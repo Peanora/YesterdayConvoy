@@ -2,7 +2,7 @@
 
 Unity 工程根目录：`E:/珍贵资料/昨日圆车`。这是空工程基线，尚未实现战斗或商店。
 
-- Unity：`6000.6.5f1`（本机已安装版本；技术选择暂定，待用户确认是否改为团队指定版本）。
+- Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；类似《明日方舟》的俯视 2D。
 - 入口：`Assets/_Game/Scenes/Bootstrap.unity`。
 - 规则圣经：[docs/GDD.md](docs/GDD.md)；当前事实：[docs/STATUS.md](docs/STATUS.md)；证据：[docs/QA.md](docs/QA.md)。
@@ -33,7 +33,8 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
-- [当前任务 T00](docs/tasks/T00.md)：唯一目标及验收标准。
+- [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。
+- [规则文档任务 R01](docs/tasks/R01.md)：本次确认同步；[商店概率提案](docs/proposals/SHOP-v0.1.md) 等待用户确认。
 - [开发与协作手册](docs/DEVELOPMENT.md)：路线图、任务方法与参考；其中“尚未建项”属于原始准备阶段上下文。
 - [课程准备原稿](docs/COURSE_PREPARATION.md)：保留课程资料；实际进度以 STATUS 为准。
 - [迁移清单](docs/PREPARATION_MIGRATION.json)：原准备包五份文件的文件名、目标路径与原始 SHA256；GDD 与入口迁移后会有记录在 Git 中的更新。
