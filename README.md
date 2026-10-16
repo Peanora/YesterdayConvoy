@@ -34,7 +34,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
 - [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。
-- [规则文档任务 R01](docs/tasks/R01.md)：本次确认同步；[商店概率提案](docs/proposals/SHOP-v0.1.md) 等待用户确认。
+- [规则文档任务 R01](docs/tasks/R01.md)、[确认同步 R02](docs/tasks/R02.md)；[商店规范](docs/proposals/SHOP-v0.1.md) 的概率、返库与缺货核心规则已确认，尚未实现。
 - [开发与协作手册](docs/DEVELOPMENT.md)：路线图、任务方法与参考；其中“尚未建项”属于原始准备阶段上下文。
 - [课程准备原稿](docs/COURSE_PREPARATION.md)：保留课程资料；实际进度以 STATUS 为准。
 - [迁移清单](docs/PREPARATION_MIGRATION.json)：原准备包五份文件的文件名、目标路径与原始 SHA256；GDD 与入口迁移后会有记录在 Git 中的更新。
