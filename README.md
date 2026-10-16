@@ -33,6 +33,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 文档入口
 
+- [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：当前 31 个资源已入库验证，尚未替换 Demo；角色/地图仍在选型。
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
 - [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。

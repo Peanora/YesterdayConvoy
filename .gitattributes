@@ -12,3 +12,5 @@
 *.prefab whitespace=-blank-at-eol
 *.asset whitespace=-blank-at-eol
 *.meta whitespace=-blank-at-eol
+# Preserve third-party license files byte-for-byte, including their original whitespace.
+docs/art/licenses/*.txt -text -whitespace
