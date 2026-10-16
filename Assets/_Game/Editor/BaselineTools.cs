@@ -16,6 +16,11 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Baseline/Initialize")]
         public static void Initialize()
         {
+            if (File.Exists(InitialDemoTools.ScenePath))
+            {
+                InitialDemoTools.Initialize();
+                return;
+            }
             EditorSettings.serializationMode = SerializationMode.ForceText;
             VersionControlSettings.mode = "Visible Meta Files";
             EditorSettings.defaultBehaviorMode = EditorBehaviorMode.Mode2D;
@@ -59,6 +64,11 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Baseline/Validate")]
         public static void Validate()
         {
+            if (File.Exists(InitialDemoTools.ScenePath))
+            {
+                InitialDemoTools.Validate();
+                return;
+            }
             if (!File.Exists(EntryScene))
                 throw new InvalidOperationException("Entry scene is missing.");
             EditorSceneManager.OpenScene(EntryScene, OpenSceneMode.Single);
@@ -79,11 +89,11 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Baseline/Build Windows")]
         public static void BuildWindows()
         {
-            Validate();
+            InitialDemoTools.Validate();
             Directory.CreateDirectory("Builds/Windows");
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { EntryScene },
+                scenes = new[] { InitialDemoTools.ScenePath },
                 locationPathName = "Builds/Windows/YesterdayConvoy.exe",
                 target = BuildTarget.StandaloneWindows64,
                 options = BuildOptions.Development

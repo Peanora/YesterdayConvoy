@@ -1,17 +1,17 @@
 # 《昨日圆车》项目指令
 
-本文件是仓库根目录的生效指令。设计圣经为 `docs/GDD.md`；实际工程状态、版本和验证结果见 `docs/STATUS.md`，最近实现任务见 `docs/tasks/T02.md`，已完成建项记录见 `docs/tasks/T00.md`。
+本文件是仓库根目录的生效指令。设计圣经为 `docs/GDD.md`；当前可玩目标与实际状态见 `docs/STATUS.md`。T00–T02 任务卡为历史记录。
 
 ## 四条强制原则（用户于 2026-10-16 确认）
 
-1. 一个任务只包含一个可验证的目标，并明确验收标准。违反时拒绝执行并提示拆分，除非人类明确认可该例外。不能把战斗、商店、羁绊和 UI 合并成一次任务。
-2. 每个任务先阅读相关文档。先读本文件、STATUS、当前任务卡和 GDD 对应章节；文档是设计依据，不能根据上次聊天猜测规则。
+1. 一个任务围绕一个可验收的玩家可见功能或小闭环。特别是前期，每次尽量交付能运行、能操作的功能；同一闭环所需的逻辑、场景、相机、最小 UI 可以一起完成，不按字段、类或极小技术步骤切碎。不要把互不相关的大系统一起承诺；目标失焦时提示拆分，用户明确认可的范围优先。
+2. 每个任务先阅读相关文档。先读本文件、STATUS、GDD 对应章节及已有的相关任务卡；文档是设计依据，不能根据上次聊天猜测规则。
 3. 每完成一个可运行功能就提交本地 Git。场景、Prefab、必要 `.meta` 纳入版本控制；Library 等缓存不提交。未通过或未执行的验证如实记录；推送与发布需要相应授权。
-4. 每次提供测试证据：改动文件、执行的测试及结果、未执行项、风险；同时解释新增关键类、核心接口和数据流。没有新增接口时明确说明，不能只回复“已完成”。
+4. 简短提供改动、实际测试结果、未测项/风险，并用几句话解释关键类和数据如何连接。验证与风险匹配，优先关键边界和可玩场景；不为小改动堆工具、镜像测试、重复报告或指纹清单。常规任务更新 STATUS/QA 即可，不要求每次新建任务卡和证据 JSON。
 
 ## 开始工作
 
-- 阅读当前用户任务、适用项目指令、`docs/GDD.md` 对应章节、`docs/STATUS.md`、当前任务卡和 Git 状态。
+- 阅读当前用户任务、适用项目指令、`docs/GDD.md` 对应章节、`docs/STATUS.md`、已有的相关任务卡和 Git 状态。
 - 工程事实以实际文件、安装环境和运行结果为准。没有项目 / 文件时先核实，不虚构实现。
 - 保留他人未提交改动；仅修改当前任务与必要相关修复。
 - 项目仍处于 GDD v0.1 草案阶段。区分已定规则、建议、试验参数和待定选择；建议不能被登记为人类已确认。
@@ -21,7 +21,7 @@
 - 游戏名为《昨日圆车》，Unity 已获课程允许。
 - 一人主导，两人辅助；当前排程按剩余 10 周、主导约 100 小时估算，投入可能更少。
 - 基础目标为完整短流程；优先可玩、清晰、稳定，内容数量可以下调。
-- 已确认 Windows 离线单机、键鼠、类似《明日方舟》的俯视 2D 视角；具体镜头倾角与美术表现待原型确认。
+- 已确认 Windows 离线单机、键鼠；用户现明确要求类似《明日方舟》的斜俯视，能看到地面顶面和立面，当前采用 2.5D 棋盘与简单立体占位物，不再以正面纯平面截图为验收。
 
 ## 已定玩法不可默改
 
@@ -89,9 +89,9 @@
 | --- | --- |
 | 真实工程根目录 | `E:/珍贵资料/昨日圆车` |
 | Unity 精确版本 | `6000.6.5f1 (3ff58d469c8a)`，2026-10-16 用户已确认沿用 |
-| 目标平台 | Windows x64 离线单机，键鼠，俯视 2D |
-| 入口场景 | `Assets/_Game/Scenes/Bootstrap.unity` |
-| 校验入口 | 场景：`YesterdayConvoy.Editor.BaselineTools.Validate`；怪物：`YesterdayConvoy.Editor.UnitConfigurationTools.ValidateProject`，构建前自动执行怪物校验 |
-| Edit Mode / Play Mode 测试入口 | EditMode：`YesterdayConvoy.Editor.Tests`；PlayMode：`YesterdayConvoy.PlayMode.Tests`。移动 Player：`-movementSmokeTest`；五帧基础启动：`-baselineSmokeTest`。数量与证据见 QA/MOVEMENT |
+| 目标平台 | Windows x64 离线单机，键鼠，斜俯视 2.5D |
+| 入口场景 | `Assets/_Game/Scenes/InitialDemo.unity`；Bootstrap 保留作 T02 回归 |
+| 校验入口 | 场景：`YesterdayConvoy.Editor.InitialDemoTools.Validate`（Baseline/Validate 同样转入）；怪物：`YesterdayConvoy.Editor.UnitConfigurationTools.ValidateProject`，构建前自动执行怪物校验 |
+| Edit Mode / Play Mode 测试入口 | EditMode：`YesterdayConvoy.Editor.Tests`；PlayMode：`YesterdayConvoy.PlayMode.Tests`。当前 Player：`-demoSmokeTest`，可选 `-demoEvidenceDir`；旧移动参数仅供 Bootstrap。数量与证据见 QA |
 | 构建入口 | `YesterdayConvoy.Editor.BaselineTools.BuildWindows`；产物 `Builds/Windows/YesterdayConvoy.exe` |
 | 最近一次真实构建 / 提交 | 见 `docs/QA.md` 和本地 Git 日志；不得据此宣称玩法实现 |

@@ -1,17 +1,19 @@
 # 昨日圆车
 
-Unity 工程根目录：`E:/珍贵资料/昨日圆车`。已完成工程基线、T01 怪物配置/校验、T02 单只怪物沿固定路线移动；尚无部署、战斗或商店。
+Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：一个怪物从红门出发，防御塔自动攻击，怪物突破蓝门或死亡，结果后可重新开始。
 
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
-- 平台：Windows x64 离线单机；键鼠；类似《明日方舟》的俯视 2D。
-- 入口：`Assets/_Game/Scenes/Bootstrap.unity`。
+- 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
+- 入口：`Assets/_Game/Scenes/InitialDemo.unity`；旧 Bootstrap 仅保留作移动回归。
 - 规则圣经：[docs/GDD.md](docs/GDD.md)；当前事实：[docs/STATUS.md](docs/STATUS.md)；证据：[docs/QA.md](docs/QA.md)。
 
 ## 打开和运行
 
-Unity Hub → Add / 从磁盘添加项目 → 选择本目录，使用上述精确版本打开。打开入口场景并按 Play：橙色 U01 沿折线从绿色起点移动，到蓝色终点停止，下方显示进度。路线长 15 世界单位，配置移速 1.5，约 10 模拟秒完成。临时说明为英文，尚无部署/战斗；中文 UI 与字体留给后续具体任务。
+最快试玩：双击 `Builds/Windows/YesterdayConvoy.exe`，点击右下角“开始进攻”。默认 100 生命可突破蓝门；把下方生命滑块降到 30 再开一局，可看到怪物被塔击败。结束后点击“重新开始”。这里只结算这次进攻，蓝门仍有防御时不宣告整关胜利。
 
-菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows。Initialize 在场景缺失时创建入口，已存在时只校验，避免重置人工场景内容。Windows 产物在 `Builds/Windows/YesterdayConvoy.exe`。
+在编辑器运行：Unity Hub 添加并打开本工程 → 下方 Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** 场景文件 → 顶部 ▶ Play → Game 视图点击“开始进攻”。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景，再按 Play。
+
+菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo。初始化保留已有场景内容。美术为简单几何占位物；生命、塔攻击参数与布局为试验值。
 
 ## 命令行验证
 
@@ -22,10 +24,10 @@ New-Item -ItemType Directory -Path artifacts -Force | Out-Null
 $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 & $editorPath -batchmode -nographics -quit -projectPath "$PWD" -executeMethod YesterdayConvoy.Editor.BaselineTools.Validate -logFile "$PWD\artifacts\validate.log" | Out-Null
 & $editorPath -batchmode -nographics -quit -projectPath "$PWD" -executeMethod YesterdayConvoy.Editor.BaselineTools.BuildWindows -logFile "$PWD\artifacts\build-windows.log" | Out-Null
-& "$PWD\Builds\Windows\YesterdayConvoy.exe" -batchmode -nographics -baselineSmokeTest -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
+& "$PWD\Builds\Windows\YesterdayConvoy.exe" -demoSmokeTest -demoEvidenceDir "$PWD\artifacts\initial-demo" -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
 ```
 
-检查退出码及日志中的 `BASELINE_VALIDATE_PASS`、`BASELINE_BUILD_PASS`、`BASELINE_SMOKE_PASS`，不能仅以文件存在判断通过。无图形烟雾检查只验证入口绑定和运行帧，不能代替实际 Game 画面、键鼠交互或第二台电脑验证。
+检查退出码及日志中的 `INITIAL_DEMO_SCENE_PASS`、`BASELINE_BUILD_PASS`、`INITIAL_DEMO_CHECK`（四项均 True），不能仅以文件存在判断通过。Demo Player 检查使用真实图形渲染，自动执行突破/死亡/重开；相机图片不包含 OnGUI，不能代替人工点击界面或第二台电脑验证。
 
 提交 Assets、Packages、ProjectSettings、文档与必要 `.meta`；Library、Logs、UserSettings、Builds、artifacts 等本地生成物已忽略。每个可运行功能验收后本地提交，远端推送和发布另按用户授权。
 
@@ -43,4 +45,4 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 入口如何连接
 
-`Bootstrap.unity` 引用正交主相机、状态组件和移动原型。`MovementPrototype` 把统一 delta 交给 `PrototypeUnit`，后者从 U01 配置创建独立 `RouteMotion` 状态并更新位置。`BaselineTools` 负责初始化、校验和构建同一入口。`-baselineSmokeTest` 仍只检查五帧启动；`-movementSmokeTest` 才运行完整路线并验证到达，见 MOVEMENT。
+`InitialDemo.unity` 保存相机、棋盘、怪物、塔和红蓝门的真实对象与引用。`InitialDemo.BeginAttack` 创建单局状态，读取只读 U01 配置，`Simulate` 用同一个 delta 推进 `RouteMotion`、塔攻击和生命，终点只扣一次蓝门防御；OnGUI 按钮调用同一个 BeginAttack 重开。`InitialDemoTools` 只在编辑器生成/校验场景，`BaselineTools.BuildWindows` 构建这个入口；Editor 和测试程序集不进入 Player。
