@@ -1,0 +1,6 @@
+{
+  "name": "YesterdayConvoy.PlayMode.Tests",
+  "rootNamespace": "YesterdayConvoy.Tests",
+  "references": ["YesterdayConvoy.Runtime"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

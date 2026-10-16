@@ -45,6 +45,10 @@ namespace YesterdayConvoy.Editor
                 if (!EditorSceneManager.SaveScene(scene, EntryScene))
                     throw new InvalidOperationException("Could not save the entry scene.");
             }
+            else
+                EditorSceneManager.OpenScene(EntryScene, OpenSceneMode.Single);
+
+            MovementPrototypeTools.EnsureInCurrentScene();
 
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(EntryScene, true) };
             AssetDatabase.SaveAssets();
@@ -68,6 +72,7 @@ namespace YesterdayConvoy.Editor
             var scenes = EditorBuildSettings.scenes;
             if (scenes.Length != 1 || !scenes[0].enabled || scenes[0].path != EntryScene)
                 throw new InvalidOperationException("Build scene list does not match the entry scene.");
+            MovementPrototypeTools.ValidateScene();
             Debug.Log("BASELINE_VALIDATE_PASS: entry scene, camera, scripts and build reference verified.");
         }
 

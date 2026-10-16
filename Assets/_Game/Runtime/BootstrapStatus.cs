@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Visible entry marker for the empty project; contains no game rules.</summary>
+    /// <summary>Visible entry marker and five-frame startup check, separate from the full movement verification.</summary>
     public sealed class BootstrapStatus : MonoBehaviour
     {
         private int observedFrames;
@@ -12,7 +12,7 @@ namespace YesterdayConvoy
         private void Awake()
         {
             smokeTest = Array.IndexOf(Environment.GetCommandLineArgs(), "-baselineSmokeTest") >= 0;
-            Debug.Log("BASELINE_ENTRY_AWAKE: Bootstrap scene loaded; gameplay is not implemented.");
+            Debug.Log("BASELINE_ENTRY_AWAKE: Bootstrap scene loaded; T02 movement demo, combat not implemented.");
         }
 
         private void Update()
@@ -30,9 +30,9 @@ namespace YesterdayConvoy
 
         private void OnGUI()
         {
-            GUI.Box(new Rect(24, 24, 520, 140), "Yesterday Convoy / Project Baseline");
+            GUI.Box(new Rect(24, 24, 520, 140), "Yesterday Convoy / T02 Prototype");
             GUI.Label(new Rect(44, 64, 480, 70),
-                "Unity project is running.\nWindows offline / keyboard + mouse / top-down 2D\nGameplay is not implemented yet.");
+                "One configured unit follows the fixed route.\nGreen = start | Amber = unit | Blue = endpoint\nCombat, deployment and shop are not implemented yet.");
         }
     }
 }

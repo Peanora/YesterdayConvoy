@@ -1,0 +1,381 @@
+{
+  "task": "T02",
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "unity": "6000.6.5f1 (3ff58d469c8a)",
+  "editMode": {
+    "result": "Passed",
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.8438193,
+    "processExitCode": 0,
+    "cases": [
+      {
+        "name": "MissingUnitBindingIsRejected",
+        "result": "Passed"
+      },
+      {
+        "name": "ZeroLengthAuthoredRouteIsRejectedWithFieldDiagnostic",
+        "result": "Passed"
+      },
+      {
+        "name": "CrossesCornerUsingRemainingDistance",
+        "result": "Passed"
+      },
+      {
+        "name": "DifferentStepSizesFollowTheSameRoute",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidSpeedIsRejected(0.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidSpeedIsRejected(-1.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidSpeedIsRejected(float.PositiveInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidTimeIsRejectedWithoutMoving(-1.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidTimeIsRejectedWithoutMoving(float.NaN)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidTimeIsRejectedWithoutMoving(float.PositiveInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "LargeStepStopsAtEndpointAndStaysThere",
+        "result": "Passed"
+      },
+      {
+        "name": "RepeatedWaypointsDoNotStallMovement",
+        "result": "Passed"
+      },
+      {
+        "name": "RouteIsCopiedAndInvalidRoutesAreRejected",
+        "result": "Passed"
+      },
+      {
+        "name": "SmallFrameStepsKeepProgressMonotonicAndWithinRouteLength(0.0002f)",
+        "result": "Passed"
+      },
+      {
+        "name": "SmallFrameStepsKeepProgressMonotonicAndWithinRouteLength(0.1f)",
+        "result": "Passed"
+      },
+      {
+        "name": "SmallFrameStepsKeepProgressMonotonicAndWithinRouteLength(0.01666667f)",
+        "result": "Passed"
+      },
+      {
+        "name": "ZeroSimulationDeltaFreezesProgress",
+        "result": "Passed"
+      },
+      {
+        "name": "BuildHookRejectsInvalidProjectAssetWithActionableDiagnostic",
+        "result": "Passed"
+      },
+      {
+        "name": "DuplicateIdReportsBothAssetPathsDespiteDifferentDisplayNames",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(0.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(-1.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.NaN)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.PositiveInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.NegativeInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingAssetAndEmptyCatalogAreRejected",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingDisplayNameIsRejected(\"\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingDisplayNameIsRejected(\"   \")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingIdReportsTheSavedAsset(\"\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingIdReportsTheSavedAsset(\"   \")",
+        "result": "Passed"
+      },
+      {
+        "name": "NonPositiveGateDamageIsRejected(0)",
+        "result": "Passed"
+      },
+      {
+        "name": "NonPositiveGateDamageIsRejected(-1)",
+        "result": "Passed"
+      },
+      {
+        "name": "PaddedIdIsRejectedWithoutChangingIt(\" PADDED\")",
+        "result": "Passed"
+      },
+      {
+        "name": "PaddedIdIsRejectedWithoutChangingIt(\"PADDED \")",
+        "result": "Passed"
+      },
+      {
+        "name": "SavedValidDefinitionsAreDiscoveredAndNotModifiedByValidation",
+        "result": "Passed"
+      }
+    ]
+  },
+  "playMode": {
+    "result": "Passed",
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.6884854,
+    "processExitCode": 0,
+    "cases": [
+      {
+        "name": "EntrySceneReadsConfigurationAndActuallyMoves",
+        "result": "Passed"
+      },
+      {
+        "name": "UnitReachesEndpointAndDoesNotLoopOrRewriteDefinition",
+        "result": "Passed"
+      },
+      {
+        "name": "ZeroTimeScaleStopsTheSharedDriver",
+        "result": "Passed"
+      }
+    ]
+  },
+  "windowsBuild": {
+    "result": "Succeeded",
+    "totalSizeBytes": 157567428,
+    "errors": 0,
+    "processExitCode": 0
+  },
+  "playerMovement": {
+    "result": "T02_MOVEMENT_PASS",
+    "processExitCode": 0,
+    "unit": "U01",
+    "speed": 1.5,
+    "routeLength": 15,
+    "endpoint": [
+      5,
+      -1.5,
+      0
+    ],
+    "arrivalLogCount": 1,
+    "graphics": "Direct3D 12",
+    "runtimeAssemblySha256": "BCC40A97EF178FE19608C9DE2F1C496A1969EE708FBC3DD28E13632B85198B42"
+  },
+  "visualEvidence": "Three 1280x720 main-camera images inspected; no OnGUI overlays included",
+  "idempotency": "Scene, scene meta, 4 materials and 4 material meta SHA256 unchanged after repeat initialization",
+  "metadata": "40 unique GUIDs; complete meta coverage; no leaked fixtures",
+  "regression": {
+    "originalPlayerFailure": "Path progress moved backwards at arrival",
+    "reproduction": "Fixed 0.0002-second steps produced 15.000299621060549 progress on a length-15 route; saved XML had 1 failed and 2 passed cases",
+    "fix": "Integrate bounded double path distance and derive position from cumulative static segment lengths",
+    "finalResult": "All three frame-step regression cases pass as part of final Edit Mode run"
+  },
+  "evidence": [
+    {
+      "path": "artifacts/t02-editmode-results.xml",
+      "sha256": "517318997E808BEBE38ED08D44ED63191F430CFF0288DBAD6A7209B9CE378F50"
+    },
+    {
+      "path": "artifacts/t02-editmode.log",
+      "sha256": "EB944C2678D1A7540BECF818A68AB3A70E9FFB636913BF449B4584EFA54B0E4C"
+    },
+    {
+      "path": "artifacts/t02-playmode-results.xml",
+      "sha256": "C498C681FBB605A87EAA5D8D36A19D2FA018EE2BDA9324E1B7ECBB544643885C"
+    },
+    {
+      "path": "artifacts/t02-playmode.log",
+      "sha256": "7B3AD089302723FCBA54169BC1D13C36DC0BC867B6B7D86520BB0AEE3057CFB5"
+    },
+    {
+      "path": "artifacts/t02-build-windows.log",
+      "sha256": "D644FAFCDAEB5192F365BB040F499CE5716E46D212A846821E7EDCCE494434C9"
+    },
+    {
+      "path": "artifacts/t02-player.log",
+      "sha256": "370777078B8666F4088D518C992A23270CC2D6FC37B625F10AB3D84697A6FB19"
+    },
+    {
+      "path": "artifacts/t02-repeat-initialize.log",
+      "sha256": "509540D4D709F465EDEF1E9C0A52309EEC54529F5BEE1EBCA9A3E5A86BC03002"
+    },
+    {
+      "path": "artifacts/t02-progress-repro.xml",
+      "sha256": "1ED564AF8C7BA46C28CADA01CDDD74C2FB5C3101D7887EF6AE9F23A94C65F395"
+    },
+    {
+      "path": "artifacts/t02-player-first-failure.log",
+      "sha256": "CD8C8FE8DA21B4FB2F86414247AED265B5446DE8D07125FDFF28E13092BE5CAD"
+    },
+    {
+      "path": "artifacts/t02-player-capture-failure.log",
+      "sha256": "844A2C2574E7060C45E3DE50C7877B9B03268DB870BAE26ACE6B71839AB28787"
+    },
+    {
+      "path": "artifacts/t02-player/start.png",
+      "sha256": "7F7B95CDD1B32807F4E49C046814ABAA0EF175A3AEC3B8600B3E890C506B9308"
+    },
+    {
+      "path": "artifacts/t02-player/middle.png",
+      "sha256": "39179FE3DED67BB26276CC52E617A3522EE9AC634B161B9830C3F93B563EB9FA"
+    },
+    {
+      "path": "artifacts/t02-player/end.png",
+      "sha256": "9D1C587F2FAD40F313E06662597A090DFCB94FF1D3464997FE44204BAA5646A3"
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "Assets/_Game/Data/Units/U01.asset",
+      "sha256": "E9FADCFFBB24DE811C839D0927E8337F9A364B7B1112021022E7ADBA938DB7AA"
+    },
+    {
+      "path": "Assets/_Game/Data/Units/U02.asset",
+      "sha256": "ACE85EC9CD8BB80889D2EE9E7C717C8C60421C90D45DF001EB9D2D0A1D1012BE"
+    },
+    {
+      "path": "Assets/_Game/Data/Units/U03.asset",
+      "sha256": "1B66ACA74B5558CEBB9D628FCC4D0A040351C1BB6B7FE75EBC486A2E76B2E41B"
+    },
+    {
+      "path": "Assets/_Game/Editor/BaselineTools.cs",
+      "sha256": "644C9FF6A3C34B85B88060130A62803FA06CD38BB794CEB15055FA489011A589"
+    },
+    {
+      "path": "Assets/_Game/Editor/MovementPrototypeBuildCheck.cs",
+      "sha256": "172CCB5C266DD91DE9CFF57CB020B3C3824F86D88281E144CC210942F0F3D080"
+    },
+    {
+      "path": "Assets/_Game/Editor/MovementPrototypeTools.cs",
+      "sha256": "5DA3C1ADFF3C950F8A73774A5AF2EA068E197023327C3F0C168881EFF804DF4D"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationBuildCheck.cs",
+      "sha256": "32BE525B49B078077554B3D7DB60FA9C724A64E2325DB728DB08A1C13BC42EB0"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationTools.cs",
+      "sha256": "94DA842C4E0E4AA1363C5E2047B76914FEB68DB350A6E7833238881876E0754E"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationValidator.cs",
+      "sha256": "00E004FA71FDAEB33E127FC1C53926CA7F3A886063553C172A38FFB4FA610E52"
+    },
+    {
+      "path": "Assets/_Game/Editor/YesterdayConvoy.Editor.asmdef",
+      "sha256": "B2D48E7379F7D7524DDE48EB059BE4400F62C0B163A241EA0D94E89026EBFE7C"
+    },
+    {
+      "path": "Assets/_Game/Materials/PrototypeEndpoint.mat",
+      "sha256": "C530D6813E5176B746DB628A7EAF16347319204643D322E82412961F3E83BD8E"
+    },
+    {
+      "path": "Assets/_Game/Materials/PrototypeRoute.mat",
+      "sha256": "5BA64952D09D404B3B01884673BD17B7CA7857D9B50670B3292A6A04EBD92577"
+    },
+    {
+      "path": "Assets/_Game/Materials/PrototypeStart.mat",
+      "sha256": "A0B6454A11948AAA07A0358B7DF09593C9643CE0F952D25F102529E24D03B2E2"
+    },
+    {
+      "path": "Assets/_Game/Materials/PrototypeUnit.mat",
+      "sha256": "FC88CFF86ECAF712DF5947B5255381CD96818D1DFBE8E18430A6EBE643443B38"
+    },
+    {
+      "path": "Assets/_Game/Runtime/BootstrapStatus.cs",
+      "sha256": "1A48553DA845F3C44D24A373D54EBDA320E79182563B388100E23C414E89930E"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Data/UnitDefinition.cs",
+      "sha256": "E4B165462033F09E67B437CAA07FB01CB94C0C13CB009E619A070CB2526E8110"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Movement/MovementPrototype.cs",
+      "sha256": "EBB0AF256AF1A41D5A5F1D25C0298D70218F653989EBB5EED5507F220FA1FF83"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Movement/MovementSmokeCheck.cs",
+      "sha256": "F4F2DA062B27CC7C736CC0E1470797CC3897F6B9E11AB55C29FDD117EDA93B12"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Movement/PrototypeUnit.cs",
+      "sha256": "A0044DE543B62E2D494D3F8C0796FF210BD618405948AE9D8ACE29E15A0C214B"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Movement/RouteMotion.cs",
+      "sha256": "5C89F80617C47CC5C239283FFD1F947108B537118E91441C2989BCCDBA3D1DEE"
+    },
+    {
+      "path": "Assets/_Game/Runtime/YesterdayConvoy.Runtime.asmdef",
+      "sha256": "E68322FDF2B072A5E8EAD9162711DAF8E08D98E13D127D569963FE8E737DCDBC"
+    },
+    {
+      "path": "Assets/_Game/Scenes/Bootstrap.unity",
+      "sha256": "A34EF6567EA223E75E013FBF4A321CBEEC68C5A8E3D9565B5071C8FDAF33BCAA"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/MovementSceneValidationTests.cs",
+      "sha256": "0478189A138B011002470F3ADCBEA01108881684CE877995A366B6D705091FFD"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/RouteMotionTests.cs",
+      "sha256": "A8F46AC327FB83D574FBCDCC6AB5EB3A4AEAA21C94490C53FFFD115BD225C318"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/UnitConfigurationTests.cs",
+      "sha256": "0ECC6D03FE2AF082E0CEC3C369B77216CC2C1D8C255A6623B98A3F19B39B806B"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/YesterdayConvoy.Editor.Tests.asmdef",
+      "sha256": "4E23BCE622E48CB07941E4095FC0EC5DCC25DE2A3718E03CB5D17D48A5C3B82E"
+    },
+    {
+      "path": "Assets/_Game/Tests/PlayMode/MovementSceneTests.cs",
+      "sha256": "930B65FE1B001CFFE7D5F8DF9073CB1EC59554B1CF071083D328D5D68496C8C9"
+    },
+    {
+      "path": "Assets/_Game/Tests/PlayMode/YesterdayConvoy.PlayMode.Tests.asmdef",
+      "sha256": "68788D9516543600D6D8681391586C06726BEE9358B0A29B305369E59E3190B4"
+    }
+  ],
+  "limitations": [
+    "No manual Unity/keyboard/mouse or OnGUI visual acceptance",
+    "No second-machine/offline test",
+    "Endpoint marker does not apply gate damage or remove entity",
+    "No deployment/combat/shop; no pause UI",
+    "Capture helper/watchdog only run under explicit test arguments"
+  ]
+}

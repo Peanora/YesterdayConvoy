@@ -36,7 +36,7 @@
 - `UnitConfigurationTools`：提供生成样例与 `ValidateProject()` 菜单/命令行入口，将失败诊断转换为可读构建错误。
 - `UnitConfigurationBuildCheck.OnPreprocessBuild()`：所有 Player 构建前调用 `ValidateProject()`，避免只在特定构建脚本中生效。
 
-数据流为 Inspector → `.asset` → Validator → Console 或构建拦截。之后 T02 可以通过 Inspector 引用 `UnitDefinition` 并读取 `MoveSpeed` 等初始值；位置、血量等可变状态需要另建，不能写回配置。**当前入口场景未绑定或读取这些配置**；尚未引用的资产也不会因此自动打入 Player。
+配置校验流为 Inspector → `.asset` → Validator → Console 或构建拦截。T02 已通过场景中的 PrototypeUnit 引用 U01，读取速度/ID 到独立 RouteMotion 状态；位置不写回配置。U01 随场景引用进入 Player，U02/U03 仍只是未被入口引用的样例；详细连接见 [MOVEMENT](MOVEMENT.md)。
 
 Runtime、Editor、Editor.Tests 三个 asmdef 仅用于让测试引用工程代码并隔离编辑器/测试程序集，不增加框架或包依赖。现有 BootstrapStatus 脚本文件及其 GUID 保持不变，移动到 Runtime 程序集后的入口已实际回归。
 
