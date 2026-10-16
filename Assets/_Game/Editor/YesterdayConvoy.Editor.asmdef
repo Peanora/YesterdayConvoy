@@ -1,0 +1,6 @@
+{
+  "name": "YesterdayConvoy.Editor",
+  "rootNamespace": "YesterdayConvoy.Editor",
+  "references": ["YesterdayConvoy.Runtime"],
+  "includePlatforms": ["Editor"]
+}

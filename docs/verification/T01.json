@@ -1,0 +1,190 @@
+{
+  "task": "T01",
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "unityVersion": "6000.6.5f1 (3ff58d469c8a)",
+  "testFrameworkVersion": "1.8.0 (existing dependency)",
+  "editMode": {
+    "result": "Passed",
+    "total": 17,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.8166259,
+    "processExitCode": 0,
+    "cases": [
+      {
+        "name": "BuildHookRejectsInvalidProjectAssetWithActionableDiagnostic",
+        "result": "Passed"
+      },
+      {
+        "name": "DuplicateIdReportsBothAssetPathsDespiteDifferentDisplayNames",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(0.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(-1.0f)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.NaN)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.PositiveInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "InvalidMoveSpeedIsRejected(float.NegativeInfinity)",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingAssetAndEmptyCatalogAreRejected",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingDisplayNameIsRejected(\"\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingDisplayNameIsRejected(\"   \")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingIdReportsTheSavedAsset(\"\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MissingIdReportsTheSavedAsset(\"   \")",
+        "result": "Passed"
+      },
+      {
+        "name": "NonPositiveGateDamageIsRejected(0)",
+        "result": "Passed"
+      },
+      {
+        "name": "NonPositiveGateDamageIsRejected(-1)",
+        "result": "Passed"
+      },
+      {
+        "name": "PaddedIdIsRejectedWithoutChangingIt(\" PADDED\")",
+        "result": "Passed"
+      },
+      {
+        "name": "PaddedIdIsRejectedWithoutChangingIt(\"PADDED \")",
+        "result": "Passed"
+      },
+      {
+        "name": "SavedValidDefinitionsAreDiscoveredAndNotModifiedByValidation",
+        "result": "Passed"
+      }
+    ]
+  },
+  "sampleCreation": "3 assets passed validation",
+  "idempotency": "3 assets and 3 meta SHA256 unchanged",
+  "assetMetadata": "23 unique GUIDs; complete meta; no temporary fixtures remain",
+  "windowsBuild": {
+    "result": "Succeeded",
+    "totalSizeBytes": 157551089,
+    "errors": 0,
+    "processExitCode": 0,
+    "configurationBuildCallback": "UNIT_CONFIGURATION_PASS present in build log"
+  },
+  "playerSmoke": {
+    "result": "BASELINE_SMOKE_PASS",
+    "graphics": "Direct3D 12",
+    "frames": 5,
+    "processExitCode": 0,
+    "runtimeAssemblySha256": "86B29341A3AA37CF562A829D1B01B17E10CC473D8734D4F304E0EBCA3BF31964"
+  },
+  "evidence": [
+    {
+      "path": "artifacts/t01-create-units.log",
+      "sha256": "FCAEE86FEA3D2B852D35F507EBA1360C990966AE4A9E09C36E0D516CB35A745B"
+    },
+    {
+      "path": "artifacts/t01-editmode.log",
+      "sha256": "C0F35FB837CC4E848CED082A02E85FCA6041363422349FDA2E2562089B80DECD"
+    },
+    {
+      "path": "artifacts/t01-editmode-results.xml",
+      "sha256": "E97402AAFA36A61057C4F90B9B6F7AEA8ECF4996CC2243EF82D514BEE711601A"
+    },
+    {
+      "path": "artifacts/t01-repeat-create.log",
+      "sha256": "BD1E4C34FCE5CD5BFD8546DD621EADBEA09328FD8E4A860AECF796097068AE30"
+    },
+    {
+      "path": "artifacts/t01-build-windows.log",
+      "sha256": "A8BEA2396F8EE86FEB716775E118EF03F4A34FA3773DE6957F8B15790B53B44F"
+    },
+    {
+      "path": "artifacts/t01-player-smoke.log",
+      "sha256": "F12B1367D3846DD44A014842D4C345C01DAF66BFBCBDDEA2F4E9EB8D814CD2B6"
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "Assets/_Game/Data/Units/U01.asset",
+      "sha256": "E9FADCFFBB24DE811C839D0927E8337F9A364B7B1112021022E7ADBA938DB7AA"
+    },
+    {
+      "path": "Assets/_Game/Data/Units/U02.asset",
+      "sha256": "ACE85EC9CD8BB80889D2EE9E7C717C8C60421C90D45DF001EB9D2D0A1D1012BE"
+    },
+    {
+      "path": "Assets/_Game/Data/Units/U03.asset",
+      "sha256": "1B66ACA74B5558CEBB9D628FCC4D0A040351C1BB6B7FE75EBC486A2E76B2E41B"
+    },
+    {
+      "path": "Assets/_Game/Editor/BaselineTools.cs",
+      "sha256": "DF3399FB428BD0A0C2BD4F6AEE1E5568BEA306C2C49102B1EEA87E212E345F9F"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationBuildCheck.cs",
+      "sha256": "32BE525B49B078077554B3D7DB60FA9C724A64E2325DB728DB08A1C13BC42EB0"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationTools.cs",
+      "sha256": "94DA842C4E0E4AA1363C5E2047B76914FEB68DB350A6E7833238881876E0754E"
+    },
+    {
+      "path": "Assets/_Game/Editor/UnitConfigurationValidator.cs",
+      "sha256": "00E004FA71FDAEB33E127FC1C53926CA7F3A886063553C172A38FFB4FA610E52"
+    },
+    {
+      "path": "Assets/_Game/Editor/YesterdayConvoy.Editor.asmdef",
+      "sha256": "B2D48E7379F7D7524DDE48EB059BE4400F62C0B163A241EA0D94E89026EBFE7C"
+    },
+    {
+      "path": "Assets/_Game/Runtime/BootstrapStatus.cs",
+      "sha256": "22357FA9715289ECE980C070DC87BD00FA05C56F1605F276B3FC51810F2D94F0"
+    },
+    {
+      "path": "Assets/_Game/Runtime/Data/UnitDefinition.cs",
+      "sha256": "E4B165462033F09E67B437CAA07FB01CB94C0C13CB009E619A070CB2526E8110"
+    },
+    {
+      "path": "Assets/_Game/Runtime/YesterdayConvoy.Runtime.asmdef",
+      "sha256": "E68322FDF2B072A5E8EAD9162711DAF8E08D98E13D127D569963FE8E737DCDBC"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/UnitConfigurationTests.cs",
+      "sha256": "0ECC6D03FE2AF082E0CEC3C369B77216CC2C1D8C255A6623B98A3F19B39B806B"
+    },
+    {
+      "path": "Assets/_Game/Tests/Editor/YesterdayConvoy.Editor.Tests.asmdef",
+      "sha256": "4E23BCE622E48CB07941E4095FC0EC5DCC25DE2A3718E03CB5D17D48A5C3B82E"
+    }
+  ],
+  "limitations": [
+    "No manual Inspector/menu or visual acceptance",
+    "No Play Mode or combat/movement tests",
+    "Invalid build test directly invokes actual build callback; positive full Player build ran",
+    "Sample assets are not referenced by the entry scene; not automatically loaded into Player",
+    "No second-machine test; sample values are experimental"
+  ]
+}

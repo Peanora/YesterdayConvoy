@@ -1,0 +1,7 @@
+{
+  "name": "YesterdayConvoy.Editor.Tests",
+  "rootNamespace": "YesterdayConvoy.Tests",
+  "references": ["YesterdayConvoy.Runtime", "YesterdayConvoy.Editor"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

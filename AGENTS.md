@@ -1,6 +1,6 @@
 # 《昨日圆车》项目指令
 
-本文件是仓库根目录的生效指令。设计圣经为 `docs/GDD.md`；实际工程状态、版本和验证结果见 `docs/STATUS.md`，最近文档任务见 `docs/tasks/R02.md`，已完成建项记录见 `docs/tasks/T00.md`。
+本文件是仓库根目录的生效指令。设计圣经为 `docs/GDD.md`；实际工程状态、版本和验证结果见 `docs/STATUS.md`，最近实现任务见 `docs/tasks/T01.md`，已完成建项记录见 `docs/tasks/T00.md`。
 
 ## 四条强制原则（用户于 2026-10-16 确认）
 
@@ -91,7 +91,7 @@
 | Unity 精确版本 | `6000.6.5f1 (3ff58d469c8a)`，2026-10-16 用户已确认沿用 |
 | 目标平台 | Windows x64 离线单机，键鼠，俯视 2D |
 | 入口场景 | `Assets/_Game/Scenes/Bootstrap.unity` |
-| 场景校验入口 | `YesterdayConvoy.Editor.BaselineTools.Validate`；玩法配置校验未实现 |
-| Edit Mode / Play Mode 测试入口 | 未建立测试套件；已执行实际 Windows Player 五帧启动烟雾检查 |
+| 校验入口 | 场景：`YesterdayConvoy.Editor.BaselineTools.Validate`；怪物：`YesterdayConvoy.Editor.UnitConfigurationTools.ValidateProject`，构建前自动执行怪物校验 |
+| Edit Mode / Play Mode 测试入口 | EditMode：`YesterdayConvoy.Editor.Tests`（17 项）；无 Play Mode 测试；Windows Player 五帧启动检查。见 CONFIGURATION 与 QA |
 | 构建入口 | `YesterdayConvoy.Editor.BaselineTools.BuildWindows`；产物 `Builds/Windows/YesterdayConvoy.exe` |
 | 最近一次真实构建 / 提交 | 见 `docs/QA.md` 和本地 Git 日志；不得据此宣称玩法实现 |
