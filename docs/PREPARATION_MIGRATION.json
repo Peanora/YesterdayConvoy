@@ -1,0 +1,27 @@
+[
+  {
+    "Original": "阅读入口-昨日圆车-v0.1.md",
+    "Destination": "docs/PREPARATION_README.md",
+    "SHA256": "7B3DBC7F1A2E60B0845B3BEF77F785BF71808D5B3EDD6C06FC08C7E0FD3BEB30"
+  },
+  {
+    "Original": "昨日圆车-课程准备材料-v0.1.md",
+    "Destination": "docs/COURSE_PREPARATION.md",
+    "SHA256": "F0D1228BC8821198CC8F0C01A4E936D0B88EB9DB3AEA35443DB6BAEAA9804546"
+  },
+  {
+    "Original": "昨日圆车-开发与Agent协作手册-v0.1.md",
+    "Destination": "docs/DEVELOPMENT.md",
+    "SHA256": "EAC58F57605E37168225E63459C39E307B6BA4071F7C977ABCB031AF597D7642"
+  },
+  {
+    "Original": "AGENTS.template.md",
+    "Destination": "docs/AGENTS.template.md",
+    "SHA256": "3C573E313A5D8174F0EE1D00257174B8F51738260C5A504267F2DF387DC4976F"
+  },
+  {
+    "Original": "昨日圆车-GDD-v0.1.md",
+    "Destination": "docs/GDD.md",
+    "SHA256": "161080425826C05A39176FA9A5516BF892CDCF2C7E2F332AA3A87F9263B4475D"
+  }
+]
