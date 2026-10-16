@@ -1,4 +1,4 @@
-* text=auto
+* text=auto eol=lf
 *.cs text eol=lf
 *.md text eol=lf
 *.json text eol=lf
@@ -6,3 +6,8 @@
 *.prefab text eol=lf
 *.asset text eol=lf
 *.meta text eol=lf
+*.md whitespace=-blank-at-eol
+*.unity whitespace=-blank-at-eol
+*.prefab whitespace=-blank-at-eol
+*.asset whitespace=-blank-at-eol
+*.meta whitespace=-blank-at-eol
