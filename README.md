@@ -11,11 +11,13 @@ Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：一个�
 
 ## 打开和运行
 
-最快试玩：双击 `Builds/Windows/YesterdayConvoy.exe`，点击右下角“开始进攻”。默认 100 生命可突破蓝门；把下方生命滑块降到 30 再开一局，可看到怪物被塔击败。结束后点击“重新开始”。这里只结算这次进攻，蓝门仍有防御时不宣告整关胜利。
+本仓库包含 Unity 源工程，`Builds` 试玩包和 `Library` 缓存不纳入 Git。首次从 GitHub 下载：使用 Git 克隆（或下载 ZIP 并解压），在 Unity Hub 中添加含 `Assets`、`Packages`、`ProjectSettings` 的项目根文件夹，以 **6000.6.5f1** 打开，等待导入后按下面的方法运行。美术文件使用普通 Git 保存，无需 Git LFS。
+
+本机已有构建时可双击 `Builds/Windows/YesterdayConvoy.exe`，点击右下角“开始进攻”。当前速度已减半，默认 100 生命会被塔击败；把生命滑块调到 **140** 可突破蓝门，调到 **30** 可快速观察死亡。结束后点击“重新开始”。这里只结算这次进攻，蓝门仍有防御时不宣告整关胜利。
 
 在编辑器运行：Unity Hub 添加并打开本工程 → 下方 Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** 场景文件 → 顶部 ▶ Play → Game 视图点击“开始进攻”。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景，再按 Play。
 
-菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo。初始化保留已有场景内容。美术为简单几何占位物；生命、塔攻击参数与布局为试验值。
+菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。当前使用像素感同系列美术与纸片关节动画；生命、塔攻击参数与布局为试验值。
 
 ## 命令行验证
 
@@ -29,7 +31,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 & "$PWD\Builds\Windows\YesterdayConvoy.exe" -demoSmokeTest -demoEvidenceDir "$PWD\artifacts\initial-demo" -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
 ```
 
-检查退出码及日志中的 `INITIAL_DEMO_SCENE_PASS`、`BASELINE_BUILD_PASS`、`INITIAL_DEMO_CHECK`（四项均 True），不能仅以文件存在判断通过。Demo Player 检查使用真实图形渲染，自动执行突破/死亡/重开；相机图片不包含 OnGUI，不能代替人工点击界面或第二台电脑验证。
+检查退出码及日志中的 `INITIAL_DEMO_SCENE_PASS`、`BASELINE_BUILD_PASS`、`INITIAL_DEMO_CHECK`（五项均 True），不能仅以文件存在判断通过。Demo Player 检查使用真实图形渲染，自动执行突破/死亡/重开；相机图片不包含 OnGUI，不能代替人工点击界面或第二台电脑验证。
 
 提交 Assets、Packages、ProjectSettings、文档与必要 `.meta`；Library、Logs、UserSettings、Builds、artifacts 等本地生成物已忽略。每个可运行功能验收后本地提交，远端推送和发布另按用户授权。
 

@@ -2,6 +2,10 @@
 
 更新：2026-10-17。当前入口为 **InitialDemo**：一个怪物、一座塔、一个红门、一个蓝门，斜俯视立体棋盘。点击开始 → 怪物移动 → 塔自动攻击 → 突破扣门或怪物死亡 → 显示结果并可重开。T00–T02 保留为历史基线。
 
+## GitHub 源码仓库（2026-10-17）
+
+用户已明确授权创建 GitHub 仓库并上传源码。私有仓库：[Peanora/YesterdayConvoy](https://github.com/Peanora/YesterdayConvoy)，上传分支为 `main`，保留本地 Git 历史及当前回退版本。`Library`、`Temp`、日志、Builds 和 artifacts 不上传，不创建 Release 或公开发布；原未跟踪 PackageManagerSettings.asset 保持不变。README 已补从 GitHub 获取后用 Unity 打开/构建的方法，并修正当前 100/140 生命结果。运行代码和美术没有变化，本轮未重跑 Unity 测试。
+
 ## 最新：回退至 e7e88c3（2026-10-17）
 
 用户要求回到本会话“向右行走恢复原三分之四正面”的版本。工程源码、Assets、包清单、配置和 AGENTS 已恢复为 `e7e88c3` 的快照，仅在 STATUS/QA 补本次回退记录。后续四次提交（分层角色/动画预览、漂浮样板及修复）撤出当前工程；完整保留在 `backup/before-rollback-397b4d6`，未重写或删除原提交历史。原未跟踪 PackageManagerSettings.asset 保留。

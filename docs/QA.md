@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## GitHub 仓库建立与源码上传（2026-10-17）
+
+用户明确授权创建仓库并上传；GitHub 账号核验为 Peanora，已创建私有仓库 `https://github.com/Peanora/YesterdayConvoy`，本地 `origin` 指向该地址，使用 `main` 上传当前工程和提交历史。保留回退前提交历史，不重写历史、不上传构建或创建 Release。
+
+本轮检查：当前工作区只有原未跟踪 PackageManagerSettings.asset；跟踪文件中无 Library/Temp/Logs/Builds/artifacts、私钥文件或常见令牌模式；全部历史最大 Blob 约 8.3 MB，无需 Git LFS。README 的 Unity 版本、入口场景、构建入口、100/140 生命结果与当前工程核对，修改仅 README/STATUS/QA。上传完成核验使用远端 main SHA 与本地 HEAD 比对，并读取 GitHub 仓库可见性。
+
+本轮**未运行** Unity、Edit/Play Mode 或构建：无运行代码、资源或场景变化，沿用前节回退任务的实际验证；未进行 GitHub 下载后在第二机导入。原未跟踪文件不纳入上传。
+
 ## 最新：恢复 e7e88c3 工程快照（2026-10-17）
 
 目标为本会话上一交付 `e7e88c3`（右向恢复三分之四正面）。回退前 HEAD=`397b4d6`，已建备份分支 `backup/before-rollback-397b4d6`。以目标快照恢复全部已跟踪文件，后续分层/灰焰/预览及修复退出当前工程；以新的回退提交保留全部历史，未使用 reset --hard、clean 或清空未跟踪文件。原 `ProjectSettings/PackageManagerSettings.asset` 保留。
