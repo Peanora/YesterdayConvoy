@@ -86,7 +86,7 @@ namespace YesterdayConvoy
             {
                 facing = requested;
                 turnStarted = -1;
-                heading = turnFrom = turnTarget = requested * 90;
+                heading = turnFrom = turnTarget = FacingAngle(requested);
                 turnProgress = 1;
                 strideAxis = desiredAxis;
                 initialized = true;
@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             {
                 facing = requested;
                 turnFrom = heading;
-                turnTarget = heading + Mathf.DeltaAngle(heading, requested * 90);
+                turnTarget = heading + Mathf.DeltaAngle(heading, FacingAngle(requested));
                 turnStarted = clock;
             }
             turnProgress = turnStarted < 0 ? 1 : Mathf.Clamp01((clock - turnStarted) / TurnDuration);
@@ -115,6 +115,9 @@ namespace YesterdayConvoy
             lastTime = clock;
         }
 
+        // Rightward travel keeps the approved three-quarter front pose. Side is a turn key pose.
+        private static float FacingAngle(int direction) => direction == 1 ? 30 : direction * 90;
+
         private Rig SelectView(float angle)
         {
             float absolute = Mathf.Abs(Mathf.DeltaAngle(0, angle));
@@ -130,7 +133,9 @@ namespace YesterdayConvoy
             rig.Root.localScale = new Vector3(Mathf.DeltaAngle(0, viewAngle) < 0 ? -1 : 1, 1, 1);
             float wave = Mathf.Sin(phase * Mathf.PI * 2) * gaitWeight;
             float bob = 0.012f * Mathf.Cos(phase * Mathf.PI * 4);
-            rig.Root.localPosition = new Vector3(0, (-0.085f + bob) * gaitWeight, 0);
+            float lateral = Mathf.Clamp01(strideAxis.x);
+            float crouch = rig == front ? Mathf.Lerp(0.085f, 0.065f, lateral) : 0.085f;
+            rig.Root.localPosition = new Vector3(0, (-crouch + bob) * gaitWeight, 0);
             PoseLeg(rig, true, phase);
             PoseLeg(rig, false, Mathf.Repeat(phase + 0.5f, 1));
             Rotate(rig.Head, -wave * 1.4f);
@@ -164,7 +169,9 @@ namespace YesterdayConvoy
             {
                 // These short source legs cannot plant for 60% of this fast stride without stretching.
                 const float stance = 0.45f;
-                float x, y = -rig.Root.localPosition.y;
+                // Restore the original front rig's lateral stance; depth travel keeps equal floors.
+                float floor = rig == front && !left ? 0.04f * Mathf.Clamp01(strideAxis.x) : 0;
+                float x, y = floor - rig.Root.localPosition.y;
                 if (phase < stance) x = Stride * (stance * 0.5f - phase);
                 else
                 {

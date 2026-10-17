@@ -95,8 +95,9 @@ namespace YesterdayConvoy.Tests
             yield return null;
             Assert.That(demo.Monster.position.x, Is.GreaterThan(body.x));
             Assert.That(Vector3.Distance(visual.Puppet.LeftFoot, planted), Is.LessThan(0.001f), "A support foot must stay planted as the body advances.");
-            Assert.That(Quaternion.Angle(visual.transform.Find("Side cutout rig/Near shoe").localRotation, Quaternion.identity), Is.LessThan(0.01f), "Support shoes should remain level while the knee bends.");
-            var nearBoot = visual.transform.Find("Side cutout rig/Near boot");
+            Assert.That(visual.Puppet.ViewName, Is.EqualTo("Front cutout rig"), "Rightward walking should retain the approved three-quarter front pose.");
+            Assert.That(Quaternion.Angle(visual.transform.Find("Front cutout rig/Near shoe").localRotation, Quaternion.identity), Is.LessThan(0.01f), "Support shoes should remain level while the knee bends.");
+            var nearBoot = visual.transform.Find("Front cutout rig/Near boot");
             Quaternion before = nearBoot.localRotation;
             demo.Simulate(0.01f);
             yield return null;
@@ -204,12 +205,13 @@ namespace YesterdayConvoy.Tests
             visual.Puppet.Reset();
             visual.PresentMotion(0, 0, Vector3.right, true, Color.white);
             visual.PresentMotion(0.75f, 1, Vector3.right, true, Color.white);
-            Assert.That(visual.Puppet.ViewName, Is.EqualTo("Side cutout rig"));
+            Assert.That(visual.Puppet.ViewName, Is.EqualTo("Front cutout rig"));
             visual.PresentMotion(0.75f, 1, Vector3.forward, true, Color.white);
-            bool sawQuarter = false;
+            bool sawSide = false, sawQuarter = false;
             for (int i = 1; i <= 16; i++)
             {
                 visual.PresentMotion(0.75f + i * 0.025f, 1 + i / 30f, Vector3.forward, true, Color.white);
+                sawSide |= visual.Puppet.ViewName == "Side cutout rig";
                 sawQuarter |= visual.Puppet.ViewName == "Rear quarter cutout rig";
                 int visibleHeads = 0;
                 foreach (MeshRenderer part in visual.GetComponentsInChildren<MeshRenderer>())
@@ -220,6 +222,7 @@ namespace YesterdayConvoy.Tests
                     }
                 Assert.That(visibleHeads, Is.EqualTo(1));
             }
+            Assert.That(sawSide, Is.True, "The side pose remains available during the turn, not steady rightward walking.");
             Assert.That(sawQuarter, Is.True);
             Assert.That(visual.Puppet.ShowingBack, Is.True);
             Assert.That(visual.Puppet.IsTurning, Is.False);
