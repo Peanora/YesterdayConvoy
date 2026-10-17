@@ -2,7 +2,15 @@
 
 更新：2026-10-17。当前入口为 **InitialDemo**：一个怪物、一座塔、一个红门、一个蓝门，斜俯视立体棋盘。点击开始 → 怪物移动 → 塔自动攻击 → 突破扣门或怪物死亡 → 显示结果并可重开。T00–T02 保留为历史基线。
 
-## 最新可玩画面：5 费卡与同系列美术
+## 最新：行走动作与镜头回正（2026-10-17）
+
+InitialDemo 已改为正向斜俯视：相机左右偏航归零、棋盘横边水平，保留下俯角与立体地面。新增 `wisadel-walk-left.png` / `wisadel-walk-right.png`，与原站姿组成左右跨步、收步循环，并加轻微起伏/摆身。DemoSpriteVisual 读取 RouteMotion 实际行走距离驱动步态，暂停不换帧，重开归零；配置、移速和战斗结算不变。原 5 费卡面保持原图。
+
+最终 34/34 Edit Mode、6/6 Play Mode 通过；Windows 构建成功、0 错误、216408485 字节；真实 Direct3D 12 Player 突破/死亡/穿门单次结算/重开全部 True、退出 0。已查看正向棋盘和 12 张连续实际相机帧，动图位于 `artifacts/walk-demo/walk-preview.gif`、`walk-closeup.gif`；试玩入口仍为 `Builds/Windows/YesterdayConvoy.exe`。截图不含 OnGUI 操作栏。
+
+仍为三个姿势的简化走路，前后向专用帧、完整攻击/死亡动画未制作；AI 帧间存在细微造型变化。人工鼠标 UI 完整操作、第二机离线测试未运行。测试与生成提示词见 QA、art/GENERATION-2026-10-17.md。
+
+## 前次可玩画面：5 费卡与同系列美术
 
 2026-10-17 用户认可的蔑视表情卡图已原样保存为维什戴尔卡牌素材，CardDefinition.recruitCost=5。InitialDemo 左侧实际显示卡面/名称/费用；战场怪物、防御炮、红蓝门和石板已替换为同系列 AI 美术，保持原斜视角与进攻逻辑。新增 CardDefinition、DemoCardView、DemoSpriteVisual 与编辑器 DemoArtTools，中文字体已内置接入。保存路径/提示词/来源见 docs/art/GENERATION-2026-10-17.md。
 

@@ -18,6 +18,8 @@ namespace YesterdayConvoy.Editor
             AssetDatabase.Refresh();
             Sprite portrait = ImportSprite(Art + "Cards/Portraits/wisadel-april-approved.png", 0);
             Sprite battle = ImportSprite(Art + "Characters/Monsters/Boss/wisadel-april-battle.png", 1.65f);
+            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-walk-left.png", 1.65f);
+            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-walk-right.png", 1.65f);
             Sprite cannon = ImportSprite(Art + "Characters/Defenders/grumpy-cannon.png", 2.2f);
             Sprite red = ImportSprite(Art + "Environment/Portal/rune-gate-red.png", 2.1f);
             Sprite blue = ImportSprite(Art + "Environment/Portal/rune-gate-blue.png", 2.1f);
@@ -59,6 +61,8 @@ namespace YesterdayConvoy.Editor
             red = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Environment/Portal/rune-gate-red.png");
             blue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Environment/Portal/rune-gate-blue.png");
             var demo = UnityEngine.Object.FindAnyObjectByType<InitialDemo>();
+            Camera.main.transform.position = new Vector3(0, 14, -21);
+            Camera.main.transform.LookAt(new Vector3(0, 0, 0.5f));
             var data = new SerializedObject(demo);
             Transform monster = (Transform)data.FindProperty("monster").objectReferenceValue;
             ReplaceVisual(monster, battle, demo);
@@ -72,7 +76,8 @@ namespace YesterdayConvoy.Editor
             SetGround("DemoFloor", floor, new Color(0.65f, 0.68f, 0.78f));
             SetGround("DemoPath", floor, new Color(1.35f, 1.22f, 1.08f));
             Camera.main.backgroundColor = new Color(0.065f, 0.065f, 0.09f);
-            CreateCardView(Camera.main, card, font);
+            if (Camera.main.transform.Find("Five Cost Card") == null)
+                CreateCardView(Camera.main, card, font);
             AssetDatabase.SaveAssets();
             EditorSceneManager.SaveScene(scene);
             Validate();
@@ -89,9 +94,18 @@ namespace YesterdayConvoy.Editor
             var visuals = UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>();
             if (visuals.Length != 4) throw new InvalidOperationException("Expected one unit, cannon and two portal sprites.");
             foreach (var visual in visuals)
+            {
                 if (visual.Renderer == null || visual.Renderer.sprite == null)
                     throw new InvalidOperationException("Missing battlefield sprite on " + visual.name);
-            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield sprites; textured board; embedded Chinese font.");
+                var values = new SerializedObject(visual);
+                if (values.FindProperty("movingDemo").objectReferenceValue == null) continue;
+                var poses = values.FindProperty("stridePoses");
+                if (poses.arraySize != 2 || poses.GetArrayElementAtIndex(0).objectReferenceValue == null || poses.GetArrayElementAtIndex(1).objectReferenceValue == null)
+                    throw new InvalidOperationException("Missing left/right walking poses.");
+            }
+            if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
+                throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");
+            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield sprites; 2 walking poses; forward-facing oblique camera.");
         }
 
         private static Sprite ImportSprite(string path, float visibleHeight)
@@ -133,9 +147,8 @@ namespace YesterdayConvoy.Editor
         private static void ReplaceVisual(Transform owner, Sprite sprite, InitialDemo movingDemo)
         {
             Transform previous = owner.Find("Series Sprite");
-            if (previous != null) UnityEngine.Object.DestroyImmediate(previous.gameObject);
             foreach (MeshRenderer renderer in owner.GetComponentsInChildren<MeshRenderer>()) renderer.enabled = false;
-            var visual = new GameObject("Series Sprite", typeof(SpriteRenderer), typeof(DemoSpriteVisual));
+            var visual = previous != null ? previous.gameObject : new GameObject("Series Sprite", typeof(SpriteRenderer), typeof(DemoSpriteVisual));
             visual.transform.SetParent(owner, false);
             visual.transform.rotation = Camera.main.transform.rotation;
             SpriteRenderer spriteRenderer = visual.GetComponent<SpriteRenderer>();
@@ -144,6 +157,13 @@ namespace YesterdayConvoy.Editor
             var values = new SerializedObject(visual.GetComponent<DemoSpriteVisual>());
             values.FindProperty("sprite").objectReferenceValue = spriteRenderer;
             values.FindProperty("movingDemo").objectReferenceValue = movingDemo;
+            if (movingDemo != null)
+            {
+                var poses = values.FindProperty("stridePoses");
+                poses.arraySize = 2;
+                poses.GetArrayElementAtIndex(0).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-walk-left.png");
+                poses.GetArrayElementAtIndex(1).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-walk-right.png");
+            }
             values.ApplyModifiedPropertiesWithoutUndo();
         }
 

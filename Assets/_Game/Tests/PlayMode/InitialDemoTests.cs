@@ -65,6 +65,37 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
+        public IEnumerator WalkingChangesFeetAndCameraKeepsBoardHorizontal()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return null;
+            Camera camera = Camera.main;
+            Vector3 origin = camera.WorldToScreenPoint(Vector3.zero);
+            Assert.That(camera.WorldToScreenPoint(Vector3.right).y, Is.EqualTo(origin.y).Within(0.01f), "Board rows should be horizontal.");
+            Assert.That(camera.WorldToScreenPoint(Vector3.forward).x, Is.EqualTo(origin.x).Within(0.01f), "Board columns should not tilt sideways.");
+            var demo = Object.FindAnyObjectByType<InitialDemo>();
+            var visual = demo.Monster.GetComponentInChildren<DemoSpriteVisual>();
+            Sprite idle = visual.Renderer.sprite;
+            Time.timeScale = 0;
+            demo.BeginAttack(100);
+            yield return null;
+            Sprite leftStep = visual.Renderer.sprite;
+            Assert.That(leftStep, Is.Not.SameAs(idle), "Movement must have a distinct leg pose, not just translate the idle image.");
+            demo.Simulate(0.3f); // 0.45 world units = opposite leg in this prototype stride.
+            yield return null;
+            Sprite rightStep = visual.Renderer.sprite;
+            Assert.That(rightStep, Is.Not.SameAs(leftStep));
+            Assert.That(rightStep, Is.Not.SameAs(idle));
+            Quaternion rotation = visual.transform.rotation;
+            for (int i = 0; i < 4; i++) yield return null;
+            Assert.That(visual.Renderer.sprite, Is.SameAs(rightStep));
+            Assert.That(visual.transform.rotation, Is.EqualTo(rotation));
+            demo.BeginAttack(100);
+            yield return null;
+            Assert.That(visual.Renderer.sprite, Is.SameAs(leftStep), "Restart should reset the gait.");
+        }
+
+        [UnityTest]
         public IEnumerator PauseFreezesSpriteMotionAndDamageFlash()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
@@ -81,12 +112,14 @@ namespace YesterdayConvoy.Tests
             Transform visual = presentation.transform;
             Vector3 before = visual.localPosition;
             Color tint = presentation.Renderer.color;
+            Sprite pose = presentation.Renderer.sprite;
             Assert.That(tint, Is.Not.EqualTo(Color.white), "Pause must be checked while a hit flash is actually visible.");
             Vector3 position = demo.Monster.position;
             float clock = demo.SimulationTime;
             for (int i = 0; i < 4; i++) yield return null;
             Assert.That(visual.localPosition, Is.EqualTo(before));
             Assert.That(presentation.Renderer.color, Is.EqualTo(tint));
+            Assert.That(presentation.Renderer.sprite, Is.SameAs(pose));
             Assert.That(demo.Monster.position, Is.EqualTo(position));
             Assert.That(demo.SimulationTime, Is.EqualTo(clock));
         }

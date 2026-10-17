@@ -167,3 +167,15 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 首次场景检查发现新建卡资源在切换场景后引用未保存，已改为先保存资源、开场景后重新取持久化资源引用；最终场景/Prefab 与 Player 都正确绑定。首次失败留 setup.log，没有把失败当成功。生成来源和最终提示词见 GENERATION-2026-10-17.md；当前试玩包附 Credits、字体许可与美术来源说明。
 
 未执行：人工鼠标点击完整 HUD、第二机离线验证、性能/平衡验收；美术为单帧 Sprite 与程序摇摆/闪色，没有完整逐帧攻击/死亡动画。5 费尚未接购买/部署扣费，正式技能未实现；卡牌/战场角色为用户指定 AI 同人原型，没有把它标成 CC0 或已取得正式发行授权。没有推送或公开发布。
+
+## 2026-10-17：走路动作与镜头回正
+
+实际改动：DemoSpriteVisual 按 RouteMotion.DistanceTravelled 播放左跨步/收步/右跨步/收步，配合小幅起伏/摆身；复用 InitialDemo 模拟状态，暂停不换步、重开重置。新增两张透明姿势图及 meta，原卡面不变。DemoArtTools 配置姿势、相机偏航归零并保留现有场景对象；初次建场景也使用正向俯视。战斗路线、速度、伤害和结算未改。
+
+- Unity 6000.6.5f1 编译、最终场景与素材引用检查退出 0，无 C# 错误/警告：`artifacts/walk-demo/setup-final.log`。
+- Edit Mode **34/34**、最终 Play Mode **6/6** 通过；新增测试验证实际不同腿部姿势、暂停保持姿势/旋转、重开首步、棋盘行列无侧倾：`editmode.xml`、`playmode-final.xml`。
+- Windows x64 构建成功、0 错误、216408485 字节：`artifacts/walk-demo/build.log`。
+- 实际图形 Player Direct3D 12，退出 0；`breach=True; gateOnce=True; killed=True; restart=True`：`player.log`。
+- 实际相机采集 12 张行走帧，每张相差 0.05 模拟秒；已查看两脚跨步、收步与水平棋盘：`walk-00.png` 至 `walk-11.png`、`walk-contact-sheet.png`。GIF 为真实帧整理，未用概念图代替实机：`walk-preview.gif`、跟随裁切放大的 `walk-closeup.gif`。这些相机画面不含 OnGUI。
+
+首轮右步图没有正确交换腿序，已弃用并通过明确条纹腿方位重生成；最终两张 PNG 均为 1145×1374、Alpha 0–255，接入并重新运行 Play Mode 与构建/Player。仍是三姿势简化动画，AI 细节存在轻微帧间变化；前后向步态、攻击/死亡专用帧、完整鼠标 UI 与第二机离线测试未运行。本轮不声称正式美术或完整动画体系已完成。

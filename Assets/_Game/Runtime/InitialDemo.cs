@@ -195,6 +195,18 @@ namespace YesterdayConvoy
 
         private IEnumerator VerifyDemo(string directory)
         {
+            if (directory != null)
+            {
+                Time.timeScale = 0;
+                BeginAttack(100);
+                Simulate(1.6f);
+                for (int frame = 0; frame < 12; frame++)
+                {
+                    yield return new WaitForEndOfFrame();
+                    CaptureCamera(directory, $"walk-{frame:00}.png");
+                    Simulate(0.05f);
+                }
+            }
             float start = Time.realtimeSinceStartup;
             bool captured = false;
             Time.timeScale = 3;

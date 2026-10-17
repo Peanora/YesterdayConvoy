@@ -55,7 +55,7 @@ namespace YesterdayConvoy.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             cameraObject.tag = "MainCamera";
-            cameraObject.transform.position = new Vector3(6, 14, -21);
+            cameraObject.transform.position = new Vector3(0, 14, -21);
             cameraObject.transform.LookAt(new Vector3(0, 0, 0.5f));
             var camera = cameraObject.GetComponent<Camera>();
             camera.orthographic = true;

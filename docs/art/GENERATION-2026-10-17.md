@@ -50,3 +50,24 @@ Use case: stylized-concept. Reference image is STYLE ONLY, to match the humorous
 ```
 
 生成图片有风格化和视角误差，红蓝门是同一设计语汇的两张独立图，不是逐像素相同结构。实际是否好看以当前 Player 相机画面与人类试玩为准。
+
+
+## 2026-10-17：行走动作补帧
+
+用户要求走路有动作、镜头回正。使用内置 image_gen 编辑已有战场 Sprite，保留原卡面、表情、造型与配色；生成单独的左右跨步图，不生成整张 Sprite Sheet。最终资产放在 `Assets/_Game/Art/Characters/Monsters/Boss/wisadel-walk-left.png` 和 `wisadel-walk-right.png`；许可与同人原型范围沿用上节。首轮第二张腿序重复，已弃用并重试，不算作完成素材。
+
+左步来源：`exec-35691f07-585d-47f6-94f9-68705dcce217.png`，以原战场图为编辑目标；右步来源：`exec-33fc1d1d-b35c-4a04-81c1-2f427b304fda.png`，以左步图为编辑目标。均为 1145×1374 RGBA，项目副本保持生成 PNG 字节，仅 Unity 配置 PPU/Pivot。未采用的 `exec-de060880-1208-4312-bb4f-392cc6cdf7de.png` 留在 generated_images，不进入最终素材目录。
+
+播放采用“左跨步→原站姿作收步→右跨步→收步”，一轮对应 0.9 世界单位；配合 0.025 单位重心起伏与 ±1.2° 轻摆。单帧不是完整骨骼动画，原站姿仅作过渡；头发/面部存在 AI 帧间细微差异，不能称为逐像素锁定。仅右向三分之四表现，前后方向专用步态暂未制作。相机左右偏航归零，保留下俯角与棋盘厚度。
+
+左跨步实际提示词：
+
+```text
+Use case: precise-object-edit. Asset type: transparent Unity 2D walking animation pose. Input image is the edit target: existing approved game sprite. Preserve the head, face, half-lidded disdainful expression, hair, horns, colors, outline, body proportions and exact art style. Keep the same three-quarter facing RIGHT direction. Change ONLY the small body below the neck into a convincing WALKING contact pose: screen-left boot extended forward toward RIGHT, screen-right boot trailing behind to LEFT.  Arms counter-swing naturally, no weapons. Keep the giant head unchanged in size, position and expression. Whole character fully visible, transparent background, no shadow, no text, no layout panels. Match original canvas 1145x1374, original head-top and boot-floor baseline and character scale. This is one single animation frame, not a sprite sheet. Clear separated legs, small restrained stride appropriate for short chibi legs. Do not redraw the face or restyle.
+```
+
+右跨步重试实际提示词：
+
+```text
+undefined
+```
