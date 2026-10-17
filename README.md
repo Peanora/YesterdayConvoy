@@ -2,6 +2,8 @@
 
 Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：一个怪物从红门出发，防御塔自动攻击，怪物突破蓝门或死亡，结果后可重新开始。
 
+当前美术已更新为用户认可的同系列像素感角色、臭脸防御炮、红蓝符文门与石板地面。左侧卡面使用认可原图，显示维什戴尔和 5 费；这是已登记的招募费用，购买/部署扣费尚未实现。生成文件与提示词见 [生成记录](docs/art/GENERATION-2026-10-17.md)。
+
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
 - 入口：`Assets/_Game/Scenes/InitialDemo.unity`；旧 Bootstrap 仅保留作移动回归。
@@ -33,7 +35,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 文档入口
 
-- [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：当前 31 个资源已入库验证，尚未替换 Demo；角色/地图仍在选型。
+- [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：六张生成图已接入当前 Demo，原有资源库保留。
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
 - [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。

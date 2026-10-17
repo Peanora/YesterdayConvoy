@@ -1,5 +1,17 @@
 # 美术工作进度
 
+## 最新：认可卡牌与实机换装（2026-10-17）
+
+已将用户认可的蔑视表情卡图原样保存到 `Cards/Portraits/wisadel-april-approved.png`，新增 `Data/Cards/WisadelApril.asset`，CardDefinition.recruitCost=5；场景左侧 FiveCostCard Prefab 显示实际卡面、名称和费用。另实际生成并接入战场 Sprite、防御炮、红门、蓝门、石板共五张美术，目录仍为 Assets/_Game/Art。与旧素材库合计 37 张/个实际图像、音频和字体资源。
+
+当前 InitialDemo 已替换旧几何占位的可见表现，保留斜俯视棋盘、路点、移速、试验生命与伤害。移动摇摆与受击闪色跟随模拟时间，暂停不推进；角色进门/死亡仍按原规则结算。旧网格 Renderer 被禁用以保留逻辑挂点，未删旧 Bootstrap。此前 31 个资源中的中文字体已接到 HUD/卡牌，未把其余图标、音频都自动接入。
+
+最终验证：34/34 Edit Mode、5/5 Play Mode 通过；5 费数据、卡面/战场引用、四个 Sprite、真实受击状态下暂停冻结、突破/死亡/重开均有实际检查。Windows 构建 203809489 字节、0 错误；真实图形 Player 四项 INITIAL_DEMO_CHECK 均 True、退出 0。已查看 `artifacts/art-demo/demo-action.png`，包含真实战场与相机内卡牌/费用，未包含 OnGUI 顶部栏/底部按钮。
+
+来源、原文件和最终提示词在 [GENERATION-2026-10-17.md](GENERATION-2026-10-17.md)。前五张透明图已读取 Alpha（0–255），地面 RGB 不透明；认可卡图与源文件字节完全一致。121 个项目资源 GUID 唯一、meta 完整。未人工点击最终 UI、未做第二机测试；单帧程序动画、试验属性和卡牌购买/部署/技能等仍有限制，未宣称 P0 全内容完成。
+
+## 前次资源调查（历史）
+
 日期：2026-10-17。本轮目标：检查实际工程、比较两套路线、形成第一版方案，并小量获取可通用资源。已完成 Phase 1–3，Phase 4 完成通用素材小批导入；Phase 5–7 尚未执行，不宣称 P0 美术整套完成。
 
 ## 实际结果

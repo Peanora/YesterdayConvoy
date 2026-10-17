@@ -31,4 +31,6 @@
 - yd：[Dungeon Ambience](https://opengameart.org/content/dungeon-ambience)，CC0；原始 dungeon002.ogg。
 - Noto 字体版权与作者见 licenses/OFL-1.1.txt；NotoSansSC-Regular.otf 原字重未修改，SIL OFL 1.1。
 
-暂无 AI 图片。工程自己的几何占位物不因此改为上述第三方许可。
+## 后续接入的 AI 美术（2026-10-17）
+
+用户认可的维什戴尔愚人节卡面及同风格战场角色，由 OpenAI 内置 image_gen 生成并经用户选择；角色形象为《明日方舟》相关同人原型，不作为 CC0 或已取得正式发行授权登记。防御炮、红蓝门和地面为同工具按画风参照新生成。实际文件、生成来源、最终提示词与条款链接见 GENERATION-2026-10-17.md。没有抓取商业游戏原图作为游戏内资产，没有公开发布或推送。工程自己的几何占位物不因此改为上述第三方许可。

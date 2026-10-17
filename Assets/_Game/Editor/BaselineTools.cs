@@ -89,7 +89,8 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Baseline/Build Windows")]
         public static void BuildWindows()
         {
-            InitialDemoTools.Validate();
+            if (File.Exists(DemoArtTools.CardPath)) DemoArtTools.Validate();
+            else InitialDemoTools.Validate();
             Directory.CreateDirectory("Builds/Windows");
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {

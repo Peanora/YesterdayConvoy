@@ -1,5 +1,7 @@
 # 资源工作流
 
+当前 Demo 换装入口为 `Yesterday Convoy/Initial Demo/Apply Approved Art`（DemoArtTools.Apply）。它配置五张 Sprite 的 Point/Alpha/脚底 Pivot 与 PPU、石板材质，保存 5 费 CardDefinition，并把新表现和卡牌 Prefab 绑定到 InitialDemo；已有认可卡图保持原文件。验证入口 DemoArtTools.Validate，构建前会调用。生成记录见 GENERATION-2026-10-17.md，下文为原通用资源库流程。
+
 当前根目录为 `Assets/_Game/Art/`，沿用工程已有 `_Game`，不另建混杂根目录。当前只创建实际有文件的 UI/Icons、VFX/Common、Audio/SFX、Audio/BGM、Fonts；Characters、Cards、Environment 等在实际选定素材后创建。旧 Materials、Scenes、脚本 GUID 不移动。
 
 1. 从具体原作者页面确认许可、作者、允许修改和原文件分发条件，再下载官网文件。遇到登录/许可确认按原站流程处理；不找镜像绕过。原 ZIP、页面快照、未选素材放 `artifacts/art-research`，被忽略，不整包拷入 Assets。

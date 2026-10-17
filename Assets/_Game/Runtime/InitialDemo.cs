@@ -22,10 +22,13 @@ namespace YesterdayConvoy
         [SerializeField] private float towerDamage = 16f;
         [SerializeField] private float shotInterval = 1f;
         [SerializeField] private int initialDefense = 8;
+        [SerializeField] private CardDefinition card;
+        [SerializeField] private Font interfaceFont;
 
         private RouteMotion motion;
         private float elapsed, nextShotAt, beamRemaining, selectedHealth = 100f, runMaxHealth;
         private Font font;
+        private bool ownsFont;
         private GUIStyle titleStyle, textStyle, smallStyle, buttonStyle;
 
         public DemoOutcome Outcome { get; private set; }
@@ -34,6 +37,8 @@ namespace YesterdayConvoy
         public int ShotsFired { get; private set; }
         public Transform Monster => monster;
         public RouteMotion Motion => motion;
+        public float SimulationTime => elapsed;
+        public CardDefinition Card => card;
 
         private void Start()
         {
@@ -122,24 +127,24 @@ namespace YesterdayConvoy
             Matrix4x4 previousMatrix = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(Screen.width / 1280f, Screen.height / 720f, 1));
             Panel(new Rect(22, 20, 1236, 88), new Color(0.06f, 0.09f, 0.12f, 0.96f));
-            GUI.Label(new Rect(42, 30, 600, 38), "昨日圆车  /  最初的进攻", titleStyle);
+            GUI.Label(new Rect(42, 30, 750, 38), "昨日圆车  /  就这？进攻小队", titleStyle);
             GUI.Label(new Rect(44, 73, 740, 26), "红门出发 → 穿过防御塔射程 → 突破蓝门", smallStyle);
             GUI.Label(new Rect(950, 40, 280, 32), $"蓝门防御  {GateDefense} / {initialDefense}", textStyle);
 
             if (monster.gameObject.activeSelf)
             {
-                Vector3 screen = Camera.main.WorldToScreenPoint(monster.position + Vector3.up * 1.45f);
+                Vector3 screen = Camera.main.WorldToScreenPoint(monster.position + Vector3.up * 1.85f);
                 if (screen.z > 0)
                 {
                     float x = screen.x * 1280f / Screen.width, y = 720 - screen.y * 720f / Screen.height;
                     Panel(new Rect(x - 43, y, 86, 9), new Color(0.05f, 0.07f, 0.08f, 0.95f));
                     Panel(new Rect(x - 41, y + 2, 82 * Health / runMaxHealth, 5), new Color(0.45f, 0.91f, 0.61f));
-                    GUI.Label(new Rect(x - 60, y - 25, 140, 25), $"怪物  {Health:0}/{runMaxHealth:0}", smallStyle);
+                    GUI.Label(new Rect(x - 60, y - 25, 140, 25), $"{Health:0} / {runMaxHealth:0}", smallStyle);
                 }
             }
-            WorldLabel(redGate.position + Vector3.up * 2, "红门 · 出生点");
-            WorldLabel(blueGate.position + Vector3.up * 2, "蓝门 · 进攻目标");
-            WorldLabel(tower.position + Vector3.up * 2.1f, "防御塔");
+            WorldLabel(redGate.position + Vector3.up * 2.2f, "红门 · 出发");
+            WorldLabel(blueGate.position + Vector3.up * 2.2f, "蓝门 · 突破目标");
+            WorldLabel(tower.position + Vector3.up * 2.4f, "臭脸防御炮");
 
             Panel(new Rect(22, 605, 1236, 94), new Color(0.06f, 0.09f, 0.12f, 0.96f));
             string result = Outcome == DemoOutcome.Ready ? "准备进攻" : Outcome == DemoOutcome.Running ? "进攻进行中" :
@@ -164,7 +169,8 @@ namespace YesterdayConvoy
         {
             if (textStyle != null)
                 return;
-            font = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Arial" }, 18);
+            ownsFont = interfaceFont == null;
+            font = interfaceFont != null ? interfaceFont : Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Arial" }, 18);
             textStyle = new GUIStyle(GUI.skin.label) { font = font, fontSize = 21 };
             titleStyle = new GUIStyle(textStyle) { fontSize = 27, fontStyle = FontStyle.Bold };
             smallStyle = new GUIStyle(textStyle) { fontSize = 16 };
@@ -245,7 +251,7 @@ namespace YesterdayConvoy
 
         private void OnDestroy()
         {
-            if (font != null) Destroy(font);
+            if (ownsFont && font != null) Destroy(font);
         }
     }
 }

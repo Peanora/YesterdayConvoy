@@ -149,3 +149,21 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 第三方许可文本含原始制表空行、混合换行与文件末尾空行；仅对 docs/art/licenses/*.txt 关闭换行规范化和空白告警，以原字节保留授权文件，C# 等其他文件检查不变。
 
 未执行：音频试听/音量与循环接缝验收、角色动画/切片/斜视角绑定、正式 UI、粒子 Prefab、独立 Player 字体验证、第二机测试。本轮无玩法变动，未重复运行 Edit/Play Mode 或构建；之前 Demo 结果不能代替本轮美术验证。未生成 AI 图片、未购买、未导入 Asset Store 或授权不明资源。Phase 5 两角色工作流和 Phase 6 P0 尚未完成；条件性 AI 缺口与中英文提示词见 AI_PENDING。
+
+## 认可卡牌与系列实机换装（2026-10-17）
+
+实际变更：原样保存用户认可的卡面，新增 5 张内置 image_gen 输出；新 CardDefinition/WisadelApril.asset 登记招募费 5，DemoCardView/FiveCostCard.prefab 将图、名、费连到相机内卡牌；DemoSpriteVisual 处理镜头朝向、脚底排序、模拟时间摇摆与受击闪色。DemoArtTools 在 Unity 中配置透明纹理/PPU/Pivot，并更新原场景引用；旧网格仅禁用 Renderer，逻辑挂点与路线、U01 数值未改。HUD 接入内置中文字体，地面材质更新，构建前检查卡牌和四个 Sprite。无包升级、无 ProjectSettings 修改。
+
+| 检查 | 真实结果 | 本地原始证据 |
+| --- | --- | --- |
+| 编译/场景/卡牌绑定 | 最终退出 0，无 C# 错误/警告；DEMO_ART_PASS：认可卡面、5 费、4 Sprite、地面、内置字体 | artifacts/art-demo/setup-final.log |
+| Edit Mode | 34/34 通过，0 失败/跳过 | artifacts/art-demo/editmode.xml / editmode.log |
+| Play Mode | 最终 5/5 通过，0 失败/跳过；包含 5 费/卡面/战场图引用、突破/死亡/重开及真实受击闪色状态下冻结 | artifacts/art-demo/playmode-final.xml / playmode-final.log |
+| Windows 构建 | 成功、0 错误，203809489 字节 | artifacts/art-demo/build.log |
+| 实际图形 Player | Direct3D 12、退出 0；100 生命 4 发后剩 36，门 8→7；30 生命 2 发死亡、门 8；gateOnce/killed/restart/breach 四项 True | artifacts/art-demo/player.log |
+| 实际相机画面 | 已查看：左侧认可卡图、中文卡名和 5 费清晰，角色/炮/红蓝门/石板可见且贴地；未包含 OnGUI 顶栏与底部操作条 | artifacts/art-demo/demo-action.png |
+| 资产完整性 | 五张 RGBA 图 Alpha 0–255、地面 RGB；认可原图字节完全相同；121 个 GUID 无重复、meta 完整 | 本轮文件/像素/引用检查，清单与生成记录 |
+
+首次场景检查发现新建卡资源在切换场景后引用未保存，已改为先保存资源、开场景后重新取持久化资源引用；最终场景/Prefab 与 Player 都正确绑定。首次失败留 setup.log，没有把失败当成功。生成来源和最终提示词见 GENERATION-2026-10-17.md；当前试玩包附 Credits、字体许可与美术来源说明。
+
+未执行：人工鼠标点击完整 HUD、第二机离线验证、性能/平衡验收；美术为单帧 Sprite 与程序摇摆/闪色，没有完整逐帧攻击/死亡动画。5 费尚未接购买/部署扣费，正式技能未实现；卡牌/战场角色为用户指定 AI 同人原型，没有把它标成 CC0 或已取得正式发行授权。没有推送或公开发布。

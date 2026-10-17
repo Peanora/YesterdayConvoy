@@ -2,7 +2,13 @@
 
 更新：2026-10-17。当前入口为 **InitialDemo**：一个怪物、一座塔、一个红门、一个蓝门，斜俯视立体棋盘。点击开始 → 怪物移动 → 塔自动攻击 → 突破扣门或怪物死亡 → 显示结果并可重开。T00–T02 保留为历史基线。
 
-## 最新美术资源工作
+## 最新可玩画面：5 费卡与同系列美术
+
+2026-10-17 用户认可的蔑视表情卡图已原样保存为维什戴尔卡牌素材，CardDefinition.recruitCost=5。InitialDemo 左侧实际显示卡面/名称/费用；战场怪物、防御炮、红蓝门和石板已替换为同系列 AI 美术，保持原斜视角与进攻逻辑。新增 CardDefinition、DemoCardView、DemoSpriteVisual 与编辑器 DemoArtTools，中文字体已内置接入。保存路径/提示词/来源见 docs/art/GENERATION-2026-10-17.md。
+
+当前 Windows 包已更新，双击 Builds/Windows/YesterdayConvoy.exe 即可试玩。34 项 Edit Mode、5 项 Play Mode、Windows 构建和图形 Player 突破/死亡/重复结算保护/重开通过；已查看包含 5 费卡的真实相机画面 artifacts/art-demo/demo-action.png。尚无购买或部署扣费，5 费已登记为招募费；动画为单帧摇摆/受击闪色，正式技能与平衡未实现。手工点击完整 UI、第二机验证未执行。
+
+## 前次美术资源调查（历史）
 
 用户再次确认斜俯视 2.5D。本轮完成美术 Phase 1–3 和通用资源的少量 Phase 4：实际导入并在 Unity 6000.6.5f1 验证 16 个图标、6 张粒子纹理、8 个音频和 1 个中文 OTF，共 31 个资源，放在 Assets/_Game/Art；来源、许可、SVG 源、完整需求和对比图见 [art/ART_PROGRESS.md](art/ART_PROGRESS.md)。资源库未接到现有 Demo，现有场景、Runtime、包清单和规则没有改动。暂无新角色/地图替换、AI 图、可播放效果 Prefab 或新 UI；未构建新版 Player。下一美术目标为两角色独立预览工作流，之后再扩到 P0。
 
