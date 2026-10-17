@@ -9,12 +9,14 @@ namespace YesterdayConvoy
     public sealed class AnimationLab : MonoBehaviour
     {
         [SerializeField] private DemoSpriteVisual biped;
+        [SerializeField] private DemoSpriteVisual floating;
         [SerializeField] private Font interfaceFont;
         private RouteMotion motion;
         private float clock;
         private bool paused, moving = true;
         private GUIStyle label, button;
         public DemoSpriteVisual Biped => biped;
+        public DemoSpriteVisual Floating => floating;
         public RouteMotion Motion => motion;
         public float SimulationTime => clock;
         public bool Paused => paused;
@@ -37,7 +39,8 @@ namespace YesterdayConvoy
         public void Restart()
         {
             motion = new RouteMotion(Route,0.75f); clock = 0; paused = false; moving = true;
-            biped.Presentation.ResetVisual(); Render();
+            biped.Presentation.ResetVisual(); floating?.Presentation.ResetVisual();
+            Camera.main.orthographicSize=4.5f;Render();
         }
         public void SetPaused(bool value) => paused = value;
         public void SetMoving(bool value) { moving = value; paused = false; }
@@ -52,16 +55,28 @@ namespace YesterdayConvoy
         private void Update() => Simulate(Time.deltaTime);
         private void Render()
         {
-            biped.transform.parent.position = motion.Position;
+            biped.transform.parent.position = motion.Position+(floating!=null?new Vector3(-1.4f,0,0):Vector3.zero);
             biped.PresentMotion((float)motion.DistanceTravelled,clock,motion.Direction,moving,Color.white);
+            if(floating!=null)
+            {
+                floating.transform.parent.position=motion.Position+new Vector3(1.4f,0,0);
+                floating.PresentMotion((float)motion.DistanceTravelled,clock,motion.Direction,moving,Color.white);
+            }
         }
         public void ShowKeyPose(int index)
         {
             if (index < 0 || index >= KeyPhases.Length) throw new ArgumentOutOfRangeException(nameof(index));
             paused = true;
-            biped.transform.parent.position = new Vector3(-0.5f,0.04f,0);
+            Camera.main.orthographicSize=3.0f;
+            biped.transform.parent.position = new Vector3(floating!=null?-1.5f:-0.5f,0.04f,0);
             biped.Presentation.ResetVisual();
             biped.PresentMotion(DemoWalkPuppet.Stride*KeyPhases[index],10,Vector3.right,true,Color.white);
+            if(floating!=null)
+            {
+                floating.transform.parent.position=new Vector3(1.5f,0.04f,0);
+                floating.Presentation.ResetVisual();
+                floating.PresentMotion(DemoWalkPuppet.Stride*KeyPhases[index],10,Vector3.right,true,Color.white);
+            }
         }
         private void OnGUI()
         {
@@ -73,7 +88,7 @@ namespace YesterdayConvoy
             Matrix4x4 before = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));
             GUI.Box(new Rect(20,18,1240,132),GUIContent.none);
-            GUI.Label(new Rect(40,28,1100,33),"动画样板 · 独立关节与关键姿势预览",label);
+            GUI.Label(new Rect(40,28,1100,33),floating!=null?"动画样板 · 双足 U01 / 漂浮 灰焰 · 同路线、同模拟时间":"动画样板 · 独立关节与关键姿势预览",label);
             if (GUI.Button(new Rect(40,79,145,44),paused?"恢复播放":"暂停画面",button)) paused=!paused;
             if (GUI.Button(new Rect(200,79,145,44),moving?"停止行走":"继续行走",button)) SetMoving(!moving);
             if (GUI.Button(new Rect(360,79,145,44),"重新开始",button)) Restart();
@@ -99,12 +114,15 @@ namespace YesterdayConvoy
                 Simulate(DemoWalkPuppet.Stride/(32*0.75f));
             }
             SetMoving(false); Simulate(0.25f);
-            bool stopped = biped.Puppet.MovementWeight == 0;
-            SetPaused(true); Vector3 foot=biped.Puppet.LeftFoot;float time=clock;Simulate(1);
-            bool frozen = clock==time && biped.Puppet.LeftFoot==foot;
+            bool stopped = biped.Presentation.MotionWeight == 0 && (floating==null || floating.Presentation.MotionWeight==0);
+            SetPaused(true); Vector3 foot=biped.Puppet.LeftFoot;float time=clock;
+            Vector3 floatingPose=floating!=null?((FloatingVisualPresentation)floating.Presentation).Body.localPosition:Vector3.zero;
+            Simulate(1);
+            bool frozen = clock==time && biped.Puppet.LeftFoot==foot && (floating==null || ((FloatingVisualPresentation)floating.Presentation).Body.localPosition==floatingPose);
             Restart();bool reset=clock==0 && motion.DistanceTravelled==0;
-            Debug.Log($"ANIMATION_LAB_CHECK: stop={stopped}; pause={frozen}; restart={reset}.");
-            Application.Quit(stopped && frozen && reset ? 0 : 1);
+            bool shared=floating==null || (floating.Presentation.LastFrame.Time==biped.Presentation.LastFrame.Time && floating.Presentation.LastFrame.Distance==biped.Presentation.LastFrame.Distance);
+            Debug.Log($"ANIMATION_LAB_CHECK: stop={stopped}; pause={frozen}; restart={reset}; sharedInput={shared}; secondBody={floating!=null}.");
+            Application.Quit(stopped && frozen && reset && shared ? 0 : 1);
         }
     }
 }

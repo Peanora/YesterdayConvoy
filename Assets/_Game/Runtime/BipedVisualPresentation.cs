@@ -15,6 +15,7 @@ namespace YesterdayConvoy
             }
         }
         public override void ResetVisual() => puppet?.Reset();
-        public override void Present(UnitVisualFrame frame) => Puppet.Pose(frame.Distance, frame.Time, frame.Direction, frame.Moving, frame.Tint, frame.SortingOrder);
+        public override float MotionWeight => Puppet.MovementWeight;
+        protected override void Apply(UnitVisualFrame frame) => Puppet.Pose(frame.Distance, frame.Time, frame.Direction, frame.Moving, frame.Tint, frame.SortingOrder);
     }
 }

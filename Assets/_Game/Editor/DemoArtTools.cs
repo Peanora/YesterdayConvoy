@@ -112,7 +112,7 @@ namespace YesterdayConvoy.Editor
             Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; 4-direction cutout views; forward-facing oblique camera.");
         }
 
-        private static Sprite ImportSprite(string path, float visibleHeight)
+        internal static Sprite ImportSprite(string path, float visibleHeight)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);

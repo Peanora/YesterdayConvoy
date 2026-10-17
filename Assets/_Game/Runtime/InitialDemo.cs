@@ -44,7 +44,7 @@ namespace YesterdayConvoy
         {
             ResetRun(selectedHealth, DemoOutcome.Ready);
             string[] args = Environment.GetCommandLineArgs();
-            if (Array.IndexOf(args, "-animationLabSmokeTest") >= 0)
+            if (Array.IndexOf(args, "-animationLabSmokeTest") >= 0 || Array.IndexOf(args, "-animationLab") >= 0)
             {
                 Application.runInBackground = true;
                 UnityEngine.SceneManagement.SceneManager.LoadScene("AnimationLab");

@@ -241,7 +241,7 @@ Transform:
   m_GameObject: {fileID: 582217122}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5.4, y: 0.04, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -370,6 +370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.AnimationLab
   biped: {fileID: 1658133749}
+  floating: {fileID: 942692575}
   interfaceFont: {fileID: 12800000, guid: a3a0ed610d6018041b53d422695bd92f, type: 3}
 --- !u!4 &891821391
 Transform:
@@ -386,6 +387,79 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &942692573
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1967101267}
+    m_Modifications:
+    - target: {fileID: 5642467449115374542, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_Name
+      value: AshWispVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9626219
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.27084884
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+--- !u!4 &942692574 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6007347988392360954, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+  m_PrefabInstance: {fileID: 942692573}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &942692575 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7088597508154663226, guid: 02e24df714b2b0744ba5db34ef216f73, type: 3}
+  m_PrefabInstance: {fileID: 942692573}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11ea9817962b80b4a81787bfe8957e71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
 --- !u!1 &1440973548
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,19 +572,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1324225855408135895, guid: a115dded1d8881643b1a73bf4104c9f0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9626219
       objectReference: {fileID: 0}
     - target: {fileID: 1324225855408135895, guid: a115dded1d8881643b1a73bf4104c9f0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.27084884
       objectReference: {fileID: 0}
     - target: {fileID: 1324225855408135895, guid: a115dded1d8881643b1a73bf4104c9f0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1324225855408135895, guid: a115dded1d8881643b1a73bf4104c9f0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1324225855408135895, guid: a115dded1d8881643b1a73bf4104c9f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -549,6 +623,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ea9817962b80b4a81787bfe8957e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
+--- !u!1 &1967101266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1967101267}
+  m_Layer: 0
+  m_Name: Floating sample
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1967101267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967101266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.6, y: 0.04, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 942692574}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -558,3 +664,4 @@ SceneRoots:
   - {fileID: 1440973551}
   - {fileID: 891821391}
   - {fileID: 582217123}
+  - {fileID: 1967101267}

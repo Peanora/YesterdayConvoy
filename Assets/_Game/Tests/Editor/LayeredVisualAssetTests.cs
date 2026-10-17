@@ -10,6 +10,18 @@ namespace YesterdayConvoy.Tests
     public sealed class LayeredVisualAssetTests
     {
         [Test]
+        public void FloatingVisualReusesSharedProtocolWithoutBipedJointsOrGameplayComponents()
+        {
+            FloatingVisualTools.ValidateAssets();
+            var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(FloatingVisualTools.PrefabPath);
+            Assert.That(prefab.GetComponent<DemoSpriteVisual>().Presentation,Is.TypeOf<FloatingVisualPresentation>());
+            Assert.That(prefab.GetComponent<BipedVisualRig>(),Is.Null);
+            Assert.That(prefab.GetComponentsInChildren<Collider>(true).Length,Is.Zero);
+            Assert.That(prefab.GetComponentsInChildren<Rigidbody>(true).Length,Is.Zero);
+            Assert.That(prefab.GetComponentInChildren<InitialDemo>(true),Is.Null);
+        }
+
+        [Test]
         public void VisualPrefabUsesPersistentSeparatePartsAndOriginalFacePixels()
         {
             LayeredCharacterTools.ValidateAssets();

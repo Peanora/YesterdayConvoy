@@ -1,5 +1,21 @@
 # 认可卡面与同系列实机美术
 
+## 第三阶段：灰焰漂浮样板（2026-10-17）
+
+以既有战场图仅作画风参照，用内置 image_gen 制作独立的无腿灰焰样板。它不是新战斗卡、未配置费用/生命/技能。源文件 `exec-7f3b0bf2-f992-4eb8-83cb-464c3779abd4.png` 原样复制为 `Assets/_Game/Art/Characters/Monsters/Normal/ash-wisp.png`，1199×1312 RGBA、Alpha 0–255，Point、Single、可见高度 1.2。悬浮/呼吸/倾斜为视觉子节点的轻量动画，不套双足 Rig。
+
+地面阴影复用已在工程内的 Kenney Particle Pack / circle_05（CC0）；原 PNG 未改，`Normal/WispSprites.asset` 保存原生 Sprite 包装，Prefab 中压成地面椭圆并着黑色。`AshWispVisual.prefab` 已接入 AnimationLab，与双足读取同一距离/方向/模拟时间。图形 Player 的 stop/pause/restart/sharedInput/secondBody 全 True。
+
+灰焰按原创烟灵用途生成，不作商业游戏原图提取；AI 输出不自动登记为 CC0，也不作一揽子权利清理声明。部件图/头部所涉维什戴尔同人状态另按原记录保持。单视图近圆形烟灵用于全向漂浮样板，不等于已制作多方向精细动画。
+
+实际提示词：
+
+```text
+Use case: original game asset, second body type to test a Unity 2.5D animation pipeline. Reference supplies STYLE ONLY: humorous dark-fantasy chibi, crisp stepped pixel-cluster outlines, silver-gray/charcoal with restrained crimson and warm amber highlights, simple 2-3 shade ramps. Create ONE ORIGINAL small FLOATING ASH WISP creature, no legs and no human body, distinct from the reference character. A squat pear-shaped silver-gray smoky ghost orb, comically disdainful half-lidded amber eyes, tiny jagged mouth, two tiny charcoal/red horn nubs, three tapering dark smoke tails at its bottom instead of feet, small red ember core tucked inside the body. Clear chunky readable silhouette, rounded top and wavy lower smoke edges, mischievous restrained expression, readable at 80-100 pixels tall. Front three-quarter view from slightly above, upright flat 2D sprite for the same tactical board. No accessories, no weapons, no clothing, no recognizable third-party character, no human limbs. Whole creature centered and completely visible with at least 12% transparent margins, genuine transparent alpha, NO floor, NO shadow, no scenery, no words, no labels, no card frame, single sprite not a sheet. Art should look from the same game family as the reference but be an original simple creature.
+```
+
+
+
 ## 第二阶段：独立部件与可复用视觉样板（2026-10-17）
 
 用户授权完成动画计划第二、第三阶段。第二阶段使用内置 image_gen，按现有正背面身份参照生成正/背两张部件源图；卡面和原四方向 PNG 未修改。每图经 Alpha 连通区域实际识别为 12 个独立部件，不假定 AI 网格准确。关节位置为完整不透明圆端，Unity 原生 Sprite 子资产按关节 Pivot、PPU 和静态安装角归一化，不在运行时拉伸图片补尺寸。

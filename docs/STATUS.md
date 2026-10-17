@@ -2,7 +2,19 @@
 
 更新：2026-10-17。当前入口为 **InitialDemo**：一个怪物、一座塔、一个红门、一个蓝门，斜俯视立体棋盘。点击开始 → 怪物移动 → 塔自动攻击 → 突破扣门或怪物死亡 → 显示结果并可重开。T00–T02 保留为历史基线。
 
-## 最新：第二阶段分层角色样板（2026-10-17）
+## 最新：第二、三阶段动画样板完成（2026-10-17）
+
+第二阶段已提交 `754f758`：U01 独立部件、52 个持久化 Sprite、U01Visual Prefab、四关键姿势和独立预览。第三阶段新增同风格的无腿灰焰与 `Assets/_Game/Prefabs/Characters/AshWispVisual.prefab`，在 `AnimationLab.unity` 与 U01 同屏，用同一条 RouteMotion、同一模拟时钟驱动；左右分开仅是展示位置偏移。灰焰不进入战斗卡池、不新增费用/技能。
+
+`DemoSpriteVisual → UnitVisualFrame → UnitVisualPresentation` 为共同表现入口；BipedVisualPresentation 驱动关节/IK，FloatingVisualPresentation 驱动悬浮/呼吸/倾斜与阴影。两者各自持有动画状态，读取原运动输入，暂停/重开不推进独立墙钟、不修改逻辑根节点旋转或缩放。资源/配置只读，没有引入 Unity 包或改战斗规则；原卡面、右向正面与 0.75 速度保留。
+
+双击 `Builds/Windows/YesterdayConvoy.exe` 后点右上“动画预览”，可停止/继续、暂停/恢复、重开，或点击四个放大关键姿势；“返回战斗 Demo”可回主场景。`-animationLab` 可直接进入预览，两个场景均已纳入构建。
+
+本轮 37/37 Edit Mode、11/11 Play Mode 通过；最终 Windows 构建 **242759557 字节、0 错误**。真实图形 Player 预览 stop/pause/restart/sharedInput/secondBody 与战斗五项检查全 True，两个进程均退出 0。已查看双角色全图、关键姿势和行走帧；动图 `artifacts/stages23/two-body-preview.gif`，四姿势图 `final-keyposes.png`。详细证据/失败修复见 QA。
+
+仍待人工观感验收：AI 部件细节与方向体块复用有局限，当前不是完整手绘多方向蒙皮动画。完整鼠标 UI、第二机离线、多单位压力测试未运行；重型/多足专用动画未在本轮扩充。
+
+## 前次：第二阶段分层角色样板（2026-10-17）
 
 用户已明确授权继续第二、第三阶段。第二阶段现已实现：原身体裁片换为带完整关节覆盖的正/背两张部件图；编辑器按实际 Alpha 区域识别 12 部件/图，生成 52 个独立 Sprite 与 `Assets/_Game/Prefabs/Characters/U01Visual.prefab`。头部使用原贴图遮罩、卡面原样保留，右向仍为原三分之四正面、移速 0.75。侧/斜背身体复用正/背部件，不冒充完整多方向专业分层绘制。
 

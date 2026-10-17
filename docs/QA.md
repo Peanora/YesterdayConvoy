@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 第三阶段与最终集成：第二体型共享运动输入（2026-10-17）
+
+新增灰焰 PNG（1199×1312 RGBA，Alpha 0–255）、独立漂浮 Prefab/Presentation、原生阴影 Sprite；阴影复用现有 Kenney CC0 粒子（已核对本地许可），源 PNG 未改。AnimationLab 同屏驱动双足与漂浮两体型，使用一条 RouteMotion 与模拟时钟，只读 UnitVisualFrame 的距离/方向/时间一致；不同表现类不互相控制，不添加战斗怪物或规则。原卡面/右向正面/0.75 速度保留。
+
+- **37/37 Edit Mode**：新增漂浮 Prefab 不带双足骨架、Collider、Rigidbody 或战斗组件，原分层资源与关节 Alpha/配置/路线测试继续通过，`artifacts/stages23/final-edit.xml`。
+- **11/11 Play Mode**：新增双体型 120 个模拟小步跨拐点的共同距离/时间/方向/移动状态检查，展示偏移不影响运动数据；验证各自待机、停止位移/继续悬浮、共同暂停/重开、根节点旋转/缩放不变。原进攻、四姿势和实例隔离继续通过，`final-play.xml`。这轮测试后只补编辑器初始摆位、默认悬浮姿态和直达预览参数，随后重新编译、构建并以 Player 验证。
+- 最终 Windows x64 构建 **242759557 字节、0 错误**，无 C# 错误/警告，`final-build.log`。Lab 场景和新增 Prefab 引用已纳入；U01 配置/主场景/卡牌校验通过。
+- 最终真实 **Direct3D 12 Player** 两个进程均退出 **0**：`final-lab.log` 为 `stop=True; pause=True; restart=True; sharedInput=True; secondBody=True`；`final-battle.log` 为原突破/单次穿门/30 血死亡/重开/默认 100 血死亡五项 True。
+- 实机帧：`final-lab/keypose-0..3.png`、`layered-walk-00..31.png`。已查看关键姿势 2 和行走 16 全图，以及 `final-keyposes.png` 的四姿势放大图；`two-body-preview.gif` 仅从实际帧跟随裁切/放大，约 0.85 秒。截图不含 OnGUI，交互状态由测试验证，未冒称已人工点击。
+- Stage3 生成工具复用已存在 U01 的 Prefab/52 Sprite 资产；再次构建后这些资产没有 Git 变动。初始化仅处理新场景零位置和漂浮 Prefab 的默认零姿态，保留已有非默认人工值。没有新增动画依赖、运行时切图/材质生成或通用动画框架。
+
+限制：关节端点覆盖不代表全动画无任何接缝，侧/斜背体块复用；灰焰是近圆形单视图漂浮样板，不是正式战斗卡。未运行完整人工鼠标 UI、第二机离线和多单位性能测试；重型/多足尚未制作。人工观感待用户验收。原未跟踪 PackageManagerSettings.asset 保留、不提交。
+
 ## 第二阶段：分层样板与动画预览（2026-10-17）
 
 新增两张 1448×1086 RGBA 12 部件图（Alpha 0–255），源文件原样保留；52 个原生 Sprite 子资产与 U01Visual Prefab 保存关节/PPU/Pivot。头部取原图 Sprite 几何遮罩、卡面不改。LayeredPuppetAuthor/LayeredCharacterTools 仅在编辑器生成资产；UnitVisualFrame/UnitVisualPresentation/BipedVisualPresentation 连接移动输入与原动画求解；AnimationLab 提供四姿势、起停、暂停、重开入口，已接到战斗按钮和 Windows 场景列表。未增加动画包或改战斗规则。

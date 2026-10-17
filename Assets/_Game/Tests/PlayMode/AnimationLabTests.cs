@@ -42,6 +42,39 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
+        public IEnumerator DifferentBodiesShareMotionButKeepTheirOwnAnimationAndFreezeTogether()
+        {
+            yield return SceneManager.LoadSceneAsync("AnimationLab",LoadSceneMode.Single);
+            Time.timeScale=0;yield return null;
+            var lab=Object.FindAnyObjectByType<AnimationLab>();
+            Assert.That(lab.Floating,Is.Not.Null);
+            Assert.That(lab.Floating.GetComponent<BipedVisualRig>(),Is.Null,"A legless body must not be given a biped rig.");
+            var floating=(FloatingVisualPresentation)lab.Floating.Presentation;
+            Quaternion rootRotation=lab.Floating.transform.parent.rotation;
+            Vector3 rootScale=lab.Floating.transform.parent.localScale;
+            for(int step=0;step<120;step++)
+            {
+                lab.Simulate(0.05f);
+                UnitVisualFrame a=lab.Biped.Presentation.LastFrame,b=lab.Floating.Presentation.LastFrame;
+                Assert.That(b.Time,Is.EqualTo(a.Time));Assert.That(b.Distance,Is.EqualTo(a.Distance));
+                Assert.That(b.Direction,Is.EqualTo(a.Direction));Assert.That(b.Moving,Is.EqualTo(a.Moving));
+                Assert.That(Vector3.Distance(lab.Floating.transform.parent.position-lab.Biped.transform.parent.position,new Vector3(2.8f,0,0)),Is.LessThan(0.0001f));
+            }
+            Assert.That(lab.Floating.transform.parent.rotation,Is.EqualTo(rootRotation));
+            Assert.That(lab.Floating.transform.parent.localScale,Is.EqualTo(rootScale));
+            lab.SetMoving(false);lab.Simulate(0.25f);
+            Assert.That(lab.Biped.Presentation.MotionWeight,Is.Zero);Assert.That(floating.MotionWeight,Is.Zero);
+            Vector3 root=lab.Floating.transform.parent.position,hover=floating.Body.localPosition;
+            lab.Simulate(0.1f);
+            Assert.That(lab.Floating.transform.parent.position,Is.EqualTo(root));
+            Assert.That(floating.Body.localPosition,Is.Not.EqualTo(hover),"Idle hovering continues while the simulation runs.");
+            lab.SetPaused(true);hover=floating.Body.localPosition;Quaternion rotation=floating.Body.localRotation;float clock=lab.SimulationTime;
+            lab.Simulate(1);
+            Assert.That(lab.SimulationTime,Is.EqualTo(clock));Assert.That(floating.Body.localPosition,Is.EqualTo(hover));Assert.That(floating.Body.localRotation,Is.EqualTo(rotation));
+            lab.Restart();Assert.That(lab.SimulationTime,Is.Zero);Assert.That(floating.Body.localPosition.y,Is.EqualTo(0.28f).Within(0.0001f));
+        }
+
+        [UnityTest]
         public IEnumerator TwoPrefabInstancesShareArtButKeepIndependentPoseState()
         {
             yield return SceneManager.LoadSceneAsync("AnimationLab",LoadSceneMode.Single);
