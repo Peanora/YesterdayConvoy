@@ -47,6 +47,7 @@ namespace YesterdayConvoy
         public DemoWalkPuppet(Transform owner, BipedVisualRig rig)
         {
             if (rig == null || !rig.IsComplete) throw new ArgumentException("Biped visual prefab has incomplete authored parts.", nameof(rig));
+            rig.PrepareHeadGeometry();
             parent = owner;
             front = rig.Front; back = rig.Back; side = rig.Side; rearQuarter = rig.RearQuarter;
             active = front;
@@ -128,7 +129,8 @@ namespace YesterdayConvoy
             Rotate(rig.HandR, 5 * gaitWeight + Mathf.Max(0, -wave) * 13);
             for (int i = 0; i < rig.Parts.Count; i++)
             {
-                rig.Parts[i].Renderer.enabled = rig.Parts[i] == rig.Head ? headVisible : bodyVisible;
+                // Serializable Part values are copied on reload; compare Unity object references.
+                rig.Parts[i].Renderer.enabled = rig.Parts[i].Renderer == rig.Head.Renderer ? headVisible : bodyVisible;
                 rig.Parts[i].Renderer.sortingOrder = sortingOrder + i;
                 rig.Parts[i].Renderer.color = tint;
             }

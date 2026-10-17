@@ -15,6 +15,22 @@ namespace YesterdayConvoy.Editor
         public const string LabScene = "Assets/_Game/Scenes/AnimationLab.unity";
         private const string Art = "Assets/_Game/Art/Characters/Monsters/Boss/";
 
+        [MenuItem("Yesterday Convoy/Animation/Repair Head Occlusion")]
+        public static void RepairHeadOcclusion()
+        {
+            GameObject owner = PrefabUtility.LoadPrefabContents(PrefabPath);
+            try
+            {
+                foreach (var view in owner.GetComponent<BipedVisualRig>().Views)
+                    LayeredPuppetAuthor.RestoreHeadOutline(view);
+                PrefabUtility.SaveAsPrefabAsset(owner, PrefabPath);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(owner); }
+            AssetDatabase.SaveAssets();
+            ValidateAssets();
+            Debug.Log("HEAD_OCCLUSION_REPAIR_PASS: saved four head-only polygons; existing sprite IDs and joints preserved.");
+        }
+
         [MenuItem("Yesterday Convoy/Animation/Build Layered Sample")]
         public static void Build()
         {

@@ -13,6 +13,35 @@ namespace YesterdayConvoy.Tests
         [TearDown] public void TearDown() => Time.timeScale=originalScale;
 
         [UnityTest]
+        public IEnumerator ReloadedHeadCannotHideTheWalkingLegArtwork()
+        {
+            yield return SceneManager.LoadSceneAsync("AnimationLab",LoadSceneMode.Single);
+            Time.timeScale=0;yield return null;
+            var lab=Object.FindAnyObjectByType<AnimationLab>();
+            lab.ShowKeyPose(0);
+            var rig=lab.Biped.GetComponent<BipedVisualRig>();
+            foreach (var view in rig.Views)
+            {
+                Sprite head=view.Head.Renderer.sprite;
+                Assert.That(head.vertices.Length,Is.EqualTo(view.HeadVertices.Length));
+                foreach (Vector2 vertex in head.vertices)
+                    Assert.That(vertex.y,Is.GreaterThan(-0.2f),"Head artwork must end above the legs, even after asset reload.");
+            }
+            Vector3 shoe=rig.Front.ShoeL.Renderer.transform.position;
+            lab.Biped.PresentMotion(DemoWalkPuppet.Stride*0.75f,11,Vector3.right,true,Color.white);
+            Assert.That(rig.Front.ShoeL.Renderer.enabled,Is.True);
+            Assert.That(Vector3.Distance(shoe,rig.Front.ShoeL.Renderer.transform.position),Is.GreaterThan(0.1f));
+            // During a turn the head can lead the torso. Serialized Part wrappers are not
+            // reference-identical, so visibility must use their actual SpriteRenderer identity.
+            lab.Biped.PresentMotion(0.5f,12,Vector3.forward,true,Color.white);
+            lab.Biped.PresentMotion(0.55f,12.19f,Vector3.forward,true,Color.white);
+            int heads=0;
+            foreach (var view in rig.Views)
+                if (view.Root.gameObject.activeSelf && view.Head.Renderer.enabled) heads++;
+            Assert.That(heads,Is.EqualTo(1));
+        }
+
+        [UnityTest]
         public IEnumerator KeyPosesStopPauseAndRestartUseAuthoredPrefab()
         {
             yield return SceneManager.LoadSceneAsync("AnimationLab",LoadSceneMode.Single);

@@ -86,13 +86,31 @@ namespace YesterdayConvoy.Editor
                 head.name=rig.Root.name+" head";
                 // Sprite vertices retain the original texture pixels; no new face is generated.
                 for(int i=0;i<vertices.Length;i++)
-                    vertices[i]=new Vector2((points[i*2]/1145f*source.texture.width-texturePivot.x*source.texture.width)/rig.Ppu,
-                        ((1-points[i*2+1]/1374f)*source.texture.height-texturePivot.y*source.texture.height)/rig.Ppu);
-                head.OverrideGeometry(vertices,Triangulate(vertices.ToList()).Select(x=>(ushort)x).ToArray());
+                    vertices[i]=new Vector2((Mathf.Clamp(points[i*2]/1145f*source.texture.width,0.05f,source.texture.width-0.05f)-texturePivot.x*source.texture.width)/rig.Ppu,
+                        (Mathf.Clamp((1-points[i*2+1]/1374f)*source.texture.height,0.05f,source.texture.height-0.05f)-texturePivot.y*source.texture.height)/rig.Ppu);
+                rig.HeadVertices = vertices;
+                rig.HeadTriangles = Triangulate(vertices.ToList());
+                head.OverrideGeometry(vertices.Select(v=>v*rig.Ppu+head.pivot).ToArray(),rig.HeadTriangles.Select(x=>(ushort)x).ToArray());
                 AssetDatabase.AddObjectToAsset(head,library);library.AddAuthoredSprite(head);
                 part.Renderer.sprite=head;
             }
             return part;
+        }
+
+        // Repair existing authored assets without replacing sprites, GUIDs or joint transforms.
+        internal static void RestoreHeadOutline(Rig rig)
+        {
+            float[] points;
+            if (rig.Root.name.StartsWith("Front")) points = new float[] {0,0,1145,0,1145,970,954,970,954,870,870,880,815,845,610,845,552,860,552,920,414,950,0,960};
+            else if (rig.Root.name.StartsWith("Rear quarter")) points = new float[] {0,0,1145,0,1145,820,901,820,847,852,752,819,650,856,550,900,0,925};
+            else if (rig.Root.name.StartsWith("Side")) points = new float[] {0,0,1145,0,1145,820,905,820,855,835,790,795,720,800,660,845,570,875,0,925};
+            else points = new float[] {0,0,1145,0,1145,960,930,960,935,880,800,890,780,865,711,862,700,850,560,850,514,878,425,910,0,960};
+            Sprite source = rig.Head.Renderer.sprite;
+            rig.HeadVertices = new Vector2[points.Length / 2];
+            for (int i = 0; i < rig.HeadVertices.Length; i++)
+                rig.HeadVertices[i] = new Vector2(Mathf.Clamp(points[2*i] / 1145f * source.texture.width,0.05f,source.texture.width-0.05f) - source.pivot.x,
+                    Mathf.Clamp((1 - points[2*i+1] / 1374f) * source.texture.height,0.05f,source.texture.height-0.05f) - source.pivot.y) / rig.Ppu;
+            rig.HeadTriangles = Triangulate(rig.HeadVertices.ToList());
         }
 
         public void Finish(Rig rig,Atlas atlas,bool rear)

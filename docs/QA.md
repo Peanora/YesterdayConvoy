@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 修复分层后整图遮挡腿部的滑行回归（2026-10-17）
+
+用户否决前次“仍像平移”的表现。检查发现原头部子 Sprite 实际加载为四顶点全身矩形，位于腿部上层；旧 Author 将局部世界坐标交给要求 Sprite Rect 像素坐标的 OverrideGeometry。单测仅检查关节转动而未检查实际头部几何，漏掉了遮挡。另已实际验证本版原生 Sprite 子资产重导后会恢复矩形，因此保存独立轮廓并在实例初始化时恢复头部几何；四个头部 Sprite 由实例持有并在销毁时释放，不重建全身网格/材质、不更改源 PNG 或已有 Sprite ID。API 坐标依据见 [Unity 官方说明](https://docs.unity.com/en-us/engine/6000.5/script-reference/unityengine/sprite/overridegeometry)。
+
+- **37/37 Edit Mode**：`artifacts/walk-occlusion/edit.xml`；**12/12 图形 Play Mode**：`play-fixed.xml`。新增回归检查加载后真实头部顶点截止在腿部以上、鞋 Sprite 随步相移动、头身分向时恰好显示一个头；原暂停、起停、重开、共享输入、实例隔离和战斗测试继续通过。
+- **Windows 构建 242762053 字节、0 错误**：`build-fixed.log`，配置/场景引用校验通过。
+- 真实 Direct3D Player 预览退出 **0**：`lab-fixed.log` 的 stop/pause/restart/sharedInput/secondBody 全 True，无 Invalid vertex 错误。实际相机 32 帧 `lab-fixed/layered-walk-*.png`、四关键姿势均已检查；`fixed-walk.gif` 为按根节点跟随裁切的完整周期，`fixed-walk-contact.png`、`fixed-keyposes.png` 显示交替迈腿。裁切仅用于证据展示，不修改游戏素材。
+- 真实战斗 Player 退出 **0**：`battle.log` 的 breach/gateOnce/killed/restart/default100Killed 全 True，无 Invalid vertex/Exception；已查看 `battle/walk-16.png`，正常战斗也使用修复后的头部裁剪与分层腿部，而非仅预览场景修复。
+- 调试中首次恢复仍报 Invalid vertex，9/12 测试失败，未记作通过；缩小为单头几何复现后改正像素坐标，新增单项先通过，再跑完整套件通过。失败证据 `play.xml`、`play-final.xml` 保留，最终以 `play-fixed.xml` 为准。
+
+关键连接：移动数据仍经 DemoSpriteVisual/UnitVisualFrame 进入 DemoWalkPuppet；BipedVisualRig 只准备头部显示网格，Prefab 保存轮廓、关节和部件引用。额外修正 Part 序列化后的值复制问题，按 Renderer 引用识别头部，不按包装对象身份判断。未改变移动/攻击/碰撞规则。人工自然度尚待用户试玩；第二机离线、完整人工鼠标流程与多单位压力未运行。
+
 ## 第三阶段与最终集成：第二体型共享运动输入（2026-10-17）
 
 新增灰焰 PNG（1199×1312 RGBA，Alpha 0–255）、独立漂浮 Prefab/Presentation、原生阴影 Sprite；阴影复用现有 Kenney CC0 粒子（已核对本地许可），源 PNG 未改。AnimationLab 同屏驱动双足与漂浮两体型，使用一条 RouteMotion 与模拟时钟，只读 UnitVisualFrame 的距离/方向/时间一致；不同表现类不互相控制，不添加战斗怪物或规则。原卡面/右向正面/0.75 速度保留。
