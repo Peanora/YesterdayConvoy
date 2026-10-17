@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 取消摆手与摆臂（2026-10-17）
+
+按用户要求，仅将 DemoWalkPuppet 中 ArmL/HandL/ArmR/HandR 四个局部旋转固定为原姿势（0），不修改 Artwork 子节点的原始绘制角度。运动输入仍通过 DemoSpriteVisual/UnitVisualFrame 进入同一求解器，腿部、头部裁剪、转身、移速与战斗规则不变；更新 GDD/STATUS。
+
+- 12/12 图形 Play Mode 通过：`artifacts/fixed-arms/play.xml`，包含战斗、暂停、重开、头部裁剪和预览回归。
+- Windows 构建 242762052 字节、0 错误：`build.log`。真实 Direct3D Player 退出 0：`player.log` 的 stop/pause/restart/sharedInput/secondBody 全 True。
+- 查看实际相机四关键姿势接触图 `keyposes.png`，手臂/手部保持固定姿势，腿部仍交替迈步；原图位于 `lab/keypose-*.png`，另保留 32 张行走帧。没有新增素材或测试框架。
+- 本次未重跑 Edit Mode、独立战斗 Player 烟雾、第二机或多单位性能；战斗流程由本轮 Play Mode 回归覆盖。自然度仍待用户评价。
+
 ## 修复分层后整图遮挡腿部的滑行回归（2026-10-17）
 
 用户否决前次“仍像平移”的表现。检查发现原头部子 Sprite 实际加载为四顶点全身矩形，位于腿部上层；旧 Author 将局部世界坐标交给要求 Sprite Rect 像素坐标的 OverrideGeometry。单测仅检查关节转动而未检查实际头部几何，漏掉了遮挡。另已实际验证本版原生 Sprite 子资产重导后会恢复矩形，因此保存独立轮廓并在实例初始化时恢复头部几何；四个头部 Sprite 由实例持有并在销毁时释放，不重建全身网格/材质、不更改源 PNG 或已有 Sprite ID。API 坐标依据见 [Unity 官方说明](https://docs.unity.com/en-us/engine/6000.5/script-reference/unityengine/sprite/overridegeometry)。

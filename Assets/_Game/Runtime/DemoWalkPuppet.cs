@@ -123,10 +123,11 @@ namespace YesterdayConvoy
             float pivot = Mathf.Sin(turnProgress * Mathf.PI) * Mathf.Sign(turnTarget - turnFrom);
             Rotate(rig.Body, wave * 1.1f + pivot * 2);
             Rotate(rig.Tail, Mathf.Sin((phase - 0.15f) * Mathf.PI * 2) * 7 * gaitWeight);
-            Rotate(rig.ArmL, wave * 17);
-            Rotate(rig.HandL, -5 * gaitWeight - Mathf.Max(0, wave) * 13);
-            Rotate(rig.ArmR, -wave * 17);
-            Rotate(rig.HandR, 5 * gaitWeight + Mathf.Max(0, -wave) * 13);
+            // Keep the authored arm/hand pose throughout the walking cycle.
+            Rotate(rig.ArmL, 0);
+            Rotate(rig.HandL, 0);
+            Rotate(rig.ArmR, 0);
+            Rotate(rig.HandR, 0);
             for (int i = 0; i < rig.Parts.Count; i++)
             {
                 // Serializable Part values are copied on reload; compare Unity object references.
