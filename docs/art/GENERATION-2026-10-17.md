@@ -1,46 +1,5 @@
 # 认可卡面与同系列实机美术
 
-## 第三阶段：灰焰漂浮样板（2026-10-17）
-
-以既有战场图仅作画风参照，用内置 image_gen 制作独立的无腿灰焰样板。它不是新战斗卡、未配置费用/生命/技能。源文件 `exec-7f3b0bf2-f992-4eb8-83cb-464c3779abd4.png` 原样复制为 `Assets/_Game/Art/Characters/Monsters/Normal/ash-wisp.png`，1199×1312 RGBA、Alpha 0–255，Point、Single、可见高度 1.2。悬浮/呼吸/倾斜为视觉子节点的轻量动画，不套双足 Rig。
-
-地面阴影复用已在工程内的 Kenney Particle Pack / circle_05（CC0）；原 PNG 未改，`Normal/WispSprites.asset` 保存原生 Sprite 包装，Prefab 中压成地面椭圆并着黑色。`AshWispVisual.prefab` 已接入 AnimationLab，与双足读取同一距离/方向/模拟时间。图形 Player 的 stop/pause/restart/sharedInput/secondBody 全 True。
-
-灰焰按原创烟灵用途生成，不作商业游戏原图提取；AI 输出不自动登记为 CC0，也不作一揽子权利清理声明。部件图/头部所涉维什戴尔同人状态另按原记录保持。单视图近圆形烟灵用于全向漂浮样板，不等于已制作多方向精细动画。
-
-实际提示词：
-
-```text
-Use case: original game asset, second body type to test a Unity 2.5D animation pipeline. Reference supplies STYLE ONLY: humorous dark-fantasy chibi, crisp stepped pixel-cluster outlines, silver-gray/charcoal with restrained crimson and warm amber highlights, simple 2-3 shade ramps. Create ONE ORIGINAL small FLOATING ASH WISP creature, no legs and no human body, distinct from the reference character. A squat pear-shaped silver-gray smoky ghost orb, comically disdainful half-lidded amber eyes, tiny jagged mouth, two tiny charcoal/red horn nubs, three tapering dark smoke tails at its bottom instead of feet, small red ember core tucked inside the body. Clear chunky readable silhouette, rounded top and wavy lower smoke edges, mischievous restrained expression, readable at 80-100 pixels tall. Front three-quarter view from slightly above, upright flat 2D sprite for the same tactical board. No accessories, no weapons, no clothing, no recognizable third-party character, no human limbs. Whole creature centered and completely visible with at least 12% transparent margins, genuine transparent alpha, NO floor, NO shadow, no scenery, no words, no labels, no card frame, single sprite not a sheet. Art should look from the same game family as the reference but be an original simple creature.
-```
-
-
-
-## 第二阶段：独立部件与可复用视觉样板（2026-10-17）
-
-用户授权完成动画计划第二、第三阶段。第二阶段使用内置 image_gen，按现有正背面身份参照生成正/背两张部件源图；卡面和原四方向 PNG 未修改。每图经 Alpha 连通区域实际识别为 12 个独立部件，不假定 AI 网格准确。关节位置为完整不透明圆端，Unity 原生 Sprite 子资产按关节 Pivot、PPU 和静态安装角归一化，不在运行时拉伸图片补尺寸。
-
-- `U01Layers/front-parts.png` ← `exec-d6912825-a2cc-461b-9633-a4ff3d1914a9.png`。
-- `U01Layers/rear-parts.png` ← `exec-eee36f84-00d4-4d43-90f5-bb7e41dd86b1.png`。
-- 两图均原样复制生成文件；准确尺寸/Alpha 见清单。Sprite Rect 裁去 torso 多余连袖和 boot shaft 多余鞋头，在成品中组合独立部件；源 PNG 保留。
-- 原头部用原贴图和保存的 Sprite 几何遮罩，不重新生成表情。编辑器将 4 个方向共 52 个 Sprite 写入 `U01Layers/LayeredSprites.asset`。
-- `Assets/_Game/Prefabs/Characters/U01Visual.prefab` 保存关节、四视图与引用。侧向/斜背体块复用正/背部件，仅用于短转角；不是四方向全套手绘层。
-- 此批维什戴尔身体仍属于既有同人原型，原条款与第三方角色权利状态不变，不声明 CC0 或正式发行授权。PNG 源、原卡面、字体等许可状态保持。
-
-正面部件实际提示词：
-
-```text
-Use case: game cutout animation parts atlas. Input images are approved front/back identity references. Create ONE TRANSPARENT production PARTS ATLAS, 4 equal columns x 3 equal rows, exactly TWELVE completely SEPARATE body pieces of this same tiny red/black chibi body. NO head, NO complete character, NO assembled limbs. Uniform invisible 4x3 grid, each piece centered in its own cell with at least 15% transparent padding, nothing crosses a cell boundary, no grid lines or text. Landscape 4:3 canvas, preferably 2048x1536. All pieces are FRONT/three-quarter view matching input1, crisp stepped dark pixel-cluster outlines, black/charcoal with deep crimson and bare pale skin, same outfit; NOT realistic and NOT smooth 3D. Read slots left-to-right top-to-bottom: 1 combined torso (red-black cropped open jacket, black cross-strap crop top, belly and black short shorts, NO arms/legs/head); 2 near UPPER ARM (short red-black sleeve to elbow, round shoulder cap); 3 near FOREARM (pale forearm plus black fingerless glove, elbow round cap at top, hand bottom); 4 far UPPER ARM same sleeve; 5 far FOREARM with glove; 6 near THIGH (pale upper leg with red-white thigh band, rounded skin cap at hip, rounded knee bottom); 7 near BOOT SHAFT (black boot calf from knee to ankle, red trim and small silver buckle, NO foot/toe, round closed ends); 8 near BOOT FOOT (chunky black short shoe, red sole stripe, toes pointing right, rounded closed ankle top); 9 far THIGH (pale upper leg, NO band, closed round hip/knee); 10 far BOOT SHAFT same black/red calf, no toes; 11 far BOOT FOOT same chunky shoe toes right; 12 complete black CURVED TAIL with red arrow tip, root end closed and rounded. Arms and leg pieces must have full opaque rounded overlap pads at all covered joints, draw the hidden portions too: no cutouts/holes/jagged cut edges at shoulders elbows hips knees ankles. This is replacing sliced original art, so complete volumes and joint overlap are the priority. All pieces separated on real transparent alpha, no background, shadow, labels, captions, interface or extra pieces.
-```
-
-背面部件实际提示词：
-
-```text
-Use case: cutout character rig atlas, BACK VIEW counterpart of reference parts atlas (image2), image1 is approved rear identity. Produce ONE true-transparent 4 COLUMN x 3 ROW atlas with exactly twelve isolated body components, same slot layout as image2, but rear/three-quarter-rear artwork of the red-black chibi costume. NO HEAD and no full characters. Every part inside its own equal cell with at least 15% empty padding, all centers aligned in an invisible 4x3 grid. Landscape 4:3, ideally 2048x1536. Slots left-to-right top-to-bottom: 1 standalone TORSO from neck through short shorts, back of red/black cropped jacket and exposed lower back, closed shoulders but NO arms attached; 2 near red/black UPPER ARM with round shoulder and elbow overlap caps; 3 near pale FOREARM + black fingerless glove; 4 far UPPER ARM; 5 far FOREARM + glove; 6 near pale THIGH with red-white band and closed hip/knee ends; 7 near black BOOT CALF SHAFT ONLY knee-to-ankle, red cuff, rounded ankle bottom with NO SOLE OR TOES; 8 near rear-view BOOT FOOT ONLY with closed rounded ankle top and red sole trim; 9 far pale THIGH with no band; 10 far BOOT CALF SHAFT ONLY, NO SOLE/TOES; 11 far rear-view BOOT FOOT; 12 complete curved black TAIL with red arrow tip and closed rounded root. Draw the hidden joint areas as solid full volumes so pieces overlap without gaps when rotating, no joint cutout holes. Retain dark stepped pixel-cluster outlines, simple charcoal/crimson/pale-skin ramps, tiny readable chibi equipment details and the reference design. Opaque components on transparent alpha, no shadows, no cell borders, no lettering or labels, no floating extra accessories. Each slot exactly ONE isolated component. Torso must not have hanging arms, boot shaft must not contain a second shoe.
-```
-
-
-
 ## 后续修订：半速步态与实际转向姿势（2026-10-17）
 
 用户反馈步频过快、向下跛脚、转身衔接生硬，并确认实际前进速度和腿部动作均减半。U01 速度由 1.5 改为 0.75，Stride 保持 0.64；没有放慢全局时钟或改变攻击数值。正面纵深步幅改为侧向投影的 35%，去除左右脚不同的落地高度。

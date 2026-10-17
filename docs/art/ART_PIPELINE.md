@@ -1,6 +1,6 @@
 # 资源工作流
 
-当前角色样板入口为 `Yesterday Convoy/Animation/Build Second Body Sample`（FloatingVisualTools.Build，会先确保双足样板存在）。通用 Demo 换装入口 `Yesterday Convoy/Initial Demo/Apply Approved Art`（DemoArtTools.Apply）仍配置原 Sprite/石板/卡牌，并保留已有分层表现；恢复角色层次时先运行 Animation 菜单。已有认可卡图保持原文件。验证入口 DemoArtTools.Validate，构建前会调用。生成记录见 GENERATION-2026-10-17.md，下文为原通用资源库流程。
+当前 Demo 换装入口为 `Yesterday Convoy/Initial Demo/Apply Approved Art`（DemoArtTools.Apply）。它配置五张 Sprite 的 Point/Alpha/脚底 Pivot 与 PPU、石板材质，保存 5 费 CardDefinition，并把新表现和卡牌 Prefab 绑定到 InitialDemo；已有认可卡图保持原文件。验证入口 DemoArtTools.Validate，构建前会调用。生成记录见 GENERATION-2026-10-17.md，下文为原通用资源库流程。
 
 当前根目录为 `Assets/_Game/Art/`，沿用工程已有 `_Game`，不另建混杂根目录。当前只创建实际有文件的 UI/Icons、VFX/Common、Audio/SFX、Audio/BGM、Fonts；Characters、Cards、Environment 等在实际选定素材后创建。旧 Materials、Scenes、脚本 GUID 不移动。
 
@@ -19,10 +19,3 @@
 斜视角下检查贴地、不上下跳、遮挡排序、左右翻转与转弯缺视图；角色伪动画必须在游戏暂停时停止。卡面无文字，UI 以独立控件叠加费用、多个羁绊、次数和两套 CD。当前尚未创建这些 Prefab、Animator 或 UI，不能靠资源文件存在勾选整套流程完成。
 
 批量验证需关闭同工程 Editor，再以当前锁定 Unity 执行 `-batchmode -nographics -quit -projectPath ... -executeMethod YesterdayConvoy.Editor.ArtResourceTools.ConfigureAndValidate -logFile ...`。核对退出 0 与 ART_IMPORT_PASS；导入日志和检查路径名单在 artifacts/art-research。当前没有新增第三方 Unity 包。
-# 分层角色样板（2026-10-17）
-
-`LayeredCharacterTools.Build`：在不存在时制作 `Prefabs/Characters/U01Visual.prefab`，保留已有 Prefab 人工编辑；绑定 InitialDemo，并建立 AnimationLab。两张部件 PNG 原样保留，按 Alpha 连通区域识别 12 部件，生成 `U01Layers/LayeredSprites.asset` 中 52 个原生 Sprite。头部保留原图与几何遮罩，关节端点检查实际 Alpha；PPU/Pivot/安装角保存在资产中。运行时仅动画骨架节点，不创建裁片网格或材质。
-
-预览入口为战斗右上“动画预览”，也可打开 `Assets/_Game/Scenes/AnimationLab.unity`。四个关键姿势、停止/继续、暂停/恢复、重开用于检查姿态和接缝。采用现有两段腿部 IK 与 Transform 动画，未引入 2D Animation/Animator 依赖；只读 Sprite 资产与每实例动画状态分离。侧/斜背体块目前复用正背部件，不能标记为完整专业多方向绘制。
-
-第三阶段：FloatingVisualTools.Build 只在不存在时创建灰焰 Prefab，复用已存在双足资源，保存第二体型引用到 Lab。`UnitVisualFrame` 为共同只读输入，`UnitVisualPresentation` 提供 Present/ResetVisual/MotionWeight；双足和漂浮分别实现 Apply，状态保留在各实例，不写 Sprite 库。暂停冻结模拟时间；停止仅停止路线推进，漂浮仍可待机。灰焰是单视图近圆形无腿样板，未制作战斗卡或改规则。原生阴影 Sprite 使用已有 Kenney CC0 纹理。源 PNG 与生成提示词/清单保持可追踪，不自动引入蒙皮包。

@@ -33,10 +33,6 @@
 
 ## 后续接入的 AI 美术（2026-10-17）
 
-灰焰（ash-wisp.png）为内置 image_gen 按本项目画风参照生成的原创无腿漂浮样板；未标为 CC0。其地面阴影使用现有 Kenney Particle Pack / circle_05，CC0，原纹理未修改。源文件/实际提示词/原生 Sprite 派生记录见 GENERATION-2026-10-17.md 和 ASSET_MANIFEST.csv。
-
-第二阶段新增 U01Layers/front-parts.png、rear-parts.png，由同一内置 image_gen 参照既有角色补绘；52 个 Sprite、关节绑定和 Prefab 由 Unity 编辑器整理。原头部像素与卡面保留；这些身体部件继承同人原型的第三方角色权利状态，不声明 CC0。源文件与完整提示词见 GENERATION-2026-10-17.md。
-
 用户认可的维什戴尔愚人节卡面及同风格战场角色，由 OpenAI 内置 image_gen 生成并经用户选择；角色形象为《明日方舟》相关同人原型，不作为 CC0 或已取得正式发行授权登记。防御炮、红蓝门和地面为同工具按画风参照新生成。实际文件、生成来源、最终提示词与条款链接见 GENERATION-2026-10-17.md。没有抓取商业游戏原图作为游戏内资产，没有公开发布或推送。工程自己的几何占位物不因此改为上述第三方许可。
 
 同日新增的 `wisadel-walk-left.png`、`wisadel-walk-right.png` 由内置 image_gen 编辑既有战场图获得，用于本地 Demo 行走；来源、提示词和使用范围同上。

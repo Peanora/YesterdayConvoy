@@ -2,35 +2,13 @@
 
 更新：2026-10-17。当前入口为 **InitialDemo**：一个怪物、一座塔、一个红门、一个蓝门，斜俯视立体棋盘。点击开始 → 怪物移动 → 塔自动攻击 → 突破扣门或怪物死亡 → 显示结果并可重开。T00–T02 保留为历史基线。
 
-## 最新：按反馈取消摆手与摆臂（2026-10-17）
+## 最新：回退至 e7e88c3（2026-10-17）
 
-DemoWalkPuppet 将四方向的上下臂/手部关节保持原部件姿势，取消步相驱动的摆动；腿部、半速、头部裁剪和路线不变。GDD 已记录用户偏好。12/12 图形 Play Mode 通过，Windows 构建 0 错误，真实 Player 动画预览五项检查通过，并查看四关键姿势确认手臂姿势固定。更新包 `Builds/Windows/YesterdayConvoy.exe`；证据见 QA。未重跑 Edit Mode、第二机或多单位测试。
+用户要求回到本会话“向右行走恢复原三分之四正面”的版本。工程源码、Assets、包清单、配置和 AGENTS 已恢复为 `e7e88c3` 的快照，仅在 STATUS/QA 补本次回退记录。后续四次提交（分层角色/动画预览、漂浮样板及修复）撤出当前工程；完整保留在 `backup/before-rollback-397b4d6`，未重写或删除原提交历史。原未跟踪 PackageManagerSettings.asset 保留。
 
-## 最新：修复分层后重新出现的整图滑行（2026-10-17）
+当前恢复 `InitialDemo/RouteMotion → DemoSpriteVisual → DemoWalkPuppet` 的单怪物表现链路：右向为原正面姿态，实际速度 0.75，保留向下步态修正与转角中间姿势；本版本没有 AnimationLab 入口或分层视觉 Prefab。
 
-用户指出第二、三阶段后又像平移。实际原因是头部 Sprite 加载成完整人物矩形，覆盖了正在运动的腿部；此前关节数值通过不能证明画面正确。现将四方向头部轮廓保存到 U01Visual Prefab，BipedVisualRig 为每个实例准备四个头部 Sprite，按正确像素坐标应用裁剪，销毁时释放；原 PNG、52 个持久化 Sprite、GUID 和卡面保留。DemoWalkPuppet 继续驱动原关节，修正序列化 Part 值被复制后导致的头身可见性判断。右向仍为原正面，移速 0.75、步频、路线与战斗规则未改。
-
-37/37 Edit Mode、12/12 图形 Play Mode 通过，新增检查实际头部网格不能覆盖腿部及转身只显示一个头；Windows 构建 242762053 字节、0 错误。真实 Player 预览五项通过，已查看 32 帧行走与四关键姿势，腿部交替运动可见。连续帧动图 `artifacts/walk-occlusion/fixed-walk.gif`；最新试玩包仍为 `Builds/Windows/YesterdayConvoy.exe`。战斗回归与限制见 QA。当前为分层关节样板，动作自然度仍需人工评价，未做第二机和多单位压力验证。
-
-## 最新：第二、三阶段动画样板完成（2026-10-17）
-
-第二阶段已提交 `754f758`：U01 独立部件、52 个持久化 Sprite、U01Visual Prefab、四关键姿势和独立预览。第三阶段新增同风格的无腿灰焰与 `Assets/_Game/Prefabs/Characters/AshWispVisual.prefab`，在 `AnimationLab.unity` 与 U01 同屏，用同一条 RouteMotion、同一模拟时钟驱动；左右分开仅是展示位置偏移。灰焰不进入战斗卡池、不新增费用/技能。
-
-`DemoSpriteVisual → UnitVisualFrame → UnitVisualPresentation` 为共同表现入口；BipedVisualPresentation 驱动关节/IK，FloatingVisualPresentation 驱动悬浮/呼吸/倾斜与阴影。两者各自持有动画状态，读取原运动输入，暂停/重开不推进独立墙钟、不修改逻辑根节点旋转或缩放。资源/配置只读，没有引入 Unity 包或改战斗规则；原卡面、右向正面与 0.75 速度保留。
-
-双击 `Builds/Windows/YesterdayConvoy.exe` 后点右上“动画预览”，可停止/继续、暂停/恢复、重开，或点击四个放大关键姿势；“返回战斗 Demo”可回主场景。`-animationLab` 可直接进入预览，两个场景均已纳入构建。
-
-本轮 37/37 Edit Mode、11/11 Play Mode 通过；最终 Windows 构建 **242759557 字节、0 错误**。真实图形 Player 预览 stop/pause/restart/sharedInput/secondBody 与战斗五项检查全 True，两个进程均退出 0。已查看双角色全图、关键姿势和行走帧；动图 `artifacts/stages23/two-body-preview.gif`，四姿势图 `final-keyposes.png`。详细证据/失败修复见 QA。
-
-仍待人工观感验收：AI 部件细节与方向体块复用有局限，当前不是完整手绘多方向蒙皮动画。完整鼠标 UI、第二机离线、多单位压力测试未运行；重型/多足专用动画未在本轮扩充。
-
-## 前次：第二阶段分层角色样板（2026-10-17）
-
-用户已明确授权继续第二、第三阶段。第二阶段现已实现：原身体裁片换为带完整关节覆盖的正/背两张部件图；编辑器按实际 Alpha 区域识别 12 部件/图，生成 52 个独立 Sprite 与 `Assets/_Game/Prefabs/Characters/U01Visual.prefab`。头部使用原贴图遮罩、卡面原样保留，右向仍为原三分之四正面、移速 0.75。侧/斜背身体复用正/背部件，不冒充完整多方向专业分层绘制。
-
-战斗右上新增“动画预览”，打开 `AnimationLab`；可看四个关键姿势、起停、暂停和重开。`DemoSpriteVisual` 把只读 `UnitVisualFrame` 传给 `BipedVisualPresentation`，`DemoWalkPuppet` 操作 Prefab 保存的关节；Sprite/PPU/Pivot 由编辑器预先保存，运行时不创建裁片网格/材质，实例状态彼此独立。仍采用 Transform 与已有两段 IK，未新增 Unity 包。
-
-36/36 Edit Mode、最终 10/10 Play Mode、Windows 构建（235409441 字节、0 错误）通过；真实 Player 预览 stop/pause/restart 与战斗五项均 True，已查看关键姿势与实机行走。证据 `artifacts/stages23/stage2-*`，详细失败修复与限制见 QA。第三阶段正在继续；人工鼠标完整流程、第二机离线、多单位性能未测，观感仍待用户验收。
+本次重新运行 Edit Mode 34/34、Play Mode 8/8；Windows 构建 222722868 字节、0 错误，真实 Player 五项结算检查全 True、退出 0。产物仍为 `Builds/Windows/YesterdayConvoy.exe`，证据 `artifacts/rollback-e7e88c3`，详见 QA。未复核完整鼠标流程、第二机或多单位性能；原有裁片接缝/转身造型差异仍在。
 
 ## 前次：向右行走恢复原正面姿态（2026-10-17）
 

@@ -1,51 +1,15 @@
 # 验证证据与回归
 
-## 取消摆手与摆臂（2026-10-17）
+## 最新：恢复 e7e88c3 工程快照（2026-10-17）
 
-按用户要求，仅将 DemoWalkPuppet 中 ArmL/HandL/ArmR/HandR 四个局部旋转固定为原姿势（0），不修改 Artwork 子节点的原始绘制角度。运动输入仍通过 DemoSpriteVisual/UnitVisualFrame 进入同一求解器，腿部、头部裁剪、转身、移速与战斗规则不变；更新 GDD/STATUS。
+目标为本会话上一交付 `e7e88c3`（右向恢复三分之四正面）。回退前 HEAD=`397b4d6`，已建备份分支 `backup/before-rollback-397b4d6`。以目标快照恢复全部已跟踪文件，后续分层/灰焰/预览及修复退出当前工程；以新的回退提交保留全部历史，未使用 reset --hard、clean 或清空未跟踪文件。原 `ProjectSettings/PackageManagerSettings.asset` 保留。
 
-- 12/12 图形 Play Mode 通过：`artifacts/fixed-arms/play.xml`，包含战斗、暂停、重开、头部裁剪和预览回归。
-- Windows 构建 242762052 字节、0 错误：`build.log`。真实 Direct3D Player 退出 0：`player.log` 的 stop/pause/restart/sharedInput/secondBody 全 True。
-- 查看实际相机四关键姿势接触图 `keyposes.png`，手臂/手部保持固定姿势，腿部仍交替迈步；原图位于 `lab/keypose-*.png`，另保留 32 张行走帧。没有新增素材或测试框架。
-- 本次未重跑 Edit Mode、独立战斗 Player 烟雾、第二机或多单位性能；战斗流程由本轮 Play Mode 回归覆盖。自然度仍待用户评价。
+- 恢复后及 Unity 验证后执行 `git diff --exit-code e7e88c3 -- Assets Packages ProjectSettings AGENTS.md`，均退出 0；工程文件与目标一致。文档仅 STATUS/QA 另增回退记录。
+- Unity **6000.6.5f1**，本次重新运行 **Edit Mode 34/34、Play Mode 8/8**，无失败；日志/XML 在 `artifacts/rollback-e7e88c3`，不是沿用历史测试结果。
+- 场景/美术引用、怪物配置校验通过；Windows x64 构建 **222722868 字节、0 错误**，无 C# 错误/警告，`build.log`。重新生成当前试玩包，恢复后的 Credits/来源记录同步到包目录。
+- 真实图形 Player 退出 **0**，`player.log`：`breach=True; gateOnce=True; killed=True; restart=True; default100Killed=True`；对应 140 生命突破、单次穿门、30/100 生命死亡与重开。未新增或重做美术素材。
 
-## 修复分层后整图遮挡腿部的滑行回归（2026-10-17）
-
-用户否决前次“仍像平移”的表现。检查发现原头部子 Sprite 实际加载为四顶点全身矩形，位于腿部上层；旧 Author 将局部世界坐标交给要求 Sprite Rect 像素坐标的 OverrideGeometry。单测仅检查关节转动而未检查实际头部几何，漏掉了遮挡。另已实际验证本版原生 Sprite 子资产重导后会恢复矩形，因此保存独立轮廓并在实例初始化时恢复头部几何；四个头部 Sprite 由实例持有并在销毁时释放，不重建全身网格/材质、不更改源 PNG 或已有 Sprite ID。API 坐标依据见 [Unity 官方说明](https://docs.unity.com/en-us/engine/6000.5/script-reference/unityengine/sprite/overridegeometry)。
-
-- **37/37 Edit Mode**：`artifacts/walk-occlusion/edit.xml`；**12/12 图形 Play Mode**：`play-fixed.xml`。新增回归检查加载后真实头部顶点截止在腿部以上、鞋 Sprite 随步相移动、头身分向时恰好显示一个头；原暂停、起停、重开、共享输入、实例隔离和战斗测试继续通过。
-- **Windows 构建 242762053 字节、0 错误**：`build-fixed.log`，配置/场景引用校验通过。
-- 真实 Direct3D Player 预览退出 **0**：`lab-fixed.log` 的 stop/pause/restart/sharedInput/secondBody 全 True，无 Invalid vertex 错误。实际相机 32 帧 `lab-fixed/layered-walk-*.png`、四关键姿势均已检查；`fixed-walk.gif` 为按根节点跟随裁切的完整周期，`fixed-walk-contact.png`、`fixed-keyposes.png` 显示交替迈腿。裁切仅用于证据展示，不修改游戏素材。
-- 真实战斗 Player 退出 **0**：`battle.log` 的 breach/gateOnce/killed/restart/default100Killed 全 True，无 Invalid vertex/Exception；已查看 `battle/walk-16.png`，正常战斗也使用修复后的头部裁剪与分层腿部，而非仅预览场景修复。
-- 调试中首次恢复仍报 Invalid vertex，9/12 测试失败，未记作通过；缩小为单头几何复现后改正像素坐标，新增单项先通过，再跑完整套件通过。失败证据 `play.xml`、`play-final.xml` 保留，最终以 `play-fixed.xml` 为准。
-
-关键连接：移动数据仍经 DemoSpriteVisual/UnitVisualFrame 进入 DemoWalkPuppet；BipedVisualRig 只准备头部显示网格，Prefab 保存轮廓、关节和部件引用。额外修正 Part 序列化后的值复制问题，按 Renderer 引用识别头部，不按包装对象身份判断。未改变移动/攻击/碰撞规则。人工自然度尚待用户试玩；第二机离线、完整人工鼠标流程与多单位压力未运行。
-
-## 第三阶段与最终集成：第二体型共享运动输入（2026-10-17）
-
-新增灰焰 PNG（1199×1312 RGBA，Alpha 0–255）、独立漂浮 Prefab/Presentation、原生阴影 Sprite；阴影复用现有 Kenney CC0 粒子（已核对本地许可），源 PNG 未改。AnimationLab 同屏驱动双足与漂浮两体型，使用一条 RouteMotion 与模拟时钟，只读 UnitVisualFrame 的距离/方向/时间一致；不同表现类不互相控制，不添加战斗怪物或规则。原卡面/右向正面/0.75 速度保留。
-
-- **37/37 Edit Mode**：新增漂浮 Prefab 不带双足骨架、Collider、Rigidbody 或战斗组件，原分层资源与关节 Alpha/配置/路线测试继续通过，`artifacts/stages23/final-edit.xml`。
-- **11/11 Play Mode**：新增双体型 120 个模拟小步跨拐点的共同距离/时间/方向/移动状态检查，展示偏移不影响运动数据；验证各自待机、停止位移/继续悬浮、共同暂停/重开、根节点旋转/缩放不变。原进攻、四姿势和实例隔离继续通过，`final-play.xml`。这轮测试后只补编辑器初始摆位、默认悬浮姿态和直达预览参数，随后重新编译、构建并以 Player 验证。
-- 最终 Windows x64 构建 **242759557 字节、0 错误**，无 C# 错误/警告，`final-build.log`。Lab 场景和新增 Prefab 引用已纳入；U01 配置/主场景/卡牌校验通过。
-- 最终真实 **Direct3D 12 Player** 两个进程均退出 **0**：`final-lab.log` 为 `stop=True; pause=True; restart=True; sharedInput=True; secondBody=True`；`final-battle.log` 为原突破/单次穿门/30 血死亡/重开/默认 100 血死亡五项 True。
-- 实机帧：`final-lab/keypose-0..3.png`、`layered-walk-00..31.png`。已查看关键姿势 2 和行走 16 全图，以及 `final-keyposes.png` 的四姿势放大图；`two-body-preview.gif` 仅从实际帧跟随裁切/放大，约 0.85 秒。截图不含 OnGUI，交互状态由测试验证，未冒称已人工点击。
-- Stage3 生成工具复用已存在 U01 的 Prefab/52 Sprite 资产；再次构建后这些资产没有 Git 变动。初始化仅处理新场景零位置和漂浮 Prefab 的默认零姿态，保留已有非默认人工值。没有新增动画依赖、运行时切图/材质生成或通用动画框架。
-
-限制：关节端点覆盖不代表全动画无任何接缝，侧/斜背体块复用；灰焰是近圆形单视图漂浮样板，不是正式战斗卡。未运行完整人工鼠标 UI、第二机离线和多单位性能测试；重型/多足尚未制作。人工观感待用户验收。原未跟踪 PackageManagerSettings.asset 保留、不提交。
-
-## 第二阶段：分层样板与动画预览（2026-10-17）
-
-新增两张 1448×1086 RGBA 12 部件图（Alpha 0–255），源文件原样保留；52 个原生 Sprite 子资产与 U01Visual Prefab 保存关节/PPU/Pivot。头部取原图 Sprite 几何遮罩、卡面不改。LayeredPuppetAuthor/LayeredCharacterTools 仅在编辑器生成资产；UnitVisualFrame/UnitVisualPresentation/BipedVisualPresentation 连接移动输入与原动画求解；AnimationLab 提供四姿势、起停、暂停、重开入口，已接到战斗按钮和 Windows 场景列表。未增加动画包或改战斗规则。
-
-- Unity 6000.6.5f1，**36/36 Edit Mode**：持久化部件、原头贴图、关节端点实际 Alpha 覆盖，以及原配置/路线回归；`artifacts/stages23/stage2-edit.xml`。
-- 最终 **10/10 Play Mode**，`stage2-play-final.xml`：原 8 项回归、Lab 四姿势/起停/暂停/重开、两个 Prefab 实例共享 Sprite/材质而状态独立。首轮 9/10：单独克隆无父节点触发排序 NullReference，已支持以自身为排序锚点；原失败 `stage2-play.xml` 保留。
-- 最终 Windows 构建 **235409441 字节、0 错误**，无 C# 错误/警告，`stage2-build-final.log`；引用/怪物配置校验通过。
-- 图形 Player 预览退出 0：`stage2-lab-final.log` 的 `stop/pause/restart` 全 True。首个隐藏 Player 在进入第二场景前尚未打开后台运行而停滞，已将开关前移到入口，再跑通过；原日志保留，不记作成功。
-- 战斗图形 Player 退出 0：`stage2-battle.log` 的突破/单次穿门/30 生命死亡/重开/默认 100 生命死亡五项 True。战斗采图使用同表现代码的首次构建，最终差异仅后台入口设置。
-- 已查看关键姿势 0/2、`stage2-keyposes.png` 四姿势放大图和战斗 `walk-16.png`；预览连续 32 帧、四关键姿势、战斗原采集帧均保留。`stage2-walk.gif` 由实机帧整理，截图不含 OnGUI。
-
-未运行：完整人工鼠标 UI、第二机离线、多单位压力测试。关节端点 Alpha 测试不等于整段动作无任何接缝；侧/斜背身体复用，源图间造型差异仍在，未称为商业级动画。用户授权继续第三阶段，工程通过不视为其已认可新观感。原未跟踪 PackageManagerSettings.asset 保留不提交。
+恢复的连接为 `InitialDemo/RouteMotion → DemoSpriteVisual → DemoWalkPuppet`，表现直接使用原纸片关节，右向正面、0.75 移速与原转角逻辑均回到目标版本。AnimationLab/漂浮样板不在当前构建入口。完整鼠标交互、第二机离线与多单位性能未测；原有裁片接缝和方向造型差异不属于此次回退修复范围。
 
 ## 最新：恢复向右正面行走（2026-10-17）
 

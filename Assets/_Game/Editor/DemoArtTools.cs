@@ -104,15 +104,13 @@ namespace YesterdayConvoy.Editor
                     throw new InvalidOperationException("Missing rear puppet texture.");
                 if (values.FindProperty("sidePose").objectReferenceValue == null || values.FindProperty("rearQuarterPose").objectReferenceValue == null)
                     throw new InvalidOperationException("Missing intermediate turning views.");
-                if (visual.Presentation == null || visual.GetComponent<BipedVisualRig>() == null || !visual.GetComponent<BipedVisualRig>().IsComplete)
-                    throw new InvalidOperationException("Missing authored layered visual prefab.");
             }
             if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
                 throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");
             Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; 4-direction cutout views; forward-facing oblique camera.");
         }
 
-        internal static Sprite ImportSprite(string path, float visibleHeight)
+        private static Sprite ImportSprite(string path, float visibleHeight)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);
