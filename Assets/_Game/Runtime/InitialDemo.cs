@@ -200,6 +200,27 @@ namespace YesterdayConvoy
                 Time.timeScale = 0;
                 BeginAttack(100);
                 Simulate(1.6f);
+                yield return null;
+                // An isolated visual clone demonstrates stop/resume without adding a gameplay stop rule.
+                var previewRoot = new GameObject("Animation preview (no simulation)").transform;
+                Vector3 previewStart = monster.position;
+                var preview = Instantiate(monster.GetComponentInChildren<DemoSpriteVisual>(), previewRoot);
+                preview.enabled = false;
+                // The source may already own runtime cutouts. The clone builds and owns its own rig.
+                foreach (Transform child in preview.transform) Destroy(child.gameObject);
+                monster.gameObject.SetActive(false);
+                for (int frame = 0; frame < 66; frame++)
+                {
+                    bool moving = frame >= 9 && frame < 36;
+                    float distance = Mathf.Clamp(frame - 8, 0, 27) * definition.MoveSpeed / 30;
+                    previewRoot.position = previewStart + Vector3.right * distance;
+                    preview.PresentMotion(distance, frame / 30f, Vector3.right, moving, Color.white);
+                    yield return new WaitForEndOfFrame();
+                    CaptureCamera(directory, $"start-stop-{frame:00}.png");
+                }
+                Destroy(previewRoot.gameObject);
+                BeginAttack(100);
+                Simulate(1.6f);
                 for (int frame = 0; frame < 32; frame++)
                 {
                     yield return new WaitForEndOfFrame();

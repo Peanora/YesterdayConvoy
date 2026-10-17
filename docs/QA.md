@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 最新：动画优化第一阶段（2026-10-17）
+
+目标和范围见 `art/ANIMATION_PLAN.md`，GDD 已同步。修改 `DemoWalkPuppet.cs`（起停权重、正背面淡化、腿长与落点限制、膝盖弯曲方向）、`DemoSpriteVisual.cs`（只读表现输入、独立重开复位）、`InitialDemo.cs`（仅 CLI 美术预览采集分支）、`InitialDemoTests.cs`（过渡/根节点隔离/四方向腿长回归）。未改 RouteMotion、场景、Prefab、配置或美术资产，未新增 Unity 包。状态/美术规范/计划同步更新。
+
+- Unity **6000.6.5f1**：最终 **34/34 Edit Mode、7/7 Play Mode** 全通过；`artifacts/animation-phase1/editmode.xml`、`playmode-final.xml`。新增独立起停与重复起步测试，覆盖过渡中冻结、480 个四方向小步的腿长上限与不改逻辑位置/旋转/缩放/距离/HP/门防御；原有支撑脚、连续关节、路线转背、受击暂停与进攻回归继续通过。
+- 首轮 Play Mode 5/7：腿长限制造成原超远支撑点滑动，已收短支撑行程、校正踝部偏移和身体高度后恢复支撑脚检查；新增淡化使受击色 Alpha 小于 1，测试改为校验 RGB 与合法透明度，并继续断言暂停后实际材质完整颜色不变。失败记录保留在 `playmode.xml`，没有删除或标记通过。
+- 场景与卡牌/正背面引用 `DEMO_ART_PASS`；Windows x64 构建 **210123301 字节、0 错误**，无 C# 错误/警告，`build.log`。
+- 真实图形 Player **Direct3D 12** 退出 **0**；`INITIAL_DEMO_CHECK: breach=True; gateOnce=True; killed=True; restart=True`，`player.log`。
+- 主相机实际帧：`walk-00..31.png`、`turn-00..47.png`、`start-stop-00..65.png` 与 `demo-action.png`。已查看三组接触图与完整相机截图。`walk-closeup.gif`、`turn-closeup.gif`、`start-stop-closeup.gif` 仅从这些帧裁切/放大整理，未加工源美术；行走采样 16 帧、约 430ms，转角 48 帧约 1.6s，起停 66 帧约 2.2s，截图不含 OnGUI。
+- 起停预览使用独立视觉克隆、手动提供模拟时间/移动输入；不推进原实体、不造成战斗伤害，不是正常关卡中新增的停止机制。正常死亡/穿门仍按原规则立即隐藏。
+
+已观察限制：正背面淡化短暂重影，源图裁片存在关节接缝，尚缺正式侧面/遮挡补绘；纵深运动不能据横向锁脚测试推断为全方向无滑步。**未运行**完整鼠标流程、第二机离线和多单位性能测试；自然程度待用户试玩，不声称商业级动作已完成。原有未跟踪 `ProjectSettings/PackageManagerSettings.asset` 保留、不纳入本次提交。
+
 ## 最新补充：连续关节步态与转向（2026-10-17）
 
 用户否决前版三姿势的自然程度；此前导入、功能测试的通过不代表其动作观感已获认可。本轮停止整图切步，新增 DemoWalkPuppet：按原图多边形分区，连续计算髋/膝/踝与独立鞋掌、支撑/回收轨迹，并控制手臂与尾巴。RouteMotion 只新增只读 Direction，原路线与移动积分不变；DemoSpriteVisual 传入距离/方向/模拟时钟和受击颜色。新增一张背面 PNG，朝远处走显示背面，转角快速切面；镜头、卡面、属性与玩法保持。

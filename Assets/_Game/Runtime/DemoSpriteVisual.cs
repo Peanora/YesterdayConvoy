@@ -13,6 +13,7 @@ namespace YesterdayConvoy
         private float flashUntil;
         private float previousTime;
         private DemoWalkPuppet puppet;
+        private RouteMotion previousMotion;
 
         public SpriteRenderer Renderer => sprite;
         public DemoWalkPuppet Puppet => puppet;
@@ -22,6 +23,8 @@ namespace YesterdayConvoy
             previousShots = 0;
             flashUntil = -1;
             previousTime = 0;
+            previousMotion = null;
+            puppet?.Reset();
             transform.localPosition = Vector3.zero;
             if (sprite != null)
             {
@@ -33,30 +36,48 @@ namespace YesterdayConvoy
 
         private void LateUpdate()
         {
-            Camera camera = Camera.main;
-            if (camera == null || sprite == null) return;
-            transform.rotation = camera.transform.rotation;
-            sprite.sortingOrder = (500 - Mathf.RoundToInt(camera.WorldToScreenPoint(transform.parent.position).y)) * 16;
-            if (movingDemo == null) return;
+            if (movingDemo == null) { FaceCamera(); return; }
             float time = movingDemo.SimulationTime;
-            if (time < previousTime) { previousShots = 0; flashUntil = -1; }
+            if (movingDemo.Motion != previousMotion || time < previousTime)
+            {
+                previousShots = 0;
+                flashUntil = -1;
+                puppet?.Reset();
+                previousMotion = movingDemo.Motion;
+            }
             previousTime = time;
             if (movingDemo.ShotsFired > previousShots) flashUntil = time + 0.18f;
             previousShots = movingDemo.ShotsFired;
             bool moving = movingDemo.Outcome == DemoOutcome.Running;
-            if (rearPose != null && moving)
+            PresentMotion((float)movingDemo.Motion.DistanceTravelled, time, movingDemo.Motion.Direction, moving,
+                time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white);
+        }
+
+        // Read-only movement input. Also used by the isolated art preview; never writes the logical root.
+        public void PresentMotion(float distance, float simulationTime, Vector3 direction, bool moving, Color tint)
+        {
+            if (!FaceCamera()) return;
+            sprite.color = tint;
+            if (rearPose != null)
             {
                 if (puppet == null) puppet = new DemoWalkPuppet(transform, idlePose, rearPose);
                 sprite.enabled = false;
-                sprite.color = time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white;
                 transform.localPosition = Vector3.zero;
-                puppet.Pose((float)movingDemo.Motion.DistanceTravelled, time, movingDemo.Motion.Direction, moving, sprite.color, sprite.sortingOrder);
+                puppet.Pose(distance, simulationTime, direction, moving, tint, sprite.sortingOrder);
                 return;
             }
             puppet?.Hide();
             sprite.enabled = true;
             transform.localScale = Vector3.one;
-            sprite.color = time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white;
+        }
+
+        private bool FaceCamera()
+        {
+            Camera camera = Camera.main;
+            if (camera == null || sprite == null) return false;
+            transform.rotation = camera.transform.rotation;
+            sprite.sortingOrder = (500 - Mathf.RoundToInt(camera.WorldToScreenPoint(transform.parent.position).y)) * 16;
+            return true;
         }
 
         private void OnDestroy() => puppet?.Dispose();

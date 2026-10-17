@@ -30,7 +30,7 @@ namespace YesterdayConvoy
         private Rig active;
         private Vector2 leftContact, rightContact;
         private int facing, displayedFacing;
-        private float turnStarted = -1, lastTime;
+        private float turnStarted = -1, lastTime, movementBlend, backBlend;
         private bool initialized;
         private Vector2 strideAxis;
         private float gaitWeight;
@@ -39,6 +39,15 @@ namespace YesterdayConvoy
         public Vector3 RightFoot => parent.TransformPoint(rightContact);
         public bool ShowingBack => active == back;
         public int Facing => facing;
+        public float MovementWeight => gaitWeight;
+        public const float MaxLegStretch = 1.04f;
+
+        public void Reset()
+        {
+            initialized = false;
+            movementBlend = gaitWeight = 0;
+            parent.localScale = Vector3.one;
+        }
 
         public void Hide()
         {
@@ -59,45 +68,60 @@ namespace YesterdayConvoy
         {
             int requested = Mathf.Abs(direction.z) > Mathf.Abs(direction.x)
                 ? direction.z > 0 ? 2 : 0 : direction.x < 0 ? 3 : 1;
-            if (!initialized || clock < lastTime)
+            if (clock < lastTime) Reset();
+            float delta = initialized ? Mathf.Max(0, clock - lastTime) : Mathf.Max(0, clock);
+            Vector3 projected = parent.InverseTransformDirection(direction);
+            Vector2 desiredAxis = new Vector2(Mathf.Abs(projected.x), projected.y);
+            if (!initialized)
             {
                 facing = displayedFacing = requested;
                 turnStarted = -1;
+                backBlend = requested == 2 ? 1 : 0;
+                strideAxis = desiredAxis;
                 initialized = true;
             }
             if (requested != facing) { facing = requested; turnStarted = clock; }
             float turn = turnStarted < 0 ? 1 : Mathf.Clamp01((clock - turnStarted) / 0.16f);
             if (turn >= 0.5f) displayedFacing = facing;
             active = displayedFacing == 2 ? back : front;
-            front.Root.gameObject.SetActive(active == front);
-            back.Root.gameObject.SetActive(active == back);
-            float width = turn < 1 ? Mathf.Lerp(0.28f, 1, Mathf.Abs(turn * 2 - 1)) : 1;
-            parent.localScale = new Vector3(width * (displayedFacing == 3 ? -1 : 1), 1, 1);
-            Vector3 projected = parent.InverseTransformDirection(direction);
-            strideAxis = new Vector2(Mathf.Abs(projected.x), projected.y);
-            float phase = moving ? Mathf.Repeat(distance / Stride, 1) : 0;
-            gaitWeight = moving ? Mathf.SmoothStep(0,1,clock / 0.18f) : 0;
-            float wave = Mathf.Sin(phase * Mathf.PI * 2) * gaitWeight;
-            float bob = moving ? 0.012f * Mathf.Cos(phase * Mathf.PI * 4) : 0;
-            active.Root.localPosition = new Vector3(0, moving ? (-0.045f + bob) * gaitWeight : 0, 0);
-            PoseLeg(active, true, phase, moving);
-            PoseLeg(active, false, Mathf.Repeat(phase + 0.5f, 1), moving);
-            Rotate(active.Head, moving ? -wave * 1.4f : 0);
-            Rotate(active.Body, moving ? wave * 1.1f : 0);
-            Rotate(active.Tail, moving ? Mathf.Sin((phase - 0.15f) * Mathf.PI * 2) * 7 : 0);
-            Rotate(active.ArmL, moving ? wave * 17 : 0);
-            Rotate(active.HandL, moving ? -5 - Mathf.Max(0, wave) * 13 : 0);
-            Rotate(active.ArmR, moving ? -wave * 17 : 0);
-            Rotate(active.HandR, moving ? 5 + Mathf.Max(0, -wave) * 13 : 0);
-            for (int i = 0; i < active.Parts.Count; i++)
-            {
-                active.Parts[i].Renderer.sortingOrder = sortingOrder + i;
-                active.Parts[i].Renderer.sharedMaterial.color = tint;
-            }
+            // Keep the silhouette's width. Missing turn drawings cannot be replaced by flattening it.
+            parent.localScale = new Vector3(displayedFacing == 3 ? -1 : 1, 1, 1);
+            backBlend = Mathf.MoveTowards(backBlend, facing == 2 ? 1 : 0, delta / 0.16f);
+            strideAxis = Vector2.Lerp(strideAxis, desiredAxis, 1 - Mathf.Exp(-delta / 0.045f));
+            movementBlend = Mathf.MoveTowards(movementBlend, moving ? 1 : 0, delta / 0.18f);
+            gaitWeight = Mathf.SmoothStep(0, 1, movementBlend);
+            float phase = Mathf.Repeat(distance / Stride, 1);
+            float blend = Mathf.SmoothStep(0, 1, backBlend);
+            PoseRig(front, phase, tint, sortingOrder, 1 - blend);
+            PoseRig(back, phase, tint, sortingOrder, blend);
             lastTime = clock;
         }
 
-        private void PoseLeg(Rig rig, bool left, float phase, bool moving)
+        private void PoseRig(Rig rig, float phase, Color tint, int sortingOrder, float opacity)
+        {
+            rig.Root.gameObject.SetActive(opacity > 0);
+            if (opacity <= 0) return;
+            float wave = Mathf.Sin(phase * Mathf.PI * 2) * gaitWeight;
+            float bob = 0.012f * Mathf.Cos(phase * Mathf.PI * 4);
+            rig.Root.localPosition = new Vector3(0, (-0.065f + bob) * gaitWeight, 0);
+            PoseLeg(rig, true, phase);
+            PoseLeg(rig, false, Mathf.Repeat(phase + 0.5f, 1));
+            Rotate(rig.Head, -wave * 1.4f);
+            Rotate(rig.Body, wave * 1.1f);
+            Rotate(rig.Tail, Mathf.Sin((phase - 0.15f) * Mathf.PI * 2) * 7 * gaitWeight);
+            Rotate(rig.ArmL, wave * 17);
+            Rotate(rig.HandL, -5 * gaitWeight - Mathf.Max(0, wave) * 13);
+            Rotate(rig.ArmR, -wave * 17);
+            Rotate(rig.HandR, 5 * gaitWeight + Mathf.Max(0, -wave) * 13);
+            tint.a *= opacity;
+            for (int i = 0; i < rig.Parts.Count; i++)
+            {
+                rig.Parts[i].Renderer.sortingOrder = sortingOrder + i;
+                rig.Parts[i].Renderer.sharedMaterial.color = tint;
+            }
+        }
+
+        private void PoseLeg(Rig rig, bool left, float phase)
         {
             Vector2 hip = left ? rig.HipL : rig.HipR;
             Vector2 knee = left ? rig.KneeL : rig.KneeR;
@@ -108,9 +132,10 @@ namespace YesterdayConvoy
             Part shoe = left ? rig.ShoeL : rig.ShoeR;
             float footPitch = 0;
             Vector2 target = foot;
-            if (moving)
+            if (gaitWeight > 0)
             {
-                const float stance = 0.6f;
+                // These short source legs cannot plant for 60% of this fast stride without stretching.
+                const float stance = 0.45f;
                 float x, y = (left ? 0 : 0.04f) - rig.Root.localPosition.y;
                 if (phase < stance) x = Stride * (stance * 0.5f - phase);
                 else
@@ -120,22 +145,26 @@ namespace YesterdayConvoy
                     x = Mathf.Lerp(-Stride * stance * 0.5f, Stride * stance * 0.5f, h)
                         - Stride * (1 - stance) * (2 * t * t * t - 3 * t * t + t);
                     y += Mathf.Pow(Mathf.Sin(t * Mathf.PI), 2) * 0.075f;
-                    footPitch = Mathf.Sin(t * Mathf.PI * 2) * -15;
+                    footPitch = Mathf.Sin(t * Mathf.PI * 2) * -15 * gaitWeight;
                 }
-                target = Vector2.Lerp(foot, new Vector2(hip.x, y) + strideAxis * x, gaitWeight);
+                target = Vector2.Lerp(foot, new Vector2(hip.x + foot.x - ankle.x, y) + strideAxis * x, gaitWeight);
             }
             Quaternion footRotation = Quaternion.Euler(0,0,footPitch);
             Vector2 targetAnkle = target - (Vector2)(footRotation * (Vector3)(foot - ankle));
             float upper = Vector2.Distance(hip, knee), lower = Vector2.Distance(knee, ankle);
             Vector2 offset = targetAnkle - hip;
-            float stretch = Mathf.Max(1, offset.magnitude / (upper + lower) + 0.002f);
+            float stretch = Mathf.Clamp(offset.magnitude / (upper + lower) + 0.0001f, 1, MaxLegStretch);
             upper *= stretch; lower *= stretch;
             float reach = Mathf.Clamp(offset.magnitude, Mathf.Abs(upper - lower) + 0.0001f, upper + lower - 0.0001f);
             Vector2 along = offset.normalized;
+            // Constrain the endpoint as well as the bones, so a reach limit cannot detach a shoe.
+            targetAnkle = hip + along * reach;
+            target = targetAnkle + (Vector2)(footRotation * (Vector3)(foot - ankle));
             float cos = Mathf.Clamp((upper * upper + reach * reach - lower * lower) / (2 * upper * reach), -1, 1);
-            Vector2 bend = new Vector2(-along.y, along.x);
+            Vector2 restLeg = ankle - hip;
+            float bendSign = Mathf.Sign(restLeg.x * (knee.y - hip.y) - restLeg.y * (knee.x - hip.x));
+            Vector2 bend = new Vector2(-along.y, along.x) * bendSign;
             Vector2 solvedKnee = hip + along * (upper * cos) + bend * (upper * Mathf.Sqrt(Mathf.Max(0, 1 - cos * cos)));
-            solvedKnee = Vector2.Lerp(knee, solvedKnee, gaitWeight);
             thigh.Bone.localPosition = hip;
             float upperScale = Vector2.Distance(hip,solvedKnee) / Vector2.Distance(hip,knee);
             thigh.Bone.localScale = new Vector3(upperScale, upperScale, 1);
@@ -147,7 +176,10 @@ namespace YesterdayConvoy
             shoe.Bone.localPosition = targetAnkle;
             shoe.Bone.localRotation = footRotation;
             Vector2 contact = target + (Vector2)rig.Root.localPosition;
-            if (left) leftContact = contact; else rightContact = contact;
+            if (rig == active)
+            {
+                if (left) leftContact = contact; else rightContact = contact;
+            }
         }
 
         private static void Rotate(Part part, float degrees) => part.Bone.localRotation = Quaternion.Euler(0, 0, degrees);

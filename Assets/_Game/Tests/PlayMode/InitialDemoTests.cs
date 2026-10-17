@@ -105,7 +105,7 @@ namespace YesterdayConvoy.Tests
             demo.Simulate(0.05f);
             yield return null;
             Vector3 turnScale = visual.transform.localScale;
-            Assert.That(turnScale.x, Is.LessThan(1));
+            Assert.That(Mathf.Abs(turnScale.x), Is.EqualTo(1), "Turning must preserve the silhouette width.");
             for (int i = 0; i < 4; i++) yield return null;
             Assert.That(visual.transform.localScale, Is.EqualTo(turnScale), "A paused turn must stay frozen.");
             demo.Simulate(0.05f);
@@ -116,6 +116,55 @@ namespace YesterdayConvoy.Tests
             yield return null;
             Assert.That(visual.Puppet.ShowingBack, Is.False);
             Assert.That(visual.transform.localScale.x, Is.EqualTo(1));
+        }
+
+        [UnityTest]
+        public IEnumerator PresentationEasesEveryStartAndStopWithoutStretchingOrMovingTheUnit()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return null;
+            Time.timeScale = 0;
+            var demo = Object.FindAnyObjectByType<InitialDemo>();
+            var visual = demo.Monster.GetComponentInChildren<DemoSpriteVisual>();
+            visual.enabled = false; // Isolated art input, not a new battle stop rule.
+            visual.Puppet.Reset();
+            Vector3 position = demo.Monster.position;
+            Quaternion rotation = demo.Monster.rotation;
+            Vector3 scale = demo.Monster.localScale;
+            visual.PresentMotion(0, 0, Vector3.right, false, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.Zero);
+            visual.PresentMotion(0.045f, 0.03f, Vector3.right, true, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.GreaterThan(0).And.LessThan(0.5f));
+            visual.PresentMotion(0.27f, 0.18f, Vector3.right, true, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.EqualTo(1).Within(0.0001f));
+            visual.PresentMotion(0.27f, 0.21f, Vector3.right, false, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.GreaterThan(0.5f).And.LessThan(1));
+            float stoppingWeight = visual.Puppet.MovementWeight;
+            visual.PresentMotion(0.27f, 0.21f, Vector3.right, false, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.EqualTo(stoppingWeight), "Pausing must freeze even an unfinished stop.");
+            visual.PresentMotion(0.27f, 0.4f, Vector3.right, false, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.Zero);
+            Assert.That(Quaternion.Angle(visual.transform.Find("Front cutout rig/Tail").localRotation, Quaternion.identity), Is.LessThan(0.01f));
+            visual.PresentMotion(0.315f, 0.43f, Vector3.right, true, Color.white);
+            Assert.That(visual.Puppet.MovementWeight, Is.GreaterThan(0).And.LessThan(0.5f), "A late restart needs its own ease-in.");
+
+            Transform[] parts = visual.GetComponentsInChildren<Transform>(true);
+            for (int frame = 0; frame < 480; frame++)
+            {
+                float clock = 0.43f + (frame + 1) / 120f;
+                Vector3 direction = frame < 120 ? Vector3.right : frame < 240 ? Vector3.forward : frame < 360 ? Vector3.left : Vector3.back;
+                visual.PresentMotion(0.315f + (clock - 0.43f) * 1.5f, clock, direction, true, Color.white);
+                foreach (Transform part in parts)
+                    if (part.name.EndsWith("thigh") || part.name.EndsWith("boot"))
+                        Assert.That(part.localScale.x, Is.InRange(0.999f, DemoWalkPuppet.MaxLegStretch + 0.001f), $"{part.name}, frame {frame}");
+                Assert.That(Mathf.Abs(visual.transform.localScale.x), Is.EqualTo(1));
+            }
+            Assert.That(demo.Monster.position, Is.EqualTo(position));
+            Assert.That(demo.Monster.rotation, Is.EqualTo(rotation));
+            Assert.That(demo.Monster.localScale, Is.EqualTo(scale));
+            Assert.That(demo.Motion.DistanceTravelled, Is.Zero);
+            Assert.That(demo.Health, Is.EqualTo(100));
+            Assert.That(demo.GateDefense, Is.EqualTo(8));
         }
 
         [UnityTest]
@@ -138,7 +187,8 @@ namespace YesterdayConvoy.Tests
             Sprite pose = presentation.Renderer.sprite;
             var visiblePart = visual.GetComponentInChildren<MeshRenderer>();
             Color visibleTint = visiblePart.sharedMaterial.color;
-            Assert.That(visibleTint, Is.EqualTo(tint), "The rendered rig, not only the hidden source sprite, must receive the hit flash.");
+            Assert.That(new Vector3(visibleTint.r, visibleTint.g, visibleTint.b), Is.EqualTo(new Vector3(tint.r, tint.g, tint.b)), "The rendered rig must receive the hit flash RGB, with alpha reserved for the turn blend.");
+            Assert.That(visibleTint.a, Is.GreaterThan(0).And.LessThanOrEqualTo(1));
             Assert.That(tint, Is.Not.EqualTo(Color.white), "Pause must be checked while a hit flash is actually visible.");
             Vector3 position = demo.Monster.position;
             float clock = demo.SimulationTime;
