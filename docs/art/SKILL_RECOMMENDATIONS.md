@@ -1,6 +1,6 @@
 # 游戏开发 Skill 筛选（2026-10-17）
 
-已在线阅读下列社区仓库的具体 SKILL.md。当前只有既有 imagegen 用于实际图像编辑；下面四个候选均未安装，也未以安装后的 skill 在本项目验证。Skill 是工作指导，不包含可直接使用的角色骨骼、动作素材或自动动画成品。
+已在线阅读下列社区仓库的具体 SKILL.md，并于 2026-10-17 按用户指令安装全部四个 skill，位置为 `C:/Users/31016/.codex/skills/<技能名>`。已检查入口文件和配套引用文件；下一轮对话可用，尚未以这些新安装的 skill 执行 Unity 开发任务。Skill 是工作指导，不包含可直接使用的角色骨骼、动作素材或自动动画成品。
 
 | 顺序 | Skill / 具体来源 | 适合本项目的用途 | 范围限制 |
 | --- | --- | --- | --- |
@@ -11,7 +11,7 @@
 
 优先组合：unity-animation + create-game-assets；game-feel 用于后续打磨，ScriptableObjects 用于卡牌/招募内容。四个来源均属于同一 Apache-2.0 社区仓库，非 Unity 或 OpenAI 官方技能。Unity 项的文档基线是 6000.3，本工程仍锁定 6000.6.5f1，实际 API/包以本工程验证为准。
 
-如用户之后要求安装，可用现有 skill-installer 按上面仓库路径选择性安装；此次仅筛选推荐，没有更改用户全局 skill、Unity 包清单或依赖。
+本次使用现有 skill-installer，从上述仓库通过 Git 安装四个独立目录，包含各自配套 references、模板或脚本。保留其余已有 skill；Unity 包清单和依赖不变。
 
 另一个值得单独评估的是 [UnitySkills / Besty0728](https://github.com/Besty0728/Unity-Skills)：MIT，含 Unity 编辑器插件、REST 工具与 agent 指导，提供场景、Animator、逐帧采样和测试等编辑器操作。它比单个 Markdown skill 更重，需要向 Unity 工程安装插件并验证连接；不是仅安装一个 skill 就能自动制作自然动画，本轮未接入。
 
