@@ -26,11 +26,11 @@ namespace YesterdayConvoy
 
         private readonly Transform parent;
         private readonly Material material;
-        private readonly Rig front, back;
+        private readonly Rig front, back, side, rearQuarter;
         private Rig active;
         private Vector2 leftContact, rightContact;
-        private int facing, displayedFacing;
-        private float turnStarted = -1, lastTime, movementBlend, backBlend;
+        private int facing;
+        private float turnStarted = -1, lastTime, movementBlend, heading, turnFrom, turnTarget, turnProgress = 1;
         private bool initialized;
         private Vector2 strideAxis;
         private float gaitWeight;
@@ -41,6 +41,10 @@ namespace YesterdayConvoy
         public int Facing => facing;
         public float MovementWeight => gaitWeight;
         public const float MaxLegStretch = 1.04f;
+        public const float TurnDuration = 0.38f;
+        public float Heading => heading;
+        public bool IsTurning => turnProgress < 1;
+        public string ViewName => active.Root.name;
 
         public void Reset()
         {
@@ -53,14 +57,18 @@ namespace YesterdayConvoy
         {
             front.Root.gameObject.SetActive(false);
             back.Root.gameObject.SetActive(false);
+            side.Root.gameObject.SetActive(false);
+            rearQuarter.Root.gameObject.SetActive(false);
         }
 
-        public DemoWalkPuppet(Transform owner, Sprite frontSprite, Sprite backSprite)
+        public DemoWalkPuppet(Transform owner, Sprite frontSprite, Sprite backSprite, Sprite sideSprite, Sprite quarterSprite)
         {
             parent = owner;
             material = new Material(Shader.Find("Sprites/Default")) { name = "Demo Puppet (runtime)" };
             front = CreateRig(frontSprite, false);
             back = CreateRig(backSprite, true);
+            side = CreateTurnRig(sideSprite, false);
+            rearQuarter = CreateTurnRig(quarterSprite, true);
             active = front;
         }
 
@@ -71,51 +79,71 @@ namespace YesterdayConvoy
             if (clock < lastTime) Reset();
             float delta = initialized ? Mathf.Max(0, clock - lastTime) : Mathf.Max(0, clock);
             Vector3 projected = parent.InverseTransformDirection(direction);
-            Vector2 desiredAxis = new Vector2(Mathf.Abs(projected.x), projected.y);
+            // Depth travel is foreshortened on the billboard. A full lateral stride overextends
+            // the shorter front leg and alternately clamps one shoe, producing a limp.
+            Vector2 desiredAxis = new Vector2(Mathf.Abs(projected.x), projected.y * 0.35f);
             if (!initialized)
             {
-                facing = displayedFacing = requested;
+                facing = requested;
                 turnStarted = -1;
-                backBlend = requested == 2 ? 1 : 0;
+                heading = turnFrom = turnTarget = requested * 90;
+                turnProgress = 1;
                 strideAxis = desiredAxis;
                 initialized = true;
             }
-            if (requested != facing) { facing = requested; turnStarted = clock; }
-            float turn = turnStarted < 0 ? 1 : Mathf.Clamp01((clock - turnStarted) / 0.16f);
-            if (turn >= 0.5f) displayedFacing = facing;
-            active = displayedFacing == 2 ? back : front;
-            // Keep the silhouette's width. Missing turn drawings cannot be replaced by flattening it.
-            parent.localScale = new Vector3(displayedFacing == 3 ? -1 : 1, 1, 1);
-            backBlend = Mathf.MoveTowards(backBlend, facing == 2 ? 1 : 0, delta / 0.16f);
+            if (requested != facing)
+            {
+                facing = requested;
+                turnFrom = heading;
+                turnTarget = heading + Mathf.DeltaAngle(heading, requested * 90);
+                turnStarted = clock;
+            }
+            turnProgress = turnStarted < 0 ? 1 : Mathf.Clamp01((clock - turnStarted) / TurnDuration);
+            heading = Mathf.Lerp(turnFrom, turnTarget, Mathf.SmoothStep(0, 1, turnProgress));
+            float headHeading = Mathf.Lerp(turnFrom, turnTarget, Mathf.SmoothStep(0, 1, Mathf.Clamp01(turnProgress / 0.75f)));
+            active = SelectView(heading);
+            Rig headView = SelectView(headHeading);
+            parent.localScale = Vector3.one;
             strideAxis = Vector2.Lerp(strideAxis, desiredAxis, 1 - Mathf.Exp(-delta / 0.045f));
             movementBlend = Mathf.MoveTowards(movementBlend, moving ? 1 : 0, delta / 0.18f);
             gaitWeight = Mathf.SmoothStep(0, 1, movementBlend);
             float phase = Mathf.Repeat(distance / Stride, 1);
-            float blend = Mathf.SmoothStep(0, 1, backBlend);
-            PoseRig(front, phase, tint, sortingOrder, 1 - blend);
-            PoseRig(back, phase, tint, sortingOrder, blend);
+            PoseRig(front, headView, headHeading, phase, tint, sortingOrder);
+            PoseRig(side, headView, headHeading, phase, tint, sortingOrder);
+            PoseRig(rearQuarter, headView, headHeading, phase, tint, sortingOrder);
+            PoseRig(back, headView, headHeading, phase, tint, sortingOrder);
             lastTime = clock;
         }
 
-        private void PoseRig(Rig rig, float phase, Color tint, int sortingOrder, float opacity)
+        private Rig SelectView(float angle)
         {
-            rig.Root.gameObject.SetActive(opacity > 0);
-            if (opacity <= 0) return;
+            float absolute = Mathf.Abs(Mathf.DeltaAngle(0, angle));
+            return absolute < 48 ? front : absolute < 112 ? side : absolute < 157 ? rearQuarter : back;
+        }
+
+        private void PoseRig(Rig rig, Rig headView, float headHeading, float phase, Color tint, int sortingOrder)
+        {
+            bool bodyVisible = rig == active, headVisible = rig == headView;
+            rig.Root.gameObject.SetActive(bodyVisible || headVisible);
+            if (!bodyVisible && !headVisible) return;
+            float viewAngle = bodyVisible ? heading : headHeading;
+            rig.Root.localScale = new Vector3(Mathf.DeltaAngle(0, viewAngle) < 0 ? -1 : 1, 1, 1);
             float wave = Mathf.Sin(phase * Mathf.PI * 2) * gaitWeight;
             float bob = 0.012f * Mathf.Cos(phase * Mathf.PI * 4);
-            rig.Root.localPosition = new Vector3(0, (-0.065f + bob) * gaitWeight, 0);
+            rig.Root.localPosition = new Vector3(0, (-0.085f + bob) * gaitWeight, 0);
             PoseLeg(rig, true, phase);
             PoseLeg(rig, false, Mathf.Repeat(phase + 0.5f, 1));
             Rotate(rig.Head, -wave * 1.4f);
-            Rotate(rig.Body, wave * 1.1f);
+            float pivot = Mathf.Sin(turnProgress * Mathf.PI) * Mathf.Sign(turnTarget - turnFrom);
+            Rotate(rig.Body, wave * 1.1f + pivot * 2);
             Rotate(rig.Tail, Mathf.Sin((phase - 0.15f) * Mathf.PI * 2) * 7 * gaitWeight);
             Rotate(rig.ArmL, wave * 17);
             Rotate(rig.HandL, -5 * gaitWeight - Mathf.Max(0, wave) * 13);
             Rotate(rig.ArmR, -wave * 17);
             Rotate(rig.HandR, 5 * gaitWeight + Mathf.Max(0, -wave) * 13);
-            tint.a *= opacity;
             for (int i = 0; i < rig.Parts.Count; i++)
             {
+                rig.Parts[i].Renderer.enabled = rig.Parts[i] == rig.Head ? headVisible : bodyVisible;
                 rig.Parts[i].Renderer.sortingOrder = sortingOrder + i;
                 rig.Parts[i].Renderer.sharedMaterial.color = tint;
             }
@@ -136,7 +164,7 @@ namespace YesterdayConvoy
             {
                 // These short source legs cannot plant for 60% of this fast stride without stretching.
                 const float stance = 0.45f;
-                float x, y = (left ? 0 : 0.04f) - rig.Root.localPosition.y;
+                float x, y = -rig.Root.localPosition.y;
                 if (phase < stance) x = Stride * (stance * 0.5f - phase);
                 else
                 {
@@ -148,6 +176,10 @@ namespace YesterdayConvoy
                     footPitch = Mathf.Sin(t * Mathf.PI * 2) * -15 * gaitWeight;
                 }
                 target = Vector2.Lerp(foot, new Vector2(hip.x + foot.x - ankle.x, y) + strideAxis * x, gaitWeight);
+                // Small alternating repositioning steps support the body turn; the route never waits.
+                float step = left ? turnProgress * 2 : turnProgress * 2 - 1;
+                if (IsTurning && step > 0 && step < 1)
+                    target.y += Mathf.Pow(Mathf.Sin(step * Mathf.PI), 2) * 0.035f * gaitWeight;
             }
             Quaternion footRotation = Quaternion.Euler(0,0,footPitch);
             Vector2 targetAnkle = target - (Vector2)(footRotation * (Vector3)(foot - ankle));
@@ -176,6 +208,7 @@ namespace YesterdayConvoy
             shoe.Bone.localPosition = targetAnkle;
             shoe.Bone.localRotation = footRotation;
             Vector2 contact = target + (Vector2)rig.Root.localPosition;
+            contact.x *= rig.Root.localScale.x;
             if (rig == active)
             {
                 if (left) leftContact = contact; else rightContact = contact;
@@ -183,6 +216,53 @@ namespace YesterdayConvoy
         }
 
         private static void Rotate(Part part, float degrees) => part.Bone.localRotation = Quaternion.Euler(0, 0, degrees);
+
+        private Rig CreateTurnRig(Sprite sprite, bool quarter)
+        {
+            var rig = new Rig { Ppu = sprite.pixelsPerUnit * 1374f / sprite.texture.height };
+            rig.Root = new GameObject(quarter ? "Rear quarter cutout rig" : "Side cutout rig").transform;
+            rig.Root.SetParent(parent, false);
+            Vector2 anchor = new Vector2(720, 1335);
+            rig.Tail = Cut(rig, sprite, anchor, "Tail", new Vector2(650,1080),
+                190,965, 430,965, 450,1045, 650,1045, 680,1125, 520,1215, 275,1230, 200,1115);
+            if (quarter)
+            {
+                rig.ArmR = Cut(rig,sprite,anchor,"Far upper arm",new Vector2(597,934), 545,885, 630,885, 660,945, 607,1008, 537,990);
+                rig.HandR = Cut(rig,sprite,anchor,"Far forearm",new Vector2(564,1000), 530,965, 605,987, 615,1030, 581,1090, 540,1090, 501,1055);
+                rig.ThighR = Cut(rig,sprite,anchor,"Far thigh",new Vector2(660,1090), 610,1050, 713,1068, 710,1150, 665,1210, 574,1180);
+                rig.BootR = Cut(rig,sprite,anchor,"Far boot",new Vector2(615,1175), 553,1140, 682,1155, 701,1255, 570,1295, 535,1255);
+                rig.ShoeR = Cut(rig,sprite,anchor,"Far shoe",new Vector2(615,1250), 541,1230, 690,1225, 704,1308, 670,1330, 533,1315);
+                rig.ThighL = Cut(rig,sprite,anchor,"Near thigh",new Vector2(770,1090), 710,1050, 820,1035, 838,1145, 817,1200, 729,1190);
+                rig.BootL = Cut(rig,sprite,anchor,"Near boot",new Vector2(785,1177), 718,1150, 834,1150, 855,1245, 822,1295, 719,1275);
+                rig.ShoeL = Cut(rig,sprite,anchor,"Near shoe",new Vector2(790,1255), 718,1230, 844,1225, 881,1285, 867,1325, 717,1325);
+                rig.Body = Cut(rig,sprite,anchor,"Torso",new Vector2(720,1070), 598,822, 733,810, 818,853, 816,940, 818,1045, 781,1107, 695,1085, 650,1100, 575,1070, 610,1000, 615,943, 569,919);
+                rig.ArmL = Cut(rig,sprite,anchor,"Near upper arm",new Vector2(812,918), 764,870, 832,850, 881,932, 871,982, 807,1008, 775,953);
+                rig.HandL = Cut(rig,sprite,anchor,"Near forearm",new Vector2(854,984), 821,960, 883,958, 914,1015, 914,1063, 862,1084, 818,1058, 802,1010);
+                rig.Head = Cut(rig,sprite,anchor,"Head and hair",new Vector2(720,845), 0,0, 1145,0, 1145,820, 901,820, 847,852, 752,819, 650,856, 550,900, 0,925);
+                rig.HipL=Pixel(rig,anchor,new Vector2(770,1090)); rig.KneeL=Pixel(rig,anchor,new Vector2(785,1177)); rig.AnkleL=Pixel(rig,anchor,new Vector2(790,1255)); rig.FootL=Pixel(rig,anchor,new Vector2(800,1315));
+                rig.HipR=Pixel(rig,anchor,new Vector2(660,1090)); rig.KneeR=Pixel(rig,anchor,new Vector2(615,1175)); rig.AnkleR=Pixel(rig,anchor,new Vector2(615,1250)); rig.FootR=Pixel(rig,anchor,new Vector2(620,1315));
+            }
+            else
+            {
+                rig.ArmR = Cut(rig,sprite,anchor,"Far upper arm",new Vector2(796,928), 760,865, 820,870, 844,968, 790,1010, 763,969);
+                rig.HandR = Cut(rig,sprite,anchor,"Far forearm",new Vector2(797,1004), 773,974, 832,975, 839,1098, 784,1107, 765,1058);
+                rig.ThighR = Cut(rig,sprite,anchor,"Far thigh",new Vector2(775,1100), 736,1063, 809,1075, 799,1189, 721,1201, 710,1145);
+                rig.BootR = Cut(rig,sprite,anchor,"Far boot",new Vector2(750,1180), 703,1150, 796,1151, 802,1265, 711,1290);
+                rig.ShoeR = Cut(rig,sprite,anchor,"Far shoe",new Vector2(760,1250), 707,1228, 801,1229, 846,1284, 840,1330, 702,1328);
+                rig.ThighL = Cut(rig,sprite,anchor,"Near thigh",new Vector2(715,1100), 640,1047, 754,1069, 751,1130, 701,1210, 604,1188);
+                rig.BootL = Cut(rig,sprite,anchor,"Near boot",new Vector2(665,1180), 588,1151, 716,1167, 723,1250, 698,1305, 582,1278);
+                rig.ShoeL = Cut(rig,sprite,anchor,"Near shoe",new Vector2(655,1250), 585,1227, 714,1229, 758,1295, 745,1351, 567,1343, 563,1294);
+                rig.Body = Cut(rig,sprite,anchor,"Torso",new Vector2(720,1070), 653,810, 776,791, 831,858, 832,945, 818,989, 836,1043, 800,1113, 713,1114, 649,1060, 671,987, 675,914);
+                rig.ArmL = Cut(rig,sprite,anchor,"Near upper arm",new Vector2(648,920), 596,850, 693,855, 718,930, 684,987, 577,970, 558,922);
+                rig.HandL = Cut(rig,sprite,anchor,"Near forearm",new Vector2(622,987), 581,961, 682,982, 667,1020, 651,1091, 589,1115, 531,1080, 540,1020);
+                rig.Head = Cut(rig,sprite,anchor,"Head and hair",new Vector2(720,840), 0,0, 1145,0, 1145,820, 905,820, 855,835, 790,795, 720,800, 660,845, 570,875, 0,925);
+                rig.HipL=Pixel(rig,anchor,new Vector2(715,1100)); rig.KneeL=Pixel(rig,anchor,new Vector2(665,1180)); rig.AnkleL=Pixel(rig,anchor,new Vector2(655,1250)); rig.FootL=Pixel(rig,anchor,new Vector2(680,1335));
+                rig.HipR=Pixel(rig,anchor,new Vector2(775,1100)); rig.KneeR=Pixel(rig,anchor,new Vector2(750,1180)); rig.AnkleR=Pixel(rig,anchor,new Vector2(760,1250)); rig.FootR=Pixel(rig,anchor,new Vector2(790,1315));
+            }
+            rig.HandL.Bone.SetParent(rig.ArmL.Bone, true);
+            rig.HandR.Bone.SetParent(rig.ArmR.Bone, true);
+            return rig;
+        }
 
         private Rig CreateRig(Sprite sprite, bool rear)
         {
@@ -302,7 +382,7 @@ namespace YesterdayConvoy
 
         public void Dispose()
         {
-            foreach (Rig rig in new[] { front, back })
+            foreach (Rig rig in new[] { front, back, side, rearQuarter })
             {
                 foreach (Part part in rig.Parts)
                 {

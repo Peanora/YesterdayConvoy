@@ -35,7 +35,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(Camera.main.orthographic, Is.True);
             Assert.That(Vector3.Dot(Camera.main.transform.forward, Vector3.down), Is.InRange(0.3f, 0.95f));
             Time.timeScale = 12;
-            demo.BeginAttack(100);
+            demo.BeginAttack(140);
             float deadline = Time.realtimeSinceStartup + 5;
             while (demo.Outcome == DemoOutcome.Running && Time.realtimeSinceStartup < deadline)
                 yield return null;
@@ -45,6 +45,13 @@ namespace YesterdayConvoy.Tests
             Assert.That(demo.Monster.gameObject.activeSelf, Is.False);
             demo.Simulate(10);
             Assert.That(demo.GateDefense, Is.EqualTo(7), "A finished monster must not damage the gate again.");
+
+            demo.BeginAttack(100);
+            deadline = Time.realtimeSinceStartup + 5;
+            while (demo.Outcome == DemoOutcome.Running && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(demo.Outcome, Is.EqualTo(DemoOutcome.Defeated), "At half speed the unchanged default HP takes more tower shots.");
+            Assert.That(demo.GateDefense, Is.EqualTo(8));
 
             demo.BeginAttack(30);
             deadline = Time.realtimeSinceStartup + 5;
@@ -77,7 +84,8 @@ namespace YesterdayConvoy.Tests
             var visual = demo.Monster.GetComponentInChildren<DemoSpriteVisual>();
             Time.timeScale = 0;
             demo.BeginAttack(100);
-            demo.Simulate(2.56f / 1.5f);
+            Assert.That(demo.Motion.Speed, Is.EqualTo(0.75f), "Travel and distance-driven gait must run at half the original speed.");
+            demo.Simulate(2.56f / demo.Motion.Speed);
             yield return null;
             Assert.That(visual.Puppet, Is.Not.Null);
             Assert.That(visual.Renderer.enabled, Is.False, "The old whole-image frame flip should be disabled.");
@@ -87,8 +95,8 @@ namespace YesterdayConvoy.Tests
             yield return null;
             Assert.That(demo.Monster.position.x, Is.GreaterThan(body.x));
             Assert.That(Vector3.Distance(visual.Puppet.LeftFoot, planted), Is.LessThan(0.001f), "A support foot must stay planted as the body advances.");
-            Assert.That(Quaternion.Angle(visual.transform.Find("Front cutout rig/Near shoe").localRotation, Quaternion.identity), Is.LessThan(0.01f), "Support shoes should remain level while the knee bends.");
-            var nearBoot = visual.transform.Find("Front cutout rig/Near boot");
+            Assert.That(Quaternion.Angle(visual.transform.Find("Side cutout rig/Near shoe").localRotation, Quaternion.identity), Is.LessThan(0.01f), "Support shoes should remain level while the knee bends.");
+            var nearBoot = visual.transform.Find("Side cutout rig/Near boot");
             Quaternion before = nearBoot.localRotation;
             demo.Simulate(0.01f);
             yield return null;
@@ -97,18 +105,21 @@ namespace YesterdayConvoy.Tests
             before = nearBoot.localRotation;
             for (int i = 0; i < 4; i++) yield return null;
             Assert.That(nearBoot.localRotation, Is.EqualTo(before));
-            demo.Simulate((3.072f - (float)demo.Motion.DistanceTravelled) / 1.5f);
+            demo.Simulate((3.072f - (float)demo.Motion.DistanceTravelled) / demo.Motion.Speed);
             yield return null;
             Assert.That(visual.Puppet.LeftFoot.y, Is.GreaterThan(demo.Monster.position.y + 0.04f), "The recovery foot must lift clear of the ground.");
-            demo.Simulate((5.3f - (float)demo.Motion.DistanceTravelled) / 1.5f);
+            demo.Simulate((5.05f - (float)demo.Motion.DistanceTravelled) / demo.Motion.Speed);
             yield return null;
             demo.Simulate(0.05f);
             yield return null;
+            Assert.That(visual.Puppet.IsTurning, Is.True);
+            float frozenHeading = visual.Puppet.Heading;
             Vector3 turnScale = visual.transform.localScale;
             Assert.That(Mathf.Abs(turnScale.x), Is.EqualTo(1), "Turning must preserve the silhouette width.");
             for (int i = 0; i < 4; i++) yield return null;
             Assert.That(visual.transform.localScale, Is.EqualTo(turnScale), "A paused turn must stay frozen.");
-            demo.Simulate(0.05f);
+            Assert.That(visual.Puppet.Heading, Is.EqualTo(frozenHeading));
+            demo.Simulate(DemoWalkPuppet.TurnDuration);
             yield return null;
             Assert.That(visual.Puppet.ShowingBack, Is.True, "The away-facing route segment must show the back of the character.");
             Assert.That(demo.Motion.Direction.z, Is.GreaterThan(0));
@@ -165,6 +176,53 @@ namespace YesterdayConvoy.Tests
             Assert.That(demo.Motion.DistanceTravelled, Is.Zero);
             Assert.That(demo.Health, Is.EqualTo(100));
             Assert.That(demo.GateDefense, Is.EqualTo(8));
+        }
+
+        [UnityTest]
+        public IEnumerator DownwardStepsAreSymmetricAndTurningUsesIntermediateViews()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return null;
+            Time.timeScale = 0;
+            var demo = Object.FindAnyObjectByType<InitialDemo>();
+            var visual = demo.Monster.GetComponentInChildren<DemoSpriteVisual>();
+            visual.enabled = false;
+            visual.Puppet.Reset();
+            visual.PresentMotion(0, 0, Vector3.back, false, Color.white);
+            var left = new float[64];
+            var right = new float[64];
+            for (int i = 0; i < 64; i++)
+            {
+                float distance = (i + 0.5f) * DemoWalkPuppet.Stride / 64;
+                visual.PresentMotion(distance, 1 + distance / 0.75f, Vector3.back, true, Color.white);
+                left[i] = visual.transform.InverseTransformPoint(visual.Puppet.LeftFoot).y;
+                right[i] = visual.transform.InverseTransformPoint(visual.Puppet.RightFoot).y;
+            }
+            for (int i = 0; i < 64; i++)
+                Assert.That(left[i], Is.EqualTo(right[(i + 32) % 64]).Within(0.003f), $"Depth gait should have equal alternating foot trajectories, sample {i}.");
+
+            visual.Puppet.Reset();
+            visual.PresentMotion(0, 0, Vector3.right, true, Color.white);
+            visual.PresentMotion(0.75f, 1, Vector3.right, true, Color.white);
+            Assert.That(visual.Puppet.ViewName, Is.EqualTo("Side cutout rig"));
+            visual.PresentMotion(0.75f, 1, Vector3.forward, true, Color.white);
+            bool sawQuarter = false;
+            for (int i = 1; i <= 16; i++)
+            {
+                visual.PresentMotion(0.75f + i * 0.025f, 1 + i / 30f, Vector3.forward, true, Color.white);
+                sawQuarter |= visual.Puppet.ViewName == "Rear quarter cutout rig";
+                int visibleHeads = 0;
+                foreach (MeshRenderer part in visual.GetComponentsInChildren<MeshRenderer>())
+                    if (part.enabled)
+                    {
+                        Assert.That(part.sharedMaterial.color.a, Is.EqualTo(1), "Turning must use pose drawings, not transparent ghosts.");
+                        if (part.name == "Head and hair") visibleHeads++;
+                    }
+                Assert.That(visibleHeads, Is.EqualTo(1));
+            }
+            Assert.That(sawQuarter, Is.True);
+            Assert.That(visual.Puppet.ShowingBack, Is.True);
+            Assert.That(visual.Puppet.IsTurning, Is.False);
         }
 
         [UnityTest]

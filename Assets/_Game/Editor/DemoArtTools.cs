@@ -19,6 +19,8 @@ namespace YesterdayConvoy.Editor
             Sprite portrait = ImportSprite(Art + "Cards/Portraits/wisadel-april-approved.png", 0);
             Sprite battle = ImportSprite(Art + "Characters/Monsters/Boss/wisadel-april-battle.png", 1.65f);
             ImportSprite(Art + "Characters/Monsters/Boss/wisadel-rear.png", 1.65f);
+            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-side.png", 1.65f);
+            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-rear-quarter.png", 1.65f);
             Sprite cannon = ImportSprite(Art + "Characters/Defenders/grumpy-cannon.png", 2.2f);
             Sprite red = ImportSprite(Art + "Environment/Portal/rune-gate-red.png", 2.1f);
             Sprite blue = ImportSprite(Art + "Environment/Portal/rune-gate-blue.png", 2.1f);
@@ -100,10 +102,12 @@ namespace YesterdayConvoy.Editor
                 if (values.FindProperty("movingDemo").objectReferenceValue == null) continue;
                 if (values.FindProperty("rearPose").objectReferenceValue == null)
                     throw new InvalidOperationException("Missing rear puppet texture.");
+                if (values.FindProperty("sidePose").objectReferenceValue == null || values.FindProperty("rearQuarterPose").objectReferenceValue == null)
+                    throw new InvalidOperationException("Missing intermediate turning views.");
             }
             if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
                 throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");
-            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; front/rear continuous cutout rig; forward-facing oblique camera.");
+            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; 4-direction cutout views; forward-facing oblique camera.");
         }
 
         private static Sprite ImportSprite(string path, float visibleHeight)
@@ -158,6 +162,8 @@ namespace YesterdayConvoy.Editor
             if (movingDemo != null)
             {
                 values.FindProperty("rearPose").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-rear.png");
+                values.FindProperty("sidePose").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-side.png");
+                values.FindProperty("rearQuarterPose").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-rear-quarter.png");
             }
             values.ApplyModifiedPropertiesWithoutUndo();
         }

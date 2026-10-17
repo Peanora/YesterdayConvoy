@@ -1,6 +1,6 @@
 # 美术资源 Credits
 
-素材库准备于 2026-10-17；目前资源未绑定到现有 Demo。发布时保留实际使用项的署名和许可，详情 ASSET_MANIFEST.csv。
+素材库首次准备于 2026-10-17；当前 Demo 已接入同系列 AI 场景美术与中文字体，其余资源是否使用以清单为准。发布时保留实际使用项的署名和许可，详情 ASSET_MANIFEST.csv。
 
 ## Game-icons.net
 
@@ -38,3 +38,5 @@
 同日新增的 `wisadel-walk-left.png`、`wisadel-walk-right.png` 由内置 image_gen 编辑既有战场图获得，用于本地 Demo 行走；来源、提示词和使用范围同上。
 
 随后新增 `wisadel-rear.png`，同工具按既有角色生成背向视图，用于当前连续关节原型；上述两张跨步图已退为历史资源。原正面图与背向 PNG 在 Unity 中按多边形分区渲染，原文件保持不变；使用范围与来源说明同上。
+
+本次步态反馈修正新增 `wisadel-side.png` 和 `wisadel-rear-quarter.png`，由同一内置 image_gen 以既有正背面为身份参照生成，用于侧向行走与转身中间姿势；同人原型与第三方角色权利状态不变。源文件、实际提示词、验证范围见 GENERATION-2026-10-17.md 和 ASSET_MANIFEST.csv。

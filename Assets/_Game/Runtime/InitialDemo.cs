@@ -199,7 +199,7 @@ namespace YesterdayConvoy
             {
                 Time.timeScale = 0;
                 BeginAttack(100);
-                Simulate(1.6f);
+                Simulate(2.4f / definition.MoveSpeed);
                 yield return null;
                 // An isolated visual clone demonstrates stop/resume without adding a gameplay stop rule.
                 var previewRoot = new GameObject("Animation preview (no simulation)").transform;
@@ -220,7 +220,7 @@ namespace YesterdayConvoy
                 }
                 Destroy(previewRoot.gameObject);
                 BeginAttack(100);
-                Simulate(1.6f);
+                Simulate(2.4f / definition.MoveSpeed);
                 for (int frame = 0; frame < 32; frame++)
                 {
                     yield return new WaitForEndOfFrame();
@@ -228,8 +228,16 @@ namespace YesterdayConvoy
                     Simulate(DemoWalkPuppet.Stride / (32 * definition.MoveSpeed));
                 }
                 BeginAttack(100);
+                Simulate(0.32f / definition.MoveSpeed);
+                for (int frame = 0; frame < 32; frame++)
+                {
+                    yield return new WaitForEndOfFrame();
+                    CaptureCamera(directory, $"down-{frame:00}.png");
+                    Simulate(DemoWalkPuppet.Stride / (32 * definition.MoveSpeed));
+                }
+                BeginAttack(100);
                 Simulate(4.75f / definition.MoveSpeed);
-                for (int frame = 0; frame < 48; frame++)
+                for (int frame = 0; frame < 96; frame++)
                 {
                     yield return new WaitForEndOfFrame();
                     CaptureCamera(directory, $"turn-{frame:00}.png");
@@ -239,7 +247,7 @@ namespace YesterdayConvoy
             float start = Time.realtimeSinceStartup;
             bool captured = false;
             Time.timeScale = 3;
-            BeginAttack(100);
+            BeginAttack(140);
             while (Outcome == DemoOutcome.Running && Time.realtimeSinceStartup - start < 20)
             {
                 if (!captured && ShotsFired > 0)
@@ -253,6 +261,10 @@ namespace YesterdayConvoy
             int settled = GateDefense;
             Simulate(10);
             bool once = GateDefense == settled;
+            BeginAttack(100);
+            while (Outcome == DemoOutcome.Running && Time.realtimeSinceStartup - start < 25)
+                yield return null;
+            bool defaultKilled = Outcome == DemoOutcome.Defeated && GateDefense == initialDefense;
             BeginAttack(30);
             while (Outcome == DemoOutcome.Running && Time.realtimeSinceStartup - start < 25)
                 yield return null;
@@ -260,8 +272,8 @@ namespace YesterdayConvoy
             BeginAttack(100);
             bool reset = Health == 100 && GateDefense == initialDefense && ShotsFired == 0 && monster.gameObject.activeSelf;
             Time.timeScale = 1;
-            Debug.Log($"INITIAL_DEMO_CHECK: breach={breached}; gateOnce={once}; killed={killed}; restart={reset}.");
-            Application.Quit(breached && once && killed && reset ? 0 : 1);
+            Debug.Log($"INITIAL_DEMO_CHECK: breach={breached}; gateOnce={once}; killed={killed}; restart={reset}; default100Killed={defaultKilled}.");
+            Application.Quit(breached && once && killed && reset && defaultKilled ? 0 : 1);
         }
 
         private static void CaptureCamera(string directory, string name)

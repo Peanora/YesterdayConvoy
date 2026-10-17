@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 最新：半速、向下步态与转身反馈（2026-10-17）
+
+用户明确选择实际前进速度和腿部动作均慢一倍。U01.moveSpeed 从 1.5 改为 0.75，Stride 保持 0.64，步周期约 0.853 秒；路线、塔伤害/间隔、生命滑块和全局时钟不变。减速增加射程内停留时间，未私自调整数值抵消：真实 140 生命突破，默认 100 与 30 生命死亡，重开正常。
+
+主要修改：`Data/Units/U01.asset`；`DemoWalkPuppet.cs`（纵深步幅/共同落点、四方向 Rig、头身分时转向、换步）；`DemoSpriteVisual.cs`（两个新方向引用）；`DemoArtTools.cs`（导入/绑定/校验）；`InitialDemo.unity`（新增引用，原 GUID 保留）；`InitialDemo.cs`（采集与新增默认血量烟雾检查）；`InitialDemoTests.cs`。两个新 PNG 与 meta、清单/许可/生成记录已加入，原卡面和其他美术原文件未改，未引入 Unity 包。
+
+- Unity **6000.6.5f1**。Edit Mode **34/34**（`artifacts/animation-feedback/editmode.xml`）；最终 Play Mode **8/8**（`playmode-final.xml`）。本轮无失败测试。
+- 新增完整向下步周期检查：64 个采样，左右相差半周期时接触轨迹一致（误差 <0.003 世界单位）；转向经过侧面/斜背面中间方向、只有一颗可见头、材质不透明，结束显示背面。既有支撑脚、抬脚、关节长度、连续动作、暂停/转向冻结、重开、进攻流程继续通过；断言实际移速 0.75，并增加默认 100 生命死亡结果检查。
+- `DemoArtTools.Apply` 成功，场景新引用已保存；构建时 `DEMO_ART_PASS` 和怪物配置检查通过。最终 Windows x64 构建 **222722285 字节、0 错误**，无 C# 错误/警告，`build-final.log`。
+- 最终真实 **Direct3D 12 Player** 退出 **0**，`player-final.log`：`breach=True; gateOnce=True; killed=True; restart=True; default100Killed=True`。140 用于突破；100/30 用于默认/低血量死亡。测试不把“更慢但受更多攻击”的结果隐藏为动画问题。
+- 两个新增 PNG：侧面 1145×1374、斜背面 1145×1373，均 RGBA、Alpha 0–255；原样复制生成源，Unity 使用有效高度 1.65、Point、Single、脚底 Pivot。实际输入/提示词见 art/GENERATION-2026-10-17.md；非正式分层素材。
+- 真实相机帧与四个 GIF 位于 `artifacts/animation-feedback`：`walk-00..31.png`、`down-00..31.png`、`turn-00..95.png`、`start-stop-00..65.png`。已查看侧向/向下/两个转角接触图；动图仅裁切放大实机帧，步周期 GIF 按 32 帧约 0.85 秒、转角 3.2 秒播放。截图不含 OnGUI。图像帧采自首次同表现代码构建；最终额外运行新增默认生命回归，未重复制图。
+
+限制：转向是四套方向裁片、头身领先与脚部换步组成的简化动作，图间仍有造型跳变和关节接缝；尚未补完整方向帧或关节遮挡，不能宣称商业级连续转身。脚底几何轨迹测试不代替实际观感验收。**未运行**完整鼠标交互、第二机离线或多单位性能测试。原未跟踪 `ProjectSettings/PackageManagerSettings.asset` 保留并排除提交。
+
 ## 最新：动画优化第一阶段（2026-10-17）
 
 目标和范围见 `art/ANIMATION_PLAN.md`，GDD 已同步。修改 `DemoWalkPuppet.cs`（起停权重、正背面淡化、腿长与落点限制、膝盖弯曲方向）、`DemoSpriteVisual.cs`（只读表现输入、独立重开复位）、`InitialDemo.cs`（仅 CLI 美术预览采集分支）、`InitialDemoTests.cs`（过渡/根节点隔离/四方向腿长回归）。未改 RouteMotion、场景、Prefab、配置或美术资产，未新增 Unity 包。状态/美术规范/计划同步更新。

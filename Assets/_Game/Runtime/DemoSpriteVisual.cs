@@ -8,6 +8,8 @@ namespace YesterdayConvoy
         [SerializeField] private SpriteRenderer sprite;
         [SerializeField] private InitialDemo movingDemo;
         [SerializeField] private Sprite rearPose;
+        [SerializeField] private Sprite sidePose;
+        [SerializeField] private Sprite rearQuarterPose;
         private Sprite idlePose;
         private int previousShots;
         private float flashUntil;
@@ -60,7 +62,7 @@ namespace YesterdayConvoy
             sprite.color = tint;
             if (rearPose != null)
             {
-                if (puppet == null) puppet = new DemoWalkPuppet(transform, idlePose, rearPose);
+                if (puppet == null) puppet = new DemoWalkPuppet(transform, idlePose, rearPose, sidePose != null ? sidePose : idlePose, rearQuarterPose != null ? rearQuarterPose : rearPose);
                 sprite.enabled = false;
                 transform.localPosition = Vector3.zero;
                 puppet.Pose(distance, simulationTime, direction, moving, tint, sprite.sortingOrder);

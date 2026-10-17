@@ -1,5 +1,30 @@
 # 认可卡面与同系列实机美术
 
+## 后续修订：半速步态与实际转向姿势（2026-10-17）
+
+用户反馈步频过快、向下跛脚、转身衔接生硬，并确认实际前进速度和腿部动作均减半。U01 速度由 1.5 改为 0.75，Stride 保持 0.64；没有放慢全局时钟或改变攻击数值。正面纵深步幅改为侧向投影的 35%，去除左右脚不同的落地高度。
+
+用内置 image_gen 编辑既有正背面身份参考，新增两个方向，源 PNG 原样复制进项目，卡面未修改。新文件仍是单张整图，运行时分区，不是已补齐遮挡的独立部件。
+- `wisadel-side.png`：`exec-299b2895-645a-4dbe-88fd-aa3e4ae8ff46.png`，右侧面，1145×1374。
+- `wisadel-rear-quarter.png`：`exec-4c108e0d-3d2b-4ed8-8a10-1a84a7d0cfed.png`，右斜背面，1145×1373。
+- 同目录 `Assets/_Game/Art/Characters/Monsters/Boss/`；世界显示高度 1.65、Point、Single、透明 Alpha。完整术语/第三方角色权利状态沿用本文现有同人原型说明，不声明 CC0 或正式发行授权。
+
+转向采用约 0.38 秒的角度状态，头领先身体、脚部小幅换步，依次使用方向姿势；不再将正背面透明叠化称为转身。左右方向由各视觉 Rig 镜像，逻辑根节点不旋转。仍有方向关键图之间造型差异，观感以实际 Player 为准。
+
+右侧面实际提示词：
+
+```text
+Use case: precise-object-edit. Input image 1 is the exact approved front character identity; input image 2 is the same character's back. Create ONE intermediate turn key pose: a strict RIGHT-FACING SIDE PROFILE (90-degree facing right), of precisely this silver-haired red-horned chibi character. Preserve the exact large-head/tiny-body proportions, half-lidded disdainful amber eye, black crop top with cross straps, tiny black shorts, red and black cropped jacket, fingerless gloves, black short boots with red trim, red thigh band, black tail with red arrow tip, curled silver forelock and paired horn ribbons. Pixel-clustered hard outlines and same restrained 2-3 shade ramp; do not make a polished smooth illustration. View is slightly from above, suitable for the same 2.5D board. Change only view and pose. Whole body straight upright, both feet resting on a common level floor baseline, knees softly bent, clearly separate both boots and both legs, no huge stride. Nose and visible eye look SCREEN RIGHT, far eye occluded by face, torso also side-on. Arms relaxed slightly separated from body; same costume, no new props. SINGLE isolated full character centered, true transparent alpha, no text, no sheet, no labels, no scenery, no ground shadow. Portrait canvas around 1145x1374 with small clear margins, character including hair and feet entirely visible. This is a frame for turning the reference character, not a different character.
+```
+
+斜背面实际提示词：
+
+```text
+Use case: precise-object-edit. Asset: ONE intermediate character TURNING pose for a Unity 2.5D game. Images 1 and 2 define the exact approved front and back identity, image 3 is the new right-side key pose. Generate this SAME character at 135-degree RIGHT-REAR THREE-QUARTER view: body facing away and toward screen RIGHT, between the strict right-side view and full back. Most of the head is silver back hair; only a very thin right cheek edge may show, no two-eye front face. Preserve head size, forelock loop, paired red horns and ribbons, silver bob hair, black-red cropped jacket, shorts, gloves, tiny boots with red trim, same thigh band and black arrow-tip tail. Tail comes out behind toward LEFT. Keep exact proportions, stepped pixel-clustered outlines and 2-3 shade ramps, same drawing style as reference sprites. Slight overhead orthographic view for an upright sprite on a tactical board, no perspective floor. Both legs readable and softly bent, a small foot pivot as if turning in place, no wide walking stride. Arms relaxed. Full body and horn ribbons entirely visible and centered with small margins, transparent alpha background, portrait near 1145x1374. One character only, no sheet, no labels, no text, no scenery, no shadow, no props. This must be a true intermediate orientation, NOT the full-back image and NOT the side image repeated. Do not alter costume or invent additional hair accessories.
+```
+
+
+
 ## 后续修订：连续关节步态与背向素材（2026-10-17）
 
 用户否决了三姿势循环的自然程度。当前 Demo 已停止播放左右跨步整图；原图和旧姿势保留在资源库，不能把旧测试通过等同于用户认可动作。新增 `Assets/_Game/Art/Characters/Monsters/Boss/wisadel-rear.png`（1145×1373 RGBA），来源 `exec-48c3fe8b-6d72-41e7-b7ea-20298b653447.png`，使用内置 image_gen，以原战场图为身份/画风参考生成背面。源 PNG 不改字节，Alpha 0–255；许可与本文件原 AI 同人范围一致。

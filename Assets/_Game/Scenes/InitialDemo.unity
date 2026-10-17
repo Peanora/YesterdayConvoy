@@ -2054,6 +2054,8 @@ MonoBehaviour:
   sprite: {fileID: 543099660}
   movingDemo: {fileID: 0}
   rearPose: {fileID: 0}
+  sidePose: {fileID: 0}
+  rearQuarterPose: {fileID: 0}
 --- !u!212 &543099660
 SpriteRenderer:
   serializedVersion: 3
@@ -5973,6 +5975,8 @@ MonoBehaviour:
   sprite: {fileID: 1434493658}
   movingDemo: {fileID: 0}
   rearPose: {fileID: 0}
+  sidePose: {fileID: 0}
+  rearQuarterPose: {fileID: 0}
 --- !u!212 &1434493658
 SpriteRenderer:
   serializedVersion: 3
@@ -6660,6 +6664,8 @@ MonoBehaviour:
   sprite: {fileID: 1722093341}
   movingDemo: {fileID: 0}
   rearPose: {fileID: 0}
+  sidePose: {fileID: 0}
+  rearQuarterPose: {fileID: 0}
 --- !u!212 &1722093341
 SpriteRenderer:
   serializedVersion: 3
@@ -7578,6 +7584,8 @@ MonoBehaviour:
   sprite: {fileID: 2026615771}
   movingDemo: {fileID: 1156048913}
   rearPose: {fileID: 21300000, guid: 594c76ac59f8b084c85256b0b9520636, type: 3}
+  sidePose: {fileID: 21300000, guid: 7af09b08280b82644a8cf67b78228312, type: 3}
+  rearQuarterPose: {fileID: 21300000, guid: 101d76ad6c206794599867c0ccd3288b, type: 3}
 --- !u!212 &2026615771
 SpriteRenderer:
   serializedVersion: 3

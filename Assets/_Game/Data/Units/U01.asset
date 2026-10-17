@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: U01
   displayName: Prototype Fast
-  moveSpeed: 1.5
+  moveSpeed: 0.75
   gateDamage: 1
