@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 第二阶段：分层样板与动画预览（2026-10-17）
+
+新增两张 1448×1086 RGBA 12 部件图（Alpha 0–255），源文件原样保留；52 个原生 Sprite 子资产与 U01Visual Prefab 保存关节/PPU/Pivot。头部取原图 Sprite 几何遮罩、卡面不改。LayeredPuppetAuthor/LayeredCharacterTools 仅在编辑器生成资产；UnitVisualFrame/UnitVisualPresentation/BipedVisualPresentation 连接移动输入与原动画求解；AnimationLab 提供四姿势、起停、暂停、重开入口，已接到战斗按钮和 Windows 场景列表。未增加动画包或改战斗规则。
+
+- Unity 6000.6.5f1，**36/36 Edit Mode**：持久化部件、原头贴图、关节端点实际 Alpha 覆盖，以及原配置/路线回归；`artifacts/stages23/stage2-edit.xml`。
+- 最终 **10/10 Play Mode**，`stage2-play-final.xml`：原 8 项回归、Lab 四姿势/起停/暂停/重开、两个 Prefab 实例共享 Sprite/材质而状态独立。首轮 9/10：单独克隆无父节点触发排序 NullReference，已支持以自身为排序锚点；原失败 `stage2-play.xml` 保留。
+- 最终 Windows 构建 **235409441 字节、0 错误**，无 C# 错误/警告，`stage2-build-final.log`；引用/怪物配置校验通过。
+- 图形 Player 预览退出 0：`stage2-lab-final.log` 的 `stop/pause/restart` 全 True。首个隐藏 Player 在进入第二场景前尚未打开后台运行而停滞，已将开关前移到入口，再跑通过；原日志保留，不记作成功。
+- 战斗图形 Player 退出 0：`stage2-battle.log` 的突破/单次穿门/30 生命死亡/重开/默认 100 生命死亡五项 True。战斗采图使用同表现代码的首次构建，最终差异仅后台入口设置。
+- 已查看关键姿势 0/2、`stage2-keyposes.png` 四姿势放大图和战斗 `walk-16.png`；预览连续 32 帧、四关键姿势、战斗原采集帧均保留。`stage2-walk.gif` 由实机帧整理，截图不含 OnGUI。
+
+未运行：完整人工鼠标 UI、第二机离线、多单位压力测试。关节端点 Alpha 测试不等于整段动作无任何接缝；侧/斜背身体复用，源图间造型差异仍在，未称为商业级动画。用户授权继续第三阶段，工程通过不视为其已认可新观感。原未跟踪 PackageManagerSettings.asset 保留不提交。
+
 ## 最新：恢复向右正面行走（2026-10-17）
 
 按用户要求，仅修改 `DemoWalkPuppet.cs` 的右向展示角和正面裁片横向站位；`InitialDemoTests.cs` 对应改为检查原正面步态，同时确认转角仍经过侧面/斜背面。DemoSpriteVisual 继续传入原运动数据，实际移速 0.75、纵深步态修正、转向状态与战斗结算不变。未改 PNG、场景、Prefab、配置或包，清单更新侧面图用途。

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -214,11 +215,11 @@ namespace YesterdayConvoy.Tests
                 sawSide |= visual.Puppet.ViewName == "Side cutout rig";
                 sawQuarter |= visual.Puppet.ViewName == "Rear quarter cutout rig";
                 int visibleHeads = 0;
-                foreach (MeshRenderer part in visual.GetComponentsInChildren<MeshRenderer>())
+                foreach (SpriteRenderer part in visual.GetComponentsInChildren<SpriteRenderer>())
                     if (part.enabled)
                     {
-                        Assert.That(part.sharedMaterial.color.a, Is.EqualTo(1), "Turning must use pose drawings, not transparent ghosts.");
-                        if (part.name == "Head and hair") visibleHeads++;
+                        Assert.That(part.color.a, Is.EqualTo(1), "Turning must use pose drawings, not transparent ghosts.");
+                        if (part.transform.parent.name == "Head and hair") visibleHeads++;
                     }
                 Assert.That(visibleHeads, Is.EqualTo(1));
             }
@@ -246,8 +247,8 @@ namespace YesterdayConvoy.Tests
             Vector3 before = visual.localPosition;
             Color tint = presentation.Renderer.color;
             Sprite pose = presentation.Renderer.sprite;
-            var visiblePart = visual.GetComponentInChildren<MeshRenderer>();
-            Color visibleTint = visiblePart.sharedMaterial.color;
+            var visiblePart = visual.GetComponentsInChildren<SpriteRenderer>().First(part => part.enabled);
+            Color visibleTint = visiblePart.color;
             Assert.That(new Vector3(visibleTint.r, visibleTint.g, visibleTint.b), Is.EqualTo(new Vector3(tint.r, tint.g, tint.b)), "The rendered rig must receive the hit flash RGB, with alpha reserved for the turn blend.");
             Assert.That(visibleTint.a, Is.GreaterThan(0).And.LessThanOrEqualTo(1));
             Assert.That(tint, Is.Not.EqualTo(Color.white), "Pause must be checked while a hit flash is actually visible.");
@@ -257,7 +258,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(visual.localPosition, Is.EqualTo(before));
             Assert.That(presentation.Renderer.color, Is.EqualTo(tint));
             Assert.That(presentation.Renderer.sprite, Is.SameAs(pose));
-            Assert.That(visiblePart.sharedMaterial.color, Is.EqualTo(visibleTint));
+            Assert.That(visiblePart.color, Is.EqualTo(visibleTint));
             Assert.That(demo.Monster.position, Is.EqualTo(position));
             Assert.That(demo.SimulationTime, Is.EqualTo(clock));
         }

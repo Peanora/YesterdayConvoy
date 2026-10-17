@@ -104,6 +104,8 @@ namespace YesterdayConvoy.Editor
                     throw new InvalidOperationException("Missing rear puppet texture.");
                 if (values.FindProperty("sidePose").objectReferenceValue == null || values.FindProperty("rearQuarterPose").objectReferenceValue == null)
                     throw new InvalidOperationException("Missing intermediate turning views.");
+                if (visual.Presentation == null || visual.GetComponent<BipedVisualRig>() == null || !visual.GetComponent<BipedVisualRig>().IsComplete)
+                    throw new InvalidOperationException("Missing authored layered visual prefab.");
             }
             if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
                 throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");

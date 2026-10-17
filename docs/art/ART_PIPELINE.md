@@ -19,3 +19,9 @@
 斜视角下检查贴地、不上下跳、遮挡排序、左右翻转与转弯缺视图；角色伪动画必须在游戏暂停时停止。卡面无文字，UI 以独立控件叠加费用、多个羁绊、次数和两套 CD。当前尚未创建这些 Prefab、Animator 或 UI，不能靠资源文件存在勾选整套流程完成。
 
 批量验证需关闭同工程 Editor，再以当前锁定 Unity 执行 `-batchmode -nographics -quit -projectPath ... -executeMethod YesterdayConvoy.Editor.ArtResourceTools.ConfigureAndValidate -logFile ...`。核对退出 0 与 ART_IMPORT_PASS；导入日志和检查路径名单在 artifacts/art-research。当前没有新增第三方 Unity 包。
+# 分层角色样板（2026-10-17）
+
+`LayeredCharacterTools.Build`：在不存在时制作 `Prefabs/Characters/U01Visual.prefab`，保留已有 Prefab 人工编辑；绑定 InitialDemo，并建立 AnimationLab。两张部件 PNG 原样保留，按 Alpha 连通区域识别 12 部件，生成 `U01Layers/LayeredSprites.asset` 中 52 个原生 Sprite。头部保留原图与几何遮罩，关节端点检查实际 Alpha；PPU/Pivot/安装角保存在资产中。运行时仅动画骨架节点，不创建裁片网格或材质。
+
+预览入口为战斗右上“动画预览”，也可打开 `Assets/_Game/Scenes/AnimationLab.unity`。四个关键姿势、停止/继续、暂停/恢复、重开用于检查姿态和接缝。采用现有两段腿部 IK 与 Transform 动画，未引入 2D Animation/Animator 依赖；只读 Sprite 资产与每实例动画状态分离。侧/斜背体块目前复用正背部件，不能标记为完整专业多方向绘制。
+

@@ -44,6 +44,12 @@ namespace YesterdayConvoy
         {
             ResetRun(selectedHealth, DemoOutcome.Ready);
             string[] args = Environment.GetCommandLineArgs();
+            if (Array.IndexOf(args, "-animationLabSmokeTest") >= 0)
+            {
+                Application.runInBackground = true;
+                UnityEngine.SceneManagement.SceneManager.LoadScene("AnimationLab");
+                return;
+            }
             if (Array.IndexOf(args, "-demoSmokeTest") >= 0)
             {
                 Application.runInBackground = true;
@@ -129,6 +135,8 @@ namespace YesterdayConvoy
             Panel(new Rect(22, 20, 1236, 88), new Color(0.06f, 0.09f, 0.12f, 0.96f));
             GUI.Label(new Rect(42, 30, 750, 38), "昨日圆车  /  就这？进攻小队", titleStyle);
             GUI.Label(new Rect(44, 73, 740, 26), "红门出发 → 穿过防御塔射程 → 突破蓝门", smallStyle);
+            if (GUI.Button(new Rect(770,43,150,40), "动画预览", buttonStyle))
+                UnityEngine.SceneManagement.SceneManager.LoadScene("AnimationLab");
             GUI.Label(new Rect(950, 40, 280, 32), $"蓝门防御  {GateDefense} / {initialDefense}", textStyle);
 
             if (monster.gameObject.activeSelf)
@@ -206,8 +214,7 @@ namespace YesterdayConvoy
                 Vector3 previewStart = monster.position;
                 var preview = Instantiate(monster.GetComponentInChildren<DemoSpriteVisual>(), previewRoot);
                 preview.enabled = false;
-                // The source may already own runtime cutouts. The clone builds and owns its own rig.
-                foreach (Transform child in preview.transform) Destroy(child.gameObject);
+                // Authored prefab children and their references are copied together with this clone.
                 monster.gameObject.SetActive(false);
                 for (int frame = 0; frame < 66; frame++)
                 {
@@ -276,7 +283,7 @@ namespace YesterdayConvoy
             Application.Quit(breached && once && killed && reset && defaultKilled ? 0 : 1);
         }
 
-        private static void CaptureCamera(string directory, string name)
+        internal static void CaptureCamera(string directory, string name)
         {
             Directory.CreateDirectory(directory);
             Camera camera = Camera.main;

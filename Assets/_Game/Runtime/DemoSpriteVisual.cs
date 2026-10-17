@@ -14,11 +14,13 @@ namespace YesterdayConvoy
         private int previousShots;
         private float flashUntil;
         private float previousTime;
-        private DemoWalkPuppet puppet;
+        [SerializeField] private UnitVisualPresentation presentation;
         private RouteMotion previousMotion;
 
         public SpriteRenderer Renderer => sprite;
-        public DemoWalkPuppet Puppet => puppet;
+        public DemoWalkPuppet Puppet => presentation is BipedVisualPresentation biped ? biped.Puppet : null;
+        public UnitVisualPresentation Presentation => presentation;
+        public bool HasSourceViews => rearPose != null && sidePose != null && rearQuarterPose != null;
 
         private void OnEnable()
         {
@@ -26,7 +28,7 @@ namespace YesterdayConvoy
             flashUntil = -1;
             previousTime = 0;
             previousMotion = null;
-            puppet?.Reset();
+            presentation?.ResetVisual();
             transform.localPosition = Vector3.zero;
             if (sprite != null)
             {
@@ -44,7 +46,7 @@ namespace YesterdayConvoy
             {
                 previousShots = 0;
                 flashUntil = -1;
-                puppet?.Reset();
+                presentation?.ResetVisual();
                 previousMotion = movingDemo.Motion;
             }
             previousTime = time;
@@ -60,15 +62,13 @@ namespace YesterdayConvoy
         {
             if (!FaceCamera()) return;
             sprite.color = tint;
-            if (rearPose != null)
+            if (presentation != null)
             {
-                if (puppet == null) puppet = new DemoWalkPuppet(transform, idlePose, rearPose, sidePose != null ? sidePose : idlePose, rearQuarterPose != null ? rearQuarterPose : rearPose);
                 sprite.enabled = false;
                 transform.localPosition = Vector3.zero;
-                puppet.Pose(distance, simulationTime, direction, moving, tint, sprite.sortingOrder);
+                presentation.Present(new UnitVisualFrame(distance, simulationTime, direction, moving, tint, sprite.sortingOrder));
                 return;
             }
-            puppet?.Hide();
             sprite.enabled = true;
             transform.localScale = Vector3.one;
         }
@@ -78,10 +78,10 @@ namespace YesterdayConvoy
             Camera camera = Camera.main;
             if (camera == null || sprite == null) return false;
             transform.rotation = camera.transform.rotation;
-            sprite.sortingOrder = (500 - Mathf.RoundToInt(camera.WorldToScreenPoint(transform.parent.position).y)) * 16;
+            Vector3 anchor = transform.parent != null ? transform.parent.position : transform.position;
+            sprite.sortingOrder = (500 - Mathf.RoundToInt(camera.WorldToScreenPoint(anchor).y)) * 16;
             return true;
         }
 
-        private void OnDestroy() => puppet?.Dispose();
     }
 }

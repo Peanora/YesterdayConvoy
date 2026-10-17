@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scenes/Bootstrap.unity
     guid: c9db98ea9b4fbc740a908f213d3ecfb7
+  - enabled: 1
+    path: Assets/_Game/Scenes/AnimationLab.unity
+    guid: ef7ec28fafa589b42bf77d6d7325e7be
   m_configObjects: {}
