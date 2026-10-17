@@ -2053,8 +2053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
   sprite: {fileID: 543099660}
   movingDemo: {fileID: 0}
-  stridePoses: []
-  strideLength: 0.9
+  rearPose: {fileID: 0}
 --- !u!212 &543099660
 SpriteRenderer:
   serializedVersion: 3
@@ -5973,8 +5972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
   sprite: {fileID: 1434493658}
   movingDemo: {fileID: 0}
-  stridePoses: []
-  strideLength: 0.9
+  rearPose: {fileID: 0}
 --- !u!212 &1434493658
 SpriteRenderer:
   serializedVersion: 3
@@ -6661,8 +6659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
   sprite: {fileID: 1722093341}
   movingDemo: {fileID: 0}
-  stridePoses: []
-  strideLength: 0.9
+  rearPose: {fileID: 0}
 --- !u!212 &1722093341
 SpriteRenderer:
   serializedVersion: 3
@@ -7580,10 +7577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DemoSpriteVisual
   sprite: {fileID: 2026615771}
   movingDemo: {fileID: 1156048913}
-  stridePoses:
-  - {fileID: 21300000, guid: dbf20fdf80eb3a54bb4e17a0fdb1123e, type: 3}
-  - {fileID: 21300000, guid: f033357bc59aaa04c81117703207efc4, type: 3}
-  strideLength: 0.9
+  rearPose: {fileID: 21300000, guid: 594c76ac59f8b084c85256b0b9520636, type: 3}
 --- !u!212 &2026615771
 SpriteRenderer:
   serializedVersion: 3

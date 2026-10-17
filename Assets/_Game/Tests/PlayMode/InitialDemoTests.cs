@@ -65,7 +65,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
-        public IEnumerator WalkingChangesFeetAndCameraKeepsBoardHorizontal()
+        public IEnumerator WalkingPlantsFootMovesContinuouslyAndTurnsWithRoute()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
             yield return null;
@@ -75,24 +75,47 @@ namespace YesterdayConvoy.Tests
             Assert.That(camera.WorldToScreenPoint(Vector3.forward).x, Is.EqualTo(origin.x).Within(0.01f), "Board columns should not tilt sideways.");
             var demo = Object.FindAnyObjectByType<InitialDemo>();
             var visual = demo.Monster.GetComponentInChildren<DemoSpriteVisual>();
-            Sprite idle = visual.Renderer.sprite;
             Time.timeScale = 0;
             demo.BeginAttack(100);
+            demo.Simulate(2.56f / 1.5f);
             yield return null;
-            Sprite leftStep = visual.Renderer.sprite;
-            Assert.That(leftStep, Is.Not.SameAs(idle), "Movement must have a distinct leg pose, not just translate the idle image.");
-            demo.Simulate(0.3f); // 0.45 world units = opposite leg in this prototype stride.
+            Assert.That(visual.Puppet, Is.Not.Null);
+            Assert.That(visual.Renderer.enabled, Is.False, "The old whole-image frame flip should be disabled.");
+            Vector3 planted = visual.Puppet.LeftFoot;
+            Vector3 body = demo.Monster.position;
+            demo.Simulate(0.05f);
             yield return null;
-            Sprite rightStep = visual.Renderer.sprite;
-            Assert.That(rightStep, Is.Not.SameAs(leftStep));
-            Assert.That(rightStep, Is.Not.SameAs(idle));
-            Quaternion rotation = visual.transform.rotation;
+            Assert.That(demo.Monster.position.x, Is.GreaterThan(body.x));
+            Assert.That(Vector3.Distance(visual.Puppet.LeftFoot, planted), Is.LessThan(0.001f), "A support foot must stay planted as the body advances.");
+            Assert.That(Quaternion.Angle(visual.transform.Find("Front cutout rig/Near shoe").localRotation, Quaternion.identity), Is.LessThan(0.01f), "Support shoes should remain level while the knee bends.");
+            var nearBoot = visual.transform.Find("Front cutout rig/Near boot");
+            Quaternion before = nearBoot.localRotation;
+            demo.Simulate(0.01f);
+            yield return null;
+            float angle = Quaternion.Angle(before, nearBoot.localRotation);
+            Assert.That(angle, Is.GreaterThan(0.01f).And.LessThan(20), "Joint motion should change continuously in small simulation steps.");
+            before = nearBoot.localRotation;
             for (int i = 0; i < 4; i++) yield return null;
-            Assert.That(visual.Renderer.sprite, Is.SameAs(rightStep));
-            Assert.That(visual.transform.rotation, Is.EqualTo(rotation));
+            Assert.That(nearBoot.localRotation, Is.EqualTo(before));
+            demo.Simulate((3.072f - (float)demo.Motion.DistanceTravelled) / 1.5f);
+            yield return null;
+            Assert.That(visual.Puppet.LeftFoot.y, Is.GreaterThan(demo.Monster.position.y + 0.04f), "The recovery foot must lift clear of the ground.");
+            demo.Simulate((5.3f - (float)demo.Motion.DistanceTravelled) / 1.5f);
+            yield return null;
+            demo.Simulate(0.05f);
+            yield return null;
+            Vector3 turnScale = visual.transform.localScale;
+            Assert.That(turnScale.x, Is.LessThan(1));
+            for (int i = 0; i < 4; i++) yield return null;
+            Assert.That(visual.transform.localScale, Is.EqualTo(turnScale), "A paused turn must stay frozen.");
+            demo.Simulate(0.05f);
+            yield return null;
+            Assert.That(visual.Puppet.ShowingBack, Is.True, "The away-facing route segment must show the back of the character.");
+            Assert.That(demo.Motion.Direction.z, Is.GreaterThan(0));
             demo.BeginAttack(100);
             yield return null;
-            Assert.That(visual.Renderer.sprite, Is.SameAs(leftStep), "Restart should reset the gait.");
+            Assert.That(visual.Puppet.ShowingBack, Is.False);
+            Assert.That(visual.transform.localScale.x, Is.EqualTo(1));
         }
 
         [UnityTest]
@@ -113,6 +136,9 @@ namespace YesterdayConvoy.Tests
             Vector3 before = visual.localPosition;
             Color tint = presentation.Renderer.color;
             Sprite pose = presentation.Renderer.sprite;
+            var visiblePart = visual.GetComponentInChildren<MeshRenderer>();
+            Color visibleTint = visiblePart.sharedMaterial.color;
+            Assert.That(visibleTint, Is.EqualTo(tint), "The rendered rig, not only the hidden source sprite, must receive the hit flash.");
             Assert.That(tint, Is.Not.EqualTo(Color.white), "Pause must be checked while a hit flash is actually visible.");
             Vector3 position = demo.Monster.position;
             float clock = demo.SimulationTime;
@@ -120,6 +146,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(visual.localPosition, Is.EqualTo(before));
             Assert.That(presentation.Renderer.color, Is.EqualTo(tint));
             Assert.That(presentation.Renderer.sprite, Is.SameAs(pose));
+            Assert.That(visiblePart.sharedMaterial.color, Is.EqualTo(visibleTint));
             Assert.That(demo.Monster.position, Is.EqualTo(position));
             Assert.That(demo.SimulationTime, Is.EqualTo(clock));
         }

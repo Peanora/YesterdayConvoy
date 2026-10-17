@@ -1,4 +1,18 @@
-# T00 验证证据
+# 验证证据与回归
+
+## 最新补充：连续关节步态与转向（2026-10-17）
+
+用户否决前版三姿势的自然程度；此前导入、功能测试的通过不代表其动作观感已获认可。本轮停止整图切步，新增 DemoWalkPuppet：按原图多边形分区，连续计算髋/膝/踝与独立鞋掌、支撑/回收轨迹，并控制手臂与尾巴。RouteMotion 只新增只读 Direction，原路线与移动积分不变；DemoSpriteVisual 传入距离/方向/模拟时钟和受击颜色。新增一张背面 PNG，朝远处走显示背面，转角快速切面；镜头、卡面、属性与玩法保持。
+
+- Unity 6000.6.5f1 编译/引用检查通过，无 C# 错误/警告；日志在 `artifacts/puppet-demo`。
+- Edit Mode **34/34**、最终 Play Mode **6/6** 通过：实测身体向前时支撑脚保持位置、鞋底水平，回收脚离地，0.01 秒模拟步产生连续关节变化；暂停冻结关节/转身/实际渲染受击色，向远处切背面，重开恢复。
+- Windows x64 构建 **210121268 字节、0 错误**（`build.log`）；实际 Direct3D 12 Player 退出 0，`breach/gateOnce/killed/restart` 四项 True（`player.log`）。
+- 实际相机帧：`walk-00..31.png`、`turn-00..47.png`，已查看步态接触图与两次转角的正背面；GIF 为这些真实帧整理，行走 GIF 为 16 个采样、约 430ms 一轮。证据 `walk-closeup.gif`、`turn-closeup.gif`、`contact-final.png`、`turn-contact.png`，不包含 OnGUI。
+- 背面图 1145×1373、Alpha 0–255，生成源与项目 PNG 字节一致；来源/实际提示词见 `art/GENERATION-2026-10-17.md`。
+
+未执行：完整鼠标 UI 交互、第二机离线测试。自然程度仍属观感验收；当前是单角色定制的分区关节原型，遮挡补绘、完整侧面/多角度转身仍不足，不能称为专业完整动画素材。已核查社区 skill，推荐见 `art/SKILL_RECOMMENDATIONS.md`，未安装。无 Unity 新包、无全局 skill 改动、无推送/公开发布。
+
+## T00 历史验证证据
 
 日期：2026-10-16（Asia/Shanghai）。机器：当前 Windows 开发机。引擎：6000.6.5f1 (3ff58d469c8a)。唯一验收目标是 Unity 空工程基线，未实现玩法。
 

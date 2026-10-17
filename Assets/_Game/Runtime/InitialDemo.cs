@@ -200,11 +200,19 @@ namespace YesterdayConvoy
                 Time.timeScale = 0;
                 BeginAttack(100);
                 Simulate(1.6f);
-                for (int frame = 0; frame < 12; frame++)
+                for (int frame = 0; frame < 32; frame++)
                 {
                     yield return new WaitForEndOfFrame();
                     CaptureCamera(directory, $"walk-{frame:00}.png");
-                    Simulate(0.05f);
+                    Simulate(DemoWalkPuppet.Stride / (32 * definition.MoveSpeed));
+                }
+                BeginAttack(100);
+                Simulate(4.75f / definition.MoveSpeed);
+                for (int frame = 0; frame < 48; frame++)
+                {
+                    yield return new WaitForEndOfFrame();
+                    CaptureCamera(directory, $"turn-{frame:00}.png");
+                    Simulate(1f / 30);
                 }
             }
             float start = Time.realtimeSinceStartup;

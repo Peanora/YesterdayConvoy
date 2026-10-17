@@ -1,5 +1,18 @@
 # 认可卡面与同系列实机美术
 
+## 后续修订：连续关节步态与背向素材（2026-10-17）
+
+用户否决了三姿势循环的自然程度。当前 Demo 已停止播放左右跨步整图；原图和旧姿势保留在资源库，不能把旧测试通过等同于用户认可动作。新增 `Assets/_Game/Art/Characters/Monsters/Boss/wisadel-rear.png`（1145×1373 RGBA），来源 `exec-48c3fe8b-6d72-41e7-b7ea-20298b653447.png`，使用内置 image_gen，以原战场图为身份/画风参考生成背面。源 PNG 不改字节，Alpha 0–255；许可与本文件原 AI 同人范围一致。
+
+正面原图与背面图由 Unity 网格多边形分区形成头、躯干、手臂、大腿、小腿、鞋掌和尾巴；没有声称已获得分层 PSD 或专业骨骼原文件。`DemoWalkPuppet` 用持续的支撑/回收轨迹与两段腿部 IK 控制髋/膝/踝，鞋掌单独旋转，动作跟随路线距离和模拟时钟。向远处走使用背面，左右可镜像，转角使用短暂的变窄/换面过渡；不是完整多角度转身动画。分区坐标只适合这个角色，自动测试不代替对接缝和节奏的人工观感验收。
+
+实际背向生成提示词：
+
+```text
+Use case: identity-preserve. Asset type: rear-facing idle sprite for the SAME Unity chibi game character. Input image is character identity and exact pixel-paint style reference. Show her BACK while she walks away from the camera toward the upper right, three-quarter REAR view. Her FACE AND EYES MUST NOT BE VISIBLE. The back of her silver-gray hair covers the back of her oversized head. Preserve the exact horn/ribbon/ahoge silhouette, red-black cropped jacket, short black shorts, red/white stripe on one thigh, chunky black boots, black tail with red tip, proportions and palette. Neutral relaxed standing pose with feet a little separated, arms at sides; no crossed legs. Match reference canvas 1145x1374, overall character height and boot-floor baseline. Huge head occupies same upper 65%, small torso and legs remain in lower 35%. Entire body and tail fully visible, genuine transparent background, no floor, no shadow, no scenery, no interface, no letters, no text. This is one single rear view sprite, not a sprite sheet. Preserve small-scale readability and consistent crisp pixel-like edges.
+```
+
+
 2026-10-17，用户认可蔑视表情版本，明确要求保存为 **5 费卡**，按该风格生成一系列游戏内美术并替换旧 Demo。此决定覆盖上一轮“非像素优先、AI 暂不制作”的候选建议；斜俯视 2.5D 保留。费用对应已定 1–5 招募费用档，本轮保存为 CardDefinition.recruitCost=5，尚未实现购买或部署扣费。5 费本身不新增首领分类、技能或属性规则。
 
 使用内置 **image_gen**，没有使用 CLI/API Key、外部付费素材或 Python 绘制代替生成。认可卡面从已生成文件逐字节复制，未再生成或修图；新生成 5 张独立美术。源文件保留在 Codex generated_images，项目消费副本如下。

@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         public double DistanceTravelled { get; private set; }
         public double TotalLength { get; }
         public bool HasArrived => nextPoint >= points.Length;
+        public Vector3 Direction => (points[Math.Min(nextPoint, points.Length - 1)] - points[Math.Max(0, Math.Min(nextPoint, points.Length - 1) - 1)]).normalized;
 
         public RouteMotion(IReadOnlyList<Vector3> waypoints, float speed)
         {

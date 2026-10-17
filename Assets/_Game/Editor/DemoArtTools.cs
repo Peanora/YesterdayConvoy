@@ -18,8 +18,7 @@ namespace YesterdayConvoy.Editor
             AssetDatabase.Refresh();
             Sprite portrait = ImportSprite(Art + "Cards/Portraits/wisadel-april-approved.png", 0);
             Sprite battle = ImportSprite(Art + "Characters/Monsters/Boss/wisadel-april-battle.png", 1.65f);
-            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-walk-left.png", 1.65f);
-            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-walk-right.png", 1.65f);
+            ImportSprite(Art + "Characters/Monsters/Boss/wisadel-rear.png", 1.65f);
             Sprite cannon = ImportSprite(Art + "Characters/Defenders/grumpy-cannon.png", 2.2f);
             Sprite red = ImportSprite(Art + "Environment/Portal/rune-gate-red.png", 2.1f);
             Sprite blue = ImportSprite(Art + "Environment/Portal/rune-gate-blue.png", 2.1f);
@@ -99,13 +98,12 @@ namespace YesterdayConvoy.Editor
                     throw new InvalidOperationException("Missing battlefield sprite on " + visual.name);
                 var values = new SerializedObject(visual);
                 if (values.FindProperty("movingDemo").objectReferenceValue == null) continue;
-                var poses = values.FindProperty("stridePoses");
-                if (poses.arraySize != 2 || poses.GetArrayElementAtIndex(0).objectReferenceValue == null || poses.GetArrayElementAtIndex(1).objectReferenceValue == null)
-                    throw new InvalidOperationException("Missing left/right walking poses.");
+                if (values.FindProperty("rearPose").objectReferenceValue == null)
+                    throw new InvalidOperationException("Missing rear puppet texture.");
             }
             if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
                 throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");
-            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield sprites; 2 walking poses; forward-facing oblique camera.");
+            Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; front/rear continuous cutout rig; forward-facing oblique camera.");
         }
 
         private static Sprite ImportSprite(string path, float visibleHeight)
@@ -159,10 +157,7 @@ namespace YesterdayConvoy.Editor
             values.FindProperty("movingDemo").objectReferenceValue = movingDemo;
             if (movingDemo != null)
             {
-                var poses = values.FindProperty("stridePoses");
-                poses.arraySize = 2;
-                poses.GetArrayElementAtIndex(0).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-walk-left.png");
-                poses.GetArrayElementAtIndex(1).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-walk-right.png");
+                values.FindProperty("rearPose").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "Characters/Monsters/Boss/wisadel-rear.png");
             }
             values.ApplyModifiedPropertiesWithoutUndo();
         }
