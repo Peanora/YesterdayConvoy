@@ -10,6 +10,12 @@ namespace YesterdayConvoy.Tests
     {
         private float originalTimeScale;
 
+        private static IEnumerator LoadLegacyScene()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
+            Object.FindAnyObjectByType<ManualBattleController>().UseLegacyPreview();
+            yield return null;
+        }
         [SetUp]
         public void SetUp() => originalTimeScale = Time.timeScale;
 
@@ -19,7 +25,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]
         public IEnumerator PlayableLoopSupportsBreachDeathAndCleanRestart()
         {
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             var demos = Object.FindObjectsByType<InitialDemo>();
             Assert.That(demos.Length, Is.EqualTo(1));
@@ -94,7 +100,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]
         public IEnumerator WalkingPlantsFootMovesContinuouslyAndTurnsWithRoute()
         {
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             Camera camera = Camera.main;
             Vector3 origin = camera.WorldToScreenPoint(Vector3.zero);
@@ -155,7 +161,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]
         public IEnumerator PresentationEasesEveryStartAndStopWithoutStretchingOrMovingTheUnit()
         {
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             Time.timeScale = 0;
             var demo = Object.FindAnyObjectByType<InitialDemo>();
@@ -204,7 +210,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]
         public IEnumerator DownwardStepsAreSymmetricAndTurningUsesIntermediateViews()
         {
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             Time.timeScale = 0;
             var demo = Object.FindAnyObjectByType<InitialDemo>();
@@ -255,7 +261,7 @@ namespace YesterdayConvoy.Tests
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
                 Assert.Ignore("Requires a real graphics device; a null-device pass cannot verify occlusion.");
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             Time.timeScale = 0;
             var demo = Object.FindAnyObjectByType<InitialDemo>();
@@ -377,7 +383,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]
         public IEnumerator PauseFreezesSpriteMotionAndDamageFlash()
         {
-            yield return SceneManager.LoadSceneAsync("InitialDemo", LoadSceneMode.Single);
+            yield return LoadLegacyScene();
             yield return null;
             var demo = Object.FindAnyObjectByType<InitialDemo>();
             demo.BeginAttack(100);

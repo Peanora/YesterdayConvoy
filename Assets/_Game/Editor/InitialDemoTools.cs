@@ -47,6 +47,7 @@ namespace YesterdayConvoy.Editor
             foreach (string field in new[] { "definition", "monster", "tower", "muzzle", "redGate", "blueGate", "shotBeam" })
                 if (data.FindProperty(field).objectReferenceValue == null)
                     throw new InvalidOperationException("InitialDemo: missing " + field);
+            if(File.Exists(ManualDeploymentTools.DefinitionPath)) ManualDeploymentTools.Validate();
             Debug.Log("INITIAL_DEMO_SCENE_PASS: monster, tower, red/blue gates and oblique camera.");
         }
 

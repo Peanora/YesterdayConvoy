@@ -20112,6 +20112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1156048914}
   - component: {fileID: 1156048913}
+  - component: {fileID: 1156048915}
   m_Layer: 0
   m_Name: Initial Demo
   m_TagString: Untagged
@@ -20168,6 +20169,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1156048915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156048912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff80f4c277af57e40bb157fa04a24481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ManualBattleController
+  scene: {fileID: 1156048913}
+  definition: {fileID: 11400000, guid: eb04f2beb0f45a6488e7eab455989b9b, type: 2}
 --- !u!1 &1166059545
 GameObject:
   m_ObjectHideFlags: 0

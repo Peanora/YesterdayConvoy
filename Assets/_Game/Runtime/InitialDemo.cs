@@ -40,6 +40,14 @@ namespace YesterdayConvoy
         public RouteMotion Motion => motion;
         public float SimulationTime => elapsed;
         public CardDefinition Card => card;
+        // Scene bindings shared with the manual battle. The old single-unit loop is retained for animation regression only.
+        public Transform Tower => tower;
+        public Transform Muzzle => muzzle;
+        public Transform RedGate => redGate;
+        public Transform BlueGate => blueGate;
+        public LineRenderer ShotBeam => shotBeam;
+        public Font InterfaceFont => interfaceFont;
+        public System.Collections.Generic.IReadOnlyList<Vector3> Waypoints => waypoints;
 
         private void Start()
         {

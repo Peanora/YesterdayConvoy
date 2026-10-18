@@ -95,7 +95,8 @@
 | Unity 精确版本 | `6000.6.5f1 (3ff58d469c8a)`，2026-10-16 用户已确认沿用 |
 | 目标平台 | Windows x64 离线单机，键鼠，斜俯视 2.5D |
 | 入口场景 | `Assets/_Game/Scenes/InitialDemo.unity`；Bootstrap 保留作 T02 回归 |
+| 当前可玩闭环 | 单卡选牌→红门部署→多实体进攻→完整胜负/重试；`ManualBattleDefinition` 保存本关试验参数，运行时由 `ManualBattle` 独立持有状态；原 `InitialDemo` 自动进攻保留为诊断 |
 | 校验入口 | 场景：`YesterdayConvoy.Editor.InitialDemoTools.Validate`（Baseline/Validate 同样转入）；怪物：`YesterdayConvoy.Editor.UnitConfigurationTools.ValidateProject`，构建前自动执行怪物校验 |
-| Edit Mode / Play Mode 测试入口 | EditMode：`YesterdayConvoy.Editor.Tests`；PlayMode：`YesterdayConvoy.PlayMode.Tests`。当前 Player：`-demoSmokeTest`，可选 `-demoEvidenceDir`；旧移动参数仅供 Bootstrap。数量与证据见 QA |
+| Edit Mode / Play Mode 测试入口 | EditMode：`YesterdayConvoy.Editor.Tests`；PlayMode：`YesterdayConvoy.PlayMode.Tests`。当前 Player：`-deploymentSmokeTest`，可选 `-demoEvidenceDir`；`-demoSmokeTest` 为旧单怪诊断，旧移动参数仅供 Bootstrap。数量与证据见 QA |
 | 构建入口 | `YesterdayConvoy.Editor.BaselineTools.BuildWindows`；产物 `Builds/Windows/YesterdayConvoy.exe` |
 | 最近一次真实构建 / 提交 | 见 `docs/QA.md` 和本地 Git 日志；不得据此宣称玩法实现 |

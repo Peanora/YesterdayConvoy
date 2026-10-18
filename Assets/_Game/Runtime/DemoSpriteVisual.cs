@@ -16,6 +16,8 @@ namespace YesterdayConvoy
         private float previousTime;
         private DemoWalkPuppet puppet;
         private RouteMotion previousMotion;
+        private ManualBattle manualBattle;
+        private DeployedUnitState deployedUnit;
 
         public SpriteRenderer Renderer => sprite;
         public DemoWalkPuppet Puppet => puppet;
@@ -38,6 +40,15 @@ namespace YesterdayConvoy
 
         private void LateUpdate()
         {
+            if (deployedUnit != null)
+            {
+                bool combat = manualBattle.Phase == BattlePhase.Running;
+                float clock = (float)(manualBattle.Clock - deployedUnit.SpawnTime);
+                PresentMotion((float)deployedUnit.Motion.DistanceTravelled, clock, deployedUnit.Motion.Direction,
+                    combat && !manualBattle.IsPaused && deployedUnit.Active,
+                    combat && manualBattle.Clock < deployedUnit.LastHitTime + 0.18 ? new Color(1,0.48f,0.48f) : Color.white);
+                return;
+            }
             if (movingDemo == null) { FaceCamera(); return; }
             float time = movingDemo.SimulationTime;
             if (movingDemo.Motion != previousMotion || time < previousTime)
@@ -53,6 +64,12 @@ namespace YesterdayConvoy
             bool moving = movingDemo.Outcome == DemoOutcome.Running;
             PresentMotion((float)movingDemo.Motion.DistanceTravelled, time, movingDemo.Motion.Direction, moving,
                 time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white);
+        }
+
+        public void Bind(ManualBattle battle, DeployedUnitState unit)
+        {
+            manualBattle = battle; deployedUnit = unit; movingDemo = null;
+            if (idlePose == null) idlePose = sprite.sprite;
         }
 
         // Read-only movement input. Also used by the isolated art preview; never writes the logical root.

@@ -1,5 +1,24 @@
 # 验证证据与回归
 
+## 最新：单卡手动部署与胜负重开（2026-10-18）
+
+唯一验收目标：让当前单种怪物 Demo 成为可以手动分批部署、打赢或失败并重新挑战的一关。新增 ManualBattle 纯状态模型、只读 ManualBattleDefinition、场景/输入适配 ManualBattleController、幂等 ManualDeploymentTools、ManualDemo 关卡资产及两组测试；修改 InitialDemo 场景绑定、DemoCardView、DemoSpriteVisual 和旧测试显式诊断入口。地图/相机/角色 PNG/Prefab 源资产、Unit/Card 既有配置和包依赖不改。原未跟踪 PackageManagerSettings.asset 保留，不提交。
+
+试验配置为 DP8、防御3、部署费2、次数6、CD2秒、生命100；招募费仍5，移速仍0.75。GDD 已标明与旧多卡草案不同，未把试验平衡登记为人类确认。四次紧凑部署和四次逐只送出分别覆盖胜利与失败；费用耗尽但仍有单位时继续结算，可支付且尚有次数时空场等待，无自然回费/超时判负。
+
+本轮证据目录为 `artifacts/manual-deployment`（本地忽略，不把日志/构建加入源码）：
+
+- `initialize.log`：真实 Unity **6000.6.5f1** 执行场景绑定和配置检查，退出 0，`MANUAL_BATTLE_CONFIG_PASS`，新资产与脚本 meta 已生成。
+- 最终 `editmode-final.xml`：**46/46 通过、0 失败**，含本轮 12 项部署模型测试：失败不扣资源、重复请求只扣一次、费用/次数边界、入口占用、多实体独立状态、CD 等待、暂停下移动/攻击/CD 冻结、最后单位结算、无自然回费/超时、重开与旧局请求、塔目标和非法配置/时间。暂停测试在实际处于塔射程并已开火的状态下冻结时钟。
+- 最终 `playmode-delivery.xml` / `.log`：带真实图形设备 **11/11 通过、0 跳过**。本轮两项真实场景测试验证正常入口无自动单位、选牌/错误位置/独立实例、部署费与招募费区分、刚出生步态从零过渡、暂停、四次部署胜利、资源耗尽等待、逐只送出失败、完整重置及资产值不受运行影响。原 9 项动画/移动/真实 GPU 遮挡回归显式启用旧单怪诊断；720/1440 地面穿透仍为 0，正常前景实体遮挡保留。
+- 最终 `build-final.log`：场景/美术引用/怪物及手动关卡校验通过；Windows x64 构建 **241208220 字节、0 错误**，无 C# 编译错误/警告。`Builds/Windows/YesterdayConvoy.exe` 更新。
+- 最终真实 Player `player-final.log`，`-deploymentSmokeTest`，退出 **0**：`invalid/cooldown/paused/deployed/waitForUnits/won/gateOnce/reset/lost` 九项全 True。同一最终构建的旧 `-demoSmokeTest`，`legacy-player.log`，`breach/gateOnce/killed/restart/default100Killed` 五项全 True，退出 **0**。
+- 首个可见功能构建完整 HUD 截图 `player/manual-ready.png`、`manual-multi.png`、`manual-won.png`、`manual-lost.png` 已逐张查看：初始空场 DP8/防御3、四单位 DP0/剩余次数2、三次突破防御0、逐只送出失败；字形、材质、CD/费用/次数可见。多单位图复制为 `docs/art/previews/manual-deployment-v1.png`。这批截图早于最后的出生步态计时、费用数字纵向位置与空格焦点保护修正；后续构建与测试通过，但未重新采集完整可见 HUD，不声称截图是最终逐像素版本。
+
+原始及最终测试均保留，所有实际执行套件通过。本轮新增空格事件消费，避免 OnGUI 焦点按钮和 Update 同时响应造成重开/重复动作；目前仅编译和场景回归通过，未完成人工键盘焦点验收。实机自动检查使用正常部署/重开公共入口，但不是自动点击输入；完整鼠标/键盘逐项验收、第二机离线、非16:9、多种怪物/大量单位性能 **未运行**。打开正常试玩窗口后观察到选牌/部署画面，用户正在操作，未继续接管或据此声称人工全流程通过。
+
+数据连接：`ManualBattleDefinition.Snapshot()` 只读卡与单位数据，`ManualBattle` 独占费用、次数、冷却、塔攻击、实体身份和胜负；`ManualBattleController.TryDeployAt()` 转换输入并同步视图/反馈，`DemoSpriteVisual.Bind()` 将独立实体运动及同一模拟时钟送入原纸片动画。碰撞体不随动画改变，无新动态寻路。旧 InitialDemo 保留场景引用与显式历史诊断，普通运行由新控制器接管。
+
 ## 最新：行走时地面标记与高台穿透角色（2026-10-18）
 
 改动范围：`DemoSpriteVisual.cs` 的 GetSortingOrder；`DemoArtTools.cs` 和 `TacticalMapTools.cs` 共用该排序，黄/青两种地面材质改不透明，装饰高台 0.48→0.30；InitialDemo 场景更新相应排序/高台尺寸，`InitialDemoTests.cs` 增加一项真实 GPU 像素回归。未修改动画姿态、逻辑坐标、速度、路线、配置、Prefab 源资产、HUD 或依赖；原未跟踪 PackageManagerSettings.asset 保留。
