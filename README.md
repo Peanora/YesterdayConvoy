@@ -39,6 +39,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 文档入口
 
+- [10月20日第5周验收准备](docs/course/WEEK5_PREPARATION.md)：本次课程准备稿、真实分工和剩余清单；完整6–10关游戏为后续目标。
 - [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：当前地图实际使用 12 个外部 CC0 文件，原有角色/资源库保留，清单注明各自验证范围。
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [待做清单与规则填写表](docs/PLANNING_CHECKLIST.md)：A组已回填，其余按功能阶段补充；推荐方案未自动生效。
