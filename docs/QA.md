@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 规则填写表整理（2026-10-18，仅文档）
+
+阅读 AGENTS、当前 STATUS、GDD、DECISIONS、商店提案、T01/T02 和实际 UnitDefinition/CardDefinition/手动关卡代码，汇总后续依赖到 `PLANNING_CHECKLIST.md`。区分已定规则、现有单卡实现、占位配置与未获确认的建议；重点标出5费卡身份/正式定位、升星“数量”的语义、短流程与十级经济、少量卡池概率的取舍。人工核对编号、填写空栏、引用和建议状态。仅修改文档，代码/场景/Prefab/资源未改，**未运行新的 Unity 测试或构建**，不重复声称上一任务的46/11项是本次验证；无新增类或运行数据流。原未跟踪 PackageManagerSettings.asset 保留。
+
 ## 最新：单卡手动部署与胜负重开（2026-10-18）
 
 唯一验收目标：让当前单种怪物 Demo 成为可以手动分批部署、打赢或失败并重新挑战的一关。新增 ManualBattle 纯状态模型、只读 ManualBattleDefinition、场景/输入适配 ManualBattleController、幂等 ManualDeploymentTools、ManualDemo 关卡资产及两组测试；修改 InitialDemo 场景绑定、DemoCardView、DemoSpriteVisual 和旧测试显式诊断入口。地图/相机/角色 PNG/Prefab 源资产、Unit/Card 既有配置和包依赖不改。原未跟踪 PackageManagerSettings.asset 保留，不提交。
