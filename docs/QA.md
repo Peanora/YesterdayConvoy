@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 最新：固定地图美术方向与工业场地（2026-10-18）
+
+唯一玩家可见目标：把当前 Demo 地图替换为与《明日方舟》相近的正向斜俯视工业战术场地，并把方向写成不可随意替换的规则。GDD/AGENTS/美术规范同步；不以测试通过代替人类风格认可。
+
+主要改动：新增 `Assets/_Game/Editor/TacticalMapTools.cs` 与 12 个外部资源、10 个共享材质及必要 meta；修改 `DemoArtTools.cs`、`InitialDemo.unity`、既有 `InitialDemoTests.cs` 与文档清单。源站/原包许可/作者/具体文件均记入 art 文档。运行时代码、单位配置、角色/卡牌 Prefab、包清单未改；原未跟踪 `ProjectSettings/PackageManagerSettings.asset` 保留、不提交。
+
+- Unity **6000.6.5f1**：本轮 **Edit Mode 34/34**（`artifacts/map-style/editmode.xml`）；最终 **Play Mode 8/8**（`playmode-final.xml`）。既有进攻闭环检查增加地图根节点/无碰撞体/旧门隐藏与新线框门断言；其余移动、半速、暂停、重开回归通过。Edit Mode 在最后一轮灯光/墙朝向调整之前运行，最终 Play Mode、构建和 Player 在调整后重跑。
+- 首轮 Apply 因 LineRenderer 的 Unity 空对象判断抛出 MissingComponentException（`apply.log`）。改为明确 `== null` 判断后生成成功；后续再次 Apply 原名复用节点，修正过亮灯光、墙/围栏端面朝向，`apply-polished.log` 退出 0。失败记录保留，未计入成功。
+- 最终场景/美术引用、怪物配置检查通过，含 `TACTICAL_MAP_PASS`；Windows x64 构建 **241116085 字节、0 错误**（`build-final.log`），无 C# 编译错误/警告。
+- 最终真实图形 Player **Direct3D 12** 退出 **0**（`player-final.log`）：`breach=True; gateOnce=True; killed=True; restart=True; default100Killed=True`。140 生命突破、单次穿门、30/默认 100 生命死亡与重开均保持原结果。
+- 已查看最终实际相机 `player-final/demo-action.png`，复制到 `docs/art/previews/tactical-map-v1.png`：无紫色丢材质，方格/高台/入口可辨，原卡牌/角色保留。烟雾采集同时生成 walk 32、down 32、turn 96、start-stop 66 帧；本轮不据此新增“动画观感通过”结论。相机截图不含 OnGUI，不能证明鼠标 UI 已人工操作。
+
+连接关系：`TacticalMapTools.Apply` 读取 InitialDemo 的 waypoints，仅构建场景表现；所有新地形/设备无 Collider，不参与寻路和伤害。`DemoArtTools.Validate → TacticalMapTools.ValidatePresentation` 校验材质/路线端点/无碰撞体，构建沿用既有校验链。运行时仍为 `InitialDemo/RouteMotion → DemoSpriteVisual → DemoWalkPuppet`。
+
+未运行：完整鼠标 UI 流程、第二机离线、多单位性能与人类最终风格验收。当前无完整城市远景；原角色同人素材的分发限制依然适用，CC0 环境许可不改变角色许可。来源包和日志留在忽略 Git 的 artifacts，提交仅包含实际使用资源与必要授权文档。
+
 ## GitHub 仓库建立与源码上传（2026-10-17）
 
 用户明确授权创建仓库并上传；GitHub 账号核验为 Peanora，已创建私有仓库 `https://github.com/Peanora/YesterdayConvoy`，本地 `origin` 指向该地址，使用 `main` 上传当前工程和提交历史。保留回退前提交历史，不重写历史、不上传构建或创建 Release。

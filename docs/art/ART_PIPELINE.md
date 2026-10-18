@@ -1,5 +1,9 @@
 # 资源工作流
 
+当前地图入口（2026-10-18）：`Yesterday Convoy/Initial Demo/Apply Tactical Map` → `TacticalMapTools.Apply`。读取场景原 waypoints，更新自有 Industrial Map 节点和红蓝门的 Tactical Gate 子节点，不写单位配置/移动脚本；新几何不带碰撞体。FBX 关闭动画/碰撞导入，选用共用贴图转换为当前 Built-in Standard 材质；原始文件不改写。资源位于 Art/Environment/Industrial，材质位于 Art/Materials/Industrial，来源和许可必须逐项登记。
+
+地图存在时，“Apply Approved Art”会重新应用地图，避免把门和地面恢复成旧幻想题材；`DemoArtTools.Validate` 和构建前校验同时检查地图材质、路径与非阻挡约束。重复应用复用命名节点和已有材质，不重复创建地图。不得把静态高台/场景装饰登记为已实现部署或阻挡玩法。
+
 当前 Demo 换装入口为 `Yesterday Convoy/Initial Demo/Apply Approved Art`（DemoArtTools.Apply）。它配置五张 Sprite 的 Point/Alpha/脚底 Pivot 与 PPU、石板材质，保存 5 费 CardDefinition，并把新表现和卡牌 Prefab 绑定到 InitialDemo；已有认可卡图保持原文件。验证入口 DemoArtTools.Validate，构建前会调用。生成记录见 GENERATION-2026-10-17.md，下文为原通用资源库流程。
 
 当前根目录为 `Assets/_Game/Art/`，沿用工程已有 `_Game`，不另建混杂根目录。当前只创建实际有文件的 UI/Icons、VFX/Common、Audio/SFX、Audio/BGM、Fonts；Characters、Cards、Environment 等在实际选定素材后创建。旧 Materials、Scenes、脚本 GUID 不移动。

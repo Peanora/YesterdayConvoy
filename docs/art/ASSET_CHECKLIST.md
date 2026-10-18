@@ -102,19 +102,19 @@
 
 - [ ] **REQ-D-01** [P0] 远景背景 — CANDIDATE； 预渲染投影需测试；未导入地图
 
-- [ ] **REQ-D-02** [P0] 中景建筑山体 — CANDIDATE； 预渲染投影需测试；未导入地图
+- [x] **REQ-D-02** [P0] 中景建筑山体 — VERIFIED（Demo 工业围墙/设备）；CC0 实体模型接入并经 Player 查看，非完整城市远景；风格观感待人类验收
 
-- [ ] **REQ-D-03** [P0] 前景装饰 — CANDIDATE； 预渲染投影需测试；未导入地图
+- [x] **REQ-D-03** [P0] 前景装饰 — VERIFIED（Demo）；原生排水沟、边缘护沿与导向线，接入 Player
 
-- [ ] **REQ-D-04** [P0] 地面 Tileset — CANDIDATE； 预渲染投影需测试；未导入地图
+- [x] **REQ-D-04** [P0] 地面 Tileset — VERIFIED（3D 模块/贴图）；CC0 混凝土/沥青用于原生方格与高台，不是 2D Tilemap 资产
 
-- [ ] **REQ-D-05** [P0] 战斗通行区域 — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-D-05** [P0] 战斗通行区域 — VERIFIED（Demo）；按原路线铺设地面，不增加阻挡或部署规则
 
-- [ ] **REQ-D-06** [P0] 怪物出生区域 — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-D-06** [P0] 怪物出生区域 — VERIFIED（Demo）；红色战术线框入口，原生成/移动规则保持
 
 - [ ] **REQ-D-07** [P0] 守军站位区域 — NOT_STARTED； 
 
-- [ ] **REQ-D-08** [P0] 蓝门 — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-D-08** [P0] 蓝门 — VERIFIED（Demo）；蓝色战术线框出口，穿门单次结算通过
 
 - [ ] **REQ-D-09** [P0] 蓝门激活受影响反馈 — NOT_STARTED； 
 
@@ -122,7 +122,7 @@
 
 - [ ] **REQ-D-11** [P0] 进蓝门效果 — NOT_STARTED； 
 
-- [ ] **REQ-D-12** [P0] 通行路线标识 — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-D-12** [P0] 通行路线标识 — VERIFIED（Demo）；区分地表与克制边线，实机画面已检查
 
 - [ ] **REQ-D-13** [P0] 可部署区域标识 — NOT_STARTED； 
 

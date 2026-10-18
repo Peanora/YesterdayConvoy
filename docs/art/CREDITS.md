@@ -1,5 +1,10 @@
 # 美术资源 Credits
 
+当前地图补充（2026-10-18）：
+- 工业环境模型与共用贴图：**Quaternius — Modular Sci-Fi MegaKit, Standard**，CC0；https://quaternius.itch.io/modular-sci-fi-megakit 。选用围墙、箱体、控制台、通风件和围栏，适配 Built-in 材质。
+- 地面材质：**ambientCG — Concrete034 / Asphalt012**，CC0；https://ambientcg.com/view?id=Concrete034 、https://ambientcg.com/view?id=Asphalt012 ，许可 https://docs.ambientcg.com/license/ 。
+- 布局、原生方格/高台、服务管道、警戒线与入口线框：本项目制作。旧符文门和石板保留在库，当前地图不显示。地图没有使用原游戏截图或地图数据。
+
 素材库首次准备于 2026-10-17；当前 Demo 已接入同系列 AI 场景美术与中文字体，其余资源是否使用以清单为准。发布时保留实际使用项的署名和许可，详情 ASSET_MANIFEST.csv。
 
 ## Game-icons.net

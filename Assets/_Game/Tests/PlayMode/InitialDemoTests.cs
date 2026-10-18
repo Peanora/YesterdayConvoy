@@ -34,6 +34,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(demo.Monster.GetComponentInChildren<SpriteRenderer>().sprite, Is.SameAs(demo.Card.BattleSprite));
             Assert.That(Camera.main.orthographic, Is.True);
             Assert.That(Vector3.Dot(Camera.main.transform.forward, Vector3.down), Is.InRange(0.3f, 0.95f));
+            GameObject map = GameObject.Find("Industrial Map");
+            Assert.That(map, Is.Not.Null, "The fixed industrial tactical map should be part of the playable scene.");
+            Assert.That(map.transform.Find("Foundation"), Is.Not.Null);
+            Assert.That(map.GetComponentsInChildren<Collider>().Length, Is.Zero, "Art replacement must not introduce gameplay collisions.");
+            Assert.That(GameObject.Find("Red Gate/Series Sprite").GetComponent<SpriteRenderer>().enabled, Is.False);
+            Assert.That(GameObject.Find("Blue Gate/Series Sprite").GetComponent<SpriteRenderer>().enabled, Is.False);
+            Assert.That(GameObject.Find("Red Gate/Tactical Gate").GetComponentInChildren<LineRenderer>(), Is.Not.Null);
+            Assert.That(GameObject.Find("Blue Gate/Tactical Gate").GetComponentInChildren<LineRenderer>(), Is.Not.Null);
             Time.timeScale = 12;
             demo.BeginAttack(140);
             float deadline = Time.realtimeSinceStartup + 5;

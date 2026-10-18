@@ -1,5 +1,11 @@
 # 授权与分发记录
 
+## 2026-10-18 工业战术地图
+
+- Quaternius Modular Sci-Fi MegaKit **Standard 免费档**：内置原始许可保存为 `licenses/quaternius-modular-scifi-standard.txt`，CC0 1.0；[作者页面](https://quaternius.com/packs/modularscifimegakit.html)、[官方下载页](https://quaternius.itch.io/modular-sci-fi-megakit)。本次只引入所选 FBX 和贴图，自行转换 Built-in 材质，未使用付费 Source 引擎工程。
+- ambientCG Concrete034、Asphalt012：具体资源页和[许可说明](https://docs.ambientcg.com/license/)明确 CC0，允许修改、游戏分发和原文件纳入项目，无强制署名。项目仍保留来源与 Credits；本次下载和导入的为原始 Color 文件。
+- 地块布置、警戒线、管道与入口线框为项目原生制作；不是从参考游戏提取的模型或贴图。PRTS 上的原游戏截图仅用于研究，不采用 Wiki 文档许可推断游戏图片可再分发，不进入 Assets/受版本控制的预览。
+
 本次动画反馈新增 `wisadel-side.png`、`wisadel-rear-quarter.png`，沿用既有同人原型的权利状态，未取得新的第三方授权、不登记为 CC0。实际使用、源文件及验证范围逐项见 ASSET_MANIFEST.csv，完整生成输入与提示词见 GENERATION-2026-10-17.md。
 
 2026-10-17 更新：用户明确授权保存认可的 AI 同人卡面并用同系列美术替换本地 Demo，随后要求补走路动作。六张初始文件、两张历史步态和一张背向视图按 AI 生成来源记录，不采用 CC0 标签；其中维什戴尔相关形象保留第三方角色 IP 状态，未取得正式发行授权。通用素材原许可不变。生成工具、输入/输出及条款链接见 GENERATION-2026-10-17.md。下文首次调查的“未引入 AI 图片”为当时历史状态。

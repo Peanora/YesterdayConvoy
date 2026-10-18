@@ -2,7 +2,7 @@
 
 Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：一个怪物从红门出发，防御塔自动攻击，怪物突破蓝门或死亡，结果后可重新开始。
 
-当前美术已更新为用户认可的同系列像素感角色、臭脸防御炮、红蓝符文门与石板地面。左侧卡面使用认可原图，显示维什戴尔和 5 费；这是已登记的招募费用，购买/部署扣费尚未实现。生成文件与提示词见 [生成记录](docs/art/GENERATION-2026-10-17.md)。
+当前保留用户认可的像素感角色、臭脸防御炮和卡面；地图已换为低饱和工业战术棋盘、方格高台与红蓝线框入口。地图必须与《明日方舟》风格相近，规则见圣经第 9 节；[当前实机样图](docs/art/previews/tactical-map-v1.png) 的最终观感待用户验收。环境选用明确 CC0 素材，具体选型与许可见 [来源调查](docs/art/ASSET_SOURCES.md)。左侧卡面显示维什戴尔和 5 费；这是招募费用，购买/部署扣费尚未实现。角色生成文件与提示词见 [生成记录](docs/art/GENERATION-2026-10-17.md)。
 
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
@@ -37,7 +37,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 文档入口
 
-- [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：六张生成图已接入当前 Demo，原有资源库保留。
+- [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：当前地图实际使用 12 个外部 CC0 文件，原有角色/资源库保留，清单注明各自验证范围。
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
 - [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。

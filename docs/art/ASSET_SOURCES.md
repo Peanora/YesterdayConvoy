@@ -1,5 +1,21 @@
 # 来源调查与第一版方案
 
+## 2026-10-18：固定《明日方舟》相近地图方向后的重新选型
+
+此次只选与固定方向相符的环境资源，不再保留中世纪/地牢作为地图替代。参照分析为 [PRTS 龙门商业街地图](https://prts.wiki/w/炎国_龙门商业街) 的模块高台、灰蓝工业表面、警戒边线和红蓝空间标记；原游戏图片只保存在忽略 Git 的研究目录，不作为本项目贴图、关卡布局或可分发素材。
+
+| 具体资源与许可页 | 实际检查 | 决策 |
+| --- | --- | --- |
+| [Quaternius Modular Sci-Fi MegaKit](https://quaternius.com/packs/modularscifimegakit.html) / [官方 itch 页](https://quaternius.itch.io/modular-sci-fi-megakit) | 免费 Standard 包实际下载并检查内置 License_Standard.txt（CC0）；可用 FBX/OBJ/glTF。自带 Unity 工程属于 Source 付费档，不假设免费；本次未购买 | **选用**六个有效 FBX：箱体、控制台、通风件、围栏、两种围墙；仅选四张共用颜色/法线贴图，自行适配当前 Built-in 材质。排除外星生物、标志与无关模块 |
+| [ambientCG Concrete034](https://ambientcg.com/view?id=Concrete034) / [Asphalt012](https://ambientcg.com/view?id=Asphalt012) / [许可](https://docs.ambientcg.com/license/) | 官方 1K-JPG 包实际下载并查看颜色图，CC0；混凝土 1024×512、沥青 1024×1024 | **选用**两张原始 Color JPG，统一蓝灰色调；其他位移/大图/工程文件不导入 |
+| [Kenney City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) | 官方 CC0 包与实际预览已检查，厂房/烟囱/集装箱齐全 | **不用于当前地图**：整套更偏城市经营模型、白墙和鲜色标记。只做研究比较，不能因免费直接整包铺进场景 |
+| [ambientCG MetalPlates006](https://ambientcg.com/view?id=MetalPlates006) / [MetalPlates013](https://ambientcg.com/view?id=MetalPlates013) | 实看前者颜色图、后者材质预览；均明确 CC0 | **排除**：前者鱼鳞纹样、后者锈蚀/反差过重，不符合此次克制的战术地表。未导入 |
+| 首次调查的 Kenney 地牢、0x72 像素地牢 | 原研究包仍保留 | **不作地图备选**，已被人类固定方向覆盖 |
+
+实际实现：`TacticalMapTools.Apply` 保留原路线/单位/相机投影，以原生模块几何、上述合法贴图和少量选用模型构成检修场地；高台、排水沟、服务管道、边缘导向线、战术红蓝入口均是表现，不增加部署区域或阻挡规则。本轮基础资源足够，不需要 AI 生成地图图片。
+
+来源包、授权网页与未选用预览留在 `artifacts/map-style`；只有实际使用的 12 个外部文件进入 `Assets/_Game/Art/Environment/Industrial`。清单逐项记录原文件、许可和验证范围；最终观感仍需人类与参照对照，不因 Unity 通过就声称风格验收完成。
+
 最新：用户已选定认可的 AI 卡图为当前 Demo 画风，六张实际使用图的来源和提示词见 [GENERATION-2026-10-17.md](GENERATION-2026-10-17.md)；现有中文字体也已接入 Demo。下文保留首次调查时的候选比较，非当前选型结论。
 
 核查日期：2026-10-17。仅原作者/发布方具体页面作为授权依据。原包和页面快照留在被 Git 忽略的 `artifacts/art-research/`；具体导入文件见 ASSET_MANIFEST.csv。
