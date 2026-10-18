@@ -54,9 +54,9 @@
 
 - [ ] **REQ-B-04** [P0] 首领卡牌底板 — NOT_STARTED； 
 
-- [ ] **REQ-B-05** [P0] 卡牌费用显示 — NOT_STARTED； 
+- [x] **REQ-B-05** [P0] 卡牌费用显示 — VERIFIED；当前底栏单卡显示招募费 5；不代表部署消费实现
 
-- [ ] **REQ-B-06** [P0] 卡牌名称区域 — NOT_STARTED； 
+- [x] **REQ-B-06** [P0] 卡牌名称区域 — VERIFIED；当前底栏单卡实机可读，保留认可卡面
 
 - [ ] **REQ-B-07** [P0] 多羁绊展示区 — NOT_STARTED； 
 
@@ -118,7 +118,7 @@
 
 - [ ] **REQ-D-09** [P0] 蓝门激活受影响反馈 — NOT_STARTED； 
 
-- [ ] **REQ-D-10** [P0] 防御值 UI — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-D-10** [P0] 防御值 UI — VERIFIED；顶部盾形标志与实际防御数，实机突破 8→7；最终观感待人类验收
 
 - [ ] **REQ-D-11** [P0] 进蓝门效果 — NOT_STARTED； 
 
@@ -188,9 +188,9 @@
 
 - [ ] **REQ-G-01** [P0] 当前费用 — NOT_STARTED； 
 
-- [ ] **REQ-G-02** [P0] 守方剩余防御值 — CANDIDATE； 现有几何/OnGUI 占位，可复用；不算正式美术完成
+- [x] **REQ-G-02** [P0] 守方剩余防御值 — VERIFIED；顶部实际状态绑定，穿门单次结算/重开回归通过
 
-- [ ] **REQ-G-03** [P0] 怪物卡牌栏 — NOT_STARTED； 
+- [x] **REQ-G-03** [P0] 怪物卡牌栏 — VERIFIED；仅当前单角色底栏；多卡/拖拽部署/经济事务未实现
 
 - [ ] **REQ-G-04** [P0] 部署冷却显示 — NOT_STARTED； 
 

@@ -38,6 +38,18 @@ namespace YesterdayConvoy.Tests
             Assert.That(map, Is.Not.Null, "The fixed industrial tactical map should be part of the playable scene.");
             Assert.That(map.transform.Find("Foundation"), Is.Not.Null);
             Assert.That(map.GetComponentsInChildren<Collider>().Length, Is.Zero, "Art replacement must not introduce gameplay collisions.");
+            Assert.That(Camera.main.transform.eulerAngles.x, Is.InRange(49,55), "A higher pitch should preserve a readable tactical ground plane.");
+            var ground = new Plane(Vector3.up, new Vector3(0,-0.25f,0));
+            foreach(Vector3 corner in new[]{Vector3.zero,Vector3.right,Vector3.up,Vector3.one})
+            {
+                Ray ray = Camera.main.ViewportPointToRay(corner);
+                Assert.That(ground.Raycast(ray,out float distance),Is.True);
+                Vector3 hit = ray.GetPoint(distance);
+                Assert.That(Mathf.Abs(hit.x),Is.LessThan(19));
+                Assert.That(Mathf.Abs(hit.z),Is.LessThan(19));
+            }
+            foreach(Renderer renderer in Object.FindAnyObjectByType<DemoCardView>().GetComponentsInChildren<Renderer>())
+                Assert.That(renderer.enabled,Is.False,"The old left-side camera card must not overlap the bottom roster.");
             Assert.That(GameObject.Find("Red Gate/Series Sprite").GetComponent<SpriteRenderer>().enabled, Is.False);
             Assert.That(GameObject.Find("Blue Gate/Series Sprite").GetComponent<SpriteRenderer>().enabled, Is.False);
             Assert.That(GameObject.Find("Red Gate/Tactical Gate").GetComponentInChildren<LineRenderer>(), Is.Not.Null);
@@ -116,7 +128,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(nearBoot.localRotation, Is.EqualTo(before));
             demo.Simulate((3.072f - (float)demo.Motion.DistanceTravelled) / demo.Motion.Speed);
             yield return null;
-            Assert.That(visual.Puppet.LeftFoot.y, Is.GreaterThan(demo.Monster.position.y + 0.04f), "The recovery foot must lift clear of the ground.");
+            Assert.That(Vector3.Dot(visual.Puppet.LeftFoot-demo.Monster.position,visual.transform.up),Is.GreaterThan(0.04f),
+                "The recovery foot must lift in the billboard's visual plane, independently of camera pitch.");
+            Assert.That(visual.Puppet.LeftFoot.y,Is.GreaterThan(demo.Monster.position.y),"The lifted foot must remain above the actual ground.");
             demo.Simulate((5.05f - (float)demo.Motion.DistanceTravelled) / demo.Motion.Speed);
             yield return null;
             demo.Simulate(0.05f);

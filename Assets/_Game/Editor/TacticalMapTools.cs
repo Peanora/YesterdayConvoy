@@ -45,16 +45,16 @@ namespace YesterdayConvoy.Editor
                 importer.materialLocation = ModelImporterMaterialLocation.InPrefab;
                 importer.SaveAndReimport();
             }
-            concrete = Mat("Concrete", new Color(0.38f,0.45f,0.54f), "concrete-color.jpg");
-            asphalt = Mat("Asphalt", new Color(0.40f,0.47f,0.55f), "asphalt-color.jpg");
-            steel = Mat("Steel", new Color(0.16f,0.21f,0.27f));
+            concrete = Mat("Concrete", new Color(0.34f,0.40f,0.46f), "concrete-color.jpg");
+            asphalt = Mat("Asphalt", new Color(0.32f,0.38f,0.44f), "asphalt-color.jpg");
+            steel = Mat("Steel", new Color(0.22f,0.28f,0.34f));
             dark = Mat("Recess", new Color(0.07f,0.095f,0.12f));
             amber = Mat("Safety Amber", new Color(0.79f,0.57f,0.23f), unlit:true);
             cyan = Mat("Guide Cyan", new Color(0.14f,0.57f,0.69f), unlit:true);
             red = Mat("Entry Red", new Color(0.95f,0.22f,0.24f), unlit:true);
             blue = Mat("Target Blue", new Color(0.16f,0.64f,0.94f), unlit:true);
-            trim1 = Mat("Trim 01", new Color(0.66f,0.73f,0.80f), "trim-01-color.png", "trim-01-normal.png");
-            trim2 = Mat("Trim 02", new Color(0.66f,0.73f,0.80f), "trim-02-color.png", "trim-02-normal.png");
+            trim1 = Mat("Trim 01", new Color(0.44f,0.52f,0.59f), "trim-01-color.png", "trim-01-normal.png");
+            trim2 = Mat("Trim 02", new Color(0.44f,0.52f,0.59f), "trim-02-color.png", "trim-02-normal.png");
 
             var scene = EditorSceneManager.OpenScene(InitialDemoTools.ScenePath, OpenSceneMode.Single);
             var demo = UnityEngine.Object.FindAnyObjectByType<InitialDemo>();
@@ -64,7 +64,11 @@ namespace YesterdayConvoy.Editor
             foreach (MeshRenderer renderer in GameObject.Find("Raised Tactical Board").GetComponentsInChildren<MeshRenderer>())
                 renderer.enabled = false;
             Transform map = RootNameObject(RootName, null);
-            Shape("Foundation", map, new Vector3(0,-0.49f,0.5f), new Vector3(13.2f,0.44f,8.2f), dark);
+            // The yard extends beyond the viewport; this is a place, rather than a board on a black backdrop.
+            Shape("Foundation", map, new Vector3(0,-0.49f,0.5f), new Vector3(40,0.44f,40), dark);
+            Material yard = Mat("Yard", new Color(0.25f,0.31f,0.37f), "asphalt-color.jpg");
+            yard.mainTextureScale = new Vector2(20,20);
+            Shape("Surrounding yard",map,new Vector3(0,-0.28f,0),new Vector3(40,0.04f,40),yard);
             for (int x=-6; x<=6; x++)
                 for (int z=-3; z<=4; z++)
                 {
@@ -75,8 +79,8 @@ namespace YesterdayConvoy.Editor
                     Shape($"Cell {x},{z}",map,new Vector3(x,height*0.5f-0.13f,z),new Vector3(0.97f,0.26f+height,0.97f),routeTile || raised ? concrete : asphalt);
                     if (raised)
                     {
-                        Shape($"Platform cap {x},{z}",map,new Vector3(x,height+0.016f,z),new Vector3(0.87f,0.035f,0.87f),steel);
-                        Shape($"Warning lip {x},{z}",map,new Vector3(x,height+0.04f,z-0.44f),new Vector3(0.82f,0.025f,0.045f),amber);
+                        Shape($"Platform cap {x},{z}",map,new Vector3(x,height+0.016f,z),new Vector3(0.94f,0.035f,0.94f),steel);
+                        Shape($"Warning lip {x},{z}",map,new Vector3(x,height+0.04f,z-0.44f),new Vector3(0.54f,0.025f,0.025f),amber);
                     }
                 }
             for (int x=-6; x<=6; x++)
@@ -85,16 +89,36 @@ namespace YesterdayConvoy.Editor
                 Shape($"Front curb {x}",map,new Vector3(x,-0.02f,-3.48f),new Vector3(0.98f,0.24f,0.18f),steel);
                 if (x%2==0) Shape($"Front guide {x}",map,new Vector3(x,0.12f,-3.4f),new Vector3(0.72f,0.028f,0.05f),cyan);
             }
+            // Keep the older imported wall/rail instances for reference; their thin end-on silhouettes
+            // did not fit the game's ground modules. Use the same concrete/steel family for the facade.
+            foreach(string name in new[]{"North wall west","North wall east","Upper rail west","Upper rail east"})
+            {
+                Transform legacy=map.Find(name);
+                if(legacy!=null)legacy.gameObject.SetActive(false);
+            }
+            for(int side=-1;side<=1;side+=2)
+            {
+                Shape($"Service wall {side}",map,new Vector3(side*3.5f,0.44f,4.3f),new Vector3(4.1f,0.9f,0.42f),concrete);
+                Shape($"Service wall cap {side}",map,new Vector3(side*3.5f,0.93f,4.3f),new Vector3(4.2f,0.08f,0.48f),steel);
+                Shape($"Rear service deck {side}",map,new Vector3(side*4.5f,-0.06f,7.5f),new Vector3(8.8f,0.36f,5.7f),concrete);
+                Shape($"Side service deck {side}",map,new Vector3(side*8.5f,-0.06f,0),new Vector3(3.6f,0.36f,8.9f),concrete);
+                for(int i=0;i<8;i++)
+                {
+                    Shape($"Side seam {side} {i}",map,new Vector3(side*8.5f,0.13f,-3.5f+i),new Vector3(3.6f,0.012f,0.025f),dark);
+                    Shape($"Side edge {side} {i}",map,new Vector3(side*6.75f,0.15f,-3.5f+i),new Vector3(0.035f,0.025f,0.65f),amber);
+                }
+                for(int i=0;i<3;i++)
+                {
+                    Shape($"Peripheral housing {side} {i}",map,new Vector3(side*8.4f,0.55f,-2.4f+i*2.4f),new Vector3(2.2f,1.1f,1.45f),steel);
+                    Shape($"Peripheral housing top {side} {i}",map,new Vector3(side*8.4f,1.13f,-2.4f+i*2.4f),new Vector3(2.1f,0.06f,1.35f),concrete);
+                }
+            }
             // Equipment sits outside the route. No colliders, navigation, damage or unit config changes.
-            Prop("North wall west", "WallBand_Straight.fbx", map,new Vector3(-3.4f,0,4.15f),3.8f,1.5f,90);
-            Prop("North wall east", "WallBand_Straight_Broken.fbx",map,new Vector3(3.4f,0,4.15f),3.8f,1.5f,90);
             Prop("Control console", "Prop_Computer.fbx",map,new Vector3(-1.6f,0,3.5f),1.25f,1.25f,90);
             Prop("Ventilation west", "Prop_Vent_Big.fbx",map,new Vector3(-5.3f,0.18f,3.55f),1.5f,1.1f,180);
             Prop("Ventilation east", "Prop_Vent_Big.fbx",map,new Vector3(5.3f,0.18f,3.55f),1.5f,1.1f,180);
             Prop("Supply crate west", "Prop_Crate3.fbx",map,new Vector3(-4.3f,0,2.75f),0.75f,0.75f,15);
             Prop("Supply crate east", "Prop_Crate3.fbx",map,new Vector3(4.3f,0,2.75f),0.75f,0.75f,-12);
-            Prop("Upper rail west", "Prop_Rail_2.fbx",map,new Vector3(-2.65f,0.1f,3.0f),1.8f,0.65f,90);
-            Prop("Upper rail east", "Prop_Rail_2.fbx",map,new Vector3(2.65f,0.1f,3.0f),1.8f,0.65f,90);
             Pipe("Service pipe west",map,new Vector3(-3.5f,0.48f,3.92f),3.7f);
             Pipe("Service pipe east",map,new Vector3(3.5f,0.48f,3.92f),3.7f);
             for (int x=-5; x<=5; x+=2)
@@ -112,6 +136,17 @@ namespace YesterdayConvoy.Editor
             }
             TacticalGate((Transform)data.FindProperty("redGate").objectReferenceValue,red);
             TacticalGate((Transform)data.FindProperty("blueGate").objectReferenceValue,blue);
+            ContactShadow((Transform)data.FindProperty("monster").objectReferenceValue,0.9f,0.48f,-0.025f);
+            ContactShadow((Transform)data.FindProperty("tower").objectReferenceValue,1.35f,0.8f,0.015f);
+            Camera camera=Camera.main;
+            camera.transform.rotation=Quaternion.Euler(52,0,0);
+            camera.transform.position=new Vector3(0,0,0.7f)-camera.transform.forward*24;
+            camera.orthographicSize=4.9f;
+            foreach(var visual in UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>())
+                visual.transform.rotation=camera.transform.rotation;
+            // The card is now a screen-space roster entry. Preserve its prefab and asset references.
+            foreach(var view in UnityEngine.Object.FindObjectsByType<DemoCardView>())
+                foreach(var renderer in view.GetComponentsInChildren<Renderer>())renderer.enabled=false;
             RenderSettings.ambientLight = new Color(0.48f,0.55f,0.65f);
             var keyLight=GameObject.Find("Key Light")?.GetComponent<Light>();
             if(keyLight!=null)
@@ -148,7 +183,20 @@ namespace YesterdayConvoy.Editor
                 if (cell == null || cell.position.y+cell.localScale.y*0.5f>0.01f)
                     throw new InvalidOperationException("Tactical map: raised terrain overlaps an existing route endpoint.");
             }
-            Debug.Log("TACTICAL_MAP_PASS: industrial modular field; original route; no colliders; original actor/card/camera references.");
+            Camera camera=Camera.main;
+            float pitch=camera.transform.eulerAngles.x;
+            if(pitch<49 || pitch>55 || Mathf.Abs(camera.transform.eulerAngles.y)>0.01f || Mathf.Abs(camera.transform.eulerAngles.z)>0.01f)
+                throw new InvalidOperationException("Tactical map: expected frontal 52-degree tactical view.");
+            // Test the actual ground-plane intersections of the full viewport, including HUD-covered corners.
+            var ground=new Plane(Vector3.up,new Vector3(0,-0.25f,0));
+            foreach(Vector3 corner in new[]{Vector3.zero,Vector3.right,Vector3.up,Vector3.one})
+            {
+                Ray ray=camera.ViewportPointToRay(corner);
+                if(!ground.Raycast(ray,out float distance))throw new InvalidOperationException("Tactical map: viewport misses ground.");
+                Vector3 hit=ray.GetPoint(distance);
+                if(Mathf.Abs(hit.x)>19 || Mathf.Abs(hit.z)>19)throw new InvalidOperationException("Tactical map: yard does not fill the frame.");
+            }
+            Debug.Log("TACTICAL_MAP_PASS: full-frame yard; 52-degree frontal view; original route; no colliders; valid materials.");
         }
 
         private static bool IsOnRoute(int x,int z,Vector3[] route)
@@ -233,6 +281,26 @@ namespace YesterdayConvoy.Editor
             child.localScale=new Vector3(0.13f,length*0.5f,0.13f);
             child.GetComponent<Renderer>().sharedMaterial=steel;
             child.gameObject.isStatic=true;
+        }
+
+        private static void ContactShadow(Transform owner,float width,float depth,float height)
+        {
+            Transform child=owner.Find("Contact shadow");
+            if(child==null)
+            {
+                var go=GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                go.name="Contact shadow";
+                UnityEngine.Object.DestroyImmediate(go.GetComponent<Collider>());
+                child=go.transform;
+                child.SetParent(owner,false);
+            }
+            child.localPosition=new Vector3(0,height,0);
+            child.localScale=new Vector3(width,0.003f,depth);
+            var renderer=child.GetComponent<MeshRenderer>();
+            renderer.enabled=true;
+            renderer.sharedMaterial=Mat("Contact Shadow",new Color(0.015f,0.025f,0.04f,0.32f),unlit:true);
+            renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows=false;
         }
 
         private static void TacticalGate(Transform owner,Material color)

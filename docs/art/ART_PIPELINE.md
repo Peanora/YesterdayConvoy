@@ -1,5 +1,9 @@
 # 资源工作流
 
+2026-10-18 布局更新：同一 Apply Tactical Map 工具设置试验俯角 52°、尺寸 4.9，并延展周边地面至视口外；保留固定偏航/滚转为 0。旧墙/栏杆实例禁用，用同系列原生墙体替代；禁用左侧卡牌子 Renderer。DemoCardView 的 DrawRoster 由 InitialDemo.OnGUI 在底部调用，顶部防御读取实际状态。无新增美术源图或包依赖。
+
+验收完整布局时使用可见 Player 的 ScreenCapture（包含 OnGUI）；原 CaptureCamera 只含相机渲染，不足以验顶部/底栏。隐藏窗口下可能得到黑色 ScreenCapture，必须查看图片后才能记录视觉通过。截图仍需与鼠标滑块/开始/重开流程一起核对，不能仅以文件存在确认。
+
 当前地图入口（2026-10-18）：`Yesterday Convoy/Initial Demo/Apply Tactical Map` → `TacticalMapTools.Apply`。读取场景原 waypoints，更新自有 Industrial Map 节点和红蓝门的 Tactical Gate 子节点，不写单位配置/移动脚本；新几何不带碰撞体。FBX 关闭动画/碰撞导入，选用共用贴图转换为当前 Built-in Standard 材质；原始文件不改写。资源位于 Art/Environment/Industrial，材质位于 Art/Materials/Industrial，来源和许可必须逐项登记。
 
 地图存在时，“Apply Approved Art”会重新应用地图，避免把门和地面恢复成旧幻想题材；`DemoArtTools.Validate` 和构建前校验同时检查地图材质、路径与非阻挡约束。重复应用复用命名节点和已有材质，不重复创建地图。不得把静态高台/场景装饰登记为已实现部署或阻挡玩法。

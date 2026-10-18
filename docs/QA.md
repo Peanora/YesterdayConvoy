@@ -1,5 +1,23 @@
 # 验证证据与回归
 
+## 最新：全画幅地图与战斗 HUD 布局（2026-10-18）
+
+玩家可验收目标：地图铺满战斗背景、减轻低俯角造成的压扁感，上方显示真实防御、下方放现有角色卡与进攻操作。固定《明日方舟》相近地图方向和此次布局反馈写入 GDD/AGENTS；52°/正交尺寸 4.9 是试验实现值，不是人类指定的精确相机参数。
+
+主要修改：`TacticalMapTools.cs`、`DemoCardView.cs`、`InitialDemo.cs`、`InitialDemo.unity`、`InitialDemoTests.cs`、五个既有材质与两个新增材质（Yard / Contact Shadow，meta 齐全）；同步 STATUS、美术规范/进度/清单、README。卡面/角色图片、单位数值、路线、包清单和 Prefab 源资产未改。旧墙/栏杆实例和左侧卡牌 Renderer 仅禁用，保留资源引用。原未跟踪 PackageManagerSettings.asset 保留、不提交。
+
+- Unity **6000.6.5f1**，本轮 **Edit Mode 34/34、Play Mode 8/8**，`artifacts/battle-layout/editmode.xml`、`playmode-final.xml`。既有闭环新增相机角度、视口四角地面覆盖、旧左侧卡牌隐藏检查；原移动/半速/转向/暂停/结算回归通过。
+- 首轮 Play Mode **7/8**（`playmode.xml`）：旧抬脚断言直接要求世界 Y 抬高 0.04，俯角改变后视觉平面抬脚的世界 Y 投影减小。改为沿视觉节点 up 检查抬脚 >0.04，同时保留脚高于实际地面的断言；动画实现/步相未改。失败记录保留，没有降低动作数值以迎合镜头。
+- 上述测试后仅修正血条沿相机 up 定位、开始按钮对比度、卡片上移 8 像素避开开发版水印；未重复与这三项 UI 细节无关的完整测试套件，而在最终构建/实际鼠标流程复核。
+- 场景/美术/怪物配置校验通过，包含 `TACTICAL_MAP_PASS`（全视口地面、正向 52°、无新增地图碰撞体、材质有效）。最终 Windows x64 构建 **241178685 字节、0 错误**，`build-delivery.log`，无 C# 编译错误/警告。
+- 最终构建另运行真实 Direct3D 12 Player 自动回归，退出 **0**，`player-final.log` 五项全部 True：突破、穿门单次结算、30 生命死亡、重开、默认 100 生命死亡。这次未传采图参数；完整 HUD 视觉证据另见可见窗口记录，不能用隐藏窗口渲染替代。
+- 可见图形 Player 的完整 ScreenCapture 在 `player-visible/hud-ready.png`、`hud-action.png`、`hud-breached.png`：实际防御 8/8→7/8、角色名/招募费 5、底栏/按钮/血条可见。此批图在最后卡片上移 8 像素之前采集；最终窗口只读截图保存为 `docs/art/previews/battle-layout-v2.png`（含窗口边框，652×397）。不是 AI 概念图。首次隐藏窗口 ScreenCapture 为黑图，未作有效视觉证据；保留失败图以区分相机 RenderTexture 与完整窗口截图。
+- 最终构建已用实际鼠标验证：拖动生命滑块到 **34** → 开始进攻 → 按钮/滑块在运行中禁用 → 三次塔攻击后失败，防御仍 **8/8**；拖至 **140** → 点击重开 → 角色重新从红门出发 → 八次塔攻击后突破，顶部 **7/8**，显示扣除 1 点防御。`mouse-playtest.log` 保存同一实际交互的 `DEMO_DEFEAT: shots=3; gate=8` 和 `DEMO_BREACH: shots=8; gate=7; health=12`。最终画面卡名不与开发版水印重叠。用户随后开始操作窗口，停止接管输入并保留该窗口。
+
+数据连接：`TacticalMapTools.Apply` 仅读原 route，生成延展地面/同材质墙体/接地阴影并设置镜头；逻辑移动与碰撞规则不变。`InitialDemo.OnGUI` 从 GateDefense 绘制顶部防御，并调用 `DemoCardView.DrawRoster` 读取原 CardDefinition 画底栏。开始/重开仍调用同一个 BeginAttack，招募费 5 仍不代表部署扣费。
+
+未运行：第二机离线、非 16:9/超宽屏、多单位性能、正式多卡部署和人类最终风格验收。周边场地仍为模块原型，角色同人素材权利状态不变；不将鼠标闭环或技术测试通过等同于风格已获认可。
+
 ## 最新：固定地图美术方向与工业场地（2026-10-18）
 
 唯一玩家可见目标：把当前 Demo 地图替换为与《明日方舟》相近的正向斜俯视工业战术场地，并把方向写成不可随意替换的规则。GDD/AGENTS/美术规范同步；不以测试通过代替人类风格认可。

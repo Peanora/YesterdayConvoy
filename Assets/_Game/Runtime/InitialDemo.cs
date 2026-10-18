@@ -30,6 +30,7 @@ namespace YesterdayConvoy
         private Font font;
         private bool ownsFont;
         private GUIStyle titleStyle, textStyle, smallStyle, buttonStyle;
+        private DemoCardView cardView;
 
         public DemoOutcome Outcome { get; private set; }
         public float Health { get; private set; }
@@ -126,14 +127,21 @@ namespace YesterdayConvoy
             EnsureStyles();
             Matrix4x4 previousMatrix = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(Screen.width / 1280f, Screen.height / 720f, 1));
-            Panel(new Rect(22, 20, 1236, 88), new Color(0.06f, 0.09f, 0.12f, 0.96f));
-            GUI.Label(new Rect(42, 30, 750, 38), "昨日圆车  /  就这？进攻小队", titleStyle);
-            GUI.Label(new Rect(44, 73, 740, 26), "红门出发 → 穿过防御塔射程 → 突破蓝门", smallStyle);
-            GUI.Label(new Rect(950, 40, 280, 32), $"蓝门防御  {GateDefense} / {initialDefense}", textStyle);
+            Panel(new Rect(0,0,1280,66),new Color(0.035f,0.05f,0.065f,0.92f));
+            GUI.Label(new Rect(26,17,340,32),"昨日圆车  /  工业防线",textStyle);
+            Panel(new Rect(531,0,218,66),new Color(0.08f,0.13f,0.17f,0.98f));
+            // Geometric shield mark, readable without relying on an optional symbol glyph.
+            Panel(new Rect(549,17,25,23),new Color(0.42f,0.78f,0.91f));
+            Panel(new Rect(553,40,17,5),new Color(0.42f,0.78f,0.91f));
+            Panel(new Rect(558,45,7,4),new Color(0.42f,0.78f,0.91f));
+            Panel(new Rect(554,21,15,14),new Color(0.08f,0.13f,0.17f));
+            GUI.Label(new Rect(589,4,135,23),"守方防御",smallStyle);
+            GUI.Label(new Rect(590,25,150,36),$"{GateDefense} / {initialDefense}",titleStyle);
+            GUI.Label(new Rect(1083,20,170,26),"红门 → 蓝门",smallStyle);
 
             if (monster.gameObject.activeSelf)
             {
-                Vector3 screen = Camera.main.WorldToScreenPoint(monster.position + Vector3.up * 1.85f);
+                Vector3 screen = Camera.main.WorldToScreenPoint(monster.position + Camera.main.transform.up * 1.85f);
                 if (screen.z > 0)
                 {
                     float x = screen.x * 1280f / Screen.width, y = 720 - screen.y * 720f / Screen.height;
@@ -142,26 +150,28 @@ namespace YesterdayConvoy
                     GUI.Label(new Rect(x - 60, y - 25, 140, 25), $"{Health:0} / {runMaxHealth:0}", smallStyle);
                 }
             }
-            WorldLabel(redGate.position + Vector3.up * 2.2f, "红门 · 出发");
-            WorldLabel(blueGate.position + Vector3.up * 2.2f, "蓝门 · 突破目标");
-            WorldLabel(tower.position + Vector3.up * 2.4f, "臭脸防御炮");
+            WorldLabel(redGate.position, "出发");
+            WorldLabel(blueGate.position, "突破目标");
 
-            Panel(new Rect(22, 605, 1236, 94), new Color(0.06f, 0.09f, 0.12f, 0.96f));
+            Panel(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
+            Panel(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
             string result = Outcome == DemoOutcome.Ready ? "准备进攻" : Outcome == DemoOutcome.Running ? "进攻进行中" :
                 Outcome == DemoOutcome.Breached ? $"突破蓝门！本次扣除 {definition.GateDamage} 点防御" : "进攻失败：怪物被防御塔击败";
-            GUI.Label(new Rect(42, 613, 760, 30), result, textStyle);
-            GUI.Label(new Rect(42, 654, 200, 24), $"怪物生命  {selectedHealth:0}", smallStyle);
+            GUI.Label(new Rect(26,565,820,30),result,textStyle);
+            GUI.Label(new Rect(26,611,160,25),$"怪物生命  {selectedHealth:0}",smallStyle);
             bool previousEnabled = GUI.enabled;
             GUI.enabled = Outcome != DemoOutcome.Running;
-            selectedHealth = Mathf.Round(GUI.HorizontalSlider(new Rect(220, 660, 210, 20), selectedHealth, 30, 140));
+            selectedHealth = Mathf.Round(GUI.HorizontalSlider(new Rect(177,619,155,20),selectedHealth,30,140));
             if (Outcome == DemoOutcome.Ready) runMaxHealth = Health = selectedHealth;
-            GUI.Label(new Rect(452, 651, 510, 25), $"塔已攻击 {ShotsFired} 次  ·  降低生命可观察失败", smallStyle);
+            GUI.Label(new Rect(26,663,335,25),$"防御塔已攻击 {ShotsFired} 次",smallStyle);
             Color background = GUI.backgroundColor;
-            GUI.backgroundColor = new Color(1, 0.75f, 0.28f);
-            if (GUI.Button(new Rect(1030, 622, 205, 58), Outcome == DemoOutcome.Ready ? "开始进攻" : Outcome == DemoOutcome.Running ? "进攻中…" : "重新开始", buttonStyle))
+            GUI.backgroundColor = new Color(0.55f,0.81f,0.89f);
+            if (GUI.Button(new Rect(386,607,180,58),Outcome == DemoOutcome.Ready ? "开始进攻" : Outcome == DemoOutcome.Running ? "进攻中…" : "重新开始",buttonStyle))
                 BeginAttack(selectedHealth);
             GUI.backgroundColor = background;
             GUI.enabled = previousEnabled;
+            if(cardView==null)cardView=FindAnyObjectByType<DemoCardView>();
+            if(cardView!=null)cardView.DrawRoster();
             GUI.matrix = previousMatrix;
         }
 
@@ -175,7 +185,11 @@ namespace YesterdayConvoy
             titleStyle = new GUIStyle(textStyle) { fontSize = 27, fontStyle = FontStyle.Bold };
             smallStyle = new GUIStyle(textStyle) { fontSize = 16 };
             buttonStyle = new GUIStyle(GUI.skin.button) { font = font, fontSize = 22, fontStyle = FontStyle.Bold };
-            buttonStyle.normal.textColor = Color.black;
+            foreach(GUIStyleState state in new[]{buttonStyle.normal,buttonStyle.hover,buttonStyle.active,buttonStyle.focused})
+            {
+                state.background=Texture2D.whiteTexture;
+                state.textColor=new Color(0.025f,0.06f,0.08f);
+            }
         }
 
         private static void Panel(Rect rect, Color color)
@@ -190,13 +204,17 @@ namespace YesterdayConvoy
         {
             Vector3 point = Camera.main.WorldToScreenPoint(position);
             if (point.z > 0)
-                GUI.Label(new Rect(point.x * 1280f / Screen.width - 70, 720 - point.y * 720f / Screen.height - 15, 160, 28), label, smallStyle);
+                GUI.Label(new Rect(point.x * 1280f / Screen.width - 32, 720 - point.y * 720f / Screen.height + 12, 100, 28), label, smallStyle);
         }
 
         private IEnumerator VerifyDemo(string directory)
         {
             if (directory != null)
             {
+                Directory.CreateDirectory(directory);
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(directory,"hud-ready.png"));
+                yield return null;
                 Time.timeScale = 0;
                 BeginAttack(100);
                 Simulate(2.4f / definition.MoveSpeed);
@@ -252,7 +270,11 @@ namespace YesterdayConvoy
             {
                 if (!captured && ShotsFired > 0)
                 {
-                    if (directory != null) CaptureCamera(directory, "demo-action.png");
+                    if (directory != null)
+                    {
+                        CaptureCamera(directory,"demo-action.png");
+                        ScreenCapture.CaptureScreenshot(Path.Combine(directory,"hud-action.png"));
+                    }
                     captured = true;
                 }
                 yield return null;
@@ -261,6 +283,12 @@ namespace YesterdayConvoy
             int settled = GateDefense;
             Simulate(10);
             bool once = GateDefense == settled;
+            if(directory!=null)
+            {
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(directory,"hud-breached.png"));
+                yield return null;
+            }
             BeginAttack(100);
             while (Outcome == DemoOutcome.Running && Time.realtimeSinceStartup - start < 25)
                 yield return null;
