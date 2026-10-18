@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+## 2026-10-19 M01新增两张AI同人原型
+
+`kroos-battle.png`与`wisadel-attack.png`由OpenAI内置image_gen以本工程认可角色画风生成，分别参考用户指定的克洛丝和维什戴尔。非CC0，未获得第三方角色正式发行授权，不把输出归属等同角色许可；未抓取商业游戏原图。具体源文件/原始提示词/实际使用/验证见[GENERATION-2026-10-19.md](GENERATION-2026-10-19.md)。本轮仅本地原型，未新推送/公开发布。基础SFX复用Kenney UI Audio click1与RPG Audio metalClick（既有CC0/许可文件不变）。
+
 当前地图补充（2026-10-18）：
 - 工业环境模型与共用贴图：**Quaternius — Modular Sci-Fi MegaKit, Standard**，CC0；https://quaternius.itch.io/modular-sci-fi-megakit 。选用围墙、箱体、控制台、通风件和围栏，适配 Built-in 材质。
 - 地面材质：**ambientCG — Concrete034 / Asphalt012**，CC0；https://ambientcg.com/view?id=Concrete034 、https://ambientcg.com/view?id=Asphalt012 ，许可 https://docs.ambientcg.com/license/ 。

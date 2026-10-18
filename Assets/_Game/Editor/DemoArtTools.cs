@@ -116,7 +116,7 @@ namespace YesterdayConvoy.Editor
             if (GameObject.Find(TacticalMapTools.RootName) != null) TacticalMapTools.ValidatePresentation();
         }
 
-        private static Sprite ImportSprite(string path, float visibleHeight)
+        public static Sprite ImportSprite(string path, float visibleHeight)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);

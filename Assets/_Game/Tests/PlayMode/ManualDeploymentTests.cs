@@ -18,6 +18,7 @@ namespace YesterdayConvoy.Tests
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
             var controller=Object.FindAnyObjectByType<ManualBattleController>();
+            controller.UseDeploymentDiagnostic();
             var source=Object.FindAnyObjectByType<InitialDemo>();
             ManualBattle battle=controller.Battle;
             Assert.That(controller.enabled,Is.True); Assert.That(source.enabled,Is.False);
@@ -63,6 +64,7 @@ namespace YesterdayConvoy.Tests
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
             var controller=Object.FindAnyObjectByType<ManualBattleController>();
+            controller.UseDeploymentDiagnostic();
             ManualBattle battle=controller.Battle;
             controller.SelectCard(true);
             for(int attempt=0;attempt<4;attempt++)

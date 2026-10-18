@@ -12,6 +12,10 @@ namespace YesterdayConvoy
     {
         [SerializeField] private InitialDemo scene;
         [SerializeField] private ManualBattleDefinition definition;
+        [SerializeField] private AudioClip uiSound, hitSound;
+        private EngagementView combatView;
+        private string selectedEntityId;
+        private bool diagnostic;
         private readonly Dictionary<string, Transform> views = new Dictionary<string, Transform>();
         private readonly List<string> removed = new List<string>();
         private DemoCardView cardView;
@@ -25,17 +29,24 @@ namespace YesterdayConvoy
         public bool Selected { get; private set; }
         public string Feedback { get; private set; } = "点击底部角色卡，再点击红门部署";
         public int ViewCount => views.Count;
+        public float SimulationSpeed { get; private set; } = 1;
+        public bool Muted { get; private set; }
+        public string SelectedEntityId => selectedEntityId;
+        public EngagementView CombatView => combatView;
 
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
+            diagnostic = Application.isBatchMode || Array.IndexOf(args,"-deploymentSmokeTest") >= 0 || Array.IndexOf(args,"-combatSmokeTest") >= 0;
             if (Array.IndexOf(args,"-demoSmokeTest") >= 0) { UseLegacyPreview(); return; }
             ValidateConfiguration();
             scene.enabled = false;
             scene.Monster.gameObject.SetActive(false);
             cardView = FindAnyObjectByType<DemoCardView>();
-            Battle = new ManualBattle(definition.Snapshot(),scene.Waypoints,scene.Tower.position);
+            bool combat = definition.Engagement != null && Array.IndexOf(args,"-deploymentSmokeTest") < 0;
+            Battle = CreateBattle(combat);
             CreatePreview();
+            if (combat) EnableCombatView();
             if(Array.IndexOf(args,"-deploymentSmokeTest") >= 0)
             {
                 Application.runInBackground = true;
@@ -43,6 +54,32 @@ namespace YesterdayConvoy
                 string directory=index>=0 && index+1<args.Length ? args[index+1] : null;
                 StartCoroutine(VerifyManualBattle(directory));
             }
+            if(Array.IndexOf(args,"-combatSmokeTest") >= 0)
+            {
+                Application.runInBackground = true;
+                int index=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyEngagement(index>=0 && index+1<args.Length ? args[index+1] : null));
+            }
+        }
+
+        private ManualBattle CreateBattle(bool combat) => combat
+            ? new ManualBattle(definition.Snapshot(),scene.Waypoints,definition.Engagement.DefenderPosition,definition.Engagement.Snapshot())
+            : new ManualBattle(definition.Snapshot(),scene.Waypoints,scene.Tower.position);
+
+        private void EnableCombatView()
+        {
+            scene.Tower.gameObject.SetActive(false);
+            var range=GameObject.Find("Tower Range"); if(range!=null) range.SetActive(false);
+            combatView=new GameObject("Kroos engagement presentation").AddComponent<EngagementView>();
+            combatView.Initialize(this,definition.Engagement,uiSound,hitSound);
+        }
+
+        public void UseDeploymentDiagnostic()
+        {
+            diagnostic=true; ClearViews();
+            if(combatView!=null) { combatView.gameObject.SetActive(false); Destroy(combatView.gameObject); }
+            scene.Tower.gameObject.SetActive(true);
+            Battle=CreateBattle(false); selectedEntityId=null; Selected=false;
         }
 
         public void ValidateConfiguration()
@@ -56,6 +93,8 @@ namespace YesterdayConvoy
         public void UseLegacyPreview()
         {
             enabled = false;
+            if(combatView!=null) { combatView.gameObject.SetActive(false); Destroy(combatView.gameObject); }
+            scene.Tower.gameObject.SetActive(true);
             scene.Monster.gameObject.SetActive(true);
             scene.enabled = true;
         }
@@ -82,6 +121,7 @@ namespace YesterdayConvoy
         public void RestartBattle()
         {
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
+            selectedEntityId=null; SimulationSpeed=1;
             scene.ShotBeam.enabled=false; Feedback="点击底部角色卡，再点击红门部署";
         }
 
@@ -89,9 +129,16 @@ namespace YesterdayConvoy
         {
             if(Battle==null) return;
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
+            if(Input.GetKeyDown(KeyCode.Alpha1)) SelectCard(true);
+            if(Input.GetKeyDown(KeyCode.E)) ActivateSelectedSkill();
             if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) SelectCard(false);
             if(Input.GetMouseButtonDown(0) && PointerOnBattlefield() && TryPointerGround(out Vector3 point)) TryDeployAt(point);
-            Battle.Advance(Time.deltaTime);
+            Tick(Time.deltaTime);
+        }
+
+        public void Tick(float delta)
+        {
+            Battle.Advance(delta*SimulationSpeed);
             SyncViews();
             UpdatePreview();
         }
@@ -133,13 +180,13 @@ namespace YesterdayConvoy
                     // A template used by a diagnostic may own generated cutouts; each new view owns its own rig.
                     foreach(Transform child in visual.transform)
                     { child.gameObject.SetActive(false); Destroy(child.gameObject); }
-                    visual.Bind(Battle,unit);
+                    visual.Bind(Battle,unit,Battle.EngagementEnabled ? definition.Engagement.WisadelAttackSprite : null);
                     views.Add(unit.EntityId,view);
                     clone.SetActive(true);
                 }
                 view.position=unit.Motion.Position;
             }
-            bool beam=Battle.Phase==BattlePhase.Running && Battle.Clock<Battle.LastShotTime+0.18;
+            bool beam=!Battle.EngagementEnabled && Battle.Phase==BattlePhase.Running && Battle.Clock<Battle.LastShotTime+0.18;
             scene.ShotBeam.enabled=beam;
             if(beam)
             {
@@ -149,7 +196,23 @@ namespace YesterdayConvoy
                 scene.ShotBeam.SetPosition(1,Battle.LastShotPosition+Vector3.up*0.65f);
             }
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) Selected=false;
+            var selectedUnit=Battle.FindUnit(selectedEntityId);
+            if(Battle.EngagementEnabled && (selectedUnit==null || !selectedUnit.Active))
+            { selectedEntityId=null; foreach(var unit in Battle.Units) if(unit.Active) { selectedEntityId=unit.EntityId; break; } }
         }
+
+        public void SelectSkillUnit(string id) { if(Battle.FindUnit(id)?.Active==true) selectedEntityId=id; }
+        public SkillFailure ActivateSelectedSkill()
+        {
+            SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
+            Feedback=result==SkillFailure.None ? "爆裂黎明已开启：强化炮击弹药装填完成" :
+                result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
+                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : "请先选择场上的维什戴尔";
+            return result;
+        }
+        public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
+        private void OnApplicationFocus(bool focus)
+        { if(!focus && !diagnostic && Battle!=null) Battle.SetPaused(true); }
 
         private void CreatePreview()
         {
@@ -203,7 +266,13 @@ namespace YesterdayConvoy
             Fill(new Rect(554,21,15,14),new Color(0.08f,0.13f,0.17f));
             GUI.Label(new Rect(589,4,135,23),"守方防御",smallStyle);
             GUI.Label(new Rect(590,25,150,36),$"{Battle.Defense} / {Battle.Settings.InitialDefense}",numberStyle);
-            GUI.Label(new Rect(788,20,240,28),$"场上 {Battle.ActiveCount}  ·  穿门 {Battle.Breaches}",smallStyle);
+            GUI.Label(new Rect(770,20,150,28),$"场上 {Battle.ActiveCount}  ·  穿门 {Battle.Breaches}",smallStyle);
+            if(Battle.EngagementEnabled)
+            {
+                if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) Muted=!Muted;
+                if(GUI.Button(new Rect(1002,14,76,38),SimulationSpeed+"x",buttonStyle)) ToggleSpeed();
+                DrawDefenderHUD();
+            }
             bool controls=Battle.Phase==BattlePhase.Running;
             GUI.enabled=controls;
             if(GUI.Button(new Rect(1090,14,160,38),Battle.IsPaused ? "继续  [空格]" : "暂停  [空格]",buttonStyle)) Battle.SetPaused(!Battle.IsPaused);
@@ -221,14 +290,47 @@ namespace YesterdayConvoy
             string status=Battle.Phase==BattlePhase.Won ? "进攻成功！守方防御归零" : Battle.Phase==BattlePhase.Lost ? "进攻失败：场上清空，已无可用部署资源" :
                 Battle.IsPaused ? "战术暂停：可选牌和预览，恢复后点击红门部署" : Feedback;
             GUI.Label(new Rect(26,565,870,32),status,textStyle);
-            GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
+            if(!Battle.EngagementEnabled) GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
             string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
-            GUI.Label(new Rect(26,651,410,26),cooldown+"  ·  右键取消选牌",smallStyle);
-            if(GUI.Button(new Rect(474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新挑战",buttonStyle))
+            GUI.Label(new Rect(26,Battle.EngagementEnabled ? 589 : 651,Battle.EngagementEnabled ? 850 : 540,26),
+                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  [1]选牌 / 右键取消" : cooldown+"  ·  [1]选牌 / 右键取消",smallStyle);
+            if(Battle.EngagementEnabled) DrawSkills();
+            if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
             if(cardView!=null && cardView.DrawRoster(Battle,Selected)) SelectCard(!Selected);
             GUI.backgroundColor=oldBackground;
             GUI.matrix=old;
+        }
+
+        private void DrawDefenderHUD()
+        {
+            var d=Battle.Defender;
+            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.95f);
+            float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
+            if(!d.Alive) return;
+            GUI.Label(new Rect(x-70,y-23,180,24),$"克洛丝  阻挡 {d.BlockedCount}/{Battle.CombatSettings.BlockCount}",smallStyle);
+            Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
+            Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
+        }
+
+        private void DrawSkills()
+        {
+            int index=0;
+            foreach(var unit in Battle.Units)
+            {
+                if(!unit.Active)continue;
+                string charge=unit.SkillAmmo>0 ? $"弹药 {unit.SkillAmmo}/6" : $"技力 {unit.SkillSP:0}/{Battle.CombatSettings.RequiredSP:0}";
+                string label=(unit.EntityId==selectedEntityId ? "▶ " : "")+$"{index+1:00}  {charge}";
+                if(GUI.Button(new Rect(26+index*190,616,181,32),label,buttonStyle)) SelectSkillUnit(unit.EntityId);
+                index++;
+            }
+            var selected=Battle.FindUnit(selectedEntityId);
+            string info=selected==null ? "部署后选择实体，技力满后按 E 释放" :
+                selected.SkillAmmo>0 ? "爆裂黎明生效中；弹药用尽后重新回复技力" : "技力自动回复，与部署费用无关";
+            GUI.Label(new Rect(26,661,540,27),info,smallStyle);
+            GUI.enabled=Battle.CheckSkill(selectedEntityId)==SkillFailure.None;
+            if(GUI.Button(new Rect(580,649,245,44),"爆裂黎明  [E]",buttonStyle)) ActivateSelectedSkill();
+            GUI.enabled=true;
         }
 
         private void EnsureStyles()
@@ -319,6 +421,57 @@ namespace YesterdayConvoy
             bool pass=invalid && cooldown && paused && deployed && waits && won && once && reset && lost;
             Debug.Log($"MANUAL_BATTLE_CHECK: invalid={invalid}; cooldown={cooldown}; paused={paused}; deployed={deployed}; waitForUnits={waits}; won={won}; gateOnce={once}; reset={reset}; lost={lost}.");
             Application.Quit(pass ? 0 : 1);
+        }
+
+        private IEnumerator VerifyEngagement(string directory)
+        {
+            Time.timeScale=0;
+            if(directory!=null) { Directory.CreateDirectory(directory); yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"combat-ready.png")); yield return null; }
+            SelectCard(true);
+            int dp=Battle.DP;
+            bool invalid=!TryDeployAt(scene.BlueGate.position).Success && Battle.DP==dp;
+            TryDeployAt(Battle.Entry); Tick(0.5f);
+            bool initial=ActivateSelectedSkill()==SkillFailure.NotReady && Battle.DP==dp-Battle.Settings.DeploymentCost;
+            Battle.SetPaused(true);
+            double clock=Battle.Clock; float sp=Battle.Units[0].SkillSP;
+            Tick(5);
+            bool paused=Battle.Clock==clock && Battle.Units[0].SkillSP==sp && ActivateSelectedSkill()==SkillFailure.Paused;
+            RestartBattle(); SelectCard(true); TryDeployAt(Battle.Entry);
+            bool stopped=false, manual=false, captured=false;
+            int deployed=1;
+            for(int i=0;i<2000 && Battle.Phase==BattlePhase.Running;i++)
+            {
+                Tick(0.05f);
+                if(deployed<4 && Battle.Clock+0.00001>=deployed*2 && TryDeployAt(Battle.Entry).Success) deployed++;
+                foreach(var unit in Battle.Units)
+                {
+                    stopped |= unit.Active && unit.HasCombatTarget && !unit.IsMoving;
+                    if(Battle.CheckSkill(unit.EntityId)==SkillFailure.None)
+                    { SelectSkillUnit(unit.EntityId); manual |= ActivateSelectedSkill()==SkillFailure.None; }
+                }
+                yield return null;
+                if(directory!=null && !captured && Battle.CombatShots.Count>=3)
+                { captured=true; yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"combat-fighting.png")); yield return null; }
+            }
+            bool killed=!Battle.Defender.Alive;
+            bool won=Battle.Phase==BattlePhase.Won && Battle.Defense==0;
+            int breaches=Battle.Breaches; Tick(20);
+            bool once=Battle.Breaches==breaches;
+            if(directory!=null) { yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"combat-won.png")); yield return null; }
+            RestartBattle();
+            bool reset=Battle.Defender.Alive && Battle.Defender.Health==Battle.CombatSettings.DefenderHealth && Battle.SkillCasts==0 && Battle.CombatShots.Count==0 && Battle.Units.Count==0 && !Battle.IsPaused;
+            SelectCard(true);
+            for(int attempt=0;attempt<4;attempt++)
+            {
+                TryDeployAt(Battle.Entry);
+                for(int i=0;i<1000 && Battle.ActiveCount>0 && Battle.Phase==BattlePhase.Running;i++) { Tick(0.05f); yield return null; }
+            }
+            bool lost=Battle.Phase==BattlePhase.Lost && Battle.Defender.Alive && Battle.ActiveCount==0;
+            if(directory!=null) { yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"combat-lost.png")); yield return null; }
+            Time.timeScale=1;
+            bool pass=invalid && initial && paused && stopped && manual && killed && won && once && reset && lost;
+            Debug.Log($"ENGAGEMENT_CHECK: invalid={invalid}; initialSP={initial}; paused={paused}; stopped={stopped}; manual={manual}; killed={killed}; won={won}; gateOnce={once}; reset={reset}; lost={lost}.");
+            Application.Quit(pass?0:1);
         }
     }
 }

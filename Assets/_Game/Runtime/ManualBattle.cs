@@ -39,6 +39,14 @@ namespace YesterdayConvoy
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool Active => Resolution == UnitResolution.Active;
+        public bool IsBlocked { get; internal set; }
+        public bool HasCombatTarget { get; internal set; }
+        public bool IsMoving { get; internal set; } = true;
+        public float SkillSP { get; internal set; }
+        public int SkillAmmo { get; internal set; }
+        public int SkillsUsed { get; internal set; }
+        public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
+        internal double NextAttackTime;
 
         internal DeployedUnitState(string id, string unitId, RouteMotion motion, float health, double spawnTime)
         { EntityId = id; UnitId = unitId; Motion = motion; Health = health; SpawnTime = spawnTime; }
@@ -53,7 +61,7 @@ namespace YesterdayConvoy
     }
 
     /// <summary>Owns one card's transactions and all entity state. No Unity frame clock, asset writes or scene objects.</summary>
-    public sealed class ManualBattle
+    public sealed partial class ManualBattle
     {
         public const float EntryRadius = 0.65f;
         public const float EntryClearance = 0.32f;
@@ -83,9 +91,10 @@ namespace YesterdayConvoy
         public double CooldownRemaining => Math.Max(0, nextDeploymentTime - Clock);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null)
         {
             Settings = settings;
+            engagement = combat;
             // Reuse the existing route validation and take our own route snapshot.
             _ = new RouteMotion(waypoints, settings.Speed);
             route = new Vector3[waypoints.Count];
@@ -103,6 +112,7 @@ namespace YesterdayConvoy
             Clock = nextDeploymentTime = nextShotTime = 0;
             ShotsFired = Breaches = 0; LastShotEntityId = null; LastShotTime = double.NegativeInfinity;
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
+            ResetEngagement();
         }
 
         public void Begin()
@@ -143,6 +153,7 @@ namespace YesterdayConvoy
             var motion = new RouteMotion(route, Settings.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
+            if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             // Commit together only after all preconditions and entity initialization succeed.
             units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;
             nextDeploymentTime = Clock + Settings.Cooldown;
@@ -161,6 +172,14 @@ namespace YesterdayConvoy
             {
                 float step = (float)Math.Min(0.05, remaining);
                 remaining -= step; Clock += step;
+                if (EngagementEnabled)
+                {
+                    StepEngagement(step);
+                    EvaluateEnd();
+                    if(Phase==BattlePhase.Won || Phase==BattlePhase.Lost)
+                        foreach(var shot in combatShots) if(!shot.Resolved) shot.Resolved=true;
+                    continue;
+                }
                 foreach (var unit in units)
                 {
                     if (!unit.Active) continue;

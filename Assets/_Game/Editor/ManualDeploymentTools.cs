@@ -42,6 +42,8 @@ namespace YesterdayConvoy.Editor
             var controller=UnityEngine.Object.FindAnyObjectByType<ManualBattleController>();
             if(controller==null || !controller.enabled)throw new InvalidOperationException("Manual deployment controller missing or disabled.");
             controller.ValidateConfiguration();
+            var definition = AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(DefinitionPath);
+            if (definition.Engagement != null) EngagementTools.Validate(definition.Engagement);
             Debug.Log("MANUAL_BATTLE_CONFIG_PASS: one card; read-only trial definition; existing route and art.");
         }
     }

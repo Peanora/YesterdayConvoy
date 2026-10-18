@@ -1,8 +1,8 @@
 # 昨日圆车
 
-Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：点击角色卡、从红门分批部署同种怪物，防御塔自动攻击；蓝门防御归零通关，资源耗尽且场上清空失败，可以重新挑战。
+Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什戴尔从红门分批出兵，与克洛丝停步交战，技力满后手动开启爆裂黎明，击杀干员后继续穿门；防御归零胜利，进攻资源耗尽且空场失败，可重新开始。
 
-当前保留用户认可的像素感角色、臭脸防御炮和卡面；地图为铺满背景的低饱和工业场地、方格高台与红蓝线框入口。顶部显示战斗费用、防御、场上数量，底部角色卡可选中，显示部署费、次数与冷却。地图必须与《明日方舟》风格相近，见圣经第 9 节；[手动部署功能实机图](docs/art/previews/manual-deployment-v1.png)。环境来源与许可见 [来源调查](docs/art/ASSET_SOURCES.md)。当前卡牌招募费仍为 5，本关试验部署费为 2；商店与拖拽部署未实现。角色生成记录见 [生成记录](docs/art/GENERATION-2026-10-17.md)。
+保留认可卡面/步态和全画幅工业地图；新增克洛丝与持炮姿势，来源见[本轮生成记录](docs/art/GENERATION-2026-10-19.md)。[当前完整实机图](docs/art/previews/engagement-v1.png)。招募费5与部署费2分别显示；商店、升星、羁绊和多关经济尚未实现。
 
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
@@ -13,13 +13,13 @@ Unity 工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩：点击�
 
 本仓库包含 Unity 源工程，`Builds` 试玩包和 `Library` 缓存不纳入 Git。首次从 GitHub 下载：使用 Git 克隆（或下载 ZIP 并解压），在 Unity Hub 中添加含 `Assets`、`Packages`、`ProjectSettings` 的项目根文件夹，以 **6000.6.5f1** 打开，等待导入后按下面的方法运行。美术文件使用普通 Git 保存，无需 Git LFS。
 
-本机可双击 `Builds/Windows/YesterdayConvoy.exe`。**点击右下角角色卡，再点击地图左侧红门**；第一次合法部署会开始作战，也可以先点“开始作战”。卡牌保持选中，可在每次 2 秒冷却结束后继续点红门。空格/顶部按钮暂停恢复，右键/Esc 取消选牌；暂停期间可预览，恢复后需再次点击红门确认，不会自动部署。
+本机可双击`Builds/Windows/YesterdayConvoy.exe`。点击右下角色卡（或按`1`），再点击左侧红门；CD结束后继续点红门部署。底栏`01/02…`选择场上实体，技力`12/12`时点“爆裂黎明”或按`E`，开启该实体独立六发强化弹；不扣DP，不会自动施放。空格暂停/恢复，暂停可选择、恢复后再次确认；右键/Esc取消选牌。顶部切1×/2×、音效静音；失焦自动暂停。“重新开始”恢复整关状态。
 
-本关试验值：初始费用 **8**，每次部署 **2**，最多 **6** 次（本关费用只够四次），蓝门防御 **3**，单只血量 **100**。费用不自然恢复。尽量紧凑地分批出怪；一只死后再送下一只会被逐个击败。防御归零显示进攻成功，场上清空且无可部署资源显示失败；点击“重新挑战”完整重置。当前不需要调生命滑块。
+试验值DP8/部署2/最多6次（费用够4次）/CD2秒/HP100/守方防御3，技力初始8/所需12/每秒1。建议CD好就连续部署四只，及时给场上实体开技能；逐只送出且不放技能会被克洛丝逐个击败。这是原型操作样例，不是正式平衡结论。
 
-在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式选牌部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`；仅需修复缺失绑定时才用 `Enable Manual Deployment` 菜单，重复执行不会覆盖已有参数。
+在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式选牌部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
 
-菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。当前使用像素感同系列美术与纸片关节动画；生命、塔攻击参数与布局为试验值。
+菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。当前使用像素感同系列美术与纸片关节动画；交战、技力与布局参数均为试验值。
 
 ## 命令行验证
 
@@ -30,10 +30,10 @@ New-Item -ItemType Directory -Path artifacts -Force | Out-Null
 $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 & $editorPath -batchmode -nographics -quit -projectPath "$PWD" -executeMethod YesterdayConvoy.Editor.BaselineTools.Validate -logFile "$PWD\artifacts\validate.log" | Out-Null
 & $editorPath -batchmode -nographics -quit -projectPath "$PWD" -executeMethod YesterdayConvoy.Editor.BaselineTools.BuildWindows -logFile "$PWD\artifacts\build-windows.log" | Out-Null
-& "$PWD\Builds\Windows\YesterdayConvoy.exe" -deploymentSmokeTest -demoEvidenceDir "$PWD\artifacts\manual-demo" -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
+& "$PWD\Builds\Windows\YesterdayConvoy.exe" -combatSmokeTest -demoEvidenceDir "$PWD\artifacts\manual-demo" -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
 ```
 
-检查退出码及 `MANUAL_BATTLE_CONFIG_PASS`、`BASELINE_BUILD_PASS`、`MANUAL_BATTLE_CHECK`（九项均 True），不能仅以文件存在判断通过。当前脚本执行非法部署、CD、暂停、多个实体、等待场上结算、胜利、穿门幂等、重试和失败。带采图参数时，完整 HUD 的 ScreenCapture 需要可见窗口；隐藏窗口可能是黑图，必须实际查看。`-demoSmokeTest` 仍是旧单怪动画/渲染诊断，不代表当前正常玩法；旧 Bootstrap 的移动诊断保留。
+检查实际退出码及`ENGAGEMENT_CONFIG_PASS`、`BASELINE_BUILD_PASS`、`ENGAGEMENT_CHECK`十项全True。当前检查停步、技力/手动技能、干员死亡、继续穿门、胜负、暂停、幂等与重开；带采图参数时完整HUD的ScreenCapture需要可见窗口，必须实际查看。`-deploymentSmokeTest`是旧单向攻击九项诊断，`-demoSmokeTest`是旧单怪五项动画诊断，不代表正常入口玩法。
 
 提交 Assets、Packages、ProjectSettings、文档与必要 `.meta`；Library、Logs、UserSettings、Builds、artifacts 等本地生成物已忽略。每个可运行功能验收后本地提交，远端推送和发布另按用户授权。
 
@@ -42,8 +42,8 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 - [10月20日第5周验收准备](docs/course/WEEK5_PREPARATION.md)：本次课程准备稿、真实分工和剩余清单；完整6–10关游戏为后续目标。
 - [美术资源进度与实物验证](docs/art/ART_PROGRESS.md)、[风格路线](docs/art/ART_STYLE_GUIDE.md)、[素材清单 CSV](docs/art/ASSET_MANIFEST.csv)、[Credits](docs/art/CREDITS.md)：当前地图实际使用 12 个外部 CC0 文件，原有角色/资源库保留，清单注明各自验证范围。
 - [圣经 / GDD](docs/GDD.md)：已定规则、建议、待定项以及四条强制开发原则。
-- [待做清单与规则填写表](docs/PLANNING_CHECKLIST.md)：A组已回填，其余按功能阶段补充；推荐方案未自动生效。
-- [后续规则详细填写](docs/proposals/RULES_FOLLOWUP.md)：A组答案已回填，继续回答战斗边界与B01–B10经济问题；新干员交战/多门规则尚未实现。
+- [待做清单与规则填写表](docs/PLANNING_CHECKLIST.md)：A/X/B/C–F与M01/G01已回填，剩余数值/角色由委托设计与后续指定；推荐未自动生效。
+- [后续规则详细填写](docs/proposals/RULES_FOLLOWUP.md)：保留原提问并回填战斗/经济答案；多门/经济尚未实现，交战以STATUS为准。
 - [工程决策](docs/DECISIONS.md)：用户确认与技术假设分别记录。
 - [已完成建项 T00](docs/tasks/T00.md)：唯一目标及验收标准。
 - [规则文档任务 R01](docs/tasks/R01.md)、[确认同步 R02](docs/tasks/R02.md)；[商店规范](docs/proposals/SHOP-v0.1.md) 的概率、返库与缺货核心规则已确认，尚未实现。
@@ -55,4 +55,4 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 入口如何连接
 
-`ManualBattleDefinition` 保存只读试验值与卡牌引用，`ManualBattle` 创建独立费用/次数/CD/实体状态，复用 `RouteMotion` 移动并统一推进塔攻击和结算。`ManualBattleController` 将选牌/入口点击转换为部署请求，实例化独立视觉并绘制 HUD；`DemoSpriteVisual`/`DemoWalkPuppet` 只读取各实体运动与同一模拟时钟。原 `InitialDemo` 保存场景绑定和历史单怪诊断，普通入口由控制器接管。Editor 与测试程序集不进入 Player。
+`ManualBattleDefinition`与`EngagementDefinition`保存只读试验配置；`ManualBattle`/`EngagementCombat`维护独立单位、干员生命/目标、SP/弹药和弹道命中。`ManualBattleController`连接输入、HUD与实体视觉；`DemoSpriteVisual`/`DemoWalkPuppet`和`EngagementView`只读取同一模拟时钟展示步态/持炮/弹道/受击/死亡。原`InitialDemo`保留场景引用和历史诊断。Editor与测试程序集不进入Player。

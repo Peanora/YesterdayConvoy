@@ -8,6 +8,7 @@ namespace YesterdayConvoy
     {
         [SerializeField] private string levelId = "MANUAL_DEMO_01";
         [SerializeField] private CardDefinition card;
+        [SerializeField] private EngagementDefinition engagement;
         [Header("Trial values for the first single-card level; not final balance")]
         [SerializeField] private int initialDP = 8;
         [SerializeField] private int initialDefense = 3;
@@ -21,6 +22,7 @@ namespace YesterdayConvoy
 
         public string LevelId => levelId;
         public CardDefinition Card => card;
+        public EngagementDefinition Engagement => engagement;
         public ManualBattleSettings Snapshot()
         {
             if (string.IsNullOrWhiteSpace(levelId) || card == null || card.Unit == null || card.Portrait == null || card.BattleSprite == null)

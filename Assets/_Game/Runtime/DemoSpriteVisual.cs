@@ -18,6 +18,8 @@ namespace YesterdayConvoy
         private RouteMotion previousMotion;
         private ManualBattle manualBattle;
         private DeployedUnitState deployedUnit;
+        private Sprite attackSprite;
+        private SpriteRenderer attackPose;
 
         public SpriteRenderer Renderer => sprite;
         public DemoWalkPuppet Puppet => puppet;
@@ -44,9 +46,12 @@ namespace YesterdayConvoy
             {
                 bool combat = manualBattle.Phase == BattlePhase.Running;
                 float clock = (float)(manualBattle.Clock - deployedUnit.SpawnTime);
-                PresentMotion((float)deployedUnit.Motion.DistanceTravelled, clock, deployedUnit.Motion.Direction,
-                    combat && !manualBattle.IsPaused && deployedUnit.Active,
-                    combat && manualBattle.Clock < deployedUnit.LastHitTime + 0.18 ? new Color(1,0.48f,0.48f) : Color.white);
+                bool attacking = manualBattle.EngagementEnabled && deployedUnit.HasCombatTarget;
+                Vector3 direction = attacking ? manualBattle.Defender.Position - deployedUnit.Motion.Position : deployedUnit.Motion.Direction;
+                Color tint = combat && manualBattle.Clock < deployedUnit.LastHitTime + 0.18 ? new Color(1,0.48f,0.48f) : Color.white;
+                PresentMotion((float)deployedUnit.Motion.DistanceTravelled, clock, direction,
+                    combat && !manualBattle.IsPaused && deployedUnit.Active && deployedUnit.IsMoving, tint);
+                PresentAttack(attacking, direction, tint);
                 return;
             }
             if (movingDemo == null) { FaceCamera(); return; }
@@ -66,10 +71,32 @@ namespace YesterdayConvoy
                 time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white);
         }
 
-        public void Bind(ManualBattle battle, DeployedUnitState unit)
+        public void Bind(ManualBattle battle, DeployedUnitState unit, Sprite attackingSprite = null)
         {
             manualBattle = battle; deployedUnit = unit; movingDemo = null;
+            attackSprite = attackingSprite;
             if (idlePose == null) idlePose = sprite.sprite;
+        }
+
+        private void PresentAttack(bool attacking, Vector3 direction, Color tint)
+        {
+            if (attackSprite == null) return;
+            if (attackPose == null)
+            {
+                attackPose = new GameObject("Wisadel aiming pose", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+                attackPose.transform.SetParent(transform, false);
+                attackPose.sprite = attackSprite;
+            }
+            attackPose.enabled = attacking;
+            if (!attacking) return;
+            puppet?.Hide(); sprite.enabled = false;
+            float face = Camera.main.transform.InverseTransformDirection(direction).x < 0 ? -1 : 1;
+            attackPose.flipX = face < 0;
+            float age = (float)(manualBattle.Clock - deployedUnit.LastAttackTime);
+            float recoil = age >= 0 && age < 0.3f ? 0.065f * Mathf.Exp(-age / 0.07f) : 0;
+            attackPose.transform.localPosition = new Vector3(-face * recoil, 0, 0);
+            attackPose.sortingOrder = sprite.sortingOrder + 30;
+            attackPose.color = tint;
         }
 
         // Read-only movement input. Also used by the isolated art preview; never writes the logical root.

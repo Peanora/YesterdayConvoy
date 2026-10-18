@@ -20183,6 +20183,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ManualBattleController
   scene: {fileID: 1156048913}
   definition: {fileID: 11400000, guid: eb04f2beb0f45a6488e7eab455989b9b, type: 2}
+  uiSound: {fileID: 8300000, guid: 3d0b29677c6248c48b19b58c902ae462, type: 3}
+  hitSound: {fileID: 8300000, guid: db93b074523fd784f91536acc881eaaf, type: 3}
 --- !u!1 &1166059545
 GameObject:
   m_ObjectHideFlags: 0

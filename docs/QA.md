@@ -1,5 +1,28 @@
 # 验证证据与回归
 
+## 2026-10-19：M01克洛丝交战与手动技力
+
+目标：在原部署闭环中完成范围交战/阻挡/干员死亡继续走，并通过各实体独立技力、手动六发炮击改变突破结果；保持原地图、行走和0.75速度。新配置/场景/两图已由Unity导入保存meta，无新依赖或引擎升级。
+
+| 实际验证 | 结果 | 本地证据（不提交Git） |
+| --- | --- | --- |
+| 配置导入/场景绑定 | 退出0；ENGAGEMENT_CONFIG_PASS，Sprite与音效引用有效 | artifacts/engagement/initialize-final.log |
+| 最终EditMode | 55/55通过，无失败/跳过；新增9项覆盖阻挡溢出/释放、停走、最低伤害、SP独立/手动/幂等、暂停、弹药用尽、死亡取消、重开旧请求 | editmode-final.xml / editmode-final.log，同目录 |
+| 最终真实GPU PlayMode | 14/14通过，0跳过；新增3项真实场景验证技能杀干员后继续走/胜利/重开、统一时钟2倍速与暂停、无技能逐只部署失败；旧720/1440遮挡/步态回归仍通过 | playmode-final.xml / playmode-final.log |
+| Windows x64 Development/Mono | 构建成功253842305字节、0错误，进程退出0 | build-final.log，BASELINE_BUILD_PASS |
+| 真实图形Player | Direct3D12，退出0；invalid/initialSP/paused/stopped/manual/killed/won/gateOnce/reset/lost十项全部True | player.log，ENGAGEMENT_CHECK |
+| 旧部署/动画诊断兼容 | 分别9项和5项全True、各退出0；显式诊断路径，不等同正常交战入口 | deployment-regression.log / animation-regression.log |
+| 完整HUD图像 | 可见Player采集ready/fighting/won/lost四张1280×720，已逐张查看：原炮隐藏、克洛丝/攻击图/血条/每实体SP弹药/顶部资源及终局可读 | player/combat-*.png；交战图复制到docs/art/previews/engagement-v1.png |
+| 实际窗口输入 | 已点击/按键验证1选牌、红门扣费生成、空格暂停恢复、暂停按E拒绝且SP保持、2倍速、静音、重开恢复8DP/3防/清实体/1倍速 | 本轮Computer Use截图观察；无独立输入录像 |
+
+首次GPU PlayMode为13/14：失败用例终局已自动取消选牌，直接TryDeployAt先返回“未选牌”，测试却期待模型Finished。补足SelectCard前置条件后14/14通过，没有为迁就断言改玩法。初次额外Edit/构建启动命令未等待Windows GUI进程，造成工程占用、构建退出1；随后改用等待进程顺序运行，最终Edit55和build-final均成功，失败日志保留。没有把失败运行列为成功。
+
+关键连接：配置快照只读；ManualBattle部分实现EngagementCombat持有单位/干员/弹道、SP/弹药；每个请求与每发弹道只结算一次，源/目标死亡取消未生效效果。Controller将部署/实体选择/E键和HUD接到同一接口，EngagementView只按Battle.Clock呈现弹道/爆炸/受击/死亡与音效。暂停同时冻结SP/移动/攻击/CD/特效，2倍速整体倍乘模拟delta。
+
+未执行/限制：未完成纯人工一整局技能通关；窗口按E时两次单独部署的实体已被击杀，观察到明确无目标提示，不据此伪称人工成功开技能。完整手动技能流程由真实Player脚本/场景测试验证。失焦暂停代码已接，未做跨应用失焦往返的专项交互验收；第二机离线、正式关间流程、长期压力/FPS、非16:9未测。基础SFX已导入并绑定，静音UI已试，不宣称音频听感/混音/BGM验收。攻击/死亡是原型关键姿势与程序反馈，非商业完整动作集；同人权利状态不变。
+
+复核：关闭同目录编辑器，用Unity6000.6.5f1执行EngagementTools.Initialize/常规Edit与Play测试，再BaselineTools.BuildWindows。当前主Player参数为`-combatSmokeTest`，可选`-demoEvidenceDir <绝对目录>`；旧`-deploymentSmokeTest`和`-demoSmokeTest`只作回归。ScreenCapture完整HUD需可见窗口，不能用未查看黑图当视觉证据。
+
 ## X/B规则回填与第5周课程材料（2026-10-18，仅文档）
 
 只读解析用户指定DOCX的正文/表格文本，核对原文明确本次仅要求开发准备，不要求课前完成可玩原型/HUD/小地图。创建course/WEEK5_PREPARATION.md，区分设计循环/实际单卡循环、已有自动测试/待人工演练、干宸骅实际主导/另两名成员待执行分工；第4周反馈写未收到。用户确认10月20日验收，覆盖原未知日期，不编造成员成果。原DOCX未修改，未生成或验证Word/PDF排版。
