@@ -78,8 +78,16 @@ namespace YesterdayConvoy
             Camera camera = Camera.main;
             if (camera == null || sprite == null) return false;
             transform.rotation = camera.transform.rotation;
-            sprite.sortingOrder = (500 - Mathf.RoundToInt(camera.WorldToScreenPoint(transform.parent.position).y)) * 16;
+            sprite.sortingOrder = GetSortingOrder(camera, transform.parent.position);
             return true;
+        }
+
+        // Ground markers use order 0. Reserve positive, resolution-independent bands for actors,
+        // with enough room for the cutout parts inside each band. Depth testing remains enabled.
+        public static int GetSortingOrder(Camera camera, Vector3 groundPosition)
+        {
+            float viewportY = Mathf.Clamp01(camera.WorldToViewportPoint(groundPosition).y);
+            return 1024 + Mathf.RoundToInt((1 - viewportY) * 512) * 32;
         }
 
         private void OnDestroy() => puppet?.Dispose();

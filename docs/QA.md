@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 最新：行走时地面标记与高台穿透角色（2026-10-18）
+
+改动范围：`DemoSpriteVisual.cs` 的 GetSortingOrder；`DemoArtTools.cs` 和 `TacticalMapTools.cs` 共用该排序，黄/青两种地面材质改不透明，装饰高台 0.48→0.30；InitialDemo 场景更新相应排序/高台尺寸，`InitialDemoTests.cs` 增加一项真实 GPU 像素回归。未修改动画姿态、逻辑坐标、速度、路线、配置、Prefab 源资产、HUD 或依赖；原未跟踪 PackageManagerSettings.asset 保留。
+
+- 原代码实测复现（`artifacts/ground-sorting/repro.xml` / `repro.log`）：720 高度人物排序 2624，1499 个不透明像素无穿透；1440 高度排序变为 **-2752**，5947/5947 个人物像素被后方黄色面覆盖。是实际 GPU 读回结果，不是仅比较属性。
+- 首次修正归一化排序与涂装材质后，简化遮挡测试通过，但 `player/walk-16.png` 的实际场景仍有高台顶面切脸。没有以这次通过结束任务：将装饰高台降至 0.30，回归测试加入出错路段的实际 Cell / Platform cap / Warning lip 三个对象。
+- 最终 Unity **6000.6.5f1**，带真实图形设备运行 **Play Mode 9/9、0 跳过**，`playmode-final.xml`；不使用 `-nographics`。空图形设备时该像素测试会明确 Ignore，不能当作渲染验证通过。其余 8 项原移动/转身/暂停/结算测试通过。
+- 最终像素证据 `playmode-final.log`：720 高度，不透明像素 **1436**、穿透 **0**、前景实体遮挡 **1436**；1440 高度分别 **5745 / 0 / 5745**，两次人物排序均 **9760**。保留正常 ZTest，未使用 ZTest Always 或把人物强制画到全部实体之上。
+- 场景/资源/怪物配置校验通过，黄/青涂装验证要求不透明队列；最终 Windows x64 构建 **241179083 字节、0 错误**，无 C# 编译错误/警告，`build-final.log`。
+- 最终真实 Direct3D 12 Player 退出 **0**，`player-final.log` 的 `breach/gateOnce/killed/restart/default100Killed` 全 True。以 2560×1440 窗口参数启动；相机采集函数仍输出固定 1280×720，严格的双分辨率覆盖以以上 GPU RenderTexture 测试为准。
+- 已查看 `player-final/walk-16.png`、`down-16.png`、`turn-48.png`，人物面部不再被后方黄条/高台横切；相机图不含 OnGUI，隐藏窗口的完整 HUD 黑图不作有效视觉证据。
+
+连接关系仍为 RouteMotion → DemoSpriteVisual → DemoWalkPuppet；只修正表现排序，纸片关节沿用原输入。地图涂装按真实地表深度绘制，高台仅改变装饰几何，不参与碰撞或寻路。本轮未运行 Edit Mode、鼠标 HUD 重测、第二机、多单位/其他镜头高度验证；今后提高高台或改变俯角需重跑这项实景遮挡测试。
+
 ## 最新：全画幅地图与战斗 HUD 布局（2026-10-18）
 
 玩家可验收目标：地图铺满战斗背景、减轻低俯角造成的压扁感，上方显示真实防御、下方放现有角色卡与进攻操作。固定《明日方舟》相近地图方向和此次布局反馈写入 GDD/AGENTS；52°/正交尺寸 4.9 是试验实现值，不是人类指定的精确相机参数。

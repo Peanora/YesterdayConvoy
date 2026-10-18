@@ -161,7 +161,7 @@ namespace YesterdayConvoy.Editor
             visual.transform.rotation = Camera.main.transform.rotation;
             SpriteRenderer spriteRenderer = visual.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = sprite;
-            spriteRenderer.sortingOrder = 500 - Mathf.RoundToInt(Camera.main.WorldToScreenPoint(owner.position).y);
+            spriteRenderer.sortingOrder = DemoSpriteVisual.GetSortingOrder(Camera.main, owner.position);
             var values = new SerializedObject(visual.GetComponent<DemoSpriteVisual>());
             values.FindProperty("sprite").objectReferenceValue = spriteRenderer;
             values.FindProperty("movingDemo").objectReferenceValue = movingDemo;

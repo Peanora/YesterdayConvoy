@@ -49,8 +49,8 @@ namespace YesterdayConvoy.Editor
             asphalt = Mat("Asphalt", new Color(0.32f,0.38f,0.44f), "asphalt-color.jpg");
             steel = Mat("Steel", new Color(0.22f,0.28f,0.34f));
             dark = Mat("Recess", new Color(0.07f,0.095f,0.12f));
-            amber = Mat("Safety Amber", new Color(0.79f,0.57f,0.23f), unlit:true);
-            cyan = Mat("Guide Cyan", new Color(0.14f,0.57f,0.69f), unlit:true);
+            amber = Mat("Safety Amber", new Color(0.79f,0.57f,0.23f), unlit:true, opaque:true);
+            cyan = Mat("Guide Cyan", new Color(0.14f,0.57f,0.69f), unlit:true, opaque:true);
             red = Mat("Entry Red", new Color(0.95f,0.22f,0.24f), unlit:true);
             blue = Mat("Target Blue", new Color(0.16f,0.64f,0.94f), unlit:true);
             trim1 = Mat("Trim 01", new Color(0.44f,0.52f,0.59f), "trim-01-color.png", "trim-01-normal.png");
@@ -75,7 +75,9 @@ namespace YesterdayConvoy.Editor
                     bool routeTile = IsOnRoute(x,z,points);
                     bool raised = !routeTile && x>=-5 && x<=5 && z>=-2 && z<=2 &&
                         ((x==-4 || x==-3) && z>=0 || (x==-1 || x==1) && z>=1 || (x==3 || x==4) && z>=0 || (x==0 || x==1) && z==-2);
-                    float height = raised ? 0.48f : 0;
+                    // Keep rear platform caps behind the camera-facing actor plane at the current
+                    // 52-degree pitch. The former 0.48m caps intersected a walking character's face.
+                    float height = raised ? 0.30f : 0;
                     Shape($"Cell {x},{z}",map,new Vector3(x,height*0.5f-0.13f,z),new Vector3(0.97f,0.26f+height,0.97f),routeTile || raised ? concrete : asphalt);
                     if (raised)
                     {
@@ -143,7 +145,10 @@ namespace YesterdayConvoy.Editor
             camera.transform.position=new Vector3(0,0,0.7f)-camera.transform.forward*24;
             camera.orthographicSize=4.9f;
             foreach(var visual in UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>())
+            {
                 visual.transform.rotation=camera.transform.rotation;
+                visual.Renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,visual.transform.parent.position);
+            }
             // The card is now a screen-space roster entry. Preserve its prefab and asset references.
             foreach(var view in UnityEngine.Object.FindObjectsByType<DemoCardView>())
                 foreach(var renderer in view.GetComponentsInChildren<Renderer>())renderer.enabled=false;
@@ -173,6 +178,12 @@ namespace YesterdayConvoy.Editor
             foreach (MeshRenderer renderer in root.GetComponentsInChildren<MeshRenderer>())
                 if (renderer.sharedMaterials.Any(m => m == null || m.shader == null || m.shader.name.Contains("Error")))
                     throw new InvalidOperationException("Tactical map: missing shader/material on " + renderer.name);
+            foreach(string name in new[]{"Safety Amber","Guide Cyan"})
+            {
+                var paint=AssetDatabase.LoadAssetAtPath<Material>(Materials+name+".mat");
+                if(paint==null || paint.renderQueue>=2500)
+                    throw new InvalidOperationException("Tactical map: solid ground paint must use the opaque depth-writing pass: "+name);
+            }
             var demo = UnityEngine.Object.FindAnyObjectByType<InitialDemo>();
             var data = new SerializedObject(demo);
             var route = data.FindProperty("waypoints");
@@ -333,15 +344,17 @@ namespace YesterdayConvoy.Editor
             line.SetPositions(points);
         }
 
-        private static Material Mat(string name,Color color,string texture=null,string normal=null,bool unlit=false)
+        private static Material Mat(string name,Color color,string texture=null,string normal=null,bool unlit=false,bool opaque=false)
         {
             string path=Materials+name+".mat";
             var material=AssetDatabase.LoadAssetAtPath<Material>(path);
+            Shader shader=Shader.Find(unlit ? (opaque ? "Unlit/Color" : "Sprites/Default") : "Standard");
             if(material==null)
             {
-                material=new Material(Shader.Find(unlit?"Sprites/Default":"Standard"));
+                material=new Material(shader);
                 AssetDatabase.CreateAsset(material,path);
             }
+            else if(material.shader!=shader)material.shader=shader;
             material.color=color;
             if(!unlit)
             {

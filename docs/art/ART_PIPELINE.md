@@ -1,5 +1,7 @@
 # 资源工作流
 
+遮挡修正（2026-10-18）：角色排序统一调用 DemoSpriteVisual.GetSortingOrder，使用归一化视口、正值排序段，不能再以原始屏幕像素决定顺序。黄/青实心地表标记用不透明 Unlit/Color，透明接地阴影仍独立保留。当前 52° 纸片人物与后方 0.48 高台会相交，因此装饰高台改为 0.30；如再改高度/镜头，必须用真实图形设备运行 GroundPaintStaysBehindCutoutsAt720And1440WhileSolidsStillOcclude，并检查实际行走帧。不能靠让人物无条件盖住实体来修复。
+
 2026-10-18 布局更新：同一 Apply Tactical Map 工具设置试验俯角 52°、尺寸 4.9，并延展周边地面至视口外；保留固定偏航/滚转为 0。旧墙/栏杆实例禁用，用同系列原生墙体替代；禁用左侧卡牌子 Renderer。DemoCardView 的 DrawRoster 由 InitialDemo.OnGUI 在底部调用，顶部防御读取实际状态。无新增美术源图或包依赖。
 
 验收完整布局时使用可见 Player 的 ScreenCapture（包含 OnGUI）；原 CaptureCamera 只含相机渲染，不足以验顶部/底栏。隐藏窗口下可能得到黑色 ScreenCapture，必须查看图片后才能记录视觉通过。截图仍需与鼠标滑块/开始/重开流程一起核对，不能仅以文件存在确认。
