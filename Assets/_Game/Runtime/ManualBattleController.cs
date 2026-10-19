@@ -307,6 +307,7 @@ namespace YesterdayConvoy
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));
+                if(Battle.EngagementEnabled) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
             Fill(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
@@ -328,6 +329,24 @@ namespace YesterdayConvoy
             if(Battle.EngagementEnabled) DrawInteractionOverlay();
             GUI.backgroundColor=oldBackground;
             GUI.matrix=old;
+        }
+
+        private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
+        {
+            Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
+            if(unit.SkillAmmo>0)
+            {
+                int capacity=Battle.CombatSettings.SkillAmmo;
+                float width=(58-2*(capacity-1))/(float)capacity;
+                for(int i=0;i<capacity;i++)
+                    Fill(new Rect(x-29+i*(width+2),y+2,width,3),i<unit.SkillAmmo ?
+                        new Color(.98f,.77f,.22f) : new Color(.20f,.24f,.27f));
+            }
+            else
+            {
+                float charge=Mathf.Clamp01(unit.SkillSP/Battle.CombatSettings.RequiredSP);
+                Fill(new Rect(x-29,y+2,58*charge,3),new Color(.20f,.61f,1));
+            }
         }
 
         private void DrawDefenderHUD()

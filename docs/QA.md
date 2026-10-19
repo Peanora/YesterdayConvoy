@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-19：血条下蓝色技力与六格黄色弹药
+
+改动仅ManualBattleController新增DrawSkillResourceBar，读取unit.SkillSP/SkillAmmo与CombatSettings.RequiredSP/SkillAmmo；蓝条按比例填充，技能期间六格黄条逐格变暗，耗尽切回蓝条。未修改EngagementCombat结算、场景、Prefab、配置或资源引用，无新素材/依赖。原单向攻击诊断没有技能，不额外显示技力条。
+
+- EditMode56/56通过、0跳过：artifacts/skill-resource-bar/editmode.xml/log。扩展AmmoIsFiniteAndSPOnlyRechargesAfterItIsSpent，从两发改为六发逐次断言6→5→4→3→2→1→0；每次消耗间暂停保持弹药/SP；弹药剩余时不回技力，耗尽后回复并回满。测试专用高生命守军避免正常M01提前击杀，未改正常关卡数值。
+- Windows构建254780693字节、0错误：build.log，BASELINE_BUILD_PASS，退出0；场景引用/配置校验通过。
+- 实际Direct3D12 Player交互八项全True：player.log，INTERACTION_CHECK；实际战斗十三项全True、进程退出0：combat.log，ENGAGEMENT_CHECK。交互日志中的五次截图失败是隐藏窗口无法抓屏，不冒充截图验证成功。
+- 原生鼠标：通过computer-use从准备状态拖卡到红门，实际DP12→10、场上1，并观察到蓝条；后续观察满技力蓝条与头顶就绪提示。角色在再次点击前已死亡，未完成手动技能施放；桌面随后切换至其他应用，未继续抢占焦点。该次结果补充此前拖动未验收状态，不代表所有拖动边界或完整技能流程已人工通过。
+
+未执行：本轮PlayMode（改动为读取状态绘制HUD，核心结算未改）、黄色六格/每发变化/耗尽回转的完整人工视觉验收、第二机与长期压力。没有新增截图；黄色条通过实现审查与真实弹药状态测试，视觉效果仍需用户试玩核对。原未跟踪PackageManagerSettings.asset保留且不提交，未推送/发布。
+
 ## 2026-10-19：拖动部署、暂停落卡与角色旁技能
 
 范围：输入与技能HUD小闭环，用户明确暂停合法落卡立即扣费/生成但战斗仍暂停。ManualBattle显式allowWhilePaused只豁免暂停部署拒绝，其余费用/次数/CD/入口/场次与幂等验证保留；旧诊断默认仍拒绝暂停。角色旁面板/头顶标志复用已有CC BY3.0图标。场景唯一改动为skillIcon引用，地图/相机/角色/只读玩法数值不变。

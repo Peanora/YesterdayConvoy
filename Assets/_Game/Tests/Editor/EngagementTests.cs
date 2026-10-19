@@ -82,10 +82,19 @@ namespace YesterdayConvoy.Tests
         public void AmmoIsFiniteAndSPOnlyRechargesAfterItIsSpent()
         {
             var b = New(new EngagementSettings(unitRange: 5, defenderHealth: 10000, defenderRange: 0.01f,
-                initialSP: 1, requiredSP: 1, skillAmmo: 2, skillInterval: 0.2f, skillAttack: 1));
-            var u = Deploy(b); b.TryActivateSkill(b.RunId, 1, u.EntityId); b.Advance(0.1f);
-            Assert.That(u.SkillAmmo, Is.EqualTo(1)); Assert.That(u.SkillSP, Is.Zero);
-            b.Advance(0.4f); Assert.That(u.SkillAmmo, Is.Zero); Assert.That(u.SkillSP, Is.LessThan(1));
+                initialSP: 1, requiredSP: 1, skillAmmo: 6, skillInterval: 0.2f, skillAttack: 1));
+            var u = Deploy(b); b.TryActivateSkill(b.RunId, 1, u.EntityId);
+            Assert.That(u.SkillAmmo,Is.EqualTo(6));
+            for(int remaining=5;remaining>=0;remaining--)
+            {
+                for(int step=0;u.SkillAmmo>remaining && step<30;step++) b.Advance(.01f);
+                Assert.That(u.SkillAmmo,Is.EqualTo(remaining));
+                Assert.That(u.SkillSP,Is.Zero,"SP stays empty until the last round is fired.");
+                b.SetPaused(true); b.Advance(2);
+                Assert.That(u.SkillAmmo,Is.EqualTo(remaining)); Assert.That(u.SkillSP,Is.Zero);
+                b.SetPaused(false);
+            }
+            b.Advance(.1f); Assert.That(u.SkillSP,Is.GreaterThan(0).And.LessThan(1));
             b.Advance(1); Assert.That(u.SkillSP, Is.EqualTo(1)); Assert.That(b.SkillCasts, Is.EqualTo(1));
         }
 
