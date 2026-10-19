@@ -19,6 +19,8 @@ namespace YesterdayConvoy.Tests
             yield return null; Time.timeScale=0;
             var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
             Assert.That(b.EngagementEnabled,Is.True); Assert.That(c.CombatView.DefenderVisual.sprite,Is.EqualTo(c.Definition.Engagement.KroosSprite));
+            Assert.That(c.CombatView.DefenderVisual.sprite.name,Is.EqualTo("kroos-comic"),"Normal M01 must use the new shared-style Kroos asset.");
+            Assert.That(c.CombatView.DefenderVisual.sprite.texture.filterMode,Is.EqualTo(FilterMode.Bilinear));
             Assert.That(b.Settings.InitialDP,Is.EqualTo(12));
             Assert.That(b.CombatSettings.UnitRange,Is.EqualTo(b.CombatSettings.DefenderRange));
             Assert.That(b.CombatSettings.SkillRange,Is.GreaterThanOrEqualTo(b.CombatSettings.UnitRange));

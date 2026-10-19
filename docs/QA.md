@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-10-19：克洛丝漫画战场图替换
+
+改动：新增kroos-comic.png与Unity meta，EngagementTools导入入口/默认路径，WisadelVsKroos.asset只有kroosSprite一行引用变化；补充原场景用例对新图/Bilinear的断言。未改Runtime、场景/Prefab、战斗配置数值、维什戴尔或地图。
+
+- 原图检查：1153×1364 RGBA、Alpha0–255、992567字节，输出与项目文件SHA256一致；Alpha>16有效范围(86,67)-(1137,1307)，按原1.8可见高度/脚底Pivot导入。可见边缘完整；极低Alpha像素延伸到画布边缘，不宣称无任何透明噪点。原始最终图及完整提示词见art/GENERATION-KROOS-COMIC-2026-10-19.md。首轮候选细节偏多，未进入Assets。
+- Unity资源导入：artifacts/kroos-comic/import.log，KROOS_COMIC_PASS，退出0；仅新图/Bilinear/Single/FullRect/无mipmap/无压缩，配置数值与场景不改。
+- GPU PlayMode23/23通过、0跳过、退出0：playmode.xml/log。新增同一场景断言当前DefenderVisual实际绑定kroos-comic/Bilinear；高台脚底/范围/阻挡0、攻击/死亡/穿门/重开、技能原地锁定与其他回归通过。
+- Windows x64构建341056961字节、0错误、退出0：build.log；场景/怪物/逐帧资源引用校验通过。
+- 最终真实Direct3D12 Player交战十三项全True，退出0：combat.log。
+- 已查看实际GPU相机两角色同屏：artifacts/wisadel-gif/camera/walk.png；副本docs/art/previews/kroos-comic-scene.png。是实际Camera.Render场景画面，不含OnGUI/HUD，不是概念图或人工鼠标试玩。也已查看两轮实际image_gen输出。
+
+未执行：本轮EditMode（仅资源/引用/Editor导入）、完整人工键鼠通关、第二机、长期性能/所有尺寸观感；没有新增或验证克洛丝逐帧动画。使用原单姿势+已有射击/受击/死亡反馈，不能声称拥有GIF级新动作。公开素材/角色权利未确认，本轮仅本地原型/本地提交，不推送/发布；原未跟踪PackageManagerSettings.asset保留且不纳入提交。
+
 ## 2026-10-19：技能播放期间锁定实际移动
 
 用户澄清覆盖前一轮允许动作播放时逻辑移动的选择。新增战斗模型IsSkillActionPlaying作为共同依据：已发射技能以LastAttackTime+SkillInterval为结束时刻，目标死亡/弹药清零不解除，移动和逐帧显示使用同一个窗口。结束跨步仅推进解锁后的时间，不修改移速配置；暂停无现实时间倒计时。伤害/弹药/技力时机与1.75倍大头不变。
