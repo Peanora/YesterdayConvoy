@@ -131,10 +131,10 @@ namespace YesterdayConvoy
             return offset.sqrMagnitude <= EntryRadius * EntryRadius;
         }
 
-        public DeployFailure CheckDeployment(Vector3 position)
+        public DeployFailure CheckDeployment(Vector3 position, bool allowWhilePaused = false)
         {
             if (Phase == BattlePhase.Won || Phase == BattlePhase.Lost) return DeployFailure.Finished;
-            if (IsPaused) return DeployFailure.Paused;
+            if (IsPaused && !allowWhilePaused) return DeployFailure.Paused;
             if (!IsEntry(position)) return DeployFailure.WrongEntry;
             if (RemainingUses == 0) return DeployFailure.NoUses;
             if (DP < Settings.DeploymentCost) return DeployFailure.NoDP;
@@ -144,11 +144,11 @@ namespace YesterdayConvoy
             return Phase == BattlePhase.Ready ? DeployFailure.NotStarted : DeployFailure.None;
         }
 
-        public DeploymentReceipt TryDeploy(int runId, long requestId, Vector3 position)
+        public DeploymentReceipt TryDeploy(int runId, long requestId, Vector3 position, bool allowWhilePaused = false)
         {
             if (runId != RunId) return new DeploymentReceipt(DeployFailure.StaleRun);
             if (committed.TryGetValue(requestId, out var previous)) return previous;
-            DeployFailure failure = CheckDeployment(position);
+            DeployFailure failure = CheckDeployment(position, allowWhilePaused);
             if (failure != DeployFailure.None) return new DeploymentReceipt(failure);
             var motion = new RouteMotion(route, Settings.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";

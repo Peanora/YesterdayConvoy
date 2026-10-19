@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         }
 
         // Drawn by InitialDemo after its HUD panels, using the same reference-resolution matrix.
-        public bool DrawRoster(ManualBattle battle = null, bool selected = false)
+        public bool DrawRoster(ManualBattle battle = null, bool selected = false, bool allowClick = true)
         {
             if (card == null || card.Portrait == null) return false;
             if (nameStyle == null)
@@ -35,7 +35,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(926,596,180,25), battle==null ? "招募费 " + card.RecruitCost : $"部署 {battle.Settings.DeploymentCost}  /  招募 {card.RecruitCost}", labelStyle);
             if(battle!=null) GUI.Label(new Rect(926,626,180,25),$"剩余 {battle.RemainingUses}/{battle.Settings.DeploymentLimit} 次",labelStyle);
             Rect slot = new Rect(1126,556,112,144);
-            bool clicked=battle!=null && GUI.Button(slot,GUIContent.none,GUIStyle.none);
+            bool clicked=allowClick && battle!=null && GUI.Button(slot,GUIContent.none,GUIStyle.none);
             Fill(slot, battle==null || selected ? new Color(0.48f,0.85f,0.91f) : new Color(0.30f,0.36f,0.41f));
             Fill(new Rect(slot.x+2,slot.y+2,slot.width-4,slot.height-4),new Color(0.07f,0.09f,0.12f));
             Sprite image=card.Portrait;

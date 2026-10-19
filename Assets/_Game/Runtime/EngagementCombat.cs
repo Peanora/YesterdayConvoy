@@ -86,6 +86,14 @@ namespace YesterdayConvoy
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
+        // Readiness stays visible during a full pause; authorization to cast is checked separately.
+        public bool IsSkillReady(string entityId)
+        {
+            var unit=FindUnit(entityId);
+            return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active &&
+                unit.SkillAmmo==0 && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
+        }
+
         public SkillFailure CheckSkill(string entityId)
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;

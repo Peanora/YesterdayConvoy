@@ -13,11 +13,11 @@ Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什
 
 本仓库包含 Unity 源工程，`Builds` 试玩包和 `Library` 缓存不纳入 Git。首次从 GitHub 下载：使用 Git 克隆（或下载 ZIP 并解压），在 Unity Hub 中添加含 `Assets`、`Packages`、`ProjectSettings` 的项目根文件夹，以 **6000.6.5f1** 打开，等待导入后按下面的方法运行。美术文件使用普通 Git 保存，无需 Git LFS。
 
-本机可双击`Builds/Windows/YesterdayConvoy.exe`。点击右下角色卡（或按`1`），再点击左侧红门；成功后取消选牌；下次需重新点卡牌或按1，CD结束后再点红门。底栏`01/02…`选择场上实体，技力`12/12`时点“爆裂黎明”或按`E`，开启该实体独立六发强化弹；不扣DP，不会自动施放。空格暂停/恢复，暂停可选择、恢复后再次确认；右键/Esc取消选牌。顶部切1×/2×、音效静音；失焦自动暂停。“重新开始”恢复整关状态。
+本机可双击`Builds/Windows/YesterdayConvoy.exe`。底部角色卡拖到左侧红门松手部署；暂停时立即扣费/生成，战斗仍暂停，原CD不绕过。非法位置/取消不扣费。点场上角色或金色头顶标志打开旁侧技能面板，0.03×继续；技力满点击图标（或面板打开时按E）施放，点空白/右键/Esc取消，恢复原1×/2×。完全暂停时技能只查看，恢复后才能释放；重叠角色重复点击切换。空格暂停/恢复，顶部切速/静音，失焦取消交互并暂停；重新开始清局。
 
-试验值DP12/部署2/最多6次（费用可用满六次）/CD2秒/HP100/守方防御3，技力初始8/所需12/每秒1。建议每次重新选牌、CD好就分批部署，及时给场上实体开技能；逐只送出且不用技能的测试仍会失败；即便最终击杀守军，穿门数量也可能不足。这是原型操作样例，不是正式平衡结论。
+试验值DP12/部署2/最多6次（费用可用满六次）/CD2秒/HP100/守方防御3，技力初始8/所需12/每秒1。建议CD好后重新拖卡分批部署，及时给场上实体开技能；逐只送出且不用技能的测试仍会失败；即便最终击杀守军，穿门数量也可能不足。这是原型操作样例，不是正式平衡结论。
 
-在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式选牌部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
+在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式拖卡部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
 
 菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。当前使用像素感同系列美术与纸片关节动画；交战、技力与布局参数均为试验值。
 
@@ -33,7 +33,7 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 & "$PWD\Builds\Windows\YesterdayConvoy.exe" -combatSmokeTest -demoEvidenceDir "$PWD\artifacts\manual-demo" -logFile "$PWD\artifacts\player-smoke.log" | Out-Null
 ```
 
-检查实际退出码及`ENGAGEMENT_CONFIG_PASS`、`BASELINE_BUILD_PASS`、`ENGAGEMENT_CHECK`十项全True。当前检查停步、技力/手动技能、干员死亡、继续穿门、胜负、暂停、幂等与重开；带采图参数时完整HUD的ScreenCapture需要可见窗口，必须实际查看。`-deploymentSmokeTest`是旧单向攻击九项诊断，`-demoSmokeTest`是旧单怪五项动画诊断，不代表正常入口玩法。
+检查实际退出码及`ENGAGEMENT_CONFIG_PASS`、`BASELINE_BUILD_PASS`、`ENGAGEMENT_CHECK`十三项全True。另用`-interactionSmokeTest`检查暂停拖放/资源幂等/非法落点/就绪/减速/取消/释放/重开八项全True（`INTERACTION_CHECK`）。这两种Player检查调用同一交互接口，不能替代真实鼠标验收。交战检查停步、技力/手动技能、干员死亡、继续穿门、胜负、暂停、幂等与重开；带采图参数时完整HUD的ScreenCapture需要可见窗口，必须实际查看。`-deploymentSmokeTest`是旧单向攻击九项诊断，`-demoSmokeTest`是旧单怪五项动画诊断，不代表正常入口玩法。
 
 提交 Assets、Packages、ProjectSettings、文档与必要 `.meta`；Library、Logs、UserSettings、Builds、artifacts 等本地生成物已忽略。每个可运行功能验收后本地提交，远端推送和发布另按用户授权。
 

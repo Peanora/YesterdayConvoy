@@ -1,5 +1,26 @@
 # 验证证据与回归
 
+## 2026-10-19：拖动部署、暂停落卡与角色旁技能
+
+范围：输入与技能HUD小闭环，用户明确暂停合法落卡立即扣费/生成但战斗仍暂停。ManualBattle显式allowWhilePaused只豁免暂停部署拒绝，其余费用/次数/CD/入口/场次与幂等验证保留；旧诊断默认仍拒绝暂停。角色旁面板/头顶标志复用已有CC BY3.0图标。场景唯一改动为skillIcon引用，地图/相机/角色/只读玩法数值不变。
+
+| 实际验证 | 结果 | 本地证据（artifacts/drag-skill-ui，不提交Git） |
+| --- | --- | --- |
+| Unity导入/绑定 | EngagementTools.Initialize退出0，图标引用落场景，新C#及meta已导入 | setup.log |
+| EditMode | 56/56通过、0跳过、退出0；显式暂停事务、重复请求不重复扣费/生成、错误入口、暂停CD不前进/不能绕过 | editmode.xml/log；完成模型改动后执行，后续只改输入表现 |
+| 最终真实GPU PlayMode | 21/21通过、0跳过；包括原720/1440遮挡/镜头/交战回归及6项交互测试 | playmode-events-final.xml/log |
+| 交互边界 | 暂停落卡只生成一次/错误落点及冷却不花费；面板使共享时钟0.03×、取消恢复2×且不放技能、点击图标只释放一次；完全暂停优先且就绪可见；选中死亡关闭；重开拒绝旧拖动；重叠角色循环；同一模拟帧内分发按下/拖动/松开完成部署 | BattleInteractionTests；最后一项调用与OnGUI共用事件分发器，不是操作系统鼠标注入 |
+| 最终Windows x64构建 | 254780509字节、0错误；场景/怪物引用校验通过 | build-events-final.log，BASELINE_BUILD_PASS |
+| 最终实际Direct3D12 Player交互 | pausedDrop/onceFrozen/invalid/ready/slow/cancel/cast/reset八项全True，进程退出0 | interaction-events-final.log；-interactionSmokeTest |
+| 最终实际Player战斗回归 | invalid/initialSP/paused/stopped/ranged/noBlock/selectionReset/manual/killed/won/gateOnce/reset/lost十三项全True、退出0 | combat-events-final.log；-combatSmokeTest，历史接口兼容检查 |
+| 实机视觉 | 已查看1280×720完整技能面板、头顶就绪与暂停落卡；暂停落卡显示DP10、场上1，面板显示SP12/12与0.03× | final-player/ui-skill-focus.png、player/ui-paused-placed.png；面板副本docs/art/previews/drag-skill-focus-v1.png |
+
+真实鼠标试验：正常Player开始/空格暂停后尝试拖卡，未生成/未扣费；随后桌面截图显示焦点已切到其他应用，无法归因于快速边沿漏采或正常失焦取消。未把这次试验记为通过。最终版将鼠标按下/拖动/松开交给OnGUI队列事件，Update只更新预览与快捷键；自动测试覆盖同一帧事件顺序，不证明真实Windows鼠标路径已验收。用户应优先试玩慢拖/快拖、暂停松手和恢复后技能操作。
+
+中间测试保留：playmode-events为无图形设备运行，19通过/1失败/1跳过。失败是测试在OnGUI之外创建Unity Event，type读为Ignore，未送到分发器；改为显式传递事件类型/坐标，OnGUI调用同一分发器；没有放宽部署断言。跳过项是需要GPU的遮挡验证，最终有GPU重跑21/21、0跳过。早期playmode19/19、加入重叠点击后20/20也保留，最终结果以21项为准。
+
+截图在最后事件分发修订前采集，布局/资源与最终版相同；最终Player检查未重复采图，不将旧图称为最终输入版截图。未执行：最终原生鼠标完整流程、完整人工技能胜负通关、第二台电脑离线、超宽屏与长时性能/平衡；640×360小窗口曾出现但低于目标720p，不视为该尺寸可读性验收。保留原未跟踪ProjectSettings/PackageManagerSettings.asset，不纳入提交。未推送/发布。
+
 ## 2026-10-19：参照图俯角与轻透视
 
 只改Editor相机设置/对应验证和场景镜头及原四个Sprite朝向/排序，未改Runtime、地图布局/材质、玩法参数或依赖。主入口采用60°/FOV24/距目标24，偏航滚转0，替代52°正交；Bootstrap仍正交。

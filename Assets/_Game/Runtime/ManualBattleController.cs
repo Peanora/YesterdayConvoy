@@ -8,7 +8,7 @@ namespace YesterdayConvoy
 {
     /// <summary>Scene/input adapter for the single-card level. Simulation and transactions belong to ManualBattle.</summary>
     [DefaultExecutionOrder(-100)]
-    public sealed class ManualBattleController : MonoBehaviour
+    public sealed partial class ManualBattleController : MonoBehaviour
     {
         [SerializeField] private InitialDemo scene;
         [SerializeField] private ManualBattleDefinition definition;
@@ -27,7 +27,7 @@ namespace YesterdayConvoy
         public ManualBattle Battle { get; private set; }
         public ManualBattleDefinition Definition => definition;
         public bool Selected { get; private set; }
-        public string Feedback { get; private set; } = "点击底部角色卡，再点击红门部署";
+        public string Feedback { get; private set; } = "拖动底部角色卡至红门部署";
         public int ViewCount => views.Count;
         public float SimulationSpeed { get; private set; } = 1;
         public bool Muted { get; private set; }
@@ -37,7 +37,7 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Application.isBatchMode || Array.IndexOf(args,"-deploymentSmokeTest") >= 0 || Array.IndexOf(args,"-combatSmokeTest") >= 0;
+            diagnostic = Application.isBatchMode || Array.IndexOf(args,"-deploymentSmokeTest") >= 0 || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             if (Array.IndexOf(args,"-demoSmokeTest") >= 0) { UseLegacyPreview(); return; }
             ValidateConfiguration();
             scene.enabled = false;
@@ -59,6 +59,12 @@ namespace YesterdayConvoy
                 Application.runInBackground = true;
                 int index=Array.IndexOf(args,"-demoEvidenceDir");
                 StartCoroutine(VerifyEngagement(index>=0 && index+1<args.Length ? args[index+1] : null));
+            }
+            if(Array.IndexOf(args,"-interactionSmokeTest") >= 0)
+            {
+                Application.runInBackground=true;
+                int index=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyInteraction(index>=0 && index+1<args.Length ? args[index+1] : null));
             }
         }
 
@@ -105,14 +111,14 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { Battle.Begin(); Feedback="选择角色，分批进攻蓝门"; }
+        public void StartBattle() { Battle.Begin(); Feedback="拖动底部卡牌至红门，分批进攻"; }
 
-        public DeploymentReceipt TryDeployAt(Vector3 point)
+        public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
             if(!Selected) { Feedback="请先点击底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
-            var result=Battle.TryDeploy(Battle.RunId,++requestSequence,point);
+            var result=Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
             Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.Settings.DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
             SyncViews();
@@ -122,24 +128,32 @@ namespace YesterdayConvoy
         public void RestartBattle()
         {
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
-            selectedEntityId=null; SimulationSpeed=1;
-            scene.ShotBeam.enabled=false; Feedback="点击底部角色卡，再点击红门部署";
+            selectedEntityId=null; SimulationSpeed=1; CancelInteraction();
+            scene.ShotBeam.enabled=false; Feedback="拖动底部角色卡至红门部署";
         }
 
         private void Update()
         {
             if(Battle==null) return;
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
-            if(Input.GetKeyDown(KeyCode.Alpha1)) SelectCard(true);
-            if(Input.GetKeyDown(KeyCode.E)) ActivateSelectedSkill();
-            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) SelectCard(false);
-            if(Input.GetMouseButtonDown(0) && PointerOnBattlefield() && TryPointerGround(out Vector3 point)) TryDeployAt(point);
+            if(Battle.EngagementEnabled)
+            {
+                if(Dragging) ProcessPointerMove(Input.mousePosition);
+                if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
+                if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) CancelInteraction();
+            }
+            else
+            {
+                if(Input.GetKeyDown(KeyCode.Alpha1)) SelectCard(true);
+                if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) SelectCard(false);
+                if(Input.GetMouseButtonDown(0) && PointerOnBattlefield() && TryPointerGround(out Vector3 point)) TryDeployAt(point);
+            }
             Tick(Time.deltaTime);
         }
 
         public void Tick(float delta)
         {
-            Battle.Advance(delta*SimulationSpeed);
+            Battle.Advance(delta*EffectiveSimulationSpeed);
             SyncViews();
             UpdatePreview();
         }
@@ -196,8 +210,9 @@ namespace YesterdayConvoy
                 scene.ShotBeam.SetPosition(0,scene.Muzzle.position);
                 scene.ShotBeam.SetPosition(1,Battle.LastShotPosition+Vector3.up*0.65f);
             }
-            if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) Selected=false;
+            if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) CancelInteraction();
             var selectedUnit=Battle.FindUnit(selectedEntityId);
+            if(SkillMenuOpen && (selectedUnit==null || !selectedUnit.Active)) CloseSkillMenu();
             if(Battle.EngagementEnabled && (selectedUnit==null || !selectedUnit.Active))
             { selectedEntityId=null; foreach(var unit in Battle.Units) if(unit.Active) { selectedEntityId=unit.EntityId; break; } }
         }
@@ -213,7 +228,7 @@ namespace YesterdayConvoy
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
         private void OnApplicationFocus(bool focus)
-        { if(!focus && !diagnostic && Battle!=null) Battle.SetPaused(true); }
+        { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); CancelInteraction(); } }
 
         private void CreatePreview()
         {
@@ -234,10 +249,14 @@ namespace YesterdayConvoy
             preview.enabled=entryOutline.enabled=Selected;
             if(!Selected) return;
             Vector3 point=Battle.Entry;
-            if(PointerOnBattlefield()) TryPointerGround(out point);
-            DeployFailure failure=Battle.CheckDeployment(point);
+            if(Dragging)
+            {
+                if(!IsBattlefield(pointerScreen) || !PointerGround(pointerScreen,out point)) { preview.enabled=false; return; }
+            }
+            else if(PointerOnBattlefield()) TryPointerGround(out point);
+            DeployFailure failure=Battle.CheckDeployment(point,Dragging);
             bool valid=failure==DeployFailure.None || failure==DeployFailure.NotStarted;
-            Color tint=Battle.IsPaused ? new Color(1,0.75f,0.25f) : valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
+            Color tint=valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
             preview.transform.position=point; preview.transform.rotation=Camera.main.transform.rotation;
             preview.sortingOrder=DemoSpriteVisual.GetSortingOrder(Camera.main,point)+24;
             preview.color=new Color(tint.r,tint.g,tint.b,0.30f);
@@ -249,6 +268,9 @@ namespace YesterdayConvoy
         private void OnGUI()
         {
             if(Battle==null) return;
+            // IMGUI keeps queued pointer edges, even when a quick down/up occurs between simulation frames.
+            var pointerEvent=Event.current;
+            if(Battle.EngagementEnabled && ProcessPointerEvent(pointerEvent.type,pointerEvent.mousePosition,pointerEvent.button)) pointerEvent.Use();
             // Space is owned by Update; do not also activate the last focused GUI button.
             if(Event.current.type==EventType.KeyDown && Event.current.keyCode==KeyCode.Space) Event.current.Use();
             EnsureStyles();
@@ -271,7 +293,7 @@ namespace YesterdayConvoy
             if(Battle.EngagementEnabled)
             {
                 if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) Muted=!Muted;
-                if(GUI.Button(new Rect(1002,14,76,38),SimulationSpeed+"x",buttonStyle)) ToggleSpeed();
+                if(GUI.Button(new Rect(1002,14,76,38),(SkillMenuOpen ? "0.03x" : SimulationSpeed+"x"),buttonStyle)) ToggleSpeed();
                 DrawDefenderHUD();
             }
             bool controls=Battle.Phase==BattlePhase.Running;
@@ -289,16 +311,21 @@ namespace YesterdayConvoy
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
             Fill(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
             string status=Battle.Phase==BattlePhase.Won ? "进攻成功！守方防御归零" : Battle.Phase==BattlePhase.Lost ? "进攻失败：场上清空，已无可用部署资源" :
-                Battle.IsPaused ? "战术暂停：可选牌和预览，恢复后点击红门部署" : Feedback;
+                Battle.IsPaused ? "战术暂停 · "+Feedback : Feedback;
             GUI.Label(new Rect(26,565,870,32),status,textStyle);
             if(!Battle.EngagementEnabled) GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
             string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
             GUI.Label(new Rect(26,Battle.EngagementEnabled ? 589 : 651,Battle.EngagementEnabled ? 850 : 540,26),
-                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  每次先[1]选牌 / 右键取消" : cooldown+"  ·  每次先[1]选牌 / 右键取消",smallStyle);
-            if(Battle.EngagementEnabled) DrawSkills();
+                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  拖动至红门 / 右键取消" : cooldown+"  ·  拖动至红门 / 右键取消",smallStyle);
+            if(Battle.EngagementEnabled)
+            {
+                GUI.Label(new Rect(26,623,785,28),"拖动卡牌部署  ·  点击角色/金色标志查看技能  ·  重叠角色再次点选切换",smallStyle);
+                GUI.Label(new Rect(26,661,785,27),SkillMenuOpen ? (Battle.IsPaused ? "技能选择中（暂停）：恢复后可释放，点空白取消" : "技能选择中：极慢速继续，点击空白处取消") : "空格暂停/继续；暂停时可部署，技力与冷却不推进",smallStyle);
+            }
             if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
-            if(cardView!=null && cardView.DrawRoster(Battle,Selected)) SelectCard(!Selected);
+            if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
+            if(Battle.EngagementEnabled) DrawInteractionOverlay();
             GUI.backgroundColor=oldBackground;
             GUI.matrix=old;
         }
@@ -312,26 +339,6 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(x-70,y-23,180,24),Battle.CombatSettings.BlockCount==0 ? "克洛丝 · 高台远程" : $"克洛丝  阻挡 {d.BlockedCount}/{Battle.CombatSettings.BlockCount}",smallStyle);
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
-        }
-
-        private void DrawSkills()
-        {
-            int index=0;
-            foreach(var unit in Battle.Units)
-            {
-                if(!unit.Active)continue;
-                string charge=unit.SkillAmmo>0 ? $"弹药 {unit.SkillAmmo}/6" : $"技力 {unit.SkillSP:0}/{Battle.CombatSettings.RequiredSP:0}";
-                string label=(unit.EntityId==selectedEntityId ? "▶ " : "")+$"{index+1:00}  {charge}";
-                if(GUI.Button(new Rect(26+index*190,616,181,32),label,buttonStyle)) SelectSkillUnit(unit.EntityId);
-                index++;
-            }
-            var selected=Battle.FindUnit(selectedEntityId);
-            string info=selected==null ? "部署后选择实体，技力满后按 E 释放" :
-                selected.SkillAmmo>0 ? "爆裂黎明生效中；弹药用尽后重新回复技力" : "技力自动回复，与部署费用无关";
-            GUI.Label(new Rect(26,661,540,27),info,smallStyle);
-            GUI.enabled=Battle.CheckSkill(selectedEntityId)==SkillFailure.None;
-            if(GUI.Button(new Rect(580,649,245,44),"爆裂黎明  [E]",buttonStyle)) ActivateSelectedSkill();
-            GUI.enabled=true;
         }
 
         private void EnsureStyles()
@@ -371,7 +378,7 @@ namespace YesterdayConvoy
 
         private void OnDisable()
         {
-            ClearViews();
+            ClearViews(); CancelInteraction();
             if(preview!=null) preview.enabled=false;
             if(entryOutline!=null) entryOutline.enabled=false;
         }

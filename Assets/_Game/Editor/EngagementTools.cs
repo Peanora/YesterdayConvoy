@@ -33,6 +33,7 @@ namespace YesterdayConvoy.Editor
             var controller = new SerializedObject(UnityEngine.Object.FindAnyObjectByType<ManualBattleController>());
             controller.FindProperty("uiSound").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/_Game/Art/Audio/SFX/ui-audio-click1.ogg");
             controller.FindProperty("hitSound").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/_Game/Art/Audio/SFX/rpg-audio-metalClick.ogg");
+            controller.FindProperty("skillIcon").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Game/Art/UI/Icons/icon-magic.png");
             controller.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());

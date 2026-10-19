@@ -13,6 +13,22 @@ namespace YesterdayConvoy.Tests
             => new ManualBattle(settings,new[]{Vector3.zero,Vector3.forward*length},towerAtEntry ? Vector3.zero : new Vector3(1000,0,0));
 
         [Test]
+        public void ExplicitPausedPlacementIsAtomicAndNeverAdvancesOrBypassesCooldown()
+        {
+            var b=New(Settings()); b.Begin(); b.SetPaused(true);
+            var first=b.TryDeploy(b.RunId,1,b.Entry,true);
+            Assert.That(first.Success,Is.True); Assert.That(b.IsPaused,Is.True); Assert.That(b.Clock,Is.Zero);
+            Assert.That(b.TryDeploy(b.RunId,1,b.Entry,true).EntityId,Is.EqualTo(first.EntityId));
+            Assert.That(b.DP,Is.EqualTo(6)); Assert.That(b.RemainingUses,Is.EqualTo(5)); Assert.That(b.Units.Count,Is.EqualTo(1));
+            Assert.That(b.TryDeploy(b.RunId,2,b.Entry,true).Failure,Is.EqualTo(DeployFailure.CoolingDown));
+            Assert.That(b.TryDeploy(b.RunId,3,Vector3.right*10,true).Failure,Is.EqualTo(DeployFailure.WrongEntry));
+            b.Advance(20);
+            Assert.That(b.CooldownRemaining,Is.EqualTo(2)); Assert.That(b.Clock,Is.Zero);
+            Assert.That(b.Units[0].Motion.DistanceTravelled,Is.Zero); Assert.That(b.DP,Is.EqualTo(6));
+            Assert.That(b.TryDeploy(b.RunId,4,b.Entry).Failure,Is.EqualTo(DeployFailure.Paused),"Legacy requests do not gain implicit pause authorization.");
+        }
+
+        [Test]
         public void DeploymentCommitsOnceAndRapidRequestsCannotDoubleSpend()
         {
             var battle=New(Settings()); battle.Begin();
