@@ -8,7 +8,7 @@ using UnityEngine;
 namespace YesterdayConvoy.Editor
 {
     /// <summary>Owns the industrial map presentation only. Reads the existing route without changing it.</summary>
-    public static class TacticalMapTools
+    public static partial class TacticalMapTools
     {
         public const string RootName = "Industrial Map";
         private const string Art = "Assets/_Game/Art/Environment/Industrial/";
@@ -49,7 +49,7 @@ namespace YesterdayConvoy.Editor
             asphalt = Mat("Asphalt", new Color(0.32f,0.38f,0.44f), "asphalt-color.jpg");
             steel = Mat("Steel", new Color(0.22f,0.28f,0.34f));
             dark = Mat("Recess", new Color(0.07f,0.095f,0.12f));
-            amber = Mat("Safety Amber", new Color(0.79f,0.57f,0.23f), unlit:true, opaque:true);
+            amber = Mat("Safety Amber", new Color(0.46f,0.43f,0.27f), unlit:true, opaque:true);
             cyan = Mat("Guide Cyan", new Color(0.14f,0.57f,0.69f), unlit:true, opaque:true);
             red = Mat("Entry Red", new Color(0.95f,0.22f,0.24f), unlit:true);
             blue = Mat("Target Blue", new Color(0.16f,0.64f,0.94f), unlit:true);
@@ -64,78 +64,7 @@ namespace YesterdayConvoy.Editor
             foreach (MeshRenderer renderer in GameObject.Find("Raised Tactical Board").GetComponentsInChildren<MeshRenderer>())
                 renderer.enabled = false;
             Transform map = RootNameObject(RootName, null);
-            // The yard extends beyond the viewport; this is a place, rather than a board on a black backdrop.
-            Shape("Foundation", map, new Vector3(0,-0.49f,0.5f), new Vector3(40,0.44f,40), dark);
-            Material yard = Mat("Yard", new Color(0.25f,0.31f,0.37f), "asphalt-color.jpg");
-            yard.mainTextureScale = new Vector2(20,20);
-            Shape("Surrounding yard",map,new Vector3(0,-0.28f,0),new Vector3(40,0.04f,40),yard);
-            for (int x=-6; x<=6; x++)
-                for (int z=-3; z<=4; z++)
-                {
-                    bool routeTile = IsOnRoute(x,z,points);
-                    bool raised = !routeTile && x>=-5 && x<=5 && z>=-2 && z<=2 &&
-                        ((x==-4 || x==-3) && z>=0 || (x==-1 || x==1) && z>=1 || (x==3 || x==4) && z>=0 || (x==0 || x==1) && z==-2);
-                    // Keep rear platform caps behind the camera-facing actor plane at the current
-                    // 52-degree pitch. The former 0.48m caps intersected a walking character's face.
-                    float height = raised ? 0.30f : 0;
-                    Shape($"Cell {x},{z}",map,new Vector3(x,height*0.5f-0.13f,z),new Vector3(0.97f,0.26f+height,0.97f),routeTile || raised ? concrete : asphalt);
-                    if (raised)
-                    {
-                        Shape($"Platform cap {x},{z}",map,new Vector3(x,height+0.016f,z),new Vector3(0.94f,0.035f,0.94f),steel);
-                        Shape($"Warning lip {x},{z}",map,new Vector3(x,height+0.04f,z-0.44f),new Vector3(0.54f,0.025f,0.025f),amber);
-                    }
-                }
-            for (int x=-6; x<=6; x++)
-            {
-                Shape($"Back curb {x}",map,new Vector3(x,0.1f,4.48f),new Vector3(0.98f,0.48f,0.18f),steel);
-                Shape($"Front curb {x}",map,new Vector3(x,-0.02f,-3.48f),new Vector3(0.98f,0.24f,0.18f),steel);
-                if (x%2==0) Shape($"Front guide {x}",map,new Vector3(x,0.12f,-3.4f),new Vector3(0.72f,0.028f,0.05f),cyan);
-            }
-            // Keep the older imported wall/rail instances for reference; their thin end-on silhouettes
-            // did not fit the game's ground modules. Use the same concrete/steel family for the facade.
-            foreach(string name in new[]{"North wall west","North wall east","Upper rail west","Upper rail east"})
-            {
-                Transform legacy=map.Find(name);
-                if(legacy!=null)legacy.gameObject.SetActive(false);
-            }
-            for(int side=-1;side<=1;side+=2)
-            {
-                Shape($"Service wall {side}",map,new Vector3(side*3.5f,0.44f,4.3f),new Vector3(4.1f,0.9f,0.42f),concrete);
-                Shape($"Service wall cap {side}",map,new Vector3(side*3.5f,0.93f,4.3f),new Vector3(4.2f,0.08f,0.48f),steel);
-                Shape($"Rear service deck {side}",map,new Vector3(side*4.5f,-0.06f,7.5f),new Vector3(8.8f,0.36f,5.7f),concrete);
-                Shape($"Side service deck {side}",map,new Vector3(side*8.5f,-0.06f,0),new Vector3(3.6f,0.36f,8.9f),concrete);
-                for(int i=0;i<8;i++)
-                {
-                    Shape($"Side seam {side} {i}",map,new Vector3(side*8.5f,0.13f,-3.5f+i),new Vector3(3.6f,0.012f,0.025f),dark);
-                    Shape($"Side edge {side} {i}",map,new Vector3(side*6.75f,0.15f,-3.5f+i),new Vector3(0.035f,0.025f,0.65f),amber);
-                }
-                for(int i=0;i<3;i++)
-                {
-                    Shape($"Peripheral housing {side} {i}",map,new Vector3(side*8.4f,0.55f,-2.4f+i*2.4f),new Vector3(2.2f,1.1f,1.45f),steel);
-                    Shape($"Peripheral housing top {side} {i}",map,new Vector3(side*8.4f,1.13f,-2.4f+i*2.4f),new Vector3(2.1f,0.06f,1.35f),concrete);
-                }
-            }
-            // Equipment sits outside the route. No colliders, navigation, damage or unit config changes.
-            Prop("Control console", "Prop_Computer.fbx",map,new Vector3(-1.6f,0,3.5f),1.25f,1.25f,90);
-            Prop("Ventilation west", "Prop_Vent_Big.fbx",map,new Vector3(-5.3f,0.18f,3.55f),1.5f,1.1f,180);
-            Prop("Ventilation east", "Prop_Vent_Big.fbx",map,new Vector3(5.3f,0.18f,3.55f),1.5f,1.1f,180);
-            Prop("Supply crate west", "Prop_Crate3.fbx",map,new Vector3(-4.3f,0,2.75f),0.75f,0.75f,15);
-            Prop("Supply crate east", "Prop_Crate3.fbx",map,new Vector3(4.3f,0,2.75f),0.75f,0.75f,-12);
-            Pipe("Service pipe west",map,new Vector3(-3.5f,0.48f,3.92f),3.7f);
-            Pipe("Service pipe east",map,new Vector3(3.5f,0.48f,3.92f),3.7f);
-            for (int x=-5; x<=5; x+=2)
-            {
-                Shape($"Drain frame {x}",map,new Vector3(x,0.01f,-2.8f),new Vector3(1.1f,0.04f,0.33f),steel);
-                for (int i=0;i<7;i++) Shape($"Drain slat {x} {i}",map,new Vector3(x-0.45f+i*0.15f,0.034f,-2.8f),new Vector3(0.055f,0.014f,0.29f),dark);
-            }
-            for (int i=1;i<points.Length;i++)
-            {
-                Vector3 direction=(points[i]-points[i-1]).normalized;
-                Vector3 center=(points[i]+points[i-1])*0.5f;
-                Vector3 side=Vector3.Cross(Vector3.up,direction)*0.39f;
-                Stroke($"Lane {i} L",map,new[]{center+side-direction*0.22f,center+side+direction*0.22f},amber,0.025f);
-                Stroke($"Lane {i} R",map,new[]{center-side-direction*0.22f,center-side+direction*0.22f},amber,0.025f);
-            }
+            BuildDiorama(map,points);
             TacticalGate((Transform)data.FindProperty("redGate").objectReferenceValue,red);
             TacticalGate((Transform)data.FindProperty("blueGate").objectReferenceValue,blue);
             ContactShadow((Transform)data.FindProperty("monster").objectReferenceValue,0.9f,0.48f,-0.025f);
@@ -152,12 +81,17 @@ namespace YesterdayConvoy.Editor
             // The card is now a screen-space roster entry. Preserve its prefab and asset references.
             foreach(var view in UnityEngine.Object.FindObjectsByType<DemoCardView>())
                 foreach(var renderer in view.GetComponentsInChildren<Renderer>())renderer.enabled=false;
-            RenderSettings.ambientLight = new Color(0.48f,0.55f,0.65f);
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.34f,0.39f,0.42f);
             var keyLight=GameObject.Find("Key Light")?.GetComponent<Light>();
             if(keyLight!=null)
             {
-                keyLight.intensity=0.9f;
-                keyLight.color=new Color(0.85f,0.91f,1);
+                keyLight.intensity=0.95f;
+                keyLight.transform.rotation=Quaternion.Euler(48,-32,0);
+                keyLight.shadows=LightShadows.Soft;
+                keyLight.shadowStrength=0.55f;
+                keyLight.shadowBias=0.04f;
+                keyLight.color=new Color(.95f,.97f,1);
             }
             Camera.main.backgroundColor = new Color(0.035f,0.05f,0.07f);
             AssetDatabase.SaveAssets();
@@ -241,6 +175,7 @@ namespace YesterdayConvoy.Editor
                 child=go.transform;
                 child.SetParent(parent,false);
             }
+            child.gameObject.SetActive(true);
             child.localPosition=position;
             child.localScale=scale;
             child.GetComponent<Renderer>().sharedMaterial=material;
@@ -258,6 +193,7 @@ namespace YesterdayConvoy.Editor
                 child=((GameObject)PrefabUtility.InstantiatePrefab(source,parent)).transform;
                 child.name=name;
             }
+            child.gameObject.SetActive(true);
             child.localPosition=Vector3.zero;
             child.localRotation=Quaternion.Euler(0,yaw,0);
             child.localScale=Vector3.one;
@@ -287,6 +223,7 @@ namespace YesterdayConvoy.Editor
                 child=go.transform;
                 child.SetParent(parent,false);
             }
+            child.gameObject.SetActive(true);
             child.localPosition=position;
             child.localRotation=Quaternion.Euler(0,0,90);
             child.localScale=new Vector3(0.13f,length*0.5f,0.13f);
@@ -337,6 +274,7 @@ namespace YesterdayConvoy.Editor
             Transform child=RootNameObject(name,parent);
             var line=child.GetComponent<LineRenderer>();
             if(line==null)line=child.gameObject.AddComponent<LineRenderer>();
+            child.gameObject.SetActive(true);
             line.useWorldSpace=false;
             line.sharedMaterial=material;
             line.widthMultiplier=width;

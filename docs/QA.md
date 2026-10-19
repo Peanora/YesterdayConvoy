@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-10-19：地图按用户截图进行层次与材质迭代
+
+只修改Editor地图生成、共享材质、原创静态水面Shader和场景可视结构。保留原路点/相机52°/尺寸4.9、角色/克洛丝高台脚底/所有玩法配置；无新碰撞体、导航或依赖。13份新材质复用原贴图，所有新资产带Unity生成meta。
+
+| 实际验证 | 结果 | 本地证据（artifacts/map-polish） |
+| --- | --- | --- |
+| Unity生成/配置检查 | refined退出0，TACTICAL_MAP_PASS；无碰撞体、原路线端点未抬高、相机正向/全画幅、引用/材质检查通过 | setup-refined.log |
+| Windows x64构建 | refined退出0，254503296字节，0错误；无Shader error或C#编译错误 | build-refined.log |
+| 实际Direct3D12 Player | refined退出0，ENGAGEMENT_CHECK十三项全True：范围、不阻挡、每次选牌、SP/技能、暂停、胜负/穿门幂等/重开 | refined-player.log |
+| GPU PlayMode | 最终15/15通过、0跳过，退出0；真实场景交战、部署/暂停、步态和720/1440遮挡仍通过 | playmode.xml / playmode.log |
+| 遮挡像素 | height720：paintBleed0/前景遮挡1436；height1440：paintBleed0/前景遮挡5745，角色排序不受分辨率影响 | playmode日志GROUND_SORT_PIXELS |
+| 实机画面 | 已查看最终准备/胜利/失败完整HUD，地块/高台/水渠/支墩/人物与入口可读；主交战截图仍未落盘，未伪称检查该帧 | refined-player/combat-ready.png、combat-won.png、combat-lost.png；ready副本在docs/art/previews/waterworks-map-v1.png |
+
+首次样板已成功生成/构建/Player，但视觉检查发现地面偏亮、水面过平；后续降低材质/环境光、添加程序水面与外围支墩，最终验证针对该细化版。原截图仅作构图/层次研究，没有把商业游戏像素复制入Assets。新增程序化水面使用静态世界坐标，不随现实时间推进，未引入暂停中持续流动的新动画。
+
+未运行：本轮EditMode（核心逻辑/参数未改）、第二台电脑离线、完整人工点击通关、长时间压力/FPS、非16:9和低端GPUShader兼容测试。自动测试不证明达到原作美术质量；建筑/磨损/道具种类仍为原型，最终主观观感待人类反馈。新增约数百个静态可视模块，有长期性能评估余地；不以当前成功构建声称已达60fps目标。
+
 ## 2026-10-19：远程、高台、选牌与初始费用反馈
 
 范围：配置改为初始DP12、普通射程3.2/技能3.8、克洛丝高台(-1,0.35,1)/阻挡0；成功部署清选牌，失败保留。未改原通用范围/阻挡算法、移动速度、路线、卡面或依赖。
