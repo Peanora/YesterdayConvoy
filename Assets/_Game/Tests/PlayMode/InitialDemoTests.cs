@@ -38,13 +38,28 @@ namespace YesterdayConvoy.Tests
             Assert.That(Object.FindObjectsByType<DemoSpriteVisual>().Length, Is.EqualTo(4));
             Assert.That(Object.FindAnyObjectByType<DemoCardView>().Card, Is.SameAs(demo.Card));
             Assert.That(demo.Monster.GetComponentInChildren<SpriteRenderer>().sprite, Is.SameAs(demo.Card.BattleSprite));
-            Assert.That(Camera.main.orthographic, Is.True);
+            Assert.That(Camera.main.orthographic, Is.False);
+            Assert.That(Camera.main.fieldOfView,Is.EqualTo(24).Within(.01));
             Assert.That(Vector3.Dot(Camera.main.transform.forward, Vector3.down), Is.InRange(0.3f, 0.95f));
             GameObject map = GameObject.Find("Industrial Map");
             Assert.That(map, Is.Not.Null, "The fixed industrial tactical map should be part of the playable scene.");
             Assert.That(map.transform.Find("Foundation"), Is.Not.Null);
             Assert.That(map.GetComponentsInChildren<Collider>().Length, Is.Zero, "Art replacement must not introduce gameplay collisions.");
-            Assert.That(Camera.main.transform.eulerAngles.x, Is.InRange(49,55), "A higher pitch should preserve a readable tactical ground plane.");
+            Assert.That(Camera.main.transform.eulerAngles.x, Is.InRange(59,61), "Reference-aligned pitch must preserve the frontal tactical view.");
+            Camera mapCamera=Camera.main;
+            float frontWidth=(mapCamera.WorldToScreenPoint(new Vector3(1,0,-3))-mapCamera.WorldToScreenPoint(new Vector3(0,0,-3))).magnitude;
+            float rearWidth=(mapCamera.WorldToScreenPoint(new Vector3(1,0,4))-mapCamera.WorldToScreenPoint(new Vector3(0,0,4))).magnitude;
+            Assert.That(frontWidth/rearWidth,Is.InRange(1.1f,1.3f),"The reference has a restrained near/far perspective difference.");
+            foreach(Vector3 gate in new[]{demo.Waypoints[0],demo.Waypoints[demo.Waypoints.Count-1]})
+            {
+                Vector3 screen=mapCamera.WorldToScreenPoint(gate);
+                Assert.That(screen.x/Screen.width,Is.InRange(.05f,.95f));
+                Assert.That((Screen.height-screen.y)/Screen.height,Is.InRange(66f/720,552f/720),"Gates must stay inside the clickable battlefield, clear of the HUD.");
+                Ray gateRay=mapCamera.ScreenPointToRay(screen);
+                var clickPlane=new Plane(Vector3.up,gate);
+                Assert.That(clickPlane.Raycast(gateRay,out float gateDistance),Is.True);
+                Assert.That(Vector3.Distance(gate,gateRay.GetPoint(gateDistance)),Is.LessThan(.001f),"Perspective projection must retain accurate ground clicks.");
+            }
             var ground = new Plane(Vector3.up, new Vector3(0,-0.25f,0));
             foreach(Vector3 corner in new[]{Vector3.zero,Vector3.right,Vector3.up,Vector3.one})
             {
@@ -272,6 +287,7 @@ namespace YesterdayConvoy.Tests
             int oldMask = camera.cullingMask;
             Vector3 oldPosition = camera.transform.position;
             float oldSize = camera.orthographicSize;
+            float oldFieldOfView = camera.fieldOfView;
             Color oldBackground = camera.backgroundColor;
             CameraClearFlags oldFlags = camera.clearFlags;
             RenderTexture oldTarget = camera.targetTexture;
@@ -306,6 +322,8 @@ namespace YesterdayConvoy.Tests
                 camera.clearFlags = CameraClearFlags.SolidColor;
                 camera.backgroundColor = Color.clear;
                 camera.orthographicSize = 3;
+                // Keep the fixture's former three-unit half-height when the actual camera is perspective.
+                if(!camera.orthographic) camera.fieldOfView=2*Mathf.Atan(3f/20)*Mathf.Rad2Deg;
                 camera.transform.position = demo.Monster.position + camera.transform.up * 0.2f - camera.transform.forward * 20;
                 int firstOrder = 0;
                 foreach (int height in new[]{720,1440})
@@ -347,6 +365,7 @@ namespace YesterdayConvoy.Tests
                 camera.cullingMask = oldMask;
                 camera.transform.position = oldPosition;
                 camera.orthographicSize = oldSize;
+                camera.fieldOfView = oldFieldOfView;
                 camera.backgroundColor = oldBackground;
                 camera.clearFlags = oldFlags;
                 if(target!=null) { target.Release(); Object.Destroy(target); }

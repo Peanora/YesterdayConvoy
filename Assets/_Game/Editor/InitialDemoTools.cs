@@ -40,9 +40,9 @@ namespace YesterdayConvoy.Editor
             if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().path != ScenePath)
                 EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             var demos = UnityEngine.Object.FindObjectsByType<InitialDemo>();
-            if (demos.Length != 1 || Camera.main == null || !Camera.main.orthographic ||
+            if (demos.Length != 1 || Camera.main == null ||
                 Vector3.Dot(Camera.main.transform.forward, Vector3.down) < 0.3f)
-                throw new InvalidOperationException("InitialDemo: expected one demo and an oblique orthographic camera.");
+                throw new InvalidOperationException("InitialDemo: expected one demo and an oblique camera.");
             var data = new SerializedObject(demos[0]);
             foreach (string field in new[] { "definition", "monster", "tower", "muzzle", "redGate", "blueGate", "shotBeam" })
                 if (data.FindProperty(field).objectReferenceValue == null)

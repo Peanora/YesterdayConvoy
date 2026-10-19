@@ -69,15 +69,7 @@ namespace YesterdayConvoy.Editor
             TacticalGate((Transform)data.FindProperty("blueGate").objectReferenceValue,blue);
             ContactShadow((Transform)data.FindProperty("monster").objectReferenceValue,0.9f,0.48f,-0.025f);
             ContactShadow((Transform)data.FindProperty("tower").objectReferenceValue,1.35f,0.8f,0.015f);
-            Camera camera=Camera.main;
-            camera.transform.rotation=Quaternion.Euler(52,0,0);
-            camera.transform.position=new Vector3(0,0,0.7f)-camera.transform.forward*24;
-            camera.orthographicSize=4.9f;
-            foreach(var visual in UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>())
-            {
-                visual.transform.rotation=camera.transform.rotation;
-                visual.Renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,visual.transform.parent.position);
-            }
+            ConfigureReferenceCamera();
             // The card is now a screen-space roster entry. Preserve its prefab and asset references.
             foreach(var view in UnityEngine.Object.FindObjectsByType<DemoCardView>())
                 foreach(var renderer in view.GetComponentsInChildren<Renderer>())renderer.enabled=false;
@@ -102,6 +94,32 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             DemoArtTools.Validate();
+        }
+
+        [MenuItem("Yesterday Convoy/Initial Demo/Align Camera to Reference")]
+        public static void ApplyCamera()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            var scene=EditorSceneManager.OpenScene(InitialDemoTools.ScenePath,OpenSceneMode.Single);
+            ConfigureReferenceCamera();
+            EditorSceneManager.SaveScene(scene);
+            Validate();
+        }
+
+        private static void ConfigureReferenceCamera()
+        {
+            // Estimated from the supplied image's square tiles and near/far size change, not original-game data.
+            Camera camera=Camera.main;
+            camera.orthographic=false;
+            camera.usePhysicalProperties=false;
+            camera.fieldOfView=24;
+            camera.transform.rotation=Quaternion.Euler(60,0,0);
+            camera.transform.position=new Vector3(0,0,0.7f)-camera.transform.forward*24;
+            foreach(var visual in UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>())
+            {
+                visual.transform.rotation=camera.transform.rotation;
+                visual.Renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,visual.transform.parent.position);
+            }
         }
 
         public static void ValidatePresentation()
@@ -130,8 +148,9 @@ namespace YesterdayConvoy.Editor
             }
             Camera camera=Camera.main;
             float pitch=camera.transform.eulerAngles.x;
-            if(pitch<49 || pitch>55 || Mathf.Abs(camera.transform.eulerAngles.y)>0.01f || Mathf.Abs(camera.transform.eulerAngles.z)>0.01f)
-                throw new InvalidOperationException("Tactical map: expected frontal 52-degree tactical view.");
+            if(camera.orthographic || pitch<59 || pitch>61 || Mathf.Abs(camera.fieldOfView-24)>0.01f ||
+                Mathf.Abs(camera.transform.eulerAngles.y)>0.01f || Mathf.Abs(camera.transform.eulerAngles.z)>0.01f)
+                throw new InvalidOperationException("Tactical map: expected frontal 60-degree perspective view with 24-degree field of view.");
             // Test the actual ground-plane intersections of the full viewport, including HUD-covered corners.
             var ground=new Plane(Vector3.up,new Vector3(0,-0.25f,0));
             foreach(Vector3 corner in new[]{Vector3.zero,Vector3.right,Vector3.up,Vector3.one})
@@ -141,7 +160,7 @@ namespace YesterdayConvoy.Editor
                 Vector3 hit=ray.GetPoint(distance);
                 if(Mathf.Abs(hit.x)>19 || Mathf.Abs(hit.z)>19)throw new InvalidOperationException("Tactical map: yard does not fill the frame.");
             }
-            Debug.Log("TACTICAL_MAP_PASS: full-frame yard; 52-degree frontal view; original route; no colliders; valid materials.");
+            Debug.Log("TACTICAL_MAP_PASS: full-frame map; 60-degree frontal perspective; FOV24; original route; no colliders; valid materials.");
         }
 
         private static bool IsOnRoute(int x,int z,Vector3[] route)
