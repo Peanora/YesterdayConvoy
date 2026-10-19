@@ -19,6 +19,7 @@ namespace YesterdayConvoy
         private AudioSource audioSource;
         private AudioClip click, impact;
         private int runId, lastPhase = -1;
+        private float readyIdleTime;
         public SpriteRenderer DefenderVisual => kroos;
 
         public void Initialize(ManualBattleController controller, EngagementDefinition data, AudioClip uiSound, AudioClip hitSound)
@@ -35,11 +36,19 @@ namespace YesterdayConvoy
         {
             if (owner == null || owner.Battle == null || !owner.Battle.EngagementEnabled) return;
             ManualBattle b = owner.Battle; var d = b.Defender; Camera cam = Camera.main;
-            if (runId != b.RunId) { ClearTransient(); runId = b.RunId; lastPhase = -1; }
+            if (runId != b.RunId) { ClearTransient(); runId = b.RunId; lastPhase = -1; readyIdleTime = 0; }
+            // Before combat there is no simulation clock yet. Carry that idle phase into combat
+            // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
+            if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
             kroos.transform.position = d.Position;
+            if (d.Alive)
+            {
+                float lift = 0.02f * (1 - Mathf.Cos((float)((readyIdleTime + time) * (Mathf.PI * 2 / 2.8f))));
+                kroos.transform.position += cam.transform.up * lift;
+            }
             kroos.transform.rotation = cam.transform.rotation * Quaternion.Euler(0, 0, death * -16);
             var target = b.FindUnit(d.TargetId);
             if (target != null) kroos.flipX = cam.transform.InverseTransformDirection(target.Motion.Position - d.Position).x > 0;

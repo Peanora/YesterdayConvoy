@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-19：克洛丝待机与界面减字
+
+只改EngagementView视觉偏移、ManualBattleController文字显示与ManualBattleInteraction失败提示连接，扩展真实场景测试；无美术/配置/场景/Prefab/依赖改动。待机2.8秒周期，向屏幕上方0–0.04世界单位，未拉伸图片；准备阶段用视觉时间，开战继承相位，战斗用共享Clock，射击后坐力仍独立叠加。去掉克洛丝名称/类型、正常入口左下角常驻提示，保留血条与功能UI；错误2.5秒居中提示（UI现实时间，不推进战斗），胜负居中，重开清除提示。
+
+- GPU PlayMode24/24通过、0失败/0跳过：artifacts/kroos-idle/playmode.xml、playmode.log。新增准备阶段真实场景待机检查：Clock仍0/无部署，视觉缓慢变化且偏移不超过0.04，逻辑位置不变。原倍速/暂停用例增加战斗起伏变化、方向/幅度、逻辑位置不变、暂停冻结与重开复位断言；原战斗、拖动、技能移动锁等回归通过。
+- Windows构建341056621字节/0错误/退出0：build.log，BASELINE_BUILD_PASS；场景/单位/逐帧美术/地图引用校验通过。日志末尾有退出时Curl error42，构建成功标志和进程退出0均已核对。
+- 更新后的实际Windows Player交战十三项全部True、退出0：combat.log（ENGAGEMENT_CHECK）；覆盖暂停、远程停步、手动技能、击杀/胜败/穿门幂等/重开。
+- 静态核对正常入口不再绘制头顶文字/左下角说明；部署失败与技能失败接到居中短提示。git diff --check通过，未跟踪的ProjectSettings/PackageManagerSettings.asset保持原样且不提交。
+
+未运行：本轮EditMode（战斗模型不变）、人工完整HUD/连续动作观感、第二台电脑、长期性能/各分辨率。自动场景测试和隐藏Player不等于人工试玩或完整HUD截图；起伏幅度/周期尚待用户主观确认。无新素材来源/许可证变化，本地提交、不推送。
+
 ## 2026-10-19：克洛丝漫画战场图替换
 
 改动：新增kroos-comic.png与Unity meta，EngagementTools导入入口/默认路径，WisadelVsKroos.asset只有kroosSprite一行引用变化；补充原场景用例对新图/Bilinear的断言。未改Runtime、场景/Prefab、战斗配置数值、维什戴尔或地图。

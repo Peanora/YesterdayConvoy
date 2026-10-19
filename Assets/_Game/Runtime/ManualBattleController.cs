@@ -22,7 +22,9 @@ namespace YesterdayConvoy
         private SpriteRenderer preview;
         private LineRenderer entryOutline;
         private Material previewMaterial;
-        private GUIStyle textStyle, smallStyle, numberStyle, buttonStyle;
+        private GUIStyle textStyle, smallStyle, numberStyle, buttonStyle, noticeStyle;
+        private string notice;
+        private float noticeUntil;
         private long requestSequence;
         public ManualBattle Battle { get; private set; }
         public ManualBattleDefinition Definition => definition;
@@ -127,6 +129,7 @@ namespace YesterdayConvoy
 
         public void RestartBattle()
         {
+            notice=null;
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
             selectedEntityId=null; SimulationSpeed=1; CancelInteraction();
             scene.ShotBeam.enabled=false; Feedback="拖动底部角色卡至红门部署";
@@ -312,18 +315,17 @@ namespace YesterdayConvoy
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
             Fill(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
-            string status=Battle.Phase==BattlePhase.Won ? "进攻成功！守方防御归零" : Battle.Phase==BattlePhase.Lost ? "进攻失败：场上清空，已无可用部署资源" :
-                Battle.IsPaused ? "战术暂停 · "+Feedback : Feedback;
-            GUI.Label(new Rect(26,565,870,32),status,textStyle);
-            if(!Battle.EngagementEnabled) GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
-            string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
-            GUI.Label(new Rect(26,Battle.EngagementEnabled ? 589 : 651,Battle.EngagementEnabled ? 850 : 540,26),
-                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  拖动至红门 / 右键取消" : cooldown+"  ·  拖动至红门 / 右键取消",smallStyle);
-            if(Battle.EngagementEnabled)
+            if(!Battle.EngagementEnabled)
             {
-                GUI.Label(new Rect(26,623,785,28),"拖动卡牌部署  ·  点击角色/金色标志查看技能  ·  重叠角色再次点选切换",smallStyle);
-                GUI.Label(new Rect(26,661,785,27),SkillMenuOpen ? (Battle.IsPaused ? "技能选择中（暂停）：恢复后可释放，点空白取消" : "技能选择中：极慢速继续，点击空白处取消") : "空格暂停/继续；暂停时可部署，技力与冷却不推进",smallStyle);
+                GUI.Label(new Rect(26,565,870,32),Feedback,textStyle);
+                GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
+                string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
+                GUI.Label(new Rect(26,651,540,26),cooldown+"  ·  拖动至红门 / 右键取消",smallStyle);
             }
+            string result=Battle.Phase==BattlePhase.Won ? "进攻成功！守方防御归零" :
+                Battle.Phase==BattlePhase.Lost ? "进攻失败：场上清空，已无可用部署资源" : null;
+            if(result!=null) DrawNotice(new Rect(330,240,620,64),result);
+            else if(notice!=null && Time.unscaledTime<noticeUntil) DrawNotice(new Rect(330,82,620,38),notice);
             if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
             if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
@@ -356,7 +358,6 @@ namespace YesterdayConvoy
             Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.95f);
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
             if(!d.Alive) return;
-            GUI.Label(new Rect(x-70,y-23,180,24),Battle.CombatSettings.BlockCount==0 ? "克洛丝 · 高台远程" : $"克洛丝  阻挡 {d.BlockedCount}/{Battle.CombatSettings.BlockCount}",smallStyle);
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
         }
@@ -366,6 +367,7 @@ namespace YesterdayConvoy
             if(textStyle!=null) return;
             textStyle=new GUIStyle(GUI.skin.label){font=scene.InterfaceFont,fontSize=20};
             smallStyle=new GUIStyle(textStyle){fontSize=16};
+            noticeStyle=new GUIStyle(textStyle){alignment=TextAnchor.MiddleCenter};
             numberStyle=new GUIStyle(textStyle){fontSize=27,fontStyle=FontStyle.Bold};
             buttonStyle=new GUIStyle(GUI.skin.button){font=scene.InterfaceFont,fontSize=18,fontStyle=FontStyle.Bold};
             foreach(var state in new[]{buttonStyle.normal,buttonStyle.hover,buttonStyle.active,buttonStyle.focused})
@@ -374,6 +376,10 @@ namespace YesterdayConvoy
 
         private static void Fill(Rect rect,Color color)
         { Color previous=GUI.color; GUI.color=color; GUI.DrawTexture(rect,Texture2D.whiteTexture); GUI.color=previous; }
+
+        private void ShowNotice(string message) { notice=message; noticeUntil=Time.unscaledTime+2.5f; }
+        private void DrawNotice(Rect rect,string message)
+        { Fill(rect,new Color(0.035f,0.05f,0.065f,0.94f)); GUI.Label(rect,message,noticeStyle); }
 
         private static string Explain(DeployFailure reason)
         {

@@ -72,7 +72,11 @@ namespace YesterdayConvoy
             else if(!IsBattlefield(screen) || !PointerGround(screen,out Vector3 point)) receipt=new DeploymentReceipt(DeployFailure.WrongEntry);
             else receipt=TryDeployAt(point,true);
             Selected=false; UpdatePreview();
-            if(!receipt.Success) Feedback=receipt.Failure==DeployFailure.WrongEntry ? "部署已取消：请拖到红门" : Explain(receipt.Failure);
+            if(!receipt.Success)
+            {
+                Feedback=receipt.Failure==DeployFailure.WrongEntry ? "部署已取消：请拖到红门" : Explain(receipt.Failure);
+                ShowNotice(Feedback);
+            }
             return receipt;
         }
 
@@ -129,6 +133,7 @@ namespace YesterdayConvoy
             if(!SkillMenuOpen) return SkillFailure.MissingEntity;
             var result=ActivateSelectedSkill();
             if(result==SkillFailure.None) CloseSkillMenu();
+            else ShowNotice(Feedback);
             return result;
         }
 

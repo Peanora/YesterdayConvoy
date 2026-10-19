@@ -72,6 +72,14 @@ namespace YesterdayConvoy.Tests
             c.SelectCard(true); c.TryDeployAt(b.Entry); c.ToggleSpeed(); c.Tick(0.5f); yield return null;
             Assert.That(b.Clock,Is.EqualTo(1).Within(0.0001)); Assert.That(b.Units[0].SkillSP,Is.EqualTo(9).Within(0.0001));
             Assert.That(b.Units[0].Motion.DistanceTravelled,Is.EqualTo(0.75).Within(0.0001));
+            Vector3 logicalPosition=b.Defender.Position;
+            Vector3 idlePosition=c.CombatView.DefenderVisual.transform.position;
+            c.Tick(0.2f); yield return null;
+            Vector3 idleOffset=c.CombatView.DefenderVisual.transform.position-logicalPosition;
+            Assert.That(Vector3.Distance(idlePosition,c.CombatView.DefenderVisual.transform.position),Is.GreaterThan(0.0001f));
+            Assert.That(idleOffset.magnitude,Is.LessThanOrEqualTo(0.0401f));
+            Assert.That(Vector3.Cross(idleOffset,Camera.main.transform.up).magnitude,Is.LessThan(0.0001f));
+            Assert.That(b.Defender.Position,Is.EqualTo(logicalPosition),"Idle must never move the logical defender or its range.");
             b.SetPaused(true); double clock=b.Clock; float sp=b.Units[0].SkillSP;
             Vector3 position=c.CombatView.DefenderVisual.transform.position;
             c.Tick(20); yield return null;
@@ -79,6 +87,23 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.CombatView.DefenderVisual.transform.position,Is.EqualTo(position));
             Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.Paused));
             c.RestartBattle(); Assert.That(c.SimulationSpeed,Is.EqualTo(1)); Assert.That(b.IsPaused,Is.False);
+            yield return null;
+            Assert.That(c.CombatView.DefenderVisual.transform.position,Is.EqualTo(b.Defender.Position));
+        }
+
+        [UnityTest]
+        public IEnumerator KroosIdlesBeforeDeploymentWithoutStartingTheBattle()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
+            yield return null;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Vector3 logicalPosition=b.Defender.Position;
+            Vector3 first=c.CombatView.DefenderVisual.transform.position;
+            yield return new WaitForSeconds(0.4f);
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Ready)); Assert.That(b.Clock,Is.Zero);
+            Assert.That(b.Units.Count,Is.Zero); Assert.That(b.Defender.Position,Is.EqualTo(logicalPosition));
+            Assert.That(Vector3.Distance(first,c.CombatView.DefenderVisual.transform.position),Is.GreaterThan(0.001f));
+            Assert.That(Vector3.Distance(logicalPosition,c.CombatView.DefenderVisual.transform.position),Is.LessThanOrEqualTo(0.0401f));
         }
 
         [UnityTest]
