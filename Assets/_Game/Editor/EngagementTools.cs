@@ -9,14 +9,12 @@ namespace YesterdayConvoy.Editor
     {
         public const string DefinitionPath = "Assets/_Game/Data/Battles/WisadelVsKroos.asset";
         public const string KroosPath = "Assets/_Game/Art/Characters/Defenders/kroos-comic.png";
-        public const string AttackPath = "Assets/_Game/Art/Characters/Monsters/Boss/wisadel-attack.png";
 
         [MenuItem("Yesterday Convoy/Initial Demo/Enable Wisadel vs Kroos")]
         public static void Initialize()
         {
             ManualDeploymentTools.Initialize();
             var kroos = ImportKroos();
-            var attack = DemoArtTools.ImportSprite(AttackPath, 1.65f);
             var definition = AssetDatabase.LoadAssetAtPath<EngagementDefinition>(DefinitionPath);
             if (definition == null)
             {
@@ -25,7 +23,6 @@ namespace YesterdayConvoy.Editor
             }
             var data = new SerializedObject(definition);
             data.FindProperty("kroosSprite").objectReferenceValue = kroos;
-            data.FindProperty("wisadelAttackSprite").objectReferenceValue = attack;
             data.ApplyModifiedPropertiesWithoutUndo();
             var level = new SerializedObject(AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(ManualDeploymentTools.DefinitionPath));
             level.FindProperty("engagement").objectReferenceValue = definition;
@@ -63,7 +60,7 @@ namespace YesterdayConvoy.Editor
 
         public static void Validate(EngagementDefinition definition)
         {
-            if (definition == null || definition.KroosSprite == null || definition.WisadelAttackSprite == null)
+            if (definition == null || definition.KroosSprite == null)
                 throw new InvalidOperationException("Engagement art/configuration is incomplete.");
             _ = definition.Snapshot();
             Vector3 position = definition.DefenderPosition;

@@ -7,19 +7,9 @@ namespace YesterdayConvoy
     {
         [SerializeField] private CardDefinition card;
         [SerializeField] private Font font;
-        [SerializeField] private SpriteRenderer portrait;
-        [SerializeField] private TextMesh title;
-        [SerializeField] private TextMesh cost;
-        [SerializeField] private TextMesh caption;
         private GUIStyle nameStyle, costStyle, labelStyle;
 
         public CardDefinition Card => card;
-
-        private void Awake()
-        {
-            // Retain the previous prefab's serialized references, but avoid a second camera-space card.
-            foreach (Renderer renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
-        }
 
         // Drawn by InitialDemo after its HUD panels, using the same reference-resolution matrix.
         public bool DrawRoster(ManualBattle battle = null, bool selected = false, bool allowClick = true)

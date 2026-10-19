@@ -8,7 +8,7 @@ namespace YesterdayConvoy.Editor
         // Presentation only: an authored waterworks deck around the existing, unchanged route.
         private static void BuildDiorama(Transform map, Vector3[] points)
         {
-            foreach (Transform child in map) child.gameObject.SetActive(false);
+            while(map.childCount>0) UnityEngine.Object.DestroyImmediate(map.GetChild(0).gameObject);
             Material slab = Mat("Deck Limestone", new Color(.34f,.39f,.39f), "concrete-color.jpg");
             Material slabAlt = Mat("Deck Limestone Alternate", new Color(.30f,.35f,.36f), "concrete-color.jpg");
             Material lane = Mat("Route Concrete", new Color(.49f,.53f,.50f), "concrete-color.jpg");

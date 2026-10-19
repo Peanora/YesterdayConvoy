@@ -6,7 +6,6 @@ namespace YesterdayConvoy
     public sealed class EngagementDefinition : ScriptableObject
     {
         [SerializeField] private Sprite kroosSprite;
-        [SerializeField] private Sprite wisadelAttackSprite;
         [SerializeField] private Vector3 defenderPosition = new Vector3(-1, 0.35f, 1);
         [Header("Trial combat values, not original-game balance")]
         [SerializeField] private float unitAttack = 14, unitArmor = 2, unitRange = 3.2f, unitInterval = 1.7f;
@@ -18,7 +17,6 @@ namespace YesterdayConvoy
         [SerializeField] private int skillAmmo = 6;
         [SerializeField] private float skillAttack = 105, skillInterval = 3.2f, skillRange = 3.8f, projectileTime = 0.22f;
         public Sprite KroosSprite => kroosSprite;
-        public Sprite WisadelAttackSprite => wisadelAttackSprite;
         public Vector3 DefenderPosition => defenderPosition;
         public EngagementSettings Snapshot() => new EngagementSettings(unitAttack, unitArmor, unitRange, unitInterval,
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,

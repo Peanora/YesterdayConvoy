@@ -14,7 +14,7 @@ namespace YesterdayConvoy
         private ManualBattleController owner;
         private EngagementDefinition definition;
         private Material material;
-        private SpriteRenderer kroos;
+        [SerializeField] private SpriteRenderer kroos;
         private LineRenderer range;
         private AudioSource audioSource;
         private AudioClip click, impact;
@@ -26,7 +26,7 @@ namespace YesterdayConvoy
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             material = new Material(Shader.Find("Sprites/Default"));
-            kroos = new GameObject("Kroos combat sprite", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            if(kroos==null) kroos = new GameObject("Kroos combat sprite", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
             kroos.transform.SetParent(transform, false); kroos.sprite = data.KroosSprite; kroos.sharedMaterial = material;
             range = CreateLine("Kroos range", 0.018f); range.loop = true; range.positionCount = 64; range.sortingOrder = 0;
             audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;

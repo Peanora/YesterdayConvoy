@@ -11,7 +11,7 @@ namespace YesterdayConvoy
         [SerializeField] private UnitDefinition unit;
         [SerializeField] private Sprite portrait;
         [SerializeField] private Sprite battleSprite;
-        [Header("Clock-driven flipbook; empty arrays retain the historical cutout diagnostic")]
+        [Header("Clock-driven comic flipbook")]
         [SerializeField] private Sprite[] walkFrames, attackFrames, skillFrames, comicImpactFaces;
 
         public string CardId => cardId;

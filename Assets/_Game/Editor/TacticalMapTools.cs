@@ -61,14 +61,11 @@ namespace YesterdayConvoy.Editor
             var data = new SerializedObject(demo);
             var route = data.FindProperty("waypoints");
             Vector3[] points = Enumerable.Range(0, route.arraySize).Select(i => route.GetArrayElementAtIndex(i).vector3Value).ToArray();
-            foreach (MeshRenderer renderer in GameObject.Find("Raised Tactical Board").GetComponentsInChildren<MeshRenderer>())
-                renderer.enabled = false;
             Transform map = RootNameObject(RootName, null);
             BuildDiorama(map,points);
             TacticalGate((Transform)data.FindProperty("redGate").objectReferenceValue,red);
             TacticalGate((Transform)data.FindProperty("blueGate").objectReferenceValue,blue);
             ContactShadow((Transform)data.FindProperty("monster").objectReferenceValue,0.9f,0.48f,-0.025f);
-            ContactShadow((Transform)data.FindProperty("tower").objectReferenceValue,1.35f,0.8f,0.015f);
             ConfigureReferenceCamera();
             // The card is now a screen-space roster entry. Preserve its prefab and asset references.
             foreach(var view in UnityEngine.Object.FindObjectsByType<DemoCardView>())
@@ -272,7 +269,6 @@ namespace YesterdayConvoy.Editor
 
         private static void TacticalGate(Transform owner,Material color)
         {
-            owner.Find("Series Sprite").GetComponent<SpriteRenderer>().enabled=false;
             Transform root=RootNameObject("Tactical Gate",owner);
             Shape("Threshold",root,new Vector3(0,0.01f,0),new Vector3(0.96f,0.04f,0.96f),dark);
             for(int level=0;level<2;level++)

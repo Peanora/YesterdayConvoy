@@ -133,7 +133,7 @@ namespace YesterdayConvoy.Tests
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
             c.StartBattle(); b.SetPaused(true); Deploy(c); yield return null;
             var u=b.Units[0]; var v=GameObject.Find(u.EntityId).GetComponentInChildren<DemoSpriteVisual>();
-            Assert.That(v.UsesFrameAnimation,Is.True); Assert.That(v.Puppet,Is.Null);
+            Assert.That(v.UsesFrameAnimation,Is.True);
             Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.BattleSprite),"Paused spawn must use the new idle immediately.");
             Assert.That(c.Definition.Card.WalkFrames.Count,Is.EqualTo(19));
             Assert.That(c.Definition.Card.AttackFrames.Count,Is.EqualTo(28));

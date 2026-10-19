@@ -1,5 +1,9 @@
 # 资源工作流
 
+## 2026-10-19旧资源退役
+
+旧像素感角色/卡面、纸片动作、炮台、符文门、石板、Bootstrap和对应诊断已删除，不能再通过旧生成器恢复为当前入口。清单REMOVED表示文件已移除，只保留来源和历史位置供追踪，不是可直接使用的素材。当前场景直接保存新版克洛丝，部署模板用漫画静态图且隐藏；HUD运行时显示。真实遮挡回归现为CurrentPresentationTests.GroundPaintStaysBehindComicActorAt720And1440WhileSolidsStillOcclude。下方旧步骤为历史，当前镜头/导入/状态以STATUS及最新规范为准。
+
 ## 用户GIF逐帧导入（2026-10-19）
 
 先运行tools/art/convert_supplied_wisadel_gifs.py --source-dir <四个原GIF所在目录>，用Pillow按GIF原始合成/透明规则解码；不抠黑、不逐帧居中/缩放、不生成假帧。只取待机首帧，其余19/28/100帧全部导出；固定裁出六个技能表情取样。原始文件保留在美术工作区/本地artifacts备份，不重复放Assets；source-records/wisadel-comic.json记录原始文件名/哈希与实际输出路径。

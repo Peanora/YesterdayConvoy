@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-10-19：旧资产与诊断清理
+
+Unity编辑器由用户保存并关闭后执行。LegacyAssetCleanup迁移保留现有Scene/Prefab/配置GUID，先清场景旧引用和卡牌Prefab旧子物体，保存新版克洛丝与隐藏漫画模板，再计算所有保留序列化资产的递归依赖；有候选仍被引用时直接拒绝删除。实际移除33项资产（13PNG/17材质/2单位样本/Bootstrap）及meta，另清11个旧脚本/测试及meta、3个空目录。完整资产路径在artifacts/legacy-cleanup/deleted-assets.txt，历史可从0fc408a恢复；13个图像清单状态改REMOVED。许可/来源文档保留。模型ManualBattle、EngagementCombat、RouteMotion及当前关卡/卡牌数值、GIF文件与镜头配置未改。
+
+- 迁移：migration.log，LEGACY_CLEANUP_PASS与场景/帧/地图校验通过、退出0。当前场景不再有旧炮台、范围圈、射线和旧棋盘；旧单怪/纸片/Bootstrap运行与生成入口移除。InitialDemo只存绑定，DemoSpriteVisual只读漫画帧，EngagementView复用保存的克洛丝，避免运行时再次生成第二份人物。
+- EditMode57/57通过、0跳过、退出0：editmode.xml/log。旧Bootstrap专用校验退役，由当前场景编辑状态引用/唯一入口/退役文件与meta确实不存在的检查接替；其余费用、战斗、技能、单位配置与路线模型测试保留。
+- GPU PlayMode首轮和最终均14/14通过、0跳过、退出0：playmode.xml/log与playmode-final.xml/log。旧纸片步态、Bootstrap/单向炮台专用测试随资源退役；保留并移植真实像素遮挡测试到当前漫画角色。最终720：opaque20410/paintBleed0/solidOccluded20410；1440：81506/0/81506；排序均9760。正常帧/暂停/技能续播移动锁、单只胜败、结算按钮、重开及拖动/技能选择回归通过。
+- Windows x64构建277913345字节/0错误/退出0：build.log，BASELINE_BUILD_PASS；当前1个单位配置通过。构建前追加未运行场景Camera.Render至editor-preview.png，已实际查看新版克洛丝与地图，无旧人物/炮台；副本docs/art/previews/editor-current-only.png。该图是编辑状态实际相机输出，不含OnGUI，不代表完整HUD人工试玩。
+- 更新后的真实Player：combat.log交战十三项、interaction.log交互八项全部True，两个进程均退出0。
+- 删除引用复查：从Git提取47个已删除meta的GUID，扫描所有保留unity/prefab/asset/mat/anim/controller/meta，残留引用0；未改变Packages/Unity版本、ManualDemo数值或当前卡牌引用。
+
+未执行：完整人工键鼠通关、第二机离线、长期性能；仅查看编辑态实际渲染，未重新人工验收所有HUD分辨率。本轮测试数量变化来自删除不再存在的诊断，不是把当前失败用例禁用；最终零跳过。原未跟踪ProjectSettings/PackageManagerSettings.asset保留，不纳入提交。外部课程Word未修改；仅本地Git提交，不推送/发布。
+
 ## 2026-10-19：单只维维美与胜负结算
 
 正常ManualDemo改为守方生命1、部署次数1，CardDefinition显示名维维美；编辑器新建默认值同步。内部ID/资产路径/源素材名称不改。ManualBattleController新增结果遮罩/面板，显示胜负、守方生命、本场部署与技能次数，无虚构金币/经验；ManualBattleInteraction使用真实IMGUI鼠标事件处理按钮完整点击，结算期间吞掉底层鼠标交互。重开仍走原RestartBattle，清理单位/射击/选择/拖动/提示，恢复费用/次数/生命/技力/暂停/速度。显式旧炮台诊断仍使用6次/3防御历史快照，不把Demo限制推广到模型。

@@ -69,8 +69,6 @@ namespace YesterdayConvoy
             string hit=IsBattlefield(screen) ? HitUnit(screen) : null;
             if(hit!=null) { OpenSkillMenu(hit); return; }
             if(SkillMenuOpen) { CloseSkillMenu(); Feedback="已取消技能选择"; return; }
-            // Point-and-click deployment remains only in the explicit historical diagnostic.
-            if(!Battle.EngagementEnabled && Selected && IsBattlefield(screen) && PointerGround(screen,out Vector3 point)) TryDeployAt(point);
         }
 
         public void ProcessPointerMove(Vector2 screen) { pointerScreen=screen; UpdatePreview(); }

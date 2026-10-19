@@ -11,14 +11,12 @@ namespace YesterdayConvoy.Editor
     {
         public const string SampleFolder = "Assets/_Game/Data/Units";
 
-        [MenuItem("Yesterday Convoy/Configuration/Create Prototype Units")]
+        [MenuItem("Yesterday Convoy/Configuration/Ensure Current Unit")]
         public static void CreatePrototypeUnits()
         {
             EnsureFolder("Assets/_Game/Data");
             EnsureFolder(SampleFolder);
-            CreateIfMissing("U01", "Prototype Fast", 1.5f, 1);
-            CreateIfMissing("U02", "Prototype Durable", 1f, 2);
-            CreateIfMissing("U03", "Prototype Leader", 0.75f, 4);
+            CreateIfMissing("U01", "维维美", 0.75f, 1);
             AssetDatabase.SaveAssets();
             ValidateProject();
         }
