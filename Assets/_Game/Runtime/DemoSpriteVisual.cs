@@ -20,6 +20,10 @@ namespace YesterdayConvoy
         private DeployedUnitState deployedUnit;
         private Sprite attackSprite;
         private SpriteRenderer attackPose;
+        private CardDefinition frameCard;
+        public bool UsesFrameAnimation => frameCard!=null && frameCard.HasFrameAnimation;
+        public string FrameState { get; private set; } = "Idle";
+        public int FrameIndex { get; private set; }
 
         public SpriteRenderer Renderer => sprite;
         public DemoWalkPuppet Puppet => puppet;
@@ -35,7 +39,7 @@ namespace YesterdayConvoy
             if (sprite != null)
             {
                 if (idlePose == null) idlePose = sprite.sprite;
-                sprite.sprite = idlePose;
+                sprite.sprite = UsesFrameAnimation ? frameCard.BattleSprite : idlePose;
                 sprite.color = Color.white;
             }
         }
@@ -49,6 +53,7 @@ namespace YesterdayConvoy
                 bool attacking = manualBattle.EngagementEnabled && deployedUnit.HasCombatTarget;
                 Vector3 direction = attacking ? manualBattle.Defender.Position - deployedUnit.Motion.Position : deployedUnit.Motion.Direction;
                 Color tint = combat && manualBattle.Clock < deployedUnit.LastHitTime + 0.18 ? new Color(1,0.48f,0.48f) : Color.white;
+                if(UsesFrameAnimation) { PresentFrames(tint); return; }
                 PresentMotion((float)deployedUnit.Motion.DistanceTravelled, clock, direction,
                     combat && !manualBattle.IsPaused && deployedUnit.Active && deployedUnit.IsMoving, tint);
                 PresentAttack(attacking, direction, tint);
@@ -71,11 +76,42 @@ namespace YesterdayConvoy
                 time < flashUntil ? new Color(1, 0.48f, 0.48f) : Color.white);
         }
 
-        public void Bind(ManualBattle battle, DeployedUnitState unit, Sprite attackingSprite = null)
+        public void Bind(ManualBattle battle, DeployedUnitState unit, Sprite attackingSprite = null, CardDefinition frames = null)
         {
             manualBattle = battle; deployedUnit = unit; movingDemo = null;
             attackSprite = attackingSprite;
+            frameCard = frames;
             if (idlePose == null) idlePose = sprite.sprite;
+            if(UsesFrameAnimation) { sprite.sprite=frameCard.BattleSprite; FrameState="Idle"; FrameIndex=0; }
+        }
+
+        // Exact source frames, no cutout deformation or directional turning. Only the simulation clock is read.
+        private void PresentFrames(Color tint)
+        {
+            if(!FaceCamera()) return;
+            puppet?.Hide(); if(attackPose!=null) attackPose.enabled=false;
+            sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
+            transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+            if(manualBattle.IsPaused) return;
+            if(deployedUnit.IsMoving)
+            {
+                FrameState="Walk";
+                // At the authored 0.75 move speed, retain the GIF's 0.95-second cycle; distance freezes on stop/pause.
+                FrameIndex=(int)(deployedUnit.Motion.DistanceTravelled/.75*20)%frameCard.WalkFrames.Count;
+                sprite.sprite=frameCard.WalkFrames[FrameIndex]; return;
+            }
+            if(!deployedUnit.HasCombatTarget)
+            { FrameState="Idle"; FrameIndex=0; sprite.sprite=frameCard.BattleSprite; return; }
+            double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+            bool skill=deployedUnit.SkillAmmo>0 || deployedUnit.LastAttackEmpowered && age<manualBattle.CombatSettings.SkillInterval;
+            var sequence=skill ? frameCard.SkillFrames : frameCard.AttackFrames;
+            FrameState=skill ? "Skill" : "Attack";
+            if(skill && !deployedUnit.LastAttackEmpowered) age=0;
+            if(double.IsInfinity(age)) age=0;
+            // Fit the full five-second skill gesture into the existing attack interval without delaying damage.
+            double duration=skill ? manualBattle.CombatSettings.SkillInterval : sequence.Count/20.0;
+            FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
+            sprite.sprite=sequence[FrameIndex];
         }
 
         private void PresentAttack(bool attacking, Vector3 direction, Color tint)

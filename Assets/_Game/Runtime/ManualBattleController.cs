@@ -195,7 +195,8 @@ namespace YesterdayConvoy
                     // A template used by a diagnostic may own generated cutouts; each new view owns its own rig.
                     foreach(Transform child in visual.transform)
                     { child.gameObject.SetActive(false); Destroy(child.gameObject); }
-                    visual.Bind(Battle,unit,Battle.EngagementEnabled ? definition.Engagement.WisadelAttackSprite : null);
+                    visual.Bind(Battle,unit,Battle.EngagementEnabled ? definition.Engagement.WisadelAttackSprite : null,
+                        Battle.EngagementEnabled ? definition.Card : null);
                     views.Add(unit.EntityId,view);
                     clone.SetActive(true);
                 }

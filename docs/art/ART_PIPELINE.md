@@ -1,5 +1,11 @@
 # 资源工作流
 
+## 用户GIF逐帧导入（2026-10-19）
+
+先运行tools/art/convert_supplied_wisadel_gifs.py --source-dir <四个原GIF所在目录>，用Pillow按GIF原始合成/透明规则解码；不抠黑、不逐帧居中/缩放、不生成假帧。只取待机首帧，其余19/28/100帧全部导出；固定裁出六个技能表情取样。原始文件保留在美术工作区/本地artifacts备份，不重复放Assets；source-records/wisadel-comic.json记录原始文件名/哈希与实际输出路径。
+
+Unity执行Yesterday Convoy/Initial Demo/Apply Supplied Comic Frames，仅设置新PNG的Sprite/FullRect、Bilinear、无mipmap/无压缩/不可读、统一PPU与每动作固定脚底，并更新现有CardDefinition的静态/帧引用；不重建场景地图或覆盖战斗数值。重复执行复用GUID/已有资产，勿删除PNG或meta后重新生成。播放由DemoSpriteVisual读取模拟时钟，无Animator/新依赖；旧诊断保留原纸片。
+
 遮挡修正（2026-10-18）：角色排序统一调用 DemoSpriteVisual.GetSortingOrder，使用归一化视口、正值排序段，不能再以原始屏幕像素决定顺序。黄/青实心地表标记用不透明 Unlit/Color，透明接地阴影仍独立保留。当前 52° 纸片人物与后方 0.48 高台会相交，因此装饰高台改为 0.30；如再改高度/镜头，必须用真实图形设备运行 GroundPaintStaysBehindCutoutsAt720And1440WhileSolidsStillOcclude，并检查实际行走帧。不能靠让人物无条件盖住实体来修复。
 
 2026-10-18 布局更新：同一 Apply Tactical Map 工具设置试验俯角 52°、尺寸 4.9，并延展周边地面至视口外；保留固定偏航/滚转为 0。旧墙/栏杆实例禁用，用同系列原生墙体替代；禁用左侧卡牌子 Renderer。DemoCardView 的 DrawRoster 由 InitialDemo.OnGUI 在底部调用，顶部防御读取实际状态。无新增美术源图或包依赖。

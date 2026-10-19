@@ -6,7 +6,7 @@ namespace YesterdayConvoy
     /// <summary>Clock-driven Kroos pose, projectiles and impacts. Never applies damage or moves a logical entity.</summary>
     public sealed class EngagementView : MonoBehaviour
     {
-        private sealed class ShotView { public LineRenderer Trail, Impact, Rays; }
+        private sealed class ShotView { public LineRenderer Trail, Impact, Rays, Ink; public SpriteRenderer Face; }
         private sealed class Puff { public LineRenderer Ring; public Vector3 Position; public double Time; public bool Death; }
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
@@ -60,7 +60,15 @@ namespace YesterdayConvoy
             {
                 if (shots.Count <= i)
                 {
-                    shots.Add(new ShotView { Trail = CreateLine("Shot trail", 0.06f), Impact = CreateLine("Impact ring", 0.04f), Rays = CreateLine("Impact rays", 0.025f) });
+                    var view=new ShotView { Trail = CreateLine("Shot trail", 0.06f), Impact = CreateLine("Impact ring", 0.04f), Rays = CreateLine("Impact rays", 0.025f), Ink=CreateLine("Comic impact ink",.12f) };
+                    var faces=owner.Definition.Card.ComicImpactFaces;
+                    if(faces?.Count>0)
+                    {
+                        view.Face=new GameObject("Comic expression",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+                        view.Face.transform.SetParent(transform,false); view.Face.sharedMaterial=material;
+                        view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
+                    }
+                    shots.Add(view);
                     Play(impact, modelShots[i].FromDefender ? 0.23f : modelShots[i].Empowered ? 0.75f : 0.35f);
                 }
                 PresentShot(shots[i], modelShots[i], b, cam);
@@ -87,6 +95,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
             var target = b.FindUnit(shot.TargetId);
@@ -113,6 +122,25 @@ namespace YesterdayConvoy
             if (!hit) return;
             color.a = 1 - age / duration;
             float radius = (shot.Empowered ? 0.28f : 0.05f) + age * (shot.Empowered ? 1.3f : 0.8f);
+            if(!shot.FromDefender && owner.Definition.Card.HasFrameAnimation)
+            {
+                // Graphic, black-edged comic burst and source-expression stamp; no extra damage event.
+                view.Rays.enabled=false; view.Ink.enabled=true;
+                int order=DemoSpriteVisual.GetSortingOrder(cam,destination)+50;
+                view.Ink.sortingOrder=order; view.Impact.sortingOrder=order+1;
+                ComicBurst(view.Ink,end,radius,new Color(.035f,.025f,.025f,color.a),cam);
+                ComicBurst(view.Impact,end,radius,new Color(1,.83f,.34f,color.a),cam);
+                view.Ink.widthMultiplier=shot.Empowered ? .13f : .06f;
+                view.Impact.widthMultiplier=shot.Empowered ? .075f : .025f;
+                if(shot.Empowered && view.Face!=null)
+                {
+                    view.Face.enabled=true; view.Face.sortingOrder=order+2;
+                    view.Face.transform.position=end; view.Face.transform.rotation=cam.transform.rotation;
+                    view.Face.transform.localScale=Vector3.one*(.48f+age*.32f);
+                    view.Face.color=new Color(1,1,1,color.a);
+                }
+                return;
+            }
             Ring(view.Impact, end, radius, color, cam);
             view.Impact.widthMultiplier = shot.Empowered ? 0.10f * (1 - age / duration) : 0.025f;
             view.Rays.positionCount = 24;
@@ -146,12 +174,22 @@ namespace YesterdayConvoy
             { float a = i * Mathf.PI / 16; line.SetPosition(i, point + (right * Mathf.Cos(a) + up * Mathf.Sin(a)) * radius); }
         }
 
+        private static void ComicBurst(LineRenderer line,Vector3 center,float radius,Color color,Camera camera)
+        {
+            line.loop=true; line.positionCount=16; line.startColor=line.endColor=color;
+            for(int i=0;i<16;i++)
+            {
+                float angle=i*Mathf.PI/8,r=radius*(i%2==0 ? 1.25f : .64f);
+                line.SetPosition(i,center+(camera.transform.right*Mathf.Cos(angle)+camera.transform.up*Mathf.Sin(angle))*r);
+            }
+        }
+
         private void AddPuff(Vector3 position, double time, bool death)
         { puffs.Add(new Puff { Ring = CreateLine(death ? "Death dissolve" : "Deployment pulse", 0.035f), Position = position, Time = time, Death = death }); }
 
         private void ClearTransient()
         {
-            foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); }
+            foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }

@@ -46,6 +46,7 @@ namespace YesterdayConvoy
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
+        public bool LastAttackEmpowered { get; internal set; }
         internal double NextAttackTime;
 
         internal DeployedUnitState(string id, string unitId, RouteMotion motion, float health, double spawnTime)

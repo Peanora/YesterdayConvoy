@@ -1,0 +1,293 @@
+{
+  "sourceType": "User supplied attachments, 2026-10-19",
+  "license": "Third-party Arknights character art; public redistribution rights not established; local prototype only",
+  "clips": [
+    {
+      "name": "walk",
+      "original": "bf10eb0ddb1f0f14e0a3ca94c00d3735.gif",
+      "sha256": "7f041b89f050241ca7d093349d97d5716a2ee28d0a6097e9b8ac892183f0630c",
+      "sourceFrames": 19,
+      "usedFrames": 19,
+      "size": [
+        276,
+        327
+      ],
+      "secondsPerFrame": 0.05,
+      "pivot": [
+        0.5036231884057971,
+        0.024464831804281346
+      ],
+      "ppu": 173.33333333333334,
+      "files": [
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-000.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-001.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-002.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-003.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-004.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-005.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-006.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-007.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-008.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-009.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-010.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-011.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-012.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-013.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-014.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-015.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-016.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-017.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/walk/walk-018.png"
+      ]
+    },
+    {
+      "name": "idle",
+      "original": "1b488e2bd8eb9f4f9b41e6c801d18e22.gif",
+      "sha256": "613da8f484b263dbfc12decb5d62f3a09d107c054910ca6073eb22ebbe2135af",
+      "sourceFrames": 23,
+      "usedFrames": 1,
+      "size": [
+        247,
+        292
+      ],
+      "secondsPerFrame": 0.05,
+      "pivot": [
+        0.5,
+        0.003424657534246575
+      ],
+      "ppu": 173.33333333333334,
+      "files": [
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/idle/idle-000.png"
+      ]
+    },
+    {
+      "name": "attack",
+      "original": "457f7ca9427283994df616b1f4c9823b.gif",
+      "sha256": "314233f0099e61f4d92a77ce36b72d834ab061ad6f4d6b80811143cb69dc3f0c",
+      "sourceFrames": 28,
+      "usedFrames": 28,
+      "size": [
+        350,
+        311
+      ],
+      "secondsPerFrame": 0.05,
+      "pivot": [
+        0.5728571428571428,
+        0.06109324758842444
+      ],
+      "ppu": 173.33333333333334,
+      "files": [
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-000.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-001.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-002.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-003.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-004.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-005.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-006.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-007.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-008.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-009.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-010.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-011.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-012.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-013.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-014.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-015.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-016.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-017.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-018.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-019.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-020.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-021.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-022.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-023.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-024.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-025.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-026.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/attack/attack-027.png"
+      ]
+    },
+    {
+      "name": "skill",
+      "original": "eae171a7435b664d9c1460159a169e05.gif",
+      "sha256": "1765821c859bb6c977872365630fd71bd7020a68eff5064eb87c4968ef506d3e",
+      "sourceFrames": 100,
+      "usedFrames": 100,
+      "size": [
+        426,
+        380
+      ],
+      "secondsPerFrame": 0.05,
+      "pivot": [
+        0.602112676056338,
+        0.15
+      ],
+      "ppu": 173.33333333333334,
+      "files": [
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-000.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-001.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-002.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-003.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-004.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-005.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-006.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-007.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-008.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-009.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-010.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-011.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-012.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-013.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-014.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-015.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-016.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-017.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-018.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-019.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-020.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-021.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-022.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-023.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-024.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-025.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-026.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-027.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-028.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-029.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-030.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-031.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-032.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-033.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-034.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-035.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-036.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-037.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-038.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-039.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-040.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-041.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-042.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-043.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-044.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-045.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-046.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-047.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-048.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-049.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-050.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-051.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-052.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-053.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-054.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-055.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-056.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-057.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-058.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-059.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-060.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-061.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-062.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-063.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-064.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-065.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-066.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-067.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-068.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-069.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-070.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-071.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-072.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-073.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-074.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-075.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-076.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-077.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-078.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-079.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-080.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-081.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-082.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-083.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-084.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-085.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-086.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-087.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-088.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-089.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-090.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-091.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-092.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-093.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-094.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-095.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-096.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-097.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-098.png",
+        "Assets/_Game/Art/Characters/Monsters/Boss/WisadelComic/skill/skill-099.png"
+      ]
+    }
+  ],
+  "portrait": "Assets/_Game/Art/Cards/Portraits/wisadel-comic-idle.png",
+  "faceCrops": [
+    {
+      "sourceFrame": 0,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-00.png"
+    },
+    {
+      "sourceFrame": 6,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-01.png"
+    },
+    {
+      "sourceFrame": 28,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-02.png"
+    },
+    {
+      "sourceFrame": 35,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-03.png"
+    },
+    {
+      "sourceFrame": 42,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-04.png"
+    },
+    {
+      "sourceFrame": 57,
+      "rect": [
+        125,
+        8,
+        390,
+        272
+      ],
+      "file": "Assets/_Game/Art/VFX/Attacks/WisadelComic/face-05.png"
+    }
+  ]
+}

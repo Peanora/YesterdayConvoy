@@ -113,6 +113,7 @@ namespace YesterdayConvoy.Editor
             if (Vector3.Dot(Camera.main.transform.right, Vector3.right) < 0.999f)
                 throw new InvalidOperationException("Board camera must face forward without sideways yaw or roll.");
             Debug.Log("DEMO_ART_PASS: approved portrait; recruitCost=5; 4 battlefield visuals; 4-direction cutout views; forward-facing oblique camera.");
+            if(card.HasFrameAnimation) ComicArtTools.Validate(card);
             if (GameObject.Find(TacticalMapTools.RootName) != null) TacticalMapTools.ValidatePresentation();
         }
 

@@ -170,6 +170,7 @@ namespace YesterdayConvoy
                     bool empowered = unit.SkillAmmo > 0;
                     if (empowered) unit.SkillAmmo--;
                     unit.LastAttackTime = Clock;
+                    unit.LastAttackEmpowered = empowered;
                     unit.NextAttackTime = Clock + (empowered ? c.SkillInterval : c.UnitInterval);
                     combatShots.Add(new CombatShot(unit.EntityId, "kroos", false, empowered, unit.Motion.Position, Defender.Position,
                         Clock, c.ProjectileTime, empowered ? c.SkillAttack : c.UnitAttack));

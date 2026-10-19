@@ -1,5 +1,25 @@
 # 验证证据与回归
 
+## 2026-10-19：用户GIF逐帧角色替换与漫画命中
+
+实际新增155张PNG：19走路、1静态待机、28普攻、100技能、1卡面、6表情裁片；新ComicArtTools仅导入/绑定现有CardDefinition帧引用，不重建地图/场景或改战斗配置。原GIF已本地备份且不进Assets；Pillow无损合成GIF处置/透明后转RGBA，无黑底键控、补绘、逐帧重新居中或缩放。全路径/源hash见docs/art/source-records/wisadel-comic.json。
+
+| 实际检查 | 结果 | artifacts/wisadel-gif本地证据 |
+| --- | --- | --- |
+| 源文件/Alpha | 四GIF帧数19/23/28/100，均50ms；所有导出帧与6裁片Alpha0–255，PNG可解码，保留源尺寸；静态仅用GIF2首帧 | source-report.json、source-contact.png；版本化convert_supplied_wisadel_gifs.py与source-records |
+| Unity导入/帧引用 | COMIC_ART_PASS，19/28/100/6引用全齐、固定Pivot/PPU/Bilinear/FullRect/无mipmap/无压缩；全新PNG与脚本由Unity创建meta | import.log，退出0 |
+| EditMode | 56/56通过、0跳过、退出0；原六发逐次消耗测试增加最后一发类型保留断言，原暂停/伤害/回转/资源结算通过 | editmode.xml/log |
+| 最终GPU PlayMode | 22/22通过、0跳过；新用例检查暂停部署立即显示新静态图、19/28/100帧、步相推进/暂停冻结、无旧Puppet/无flip/无变形、正常/技能帧切换、开火前保持首帧、技能命中表情；原完整战斗/拖动/镜头与720/1440旧遮挡诊断仍通过 | playmode-final.xml/log；首版playmode.xml同22/22 |
+| 构建/配置引用 | Windows x64构建341061081字节、0错误、退出0，DEMO_ART_PASS/COMIC_ART_PASS/场景怪物校验 | build.log |
+| 最终实际Direct3D12 Player | 交互八项与战斗十三项全部True，两个进程均退出0；未采Player截图 | interaction.log、combat.log |
+| 实际视觉 | 已查看最终游戏相机1280×720走路/普攻/技能三图，源透明轮廓和技能翻滚、黑边黄白爆炸/表情印章可见，无旧转身混合；源19/静态/28/100选帧与6裁片接触表也已查看 | camera/walk.png、attack.png、skill.png；副本docs/art/previews/wisadel-comic-*.png |
+
+GPU相机图通过测试的Camera.Render离屏渲染保存，属于实际场景与Sprite/特效输出，不包含OnGUI顶部/底栏，也不是桌面鼠标验收。当前卡面更换由资产绑定与Alpha/源图一致性检查覆盖；完整HUD观感未实机人工查看。旧InitialDemo单怪诊断明确保留旧纸片，它的原“卡牌BattleSprite必须等于旧模板图”断言改为历史贴图非空；新的正常入口用例明确断言暂停出生图等于新Card.BattleSprite，未借历史诊断放宽正常美术绑定要求。
+
+中间检查修正：代码审查发现克隆OnEnable会恢复旧idlePose，补为已绑定逐帧卡时立即用新静态图，新测试覆盖暂停出生；首次技能开火前改为保持首帧，避免沿用上次普攻计时后跳回。最终22项通过后只更新文档/转换工具稳定写入，未再改Runtime。
+
+未执行：全100帧逐帧人工审批、完整人工动画连续播放/拖动/技能通关、第二台电脑离线、多角色/大规模长时性能；本轮没有用自动测试声称主观动作自然或达到原作特效。源5秒技能压缩到3.2秒为纯表现适配，手感待用户试玩。PNG原像素9MB多，未压缩纹理使构建增加86280388字节（约82.3MiB），后续图集/压缩评估未做；不把本次22/22当作性能成绩。无新网络素材下载、无AI生成、无新增依赖；保留未跟踪PackageManagerSettings.asset，不纳入提交。来源权利范围仅本地原型，未推送/公开发布。
+
 ## 2026-10-19：血条下蓝色技力与六格黄色弹药
 
 改动仅ManualBattleController新增DrawSkillResourceBar，读取unit.SkillSP/SkillAmmo与CombatSettings.RequiredSP/SkillAmmo；蓝条按比例填充，技能期间六格黄条逐格变暗，耗尽切回蓝条。未修改EngagementCombat结算、场景、Prefab、配置或资源引用，无新素材/依赖。原单向攻击诊断没有技能，不额外显示技力条。

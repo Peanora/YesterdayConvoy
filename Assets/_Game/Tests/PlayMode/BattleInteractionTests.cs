@@ -115,5 +115,61 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.Units.Count,Is.EqualTo(1)); Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.Clock,Is.Zero);
             Assert.That(b.IsPaused,Is.True); Assert.That(c.Dragging,Is.False);
         }
+
+        [UnityTest]
+        public IEnumerator ComicFramesFreezeOnPauseAndUseNormalAndSkillActionsWithoutTurning()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            c.StartBattle(); b.SetPaused(true); Deploy(c); yield return null;
+            var u=b.Units[0]; var v=GameObject.Find(u.EntityId).GetComponentInChildren<DemoSpriteVisual>();
+            Assert.That(v.UsesFrameAnimation,Is.True); Assert.That(v.Puppet,Is.Null);
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.BattleSprite),"Paused spawn must use the new idle immediately.");
+            Assert.That(c.Definition.Card.WalkFrames.Count,Is.EqualTo(19));
+            Assert.That(c.Definition.Card.AttackFrames.Count,Is.EqualTo(28));
+            Assert.That(c.Definition.Card.SkillFrames.Count,Is.EqualTo(100));
+            b.SetPaused(false); c.Tick(.15f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Walk")); Assert.That(v.FrameIndex,Is.GreaterThan(0));
+            var frame=v.Renderer.sprite; int index=v.FrameIndex;
+            b.SetPaused(true); c.Tick(20); yield return null;
+            Assert.That(v.Renderer.sprite,Is.SameAs(frame)); Assert.That(v.FrameIndex,Is.EqualTo(index));
+            Assert.That(v.Renderer.flipX,Is.False); Assert.That(v.transform.localScale,Is.EqualTo(Vector3.one));
+            SaveComicCamera("walk");
+            b.SetPaused(false);
+            for(int i=0;i<200 && !u.HasCombatTarget;i++) { c.Tick(.05f); yield return null; }
+            Assert.That(u.HasCombatTarget,Is.True); c.Tick(.2f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Attack")); Assert.That(u.LastAttackEmpowered,Is.False);
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.AttackFrames[v.FrameIndex]));
+            SaveComicCamera("attack");
+            c.SelectSkillUnit(u.EntityId); Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));
+            yield return null; Assert.That(v.FrameState,Is.EqualTo("Skill"));
+            Assert.That(v.FrameIndex,Is.Zero,"Before the first empowered shot, hold its anticipation instead of replaying an old normal attack's elapsed time.");
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.SkillFrames[v.FrameIndex]));
+            for(int i=0;i<100 && !u.LastAttackEmpowered;i++) { c.Tick(.02f); yield return null; }
+            Assert.That(u.LastAttackEmpowered,Is.True); c.Tick(.5f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Skill")); SaveComicCamera("skill");
+            bool face=false;
+            foreach(var renderer in c.CombatView.GetComponentsInChildren<SpriteRenderer>())
+                if(renderer.gameObject.name=="Comic expression" && renderer.enabled) face=true;
+            Assert.That(face,Is.True,"A resolved empowered shot must show the source-expression impact stamp.");
+            frame=v.Renderer.sprite; b.SetPaused(true); c.Tick(30); yield return null;
+            Assert.That(v.Renderer.sprite,Is.SameAs(frame)); Assert.That(v.Renderer.flipX,Is.False);
+            Assert.That(Quaternion.Angle(v.transform.rotation,Camera.main.transform.rotation),Is.LessThan(.01f));
+        }
+
+        private static void SaveComicCamera(string name)
+        {
+            if(SystemInfo.graphicsDeviceType==UnityEngine.Rendering.GraphicsDeviceType.Null) return;
+            var camera=Camera.main; var previous=camera.targetTexture; var active=RenderTexture.active;
+            var target=new RenderTexture(1280,720,24); var image=new Texture2D(1280,720,TextureFormat.RGBA32,false);
+            try
+            {
+                camera.targetTexture=target; camera.Render(); RenderTexture.active=target;
+                image.ReadPixels(new Rect(0,0,1280,720),0,0); image.Apply();
+                System.IO.Directory.CreateDirectory("artifacts/wisadel-gif/camera");
+                System.IO.File.WriteAllBytes("artifacts/wisadel-gif/camera/"+name+".png",image.EncodeToPNG());
+            }
+            finally
+            { camera.targetTexture=previous; RenderTexture.active=active; target.Release(); Object.Destroy(target); Object.Destroy(image); }
+        }
     }
 }

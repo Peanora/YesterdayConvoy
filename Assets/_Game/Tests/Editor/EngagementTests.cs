@@ -89,6 +89,7 @@ namespace YesterdayConvoy.Tests
             {
                 for(int step=0;u.SkillAmmo>remaining && step<30;step++) b.Advance(.01f);
                 Assert.That(u.SkillAmmo,Is.EqualTo(remaining));
+                Assert.That(u.LastAttackEmpowered,Is.True,"The last round retains its skill presentation after ammo reaches zero.");
                 Assert.That(u.SkillSP,Is.Zero,"SP stays empty until the last round is fired.");
                 b.SetPaused(true); b.Advance(2);
                 Assert.That(u.SkillAmmo,Is.EqualTo(remaining)); Assert.That(u.SkillSP,Is.Zero);

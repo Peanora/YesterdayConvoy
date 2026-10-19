@@ -2,7 +2,7 @@
 
 Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什戴尔从红门分批出兵，与高台克洛丝远程停步交战（克洛丝不阻挡），技力满后手动开启爆裂黎明，击杀干员后继续穿门；防御归零胜利，进攻资源耗尽且空场失败，可重新开始。
 
-保留认可卡面/步态和全画幅水闸检修平台（正向斜俯视、分格高台、外围水渠）；新增克洛丝与持炮姿势，来源见[本轮生成记录](docs/art/GENERATION-2026-10-19.md)。[当前水闸地图实机图](docs/art/previews/waterworks-camera-v2.png)。招募费5与部署费2分别显示；商店、升星、羁绊和多关经济尚未实现。
+维什戴尔已改为用户四GIF的漫画Q版：19帧走路、静态卡面/待机、28帧普攻、100帧爆裂黎明；无方向转身，爆炸加入黑边与表情印章。今后角色/特效按此统一，来源与使用范围见[本轮资源记录](docs/art/WISADEL-COMIC-2026-10-19.md)。全画幅水闸地图/镜头与克洛丝本轮未重绘。[当前漫画角色与技能实机](docs/art/previews/wisadel-comic-skill.png)（实际战场相机，不含HUD）。招募费5与部署费2分别显示；商店、升星、羁绊和多关经济尚未实现。
 
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
@@ -19,7 +19,7 @@ Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什
 
 在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式拖卡部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
 
-菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。当前使用像素感同系列美术与纸片关节动画；交战、技力与布局参数均为试验值。
+菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。正常入口使用用户提供的漫画逐帧动画，显式历史诊断保留旧纸片；交战、技力与布局参数均为试验值。
 
 ## 命令行验证
 
