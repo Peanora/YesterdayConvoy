@@ -177,12 +177,12 @@ namespace YesterdayConvoy.Tests
                 { killer=b.FindUnit(b.CombatShots[i].SourceId); break; }
             Assert.That(killer,Is.Not.Null); Assert.That(killer.Active,Is.True);
             var visual=GameObject.Find(killer.EntityId).GetComponentInChildren<DemoSpriteVisual>();
-            Assert.That(killer.HasCombatTarget,Is.False); Assert.That(killer.IsMoving,Is.True);
+            Assert.That(killer.HasCombatTarget,Is.False); Assert.That(killer.IsMoving,Is.False);
             Assert.That(visual.FrameState,Is.EqualTo("Skill"),"Target death cannot interrupt a fired skill gesture.");
             double distance=killer.Motion.DistanceTravelled; int frame=visual.FrameIndex;
             c.Tick(.4f); yield return null;
             Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.GreaterThan(frame));
-            Assert.That(killer.Motion.DistanceTravelled,Is.GreaterThan(distance),"Presentation cannot stall the existing movement rules.");
+            Assert.That(killer.Motion.DistanceTravelled,Is.EqualTo(distance),"The complete skill action locks actual movement even after target death.");
             SaveComicCamera("skill-after-target-death");
             frame=visual.FrameIndex; b.SetPaused(true); c.Tick(20); yield return null;
             Assert.That(visual.FrameIndex,Is.EqualTo(frame)); b.SetPaused(false);
@@ -190,7 +190,8 @@ namespace YesterdayConvoy.Tests
             c.Tick(remaining-.01f); yield return null;
             Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.EqualTo(99));
             c.Tick(.03f); yield return null;
-            Assert.That(visual.FrameState,Is.EqualTo("Walk"));
+            Assert.That(visual.FrameState,Is.EqualTo("Walk")); Assert.That(killer.IsMoving,Is.True);
+            Assert.That(killer.Motion.DistanceTravelled,Is.GreaterThan(distance));
             c.RestartBattle(); yield return null;
             Assert.That(c.ViewCount,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero);
         }

@@ -46,8 +46,29 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryActivateSkill(b.RunId, 1, u.EntityId), Is.EqualTo(SkillFailure.None));
             b.Advance(0.3f);
             Assert.That(b.Defender.Alive, Is.False); Assert.That(b.Defender.BlockedCount, Is.Zero);
-            Assert.That(u.IsBlocked, Is.False); Assert.That(u.IsMoving, Is.True);
+            Assert.That(u.IsBlocked, Is.False); Assert.That(u.IsMoving, Is.False,"A fired skill action still owns its movement lock after the blocker dies.");
+            b.Advance(b.CombatSettings.SkillInterval);
+            Assert.That(u.IsMoving,Is.True);
             int shots = b.ShotsFired; b.Advance(2); Assert.That(b.ShotsFired, Is.EqualTo(shots));
+        }
+
+        [Test]
+        public void SkillActionLocksTravelUntilItsEndIncludingTheFinalRoundAndPause()
+        {
+            var b=New(new EngagementSettings(unitRange:5,defenderHealth:1,defenderRange:.01f,
+                initialSP:1,requiredSP:1,skillAmmo:1,skillInterval:3.2f),health:1000);
+            var u=Deploy(b); Assert.That(b.TryActivateSkill(b.RunId,1,u.EntityId),Is.EqualTo(SkillFailure.None));
+            b.Advance(.3f); Assert.That(b.Defender.Alive,Is.False); Assert.That(u.SkillAmmo,Is.Zero);
+            Assert.That(b.IsSkillActionPlaying(u),Is.True); Assert.That(u.IsMoving,Is.False);
+            double distance=u.Motion.DistanceTravelled,clock=b.Clock;
+            b.SetPaused(true); b.Advance(20); Assert.That(b.Clock,Is.EqualTo(clock));
+            Assert.That(u.Motion.DistanceTravelled,Is.EqualTo(distance)); b.SetPaused(false);
+            float remaining=(float)(u.LastAttackTime+b.CombatSettings.SkillInterval-b.Clock);
+            b.Advance(remaining-.01f);
+            Assert.That(b.IsSkillActionPlaying(u),Is.True); Assert.That(u.Motion.DistanceTravelled,Is.EqualTo(distance));
+            b.Advance(.04f);
+            Assert.That(b.IsSkillActionPlaying(u),Is.False); Assert.That(u.IsMoving,Is.True);
+            Assert.That(u.Motion.DistanceTravelled-distance,Is.EqualTo(.03).Within(.0001),"A crossing step must not move during the locked portion.");
         }
 
         [Test]

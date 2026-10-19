@@ -96,7 +96,7 @@ namespace YesterdayConvoy
             double age=manualBattle.Clock-deployedUnit.LastAttackTime;
             double skillDuration=manualBattle.CombatSettings.SkillInterval;
             // A fired skill gesture owns its full window, independently of target lifetime or resumed movement.
-            if(deployedUnit.LastAttackEmpowered && age>=0 && age<skillDuration)
+            if(manualBattle.IsSkillActionPlaying(deployedUnit))
             {
                 FrameState="Skill";
                 FrameIndex=Mathf.Clamp((int)(age/skillDuration*frameCard.SkillFrames.Count),0,frameCard.SkillFrames.Count-1);

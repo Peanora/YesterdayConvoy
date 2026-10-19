@@ -86,6 +86,9 @@ namespace YesterdayConvoy
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
+        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active &&
+            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval;
+
         // Readiness stays visible during a full pause; authorization to cast is checked separately.
         public bool IsSkillReady(string entityId)
         {
@@ -156,8 +159,14 @@ namespace YesterdayConvoy
                 if (unit.IsBlocked) Defender.BlockedCount++;
                 float range = unit.SkillAmmo > 0 ? c.SkillRange : c.UnitRange;
                 unit.HasCombatTarget = Defender.Alive && GroundDistance(unit.Motion.Position, Defender.Position) <= range;
-                unit.IsMoving = !unit.IsBlocked && !unit.HasCombatTarget;
-                if (unit.IsMoving) unit.Motion.Advance(step);
+                unit.IsMoving = !unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit);
+                if (unit.IsMoving)
+                {
+                    // A step straddling the action end may only move for its unlocked remainder.
+                    float moveStep=unit.LastAttackEmpowered ?
+                        (float)Math.Min(step,Math.Max(0,Clock-unit.LastAttackTime-c.SkillInterval)) : step;
+                    if(moveStep>0) unit.Motion.Advance(moveStep);
+                }
                 if (unit.Motion.HasArrived)
                 {
                     unit.Resolution = UnitResolution.Breached; unit.IsMoving = false; unit.HasCombatTarget = unit.IsBlocked = false;
