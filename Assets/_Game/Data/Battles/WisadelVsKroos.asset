@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.EngagementDefinition
   kroosSprite: {fileID: 21300000, guid: 9c6ef92a3a5302f48b5eaced294a8af4, type: 3}
   wisadelAttackSprite: {fileID: 21300000, guid: 0e031cfdcfa615043b390fe7658e788a, type: 3}
-  defenderPosition: {x: 0, y: 0.04, z: 0}
+  defenderPosition: {x: -1, y: 0.35, z: 1}
   unitAttack: 14
   unitArmor: 2
-  unitRange: 0.65
+  unitRange: 3.2
   unitInterval: 1.7
   defenderHealth: 180
   defenderAttack: 22
   defenderArmor: 3
   defenderRange: 3.2
   defenderInterval: 1
-  blockCount: 1
+  blockCount: 0
   blockRadius: 0.65
   initialSP: 8
   requiredSP: 12
@@ -32,5 +32,5 @@ MonoBehaviour:
   skillAmmo: 6
   skillAttack: 105
   skillInterval: 3.2
-  skillRange: 2.6
+  skillRange: 3.8
   projectileTime: 0.22

@@ -113,7 +113,8 @@ namespace YesterdayConvoy
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
             var result=Battle.TryDeploy(Battle.RunId,++requestSequence,point);
-            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.Settings.DeploymentCost}" : Explain(result.Failure);
+            if(result.Success) Selected=false;
+            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.Settings.DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
             SyncViews();
             return result;
         }
@@ -293,7 +294,7 @@ namespace YesterdayConvoy
             if(!Battle.EngagementEnabled) GUI.Label(new Rect(26,608,800,27),$"部署消耗 {Battle.Settings.DeploymentCost}  ·  剩余次数 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}  ·  费用不自然回复",smallStyle);
             string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
             GUI.Label(new Rect(26,Battle.EngagementEnabled ? 589 : 651,Battle.EngagementEnabled ? 850 : 540,26),
-                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  [1]选牌 / 右键取消" : cooldown+"  ·  [1]选牌 / 右键取消",smallStyle);
+                Battle.EngagementEnabled ? $"部署 {Battle.Settings.DeploymentCost}费  ·  剩余 {Battle.RemainingUses}/{Battle.Settings.DeploymentLimit}次  ·  {cooldown}  ·  每次先[1]选牌 / 右键取消" : cooldown+"  ·  每次先[1]选牌 / 右键取消",smallStyle);
             if(Battle.EngagementEnabled) DrawSkills();
             if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
@@ -308,7 +309,7 @@ namespace YesterdayConvoy
             Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.95f);
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
             if(!d.Alive) return;
-            GUI.Label(new Rect(x-70,y-23,180,24),$"克洛丝  阻挡 {d.BlockedCount}/{Battle.CombatSettings.BlockCount}",smallStyle);
+            GUI.Label(new Rect(x-70,y-23,180,24),Battle.CombatSettings.BlockCount==0 ? "克洛丝 · 高台远程" : $"克洛丝  阻挡 {d.BlockedCount}/{Battle.CombatSettings.BlockCount}",smallStyle);
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
         }
@@ -391,13 +392,14 @@ namespace YesterdayConvoy
             int dp=Battle.DP,uses=Battle.RemainingUses;
             bool invalid=!TryDeployAt(scene.BlueGate.position).Success && Battle.DP==dp && Battle.RemainingUses==uses && Battle.Phase==BattlePhase.Ready;
             bool first=TryDeployAt(Battle.Entry).Success;
+            SelectCard(true);
             bool cooldown=TryDeployAt(Battle.Entry).Failure==DeployFailure.CoolingDown && Battle.Units.Count==1;
             Battle.SetPaused(true); double clock=Battle.Clock; Vector3 position=Battle.Units[0].Motion.Position;
             Battle.Advance(3);
             bool paused=Battle.Clock==clock && Battle.Units[0].Motion.Position==position && TryDeployAt(Battle.Entry).Failure==DeployFailure.Paused;
             Battle.SetPaused(false);
             bool deployed=first;
-            for(int i=0;i<3;i++) { Battle.Advance(2); deployed &= TryDeployAt(Battle.Entry).Success; }
+            for(int i=1;i<Battle.Settings.DeploymentLimit;i++) { Battle.Advance(2); SelectCard(true); deployed &= TryDeployAt(Battle.Entry).Success; }
             bool waits=Battle.DP==0 && Battle.ActiveCount>0 && Battle.Phase==BattlePhase.Running;
             yield return null;
             if(directory!=null) { yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"manual-multi.png")); yield return null; }
@@ -409,9 +411,9 @@ namespace YesterdayConvoy
             int oldRun=Battle.RunId; RestartBattle();
             bool reset=Battle.RunId==oldRun+1 && Battle.DP==Battle.Settings.InitialDP && Battle.RemainingUses==Battle.Settings.DeploymentLimit && Battle.Units.Count==0 && views.Count==0 && !Selected;
             SelectCard(true);
-            for(int attempt=0;attempt<4;attempt++)
+            for(int attempt=0;attempt<Battle.Settings.DeploymentLimit && Battle.Phase!=BattlePhase.Lost;attempt++)
             {
-                deployed &= TryDeployAt(Battle.Entry).Success;
+                SelectCard(true); deployed &= TryDeployAt(Battle.Entry).Success;
                 for(int tick=0;tick<100 && Battle.ActiveCount>0 && Battle.Phase==BattlePhase.Running;tick++)
                 { Battle.Advance(0.5f); SyncViews(); yield return null; }
             }
@@ -438,14 +440,20 @@ namespace YesterdayConvoy
             bool paused=Battle.Clock==clock && Battle.Units[0].SkillSP==sp && ActivateSelectedSkill()==SkillFailure.Paused;
             RestartBattle(); SelectCard(true); TryDeployAt(Battle.Entry);
             bool stopped=false, manual=false, captured=false;
+            bool selectionReset=!Selected && TryDeployAt(Battle.Entry).Failure==DeployFailure.NotStarted;
+            bool ranged=false, noBlock=Battle.CombatSettings.BlockCount==0;
             int deployed=1;
             for(int i=0;i<2000 && Battle.Phase==BattlePhase.Running;i++)
             {
                 Tick(0.05f);
-                if(deployed<4 && Battle.Clock+0.00001>=deployed*2 && TryDeployAt(Battle.Entry).Success) deployed++;
+                if(deployed<Battle.Settings.DeploymentLimit && Battle.Clock+0.00001>=deployed*2)
+                { SelectCard(true); if(TryDeployAt(Battle.Entry).Success) deployed++; }
                 foreach(var unit in Battle.Units)
                 {
                     stopped |= unit.Active && unit.HasCombatTarget && !unit.IsMoving;
+                    noBlock &= !unit.IsBlocked;
+                    Vector3 gap=unit.Motion.Position-Battle.Defender.Position; gap.y=0;
+                    ranged |= unit.Active && unit.HasCombatTarget && gap.magnitude>3;
                     if(Battle.CheckSkill(unit.EntityId)==SkillFailure.None)
                     { SelectSkillUnit(unit.EntityId); manual |= ActivateSelectedSkill()==SkillFailure.None; }
                 }
@@ -461,16 +469,16 @@ namespace YesterdayConvoy
             RestartBattle();
             bool reset=Battle.Defender.Alive && Battle.Defender.Health==Battle.CombatSettings.DefenderHealth && Battle.SkillCasts==0 && Battle.CombatShots.Count==0 && Battle.Units.Count==0 && !Battle.IsPaused;
             SelectCard(true);
-            for(int attempt=0;attempt<4;attempt++)
+            for(int attempt=0;attempt<Battle.Settings.DeploymentLimit && Battle.Phase!=BattlePhase.Lost;attempt++)
             {
-                TryDeployAt(Battle.Entry);
+                SelectCard(true); TryDeployAt(Battle.Entry);
                 for(int i=0;i<1000 && Battle.ActiveCount>0 && Battle.Phase==BattlePhase.Running;i++) { Tick(0.05f); yield return null; }
             }
-            bool lost=Battle.Phase==BattlePhase.Lost && Battle.Defender.Alive && Battle.ActiveCount==0;
+            bool lost=Battle.Phase==BattlePhase.Lost && Battle.ActiveCount==0;
             if(directory!=null) { yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(directory,"combat-lost.png")); yield return null; }
             Time.timeScale=1;
-            bool pass=invalid && initial && paused && stopped && manual && killed && won && once && reset && lost;
-            Debug.Log($"ENGAGEMENT_CHECK: invalid={invalid}; initialSP={initial}; paused={paused}; stopped={stopped}; manual={manual}; killed={killed}; won={won}; gateOnce={once}; reset={reset}; lost={lost}.");
+            bool pass=invalid && initial && paused && stopped && ranged && noBlock && selectionReset && manual && killed && won && once && reset && lost;
+            Debug.Log($"ENGAGEMENT_CHECK: invalid={invalid}; initialSP={initial}; paused={paused}; stopped={stopped}; ranged={ranged}; noBlock={noBlock}; selectionReset={selectionReset}; manual={manual}; killed={killed}; won={won}; gateOnce={once}; reset={reset}; lost={lost}.");
             Application.Quit(pass?0:1);
         }
     }

@@ -7,16 +7,16 @@ namespace YesterdayConvoy
     {
         [SerializeField] private Sprite kroosSprite;
         [SerializeField] private Sprite wisadelAttackSprite;
-        [SerializeField] private Vector3 defenderPosition = new Vector3(0, 0.04f, 0);
+        [SerializeField] private Vector3 defenderPosition = new Vector3(-1, 0.35f, 1);
         [Header("Trial combat values, not original-game balance")]
-        [SerializeField] private float unitAttack = 14, unitArmor = 2, unitRange = 0.65f, unitInterval = 1.7f;
+        [SerializeField] private float unitAttack = 14, unitArmor = 2, unitRange = 3.2f, unitInterval = 1.7f;
         [SerializeField] private float defenderHealth = 180, defenderAttack = 22, defenderArmor = 3, defenderRange = 3.2f, defenderInterval = 1;
-        [SerializeField] private int blockCount = 1;
+        [SerializeField] private int blockCount = 0;
         [SerializeField] private float blockRadius = 0.65f;
         [Header("SP is skill charge, independent from deployment DP")]
         [SerializeField] private float initialSP = 8, requiredSP = 12, spPerSecond = 1;
         [SerializeField] private int skillAmmo = 6;
-        [SerializeField] private float skillAttack = 105, skillInterval = 3.2f, skillRange = 2.6f, projectileTime = 0.22f;
+        [SerializeField] private float skillAttack = 105, skillInterval = 3.2f, skillRange = 3.8f, projectileTime = 0.22f;
         public Sprite KroosSprite => kroosSprite;
         public Sprite WisadelAttackSprite => wisadelAttackSprite;
         public Vector3 DefenderPosition => defenderPosition;

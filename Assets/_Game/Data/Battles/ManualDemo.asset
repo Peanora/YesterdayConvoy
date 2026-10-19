@@ -15,7 +15,7 @@ MonoBehaviour:
   levelId: MANUAL_DEMO_01
   card: {fileID: 11400000, guid: a26ac99d86737414d99c99a19d8b265f, type: 2}
   engagement: {fileID: 11400000, guid: d22f5bff70165a74b94784c1943ad40b, type: 2}
-  initialDP: 8
+  initialDP: 12
   initialDefense: 3
   deploymentCost: 2
   deploymentLimit: 6

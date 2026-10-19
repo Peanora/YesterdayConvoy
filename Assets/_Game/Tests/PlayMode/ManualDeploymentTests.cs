@@ -28,7 +28,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.TryDeployAt(battle.Entry).Success,Is.False);
             controller.SelectCard(true);
             Assert.That(controller.TryDeployAt(source.BlueGate.position).Failure,Is.EqualTo(DeployFailure.WrongEntry));
-            Assert.That(battle.DP,Is.EqualTo(8)); Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Ready));
+            Assert.That(battle.DP,Is.EqualTo(battle.Settings.InitialDP)); Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Ready));
             Assert.That(controller.TryDeployAt(battle.Entry).Success,Is.True);
             yield return null;
             Assert.That(controller.ViewCount,Is.EqualTo(1));
@@ -42,17 +42,17 @@ namespace YesterdayConvoy.Tests
             Assert.That(battle.Clock,Is.EqualTo(clock)); Assert.That(battle.CooldownRemaining,Is.EqualTo(cd));
             Assert.That(firstView.Puppet.LeftFoot,Is.EqualTo(foot));
             battle.SetPaused(false);
-            for(int i=0;i<3;i++) { battle.Advance(2); Assert.That(controller.TryDeployAt(battle.Entry).Success,Is.True); yield return null; }
-            Assert.That(controller.ViewCount,Is.EqualTo(4)); Assert.That(battle.ActiveCount,Is.EqualTo(4));
-            var newest=GameObject.Find(battle.Units[3].EntityId).GetComponentInChildren<DemoSpriteVisual>();
+            for(int i=1;i<battle.Settings.DeploymentLimit;i++) { battle.Advance(2); controller.SelectCard(true); Assert.That(controller.TryDeployAt(battle.Entry).Success,Is.True); yield return null; }
+            Assert.That(controller.ViewCount,Is.EqualTo(battle.Settings.DeploymentLimit)); Assert.That(battle.ActiveCount,Is.EqualTo(battle.Settings.DeploymentLimit));
+            var newest=GameObject.Find(battle.Units[battle.Units.Count-1].EntityId).GetComponentInChildren<DemoSpriteVisual>();
             Assert.That(newest.Puppet.MovementWeight,Is.Zero,"Each spawned visual starts its own ease-in from the shared simulation clock.");
             Assert.That(battle.DP,Is.Zero); Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running));
             for(int i=0;i<160 && battle.Phase==BattlePhase.Running;i++) { battle.Advance(0.25f); yield return null; }
             Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Won)); Assert.That(battle.Defense,Is.Zero);
-            Assert.That(controller.Definition.Snapshot().InitialDP,Is.EqualTo(8),"Spending must not write back to the shared definition.");
+            Assert.That(controller.Definition.Snapshot().InitialDP,Is.EqualTo(battle.Settings.InitialDP),"Spending must not write back to the shared definition.");
             int oldRun=battle.RunId; controller.RestartBattle(); yield return null;
             Assert.That(controller.ViewCount,Is.Zero); Assert.That(battle.Units.Count,Is.Zero);
-            Assert.That(battle.RunId,Is.EqualTo(oldRun+1)); Assert.That(battle.DP,Is.EqualTo(8));
+            Assert.That(battle.RunId,Is.EqualTo(oldRun+1)); Assert.That(battle.DP,Is.EqualTo(battle.Settings.InitialDP));
             Assert.That(controller.Selected,Is.False); Assert.That(battle.RemainingUses,Is.EqualTo(6));
             Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Ready)); Assert.That(source.Monster.gameObject.activeSelf,Is.False);
             Assert.That(controller.Definition.Card.RecruitCost,Is.EqualTo(5),"Runtime must not mutate authored card data.");
@@ -67,12 +67,13 @@ namespace YesterdayConvoy.Tests
             controller.UseDeploymentDiagnostic();
             ManualBattle battle=controller.Battle;
             controller.SelectCard(true);
-            for(int attempt=0;attempt<4;attempt++)
+            for(int attempt=0;attempt<battle.Settings.DeploymentLimit;attempt++)
             {
+                controller.SelectCard(true);
                 Assert.That(controller.TryDeployAt(battle.Entry).Success,Is.True);
                 Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running));
                 for(int tick=0;tick<80 && battle.ActiveCount>0;tick++) { battle.Advance(0.5f); yield return null; }
-                if(attempt<3)Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running),"Affordable future deployments remain.");
+                if(attempt<battle.Settings.DeploymentLimit-1)Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running),"Affordable future deployments remain.");
             }
             Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Lost)); Assert.That(battle.ActiveCount,Is.Zero);
             Assert.That(battle.Defense,Is.EqualTo(3)); Assert.That(battle.DP,Is.Zero);

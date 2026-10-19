@@ -53,7 +53,7 @@ namespace YesterdayConvoy
             for (int i = 0; i < 64; i++)
             {
                 float a = i * Mathf.PI * 2 / 64;
-                range.SetPosition(i, d.Position + new Vector3(Mathf.Cos(a), 0.015f, Mathf.Sin(a)) * b.CombatSettings.DefenderRange);
+                range.SetPosition(i, new Vector3(d.Position.x, 0.055f, d.Position.z) + new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * b.CombatSettings.DefenderRange);
             }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
