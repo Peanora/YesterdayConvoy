@@ -93,6 +93,15 @@ namespace YesterdayConvoy
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
             transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
             if(manualBattle.IsPaused) return;
+            double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+            double skillDuration=manualBattle.CombatSettings.SkillInterval;
+            // A fired skill gesture owns its full window, independently of target lifetime or resumed movement.
+            if(deployedUnit.LastAttackEmpowered && age>=0 && age<skillDuration)
+            {
+                FrameState="Skill";
+                FrameIndex=Mathf.Clamp((int)(age/skillDuration*frameCard.SkillFrames.Count),0,frameCard.SkillFrames.Count-1);
+                sprite.sprite=frameCard.SkillFrames[FrameIndex]; return;
+            }
             if(deployedUnit.IsMoving)
             {
                 FrameState="Walk";
@@ -102,7 +111,6 @@ namespace YesterdayConvoy
             }
             if(!deployedUnit.HasCombatTarget)
             { FrameState="Idle"; FrameIndex=0; sprite.sprite=frameCard.BattleSprite; return; }
-            double age=manualBattle.Clock-deployedUnit.LastAttackTime;
             bool skill=deployedUnit.SkillAmmo>0 || deployedUnit.LastAttackEmpowered && age<manualBattle.CombatSettings.SkillInterval;
             var sequence=skill ? frameCard.SkillFrames : frameCard.AttackFrames;
             FrameState=skill ? "Skill" : "Attack";

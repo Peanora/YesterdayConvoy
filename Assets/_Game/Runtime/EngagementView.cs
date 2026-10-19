@@ -136,7 +136,7 @@ namespace YesterdayConvoy
                 {
                     view.Face.enabled=true; view.Face.sortingOrder=order+2;
                     view.Face.transform.position=end; view.Face.transform.rotation=cam.transform.rotation;
-                    view.Face.transform.localScale=Vector3.one*(.48f+age*.32f);
+                    view.Face.transform.localScale=Vector3.one*(.84f+age*.56f);
                     view.Face.color=new Color(1,1,1,color.a);
                 }
                 return;

@@ -149,11 +149,50 @@ namespace YesterdayConvoy.Tests
             Assert.That(v.FrameState,Is.EqualTo("Skill")); SaveComicCamera("skill");
             bool face=false;
             foreach(var renderer in c.CombatView.GetComponentsInChildren<SpriteRenderer>())
-                if(renderer.gameObject.name=="Comic expression" && renderer.enabled) face=true;
+                if(renderer.gameObject.name=="Comic expression" && renderer.enabled)
+                { face=true; Assert.That(renderer.transform.localScale.x,Is.GreaterThan(.84f),"Empowered impact head is enlarged by 1.75x."); }
             Assert.That(face,Is.True,"A resolved empowered shot must show the source-expression impact stamp.");
             frame=v.Renderer.sprite; b.SetPaused(true); c.Tick(30); yield return null;
             Assert.That(v.Renderer.sprite,Is.SameAs(frame)); Assert.That(v.Renderer.flipX,Is.False);
             Assert.That(Quaternion.Angle(v.transform.rotation,Camera.main.transform.rotation),Is.LessThan(.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator FiredSkillActionFinishesAfterItsTargetDiesBeforeReturningToWalk()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c); c.Tick(2); Deploy(c);
+            for(int i=0;i<500 && b.Defender.Alive;i++)
+            {
+                c.Tick(.04f);
+                foreach(var unit in b.Units)
+                    if(b.CheckSkill(unit.EntityId)==SkillFailure.None)
+                    { c.SelectSkillUnit(unit.EntityId); Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None)); }
+                yield return null;
+            }
+            Assert.That(b.Defender.Alive,Is.False);
+            DeployedUnitState killer=null;
+            for(int i=b.CombatShots.Count-1;i>=0;i--)
+                if(!b.CombatShots[i].FromDefender && b.CombatShots[i].Empowered && b.CombatShots[i].Applied)
+                { killer=b.FindUnit(b.CombatShots[i].SourceId); break; }
+            Assert.That(killer,Is.Not.Null); Assert.That(killer.Active,Is.True);
+            var visual=GameObject.Find(killer.EntityId).GetComponentInChildren<DemoSpriteVisual>();
+            Assert.That(killer.HasCombatTarget,Is.False); Assert.That(killer.IsMoving,Is.True);
+            Assert.That(visual.FrameState,Is.EqualTo("Skill"),"Target death cannot interrupt a fired skill gesture.");
+            double distance=killer.Motion.DistanceTravelled; int frame=visual.FrameIndex;
+            c.Tick(.4f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.GreaterThan(frame));
+            Assert.That(killer.Motion.DistanceTravelled,Is.GreaterThan(distance),"Presentation cannot stall the existing movement rules.");
+            SaveComicCamera("skill-after-target-death");
+            frame=visual.FrameIndex; b.SetPaused(true); c.Tick(20); yield return null;
+            Assert.That(visual.FrameIndex,Is.EqualTo(frame)); b.SetPaused(false);
+            float remaining=(float)(b.CombatSettings.SkillInterval-(b.Clock-killer.LastAttackTime));
+            c.Tick(remaining-.01f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.EqualTo(99));
+            c.Tick(.03f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Walk"));
+            c.RestartBattle(); yield return null;
+            Assert.That(c.ViewCount,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero);
         }
 
         private static void SaveComicCamera(string name)

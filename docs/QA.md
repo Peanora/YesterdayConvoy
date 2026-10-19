@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-19：目标死亡后的技能续播与大头尺寸
+
+只改DemoSpriteVisual的显示优先级与EngagementView表情印章缩放。已发射的技能以LastAttackTime/LastAttackEmpowered及共享Clock保持完整攻击动作窗口，优先于目标/移动显示；100帧/3.2秒不变。特效缩放(.48+age*.32)→(.84+age*.56)，全阶段1.75倍。未改战斗模型、数值、素材/引用、碰撞体或地图。
+
+- GPU PlayMode23/23通过、0跳过：artifacts/skill-followthrough/playmode.xml/log。新增真实场景双单位流程，由技能击杀克洛丝，确认施放者仍活着且已恢复逻辑移动、HasCombatTarget=false时仍为Skill、后续帧继续推进；暂停20秒冻结；在动作结束前0.01秒到第99帧，再推进0.03秒才切Walk；重开清理。原场景用例同时断言放大大头的实际Transform，其他交战/输入/遮挡回归通过。
+- Windows构建341061645字节、0错误、退出0：build.log；场景/怪物/逐帧资源引用校验通过。
+- 最终实际Direct3D12 Player交战十三项全True、退出0：combat.log。自动检查不是人工通关。
+- 已查看实际GPU Camera.Render画面：artifacts/wisadel-gif/camera/skill.png（放大表情），skill-after-target-death.png（干员已消失、维什戴尔继续技能帧）。测试沿用已有相机采图入口；副本为docs/art/previews/wisadel-comic-large-head.png与wisadel-comic-followthrough.png，不含OnGUI/HUD。
+
+未执行：本轮EditMode（纯表现优先级/尺寸）、完整人工连续动画/技能键鼠流程、第二机、长时性能/所有分辨率观感。自身死亡/穿门仍移除角色，不生成独立幽灵动作；终局仍冻结模拟，不为动作延长游戏结算。1.75倍是视觉试验，主观大小待用户反馈。保留原未跟踪PackageManagerSettings.asset，不提交；无新下载/AI美术、未推送。
+
 ## 2026-10-19：用户GIF逐帧角色替换与漫画命中
 
 实际新增155张PNG：19走路、1静态待机、28普攻、100技能、1卡面、6表情裁片；新ComicArtTools仅导入/绑定现有CardDefinition帧引用，不重建地图/场景或改战斗配置。原GIF已本地备份且不进Assets；Pillow无损合成GIF处置/透明后转RGBA，无黑底键控、补绘、逐帧重新居中或缩放。全路径/源hash见docs/art/source-records/wisadel-comic.json。
