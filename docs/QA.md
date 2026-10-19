@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-10-19：实际编辑器空场景排查
+
+- 原窗口标题为Untitled，Hierarchy仅有空场景；查看项目Logs/Editor.log未发现本次运行异常。
+- 使用既有Open Current Scene菜单打开InitialDemo，场景校验记录INITIAL_DEMO_SCENE_PASS。
+- 在用户正在使用的Unity编辑器内进入Play，实际观察地图、新克洛丝、顶部生命1/1与DP12、底部卡栏。实际拖卡到红门成功部署维维美：场景出现run-1/unit-1，DP12→10、次数1/1→0/1，并观察到沿路线前进。
+- 原因是编辑器当前打开空场景；未修改代码/Prefab/场景/美术，不需要新增类或接口。未重跑自动化套件或构建，未完整人工通关。用户继续操作编辑器，保留其当前播放/暂停状态。
+
 ## 2026-10-19：旧资产与诊断清理
 
 Unity编辑器由用户保存并关闭后执行。LegacyAssetCleanup迁移保留现有Scene/Prefab/配置GUID，先清场景旧引用和卡牌Prefab旧子物体，保存新版克洛丝与隐藏漫画模板，再计算所有保留序列化资产的递归依赖；有候选仍被引用时直接拒绝删除。实际移除33项资产（13PNG/17材质/2单位样本/Bootstrap）及meta，另清11个旧脚本/测试及meta、3个空目录。完整资产路径在artifacts/legacy-cleanup/deleted-assets.txt，历史可从0fc408a恢复；13个图像清单状态改REMOVED。许可/来源文档保留。模型ManualBattle、EngagementCombat、RouteMotion及当前关卡/卡牌数值、GIF文件与镜头配置未改。
