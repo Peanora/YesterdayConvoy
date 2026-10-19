@@ -34,11 +34,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.IsPaused,Is.True); Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.Units.Count,Is.EqualTo(1));
             Assert.That(c.Dragging,Is.False); Assert.That(c.Selected,Is.False);
             c.ProcessPointerUp(Entry(c)); Assert.That(b.Units.Count,Is.EqualTo(1));
-            BeginDrag(c); Assert.That(c.ProcessPointerUp(Entry(c)).Failure,Is.EqualTo(DeployFailure.CoolingDown));
+            BeginDrag(c); Assert.That(c.ProcessPointerUp(Entry(c)).Failure,Is.EqualTo(DeployFailure.NoUses));
             BeginDrag(c); Assert.That(c.ProcessPointerUp(Camera.main.WorldToScreenPoint(b.Entry+Vector3.right*10)).Success,Is.False);
             c.Tick(30); Assert.That(b.Clock,Is.Zero); Assert.That(b.CooldownRemaining,Is.EqualTo(2));
             Assert.That(b.Units[0].SkillSP,Is.EqualTo(8)); Assert.That(b.Units[0].Motion.DistanceTravelled,Is.Zero);
-            Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.RemainingUses,Is.EqualTo(5));
+            Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.RemainingUses,Is.Zero);
         }
 
         [UnityTest]
@@ -84,21 +84,32 @@ namespace YesterdayConvoy.Tests
             c.Tick(300); yield return null;
             Assert.That(b.FindUnit(id).Active,Is.False); Assert.That(c.SkillMenuOpen,Is.False); Assert.That(b.IsSkillReady(id),Is.False);
             Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(1));
-            BeginDrag(c); b.Restart();
+            c.RestartBattle(); BeginDrag(c); b.Restart();
             Assert.That(c.ProcessPointerUp(Entry(c)).Failure,Is.EqualTo(DeployFailure.StaleRun)); Assert.That(b.DP,Is.EqualTo(12)); Assert.That(b.Units.Count,Is.Zero);
         }
 
         [UnityTest]
-        public IEnumerator RepeatedBodyClicksCycleOverlappingEntitiesWithoutCasting()
+        public IEnumerator LostSettlementBlocksWorldClicksAndRequiresACompleteRestartClick()
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
-            Deploy(c); c.Tick(2); Deploy(c); c.Tick(5.5f);
-            Assert.That(b.Units[0].Active && b.Units[1].Active,Is.True);
-            Vector2 point=Body(c,b.Units[1].EntityId);
-            c.ProcessPointerDown(point); string first=c.SelectedEntityId;
-            c.ProcessPointerDown(point);
-            Assert.That(c.SelectedEntityId,Is.Not.EqualTo(first)); Assert.That(c.SkillMenuOpen,Is.True);
-            Assert.That(b.SkillCasts,Is.Zero); Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(.03f));
+            Deploy(c); c.Tick(100); yield return null;
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost)); Assert.That(c.SettlementVisible,Is.True);
+            double clock=b.Clock; int run=b.RunId;
+            Vector2 card=ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center);
+            Vector2 button=ManualBattleController.ScreenPosition(ManualBattleController.SettlementRestartRect.center);
+            Vector2 outside=new Vector2(card.x,Screen.height-card.y),inside=new Vector2(button.x,Screen.height-button.y);
+            c.ProcessPointerEvent(EventType.MouseDown,outside,0); c.ProcessPointerEvent(EventType.MouseUp,outside,0);
+            Assert.That(c.Dragging,Is.False); Assert.That(b.Units.Count,Is.EqualTo(1)); Assert.That(b.DP,Is.EqualTo(10));
+            c.ProcessPointerEvent(EventType.MouseDown,inside,0); c.ProcessPointerEvent(EventType.MouseUp,outside,0);
+            c.ProcessPointerEvent(EventType.MouseUp,inside,0);
+            Assert.That(b.RunId,Is.EqualTo(run)); Assert.That(c.SettlementVisible,Is.True);
+            c.ProcessPointerEvent(EventType.MouseDown,inside,0); c.Tick(5);
+            Assert.That(b.Clock,Is.EqualTo(clock));
+            c.ProcessPointerEvent(EventType.MouseUp,inside,0); yield return null;
+            Assert.That(c.SettlementVisible,Is.False); Assert.That(b.RunId,Is.EqualTo(run+1));
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Ready)); Assert.That(b.Defense,Is.EqualTo(1));
+            Assert.That(b.DP,Is.EqualTo(12)); Assert.That(b.RemainingUses,Is.EqualTo(1)); Assert.That(b.Units.Count,Is.Zero);
+            Assert.That(c.ViewCount,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero); Assert.That(b.SkillCasts,Is.Zero);
         }
 
         [UnityTest]
@@ -161,7 +172,7 @@ namespace YesterdayConvoy.Tests
         public IEnumerator FiredSkillActionFinishesAfterItsTargetDiesBeforeReturningToWalk()
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
-            Deploy(c); c.Tick(2); Deploy(c);
+            Deploy(c);
             for(int i=0;i<500 && b.Defender.Alive;i++)
             {
                 c.Tick(.04f);

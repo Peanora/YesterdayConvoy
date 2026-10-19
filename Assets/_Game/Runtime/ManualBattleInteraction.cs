@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         [SerializeField] private Sprite skillIcon;
         private Vector2 pointerScreen;
         private int dragRunId;
+        private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
         public float EffectiveSimulationSpeed => Battle==null || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
@@ -30,6 +31,18 @@ namespace YesterdayConvoy
         {
             if(button!=0) return false;
             Vector2 screen=new Vector2(guiPosition.x,Screen.height-guiPosition.y);
+            if(SettlementVisible)
+            {
+                if(type==EventType.MouseDown) { settlementPointerDown=SettlementRestartRect.Contains(GUIPosition(screen)); return true; }
+                if(type==EventType.MouseUp)
+                {
+                    bool restart=settlementPointerDown && SettlementRestartRect.Contains(GUIPosition(screen));
+                    settlementPointerDown=false;
+                    if(restart) RestartBattle();
+                    return true;
+                }
+                return type==EventType.MouseDrag;
+            }
             if(type==EventType.MouseDown)
             {
                 bool handled=RosterSlot.Contains(GUIPosition(screen)) || IsBattlefield(screen);

@@ -22,6 +22,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.CombatView.DefenderVisual.sprite.name,Is.EqualTo("kroos-comic"),"Normal M01 must use the new shared-style Kroos asset.");
             Assert.That(c.CombatView.DefenderVisual.sprite.texture.filterMode,Is.EqualTo(FilterMode.Bilinear));
             Assert.That(b.Settings.InitialDP,Is.EqualTo(12));
+            Assert.That(b.Settings.InitialDefense,Is.EqualTo(1)); Assert.That(b.Settings.DeploymentLimit,Is.EqualTo(1));
+            Assert.That(c.Definition.Card.DisplayName,Is.EqualTo("维维美"));
             Assert.That(b.CombatSettings.UnitRange,Is.EqualTo(b.CombatSettings.DefenderRange));
             Assert.That(b.CombatSettings.SkillRange,Is.GreaterThanOrEqualTo(b.CombatSettings.UnitRange));
             Assert.That(b.CombatSettings.BlockCount,Is.Zero);
@@ -30,12 +32,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.Units.Count,Is.Zero); c.SelectCard(true); Assert.That(c.TryDeployAt(b.Entry).Success,Is.True);
             Assert.That(c.Selected,Is.False);
             Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.NotReady));
-            int count=1; bool stopped=false,independent=false;
+            bool stopped=false;
             for(int i=0;i<2000 && b.Phase==BattlePhase.Running;i++)
             {
                 c.Tick(0.05f);
-                if(count<b.Settings.DeploymentLimit && b.Clock+0.00001>=count*2)
-                { c.SelectCard(true); Assert.That(c.TryDeployAt(b.Entry).Success,Is.True); count++; }
                 foreach(var u in b.Units)
                 {
                     stopped |= u.Active && u.HasCombatTarget && !u.IsMoving;
@@ -44,20 +44,25 @@ namespace YesterdayConvoy.Tests
                     {
                         c.SelectSkillUnit(u.EntityId); int dp=b.DP;
                         Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None)); Assert.That(b.DP,Is.EqualTo(dp));
-                        if(b.Units.Count>1 && u==b.Units[0]) independent=b.Units[1].SkillSP>0;
                     }
                 }
                 yield return null;
             }
-            Assert.That(stopped,Is.True); Assert.That(independent,Is.True);
+            Assert.That(stopped,Is.True); Assert.That(b.Units.Count,Is.EqualTo(1));
             var firstShot=b.CombatShots[0];
             Assert.That(firstShot.FromDefender,Is.False,"Wisadel starts shooting on entering the shared range.");
             Vector3 offset=firstShot.Origin-firstShot.Destination; offset.y=0;
             Assert.That(offset.magnitude,Is.GreaterThan(3),"This is ranged engagement, not contact distance.");
             Assert.That(b.Defender.Alive,Is.False); Assert.That(b.SkillCasts,Is.GreaterThan(0));
             Assert.That(b.Phase,Is.EqualTo(BattlePhase.Won)); Assert.That(b.Defense,Is.Zero);
+            Assert.That(c.SettlementVisible,Is.True); Assert.That(b.Breaches,Is.EqualTo(1));
             Assert.That(c.Definition.Engagement.Snapshot().DefenderHealth,Is.EqualTo(180),"Runtime cannot write to authored data.");
-            int oldRun=b.RunId; c.RestartBattle(); yield return null;
+            int oldRun=b.RunId;
+            Vector2 screen=ManualBattleController.ScreenPosition(ManualBattleController.SettlementRestartRect.center);
+            Vector2 gui=new Vector2(screen.x,Screen.height-screen.y);
+            c.ProcessPointerEvent(EventType.MouseDown,gui,0); c.Tick(1);
+            c.ProcessPointerEvent(EventType.MouseUp,gui,0); yield return null;
+            Assert.That(c.SettlementVisible,Is.False); Assert.That(b.Defense,Is.EqualTo(1)); Assert.That(b.RemainingUses,Is.EqualTo(1));
             Assert.That(b.RunId,Is.EqualTo(oldRun+1)); Assert.That(b.Defender.Alive,Is.True);
             Assert.That(b.SkillCasts,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero); Assert.That(c.ViewCount,Is.Zero);
             Assert.That(c.CombatView.DefenderVisual.enabled,Is.True); Assert.That(c.SelectedEntityId,Is.Null);
@@ -127,7 +132,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
-        public IEnumerator EachSuccessfulDeploymentRequiresFreshSelectionButFailuresKeepIt()
+        public IEnumerator SingleDeploymentStaysExhaustedAfterCooldownAndPause()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
@@ -142,8 +147,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.TryDeployAt(b.Entry).Failure,Is.EqualTo(DeployFailure.Paused)); Assert.That(c.Selected,Is.True);
             b.SetPaused(false);
             Assert.That(c.TryDeployAt(b.Entry+Vector3.right*20).Failure,Is.EqualTo(DeployFailure.WrongEntry)); Assert.That(c.Selected,Is.True);
-            Assert.That(c.TryDeployAt(b.Entry).Success,Is.True); Assert.That(c.Selected,Is.False);
-            Assert.That(b.DP,Is.EqualTo(dp-b.Settings.DeploymentCost)); Assert.That(b.Units.Count,Is.EqualTo(2));
+            Assert.That(c.TryDeployAt(b.Entry).Failure,Is.EqualTo(DeployFailure.NoUses));
+            Assert.That(b.DP,Is.EqualTo(dp)); Assert.That(b.RemainingUses,Is.Zero); Assert.That(b.Units.Count,Is.EqualTo(1));
         }
     }
 }

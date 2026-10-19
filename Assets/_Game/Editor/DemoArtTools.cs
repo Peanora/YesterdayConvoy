@@ -45,7 +45,7 @@ namespace YesterdayConvoy.Editor
                 card = ScriptableObject.CreateInstance<CardDefinition>();
                 var values = new SerializedObject(card);
                 values.FindProperty("cardId").stringValue = "CARD_WISADEL_APRIL";
-                values.FindProperty("displayName").stringValue = "维什戴尔";
+                values.FindProperty("displayName").stringValue = "维维美";
                 values.FindProperty("recruitCost").intValue = 5;
                 values.FindProperty("unit").objectReferenceValue = AssetDatabase.LoadAssetAtPath<UnitDefinition>(UnitConfigurationTools.SampleFolder + "/U01.asset");
                 values.FindProperty("portrait").objectReferenceValue = portrait;

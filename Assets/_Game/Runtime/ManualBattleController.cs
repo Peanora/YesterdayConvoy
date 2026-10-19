@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         private SpriteRenderer preview;
         private LineRenderer entryOutline;
         private Material previewMaterial;
-        private GUIStyle textStyle, smallStyle, numberStyle, buttonStyle, noticeStyle;
+        private GUIStyle textStyle, smallStyle, numberStyle, buttonStyle, noticeStyle, resultStyle;
         private string notice;
         private float noticeUntil;
         private long requestSequence;
@@ -35,6 +35,8 @@ namespace YesterdayConvoy
         public bool Muted { get; private set; }
         public string SelectedEntityId => selectedEntityId;
         public EngagementView CombatView => combatView;
+        public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost);
+        public static Rect SettlementRestartRect => new Rect(480,454,320,54);
 
         private void Start()
         {
@@ -70,9 +72,15 @@ namespace YesterdayConvoy
             }
         }
 
-        private ManualBattle CreateBattle(bool combat) => combat
-            ? new ManualBattle(definition.Snapshot(),scene.Waypoints,definition.Engagement.DefenderPosition,definition.Engagement.Snapshot())
-            : new ManualBattle(definition.Snapshot(),scene.Waypoints,scene.Tower.position);
+        private ManualBattle CreateBattle(bool combat)
+        {
+            var settings=definition.Snapshot();
+            if(combat) return new ManualBattle(settings,scene.Waypoints,definition.Engagement.DefenderPosition,definition.Engagement.Snapshot());
+            // Explicit old tower diagnostic retains its six-unit / three-life regression scenario.
+            settings=new ManualBattleSettings(settings.CardId,settings.UnitId,settings.InitialDP,3,6,settings.DeploymentCost,
+                settings.Cooldown,settings.Health,settings.Speed,settings.GateDamage,settings.TowerRange,settings.TowerDamage,settings.ShotInterval);
+            return new ManualBattle(settings,scene.Waypoints,scene.Tower.position);
+        }
 
         private void EnableCombatView()
         {
@@ -130,6 +138,7 @@ namespace YesterdayConvoy
         public void RestartBattle()
         {
             notice=null;
+            settlementPointerDown=false;
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
             selectedEntityId=null; SimulationSpeed=1; CancelInteraction();
             scene.ShotBeam.enabled=false; Feedback="拖动底部角色卡至红门部署";
@@ -227,7 +236,7 @@ namespace YesterdayConvoy
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
             Feedback=result==SkillFailure.None ? "爆裂黎明已开启：强化炮击弹药装填完成" :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
-                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : "请先选择场上的维什戴尔";
+                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
@@ -274,7 +283,7 @@ namespace YesterdayConvoy
             if(Battle==null) return;
             // IMGUI keeps queued pointer edges, even when a quick down/up occurs between simulation frames.
             var pointerEvent=Event.current;
-            if(Battle.EngagementEnabled && ProcessPointerEvent(pointerEvent.type,pointerEvent.mousePosition,pointerEvent.button)) pointerEvent.Use();
+            if((Battle.EngagementEnabled || SettlementVisible) && ProcessPointerEvent(pointerEvent.type,pointerEvent.mousePosition,pointerEvent.button)) pointerEvent.Use();
             // Space is owned by Update; do not also activate the last focused GUI button.
             if(Event.current.type==EventType.KeyDown && Event.current.keyCode==KeyCode.Space) Event.current.Use();
             EnsureStyles();
@@ -282,6 +291,11 @@ namespace YesterdayConvoy
             Color oldBackground=GUI.backgroundColor;
             GUI.backgroundColor=new Color(0.55f,0.81f,0.89f);
             GUI.matrix=Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));
+            if(SettlementVisible)
+            {
+                DrawSettlement();
+                GUI.backgroundColor=oldBackground; GUI.matrix=old; return;
+            }
             Fill(new Rect(0,0,1280,66),new Color(0.035f,0.05f,0.065f,0.94f));
             GUI.Label(new Rect(26,17,310,32),"昨日圆车  /  工业防线",textStyle);
             GUI.Label(new Rect(346,8,180,26),"战斗费用",smallStyle);
@@ -291,7 +305,7 @@ namespace YesterdayConvoy
             Fill(new Rect(553,40,17,5),new Color(0.42f,0.78f,0.91f));
             Fill(new Rect(558,45,7,4),new Color(0.42f,0.78f,0.91f));
             Fill(new Rect(554,21,15,14),new Color(0.08f,0.13f,0.17f));
-            GUI.Label(new Rect(589,4,135,23),"守方防御",smallStyle);
+            GUI.Label(new Rect(589,4,135,23),"守方生命",smallStyle);
             GUI.Label(new Rect(590,25,150,36),$"{Battle.Defense} / {Battle.Settings.InitialDefense}",numberStyle);
             GUI.Label(new Rect(770,20,150,28),$"场上 {Battle.ActiveCount}  ·  穿门 {Battle.Breaches}",smallStyle);
             if(Battle.EngagementEnabled)
@@ -322,10 +336,7 @@ namespace YesterdayConvoy
                 string cooldown=Battle.CooldownRemaining>0 ? $"部署冷却 {Battle.CooldownRemaining:0.0}s" : "部署就绪";
                 GUI.Label(new Rect(26,651,540,26),cooldown+"  ·  拖动至红门 / 右键取消",smallStyle);
             }
-            string result=Battle.Phase==BattlePhase.Won ? "进攻成功！守方防御归零" :
-                Battle.Phase==BattlePhase.Lost ? "进攻失败：场上清空，已无可用部署资源" : null;
-            if(result!=null) DrawNotice(new Rect(330,240,620,64),result);
-            else if(notice!=null && Time.unscaledTime<noticeUntil) DrawNotice(new Rect(330,82,620,38),notice);
+            if(notice!=null && Time.unscaledTime<noticeUntil) DrawNotice(new Rect(330,82,620,38),notice);
             if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
             if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
@@ -352,6 +363,30 @@ namespace YesterdayConvoy
             }
         }
 
+        private void DrawSettlement()
+        {
+            bool won=Battle.Phase==BattlePhase.Won;
+            Color accent=won ? new Color(.44f,.88f,.74f) : new Color(.98f,.43f,.35f);
+            Fill(new Rect(0,0,1280,720),new Color(.015f,.025f,.035f,.80f));
+            Fill(new Rect(330,174,620,372),new Color(.045f,.075f,.095f,.99f));
+            Fill(new Rect(330,174,620,4),accent);
+            GUI.Label(new Rect(360,195,560,26),"作战结束",noticeStyle);
+            Color old=GUI.color; GUI.color=accent;
+            GUI.Label(new Rect(360,233,560,58),won ? "突破成功" : "进攻失败",resultStyle);
+            GUI.color=old;
+            GUI.Label(new Rect(350,299,580,32),won ? $"{definition.Card.DisplayName}已穿过蓝门" : "进攻单位已全部倒下，本场部署机会已用尽",noticeStyle);
+            string[] labels={"守方剩余生命","本场部署","技能释放"};
+            string[] values={Battle.Defense+" / "+Battle.Settings.InitialDefense,Battle.Units.Count.ToString(),Battle.SkillCasts.ToString()};
+            for(int i=0;i<3;i++)
+            {
+                float x=365+i*184;
+                GUI.Label(new Rect(x,351,182,26),labels[i],noticeStyle);
+                GUI.Label(new Rect(x,382,182,42),values[i],resultStyle);
+            }
+            if(GUI.Button(SettlementRestartRect,"重新开始",buttonStyle)) RestartBattle();
+            GUI.Label(new Rect(360,514,560,25),"重置本场费用、角色、生命与技能状态",smallStyle);
+        }
+
         private void DrawDefenderHUD()
         {
             var d=Battle.Defender;
@@ -369,6 +404,7 @@ namespace YesterdayConvoy
             smallStyle=new GUIStyle(textStyle){fontSize=16};
             noticeStyle=new GUIStyle(textStyle){alignment=TextAnchor.MiddleCenter};
             numberStyle=new GUIStyle(textStyle){fontSize=27,fontStyle=FontStyle.Bold};
+            resultStyle=new GUIStyle(numberStyle){fontSize=36,alignment=TextAnchor.MiddleCenter};
             buttonStyle=new GUIStyle(GUI.skin.button){font=scene.InterfaceFont,fontSize=18,fontStyle=FontStyle.Bold};
             foreach(var state in new[]{buttonStyle.normal,buttonStyle.hover,buttonStyle.active,buttonStyle.focused})
             { state.background=Texture2D.whiteTexture; state.textColor=new Color(0.02f,0.06f,0.08f); }

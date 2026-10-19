@@ -11,9 +11,9 @@ namespace YesterdayConvoy
         [SerializeField] private EngagementDefinition engagement;
         [Header("Trial values for the first single-card level; not final balance")]
         [SerializeField] private int initialDP = 12;
-        [SerializeField] private int initialDefense = 3;
+        [SerializeField] private int initialDefense = 1;
         [SerializeField] private int deploymentCost = 2;
-        [SerializeField] private int deploymentLimit = 6;
+        [SerializeField] private int deploymentLimit = 1;
         [SerializeField] private float deploymentCooldown = 2;
         [SerializeField] private float unitHealth = 100;
         [SerializeField] private float towerRange = 2.8f;
