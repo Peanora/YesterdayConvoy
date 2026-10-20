@@ -1,5 +1,25 @@
 # 验证证据与回归
 
+## 2026-10-20：塔露拉火雨可玩样板
+
+环境：Unity6000.6.5f1(3ff58d469c8a)、Windows x64、RTX4060/D3D12；基线main 0dec185，独立工作目录/分支codex/talulah-fire-rain。原目录四项文档修改和未跟踪CONTRIBUTING/PackageManagerSettings不改动。用户明确确认共享战斗、配置接口、表现及InitialDemo绑定修改范围，任务[#3](https://github.com/Peanora/YesterdayConvoy/issues/3)。
+
+- `TalulahTools.Prepare`：真实Unity导入两张PNG/12精确切片，创建单位/卡/战斗参数并绑定主场景；绑定保存后重新打开校验，原场景仅新增talulahDefinition一行，无地图/镜头变动。
+- `-runTests -testPlatform EditMode`：60/60通过，0跳过；新增FireRainTests三例，验证射程外三守军同受伤、请求幂等不耗DP、恰好6波18个事件、不重复伤害、暂停、重开/旧run拒绝、全灭后锁定至结束与恢复SP。其余为原模型/配置回归。
+- `-runTests -testPlatform PlayMode`（保留GPU）：15/15通过，0跳过；新增实际场景切换、暂停拖放、手动点击技能、0.03慢速、三目标伤害、帧动画暂停与返回原卡栏。原14个场景/表现/交互用例保留，含720/1440遮挡回归。
+- `BaselineTools.BuildWindows`：真实Windows构建290538195字节、0错误、退出0。构建目录Builds/Windows含exe/Data/Mono/DLL。最终打包源码提交见包内SOURCE.txt。
+- 最终Player `-talulahSmokeTest`：drag/pauseDeploy/ready/slow/cast/global/freeze/locked/allDead/resume/won/reset/original共13项全True、退出0；测试真实Player输入适配器及模型，非人工键鼠全程通关。
+- 同一构建 `-combatSmokeTest`：维维美交战13项全True；`-interactionSmokeTest`：暂停部署/冻结/非法位置/就绪/慢速/取消/施放/重开8项全True；均退出0。
+- `TalulahTools.Prepare`重复执行：四份新增数据资产及主场景SHA256前后相同，未覆盖人工数值或创建重复资产。
+- PNG真实RGBA与Alpha范围0–255，1448×1086按4×3切成362×362；卡面1153×1364。Player通过RenderTexture导出[相机图](art/previews/talulah-fire-rain-camera.png)，已人工检查塔露拉举剑/漫画火焰、三克洛丝高台、地图层级和地面落点。该图不包含IMGUI HUD，不冒充整屏截图；HUD绑定/技能交互由PlayMode与Player输入适配测试覆盖。
+
+中途发现并修复：首次生成后的场景引用未持久保存（首轮PlayMode 14通过/1失败）；改为重新载入资产再绑定，并保存后重开断言，最终15/15。首次编译smoke脚本DistanceTravelled double/float类型错误已修复。隐藏窗口普通ScreenCapture无PNG，CaptureScreenshotAsTexture亦返回空；撤回对通用截图入口的试探改动，改用塔露拉专用相机RenderTexture输出，图像确已存在。首轮尾迹过于接近光条，补充程序化三色火焰形状后重跑GPU测试/构建/Player并核图。
+
+未测/限制：完整人工键鼠胜负流程、第二机离线、长时运行/低配性能、所有未来单位体型、多角色并行施法尚未验收。八帧AI走路仍有局部比例变化；普攻仅两个独立姿势，施法仅两个姿势，非商用品质完整动画。火雨/生命/SP均为本轮试验数值，未做正式平衡。未实现羁绊运营/商店。不会把第三方角色AI同人图登记为CC0。
+
+原始日志/XML：artifacts/talulah-import.log、talulah-bind.log、talulah-edit.xml、talulah-play.xml、talulah-build.log、talulah-player.log、wisadel-combat.log、wisadel-interaction.log；本机artifacts不提交，仅本条摘要与相机PNG入库。公开试玩发布遵循人工main集成后统一发布规则，本轮提供本地功能分支审阅包。
+
+
 ## 2026-10-20：设计分支同步main与文档冲突整理
 
 用户要求保留双方并整理冲突。基于设计提交1056daf，在独立工作目录合入main提交3c5a729（协作规范PR #2）；实际冲突仅为STATUS/QA标题后同位置新增段落。将main的协作规范记录、设计分支三条历史记录逐条保留，补充v0.4最新设计入口，未整文件选择ours/theirs。CONTRIBUTING、AGENTS.template和COLLABORATION保留main版本，GDD/羁绊方案保持设计分支版本。原工程四项已修改文档、未跟踪CONTRIBUTING与PackageManagerSettings不编辑、不暂存、不提交。

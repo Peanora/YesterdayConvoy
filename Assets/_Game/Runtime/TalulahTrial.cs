@@ -1,0 +1,91 @@
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+
+namespace YesterdayConvoy
+{
+    public sealed partial class ManualBattleController
+    {
+        [SerializeField] private ManualBattleDefinition talulahDefinition;
+        private ManualBattleDefinition wisadelDefinition;
+        public bool TalulahActive => definition==talulahDefinition && talulahDefinition!=null;
+        public string SkillName => TalulahActive ? "焚天火雨" : "爆裂黎明";
+
+        public void SwitchTrial(bool talulah)
+        {
+            var next=talulah ? talulahDefinition : wisadelDefinition;
+            if(next==null) throw new InvalidOperationException("Trial configuration is missing.");
+            ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null;
+            definition=next; SimulationSpeed=1;
+            Battle=CreateBattle(); ValidateConfiguration();
+            cardView.SetCard(definition.Card); preview.sprite=definition.Card.BattleSprite;
+            EnableCombatView(); UpdatePreview();
+            Feedback="拖动底部角色卡至红门部署";
+        }
+
+        private void DrawTrialSelector()
+        {
+            if(talulahDefinition==null) return;
+            // Switching discards the current trial, never carries SP, damage or deployment state.
+            if(GUI.Button(new Rect(24,579,246,42),TalulahActive ? "切换：维维美原试玩" : "切换：塔露拉火雨试验",buttonStyle))
+                SwitchTrial(!TalulahActive);
+            if(TalulahActive)
+            {
+                GUI.Label(new Rect(24,631,650,28),"焚天火雨 · 满技力后点击角色 → 技能图标",smallStyle);
+                GUI.Label(new Rect(24,659,650,26),"6秒 / 6波全图打击 · 施法原地不动 · 空格暂停",smallStyle);
+            }
+        }
+
+        private IEnumerator TalulahFrame(string directory,string name)
+        {
+            yield return null; yield return null;
+            Directory.CreateDirectory(directory);
+            Camera camera=Camera.main; var oldTarget=camera.targetTexture; var oldActive=RenderTexture.active;
+            var target=new RenderTexture(1280,720,24,RenderTextureFormat.ARGB32);
+            var image=new Texture2D(1280,720,TextureFormat.RGBA32,false);
+            try
+            {
+                camera.targetTexture=target; camera.Render(); RenderTexture.active=target;
+                image.ReadPixels(new Rect(0,0,1280,720),0,0); image.Apply();
+                File.WriteAllBytes(Path.Combine(directory,name+"-camera.png"),image.EncodeToPNG());
+            }
+            finally
+            { camera.targetTexture=oldTarget; RenderTexture.active=oldActive; target.Release(); Destroy(target); Destroy(image); }
+        }
+
+        private IEnumerator VerifyTalulah(string directory)
+        {
+            Time.timeScale=0; SwitchTrial(true); Battle.Begin(); Battle.SetPaused(true);
+            Vector2 card=ScreenPosition(RosterSlot.center), entry=Camera.main.WorldToScreenPoint(Battle.Entry);
+            ProcessPointerDown(card); ProcessPointerMove(entry);
+            bool placed=ProcessPointerUp(entry).Success && Battle.IsPaused;
+            Tick(10); bool pauseDeploy=Battle.Clock==0 && Battle.Units.Count==1;
+            Battle.SetPaused(false); Tick(4.05f);
+            var unit=Battle.Units[0]; string id=unit.EntityId;
+            bool ready=Battle.IsSkillReady(id);
+            OpenSkillMenu(id); double clock=Battle.Clock; Tick(1);
+            bool slow=SkillMenuOpen && Math.Abs(Battle.Clock-clock-.03)<.001;
+            if(directory!=null) yield return TalulahFrame(directory,"talulah-ready");
+            bool cast=CastFocusedSkill()==SkillFailure.None;
+            double start=unit.Motion.DistanceTravelled; Tick(1.25f); yield return null;
+            bool global=true; foreach(var d in Battle.Defenders) global &= d.Health<Battle.CombatSettings.DefenderHealth;
+            Battle.SetPaused(true); clock=Battle.Clock; int shots=Battle.CombatShots.Count;
+            Tick(10); bool freeze=Battle.Clock==clock && shots==Battle.CombatShots.Count;
+            if(directory!=null) yield return TalulahFrame(directory,"talulah-fire-rain");
+            Battle.SetPaused(false); Tick(4.5f);
+            bool locked=unit.Motion.DistanceTravelled==start && Battle.IsSkillActionPlaying(unit);
+            bool allDead=true; foreach(var d in Battle.Defenders) allDead &= !d.Alive;
+            Tick(.35f); bool resume=unit.Motion.DistanceTravelled>start;
+            for(int i=0;i<1500 && Battle.Phase==BattlePhase.Running;i++) Tick(.05f);
+            bool won=Battle.Phase==BattlePhase.Won;
+            if(directory!=null) yield return TalulahFrame(directory,"talulah-victory");
+            RestartBattle();
+            bool reset=Battle.Units.Count==0 && Battle.CombatShots.Count==0 && Battle.SkillCasts==0;
+            foreach(var d in Battle.Defenders) reset &= d.Alive && d.Health==Battle.CombatSettings.DefenderHealth;
+            SwitchTrial(false); bool original=Definition.Card==scene.Card && Battle.Defenders.Count==1;
+            Debug.Log($"TALULAH_CHECK: drag={placed}; pauseDeploy={pauseDeploy}; ready={ready}; slow={slow}; cast={cast}; global={global}; freeze={freeze}; locked={locked}; allDead={allDead}; resume={resume}; won={won}; reset={reset}; original={original}.");
+            Time.timeScale=1; Application.Quit(placed && pauseDeploy && ready && slow && cast && global && freeze && locked && allDead && resume && won && reset && original ? 0 : 1);
+        }
+    }
+}

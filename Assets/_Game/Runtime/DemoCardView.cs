@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         private GUIStyle nameStyle, costStyle, labelStyle;
 
         public CardDefinition Card => card;
+        public void SetCard(CardDefinition value) { card=value; }
 
         // Drawn by InitialDemo after its HUD panels, using the same reference-resolution matrix.
         public bool DrawRoster(ManualBattle battle = null, bool selected = false, bool allowClick = true)

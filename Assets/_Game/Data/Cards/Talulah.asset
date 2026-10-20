@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a509c8e9c8e594c4998b7307203faef9, type: 3}
+  m_Name: Talulah
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.CardDefinition
+  cardId: CARD_TALULAH_TRIAL
+  displayName: "\u5854\u9732\u62C9"
+  recruitCost: 5
+  unit: {fileID: 11400000, guid: 6bd4655203a5c2c4f82d77eff15a58e8, type: 2}
+  portrait: {fileID: 21300000, guid: 318164644c6be0f4db08c32e375610b9, type: 3}
+  battleSprite: {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  walkFrames:
+  - {fileID: -1300099901938377857, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: -7724977770509396470, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: -3676041701349816874, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 3158548518078711609, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 5946979320058971374, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 3776611560210301707, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: -2291188507322796102, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: -1767947813520027114, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  attackFrames:
+  - {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: -3051931763329679103, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  skillFrames:
+  - {fileID: 8246513144273101584, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 5102887922514915171, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  comicImpactFaces: []

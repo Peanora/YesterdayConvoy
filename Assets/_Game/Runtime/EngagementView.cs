@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         private Material material;
         [SerializeField] private SpriteRenderer kroos;
         private LineRenderer range;
+        private readonly List<SpriteRenderer> extraVisuals=new List<SpriteRenderer>();
         private AudioSource audioSource;
         private AudioClip click, impact;
         private int runId, lastPhase = -1;
@@ -25,11 +26,17 @@ namespace YesterdayConvoy
         public void Initialize(ManualBattleController controller, EngagementDefinition data, AudioClip uiSound, AudioClip hitSound)
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
-            material = new Material(Shader.Find("Sprites/Default"));
+            ClearTransient(); runId=-1;
+            foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
+            extraVisuals.Clear();
+            if(material==null) material = new Material(Shader.Find("Sprites/Default"));
             if(kroos==null) kroos = new GameObject("Kroos combat sprite", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
             kroos.transform.SetParent(transform, false); kroos.sprite = data.KroosSprite; kroos.sharedMaterial = material;
-            range = CreateLine("Kroos range", 0.018f); range.loop = true; range.positionCount = 64; range.sortingOrder = 0;
-            audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;
+            if(range==null) range = CreateLine("Kroos range", 0.018f); range.loop = true; range.positionCount = 64; range.sortingOrder = 0;
+            for(int i=0;i<data.ExtraDefenders.Count;i++)
+            { var v=new GameObject("Kroos flank "+i,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+              v.transform.SetParent(transform,false); v.sprite=data.KroosSprite; v.sharedMaterial=material; extraVisuals.Add(v); }
+            if(audioSource==null) audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;
         }
 
         private void LateUpdate()
@@ -63,6 +70,14 @@ namespace YesterdayConvoy
             {
                 float a = i * Mathf.PI * 2 / 64;
                 range.SetPosition(i, new Vector3(d.Position.x, 0.055f, d.Position.z) + new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * b.CombatSettings.DefenderRange);
+            }
+            for(int i=0;i<extraVisuals.Count;i++)
+            {
+                var other=b.Defenders[i+1]; var v=extraVisuals[i];
+                float fade=other.Alive ? 1 : 1-Mathf.Clamp01((float)(time-other.DeathTime)/.45f);
+                v.enabled=fade>0; v.transform.position=other.Position; v.transform.rotation=cam.transform.rotation;
+                v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
+                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
             }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
@@ -105,6 +120,7 @@ namespace YesterdayConvoy
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
+            if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
             var target = b.FindUnit(shot.TargetId);
@@ -161,6 +177,31 @@ namespace YesterdayConvoy
                 view.Rays.SetPosition(i * 2 + 1, end + axis * radius * 1.3f);
             }
             view.Rays.startColor = view.Rays.endColor = color;
+        }
+
+        private void PresentFireRain(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            float t=Mathf.Clamp01((float)((b.Clock-shot.StartedAt)/(shot.ImpactAt-shot.StartedAt)));
+            Vector3 end=shot.Destination+cam.transform.up*.55f;
+            bool falling=b.Clock<shot.ImpactAt;
+            v.Trail.enabled=falling; v.Ink.enabled=falling;
+            v.Trail.positionCount=v.Ink.positionCount=2;
+            Vector3 point=end+cam.transform.up*(4*(1-t))+cam.transform.right*(1-t);
+            foreach(var line in new[]{v.Trail,v.Ink})
+            { line.SetPosition(0,point+cam.transform.up*.9f); line.SetPosition(1,point); line.sortingOrder=23000; }
+            v.Ink.widthMultiplier=.22f; v.Ink.startColor=v.Ink.endColor=new Color(.15f,.035f,.02f);
+            v.Trail.sortingOrder=23001; v.Trail.widthMultiplier=.12f;
+            v.Trail.startColor=new Color(1,.22f,.03f); v.Trail.endColor=new Color(1,.95f,.45f);
+            float age=(float)(b.Clock-shot.ImpactAt);
+            bool hit=age>=0 && age<.6f;
+            v.Impact.enabled=falling || hit; v.Rays.enabled=hit;
+            if(falling) Ring(v.Impact,shot.Destination+Vector3.up*.04f,.45f,new Color(1,.28f,.05f,.65f),null);
+            else if(hit)
+            {
+                ComicBurst(v.Impact,end,.35f+age*1.4f,new Color(1,.4f,.06f,1-age/.6f),cam);
+                ComicBurst(v.Rays,end,.22f+age*.8f,new Color(1,.9f,.4f,1-age/.6f),cam);
+            }
+            v.Impact.sortingOrder=23002; v.Rays.sortingOrder=23003;
         }
 
         private void Play(AudioClip clip, float volume)

@@ -42,6 +42,7 @@ namespace YesterdayConvoy
         {
             string[] args = Environment.GetCommandLineArgs();
             diagnostic = Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            wisadelDefinition=definition;
             ValidateConfiguration();
             scene.enabled = false;
             scene.Monster.gameObject.SetActive(false);
@@ -49,6 +50,11 @@ namespace YesterdayConvoy
             Battle = CreateBattle();
             CreatePreview();
             EnableCombatView();
+            gameObject.AddComponent<FireRainView>().Initialize(this);
+            if(Array.IndexOf(args,"-talulahSmokeTest")>=0)
+            { diagnostic=true; Application.runInBackground=true;
+              int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+              StartCoroutine(VerifyTalulah(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
             if(Array.IndexOf(args,"-combatSmokeTest") >= 0)
             {
                 Application.runInBackground = true;
@@ -64,7 +70,7 @@ namespace YesterdayConvoy
         }
 
         private ManualBattle CreateBattle() => new ManualBattle(definition.Snapshot(),scene.Waypoints,
-            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot());
+            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders);
 
         private void EnableCombatView()
         {
@@ -74,9 +80,12 @@ namespace YesterdayConvoy
 
         public void ValidateConfiguration()
         {
-            if(scene==null || definition==null || definition.Card!=scene.Card || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
+            if(scene==null || definition==null || (definition!=talulahDefinition && definition.Card!=scene.Card) || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
                 throw new InvalidOperationException("Current battle scene/configuration is incomplete.");
             _ = CreateBattle();
+            if(talulahDefinition==null || !talulahDefinition.Card.HasFrameAnimation || !talulahDefinition.Engagement.FireRain || talulahDefinition.Engagement.ExtraDefenders.Count!=2)
+                throw new InvalidOperationException("Talulah trial scene binding/configuration is incomplete.");
+            _ = talulahDefinition.Snapshot(); _ = talulahDefinition.Engagement.Snapshot();
         }
 
         public void SelectCard(bool selected)
@@ -85,7 +94,7 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { Battle.Begin(); Feedback="拖动底部卡牌至红门，部署维维美"; }
+        public void StartBattle() { Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
@@ -176,7 +185,7 @@ namespace YesterdayConvoy
         public SkillFailure ActivateSelectedSkill()
         {
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? "爆裂黎明已开启：强化炮击弹药装填完成" :
+            Feedback=result==SkillFailure.None ? (Battle.CombatSettings.FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
                 result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
@@ -274,6 +283,7 @@ namespace YesterdayConvoy
             if(notice!=null && Time.unscaledTime<noticeUntil) DrawNotice(new Rect(330,82,620,38),notice);
             if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
+            DrawTrialSelector();
             if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
             if(Battle.EngagementEnabled) DrawInteractionOverlay();
             GUI.backgroundColor=oldBackground;
@@ -283,7 +293,12 @@ namespace YesterdayConvoy
         private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
         {
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
-            if(unit.SkillAmmo>0)
+            if(Battle.CombatSettings.FireRain && Battle.IsSkillActionPlaying(unit))
+            {
+                float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FireRainStartedAt)/Battle.CombatSettings.SkillInterval));
+                Fill(new Rect(x-29,y+2,58*remaining,3),new Color(1,.38f,.12f));
+            }
+            else if(unit.SkillAmmo>0)
             {
                 int capacity=Battle.CombatSettings.SkillAmmo;
                 float width=(58-2*(capacity-1))/(float)capacity;
@@ -324,12 +339,14 @@ namespace YesterdayConvoy
 
         private void DrawDefenderHUD()
         {
-            var d=Battle.Defender;
+            foreach(var d in Battle.Defenders)
+            {
             Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.95f);
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
-            if(!d.Alive) return;
+            if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
+            }
         }
 
         private void EnsureStyles()

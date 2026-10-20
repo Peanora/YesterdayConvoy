@@ -9,13 +9,14 @@ namespace YesterdayConvoy
         public readonly float UnitAttack, UnitArmor, UnitRange, UnitInterval;
         public readonly float DefenderHealth, DefenderAttack, DefenderArmor, DefenderRange, DefenderInterval, BlockRadius;
         public readonly int BlockCount, SkillAmmo;
+        public readonly bool FireRain;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, requiredSP, spPerSecond, skillAttack, skillInterval, skillRange, projectileTime })
@@ -23,6 +24,7 @@ namespace YesterdayConvoy
             if (!Finite(unitArmor) || !Finite(defenderArmor) || !Finite(initialSP) || unitArmor < 0 || defenderArmor < 0 ||
                 initialSP < 0 || initialSP > requiredSP || blockCount < 0 || skillAmmo <= 0)
                 throw new ArgumentException("Invalid combat armor, block count or initial SP.");
+            FireRain = fireRain;
             UnitAttack = unitAttack; UnitArmor = unitArmor; UnitRange = unitRange; UnitInterval = unitInterval;
             DefenderHealth = defenderHealth; DefenderAttack = defenderAttack; DefenderArmor = defenderArmor;
             DefenderRange = defenderRange; DefenderInterval = defenderInterval; BlockCount = blockCount; BlockRadius = blockRadius;
@@ -34,6 +36,7 @@ namespace YesterdayConvoy
 
     public sealed class DefenderState
     {
+        public string EntityId { get; }
         public Vector3 Position { get; }
         public float Health { get; internal set; }
         public bool Alive => Health > 0;
@@ -42,7 +45,7 @@ namespace YesterdayConvoy
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         internal double NextAttackTime;
-        internal DefenderState(Vector3 position, float health) { Position = position; Health = health; }
+        internal DefenderState(string id, Vector3 position, float health) { EntityId=id; Position = position; Health = health; }
     }
 
     public sealed class CombatShot
@@ -51,6 +54,7 @@ namespace YesterdayConvoy
         public string TargetId { get; }
         public bool FromDefender { get; }
         public bool Empowered { get; }
+        public bool FireRain { get; }
         public Vector3 Origin { get; }
         public Vector3 Destination { get; }
         public double StartedAt { get; }
@@ -59,8 +63,8 @@ namespace YesterdayConvoy
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
-            double start, float duration, float attack)
-        { SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
+            double start, float duration, float attack, bool fireRain = false)
+        { FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }
 
@@ -73,28 +77,35 @@ namespace YesterdayConvoy
         private readonly Dictionary<long, string> skillRequests = new Dictionary<long, string>();
         public bool EngagementEnabled => engagement.HasValue;
         public EngagementSettings CombatSettings => engagement.Value;
-        public DefenderState Defender { get; private set; }
+        private readonly Vector3[] defenderPositions;
+        private readonly List<DefenderState> defenders = new List<DefenderState>();
+        public IReadOnlyList<DefenderState> Defenders => defenders.AsReadOnly();
+        public DefenderState Defender => defenders.Count>0 ? defenders[0] : null;
+        public DefenderState FindDefender(string id) => defenders.Find(d=>d.EntityId==id);
         public IReadOnlyList<CombatShot> CombatShots => combatShots.AsReadOnly();
         public int SkillCasts { get; private set; }
 
         private void ResetEngagement()
         {
             combatShots.Clear(); skillRequests.Clear(); SkillCasts = 0;
-            Defender = EngagementEnabled ? new DefenderState(towerPosition, CombatSettings.DefenderHealth) : null;
+            defenders.Clear();
+            if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
+                defenders.Add(new DefenderState(i==0 ? "kroos" : "kroos-"+i,defenderPositions[i],CombatSettings.DefenderHealth));
         }
 
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
         public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active &&
-            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval;
+            (CombatSettings.FireRain ? Clock<unit.FireRainStartedAt+CombatSettings.SkillInterval :
+            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval);
 
         // Readiness stays visible during a full pause; authorization to cast is checked separately.
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active &&
-                unit.SkillAmmo==0 && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
+                unit.SkillAmmo==0 && (!CombatSettings.FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
         }
 
         public SkillFailure CheckSkill(string entityId)
@@ -103,7 +114,7 @@ namespace YesterdayConvoy
             if (IsPaused) return SkillFailure.Paused;
             var unit = FindUnit(entityId);
             if (unit == null || !unit.Active) return SkillFailure.MissingEntity;
-            if (unit.SkillAmmo > 0) return SkillFailure.AlreadyActive;
+            if (unit.SkillAmmo > 0 || CombatSettings.FireRain && IsSkillActionPlaying(unit)) return SkillFailure.AlreadyActive;
             return unit.SkillSP + 0.00001f >= CombatSettings.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
         }
 
@@ -117,6 +128,8 @@ namespace YesterdayConvoy
             var unit = FindUnit(entityId);
             unit.SkillSP = 0; unit.SkillAmmo = CombatSettings.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
             unit.NextAttackTime = Clock;
+            if(CombatSettings.FireRain)
+            { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+CombatSettings.SkillInterval; }
             skillRequests.Add(requestId, entityId);
             return SkillFailure.None;
         }
@@ -126,85 +139,123 @@ namespace YesterdayConvoy
 
         private void StepEngagement(float step)
         {
-            EngagementSettings c = CombatSettings;
-            // A launched projectile settles once. Dead sources/targets cancel effects; no corpse casts.
-            foreach (var shot in combatShots)
+            EngagementSettings c=CombatSettings;
+            foreach(var shot in combatShots)
             {
-                if (shot.Resolved || Clock + 0.000001 < shot.ImpactAt) continue;
-                shot.Resolved = true;
-                var unit = FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
-                if (unit == null || !unit.Active || !Defender.Alive) continue;
-                shot.Applied = true;
-                if (shot.FromDefender)
+                if(shot.Resolved || Clock+0.000001<shot.ImpactAt) continue;
+                shot.Resolved=true;
+                var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
+                var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
+                if(unit==null || !unit.Active || defender==null || !defender.Alive) continue;
+                shot.Applied=true;
+                if(shot.FromDefender)
                 {
-                    unit.Health = Mathf.Max(0, unit.Health - Mathf.Max(1, shot.Attack - c.UnitArmor));
-                    unit.LastHitTime = Clock;
-                    if (unit.Health == 0) { unit.Resolution = UnitResolution.Dead; unit.IsMoving = false; unit.IsBlocked = false; }
+                    unit.Health=Mathf.Max(0,unit.Health-Mathf.Max(1,shot.Attack-c.UnitArmor));
+                    unit.LastHitTime=Clock;
+                    if(unit.Health==0) { unit.Resolution=UnitResolution.Dead; unit.IsMoving=unit.IsBlocked=false; }
                 }
                 else
                 {
-                    Defender.Health = Mathf.Max(0, Defender.Health - Mathf.Max(1, shot.Attack - c.DefenderArmor));
-                    Defender.LastHitTime = Clock;
-                    if (!Defender.Alive) { Defender.DeathTime = Clock; Defender.TargetId = null; }
+                    defender.Health=Mathf.Max(0,defender.Health-Mathf.Max(1,shot.Attack-c.DefenderArmor));
+                    defender.LastHitTime=Clock;
+                    if(!defender.Alive) { defender.DeathTime=Clock; defender.TargetId=null; }
                 }
             }
-
-            Defender.BlockedCount = 0;
-            foreach (var unit in units)
+            foreach(var d in defenders) d.BlockedCount=0;
+            foreach(var unit in units)
             {
-                if (!unit.Active) { unit.IsBlocked = unit.HasCombatTarget = false; continue; }
-                if (unit.SkillAmmo == 0) unit.SkillSP = Mathf.Min(c.RequiredSP, unit.SkillSP + step * c.SPPerSecond);
-                unit.IsBlocked = Defender.Alive && Defender.BlockedCount < c.BlockCount &&
-                    GroundDistance(unit.Motion.Position, Defender.Position) <= c.BlockRadius;
-                if (unit.IsBlocked) Defender.BlockedCount++;
-                float range = unit.SkillAmmo > 0 ? c.SkillRange : c.UnitRange;
-                unit.HasCombatTarget = Defender.Alive && GroundDistance(unit.Motion.Position, Defender.Position) <= range;
-                unit.IsMoving = !unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit);
-                if (unit.IsMoving)
+                if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                bool casting=c.FireRain && IsSkillActionPlaying(unit);
+                if(unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                unit.IsBlocked=false; unit.BlockerId=null;
+                foreach(var d in defenders)
+                    if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
+                    { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
+                DefenderState target=ChooseDefender(unit,range);
+                unit.HasCombatTarget=target!=null;
+                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit);
+                if(unit.IsMoving)
                 {
-                    // A step straddling the action end may only move for its unlocked remainder.
-                    float moveStep=unit.LastAttackEmpowered ?
-                        (float)Math.Min(step,Math.Max(0,Clock-unit.LastAttackTime-c.SkillInterval)) : step;
+                    double lockEnd=c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
+                        unit.LastAttackEmpowered ? unit.LastAttackTime+c.SkillInterval : double.NegativeInfinity;
+                    float moveStep=(float)Math.Min(step,Math.Max(0,Clock-lockEnd));
                     if(moveStep>0) unit.Motion.Advance(moveStep);
                 }
-                if (unit.Motion.HasArrived)
+                if(unit.Motion.HasArrived)
                 {
-                    unit.Resolution = UnitResolution.Breached; unit.IsMoving = false; unit.HasCombatTarget = unit.IsBlocked = false;
-                    Breaches++; Defense = Math.Max(0, Defense - Settings.GateDamage);
-                    continue;
+                    unit.Resolution=UnitResolution.Breached; unit.IsMoving=unit.HasCombatTarget=unit.IsBlocked=false;
+                    Breaches++; Defense=Math.Max(0,Defense-Settings.GateDamage); continue;
                 }
-                unit.HasCombatTarget = Defender.Alive && GroundDistance(unit.Motion.Position, Defender.Position) <= range;
-                if (unit.HasCombatTarget && Clock + 0.000001 >= unit.NextAttackTime)
+                if(c.FireRain && unit.SkillAmmo>0)
                 {
-                    bool empowered = unit.SkillAmmo > 0;
-                    if (empowered) unit.SkillAmmo--;
-                    unit.LastAttackTime = Clock;
-                    unit.LastAttackEmpowered = empowered;
-                    unit.NextAttackTime = Clock + (empowered ? c.SkillInterval : c.UnitInterval);
-                    combatShots.Add(new CombatShot(unit.EntityId, "kroos", false, empowered, unit.Motion.Position, Defender.Position,
-                        Clock, c.ProjectileTime, empowered ? c.SkillAttack : c.UnitAttack));
+                    // Six timed waves, with an explicit launch delay. Every living defender is hit,
+                    // regardless of ordinary range. The caster holds its pose through the full window.
+                    int wave=c.SkillAmmo-unit.SkillAmmo;
+                    double due=unit.FireRainStartedAt+(wave+.25)*c.SkillInterval/c.SkillAmmo;
+                    if(Clock+0.000001>=due)
+                    {
+                        unit.SkillAmmo--;
+                        foreach(var d in defenders) if(d.Alive)
+                            combatShots.Add(new CombatShot(unit.EntityId,d.EntityId,false,true,
+                                d.Position+Vector3.up*5,d.Position,Clock,c.ProjectileTime,c.SkillAttack,true));
+                    }
+                }
+                target=ChooseDefender(unit,range); unit.HasCombatTarget=target!=null;
+                if(target!=null && !casting && Clock+0.000001>=unit.NextAttackTime)
+                {
+                    bool empowered=!c.FireRain && unit.SkillAmmo>0;
+                    if(empowered) unit.SkillAmmo--;
+                    unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
+                    unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
+                    combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
+                        unit.Motion.Position,target.Position,Clock,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack));
                 }
             }
-            if (!Defender.Alive || Defense == 0) return;
-            var target = FindUnit(Defender.TargetId);
-            bool blocksExist = Defender.BlockedCount > 0;
-            if (target == null || !target.Active || GroundDistance(target.Motion.Position, Defender.Position) > c.DefenderRange ||
-                (blocksExist && !target.IsBlocked))
+            if(Defense==0) return;
+            foreach(var d in defenders)
             {
-                target = null;
-                foreach (var unit in units)
+                if(!d.Alive) continue;
+                var target=FindUnit(d.TargetId);
+                bool blocks=d.BlockedCount>0;
+                if(target==null || !target.Active || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||
+                    blocks && target.BlockerId!=d.EntityId)
                 {
-                    if (!unit.Active || GroundDistance(unit.Motion.Position, Defender.Position) > c.DefenderRange ||
-                        (blocksExist && !unit.IsBlocked)) continue;
-                    if (target == null || unit.Motion.DistanceTravelled > target.Motion.DistanceTravelled) target = unit;
+                    target=null;
+                    foreach(var unit in units)
+                    {
+                        if(!unit.Active || GroundDistance(unit.Motion.Position,d.Position)>c.DefenderRange ||
+                            blocks && unit.BlockerId!=d.EntityId) continue;
+                        if(target==null || unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
+                    }
+                    d.TargetId=target?.EntityId;
                 }
-                Defender.TargetId = target?.EntityId;
+                if(target==null || Clock+0.000001<d.NextAttackTime) continue;
+                ShotsFired++; LastShotTime=Clock; LastShotEntityId=target.EntityId; LastShotPosition=target.Motion.Position;
+                d.NextAttackTime=Clock+c.DefenderInterval;
+                combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
+                    Clock,c.ProjectileTime,c.DefenderAttack));
             }
-            if (target == null || Clock + 0.000001 < Defender.NextAttackTime) return;
-            ShotsFired++; LastShotTime = Clock; LastShotEntityId = target.EntityId; LastShotPosition = target.Motion.Position;
-            Defender.NextAttackTime = Clock + c.DefenderInterval;
-            combatShots.Add(new CombatShot("kroos", target.EntityId, true, false, Defender.Position, target.Motion.Position,
-                Clock, c.ProjectileTime, c.DefenderAttack));
+        }
+
+        private DefenderState ChooseDefender(DeployedUnitState unit,float range)
+        {
+            var blocker=FindDefender(unit.BlockerId);
+            if(blocker!=null && blocker.Alive && GroundDistance(unit.Motion.Position,blocker.Position)<=range)
+            { unit.CombatTargetId=blocker.EntityId; return blocker; }
+            var previous=FindDefender(unit.CombatTargetId);
+            if(previous!=null && previous.Alive && GroundDistance(unit.Motion.Position,previous.Position)<=range) return previous;
+            DefenderState nearest=null; float distance=float.PositiveInfinity;
+            foreach(var d in defenders)
+            {
+                if(!d.Alive) continue;
+                float gap=GroundDistance(unit.Motion.Position,d.Position);
+                if(gap>range) continue;
+
+                if(gap<distance) { nearest=d; distance=gap; }
+            }
+            unit.CombatTargetId=nearest?.EntityId;
+            return nearest;
         }
     }
 }

@@ -51,14 +51,18 @@ namespace YesterdayConvoy
             if(manualBattle.IsSkillActionPlaying(deployedUnit))
             {
                 FrameState="Skill";
-                FrameIndex=Mathf.Clamp((int)(age/skillDuration*frameCard.SkillFrames.Count),0,frameCard.SkillFrames.Count-1);
+                FrameIndex=manualBattle.CombatSettings.FireRain ?
+                    (int)((manualBattle.Clock-deployedUnit.FireRainStartedAt)*4)%frameCard.SkillFrames.Count :
+                    Mathf.Clamp((int)(age/skillDuration*frameCard.SkillFrames.Count),0,frameCard.SkillFrames.Count-1);
                 sprite.sprite=frameCard.SkillFrames[FrameIndex]; return;
             }
             if(deployedUnit.IsMoving)
             {
                 FrameState="Walk";
                 // At the authored 0.75 move speed, retain the GIF's 0.95-second cycle; distance freezes on stop/pause.
-                FrameIndex=(int)(deployedUnit.Motion.DistanceTravelled/.75*20)%frameCard.WalkFrames.Count;
+                FrameIndex=manualBattle.CombatSettings.FireRain ?
+                    (int)(deployedUnit.Motion.DistanceTravelled/.9*frameCard.WalkFrames.Count)%frameCard.WalkFrames.Count :
+                    (int)(deployedUnit.Motion.DistanceTravelled/.75*20)%frameCard.WalkFrames.Count;
                 sprite.sprite=frameCard.WalkFrames[FrameIndex]; return;
             }
             if(!deployedUnit.HasCombatTarget)
