@@ -2,6 +2,8 @@
 
 ## 2026-10-20：塔露拉火雨可玩样板
 
+交付复核：源码提交6028b339235cd0256c68fa881c3499330db8cef8，PR #4已创建、repository-checks工作流39424822689成功；未合并main。该干净源码重新构建，仍为290538195字节/0错误。原目录Builds/TalulahTrial-6028b33.zip（85789690字节）完整解压并核验264个文件SHA256；从解压目录Game真实启动，塔露拉13项、维维美13项交战/8项交互全部True、三次退出0，日志artifacts/下分别为zip-talulahSmokeTest.log、zip-combatSmokeTest.log、zip-interactionSmokeTest.log。后续本条交付说明为纯文档更新，不改变包对应源码6028b33。
+
 环境：Unity6000.6.5f1(3ff58d469c8a)、Windows x64、RTX4060/D3D12；基线main 0dec185，独立工作目录/分支codex/talulah-fire-rain。原目录四项文档修改和未跟踪CONTRIBUTING/PackageManagerSettings不改动。用户明确确认共享战斗、配置接口、表现及InitialDemo绑定修改范围，任务[#3](https://github.com/Peanora/YesterdayConvoy/issues/3)。
 
 - `TalulahTools.Prepare`：真实Unity导入两张PNG/12精确切片，创建单位/卡/战斗参数并绑定主场景；绑定保存后重新打开校验，原场景仅新增talulahDefinition一行，无地图/镜头变动。
