@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：后续开发同步试玩包（2026-10-20）
+
+用户已持续授权：完成可运行开发且验证通过后，同步源码与完整Windows ZIP到既有GitHub仓库，试玩包放Releases附件，无需每轮重复询问。保留现有可见性；实际GitHub API核实Peanora/YesterdayConvoy当前为公开仓库，不将其误报私有。AGENTS.md本地保留，从当前Git索引移除并加入.gitignore；不删除或改写历史。此次准备补发demo-2026-10-20试玩版，实际上传结果见QA。
+
 ## 当前：可玩ZIP已准备（2026-10-20）
 
 源码已推送不等于有可玩包：Builds目录由Git忽略。已将现有清理后Windows版本整理为artifacts/release-2026-10-20/YesterdayConvoy-Windows-x64-2026-10-20.zip，完整解压后运行Game/YesterdayConvoy.exe，无需Unity。解压后的真实Player战斗十三项/交互八项全True；未重新构建、未第二机核验。GitHub Releases附件尚未上传；运行说明/来源与Credits随包保留。
