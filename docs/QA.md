@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-10-20：试玩版发布与交付规则
+
+用户授权今后开发默认同步源码/已验证Windows试玩包。已推送1285e55，AGENTS.md从当前Git索引移除并在.gitignore忽略，本地文件仍存在；未重写历史。GitHub REST实际返回仓库private=false，保持原公开状态，未调用可见性设置接口。创建demo-2026-10-20预发布：上传成功并验证本地SHA256与GitHub返回digest/字节数一致后取消draft，发布地址https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20。
+
+附件YesterdayConvoy-Windows-x64-2026-10-20.zip为83630536字节，SHA256 d639cb803d15a0809f9c861b68d606488df59145c12d203f2f1e9d316a3c0b06。检查ZIP共258项，含exe、UnityPlayer.dll和Data/level0，无AGENTS.md。上一节解压Player战斗13项/交互8项全通过；本轮仅更新包内运行说明及交付文档，未修改游戏二进制、未重建。发布说明明确二进制来自2026-10-19清理后构建、标签对应源码1285e55；后续为文档/交付配置变化。未第二机离线或长期性能核验。
+
 ## 2026-10-20：可玩包整理与解压验证
 
 确认Builds被.gitignore排除，上次git push仅同步源工程。将现有2026-10-19清理后Windows构建整理为artifacts/release-2026-10-20/YesterdayConvoy-Windows-x64-2026-10-20.zip（约80MiB），包含完整Game目录、运行说明及更新后的Credits/漫画资源来源说明；未重编译，3578475至e1cf5d4间Assets/Packages/ProjectSettings无已提交差异。实际解压ZIP后运行Player：ENGAGEMENT_CHECK十三项、INTERACTION_CHECK八项全True；交互进程退出0。未完整人工通关、第二机离线核验。文件仅在本地准备，尚未上传GitHub Releases。

@@ -1,12 +1,16 @@
 # 昨日圆车
 
-Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什戴尔从红门分批出兵，与高台克洛丝远程停步交战（克洛丝不阻挡），技力满后手动开启爆裂黎明，击杀干员后继续穿门；防御归零胜利，进攻资源耗尽且空场失败，可重新开始。
+Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：从红门部署一只维维美，与高台克洛丝远程停步交战（克洛丝不阻挡），技力满后手动开启爆裂黎明，击杀干员后继续穿门；守方生命1，一次穿门胜利，角色倒下失败，可重新开始。
+
+## 直接下载试玩
+
+无需Unity：[Windows x64试玩包与发布说明](https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20)。下载附件`YesterdayConvoy-Windows-x64-2026-10-20.zip`，完整解压后打开`Game/YesterdayConvoy.exe`；不要只取exe，Data文件夹和DLL必须一起保留。后续已验证的可运行版本将同步到[Releases](https://github.com/Peanora/YesterdayConvoy/releases)。GitHub的“Source code”压缩包是Unity源工程，不是试玩包。
 
 维什戴尔已改为用户四GIF的漫画Q版：19帧走路、静态卡面/待机、28帧普攻、100帧爆裂黎明；无方向转身，爆炸加入黑边与表情印章。今后角色/特效按此统一，来源与使用范围见[本轮资源记录](docs/art/WISADEL-COMIC-2026-10-19.md)。全画幅水闸地图/镜头与克洛丝本轮未重绘。[当前漫画角色与技能实机](docs/art/previews/wisadel-comic-skill.png)（实际战场相机，不含HUD）。招募费5与部署费2分别显示；商店、升星、羁绊和多关经济尚未实现。
 
 - Unity：`6000.6.5f1`（2026-10-16 用户已确认沿用）。
 - 平台：Windows x64 离线单机；键鼠；斜俯视 2.5D 棋盘。
-- 入口：`Assets/_Game/Scenes/InitialDemo.unity`；旧 Bootstrap 仅保留作移动回归。
+- 入口：`Assets/_Game/Scenes/InitialDemo.unity`；旧 Bootstrap 与纸片资源已清理。
 - 规则圣经：[docs/GDD.md](docs/GDD.md)；当前事实：[docs/STATUS.md](docs/STATUS.md)；证据：[docs/QA.md](docs/QA.md)。
 
 ## 打开和运行
@@ -15,11 +19,11 @@ Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：维什
 
 本机可双击`Builds/Windows/YesterdayConvoy.exe`。底部角色卡拖到左侧红门松手部署；暂停时立即扣费/生成，战斗仍暂停，原CD不绕过。非法位置/取消不扣费。点场上角色或金色头顶标志打开旁侧技能面板，0.03×继续；技力满点击图标（或面板打开时按E）施放，点空白/右键/Esc取消，恢复原1×/2×。完全暂停时技能只查看，恢复后才能释放；重叠角色重复点击切换。空格暂停/恢复，顶部切速/静音，失焦取消交互并暂停；重新开始清局。
 
-试验值DP12/部署2/最多6次（费用可用满六次）/CD2秒/HP100/守方防御3，技力初始8/所需12/每秒1。建议CD好后重新拖卡分批部署，及时给场上实体开技能；逐只送出且不用技能的测试仍会失败；即便最终击杀守军，穿门数量也可能不足。这是原型操作样例，不是正式平衡结论。
+当前演示参数DP12/部署2/最多1次/CD2秒/HP100/守方生命1，技力初始8/所需12/每秒1。及时给场上角色开技能；不使用技能会失败。这是本关原型参数，不是正式平衡结论。
 
-在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式拖卡部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open or Create` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
+在编辑器运行：Unity Hub 添加并打开本工程 → Project 面板展开 `Assets/_Game/Scenes` → 双击 **InitialDemo** → 顶部 ▶ Play → 按上述方式拖卡部署。也可用菜单 `Yesterday Convoy/Initial Demo/Open Current Scene` 打开正确场景。关卡只读参数位于 `Assets/_Game/Data/Battles/ManualDemo.asset`及`WisadelVsKroos.asset`；仅需修复缺失绑定时才用`Enable Wisadel vs Kroos`菜单，重复执行不会覆盖已有参数。
 
-菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化保留已有场景内容。正常入口使用用户提供的漫画逐帧动画，显式历史诊断保留旧纸片；交战、技力与布局参数均为试验值。
+菜单 `Yesterday Convoy/Baseline` 提供 Initialize、Validate、Build Windows，均已接到新 Demo；使用 **Build Windows** 可在本机生成上述试玩包。初始化打开现有场景。正常入口使用用户提供的漫画逐帧动画，旧纸片诊断已删除；交战、技力与布局参数均为试验值。
 
 ## 命令行验证
 
@@ -55,4 +59,4 @@ $editorPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.5f1\Editor\Unity.exe'
 
 ## 入口如何连接
 
-`ManualBattleDefinition`与`EngagementDefinition`保存只读试验配置；`ManualBattle`/`EngagementCombat`维护独立单位、干员生命/目标、SP/弹药和弹道命中。`ManualBattleController`连接输入、HUD与实体视觉；`DemoSpriteVisual`/`DemoWalkPuppet`和`EngagementView`只读取同一模拟时钟展示步态/持炮/弹道/受击/死亡。原`InitialDemo`保留场景引用和历史诊断。Editor与测试程序集不进入Player。
+`ManualBattleDefinition`与`EngagementDefinition`保存只读试验配置；`ManualBattle`/`EngagementCombat`维护独立单位、干员生命/目标、SP/弹药和弹道命中。`ManualBattleController`连接输入、HUD与实体视觉；`DemoSpriteVisual`和`EngagementView`读取同一模拟时钟展示动作/弹道/受击/死亡。`InitialDemo`仅保留场景绑定。Editor与测试程序集不进入Player。

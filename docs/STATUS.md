@@ -2,7 +2,7 @@
 
 ## 当前：后续开发同步试玩包（2026-10-20）
 
-用户已持续授权：完成可运行开发且验证通过后，同步源码与完整Windows ZIP到既有GitHub仓库，试玩包放Releases附件，无需每轮重复询问。保留现有可见性；实际GitHub API核实Peanora/YesterdayConvoy当前为公开仓库，不将其误报私有。AGENTS.md本地保留，从当前Git索引移除并加入.gitignore；不删除或改写历史。此次准备补发demo-2026-10-20试玩版，实际上传结果见QA。
+用户已持续授权：完成可运行开发且验证通过后，同步源码与完整Windows ZIP到既有GitHub仓库，试玩包放Releases附件，无需每轮重复询问。保留现有可见性；实际GitHub API核实Peanora/YesterdayConvoy当前为公开仓库，不将其误报私有。AGENTS.md本地保留，从当前Git索引移除并加入.gitignore；不删除或改写历史。[demo-2026-10-20试玩版](https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20)已上传完整Windows ZIP，约80MiB，非草稿预发布；README已加入下载入口，实际验证范围见QA。以下为历史记录。
 
 ## 当前：可玩ZIP已准备（2026-10-20）
 
