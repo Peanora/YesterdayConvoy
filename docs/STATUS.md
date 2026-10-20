@@ -2,7 +2,7 @@
 
 ## 当前：三人协作准备（2026-10-20）
 
-已向霍利屹shigaharuki17、宋方壹1164571767发送GitHub写入权限邀请，接受前不能记为已加入。新增[协作指南](COLLABORATION.md)、CODEOWNERS/PR与任务/问题模板及repository-checks工作流，沿用现有Force Text/Visible Meta Files、Unity6000.6.5f1；不改玩法或Unity资源。每人功能分支，经PR由Peanora集成；同一场景/Prefab唯一写入者。自动检查仅为Git/Unity元数据静态检查，不编译Unity。当前本地检查通过，缺.meta/重复GUID负例能被拒绝；远端检查和main保护启用结果见QA。试玩版仍用demo-2026-10-20，本轮不重复构建相同二进制。
+已向霍利屹shigaharuki17、宋方壹1164571767发送GitHub写入权限邀请，已核实1164571767接受并为write，接受前不把其他邀请记作已加入。新增[协作指南](COLLABORATION.md)、CODEOWNERS/PR与任务/问题模板及repository-checks工作流，沿用现有Force Text/Visible Meta Files、Unity6000.6.5f1；不改玩法或Unity资源。每人功能分支，经PR由Peanora集成；同一场景/Prefab唯一写入者。自动检查仅为Git/Unity元数据静态检查，不编译Unity。本地检查及缺.meta/重复GUID负例通过，配置提交远端Actions已成功。main已启用1审批/代码负责人/必需检查与最新main、禁止强推/删除和线性历史；管理员应急绕过保留。试玩版仍用demo-2026-10-20，本轮不重复构建相同二进制，未第二机验证。证据见QA。
 
 ## 当前：后续开发同步试玩包（2026-10-20）
 

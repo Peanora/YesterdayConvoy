@@ -6,6 +6,8 @@ GitHub REST核实仓库只有Peanora管理员、main原无保护；向shigaharuk
 
 本地检查当前Git跟踪源文件通过；临时目录负例验证缺失.meta和重复GUID会报错，未修改实际Assets。git diff --check通过。未运行Unity编译/EditMode/PlayMode/Windows构建（仅文档、GitHub配置与静态检查脚本，不改游戏代码/资源），未做成员第二机克隆/导入，原试玩包不重发。远端Actions与分支保护实际结果在配置完成后补记。
 
+实际完成：配置提交8eb4134已推送，远端[Actions 39381891937](https://github.com/Peanora/YesterdayConvoy/actions/runs/39381891937) completed/success。main保护REST写入成功：repository-checks且strict=true、1个审批/代码负责人审查/新提交撤销旧审批、讨论解决、线性历史、禁止强推/删除；enforce_admins=false，保留主导者应急路径，未声称管理员也被硬性阻止。检查到1164571767已接受邀请并为write；另一位待最终邀请核对。脚本/文档不增加Unity运行时类：Actions调用tools/check_repository.py只读Git文件与.meta，PR模板和CODEOWNERS连接人工验收与集成；没有配置云端Unity构建。
+
 ## 2026-10-20：试玩版发布与交付规则
 
 用户授权今后开发默认同步源码/已验证Windows试玩包。已推送1285e55，AGENTS.md从当前Git索引移除并在.gitignore忽略，本地文件仍存在；未重写历史。GitHub REST实际返回仓库private=false，保持原公开状态，未调用可见性设置接口。创建demo-2026-10-20预发布：上传成功并验证本地SHA256与GitHub返回digest/字节数一致后取消draft，发布地址https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20。
