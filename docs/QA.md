@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-20：三名开发者的 Codex 协作规范
+
+仅整合AGENTS / CONTRIBUTING及必要文档引用：按用户12条逐项核对，保留原玩法、Unity、验证和发布规则；按后续明确要求改为Agent自动执行新功能Git检查 / main同步 / 开分支及完成后的提交 / 推送 / PR，未提交修改或冲突必须先报告。禁止直接写main或自动合并。文档链接、Git差异与空白检查通过；独立worktree的repository-checks本机静态检查通过（不含Unity编译）；原目录存在上一轮文档修改及原未跟踪ProjectSettings/PackageManagerSettings.asset，已报告并保持原样。Unity编译、EditMode / PlayMode、构建与试玩均未运行（本轮无代码或资源变更）；未验证队友本机AGENTS配置是否完成，不发布新试玩包。用户随后授权推送，本次在最新main的独立worktree只集成本任务文档，原目录与原未跟踪文件保留；功能分支提交并推送、创建PR，不合并main。
+
 ## 2026-10-20：多人协作配置
 
 GitHub REST核实仓库只有Peanora管理员、main原无保护；向shigaharuki17/1164571767发送push（写入）权限邀请，邀请ID338658702/338658707，未把邀请当成已接受。Unity当前m_SerializationMode=2、m_Mode=Visible Meta Files，无需改场景或ProjectSettings。新增功能分支/PR协作说明与模板、CODEOWNERS及无Unity许可依赖的repository-checks。
