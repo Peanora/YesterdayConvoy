@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-20：可玩包整理与解压验证
+
+确认Builds被.gitignore排除，上次git push仅同步源工程。将现有2026-10-19清理后Windows构建整理为artifacts/release-2026-10-20/YesterdayConvoy-Windows-x64-2026-10-20.zip（约80MiB），包含完整Game目录、运行说明及更新后的Credits/漫画资源来源说明；未重编译，3578475至e1cf5d4间Assets/Packages/ProjectSettings无已提交差异。实际解压ZIP后运行Player：ENGAGEMENT_CHECK十三项、INTERACTION_CHECK八项全True；交互进程退出0。未完整人工通关、第二机离线核验。文件仅在本地准备，尚未上传GitHub Releases。
+
 ## 2026-10-19：实际编辑器空场景排查
 
 - 原窗口标题为Untitled，Hierarchy仅有空场景；查看项目Logs/Editor.log未发现本次运行异常。

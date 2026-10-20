@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：可玩ZIP已准备（2026-10-20）
+
+源码已推送不等于有可玩包：Builds目录由Git忽略。已将现有清理后Windows版本整理为artifacts/release-2026-10-20/YesterdayConvoy-Windows-x64-2026-10-20.zip，完整解压后运行Game/YesterdayConvoy.exe，无需Unity。解压后的真实Player战斗十三项/交互八项全True；未重新构建、未第二机核验。GitHub Releases附件尚未上传；运行说明/来源与Credits随包保留。
+
 ## 当前：Unity空场景运行排查（2026-10-19）
 
 实际编辑器打开的是Untitled空场景，不含战斗对象。通过Yesterday Convoy → Initial Demo → Open Current Scene打开InitialDemo后，编辑器内Play可见当前地图、漫画克洛丝、生命1/1、DP12和维维美卡栏；实际拖卡到红门成功生成角色，DP变10、剩余次数变0/1，观察到角色沿路线移动。本次未修改代码、场景或素材，未重跑测试套件/构建，未完整通关。正常入口仍为Assets/_Game/Scenes/InitialDemo.unity；Build Settings的场景列表不会自动替换编辑器当前打开的空场景。
