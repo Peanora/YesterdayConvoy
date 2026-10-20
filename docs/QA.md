@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-10-20：设计分支同步main与文档冲突整理
+
+用户要求保留双方并整理冲突。基于设计提交1056daf，在独立工作目录合入main提交3c5a729（协作规范PR #2）；实际冲突仅为STATUS/QA标题后同位置新增段落。将main的协作规范记录、设计分支三条历史记录逐条保留，补充v0.4最新设计入口，未整文件选择ours/theirs。CONTRIBUTING、AGENTS.template和COLLABORATION保留main版本，GDD/羁绊方案保持设计分支版本。原工程四项已修改文档、未跟踪CONTRIBUTING与PackageManagerSettings不编辑、不暂存、不提交。
+
+本轮检查通过：逐段核对双方674段历史内容全部保留；四份文档37个本地链接存在；冲突标记、暂存差异/空白和repository-checks仓库静态检查通过。main的CONTRIBUTING/AGENTS.template/COLLABORATION与来源一致，设计分支的GDD/羁绊方案未被改写，Assets/Packages/ProjectSettings无变化。Unity编译、EditMode、PlayMode、Windows构建和人工试玩均未运行；仅文档同步，不新增试玩包、不直接合并main。银狼接管及其他新机制仍未实现。
+
+## 2026-10-20：三名开发者的 Codex 协作规范
+
+仅整合AGENTS / CONTRIBUTING及必要文档引用：按用户12条逐项核对，保留原玩法、Unity、验证和发布规则；按后续明确要求改为Agent自动执行新功能Git检查 / main同步 / 开分支及完成后的提交 / 推送 / PR，未提交修改或冲突必须先报告。禁止直接写main或自动合并。文档链接、Git差异与空白检查通过；独立worktree的repository-checks本机静态检查通过（不含Unity编译）；原目录存在上一轮文档修改及原未跟踪ProjectSettings/PackageManagerSettings.asset，已报告并保持原样。Unity编译、EditMode / PlayMode、构建与试玩均未运行（本轮无代码或资源变更）；未验证队友本机AGENTS配置是否完成，不发布新试玩包。用户随后授权推送，本次在最新main的独立worktree只集成本任务文档，原目录与原未跟踪文件保留；功能分支提交并推送、创建PR，不合并main。
+
 ## 2026-10-20：纠正怪物/干员误读
 
 用户明确“怪物，维什戴尔为特例”。GDD F12纠正为进攻方采用方舟敌方怪物；v0.2六名干员提案明确撤回，STATUS误将方向记为已定的段落改正。新增v0.3六种敌方单位候选，在线核对PRTS敌人页；费用/标签/技能未确认，不继承错误干员数值。未改代码/素材/配置/场景，未下载资源；仅运行文档/仓库静态检查，未运行Unity或构建，不新增试玩包。
