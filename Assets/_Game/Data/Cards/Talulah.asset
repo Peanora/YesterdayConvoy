@@ -16,22 +16,13 @@ MonoBehaviour:
   displayName: "\u5854\u9732\u62C9"
   recruitCost: 5
   unit: {fileID: 11400000, guid: 6bd4655203a5c2c4f82d77eff15a58e8, type: 2}
-  portrait: {fileID: 21300000, guid: 318164644c6be0f4db08c32e375610b9, type: 3}
-  battleSprite: {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  portrait: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  battleSprite: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  articulatedArt: {fileID: 11400000, guid: 29e0e49e05597d346b6b4fe38a01821a, type: 2}
   walkFrames:
-  - {fileID: -1300099901938377857, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: -7724977770509396470, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: -3676041701349816874, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: 3158548518078711609, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: 5946979320058971374, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: 3776611560210301707, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: -2291188507322796102, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: -1767947813520027114, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
   attackFrames:
-  - {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: -3051931763329679103, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: 2943874110972876852, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
   skillFrames:
-  - {fileID: 8246513144273101584, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
-  - {fileID: 5102887922514915171, guid: 30bc5a6c464e0124da90018ec981f2d8, type: 3}
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
   comicImpactFaces: []

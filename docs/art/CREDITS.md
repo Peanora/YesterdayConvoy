@@ -1,5 +1,10 @@
 # 美术资源 Credits
 
+## 2026-10-20 塔露拉V2
+
+新增火流/命中动画：Soluna Software，[Lots of game effects](https://opengameart.org/content/lots-of-game-effects)，CC0，保留作者记录。新版塔露拉卡面和部件由OpenAI内置image_gen生成，原角色来自《明日方舟》，非CC0；用户视频仅作动作参考。程序化关节动作、斩击弧线/辉光为项目制作。见[TALULAH-VIDEO-REVISION-2026-10-20.md](TALULAH-VIDEO-REVISION-2026-10-20.md)。
+
+
 ## 2026-10-20 塔露拉试验
 
 塔露拉：原角色来自《明日方舟》，本项目AI漫画同人原型由OpenAI image_gen生成；火雨轨迹/预警/命中图形为项目程序制作。沿用已登记的克洛丝、Kenney音效和Lorc技能图标，不重复授予第三方角色许可。见 [生成记录](GENERATION-TALULAH-2026-10-20.md)。

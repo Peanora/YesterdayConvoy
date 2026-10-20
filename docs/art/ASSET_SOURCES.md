@@ -1,5 +1,10 @@
 # 来源调查与第一版方案
 
+## 2026-10-20 塔露拉视频反馈调查
+
+实际调查并采用[Soluna Software / Lots of game effects](https://opengameart.org/content/lots-of-game-effects)：Fire01/ToonExplosion31，明确CC0；比单张纹理更适合连续火流。[BenHickling Animated Fire](https://opengameart.org/content/animated-fire)为CC0但偏低分辨率像素；Kenney Particle Pack项目已有、不重复下载，Smoke Particles暂不引入。商业游戏资源镜像没有提供新的再分发许可，不导入其贴图/模型。[比较、下载与使用记录](TALULAH-VIDEO-REVISION-2026-10-20.md)。
+
+
 ## 2026-10-19漫画角色与特效检索
 
 本轮新增实际素材来自用户四GIF，无新增网上下载。已查BWIKI“绝对主角-维什戴尔”、蓝GAG喵皮肤慢镜展示、PRTS原角色与Kenney Particle Pack；前两者用于身份/表现研究，未提供可公开再分发原始美术授权，后者CC0但不能补齐同系列角色/表情。选择用户提供的19/静态1/28/100帧与本地裁片/原生漫画特效。具体URL、读取限制、选用理由和本地路径见[WISADEL-COMIC-2026-10-19.md](WISADEL-COMIC-2026-10-19.md)。

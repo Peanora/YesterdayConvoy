@@ -1,5 +1,16 @@
 # 当前工程状态
 
+## 当前：塔露拉按三段视频修订；ZIP改为明确要求才更新（2026-10-20）
+
+继续codex/talulah-fire-rain / PR #4：新版偏分银灰发、冷灰眼、小黑龙角、无呆毛/猫嘴，卡面和战斗同一造型。使用13张归一化部件（独立裙片备用，实际不叠画）、塔露拉专用连续双骨腿部/手臂动作与披风跟随；替代旧8帧行走和两姿势挥剑。普攻有蓄势→挥击→收势，火雨有举剑抬手/手部火焰→维持→收势。没有转身动画，没有安装Unity/Spine插件；靴子和小腿仍同图，非商业级完整骨骼绑定。
+
+按视频改为六排横贯战场的48条火流、残焰/暖光与真实命中特效。实际下载并采用Soluna Software两张明确CC0的32帧火焰/16帧命中图，来源、被排除的资源和实际生成记录见[修订记录](art/TALULAH-VIDEO-REVISION-2026-10-20.md)。地图/相机/路线及射程/伤害/攻击间隔/SP/根节点移动锁均保留，原维维美不变。配置只保存资源引用，DemoSpriteVisual调用TalulahRig，FireRainView/EngagementView只表现，伤害仍由原模型结算。
+
+61/61 EditMode、16/16 GPU PlayMode通过，0跳过；新增连续步态/支撑与摆腿/武器衔接、实际关节和火流暂停验证。独立Windows构建及Player三组回归、真实动作预览见QA。完整人工键鼠试玩、不同路径朝向的自然程度、第二机与低配/长时性能待验；不能把固定视角分层动作称为全方向完整动画。
+
+用户最新约定已同步本地AGENTS、CONTRIBUTING和COLLABORATION：未明确要求时不创建、更新或上传ZIP/Releases。本轮只更新源码/资源/验证与本地测试EXE，不更新旧ZIP。原目录Builds/TalulahTrial-6028b33.zip仍为旧源码6028b33，不能作为本轮最新版；本轮实际EXE在功能分支工作目录Builds/Windows/YesterdayConvoy.exe。原目录六项既存修改继续隔离，源代码经PR人工合入。
+
+
 ## 当前：塔露拉漫画美术与全屏火雨试验（2026-10-20）
 
 已提交源码6028b33并推送[PR #4](https://github.com/Peanora/YesterdayConvoy/pull/4)，GitHub repository-checks成功。原目录Builds/TalulahTrial-6028b33.zip已交付（85789690字节/约81.8MiB）；同名解压目录Game/YesterdayConvoy.exe可直接运行。包内SOURCE.txt绑定6028b33，264个文件SHA256核对通过；解压后的真实Player再次通过塔露拉13项、维维美交战13项/交互8项，均退出0。当前main仍0dec185，待人工审查合入后再统一发布Releases。

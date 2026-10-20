@@ -11,6 +11,8 @@ namespace YesterdayConvoy
         [SerializeField] private UnitDefinition unit;
         [SerializeField] private Sprite portrait;
         [SerializeField] private Sprite battleSprite;
+        [SerializeField] private TalulahArtDefinition articulatedArt;
+        public TalulahArtDefinition ArticulatedArt => articulatedArt;
         [Header("Clock-driven comic flipbook")]
         [SerializeField] private Sprite[] walkFrames, attackFrames, skillFrames, comicImpactFaces;
 

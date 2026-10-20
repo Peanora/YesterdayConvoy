@@ -86,11 +86,11 @@ namespace YesterdayConvoy
                 {
                     var view=new ShotView { Trail = CreateLine("Shot trail", 0.06f), Impact = CreateLine("Impact ring", 0.04f), Rays = CreateLine("Impact rays", 0.025f), Ink=CreateLine("Comic impact ink",.12f) };
                     var faces=owner.Definition.Card.ComicImpactFaces;
-                    if(faces?.Count>0)
+                    if(faces?.Count>0 || owner.Definition.Card.ArticulatedArt!=null)
                     {
                         view.Face=new GameObject("Comic expression",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
                         view.Face.transform.SetParent(transform,false); view.Face.sharedMaterial=material;
-                        view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
+                        if(faces?.Count>0) view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
                     }
                     shots.Add(view);
                     Play(impact, modelShots[i].FromDefender ? 0.23f : modelShots[i].Empowered ? 0.75f : 0.35f);
@@ -121,6 +121,7 @@ namespace YesterdayConvoy
         {
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
             if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
+            if(!shot.FromDefender && owner.Definition.Card.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
             var target = b.FindUnit(shot.TargetId);
@@ -181,27 +182,49 @@ namespace YesterdayConvoy
 
         private void PresentFireRain(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
         {
-            float t=Mathf.Clamp01((float)((b.Clock-shot.StartedAt)/(shot.ImpactAt-shot.StartedAt)));
-            Vector3 end=shot.Destination+cam.transform.up*.55f;
-            bool falling=b.Clock<shot.ImpactAt;
-            v.Trail.enabled=falling; v.Ink.enabled=falling;
-            v.Trail.positionCount=v.Ink.positionCount=2;
-            Vector3 point=end+cam.transform.up*(4*(1-t))+cam.transform.right*(1-t);
-            foreach(var line in new[]{v.Trail,v.Ink})
-            { line.SetPosition(0,point+cam.transform.up*.9f); line.SetPosition(1,point); line.sortingOrder=23000; }
-            v.Ink.widthMultiplier=.22f; v.Ink.startColor=v.Ink.endColor=new Color(.15f,.035f,.02f);
-            v.Trail.sortingOrder=23001; v.Trail.widthMultiplier=.12f;
-            v.Trail.startColor=new Color(1,.22f,.03f); v.Trail.endColor=new Color(1,.95f,.45f);
+            v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
+            var art=owner.Definition.Card.ArticulatedArt;
+            if(v.Face==null || art==null) return;
             float age=(float)(b.Clock-shot.ImpactAt);
-            bool hit=age>=0 && age<.6f;
-            v.Impact.enabled=falling || hit; v.Rays.enabled=hit;
-            if(falling) Ring(v.Impact,shot.Destination+Vector3.up*.04f,.45f,new Color(1,.28f,.05f,.65f),null);
-            else if(hit)
+            v.Face.enabled=age>=0 && age<.66f;
+            if(!v.Face.enabled) return;
+            v.Face.sprite=art.ImpactFrames[Mathf.Clamp((int)(age*24),0,art.ImpactFrames.Count-1)];
+            v.Face.transform.position=shot.Destination+cam.transform.up*.65f;
+            v.Face.transform.rotation=cam.transform.rotation; v.Face.transform.localScale=Vector3.one*1.05f;
+            v.Face.sortingOrder=23003; v.Face.color=new Color(1,1,1,1-age/.66f);
+        }
+
+        private void PresentTalulahSlash(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
+            float age=(float)(b.Clock-shot.StartedAt),hitAge=(float)(b.Clock-shot.ImpactAt);
+            Vector3 origin=shot.Origin+cam.transform.up*.72f,end=shot.Destination+cam.transform.up*.75f;
+            float face=cam.transform.InverseTransformDirection(end-origin).x<0 ? -1 : 1;
+            if(age>=.38f && age<.78f)
             {
-                ComicBurst(v.Impact,end,.35f+age*1.4f,new Color(1,.4f,.06f,1-age/.6f),cam);
-                ComicBurst(v.Rays,end,.22f+age*.8f,new Color(1,.9f,.4f,1-age/.6f),cam);
+                float progress=Mathf.Clamp01((age-.38f)/.28f),alpha=Mathf.Clamp01((.78f-age)/.14f);
+                v.Ink.enabled=v.Trail.enabled=true; v.Ink.loop=v.Trail.loop=false;
+                v.Ink.positionCount=v.Trail.positionCount=24;
+                v.Ink.widthMultiplier=.16f; v.Trail.widthMultiplier=.075f;
+                v.Ink.sortingOrder=23000; v.Trail.sortingOrder=23001;
+                v.Ink.startColor=v.Ink.endColor=new Color(.10f,.015f,.025f,alpha);
+                v.Trail.startColor=new Color(1,.14f,.015f,alpha); v.Trail.endColor=new Color(1,.92f,.50f,alpha);
+                Vector3 center=Vector3.Lerp(origin,end,progress*.75f);
+                for(int j=0;j<24;j++)
+                {
+                    float angle=(Mathf.Lerp(1.9f,-1.3f,j/23f)+progress*.65f);
+                    Vector3 point=center+cam.transform.right*(face*Mathf.Cos(angle)*.82f)+cam.transform.up*(Mathf.Sin(angle)*.78f);
+                    v.Ink.SetPosition(j,point); v.Trail.SetPosition(j,point);
+                }
             }
-            v.Impact.sortingOrder=23002; v.Rays.sortingOrder=23003;
+            if(v.Face!=null && hitAge>=0 && hitAge<.54f)
+            {
+                var frames=owner.Definition.Card.ArticulatedArt.ImpactFrames;
+                v.Face.enabled=true; v.Face.sprite=frames[Mathf.Clamp((int)(hitAge*24),0,frames.Count-1)];
+                v.Face.transform.position=end; v.Face.transform.rotation=cam.transform.rotation;
+                v.Face.transform.localScale=Vector3.one*.85f; v.Face.color=new Color(1,.78f,.65f,1-hitAge/.54f);
+                v.Face.sortingOrder=23002;
+            }
         }
 
         private void Play(AudioClip clip, float volume)

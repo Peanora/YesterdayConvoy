@@ -115,7 +115,7 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             var level=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(LevelPath);
-            if(level==null || !level.Card.HasFrameAnimation || level.Card.WalkFrames.Count!=8 || level.Engagement.ExtraDefenders.Count!=2 || !level.Engagement.FireRain)
+            if(level==null || !level.Card.HasFrameAnimation || (level.Card.ArticulatedArt==null && level.Card.WalkFrames.Count!=8) || level.Engagement.ExtraDefenders.Count!=2 || !level.Engagement.FireRain)
                 throw new InvalidOperationException("Incomplete Talulah trial.");
             _=level.Snapshot(); _=level.Engagement.Snapshot();
             InitialDemoTools.Validate();

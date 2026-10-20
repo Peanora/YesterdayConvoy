@@ -1,5 +1,23 @@
 # 验证证据与回归
 
+## 2026-10-20：按用户三段视频修订塔露拉动作/全场火流
+
+继续PR #4同一功能分支，保留原目录六项既存修改；用户本轮明确要求按视频改普攻/火雨/行走与头部辨识度，并停止默认更新ZIP。共享文件范围沿用本功能此前具体确认；本轮不改场景、Prefab、Packages/ProjectSettings、战斗模型/数值与维维美资源。
+
+- 实际解码三段MP4（31.95/16.71/5.40秒），查看全片接触表、攻击/步态局部时序；视频只作参考，不导入原游戏贴图。采样/元数据在artifacts/video-reference。
+- OpenAI内置image_gen真实生成新版卡面/身体部件/手臂部件，Alpha0–255；候选16格行走图有背景光晕和重复，否决并未导入。Unity精确分区/按Alpha裁切、比例归一化到PPU256、关节Pivot；不拉伸图形掩盖大小问题。
+- TalulahRevisionTools.Apply真实执行；重复执行检查37个派生PNG/meta、卡牌/Art/战斗配置和主场景，SHA256相同，无重复对象、无覆盖玩法数值。两张CC0特效原PNG哈希与来源页记录在docs/art/source-records/talulah-v2-resources.json。
+- EditMode：61/61、0跳过。新增支撑阶段脚部后移与距离匹配、摆腿离地、周期/接触衔接连续检查；原60模型/配置用例保留。
+- GPU PlayMode：16/16、0跳过。实际塔露拉脚部36帧采样有超过20个中间姿态、位移等于原速度×模拟时间；普攻蓄势/挥击/收势武器角度连续。原技能交互用例增加13部件/手部火焰与全场火流暂停位置/旋转/帧一致性；原维维美与遮挡回归保持。
+- Windows独立构建：290353067字节、0错误、退出0。运行本地Player验证，不制作ZIP；最终源码提交在Git日志中。
+- Player：-talulahSmokeTest 13项、-combatSmokeTest 13项、-interactionSmokeTest 8项全部True、退出0。实际输入适配器/模型回归，非人工键鼠通关。
+- -talulahMotionEvidence真实Player捕获36张行走、33张攻击、12张火雨相机图，cast=True/退出0。只由捕获帧编码GIF/MP4，不插造动作帧；行走截取稳定后约一周期。角色预览为诊断放大跟随相机，火雨为原地图相机，均不包含IMGUI HUD，不冒充整屏截图。
+
+已核图：[步态](art/previews/talulah-walk-v2.gif)、[攻击](art/previews/talulah-attack-v2.gif)、[全图火流](art/previews/talulah-fire-rain-v2-camera.png)。原始结果：artifacts/talulah-revision-edit.xml、talulah-revision-play.xml、talulah-revision-build.log、revised-talulahSmokeTest.log、revised-combatSmokeTest.log、revised-interactionSmokeTest.log、talulah-motion.log。首次录像发现蓄势末端跳回中立，修复连续插值并增加实际武器转角断言后复测；初版火流太小，补足尺寸、辉光、残焰和暖光后重新录制。
+
+未测/限制：完整人工键鼠通关、第二机离线、低配和长时性能、所有路线方向的动作自然度待用户评价。当前为固定前侧视造型的程序化分层动画，不含转身、多方向立绘、脚踝/脚趾独立骨骼或复杂布料。火流含48条装饰流与18处残焰，不按装饰数量追加伤害。旧ZIP保持85789690字节、最后修改2026-10-20 20:47:26；本轮不声称旧ZIP已更新，不更新Releases。
+
+
 ## 2026-10-20：塔露拉火雨可玩样板
 
 交付复核：源码提交6028b339235cd0256c68fa881c3499330db8cef8，PR #4已创建、repository-checks工作流39424822689成功；未合并main。该干净源码重新构建，仍为290538195字节/0错误。原目录Builds/TalulahTrial-6028b33.zip（85789690字节）完整解压并核验264个文件SHA256；从解压目录Game真实启动，塔露拉13项、维维美13项交战/8项交互全部True、三次退出0，日志artifacts/下分别为zip-talulahSmokeTest.log、zip-combatSmokeTest.log、zip-interactionSmokeTest.log。后续本条交付说明为纯文档更新，不改变包对应源码6028b33。

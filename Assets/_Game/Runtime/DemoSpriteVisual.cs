@@ -10,7 +10,8 @@ namespace YesterdayConvoy
         private ManualBattle manualBattle;
         private DeployedUnitState deployedUnit;
         private CardDefinition frameCard;
-        public bool UsesFrameAnimation => frameCard!=null && frameCard.HasFrameAnimation;
+        public TalulahRig Rig { get; private set; }
+        public bool UsesFrameAnimation => Rig==null && frameCard!=null && frameCard.HasFrameAnimation;
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
@@ -29,6 +30,8 @@ namespace YesterdayConvoy
             if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Comic frame configuration is required.");
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
             sprite.sprite=frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
+            if(frames.ArticulatedArt!=null)
+            { Rig=gameObject.AddComponent<TalulahRig>(); Rig.Bind(frames.ArticulatedArt,sprite.sharedMaterial); }
         }
 
         private void LateUpdate()
@@ -42,6 +45,13 @@ namespace YesterdayConvoy
         private void PresentFrames(Color tint)
         {
             if(!FaceCamera()) return;
+            if(Rig!=null)
+            {
+                sprite.enabled=false; transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+                FrameState=manualBattle.IsSkillActionPlaying(deployedUnit) ? "Skill" : deployedUnit.IsMoving ? "Walk" : deployedUnit.HasCombatTarget ? "Attack" : "Idle";
+                Rig.Present(manualBattle,deployedUnit,tint,GetSortingOrder(Camera.main,transform.parent.position));
+                return;
+            }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
             transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
             if(manualBattle.IsPaused) return;

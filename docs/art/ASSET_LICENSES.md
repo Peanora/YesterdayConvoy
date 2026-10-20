@@ -1,5 +1,10 @@
 # 授权与分发记录
 
+## 2026-10-20 塔露拉V2与Soluna Software特效
+
+V2卡面/部件由内置image_gen生成，为第三方角色同人原型，非CC0；三段用户视频仅作动作参考、不导入原贴图。实际采用[Soluna Software / Lots of game effects](https://opengameart.org/content/lots-of-game-effects)的Fire01.png和ToonExplosion31.png，具体原始页面明确CC0及无需署名；仍保留作者。原PNG未改，仅Unity切图，许可依据/哈希见source-records/talulah-v2-resources.json。[详细记录](TALULAH-VIDEO-REVISION-2026-10-20.md)。
+
+
 ## 2026-10-20 塔露拉 AI 同人原型
 
 两张PNG由OpenAI内置image_gen真实生成，沿用项目漫画风格；未下载商业游戏原贴图。塔露拉为《明日方舟》角色，非CC0，工具输出条件不替代第三方角色权利。来源、提示约束、路径与实际用途见 [生成记录](GENERATION-TALULAH-2026-10-20.md)。

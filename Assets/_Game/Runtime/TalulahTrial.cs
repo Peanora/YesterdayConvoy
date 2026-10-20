@@ -37,21 +37,44 @@ namespace YesterdayConvoy
             }
         }
 
-        private IEnumerator TalulahFrame(string directory,string name)
+        private IEnumerator TalulahFrame(string directory,string name,bool zoom=false)
         {
             yield return null; yield return null;
             Directory.CreateDirectory(directory);
             Camera camera=Camera.main; var oldTarget=camera.targetTexture; var oldActive=RenderTexture.active;
-            var target=new RenderTexture(1280,720,24,RenderTextureFormat.ARGB32);
-            var image=new Texture2D(1280,720,TextureFormat.RGBA32,false);
+            Vector3 oldPosition=camera.transform.position; float oldAspect=camera.aspect;
+            int width=zoom ? 512 : 1280,height=zoom ? 512 : 720;
+            var target=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            var image=new Texture2D(width,height,TextureFormat.RGBA32,false);
             try
             {
+                if(zoom)
+                {
+                    camera.transform.position=Battle.Units[0].Motion.Position+camera.transform.up*.91f-camera.transform.forward*5;
+                    camera.aspect=1;
+                }
                 camera.targetTexture=target; camera.Render(); RenderTexture.active=target;
-                image.ReadPixels(new Rect(0,0,1280,720),0,0); image.Apply();
+                image.ReadPixels(new Rect(0,0,width,height),0,0); image.Apply();
                 File.WriteAllBytes(Path.Combine(directory,name+"-camera.png"),image.EncodeToPNG());
             }
             finally
-            { camera.targetTexture=oldTarget; RenderTexture.active=oldActive; target.Release(); Destroy(target); Destroy(image); }
+            { camera.targetTexture=oldTarget; camera.transform.position=oldPosition; camera.aspect=oldAspect;
+              RenderTexture.active=oldActive; target.Release(); Destroy(target); Destroy(image); }
+        }
+
+        private IEnumerator VerifyTalulahMotion(string directory)
+        {
+            if(directory==null) throw new InvalidOperationException("Motion evidence needs an output directory.");
+            Time.timeScale=0; SwitchTrial(true); SelectCard(true); TryDeployAt(Battle.Entry);
+            for(int i=0;i<36;i++) { Tick(1f/30); yield return TalulahFrame(directory,"walk-"+i.ToString("00"),true); }
+            var unit=Battle.Units[0];
+            for(int i=0;i<300 && double.IsInfinity(unit.LastAttackTime);i++) { Tick(.05f); yield return null; }
+            for(int i=0;i<33;i++) { Tick(1f/30); yield return TalulahFrame(directory,"attack-"+i.ToString("00"),true); }
+            for(int i=0;i<200 && !Battle.IsSkillReady(unit.EntityId);i++) { Tick(.05f); yield return null; }
+            SelectSkillUnit(unit.EntityId); bool cast=ActivateSelectedSkill()==SkillFailure.None;
+            for(int i=0;i<12;i++) { Tick(.15f); yield return TalulahFrame(directory,"rain-"+i.ToString("00")); }
+            Debug.Log("TALULAH_MOTION_EVIDENCE: walk36; attack33; rain12; cast="+cast+"; camera-only, zoom for character, normal map camera for rain.");
+            Time.timeScale=1; Application.Quit(cast ? 0 : 1);
         }
 
         private IEnumerator VerifyTalulah(string directory)

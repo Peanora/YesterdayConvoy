@@ -51,6 +51,9 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
+            if(Array.IndexOf(args,"-talulahMotionEvidence")>=0)
+            { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+              StartCoroutine(VerifyTalulahMotion(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
             if(Array.IndexOf(args,"-talulahSmokeTest")>=0)
             { diagnostic=true; Application.runInBackground=true;
               int evidence=Array.IndexOf(args,"-demoEvidenceDir");
