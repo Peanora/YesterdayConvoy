@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-20：首批怪物与羁绊设计提案
+
+ROSTER-v0.1为设计文档，不是可运行功能。核对现有规则：9张/3合1、同名限编队一张、战前固定/仅最高档、多标签、Gold与DP分离、无自然DP/倒计时、现行停步索敌不变；维维美仍只在试验关。首批3只1费、2只2费、1只3费，概率表4级才解锁2/3费，已注明开局辅助单卡与极小牌库风险；未擅改商店概率或赠卡池。护盾/治疗/友方回SP等为新增建议，并未实现。未运行Unity编译、EditMode/PlayMode、构建或战斗平衡模拟；不生成新试玩包。
+
 ## 2026-10-20：多人协作配置
 
 GitHub REST核实仓库只有Peanora管理员、main原无保护；向shigaharuki17/1164571767发送push（写入）权限邀请，邀请ID338658702/338658707，未把邀请当成已接受。Unity当前m_SerializationMode=2、m_Mode=Visible Meta Files，无需改场景或ProjectSettings。新增功能分支/PR协作说明与模板、CODEOWNERS及无Unity许可依赖的repository-checks。
