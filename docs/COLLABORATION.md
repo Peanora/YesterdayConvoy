@@ -2,6 +2,8 @@
 
 适用当前仓库：https://github.com/Peanora/YesterdayConvoy 。这是一起开发Unity源工程，游戏仍为离线单机，不是增加联机玩法。
 
+2026-10-20：三名开发者分别使用 Codex。日常 Git / PR 和冲突处理的统一流程见根目录 [CONTRIBUTING.md](../CONTRIBUTING.md)，本指南保留成员、环境、文件责任、检查范围与发布分工，避免维护两套操作步骤。
+
 ## 1. 成员与权限
 
 | 成员 | GitHub | 工作方式 |
@@ -19,29 +21,13 @@
 3. 安装Unity Hub和精确版本 **6000.6.5f1**，加装Windows Build Support（需要打包的人安装）；不要因Hub提示更新而升级项目。
 4. Unity Hub → Add/Open project from disk，选择克隆后同时含Assets、Packages、ProjectSettings的根目录。首次导入需要等待，Library由本机生成。
 5. 在Unity打开`Assets/_Game/Scenes/InitialDemo.unity`，或用Yesterday Convoy → Initial Demo → Open Current Scene；点Play验证。Game视图选Full HD并关闭Low Resolution Aspect Ratios。
-6. 先看`docs/STATUS.md`当前状态、`docs/GDD.md`相关规则、本指南。AGENTS.md只保存在主导者本机，克隆后没有此文件是正常的；协作不能依赖收到它。
+6. 先看`docs/STATUS.md`当前状态、`docs/GDD.md`相关规则、本指南及[CONTRIBUTING](../CONTRIBUTING.md)。AGENTS.md不随仓库分发，克隆后缺失是正常的；每人使用Codex前按CONTRIBUTING第1节创建本地引导，已有完整指令时合并，共享流程不依赖主导者私有文件。
 
 只试玩的人无需安装Unity，到仓库[Releases](https://github.com/Peanora/YesterdayConvoy/releases)下载Windows附件，完整解压后运行Game/YesterdayConvoy.exe。GitHub的Source code不是可玩包。
 
 ## 3. 每次开发照这个顺序
 
-### 开工
-
-1. 在GitHub的Issues → New issue → 开发任务，写一个验收目标、负责人和将修改的文件；由主导者确认规则与范围，再认领。
-2. Unity保存并关闭后，在Desktop切到main，Fetch origin → Pull origin。没有Pull按钮通常表示已同步。
-3. 从最新main创建自己的分支，例如`feat/huo/skill-icon`、`feat/song/deployment-feedback`。每人每个任务一个分支；主导者的Codex分支使用`codex/`前缀。
-4. 打开Unity再工作。不要两个人在同一分支开发，也不要带着未提交改动切分支/拉取；Desktop提示时先停下，提交当前任务或找负责人处理，不选丢弃。
-
-### 交付
-
-1. 先在Unity完成任务验收；记录实际运行过什么、没测什么。保存并关闭Unity。
-2. Desktop → Changes逐项检查差异。场景、Prefab、资源与必要.meta一起提交；不要提交Library、Temp、Logs、Builds、个人账号文件、AGENTS.md。资源改名/移动在Unity里做，保留原.meta，不重新生成GUID。
-3. 写具体提交说明，例如“技能就绪时显示角色头顶标志”，Commit到自己的分支，再Push origin/Publish branch。
-4. Create Pull Request → 目标main，按PR模板填写目标、文件范围、操作验收、关键连接和风险。关联任务Issue。
-5. 等GitHub的`repository-checks`变绿，再由Peanora查看差异、在本机切到该分支运行Unity/相关测试，验证通过后批准并用 **Squash and merge** 合入main。成员自己不能批准自己的PR。
-6. 合并后，大家保存并关闭Unity，回main → Fetch/Pull；再从新main开下个分支。不要继续向已合并的旧分支提交。
-
-检查不通过时先看Actions/PR里第一条ERROR；修复后在同一分支继续Commit/Push即可更新原PR，不要反复开新PR。
+按[CONTRIBUTING第1—4节](../CONTRIBUTING.md)执行：认领与确认范围 → Agent自动检查工作区、同步最新main并创建独立功能分支 → 开发和验证 → Agent自动提交自己的任务文件、推送并创建PR → 人工审查与合并。新功能的提交 / 推送 / PR已有用户持续授权；发现既存未提交修改或冲突必须先报告，不得覆盖。Agent不得自动合并main。
 
 ## 4. 场景和Prefab怎样分工
 
@@ -59,14 +45,11 @@ Git不能让同一Unity场景安全地随意同时编辑。CODEOWNERS只是审�
 
 ## 5. 冲突处理
 
-- 遇到`.unity/.prefab/.asset/.meta`冲突先暂停合并，把双方改动交给该文件负责人处理；不要随意点Accept All，也不要删除.meta来消除冲突。
-- 普通代码冲突可共同核对保留哪部分，去掉冲突标记后重新编译和测试；不懂就把第一条错误和文件路径交给负责人。
-- 更新期间关闭Unity，避免编辑器把磁盘新内容覆盖回旧内容。不要同时升级Unity或Packages，不强推main。
-- 失败恢复使用Git提交或撤销PR；不要复制整套旧Assets覆盖当前工程。没有确认前不使用`reset --hard`或`clean -fd`。
+统一按[CONTRIBUTING第5节](../CONTRIBUTING.md)处理，保留双方有效修改；Unity共享资源交唯一写入者协调，解决后重新验证。不要擅自选一方整文件覆盖。
 
 ## 6. main保护和检查范围
 
-协作配置目标：普通成员通过PR合入；1个审批且由CODEOWNERS指定的Peanora审查、讨论已解决、`repository-checks`通过并基于最新main；禁止强推/删除main，使用线性提交历史。main管理员保留应急绕过，以免现阶段主导者自己提交时无人能审查而锁死；这不是普通成员绕过检查的入口。主导者自己的提交仍应检查通过并完成本机验证。
+协作配置目标：普通成员通过PR合入；1个审批且由CODEOWNERS指定的Peanora审查、讨论已解决、`repository-checks`通过并基于最新main；禁止强推/删除main，使用线性提交历史。main管理员保留人工应急能力，Agent不得使用该能力绕过保护或自动合并；人工应急由负责人决定并记录原因和验证。主导者自己的提交仍应检查通过并完成本机验证。
 
 自动检查只读Git跟踪文件，检查缺失/孤立.meta、重复GUID、大小写路径冲突、未解决合并标记、误交缓存/本地AGENTS.md、精确Unity版本、Force Text/Visible Meta Files以及包JSON。入口`python tools/check_repository.py`；GitHub Actions自带Python执行，无需Unity许可或上传账号密钥。它不检查游戏逻辑正确性，不代替Unity编译、EditMode/PlayMode和实机试玩。
 
