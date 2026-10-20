@@ -1,0 +1,23 @@
+name: 开发任务
+description: 分配一个可验收的小功能，先约定修改范围。
+title: "[任务] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 玩家可见目标与验收步骤
+      description: 写清一个目标、操作步骤和预期结果。
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: 负责人、分支与文件范围
+      description: 尤其列明场景、Prefab、配置资产；先约定再开始，不把认领当作自动锁定。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 验证与交接（完成后补充）
+      description: 运行版本、实际测试、截图/录像、风险和PR链接。

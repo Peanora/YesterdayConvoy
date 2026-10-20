@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：三人协作准备（2026-10-20）
+
+已向霍利屹shigaharuki17、宋方壹1164571767发送GitHub写入权限邀请，接受前不能记为已加入。新增[协作指南](COLLABORATION.md)、CODEOWNERS/PR与任务/问题模板及repository-checks工作流，沿用现有Force Text/Visible Meta Files、Unity6000.6.5f1；不改玩法或Unity资源。每人功能分支，经PR由Peanora集成；同一场景/Prefab唯一写入者。自动检查仅为Git/Unity元数据静态检查，不编译Unity。当前本地检查通过，缺.meta/重复GUID负例能被拒绝；远端检查和main保护启用结果见QA。试玩版仍用demo-2026-10-20，本轮不重复构建相同二进制。
+
 ## 当前：后续开发同步试玩包（2026-10-20）
 
 用户已持续授权：完成可运行开发且验证通过后，同步源码与完整Windows ZIP到既有GitHub仓库，试玩包放Releases附件，无需每轮重复询问。保留现有可见性；实际GitHub API核实Peanora/YesterdayConvoy当前为公开仓库，不将其误报私有。AGENTS.md本地保留，从当前Git索引移除并加入.gitignore；不删除或改写历史。[demo-2026-10-20试玩版](https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20)已上传完整Windows ZIP，约80MiB，非草稿预发布；README已加入下载入口，实际验证范围见QA。以下为历史记录。

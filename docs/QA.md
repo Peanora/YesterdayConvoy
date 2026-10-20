@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-10-20：多人协作配置
+
+GitHub REST核实仓库只有Peanora管理员、main原无保护；向shigaharuki17/1164571767发送push（写入）权限邀请，邀请ID338658702/338658707，未把邀请当成已接受。Unity当前m_SerializationMode=2、m_Mode=Visible Meta Files，无需改场景或ProjectSettings。新增功能分支/PR协作说明与模板、CODEOWNERS及无Unity许可依赖的repository-checks。
+
+本地检查当前Git跟踪源文件通过；临时目录负例验证缺失.meta和重复GUID会报错，未修改实际Assets。git diff --check通过。未运行Unity编译/EditMode/PlayMode/Windows构建（仅文档、GitHub配置与静态检查脚本，不改游戏代码/资源），未做成员第二机克隆/导入，原试玩包不重发。远端Actions与分支保护实际结果在配置完成后补记。
+
 ## 2026-10-20：试玩版发布与交付规则
 
 用户授权今后开发默认同步源码/已验证Windows试玩包。已推送1285e55，AGENTS.md从当前Git索引移除并在.gitignore忽略，本地文件仍存在；未重写历史。GitHub REST实际返回仓库private=false，保持原公开状态，未调用可见性设置接口。创建demo-2026-10-20预发布：上传成功并验证本地SHA256与GitHub返回digest/字节数一致后取消draft，发布地址https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20。

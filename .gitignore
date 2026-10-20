@@ -10,6 +10,7 @@
 /.vsconfig
 /.idea/
 /AGENTS.md
+/UpgradeLog.htm
 *.csproj
 *.sln
 *.slnx
