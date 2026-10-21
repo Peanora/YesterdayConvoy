@@ -24,3 +24,9 @@ __pycache__/
 *.opendb
 *.VC.db
 /昨日圆车-开发准备包-v0.1/
+
+# Approved local original-character media; not for public redistribution.
+/Assets/StreamingAssets/ArcherOriginal/
+/Assets/StreamingAssets/ArcherOriginal.meta
+/Assets/StreamingAssets/ApprovedMonsterArt/
+/Assets/StreamingAssets/ApprovedMonsterArt.meta
