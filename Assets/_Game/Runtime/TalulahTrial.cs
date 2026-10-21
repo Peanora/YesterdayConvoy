@@ -10,14 +10,18 @@ namespace YesterdayConvoy
         [SerializeField] private ManualBattleDefinition talulahDefinition;
         private ManualBattleDefinition wisadelDefinition;
         public bool TalulahActive => definition==talulahDefinition && talulahDefinition!=null;
-        public string SkillName => TalulahActive ? "焚天火雨" : "爆裂黎明";
+        public string SkillName => TalulahActive ? "焚天火雨" : definition==wisadelDefinition ? "爆裂黎明" : "主动技能";
 
         public void SwitchTrial(bool talulah)
         {
             var next=talulah ? talulahDefinition : wisadelDefinition;
             if(next==null) throw new InvalidOperationException("Trial configuration is missing.");
+            SwitchTestDefinition(next);
+        }
+        private void SwitchTestDefinition(ManualBattleDefinition next)
+        {
             ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null;
-            definition=next; SimulationSpeed=1;
+            definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
             Battle=CreateBattle(); ValidateConfiguration();
             cardView.SetCard(definition.Card); preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card);
             EnableCombatView(); UpdatePreview();
@@ -26,10 +30,7 @@ namespace YesterdayConvoy
 
         private void DrawTrialSelector()
         {
-            if(talulahDefinition==null) return;
-            // Switching discards the current trial, never carries SP, damage or deployment state.
-            if(GUI.Button(new Rect(24,579,246,42),TalulahActive ? "切换：维维美原试玩" : "切换：塔露拉火雨试验",buttonStyle))
-                SwitchTrial(!TalulahActive);
+            if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
             if(TalulahActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"焚天火雨 · 满技力后点击角色 → 技能图标",smallStyle);

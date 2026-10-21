@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-21：启动选择单怪测试
+
+- 用户明确确认控制器/输入/切换接口和新增选择页/测试范围，授权作为PR #4续作。只改相关运行时、测试与文档，不改主场景、Prefab、玩法配置、包或原目录既存修改；不制作ZIP。
+- Unity6000.6.5f1：61/61 EditMode、21/21 GPU PlayMode，0跳过，进程均0。artifacts/monster-menu-edit.xml / monster-menu-play.xml。新增3项覆盖正常启动拦截输入/空跑、39个待制作/未知ID拒绝、两个样板进入、施法与拖动返回清理、结算完整按下/松开、跨怪物重新进入。原图层、交战、暂停及火雨测试保留断言并显式选择所测样板。
+- Windows构建：BASELINE_BUILD_PASS 321558422字节，0错误，进程0，artifacts/monster-menu-build.log。
+- 独立Player：-monsterSelectionSmokeTest九项、-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项均全True，进程各0；artifacts/monster-menu-player/各flag.log。原版人物包实际加载，未回退。
+- 屏幕取证单独核对：隐藏D3D12的ScreenCapture失败、隐藏D3D11为黑图，均不计成功。缩小到实际窗口显示条件后，正常窗口D3D11及默认D3D12均获得1280×720真实完整截图；9项入口检查仍全True、退出0。已查看选择页/塔露拉战斗HUD，无文字截断或遮挡，左下返回入口可见。正常窗口证据保存在artifacts/monster-menu-player/visible-default及visible-d3d11，保留失败日志以区分。
+- 当前两个内置样板可玩，其余39个只展示待制作。新增Resources/MonsterTests配置注册使用现有校验，尚未制作第三只怪物来完成真实新配置接入验证；不能把入口开放等同于普通怪/无主动技能/完整多卡系统已支持。
+- 文档52个本地链接、39个待制作名称、暂存差异与仓库静态检查815个跟踪文件通过，新增脚本.meta齐全；静态检查不代替上述实际Unity/Player验证。
+- 未执行：完整真人鼠标键盘通关、第二台电脑、低配/长时性能与所有分辨率人工测试。本轮未重新生成美术；含原版角色的截图只留本地，不上传公共Git；ZIP未更新。
+
 ## 2026-10-21：已确认火雨预览的表现接入
 
 - 范围：FireRainView、视觉专用FireRainScreenEffect/两张shader、新增CC0碎焰图集及处理/导入工具、对应Play测试与原动作取证。保留人物和玩法；未改主场景、Prefab、配置、Packages、ProjectSettings或原目录六项既存修改。

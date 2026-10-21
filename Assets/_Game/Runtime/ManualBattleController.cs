@@ -43,6 +43,7 @@ namespace YesterdayConvoy
             string[] args = Environment.GetCommandLineArgs();
             diagnostic = Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
+            BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
             scene.Monster.gameObject.SetActive(false);
@@ -51,6 +52,11 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
+            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest");
+            TestSelectionOpen=!smoke;
+            if(Array.IndexOf(args,"-monsterSelectionSmokeTest")>=0)
+            { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+              StartCoroutine(VerifyMonsterSelection(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
             if(Array.IndexOf(args,"-talulahMotionEvidence")>=0)
             { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
               StartCoroutine(VerifyTalulahMotion(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
@@ -83,7 +89,7 @@ namespace YesterdayConvoy
 
         public void ValidateConfiguration()
         {
-            if(scene==null || definition==null || (definition!=talulahDefinition && definition.Card!=scene.Card) || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
+            if(scene==null || definition==null || !IsRegisteredTest(definition) || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
                 throw new InvalidOperationException("Current battle scene/configuration is incomplete.");
             _ = CreateBattle();
             if(talulahDefinition==null || !talulahDefinition.Card.HasFrameAnimation || !talulahDefinition.Engagement.FireRain || talulahDefinition.Engagement.ExtraDefenders.Count!=2)
@@ -93,15 +99,16 @@ namespace YesterdayConvoy
 
         public void SelectCard(bool selected)
         {
+            if(TestSelectionOpen) return;
             Selected=selected;
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
-            if(!Selected) { Feedback="请先点击底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
+            if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
             var result=Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
@@ -115,6 +122,7 @@ namespace YesterdayConvoy
         {
             notice=null;
             settlementPointerDown=false;
+            selectionReturnPointerDown=false;
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
             selectedEntityId=null; SimulationSpeed=1; CancelInteraction();
             Feedback="拖动底部角色卡至红门部署";
@@ -122,7 +130,7 @@ namespace YesterdayConvoy
 
         private void Update()
         {
-            if(Battle==null) return;
+            if(Battle==null || TestSelectionOpen) return;
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
             if(Dragging) ProcessPointerMove(Input.mousePosition);
             if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
@@ -132,6 +140,7 @@ namespace YesterdayConvoy
 
         public void Tick(float delta)
         {
+            if(TestSelectionOpen) return;
             Battle.Advance(delta*EffectiveSimulationSpeed);
             SyncViews();
             UpdatePreview();
@@ -187,6 +196,7 @@ namespace YesterdayConvoy
         public void SelectSkillUnit(string id) { if(Battle.FindUnit(id)?.Active==true) selectedEntityId=id; }
         public SkillFailure ActivateSelectedSkill()
         {
+            if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
             Feedback=result==SkillFailure.None ? (Battle.CombatSettings.FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
@@ -235,6 +245,13 @@ namespace YesterdayConvoy
         private void OnGUI()
         {
             if(Battle==null) return;
+            if(TestSelectionOpen)
+            {
+                EnsureStyles(); Matrix4x4 previousMatrix=GUI.matrix; Color previousBackground=GUI.backgroundColor;
+                GUI.matrix=Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));
+                GUI.backgroundColor=new Color(.55f,.81f,.89f); DrawMonsterTestSelection();
+                GUI.matrix=previousMatrix; GUI.backgroundColor=previousBackground; return;
+            }
             // IMGUI keeps queued pointer edges, even when a quick down/up occurs between simulation frames.
             var pointerEvent=Event.current;
             if((Battle.EngagementEnabled || SettlementVisible) && ProcessPointerEvent(pointerEvent.type,pointerEvent.mousePosition,pointerEvent.button)) pointerEvent.Use();
@@ -321,7 +338,7 @@ namespace YesterdayConvoy
             bool won=Battle.Phase==BattlePhase.Won;
             Color accent=won ? new Color(.44f,.88f,.74f) : new Color(.98f,.43f,.35f);
             Fill(new Rect(0,0,1280,720),new Color(.015f,.025f,.035f,.80f));
-            Fill(new Rect(330,174,620,372),new Color(.045f,.075f,.095f,.99f));
+            Fill(new Rect(330,174,620,424),new Color(.045f,.075f,.095f,.99f));
             Fill(new Rect(330,174,620,4),accent);
             GUI.Label(new Rect(360,195,560,26),"作战结束",noticeStyle);
             Color old=GUI.color; GUI.color=accent;
@@ -337,6 +354,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(x,382,182,42),values[i],resultStyle);
             }
             if(GUI.Button(SettlementRestartRect,"重新开始",buttonStyle)) RestartBattle();
+            if(GUI.Button(SettlementReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
             GUI.Label(new Rect(360,514,560,25),"重置本场费用、角色、生命与技能状态",smallStyle);
         }
 

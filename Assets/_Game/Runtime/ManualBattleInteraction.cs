@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
-        public float EffectiveSimulationSpeed => Battle==null || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
+        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
         private static Vector2 GUIPosition(Vector2 screen) => new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
@@ -29,16 +29,19 @@ namespace YesterdayConvoy
 
         public bool ProcessPointerEvent(EventType type, Vector2 guiPosition, int button)
         {
+            if(TestSelectionOpen) return false;
             if(button!=0) return false;
             Vector2 screen=new Vector2(guiPosition.x,Screen.height-guiPosition.y);
             if(SettlementVisible)
             {
-                if(type==EventType.MouseDown) { settlementPointerDown=SettlementRestartRect.Contains(GUIPosition(screen)); return true; }
+                if(type==EventType.MouseDown)
+                { settlementPointerDown=SettlementRestartRect.Contains(GUIPosition(screen)); selectionReturnPointerDown=SettlementReturnRect.Contains(GUIPosition(screen)); return true; }
                 if(type==EventType.MouseUp)
                 {
                     bool restart=settlementPointerDown && SettlementRestartRect.Contains(GUIPosition(screen));
-                    settlementPointerDown=false;
-                    if(restart) RestartBattle();
+                    bool returnToMenu=selectionReturnPointerDown && SettlementReturnRect.Contains(GUIPosition(screen));
+                    settlementPointerDown=selectionReturnPointerDown=false;
+                    if(returnToMenu) ReturnToMonsterTests(); else if(restart) RestartBattle();
                     return true;
                 }
                 return type==EventType.MouseDrag;
@@ -56,6 +59,7 @@ namespace YesterdayConvoy
 
         public void ProcessPointerDown(Vector2 screen)
         {
+            if(TestSelectionOpen) return;
             pointerScreen=screen;
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) { CancelInteraction(); return; }
             if(RosterSlot.Contains(GUIPosition(screen)))
@@ -75,6 +79,7 @@ namespace YesterdayConvoy
 
         public DeploymentReceipt ProcessPointerUp(Vector2 screen)
         {
+            if(TestSelectionOpen) return new DeploymentReceipt(DeployFailure.NotStarted);
             pointerScreen=screen;
             if(!Dragging) return new DeploymentReceipt(DeployFailure.NotStarted);
             Dragging=false;
@@ -134,6 +139,7 @@ namespace YesterdayConvoy
 
         public void OpenSkillMenu(string id)
         {
+            if(TestSelectionOpen) return;
             if(!Battle.EngagementEnabled || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
             Dragging=false; Selected=false; selectedEntityId=id; SkillMenuOpen=true;
             Feedback="选择角色技能；点击空白处取消"; UpdatePreview();
