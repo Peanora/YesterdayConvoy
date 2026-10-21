@@ -29,3 +29,7 @@
 | idle.mp4 | e9394a57f03884bc9ca14de23e094b25e6d11f46d64783960207c944b690791f |
 | walk.mp4 | 6e657a6fc1eb46bf661da70ea72accae32c3d6d900cdac358774375148557a4c |
 | attack.mp4 | 8349d6ce81a9ca6144bf4ce9c24c196d334816f92934a26557692d8a6a5459ae |
+
+## 后续用户确认与源码侧入口
+
+2026-10-22（Asia/Shanghai）当前用户看稿后回复“可以”，确认M10-Defender-v1卡面及待机、持盾行走、近战攻击。已加入Approved Monster Previews编辑器窗口和本地包安装器，120/72/60帧保持原速。本条覆盖待确认历史；未新增战斗逻辑、受击/死亡预览或主场景绑定。原作媒体继续仅本地且Git忽略；身份为精英。本地approval.json记录本次确认，不假定为干宸骅最终集成审批。
