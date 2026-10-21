@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Only the current comic frames; never modifies the logical unit.</summary>
+    /// <summary>Clock-driven battle frames; never modifies the logical unit.</summary>
     public sealed class DemoSpriteVisual : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer sprite;
@@ -11,6 +11,10 @@ namespace YesterdayConvoy
         private DeployedUnitState deployedUnit;
         private CardDefinition frameCard;
         private OriginalTalulahArt original;
+        private OriginalSlugArt slug;
+        private Func<double> presentationClock;
+        private bool slugWasMoving;
+        private double slugTransitionTime,slugWalkDistance;
         public TalulahRig Rig { get; private set; }
         public bool UsesFrameAnimation => Rig==null && frameCard!=null && frameCard.HasFrameAnimation;
         public string FrameState { get; private set; } = "Idle";
@@ -26,10 +30,12 @@ namespace YesterdayConvoy
             FrameState="Idle"; FrameIndex=0;
         }
 
-        public void Bind(ManualBattle battle,DeployedUnitState unit,CardDefinition frames)
+        public void Bind(ManualBattle battle,DeployedUnitState unit,CardDefinition frames,Func<double> presentationClock=null)
         {
-            if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Comic frame configuration is required.");
+            if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Battle animation configuration is required.");
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
+            this.presentationClock=presentationClock; slug=OriginalSlugArt.For(frames.CardId);
+            slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
             original=OriginalTalulahArt.For(frames);
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
@@ -56,6 +62,7 @@ namespace YesterdayConvoy
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
             transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+            if(slug!=null) { PresentSlug(); return; }
             if(manualBattle.IsPaused) return;
             if(original!=null) { PresentOriginal(); return; }
             double age=manualBattle.Clock-deployedUnit.LastAttackTime;
@@ -89,6 +96,40 @@ namespace YesterdayConvoy
             double duration=skill ? manualBattle.CombatSettings.SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
+        }
+
+        private void PresentSlug()
+        {
+            string clip; double time;
+            if(deployedUnit.Resolution==UnitResolution.Dead)
+            {
+                FrameState="Death"; clip="death";
+                time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime;
+                sprite.color=Color.white;
+            }
+            else
+            {
+                bool moving=deployedUnit.IsMoving;
+                if(moving!=slugWasMoving)
+                { slugWasMoving=moving; slugTransitionTime=manualBattle.Clock; slugWalkDistance=deployedUnit.Motion.DistanceTravelled; }
+                double elapsed=manualBattle.Clock-slugTransitionTime;
+                double attackAge=manualBattle.Clock-deployedUnit.LastAttackTime;
+                if(!moving && deployedUnit.HasCombatTarget && attackAge>=0 && attackAge<slug["attack"].Duration)
+                { FrameState="Attack"; clip="attack"; time=attackAge; }
+                else if(moving)
+                {
+                    double travel=(deployedUnit.Motion.DistanceTravelled-slugWalkDistance)/slug.ReferenceSpeed;
+                    if(travel<slug["start"].Duration) { FrameState="Start"; clip="start"; time=travel; }
+                    else { FrameState="Walk"; clip="walk"; time=travel-slug["start"].Duration; }
+                }
+                else if(elapsed<slug["stop"].Duration && !deployedUnit.HasCombatTarget)
+                { FrameState="Stop"; clip="stop"; time=elapsed; }
+                else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; }
+                // Presentation-only hit recoil, never modify the route/root/collider.
+                float recoil=Mathf.Clamp01((float)(1-(manualBattle.Clock-deployedUnit.LastHitTime)/.2));
+                transform.localPosition=transform.parent.InverseTransformVector(Camera.main.transform.right*(-.035f*recoil));
+            }
+            sprite.sprite=slug[clip].At(time,clip=="walk" || clip=="idle",out int index);FrameIndex=index;
         }
 
         private void PresentOriginal()

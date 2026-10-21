@@ -120,6 +120,7 @@ namespace YesterdayConvoy
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
+            if(!shot.FromDefender && b.CombatSettings.Melee) { PresentMelee(view,shot,b,cam); return; }
             if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
             if(!shot.FromDefender && owner.Definition.Card.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
             double time = b.Clock;
@@ -178,6 +179,18 @@ namespace YesterdayConvoy
                 view.Rays.SetPosition(i * 2 + 1, end + axis * radius * 1.3f);
             }
             view.Rays.startColor = view.Rays.endColor = color;
+        }
+
+        private void PresentMelee(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            v.Trail.enabled=v.Ink.enabled=v.Rays.enabled=false;
+            float age=(float)(b.Clock-shot.ImpactAt);
+            v.Impact.enabled=shot.Applied && age>=0 && age<.16f;
+            if(v.Impact.enabled)
+            {
+                v.Impact.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,shot.Destination)+50;
+                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,new Color(1,.76f,.28f,1-age/.16f),cam);
+            }
         }
 
         private void PresentFireRain(ShotView v,CombatShot shot,ManualBattle b,Camera cam)

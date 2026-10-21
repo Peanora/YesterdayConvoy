@@ -40,8 +40,9 @@ namespace YesterdayConvoy
             {
                 try
                 {
-                    _=data.Snapshot(); _=data.Engagement.Snapshot();
-                    if(!data.Card.HasFrameAnimation) throw new InvalidOperationException("Missing battle animation frames.");
+                    _=data.Snapshot(); var combat=data.Engagement.Snapshot();
+                    if(!data.Card.HasFrameAnimation || combat.HasSkill && (data.Card.SkillFrames?.Count ?? 0)==0)
+                        throw new InvalidOperationException("Missing required battle animation frames.");
                     if(!ids.Add(data.Card.CardId)) throw new InvalidOperationException("Duplicate test card ID.");
                     monsterTests.Add(new MonsterTestOption(data.Card.DisplayName,data));
                 }
@@ -92,21 +93,22 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(56,126,680,42),"每次只测试一种怪物。重新进入时，战斗状态完整重置。",menuBody);
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
-            playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/2f)*364));
+            int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
+            playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));
             int index=0;
             foreach(var option in monsterTests)
             {
                 if(!option.Playable) continue;
-                float x=index%2*332,y=index/2*364;
-                Fill(new Rect(x,y,316,344),new Color(.065f,.10f,.13f));
-                Fill(new Rect(x,y,316,3),new Color(.38f,.82f,.86f));
-                Fill(new Rect(x+14,y+16,288,172),new Color(.035f,.06f,.08f));
+                float x=index%columns*(cardWidth+16),y=index/columns*364;
+                Fill(new Rect(x,y,cardWidth,344),new Color(.065f,.10f,.13f));
+                Fill(new Rect(x,y,cardWidth,3),new Color(.38f,.82f,.86f));
+                Fill(new Rect(x+14,y+16,cardWidth-28,172),new Color(.035f,.06f,.08f));
                 Sprite portrait=OriginalTalulahArt.CardPortrait(option.Definition.Card);
-                DrawTestPortrait(new Rect(x+23,y+20,270,164),portrait);
-                GUI.Label(new Rect(x+20,y+200,275,38),option.Name,menuHeading);
-                string detail=option.Definition==talulahDefinition ? "全图火雨 · 技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击 · 六发强化弹药" : "独立配置 · 单怪交战样板";
-                GUI.Label(new Rect(x+20,y+243,275,30),detail,menuSmall);
-                if(GUI.Button(new Rect(x+18,y+290,280,38),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
+                DrawTestPortrait(new Rect(x+23,y+20,cardWidth-46,164),portrait);
+                GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuHeading);
+                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : "独立配置\n单怪交战样板";
+                GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
+                if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
                 index++;
             }
             GUI.EndScrollView();
@@ -126,7 +128,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(310,i*34+3,80,26),"待制作",menuSmall); GUI.color=previous;
             }
             GUI.EndScrollView();
-            GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；满技力时点角色释放技能。可随时返回此页。",menuBody);
+            GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
         }
         private static void DrawTestPortrait(Rect bounds,Sprite sprite)
         {
@@ -143,7 +145,7 @@ namespace YesterdayConvoy
             yield return InteractionFrame(directory,"monster-selection");
             double clock=Battle.Clock; SelectCard(true); TryDeployAt(Battle.Entry); Tick(3);
             bool blocked=Battle.Units.Count==0 && Battle.Clock==clock && !Dragging;
-            bool pending=!TryEnterMonsterTest("pending/源石虫") && TestSelectionOpen;
+            bool pending=!TryEnterMonsterTest("pending/猎狗") && TestSelectionOpen;
             bool wisadel=TryEnterMonsterTest(wisadelDefinition.Card.CardId) && !TestSelectionOpen;
             SelectCard(true); bool deployed=TryDeployAt(Battle.Entry).Success;
             Tick(4.05f); OpenSkillMenu(Battle.Units[0].EntityId); ReturnToMonsterTests(); yield return null;

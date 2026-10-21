@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-10-21 源石虫单怪可玩测试
+
+- 授权与隔离：人类确认工程外V1美术，再明确确认Card/战斗/视图/输入/菜单接口及独立配置范围。从最新main70b9078（PR #4/#5已合入）创建codex/originium-slug-test；原目录codex/roster-draft六项既存修改不暂存、不覆盖。未修改主场景、Prefab、Packages、ProjectSettings。
+- 配置创建：OriginiumSlugTools.Prepare退出0；3个Unit定义校验通过，SLUG_CONFIGURATION_PASS local art=True。只新增本角色4份资产及Resources目录，保留原维维美/塔露拉参数。已批准的6图集+portrait+manifest共8文件通过安装脚本校验复制，原作媒体及.meta均Git忽略，未上传。
+- Unity6000.6.5f1 EditMode：64/64通过、0跳过，进程0，artifacts/slug-edit.xml / slug-edit.log。包含无技能零资源/禁止施放、正常近战穿门、无技能耗尽判负、配置拒绝与原场景/角色回归。
+- GPU PlayMode：25/25通过、0跳过，进程0，artifacts/slug-play.xml / slug-play.log。4项源石虫覆盖暂停拖动立即部署扣费、模拟/帧冻结、无技能面板与技力、实际近战帧、运行中死亡/暂停、最后死亡0.5秒尾段与判负/清理、三只连续部署胜利/穿门、逐只部署失败与重开。原21项技能/火雨/选择页/图层等仍通过。
+- 首轮Edit有1项测试错误地使用struct参数无参构造，取到C#零初始化而非可选参数构造；修正为显式参数，未改原有运行语义。首轮GPU有1项错误地要求多实体同一步只能有一次穿门；既有模型允许该步多个单位同时到达（各实体只结算一次），改验胜利/防御归零与现有幂等回归，不改路径/穿门规则。后续两套全绿。最后显示层仅调整选择卡排列/描述换行，独立Player复核。
+- Windows构建：artifacts/slug-build.log，BASELINE_BUILD_PASS、0错误、进程0；最终325342065字节。产物Builds/Windows/YesterdayConvoy.exe。无ZIP/Releases。
+- 独立Player：源石虫-slugSmokeTest十三项全部True、退出0；暂停部署、移动、技能拒绝、攻击/死亡清理、资源重开、三只通关、返回与旧角色切换均实际执行。正常可见D3D12窗口取得完整1280×720 HUD截图（选择、暂停、移动、攻击、死亡、集群、胜利），并查看比例/血条/图层/入口；三张卡并排、描述显式两行，无文字截断。artifacts/slug-player/visible-final，图片不上传公共Git。
+- 独立Player回归：combatSmokeTest十三项、talulahSmokeTest十三项、interactionSmokeTest八项、monsterSelectionSmokeTest九项全True、进程各0，日志artifacts/slug-player/<flag>.log。回归进程未请求截图，不将隐藏窗口画面当视觉证据。
+- 仓库静态检查839个跟踪文件通过，必要.meta/配置GUID引用与暂存差异检查；CSV保持21列；最终更改列表和源码绑定见Git提交/本地Builds/Windows/SOURCE.txt。代码、来源与配置进PR，原作文件/实机图片不进PR。
+- 限制：未执行完整真人鼠标键盘通关、第二机/无原作包真实克隆运行、低配/长时性能与全部分辨率。克洛丝仍为现有漫画资源；多只同位置可能重叠，未改队列/寻路或避让规则；原128×128贴图放大有限。未实现正式商店、升星、羁绊或混合多卡。数值由人类试玩继续调整。
+
 ## 2026-10-21：启动选择单怪测试
 
 - 用户明确确认控制器/输入/切换接口和新增选择页/测试范围，授权作为PR #4续作。只改相关运行时、测试与文档，不改主场景、Prefab、玩法配置、包或原目录既存修改；不制作ZIP。

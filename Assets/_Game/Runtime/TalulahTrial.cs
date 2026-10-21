@@ -31,7 +31,12 @@ namespace YesterdayConvoy
         private void DrawTrialSelector()
         {
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
-            if(TalulahActive)
+            if(SlugActive)
+            {
+                GUI.Label(new Rect(24,631,650,28),"源石虫 · 近战普通攻击 · 无主动技能",smallStyle);
+                GUI.Label(new Rect(24,659,650,26),"可部署3次 · 单次1 DP · 空格暂停 / 支持暂停部署",smallStyle);
+            }
+            else if(TalulahActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"焚天火雨 · 满技力后点击角色 → 技能图标",smallStyle);
                 GUI.Label(new Rect(24,659,650,26),"6秒 / 6波全图打击 · 施法原地不动 · 空格暂停",smallStyle);

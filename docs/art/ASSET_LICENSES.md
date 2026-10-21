@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-10-21 源石虫本地原作图集
+
+[PRTS源石虫模型页](https://prts.wiki/w/源石虫/spine)的enemy_1007_slime。原作贴图、角色和动作属于原权利人，非CC0，未确认开放再分发许可；用户确认本地预览/接入不等于授权公开再分发。源文件/派生PNG/卡面/实机图本地保存并Git忽略。Unity仅用PNG，不引入Spine运行时；项目外评估渲染器保留原README/LICENSE。[接入说明](ORIGINIUM-SLUG-INTEGRATION.md)、[文件哈希](source-records/originium-slug.json)。
+
 ## 2026-10-21 火雨碎焰
 
 [highwizard / Animated flame / Fire sprite Sheet](https://opengameart.org/content/animated-flame-fire-sprite-sheet)原页明确CC0及无需署名/可商业使用；下载25帧黑底PNG，按保持发光亮度的Alpha公式转换并排为640×640派生图集。可随本项目源码和游戏分发，仍保留作者和来源。[原文件/加工哈希](source-records/fire-rain-embers.json)、[接入记录](FIRE-RAIN-INTEGRATION-2026-10-21.md)。此许可只涵盖该火焰，不涵盖原作塔露拉和含其图像的预览；本轮没有上传后者。

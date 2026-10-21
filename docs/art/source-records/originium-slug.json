@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-21",
+  "name": "源石虫",
+  "cardId": "CARD_ORIGINIUM_SLUG",
+  "model": "enemy_1007_slime",
+  "sourcePage": "https://prts.wiki/w/源石虫/spine",
+  "approval": "User approved V1 preview then explicit shared-interface integration scope.",
+  "rights": "Original proprietary media, open redistribution permission unconfirmed; local-only, Git ignored.",
+  "sourceFiles": {
+    "enemy_1007_slime.skel": {
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1007_slime/enemy_1007_slime.skel",
+      "bytes": 16567,
+      "sha256": "c32483e6bd3bdb0ed36eccadf4e6d99f8d78dac424d797bc4202a88e67dcee92"
+    },
+    "enemy_1007_slime.atlas": {
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1007_slime/enemy_1007_slime.atlas",
+      "bytes": 552,
+      "sha256": "ba435931800962a167f09cb65d7e04a13f698c6c9f4966ea080698a0c37c9983"
+    },
+    "enemy_1007_slime.png": {
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1007_slime/enemy_1007_slime.png",
+      "bytes": 12510,
+      "sha256": "a2e0b32b6d239ce3f9a61642cd0797d17c90a70fc3f006c07739656b8638bb2a"
+    }
+  },
+  "packageFiles": {
+    "attack.png": {
+      "bytes": 553389,
+      "sha256": "62035372ba0d41483b29b6776475db1baedff6f952a1777934b6c49119cb9c94"
+    },
+    "death.png": {
+      "bytes": 307437,
+      "sha256": "3724b8baecac4efd2401d39c220c210e4cf0108b370b686f64f0790d948e3add"
+    },
+    "idle.png": {
+      "bytes": 1137127,
+      "sha256": "4c07fd084bf34ccdd22c9666228e4cc016296d702c747903e3074f80c0b06e62"
+    },
+    "manifest.json": {
+      "bytes": 2631,
+      "sha256": "e6e0c58e4506b59e52897334923d21d698b3cbab22c8180d510647f715444766"
+    },
+    "portrait.png": {
+      "bytes": 172111,
+      "sha256": "4e162456a1d1c3bd0ef932fa23068bb9c476272faf9262f84ba1a45140fae760"
+    },
+    "start.png": {
+      "bytes": 200969,
+      "sha256": "b5d2e64a859813a0e5211ad8f67f5336945d6a9ae81eb101d3e7049ec7e0a4c8"
+    },
+    "stop.png": {
+      "bytes": 198256,
+      "sha256": "fc5d71f409f0b33f55771103ad93dc0cd2c32dfc866acf195cf097d7d6885aaf"
+    },
+    "walk.png": {
+      "bytes": 1197967,
+      "sha256": "dab84f8809d4039884a7b08ebdb9bdc0860a8e6e74e1b88b782d6e1f64f9a383"
+    }
+  },
+  "frames": 380,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "duration": 2,
+      "fps": 60,
+      "count": 120
+    },
+    {
+      "key": "walk",
+      "source": "Move_Loop",
+      "duration": 2,
+      "fps": 60,
+      "count": 120
+    },
+    {
+      "key": "start",
+      "source": "Move_Begin",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31
+    },
+    {
+      "key": "stop",
+      "source": "Move_End",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "duration": 0.7666666507720947,
+      "fps": 60,
+      "count": 47
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31
+    }
+  ]
+}
