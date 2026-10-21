@@ -8,11 +8,11 @@ namespace YesterdayConvoy.Editor
     /// <summary>Editor-only review of approved local media. Does not register a card or simulate combat.</summary>
     public sealed class ApprovedMonsterArtPreview : EditorWindow
     {
-        private static readonly string[] Tasks = { "M02", "M03", "M04", "M05", "M06", "M07" };
-        private static readonly string[] Names = { "猎狗", "游击队猎犬", "高能源石虫", "酸液源石虫", "冰爆源石虫", "士兵" };
-        private static readonly string[][] ClipKeys = { new[] { "idle", "walk", "attack" }, new[] { "idle", "run", "attack" }, new[] { "idle", "move", "attack", "death" }, new[] { "idle", "move", "attack" }, new[] { "idle", "move", "attack", "death" }, new[] { "idle", "walk", "attack" } };
-        private static readonly string[][] ClipLabels = { new[] { "待机", "四足行走", "扑咬" }, new[] { "待机", "四足奔跑", "扑咬" }, new[] { "待机", "多足移动", "攻击", "死亡蓄爆" }, new[] { "待机", "蠕动", "喷吐" }, new[] { "待机", "多足移动", "攻击", "死亡蓄爆" }, new[] { "待机", "双足行走", "挥刀" } };
-        private static readonly int[][] Counts = { new[] { 60, 48, 60 }, new[] { 60, 32, 60 }, new[] { 60, 60, 150, 60 }, new[] { 120, 120, 80 }, new[] { 60, 60, 150, 60 }, new[] { 60, 60, 60 } };
+        private static readonly string[] Tasks = { "M02", "M03", "M04", "M05", "M06", "M07", "M09" };
+        private static readonly string[] Names = { "猎狗", "游击队猎犬", "高能源石虫", "酸液源石虫", "冰爆源石虫", "士兵", "术师" };
+        private static readonly string[][] ClipKeys = { new[] { "idle", "walk", "attack" }, new[] { "idle", "run", "attack" }, new[] { "idle", "move", "attack", "death" }, new[] { "idle", "move", "attack" }, new[] { "idle", "move", "attack", "death" }, new[] { "idle", "walk", "attack" }, new[] { "idle", "walk", "attack" } };
+        private static readonly string[][] ClipLabels = { new[] { "待机", "四足行走", "扑咬" }, new[] { "待机", "四足奔跑", "扑咬" }, new[] { "待机", "多足移动", "攻击", "死亡蓄爆" }, new[] { "待机", "蠕动", "喷吐" }, new[] { "待机", "多足移动", "攻击", "死亡蓄爆" }, new[] { "待机", "双足行走", "挥刀" }, new[] { "待机", "双足行走", "法术攻击" } };
+        private static readonly int[][] Counts = { new[] { 60, 48, 60 }, new[] { 60, 32, 60 }, new[] { 60, 60, 150, 60 }, new[] { 120, 120, 80 }, new[] { 60, 60, 150, 60 }, new[] { 60, 60, 60 }, new[] { 120, 60, 72 } };
         private int monster;
         private string[] Keys => ClipKeys[monster];
         private string[] Labels => ClipLabels[monster];
@@ -55,6 +55,7 @@ namespace YesterdayConvoy.Editor
                 frame = null; portrait = null; started = EditorApplication.timeSinceStartup;
             }
             GUILayout.Label(Tasks[monster] + " " + Names[monster] + " · 当前用户已确认V1", EditorStyles.boldLabel);
+            if (monster == 6) EditorGUILayout.HelpBox("仅法术攻击手势；弹道与命中特效尚未补齐。", MessageType.Warning);
             if (monster == 4) EditorGUILayout.HelpBox("完整冰爆特效、寒冷和冻结尚未接入。", MessageType.Warning);
             if (monster == 3) EditorGUILayout.HelpBox("仅喷吐动作；酸液弹道、命中特效与削甲尚未接入。", MessageType.Warning);
             if (monster == 2) EditorGUILayout.HelpBox("死亡仅含蓄爆动作；完整爆炸特效未补。", MessageType.Warning);
@@ -133,7 +134,7 @@ namespace YesterdayConvoy.Editor
                 DestroyImmediate(card);
                 if (!cardValid) throw new InvalidDataException("Expected 600x840 portrait.");
             }
-            Debug.Log("APPROVED_MONSTER_ART_VALIDATED: M02/M03/M04/M05/M06/M07; no gameplay registered.");
+            Debug.Log("APPROVED_MONSTER_ART_VALIDATED: M02/M03/M04/M05/M06/M07/M09; no gameplay registered.");
         }
     }
 }

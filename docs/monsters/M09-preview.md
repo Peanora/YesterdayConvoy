@@ -31,3 +31,7 @@
 | idle.mp4 | f3dddcd294d18c5e2f7d770e5a2249a22980ba10794da996cf9708b57924776d |
 | walk.mp4 | 46f8563426068f648ae6b14e5403a2ca0dac9aff56c8e3d411809e330156a7bc |
 | cast.mp4 | 894a6f343226714e437fcea346eb710314ce90ecb594326974ac6c10b88dd713 |
+
+## 后续用户确认与源码侧入口
+
+2026-10-22（Asia/Shanghai）当前用户看稿后回复“可以”，确认M09-Caster-v1卡面、待机/行走/法术攻击手势。已加入Approved Monster Previews编辑器窗口及本地包安装器，120/60/72帧保持2/1/1.2秒原速。原作媒体继续Git忽略。本条覆盖待确认历史；不代表法术弹道/命中特效、伤害逻辑或战斗卡牌已接入。确认记录保存在本地approval.json。
