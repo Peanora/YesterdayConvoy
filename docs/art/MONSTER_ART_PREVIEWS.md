@@ -1,10 +1,10 @@
 # 已确认怪物美术：源码侧预览与本地媒体
 
-负责人：霍利屹 / shigaharuki17。范围：M02、M03、M04、M05、M08的已确认美术预览。当前用户逐项看稿确认，并要求每完成一个先保存GitHub；不将当前用户身份假定为干宸骅，不虚构主导者审批或认领Issue。
+负责人：霍利屹 / shigaharuki17。范围：M02、M03、M04、M05、M06、M08的已确认美术预览。当前用户逐项看稿确认，并要求每完成一个先保存GitHub；不将当前用户身份假定为干宸骅，不虚构主导者审批或认领Issue。
 
 ## Unity查看入口
 
-- `Yesterday Convoy > Art > Approved Monster Previews`：切换M02猎狗、M03游击队猎犬、M04高能源石虫、M05酸液源石虫，播放/暂停/逐帧查看同一模型的卡面与动作。
+- `Yesterday Convoy > Art > Approved Monster Previews`：切换M02猎狗、M03游击队猎犬、M04高能源石虫、M05酸液源石虫、M06冰爆源石虫，播放/暂停/逐帧查看同一模型的卡面与动作。
 - `Yesterday Convoy > Art > M08 Archer Approved Preview`：已确认弩手的独立窗口，保留兼容。
 
 所有窗口仅属于Editor程序集，不注册可玩卡牌、不修改战斗Runtime、主场景、Prefab、配置、Packages或ProjectSettings。使用编辑器时间，不声称已接入战斗模拟时钟。普通怪无技能接口、稳定UnitId、独立战斗参数及战斗样板仍待协调；没有复制假技能帧通过校验。
@@ -17,18 +17,19 @@
 | M03 游击队猎犬 | enemy_1077_sotihd | 待机60/奔跑32/攻击60帧 | 用户确认V1；没有独立慢走源动作 |
 | M04 高能源石虫 | enemy_1021_bslime | 待机60/移动60/攻击150/死亡蓄爆60帧 | 用户同意写入V1；完整死亡爆炸特效未补 |
 | M05 酸液源石虫 | enemy_1004_mslime | 待机120/蠕动120/喷吐80帧 | 用户确认V1；酸液弹道、腐蚀命中特效和削甲未接入 |
+| M06 冰爆源石虫 | enemy_1067_snslime | 待机60/移动60/攻击150/死亡蓄爆60帧 | 用户认可当前V1；完整冰爆特效、寒冷、冻结未接入 |
 | M08 弩手 | enemy_1003_ncbow | 待机60/行走60/射击60帧 | 用户确认V1；没有战斗接入 |
 
-卡面复用同一战斗模型排版，不是独立绘制的高清立绘。动作维持原版时长，例如M04攻击2.5秒/M05待机2秒，不统一压成1秒。固定640×640透明画布；M02～M05根点(320,490)，M08根点(280,550)。源帧不逐帧重定位或变形。预计游戏尺寸未经Unity实机镜头校准。
+卡面复用同一战斗模型排版，不是独立绘制的高清立绘。动作维持原版时长，例如M04攻击2.5秒/M05待机2秒，不统一压成1秒。固定640×640透明画布；M02～M06根点(320,490)，M08根点(280,550)。源帧不逐帧重定位或变形。预计游戏尺寸未经Unity实机镜头校准。
 
 ## 本地媒体与公开源码
 
-本地PNG/manifest放在`Assets/StreamingAssets/ApprovedMonsterArt/M02`至`M05`和`Assets/StreamingAssets/ArcherOriginal`，均被.gitignore排除，包括父目录.meta。M02～M05共974张PNG（含4张600×840卡面）；M08另181张PNG。Unity缺包时显示安装提示，不联网下载原作素材。
+本地PNG/manifest放在`Assets/StreamingAssets/ApprovedMonsterArt/M02`至`M06`和`Assets/StreamingAssets/ArcherOriginal`，均被.gitignore排除，包括父目录.meta。M02～M06共1305张PNG（含5张600×840卡面）；M08另181张PNG。Unity缺包时显示安装提示，不联网下载原作素材。
 
 在具备合法可用资源且Unity关闭时，使用PowerShell 7：
 
 ```powershell
-./tools/install_approved_monster_art.ps1 -Source "本地Approved-M02-M05目录"
+./tools/install_approved_monster_art.ps1 -Source "本地Approved-M02-M06目录"
 ./tools/install_archer_original.ps1 -Source "本地M08 approved-package目录"
 ```
 

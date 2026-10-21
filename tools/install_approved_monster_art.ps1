@@ -6,9 +6,10 @@ $definitions = @{
     M03 = @{ idle=60; run=32; attack=60 }
     M04 = @{ idle=60; move=60; attack=150; death=60 }
     M05 = @{ idle=120; move=120; attack=80 }
+    M06 = @{ idle=60; move=60; attack=150; death=60 }
 }
 $copies = @()
-foreach ($taskName in @('M02','M03','M04','M05')) {
+foreach ($taskName in @('M02','M03','M04','M05','M06')) {
     $packageRoot = Join-Path $sourceRoot $taskName
     $manifest = Get-Content -LiteralPath (Join-Path $packageRoot 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($manifest.version -ne 1 -or $manifest.task -cne $taskName -or $manifest.fps -ne 60) { throw "Invalid package: $taskName" }
@@ -35,4 +36,4 @@ foreach ($copy in $copies) {
     New-Item -ItemType Directory -Path (Split-Path -Parent $outputFile) -Force | Out-Null
     Copy-Item -LiteralPath $copy.input -Destination $outputFile -Force
 }
-Write-Output 'M02/M03/M04/M05 local art installed. Unity: Yesterday Convoy > Art > Approved Monster Previews.'
+Write-Output 'M02/M03/M04/M05/M06 local art installed. Unity: Yesterday Convoy > Art > Approved Monster Previews.'
