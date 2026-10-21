@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-10-21 火雨碎焰
+
+[highwizard / Animated flame / Fire sprite Sheet](https://opengameart.org/content/animated-flame-fire-sprite-sheet)原页明确CC0及无需署名/可商业使用；下载25帧黑底PNG，按保持发光亮度的Alpha公式转换并排为640×640派生图集。可随本项目源码和游戏分发，仍保留作者和来源。[原文件/加工哈希](source-records/fire-rain-embers.json)、[接入记录](FIRE-RAIN-INTEGRATION-2026-10-21.md)。此许可只涵盖该火焰，不涵盖原作塔露拉和含其图像的预览；本轮没有上传后者。
+
 ## 2026-10-21 塔露拉原版数据的本地派生图集
 
 来源为PRTS公开的enemy_1515_bsnake原版模型；角色/贴图/动作属于原权利人，非CC0，未确认开放再分发许可。用户确认的是本地V4预览与接入；PNG图集、卡面、清单与实机图仅留本地，不随公共PR自动上传。离线评估渲染工具在项目外，Unity只使用导出的PNG，无Spine运行时或新包。[完整说明](TALULAH-ORIGINAL-INTEGRATION.md)。本轮不发布ZIP/Releases。

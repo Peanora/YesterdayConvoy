@@ -72,8 +72,8 @@ namespace YesterdayConvoy
             for(int i=0;i<33;i++) { Tick(1f/30); yield return TalulahFrame(directory,"attack-"+i.ToString("00"),true); }
             for(int i=0;i<200 && !Battle.IsSkillReady(unit.EntityId);i++) { Tick(.05f); yield return null; }
             SelectSkillUnit(unit.EntityId); bool cast=ActivateSelectedSkill()==SkillFailure.None;
-            for(int i=0;i<12;i++) { Tick(.15f); yield return TalulahFrame(directory,"rain-"+i.ToString("00")); }
-            Debug.Log("TALULAH_MOTION_EVIDENCE: walk36; attack33; rain12; cast="+cast+"; camera-only, zoom for character, normal map camera for rain.");
+            for(int i=0;i<180;i++) { Tick(1f/30); yield return TalulahFrame(directory,"rain-"+i.ToString("000")); }
+            Debug.Log("TALULAH_MOTION_EVIDENCE: walk36; attack33; rain180; cast="+cast+"; camera-only, zoom for character, normal map camera for rain.");
             Time.timeScale=1; Application.Quit(cast ? 0 : 1);
         }
 

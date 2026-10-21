@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+## 火雨碎焰（2026-10-21）
+
+highwizard，[Animated flame / Fire sprite Sheet](https://opengameart.org/content/animated-flame-fire-sprite-sheet)，CC0；25帧源图经黑底转Alpha并排版，用于火雨碎焰。主火焰继续使用下列Soluna Software CC0素材；震屏/色调/加色合成为项目代码，非原作完整特效提取。
+
 ## 塔露拉原版模型的本地预览/接入（2026-10-21）
 
 《明日方舟》角色塔露拉、原版贴图和动作：鹰角网络／原权利人。模型数据参考：[PRTS“不死的黑蛇”模型页](https://prts.wiki/w/“不死的黑蛇”/spine)。派生PNG图集仅存本地，不按CC0登记，不自动上传公共仓库；源码只保留播放和本地安装支持。

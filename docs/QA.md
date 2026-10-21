@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-21：已确认火雨预览的表现接入
+
+- 范围：FireRainView、视觉专用FireRainScreenEffect/两张shader、新增CC0碎焰图集及处理/导入工具、对应Play测试与原动作取证。保留人物和玩法；未改主场景、Prefab、配置、Packages、ProjectSettings或原目录六项既存修改。
+- 导入/编译：FireRainArtTools.Prepare实际退出0；640×640无损透明图集、25帧/Alpha归一、两shader资源检查通过，artifacts/fire-rain-import.log。
+- Unity6000.6.5f1：EditMode 61/61，GPU PlayMode 18/18，零跳过，两进程均0。artifacts/fire-rain-edit.xml / fire-rain-play.xml。新增检查包含实际GPU画面后处理差异、暂停全画面冻结、火浪向右/贴图帧变化、目标死后原地播完、自然结束/重开清除色调与偏移、切回维维美，相机Transform保持。
+- Windows构建：BASELINE_BUILD_PASS 321546090字节、0错误、进程0，artifacts/fire-rain-build.log。
+- 独立Player：-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项全True，各退出0；artifacts/fire-rain-player/各flag.log。原版人物加载日志TALULAH_ORIGINAL_LOADED，未回退。
+- -talulahMotionEvidence：walk36/attack33/rain180，cast=True、进程0；查看真实相机图中的大火浪、亮核/碎焰、场景色调及完整六秒帧序列。相机图不含IMGUI HUD，不能称为完整人工键鼠录屏；本轮未新增音频。
+- 仓库静态检查810个跟踪文件通过，新增资源/脚本.meta完整，CSV各行21列及暂存差异核对通过；不将此项代替上述Unity/GPU/Player验证。
+- 未执行：完整人工键鼠通关、第二台电脑离线、低配/长时性能与所有宽高比人工检查。源图分辨率有限，无真实体积火焰/热折射，非原作完整特效。原版媒体和含其图像的本地取证不上传公共Git；不更新ZIP/Releases。
+
 ## 2026-10-21：已确认V4原版塔露拉的本地接入
 
 - 用户先明确确认原版模型预览，再授权接入；只改角色显示、卡牌/拖动预览与对应测试，不改主场景、Prefab、玩法模型/配置、Packages、ProjectSettings或维维美。
