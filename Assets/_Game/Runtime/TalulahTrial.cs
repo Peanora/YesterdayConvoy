@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null;
             definition=next; SimulationSpeed=1;
             Battle=CreateBattle(); ValidateConfiguration();
-            cardView.SetCard(definition.Card); preview.sprite=definition.Card.BattleSprite;
+            cardView.SetCard(definition.Card); preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card);
             EnableCombatView(); UpdatePreview();
             Feedback="拖动底部角色卡至红门部署";
         }

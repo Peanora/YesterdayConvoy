@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+## 塔露拉原版模型的本地预览/接入（2026-10-21）
+
+《明日方舟》角色塔露拉、原版贴图和动作：鹰角网络／原权利人。模型数据参考：[PRTS“不死的黑蛇”模型页](https://prts.wiki/w/“不死的黑蛇”/spine)。派生PNG图集仅存本地，不按CC0登记，不自动上传公共仓库；源码只保留播放和本地安装支持。
+
 ## 2026-10-20 塔露拉V2
 
 新增火流/命中动画：Soluna Software，[Lots of game effects](https://opengameart.org/content/lots-of-game-effects)，CC0，保留作者记录。新版塔露拉卡面和部件由OpenAI内置image_gen生成，原角色来自《明日方舟》，非CC0；用户视频仅作动作参考。程序化关节动作、斩击弧线/辉光为项目制作。见[TALULAH-VIDEO-REVISION-2026-10-20.md](TALULAH-VIDEO-REVISION-2026-10-20.md)。

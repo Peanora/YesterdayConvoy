@@ -195,7 +195,7 @@ namespace YesterdayConvoy
             {
                 Vector2 p=GUIPosition(pointerScreen);
                 Fill(new Rect(p.x-30,p.y-76,60,70),new Color(.24f,.51f,.58f,.85f));
-                Sprite portrait=definition.Card.Portrait; Rect source=portrait.textureRect;
+                Sprite portrait=OriginalTalulahArt.CardPortrait(definition.Card); Rect source=portrait.textureRect;
                 GUI.DrawTextureWithTexCoords(new Rect(p.x-28,p.y-74,56,66),portrait.texture,
                     new Rect(source.x/portrait.texture.width,source.y/portrait.texture.height,source.width/portrait.texture.width,source.height/portrait.texture.height));
             }

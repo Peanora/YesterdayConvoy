@@ -29,7 +29,7 @@ namespace YesterdayConvoy
             bool clicked=allowClick && battle!=null && GUI.Button(slot,GUIContent.none,GUIStyle.none);
             Fill(slot, battle==null || selected ? new Color(0.48f,0.85f,0.91f) : new Color(0.30f,0.36f,0.41f));
             Fill(new Rect(slot.x+2,slot.y+2,slot.width-4,slot.height-4),new Color(0.07f,0.09f,0.12f));
-            Sprite image=card.Portrait;
+            Sprite image=OriginalTalulahArt.CardPortrait(card);
             Rect source=image.textureRect;
             // Sample the sprite rect, preserving its aspect rather than stretching the portrait.
             Rect target=new Rect(slot.x+5,slot.y+5,102,111);

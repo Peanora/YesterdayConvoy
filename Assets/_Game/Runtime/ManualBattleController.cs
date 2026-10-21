@@ -201,7 +201,7 @@ namespace YesterdayConvoy
         {
             previewMaterial=new Material(Shader.Find("Sprites/Default"));
             preview=new GameObject("Deployment preview",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-            preview.sprite=definition.Card.BattleSprite; preview.sharedMaterial=previewMaterial;
+            preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card); preview.sharedMaterial=previewMaterial;
             entryOutline=new GameObject("Red gate deployment area",typeof(LineRenderer)).GetComponent<LineRenderer>();
             entryOutline.sharedMaterial=previewMaterial; entryOutline.widthMultiplier=0.025f;
             entryOutline.positionCount=5; entryOutline.useWorldSpace=true;

@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-10-21 塔露拉原版数据的本地派生图集
+
+来源为PRTS公开的enemy_1515_bsnake原版模型；角色/贴图/动作属于原权利人，非CC0，未确认开放再分发许可。用户确认的是本地V4预览与接入；PNG图集、卡面、清单与实机图仅留本地，不随公共PR自动上传。离线评估渲染工具在项目外，Unity只使用导出的PNG，无Spine运行时或新包。[完整说明](TALULAH-ORIGINAL-INTEGRATION.md)。本轮不发布ZIP/Releases。
+
 ## 2026-10-20 塔露拉V2与Soluna Software特效
 
 V2卡面/部件由内置image_gen生成，为第三方角色同人原型，非CC0；三段用户视频仅作动作参考、不导入原贴图。实际采用[Soluna Software / Lots of game effects](https://opengameart.org/content/lots-of-game-effects)的Fire01.png和ToonExplosion31.png，具体原始页面明确CC0及无需署名；仍保留作者。原PNG未改，仅Unity切图，许可依据/哈希见source-records/talulah-v2-resources.json。[详细记录](TALULAH-VIDEO-REVISION-2026-10-20.md)。

@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         private ManualBattle manualBattle;
         private DeployedUnitState deployedUnit;
         private CardDefinition frameCard;
+        private OriginalTalulahArt original;
         public TalulahRig Rig { get; private set; }
         public bool UsesFrameAnimation => Rig==null && frameCard!=null && frameCard.HasFrameAnimation;
         public string FrameState { get; private set; } = "Idle";
@@ -20,7 +21,7 @@ namespace YesterdayConvoy
         {
             transform.localPosition=Vector3.zero;
             if(sprite==null) return;
-            if(UsesFrameAnimation) sprite.sprite=frameCard.BattleSprite;
+            if(UsesFrameAnimation) sprite.sprite=original != null ? original["idle"].Frames[0] : frameCard.BattleSprite;
             sprite.color=Color.white;
             FrameState="Idle"; FrameIndex=0;
         }
@@ -29,8 +30,9 @@ namespace YesterdayConvoy
         {
             if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Comic frame configuration is required.");
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
-            sprite.sprite=frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
-            if(frames.ArticulatedArt!=null)
+            original=OriginalTalulahArt.For(frames);
+            sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
+            if(original==null && frames.ArticulatedArt!=null)
             { Rig=gameObject.AddComponent<TalulahRig>(); Rig.Bind(frames.ArticulatedArt,sprite.sharedMaterial); }
         }
 
@@ -55,6 +57,7 @@ namespace YesterdayConvoy
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
             transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
             if(manualBattle.IsPaused) return;
+            if(original!=null) { PresentOriginal(); return; }
             double age=manualBattle.Clock-deployedUnit.LastAttackTime;
             double skillDuration=manualBattle.CombatSettings.SkillInterval;
             // A fired skill gesture owns its full window, independently of target lifetime or resumed movement.
@@ -86,6 +89,46 @@ namespace YesterdayConvoy
             double duration=skill ? manualBattle.CombatSettings.SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
+        }
+
+        private void PresentOriginal()
+        {
+            double age = manualBattle.Clock - deployedUnit.LastAttackTime;
+            string clip;
+            double sourceTime;
+            bool loop;
+            if (manualBattle.IsSkillActionPlaying(deployedUnit))
+            {
+                FrameState = "Skill"; clip = "cast"; loop = false;
+                double elapsed = manualBattle.Clock - deployedUnit.FireRainStartedAt;
+                double total = manualBattle.CombatSettings.SkillInterval;
+                double raise = Math.Min(.8, total * .2), lower = Math.Min(.6, total * .2);
+                double holdPose = 1.1666667;
+                sourceTime = elapsed < raise ? elapsed / raise * holdPose :
+                    elapsed < total - lower ? holdPose :
+                    holdPose + (elapsed - (total - lower)) / lower * (original["cast"].Duration - holdPose);
+            }
+            else if (deployedUnit.IsMoving)
+            {
+                FrameState = "Walk"; clip = "walk"; loop = true;
+                sourceTime = deployedUnit.Motion.DistanceTravelled / original.ReferenceSpeed;
+            }
+            else if (deployedUnit.HasCombatTarget && age >= 0 && age < manualBattle.CombatSettings.UnitInterval)
+            {
+                FrameState = "Attack"; clip = "attack"; loop = false;
+                // Align the source OnAttack marker with this game's existing hit time. Never reschedule damage.
+                double contact = Math.Min(manualBattle.CombatSettings.ProjectileTime, manualBattle.CombatSettings.UnitInterval * .8);
+                sourceTime = age <= contact ? age / contact * original.AttackContact :
+                    original.AttackContact + (age - contact) / (manualBattle.CombatSettings.UnitInterval - contact) *
+                    (original["attack"].Duration - original.AttackContact);
+            }
+            else
+            {
+                FrameState = "Idle"; clip = "idle"; loop = true;
+                sourceTime = manualBattle.Clock - deployedUnit.SpawnTime;
+            }
+            sprite.sprite = original[clip].At(sourceTime, loop, out int index);
+            FrameIndex = index;
         }
 
         private bool FaceCamera()

@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-10-21：已确认V4原版塔露拉的本地接入
+
+- 用户先明确确认原版模型预览，再授权接入；只改角色显示、卡牌/拖动预览与对应测试，不改主场景、Prefab、玩法模型/配置、Packages、ProjectSettings或维维美。
+- 离线渲染13张透明图集、卡面与清单，15个本地文件、762帧（idle288/walk216/attack140/cast118）。源根点固定为Sprite Pivot，PPU88.8888889；Unity运行时动态Sprite共用只读缓存，暂停/变速均读取原模拟时钟，GPU用DXT5。原作媒体与派生图集Git忽略，不自动公开；缺包回退和安装入口见[接入说明](art/TALULAH-ORIGINAL-INTEGRATION.md)。
+- Unity6000.6.5f1 EditMode：61/61通过，0跳过，artifacts/talulah-original-edit.xml。
+- GPU PlayMode最终复核：16/16通过，0跳过，原版Sprite名称/帧推进、根位置不被动画修改、暂停帧冻结、目标全灭仍继续技能/移动锁、结束恢复移动、重开及维维美回归通过。artifacts/talulah-original-play-final.xml / .log；最终进程退出0。初次XML已16通过但外层退出状态异常，额外复核后获得明确进程0，不忽略该状态。
+- Windows独立构建：BASELINE_BUILD_PASS 319893271字节，0错误，进程0；artifacts/talulah-original-build.log。
+- 实际最终Player：-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项全True，分别退出0；前者日志含TALULAH_ORIGINAL_LOADED，确认装包路径实际生效，没有回退旧图。
+- -talulahMotionEvidence：walk36/attack33/rain12真实相机帧，cast=True、退出0，同样含原版已加载日志。已检查放大行走/攻击与正常地图火雨图；相机取证不含IMGUI HUD，非完整鼠标人工通关或全屏录制。证据在artifacts/talulah-original-player，各组日志同名。
+- 原作普攻2.333秒适配现有1.7秒间隔并对齐0.65秒命中；施法适配六秒（抬手0.8/维持到5.4/收势0.6），维持阶段为原姿态固定帧。未变动伤害、攻速配置、实际移速、暂停与技能移动锁。角色原版，火雨仍为原CC0近似效果，克洛丝仍漫画版。
+- 原目录六项既存修改保持隔离。仅将本任务源码/安装工具/文档和必要.meta提交到原功能分支；原图集、原骨骼、Spine运行时、Player/日志/实机图不进公共PR。没有制作/更新ZIP或Releases。
+
+未测：完整人工键鼠通关、最终攻速映射的主观节奏、第二台电脑离线、低配/长时性能；不把代码和图片检查当成人类对最终实机的认可。其他克隆缺少本地图包时仅能看到保留的技术样板，原版专用Play测试会明确跳过；本机最终没有跳过。
+
+
 ## 2026-10-21：美术风格文档与预览验收状态
 
 仅文档修改：逐字核对用户美术段落，检查GDD有效方向与旧漫画历史的优先级、相关美术规范和STATUS一致；登记塔露拉项目外预览未通过，原版相似度与动作自然度须分别人工确认。核对Git差异仅含本任务文档，不修改原目录六项既存内容。git diff --check与tools/check_repository.py通过（787个跟踪文件）；仅为格式/仓库静态核对。Unity、EditMode/PlayMode、Player与构建均未运行：本轮无运行时代码或资源改动，旧测试记录仅属于旧实现，不作为新美术认可。未生成图片/视频、未导入、未更新ZIP。美术实际资源与动作仍待下一次预览，不标记VERIFIED。
