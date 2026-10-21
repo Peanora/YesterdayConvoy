@@ -29,3 +29,7 @@ Idle/Move_Loop/Attack各为原版1秒60帧，每段MP4按原速循环至6秒，1
 | idle.mp4 | bb5a8a5adefb51450fa2eb65361ee9d5054381b460bab87dbbfff2b2349630c9 |
 | walk.mp4 | 81e7c926ea5ebfbc7f8acf2d78abf8816f6d956e2ca40472b901951a3b437920 |
 | attack.mp4 | adc871a4f6731244681030967454cc1d862ba4b5c3f1a92efb9b7b6a086fac52 |
+
+## 后续用户确认与源码侧入口
+
+2026-10-22（Asia/Shanghai）当前用户看稿后回复“可以”，批准M07-Soldier-v1卡面及待机/行走/挥刀预览。已加入Approved Monster Previews编辑器窗口和本地可选包安装器，60/60/60帧按原速播放，原版媒体继续Git忽略。此条覆盖上文待确认历史，不代表战斗接入或主导者单独审批。确认原话及文件校验值保存在本地approval.json。
