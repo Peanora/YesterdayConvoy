@@ -9,21 +9,30 @@ namespace YesterdayConvoy
         public readonly float UnitAttack, UnitArmor, UnitRange, UnitInterval;
         public readonly float DefenderHealth, DefenderAttack, DefenderArmor, DefenderRange, DefenderInterval, BlockRadius;
         public readonly int BlockCount, SkillAmmo;
-        public readonly bool FireRain;
+        public readonly bool FireRain, HasSkill, Melee;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
-                defenderInterval, blockRadius, requiredSP, spPerSecond, skillAttack, skillInterval, skillRange, projectileTime })
+                defenderInterval, blockRadius, projectileTime })
                 if (!Finite(value) || value <= 0) throw new ArgumentException("Combat values must be finite and positive.");
             if (!Finite(unitArmor) || !Finite(defenderArmor) || !Finite(initialSP) || unitArmor < 0 || defenderArmor < 0 ||
-                initialSP < 0 || initialSP > requiredSP || blockCount < 0 || skillAmmo <= 0)
+                initialSP < 0 || blockCount < 0)
                 throw new ArgumentException("Invalid combat armor, block count or initial SP.");
+            if (hasSkill)
+            {
+                foreach(float value in new[]{requiredSP,spPerSecond,skillAttack,skillInterval,skillRange})
+                    if(!Finite(value) || value<=0) throw new ArgumentException("Skill values must be finite and positive.");
+                if(initialSP>requiredSP || skillAmmo<=0) throw new ArgumentException("Invalid initial SP or ammo.");
+            }
+            else if(fireRain || initialSP!=0 || requiredSP!=0 || spPerSecond!=0 || skillAmmo!=0 || skillAttack!=0 || skillInterval!=0 || skillRange!=0)
+                throw new ArgumentException("A unit without a skill must have zero skill resources.");
+            HasSkill=hasSkill; Melee=melee;
             FireRain = fireRain;
             UnitAttack = unitAttack; UnitArmor = unitArmor; UnitRange = unitRange; UnitInterval = unitInterval;
             DefenderHealth = defenderHealth; DefenderAttack = defenderAttack; DefenderArmor = defenderArmor;
@@ -68,7 +77,7 @@ namespace YesterdayConvoy
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }
 
-    public enum SkillFailure { None, NotRunning, Paused, StaleRun, MissingEntity, NotReady, AlreadyActive }
+    public enum SkillFailure { None, NotRunning, Paused, StaleRun, MissingEntity, NotReady, AlreadyActive, NoSkill }
 
     public sealed partial class ManualBattle
     {
@@ -96,7 +105,7 @@ namespace YesterdayConvoy
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
-        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active &&
+        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && CombatSettings.HasSkill && unit!=null && unit.Active &&
             (CombatSettings.FireRain ? Clock<unit.FireRainStartedAt+CombatSettings.SkillInterval :
             unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval);
 
@@ -104,13 +113,14 @@ namespace YesterdayConvoy
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
-            return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active &&
+            return EngagementEnabled && CombatSettings.HasSkill && Phase==BattlePhase.Running && unit!=null && unit.Active &&
                 unit.SkillAmmo==0 && (!CombatSettings.FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
         }
 
         public SkillFailure CheckSkill(string entityId)
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;
+            if (!CombatSettings.HasSkill) return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             var unit = FindUnit(entityId);
             if (unit == null || !unit.Active) return SkillFailure.MissingEntity;
@@ -152,7 +162,7 @@ namespace YesterdayConvoy
                 {
                     unit.Health=Mathf.Max(0,unit.Health-Mathf.Max(1,shot.Attack-c.UnitArmor));
                     unit.LastHitTime=Clock;
-                    if(unit.Health==0) { unit.Resolution=UnitResolution.Dead; unit.IsMoving=unit.IsBlocked=false; }
+                    if(unit.Health==0) { unit.Resolution=UnitResolution.Dead; unit.DeathTime=Clock; unit.IsMoving=unit.IsBlocked=false; }
                 }
                 else
                 {
@@ -166,7 +176,7 @@ namespace YesterdayConvoy
             {
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
-                if(unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
                     if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)

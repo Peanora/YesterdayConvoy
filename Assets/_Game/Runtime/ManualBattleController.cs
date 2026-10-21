@@ -35,7 +35,11 @@ namespace YesterdayConvoy
         public bool Muted { get; private set; }
         public string SelectedEntityId => selectedEntityId;
         public EngagementView CombatView => combatView;
-        public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost);
+        private double terminalPresentationElapsed;
+        public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
+        private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
+        public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) &&
+            !(SlugActive && Battle.Phase==BattlePhase.Lost && terminalPresentationElapsed<.5);
         public static Rect SettlementRestartRect => new Rect(480,454,320,54);
 
         private void Start()
@@ -52,8 +56,11 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
-            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest");
+            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest");
             TestSelectionOpen=!smoke;
+            if(Array.IndexOf(args,"-slugSmokeTest")>=0)
+            { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+              StartCoroutine(VerifySlug(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
             if(Array.IndexOf(args,"-monsterSelectionSmokeTest")>=0)
             { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
               StartCoroutine(VerifyMonsterSelection(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
@@ -91,7 +98,9 @@ namespace YesterdayConvoy
         {
             if(scene==null || definition==null || !IsRegisteredTest(definition) || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
                 throw new InvalidOperationException("Current battle scene/configuration is incomplete.");
-            _ = CreateBattle();
+            var checkedBattle = CreateBattle();
+            if(checkedBattle.CombatSettings.HasSkill && (definition.Card.SkillFrames?.Count ?? 0)==0)
+                throw new InvalidOperationException("A skill-enabled card requires skill animation frames.");
             if(talulahDefinition==null || !talulahDefinition.Card.HasFrameAnimation || !talulahDefinition.Engagement.FireRain || talulahDefinition.Engagement.ExtraDefenders.Count!=2)
                 throw new InvalidOperationException("Talulah trial scene binding/configuration is incomplete.");
             _ = talulahDefinition.Snapshot(); _ = talulahDefinition.Engagement.Snapshot();
@@ -141,6 +150,8 @@ namespace YesterdayConvoy
         public void Tick(float delta)
         {
             if(TestSelectionOpen) return;
+            if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
+                terminalPresentationElapsed=Math.Min(.6,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
             SyncViews();
             UpdatePreview();
@@ -167,7 +178,7 @@ namespace YesterdayConvoy
             foreach(var pair in views)
             {
                 bool alive=false;
-                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && unit.Active) { alive=true; break; }
+                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || SlugActive && unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+.5)) { alive=true; break; }
                 if(!alive) { if(pair.Value!=null) { pair.Value.gameObject.SetActive(false); Destroy(pair.Value.gameObject); } removed.Add(pair.Key); }
             }
             foreach(string id in removed) views.Remove(id);
@@ -180,7 +191,7 @@ namespace YesterdayConvoy
                     clone.name=unit.EntityId;
                     view=clone.transform;
                     var visual=clone.GetComponentInChildren<DemoSpriteVisual>(true);
-                    visual.Bind(Battle,unit,definition.Card);
+                    visual.Bind(Battle,unit,definition.Card,()=>PresentationClock);
                     views.Add(unit.EntityId,view);
                     clone.SetActive(true);
                 }
@@ -292,11 +303,11 @@ namespace YesterdayConvoy
             foreach(var unit in Battle.Units)
             {
                 if(!unit.Active) continue;
-                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*1.8f);
+                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*(SlugActive ? 1f : 1.8f));
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));
-                if(Battle.EngagementEnabled) DrawSkillResourceBar(x,y+9,unit);
+                if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
             Fill(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
@@ -407,6 +418,7 @@ namespace YesterdayConvoy
 
         private void ClearViews()
         {
+            terminalPresentationElapsed=0;
             foreach(var view in views.Values) if(view!=null) { view.gameObject.SetActive(false); Destroy(view.gameObject); }
             views.Clear();
         }

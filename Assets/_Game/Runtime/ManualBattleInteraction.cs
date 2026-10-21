@@ -140,7 +140,7 @@ namespace YesterdayConvoy
         public void OpenSkillMenu(string id)
         {
             if(TestSelectionOpen) return;
-            if(!Battle.EngagementEnabled || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
+            if(!Battle.EngagementEnabled || !Battle.CombatSettings.HasSkill || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
             Dragging=false; Selected=false; selectedEntityId=id; SkillMenuOpen=true;
             Feedback="选择角色技能；点击空白处取消"; UpdatePreview();
         }

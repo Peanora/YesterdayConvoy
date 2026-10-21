@@ -37,6 +37,7 @@ namespace YesterdayConvoy
         public RouteMotion Motion { get; }
         public float Health { get; internal set; }
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
+        public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool Active => Resolution == UnitResolution.Active;
         public bool IsBlocked { get; internal set; }
@@ -213,7 +214,7 @@ namespace YesterdayConvoy
                         target.Health = Mathf.Max(0, target.Health - Settings.TowerDamage);
                         target.LastHitTime = LastShotTime = Clock; LastShotEntityId = target.EntityId;
                         LastShotPosition = target.Motion.Position; ShotsFired++; nextShotTime = Clock + Settings.ShotInterval;
-                        if (target.Health == 0) target.Resolution = UnitResolution.Dead;
+                        if (target.Health == 0) { target.Resolution = UnitResolution.Dead; target.DeathTime=Clock; }
                     }
                 }
                 EvaluateEnd();
