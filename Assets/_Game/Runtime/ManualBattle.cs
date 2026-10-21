@@ -41,12 +41,14 @@ namespace YesterdayConvoy
         public bool Active => Resolution == UnitResolution.Active;
         public bool IsBlocked { get; internal set; }
         public bool HasCombatTarget { get; internal set; }
+        internal string CombatTargetId, BlockerId;
         public bool IsMoving { get; internal set; } = true;
         public float SkillSP { get; internal set; }
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
         public bool LastAttackEmpowered { get; internal set; }
+        public double FireRainStartedAt { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
 
         internal DeployedUnitState(string id, string unitId, RouteMotion motion, float health, double spawnTime)
@@ -92,10 +94,13 @@ namespace YesterdayConvoy
         public double CooldownRemaining => Math.Max(0, nextDeploymentTime - Clock);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null)
         {
             Settings = settings;
             engagement = combat;
+            defenderPositions = new Vector3[1 + (extraDefenders?.Count ?? 0)];
+            defenderPositions[0] = tower;
+            for (int i=1;i<defenderPositions.Length;i++) defenderPositions[i]=extraDefenders[i-1];
             // Reuse the existing route validation and take our own route snapshot.
             _ = new RouteMotion(waypoints, settings.Speed);
             route = new Vector3[waypoints.Count];

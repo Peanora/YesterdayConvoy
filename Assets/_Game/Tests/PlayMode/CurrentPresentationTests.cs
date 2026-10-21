@@ -18,6 +18,7 @@ namespace YesterdayConvoy.Tests
             yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("InitialDemo");
             yield return null; Time.timeScale=0;
             var c=Object.FindAnyObjectByType<ManualBattleController>();
+            c.SwitchTrial(false);
             c.SelectCard(true); Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
             var unit=c.Battle.Units[0]; unit.Motion.Advance(2.72f/unit.Motion.Speed); c.Tick(0);
             yield return null;

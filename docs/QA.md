@@ -1,5 +1,86 @@
 # 验证证据与回归
 
+## 2026-10-21：启动选择单怪测试
+
+- 用户明确确认控制器/输入/切换接口和新增选择页/测试范围，授权作为PR #4续作。只改相关运行时、测试与文档，不改主场景、Prefab、玩法配置、包或原目录既存修改；不制作ZIP。
+- Unity6000.6.5f1：61/61 EditMode、21/21 GPU PlayMode，0跳过，进程均0。artifacts/monster-menu-edit.xml / monster-menu-play.xml。新增3项覆盖正常启动拦截输入/空跑、39个待制作/未知ID拒绝、两个样板进入、施法与拖动返回清理、结算完整按下/松开、跨怪物重新进入。原图层、交战、暂停及火雨测试保留断言并显式选择所测样板。
+- Windows构建：BASELINE_BUILD_PASS 321558422字节，0错误，进程0，artifacts/monster-menu-build.log。
+- 独立Player：-monsterSelectionSmokeTest九项、-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项均全True，进程各0；artifacts/monster-menu-player/各flag.log。原版人物包实际加载，未回退。
+- 屏幕取证单独核对：隐藏D3D12的ScreenCapture失败、隐藏D3D11为黑图，均不计成功。缩小到实际窗口显示条件后，正常窗口D3D11及默认D3D12均获得1280×720真实完整截图；9项入口检查仍全True、退出0。已查看选择页/塔露拉战斗HUD，无文字截断或遮挡，左下返回入口可见。正常窗口证据保存在artifacts/monster-menu-player/visible-default及visible-d3d11，保留失败日志以区分。
+- 当前两个内置样板可玩，其余39个只展示待制作。新增Resources/MonsterTests配置注册使用现有校验，尚未制作第三只怪物来完成真实新配置接入验证；不能把入口开放等同于普通怪/无主动技能/完整多卡系统已支持。
+- 文档52个本地链接、39个待制作名称、暂存差异与仓库静态检查815个跟踪文件通过，新增脚本.meta齐全；静态检查不代替上述实际Unity/Player验证。
+- 未执行：完整真人鼠标键盘通关、第二台电脑、低配/长时性能与所有分辨率人工测试。本轮未重新生成美术；含原版角色的截图只留本地，不上传公共Git；ZIP未更新。
+
+## 2026-10-21：已确认火雨预览的表现接入
+
+- 范围：FireRainView、视觉专用FireRainScreenEffect/两张shader、新增CC0碎焰图集及处理/导入工具、对应Play测试与原动作取证。保留人物和玩法；未改主场景、Prefab、配置、Packages、ProjectSettings或原目录六项既存修改。
+- 导入/编译：FireRainArtTools.Prepare实际退出0；640×640无损透明图集、25帧/Alpha归一、两shader资源检查通过，artifacts/fire-rain-import.log。
+- Unity6000.6.5f1：EditMode 61/61，GPU PlayMode 18/18，零跳过，两进程均0。artifacts/fire-rain-edit.xml / fire-rain-play.xml。新增检查包含实际GPU画面后处理差异、暂停全画面冻结、火浪向右/贴图帧变化、目标死后原地播完、自然结束/重开清除色调与偏移、切回维维美，相机Transform保持。
+- Windows构建：BASELINE_BUILD_PASS 321546090字节、0错误、进程0，artifacts/fire-rain-build.log。
+- 独立Player：-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项全True，各退出0；artifacts/fire-rain-player/各flag.log。原版人物加载日志TALULAH_ORIGINAL_LOADED，未回退。
+- -talulahMotionEvidence：walk36/attack33/rain180，cast=True、进程0；查看真实相机图中的大火浪、亮核/碎焰、场景色调及完整六秒帧序列。相机图不含IMGUI HUD，不能称为完整人工键鼠录屏；本轮未新增音频。
+- 仓库静态检查810个跟踪文件通过，新增资源/脚本.meta完整，CSV各行21列及暂存差异核对通过；不将此项代替上述Unity/GPU/Player验证。
+- 未执行：完整人工键鼠通关、第二台电脑离线、低配/长时性能与所有宽高比人工检查。源图分辨率有限，无真实体积火焰/热折射，非原作完整特效。原版媒体和含其图像的本地取证不上传公共Git；不更新ZIP/Releases。
+
+## 2026-10-21：已确认V4原版塔露拉的本地接入
+
+- 用户先明确确认原版模型预览，再授权接入；只改角色显示、卡牌/拖动预览与对应测试，不改主场景、Prefab、玩法模型/配置、Packages、ProjectSettings或维维美。
+- 离线渲染13张透明图集、卡面与清单，15个本地文件、762帧（idle288/walk216/attack140/cast118）。源根点固定为Sprite Pivot，PPU88.8888889；Unity运行时动态Sprite共用只读缓存，暂停/变速均读取原模拟时钟，GPU用DXT5。原作媒体与派生图集Git忽略，不自动公开；缺包回退和安装入口见[接入说明](art/TALULAH-ORIGINAL-INTEGRATION.md)。
+- Unity6000.6.5f1 EditMode：61/61通过，0跳过，artifacts/talulah-original-edit.xml。
+- GPU PlayMode最终复核：16/16通过，0跳过，原版Sprite名称/帧推进、根位置不被动画修改、暂停帧冻结、目标全灭仍继续技能/移动锁、结束恢复移动、重开及维维美回归通过。artifacts/talulah-original-play-final.xml / .log；最终进程退出0。初次XML已16通过但外层退出状态异常，额外复核后获得明确进程0，不忽略该状态。
+- Windows独立构建：BASELINE_BUILD_PASS 319893271字节，0错误，进程0；artifacts/talulah-original-build.log。
+- 实际最终Player：-talulahSmokeTest十三项、-combatSmokeTest十三项、-interactionSmokeTest八项全True，分别退出0；前者日志含TALULAH_ORIGINAL_LOADED，确认装包路径实际生效，没有回退旧图。
+- -talulahMotionEvidence：walk36/attack33/rain12真实相机帧，cast=True、退出0，同样含原版已加载日志。已检查放大行走/攻击与正常地图火雨图；相机取证不含IMGUI HUD，非完整鼠标人工通关或全屏录制。证据在artifacts/talulah-original-player，各组日志同名。
+- 原作普攻2.333秒适配现有1.7秒间隔并对齐0.65秒命中；施法适配六秒（抬手0.8/维持到5.4/收势0.6），维持阶段为原姿态固定帧。未变动伤害、攻速配置、实际移速、暂停与技能移动锁。角色原版，火雨仍为原CC0近似效果，克洛丝仍漫画版。
+- 原目录六项既存修改保持隔离。仅将本任务源码/安装工具/文档和必要.meta提交到原功能分支；原图集、原骨骼、Spine运行时、Player/日志/实机图不进公共PR。没有制作/更新ZIP或Releases。
+
+未测：完整人工键鼠通关、最终攻速映射的主观节奏、第二台电脑离线、低配/长时性能；不把代码和图片检查当成人类对最终实机的认可。其他克隆缺少本地图包时仅能看到保留的技术样板，原版专用Play测试会明确跳过；本机最终没有跳过。
+
+
+## 2026-10-21：美术风格文档与预览验收状态
+
+仅文档修改：逐字核对用户美术段落，检查GDD有效方向与旧漫画历史的优先级、相关美术规范和STATUS一致；登记塔露拉项目外预览未通过，原版相似度与动作自然度须分别人工确认。核对Git差异仅含本任务文档，不修改原目录六项既存内容。git diff --check与tools/check_repository.py通过（787个跟踪文件）；仅为格式/仓库静态核对。Unity、EditMode/PlayMode、Player与构建均未运行：本轮无运行时代码或资源改动，旧测试记录仅属于旧实现，不作为新美术认可。未生成图片/视频、未导入、未更新ZIP。美术实际资源与动作仍待下一次预览，不标记VERIFIED。
+
+## 2026-10-20：按用户三段视频修订塔露拉动作/全场火流
+
+继续PR #4同一功能分支，保留原目录六项既存修改；用户本轮明确要求按视频改普攻/火雨/行走与头部辨识度，并停止默认更新ZIP。共享文件范围沿用本功能此前具体确认；本轮不改场景、Prefab、Packages/ProjectSettings、战斗模型/数值与维维美资源。
+
+- 实际解码三段MP4（31.95/16.71/5.40秒），查看全片接触表、攻击/步态局部时序；视频只作参考，不导入原游戏贴图。采样/元数据在artifacts/video-reference。
+- OpenAI内置image_gen真实生成新版卡面/身体部件/手臂部件，Alpha0–255；候选16格行走图有背景光晕和重复，否决并未导入。Unity精确分区/按Alpha裁切、比例归一化到PPU256、关节Pivot；不拉伸图形掩盖大小问题。
+- TalulahRevisionTools.Apply真实执行；重复执行检查37个派生PNG/meta、卡牌/Art/战斗配置和主场景，SHA256相同，无重复对象、无覆盖玩法数值。两张CC0特效原PNG哈希与来源页记录在docs/art/source-records/talulah-v2-resources.json。
+- EditMode：61/61、0跳过。新增支撑阶段脚部后移与距离匹配、摆腿离地、周期/接触衔接连续检查；原60模型/配置用例保留。
+- GPU PlayMode：16/16、0跳过。实际塔露拉脚部36帧采样有超过20个中间姿态、位移等于原速度×模拟时间；普攻蓄势/挥击/收势武器角度连续。原技能交互用例增加13部件/手部火焰与全场火流暂停位置/旋转/帧一致性；原维维美与遮挡回归保持。
+- Windows独立构建：290353067字节、0错误、退出0。运行本地Player验证，不制作ZIP；最终源码提交在Git日志中。
+- Player：-talulahSmokeTest 13项、-combatSmokeTest 13项、-interactionSmokeTest 8项全部True、退出0。实际输入适配器/模型回归，非人工键鼠通关。
+- -talulahMotionEvidence真实Player捕获36张行走、33张攻击、12张火雨相机图，cast=True/退出0。只由捕获帧编码GIF/MP4，不插造动作帧；行走截取稳定后约一周期。角色预览为诊断放大跟随相机，火雨为原地图相机，均不包含IMGUI HUD，不冒充整屏截图。
+
+已核图：[步态](art/previews/talulah-walk-v2.gif)、[攻击](art/previews/talulah-attack-v2.gif)、[全图火流](art/previews/talulah-fire-rain-v2-camera.png)。原始结果：artifacts/talulah-revision-edit.xml、talulah-revision-play.xml、talulah-revision-build.log、revised-talulahSmokeTest.log、revised-combatSmokeTest.log、revised-interactionSmokeTest.log、talulah-motion.log。首次录像发现蓄势末端跳回中立，修复连续插值并增加实际武器转角断言后复测；初版火流太小，补足尺寸、辉光、残焰和暖光后重新录制。
+
+未测/限制：完整人工键鼠通关、第二机离线、低配和长时性能、所有路线方向的动作自然度待用户评价。当前为固定前侧视造型的程序化分层动画，不含转身、多方向立绘、脚踝/脚趾独立骨骼或复杂布料。火流含48条装饰流与18处残焰，不按装饰数量追加伤害。旧ZIP保持85789690字节、最后修改2026-10-20 20:47:26；本轮不声称旧ZIP已更新，不更新Releases。
+
+
+## 2026-10-20：塔露拉火雨可玩样板
+
+交付复核：源码提交6028b339235cd0256c68fa881c3499330db8cef8，PR #4已创建、repository-checks工作流39424822689成功；未合并main。该干净源码重新构建，仍为290538195字节/0错误。原目录Builds/TalulahTrial-6028b33.zip（85789690字节）完整解压并核验264个文件SHA256；从解压目录Game真实启动，塔露拉13项、维维美13项交战/8项交互全部True、三次退出0，日志artifacts/下分别为zip-talulahSmokeTest.log、zip-combatSmokeTest.log、zip-interactionSmokeTest.log。后续本条交付说明为纯文档更新，不改变包对应源码6028b33。
+
+环境：Unity6000.6.5f1(3ff58d469c8a)、Windows x64、RTX4060/D3D12；基线main 0dec185，独立工作目录/分支codex/talulah-fire-rain。原目录四项文档修改和未跟踪CONTRIBUTING/PackageManagerSettings不改动。用户明确确认共享战斗、配置接口、表现及InitialDemo绑定修改范围，任务[#3](https://github.com/Peanora/YesterdayConvoy/issues/3)。
+
+- `TalulahTools.Prepare`：真实Unity导入两张PNG/12精确切片，创建单位/卡/战斗参数并绑定主场景；绑定保存后重新打开校验，原场景仅新增talulahDefinition一行，无地图/镜头变动。
+- `-runTests -testPlatform EditMode`：60/60通过，0跳过；新增FireRainTests三例，验证射程外三守军同受伤、请求幂等不耗DP、恰好6波18个事件、不重复伤害、暂停、重开/旧run拒绝、全灭后锁定至结束与恢复SP。其余为原模型/配置回归。
+- `-runTests -testPlatform PlayMode`（保留GPU）：15/15通过，0跳过；新增实际场景切换、暂停拖放、手动点击技能、0.03慢速、三目标伤害、帧动画暂停与返回原卡栏。原14个场景/表现/交互用例保留，含720/1440遮挡回归。
+- `BaselineTools.BuildWindows`：真实Windows构建290538195字节、0错误、退出0。构建目录Builds/Windows含exe/Data/Mono/DLL。最终打包源码提交见包内SOURCE.txt。
+- 最终Player `-talulahSmokeTest`：drag/pauseDeploy/ready/slow/cast/global/freeze/locked/allDead/resume/won/reset/original共13项全True、退出0；测试真实Player输入适配器及模型，非人工键鼠全程通关。
+- 同一构建 `-combatSmokeTest`：维维美交战13项全True；`-interactionSmokeTest`：暂停部署/冻结/非法位置/就绪/慢速/取消/施放/重开8项全True；均退出0。
+- `TalulahTools.Prepare`重复执行：四份新增数据资产及主场景SHA256前后相同，未覆盖人工数值或创建重复资产。
+- PNG真实RGBA与Alpha范围0–255，1448×1086按4×3切成362×362；卡面1153×1364。Player通过RenderTexture导出[相机图](art/previews/talulah-fire-rain-camera.png)，已人工检查塔露拉举剑/漫画火焰、三克洛丝高台、地图层级和地面落点。该图不包含IMGUI HUD，不冒充整屏截图；HUD绑定/技能交互由PlayMode与Player输入适配测试覆盖。
+
+中途发现并修复：首次生成后的场景引用未持久保存（首轮PlayMode 14通过/1失败）；改为重新载入资产再绑定，并保存后重开断言，最终15/15。首次编译smoke脚本DistanceTravelled double/float类型错误已修复。隐藏窗口普通ScreenCapture无PNG，CaptureScreenshotAsTexture亦返回空；撤回对通用截图入口的试探改动，改用塔露拉专用相机RenderTexture输出，图像确已存在。首轮尾迹过于接近光条，补充程序化三色火焰形状后重跑GPU测试/构建/Player并核图。
+
+未测/限制：完整人工键鼠胜负流程、第二机离线、长时运行/低配性能、所有未来单位体型、多角色并行施法尚未验收。八帧AI走路仍有局部比例变化；普攻仅两个独立姿势，施法仅两个姿势，非商用品质完整动画。火雨/生命/SP均为本轮试验数值，未做正式平衡。未实现羁绊运营/商店。不会把第三方角色AI同人图登记为CC0。
+
+原始日志/XML：artifacts/talulah-import.log、talulah-bind.log、talulah-edit.xml、talulah-play.xml、talulah-build.log、talulah-player.log、wisadel-combat.log、wisadel-interaction.log；本机artifacts不提交，仅本条摘要与相机PNG入库。公开试玩发布遵循人工main集成后统一发布规则，本轮提供本地功能分支审阅包。
+
+
 ## 2026-10-20：设计分支同步main与文档冲突整理
 
 用户要求保留双方并整理冲突。基于设计提交1056daf，在独立工作目录合入main提交3c5a729（协作规范PR #2）；实际冲突仅为STATUS/QA标题后同位置新增段落。将main的协作规范记录、设计分支三条历史记录逐条保留，补充v0.4最新设计入口，未整文件选择ours/theirs。CONTRIBUTING、AGENTS.template和COLLABORATION保留main版本，GDD/羁绊方案保持设计分支版本。原工程四项已修改文档、未跟踪CONTRIBUTING与PackageManagerSettings不编辑、不暂存、不提交。

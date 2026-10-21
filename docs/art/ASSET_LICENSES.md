@@ -1,5 +1,23 @@
 # 授权与分发记录
 
+## 2026-10-21 火雨碎焰
+
+[highwizard / Animated flame / Fire sprite Sheet](https://opengameart.org/content/animated-flame-fire-sprite-sheet)原页明确CC0及无需署名/可商业使用；下载25帧黑底PNG，按保持发光亮度的Alpha公式转换并排为640×640派生图集。可随本项目源码和游戏分发，仍保留作者和来源。[原文件/加工哈希](source-records/fire-rain-embers.json)、[接入记录](FIRE-RAIN-INTEGRATION-2026-10-21.md)。此许可只涵盖该火焰，不涵盖原作塔露拉和含其图像的预览；本轮没有上传后者。
+
+## 2026-10-21 塔露拉原版数据的本地派生图集
+
+来源为PRTS公开的enemy_1515_bsnake原版模型；角色/贴图/动作属于原权利人，非CC0，未确认开放再分发许可。用户确认的是本地V4预览与接入；PNG图集、卡面、清单与实机图仅留本地，不随公共PR自动上传。离线评估渲染工具在项目外，Unity只使用导出的PNG，无Spine运行时或新包。[完整说明](TALULAH-ORIGINAL-INTEGRATION.md)。本轮不发布ZIP/Releases。
+
+## 2026-10-20 塔露拉V2与Soluna Software特效
+
+V2卡面/部件由内置image_gen生成，为第三方角色同人原型，非CC0；三段用户视频仅作动作参考、不导入原贴图。实际采用[Soluna Software / Lots of game effects](https://opengameart.org/content/lots-of-game-effects)的Fire01.png和ToonExplosion31.png，具体原始页面明确CC0及无需署名；仍保留作者。原PNG未改，仅Unity切图，许可依据/哈希见source-records/talulah-v2-resources.json。[详细记录](TALULAH-VIDEO-REVISION-2026-10-20.md)。
+
+
+## 2026-10-20 塔露拉 AI 同人原型
+
+两张PNG由OpenAI内置image_gen真实生成，沿用项目漫画风格；未下载商业游戏原贴图。塔露拉为《明日方舟》角色，非CC0，工具输出条件不替代第三方角色权利。来源、提示约束、路径与实际用途见 [生成记录](GENERATION-TALULAH-2026-10-20.md)。
+
+
 2026-10-19清理说明：13张被新版替代的旧图已从Assets删除，清单标记REMOVED。以下生成记录、作者/许可证文字保留为来源历史；记录旧图不表示旧文件仍在工程或当前构建使用。当前漫画版的第三方角色权利范围不因清理改变，历史可从Git查阅。
 
 ## 2026-10-19克洛丝漫画重绘

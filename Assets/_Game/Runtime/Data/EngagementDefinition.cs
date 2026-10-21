@@ -16,10 +16,14 @@ namespace YesterdayConvoy
         [SerializeField] private float initialSP = 8, requiredSP = 12, spPerSecond = 1;
         [SerializeField] private int skillAmmo = 6;
         [SerializeField] private float skillAttack = 105, skillInterval = 3.2f, skillRange = 3.8f, projectileTime = 0.22f;
+        [SerializeField] private bool fireRain;
+        [SerializeField] private Vector3[] extraDefenders = new Vector3[0];
+        public System.Collections.Generic.IReadOnlyList<Vector3> ExtraDefenders => extraDefenders;
+        public bool FireRain => fireRain;
         public Sprite KroosSprite => kroosSprite;
         public Vector3 DefenderPosition => defenderPosition;
         public EngagementSettings Snapshot() => new EngagementSettings(unitAttack, unitArmor, unitRange, unitInterval,
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
-            initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime);
+            initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain);
     }
 }

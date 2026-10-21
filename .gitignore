@@ -10,6 +10,8 @@
 /.vsconfig
 /.idea/
 /AGENTS.md
+/Assets/StreamingAssets/TalulahOriginal/
+/Assets/StreamingAssets/TalulahOriginal.meta
 /UpgradeLog.htm
 __pycache__/
 *.pyc

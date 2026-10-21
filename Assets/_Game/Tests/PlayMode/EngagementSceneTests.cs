@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
-            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); c.SwitchTrial(false); var b=c.Battle;
             Assert.That(b.EngagementEnabled,Is.True); Assert.That(c.CombatView.DefenderVisual.sprite,Is.EqualTo(c.Definition.Engagement.KroosSprite));
             Assert.That(c.CombatView.DefenderVisual.sprite.name,Is.EqualTo("kroos-comic"),"Normal M01 must use the new shared-style Kroos asset.");
             Assert.That(c.CombatView.DefenderVisual.sprite.texture.filterMode,Is.EqualTo(FilterMode.Bilinear));
@@ -73,7 +73,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
-            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); c.SwitchTrial(false); var b=c.Battle;
             c.SelectCard(true); c.TryDeployAt(b.Entry); c.ToggleSpeed(); c.Tick(0.5f); yield return null;
             Assert.That(b.Clock,Is.EqualTo(1).Within(0.0001)); Assert.That(b.Units[0].SkillSP,Is.EqualTo(9).Within(0.0001));
             Assert.That(b.Units[0].Motion.DistanceTravelled,Is.EqualTo(0.75).Within(0.0001));
@@ -101,7 +101,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null;
-            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); c.SwitchTrial(false); var b=c.Battle;
             Vector3 logicalPosition=b.Defender.Position;
             Vector3 first=c.CombatView.DefenderVisual.transform.position;
             yield return new WaitForSeconds(0.4f);
@@ -116,7 +116,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
-            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); c.SwitchTrial(false); var b=c.Battle;
             for(int attempt=0;attempt<b.Settings.DeploymentLimit && b.Phase!=BattlePhase.Lost;attempt++)
             {
                 c.SelectCard(true);
@@ -136,7 +136,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
-            var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            var c=Object.FindAnyObjectByType<ManualBattleController>(); c.SwitchTrial(false); var b=c.Battle;
             c.SelectCard(true);
             Assert.That(c.TryDeployAt(b.Entry).Success,Is.True); Assert.That(c.Selected,Is.False);
             int dp=b.DP, uses=b.RemainingUses;

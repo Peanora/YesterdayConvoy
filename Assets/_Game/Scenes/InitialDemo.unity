@@ -33749,6 +33749,7 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: db93b074523fd784f91536acc881eaaf, type: 3}
   combatView: {fileID: 977501757}
   skillIcon: {fileID: 21300000, guid: bdb90aa774db33843b17248c20b6820c, type: 3}
+  talulahDefinition: {fileID: 11400000, guid: 5ac2d238e4a9a45488063873ea1145c7, type: 2}
 --- !u!1 &1156756412
 GameObject:
   m_ObjectHideFlags: 0

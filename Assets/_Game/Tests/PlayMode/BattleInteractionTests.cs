@@ -15,6 +15,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo",LoadSceneMode.Single);
             yield return null; Time.timeScale=0;
+            Object.FindAnyObjectByType<ManualBattleController>().SwitchTrial(false);
         }
         private static Vector2 Entry(ManualBattleController c) => Camera.main.WorldToScreenPoint(c.Battle.Entry);
         private static void BeginDrag(ManualBattleController c) => c.ProcessPointerDown(ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center));

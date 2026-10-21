@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a509c8e9c8e594c4998b7307203faef9, type: 3}
+  m_Name: Talulah
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.CardDefinition
+  cardId: CARD_TALULAH_TRIAL
+  displayName: "\u5854\u9732\u62C9"
+  recruitCost: 5
+  unit: {fileID: 11400000, guid: 6bd4655203a5c2c4f82d77eff15a58e8, type: 2}
+  portrait: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  battleSprite: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  articulatedArt: {fileID: 11400000, guid: 29e0e49e05597d346b6b4fe38a01821a, type: 2}
+  walkFrames:
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  attackFrames:
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  skillFrames:
+  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  comicImpactFaces: []

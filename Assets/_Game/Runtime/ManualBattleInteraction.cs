@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
-        public float EffectiveSimulationSpeed => Battle==null || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
+        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
         private static Vector2 GUIPosition(Vector2 screen) => new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
@@ -29,16 +29,19 @@ namespace YesterdayConvoy
 
         public bool ProcessPointerEvent(EventType type, Vector2 guiPosition, int button)
         {
+            if(TestSelectionOpen) return false;
             if(button!=0) return false;
             Vector2 screen=new Vector2(guiPosition.x,Screen.height-guiPosition.y);
             if(SettlementVisible)
             {
-                if(type==EventType.MouseDown) { settlementPointerDown=SettlementRestartRect.Contains(GUIPosition(screen)); return true; }
+                if(type==EventType.MouseDown)
+                { settlementPointerDown=SettlementRestartRect.Contains(GUIPosition(screen)); selectionReturnPointerDown=SettlementReturnRect.Contains(GUIPosition(screen)); return true; }
                 if(type==EventType.MouseUp)
                 {
                     bool restart=settlementPointerDown && SettlementRestartRect.Contains(GUIPosition(screen));
-                    settlementPointerDown=false;
-                    if(restart) RestartBattle();
+                    bool returnToMenu=selectionReturnPointerDown && SettlementReturnRect.Contains(GUIPosition(screen));
+                    settlementPointerDown=selectionReturnPointerDown=false;
+                    if(returnToMenu) ReturnToMonsterTests(); else if(restart) RestartBattle();
                     return true;
                 }
                 return type==EventType.MouseDrag;
@@ -56,6 +59,7 @@ namespace YesterdayConvoy
 
         public void ProcessPointerDown(Vector2 screen)
         {
+            if(TestSelectionOpen) return;
             pointerScreen=screen;
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) { CancelInteraction(); return; }
             if(RosterSlot.Contains(GUIPosition(screen)))
@@ -75,6 +79,7 @@ namespace YesterdayConvoy
 
         public DeploymentReceipt ProcessPointerUp(Vector2 screen)
         {
+            if(TestSelectionOpen) return new DeploymentReceipt(DeployFailure.NotStarted);
             pointerScreen=screen;
             if(!Dragging) return new DeploymentReceipt(DeployFailure.NotStarted);
             Dragging=false;
@@ -134,6 +139,7 @@ namespace YesterdayConvoy
 
         public void OpenSkillMenu(string id)
         {
+            if(TestSelectionOpen) return;
             if(!Battle.EngagementEnabled || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
             Dragging=false; Selected=false; selectedEntityId=id; SkillMenuOpen=true;
             Feedback="选择角色技能；点击空白处取消"; UpdatePreview();
@@ -195,7 +201,7 @@ namespace YesterdayConvoy
             {
                 Vector2 p=GUIPosition(pointerScreen);
                 Fill(new Rect(p.x-30,p.y-76,60,70),new Color(.24f,.51f,.58f,.85f));
-                Sprite portrait=scene.Card.Portrait; Rect source=portrait.textureRect;
+                Sprite portrait=OriginalTalulahArt.CardPortrait(definition.Card); Rect source=portrait.textureRect;
                 GUI.DrawTextureWithTexCoords(new Rect(p.x-28,p.y-74,56,66),portrait.texture,
                     new Rect(source.x/portrait.texture.width,source.y/portrait.texture.height,source.width/portrait.texture.width,source.height/portrait.texture.height));
             }
@@ -205,14 +211,14 @@ namespace YesterdayConvoy
             Rect bounds=UnitScreenRect(selectedEntityId),panel=SkillPopupRect,button=SkillCastRect;
             Fill(new Rect(bounds.xMin,bounds.yMax-4,bounds.width,3),ReadyGold);
             Fill(panel,new Color(.04f,.075f,.10f,.98f)); Fill(new Rect(panel.x,panel.y,panel.width,3),ReadyGold);
-            GUI.Label(new Rect(panel.x+14,panel.y+10,145,29),"爆裂黎明",textStyle);
+            GUI.Label(new Rect(panel.x+14,panel.y+10,145,29),SkillName,textStyle);
             int entityNumber=1;
             foreach(var unit in Battle.Units) { if(unit.EntityId==selectedEntityId) break; entityNumber++; }
             GUI.Label(new Rect(panel.x+166,panel.y+12,42,26),$"#{entityNumber:00}",smallStyle);
             bool ready=Battle.CheckSkill(selectedEntityId)==SkillFailure.None;
             Fill(button,ready ? ReadyGold : new Color(.22f,.29f,.32f));
             DrawSkillIcon(new Rect(button.x+9,button.y+9,48,48),ready ? new Color(.06f,.10f,.13f) : new Color(.55f,.62f,.65f));
-            string charge=selected.SkillAmmo>0 ? $"弹药 {selected.SkillAmmo}/6" : $"技力 {selected.SkillSP:0}/{Battle.CombatSettings.RequiredSP:0}";
+            string charge=Battle.CombatSettings.FireRain && Battle.IsSkillActionPlaying(selected) ? $"火雨 {selected.SkillAmmo} 波" : selected.SkillAmmo>0 ? $"弹药 {selected.SkillAmmo}/6" : $"技力 {selected.SkillSP:0}/{Battle.CombatSettings.RequiredSP:0}";
             GUI.Label(new Rect(panel.x+93,panel.y+45,116,26),charge,smallStyle);
             GUI.Label(new Rect(panel.x+93,panel.y+76,116,26),Battle.IsPaused ? "暂停中" : ready ? "点击释放" : selected.SkillAmmo>0 ? "技能生效中" : "技力回复中",smallStyle);
             GUI.Label(new Rect(panel.x+14,panel.y+119,194,25),Battle.IsPaused ? "恢复后可释放技能" : "0.03×  ·  点空白处取消",smallStyle);

@@ -1,0 +1,25 @@
+{
+  "checked": "2026-10-20",
+  "source_page": "https://opengameart.org/content/lots-of-game-effects",
+  "author": "Soluna Software",
+  "license": "CC0",
+  "license_evidence": "Original page License(s): CC0; Copyright/Attribution Notice: Use this as you like. You do not need to credit me",
+  "files": [
+    {
+      "source": "https://opengameart.org/sites/default/files/Fire01.png",
+      "local": "Assets/_Game/Art/VFX/Skills/Talulah/fire-stream-cc0.png",
+      "sha256": "cee47a14971d54ab3a1f8ea1806e6f807ff9aae1dd62e6a6c7ede61efd92c8c0",
+      "changes": "Byte-for-byte original PNG; Unity sprite slicing only"
+    },
+    {
+      "source": "https://opengameart.org/sites/default/files/ToonExplosion31.png",
+      "local": "Assets/_Game/Art/VFX/Skills/Talulah/fire-impact-cc0.png",
+      "sha256": "be8b73c5655ae05a4a83be32ce812a366ef157fdd8696f91224565ccf72c0f7f",
+      "changes": "Byte-for-byte original PNG; Unity sprite slicing only"
+    }
+  ],
+  "other_evaluated_pages": [
+    "https://kenney.nl/assets/particle-pack",
+    "https://opengameart.org/content/animated-fire"
+  ]
+}

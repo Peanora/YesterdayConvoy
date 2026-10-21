@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         private Material material;
         [SerializeField] private SpriteRenderer kroos;
         private LineRenderer range;
+        private readonly List<SpriteRenderer> extraVisuals=new List<SpriteRenderer>();
         private AudioSource audioSource;
         private AudioClip click, impact;
         private int runId, lastPhase = -1;
@@ -25,11 +26,17 @@ namespace YesterdayConvoy
         public void Initialize(ManualBattleController controller, EngagementDefinition data, AudioClip uiSound, AudioClip hitSound)
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
-            material = new Material(Shader.Find("Sprites/Default"));
+            ClearTransient(); runId=-1;
+            foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
+            extraVisuals.Clear();
+            if(material==null) material = new Material(Shader.Find("Sprites/Default"));
             if(kroos==null) kroos = new GameObject("Kroos combat sprite", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
             kroos.transform.SetParent(transform, false); kroos.sprite = data.KroosSprite; kroos.sharedMaterial = material;
-            range = CreateLine("Kroos range", 0.018f); range.loop = true; range.positionCount = 64; range.sortingOrder = 0;
-            audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;
+            if(range==null) range = CreateLine("Kroos range", 0.018f); range.loop = true; range.positionCount = 64; range.sortingOrder = 0;
+            for(int i=0;i<data.ExtraDefenders.Count;i++)
+            { var v=new GameObject("Kroos flank "+i,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+              v.transform.SetParent(transform,false); v.sprite=data.KroosSprite; v.sharedMaterial=material; extraVisuals.Add(v); }
+            if(audioSource==null) audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;
         }
 
         private void LateUpdate()
@@ -64,6 +71,14 @@ namespace YesterdayConvoy
                 float a = i * Mathf.PI * 2 / 64;
                 range.SetPosition(i, new Vector3(d.Position.x, 0.055f, d.Position.z) + new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * b.CombatSettings.DefenderRange);
             }
+            for(int i=0;i<extraVisuals.Count;i++)
+            {
+                var other=b.Defenders[i+1]; var v=extraVisuals[i];
+                float fade=other.Alive ? 1 : 1-Mathf.Clamp01((float)(time-other.DeathTime)/.45f);
+                v.enabled=fade>0; v.transform.position=other.Position; v.transform.rotation=cam.transform.rotation;
+                v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
+                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
+            }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {
@@ -71,11 +86,11 @@ namespace YesterdayConvoy
                 {
                     var view=new ShotView { Trail = CreateLine("Shot trail", 0.06f), Impact = CreateLine("Impact ring", 0.04f), Rays = CreateLine("Impact rays", 0.025f), Ink=CreateLine("Comic impact ink",.12f) };
                     var faces=owner.Definition.Card.ComicImpactFaces;
-                    if(faces?.Count>0)
+                    if(faces?.Count>0 || owner.Definition.Card.ArticulatedArt!=null)
                     {
                         view.Face=new GameObject("Comic expression",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
                         view.Face.transform.SetParent(transform,false); view.Face.sharedMaterial=material;
-                        view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
+                        if(faces?.Count>0) view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
                     }
                     shots.Add(view);
                     Play(impact, modelShots[i].FromDefender ? 0.23f : modelShots[i].Empowered ? 0.75f : 0.35f);
@@ -105,6 +120,8 @@ namespace YesterdayConvoy
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
+            if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
+            if(!shot.FromDefender && owner.Definition.Card.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
             var target = b.FindUnit(shot.TargetId);
@@ -161,6 +178,53 @@ namespace YesterdayConvoy
                 view.Rays.SetPosition(i * 2 + 1, end + axis * radius * 1.3f);
             }
             view.Rays.startColor = view.Rays.endColor = color;
+        }
+
+        private void PresentFireRain(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
+            var art=owner.Definition.Card.ArticulatedArt;
+            if(v.Face==null || art==null) return;
+            float age=(float)(b.Clock-shot.ImpactAt);
+            v.Face.enabled=age>=0 && age<.66f;
+            if(!v.Face.enabled) return;
+            v.Face.sprite=art.ImpactFrames[Mathf.Clamp((int)(age*24),0,art.ImpactFrames.Count-1)];
+            v.Face.transform.position=shot.Destination+cam.transform.up*.65f;
+            v.Face.transform.rotation=cam.transform.rotation; v.Face.transform.localScale=Vector3.one*1.05f;
+            v.Face.sortingOrder=23003; v.Face.color=new Color(1,1,1,1-age/.66f);
+        }
+
+        private void PresentTalulahSlash(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
+            float age=(float)(b.Clock-shot.StartedAt),hitAge=(float)(b.Clock-shot.ImpactAt);
+            Vector3 origin=shot.Origin+cam.transform.up*.72f,end=shot.Destination+cam.transform.up*.75f;
+            float face=cam.transform.InverseTransformDirection(end-origin).x<0 ? -1 : 1;
+            if(age>=.38f && age<.78f)
+            {
+                float progress=Mathf.Clamp01((age-.38f)/.28f),alpha=Mathf.Clamp01((.78f-age)/.14f);
+                v.Ink.enabled=v.Trail.enabled=true; v.Ink.loop=v.Trail.loop=false;
+                v.Ink.positionCount=v.Trail.positionCount=24;
+                v.Ink.widthMultiplier=.16f; v.Trail.widthMultiplier=.075f;
+                v.Ink.sortingOrder=23000; v.Trail.sortingOrder=23001;
+                v.Ink.startColor=v.Ink.endColor=new Color(.10f,.015f,.025f,alpha);
+                v.Trail.startColor=new Color(1,.14f,.015f,alpha); v.Trail.endColor=new Color(1,.92f,.50f,alpha);
+                Vector3 center=Vector3.Lerp(origin,end,progress*.75f);
+                for(int j=0;j<24;j++)
+                {
+                    float angle=(Mathf.Lerp(1.9f,-1.3f,j/23f)+progress*.65f);
+                    Vector3 point=center+cam.transform.right*(face*Mathf.Cos(angle)*.82f)+cam.transform.up*(Mathf.Sin(angle)*.78f);
+                    v.Ink.SetPosition(j,point); v.Trail.SetPosition(j,point);
+                }
+            }
+            if(v.Face!=null && hitAge>=0 && hitAge<.54f)
+            {
+                var frames=owner.Definition.Card.ArticulatedArt.ImpactFrames;
+                v.Face.enabled=true; v.Face.sprite=frames[Mathf.Clamp((int)(hitAge*24),0,frames.Count-1)];
+                v.Face.transform.position=end; v.Face.transform.rotation=cam.transform.rotation;
+                v.Face.transform.localScale=Vector3.one*.85f; v.Face.color=new Color(1,.78f,.65f,1-hitAge/.54f);
+                v.Face.sortingOrder=23002;
+            }
         }
 
         private void Play(AudioClip clip, float volume)
