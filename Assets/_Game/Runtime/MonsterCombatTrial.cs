@@ -30,6 +30,10 @@ namespace YesterdayConvoy
             }
             bool resolved=!unit.Active;
             if(unit.Resolution==UnitResolution.Dead) { Tick(.2f);yield return InteractionFrame(directory,task+"-death"); }
+            if(Battle.HasPendingDeathBlast)
+            {
+                Tick(1.05f);yield return InteractionFrame(directory,task+"-blast");
+            }
             RestartBattle();SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);
             SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);SelectCard(true);bool three=TryDeployAt(Battle.Entry).Success;
             yield return InteractionFrame(directory,task+"-group");
