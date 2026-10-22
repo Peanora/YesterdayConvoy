@@ -1,0 +1,678 @@
+{
+  "version": 1,
+  "task": "M20",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_attack_2",
+      "source": "Attack_2",
+      "count": 83,
+      "duration": 1.3666666746139526,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_attack_2-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-05.png",
+          "count": 3,
+          "width": 1920,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "extra_idle_2",
+      "source": "Idle_2",
+      "count": 72,
+      "duration": 1.2000000476837158,
+      "fps": 60,
+      "loop": true,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_idle_2-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_idle_2-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_idle_2-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_idle_2-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_idle_2-04.png",
+          "count": 8,
+          "width": 1920,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "key": "extra_move_2",
+      "source": "Move_2",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_move_2-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_move_2-07.png",
+          "count": 8,
+          "width": 1920,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "key": "extra_skill",
+      "source": "Skill",
+      "count": 207,
+      "duration": 3.433333396911621,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_skill-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-07.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-08.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-09.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-10.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-11.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill-12.png",
+          "count": 15,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_revive_1",
+      "source": "revive_1",
+      "count": 73,
+      "duration": 1.2000000476837158,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_revive_1-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_1-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_1-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_1-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_1-04.png",
+          "count": 9,
+          "width": 1920,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "extra_revive_2",
+      "source": "revive_2",
+      "count": 81,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_revive_2-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_2-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_2-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_2-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_2-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_2-05.png",
+          "count": 1,
+          "width": 1920,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "extra_revive_3",
+      "source": "revive_3",
+      "count": 221,
+      "duration": 3.6666667461395264,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "extra_revive_3-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-07.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-08.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-09.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-10.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-11.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-12.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_revive_3-13.png",
+          "count": 13,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_attack_2-00.png",
+      "sha256": "4efb3ec136deacd12a8e14bf00c59800c53547bc433176102a49a0a88cf09a24"
+    },
+    {
+      "file": "extra_attack_2-01.png",
+      "sha256": "90c9542c6f94d3769ba3c5b95d8ee02b6d51bc7c8186de795ad8bf8465cb8259"
+    },
+    {
+      "file": "extra_attack_2-02.png",
+      "sha256": "9ef70252925953335153c531b0cfdf110bffd4c585af63d341c8e1fd8739afeb"
+    },
+    {
+      "file": "extra_attack_2-03.png",
+      "sha256": "15673ff7ea3a8a8576fe6d4804eabf8123a55a3d6ce91e01dba49577a89387fd"
+    },
+    {
+      "file": "extra_attack_2-04.png",
+      "sha256": "6477807b967a8e739cb20dd26c9b67d61d85964f9fc03ffb570d003dc968a771"
+    },
+    {
+      "file": "extra_attack_2-05.png",
+      "sha256": "fcb4182ac25a295a8cd84708615bef0d99e1721eb09b834b448f964670d1dadf"
+    },
+    {
+      "file": "extra_idle_2-00.png",
+      "sha256": "e75649246348ce8febd5f49a9de6ef4c4a974ac1afbaddfba7b6c79697317e14"
+    },
+    {
+      "file": "extra_idle_2-01.png",
+      "sha256": "274dd30449aa1ab40ef2088316083b3197b917a93cf0a4a7b19577e156d16305"
+    },
+    {
+      "file": "extra_idle_2-02.png",
+      "sha256": "f9ab52d774bbbeee76147b43d0bad18ae0ba73cdf68b873e23d0514981a89b8e"
+    },
+    {
+      "file": "extra_idle_2-03.png",
+      "sha256": "f5c883279a002c44e42638ea2d53df7f598d1d6f078f7bb7a0ed57a65760aca8"
+    },
+    {
+      "file": "extra_idle_2-04.png",
+      "sha256": "10e687bfc94980fb52754d3cdaa4132af5f56a11e80c2da1c195b84868c82540"
+    },
+    {
+      "file": "extra_move_2-00.png",
+      "sha256": "691171cf5269d1129aa7869a0dc7dc252df4ec98428806db3fefeec20a701c1d"
+    },
+    {
+      "file": "extra_move_2-01.png",
+      "sha256": "6e9f6cbbc80f3d67753bea6b72403018f1966f65537c75d33b7f102174c4f64f"
+    },
+    {
+      "file": "extra_move_2-02.png",
+      "sha256": "ed56adf983af45345c393288dcdee9aafcd2a28ab9703875c94387854eec72ed"
+    },
+    {
+      "file": "extra_move_2-03.png",
+      "sha256": "f28c4eafecb7103d68200b00373fa9668b2812eff3db8c8acc024098da350786"
+    },
+    {
+      "file": "extra_move_2-04.png",
+      "sha256": "8f0d70fdcdc69677aad753b643cfc80d993c10975d14208a9024b956bff34459"
+    },
+    {
+      "file": "extra_move_2-05.png",
+      "sha256": "2273172992534e9754139c586a1f1829951413dac012aca213de3418c97c8c16"
+    },
+    {
+      "file": "extra_move_2-06.png",
+      "sha256": "06fdcfa435ed5756019bfe3cdac6fe710c54f065739aa0aa3531ca2c89311201"
+    },
+    {
+      "file": "extra_move_2-07.png",
+      "sha256": "f42bf817420840968b857cd1d202ced0891d4afd47a3b1bd6e5d7baf653d567d"
+    },
+    {
+      "file": "extra_skill-00.png",
+      "sha256": "034f7b38172acca8b2af8696408937e83a9838db282a987b2a1bfe7369a6c867"
+    },
+    {
+      "file": "extra_skill-01.png",
+      "sha256": "b4671af5df36ac79997e6b5e71c5e329efbbcda129e9994b1e50f49031d1e9e2"
+    },
+    {
+      "file": "extra_skill-02.png",
+      "sha256": "952145ad25c1a4f390dea7a614443d9d2df0ef536cc9e62bac24e4c90706152c"
+    },
+    {
+      "file": "extra_skill-03.png",
+      "sha256": "0d40e063724e4b71665a03eeffc5db18cfa082b4058e2d81f8e2314061d8597b"
+    },
+    {
+      "file": "extra_skill-04.png",
+      "sha256": "20ec412c6d177b5c1397dac5c1e95f51ded49bf42b569cb47c1757787cd5e370"
+    },
+    {
+      "file": "extra_skill-05.png",
+      "sha256": "e50ef2fb4ec263f1b1dd853f7460ab213faaa1e352eeaebebbf045b6fa7691a8"
+    },
+    {
+      "file": "extra_skill-06.png",
+      "sha256": "bd8f7265f242edc8f6d8e056f1729e091e9f3cf00c5a41061b4b833539759af1"
+    },
+    {
+      "file": "extra_skill-07.png",
+      "sha256": "644910a559f0e3222533a949229843077065db35ef3e91893b410808da6334c8"
+    },
+    {
+      "file": "extra_skill-08.png",
+      "sha256": "43967e1c633f4a09c08a8050bd111bec7837f763ccb3c4dca47f4e1ec6d87661"
+    },
+    {
+      "file": "extra_skill-09.png",
+      "sha256": "392e4d0ea0f1954ba313fb0265dc5d61222a1255d06b5a0a148240d7e93140aa"
+    },
+    {
+      "file": "extra_skill-10.png",
+      "sha256": "9ed3986d6bcf03d7e231bf81354b7d3b6f5fcab246fd2056a3bc5ac3f485bf85"
+    },
+    {
+      "file": "extra_skill-11.png",
+      "sha256": "aeb981cda3f9862c50fdad5f5dab0ec84d6d8da74c9e97b80cb3ab9d01b46c45"
+    },
+    {
+      "file": "extra_skill-12.png",
+      "sha256": "ac5f134b15740f42227b1f844d0bd6f0368e98bb5b8c7a7211d023b3c9bfa01b"
+    },
+    {
+      "file": "extra_revive_1-00.png",
+      "sha256": "f7ff5c04d0e17a81cde5f60dedd380c8a5ba968834a64a775aafa07876dc4cd2"
+    },
+    {
+      "file": "extra_revive_1-01.png",
+      "sha256": "51fb46cc913e270d41a2d85001576a83491140cbb54ce1b47c34b8e57c054ebf"
+    },
+    {
+      "file": "extra_revive_1-02.png",
+      "sha256": "7d649694c04f15ceae4a76e94f47a9ef4b6848abb5c21936431c431986d4d2b4"
+    },
+    {
+      "file": "extra_revive_1-03.png",
+      "sha256": "3ace552715640a82f9bc713c7bc0934ead19d7369512f9f9654de513ecd2f795"
+    },
+    {
+      "file": "extra_revive_1-04.png",
+      "sha256": "a41ad32846cafe7d337fd5367835163fcf3f023586bd38a62474c8d4bd52f208"
+    },
+    {
+      "file": "extra_revive_2-00.png",
+      "sha256": "d0633b51b7c6e098795ed3138460c039fb01ea61b8f39198df1fafad09df7168"
+    },
+    {
+      "file": "extra_revive_2-01.png",
+      "sha256": "2ba9350685ba425f621d7d6b2f28ecd12d3383138aa398fabd35db33c6421cf2"
+    },
+    {
+      "file": "extra_revive_2-02.png",
+      "sha256": "975ec9fea4a7c8e793ed6798ce4e65955802f3aba1d05f5583963c2f08975159"
+    },
+    {
+      "file": "extra_revive_2-03.png",
+      "sha256": "ae37802ac2d0f1086cb6fb1ab51fe004c67f56d0d0246e50bb81387fb42d94ed"
+    },
+    {
+      "file": "extra_revive_2-04.png",
+      "sha256": "cd5d157c22e92a4209754ba02f779bc1febd58b7ae995c62e8957e829d4bafc7"
+    },
+    {
+      "file": "extra_revive_2-05.png",
+      "sha256": "c0a10708cb7608cadbef4b3d6f8c1272dea15d47348a734323f0aae44013601e"
+    },
+    {
+      "file": "extra_revive_3-00.png",
+      "sha256": "fd7b1b28a2a29f485170318eba6cd33a118d31feba8b1c37e5c0c701352be2df"
+    },
+    {
+      "file": "extra_revive_3-01.png",
+      "sha256": "6e3edd192fbde3c0133b6d977086a0a60d7cb6af9033e6e7e18a817a94db8311"
+    },
+    {
+      "file": "extra_revive_3-02.png",
+      "sha256": "a86a64f21c1912d6b9c5338a0534c81bea6df6b796f58f114c4329bb690c0b3c"
+    },
+    {
+      "file": "extra_revive_3-03.png",
+      "sha256": "f4bee93c79421c8281789842e27da23ea0ab6966e7d260a70adcb306af3f37d6"
+    },
+    {
+      "file": "extra_revive_3-04.png",
+      "sha256": "1ec153b7676cf46b0f67a005a49154d522ed457d91cda35a48f2e8a7bfda2595"
+    },
+    {
+      "file": "extra_revive_3-05.png",
+      "sha256": "06873113ab6dfdfc050b8e93c31183a4022ed25e1fbb1d2cd1e8084d25d336a3"
+    },
+    {
+      "file": "extra_revive_3-06.png",
+      "sha256": "7ec9f3b829de73af6313fcaed676f37076bd8bb2599d9576709802dc7c4a7192"
+    },
+    {
+      "file": "extra_revive_3-07.png",
+      "sha256": "0b6d8d0d85aca529ebbe5f637d24148623b3dfdcffc661743d5738b781a33a2b"
+    },
+    {
+      "file": "extra_revive_3-08.png",
+      "sha256": "3fdf4737908e40500e3ce5b6b080b72444abff1ed5167fb622d3101988b36075"
+    },
+    {
+      "file": "extra_revive_3-09.png",
+      "sha256": "1be0d8a0d035ee5f697633b8d448fc37c6bd6359e87e1a0f397952248ee06b01"
+    },
+    {
+      "file": "extra_revive_3-10.png",
+      "sha256": "c258677c02cec8724b2cf07865ce37c45f49d11fa410883f594cee259001d480"
+    },
+    {
+      "file": "extra_revive_3-11.png",
+      "sha256": "9025e666d9fe0f09fce55d2cf497ce8506a4ad72f24da4c10e74cde0fb3cf7f9"
+    },
+    {
+      "file": "extra_revive_3-12.png",
+      "sha256": "3ca937d8c89f4186489c3b48821da289080900dd5d1df42d24a06472d8b30be5"
+    },
+    {
+      "file": "extra_revive_3-13.png",
+      "sha256": "19038834d84b4142255178c8337d8d1c2db7c6a1748a02c3e46e7f624e3b89e7"
+    }
+  ],
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1506_patrt. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+}

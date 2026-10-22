@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8daae59cfbb1a1d4f9375b5159d4c8c9, type: 3}
+  m_Name: M34
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ManualBattleDefinition
+  levelId: M34_TEST
+  card: {fileID: 11400000, guid: 4bec00431a6bd544da537680bfbfc9ef, type: 2}
+  engagement: {fileID: 11400000, guid: f15dd3680b6b3f443a5e52004c416f8b, type: 2}
+  initialDP: 12
+  initialDefense: 1
+  deploymentCost: 2
+  deploymentLimit: 3
+  deploymentCooldown: 1
+  unitHealth: 260
+  towerRange: 2.8
+  towerDamage: 16
+  shotInterval: 1

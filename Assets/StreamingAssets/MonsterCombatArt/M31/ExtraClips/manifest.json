@@ -1,0 +1,289 @@
+{
+  "version": 1,
+  "task": "M31",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_skill_down_end",
+      "source": "Skill_Down_End",
+      "count": 33,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.3724933403730393,
+      "pivotY": 0.16377861458808185,
+      "sourceBounds": [
+        -192.5980682373047,
+        -3.1766271591186523,
+        364.3965148925781,
+        456.1907043457031
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_down_end-00.png",
+          "count": 33,
+          "width": 2048,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_down_loop",
+      "source": "Skill_Down_Loop",
+      "count": 24,
+      "duration": 0.4000000059604645,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4435389116832188,
+      "pivotY": 0.12598357083542006,
+      "sourceBounds": [
+        -194.32725524902344,
+        -3.3178954124450684,
+        260.89190673828125,
+        444.2635803222656
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_down_loop-00.png",
+          "count": 24,
+          "width": 2016,
+          "height": 672
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_down_start",
+      "source": "Skill_Down_Start",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.3816577750444412,
+      "pivotY": 0.10625974018126727,
+      "sourceBounds": [
+        -192.5980682373047,
+        -3.1766271591186523,
+        352.04864501953125,
+        533.6898193359375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_down_start-00.png",
+          "count": 31,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_front_end",
+      "source": "Skill_Front_End",
+      "count": 33,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.3542708941868373,
+      "pivotY": 0.11574698810066497,
+      "sourceBounds": [
+        -176.99383544921875,
+        -3.1766271591186523,
+        348.80078125,
+        456.1907043457031
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_front_end-00.png",
+          "count": 33,
+          "width": 2016,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_front_loop",
+      "source": "Skill_Front_Loop",
+      "count": 24,
+      "duration": 0.4000000059604645,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.42002266804377236,
+      "pivotY": 0.07104222478965916,
+      "sourceBounds": [
+        -177.3264617919922,
+        -3.3178954124450684,
+        258.1456604003906,
+        436.791015625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_front_loop-00.png",
+          "count": 24,
+          "width": 1920,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_front_start",
+      "source": "Skill_Front_Start",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.37060585618019104,
+      "pivotY": 0.10625974018126727,
+      "sourceBounds": [
+        -176.99383544921875,
+        -3.1766271591186523,
+        351.3354187011719,
+        533.6898193359375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_front_start-00.png",
+          "count": 31,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_up_end",
+      "source": "Skill_Up_End",
+      "count": 33,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.36918451547622677,
+      "pivotY": 0.15298183400183918,
+      "sourceBounds": [
+        -188.13986206054688,
+        -3.1766271591186523,
+        364.3965148925781,
+        470.7379455566406
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_up_end-00.png",
+          "count": 33,
+          "width": 2048,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_up_loop",
+      "source": "Skill_Up_Loop",
+      "count": 24,
+      "duration": 0.4000000059604645,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4512782069614955,
+      "pivotY": 0.10283494151064326,
+      "sourceBounds": [
+        -188.13986206054688,
+        -3.3178954124450684,
+        245.58029174804688,
+        471.5545959472656
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_up_loop-00.png",
+          "count": 24,
+          "width": 2016,
+          "height": 672
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_up_start",
+      "source": "Skill_Up_Start",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.37887829780578614,
+      "pivotY": 0.10625974018126727,
+      "sourceBounds": [
+        -188.13986206054688,
+        -3.1766271591186523,
+        351.3354187011719,
+        533.6898193359375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_up_start-00.png",
+          "count": 31,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_skill_down_end-00.png",
+      "sha256": "999227ddcb2a5f23ff3ada56f272a579c06c23962450c43bb5460ac345537a21"
+    },
+    {
+      "file": "extra_skill_down_loop-00.png",
+      "sha256": "3b97954abc1fc2318edb5b99778a28a4d2d59a35b96e36b009317882eea8277f"
+    },
+    {
+      "file": "extra_skill_down_start-00.png",
+      "sha256": "e0accce60b62f11b6a95d9667547e8e21012128ab63267b76350575e5aeb938a"
+    },
+    {
+      "file": "extra_skill_front_end-00.png",
+      "sha256": "86fc45fc3808951b1582fd8e002515cc43d84f589683e10a31f27d5d0a9e2a4d"
+    },
+    {
+      "file": "extra_skill_front_loop-00.png",
+      "sha256": "d958d9245e3256ba14aff39642e54781959b6ffab6e762db5653b85772203e0f"
+    },
+    {
+      "file": "extra_skill_front_start-00.png",
+      "sha256": "20a26b6d3703ac9366a6bf0c9ec477b7f7ce26d3ce1892adad2d934a78862296"
+    },
+    {
+      "file": "extra_skill_up_end-00.png",
+      "sha256": "58378667b84a510b9d364ac17a0820c2f1c11a7d62770655dbe759c3395f88d8"
+    },
+    {
+      "file": "extra_skill_up_loop-00.png",
+      "sha256": "546fc4add15def54891c847f340de95a875b4a4d7327865cd3e2b6b8b5ce582e"
+    },
+    {
+      "file": "extra_skill_up_start-00.png",
+      "sha256": "90d750730065cc6f285854dad085d77bc4b53d78381f5c1569af2b8245517395"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1173_duspfr. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

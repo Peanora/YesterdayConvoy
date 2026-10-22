@@ -38,7 +38,8 @@ namespace YesterdayConvoy
             }
             else if(CurrentLocalArt!=null)
             {
-                GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+" · 普通攻击 · 无主动技能",smallStyle);
+                GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
+                    (Battle.CombatSettings.CanAttack ? " · 普通攻击 · 无主动技能" : " · 不普攻 · 特殊机制待做"),smallStyle);
                 GUI.Label(new Rect(24,659,650,26),$"可部署{Battle.Settings.DeploymentLimit}次 · 单次{Battle.Settings.DeploymentCost} DP · 空格暂停",smallStyle);
             }
             else if(TalulahActive)
