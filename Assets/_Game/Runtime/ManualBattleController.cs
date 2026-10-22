@@ -38,8 +38,10 @@ namespace YesterdayConvoy
         private double terminalPresentationElapsed;
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
+        private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
+        private double DeathTail => CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0);
         public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) &&
-            !(SlugActive && Battle.Phase==BattlePhase.Lost && terminalPresentationElapsed<.5);
+            !(Battle.Phase==BattlePhase.Lost && terminalPresentationElapsed<DeathTail);
         public static Rect SettlementRestartRect => new Rect(480,454,320,54);
 
         private void Start()
@@ -56,8 +58,12 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
-            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest");
+            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
+            int monsterSmoke=Array.IndexOf(args,"-monsterCombatSmokeTest");
+            if(monsterSmoke>=0 && monsterSmoke+1<args.Length)
+            { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+              StartCoroutine(VerifyMonsterCombat(args[monsterSmoke+1],evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
             if(Array.IndexOf(args,"-slugSmokeTest")>=0)
             { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
               StartCoroutine(VerifySlug(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null)); }
@@ -151,7 +157,7 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
-                terminalPresentationElapsed=Math.Min(.6,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
+                terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
             SyncViews();
             UpdatePreview();
@@ -178,7 +184,7 @@ namespace YesterdayConvoy
             foreach(var pair in views)
             {
                 bool alive=false;
-                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || SlugActive && unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+.5)) { alive=true; break; }
+                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || DeathTail>0 && unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail)) { alive=true; break; }
                 if(!alive) { if(pair.Value!=null) { pair.Value.gameObject.SetActive(false); Destroy(pair.Value.gameObject); } removed.Add(pair.Key); }
             }
             foreach(string id in removed) views.Remove(id);
@@ -303,7 +309,7 @@ namespace YesterdayConvoy
             foreach(var unit in Battle.Units)
             {
                 if(!unit.Active) continue;
-                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*(SlugActive ? 1f : 1.8f));
+                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*(CurrentLocalArt?.Height ?? (SlugActive ? 1f : 1.8f)));
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));

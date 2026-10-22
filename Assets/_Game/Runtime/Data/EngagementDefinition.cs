@@ -19,6 +19,7 @@ namespace YesterdayConvoy
         [SerializeField] private bool fireRain;
         [SerializeField] private bool hasSkill = true;
         [SerializeField] private bool melee;
+        [SerializeField] private float attackDuration, attackWindup;
         [SerializeField] private Vector3[] extraDefenders = new Vector3[0];
         public System.Collections.Generic.IReadOnlyList<Vector3> ExtraDefenders => extraDefenders;
         public bool FireRain => fireRain;
@@ -26,6 +27,6 @@ namespace YesterdayConvoy
         public Vector3 DefenderPosition => defenderPosition;
         public EngagementSettings Snapshot() => new EngagementSettings(unitAttack, unitArmor, unitRange, unitInterval,
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
-            initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee);
+            initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup);
     }
 }

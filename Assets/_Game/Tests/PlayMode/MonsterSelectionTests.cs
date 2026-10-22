@@ -20,14 +20,14 @@ namespace YesterdayConvoy.Tests
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>();
             Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.MonsterTests.Count,Is.EqualTo(41));
-            Assert.That(c.MonsterTests.Count(x=>x.Playable),Is.EqualTo(c.MonsterTests.Single(x=>x.Name=="源石虫").Playable ? 3 : 2));
+            Assert.That(c.MonsterTests.Count(x=>x.Playable),Is.EqualTo(2+Resources.LoadAll<ManualBattleDefinition>("MonsterTests").Count(d=>d.Card.HasFrameAnimation)));
             var battle=c.Battle; int dp=battle.DP;
             c.SelectCard(true); c.StartBattle();
             c.ProcessPointerDown(ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center));
             Assert.That(c.ProcessPointerUp(Camera.main.WorldToScreenPoint(battle.Entry)).Success,Is.False);
             c.Tick(100); Assert.That(c.Dragging,Is.False); Assert.That(battle.Units,Is.Empty);
             Assert.That(battle.Clock,Is.Zero); Assert.That(c.EffectiveSimulationSpeed,Is.Zero);
-            Assert.That(c.TryEnterMonsterTest(Id(c,"猎狗")),Is.False); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
+            Assert.That(c.TryEnterMonsterTest(Id(c,"雪怪狙击手")),Is.False); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
             Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.Battle,Is.SameAs(battle)); Assert.That(battle.DP,Is.EqualTo(dp));
             Assert.That(c.TryEnterMonsterTest(Id(c,"维维美")),Is.True);
             Assert.That(c.TestSelectionOpen,Is.False); Assert.That(c.Definition.Card.DisplayName,Is.EqualTo("维维美"));

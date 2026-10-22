@@ -132,7 +132,7 @@ namespace YesterdayConvoy
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
             Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
-            bool flying = !shot.Resolved && time < shot.ImpactAt;
+            bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
             view.Trail.enabled = flying;
             if (flying)
             {
@@ -149,7 +149,7 @@ namespace YesterdayConvoy
             if (!hit) return;
             color.a = 1 - age / duration;
             float radius = (shot.Empowered ? 0.28f : 0.05f) + age * (shot.Empowered ? 1.3f : 0.8f);
-            if(!shot.FromDefender && owner.Definition.Card.HasFrameAnimation)
+            if(!shot.FromDefender && owner.Definition.Card.HasFrameAnimation && LocalMonsterArt.For(owner.Definition.Card.CardId)==null)
             {
                 // Graphic, black-edged comic burst and source-expression stamp; no extra damage event.
                 view.Rays.enabled=false; view.Ink.enabled=true;

@@ -12,6 +12,7 @@ namespace YesterdayConvoy
         private CardDefinition frameCard;
         private OriginalTalulahArt original;
         private OriginalSlugArt slug;
+        private LocalMonsterArt local;
         private Func<double> presentationClock;
         private bool slugWasMoving;
         private double slugTransitionTime,slugWalkDistance;
@@ -34,7 +35,7 @@ namespace YesterdayConvoy
         {
             if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Battle animation configuration is required.");
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
-            this.presentationClock=presentationClock; slug=OriginalSlugArt.For(frames.CardId);
+            this.presentationClock=presentationClock; local=LocalMonsterArt.For(frames.CardId); slug=OriginalSlugArt.For(frames.CardId);
             slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
             original=OriginalTalulahArt.For(frames);
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
@@ -62,6 +63,7 @@ namespace YesterdayConvoy
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
             transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+            if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
             if(manualBattle.IsPaused) return;
             if(original!=null) { PresentOriginal(); return; }
@@ -96,6 +98,23 @@ namespace YesterdayConvoy
             double duration=skill ? manualBattle.CombatSettings.SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
+        }
+
+        private void PresentLocal()
+        {
+            string clip; double time; bool loop=false;
+            if(deployedUnit.Resolution==UnitResolution.Dead)
+            { FrameState="Death"; clip="death"; time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime; sprite.color=Color.white; }
+            else
+            {
+                double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+                if(age>=0 && age<local["attack"].Duration)
+                { FrameState="Attack"; clip="attack"; time=age; }
+                else if(deployedUnit.IsMoving)
+                { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
+                else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; loop=true; }
+            }
+            sprite.sprite=local[clip].At(time,loop,out int index); FrameIndex=index;
         }
 
         private void PresentSlug()
