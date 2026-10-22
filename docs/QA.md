@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-10-22：M11–M20已确认美术与独立基础交战
+
+- 授权/基线：用户先确认十只项目外预览，再确认保留原main未跟踪PackageManagerSettings.asset的独立目录方案。从实时核实main6be1300建立codex/m11-m20-art-integration，不改原目录。范围仅基础动作/卡面/单卡普攻配置，额外阶段动作保留，不新增技能/光环/复活机制。
+- 导入：Unity6000.6.5f1首次完整导入，MonsterCombatTools.PrepareNextBatch实际退出0；十只均MONSTER_CONFIGURATION_PASS，22份Unit定义校验通过，InitialDemo校验通过。10张透明卡面、55段5451帧（40段参与基础交战、15段留存）来自已确认源模型。212PNG、14清单及必要meta随源码跟踪，无新包/Spine运行时；来源和真实许可状态见art/M11-M20-INTEGRATION.md。
+- Edit Mode：69/69通过、0失败/跳过，artifacts/batch-edit.xml / batch-edit-retry.log。首次batch-edit.log因Unity IL Post Processor runner未能启动、找不到IPC pipe而退出1，没有测试结果；保留失败记录，重新启动并等待进程后通过，未因此改动产品代码或包依赖。
+- GPU Play Mode：32/32通过、0失败/跳过，artifacts/batch-play.xml / batch-play.log。既有Roster测试覆盖全部19个CARD_M样板，新增断言要求M11–M20实际注册而非静默待制作；每只实际检查图帧来源、暂停位置/帧冻结、无技能、三次部署/攻击/穿门胜利、重进资源清理和独立死亡动画根点。选择测试原“雪怪狙击手待制作”改验仍待制作的宿主士兵，保留未知ID拒绝。
+- 菜单后续修整：长名字体缩为20px，避免八字名超出170px名称区域；仅取证入口自动滚动到被测角色。此后针对选择页补跑3/3 Play通过、0跳过，artifacts/batch-menu-final.xml。未为小字样更改再重复整套战斗测试；最终Player检查名称与入口。
+- 最终Windows构建：源码b74265ddb92342ee953091370262998a2d225a41；BaselineTools.BuildWindows退出0，BASELINE_BUILD_PASS 539842988 bytes / 0 errors，artifacts/batch-build-delivery.log。此前构建日志batch-build-final.log为菜单字号修整前版本；不是最终交付来源。Builds/Windows/SOURCE.txt绑定源码、分支、Unity和基线；后续只补文档记录。
+- 十只独立Player：artifacts/player-batch/results.json，M11–M20各自-monsterCombatSmokeTest均退出0，entered/paused/attacked/hit/resolved/three/won/noSkill/clean全部True。输出中的frozen为旧M06专用分支默认值，不能当成新怪冻结能力测试。此轮在最终菜单字号/取证滚动修改前构建上完成，战斗配置/逻辑与最终相同。
+- 最终构建Player：artifacts/player-final/results.json。M13/M19重跑真实部署/战斗/清理并采集完整新菜单，退出0、全True；另-monsterSelectionSmokeTest九项、-talulahSmokeTest十三项、-interactionSmokeTest八项、-combatSmokeTest十三项全部True、各退出0。两轮合计16个独立Player进程，无失败；塔露拉日志original=True，未以回退图冒充原动作。
+- 实际视觉检查：正常D3D12窗口ScreenCapture输出完整1280×720 HUD，已查看雪怪/霜星/盾卫/爱国者交战、M13和M19所在菜单页；名称无截断，卡面无烘焙字、保留比例，脚底/血条/高台层次可读。截图在artifacts/player-batch与player-final，仅本地，不上传预览工作区。单一路线多只实体可能重叠，未修改避让规则；克洛丝仍用现有资源。
+- 资源交付审计：artifacts/media-audit.json；新增212PNG与14清单全部实际Git跟踪，PNG SHA256匹配来源清单及最终Build StreamingAssets，清单内容与构建一致，meta均配对；最大单PNG2094011字节，不需LFS。55动作/5451帧核对一致，ExtraClips实际包含在构建但不被本轮运行加载。仓库及本机忽略核对未排除新媒体；AGENTS仍忽略。
+- 交付副本：E:/珍贵资料/昨日圆车_本地试玩/2026-10-22-M11-M20-b74265d/YesterdayConvoy.exe；564文件逐一SHA256匹配最终构建，没有ZIP/Releases。
+- 仓库静态检查1689个跟踪文件通过，diff --check通过；主场景/Prefab/Packages/ProjectSettings无暂存差异，原工程既存未跟踪设置保留。来源记录/CSV/Credits/排期更新，不冒充原作许可已获得；不自动合并main。
+- 未执行/限制：真人完整连续键鼠通关、第二台电脑、低配/长时/全分辨率验收未执行。当前只接入每只基础四动作，不含正式技能/首领阶段/原作独立投射物/全场特效、商店/升星/羁绊或混编。未重新绘制十张精绘立绘；霜星为普通enemy_1505_frstar而非冬痕。PR14旧角色透明卡面统一仍独立于本任务的main基线，不能把它当作本轮已集成。
+
 ## 2026-10-22：补齐塔露拉 / 源石虫素材，干净克隆完整复现
 
 源码提交8be0d18d5431def15c69e76f693f5e9279e93ca1，基于main b3455c6；后续提交仅补验证文档。同机独立Git克隆，起始无Library、旧构建或额外媒体；所有素材均来自该提交，没有复制忽略目录或运行安装器。Unity6000.6.5f1首次导入、入口场景及12份单位配置校验通过，Windows x64构建360329251字节、0错误、退出0；导入后跟踪文件无变化。
