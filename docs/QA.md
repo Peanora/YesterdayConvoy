@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-10-22 M02～M10独立单怪接入（霍利屹）
+
+- 授权/范围：当前用户逐项确认V1造型，再要求从M08开始接入此前M02～M10任务。基线main e5c1d7d，新分支codex/monster-archer-combat，[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)/[首批PR#9（人类已合入）](https://github.com/Peanora/YesterdayConvoy/pull/9) / [后续PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11)。先M08，再逐只完成并分别正常提交推送其余角色。最终同步发现PR9已由人类合入，按项目规则从新main a306949创建codex/monster-effects-and-roster-completion，移植剩余5个自己的提交；无冲突，文件树与完整验证版93a7a8d一致，随后仅更新审查链接。既存.vscode保留不提交；无主场景、Prefab、Packages/ProjectSettings改动，无覆盖旧ZIP目录/他人修改。
+- Unity6000.6.5f1许可证经当前用户修复后实际启动/编译/单位配置校验退出0，m08-unity-retry.log；后续九份独立Unit/Card/Engagement/ManualBattle资产均由Unity准备工具实际创建并验证，不是手填GUID。原版媒体打包2538帧/56PNG，安装器逐包SHA256/文件清单实际校验；运行时实际加载自己角色的idle/walk/attack/death和卡面，M09选Wizard皮肤，原作媒体及截图始终Git忽略。
+- 最终EditMode69/69通过、零跳过、进程0：artifacts/combat-final-edit.xml/log。新增真实结算覆盖物理/术伤及最小1伤害、削甲按命中单次叠加/目标隔离/重开、死亡来源消失后延迟爆炸/范围/幂等/暂停/最终判负等待、寒冷再叠冻结与到期/暂停/禁止攻击、旧默认兼容及非法配置拒绝。
+- 最终GPU PlayMode32项中26通过、0失败、6项因本目录未装M01和塔露拉原版包而跳过；进程0，artifacts/combat-final-play.xml/log。新角色相关检查无跳过：当前九只独立部署/原版帧/暂停和帧冻结、无技能/无SP、正常攻击/2倍速三次部署击杀/穿门、返回清场/重开；隔离低生命模型验证每只真正Die帧且逻辑根节点不动；场景实际验证爆炸预警/爆炸可见/伤害/暂停清理，酸液削甲、术师按法抗真实扣血，以及两只冰爆错峰部署后的冻结/停止攻击/暂停/重开。
+- 最终Windows Development构建494094825字节、0错误、退出0：artifacts/combat-final-build.log，Builds/Windows/YesterdayConvoy.exe。最终冻结/爆炸尾段已纳入；随后仅补强Player诊断为跨完整部署流程检查攻击、给慢速重甲单位更长等待，游戏规则/数值未改。无ZIP/Releases。
+- 独立Player九只分别执行-monsterCombatSmokeTest，最终全部退出0，entered/paused/attacked/hit/resolved/three/won/noSkill/clean均True，M06额外frozen=True。日志artifacts/combat-player-Mxx.log；每只普通可见D3D12窗口输出完整1280×720 HUD截图，已查看各角色协同攻击、选择页、M04爆炸和M06冻结；artifacts/combat-player-contact.jpg为真实截图裁切检查图，不是美术模拟图。截图与原作媒体不上传公共Git。隐藏窗口未输出截图的首次M08运行不算视觉证据。
+- 首轮独立Player有两项诊断限制：单只M06会先阵亡，现严格在协同部署阶段也检查其真实普通攻击；单只M10击杀后仍需慢速走到门，等待延长至60模拟秒，未改速度凑结果。失败日志保留combat-player-M06-first-failed.log/M10-first-failed.log；最终九项全部通过。冻结首轮错误地在首次爆炸后才部署第二只，超出寒冷窗口；改验正常相隔1秒重叠部署。最终M06仍速度0.65、寒冷10秒，不扩大持续时间迎合测试。
+- 旧独立Player四组回归均全True/退出0：combatSmokeTest、talulahSmokeTest、interactionSmokeTest、monsterSelectionSmokeTest；日志artifacts/combat-legacy-*.log。塔露拉使用本目录已有回退样板，不冒充其缺失原版动作的零跳过验证；M01缺包未声称本轮原版Player通过。
+- 限制：本轮是九只独立单卡测试，A为当前用户确认、B为代码/自动验证后待主导者人工审查集成，C商店/星级/库存/羁绊/混编未完成。未执行完整真人键鼠通关、第二机、低配/长时/全分辨率测试；实体同位置可能重叠，未改避让或队列。克洛丝沿用旧漫画资源；新增弹道/爆炸/碎片为程序绘制简化表现，不声称原版完整粒子复刻。原作公开再分发许可未确认，不自动合并main。
+
+
 ## 2026-10-21 源石虫单怪可玩测试
 
 - 授权与隔离：人类确认工程外V1美术，再明确确认Card/战斗/视图/输入/菜单接口及独立配置范围。从最新main70b9078（PR #4/#5已合入）创建codex/originium-slug-test；原目录codex/roster-draft六项既存修改不暂存、不覆盖。未修改主场景、Prefab、Packages、ProjectSettings。

@@ -47,12 +47,17 @@ namespace YesterdayConvoy.Editor
             var args=Environment.GetCommandLineArgs();int index=Array.IndexOf(args,"-monsterTask");
             if(index<0 || index+1>=args.Length) throw new ArgumentException("-monsterTask required.");
             string task=args[index+1],name,id;float speed,health,attack,armor,interval,windup,defenseHealth=140;int cost=1;
+            float range=.75f,duration=1,resistance=0,shred=0,blast=0,blastRadius=0,blastDelay=0,cold=0;bool melee=true;int damageType=0;
             switch(task)
             {
                 case "M02":name="猎狗";id="HOUND";speed=1.1f;health=110;attack=30;armor=0;interval=1.4f;windup=.6f;break;
                 case "M03":name="游击队猎犬";id="GUERRILLA_HOUND";speed=1.35f;health=130;attack=34;armor=2;interval=1.4f;windup=.6f;break;
                 case "M07":name="士兵";id="SOLDIER";speed=.75f;health=150;attack=28;armor=5;interval=1.6f;windup=.4f;break;
                 case "M10":name="重装防御者";id="HEAVY_DEFENDER";speed=.55f;health=340;attack=40;armor=14;interval=2.6f;windup=28f/60;cost=2;defenseHealth=200;break;
+                case "M04":name="高能源石虫";id="EXPLOSIVE_SLUG";speed=.65f;health=130;attack=32;armor=0;interval=2.8f;windup=28f/60;duration=2.5f;cost=2;blast=90;blastRadius=1.65f;blastDelay=1;break;
+                case "M05":name="酸液源石虫";id="ACID_SLUG";speed=.65f;health=130;attack=24;armor=0;interval=2.2f;windup=50f/60;duration=80f/60;cost=2;range=2.8f;melee=false;shred=2;break;
+                case "M06":name="冰爆源石虫";id="ICE_SLUG";speed=.65f;health=90;defenseHealth=240;attack=30;armor=0;interval=2.8f;windup=28f/60;duration=2.5f;cost=2;blast=60;blastRadius=1.65f;blastDelay=1;cold=10;break;
+                case "M09":name="术师";id="CASTER";speed=.65f;health=120;attack=26;armor=1;interval=2.4f;windup=38f/60;duration=1.2f;range=3;melee=false;damageType=1;resistance=20;break;
                 default:throw new ArgumentException("Unsupported task: "+task);
             }
             string levelPath="Assets/_Game/Data/Resources/MonsterTests/"+task+".asset";
@@ -64,12 +69,15 @@ namespace YesterdayConvoy.Editor
             var combat=Create<EngagementDefinition>("Assets/_Game/Data/Battles/"+task+".asset");
             Set(combat,"kroosSprite",AssetDatabase.LoadAssetAtPath<Sprite>(EngagementTools.KroosPath));
             Set(combat,"defenderPosition",new Vector3(0,.35f,0));Set(combat,"unitAttack",attack);Set(combat,"unitArmor",armor);
-            Set(combat,"unitRange",.75f);Set(combat,"unitInterval",interval);Set(combat,"attackDuration",1f);Set(combat,"attackWindup",windup);
+            Set(combat,"unitRange",range);Set(combat,"unitInterval",interval);Set(combat,"attackDuration",duration);Set(combat,"attackWindup",windup);
             Set(combat,"defenderHealth",defenseHealth);Set(combat,"defenderAttack",18f);Set(combat,"defenderArmor",3f);
             Set(combat,"defenderRange",3.2f);Set(combat,"defenderInterval",1f);Set(combat,"blockCount",0);
-            Set(combat,"hasSkill",false);Set(combat,"melee",true);
+            Set(combat,"hasSkill",false);Set(combat,"melee",melee);
+            Set(combat,"damageType",damageType);Set(combat,"defenderResistance",resistance);Set(combat,"armorShred",shred);
+            Set(combat,"blastAttack",blast);Set(combat,"blastRadius",blastRadius);Set(combat,"blastDelay",blastDelay);Set(combat,"coldDuration",cold);
+            if(task=="M05" || task=="M09") Set(combat,"defenderArmor",18f);
             foreach(string field in new[]{"initialSP","requiredSP","spPerSecond","skillAttack","skillInterval","skillRange"}) Set(combat,field,0f);
-            Set(combat,"skillAmmo",0);Set(combat,"projectileTime",.02f);
+            Set(combat,"skillAmmo",0);Set(combat,"projectileTime",melee ? .02f : .25f);
             var level=Create<ManualBattleDefinition>(levelPath);
             Set(level,"levelId",task+"_TEST");Set(level,"card",card);Set(level,"engagement",combat);
             Set(level,"initialDP",12);Set(level,"initialDefense",1);Set(level,"deploymentCost",cost);
