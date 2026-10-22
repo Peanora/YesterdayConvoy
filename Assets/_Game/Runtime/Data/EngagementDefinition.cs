@@ -19,6 +19,8 @@ namespace YesterdayConvoy
         [SerializeField] private bool fireRain;
         [SerializeField] private bool hasSkill = true;
         [SerializeField] private bool melee;
+        [Tooltip("Support/non-attacking art sample. Does not disable defender blocking or damage.")]
+        [SerializeField] private bool noOrdinaryAttack;
         [SerializeField] private float attackDuration, attackWindup;
         [Header("Independent ordinary attack and death effects; zero keeps legacy behavior")]
         [SerializeField] private CombatDamageType damageType;
@@ -31,6 +33,6 @@ namespace YesterdayConvoy
         public EngagementSettings Snapshot() => new EngagementSettings(unitAttack, unitArmor, unitRange, unitInterval,
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
-            new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration));
+            new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration), canAttack: !noOrdinaryAttack);
     }
 }

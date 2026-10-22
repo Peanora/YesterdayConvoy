@@ -28,13 +28,15 @@ namespace YesterdayConvoy
             paused &= Battle.Clock==0 && unit.Motion.DistanceTravelled==0;
             yield return InteractionFrame(directory,task+"-paused");
             Battle.SetPaused(false);Tick(.35f);yield return InteractionFrame(directory,task+"-walk");
-            bool attacked=false,hit=false;
+            bool attacked=false,hit=false,canAttack=Battle.CombatSettings.CanAttack;
+            bool passiveMoving=false;
             for(int i=0;i<2400 && unit.Active;i++)
             {
                 Tick(.025f);yield return null;
                 if(!attacked && !double.IsNegativeInfinity(unit.LastAttackTime))
                 { attacked=true;Tick(.3f);yield return InteractionFrame(directory,task+"-attack"); }
                 hit |= unit.Health<Battle.Settings.Health;
+                passiveMoving |= !canAttack && unit.IsMoving && !unit.HasCombatTarget && unit.Health<Battle.Settings.Health;
             }
             bool resolved=!unit.Active;
             if(unit.Resolution==UnitResolution.Dead) { Tick(.2f);yield return InteractionFrame(directory,task+"-death"); }
@@ -73,7 +75,9 @@ namespace YesterdayConvoy
             ReturnToMonsterTests();yield return null;
             bool clean=ViewCount==0 && Battle.Units.Count==0 && Battle.CombatShots.Count==0 && Battle.Clock==0;
             Debug.Log($"MONSTER_COMBAT_CHECK: {task}; entered={entered}; paused={paused}; attacked={attacked}; hit={hit}; resolved={resolved}; three={three}; won={won}; noSkill={noSkill}; clean={clean}; frozen={frozen}.");
-            Time.timeScale=1;Application.Quit(entered && paused && attacked && resolved && three && won && noSkill && clean && frozen ? 0 : 1);
+            bool attackPolicy=canAttack ? attacked : !attacked && passiveMoving;
+            Debug.Log($"MONSTER_ATTACK_POLICY_CHECK: {task}; canAttack={canAttack}; policy={attackPolicy}.");
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen ? 0 : 1);
         }
     }
 }

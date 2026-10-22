@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "task": "M21",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 1.9,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.49050999760627745,
+      "pivotY": 0.22423663645982744,
+      "sourceBounds": [
+        -285.2070617675781,
+        -87.5776596069336,
+        297.99359130859375,
+        459.13250732421875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Run_Loop",
+      "count": 48,
+      "duration": 0.800000011920929,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.49050999760627745,
+      "pivotY": 0.22423663645982744,
+      "sourceBounds": [
+        -285.2070617675781,
+        -87.5776596069336,
+        297.99359130859375,
+        459.13250732421875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 48,
+          "width": 2048,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.49050999760627745,
+      "pivotY": 0.22423663645982744,
+      "sourceBounds": [
+        -285.2070617675781,
+        -87.5776596069336,
+        297.99359130859375,
+        459.13250732421875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.49050999760627745,
+      "pivotY": 0.22423663645982744,
+      "sourceBounds": [
+        -285.2070617675781,
+        -87.5776596069336,
+        297.99359130859375,
+        459.13250732421875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "9cc0373129bec92f286edaec608b2262e8e239016536892ae7b26297fbcc63b7"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "82bcf54c51cbcae14fb02a9fdbfb66af89a60d6087a9fd83cf5b9ef8e96f6e04"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "68161120e2231362377f8a18b38b72eb89f46795adc540c106cd2f086716220d"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "fdbc302419d70976841cf5566a88e36be543259ea9b9134dc60f38861f821c09"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "15e8715346192283e110451efea3bc4cf5abaec30498790dca84ab593c40a3bf"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1043_zomsabr. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}
