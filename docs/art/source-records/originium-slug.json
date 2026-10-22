@@ -5,7 +5,7 @@
   "model": "enemy_1007_slime",
   "sourcePage": "https://prts.wiki/w/源石虫/spine",
   "approval": "User approved V1 preview then explicit shared-interface integration scope.",
-  "rights": "Original proprietary media, open redistribution permission unconfirmed; local-only, Git ignored.",
+  "rights": "Original proprietary media; open redistribution permission unconfirmed. Runtime derivatives tracked following explicit user upload request on 2026-10-22; request is not a rightsholder license.",
   "sourceFiles": {
     "enemy_1007_slime.skel": {
       "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1007_slime/enemy_1007_slime.skel",

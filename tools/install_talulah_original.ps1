@@ -22,4 +22,4 @@ foreach($taskName in $taskNames) {
     Copy-Item -LiteralPath (Join-Path $taskSource $taskName) -Destination (Join-Path $taskDestination $taskName) -Force
 }
 Write-Output "Installed $($taskNames.Count) local files into $taskDestination"
-Write-Output 'Original art remains Git-ignored. This command grants no redistribution license.'
+Write-Output 'Runtime art is tracked with source; this installer is optional. This command grants no redistribution license.'

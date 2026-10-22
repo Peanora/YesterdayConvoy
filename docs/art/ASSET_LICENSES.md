@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-10-22 交付范围修订（不变更原作权利状态）
+
+用户明确要求现有运行素材全部上传，塔露拉 / 源石虫的运行PNG、清单和meta本轮改为Git跟踪；M02～M10已由PR #12跟踪。下方“仅本地 / 不自动上传”是此前范围，现已被明确上传请求覆盖。原作美术仍非CC0，公开再分发许可未确认，上传决定不登记为权利人授权；来源、作者归属和加工记录继续保留，见[交付审计](MONSTER-RUNTIME-DELIVERY.md)。
+
 ## 2026-10-21 源石虫本地原作图集
 
 [PRTS源石虫模型页](https://prts.wiki/w/源石虫/spine)的enemy_1007_slime。原作贴图、角色和动作属于原权利人，非CC0，未确认开放再分发许可；用户确认本地预览/接入不等于授权公开再分发。源文件/派生PNG/卡面/实机图本地保存并Git忽略。Unity仅用PNG，不引入Spine运行时；项目外评估渲染器保留原README/LICENSE。[接入说明](ORIGINIUM-SLUG-INTEGRATION.md)、[文件哈希](source-records/originium-slug.json)。

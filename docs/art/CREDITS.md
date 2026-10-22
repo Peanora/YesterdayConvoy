@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+## 2026-10-22 运行素材交付更新
+
+新版塔露拉与源石虫的派生运行图集 / 卡面随源码跟踪，覆盖下方历史“仅本地”范围说明。《明日方舟》角色、原贴图和动作权利仍属鹰角网络 / 原权利人，未确认开放再分发许可；来源分别见[塔露拉](TALULAH-ORIGINAL-INTEGRATION.md)、[源石虫](ORIGINIUM-SLUG-INTEGRATION.md)及[九只怪物](MONSTER-RUNTIME-DELIVERY.md)。
+
 ## 火雨碎焰（2026-10-21）
 
 highwizard，[Animated flame / Fire sprite Sheet](https://opengameart.org/content/animated-flame-fire-sprite-sheet)，CC0；25帧源图经黑底转Alpha并排版，用于火雨碎焰。主火焰继续使用下列Soluna Software CC0素材；震屏/色调/加色合成为项目代码，非原作完整特效提取。

@@ -21,4 +21,4 @@ $slugProject=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $slugDestination=Join-Path $slugProject 'Assets/StreamingAssets/OriginiumSlugOriginal'
 New-Item -ItemType Directory -Force -Path $slugDestination | Out-Null
 foreach($slugFile in $slugFiles) { Copy-Item -LiteralPath (Join-Path $slugSource $slugFile) -Destination (Join-Path $slugDestination $slugFile) -Force }
-Write-Output "Installed $($slugFiles.Count) local files. Original media remains Git-ignored; no redistribution rights are granted."
+Write-Output "Installed $($slugFiles.Count) files. Runtime media is tracked with source; this installer is optional. No redistribution rights are granted."

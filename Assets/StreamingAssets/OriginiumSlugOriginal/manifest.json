@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "cardId": "CARD_ORIGINIUM_SLUG",
+  "ppu": 88.8888889,
+  "referenceSpeed": 0.75,
+  "attackContact": 0.3333333333333333,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "duration": 2,
+      "fps": 60,
+      "count": 120,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "idle.png",
+          "width": 1960,
+          "height": 936,
+          "count": 120
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move_Loop",
+      "duration": 2,
+      "fps": 60,
+      "count": 120,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "walk.png",
+          "width": 1960,
+          "height": 936,
+          "count": 120
+        }
+      ]
+    },
+    {
+      "key": "start",
+      "source": "Move_Begin",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "start.png",
+          "width": 1960,
+          "height": 312,
+          "count": 31
+        }
+      ]
+    },
+    {
+      "key": "stop",
+      "source": "Move_End",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "stop.png",
+          "width": 1960,
+          "height": 312,
+          "count": 31
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "duration": 0.7666666507720947,
+      "fps": 60,
+      "count": 47,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "attack.png",
+          "width": 1960,
+          "height": 416,
+          "count": 47
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "duration": 0.5,
+      "fps": 60,
+      "count": 31,
+      "cellWidth": 140,
+      "cellHeight": 104,
+      "columns": 14,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.1346153846153846,
+      "pages": [
+        {
+          "file": "death.png",
+          "width": 1960,
+          "height": 312,
+          "count": 31
+        }
+      ]
+    }
+  ]
+}
