@@ -2,7 +2,7 @@
 
 ## 当前：M02～M10单怪接入（2026-10-22，待PR人工审查）
 
-霍利屹按当前用户授权先M08，再逐只接入M02/M03/M07/M10/M04/M05/M06/M09，每项独立验证、提交和推送。[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)，[PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9)，[操作/配置/来源/限制](monsters/M02-M10-combat.md)。正常选择页可进入本机已装媒体的九个新单怪测试；各自参数、卡面、原版待机/移动/攻击/死亡，支持暂停部署/倍速、击杀续行、穿门与重开。术师按法抗结算，酸液命中削甲，高能/冰爆有真实死亡范围伤害，寒冷再叠冻结并停止攻击。
+霍利屹按当前用户授权先M08，再逐只接入M02/M03/M07/M10/M04/M05/M06/M09，每项独立验证、提交和推送。[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)，[首批PR#9（人类已合入）](https://github.com/Peanora/YesterdayConvoy/pull/9) / [后续PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11)，[操作/配置/来源/限制](monsters/M02-M10-combat.md)。正常选择页可进入本机已装媒体的九个新单怪测试；各自参数、卡面、原版待机/移动/攻击/死亡，支持暂停部署/倍速、击杀续行、穿门与重开。术师按法抗结算，酸液命中削甲，高能/冰爆有真实死亡范围伤害，寒冷再叠冻结并停止攻击。
 
 原作媒体仅本地，缺包不开放这些入口；未改主场景/Prefab/Packages/ProjectSettings。当前本机M01缺原作包，仍保持待制作；不将另一成员的工作覆盖或视为本轮完成。A为当前用户造型确认，B为本轮单怪接入/自动验证、仍待主导者审阅集成，C商店/升星/羁绊/混编未做。没有ZIP/Releases或自动合并。最终验证见QA；以下为历史。
 

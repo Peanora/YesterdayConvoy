@@ -2,7 +2,7 @@
 
 ## 2026-10-22 M02～M10独立单怪接入（霍利屹）
 
-- 授权/范围：当前用户逐项确认V1造型，再要求从M08开始接入此前M02～M10任务。基线main e5c1d7d，新分支codex/monster-archer-combat，[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)/[PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9)。先M08，再逐只完成并分别正常提交推送其余角色。既存.vscode保留不提交；无主场景、Prefab、Packages/ProjectSettings改动，无覆盖旧ZIP目录/他人修改。
+- 授权/范围：当前用户逐项确认V1造型，再要求从M08开始接入此前M02～M10任务。基线main e5c1d7d，新分支codex/monster-archer-combat，[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)/[首批PR#9（人类已合入）](https://github.com/Peanora/YesterdayConvoy/pull/9) / [后续PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11)。先M08，再逐只完成并分别正常提交推送其余角色。最终同步发现PR9已由人类合入，按项目规则从新main a306949创建codex/monster-effects-and-roster-completion，移植剩余5个自己的提交；无冲突，文件树与完整验证版93a7a8d一致，随后仅更新审查链接。既存.vscode保留不提交；无主场景、Prefab、Packages/ProjectSettings改动，无覆盖旧ZIP目录/他人修改。
 - Unity6000.6.5f1许可证经当前用户修复后实际启动/编译/单位配置校验退出0，m08-unity-retry.log；后续九份独立Unit/Card/Engagement/ManualBattle资产均由Unity准备工具实际创建并验证，不是手填GUID。原版媒体打包2538帧/56PNG，安装器逐包SHA256/文件清单实际校验；运行时实际加载自己角色的idle/walk/attack/death和卡面，M09选Wizard皮肤，原作媒体及截图始终Git忽略。
 - 最终EditMode69/69通过、零跳过、进程0：artifacts/combat-final-edit.xml/log。新增真实结算覆盖物理/术伤及最小1伤害、削甲按命中单次叠加/目标隔离/重开、死亡来源消失后延迟爆炸/范围/幂等/暂停/最终判负等待、寒冷再叠冻结与到期/暂停/禁止攻击、旧默认兼容及非法配置拒绝。
 - 最终GPU PlayMode32项中26通过、0失败、6项因本目录未装M01和塔露拉原版包而跳过；进程0，artifacts/combat-final-play.xml/log。新角色相关检查无跳过：当前九只独立部署/原版帧/暂停和帧冻结、无技能/无SP、正常攻击/2倍速三次部署击杀/穿门、返回清场/重开；隔离低生命模型验证每只真正Die帧且逻辑根节点不动；场景实际验证爆炸预警/爆炸可见/伤害/暂停清理，酸液削甲、术师按法抗真实扣血，以及两只冰爆错峰部署后的冻结/停止攻击/暂停/重开。
