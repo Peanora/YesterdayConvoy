@@ -12,7 +12,15 @@ namespace YesterdayConvoy
             Time.timeScale=0;
             bool entered=TryEnterMonsterTest("CARD_"+task);
             if(!entered) { Debug.LogError("MONSTER_COMBAT_CHECK: missing local media/configuration: "+task);Application.Quit(1);yield break; }
-            ReturnToMonsterTests();yield return InteractionFrame(directory,task+"-selection");
+            ReturnToMonsterTests();
+            int selectionIndex=0;
+            foreach(var option in monsterTests)
+            {
+                if(option.Id=="CARD_"+task) break;
+                if(option.Playable) selectionIndex++;
+            }
+            playableScroll=new Vector2(0,selectionIndex/3*364);
+            yield return InteractionFrame(directory,task+"-selection");
             TryEnterMonsterTest("CARD_"+task);StartBattle();Battle.SetPaused(true);
             ProcessPointerDown(ScreenPosition(RosterSlot.center));
             Vector2 entry=Camera.main.WorldToScreenPoint(Battle.Entry);ProcessPointerMove(entry);

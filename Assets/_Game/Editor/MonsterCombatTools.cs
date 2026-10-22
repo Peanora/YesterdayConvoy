@@ -46,7 +46,18 @@ namespace YesterdayConvoy.Editor
         {
             var args=Environment.GetCommandLineArgs();int index=Array.IndexOf(args,"-monsterTask");
             if(index<0 || index+1>=args.Length) throw new ArgumentException("-monsterTask required.");
-            string task=args[index+1],name,id;float speed,health,attack,armor,interval,windup,defenseHealth=140;int cost=1;
+            Prepare(args[index+1]);
+        }
+        [MenuItem("Yesterday Convoy/Configuration/Prepare Approved M11-M20 Art Tests")]
+        public static void PrepareNextBatch()
+        {
+            for(int i=11;i<=20;i++) Prepare("M"+i);
+            InitialDemoTools.Validate();
+            Debug.Log("M11_M20_CONFIGURATION_PASS: ten approved basic-art tests; no boss mechanics added.");
+        }
+        private static void Prepare(string task)
+        {
+            string name,id;float speed,health,attack,armor,interval,windup,defenseHealth=140;int cost=1,recruitCost=0;
             float range=.75f,duration=1,resistance=0,shred=0,blast=0,blastRadius=0,blastDelay=0,cold=0;bool melee=true;int damageType=0;
             switch(task)
             {
@@ -58,6 +69,18 @@ namespace YesterdayConvoy.Editor
                 case "M05":name="酸液源石虫";id="ACID_SLUG";speed=.65f;health=130;attack=24;armor=0;interval=2.2f;windup=50f/60;duration=80f/60;cost=2;range=2.8f;melee=false;shred=2;break;
                 case "M06":name="冰爆源石虫";id="ICE_SLUG";speed=.65f;health=90;defenseHealth=240;attack=30;armor=0;interval=2.8f;windup=28f/60;duration=2.5f;cost=2;blast=60;blastRadius=1.65f;blastDelay=1;cold=10;break;
                 case "M09":name="术师";id="CASTER";speed=.65f;health=120;attack=26;armor=1;interval=2.4f;windup=38f/60;duration=1.2f;range=3;melee=false;damageType=1;resistance=20;break;
+                // Art-only sample balance. Original phase/skill clips are retained separately;
+                // these entries deliberately do not invent freeze, aura or resurrection rules.
+                case "M11":name="雪怪狙击手";id="SNOW_SNIPER";speed=.75f;health=140;attack=30;armor=2;interval=1.8f;windup=.5f;duration=1;range=3.1f;melee=false;break;
+                case "M12":name="雪怪术师";id="SNOW_CASTER";speed=.65f;health=140;attack=32;armor=1;interval=2;windup=.6f;duration=70f/60;range=3;melee=false;damageType=1;recruitCost=2;break;
+                case "M13":name="雪怪小队凿冰人";id="ICEBREAKER";speed=.65f;health=300;attack=65;armor=8;interval=3.2f;windup=1.6f;duration=3;cost=3;break;
+                case "M14":name="霜星";id="FROSTNOVA";speed=.65f;health=360;attack=48;armor=6;interval=2.4f;windup=.8f;duration=1.6f;range=3.1f;melee=false;damageType=1;cost=3;recruitCost=5;break;
+                case "M15":name="游击队战士";id="GUERRILLA_SOLDIER";speed=.8f;health=180;attack=34;armor=5;interval=1.6f;windup=.5f;duration=1;break;
+                case "M16":name="游击队狙击手";id="GUERRILLA_SNIPER";speed=.75f;health=150;attack=32;armor=3;interval=2;windup=.75f;duration=1.5f;range=3.1f;melee=false;cost=2;break;
+                case "M17":name="游击队传令兵";id="GUERRILLA_HERALD";speed=.75f;health=170;attack=26;armor=4;interval=1.7f;windup=.55f;duration=1.1f;cost=2;recruitCost=3;break;
+                case "M18":name="游击队盾卫";id="GUERRILLA_SHIELDGUARD";speed=.6f;health=400;attack=40;armor=14;interval=2.4f;windup=.85f;duration=1.7f;cost=3;recruitCost=4;break;
+                case "M19":name="游击队萨卡兹战士";id="GUERRILLA_SARKAZ";speed=.75f;health=270;attack=46;armor=8;interval=2;windup=.6f;duration=70f/60;cost=3;break;
+                case "M20":name="爱国者";id="PATRIOT";speed=.6f;health=600;attack=90;armor=14;interval=2.6f;windup=.75f;duration=1.5f;cost=3;recruitCost=5;break;
                 default:throw new ArgumentException("Unsupported task: "+task);
             }
             string levelPath="Assets/_Game/Data/Resources/MonsterTests/"+task+".asset";
@@ -65,7 +88,7 @@ namespace YesterdayConvoy.Editor
             var unit=Create<UnitDefinition>("Assets/_Game/Data/Units/"+task+".asset");
             Set(unit,"unitId",task+"_"+id);Set(unit,"displayName",name);Set(unit,"moveSpeed",speed);Set(unit,"gateDamage",1);
             var card=Create<CardDefinition>("Assets/_Game/Data/Cards/"+task+".asset");
-            Set(card,"cardId","CARD_"+task);Set(card,"displayName",name);Set(card,"recruitCost",cost);Set(card,"unit",unit);
+            Set(card,"cardId","CARD_"+task);Set(card,"displayName",name);Set(card,"recruitCost",recruitCost>0 ? recruitCost : cost);Set(card,"unit",unit);
             var combat=Create<EngagementDefinition>("Assets/_Game/Data/Battles/"+task+".asset");
             Set(combat,"kroosSprite",AssetDatabase.LoadAssetAtPath<Sprite>(EngagementTools.KroosPath));
             Set(combat,"defenderPosition",new Vector3(0,.35f,0));Set(combat,"unitAttack",attack);Set(combat,"unitArmor",armor);

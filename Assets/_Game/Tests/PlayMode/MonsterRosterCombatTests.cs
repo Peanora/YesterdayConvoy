@@ -24,7 +24,8 @@ namespace YesterdayConvoy.Tests
 
         [UnityTest] public IEnumerator RegisteredRosterCanDeployFreezeAttackWinAndRestartIndependently()
         {
-            yield return Load();Assert.That(Ids().Length,Is.GreaterThanOrEqualTo(2));
+            yield return Load();Assert.That(Ids().Length,Is.GreaterThanOrEqualTo(19));
+            for(int i=11;i<=20;i++) Assert.That(Ids(),Does.Contain("CARD_M"+i),"Approved batch must be registered, not silently pending.");
             foreach(string id in Ids())
             {
                 Assert.That(c.TryEnterMonsterTest(id),Is.True);var unit=Deploy();yield return null;

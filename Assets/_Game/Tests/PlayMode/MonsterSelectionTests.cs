@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.ProcessPointerUp(Camera.main.WorldToScreenPoint(battle.Entry)).Success,Is.False);
             c.Tick(100); Assert.That(c.Dragging,Is.False); Assert.That(battle.Units,Is.Empty);
             Assert.That(battle.Clock,Is.Zero); Assert.That(c.EffectiveSimulationSpeed,Is.Zero);
-            Assert.That(c.TryEnterMonsterTest(Id(c,"雪怪狙击手")),Is.False); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
+            Assert.That(c.TryEnterMonsterTest(Id(c,"宿主士兵")),Is.False); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
             Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.Battle,Is.SameAs(battle)); Assert.That(battle.DP,Is.EqualTo(dp));
             Assert.That(c.TryEnterMonsterTest(Id(c,"维维美")),Is.True);
             Assert.That(c.TestSelectionOpen,Is.False); Assert.That(c.Definition.Card.DisplayName,Is.EqualTo("维维美"));

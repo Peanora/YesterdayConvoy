@@ -20,7 +20,7 @@ namespace YesterdayConvoy
         private readonly List<MonsterTestOption> monsterTests=new List<MonsterTestOption>();
         private Vector2 playableScroll,pendingScroll;
         private string pendingFilter="";
-        private GUIStyle menuTitle,menuHeading,menuBody,menuSmall,menuSearch;
+        private GUIStyle menuTitle,menuHeading,menuCardName,menuBody,menuSmall,menuSearch;
         private bool selectionReturnPointerDown;
         public bool TestSelectionOpen { get; private set; }
         public IReadOnlyList<MonsterTestOption> MonsterTests => monsterTests.AsReadOnly();
@@ -82,6 +82,7 @@ namespace YesterdayConvoy
             {
                 menuTitle=new GUIStyle(textStyle){fontSize=42,fontStyle=FontStyle.Bold};
                 menuHeading=new GUIStyle(textStyle){fontSize=24,fontStyle=FontStyle.Bold};
+                menuCardName=new GUIStyle(menuHeading){fontSize=20};
                 menuBody=new GUIStyle(textStyle){fontSize=18,wordWrap=true};
                 menuSmall=new GUIStyle(smallStyle){fontSize=15,wordWrap=true};
                 menuSearch=new GUIStyle(GUI.skin.textField){font=scene.InterfaceFont,fontSize=16,padding=new RectOffset(9,9,6,6)};
@@ -105,8 +106,8 @@ namespace YesterdayConvoy
                 Fill(new Rect(x+14,y+16,cardWidth-28,172),new Color(.035f,.06f,.08f));
                 Sprite portrait=OriginalTalulahArt.CardPortrait(option.Definition.Card);
                 DrawTestPortrait(new Rect(x+23,y+20,cardWidth-46,164),portrait);
-                GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuHeading);
-                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : "独立配置\n单怪交战样板";
+                GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuCardName);
+                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : "基础动作与普攻\n单怪交战样板";
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
                 if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
                 index++;
