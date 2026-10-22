@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-10-22：补齐塔露拉 / 源石虫素材，干净克隆完整复现
+
+源码提交8be0d18d5431def15c69e76f693f5e9279e93ca1，基于main b3455c6；后续提交仅补验证文档。同机独立Git克隆，起始无Library、旧构建或额外媒体；所有素材均来自该提交，没有复制忽略目录或运行安装器。Unity6000.6.5f1首次导入、入口场景及12份单位配置校验通过，Windows x64构建360329251字节、0错误、退出0；导入后跟踪文件无变化。
+
+新Player依次实际运行14组：monsterSelectionSmokeTest、slugSmokeTest、talulahSmokeTest、M02～M10各自monsterCombatSmokeTest、combatSmokeTest、interactionSmokeTest。全部进程退出0，所有输出检查为True；源石虫13项、塔露拉13项含原版加载、九只实际进入 / 部署 / 攻击 / 单只结算 / 三次部署 / 通关 / 无主动技能 / 返回清理均通过，M06冻结检查True。选择页启动日志确认九个本地图集及塔露拉 / 源石虫包实际加载，无缺包回退；维维美沿用Git中已跟踪的动作。Git内77 PNG与11清单共88个运行文件逐一与Player的StreamingAssets SHA256一致。仓库静态1141文件、差异空白检查通过。
+
+证据目录：本机独立克隆 `E:/珍贵资料/昨日圆车_交付验证/2026-10-22-runtime-art/artifacts/`，包含runtime-delivery-build.log与各角色 / 流程日志；本地Player输出在该克隆Builds/Windows。没有生成新的美术或录制动作视频。本轮未重跑EditMode / PlayMode、未人工完整键鼠通关、未第二台真实电脑或低配长时验收；同机干净克隆不作为另一位队友已签收。无ZIP / Releases，原作权利状态见[交付审计](art/MONSTER-RUNTIME-DELIVERY.md)。
+
 ## 2026-10-22：M02～M10 素材入库与干净克隆复现
 
 对应完整交付PR #12；测试提交11444fa9cc79cb7ced64ffd364db0874a3c33925。验证在同机独立Git克隆执行，Git对象由本地已推送提交取得，开始无Library/旧预览/额外包，未借用作者忽略文件。首次Unity6000.6.5f1导入与Windows构建成功：327027210字节、0错误。56 PNG、9清单及75原meta均纳入Git；逐PNG源/构建SHA256一致，Unity导入后跟踪文件未变。
