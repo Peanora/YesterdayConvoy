@@ -12,6 +12,24 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator TwoStaggeredIceDeathsFreezeTheActualDefenderAndPausePreservesIt()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M06"),Is.True);
+            c.SelectCard(true);var first=c.TryDeployAt(c.Battle.Entry);Assert.That(first.Success,Is.True);
+            c.Tick(1.1f);yield return null;c.SelectCard(true);var second=c.TryDeployAt(c.Battle.Entry);Assert.That(second.Success,Is.True);
+            var one=c.Battle.FindUnit(first.EntityId);var two=c.Battle.FindUnit(second.EntityId);
+            for(int i=0;i<1600 && (one.Active || two.Active);i++) { c.Tick(.025f);yield return null; }
+            Assert.That(one.Resolution,Is.EqualTo(UnitResolution.Dead));Assert.That(two.Resolution,Is.EqualTo(UnitResolution.Dead));
+            c.Tick(1.05f);yield return null;Assert.That(c.Battle.Defender.Alive,Is.True);
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);int shots=c.Battle.ShotsFired;
+            c.Tick(4);yield return null;Assert.That(c.Battle.ShotsFired,Is.EqualTo(shots));
+            c.Battle.SetPaused(true);double clock=c.Battle.Clock;c.Tick(10);yield return null;
+            Assert.That(c.Battle.Clock,Is.EqualTo(clock));Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(clock));
+            c.RestartBattle();Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));
+        }
+
         [UnityTest] public IEnumerator AvailableSpecialMonstersApplyRealDamageAndVisibleEffectsThenClearState()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

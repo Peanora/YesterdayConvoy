@@ -43,15 +43,15 @@ P0/P1共8张普通卡是推荐首批规模，不是现在同时开8个开发任�
 | 编号 | 单位 | 费 | 拟定常规标签 | 优先级 | 当前状态 | 后续负责人 |
 | --- | --- | --- | --- | --- | --- | --- |
 | M01 | 源石虫 | 1 | 感染生物 | P0 | 本地单怪战斗样板；美术已确认，数值待试玩 | 干宸骅主导 / Codex实现 |
-| M02 | 猎狗 | 1 | 感染生物、整合运动 | P0 | 待制作 | 未认领 |
-| M03 | 游击队猎犬 | 1 | 感染生物、游击队、整合运动 | P2 | 待制作 | 未认领 |
-| M04 | 高能源石虫 | 2 | 感染生物 | P2 | 待制作 | 未认领 |
-| M05 | 酸液源石虫 | 2 | 感染生物 | P2 | 待制作 | 未认领 |
-| M06 | 冰爆源石虫 | 2 | 感染生物、雪怪小队、整合运动 | P2 | 待制作 | 未认领 |
-| M07 | 士兵 | 1 | 整合运动 | P0 | 待制作 | 未认领 |
-| M08 | 弩手 | 1 | 整合运动 | P0 | 待制作 | 未认领 |
-| M09 | 术师 | 1 | 整合运动 | P0 | 待制作 | 未认领 |
-| M10 | 重装防御者 | 2 | 整合运动 | P0 | 待制作 | 未认领 |
+| M02 | 猎狗 | 1 | 感染生物、整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M03 | 游击队猎犬 | 1 | 感染生物、游击队、整合运动 | P2 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M04 | 高能源石虫 | 2 | 感染生物 | P2 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M05 | 酸液源石虫 | 2 | 感染生物 | P2 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M06 | 冰爆源石虫 | 2 | 感染生物、雪怪小队、整合运动 | P2 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M07 | 士兵 | 1 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M08 | 弩手 | 1 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M09 | 术师 | 1 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
+| M10 | 重装防御者 | 2 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9) |
 | M11 | 雪怪狙击手 | 1 | 雪怪小队、整合运动 | P2 | 待制作 | 未认领 |
 | M12 | 雪怪术师 | 2 | 雪怪小队、整合运动 | P2 | 待制作 | 未认领 |
 | M13 | 雪怪小队凿冰人 | 3 | 雪怪小队、整合运动 | P2 | 待制作 | 未认领 |

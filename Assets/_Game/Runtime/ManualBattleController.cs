@@ -40,8 +40,17 @@ namespace YesterdayConvoy
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
         private double DeathTail => CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0);
+        private bool DeathPresentationPending
+        {
+            get
+            {
+                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail) return true;
+                foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
+                return false;
+            }
+        }
         public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) &&
-            !(Battle.Phase==BattlePhase.Lost && terminalPresentationElapsed<DeathTail);
+            !DeathPresentationPending;
         public static Rect SettlementRestartRect => new Rect(480,454,320,54);
 
         private void Start()
