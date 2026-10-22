@@ -49,4 +49,13 @@
 
 ## 本轮验证
 
-待写入独立克隆导入、构建与 Player 实测结果；此占位不表示已通过。
+验证源码：`11444fa9cc79cb7ced64ffd364db0874a3c33925`（本轮后续提交只补记录）。GitHub 该提交的清单已通过连接器读取确认。验证目录为同机独立 Git 克隆，Git 对象取自本地已推送提交；未复制忽略文件、Library、预览目录、额外素材包或旧构建。它不是第二台电脑验收。
+
+- 开始时没有 Library / ApprovedMonsterArt / ArcherOriginal；Unity6000.6.5f1 首次解析/导入并构建成功，`BASELINE_BUILD_PASS: 327027210 bytes; 0 errors`。
+- 56 PNG 与文件 meta 全部被 Git 跟踪；源文件和新 Player 的 StreamingAssets 图片逐一匹配各 manifest SHA256。75个已有 meta 保留，Unity导入后无跟踪文件变化。
+- EditMode：69通过、0失败、0跳过。完整 GPU PlayMode：26通过、0失败、6跳过，跳过为4项 M01源石虫原作包与2项塔露拉原作包检查；本轮九只相关检查无跳过。
+- 新构建九只独立 Player：M08、M02、M03、M04、M05、M06、M07、M09、M10 全部退出0；每只 entered / paused / attacked / resolved / three / won / noSkill / clean 均为True，M06真实叠加冻结检查为True。各只选择/暂停/行走/攻击/胜负完整HUD截图已生成；查看了菜单、弩手攻击、冰爆冻结、术师攻击画面。
+- 四组旧流程 combatSmokeTest / talulahSmokeTest / interactionSmokeTest / monsterSelectionSmokeTest 全部退出0。菜单实际显示11个可玩、30个待制作。
+- 仓库静态检查1093个跟踪文件通过，`git diff --check`通过。日志/截图保存在独立验证目录 artifacts/receiver-*，不随公共PR再上传原作实机画面。
+
+接收者拉取本PR分支即可获得九只所需运行媒体；不需额外安装包。仍未执行另一台真实电脑、人类完整键鼠通关、长时低配与所有分辨率检查。

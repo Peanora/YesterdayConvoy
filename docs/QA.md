@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-10-22：M02～M10 素材入库与干净克隆复现
+
+对应完整交付PR #12；测试提交11444fa9cc79cb7ced64ffd364db0874a3c33925。验证在同机独立Git克隆执行，Git对象由本地已推送提交取得，开始无Library/旧预览/额外包，未借用作者忽略文件。首次Unity6000.6.5f1导入与Windows构建成功：327027210字节、0错误。56 PNG、9清单及75原meta均纳入Git；逐PNG源/构建SHA256一致，Unity导入后跟踪文件未变。
+
+已有EditMode69通过/0失败/0跳过；完整GPU PlayMode26通过/0失败/6跳过（4项M01源石虫原作包、2项塔露拉原作包），本轮九只无跳过。新Player依次M08/M02/M03/M04/M05/M06/M07/M09/M10：9/9退出0，进入/暂停拖拽/攻击/单只结算/三次部署/穿门胜利/无主动技能/返回清理均True，M06叠加冻结True。九只完整HUD截图已生成，菜单11可玩/30待制作；已查看菜单、弩手攻击、冰爆冻结与术师攻击。旧combatSmokeTest/talulahSmokeTest/interactionSmokeTest/monsterSelectionSmokeTest四组全退出0。静态1093文件、差异空白检查通过。
+
+本地证据：独立验证目录artifacts/receiver-build.log、receiver-EditMode.xml、receiver-PlayMode.xml、receiver-player-Mxx.log、receiver-player/Mxx/及四组receiver-*SmokeTest.log。只读来源与交付记录见[素材交付审计](art/MONSTER-RUNTIME-DELIVERY.md)，实机画面不另入公共Git。后续仅记录提交不重建相同二进制。未第二台真实电脑、人类完整键鼠通关、长期/低配/全分辨率验证，不宣称接收者已签收。许可状态依原记录，学生用途不作为权利人授权；无ZIP/Releases。
+
 ## 2026-10-22 M02～M10独立单怪接入（霍利屹）
 
 - 授权/范围：当前用户逐项确认V1造型，再要求从M08开始接入此前M02～M10任务。基线main e5c1d7d，新分支codex/monster-archer-combat，[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)/[首批PR#9（人类已合入）](https://github.com/Peanora/YesterdayConvoy/pull/9) / [后续PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11)。先M08，再逐只完成并分别正常提交推送其余角色。最终同步发现PR9已由人类合入，按项目规则从新main a306949创建codex/monster-effects-and-roster-completion，移植剩余5个自己的提交；无冲突，文件树与完整验证版93a7a8d一致，随后仅更新审查链接。既存.vscode保留不提交；无主场景、Prefab、Packages/ProjectSettings改动，无覆盖旧ZIP目录/他人修改。

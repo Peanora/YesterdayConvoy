@@ -1,5 +1,11 @@
 # 当前工程状态
 
+## 当前：九只角色运行素材随源码交付（2026-10-22）
+
+[完整交付PR #12](https://github.com/Peanora/YesterdayConvoy/pull/12) 包含PR #11代码与M02～M10共56 PNG/9清单/75原有meta，同步main的PR #10。仅解除MonsterCombatArt目录两条忽略规则，其他原作预览仍排除；未改场景/Prefab/Packages/ProjectSettings。按用户明确“直接上传，我们是学生作业用”请求提交，未收到权利人授权依据，不标记为已获公开再分发许可。[来源/忽略审计/接收与未交接文件](art/MONSTER-RUNTIME-DELIVERY.md)。以下“本地/缺包”段落为历史状态。
+
+同机干净克隆11444fa首次导入构建0错误，69 Edit通过、26 GPU Play通过/0失败/6项范围外原作包跳过；九只独立Player与四组旧流程全通过，56图片在构建中均与Git清单哈希一致。队友拉取本PR分支无需再装CombatPackages即可运行九只；第二台真实电脑与人类验收尚未执行，不以本机复现代替接收者签收。无ZIP/Releases/自动合并；PR #11代码已包含在#12中，集成时避免重复。
+
 ## 当前：M02～M10单怪接入（2026-10-22，待PR人工审查）
 
 霍利屹按当前用户授权先M08，再逐只接入M02/M03/M07/M10/M04/M05/M06/M09，每项独立验证、提交和推送。[任务#8](https://github.com/Peanora/YesterdayConvoy/issues/8)，[首批PR#9（人类已合入）](https://github.com/Peanora/YesterdayConvoy/pull/9) / [后续PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11)，[操作/配置/来源/限制](monsters/M02-M10-combat.md)。正常选择页可进入本机已装媒体的九个新单怪测试；各自参数、卡面、原版待机/移动/攻击/死亡，支持暂停部署/倍速、击杀续行、穿门与重开。术师按法抗结算，酸液命中削甲，高能/冰爆有真实死亡范围伤害，寒冷再叠冻结并停止攻击。
