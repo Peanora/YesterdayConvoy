@@ -27,6 +27,9 @@ namespace YesterdayConvoy
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             ClearTransient(); runId=-1;
+            var deathEffects=GetComponent<MonsterDeathEffectView>();
+            if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
+            deathEffects.Initialize(controller);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));
@@ -51,7 +54,7 @@ namespace YesterdayConvoy
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
             kroos.transform.position = d.Position;
-            if (d.Alive)
+            if (d.Alive && d.FrozenUntil<=time)
             {
                 float lift = 0.02f * (1 - Mathf.Cos((float)((readyIdleTime + time) * (Mathf.PI * 2 / 2.8f))));
                 kroos.transform.position += cam.transform.up * lift;
@@ -63,6 +66,7 @@ namespace YesterdayConvoy
             kroos.transform.position += cam.transform.right * recoil;
             kroos.sortingOrder = DemoSpriteVisual.GetSortingOrder(cam, d.Position) + 30;
             Color tint = time < d.LastHitTime + 0.14 ? new Color(1, 0.5f, 0.45f) : Color.white;
+            if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time)) tint=new Color(.45f,.8f,1);
             tint.a = 1 - death; kroos.color = tint;
             range.enabled = d.Alive;
             range.startColor = range.endColor = new Color(0.45f, 0.8f, 0.88f, 0.25f);
@@ -132,6 +136,8 @@ namespace YesterdayConvoy
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
             Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
+            if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
+            else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
             view.Trail.enabled = flying;
             if (flying)

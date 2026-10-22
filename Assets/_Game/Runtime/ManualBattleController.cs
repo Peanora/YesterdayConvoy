@@ -40,8 +40,17 @@ namespace YesterdayConvoy
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
         private double DeathTail => CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0);
+        private bool DeathPresentationPending
+        {
+            get
+            {
+                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail) return true;
+                foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
+                return false;
+            }
+        }
         public bool SettlementVisible => Battle!=null && (Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) &&
-            !(Battle.Phase==BattlePhase.Lost && terminalPresentationElapsed<DeathTail);
+            !DeathPresentationPending;
         public static Rect SettlementRestartRect => new Rect(480,454,320,54);
 
         private void Start()
@@ -384,6 +393,9 @@ namespace YesterdayConvoy
             if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
+            string status=d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : "";
+            if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
+            if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);
             }
         }
 

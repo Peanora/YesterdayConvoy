@@ -225,7 +225,7 @@ namespace YesterdayConvoy
         {
             if (Phase != BattlePhase.Running) return;
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
-            else if (ActiveCount == 0 && (RemainingUses == 0 || DP < Settings.DeploymentCost))
+            else if (!HasPendingDeathBlast && ActiveCount == 0 && (RemainingUses == 0 || DP < Settings.DeploymentCost))
             { Phase = BattlePhase.Lost; IsPaused = false; }
             // Affordable uses remain: wait for cooldown/input. There is no timeout or passive DP recovery.
         }

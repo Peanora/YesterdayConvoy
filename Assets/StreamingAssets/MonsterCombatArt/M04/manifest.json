@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "task": "M04",
+  "ppu": 80,
+  "referenceSpeed": 0.65,
+  "height": 0.9800000000000001,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 150,
+      "duration": 2.5,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-01.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-02.png",
+          "count": 22,
+          "width": 2048,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "2650165ca39a0d0466ee46a0a7808d1ba5affc739a5a8651de5bb4b969db8313"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "224c80ffcf27752252bca2df397bc899489f3c339f4f5dd37e423ea44213e626"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "c1e8fdf4fd72db45b224b191da44ffec5488e67f9d4c3397f2d2253658d8b4f3"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "f72f7f60e88875796dc182c57248f12827e8711d0c170d073125e2bc1421013e"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "41955073ca7d2710be2c9fd4090c963cbc8eddadf844e5fec0e2dc2911c8d2a4"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "7923624fae308f659123be0663c3e3378c8c9a4d03e850001f208289a1ee7558"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "667ec627aeb3cc807bd51d77e535d09b344d5940f2af3cd7fb32a328178c0237"
+    }
+  ],
+  "provenance": "Approved local preview M04-ExplosiveSlug-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

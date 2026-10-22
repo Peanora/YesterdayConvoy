@@ -8,9 +8,9 @@ from PIL import Image
 PROFILES = {
     'M02': ('M02-Hound-v1', 'Move_Loop', 1.1),
     'M03': ('M03-GuerrillaHound-v1', 'Run_Loop', 1.35),
-    'M04': ('M04-ExplosiveSlug-v1', 'Move_Loop', .65),
+    'M04': ('M04-ExplosiveSlug-v1', 'Move', .65),
     'M05': ('M05-AcidSlug-v1', 'Move_Loop', .65),
-    'M06': ('M06-IceSlug-v1', 'Move_Loop', .65),
+    'M06': ('M06-IceSlug-v1', 'Move', .65),
     'M07': ('M07-Soldier-v1', 'Move_Loop', .75),
     'M08': ('M08-Archer-v1', 'Move_Loop', .75),
     'M09': ('M09-Caster-v1', 'Move_Loop', .65),
