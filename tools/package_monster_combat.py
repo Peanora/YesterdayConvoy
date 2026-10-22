@@ -26,8 +26,11 @@ def portrait_from_idle(frame):
     subject = frame.crop(bounds)
     scale = 248 / max(subject.size)
     size = tuple(max(1, round(length * scale)) for length in subject.size)
-    portrait = Image.new('RGBA', (size[0] + 8, size[1] + 8))
-    portrait.paste(subject.resize(size, Image.Resampling.LANCZOS), (4, 4))
+    # Runtime loading compresses textures; both dimensions must align to BC blocks.
+    canvas = tuple((length + 8 + 3) // 4 * 4 for length in size)
+    portrait = Image.new('RGBA', canvas)
+    offset = tuple((outer - inner) // 2 for outer, inner in zip(canvas, size))
+    portrait.paste(subject.resize(size, Image.Resampling.LANCZOS), offset)
     return portrait
 
 
