@@ -55,7 +55,10 @@ namespace YesterdayConvoy.Tests
             Deploy(b,2);b.Advance(1.8f);Assert.That(b.DeathBlasts.Count,Is.EqualTo(2));
             Assert.That(b.Defender.FrozenUntil,Is.GreaterThan(b.Clock));double frozenUntil=b.Defender.FrozenUntil;
             b.SetPaused(true);b.Advance(100);Assert.That(b.Defender.FrozenUntil,Is.EqualTo(frozenUntil));
-            b.SetPaused(false);b.Advance(11);Assert.That(b.Defender.FrozenUntil,Is.LessThanOrEqualTo(b.Clock));
+            b.SetPaused(false);Deploy(b,3);int shots=b.ShotsFired;b.Advance(1);
+            Assert.That(b.ShotsFired,Is.EqualTo(shots),"Frozen defender must not attack a live target.");
+            Assert.That(b.Units[2].Active,Is.True);
+            b.Advance(11);Assert.That(b.Defender.FrozenUntil,Is.LessThanOrEqualTo(b.Clock));
             b.Restart();Assert.That(b.Defender.ColdUntil,Is.LessThan(b.Clock));Assert.That(b.Defender.FrozenUntil,Is.LessThan(b.Clock));
         }
         [Test] public void EffectsRejectInvalidValuesAndLegacySettingsHaveNoNewBehavior()
