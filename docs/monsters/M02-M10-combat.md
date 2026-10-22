@@ -1,5 +1,7 @@
 # M02～M10 单怪战斗接入与交付
 
+2026-10-22 更新：本轮运行媒体现随源码提交，队友无需另外安装 CombatPackages；原文“仅本地”描述保留为此前交付历史。实际来源、未核实的许可状态和干净克隆验证见[素材交付审计](../art/MONSTER-RUNTIME-DELIVERY.md)。
+
 负责人霍利屹 / shigaharuki17。任务 [#8](https://github.com/Peanora/YesterdayConvoy/issues/8)，首批 [PR #9](https://github.com/Peanora/YesterdayConvoy/pull/9) 已由人类合入；后续审查 [PR #11](https://github.com/Peanora/YesterdayConvoy/pull/11)。首批基线main e5c1d7d；后续基于main a306949，分支codex/monster-effects-and-roster-completion。当前用户逐项确认了V1美术，再明确要求从M08开始接入游戏；先完成M08并上传，再依次完成其余本轮单位，每只均独立提交并推送。既存.vscode保留不提交；旧ZIP副本和原作工作区未覆盖。
 
 ## 怎样玩

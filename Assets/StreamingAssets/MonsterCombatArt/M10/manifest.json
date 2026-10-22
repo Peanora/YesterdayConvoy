@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "task": "M10",
+  "ppu": 80,
+  "referenceSpeed": 0.55,
+  "height": 1.71,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 120,
+      "duration": 2.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "idle-01.png",
+          "count": 56,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 72,
+      "duration": 1.2,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "walk-01.png",
+          "count": 8,
+          "width": 2048,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 54,
+      "duration": 0.9,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 54,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "52b269d436ce32654e82c0c232670686d1db35b56ea03fed3cdb3bbbdd18a909"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "0f428de284b4b2c5de5d304be854e2d7d990610dbce1e419aebbf7be32bb1bf5"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "47056008463694d594a734ec46081360db6a47a9c9dba669e89510d55059b2f3"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "ddc12079c71f63d68c68d9b62412c0fe609661cf8258cfc13bf671d324c0f803"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "9bb4b76d6649ec3d7bfd86ab25029eeea475c30a6d9193f94144da1813fe897e"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "bacc6c02dfab5b0ad1fc313ecb415912ef1610d2adcc0ffba4f4dcffb95b738b"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "45df7adf33b2bd50d049d04dabf44469e54cd2e0fefab10d6e0b4659421e8ba8"
+    }
+  ],
+  "provenance": "Approved local preview M10-Defender-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

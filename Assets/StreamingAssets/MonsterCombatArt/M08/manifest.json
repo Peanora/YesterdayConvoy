@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "task": "M08",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 1.855,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4375,
+      "pivotY": 0.140625,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4375,
+      "pivotY": 0.140625,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4375,
+      "pivotY": 0.140625,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4375,
+      "pivotY": 0.140625,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "2e2fa151aec089c8b62271c1c39c6ea15f7db9acac8ec6e2a8d63fbbe79176df"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "37ed298a1ff618a203f260fb6d8414b237b20cca0900cdebdcfebfd8046483f5"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "9d2a2f3329ca3d20b228aafd7e31663f5b288617550a51e86b3fce6f85a8104e"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "b7e45e419ad512e22b2c3ab816cc9c974ff96f0d4b8c80e6548dd1bf9c58da53"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "d86fea9e4d4130e238ad64d6377b3fe35e16f62c881f7233fd3efe0fe93807c8"
+    }
+  ],
+  "provenance": "Approved local preview M08-Archer-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

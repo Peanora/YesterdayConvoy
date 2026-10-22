@@ -1,5 +1,7 @@
 # M04 高能源石虫：独立战斗与死亡爆炸
 
+2026-10-22 更新：按用户本轮明确要求，运行所需图片/图集/清单及原有 `.meta` 随源码提交；下方“仅本地/需另装包”是此前阶段记录。当前拉取与许可状态见[素材交付审计](../art/MONSTER-RUNTIME-DELIVERY.md)。
+
 霍利屹，任务[#8](https://github.com/Peanora/YesterdayConvoy/issues/8)。当前用户已确认V1造型并授权完成此前角色游戏接入；干宸骅最终代码/数值审查不冒认已通过。入口InitialDemo的怪物选择，独立配置Data/Units、Cards、Battles、Resources/MonsterTests/M04.asset，稳定ID CARD_M04 / M04_EXPLOSIVE_SLUG。
 
 初始12 DP、3次、CD1秒、每次2 DP；招募2金币独立保存。生命130、攻击32、护甲0、速度0.65、近战范围0.75、间隔2.8秒、完整原攻击2.5秒，OnAttack前摇28/60秒后0.02秒接触。守军生命140、攻击18、护甲3、范围3.2、间隔1秒、不阻挡。数值为本轮试验，不是原作数值或最终平衡。

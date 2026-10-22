@@ -33,5 +33,6 @@ __pycache__/
 /Assets/StreamingAssets/ApprovedMonsterArt/
 /Assets/StreamingAssets/ApprovedMonsterArt.meta
 
-/Assets/StreamingAssets/MonsterCombatArt/
-/Assets/StreamingAssets/MonsterCombatArt.meta
+
+# M02-M10 runtime packages are tracked by explicit coursework delivery request.
+# Other original-art preview directories above remain local-only.

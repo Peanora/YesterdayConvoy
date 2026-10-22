@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "task": "M02",
+  "ppu": 80,
+  "referenceSpeed": 1.1,
+  "height": 1.1749999999999998,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 48,
+      "duration": 0.8,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 48,
+          "width": 2048,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 40,
+      "duration": 0.6666666666666666,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 40,
+          "width": 2048,
+          "height": 1280
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "48317b85b979174d63b88fd42f1fddc4f133c7c1bf9cb6faf410bf0894514d5d"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "01dd64a2e911178405af2e1ffb81618067a135ab043025f919bbdeea0d1778d7"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "d727dde85b21489948cca3f8df1eda52bd54392242a82544eefc821f7d24cffc"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "968cac117f0f72bce2a937b2f642d1ffedc917f4108eca7774cfc820f45a5147"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "ff45913175a94ac4505aa39b33babb67d1d334c269b7b293a4120f015dfa4dfa"
+    }
+  ],
+  "provenance": "Approved local preview M02-Hound-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

@@ -1,0 +1,369 @@
+{
+  "date": "2026-10-22",
+  "scope": "M02-M10 runtime images, four animation states, portraits, manifests and existing Unity metadata",
+  "publication_request": "User explicitly requested upload for student coursework after being informed that public redistribution permission had not been verified.",
+  "rights_status": "No rightsholder authorization document or verifiable public redistribution license has been supplied. Coursework purpose is recorded as intended use, not a license. No CC0 or project-ownership claim is made for original character artwork or animation.",
+  "processing": "Original model frames rendered offline at 60fps using fixed canvas/root. tools/package_monster_combat.py downsamples 640x640 frames to 256x256 and packs max 64 frames per 2048px page; portrait comes from the same approved preview. PNG SHA256 values are in each runtime manifest. Existing .meta files and GUIDs are preserved. No Spine runtime or skeleton data is added to Unity.",
+  "records": [
+    {
+      "task": "M02",
+      "preview": "M02-Hound-v1",
+      "source_record": {
+        "model": "enemy_1000_gopro",
+        "reference": "https://prts.wiki/w/猎狗",
+        "author": "明日方舟原权利人；具体原画与动画师未确认",
+        "license": "未确认公开再分发许可，仅本地看稿",
+        "processing": "PixiJS6.5.10 + pixi-spine3.1.2离线渲染，不使用AI重绘；固定缩放0.8，根点320,490；各动作60fps；使用共同裁切框，不逐帧重定位",
+        "frame_bounds_union": [
+          157,
+          257,
+          559,
+          499
+        ],
+        "files": [
+          {
+            "file": "enemy_1000_gopro.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1000_gopro/enemy_1000_gopro.atlas",
+            "sha256": "b7d67e710a3f6b7a77c09516442ff463dadc6ff9e23b89f8ed79a502a2d5883c"
+          },
+          {
+            "file": "enemy_1000_gopro.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1000_gopro/enemy_1000_gopro.png",
+            "sha256": "cf9bdec83ef25a80bcc7739110bfee412c8a607f1f6eba1d40f7d5eeb16ceb0b"
+          },
+          {
+            "file": "enemy_1000_gopro.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1000_gopro/enemy_1000_gopro.skel",
+            "sha256": "6255bff9f5fe9cd893a7d700c8580cb30ffaf52b378ef9b8d22977188ef8eca5"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M02/manifest.json",
+      "png_count": 5,
+      "animation_frames": 208
+    },
+    {
+      "task": "M03",
+      "preview": "M03-GuerrillaHound-v1",
+      "source_record": {
+        "model": "enemy_1077_sotihd",
+        "reference": "https://prts.wiki/w/游击队猎犬",
+        "author": "明日方舟原权利人；具体原画与动画师未确认",
+        "license": "未确认公开再分发许可，仅本地看稿",
+        "processing": "PixiJS6.5.10 + pixi-spine3.1.2离线渲染；未AI重绘；固定缩放0.8，根点320,490；各动作60fps；共同裁切框，不逐帧重定位",
+        "frame_bounds_union": [
+          149,
+          267,
+          566,
+          500
+        ],
+        "files": [
+          {
+            "file": "enemy_1077_sotihd.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1077_sotihd/enemy_1077_sotihd.atlas",
+            "sha256": "19c3e170119ad40da94971eb4f3371511f5c1576a1e145083ff5fb59442ae8b3"
+          },
+          {
+            "file": "enemy_1077_sotihd.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1077_sotihd/enemy_1077_sotihd.png",
+            "sha256": "3bf12be9f52af1a1dae62020f146f869591067f030289f19d3ae9f1026a4af13"
+          },
+          {
+            "file": "enemy_1077_sotihd.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1077_sotihd/enemy_1077_sotihd.skel",
+            "sha256": "a639518375a8f10f0049af747b7bd57ee2e6487aeba76d79d0d99dab5bfcba72"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M03/manifest.json",
+      "png_count": 5,
+      "animation_frames": 212
+    },
+    {
+      "task": "M04",
+      "preview": "M04-ExplosiveSlug-v1",
+      "source_record": {
+        "model": "enemy_1021_bslime",
+        "reference": "https://prts.wiki/w/高能源石虫",
+        "author": "明日方舟原权利人；具体原画与动画师未确认",
+        "license": "公开再分发许可未确认，仅本地看稿",
+        "processing": "本地PixiJS6.5.10 + pixi-spine3.1.2逐帧渲染，原版60fps；固定缩放0.8、根点320,490、共同裁切框；未AI重绘或逐帧重定位；Die仅源角色蓄爆动作，没有另外添加完整爆炸VFX",
+        "bounds": {
+          "union": [
+            155,
+            318,
+            574,
+            520
+          ],
+          "crop": [
+            139,
+            302,
+            590,
+            536
+          ]
+        },
+        "files": [
+          {
+            "file": "enemy_1021_bslime.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1021_bslime/enemy_1021_bslime.atlas",
+            "sha256": "370495114fdefbf1ae62cdc54229433b1b622f8238d460cdd0be539075eaa971"
+          },
+          {
+            "file": "enemy_1021_bslime.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1021_bslime/enemy_1021_bslime.png",
+            "sha256": "cd1578e7188a2bc1719babc5ebaacf71851044a19ae6a489d4e3a55462666251"
+          },
+          {
+            "file": "enemy_1021_bslime.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1021_bslime/enemy_1021_bslime.skel",
+            "sha256": "ec8e8d9427b817916ff52662e6b96f7dde852606b8e71d247ff2ef2ce6b36335"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M04/manifest.json",
+      "png_count": 7,
+      "animation_frames": 330
+    },
+    {
+      "task": "M05",
+      "preview": "M05-AcidSlug-v1",
+      "source_record": {
+        "model": "enemy_1004_mslime",
+        "reference": "https://prts.wiki/w/酸液源石虫",
+        "author": "明日方舟原权利人；具体原画与动画师未确认",
+        "license": "未确认公开再分发许可，仅本地看稿",
+        "processing": "PixiJS6.5.10与pixi-spine3.1.2离线渲染原骨骼动作；固定根点320,490、缩放0.8、60fps、共同裁切；没有AI重绘或将M04换色",
+        "bounds": [
+          194,
+          303,
+          510,
+          516
+        ],
+        "suggested_idle_height": 78,
+        "files": [
+          {
+            "file": "enemy_1004_mslime.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1004_mslime/enemy_1004_mslime.atlas",
+            "sha256": "16a61c2acffa72267ce22a6e9dd443659ea643943d5e4c0dd24c7944fafb52f6"
+          },
+          {
+            "file": "enemy_1004_mslime.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1004_mslime/enemy_1004_mslime.png",
+            "sha256": "da5bfdbdb77ac9e17906ab863fc3e6f8b4a3912f4ad6dc977e4023cf08809854"
+          },
+          {
+            "file": "enemy_1004_mslime.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1004_mslime/enemy_1004_mslime.skel",
+            "sha256": "787a53e5ef9266b05bbea0b249d0144c493c04f9ef6f6862d9ee1a57206db33f"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M05/manifest.json",
+      "png_count": 8,
+      "animation_frames": 370
+    },
+    {
+      "task": "M06",
+      "preview": "M06-IceSlug-v1",
+      "source_record": {
+        "model": "enemy_1067_snslime",
+        "reference": "https://prts.wiki/w/冰爆源石虫",
+        "author": "明日方舟原权利人；具体原画/动画师未确认",
+        "license": "公开再分发许可未确认，仅本地看稿",
+        "processing": "PixiJS6.5.10/pixi-spine3.1.2原骨骼渲染，固定根点320,490、缩放0.8、60fps、共同裁切框；未AI重绘或换色M04",
+        "bounds": [
+          160,
+          295,
+          573,
+          520
+        ],
+        "files": [
+          {
+            "file": "enemy_1067_snslime.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1067_snslime/enemy_1067_snslime.atlas",
+            "sha256": "b7c51974e4846f7d3bf8709dbf9b82077cef5e0177b3b4dca03a6cc02eb3a7ef"
+          },
+          {
+            "file": "enemy_1067_snslime.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1067_snslime/enemy_1067_snslime.png",
+            "sha256": "f8a2756d8588100436021006a4c25b365239c20f38e0a5a5e0213017a3b17e31"
+          },
+          {
+            "file": "enemy_1067_snslime.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1067_snslime/enemy_1067_snslime.skel",
+            "sha256": "16dbb8319527b79a017d9710128eef9953e6deef37dd638ba1b03acabdc9f11f"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M06/manifest.json",
+      "png_count": 7,
+      "animation_frames": 330
+    },
+    {
+      "task": "M07",
+      "preview": "M07-Soldier-v1",
+      "source_record": {
+        "model": "enemy_1002_nsabr",
+        "reference": "https://prts.wiki/w/士兵",
+        "author": "明日方舟原权利人；具体原画和动画师未确认",
+        "license": "公开再分发许可未确认，仅本地看稿",
+        "processing": "原骨骼由PixiJS6.5.10/pixi-spine3.1.2离线渲染；固定缩放0.8、根点320,490、60fps、共同裁切框；不重绘或变形",
+        "bounds": [
+          129,
+          124,
+          557,
+          558
+        ],
+        "files": [
+          {
+            "file": "enemy_1002_nsabr.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1002_nsabr/enemy_1002_nsabr.atlas",
+            "sha256": "7363864a276e23f1a3c19be706f2653b1fcd5fbe42e9f256cc211d3eba0cc752"
+          },
+          {
+            "file": "enemy_1002_nsabr.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1002_nsabr/enemy_1002_nsabr.png",
+            "sha256": "9382a7436f8ca8978c5a1e6565980948be812b2656dc9234ac0a9c637896abfb"
+          },
+          {
+            "file": "enemy_1002_nsabr.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1002_nsabr/enemy_1002_nsabr.skel",
+            "sha256": "d8b94151ac583a282b85ebd177453b25c61560a24ba6679fde3bf4c38b5d4bd4"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M07/manifest.json",
+      "png_count": 5,
+      "animation_frames": 240
+    },
+    {
+      "task": "M08",
+      "preview": "M08-Archer-v1",
+      "source_record": {
+        "date": "2026-10-21",
+        "unit": "普通弩手",
+        "source_model": "enemy_1003_ncbow",
+        "reference_pages": [
+          "https://prts.wiki/w/弩手",
+          "https://prts.wiki/w/弩手/spine"
+        ],
+        "files": [
+          {
+            "file": "source\\enemy_1003_ncbow.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1003_ncbow/enemy_1003_ncbow.skel",
+            "sha256": "2511a928f53fc61cff4023b23e4b012a78b9c144ae05d958a7c023974d5c687d",
+            "bytes": 38300,
+            "author": "明日方舟原权利人；具体美术与动画作者未确认",
+            "license": "公开再分发许可未确认，仅本地看稿"
+          },
+          {
+            "file": "source\\enemy_1003_ncbow.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1003_ncbow/enemy_1003_ncbow.atlas",
+            "sha256": "34121f13c31101944befd717cdb8704ff12985031a225a4338b399cb1ffa6b37",
+            "bytes": 2630,
+            "author": "明日方舟原权利人；具体美术与动画作者未确认",
+            "license": "公开再分发许可未确认，仅本地看稿"
+          },
+          {
+            "file": "source\\enemy_1003_ncbow.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1003_ncbow/enemy_1003_ncbow.png",
+            "sha256": "920609fc4fefb314631e0439ebb88b127f5de2cdbf0393d9c5e3c3edf82ea8c7",
+            "bytes": 49146,
+            "author": "明日方舟原权利人；具体美术与动画作者未确认",
+            "license": "公开再分发许可未确认，仅本地看稿"
+          }
+        ],
+        "tools": {
+          "pixi": "https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js",
+          "pixi-spine": "https://cdn.jsdelivr.net/npm/pixi-spine@3.1.2/dist/pixi-spine.umd.js",
+          "spine_license": "https://raw.githubusercontent.com/EsotericSoftware/spine-runtimes/3.8/LICENSE",
+          "ffmpeg": "https://pypi.org/project/imageio-ffmpeg/"
+        },
+        "public_upload": false
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M08/manifest.json",
+      "png_count": 5,
+      "animation_frames": 240
+    },
+    {
+      "task": "M09",
+      "preview": "M09-Caster-v1",
+      "source_record": {
+        "model": "enemy_1011_wizard",
+        "skin": "Wizard",
+        "reference": "https://prts.wiki/w/术师",
+        "mirror": "https://github.com/isHarryh/Ark-Models/tree/main/models_enemies/1011_wizard",
+        "author": "明日方舟原权利人；具体原画/动画师未确认；镜像维护isHarryh",
+        "license": "原作媒体公开再分发许可未确认，仅本地看稿",
+        "processing": "固定0.8缩放、根点320,490；按Wizard皮肤原骨骼60fps离线渲染；共同裁切框，不重绘、变形或逐帧定位",
+        "bounds": [
+          235,
+          213,
+          456,
+          497
+        ],
+        "files": [
+          {
+            "file": "enemy_1011_wizard.skel",
+            "url": "https://raw.githubusercontent.com/isHarryh/Ark-Models/main/models_enemies/1011_wizard/enemy_1011_wizard.skel",
+            "sha256": "5ca3198e83d6a51ce74c7ef7dbc757811b2bb638ac6cfa12f037c0d1da3c8443"
+          },
+          {
+            "file": "enemy_1011_wizard.atlas",
+            "url": "https://raw.githubusercontent.com/isHarryh/Ark-Models/main/models_enemies/1011_wizard/enemy_1011_wizard.atlas",
+            "sha256": "c169f170e5be7afe1a7d917892b787817caaee191ef15ec4dc86d4aeba433844"
+          },
+          {
+            "file": "enemy_1011_wizard.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1011_wizard/enemy_1011_wizard.png",
+            "sha256": "adca1bd2a9fe202be8edc5ff90f640be2a6d278dd56eed37e496cd2481fac01f"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M09/manifest.json",
+      "png_count": 7,
+      "animation_frames": 302
+    },
+    {
+      "task": "M10",
+      "preview": "M10-Defender-v1",
+      "source_record": {
+        "model": "enemy_1006_shield",
+        "reference": "https://prts.wiki/w/重装防御者",
+        "original_rank": "精英",
+        "author": "明日方舟原权利人；具体原画/动画师未确认",
+        "license": "原作媒体公开再分发许可未确认，仅本地看稿",
+        "processing": "PixiJS6.5.10/pixi-spine3.1.2离线原骨骼60fps渲染；固定缩放0.8和根点320,490；共同裁切，不逐帧定位或AI重绘",
+        "common_crop": [
+          85,
+          165,
+          529,
+          519
+        ],
+        "files": [
+          {
+            "file": "enemy_1006_shield.skel",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1006_shield/enemy_1006_shield.skel",
+            "bytes": 45068,
+            "sha256": "f8752a732f526bc55bd600247152f929e06587dfa0f9a388d5783db634055bec"
+          },
+          {
+            "file": "enemy_1006_shield.atlas",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1006_shield/enemy_1006_shield.atlas",
+            "bytes": 1494,
+            "sha256": "664dbba3cae194a7f1405b7bd095206d224ad700c933f3edcfcf8432378c75fb"
+          },
+          {
+            "file": "enemy_1006_shield.png",
+            "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1006_shield/enemy_1006_shield.png",
+            "bytes": 39499,
+            "sha256": "1fc4fc22d9e0e049ad18edc208cb157785a629842d909f6257e1421d2206c6f6"
+          }
+        ]
+      },
+      "runtime_manifest": "Assets/StreamingAssets/MonsterCombatArt/M10/manifest.json",
+      "png_count": 7,
+      "animation_frames": 306
+    }
+  ]
+}

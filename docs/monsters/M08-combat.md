@@ -1,5 +1,7 @@
 # M08 弩手：独立战斗接入
 
+2026-10-22 更新：按用户本轮明确要求，运行所需图片/图集/清单及原有 `.meta` 随源码提交；下方“仅本地/需另装包”是此前阶段记录。当前拉取与许可状态见[素材交付审计](../art/MONSTER-RUNTIME-DELIVERY.md)。
+
 负责人霍利屹，任务 https://github.com/Peanora/YesterdayConvoy/issues/8 。当前用户已确认M08-Archer-v1，并于2026-10-22要求从M08开始把已分配角色接入游戏。基线main e5c1d7d，分支codex/monster-archer-combat；不假定当前用户为干宸骅，不代替主导者PR审查。
 
 ## 入口与行为

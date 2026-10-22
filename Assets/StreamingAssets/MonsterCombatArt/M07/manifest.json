@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "task": "M07",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 1.605,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "5c2d4bdd487d142272f4ab84aa5b13b7d326dc98adfcb3a3b598f520e3ddb453"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "5a34df4a4037bda5813575421d0047242c8d744d8b7c29094f076fb63aa677ec"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "5535c147bcdd68996933f7517b668473aab3b5077d7bf0c5a2d6a54e93ca5af1"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "53a94d4af8b7361f87ab7c223b2a14ca018a64ddd90e6a804beecc2752201092"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "ef03a397bc4641ba7b326b2952af19e56df822fcbebc0c134d7d921bb71d8597"
+    }
+  ],
+  "provenance": "Approved local preview M07-Soldier-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

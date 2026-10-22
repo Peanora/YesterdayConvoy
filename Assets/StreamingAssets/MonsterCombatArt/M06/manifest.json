@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "task": "M06",
+  "ppu": 80,
+  "referenceSpeed": 0.65,
+  "height": 1.07,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 150,
+      "duration": 2.5,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-01.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-02.png",
+          "count": 22,
+          "width": 2048,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "6dbd22fdbe9781640e43c345ec999d2686971475ca49a80795f262d32e90bc1c"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "0a098ce117fb548c8f8009e9097d984f07a08d6fc6696e0d36372fa92fbc5bde"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "66b71e8528a86861562c9dcd6281ee3d0df9ccca033e16f8b574752bfc5c3e13"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "445bb097ddbe243071d484c6c2589dbf6b73b67d6b92ecccdf83fb71547a3c55"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "cbf06699cf157249bba45a0ac93f46ae4edc9e41894786b0e82952feac90034c"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "12a3a21b4c88c8f8082579a95f455fc5add9c2fdb9b1924f90dda7e472bd47ff"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "8718a73fb21e57e22917491a6f38c69f75f392a9041804b87b0255deb7b2a99f"
+    }
+  ],
+  "provenance": "Approved local preview M06-IceSlug-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "task": "M05",
+  "ppu": 80,
+  "referenceSpeed": 0.65,
+  "height": 1.075,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 120,
+      "duration": 2.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "idle-01.png",
+          "count": 56,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 120,
+      "duration": 2.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "walk-01.png",
+          "count": 56,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 80,
+      "duration": 1.3333333333333333,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-01.png",
+          "count": 16,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 50,
+      "duration": 0.8333333333333334,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 50,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "d0376f731c0155b4a86b3fa06fa0f0d82c75d757f024f2a2996d535e725ecbcd"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "a827e9236ee572f20887666b158f16b9658402c9f51edfc20290ad6c47ed09ea"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "496189f79533641641413036fefd0b61694bf9be147f156d9a0f895b919fc209"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "0231247a50c98fa1d7ade714a39e4697320141de503a18f0c7e6d8681f25653a"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "e4f4f669b7e77b5c6237855c5ae5ecf2a48d36890244ad38dbc5edfa28467d95"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "cf55fb3782378018c1a5926cc7edfab6a501380631e02633d8802f430c664072"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "e2960ee666d346f5ff964e60331fc3eeb99beea2a2977d25ded109676880c791"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "c7ad9e0d1476d667f2c59d110ee177a19a584fd430b61ab62506c47a48492462"
+    }
+  ],
+  "provenance": "Approved local preview M05-AcidSlug-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}

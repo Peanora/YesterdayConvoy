@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "task": "M03",
+  "ppu": 80,
+  "referenceSpeed": 1.35,
+  "height": 1.155,
+  "clips": [
+    {
+      "key": "idle",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 32,
+      "duration": 0.5333333333333333,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 32,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "count": 60,
+      "duration": 1.0,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.234375,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "754e025f0b2e20ee72db693173f5c4e4f961c0f3ebf3d334c91d2ec9b2ebb1dd"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "896766adb2edfc393e7c54583b69f848907fcdd281b4db491a555fe29ed9fd5b"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "7793f1c4480e6dc8eca41b92a54ec478a9760d47854eceb81e9de7e0922e6ebf"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "9f3b3e4913f4c4e93d4e871e7ebac2afff00b8cdc8c60da19fa709016bf30268"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "59c59ab41d3807da71646cfaabbb9c1034d77fc6ebe9d1a893c9070da72de698"
+    }
+  ],
+  "provenance": "Approved local preview M03-GuerrillaHound-v1; source and rights records remain beside it. No public redistribution license confirmed."
+}
