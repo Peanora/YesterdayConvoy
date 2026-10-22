@@ -25,7 +25,7 @@
 5. 在Unity打开`Assets/_Game/Scenes/InitialDemo.unity`，或用Yesterday Convoy → Initial Demo → Open Current Scene；点Play验证。Game视图选Full HD并关闭Low Resolution Aspect Ratios。
 6. 先看`docs/STATUS.md`当前状态、`docs/GDD.md`相关规则、本指南及[CONTRIBUTING](../CONTRIBUTING.md)。AGENTS.md不随仓库分发，克隆后缺失是正常的；每人使用Codex前按CONTRIBUTING第1节创建本地引导，已有完整指令时合并，共享流程不依赖主导者私有文件。
 
-只试玩的人无需安装Unity，到仓库[Releases](https://github.com/Peanora/YesterdayConvoy/releases)下载Windows附件，完整解压后运行Game/YesterdayConvoy.exe。GitHub的Source code不是可玩包。
+只试玩的人无需安装 Unity，向主导者获取已验证、标明源码版本的完整 Windows 构建目录，运行其中的 YesterdayConvoy.exe；保留配套数据与 DLL。GitHub 的 Source code 不是可玩包，旧 Releases 不代表最新 main。需要自行构建的人先按角色说明取得有权使用的运行素材并安装，再用对应版本构建；仅克隆代码可能缺少被许可规则排除的本地媒体。
 
 ## 3. 每次开发照这个顺序
 
@@ -55,10 +55,10 @@ Git不能让同一Unity场景安全地随意同时编辑。CODEOWNERS只是审�
 
 自动检查只读Git跟踪文件，检查缺失/孤立.meta、重复GUID、大小写路径冲突、未解决合并标记、误交缓存/本地AGENTS.md、精确Unity版本、Force Text/Visible Meta Files以及包JSON。入口`python tools/check_repository.py`；GitHub Actions自带Python执行，无需Unity许可或上传账号密钥。它不检查游戏逻辑正确性，不代替Unity编译、EditMode/PlayMode和实机试玩。
 
-## 7. 谁上传试玩包
+## 7. 本地构建与可玩交付
 
-2026-10-20用户最新约定：只有用户明确要求时才制作、更新或上传试玩ZIP；普通开发默认只提交源码和验证记录，必要的本地独立Player验证仍可执行。用户要求发包时，由主导者在main集成并验证后统一打包、上传同仓库Releases，记录对应源码版本、操作说明、实际测试与限制。成员只提交源码/资源，不往Git仓库塞exe，也不分别发布互相冲突的“最新版”。当前未配置云端Unity编译/自动发包；发布由本机Unity验证和构建后执行，不需要成员提供Unity/GitHub令牌。
+2026-10-22 用户最新约定：可运行开发通过相应验证后，默认本机构建 Windows EXE，说明路径、对应源码与实际测试；不自动制作、更新或上传 ZIP / Releases。用户另行要求发包时，由主导者在 main 集成并验证后统一交付。成员不往 Git 仓库塞 EXE，不分别发布互相冲突的“最新版”；源码仍走功能分支 / PR / 人工合并。本地构建不授权 Agent 自动合并。当前未配置云端 Unity 编译 / 自动发包，不需要成员提供 Unity / GitHub 令牌。
 
-本次协作配置只改变开发流程，不改变玩法，因此沿用已有试玩版，不额外发布内容相同的包。第二台电脑的首次克隆、Unity导入、Play和离线包启动仍须两位实际执行，结果填入Issue。
+交付统一按[圣经第 0.3 节](GDD.md#03-可玩功能交付标准已定2026-10-22)：代码、配套素材、可访问的获取 / 安装说明、真实验证记录一起交。合法可分发素材随 Git 提交；原作媒体不因队友需要就自动公开。作者本机成功与接收端验收分开记录，缺素材时明确写待交付；接收者实际运行后再记可玩交付完成。第二台电脑首次克隆、导入、Play 与离线启动结果由实际执行者填写，不由主导者推断。
 
 参考：[Desktop创建PR](https://docs.github.com/en/desktop/working-with-your-remote-repository-on-github-or-github-enterprise/creating-an-issue-or-pull-request-from-github-desktop)、[保护分支](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)。GitHub UI语言可能不同，按同义按钮操作。
