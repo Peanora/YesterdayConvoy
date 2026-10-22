@@ -59,6 +59,6 @@ Git不能让同一Unity场景安全地随意同时编辑。CODEOWNERS只是审�
 
 2026-10-22 用户最新约定：可运行开发通过相应验证后，默认本机构建 Windows EXE，说明路径、对应源码与实际测试；不自动制作、更新或上传 ZIP / Releases。用户另行要求发包时，由主导者在 main 集成并验证后统一交付。成员不往 Git 仓库塞 EXE，不分别发布互相冲突的“最新版”；源码仍走功能分支 / PR / 人工合并。本地构建不授权 Agent 自动合并。当前未配置云端 Unity 编译 / 自动发包，不需要成员提供 Unity / GitHub 令牌。
 
-交付统一按[圣经第 0.3 节](GDD.md#03-可玩功能交付标准已定2026-10-22)：代码、配套素材、可访问的获取 / 安装说明、真实验证记录一起交。2026-10-22 用户明确要求现有运行素材全部随 Git 提交，覆盖先前原作媒体仅本地的交付约定；来源及未确认公开再分发许可的记录保留。作者本机成功与接收端验收分开记录，缺素材时明确写待交付；接收者实际运行后再记可玩交付完成。第二台电脑首次克隆、导入、Play 与离线启动结果由实际执行者填写，不由主导者推断。
+交付统一按[圣经第 0.3 节](GDD.md#03-可玩功能交付标准已定2026-10-22)：代码、配套素材、可访问的获取 / 安装说明、真实验证记录一起交。2026-10-22 用户明确“以后素材都直接上传”，适用于三位成员后续每次开发；新增 / 替换游戏素材与必要 `.meta` 验证后随源码提交、推送功能分支并创建 / 更新 PR，无需另问上传许可，不自动合并。检查仓库 / 本机忽略和实际跟踪，覆盖先前原作媒体仅本地的交付约定；保留来源、真实权利状态及美术预览确认流程。作者本机成功与接收端验收分开记录，缺素材时明确写待交付；接收者实际运行后再记可玩交付完成。第二台电脑首次克隆、导入、Play 与离线启动结果由实际执行者填写，不由主导者推断。
 
 参考：[Desktop创建PR](https://docs.github.com/en/desktop/working-with-your-remote-repository-on-github-or-github-enterprise/creating-an-issue-or-pull-request-from-github-desktop)、[保护分支](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)。GitHub UI语言可能不同，按同义按钮操作。
