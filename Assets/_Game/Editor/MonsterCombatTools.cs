@@ -41,6 +41,48 @@ namespace YesterdayConvoy.Editor
             _=level.Snapshot(); UnitConfigurationTools.ValidateProject();
             Debug.Log("M08_CONFIGURATION_PASS: approved local media, ranged physical attack, no active skill.");
         }
+        // Read the explicitly requested task; never overwrite an existing authored configuration.
+        public static void PrepareTask()
+        {
+            var args=Environment.GetCommandLineArgs();int index=Array.IndexOf(args,"-monsterTask");
+            if(index<0 || index+1>=args.Length) throw new ArgumentException("-monsterTask required.");
+            string task=args[index+1],name,id;float speed,health,attack,armor,interval,windup,defenseHealth=140;int cost=1;
+            switch(task)
+            {
+                case "M02":name="猎狗";id="HOUND";speed=1.1f;health=110;attack=30;armor=0;interval=1.4f;windup=.6f;break;
+                case "M03":name="游击队猎犬";id="GUERRILLA_HOUND";speed=1.35f;health=130;attack=34;armor=2;interval=1.4f;windup=.6f;break;
+                case "M07":name="士兵";id="SOLDIER";speed=.75f;health=150;attack=28;armor=5;interval=1.6f;windup=.4f;break;
+                case "M10":name="重装防御者";id="HEAVY_DEFENDER";speed=.55f;health=340;attack=40;armor=14;interval=2.6f;windup=28f/60;cost=2;defenseHealth=200;break;
+                default:throw new ArgumentException("Unsupported task: "+task);
+            }
+            string levelPath="Assets/_Game/Data/Resources/MonsterTests/"+task+".asset";
+            if(AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(levelPath)!=null) { ValidateTask(task);return; }
+            var unit=Create<UnitDefinition>("Assets/_Game/Data/Units/"+task+".asset");
+            Set(unit,"unitId",task+"_"+id);Set(unit,"displayName",name);Set(unit,"moveSpeed",speed);Set(unit,"gateDamage",1);
+            var card=Create<CardDefinition>("Assets/_Game/Data/Cards/"+task+".asset");
+            Set(card,"cardId","CARD_"+task);Set(card,"displayName",name);Set(card,"recruitCost",cost);Set(card,"unit",unit);
+            var combat=Create<EngagementDefinition>("Assets/_Game/Data/Battles/"+task+".asset");
+            Set(combat,"kroosSprite",AssetDatabase.LoadAssetAtPath<Sprite>(EngagementTools.KroosPath));
+            Set(combat,"defenderPosition",new Vector3(0,.35f,0));Set(combat,"unitAttack",attack);Set(combat,"unitArmor",armor);
+            Set(combat,"unitRange",.75f);Set(combat,"unitInterval",interval);Set(combat,"attackDuration",1f);Set(combat,"attackWindup",windup);
+            Set(combat,"defenderHealth",defenseHealth);Set(combat,"defenderAttack",18f);Set(combat,"defenderArmor",3f);
+            Set(combat,"defenderRange",3.2f);Set(combat,"defenderInterval",1f);Set(combat,"blockCount",0);
+            Set(combat,"hasSkill",false);Set(combat,"melee",true);
+            foreach(string field in new[]{"initialSP","requiredSP","spPerSecond","skillAttack","skillInterval","skillRange"}) Set(combat,field,0f);
+            Set(combat,"skillAmmo",0);Set(combat,"projectileTime",.02f);
+            var level=Create<ManualBattleDefinition>(levelPath);
+            Set(level,"levelId",task+"_TEST");Set(level,"card",card);Set(level,"engagement",combat);
+            Set(level,"initialDP",12);Set(level,"initialDefense",1);Set(level,"deploymentCost",cost);
+            Set(level,"deploymentLimit",3);Set(level,"deploymentCooldown",1f);Set(level,"unitHealth",health);
+            AssetDatabase.SaveAssets();ValidateTask(task);
+        }
+        public static void ValidateTask(string task)
+        {
+            var level=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/_Game/Data/Resources/MonsterTests/"+task+".asset");
+            if(level==null || !level.Card.HasFrameAnimation) throw new InvalidOperationException(task+" configuration/local art missing.");
+            _=level.Snapshot();if(level.Engagement.Snapshot().HasSkill) throw new InvalidOperationException("Unexpected active skill.");
+            UnitConfigurationTools.ValidateProject();Debug.Log("MONSTER_CONFIGURATION_PASS: "+task);
+        }
         private static T Create<T>(string path) where T:ScriptableObject
         {
             var asset=AssetDatabase.LoadAssetAtPath<T>(path);

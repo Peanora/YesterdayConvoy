@@ -34,6 +34,7 @@ namespace YesterdayConvoy
         public void Bind(ManualBattle battle,DeployedUnitState unit,CardDefinition frames,Func<double> presentationClock=null)
         {
             if(frames==null || !frames.HasFrameAnimation) throw new ArgumentException("Battle animation configuration is required.");
+            if(sprite==null) sprite=GetComponent<SpriteRenderer>();
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
             this.presentationClock=presentationClock; local=LocalMonsterArt.For(frames.CardId); slug=OriginalSlugArt.For(frames.CardId);
             slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
