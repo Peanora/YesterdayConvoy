@@ -20,12 +20,12 @@ namespace YesterdayConvoy
         public string DisplayName => displayName;
         public int RecruitCost => recruitCost;
         public UnitDefinition Unit => unit;
-        public Sprite Portrait => OriginalSlugArt.For(cardId)?.Portrait ?? portrait;
-        public Sprite BattleSprite => OriginalSlugArt.For(cardId)?["idle"].Frames[0] ?? battleSprite;
+        public Sprite Portrait => LocalMonsterArt.For(cardId)?.Portrait ?? OriginalSlugArt.For(cardId)?.Portrait ?? portrait;
+        public Sprite BattleSprite => LocalMonsterArt.For(cardId)?["idle"].Frames[0] ?? OriginalSlugArt.For(cardId)?["idle"].Frames[0] ?? battleSprite;
         public System.Collections.Generic.IReadOnlyList<Sprite> WalkFrames => walkFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> AttackFrames => attackFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> SkillFrames => skillFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> ComicImpactFaces => comicImpactFaces;
-        public bool HasFrameAnimation => OriginalSlugArt.For(cardId)!=null || (walkFrames?.Length>0 && attackFrames?.Length>0);
+        public bool HasFrameAnimation => LocalMonsterArt.For(cardId)!=null || OriginalSlugArt.For(cardId)!=null || (walkFrames?.Length>0 && attackFrames?.Length>0);
     }
 }

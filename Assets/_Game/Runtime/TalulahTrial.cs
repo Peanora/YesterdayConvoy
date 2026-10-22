@@ -36,6 +36,11 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(24,631,650,28),"源石虫 · 近战普通攻击 · 无主动技能",smallStyle);
                 GUI.Label(new Rect(24,659,650,26),"可部署3次 · 单次1 DP · 空格暂停 / 支持暂停部署",smallStyle);
             }
+            else if(CurrentLocalArt!=null)
+            {
+                GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+" · 普通攻击 · 无主动技能",smallStyle);
+                GUI.Label(new Rect(24,659,650,26),$"可部署{Battle.Settings.DeploymentLimit}次 · 单次{Battle.Settings.DeploymentCost} DP · 空格暂停",smallStyle);
+            }
             else if(TalulahActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"焚天火雨 · 满技力后点击角色 → 技能图标",smallStyle);

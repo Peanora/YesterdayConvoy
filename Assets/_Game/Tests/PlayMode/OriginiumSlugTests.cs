@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
 
         [UnityTest] public IEnumerator PauseDeploymentUsesApprovedArtAndNoSkillInterfaceOrCharge()
         {
-            yield return Load();Assert.That(c.MonsterTests.Count(x=>x.Playable),Is.EqualTo(3));
+            yield return Load();Assert.That(c.MonsterTests.Count(x=>x.Playable),Is.GreaterThanOrEqualTo(3));
             c.StartBattle();c.Battle.SetPaused(true);
             c.ProcessPointerDown(ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center));
             c.ProcessPointerMove(Camera.main.WorldToScreenPoint(c.Battle.Entry));

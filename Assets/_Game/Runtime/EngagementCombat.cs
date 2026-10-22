@@ -10,13 +10,14 @@ namespace YesterdayConvoy
         public readonly float DefenderHealth, DefenderAttack, DefenderArmor, DefenderRange, DefenderInterval, BlockRadius;
         public readonly int BlockCount, SkillAmmo;
         public readonly bool FireRain, HasSkill, Melee;
+        public readonly float AttackDuration, AttackWindup;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
@@ -32,6 +33,9 @@ namespace YesterdayConvoy
             }
             else if(fireRain || initialSP!=0 || requiredSP!=0 || spPerSecond!=0 || skillAmmo!=0 || skillAttack!=0 || skillInterval!=0 || skillRange!=0)
                 throw new ArgumentException("A unit without a skill must have zero skill resources.");
+            if(!Finite(attackDuration) || !Finite(attackWindup) || attackDuration<0 || attackDuration>unitInterval || attackWindup<0 || attackWindup>attackDuration)
+                throw new ArgumentException("Invalid attack animation timing.");
+            AttackDuration=attackDuration; AttackWindup=attackWindup;
             HasSkill=hasSkill; Melee=melee;
             FireRain = fireRain;
             UnitAttack = unitAttack; UnitArmor = unitArmor; UnitRange = unitRange; UnitInterval = unitInterval;
@@ -184,7 +188,7 @@ namespace YesterdayConvoy
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
                 DefenderState target=ChooseDefender(unit,range);
                 unit.HasCombatTarget=target!=null;
-                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit);
+                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration;
                 if(unit.IsMoving)
                 {
                     double lockEnd=c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
@@ -219,7 +223,7 @@ namespace YesterdayConvoy
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack));
+                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack));
                 }
             }
             if(Defense==0) return;
