@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-10-22：M21–M38十八位接入，银狼暂缓
+
+- 授权/基线：用户确认已展示18位素材，明确排除银狼，并确认继续PR #15、原main既存未跟踪设置隔离与公共不普攻接口范围。开工fetch核实main仍6be1300、功能分支333f437，独立目录干净；未改原main或其设置，不自动合并。
+- 资源/配置：新增18张透明卡面、119段10,519帧；312 PNG、26份清单，72份Card/Unit/Engagement/MonsterTests配置。71段基础清单中的梅菲斯特治疗施法仅保留，不作攻击；实际使用70段基础动作，48段ExtraClips仅留存。无M41文件/配置/图像，也未带入原骨骼、加工运行库或预览。
+- Unity导入：6000.6.5f1，PrepareRemainingBatch实际退出0，18个MONSTER_CONFIGURATION_PASS、40份单位与InitialDemo场景校验通过。首次导入因新增测试误访问内部CombatTargetId出现CS1061，改为通过公开HasCombatTarget和实际弹道/伤害验证，重新导入退出0。
+- EditMode：最终72/72，0失败/跳过，artifacts/m21-edit-final.xml。新增覆盖不普攻单位过射程仍移动且无己方伤害、暂停、穿门一次、仍能阻挡和受伤死亡、既存配置默认攻击及仅两份新配置禁用。首次Edit为71/72，新增测试误用new EngagementSettings()得到结构体零值；改为显式调用既有带参构造，不改产品构造语义；最终重跑通过，失败记录保留。
+- GPU PlayMode：32/32，0失败/跳过，artifacts/m21-play.xml。Roster遍历全部37个CARD_M（M02–M38），检查正常注册、实际图帧、暂停冻结、无技能、三次部署、按配置攻击/不攻击、通关穿门、重进清理、死亡原帧及根节点不移动；既有维维美/塔露拉/源石虫等回归同套通过。菜单与底栏后续文案修正后另3/3入口Play通过，artifacts/m21-menu-final.xml。
+- Windows：最终BuildWindows退出0，BASELINE_BUILD_PASS 846218362字节、0错误，artifacts/m21-build-final.log；运行源码6608c96139dbe544e06e56ab327fe87dea8f0b08。后续仅补证据文档。构建SOURCE.txt绑定该提交和真实覆盖范围。
+- 18只独立Player：artifacts/player-m21-m38/results.json，M21–M38均退出0；entered/paused/hit/resolved/three/won/noSkill/clean均True。16只攻击者attacked=True，M25/M33为False且独立MONSTER_ATTACK_POLICY_CHECK policy=True（受到敌方伤害时仍移动、没有普攻）；frozen为旧M06专用分支默认值，不作为新怪冻结能力证据。此轮在底栏文案修正前构建上运行，战斗与素材和最终相同。
+- 最终构建6组Player：artifacts/player-m21-final/results.json。重跑M25/M33验证不普攻与新底栏，其余selection/talulah/interaction/wisadel旧流程均退出0、检查通过；选择页实际40可玩/1待制作银狼。两轮共24个独立进程通过，无产品运行异常或缺图回退。
+- 实际视觉检查：已查看D3D12 1280×720完整HUD、八字长名菜单、宿主士兵/泥岩/蔓德拉攻击、梅菲斯特/囊海爬行者与新底栏、海嗣/萨卡兹及最后一页截图，角色透明度/比例/脚点/血条可读，名称无截断。截图仅本地artifacts/player-m21-m38与player-m21-final。没有把截图或整张平移当作新生成动画；使用确认稿离线原动作帧。
+- Git/构建审计：artifacts/m21-media-audit.json，312 PNG/26清单及必要meta全部实际Git跟踪，源文件SHA256匹配清单与最终构建；清单内容匹配；最大PNG3,019,918字节，无单文件超GitHub限制。仓库/本机忽略核对未排除素材，M41在源与构建均不存在；AGENTS/缓存/日志/构建不提交。repository-checks最终结果见提交/PR。
+- 本地副本：E:/珍贵资料/昨日圆车_本地试玩/2026-10-22-M21-M38-6608c96/YesterdayConvoy.exe；902文件逐一SHA256匹配构建。不生成ZIP/Releases。原工程main仍需人工合并PR并更新，不能将旧main目录当作此版。
+- 关键连接：Resources测试配置→CardDefinition/LocalMonsterArt读取图集→DemoSpriteVisual按模拟时钟/路程播放；EngagementDefinition的noOrdinaryAttack默认false，快照CanAttack追加参数默认true，ManualBattle对两位禁普攻但保留受伤/阻挡/暂停/穿门；没有新治疗或首领机制。
+- 未执行/限制：未做真人连续键鼠完整通关、第二台电脑、低配/长时/全分辨率或专项加载性能测试；菜单首次读取全部卡池图集，尚未专项优化。梅菲斯特治疗、囊海神经损伤、首领阶段/召唤/复活、正式羁绊/运营尚未实现；沿用通用攻击特效，未还原独立原作全套特效。原作权利状态保留，非CC0且公开再分发许可未确认。PR14旧卡面统一仍是独立任务，不宣称本轮已合入它。
+
 ## 2026-10-22：M11–M20已确认美术与独立基础交战
 
 - 授权/基线：用户先确认十只项目外预览，再确认保留原main未跟踪PackageManagerSettings.asset的独立目录方案。从实时核实main6be1300建立codex/m11-m20-art-integration，不改原目录。范围仅基础动作/卡面/单卡普攻配置，额外阶段动作保留，不新增技能/光环/复活机制。
