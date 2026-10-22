@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：补齐塔露拉与源石虫运行素材交付（2026-10-22）
+
+基于最新main b3455c6，用户明确要求所有运行素材上传。M02～M10已随PR #12入库，本轮补齐塔露拉 / 源石虫21 PNG、2清单及25个原meta，不修改美术、动画、场景、配置或玩法；解除对应历史忽略，更新共享交付规则与历史安装说明。来源和原作许可未确认状态保留，[审计](art/MONSTER-RUNTIME-DELIVERY.md)。验证待本轮实际执行后填写；不将同机克隆当成另一台电脑验收，不上传ZIP / Releases。
+
 ## 当前：九只角色运行素材随源码交付（2026-10-22）
 
 [完整交付PR #12](https://github.com/Peanora/YesterdayConvoy/pull/12) 包含PR #11代码与M02～M10共56 PNG/9清单/75原有meta，同步main的PR #10。仅解除MonsterCombatArt目录两条忽略规则，其他原作预览仍排除；未改场景/Prefab/Packages/ProjectSettings。按用户明确“直接上传，我们是学生作业用”请求提交，未收到权利人授权依据，不标记为已获公开再分发许可。[来源/忽略审计/接收与未交接文件](art/MONSTER-RUNTIME-DELIVERY.md)。以下“本地/缺包”段落为历史状态。

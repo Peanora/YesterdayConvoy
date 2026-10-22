@@ -1,15 +1,14 @@
-Optional local media
+Runtime media delivered with source (2026-10-22)
 
-M02-M10 runtime delivery (2026-10-22)
-MonsterCombatArt/M02 through M10 are now tracked with their PNGs, manifests and
-existing Unity .meta files, following the user's explicit coursework upload request.
-No separate installation is needed for these nine units after cloning this branch.
-This request is not recorded as a rightsholder license. Public redistribution
-permission remains unverified. See docs/art/MONSTER-RUNTIME-DELIVERY.md and
-docs/art/source-records/monster-combat-runtime.json for source and rights records.
-The local-only notes below still apply to the other original-art directories.
+TalulahOriginal, OriginiumSlugOriginal and MonsterCombatArt/M02 through M10
+include their PNGs, manifests and existing Unity metadata in Git.
+No manual installation, original skeleton data, Spine runtime or online fetch
+is needed to play the existing tests after cloning this version.
 
-The approved Talulah original-art package is deliberately excluded from public Git.
-Install an authorized local copy with tools/install_talulah_original.ps1.
-See docs/art/TALULAH-ORIGINAL-INTEGRATION.md for paths and fallback behavior.
-No Spine runtime or original skeleton data is required by the game.
+This follows the user's explicit request to upload all current runtime media.
+It is not a rightsholder license. Original art is not CC0; permission for public
+redistribution remains unverified. Keep the source and credits records:
+docs/art/ASSET_LICENSES.md and docs/art/MONSTER-RUNTIME-DELIVERY.md.
+
+The installers remain optional maintenance tools for compatible packages.
+Development raw models, working previews, caches and builds are not required.

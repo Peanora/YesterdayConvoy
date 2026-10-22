@@ -10,10 +10,6 @@
 /.vsconfig
 /.idea/
 /AGENTS.md
-/Assets/StreamingAssets/TalulahOriginal/
-/Assets/StreamingAssets/TalulahOriginal.meta
-/Assets/StreamingAssets/OriginiumSlugOriginal/
-/Assets/StreamingAssets/OriginiumSlugOriginal.meta
 /UpgradeLog.htm
 __pycache__/
 *.pyc
@@ -27,12 +23,5 @@ __pycache__/
 *.VC.db
 /昨日圆车-开发准备包-v0.1/
 
-# Approved local original-character media; not for public redistribution.
-/Assets/StreamingAssets/ArcherOriginal/
-/Assets/StreamingAssets/ArcherOriginal.meta
-/Assets/StreamingAssets/ApprovedMonsterArt/
-/Assets/StreamingAssets/ApprovedMonsterArt.meta
-
-
-# M02-M10 runtime packages are tracked by explicit coursework delivery request.
-# Other original-art preview directories above remain local-only.
+# Game art and its Unity metadata are tracked with source by explicit user request.
+# Generated caches, raw working files under artifacts/, and builds remain ignored.
