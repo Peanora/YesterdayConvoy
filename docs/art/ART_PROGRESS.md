@@ -183,3 +183,9 @@ AI_PENDING 提供两种原创概念的中英文卡面/Sprite 提示词，均为�
 ## 关键接口与数据流
 
 本轮只新增编辑器类 **ArtResourceTools**：官网原文件→筛选/重命名→独立 Art 目录→Texture/Audio/Font Importer→逐个 LoadAsset 验证→CSV 状态与 Credits。`ConfigureAndValidate` 不打开或保存任何场景，不接战斗事件。已有 InitialDemo / RouteMotion / UnitDefinition 接口与数据流保持原样；下一阶段用独立表现组件连接已有模拟状态。
+
+## 2026-10-23：守军清单与首批8名项目外预览
+
+首批8名原作默认模型与动作预览已在项目外完成：米格鲁、斑点、玫兰莎、克洛丝、史都华德、炎熔、芙蓉、梓兰。24份骨骼变体、74段5236帧、154 PNG、8卡面/8 MP4/8 GIF及离线逐帧浏览页真实存在；图集/视频解码/离线页检查通过。部署Start独立画幅，战斗模型无行走，基建Move另列；未制造缺失技能或医疗伤害动作。
+
+全体30名与队友步骤见[TODO_list](../../TODO_list.md)，逐项来源、数据连接与未测项见[预览记录](DEFENDERS-FIRST8-PREVIEW.md)。尚未人类确认本批美术，未导入Unity或替换现有漫画克洛丝；独立特效和守军逻辑待做。仅本轮文档提交，原作媒体权利状态保持。

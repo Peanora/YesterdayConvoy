@@ -409,3 +409,9 @@ InitialDemo 已改为正向斜俯视：相机左右偏航归零、棋盘横边�
 ## 下一步
 
 建议下一功能为“手动点击红门部署怪物”：把自动开局改为玩家发起部署，接入费用/次数/CD 与可理解的失败提示，形成能操作的进攻选择。先试玩当前 Demo 确认视角；旧 T03/T04 中本 Demo 所需的穿门、生命和塔攻击已经合并实现，无需再单独启动这些碎片。升级经济、备战容量等后续设计仍未定案。
+
+## 2026-10-23：守军清单与首批8名项目外预览
+
+用户要求将已讨论的30名守军写进根目录[TODO_list](../TODO_list.md)，并先做米格鲁、斑点、玫兰莎、克洛丝、史都华德、炎熔、芙蓉、梓兰8名模型。首批项目外原作2D模型/透明卡面/动作图集/MP4/GIF/离线浏览页已存在：24骨骼变体、74段5236帧、154 PNG、8视频与8动图；来源和真实验证见[预览记录](art/DEFENDERS-FIRST8-PREVIEW.md)。A待人类确认，B/C及治疗/技能AI待制作。
+
+本轮新建codex/defender-art-todo文档分支，基于fetch核实的最新main6be1300；沿用前轮已明确的同一未跟踪ProjectSettings/PackageManagerSettings.asset保留方案，原main与既有功能分支保持。只提交清单/进度/QA文档，不改Assets、场景、Prefab、Packages、ProjectSettings或玩法；未运行Unity/测试/构建，不更新EXE/ZIP/Releases。未接入原始加工区和预览不入Git，确认接入后的运行资源仍随源码上传。
