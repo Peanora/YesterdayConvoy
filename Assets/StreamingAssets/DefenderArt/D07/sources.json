@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D07F",
+      "unitId": "D07",
+      "name": "克洛丝",
+      "variant": "战斗正面",
+      "characterId": "char_124_kroos",
+      "reference": "https://prts.wiki/w/%E5%85%8B%E6%B4%9B%E4%B8%9D",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/meta.json",
+      "model": "char_124_kroos",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_124_kroos.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/front/char_124_kroos.skel",
+          "bytes": 97301,
+          "sha256": "90225812a7f43de1aaba9a1774a671c22afdf9422fd2283dc27adf01e20af3db"
+        },
+        {
+          "file": "char_124_kroos.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/front/char_124_kroos.atlas",
+          "bytes": 3958,
+          "sha256": "84844e24ee5b91833a7cf855482f18ad14cbc3c0bcb8ae7ae71ad27b7a257a0e"
+        },
+        {
+          "file": "char_124_kroos.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/front/char_124_kroos.png",
+          "bytes": 52593,
+          "sha256": "61b14e3199bd3e50a8d95206def1772045efa45aae6fb7152186b7574c9ce35c"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D07B",
+      "unitId": "D07",
+      "name": "克洛丝",
+      "variant": "战斗背面",
+      "characterId": "char_124_kroos",
+      "reference": "https://prts.wiki/w/%E5%85%8B%E6%B4%9B%E4%B8%9D",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/meta.json",
+      "model": "char_124_kroos",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_124_kroos.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/back/char_124_kroos.skel",
+          "bytes": 62302,
+          "sha256": "fca871cd854bf9d07b6812c090c8b0b0b7a2fd330608351f0fed1a9b8b125964"
+        },
+        {
+          "file": "char_124_kroos.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/back/char_124_kroos.atlas",
+          "bytes": 2464,
+          "sha256": "8252e6cae1021978b2991e4930b6ba06d9b44d041b7adffd5bf359c7b0e14081"
+        },
+        {
+          "file": "char_124_kroos.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/back/char_124_kroos.png",
+          "bytes": 35735,
+          "sha256": "d01088238b6779b5f78e0b8dfa6dac808684accb373a070b33f1225a5c0dcd82"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D07H",
+      "unitId": "D07",
+      "name": "克洛丝",
+      "variant": "基建动作",
+      "characterId": "char_124_kroos",
+      "reference": "https://prts.wiki/w/%E5%85%8B%E6%B4%9B%E4%B8%9D",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/meta.json",
+      "model": "build_char_124_kroos",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_124_kroos.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/build/build_char_124_kroos.skel",
+          "bytes": 101022,
+          "sha256": "e8df902d3af11147c995281613191e34b55177f5b79cd01d136cc8260636f6d7"
+        },
+        {
+          "file": "build_char_124_kroos.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/build/build_char_124_kroos.atlas",
+          "bytes": 3999,
+          "sha256": "66165ae81470520d12c07e7f2b32581d9b9cb0a78623c69c21da87de2deb024f"
+        },
+        {
+          "file": "build_char_124_kroos.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/build/build_char_124_kroos.png",
+          "bytes": 97846,
+          "sha256": "7470f299e2a2aa2464ec45bb849b05933c9c3dcc5758a09f237d577d611f9140"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

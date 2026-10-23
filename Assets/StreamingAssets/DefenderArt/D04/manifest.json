@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "task": "D04",
+  "ppu": 134.4,
+  "referenceSpeed": 0.75,
+  "height": 2.2625,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4628692889213562,
+      "pivotY": 0.239678940474987,
+      "sourceBounds": [
+        -254.4212646484375,
+        -95.69318389892578,
+        304.45001220703125,
+        446.4415588378906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "idle-01.png",
+          "count": 56,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack_Loop",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4628692889213562,
+      "pivotY": 0.239678940474987,
+      "sourceBounds": [
+        -254.4212646484375,
+        -95.69318389892578,
+        304.45001220703125,
+        446.4415588378906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4628692889213562,
+      "pivotY": 0.239678940474987,
+      "sourceBounds": [
+        -254.4212646484375,
+        -95.69318389892578,
+        304.45001220703125,
+        446.4415588378906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack_end",
+      "source": "Attack_End",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4628692889213562,
+      "pivotY": 0.239678940474987,
+      "sourceBounds": [
+        -254.4212646484375,
+        -95.69318389892578,
+        304.45001220703125,
+        446.4415588378906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_end-00.png",
+          "count": 31,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    },
+    {
+      "key": "attack_start",
+      "source": "Attack_Start",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4628692889213562,
+      "pivotY": 0.239678940474987,
+      "sourceBounds": [
+        -254.4212646484375,
+        -95.69318389892578,
+        304.45001220703125,
+        446.4415588378906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_start-00.png",
+          "count": 31,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "72d67fe129607c26b84109cb867f2873ac3d5f5dc1235b2fa595db3048019c27"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "ccb6ef72bf93e3755d57184934db9372314bbb1a308871bc4a037381c6b2c781"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "1fce3d48b4f510fb3a32663163bd89f23b84dfd9d74b5889d2361bd493998392"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "2ed082874610450241a57d6f1cdea97eb65c21baa932b3a81f5b164b4324e22c"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "6fca64398948d2d87138a71eabadbe7fd0d2fc22c7d6403ba0ee1407ce1bc262"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_208_melan; open redistribution license unconfirmed. No gameplay integration.",
+  "worldHeight": "Idle first-frame alpha height normalized to 1.25 world units; same ppu/pivot across clips, no per-frame scaling."
+}

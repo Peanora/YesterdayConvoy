@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "task": "D10",
+  "ppu": 118.4,
+  "referenceSpeed": 0.75,
+  "height": 2.0,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 240,
+      "duration": 4,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.38864784036363875,
+      "pivotY": 0.1445065668651036,
+      "sourceBounds": [
+        -153.08229064941406,
+        -43.47187805175781,
+        284.3606262207031,
+        462.5799255371094
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 78,
+          "width": 2016,
+          "height": 2016
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.38864784036363875,
+      "pivotY": 0.1445065668651036,
+      "sourceBounds": [
+        -153.08229064941406,
+        -43.47187805175781,
+        284.3606262207031,
+        462.5799255371094
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.38864784036363875,
+      "pivotY": 0.1445065668651036,
+      "sourceBounds": [
+        -153.08229064941406,
+        -43.47187805175781,
+        284.3606262207031,
+        462.5799255371094
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "eee603b596ae192d0b310d39edfbfe34b5b81e4061b9c08a73151f8ce9d8d23e"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "c10693e15b4281834a40bf038d2a5754be39692eb820cdcc84b8e5f688fbf83c"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "cf5062168f32ec7345deb9dcc7f6dae24ea1de2d529925b1821669288f10ad83"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "155d4c4cc00721e5b51dfea1303c33725516d21eac70e5e6c8f2e6e77a1256cf"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "7085b458070efdd1997014316a3fa55db3d3a40fcc2422109935655c3d6b3803"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "2dd38baa2e96a02278550049b685a64ae9f2a7d4c73c0fa69f4260d41c225818"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_120_hibisc; open redistribution license unconfirmed. No gameplay integration.",
+  "worldHeight": "Idle first-frame alpha height normalized to 1.25 world units; same ppu/pivot across clips, no per-frame scaling."
+}
