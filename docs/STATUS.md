@@ -415,3 +415,7 @@ InitialDemo 已改为正向斜俯视：相机左右偏航归零、棋盘横边�
 用户要求将已讨论的30名守军写进根目录[TODO_list](../TODO_list.md)，并先做米格鲁、斑点、玫兰莎、克洛丝、史都华德、炎熔、芙蓉、梓兰8名模型。首批项目外原作2D模型/透明卡面/动作图集/MP4/GIF/离线浏览页已存在：24骨骼变体、74段5236帧、154 PNG、8视频与8动图；来源和真实验证见[预览记录](art/DEFENDERS-FIRST8-PREVIEW.md)。A待人类确认，B/C及治疗/技能AI待制作。
 
 本轮新建codex/defender-art-todo文档分支，基于fetch核实的最新main6be1300；沿用前轮已明确的同一未跟踪ProjectSettings/PackageManagerSettings.asset保留方案，原main与既有功能分支保持。只提交清单/进度/QA文档，不改Assets、场景、Prefab、Packages、ProjectSettings或玩法；未运行Unity/测试/构建，不更新EXE/ZIP/Releases。未接入原始加工区和预览不入Git，确认接入后的运行资源仍随源码上传。
+
+## 2026-10-23：剩余22名守军项目外预览完成
+
+用户明确继续制作剩余22名。66默认模型变体、423段38147帧、1091清单PNG、22透明卡面/22 MP4/22 GIF与离线逐帧页实际存在；原曲线输出、未AI改绘。基建纹理声明尺寸不匹配问题已修正并重做全部检查，帧/Alpha/哈希、22视频完整解码、file://22名423段加载/0JS错误通过。待人类确认，本轮未导入Unity、未改代码/场景或EXE。清单更新A/B/C状态和队友交付规则，详见[22名预览记录](art/DEFENDERS-REMAINING22-PREVIEW.md)。首批8人基础交战在独立PR #17，仍待人工合并；本PR只管理文档及预览证据。

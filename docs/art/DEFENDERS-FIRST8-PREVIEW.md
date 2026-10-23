@@ -1,5 +1,7 @@
 # 首批8名守军模型与动作预览
 
+后续状态：首批造型已获用户接入确认，基础八人防线见[PR #17](https://github.com/Peanora/YesterdayConvoy/pull/17)，本文件下文保留首次预览时的历史状态。剩余22名预览见[本批记录](DEFENDERS-REMAINING22-PREVIEW.md)。
+
 2026-10-23。用户接受30名守军候选并要求先制作8名，按既有怪物流程先在项目外看稿，不直接导入Unity。全体角色、代表原作技能、位置、实施阶段与队友流程见根目录[TODO_list.md](../../TODO_list.md)。
 
 ## 已存在资源
