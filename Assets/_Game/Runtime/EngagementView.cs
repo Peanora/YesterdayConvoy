@@ -21,12 +21,17 @@ namespace YesterdayConvoy
         private AudioClip click, impact;
         private int runId, lastPhase = -1;
         private float readyIdleTime;
+        private DefenderRosterView rosterView;
         public SpriteRenderer DefenderVisual => kroos;
 
         public void Initialize(ManualBattleController controller, EngagementDefinition data, AudioClip uiSound, AudioClip hitSound)
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             ClearTransient(); runId=-1;
+            if(rosterView!=null) { rosterView.gameObject.SetActive(false); Destroy(rosterView.gameObject); rosterView=null; }
+            if(controller.DefenderTrialActive)
+            { rosterView=new GameObject("Eight original defenders").AddComponent<DefenderRosterView>();
+              rosterView.transform.SetParent(transform,false); rosterView.Initialize(controller); }
             var deathEffects=GetComponent<MonsterDeathEffectView>();
             if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
             deathEffects.Initialize(controller);
@@ -51,6 +56,8 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
+            if(rosterView==null)
+            {
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
             kroos.transform.position = d.Position;
@@ -83,6 +90,8 @@ namespace YesterdayConvoy
                 v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
                 Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
             }
+            }
+            else { kroos.enabled=range.enabled=false; foreach(var v in extraVisuals) v.enabled=false; }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {
@@ -127,6 +136,7 @@ namespace YesterdayConvoy
             if(!shot.FromDefender && b.CombatSettings.Melee) { PresentMelee(view,shot,b,cam); return; }
             if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
             if(!shot.FromDefender && owner.Definition.Card.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
+            if(shot.Healing) { PresentHealing(view,shot,b,cam); return; }
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
             var target = b.FindUnit(shot.TargetId);
@@ -135,7 +145,7 @@ namespace YesterdayConvoy
             Vector3 end = destination + cam.transform.up * 0.8f;
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
-            Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
+            Color color = shot.FromDefender ? (shot.DamageType==CombatDamageType.Arts ? new Color(.55f,.65f,1) : new Color(1, 0.83f, 0.36f)) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
             if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
             else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
@@ -185,6 +195,18 @@ namespace YesterdayConvoy
                 view.Rays.SetPosition(i * 2 + 1, end + axis * radius * 1.3f);
             }
             view.Rays.startColor = view.Rays.endColor = color;
+        }
+
+        private void PresentHealing(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
+        {
+            v.Trail.enabled=v.Rays.enabled=false;
+            float age=(float)(b.Clock-shot.ImpactAt);
+            v.Impact.enabled=shot.Applied && age>=0 && age<.55f;
+            if(v.Impact.enabled)
+            {
+                var ally=b.FindDefender(shot.TargetId);
+                Ring(v.Impact,(ally?.Position ?? shot.Destination)+cam.transform.up*.6f,.18f+age*.45f,new Color(.3f,1,.65f,1-age/.55f),cam);
+            }
         }
 
         private void PresentMelee(ShotView v,CombatShot shot,ManualBattle b,Camera cam)

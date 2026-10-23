@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "task": "D09",
+  "ppu": 120.0,
+  "referenceSpeed": 0.75,
+  "height": 2.0375,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 180,
+      "duration": 3,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.45484034197671075,
+      "pivotY": 0.11843730858394075,
+      "sourceBounds": [
+        -198.64047241210938,
+        -16.498092651367188,
+        251.88133239746094,
+        466.3404235839844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 18,
+          "width": 2016,
+          "height": 448
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 95,
+      "duration": 1.5666667222976685,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.45484034197671075,
+      "pivotY": 0.11843730858394075,
+      "sourceBounds": [
+        -198.64047241210938,
+        -16.498092651367188,
+        251.88133239746094,
+        466.3404235839844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 14,
+          "width": 2016,
+          "height": 448
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.45484034197671075,
+      "pivotY": 0.11843730858394075,
+      "sourceBounds": [
+        -198.64047241210938,
+        -16.498092651367188,
+        251.88133239746094,
+        466.3404235839844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "dc6d3cf0be4ec714857277a80b9d818772ed356dd2fa34b34b15d98f958dc45f"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "4a6e454b5496562ebc80ea4e31518d72085436b90aebd41f0e7d6c7765c7fd2c"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "2cdf6f95ec0a21acd6532a414cf3329cd788302202b08993771e899ba3c55867"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "02b1310633b4cedfdd9394a57f6c7aa4974d8fbc17af4a1d99fe25874429316a"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "924a8138fae1829f25049b6f83534ec07c8d0614c372153a5afa0208d8ade042"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "60a89ff3196bc81ba20057f8a693be3a5fa3c0fd32a0534f373a706ded1a6160"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "d8e868372da1d1a548021a759c20119df6d1845a0a8db351dcd14184bacaf971"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_121_lava; open redistribution license unconfirmed. No gameplay integration.",
+  "worldHeight": "Idle first-frame alpha height normalized to 1.25 world units; same ppu/pivot across clips, no per-frame scaling."
+}

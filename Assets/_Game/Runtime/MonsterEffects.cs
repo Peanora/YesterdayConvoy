@@ -45,7 +45,7 @@ namespace YesterdayConvoy
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved);
-        public float DefenderArmor(DefenderState defender) => CombatSettings.DefenderArmor-defender.ArmorReduction;
+        public float DefenderArmor(DefenderState defender) => defender.Settings.Armor-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 

@@ -73,3 +73,7 @@ GameArt2D 的免费项许可依据是 [Free Assets License](https://www.gameart2
 | [Noto Sans SC / Google Fonts](https://fonts.google.com/noto/specimen/Noto+Sans+SC)；[官方静态 SC 字重](https://github.com/notofonts/noto-cjk/tree/main/Sans/SubsetOTF/SC) | SIL OFL 1.1；选择静态 Regular OTF，避免变量字体导入兼容性假设。保留原字重名及许可证；字形样本由 Unity 验证，尚未替换 Demo 字体 |
 
 综合方案：地图主路线保留现有几何并试用非像素石墙/装饰；角色先比较同风格近战和法系两个样张，未选定前不批量造资产。图标/字体/粒子/音效独立于最终角色画风，可先建立可复用库。未选付费项、未付款、未引入额外 Unity 包。
+
+## 2026-10-23 首批8名守军实际接入来源
+
+本轮不重新下载无关素材，优先使用此前已保存的米格鲁/斑点/玫兰莎/克洛丝/史都华德/炎熔/芙蓉/梓兰默认模型预览。具体角色页面、原模型ID、真实权利状态与取舍见[8人来源表](DEFENDERS-FIRST8-INTEGRATION.md)；每位运行目录sources.json含原始meta与纹理/骨骼地址、SHA。保留正面核心动作、斑点治疗姿势与玫兰莎攻击阶段，不把基建Move混用为战斗行走。原版完整技能粒子不在本次取得范围。

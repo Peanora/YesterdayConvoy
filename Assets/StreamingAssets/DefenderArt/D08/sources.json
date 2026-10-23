@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D08F",
+      "unitId": "D08",
+      "name": "史都华德",
+      "variant": "战斗正面",
+      "characterId": "char_210_stward",
+      "reference": "https://prts.wiki/w/%E5%8F%B2%E9%83%BD%E5%8D%8E%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/meta.json",
+      "model": "char_210_stward",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_210_stward.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/front/char_210_stward.skel",
+          "bytes": 100051,
+          "sha256": "f6387ee1effc820e800fdae4ea551e67ccc308c7b716026e428e94db98274266"
+        },
+        {
+          "file": "char_210_stward.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/front/char_210_stward.atlas",
+          "bytes": 4193,
+          "sha256": "7f0e5748dd703cab2075ccc299eb5b5a5c66d2bd20068c9746a0204981b784a4"
+        },
+        {
+          "file": "char_210_stward.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/front/char_210_stward.png",
+          "bytes": 48566,
+          "sha256": "b066c266d6aa8a45d9af506f39c3d1b5d644776a469ea276bbf1f766be1b1ef0"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D08B",
+      "unitId": "D08",
+      "name": "史都华德",
+      "variant": "战斗背面",
+      "characterId": "char_210_stward",
+      "reference": "https://prts.wiki/w/%E5%8F%B2%E9%83%BD%E5%8D%8E%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/meta.json",
+      "model": "char_210_stward",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_210_stward.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/back/char_210_stward.skel",
+          "bytes": 63590,
+          "sha256": "616ef028b1fefdfbce5492c33017951caec4e65264332db1959fdbc214793b2f"
+        },
+        {
+          "file": "char_210_stward.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/back/char_210_stward.atlas",
+          "bytes": 2864,
+          "sha256": "8698138a15b99f49863a69c290a61474a838edb3fcc9186ff2a5e113a67c274b"
+        },
+        {
+          "file": "char_210_stward.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/back/char_210_stward.png",
+          "bytes": 33321,
+          "sha256": "1a3ef028d9406fc6bbd72eaef3c76c461bec149e0d2c2d7d34097f8cb9150055"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D08H",
+      "unitId": "D08",
+      "name": "史都华德",
+      "variant": "基建动作",
+      "characterId": "char_210_stward",
+      "reference": "https://prts.wiki/w/%E5%8F%B2%E9%83%BD%E5%8D%8E%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/meta.json",
+      "model": "build_char_210_stward",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_210_stward.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/build/build_char_210_stward.skel",
+          "bytes": 101415,
+          "sha256": "752d980ebaec075901a8ef9c7a0bb98d82c601e419033cd1faac5b285e6b20d3"
+        },
+        {
+          "file": "build_char_210_stward.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/build/build_char_210_stward.atlas",
+          "bytes": 4227,
+          "sha256": "3e568b99ac071047a74c0a25a52a31c02c5840c4f716f4d5dc7fe9719491ae75"
+        },
+        {
+          "file": "build_char_210_stward.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/build/build_char_210_stward.png",
+          "bytes": 94935,
+          "sha256": "0da7b60af6be97a52f79cc637948bc2602b463f17191b7f3887a719364bc4b38"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

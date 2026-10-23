@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D04F",
+      "unitId": "D04",
+      "name": "玫兰莎",
+      "variant": "战斗正面",
+      "characterId": "char_208_melan",
+      "reference": "https://prts.wiki/w/%E7%8E%AB%E5%85%B0%E8%8E%8E",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/meta.json",
+      "model": "char_208_melan",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_208_melan.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/front/char_208_melan.skel",
+          "bytes": 97507,
+          "sha256": "059fb1145768cf159cb1034f3a28e35144eafb399d312ce90c8c5ee7f70fc730"
+        },
+        {
+          "file": "char_208_melan.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/front/char_208_melan.atlas",
+          "bytes": 3651,
+          "sha256": "35a2d2d31797fc905bf98a5cb3ba059d4e05ba081e919d8ef5b222fc58d5cd4f"
+        },
+        {
+          "file": "char_208_melan.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/front/char_208_melan.png",
+          "bytes": 52835,
+          "sha256": "9e15717f44a9d40ad30d433e4b55f3576f06269a4992a32ea4639f8c34e2bf7b"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D04B",
+      "unitId": "D04",
+      "name": "玫兰莎",
+      "variant": "战斗背面",
+      "characterId": "char_208_melan",
+      "reference": "https://prts.wiki/w/%E7%8E%AB%E5%85%B0%E8%8E%8E",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/meta.json",
+      "model": "char_208_melan",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_208_melan.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/back/char_208_melan.skel",
+          "bytes": 54452,
+          "sha256": "6a1ce44db81f1f7119e2d1507ade063f8351dc4a1b91539ffbb14c71f388e527"
+        },
+        {
+          "file": "char_208_melan.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/back/char_208_melan.atlas",
+          "bytes": 2683,
+          "sha256": "737e6141febd1fe4669934ec8a3a9f50b39796e1baaab6faf4cba2d56b4f659f"
+        },
+        {
+          "file": "char_208_melan.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/back/char_208_melan.png",
+          "bytes": 46614,
+          "sha256": "5f45c16d2f58e7f02e01b71248941df74aad0ef7d3879a3a07f310a0532abd62"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D04H",
+      "unitId": "D04",
+      "name": "玫兰莎",
+      "variant": "基建动作",
+      "characterId": "char_208_melan",
+      "reference": "https://prts.wiki/w/%E7%8E%AB%E5%85%B0%E8%8E%8E",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/meta.json",
+      "model": "build_char_208_melan",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_208_melan.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/build/build_char_208_melan.skel",
+          "bytes": 70493,
+          "sha256": "8a3c9ab80d40c5531552384516389631f30717a85cdff46dd47cff9352b822e6"
+        },
+        {
+          "file": "build_char_208_melan.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/build/build_char_208_melan.atlas",
+          "bytes": 3698,
+          "sha256": "4e1481b0c3f97198df81b53ac98c791a6a91dcf6282848fe5054afb5443f137a"
+        },
+        {
+          "file": "build_char_208_melan.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/build/build_char_208_melan.png",
+          "bytes": 96653,
+          "sha256": "cac002afbe008b28a442309ec1e6e580f473f430e13ab6da575dfe0e5db301db"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

@@ -39,13 +39,14 @@ namespace YesterdayConvoy
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
-        private double DeathTail => CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0);
+        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? 1 : 0);
         private bool DeathPresentationPending
         {
             get
             {
                 foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail) return true;
                 foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
+                if(DefenderTrialActive) foreach(var d in Battle.Defenders) if(!d.Alive && PresentationClock<d.DeathTime+1) return true;
                 return false;
             }
         }
@@ -69,6 +70,12 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
+            if(Array.IndexOf(args,"-defenderTrialSmokeTest")>=0)
+            {
+                diagnostic=true; Application.runInBackground=true; TestSelectionOpen=false;
+                int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyDefenderTrial(evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null));
+            }
             int monsterSmoke=Array.IndexOf(args,"-monsterCombatSmokeTest");
             if(monsterSmoke>=0 && monsterSmoke+1<args.Length)
             { diagnostic=true; Application.runInBackground=true; int evidence=Array.IndexOf(args,"-demoEvidenceDir");
@@ -100,8 +107,10 @@ namespace YesterdayConvoy
             }
         }
 
-        private ManualBattle CreateBattle() => new ManualBattle(definition.Snapshot(),scene.Waypoints,
-            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders);
+        private ManualBattle CreateBattle() => new ManualBattle(definition.Snapshot(),
+            defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
+            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
+            defenderTrial!=null ? defenderTrial.Snapshot() : null);
 
         private void EnableCombatView()
         {
@@ -144,6 +153,7 @@ namespace YesterdayConvoy
 
         public void RestartBattle()
         {
+            terminalPresentationElapsed=0;
             notice=null;
             settlementPointerDown=false;
             selectionReturnPointerDown=false;
@@ -388,13 +398,14 @@ namespace YesterdayConvoy
         {
             foreach(var d in Battle.Defenders)
             {
-            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.95f);
+            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(defenderTrial!=null ? 1.32f : 1.95f));
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
             if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
-            Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
+            Fill(new Rect(x-46,y+2,92*d.Health/d.MaxHealth,4),new Color(0.96f,0.66f,0.3f));
             string status=d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
+            if(defenderTrial!=null) GUI.Label(new Rect(x-60,y-24,120,24),d.Settings.Name,smallStyle);
             if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);
             }
         }

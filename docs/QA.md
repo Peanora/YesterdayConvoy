@@ -696,3 +696,19 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 实际相机采集 12 张行走帧，每张相差 0.05 模拟秒；已查看两脚跨步、收步与水平棋盘：`walk-00.png` 至 `walk-11.png`、`walk-contact-sheet.png`。GIF 为真实帧整理，未用概念图代替实机：`walk-preview.gif`、跟随裁切放大的 `walk-closeup.gif`。这些相机画面不含 OnGUI。
 
 首轮右步图没有正确交换腿序，已弃用并通过明确条纹腿方位重生成；最终两张 PNG 均为 1145×1374、Alpha 0–255，接入并重新运行 Play Mode 与构建/Player。仍是三姿势简化动画，AI 细节存在轻微帧间变化；前后向步态、攻击/死亡专用帧、完整鼠标 UI 与第二机离线测试未运行。本轮不声称正式美术或完整动画体系已完成。
+
+## 2026-10-23 八人守军混合防线与工业折线地图
+
+- 授权：人类明确将已预览8人接入，并确认独立守军数据/公共战斗接口/表现/入口范围。以实时origin/main 6be1300创建独立codex/defender-mixed-map；原工程main的ProjectSettings/PackageManagerSettings.asset保留，不提交、不覆盖。其他未合并角色PR不作为此任务基线。
+- 资源：实际复制默认原作正面idle/attack/death、玫兰莎攻击三阶段、斑点治疗姿势和透明卡面，64个运行文件、48PNG、27段/2200帧，合计54738004字节（不含meta）。逐PNG检查RGBA与最大2048，Unity真实加载全部清单和Sprite布局；运行素材与源码一并跟踪，来源和未确认公开再分发许可如实记录。无新增Spine运行库或原始骨骼。不同角色待机高度通过PPU规范为1.25世界单位，所有动作固定Pivot；不缩放逻辑根节点。
+- 编译/准备：DefenderTrialTools.Prepare实际创建3份独立配置并校验，退出0，DEFENDER_TRIAL_CONFIGURATION_PASS。首次准备失败是新Resources父目录不存在，已改用工程既有Data/Resources；不把失败记为成功。准备工具只在缺失时初始化，不覆盖现存调值。
+- 最终EditMode：artifacts/defenders-final-editmode.xml，76/76通过，0失败、0跳过、进程0。新增7项覆盖独立最大生命/快照/重开、分实体阻挡与溢出、医疗不攻击/不过量、暂停中的待结算治疗、受疗者死亡不复活、空血医疗不出手、非法配置/重复ID、治疗范围不扩张近战范围；旧69项回归通过。
+- 最终GPU PlayMode：artifacts/defenders-final-playmode.xml，34/34通过，0失败、0跳过、进程0。新增2项实际加载入口、8个本角色动作、单位缩放/位置、暂停下正常卡槽拖放到新镜头红门、动画冻结、攻击姿势、火雨/治疗/胜利、重开，返回清理并恢复原工业地图/相机。原32项回归通过。中间局部2项复核记录defenders-final-play.xml不替代最终整套结果。
+- 最终Windows：BaselineTools.BuildWindows，artifacts/defenders-final-build.log，BASELINE_BUILD_PASS 415097285 bytes; 0 errors，退出0。无主场景/Prefab/Packages/ProjectSettings修改，无ZIP/Releases。新路由和地形只在试玩期间创建；配置为只读设计数据，运行快照独立保存。
+- 独立Player：正常D3D12窗口运行-defenderTrialSmokeTest，artifacts/defender-player-release.log，退出0；entered/models/deployed/paused/attacked/healed/skill/won/reset/restored全部True。使用真实卡槽按下/移到投影红门/松手的输入适配，非绕过坐标限制的直接部署。
+- 独立旧Player：-combatSmokeTest、-talulahSmokeTest、-interactionSmokeTest、-monsterSelectionSmokeTest分别退出0，四份defender-regression-*.log对应全部_CHECK标志True。保留原单怪参数、技力/六发、火雨移动锁、暂停、技能面板、胜负重开与选择页。
+- 实机视觉：artifacts/defender-player-release/有ready与3/6/9/12秒五张完整1280×720 HUD截图，已查看ready和6秒火雨。首轮发现玫兰莎被后一格高台挡住，已错开站位到(2,.04,-2)；拉开路线/地面的明暗并复核。首次使用相对截图路径导致未保存，未算作视觉证据；最终使用绝对路径的截图确实存在。
+- 数据流：DefenderTrialDefinition→不可变DefenderSettings→ManualBattle/DefenderState→CombatShot攻击/治疗→DefenderRosterView/EngagementView显示；同一模拟时钟处理动作、前摇、命中、暂停与重开。逻辑不依赖帧图，不由动画扣血；地图退出恢复借用的场景对象，既有静态场景不保存改动。
+- 限制：8人完整原作技能、克洛丝二连射/天赋、史都华德高甲优先、梓兰停顿、怪物法抗配置、完整角色特效尚未制作。斑点按伤员自动切换治疗是基础样板，不是原作技力技能。使用简化通用弹道/命中与治疗圈；没有新增受击独立动画。未完整人工键鼠通关、第二台电脑离线或长时/低配性能验证。火雨容易清场，数值仅用于模型与地形观察，不宣称正式关卡平衡。主观美术/手感待人类试玩。
+
+- 本地交付：运行代码提交 a576ea00fe336071df702cbeebbc5ee2a53ccaa4；完整401个构建文件共415097285字节已逐文件SHA256匹配复制到 E:/珍贵资料/昨日圆车_本地试玩/2026-10-23-八人防线-a576ea0/，另附BUILD_INFO.json与实机截图。代码和运行素材已推送PR #17（https://github.com/Peanora/YesterdayConvoy/pull/17），待人工合并；此后仅补交付记录，不改变已验证运行代码。

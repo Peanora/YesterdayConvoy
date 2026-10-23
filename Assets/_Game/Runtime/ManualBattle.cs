@@ -95,10 +95,17 @@ namespace YesterdayConvoy
         public double CooldownRemaining => Math.Max(0, nextDeploymentTime - Clock);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null)
         {
             Settings = settings;
             engagement = combat;
+            if(roster!=null)
+            {
+                if(!combat.HasValue || roster.Count==0) throw new ArgumentException("Roster requires combat settings.");
+                defenderRoster=new DefenderSettings[roster.Count]; var rosterIds=new HashSet<string>();
+                for(int i=0;i<roster.Count;i++)
+                { if(!rosterIds.Add(roster[i].Id) || roster[i].Health<=0) throw new ArgumentException("Invalid roster."); defenderRoster[i]=roster[i]; }
+            }
             defenderPositions = new Vector3[1 + (extraDefenders?.Count ?? 0)];
             defenderPositions[0] = tower;
             for (int i=1;i<defenderPositions.Length;i++) defenderPositions[i]=extraDefenders[i-1];

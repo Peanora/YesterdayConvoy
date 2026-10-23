@@ -183,3 +183,7 @@ AI_PENDING 提供两种原创概念的中英文卡面/Sprite 提示词，均为�
 ## 关键接口与数据流
 
 本轮只新增编辑器类 **ArtResourceTools**：官网原文件→筛选/重命名→独立 Art 目录→Texture/Audio/Font Importer→逐个 LoadAsset 验证→CSV 状态与 Credits。`ConfigureAndValidate` 不打开或保存任何场景，不接战斗事件。已有 InitialDemo / RouteMotion / UnitDefinition 接口与数据流保持原样；下一阶段用独立表现组件连接已有模拟状态。
+
+## 2026-10-23 首批8名守军已接入独立八人防线
+
+用户明确接入后完成8名原版正面、透明卡面与27段2200帧基础动作；48PNG与清单/来源共64文件随源码上传。工业折线地图实际交战：地面阻挡、高台攻击、芙蓉医疗、斑点基础治疗，玫兰莎三阶段攻击与完整炎熔动作；基础功能验证通过。完整技能、背面/部署动作、梓兰停顿、专属粒子与正式平衡仍待做。详见[接入记录](DEFENDERS-FIRST8-INTEGRATION.md)及[操作说明](../DEFENDER_TRIAL.md)。最终76 Edit/34 GPU Play、独立试验Player与四组旧Player通过；查看实际ready/火雨截图。此为功能分支已验证状态，不等于main已合并或人类完成体验验收。
