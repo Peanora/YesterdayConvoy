@@ -417,4 +417,5 @@ InitialDemo 已改为正向斜俯视：相机左右偏航归零、棋盘横边�
 新地图15×9模块、折返固定路线、三处地面阻挡点和分组高台，复用原工业材质；退出恢复原地图/红蓝门/相机。20DP、4次塔露拉、900生命、火雨每波60均为试验值；本关以一只穿门为胜。64个运行文件含48PNG、27段2200帧与必要meta随源码提交。玩法见[八人防线](DEFENDER_TRIAL.md)，[素材/接口记录](art/DEFENDERS-FIRST8-INTEGRATION.md)。
 
 最终76 EditMode、34 GPU PlayMode全通过、零跳过；Windows构建415097285字节/0错误，新试验独立Player和四组旧Player回归均通过，实机1280×720截图已查看。未改主场景/Prefab/Packages/ProjectSettings，无ZIP/Releases，不自动合并main。该入口需本功能分支或其本地EXE；原工程main不自动切换。
-`n交付：源码 a576ea0，PR [#17](https://github.com/Peanora/YesterdayConvoy/pull/17) 待人工合并；本地试玩在 E:/珍贵资料/昨日圆车_本地试玩/2026-10-23-八人防线-a576ea0/YesterdayConvoy.exe。401份构建文件SHA匹配，不创建ZIP。
+
+交付：源码 a576ea0，PR [#17](https://github.com/Peanora/YesterdayConvoy/pull/17) 待人工合并；本地试玩在 E:/珍贵资料/昨日圆车_本地试玩/2026-10-23-八人防线-a576ea0/YesterdayConvoy.exe。401份构建文件SHA匹配，不创建ZIP。
