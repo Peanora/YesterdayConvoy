@@ -34,6 +34,7 @@ namespace YesterdayConvoy
             deathEffects.Initialize(controller);
             var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle);
+            var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));
@@ -91,6 +92,7 @@ namespace YesterdayConvoy
             kroos.sortingOrder = DemoSpriteVisual.GetSortingOrder(cam, d.Position) + 30;
             Color tint = time < d.LastHitTime + 0.14 ? new Color(1, 0.5f, 0.45f) : Color.white;
             if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time || d.FrostSlowUntil>time)) tint=new Color(.45f,.8f,1);
+            if(d.NeuralUntil>time)tint=new Color(.92f,.83f,.35f);
             tint.a = 1 - death; kroos.color = tint;
             range.enabled = d.Alive;
             range.startColor = range.endColor = new Color(0.45f, 0.8f, 0.88f, 0.25f);

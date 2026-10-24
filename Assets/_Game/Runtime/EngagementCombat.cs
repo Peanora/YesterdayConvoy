@@ -38,6 +38,7 @@ namespace YesterdayConvoy
                 throw new ArgumentException("A unit without a skill must have zero skill resources.");
             if(!Finite(attackDuration) || !Finite(attackWindup) || attackDuration<0 || attackDuration>unitInterval || attackWindup<0 || attackWindup>attackDuration)
                 throw new ArgumentException("Invalid attack animation timing.");
+            if(effects.NervousCreeper&&(canAttack||hasSkill))throw new ArgumentException("Creeper cannot use ordinary attacks or ammo skills.");
             if(effects.Healer && (canAttack || hasSkill)) throw new ArgumentException("Healer uses automatic treatment, not damage attacks or ammunition skills.");
             if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
             Effects=effects;
@@ -67,6 +68,10 @@ namespace YesterdayConvoy
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public float ArmorReduction { get; internal set; }
         public float BurnAccumulated {get;internal set;}
+        public float NeuralAccumulated {get;internal set;}
+        public double NeuralUntil {get;internal set;}=double.NegativeInfinity;
+        public double LastNeuralBurstAt {get;internal set;}=double.NegativeInfinity;
+        public int NeuralBursts {get;internal set;}
         public double BurnUntil {get;internal set;}=double.NegativeInfinity;
         public double ColdUntil { get; internal set; } = double.NegativeInfinity;
         public double FrozenUntil { get; internal set; } = double.NegativeInfinity;
@@ -118,7 +123,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();
+            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
@@ -223,8 +228,9 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(!UnitAirborne(unit) && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
+                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
@@ -292,7 +298,7 @@ namespace YesterdayConvoy
             if(Defense==0) return;
             foreach(var d in defenders)
             {
-                if(!d.Alive || d.FrozenUntil>Clock) continue;
+                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock) continue;
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
                 if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||

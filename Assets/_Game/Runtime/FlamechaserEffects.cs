@@ -61,7 +61,9 @@ namespace YesterdayConvoy
             if(!u.Active||u.IsReviving||UnitInvulnerable(u)||damage<=0)return false;
             if(u.FlamePhase==FlamechaserPhase.Ember)damage=1;
             u.Health=Mathf.Max(0,u.Health-damage);u.LastHitTime=Clock;
-            if(u.Health<=0)DefeatUnit(u);return true;
+            if(u.Health<=0)DefeatUnit(u);
+            else if(CombatSettings.Effects.NervousCreeper)StepCreeperDamage(u);
+            return true;
         }
         void ApplyBurn(DefenderState d,float amount)
         {

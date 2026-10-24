@@ -43117,6 +43117,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 979eac1167ea7e4428eafdd9c5dd0064, type: 2}
   - {fileID: 11400000, guid: 5846ba9691896494abf6312164b7baf6, type: 2}
   - {fileID: 11400000, guid: 4fbf57560a457c1499cf17f1d4991e9c, type: 2}
+  - {fileID: 11400000, guid: c98b15dadb32cef4d9dc3ffe82515465, type: 2}
   interfaceFont: {fileID: 12800000, guid: a3a0ed610d6018041b53d422695bd92f, type: 3}
 --- !u!4 &1113769683
 Transform:

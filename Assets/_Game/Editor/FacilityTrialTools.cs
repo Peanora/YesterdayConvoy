@@ -21,7 +21,7 @@ namespace YesterdayConvoy.Editor
                 foreach(var nav in UnityEngine.Object.FindObjectsByType<MapPreviewNavigation>(FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(nav.gameObject);
                 var controller=new GameObject("Facility combat trial").AddComponent<FacilityTrialController>();controller.mapIndex=i;
                 controller.interfaceFont=AssetDatabase.LoadAssetAtPath<Font>("Assets/_Game/Art/Fonts/NotoSansSC-Regular.otf");
-                string[] ids=i==0?new[]{"M19","M07","M29","M31","M32"}:i==1?new[]{"M14"}:new[]{"M28","M30","M26"};
+                string[] ids=i==0?new[]{"M19","M07","M29","M31","M32"}:i==1?new[]{"M14"}:new[]{"M28","M30","M26","M33"};
                 controller.roles=ids.Select(id=>AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/_Game/Data/Resources/MonsterTests/"+id+".asset")).ToArray();
                 if(controller.roles.Any(r=>r==null))throw new InvalidOperationException("Missing role trial definition");
                 controller.route=MapPreviewTools.RouteFor(i);

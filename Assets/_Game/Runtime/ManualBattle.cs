@@ -63,6 +63,9 @@ namespace YesterdayConvoy
         internal double NextHealAt;
         public bool ReviveUsed { get; internal set; }
         public bool AltarEmpowered { get; internal set; }
+        public int CreeperRetaliations {get;internal set;}
+        public double LastRetaliationAt {get;internal set;}=double.NegativeInfinity;
+        internal float NextRetaliationRatio=.85f;
         public MandragoraPhase MandraPhase {get;internal set;}
         public bool StoneShield {get;internal set;}
         public int StoneShieldBreaks {get;internal set;}
