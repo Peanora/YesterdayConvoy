@@ -211,7 +211,7 @@ namespace YesterdayConvoy
                 foreach(var d in defenders)
                     if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
-                if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit)) continue;
+                if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
                 DefenderState target=c.CanAttack ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;

@@ -80,11 +80,12 @@ namespace YesterdayConvoy
                     art.clips.Add(item.key, new Clip { Frames = frames.ToArray(), Duration = item.duration });
                 }
                 // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
-                if(task=="M14")
+                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} : Array.Empty<string>();
+                if(extraKeys.Length>0)
                 {
                     string extraRoot=Path.Combine(root,"ExtraClips");
                     var extra=JsonUtility.FromJson<ExtraManifest>(File.ReadAllText(Path.Combine(extraRoot,"manifest.json")));
-                    foreach(var item in extra.clips) if(item.key=="extra_skill_1")
+                    foreach(var item in extra.clips) if(Array.IndexOf(extraKeys,item.key)>=0)
                     {
                         var frames=new List<Sprite>();
                         foreach(var page in item.pages)
@@ -103,7 +104,7 @@ namespace YesterdayConvoy
                         if(frames.Count!=item.count || !Positive(item.duration)) throw new InvalidDataException("Extra frame count mismatch.");
                         art.clips.Add(item.key,new Clip {Frames=frames.ToArray(),Duration=item.duration});
                     }
-                    if(!art.HasClip("extra_skill_1")) throw new InvalidDataException("FrostNova ring animation missing.");
+                    foreach(string key in extraKeys) if(!art.HasClip(key)) throw new InvalidDataException("Required effect animation missing: "+key);
                 }
                 var portrait = Load(root, "portrait.png", allocated);
                 art.Portrait = Sprite.Create(portrait, new Rect(0, 0, portrait.width, portrait.height), new Vector2(.5f, 0), data.ppu);

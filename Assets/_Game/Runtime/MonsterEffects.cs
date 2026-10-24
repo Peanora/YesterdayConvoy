@@ -20,10 +20,11 @@ namespace YesterdayConvoy
         public readonly bool Healer;
         public readonly bool ArtsBarrier;
         public readonly float UnitResistance;
+        public readonly bool Mudrock;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -41,6 +42,7 @@ namespace YesterdayConvoy
             AttackTargets=attackTargets;LifeSteal=lifeSteal;
             Healer=healer;
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
+            Mudrock=mudrock;
         }
     }
 
@@ -143,8 +145,20 @@ namespace YesterdayConvoy
         }
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
-        public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
+        public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
+            CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
         public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
+        private bool StepMudrock(DeployedUnitState unit)
+        {
+            if(Clock<unit.BarrierRefreshStartedAt+1.5) {unit.IsMoving=unit.HasCombatTarget=false;return true;}
+            if(Clock+1e-6<unit.NextBarrierRefreshAt || Clock<unit.LastAttackTime+CombatSettings.AttackDuration/unit.LastAttackRate) return false;
+            bool broken=unit.ArtsBarrierRemaining<=0;
+            unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=Settings.Health*1.5f;
+            if(broken) unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)/1.5;
+            unit.BarrierRefreshes++;unit.BarrierRefreshStartedAt=Clock;unit.NextBarrierRefreshAt=Clock+17;
+            unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+1.5);
+            unit.IsMoving=unit.HasCombatTarget=false;return true;
+        }
         private float DefenderAttackRate(DefenderState defender) =>
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1);
         private void DefeatUnit(DeployedUnitState unit)

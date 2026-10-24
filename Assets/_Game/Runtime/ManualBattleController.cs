@@ -326,11 +326,12 @@ namespace YesterdayConvoy
                 {
                     Fill(new Rect(x-31,y+10,62,5),new Color(.03f,.05f,.1f));
                     Fill(new Rect(x-29,y+11,58*unit.ArtsBarrierRemaining/(unit.ArtsBarrierLayerSize*3),3),new Color(.3f,.7f,1));
-                    GUI.Label(new Rect(x-70,y-28,140,26),$"法术屏障 {unit.ArtsBarrierLayers}层",smallStyle);
+                    GUI.Label(new Rect(x-70,y-28,140,26),$"屏障×{unit.ArtsBarrierLayers}",smallStyle);
                 }
                 if(unit.IsReviving) GUI.Label(new Rect(x-70,y-28,140,26),$"复起 {Math.Max(0,unit.ReviveAt-Battle.Clock):0.0}s",smallStyle);
                 else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
+                if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));

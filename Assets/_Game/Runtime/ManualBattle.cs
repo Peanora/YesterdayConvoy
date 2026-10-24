@@ -41,6 +41,9 @@ namespace YesterdayConvoy
         public float ArtsBarrierLayerSize { get; internal set; }
         public int ArtsBarrierLayers => ArtsBarrierLayerSize>0 ? Mathf.CeilToInt(ArtsBarrierRemaining/ArtsBarrierLayerSize) : 0;
         public float LastAttackRate { get; internal set; } = 1;
+        public double BarrierRefreshStartedAt { get; internal set; } = double.NegativeInfinity;
+        public int BarrierRefreshes { get; internal set; }
+        internal double NextBarrierRefreshAt;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
@@ -178,10 +181,11 @@ namespace YesterdayConvoy
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             unit.NextIceRingAt=Clock+8.5;
-            if(EngagementEnabled && CombatSettings.Effects.ArtsBarrier)
+            if(EngagementEnabled && (CombatSettings.Effects.ArtsBarrier || CombatSettings.Effects.Mudrock))
             {
                 unit.MaxHealth=unit.Health=Settings.Health*1.5f;
-                unit.ArtsBarrierLayerSize=Settings.Health*.2f;unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;
+                unit.ArtsBarrierLayerSize=Settings.Health*(CombatSettings.Effects.Mudrock ? 5500f/45000 : .2f);
+                unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
             // Commit together only after all preconditions and entity initialization succeed.
             units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;

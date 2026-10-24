@@ -18,8 +18,8 @@ MonoBehaviour:
   unitArmor: 15
   unitRange: 0.9
   unitInterval: 2.5
-  defenderHealth: 140
-  defenderAttack: 18
+  defenderHealth: 4000
+  defenderAttack: 30
   defenderArmor: 3
   defenderRange: 3.2
   defenderInterval: 1
@@ -46,4 +46,7 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  mudrock: 1
+  unitResistance: 30
+  defenderDamageType: 1
   extraDefenders: []

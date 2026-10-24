@@ -245,5 +245,23 @@ namespace YesterdayConvoy.Tests
             b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));
             Assert.That(unit.MaxHealth,Is.EqualTo(150));Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(unitResistance:101));
         }
+
+        [Test] public void EnemyMudrockRampsBeforeEachAttackAndRefreshesHerArtsBarrierWithoutDirectHealing()
+        {
+            var b=Battle(new MonsterEffectSettings(mudrock:true),health:1000);var unit=Deploy(b,1);
+            Assert.That(unit.ArtsBarrierRemaining,Is.EqualTo(1000*16500f/45000).Within(.001));
+            b.TryDamageUnit(unit.EntityId,400,CombatDamageType.Arts);Assert.That(unit.ArtsBarrierRemaining,Is.Zero);
+            Assert.That(unit.MaxHealth,Is.EqualTo(1000));b.Advance(16.9f);
+            var shots=b.CombatShots.Where(s=>!s.FromDefender).ToArray();Assert.That(shots.Length,Is.GreaterThan(6));
+            Assert.That(shots[0].Attack,Is.EqualTo(32).Within(.001));Assert.That(shots[5].Attack,Is.EqualTo(92).Within(.001));
+            Assert.That(shots.Skip(5).All(s=>Mathf.Abs(s.Attack-92)<.001),Is.True);
+            Assert.That(unit.BarrierRefreshes,Is.Zero);float hp=unit.Health;
+            b.SetPaused(true);b.Advance(100);Assert.That(unit.BarrierRefreshes,Is.Zero);
+            b.SetPaused(false);b.Advance(.2f);Assert.That(unit.BarrierRefreshes,Is.EqualTo(1));
+            Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));Assert.That(unit.MaxHealth,Is.EqualTo(1500));
+            Assert.That(unit.Health,Is.LessThanOrEqualTo(hp),"Refreshing a barrier must not grant direct healing.");
+            Assert.That(b.UnitAttackRate(unit),Is.EqualTo(1.5f));
+            b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.BarrierRefreshes,Is.Zero);Assert.That(unit.OrdinaryAttacksFired,Is.Zero);
+        }
     }
 }

@@ -12,6 +12,21 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualEnemyMudrockNaturallyBreaksRefreshesAndReachesSixAttackStacks()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M28"),Is.True);
+            c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);var unit=c.Battle.FindUnit(r.EntityId);
+            bool broken=false,refreshPose=false;
+            for(int i=0;i<1400 && unit.Active && !(broken && refreshPose && unit.OrdinaryAttacksFired>=6);i++)
+            {
+                c.Tick(.05f);yield return null;broken|=unit.ArtsBarrierRemaining<=0;
+                refreshPose|=Object.FindObjectsByType<DemoSpriteVisual>().Any(v=>v.transform.parent.name==unit.EntityId && v.FrameState=="BarrierRefresh");
+            }
+            Assert.That(broken && refreshPose,Is.True);Assert.That(unit.BarrierRefreshes,Is.GreaterThan(0));
+            Assert.That(unit.OrdinaryAttacksFired,Is.GreaterThanOrEqualTo(6));Assert.That(c.Battle.UnitAttackMultiplier(unit),Is.EqualTo(4.6f).Within(.001));
+            c.RestartBattle();Assert.That(c.Battle.Units,Is.Empty);c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
         [UnityTest] public IEnumerator ActualPractitionerLosesItsThreeBarrierLayersUnderTheExplicitArtsTestDefender()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
