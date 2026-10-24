@@ -32,6 +32,7 @@ namespace YesterdayConvoy
         [SerializeField] private float regenerationFraction;
         [SerializeField] private int attackTargets;
         [SerializeField] private float lifeSteal;
+        [SerializeField] private bool healer;
         [SerializeField] private Vector3[] extraDefenders = new Vector3[0];
         public System.Collections.Generic.IReadOnlyList<Vector3> ExtraDefenders => extraDefenders;
         public bool FireRain => fireRain;
@@ -41,6 +42,6 @@ namespace YesterdayConvoy
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
             new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,
-                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal), canAttack: !noOrdinaryAttack);
+                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer), canAttack: !noOrdinaryAttack);
     }
 }

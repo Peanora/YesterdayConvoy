@@ -193,5 +193,39 @@ namespace YesterdayConvoy.Tests
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(attackTargets:4));
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(lifeSteal:float.PositiveInfinity));
         }
+
+        private static ManualBattle HealerBattle(float regeneration=0)
+        {
+            var c=new EngagementSettings(unitAttack:20,unitRange:20,unitInterval:2,unitArmor:0,defenderRange:1,
+                initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
+                canAttack:false,attackDuration:1,attackWindup:.2f,effects:new MonsterEffectSettings(healer:true,regenerationFraction:regeneration));
+            var s=new ManualBattleSettings("HEAL","HEAL",20,1,4,1,.1f,100,1,1,1,1,1);
+            var b=new ManualBattle(s,new[]{Vector3.zero,Vector3.forward*100},Vector3.right*100,c);b.Begin();return b;
+        }
+        [Test] public void HealerTreatsAtMostThreeWoundedTargetsAndInFlightHealingCannotReviveItsDeadCaster()
+        {
+            var b=HealerBattle();for(int i=0;i<4;i++) {Deploy(b,i+1);b.Advance(.4f);}
+            Assert.That(b.HealingCasts,Is.Empty,"Healthy units do not trigger casts.");
+            for(int i=0;i<4;i++) b.TryDamageUnit(b.Units[i].EntityId,(i+1)*10,CombatDamageType.Physical);
+            b.Advance(.05f);Assert.That(b.HealingCasts.Count,Is.EqualTo(4));var cast=b.HealingCasts[0];
+            Assert.That(cast.TargetIds.Count,Is.EqualTo(3));Assert.That(cast.TargetIds.Distinct().Count(),Is.EqualTo(3));
+            Assert.That(cast.TargetIds,Does.Not.Contain(b.Units[0].EntityId),"The three most wounded are chosen first.");
+            b.SetPaused(true);b.Advance(30);Assert.That(cast.Resolved,Is.False);
+            Assert.That(b.TryDamageUnit(b.Units[0].EntityId,1000,CombatDamageType.Physical),Is.False);
+            b.SetPaused(false);b.TryDamageUnit(b.Units[0].EntityId,1000,CombatDamageType.Physical);b.Advance(.3f);
+            Assert.That(cast.Resolved,Is.True);Assert.That(cast.HealthRestored,Is.Zero);
+            Assert.That(b.Units[0].Health,Is.Zero);Assert.That(b.Units[0].Active,Is.False);
+            Assert.That(b.Units.Skip(1).Any(u=>u.HealthRecovered>0),Is.True);
+            Assert.That(b.Units.All(u=>u.Health<=100),Is.True);Assert.That(b.CombatShots,Is.Empty);
+            b.Restart();Assert.That(b.HealingCasts,Is.Empty);Assert.That(b.RegenerationMultiplier,Is.EqualTo(1));
+        }
+        [Test] public void HealerPresenceDoublesNaturalRecoveryWithoutMakingExtraAttackShots()
+        {
+            var b=HealerBattle(.1f);var unit=Deploy(b,1);
+            b.TryDamageUnit(unit.EntityId,10,CombatDamageType.Physical);b.Advance(.05f);
+            Assert.That(unit.Health,Is.EqualTo(91).Within(.001));Assert.That(b.RegenerationMultiplier,Is.EqualTo(2));
+            Assert.That(b.CombatShots,Is.Empty);Assert.That(unit.OrdinaryAttacksFired,Is.Zero);
+            Assert.Throws<ArgumentException>(()=>new EngagementSettings(effects:new MonsterEffectSettings(healer:true)));
+        }
     }
 }

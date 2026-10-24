@@ -109,6 +109,11 @@ namespace YesterdayConvoy
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+                if(manualBattle.CombatSettings.Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.CombatSettings.AttackDuration)
+                {
+                    FrameState="Heal";sprite.sprite=local["attack"].At(manualBattle.Clock-deployedUnit.HealingStartedAt,false,out int healIndex);
+                    FrameIndex=healIndex;return;
+                }
                 if(manualBattle.CombatSettings.Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
                 {
                     FrameState="IceRing";

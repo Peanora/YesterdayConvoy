@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-10-24：已有模型效果续作
+
+见[逐角色证据和失败修正](monsters/EXISTING-MODEL-EFFECTS.md)，任务#20/PR#21。M14冰环/首次复起：79 Edit、35 GPU Play全过，实际Player退出0。M21–23回血：80 Edit、36 GPU Play全过，三只各自实际Player退出0。M24三目标法术吸血：81 Edit、37 GPU Play全过，实际Player退出0。M25自动三目标治疗：83 Edit、38完整GPU Play全过/零跳过，Windows构建0错误，实际Player治疗232、无伤害普攻、完整流程均True并退出0。每只在验证后独立提交推送，未做封地等设施联动或全角色完成声明。
+
+日志/结果分别artifacts/effects-*、host-*、centurion-*、mephisto-*。最后完整回归包含之前角色场景，不冒充所有旧角色Player在每次构建重跑。已查看冰环/治疗实际HUD截图，原PNG/meta与场景/Prefab/Packages/ProjectSettings未改。第一次受限环境Unity许可198、初次测试编译类型错误、霜星靶生命/射程与诊断等待不足均如实修正重跑；不把失败版本记为成功。M24推送时提升权限的静态工具遇所有权校验失败，随后正常环境静态2539文件通过。未第二机、人类全通或长时性能验收，无ZIP/Releases/自动合并。
+
 ## 2026-10-24：雪怪效果最终10组Player回归
 
 运行源码bf44797，后续仅文档；Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误。10组最终Player全部退出0：M11普通/明确冻结靶场、M13普通/明确冻结靶场、M12正常寒冷/叠冻、M06冰爆，及原交战/塔露拉/交互/选择页四组。两个bonus=True；M12 cold/frozen/noInjectedStatus=True。已查看完整HUD和实际状态/命中反馈，日志artifacts/snow-final-*与图snow-final-player/。仓库2538文件、差异空白与文件范围核对通过，原图集/meta及场景/Prefab/Packages/ProjectSettings无变更。没有执行第二机、真人全通、长期低配验收；其余角色特殊能力与正式羁绊仍待做。详情[效果交付](monsters/SNOW-EFFECTS.md)，依赖PR15，续作PR19不自动合并，无ZIP/Releases。

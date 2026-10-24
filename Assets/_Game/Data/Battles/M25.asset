@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.EngagementDefinition
   kroosSprite: {fileID: 21300000, guid: df33ff5010c717346aebb937c6e5426b, type: 3}
   defenderPosition: {x: 0, y: 0.35, z: 0}
-  unitAttack: 1
+  unitAttack: 35
   unitArmor: 7
-  unitRange: 3
-  unitInterval: 3.5
+  unitRange: 20
+  unitInterval: 6
   defenderHealth: 140
   defenderAttack: 18
   defenderArmor: 3
@@ -37,8 +37,8 @@ MonoBehaviour:
   hasSkill: 0
   melee: 0
   noOrdinaryAttack: 1
-  attackDuration: 0
-  attackWindup: 0
+  attackDuration: 3.1666667
+  attackWindup: 1.2
   damageType: 0
   defenderResistance: 0
   armorShred: 0
@@ -46,4 +46,5 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  healer: 1
   extraDefenders: []

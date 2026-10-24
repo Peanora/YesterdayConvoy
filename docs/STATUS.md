@@ -2,6 +2,8 @@
 
 ## 当前：已有模型角色效果继续补齐（2026-10-24）
 
+续作PR #21已逐只推送M14冰环/首次复起、M21–M23自然回血、M24三目标法术吸血；M25三目标自动治疗已完成本机验证。最新83 Edit、38完整GPU Play全过/零跳过，Windows0错误、M25实际Player退出0，治疗232且不攻击守军，已查看治疗HUD。详细操作、独立参数、模型条件验证和未完成项见下方链接；其他角色继续逐项制作，不声称全角色完成。
+
 用户要求补齐全部已有模型角色的未完效果，银狼暂缓。霍利屹在PR19基础新建codex/monster-existing-effects，[任务#20](https://github.com/Peanora/YesterdayConvoy/issues/20)。先补M14四章霜星：8.5秒冰环150%法术伤害/攻速减半8秒、5秒首次复起与复起后攻击+50%，启用已有Skill_1原动作，所有状态共用模拟时钟。79 Edit、35 GPU Play全通过/零跳过，Windows0错误，实际M14 Player退出0且自然冰环/复起与完整流程全部True。封地和其余角色效果仍待后续；不冒称全角色完成。[逐项进度、参数、失败修正和证据](monsters/EXISTING-MODEL-EFFECTS.md)。未改主场景/Prefab/Packages/ProjectSettings或原PNG/meta，无ZIP/Releases/自动合并。以下为历史。
 
 ## 当前：M11/M12/M13自身效果补齐（2026-10-24）

@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
+        private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
         private ManualBattleController owner;
         private EngagementDefinition definition;
@@ -52,6 +53,19 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
+            int healingIndex=0;
+            foreach(var cast in b.HealingCasts)
+                foreach(string targetId in cast.TargetIds)
+                {
+                    if(healingIndex>=healingViews.Count) healingViews.Add(CreateLine("Healing link",.035f));
+                    var line=healingViews[healingIndex++];var source=b.FindUnit(cast.SourceId);var healed=b.FindUnit(targetId);
+                    double age=time-cast.ImpactAt;
+                    line.enabled=cast.Resolved && cast.HealthRestored>0 && age>=0 && age<.6 && source!=null && healed!=null && source.Active && healed.Active;
+                    if(!line.enabled) continue;
+                    line.startColor=line.endColor=new Color(.25f,1,.55f,1-(float)age/.6f);
+                    if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
+                    else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
+                }
             for(int i=0;i<b.IceRings.Count;i++)
             {
                 if(i>=iceRingViews.Count) iceRingViews.Add(CreateLine("FrostNova ice ring",.09f));
@@ -296,6 +310,7 @@ namespace YesterdayConvoy
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
+            foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
         private void OnDestroy() { ClearTransient(); if (material != null) Destroy(material); }

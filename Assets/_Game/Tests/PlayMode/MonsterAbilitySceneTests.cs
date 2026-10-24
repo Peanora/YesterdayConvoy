@@ -12,6 +12,25 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualMephistoUsesHisHealingAnimationAndNeverDamagesTheDefender()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M25"),Is.True);
+            c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);
+            var unit=c.Battle.FindUnit(r.EntityId);bool pose=false;
+            for(int i=0;i<800 && unit.HealingDone<=0;i++)
+            {
+                c.Tick(.05f);yield return null;
+                pose|=Object.FindObjectsByType<DemoSpriteVisual>().Any(v=>v.transform.parent.name==unit.EntityId && v.FrameState=="Heal");
+            }
+            Assert.That(pose,Is.True);Assert.That(unit.HealingDone,Is.GreaterThan(0));
+            Assert.That(unit.HealthRecovered,Is.GreaterThan(0));Assert.That(unit.OrdinaryAttacksFired,Is.Zero);
+            Assert.That(c.Battle.CombatShots.All(s=>s.FromDefender),Is.True);
+            Assert.That(c.Battle.Defender.Health,Is.EqualTo(c.Battle.CombatSettings.DefenderHealth));
+            c.Battle.SetPaused(true);float healed=unit.HealingDone;double clock=c.Battle.Clock;c.Tick(20);yield return null;
+            Assert.That(unit.HealingDone,Is.EqualTo(healed));Assert.That(c.Battle.Clock,Is.EqualTo(clock));
+            c.RestartBattle();Assert.That(c.Battle.HealingCasts,Is.Empty);c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
         [UnityTest] public IEnumerator ActualCenturionDamagesThreeDefendersAndRecoversHealthWithoutInjection()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

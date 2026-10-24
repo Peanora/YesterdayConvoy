@@ -17,9 +17,10 @@ namespace YesterdayConvoy
         public readonly float RegenerationFraction;
         public readonly int AttackTargets;
         public readonly float LifeSteal;
+        public readonly bool Healer;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
-            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0)
+            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -35,6 +36,7 @@ namespace YesterdayConvoy
             FrostNova=frostNova;
             RegenerationFraction=regenerationFraction;
             AttackTargets=attackTargets;LifeSteal=lifeSteal;
+            Healer=healer;
         }
     }
 
@@ -57,12 +59,67 @@ namespace YesterdayConvoy
 
     public sealed partial class ManualBattle
     {
-        private void HealUnit(DeployedUnitState unit,float amount)
+        // One model entry for direct and projectile damage; damage cannot mutate a paused/finished battle.
+        public bool TryDamageUnit(string entityId,float attack,CombatDamageType type)
         {
-            if(!unit.Active || unit.IsReviving || amount<=0) return;
+            if(float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
+                type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
+            if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
+            var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving) return false;
+            unit.Health=Mathf.Max(0,unit.Health-CalculateDamage(attack,CombatSettings.UnitArmor,0,type));
+            unit.LastHitTime=Clock;if(unit.Health==0) DefeatUnit(unit);return true;
+        }
+        public sealed class HealingCast
+        {
+            public string SourceId { get; internal set; }
+            public IReadOnlyList<string> TargetIds { get; internal set; }
+            public double StartedAt { get; internal set; }
+            public double ImpactAt { get; internal set; }
+            public bool Resolved { get; internal set; }
+            public float HealthRestored { get; internal set; }
+        }
+        private readonly List<HealingCast> healingCasts=new List<HealingCast>();
+        public IReadOnlyList<HealingCast> HealingCasts => healingCasts.AsReadOnly();
+        public float RegenerationMultiplier => CombatSettings.Effects.Healer && units.Exists(u=>u.Active && !u.IsReviving) ? 2 : 1;
+        private float HealUnit(DeployedUnitState unit,float amount)
+        {
+            if(!unit.Active || unit.IsReviving || amount<=0) return 0;
             float restored=Mathf.Min(amount,Settings.Health-unit.Health);
-            if(restored<=0) return;
+            if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
+            return restored;
+        }
+        private void ResolveHealing()
+        {
+            foreach(var cast in healingCasts)
+            {
+                if(cast.Resolved || Clock+1e-6<cast.ImpactAt) continue;
+                cast.Resolved=true;var source=FindUnit(cast.SourceId);
+                if(source==null || !source.Active || source.IsReviving) continue;
+                foreach(string id in cast.TargetIds)
+                {
+                    var target=FindUnit(id);if(target==null) continue;
+                    cast.HealthRestored+=HealUnit(target,CombatSettings.UnitAttack);
+                }
+                source.HealingDone+=cast.HealthRestored;
+            }
+        }
+        private bool StepHealer(DeployedUnitState source)
+        {
+            if(Clock<source.HealingStartedAt+CombatSettings.AttackDuration)
+            {source.IsMoving=source.HasCombatTarget=false;return true;}
+            if(Clock+1e-6<source.NextHealAt) return false;
+            var targets=new List<DeployedUnitState>();
+            foreach(var target in units)
+                if(target.Active && !target.IsReviving && target.Health<Settings.Health &&
+                    GroundDistance(source.Motion.Position,target.Motion.Position)<=CombatSettings.UnitRange) targets.Add(target);
+            targets.Sort((a,b)=> {int health=a.Health.CompareTo(b.Health);return health!=0 ? health : string.CompareOrdinal(a.EntityId,b.EntityId);});
+            if(targets.Count==0) return false;
+            var ids=new List<string>();for(int i=0;i<Math.Min(3,targets.Count);i++) ids.Add(targets[i].EntityId);
+            source.HealingStartedAt=Clock;source.NextHealAt=Clock+CombatSettings.UnitInterval;
+            source.IsMoving=source.HasCombatTarget=false;
+            healingCasts.Add(new HealingCast {SourceId=source.EntityId,TargetIds=ids.AsReadOnly(),StartedAt=Clock,ImpactAt=Clock+CombatSettings.AttackWindup});
+            return true;
         }
         public sealed class IceRing
         {
@@ -92,11 +149,11 @@ namespace YesterdayConvoy
         private bool StepIceRing(DeployedUnitState unit)
         {
             if(Clock<unit.IceRingStartedAt+3)
-            {unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;return true;}
+            {unit.IsMoving=unit.HasCombatTarget=false;return true;}
             if(Clock+1e-6<unit.NextIceRingAt) return false;
             var target=ChooseDefender(unit,2.5f);if(target==null) return false;
             unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+8.5;
-            unit.NextAttackTime=Clock+3;unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;
+            unit.NextAttackTime=Clock+3;unit.IsMoving=unit.HasCombatTarget=false;
             var ring=new IceRing {Position=unit.Motion.Position,Time=Clock};iceRings.Add(ring);
             foreach(var defender in defenders)
             {

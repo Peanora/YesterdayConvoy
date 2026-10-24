@@ -36,6 +36,7 @@ namespace YesterdayConvoy
                 throw new ArgumentException("A unit without a skill must have zero skill resources.");
             if(!Finite(attackDuration) || !Finite(attackWindup) || attackDuration<0 || attackDuration>unitInterval || attackWindup<0 || attackWindup>attackDuration)
                 throw new ArgumentException("Invalid attack animation timing.");
+            if(effects.Healer && (canAttack || hasSkill)) throw new ArgumentException("Healer uses automatic treatment, not damage attacks or ammunition skills.");
             Effects=effects;
             AttackDuration=attackDuration; AttackWindup=attackWindup;
             HasSkill=hasSkill; Melee=melee; CanAttack=canAttack;
@@ -109,7 +110,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); skillRequests.Clear(); SkillCasts = 0;
+            combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
                 defenders.Add(new DefenderState(i==0 ? "kroos" : "kroos-"+i,defenderPositions[i],CombatSettings.DefenderHealth));
@@ -164,6 +165,7 @@ namespace YesterdayConvoy
         {
             EngagementSettings c=CombatSettings;
             ResolveDeathEffects();
+            ResolveHealing();
             foreach(var shot in combatShots)
             {
                 if(shot.Resolved || Clock+0.000001<shot.ImpactAt) continue;
@@ -174,9 +176,7 @@ namespace YesterdayConvoy
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
-                    unit.Health=Mathf.Max(0,unit.Health-Mathf.Max(1,shot.Attack-c.UnitArmor));
-                    unit.LastHitTime=Clock;
-                    if(unit.Health==0) DefeatUnit(unit);
+                    TryDamageUnit(unit.EntityId,shot.Attack,CombatDamageType.Physical);
                 }
                 else
                 {
@@ -201,14 +201,14 @@ namespace YesterdayConvoy
                     unit.IsReviving=false;unit.Health=Settings.Health;unit.DeathTime=double.PositiveInfinity;
                     unit.NextIceRingAt=Clock+8.5;unit.NextAttackTime=Clock;
                 }
-                if(c.Effects.FrostNova && StepIceRing(unit)) continue;
-                HealUnit(unit,Settings.Health*c.Effects.RegenerationFraction*step);
+                HealUnit(unit,Settings.Health*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
                     if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit)) continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
                 DefenderState target=c.CanAttack ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
