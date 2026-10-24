@@ -70,5 +70,28 @@ namespace YesterdayConvoy.Tests
                 Debug.Log("MONSTER_ABILITY_PASS: "+id);
             }
         }
+
+        [UnityTest] public IEnumerator SnowSniperUsesItsActualConfigAndAppliesBonusOnlyToFrozenImpact()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();
+            Assert.That(c.TryEnterMonsterTest("CARD_M11"),Is.True);
+            var e=c.Battle.CombatSettings.Effects;Assert.That(e.FrozenAttackMultiplier,Is.EqualTo(1.5f));
+            c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
+            // Explicit status fixture: the sniper itself must never generate freeze.
+            c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);
+            for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
+            var shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
+            Assert.That(shot.FrozenBonusApplied,Is.True);
+            Assert.That(shot.DamageDealt,Is.EqualTo(42).Within(.001));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            c.RestartBattle();Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));
+            c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
+            for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
+            shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
+            Assert.That(shot.FrozenBonusApplied,Is.False);
+            Assert.That(shot.DamageDealt,Is.EqualTo(27).Within(.001));
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
     }
 }

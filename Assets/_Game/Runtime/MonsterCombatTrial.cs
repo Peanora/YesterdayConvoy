@@ -28,6 +28,9 @@ namespace YesterdayConvoy
             paused &= Battle.Clock==0 && unit.Motion.DistanceTravelled==0;
             yield return InteractionFrame(directory,task+"-paused");
             Battle.SetPaused(false);Tick(.35f);yield return InteractionFrame(directory,task+"-walk");
+            bool snowFixture=Array.IndexOf(Environment.GetCommandLineArgs(),"-snowEffectFixture")>=0 && Battle.CombatSettings.Effects.FrozenAttackMultiplier>1;
+            if(snowFixture) { Battle.TryApplyCold(Battle.Defender.EntityId,30);Battle.TryApplyCold(Battle.Defender.EntityId,30); }
+            bool bonusCaptured=false,bonusValid=!snowFixture;
             bool attacked=false,hit=false,canAttack=Battle.CombatSettings.CanAttack;
             bool passiveMoving=false;
             for(int i=0;i<2400 && unit.Active;i++)
@@ -35,6 +38,13 @@ namespace YesterdayConvoy
                 Tick(.025f);yield return null;
                 if(!attacked && !double.IsNegativeInfinity(unit.LastAttackTime))
                 { attacked=true;Tick(.3f);yield return InteractionFrame(directory,task+"-attack"); }
+                if(snowFixture && !bonusCaptured)
+                    foreach(var shot in Battle.CombatShots) if(!shot.FromDefender && shot.Applied)
+                    {
+                        bonusCaptured=true;bonusValid=shot.FrozenBonusApplied && Mathf.Abs(shot.DamageDealt-
+                            Mathf.Max(1,shot.Attack*Battle.CombatSettings.Effects.FrozenAttackMultiplier-Battle.DefenderArmor(Battle.Defender)))<.01f;
+                        yield return InteractionFrame(directory,task+"-frozen-bonus");break;
+                    }
                 hit |= unit.Health<Battle.Settings.Health;
                 passiveMoving |= !canAttack && unit.IsMoving && !unit.HasCombatTarget && unit.Health<Battle.Settings.Health;
             }
@@ -77,7 +87,8 @@ namespace YesterdayConvoy
             Debug.Log($"MONSTER_COMBAT_CHECK: {task}; entered={entered}; paused={paused}; attacked={attacked}; hit={hit}; resolved={resolved}; three={three}; won={won}; noSkill={noSkill}; clean={clean}; frozen={frozen}.");
             bool attackPolicy=canAttack ? attacked : !attacked && passiveMoving;
             Debug.Log($"MONSTER_ATTACK_POLICY_CHECK: {task}; canAttack={canAttack}; policy={attackPolicy}.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen ? 0 : 1);
+            if(snowFixture) Debug.Log($"SNOW_FIXTURE_CHECK: {task}; explicitFrozenTarget=True; bonus={bonusValid}.");
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid ? 0 : 1);
         }
     }
 }

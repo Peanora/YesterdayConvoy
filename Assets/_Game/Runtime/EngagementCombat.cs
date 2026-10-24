@@ -80,6 +80,8 @@ namespace YesterdayConvoy
         public float Attack { get; }
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
+        public bool FrozenBonusApplied { get; internal set; }
+        public float DamageDealt { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
             double start, float duration, float attack, bool fireRain = false)
         { FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
@@ -176,7 +178,12 @@ namespace YesterdayConvoy
                 }
                 else
                 {
-                    DamageDefender(defender,shot.Attack,c.Effects.DamageType);
+                    // Freeze can begin or expire while the projectile is in flight.
+                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && c.Effects.FrozenAttackMultiplier>1;
+                    float attack=shot.Attack*(shot.FrozenBonusApplied ? c.Effects.FrozenAttackMultiplier : 1);
+                    float health=defender.Health;
+                    DamageDefender(defender,attack,c.Effects.DamageType);
+                    shot.DamageDealt=health-defender.Health;
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
                 }
             }

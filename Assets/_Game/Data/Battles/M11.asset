@@ -45,4 +45,5 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  frozenAttackMultiplier: 1.5
   extraDefenders: []

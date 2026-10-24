@@ -71,5 +71,30 @@ namespace YesterdayConvoy.Tests
             var old=new EngagementSettings(unitAttack:14);Assert.That(old.Effects.BlastAttack,Is.Zero);
             Assert.That(old.Effects.ArmorShred,Is.Zero);Assert.That(old.Effects.DamageType,Is.EqualTo(CombatDamageType.Physical));
         }
+
+        [Test] public void FrozenBonusUsesImpactStateAndScalesAttackBeforeArmorWithoutConsumingFreeze()
+        {
+            var b=Battle(new MonsterEffectSettings(frozenAttackMultiplier:1.5f));Deploy(b,1);
+            b.Advance(.025f);var shot=b.CombatShots[0];
+            b.TryApplyCold(b.Defender.EntityId,1);b.TryApplyCold(b.Defender.EntityId,1);b.Advance(.15f);
+            Assert.That(shot.FrozenBonusApplied,Is.True);
+            Assert.That(shot.DamageDealt,Is.EqualTo(20),"20*1.5-10, not (20-10)*1.5");
+            Assert.That(b.Defender.FrozenUntil,Is.GreaterThan(b.Clock));
+            float hp=b.Defender.Health;b.SetPaused(true);b.Advance(10);
+            Assert.That(b.Defender.Health,Is.EqualTo(hp));
+            b.Restart();b.Begin();Deploy(b,2);b.TryApplyCold(b.Defender.EntityId,.05f);b.TryApplyCold(b.Defender.EntityId,.05f);b.Advance(.2f);
+            Assert.That(b.CombatShots[0].FrozenBonusApplied,Is.False,"Expired freeze at impact gives no bonus.");
+            Assert.That(b.CombatShots[0].DamageDealt,Is.EqualTo(10));
+        }
+
+        [Test] public void ColdAloneDoesNotGrantFrozenBonusAndFrozenMultiplierMustBeValid()
+        {
+            var b=Battle(new MonsterEffectSettings(frozenAttackMultiplier:1.5f));Deploy(b,1);
+            b.TryApplyCold(b.Defender.EntityId,10);b.Advance(.2f);
+            Assert.That(b.CombatShots[0].FrozenBonusApplied,Is.False);
+            Assert.That(b.CombatShots[0].DamageDealt,Is.EqualTo(10));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(frozenAttackMultiplier:.5f));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(frozenAttackMultiplier:float.NaN));
+        }
     }
 }
