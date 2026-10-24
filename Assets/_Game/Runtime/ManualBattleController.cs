@@ -332,6 +332,7 @@ namespace YesterdayConvoy
                 else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
+                if(Battle.CombatSettings.Effects.Phalanx) GUI.Label(new Rect(x-70,y-28,160,26),$"方阵 +{Battle.UnitArmor(unit)-Battle.CombatSettings.UnitArmor:0}甲",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));

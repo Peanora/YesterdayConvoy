@@ -40,6 +40,7 @@ namespace YesterdayConvoy
             {
                 GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
                     (Battle.CombatSettings.Effects.FrostNova ? " · 冰环减速 · 首次倒下复起" :
+                     Battle.CombatSettings.Effects.Phalanx ? " · 方阵相互支援 · 折射法抗" :
                      Battle.CombatSettings.Effects.Mudrock ? " · 攻击蓄力 · 定时补充法术屏障" :
                      Battle.CombatSettings.Effects.ArtsBarrier ? " · 三层法术屏障 · 屏障期间生命/攻速强化" :
                      Battle.CombatSettings.Effects.Healer ? " · 自动治疗受伤友军 · 不攻击守军" :

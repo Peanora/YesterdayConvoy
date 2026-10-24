@@ -95,10 +95,13 @@ namespace YesterdayConvoy
             SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);SelectCard(true);bool three=TryDeployAt(Battle.Entry).Success;
             yield return InteractionFrame(directory,task+"-group");
             bool groupAttackCaptured=false;
+            bool phalanxSupported=false;
             bool coldCaptured=false,casterFrozen=false;
             for(int i=0;i<1600 && Battle.Phase==BattlePhase.Running;i++)
             {
                 Tick(task=="M14" || task=="M24" || task=="M25" || task=="M27" || task=="M28" ? .1f : .025f);yield return null;
+                if(task=="M29" && !phalanxSupported && System.Linq.Enumerable.Any(Battle.Units,u=>u.Active && Battle.UnitArmor(u)>Battle.CombatSettings.UnitArmor))
+                {phalanxSupported=true;yield return InteractionFrame(directory,task+"-phalanx-support");}
                 if(!groupAttackCaptured)
                     foreach(var shot in Battle.CombatShots) if(!shot.FromDefender)
                     {
@@ -114,6 +117,8 @@ namespace YesterdayConvoy
             bool won=Battle.Phase==BattlePhase.Won && Battle.Breaches>0;
             yield return InteractionFrame(directory,task+"-result");
             bool noSkill=Battle.SkillCasts==0 && !Battle.CombatSettings.HasSkill;
+            bool phalanxValid=task!="M29" || phalanxSupported;
+            if(task=="M29") Debug.Log($"PHALANX_CHECK: nearbyArmor={phalanxSupported}; noInjectedState=True.");
             bool barrierValid=task!="M27" || barrierPartial && barrierBroken;
             bool mudrockValid=task!="M28" || mudrockBroken && mudrockRefreshed && mudrockFull;
             if(task=="M28") Debug.Log($"MUDROCK_CHECK: broken={mudrockBroken}; refreshed={mudrockRefreshed}; sixStacks={mudrockFull}; noInjectedDamage=True.");
@@ -134,7 +139,7 @@ namespace YesterdayConvoy
             if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
             bool frostValid=task!="M14" || ringCaptured && reviveCaptured && revived;
             if(task=="M14") Debug.Log($"FROSTNOVA_CHECK: ring={ringCaptured}; reviving={reviveCaptured}; revived={revived}; noInjectedStatus=True.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid ? 0 : 1);
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid && phalanxValid ? 0 : 1);
         }
     }
 }

@@ -21,10 +21,11 @@ namespace YesterdayConvoy
         public readonly bool ArtsBarrier;
         public readonly float UnitResistance;
         public readonly bool Mudrock;
+        public readonly bool Phalanx;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0,bool mudrock=false)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -43,6 +44,7 @@ namespace YesterdayConvoy
             Healer=healer;
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
             Mudrock=mudrock;
+            Phalanx=phalanx;
         }
     }
 
@@ -72,7 +74,7 @@ namespace YesterdayConvoy
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving) return false;
-            float damage=CalculateDamage(attack,CombatSettings.UnitArmor,CombatSettings.Effects.UnitResistance,type);
+            float damage=CalculateDamage(attack,UnitArmor(unit),CombatSettings.Effects.UnitResistance,type);
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
                 float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;
@@ -148,6 +150,15 @@ namespace YesterdayConvoy
         public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
             CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
         public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
+        public float UnitArmor(DeployedUnitState unit)
+        {
+            float armor=CombatSettings.UnitArmor;
+            if(!CombatSettings.Effects.Phalanx || unit==null || !unit.Active) return armor;
+            foreach(var other in units)
+                if(other!=unit && other.Active && !other.IsReviving && other.UnitId==unit.UnitId && GroundDistance(other.Motion.Position,unit.Motion.Position)<=1.5f)
+                    armor+=CombatSettings.UnitArmor*(200f/300);
+            return armor;
+        }
         private bool StepMudrock(DeployedUnitState unit)
         {
             if(Clock<unit.BarrierRefreshStartedAt+1.5) {unit.IsMoving=unit.HasCombatTarget=false;return true;}

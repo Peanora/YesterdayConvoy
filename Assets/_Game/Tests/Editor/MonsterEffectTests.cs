@@ -263,5 +263,20 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.UnitAttackRate(unit),Is.EqualTo(1.5f));
             b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.BarrierRefreshes,Is.Zero);Assert.That(unit.OrdinaryAttacksFired,Is.Zero);
         }
+
+        [Test] public void PhalanxArmorStacksOnlyFromNearbyLivingAlliesWhileArtsUsesIndependentResistance()
+        {
+            var c=new EngagementSettings(unitArmor:12,unitRange:.8f,defenderRange:1,initialSP:0,requiredSP:0,spPerSecond:0,
+                skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,effects:new MonsterEffectSettings(phalanx:true,unitResistance:70));
+            var s=new ManualBattleSettings("PHALANX","PHALANX",12,1,3,1,.1f,1000,1,1,1,1,1);
+            var b=new ManualBattle(s,new[]{Vector3.zero,Vector3.forward*100},Vector3.right*100,c);b.Begin();
+            var one=Deploy(b,1);Assert.That(b.UnitArmor(one),Is.EqualTo(12));b.Advance(.4f);var two=Deploy(b,2);
+            Assert.That(b.UnitArmor(one),Is.EqualTo(20));Assert.That(b.UnitArmor(two),Is.EqualTo(20));
+            b.TryDamageUnit(one.EntityId,30,CombatDamageType.Physical);Assert.That(one.Health,Is.EqualTo(990));
+            b.TryDamageUnit(one.EntityId,100,CombatDamageType.Arts);Assert.That(one.Health,Is.EqualTo(960).Within(.001));
+            b.TryDamageUnit(two.EntityId,10000,CombatDamageType.Arts);Assert.That(b.UnitArmor(one),Is.EqualTo(12));
+            b.Advance(2);var far=Deploy(b,3);Assert.That(b.UnitArmor(one),Is.EqualTo(12));Assert.That(b.UnitArmor(far),Is.EqualTo(12));
+            b.Restart();Assert.That(b.Units,Is.Empty);
+        }
     }
 }
