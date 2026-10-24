@@ -46,3 +46,4 @@ MonoBehaviour:
   blastDelay: 0
   coldDuration: 0
   extraDefenders: []
+  tacticalCommander: 1

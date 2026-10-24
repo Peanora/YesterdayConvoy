@@ -6,7 +6,7 @@ namespace YesterdayConvoy
 {
     public enum BattlePhase { Ready, Running, Won, Lost }
     public enum UnitResolution { Active, Dead, Breached }
-    public enum DeployFailure { None, NotStarted, Finished, Paused, WrongEntry, NoDP, NoUses, CoolingDown, EntryBusy, StaleRun }
+    public enum DeployFailure { None, NotStarted, Finished, Paused, WrongEntry, NoDP, NoUses, CoolingDown, EntryBusy, StaleRun, MissingCard }
 
     /// <summary>An immutable snapshot. Changing an authored asset cannot mutate a battle in progress.</summary>
     public readonly struct ManualBattleSettings
@@ -33,6 +33,8 @@ namespace YesterdayConvoy
     {
         public string EntityId { get; }
         public string UnitId { get; }
+        public string CardId {get;internal set;}
+        public BasicRosterProfile Profile {get;internal set;}
         public double SpawnTime { get; }
         public RouteMotion Motion { get; }
         public float Health { get; internal set; }
@@ -211,14 +213,20 @@ namespace YesterdayConvoy
         }
 
         public DeploymentReceipt TryDeploy(int runId, long requestId, Vector3 position, bool allowWhilePaused = false)
+            =>DeployProfile(runId,requestId,position,allowWhilePaused,null);
+
+        private DeploymentReceipt DeployProfile(int runId,long requestId,Vector3 position,bool allowWhilePaused,BasicRosterProfile profile)
         {
             if (runId != RunId) return new DeploymentReceipt(DeployFailure.StaleRun);
-            if (committed.TryGetValue(requestId, out var previous)) return previous;
+            string requestedCard=profile?.Unit.CardId??Settings.CardId;
+            if (committed.TryGetValue(requestId, out var previous))
+                return FindUnit(previous.EntityId)?.CardId==requestedCard?previous:new DeploymentReceipt(DeployFailure.StaleRun);
             DeployFailure failure = CheckDeployment(position, allowWhilePaused);
             if (failure != DeployFailure.None) return new DeploymentReceipt(failure);
-            var motion = new RouteMotion(route, Settings.Speed);
+            var spawn=profile?.Unit??Settings;
+            var motion = new RouteMotion(route, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile};
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             unit.NextIceRingAt=Clock+8.5;
             if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}

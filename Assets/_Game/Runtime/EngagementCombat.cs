@@ -178,7 +178,7 @@ namespace YesterdayConvoy
 
         private void StepEngagement(float step)
         {
-            EngagementSettings c=CombatSettings;
+            EngagementSettings guardSettings=CombatSettings;
             StepFacilities(step);
             ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
             ResolveDeathEffects();ResolveShackles();
@@ -190,22 +190,22 @@ namespace YesterdayConvoy
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
                 if(unit==null || !unit.Active || unit.IsReviving || defender==null || !defender.Alive) continue;
-                if(shot.FromDefender&&UnitAirborne(unit)&&!c.DefenderCanHitAir)continue;
+                if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
-                    TryDamageUnit(unit.EntityId,shot.Attack,c.DefenderDamageType);
+                    TryDamageUnit(unit.EntityId,shot.Attack,guardSettings.DefenderDamageType);
                 }
                 else
                 {
                     // Freeze can begin or expire while the projectile is in flight.
-                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && c.Effects.FrozenAttackMultiplier>1;
-                    float attack=shot.Attack*(shot.FrozenBonusApplied ? c.Effects.FrozenAttackMultiplier : 1);
+                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && guardSettings.Effects.FrozenAttackMultiplier>1;
+                    float attack=shot.Attack*(shot.FrozenBonusApplied ? guardSettings.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
-                    DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:c.Effects.DamageType);
+                    DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
-                    HealUnit(unit,shot.DamageDealt*c.Effects.LifeSteal);
-                    if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
+                    HealUnit(unit,shot.DamageDealt*guardSettings.Effects.LifeSteal);
+                    if(defender.Alive) defender.ArmorReduction+=guardSettings.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                     if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
@@ -214,6 +214,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders) d.BlockedCount=0;
             foreach(var unit in units)
             {
+                var c=UnitCombat(unit);
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
                 if(unit.FuelDying)continue;
                 if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
@@ -231,7 +232,7 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
+                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<guardSettings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=guardSettings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
@@ -309,13 +310,13 @@ namespace YesterdayConvoy
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)) continue;
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
-                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||
+                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>guardSettings.DefenderRange ||
                     blocks && target.BlockerId!=d.EntityId)
                 {
                     target=null;
                     foreach(var unit in units)
                     {
-                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>c.DefenderRange ||
+                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>guardSettings.DefenderRange ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
                         if(target==null || unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
                     }
@@ -323,9 +324,9 @@ namespace YesterdayConvoy
                 }
                 if(target==null || Clock+0.000001<d.NextAttackTime) continue;
                 ShotsFired++; LastShotTime=Clock; LastShotEntityId=target.EntityId; LastShotPosition=target.Motion.Position;
-                d.NextAttackTime=Clock+c.DefenderInterval/DefenderAttackRate(d);
+                d.NextAttackTime=Clock+guardSettings.DefenderInterval/DefenderAttackRate(d);
                 combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
-                    Clock,c.ProjectileTime,c.DefenderAttack));
+                    Clock,guardSettings.ProjectileTime,guardSettings.DefenderAttack));
             }
         }
 
