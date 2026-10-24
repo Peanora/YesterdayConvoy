@@ -36,6 +36,14 @@ namespace YesterdayConvoy
         public double SpawnTime { get; }
         public RouteMotion Motion { get; }
         public float Health { get; internal set; }
+        public float MaxHealth { get; internal set; }
+        public float ArtsBarrierRemaining { get; internal set; }
+        public float ArtsBarrierLayerSize { get; internal set; }
+        public int ArtsBarrierLayers => ArtsBarrierLayerSize>0 ? Mathf.CeilToInt(ArtsBarrierRemaining/ArtsBarrierLayerSize) : 0;
+        public float LastAttackRate { get; internal set; } = 1;
+        public double BarrierRefreshStartedAt { get; internal set; } = double.NegativeInfinity;
+        public int BarrierRefreshes { get; internal set; }
+        internal double NextBarrierRefreshAt;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
@@ -47,13 +55,63 @@ namespace YesterdayConvoy
         public float SkillSP { get; internal set; }
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
+        public int OrdinaryAttacksFired { get; internal set; }
+        public float HealthRecovered { get; internal set; }
+        public double LastHealTime { get; internal set; } = double.NegativeInfinity;
+        public float HealingDone { get; internal set; }
+        public double HealingStartedAt { get; internal set; } = double.NegativeInfinity;
+        internal double NextHealAt;
+        public bool ReviveUsed { get; internal set; }
+        public bool AltarEmpowered { get; internal set; }
+        public HarvesterPhase HarvesterPhase {get;internal set;}
+        public double HarvesterPhaseStartedAt {get;internal set;}=double.NegativeInfinity;
+        public float HarvesterHealthLost {get;internal set;}
+        public int HarvesterAuraTicks {get;internal set;}
+        public double LastHarvesterAuraAt {get;internal set;}=double.NegativeInfinity;
+        internal double NextHarvesterAuraAt;
+        public double BubbleStartedAt {get;internal set;}=double.NegativeInfinity;
+        internal double NextBubbleAt;
+        public ShackleCast Shackle {get;internal set;}
+        public double ShackleStunnedUntil {get;internal set;}=double.NegativeInfinity;
+        public double ShackleSilencedUntil {get;internal set;}=double.NegativeInfinity;
+        public int CreeperRetaliations {get;internal set;}
+        public double LastRetaliationAt {get;internal set;}=double.NegativeInfinity;
+        internal float NextRetaliationRatio=.85f;
+        public MandragoraPhase MandraPhase {get;internal set;}
+        public bool StoneShield {get;internal set;}
+        public int StoneShieldBreaks {get;internal set;}
+        public int StoneShieldRestores {get;internal set;}
+        public int StoneAuraHits {get;internal set;}
+        public double MandraPhaseStartedAt {get;internal set;}
+        public double MandraInvulnerableUntil {get;internal set;}=double.NegativeInfinity;
+        public double StoneShieldBrokenAt {get;internal set;}=double.NegativeInfinity;
+        public double StoneShieldRestoredAt {get;internal set;}=double.NegativeInfinity;
+        internal float HealthAtShieldBreak;
+        internal double NextGazeAt,NextMandraPillarAt,NextStoneAuraAt;
+        public double PillarCommandStartedAt {get;internal set;}=double.NegativeInfinity;
+        public PetrifyingGaze Gaze {get;internal set;}
+        public double PillarStunnedUntil {get;internal set;}=double.NegativeInfinity;
+        public bool FuelDying {get;internal set;}
+        public FlameSpray Spray {get;internal set;}
+        internal double NextSprayAt;
+        public double SprayStunnedUntil {get;internal set;}=double.NegativeInfinity;
+        public double SpraySilencedUntil {get;internal set;}=double.NegativeInfinity;
+        public FlamechaserPhase FlamePhase {get;internal set;}
+        public double FlamePhaseStartedAt {get;internal set;}=double.NegativeInfinity;
+        public int EmberTransformations {get;internal set;}
+        public int EmberRevivals {get;internal set;}
+        public double EmberRevealedUntil {get;internal set;}=double.NegativeInfinity;
+        public double ReviveAt { get; internal set; } = double.NegativeInfinity;
+        public bool IsReviving { get; internal set; }
+        public double IceRingStartedAt { get; internal set; } = double.NegativeInfinity;
+        internal double NextIceRingAt;
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
         public bool LastAttackEmpowered { get; internal set; }
         public double FireRainStartedAt { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
 
         internal DeployedUnitState(string id, string unitId, RouteMotion motion, float health, double spawnTime)
-        { EntityId = id; UnitId = unitId; Motion = motion; Health = health; SpawnTime = spawnTime; }
+        { EntityId = id; UnitId = unitId; Motion = motion; Health = MaxHealth = health; SpawnTime = spawnTime; }
     }
 
     public readonly struct DeploymentReceipt
@@ -120,6 +178,7 @@ namespace YesterdayConvoy
             ShotsFired = Breaches = 0; LastShotEntityId = null; LastShotTime = double.NegativeInfinity;
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
             ResetEngagement();
+            ResetFacilities();
         }
 
         public void Begin()
@@ -161,6 +220,14 @@ namespace YesterdayConvoy
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
+            unit.NextIceRingAt=Clock+8.5;
+            if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
+            if(EngagementEnabled && (CombatSettings.Effects.ArtsBarrier || CombatSettings.Effects.Mudrock))
+            {
+                unit.MaxHealth=unit.Health=Settings.Health*1.5f;
+                unit.ArtsBarrierLayerSize=Settings.Health*(CombatSettings.Effects.Mudrock ? 5500f/45000 : .2f);
+                unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
+            }
             // Commit together only after all preconditions and entity initialization succeed.
             units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;
             nextDeploymentTime = Clock + Settings.Cooldown;

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a509c8e9c8e594c4998b7307203faef9, type: 3}
+  m_Name: M17
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.CardDefinition
+  cardId: CARD_M17
+  displayName: "\u6E38\u51FB\u961F\u4F20\u4EE4\u5175"
+  recruitCost: 3
+  unit: {fileID: 11400000, guid: f24c2f723ae98d94e9b654e98c176453, type: 2}
+  portrait: {fileID: 0}
+  battleSprite: {fileID: 0}
+  articulatedArt: {fileID: 0}
+  walkFrames: []
+  attackFrames: []
+  skillFrames: []
+  comicImpactFaces: []

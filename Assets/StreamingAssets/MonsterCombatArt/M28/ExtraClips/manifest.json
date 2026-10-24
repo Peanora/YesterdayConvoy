@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "task": "M28",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_attack_2",
+      "source": "Attack_2",
+      "count": 121,
+      "duration": 2,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4832777992884318,
+      "pivotY": 0.20040339668591817,
+      "sourceBounds": [
+        -437.7657775878906,
+        -55.72251892089844,
+        471.5622253417969,
+        661.2230224609375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_2-00.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-01.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-02.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-03.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_attack_2-04.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_1",
+      "source": "Skill_1",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4571413332223892,
+      "pivotY": 0.10747988231480121,
+      "sourceBounds": [
+        -201.40953063964844,
+        -7.048452377319336,
+        259.15594482421875,
+        535.9176635742188
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_1-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "extra_skill_1-01.png",
+          "count": 27,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_2",
+      "source": "Skill_2",
+      "count": 81,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4821503414426531,
+      "pivotY": 0.07503848252551892,
+      "sourceBounds": [
+        -236.7497100830078,
+        -4.866791248321533,
+        257.79351806640625,
+        505.8740539550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_2-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_attack_2-00.png",
+      "sha256": "5133a58cbbafe23636bdf68f58017b3f790755810768495ef12f7bb8d399751a"
+    },
+    {
+      "file": "extra_attack_2-01.png",
+      "sha256": "771d96bbf3eef38e64cea4596f4436641e88b0a9043471dd88957f71eb7c1b66"
+    },
+    {
+      "file": "extra_attack_2-02.png",
+      "sha256": "50cf4fff93dd8f5e702391bee13db2a19bb3dc6c56e8d22b176c0e063c9a7ffa"
+    },
+    {
+      "file": "extra_attack_2-03.png",
+      "sha256": "ca4f211d7fadaf2f476646deac1c278f0840a524af9343157feac538be16a501"
+    },
+    {
+      "file": "extra_attack_2-04.png",
+      "sha256": "e488af048ea5dedddc09330fa77ea7ef985d1fb6b4af63c037956d4ee0d77887"
+    },
+    {
+      "file": "extra_skill_1-00.png",
+      "sha256": "496ca09ab7ac176b338934a25255b3457038d8f33596c673b8365b11195be56d"
+    },
+    {
+      "file": "extra_skill_1-01.png",
+      "sha256": "779870e70be496378708818ae16eef6373eb8f3ce458335a13e053d3fa4212b8"
+    },
+    {
+      "file": "extra_skill_2-00.png",
+      "sha256": "63bf55268c9a1e6cd8235a18e250c82c4ad3164f8cb7a8e13b135e638e4ae510"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1511_mdrock. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

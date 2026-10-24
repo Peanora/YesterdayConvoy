@@ -1,5 +1,9 @@
 # 来源调查与第一版方案
 
+## 2026-10-22 M21–M38 已确认接入，银狼排除
+
+18位《明日方舟》敌方角色的卡面、原作离线采样图集与来源记录随源码交付。权利归原作权利人，具体原画/动画师未确认，非CC0且公开再分发许可未确认；用户上传指令不等于权利人授权。PRTS不是开放许可证明。逐个页面、实际下载地址、哈希与当前使用范围见[source-records/m21-m38-approved.json](source-records/m21-m38-approved.json)及[接入记录](M21-M38-INTEGRATION.md)。未向Unity添加Spine运行库，原模型/加工库/预览不入库。
+
 ## 2026-10-20 塔露拉视频反馈调查
 
 实际调查并采用[Soluna Software / Lots of game effects](https://opengameart.org/content/lots-of-game-effects)：Fire01/ToonExplosion31，明确CC0；比单张纹理更适合连续火流。[BenHickling Animated Fire](https://opengameart.org/content/animated-fire)为CC0但偏低分辨率像素；Kenney Particle Pack项目已有、不重复下载，Smoke Particles暂不引入。商业游戏资源镜像没有提供新的再分发许可，不导入其贴图/模型。[比较、下载与使用记录](TALULAH-VIDEO-REVISION-2026-10-20.md)。

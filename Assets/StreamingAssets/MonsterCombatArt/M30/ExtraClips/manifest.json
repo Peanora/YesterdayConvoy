@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "task": "M30",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_die_2",
+      "source": "Die_2",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 128,
+      "columns": 16,
+      "pivotX": 0.5685083138942718,
+      "pivotY": 0.12625344157218932,
+      "sourceBounds": [
+        -99.45389556884766,
+        0,
+        53.300926208496094,
+        251.7871551513672
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_die_2-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "extra_idle_2",
+      "source": "Idle_2",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 128,
+      "columns": 16,
+      "pivotX": 0.5434791514277458,
+      "pivotY": 0.1621099901199341,
+      "sourceBounds": [
+        -83.11724090576172,
+        0,
+        53.82602310180664,
+        227.63116455078125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_idle_2-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "extra_move_2",
+      "source": "Move_2",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 128,
+      "columns": 16,
+      "pivotX": 0.5297170805931092,
+      "pivotY": 0.15590925455093385,
+      "sourceBounds": [
+        -81.4736099243164,
+        0,
+        61.45368194580078,
+        231.80850219726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_move_2-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "extra_revive",
+      "source": "Revive",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.40499648928642273,
+      "pivotY": 0.20947169065475463,
+      "sourceBounds": [
+        -230.11148071289062,
+        -73.5137939453125,
+        358.1162109375,
+        464.96246337890625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_revive-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "extra_start",
+      "source": "Start",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 160,
+      "columns": 12,
+      "pivotX": 0.5347833256721497,
+      "pivotY": 0.29462130784988405,
+      "sourceBounds": [
+        -83.11724090576172,
+        -84.57274627685547,
+        53.826019287109375,
+        257.5232238769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_start-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 960
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_die_2-00.png",
+      "sha256": "7f536aa9700689e04e925c0758ec1faa3aa75810b2bc33e0f4ae3d7af6fbba93"
+    },
+    {
+      "file": "extra_idle_2-00.png",
+      "sha256": "857b4fb37f5fc71fea71c0f9ffaee5801a6fee036d8675ecbdc23e5195c55e7d"
+    },
+    {
+      "file": "extra_move_2-00.png",
+      "sha256": "eefb6df4357408107666d1298159fb5ee4312af3ea46e902441106ec6331b706"
+    },
+    {
+      "file": "extra_revive-00.png",
+      "sha256": "5018762b9d0bd45171920d7b214a03729545eb55ab5df67cea5be8d1fbaa1efe"
+    },
+    {
+      "file": "extra_start-00.png",
+      "sha256": "115c189b4eddbfc560bd11e25cfaf4c0ff00239d5bd2108f3e705499323ddc04"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1288_duskls. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

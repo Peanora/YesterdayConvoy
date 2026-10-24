@@ -104,16 +104,118 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
-            if(deployedUnit.Resolution==UnitResolution.Dead)
+            if(manualBattle.CombatSettings.Effects.Shackler&&deployedUnit.Active&&deployedUnit.Shackle!=null)
+            {
+                var s=deployedUnit.Shackle;double age=manualBattle.Clock-s.StartedAt;
+                if(!s.Ended||manualBattle.Clock<s.EndedAt+2.0/3)
+                {
+                    string part=s.Ended?"end":age<.8666667?"begin":"loop";
+                    double elapsed=s.Ended?manualBattle.Clock-s.EndedAt:part=="begin"?age:age-.8666667;
+                    FrameState="Shackle"+part;sprite.sprite=local["extra_skill_"+part].At(elapsed,part=="loop",out int shackleIndex);FrameIndex=shackleIndex;return;
+                }
+            }
+            if(manualBattle.FirstSpeakerCasting(deployedUnit))
+            {
+                double age=manualBattle.Clock-deployedUnit.BubbleStartedAt;
+                string part=age<1?"begin":age<5-.7666667?"loop":"end";
+                double elapsed=part=="begin"?age:part=="loop"?age-1:age-(5-.7666667);
+                FrameState="Bubble"+part;sprite.sprite=local["extra_skill_"+part].At(elapsed,part=="loop",out int bubbleIndex);FrameIndex=bubbleIndex;return;
+            }
+            if(manualBattle.CombatSettings.Effects.Harvester&&deployedUnit.Active)
+            {
+                var u=deployedUnit;
+                if(u.HarvesterPhase==HarvesterPhase.Waking)
+                {FrameState="HarvesterWake";sprite.sprite=local["extra_skill_begin"].At(manualBattle.Clock-u.HarvesterPhaseStartedAt,false,out int wakeIndex);FrameIndex=wakeIndex;return;}
+                if(u.HarvesterPhase==HarvesterPhase.Combat&&manualBattle.Clock>=u.LastAttackTime+manualBattle.CombatSettings.AttackDuration)
+                {
+                    string action=u.IsMoving?"extra_skill_move":"extra_skill_idle";
+                    double elapsed=u.IsMoving?u.Motion.DistanceTravelled/(manualBattle.Settings.Speed*6):manualBattle.Clock-u.HarvesterPhaseStartedAt;
+                    FrameState=u.IsMoving?"HarvesterWalk":"HarvesterIdle";sprite.sprite=local[action].At(elapsed,true,out int activeIndex);FrameIndex=activeIndex;return;
+                }
+            }
+            if(manualBattle.CombatSettings.Effects.Mandragora)
+            {
+                var u=deployedUnit;double clock=presentationClock?.Invoke()??manualBattle.Clock;
+                string prefix=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_":"extra_c2_";
+                if(u.Resolution==UnitResolution.Dead){clip=u.StoneShield?"extra_c2_die_1":"death";time=clock-u.DeathTime;FrameState="Death";}
+                else if(u.MandraPhase==MandragoraPhase.Reborn){clip="extra_reborn";time=(manualBattle.Clock-u.MandraPhaseStartedAt)/5*local[clip].Duration;FrameState="MandraReborn";}
+                else if(u.Gaze!=null&&manualBattle.Clock<u.Gaze.EndedAt+1.0/3)
+                {
+                    var g=u.Gaze;double age=manualBattle.Clock-g.StartedAt;
+                    string part=g.Ended?"end":age<.8333334?"begin":"loop";
+                    clip=prefix+"skill_1_"+part;time=g.Ended?manualBattle.Clock-g.EndedAt:part=="begin"?age:age-.8333334;
+                    loop=part=="loop";FrameState="Gaze"+part;
+                }
+                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_2";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
+                else if(manualBattle.Clock<u.StoneShieldRestoredAt+(u.MandraPhase==MandragoraPhase.Ground?1.5:1.3333334))
+                {clip=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_skill_2":"extra_c2_skill_3";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
+                else if(u.MandraPhase==MandragoraPhase.Second&&manualBattle.Clock<u.PillarStunnedUntil){clip="extra_c2_stun";time=manualBattle.Clock-u.StoneShieldBrokenAt;FrameState="StoneShieldBreak";loop=true;}
+                else
+                {
+                    double age=manualBattle.Clock-u.LastAttackTime;
+                    bool ground=u.MandraPhase==MandragoraPhase.Ground;
+                    string idle=ground?"extra_c1_idle":u.StoneShield?"extra_c2_idle_1":"idle";
+                    string walk=ground?"extra_c1_move":u.StoneShield?"extra_c2_move_1":"walk";
+                    string attack=ground?"extra_c1_attack":u.StoneShield?"extra_c2_attack_1":"attack";
+                    if(age>=0&&age<1.5){clip=attack;time=age;FrameState="Attack";}
+                    else if(u.IsMoving){clip=walk;time=u.Motion.DistanceTravelled/local.ReferenceSpeed;loop=true;FrameState="Walk";}
+                    else{clip=idle;time=manualBattle.Clock-u.SpawnTime;loop=true;FrameState="Idle";}
+                }
+                sprite.sprite=local[clip].At(time,loop,out int mandraIndex);FrameIndex=mandraIndex;return;
+            }
+            if(manualBattle.CombatSettings.Effects.Flamechaser&&
+                (deployedUnit.FlamePhase!=FlamechaserPhase.Soldier||deployedUnit.Resolution==UnitResolution.Dead))
+            {
+                time=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.FlamePhaseStartedAt;
+                if(deployedUnit.Resolution==UnitResolution.Dead){FrameState="EmberDeath";clip="extra_die_2";time=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.DeathTime;}
+                else if(deployedUnit.FlamePhase==FlamechaserPhase.Transforming){FrameState="EmberTransform";clip="death";}
+                else if(deployedUnit.FlamePhase==FlamechaserPhase.Reforming){FrameState="EmberRevive";clip="extra_revive";}
+                else{FrameState="Ember";clip=deployedUnit.IsMoving?"extra_move_2":"extra_idle_2";loop=true;}
+                sprite.sprite=local[clip].At(time,loop,out int emberIndex);FrameIndex=emberIndex;
+                sprite.color=manualBattle.UnitInvisible(deployedUnit)?new Color(1,1,1,.55f):Color.white;return;
+            }
+            if(deployedUnit.Resolution==UnitResolution.Dead || deployedUnit.IsReviving)
             { FrameState="Death"; clip="death"; time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime; sprite.color=Color.white; }
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
-                if(age>=0 && age<local["attack"].Duration)
-                { FrameState="Attack"; clip="attack"; time=age; }
+                var spray=deployedUnit.Spray;
+                if(spray!=null&&manualBattle.Clock<spray.EndedAt+.5333334)
+                {
+                    double elapsed=manualBattle.Clock-spray.StartedAt;
+                    string phase=spray.Ended?"end":elapsed<.5?"start":"loop";
+                    string key="extra_skill_"+spray.Direction+"_"+phase;
+                    FrameState="Spray"+phase;
+                    sprite.sprite=local[key].At(spray.Ended?manualBattle.Clock-spray.EndedAt:phase=="start"?elapsed:elapsed-.5,phase=="loop",out int sprayFrame);
+                    sprite.flipX=spray.FlipX;FrameIndex=sprayFrame;return;
+                }
+                if(manualBattle.CombatSettings.Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
+                {
+                    FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
+                    FrameIndex=shieldIndex;return;
+                }
+                if(manualBattle.CombatSettings.Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.CombatSettings.AttackDuration)
+                {
+                    FrameState="Heal";sprite.sprite=local["attack"].At(manualBattle.Clock-deployedUnit.HealingStartedAt,false,out int healIndex);
+                    FrameIndex=healIndex;return;
+                }
+                if(manualBattle.CombatSettings.Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
+                {
+                    FrameState="IceRing";
+                    sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
+                    FrameIndex=ringIndex;return;
+                }
+                string attackClip=deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19"?"extra_attack_2":manualBattle.CombatSettings.Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
+                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local[attackClip].Duration/deployedUnit.LastAttackRate)
+                { FrameState="Attack"; clip=attackClip; time=age*deployedUnit.LastAttackRate; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
                 else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; loop=true; }
+            }
+            if(deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19")
+            {
+                clip=clip=="walk"?"extra_move_2":clip=="death"?"extra_die_2":clip=="attack"||clip=="extra_attack_2"?"extra_attack_2":"extra_idle_2";
+                FrameState="Altar"+FrameState;
             }
             sprite.sprite=local[clip].At(time,loop,out int index); FrameIndex=index;
         }
