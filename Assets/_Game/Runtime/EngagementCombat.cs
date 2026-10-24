@@ -186,6 +186,7 @@ namespace YesterdayConvoy
                     float health=defender.Health;
                     DamageDefender(defender,attack,c.Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
+                    HealUnit(unit,shot.DamageDealt*c.Effects.LifeSteal);
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                 }
@@ -251,6 +252,18 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                    if(!empowered && c.Effects.AttackTargets>1)
+                    {
+                        int count=1;
+                        foreach(var other in defenders)
+                        {
+                            if(count>=c.Effects.AttackTargets) break;
+                            if(!other.Alive || other==target || GroundDistance(unit.Motion.Position,other.Position)>range) continue;
+                            combatShots.Add(new CombatShot(unit.EntityId,other.EntityId,false,false,unit.Motion.Position,other.Position,
+                                Clock+c.AttackWindup,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                            count++;
+                        }
+                    }
                 }
             }
             if(Defense==0) return;

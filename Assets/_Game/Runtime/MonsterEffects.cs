@@ -15,16 +15,18 @@ namespace YesterdayConvoy
         public readonly float AttackColdDuration;
         public readonly bool FrostNova;
         public readonly float RegenerationFraction;
+        public readonly int AttackTargets;
+        public readonly float LifeSteal;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
-            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0)
+            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0)
         {
-            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction})
+            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
             if((damageType!=CombatDamageType.Physical && damageType!=CombatDamageType.Arts) || resistance>100 ||
                 blastAttack>0 && blastRadius<=0 || coldDuration>0 && blastAttack<=0 ||
                 frozenAttackMultiplier>0 && frozenAttackMultiplier<1 || coldAttackEvery<0 ||
-                (coldAttackEvery>0)!=(attackColdDuration>0) || regenerationFraction>1)
+                (coldAttackEvery>0)!=(attackColdDuration>0) || regenerationFraction>1 || attackTargets<0 || attackTargets>3)
                 throw new ArgumentException("Incomplete monster effect configuration.");
             DamageType=damageType;Resistance=resistance;ArmorShred=armorShred;BlastAttack=blastAttack;
             BlastRadius=blastRadius;BlastDelay=blastDelay;ColdDuration=coldDuration;
@@ -32,6 +34,7 @@ namespace YesterdayConvoy
             ColdAttackEvery=coldAttackEvery;AttackColdDuration=attackColdDuration;
             FrostNova=frostNova;
             RegenerationFraction=regenerationFraction;
+            AttackTargets=attackTargets;LifeSteal=lifeSteal;
         }
     }
 

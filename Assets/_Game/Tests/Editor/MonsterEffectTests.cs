@@ -177,5 +177,21 @@ namespace YesterdayConvoy.Tests
             b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.HealthRecovered,Is.Zero);
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(regenerationFraction:1.01f));
         }
+
+        [Test] public void CenturionLaunchesThreeDistinctArtsHitsAndHealsOnlyFromAppliedDamage()
+        {
+            var prototype=Battle(new MonsterEffectSettings(CombatDamageType.Arts,attackTargets:3,lifeSteal:1.5f),health:100,defenderAttack:10);
+            var b=new ManualBattle(prototype.Settings,new[]{Vector3.zero,Vector3.forward*6},Vector3.forward,prototype.CombatSettings,
+                new[]{Vector3.forward*1.5f,Vector3.forward*2,Vector3.forward*5});b.Begin();
+            var unit=Deploy(b,1);b.Advance(.7f);
+            var volley=b.CombatShots.Where(s=>!s.FromDefender && s.StartedAt<.1).ToArray();
+            Assert.That(volley.Length,Is.EqualTo(3));Assert.That(volley.Select(s=>s.TargetId).Distinct().Count(),Is.EqualTo(3));
+            Assert.That(volley.All(s=>s.Applied && s.DamageDealt==20),Is.True);
+            Assert.That(b.Defenders[3].Health,Is.EqualTo(10000));
+            Assert.That(unit.HealthRecovered,Is.GreaterThan(0));Assert.That(unit.Health,Is.LessThanOrEqualTo(100));
+            b.Restart();Assert.That(b.CombatShots,Is.Empty);
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(attackTargets:4));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(lifeSteal:float.PositiveInfinity));
+        }
     }
 }

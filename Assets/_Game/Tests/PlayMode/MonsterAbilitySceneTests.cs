@@ -12,6 +12,20 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualCenturionDamagesThreeDefendersAndRecoversHealthWithoutInjection()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M24"),Is.True);
+            Assert.That(c.Battle.Defenders.Count,Is.EqualTo(3));
+            Assert.That(c.Battle.CombatSettings.Effects.DamageType,Is.EqualTo(CombatDamageType.Arts));
+            c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);
+            var unit=c.Battle.FindUnit(r.EntityId);
+            for(int i=0;i<1600 && unit.Active && (unit.HealthRecovered<=0 || c.Battle.Defenders.Any(d=>d.Health==350));i++)
+            {c.Tick(.05f);yield return null;}
+            Assert.That(c.Battle.Defenders.All(d=>d.Health<350),Is.True);
+            Assert.That(unit.HealthRecovered,Is.GreaterThan(0));Assert.That(unit.Health,Is.LessThanOrEqualTo(c.Battle.Settings.Health));
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
         [UnityTest] public IEnumerator ActualHostModelsRegenerateIndependentlyOnTheBattleClock()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
