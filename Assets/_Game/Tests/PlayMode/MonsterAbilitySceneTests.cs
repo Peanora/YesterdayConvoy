@@ -12,6 +12,17 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ThreeActualPhalanxUnitsProvideTheirOwnNearbyArmorAndClearOnReturn()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M29"),Is.True);
+            for(int i=0;i<3;i++) {c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);c.Tick(1.1f);yield return null;}
+            bool supported=false;
+            for(int i=0;i<600 && !supported;i++)
+            {c.Tick(.05f);yield return null;supported=c.Battle.Units.Any(u=>u.Active && c.Battle.UnitArmor(u)>c.Battle.CombatSettings.UnitArmor);}
+            Assert.That(supported,Is.True);Assert.That(c.Battle.CombatSettings.Effects.UnitResistance,Is.EqualTo(70));
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);Assert.That(c.Battle.Units,Is.Empty);
+        }
         [UnityTest] public IEnumerator ActualEnemyMudrockNaturallyBreaksRefreshesAndReachesSixAttackStacks()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

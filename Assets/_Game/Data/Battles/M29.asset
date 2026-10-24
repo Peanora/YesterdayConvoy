@@ -46,4 +46,6 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  phalanx: 1
+  unitResistance: 70
   extraDefenders: []
