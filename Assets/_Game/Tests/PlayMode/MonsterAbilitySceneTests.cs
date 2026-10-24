@@ -71,27 +71,30 @@ namespace YesterdayConvoy.Tests
             }
         }
 
-        [UnityTest] public IEnumerator SnowSniperUsesItsActualConfigAndAppliesBonusOnlyToFrozenImpact()
+        [UnityTest] public IEnumerator SnowSniperAndIcecleaverUseActualConfigAndApplyBonusOnlyToFrozenImpact()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
             var c=Object.FindAnyObjectByType<ManualBattleController>();
-            Assert.That(c.TryEnterMonsterTest("CARD_M11"),Is.True);
-            var e=c.Battle.CombatSettings.Effects;Assert.That(e.FrozenAttackMultiplier,Is.EqualTo(1.5f));
+            foreach(string id in new[]{"CARD_M11","CARD_M13"})
+            {
+            Assert.That(c.TryEnterMonsterTest(id),Is.True);
+            var e=c.Battle.CombatSettings.Effects;Assert.That(e.FrozenAttackMultiplier,Is.EqualTo(id=="CARD_M11" ? 1.5f : 2.5f));
             c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
             // Explicit status fixture: the sniper itself must never generate freeze.
             c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);
             for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
             var shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
             Assert.That(shot.FrozenBonusApplied,Is.True);
-            Assert.That(shot.DamageDealt,Is.EqualTo(42).Within(.001));
+            Assert.That(shot.DamageDealt,Is.EqualTo(id=="CARD_M11" ? 42 : 140).Within(.001));
             Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
             c.RestartBattle();Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));
             c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
             for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
             shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
             Assert.That(shot.FrozenBonusApplied,Is.False);
-            Assert.That(shot.DamageDealt,Is.EqualTo(27).Within(.001));
+            Assert.That(shot.DamageDealt,Is.EqualTo(id=="CARD_M11" ? 27 : 62).Within(.001));
             c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+            }
         }
 
         [UnityTest] public IEnumerator TwoActualSnowCastersCountTheirOwnAttacksAndFreezeWithoutAnInjectedStatus()

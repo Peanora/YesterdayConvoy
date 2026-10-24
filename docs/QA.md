@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-24：凿冰人冻结增伤与雪怪最终构建
+
+M13按命中冻结状态采用250%攻击倍率再扣护甲，普通62、冻结计算159.5但本关实际扣血最多140。Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误；M13普通与明确冻结靶场两组Player均退出0、bonus=True，实际HUD与浅青近战反馈已查看。M11/M12已分别完成并推送；最终其他Player回归与来源说明见[效果交付](monsters/SNOW-EFFECTS.md)。不声称已做霜星/其他首领、跨卡混编或雪怪羁绊。
+
 ## 2026-10-24：雪怪术师第三击寒冷
 
 M12每第三次普通攻击的命中施加10秒寒冷，逐实体计数；两只真实部署叠加冻结，非诊断注入。M12守军生命140→400仅为显示完整链路的样板调整。Edit76/76、GPU Play34/34零跳过，Windows846214278字节/0错误，实际Player所有检查通过且cold/frozen/noInjectedStatus均True，完整HUD已查看；证据与来源见[效果交付](monsters/SNOW-EFFECTS.md)。未改场景/Prefab/Packages/ProjectSettings，未做跨卡混编/羁绊/完整首领能力；无ZIP/Releases。

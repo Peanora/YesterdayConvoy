@@ -73,13 +73,15 @@ namespace YesterdayConvoy.Tests
             Assert.That(old.Effects.ArmorShred,Is.Zero);Assert.That(old.Effects.DamageType,Is.EqualTo(CombatDamageType.Physical));
         }
 
-        [Test] public void FrozenBonusUsesImpactStateAndScalesAttackBeforeArmorWithoutConsumingFreeze()
+        [TestCase(1.5f,20f)]
+        [TestCase(2.5f,40f)]
+        public void FrozenBonusUsesImpactStateAndScalesAttackBeforeArmorWithoutConsumingFreeze(float multiplier,float damage)
         {
-            var b=Battle(new MonsterEffectSettings(frozenAttackMultiplier:1.5f));Deploy(b,1);
+            var b=Battle(new MonsterEffectSettings(frozenAttackMultiplier:multiplier));Deploy(b,1);
             b.Advance(.025f);var shot=b.CombatShots[0];
             b.TryApplyCold(b.Defender.EntityId,1);b.TryApplyCold(b.Defender.EntityId,1);b.Advance(.15f);
             Assert.That(shot.FrozenBonusApplied,Is.True);
-            Assert.That(shot.DamageDealt,Is.EqualTo(20),"20*1.5-10, not (20-10)*1.5");
+            Assert.That(shot.DamageDealt,Is.EqualTo(damage),"Scale attack before subtracting armor.");
             Assert.That(b.Defender.FrozenUntil,Is.GreaterThan(b.Clock));
             float hp=b.Defender.Health;b.SetPaused(true);b.Advance(10);
             Assert.That(b.Defender.Health,Is.EqualTo(hp));

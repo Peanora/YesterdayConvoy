@@ -42,7 +42,7 @@ namespace YesterdayConvoy
                     foreach(var shot in Battle.CombatShots) if(!shot.FromDefender && shot.Applied)
                     {
                         bonusCaptured=true;bonusValid=shot.FrozenBonusApplied && Mathf.Abs(shot.DamageDealt-
-                            Mathf.Max(1,shot.Attack*Battle.CombatSettings.Effects.FrozenAttackMultiplier-Battle.DefenderArmor(Battle.Defender)))<.01f;
+                            Mathf.Min(Battle.CombatSettings.DefenderHealth,Mathf.Max(1,shot.Attack*Battle.CombatSettings.Effects.FrozenAttackMultiplier-Battle.DefenderArmor(Battle.Defender))))<.01f;
                         yield return InteractionFrame(directory,task+"-frozen-bonus");break;
                     }
                 hit |= unit.Health<Battle.Settings.Health;

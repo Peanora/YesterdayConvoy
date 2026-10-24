@@ -198,7 +198,8 @@ namespace YesterdayConvoy
             if(v.Impact.enabled)
             {
                 v.Impact.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,shot.Destination)+50;
-                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,new Color(1,.76f,.28f,1-age/.16f),cam);
+                Color color=shot.FrozenBonusApplied ? new Color(.45f,.95f,1,1-age/.16f) : new Color(1,.76f,.28f,1-age/.16f);
+                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,color,cam);
             }
         }
 
