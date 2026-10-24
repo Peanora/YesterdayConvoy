@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         private sealed class Puff { public LineRenderer Ring; public Vector3 Position; public double Time; public bool Death; }
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
+        private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
         private ManualBattleController owner;
         private EngagementDefinition definition;
@@ -51,6 +52,13 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
+            for(int i=0;i<b.IceRings.Count;i++)
+            {
+                if(i>=iceRingViews.Count) iceRingViews.Add(CreateLine("FrostNova ice ring",.09f));
+                var ring=b.IceRings[i];float age=(float)(time-ring.Time);
+                var line=iceRingViews[i];line.enabled=age>=0 && age<1;
+                if(line.enabled) Ring(line,ring.Position+Vector3.up*.08f,Mathf.Lerp(.1f,2,age),new Color(.4f,.9f,1,1-age),null);
+            }
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
             kroos.transform.position = d.Position;
@@ -66,7 +74,7 @@ namespace YesterdayConvoy
             kroos.transform.position += cam.transform.right * recoil;
             kroos.sortingOrder = DemoSpriteVisual.GetSortingOrder(cam, d.Position) + 30;
             Color tint = time < d.LastHitTime + 0.14 ? new Color(1, 0.5f, 0.45f) : Color.white;
-            if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time)) tint=new Color(.45f,.8f,1);
+            if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time || d.FrostSlowUntil>time)) tint=new Color(.45f,.8f,1);
             tint.a = 1 - death; kroos.color = tint;
             range.enabled = d.Alive;
             range.startColor = range.endColor = new Color(0.45f, 0.8f, 0.88f, 0.25f);
@@ -287,6 +295,7 @@ namespace YesterdayConvoy
         {
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
+            foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
         private void OnDestroy() { ClearTransient(); if (material != null) Destroy(material); }

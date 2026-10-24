@@ -104,11 +104,17 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
-            if(deployedUnit.Resolution==UnitResolution.Dead)
+            if(deployedUnit.Resolution==UnitResolution.Dead || deployedUnit.IsReviving)
             { FrameState="Death"; clip="death"; time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime; sprite.color=Color.white; }
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+                if(manualBattle.CombatSettings.Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
+                {
+                    FrameState="IceRing";
+                    sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
+                    FrameIndex=ringIndex;return;
+                }
                 if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local["attack"].Duration)
                 { FrameState="Attack"; clip="attack"; time=age; }
                 else if(deployedUnit.IsMoving)

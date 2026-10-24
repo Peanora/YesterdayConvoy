@@ -12,6 +12,35 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualFrostNovaShowsIceRingAndRevivesOnceWithoutInjectedState()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M14"),Is.True);
+            c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);
+            var unit=c.Battle.FindUnit(r.EntityId);bool ring=false,reviving=false,revived=false;
+            for(int i=0;i<2000 && unit.Active;i++)
+            {
+                c.Tick(.1f);yield return null;
+                var visual=Object.FindObjectsByType<DemoSpriteVisual>().FirstOrDefault(v=>v.transform.parent.name==unit.EntityId);
+                if(visual!=null && visual.FrameState=="IceRing")
+                {
+                    ring=true;Assert.That(visual.Renderer.sprite,Is.Not.Null);
+                    Assert.That(c.Battle.IceRings.Count,Is.GreaterThan(0));
+                    Assert.That(c.Battle.Defender.FrostSlowUntil,Is.GreaterThan(c.Battle.Clock));
+                }
+                if(unit.IsReviving && !reviving)
+                {
+                    reviving=true;double clock=c.Battle.Clock;var position=unit.Motion.Position;
+                    c.Battle.SetPaused(true);c.Tick(20);yield return null;
+                    Assert.That(c.Battle.Clock,Is.EqualTo(clock));Assert.That(unit.Motion.Position,Is.EqualTo(position));
+                    c.Battle.SetPaused(false);
+                }
+                revived |= unit.ReviveUsed && !unit.IsReviving && unit.Health>0;
+            }
+            Assert.That(ring && reviving && revived,Is.True,$"Natural combat: ring={ring}, reviving={reviving}, revived={revived}, clock={c.Battle.Clock}, hp={unit.Health}.");
+            c.RestartBattle();Assert.That(c.Battle.IceRings,Is.Empty);Assert.That(c.Battle.Units,Is.Empty);
+            Assert.That(c.Battle.Defender.FrostSlowUntil,Is.LessThan(c.Battle.Clock));
+        }
         [UnityTest] public IEnumerator TwoStaggeredIceDeathsFreezeTheActualDefenderAndPausePreservesIt()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

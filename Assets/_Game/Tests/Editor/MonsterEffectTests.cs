@@ -130,5 +130,38 @@ namespace YesterdayConvoy.Tests
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(attackColdDuration:10));
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(coldAttackEvery:-1,attackColdDuration:10));
         }
+
+        [Test] public void FrostNovaRevivesOnceWithoutEndingBattleAndPauseStopsTheFiveSecondTimer()
+        {
+            var b=Battle(new MonsterEffectSettings(frostNova:true),health:1,defenderAttack:100);
+            var unit=Deploy(b,1);b.Advance(.3f);
+            Assert.That(unit.IsReviving,Is.True);Assert.That(unit.Active,Is.True);
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Running));
+            double at=unit.ReviveAt,distance=unit.Motion.DistanceTravelled;
+            b.SetPaused(true);b.Advance(100);Assert.That(unit.ReviveAt,Is.EqualTo(at));
+            b.SetPaused(false);b.Advance(4.7f);Assert.That(unit.IsReviving,Is.True);
+            Assert.That(unit.Motion.DistanceTravelled,Is.EqualTo(distance));
+            b.Advance(.15f);Assert.That(unit.IsReviving,Is.False);Assert.That(unit.Health,Is.EqualTo(1));
+            Assert.That(b.UnitAttackMultiplier(unit),Is.EqualTo(1.5f));
+            b.Advance(1);Assert.That(unit.Resolution,Is.EqualTo(UnitResolution.Dead));
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost));
+            b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.ReviveUsed,Is.False);
+        }
+
+        [Test] public void FrostNovaRingHitsOnlyInRangeAndSlowsWithoutApplyingColdOrFreeze()
+        {
+            var b=Battle(new MonsterEffectSettings(CombatDamageType.Arts,frostNova:true),extra:true);
+            var unit=Deploy(b,1);
+            // Defender at z=1 stops the caster at the entry; z=5 is outside its ring.
+            b.Advance(8.45f);Assert.That(b.IceRings,Is.Empty);
+            b.Advance(.1f);Assert.That(b.IceRings.Count,Is.EqualTo(1));
+            Assert.That(b.IceRings[0].TargetsHit,Is.EqualTo(1));Assert.That(b.Defenders[1].Health,Is.EqualTo(10000));
+            Assert.That(b.Defender.FrostSlowUntil-b.Clock,Is.InRange(7.9,8));
+            Assert.That(b.Defender.ColdUntil,Is.LessThan(b.Clock));Assert.That(b.Defender.FrozenUntil,Is.LessThan(b.Clock));
+            int count=unit.OrdinaryAttacksFired;float hp=b.Defender.Health;b.Advance(2);
+            Assert.That(unit.OrdinaryAttacksFired,Is.EqualTo(count));Assert.That(b.Defender.Health,Is.EqualTo(hp));
+            b.SetPaused(true);double clock=b.Clock;b.Advance(20);Assert.That(b.Clock,Is.EqualTo(clock));
+            b.Restart();Assert.That(b.IceRings,Is.Empty);Assert.That(b.Defender.FrostSlowUntil,Is.LessThan(b.Clock));
+        }
     }
 }

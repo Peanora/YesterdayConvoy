@@ -33,9 +33,16 @@ namespace YesterdayConvoy
             bool bonusCaptured=false,bonusValid=!snowFixture;
             bool attacked=false,hit=false,canAttack=Battle.CombatSettings.CanAttack;
             bool passiveMoving=false;
+            bool ringCaptured=false,reviveCaptured=false,revived=false;
             for(int i=0;i<2400 && unit.Active;i++)
             {
-                Tick(.025f);yield return null;
+                Tick(task=="M14" ? .1f : .025f);yield return null;
+                if(task=="M14")
+                {
+                    if(!ringCaptured && Battle.IceRings.Count>0) {ringCaptured=true;yield return InteractionFrame(directory,task+"-ice-ring");}
+                    if(!reviveCaptured && unit.IsReviving) {reviveCaptured=true;yield return InteractionFrame(directory,task+"-reviving");}
+                    if(unit.ReviveUsed && !unit.IsReviving && unit.Health>0) revived=true;
+                }
                 if(!attacked && !double.IsNegativeInfinity(unit.LastAttackTime))
                 { attacked=true;Tick(.3f);yield return InteractionFrame(directory,task+"-attack"); }
                 if(snowFixture && !bonusCaptured)
@@ -71,7 +78,7 @@ namespace YesterdayConvoy
             bool coldCaptured=false,casterFrozen=false;
             for(int i=0;i<1600 && Battle.Phase==BattlePhase.Running;i++)
             {
-                Tick(.025f);yield return null;
+                Tick(task=="M14" ? .1f : .025f);yield return null;
                 if(!groupAttackCaptured)
                     foreach(var shot in Battle.CombatShots) if(!shot.FromDefender)
                     {
@@ -95,7 +102,9 @@ namespace YesterdayConvoy
             if(snowFixture) Debug.Log($"SNOW_FIXTURE_CHECK: {task}; explicitFrozenTarget=True; bonus={bonusValid}.");
             bool casterValid=task!="M12" || coldCaptured && casterFrozen;
             if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid ? 0 : 1);
+            bool frostValid=task!="M14" || ringCaptured && reviveCaptured && revived;
+            if(task=="M14") Debug.Log($"FROSTNOVA_CHECK: ring={ringCaptured}; reviving={reviveCaptured}; revived={revived}; noInjectedStatus=True.");
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid ? 0 : 1);
         }
     }
 }

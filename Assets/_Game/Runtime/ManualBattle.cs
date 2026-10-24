@@ -48,6 +48,11 @@ namespace YesterdayConvoy
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public int OrdinaryAttacksFired { get; internal set; }
+        public bool ReviveUsed { get; internal set; }
+        public double ReviveAt { get; internal set; } = double.NegativeInfinity;
+        public bool IsReviving { get; internal set; }
+        public double IceRingStartedAt { get; internal set; } = double.NegativeInfinity;
+        internal double NextIceRingAt;
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
         public bool LastAttackEmpowered { get; internal set; }
         public double FireRainStartedAt { get; internal set; } = double.NegativeInfinity;
@@ -162,6 +167,7 @@ namespace YesterdayConvoy
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
+            unit.NextIceRingAt=Clock+8.5;
             // Commit together only after all preconditions and entity initialization succeed.
             units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;
             nextDeploymentTime = Clock + Settings.Cooldown;

@@ -13,9 +13,10 @@ namespace YesterdayConvoy
         public readonly float FrozenAttackMultiplier;
         public readonly int ColdAttackEvery;
         public readonly float AttackColdDuration;
+        public readonly bool FrostNova;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
-            int coldAttackEvery=0,float attackColdDuration=0)
+            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -28,6 +29,7 @@ namespace YesterdayConvoy
             BlastRadius=blastRadius;BlastDelay=blastDelay;ColdDuration=coldDuration;
             FrozenAttackMultiplier=frozenAttackMultiplier;
             ColdAttackEvery=coldAttackEvery;AttackColdDuration=attackColdDuration;
+            FrostNova=frostNova;
         }
     }
 
@@ -50,6 +52,50 @@ namespace YesterdayConvoy
 
     public sealed partial class ManualBattle
     {
+        public sealed class IceRing
+        {
+            public Vector3 Position { get; internal set; }
+            public double Time { get; internal set; }
+            public int TargetsHit { get; internal set; }
+        }
+        private readonly List<IceRing> iceRings=new List<IceRing>();
+        public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
+        public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
+        private float DefenderAttackRate(DefenderState defender) =>
+            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1);
+        private void DefeatUnit(DeployedUnitState unit)
+        {
+            unit.DeathTime=Clock;unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;
+            unit.CombatTargetId=unit.BlockerId=null;
+            // First defeat interrupts this life, including projectiles already in flight.
+            foreach(var shot in combatShots)
+                if(!shot.Resolved && (shot.SourceId==unit.EntityId || shot.TargetId==unit.EntityId)) shot.Resolved=true;
+            if(CombatSettings.Effects.FrostNova && !unit.ReviveUsed)
+            {
+                unit.ReviveUsed=true;unit.IsReviving=true;unit.ReviveAt=Clock+5;
+                unit.IceRingStartedAt=double.NegativeInfinity;return;
+            }
+            unit.Resolution=UnitResolution.Dead;ScheduleDeathEffect(unit);
+        }
+        private bool StepIceRing(DeployedUnitState unit)
+        {
+            if(Clock<unit.IceRingStartedAt+3)
+            {unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;return true;}
+            if(Clock+1e-6<unit.NextIceRingAt) return false;
+            var target=ChooseDefender(unit,2.5f);if(target==null) return false;
+            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+8.5;
+            unit.NextAttackTime=Clock+3;unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;
+            var ring=new IceRing {Position=unit.Motion.Position,Time=Clock};iceRings.Add(ring);
+            foreach(var defender in defenders)
+            {
+                if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>2) continue;
+                ring.TargetsHit++;DamageDefender(defender,CombatSettings.UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts);
+                if(!defender.Alive) continue;
+                if(defender.FrostSlowUntil<=Clock) defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)*2;
+                defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+8);
+            }
+            return true;
+        }
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved);

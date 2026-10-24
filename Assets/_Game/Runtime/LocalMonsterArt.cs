@@ -17,6 +17,7 @@ namespace YesterdayConvoy
         internal float ReferenceSpeed { get; private set; }
         internal float Height { get; private set; }
         internal bool HasAttack => clips.ContainsKey("attack");
+        internal bool HasClip(string key) => clips.ContainsKey(key);
         internal float DeathDuration => clips["death"].Duration;
         internal Clip this[string key] => clips[key];
         [Serializable] private sealed class Manifest
@@ -24,6 +25,7 @@ namespace YesterdayConvoy
         [Serializable] private sealed class ClipData
         { public string key; public int count, cell, columns; public float duration, pivotX, pivotY; public Page[] pages; }
         [Serializable] private sealed class Page { public string file; public int count, width, height; }
+        [Serializable] private sealed class ExtraManifest { public ClipData[] clips; }
         internal sealed class Clip
         {
             internal Sprite[] Frames;
@@ -76,6 +78,32 @@ namespace YesterdayConvoy
                     }
                     if (frames.Count != item.count) throw new InvalidDataException("Frame count mismatch.");
                     art.clips.Add(item.key, new Clip { Frames = frames.ToArray(), Duration = item.duration });
+                }
+                // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
+                if(task=="M14")
+                {
+                    string extraRoot=Path.Combine(root,"ExtraClips");
+                    var extra=JsonUtility.FromJson<ExtraManifest>(File.ReadAllText(Path.Combine(extraRoot,"manifest.json")));
+                    foreach(var item in extra.clips) if(item.key=="extra_skill_1")
+                    {
+                        var frames=new List<Sprite>();
+                        foreach(var page in item.pages)
+                        {
+                            var texture=Load(extraRoot,page.file,allocated);
+                            if(texture.width!=page.width || texture.height!=page.height || item.cell<=0 || item.columns<=0 || page.count<=0 ||
+                                page.width!=item.columns*item.cell || page.height%item.cell!=0 || page.count>item.columns*(page.height/item.cell))
+                                throw new InvalidDataException("Extra atlas layout mismatch.");
+                            for(int i=0;i<page.count;i++)
+                            {
+                                var frame=Sprite.Create(texture,new Rect(i%item.columns*item.cell,page.height-(i/item.columns+1)*item.cell,item.cell,item.cell),
+                                    new Vector2(item.pivotX,item.pivotY),data.ppu,0,SpriteMeshType.FullRect);
+                                frames.Add(frame);allocated.Add(frame);
+                            }
+                        }
+                        if(frames.Count!=item.count || !Positive(item.duration)) throw new InvalidDataException("Extra frame count mismatch.");
+                        art.clips.Add(item.key,new Clip {Frames=frames.ToArray(),Duration=item.duration});
+                    }
+                    if(!art.HasClip("extra_skill_1")) throw new InvalidDataException("FrostNova ring animation missing.");
                 }
                 var portrait = Load(root, "portrait.png", allocated);
                 art.Portrait = Sprite.Create(portrait, new Rect(0, 0, portrait.width, portrait.height), new Vector2(.5f, 0), data.ppu);

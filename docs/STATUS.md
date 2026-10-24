@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：已有模型角色效果继续补齐（2026-10-24）
+
+用户要求补齐全部已有模型角色的未完效果，银狼暂缓。霍利屹在PR19基础新建codex/monster-existing-effects，[任务#20](https://github.com/Peanora/YesterdayConvoy/issues/20)。先补M14四章霜星：8.5秒冰环150%法术伤害/攻速减半8秒、5秒首次复起与复起后攻击+50%，启用已有Skill_1原动作，所有状态共用模拟时钟。79 Edit、35 GPU Play全通过/零跳过，Windows0错误，实际M14 Player退出0且自然冰环/复起与完整流程全部True。封地和其余角色效果仍待后续；不冒称全角色完成。[逐项进度、参数、失败修正和证据](monsters/EXISTING-MODEL-EFFECTS.md)。未改主场景/Prefab/Packages/ProjectSettings或原PNG/meta，无ZIP/Releases/自动合并。以下为历史。
+
 ## 当前：M11/M12/M13自身效果补齐（2026-10-24）
 
 用户明确银狼先不做，继续补已有角色效果。霍利屹基于PR15/3847094独立建立codex/monster-snow-effects：[任务#18](https://github.com/Peanora/YesterdayConvoy/issues/18)、[PR#19](https://github.com/Peanora/YesterdayConvoy/pull/19)。M11冻结命中150%攻击、M13为250%，再扣护甲；M12每第三次普通攻击命中施10秒寒冷，重复寒冷冻结。默认关闭字段保持其他角色；原帧/meta不变，未改场景/Prefab/Packages/ProjectSettings。M12守军生命140→400仅为正常部署可展示叠冻的试验参数。

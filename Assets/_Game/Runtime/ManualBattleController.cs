@@ -322,6 +322,8 @@ namespace YesterdayConvoy
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));
+                if(unit.IsReviving) GUI.Label(new Rect(x-70,y-28,140,26),$"复起 {Math.Max(0,unit.ReviveAt-Battle.Clock):0.0}s",smallStyle);
+                else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
@@ -393,7 +395,7 @@ namespace YesterdayConvoy
             if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
-            string status=d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : "";
+            string status=d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
             if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);
             }
