@@ -18,16 +18,19 @@ namespace YesterdayConvoy
         public readonly int AttackTargets;
         public readonly float LifeSteal;
         public readonly bool Healer;
+        public readonly bool ArtsBarrier;
+        public readonly float UnitResistance;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
-            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false)
+            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
+            bool artsBarrier=false,float unitResistance=0)
         {
-            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal})
+            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
             if((damageType!=CombatDamageType.Physical && damageType!=CombatDamageType.Arts) || resistance>100 ||
                 blastAttack>0 && blastRadius<=0 || coldDuration>0 && blastAttack<=0 ||
                 frozenAttackMultiplier>0 && frozenAttackMultiplier<1 || coldAttackEvery<0 ||
-                (coldAttackEvery>0)!=(attackColdDuration>0) || regenerationFraction>1 || attackTargets<0 || attackTargets>3)
+                (coldAttackEvery>0)!=(attackColdDuration>0) || regenerationFraction>1 || attackTargets<0 || attackTargets>3 || unitResistance>100)
                 throw new ArgumentException("Incomplete monster effect configuration.");
             DamageType=damageType;Resistance=resistance;ArmorShred=armorShred;BlastAttack=blastAttack;
             BlastRadius=blastRadius;BlastDelay=blastDelay;ColdDuration=coldDuration;
@@ -37,6 +40,7 @@ namespace YesterdayConvoy
             RegenerationFraction=regenerationFraction;
             AttackTargets=attackTargets;LifeSteal=lifeSteal;
             Healer=healer;
+            ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
         }
     }
 
@@ -66,7 +70,17 @@ namespace YesterdayConvoy
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving) return false;
-            unit.Health=Mathf.Max(0,unit.Health-CalculateDamage(attack,CombatSettings.UnitArmor,0,type));
+            float damage=CalculateDamage(attack,CombatSettings.UnitArmor,CombatSettings.Effects.UnitResistance,type);
+            if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
+            {
+                float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;
+                if(unit.ArtsBarrierRemaining<=.00001f)
+                {
+                    unit.ArtsBarrierRemaining=0;unit.MaxHealth=Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
+                    unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
+                }
+            }
+            unit.Health=Mathf.Max(0,unit.Health-damage);
             unit.LastHitTime=Clock;if(unit.Health==0) DefeatUnit(unit);return true;
         }
         public sealed class HealingCast
@@ -84,7 +98,7 @@ namespace YesterdayConvoy
         private float HealUnit(DeployedUnitState unit,float amount)
         {
             if(!unit.Active || unit.IsReviving || amount<=0) return 0;
-            float restored=Mathf.Min(amount,Settings.Health-unit.Health);
+            float restored=Mathf.Min(amount,unit.MaxHealth-unit.Health);
             if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
             return restored;
@@ -111,9 +125,9 @@ namespace YesterdayConvoy
             if(Clock+1e-6<source.NextHealAt) return false;
             var targets=new List<DeployedUnitState>();
             foreach(var target in units)
-                if(target.Active && !target.IsReviving && target.Health<Settings.Health &&
+                if(target.Active && !target.IsReviving && target.Health<target.MaxHealth &&
                     GroundDistance(source.Motion.Position,target.Motion.Position)<=CombatSettings.UnitRange) targets.Add(target);
-            targets.Sort((a,b)=> {int health=a.Health.CompareTo(b.Health);return health!=0 ? health : string.CompareOrdinal(a.EntityId,b.EntityId);});
+            targets.Sort((a,b)=> {int health=(a.Health/a.MaxHealth).CompareTo(b.Health/b.MaxHealth);return health!=0 ? health : string.CompareOrdinal(a.EntityId,b.EntityId);});
             if(targets.Count==0) return false;
             var ids=new List<string>();for(int i=0;i<Math.Min(3,targets.Count);i++) ids.Add(targets[i].EntityId);
             source.HealingStartedAt=Clock;source.NextHealAt=Clock+CombatSettings.UnitInterval;
@@ -130,6 +144,7 @@ namespace YesterdayConvoy
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
         public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
+        public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
         private float DefenderAttackRate(DefenderState defender) =>
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1);
         private void DefeatUnit(DeployedUnitState unit)

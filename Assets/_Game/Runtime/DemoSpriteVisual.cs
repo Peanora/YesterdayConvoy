@@ -120,8 +120,8 @@ namespace YesterdayConvoy
                     sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
                     FrameIndex=ringIndex;return;
                 }
-                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local["attack"].Duration)
-                { FrameState="Attack"; clip="attack"; time=age; }
+                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local["attack"].Duration/deployedUnit.LastAttackRate)
+                { FrameState="Attack"; clip="attack"; time=age*deployedUnit.LastAttackRate; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
                 else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; loop=true; }

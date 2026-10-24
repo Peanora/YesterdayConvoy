@@ -36,6 +36,11 @@ namespace YesterdayConvoy
         public double SpawnTime { get; }
         public RouteMotion Motion { get; }
         public float Health { get; internal set; }
+        public float MaxHealth { get; internal set; }
+        public float ArtsBarrierRemaining { get; internal set; }
+        public float ArtsBarrierLayerSize { get; internal set; }
+        public int ArtsBarrierLayers => ArtsBarrierLayerSize>0 ? Mathf.CeilToInt(ArtsBarrierRemaining/ArtsBarrierLayerSize) : 0;
+        public float LastAttackRate { get; internal set; } = 1;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
@@ -64,7 +69,7 @@ namespace YesterdayConvoy
         internal double NextAttackTime;
 
         internal DeployedUnitState(string id, string unitId, RouteMotion motion, float health, double spawnTime)
-        { EntityId = id; UnitId = unitId; Motion = motion; Health = health; SpawnTime = spawnTime; }
+        { EntityId = id; UnitId = unitId; Motion = motion; Health = MaxHealth = health; SpawnTime = spawnTime; }
     }
 
     public readonly struct DeploymentReceipt
@@ -173,6 +178,11 @@ namespace YesterdayConvoy
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             unit.NextIceRingAt=Clock+8.5;
+            if(EngagementEnabled && CombatSettings.Effects.ArtsBarrier)
+            {
+                unit.MaxHealth=unit.Health=Settings.Health*1.5f;
+                unit.ArtsBarrierLayerSize=Settings.Health*.2f;unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;
+            }
             // Commit together only after all preconditions and entity initialization succeed.
             units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;
             nextDeploymentTime = Clock + Settings.Cooldown;

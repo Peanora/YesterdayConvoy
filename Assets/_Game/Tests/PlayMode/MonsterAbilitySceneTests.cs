@@ -12,6 +12,20 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualPractitionerLosesItsThreeBarrierLayersUnderTheExplicitArtsTestDefender()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M27"),Is.True);
+            Assert.That(c.Battle.CombatSettings.DefenderDamageType,Is.EqualTo(CombatDamageType.Arts));
+            c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);var unit=c.Battle.FindUnit(r.EntityId);
+            Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));bool partial=false;
+            for(int i=0;i<1600 && unit.Active && unit.ArtsBarrierRemaining>0;i++)
+            {c.Tick(.05f);yield return null;partial|=unit.ArtsBarrierLayers>0 && unit.ArtsBarrierLayers<3;}
+            Assert.That(partial,Is.True);Assert.That(unit.ArtsBarrierRemaining,Is.Zero);
+            Assert.That(unit.MaxHealth,Is.EqualTo(c.Battle.Settings.Health));Assert.That(c.Battle.UnitAttackRate(unit),Is.EqualTo(1));
+            c.RestartBattle();c.SelectCard(true);r=c.TryDeployAt(c.Battle.Entry);Assert.That(c.Battle.FindUnit(r.EntityId).ArtsBarrierLayers,Is.EqualTo(3));
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
         [UnityTest] public IEnumerator ActualMephistoUsesHisHealingAnimationAndNeverDamagesTheDefender()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

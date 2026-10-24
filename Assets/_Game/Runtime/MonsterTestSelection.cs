@@ -115,6 +115,7 @@ namespace YesterdayConvoy
                 if(effects.RegenerationFraction>0) detail=$"自然回血 {effects.RegenerationFraction*100:0.##}% / 秒\n按各实体生命上限恢复";
                 if(effects.LifeSteal>0) detail=$"最多攻击{effects.AttackTargets}个目标\n按实际伤害{effects.LifeSteal*100:0}%恢复生命";
                 if(effects.Healer) detail="最多治疗3名受伤友军\n自动治疗 / 不攻击守军";
+                if(effects.ArtsBarrier) detail="三层法术屏障 / 生命攻速强化\n法术测试靶 / 可观察破盾";
                 if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
                 if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);

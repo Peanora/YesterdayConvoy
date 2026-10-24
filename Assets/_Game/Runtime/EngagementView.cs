@@ -159,6 +159,7 @@ namespace YesterdayConvoy
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
             Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
+            if(shot.FromDefender && b.CombatSettings.DefenderDamageType==CombatDamageType.Arts) color=new Color(.8f,.4f,1);
             if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
             else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
             if(shot.FrozenBonusApplied) color=new Color(.45f,.95f,1);

@@ -227,5 +227,23 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.CombatShots,Is.Empty);Assert.That(unit.OrdinaryAttacksFired,Is.Zero);
             Assert.Throws<ArgumentException>(()=>new EngagementSettings(effects:new MonsterEffectSettings(healer:true)));
         }
+
+        [Test] public void PractitionerBarrierAbsorbsOnlyArtsAndLosesItsHealthAndSpeedBonusWhenBroken()
+        {
+            var b=Battle(new MonsterEffectSettings(artsBarrier:true,unitResistance:25),health:100);
+            var unit=Deploy(b,1);Assert.That(unit.MaxHealth,Is.EqualTo(150));Assert.That(unit.Health,Is.EqualTo(150));
+            Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));Assert.That(b.UnitAttackRate(unit),Is.EqualTo(1.5f));
+            b.TryDamageUnit(unit.EntityId,10,CombatDamageType.Physical);
+            Assert.That(unit.Health,Is.EqualTo(140));Assert.That(unit.ArtsBarrierRemaining,Is.EqualTo(60).Within(.001));
+            b.TryDamageUnit(unit.EntityId,40,CombatDamageType.Arts);
+            Assert.That(unit.ArtsBarrierRemaining,Is.EqualTo(30).Within(.001));Assert.That(unit.Health,Is.EqualTo(140));
+            b.SetPaused(true);Assert.That(b.TryDamageUnit(unit.EntityId,40,CombatDamageType.Arts),Is.False);
+            b.SetPaused(false);b.TryDamageUnit(unit.EntityId,40,CombatDamageType.Arts);
+            Assert.That(unit.ArtsBarrierRemaining,Is.Zero);Assert.That(unit.MaxHealth,Is.EqualTo(100));Assert.That(unit.Health,Is.EqualTo(100));
+            Assert.That(b.UnitAttackRate(unit),Is.EqualTo(1));
+            b.TryDamageUnit(unit.EntityId,40,CombatDamageType.Arts);Assert.That(unit.Health,Is.EqualTo(70).Within(.001));
+            b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));
+            Assert.That(unit.MaxHealth,Is.EqualTo(150));Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(unitResistance:101));
+        }
     }
 }

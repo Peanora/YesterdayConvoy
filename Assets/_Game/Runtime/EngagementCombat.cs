@@ -12,13 +12,14 @@ namespace YesterdayConvoy
         public readonly bool FireRain, HasSkill, Melee, CanAttack;
         public readonly float AttackDuration, AttackWindup;
         public readonly MonsterEffectSettings Effects;
+        public readonly CombatDamageType DefenderDamageType;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
@@ -37,7 +38,9 @@ namespace YesterdayConvoy
             if(!Finite(attackDuration) || !Finite(attackWindup) || attackDuration<0 || attackDuration>unitInterval || attackWindup<0 || attackWindup>attackDuration)
                 throw new ArgumentException("Invalid attack animation timing.");
             if(effects.Healer && (canAttack || hasSkill)) throw new ArgumentException("Healer uses automatic treatment, not damage attacks or ammunition skills.");
+            if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
             Effects=effects;
+            DefenderDamageType=defenderDamageType;
             AttackDuration=attackDuration; AttackWindup=attackWindup;
             HasSkill=hasSkill; Melee=melee; CanAttack=canAttack;
             FireRain = fireRain;
@@ -176,7 +179,7 @@ namespace YesterdayConvoy
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
-                    TryDamageUnit(unit.EntityId,shot.Attack,CombatDamageType.Physical);
+                    TryDamageUnit(unit.EntityId,shot.Attack,c.DefenderDamageType);
                 }
                 else
                 {
@@ -201,7 +204,7 @@ namespace YesterdayConvoy
                     unit.IsReviving=false;unit.Health=Settings.Health;unit.DeathTime=double.PositiveInfinity;
                     unit.NextIceRingAt=Clock+8.5;unit.NextAttackTime=Clock;
                 }
-                HealUnit(unit,Settings.Health*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
+                HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
@@ -213,7 +216,7 @@ namespace YesterdayConvoy
                 DefenderState target=c.CanAttack ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
-                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration;
+                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration/unit.LastAttackRate;
                 if(unit.IsMoving)
                 {
                     double lockEnd=c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
@@ -249,9 +252,10 @@ namespace YesterdayConvoy
                     float coldDuration=!empowered && c.Effects.ColdAttackEvery>0 &&
                         unit.OrdinaryAttacksFired%c.Effects.ColdAttackEvery==0 ? c.Effects.AttackColdDuration : 0;
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
-                    unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
+                    unit.LastAttackRate=empowered ? 1 : UnitAttackRate(unit);
+                    unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval)/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                        unit.Motion.Position,target.Position,Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
                     if(!empowered && c.Effects.AttackTargets>1)
                     {
                         int count=1;
@@ -260,7 +264,7 @@ namespace YesterdayConvoy
                             if(count>=c.Effects.AttackTargets) break;
                             if(!other.Alive || other==target || GroundDistance(unit.Motion.Position,other.Position)>range) continue;
                             combatShots.Add(new CombatShot(unit.EntityId,other.EntityId,false,false,unit.Motion.Position,other.Position,
-                                Clock+c.AttackWindup,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                                Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit),coldDuration:coldDuration));
                             count++;
                         }
                     }
