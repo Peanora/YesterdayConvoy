@@ -104,6 +104,36 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
+            if(manualBattle.CombatSettings.Effects.Mandragora)
+            {
+                var u=deployedUnit;double clock=presentationClock?.Invoke()??manualBattle.Clock;
+                string prefix=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_":"extra_c2_";
+                if(u.Resolution==UnitResolution.Dead){clip=u.StoneShield?"extra_c2_die_1":"death";time=clock-u.DeathTime;FrameState="Death";}
+                else if(u.MandraPhase==MandragoraPhase.Reborn){clip="extra_reborn";time=(manualBattle.Clock-u.MandraPhaseStartedAt)/5*local[clip].Duration;FrameState="MandraReborn";}
+                else if(u.Gaze!=null&&manualBattle.Clock<u.Gaze.EndedAt+1.0/3)
+                {
+                    var g=u.Gaze;double age=manualBattle.Clock-g.StartedAt;
+                    string part=g.Ended?"end":age<.8333334?"begin":"loop";
+                    clip=prefix+"skill_1_"+part;time=g.Ended?manualBattle.Clock-g.EndedAt:part=="begin"?age:age-.8333334;
+                    loop=part=="loop";FrameState="Gaze"+part;
+                }
+                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_2";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
+                else if(manualBattle.Clock<u.StoneShieldRestoredAt+(u.MandraPhase==MandragoraPhase.Ground?1.5:1.3333334))
+                {clip=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_skill_2":"extra_c2_skill_3";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
+                else if(u.MandraPhase==MandragoraPhase.Second&&manualBattle.Clock<u.PillarStunnedUntil){clip="extra_c2_stun";time=manualBattle.Clock-u.StoneShieldBrokenAt;FrameState="StoneShieldBreak";loop=true;}
+                else
+                {
+                    double age=manualBattle.Clock-u.LastAttackTime;
+                    bool ground=u.MandraPhase==MandragoraPhase.Ground;
+                    string idle=ground?"extra_c1_idle":u.StoneShield?"extra_c2_idle_1":"idle";
+                    string walk=ground?"extra_c1_move":u.StoneShield?"extra_c2_move_1":"walk";
+                    string attack=ground?"extra_c1_attack":u.StoneShield?"extra_c2_attack_1":"attack";
+                    if(age>=0&&age<1.5){clip=attack;time=age;FrameState="Attack";}
+                    else if(u.IsMoving){clip=walk;time=u.Motion.DistanceTravelled/local.ReferenceSpeed;loop=true;FrameState="Walk";}
+                    else{clip=idle;time=manualBattle.Clock-u.SpawnTime;loop=true;FrameState="Idle";}
+                }
+                sprite.sprite=local[clip].At(time,loop,out int mandraIndex);FrameIndex=mandraIndex;return;
+            }
             if(manualBattle.CombatSettings.Effects.Flamechaser&&
                 (deployedUnit.FlamePhase!=FlamechaserPhase.Soldier||deployedUnit.Resolution==UnitResolution.Dead))
             {

@@ -7,10 +7,10 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
-            (u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
+            (u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
         public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil;
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!UnitInvulnerable(u)&&
-            (!UnitInvisible(u)||CombatSettings.RevealsInvisible);
+            (!UnitInvisible(u)||CombatSettings.RevealsInvisible)&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
         public bool NearBurningReeds(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Soldier&&
             facilities.Exists(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning&&GroundDistance(u.Motion.Position,f.Settings.Position)<=1.5f);
         void CancelUnitShots(DeployedUnitState u)
@@ -28,7 +28,7 @@ namespace YesterdayConvoy
         bool StepFlamechaser(DeployedUnitState u,float step)
         {
             if(u.FlamePhase==FlamechaserPhase.Soldier)return false;
-            if(u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming)
+            if(u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming)
             {
                 if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
                 u.FlamePhase=FlamechaserPhase.Ember;u.FlamePhaseStartedAt+=1;

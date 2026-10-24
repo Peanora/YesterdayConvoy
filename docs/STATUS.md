@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 当前：M32蔓德拉双阶段与石盾（2026-10-25）
+
+M32接入石盾/破盾恢复、首次5秒重生、第二阶段悬浮与范围伤害、凝视减攻速/续锁封地、支柱5秒预警倒塌。127 Edit、45完整GPU Play通过；设施Player和完整入口M32均退出0，暂停/重开清理正常。来源、实际冷却/缩放与未完细节见[M32交付](monsters/M32-MANDRAGORA-EFFECTS.md)。原图集/meta保留，主场景/Prefab/Packages/ProjectSettings未改。M33等继续，银狼暂缓。
+
 ## 当前：M31喷火、灼燃与死亡连锁（2026-10-25）
 
 M31深池焚毁者接入独立喷火、已有9段原动作、被阻挡时物理普攻、灼燃、致命1血保护与死亡爆炸、同类连锁和破碎支柱倒塌。114 Edit、44完整GPU Play通过；完整入口保持守军无阻挡后的37角色回归1/1通过。独立设施Player自然三连爆/倒柱/灼燃，完整入口M31部署交战突破清理均退出0。素材与必要meta随源码保留，主场景/Prefab/Packages/ProjectSettings未改。来源、实际参数与限制见[M31交付记录](monsters/M31-FLAMERAZER-EFFECTS.md)，[PR27](https://github.com/Peanora/YesterdayConvoy/pull/27)供审查。M32等仍待做，不声称全部完成。

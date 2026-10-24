@@ -36,6 +36,7 @@ namespace YesterdayConvoy
             lineMaterial=new Material(Shader.Find("Sprites/Default"));
             presentation=new GameObject("Facility trial presentation").transform;
             gameObject.AddComponent<FlamerazerEffectView>().Bind(()=>Battle);
+            gameObject.AddComponent<MandragoraEffectView>().Bind(()=>Battle);
             ResetTrial(0);
         }
         IEnumerator Start()
@@ -50,6 +51,7 @@ namespace YesterdayConvoy
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
             Time.timeScale=0;
             bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
+            bool mandragora=Battle.CombatSettings.Effects.Mandragora,gazePose=false,brokenPose=false,rebornPose=false,airPose=false,warningPose=false,toppled=false;
             bool flamerazer=Battle.CombatSettings.Effects.Flamerazer,startPose=false,loopPose=false,endPose=false,blastPose=false;
             for(int i=0;i<1800&&Battle.Phase==BattlePhase.Running;i++)
             {
@@ -67,6 +69,15 @@ namespace YesterdayConvoy
                     {blastPose=true;yield return CaptureFrame(folder,"fuel-explosion");}
                 }
                 var flame=Battle.Units.FirstOrDefault();
+                if(mandragora&&flame!=null)
+                {
+                    if(!gazePose&&flame.Gaze!=null&&flame.Gaze.Ticks>0){gazePose=true;yield return CaptureFrame(folder,"gaze");}
+                    if(gazePose&&!toppled){toppled=ToppleMandragoraPillar();Sync();}
+                    if(!brokenPose&&flame.StoneShieldBreaks>0&&!flame.StoneShield&&flame.MandraPhase!=MandragoraPhase.Reborn){brokenPose=true;yield return CaptureFrame(folder,"stone-shield-broken");}
+                    if(!rebornPose&&flame.MandraPhase==MandragoraPhase.Reborn){rebornPose=true;yield return CaptureFrame(folder,"reborn");}
+                    if(!airPose&&Battle.UnitAirborne(flame)){airPose=true;yield return CaptureFrame(folder,"airborne");}
+                    if(!warningPose&&Battle.PillarCommands.Any(p=>!p.Resolved)){warningPose=true;yield return CaptureFrame(folder,"pillar-warning");}
+                }
                 if(mapIndex==2&&SelectedRole==1&&flame!=null)
                 {
                     if(!emberCaptured&&flame.FlamePhase==FlamechaserPhase.Ember)
@@ -74,13 +85,13 @@ namespace YesterdayConvoy
                     if(!reviveCaptured&&flame.FlamePhase==FlamechaserPhase.Reforming)
                     {reviveCaptured=true;yield return CaptureFrame(folder,"ember-reforming");}
                 }
-                bool effect=flamerazer?startPose&&loopPose&&endPose&&blastPose&&Battle.FuelExplosions.Count(e=>e.Resolved)>=3&&Battle.Facilities.Any(f=>f.Collapsed)&&Battle.BurnBursts>0&&Battle.RubbleTiles.Any():mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
+                bool effect=mandragora?gazePose&&brokenPose&&rebornPose&&airPose&&warningPose&&Battle.PillarCommands.Any(p=>p.Applied)&&flame.StoneAuraHits>0:flamerazer?startPose&&loopPose&&endPose&&blastPose&&Battle.FuelExplosions.Count(e=>e.Resolved)>=3&&Battle.Facilities.Any(f=>f.Collapsed)&&Battle.BurnBursts>0&&Battle.RubbleTiles.Any():mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
                     mapIndex==1?Battle.SealedTileCount>0:
                     SelectedRole==1?flame!=null&&emberCaptured&&Battle.CombatShots.Any(s=>s.Applied&&s.BurnDamage>0)&&(reveal?flame.Resolution==UnitResolution.Dead:flame.EmberRevivals>0):Battle.AttackerGramophoneHits>0;
                 if(effect&&!captured)
                 {
                     captured=true;
-                    if(flamerazer){Battle.Advance(1);Sync();yield return null;yield return CaptureFrame(folder,"pillar-settled");}
+                    if(flamerazer||mandragora){Battle.Advance(1);Sync();yield return null;yield return CaptureFrame(folder,"pillar-settled");}
                     // Keep the naturally triggered effect visible long enough to show the flame/pulse, without injecting status.
                     yield return new WaitForEndOfFrame();
                     var shot=ScreenCapture.CaptureScreenshotAsTexture();File.WriteAllBytes(Path.Combine(folder,$"map-{mapIndex}-role-{SelectedRole}.png"),shot.EncodeToPNG());Destroy(shot);
@@ -89,10 +100,11 @@ namespace YesterdayConvoy
             }
             Battle.SetPaused(true);double clock=Battle.Clock;Battle.Advance(10);bool pause=Battle.Clock==clock;
             int altar=Battle.AltarHits,seal=Battle.SealedTileCount,ignitions=Battle.Ignitions,gram=Battle.GramophoneHits;
+            if(mandragora)Debug.Log($"MANDRAGORA_PLAYER_CHECK: gaze={gazePose}; manualPillar={toppled}; broken={brokenPose}; reborn={rebornPose}; airborne={airPose}; warning={warningPose}; collapsed={Battle.PillarCommands.Any(p=>p.Applied)}; aura={Battle.Units.Sum(u=>u.StoneAuraHits)}; noInjectedHealth=True");
             if(flamerazer)Debug.Log($"FLAMERAZER_PLAYER_CHECK: start={startPose}; loop={loopPose}; end={endPose}; explosion={blastPose}; chain={Battle.FuelExplosions.Count(e=>e.Resolved)}; pillars={Battle.Facilities.Count(f=>f.Collapsed)}; rubble={Battle.RubbleTiles.Count()}; burn={Battle.BurnBursts}; noInjectedDamage=True");
             if(mapIndex==2&&SelectedRole==1)Debug.Log($"FLAMECHASER_PLAYER_CHECK: reveal={reveal}; emberPose={emberCaptured}; revivePose={reviveCaptured}; revived={Battle.Units.Any(u=>u.EmberRevivals>0)}; eliminated={Battle.Units.Any(u=>u.Resolution==UnitResolution.Dead)}; noInjectedDamage=True");
             Battle.Restart();Sync();bool reset=Battle.Phase==BattlePhase.Ready&&Battle.Units.Count==0&&Battle.SealedTileCount==0&&Battle.AltarHits==0&&
-                Battle.Ignitions==Battle.Facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Settings.InitiallyBurning)&&Battle.GramophoneHits==0&&Battle.FlameSprays.Count==0&&Battle.FuelExplosions.Count==0&&!Battle.Facilities.Any(f=>f.Collapsed)&&!Battle.RubbleTiles.Any();
+                Battle.Ignitions==Battle.Facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Settings.InitiallyBurning)&&Battle.GramophoneHits==0&&Battle.Gazes.Count==0&&Battle.PillarCommands.Count==0&&Battle.FlameSprays.Count==0&&Battle.FuelExplosions.Count==0&&!Battle.Facilities.Any(f=>f.Collapsed)&&!Battle.RubbleTiles.Any();
             Debug.Log($"FACILITY_PLAYER_CHECK: map={mapIndex}; role={SelectedRole}; deployed={deployed}; effect={captured}; pause={pause}; reset={reset}; altar={altar}; sealed={seal}; ignitions={ignitions}; gramophone={gram}");
             Application.Quit(deployed&&captured&&pause&&reset?0:1);
         }
@@ -101,6 +113,7 @@ namespace YesterdayConvoy
             yield return new WaitForEndOfFrame();var shot=ScreenCapture.CaptureScreenshotAsTexture();
             File.WriteAllBytes(Path.Combine(folder,name+".png"),shot.EncodeToPNG());Destroy(shot);
         }
+        public bool ToppleMandragoraPillar()=>Battle.TryTopplePillar(0,new Vector3(-3,0,0));
         public void SetReveal(bool enabled){reveal=enabled;ResetTrial(SelectedRole);}
         public void ResetTrial(int role)
         {
@@ -108,17 +121,19 @@ namespace YesterdayConvoy
             foreach(Transform child in presentation)Destroy(child.gameObject);
             actors.Clear();facilityViews.Clear();sealViews.Clear();rubbleViews.Clear();beams.Clear();
             var original=roles[role].Snapshot();var c=roles[role].Engagement.Snapshot();
-            bool flamechaser=c.Effects.Flamechaser,flamerazer=c.Effects.Flamerazer;
+            bool flamechaser=c.Effects.Flamechaser,flamerazer=c.Effects.Flamerazer,mandragora=c.Effects.Mandragora;
             var settings=new ManualBattleSettings(original.CardId,original.UnitId,30,1,12,1,.5f,
                 flamerazer?450:flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
             var combat=new EngagementSettings(unitAttack:c.UnitAttack,unitArmor:c.UnitArmor,unitRange:c.UnitRange,unitInterval:c.UnitInterval,
-                defenderHealth:15000,defenderAttack:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:flamerazer?3:0,
+                defenderHealth:15000,defenderAttack:mandragora?110:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:flamerazer?3:0,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
                 attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack,revealsInvisible:reveal);
             Vector3 guard=mapIndex==0?new Vector3(-2,.35f,1):mapIndex==1?new Vector3(-2,.35f,1):role==1?new Vector3(-3,.35f,0):new Vector3(2.5f,.35f,-1);
+            if(mandragora)guard=new Vector3(-2,.35f,2);
             if(flamerazer)guard=new Vector3(-2,.35f,2);
             Battle=new ManualBattle(settings,route,guard,combat);
             var facilities=new List<FacilitySettings>();
+            if(mandragora){facilities.Add(new FacilitySettings(FacilityKind.Pillar,new Vector3(-3,0,1),power:120));facilities.Add(new FacilitySettings(FacilityKind.Pillar,new Vector3(-1,0,2),power:150));}
             if(flamerazer)facilities.Add(new FacilitySettings(FacilityKind.Pillar,new Vector3(-3,0,1),power:1200));
             if(mapIndex==0)facilities.Add(new FacilitySettings(FacilityKind.Altar,new Vector3(1,0,1),3.2f));
             if(mapIndex==2)
@@ -127,7 +142,7 @@ namespace YesterdayConvoy
                 foreach(var p in new[]{new Vector3(-3,0,0),new Vector3(-3,0,-1),new Vector3(-3,0,-2),new Vector3(-2,0,-2)})
                     facilities.Add(new FacilitySettings(FacilityKind.Reeds,p,.5f,1,4,initiallyBurning:flamechaser&&p==new Vector3(-3,0,0)));
             }
-            Battle.ConfigureFacilities(facilities,mapIndex==1||flamerazer?deployableTiles:null);
+            Battle.ConfigureFacilities(facilities,mapIndex==1||flamerazer||mandragora?deployableTiles:null);
             foreach(var f in Battle.Facilities)
             {
                 var node=new GameObject(f.Settings.Kind.ToString()).transform;node.SetParent(presentation);node.position=f.Settings.Position;
@@ -265,10 +280,11 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(170,bottom+40,140,35),Battle.IsPaused?"继续":"暂停（空格）"))Battle.SetPaused(!Battle.IsPaused);
             if(GUI.Button(new Rect(320,bottom+40,140,35),"重新开始"))ResetTrial(SelectedRole);
             if(GUI.Button(new Rect(470,bottom+40,140,35),$"速度 ×{speed:0}"))speed=speed==1?3:1;
+            if(Battle.CombatSettings.Effects.Mandragora&&GUI.Button(new Rect(620,bottom+40,160,35),"向蔓德拉推倒支柱"))ToppleMandragoraPillar();
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(620,bottom+40,160,35),"眩晕喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2);
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(790,bottom+40,160,35),"沉默喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2,true);
             if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
-            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
+            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(Battle.CombatSettings.Effects.Mandragora?$" {(u.MandraPhase==MandragoraPhase.Reborn?"重生":u.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} {(u.StoneShield?"石盾":"破盾")}":u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
                 (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
             foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(Battle.DefenderCamouflaged(d)?" 迷彩":""));
             foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):f.Settings.Kind==FacilityKind.Pillar?(f.Collapsed?"支柱已倒塌":"破碎支柱"):"祭坛");

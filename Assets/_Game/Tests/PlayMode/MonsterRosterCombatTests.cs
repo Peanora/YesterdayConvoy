@@ -37,7 +37,7 @@ namespace YesterdayConvoy.Tests
                 c.Battle.SetPaused(false);c.Tick(1.1f);yield return null;Deploy();c.Tick(1.1f);yield return null;Deploy();
                 c.ToggleSpeed();bool attacked=false;
                 for(int i=0;i<1200 && c.Battle.Phase==BattlePhase.Running;i++)
-                { c.Tick(.03f);yield return null;attacked|=c.Battle.CombatShots.Any(s=>!s.FromDefender)||c.Battle.FlameSprays.Any(s=>s.Ticks>0); }
+                { c.Tick(.03f);yield return null;attacked|=c.Battle.CombatShots.Any(s=>!s.FromDefender)||c.Battle.FlameSprays.Any(s=>s.Ticks>0)||c.Battle.Gazes.Any(s=>s.Ticks>0); }
                 Assert.That(attacked,Is.EqualTo(c.Battle.CombatSettings.CanAttack),id);Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won),id);
                 Assert.That(c.Battle.Breaches,Is.GreaterThan(0),id);Assert.That(c.Battle.SkillCasts,Is.Zero);
                 c.ReturnToMonsterTests();yield return null;Assert.That(c.ViewCount,Is.Zero);Assert.That(c.Battle.CombatShots,Is.Empty);

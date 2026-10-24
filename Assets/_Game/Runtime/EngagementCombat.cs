@@ -13,14 +13,14 @@ namespace YesterdayConvoy
         public readonly float AttackDuration, AttackWindup;
         public readonly MonsterEffectSettings Effects;
         public readonly CombatDamageType DefenderDamageType;
-        public readonly bool RevealsInvisible;
+        public readonly bool RevealsInvisible, DefenderCanHitAir;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical,bool revealsInvisible=false)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical,bool revealsInvisible=false,bool defenderCanHitAir=true)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
@@ -42,7 +42,7 @@ namespace YesterdayConvoy
             if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
             Effects=effects;
             DefenderDamageType=defenderDamageType;
-            RevealsInvisible=revealsInvisible;
+            RevealsInvisible=revealsInvisible;DefenderCanHitAir=defenderCanHitAir;
             AttackDuration=attackDuration; AttackWindup=attackWindup;
             HasSkill=hasSkill; Melee=melee; CanAttack=canAttack;
             FireRain = fireRain;
@@ -118,7 +118,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            flameSprays.Clear();fuelExplosions.Clear();
+            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
@@ -174,7 +174,7 @@ namespace YesterdayConvoy
         {
             EngagementSettings c=CombatSettings;
             StepFacilities(step);
-            ResolveFuelExplosions();
+            ResolveFuelExplosions();ResolvePillarCommands();
             ResolveDeathEffects();
             ResolveHealing();
             foreach(var shot in combatShots)
@@ -184,6 +184,7 @@ namespace YesterdayConvoy
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
                 if(unit==null || !unit.Active || unit.IsReviving || defender==null || !defender.Alive) continue;
+                if(shot.FromDefender&&UnitAirborne(unit)&&!c.DefenderCanHitAir)continue;
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
@@ -208,6 +209,7 @@ namespace YesterdayConvoy
             {
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
                 if(unit.FuelDying)continue;
+                if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
                 if(unit.PillarStunnedUntil>Clock){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
@@ -221,12 +223,13 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
+                    if(!UnitAirborne(unit) && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
-                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked);
+                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked);
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;

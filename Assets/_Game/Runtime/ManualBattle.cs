@@ -63,6 +63,19 @@ namespace YesterdayConvoy
         internal double NextHealAt;
         public bool ReviveUsed { get; internal set; }
         public bool AltarEmpowered { get; internal set; }
+        public MandragoraPhase MandraPhase {get;internal set;}
+        public bool StoneShield {get;internal set;}
+        public int StoneShieldBreaks {get;internal set;}
+        public int StoneShieldRestores {get;internal set;}
+        public int StoneAuraHits {get;internal set;}
+        public double MandraPhaseStartedAt {get;internal set;}
+        public double MandraInvulnerableUntil {get;internal set;}=double.NegativeInfinity;
+        public double StoneShieldBrokenAt {get;internal set;}=double.NegativeInfinity;
+        public double StoneShieldRestoredAt {get;internal set;}=double.NegativeInfinity;
+        internal float HealthAtShieldBreak;
+        internal double NextGazeAt,NextMandraPillarAt,NextStoneAuraAt;
+        public double PillarCommandStartedAt {get;internal set;}=double.NegativeInfinity;
+        public PetrifyingGaze Gaze {get;internal set;}
         public double PillarStunnedUntil {get;internal set;}=double.NegativeInfinity;
         public bool FuelDying {get;internal set;}
         public FlameSpray Spray {get;internal set;}
@@ -194,6 +207,7 @@ namespace YesterdayConvoy
             var unit = new DeployedUnitState(id, Settings.UnitId, motion, Settings.Health, Clock);
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             unit.NextIceRingAt=Clock+8.5;
+            if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
             if(EngagementEnabled && (CombatSettings.Effects.ArtsBarrier || CombatSettings.Effects.Mudrock))
             {
                 unit.MaxHealth=unit.Health=Settings.Health*1.5f;

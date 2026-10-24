@@ -81,6 +81,7 @@ namespace YesterdayConvoy
                 }
                 // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
                 string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} :
+                    task=="M32" ? new[]{"extra_c1_attack","extra_c1_idle","extra_c1_move","extra_c1_skill_2","extra_c1_skill_1_begin","extra_c1_skill_1_end","extra_c1_skill_1_loop","extra_c2_attack_1","extra_c2_die_1","extra_c2_idle_1","extra_c2_move_1","extra_c2_skill_2","extra_c2_skill_3","extra_c2_skill_1_begin","extra_c2_skill_1_end","extra_c2_skill_1_loop","extra_c2_stun","extra_reborn"} :
                     task=="M31" ? new[]{"extra_skill_down_start","extra_skill_down_loop","extra_skill_down_end","extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end","extra_skill_up_start","extra_skill_up_loop","extra_skill_up_end"} :
                     task=="M30" ? new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"} : Array.Empty<string>();
                 if(extraKeys.Length>0)
@@ -100,6 +101,7 @@ namespace YesterdayConvoy
                             {
                                 var frame=Sprite.Create(texture,new Rect(i%item.columns*item.cell,page.height-(i/item.columns+1)*item.cell,item.cell,item.cell),
                                     new Vector2(item.pivotX,item.pivotY),data.ppu,0,SpriteMeshType.FullRect);
+                                frame.name=task+"/"+item.key+"/"+frames.Count.ToString("000");
                                 frames.Add(frame);allocated.Add(frame);
                             }
                         }

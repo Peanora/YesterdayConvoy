@@ -16,8 +16,8 @@ MonoBehaviour:
   defenderPosition: {x: 0, y: 0.35, z: 0}
   unitAttack: 58
   unitArmor: 8
-  unitRange: 3
-  unitInterval: 2
+  unitRange: 1.5
+  unitInterval: 1.8
   defenderHealth: 140
   defenderAttack: 18
   defenderArmor: 3
@@ -47,3 +47,5 @@ MonoBehaviour:
   blastDelay: 0
   coldDuration: 0
   extraDefenders: []
+  mandragora: 1
+  unitResistance: 35

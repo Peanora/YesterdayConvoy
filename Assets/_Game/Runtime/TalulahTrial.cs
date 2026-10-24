@@ -41,6 +41,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
                     (Battle.CombatSettings.Effects.FrostNova ? " · 冰环减速 · 首次倒下复起" :
                      Battle.CombatSettings.Effects.Phalanx ? " · 方阵相互支援 · 折射法抗" :
+                     Battle.CombatSettings.Effects.Mandragora ? " · 石盾 / 双阶段 · 凝视与支柱" :
                      Battle.CombatSettings.Effects.Flamerazer ? " · 喷火灼燃 · 死亡爆炸与同类连锁" :
                      Battle.CombatSettings.Effects.Flamechaser ? " · 隐匿余烬 · 重生 · 燃烧芦苇附加灼燃" :
                      Battle.CombatSettings.Effects.Mudrock ? " · 攻击蓄力 · 定时补充法术屏障" :

@@ -118,6 +118,7 @@ namespace YesterdayConvoy
                 if(effects.ArtsBarrier) detail="三层法术屏障 / 生命攻速强化\n法术测试靶 / 可观察破盾";
                 if(effects.Mudrock) detail="攻击逐次蓄力 / 最多6层\n定时补充法术屏障";
                 if(effects.Phalanx) detail="附近方阵单位相互加护甲\n折射 / 70法术抗性";
+                if(effects.Mandragora) detail="石盾减伤 / 首次重生与悬浮\n凝视 / 支柱破盾和倒塌";
                 if(effects.Flamerazer) detail="半秒喷火 / 积累灼燃\n死亡爆炸 / 同类连锁与支柱倒塌";
                 if(effects.Flamechaser) detail="倒下化为5次受击的隐匿余烬\n余烬存活10秒后重生 / 芦苇灼燃";
                 if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
