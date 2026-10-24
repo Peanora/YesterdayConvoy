@@ -104,6 +104,17 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
+            if(manualBattle.CombatSettings.Effects.Flamechaser&&
+                (deployedUnit.FlamePhase!=FlamechaserPhase.Soldier||deployedUnit.Resolution==UnitResolution.Dead))
+            {
+                time=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.FlamePhaseStartedAt;
+                if(deployedUnit.Resolution==UnitResolution.Dead){FrameState="EmberDeath";clip="extra_die_2";time=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.DeathTime;}
+                else if(deployedUnit.FlamePhase==FlamechaserPhase.Transforming){FrameState="EmberTransform";clip="death";}
+                else if(deployedUnit.FlamePhase==FlamechaserPhase.Reforming){FrameState="EmberRevive";clip="extra_revive";}
+                else{FrameState="Ember";clip=deployedUnit.IsMoving?"extra_move_2":"extra_idle_2";loop=true;}
+                sprite.sprite=local[clip].At(time,loop,out int emberIndex);FrameIndex=emberIndex;
+                sprite.color=manualBattle.UnitInvisible(deployedUnit)?new Color(1,1,1,.55f):Color.white;return;
+            }
             if(deployedUnit.Resolution==UnitResolution.Dead || deployedUnit.IsReviving)
             { FrameState="Death"; clip="death"; time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime; sprite.color=Color.white; }
             else

@@ -30,7 +30,7 @@ namespace YesterdayConvoy.Tests
                     {
                         c.Battle.Advance(.1f);
                         effect=n==0?c.Battle.Units.Any(u=>u.AltarEmpowered):n==1?c.Battle.SealedTileCount>0:n==2?
-                            c.Battle.AttackerGramophoneHits>0:c.Battle.Ignitions>0;
+                            c.Battle.AttackerGramophoneHits>0:c.Battle.CombatShots.Any(s=>s.Applied&&s.BurnDamage>0);
                         if(i%20==0)yield return null;
                     }
                     yield return null;

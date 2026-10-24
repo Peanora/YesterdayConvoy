@@ -63,6 +63,11 @@ namespace YesterdayConvoy
         internal double NextHealAt;
         public bool ReviveUsed { get; internal set; }
         public bool AltarEmpowered { get; internal set; }
+        public FlamechaserPhase FlamePhase {get;internal set;}
+        public double FlamePhaseStartedAt {get;internal set;}=double.NegativeInfinity;
+        public int EmberTransformations {get;internal set;}
+        public int EmberRevivals {get;internal set;}
+        public double EmberRevealedUntil {get;internal set;}=double.NegativeInfinity;
         public double ReviveAt { get; internal set; } = double.NegativeInfinity;
         public bool IsReviving { get; internal set; }
         public double IceRingStartedAt { get; internal set; } = double.NegativeInfinity;

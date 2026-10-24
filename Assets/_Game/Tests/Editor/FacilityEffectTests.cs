@@ -81,9 +81,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.Facilities[1].Burning,Is.True);Assert.That(b.Facilities[2].Burning,Is.False);
             b.SetPaused(true);Assert.That(b.TryIgniteReeds(new Vector3(1,0,1)),Is.False);
         }
-        [Test]public void RoleM30IgnitesNaturallyAndInvalidSettingsCannotReplaceConfiguration()
+        [Test]public void MapIgnitionUsesTheNormalEntryAndInvalidSettingsCannotReplaceConfiguration()
         {
-            var b=Create("M30_TEST");b.ConfigureFacilities(new[]{new FacilitySettings(FacilityKind.Reeds,Vector3.zero)});Start(b);b.Advance(.1f);Assert.That(b.Ignitions,Is.EqualTo(1));
+            var b=Create("M30_TEST");b.ConfigureFacilities(new[]{new FacilitySettings(FacilityKind.Reeds,Vector3.zero)});Start(b);b.Advance(.1f);Assert.That(b.Ignitions,Is.Zero);
+            Assert.That(b.TryIgniteReeds(Vector3.zero),Is.True);Assert.That(b.Ignitions,Is.EqualTo(1));
             Assert.Throws<InvalidOperationException>(()=>b.ConfigureFacilities(Array.Empty<FacilitySettings>()));
             Assert.Throws<ArgumentException>(()=>new FacilitySettings(FacilityKind.Altar,Vector3.zero,interval:0));
             Assert.Throws<ArgumentException>(()=>new FacilitySettings(FacilityKind.Altar,new Vector3(float.NaN,0,0)));

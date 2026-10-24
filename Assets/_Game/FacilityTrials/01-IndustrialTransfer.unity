@@ -36145,6 +36145,162 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108062134}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1113769681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1113769683}
+  - component: {fileID: 1113769682}
+  m_Layer: 0
+  m_Name: Facility combat trial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1113769682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113769681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c9dd2afe72ff84ca40f8ca68f5750c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.FacilityTrialController
+  mapIndex: 0
+  route:
+  - {x: -6, y: 0, z: 2}
+  - {x: -2, y: 0, z: 2}
+  - {x: -2, y: 0, z: -2}
+  - {x: 3, y: 0, z: -2}
+  - {x: 3, y: 0, z: 1}
+  - {x: 6, y: 0, z: 1}
+  deployableTiles:
+  - {x: -6, y: 0, z: -3}
+  - {x: -6, y: 0, z: -2}
+  - {x: -6, y: 0, z: -1}
+  - {x: -6, y: 0, z: 0}
+  - {x: -6, y: 0, z: 1}
+  - {x: -6, y: 0, z: 3}
+  - {x: -6, y: 0, z: 4}
+  - {x: -5, y: 0, z: -3}
+  - {x: -5, y: 0, z: -2}
+  - {x: -5, y: 0, z: -1}
+  - {x: -5, y: 0, z: 0}
+  - {x: -5, y: 0, z: 1}
+  - {x: -5, y: 0, z: 2}
+  - {x: -5, y: 0, z: 3}
+  - {x: -5, y: 0, z: 4}
+  - {x: -4, y: 0, z: -3}
+  - {x: -4, y: 0, z: -2}
+  - {x: -4, y: 0, z: -1}
+  - {x: -4, y: 0, z: 0}
+  - {x: -4, y: 0, z: 1}
+  - {x: -4, y: 0, z: 2}
+  - {x: -4, y: 0, z: 3}
+  - {x: -4, y: 0, z: 4}
+  - {x: -3, y: 0, z: -3}
+  - {x: -3, y: 0, z: -2}
+  - {x: -3, y: 0, z: -1}
+  - {x: -3, y: 0, z: 0}
+  - {x: -3, y: 0, z: 1}
+  - {x: -3, y: 0, z: 2}
+  - {x: -3, y: 0, z: 3}
+  - {x: -3, y: 0, z: 4}
+  - {x: -2, y: 0, z: -3}
+  - {x: -2, y: 0, z: -1}
+  - {x: -2, y: 0, z: 0}
+  - {x: -2, y: 0, z: 1}
+  - {x: -2, y: 0, z: 3}
+  - {x: -2, y: 0, z: 4}
+  - {x: -1, y: 0, z: -3}
+  - {x: -1, y: 0, z: -2}
+  - {x: -1, y: 0, z: -1}
+  - {x: -1, y: 0, z: 0}
+  - {x: -1, y: 0, z: 1}
+  - {x: -1, y: 0, z: 2}
+  - {x: -1, y: 0, z: 3}
+  - {x: -1, y: 0, z: 4}
+  - {x: 0, y: 0, z: -3}
+  - {x: 0, y: 0, z: -2}
+  - {x: 0, y: 0, z: -1}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 2}
+  - {x: 0, y: 0, z: 3}
+  - {x: 0, y: 0, z: 4}
+  - {x: 1, y: 0, z: -3}
+  - {x: 1, y: 0, z: -2}
+  - {x: 1, y: 0, z: -1}
+  - {x: 1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 1}
+  - {x: 1, y: 0, z: 2}
+  - {x: 1, y: 0, z: 3}
+  - {x: 1, y: 0, z: 4}
+  - {x: 2, y: 0, z: -3}
+  - {x: 2, y: 0, z: -2}
+  - {x: 2, y: 0, z: -1}
+  - {x: 2, y: 0, z: 0}
+  - {x: 2, y: 0, z: 1}
+  - {x: 2, y: 0, z: 2}
+  - {x: 2, y: 0, z: 3}
+  - {x: 2, y: 0, z: 4}
+  - {x: 3, y: 0, z: -3}
+  - {x: 3, y: 0, z: -1}
+  - {x: 3, y: 0, z: 0}
+  - {x: 3, y: 0, z: 2}
+  - {x: 3, y: 0, z: 3}
+  - {x: 3, y: 0, z: 4}
+  - {x: 4, y: 0, z: -3}
+  - {x: 4, y: 0, z: -2}
+  - {x: 4, y: 0, z: -1}
+  - {x: 4, y: 0, z: 0}
+  - {x: 4, y: 0, z: 1}
+  - {x: 4, y: 0, z: 2}
+  - {x: 4, y: 0, z: 3}
+  - {x: 4, y: 0, z: 4}
+  - {x: 5, y: 0, z: -3}
+  - {x: 5, y: 0, z: -2}
+  - {x: 5, y: 0, z: -1}
+  - {x: 5, y: 0, z: 0}
+  - {x: 5, y: 0, z: 1}
+  - {x: 5, y: 0, z: 2}
+  - {x: 5, y: 0, z: 3}
+  - {x: 5, y: 0, z: 4}
+  - {x: 6, y: 0, z: -3}
+  - {x: 6, y: 0, z: -2}
+  - {x: 6, y: 0, z: -1}
+  - {x: 6, y: 0, z: 0}
+  - {x: 6, y: 0, z: 2}
+  - {x: 6, y: 0, z: 3}
+  - {x: 6, y: 0, z: 4}
+  roles:
+  - {fileID: 11400000, guid: cf43b769bde1aca4b9c39ed90283aebf, type: 2}
+  - {fileID: 11400000, guid: f959311d958c6124db26d59c1e7b83ca, type: 2}
+  - {fileID: 11400000, guid: f5c0a4fbf65fc1948b471fa13922ef8b, type: 2}
+  interfaceFont: {fileID: 12800000, guid: a3a0ed610d6018041b53d422695bd92f, type: 3}
+--- !u!4 &1113769683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113769681}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1117821964
 GameObject:
   m_ObjectHideFlags: 0
@@ -48745,161 +48901,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1505416698}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1507506668
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1507506670}
-  - component: {fileID: 1507506669}
-  m_Layer: 0
-  m_Name: Facility combat trial
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1507506669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1507506668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39c9dd2afe72ff84ca40f8ca68f5750c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.FacilityTrialController
-  mapIndex: 0
-  route:
-  - {x: -6, y: 0, z: 2}
-  - {x: -2, y: 0, z: 2}
-  - {x: -2, y: 0, z: -2}
-  - {x: 3, y: 0, z: -2}
-  - {x: 3, y: 0, z: 1}
-  - {x: 6, y: 0, z: 1}
-  deployableTiles:
-  - {x: -6, y: 0, z: -3}
-  - {x: -6, y: 0, z: -2}
-  - {x: -6, y: 0, z: -1}
-  - {x: -6, y: 0, z: 0}
-  - {x: -6, y: 0, z: 1}
-  - {x: -6, y: 0, z: 3}
-  - {x: -6, y: 0, z: 4}
-  - {x: -5, y: 0, z: -3}
-  - {x: -5, y: 0, z: -2}
-  - {x: -5, y: 0, z: -1}
-  - {x: -5, y: 0, z: 0}
-  - {x: -5, y: 0, z: 1}
-  - {x: -5, y: 0, z: 2}
-  - {x: -5, y: 0, z: 3}
-  - {x: -5, y: 0, z: 4}
-  - {x: -4, y: 0, z: -3}
-  - {x: -4, y: 0, z: -2}
-  - {x: -4, y: 0, z: -1}
-  - {x: -4, y: 0, z: 0}
-  - {x: -4, y: 0, z: 1}
-  - {x: -4, y: 0, z: 2}
-  - {x: -4, y: 0, z: 3}
-  - {x: -4, y: 0, z: 4}
-  - {x: -3, y: 0, z: -3}
-  - {x: -3, y: 0, z: -2}
-  - {x: -3, y: 0, z: -1}
-  - {x: -3, y: 0, z: 0}
-  - {x: -3, y: 0, z: 1}
-  - {x: -3, y: 0, z: 2}
-  - {x: -3, y: 0, z: 3}
-  - {x: -3, y: 0, z: 4}
-  - {x: -2, y: 0, z: -3}
-  - {x: -2, y: 0, z: -1}
-  - {x: -2, y: 0, z: 0}
-  - {x: -2, y: 0, z: 1}
-  - {x: -2, y: 0, z: 3}
-  - {x: -2, y: 0, z: 4}
-  - {x: -1, y: 0, z: -3}
-  - {x: -1, y: 0, z: -2}
-  - {x: -1, y: 0, z: -1}
-  - {x: -1, y: 0, z: 0}
-  - {x: -1, y: 0, z: 1}
-  - {x: -1, y: 0, z: 2}
-  - {x: -1, y: 0, z: 3}
-  - {x: -1, y: 0, z: 4}
-  - {x: 0, y: 0, z: -3}
-  - {x: 0, y: 0, z: -2}
-  - {x: 0, y: 0, z: -1}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
-  - {x: 0, y: 0, z: 2}
-  - {x: 0, y: 0, z: 3}
-  - {x: 0, y: 0, z: 4}
-  - {x: 1, y: 0, z: -3}
-  - {x: 1, y: 0, z: -2}
-  - {x: 1, y: 0, z: -1}
-  - {x: 1, y: 0, z: 0}
-  - {x: 1, y: 0, z: 1}
-  - {x: 1, y: 0, z: 2}
-  - {x: 1, y: 0, z: 3}
-  - {x: 1, y: 0, z: 4}
-  - {x: 2, y: 0, z: -3}
-  - {x: 2, y: 0, z: -2}
-  - {x: 2, y: 0, z: -1}
-  - {x: 2, y: 0, z: 0}
-  - {x: 2, y: 0, z: 1}
-  - {x: 2, y: 0, z: 2}
-  - {x: 2, y: 0, z: 3}
-  - {x: 2, y: 0, z: 4}
-  - {x: 3, y: 0, z: -3}
-  - {x: 3, y: 0, z: -1}
-  - {x: 3, y: 0, z: 0}
-  - {x: 3, y: 0, z: 2}
-  - {x: 3, y: 0, z: 3}
-  - {x: 3, y: 0, z: 4}
-  - {x: 4, y: 0, z: -3}
-  - {x: 4, y: 0, z: -2}
-  - {x: 4, y: 0, z: -1}
-  - {x: 4, y: 0, z: 0}
-  - {x: 4, y: 0, z: 1}
-  - {x: 4, y: 0, z: 2}
-  - {x: 4, y: 0, z: 3}
-  - {x: 4, y: 0, z: 4}
-  - {x: 5, y: 0, z: -3}
-  - {x: 5, y: 0, z: -2}
-  - {x: 5, y: 0, z: -1}
-  - {x: 5, y: 0, z: 0}
-  - {x: 5, y: 0, z: 1}
-  - {x: 5, y: 0, z: 2}
-  - {x: 5, y: 0, z: 3}
-  - {x: 5, y: 0, z: 4}
-  - {x: 6, y: 0, z: -3}
-  - {x: 6, y: 0, z: -2}
-  - {x: 6, y: 0, z: -1}
-  - {x: 6, y: 0, z: 0}
-  - {x: 6, y: 0, z: 2}
-  - {x: 6, y: 0, z: 3}
-  - {x: 6, y: 0, z: 4}
-  roles:
-  - {fileID: 11400000, guid: cf43b769bde1aca4b9c39ed90283aebf, type: 2}
-  - {fileID: 11400000, guid: f959311d958c6124db26d59c1e7b83ca, type: 2}
-  interfaceFont: {fileID: 12800000, guid: a3a0ed610d6018041b53d422695bd92f, type: 3}
---- !u!4 &1507506670
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1507506668}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1508139360
 GameObject:
   m_ObjectHideFlags: 0
@@ -64688,4 +64689,4 @@ SceneRoots:
   - {fileID: 421197750}
   - {fileID: 57834656}
   - {fileID: 951526108}
-  - {fileID: 1507506670}
+  - {fileID: 1113769683}

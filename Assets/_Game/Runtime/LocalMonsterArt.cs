@@ -80,7 +80,8 @@ namespace YesterdayConvoy
                     art.clips.Add(item.key, new Clip { Frames = frames.ToArray(), Duration = item.duration });
                 }
                 // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
-                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} : Array.Empty<string>();
+                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} :
+                    task=="M30" ? new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"} : Array.Empty<string>();
                 if(extraKeys.Length>0)
                 {
                     string extraRoot=Path.Combine(root,"ExtraClips");

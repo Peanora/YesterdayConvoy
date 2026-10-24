@@ -333,6 +333,8 @@ namespace YesterdayConvoy
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
                 if(Battle.CombatSettings.Effects.Phalanx) GUI.Label(new Rect(x-70,y-28,160,26),$"方阵 +{Battle.UnitArmor(unit)-Battle.CombatSettings.UnitArmor:0}甲",smallStyle);
+                if(Battle.CombatSettings.Effects.Flamechaser&&unit.FlamePhase!=FlamechaserPhase.Soldier)
+                    GUI.Label(new Rect(x-70,y-28,180,26),unit.FlamePhase==FlamechaserPhase.Ember?$"余烬 {unit.Health:0}/5 · {(Battle.UnitInvisible(unit)?"隐匿":"显形")}":unit.FlamePhase==FlamechaserPhase.Transforming?"余烬转化":"重生中",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));

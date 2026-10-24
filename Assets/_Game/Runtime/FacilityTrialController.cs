@@ -25,6 +25,7 @@ namespace YesterdayConvoy
         Transform presentation;
         long request;
         float speed=1;
+        bool reveal;
         string feedback="点击部署，让角色沿已确认的地图路线行进";
         static readonly string[] Titles={"工业转运站 · 祭坛脉冲","雪原中继站 · 霜星封地","芦苇水道 · 留声机 / 燃烧芦苇"};
         void Awake()
@@ -41,22 +42,30 @@ namespace YesterdayConvoy
             string requested=Array.Find(args,a=>a.StartsWith("--facility-map="));
             if(requested!=null&&int.TryParse(requested.Substring(15),out int n)&&n>=0&&n<3&&n!=mapIndex){SceneManager.LoadScene(n);yield break;}
             string selected=Array.Find(args,a=>a.StartsWith("--facility-role="));
+            reveal=Array.IndexOf(args,"--ember-reveal")>=0;
             if(selected!=null&&int.TryParse(selected.Substring(16),out int r)&&r>=0&&r<roles.Length)ResetTrial(r);
             string evidence=Array.Find(args,a=>a.StartsWith("--facility-check="));if(evidence==null)yield break;
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
             Time.timeScale=0;
-            bool deployed=Deploy();bool captured=false;
+            bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
             for(int i=0;i<1800&&Battle.Phase==BattlePhase.Running;i++)
             {
                 Battle.Advance(.1f);Sync();yield return null;
+                var flame=Battle.Units.FirstOrDefault();
+                if(mapIndex==2&&SelectedRole==1&&flame!=null)
+                {
+                    if(!emberCaptured&&flame.FlamePhase==FlamechaserPhase.Ember)
+                    {emberCaptured=true;yield return CaptureFrame(folder,reveal?"ember-revealed":"ember-hidden");}
+                    if(!reviveCaptured&&flame.FlamePhase==FlamechaserPhase.Reforming)
+                    {reviveCaptured=true;yield return CaptureFrame(folder,"ember-reforming");}
+                }
                 bool effect=mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
                     mapIndex==1?Battle.SealedTileCount>0:
-                    SelectedRole==1?Battle.Ignitions>0:Battle.AttackerGramophoneHits>0;
+                    SelectedRole==1?flame!=null&&emberCaptured&&Battle.CombatShots.Any(s=>s.Applied&&s.BurnDamage>0)&&(reveal?flame.Resolution==UnitResolution.Dead:flame.EmberRevivals>0):Battle.AttackerGramophoneHits>0;
                 if(effect&&!captured)
                 {
                     captured=true;
                     // Keep the naturally triggered effect visible long enough to show the flame/pulse, without injecting status.
-                    if(mapIndex==2&&SelectedRole==1){Battle.Advance(.4f);Sync();yield return null;}
                     yield return new WaitForEndOfFrame();
                     var shot=ScreenCapture.CaptureScreenshotAsTexture();File.WriteAllBytes(Path.Combine(folder,$"map-{mapIndex}-role-{SelectedRole}.png"),shot.EncodeToPNG());Destroy(shot);
                     break;
@@ -64,22 +73,31 @@ namespace YesterdayConvoy
             }
             Battle.SetPaused(true);double clock=Battle.Clock;Battle.Advance(10);bool pause=Battle.Clock==clock;
             int altar=Battle.AltarHits,seal=Battle.SealedTileCount,ignitions=Battle.Ignitions,gram=Battle.GramophoneHits;
-            Battle.Restart();Sync();bool reset=Battle.Phase==BattlePhase.Ready&&Battle.Units.Count==0&&Battle.SealedTileCount==0&&Battle.AltarHits==0&&Battle.Ignitions==0&&Battle.GramophoneHits==0;
+            if(mapIndex==2&&SelectedRole==1)Debug.Log($"FLAMECHASER_PLAYER_CHECK: reveal={reveal}; emberPose={emberCaptured}; revivePose={reviveCaptured}; revived={Battle.Units.Any(u=>u.EmberRevivals>0)}; eliminated={Battle.Units.Any(u=>u.Resolution==UnitResolution.Dead)}; noInjectedDamage=True");
+            Battle.Restart();Sync();bool reset=Battle.Phase==BattlePhase.Ready&&Battle.Units.Count==0&&Battle.SealedTileCount==0&&Battle.AltarHits==0&&
+                Battle.Ignitions==Battle.Facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Settings.InitiallyBurning)&&Battle.GramophoneHits==0;
             Debug.Log($"FACILITY_PLAYER_CHECK: map={mapIndex}; role={SelectedRole}; deployed={deployed}; effect={captured}; pause={pause}; reset={reset}; altar={altar}; sealed={seal}; ignitions={ignitions}; gramophone={gram}");
             Application.Quit(deployed&&captured&&pause&&reset?0:1);
         }
+        IEnumerator CaptureFrame(string folder,string name)
+        {
+            yield return new WaitForEndOfFrame();var shot=ScreenCapture.CaptureScreenshotAsTexture();
+            File.WriteAllBytes(Path.Combine(folder,name+".png"),shot.EncodeToPNG());Destroy(shot);
+        }
+        public void SetReveal(bool enabled){reveal=enabled;ResetTrial(SelectedRole);}
         public void ResetTrial(int role)
         {
             SelectedRole=role;request=0;
             foreach(Transform child in presentation)Destroy(child.gameObject);
             actors.Clear();facilityViews.Clear();sealViews.Clear();beams.Clear();
             var original=roles[role].Snapshot();var c=roles[role].Engagement.Snapshot();
+            bool flamechaser=c.Effects.Flamechaser;
             var settings=new ManualBattleSettings(original.CardId,original.UnitId,30,1,12,1,.5f,
-                Math.Max(1000,original.Health),original.Speed,1,2,1,1);
+                flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
             var combat=new EngagementSettings(unitAttack:c.UnitAttack,unitArmor:c.UnitArmor,unitRange:c.UnitRange,unitInterval:c.UnitInterval,
-                defenderHealth:15000,defenderAttack:8,defenderArmor:12,defenderRange:3,defenderInterval:1,blockCount:0,
+                defenderHealth:15000,defenderAttack:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:0,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
-                attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack);
+                attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack,revealsInvisible:reveal);
             Vector3 guard=mapIndex==0?new Vector3(-2,.35f,1):mapIndex==1?new Vector3(-2,.35f,1):role==1?new Vector3(-3,.35f,0):new Vector3(2.5f,.35f,-1);
             Battle=new ManualBattle(settings,route,guard,combat);
             var facilities=new List<FacilitySettings>();
@@ -88,7 +106,7 @@ namespace YesterdayConvoy
             {
                 facilities.Add(new FacilitySettings(FacilityKind.Gramophone,new Vector3(4,0,-1),4));
                 foreach(var p in new[]{new Vector3(-3,0,0),new Vector3(-3,0,-1),new Vector3(-3,0,-2),new Vector3(-2,0,-2)})
-                    facilities.Add(new FacilitySettings(FacilityKind.Reeds,p,.5f,1,4));
+                    facilities.Add(new FacilitySettings(FacilityKind.Reeds,p,.5f,1,4,initiallyBurning:flamechaser&&p==new Vector3(-3,0,0)));
             }
             Battle.ConfigureFacilities(facilities,mapIndex==1?deployableTiles:null);
             foreach(var f in Battle.Facilities)
@@ -202,7 +220,9 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(170,bottom+40,140,35),Battle.IsPaused?"继续":"暂停（空格）"))Battle.SetPaused(!Battle.IsPaused);
             if(GUI.Button(new Rect(320,bottom+40,140,35),"重新开始"))ResetTrial(SelectedRole);
             if(GUI.Button(new Rect(470,bottom+40,140,35),$"速度 ×{speed:0}"))speed=speed==1?3:1;
-            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(u.AltarEmpowered?" 法术化":""));
+            if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
+            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+
+                (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
             foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(Battle.DefenderCamouflaged(d)?" 迷彩":""));
             foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):"祭坛");
         }

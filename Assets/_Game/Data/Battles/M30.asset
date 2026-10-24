@@ -37,6 +37,8 @@ MonoBehaviour:
   hasSkill: 0
   melee: 1
   noOrdinaryAttack: 0
+  flamechaser: 1
+  unitResistance: 50
   attackDuration: 1.5
   attackWindup: 0.65
   damageType: 0

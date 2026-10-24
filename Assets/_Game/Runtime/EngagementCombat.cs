@@ -13,13 +13,14 @@ namespace YesterdayConvoy
         public readonly float AttackDuration, AttackWindup;
         public readonly MonsterEffectSettings Effects;
         public readonly CombatDamageType DefenderDamageType;
+        public readonly bool RevealsInvisible;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
 
         public EngagementSettings(float unitAttack = 14, float unitArmor = 2, float unitRange = 0.65f, float unitInterval = 1.7f,
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical,bool revealsInvisible=false)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
@@ -41,6 +42,7 @@ namespace YesterdayConvoy
             if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
             Effects=effects;
             DefenderDamageType=defenderDamageType;
+            RevealsInvisible=revealsInvisible;
             AttackDuration=attackDuration; AttackWindup=attackWindup;
             HasSkill=hasSkill; Melee=melee; CanAttack=canAttack;
             FireRain = fireRain;
@@ -86,6 +88,7 @@ namespace YesterdayConvoy
         public double ImpactAt { get; }
         public float Attack { get; }
         public float ColdDuration { get; }
+        public float BurnDamage {get;internal set;}
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
         public bool FrozenBonusApplied { get; internal set; }
@@ -195,12 +198,14 @@ namespace YesterdayConvoy
                     HealUnit(unit,shot.DamageDealt*c.Effects.LifeSteal);
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
+                    if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;
             foreach(var unit in units)
             {
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
                 {
                     if(Clock+1e-6<unit.ReviveAt) continue;
@@ -259,6 +264,7 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval)/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                    if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
                     if(!empowered && c.Effects.AttackTargets>1)
                     {
                         int count=1;
@@ -279,13 +285,13 @@ namespace YesterdayConvoy
                 if(!d.Alive || d.FrozenUntil>Clock) continue;
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
-                if(target==null || !target.Active || target.IsReviving || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||
+                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||
                     blocks && target.BlockerId!=d.EntityId)
                 {
                     target=null;
                     foreach(var unit in units)
                     {
-                        if(!unit.Active || unit.IsReviving || GroundDistance(unit.Motion.Position,d.Position)>c.DefenderRange ||
+                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>c.DefenderRange ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
                         if(target==null || unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
                     }

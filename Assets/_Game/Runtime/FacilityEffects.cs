@@ -72,12 +72,12 @@ namespace YesterdayConvoy
         void ResetFacilities()
         {
             foreach(var f in facilities)f.Reset();sealedTiles.Clear();nextSeal.Clear();nextCapture.Clear();sealRandom=1777;
-            AltarHits=GramophoneHits=AttackerGramophoneHits=BurnBursts=Ignitions=0;FacilityHealing=0;
+            AltarHits=GramophoneHits=AttackerGramophoneHits=BurnBursts=0;Ignitions=facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning);FacilityHealing=0;
         }
         void TrueDamage(DeployedUnitState u,float amount)
         {
             if(!u.Active||u.IsReviving)return;
-            u.Health=Math.Max(0,u.Health-amount);u.LastHitTime=Clock;if(u.Health<=0)DefeatUnit(u);
+            ApplyUnitHealthDamage(u,amount);
         }
         void TrueDamage(DefenderState d,float amount)
         {
@@ -129,16 +129,10 @@ namespace YesterdayConvoy
                     {
                         if(!d.Alive||Cell(d.Position)!=Cell(s.Position))continue;
                         DamageDefender(d,s.Power,CombatDamageType.Arts);
-                        if(!d.Alive||d.BurnUntil>Clock)continue;
-                        d.BurnAccumulated+=s.Power;
-                        if(d.BurnAccumulated>=100)
-                        {d.BurnAccumulated=0;d.BurnUntil=Clock+10;BurnBursts++;DamageDefender(d,120,CombatDamageType.Arts);}
+                        ApplyBurn(d,s.Power);
                     }
                 }
             }
-            foreach(var u in units)
-                if(u.Active&&!u.IsReviving&&IsRole(u,"M30"))
-                    TryIgniteReeds(u.Motion.Position);
         }
         void Activate(FacilityState f){f.Activations++;f.LastActivation=Clock;}
         void StepSealing()

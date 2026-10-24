@@ -22,10 +22,11 @@ namespace YesterdayConvoy
         public readonly float UnitResistance;
         public readonly bool Mudrock;
         public readonly bool Phalanx;
+        public readonly bool Flamechaser;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -45,6 +46,7 @@ namespace YesterdayConvoy
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
             Mudrock=mudrock;
             Phalanx=phalanx;
+            Flamechaser=flamechaser;
         }
     }
 
@@ -73,7 +75,8 @@ namespace YesterdayConvoy
             if(float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
-            var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving) return false;
+            var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || UnitInvulnerable(unit)) return false;
+            if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
             float damage=CalculateDamage(attack,UnitArmor(unit),CombatSettings.Effects.UnitResistance,type);
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
@@ -84,8 +87,8 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
                 }
             }
-            unit.Health=Mathf.Max(0,unit.Health-damage);
-            unit.LastHitTime=Clock;if(unit.Health==0) DefeatUnit(unit);return true;
+            if(damage<=0){unit.LastHitTime=Clock;return true;}
+            return ApplyUnitHealthDamage(unit,damage);
         }
         public sealed class HealingCast
         {
@@ -101,7 +104,7 @@ namespace YesterdayConvoy
         public float RegenerationMultiplier => CombatSettings.Effects.Healer && units.Exists(u=>u.Active && !u.IsReviving) ? 2 : 1;
         private float HealUnit(DeployedUnitState unit,float amount)
         {
-            if(!unit.Active || unit.IsReviving || amount<=0) return 0;
+            if(!unit.Active || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
             float restored=Mathf.Min(amount,unit.MaxHealth-unit.Health);
             if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
@@ -174,6 +177,7 @@ namespace YesterdayConvoy
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1);
         private void DefeatUnit(DeployedUnitState unit)
         {
+            if(CombatSettings.Effects.Flamechaser&&unit.FlamePhase==FlamechaserPhase.Soldier){StartEmber(unit);return;}
             unit.DeathTime=Clock;unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;
             unit.CombatTargetId=unit.BlockerId=null;
             // First defeat interrupts this life, including projectiles already in flight.
