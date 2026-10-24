@@ -94,6 +94,7 @@ namespace YesterdayConvoy
         public float Attack { get; }
         public float ColdDuration { get; }
         public float BurnDamage {get;internal set;}
+        public float NeuralDamage {get;internal set;}
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
         public bool FrozenBonusApplied { get; internal set; }
@@ -207,6 +208,7 @@ namespace YesterdayConvoy
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
+                    if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;
@@ -215,6 +217,7 @@ namespace YesterdayConvoy
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
                 if(unit.FuelDying)continue;
                 if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
+                if(c.Effects.Harvester&&StepHarvesterPassive(unit,step))continue;
                 if(unit.PillarStunnedUntil>Clock){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
@@ -230,12 +233,13 @@ namespace YesterdayConvoy
                 foreach(var d in defenders)
                     if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
-                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked);
+                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked)&&(!c.Effects.Harvester||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.IsBlocked);
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
@@ -246,7 +250,7 @@ namespace YesterdayConvoy
                     double lockEnd=c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
                         unit.LastAttackEmpowered ? unit.LastAttackTime+c.SkillInterval : double.NegativeInfinity;
                     float moveStep=(float)Math.Min(step,Math.Max(0,Clock-lockEnd));
-                    if(moveStep>0) unit.Motion.Advance(moveStep);
+                    if(moveStep>0) unit.Motion.Advance(moveStep*UnitMoveMultiplier(unit));
                 }
                 if(unit.Motion.HasArrived)
                 {
@@ -280,6 +284,7 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval)/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                    if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
                     if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
                     if(!empowered && c.Effects.AttackTargets>1)
                     {

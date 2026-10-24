@@ -38,6 +38,14 @@ namespace YesterdayConvoy
                         spike.SetPosition(2,pulse.Position+dir*(distance+.36f)+Vector3.up*.2f);
                     }
                 }
+                if(b.EngagementEnabled&&b.CombatSettings.Effects.Harvester)
+                    foreach(var u in b.Units)
+                    {
+                        if(!u.Active||u.HarvesterPhase!=HarvesterPhase.Combat)continue;
+                        bool pulse=b.Clock-u.LastHarvesterAuraAt<.3;
+                        var aura=Line(pulse?.035f:.012f,new Color(.25f,.9f,.7f,pulse?.65f:.25f),49);
+                        for(int k=0;k<=48;k++){float a=k*Mathf.PI/24;aura.SetPosition(k,u.Motion.Position+new Vector3(Mathf.Cos(a)*2.5f,.15f,Mathf.Sin(a)*2.5f));}
+                    }
                 foreach(var d in b.Defenders)
                 {
                     if(!d.Alive||d.NeuralUntil<=b.Clock)continue;

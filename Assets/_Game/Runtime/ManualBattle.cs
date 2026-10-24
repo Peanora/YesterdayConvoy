@@ -63,6 +63,12 @@ namespace YesterdayConvoy
         internal double NextHealAt;
         public bool ReviveUsed { get; internal set; }
         public bool AltarEmpowered { get; internal set; }
+        public HarvesterPhase HarvesterPhase {get;internal set;}
+        public double HarvesterPhaseStartedAt {get;internal set;}=double.NegativeInfinity;
+        public float HarvesterHealthLost {get;internal set;}
+        public int HarvesterAuraTicks {get;internal set;}
+        public double LastHarvesterAuraAt {get;internal set;}=double.NegativeInfinity;
+        internal double NextHarvesterAuraAt;
         public int CreeperRetaliations {get;internal set;}
         public double LastRetaliationAt {get;internal set;}=double.NegativeInfinity;
         internal float NextRetaliationRatio=.85f;

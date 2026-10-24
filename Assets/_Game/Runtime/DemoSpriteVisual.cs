@@ -104,6 +104,18 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
+            if(manualBattle.CombatSettings.Effects.Harvester&&deployedUnit.Active)
+            {
+                var u=deployedUnit;
+                if(u.HarvesterPhase==HarvesterPhase.Waking)
+                {FrameState="HarvesterWake";sprite.sprite=local["extra_skill_begin"].At(manualBattle.Clock-u.HarvesterPhaseStartedAt,false,out int wakeIndex);FrameIndex=wakeIndex;return;}
+                if(u.HarvesterPhase==HarvesterPhase.Combat&&manualBattle.Clock>=u.LastAttackTime+manualBattle.CombatSettings.AttackDuration)
+                {
+                    string action=u.IsMoving?"extra_skill_move":"extra_skill_idle";
+                    double elapsed=u.IsMoving?u.Motion.DistanceTravelled/(manualBattle.Settings.Speed*6):manualBattle.Clock-u.HarvesterPhaseStartedAt;
+                    FrameState=u.IsMoving?"HarvesterWalk":"HarvesterIdle";sprite.sprite=local[action].At(elapsed,true,out int activeIndex);FrameIndex=activeIndex;return;
+                }
+            }
             if(manualBattle.CombatSettings.Effects.Mandragora)
             {
                 var u=deployedUnit;double clock=presentationClock?.Invoke()??manualBattle.Clock;

@@ -27,7 +27,7 @@ namespace YesterdayConvoy
             bool paused=ProcessPointerUp(entry).Success;var unit=Battle.Units[0];Tick(2);
             paused &= Battle.Clock==0 && unit.Motion.DistanceTravelled==0;
             yield return InteractionFrame(directory,task+"-paused");
-            Battle.SetPaused(false);Tick(.35f);yield return InteractionFrame(directory,task+"-walk");
+            Battle.SetPaused(false);Tick(.35f);yield return InteractionFrame(directory,task+(unit.HarvesterPhase==HarvesterPhase.Waking?"-waking":"-walk"));
             bool snowFixture=Array.IndexOf(Environment.GetCommandLineArgs(),"-snowEffectFixture")>=0 && Battle.CombatSettings.Effects.FrozenAttackMultiplier>1;
             if(snowFixture) { Battle.TryApplyCold(Battle.Defender.EntityId,30);Battle.TryApplyCold(Battle.Defender.EntityId,30); }
             bool bonusCaptured=false,bonusValid=!snowFixture;
@@ -91,8 +91,8 @@ namespace YesterdayConvoy
                 Tick(1.05f);frozen=Battle.Defender.FrozenUntil>Battle.Clock;
                 yield return InteractionFrame(directory,task+"-frozen");
             }
-            RestartBattle();SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);
-            SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);SelectCard(true);bool three=TryDeployAt(Battle.Entry).Success;
+            RestartBattle();SelectCard(true);TryDeployAt(Battle.Entry);Tick(task=="M34"?3.3f:1.1f);
+            SelectCard(true);TryDeployAt(Battle.Entry);Tick(task=="M34"?3.3f:1.1f);SelectCard(true);bool three=TryDeployAt(Battle.Entry).Success;
             yield return InteractionFrame(directory,task+"-group");
             bool groupAttackCaptured=false;
             bool phalanxSupported=false;
@@ -132,14 +132,16 @@ namespace YesterdayConvoy
             ReturnToMonsterTests();yield return null;
             bool clean=ViewCount==0 && Battle.Units.Count==0 && Battle.CombatShots.Count==0 && Battle.Clock==0;
             Debug.Log($"MONSTER_COMBAT_CHECK: {task}; entered={entered}; paused={paused}; attacked={attacked}; hit={hit}; resolved={resolved}; three={three}; won={won}; noSkill={noSkill}; clean={clean}; frozen={frozen}.");
-            bool attackPolicy=canAttack ? attacked : !attacked && passiveMoving;
+            bool harvesterValid=task!="M34"||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.HarvesterHealthLost>0&&unit.HarvesterAuraTicks>0;
+            if(task=="M34")Debug.Log($"HARVESTER_CHECK: combat={unit.HarvesterPhase==HarvesterPhase.Combat}; selfLoss={unit.HarvesterHealthLost}; auraTicks={unit.HarvesterAuraTicks}; noInjectedHealth=True");
+            bool attackPolicy=task=="M34" ? !attacked&&harvesterValid : canAttack ? attacked : !attacked && passiveMoving;
             Debug.Log($"MONSTER_ATTACK_POLICY_CHECK: {task}; canAttack={canAttack}; policy={attackPolicy}.");
             if(snowFixture) Debug.Log($"SNOW_FIXTURE_CHECK: {task}; explicitFrozenTarget=True; bonus={bonusValid}.");
             bool casterValid=task!="M12" || coldCaptured && casterFrozen;
             if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
             bool frostValid=task!="M14" || ringCaptured && reviveCaptured && revived;
             if(task=="M14") Debug.Log($"FROSTNOVA_CHECK: ring={ringCaptured}; reviving={reviveCaptured}; revived={revived}; noInjectedStatus=True.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid && phalanxValid ? 0 : 1);
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid && phalanxValid && harvesterValid ? 0 : 1);
         }
     }
 }

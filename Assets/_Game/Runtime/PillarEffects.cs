@@ -37,7 +37,7 @@ namespace YesterdayConvoy
         }
         bool PillarObstructs(DeployedUnitState u,float step)
         {
-            Vector3 next=u.Motion.Position+u.Motion.Direction*(u.Motion.Speed*step);
+            Vector3 next=u.Motion.Position+u.Motion.Direction*(u.Motion.Speed*step*UnitMoveMultiplier(u));
             foreach(var cell in rubbleTiles)
                 if(Mathf.Abs(next.x-cell.x)<.65f&&Mathf.Abs(next.z-cell.y)<.65f)return true;
             return false;

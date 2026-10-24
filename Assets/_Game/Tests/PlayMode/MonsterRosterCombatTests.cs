@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
         }
         private string[] Ids() => c.MonsterTests.Where(x=>x.Playable && x.Id.StartsWith("CARD_M")).Select(x=>x.Id).ToArray();
         private DeployedUnitState Deploy()
-        { c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True);return c.Battle.FindUnit(r.EntityId); }
+        { c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);Assert.That(r.Success,Is.True,$"{c.Definition.Card.CardId}: {r.Failure} at {c.Battle.Clock:0.00}");return c.Battle.FindUnit(r.EntityId); }
 
         [UnityTest] public IEnumerator RegisteredRosterCanDeployFreezeAttackWinAndRestartIndependently()
         {
@@ -34,11 +34,12 @@ namespace YesterdayConvoy.Tests
                 var position=unit.Motion.Position;c.Battle.SetPaused(true);int frame=view.FrameIndex;c.Tick(3);yield return null;
                 Assert.That(unit.Motion.Position,Is.EqualTo(position));Assert.That(view.FrameIndex,Is.EqualTo(frame));
                 Assert.That(unit.SkillSP,Is.Zero);Assert.That(c.Battle.CheckSkill(unit.EntityId),Is.EqualTo(SkillFailure.NoSkill));
-                c.Battle.SetPaused(false);c.Tick(1.1f);yield return null;Deploy();c.Tick(1.1f);yield return null;Deploy();
+                c.Battle.SetPaused(false);c.Tick(id=="CARD_M34"?3.3f:1.1f);yield return null;Deploy();c.Tick(id=="CARD_M34"?3.3f:1.1f);yield return null;Deploy();
                 c.ToggleSpeed();bool attacked=false;
                 for(int i=0;i<1200 && c.Battle.Phase==BattlePhase.Running;i++)
                 { c.Tick(.03f);yield return null;attacked|=c.Battle.CombatShots.Any(s=>!s.FromDefender)||c.Battle.FlameSprays.Any(s=>s.Ticks>0)||c.Battle.Gazes.Any(s=>s.Ticks>0); }
-                Assert.That(attacked,Is.EqualTo(c.Battle.CombatSettings.CanAttack),id);Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won),id);
+                Assert.That(attacked,Is.EqualTo(c.Battle.CombatSettings.CanAttack&&!c.Battle.CombatSettings.Effects.Harvester),id);
+                if(c.Battle.CombatSettings.Effects.Harvester)Assert.That(c.Battle.Units.Any(u=>u.HarvesterAuraTicks>0&&u.HarvesterHealthLost>0),Is.True);Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won),id);
                 Assert.That(c.Battle.Breaches,Is.GreaterThan(0),id);Assert.That(c.Battle.SkillCasts,Is.Zero);
                 c.ReturnToMonsterTests();yield return null;Assert.That(c.ViewCount,Is.Zero);Assert.That(c.Battle.CombatShots,Is.Empty);
                 c.TryEnterMonsterTest(id);Assert.That(c.Battle.Units,Is.Empty);Assert.That(c.Battle.DP,Is.EqualTo(12));

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: M34_SEABORN_REAPER
   displayName: "\u94B5\u6D77\u6536\u5272\u8005"
-  moveSpeed: 0.8
+  moveSpeed: 0.15
   gateDamage: 1

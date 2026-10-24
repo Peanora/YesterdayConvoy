@@ -118,6 +118,7 @@ namespace YesterdayConvoy
                 if(effects.ArtsBarrier) detail="三层法术屏障 / 生命攻速强化\n法术测试靶 / 可观察破盾";
                 if(effects.Mudrock) detail="攻击逐次蓄力 / 最多6层\n定时补充法术屏障";
                 if(effects.Phalanx) detail="附近方阵单位相互加护甲\n折射 / 70法术抗性";
+                if(effects.Harvester) detail="受伤苏醒 / 临战加速和失血\n神经光环 / 阻挡时近战";
                 if(effects.NervousCreeper) detail="不主动攻击 / 受伤范围反击\n神经损伤爆发 / 真实伤害与眩晕";
                 if(effects.Mandragora) detail="石盾减伤 / 首次重生与悬浮\n凝视 / 支柱破盾和倒塌";
                 if(effects.Flamerazer) detail="半秒喷火 / 积累灼燃\n死亡爆炸 / 同类连锁与支柱倒塌";

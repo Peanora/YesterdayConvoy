@@ -52,6 +52,7 @@ namespace YesterdayConvoy
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
             Time.timeScale=0;
             bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
+            bool harvester=Battle.CombatSettings.Effects.Harvester,wakePose=false,combatPose=false,auraPose=false;
             bool creeper=Battle.CombatSettings.Effects.NervousCreeper,pulsePose=false,neuralPose=false;
             bool mandragora=Battle.CombatSettings.Effects.Mandragora,gazePose=false,brokenPose=false,rebornPose=false,airPose=false,warningPose=false,toppled=false;
             bool flamerazer=Battle.CombatSettings.Effects.Flamerazer,startPose=false,loopPose=false,endPose=false,blastPose=false;
@@ -76,6 +77,13 @@ namespace YesterdayConvoy
                     if(!neuralPose&&Battle.NeuralBursts>0){neuralPose=true;yield return CaptureFrame(folder,"neural-burst");}
                 }
                 var flame=Battle.Units.FirstOrDefault();
+                if(harvester&&flame!=null)
+                {
+                    if(!wakePose&&flame.HarvesterPhase==HarvesterPhase.Waking){wakePose=true;yield return CaptureFrame(folder,"harvester-waking");}
+                    if(!combatPose&&flame.HarvesterPhase==HarvesterPhase.Combat){combatPose=true;yield return CaptureFrame(folder,"harvester-combat");}
+                    if(!auraPose&&flame.HarvesterAuraTicks>0&&Battle.Clock>=flame.LastHarvesterAuraAt+.3){auraPose=true;yield return CaptureFrame(folder,"neural-aura");}
+                    if(!neuralPose&&Battle.NeuralBursts>0&&Battle.Clock>=Battle.Defender.LastNeuralBurstAt+.35){neuralPose=true;yield return CaptureFrame(folder,"neural-burst");}
+                }
                 if(mandragora&&flame!=null)
                 {
                     if(!gazePose&&flame.Gaze!=null&&flame.Gaze.Ticks>0){gazePose=true;yield return CaptureFrame(folder,"gaze");}
@@ -92,7 +100,7 @@ namespace YesterdayConvoy
                     if(!reviveCaptured&&flame.FlamePhase==FlamechaserPhase.Reforming)
                     {reviveCaptured=true;yield return CaptureFrame(folder,"ember-reforming");}
                 }
-                bool effect=creeper?pulsePose&&neuralPose&&Battle.Units.Any(u=>u.IsMoving&&u.CreeperRetaliations>=4):mandragora?gazePose&&brokenPose&&rebornPose&&airPose&&warningPose&&Battle.PillarCommands.Any(p=>p.Applied)&&flame.StoneAuraHits>0:flamerazer?startPose&&loopPose&&endPose&&blastPose&&Battle.FuelExplosions.Count(e=>e.Resolved)>=3&&Battle.Facilities.Any(f=>f.Collapsed)&&Battle.BurnBursts>0&&Battle.RubbleTiles.Any():mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
+                bool effect=harvester?wakePose&&combatPose&&auraPose&&neuralPose&&flame.IsMoving&&flame.HarvesterHealthLost>0:creeper?pulsePose&&neuralPose&&Battle.Units.Any(u=>u.IsMoving&&u.CreeperRetaliations>=4):mandragora?gazePose&&brokenPose&&rebornPose&&airPose&&warningPose&&Battle.PillarCommands.Any(p=>p.Applied)&&flame.StoneAuraHits>0:flamerazer?startPose&&loopPose&&endPose&&blastPose&&Battle.FuelExplosions.Count(e=>e.Resolved)>=3&&Battle.Facilities.Any(f=>f.Collapsed)&&Battle.BurnBursts>0&&Battle.RubbleTiles.Any():mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
                     mapIndex==1?Battle.SealedTileCount>0:
                     SelectedRole==1?flame!=null&&emberCaptured&&Battle.CombatShots.Any(s=>s.Applied&&s.BurnDamage>0)&&(reveal?flame.Resolution==UnitResolution.Dead:flame.EmberRevivals>0):Battle.AttackerGramophoneHits>0;
                 if(effect&&!captured)
@@ -107,6 +115,7 @@ namespace YesterdayConvoy
             }
             Battle.SetPaused(true);double clock=Battle.Clock;Battle.Advance(10);bool pause=Battle.Clock==clock;
             int altar=Battle.AltarHits,seal=Battle.SealedTileCount,ignitions=Battle.Ignitions,gram=Battle.GramophoneHits;
+            if(harvester)Debug.Log($"HARVESTER_PLAYER_CHECK: waking={wakePose}; combat={combatPose}; aura={auraPose}; neural={neuralPose}; selfHealthLost={Battle.Units.Sum(u=>u.HarvesterHealthLost)}; noInjectedHealth=True");
             if(creeper)Debug.Log($"CREEPER_PLAYER_CHECK: retaliation={pulsePose}; neural={neuralPose}; pulses={Battle.CreeperPulses.Count}; bursts={Battle.NeuralBursts}; noOrdinaryAttack={!Battle.CombatShots.Any(s=>!s.FromDefender)}; noInjectedDamage=True");
             if(mandragora)Debug.Log($"MANDRAGORA_PLAYER_CHECK: gaze={gazePose}; manualPillar={toppled}; broken={brokenPose}; reborn={rebornPose}; airborne={airPose}; warning={warningPose}; collapsed={Battle.PillarCommands.Any(p=>p.Applied)}; aura={Battle.Units.Sum(u=>u.StoneAuraHits)}; noInjectedHealth=True");
             if(flamerazer)Debug.Log($"FLAMERAZER_PLAYER_CHECK: start={startPose}; loop={loopPose}; end={endPose}; explosion={blastPose}; chain={Battle.FuelExplosions.Count(e=>e.Resolved)}; pillars={Battle.Facilities.Count(f=>f.Collapsed)}; rubble={Battle.RubbleTiles.Count()}; burn={Battle.BurnBursts}; noInjectedDamage=True");
@@ -129,14 +138,15 @@ namespace YesterdayConvoy
             foreach(Transform child in presentation)Destroy(child.gameObject);
             actors.Clear();facilityViews.Clear();sealViews.Clear();rubbleViews.Clear();beams.Clear();
             var original=roles[role].Snapshot();var c=roles[role].Engagement.Snapshot();
-            bool flamechaser=c.Effects.Flamechaser,flamerazer=c.Effects.Flamerazer,mandragora=c.Effects.Mandragora,creeper=c.Effects.NervousCreeper;
+            bool flamechaser=c.Effects.Flamechaser,flamerazer=c.Effects.Flamerazer,mandragora=c.Effects.Mandragora,creeper=c.Effects.NervousCreeper,harvester=c.Effects.Harvester;
             var settings=new ManualBattleSettings(original.CardId,original.UnitId,30,1,12,1,.5f,
                 creeper?1500:flamerazer?450:flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
             var combat=new EngagementSettings(unitAttack:c.UnitAttack,unitArmor:c.UnitArmor,unitRange:c.UnitRange,unitInterval:c.UnitInterval,
-                defenderHealth:15000,defenderAttack:creeper?170:mandragora?110:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:creeper||flamerazer?3:0,
+                defenderHealth:15000,defenderAttack:harvester?4:creeper?170:mandragora?110:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:harvester||creeper||flamerazer?3:0,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
                 attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack,revealsInvisible:reveal);
             Vector3 guard=mapIndex==0?new Vector3(-2,.35f,1):mapIndex==1?new Vector3(-2,.35f,1):role==1?new Vector3(-3,.35f,0):new Vector3(2.5f,.35f,-1);
+            if(harvester)guard=new Vector3(-3,.35f,1);
             if(creeper)guard=new Vector3(-3,.35f,1);
             if(mandragora)guard=new Vector3(-2,.35f,2);
             if(flamerazer)guard=new Vector3(-2,.35f,2);
@@ -293,7 +303,7 @@ namespace YesterdayConvoy
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(620,bottom+40,160,35),"眩晕喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2);
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(790,bottom+40,160,35),"沉默喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2,true);
             if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
-            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(Battle.CombatSettings.Effects.NervousCreeper?$" 刺伤{u.CreeperRetaliations}":Battle.CombatSettings.Effects.Mandragora?$" {(u.MandraPhase==MandragoraPhase.Reborn?"重生":u.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} {(u.StoneShield?"石盾":"破盾")}":u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
+            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(Battle.CombatSettings.Effects.Harvester?$" {(u.HarvesterPhase==HarvesterPhase.Dormant?"待命":u.HarvesterPhase==HarvesterPhase.Waking?"苏醒":"临战")} 失血{u.HarvesterHealthLost:0}":Battle.CombatSettings.Effects.NervousCreeper?$" 刺伤{u.CreeperRetaliations}":Battle.CombatSettings.Effects.Mandragora?$" {(u.MandraPhase==MandragoraPhase.Reborn?"重生":u.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} {(u.StoneShield?"石盾":"破盾")}":u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
                 (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
             foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(d.NeuralUntil>Battle.Clock?$" 神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s":d.NeuralAccumulated>0?$" 神经 {d.NeuralAccumulated:0}/100":Battle.DefenderCamouflaged(d)?" 迷彩":""));
             foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):f.Settings.Kind==FacilityKind.Pillar?(f.Collapsed?"支柱已倒塌":"破碎支柱"):"祭坛");
