@@ -39,7 +39,7 @@ MonoBehaviour:
   noOrdinaryAttack: 0
   attackDuration: 1
   attackWindup: 0.5
-  damageType: 1
+  damageType: 0
   defenderResistance: 0
   armorShred: 0
   blastAttack: 0

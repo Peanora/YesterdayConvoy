@@ -64,6 +64,8 @@ namespace YesterdayConvoy
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public float ArmorReduction { get; internal set; }
+        public float BurnAccumulated {get;internal set;}
+        public double BurnUntil {get;internal set;}=double.NegativeInfinity;
         public double ColdUntil { get; internal set; } = double.NegativeInfinity;
         public double FrozenUntil { get; internal set; } = double.NegativeInfinity;
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
@@ -167,6 +169,7 @@ namespace YesterdayConvoy
         private void StepEngagement(float step)
         {
             EngagementSettings c=CombatSettings;
+            StepFacilities(step);
             ResolveDeathEffects();
             ResolveHealing();
             foreach(var shot in combatShots)
@@ -187,7 +190,7 @@ namespace YesterdayConvoy
                     shot.FrozenBonusApplied=defender.FrozenUntil>Clock && c.Effects.FrozenAttackMultiplier>1;
                     float attack=shot.Attack*(shot.FrozenBonusApplied ? c.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
-                    DamageDefender(defender,attack,c.Effects.DamageType);
+                    DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:c.Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
                     HealUnit(unit,shot.DamageDealt*c.Effects.LifeSteal);
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
@@ -301,12 +304,24 @@ namespace YesterdayConvoy
             var blocker=FindDefender(unit.BlockerId);
             if(blocker!=null && blocker.Alive && GroundDistance(unit.Motion.Position,blocker.Position)<=range)
             { unit.CombatTargetId=blocker.EntityId; return blocker; }
+            if(IsRole(unit,"M26"))
+            {
+                DefenderState protocolTarget=null;float closest=float.PositiveInfinity;
+                foreach(var d in defenders)
+                {
+                    if(!d.Alive||DefenderCamouflaged(d)||GroundDistance(unit.Motion.Position,d.Position)>range||
+                        !facilities.Exists(f=>f.Settings.Kind==FacilityKind.Gramophone&&GroundDistance(unit.Motion.Position,f.Settings.Position)<=4&&GroundDistance(d.Position,f.Settings.Position)<=1.5f))continue;
+                    float gap=GroundDistance(unit.Motion.Position,d.Position);
+                    if(gap<closest){closest=gap;protocolTarget=d;}
+                }
+                if(protocolTarget!=null){unit.CombatTargetId=protocolTarget.EntityId;return protocolTarget;}
+            }
             var previous=FindDefender(unit.CombatTargetId);
-            if(previous!=null && previous.Alive && GroundDistance(unit.Motion.Position,previous.Position)<=range) return previous;
+            if(previous!=null && previous.Alive && !DefenderCamouflaged(previous) && GroundDistance(unit.Motion.Position,previous.Position)<=range) return previous;
             DefenderState nearest=null; float distance=float.PositiveInfinity;
             foreach(var d in defenders)
             {
-                if(!d.Alive) continue;
+                if(!d.Alive || DefenderCamouflaged(d)) continue;
                 float gap=GroundDistance(unit.Motion.Position,d.Position);
                 if(gap>range) continue;
 

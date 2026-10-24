@@ -62,6 +62,7 @@ namespace YesterdayConvoy
         public double HealingStartedAt { get; internal set; } = double.NegativeInfinity;
         internal double NextHealAt;
         public bool ReviveUsed { get; internal set; }
+        public bool AltarEmpowered { get; internal set; }
         public double ReviveAt { get; internal set; } = double.NegativeInfinity;
         public bool IsReviving { get; internal set; }
         public double IceRingStartedAt { get; internal set; } = double.NegativeInfinity;
@@ -139,6 +140,7 @@ namespace YesterdayConvoy
             ShotsFired = Breaches = 0; LastShotEntityId = null; LastShotTime = double.NegativeInfinity;
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
             ResetEngagement();
+            ResetFacilities();
         }
 
         public void Begin()

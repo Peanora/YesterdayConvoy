@@ -21,6 +21,7 @@ namespace YesterdayConvoy.Editor
             new[]{ V(-6,1),V(-3,1),V(-3,-2),V(2,-2),V(2,2),V(6,2) }
         };
         static Vector2Int V(int x,int z) => new Vector2Int(x,z);
+        public static Vector3[] RouteFor(int index)=>Routes[index].Select(p=>new Vector3(p.x,0,p.y)).ToArray();
 
         [MenuItem("Yesterday Convoy/Map Previews/Generate Three Scenes and Images")]
         public static void Generate()
