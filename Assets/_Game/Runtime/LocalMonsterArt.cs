@@ -5,22 +5,27 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    // Optional approved local media. Public clones never substitute another character's art.
+    // Approved media ships with source. Missing media never substitutes another character's art.
     internal sealed class LocalMonsterArt
     {
-        private static readonly HashSet<string> Tasks = new HashSet<string> { "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10" };
+        private static readonly HashSet<string> Tasks = new HashSet<string> {
+            "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10",
+            "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20", "M21", "M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30", "M31", "M32", "M33", "M34", "M35", "M36", "M37", "M38" };
         private static readonly Dictionary<string, LocalMonsterArt> Cache = new Dictionary<string, LocalMonsterArt>();
         private readonly Dictionary<string, Clip> clips = new Dictionary<string, Clip>();
         internal Sprite Portrait { get; private set; }
         internal float ReferenceSpeed { get; private set; }
         internal float Height { get; private set; }
+        internal bool HasAttack => clips.ContainsKey("attack");
+        internal bool HasClip(string key) => clips.ContainsKey(key);
         internal float DeathDuration => clips["death"].Duration;
         internal Clip this[string key] => clips[key];
         [Serializable] private sealed class Manifest
-        { public int version; public string task; public float ppu, referenceSpeed, height; public ClipData[] clips; }
+        { public int version; public bool noAttackClip; public string task; public float ppu, referenceSpeed, height; public ClipData[] clips; }
         [Serializable] private sealed class ClipData
         { public string key; public int count, cell, columns; public float duration, pivotX, pivotY; public Page[] pages; }
         [Serializable] private sealed class Page { public string file; public int count, width, height; }
+        [Serializable] private sealed class ExtraManifest { public ClipData[] clips; }
         internal sealed class Clip
         {
             internal Sprite[] Frames;
@@ -46,9 +51,10 @@ namespace YesterdayConvoy
             {
                 var data = JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(root, "manifest.json")));
                 if (data == null || data.version != 1 || data.task != task || !Positive(data.ppu) || !Positive(data.referenceSpeed) ||
-                    !Positive(data.height) || data.clips?.Length != 4) throw new InvalidDataException("Invalid monster manifest.");
+                    !Positive(data.height) || data.clips?.Length != (data.noAttackClip ? 3 : 4) || data.noAttackClip && task!="M33") throw new InvalidDataException("Invalid monster manifest.");
                 var art = new LocalMonsterArt { ReferenceSpeed = data.referenceSpeed, Height = data.height };
-                var required = new HashSet<string> { "idle", "walk", "attack", "death" };
+                var required = new HashSet<string> { "idle", "walk", "death" };
+                if(!data.noAttackClip) required.Add("attack");
                 foreach (var item in data.clips)
                 {
                     if (!required.Remove(item.key) || item.count <= 0 || item.count > 600 || !Positive(item.duration) ||
@@ -73,10 +79,37 @@ namespace YesterdayConvoy
                     if (frames.Count != item.count) throw new InvalidDataException("Frame count mismatch.");
                     art.clips.Add(item.key, new Clip { Frames = frames.ToArray(), Duration = item.duration });
                 }
+                // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
+                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} : Array.Empty<string>();
+                if(extraKeys.Length>0)
+                {
+                    string extraRoot=Path.Combine(root,"ExtraClips");
+                    var extra=JsonUtility.FromJson<ExtraManifest>(File.ReadAllText(Path.Combine(extraRoot,"manifest.json")));
+                    foreach(var item in extra.clips) if(Array.IndexOf(extraKeys,item.key)>=0)
+                    {
+                        var frames=new List<Sprite>();
+                        foreach(var page in item.pages)
+                        {
+                            var texture=Load(extraRoot,page.file,allocated);
+                            if(texture.width!=page.width || texture.height!=page.height || item.cell<=0 || item.columns<=0 || page.count<=0 ||
+                                page.width!=item.columns*item.cell || page.height%item.cell!=0 || page.count>item.columns*(page.height/item.cell))
+                                throw new InvalidDataException("Extra atlas layout mismatch.");
+                            for(int i=0;i<page.count;i++)
+                            {
+                                var frame=Sprite.Create(texture,new Rect(i%item.columns*item.cell,page.height-(i/item.columns+1)*item.cell,item.cell,item.cell),
+                                    new Vector2(item.pivotX,item.pivotY),data.ppu,0,SpriteMeshType.FullRect);
+                                frames.Add(frame);allocated.Add(frame);
+                            }
+                        }
+                        if(frames.Count!=item.count || !Positive(item.duration)) throw new InvalidDataException("Extra frame count mismatch.");
+                        art.clips.Add(item.key,new Clip {Frames=frames.ToArray(),Duration=item.duration});
+                    }
+                    foreach(string key in extraKeys) if(!art.HasClip(key)) throw new InvalidDataException("Required effect animation missing: "+key);
+                }
                 var portrait = Load(root, "portrait.png", allocated);
                 art.Portrait = Sprite.Create(portrait, new Rect(0, 0, portrait.width, portrait.height), new Vector2(.5f, 0), data.ppu);
                 allocated.Add(art.Portrait); Cache[task] = art;
-                Debug.Log("MONSTER_LOCAL_ART_LOADED: " + task + "; approved idle/walk/attack/death; no active skill.");
+                Debug.Log("MONSTER_LOCAL_ART_LOADED: " + task + "; approved idle/walk/death; attack clip="+art.HasAttack+"; no active skill.");
                 return art;
             }
             catch (Exception e)

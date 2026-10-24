@@ -38,7 +38,16 @@ namespace YesterdayConvoy
             }
             else if(CurrentLocalArt!=null)
             {
-                GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+" · 普通攻击 · 无主动技能",smallStyle);
+                GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
+                    (Battle.CombatSettings.Effects.FrostNova ? " · 冰环减速 · 首次倒下复起" :
+                     Battle.CombatSettings.Effects.Mudrock ? " · 攻击蓄力 · 定时补充法术屏障" :
+                     Battle.CombatSettings.Effects.ArtsBarrier ? " · 三层法术屏障 · 屏障期间生命/攻速强化" :
+                     Battle.CombatSettings.Effects.Healer ? " · 自动治疗受伤友军 · 不攻击守军" :
+                     Battle.CombatSettings.Effects.LifeSteal>0 ? " · 三目标法术攻击 · 伤害吸血" :
+                     Battle.CombatSettings.Effects.RegenerationFraction>0 ? $" · 每秒恢复{Battle.CombatSettings.Effects.RegenerationFraction*100:0.##}%生命" :
+                     Battle.CombatSettings.Effects.ColdAttackEvery>0 ? $" · 每{Battle.CombatSettings.Effects.ColdAttackEvery}次普攻附加寒冷" :
+                     Battle.CombatSettings.Effects.FrozenAttackMultiplier>1 ? $" · 冻结目标攻击倍率×{Battle.CombatSettings.Effects.FrozenAttackMultiplier:0.##}" :
+                     Battle.CombatSettings.CanAttack ? " · 普通攻击 · 无主动技能" : " · 不普攻 · 特殊机制待做"),smallStyle);
                 GUI.Label(new Rect(24,659,650,26),$"可部署{Battle.Settings.DeploymentLimit}次 · 单次{Battle.Settings.DeploymentCost} DP · 空格暂停",smallStyle);
             }
             else if(TalulahActive)

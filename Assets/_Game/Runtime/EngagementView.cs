@@ -10,6 +10,8 @@ namespace YesterdayConvoy
         private sealed class Puff { public LineRenderer Ring; public Vector3 Position; public double Time; public bool Death; }
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
+        private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
+        private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
         private ManualBattleController owner;
         private EngagementDefinition definition;
@@ -51,6 +53,26 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
+            int healingIndex=0;
+            foreach(var cast in b.HealingCasts)
+                foreach(string targetId in cast.TargetIds)
+                {
+                    if(healingIndex>=healingViews.Count) healingViews.Add(CreateLine("Healing link",.035f));
+                    var line=healingViews[healingIndex++];var source=b.FindUnit(cast.SourceId);var healed=b.FindUnit(targetId);
+                    double age=time-cast.ImpactAt;
+                    line.enabled=cast.Resolved && cast.HealthRestored>0 && age>=0 && age<.6 && source!=null && healed!=null && source.Active && healed.Active;
+                    if(!line.enabled) continue;
+                    line.startColor=line.endColor=new Color(.25f,1,.55f,1-(float)age/.6f);
+                    if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
+                    else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
+                }
+            for(int i=0;i<b.IceRings.Count;i++)
+            {
+                if(i>=iceRingViews.Count) iceRingViews.Add(CreateLine("FrostNova ice ring",.09f));
+                var ring=b.IceRings[i];float age=(float)(time-ring.Time);
+                var line=iceRingViews[i];line.enabled=age>=0 && age<1;
+                if(line.enabled) Ring(line,ring.Position+Vector3.up*.08f,Mathf.Lerp(.1f,2,age),new Color(.4f,.9f,1,1-age),null);
+            }
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
             kroos.transform.position = d.Position;
@@ -66,7 +88,7 @@ namespace YesterdayConvoy
             kroos.transform.position += cam.transform.right * recoil;
             kroos.sortingOrder = DemoSpriteVisual.GetSortingOrder(cam, d.Position) + 30;
             Color tint = time < d.LastHitTime + 0.14 ? new Color(1, 0.5f, 0.45f) : Color.white;
-            if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time)) tint=new Color(.45f,.8f,1);
+            if(time>=d.LastHitTime+.14 && (d.ColdUntil>time || d.FrozenUntil>time || d.FrostSlowUntil>time)) tint=new Color(.45f,.8f,1);
             tint.a = 1 - death; kroos.color = tint;
             range.enabled = d.Alive;
             range.startColor = range.endColor = new Color(0.45f, 0.8f, 0.88f, 0.25f);
@@ -81,7 +103,8 @@ namespace YesterdayConvoy
                 float fade=other.Alive ? 1 : 1-Mathf.Clamp01((float)(time-other.DeathTime)/.45f);
                 v.enabled=fade>0; v.transform.position=other.Position; v.transform.rotation=cam.transform.rotation;
                 v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
-                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
+                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) :
+                    other.ColdUntil>time || other.FrozenUntil>time ? new Color(.45f,.8f,1,fade) : new Color(1,1,1,fade); v.color=color;
             }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
@@ -136,8 +159,11 @@ namespace YesterdayConvoy
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
             Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
+            if(shot.FromDefender && b.CombatSettings.DefenderDamageType==CombatDamageType.Arts) color=new Color(.8f,.4f,1);
             if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
             else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
+            if(shot.FrozenBonusApplied) color=new Color(.45f,.95f,1);
+            if(!shot.FromDefender && shot.ColdDuration>0) color=new Color(.2f,.85f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
             view.Trail.enabled = flying;
             if (flying)
@@ -195,7 +221,8 @@ namespace YesterdayConvoy
             if(v.Impact.enabled)
             {
                 v.Impact.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,shot.Destination)+50;
-                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,new Color(1,.76f,.28f,1-age/.16f),cam);
+                Color color=shot.FrozenBonusApplied ? new Color(.45f,.95f,1,1-age/.16f) : new Color(1,.76f,.28f,1-age/.16f);
+                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,color,cam);
             }
         }
 
@@ -283,6 +310,8 @@ namespace YesterdayConvoy
         {
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
+            foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
+            foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
         private void OnDestroy() { ClearTransient(); if (material != null) Destroy(material); }

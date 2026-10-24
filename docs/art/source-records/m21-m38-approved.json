@@ -1,0 +1,632 @@
+[
+  {
+    "task": "M21",
+    "name": "宿主士兵",
+    "reference": "https://prts.wiki/w/%E5%AE%BF%E4%B8%BB%E5%A3%AB%E5%85%B5",
+    "model": "enemy_1043_zomsabr",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1043_zomsbr/",
+    "files": [
+      {
+        "file": "enemy_1043_zomsabr.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1043_zomsbr/enemy_1043_zomsabr.skel",
+        "bytes": 38084,
+        "sha256": "c68b9c3abb5147776a2feb9f9010b97ae017793b85140e8c810905a8b057aa04",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1043_zomsabr.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1043_zomsbr/enemy_1043_zomsabr.atlas",
+        "bytes": 2436,
+        "sha256": "fdb723377222655cf4405b6054b446ff5bec82a1cdb5dd568f0a973ff1f8970b",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1043_zomsabr.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1043_zomsbr/enemy_1043_zomsabr.png",
+        "bytes": 40949,
+        "sha256": "5a51864e48a5121a698f4e0309d70d3c3f41e5b102adff9270a5971d2608b984",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M21",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M22",
+    "name": "宿主拾荒者",
+    "reference": "https://prts.wiki/w/%E5%AE%BF%E4%B8%BB%E6%8B%BE%E8%8D%92%E8%80%85",
+    "model": "enemy_1044_zomstr",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr/",
+    "files": [
+      {
+        "file": "enemy_1044_zomstr.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr/enemy_1044_zomstr.skel",
+        "bytes": 43801,
+        "sha256": "79464ee01df9040fdbfc3053cafcc577a1e9a9b038dab49d70c05faedf0d3b9b",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1044_zomstr.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr/enemy_1044_zomstr.atlas",
+        "bytes": 2677,
+        "sha256": "a13f104ca68bf8daf07b3af984e270e98d5b9d6fb1e44181a5b52f811cd7fd6d",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1044_zomstr.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr/enemy_1044_zomstr.png",
+        "bytes": 53105,
+        "sha256": "793bb2bbac94a586c8ebcb258a807807c1899866c9d178904d4282b3cf1a6e63",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M22",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M23",
+    "name": "宿主流浪者",
+    "reference": "https://prts.wiki/w/%E5%AE%BF%E4%B8%BB%E6%B5%81%E6%B5%AA%E8%80%85",
+    "model": "enemy_1044_zomstr_2",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr_2/",
+    "files": [
+      {
+        "file": "enemy_1044_zomstr_2.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr_2/enemy_1044_zomstr_2.skel",
+        "bytes": 43801,
+        "sha256": "d3f0736c7a4f83f63a5ae0c06ce93115d5de24028c1b788e9fd7e6b0703a746b",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1044_zomstr_2.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr_2/enemy_1044_zomstr_2.atlas",
+        "bytes": 2679,
+        "sha256": "9981104d6d4462b999d525d71c7757ea3d691a7b92b7736f1f2165b54fc74ed5",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1044_zomstr_2.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1044_zomstr_2/enemy_1044_zomstr_2.png",
+        "bytes": 52748,
+        "sha256": "3a164bf3b0a8a41c4fe18c16932e5ef0e0f898be72c8b04407aaf80fa0cebbb4",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M23",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M24",
+    "name": "萨卡兹宿主百夫长",
+    "reference": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%AE%BF%E4%B8%BB%E7%99%BE%E5%A4%AB%E9%95%BF",
+    "model": "enemy_1114_rgrdmn",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1114_rgrdmn/",
+    "files": [
+      {
+        "file": "enemy_1114_rgrdmn.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1114_rgrdmn/enemy_1114_rgrdmn.skel",
+        "bytes": 34035,
+        "sha256": "09974f1d6286ec5d52dc42eeda172db4dd4d32cddded49bbf672c1c432f75699",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1114_rgrdmn.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1114_rgrdmn/enemy_1114_rgrdmn.atlas",
+        "bytes": 2665,
+        "sha256": "a466eb33651d4c123c855ee1a886a0a181299b146f7f424ba6e42f43ec142b1b",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1114_rgrdmn.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1114_rgrdmn/enemy_1114_rgrdmn.png",
+        "bytes": 73418,
+        "sha256": "0b952301eb6e8676c7f5b7afcb6a5e3ec3447e852ee726679634ef4962556d2a",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M24",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M25",
+    "name": "梅菲斯特",
+    "reference": "https://prts.wiki/w/%E6%A2%85%E8%8F%B2%E6%96%AF%E7%89%B9",
+    "model": "enemy_1507_mephi",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/",
+    "files": [
+      {
+        "file": "enemy_1507_mephi.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.skel",
+        "bytes": 138911,
+        "sha256": "39af3ff1b5065657e772841895ffd3117ac4b2b0d14953c15b1daa3a20a12ed9",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1507_mephi.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.atlas",
+        "bytes": 6300,
+        "sha256": "c7a935a6aa157427f5f23f004539c1bc948616b8cb213b7a439bb37ad2f2485c",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1507_mephi.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.png",
+        "bytes": 56556,
+        "sha256": "5500a9b6937cdfb81f9a5ce14facc9dd804cac72dee496d23505e910ef27c8ea",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M25",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M26",
+    "name": "泥岩小队掷能者",
+    "reference": "https://prts.wiki/w/%E6%B3%A5%E5%B2%A9%E5%B0%8F%E9%98%9F%E6%8E%B7%E8%83%BD%E8%80%85",
+    "model": "enemy_1090_mdsnpr",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr/",
+    "files": [
+      {
+        "file": "enemy_1090_mdsnpr.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr/enemy_1090_mdsnpr.skel",
+        "bytes": 115607,
+        "sha256": "989047d55c618b630b17321c11ad87bbd52e32accf303aef8d35bc7fe54b4b1c",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1090_mdsnpr.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr/enemy_1090_mdsnpr.atlas",
+        "bytes": 2638,
+        "sha256": "8fcb7a4c8e326a465c22428e72d4a65ba2b41417925e67e7afcf318a817c5c53",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1090_mdsnpr.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr/enemy_1090_mdsnpr.png",
+        "bytes": 56202,
+        "sha256": "fcd74d62e00e68900771e2ecdc21ca89c5ad408d4c798d9686bfe0622523c7f0",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M26",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M27",
+    "name": "泥岩小队践行者",
+    "reference": "https://prts.wiki/w/%E6%B3%A5%E5%B2%A9%E5%B0%8F%E9%98%9F%E8%B7%B5%E8%A1%8C%E8%80%85",
+    "model": "enemy_1091_mdhmmr",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr/",
+    "files": [
+      {
+        "file": "enemy_1091_mdhmmr.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr/enemy_1091_mdhmmr.skel",
+        "bytes": 49456,
+        "sha256": "f0a8ab371717b6a59f1801f90edc9c24f3d57af6c1f8b632d4e328d7dd221d83",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1091_mdhmmr.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr/enemy_1091_mdhmmr.atlas",
+        "bytes": 2894,
+        "sha256": "e53be5f2fdd39ebd4a3b6c678398f1d22ea54c327274ed2d411d07396759c94f",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1091_mdhmmr.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr/enemy_1091_mdhmmr.png",
+        "bytes": 55387,
+        "sha256": "07053ff0e2be7426f99bcf3c7dae16279690230033bb0c1c19acf7e317bd6a95",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M27",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M28",
+    "name": "泥岩(敌方)",
+    "reference": "https://prts.wiki/w/%E6%B3%A5%E5%B2%A9%28%E6%95%8C%E6%96%B9%29",
+    "model": "enemy_1511_mdrock",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/",
+    "files": [
+      {
+        "file": "enemy_1511_mdrock.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.skel",
+        "bytes": 140340,
+        "sha256": "8e81c6eabdd885a0d1daf08c2aa7c78ff83f7d857bafe7671b83b81c01e8ff06",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1511_mdrock.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.atlas",
+        "bytes": 4564,
+        "sha256": "2d06685948ea9db1f008d6b1a9791b2816fb5d7c44edfcd60f7b03ecec5f51d3",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1511_mdrock.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.png",
+        "bytes": 80806,
+        "sha256": "03d3577221e00fca5bc81add8ef221bcbe4dc00068cc103e04386fe238943164",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M28",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M29",
+    "name": "深池方阵战士",
+    "reference": "https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E6%96%B9%E9%98%B5%E6%88%98%E5%A3%AB",
+    "model": "enemy_1169_duphx",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1169_duphlx/",
+    "files": [
+      {
+        "file": "enemy_1169_duphx.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1169_duphlx/enemy_1169_duphx.skel",
+        "bytes": 40359,
+        "sha256": "e9264e8089406d4ef920d1f11b3d8b27637a038fd69858d4e230455809022107",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1169_duphx.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1169_duphlx/enemy_1169_duphx.atlas",
+        "bytes": 2772,
+        "sha256": "01c3dc8e0211ee9dbf914c27b46e407f005f172ef104fd083544d3f0a669f29d",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1169_duphx.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1169_duphlx/enemy_1169_duphx.png",
+        "bytes": 47890,
+        "sha256": "247c76bfe5e79017db189a2e530a17f604e970cf5a8419d7b3d92da533828665",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M29",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M30",
+    "name": "深池逐火战士",
+    "reference": "https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E9%80%90%E7%81%AB%E6%88%98%E5%A3%AB",
+    "model": "enemy_1288_duskls",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1288_duskls/",
+    "files": [
+      {
+        "file": "enemy_1288_duskls.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1288_duskls/enemy_1288_duskls.skel",
+        "bytes": 114903,
+        "sha256": "8f9aac10fd6af1eb7bff676a015bd275188d8e1c67d9a13756e9454d8dc0fe7f",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1288_duskls.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1288_duskls/enemy_1288_duskls.atlas",
+        "bytes": 2933,
+        "sha256": "e298b709be6a323291b197ae4450d330401aed979e27facd60e78b18956c2629",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1288_duskls.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1288_duskls/enemy_1288_duskls.png",
+        "bytes": 62401,
+        "sha256": "6073e748f9c4f17b5d321c3dfd6d921fa1b65198f68bbac20c41a56a852521d8",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M30",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M31",
+    "name": "深池焚毁者",
+    "reference": "https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E7%84%9A%E6%AF%81%E8%80%85",
+    "model": "enemy_1173_duspfr",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1173_duspfr/",
+    "files": [
+      {
+        "file": "enemy_1173_duspfr.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1173_duspfr/enemy_1173_duspfr.skel",
+        "bytes": 64877,
+        "sha256": "9ad98ebf78e7a0296fa69d4c125cdcfe10be5daa6eb57da42618804316b1d1c6",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1173_duspfr.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1173_duspfr/enemy_1173_duspfr.atlas",
+        "bytes": 2787,
+        "sha256": "b3c441624de5983bef0f0dfeb9ca1434ce28ec1555b91f9ac65bd68175cd3f03",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1173_duspfr.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1173_duspfr/enemy_1173_duspfr.png",
+        "bytes": 65618,
+        "sha256": "3b36a7de3934efa7c36ab3f025c3a17e5c4d7f18e091d8d591b552bc3b435725",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M31",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M32",
+    "name": "蔓德拉",
+    "reference": "https://prts.wiki/w/%E8%94%93%E5%BE%B7%E6%8B%89",
+    "model": "enemy_1523_mandra",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/",
+    "files": [
+      {
+        "file": "enemy_1523_mandra.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.skel",
+        "bytes": 597714,
+        "sha256": "fc7f0cd524d6e244a6474149a054270148b38f9e88d46d7f804003c0fdae01a7",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1523_mandra.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.atlas",
+        "bytes": 7703,
+        "sha256": "3949ea4ab28d7aefff658b0573d8fa79ad098725c19e33fd67fa3d12a8776063",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1523_mandra.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.png",
+        "bytes": 82273,
+        "sha256": "a89ca545f8142c137753d92257483c46925ebf5f2bcf779171d563e1d3c33e97",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M32",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M33",
+    "name": "囊海爬行者",
+    "reference": "https://prts.wiki/w/%E5%9B%8A%E6%B5%B7%E7%88%AC%E8%A1%8C%E8%80%85",
+    "model": "enemy_1152_dsurch",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1152_dsurch/",
+    "files": [
+      {
+        "file": "enemy_1152_dsurch.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1152_dsurch/enemy_1152_dsurch.skel",
+        "bytes": 6845,
+        "sha256": "aab4a34df17df5604371a7e9b82d1d11688bbff351d2c92c35dc7fc7ba166339",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1152_dsurch.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1152_dsurch/enemy_1152_dsurch.atlas",
+        "bytes": 668,
+        "sha256": "307b1f169867849e8461c2e827f0bed2f1a286de602b441c52a0b343c4cc4e63",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1152_dsurch.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1152_dsurch/enemy_1152_dsurch.png",
+        "bytes": 44402,
+        "sha256": "2a94c88eab00d698cf37f8b9c1f23d297689045e3a874792e45b8d2432be60b1",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M33",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M34",
+    "name": "钵海收割者",
+    "reference": "https://prts.wiki/w/%E9%92%B5%E6%B5%B7%E6%94%B6%E5%89%B2%E8%80%85",
+    "model": "enemy_1151_dslntc",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1151_dslntc/",
+    "files": [
+      {
+        "file": "enemy_1151_dslntc.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1151_dslntc/enemy_1151_dslntc.skel",
+        "bytes": 232715,
+        "sha256": "263e5eef100427463043e103188cd5b670289cd67fb74796684d294b81693eb9",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1151_dslntc.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1151_dslntc/enemy_1151_dslntc.atlas",
+        "bytes": 4317,
+        "sha256": "e58d7f44abb0c35cba552449f362cd551b13be9c12366c68494b3d58cbd76db7",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1151_dslntc.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1151_dslntc/enemy_1151_dslntc.png",
+        "bytes": 119626,
+        "sha256": "8fdf78d6bdcb49690bc44d93d03ed03ce2997f4bac453c01174005e91a12eca0",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M34",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M35",
+    "name": "壳海狂奔者",
+    "reference": "https://prts.wiki/w/%E5%A3%B3%E6%B5%B7%E7%8B%82%E5%A5%94%E8%80%85",
+    "model": "enemy_1147_dshond",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1147_dshond/",
+    "files": [
+      {
+        "file": "enemy_1147_dshond.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1147_dshond/enemy_1147_dshond.skel",
+        "bytes": 30696,
+        "sha256": "c806ecc60347cfd981924a8c3eb81271d29f27d1cb0e55d065f2c07dfa10d404",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1147_dshond.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1147_dshond/enemy_1147_dshond.atlas",
+        "bytes": 2162,
+        "sha256": "9e93232ee843089884669f4e4bed727ab3fa81fc1186ab0bdc259ac212206bd0",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1147_dshond.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1147_dshond/enemy_1147_dshond.png",
+        "bytes": 28206,
+        "sha256": "8a2aee4f3869e1d833a41028a55aecb55475b734af96e3cb47a6cca6a284db87",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M35",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M36",
+    "name": "首言者",
+    "reference": "https://prts.wiki/w/%E9%A6%96%E8%A8%80%E8%80%85",
+    "model": "enemy_1154_dsmant",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1154_dsmant/",
+    "files": [
+      {
+        "file": "enemy_1154_dsmant.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1154_dsmant/enemy_1154_dsmant.skel",
+        "bytes": 140329,
+        "sha256": "d545d85828507f14de31bf0dcfbb8bc9a6eaf94c11244520ee2adfda739ccb6e",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1154_dsmant.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1154_dsmant/enemy_1154_dsmant.atlas",
+        "bytes": 2864,
+        "sha256": "6acc83ae53ea8cabecfc4b9f9d8bb1cd3eacc02dd4549c006428b2cb7304a63c",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1154_dsmant.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1154_dsmant/enemy_1154_dsmant.png",
+        "bytes": 91666,
+        "sha256": "0ca689199ae53f27580664c715bda2d3e51218337b30bdfaed2f83e425e5d99c",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M36",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M37",
+    "name": "萨卡兹大剑手",
+    "reference": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%A4%A7%E5%89%91%E6%89%8B",
+    "model": "enemy_1010_demon",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1010_demon/",
+    "files": [
+      {
+        "file": "enemy_1010_demon.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1010_demon/enemy_1010_demon.skel",
+        "bytes": 65675,
+        "sha256": "a102900c5d7de777ae823d9e541094a2042e91deebdacfa6bd1ef2ec45759b58",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1010_demon.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1010_demon/enemy_1010_demon.atlas",
+        "bytes": 2940,
+        "sha256": "be06626a5b2f9d835dffeebb5704d62e027e08a9d71520cf1717b6517ce11216",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1010_demon.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1010_demon/enemy_1010_demon.png",
+        "bytes": 94282,
+        "sha256": "f495357f8c50797096711be1ffc9fa1dc580915a04dc34156330f8b94ff624f7",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M37",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M38",
+    "name": "萨卡兹术师",
+    "reference": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E6%9C%AF%E5%B8%88",
+    "model": "enemy_1022_dmage",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1022_dmage/",
+    "files": [
+      {
+        "file": "enemy_1022_dmage.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1022_dmage/enemy_1022_dmage.skel",
+        "bytes": 64858,
+        "sha256": "94843c743b5dcd2516745bab5d46113ea124448112b7923c1f771accc108c1b3",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1022_dmage.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1022_dmage/enemy_1022_dmage.atlas",
+        "bytes": 2591,
+        "sha256": "f92358bf400ea550beb4e37f21f0be04abdfb371231d248b7059bccd13ebd99d",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1022_dmage.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1022_dmage/enemy_1022_dmage.png",
+        "bytes": 58464,
+        "sha256": "d7dae286005d27bf5da496f899e18afdc00a1fa57c7731ad6062878e73b6b141",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. User approved project integration and Git delivery; this does not constitute rightsholder permission.",
+    "approval": "2026-10-22 user: 银狼先不做，其他的做到项目里。Concrete scope continuation PR15 approved.",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M38",
+    "rawModelsShipped": false
+  }
+]
