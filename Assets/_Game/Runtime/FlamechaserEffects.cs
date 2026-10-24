@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
-            (u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
+            (u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
         public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil;
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!UnitInvulnerable(u)&&
             (!UnitInvisible(u)||CombatSettings.RevealsInvisible);
@@ -28,7 +28,7 @@ namespace YesterdayConvoy
         bool StepFlamechaser(DeployedUnitState u,float step)
         {
             if(u.FlamePhase==FlamechaserPhase.Soldier)return false;
-            if(u.FlamePhase==FlamechaserPhase.Transforming)
+            if(u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming)
             {
                 if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
                 u.FlamePhase=FlamechaserPhase.Ember;u.FlamePhaseStartedAt+=1;
@@ -45,6 +45,7 @@ namespace YesterdayConvoy
                     if(d.Alive&&d.BlockedCount<CombatSettings.BlockCount&&GroundDistance(u.Motion.Position,d.Position)<=CombatSettings.BlockRadius)
                     {u.IsBlocked=true;u.BlockerId=d.EntityId;u.EmberRevealedUntil=Clock+3;d.BlockedCount++;break;}
                 u.IsMoving=!u.IsBlocked;
+                if(u.IsMoving&&PillarObstructs(u,step))u.IsMoving=false;
                 if(u.IsMoving)u.Motion.Advance(step);
                 if(u.Motion.HasArrived)
                 {u.Resolution=UnitResolution.Breached;u.IsMoving=u.IsBlocked=false;Breaches++;Defense=Math.Max(0,Defense-Settings.GateDamage);}

@@ -20,6 +20,7 @@ namespace YesterdayConvoy
         public int SelectedRole {get;private set;}
         readonly Dictionary<string,Transform> actors=new Dictionary<string,Transform>();
         readonly List<Transform> facilityViews=new List<Transform>(),sealViews=new List<Transform>();
+        readonly List<Transform> rubbleViews=new List<Transform>();
         readonly List<LineRenderer> beams=new List<LineRenderer>();
         Material glow,solid,lineMaterial;
         Transform presentation;
@@ -34,6 +35,7 @@ namespace YesterdayConvoy
             glow=new Material(Shader.Find("Unlit/Color"));solid=new Material(Shader.Find("Standard"));solid.color=new Color(.16f,.23f,.28f);
             lineMaterial=new Material(Shader.Find("Sprites/Default"));
             presentation=new GameObject("Facility trial presentation").transform;
+            gameObject.AddComponent<FlamerazerEffectView>().Bind(()=>Battle);
             ResetTrial(0);
         }
         IEnumerator Start()
@@ -48,9 +50,22 @@ namespace YesterdayConvoy
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
             Time.timeScale=0;
             bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
+            bool flamerazer=Battle.CombatSettings.Effects.Flamerazer,startPose=false,loopPose=false,endPose=false,blastPose=false;
             for(int i=0;i<1800&&Battle.Phase==BattlePhase.Running;i++)
             {
-                Battle.Advance(.1f);Sync();yield return null;
+                Battle.Advance(.1f);
+                if(flamerazer&&i==10)deployed&=Deploy();
+                if(flamerazer&&i==20)deployed&=Deploy();
+                Sync();yield return null;
+                if(flamerazer)
+                {
+                    var sprite=FindObjectsByType<DemoSpriteVisual>().FirstOrDefault(v=>v.FrameState.StartsWith("Spray"));
+                    if(sprite!=null&&!startPose&&sprite.FrameState=="Spraystart"){startPose=true;yield return CaptureFrame(folder,"spray-start");}
+                    if(sprite!=null&&!loopPose&&sprite.FrameState=="Sprayloop"){loopPose=true;yield return CaptureFrame(folder,"spray-loop");}
+                    if(sprite!=null&&!endPose&&sprite.FrameState=="Sprayend"){endPose=true;yield return CaptureFrame(folder,"spray-end");}
+                    if(!blastPose&&Battle.FuelExplosions.Any(e=>e.Resolved&&Battle.Clock>=e.DetonateAt+.4))
+                    {blastPose=true;yield return CaptureFrame(folder,"fuel-explosion");}
+                }
                 var flame=Battle.Units.FirstOrDefault();
                 if(mapIndex==2&&SelectedRole==1&&flame!=null)
                 {
@@ -59,12 +74,13 @@ namespace YesterdayConvoy
                     if(!reviveCaptured&&flame.FlamePhase==FlamechaserPhase.Reforming)
                     {reviveCaptured=true;yield return CaptureFrame(folder,"ember-reforming");}
                 }
-                bool effect=mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
+                bool effect=flamerazer?startPose&&loopPose&&endPose&&blastPose&&Battle.FuelExplosions.Count(e=>e.Resolved)>=3&&Battle.Facilities.Any(f=>f.Collapsed)&&Battle.BurnBursts>0&&Battle.RubbleTiles.Any():mapIndex==0?Battle.AltarHits>0||Battle.Units.Any(u=>u.AltarEmpowered):
                     mapIndex==1?Battle.SealedTileCount>0:
                     SelectedRole==1?flame!=null&&emberCaptured&&Battle.CombatShots.Any(s=>s.Applied&&s.BurnDamage>0)&&(reveal?flame.Resolution==UnitResolution.Dead:flame.EmberRevivals>0):Battle.AttackerGramophoneHits>0;
                 if(effect&&!captured)
                 {
                     captured=true;
+                    if(flamerazer){Battle.Advance(1);Sync();yield return null;yield return CaptureFrame(folder,"pillar-settled");}
                     // Keep the naturally triggered effect visible long enough to show the flame/pulse, without injecting status.
                     yield return new WaitForEndOfFrame();
                     var shot=ScreenCapture.CaptureScreenshotAsTexture();File.WriteAllBytes(Path.Combine(folder,$"map-{mapIndex}-role-{SelectedRole}.png"),shot.EncodeToPNG());Destroy(shot);
@@ -73,9 +89,10 @@ namespace YesterdayConvoy
             }
             Battle.SetPaused(true);double clock=Battle.Clock;Battle.Advance(10);bool pause=Battle.Clock==clock;
             int altar=Battle.AltarHits,seal=Battle.SealedTileCount,ignitions=Battle.Ignitions,gram=Battle.GramophoneHits;
+            if(flamerazer)Debug.Log($"FLAMERAZER_PLAYER_CHECK: start={startPose}; loop={loopPose}; end={endPose}; explosion={blastPose}; chain={Battle.FuelExplosions.Count(e=>e.Resolved)}; pillars={Battle.Facilities.Count(f=>f.Collapsed)}; rubble={Battle.RubbleTiles.Count()}; burn={Battle.BurnBursts}; noInjectedDamage=True");
             if(mapIndex==2&&SelectedRole==1)Debug.Log($"FLAMECHASER_PLAYER_CHECK: reveal={reveal}; emberPose={emberCaptured}; revivePose={reviveCaptured}; revived={Battle.Units.Any(u=>u.EmberRevivals>0)}; eliminated={Battle.Units.Any(u=>u.Resolution==UnitResolution.Dead)}; noInjectedDamage=True");
             Battle.Restart();Sync();bool reset=Battle.Phase==BattlePhase.Ready&&Battle.Units.Count==0&&Battle.SealedTileCount==0&&Battle.AltarHits==0&&
-                Battle.Ignitions==Battle.Facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Settings.InitiallyBurning)&&Battle.GramophoneHits==0;
+                Battle.Ignitions==Battle.Facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Settings.InitiallyBurning)&&Battle.GramophoneHits==0&&Battle.FlameSprays.Count==0&&Battle.FuelExplosions.Count==0&&!Battle.Facilities.Any(f=>f.Collapsed)&&!Battle.RubbleTiles.Any();
             Debug.Log($"FACILITY_PLAYER_CHECK: map={mapIndex}; role={SelectedRole}; deployed={deployed}; effect={captured}; pause={pause}; reset={reset}; altar={altar}; sealed={seal}; ignitions={ignitions}; gramophone={gram}");
             Application.Quit(deployed&&captured&&pause&&reset?0:1);
         }
@@ -89,18 +106,20 @@ namespace YesterdayConvoy
         {
             SelectedRole=role;request=0;
             foreach(Transform child in presentation)Destroy(child.gameObject);
-            actors.Clear();facilityViews.Clear();sealViews.Clear();beams.Clear();
+            actors.Clear();facilityViews.Clear();sealViews.Clear();rubbleViews.Clear();beams.Clear();
             var original=roles[role].Snapshot();var c=roles[role].Engagement.Snapshot();
-            bool flamechaser=c.Effects.Flamechaser;
+            bool flamechaser=c.Effects.Flamechaser,flamerazer=c.Effects.Flamerazer;
             var settings=new ManualBattleSettings(original.CardId,original.UnitId,30,1,12,1,.5f,
-                flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
+                flamerazer?450:flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
             var combat=new EngagementSettings(unitAttack:c.UnitAttack,unitArmor:c.UnitArmor,unitRange:c.UnitRange,unitInterval:c.UnitInterval,
-                defenderHealth:15000,defenderAttack:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:0,
+                defenderHealth:15000,defenderAttack:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:flamerazer?3:0,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
                 attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack,revealsInvisible:reveal);
             Vector3 guard=mapIndex==0?new Vector3(-2,.35f,1):mapIndex==1?new Vector3(-2,.35f,1):role==1?new Vector3(-3,.35f,0):new Vector3(2.5f,.35f,-1);
+            if(flamerazer)guard=new Vector3(-2,.35f,2);
             Battle=new ManualBattle(settings,route,guard,combat);
             var facilities=new List<FacilitySettings>();
+            if(flamerazer)facilities.Add(new FacilitySettings(FacilityKind.Pillar,new Vector3(-3,0,1),power:1200));
             if(mapIndex==0)facilities.Add(new FacilitySettings(FacilityKind.Altar,new Vector3(1,0,1),3.2f));
             if(mapIndex==2)
             {
@@ -108,12 +127,18 @@ namespace YesterdayConvoy
                 foreach(var p in new[]{new Vector3(-3,0,0),new Vector3(-3,0,-1),new Vector3(-3,0,-2),new Vector3(-2,0,-2)})
                     facilities.Add(new FacilitySettings(FacilityKind.Reeds,p,.5f,1,4,initiallyBurning:flamechaser&&p==new Vector3(-3,0,0)));
             }
-            Battle.ConfigureFacilities(facilities,mapIndex==1?deployableTiles:null);
+            Battle.ConfigureFacilities(facilities,mapIndex==1||flamerazer?deployableTiles:null);
             foreach(var f in Battle.Facilities)
             {
                 var node=new GameObject(f.Settings.Kind.ToString()).transform;node.SetParent(presentation);node.position=f.Settings.Position;
                 facilityViews.Add(node);
-                if(f.Settings.Kind==FacilityKind.Reeds)
+                if(f.Settings.Kind==FacilityKind.Pillar)
+                {
+                    var pillar=new GameObject("Pillar pivot").transform;pillar.SetParent(node,false);
+                    Mesh(pillar,new Vector3(0,1.1f,0),new Vector3(.43f,2.2f,.43f),new Color(.4f,.41f,.39f));
+                    Mesh(node,new Vector3(0,.1f,0),new Vector3(.8f,.2f,.8f),new Color(.25f,.26f,.25f));
+                }
+                else if(f.Settings.Kind==FacilityKind.Reeds)
                 {
                     for(int i=0;i<7;i++)Mesh(node,new Vector3((i%3-1)*.16f,.28f,(i/3-1)*.18f),new Vector3(.035f,.55f,.035f),new Color(.48f,.44f,.23f));
                     var flames=new GameObject("Flames").transform;flames.SetParent(node,false);
@@ -178,7 +203,13 @@ namespace YesterdayConvoy
                 Color ringColor=color;ringColor.a=Battle.Clock-f.LastActivation<.65?.65f:.22f;
                 line.startColor=line.endColor=ringColor;
                 line.widthMultiplier=Battle.Clock-f.LastActivation<.65?.035f:.009f;
-                if(f.Settings.Kind==FacilityKind.Reeds)
+                if(f.Settings.Kind==FacilityKind.Pillar)
+                {
+                    var pillar=node.Find("Pillar pivot");
+                    float fall=f.Collapsed?Mathf.Clamp01((float)(Battle.Clock-f.LastActivation)/.6f):0;
+                    pillar.rotation=f.Collapsed?Quaternion.AngleAxis(fall*88,Vector3.Cross(Vector3.up,f.FallDirection)):Quaternion.identity;
+                }
+                else if(f.Settings.Kind==FacilityKind.Reeds)
                 {
                     foreach(var renderer in node.GetComponentsInChildren<MeshRenderer>())
                     {var block=new MaterialPropertyBlock();block.SetColor("_Color",color);renderer.SetPropertyBlock(block);}
@@ -191,6 +222,20 @@ namespace YesterdayConvoy
                 foreach(var old in sealViews)Destroy(old.gameObject);sealViews.Clear();
                 foreach(var cell in Battle.SealedTiles)
                     sealViews.Add(Mesh(presentation,new Vector3(cell.x,.42f,cell.y),new Vector3(.83f,.10f,.83f),new Color(.035f,.07f,.12f)));
+            }
+            if(rubbleViews.Count!=Battle.RubbleTiles.Count())
+            {
+                foreach(var old in rubbleViews)Destroy(old.gameObject);rubbleViews.Clear();
+                foreach(var cell in Battle.RubbleTiles)
+                {
+                    var rubble=new GameObject("Collapsed pillar rubble").transform;rubble.SetParent(presentation);rubble.position=new Vector3(cell.x,.35f,cell.y);
+                    for(int k=0;k<4;k++)
+                    {
+                        var piece=Mesh(rubble,new Vector3((k%2-.5f)*.35f,.1f,(k/2-.5f)*.3f),new Vector3(.35f,.25f,.28f),new Color(.36f,.35f,.32f));
+                        piece.localRotation=Quaternion.Euler(k*13,k*43,k*17);
+                    }
+                    rubbleViews.Add(rubble);
+                }
             }
             int used=0;
             foreach(var shot in Battle.CombatShots)
@@ -220,11 +265,13 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(170,bottom+40,140,35),Battle.IsPaused?"继续":"暂停（空格）"))Battle.SetPaused(!Battle.IsPaused);
             if(GUI.Button(new Rect(320,bottom+40,140,35),"重新开始"))ResetTrial(SelectedRole);
             if(GUI.Button(new Rect(470,bottom+40,140,35),$"速度 ×{speed:0}"))speed=speed==1?3:1;
+            if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(620,bottom+40,160,35),"眩晕喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2);
+            if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(790,bottom+40,160,35),"沉默喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2,true);
             if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
-            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+
+            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
                 (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
             foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(Battle.DefenderCamouflaged(d)?" 迷彩":""));
-            foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):"祭坛");
+            foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):f.Settings.Kind==FacilityKind.Pillar?(f.Collapsed?"支柱已倒塌":"破碎支柱"):"祭坛");
         }
         void Label(Vector3 point,string text)
         {

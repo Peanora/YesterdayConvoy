@@ -81,6 +81,7 @@ namespace YesterdayConvoy
                 }
                 // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
                 string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} :
+                    task=="M31" ? new[]{"extra_skill_down_start","extra_skill_down_loop","extra_skill_down_end","extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end","extra_skill_up_start","extra_skill_up_loop","extra_skill_up_end"} :
                     task=="M30" ? new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"} : Array.Empty<string>();
                 if(extraKeys.Length>0)
                 {

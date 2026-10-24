@@ -32,6 +32,7 @@ namespace YesterdayConvoy
             var deathEffects=GetComponent<MonsterDeathEffectView>();
             if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
             deathEffects.Initialize(controller);
+            var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));

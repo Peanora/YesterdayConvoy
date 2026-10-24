@@ -63,7 +63,7 @@ namespace YesterdayConvoy
                     if(!reviveCaptured && unit.IsReviving) {reviveCaptured=true;yield return InteractionFrame(directory,task+"-reviving");}
                     if(unit.ReviveUsed && !unit.IsReviving && unit.Health>0) revived=true;
                 }
-                if(!attacked && !double.IsNegativeInfinity(unit.LastAttackTime))
+                if(!attacked && (unit.Spray!=null&&unit.Spray.Ticks>0 || !double.IsNegativeInfinity(unit.LastAttackTime)))
                 { attacked=true;Tick(.3f);yield return InteractionFrame(directory,task+"-attack"); }
                 if(snowFixture && !bonusCaptured)
                     foreach(var shot in Battle.CombatShots) if(!shot.FromDefender && shot.Applied)

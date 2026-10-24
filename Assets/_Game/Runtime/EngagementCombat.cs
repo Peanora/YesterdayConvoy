@@ -118,6 +118,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
+            flameSprays.Clear();fuelExplosions.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
@@ -173,6 +174,7 @@ namespace YesterdayConvoy
         {
             EngagementSettings c=CombatSettings;
             StepFacilities(step);
+            ResolveFuelExplosions();
             ResolveDeathEffects();
             ResolveHealing();
             foreach(var shot in combatShots)
@@ -205,6 +207,8 @@ namespace YesterdayConvoy
             foreach(var unit in units)
             {
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                if(unit.FuelDying)continue;
+                if(unit.PillarStunnedUntil>Clock){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
                 {
@@ -219,12 +223,15 @@ namespace YesterdayConvoy
                 foreach(var d in defenders)
                     if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
-                DefenderState target=c.CanAttack ? ChooseDefender(unit,range) : null;
+                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked);
+                DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
                 unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration/unit.LastAttackRate;
+                if(unit.IsMoving&&PillarObstructs(unit,step))unit.IsMoving=false;
                 if(unit.IsMoving)
                 {
                     double lockEnd=c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
@@ -251,7 +258,7 @@ namespace YesterdayConvoy
                                 d.Position+Vector3.up*5,d.Position,Clock,c.ProjectileTime,c.SkillAttack,true));
                     }
                 }
-                target=c.CanAttack ? ChooseDefender(unit,range) : null; unit.HasCombatTarget=target!=null;
+                target=ordinary ? ChooseDefender(unit,range) : null; unit.HasCombatTarget=target!=null;
                 if(target!=null && !casting && Clock+0.000001>=unit.NextAttackTime)
                 {
                     bool empowered=!c.FireRain && unit.SkillAmmo>0;

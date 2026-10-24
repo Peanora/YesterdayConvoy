@@ -22,11 +22,11 @@ namespace YesterdayConvoy
         public readonly float UnitResistance;
         public readonly bool Mudrock;
         public readonly bool Phalanx;
-        public readonly bool Flamechaser;
+        public readonly bool Flamechaser, Flamerazer;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false,bool flamerazer=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -46,7 +46,7 @@ namespace YesterdayConvoy
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
             Mudrock=mudrock;
             Phalanx=phalanx;
-            Flamechaser=flamechaser;
+            Flamechaser=flamechaser;Flamerazer=flamerazer;
         }
     }
 
@@ -104,7 +104,7 @@ namespace YesterdayConvoy
         public float RegenerationMultiplier => CombatSettings.Effects.Healer && units.Exists(u=>u.Active && !u.IsReviving) ? 2 : 1;
         private float HealUnit(DeployedUnitState unit,float amount)
         {
-            if(!unit.Active || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
+            if(!unit.Active || unit.FuelDying || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
             float restored=Mathf.Min(amount,unit.MaxHealth-unit.Health);
             if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
@@ -177,6 +177,7 @@ namespace YesterdayConvoy
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1);
         private void DefeatUnit(DeployedUnitState unit)
         {
+            if(CombatSettings.Effects.Flamerazer){StartFuelExplosion(unit);return;}
             if(CombatSettings.Effects.Flamechaser&&unit.FlamePhase==FlamechaserPhase.Soldier){StartEmber(unit);return;}
             unit.DeathTime=Clock;unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;
             unit.CombatTargetId=unit.BlockerId=null;
@@ -211,7 +212,7 @@ namespace YesterdayConvoy
         }
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
-        public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved);
+        public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved);
         public float DefenderArmor(DefenderState defender) => CombatSettings.DefenderArmor-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);

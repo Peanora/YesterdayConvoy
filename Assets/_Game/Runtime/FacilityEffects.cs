@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    public enum FacilityKind { Altar, Gramophone, Reeds }
+    public enum FacilityKind { Altar, Gramophone, Reeds, Pillar }
     public enum FacilityOwner { Neutral, Attackers, Defenders }
     public readonly struct FacilitySettings
     {
@@ -28,6 +28,8 @@ namespace YesterdayConvoy
         public FacilityOwner Owner {get;internal set;}
         public float Capture {get;internal set;}
         public bool Burning {get;internal set;}
+        public bool Collapsed {get;internal set;}
+        public Vector3 FallDirection {get;internal set;}
         public int Activations {get;internal set;}
         public double LastActivation {get;internal set;}=double.NegativeInfinity;
         public double IgnitedAt {get;internal set;}=double.NegativeInfinity;
@@ -36,6 +38,7 @@ namespace YesterdayConvoy
         internal FacilityState(FacilitySettings settings){Settings=settings;Reset();}
         internal void Reset()
         {
+            Collapsed=false;FallDirection=Vector3.zero;
             Owner=FacilityOwner.Neutral;Capture=Extinguishing=0;Activations=0;LastActivation=double.NegativeInfinity;
             Burning=Settings.InitiallyBurning;IgnitedAt=Burning?0:double.NegativeInfinity;
             NextAction=Settings.Kind==FacilityKind.Reeds?1:Settings.Interval;NextHeal=5;NextSpread=15;SafeUntil=0;
@@ -71,7 +74,7 @@ namespace YesterdayConvoy
         static bool IsRole(DeployedUnitState u,string id)=>u.UnitId.StartsWith(id+"_",StringComparison.Ordinal)||u.UnitId==id;
         void ResetFacilities()
         {
-            foreach(var f in facilities)f.Reset();sealedTiles.Clear();nextSeal.Clear();nextCapture.Clear();sealRandom=1777;
+            foreach(var f in facilities)f.Reset();sealedTiles.Clear();rubbleTiles.Clear();nextSeal.Clear();nextCapture.Clear();sealRandom=1777;
             AltarHits=GramophoneHits=AttackerGramophoneHits=BurnBursts=0;Ignitions=facilities.Count(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning);FacilityHealing=0;
         }
         void TrueDamage(DeployedUnitState u,float amount)
@@ -114,7 +117,7 @@ namespace YesterdayConvoy
                     foreach(var d in defenders)if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,s.Position)<=s.Radius){TrueDamage(d,s.Power);AltarHits++;}
                 }
                 else if(s.Kind==FacilityKind.Gramophone)StepGramophone(f,step);
-                else if(f.Burning)
+                else if(s.Kind==FacilityKind.Reeds&&f.Burning)
                 {
                     bool occupied=defenders.Exists(d=>d.Alive&&Cell(d.Position)==Cell(s.Position));
                     if(occupied)

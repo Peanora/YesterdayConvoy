@@ -120,6 +120,16 @@ namespace YesterdayConvoy
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
+                var spray=deployedUnit.Spray;
+                if(spray!=null&&manualBattle.Clock<spray.EndedAt+.5333334)
+                {
+                    double elapsed=manualBattle.Clock-spray.StartedAt;
+                    string phase=spray.Ended?"end":elapsed<.5?"start":"loop";
+                    string key="extra_skill_"+spray.Direction+"_"+phase;
+                    FrameState="Spray"+phase;
+                    sprite.sprite=local[key].At(spray.Ended?manualBattle.Clock-spray.EndedAt:phase=="start"?elapsed:elapsed-.5,phase=="loop",out int sprayFrame);
+                    sprite.flipX=spray.FlipX;FrameIndex=sprayFrame;return;
+                }
                 if(manualBattle.CombatSettings.Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
                 {
                     FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
