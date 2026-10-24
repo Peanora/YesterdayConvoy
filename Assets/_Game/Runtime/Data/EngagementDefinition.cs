@@ -19,10 +19,15 @@ namespace YesterdayConvoy
         [SerializeField] private bool fireRain;
         [SerializeField] private bool hasSkill = true;
         [SerializeField] private bool melee;
+        [Tooltip("Support/non-attacking art sample. Does not disable defender blocking or damage.")]
+        [SerializeField] private bool noOrdinaryAttack;
         [SerializeField] private float attackDuration, attackWindup;
         [Header("Independent ordinary attack and death effects; zero keeps legacy behavior")]
         [SerializeField] private CombatDamageType damageType;
         [SerializeField] private float defenderResistance, armorShred, blastAttack, blastRadius, blastDelay, coldDuration;
+        [SerializeField] private float frozenAttackMultiplier;
+        [SerializeField] private int coldAttackEvery;
+        [SerializeField] private float attackColdDuration;
         [SerializeField] private Vector3[] extraDefenders = new Vector3[0];
         public System.Collections.Generic.IReadOnlyList<Vector3> ExtraDefenders => extraDefenders;
         public bool FireRain => fireRain;
@@ -31,6 +36,7 @@ namespace YesterdayConvoy
         public EngagementSettings Snapshot() => new EngagementSettings(unitAttack, unitArmor, unitRange, unitInterval,
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
-            new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration));
+            new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,
+                coldAttackEvery,attackColdDuration), canAttack: !noOrdinaryAttack);
     }
 }

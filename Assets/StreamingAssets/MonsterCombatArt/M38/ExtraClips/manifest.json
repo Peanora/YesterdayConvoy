@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "task": "M38",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_skill_begin",
+      "source": "Skill_Begin",
+      "count": 53,
+      "duration": 0.8666666746139526,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4859230653444926,
+      "pivotY": 0.18694062928358712,
+      "sourceBounds": [
+        -447.34197998046875,
+        -29.90387725830078,
+        475.7922058105469,
+        662.6133422851562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_begin-00.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill_begin-01.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill_begin-02.png",
+          "count": 3,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_end",
+      "source": "Skill_End",
+      "count": 41,
+      "duration": 0.6666666865348816,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.38821552753448485,
+      "pivotY": 0.21097084689140322,
+      "sourceBounds": [
+        -290.4855651855469,
+        -30.97156524658203,
+        478.754150390625,
+        517.7575073242188
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_end-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_skill_end-01.png",
+          "count": 5,
+          "width": 1920,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_loop",
+      "source": "Skill_Loop",
+      "count": 28,
+      "duration": 0.46666666865348816,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.24208926618099214,
+      "pivotY": 0.20840013929642737,
+      "sourceBounds": [
+        -131.2848358154297,
+        -2.083050489425659,
+        478.7856140136719,
+        394.9754943847656
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_loop-00.png",
+          "count": 28,
+          "width": 2048,
+          "height": 1024
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_skill_begin-00.png",
+      "sha256": "04b8e9901e655512abe6bf82897e3fe6917f0efce0e2e217fba6ba4694c54eae"
+    },
+    {
+      "file": "extra_skill_begin-01.png",
+      "sha256": "008e2c7e869e71a7caab9d8666868d6e0ad322303f5ec33055bc6ffdabfa21e7"
+    },
+    {
+      "file": "extra_skill_begin-02.png",
+      "sha256": "3ac8f781a8e614295612fe18be2c4effc95129d88c66efd64fb51055ad772749"
+    },
+    {
+      "file": "extra_skill_end-00.png",
+      "sha256": "d8beba972b06a11ba3f8d3dbdd95952f56bfc22eac99c60827054c8e682ee6a4"
+    },
+    {
+      "file": "extra_skill_end-01.png",
+      "sha256": "df4e244d5879574b5e26847d78333798af7e096a5112d8a169f80fea4e745630"
+    },
+    {
+      "file": "extra_skill_loop-00.png",
+      "sha256": "a1628cad60c89aa3abf88c9a6848f08fd69af89cf5f92e637c8e7d3229d1f71b"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1022_dmage. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

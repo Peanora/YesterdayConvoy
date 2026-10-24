@@ -47,6 +47,7 @@ namespace YesterdayConvoy
         public float SkillSP { get; internal set; }
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
+        public int OrdinaryAttacksFired { get; internal set; }
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;
         public bool LastAttackEmpowered { get; internal set; }
         public double FireRainStartedAt { get; internal set; } = double.NegativeInfinity;

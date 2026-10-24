@@ -70,5 +70,55 @@ namespace YesterdayConvoy.Tests
                 Debug.Log("MONSTER_ABILITY_PASS: "+id);
             }
         }
+
+        [UnityTest] public IEnumerator SnowSniperAndIcecleaverUseActualConfigAndApplyBonusOnlyToFrozenImpact()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();
+            foreach(string id in new[]{"CARD_M11","CARD_M13"})
+            {
+            Assert.That(c.TryEnterMonsterTest(id),Is.True);
+            var e=c.Battle.CombatSettings.Effects;Assert.That(e.FrozenAttackMultiplier,Is.EqualTo(id=="CARD_M11" ? 1.5f : 2.5f));
+            c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
+            // Explicit status fixture: the sniper itself must never generate freeze.
+            c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);c.Battle.TryApplyCold(c.Battle.Defender.EntityId,30);
+            for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
+            var shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
+            Assert.That(shot.FrozenBonusApplied,Is.True);
+            Assert.That(shot.DamageDealt,Is.EqualTo(id=="CARD_M11" ? 42 : 140).Within(.001));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            c.RestartBattle();Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));
+            c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
+            for(int i=0;i<1000 && !c.Battle.CombatShots.Any(s=>!s.FromDefender && s.Applied);i++) {c.Tick(.025f);yield return null;}
+            shot=c.Battle.CombatShots.First(s=>!s.FromDefender && s.Applied);
+            Assert.That(shot.FrozenBonusApplied,Is.False);
+            Assert.That(shot.DamageDealt,Is.EqualTo(id=="CARD_M11" ? 27 : 62).Within(.001));
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+            }
+        }
+
+        [UnityTest] public IEnumerator TwoActualSnowCastersCountTheirOwnAttacksAndFreezeWithoutAnInjectedStatus()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M12"),Is.True);
+            c.SelectCard(true);var first=c.TryDeployAt(c.Battle.Entry);Assert.That(first.Success,Is.True);c.Tick(1.1f);
+            c.SelectCard(true);var second=c.TryDeployAt(c.Battle.Entry);Assert.That(second.Success,Is.True);
+            for(int i=0;i<1600 && c.Battle.Defender.FrozenUntil<=c.Battle.Clock && c.Battle.Phase==BattlePhase.Running;i++) {c.Tick(.025f);yield return null;}
+            Assert.That(c.Battle.Defender.Alive,Is.True);
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            foreach(string id in new[]{first.EntityId,second.EntityId})
+            {
+                var shots=c.Battle.CombatShots.Where(s=>!s.FromDefender && s.SourceId==id).ToArray();
+                Assert.That(shots.Length,Is.GreaterThanOrEqualTo(3));
+                Assert.That(shots[0].ColdDuration,Is.Zero);Assert.That(shots[1].ColdDuration,Is.Zero);
+                Assert.That(shots[2].ColdDuration,Is.EqualTo(10));Assert.That(shots[2].Applied,Is.True);
+            }
+            c.Battle.SetPaused(true);double clock=c.Battle.Clock;c.Tick(15);yield return null;
+            Assert.That(c.Battle.Clock,Is.EqualTo(clock));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(clock));
+            c.RestartBattle();Assert.That(c.Battle.Defender.ColdUntil,Is.LessThan(c.Battle.Clock));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));Assert.That(c.Battle.Units,Is.Empty);
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
     }
 }

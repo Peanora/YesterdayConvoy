@@ -81,7 +81,8 @@ namespace YesterdayConvoy
                 float fade=other.Alive ? 1 : 1-Mathf.Clamp01((float)(time-other.DeathTime)/.45f);
                 v.enabled=fade>0; v.transform.position=other.Position; v.transform.rotation=cam.transform.rotation;
                 v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
-                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
+                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) :
+                    other.ColdUntil>time || other.FrozenUntil>time ? new Color(.45f,.8f,1,fade) : new Color(1,1,1,fade); v.color=color;
             }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
@@ -138,6 +139,8 @@ namespace YesterdayConvoy
             Color color = shot.FromDefender ? new Color(1, 0.83f, 0.36f) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
             if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
             else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
+            if(shot.FrozenBonusApplied) color=new Color(.45f,.95f,1);
+            if(!shot.FromDefender && shot.ColdDuration>0) color=new Color(.2f,.85f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
             view.Trail.enabled = flying;
             if (flying)
@@ -195,7 +198,8 @@ namespace YesterdayConvoy
             if(v.Impact.enabled)
             {
                 v.Impact.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,shot.Destination)+50;
-                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,new Color(1,.76f,.28f,1-age/.16f),cam);
+                Color color=shot.FrozenBonusApplied ? new Color(.45f,.95f,1,1-age/.16f) : new Color(1,.76f,.28f,1-age/.16f);
+                Ring(v.Impact,shot.Destination+cam.transform.up*.32f,.06f+age*.8f,color,cam);
             }
         }
 

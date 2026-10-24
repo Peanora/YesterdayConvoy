@@ -10,16 +10,24 @@ namespace YesterdayConvoy
     {
         public readonly CombatDamageType DamageType;
         public readonly float Resistance, ArmorShred, BlastAttack, BlastRadius, BlastDelay, ColdDuration;
+        public readonly float FrozenAttackMultiplier;
+        public readonly int ColdAttackEvery;
+        public readonly float AttackColdDuration;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
-            float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0)
+            float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
+            int coldAttackEvery=0,float attackColdDuration=0)
         {
-            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration})
+            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
             if((damageType!=CombatDamageType.Physical && damageType!=CombatDamageType.Arts) || resistance>100 ||
-                blastAttack>0 && blastRadius<=0 || coldDuration>0 && blastAttack<=0)
+                blastAttack>0 && blastRadius<=0 || coldDuration>0 && blastAttack<=0 ||
+                frozenAttackMultiplier>0 && frozenAttackMultiplier<1 || coldAttackEvery<0 ||
+                (coldAttackEvery>0)!=(attackColdDuration>0))
                 throw new ArgumentException("Incomplete monster effect configuration.");
             DamageType=damageType;Resistance=resistance;ArmorShred=armorShred;BlastAttack=blastAttack;
             BlastRadius=blastRadius;BlastDelay=blastDelay;ColdDuration=coldDuration;
+            FrozenAttackMultiplier=frozenAttackMultiplier;
+            ColdAttackEvery=coldAttackEvery;AttackColdDuration=attackColdDuration;
         }
     }
 
@@ -59,6 +67,19 @@ namespace YesterdayConvoy
         {
             if(CombatSettings.Effects.BlastAttack>0) deathBlasts.Add(new DeathBlast(unit,Clock,CombatSettings.Effects));
         }
+        public bool TryApplyCold(string defenderId,float duration)
+        {
+            if(float.IsNaN(duration) || float.IsInfinity(duration) || duration<=0)
+                throw new ArgumentException("Cold duration must be finite and positive.");
+            if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
+            var defender=FindDefender(defenderId);
+            if(defender==null || !defender.Alive) return false;
+            bool cold=defender.ColdUntil>Clock || defender.FrozenUntil>Clock;
+            if(cold) defender.FrozenUntil=Math.Max(defender.FrozenUntil,Clock+duration);
+            else defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)/.7;
+            defender.ColdUntil=Math.Max(defender.ColdUntil,Clock+duration);
+            return true;
+        }
         private void ResolveDeathEffects()
         {
             var effects=CombatSettings.Effects;
@@ -71,13 +92,7 @@ namespace YesterdayConvoy
                 {
                     if(!defender.Alive || GroundDistance(blast.Position,defender.Position)>blast.Radius) continue;
                     blast.TargetsHit++;DamageDefender(defender,effects.BlastAttack,CombatDamageType.Physical);
-                    if(defender.Alive && effects.ColdDuration>0)
-                    {
-                        bool cold=defender.ColdUntil>Clock || defender.FrozenUntil>Clock;
-                        if(cold) defender.FrozenUntil=Math.Max(defender.FrozenUntil,Clock+effects.ColdDuration);
-                        else defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)/.7;
-                        defender.ColdUntil=Math.Max(defender.ColdUntil,Clock+effects.ColdDuration);
-                    }
+                    if(defender.Alive && effects.ColdDuration>0) TryApplyCold(defender.EntityId,effects.ColdDuration);
                 }
             }
         }

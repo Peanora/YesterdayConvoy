@@ -20,7 +20,7 @@ namespace YesterdayConvoy
         private readonly List<MonsterTestOption> monsterTests=new List<MonsterTestOption>();
         private Vector2 playableScroll,pendingScroll;
         private string pendingFilter="";
-        private GUIStyle menuTitle,menuHeading,menuBody,menuSmall,menuSearch;
+        private GUIStyle menuTitle,menuHeading,menuCardName,menuBody,menuSmall,menuSearch;
         private bool selectionReturnPointerDown;
         public bool TestSelectionOpen { get; private set; }
         public IReadOnlyList<MonsterTestOption> MonsterTests => monsterTests.AsReadOnly();
@@ -41,7 +41,7 @@ namespace YesterdayConvoy
                 try
                 {
                     _=data.Snapshot(); var combat=data.Engagement.Snapshot();
-                    if(!data.Card.HasFrameAnimation || combat.HasSkill && (data.Card.SkillFrames?.Count ?? 0)==0)
+                    if(!data.Card.HasFrameAnimation || combat.CanAttack && LocalMonsterArt.For(data.Card.CardId)!=null && !LocalMonsterArt.For(data.Card.CardId).HasAttack || combat.HasSkill && (data.Card.SkillFrames?.Count ?? 0)==0)
                         throw new InvalidOperationException("Missing required battle animation frames.");
                     if(!ids.Add(data.Card.CardId)) throw new InvalidOperationException("Duplicate test card ID.");
                     monsterTests.Add(new MonsterTestOption(data.Card.DisplayName,data));
@@ -82,6 +82,7 @@ namespace YesterdayConvoy
             {
                 menuTitle=new GUIStyle(textStyle){fontSize=42,fontStyle=FontStyle.Bold};
                 menuHeading=new GUIStyle(textStyle){fontSize=24,fontStyle=FontStyle.Bold};
+                menuCardName=new GUIStyle(menuHeading){fontSize=20};
                 menuBody=new GUIStyle(textStyle){fontSize=18,wordWrap=true};
                 menuSmall=new GUIStyle(smallStyle){fontSize=15,wordWrap=true};
                 menuSearch=new GUIStyle(GUI.skin.textField){font=scene.InterfaceFont,fontSize=16,padding=new RectOffset(9,9,6,6)};
@@ -105,8 +106,12 @@ namespace YesterdayConvoy
                 Fill(new Rect(x+14,y+16,cardWidth-28,172),new Color(.035f,.06f,.08f));
                 Sprite portrait=OriginalTalulahArt.CardPortrait(option.Definition.Card);
                 DrawTestPortrait(new Rect(x+23,y+20,cardWidth-46,164),portrait);
-                GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuHeading);
-                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : "独立配置\n单怪交战样板";
+                GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuCardName);
+                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : !option.Definition.Engagement.Snapshot().CanAttack ? "基础动作 / 不普攻\n特殊机制待做" : "基础动作与普攻\n单怪交战样板";
+                float frozenMultiplier=option.Definition.Engagement.Snapshot().Effects.FrozenAttackMultiplier;
+                if(frozenMultiplier>1) detail=$"冻结目标攻击×{frozenMultiplier:0.##}\n物理伤害 / 命中判定";
+                var effects=option.Definition.Engagement.Snapshot().Effects;
+                if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
                 if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
                 index++;
@@ -141,11 +146,12 @@ namespace YesterdayConvoy
         private IEnumerator VerifyMonsterSelection(string directory)
         {
             Time.timeScale=0; ReturnToMonsterTests();
-            bool initial=TestSelectionOpen && MonsterTests.Count>=41;
+            int playable=0;foreach(var option in MonsterTests) if(option.Playable) playable++;
+            bool initial=TestSelectionOpen && MonsterTests.Count==41 && playable==40;
             yield return InteractionFrame(directory,"monster-selection");
             double clock=Battle.Clock; SelectCard(true); TryDeployAt(Battle.Entry); Tick(3);
             bool blocked=Battle.Units.Count==0 && Battle.Clock==clock && !Dragging;
-            bool pending=!TryEnterMonsterTest("pending/猎狗") && TestSelectionOpen;
+            bool pending=!TryEnterMonsterTest("pending/银狼") && TestSelectionOpen;
             bool wisadel=TryEnterMonsterTest(wisadelDefinition.Card.CardId) && !TestSelectionOpen;
             SelectCard(true); bool deployed=TryDeployAt(Battle.Entry).Success;
             Tick(4.05f); OpenSkillMenu(Battle.Units[0].EntityId); ReturnToMonsterTests(); yield return null;

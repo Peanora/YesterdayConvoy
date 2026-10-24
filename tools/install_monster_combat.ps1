@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][ValidateSet('M02','M03','M04','M05','M06','M07','M08','M09','M10')][string]$Task)
+param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][ValidateSet('M02','M03','M04','M05','M06','M07','M08','M09','M10','M11','M12','M13','M14','M15','M16','M17','M18','M19','M20')][string]$Task)
 $ErrorActionPreference='Stop'
 $packageRoot=(Resolve-Path -LiteralPath (Join-Path $Source $Task)).Path
 $data=Get-Content -LiteralPath (Join-Path $packageRoot 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json

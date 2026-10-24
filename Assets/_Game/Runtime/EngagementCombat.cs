@@ -9,7 +9,7 @@ namespace YesterdayConvoy
         public readonly float UnitAttack, UnitArmor, UnitRange, UnitInterval;
         public readonly float DefenderHealth, DefenderAttack, DefenderArmor, DefenderRange, DefenderInterval, BlockRadius;
         public readonly int BlockCount, SkillAmmo;
-        public readonly bool FireRain, HasSkill, Melee;
+        public readonly bool FireRain, HasSkill, Melee, CanAttack;
         public readonly float AttackDuration, AttackWindup;
         public readonly MonsterEffectSettings Effects;
         public readonly float InitialSP, RequiredSP, SPPerSecond, SkillAttack, SkillInterval, SkillRange, ProjectileTime;
@@ -18,7 +18,7 @@ namespace YesterdayConvoy
             float defenderHealth = 180, float defenderAttack = 22, float defenderArmor = 3, float defenderRange = 3.2f,
             float defenderInterval = 1, int blockCount = 1, float blockRadius = 0.65f,
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
-            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default)
+            float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true)
         {
             foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
@@ -38,7 +38,7 @@ namespace YesterdayConvoy
                 throw new ArgumentException("Invalid attack animation timing.");
             Effects=effects;
             AttackDuration=attackDuration; AttackWindup=attackWindup;
-            HasSkill=hasSkill; Melee=melee;
+            HasSkill=hasSkill; Melee=melee; CanAttack=canAttack;
             FireRain = fireRain;
             UnitAttack = unitAttack; UnitArmor = unitArmor; UnitRange = unitRange; UnitInterval = unitInterval;
             DefenderHealth = defenderHealth; DefenderAttack = defenderAttack; DefenderArmor = defenderArmor;
@@ -78,11 +78,14 @@ namespace YesterdayConvoy
         public double StartedAt { get; }
         public double ImpactAt { get; }
         public float Attack { get; }
+        public float ColdDuration { get; }
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
+        public bool FrozenBonusApplied { get; internal set; }
+        public float DamageDealt { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
-            double start, float duration, float attack, bool fireRain = false)
-        { FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
+            double start, float duration, float attack, bool fireRain = false,float coldDuration=0)
+        { ColdDuration=coldDuration;FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }
 
@@ -176,8 +179,14 @@ namespace YesterdayConvoy
                 }
                 else
                 {
-                    DamageDefender(defender,shot.Attack,c.Effects.DamageType);
+                    // Freeze can begin or expire while the projectile is in flight.
+                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && c.Effects.FrozenAttackMultiplier>1;
+                    float attack=shot.Attack*(shot.FrozenBonusApplied ? c.Effects.FrozenAttackMultiplier : 1);
+                    float health=defender.Health;
+                    DamageDefender(defender,attack,c.Effects.DamageType);
+                    shot.DamageDealt=health-defender.Health;
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
+                    if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;
@@ -191,7 +200,8 @@ namespace YesterdayConvoy
                     if(d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
-                DefenderState target=ChooseDefender(unit,range);
+                DefenderState target=c.CanAttack ? ChooseDefender(unit,range) : null;
+                if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
                 unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration;
                 if(unit.IsMoving)
@@ -220,15 +230,18 @@ namespace YesterdayConvoy
                                 d.Position+Vector3.up*5,d.Position,Clock,c.ProjectileTime,c.SkillAttack,true));
                     }
                 }
-                target=ChooseDefender(unit,range); unit.HasCombatTarget=target!=null;
+                target=c.CanAttack ? ChooseDefender(unit,range) : null; unit.HasCombatTarget=target!=null;
                 if(target!=null && !casting && Clock+0.000001>=unit.NextAttackTime)
                 {
                     bool empowered=!c.FireRain && unit.SkillAmmo>0;
                     if(empowered) unit.SkillAmmo--;
+                    else unit.OrdinaryAttacksFired++;
+                    float coldDuration=!empowered && c.Effects.ColdAttackEvery>0 &&
+                        unit.OrdinaryAttacksFired%c.Effects.ColdAttackEvery==0 ? c.Effects.AttackColdDuration : 0;
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack));
+                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack,coldDuration:coldDuration));
                 }
             }
             if(Defense==0) return;

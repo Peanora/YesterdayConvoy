@@ -109,7 +109,7 @@ namespace YesterdayConvoy
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
-                if(age>=0 && age<local["attack"].Duration)
+                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local["attack"].Duration)
                 { FrameState="Attack"; clip="attack"; time=age; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
