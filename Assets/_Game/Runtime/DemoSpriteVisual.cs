@@ -205,12 +205,17 @@ namespace YesterdayConvoy
                     sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
                     FrameIndex=ringIndex;return;
                 }
-                string attackClip=manualBattle.CombatSettings.Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
+                string attackClip=deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19"?"extra_attack_2":manualBattle.CombatSettings.Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
                 if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local[attackClip].Duration/deployedUnit.LastAttackRate)
                 { FrameState="Attack"; clip=attackClip; time=age*deployedUnit.LastAttackRate; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
                 else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; loop=true; }
+            }
+            if(deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19")
+            {
+                clip=clip=="walk"?"extra_move_2":clip=="death"?"extra_die_2":clip=="attack"||clip=="extra_attack_2"?"extra_attack_2":"extra_idle_2";
+                FrameState="Altar"+FrameState;
             }
             sprite.sprite=local[clip].At(time,loop,out int index); FrameIndex=index;
         }

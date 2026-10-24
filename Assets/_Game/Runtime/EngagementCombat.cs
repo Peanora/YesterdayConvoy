@@ -245,7 +245,7 @@ namespace YesterdayConvoy
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
-                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+c.AttackDuration/unit.LastAttackRate;
+                unit.IsMoving=!unit.IsBlocked && !unit.HasCombatTarget && !IsSkillActionPlaying(unit) && Clock>=unit.LastAttackTime+UnitActionDuration(unit)/unit.LastAttackRate;
                 if(unit.IsMoving&&PillarObstructs(unit,step))unit.IsMoving=false;
                 if(unit.IsMoving)
                 {

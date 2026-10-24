@@ -81,6 +81,7 @@ namespace YesterdayConvoy
                 }
                 // Only load the approved clip actually used by this role. Other optional atlases stay unloaded.
                 string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} :
+                    task=="M19" ? new[]{"extra_attack_2","extra_die_2","extra_idle_2","extra_move_2"} :
                     task=="M38" ? new[]{"extra_skill_begin","extra_skill_loop","extra_skill_end"} :
                     task=="M36" ? new[]{"extra_attack_2","extra_skill_begin","extra_skill_loop","extra_skill_end"} :
                     task=="M34" ? new[]{"extra_skill_begin","extra_skill_idle","extra_skill_move"} :

@@ -153,6 +153,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
         public float UnitAttackMultiplier(DeployedUnitState unit) => CombatSettings.Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
             CombatSettings.Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1;
+        public float UnitActionDuration(DeployedUnitState unit)=>unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:CombatSettings.AttackDuration;
         public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
         public float UnitArmor(DeployedUnitState unit)
         {

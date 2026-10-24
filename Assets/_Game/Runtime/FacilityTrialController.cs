@@ -50,6 +50,7 @@ namespace YesterdayConvoy
             if(selected!=null&&int.TryParse(selected.Substring(16),out int r)&&r>=0&&r<roles.Length)ResetTrial(r);
             string evidence=Array.Find(args,a=>a.StartsWith("--facility-check="));if(evidence==null)yield break;
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
+            if(roles[SelectedRole].Card.CardId=="CARD_M19"){yield return VerifyAltarWarrior(folder);yield break;}
             if(Battle.CombatSettings.Effects.Shackler){yield return VerifyShackler(folder,Array.IndexOf(args,"--shackle-silence")>=0);yield break;}
             Time.timeScale=0;
             bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
@@ -143,7 +144,7 @@ namespace YesterdayConvoy
             var settings=new ManualBattleSettings(original.CardId,original.UnitId,30,1,12,1,.5f,
                 creeper?1500:flamerazer?450:flamechaser?450:Math.Max(1000,original.Health),original.Speed,1,2,1,1);
             var combat=new EngagementSettings(unitAttack:c.UnitAttack,unitArmor:c.UnitArmor,unitRange:c.UnitRange,unitInterval:c.UnitInterval,
-                defenderHealth:15000,defenderAttack:harvester?4:creeper?170:mandragora?110:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:harvester||creeper||flamerazer?3:0,
+                defenderHealth:original.CardId=="CARD_M19"?400:15000,defenderAttack:harvester?4:creeper?170:mandragora?110:flamerazer?28:flamechaser?65:8,defenderArmor:12,defenderRange:3,defenderInterval:flamechaser?.7f:1,blockCount:harvester||creeper||flamerazer?3:0,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
                 attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,effects:c.Effects,canAttack:c.CanAttack,revealsInvisible:reveal);
             Vector3 guard=mapIndex==0?new Vector3(-2,.35f,1):mapIndex==1?new Vector3(-2,.35f,1):role==1?new Vector3(-3,.35f,0):new Vector3(2.5f,.35f,-1);
