@@ -43,4 +43,14 @@ Unity6000.6.5f1：Edit76/76、GPU Play34/34，零失败零跳过；新场景测�
 
 依据[PRTS雪怪小队凿冰人](https://prts.wiki/w/雪怪小队凿冰人)，冻结目标采用250%攻击倍率后再扣护甲，仍为物理伤害，不消耗冻结。本关攻击65、守军护甲3，普通命中62；冻结计算159.5，但目标满生命140，所以实际最多扣140，不记录虚假的过量扣血。未改生命/攻击等原试验参数，保留原近战动作与收势；增伤命中圈浅青色，菜单/底栏显示倍率。
 
-最终Unity6000.6.5f1：Edit77/77、GPU Play34/34零失败零跳过，M11/M13实际配置均覆盖冻结与重开后的普通命中；Windows846214302字节/0错误。M13普通与明确冻结靶场两组实际Player均退出0，靶场bonus=True，已查看完整HUD与近战命中图。证据artifacts/snow-final-*及snow-final-player/M13-*/。其他角色最终回归会在下方补记。
+最终Unity6000.6.5f1：Edit77/77、GPU Play34/34零失败零跳过，M11/M13实际配置均覆盖冻结与重开后的普通命中；Windows846214302字节/0错误。M13普通与明确冻结靶场两组实际Player均退出0，靶场bonus=True，已查看完整HUD与近战命中图。证据artifacts/snow-final-*及snow-final-player/M13-*/。其他角色最终回归见下方。
+
+## 最终交付与未完成范围
+
+[续作PR #19](https://github.com/Peanora/YesterdayConvoy/pull/19)，依赖PR #15。三只已分别验证、提交、推送：M11 efd1377，M12 3f7414a，M13 bf44797。最终构建运行代码对应bf44797，之后仅补交付文档。
+
+最终构建10组独立Player全部退出0：M11普通/冻结靶场、M13普通/冻结靶场、M12正常寒冷/冻结、M06冰爆，以及combatSmokeTest / talulahSmokeTest / interactionSmokeTest / monsterSelectionSmokeTest四组旧流程。两个冻结靶场bonus=True，M12 cold/frozen/noInjectedStatus均True。Edit77/77、GPU Play34/34零跳过；仓库2538文件静态检查、差异空白、范围核对通过，原图集和meta无改动。
+
+本机新构建：Builds/Windows/YesterdayConvoy.exe，同目录SOURCE.txt标明版本和依赖。正常菜单可进入三只；M12能通过正常部署观察真实寒冷和冻结。M11/M13单卡关没有其他冻结来源，必须在明确冻结靶场验证条件增伤，不能把它当成角色自带冻结或已支持多卡编队。
+
+当前未完成：M14霜星及其他首领阶段/复活/召唤，梅菲斯特治疗，海嗣神经损伤等其余角色特殊能力；银狼继续按用户要求暂缓；正式商店/升星/羁绊/多卡混编不在本轮。未真人完整键鼠通关、第二机、长时低配/全分辨率验证。本轮没有生成ZIP/Releases，没有自动合并PR。

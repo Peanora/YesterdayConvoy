@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-24：雪怪效果最终10组Player回归
+
+运行源码bf44797，后续仅文档；Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误。10组最终Player全部退出0：M11普通/明确冻结靶场、M13普通/明确冻结靶场、M12正常寒冷/叠冻、M06冰爆，及原交战/塔露拉/交互/选择页四组。两个bonus=True；M12 cold/frozen/noInjectedStatus=True。已查看完整HUD和实际状态/命中反馈，日志artifacts/snow-final-*与图snow-final-player/。仓库2538文件、差异空白与文件范围核对通过，原图集/meta及场景/Prefab/Packages/ProjectSettings无变更。没有执行第二机、真人全通、长期低配验收；其余角色特殊能力与正式羁绊仍待做。详情[效果交付](monsters/SNOW-EFFECTS.md)，依赖PR15，续作PR19不自动合并，无ZIP/Releases。
+
 ## 2026-10-24：凿冰人冻结增伤与雪怪最终构建
 
 M13按命中冻结状态采用250%攻击倍率再扣护甲，普通62、冻结计算159.5但本关实际扣血最多140。Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误；M13普通与明确冻结靶场两组Player均退出0、bonus=True，实际HUD与浅青近战反馈已查看。M11/M12已分别完成并推送；最终其他Player回归与来源说明见[效果交付](monsters/SNOW-EFFECTS.md)。不声称已做霜星/其他首领、跨卡混编或雪怪羁绊。
