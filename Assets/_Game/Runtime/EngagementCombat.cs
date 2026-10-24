@@ -124,7 +124,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();
+            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
@@ -180,7 +180,7 @@ namespace YesterdayConvoy
         {
             EngagementSettings c=CombatSettings;
             StepFacilities(step);
-            ResolveFuelExplosions();ResolvePillarCommands();
+            ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
             ResolveDeathEffects();
             ResolveHealing();
             foreach(var shot in combatShots)
@@ -235,6 +235,7 @@ namespace YesterdayConvoy
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
+                if(c.Effects.FirstSpeaker&&StepFirstSpeaker(unit))continue;
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
@@ -284,6 +285,7 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval)/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                    if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;
                     if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
                     if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
                     if(!empowered && c.Effects.AttackTargets>1)

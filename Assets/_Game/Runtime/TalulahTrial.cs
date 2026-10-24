@@ -41,6 +41,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
                     (Battle.CombatSettings.Effects.FrostNova ? " · 冰环减速 · 首次倒下复起" :
                      Battle.CombatSettings.Effects.Phalanx ? " · 方阵相互支援 · 折射法抗" :
+                     Battle.CombatSettings.Effects.FirstSpeaker ? " · 物理普攻/神经附伤 · 侵蚀液泡" :
                      Battle.CombatSettings.Effects.Harvester ? " · 待命苏醒 · 临战加速/失血 · 神经光环" :
                      Battle.CombatSettings.Effects.NervousCreeper ? " · 受伤刺伤反击 · 神经损伤 · 不普攻" :
                      Battle.CombatSettings.Effects.Mandragora ? " · 石盾 / 双阶段 · 凝视与支柱" :

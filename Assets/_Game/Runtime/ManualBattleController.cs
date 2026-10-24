@@ -332,6 +332,7 @@ namespace YesterdayConvoy
                 else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
+                if(Battle.FirstSpeakerCasting(unit))GUI.Label(new Rect(x-70,y-28,220,26),$"侵蚀液泡 · 无敌 {5-(Battle.Clock-unit.BubbleStartedAt):0.0}s",smallStyle);
                 if(Battle.CombatSettings.Effects.Harvester)GUI.Label(new Rect(x-70,y-28,200,26),unit.HarvesterPhase==HarvesterPhase.Dormant?"待命":unit.HarvesterPhase==HarvesterPhase.Waking?"苏醒中":$"临战 ×6 · 失血{unit.HarvesterHealthLost:0}",smallStyle);
                 if(Battle.CombatSettings.Effects.Mandragora)GUI.Label(new Rect(x-70,y-28,200,26),unit.MandraPhase==MandragoraPhase.Reborn?"重生中":$"{(unit.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} · {(unit.StoneShield?"石盾":"破盾")}",smallStyle);
                 if(Battle.CombatSettings.Effects.Flamerazer&&unit.Spray!=null&&!unit.Spray.Ended)GUI.Label(new Rect(x-70,y-28,160,26),$"喷火 {unit.Spray.Ticks}跳",smallStyle);

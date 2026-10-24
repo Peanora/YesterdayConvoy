@@ -104,6 +104,13 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
+            if(manualBattle.FirstSpeakerCasting(deployedUnit))
+            {
+                double age=manualBattle.Clock-deployedUnit.BubbleStartedAt;
+                string part=age<1?"begin":age<5-.7666667?"loop":"end";
+                double elapsed=part=="begin"?age:part=="loop"?age-1:age-(5-.7666667);
+                FrameState="Bubble"+part;sprite.sprite=local["extra_skill_"+part].At(elapsed,part=="loop",out int bubbleIndex);FrameIndex=bubbleIndex;return;
+            }
             if(manualBattle.CombatSettings.Effects.Harvester&&deployedUnit.Active)
             {
                 var u=deployedUnit;
