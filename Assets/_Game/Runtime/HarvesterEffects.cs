@@ -5,7 +5,12 @@ namespace YesterdayConvoy
     public enum HarvesterPhase { Dormant, Waking, Combat }
     public sealed partial class ManualBattle
     {
-        public float UnitMoveMultiplier(DeployedUnitState u)=>EngagementEnabled&&CombatSettings.Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
+        public float UnitMoveMultiplier(DeployedUnitState u)
+        {
+            float multiplier=EngagementEnabled&&CombatSettings.Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
+            if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&TacticalCommanders>0)multiplier*=1+.3f/u.Motion.Speed;
+            return multiplier;
+        }
         void TryWakeHarvester(DeployedUnitState u)
         {
             if(!u.Active||u.HarvesterPhase!=HarvesterPhase.Dormant||u.PillarStunnedUntil>Clock||u.Health/u.MaxHealth>=.9999f)return;

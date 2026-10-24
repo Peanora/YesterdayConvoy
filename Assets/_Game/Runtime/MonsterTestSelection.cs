@@ -118,6 +118,8 @@ namespace YesterdayConvoy
                 if(effects.ArtsBarrier) detail="三层法术屏障 / 生命攻速强化\n法术测试靶 / 可观察破盾";
                 if(effects.Mudrock) detail="攻击逐次蓄力 / 最多6层\n定时补充法术屏障";
                 if(effects.Phalanx) detail="附近方阵单位相互加护甲\n折射 / 70法术抗性";
+                if(effects.TacticalCommander) detail="战术命令 / 全场攻防强化\n多名传令兵可叠加 / 离场解除";
+                if(effects.OrderRunner) detail="收到战术命令时移速+0.3\n独立游击队关可同场展示";
                 if(effects.Shackler) detail="一次性枷锁 / 禁止攻击与阻挡\n每秒法术伤害 / 可被中断";
                 if(effects.FirstSpeaker) detail="物理普攻附神经损伤 / 侵蚀液泡\n延迟十字索敌 / 施放期间无敌";
                 if(effects.Harvester) detail="受伤苏醒 / 临战加速和失血\n神经光环 / 阻挡时近战";

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    public sealed class GuerrillaTrialController:MonoBehaviour
+    public sealed partial class GuerrillaTrialController:MonoBehaviour
     {
         public ManualBattleDefinition[] roles;
         public Vector3[] route;
@@ -26,7 +26,9 @@ namespace YesterdayConvoy
         {
             material=new Material(Shader.Find("Sprites/Default"));ResetTrial();Application.runInBackground=true;
             string evidence=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--guerrilla-check="));
-            if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
+            string runner=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--runner-check="));
+            if(runner!=null)StartCoroutine(VerifyRunner(runner.Substring(15)));
+            else if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
         }
         public void ResetTrial()
         {
@@ -95,7 +97,7 @@ namespace YesterdayConvoy
             for(int i=0;i<Battle.Defenders.Count;i++)GUI.Label(new Rect(1020,52+i*25,236,26),$"守军{i+1}  {Battle.Defenders[i].Health:0}生命",text);
             rosterScroll=GUI.BeginScrollView(new Rect(1018,112,240,428),rosterScroll,new Rect(0,0,216,living.Length*56));
             for(int i=0;i<living.Length;i++)
-            {var u=living[i];GUI.Label(new Rect(0,i*56,216,26),$"{ShortName(u.CardId)} · {u.Health:0}生命",text);GUI.Label(new Rect(0,i*56+24,216,26),$"攻击 {Battle.UnitCombat(u).UnitAttack*Battle.UnitAttackMultiplier(u):0.0}  护甲 {Battle.UnitArmor(u):0.0}",text);}
+            {var u=living[i];GUI.Label(new Rect(0,i*56,216,26),$"{ShortName(u.CardId)} · {u.Health:0}生命",text);GUI.Label(new Rect(0,i*56+24,216,26),$"攻{Battle.UnitCombat(u).UnitAttack*Battle.UnitAttackMultiplier(u):0.0}  甲{Battle.UnitArmor(u):0.0}  速{u.Motion.Speed*Battle.UnitMoveMultiplier(u):0.0}",text);}
             GUI.EndScrollView();
         }
         IEnumerator Capture(string folder,string name)
