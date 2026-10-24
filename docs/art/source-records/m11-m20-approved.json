@@ -1,0 +1,352 @@
+[
+  {
+    "task": "M11",
+    "name": "雪怪狙击手",
+    "reference": "https://prts.wiki/w/%E9%9B%AA%E6%80%AA%E7%8B%99%E5%87%BB%E6%89%8B",
+    "model": "enemy_1066_snbow",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1066_snbow/",
+    "files": [
+      {
+        "file": "enemy_1066_snbow.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1066_snbow/enemy_1066_snbow.skel",
+        "bytes": 33166,
+        "sha256": "a055f8e6c19a8908a3158b9561bb8b8f3e2a287c42c19fb151e5f519094a678a",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1066_snbow.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1066_snbow/enemy_1066_snbow.atlas",
+        "bytes": 2697,
+        "sha256": "4f676b3118a14ca13744cb2bd2a291c152fd76529c83d0b2758a3448a8e729a2",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1066_snbow.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1066_snbow/enemy_1066_snbow.png",
+        "bytes": 59973,
+        "sha256": "16153315a116bf051063bda5891180a1dfee3184804cb06ff67e883b1dce8842",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M11",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M12",
+    "name": "雪怪术师",
+    "reference": "https://prts.wiki/w/%E9%9B%AA%E6%80%AA%E6%9C%AF%E5%B8%88",
+    "model": "enemy_1068_snmage",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1068_snmage/",
+    "files": [
+      {
+        "file": "enemy_1068_snmage.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1068_snmage/enemy_1068_snmage.skel",
+        "bytes": 35301,
+        "sha256": "a770937296fed213b9420a300ca897b8652367bcb7f11638dc107a75d5f6fc04",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1068_snmage.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1068_snmage/enemy_1068_snmage.atlas",
+        "bytes": 2213,
+        "sha256": "2663fc153b56daa658a2ecaf5855dfb7fd6e2cdfc1b8ed2dbc4d8917923d3a8d",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1068_snmage.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1068_snmage/enemy_1068_snmage.png",
+        "bytes": 47874,
+        "sha256": "c7fe87c7870e202bcb61233b8f22085f531fabb5861b4d36e5781bec66532cd6",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M12",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M13",
+    "name": "雪怪小队凿冰人",
+    "reference": "https://prts.wiki/w/%E9%9B%AA%E6%80%AA%E5%B0%8F%E9%98%9F%E5%87%BF%E5%86%B0%E4%BA%BA",
+    "model": "enemy_1069_icebrk",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1069_icebrk/",
+    "files": [
+      {
+        "file": "enemy_1069_icebrk.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1069_icebrk/enemy_1069_icebrk.skel",
+        "bytes": 53349,
+        "sha256": "8394ca3079e2b48ec1463dfa1d75f49fe042e2b926f7129df7d5de6c822785c6",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1069_icebrk.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1069_icebrk/enemy_1069_icebrk.atlas",
+        "bytes": 2615,
+        "sha256": "533155a19e8450304f54b64595126876b0281386357d28473dddd16644838890",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1069_icebrk.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1069_icebrk/enemy_1069_icebrk.png",
+        "bytes": 54276,
+        "sha256": "56436bdbbfee4a5321cdf89aa1ab7cd7d7efb821b0748ba3a1540f04db7a0ff9",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M13",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M14",
+    "name": "霜星",
+    "reference": "https://prts.wiki/w/%E9%9C%9C%E6%98%9F",
+    "model": "enemy_1505_frstar",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1505_frstar/",
+    "files": [
+      {
+        "file": "enemy_1505_frstar.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1505_frstar/enemy_1505_frstar.skel",
+        "bytes": 177827,
+        "sha256": "d587222ce1595b952760e6d7225f98e6dfb17c627dade534ccc63ac31db5b891",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1505_frstar.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1505_frstar/enemy_1505_frstar.atlas",
+        "bytes": 4217,
+        "sha256": "46760d5fadabf8e9e7bdb9bc3ee5be969b84749b28c3f0774be2b3f026e0c323",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1505_frstar.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1505_frstar/enemy_1505_frstar.png",
+        "bytes": 60132,
+        "sha256": "4a95fbc14f052e28fce27c453b5e590269e11b1fef773ec9d096bbf031540df4",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M14",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M15",
+    "name": "游击队战士",
+    "reference": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E6%88%98%E5%A3%AB",
+    "model": "enemy_1078_sotisc",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1078_sotisc/",
+    "files": [
+      {
+        "file": "enemy_1078_sotisc.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1078_sotisc/enemy_1078_sotisc.skel",
+        "bytes": 41480,
+        "sha256": "ee1da89f8a88851fa846ecb7ea4c15fa0c421fad654e1f26187a8f152e9c2a06",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1078_sotisc.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1078_sotisc/enemy_1078_sotisc.atlas",
+        "bytes": 2520,
+        "sha256": "c8d96f59a8965fe99e59fd15597333b030b01fe4545d7456c05d8db460806ed2",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1078_sotisc.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1078_sotisc/enemy_1078_sotisc.png",
+        "bytes": 38610,
+        "sha256": "303c79059835f49deb2d8647e755522d636c8e368c3dd2fe311229ceb5b92d03",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M15",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M16",
+    "name": "游击队狙击手",
+    "reference": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E7%8B%99%E5%87%BB%E6%89%8B",
+    "model": "enemy_1079_sotisp",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1079_sotisp/",
+    "files": [
+      {
+        "file": "enemy_1079_sotisp.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1079_sotisp/enemy_1079_sotisp.skel",
+        "bytes": 49846,
+        "sha256": "c6d65b8e05b6b794e125db7d976f13287e6764b316c5bedccd750c024e0ab2fc",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1079_sotisp.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1079_sotisp/enemy_1079_sotisp.atlas",
+        "bytes": 2859,
+        "sha256": "0ce56967fb7b693d08e3604877575d1509f08e41c08769ca73cdc49197773af7",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1079_sotisp.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1079_sotisp/enemy_1079_sotisp.png",
+        "bytes": 52858,
+        "sha256": "b84779f17ae92e621652fe0f487203b1820b708da6f8e1b383ef9d20c3351463",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M16",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M17",
+    "name": "游击队传令兵",
+    "reference": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E4%BC%A0%E4%BB%A4%E5%85%B5",
+    "model": "enemy_1080_sotidp",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1080_sotidp/",
+    "files": [
+      {
+        "file": "enemy_1080_sotidp.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1080_sotidp/enemy_1080_sotidp.skel",
+        "bytes": 44096,
+        "sha256": "d6faa4a454405d981f47f180440dfbdbc5d391efcd3b82b0d8fe353bf3dad995",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1080_sotidp.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1080_sotidp/enemy_1080_sotidp.atlas",
+        "bytes": 3209,
+        "sha256": "c39dc81aed78755f5b23e8fd0db76e3842e748a163ed8d1f01302753065e9112",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1080_sotidp.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1080_sotidp/enemy_1080_sotidp.png",
+        "bytes": 55675,
+        "sha256": "6c28c54e63453fdcb688e63537ab75c82c521f7aa6828488d98add4e0a78c7bc",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M17",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M18",
+    "name": "游击队盾卫",
+    "reference": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E7%9B%BE%E5%8D%AB",
+    "model": "enemy_1081_sotisd",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1081_sotisd/",
+    "files": [
+      {
+        "file": "enemy_1081_sotisd.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1081_sotisd/enemy_1081_sotisd.skel",
+        "bytes": 42064,
+        "sha256": "40823d828803f9d0a74a1ab59cf377126d694ffeb5f84aa1ecb6dbb42fe9a5fe",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1081_sotisd.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1081_sotisd/enemy_1081_sotisd.atlas",
+        "bytes": 1695,
+        "sha256": "19cd5d33aa39115fc7b484d207aae06af8bfafc3e58e00959cf2567d617c362f",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1081_sotisd.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1081_sotisd/enemy_1081_sotisd.png",
+        "bytes": 59728,
+        "sha256": "197b3af7fdb66c7760515652d579f879b08b2ecd351af9defba0d4692245f9c2",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M18",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M19",
+    "name": "游击队萨卡兹战士",
+    "reference": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E8%90%A8%E5%8D%A1%E5%85%B9%E6%88%98%E5%A3%AB",
+    "model": "enemy_1084_sotidm",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1084_sotidm/",
+    "files": [
+      {
+        "file": "enemy_1084_sotidm.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1084_sotidm/enemy_1084_sotidm.skel",
+        "bytes": 55870,
+        "sha256": "14b5c63decbf28e31bd60de0ae195fd360d32a9dae8fc6b54d39b9d0d3a47830",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1084_sotidm.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1084_sotidm/enemy_1084_sotidm.atlas",
+        "bytes": 2849,
+        "sha256": "75bd5ad750b2d527077c310631633c60bd98b3b5b337be783e5a2d388cd16081",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1084_sotidm.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1084_sotidm/enemy_1084_sotidm.png",
+        "bytes": 63631,
+        "sha256": "0a5eb859c52f2c9aa224b7922db66370cd59bdd650f05021d7b4d5795d9ce48e",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M19",
+    "rawModelsShipped": false
+  },
+  {
+    "task": "M20",
+    "name": "爱国者",
+    "reference": "https://prts.wiki/w/%E7%88%B1%E5%9B%BD%E8%80%85",
+    "model": "enemy_1506_patrt",
+    "prefix": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/",
+    "files": [
+      {
+        "file": "enemy_1506_patrt.skel",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.skel",
+        "bytes": 433473,
+        "sha256": "93940c09827c7f45649b72a27c3dff5f061ae9e110087aaf453d6f046568daf0",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1506_patrt.atlas",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.atlas",
+        "bytes": 3195,
+        "sha256": "cd23d92b89a8d387d7c1a5b998665973ba0be39427f577319b07f33957163e19",
+        "http_status": 200
+      },
+      {
+        "file": "enemy_1506_patrt.png",
+        "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.png",
+        "bytes": 97767,
+        "sha256": "ccb07c3c9b6aeb2516ccd3fc1365ed276560989c31cfc218a8639dd0affa53d5",
+        "http_status": 200
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character / texture / animation; not CC0; public redistribution license unconfirmed. Local unapproved preview only.",
+    "approval": "2026-10-22 user: 可以，做吧",
+    "runtimePath": "Assets/StreamingAssets/MonsterCombatArt/M20",
+    "rawModelsShipped": false
+  }
+]

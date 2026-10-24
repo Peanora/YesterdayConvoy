@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "task": "M35",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 1.4625,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.558032160864936,
+      "pivotY": 0.327822928958469,
+      "sourceBounds": [
+        -350.6417541503906,
+        -33.54913330078125,
+        262.6772155761719,
+        294.5333251953125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 11,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 32,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.558032160864936,
+      "pivotY": 0.327822928958469,
+      "sourceBounds": [
+        -350.6417541503906,
+        -33.54913330078125,
+        262.6772155761719,
+        294.5333251953125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 32,
+          "width": 2016,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.558032160864936,
+      "pivotY": 0.327822928958469,
+      "sourceBounds": [
+        -350.6417541503906,
+        -33.54913330078125,
+        262.6772155761719,
+        294.5333251953125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.558032160864936,
+      "pivotY": 0.327822928958469,
+      "sourceBounds": [
+        -350.6417541503906,
+        -33.54913330078125,
+        262.6772155761719,
+        294.5333251953125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "death-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "3c2ae8155887e6197e4441b3837400eac703af2e7423ebd35561de37f6af403d"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "7621c3928d602420c980b3ff1ee163e8828130598fb1089c36c67dc9694060f1"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "9e3347dd6c6644bcb9df53e2a0e13dd7726ac40a0a0651fc82dc8fbedc0fb4f4"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "03d8b500b88d1d4cae46683119e01e731cb8c50d9a1b4983ed1afe2460c3b302"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "37c4fd8f88fb99c8b287ab74c53984fcca1afd4a8950819743eda190fc02b100"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "41df1f850099fd24e9a1cca86d078d8d87e45183f6bbe77522819240d658ddae"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "1b5f1a070109e21dcf2749f856b7e8256b81fcdb3d4ea0f07b4957b931faf43d"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "2a94aa1766edf72f6661d83650329530f283a5ad86e1664ee878478a161c37fc"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1147_dshond. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

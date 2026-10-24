@@ -104,13 +104,30 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
-            if(deployedUnit.Resolution==UnitResolution.Dead)
+            if(deployedUnit.Resolution==UnitResolution.Dead || deployedUnit.IsReviving)
             { FrameState="Death"; clip="death"; time=(presentationClock?.Invoke() ?? manualBattle.Clock)-deployedUnit.DeathTime; sprite.color=Color.white; }
             else
             {
                 double age=manualBattle.Clock-deployedUnit.LastAttackTime;
-                if(age>=0 && age<local["attack"].Duration)
-                { FrameState="Attack"; clip="attack"; time=age; }
+                if(manualBattle.CombatSettings.Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
+                {
+                    FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
+                    FrameIndex=shieldIndex;return;
+                }
+                if(manualBattle.CombatSettings.Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.CombatSettings.AttackDuration)
+                {
+                    FrameState="Heal";sprite.sprite=local["attack"].At(manualBattle.Clock-deployedUnit.HealingStartedAt,false,out int healIndex);
+                    FrameIndex=healIndex;return;
+                }
+                if(manualBattle.CombatSettings.Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
+                {
+                    FrameState="IceRing";
+                    sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
+                    FrameIndex=ringIndex;return;
+                }
+                string attackClip=manualBattle.CombatSettings.Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
+                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local[attackClip].Duration/deployedUnit.LastAttackRate)
+                { FrameState="Attack"; clip=attackClip; time=age*deployedUnit.LastAttackRate; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
                 else { FrameState="Idle"; clip="idle"; time=manualBattle.Clock-deployedUnit.SpawnTime; loop=true; }

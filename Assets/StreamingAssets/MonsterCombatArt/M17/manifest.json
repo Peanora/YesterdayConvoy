@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "task": "M17",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 2.1375,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5824906253814697,
+      "pivotY": 0.20793389052152633,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5824906253814697,
+      "pivotY": 0.20793389052152633,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 67,
+      "duration": 1.100000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5824906253814697,
+      "pivotY": 0.20793389052152633,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "attack-01.png",
+          "count": 3,
+          "width": 2048,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 73,
+      "duration": 1.2000000476837158,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5824906253814697,
+      "pivotY": 0.20793389052152633,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "death-01.png",
+          "count": 9,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "f65a10dd01d2348250d37c38a85c96054a404c32e75c646092fae40f15d75b78"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "49e0a48fb2efcfb0f575c1019cc2219e001eb5efad82a4473aa3d93804cfa570"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "40bf84db9aab55451a6bd6cfb5808ee704b2e11e7dec94172d782bbfd44e6d28"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "6a18813948887a77650ccfc6e8a6c179bc923f1e884c30f1577fde2cd73584ac"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "a90100618239b78aa657d84136b52e0f00e2844a3144a99f35f1a1af7acf64b0"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "149cb5f6a949e20cd3aa09e10dd618b0dff68fffe66ba113d54e00c4595ffced"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "9cbccb39e93c36cd305210d91b8858fda3d72eb6378bdc75166ed512b93866c6"
+    }
+  ],
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1080_sotidp. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+}

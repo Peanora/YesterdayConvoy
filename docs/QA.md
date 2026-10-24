@@ -1,5 +1,59 @@
 # 验证证据与回归
 
+## 2026-10-24：已有模型效果续作
+
+见[逐角色证据和失败修正](monsters/EXISTING-MODEL-EFFECTS.md)，任务#20/PR#21。M14冰环/首次复起：79 Edit、35 GPU Play全过，实际Player退出0。M21–23回血：80 Edit、36 GPU Play全过，三只各自实际Player退出0。M24三目标法术吸血：81 Edit、37 GPU Play全过，实际Player退出0。M25自动三目标治疗：83 Edit、38完整GPU Play全过/零跳过，Windows构建0错误，实际Player治疗232、无伤害普攻、完整流程均True并退出0。每只在验证后独立提交推送，未做封地等设施联动或全角色完成声明。
+
+日志/结果分别artifacts/effects-*、host-*、centurion-*、mephisto-*。最后完整回归包含之前角色场景，不冒充所有旧角色Player在每次构建重跑。已查看冰环/治疗实际HUD截图，原PNG/meta与场景/Prefab/Packages/ProjectSettings未改。第一次受限环境Unity许可198、初次测试编译类型错误、霜星靶生命/射程与诊断等待不足均如实修正重跑；不把失败版本记为成功。M24推送时提升权限的静态工具遇所有权校验失败，随后正常环境静态2539文件通过。未第二机、人类全通或长时性能验收，无ZIP/Releases/自动合并。
+
+## 2026-10-24：雪怪效果最终10组Player回归
+
+运行源码bf44797，后续仅文档；Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误。10组最终Player全部退出0：M11普通/明确冻结靶场、M13普通/明确冻结靶场、M12正常寒冷/叠冻、M06冰爆，及原交战/塔露拉/交互/选择页四组。两个bonus=True；M12 cold/frozen/noInjectedStatus=True。已查看完整HUD和实际状态/命中反馈，日志artifacts/snow-final-*与图snow-final-player/。仓库2538文件、差异空白与文件范围核对通过，原图集/meta及场景/Prefab/Packages/ProjectSettings无变更。没有执行第二机、真人全通、长期低配验收；其余角色特殊能力与正式羁绊仍待做。详情[效果交付](monsters/SNOW-EFFECTS.md)，依赖PR15，续作PR19不自动合并，无ZIP/Releases。
+
+## 2026-10-24：凿冰人冻结增伤与雪怪最终构建
+
+M13按命中冻结状态采用250%攻击倍率再扣护甲，普通62、冻结计算159.5但本关实际扣血最多140。Edit77/77、GPU Play34/34零跳过，最终Windows846214302字节/0错误；M13普通与明确冻结靶场两组Player均退出0、bonus=True，实际HUD与浅青近战反馈已查看。M11/M12已分别完成并推送；最终其他Player回归与来源说明见[效果交付](monsters/SNOW-EFFECTS.md)。不声称已做霜星/其他首领、跨卡混编或雪怪羁绊。
+
+## 2026-10-24：雪怪术师第三击寒冷
+
+M12每第三次普通攻击的命中施加10秒寒冷，逐实体计数；两只真实部署叠加冻结，非诊断注入。M12守军生命140→400仅为显示完整链路的样板调整。Edit76/76、GPU Play34/34零跳过，Windows846214278字节/0错误，实际Player所有检查通过且cold/frozen/noInjectedStatus均True，完整HUD已查看；证据与来源见[效果交付](monsters/SNOW-EFFECTS.md)。未改场景/Prefab/Packages/ProjectSettings，未做跨卡混编/羁绊/完整首领能力；无ZIP/Releases。
+
+## 2026-10-24：雪怪狙击手冻结增伤
+
+[任务#18](https://github.com/Peanora/YesterdayConvoy/issues/18)，基于PR15/3847094的独立分支codex/monster-snow-effects。M11按命中时冻结状态提升至150%攻击后扣护甲，不消耗冻结；只有寒冷无增伤，飞行中到期无增伤。默认零值保持其他角色，M06共用寒冷入口语义不变。Edit74/74、GPU Play33/33零跳过，Windows846212458字节/0错误；普通与明确标记冻结靶场两组Player全退出0，bonus=True，已查看完整HUD。普通单卡关不会自行冻结，不宣称跨卡混编或雪怪羁绊已做。测试失败修正与证据路径见[效果交付](monsters/SNOW-EFFECTS.md)。未完整人类键鼠通关/第二机/长期低配；无ZIP/Releases或自动合并。
+
+## 2026-10-22：M21–M38十八位接入，银狼暂缓
+
+- 授权/基线：用户确认已展示18位素材，明确排除银狼，并确认继续PR #15、原main既存未跟踪设置隔离与公共不普攻接口范围。开工fetch核实main仍6be1300、功能分支333f437，独立目录干净；未改原main或其设置，不自动合并。
+- 资源/配置：新增18张透明卡面、119段10,519帧；312 PNG、26份清单，72份Card/Unit/Engagement/MonsterTests配置。71段基础清单中的梅菲斯特治疗施法仅保留，不作攻击；实际使用70段基础动作，48段ExtraClips仅留存。无M41文件/配置/图像，也未带入原骨骼、加工运行库或预览。
+- Unity导入：6000.6.5f1，PrepareRemainingBatch实际退出0，18个MONSTER_CONFIGURATION_PASS、40份单位与InitialDemo场景校验通过。首次导入因新增测试误访问内部CombatTargetId出现CS1061，改为通过公开HasCombatTarget和实际弹道/伤害验证，重新导入退出0。
+- EditMode：最终72/72，0失败/跳过，artifacts/m21-edit-final.xml。新增覆盖不普攻单位过射程仍移动且无己方伤害、暂停、穿门一次、仍能阻挡和受伤死亡、既存配置默认攻击及仅两份新配置禁用。首次Edit为71/72，新增测试误用new EngagementSettings()得到结构体零值；改为显式调用既有带参构造，不改产品构造语义；最终重跑通过，失败记录保留。
+- GPU PlayMode：32/32，0失败/跳过，artifacts/m21-play.xml。Roster遍历全部37个CARD_M（M02–M38），检查正常注册、实际图帧、暂停冻结、无技能、三次部署、按配置攻击/不攻击、通关穿门、重进清理、死亡原帧及根节点不移动；既有维维美/塔露拉/源石虫等回归同套通过。菜单与底栏后续文案修正后另3/3入口Play通过，artifacts/m21-menu-final.xml。
+- Windows：最终BuildWindows退出0，BASELINE_BUILD_PASS 846218362字节、0错误，artifacts/m21-build-final.log；运行源码6608c96139dbe544e06e56ab327fe87dea8f0b08。后续仅补证据文档。构建SOURCE.txt绑定该提交和真实覆盖范围。
+- 18只独立Player：artifacts/player-m21-m38/results.json，M21–M38均退出0；entered/paused/hit/resolved/three/won/noSkill/clean均True。16只攻击者attacked=True，M25/M33为False且独立MONSTER_ATTACK_POLICY_CHECK policy=True（受到敌方伤害时仍移动、没有普攻）；frozen为旧M06专用分支默认值，不作为新怪冻结能力证据。此轮在底栏文案修正前构建上运行，战斗与素材和最终相同。
+- 最终构建6组Player：artifacts/player-m21-final/results.json。重跑M25/M33验证不普攻与新底栏，其余selection/talulah/interaction/wisadel旧流程均退出0、检查通过；选择页实际40可玩/1待制作银狼。两轮共24个独立进程通过，无产品运行异常或缺图回退。
+- 实际视觉检查：已查看D3D12 1280×720完整HUD、八字长名菜单、宿主士兵/泥岩/蔓德拉攻击、梅菲斯特/囊海爬行者与新底栏、海嗣/萨卡兹及最后一页截图，角色透明度/比例/脚点/血条可读，名称无截断。截图仅本地artifacts/player-m21-m38与player-m21-final。没有把截图或整张平移当作新生成动画；使用确认稿离线原动作帧。
+- Git/构建审计：artifacts/m21-media-audit.json，312 PNG/26清单及必要meta全部实际Git跟踪，源文件SHA256匹配清单与最终构建；清单内容匹配；最大PNG3,019,918字节，无单文件超GitHub限制。仓库/本机忽略核对未排除素材，M41在源与构建均不存在；AGENTS/缓存/日志/构建不提交。repository-checks最终结果见提交/PR。
+- 本地副本：E:/珍贵资料/昨日圆车_本地试玩/2026-10-22-M21-M38-6608c96/YesterdayConvoy.exe；902文件逐一SHA256匹配构建。不生成ZIP/Releases。原工程main仍需人工合并PR并更新，不能将旧main目录当作此版。
+- 关键连接：Resources测试配置→CardDefinition/LocalMonsterArt读取图集→DemoSpriteVisual按模拟时钟/路程播放；EngagementDefinition的noOrdinaryAttack默认false，快照CanAttack追加参数默认true，ManualBattle对两位禁普攻但保留受伤/阻挡/暂停/穿门；没有新治疗或首领机制。
+- 未执行/限制：未做真人连续键鼠完整通关、第二台电脑、低配/长时/全分辨率或专项加载性能测试；菜单首次读取全部卡池图集，尚未专项优化。梅菲斯特治疗、囊海神经损伤、首领阶段/召唤/复活、正式羁绊/运营尚未实现；沿用通用攻击特效，未还原独立原作全套特效。原作权利状态保留，非CC0且公开再分发许可未确认。PR14旧卡面统一仍是独立任务，不宣称本轮已合入它。
+
+## 2026-10-22：M11–M20已确认美术与独立基础交战
+
+- 授权/基线：用户先确认十只项目外预览，再确认保留原main未跟踪PackageManagerSettings.asset的独立目录方案。从实时核实main6be1300建立codex/m11-m20-art-integration，不改原目录。范围仅基础动作/卡面/单卡普攻配置，额外阶段动作保留，不新增技能/光环/复活机制。
+- 导入：Unity6000.6.5f1首次完整导入，MonsterCombatTools.PrepareNextBatch实际退出0；十只均MONSTER_CONFIGURATION_PASS，22份Unit定义校验通过，InitialDemo校验通过。10张透明卡面、55段5451帧（40段参与基础交战、15段留存）来自已确认源模型。212PNG、14清单及必要meta随源码跟踪，无新包/Spine运行时；来源和真实许可状态见art/M11-M20-INTEGRATION.md。
+- Edit Mode：69/69通过、0失败/跳过，artifacts/batch-edit.xml / batch-edit-retry.log。首次batch-edit.log因Unity IL Post Processor runner未能启动、找不到IPC pipe而退出1，没有测试结果；保留失败记录，重新启动并等待进程后通过，未因此改动产品代码或包依赖。
+- GPU Play Mode：32/32通过、0失败/跳过，artifacts/batch-play.xml / batch-play.log。既有Roster测试覆盖全部19个CARD_M样板，新增断言要求M11–M20实际注册而非静默待制作；每只实际检查图帧来源、暂停位置/帧冻结、无技能、三次部署/攻击/穿门胜利、重进资源清理和独立死亡动画根点。选择测试原“雪怪狙击手待制作”改验仍待制作的宿主士兵，保留未知ID拒绝。
+- 菜单后续修整：长名字体缩为20px，避免八字名超出170px名称区域；仅取证入口自动滚动到被测角色。此后针对选择页补跑3/3 Play通过、0跳过，artifacts/batch-menu-final.xml。未为小字样更改再重复整套战斗测试；最终Player检查名称与入口。
+- 最终Windows构建：源码b74265ddb92342ee953091370262998a2d225a41；BaselineTools.BuildWindows退出0，BASELINE_BUILD_PASS 539842988 bytes / 0 errors，artifacts/batch-build-delivery.log。此前构建日志batch-build-final.log为菜单字号修整前版本；不是最终交付来源。Builds/Windows/SOURCE.txt绑定源码、分支、Unity和基线；后续只补文档记录。
+- 十只独立Player：artifacts/player-batch/results.json，M11–M20各自-monsterCombatSmokeTest均退出0，entered/paused/attacked/hit/resolved/three/won/noSkill/clean全部True。输出中的frozen为旧M06专用分支默认值，不能当成新怪冻结能力测试。此轮在最终菜单字号/取证滚动修改前构建上完成，战斗配置/逻辑与最终相同。
+- 最终构建Player：artifacts/player-final/results.json。M13/M19重跑真实部署/战斗/清理并采集完整新菜单，退出0、全True；另-monsterSelectionSmokeTest九项、-talulahSmokeTest十三项、-interactionSmokeTest八项、-combatSmokeTest十三项全部True、各退出0。两轮合计16个独立Player进程，无失败；塔露拉日志original=True，未以回退图冒充原动作。
+- 实际视觉检查：正常D3D12窗口ScreenCapture输出完整1280×720 HUD，已查看雪怪/霜星/盾卫/爱国者交战、M13和M19所在菜单页；名称无截断，卡面无烘焙字、保留比例，脚底/血条/高台层次可读。截图在artifacts/player-batch与player-final，仅本地，不上传预览工作区。单一路线多只实体可能重叠，未修改避让规则；克洛丝仍用现有资源。
+- 资源交付审计：artifacts/media-audit.json；新增212PNG与14清单全部实际Git跟踪，PNG SHA256匹配来源清单及最终Build StreamingAssets，清单内容与构建一致，meta均配对；最大单PNG2094011字节，不需LFS。55动作/5451帧核对一致，ExtraClips实际包含在构建但不被本轮运行加载。仓库及本机忽略核对未排除新媒体；AGENTS仍忽略。
+- 交付副本：E:/珍贵资料/昨日圆车_本地试玩/2026-10-22-M11-M20-b74265d/YesterdayConvoy.exe；564文件逐一SHA256匹配最终构建，没有ZIP/Releases。
+- 仓库静态检查1689个跟踪文件通过，diff --check通过；主场景/Prefab/Packages/ProjectSettings无暂存差异，原工程既存未跟踪设置保留。来源记录/CSV/Credits/排期更新，不冒充原作许可已获得；不自动合并main。
+- 未执行/限制：真人完整连续键鼠通关、第二台电脑、低配/长时/全分辨率验收未执行。当前只接入每只基础四动作，不含正式技能/首领阶段/原作独立投射物/全场特效、商店/升星/羁绊或混编。未重新绘制十张精绘立绘；霜星为普通enemy_1505_frstar而非冬痕。PR14旧角色透明卡面统一仍独立于本任务的main基线，不能把它当作本轮已集成。
+
 ## 2026-10-22：补齐塔露拉 / 源石虫素材，干净克隆完整复现
 
 源码提交8be0d18d5431def15c69e76f693f5e9279e93ca1，基于main b3455c6；后续提交仅补验证文档。同机独立Git克隆，起始无Library、旧构建或额外媒体；所有素材均来自该提交，没有复制忽略目录或运行安装器。Unity6000.6.5f1首次导入、入口场景及12份单位配置校验通过，Windows x64构建360329251字节、0错误、退出0；导入后跟踪文件无变化。

@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "task": "M37",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_attack_end",
+      "source": "Attack_End",
+      "count": 31,
+      "duration": 0.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.39571883296966553,
+      "pivotY": 0.12391212686896325,
+      "sourceBounds": [
+        -259.8183898925781,
+        -12.949135780334473,
+        435.4498291015625,
+        646.3602905273438
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_end-00.png",
+          "count": 31,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_attack_idle",
+      "source": "Attack_Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.3231362295150757,
+      "pivotY": 0.18613363972732,
+      "sourceBounds": [
+        -152.1162567138672,
+        -15.849855422973633,
+        360.62933349609375,
+        385.88177490234375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_idle-00.png",
+          "count": 60,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    },
+    {
+      "key": "extra_attack_nopre",
+      "source": "Attack_NoPre",
+      "count": 67,
+      "duration": 1.100000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.4836952330849387,
+      "pivotY": 0.19181858322837136,
+      "sourceBounds": [
+        -408.7818603515625,
+        -102.64010620117188,
+        438.98858642578125,
+        673.5867309570312
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_nopre-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_attack_nopre-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_attack_nopre-02.png",
+          "count": 17,
+          "width": 1760,
+          "height": 1408
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_attack_end-00.png",
+      "sha256": "d43f6b7232d2c90f2f46522c57d57c5f557bbfd3e17f4f8a5eb1f36fa9683a5f"
+    },
+    {
+      "file": "extra_attack_idle-00.png",
+      "sha256": "8154159b37286956c3a912a4ebaf4bd7215444fc489eb13d71c1bf6c70747553"
+    },
+    {
+      "file": "extra_attack_nopre-00.png",
+      "sha256": "b5e166fd2c4c2d705fc22d8cdff62ca0ee711da98c194b839ff14c34da6b691e"
+    },
+    {
+      "file": "extra_attack_nopre-01.png",
+      "sha256": "0ccc7595111ca9f608fea23ba90c82c160bd8293b82865a5c22d48cf38d03cf4"
+    },
+    {
+      "file": "extra_attack_nopre-02.png",
+      "sha256": "b003b7d407c4a937202e66838d1481b857b97d474d9142fad00ab5d8cf402c7a"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1010_demon. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}
