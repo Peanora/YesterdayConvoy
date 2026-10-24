@@ -46,4 +46,5 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  regenerationFraction: 0.033333333
   extraDefenders: []
