@@ -28,7 +28,12 @@ namespace YesterdayConvoy
             string evidence=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--guerrilla-check="));
             string runner=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--runner-check="));
             if(runner!=null)StartCoroutine(VerifyRunner(runner.Substring(15)));
-            else if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
+            else
+            {
+                string sniper=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--sniper-check="));
+                if(sniper!=null)StartCoroutine(VerifySniper(sniper.Substring(15)));
+                else if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
+            }
         }
         public void ResetTrial()
         {
@@ -40,7 +45,7 @@ namespace YesterdayConvoy
                 defenderHealth:2500,defenderAttack:18,defenderArmor:3,defenderRange:4,defenderInterval:1,blockCount:1,blockRadius:.65f,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
                 attackDuration:c.AttackDuration,attackWindup:c.AttackWindup,projectileTime:c.ProjectileTime,effects:c.Effects);
-            Battle=new ManualBattle(settings,route,new Vector3(0,.35f,-2),guard,new[]{new Vector3(1,.35f,-2)});
+            Battle=new ManualBattle(settings,route,new Vector3(-2.5f,.35f,-2),guard,new[]{new Vector3(-1.5f,.35f,-2)});
             Battle.ConfigureRosterProfiles(roles.Select(r=>new BasicRosterProfile(r.Snapshot(),r.Engagement.Snapshot())));request=0;
             foreach(var d in Battle.Defenders)
             {
@@ -67,7 +72,7 @@ namespace YesterdayConvoy
             }
             foreach(var d in Battle.Defenders)
             {
-                var root=actors[d.EntityId];root.position=d.Position;root.rotation=Camera.main.transform.rotation;root.gameObject.SetActive(d.Alive);
+                var root=actors[d.EntityId];root.position=d.Position;root.rotation=Camera.main.transform.rotation;root.localScale=Vector3.one*.85f;root.gameObject.SetActive(d.Alive);
                 var v=root.GetComponent<SpriteRenderer>();v.sortingOrder=DemoSpriteVisual.GetSortingOrder(Camera.main,d.Position)+30;
                 v.color=Battle.Clock<d.LastHitTime+.15?new Color(1,.5f,.5f):Color.white;
             }

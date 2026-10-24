@@ -42,5 +42,6 @@ namespace YesterdayConvoy
         public int TacticalCommanders=>units.Count(u=>u.Active&&!u.IsReviving&&UnitCombat(u).Effects.TacticalCommander);
         public float TacticalAttackMultiplier=>1+TacticalCommanders*.1f;
         public float TacticalArmorBonus=>TacticalCommanders;
+        public int UnitAttackTargets(DeployedUnitState u)=>Math.Max(Math.Max(1,UnitCombat(u).Effects.AttackTargets),UnitCombat(u).Effects.OrderSniper&&TacticalCommanders>0?2:1);
     }
 }

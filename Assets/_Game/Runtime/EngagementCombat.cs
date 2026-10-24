@@ -290,13 +290,14 @@ namespace YesterdayConvoy
                     if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;
                     if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
                     if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
-                    if(!empowered && c.Effects.AttackTargets>1)
+                    int attackTargets=UnitAttackTargets(unit);
+                    if(!empowered && attackTargets>1)
                     {
                         int count=1;
                         foreach(var other in defenders)
                         {
-                            if(count>=c.Effects.AttackTargets) break;
-                            if(!other.Alive || other==target || GroundDistance(unit.Motion.Position,other.Position)>range) continue;
+                            if(count>=attackTargets) break;
+                            if(!other.Alive || other==target || DefenderCamouflaged(other) || GroundDistance(unit.Motion.Position,other.Position)>range) continue;
                             combatShots.Add(new CombatShot(unit.EntityId,other.EntityId,false,false,unit.Motion.Position,other.Position,
                                 Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit),coldDuration:coldDuration));
                             count++;
