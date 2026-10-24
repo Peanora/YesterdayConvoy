@@ -18,7 +18,7 @@ MonoBehaviour:
   unitArmor: 1
   unitRange: 3
   unitInterval: 2
-  defenderHealth: 140
+  defenderHealth: 400
   defenderAttack: 18
   defenderArmor: 3
   defenderRange: 3.2
@@ -45,4 +45,6 @@ MonoBehaviour:
   blastRadius: 0
   blastDelay: 0
   coldDuration: 0
+  coldAttackEvery: 3
+  attackColdDuration: 10
   extraDefenders: []

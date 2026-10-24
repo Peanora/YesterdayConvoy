@@ -39,7 +39,8 @@ namespace YesterdayConvoy
             else if(CurrentLocalArt!=null)
             {
                 GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
-                    (Battle.CombatSettings.Effects.FrozenAttackMultiplier>1 ? $" · 冻结目标攻击倍率×{Battle.CombatSettings.Effects.FrozenAttackMultiplier:0.##}" :
+                    (Battle.CombatSettings.Effects.ColdAttackEvery>0 ? $" · 每{Battle.CombatSettings.Effects.ColdAttackEvery}次普攻附加寒冷" :
+                     Battle.CombatSettings.Effects.FrozenAttackMultiplier>1 ? $" · 冻结目标攻击倍率×{Battle.CombatSettings.Effects.FrozenAttackMultiplier:0.##}" :
                      Battle.CombatSettings.CanAttack ? " · 普通攻击 · 无主动技能" : " · 不普攻 · 特殊机制待做"),smallStyle);
                 GUI.Label(new Rect(24,659,650,26),$"可部署{Battle.Settings.DeploymentLimit}次 · 单次{Battle.Settings.DeploymentCost} DP · 空格暂停",smallStyle);
             }

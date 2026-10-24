@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -6,12 +7,12 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class MonsterEffectTests
     {
-        private static ManualBattle Battle(MonsterEffectSettings effects,float health=1000,int uses=1,float defenderAttack=1,bool extra=false)
+        private static ManualBattle Battle(MonsterEffectSettings effects,float health=1000,int uses=1,float defenderAttack=1,bool extra=false,float windup=0)
         {
             var combat=new EngagementSettings(unitAttack:20,unitArmor:0,unitRange:3,unitInterval:.4f,
                 defenderHealth:10000,defenderAttack:defenderAttack,defenderArmor:10,defenderRange:3,defenderInterval:.4f,
                 blockCount:0,initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,
-                projectileTime:.1f,hasSkill:false,effects:effects);
+                projectileTime:.1f,hasSkill:false,effects:effects,attackDuration:windup,attackWindup:windup);
             var settings=new ManualBattleSettings("EFFECT_TEST","EFFECT_TEST",12,1,uses,1,.1f,health,1,1,2,1,1);
             var b=new ManualBattle(settings,new[]{Vector3.zero,Vector3.forward*6},Vector3.forward,combat,
                 extra ? new[]{Vector3.forward*5} : null);b.Begin();return b;
@@ -95,6 +96,37 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.CombatShots[0].DamageDealt,Is.EqualTo(10));
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(frozenAttackMultiplier:.5f));
             Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(frozenAttackMultiplier:float.NaN));
+        }
+
+        [Test] public void EveryThirdOrdinaryAttackAppliesColdOnImpactAndRestartResetsCounter()
+        {
+            var b=Battle(new MonsterEffectSettings(CombatDamageType.Arts,coldAttackEvery:3,attackColdDuration:10));
+            var unit=Deploy(b,1);b.Advance(.7f);
+            Assert.That(unit.OrdinaryAttacksFired,Is.EqualTo(2));
+            Assert.That(b.Defender.ColdUntil,Is.LessThan(b.Clock));
+            b.Advance(.4f);
+            var shots=b.CombatShots.Where(x=>!x.FromDefender).ToArray();
+            Assert.That(shots.Take(2).All(x=>x.ColdDuration==0),Is.True);
+            Assert.That(shots[2].ColdDuration,Is.EqualTo(10));Assert.That(shots[2].Applied,Is.True);
+            Assert.That(b.Defender.ColdUntil-b.Clock,Is.InRange(9.7,10));
+            Assert.That(b.Defender.FrozenUntil,Is.LessThan(b.Clock));
+            b.SetPaused(true);int count=unit.OrdinaryAttacksFired;double clock=b.Clock;b.Advance(20);
+            Assert.That(unit.OrdinaryAttacksFired,Is.EqualTo(count));Assert.That(b.Clock,Is.EqualTo(clock));
+            b.Restart();b.Begin();unit=Deploy(b,2);b.Advance(.2f);
+            Assert.That(unit.OrdinaryAttacksFired,Is.EqualTo(1));Assert.That(b.Defender.ColdUntil,Is.LessThan(b.Clock));
+        }
+
+        [Test] public void ColdShotFromDeadSourceDoesNotApplyAndInvalidCadencesAreRejected()
+        {
+            var b=Battle(new MonsterEffectSettings(coldAttackEvery:1,attackColdDuration:10),health:1,defenderAttack:100,windup:.2f);
+            Deploy(b,1);b.Advance(.5f);
+            Assert.That(b.Units[0].Active,Is.False);
+            Assert.That(b.CombatShots.Any(s=>!s.FromDefender && s.ColdDuration>0),Is.True);
+            Assert.That(b.CombatShots.Any(s=>!s.FromDefender && s.Applied),Is.False);
+            Assert.That(b.Defender.ColdUntil,Is.LessThan(b.Clock));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(coldAttackEvery:3));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(attackColdDuration:10));
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(coldAttackEvery:-1,attackColdDuration:10));
         }
     }
 }

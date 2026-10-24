@@ -68,6 +68,7 @@ namespace YesterdayConvoy
             SelectCard(true);TryDeployAt(Battle.Entry);Tick(1.1f);SelectCard(true);bool three=TryDeployAt(Battle.Entry).Success;
             yield return InteractionFrame(directory,task+"-group");
             bool groupAttackCaptured=false;
+            bool coldCaptured=false,casterFrozen=false;
             for(int i=0;i<1600 && Battle.Phase==BattlePhase.Running;i++)
             {
                 Tick(.025f);yield return null;
@@ -78,6 +79,10 @@ namespace YesterdayConvoy
                         Tick(Battle.CombatSettings.AttackWindup+.08f);
                         yield return InteractionFrame(directory,task+"-attack");break;
                     }
+                if(task=="M12" && !coldCaptured && Battle.Defender.ColdUntil>Battle.Clock)
+                {coldCaptured=true;yield return InteractionFrame(directory,task+"-cold");}
+                if(task=="M12" && !casterFrozen && Battle.Defender.FrozenUntil>Battle.Clock)
+                {casterFrozen=true;yield return InteractionFrame(directory,task+"-frozen");}
             }
             bool won=Battle.Phase==BattlePhase.Won && Battle.Breaches>0;
             yield return InteractionFrame(directory,task+"-result");
@@ -88,7 +93,9 @@ namespace YesterdayConvoy
             bool attackPolicy=canAttack ? attacked : !attacked && passiveMoving;
             Debug.Log($"MONSTER_ATTACK_POLICY_CHECK: {task}; canAttack={canAttack}; policy={attackPolicy}.");
             if(snowFixture) Debug.Log($"SNOW_FIXTURE_CHECK: {task}; explicitFrozenTarget=True; bonus={bonusValid}.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid ? 0 : 1);
+            bool casterValid=task!="M12" || coldCaptured && casterFrozen;
+            if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid ? 0 : 1);
         }
     }
 }

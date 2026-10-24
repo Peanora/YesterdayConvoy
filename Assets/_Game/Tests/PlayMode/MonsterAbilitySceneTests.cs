@@ -93,5 +93,29 @@ namespace YesterdayConvoy.Tests
             Assert.That(shot.DamageDealt,Is.EqualTo(27).Within(.001));
             c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
         }
+
+        [UnityTest] public IEnumerator TwoActualSnowCastersCountTheirOwnAttacksAndFreezeWithoutAnInjectedStatus()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TryEnterMonsterTest("CARD_M12"),Is.True);
+            c.SelectCard(true);var first=c.TryDeployAt(c.Battle.Entry);Assert.That(first.Success,Is.True);c.Tick(1.1f);
+            c.SelectCard(true);var second=c.TryDeployAt(c.Battle.Entry);Assert.That(second.Success,Is.True);
+            for(int i=0;i<1600 && c.Battle.Defender.FrozenUntil<=c.Battle.Clock && c.Battle.Phase==BattlePhase.Running;i++) {c.Tick(.025f);yield return null;}
+            Assert.That(c.Battle.Defender.Alive,Is.True);
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            foreach(string id in new[]{first.EntityId,second.EntityId})
+            {
+                var shots=c.Battle.CombatShots.Where(s=>!s.FromDefender && s.SourceId==id).ToArray();
+                Assert.That(shots.Length,Is.GreaterThanOrEqualTo(3));
+                Assert.That(shots[0].ColdDuration,Is.Zero);Assert.That(shots[1].ColdDuration,Is.Zero);
+                Assert.That(shots[2].ColdDuration,Is.EqualTo(10));Assert.That(shots[2].Applied,Is.True);
+            }
+            c.Battle.SetPaused(true);double clock=c.Battle.Clock;c.Tick(15);yield return null;
+            Assert.That(c.Battle.Clock,Is.EqualTo(clock));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(clock));
+            c.RestartBattle();Assert.That(c.Battle.Defender.ColdUntil,Is.LessThan(c.Battle.Clock));
+            Assert.That(c.Battle.Defender.FrozenUntil,Is.LessThan(c.Battle.Clock));Assert.That(c.Battle.Units,Is.Empty);
+            c.ReturnToMonsterTests();Assert.That(c.ViewCount,Is.Zero);
+        }
     }
 }

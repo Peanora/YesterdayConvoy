@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-24：雪怪术师第三击寒冷
+
+M12每第三次普通攻击的命中施加10秒寒冷，逐实体计数；两只真实部署叠加冻结，非诊断注入。M12守军生命140→400仅为显示完整链路的样板调整。Edit76/76、GPU Play34/34零跳过，Windows846214278字节/0错误，实际Player所有检查通过且cold/frozen/noInjectedStatus均True，完整HUD已查看；证据与来源见[效果交付](monsters/SNOW-EFFECTS.md)。未改场景/Prefab/Packages/ProjectSettings，未做跨卡混编/羁绊/完整首领能力；无ZIP/Releases。
+
 ## 2026-10-24：雪怪狙击手冻结增伤
 
 [任务#18](https://github.com/Peanora/YesterdayConvoy/issues/18)，基于PR15/3847094的独立分支codex/monster-snow-effects。M11按命中时冻结状态提升至150%攻击后扣护甲，不消耗冻结；只有寒冷无增伤，飞行中到期无增伤。默认零值保持其他角色，M06共用寒冷入口语义不变。Edit74/74、GPU Play33/33零跳过，Windows846212458字节/0错误；普通与明确标记冻结靶场两组Player全退出0，bonus=True，已查看完整HUD。普通单卡关不会自行冻结，不宣称跨卡混编或雪怪羁绊已做。测试失败修正与证据路径见[效果交付](monsters/SNOW-EFFECTS.md)。未完整人类键鼠通关/第二机/长期低配；无ZIP/Releases或自动合并。

@@ -81,7 +81,8 @@ namespace YesterdayConvoy
                 float fade=other.Alive ? 1 : 1-Mathf.Clamp01((float)(time-other.DeathTime)/.45f);
                 v.enabled=fade>0; v.transform.position=other.Position; v.transform.rotation=cam.transform.rotation;
                 v.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,other.Position)+30;
-                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) : new Color(1,1,1,fade); v.color=color;
+                Color color=time<other.LastHitTime+.14 ? new Color(1,.5f,.45f,fade) :
+                    other.ColdUntil>time || other.FrozenUntil>time ? new Color(.45f,.8f,1,fade) : new Color(1,1,1,fade); v.color=color;
             }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
@@ -139,6 +140,7 @@ namespace YesterdayConvoy
             if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
             else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
             if(shot.FrozenBonusApplied) color=new Color(.45f,.95f,1);
+            if(!shot.FromDefender && shot.ColdDuration>0) color=new Color(.2f,.85f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
             view.Trail.enabled = flying;
             if (flying)

@@ -110,6 +110,8 @@ namespace YesterdayConvoy
                 string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : !option.Definition.Engagement.Snapshot().CanAttack ? "基础动作 / 不普攻\n特殊机制待做" : "基础动作与普攻\n单怪交战样板";
                 float frozenMultiplier=option.Definition.Engagement.Snapshot().Effects.FrozenAttackMultiplier;
                 if(frozenMultiplier>1) detail=$"冻结目标攻击×{frozenMultiplier:0.##}\n物理伤害 / 命中判定";
+                var effects=option.Definition.Engagement.Snapshot().Effects;
+                if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
                 if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
                 index++;

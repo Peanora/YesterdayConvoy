@@ -78,13 +78,14 @@ namespace YesterdayConvoy
         public double StartedAt { get; }
         public double ImpactAt { get; }
         public float Attack { get; }
+        public float ColdDuration { get; }
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
         public bool FrozenBonusApplied { get; internal set; }
         public float DamageDealt { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
-            double start, float duration, float attack, bool fireRain = false)
-        { FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
+            double start, float duration, float attack, bool fireRain = false,float coldDuration=0)
+        { ColdDuration=coldDuration;FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }
 
@@ -185,6 +186,7 @@ namespace YesterdayConvoy
                     DamageDefender(defender,attack,c.Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
                     if(defender.Alive) defender.ArmorReduction+=c.Effects.ArmorShred;
+                    if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;
@@ -233,10 +235,13 @@ namespace YesterdayConvoy
                 {
                     bool empowered=!c.FireRain && unit.SkillAmmo>0;
                     if(empowered) unit.SkillAmmo--;
+                    else unit.OrdinaryAttacksFired++;
+                    float coldDuration=!empowered && c.Effects.ColdAttackEvery>0 &&
+                        unit.OrdinaryAttacksFired%c.Effects.ColdAttackEvery==0 ? c.Effects.AttackColdDuration : 0;
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval);
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack));
+                        unit.Motion.Position,target.Position,Clock+c.AttackWindup,c.ProjectileTime,empowered ? c.SkillAttack : c.UnitAttack,coldDuration:coldDuration));
                 }
             }
             if(Defense==0) return;

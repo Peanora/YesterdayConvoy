@@ -55,7 +55,7 @@ P0/P1共8张普通卡是推荐首批规模，不是现在同时开8个开发任�
 | M09 | 术师 | 1 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9)、[PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11) |
 | M10 | 重装防御者 | 2 | 整合运动 | P0 | A当前用户确认；B单怪接入/自动验证，待人工审查；C待做 | 霍利屹；[#8](https://github.com/Peanora/YesterdayConvoy/issues/8) / [PR#9](https://github.com/Peanora/YesterdayConvoy/pull/9)、[PR#11](https://github.com/Peanora/YesterdayConvoy/pull/11) |
 | M11 | 雪怪狙击手 | 1 | 雪怪小队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C待做；冻结增伤150%已接入，[效果验收](monsters/SNOW-EFFECTS.md) | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
-| M12 | 雪怪术师 | 2 | 雪怪小队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C及特殊机制待做 | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
+| M12 | 雪怪术师 | 2 | 雪怪小队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C待做；第三击寒冷/叠冻已接入，[效果验收](monsters/SNOW-EFFECTS.md) | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
 | M13 | 雪怪小队凿冰人 | 3 | 雪怪小队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C及特殊机制待做 | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
 | M14 | 霜星 | 5 | 雪怪小队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C及特殊机制待做 | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
 | M15 | 游击队战士 | 1 | 游击队、整合运动 | P2 | A当前用户确认；B基础动作/独立普攻接入，待人工审查；C及特殊机制待做 | 干宸骅主导；[本轮接入](art/M11-M20-INTEGRATION.md) |
