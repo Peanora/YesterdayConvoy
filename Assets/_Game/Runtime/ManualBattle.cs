@@ -48,6 +48,8 @@ namespace YesterdayConvoy
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public int OrdinaryAttacksFired { get; internal set; }
+        public float HealthRecovered { get; internal set; }
+        public double LastHealTime { get; internal set; } = double.NegativeInfinity;
         public bool ReviveUsed { get; internal set; }
         public double ReviveAt { get; internal set; } = double.NegativeInfinity;
         public bool IsReviving { get; internal set; }

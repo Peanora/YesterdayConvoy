@@ -324,6 +324,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));
                 if(unit.IsReviving) GUI.Label(new Rect(x-70,y-28,140,26),$"复起 {Math.Max(0,unit.ReviveAt-Battle.Clock):0.0}s",smallStyle);
                 else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
+                else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));

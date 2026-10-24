@@ -163,5 +163,19 @@ namespace YesterdayConvoy.Tests
             b.SetPaused(true);double clock=b.Clock;b.Advance(20);Assert.That(b.Clock,Is.EqualTo(clock));
             b.Restart();Assert.That(b.IceRings,Is.Empty);Assert.That(b.Defender.FrostSlowUntil,Is.LessThan(b.Clock));
         }
+
+        [Test] public void RegenerationUsesSimulationTimeCapsAtMaximumAndCannotReviveDeadUnits()
+        {
+            var b=Battle(new MonsterEffectSettings(regenerationFraction:.1f),health:100,defenderAttack:10);
+            var unit=Deploy(b,1);b.Advance(.2f);
+            Assert.That(unit.HealthRecovered,Is.GreaterThan(0));Assert.That(unit.Health,Is.LessThanOrEqualTo(100));
+            float hp=unit.Health,recovered=unit.HealthRecovered;
+            b.SetPaused(true);b.Advance(30);Assert.That(unit.Health,Is.EqualTo(hp));Assert.That(unit.HealthRecovered,Is.EqualTo(recovered));
+            var lethal=Battle(new MonsterEffectSettings(regenerationFraction:1),health:1,defenderAttack:100);
+            var victim=Deploy(lethal,1);lethal.Advance(1);Assert.That(victim.Resolution,Is.EqualTo(UnitResolution.Dead));
+            Assert.That(victim.Health,Is.Zero);Assert.That(victim.HealthRecovered,Is.Zero);
+            b.Restart();b.Begin();unit=Deploy(b,2);Assert.That(unit.HealthRecovered,Is.Zero);
+            Assert.Throws<ArgumentException>(()=>new MonsterEffectSettings(regenerationFraction:1.01f));
+        }
     }
 }

@@ -94,6 +94,8 @@ namespace YesterdayConvoy
             bool won=Battle.Phase==BattlePhase.Won && Battle.Breaches>0;
             yield return InteractionFrame(directory,task+"-result");
             bool noSkill=Battle.SkillCasts==0 && !Battle.CombatSettings.HasSkill;
+            bool regenValid=Battle.CombatSettings.Effects.RegenerationFraction<=0 || unit.HealthRecovered>0;
+            if(Battle.CombatSettings.Effects.RegenerationFraction>0) Debug.Log($"HOST_REGEN_CHECK: {task}; recovered={unit.HealthRecovered}; valid={regenValid}; noInjectedHealth=True.");
             ReturnToMonsterTests();yield return null;
             bool clean=ViewCount==0 && Battle.Units.Count==0 && Battle.CombatShots.Count==0 && Battle.Clock==0;
             Debug.Log($"MONSTER_COMBAT_CHECK: {task}; entered={entered}; paused={paused}; attacked={attacked}; hit={hit}; resolved={resolved}; three={three}; won={won}; noSkill={noSkill}; clean={clean}; frozen={frozen}.");
@@ -104,7 +106,7 @@ namespace YesterdayConvoy
             if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
             bool frostValid=task!="M14" || ringCaptured && reviveCaptured && revived;
             if(task=="M14") Debug.Log($"FROSTNOVA_CHECK: ring={ringCaptured}; reviving={reviveCaptured}; revived={revived}; noInjectedStatus=True.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid ? 0 : 1);
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid ? 0 : 1);
         }
     }
 }

@@ -40,6 +40,7 @@ namespace YesterdayConvoy
             {
                 GUI.Label(new Rect(24,631,650,28),definition.Card.DisplayName+
                     (Battle.CombatSettings.Effects.FrostNova ? " · 冰环减速 · 首次倒下复起" :
+                     Battle.CombatSettings.Effects.RegenerationFraction>0 ? $" · 每秒恢复{Battle.CombatSettings.Effects.RegenerationFraction*100:0.##}%生命" :
                      Battle.CombatSettings.Effects.ColdAttackEvery>0 ? $" · 每{Battle.CombatSettings.Effects.ColdAttackEvery}次普攻附加寒冷" :
                      Battle.CombatSettings.Effects.FrozenAttackMultiplier>1 ? $" · 冻结目标攻击倍率×{Battle.CombatSettings.Effects.FrozenAttackMultiplier:0.##}" :
                      Battle.CombatSettings.CanAttack ? " · 普通攻击 · 无主动技能" : " · 不普攻 · 特殊机制待做"),smallStyle);

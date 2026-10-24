@@ -12,6 +12,25 @@ namespace YesterdayConvoy.Tests
         private float previous;
         [SetUp] public void Setup() { previous=Time.timeScale; }
         [TearDown] public void TearDown() { Time.timeScale=previous; }
+        [UnityTest] public IEnumerator ActualHostModelsRegenerateIndependentlyOnTheBattleClock()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();
+            int hostsChecked=0;
+            foreach(string id in new[]{"CARD_M21","CARD_M22","CARD_M23"})
+            {
+                Assert.That(c.TryEnterMonsterTest(id),Is.True);
+                if(c.Battle.CombatSettings.Effects.RegenerationFraction<=0) continue;
+                hostsChecked++;c.SelectCard(true);var r=c.TryDeployAt(c.Battle.Entry);
+                Assert.That(r.Success,Is.True);var unit=c.Battle.FindUnit(r.EntityId);
+                for(int i=0;i<400 && unit.HealthRecovered<=0;i++) {c.Tick(.025f);yield return null;}
+                Assert.That(unit.HealthRecovered,Is.GreaterThan(0),id);
+                float hp=unit.Health;c.Battle.SetPaused(true);c.Tick(30);Assert.That(unit.Health,Is.EqualTo(hp));
+                Assert.That(unit.Health,Is.LessThanOrEqualTo(c.Battle.Settings.Health));
+                c.RestartBattle();Assert.That(c.Battle.Units,Is.Empty);c.ReturnToMonsterTests();
+            }
+            Assert.That(hostsChecked,Is.GreaterThan(0));
+        }
         [UnityTest] public IEnumerator ActualFrostNovaShowsIceRingAndRevivesOnceWithoutInjectedState()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;

@@ -14,22 +14,24 @@ namespace YesterdayConvoy
         public readonly int ColdAttackEvery;
         public readonly float AttackColdDuration;
         public readonly bool FrostNova;
+        public readonly float RegenerationFraction;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
-            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false)
+            int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0)
         {
-            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration})
+            foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
             if((damageType!=CombatDamageType.Physical && damageType!=CombatDamageType.Arts) || resistance>100 ||
                 blastAttack>0 && blastRadius<=0 || coldDuration>0 && blastAttack<=0 ||
                 frozenAttackMultiplier>0 && frozenAttackMultiplier<1 || coldAttackEvery<0 ||
-                (coldAttackEvery>0)!=(attackColdDuration>0))
+                (coldAttackEvery>0)!=(attackColdDuration>0) || regenerationFraction>1)
                 throw new ArgumentException("Incomplete monster effect configuration.");
             DamageType=damageType;Resistance=resistance;ArmorShred=armorShred;BlastAttack=blastAttack;
             BlastRadius=blastRadius;BlastDelay=blastDelay;ColdDuration=coldDuration;
             FrozenAttackMultiplier=frozenAttackMultiplier;
             ColdAttackEvery=coldAttackEvery;AttackColdDuration=attackColdDuration;
             FrostNova=frostNova;
+            RegenerationFraction=regenerationFraction;
         }
     }
 
@@ -52,6 +54,13 @@ namespace YesterdayConvoy
 
     public sealed partial class ManualBattle
     {
+        private void HealUnit(DeployedUnitState unit,float amount)
+        {
+            if(!unit.Active || unit.IsReviving || amount<=0) return;
+            float restored=Mathf.Min(amount,Settings.Health-unit.Health);
+            if(restored<=0) return;
+            unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
+        }
         public sealed class IceRing
         {
             public Vector3 Position { get; internal set; }

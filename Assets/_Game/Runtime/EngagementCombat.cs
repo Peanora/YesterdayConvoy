@@ -201,6 +201,7 @@ namespace YesterdayConvoy
                     unit.NextIceRingAt=Clock+8.5;unit.NextAttackTime=Clock;
                 }
                 if(c.Effects.FrostNova && StepIceRing(unit)) continue;
+                HealUnit(unit,Settings.Health*c.Effects.RegenerationFraction*step);
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
