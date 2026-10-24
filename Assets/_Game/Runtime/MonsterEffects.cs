@@ -22,11 +22,11 @@ namespace YesterdayConvoy
         public readonly float UnitResistance;
         public readonly bool Mudrock;
         public readonly bool Phalanx;
-        public readonly bool Flamechaser, Flamerazer, Mandragora, NervousCreeper, Harvester, FirstSpeaker;
+        public readonly bool Flamechaser, Flamerazer, Mandragora, NervousCreeper, Harvester, FirstSpeaker, Shackler;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false,bool flamerazer=false,bool mandragora=false,bool nervousCreeper=false,bool harvester=false,bool firstSpeaker=false)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false,bool flamerazer=false,bool mandragora=false,bool nervousCreeper=false,bool harvester=false,bool firstSpeaker=false,bool shackler=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -46,7 +46,7 @@ namespace YesterdayConvoy
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
             Mudrock=mudrock;
             Phalanx=phalanx;
-            Flamechaser=flamechaser;Flamerazer=flamerazer;Mandragora=mandragora;NervousCreeper=nervousCreeper;Harvester=harvester;FirstSpeaker=firstSpeaker;
+            Flamechaser=flamechaser;Flamerazer=flamerazer;Mandragora=mandragora;NervousCreeper=nervousCreeper;Harvester=harvester;FirstSpeaker=firstSpeaker;Shackler=shackler;
         }
     }
 
@@ -178,6 +178,7 @@ namespace YesterdayConvoy
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1);
         private void DefeatUnit(DeployedUnitState unit)
         {
+            if(CombatSettings.Effects.Shackler)EndShackle(unit,true);
             if(CombatSettings.Effects.Mandragora&&unit.MandraPhase==MandragoraPhase.Ground){StartMandragoraRebirth(unit);return;}
             if(CombatSettings.Effects.Mandragora)EndGaze(unit,true);
             if(CombatSettings.Effects.Flamerazer){StartFuelExplosion(unit);return;}

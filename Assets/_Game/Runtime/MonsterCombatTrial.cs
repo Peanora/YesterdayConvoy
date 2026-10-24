@@ -35,12 +35,20 @@ namespace YesterdayConvoy
             bool passiveMoving=false;
             bool ringCaptured=false,reviveCaptured=false,revived=false;
             bool healingCaptured=false;
+            bool shackleBegin=false,shackleLoop=false,shackleEnd=false;
             bool bubbleBegin=false,bubbleLoop=false,bubbleEnd=false,bubblePulsed=false;
             bool barrierPartial=false,barrierBroken=false;
             bool mudrockBroken=false,mudrockRefreshed=false,mudrockFull=false;
             for(int i=0;i<2400 && unit.Active;i++)
             {
-                Tick(task=="M14" || task=="M24" || task=="M25" || task=="M27" || task=="M28" || task=="M36" ? .1f : .025f);yield return null;
+                Tick(task=="M14" || task=="M24" || task=="M25" || task=="M27" || task=="M28" || task=="M36" || task=="M38" ? .1f : .025f);yield return null;
+                if(task=="M38"&&unit.Shackle!=null)
+                {
+                    var sh=unit.Shackle;double age=Battle.Clock-sh.StartedAt;
+                    if(!shackleBegin&&age<.8){shackleBegin=true;yield return InteractionFrame(directory,task+"-shackle-begin");}
+                    if(!shackleLoop&&!sh.Ended&&age>=2){shackleLoop=true;yield return InteractionFrame(directory,task+"-shackle-loop");}
+                    if(!shackleEnd&&sh.Ended){shackleEnd=true;yield return InteractionFrame(directory,task+"-shackle-end");}
+                }
                 if(task=="M36")
                 {
                     double age=Battle.Clock-unit.BubbleStartedAt;
@@ -87,6 +95,8 @@ namespace YesterdayConvoy
             }
             bool speakerValid=task!="M36"||bubbleBegin&&bubbleLoop&&bubbleEnd&&bubblePulsed;
             if(task=="M36")Debug.Log($"FIRST_SPEAKER_CHECK: begin={bubbleBegin}; loop={bubbleLoop}; end={bubbleEnd}; pulses={bubblePulsed}; distinctTargets={System.Linq.Enumerable.Count(System.Linq.Enumerable.Distinct(System.Linq.Enumerable.SelectMany(Battle.CorrosiveBubbles,b=>b.TargetIds)))}; neuralBursts={Battle.NeuralBursts}; noInjectedStatus=True");
+            bool shacklerValid=task!="M38"||shackleBegin&&shackleLoop&&shackleEnd&&unit.Shackle.Ticks==20;
+            if(task=="M38")Debug.Log($"SHACKLER_CHECK: begin={shackleBegin}; loop={shackleLoop}; end={shackleEnd}; ticks={unit.Shackle?.Ticks}; castCount={Battle.Shackles.Count}; noInjectedStatus=True");
             bool resolved=!unit.Active;
             if(unit.Resolution==UnitResolution.Dead) { Tick(.2f);yield return InteractionFrame(directory,task+"-death"); }
             if(Battle.HasPendingDeathBlast)
@@ -111,7 +121,7 @@ namespace YesterdayConvoy
             bool coldCaptured=false,casterFrozen=false;
             for(int i=0;i<1600 && Battle.Phase==BattlePhase.Running;i++)
             {
-                Tick(task=="M14" || task=="M24" || task=="M25" || task=="M27" || task=="M28" || task=="M36" ? .1f : .025f);yield return null;
+                Tick(task=="M14" || task=="M24" || task=="M25" || task=="M27" || task=="M28" || task=="M36" || task=="M38" ? .1f : .025f);yield return null;
                 if(task=="M29" && !phalanxSupported && System.Linq.Enumerable.Any(Battle.Units,u=>u.Active && Battle.UnitArmor(u)>Battle.CombatSettings.UnitArmor))
                 {phalanxSupported=true;yield return InteractionFrame(directory,task+"-phalanx-support");}
                 if(!groupAttackCaptured)
@@ -153,7 +163,7 @@ namespace YesterdayConvoy
             if(task=="M12") Debug.Log($"SNOW_CASTER_CHECK: cold={coldCaptured}; frozen={casterFrozen}; noInjectedStatus=True.");
             bool frostValid=task!="M14" || ringCaptured && reviveCaptured && revived;
             if(task=="M14") Debug.Log($"FROSTNOVA_CHECK: ring={ringCaptured}; reviving={reviveCaptured}; revived={revived}; noInjectedStatus=True.");
-            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid && phalanxValid && harvesterValid && speakerValid ? 0 : 1);
+            Time.timeScale=1;Application.Quit(entered && paused && attackPolicy && resolved && three && won && noSkill && clean && frozen && bonusValid && casterValid && frostValid && regenValid && centurionValid && healerValid && barrierValid && mudrockValid && phalanxValid && harvesterValid && speakerValid && shacklerValid ? 0 : 1);
         }
     }
 }

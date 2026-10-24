@@ -71,6 +71,9 @@ namespace YesterdayConvoy
         internal double NextHarvesterAuraAt;
         public double BubbleStartedAt {get;internal set;}=double.NegativeInfinity;
         internal double NextBubbleAt;
+        public ShackleCast Shackle {get;internal set;}
+        public double ShackleStunnedUntil {get;internal set;}=double.NegativeInfinity;
+        public double ShackleSilencedUntil {get;internal set;}=double.NegativeInfinity;
         public int CreeperRetaliations {get;internal set;}
         public double LastRetaliationAt {get;internal set;}=double.NegativeInfinity;
         internal float NextRetaliationRatio=.85f;

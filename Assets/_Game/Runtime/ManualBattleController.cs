@@ -332,6 +332,7 @@ namespace YesterdayConvoy
                 else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
+                if(unit.Shackle!=null&&!unit.Shackle.Ended)GUI.Label(new Rect(x-70,y-28,180,26),$"枷锁 {20-(Battle.Clock-unit.Shackle.StartedAt):0.0}s",smallStyle);
                 if(Battle.FirstSpeakerCasting(unit))GUI.Label(new Rect(x-70,y-28,220,26),$"侵蚀液泡 · 无敌 {5-(Battle.Clock-unit.BubbleStartedAt):0.0}s",smallStyle);
                 if(Battle.CombatSettings.Effects.Harvester)GUI.Label(new Rect(x-70,y-28,200,26),unit.HarvesterPhase==HarvesterPhase.Dormant?"待命":unit.HarvesterPhase==HarvesterPhase.Waking?"苏醒中":$"临战 ×6 · 失血{unit.HarvesterHealthLost:0}",smallStyle);
                 if(Battle.CombatSettings.Effects.Mandragora)GUI.Label(new Rect(x-70,y-28,200,26),unit.MandraPhase==MandragoraPhase.Reborn?"重生中":$"{(unit.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} · {(unit.StoneShield?"石盾":"破盾")}",smallStyle);
@@ -410,7 +411,7 @@ namespace YesterdayConvoy
             if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/Battle.CombatSettings.DefenderHealth,4),new Color(0.96f,0.66f,0.3f));
-            string status=d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :
+            string status=Battle.DefenderShackled(d)?"枷锁禁锢":d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :
                 Battle.CombatSettings.DefenderDamageType==CombatDamageType.Arts ? "法术测试靶" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
             if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);

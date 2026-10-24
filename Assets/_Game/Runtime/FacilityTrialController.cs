@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 namespace YesterdayConvoy
 {
     /// <summary>Separate facility integration trial. Gameplay uses the normal ManualBattle model.</summary>
-    public sealed class FacilityTrialController:MonoBehaviour
+    public sealed partial class FacilityTrialController:MonoBehaviour
     {
         public int mapIndex;
         public Vector3[] route;
@@ -50,6 +50,7 @@ namespace YesterdayConvoy
             if(selected!=null&&int.TryParse(selected.Substring(16),out int r)&&r>=0&&r<roles.Length)ResetTrial(r);
             string evidence=Array.Find(args,a=>a.StartsWith("--facility-check="));if(evidence==null)yield break;
             string folder=evidence.Substring(17);Directory.CreateDirectory(folder);
+            if(Battle.CombatSettings.Effects.Shackler){yield return VerifyShackler(folder,Array.IndexOf(args,"--shackle-silence")>=0);yield break;}
             Time.timeScale=0;
             bool deployed=Deploy();bool captured=false,emberCaptured=false,reviveCaptured=false;
             bool harvester=Battle.CombatSettings.Effects.Harvester,wakePose=false,combatPose=false,auraPose=false;
@@ -300,12 +301,14 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(320,bottom+40,140,35),"重新开始"))ResetTrial(SelectedRole);
             if(GUI.Button(new Rect(470,bottom+40,140,35),$"速度 ×{speed:0}"))speed=speed==1?3:1;
             if(Battle.CombatSettings.Effects.Mandragora&&GUI.Button(new Rect(620,bottom+40,160,35),"向蔓德拉推倒支柱"))ToppleMandragoraPillar();
+            if(Battle.CombatSettings.Effects.Shackler&&GUI.Button(new Rect(620,bottom+40,160,35),"沉默术师 3秒"))SilenceShacklers();
+            if(Battle.CombatSettings.Effects.Shackler&&GUI.Button(new Rect(790,bottom+40,160,35),"眩晕术师 3秒"))foreach(var u in Battle.Units)Battle.TryDisableShackler(u.EntityId,3);
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(620,bottom+40,160,35),"眩晕喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2);
             if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(790,bottom+40,160,35),"沉默喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2,true);
             if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
             foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(Battle.CombatSettings.Effects.Harvester?$" {(u.HarvesterPhase==HarvesterPhase.Dormant?"待命":u.HarvesterPhase==HarvesterPhase.Waking?"苏醒":"临战")} 失血{u.HarvesterHealthLost:0}":Battle.CombatSettings.Effects.NervousCreeper?$" 刺伤{u.CreeperRetaliations}":Battle.CombatSettings.Effects.Mandragora?$" {(u.MandraPhase==MandragoraPhase.Reborn?"重生":u.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} {(u.StoneShield?"石盾":"破盾")}":u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
                 (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
-            foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(d.NeuralUntil>Battle.Clock?$" 神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s":d.NeuralAccumulated>0?$" 神经 {d.NeuralAccumulated:0}/100":Battle.DefenderCamouflaged(d)?" 迷彩":""));
+            foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(Battle.DefenderShackled(d)?" 枷锁禁锢":d.NeuralUntil>Battle.Clock?$" 神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s":d.NeuralAccumulated>0?$" 神经 {d.NeuralAccumulated:0}/100":Battle.DefenderCamouflaged(d)?" 迷彩":""));
             foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):f.Settings.Kind==FacilityKind.Pillar?(f.Collapsed?"支柱已倒塌":"破碎支柱"):"祭坛");
         }
         void Label(Vector3 point,string text)

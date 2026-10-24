@@ -46,6 +46,18 @@ namespace YesterdayConvoy
                         var aura=Line(pulse?.035f:.012f,new Color(.25f,.9f,.7f,pulse?.65f:.25f),49);
                         for(int k=0;k<=48;k++){float a=k*Mathf.PI/24;aura.SetPosition(k,u.Motion.Position+new Vector3(Mathf.Cos(a)*2.5f,.15f,Mathf.Sin(a)*2.5f));}
                     }
+                foreach(var cast in b.Shackles)
+                {
+                    if(cast.Ended)continue;var u=b.FindUnit(cast.SourceId);var d=b.FindDefender(cast.TargetId);
+                    if(u==null||!u.Active||d==null||!b.DefenderShackled(d))continue;
+                    var up=Camera.main!=null?Camera.main.transform.up:Vector3.up;
+                    Vector3 from=u.Motion.Position+up*1.1f,to=d.Position+up*.8f;
+                    var chain=Line(.055f,new Color(.85f,.35f,1,.9f),17);
+                    for(int k=0;k<=16;k++)chain.SetPosition(k,Vector3.Lerp(from,to,k/16f)+up*((k%2==0?1:-1)*.06f));
+                    var seal=Line(.04f,new Color(.85f,.4f,1),33);
+                    var right=Camera.main!=null?Camera.main.transform.right:Vector3.right;
+                    for(int k=0;k<=32;k++){float a=k*Mathf.PI/16;seal.SetPosition(k,to+right*(Mathf.Cos(a)*.4f)+up*(Mathf.Sin(a)*.6f));}
+                }
                 foreach(var bubble in b.CorrosiveBubbles)
                 {
                     float age=(float)(b.Clock-bubble.StartedAt);if(age<0||age>5.5f)continue;

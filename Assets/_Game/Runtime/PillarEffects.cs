@@ -30,7 +30,7 @@ namespace YesterdayConvoy
                 foreach(var d in defenders)if(d.Alive&&Cell(d.Position)==cell)TrueDamage(d,d.Health);
                 foreach(var u in units)
                     if(u.Active&&!u.IsReviving&&!UnitInvulnerable(u)&&Cell(u.Motion.Position)==cell)
-                    {if(CombatSettings.Effects.Mandragora)BreakStoneShield(u);TrueDamage(u,f.Settings.Power);u.PillarStunnedUntil=Clock+3;if(CombatSettings.Effects.Flamerazer)EndSpray(u,true);}
+                    {if(CombatSettings.Effects.Mandragora)BreakStoneShield(u);TrueDamage(u,f.Settings.Power);u.PillarStunnedUntil=Clock+3;if(CombatSettings.Effects.Flamerazer)EndSpray(u,true);if(CombatSettings.Effects.Shackler)EndShackle(u,true);}
                 foreach(var other in facilities)
                     if(other.Settings.Kind==FacilityKind.Pillar&&!other.Collapsed&&Cell(other.Settings.Position)==cell)CollapsePillar(other,f.Settings.Position);
             }

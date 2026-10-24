@@ -124,7 +124,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();
+            flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
             if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
@@ -181,7 +181,7 @@ namespace YesterdayConvoy
             EngagementSettings c=CombatSettings;
             StepFacilities(step);
             ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
-            ResolveDeathEffects();
+            ResolveDeathEffects();ResolveShackles();
             ResolveHealing();
             foreach(var shot in combatShots)
             {
@@ -231,10 +231,11 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
+                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<c.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=c.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
+                if(c.Effects.Shackler&&StepShackler(unit))continue;
                 if(c.Effects.FirstSpeaker&&StepFirstSpeaker(unit))continue;
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
@@ -305,7 +306,7 @@ namespace YesterdayConvoy
             if(Defense==0) return;
             foreach(var d in defenders)
             {
-                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock) continue;
+                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)) continue;
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
                 if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>c.DefenderRange ||
