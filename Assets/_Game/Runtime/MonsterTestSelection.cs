@@ -168,6 +168,14 @@ namespace YesterdayConvoy
             int playable=0;foreach(var option in MonsterTests) if(option.Playable) playable++;
             bool initial=TestSelectionOpen && MonsterTests.Count==41 && playable==40;
             yield return InteractionFrame(directory,"monster-selection");
+            // Show the formerly poster-backed cards beside a later transparent portrait.
+            int portraitIndex=monsterTests.FindIndex(option=>option.Id=="CARD_M09");
+            if(portraitIndex>=0)
+            {
+                playableScroll=new Vector2(0,portraitIndex/3*364);
+                yield return InteractionFrame(directory,"selection-clean-portraits");
+                playableScroll=Vector2.zero;
+            }
             double clock=Battle.Clock; SelectCard(true); TryDeployAt(Battle.Entry); Tick(3);
             bool blocked=Battle.Units.Count==0 && Battle.Clock==clock && !Dragging;
             bool pending=!TryEnterMonsterTest("pending/银狼") && TestSelectionOpen;

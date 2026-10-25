@@ -53,6 +53,9 @@ namespace YesterdayConvoy
                 if (data == null || data.version != 1 || data.task != task || !Positive(data.ppu) || !Positive(data.referenceSpeed) ||
                     !Positive(data.height) || data.clips?.Length != (data.noAttackClip ? 3 : 4) || data.noAttackClip && task!="M33") throw new InvalidDataException("Invalid monster manifest.");
                 var art = new LocalMonsterArt { ReferenceSpeed = data.referenceSpeed, Height = data.height };
+                // The first batch's portrait.png files are presentation posters. Reuse the
+                // actual idle artwork for their cards, matching the later transparent portraits.
+                bool useIdlePortrait = int.TryParse(task.Substring(1), out int number) && number <= 10;
                 var required = new HashSet<string> { "idle", "walk", "death" };
                 if(!data.noAttackClip) required.Add("attack");
                 foreach (var item in data.clips)
@@ -64,10 +67,17 @@ namespace YesterdayConvoy
                     var frames = new List<Sprite>();
                     foreach (var page in item.pages)
                     {
-                        var texture = Load(root, page.file, allocated);
+                        bool portraitPage = useIdlePortrait && item.key == "idle" && frames.Count == 0;
+                        var texture = Load(root, page.file, allocated, portraitPage);
                         if (page.width != texture.width || page.height != texture.height || page.width > 2048 || page.height > 2048 ||
                             page.count <= 0 || page.width != item.columns * item.cell || page.height % item.cell != 0 ||
                             page.count > (long)item.columns * (page.height / item.cell)) throw new InvalidDataException("Atlas layout mismatch.");
+                        if (portraitPage)
+                        {
+                            art.Portrait = IdlePortrait(texture, item.cell, data.ppu);
+                            allocated.Add(art.Portrait);
+                            texture.Apply(false, true);
+                        }
                         for (int i = 0; i < page.count; i++)
                         {
                             var frame = Sprite.Create(texture, new Rect(i % item.columns * item.cell, page.height - (i / item.columns + 1) * item.cell,
@@ -115,9 +125,13 @@ namespace YesterdayConvoy
                     }
                     foreach(string key in extraKeys) if(!art.HasClip(key)) throw new InvalidDataException("Required effect animation missing: "+key);
                 }
-                var portrait = Load(root, "portrait.png", allocated);
-                art.Portrait = Sprite.Create(portrait, new Rect(0, 0, portrait.width, portrait.height), new Vector2(.5f, 0), data.ppu);
-                allocated.Add(art.Portrait); Cache[task] = art;
+                if (!useIdlePortrait)
+                {
+                    var portrait = Load(root, "portrait.png", allocated);
+                    art.Portrait = Sprite.Create(portrait, new Rect(0, 0, portrait.width, portrait.height), new Vector2(.5f, 0), data.ppu);
+                    allocated.Add(art.Portrait);
+                }
+                Cache[task] = art;
                 Debug.Log("MONSTER_LOCAL_ART_LOADED: " + task + "; approved idle/walk/death; attack clip="+art.HasAttack+"; no active skill.");
                 return art;
             }
@@ -131,14 +145,29 @@ namespace YesterdayConvoy
         }
         private static bool Finite(float n) => !float.IsNaN(n) && !float.IsInfinity(n);
         private static bool Positive(float n) => Finite(n) && n > 0;
-        private static Texture2D Load(string root, string file, List<UnityEngine.Object> allocated)
+        private static Sprite IdlePortrait(Texture2D texture, int cell, float ppu)
+        {
+            int bottom = texture.height - cell;
+            var pixels = texture.GetPixels32();
+            int left = cell, right = -1, low = cell, high = -1;
+            for (int y = 0; y < cell; y++)
+                for (int x = 0; x < cell; x++)
+                    if (pixels[(bottom + y) * texture.width + x].a > 8)
+                    { left = Math.Min(left, x); right = Math.Max(right, x); low = Math.Min(low, y); high = Math.Max(high, y); }
+            if (right < left) throw new InvalidDataException("Idle portrait is empty.");
+            // Leave a small transparent margin without sampling a neighbouring atlas cell.
+            left = Math.Max(0, left - 2); low = Math.Max(0, low - 2);
+            right = Math.Min(cell - 1, right + 2); high = Math.Min(cell - 1, high + 2);
+            return Sprite.Create(texture, new Rect(left, bottom + low, right - left + 1, high - low + 1), new Vector2(.5f, 0), ppu, 0, SpriteMeshType.FullRect);
+        }
+        private static Texture2D Load(string root, string file, List<UnityEngine.Object> allocated, bool readable = false)
         {
             if (string.IsNullOrEmpty(file) || Path.GetFileName(file) != file || file.Contains(":") || !file.EndsWith(".png", StringComparison.Ordinal))
                 throw new InvalidDataException("Expected local PNG filename.");
             var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false); allocated.Add(texture);
             if (!ImageConversion.LoadImage(texture, File.ReadAllBytes(Path.Combine(root, file)), false)) throw new InvalidDataException("PNG decode failed.");
             texture.filterMode = FilterMode.Bilinear; texture.wrapMode = TextureWrapMode.Clamp;
-            texture.Compress(true); texture.Apply(false, true); return texture;
+            texture.Compress(true); texture.Apply(false, !readable); return texture;
         }
     }
 }
