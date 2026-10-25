@@ -312,14 +312,15 @@ namespace YesterdayConvoy
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
                 if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>guardSettings.DefenderRange ||
-                    blocks && target.BlockerId!=d.EntityId)
+                    blocks && target.BlockerId!=d.EntityId || HasHigherTauntTarget(d,target,blocks))
                 {
                     target=null;
                     foreach(var unit in units)
                     {
                         if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>guardSettings.DefenderRange ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
-                        if(target==null || unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
+                        if(target==null || UnitTaunt(unit)>UnitTaunt(target) ||
+                            UnitTaunt(unit)==UnitTaunt(target) && unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
                     }
                     d.TargetId=target?.EntityId;
                 }
@@ -329,6 +330,15 @@ namespace YesterdayConvoy
                 combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
                     Clock,guardSettings.ProjectileTime,guardSettings.DefenderAttack));
             }
+        }
+
+        public int UnitTaunt(DeployedUnitState unit)=>UnitCombat(unit).Effects.TauntLevel;
+        bool HasHigherTauntTarget(DefenderState defender,DeployedUnitState current,bool blocks)
+        {
+            foreach(var unit in units)
+                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=CombatSettings.DefenderRange &&
+                    (!blocks || unit.BlockerId==defender.EntityId) && UnitTaunt(unit)>UnitTaunt(current)) return true;
+            return false;
         }
 
         private DefenderState ChooseDefender(DeployedUnitState unit,float range)

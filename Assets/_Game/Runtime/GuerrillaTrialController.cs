@@ -21,7 +21,7 @@ namespace YesterdayConvoy
         string feedback="先部署战士/狙击手，再部署传令兵观察支援叠加";
         float speed=1;
         Vector2 rosterScroll;
-        static string ShortName(string card)=>card=="CARD_M03"?"猎犬":card=="CARD_M15"?"战士":card=="CARD_M16"?"狙击手":card=="CARD_M17"?"传令兵":card=="CARD_M18"?"盾卫":"萨卡兹战士";
+        static string ShortName(string card)=>string.IsNullOrEmpty(card)?"无":card=="CARD_M03"?"猎犬":card=="CARD_M15"?"战士":card=="CARD_M16"?"狙击手":card=="CARD_M17"?"传令兵":card=="CARD_M18"?"盾卫":"萨卡兹战士";
         void Start()
         {
             material=new Material(Shader.Find("Sprites/Default"));ResetTrial();Application.runInBackground=true;
@@ -32,7 +32,12 @@ namespace YesterdayConvoy
             {
                 string sniper=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--sniper-check="));
                 if(sniper!=null)StartCoroutine(VerifySniper(sniper.Substring(15)));
-                else if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
+                else
+                {
+                    string taunt=Array.Find(Environment.GetCommandLineArgs(),a=>a.StartsWith("--taunt-check="));
+                    if(taunt!=null)StartCoroutine(VerifyTaunt(taunt.Substring(14)));
+                    else if(evidence!=null)StartCoroutine(VerifyCommands(evidence.Substring(18)));
+                }
             }
         }
         public void ResetTrial()
@@ -99,7 +104,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(24,678,1200,26),"同场参数试验 · 每次部署1费用 · 战术命令随存活传令兵实时变化",text);
             var living=Battle.Units.Where(u=>u.Active).ToArray();
             GUI.Box(new Rect(1008,12,260,540),"");GUI.Label(new Rect(1020,20,236,28),$"场上部队 {living.Length}",title);
-            for(int i=0;i<Battle.Defenders.Count;i++)GUI.Label(new Rect(1020,52+i*25,236,26),$"守军{i+1}  {Battle.Defenders[i].Health:0}生命",text);
+            for(int i=0;i<Battle.Defenders.Count;i++)GUI.Label(new Rect(1020,52+i*25,236,26),$"守军{i+1}→{ShortName(Battle.FindUnit(Battle.Defenders[i].TargetId)?.CardId)}  {Battle.Defenders[i].Health:0}血",text);
             rosterScroll=GUI.BeginScrollView(new Rect(1018,112,240,428),rosterScroll,new Rect(0,0,216,living.Length*56));
             for(int i=0;i<living.Length;i++)
             {var u=living[i];GUI.Label(new Rect(0,i*56,216,26),$"{ShortName(u.CardId)} · {u.Health:0}生命",text);GUI.Label(new Rect(0,i*56+24,216,26),$"攻{Battle.UnitCombat(u).UnitAttack*Battle.UnitAttackMultiplier(u):0.0}  甲{Battle.UnitArmor(u):0.0}  速{u.Motion.Speed*Battle.UnitMoveMultiplier(u):0.0}",text);}

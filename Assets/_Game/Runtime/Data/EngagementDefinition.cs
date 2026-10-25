@@ -27,6 +27,7 @@ namespace YesterdayConvoy
         [SerializeField] private float defenderResistance, armorShred, blastAttack, blastRadius, blastDelay, coldDuration;
         [SerializeField] private float frozenAttackMultiplier;
         [SerializeField] private int coldAttackEvery;
+        [SerializeField] private int tauntLevel;
         [SerializeField] private float attackColdDuration;
         [SerializeField] private bool frostNova;
         [SerializeField] private float regenerationFraction;
@@ -48,7 +49,7 @@ namespace YesterdayConvoy
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
             new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,
-                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer,artsBarrier,unitResistance,mudrock,phalanx,flamechaser,flamerazer,mandragora,nervousCreeper,harvester,firstSpeaker,shackler,tacticalCommander,orderRunner,orderSniper),
+                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer,artsBarrier,unitResistance,mudrock,phalanx,flamechaser,flamerazer,mandragora,nervousCreeper,harvester,firstSpeaker,shackler,tacticalCommander,orderRunner,orderSniper,tauntLevel),
             canAttack: !noOrdinaryAttack,defenderDamageType:defenderDamageType,revealsInvisible:revealsInvisible);
     }
 }
