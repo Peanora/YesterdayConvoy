@@ -104,6 +104,25 @@ namespace YesterdayConvoy
         private void PresentLocal()
         {
             string clip; double time; bool loop=false;
+            if(manualBattle.IsPatriot(deployedUnit))
+            {
+                var u=deployedUnit;double age=manualBattle.Clock-u.PatriotPhaseStartedAt;
+                if(manualBattle.PatriotReborn(u))
+                {
+                    string part=age<1.2?"1":age<60-3.6666667?"2":"3";
+                    double elapsed=part=="1"?age:part=="2"?age-1.2:age-(60-3.6666667);
+                    FrameState="PatriotReborn"+part;sprite.sprite=local["extra_revive_"+part].At(elapsed,part=="2",out int reviveIndex);FrameIndex=reviveIndex;return;
+                }
+                if(manualBattle.PatriotCasting(u))
+                {FrameState="PatriotSpear";sprite.sprite=local["extra_skill"].At(manualBattle.Clock-u.Spear.StartedAt,false,out int spearIndex);FrameIndex=spearIndex;return;}
+                if(u.PatriotPhase==PatriotPhase.Destruction&&u.Active)
+                {
+                    double attackAge=manualBattle.Clock-u.LastAttackTime;string action=attackAge>=0&&attackAge<manualBattle.UnitActionDuration(u)?"extra_attack_2":u.IsMoving?"extra_move_2":"extra_idle_2";
+                    double elapsed=action=="extra_attack_2"?attackAge:u.IsMoving?u.Motion.DistanceTravelled/(u.Motion.Speed+.1f):age;
+                    FrameState=action=="extra_attack_2"?"PatriotAttack":u.IsMoving?"PatriotWalk":"PatriotIdle";
+                    sprite.sprite=local[action].At(elapsed,action!="extra_attack_2",out int secondIndex);FrameIndex=secondIndex;return;
+                }
+            }
             if(manualBattle.CombatSettings.Effects.Shackler&&deployedUnit.Active&&deployedUnit.Shackle!=null)
             {
                 var s=deployedUnit.Shackle;double age=manualBattle.Clock-s.StartedAt;

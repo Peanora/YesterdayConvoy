@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
-            (FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
+            (PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
         public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil;
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!UnitInvulnerable(u)&&
             (!UnitInvisible(u)||CombatSettings.RevealsInvisible)&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);

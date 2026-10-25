@@ -119,6 +119,7 @@ namespace YesterdayConvoy
                 if(effects.Mudrock) detail="攻击逐次蓄力 / 最多6层\n定时补充法术屏障";
                 if(effects.Phalanx) detail="附近方阵单位相互加护甲\n折射 / 70法术抗性";
                 if(effects.TacticalCommander) detail="战术命令 / 全场攻防强化\n多名传令兵可叠加 / 离场解除";
+                if(effects.Patriot) detail="行军四连击 · 双阶段复起\n独立爱国者关可展示献祭和投枪";
                 if(effects.TauntLevel>0) detail="高仇恨吸引范围内火力\n独立游击队关可掩护队友";
                 if(effects.OrderSniper) detail="收到战术命令时同时攻击两人\n独立游击队关可同场展示";
                 if(effects.OrderRunner) detail="收到战术命令时移速+0.3\n独立游击队关可同场展示";

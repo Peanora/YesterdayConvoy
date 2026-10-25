@@ -23,11 +23,11 @@ namespace YesterdayConvoy
         public readonly float UnitResistance;
         public readonly bool Mudrock;
         public readonly bool Phalanx;
-        public readonly bool Flamechaser, Flamerazer, Mandragora, NervousCreeper, Harvester, FirstSpeaker, Shackler, TacticalCommander, OrderRunner, OrderSniper;
+        public readonly bool Flamechaser, Flamerazer, Mandragora, NervousCreeper, Harvester, FirstSpeaker, Shackler, TacticalCommander, OrderRunner, OrderSniper, Patriot;
         public MonsterEffectSettings(CombatDamageType damageType=CombatDamageType.Physical, float resistance=0, float armorShred=0,
             float blastAttack=0, float blastRadius=0, float blastDelay=0, float coldDuration=0, float frozenAttackMultiplier=0,
             int coldAttackEvery=0,float attackColdDuration=0,bool frostNova=false,float regenerationFraction=0,int attackTargets=0,float lifeSteal=0,bool healer=false,
-            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false,bool flamerazer=false,bool mandragora=false,bool nervousCreeper=false,bool harvester=false,bool firstSpeaker=false,bool shackler=false,bool tacticalCommander=false,bool orderRunner=false,bool orderSniper=false,int tauntLevel=0)
+            bool artsBarrier=false,float unitResistance=0,bool mudrock=false,bool phalanx=false,bool flamechaser=false,bool flamerazer=false,bool mandragora=false,bool nervousCreeper=false,bool harvester=false,bool firstSpeaker=false,bool shackler=false,bool tacticalCommander=false,bool orderRunner=false,bool orderSniper=false,int tauntLevel=0,bool patriot=false)
         {
             foreach(float value in new[]{resistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,attackColdDuration,regenerationFraction,lifeSteal,unitResistance})
                 if(float.IsNaN(value) || float.IsInfinity(value) || value<0) throw new ArgumentException("Invalid monster effect value.");
@@ -47,7 +47,7 @@ namespace YesterdayConvoy
             ArtsBarrier=artsBarrier;UnitResistance=unitResistance;
             Mudrock=mudrock;
             Phalanx=phalanx;
-            Flamechaser=flamechaser;Flamerazer=flamerazer;Mandragora=mandragora;NervousCreeper=nervousCreeper;Harvester=harvester;FirstSpeaker=firstSpeaker;Shackler=shackler;TacticalCommander=tacticalCommander;OrderRunner=orderRunner;OrderSniper=orderSniper;TauntLevel=tauntLevel;
+            Flamechaser=flamechaser;Flamerazer=flamerazer;Mandragora=mandragora;NervousCreeper=nervousCreeper;Harvester=harvester;FirstSpeaker=firstSpeaker;Shackler=shackler;TacticalCommander=tacticalCommander;OrderRunner=orderRunner;OrderSniper=orderSniper;TauntLevel=tauntLevel;Patriot=patriot;
         }
     }
 
@@ -78,7 +78,7 @@ namespace YesterdayConvoy
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || UnitInvulnerable(unit)) return false;
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
-            float damage=CalculateDamage(attack,UnitArmor(unit),UnitCombat(unit).Effects.UnitResistance,type);
+            float damage=CalculateDamage(attack,UnitArmor(unit),UnitResistance(unit),type);
             if(CombatSettings.Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
@@ -106,7 +106,7 @@ namespace YesterdayConvoy
         public float RegenerationMultiplier => CombatSettings.Effects.Healer && units.Exists(u=>u.Active && !u.IsReviving) ? 2 : 1;
         private float HealUnit(DeployedUnitState unit,float amount)
         {
-            if(!unit.Active || unit.FuelDying || unit.MandraPhase==MandragoraPhase.Reborn || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
+            if(!unit.Active || unit.FuelDying || unit.MandraPhase==MandragoraPhase.Reborn || PatriotReborn(unit) || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
             float restored=Mathf.Min(amount,unit.MaxHealth-unit.Health);
             if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
@@ -152,13 +152,14 @@ namespace YesterdayConvoy
         }
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
-        public float UnitAttackMultiplier(DeployedUnitState unit) => TacticalAttackMultiplier*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
+        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?.2f:0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?1.5f:1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
             UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1);
-        public float UnitActionDuration(DeployedUnitState unit)=>unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
+        public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?1.3666667f:unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
         public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
         public float UnitArmor(DeployedUnitState unit)
         {
-            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus;
+            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?2:0);
+            if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March)armor*=3;
             if(!CombatSettings.Effects.Phalanx || unit==null || !unit.Active) return armor;
             foreach(var other in units)
                 if(other!=unit && other.Active && !other.IsReviving && other.UnitId==unit.UnitId && GroundDistance(other.Motion.Position,unit.Motion.Position)<=1.5f)
@@ -180,6 +181,7 @@ namespace YesterdayConvoy
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1);
         private void DefeatUnit(DeployedUnitState unit)
         {
+            if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}
             if(CombatSettings.Effects.Shackler)EndShackle(unit,true);
             if(CombatSettings.Effects.Mandragora&&unit.MandraPhase==MandragoraPhase.Ground){StartMandragoraRebirth(unit);return;}
             if(CombatSettings.Effects.Mandragora)EndGaze(unit,true);

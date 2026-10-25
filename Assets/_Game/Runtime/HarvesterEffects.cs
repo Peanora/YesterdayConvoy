@@ -8,7 +8,8 @@ namespace YesterdayConvoy
         public float UnitMoveMultiplier(DeployedUnitState u)
         {
             float multiplier=EngagementEnabled&&CombatSettings.Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
-            if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&TacticalCommanders>0)multiplier*=1+.3f/u.Motion.Speed;
+            if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&HasTacticalCommand)multiplier*=1+.3f/u.Motion.Speed;
+            if(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction)multiplier*=1+.1f/u.Motion.Speed;
             return multiplier;
         }
         void TryWakeHarvester(DeployedUnitState u)

@@ -79,6 +79,15 @@ namespace YesterdayConvoy
         public int CreeperRetaliations {get;internal set;}
         public double LastRetaliationAt {get;internal set;}=double.NegativeInfinity;
         internal float NextRetaliationRatio=.85f;
+        public PatriotPhase PatriotPhase {get;internal set;}
+        public double PatriotPhaseStartedAt {get;internal set;}
+        public double PatriotInvulnerableUntil {get;internal set;}=double.NegativeInfinity;
+        public double PatriotDisabledUntil {get;internal set;}=double.NegativeInfinity;
+        public int ImmolationTicks {get;internal set;}
+        public float ImmolationDamage {get;internal set;}
+        public double LastImmolationAt {get;internal set;}=double.NegativeInfinity;
+        internal double NextImmolationAt,NextSpearAt;
+        public PatriotSpear Spear {get;internal set;}
         public MandragoraPhase MandraPhase {get;internal set;}
         public bool StoneShield {get;internal set;}
         public int StoneShieldBreaks {get;internal set;}
@@ -228,6 +237,7 @@ namespace YesterdayConvoy
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile};
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
+            if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
             unit.NextIceRingAt=Clock+8.5;
             if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
             if(EngagementEnabled && (CombatSettings.Effects.ArtsBarrier || CombatSettings.Effects.Mudrock))

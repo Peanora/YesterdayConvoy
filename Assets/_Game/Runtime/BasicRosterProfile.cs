@@ -15,7 +15,7 @@ namespace YesterdayConvoy
             if(!allowed.Contains(unit.CardId)||!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack)
                 throw new ArgumentException("Only authored basic guerrilla trial roles are supported.");
             var e=combat.Effects;
-            if(e.FrostNova||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer||e.Flamechaser||e.Flamerazer||e.Mandragora||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||
+            if(e.Patriot||e.FrostNova||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer||e.Flamechaser||e.Flamerazer||e.Mandragora||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||
                 e.RegenerationFraction>0||e.LifeSteal>0||e.BlastAttack>0||e.ColdAttackEvery>0||e.FrozenAttackMultiplier>1||e.ArmorShred>0||e.AttackTargets>1)
                 throw new ArgumentException("This roster supports basic unit profiles and tactical orders only.");
             Unit=unit;Combat=combat;
@@ -40,8 +40,9 @@ namespace YesterdayConvoy
             return DeployProfile(runId,requestId,position,allowWhilePaused,profile);
         }
         public int TacticalCommanders=>units.Count(u=>u.Active&&!u.IsReviving&&UnitCombat(u).Effects.TacticalCommander);
-        public float TacticalAttackMultiplier=>1+TacticalCommanders*.1f;
-        public float TacticalArmorBonus=>TacticalCommanders;
-        public int UnitAttackTargets(DeployedUnitState u)=>Math.Max(Math.Max(1,UnitCombat(u).Effects.AttackTargets),UnitCombat(u).Effects.OrderSniper&&TacticalCommanders>0?2:1);
+        public bool HasTacticalCommand=>TacticalCommanders>0||PatriotPresent;
+        public float TacticalAttackMultiplier=>1+TacticalCommanders*.1f+(PatriotPresent?.2f:0);
+        public float TacticalArmorBonus=>TacticalCommanders+(PatriotPresent?2:0);
+        public int UnitAttackTargets(DeployedUnitState u)=>Math.Max(Math.Max(1,UnitCombat(u).Effects.AttackTargets),UnitCombat(u).Effects.OrderSniper&&HasTacticalCommand?2:1);
     }
 }

@@ -41,6 +41,7 @@ namespace YesterdayConvoy
             if(effects.NervousCreeper&&(canAttack||hasSkill))throw new ArgumentException("Creeper cannot use ordinary attacks or ammo skills.");
             if(effects.Healer && (canAttack || hasSkill)) throw new ArgumentException("Healer uses automatic treatment, not damage attacks or ammunition skills.");
             if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
+            if(effects.Patriot&&unitInterval<=.4f)throw new ArgumentException("Patriot requires a positive second-phase attack interval.");
             Effects=effects;
             DefenderDamageType=defenderDamageType;
             RevealsInvisible=revealsInvisible;DefenderCanHitAir=defenderCanHitAir;
@@ -63,6 +64,7 @@ namespace YesterdayConvoy
         public float Health { get; internal set; }
         public bool Alive => Health > 0;
         public string TargetId { get; internal set; }
+        public bool HighGround {get;internal set;}
         public int BlockedCount { get; internal set; }
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
@@ -217,9 +219,10 @@ namespace YesterdayConvoy
                 var c=UnitCombat(unit);
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
                 if(unit.FuelDying)continue;
+                if(c.Effects.Patriot&&StepPatriotPassive(unit))continue;
                 if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
                 if(c.Effects.Harvester&&StepHarvesterPassive(unit,step))continue;
-                if(unit.PillarStunnedUntil>Clock){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
+                if(unit.PillarStunnedUntil>Clock&&!PatriotControlImmune(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
                 {
@@ -232,17 +235,18 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(!UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<guardSettings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=guardSettings.BlockRadius)
+                    if(!d.HighGround && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<guardSettings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=guardSettings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
+                if(c.Effects.Patriot&&StepPatriotAction(unit))continue;
                 if(c.Effects.Shackler&&StepShackler(unit))continue;
                 if(c.Effects.FirstSpeaker&&StepFirstSpeaker(unit))continue;
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
-                float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.UnitRange;
-                bool ordinary=c.CanAttack&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked)&&(!c.Effects.Harvester||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.IsBlocked);
+                float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.Destruction?.85f:c.UnitRange;
+                bool ordinary=c.CanAttack&&(!c.Effects.Patriot||unit.PatriotPhase==PatriotPhase.Destruction||unit.IsBlocked)&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked)&&(!c.Effects.Harvester||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.IsBlocked);
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
                 unit.HasCombatTarget=target!=null;
@@ -284,9 +288,11 @@ namespace YesterdayConvoy
                         unit.OrdinaryAttacksFired%c.Effects.ColdAttackEvery==0 ? c.Effects.AttackColdDuration : 0;
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
                     unit.LastAttackRate=empowered ? 1 : UnitAttackRate(unit);
-                    unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : c.UnitInterval)/unit.LastAttackRate;
+                    unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : UnitAttackInterval(unit))/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock+c.AttackWindup/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                        unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                    if(c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.March&&!empowered)
+                        for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+c.AttackWindup+hit*.2f,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit)));
                     if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;
                     if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
                     if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
@@ -332,7 +338,7 @@ namespace YesterdayConvoy
             }
         }
 
-        public int UnitTaunt(DeployedUnitState unit)=>UnitCombat(unit).Effects.TauntLevel;
+        public int UnitTaunt(DeployedUnitState unit)=>IsPatriot(unit)?unit.PatriotPhase==PatriotPhase.March?2:0:UnitCombat(unit).Effects.TauntLevel;
         bool HasHigherTauntTarget(DefenderState defender,DeployedUnitState current,bool blocks)
         {
             foreach(var unit in units)
