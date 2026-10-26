@@ -1,0 +1,492 @@
+{
+  "version": 1,
+  "task": "M20",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 2.55,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle_1",
+      "count": 100,
+      "duration": 1.6666666269302368,
+      "fps": 60,
+      "loop": true,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-06.png",
+          "count": 4,
+          "width": 1920,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move_1",
+      "count": 114,
+      "duration": 1.899999976158142,
+      "fps": 60,
+      "loop": true,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "walk-07.png",
+          "count": 2,
+          "width": 1920,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack_1",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-05.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 321,
+      "duration": 5.333333492279053,
+      "fps": 60,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.47638702392578125,
+      "pivotY": 0.26498010762532553,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-07.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-08.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-09.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-10.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-11.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-12.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-13.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-14.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-15.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-16.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-17.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-18.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-19.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-20.png",
+          "count": 1,
+          "width": 1920,
+          "height": 480
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "e3f12667dd2a420a1f3ee4a806da8713d103f221ebc375e6e8785ffdb34b1972"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "d00ba10d959b5118c3a5a902c42268b2eeb5f7f5cf8b08c63992b1c205438503"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "ec9ba80c2fb45f6ac3502cbca7650cc74bc331fe509cd41b14e57c23bb4a48d8"
+    },
+    {
+      "file": "attack-03.png",
+      "sha256": "25265dc98b7e5908a0849a7da95fdab96cf3acf4b2ce8d51993221b45b1d694e"
+    },
+    {
+      "file": "attack-04.png",
+      "sha256": "5a8a24a64d75f68f9cf25d068fc9553b80d2e69828024958bd9021cc9e937a3f"
+    },
+    {
+      "file": "attack-05.png",
+      "sha256": "7057457d3a02617a5e3a3c16fdbe7493d64dfda841eb04f570e2a8bd920a0937"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "49bf7d35789c454187619e5fe9604df74748353ea67dbdb8bafffce106dff822"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "fee5243ce0aa1907a352d86169a29f55eb1caed118a34fc6e4f5cd98958acc88"
+    },
+    {
+      "file": "death-02.png",
+      "sha256": "8778160c948f149ab9ed1c2b4fae8dfe821ffd6f40d5227cfbd9e3610645e74d"
+    },
+    {
+      "file": "death-03.png",
+      "sha256": "7bb72943125bafb127650772c2a7c626663421faae95a4e47fdbfcb840dbc850"
+    },
+    {
+      "file": "death-04.png",
+      "sha256": "85bf5c953f307afb264067c499128d7501ed589d0e6150beac2f463db65bed0d"
+    },
+    {
+      "file": "death-05.png",
+      "sha256": "6d208fe16fb982f0dd1742412f8bc60471be4052d6ea23233a6bd4e583d2c196"
+    },
+    {
+      "file": "death-06.png",
+      "sha256": "ec541fab7b6aa2383254ba049981ff1e2a2931731faf7967e701a530553338bb"
+    },
+    {
+      "file": "death-07.png",
+      "sha256": "1b9eaa3d7bdc19d4c32343d31b1eb5fa30a5d027b02959d32c1ee83eb95f05f3"
+    },
+    {
+      "file": "death-08.png",
+      "sha256": "95883cb8cf4ebf49864242c3dec0dcac4a1577bb491ad9c4c2df23cf3327820c"
+    },
+    {
+      "file": "death-09.png",
+      "sha256": "054d10414377ecc9c03cef01a1eda0b0392613c5dc4c959733517b62d790192f"
+    },
+    {
+      "file": "death-10.png",
+      "sha256": "30b2268df8bd921d454929639e7c646b7f2c66321e6ed52339a0cf163c4a10ea"
+    },
+    {
+      "file": "death-11.png",
+      "sha256": "b460f76a69cc9ed49a765d02b3dacf92eddd200a740d73f125472f3a1cf496b9"
+    },
+    {
+      "file": "death-12.png",
+      "sha256": "2af5e0219ad06639e093e752f10096c49209a213ee763e55eeccdb64a48843f1"
+    },
+    {
+      "file": "death-13.png",
+      "sha256": "cf2f58b87b46a442d86f8e1940631da9497c83210bd43f337d9e0c70b76fe3da"
+    },
+    {
+      "file": "death-14.png",
+      "sha256": "9e5ed0d596b9f18b3531bee5c33038c8643612cd7c83e239eb3ff3c32e5652c4"
+    },
+    {
+      "file": "death-15.png",
+      "sha256": "e4e8943b4e6c861200a528f6cc96be21bfdea2efbc59f2af444b903a9ece40b3"
+    },
+    {
+      "file": "death-16.png",
+      "sha256": "30532a79da9862c2d6f4c65f379d8430e4c3949e897bb3d28ab79b9c4383642e"
+    },
+    {
+      "file": "death-17.png",
+      "sha256": "2c9901e14df7f215674ca1a1186f79329e52e752486ca4e12f48395addcaf90e"
+    },
+    {
+      "file": "death-18.png",
+      "sha256": "fce4601f6b17f4231e202ec1c971c007b63a3f88376ebdac667d40436f725619"
+    },
+    {
+      "file": "death-19.png",
+      "sha256": "a0c8b9650fdc653b9f465b5f6d2bb8a1a8164e25cd8a212d45766dd654d919dd"
+    },
+    {
+      "file": "death-20.png",
+      "sha256": "5d282837ef6c97de151219273d061d67ebc7d99e77d45acd5369cf312737f07e"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "74f469b19e3d04dd4a97ff1278aa56fd6db0183f5be77edd51ac319085556083"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "162f288a3ab299b99a363436e1a10570b6eda443ac0c65d82fd280d349f4e756"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "356387f0f8f0f623fb56088f904f10860b1c6b9c1140e8a4a2d0bb5db03e285b"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "745024e7ebb6c98786280e4797766c5ac9f0c58913a3e3032c70091a56372e01"
+    },
+    {
+      "file": "idle-04.png",
+      "sha256": "7aedcada13ead1623281b5e11ef37b215368b915e123197a550ade030552c7c7"
+    },
+    {
+      "file": "idle-05.png",
+      "sha256": "dac3e54de3eb50c0dd75c7f6c9f99c69db09dfd465903d16eea4e04c13520072"
+    },
+    {
+      "file": "idle-06.png",
+      "sha256": "86291ab5cc3e2f04ff307bccd60860ee13aedf70495df7a18a0120a7ec6a5d92"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "be0d8da1967aab46a1d4736b1cd5d8d5a792191bd8d793fed8a624c989edecee"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "37ebc26f0d9e664cbbffc06ace21a2a236513427aeb8f75d76121e3626802f78"
+    },
+    {
+      "file": "walk-02.png",
+      "sha256": "f24d207d8c22223ba2180ff4d8b0c609201e6dba286b0e28075320079706cc3b"
+    },
+    {
+      "file": "walk-03.png",
+      "sha256": "3a8dcd7093779b95cc78484efadc9a5d9ef4b92ebdfc8aea0b9369bb123fa1bf"
+    },
+    {
+      "file": "walk-04.png",
+      "sha256": "e70f299a713429a508067c3e30467c132a28f2aad60fff36057c1f6dc92e46de"
+    },
+    {
+      "file": "walk-05.png",
+      "sha256": "6df5004576df49349f6952301269a634b74fccd8b71565c077179ae9b431c948"
+    },
+    {
+      "file": "walk-06.png",
+      "sha256": "abcd3ff28ddda7a3044da3540c1c11cb2536a15f53af900c303269092dcaa779"
+    },
+    {
+      "file": "walk-07.png",
+      "sha256": "81f5ef8ad3df6302d49537d59ca983bea9b0fe14cdf064c87449a2de221721a6"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "9717bfe0fc12e170756b60849e8b09de56f59b8ccdddca752e8e8e6fb4a31adc"
+    }
+  ],
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1506_patrt. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+}

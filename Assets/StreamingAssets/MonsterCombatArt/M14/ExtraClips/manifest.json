@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "task": "M14",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_skill_1",
+      "source": "Skill_1",
+      "count": 181,
+      "duration": 3,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.41565193600124783,
+      "pivotY": 0.2524828275044759,
+      "pages": [
+        {
+          "file": "extra_skill_1-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_1-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_1-02.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_1-03.png",
+          "count": 34,
+          "width": 2016,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_2",
+      "source": "Skill_2",
+      "count": 433,
+      "duration": 7.199999809265137,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.41565193600124783,
+      "pivotY": 0.2524828275044759,
+      "pages": [
+        {
+          "file": "extra_skill_2-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-02.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-03.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-04.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-05.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-06.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-07.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_2-08.png",
+          "count": 41,
+          "width": 2016,
+          "height": 1728
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_skill_1-00.png",
+      "sha256": "097b2ea6888dd0afc60482e32659f2fc16dac6cd1ca8edac49c456bdde2a8a08"
+    },
+    {
+      "file": "extra_skill_1-01.png",
+      "sha256": "5220509ec248a1605b065d000d54318802e11a7d4ac3e98e146fcb3ca439c779"
+    },
+    {
+      "file": "extra_skill_1-02.png",
+      "sha256": "5bab7e8096cac7b76d280c64b5a60bbb55be6c5b3cb5839a66a4538bfd8943f7"
+    },
+    {
+      "file": "extra_skill_1-03.png",
+      "sha256": "433eddd8742fd8c31ebe3778e5551a62e722441a7d02d0870cfe8c7e677f5a20"
+    },
+    {
+      "file": "extra_skill_2-00.png",
+      "sha256": "c2a9f4bbb3d14dd4265c646d8ff2fe4b72ad3aae9954fe89935ddd0255f43a89"
+    },
+    {
+      "file": "extra_skill_2-01.png",
+      "sha256": "c275d542f0ce48ada5daef6cadf1cfe1ace52fc107b90b728f0f74cb71dc1441"
+    },
+    {
+      "file": "extra_skill_2-02.png",
+      "sha256": "f6d55f22d971a17ee9c953bb23af9d37ad7f77cc9c9d45a20c0126a299d91777"
+    },
+    {
+      "file": "extra_skill_2-03.png",
+      "sha256": "300e1be240737887c46d7fd4ab03f8672548f9ec7ad67cc0157875377dd499b5"
+    },
+    {
+      "file": "extra_skill_2-04.png",
+      "sha256": "da44f8cf7fffb97dd4a6c88c7710d95a8b723891257fd83e7ec07aa50c8f4f5a"
+    },
+    {
+      "file": "extra_skill_2-05.png",
+      "sha256": "8c2075f048b42b2fba952b5362902b6c128e64fda32bf4f179a6361213325705"
+    },
+    {
+      "file": "extra_skill_2-06.png",
+      "sha256": "701573657c78ddc1dac519758e27440e8737d855714c10c4f5cf47fbdc18887f"
+    },
+    {
+      "file": "extra_skill_2-07.png",
+      "sha256": "40ef843d4d0b2e9780ba25cfb623ba869366d6f9e81954e8557fb12e5b2605d0"
+    },
+    {
+      "file": "extra_skill_2-08.png",
+      "sha256": "214acb78292cc1341e88991565836437fdfe76071bc7da8eeb25748be28dbba9"
+    }
+  ],
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1505_frstar. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+}

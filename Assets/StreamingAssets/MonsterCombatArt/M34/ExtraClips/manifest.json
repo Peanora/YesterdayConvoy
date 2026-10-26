@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "task": "M34",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_skill_begin",
+      "source": "Skill_Begin",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5597274632887407,
+      "pivotY": 0.30020923137664796,
+      "sourceBounds": [
+        -449.6560974121094,
+        -151.79881286621094,
+        339.00311279296875,
+        521.9375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_begin-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_skill_begin-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_skill_begin-02.png",
+          "count": 11,
+          "width": 1760,
+          "height": 1056
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_idle",
+      "source": "Skill_Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.47282924122280545,
+      "pivotY": 0.26512499199973216,
+      "sourceBounds": [
+        -301.36566162109375,
+        -75.8651351928711,
+        342.5508117675781,
+        431.8861999511719
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_skill_idle-02.png",
+          "count": 22,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_skill_move",
+      "source": "Skill_Move",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.4337886214256287,
+      "pivotY": 0.23576561599969864,
+      "sourceBounds": [
+        -259.5387878417969,
+        -75.8651351928711,
+        348.7499084472656,
+        431.8861999511719
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_move-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "extra_skill_move-01.png",
+          "count": 56,
+          "width": 2048,
+          "height": 1792
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_skill_begin-00.png",
+      "sha256": "c11c95051f35969fe48435c960e3354a8260089aa1e2742c230cc6aed5425fde"
+    },
+    {
+      "file": "extra_skill_begin-01.png",
+      "sha256": "2487df01f24013e57ae0fdb8acd0be985b55389a82a2f6feeb310d40de58c448"
+    },
+    {
+      "file": "extra_skill_begin-02.png",
+      "sha256": "b5844dd28e1d1638ff3e184efc08899f7dc35fb984f4656b3aacd296b941ec8d"
+    },
+    {
+      "file": "extra_skill_idle-00.png",
+      "sha256": "9d5cfc8d25fde9c9c5550ecfdb3f1c669f0b561b463193c59ce26e7afa4690df"
+    },
+    {
+      "file": "extra_skill_idle-01.png",
+      "sha256": "a869de892e2254123a4404dadf80edf32002f01f1e398e76e20d921c5fc880c7"
+    },
+    {
+      "file": "extra_skill_idle-02.png",
+      "sha256": "e20c4a2c9dcb47f6c6e0f844656ba9b2bb4f3322ca06ed8b256e2d5b4955e101"
+    },
+    {
+      "file": "extra_skill_move-00.png",
+      "sha256": "957651904cf298b1981580ca6fca1b1e9ac69ae2580069bd4b11276eb4922e0b"
+    },
+    {
+      "file": "extra_skill_move-01.png",
+      "sha256": "6fbd9cd87d3c7eae0d70b93eccf62e5a041b43423de67494c526632ef72e7f5b"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1151_dslntc. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

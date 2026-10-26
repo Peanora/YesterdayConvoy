@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "task": "M30",
+  "ppu": 80,
+  "referenceSpeed": 0.75,
+  "height": 2.025,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 80,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": true,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5360830029574307,
+      "pivotY": 0.30629407015713783,
+      "sourceBounds": [
+        -460.59954833984375,
+        -231.996337890625,
+        393.75103759765625,
+        590.862060546875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-03.png",
+          "count": 5,
+          "width": 1760,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5360830029574307,
+      "pivotY": 0.30629407015713783,
+      "sourceBounds": [
+        -460.59954833984375,
+        -231.996337890625,
+        393.75103759765625,
+        590.862060546875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "walk-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "walk-02.png",
+          "count": 10,
+          "width": 1760,
+          "height": 704
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5360830029574307,
+      "pivotY": 0.30629407015713783,
+      "sourceBounds": [
+        -460.59954833984375,
+        -231.996337890625,
+        393.75103759765625,
+        590.862060546875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-03.png",
+          "count": 16,
+          "width": 1760,
+          "height": 1408
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5360830029574307,
+      "pivotY": 0.30629407015713783,
+      "sourceBounds": [
+        -460.59954833984375,
+        -231.996337890625,
+        393.75103759765625,
+        590.862060546875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "death-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "death-02.png",
+          "count": 11,
+          "width": 1760,
+          "height": 1056
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "bc102d748c02ad99ebaf0ab8a0609add9c32e93c7c1229bb0d6f62a5beae5c80"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "f758b4ed286631fe9ef05c8f866afa194fe5e9fa592acdfb3535530342513374"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "6ada05d2ddc877be5381048357494df6c4a57974bcf18864dcdcbee810fc3488"
+    },
+    {
+      "file": "attack-03.png",
+      "sha256": "69af4ec49dbf8a55d93542721217d5ab9e33f1b2763340ff6dad687bc4a4d42e"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "99f913c28f69da4aac238344e218d0f5e6f5f41df2429b373f76678d1849a29e"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "1f0789cc831a15d135b91c97b2a346a2882ac979e3b44311804d6b5bbc0ffe28"
+    },
+    {
+      "file": "death-02.png",
+      "sha256": "78c18c7323a5a631f6e44b3ef9e809605be44ef9e3311b6baa824810af6e20ce"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "ac5e292f8911ede9662442f768e1189b733ee121d912d7530d4fc8e82e29b6ed"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "b159822942bafe119a0f171d8126d37e839d0dfbc1a3f1d6b9068cd33cd0579d"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "c63ff54ac15764fe26f8180f2ebebd7fb602511114666f68449f3a7130542d1f"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "575e45b4df95ccd2dc11cc180df58d729128ea39a88f9048a7f0f499b16fa6fa"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "1e966ab0d1a8a0dccb237284b9f9ffbe954738d24aba83dade8c78eb83f2555d"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "2137326443baf1f4ff246403ba08b042bc025ef89245dbaaaa15fba3125fd63e"
+    },
+    {
+      "file": "walk-02.png",
+      "sha256": "ff3ec77167402273b22103bf8a624d83c507634dc04b0a01db9a57d28922b361"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "25926b7b2f414c2af1de9d08dca976e686627441f199ad23b2fd819d2c83303c"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1288_duskls. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}

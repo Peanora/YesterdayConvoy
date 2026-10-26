@@ -1,0 +1,688 @@
+{
+  "version": 1,
+  "task": "M32",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_c1_attack",
+      "source": "C1_Attack",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5073728609085083,
+      "pivotY": 0.1067519731322924,
+      "sourceBounds": [
+        -181.0062255859375,
+        -5.025789260864258,
+        173.55575561523438,
+        402.41326904296875
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_attack-00.png",
+          "count": 91,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_idle",
+      "source": "C1_Idle",
+      "count": 320,
+      "duration": 5.333333492279053,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5340106228987376,
+      "pivotY": 0.11032373773554965,
+      "sourceBounds": [
+        -133.93377685546875,
+        -2.5089612007141113,
+        99.56514739990234,
+        396.2870788574219
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_idle-00.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_c1_idle-01.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_c1_idle-02.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_c1_idle-03.png",
+          "count": 20,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_move",
+      "source": "C1_Move",
+      "count": 80,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5118953923384348,
+      "pivotY": 0.11623986154794691,
+      "sourceBounds": [
+        -132.21311950683594,
+        -8.760370254516602,
+        120.19251251220703,
+        396.5600891113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_move-00.png",
+          "count": 80,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_skill_2",
+      "source": "C1_Skill_2",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5246111591657002,
+      "pivotY": 0.10502400627980629,
+      "sourceBounds": [
+        -174.24325561523438,
+        -2.9436347484588623,
+        149.37303161621094,
+        402.0772705078125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_skill_2-00.png",
+          "count": 91,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_skill_1_begin",
+      "source": "C1_Skill_1_Begin",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.49377439498901365,
+      "pivotY": 0.09593767908712225,
+      "sourceBounds": [
+        -153.06121826171875,
+        -4.104282855987549,
+        159.35235595703125,
+        412.4198913574219
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_skill_1_begin-00.png",
+          "count": 51,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_skill_1_end",
+      "source": "C1_Skill_1_End",
+      "count": 21,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5001664606730143,
+      "pivotY": 0.11096445428828394,
+      "sourceBounds": [
+        -167.57308959960938,
+        -2.5089612007141113,
+        167.40487670898438,
+        395.6396179199219
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_skill_1_end-00.png",
+          "count": 21,
+          "width": 1920,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "extra_c1_skill_1_loop",
+      "source": "C1_Skill_1_Loop",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.45908963203430175,
+      "pivotY": 0.1087190830459197,
+      "sourceBounds": [
+        -136.0335693359375,
+        -2.1285958290100098,
+        177.37457275390625,
+        397.52825927734375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c1_skill_1_loop-00.png",
+          "count": 60,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_attack_1",
+      "source": "C2_Attack_1",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5184635577883039,
+      "pivotY": 0.11486797741481236,
+      "sourceBounds": [
+        -197.69772338867188,
+        0,
+        175.93016052246094,
+        454.0503845214844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_attack_1-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_c2_attack_1-01.png",
+          "count": 10,
+          "width": 2016,
+          "height": 448
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_die_1",
+      "source": "C2_Die_1",
+      "count": 81,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5057692462205887,
+      "pivotY": 0.09845404863357543,
+      "sourceBounds": [
+        -178.70599365234375,
+        0,
+        170.9326934814453,
+        541.0303344726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_die_1-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "extra_c2_die_1-01.png",
+          "count": 17,
+          "width": 2048,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_idle_1",
+      "source": "C2_Idle_1",
+      "count": 160,
+      "duration": 2.6666667461395264,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5368935227394104,
+      "pivotY": 0.0701657152175903,
+      "sourceBounds": [
+        -166.084716796875,
+        0,
+        128.80284118652344,
+        434.3588562011719
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_idle_1-00.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "extra_c2_idle_1-01.png",
+          "count": 60,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_move_1",
+      "source": "C2_Move_1",
+      "count": 80,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5416431709130605,
+      "pivotY": 0.06630075931549073,
+      "sourceBounds": [
+        -159.2719268798828,
+        0,
+        117.1904067993164,
+        438.2644958496094
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_move_1-00.png",
+          "count": 80,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_skill_2",
+      "source": "C2_Skill_2",
+      "count": 91,
+      "duration": 1.5,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5304103251865931,
+      "pivotY": 0.1259182921903474,
+      "sourceBounds": [
+        -181.08082580566406,
+        -2.3562612533569336,
+        145.22865295410156,
+        443.37890625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_skill_2-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_c2_skill_2-01.png",
+          "count": 10,
+          "width": 2016,
+          "height": 448
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_skill_3",
+      "source": "C2_Skill_3",
+      "count": 81,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4853646278381348,
+      "pivotY": 0.09732885360717775,
+      "sourceBounds": [
+        -169.39300537109375,
+        0,
+        186.6473388671875,
+        474.72808837890625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_skill_3-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_skill_1_begin",
+      "source": "C2_Skill_1_Begin",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5203416115897043,
+      "pivotY": 0.10164423212741636,
+      "sourceBounds": [
+        -180.12745666503906,
+        -0.19350014626979828,
+        156.14576721191406,
+        469.833984375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_skill_1_begin-00.png",
+          "count": 51,
+          "width": 2016,
+          "height": 1344
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_skill_1_end",
+      "source": "C2_Skill_1_End",
+      "count": 21,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5440804894765218,
+      "pivotY": 0.07152623764549687,
+      "sourceBounds": [
+        -182.61459350585938,
+        -0.9964257478713989,
+        138.07009887695312,
+        433.9804382324219
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_skill_1_end-00.png",
+          "count": 21,
+          "width": 1920,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_skill_1_loop",
+      "source": "C2_Skill_1_Loop",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.518314041296641,
+      "pivotY": 0.07020606199900309,
+      "sourceBounds": [
+        -181.06089782714844,
+        0,
+        162.5540771484375,
+        434.3180847167969
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_skill_1_loop-00.png",
+          "count": 60,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_c2_stun",
+      "source": "C2_Stun",
+      "count": 41,
+      "duration": 0.6666666865348816,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.49420315504074097,
+      "pivotY": 0.07345543385793762,
+      "sourceBounds": [
+        -167.03765869140625,
+        -2.9458987712860107,
+        172.89552307128906,
+        433.98040771484375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_c2_stun-00.png",
+          "count": 41,
+          "width": 1920,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "key": "extra_reborn",
+      "source": "Reborn",
+      "count": 441,
+      "duration": 7.333333492279053,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4887031384876796,
+      "pivotY": 0.10482759624719623,
+      "sourceBounds": [
+        -175.13241577148438,
+        -13.477799415588379,
+        188.45082092285156,
+        479.3652648925781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_reborn-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_reborn-01.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_reborn-02.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_reborn-03.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_reborn-04.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "extra_reborn-05.png",
+          "count": 36,
+          "width": 2016,
+          "height": 896
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_c1_attack-00.png",
+      "sha256": "1d36ac7803f36948ed22bbc027f3947171f811cf2b62c4722d100bf3a8060e4c"
+    },
+    {
+      "file": "extra_c1_idle-00.png",
+      "sha256": "994d48527ffbdc4c9ade16b10b7c7a2a14806762144f141d0225f39142abeb3d"
+    },
+    {
+      "file": "extra_c1_idle-01.png",
+      "sha256": "988982084d6fea4112e105ca45668094784771d993d5804c581e30229a8bae90"
+    },
+    {
+      "file": "extra_c1_idle-02.png",
+      "sha256": "8adbfa3a59893754631db228b626a23f11dd73e078380b0fdfd8d0cc1a27be2c"
+    },
+    {
+      "file": "extra_c1_idle-03.png",
+      "sha256": "7f324f25b709c44837310362c3c49d4574997e373ee8434c413feb3bc41abca5"
+    },
+    {
+      "file": "extra_c1_move-00.png",
+      "sha256": "ae78b70199b94dc786059c14f884605086e291e4d639a6f9754c9d8e20d0ac9e"
+    },
+    {
+      "file": "extra_c1_skill_2-00.png",
+      "sha256": "f250bf32474a2e22189cdaa4537365fd3f25e009520ce93192c03a52c002f91e"
+    },
+    {
+      "file": "extra_c1_skill_1_begin-00.png",
+      "sha256": "79e284f0c1b1d98d5e5e3f1c4e69d397a65258e3afdedb048fa53ca6278742bb"
+    },
+    {
+      "file": "extra_c1_skill_1_end-00.png",
+      "sha256": "daf4b89542da4418610896dc27f9cc8b599afbefc7e2dd02da86c8dc83d324b7"
+    },
+    {
+      "file": "extra_c1_skill_1_loop-00.png",
+      "sha256": "69cf11e2c92aa5092ce23c2cc4c221776bcaa2dc889cd496be3cbee3d43f711e"
+    },
+    {
+      "file": "extra_c2_attack_1-00.png",
+      "sha256": "f6ec4d68a683d8bdc0fbfc2aac69f30424a72044b0aeea8b2e48c90f258216bb"
+    },
+    {
+      "file": "extra_c2_attack_1-01.png",
+      "sha256": "458b57399602d6f961d15308357a8c97086b42c5adcb144727d8bde3dd1a7599"
+    },
+    {
+      "file": "extra_c2_die_1-00.png",
+      "sha256": "2030c726ac5e26684112c0dc1d0352d7d23787e25b1b9942b449202698ea30a2"
+    },
+    {
+      "file": "extra_c2_die_1-01.png",
+      "sha256": "db25ee1e36ba42c3507b0d3af2463a82c6f6692f4bd6cfb90ef52f401063f224"
+    },
+    {
+      "file": "extra_c2_idle_1-00.png",
+      "sha256": "981f63b6e5ef44345147e9e2f9f9918a44bb7dad7082a2fb174d4be8ec063083"
+    },
+    {
+      "file": "extra_c2_idle_1-01.png",
+      "sha256": "dbc6f50dd5abf01766419af110ec78897c96afcd85758b6d61e3b10b7138b6e7"
+    },
+    {
+      "file": "extra_c2_move_1-00.png",
+      "sha256": "0c54dea1429c1db9ec841e22dbb4eb35d1ebae9b4279f8ed535398661da09b8b"
+    },
+    {
+      "file": "extra_c2_skill_2-00.png",
+      "sha256": "61b338eb22ea8eb8092d2a5bbd51a6f27ec2189410e76d89227f15afc500bff4"
+    },
+    {
+      "file": "extra_c2_skill_2-01.png",
+      "sha256": "5cca675e8f09c2742d1c1262fe01de15a1beed38f7ff2c972743c1ea81ece4f4"
+    },
+    {
+      "file": "extra_c2_skill_3-00.png",
+      "sha256": "270834ba6182c0e9f829b1a12c8f9cbb97a8ece0e8f0ee85c433d67bb2b1b134"
+    },
+    {
+      "file": "extra_c2_skill_1_begin-00.png",
+      "sha256": "7a1394ec47de88193fdba99affb651d654998b9e7e9e4289179049d0f62d2dd0"
+    },
+    {
+      "file": "extra_c2_skill_1_end-00.png",
+      "sha256": "4485f6ba6fa3d7f168cff332499a8622c773efba9e071eaf71a08ed2e0c97f68"
+    },
+    {
+      "file": "extra_c2_skill_1_loop-00.png",
+      "sha256": "10c8ff0ec8daf6a45820df89836e20a8e796c13c41235b724a062892ec2ce3ac"
+    },
+    {
+      "file": "extra_c2_stun-00.png",
+      "sha256": "fbfe376e2bb4324beaba88829c97c92099905ca2aefad15f775335e3e050100a"
+    },
+    {
+      "file": "extra_reborn-00.png",
+      "sha256": "3da7e44ece95000effdaed02850463b95cf4d5085df6880d027a52b406838f66"
+    },
+    {
+      "file": "extra_reborn-01.png",
+      "sha256": "863c7a44160cd0cb1519f621866de5d43c79bd463c86740150c09e603295d132"
+    },
+    {
+      "file": "extra_reborn-02.png",
+      "sha256": "fbdfbab9cedd297874bf3a396e05bd3db7c0aab6c8abf044b339208f4ec331e4"
+    },
+    {
+      "file": "extra_reborn-03.png",
+      "sha256": "cdcfd826e429e1709d260548075b0c7c0d146433c3a4bc2bab239bce3ab06175"
+    },
+    {
+      "file": "extra_reborn-04.png",
+      "sha256": "68add23ba50c12769d1cfbd76d26e1ca9d36d2edc4d89fa6697ea02ef93f2909"
+    },
+    {
+      "file": "extra_reborn-05.png",
+      "sha256": "3f6a17c31afa3cf94e79be93bac8a9f4ffe4f58b4c4f2c45ba2a72eacce26d9b"
+    }
+  ],
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1523_mandra. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+}
