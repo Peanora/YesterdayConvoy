@@ -76,6 +76,39 @@
           "height": 576
         }
       ]
+    },
+    {
+      "key": "skill",
+      "source": "Skill",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4226751316918267,
+      "pivotY": 0.21500356541381588,
+      "sourceBounds": [
+        -231.99954223632812,
+        -108.31520080566406,
+        349.207763671875,
+        545.5399780273438
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "skill-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
     }
   ],
   "files": [
@@ -98,8 +131,16 @@
     {
       "file": "idle-02.png",
       "sha256": "dc41935daed5daa560fa36a437165ff09d83c5dc285498b1cc5f9c807b2c73a3"
+    },
+    {
+      "file": "skill-00.png",
+      "sha256": "b0925500163031b11f469bfa83ced59c816cc705c58f680d956777c6a1871c12"
+    },
+    {
+      "file": "skill-01.png",
+      "sha256": "8d27fd48e4b185b2a3eba42e8a8812c5031d2acf34c92b6ce7777a7782f5acbd"
     }
   ],
-  "provenance": "UNAPPROVED art preview. Original model char_122_beagle; open redistribution license unconfirmed. No gameplay integration.",
+  "provenance": "User approved original first-eight models; original rights holders retain rights; open redistribution permission unconfirmed. Skill integration 2026-10-27.",
   "rearVariant": true
 }

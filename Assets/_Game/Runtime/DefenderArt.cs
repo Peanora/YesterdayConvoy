@@ -28,6 +28,8 @@ namespace YesterdayConvoy
         public float ActionDuration => clips["attack"].Duration+(clips.TryGetValue("attack_start",out var start)?start.Duration:0)+(clips.TryGetValue("attack_end",out var end)?end.Duration:0);
         public Clip this[string key] => clips[key];
         public Sprite HealAt(double age) => clips.TryGetValue("heal",out var clip) ? clip.At(age,false) : ActionAt(age);
+        public float HealDuration=>clips.TryGetValue("heal",out var clip)?clip.Duration:ActionDuration;
+        public Sprite SkillIdleAt(double age)=>clips.TryGetValue("skill",out var clip)&&age<clip.Duration?clip.At(age,false):clips["idle"].At(age,true);
         public Sprite ActionAt(double age)
         {
             if(clips.TryGetValue("attack_start",out var start))

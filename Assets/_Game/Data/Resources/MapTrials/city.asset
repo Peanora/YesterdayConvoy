@@ -43,6 +43,23 @@ MonoBehaviour:
     damageType: 0
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 5
+      initialSP: 0
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 30
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1.5
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D03
     displayName: "\u6591\u70B9"
     artId: D03
@@ -59,6 +76,23 @@ MonoBehaviour:
     damageType: 0
     splashRadius: 0
     healingRange: 2.5
+    skill:
+      kind: 6
+      initialSP: 25
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 25
+      attackMultiplier: 1.45
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 1.3
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D04
     displayName: "\u73AB\u5170\u838E"
     artId: D04
@@ -75,6 +109,23 @@ MonoBehaviour:
     damageType: 0
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 7
+      initialSP: 0
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 20
+      attackMultiplier: 1.5
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D07
     displayName: "\u514B\u6D1B\u4E1D"
     artId: D07
@@ -91,6 +142,23 @@ MonoBehaviour:
     damageType: 0
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 8
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.4
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0.2
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D08
     displayName: "\u53F2\u90FD\u534E\u5FB7"
     artId: D08
@@ -107,6 +175,23 @@ MonoBehaviour:
     damageType: 1
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 9
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.9
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D09
     displayName: "\u708E\u7194"
     artId: D09
@@ -123,6 +208,23 @@ MonoBehaviour:
     damageType: 1
     splashRadius: 0.65
     healingRange: 0
+    skill:
+      kind: 10
+      initialSP: 0
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 20
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1.5
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D10
     displayName: "\u8299\u84C9"
     artId: D10
@@ -139,6 +241,23 @@ MonoBehaviour:
     damageType: 0
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 11
+      initialSP: 0
+      requiredSP: 30
+      spPerSecond: 1
+      duration: 20
+      attackMultiplier: 1.5
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   - id: D12
     displayName: "\u6893\u5170"
     artId: D12
@@ -155,6 +274,23 @@ MonoBehaviour:
     damageType: 1
     splashRadius: 0
     healingRange: 0
+    skill:
+      kind: 12
+      initialSP: 0
+      requiredSP: 45
+      spPerSecond: 1
+      duration: 25
+      attackMultiplier: 1.25
+      attackSpeedMultiplier: 1.25
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+    noOrdinaryAttack: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
   surfaces:
   - {fileID: 2100000, guid: c4645c5f488adee49b0a39bfcd1edc36, type: 2}
   - {fileID: 2100000, guid: 1d10db389e6caa042be5a6fe156f61c9, type: 2}
@@ -339,3 +475,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2061f5dd314af2a47ab9edcd03779138, type: 2}
   - {fileID: 11400000, guid: b03f25a352b8ec14f828fae5413df0e7, type: 2}
   - {fileID: 11400000, guid: 5b407ae037dc7174c9468ba335b65ce7, type: 2}
+  defenderTestId: 

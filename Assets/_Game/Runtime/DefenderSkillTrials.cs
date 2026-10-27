@@ -8,39 +8,64 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         private bool defenderMenuOpen;
+        private bool originalEightTab=true;
         public bool DefenderSkillTrialActive=>defenderTrial!=null&&!string.IsNullOrEmpty(defenderTrial.defenderTestId);
         public string DefenderSkillTrialId=>DefenderSkillTrialActive?defenderTrial.defenderTestId:null;
         public static readonly string[] DefenderBatch1Ids={"D02","D05","D06","D11"};
+        public static readonly string[] OriginalEightIds={"D01","D03","D04","D07","D08","D09","D10","D12"};
         public bool TryEnterDefenderSkillTrial(string id)
         {
-            if(Array.IndexOf(DefenderBatch1Ids,id)<0)return false;
+            if(Array.IndexOf(DefenderBatch1Ids,id)<0&&Array.IndexOf(OriginalEightIds,id)<0)return false;
             var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);
             if(data==null)return false;
             defenderMenuOpen=false;return EnterDefense(data);
         }
-        public static string DefenderSkillName(DefenderSkillKind kind)=>kind==DefenderSkillKind.CardiganRecovery?"生命回复·α型":
-            kind==DefenderSkillKind.MidnightEnchant?"武器附魔·α型":kind==DefenderSkillKind.PlumeSwiftStrike?"迅捷打击·α型":kind==DefenderSkillKind.AnselRange?"治疗范围强化":"无主动技能";
+        public static string DefenderSkillName(DefenderSkillKind kind)
+        {
+            switch(kind)
+            {
+                case DefenderSkillKind.CardiganRecovery:return "生命回复·α型";
+                case DefenderSkillKind.MidnightEnchant:return "武器附魔·α型";
+                case DefenderSkillKind.PlumeSwiftStrike:case DefenderSkillKind.OrchidSwiftStrike:return "迅捷打击·α型";
+                case DefenderSkillKind.AnselRange:return "治疗范围强化";
+                case DefenderSkillKind.BeagleGuard:return "防御力强化·α型";
+                case DefenderSkillKind.SpotHealingMode:return "次级治疗模式";
+                case DefenderSkillKind.MelanthaStrength:return "攻击力强化·α型";
+                case DefenderSkillKind.KroosDoubleShot:return "二连射·自动";
+                case DefenderSkillKind.StewardStrike:return "强力击·α型";
+                case DefenderSkillKind.LavaChant:return "战术咏唱·α型";
+                case DefenderSkillKind.HibiscusHealing:return "治疗强化·α型";
+                default:return "无主动技能";
+            }
+        }
+        private Vector2 defenderMenuScroll;
         private void DrawDefenderSelection()
         {
             Fill(new Rect(0,0,1280,720),new Color(.025f,.04f,.055f));
-            GUI.Label(new Rect(54,48,880,64),"守军技能测试 · 第一批 4 / 22",menuTitle);
+            GUI.Label(new Rect(54,48,880,64),"守军技能测试 · 12名可玩",menuTitle);
             GUI.Label(new Rect(56,120,1150,46),"守军会自动选择开技能时机。拖动底部怪物卡进攻；技能效果、技力与剩余时间显示在守军上方。",menuBody);
             if(GUI.Button(new Rect(960,48,260,55),"返回怪物选择",buttonStyle))defenderMenuOpen=false;
+            if(GUI.Button(new Rect(56,153,280,32),"原八人防线",buttonStyle)){originalEightTab=true;defenderMenuScroll=Vector2.zero;}
+            if(GUI.Button(new Rect(354,153,280,32),"新增四名守军",buttonStyle)){originalEightTab=false;defenderMenuScroll=Vector2.zero;}
             int i=0;
-            foreach(string id in DefenderBatch1Ids)
+            var ids=originalEightTab?OriginalEightIds:DefenderBatch1Ids;
+            defenderMenuScroll=GUI.BeginScrollView(new Rect(48,192,1184,424),defenderMenuScroll,new Rect(0,0,1172,Mathf.Ceil(ids.Length/4f)*420));
+            foreach(string id in ids)
             {
                 var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);if(data==null)continue;
-                var selected=data.defenders[0];float x=56+i++*298;var art=DefenderArt.Load(selected.artId);
-                Fill(new Rect(x,190,278,416),new Color(.065f,.10f,.13f));
-                DrawTestPortrait(new Rect(x+16,206,246,212),art.Portrait);
-                GUI.Label(new Rect(x+20,430,240,35),selected.displayName,menuCardName);
-                GUI.Label(new Rect(x+20,474,240,64),DefenderSkillName(selected.skill.kind)+"\n"+(selected.role==DefenderRole.Medic?"高台医疗 · 基础治疗与扩范围":"地面守军 · 阻挡与技能交战"),menuSmall);
-                if(GUI.Button(new Rect(x+20,550,238,40),"进入技能测试",buttonStyle))TryEnterDefenderSkillTrial(id);
+                var selected=data.defenders[0];float x=8+i%4*292,y=i/4*420;i++;var art=DefenderArt.Load(selected.artId);
+                Fill(new Rect(x,y,272,408),new Color(.065f,.10f,.13f));
+                DrawTestPortrait(new Rect(x+16,y+16,240,204),art.Portrait);
+                GUI.Label(new Rect(x+20,y+238,232,35),selected.displayName,menuCardName);
+                GUI.Label(new Rect(x+20,y+282,232,64),DefenderSkillName(selected.skill.kind)+"\n"+(selected.role==DefenderRole.Medic?"高台医疗 · 治疗支援":selected.position.y>.2f?"高台守军 · 远程火力":"地面守军 · 阻挡与技能交战"),menuSmall);
+                if(GUI.Button(new Rect(x+20,y+358,232,40),"进入技能测试",buttonStyle))TryEnterDefenderSkillTrial(id);
             }
+            GUI.EndScrollView();
             GUI.Label(new Rect(56,634,1150,44),"空格暂停；暂停时也能拖动部署。重新开始会重置双方生命、部署次数和技能。",menuBody);
         }
         private IEnumerator VerifyDefenderSkillTrial(string id,string directory)
         {
+            if(Array.IndexOf(OriginalEightIds,id)>=0){yield return VerifyOriginalEightSkill(id,directory);yield break;}
             Time.timeScale=0;
             if(directory!=null){ReturnToMonsterTests();yield return TacticalFrame(directory,"main-selection");defenderMenuOpen=true;yield return TacticalFrame(directory,"defender-selection");}
             bool entered=TryEnterDefenderSkillTrial(id);yield return null;yield return null;

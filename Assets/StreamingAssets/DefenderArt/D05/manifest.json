@@ -197,6 +197,14 @@
     {
       "file": "portrait.png",
       "sha256": "bafa263cdeb24b110b31f07b48b2a314c15a57f608e5411d4c240bd3be84bc80"
+    },
+    {
+      "file": "extra_attack_end-00.png",
+      "sha256": "fb8050fff656cef1ac2ee48553ae6db749c16bc1ba4e33b9079523a4d258182a"
+    },
+    {
+      "file": "extra_attack_start-00.png",
+      "sha256": "7d5dfccad6c9b84e3a2f34dce523be8fd78fc0cf57e4fa11758dd1959502aa0e"
     }
   ],
   "provenance": "UNAPPROVED art preview. Original model char_283_midn; open redistribution license unconfirmed. No gameplay integration."

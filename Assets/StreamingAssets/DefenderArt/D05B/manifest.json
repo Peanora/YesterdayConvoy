@@ -152,6 +152,14 @@
     {
       "file": "idle-02.png",
       "sha256": "a8a640d12431c6591645593247e92c1773b46055d685cbba3ada75fadc49e5f4"
+    },
+    {
+      "file": "extra_attack_end-00.png",
+      "sha256": "2837659f6f1c87704d3c4ebcdf8b5a724f0d062d1779435b3a4e6ef1a1f1f15e"
+    },
+    {
+      "file": "extra_attack_start-00.png",
+      "sha256": "0903fecfa13b946d4eb5e393931269c28beb22a97a75616c52db2520ff9b9eee"
     }
   ],
   "provenance": "UNAPPROVED art preview. Original model char_283_midn; open redistribution license unconfirmed. No gameplay integration.",

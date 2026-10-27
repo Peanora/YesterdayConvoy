@@ -58,6 +58,33 @@
           "height": 1344
         }
       ]
+    },
+    {
+      "key": "heal",
+      "source": "Skill",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.48343571345011394,
+      "pivotY": 0.12846358360887383,
+      "sourceBounds": [
+        -174.04000854492188,
+        -19.424049377441406,
+        190.77865600585938,
+        389.6318664550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "heal-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
     }
   ],
   "files": [
@@ -68,8 +95,12 @@
     {
       "file": "idle-00.png",
       "sha256": "2a9a44674ad3709750a2dff59dfb57cf03a59b6c13757e3f83fd58626a740d19"
+    },
+    {
+      "file": "heal-00.png",
+      "sha256": "eb14b6245abac10a77d5a3ed48ea96810a1f626fed0e2c3c8fb26f6553c5539c"
     }
   ],
-  "provenance": "UNAPPROVED art preview. Original model char_284_spot; open redistribution license unconfirmed. No gameplay integration.",
+  "provenance": "User approved original first-eight models; original rights holders retain rights; open redistribution permission unconfirmed. Skill integration 2026-10-27.",
   "rearVariant": true
 }

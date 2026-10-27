@@ -130,6 +130,10 @@
     {
       "file": "portrait.png",
       "sha256": "f899217e65f33eb5825170b4ff1e5302ce49c86d470a4237f313ca847c6299d3"
+    },
+    {
+      "file": "extra_skill-00.png",
+      "sha256": "a5229d7694da1b2a19be7db92584a36c4efb51d27859055971d592de3cb076f4"
     }
   ],
   "provenance": "UNAPPROVED art preview. Original model char_284_spot; open redistribution license unconfirmed. No gameplay integration.",

@@ -99,7 +99,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(840,62,360,64),"八人防线 · 折线工业地图",buttonStyle)) TryEnterDefenderTrial();
             if(GUI.Button(new Rect(790,136,210,44),"泵站回廊 · 4红2蓝",buttonStyle)) TryEnterTacticalMap("city");
             if(GUI.Button(new Rect(1008,136,210,44),"金叶环庭 · 3红2蓝",buttonStyle)) TryEnterTacticalMap("ruins");
-            if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 第一批4名",buttonStyle))defenderMenuOpen=true;
+            if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 原8名 / 新4名",buttonStyle))defenderMenuOpen=true;
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));

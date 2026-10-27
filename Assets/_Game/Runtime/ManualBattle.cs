@@ -49,6 +49,7 @@ namespace YesterdayConvoy
         public int BarrierRefreshes { get; internal set; }
         internal double NextBarrierRefreshAt;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
+        public double HinderedUntil {get;internal set;}=double.NegativeInfinity;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool Active => Resolution == UnitResolution.Active;

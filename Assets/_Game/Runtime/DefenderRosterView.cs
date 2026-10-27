@@ -71,7 +71,8 @@ namespace YesterdayConvoy
                 if(!r.enabled) continue;
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
-                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(actionAge) : art.ActionAt(actionAge);
+                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge);
+                else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
                 else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);
                 r.transform.position=d.Position; r.transform.rotation=camera.transform.rotation;
                 r.transform.localScale=Vector3.one;
@@ -80,7 +81,7 @@ namespace YesterdayConvoy
                     d.ColdUntil>b.Clock || d.FrozenUntil>b.Clock ? new Color(.5f,.8f,1) : Color.white;
                 if(v.Skill!=null)
                 {
-                    bool healing=d.Settings.Skill.Kind==DefenderSkillKind.CardiganRecovery||d.Settings.Skill.Kind==DefenderSkillKind.AnselRange;
+                    bool healing=d.Settings.Skill.Kind==DefenderSkillKind.CardiganRecovery||d.Settings.Skill.Kind==DefenderSkillKind.AnselRange||d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode||d.Settings.Skill.Kind==DefenderSkillKind.HibiscusHealing;
                     Color color=healing?new Color(.3f,1,.6f):d.Settings.Skill.Kind==DefenderSkillKind.MidnightEnchant?new Color(.65f,.5f,1):new Color(1,.8f,.2f);
                     v.Skill.enabled=d.Alive&&(b.DefenderSkillActive(d)||b.Clock-d.SkillStartedAt<.7);
                     v.Skill.startColor=v.Skill.endColor=color;v.Skill.sortingOrder=r.sortingOrder+1;

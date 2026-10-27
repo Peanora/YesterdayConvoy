@@ -1,0 +1,37 @@
+[
+  {
+    "id": "D01",
+    "key": "skill",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\D01F\\extra-clips\\extra_skill-00.png",
+    "target": "Assets\\StreamingAssets\\DefenderArt\\D01\\skill-00.png",
+    "sha256": "ae7fd6cf9fa31a70337f2eed39683ab85b3e738c56e78bb5872e49dd834ea1fc"
+  },
+  {
+    "id": "D01",
+    "key": "skill",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\D01F\\extra-clips\\extra_skill-01.png",
+    "target": "Assets\\StreamingAssets\\DefenderArt\\D01\\skill-01.png",
+    "sha256": "fe942243ee8e40641759e5211543a5f34934a8a3ad235ac0ea0da450a12293b9"
+  },
+  {
+    "id": "D01B",
+    "key": "skill",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\D01B\\extra-clips\\extra_skill-00.png",
+    "target": "Assets\\StreamingAssets\\DefenderArt\\D01B\\skill-00.png",
+    "sha256": "b0925500163031b11f469bfa83ced59c816cc705c58f680d956777c6a1871c12"
+  },
+  {
+    "id": "D01B",
+    "key": "skill",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\D01B\\extra-clips\\extra_skill-01.png",
+    "target": "Assets\\StreamingAssets\\DefenderArt\\D01B\\skill-01.png",
+    "sha256": "8d27fd48e4b185b2a3eba42e8a8812c5031d2acf34c92b6ce7777a7782f5acbd"
+  },
+  {
+    "id": "D03B",
+    "key": "heal",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\D03B\\extra-clips\\extra_skill-00.png",
+    "target": "Assets\\StreamingAssets\\DefenderArt\\D03B\\heal-00.png",
+    "sha256": "eb14b6245abac10a77d5a3ed48ea96810a1f626fed0e2c3c8fb26f6553c5539c"
+  }
+]

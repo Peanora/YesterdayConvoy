@@ -167,6 +167,14 @@
     {
       "file": "portrait.png",
       "sha256": "6fca64398948d2d87138a71eabadbe7fd0d2fc22c7d6403ba0ee1407ce1bc262"
+    },
+    {
+      "file": "extra_attack_end-00.png",
+      "sha256": "a4318335693110008c6106eba706ddfb8a97248ee706ecd50bef80671834989c"
+    },
+    {
+      "file": "extra_attack_start-00.png",
+      "sha256": "7b676ac8516ed96d7989d5a64b3ea9a2c145b4d844eb686e2983db1b588389f7"
     }
   ],
   "provenance": "UNAPPROVED art preview. Original model char_208_melan; open redistribution license unconfirmed. No gameplay integration.",
