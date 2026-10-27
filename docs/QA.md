@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-27 后续源码上传
+
+用户在本地验收交付后明确要求上传GitHub，授权将`4e2c79f`运行修正及其着色器/meta、测试和实机截图推送原功能分支、更新PR #40。此前“仅本地”说明为历史执行边界。上传前工作区干净，已fetch核对远端PR仍开放、分支可正常快进；运行依赖均已跟踪。此次只更新交付说明并提交，没有修改运行代码，沿用下方真实Unity/Player证据，不重复声称运行了测试。无main合并、EXE上传、ZIP或Release操作。
+
 ## 2026-10-27：本地人物比例与战前待机修正
 
 **范围。** 用户明确要求不上传GitHub，本轮仅本地开发、Git提交与Windows构建。修改DemoSpriteVisual、DefenderRosterView、ManualBattleController/TalulahTrial的准备相位及TacticalRosterEvidence和对应PlayMode测试；新增原创TacticalActor.shader及Unity生成的meta，无新外部美术素材。主场景、Prefab、Packages、ProjectSettings不变。
