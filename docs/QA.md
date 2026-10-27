@@ -1,5 +1,33 @@
 # 验证证据与回归
 
+## 2026-10-27：多门 V2 双地图接入
+
+**范围与版本。** 从 main `172dc06` 创建 `codex/tactical-maps-v2`；人类已确认4红2蓝泵站、3红2蓝环庭以及共享接口范围。本轮只修改配置/运行适配/地图显示/菜单/对应测试，并迁移旧能力回归；未改主场景文件、Prefab、Packages、ProjectSettings。原工程既存设置文件SHA256保持 `312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2`。没有自动合并main、ZIP或Releases。
+
+**实际运行。** Unity `6000.6.5f1 (3ff58d469c8a)`，Windows x64 / RTX4060 / 1920×1080：
+
+| 检查 | 真实结果与范围 |
+| --- | --- |
+| 配置生成/导入 | `TacticalMapV2Tools.Prepare`及Validate通过；2地图/7固定路线/每图2蓝门/8独立守军/3张运行PNG绑定。幂等创建地图资产，既有资产保留。 |
+| 审批布局核对 | 7条路线的每个序列化坐标、红门和蓝门身份与审批JSON完全一致；三张PNG的SHA/meta/忽略规则通过。 |
+| EditMode | 213/213，通过、零跳过；含多入口路径、共用防御幂等、暂停扣费/冻结/共享CD、忙入口隔离、重复事务与配置防歧义。 |
+| 完整GPU PlayMode | 61/61，通过、零跳过；原怪物与队友能力、8守军交战/医疗及新两图均覆盖。 |
+| 视觉整理后定向GPU | 2/2，通过；7门实际屏幕拖放、反复返回/重进/卸载清理、双图技能交战与胜利重置。 |
+| 最终Windows构建 | `BaselineTools.BuildWindows`成功，921,699,503 bytes，0 errors，仍只有InitialDemo构建场景。 |
+| 泵站独立Player | 退出0；entered/gates/drag/paused/invalid/attacked/skill/won/reset/restored全部True。 |
+| 环庭独立Player | 退出0；同上全部True。 |
+| 原维维美交互Player | 退出0；暂停拖放、一次扣费与冻结、非法取消、技力、慢速点选、取消/释放、重开8项全部True。 |
+| 仓库完整性 | 2959个跟踪文件检查通过；三张新PNG及meta正常跟踪，无孤立meta、冲突标记或本地构建/AGENTS误提交。 |
+
+独立Player参数 `-tacticalMapSmokeTest city` / `ruins`，可选 `-demoEvidenceDir`；诊断截图需要正常可见图形窗口。隐藏窗口的截图接口曾返回null，不作为画面证据，已改为明确报错退出；实际交付使用可见窗口重新完整运行并检查截图。原网页看稿浏览器测试未执行（本地HTTP启动被自动审批拒绝），不算Unity或Player证据。
+
+**实机画面。** [泵站](art/tactical-v2-runtime-city.png) / [环庭](art/tactical-v2-runtime-ruins.png)。截图是最终EXE的实际输出，非概念图。实机复核发现并修正：基础块顶面与地面片共面造成条纹；平台设备遮挡角色；运行时Standard透明变体在Player中缺失造成树冠方形底。最终使用分离的顶面高度、边缘设备、现有Sprite透明材质。新两图隐藏守军名字、使用紧凑血条，拖动到门时高亮该门路线，无战斗中切场景按钮。
+
+**文件与连接。** `DeploymentLane`保存不可变路线快照，`ManualBattle`选择红门后绑定单位的RouteId/ExitId，旧单路线调用保持兼容；仍由原战斗模型处理费用、暂停、攻击/技能和蓝门共享防御。`DefenderTrialDefinition`保存地图/守军静态数据，`TacticalMapEnvironment`只生成视觉，`DefenseTrialMap`负责借用与恢复相机/原地图/门显隐，主选择页与控制器复用原拖动卡牌。旧设施/游击队/爱国者能力转到独立中性测试底板，无旧地图切换UI。
+
+**交付与未测。** 新版在功能分支、待人工合并；本地试玩 `E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-双地图V2/YesterdayConvoy.exe`，对应源码提交见同目录BUILD-INFO.txt。地图仍为塔露拉对原八人防线的样板，DP24/费2/12次/防御1是试验值；正式编队/商店/全角色地图平衡未实现。未做第二台电脑离线验证、长期手动游玩和最终美术验收，不宣称达到原作完整美术精细度。
+
+
 ## 2026-10-27：PR #14 / #16 / #17 与周末 main 的兼容整合
 
 基线：实时fetch的 `origin/main cbe321b543f54fa20f8efc694639ea276101c9b5`，文件树与已合并#27最终 `7ec2860` 完全相同。继续干净的 `codex/defender-mixed-map` / PR #17，依次merge main、原#16和#14，保留全部父提交及双方意图；没有rebase、强推、整文件ours/theirs、main提交或自动合并。原工程main及未跟踪的PackageManagerSettings保持不动。初版运行源码 `e0ce1c39fd64958f90e0acb82f9c4f88008dc00b`；最终运行源码 `16315a863bcfa86e39ed769132854c12e934b306` 另修正下述场景卸载及诊断文字问题；后续仅文档。

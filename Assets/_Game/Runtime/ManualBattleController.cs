@@ -70,6 +70,13 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
+            int mapSmoke=Array.IndexOf(args,"-tacticalMapSmokeTest");
+            if(mapSmoke>=0 && mapSmoke+1<args.Length)
+            {
+                diagnostic=true;Application.runInBackground=true;TestSelectionOpen=false;
+                int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyTacticalMap(args[mapSmoke+1],evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null));
+            }
             if(Array.IndexOf(args,"-defenderTrialSmokeTest")>=0)
             {
                 diagnostic=true; Application.runInBackground=true; TestSelectionOpen=false;
@@ -110,7 +117,8 @@ namespace YesterdayConvoy
         private ManualBattle CreateBattle() => new ManualBattle(definition.Snapshot(),
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
-            defenderTrial!=null ? defenderTrial.Snapshot() : null);
+            defenderTrial!=null ? defenderTrial.Snapshot() : null,
+            defenderTrial!=null ? defenderTrial.LaneSnapshot() : null);
 
         private void EnableCombatView()
         {
@@ -259,6 +267,8 @@ namespace YesterdayConvoy
         private void UpdatePreview()
         {
             if(preview==null) return;
+            var map=defenderTrialMap!=null ? defenderTrialMap.GetComponent<TacticalMapEnvironment>() : null;
+            if(map!=null) map.ShowLane(null);
             preview.enabled=entryOutline.enabled=Selected;
             if(!Selected) return;
             Vector3 point=Battle.Entry;
@@ -267,6 +277,11 @@ namespace YesterdayConvoy
                 if(!IsBattlefield(pointerScreen) || !PointerGround(pointerScreen,out point)) { preview.enabled=false; return; }
             }
             else if(PointerOnBattlefield()) TryPointerGround(out point);
+            var lane=Battle.FindEntryLane(point);
+            if(map!=null && Dragging) map.ShowLane(lane);
+            if(lane!=null) point=lane.Entry;
+            Vector3 p=(lane!=null ? lane.Entry : point)+Vector3.up*.015f;
+            entryOutline.SetPositions(new[]{p+new Vector3(-.6f,0,-.6f),p+new Vector3(-.6f,0,.6f),p+new Vector3(.6f,0,.6f),p+new Vector3(.6f,0,-.6f),p+new Vector3(-.6f,0,-.6f)});
             DeployFailure failure=Battle.CheckDeployment(point,Dragging);
             bool valid=failure==DeployFailure.None || failure==DeployFailure.NotStarted;
             Color tint=valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
@@ -304,7 +319,7 @@ namespace YesterdayConvoy
                 GUI.backgroundColor=oldBackground; GUI.matrix=old; return;
             }
             Fill(new Rect(0,0,1280,66),new Color(0.035f,0.05f,0.065f,0.94f));
-            GUI.Label(new Rect(26,17,310,32),"昨日圆车  /  工业防线",textStyle);
+            GUI.Label(new Rect(26,17,310,32),TacticalMapActive ? defenderTrial.mapTitle : "昨日圆车  /  工业防线",textStyle);
             GUI.Label(new Rect(346,8,180,26),"战斗费用",smallStyle);
             GUI.Label(new Rect(347,24,180,40),Battle.DP.ToString(),numberStyle);
             Fill(new Rect(531,0,218,66),new Color(0.08f,0.13f,0.17f));
@@ -419,12 +434,13 @@ namespace YesterdayConvoy
             Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(defenderTrial!=null ? 1.32f : 1.95f));
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
             if(!d.Alive) continue;
-            Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
-            Fill(new Rect(x-46,y+2,92*d.Health/d.MaxHealth,4),new Color(0.96f,0.66f,0.3f));
+            float width=TacticalMapActive ? 62 : 96;
+            Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
+            Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
             string status=Battle.DefenderShackled(d)?"枷锁禁锢":d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :
                 !DefenderTrialActive && d.Settings.DamageType==CombatDamageType.Arts ? "法术测试靶" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
-            if(defenderTrial!=null) GUI.Label(new Rect(x-60,y-24,120,24),d.Settings.Name,smallStyle);
+            if(defenderTrial!=null && !TacticalMapActive) GUI.Label(new Rect(x-60,y-24,120,24),d.Settings.Name,smallStyle);
             if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);
             }
         }

@@ -34,6 +34,8 @@ namespace YesterdayConvoy
         public string EntityId { get; }
         public string UnitId { get; }
         public string CardId {get;internal set;}
+        public string RouteId {get;internal set;}
+        public string ExitId {get;internal set;}
         public BasicRosterProfile Profile {get;internal set;}
         public double SpawnTime { get; }
         public RouteMotion Motion { get; }
@@ -139,6 +141,8 @@ namespace YesterdayConvoy
         public const float EntryRadius = 0.65f;
         public const float EntryClearance = 0.32f;
         private readonly Vector3[] route;
+        private readonly IReadOnlyList<DeploymentLane> lanes;
+        public IReadOnlyList<DeploymentLane> Lanes => lanes;
         private readonly Vector3 towerPosition;
         private readonly List<DeployedUnitState> units = new List<DeployedUnitState>();
         private readonly Dictionary<long, DeploymentReceipt> committed = new Dictionary<long, DeploymentReceipt>();
@@ -164,7 +168,7 @@ namespace YesterdayConvoy
         public double CooldownRemaining => Math.Max(0, nextDeploymentTime - Clock);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null)
         {
             Settings = settings;
             engagement = combat;
@@ -178,7 +182,24 @@ namespace YesterdayConvoy
             defenderPositions = new Vector3[1 + (extraDefenders?.Count ?? 0)];
             defenderPositions[0] = tower;
             for (int i=1;i<defenderPositions.Length;i++) defenderPositions[i]=extraDefenders[i-1];
-            // Reuse the existing route validation and take our own route snapshot.
+            // Deep-copy all paths; existing callers retain exactly one compatible path.
+            var snapshot=new List<DeploymentLane>();
+            if(deploymentLanes==null) snapshot.Add(new DeploymentLane("R1","B1",waypoints));
+            else
+            {
+                if(deploymentLanes.Count==0) throw new ArgumentException("Missing deployment lanes.");
+                var ids=new HashSet<string>();var exits=new Dictionary<string,Vector3>();
+                foreach(var lane in deploymentLanes)
+                {
+                    if(lane==null||!ids.Add(lane.Id)) throw new ArgumentException("Invalid deployment lane identity.");
+                    var copy=new DeploymentLane(lane.Id,lane.ExitId,lane.Points);
+                    foreach(var prior in snapshot)
+                    {var offset=prior.Entry-copy.Entry;offset.y=0;if(offset.sqrMagnitude<4*EntryRadius*EntryRadius)throw new ArgumentException("Overlapping red gates.");}
+                    if(exits.TryGetValue(copy.ExitId,out var end) && Vector3.Distance(end,copy.Exit)>.001f) throw new ArgumentException("One blue gate cannot have two positions.");
+                    exits[copy.ExitId]=copy.Exit;snapshot.Add(copy);
+                }
+            }
+            lanes=snapshot.AsReadOnly();waypoints=lanes[0].Points;
             _ = new RouteMotion(waypoints, settings.Speed);
             route = new Vector3[waypoints.Count];
             for (int i = 0; i < route.Length; i++) route[i] = waypoints[i];
@@ -209,22 +230,27 @@ namespace YesterdayConvoy
         public void SetPaused(bool paused) { if (Phase == BattlePhase.Running) IsPaused = paused; }
 
         public bool IsEntry(Vector3 position)
+            => FindEntryLane(position)!=null;
+
+        public DeploymentLane FindEntryLane(Vector3 position)
         {
-            if (float.IsNaN(position.x) || float.IsInfinity(position.x) || float.IsNaN(position.z) || float.IsInfinity(position.z)) return false;
-            Vector3 offset = position - Entry; offset.y = 0;
-            return offset.sqrMagnitude <= EntryRadius * EntryRadius;
+            if (float.IsNaN(position.x) || float.IsInfinity(position.x) || float.IsNaN(position.z) || float.IsInfinity(position.z)) return null;
+            foreach(var lane in lanes)
+            {var offset=position-lane.Entry;offset.y=0;if(offset.sqrMagnitude<=EntryRadius*EntryRadius)return lane;}
+            return null;
         }
 
         public DeployFailure CheckDeployment(Vector3 position, bool allowWhilePaused = false)
         {
             if (Phase == BattlePhase.Won || Phase == BattlePhase.Lost) return DeployFailure.Finished;
             if (IsPaused && !allowWhilePaused) return DeployFailure.Paused;
-            if (!IsEntry(position)) return DeployFailure.WrongEntry;
+            var lane=FindEntryLane(position);
+            if (lane==null) return DeployFailure.WrongEntry;
             if (RemainingUses == 0) return DeployFailure.NoUses;
             if (DP < Settings.DeploymentCost) return DeployFailure.NoDP;
             if (Clock + 0.000001 < nextDeploymentTime) return DeployFailure.CoolingDown;
             foreach (var unit in units)
-                if (unit.Active && Vector3.Distance(unit.Motion.Position, Entry) < EntryClearance) return DeployFailure.EntryBusy;
+                if (unit.Active && Vector3.Distance(unit.Motion.Position, lane.Entry) < EntryClearance) return DeployFailure.EntryBusy;
             return Phase == BattlePhase.Ready ? DeployFailure.NotStarted : DeployFailure.None;
         }
 
@@ -236,13 +262,17 @@ namespace YesterdayConvoy
             if (runId != RunId) return new DeploymentReceipt(DeployFailure.StaleRun);
             string requestedCard=profile?.Unit.CardId??Settings.CardId;
             if (committed.TryGetValue(requestId, out var previous))
-                return FindUnit(previous.EntityId)?.CardId==requestedCard?previous:new DeploymentReceipt(DeployFailure.StaleRun);
+            {
+                var prior=FindUnit(previous.EntityId);
+                return prior?.CardId==requestedCard && (lanes.Count==1||prior.RouteId==FindEntryLane(position)?.Id)?previous:new DeploymentReceipt(DeployFailure.StaleRun);
+            }
             DeployFailure failure = CheckDeployment(position, allowWhilePaused);
             if (failure != DeployFailure.None) return new DeploymentReceipt(failure);
             var spawn=profile?.Unit??Settings;
-            var motion = new RouteMotion(route, spawn.Speed);
+            var lane=FindEntryLane(position);
+            var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile};
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
             unit.NextIceRingAt=Clock+8.5;

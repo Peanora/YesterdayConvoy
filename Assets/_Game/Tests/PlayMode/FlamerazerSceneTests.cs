@@ -18,7 +18,7 @@ namespace YesterdayConvoy.Tests
             float previous=Time.timeScale;
             try
             {
-                yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/FacilityTrials/01-IndustrialTransfer.unity",new LoadSceneParameters(LoadSceneMode.Single));
+                yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/Tests/Fixtures/01-IndustrialTransfer.unity",new LoadSceneParameters(LoadSceneMode.Single));
                 yield return null;Time.timeScale=0;
                 var c=Object.FindAnyObjectByType<FacilityTrialController>();c.ResetTrial(3);yield return null;
                 Assert.That(c.Deploy(),Is.True);bool start=false,loop=false,end=false;

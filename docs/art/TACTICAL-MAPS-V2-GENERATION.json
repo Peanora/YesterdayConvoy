@@ -1,0 +1,47 @@
+{
+  "tool": "OpenAI image_gen built-in",
+  "date": "2026-10-27",
+  "styleApproval": "User approved multi-gate V2 concepts and exact layouts before Unity integration.",
+  "license": "Generated support materials; no CC0 or original-game redistribution permission is claimed.",
+  "entries": [
+    {
+      "file": "Assets/_Game/Art/Environment/TacticalV2/city-concrete.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "d7c2cc43a3d36e1abe565c16fcf1565c3c7cd500d58755113ad5a2d28f0eead1",
+      "alphaRange": null,
+      "transparentPixels": 0,
+      "prompt": "Create a production diffuse/albedo material texture for the APPROVED original industrial tactical map reference. Exactly square, flat orthographic material scan, no perspective, no scene, no props, no UI, no gates. Wet weathered desaturated cool grey concrete with fine mineral grain, subtle age mottling, sparse faint water traces and gentle neutral tone variations. The material should be restrained and elegant at small game-tile scale, not noisy grunge. No large cracks, no grout grid, no painted symbols, no borders and no baked directional lighting or cast shadows. Seamlessly tileable in X and Y; opposite edges match. Single uninterrupted surface filling all 1024x1024 pixels. This is a supporting surface for the approved map, not a new concept. Match the quiet grey-green walkable pavement surfaces in the reference."
+    },
+    {
+      "file": "Assets/_Game/Art/Environment/TacticalV2/ruins-sandstone.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "26a37337cd7bea1867cd631e7fe78ac877f781e3a9112d988a2ac953ca270561",
+      "alphaRange": null,
+      "transparentPixels": 0,
+      "prompt": "Create a production diffuse/albedo material texture for the APPROVED original autumn ruin tactical map reference. Exactly square 1024x1024, flat orthographic material scan with no scene/perspective. Continuous ancient grey-olive sandstone, subtle worn fine pits, restrained dark-green lichen/moss in tiny crevices, a few thin organic weathering traces. Muted cool olive-grey, not vivid yellow or green. Tactile and refined anime strategy environment texture that remains quiet under characters. No tile seams/grout grid, no large symbols or lettering, no objects, no UI or gates, no directional lighting or cast shadows. Seamlessly tileable in X/Y with matching opposite edges. Whole square is the material, no surrounding frame. Match the stone surfaces in the reference while avoiding copying its unique carvings."
+    },
+    {
+      "file": "Assets/_Game/Art/Environment/TacticalV2/autumn-canopy.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "sha256": "dc19dca014e6a8700f5edcb19f46ecddf1d0baf5344fb1db90a48999f7240c18",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "transparentPixels": 697320,
+      "prompt": "Create a single original game-environment foliage cutout supporting this approved autumn ruin map. One dense organic rounded cluster of small ginkgo-like golden ochre and amber leaves, visibly individual fan-shaped leaves with elegant restrained painterly detail and a few glimpses of thin dark branches. Seen from the tactical overhead camera about 60 degrees downward, no ground, no tree trunk, no scenery, no pots, no gates, no UI or text. Silhouette irregular and airy around the outer edge, packed and shaded toward center, high-end anime strategy environment finish matching the reference, not flat vector or low-poly triangles. Soft upper-left diffuse light and cool greenish interior shadows; no hard shadow cast on a ground plane. Entire cluster within square 1024x1024, generous transparent edge, genuinely TRANSPARENT background, no white/black/checkerboard matte. This will be placed on 3D tree branches near the map border, not on walkable lanes."
+    }
+  ]
+}

@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
             {
                 foreach(bool reveal in new[]{false,true})
                 {
-                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/FacilityTrials/03-ReedCanal.unity",new LoadSceneParameters(LoadSceneMode.Single));
+                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/Tests/Fixtures/03-ReedCanal.unity",new LoadSceneParameters(LoadSceneMode.Single));
                     yield return null;Time.timeScale=0;
                     var c=Object.FindAnyObjectByType<FacilityTrialController>();c.ResetTrial(1);c.SetReveal(reveal);yield return null;
                     Assert.That(c.Deploy(),Is.True);var u=c.Battle.Units[0];bool ember=false,revive=false,death=false;

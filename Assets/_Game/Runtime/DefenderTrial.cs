@@ -13,6 +13,17 @@ namespace YesterdayConvoy
         public bool TryEnterDefenderTrial()
         {
             var data=Resources.Load<DefenderTrialDefinition>("DefenderTrial");
+            return EnterDefense(data);
+        }
+        public bool TacticalMapActive => defenderTrial!=null && defenderTrial.Tactical;
+        public string TacticalMapId => TacticalMapActive ? defenderTrial.mapId : null;
+        public bool TryEnterTacticalMap(string id)
+        {
+            if(id!="city" && id!="ruins") return false;
+            return EnterDefense(Resources.Load<DefenderTrialDefinition>("MapTrials/"+id));
+        }
+        private bool EnterDefense(DefenderTrialDefinition data)
+        {
             if(data==null) { Feedback="八人防线配置缺失"; return false; }
             _=data.Snapshot(); foreach(var d in data.defenders) _=DefenderArt.Load(d.artId);
             LeaveDefenderTrial(); defenderTrial=data;

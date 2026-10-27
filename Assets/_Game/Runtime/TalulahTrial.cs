@@ -32,6 +32,7 @@ namespace YesterdayConvoy
         private void DrawTrialSelector()
         {
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
+            if(TacticalMapActive) return;
             if(DefenderTrialActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"八人防线 · 地面阻挡 / 高台火力 / 医疗支援",smallStyle);
