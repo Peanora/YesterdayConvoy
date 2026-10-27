@@ -1,5 +1,26 @@
 # 验证证据与回归
 
+## 2026-10-27：本地人物比例与战前待机修正
+
+**范围。** 用户明确要求不上传GitHub，本轮仅本地开发、Git提交与Windows构建。修改DemoSpriteVisual、DefenderRosterView、ManualBattleController/TalulahTrial的准备相位及TacticalRosterEvidence和对应PlayMode测试；新增原创TacticalActor.shader及Unity生成的meta，无新外部美术素材。主场景、Prefab、Packages、ProjectSettings不变。
+
+**原因与连接。** 先前世界竖直角色面以Y×2补偿60°镜头，偏离画面中心时产生透视歪斜。现在使用屏幕平行、等比例Sprite；新着色器从脚底竖直平面重建遮挡深度，避免单纯billboard被高台切断身体，也没有关闭全部深度遮挡。塔露拉进入原有目标/移动左右镜像流程，按原UnitInterval锁定普攻朝向，施法保持方向，逻辑根节点不旋转。准备阶段的readyIdleElapsed只供守军idle使用，开战后叠加Battle.Clock；攻击、受击、伤害和SP仍使用原模拟时间。
+
+| 实际验证 | 结果 |
+| --- | --- |
+| 初步定向GPU PlayMode | 5/5通过。新增3项检查：准备阶段8人idle有帧变化且不推进战斗，开始不跳帧/暂停冻结；两图全部七门和八人位置的屏幕轴正交/等像素比例；塔露拉在左右转折改变朝向，纵向保留朝向且逻辑根不旋转。 |
+| 完整GPU PlayMode | 66/66通过、0跳过，`artifacts/proportions-full-play.xml`；此轮在最终深度着色器接入前完成。 |
+| 最终显示定向GPU | 5/5通过、0跳过，`artifacts/proportions-release-play.xml`；包含角色材质正确及Shader支持检查，日志无Shader error。 |
+| 最终Windows | Unity6000.6.5f1，Windows x64；949,183,473 bytes、0错误；`artifacts/proportions-final-build.log`无Shader编译错误。 |
+| 泵站最终Player | 退出0，`artifacts/proportions-final-city/player.log`；entered/cards/drag/independent/paused/facing/preparation/noSkill/attacked/acid/slow/cast/won/reset/restored全部True。 |
+| 环庭最终Player | 退出0，同上；`artifacts/proportions-final-ruins/player.log`。 |
+
+**图像检查。** 实际查看最终EXE的泵站下方/上方出生与混编截图、环庭上方出生截图；人物轴向与比例正常，原先腰部被高台切断的条带已消除。两图全部七个出生点原图保存在上述artifacts目录。提交中的实机示例：[泵站上方红门](art/tactical-actors-proportions-city.png) / [环庭上方红门](art/tactical-actors-proportions-ruins.png)。这些是运行画面，不是概念稿。
+
+**修复中发现。** 隐藏窗口启动时截图接口返回空，改为可见窗口后完成最终检查；纯billboard的中间稿出现高台切割，已由脚底深度解决。着色器首次条件表达式编译错误已修正，最终构建和运行日志没有该错误。失败/中间稿不作为最终可玩证据。
+
+**限制。** 塔露拉为左右镜像转向，没有新绘完整转身/背面动作；守军继续使用既有正背面资源，死亡仍沿用前面。没有重画身体比例、添加新角色、修改路线/数值/技能或声称商业动画质量。本轮未重跑EditMode，未做第二台电脑离线、非Windows平台、长时性能或完整人工平衡；最终深度修正只重跑受影响5项和两图独立Player，不将先前66项冒称为最终着色器完整回归。
+
 ## 2026-10-27：V3高台迷宫与混合小怪
 
 **确认与范围。** 人类确认项目外V3实际几何图/动作视频与README的接口范围后，在PR #40原分支接入。保留原4红2蓝/3红2蓝及七条固定路线；泵站高台110/198格，环庭116/198格。只调整非通道地形、已批准的显示/卡栏/部署与必要来源配置；主场景文件、Prefab、Packages和ProjectSettings未修改。

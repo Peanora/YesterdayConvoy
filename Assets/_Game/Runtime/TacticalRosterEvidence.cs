@@ -13,7 +13,18 @@ namespace YesterdayConvoy
             bool cards=RosterCount==4 && Battle.Cards.Count==4,drag=true,independent=true,paused=true;
             var guards=FindAnyObjectByType<DefenderRosterView>();
             bool facing=Battle.Defenders.Any(d=>guards.FacingBack(d.EntityId)) && Battle.Defenders.Any(d=>!guards.FacingBack(d.EntityId));
+            var idleBefore=Battle.Defenders.Select(d=>guards.FindVisual(d.EntityId).sprite).ToArray();
+            Tick(.73f);yield return null;
+            bool preparation=Battle.Clock==0 && Battle.Defenders.Select((d,i)=>guards.FindVisual(d.EntityId).sprite!=idleBefore[i]).All(changed=>changed);
             if(directory!=null)yield return TacticalFrame(directory,id+"-v3-ready");
+            // Inspect the reported upper/side spawn distortion in the shipped Player at every gate.
+            for(int laneIndex=0;laneIndex<Battle.Lanes.Count;laneIndex++)
+            {
+                RestartBattle();StartBattle();Battle.SetPaused(true);SelectCard(true);
+                var spawn=TryDeployAt(Battle.Lanes[laneIndex].Entry,true);drag &= spawn.Success;yield return null;
+                if(directory!=null)yield return TacticalFrame(directory,id+"-proportions-gate-"+laneIndex);
+            }
+            RestartBattle();
             StartBattle();Battle.SetPaused(true);int expected=Battle.DP;int[] order={3,0,1,2};string mainId=null;
             for(int j=0;j<4;j++)
             {
@@ -52,8 +63,8 @@ namespace YesterdayConvoy
             if(directory!=null)yield return TacticalFrame(directory,id+"-v3-result");
             RestartBattle();bool reset=Battle.Units.Count==0 && Battle.DP==24 && Battle.Cards.All(c=>c.RemainingUses==c.Settings.DeploymentLimit && Battle.CardCooldown(c.Settings.CardId)==0);
             ReturnToMonsterTests();yield return null;yield return null;bool restored=TestSelectionOpen && !TacticalMapActive && Battle.Cards.Count==0 && FindAnyObjectByType<TacticalMapEnvironment>()==null;
-            Debug.Log($"V3_ROSTER_CHECK: id={id}; entered={entered}; cards={cards}; drag={drag}; independent={independent}; paused={paused}; facing={facing}; noSkill={noSkill}; attacked={attacked}; acid={acid}; slow={slow}; cast={cast}; won={won}; reset={reset}; restored={restored}.");
-            Time.timeScale=1;Application.Quit(entered&&cards&&drag&&independent&&paused&&facing&&noSkill&&attacked&&acid&&slow&&cast&&won&&reset&&restored?0:1);
+            Debug.Log($"V3_ROSTER_CHECK: id={id}; entered={entered}; cards={cards}; drag={drag}; independent={independent}; paused={paused}; facing={facing}; preparation={preparation}; noSkill={noSkill}; attacked={attacked}; acid={acid}; slow={slow}; cast={cast}; won={won}; reset={reset}; restored={restored}.");
+            Time.timeScale=1;Application.Quit(entered&&cards&&drag&&independent&&paused&&facing&&preparation&&noSkill&&attacked&&acid&&slow&&cast&&won&&reset&&restored?0:1);
         }
     }
 }

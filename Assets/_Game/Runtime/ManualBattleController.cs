@@ -36,6 +36,8 @@ namespace YesterdayConvoy
         public string SelectedEntityId => selectedEntityId;
         public EngagementView CombatView => combatView;
         private double terminalPresentationElapsed;
+        private double readyIdleElapsed;
+        internal double DefenderIdleClock => readyIdleElapsed+Battle.Clock;
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
@@ -179,6 +181,7 @@ namespace YesterdayConvoy
         public void RestartBattle()
         {
             terminalPresentationElapsed=0;
+            readyIdleElapsed=0;
             notice=null;
             selectedRosterIndex=0;
             settlementPointerDown=false;
@@ -201,6 +204,9 @@ namespace YesterdayConvoy
         public void Tick(float delta)
         {
             if(TestSelectionOpen) return;
+            // Preparation has visual life but no combat, SP, movement or cooldown progression.
+            // Carry this phase into battle; after Begin only the simulation clock advances it.
+            if(Battle.Phase==BattlePhase.Ready && !Battle.IsPaused) readyIdleElapsed+=delta;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
                 terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);

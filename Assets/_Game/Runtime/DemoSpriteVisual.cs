@@ -21,7 +21,8 @@ namespace YesterdayConvoy
         public bool WorldUpright {get;set;}
         private bool tacticalFlip;
         private double tacticalAttack=double.NegativeInfinity;
-        Vector3 VisualScale=>WorldUpright ? new Vector3(1,2,1) : Vector3.one;
+        private static Material tacticalMaterial;
+        Vector3 VisualScale=>Vector3.one;
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
@@ -43,6 +44,13 @@ namespace YesterdayConvoy
             this.presentationClock=presentationClock; local=LocalMonsterArt.For(frames.CardId); slug=OriginalSlugArt.For(frames.CardId);
             slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
             original=OriginalTalulahArt.For(frames);
+            if(WorldUpright)
+            {
+                if(tacticalMaterial==null)tacticalMaterial=new Material(Resources.Load<Shader>("TacticalActor"));
+                sprite.sharedMaterial=tacticalMaterial;
+            }
+            tacticalFlip=unit.Motion.Direction.x<-.08f;
+            tacticalAttack=double.NegativeInfinity;
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
             { Rig=gameObject.AddComponent<TalulahRig>(); Rig.Bind(frames.ArticulatedArt,sprite.sharedMaterial); }
@@ -55,7 +63,7 @@ namespace YesterdayConvoy
             PresentFrames(tint);
         }
 
-        // Exact source frames, no cutout deformation or directional turning. Only the simulation clock is read.
+        // Source frames retain their aspect ratio. Facing changes only the visual, never the route root.
         private void PresentFrames(Color tint)
         {
             if(!FaceCamera()) return;
@@ -67,12 +75,12 @@ namespace YesterdayConvoy
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
-            if(WorldUpright && (local!=null || slug!=null))
+            if(WorldUpright && (local!=null || slug!=null || original!=null))
             {
-                if(deployedUnit.Active && !manualBattle.IsPaused)
+                if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
                     var combat=manualBattle.UnitCombat(deployedUnit);double facingAge=manualBattle.Clock-deployedUnit.LastAttackTime;
-                    bool attacking=facingAge>=0 && facingAge<combat.AttackDuration;
+                    bool attacking=facingAge>=0 && facingAge<(original!=null ? combat.UnitInterval : combat.AttackDuration);
                     if(!attacking || tacticalAttack!=deployedUnit.LastAttackTime)
                     {
                         float dx=deployedUnit.Motion.Direction.x;
@@ -80,7 +88,7 @@ namespace YesterdayConvoy
                         {
                             tacticalAttack=deployedUnit.LastAttackTime;
                             for(int i=manualBattle.CombatShots.Count-1;i>=0;i--)
-                            {var shot=manualBattle.CombatShots[i];if(!shot.FromDefender && shot.SourceId==deployedUnit.EntityId){dx=shot.Destination.x-deployedUnit.Motion.Position.x;break;}}
+                            {var shot=manualBattle.CombatShots[i];if(!shot.FromDefender && shot.SourceId==deployedUnit.EntityId && shot.StartedAt>=deployedUnit.LastAttackTime){dx=shot.Destination.x-deployedUnit.Motion.Position.x;break;}}
                         }
                         if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;
                     }
@@ -341,7 +349,9 @@ namespace YesterdayConvoy
         {
             Camera camera = Camera.main;
             if (camera == null || sprite == null) return false;
-            transform.rotation = WorldUpright ? Quaternion.identity : camera.transform.rotation;
+            // A shared screen-parallel plane avoids off-axis perspective shear at upper/side gates.
+            // World-upright quads with a compensating Y stretch distort these authored 2D frames.
+            transform.rotation = camera.transform.rotation;
             sprite.sortingOrder = GetSortingOrder(camera, transform.parent.position);
             return true;
         }

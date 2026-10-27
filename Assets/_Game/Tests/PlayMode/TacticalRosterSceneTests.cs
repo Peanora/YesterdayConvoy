@@ -9,6 +9,99 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class TacticalRosterSceneTests
     {
+        static void AssertUndistorted(Transform visual)
+        {
+            var camera=Camera.main;
+            var material=visual.GetComponent<SpriteRenderer>().sharedMaterial;
+            Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/Tactical Actor"));
+            Assert.That(material.shader.isSupported,Is.True);
+            Vector2 origin=camera.WorldToScreenPoint(visual.position);
+            Vector2 right=(Vector2)camera.WorldToScreenPoint(visual.TransformPoint(Vector3.right))-origin;
+            Vector2 up=(Vector2)camera.WorldToScreenPoint(visual.TransformPoint(Vector3.up))-origin;
+            Assert.That(Mathf.Abs(right.y),Is.LessThan(.02f),"Horizontal sprite axis must stay horizontal at off-axis gates.");
+            Assert.That(Mathf.Abs(up.x),Is.LessThan(.02f),"Vertical sprite axis must not lean toward the vanishing point.");
+            Assert.That(right.magnitude/up.magnitude,Is.EqualTo(1).Within(.002f),"Preserve the authored pixel aspect ratio.");
+        }
+
+        [UnityTest]public IEnumerator PreparationIdlesAnimateWithoutAdvancingCombatAndRemainContinuousAtBegin()
+        {
+            float previous=Time.timeScale;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+                var c=Object.FindAnyObjectByType<ManualBattleController>();
+                foreach(string id in new[]{"city","ruins"})
+                {
+                    c.TryEnterTacticalMap(id);yield return null;
+                    var guards=Object.FindAnyObjectByType<DefenderRosterView>();
+                    var before=c.Battle.Defenders.Select(d=>guards.FindVisual(d.EntityId).sprite).ToArray();
+                    int dp=c.Battle.DP;c.Tick(.73f);yield return null;
+                    Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Ready));Assert.That(c.Battle.Clock,Is.Zero);
+                    Assert.That(c.Battle.DP,Is.EqualTo(dp));Assert.That(c.Battle.CombatShots,Is.Empty);Assert.That(c.Battle.Units,Is.Empty);
+                    var moving=c.Battle.Defenders.Select(d=>guards.FindVisual(d.EntityId).sprite).ToArray();
+                    Assert.That(moving.Where((s,i)=>s!=before[i]).Count(),Is.EqualTo(8),"All eight original idle clips advance before Begin.");
+                    c.StartBattle();yield return null;
+                    CollectionAssert.AreEqual(moving,c.Battle.Defenders.Select(d=>guards.FindVisual(d.EntityId).sprite).ToArray(),"Starting must not reset idle pose.");
+                    c.Battle.SetPaused(true);c.Tick(3);yield return null;
+                    CollectionAssert.AreEqual(moving,c.Battle.Defenders.Select(d=>guards.FindVisual(d.EntityId).sprite).ToArray(),"Battle pause freezes idle too.");
+                    c.RestartBattle();yield return null;c.Tick(.43f);yield return null;
+                    Assert.That(c.Battle.Clock,Is.Zero);Assert.That(guards.FindVisual(c.Battle.Defenders[0].EntityId).sprite,Is.Not.Null);
+                    c.ReturnToMonsterTests();yield return null;yield return null;
+                }
+            }
+            finally{Time.timeScale=previous;}
+        }
+
+        [UnityTest]public IEnumerator SpriteAspectAndAxesStayCorrectAtEveryGateAndGuardPosition()
+        {
+            float previous=Time.timeScale;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+                var c=Object.FindAnyObjectByType<ManualBattleController>();
+                foreach(string id in new[]{"city","ruins"})
+                {
+                    c.TryEnterTacticalMap(id);yield return null;
+                    var guards=Object.FindAnyObjectByType<DefenderRosterView>();
+                    foreach(var d in c.Battle.Defenders)AssertUndistorted(guards.FindVisual(d.EntityId).transform);
+                    foreach(var lane in c.Battle.Lanes)
+                    {
+                        c.RestartBattle();c.StartBattle();c.Battle.SetPaused(true);c.SelectCard(true);
+                        var receipt=c.TryDeployAt(lane.Entry,true);Assert.That(receipt.Success,Is.True);yield return null;
+                        var visual=Object.FindObjectsByType<DemoSpriteVisual>(FindObjectsSortMode.None).Single(v=>v.transform.root.name==receipt.EntityId);
+                        AssertUndistorted(visual.transform);
+                        Assert.That(visual.transform.localScale,Is.EqualTo(Vector3.one));
+                        Assert.That(visual.transform.parent.position,Is.EqualTo(lane.Entry));
+                        if(Mathf.Abs(c.Battle.Units[0].Motion.Direction.x)>.08f)
+                            Assert.That(visual.Renderer.flipX,Is.EqualTo(c.Battle.Units[0].Motion.Direction.x<0),"Paused spawn faces its own route immediately.");
+                    }
+                    c.ReturnToMonsterTests();yield return null;yield return null;
+                }
+            }
+            finally{Time.timeScale=previous;}
+        }
+
+        [UnityTest]public IEnumerator TalulahChangesHorizontalFacingAtRouteCornersWithoutRotatingLogicRoot()
+        {
+            float previous=Time.timeScale;GameObject root=null;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
+                var c=Object.FindAnyObjectByType<ManualBattleController>();c.TryEnterTacticalMap("city");
+                var route=new[]{Vector3.zero,new Vector3(1,0,0),new Vector3(-1,0,0),new Vector3(-1,0,2)};
+                var battle=new ManualBattle(c.Definition.Snapshot(),route,new Vector3(100,0,100),c.Battle.CombatSettings);
+                battle.Begin();var receipt=battle.TryDeploy(battle.RunId,1,route[0]);Assert.That(receipt.Success,Is.True);
+                var unit=battle.Units[0];root=new GameObject("Talulah facing test");
+                var child=new GameObject("visual",typeof(SpriteRenderer),typeof(DemoSpriteVisual));child.transform.SetParent(root.transform,false);
+                var visual=child.GetComponent<DemoSpriteVisual>();visual.WorldUpright=true;visual.Bind(battle,unit,c.Definition.Card);
+                yield return null;Assert.That(visual.Renderer.flipX,Is.False);
+                unit.Motion.Advance(1.1f/unit.Motion.Speed);yield return null;Assert.That(visual.Renderer.flipX,Is.True);
+                unit.Motion.Advance(2.0f/unit.Motion.Speed);yield return null;Assert.That(visual.Renderer.flipX,Is.True,"Vertical movement keeps the last lateral facing.");
+                Assert.That(root.transform.rotation,Is.EqualTo(Quaternion.identity));Assert.That(root.transform.localScale,Is.EqualTo(Vector3.one));
+            }
+            finally{if(root!=null)Object.Destroy(root);Time.timeScale=previous;}
+        }
+
         [UnityTest]public IEnumerator FourRealCardsDragDeployDuringPauseAndResetIndependentlyOnBothMaps()
         {
             float previous=Time.timeScale;

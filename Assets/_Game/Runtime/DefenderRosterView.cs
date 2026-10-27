@@ -14,7 +14,7 @@ namespace YesterdayConvoy
         public bool FacingBack(string id)=>visuals.Find(v=>v.Id==id)?.Back??false;
         public void Initialize(ManualBattleController controller)
         {
-            owner=controller; material=new Material(Shader.Find("Sprites/Default"));
+            owner=controller; material=new Material(owner.TacticalMapActive?Resources.Load<Shader>("TacticalActor"):Shader.Find("Sprites/Default"));
             foreach(var d in owner.Battle.Defenders)
             {
                 var r=new GameObject(d.Settings.Name+" / "+d.EntityId,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
@@ -63,9 +63,9 @@ namespace YesterdayConvoy
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
                 else if(action) r.sprite=d.LastActionHealing ? art.HealAt(actionAge) : art.ActionAt(actionAge);
-                else r.sprite=art["idle"].At(b.Clock,true);
-                r.transform.position=d.Position; r.transform.rotation=owner.TacticalMapActive?Quaternion.identity:camera.transform.rotation;
-                r.transform.localScale=owner.TacticalMapActive?new Vector3(1,2,1):Vector3.one;
+                else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);
+                r.transform.position=d.Position; r.transform.rotation=camera.transform.rotation;
+                r.transform.localScale=Vector3.one;
                 r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,d.Position)+30;
                 r.color=b.Clock<d.LastHitTime+.12 ? new Color(1,.65f,.65f) :
                     d.ColdUntil>b.Clock || d.FrozenUntil>b.Clock ? new Color(.5f,.8f,1) : Color.white;
