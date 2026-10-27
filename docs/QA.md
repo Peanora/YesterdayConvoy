@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-10-27：PR #14 / #16 / #17 与周末 main 的兼容整合
+
+基线：实时fetch的 `origin/main cbe321b543f54fa20f8efc694639ea276101c9b5`，文件树与已合并#27最终 `7ec2860` 完全相同。继续干净的 `codex/defender-mixed-map` / PR #17，依次merge main、原#16和#14，保留全部父提交及双方意图；没有rebase、强推、整文件ours/theirs、main提交或自动合并。原工程main及未跟踪的PackageManagerSettings保持不动。初版运行源码 `e0ce1c39fd64958f90e0acb82f9c4f88008dc00b`；最终运行源码 `16315a863bcfa86e39ed769132854c12e934b306` 另修正下述场景卸载及诊断文字问题；后续仅文档。
+
+- main的6个冲突文件：EngagementCombat、EngagementView、ManualBattleController、MonsterEffects、QA、ASSET_MANIFEST；随后合入#16/#14的同位置文档插入均并存。独立守军生命/护甲/范围/医疗/群攻保留，同时复用统一TryDamageUnit处理法抗、屏障、复活及死亡；枷锁/神经眩晕、冻结/冰环/凝视减速、嘲讽、待结算爆炸均保留。旧守军转换携带原伤害类型；CombatShot保留main的coldDuration位置及两分支新增字段。留声机改用守军自身生命上限，避免医疗错误封顶。
+- Unity **6000.6.5f1：209/209 EditMode，58/58 GPU PlayMode，零失败、零跳过**。新增4个交叉逻辑用例：独立法术守军实际打掉屏障而非直接扣HP、致命攻击触发霜星复活、枷锁使独立守军不阻挡/不起攻击、不同最大生命守军的留声机治疗不超量。完整Play包含8人切换/暂停拖放/治疗/火雨/返回，以及原怪物、设施与首领场景。证据：artifacts/integration-edit.xml、integration-play.xml及同名log。
+- 最终16315a8 Windows Development Build **900,715,441字节、0错误**；40份单位及场景校验通过，日志artifacts/integration-final-build.log。主场景、已有Prefab、Packages、ProjectSettings与main无差异。没有重建队友三个独立设施/游击队/爱国者Player；它们的实际场景由完整GPU Play覆盖。
+- 初版e0ce1c3独立Player共10组：八人防线、combat、talulah、interaction、monsterSelection、M09、M14、M27、M33、M38，全部退出0，检查符合预期。M14自然冰环/复起、M27显式法术靶真实破盾、M38原动作与20次枷锁、M33不普攻均成立；M33 attacked=False是预期，policy=True。结果artifacts/integration-player-results.json，逐项日志integration-player-*.log。并非真人完整键鼠通关。
+- 资源：625个manifest列出文件哈希与meta通过；九张PR14卡面从原idle重新计算像素一致；资源清单303个唯一ID。全部717份StreamingAssets非meta文件与最终Player逐一SHA一致，1495份媒体/目录meta等均已Git跟踪，无依赖仅留作者电脑。仓库2936跟踪文件静态检查及git diff --check通过；检查不冒充Unity测试。
+- 完整本地试玩目录：`E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-PR整合-16315a8/YesterdayConvoy.exe`。965个构建文件复制后逐一SHA匹配，另附BUILD_INFO.json和游玩说明；保留完整目录，不单取EXE。该包对应PR #17，未自动合入main；不ZIP、不更新Releases。
+- 首次隐藏Player逻辑检查通过，但ScreenCapture失败，不算画面证据。随后从复制目录用可见D3D12窗口重跑八人防线和选择页，均退出0，实际取得9张HUD图，查看了八人站位及M09/M10卡面。画面中发现真实守军显示“法术测试靶”，已限制该文字只出现在诊断关。
+- 文案修正后的5项定向Play首次4过/1失败，暴露切场景时DefenseTrialMap.OnDestroy访问已销毁红蓝门的MissingReferenceException（artifacts/integration-final-menu.xml）。修正为幂等清理、逐个判空，只恢复借用的旧相机；新增活动防线直接重载场景回归。最终16315a8 **59/59完整GPU Play通过，零失败零跳过**（artifacts/integration-final-play.xml）。核心战斗代码未再改变，209项Edit结果保留，未冒称在文案/场景清理修复后重跑Edit。
+- 最终16315a8构建复制后再次从交付目录可见运行：八人防线与选择页两个Player退出0，所有检查True、无异常，再取得5+4张完整HUD图；已查看最终8人站位/无诊断文字、实战火雨和卡面。日志integration-final-player-defenders/selection.log，图片artifacts/integration-final-visible/，结果integration-final-visible-results.json。前10组广泛Player是在e0ce1c3执行，未冒称均在最终文案/清理补丁后重跑。
+
+关键连接：DefenderTrialDefinition → 每人的DefenderSettings/DefenderState → CombatShot → 共享伤害/控制/设施逻辑 → DefenderRosterView与EngagementView；旧单怪仍从原EngagementSettings构造兼容守军。剩余22名仅合并预览文档，未导入或确认；8人完整技能、正式商店/阵容/羁绊仍未实现。未执行第二台电脑、长时低配或人类连续通关；来源与原作再分发权利状态按原记录，上传决定不是权利人许可。
+
 ## 2026-10-25：透明角色卡面与课堂入口修复
 
 M02至M10不再把带说明文字的portrait海报缩进卡牌，而是复用本角色已有idle首帧并去除外围透明留白。M11及后续原有透明立绘保持。纹理仅在首次裁出Sprite时保留CPU读取，随后释放可读副本；同一卡复用缓存。不生成新PNG、不改原meta/GUID或战斗动作。
@@ -93,6 +109,17 @@ M12每第三次普通攻击的命中施加10秒寒冷，逐实体计数；两只
 - 交付副本：E:/珍贵资料/昨日圆车_本地试玩/2026-10-22-M11-M20-b74265d/YesterdayConvoy.exe；564文件逐一SHA256匹配最终构建，没有ZIP/Releases。
 - 仓库静态检查1689个跟踪文件通过，diff --check通过；主场景/Prefab/Packages/ProjectSettings无暂存差异，原工程既存未跟踪设置保留。来源记录/CSV/Credits/排期更新，不冒充原作许可已获得；不自动合并main。
 - 未执行/限制：真人完整连续键鼠通关、第二台电脑、低配/长时/全分辨率验收未执行。当前只接入每只基础四动作，不含正式技能/首领阶段/原作独立投射物/全场特效、商店/升星/羁绊或混编。未重新绘制十张精绘立绘；霜星为普通enemy_1505_frstar而非冬痕。PR14旧角色透明卡面统一仍独立于本任务的main基线，不能把它当作本轮已集成。
+
+## 2026-10-22：已确认卡面统一接入
+
+用户对项目外V1（透明角色 / 去验稿海报包装 / 十二张实际尺寸对照）回复“可以”后实施。基于main6be1300，最终运行源码a39798d9e6b137380ecd40459f54be65631a6bc3；后续只补资源清单与验证文档。只修改九张portrait、对应SHA256和加工工具，未改C#、战斗图集、meta、场景 / Prefab / 配置数值。
+
+- 资源与加工：九张RGBA透明卡面、非空轮廓 / 透明边缘 / 等比例裁切、最长边256且宽高均为4的倍数；各运行清单的全部文件SHA256匹配。重复执行生成器字节不变；除portrait哈希外，清单所有参数与原版一致。首次实机发现非4倍数画布触发Compress警告，已只补透明边距、重建并重新运行以下最终验证，未将首次输出当最终证据。
+- Unity6000.6.5f1：实际场景 / 12份配置校验通过，Windows构建359865248字节、0错误、退出0。未重跑EditMode / PlayMode。
+- 最终Player：monsterSelectionSmokeTest九项、slugSmokeTest十三项、combatSmokeTest十三项、talulahSmokeTest十三项、interactionSmokeTest八项全True、各退出0；新增M02/M08/M09普通可见窗口monsterCombatSmokeTest三组各十个输出检查全True、各退出0。共8组 / 86项输出检查；冻结字段在非冰爆样板中仅表示不适用，未据此宣称本轮验证冰爆机制。
+- 实际视觉：三组可见D3D12窗口各生成7张完整1280×720 HUD图片。已查看菜单（12可玩、29待制作）、弩手暂停 / 攻击、猎狗菜单 / 攻击、术师暂停，确认原验稿海报文字消失、卡面主体放大、横向 / 方形 / 纵向比例正常，实际费用与名称继续由既有UI绘制。最终八组日志无Compress失败、Exception或缺包回退。
+
+证据在本机artifacts/card-portraits-final-build.log、card-portraits-final-player/及verify_card_portraits.py；早期有压缩警告的日志在无final的同名前缀下，属于被替换记录。此为现有帧裁切 / 排版，不是新AI绘画、动作生成或手动通关；原作权利状态不变。未完整人工键鼠通关、第二机 / 低配 / 全分辨率验收；本机没有队友640px原始帧，完整原始帧重打包未执行，共用卡面函数已通过运行包再生成验证。独立EXE只交本地，不更新ZIP / Releases，不自动合并main。
 
 ## 2026-10-22：补齐塔露拉 / 源石虫素材，干净克隆完整复现
 
@@ -806,3 +833,38 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 2026-10-25 M15：177/177 Edit、52/52完整GPU Play通过。最终Windows游击队729860909/设施732330543/完整846381722字节、0错误；Runner Player半秒真实距离0.4→0.55、暂停重开通过，原M15完整流程通过。来源/死亡恢复的模型覆盖与限制见monsters/M15-ORDER-RUNNER.md，未第二机。
 
 2026-10-25 M16：181/181 Edit、53/53完整GPU Play通过；最终Windows游击队729865402/设施732335036/完整846386230字节、0错误。Sniper Player无命令1、有命令2个不同目标均真实命中/只计一次攻击/暂停重开通过，原M16完整流程通过。单目标/多来源上限/死亡恢复/迷彩另有模型覆盖，见monsters/M16-ORDER-SNIPER.md；未第二机。
+
+## 2026-10-23 八人守军混合防线与工业折线地图
+
+- 授权：人类明确将已预览8人接入，并确认独立守军数据/公共战斗接口/表现/入口范围。以实时origin/main 6be1300创建独立codex/defender-mixed-map；原工程main的ProjectSettings/PackageManagerSettings.asset保留，不提交、不覆盖。其他未合并角色PR不作为此任务基线。
+- 资源：实际复制默认原作正面idle/attack/death、玫兰莎攻击三阶段、斑点治疗姿势和透明卡面，64个运行文件、48PNG、27段/2200帧，合计54738004字节（不含meta）。逐PNG检查RGBA与最大2048，Unity真实加载全部清单和Sprite布局；运行素材与源码一并跟踪，来源和未确认公开再分发许可如实记录。无新增Spine运行库或原始骨骼。不同角色待机高度通过PPU规范为1.25世界单位，所有动作固定Pivot；不缩放逻辑根节点。
+- 编译/准备：DefenderTrialTools.Prepare实际创建3份独立配置并校验，退出0，DEFENDER_TRIAL_CONFIGURATION_PASS。首次准备失败是新Resources父目录不存在，已改用工程既有Data/Resources；不把失败记为成功。准备工具只在缺失时初始化，不覆盖现存调值。
+- 最终EditMode：artifacts/defenders-final-editmode.xml，76/76通过，0失败、0跳过、进程0。新增7项覆盖独立最大生命/快照/重开、分实体阻挡与溢出、医疗不攻击/不过量、暂停中的待结算治疗、受疗者死亡不复活、空血医疗不出手、非法配置/重复ID、治疗范围不扩张近战范围；旧69项回归通过。
+- 最终GPU PlayMode：artifacts/defenders-final-playmode.xml，34/34通过，0失败、0跳过、进程0。新增2项实际加载入口、8个本角色动作、单位缩放/位置、暂停下正常卡槽拖放到新镜头红门、动画冻结、攻击姿势、火雨/治疗/胜利、重开，返回清理并恢复原工业地图/相机。原32项回归通过。中间局部2项复核记录defenders-final-play.xml不替代最终整套结果。
+- 最终Windows：BaselineTools.BuildWindows，artifacts/defenders-final-build.log，BASELINE_BUILD_PASS 415097285 bytes; 0 errors，退出0。无主场景/Prefab/Packages/ProjectSettings修改，无ZIP/Releases。新路由和地形只在试玩期间创建；配置为只读设计数据，运行快照独立保存。
+- 独立Player：正常D3D12窗口运行-defenderTrialSmokeTest，artifacts/defender-player-release.log，退出0；entered/models/deployed/paused/attacked/healed/skill/won/reset/restored全部True。使用真实卡槽按下/移到投影红门/松手的输入适配，非绕过坐标限制的直接部署。
+- 独立旧Player：-combatSmokeTest、-talulahSmokeTest、-interactionSmokeTest、-monsterSelectionSmokeTest分别退出0，四份defender-regression-*.log对应全部_CHECK标志True。保留原单怪参数、技力/六发、火雨移动锁、暂停、技能面板、胜负重开与选择页。
+- 实机视觉：artifacts/defender-player-release/有ready与3/6/9/12秒五张完整1280×720 HUD截图，已查看ready和6秒火雨。首轮发现玫兰莎被后一格高台挡住，已错开站位到(2,.04,-2)；拉开路线/地面的明暗并复核。首次使用相对截图路径导致未保存，未算作视觉证据；最终使用绝对路径的截图确实存在。
+- 数据流：DefenderTrialDefinition→不可变DefenderSettings→ManualBattle/DefenderState→CombatShot攻击/治疗→DefenderRosterView/EngagementView显示；同一模拟时钟处理动作、前摇、命中、暂停与重开。逻辑不依赖帧图，不由动画扣血；地图退出恢复借用的场景对象，既有静态场景不保存改动。
+- 限制：8人完整原作技能、克洛丝二连射/天赋、史都华德高甲优先、梓兰停顿、怪物法抗配置、完整角色特效尚未制作。斑点按伤员自动切换治疗是基础样板，不是原作技力技能。使用简化通用弹道/命中与治疗圈；没有新增受击独立动画。未完整人工键鼠通关、第二台电脑离线或长时/低配性能验证。火雨容易清场，数值仅用于模型与地形观察，不宣称正式关卡平衡。主观美术/手感待人类试玩。
+
+- 本地交付：运行代码提交 a576ea00fe336071df702cbeebbc5ee2a53ccaa4；完整401个构建文件共415097285字节已逐文件SHA256匹配复制到 E:/珍贵资料/昨日圆车_本地试玩/2026-10-23-八人防线-a576ea0/，另附BUILD_INFO.json与实机截图。代码和运行素材已推送PR #17（https://github.com/Peanora/YesterdayConvoy/pull/17），待人工合并；此后仅补交付记录，不改变已验证运行代码。
+
+## 2026-10-23：守军清单与首批8名项目外预览
+
+- 纯文档与项目外美术任务：根目录TODO_list含D01–D30唯一角色，12开荒/8进阶/10六星，区分位置与原作代表技能。D01/D03/D04/D07/D08/D09/D10/D12为首批。未将数值建议、守军AI适配或未制作机制登记为已实现。
+- 已取得8名默认外观各正面/背面/基建的24份Spine3.8.99骨骼、atlas、纹理与模型meta；来源URL、原文件SHA256和真实权利状态保存在项目外sources.json。原作Battle模型无Move，8段基建行走独立展示。芙蓉Attack明确为治疗，玫兰莎攻击起手/循环/收手分别保留。
+- 项目外ASSET-QA：74段5236帧图集尺寸/帧数/哈希、透明边界/整段非空检查通过；VIDEO-QA：8个1280×720、60fps MP4完整解码通过，8个48帧GIF存在；VIEWER-QA：file://离线页面8名/74段全部图集读取成功，0JS错误。DELIVERY-QA：154个PNG文件哈希/RGBA/最大2048尺寸，8张透明卡面尺寸和Alpha核对通过。
+- 已查看8名总览、浏览器截图和米格鲁待机/芙蓉治疗/玫兰莎攻击视频画面（放大及约128px尺寸参考）。部署Start单独取景，避免高处落下动作把普通待机缩得过小；素材非AI补帧，卡面为原待机透明裁切等比缩放。
+- 文档核对：30个唯一ID与角色，首批8名均在表中，参考与文档链接、git diff --check、仓库静态检查。静态检查不代表Unity验证；具体检查输出以本轮提交/PR为准。
+- 未执行Unity导入/EditMode/PlayMode/Windows构建、真实守军交战与人工美术验收。不更新EXE/ZIP/Releases；未修改原工程未跟踪设置、共享场景/Prefab/包/配置或旧角色。独立治疗光束/技能特效/受击、治疗/索敌/技能AI逻辑尚未制作，A待人类看稿，B/C待做。
+- 原作非CC0、公开再分发许可未确认；来源资料不等于权利人授权。工作区和预览不自动上传，本次PR只交文档。详情见[首批预览记录](art/DEFENDERS-FIRST8-PREVIEW.md)。
+
+## 2026-10-23：剩余22名守军预览QA
+
+- 用户选择继续制作清单剩余22名，沿用现有独立文档分支codex/defender-art-todo / PR #16；已fetch核实main仍6be1300，文档分支干净并与远端一致。原main未跟踪PackageManagerSettings保留，原8人玩法PR #17及其他工作目录未改。
+- 实际66个默认模型变体、198个原始文件，逐角色具体资料页/meta/骨骼/atlas/纹理与SHA存在。423段38147帧按原Spine3.8.99曲线实际输出；22份基建原纹理小于atlas声明，视觉发现错位后按声明画布匹配纹理并重导出，不覆盖原文件，不冒充提高清晰度。
+- 修复后全部帧/图集布局、SHA、RGBA/Alpha边界、整段非空和行走多姿势通过；1091清单内PNG最大2048，22张独立卡面透明/等比/最大256核对通过。VIDEO-QA最终22个1280×720 60fps MP4完整解码、22个多帧GIF存在；VIEWER-QA真实file://22名423段全部图集加载成功、0JS错误。DELIVERY-QA再次核对原源文件与图集SHA及全部预览文件。
+- 实际查看造型总览/离线页、Mon3tr/圣聆初雪/玛恩纳技能的MP4帧与修复后翎羽Move姿势序列；新约能天使取样实际存在。完整原作粒子/形态实体、AI与游戏机制未实现；自动检查不替代人类美术确认。普通治疗、无普攻角色、基础攻击多段、技能各阶段、基建行走均明确区分。
+- 本轮没有Unity资源/代码改动，未运行Unity导入、EditMode、PlayMode、Windows构建或实机交战，不更新EXE/ZIP/Releases。原始加工区与未接入预览仅项目外保留；确认后实际运行素材仍随代码上传。文档核对30唯一ID、首批8/其余22的状态、链接及仓库静态检查；具体文件见[本批记录](art/DEFENDERS-REMAINING22-PREVIEW.md)。
+- 文档交付核对：30个唯一守军ID、首批8人/余22人状态和本轮相对链接全部通过；git diff --cached --check通过，repository-checks检查1144个跟踪文件通过。本轮仅6份Markdown改动，无运行资产或代码改动。

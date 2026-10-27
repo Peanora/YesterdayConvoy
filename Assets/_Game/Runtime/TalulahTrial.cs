@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         [SerializeField] private ManualBattleDefinition talulahDefinition;
         private ManualBattleDefinition wisadelDefinition;
         public bool TalulahActive => definition==talulahDefinition && talulahDefinition!=null;
-        public string SkillName => TalulahActive ? "焚天火雨" : definition==wisadelDefinition ? "爆裂黎明" : "主动技能";
+        public string SkillName => TalulahActive || DefenderTrialActive ? "焚天火雨" : definition==wisadelDefinition ? "爆裂黎明" : "主动技能";
 
         public void SwitchTrial(bool talulah)
         {
@@ -18,9 +18,10 @@ namespace YesterdayConvoy
             if(next==null) throw new InvalidOperationException("Trial configuration is missing.");
             SwitchTestDefinition(next);
         }
-        private void SwitchTestDefinition(ManualBattleDefinition next)
+        private void SwitchTestDefinition(ManualBattleDefinition next, bool keepDefenderTrial=false)
         {
-            ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null;
+            if(!keepDefenderTrial) LeaveDefenderTrial();
+            ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null; terminalPresentationElapsed=0;
             definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
             Battle=CreateBattle(); ValidateConfiguration();
             cardView.SetCard(definition.Card); preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card);
@@ -31,6 +32,12 @@ namespace YesterdayConvoy
         private void DrawTrialSelector()
         {
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
+            if(DefenderTrialActive)
+            {
+                GUI.Label(new Rect(24,631,650,28),"八人防线 · 地面阻挡 / 高台火力 / 医疗支援",smallStyle);
+                GUI.Label(new Rect(24,659,650,26),"塔露拉可部署4次 · 火雨手动释放 · 空格暂停",smallStyle);
+                return;
+            }
             if(SlugActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"源石虫 · 近战普通攻击 · 无主动技能",smallStyle);

@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D01F",
+      "unitId": "D01",
+      "name": "米格鲁",
+      "variant": "战斗正面",
+      "characterId": "char_122_beagle",
+      "reference": "https://prts.wiki/w/%E7%B1%B3%E6%A0%BC%E9%B2%81",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/meta.json",
+      "model": "char_122_beagle",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_122_beagle.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/front/char_122_beagle.skel",
+          "bytes": 122143,
+          "sha256": "02f0f09ad393831d8c9b90a0748fce41508c4d4f153fbc504bd41243d4e6ae9a"
+        },
+        {
+          "file": "char_122_beagle.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/front/char_122_beagle.atlas",
+          "bytes": 6270,
+          "sha256": "346f71a0a221933b8597b877f3983570a3d2865e7f0987568fba5c3ee207dfe3"
+        },
+        {
+          "file": "char_122_beagle.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/front/char_122_beagle.png",
+          "bytes": 53982,
+          "sha256": "644c86452b02783338bb23b28a7a52b87a2ad92390f8e7362e1cafb56b917120"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D01B",
+      "unitId": "D01",
+      "name": "米格鲁",
+      "variant": "战斗背面",
+      "characterId": "char_122_beagle",
+      "reference": "https://prts.wiki/w/%E7%B1%B3%E6%A0%BC%E9%B2%81",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/meta.json",
+      "model": "char_122_beagle",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_122_beagle.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/back/char_122_beagle.skel",
+          "bytes": 61483,
+          "sha256": "e8851c0a5ca8ab16d3e43d6ce3379c059a49c6135ed28289aaa417edb70d1a61"
+        },
+        {
+          "file": "char_122_beagle.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/back/char_122_beagle.atlas",
+          "bytes": 2629,
+          "sha256": "ef81fee7e6bd9f912159e89bb4451f483983c66c7adb4f7afaa0aeb0e0aa9bba"
+        },
+        {
+          "file": "char_122_beagle.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/back/char_122_beagle.png",
+          "bytes": 34782,
+          "sha256": "71d48f0e19cffe3b5fe811941993f40911329a1229d0b81c4bb0be685d5b3166"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D01H",
+      "unitId": "D01",
+      "name": "米格鲁",
+      "variant": "基建动作",
+      "characterId": "char_122_beagle",
+      "reference": "https://prts.wiki/w/%E7%B1%B3%E6%A0%BC%E9%B2%81",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/meta.json",
+      "model": "build_char_122_beagle",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_122_beagle.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/build/build_char_122_beagle.skel",
+          "bytes": 98082,
+          "sha256": "c6f6ae7047fa712ae6b1c10335ae447f8d0f0380211f58ea33cae8d4563b0c6c"
+        },
+        {
+          "file": "build_char_122_beagle.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/build/build_char_122_beagle.atlas",
+          "bytes": 6162,
+          "sha256": "6a2d5e243a4089e33856dfdb4f7f9561594a379c369293ab2f845ac9e49b8050"
+        },
+        {
+          "file": "build_char_122_beagle.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/build/build_char_122_beagle.png",
+          "bytes": 90333,
+          "sha256": "5aeaa7207de671ea99b780a579033c039dcd087c6a378dbf704024b8a7e64175"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

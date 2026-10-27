@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "task": "D03",
+  "ppu": 117.6,
+  "referenceSpeed": 0.75,
+  "height": 1.9875,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.48343571345011394,
+      "pivotY": 0.13364851435025532,
+      "sourceBounds": [
+        -174.04000854492188,
+        -19.424049377441406,
+        190.77865600585938,
+        389.6318664550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.48343571345011394,
+      "pivotY": 0.13364851435025532,
+      "sourceBounds": [
+        -174.04000854492188,
+        -19.424049377441406,
+        190.77865600585938,
+        389.6318664550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.48343571345011394,
+      "pivotY": 0.13364851435025532,
+      "sourceBounds": [
+        -174.04000854492188,
+        -19.424049377441406,
+        190.77865600585938,
+        389.6318664550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    },
+    {
+      "key": "heal",
+      "source": "Skill",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.48343571345011394,
+      "pivotY": 0.13364851435025532,
+      "sourceBounds": [
+        -174.04000854492188,
+        -19.424049377441406,
+        190.77865600585938,
+        389.6318664550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "79efdd5c624416e7774a961da3199492429b093fb419bad7c08cb98f5d1e32f5"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "9a350a531096087330f0cb099e59edfd20c018217e546b91f56435af4fbbe45c"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "bb5c5c2a53c32fef0f507e2929ebbeb9c89bb3f3202c84e52a7aa3f8d60d0053"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "f899217e65f33eb5825170b4ff1e5302ce49c86d470a4237f313ca847c6299d3"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_284_spot; open redistribution license unconfirmed. No gameplay integration.",
+  "worldHeight": "Idle first-frame alpha height normalized to 1.25 world units; same ppu/pivot across clips, no per-frame scaling."
+}

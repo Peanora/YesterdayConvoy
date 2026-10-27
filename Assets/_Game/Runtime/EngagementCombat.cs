@@ -60,6 +60,10 @@ namespace YesterdayConvoy
     public sealed class DefenderState
     {
         public string EntityId { get; }
+        public DefenderSettings Settings { get; }
+        public float MaxHealth => Settings.Health;
+        public double LastActionTime { get; internal set; } = double.NegativeInfinity;
+        public bool LastActionHealing { get; internal set; }
         public Vector3 Position { get; }
         public float Health { get; internal set; }
         public bool Alive => Health > 0;
@@ -79,7 +83,8 @@ namespace YesterdayConvoy
         public double FrozenUntil { get; internal set; } = double.NegativeInfinity;
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
-        internal DefenderState(string id, Vector3 position, float health) { EntityId=id; Position = position; Health = health; }
+        internal DefenderState(DefenderSettings settings)
+        { Settings=settings; EntityId=settings.Id; Position=settings.Position; Health=settings.Health; }
     }
 
     public sealed class CombatShot
@@ -89,6 +94,9 @@ namespace YesterdayConvoy
         public bool FromDefender { get; }
         public bool Empowered { get; }
         public bool FireRain { get; }
+        public bool Healing { get; }
+        public CombatDamageType DamageType { get; }
+        public float SplashRadius { get; }
         public Vector3 Origin { get; }
         public Vector3 Destination { get; }
         public double StartedAt { get; }
@@ -102,8 +110,8 @@ namespace YesterdayConvoy
         public bool FrozenBonusApplied { get; internal set; }
         public float DamageDealt { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
-            double start, float duration, float attack, bool fireRain = false,float coldDuration=0)
-        { ColdDuration=coldDuration;FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
+            double start, float duration, float attack, bool fireRain = false, float coldDuration = 0, bool healing = false, CombatDamageType damageType = CombatDamageType.Physical, float splashRadius = 0)
+        { ColdDuration=coldDuration; Healing=healing; DamageType=damageType; SplashRadius=splashRadius; FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }
 
@@ -117,6 +125,7 @@ namespace YesterdayConvoy
         public bool EngagementEnabled => engagement.HasValue;
         public EngagementSettings CombatSettings => engagement.Value;
         private readonly Vector3[] defenderPositions;
+        private readonly DefenderSettings[] defenderRoster;
         private readonly List<DefenderState> defenders = new List<DefenderState>();
         public IReadOnlyList<DefenderState> Defenders => defenders.AsReadOnly();
         public DefenderState Defender => defenders.Count>0 ? defenders[0] : null;
@@ -129,8 +138,13 @@ namespace YesterdayConvoy
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
-            if (EngagementEnabled) for(int i=0;i<defenderPositions.Length;i++)
-                defenders.Add(new DefenderState(i==0 ? "kroos" : "kroos-"+i,defenderPositions[i],CombatSettings.DefenderHealth));
+            if(!EngagementEnabled) return;
+            if(defenderRoster!=null) { foreach(var spec in defenderRoster) defenders.Add(new DefenderState(spec)); return; }
+            var c=CombatSettings;
+            for(int i=0;i<defenderPositions.Length;i++)
+                defenders.Add(new DefenderState(new DefenderSettings(i==0 ? "kroos" : "kroos-"+i,"克洛丝",null,
+                    defenderPositions[i],c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,
+                    c.BlockCount,damageType:c.DefenderDamageType,blockRadius:c.BlockRadius)));
         }
 
         public DeployedUnitState FindUnit(string id)
@@ -189,6 +203,13 @@ namespace YesterdayConvoy
             {
                 if(shot.Resolved || Clock+0.000001<shot.ImpactAt) continue;
                 shot.Resolved=true;
+                if(shot.Healing)
+                {
+                    var healer=FindDefender(shot.SourceId); var recipient=FindDefender(shot.TargetId);
+                    if(healer!=null && healer.Alive && recipient!=null && recipient.Alive)
+                    { recipient.Health=Mathf.Min(recipient.MaxHealth,recipient.Health+shot.Attack); shot.Applied=true; }
+                    continue;
+                }
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
                 if(unit==null || !unit.Active || unit.IsReviving || defender==null || !defender.Alive) continue;
@@ -196,7 +217,11 @@ namespace YesterdayConvoy
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
-                    TryDamageUnit(unit.EntityId,shot.Attack,guardSettings.DefenderDamageType);
+                    TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType);
+                    if(shot.SplashRadius>0)
+                        foreach(var other in units)
+                            if(other!=unit && CanDefenderTarget(other) && GroundDistance(other.Motion.Position,unit.Motion.Position)<=shot.SplashRadius)
+                                TryDamageUnit(other.EntityId,shot.Attack,shot.DamageType);
                 }
                 else
                 {
@@ -235,7 +260,7 @@ namespace YesterdayConvoy
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 foreach(var d in defenders)
-                    if(!d.HighGround && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<guardSettings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=guardSettings.BlockRadius)
+                    if(!d.HighGround && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
@@ -315,15 +340,36 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
             {
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)) continue;
+                var spec=d.Settings;
+                if(spec.Role!=DefenderRole.Fighter)
+                {
+                    DefenderState wounded=null;
+                    foreach(var ally in defenders)
+                        if(ally.Alive && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=spec.HealRange &&
+                            (wounded==null || ally.Health/ally.MaxHealth<wounded.Health/wounded.MaxHealth)) wounded=ally;
+                    if(wounded!=null)
+                    {
+                        d.TargetId=wounded.EntityId;
+                        if(Clock+1e-6>=d.NextAttackTime)
+                        {
+                            d.LastActionTime=Clock; d.LastActionHealing=true;
+                            d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
+                            combatShots.Add(new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
+                                Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,healing:true));
+                        }
+                        continue;
+                    }
+                    if(spec.Role==DefenderRole.Medic) { d.TargetId=null; continue; }
+                }
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
-                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>guardSettings.DefenderRange ||
+                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>spec.Range ||
                     blocks && target.BlockerId!=d.EntityId || HasHigherTauntTarget(d,target,blocks))
                 {
                     target=null;
                     foreach(var unit in units)
                     {
-                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>guardSettings.DefenderRange ||
+                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>spec.Range ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
                         if(target==null || UnitTaunt(unit)>UnitTaunt(target) ||
                             UnitTaunt(unit)==UnitTaunt(target) && unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
@@ -331,10 +377,11 @@ namespace YesterdayConvoy
                     d.TargetId=target?.EntityId;
                 }
                 if(target==null || Clock+0.000001<d.NextAttackTime) continue;
+                d.LastActionTime=Clock; d.LastActionHealing=false;
                 ShotsFired++; LastShotTime=Clock; LastShotEntityId=target.EntityId; LastShotPosition=target.Motion.Position;
-                d.NextAttackTime=Clock+guardSettings.DefenderInterval/DefenderAttackRate(d);
+                d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
                 combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
-                    Clock,guardSettings.ProjectileTime,guardSettings.DefenderAttack));
+                    Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,damageType:spec.DamageType,splashRadius:spec.SplashRadius));
             }
         }
 
@@ -342,7 +389,7 @@ namespace YesterdayConvoy
         bool HasHigherTauntTarget(DefenderState defender,DeployedUnitState current,bool blocks)
         {
             foreach(var unit in units)
-                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=CombatSettings.DefenderRange &&
+                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=defender.Settings.Range &&
                     (!blocks || unit.BlockerId==defender.EntityId) && UnitTaunt(unit)>UnitTaunt(current)) return true;
             return false;
         }

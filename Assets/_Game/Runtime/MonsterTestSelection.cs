@@ -60,6 +60,7 @@ namespace YesterdayConvoy
         }
         private bool IsRegisteredTest(ManualBattleDefinition data)
         {
+            if(defenderTrial!=null && data==defenderTrial.battle) return true;
             if(data!=null && (data==talulahDefinition || data.Card==scene?.Card)) return true;
             foreach(var option in monsterTests) if(option.Definition==data && option.Playable) return true;
             return false;
@@ -72,7 +73,8 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
-            RestartBattle(); EnableCombatView();
+            if(defenderTrial!=null) SwitchTestDefinition(wisadelDefinition);
+            else { RestartBattle(); EnableCombatView(); }
             TestSelectionOpen=true; selectionReturnPointerDown=false;
             Feedback="选择一个怪物，开始独立测试";
         }
@@ -93,6 +95,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(52,62,700,60),"选择测试怪物",menuTitle);
             GUI.Label(new Rect(56,126,680,42),"每次只测试一种怪物。重新进入时，战斗状态完整重置。",menuBody);
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
+            if(GUI.Button(new Rect(840,62,360,64),"八人防线 · 折线工业地图",buttonStyle)) TryEnterDefenderTrial();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));

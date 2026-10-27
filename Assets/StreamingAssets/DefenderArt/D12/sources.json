@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D12F",
+      "unitId": "D12",
+      "name": "梓兰",
+      "variant": "战斗正面",
+      "characterId": "char_278_orchid",
+      "reference": "https://prts.wiki/w/%E6%A2%93%E5%85%B0",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/meta.json",
+      "model": "char_278_orchid",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_278_orchid.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/front/char_278_orchid.skel",
+          "bytes": 72775,
+          "sha256": "c48d0e8073ec636cd432a52438461113eb1d7d079f03d606cbd41ee422892cdc"
+        },
+        {
+          "file": "char_278_orchid.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/front/char_278_orchid.atlas",
+          "bytes": 6951,
+          "sha256": "e6f5f268fc5dd6a05ec625869d70dd62332d42f5968afa7466f4a7c0cf43c2b0"
+        },
+        {
+          "file": "char_278_orchid.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/front/char_278_orchid.png",
+          "bytes": 78694,
+          "sha256": "6e6c44f1196959d57176e86ef897416f4fee7e61decf6082ce18a23ca7b63b07"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D12B",
+      "unitId": "D12",
+      "name": "梓兰",
+      "variant": "战斗背面",
+      "characterId": "char_278_orchid",
+      "reference": "https://prts.wiki/w/%E6%A2%93%E5%85%B0",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/meta.json",
+      "model": "char_278_orchid",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_278_orchid.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/back/char_278_orchid.skel",
+          "bytes": 43353,
+          "sha256": "dede858f7465e3519ce9ce5287cbb8fda72d9fd598e507044af1868df3bc0572"
+        },
+        {
+          "file": "char_278_orchid.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/back/char_278_orchid.atlas",
+          "bytes": 3678,
+          "sha256": "e05a4088f12effbfd9d0865bcd56ea57576501525d9149525696d0b9024e6ec1"
+        },
+        {
+          "file": "char_278_orchid.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/back/char_278_orchid.png",
+          "bytes": 60740,
+          "sha256": "8f2a2dea69330ac33d9f8c7e3d3dcce5be96f80c9ebc1fd140cb2a53b2b8947b"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D12H",
+      "unitId": "D12",
+      "name": "梓兰",
+      "variant": "基建动作",
+      "characterId": "char_278_orchid",
+      "reference": "https://prts.wiki/w/%E6%A2%93%E5%85%B0",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/meta.json",
+      "model": "build_char_278_orchid",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_278_orchid.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/build/build_char_278_orchid.skel",
+          "bytes": 125509,
+          "sha256": "c7be7ac0e4feb1af2c40d36c797dc1f796e05a4ec5e6550e7f78a331f5968c08"
+        },
+        {
+          "file": "build_char_278_orchid.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/build/build_char_278_orchid.atlas",
+          "bytes": 7121,
+          "sha256": "d9af8884a877a0f2c77c353189ae93ac3d842087b43012f1da812e3f099c1685"
+        },
+        {
+          "file": "build_char_278_orchid.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/build/build_char_278_orchid.png",
+          "bytes": 152375,
+          "sha256": "b27bd69b6dc3064b8617f7e1207035c9add9cb4424562bff987692cd93f25dbf"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

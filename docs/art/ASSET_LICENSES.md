@@ -72,3 +72,7 @@ kroos-comic.png由OpenAI内置image_gen两轮生成，选第二轮；以用户�
 未引入：Craftpix 自定义许可项、Asset Store EULA 项、CC BY-SA/GPL 项、授权不明项、商业游戏抓取内容、付费素材、AI 图片。候选 GameArt2D 的免费许可见原站 license.html，尚未下载其原文件；与付费素材的再分发限制不可混淆。
 
 通用许可原文：[CC0](https://creativecommons.org/publicdomain/zero/1.0/)、[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)、本地 licenses/OFL-1.1.txt。发布时把实际使用素材对应的 CREDITS 和所需许可随游戏提供；本轮未改构建器自动打包这些文件，不能把“已有文档”当成已经写入发布包。
+
+## 2026-10-23 首批8名守军运行图集
+
+D01/D03/D04/D07/D08/D09/D10/D12采用上轮本地预览的默认原作模型。角色、纹理及动画归《明日方舟》原权利人，具体画师/动画师未确认；不是CC0，修改/游戏分发/公开源文件再分发的开放许可均未确认。用户明确要求接入并持续要求运行素材随代码上传，故本轮跟踪运行依赖；不将此决定登记为权利人授权。PRTS仅是具体来源，不是许可证明。每位sources.json保留具体地址和原SHA；[详细清单](DEFENDERS-FIRST8-INTEGRATION.md)。卡面为透明待机裁切，地图复用既有工业材质和自制基础几何，不新引入外部环境授权。

@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D10F",
+      "unitId": "D10",
+      "name": "芙蓉",
+      "variant": "战斗正面",
+      "characterId": "char_120_hibisc",
+      "reference": "https://prts.wiki/w/%E8%8A%99%E8%93%89",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/meta.json",
+      "model": "char_120_hibisc",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_120_hibisc.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/front/char_120_hibisc.skel",
+          "bytes": 57418,
+          "sha256": "9fd977c32230fc6f7076f93612830238eb382bda4ea1801ed3f518fe8907af04"
+        },
+        {
+          "file": "char_120_hibisc.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/front/char_120_hibisc.atlas",
+          "bytes": 4025,
+          "sha256": "a9786e40963b2bf8d143440962d08a36f55e6aaa7de989ebccae5358d4f96b57"
+        },
+        {
+          "file": "char_120_hibisc.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/front/char_120_hibisc.png",
+          "bytes": 50306,
+          "sha256": "fe562daec8141156738fdfe9329f89b3106a19b171386ef21f0db0c20f2a8ca0"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D10B",
+      "unitId": "D10",
+      "name": "芙蓉",
+      "variant": "战斗背面",
+      "characterId": "char_120_hibisc",
+      "reference": "https://prts.wiki/w/%E8%8A%99%E8%93%89",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/meta.json",
+      "model": "char_120_hibisc",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_120_hibisc.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/back/char_120_hibisc.skel",
+          "bytes": 29443,
+          "sha256": "6e84afdda05278b8f010fbfae1f74f71619451dd8f3461758ad714ae8476d28d"
+        },
+        {
+          "file": "char_120_hibisc.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/back/char_120_hibisc.atlas",
+          "bytes": 2479,
+          "sha256": "8443ded1a3bd846b6b8a2d89bfa3173c0cd0315a34f8f1a8a899d56f39771d6e"
+        },
+        {
+          "file": "char_120_hibisc.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/back/char_120_hibisc.png",
+          "bytes": 40339,
+          "sha256": "9fceb98abdf50d11f46fd47ac5e495ae01aba3fd779a2198a71cc02b26b07fa1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D10H",
+      "unitId": "D10",
+      "name": "芙蓉",
+      "variant": "基建动作",
+      "characterId": "char_120_hibisc",
+      "reference": "https://prts.wiki/w/%E8%8A%99%E8%93%89",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/meta.json",
+      "model": "build_char_120_hibisc",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_120_hibisc.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/build/build_char_120_hibisc.skel",
+          "bytes": 73651,
+          "sha256": "00cffc88613a9b89f4e29d46dfe6a73e3be8ca774d764d8885ca948ba958248b"
+        },
+        {
+          "file": "build_char_120_hibisc.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/build/build_char_120_hibisc.atlas",
+          "bytes": 4062,
+          "sha256": "fcc8a3d3fba83911226a264bc8c47ce242e479d94a9f7e82474ef484d68e1a15"
+        },
+        {
+          "file": "build_char_120_hibisc.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/build/build_char_120_hibisc.png",
+          "bytes": 96560,
+          "sha256": "479b2b9c2b37f093a8ea27f88d49b4c68f61857afadd93e060cc91203f59bb79"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}
