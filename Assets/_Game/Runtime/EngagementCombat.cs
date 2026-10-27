@@ -110,7 +110,7 @@ namespace YesterdayConvoy
         public bool FrozenBonusApplied { get; internal set; }
         public float DamageDealt { get; internal set; }
         internal CombatShot(string source, string target, bool defender, bool empowered, Vector3 origin, Vector3 destination,
-            double start, float duration, float attack, bool fireRain = false, bool healing = false, CombatDamageType damageType = CombatDamageType.Physical, float splashRadius = 0, float coldDuration = 0)
+            double start, float duration, float attack, bool fireRain = false, float coldDuration = 0, bool healing = false, CombatDamageType damageType = CombatDamageType.Physical, float splashRadius = 0)
         { ColdDuration=coldDuration; Healing=healing; DamageType=damageType; SplashRadius=splashRadius; FireRain=fireRain; SourceId = source; TargetId = target; FromDefender = defender; Empowered = empowered; Origin = origin;
             Destination = destination; StartedAt = start; ImpactAt = start + duration; Attack = attack; }
     }

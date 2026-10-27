@@ -78,5 +78,61 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.CombatShots.Any(s=>s.SourceId=="guardian" && s.Healing && s.Applied),Is.True);
             Assert.That(b.CombatShots.Any(s=>s.SourceId=="guardian" && !s.Healing),Is.False);
         }
+
+        private static ManualBattle IntegratedBattle(DefenderSettings[] roster, MonsterEffectSettings effects,
+            float health=100, float range=.01f)
+        {
+            var combat=new EngagementSettings(unitAttack:1,unitRange:range,unitInterval:10,blockCount:0,
+                initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,
+                projectileTime:.05f,hasSkill:false,effects:effects);
+            return new ManualBattle(new ManualBattleSettings("CARD_TEST","TEST",20,1,6,1,.1f,health,.001f,1,1,1,1),
+                new[]{Vector3.zero,Vector3.forward*100},Vector3.zero,combat,roster:roster);
+        }
+
+        [Test] public void RosterArtsProjectileUsesSharedBarrierAndResistanceResolution()
+        {
+            var caster=new DefenderSettings("caster","caster","D08",Vector3.right,500,20,0,3,10,
+                damageType:CombatDamageType.Arts);
+            var b=IntegratedBattle(new[]{caster},new MonsterEffectSettings(artsBarrier:true,unitResistance:25));
+            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);var unit=b.Units[0];b.Advance(.2f);
+            Assert.That(unit.Health,Is.EqualTo(150));
+            Assert.That(unit.ArtsBarrierRemaining,Is.EqualTo(45).Within(.001));
+            Assert.That(b.CombatShots.Single(s=>s.FromDefender).DamageType,Is.EqualTo(CombatDamageType.Arts));
+        }
+
+        [Test] public void RosterLethalProjectileStillStartsFrostNovaRevival()
+        {
+            var fighter=new DefenderSettings("fighter","fighter","D04",Vector3.right,500,1000,0,3,10);
+            var b=IntegratedBattle(new[]{fighter},new MonsterEffectSettings(frostNova:true));
+            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(.2f);
+            Assert.That(b.Units[0].IsReviving,Is.True);
+            Assert.That(b.Units[0].Active,Is.True);
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Running));
+        }
+
+        [Test] public void ShackledRosterDefenderCannotBlockOrStartAttacks()
+        {
+            var fighter=new DefenderSettings("fighter","fighter","D01",Vector3.forward,500,1,1000,3,1,3,blockRadius:1.1f);
+            var b=IntegratedBattle(new[]{fighter},new MonsterEffectSettings(shackler:true),range:3);
+            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(.2f);
+            Assert.That(b.DefenderShackled(b.Defender),Is.True);
+            Assert.That(b.Defender.BlockedCount,Is.Zero);
+            Assert.That(b.CombatShots.Any(s=>s.FromDefender),Is.False);
+            b.SetPaused(true);double clock=b.Clock;b.Advance(10);Assert.That(b.Clock,Is.EqualTo(clock));
+        }
+
+        [Test] public void GramophoneHealingUsesRosterMaximumAndDoesNotOverhealSmallDefenders()
+        {
+            var small=Spec("small",Vector3.right,90,range:.001f);
+            var large=Spec("large",Vector3.left,900,range:.001f);
+            var b=IntegratedBattle(new[]{small,large},default);
+            b.ConfigureFacilities(new[]{new FacilitySettings(FacilityKind.Altar,Vector3.zero,2,1,1),
+                new FacilitySettings(FacilityKind.Gramophone,Vector3.zero,captureTime:.1f)});
+            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(5.1f);
+            Assert.That(b.Facilities[1].Owner,Is.EqualTo(FacilityOwner.Defenders));
+            Assert.That(b.FacilityHealing,Is.GreaterThan(0));
+            Assert.That(b.Defenders.All(d=>d.Health<=d.MaxHealth),Is.True);
+            Assert.That(b.FindDefender("small").Health,Is.GreaterThan(85));
+        }
     }
 }

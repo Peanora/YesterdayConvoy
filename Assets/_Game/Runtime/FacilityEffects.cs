@@ -176,7 +176,7 @@ namespace YesterdayConvoy
                 if(f.Owner==FacilityOwner.Attackers)
                 {
                     var d=defenders.Where(d=>d.Alive&&GroundDistance(d.Position,s.Position)<=s.Radius).OrderBy(d=>d.Health).FirstOrDefault();
-                    if(d!=null){DamageDefender(d,CombatSettings.DefenderHealth*.05f,CombatDamageType.Arts);GramophoneHits++;AttackerGramophoneHits++;Activate(f);}
+                    if(d!=null){DamageDefender(d,d.MaxHealth*.05f,CombatDamageType.Arts);GramophoneHits++;AttackerGramophoneHits++;Activate(f);}
                 }
                 else
                 {
@@ -192,8 +192,8 @@ namespace YesterdayConvoy
             }
             else
             {
-                var d=defenders.Where(d=>d.Alive&&d.Health<CombatSettings.DefenderHealth&&GroundDistance(d.Position,s.Position)<=s.Radius).OrderBy(d=>d.Health).FirstOrDefault();
-                if(d!=null){float before=d.Health;d.Health=Math.Min(CombatSettings.DefenderHealth,d.Health+CombatSettings.DefenderHealth*.1f);FacilityHealing+=d.Health-before;}
+                var d=defenders.Where(d=>d.Alive&&d.Health<d.MaxHealth&&GroundDistance(d.Position,s.Position)<=s.Radius).OrderBy(d=>d.Health).FirstOrDefault();
+                if(d!=null){float before=d.Health;d.Health=Math.Min(d.MaxHealth,d.Health+d.MaxHealth*.1f);FacilityHealing+=d.Health-before;}
             }
         }
     }
