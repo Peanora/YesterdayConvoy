@@ -1,0 +1,222 @@
+[
+  {
+    "id": "D01B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D01B",
+    "originalPPU": 80,
+    "normalizedPPU": 117.6,
+    "footDeltaPixels": 0.9937345112981021,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "84189538ca7cbc55a3e200d29e6f2ec37ebb67f64bcf6aa943375047ad46b366"
+      },
+      {
+        "file": "attack-01.png",
+        "sha256": "ed06df87309377acf7ad05c97154071ecc60d631bcf40617689b53f500d985ce"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "81a11329d01d17f332032e197b8dbbdaeaad6137bc40e0ec3a03b2ce138a76ed"
+      },
+      {
+        "file": "idle-01.png",
+        "sha256": "b8e47f2fb29aed548a2784fda0ae41b5aa799f66982bf23d6fa7636fcd3df678"
+      },
+      {
+        "file": "idle-02.png",
+        "sha256": "dc41935daed5daa560fa36a437165ff09d83c5dc285498b1cc5f9c807b2c73a3"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "2596972d0e7e7d4f835e354f7fa007702a913ae6cd1c67c4592ad0ff2e1ce485"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E7%B1%B3%E6%A0%BC%E9%B2%81",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_122_beagle/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D03B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D03B",
+    "originalPPU": 80,
+    "normalizedPPU": 118.4,
+    "footDeltaPixels": -0.9955067023452447,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "a4f6a4e1d63f0a630d60414805d4c872e3d218737ec7b2832ebb517d1a67efd5"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "2a9a44674ad3709750a2dff59dfb57cf03a59b6c13757e3f83fd58626a740d19"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "41557bde5462799df21212ee4c86ba51815231ca6c9e67a4274fe48c7b4486b8"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E6%96%91%E7%82%B9",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D04B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D04B",
+    "originalPPU": 80,
+    "normalizedPPU": 134.4,
+    "footDeltaPixels": 0.0,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "4624b90dc60b17289614f3fbe28c951e24271d45ebd53296010a9447e202cc1d"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "5b45fee6a94efcc8e8ffa281c0f72ce71eadedcf05f60deb62a66abd8d0d0a1d"
+      },
+      {
+        "file": "idle-01.png",
+        "sha256": "1b0eb6abce73dfefd591fe9a9ddcf993a826f0b7d82458e6d96711aeed5f98ae"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "f053777864308f8cfd426a9b124f7703c147b4d4424a9c7707732298b2b33248"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E7%8E%AB%E5%85%B0%E8%8E%8E",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_208_melan/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D07B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D07B",
+    "originalPPU": 80,
+    "normalizedPPU": 132.8,
+    "footDeltaPixels": -0.005329016040185106,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "47c89713751d9f5ccded9daa3b006e38070dfb00025590cd1a54b198c83edcd1"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "0b81d3c290e2b2b2adf892fb21415f746373a4ec8a6179d352e3c29eecdb51f9"
+      },
+      {
+        "file": "idle-01.png",
+        "sha256": "a6ee25854ab372778bdca9f3bdbbe3e15756854cd3386fdb12f3cbaf6ae9d975"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "a8b04ab98dcff8dec9dc79ae8596a563b15fc347f0e92ff7ef69e2b2f2db84bd"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E5%85%8B%E6%B4%9B%E4%B8%9D",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_124_kroos/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D08B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D08B",
+    "originalPPU": 80,
+    "normalizedPPU": 123.2,
+    "footDeltaPixels": 0.0,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "120cfc7bd7491c22a6037a710e1c9a1b3b252f5e07bbcaced92f5ffa6ed5c820"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "bedbdab1ab409be4927a191ed6436d3084a6489a9f85d2cf54aecef0434beafa"
+      },
+      {
+        "file": "idle-01.png",
+        "sha256": "3f90a926889dbcdb6c200d748a626449b75d9b05f93d1c9417e86ce2a4b1e311"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "7d1af47f8dac64a09cfcb31816ab868598a069c827fd60788edeb94e41e8f630"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E5%8F%B2%E9%83%BD%E5%8D%8E%E5%BE%B7",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_210_stward/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D09B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D09B",
+    "originalPPU": 80,
+    "normalizedPPU": 117.6,
+    "footDeltaPixels": -0.010599142456054611,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "c5877cc18200b8aeabce58b40af271e9fd1c603847ed7054754ffce9f8c1aa10"
+      },
+      {
+        "file": "attack-01.png",
+        "sha256": "d0b78d2b27c55361067cd12860b40af1d731a2a37075e83ccce3a47fbce38c8b"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "106f5670a4257a8e698659a9b6a67d3a4eb8829794f7afd503bfd13eda657034"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "89c18fee39ebdfbf2edecc1a272560bd4d3261048d0ccec5b88c774a794dc5fd"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E7%82%8E%E7%86%94",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D10B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D10B",
+    "originalPPU": 80,
+    "normalizedPPU": 116.8,
+    "footDeltaPixels": -0.00499285105112445,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "c73bdd8eb80c40ddff4bfafe77eef7699c6034947347daa63318f354e023e5a3"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "408be16c6b85f69a40f5e9670239761ea941b9d957ed508726ef6c7feb2e64da"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "9a7c2869d5da2f94530ec8197751fe68f4d05f39bccd427cf90b0e82cca3b5c8"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E8%8A%99%E8%93%89",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_120_hibisc/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  },
+  {
+    "id": "D12B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军首批8名-v1\\runtime-packages\\D12B",
+    "originalPPU": 80,
+    "normalizedPPU": 118.4,
+    "footDeltaPixels": 0.9889913748414726,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "sha256": "d1a943abddadcbcd1d372a86c418e5acb83b9b34a6c7507a6bfcd0ebb63f692c"
+      },
+      {
+        "file": "idle-00.png",
+        "sha256": "b2fb906a039cb14507f62bbf57906b8dc76019799124ec2ff005198bda1841bf"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "e903c7389041dabb0d733f3f7273c8ef5aca67d2cd1c94a252eff4cd1ec433f7"
+      }
+    ],
+    "reference": "https://prts.wiki/w/%E6%A2%93%E5%85%B0",
+    "originalAssetPrefix": "https://torappu.prts.wiki/assets/char_spine/char_278_orchid/defaultskin/back/",
+    "rights": "Original Arknights rights holders; non-CC0; redistribution permission not confirmed. Project runtime upload explicitly requested by user."
+  }
+]

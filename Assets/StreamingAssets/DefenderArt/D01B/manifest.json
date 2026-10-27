@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "task": "D01B",
+  "ppu": 117.6,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4226751316918267,
+      "pivotY": 0.21500356541381588,
+      "sourceBounds": [
+        -231.99954223632812,
+        -108.31520080566406,
+        349.207763671875,
+        545.5399780273438
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 22,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4226751316918267,
+      "pivotY": 0.21500356541381588,
+      "sourceBounds": [
+        -231.99954223632812,
+        -108.31520080566406,
+        349.207763671875,
+        545.5399780273438
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "84189538ca7cbc55a3e200d29e6f2ec37ebb67f64bcf6aa943375047ad46b366"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "ed06df87309377acf7ad05c97154071ecc60d631bcf40617689b53f500d985ce"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "81a11329d01d17f332032e197b8dbbdaeaad6137bc40e0ec3a03b2ce138a76ed"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "b8e47f2fb29aed548a2784fda0ae41b5aa799f66982bf23d6fa7636fcd3df678"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "dc41935daed5daa560fa36a437165ff09d83c5dc285498b1cc5f9c807b2c73a3"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_122_beagle; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

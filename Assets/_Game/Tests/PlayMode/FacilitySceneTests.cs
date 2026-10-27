@@ -21,7 +21,7 @@ namespace YesterdayConvoy.Tests
                 var names=new[]{"01-IndustrialTransfer","02-SnowRelay","03-ReedCanal","03-ReedCanal"};
                 for(int n=0;n<4;n++)
                 {
-                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/FacilityTrials/"+names[n]+".unity",new LoadSceneParameters(LoadSceneMode.Single));
+                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/Tests/Fixtures/"+names[n]+".unity",new LoadSceneParameters(LoadSceneMode.Single));
                     yield return null;Time.timeScale=0;
                     var c=Object.FindAnyObjectByType<FacilityTrialController>();Assert.That(c,Is.Not.Null);
                     if(n==3)c.ResetTrial(1);Assert.That(c.Deploy(),Is.True);

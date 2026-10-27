@@ -1,5 +1,83 @@
 # 验证证据与回归
 
+## 2026-10-27 后续源码上传
+
+用户在本地验收交付后明确要求上传GitHub，授权将`4e2c79f`运行修正及其着色器/meta、测试和实机截图推送原功能分支、更新PR #40。此前“仅本地”说明为历史执行边界。上传前工作区干净，已fetch核对远端PR仍开放、分支可正常快进；运行依赖均已跟踪。此次只更新交付说明并提交，没有修改运行代码，沿用下方真实Unity/Player证据，不重复声称运行了测试。无main合并、EXE上传、ZIP或Release操作。
+
+## 2026-10-27：本地人物比例与战前待机修正
+
+**范围。** 用户明确要求不上传GitHub，本轮仅本地开发、Git提交与Windows构建。修改DemoSpriteVisual、DefenderRosterView、ManualBattleController/TalulahTrial的准备相位及TacticalRosterEvidence和对应PlayMode测试；新增原创TacticalActor.shader及Unity生成的meta，无新外部美术素材。主场景、Prefab、Packages、ProjectSettings不变。
+
+**原因与连接。** 先前世界竖直角色面以Y×2补偿60°镜头，偏离画面中心时产生透视歪斜。现在使用屏幕平行、等比例Sprite；新着色器从脚底竖直平面重建遮挡深度，避免单纯billboard被高台切断身体，也没有关闭全部深度遮挡。塔露拉进入原有目标/移动左右镜像流程，按原UnitInterval锁定普攻朝向，施法保持方向，逻辑根节点不旋转。准备阶段的readyIdleElapsed只供守军idle使用，开战后叠加Battle.Clock；攻击、受击、伤害和SP仍使用原模拟时间。
+
+| 实际验证 | 结果 |
+| --- | --- |
+| 初步定向GPU PlayMode | 5/5通过。新增3项检查：准备阶段8人idle有帧变化且不推进战斗，开始不跳帧/暂停冻结；两图全部七门和八人位置的屏幕轴正交/等像素比例；塔露拉在左右转折改变朝向，纵向保留朝向且逻辑根不旋转。 |
+| 完整GPU PlayMode | 66/66通过、0跳过，`artifacts/proportions-full-play.xml`；此轮在最终深度着色器接入前完成。 |
+| 最终显示定向GPU | 5/5通过、0跳过，`artifacts/proportions-release-play.xml`；包含角色材质正确及Shader支持检查，日志无Shader error。 |
+| 最终Windows | Unity6000.6.5f1，Windows x64；949,183,473 bytes、0错误；`artifacts/proportions-final-build.log`无Shader编译错误。 |
+| 泵站最终Player | 退出0，`artifacts/proportions-final-city/player.log`；entered/cards/drag/independent/paused/facing/preparation/noSkill/attacked/acid/slow/cast/won/reset/restored全部True。 |
+| 环庭最终Player | 退出0，同上；`artifacts/proportions-final-ruins/player.log`。 |
+
+**图像检查。** 实际查看最终EXE的泵站下方/上方出生与混编截图、环庭上方出生截图；人物轴向与比例正常，原先腰部被高台切断的条带已消除。两图全部七个出生点原图保存在上述artifacts目录。提交中的实机示例：[泵站上方红门](art/tactical-actors-proportions-city.png) / [环庭上方红门](art/tactical-actors-proportions-ruins.png)。这些是运行画面，不是概念稿。
+
+**修复中发现。** 隐藏窗口启动时截图接口返回空，改为可见窗口后完成最终检查；纯billboard的中间稿出现高台切割，已由脚底深度解决。着色器首次条件表达式编译错误已修正，最终构建和运行日志没有该错误。失败/中间稿不作为最终可玩证据。
+
+**限制。** 塔露拉为左右镜像转向，没有新绘完整转身/背面动作；守军继续使用既有正背面资源，死亡仍沿用前面。没有重画身体比例、添加新角色、修改路线/数值/技能或声称商业动画质量。本轮未重跑EditMode，未做第二台电脑离线、非Windows平台、长时性能或完整人工平衡；最终深度修正只重跑受影响5项和两图独立Player，不将先前66项冒称为最终着色器完整回归。
+
+## 2026-10-27：V3高台迷宫与混合小怪
+
+**确认与范围。** 人类确认项目外V3实际几何图/动作视频与README的接口范围后，在PR #40原分支接入。保留原4红2蓝/3红2蓝及七条固定路线；泵站高台110/198格，环庭116/198格。只调整非通道地形、已批准的显示/卡栏/部署与必要来源配置；主场景文件、Prefab、Packages和ProjectSettings未修改。
+
+| 实际检查 | 结果与范围 |
+| --- | --- |
+| Unity配置/资源 | `TacticalMapV3Tools.Apply`两图通过；4卡、8人背面图集及前面兼容加载成功。后续`TacticalMapV2Tools.Validate`仍通过。 |
+| EditMode | 216/216通过、零跳过；新增每卡费用/CD/次数、暂停与重开、重复请求卡身份、1DP可用低费卡、小怪无技能、真实来源破甲等边界。 |
+| 完整GPU PlayMode | 63/63通过、零跳过；保留原怪物/设施/守军回归；新增两图四卡混编与攻击期间目标死亡后朝向保持。 |
+| 最后定向GPU | 2/2通过；四张卡走MouseDown/MouseDrag/MouseUp实际事件分发，暂停与独立状态正确，点击无技能单位关闭旧技能面板，左右基准与完整攻击朝向锁通过。 |
+| 最终Windows构建 | Unity6000.6.5f1 / Windows x64，`BaselineTools.BuildWindows`，949,175,014 bytes，0错误。 |
+| 泵站独立Player | 退出0；entered/cards/drag/independent/paused/facing/noSkill/attacked/acid/slow/cast/won/reset/restored全部True。 |
+| 环庭独立Player | 退出0；同上全部True。3红门时先恢复一秒让出生点让开，再暂停放第4卡，不绕过入口占用限制。 |
+| 原维维美交互Player | 退出0，暂停部署、一次扣费/冻结、非法取消、就绪、0.03×聚焦、取消、释放、重开8项全部True。 |
+| 仓库与媒体 | 3045个跟踪文件完整性检查通过；8份新增背面包PNG/JSON哈希、meta与忽略规则核对通过，未混入AGENTS、构建或工程设置。 |
+
+最终Player用1920×1080正常可见窗口运行 `-tacticalRosterSmokeTest city` / `ruins`。实际4卡产生各自原造型与动作，画面同场8个实体；酸液命中真实降低守军护甲，只有塔露拉有SP/火雨。用点击角色/技能图标的路径检查0.03×聚焦、施放与恢复；无技能小怪不能打开技能面板或增长SP。自动化Player是确定性检查，不替代长期人工试玩。
+
+**实机画面。** [泵站混编](art/tactical-v3-runtime-city.png) / [环庭混编](art/tactical-v3-runtime-ruins.png)，来自最终EXE；与项目外编排预演区分。实机发现并处理了卡栏挡住重开按钮、血条压头、左右翻转基准相反的问题。原背面玫兰莎1秒攻击按本作2秒动作窗口映射，不额外结算伤害。背面包无死亡，统一沿用既有正面死亡，未虚构素材。
+
+**连接与文件。** `DefenderTrialDefinition.rosterCards`和两份MapTrials资产提供只读卡/高台配置，`BattleCardState`保存每卡运行次数与下一次可部署时间，`ManualBattle`完成原子事务及共用DP；旧单卡/游击队入口继续兼容。`UnitCombat`把实体自己的参数送到技能、伤害与动画；`TacticalLoadout`和输入适配器绘制/拖动四卡，`DefenderRosterView`按已发射攻击目标锁朝向，`DefenderArt`加载正背面包；`DemoSpriteVisual`仅在本试验竖直显示并镜像小怪，不旋转逻辑根节点。具体文件/资源与来源见[V3说明](art/TACTICAL-MAPS-V3.md)。
+
+**交付与未测。** 功能分支提交/推送/PR #40待人工审查，不合并main；本地EXE位于 `E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-迷宫高台V3/YesterdayConvoy.exe`，对应源码见BUILD-INFO.txt。新增8份背面运行媒体及meta默认随源码提交，无ZIP/Releases。没有做第二台电脑离线、长时间手动操作、每位每帧人工美术验收或正式挑战平衡；当前每卡试验值见V3说明。尚未接入其余22名/六星、完整8人技能、商店或正式编队。
+
+
+## 2026-10-27：多门 V2 双地图接入
+
+**范围与版本。** 从 main `172dc06` 创建 `codex/tactical-maps-v2`；人类已确认4红2蓝泵站、3红2蓝环庭以及共享接口范围。本轮只修改配置/运行适配/地图显示/菜单/对应测试，并迁移旧能力回归；未改主场景文件、Prefab、Packages、ProjectSettings。原工程既存设置文件SHA256保持 `312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2`。没有自动合并main、ZIP或Releases。
+
+**实际运行。** Unity `6000.6.5f1 (3ff58d469c8a)`，Windows x64 / RTX4060 / 1920×1080：
+
+| 检查 | 真实结果与范围 |
+| --- | --- |
+| 配置生成/导入 | `TacticalMapV2Tools.Prepare`及Validate通过；2地图/7固定路线/每图2蓝门/8独立守军/3张运行PNG绑定。幂等创建地图资产，既有资产保留。 |
+| 审批布局核对 | 7条路线的每个序列化坐标、红门和蓝门身份与审批JSON完全一致；三张PNG的SHA/meta/忽略规则通过。 |
+| EditMode | 213/213，通过、零跳过；含多入口路径、共用防御幂等、暂停扣费/冻结/共享CD、忙入口隔离、重复事务与配置防歧义。 |
+| 完整GPU PlayMode | 61/61，通过、零跳过；原怪物与队友能力、8守军交战/医疗及新两图均覆盖。 |
+| 视觉整理后定向GPU | 2/2，通过；7门实际屏幕拖放、反复返回/重进/卸载清理、双图技能交战与胜利重置。 |
+| 最终Windows构建 | `BaselineTools.BuildWindows`成功，921,699,503 bytes，0 errors，仍只有InitialDemo构建场景。 |
+| 泵站独立Player | 退出0；entered/gates/drag/paused/invalid/attacked/skill/won/reset/restored全部True。 |
+| 环庭独立Player | 退出0；同上全部True。 |
+| 原维维美交互Player | 退出0；暂停拖放、一次扣费与冻结、非法取消、技力、慢速点选、取消/释放、重开8项全部True。 |
+| 仓库完整性 | 2959个跟踪文件检查通过；三张新PNG及meta正常跟踪，无孤立meta、冲突标记或本地构建/AGENTS误提交。 |
+
+独立Player参数 `-tacticalMapSmokeTest city` / `ruins`，可选 `-demoEvidenceDir`；诊断截图需要正常可见图形窗口。隐藏窗口的截图接口曾返回null，不作为画面证据，已改为明确报错退出；实际交付使用可见窗口重新完整运行并检查截图。原网页看稿浏览器测试未执行（本地HTTP启动被自动审批拒绝），不算Unity或Player证据。
+
+**实机画面。** [泵站](art/tactical-v2-runtime-city.png) / [环庭](art/tactical-v2-runtime-ruins.png)。截图是最终EXE的实际输出，非概念图。实机复核发现并修正：基础块顶面与地面片共面造成条纹；平台设备遮挡角色；运行时Standard透明变体在Player中缺失造成树冠方形底。最终使用分离的顶面高度、边缘设备、现有Sprite透明材质。新两图隐藏守军名字、使用紧凑血条，拖动到门时高亮该门路线，无战斗中切场景按钮。
+
+**文件与连接。** `DeploymentLane`保存不可变路线快照，`ManualBattle`选择红门后绑定单位的RouteId/ExitId，旧单路线调用保持兼容；仍由原战斗模型处理费用、暂停、攻击/技能和蓝门共享防御。`DefenderTrialDefinition`保存地图/守军静态数据，`TacticalMapEnvironment`只生成视觉，`DefenseTrialMap`负责借用与恢复相机/原地图/门显隐，主选择页与控制器复用原拖动卡牌。旧设施/游击队/爱国者能力转到独立中性测试底板，无旧地图切换UI。
+
+**交付与未测。** 新版在功能分支、待人工合并；本地试玩 `E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-双地图V2/YesterdayConvoy.exe`，对应源码提交见同目录BUILD-INFO.txt。地图仍为塔露拉对原八人防线的样板，DP24/费2/12次/防御1是试验值；正式编队/商店/全角色地图平衡未实现。未做第二台电脑离线验证、长期手动游玩和最终美术验收，不宣称达到原作完整美术精细度。
+
+
 ## 2026-10-27：PR #14 / #16 / #17 与周末 main 的兼容整合
 
 基线：实时fetch的 `origin/main cbe321b543f54fa20f8efc694639ea276101c9b5`，文件树与已合并#27最终 `7ec2860` 完全相同。继续干净的 `codex/defender-mixed-map` / PR #17，依次merge main、原#16和#14，保留全部父提交及双方意图；没有rebase、强推、整文件ours/theirs、main提交或自动合并。原工程main及未跟踪的PackageManagerSettings保持不动。初版运行源码 `e0ce1c39fd64958f90e0acb82f9c4f88008dc00b`；最终运行源码 `16315a863bcfa86e39ed769132854c12e934b306` 另修正下述场景卸载及诊断文字问题；后续仅文档。

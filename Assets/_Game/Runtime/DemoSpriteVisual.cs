@@ -18,6 +18,11 @@ namespace YesterdayConvoy
         private double slugTransitionTime,slugWalkDistance;
         public TalulahRig Rig { get; private set; }
         public bool UsesFrameAnimation => Rig==null && frameCard!=null && frameCard.HasFrameAnimation;
+        public bool WorldUpright {get;set;}
+        private bool tacticalFlip;
+        private double tacticalAttack=double.NegativeInfinity;
+        private static Material tacticalMaterial;
+        Vector3 VisualScale=>Vector3.one;
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
@@ -39,6 +44,13 @@ namespace YesterdayConvoy
             this.presentationClock=presentationClock; local=LocalMonsterArt.For(frames.CardId); slug=OriginalSlugArt.For(frames.CardId);
             slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
             original=OriginalTalulahArt.For(frames);
+            if(WorldUpright)
+            {
+                if(tacticalMaterial==null)tacticalMaterial=new Material(Resources.Load<Shader>("TacticalActor"));
+                sprite.sharedMaterial=tacticalMaterial;
+            }
+            tacticalFlip=unit.Motion.Direction.x<-.08f;
+            tacticalAttack=double.NegativeInfinity;
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
             { Rig=gameObject.AddComponent<TalulahRig>(); Rig.Bind(frames.ArticulatedArt,sprite.sharedMaterial); }
@@ -51,30 +63,50 @@ namespace YesterdayConvoy
             PresentFrames(tint);
         }
 
-        // Exact source frames, no cutout deformation or directional turning. Only the simulation clock is read.
+        // Source frames retain their aspect ratio. Facing changes only the visual, never the route root.
         private void PresentFrames(Color tint)
         {
             if(!FaceCamera()) return;
             if(Rig!=null)
             {
-                sprite.enabled=false; transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+                sprite.enabled=false; transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
                 FrameState=manualBattle.IsSkillActionPlaying(deployedUnit) ? "Skill" : deployedUnit.IsMoving ? "Walk" : deployedUnit.HasCombatTarget ? "Attack" : "Idle";
                 Rig.Present(manualBattle,deployedUnit,tint,GetSortingOrder(Camera.main,transform.parent.position));
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
-            transform.localPosition=Vector3.zero; transform.localScale=Vector3.one;
+            if(WorldUpright && (local!=null || slug!=null || original!=null))
+            {
+                if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
+                {
+                    var combat=manualBattle.UnitCombat(deployedUnit);double facingAge=manualBattle.Clock-deployedUnit.LastAttackTime;
+                    bool attacking=facingAge>=0 && facingAge<(original!=null ? combat.UnitInterval : combat.AttackDuration);
+                    if(!attacking || tacticalAttack!=deployedUnit.LastAttackTime)
+                    {
+                        float dx=deployedUnit.Motion.Direction.x;
+                        if(attacking)
+                        {
+                            tacticalAttack=deployedUnit.LastAttackTime;
+                            for(int i=manualBattle.CombatShots.Count-1;i>=0;i--)
+                            {var shot=manualBattle.CombatShots[i];if(!shot.FromDefender && shot.SourceId==deployedUnit.EntityId && shot.StartedAt>=deployedUnit.LastAttackTime){dx=shot.Destination.x-deployedUnit.Motion.Position.x;break;}}
+                        }
+                        if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;
+                    }
+                }
+                sprite.flipX=tacticalFlip;
+            }
+            transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
             if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
             if(manualBattle.IsPaused) return;
             if(original!=null) { PresentOriginal(); return; }
             double age=manualBattle.Clock-deployedUnit.LastAttackTime;
-            double skillDuration=manualBattle.CombatSettings.SkillInterval;
+            double skillDuration=manualBattle.UnitCombat(deployedUnit).SkillInterval;
             // A fired skill gesture owns its full window, independently of target lifetime or resumed movement.
             if(manualBattle.IsSkillActionPlaying(deployedUnit))
             {
                 FrameState="Skill";
-                FrameIndex=manualBattle.CombatSettings.FireRain ?
+                FrameIndex=manualBattle.UnitCombat(deployedUnit).FireRain ?
                     (int)((manualBattle.Clock-deployedUnit.FireRainStartedAt)*4)%frameCard.SkillFrames.Count :
                     Mathf.Clamp((int)(age/skillDuration*frameCard.SkillFrames.Count),0,frameCard.SkillFrames.Count-1);
                 sprite.sprite=frameCard.SkillFrames[FrameIndex]; return;
@@ -83,20 +115,20 @@ namespace YesterdayConvoy
             {
                 FrameState="Walk";
                 // At the authored 0.75 move speed, retain the GIF's 0.95-second cycle; distance freezes on stop/pause.
-                FrameIndex=manualBattle.CombatSettings.FireRain ?
+                FrameIndex=manualBattle.UnitCombat(deployedUnit).FireRain ?
                     (int)(deployedUnit.Motion.DistanceTravelled/.9*frameCard.WalkFrames.Count)%frameCard.WalkFrames.Count :
                     (int)(deployedUnit.Motion.DistanceTravelled/.75*20)%frameCard.WalkFrames.Count;
                 sprite.sprite=frameCard.WalkFrames[FrameIndex]; return;
             }
             if(!deployedUnit.HasCombatTarget)
             { FrameState="Idle"; FrameIndex=0; sprite.sprite=frameCard.BattleSprite; return; }
-            bool skill=deployedUnit.SkillAmmo>0 || deployedUnit.LastAttackEmpowered && age<manualBattle.CombatSettings.SkillInterval;
+            bool skill=deployedUnit.SkillAmmo>0 || deployedUnit.LastAttackEmpowered && age<manualBattle.UnitCombat(deployedUnit).SkillInterval;
             var sequence=skill ? frameCard.SkillFrames : frameCard.AttackFrames;
             FrameState=skill ? "Skill" : "Attack";
             if(skill && !deployedUnit.LastAttackEmpowered) age=0;
             if(double.IsInfinity(age)) age=0;
             // Fit the full five-second skill gesture into the existing attack interval without delaying damage.
-            double duration=skill ? manualBattle.CombatSettings.SkillInterval : sequence.Count/20.0;
+            double duration=skill ? manualBattle.UnitCombat(deployedUnit).SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
         }
@@ -123,7 +155,7 @@ namespace YesterdayConvoy
                     sprite.sprite=local[action].At(elapsed,action!="extra_attack_2",out int secondIndex);FrameIndex=secondIndex;return;
                 }
             }
-            if(manualBattle.CombatSettings.Effects.Shackler&&deployedUnit.Active&&deployedUnit.Shackle!=null)
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Shackler&&deployedUnit.Active&&deployedUnit.Shackle!=null)
             {
                 var s=deployedUnit.Shackle;double age=manualBattle.Clock-s.StartedAt;
                 if(!s.Ended||manualBattle.Clock<s.EndedAt+2.0/3)
@@ -140,19 +172,19 @@ namespace YesterdayConvoy
                 double elapsed=part=="begin"?age:part=="loop"?age-1:age-(5-.7666667);
                 FrameState="Bubble"+part;sprite.sprite=local["extra_skill_"+part].At(elapsed,part=="loop",out int bubbleIndex);FrameIndex=bubbleIndex;return;
             }
-            if(manualBattle.CombatSettings.Effects.Harvester&&deployedUnit.Active)
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Harvester&&deployedUnit.Active)
             {
                 var u=deployedUnit;
                 if(u.HarvesterPhase==HarvesterPhase.Waking)
                 {FrameState="HarvesterWake";sprite.sprite=local["extra_skill_begin"].At(manualBattle.Clock-u.HarvesterPhaseStartedAt,false,out int wakeIndex);FrameIndex=wakeIndex;return;}
-                if(u.HarvesterPhase==HarvesterPhase.Combat&&manualBattle.Clock>=u.LastAttackTime+manualBattle.CombatSettings.AttackDuration)
+                if(u.HarvesterPhase==HarvesterPhase.Combat&&manualBattle.Clock>=u.LastAttackTime+manualBattle.UnitCombat(deployedUnit).AttackDuration)
                 {
                     string action=u.IsMoving?"extra_skill_move":"extra_skill_idle";
                     double elapsed=u.IsMoving?u.Motion.DistanceTravelled/(manualBattle.Settings.Speed*6):manualBattle.Clock-u.HarvesterPhaseStartedAt;
                     FrameState=u.IsMoving?"HarvesterWalk":"HarvesterIdle";sprite.sprite=local[action].At(elapsed,true,out int activeIndex);FrameIndex=activeIndex;return;
                 }
             }
-            if(manualBattle.CombatSettings.Effects.Mandragora)
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Mandragora)
             {
                 var u=deployedUnit;double clock=presentationClock?.Invoke()??manualBattle.Clock;
                 string prefix=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_":"extra_c2_";
@@ -182,7 +214,7 @@ namespace YesterdayConvoy
                 }
                 sprite.sprite=local[clip].At(time,loop,out int mandraIndex);FrameIndex=mandraIndex;return;
             }
-            if(manualBattle.CombatSettings.Effects.Flamechaser&&
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Flamechaser&&
                 (deployedUnit.FlamePhase!=FlamechaserPhase.Soldier||deployedUnit.Resolution==UnitResolution.Dead))
             {
                 time=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.FlamePhaseStartedAt;
@@ -208,24 +240,24 @@ namespace YesterdayConvoy
                     sprite.sprite=local[key].At(spray.Ended?manualBattle.Clock-spray.EndedAt:phase=="start"?elapsed:elapsed-.5,phase=="loop",out int sprayFrame);
                     sprite.flipX=spray.FlipX;FrameIndex=sprayFrame;return;
                 }
-                if(manualBattle.CombatSettings.Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
+                if(manualBattle.UnitCombat(deployedUnit).Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
                 {
                     FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
                     FrameIndex=shieldIndex;return;
                 }
-                if(manualBattle.CombatSettings.Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.CombatSettings.AttackDuration)
+                if(manualBattle.UnitCombat(deployedUnit).Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.UnitCombat(deployedUnit).AttackDuration)
                 {
                     FrameState="Heal";sprite.sprite=local["attack"].At(manualBattle.Clock-deployedUnit.HealingStartedAt,false,out int healIndex);
                     FrameIndex=healIndex;return;
                 }
-                if(manualBattle.CombatSettings.Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
+                if(manualBattle.UnitCombat(deployedUnit).Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
                 {
                     FrameState="IceRing";
                     sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.IceRingStartedAt,false,out int ringIndex);
                     FrameIndex=ringIndex;return;
                 }
-                string attackClip=deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19"?"extra_attack_2":manualBattle.CombatSettings.Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
-                if(manualBattle.CombatSettings.CanAttack && local.HasAttack && age>=0 && age<local[attackClip].Duration/deployedUnit.LastAttackRate)
+                string attackClip=deployedUnit.AltarEmpowered&&frameCard.CardId=="CARD_M19"?"extra_attack_2":manualBattle.UnitCombat(deployedUnit).Effects.Mudrock && deployedUnit.OrdinaryAttacksFired>=3 && local.HasClip("extra_attack_2") ? "extra_attack_2" : "attack";
+                if(manualBattle.UnitCombat(deployedUnit).CanAttack && local.HasAttack && age>=0 && age<local[attackClip].Duration/deployedUnit.LastAttackRate)
                 { FrameState="Attack"; clip=attackClip; time=age*deployedUnit.LastAttackRate; }
                 else if(deployedUnit.IsMoving)
                 { FrameState="Walk"; clip="walk"; time=deployedUnit.Motion.DistanceTravelled/local.ReferenceSpeed; loop=true; }
@@ -283,7 +315,7 @@ namespace YesterdayConvoy
             {
                 FrameState = "Skill"; clip = "cast"; loop = false;
                 double elapsed = manualBattle.Clock - deployedUnit.FireRainStartedAt;
-                double total = manualBattle.CombatSettings.SkillInterval;
+                double total = manualBattle.UnitCombat(deployedUnit).SkillInterval;
                 double raise = Math.Min(.8, total * .2), lower = Math.Min(.6, total * .2);
                 double holdPose = 1.1666667;
                 sourceTime = elapsed < raise ? elapsed / raise * holdPose :
@@ -295,13 +327,13 @@ namespace YesterdayConvoy
                 FrameState = "Walk"; clip = "walk"; loop = true;
                 sourceTime = deployedUnit.Motion.DistanceTravelled / original.ReferenceSpeed;
             }
-            else if (deployedUnit.HasCombatTarget && age >= 0 && age < manualBattle.CombatSettings.UnitInterval)
+            else if (deployedUnit.HasCombatTarget && age >= 0 && age < manualBattle.UnitCombat(deployedUnit).UnitInterval)
             {
                 FrameState = "Attack"; clip = "attack"; loop = false;
                 // Align the source OnAttack marker with this game's existing hit time. Never reschedule damage.
-                double contact = Math.Min(manualBattle.CombatSettings.ProjectileTime, manualBattle.CombatSettings.UnitInterval * .8);
+                double contact = Math.Min(manualBattle.UnitCombat(deployedUnit).ProjectileTime, manualBattle.UnitCombat(deployedUnit).UnitInterval * .8);
                 sourceTime = age <= contact ? age / contact * original.AttackContact :
-                    original.AttackContact + (age - contact) / (manualBattle.CombatSettings.UnitInterval - contact) *
+                    original.AttackContact + (age - contact) / (manualBattle.UnitCombat(deployedUnit).UnitInterval - contact) *
                     (original["attack"].Duration - original.AttackContact);
             }
             else
@@ -317,6 +349,8 @@ namespace YesterdayConvoy
         {
             Camera camera = Camera.main;
             if (camera == null || sprite == null) return false;
+            // A shared screen-parallel plane avoids off-axis perspective shear at upper/side gates.
+            // World-upright quads with a compensating Y stretch distort these authored 2D frames.
             transform.rotation = camera.transform.rotation;
             sprite.sortingOrder = GetSortingOrder(camera, transform.parent.position);
             return true;

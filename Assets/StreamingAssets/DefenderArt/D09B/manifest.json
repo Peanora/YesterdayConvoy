@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "task": "D09B",
+  "ppu": 117.6,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.45484034197671075,
+      "pivotY": 0.1183899909836905,
+      "sourceBounds": [
+        -198.64047241210938,
+        -16.498092651367188,
+        251.88133239746094,
+        466.3404235839844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 95,
+      "duration": 1.5666667222976685,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.45484034197671075,
+      "pivotY": 0.1183899909836905,
+      "sourceBounds": [
+        -198.64047241210938,
+        -16.498092651367188,
+        251.88133239746094,
+        466.3404235839844
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 14,
+          "width": 2016,
+          "height": 448
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "c5877cc18200b8aeabce58b40af271e9fd1c603847ed7054754ffce9f8c1aa10"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "d0b78d2b27c55361067cd12860b40af1d731a2a37075e83ccce3a47fbce38c8b"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "106f5670a4257a8e698659a9b6a67d3a4eb8829794f7afd503bfd13eda657034"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_121_lava; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

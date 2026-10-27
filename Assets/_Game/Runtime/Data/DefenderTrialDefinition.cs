@@ -26,6 +26,20 @@ namespace YesterdayConvoy
         public Vector3[] route;
         public DefenderPlacement[] defenders;
         public Material[] surfaces;
+        public string mapId, mapTitle;
+        public bool autumnRuins;
+        public TacticalLane[] lanes;
+        public Vector2Int[] raised;
+        public Texture2D floorTexture, foliageTexture;
+        public ManualBattleDefinition[] rosterCards;
+        public bool Tactical => lanes!=null && lanes.Length>0;
+        public DeploymentLane[] LaneSnapshot()
+        {
+            if(!Tactical) return null;
+            var result=new DeploymentLane[lanes.Length];
+            for(int i=0;i<result.Length;i++) result[i]=new DeploymentLane(lanes[i].id,lanes[i].exitId,lanes[i].points);
+            return result;
+        }
         public DefenderSettings[] Snapshot()
         {
             if (battle==null || defenders==null || defenders.Length!=8) throw new InvalidOperationException("Eight defenders required.");
@@ -39,5 +53,11 @@ namespace YesterdayConvoy
             _=new RouteMotion(route, battle.Snapshot().Speed);
             return result;
         }
+    }
+    [Serializable]
+    public sealed class TacticalLane
+    {
+        public string id,exitId;
+        public Vector3[] points;
     }
 }
