@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "task": "D06B",
+  "ppu": 120.8496551724138,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.44214209938049315,
+      "pivotY": 0.27828475591725316,
+      "sourceBounds": [
+        -307.0992736816406,
+        -137.35284423828125,
+        404.5441589355469,
+        505.6169738769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 24,
+          "width": 1920,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.44214209938049315,
+      "pivotY": 0.27828475591725316,
+      "sourceBounds": [
+        -307.0992736816406,
+        -137.35284423828125,
+        404.5441589355469,
+        505.6169738769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-01.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1600
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "b890dabfc23270a8daaac94e297af875294a301d4c0fcf88c18cf490e041ebf8"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "cfe26ade15454ce48874d44dd3784b4184a84a35840da06dbbafb4e658ae8edd"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "f4d2e9d72e19cc94e9d6bf361d690e2c8d403ba3448b705c2c6eec80be303518"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "d094d529b539170595bf215947e272a44c839bb385b60860d80ea148f33bf18d"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_192_falco; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

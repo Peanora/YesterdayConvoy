@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24d8feef201d9c84ab3f9ffcf677f82b, type: 3}
+  m_Name: D11-combat
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.EngagementDefinition
+  kroosSprite: {fileID: 21300000, guid: df33ff5010c717346aebb937c6e5426b, type: 3}
+  defenderPosition: {x: -1, y: 0.35, z: 1}
+  unitAttack: 25
+  unitArmor: 3
+  unitRange: 3.2
+  unitInterval: 1.7
+  defenderHealth: 210
+  defenderAttack: 24
+  defenderArmor: 3
+  defenderRange: 3.2
+  defenderInterval: 1
+  blockCount: 0
+  blockRadius: 0.65
+  initialSP: 8
+  requiredSP: 12
+  spPerSecond: 1
+  skillAmmo: 6
+  skillAttack: 60
+  skillInterval: 6
+  skillRange: 3.8
+  projectileTime: 0.65
+  fireRain: 1
+  hasSkill: 1
+  melee: 0
+  noOrdinaryAttack: 0
+  attackDuration: 0
+  attackWindup: 0
+  damageType: 0
+  defenderResistance: 0
+  armorShred: 0
+  blastAttack: 0
+  blastRadius: 0
+  blastDelay: 0
+  coldDuration: 0
+  frozenAttackMultiplier: 0
+  coldAttackEvery: 0
+  tauntLevel: 0
+  attackColdDuration: 0
+  frostNova: 0
+  regenerationFraction: 0
+  attackTargets: 0
+  lifeSteal: 0
+  healer: 0
+  artsBarrier: 0
+  unitResistance: 0
+  defenderDamageType: 0
+  mudrock: 0
+  phalanx: 0
+  flamechaser: 0
+  revealsInvisible: 0
+  flamerazer: 0
+  mandragora: 0
+  nervousCreeper: 0
+  harvester: 0
+  firstSpeaker: 0
+  shackler: 0
+  tacticalCommander: 0
+  orderRunner: 0
+  orderSniper: 0
+  patriot: 0
+  extraDefenders:
+  - {x: 1, y: 0.35, z: -2}
+  - {x: 3, y: 0.35, z: 2}

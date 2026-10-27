@@ -89,6 +89,7 @@ namespace YesterdayConvoy
                 menuSmall=new GUIStyle(smallStyle){fontSize=15,wordWrap=true};
                 menuSearch=new GUIStyle(GUI.skin.textField){font=scene.InterfaceFont,fontSize=16,padding=new RectOffset(9,9,6,6)};
             }
+            if(defenderMenuOpen){DrawDefenderSelection();return;}
             Fill(new Rect(0,0,1280,720),new Color(.025f,.04f,.055f,.99f));
             Fill(new Rect(0,0,10,720),new Color(.37f,.8f,.86f));
             GUI.Label(new Rect(54,30,650,26),"昨日圆车  /  单怪测试",smallStyle);
@@ -98,6 +99,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(840,62,360,64),"八人防线 · 折线工业地图",buttonStyle)) TryEnterDefenderTrial();
             if(GUI.Button(new Rect(790,136,210,44),"泵站回廊 · 4红2蓝",buttonStyle)) TryEnterTacticalMap("city");
             if(GUI.Button(new Rect(1008,136,210,44),"金叶环庭 · 3红2蓝",buttonStyle)) TryEnterTacticalMap("ruins");
+            if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 原8名 / 新4名",buttonStyle))defenderMenuOpen=true;
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));
@@ -141,14 +143,14 @@ namespace YesterdayConvoy
                 index++;
             }
             GUI.EndScrollView();
-            Fill(new Rect(774,188,452,438),new Color(.045f,.07f,.095f));
-            GUI.Label(new Rect(794,202,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
+            Fill(new Rect(774,242,452,384),new Color(.045f,.07f,.095f));
+            GUI.Label(new Rect(794,256,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
             GUI.SetNextControlName("MonsterTestSearch");
-            pendingFilter=GUI.TextField(new Rect(794,247,410,32),pendingFilter,40,menuSearch);
-            if(string.IsNullOrEmpty(pendingFilter)) GUI.Label(new Rect(805,251,380,24),"输入名字筛选待制作怪物",menuSmall);
+            pendingFilter=GUI.TextField(new Rect(794,301,410,32),pendingFilter,40,menuSearch);
+            if(string.IsNullOrEmpty(pendingFilter)) GUI.Label(new Rect(805,305,380,24),"输入名字筛选待制作怪物",menuSmall);
             var pending=new List<MonsterTestOption>();
             foreach(var option in monsterTests) if(!option.Playable && (string.IsNullOrEmpty(pendingFilter) || option.Name.IndexOf(pendingFilter,StringComparison.OrdinalIgnoreCase)>=0)) pending.Add(option);
-            pendingScroll=GUI.BeginScrollView(new Rect(790,292,426,306),pendingScroll,new Rect(0,0,400,pending.Count*34));
+            pendingScroll=GUI.BeginScrollView(new Rect(790,346,426,252),pendingScroll,new Rect(0,0,400,pending.Count*34));
             for(int i=0;i<pending.Count;i++)
             {
                 Fill(new Rect(0,i*34,396,30),i%2==0 ? new Color(.075f,.105f,.13f) : new Color(.055f,.08f,.105f));

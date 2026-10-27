@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "task": "D05B",
+  "ppu": 117.6053691275168,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.43348345862494575,
+      "pivotY": 0.29532918536778624,
+      "sourceBounds": [
+        -273.8419494628906,
+        -96.08629608154297,
+        374.6670227050781,
+        406.2866516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 22,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack_Loop",
+      "count": 70,
+      "duration": 1.1666666269302368,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.43348345862494575,
+      "pivotY": 0.29532918536778624,
+      "sourceBounds": [
+        -273.8419494628906,
+        -96.08629608154297,
+        374.6670227050781,
+        406.2866516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 21,
+          "width": 2016,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "attack_end",
+      "source": "Attack_End",
+      "count": 33,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.43348345862494575,
+      "pivotY": 0.29532918536778624,
+      "sourceBounds": [
+        -273.8419494628906,
+        -96.08629608154297,
+        374.6670227050781,
+        406.2866516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_end-00.png",
+          "count": 33,
+          "width": 2016,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "attack_start",
+      "source": "Attack_Start",
+      "count": 33,
+      "duration": 0.5333333611488342,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.43348345862494575,
+      "pivotY": 0.29532918536778624,
+      "sourceBounds": [
+        -273.8419494628906,
+        -96.08629608154297,
+        374.6670227050781,
+        406.2866516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_start-00.png",
+          "count": 33,
+          "width": 2016,
+          "height": 1440
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "f38bb9a685b147bb5b0c672566c2d12c44c476b55930f45d7a489f7c9776e3da"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "eb6a001444f199f60f0a65a03dd07d5ef66e9849bcab9430f04fe2a6d1df212d"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "8703035afebb53c5f5562cdce252e5e80627b181d3d4c7dd95c4d76ddb669f02"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "642d48fd0dfd02f4c57f9e90bcd955509b768a61a2a79c4475d6bd0fc2a1a039"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "a8a640d12431c6591645593247e92c1773b46055d685cbba3ada75fadc49e5f4"
+    },
+    {
+      "file": "extra_attack_end-00.png",
+      "sha256": "2837659f6f1c87704d3c4ebcdf8b5a724f0d062d1779435b3a4e6ef1a1f1f15e"
+    },
+    {
+      "file": "extra_attack_start-00.png",
+      "sha256": "0903fecfa13b946d4eb5e393931269c28beb22a97a75616c52db2520ff9b9eee"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_283_midn; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

@@ -178,7 +178,8 @@ namespace YesterdayConvoy
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
         private float DefenderAttackRate(DefenderState defender) =>
-            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1);
+            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1);
         private void DefeatUnit(DeployedUnitState unit)
         {
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}
@@ -221,7 +222,8 @@ namespace YesterdayConvoy
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
-        public float DefenderArmor(DefenderState defender) => defender.Settings.Armor-defender.ArmorReduction;
+        public float DefenderArmor(DefenderState defender) => defender.Settings.Armor*
+            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 

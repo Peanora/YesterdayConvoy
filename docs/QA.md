@@ -1,5 +1,57 @@
 # 验证证据与回归
 
+## 2026-10-27：#43 保留两批记录并同步主分支
+
+按人类要求整理STATUS/QA冲突：#42先同步main8dbdd5a，再合入#43。两份文档的原八人章节、新四人章节及既往验证全文均保留，补齐当前状态与压缩合并说明；没有把前批4人的结果与后批8人结果混为一次运行。最终相对7aa26ed仅STATUS/QA新增说明，所有运行文件、配置、素材和meta一致；main8dbdd5a已成为本分支祖先。
+
+本轮实际执行仓库结构/Unity元数据检查、两份文档的本地链接与冲突标记检查、暂存差异和运行文件等同性核对。Unity编译、EditMode、PlayMode和Windows构建均未重跑；现有EXE仍对应7aa26ed的已测运行内容，不新打包、不更新ZIP/Releases。PR内容冲突整理后正常推送，仍由人类审查合并。
+
+## 2026-10-27：原8名守军所选技能补齐
+
+本轮按人类已确认的范围，在codex/defender-original-eight-skills上完成8人技能，并应用到原八人防线及city/ruins；分支起于同步main172dc06并吸收PR #40/#42，未合并main。详细机制、原文链接、配置、动作与未做项见[本轮说明](DEFENDER-ORIGINAL-EIGHT-SKILLS.md)。
+
+| 实际验证 | 结果及证据 |
+| --- | --- |
+| 配置/幂等 | OriginalEightSkillTools.Apply/Validate通过；复跑后既有配置差异完全一致，artifacts/eight-skills-idempotence.log。8个新独立配置、三份混合防线均有对应技能，旧4个独立配置不变。 |
+| 最终EditMode | 240/240通过、零跳过；artifacts/eight-skills-final-edit.xml。新增12项覆盖防御/破甲与过期、治疗切换、伤害倍率、攻击回技力与逐箭扣甲、来源死亡取消后箭、高甲/嘲讽优先、医疗不攻击、停顿实际距离/暂停/过期、群攻与攻速、三份混合配置。 |
+| 完整GPU PlayMode | 最后68/68通过、零跳过，artifacts/eight-skills-final-play.xml；包含原怪物/队友特殊能力、旧4人、原防线/双地图，以及新8人逐个入口的原模型、屏幕平行比例、战前idle、暂停拖动/SP/动作冻结、真实技能效果、重开与返回。 |
+| 最终Windows构建 | BaselineTools.BuildWindows通过，995002061 bytes、0错误；artifacts/eight-skills-release-build.log。最后修改为单人HUD说明避让及素材SHA索引，未改PNG或已验证战斗逻辑。 |
+| 原8人独立Player | D01/D03/D04/D07/D08/D09/D10/D12均实际退出0，artifacts/eight-player-Dxx/player.log。ORIGINAL_EIGHT_SKILL的entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全部True。以猎狗观察技能后用塔露拉完成实际胜利。 |
+| 最终产物复核 | 最终EXE再跑D07、D03、旧D06与city/ruins，全部退出0，artifacts/eight-release-*/player.log。两图四卡独立DP/次数/CD、全部红门比例、准备待机、暂停、正背面/左右、无误继承技能、真实破甲、0.03×点选施放、胜利/重开/返回全部True。D06玩家猎狗不要求主动技能。 |
+| 资源/仓库 | 新5PNG共4712263 bytes，原SHA保留，必要meta和完整运行清单跟踪；补齐7个旧已跟踪图集页的manifest.files哈希索引，无PNG变更。Git忽略/实际跟踪、GUID/引用与保护路径检查通过，check_repository仅是结构检查，不替代Unity运行证据。 |
+
+初次新测试有2处测试编译错误（约束名和构造参数）及5处样板设置/时间窗口错误；按现有入口占用/CD、合法门间距和投射物延迟修正测试，未放宽运行规则。最终240 Edit和68 GPU全部通过。实际检查米格鲁技能起手、斑点治疗、克洛丝连射及双地图画面，截图见本轮说明；没有把单张截图当成完整逐帧美术验收。
+
+交付本地EXE：`E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-原八名守军完整技能/YesterdayConvoy.exe`。对应源码、复制校验与操作见同目录BUILD-INFO.txt；复制后重新启动检查结果保留在artifacts/eight-delivered-D07。全目录文件复制保持SHA256一致，保留字体/音频/美术权利记录。不创建ZIP/Releases，不自动合并main。
+
+原E:/珍贵资料/昨日圆车仍保持main及既存未跟踪设置，PackageManagerSettings.asset SHA256仍为312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2。本轮主场景文件、Prefab、Packages和ProjectSettings均未改。
+
+未运行第二台电脑离线、长时性能、正式平衡、所有正背面动作逐帧人工验收；没有复刻原作逐格范围/全部培养天赋/整套外置技能特效。剩余18名守军仍待后续。
+
+## 2026-10-27：#42 压缩合并后的冲突整理
+
+人类要求整理冲突。已同步main8dbdd5a，证实其文件树5c451604与#40最终9314705完全一致；在#42分支逐文件按此共同内容三方合并，再加入main父历史。12个冲突文件包括共享脚本及文档；解决后完整暂存树与e3e64d4原已测树相同，未通过整文件选择某一方丢弃改动。随后只给STATUS/QA新增本轮说明，原设计、来源和所有测试记录保留。
+
+实际执行：Git冲突索引/标记清理、文件树等同检查、文档内容及本地链接检查、git diff --check、tools/check_repository.py。Unity编译、EditMode、PlayMode及Windows构建本轮均未运行；代码、素材和配置与既有#42已测版本完全相同，不需要重打试玩包。没有修改主场景/Prefab/Packages/ProjectSettings或原工程既存未跟踪设置，不自动合并main。
+
+## 2026-10-27：守军技能第一批
+
+本轮从已同步main172dc06创建codex/defender-skills-batch1，并以PR #40现有提交为依赖。角色/模型/技能范围经人类选定为“22名连同完整技能分批制作”，本轮为其中4名的可玩闭环。相关代码、数据流、来源、数值及机制适配见[本批说明](DEFENDER-SKILLS-BATCH1.md)。
+
+| 实际验证 | 结果及阶段 |
+| --- | --- |
+| 配置/素材 | DefenderSkillTrialTools.CreateBatch1与ValidateBatch1通过；4组独立配置/8份正背面包，53个运行文件/45PNG。保留原PNG，尺度/脚底元数据规范化。 |
+| EditMode | 228/228、零跳过，artifacts/defender-batch1-release-EditMode.xml。新增12项覆盖实际恢复40%/不复活、物理→法术→物理、伤害倍率/远程惩罚/暴击、攻速与前摇/暂停、扩范围实际治疗及附加目标去重、冻结不能施放、无普攻与非法配置，以及旧寒冷只改变间隔、不误改原前摇。 |
+| 完整GPU PlayMode | 最终67/67全部通过、零跳过，artifacts/defender-batch1-release-PlayMode.xml。首次新四人场景因远程对手未进入翎羽射程而失败，改为近身猎狗；最终完整回归包含旧8人、地图、怪物/队友能力与新四人。 |
+| 最终定向GPU | 1/1通过、零跳过，artifacts/defender-batch1-scene-final.xml；同一项依次覆盖4角色，翎羽使用专用低伤高生命猎狗检查近战；准备idle/动作比例/合法拖动/暂停SP冻结/各技能真实效果/重开返回均通过。随后增加旧行为兼容性保护，最终再次运行全部67项通过。 |
+| 最终Windows | BaselineTools.BuildWindows，990260719 bytes、0错误；artifacts/defender-batch1-final-build.log。 |
+| 独立Player | D02/D05/D06/D11全部退出0；artifacts/defender-batch1-player-Dxx/player.log，entered/models/preparation/deployed/paused/skill/effect/playerSkillOrNotRequired/won/reset/restored全部True。D06玩家单位无技能，playerSkillOrNotRequired表示该检查不适用。 |
+| 最后文字/菜单 | 只调整选择页底部操作说明及证据截图后重新构建，D02再启动通过；artifacts/defender-batch1-release-D02/player.log。运行逻辑未变。 |
+
+初次Edit编译因测试把attackTargets放错构造参数失败，改为既有MonsterEffectSettings后通过，最终新增兼容性用例共228项通过；没有修改游戏接口迁就测试。近战角色的远程对手失败缩小为实际射程关系后修正样板，不放宽技能索敌。所有失败中间结果保留在本地日志，不计为最终通过。
+
+本轮没有修改主场景、Prefab、Packages或ProjectSettings；没有创建Spine运行库或游戏新包。素材及meta随源码跟踪；工作区/缓存/日志/构建/AGENTS不提交。未做第二台电脑离线、长时性能/正式平衡、全部动作逐帧人工验收或剩余18人技能；不把四个技能样板等同于全部原作培养/经济系统。
+
 ## 2026-10-27 后续源码上传
 
 用户在本地验收交付后明确要求上传GitHub，授权将`4e2c79f`运行修正及其着色器/meta、测试和实机截图推送原功能分支、更新PR #40。此前“仅本地”说明为历史执行边界。上传前工作区干净，已fetch核对远端PR仍开放、分支可正常快进；运行依赖均已跟踪。此次只更新交付说明并提交，没有修改运行代码，沿用下方真实Unity/Player证据，不重复声称运行了测试。无main合并、EXE上传、ZIP或Release操作。

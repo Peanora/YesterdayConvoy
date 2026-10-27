@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "task": "D06",
+  "ppu": 118.4,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 180,
+      "duration": 3,
+      "fps": 60,
+      "loop": true,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.44214209938049315,
+      "pivotY": 0.28134317302703854,
+      "sourceBounds": [
+        -307.0992736816406,
+        -137.35284423828125,
+        404.5441589355469,
+        505.6169738769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-02.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-03.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-04.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.44214209938049315,
+      "pivotY": 0.28134317302703854,
+      "sourceBounds": [
+        -307.0992736816406,
+        -137.35284423828125,
+        404.5441589355469,
+        505.6169738769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-01.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1600
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.44214209938049315,
+      "pivotY": 0.28134317302703854,
+      "sourceBounds": [
+        -307.0992736816406,
+        -137.35284423828125,
+        404.5441589355469,
+        505.6169738769531
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "death-01.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1600
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "1daa0b03b3563e414c19a3e92cc68fa8ef53cb01f5e893652e75d4ebba4ca0fe"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "c92b2a84d516b96b19fc01e6be5e9d5273b0a668af6b6f040217402b9764732c"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "310ae9306eed476b4178ae803c1be2a4337bd4d43052ff7c608a2fb6eacfb917"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "f077f0bf9ee0bfbdea21b63eb66c5ccf2e6da5e57c5f529a836582ffded9fd43"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "571f7610d8a2bdd0f58eda6bb57bbaff711e28c2bbf1adddd4bba5a1edb23a28"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "3db377bf58866c3d0e590b7708eb1145dcbca1ea05b71c2dddc9b3c4de6a17a9"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "258d1c9c81069c490b5c259dd86cc46a2953c4553d12d3be9660b7fe6864aa8e"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "f67fbb16d5cd1abcddf842444e7326d0286b75c16dd459d153653e19399c9d5d"
+    },
+    {
+      "file": "idle-04.png",
+      "sha256": "54c9a89e6b1e6b3204a3c3c8cfcc655cc8d2714e14d0fed17ceb64e326e73b9f"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "2d8b24e74798f3807e3b5e1b57f7e5c9d9efa59cbe4169464ec67bd406ac0826"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_192_falco; open redistribution license unconfirmed. No gameplay integration."
+}
