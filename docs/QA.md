@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-10-27：PR #14 / #16 / #17 与周末 main 的兼容整合
+
+基线：实时fetch的 `origin/main cbe321b543f54fa20f8efc694639ea276101c9b5`，文件树与已合并#27最终 `7ec2860` 完全相同。继续干净的 `codex/defender-mixed-map` / PR #17，依次merge main、原#16和#14，保留全部父提交及双方意图；没有rebase、强推、整文件ours/theirs、main提交或自动合并。原工程main及未跟踪的PackageManagerSettings保持不动。初版运行源码 `e0ce1c39fd64958f90e0acb82f9c4f88008dc00b`；最终运行源码 `16315a863bcfa86e39ed769132854c12e934b306` 另修正下述场景卸载及诊断文字问题；后续仅文档。
+
+- main的6个冲突文件：EngagementCombat、EngagementView、ManualBattleController、MonsterEffects、QA、ASSET_MANIFEST；随后合入#16/#14的同位置文档插入均并存。独立守军生命/护甲/范围/医疗/群攻保留，同时复用统一TryDamageUnit处理法抗、屏障、复活及死亡；枷锁/神经眩晕、冻结/冰环/凝视减速、嘲讽、待结算爆炸均保留。旧守军转换携带原伤害类型；CombatShot保留main的coldDuration位置及两分支新增字段。留声机改用守军自身生命上限，避免医疗错误封顶。
+- Unity **6000.6.5f1：209/209 EditMode，58/58 GPU PlayMode，零失败、零跳过**。新增4个交叉逻辑用例：独立法术守军实际打掉屏障而非直接扣HP、致命攻击触发霜星复活、枷锁使独立守军不阻挡/不起攻击、不同最大生命守军的留声机治疗不超量。完整Play包含8人切换/暂停拖放/治疗/火雨/返回，以及原怪物、设施与首领场景。证据：artifacts/integration-edit.xml、integration-play.xml及同名log。
+- 最终16315a8 Windows Development Build **900,715,441字节、0错误**；40份单位及场景校验通过，日志artifacts/integration-final-build.log。主场景、已有Prefab、Packages、ProjectSettings与main无差异。没有重建队友三个独立设施/游击队/爱国者Player；它们的实际场景由完整GPU Play覆盖。
+- 初版e0ce1c3独立Player共10组：八人防线、combat、talulah、interaction、monsterSelection、M09、M14、M27、M33、M38，全部退出0，检查符合预期。M14自然冰环/复起、M27显式法术靶真实破盾、M38原动作与20次枷锁、M33不普攻均成立；M33 attacked=False是预期，policy=True。结果artifacts/integration-player-results.json，逐项日志integration-player-*.log。并非真人完整键鼠通关。
+- 资源：625个manifest列出文件哈希与meta通过；九张PR14卡面从原idle重新计算像素一致；资源清单303个唯一ID。全部717份StreamingAssets非meta文件与最终Player逐一SHA一致，1495份媒体/目录meta等均已Git跟踪，无依赖仅留作者电脑。仓库2936跟踪文件静态检查及git diff --check通过；检查不冒充Unity测试。
+- 完整本地试玩目录：`E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-PR整合-16315a8/YesterdayConvoy.exe`。965个构建文件复制后逐一SHA匹配，另附BUILD_INFO.json和游玩说明；保留完整目录，不单取EXE。该包对应PR #17，未自动合入main；不ZIP、不更新Releases。
+- 首次隐藏Player逻辑检查通过，但ScreenCapture失败，不算画面证据。随后从复制目录用可见D3D12窗口重跑八人防线和选择页，均退出0，实际取得9张HUD图，查看了八人站位及M09/M10卡面。画面中发现真实守军显示“法术测试靶”，已限制该文字只出现在诊断关。
+- 文案修正后的5项定向Play首次4过/1失败，暴露切场景时DefenseTrialMap.OnDestroy访问已销毁红蓝门的MissingReferenceException（artifacts/integration-final-menu.xml）。修正为幂等清理、逐个判空，只恢复借用的旧相机；新增活动防线直接重载场景回归。最终16315a8 **59/59完整GPU Play通过，零失败零跳过**（artifacts/integration-final-play.xml）。核心战斗代码未再改变，209项Edit结果保留，未冒称在文案/场景清理修复后重跑Edit。
+- 最终16315a8构建复制后再次从交付目录可见运行：八人防线与选择页两个Player退出0，所有检查True、无异常，再取得5+4张完整HUD图；已查看最终8人站位/无诊断文字、实战火雨和卡面。日志integration-final-player-defenders/selection.log，图片artifacts/integration-final-visible/，结果integration-final-visible-results.json。前10组广泛Player是在e0ce1c3执行，未冒称均在最终文案/清理补丁后重跑。
+
+关键连接：DefenderTrialDefinition → 每人的DefenderSettings/DefenderState → CombatShot → 共享伤害/控制/设施逻辑 → DefenderRosterView与EngagementView；旧单怪仍从原EngagementSettings构造兼容守军。剩余22名仅合并预览文档，未导入或确认；8人完整技能、正式商店/阵容/羁绊仍未实现。未执行第二台电脑、长时低配或人类连续通关；来源与原作再分发权利状态按原记录，上传决定不是权利人许可。
+
 ## 2026-10-25：透明角色卡面与课堂入口修复
 
 M02至M10不再把带说明文字的portrait海报缩进卡牌，而是复用本角色已有idle首帧并去除外围透明留白。M11及后续原有透明立绘保持。纹理仅在首次裁出Sprite时保留CPU读取，随后释放可读副本；同一卡复用缓存。不生成新PNG、不改原meta/GUID或战斗动作。
