@@ -15,8 +15,12 @@ namespace YesterdayConvoy
         public CombatDamageType damageType;
         public float splashRadius;
         public float healingRange;
+        public DefenderSkillDefinition skill;
+        public bool noOrdinaryAttack;
+        public float rangedAttackMultiplier=1,criticalChance,criticalMultiplier=1.5f,extraHealChance;
         public DefenderSettings Snapshot() => new DefenderSettings(id, displayName, artId, position,
-            health, attack, armor, range, interval, blocks, role, damageType, windup, actionDuration, splashRadius, healingRange:healingRange);
+            health, attack, armor, range, interval, blocks, role, damageType, windup, actionDuration, splashRadius, healingRange:healingRange,
+            skill:skill?.Snapshot()??default,canAttack:!noOrdinaryAttack,rangedAttackMultiplier:rangedAttackMultiplier,criticalChance:criticalChance,criticalMultiplier:criticalMultiplier,extraHealChance:extraHealChance);
     }
 
     [CreateAssetMenu(menuName="Yesterday Convoy/Defender Trial")]
@@ -32,6 +36,7 @@ namespace YesterdayConvoy
         public Vector2Int[] raised;
         public Texture2D floorTexture, foliageTexture;
         public ManualBattleDefinition[] rosterCards;
+        public string defenderTestId;
         public bool Tactical => lanes!=null && lanes.Length>0;
         public DeploymentLane[] LaneSnapshot()
         {
@@ -42,7 +47,7 @@ namespace YesterdayConvoy
         }
         public DefenderSettings[] Snapshot()
         {
-            if (battle==null || defenders==null || defenders.Length!=8) throw new InvalidOperationException("Eight defenders required.");
+            if (battle==null || defenders==null || defenders.Length==0 || defenders.Length>30) throw new InvalidOperationException("One to thirty defenders required.");
             var ids=new HashSet<string>(); var result=new DefenderSettings[defenders.Length];
             for(int i=0;i<result.Length;i++)
             {

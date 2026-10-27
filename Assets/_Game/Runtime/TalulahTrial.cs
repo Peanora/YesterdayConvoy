@@ -31,6 +31,11 @@ namespace YesterdayConvoy
 
         private void DrawTrialSelector()
         {
+            if(DefenderSkillTrialActive)
+            {
+                if(GUI.Button(TestReturnRect,"返回守军选择",buttonStyle)){ReturnToMonsterTests();defenderMenuOpen=true;}
+                return;
+            }
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
             if(TacticalMapActive) return;
             if(DefenderTrialActive)

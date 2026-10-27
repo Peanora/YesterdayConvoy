@@ -178,7 +178,8 @@ namespace YesterdayConvoy
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
         private float DefenderAttackRate(DefenderState defender) =>
-            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1);
+            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1);
         private void DefeatUnit(DeployedUnitState unit)
         {
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}

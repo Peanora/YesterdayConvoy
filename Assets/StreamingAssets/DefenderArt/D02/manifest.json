@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "task": "D02",
+  "ppu": 118.4,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.4913018258412679,
+      "pivotY": 0.15280335267384842,
+      "sourceBounds": [
+        -204.76097106933594,
+        -42.115936279296875,
+        213.5507049560547,
+        392.96728515625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 20,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.4913018258412679,
+      "pivotY": 0.15280335267384842,
+      "sourceBounds": [
+        -204.76097106933594,
+        -42.115936279296875,
+        213.5507049560547,
+        392.96728515625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.4913018258412679,
+      "pivotY": 0.15280335267384842,
+      "sourceBounds": [
+        -204.76097106933594,
+        -42.115936279296875,
+        213.5507049560547,
+        392.96728515625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "6fd1fc98e28102b0bce6417cbc25e12c41c9b4f221827c52115c1b99461792f6"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "145236b174b41515d658372ef0a9e9c0889fa5e39585ebf8188667190280d81a"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "7e53807cd2d333bebd97abac2d7184113c0688782ed15d343f84a3203bbdd902"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "a3e4cb827c671afb109976d9437351c304158e2d9fc502dce0dec9558157957c"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "0122d4052fb57330d8477c92da4600937d8fea5afdfe4640e7db726055d87e2a"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_209_ardign; open redistribution license unconfirmed. No gameplay integration."
+}

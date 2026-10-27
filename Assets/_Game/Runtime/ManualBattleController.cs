@@ -72,6 +72,13 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
+            int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
+            if(defenderSmoke>=0&&defenderSmoke+1<args.Length)
+            {
+                diagnostic=true;Application.runInBackground=true;TestSelectionOpen=false;
+                int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyDefenderSkillTrial(args[defenderSmoke+1],evidence>=0&&evidence+1<args.Length?args[evidence+1]:null));
+            }
             int rosterSmoke=Array.IndexOf(args,"-tacticalRosterSmokeTest");
             if(rosterSmoke>=0 && rosterSmoke+1<args.Length)
             {
@@ -465,6 +472,14 @@ namespace YesterdayConvoy
             float width=TacticalMapActive ? 62 : 96;
             Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
+            if(d.Settings.Skill.Enabled)
+            {
+                bool active=Battle.DefenderSkillActive(d);float fill=active?(float)((d.SkillActiveUntil-Battle.Clock)/d.Settings.Skill.Duration):d.SkillSP/d.Settings.Skill.RequiredSP;
+                Fill(new Rect(x-width/2,y+9,width,5),new Color(.03f,.05f,.06f));
+                Fill(new Rect(x-width/2+1,y+10,(width-2)*Mathf.Clamp01(fill),3),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
+                string skill=DefenderSkillName(d.Settings.Skill.Kind)+(active?$" {Math.Max(0,d.SkillActiveUntil-Battle.Clock):0.0}s":$" {d.SkillSP:0}/{d.Settings.Skill.RequiredSP:0}");
+                GUI.Label(new Rect(x-120,y-27,260,25),skill,smallStyle);
+            }
             string status=Battle.DefenderShackled(d)?"枷锁禁锢":d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :
                 !DefenderTrialActive && d.Settings.DamageType==CombatDamageType.Arts ? "法术测试靶" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");

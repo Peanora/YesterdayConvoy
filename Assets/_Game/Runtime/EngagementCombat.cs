@@ -64,6 +64,16 @@ namespace YesterdayConvoy
         public float MaxHealth => Settings.Health;
         public double LastActionTime { get; internal set; } = double.NegativeInfinity;
         public bool LastActionHealing { get; internal set; }
+        public float LastActionRate {get;internal set;}=1;
+        public float SkillSP {get;internal set;}
+        public int SkillCasts {get;internal set;}
+        public double SkillStartedAt {get;internal set;}=double.NegativeInfinity;
+        public double SkillActiveUntil {get;internal set;}=double.NegativeInfinity;
+        public float SkillHealthRestored {get;internal set;}
+        public int CriticalHits {get;internal set;}
+        public int ExtraHeals {get;internal set;}
+        private uint randomState=2166136261;
+        internal float Roll(){randomState^=randomState<<13;randomState^=randomState>>17;randomState^=randomState<<5;return(randomState&0xffffff)/16777216f;}
         public Vector3 Position { get; }
         public float Health { get; internal set; }
         public bool Alive => Health > 0;
@@ -84,7 +94,7 @@ namespace YesterdayConvoy
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
         internal DefenderState(DefenderSettings settings)
-        { Settings=settings; EntityId=settings.Id; Position=settings.Position; Health=settings.Health; }
+        { Settings=settings; EntityId=settings.Id; Position=settings.Position; Health=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
     }
 
     public sealed class CombatShot
@@ -341,6 +351,7 @@ namespace YesterdayConvoy
                 }
             }
             if(Defense==0) return;
+            StepDefenderSkills(step);
             foreach(var d in defenders)
             {
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)) continue;
@@ -349,22 +360,20 @@ namespace YesterdayConvoy
                 {
                     DefenderState wounded=null;
                     foreach(var ally in defenders)
-                        if(ally.Alive && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=spec.HealRange &&
+                        if(ally.Alive && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=DefenderHealRange(d) &&
                             (wounded==null || ally.Health/ally.MaxHealth<wounded.Health/wounded.MaxHealth)) wounded=ally;
                     if(wounded!=null)
                     {
                         d.TargetId=wounded.EntityId;
                         if(Clock+1e-6>=d.NextAttackTime)
                         {
-                            d.LastActionTime=Clock; d.LastActionHealing=true;
-                            d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
-                            combatShots.Add(new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
-                                Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,healing:true));
+                            ScheduleDefenderHealing(d,wounded,guardSettings.ProjectileTime);
                         }
                         continue;
                     }
                     if(spec.Role==DefenderRole.Medic) { d.TargetId=null; continue; }
                 }
+                if(!spec.CanAttack){d.TargetId=null;continue;}
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
                 if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>spec.Range ||
@@ -381,11 +390,12 @@ namespace YesterdayConvoy
                     d.TargetId=target?.EntityId;
                 }
                 if(target==null || Clock+0.000001<d.NextAttackTime) continue;
-                d.LastActionTime=Clock; d.LastActionHealing=false;
+                d.LastActionTime=Clock; d.LastActionHealing=false;d.LastActionRate=DefenderAnimationRate(d);
                 ShotsFired++; LastShotTime=Clock; LastShotEntityId=target.EntityId; LastShotPosition=target.Motion.Position;
                 d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
                 combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
-                    Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,damageType:spec.DamageType,splashRadius:spec.SplashRadius));
+                    Clock+spec.Windup/d.LastActionRate,guardSettings.ProjectileTime,DefenderOrdinaryDamage(d,target),
+                    damageType:DefenderSkillActive(d)&&spec.Skill.Kind==DefenderSkillKind.MidnightEnchant?CombatDamageType.Arts:spec.DamageType,splashRadius:spec.SplashRadius));
             }
         }
 

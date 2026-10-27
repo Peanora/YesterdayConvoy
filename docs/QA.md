@@ -1,5 +1,23 @@
 # 验证证据与回归
 
+## 2026-10-27：守军技能第一批
+
+本轮从已同步main172dc06创建codex/defender-skills-batch1，并以PR #40现有提交为依赖。角色/模型/技能范围经人类选定为“22名连同完整技能分批制作”，本轮为其中4名的可玩闭环。相关代码、数据流、来源、数值及机制适配见[本批说明](DEFENDER-SKILLS-BATCH1.md)。
+
+| 实际验证 | 结果及阶段 |
+| --- | --- |
+| 配置/素材 | DefenderSkillTrialTools.CreateBatch1与ValidateBatch1通过；4组独立配置/8份正背面包，53个运行文件/45PNG。保留原PNG，尺度/脚底元数据规范化。 |
+| EditMode | 228/228、零跳过，artifacts/defender-batch1-release-EditMode.xml。新增12项覆盖实际恢复40%/不复活、物理→法术→物理、伤害倍率/远程惩罚/暴击、攻速与前摇/暂停、扩范围实际治疗及附加目标去重、冻结不能施放、无普攻与非法配置，以及旧寒冷只改变间隔、不误改原前摇。 |
+| 完整GPU PlayMode | 最终67/67全部通过、零跳过，artifacts/defender-batch1-release-PlayMode.xml。首次新四人场景因远程对手未进入翎羽射程而失败，改为近身猎狗；最终完整回归包含旧8人、地图、怪物/队友能力与新四人。 |
+| 最终定向GPU | 1/1通过、零跳过，artifacts/defender-batch1-scene-final.xml；同一项依次覆盖4角色，翎羽使用专用低伤高生命猎狗检查近战；准备idle/动作比例/合法拖动/暂停SP冻结/各技能真实效果/重开返回均通过。随后增加旧行为兼容性保护，最终再次运行全部67项通过。 |
+| 最终Windows | BaselineTools.BuildWindows，990260719 bytes、0错误；artifacts/defender-batch1-final-build.log。 |
+| 独立Player | D02/D05/D06/D11全部退出0；artifacts/defender-batch1-player-Dxx/player.log，entered/models/preparation/deployed/paused/skill/effect/playerSkillOrNotRequired/won/reset/restored全部True。D06玩家单位无技能，playerSkillOrNotRequired表示该检查不适用。 |
+| 最后文字/菜单 | 只调整选择页底部操作说明及证据截图后重新构建，D02再启动通过；artifacts/defender-batch1-release-D02/player.log。运行逻辑未变。 |
+
+初次Edit编译因测试把attackTargets放错构造参数失败，改为既有MonsterEffectSettings后通过，最终新增兼容性用例共228项通过；没有修改游戏接口迁就测试。近战角色的远程对手失败缩小为实际射程关系后修正样板，不放宽技能索敌。所有失败中间结果保留在本地日志，不计为最终通过。
+
+本轮没有修改主场景、Prefab、Packages或ProjectSettings；没有创建Spine运行库或游戏新包。素材及meta随源码跟踪；工作区/缓存/日志/构建/AGENTS不提交。未做第二台电脑离线、长时性能/正式平衡、全部动作逐帧人工验收或剩余18人技能；不把四个技能样板等同于全部原作培养/经济系统。
+
 ## 2026-10-27 后续源码上传
 
 用户在本地验收交付后明确要求上传GitHub，授权将`4e2c79f`运行修正及其着色器/meta、测试和实机截图推送原功能分支、更新PR #40。此前“仅本地”说明为历史执行边界。上传前工作区干净，已fetch核对远端PR仍开放、分支可正常快进；运行依赖均已跟踪。此次只更新交付说明并提交，没有修改运行代码，沿用下方真实Unity/Player证据，不重复声称运行了测试。无main合并、EXE上传、ZIP或Release操作。
