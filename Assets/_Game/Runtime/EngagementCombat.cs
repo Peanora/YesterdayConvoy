@@ -150,27 +150,29 @@ namespace YesterdayConvoy
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
-        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && CombatSettings.HasSkill && unit!=null && unit.Active &&
-            (CombatSettings.FireRain ? Clock<unit.FireRainStartedAt+CombatSettings.SkillInterval :
-            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval);
+        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
+            (UnitCombat(unit).FireRain ? Clock<unit.FireRainStartedAt+UnitCombat(unit).SkillInterval :
+            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+UnitCombat(unit).SkillInterval);
 
         // Readiness stays visible during a full pause; authorization to cast is checked separately.
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
-            return EngagementEnabled && CombatSettings.HasSkill && Phase==BattlePhase.Running && unit!=null && unit.Active &&
-                unit.SkillAmmo==0 && (!CombatSettings.FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
+            return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
+                unit.SkillAmmo==0 && (!UnitCombat(unit).FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
         }
 
         public SkillFailure CheckSkill(string entityId)
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;
             if (!CombatSettings.HasSkill) return SkillFailure.NoSkill;
-            if (IsPaused) return SkillFailure.Paused;
             var unit = FindUnit(entityId);
+            if(unit!=null && !UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
+            if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active) return SkillFailure.MissingEntity;
-            if (unit.SkillAmmo > 0 || CombatSettings.FireRain && IsSkillActionPlaying(unit)) return SkillFailure.AlreadyActive;
-            return unit.SkillSP + 0.00001f >= CombatSettings.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
+            var c=UnitCombat(unit);
+            if (unit.SkillAmmo > 0 || c.FireRain && IsSkillActionPlaying(unit)) return SkillFailure.AlreadyActive;
+            return unit.SkillSP + 0.00001f >= c.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
         }
 
         public SkillFailure TryActivateSkill(int runId, long requestId, string entityId)
@@ -181,10 +183,11 @@ namespace YesterdayConvoy
             SkillFailure failure = CheckSkill(entityId);
             if (failure != SkillFailure.None) return failure;
             var unit = FindUnit(entityId);
-            unit.SkillSP = 0; unit.SkillAmmo = CombatSettings.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
+            var c=UnitCombat(unit);
+            unit.SkillSP = 0; unit.SkillAmmo = c.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
             unit.NextAttackTime = Clock;
-            if(CombatSettings.FireRain)
-            { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+CombatSettings.SkillInterval; }
+            if(c.FireRain)
+            { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+c.SkillInterval; }
             skillRequests.Add(requestId, entityId);
             return SkillFailure.None;
         }
@@ -226,13 +229,14 @@ namespace YesterdayConvoy
                 else
                 {
                     // Freeze can begin or expire while the projectile is in flight.
-                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && guardSettings.Effects.FrozenAttackMultiplier>1;
-                    float attack=shot.Attack*(shot.FrozenBonusApplied ? guardSettings.Effects.FrozenAttackMultiplier : 1);
+                    var source=UnitCombat(unit);
+                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && source.Effects.FrozenAttackMultiplier>1;
+                    float attack=shot.Attack*(shot.FrozenBonusApplied ? source.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
                     DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
-                    HealUnit(unit,shot.DamageDealt*guardSettings.Effects.LifeSteal);
-                    if(defender.Alive) defender.ArmorReduction+=guardSettings.Effects.ArmorShred;
+                    HealUnit(unit,shot.DamageDealt*source.Effects.LifeSteal);
+                    if(defender.Alive) defender.ArmorReduction+=source.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                     if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);

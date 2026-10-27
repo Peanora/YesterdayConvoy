@@ -8,7 +8,7 @@ namespace YesterdayConvoy
     /// <summary>Approved front battle flipbooks, loaded from tracked StreamingAssets. No Spine runtime shipped.</summary>
     public sealed class DefenderArt
     {
-        [Serializable] private sealed class Manifest { public int version; public string task; public float ppu; public ClipData[] clips; }
+        [Serializable] private sealed class Manifest { public int version; public string task; public float ppu; public bool rearVariant; public ClipData[] clips; }
         [Serializable] private sealed class ClipData
         { public string key; public int count, cell, columns; public float duration, pivotX, pivotY; public Page[] pages; }
         [Serializable] private sealed class Page { public string file; public int count, width, height; }
@@ -25,6 +25,7 @@ namespace YesterdayConvoy
         private static readonly Dictionary<string,DefenderArt> Cache=new Dictionary<string,DefenderArt>();
         private readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>();
         public Sprite Portrait { get; private set; }
+        public float ActionDuration => clips["attack"].Duration+(clips.TryGetValue("attack_start",out var start)?start.Duration:0)+(clips.TryGetValue("attack_end",out var end)?end.Duration:0);
         public Clip this[string key] => clips[key];
         public Sprite HealAt(double age) => clips.TryGetValue("heal",out var clip) ? clip.At(age,false) : ActionAt(age);
         public Sprite ActionAt(double age)
@@ -74,11 +75,17 @@ namespace YesterdayConvoy
                     if(frames.Count!=item.count) throw new InvalidDataException("Defender frame count mismatch.");
                     art.clips.Add(item.key,new Clip { Frames=frames.ToArray(),Duration=item.duration });
                 }
-                foreach(string key in new[]{"idle","attack","death"}) if(!art.clips.ContainsKey(key)) throw new InvalidDataException("Missing "+key);
+                if(data.rearVariant && !id.EndsWith("B",StringComparison.Ordinal))throw new InvalidDataException("Invalid rear variant.");
+                foreach(string key in data.rearVariant ? new[]{"idle","attack"} : new[]{"idle","attack","death"}) if(!art.clips.ContainsKey(key)) throw new InvalidDataException("Missing "+key);
                 if(art.clips.ContainsKey("attack_start")!=art.clips.ContainsKey("attack_end")) throw new InvalidDataException("Incomplete attack phases.");
-                var portrait=LoadPng(root,"portrait.png",allocated);
-                art.Portrait=Sprite.Create(portrait,new Rect(0,0,portrait.width,portrait.height),new Vector2(.5f,0),data.ppu);
-                allocated.Add(art.Portrait); Cache.Add(id,art); return art;
+                if(data.rearVariant)art.Portrait=Load(id.Substring(0,id.Length-1)).Portrait;
+                else
+                {
+                    var portrait=LoadPng(root,"portrait.png",allocated);
+                    art.Portrait=Sprite.Create(portrait,new Rect(0,0,portrait.width,portrait.height),new Vector2(.5f,0),data.ppu);
+                    allocated.Add(art.Portrait);
+                }
+                Cache.Add(id,art); return art;
             }
             catch
             {

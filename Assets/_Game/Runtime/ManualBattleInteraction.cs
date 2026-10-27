@@ -48,7 +48,8 @@ namespace YesterdayConvoy
             }
             if(type==EventType.MouseDown)
             {
-                bool handled=RosterSlot.Contains(GUIPosition(screen)) || IsBattlefield(screen);
+                bool handled=IsBattlefield(screen);
+                for(int i=0;i<RosterCount;i++)handled|=CardSlot(i).Contains(GUIPosition(screen));
                 ProcessPointerDown(screen);
                 return handled;
             }
@@ -62,9 +63,10 @@ namespace YesterdayConvoy
             if(TestSelectionOpen) return;
             pointerScreen=screen;
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) { CancelInteraction(); return; }
-            if(RosterSlot.Contains(GUIPosition(screen)))
+            int cardIndex=-1;for(int i=0;i<RosterCount;i++)if(CardSlot(i).Contains(GUIPosition(screen)))cardIndex=i;
+            if(cardIndex>=0)
             {
-                CloseSkillMenu(); Dragging=true; dragRunId=Battle.RunId; Selected=true;
+                selectedRosterIndex=cardIndex; CloseSkillMenu(); Dragging=true; dragRunId=Battle.RunId; Selected=true;
                 Feedback="拖到红门后松手部署；右键/Esc取消"; UpdatePreview(); return;
             }
             if(Dragging) return;
@@ -110,7 +112,7 @@ namespace YesterdayConvoy
             if(unit==null) return Rect.zero;
             Camera cam=Camera.main;
             Vector2 feet=GUIPosition(cam.WorldToScreenPoint(unit.Motion.Position));
-            Vector2 head=GUIPosition(cam.WorldToScreenPoint(unit.Motion.Position+cam.transform.up*1.72f));
+            Vector2 head=GUIPosition(cam.WorldToScreenPoint(unit.Motion.Position+cam.transform.up*UnitVisualHeight(unit)));
             Vector2 side=GUIPosition(cam.WorldToScreenPoint(unit.Motion.Position+cam.transform.right*.58f));
             return Rect.MinMaxRect(feet.x-Mathf.Abs(side.x-feet.x),head.y,feet.x+Mathf.Abs(side.x-feet.x),feet.y+5);
         }
@@ -129,7 +131,7 @@ namespace YesterdayConvoy
                 return order!=0 ? order : b.SpawnTime.CompareTo(a.SpawnTime);
             });
             if(hits.Count==0) return null;
-            if(SkillMenuOpen && hits.Count>1)
+            if((SkillMenuOpen || TacticalMapActive) && hits.Count>1)
             {
                 int current=hits.FindIndex(u=>u.EntityId==selectedEntityId);
                 if(current>=0) return hits[(current+1)%hits.Count].EntityId;
@@ -140,7 +142,10 @@ namespace YesterdayConvoy
         public void OpenSkillMenu(string id)
         {
             if(TestSelectionOpen) return;
-            if(!Battle.EngagementEnabled || !Battle.CombatSettings.HasSkill || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
+            var picked=Battle.FindUnit(id);
+            if(TacticalMapActive && picked?.Active==true && !Battle.UnitCombat(picked).HasSkill)
+            {CloseSkillMenu();selectedEntityId=id;Feedback=CardForUnit(picked).DisplayName+"没有主动技能";return;}
+            if(!Battle.EngagementEnabled || !Battle.UnitCombat(Battle.FindUnit(id)).HasSkill || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
             Dragging=false; Selected=false; selectedEntityId=id; SkillMenuOpen=true;
             Feedback="选择角色技能；点击空白处取消"; UpdatePreview();
         }
@@ -201,7 +206,7 @@ namespace YesterdayConvoy
             {
                 Vector2 p=GUIPosition(pointerScreen);
                 Fill(new Rect(p.x-30,p.y-76,60,70),new Color(.24f,.51f,.58f,.85f));
-                Sprite portrait=OriginalTalulahArt.CardPortrait(definition.Card); Rect source=portrait.textureRect;
+                Sprite portrait=OriginalTalulahArt.CardPortrait(DeploymentDefinition.Card); Rect source=portrait.textureRect;
                 GUI.DrawTextureWithTexCoords(new Rect(p.x-28,p.y-74,56,66),portrait.texture,
                     new Rect(source.x/portrait.texture.width,source.y/portrait.texture.height,source.width/portrait.texture.width,source.height/portrait.texture.height));
             }

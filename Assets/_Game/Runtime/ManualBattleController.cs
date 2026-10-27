@@ -39,7 +39,7 @@ namespace YesterdayConvoy
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
-        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? 1 : 0);
+        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
         private bool DeathPresentationPending
         {
             get
@@ -70,6 +70,13 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
+            int rosterSmoke=Array.IndexOf(args,"-tacticalRosterSmokeTest");
+            if(rosterSmoke>=0 && rosterSmoke+1<args.Length)
+            {
+                diagnostic=true;Application.runInBackground=true;TestSelectionOpen=false;
+                int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyTacticalRoster(args[rosterSmoke+1],evidence>=0 && evidence+1<args.Length ? args[evidence+1] : null));
+            }
             int mapSmoke=Array.IndexOf(args,"-tacticalMapSmokeTest");
             if(mapSmoke>=0 && mapSmoke+1<args.Length)
             {
@@ -114,11 +121,21 @@ namespace YesterdayConvoy
             }
         }
 
-        private ManualBattle CreateBattle() => new ManualBattle(definition.Snapshot(),
+        private ManualBattle CreateBattle()
+        {
+            var result=new ManualBattle(definition.Snapshot(),
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
             defenderTrial!=null ? defenderTrial.LaneSnapshot() : null);
+            if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
+            {
+                var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
+                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(data.Snapshot(),data.Engagement.Snapshot()));
+                result.ConfigureCardLoadout(profiles);
+            }
+            return result;
+        }
 
         private void EnableCombatView()
         {
@@ -152,9 +169,9 @@ namespace YesterdayConvoy
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
-            var result=Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
+            var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
-            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.Settings.DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
+            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
             SyncViews();
             return result;
         }
@@ -163,6 +180,7 @@ namespace YesterdayConvoy
         {
             terminalPresentationElapsed=0;
             notice=null;
+            selectedRosterIndex=0;
             settlementPointerDown=false;
             selectionReturnPointerDown=false;
             ClearViews(); Battle.Restart(); requestSequence=0; Selected=false;
@@ -224,7 +242,8 @@ namespace YesterdayConvoy
                     clone.name=unit.EntityId;
                     view=clone.transform;
                     var visual=clone.GetComponentInChildren<DemoSpriteVisual>(true);
-                    visual.Bind(Battle,unit,definition.Card,()=>PresentationClock);
+                    visual.WorldUpright=TacticalMapActive;
+                    visual.Bind(Battle,unit,CardForUnit(unit),()=>PresentationClock);
                     views.Add(unit.EntityId,view);
                     clone.SetActive(true);
                 }
@@ -282,7 +301,8 @@ namespace YesterdayConvoy
             if(lane!=null) point=lane.Entry;
             Vector3 p=(lane!=null ? lane.Entry : point)+Vector3.up*.015f;
             entryOutline.SetPositions(new[]{p+new Vector3(-.6f,0,-.6f),p+new Vector3(-.6f,0,.6f),p+new Vector3(.6f,0,.6f),p+new Vector3(.6f,0,-.6f),p+new Vector3(-.6f,0,-.6f)});
-            DeployFailure failure=Battle.CheckDeployment(point,Dragging);
+            preview.sprite=OriginalTalulahArt.BattleSprite(DeploymentDefinition.Card);
+            DeployFailure failure=Battle.CheckCardDeployment(DeploymentDefinition.Card.CardId,point,Dragging);
             bool valid=failure==DeployFailure.None || failure==DeployFailure.NotStarted;
             Color tint=valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
             preview.transform.position=point; preview.transform.rotation=Camera.main.transform.rotation;
@@ -343,7 +363,7 @@ namespace YesterdayConvoy
             foreach(var unit in Battle.Units)
             {
                 if(!unit.Active) continue;
-                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*(CurrentLocalArt?.Height ?? (SlugActive ? 1f : 1.8f)));
+                Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit));
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/unit.MaxHealth,3),new Color(0.45f,0.91f,0.61f));
@@ -365,15 +385,17 @@ namespace YesterdayConvoy
                 if(Battle.CombatSettings.Effects.Phalanx) GUI.Label(new Rect(x-70,y-28,160,26),$"方阵 +{Battle.UnitArmor(unit)-Battle.CombatSettings.UnitArmor:0}甲",smallStyle);
                 if(Battle.CombatSettings.Effects.Flamechaser&&unit.FlamePhase!=FlamechaserPhase.Soldier)
                     GUI.Label(new Rect(x-70,y-28,180,26),unit.FlamePhase==FlamechaserPhase.Ember?$"余烬 {unit.Health:0}/5 · {(Battle.UnitInvisible(unit)?"隐匿":"显形")}":unit.FlamePhase==FlamechaserPhase.Transforming?"余烬转化":"重生中",smallStyle);
-                if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
+                if(Battle.EngagementEnabled && Battle.UnitCombat(unit).HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
             Fill(new Rect(0,552,1280,2),new Color(0.28f,0.37f,0.43f));
             if(notice!=null && Time.unscaledTime<noticeUntil) DrawNotice(new Rect(330,82,620,38),notice);
-            if(GUI.Button(new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44),Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
+            Rect restartButton=Battle.HasCardLoadout ? new Rect(292,579,170,42) : new Rect(Battle.EngagementEnabled ? 860 : 474,649,170,44);
+            if(GUI.Button(restartButton,Battle.Phase==BattlePhase.Ready ? "开始作战" : "重新开始",buttonStyle))
             { if(Battle.Phase==BattlePhase.Ready) StartBattle(); else RestartBattle(); }
             DrawTrialSelector();
-            if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
+            if(Battle.HasCardLoadout) DrawTacticalRoster();
+            else if(cardView!=null && cardView.DrawRoster(Battle,Selected,!Battle.EngagementEnabled)) SelectCard(!Selected);
             if(Battle.EngagementEnabled) DrawInteractionOverlay();
             GUI.backgroundColor=oldBackground;
             GUI.matrix=old;
@@ -413,7 +435,7 @@ namespace YesterdayConvoy
             Color old=GUI.color; GUI.color=accent;
             GUI.Label(new Rect(360,233,560,58),won ? "突破成功" : "进攻失败",resultStyle);
             GUI.color=old;
-            GUI.Label(new Rect(350,299,580,32),won ? $"{definition.Card.DisplayName}已穿过蓝门" : "进攻单位已全部倒下，本场部署机会已用尽",noticeStyle);
+            GUI.Label(new Rect(350,299,580,32),won ? $"{VictoryUnitName}已穿过蓝门" : "进攻单位已全部倒下，本场部署机会已用尽",noticeStyle);
             string[] labels={"守方剩余生命","本场部署","技能释放"};
             string[] values={Battle.Defense+" / "+Battle.Settings.InitialDefense,Battle.Units.Count.ToString(),Battle.SkillCasts.ToString()};
             for(int i=0;i<3;i++)
@@ -431,7 +453,7 @@ namespace YesterdayConvoy
         {
             foreach(var d in Battle.Defenders)
             {
-            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(defenderTrial!=null ? 1.32f : 1.95f));
+            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : 1.95f));
             float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
             if(!d.Alive) continue;
             float width=TacticalMapActive ? 62 : 96;

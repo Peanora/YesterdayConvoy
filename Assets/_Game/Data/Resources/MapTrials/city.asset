@@ -78,7 +78,7 @@ MonoBehaviour:
   - id: D07
     displayName: "\u514B\u6D1B\u4E1D"
     artId: D07
-    position: {x: -3.5, y: 0.46, z: 2}
+    position: {x: -3.5, y: 0.76, z: 2}
     health: 140
     attack: 12
     armor: 2
@@ -94,7 +94,7 @@ MonoBehaviour:
   - id: D08
     displayName: "\u53F2\u90FD\u534E\u5FB7"
     artId: D08
-    position: {x: -0.5, y: 0.46, z: 3}
+    position: {x: -0.5, y: 0.76, z: 3}
     health: 140
     attack: 16
     armor: 2
@@ -110,7 +110,7 @@ MonoBehaviour:
   - id: D09
     displayName: "\u708E\u7194"
     artId: D09
-    position: {x: 3.5, y: 0.46, z: -1}
+    position: {x: 3.5, y: 0.76, z: -1}
     health: 140
     attack: 15
     armor: 2
@@ -126,7 +126,7 @@ MonoBehaviour:
   - id: D10
     displayName: "\u8299\u84C9"
     artId: D10
-    position: {x: 1.5, y: 0.46, z: -1}
+    position: {x: 1.5, y: 0.76, z: -1}
     health: 140
     attack: 28
     armor: 2
@@ -142,7 +142,7 @@ MonoBehaviour:
   - id: D12
     displayName: "\u6893\u5170"
     artId: D12
-    position: {x: 6.5, y: 0.46, z: -3}
+    position: {x: 6.5, y: 0.76, z: -3}
     health: 140
     attack: 12
     armor: 2
@@ -223,18 +223,119 @@ MonoBehaviour:
     - {x: 3.5, y: 0.04, z: 2}
     - {x: 3.5, y: 0.04, z: 5}
   raised:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 2, y: 0}
+  - {x: 3, y: 0}
+  - {x: 4, y: 0}
+  - {x: 5, y: 0}
+  - {x: 6, y: 0}
+  - {x: 7, y: 0}
+  - {x: 8, y: 0}
+  - {x: 9, y: 0}
+  - {x: 10, y: 0}
+  - {x: 11, y: 0}
+  - {x: 13, y: 0}
+  - {x: 14, y: 0}
+  - {x: 15, y: 0}
+  - {x: 16, y: 0}
+  - {x: 17, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 2, y: 1}
+  - {x: 3, y: 1}
+  - {x: 4, y: 1}
+  - {x: 5, y: 1}
+  - {x: 6, y: 1}
+  - {x: 15, y: 1}
+  - {x: 16, y: 1}
   - {x: 4, y: 2}
-  - {x: 4, y: 3}
   - {x: 5, y: 2}
-  - {x: 5, y: 3}
+  - {x: 6, y: 2}
   - {x: 8, y: 2}
   - {x: 9, y: 2}
+  - {x: 10, y: 2}
+  - {x: 13, y: 2}
+  - {x: 15, y: 2}
+  - {x: 16, y: 2}
+  - {x: 0, y: 3}
+  - {x: 1, y: 3}
+  - {x: 2, y: 3}
+  - {x: 4, y: 3}
+  - {x: 5, y: 3}
+  - {x: 6, y: 3}
+  - {x: 8, y: 3}
+  - {x: 9, y: 3}
+  - {x: 10, y: 3}
+  - {x: 13, y: 3}
+  - {x: 0, y: 4}
+  - {x: 1, y: 4}
+  - {x: 2, y: 4}
+  - {x: 4, y: 4}
+  - {x: 5, y: 4}
+  - {x: 6, y: 4}
+  - {x: 8, y: 4}
+  - {x: 12, y: 4}
+  - {x: 13, y: 4}
+  - {x: 14, y: 4}
+  - {x: 17, y: 4}
+  - {x: 0, y: 5}
+  - {x: 1, y: 5}
+  - {x: 2, y: 5}
+  - {x: 8, y: 5}
   - {x: 10, y: 5}
-  - {x: 10, y: 6}
   - {x: 12, y: 5}
+  - {x: 0, y: 6}
+  - {x: 1, y: 6}
+  - {x: 2, y: 6}
+  - {x: 3, y: 6}
+  - {x: 4, y: 6}
+  - {x: 5, y: 6}
+  - {x: 6, y: 6}
+  - {x: 8, y: 6}
+  - {x: 10, y: 6}
   - {x: 12, y: 6}
   - {x: 15, y: 6}
+  - {x: 17, y: 6}
+  - {x: 0, y: 7}
+  - {x: 1, y: 7}
+  - {x: 2, y: 7}
+  - {x: 3, y: 7}
+  - {x: 4, y: 7}
+  - {x: 8, y: 7}
+  - {x: 10, y: 7}
   - {x: 15, y: 7}
+  - {x: 17, y: 7}
+  - {x: 0, y: 8}
+  - {x: 1, y: 8}
+  - {x: 2, y: 8}
+  - {x: 3, y: 8}
+  - {x: 4, y: 8}
+  - {x: 6, y: 8}
+  - {x: 7, y: 8}
+  - {x: 8, y: 8}
   - {x: 15, y: 8}
+  - {x: 17, y: 8}
+  - {x: 0, y: 9}
+  - {x: 1, y: 9}
+  - {x: 2, y: 9}
+  - {x: 3, y: 9}
+  - {x: 4, y: 9}
+  - {x: 6, y: 9}
+  - {x: 7, y: 9}
+  - {x: 17, y: 9}
+  - {x: 9, y: 10}
+  - {x: 10, y: 10}
+  - {x: 11, y: 10}
+  - {x: 12, y: 10}
+  - {x: 13, y: 10}
+  - {x: 14, y: 10}
+  - {x: 15, y: 10}
+  - {x: 16, y: 10}
+  - {x: 17, y: 10}
   floorTexture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
   foliageTexture: {fileID: 2800000, guid: cb7097b3454279841bb76e4c90c70afe, type: 3}
+  rosterCards:
+  - {fileID: 11400000, guid: 2061f5dd314af2a47ab9edcd03779138, type: 2}
+  - {fileID: 11400000, guid: b03f25a352b8ec14f828fae5413df0e7, type: 2}
+  - {fileID: 11400000, guid: 5b407ae037dc7174c9468ba335b65ce7, type: 2}

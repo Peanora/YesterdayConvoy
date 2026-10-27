@@ -16,12 +16,12 @@ namespace YesterdayConvoy
                 RestartBattle();StartBattle();Battle.SetPaused(true);
                 Vector2 gate=Camera.main.WorldToScreenPoint(lane.Entry);
                 drag &= IsBattlefield(gate);
-                ProcessPointerDown(ScreenPosition(RosterSlot.center));ProcessPointerMove(gate);
+                ProcessPointerDown(ScreenPosition(CardSlot(0).center));ProcessPointerMove(gate);
                 var receipt=ProcessPointerUp(gate);
                 drag &= receipt.Success && !Dragging && !Selected && Battle.Units.Count==1 && Battle.Units[0].RouteId==lane.Id && Battle.Units[0].ExitId==lane.ExitId;
                 double clock=Battle.Clock;int dp=Battle.DP;Tick(5);
                 paused &= Battle.IsPaused && Battle.Clock==clock && Battle.Units[0].Motion.DistanceTravelled==0;
-                ProcessPointerDown(ScreenPosition(RosterSlot.center));ProcessPointerMove(ScreenPosition(new Vector2(640,400)));
+                ProcessPointerDown(ScreenPosition(CardSlot(0).center));ProcessPointerMove(ScreenPosition(new Vector2(640,400)));
                 invalid &= !ProcessPointerUp(ScreenPosition(new Vector2(640,400))).Success && Battle.DP==dp;
             }
             RestartBattle();StartBattle();

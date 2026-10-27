@@ -31,6 +31,7 @@ namespace YesterdayConvoy
         public TacticalLane[] lanes;
         public Vector2Int[] raised;
         public Texture2D floorTexture, foliageTexture;
+        public ManualBattleDefinition[] rosterCards;
         public bool Tactical => lanes!=null && lanes.Length>0;
         public DeploymentLane[] LaneSnapshot()
         {

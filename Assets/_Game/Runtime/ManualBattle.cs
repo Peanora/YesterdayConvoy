@@ -165,7 +165,7 @@ namespace YesterdayConvoy
         public Vector3 LastShotPosition { get; private set; }
         public double LastShotTime { get; private set; }
         public Vector3 Entry => route[0];
-        public double CooldownRemaining => Math.Max(0, nextDeploymentTime - Clock);
+        public double CooldownRemaining => CardCooldown(Settings.CardId);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
         public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null)
@@ -214,6 +214,7 @@ namespace YesterdayConvoy
             units.Clear(); committed.Clear(); sequence = 0;
             DP = Settings.InitialDP; RemainingUses = Settings.DeploymentLimit; Defense = Settings.InitialDefense;
             Clock = nextDeploymentTime = nextShotTime = 0;
+            ResetCards();
             ShotsFired = Breaches = 0; LastShotEntityId = null; LastShotTime = double.NegativeInfinity;
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
             ResetEngagement();
@@ -241,14 +242,16 @@ namespace YesterdayConvoy
         }
 
         public DeployFailure CheckDeployment(Vector3 position, bool allowWhilePaused = false)
+            => CheckDeploymentState(position,allowWhilePaused,FindCard(Settings.CardId));
+        private DeployFailure CheckDeploymentState(Vector3 position,bool allowWhilePaused,BattleCardState card)
         {
             if (Phase == BattlePhase.Won || Phase == BattlePhase.Lost) return DeployFailure.Finished;
             if (IsPaused && !allowWhilePaused) return DeployFailure.Paused;
             var lane=FindEntryLane(position);
             if (lane==null) return DeployFailure.WrongEntry;
-            if (RemainingUses == 0) return DeployFailure.NoUses;
-            if (DP < Settings.DeploymentCost) return DeployFailure.NoDP;
-            if (Clock + 0.000001 < nextDeploymentTime) return DeployFailure.CoolingDown;
+            if ((card?.RemainingUses??RemainingUses) == 0) return DeployFailure.NoUses;
+            if (DP < (card?.Settings.DeploymentCost??Settings.DeploymentCost)) return DeployFailure.NoDP;
+            if (Clock + 0.000001 < (card?.NextDeploymentTime??nextDeploymentTime)) return DeployFailure.CoolingDown;
             foreach (var unit in units)
                 if (unit.Active && Vector3.Distance(unit.Motion.Position, lane.Entry) < EntryClearance) return DeployFailure.EntryBusy;
             return Phase == BattlePhase.Ready ? DeployFailure.NotStarted : DeployFailure.None;
@@ -266,14 +269,14 @@ namespace YesterdayConvoy
                 var prior=FindUnit(previous.EntityId);
                 return prior?.CardId==requestedCard && (lanes.Count==1||prior.RouteId==FindEntryLane(position)?.Id)?previous:new DeploymentReceipt(DeployFailure.StaleRun);
             }
-            DeployFailure failure = CheckDeployment(position, allowWhilePaused);
+            DeployFailure failure = CheckCardDeployment(requestedCard,position,allowWhilePaused);
             if (failure != DeployFailure.None) return new DeploymentReceipt(failure);
             var spawn=profile?.Unit??Settings;
             var lane=FindEntryLane(position);
             var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
-            if (EngagementEnabled) unit.SkillSP = CombatSettings.InitialSP;
+            if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
             unit.NextIceRingAt=Clock+8.5;
             if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
@@ -284,8 +287,10 @@ namespace YesterdayConvoy
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
             // Commit together only after all preconditions and entity initialization succeed.
-            units.Add(unit); sequence++; DP -= Settings.DeploymentCost; RemainingUses--;
-            nextDeploymentTime = Clock + Settings.Cooldown;
+            units.Add(unit); sequence++;
+            var card=FindCard(requestedCard);
+            if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}
+            else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
             return receipt;
@@ -347,7 +352,7 @@ namespace YesterdayConvoy
         {
             if (Phase != BattlePhase.Running) return;
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
-            else if (!HasPendingDeathBlast && ActiveCount == 0 && (RemainingUses == 0 || DP < Settings.DeploymentCost))
+            else if (!HasPendingDeathBlast && ActiveCount == 0 && !HasAffordableCard())
             { Phase = BattlePhase.Lost; IsPaused = false; }
             // Affordable uses remain: wait for cooldown/input. There is no timeout or passive DP recovery.
         }

@@ -52,7 +52,7 @@ namespace YesterdayConvoy.Tests
                         c.RestartBattle();c.StartBattle();c.Battle.SetPaused(true);
                         Vector2 screen=camera.WorldToScreenPoint(lane.Entry);float guiY=720-screen.y*720/Screen.height;
                         Assert.That(guiY,Is.InRange(70,540),id+"/"+lane.Id+" must clear HUD");
-                        c.ProcessPointerDown(ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center));c.ProcessPointerMove(screen);
+                        c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.CardSlot(0).center));c.ProcessPointerMove(screen);
                         Assert.That(c.ProcessPointerUp(screen).Success,Is.True,id+"/"+lane.Id);
                         Assert.That(c.Battle.Units[0].RouteId,Is.EqualTo(lane.Id));
                         Assert.That(c.Battle.Units[0].ExitId,Is.EqualTo(lane.ExitId));

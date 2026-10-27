@@ -46,17 +46,19 @@ namespace YesterdayConvoy
                 // Service trenches / stream cuts occupy only non-route, non-platform cells.
                 bool gap=!route && !high && (forest ? (x==0 || x==17 || (y==10 && x<5)) : ((x==0||x==17) && y>3 || x==12 && y>=8));
                 if(gap) { if((x+y)%2==0) Box("Submerged footing",Cell(x,y,-.43f),new Vector3(.6f,.2f,.6f),side); continue; }
-                float h=high?.43f:0;
+                float h=high?.72f:0;
                 Box("Foundation "+x+","+y,Cell(x,y,(h-.3f)/2-.04f),new Vector3(.98f,.3f+h,.98f),side);
                 Box(route?"Fixed route surface":"Terrace surface",Cell(x,y,h-.012f),new Vector3(.95f,.024f,.95f),route?walk:ground);
                 if(high)
                 {
-                    Box("Raised lip",Cell(x,y+.46f,h),new Vector3(.99f,.065f,.08f),trim);
+                    if(!raised.Contains(new Vector2Int(x,y+1))) Box("Raised lip",Cell(x,y+.46f,h),new Vector3(.99f,.065f,.08f),trim);
                     Box("Platform inset",Cell(x,y,h+.018f),new Vector3(.77f,.025f,.77f),ground);
                     if(forest)
                     {
-                        Box("Carved stone band",Cell(x,y,h+.035f),new Vector3(.07f,.015f,.68f),trim);
-                        Box("Carved stone band",Cell(x,y,h+.035f),new Vector3(.68f,.015f,.07f),trim);
+                        Box("Carved stone edge",Cell(x-.34f,y,h+.035f),new Vector3(.035f,.015f,.68f),trim);
+                        Box("Carved stone edge",Cell(x+.34f,y,h+.035f),new Vector3(.035f,.015f,.68f),trim);
+                        Box("Carved stone edge",Cell(x,y-.34f,h+.035f),new Vector3(.68f,.015f,.035f),trim);
+                        Box("Carved stone edge",Cell(x,y+.34f,h+.035f),new Vector3(.68f,.015f,.035f),trim);
                     }
                     else Box("Corner hazard paint",Cell(x+.32f,y+.35f,h+.025f),new Vector3(.16f,.01f,.035f),accent);
                 }

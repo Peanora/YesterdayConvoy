@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         {
             if(!keepDefenderTrial) LeaveDefenderTrial();
             ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null; terminalPresentationElapsed=0;
-            definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
+            selectedRosterIndex=0; definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
             Battle=CreateBattle(); ValidateConfiguration();
             cardView.SetCard(definition.Card); preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card);
             EnableCombatView(); UpdatePreview();

@@ -1,5 +1,30 @@
 # 验证证据与回归
 
+## 2026-10-27：V3高台迷宫与混合小怪
+
+**确认与范围。** 人类确认项目外V3实际几何图/动作视频与README的接口范围后，在PR #40原分支接入。保留原4红2蓝/3红2蓝及七条固定路线；泵站高台110/198格，环庭116/198格。只调整非通道地形、已批准的显示/卡栏/部署与必要来源配置；主场景文件、Prefab、Packages和ProjectSettings未修改。
+
+| 实际检查 | 结果与范围 |
+| --- | --- |
+| Unity配置/资源 | `TacticalMapV3Tools.Apply`两图通过；4卡、8人背面图集及前面兼容加载成功。后续`TacticalMapV2Tools.Validate`仍通过。 |
+| EditMode | 216/216通过、零跳过；新增每卡费用/CD/次数、暂停与重开、重复请求卡身份、1DP可用低费卡、小怪无技能、真实来源破甲等边界。 |
+| 完整GPU PlayMode | 63/63通过、零跳过；保留原怪物/设施/守军回归；新增两图四卡混编与攻击期间目标死亡后朝向保持。 |
+| 最后定向GPU | 2/2通过；四张卡走MouseDown/MouseDrag/MouseUp实际事件分发，暂停与独立状态正确，点击无技能单位关闭旧技能面板，左右基准与完整攻击朝向锁通过。 |
+| 最终Windows构建 | Unity6000.6.5f1 / Windows x64，`BaselineTools.BuildWindows`，949,175,014 bytes，0错误。 |
+| 泵站独立Player | 退出0；entered/cards/drag/independent/paused/facing/noSkill/attacked/acid/slow/cast/won/reset/restored全部True。 |
+| 环庭独立Player | 退出0；同上全部True。3红门时先恢复一秒让出生点让开，再暂停放第4卡，不绕过入口占用限制。 |
+| 原维维美交互Player | 退出0，暂停部署、一次扣费/冻结、非法取消、就绪、0.03×聚焦、取消、释放、重开8项全部True。 |
+| 仓库与媒体 | 3045个跟踪文件完整性检查通过；8份新增背面包PNG/JSON哈希、meta与忽略规则核对通过，未混入AGENTS、构建或工程设置。 |
+
+最终Player用1920×1080正常可见窗口运行 `-tacticalRosterSmokeTest city` / `ruins`。实际4卡产生各自原造型与动作，画面同场8个实体；酸液命中真实降低守军护甲，只有塔露拉有SP/火雨。用点击角色/技能图标的路径检查0.03×聚焦、施放与恢复；无技能小怪不能打开技能面板或增长SP。自动化Player是确定性检查，不替代长期人工试玩。
+
+**实机画面。** [泵站混编](art/tactical-v3-runtime-city.png) / [环庭混编](art/tactical-v3-runtime-ruins.png)，来自最终EXE；与项目外编排预演区分。实机发现并处理了卡栏挡住重开按钮、血条压头、左右翻转基准相反的问题。原背面玫兰莎1秒攻击按本作2秒动作窗口映射，不额外结算伤害。背面包无死亡，统一沿用既有正面死亡，未虚构素材。
+
+**连接与文件。** `DefenderTrialDefinition.rosterCards`和两份MapTrials资产提供只读卡/高台配置，`BattleCardState`保存每卡运行次数与下一次可部署时间，`ManualBattle`完成原子事务及共用DP；旧单卡/游击队入口继续兼容。`UnitCombat`把实体自己的参数送到技能、伤害与动画；`TacticalLoadout`和输入适配器绘制/拖动四卡，`DefenderRosterView`按已发射攻击目标锁朝向，`DefenderArt`加载正背面包；`DemoSpriteVisual`仅在本试验竖直显示并镜像小怪，不旋转逻辑根节点。具体文件/资源与来源见[V3说明](art/TACTICAL-MAPS-V3.md)。
+
+**交付与未测。** 功能分支提交/推送/PR #40待人工审查，不合并main；本地EXE位于 `E:/珍贵资料/昨日圆车_本地试玩/2026-10-27-迷宫高台V3/YesterdayConvoy.exe`，对应源码见BUILD-INFO.txt。新增8份背面运行媒体及meta默认随源码提交，无ZIP/Releases。没有做第二台电脑离线、长时间手动操作、每位每帧人工美术验收或正式挑战平衡；当前每卡试验值见V3说明。尚未接入其余22名/六星、完整8人技能、商店或正式编队。
+
+
 ## 2026-10-27：多门 V2 双地图接入
 
 **范围与版本。** 从 main `172dc06` 创建 `codex/tactical-maps-v2`；人类已确认4红2蓝泵站、3红2蓝环庭以及共享接口范围。本轮只修改配置/运行适配/地图显示/菜单/对应测试，并迁移旧能力回归；未改主场景文件、Prefab、Packages、ProjectSettings。原工程既存设置文件SHA256保持 `312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2`。没有自动合并main、ZIP或Releases。

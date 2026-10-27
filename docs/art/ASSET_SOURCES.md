@@ -85,3 +85,7 @@ GameArt2D 的免费项许可依据是 [Free Assets License](https://www.gameart2
 ## 2026-10-27 多门 V2 支持素材
 
 本次实际使用的三张地图纹理由内置 OpenAI image_gen 生成，参考人类已确认的项目外V2概念，不使用整张原游戏地图截图。三张素材、完整提示词和SHA见[生成记录](TACTICAL-MAPS-V2-GENERATION.json)，玩法布局和使用位置见[接入说明](TACTICAL-MAPS-V2.md)。没有另行下载来源不明的免费包。
+
+## 2026-10-27 守军背面 V3
+
+复用首批8人项目外包的默认背面图集，没有新下载或AI重绘。各角色具体PRTS页及原资源URL前缀保存在[导入记录](DEFENDERS-REAR-V3-IMPORT.json)。源石虫、猎狗、酸液源石虫直接复用已跟踪的原运行资源；原来源与权利状态保留。
