@@ -9,15 +9,18 @@ namespace YesterdayConvoy
         private InitialDemo scene;
         private GameObject original;
         private bool originalActive;
+        private bool restored;
+        private Camera borrowedCamera;
         private Vector3 red, blue, cameraPosition;
         private Material[] materials;
         public void Initialize(InitialDemo bindings,DefenderTrialDefinition data)
         {
             scene=bindings; original=GameObject.Find("Industrial Map");
             if(original!=null) { originalActive=original.activeSelf; original.SetActive(false); }
-            red=scene.RedGate.position; blue=scene.BlueGate.position; cameraPosition=Camera.main.transform.position;
+            borrowedCamera=Camera.main;
+            red=scene.RedGate.position; blue=scene.BlueGate.position; cameraPosition=borrowedCamera.transform.position;
             scene.RedGate.position=data.route[0]; scene.BlueGate.position=data.route[data.route.Length-1];
-            Camera.main.transform.position-=Camera.main.transform.forward*2.8f;
+            borrowedCamera.transform.position-=borrowedCamera.transform.forward*2.8f;
             materials=(Material[])data.surfaces.Clone();
             materials[0]=new Material(materials[0]); materials[0].color*=1.12f;
             materials[1]=new Material(materials[1]); materials[1].color*=.72f;
@@ -97,10 +100,15 @@ namespace YesterdayConvoy
         }
         public void Restore()
         {
-            if(scene==null) return;
-            scene.RedGate.position=red; scene.BlueGate.position=blue;
+            if(restored) return;
+            restored=true;
+            if(scene!=null)
+            {
+                if(scene.RedGate!=null) scene.RedGate.position=red;
+                if(scene.BlueGate!=null) scene.BlueGate.position=blue;
+            }
             if(original!=null) original.SetActive(originalActive);
-            if(Camera.main!=null) Camera.main.transform.position=cameraPosition;
+            if(borrowedCamera!=null) borrowedCamera.transform.position=cameraPosition;
             scene=null; gameObject.SetActive(false);
         }
         private void OnDestroy()

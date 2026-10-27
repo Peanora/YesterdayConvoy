@@ -43,6 +43,22 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.Defenders.Count,Is.EqualTo(1));
         }
 
+        [UnityTest] public IEnumerator ReloadingAnActiveTrialDoesNotRestoreDestroyedGatesOrTheNewCamera()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo"); yield return null; Time.timeScale=0;
+            Vector3 originalCamera=Camera.main.transform.position;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();
+            Assert.That(c.TryEnterDefenderTrial(),Is.True); yield return null;
+            Assert.That(Camera.main.transform.position,Is.Not.EqualTo(originalCamera));
+            yield return SceneManager.LoadSceneAsync("InitialDemo"); yield return null;
+            c=Object.FindAnyObjectByType<ManualBattleController>();
+            Assert.That(c.DefenderTrialActive,Is.False);
+            Assert.That(c.TestSelectionOpen,Is.True);
+            Assert.That(Camera.main.transform.position,Is.EqualTo(originalCamera));
+            Assert.That(Object.FindAnyObjectByType<DefenseTrialMap>(),Is.Null);
+            LogAssert.NoUnexpectedReceived();
+        }
+
         [UnityTest] public IEnumerator FireRainCompletesTheDefenseTrialAndDefendersUseTheirOwnHealth()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo"); yield return null; Time.timeScale=0;
