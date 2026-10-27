@@ -5,6 +5,46 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class EngagementTests
     {
+        private static EngagementSettings Passive(int blockCount=0, float defenderAttack=1) => new EngagementSettings(
+            unitRange:5,defenderRange:5,defenderAttack:defenderAttack,blockCount:blockCount,blockRadius:.7f,
+            initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,
+            hasSkill:false,canAttack:false);
+
+        [Test] public void NonAttackerCrossesHostileRangeWithoutTargetOrOutgoingDamage()
+        {
+            var battle=New(Passive(),health:1000);var unit=Deploy(battle);
+            battle.Advance(3);
+            Assert.That(unit.Motion.DistanceTravelled,Is.EqualTo(3).Within(.03));
+            Assert.That(unit.IsMoving,Is.True);Assert.That(unit.HasCombatTarget,Is.False);
+            Assert.That(unit.LastAttackTime,Is.EqualTo(double.NegativeInfinity));
+            Assert.That(battle.Defender.Health,Is.EqualTo(battle.CombatSettings.DefenderHealth));
+            Assert.That(unit.Health,Is.LessThan(1000),"Non-attacking units still take enemy fire.");
+            foreach(var shot in battle.CombatShots) Assert.That(shot.FromDefender,Is.True);
+            var position=unit.Motion.Position;battle.SetPaused(true);battle.Advance(3);
+            Assert.That(unit.Motion.Position,Is.EqualTo(position));
+            battle.SetPaused(false);battle.Advance(25);
+            Assert.That(unit.Resolution,Is.EqualTo(UnitResolution.Breached));Assert.That(battle.Breaches,Is.EqualTo(1));
+        }
+
+        [Test] public void NonAttackerStillBlocksAndDeathReleasesCapacity()
+        {
+            var battle=New(Passive(blockCount:1));var unit=Deploy(battle);
+            battle.Advance(2);Assert.That(unit.IsBlocked,Is.True);Assert.That(unit.IsMoving,Is.False);
+            double distance=unit.Motion.DistanceTravelled;battle.Advance(1);
+            Assert.That(unit.Motion.DistanceTravelled,Is.EqualTo(distance));
+            Assert.That(unit.HasCombatTarget,Is.False);
+            var lethal=New(Passive(blockCount:1,defenderAttack:1000));var victim=Deploy(lethal);lethal.Advance(3);
+            Assert.That(victim.Resolution,Is.EqualTo(UnitResolution.Dead));Assert.That(lethal.Defender.BlockedCount,Is.Zero);
+        }
+
+        [Test] public void ExistingCombatAssetsRemainAttackersAndOnlyTwoNewSamplesOptOut()
+        {
+            Assert.That(new EngagementSettings(unitAttack:14).CanAttack,Is.True);
+            foreach(string task in new[]{"M08","M20","M21","M32","M38"})
+                Assert.That(UnityEditor.AssetDatabase.LoadAssetAtPath<EngagementDefinition>("Assets/_Game/Data/Battles/"+task+".asset").Snapshot().CanAttack,Is.True,task);
+            foreach(string task in new[]{"M25","M33"})
+                Assert.That(UnityEditor.AssetDatabase.LoadAssetAtPath<EngagementDefinition>("Assets/_Game/Data/Battles/"+task+".asset").Snapshot().CanAttack,Is.False,task);
+        }
         private static ManualBattle New(EngagementSettings combat, Vector3? defender = null, float health = 100)
         {
             var basic = new ManualBattleSettings("CARD", "UNIT", 8, 3, 6, 2, 0.1f, health, 1, 1, 3, 10, 1);

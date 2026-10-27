@@ -331,7 +331,25 @@ namespace YesterdayConvoy
                 Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*(CurrentLocalArt?.Height ?? (SlugActive ? 1f : 1.8f)));
                 float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
-                Fill(new Rect(x-29,y+2,58*unit.Health/Battle.Settings.Health,3),new Color(0.45f,0.91f,0.61f));
+                Fill(new Rect(x-29,y+2,58*unit.Health/unit.MaxHealth,3),new Color(0.45f,0.91f,0.61f));
+                if(unit.ArtsBarrierRemaining>0)
+                {
+                    Fill(new Rect(x-31,y+10,62,5),new Color(.03f,.05f,.1f));
+                    Fill(new Rect(x-29,y+11,58*unit.ArtsBarrierRemaining/(unit.ArtsBarrierLayerSize*3),3),new Color(.3f,.7f,1));
+                    GUI.Label(new Rect(x-70,y-28,140,26),$"屏障×{unit.ArtsBarrierLayers}",smallStyle);
+                }
+                if(unit.IsReviving) GUI.Label(new Rect(x-70,y-28,140,26),$"复起 {Math.Max(0,unit.ReviveAt-Battle.Clock):0.0}s",smallStyle);
+                else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
+                else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
+                if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
+                if(unit.Shackle!=null&&!unit.Shackle.Ended)GUI.Label(new Rect(x-70,y-28,180,26),$"枷锁 {20-(Battle.Clock-unit.Shackle.StartedAt):0.0}s",smallStyle);
+                if(Battle.FirstSpeakerCasting(unit))GUI.Label(new Rect(x-70,y-28,220,26),$"侵蚀液泡 · 无敌 {5-(Battle.Clock-unit.BubbleStartedAt):0.0}s",smallStyle);
+                if(Battle.CombatSettings.Effects.Harvester)GUI.Label(new Rect(x-70,y-28,200,26),unit.HarvesterPhase==HarvesterPhase.Dormant?"待命":unit.HarvesterPhase==HarvesterPhase.Waking?"苏醒中":$"临战 ×6 · 失血{unit.HarvesterHealthLost:0}",smallStyle);
+                if(Battle.CombatSettings.Effects.Mandragora)GUI.Label(new Rect(x-70,y-28,200,26),unit.MandraPhase==MandragoraPhase.Reborn?"重生中":$"{(unit.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} · {(unit.StoneShield?"石盾":"破盾")}",smallStyle);
+                if(Battle.CombatSettings.Effects.Flamerazer&&unit.Spray!=null&&!unit.Spray.Ended)GUI.Label(new Rect(x-70,y-28,160,26),$"喷火 {unit.Spray.Ticks}跳",smallStyle);
+                if(Battle.CombatSettings.Effects.Phalanx) GUI.Label(new Rect(x-70,y-28,160,26),$"方阵 +{Battle.UnitArmor(unit)-Battle.CombatSettings.UnitArmor:0}甲",smallStyle);
+                if(Battle.CombatSettings.Effects.Flamechaser&&unit.FlamePhase!=FlamechaserPhase.Soldier)
+                    GUI.Label(new Rect(x-70,y-28,180,26),unit.FlamePhase==FlamechaserPhase.Ember?$"余烬 {unit.Health:0}/5 · {(Battle.UnitInvisible(unit)?"隐匿":"显形")}":unit.FlamePhase==FlamechaserPhase.Transforming?"余烬转化":"重生中",smallStyle);
                 if(Battle.EngagementEnabled && Battle.CombatSettings.HasSkill) DrawSkillResourceBar(x,y+9,unit);
             }
             Fill(new Rect(0,552,1280,168),new Color(0.035f,0.05f,0.065f,0.97f));
@@ -403,7 +421,8 @@ namespace YesterdayConvoy
             if(!d.Alive) continue;
             Fill(new Rect(x-48,y,96,8),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-46,y+2,92*d.Health/d.MaxHealth,4),new Color(0.96f,0.66f,0.3f));
-            string status=d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : "";
+            string status=Battle.DefenderShackled(d)?"枷锁禁锢":d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :
+                d.Settings.DamageType==CombatDamageType.Arts ? "法术测试靶" : "";
             if(d.ArmorReduction>0) status+=(status.Length>0 ? " / " : "")+"护甲 -"+d.ArmorReduction.ToString("0");
             if(defenderTrial!=null) GUI.Label(new Rect(x-60,y-24,120,24),d.Settings.Name,smallStyle);
             if(status.Length>0) GUI.Label(new Rect(x-90,y+10,180,26),status,smallStyle);

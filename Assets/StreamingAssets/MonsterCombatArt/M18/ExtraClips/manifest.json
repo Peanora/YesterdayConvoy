@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "task": "M18",
+  "description": "Optional original phase, skill and transition art clips; not gameplay rules",
+  "clips": [
+    {
+      "key": "extra_move_begin",
+      "source": "Move_Begin",
+      "count": 13,
+      "duration": 0.20000000298023224,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5680324423313141,
+      "pivotY": 0.24878579944372176,
+      "pages": [
+        {
+          "file": "extra_move_begin-00.png",
+          "count": 13,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "extra_move_end",
+      "source": "Move_End",
+      "count": 15,
+      "duration": 0.23333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5680324423313141,
+      "pivotY": 0.24878579944372176,
+      "pages": [
+        {
+          "file": "extra_move_end-00.png",
+          "count": 15,
+          "width": 2048,
+          "height": 512
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "extra_move_begin-00.png",
+      "sha256": "d606ffa6ffa57b3d68372498c0de7767f4af8e62e098bc5de116900cb914b062"
+    },
+    {
+      "file": "extra_move_end-00.png",
+      "sha256": "0cc534dd830a775d4d5efbb0b1bf29ecf5be4066820ffb66a32c5ad4e4f22620"
+    }
+  ],
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1081_sotisd. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+}
