@@ -72,6 +72,15 @@ namespace YesterdayConvoy
             Position = Vector3.LerpUnclamped(points[nextPoint - 1], points[nextPoint], fraction);
         }
 
+        public void Retreat(float simulationDelta)
+        {
+            if(!Finite(simulationDelta)||simulationDelta<0)throw new ArgumentOutOfRangeException(nameof(simulationDelta));
+            DistanceTravelled=Math.Max(0,DistanceTravelled-(double)Speed*simulationDelta);
+            nextPoint=1;while(nextPoint<points.Length-1&&DistanceTravelled>=cumulativeLengths[nextPoint])nextPoint++;
+            double length=cumulativeLengths[nextPoint]-cumulativeLengths[nextPoint-1];
+            Position=length>0?Vector3.LerpUnclamped(points[nextPoint-1],points[nextPoint],(float)((DistanceTravelled-cumulativeLengths[nextPoint-1])/length)):points[nextPoint];
+        }
+
         private static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }
 }

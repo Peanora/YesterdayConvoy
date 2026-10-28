@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "task": "D29B",
+  "ppu": 116.0,
+  "referenceSpeed": 0.75,
+  "height": 1.25,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4989180789675031,
+      "pivotY": 0.14285714285714285,
+      "sourceBounds": [
+        -246.3607177734375,
+        -53.791587829589844,
+        247.63624572753906,
+        468.7955627441406
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 39,
+          "width": 2016,
+          "height": 1120
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 71,
+      "duration": 1.1666666269302368,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4989180789675031,
+      "pivotY": 0.14285714285714285,
+      "sourceBounds": [
+        -246.3607177734375,
+        -53.791587829589844,
+        247.63624572753906,
+        468.7955627441406
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 71,
+          "width": 2016,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "skill_attack",
+      "source": "Attack_2",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.4989180789675031,
+      "pivotY": 0.14285714285714285,
+      "sourceBounds": [
+        -246.3607177734375,
+        -53.791587829589844,
+        247.63624572753906,
+        468.7955627441406
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_attack-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "78b42160dcecf8be336e8d4ef85ed7bdaa826eaa2a03af5568f03a291a34a6d5"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "e08f12e796b6b21fd3dbe918def23b333df16c2f4e2adb918af83a005dd0987c"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "7931bd49aad066788a26d83235b2b14fa197a0a98eb22016ba45064cbad2f612"
+    },
+    {
+      "file": "skill_attack-00.png",
+      "sha256": "08119925048cfdea473414b20bf8b5a912faf4d0a077c844eaacc542bfa0e5e1"
+    }
+  ],
+  "provenance": "Approved direct batch-four integration 2026-10-28. Original Arknights media; open redistribution permission unconfirmed. PNG bytes retained; uniform 1.25-unit idle height and foot-center pivot.",
+  "rearVariant": true
+}

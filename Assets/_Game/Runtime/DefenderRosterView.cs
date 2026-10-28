@@ -71,6 +71,7 @@ namespace YesterdayConvoy
                 if(!r.enabled) continue;
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
+                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.Clock-d.SkillEndedAt<.5))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,d.SkillActiveUntil-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration);
                 else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge);
                 else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
                 else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);

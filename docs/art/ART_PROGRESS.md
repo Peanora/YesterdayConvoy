@@ -1,5 +1,9 @@
 # 美术工作进度
 
+## 2026-10-28：六星守军第四批
+
+D21荒芜拉普兰德、D22余、D29塞雷娅、D30玛恩纳的已确认正背面模型、卡面和S3动作接入独立试玩；154PNG/168756309字节、8份清单与meta随源码交付。原角色、纹理和动作属于《明日方舟》原权利人，具体画师及开放再分发许可未确认，非CC0；用户接入/上传决定不等于权利人许可。运行路径、缺失的塞雷娅背面S3、程序特效与实际验证边界见[本批说明](../DEFENDER-SKILLS-BATCH4.md)。[具体来源](source-records/defender-batch4-approved.json)、[导入SHA](DEFENDER-BATCH4-IMPORT.json)。余火墙复用highwizard/Animated flame的既有CC0纹理，仅此火焰受CC0许可，不扩大到原作角色。
+
 ## 2026-10-27：原八名守军技能补充
 
 米格鲁正背面技能4页、斑点背面治疗1页，共5个PNG，保留原字节与实际来源；枢轴按现有待机校准。原媒体归《明日方舟》原权利人，具体画师未确认，非CC0，开放再分发许可未确认；用户上传决定不等于权利人授权。见[本轮说明](../DEFENDER-ORIGINAL-EIGHT-SKILLS.md)及[导入记录](ORIGINAL-EIGHT-SKILLS-IMPORT.json)。
