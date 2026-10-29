@@ -36,6 +36,11 @@ namespace YesterdayConvoy
             if(b!=null&&cam!=null)
             {
                 float t=(float)b.Clock;
+                foreach(var cell in b.SnowCells)if(cell.Layers>0&&b.FindDefender(cell.SourceId).Alive)Ring(cell.Position,.35f,new Color(.6f,.9f,1,.3f+cell.Layers*.1f),.025f);
+                foreach(var cell in b.ChessPieces)
+                    if(cell.Time==0)Ring(cell.Position,.25f,cell.Active?new Color(.9f,.9f,.75f,.9f):new Color(.45f,.5f,.6f,.5f),.07f);
+                    else if(b.Clock-cell.Time<.4)Ring(cell.Position,.25f+(float)(b.Clock-cell.Time)*2,new Color(1,.8f,.3f,.8f),.07f);
+                foreach(var d in b.Defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&b.DefenderSkillActive(d)&&b.FindDefender(d.PartnerId) is DefenderState partner&&partner.Alive)Ring(partner.Position,.55f,new Color(.4f,.8f,1,.8f),.07f);
                 foreach(var v in b.DefenderDrones)
                 {
                     var p=v.Position+cam.transform.up*.7f;var right=cam.transform.right;var up=cam.transform.up;

@@ -5,7 +5,7 @@ namespace YesterdayConvoy
 {
     public sealed partial class ManualBattle
     {
-        public bool IsFifth(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.Mon3trMeltdown;
+        public bool IsFifth(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.Mon3trMeltdown&&(int)d.Settings.Skill.Kind<=(int)DefenderSkillKind.HoshigumaInferno;
         public bool IsFifthActive(DefenderState d)=>IsFifth(d)&&(DefenderSkillActive(d)||d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Clock);
         bool BeginFifthSkill(DefenderState d)
         {

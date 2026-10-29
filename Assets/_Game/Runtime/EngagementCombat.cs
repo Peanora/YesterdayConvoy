@@ -92,6 +92,17 @@ namespace YesterdayConvoy
         internal float Roll(){randomState^=randomState<<13;randomState^=randomState>>17;randomState^=randomState<<5;return(randomState&0xffffff)/16777216f;}
         public Vector3 Position { get; internal set; }
         public float Health { get; internal set; }
+        public int ReserveCost {get;internal set;}
+        public int SixthHits {get;internal set;}
+        public int ChessStock {get;internal set;}
+        public int ChessTriggers {get;internal set;}
+        public int SnowHits {get;internal set;}
+        public int Lures {get;internal set;}
+        public bool CostsExchanged {get;internal set;}
+        public string PartnerId {get;internal set;}
+        public double NextSixthAt {get;internal set;}
+        public double NextSnowAt {get;internal set;}=10;
+        public float BudgetReceived {get;internal set;}
         public bool Reserve {get;internal set;}
         public bool Departed {get;internal set;}
         public bool DebtLife {get;internal set;}
@@ -122,7 +133,7 @@ namespace YesterdayConvoy
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
         internal DefenderState(DefenderSettings settings)
-        { Settings=settings;Reserve=settings.Reserve; EntityId=settings.Id; Position=settings.Position; Health=MaxHealth=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
+        { ChessStock=settings.Skill.Kind==DefenderSkillKind.WangGambit?7:0;Settings=settings;ReserveCost=settings.ReserveCost;Reserve=settings.Reserve; EntityId=settings.Id; Position=settings.Position; Health=MaxHealth=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
     }
 
     public sealed class CombatShot
@@ -132,6 +143,8 @@ namespace YesterdayConvoy
         public bool FromDefender { get; }
         public bool Empowered { get; }
         public bool FireRain { get; }
+        public float Vulnerability {get;internal set;}
+        public float IgnoreResistance {get;internal set;}
         public bool TrueDamage {get;internal set;}
         public bool Healing { get; }
         public CombatDamageType DamageType { get; }
@@ -178,7 +191,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
-            defenderDrones.Clear();
+            defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
@@ -267,8 +280,9 @@ namespace YesterdayConvoy
                 if(shot.FromDefender)
                 {
                     bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType);
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
+                    if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
                     if(damaged)OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);
                     if(killedByHit)OnLiberatorKill(defender);
                     if(damaged&&unit.Active&&shot.HinderDuration>0)unit.HinderedUntil=Math.Max(unit.HinderedUntil,Clock+shot.HinderDuration);
@@ -316,7 +330,7 @@ namespace YesterdayConvoy
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
-                if(StepUnitFear(unit,step))continue;
+                if(StepUnitLure(unit,step)||StepUnitFear(unit,step))continue;
                 foreach(var d in defenders)
                     if(!d.HighGround && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }

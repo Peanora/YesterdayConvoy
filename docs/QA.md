@@ -1,5 +1,24 @@
 # 验证证据与回归
 
+## 2026-10-29：第六批三名六星守军
+
+D26/D27/D28的独立所选S3与原生模型接入。具体适配/未做项见[第六批说明](DEFENDER-SKILLS-BATCH6.md)。从实时main34ec756创建新分支，包含未合并#45依赖，不自动写main。
+
+| 实际验证 | 结果 |
+| --- | --- |
+| 最终完整EditMode | 271/271通过、0跳过，artifacts/b6-delivery-EditMode.xml。新增8项覆盖费用交换/真实备援与玩家DP隔离、实际直线命中/脆弱及暂停、诱导路线进度/雪层上限、棋子实际伤害/弹药/重置、路线转角投影、配置/原生S3、连续攻击时间边界、忽略法抗不能额外制造负法抗。 |
+| 最终完整GPU PlayMode | 71/71通过、0跳过，artifacts/b6-delivery-PlayMode.xml。新场景验证三人原模型、直立比例/屏幕平行、准备待机、暂停拖动/SP/帧冻结、实际技能效果、重开和返回，包含旧19人、怪物能力与双地图回归。 |
+| 最终Windows | BaselineTools.BuildWindows通过，1495880012 bytes、0错误，artifacts/b6-delivery-build.log。数值为Unity构建报告统计，不是EXE单文件大小。 |
+| 最终独立Player | D26/D27/D28/D25/city/ruins六例全部退出0、无捕获异常，artifacts/b6-player-results.json；新增三人entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全部True。伤害边界另由逻辑测试验证；截图不是完整数值证明。 |
+| 资源与画面 | 99张PNG共196469931字节，逐页SHA与导入记录匹配；6份运行清单、必要meta、原生动作、来源记录齐全。已查看选择页与三技能实机截图，docs/art/defender-batch6-*.png。资源/源码跟踪检查见本轮提交。 |
+
+初次校验发现初雪无普攻应标记noOrdinaryAttack，已修正；第一次逻辑测试仅路线投影浮点精确比较失败，改用微小误差。场景复现发现银灰满SP被连续普攻的浮点时间边界饿死，统一技能与攻击的时间误差后通过；提高样板生命不能解决该根因，不将其当修复。修正已触发棋子残留连线与清理、初雪法抗忽略下限，并核对银灰7级S3参数后，上述最终完整两套和Player均重新运行。失败记录未登记为通过。
+
+未改主场景/Prefab/Packages/ProjectSettings。原工程既存PackageManagerSettings.asset保持原SHA256：312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2；不提交、不覆盖。EXE与源码提交见STATUS和本地BUILD-INFO；无ZIP/Releases。
+
+未测第二台电脑离线、全新克隆构建、长时压力、全怪物×全部守军技能穷举。守军技能为自动调度；风雪之眼未做自由部署/转移及19费交易，望未做玩家选格/主动结束和全部盘面限制，雪格/棋子/外部特效仍为程序近似；正式数值和美术效果待人类试玩。
+
+
 ## 2026-10-29：六星守军第五批
 
 D23/D24/D25独立所选S3接入，完整范围与明确缺口见[第五批说明](DEFENDER-SKILLS-BATCH5.md)。基线main34ec756，codex/defender-skills-batch5包含第四批#44依赖，等待人工合并，不自动写main。

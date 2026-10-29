@@ -8,9 +8,9 @@ namespace YesterdayConvoy
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
             (PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
-        public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil;
+        public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil&&!SixthReveals(u);
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!UnitInvulnerable(u)&&
-            (!UnitInvisible(u)||CombatSettings.RevealsInvisible)&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
+            (!UnitInvisible(u)||CombatSettings.RevealsInvisible||SixthReveals(u))&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
         public bool NearBurningReeds(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Soldier&&
             facilities.Exists(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning&&GroundDistance(u.Motion.Position,f.Settings.Position)<=1.5f);
         void CancelUnitShots(DeployedUnitState u)

@@ -21,10 +21,10 @@ namespace YesterdayConvoy
         readonly List<DefenderDroneState> defenderDrones=new List<DefenderDroneState>();
         public IReadOnlyList<DefenderDroneState> DefenderDrones=>defenderDrones.AsReadOnly();
         public bool IsAdvancedDefender(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.LapplandHavoc;
-        public float DefenderRange(DefenderState d)=>IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
+        public float DefenderRange(DefenderState d)=>IsSixth(d)&&DefenderSkillActive(d)?d.Settings.Skill.EffectRadius:IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
         public bool DefenderCanBlock(DefenderState d)=>d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d);
-        public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?DefenderSkillActive(d):d.Settings.CanAttack;
+        public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?DefenderSkillActive(d):d.Settings.CanAttack||(d.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&DefenderSkillActive(d));
         float LiberatorAttackMultiplier(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?1+d.LiberatorBonus:1;
         public float DefenderCharge(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?
             Mathf.Clamp01((float)(Clock-d.ChargeStartedAt)/Mathf.Max(.01f,d.Settings.Skill.ChargeSeconds)):0;
@@ -40,7 +40,7 @@ namespace YesterdayConvoy
         {
             if(!IsAdvancedDefender(d))return;
             var s=d.Settings.Skill;d.AdvancedSkillWasActive=true;
-            if(BeginFifthSkill(d))return;
+            if(BeginSixthSkill(d)||BeginFifthSkill(d))return;
             d.SkillActionUntil=Clock+(s.Kind==DefenderSkillKind.YuKitchen?1.6:s.Kind==DefenderSkillKind.LapplandHavoc?1:s.Kind==DefenderSkillKind.SariaCalcification?.7:1d/3);
             d.NextAttackTime=Math.Max(d.NextAttackTime,d.SkillActionUntil);d.NextAuraAt=d.SkillActionUntil;
             if(s.Kind==DefenderSkillKind.YuKitchen)
@@ -60,12 +60,12 @@ namespace YesterdayConvoy
         }
         void StepAdvancedDefenders(float step)
         {
-            StepFifthDefenders(step);
+            StepFifthDefenders(step);StepSixthDefenders(step);
             bool globalRecovery=false;int alive=0;
             foreach(var d in defenders)if(d.Alive)alive++;
             foreach(var d in defenders)
             {
-                if(!IsAdvancedDefender(d)||IsFifth(d))continue;
+                if(!IsAdvancedDefender(d)||IsFifth(d)||IsSixth(d))continue;
                 if(d.AdvancedSkillWasActive&&!DefenderSkillActive(d))
                 {
                     if(d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen)
@@ -220,7 +220,7 @@ namespace YesterdayConvoy
         void ApplyPureUnitDamage(DeployedUnitState u,float amount)
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
-            ApplyUnitHealthDamage(u,u.FlamePhase==FlamechaserPhase.Ember?1:amount);
+            ApplyUnitHealthDamage(u,u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u));
         }
         void AddScorch(DeployedUnitState u,float amount)
         {

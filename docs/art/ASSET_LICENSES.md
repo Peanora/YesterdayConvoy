@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-10-29：六星守军第六批
+
+D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。
+
 ## 2026-10-29：六星守军第五批
 
 D23 Mon3tr、D24新约能天使、D25斩业星熊的已确认模型/卡面/选定S3动作接入独立试玩；131PNG/135387446字节、6清单及meta随源码交付。原作媒体非CC0，开放再分发权利未确认，上传决定不等于权利人授权。[实现与缺口](../DEFENDER-SKILLS-BATCH5.md)、[具体来源](source-records/defender-batch5-approved.json)、[PNG哈希](DEFENDER-BATCH5-IMPORT.json)。

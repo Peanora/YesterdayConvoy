@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum DefenderSkillKind { None, CardiganRecovery, MidnightEnchant, PlumeSwiftStrike, AnselRange,
-        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno }
+        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno,SilverAshReign,PramanixSnow,WangGambit }
 
     [Serializable]
     public sealed class DefenderSkillDefinition
@@ -69,7 +69,8 @@ namespace YesterdayConvoy
                 float elapsed=(float)Math.Max(0,Clock-Math.Max(Clock-step,d.SkillActiveUntil));
                 d.SkillSP=Math.Min(skill.RequiredSP,d.SkillSP+(skill.AttackRecovery?0:elapsed*skill.SPPerSecond));
                 if(DefenderSkillActive(d)||IsFifthActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
-                if(Clock<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
+                // Match attack scheduling tolerance so float rounding cannot starve a ready skill.
+                if(Clock+1e-6<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);
                 if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)useful=d.SkillSP>=skill.RequiredSP&&units.Exists(u=>CanDefenderTarget(u));
                 if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*.8f;
@@ -122,7 +123,7 @@ namespace YesterdayConvoy
 
         private void ScheduleDefenderAttack(DefenderState d,DeployedUnitState target,float travel)
         {
-            if(ScheduleFifthAttack(d,target,travel))return;
+            if(ScheduleSixthAttack(d,target,travel)||ScheduleFifthAttack(d,target,travel))return;
             var spec=d.Settings;var skill=spec.Skill;
             bool empowered=skill.AttackRecovery&&d.SkillSP+1e-5>=skill.RequiredSP;
             if(empowered){d.SkillSP=0;d.SkillCasts++;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock;}

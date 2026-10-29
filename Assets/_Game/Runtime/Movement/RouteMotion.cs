@@ -81,6 +81,23 @@ namespace YesterdayConvoy
             Position=length>0?Vector3.LerpUnclamped(points[nextPoint-1],points[nextPoint],(float)((DistanceTravelled-cumulativeLengths[nextPoint-1])/length)):points[nextPoint];
         }
 
+        public double ProjectDistance(Vector3 target)
+        {
+            double best=0;float distance=float.PositiveInfinity;
+            for(int i=1;i<points.Length;i++)
+            {
+                var delta=points[i]-points[i-1];float t=delta.sqrMagnitude>0?Mathf.Clamp01(Vector3.Dot(target-points[i-1],delta)/delta.sqrMagnitude):0;
+                float d=(target-(points[i-1]+delta*t)).sqrMagnitude;
+                if(d<distance){distance=d;best=cumulativeLengths[i-1]+(cumulativeLengths[i]-cumulativeLengths[i-1])*t;}
+            }
+            return best;
+        }
+        public void ApproachDistance(double target,float delta)
+        {
+            double step=Math.Min(Math.Abs(target-DistanceTravelled),Speed*delta);
+            if(target<DistanceTravelled)Retreat((float)(step/Speed));else Advance((float)(step/Speed));
+        }
+
         private static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }
 }

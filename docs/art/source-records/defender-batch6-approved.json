@@ -1,0 +1,221 @@
+{
+  "sources": [
+    {
+      "task": "D26F",
+      "unitId": "D26",
+      "name": "凛御银灰",
+      "variant": "战斗正面",
+      "characterId": "char_1045_svash2",
+      "reference": "https://prts.wiki/w/%E5%87%9B%E5%BE%A1%E9%93%B6%E7%81%B0",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/meta.json",
+      "model": "char_1045_svash2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1045_svash2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.skel",
+          "bytes": 908200,
+          "sha256": "a761cc6d23673799fa2ba93fe8e9ed53ff847ebc5a75efb20134f40886b89cfd"
+        },
+        {
+          "file": "char_1045_svash2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.atlas",
+          "bytes": 14337,
+          "sha256": "574589b8e5dab46e97aeeeca1f113d01069d8a905b3972b43f8a265638b41871"
+        },
+        {
+          "file": "char_1045_svash2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.png",
+          "bytes": 175808,
+          "sha256": "f390ff87e1ecc1b71f52f0eb419e100e51e1c322fadd9dd1cf4397fb60b25fd6"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    },
+    {
+      "task": "D26B",
+      "unitId": "D26",
+      "name": "凛御银灰",
+      "variant": "战斗背面",
+      "characterId": "char_1045_svash2",
+      "reference": "https://prts.wiki/w/%E5%87%9B%E5%BE%A1%E9%93%B6%E7%81%B0",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/meta.json",
+      "model": "char_1045_svash2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1045_svash2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/back/char_1045_svash2.skel",
+          "bytes": 527284,
+          "sha256": "f126f888cdae2d2029310e8a2d7249ef3494820b52dde14e2d19819e58f04894"
+        },
+        {
+          "file": "char_1045_svash2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/back/char_1045_svash2.atlas",
+          "bytes": 7331,
+          "sha256": "5b1ecdc8878c6df490cb412396b0e79fe096987779ad6ecd2c4160f9051ac272"
+        },
+        {
+          "file": "char_1045_svash2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/back/char_1045_svash2.png",
+          "bytes": 138426,
+          "sha256": "90e02ba5f86a830d547d84d8120668d0c2a25b51aeafc8c94842a5eef43e3a5b"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    },
+    {
+      "task": "D27F",
+      "unitId": "D27",
+      "name": "圣聆初雪",
+      "variant": "战斗正面",
+      "characterId": "char_1046_sbell2",
+      "reference": "https://prts.wiki/w/%E5%9C%A3%E8%81%86%E5%88%9D%E9%9B%AA",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/meta.json",
+      "model": "char_1046_sbell2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1046_sbell2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.skel",
+          "bytes": 1230640,
+          "sha256": "5956bcbd4b31aae3376c79d4e5a11d0b132fdc5e86702009cc9841026808bbde"
+        },
+        {
+          "file": "char_1046_sbell2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.atlas",
+          "bytes": 13170,
+          "sha256": "e5c0e887d90eb481c39e4209dc26f4ffbfa6645a02c83eec1b0629c8c9873a27"
+        },
+        {
+          "file": "char_1046_sbell2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.png",
+          "bytes": 194758,
+          "sha256": "332e4a02d1bb1e1a62cf15a6dd2450341b53d53c8599361b48967363f9d6cb87"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    },
+    {
+      "task": "D27B",
+      "unitId": "D27",
+      "name": "圣聆初雪",
+      "variant": "战斗背面",
+      "characterId": "char_1046_sbell2",
+      "reference": "https://prts.wiki/w/%E5%9C%A3%E8%81%86%E5%88%9D%E9%9B%AA",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/meta.json",
+      "model": "char_1046_sbell2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1046_sbell2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.skel",
+          "bytes": 968385,
+          "sha256": "2f3c109bf475f180656a4c6028cd9192ea50e84d33614556caadf9f6c11d6397"
+        },
+        {
+          "file": "char_1046_sbell2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.atlas",
+          "bytes": 8665,
+          "sha256": "3d6be63e4d8edc57bb1ec690859ce89097a374934d5def4e5a28c9ee6cad4783"
+        },
+        {
+          "file": "char_1046_sbell2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.png",
+          "bytes": 180919,
+          "sha256": "cfcae965338f53cc2db4d6434f6f46edc97cc16c98a21c03a69bde2b17daf047"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    },
+    {
+      "task": "D28F",
+      "unitId": "D28",
+      "name": "望",
+      "variant": "战斗正面",
+      "characterId": "char_2027_wang",
+      "reference": "https://prts.wiki/w/%E6%9C%9B",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/meta.json",
+      "model": "char_2027_wang",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_2027_wang.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.skel",
+          "bytes": 968009,
+          "sha256": "3064f5715b6f6b3a755951e856bb65a99e371f03ff8170088e4dbe7f0755ab97"
+        },
+        {
+          "file": "char_2027_wang.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.atlas",
+          "bytes": 12156,
+          "sha256": "fb1b0bdde9941f4d94ccc8a33e5aa45da046a904bedffd656eb1775279722316"
+        },
+        {
+          "file": "char_2027_wang.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.png",
+          "bytes": 165293,
+          "sha256": "8073905adef15237f2bef0765b46efe80046bdba24ca45d59dedda35a8eb55b1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    },
+    {
+      "task": "D28B",
+      "unitId": "D28",
+      "name": "望",
+      "variant": "战斗背面",
+      "characterId": "char_2027_wang",
+      "reference": "https://prts.wiki/w/%E6%9C%9B",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/meta.json",
+      "model": "char_2027_wang",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_2027_wang.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.skel",
+          "bytes": 591471,
+          "sha256": "613fefb84e33295ebaddad313f9c4333469a479ace2b8e76872b4de8b3721bfe"
+        },
+        {
+          "file": "char_2027_wang.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.atlas",
+          "bytes": 8577,
+          "sha256": "283b2d0b82370f3d414b367016a6ae080c4c780ba68d788607c47353858d44ee"
+        },
+        {
+          "file": "char_2027_wang.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.png",
+          "bytes": 137286,
+          "sha256": "ba0b302cd54107431d65efee285f82f30ec58a3865971d5eff4ab8d7550856a1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approvalNote": "User explicitly approved batch-six integration on 2026-10-29; not a rights-holder license."
+    }
+  ],
+  "rights": "Original Arknights media; open redistribution permission unconfirmed. User upload instruction is not a rights-holder license."
+}
