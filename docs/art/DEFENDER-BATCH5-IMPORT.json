@@ -1,0 +1,919 @@
+[
+  {
+    "id": "D23",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/idle-00.png",
+    "sha256": "28d788fa52426bf7333cc0e285d589b77f694a95dbaf354a1b52490296702374"
+  },
+  {
+    "id": "D23",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/idle-01.png",
+    "sha256": "75647c25a23663f1475092129eec44ea6e714edb6a10a6ff080e5a644e73067c"
+  },
+  {
+    "id": "D23",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/attack-00.png",
+    "sha256": "6f392701c9ec1f55841a59922773dd12860adf8ede6180e3911a14b6db195466"
+  },
+  {
+    "id": "D23",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/attack-01.png",
+    "sha256": "38b41928eea93f088b599597c2808f7bba8b2ba611ae32ada53635e41ddc8657"
+  },
+  {
+    "id": "D23",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\attack-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/attack-02.png",
+    "sha256": "1bafaa9af48cfb82dc5ce6ebe79b967350921feea79490a7dd193eecf6177654"
+  },
+  {
+    "id": "D23",
+    "key": "death",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\death-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/death-00.png",
+    "sha256": "de7d6295066a3aea7bc6d51bfd8f62987e8e46aa2523711945d1e355ecbd3893"
+  },
+  {
+    "id": "D23",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_begin-00.png",
+    "sha256": "429b0791e65f0aa0c51363f8fadd06cf422d68bc5cefe7fbf0fecd02da6c425e"
+  },
+  {
+    "id": "D23",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_begin-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_begin-01.png",
+    "sha256": "6b1e08586dbd89de806b2fe4bc39ca1db2635caf4216c1c161b8b0124f40ecae"
+  },
+  {
+    "id": "D23",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_begin-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_begin-02.png",
+    "sha256": "53892c5d01a0d07c2d10c5f8364c41214415352370aef378c4a8a065e32b2ac5"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-00.png",
+    "sha256": "23b4e4d9b5fef2c6c53cc7bd413c970d5d50aff8681bed3b6d27094f8157180c"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-01.png",
+    "sha256": "57f309ede9eb8d581b944e80ee9a4194f268e5eb174b60eae6db10a165641c9d"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-02.png",
+    "sha256": "691b8e5c03b98bf21abf5642cd1312e11e6ea21bcf1fa470a774257d4684ed48"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-03.png",
+    "sha256": "ae92320f39bb31561468d4f1613824d710def51ac54e6bcd95935ab7290aec68"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-04.png",
+    "sha256": "fcd8ef5fc0a6a1dbf7f6a8fc1e3e8d2484b039d1044c1c70dc2b85f3daa11aca"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-05.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-05.png",
+    "sha256": "7e6ec1b5a102b13a795e733de8907832f9688a06ee3f392e8329cebaa91e8142"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-06.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-06.png",
+    "sha256": "bb0fb67f2705b8aac6a418f67862533ddf049b170f20e77b5a75c4f9d2afec60"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-07.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-07.png",
+    "sha256": "9b28112f033dd2827c1a1f520cef87892255f2d62d344d51139f8733184b7776"
+  },
+  {
+    "id": "D23",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_idle-08.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_idle-08.png",
+    "sha256": "cb4e74e7de8e5a4471d2791358dbee803009b4bdd6e20903c3feb950ceaf572b"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-00.png",
+    "sha256": "702d34a65c233798967b6e23e7799fb20172be065f2d43476edc3b23eb51c224"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-01.png",
+    "sha256": "85557eb712a3f675d8bbe7bb77cf37d78c7098c6d30a3d1bbb29ab18164ba944"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-02.png",
+    "sha256": "2975e4f0f9d248694084e0ae1bdd8bd40256c95a4d916fa42738b2859fb8ced1"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-03.png",
+    "sha256": "95789f6a3aa38a07e6858cc684ab2b18954ccfee52eb2dcecd47972db2fe2590"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-04.png",
+    "sha256": "b6f9432d373106c4aa2a47967150d3a2f26dccb39a289f908e4477b622117cdf"
+  },
+  {
+    "id": "D23",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_loop-05.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_attack-05.png",
+    "sha256": "6e3e28f2dca93c9ef833458b5936e66b3db352ce3ccb9f338686f7e003562c80"
+  },
+  {
+    "id": "D23",
+    "key": "portrait",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23F\\portrait.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/portrait.png",
+    "sha256": "c3b27dab8c87a57554552daa5ccf70013b6ffefc02b7e6736bc55bfcfe692fcc"
+  },
+  {
+    "id": "D23B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23B\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/idle-00.png",
+    "sha256": "2fece82b99c32a19ecef9b323af40727997d4715b9abc2336347fe486029cad3"
+  },
+  {
+    "id": "D23B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23B\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/idle-01.png",
+    "sha256": "41a793058bc77b5128263b79131b78ca54c912486fe774027508e85dd3182c6c"
+  },
+  {
+    "id": "D23B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23B\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/attack-00.png",
+    "sha256": "83e2803f53f3177d77c4938ab98488bb471a23baffdb30b72a93dba3a62b03f7"
+  },
+  {
+    "id": "D23B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23B\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/attack-01.png",
+    "sha256": "ff9f596324539eb4dda823f8570406617ca7c3df3cf9b1089c47654d861ad8d5"
+  },
+  {
+    "id": "D23B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D23B\\attack-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/attack-02.png",
+    "sha256": "953cbf9c8710ab40d7edd7202028d2a3dbb31ed1f80451e3c08d4dce9071a2bf"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_begin-00.png",
+    "sha256": "f3862a97649f64c841c07534e60dec84b820da803ff8728927f7f1be9be7d859"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_begin-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_begin-01.png",
+    "sha256": "24e1cddb1b7a41202a26a2bf9f0774f2e6aaea3c792c975a1c730539552b476c"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_begin-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_begin-02.png",
+    "sha256": "137a8880b6776c1e5f8e1d67ce5cf8ca539a11cac25eeccb4e4fc0c3d3d71c56"
+  },
+  {
+    "id": "D24",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/idle-00.png",
+    "sha256": "00fa9116b299c3903a0fd18fc8302ed206cbd9619ae5a5c823428509c5b15525"
+  },
+  {
+    "id": "D24",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/idle-01.png",
+    "sha256": "afd02e8e9891a8edc4ec66ea12aa938fdd6991a60572f8bca8d2383358a06ea8"
+  },
+  {
+    "id": "D24",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/attack-00.png",
+    "sha256": "bef1839d002b1c87444255efbe1b9c528f62319c97943161aca24b1f9fa7e69c"
+  },
+  {
+    "id": "D24",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/attack-01.png",
+    "sha256": "01618fad5b50927a89041be0d9b7b259a9b011a7692f4f40c87e3bf27cba20d6"
+  },
+  {
+    "id": "D24",
+    "key": "death",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\death-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/death-00.png",
+    "sha256": "a6f5832dd5ae84617ae9b5704415102748146e5ef874e15627e90cf31cba671b"
+  },
+  {
+    "id": "D24",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_begin-00.png",
+    "sha256": "b01091f7d8ef665898bfd980bb44894d859c7858cdde35a2a21ac648e7943eb6"
+  },
+  {
+    "id": "D24",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_end-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_end-00.png",
+    "sha256": "c42f3c53566b5bc8c628bf77f3a87d589203809da0fd5b0e818895bc4ffa1314"
+  },
+  {
+    "id": "D24",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_end-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_end-01.png",
+    "sha256": "0311b1b9b5329b7fc0333b034c4e781378bcdb95d72316d8864c1f639837984b"
+  },
+  {
+    "id": "D24",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_end-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_end-02.png",
+    "sha256": "3dc3269d816664de2eb614fcaf01779245ffbd6edca44e4e2a8f5a378c161faa"
+  },
+  {
+    "id": "D24",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_idle-00.png",
+    "sha256": "a7c9543f8d210a4d88a0c8d96ba9e3e5fd4f98a81ee3abe8cb61069d5b6cf20d"
+  },
+  {
+    "id": "D24",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_idle-01.png",
+    "sha256": "4eafbd3cc27b087eb3f80702f07997dd3c917b354b0ee4da6d34db7e49a45c92"
+  },
+  {
+    "id": "D24",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_idle-02.png",
+    "sha256": "b7b82ceb8d103fadfba916422ea3ca73bc059712dbff83d1e93426499505417c"
+  },
+  {
+    "id": "D24",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_idle-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_idle-03.png",
+    "sha256": "7c3e3eb1408c415cb0e053f1aeb6fdc5828be64b8b085ffc3630baca7a7dfafa"
+  },
+  {
+    "id": "D24",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_idle-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_idle-04.png",
+    "sha256": "cbf5f467c5b40d858850daca5efc5134c7578cd29adb0b60d3070b21e3dcbc49"
+  },
+  {
+    "id": "D24",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_loop-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_attack-00.png",
+    "sha256": "e8d4dea928ad8abfae718477249b06a69999b17a53a35e746ef2206cd0e16717"
+  },
+  {
+    "id": "D24",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_loop-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_attack-01.png",
+    "sha256": "98aedb88dbfc8cf5ee2076b079cdaaf242fa85216e4e6a74ac416cc69b662687"
+  },
+  {
+    "id": "D24",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_loop-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_attack-02.png",
+    "sha256": "59df193c98fda85a396fbba1bdebe1cf03916fec1329665eb9fc71cb5ab2217b"
+  },
+  {
+    "id": "D24",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24F\\extra-clips\\extra_skill_3_loop-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/skill_attack-03.png",
+    "sha256": "65c6a239d9fb25345428664105ecbc314c10e3f1b1a1b0abd72589b5bd68a534"
+  },
+  {
+    "id": "D24",
+    "key": "portrait",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24F\\portrait.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24/portrait.png",
+    "sha256": "afbeefe12cc4b029530e54edf4a032ba75ba896dab7a90897f1a1ab36753408d"
+  },
+  {
+    "id": "D24B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24B\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/idle-00.png",
+    "sha256": "ba81f82f3a2bfe0f3db7bb4b9312e95b13f3e620a3771be1b22da03b77baaf03"
+  },
+  {
+    "id": "D24B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24B\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/idle-01.png",
+    "sha256": "f0df60ec7dc147ed38226219a89e38e0f0aca0e93c490b44f5ae93b96e267e78"
+  },
+  {
+    "id": "D24B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24B\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/attack-00.png",
+    "sha256": "f5477ab86b2cd95bfc110adfed28a41ac92e88ca0efb40809414e8aecfe03f3f"
+  },
+  {
+    "id": "D24B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D24B\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/attack-01.png",
+    "sha256": "cf40d08e4efde136e98344a7b2feba1f236a840ab914194687009334a0b8cd72"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_begin-00.png",
+    "sha256": "ccd48ee4f9d962ac23cff184d703939760ccc58f04122dedaf674cfdc1da750e"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_end-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_end-00.png",
+    "sha256": "a547e56472bdc79ac4eb2403b395d7d5a9b43bd1512e51519833ba8030f498a0"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_end-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_end-01.png",
+    "sha256": "a1e4a5473982f4355f4e28223b19e002b2769afe810909828e6512db475f0599"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_end-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_end-02.png",
+    "sha256": "0c62c4136005543fa84f0432eec573ca0ee6e56e2d125624be35f249c16b95b1"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_idle-00.png",
+    "sha256": "f0f7e0f71df68904ba438fe9f1656aefae30512c89d88df150314ef7da480695"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_idle-01.png",
+    "sha256": "5e75acbcaaf78301771ea2848bd19001c0912f519f9beebcd3b0155fcd025787"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_idle-02.png",
+    "sha256": "3a8cbc74ced87eba7db5b8461e6a47d7e1ac9791eeeb413506ba06a9fc5a2414"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_idle-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_idle-03.png",
+    "sha256": "0b73595fda6c5ece31ac36080eb97a1352eb4a20647a22371e3f69c04356f5ac"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_idle-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_idle-04.png",
+    "sha256": "2a1ca74f01ca23f7736e6c8987ed2d4e3474b267b65248ebeca3e417a7c157e7"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_loop-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_attack-00.png",
+    "sha256": "bdfac3085eef9dd129686c3a07a790fbba9d118894cad6154a0595182d5ac46b"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_loop-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_attack-01.png",
+    "sha256": "fc1662d677e9fada5aacf01e253c2a091a205d2e0e2ec2db05dba20c8da3cb53"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_loop-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_attack-02.png",
+    "sha256": "d3967a81e154fcb6f51fa6d1858c95f2e2220f75bdb672ef9a396e5d68779aea"
+  },
+  {
+    "id": "D24B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D24B\\extra-clips\\extra_skill_3_loop-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D24B/skill_attack-03.png",
+    "sha256": "cf0ba42b62ff45cf30f4593ecfe1f77da7728aba5d0bc9ca6c3b0d686b60a42e"
+  },
+  {
+    "id": "D25",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/idle-00.png",
+    "sha256": "a5cae0be455333de0acb2d462ba954ad86c074d60c8b6e7739a2173dff736618"
+  },
+  {
+    "id": "D25",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/idle-01.png",
+    "sha256": "8aa6f0c7677a6d3a29869038bbb048d7ee16065b0c20c8efbb67214524b90b89"
+  },
+  {
+    "id": "D25",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/idle-02.png",
+    "sha256": "ede4f2c0d1a6a18fb01832ad564fc1dc6907b559b05753ad8256d0528c21cc98"
+  },
+  {
+    "id": "D25",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/attack-00.png",
+    "sha256": "5bb0fb2b07b895a5ea7a9c29125ae047e0c367a324a7680faebc3b7b97747e33"
+  },
+  {
+    "id": "D25",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/attack-01.png",
+    "sha256": "a6237335f8e539875674017d7d84509f7bde11617d450048fbc674d4cbc6ca7c"
+  },
+  {
+    "id": "D25",
+    "key": "death",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\death-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/death-00.png",
+    "sha256": "f03ec1de75e3c3cfca814c1cefe450c5b485cef7a2485264ec2fad6f44fff3a5"
+  },
+  {
+    "id": "D25",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_begin-00.png",
+    "sha256": "eceefff7d22bd8caf8edfc529c16e0a00f72950211b8eaa9bee1b02c1208ad5f"
+  },
+  {
+    "id": "D25",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_end-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_end-00.png",
+    "sha256": "b5d09d0c7f1c9a6e8b8608e0c7c1179d764f4422088098e8b0f1c5830b4d59b6"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-00.png",
+    "sha256": "3d409ea3dd0ea09ad26a499fa01dda8c13229c58fe8b2058bcfe24c85fe9ede9"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-01.png",
+    "sha256": "9f34418584f7db10555265ec121c1e6d5a7f6a221207b40e27b23fa09dde704e"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-02.png",
+    "sha256": "ef08384c2c689a4b108613592000d238574f98d8cb7008b91d0ca5734b185e30"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-03.png",
+    "sha256": "b0de57c562c858c39053ded6800b6a6df0a07fd7d1c2ecd254834d50f0c69eae"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-04.png",
+    "sha256": "ce9edcd37288cbc6778d023dac2df92e1f458967066a22d5d45960677ec2e833"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-05.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-05.png",
+    "sha256": "16399f174a13be36c9ec649abbddfbafa11eacf7670ad83a110160fba85d6d46"
+  },
+  {
+    "id": "D25",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_idle-06.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_idle-06.png",
+    "sha256": "80a5096f5cec5e0d099a1500c69426fcb2cd935ee4685625a184ee75d804c3b0"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_a-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack-00.png",
+    "sha256": "5928625d2ea461f949af293ad5c0853341fa39e1fa706c6d5b5eceb8f5f63fbd"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_a-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack-01.png",
+    "sha256": "5a37c6fb1cd4a93f3d6df4b5b1cc3974ae3a62dece6082a723b616d79303a09a"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_a-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack-02.png",
+    "sha256": "d8632aaed9f5ce8d5a0620de7a701ade8f131757fad86bf41e4573d63a66d6f3"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_a-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack-03.png",
+    "sha256": "0164d0880597bf0eedd95c88e56be009a57618c3b33913990dcc070720fded10"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_b-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_b-00.png",
+    "sha256": "3e2d4e61f49d19e74bb61a12f74c9efcfe57b2093e60584f27eb2e692c129cc6"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_b-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_b-01.png",
+    "sha256": "40c00e335f9a2e44fac99de5ca961e1f0a445813edeeabfa7a0f771f61025e70"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_b-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_b-02.png",
+    "sha256": "a73ce3319cd5005d7b8d2cd8990ee4c528d425252c06fe0b193eb5f055cc5bd6"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_b-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_b-03.png",
+    "sha256": "3923f549750b9c7a818e6731b8ea0df44c2f9156288a40cc32da1a83cf72ff32"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_c-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_c-00.png",
+    "sha256": "68df659c163770902c9696926da6deb53a14612053b93a1a3ba5129d45403fc0"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_c-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_c-01.png",
+    "sha256": "40949c3bfda40f772faf57d452a7f3a6ce769f1e1d4a11467a030ec76b7eee95"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_c-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_c-02.png",
+    "sha256": "23205054cde9621c43f1f37b52b90b3290e36f10227b588f32d751c5c81f7a95"
+  },
+  {
+    "id": "D25",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25F\\extra-clips\\extra_skill_3_loop_c-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/skill_attack_c-03.png",
+    "sha256": "713d171bfdef14293ef123a9803e7c291d196cb0c02129c424c876ca3082e079"
+  },
+  {
+    "id": "D25",
+    "key": "portrait",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25F\\portrait.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25/portrait.png",
+    "sha256": "b020aacc93148d9de4add3fe9fccead40a4cd82d08f09401d0b281b890f88e0b"
+  },
+  {
+    "id": "D25B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25B\\idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/idle-00.png",
+    "sha256": "e6193bfb7ffd00d46b429f953c3f71715f227c25d9832de2bee27390b2daf9d2"
+  },
+  {
+    "id": "D25B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25B\\idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/idle-01.png",
+    "sha256": "99581592ffb2a8ce0866b044e3f36bebc986092022917521d504abf8344472c7"
+  },
+  {
+    "id": "D25B",
+    "key": "idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25B\\idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/idle-02.png",
+    "sha256": "f30d2d8cd52e857a602243a3f3ba1feb27a472d945591d70238deaaaa3981639"
+  },
+  {
+    "id": "D25B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25B\\attack-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/attack-00.png",
+    "sha256": "e60ef3764cbdd5eb23c1d29aab03e18bab3f35cdb9864038f73c860980804254"
+  },
+  {
+    "id": "D25B",
+    "key": "attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D25B\\attack-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/attack-01.png",
+    "sha256": "dc71ae33a50c52cc5028a4bd4845137a2588c80e3a6a093f19f4ad304f0fea24"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_begin",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_begin-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_begin-00.png",
+    "sha256": "7ed2b1e8170499c5bfbae6ecf852e3ebb42b821365c186ca5fd393285ab15dca"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_end-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_end-00.png",
+    "sha256": "f8a2c8b99f9e8b88c264265d49e6d5b429c162b7bb255fa09e7433bbd1734269"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-00.png",
+    "sha256": "3337f81fc345a6713ad05f31b9bdb3e1383cbcf29c8be3a9297faea744758897"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-01.png",
+    "sha256": "34512581fa70a7eff956d2dd281ebdf5cbb7f5138c8d16a557b16be038f7d474"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-02.png",
+    "sha256": "ee4a3627a7e504a707294f6cfcd55aa627035248e71c4fad69fdcb50dcac1cb9"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-03.png",
+    "sha256": "589fe1df5417cf23753a387d772d4ab90204d57c5306bb0bcde8336b576d1f7a"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-04.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-04.png",
+    "sha256": "3f8e8e86d338505d0878a3a0f61f5fcc23ad35b8ceb1eff5a97b321aabad81d0"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-05.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-05.png",
+    "sha256": "15192afa3eb9a2fb3d6f19677b8b237289e3f7df95c6598587352aa391ddf9f8"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_idle",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_idle-06.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_idle-06.png",
+    "sha256": "1c61aca303f3d3de8c5b6908c932e087b83277c9051ea22d565cc9864bedefd1"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_a-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack-00.png",
+    "sha256": "2793477fdecdd6e0f49a6c391f95ec6e6e9765d9022c390f4fb3d3c3a7398f29"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_a-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack-01.png",
+    "sha256": "352b12d897b2d892dd8dd65d4507f0b622e7c56241c6a9de9cdeccd7002ed2b6"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_a-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack-02.png",
+    "sha256": "08439b561f0e105cc39cf44bc12be65bc44f4fa18b8c15d41af8fd3919ac2c06"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_a-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack-03.png",
+    "sha256": "89eae0576dd455294020cefafdfe9ddf0624f6e704296de429be6dba92d4613e"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_b-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_b-00.png",
+    "sha256": "0fe7c368343b7efff0a133f920e9cfc8aaacd12088fd2abae7cd5fb654133e4f"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_b-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_b-01.png",
+    "sha256": "03ee421e2371cafd862dbea5a5895d240051a5e7973fb7bbf21ef18943b4417f"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_b-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_b-02.png",
+    "sha256": "41febaa8a6cb9166f20276341fb3934b55263bd245edcbced54534f7b0d6e1a9"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_b",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_b-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_b-03.png",
+    "sha256": "1938d25de6b9218d8570fd50ef52326f61a31bd01b032dcb7b77cde87f56bbba"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_c-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_c-00.png",
+    "sha256": "1415a2d67809e2049796c94b50ae80cedd493a10c12349fb9601561c93dfd524"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_c-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_c-01.png",
+    "sha256": "56f0bf7c4cba2c1e2878e55046aafdf8758973ec9c71709bf48b80ed48fe9664"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_c-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_c-02.png",
+    "sha256": "d92c38af375e58a47939b6971048a490adb28b779da9dbe59e403539fb9e5859"
+  },
+  {
+    "id": "D25B",
+    "key": "skill_attack_c",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D25B\\extra-clips\\extra_skill_3_loop_c-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D25B/skill_attack_c-03.png",
+    "sha256": "2ed1c945524013a32ab57309c2c2c795ababe3293eade6b50a35799ed777ae50"
+  },
+  {
+    "id": "D23",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_back-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_end-00.png",
+    "sha256": "c961369799cebd5bc207112de5d4b91edb640a20b8d731abdab59b601b36a11e"
+  },
+  {
+    "id": "D23",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_back-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_end-01.png",
+    "sha256": "ac9ef231efa49fc50372ed6bf8017166dfe3ba51498e8a4c2fecc7215de670a9"
+  },
+  {
+    "id": "D23",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_back-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_end-02.png",
+    "sha256": "f0986e4c2c9c5e52342864003d2d6eb85ebb3d49a48d1ca37381caaa5b7e26fc"
+  },
+  {
+    "id": "D23",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23F\\extra-clips\\extra_skill_3_back-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23/skill_end-03.png",
+    "sha256": "a744240a453de295f076b09d70d6ba81760ad3498e02698545740de2089de133"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_back-00.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_end-00.png",
+    "sha256": "1520281efba47c05a7b3270f9be3edf91b670d337b6629d38c2fa8c4cece5ffd"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_back-01.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_end-01.png",
+    "sha256": "adce1f0e4410e6fcbfb92bf519969fa9783b2a6b47c1d7aaca43d8ead20fe188"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_back-02.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_end-02.png",
+    "sha256": "45a8bbe74532dd1b75efdc19602a206835447ace0052afaf07b54bca7d6292b0"
+  },
+  {
+    "id": "D23B",
+    "key": "skill_end",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\D23B\\extra-clips\\extra_skill_3_back-03.png",
+    "target": "Assets/StreamingAssets/DefenderArt/D23B/skill_end-03.png",
+    "sha256": "39274acb26aa5bd08199313e5ecdcd2beeb8e8a9fd0a08bef7d1ee568a5347a5"
+  }
+]

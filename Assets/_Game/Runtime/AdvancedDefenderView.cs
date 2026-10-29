@@ -48,6 +48,7 @@ namespace YesterdayConvoy
                 }
                 foreach(var d in b.Defenders)
                 {
+                    if(b.IsFifth(d)&&d.Alive){Ring(d.Settings.RelayPosition,.42f,new Color(.3f,1,.75f,.7f),.04f);if(b.IsFifthActive(d))Ring(d.Position,.65f,new Color(1,.45f,.2f,.7f),.045f);}
                     if(!b.DefenderSkillActive(d))continue;
                     switch(d.Settings.Skill.Kind)
                     {

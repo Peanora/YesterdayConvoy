@@ -478,10 +478,15 @@ namespace YesterdayConvoy
             if(d.Settings.Skill.Enabled)
             {
                 bool active=Battle.DefenderSkillActive(d);float fill=active?(float)((d.SkillActiveUntil-Battle.Clock)/d.Settings.Skill.Duration):d.SkillSP/d.Settings.Skill.RequiredSP;
+                if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)fill=d.Ammo/50f;
                 Fill(new Rect(x-width/2,y+9,width,5),new Color(.03f,.05f,.06f));
                 Fill(new Rect(x-width/2+1,y+10,(width-2)*Mathf.Clamp01(fill),3),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
+                if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)fill=(float)(d.ProtectionUntil-Battle.Clock)/11;
                 string skill=DefenderSkillName(d.Settings.Skill.Kind)+(active?$" {Math.Max(0,d.SkillActiveUntil-Battle.Clock):0.0}s":$" {d.SkillSP:0}/{d.Settings.Skill.RequiredSP:0}");
+                if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)skill="使命必达 · 弹药 "+d.Ammo+"/50";
+                if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)skill=$"地狱变相 · 临死保护 {d.ProtectionUntil-Battle.Clock:0.0}s";
                 GUI.Label(DefenderSkillTrialActive?new Rect(x+width/2+8,y-3,320,25):new Rect(x-120,y-27,260,25),skill,smallStyle);
+                if(d.DebtLife)GUI.Label(new Rect(x+width/2+8,y+18,260,24),$"我执 · 累积伤害 {d.Debt:0}",smallStyle);
                 if(d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&!active)GUI.Label(new Rect(x+width/2+8,y+18,260,24),$"蓄力 {Battle.DefenderCharge(d)*100:0}% · 不攻不挡",smallStyle);
             }
             string status=Battle.DefenderShackled(d)?"枷锁禁锢":d.NeuralUntil>Battle.Clock ? $"神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s" : d.NeuralAccumulated>0 ? $"神经损伤 {d.NeuralAccumulated:0}/100" : d.FrozenUntil>Battle.Clock ? "冻结" : d.ColdUntil>Battle.Clock ? "寒冷" : d.FrostSlowUntil>Battle.Clock ? "冰环减速" :

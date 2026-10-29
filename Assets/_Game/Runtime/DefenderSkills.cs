@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum DefenderSkillKind { None, CardiganRecovery, MidnightEnchant, PlumeSwiftStrike, AnselRange,
-        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory }
+        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno }
 
     [Serializable]
     public sealed class DefenderSkillDefinition
@@ -27,7 +27,7 @@ namespace YesterdayConvoy
         public readonly float DefenseMultiplier,HealingInterval,HealthMultiplier,EffectRadius,DamageAmplification,MoveMultiplier,ElementFraction,EraseChance,ChargeSeconds;
         public readonly int Targets;
         public bool Enabled=>Kind!=DefenderSkillKind.None;
-        public bool AttackRecovery=>Kind==DefenderSkillKind.KroosDoubleShot||Kind==DefenderSkillKind.StewardStrike;
+        public bool AttackRecovery=>Kind==DefenderSkillKind.KroosDoubleShot||Kind==DefenderSkillKind.StewardStrike||Kind==DefenderSkillKind.Mon3trMeltdown;
         public DefenderSkillSettings(DefenderSkillKind kind,float initialSP,float requiredSP,float spPerSecond,float duration,
             float attackMultiplier=1,float attackSpeedMultiplier=1,float healFraction=0,float healRangeBonus=0,float defenseMultiplier=1,float healingInterval=0,
             float healthMultiplier=1,float effectRadius=0,float damageAmplification=1,float moveMultiplier=1,float elementFraction=0,float eraseChance=0,float chargeSeconds=0,int targets=1)
@@ -52,11 +52,11 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool DefenderSkillActive(DefenderState d)=>d!=null&&d.Alive&&d.Settings.Skill.Enabled&&Clock<d.SkillActiveUntil;
-        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d);
+        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d);
         public float DefenderHealRange(DefenderState d)=>d.Settings.HealRange+(DefenderSkillActive(d)?d.Settings.Skill.HealRangeBonus:0);
         private float DefenderAnimationRate(DefenderState d)=>DefenderSkillActive(d)?d.Settings.Skill.AttackSpeedMultiplier:1;
         private bool SpotHealing(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode&&DefenderSkillActive(d);
-        private bool CanDefenderHeal(DefenderState d)=>d.Settings.Role!=DefenderRole.Fighter&&
+        private bool CanDefenderHeal(DefenderState d)=>!(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&DefenderSkillActive(d))&&d.Settings.Role!=DefenderRole.Fighter&&
             (d.Settings.Skill.Kind!=DefenderSkillKind.SpotHealingMode||DefenderSkillActive(d))&&
             (d.Settings.Skill.Kind!=DefenderSkillKind.SariaCalcification||!DefenderSkillActive(d));
         private void StepDefenderSkills(float step)
@@ -64,13 +64,14 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
             {
                 var skill=d.Settings.Skill;
-                if(!d.Alive||!skill.Enabled||skill.AttackRecovery)continue;
+                if(!d.Alive||!skill.Enabled||skill.AttackRecovery&&skill.Kind!=DefenderSkillKind.Mon3trMeltdown)continue;
                 // Recovery resumes only after an active skill has ended, including a straddling frame.
                 float elapsed=(float)Math.Max(0,Clock-Math.Max(Clock-step,d.SkillActiveUntil));
-                d.SkillSP=Math.Min(skill.RequiredSP,d.SkillSP+elapsed*skill.SPPerSecond);
+                d.SkillSP=Math.Min(skill.RequiredSP,d.SkillSP+(skill.AttackRecovery?0:elapsed*skill.SPPerSecond));
                 if(DefenderSkillActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
                 if(Clock<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);
+                if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)useful=d.SkillSP>=skill.RequiredSP&&units.Exists(u=>CanDefenderTarget(u));
                 if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*.8f;
                 else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing)
                 {
@@ -107,6 +108,7 @@ namespace YesterdayConvoy
             d.NextAttackTime=Clock+(SpotHealing(d)&&spec.Skill.HealingInterval>0?spec.Skill.HealingInterval:spec.Interval)/rate;
             combatShots.Add(new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
                 Clock+spec.Windup/d.LastActionRate,travel,DefenderSkillAttack(d),healing:true));
+            if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown){ScheduleMon3trChain(d,wounded,travel);d.SkillSP=Math.Min(spec.Skill.RequiredSP,d.SkillSP+1);}
             if(spec.ExtraHealChance<=0||d.Roll()>=spec.ExtraHealChance)return;
             DefenderState second=null;
             foreach(var ally in defenders)
@@ -120,6 +122,7 @@ namespace YesterdayConvoy
 
         private void ScheduleDefenderAttack(DefenderState d,DeployedUnitState target,float travel)
         {
+            if(ScheduleFifthAttack(d,target,travel))return;
             var spec=d.Settings;var skill=spec.Skill;
             bool empowered=skill.AttackRecovery&&d.SkillSP+1e-5>=skill.RequiredSP;
             if(empowered){d.SkillSP=0;d.SkillCasts++;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock;}

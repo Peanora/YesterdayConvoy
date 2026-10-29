@@ -229,7 +229,7 @@ namespace YesterdayConvoy
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type)
         {
-            defender.Health=Mathf.Max(0,defender.Health-CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance-(defender.BurnUntil>Clock?20:0)),type));
+            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance-(defender.BurnUntil>Clock?20:0)),type));
             defender.LastHitTime=Clock;
             if(!defender.Alive) { defender.DeathTime=Clock;defender.TargetId=null; }
         }

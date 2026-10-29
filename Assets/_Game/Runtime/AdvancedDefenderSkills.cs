@@ -21,7 +21,7 @@ namespace YesterdayConvoy
         readonly List<DefenderDroneState> defenderDrones=new List<DefenderDroneState>();
         public IReadOnlyList<DefenderDroneState> DefenderDrones=>defenderDrones.AsReadOnly();
         public bool IsAdvancedDefender(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.LapplandHavoc;
-        public float DefenderRange(DefenderState d)=>DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
+        public float DefenderRange(DefenderState d)=>IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
         public bool DefenderCanBlock(DefenderState d)=>d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d);
         public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?DefenderSkillActive(d):d.Settings.CanAttack;
@@ -40,6 +40,7 @@ namespace YesterdayConvoy
         {
             if(!IsAdvancedDefender(d))return;
             var s=d.Settings.Skill;d.AdvancedSkillWasActive=true;
+            if(BeginFifthSkill(d))return;
             d.SkillActionUntil=Clock+(s.Kind==DefenderSkillKind.YuKitchen?1.6:s.Kind==DefenderSkillKind.LapplandHavoc?1:s.Kind==DefenderSkillKind.SariaCalcification?.7:1d/3);
             d.NextAttackTime=Math.Max(d.NextAttackTime,d.SkillActionUntil);d.NextAuraAt=d.SkillActionUntil;
             if(s.Kind==DefenderSkillKind.YuKitchen)
@@ -59,11 +60,12 @@ namespace YesterdayConvoy
         }
         void StepAdvancedDefenders(float step)
         {
+            StepFifthDefenders(step);
             bool globalRecovery=false;int alive=0;
             foreach(var d in defenders)if(d.Alive)alive++;
             foreach(var d in defenders)
             {
-                if(!IsAdvancedDefender(d))continue;
+                if(!IsAdvancedDefender(d)||IsFifth(d))continue;
                 if(d.AdvancedSkillWasActive&&!DefenderSkillActive(d))
                 {
                     if(d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen)
@@ -75,7 +77,7 @@ namespace YesterdayConvoy
             }
             if(alive>=4)foreach(var ally in defenders)
             {
-                if(!ally.Alive||!globalRecovery&&ally.Settings.Skill.Kind!=DefenderSkillKind.YuKitchen)continue;
+                if(!ally.Alive||ally.DebtLife||!globalRecovery&&ally.Settings.Skill.Kind!=DefenderSkillKind.YuKitchen)continue;
                 float amount=ally.MaxHealth*.015f*step;
                 float gain=Math.Min(amount,ally.MaxHealth-ally.Health);ally.Health+=gain;
                 ally.BurnAccumulated=Math.Max(0,ally.BurnAccumulated-amount);ally.NeuralAccumulated=Math.Max(0,ally.NeuralAccumulated-amount);
@@ -99,6 +101,7 @@ namespace YesterdayConvoy
         }
         void HealDefender(DefenderState source,DefenderState target,float amount)
         {
+            if(target.DebtLife)return;
             float gain=Math.Min(amount,target.MaxHealth-target.Health);target.Health+=gain;
             if(source.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)
             {

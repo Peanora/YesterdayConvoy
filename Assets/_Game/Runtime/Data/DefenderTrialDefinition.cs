@@ -16,11 +16,12 @@ namespace YesterdayConvoy
         public float splashRadius;
         public float healingRange;
         public DefenderSkillDefinition skill;
-        public bool noOrdinaryAttack,kasimierz;
+        public bool noOrdinaryAttack,kasimierz,reserve;
+        public Vector3 relayPosition;
         public float rangedAttackMultiplier=1,criticalChance,criticalMultiplier=1.5f,extraHealChance;
         public DefenderSettings Snapshot() => new DefenderSettings(id, displayName, artId, position,
             health, attack, armor, range, interval, blocks, role, damageType, windup, actionDuration, splashRadius, healingRange:healingRange,
-            skill:skill?.Snapshot()??default,canAttack:!noOrdinaryAttack,rangedAttackMultiplier:rangedAttackMultiplier,criticalChance:criticalChance,criticalMultiplier:criticalMultiplier,extraHealChance:extraHealChance,kasimierz:kasimierz);
+            skill:skill?.Snapshot()??default,canAttack:!noOrdinaryAttack,rangedAttackMultiplier:rangedAttackMultiplier,criticalChance:criticalChance,criticalMultiplier:criticalMultiplier,extraHealChance:extraHealChance,kasimierz:kasimierz,reserve:reserve,relayPosition:relayPosition);
     }
 
     [CreateAssetMenu(menuName="Yesterday Convoy/Defender Trial")]

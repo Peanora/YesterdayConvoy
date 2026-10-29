@@ -90,9 +90,21 @@ namespace YesterdayConvoy
         public Vector3 WallNormal {get;internal set;}=Vector3.right;
         private uint randomState=2166136261;
         internal float Roll(){randomState^=randomState<<13;randomState^=randomState>>17;randomState^=randomState<<5;return(randomState&0xffffff)/16777216f;}
-        public Vector3 Position { get; }
+        public Vector3 Position { get; internal set; }
         public float Health { get; internal set; }
-        public bool Alive => Health > 0;
+        public bool Reserve {get;internal set;}
+        public bool Departed {get;internal set;}
+        public bool DebtLife {get;internal set;}
+        public float Debt {get;internal set;}
+        public int Ammo {get;internal set;}
+        public int Transfers {get;internal set;}
+        public int Reinforcements {get;internal set;}
+        public int ProtectedHits {get;internal set;}
+        public int TrueHits {get;internal set;}
+        public double LastReceivedDamage {get;internal set;}=double.NegativeInfinity;
+        public double ProtectionUntil {get;internal set;}=double.NegativeInfinity;
+        public bool FifthActive {get;internal set;}
+        public bool Alive => !Reserve&&!Departed&&(Health>0||DebtLife);
         public string TargetId { get; internal set; }
         public bool HighGround {get;internal set;}
         public int BlockedCount { get; internal set; }
@@ -110,7 +122,7 @@ namespace YesterdayConvoy
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
         internal DefenderState(DefenderSettings settings)
-        { Settings=settings; EntityId=settings.Id; Position=settings.Position; Health=MaxHealth=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
+        { Settings=settings;Reserve=settings.Reserve; EntityId=settings.Id; Position=settings.Position; Health=MaxHealth=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
     }
 
     public sealed class CombatShot
@@ -120,6 +132,7 @@ namespace YesterdayConvoy
         public bool FromDefender { get; }
         public bool Empowered { get; }
         public bool FireRain { get; }
+        public bool TrueDamage {get;internal set;}
         public bool Healing { get; }
         public CombatDamageType DamageType { get; }
         public float SplashRadius { get; }
@@ -254,7 +267,7 @@ namespace YesterdayConvoy
                 if(shot.FromDefender)
                 {
                     bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType);
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged)OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);
                     if(killedByHit)OnLiberatorKill(defender);
@@ -387,11 +400,12 @@ namespace YesterdayConvoy
             {
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
                 var spec=d.Settings;
+                if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&DefenderSkillActive(d)){ScheduleFifthAttack(d,null,guardSettings.ProjectileTime);continue;}
                 if(CanDefenderHeal(d))
                 {
                     DefenderState wounded=null;
                     foreach(var ally in defenders)
-                        if(ally.Alive && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=DefenderHealRange(d) &&
+                        if(ally.Alive && !ally.DebtLife && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=DefenderHealRange(d) &&
                             (wounded==null || ally.Health/ally.MaxHealth<wounded.Health/wounded.MaxHealth)) wounded=ally;
                     if(wounded!=null)
                     {
