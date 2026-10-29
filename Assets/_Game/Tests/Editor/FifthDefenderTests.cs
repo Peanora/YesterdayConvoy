@@ -40,7 +40,7 @@ namespace YesterdayConvoy.Tests
             var s=new DefenderSkillSettings(DefenderSkillKind.HoshigumaInferno,1,1,1,32,effectRadius:5);
             var roster=new[]{new DefenderSettings("tank","tank","D01",Vector3.forward*.1f,140,1,0,5,100),new DefenderSettings("hoshi","hoshi","D25",Vector3.right*2,10000,20,0,5,1,skill:s)};
             var b=new ManualBattle(new ManualBattleSettings("c","u",30,1,10,1,.1f,100000,.1f,1,1,1,1),new[]{Vector3.zero,Vector3.forward*100},Vector3.one,new EngagementSettings(unitAttack:3,unitInterval:.5f,unitRange:5),roster:roster);
-            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(24);Assert.That(b.FindDefender("hoshi").ProtectedHits,Is.GreaterThan(1));Assert.That(b.FindDefender("tank").Alive,Is.True);Assert.That(b.FindDefender("tank").Health,Is.EqualTo(1));
+            b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(24);Assert.That(b.FindDefender("hoshi").ProtectedHits,Is.GreaterThan(1));Assert.That(b.FindDefender("hoshi").Health,Is.LessThan(b.FindDefender("hoshi").MaxHealth));Assert.That(b.FindDefender("tank").Alive,Is.True);Assert.That(b.FindDefender("tank").Health,Is.EqualTo(1));
             b.Advance(4);Assert.That(b.FindDefender("hoshi").Departed,Is.True);
         }
     }

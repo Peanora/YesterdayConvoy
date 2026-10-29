@@ -9,13 +9,15 @@ D23/D24/D25独立所选S3接入，完整范围与明确缺口见[第五批说明
 | 完整EditMode | 263/263通过、零跳过：artifacts/b5-final-EditMode.xml。新8项覆盖五发逐发结算/扣弹、致命返回与暂停、真实伤害与重开、负生命有限/被击倒、法术连击/11秒退场、模型配置、实际备援部署及6SP、实际致命伤转移。 |
 | 完整GPU PlayMode | 70/70通过、零跳过：artifacts/b5-final-PlayMode.xml。包含旧16人、原怪物能力和双地图，以及本轮三人原模型、屏幕平行/scale1、准备待机、暂停部署/SP/帧冻结、三技能状态、重开和返回。 |
 | 后续定向复核 | 最后将Mon3tr返回的1秒不死与技能强化分开后，8/8逻辑、1/1三人场景通过，artifacts/b5-release-EditMode.xml / b5-release-PlayMode.xml。随后仅修整保护阶段HUD和Mon3tr原返回帧，没有再改战斗逻辑；未把完整两套记录为在这些表现调整后重跑。 |
-| Windows | 最终BaselineTools.BuildWindows通过：1299335143 bytes、0错误，artifacts/b5-build-delivery.log。此为Unity构建报告统计，不等于EXE单文件大小。 |
-| 独立Player | 最终三人D23/D24/D25全部退出0，artifacts/b5-delivery-player-results.json；entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全True。此前同战斗逻辑还跑了D21/city/ruins，均退出0，artifacts/b5-player-results.json；最后HUD/返回帧调整后未重跑这三例。技能状态观察计数不是所有命中类型的穷举，关键伤害/保护边界由前述逻辑测试另行验证。 |
+| Windows | 最终BaselineTools.BuildWindows通过：见artifacts/b5-build-transfer-final.log统计（最终构建）、0错误，artifacts/b5-build-transfer-final.log。此为Unity构建报告统计，不等于EXE单文件大小。 |
+| 独立Player | 最终三人D23/D24/D25全部退出0，artifacts/b5-verified-player-results.json；entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全True。此前同战斗逻辑还跑了D21/city/ruins，均退出0，artifacts/b5-player-results.json；最后HUD/返回帧调整后未重跑这三例。技能状态观察计数不是所有命中类型的穷举，关键伤害/保护边界由前述逻辑测试另行验证。 |
 | 美术/文件 | 131PNG原字节SHA、6份清单完整索引已核对，原生动作与脚底规范保留；选择页、三人实际技能截图已查看，docs/art/defender-batch5-*.png。最后补充临死保护剩余时间与原返回动作。源资产、meta、来源与权利记录随源码交付。 |
 
 首轮编译发现菜单循环文本替换错误，已局部修正；一次原生图集导入中返回/收手重名导致布局不符，已消除重复键并核对每页哈希。定向GPU还发现临死阶段误回普通攻击帧，修正后完整70项通过；失败日志没有登记为成功验证。其他模块只在必要调用点接入新的扣血入口，原场景/Prefab/包/设置没有更改。
 
 本地试玩路径见STATUS，目录BUILD-INFO保存实际源码提交与EXE哈希。原工程既存PackageManagerSettings.asset未提交或覆盖，SHA256仍为312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2。仓库完整性、暂存差异和媒体跟踪检查通过；不上传ZIP/Releases。
+
+最终扣血核对又修正了保护者应先付出自身生命、剩余才计入负生命；同时禁止临死保护期再次开启技能。263项完整EditMode重新全部通过（artifacts/b5-transfer-final.xml），增强断言验证队友1血与保护者实际掉血。随后重建最终Windows并复核三个Player；完整70项GPU没有在此最后两处逻辑修正后重跑，不将此前结果改称本轮重跑。
 
 未执行第二台电脑离线、全新克隆构建、长时性能、全怪物×三技能穷举或人类最终美术/平衡验收。重构体为路标、投递为固定候选点及单名未登场备援，不包含完整召唤物销毁/部署列表/再部署系统，也未包含三人其余技能/全部天赋/模组或原作完整外部特效；这些限制不能登记为完成。
 

@@ -67,7 +67,7 @@ namespace YesterdayConvoy
             if(loss>=d.Health&&!d.DebtLife)
                 foreach(var protector in defenders)
                     if(protector!=d&&protector.Alive&&protector.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&protector.ProtectionUntil>Clock&&GroundDistance(protector.Position,d.Position)<=protector.Settings.Skill.EffectRadius)
-                    {float excess=loss-Math.Max(0,d.Health-1);loss-=excess;protector.Debt+=excess;protector.ProtectedHits++;break;}
+                    {float excess=loss-Math.Max(0,d.Health-1);loss-=excess;float paid=Math.Min(protector.Health,excess);protector.Health-=paid;protector.Debt+=excess-paid;if(protector.Health<=0)protector.DebtLife=true;protector.ProtectedHits++;break;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&loss>=d.Health)
             {if(DefenderSkillActive(d)){EndMon3tr(d,true);return;}if(d.ProtectionUntil>Clock){d.Health=1;return;}}
             if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno)
