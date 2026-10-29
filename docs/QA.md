@@ -6,13 +6,13 @@ D26/D27/D28的独立所选S3与原生模型接入。具体适配/未做项见[�
 
 | 实际验证 | 结果 |
 | --- | --- |
-| 最终完整EditMode | 271/271通过、0跳过，artifacts/b6-delivery-EditMode.xml。新增8项覆盖费用交换/真实备援与玩家DP隔离、实际直线命中/脆弱及暂停、诱导路线进度/雪层上限、棋子实际伤害/弹药/重置、路线转角投影、配置/原生S3、连续攻击时间边界、忽略法抗不能额外制造负法抗。 |
-| 最终完整GPU PlayMode | 71/71通过、0跳过，artifacts/b6-delivery-PlayMode.xml。新场景验证三人原模型、直立比例/屏幕平行、准备待机、暂停拖动/SP/帧冻结、实际技能效果、重开和返回，包含旧19人、怪物能力与双地图回归。 |
-| 最终Windows | BaselineTools.BuildWindows通过，1495880012 bytes、0错误，artifacts/b6-delivery-build.log。数值为Unity构建报告统计，不是EXE单文件大小。 |
-| 最终独立Player | D26/D27/D28/D25/city/ruins六例全部退出0、无捕获异常，artifacts/b6-player-results.json；新增三人entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全部True。伤害边界另由逻辑测试验证；截图不是完整数值证明。 |
+| 最终完整EditMode | 271/271通过、0跳过，artifacts/b6-compatible-EditMode.xml。新增8项覆盖费用交换/真实备援与玩家DP隔离、实际直线命中/脆弱及暂停、诱导路线进度/雪层上限、棋子实际伤害/弹药/重置、路线转角投影、配置/原生S3、连续攻击时间边界、忽略法抗不能额外制造负法抗。 |
+| 最终完整GPU PlayMode | 71/71通过、0跳过，artifacts/b6-compatible-PlayMode.xml。新场景验证三人原模型、直立比例/屏幕平行、准备待机、暂停拖动/SP/帧冻结、实际技能效果、重开和返回，包含旧19人、怪物能力与双地图回归。 |
+| 最终Windows | BaselineTools.BuildWindows通过，1495880061 bytes、0错误，artifacts/b6-compatible-build.log。数值为Unity构建报告统计，不是EXE单文件大小。 |
+| 最终独立Player | D26/D27/D28/D25/D22/city/ruins七例全部退出0、无捕获异常，artifacts/b6-compat-player-results.json；新增三人entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored全部True。伤害边界另由逻辑测试验证；截图不是完整数值证明。 |
 | 资源与画面 | 99张PNG共196469931字节，逐页SHA与导入记录匹配；6份运行清单、必要meta、原生动作、来源记录齐全。已查看选择页与三技能实机截图，docs/art/defender-batch6-*.png。资源/源码跟踪检查见本轮提交。 |
 
-初次校验发现初雪无普攻应标记noOrdinaryAttack，已修正；第一次逻辑测试仅路线投影浮点精确比较失败，改用微小误差。场景复现发现银灰满SP被连续普攻的浮点时间边界饿死，统一技能与攻击的时间误差后通过；提高样板生命不能解决该根因，不将其当修复。修正已触发棋子残留连线与清理、初雪法抗忽略下限，并核对银灰7级S3参数后，上述最终完整两套和Player均重新运行。失败记录未登记为通过。
+初次校验发现初雪无普攻应标记noOrdinaryAttack，已修正；第一次逻辑测试仅路线投影浮点精确比较失败，改用微小误差。场景复现发现银灰满SP被连续普攻的浮点时间边界饿死，统一技能与攻击的时间误差后通过；提高样板生命不能解决该根因，不将其当修复。修正已触发棋子残留连线与清理、初雪法抗忽略下限，并核对银灰7级S3参数后，之后最终复核发现忽略法抗的下限不能抹去旧灼燃负法抗；修正并在余的真实火墙流程中加入伤害断言后，上述最终完整两套与7例Player全部重新运行。失败记录未登记为通过。
 
 未改主场景/Prefab/Packages/ProjectSettings。原工程既存PackageManagerSettings.asset保持原SHA256：312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2；不提交、不覆盖。EXE与源码提交见STATUS和本地BUILD-INFO；无ZIP/Releases。
 

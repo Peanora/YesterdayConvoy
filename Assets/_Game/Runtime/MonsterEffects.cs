@@ -78,7 +78,10 @@ namespace YesterdayConvoy
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || UnitInvulnerable(unit)) return false;
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
-            float damage=CalculateDamage(attack,UnitArmor(unit),Mathf.Max(0,UnitResistance(unit)-ignoreResistance),type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
+            // Penetration stops at zero; existing resistance debuffs may remain negative.
+            float resistance=UnitResistance(unit);
+            if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
+            float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
             if(CombatSettings.Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {

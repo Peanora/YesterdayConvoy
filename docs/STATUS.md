@@ -4,7 +4,7 @@
 
 凛御银灰、圣聆初雪、望的已确认正背面模型及所选S3进入独立试玩。入口：“守军技能测试 · 含六星 → 六星第六批”。当前22名有选定技能，第二/第三批8名仍跳过。[第六批机制、系统连接及未做项](DEFENDER-SKILLS-BATCH6.md)。
 
-基线实时main34ec756，codex/defender-skills-batch6包含未合并第五批#45依赖，不自动合并main。最终完整271 EditMode、71 GPU PlayMode通过，Windows构建及D26/D27/D28/D25/city/ruins六个最终独立Player退出0。99PNG、6清单、meta及来源随源码交付；未改主场景、Prefab、包、设置，无ZIP/Releases。
+基线实时main34ec756，codex/defender-skills-batch6包含未合并第五批#45依赖，不自动合并main。最终完整271 EditMode、71 GPU PlayMode通过，Windows构建及D26/D27/D28/D25/D22/city/ruins七个最终独立Player退出0。99PNG、6清单、meta及来源随源码交付；未改主场景、Prefab、包、设置，无ZIP/Releases。
 
 本地EXE：`E:/珍贵资料/昨日圆车_本地试玩/2026-10-29-六星守军第六批/YesterdayConvoy.exe`；对应源码和校验见同目录BUILD-INFO.txt。原E盘工程未自动切换，Unity体验当前版本需打开本独立工程，或人工合并PR后更新原工程。风雪之眼/棋子/积雪为程序样板，诱导限原路线，费用独立；未包含完整原作部署UI、所有天赋/模组及人类平衡验收。
 

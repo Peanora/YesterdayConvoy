@@ -16,7 +16,7 @@
 
 ## 文件与系统连接
 
-`Editor/DefenderBatch6Tools.cs`生成独立D26/D27/D28和B6配置，重复运行不覆盖已存在的人工值。`DefenderTrialDefinition/DefenderSettings`保存只读参数，`DefenderState`和`SixthDefenderSkills.cs`保存每场费用、积雪、诱导、棋子、弹药与协同状态。`EngagementCombat/MonsterEffects`负责真正命中、护甲/法抗/脆弱结算；`RouteMotion.ProjectDistance/ApproachDistance`只在原路线积分，保留原部署/攻击/技能移动锁。修复连续攻击时浮点边界导致满技力技能长期等不到空档的问题，使技能与普攻使用相同误差约定。
+`Editor/DefenderBatch6Tools.cs`生成独立D26/D27/D28和B6配置，重复运行不覆盖已存在的人工值。`DefenderTrialDefinition/DefenderSettings`保存只读参数，`DefenderState`和`SixthDefenderSkills.cs`保存每场费用、积雪、诱导、棋子、弹药与协同状态。`EngagementCombat/MonsterEffects`负责真正命中、护甲/法抗/脆弱结算；忽略法抗止于0，原有灼燃造成的负法抗仍保留；`RouteMotion.ProjectDistance/ApproachDistance`只在原路线积分，保留原部署/攻击/技能移动锁。修复连续攻击时浮点边界导致满技力技能长期等不到空档的问题，使技能与普攻使用相同误差约定。
 
 `DefenderSkillTrials`接通选择页；`DefenderRosterView/DefenderArt`沿用原生帧和脚底枢轴，准备待机、战斗暂停与朝向使用既有实现；`AdvancedDefenderView`画程序雪格、棋子和协同标记；HUD单独显示守军费用/棋子弹药。所有战斗计时共享模拟时钟，不改主场景、Prefab、Packages或ProjectSettings。
 

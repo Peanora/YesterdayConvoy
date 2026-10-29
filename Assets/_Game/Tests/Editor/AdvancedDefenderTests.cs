@@ -85,6 +85,8 @@ namespace YesterdayConvoy.Tests
             b.Advance(6);Assert.That(b.DefenderWallActive(b.Defender),Is.True);Assert.That(b.Defender.ErasedProjectiles,Is.GreaterThan(0));
             Assert.That(b.CombatShots.Where(s=>s.Erased).All(s=>s.Resolved&&!s.Applied),Is.True);
             Assert.That(b.Defender.BurnApplications,Is.GreaterThan(0));Assert.That(b.Units[0].ScorchBursts,Is.GreaterThan(0));
+            float hp=b.Units[0].Health;b.TryDamageUnit(b.Units[0].EntityId,100,CombatDamageType.Arts,10);
+            Assert.That(hp-b.Units[0].Health,Is.EqualTo(120).Within(.01),"Existing scorch negative resistance survives penetration");
             Assert.That(b.UnitResistance(b.Units[0]),Is.EqualTo(-20));
         }
         [Test]public void WallCrossingUsesBothSidesAndCardinalNormal()
