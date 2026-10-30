@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-10-30：备战席持续特效修复
+
+play-bench-expiry.xml：4/4地图GPU PlayMode通过，0失败/跳过。在原满席二/三星场景增加断言：已有高星棋子静态，本次合成目标立即播放，Time.timeScale=0等待1.1秒后特效归零，星级不变；满席直接合成、无成功文字、地图与镜头恢复继续通过。build-bench-expiry.log：Windows1495931056 bytes、0错误。未重跑完整EditMode或其他PlayMode；278 EditMode为上一轮结果，模型本轮未改。
+
+player-bench-expiry.log：原19项SHOP_MAP_CHECK全部True，新增SHOP_BENCH_EFFECTS_EXPIRE=True（二/三星即时启动、等待后结束且星级保留），共20项。实际1920×1080截图在player-bench-expiry；已查看三星静态备战画面，无头像光晕/光弧，无中央成功提示。二/三星结束后截图随docs/ui-previews/shop保存。未测第二台电脑或全新克隆构建。
+
 ## 2026-10-30：直接满席合成与银/金星标反馈
 
 完整edit-rank.xml：278/278通过，0失败/跳过；其中商店模型7项，覆盖重复预告只读、2/3星预告等于实际合成、一次满席购买只扣一次、重复购买不扣款、无钱不能买、购买/出售后标记更新。play-rank.xml：4/4 GPU地图交互通过，满席立即合成且ShopFeedback为空，原地图和镜头不变，覆盖店开关/遮挡、编队部署、退出恢复继续通过。

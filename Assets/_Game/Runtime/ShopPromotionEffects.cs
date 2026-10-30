@@ -54,13 +54,16 @@ namespace YesterdayConvoy
             }
             DrawTestPortrait(rect,portrait);
         }
-        void DrawShopRankBadge(Rect rect,int star)
+        void DrawShopRankBadge(Rect rect,int star,bool animate=true)
         {
-            float wave=.5f+.5f*Mathf.Sin(Time.unscaledTime*(star==3?4.6f:4f));
+            float wave=animate?.5f+.5f*Mathf.Sin(Time.unscaledTime*(star==3?4.6f:4f)):1;
             Fill(rect,new Color(.025f,.045f,.055f,.82f));
             ShopBorder(rect,ShopRankColor(star,.25f+.3f*wave),1);
-            Color previous=GUI.color;GUI.color=ShopRankColor(star,.2f+.25f*wave);
-            GUI.DrawTexture(new Rect(rect.x-4,rect.y-8,rect.width+8,rect.height+16),shopAura,ScaleMode.StretchToFill,true);GUI.color=previous;
+            if(animate)
+            {
+                Color previous=GUI.color;GUI.color=ShopRankColor(star,.2f+.25f*wave);
+                GUI.DrawTexture(new Rect(rect.x-4,rect.y-8,rect.width+8,rect.height+16),shopAura,ScaleMode.StretchToFill,true);GUI.color=previous;
+            }
             DrawShopStars(new Rect(rect.x+3,rect.y+2,rect.width-6,rect.height-4),star,ShopRankColor(star,.5f+.5f*wave));
         }
     }

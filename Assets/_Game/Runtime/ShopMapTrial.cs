@@ -27,6 +27,7 @@ namespace YesterdayConvoy
         public ShopTrialModel Shop=>shop;
         public string ShopFeedback=>shopMessage;
         public bool ShopVisible=>shopVisible;
+        public float ShopBenchPromotionRemaining(int instance)=>ShopTrialActive&&instance==shopPromotedInstance?Mathf.Clamp01(1-(Time.unscaledTime-shopPromotionAt)):0;
         public static Rect ShopBattlefieldRect=>new Rect(0,64,1280,538);
         public static Rect ShopPanelRect=>new Rect(0,64,1280,199);
         public static Rect ShopSellRect=>new Rect(16,688,1248,30);
@@ -246,9 +247,10 @@ namespace YesterdayConvoy
                 bool active=shopLineup.Contains(p.Id)&&shop.Bench.Where(b=>b.Id==p.Id).OrderByDescending(b=>b.Star).ThenBy(b=>b.Instance).First().Instance==p.Instance;
                 if(active||p.Star>1)ShopBorder(r,p.Star>1?ShopRankColor(p.Star,.85f):new Color(.52f,.90f,.93f),1);
                 if(active)Fill(new Rect(r.x+1,r.y+1,2,r.height-2),new Color(.52f,.90f,.93f));
-                float burst=p.Instance==shopPromotedInstance?Mathf.Clamp01(1-(Time.unscaledTime-shopPromotionAt)/1.6f):0;
-                DrawShopRankPortrait(new Rect(r.x+2,r.y+1,46,44),OriginalTalulahArt.CardPortrait(shopDefinitions[p.Id].Card),p.Star,burst);
-                if(p.Star>1)DrawShopRankBadge(new Rect(r.x+51,r.y+2,48,16),p.Star);else DrawShopStars(new Rect(r.x+53,r.y+4,36,11),1,new Color(.75f,.89f,1));
+                float burst=ShopBenchPromotionRemaining(p.Instance);
+                var portraitRect=new Rect(r.x+2,r.y+1,46,44);var portrait=OriginalTalulahArt.CardPortrait(shopDefinitions[p.Id].Card);
+                if(burst>0)DrawShopRankPortrait(portraitRect,portrait,p.Star,burst);else DrawTestPortrait(portraitRect,portrait);
+                if(p.Star>1)DrawShopRankBadge(new Rect(r.x+51,r.y+2,48,16),p.Star,burst>0);else DrawShopStars(new Rect(r.x+53,r.y+4,36,11),1,new Color(.75f,.89f,1));
                 GUI.Label(new Rect(r.x+49,r.y+19,65,24),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.67f,.77f,.82f)}});
             }
             if(shopDrag>=0&&shopMoving)

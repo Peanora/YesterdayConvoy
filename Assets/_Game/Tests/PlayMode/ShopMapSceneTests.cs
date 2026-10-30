@@ -57,7 +57,14 @@ namespace YesterdayConvoy.Tests
                 Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));int gold=c.Shop.Gold;
                 Assert.That(c.PurchaseShopCard(1).Success,Is.False);Assert.That(c.Shop.Gold,Is.EqualTo(gold));
                 Assert.That(c.Shop.PreviewPurchase(0).FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
+                foreach(var piece in c.Shop.Bench)Assert.That(c.ShopBenchPromotionRemaining(piece.Instance),Is.Zero,"Existing ranked pieces must be static.");
                 var result=c.PurchaseShopCard(0);Assert.That(result.Success,Is.True);Assert.That(result.FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(string.IsNullOrEmpty(c.ShopFeedback),Is.True,"Successful promotion should only animate the piece, without a success notice.");
+                Assert.That(c.ShopBenchPromotionRemaining(result.Instance),Is.GreaterThan(0));
+                float previousScale=Time.timeScale;Time.timeScale=0;
+                yield return new WaitForSecondsRealtime(1.1f);
+                Time.timeScale=previousScale;
+                Assert.That(c.ShopBenchPromotionRemaining(result.Instance),Is.Zero,"Bench effects must finish even while gameplay is paused.");
+                Assert.That(c.Shop.Bench.Single(p=>p.Instance==result.Instance).Star,Is.EqualTo(result.FinalStar),"Ending the effect must preserve the rank.");
                 Assert.That(c.Shop.Bench.Count,Is.EqualTo(preset==1?9:7));Assert.That(c.Shop.Gold,Is.EqualTo(gold-1));c.Shop.Validate();
                 Assert.That(Camera.main.fieldOfView,Is.EqualTo(framedFov).Within(.001f),"Buying or merging must not accumulate camera zoom.");
                 Assert.That(original.battle,Is.SameAs(originalCard));Assert.That(ManualBattleController.ShopOfferRect(0).yMax,Is.LessThan(ManualBattleController.ShopBenchRect(0).y));
