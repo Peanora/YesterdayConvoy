@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-30：备战星标与升星瞬间取消旋转
+
+备战星标调用始终关闭动画，头像升星反馈明确关闭旋转光弧；保留1秒亮起和扩散边框，商店预告保持。build-bench-static-stars.log：Windows1495931056 bytes、0错误；player-bench-static-stars.log：原19项及特效结束检查共20项全部True，无捕获异常。已查看三星合成瞬间实际截图，备战无旋转光弧，星标固定；shop-map-three-star.png更新为本版。此前结束后的二/三星静态截图与本轮完全一致。本次仅显示调整，未重复完整EditMode或GPU PlayMode；上一轮4/4暂停结束验证仍为历史结果。未测第二台电脑/全新克隆。
+
 ## 2026-10-30：备战席持续特效修复
 
 play-bench-expiry.xml：4/4地图GPU PlayMode通过，0失败/跳过。在原满席二/三星场景增加断言：已有高星棋子静态，本次合成目标立即播放，Time.timeScale=0等待1.1秒后特效归零，星级不变；满席直接合成、无成功文字、地图与镜头恢复继续通过。build-bench-expiry.log：Windows1495931056 bytes、0错误。未重跑完整EditMode或其他PlayMode；278 EditMode为上一轮结果，模型本轮未改。

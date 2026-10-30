@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             }
             shopAura.SetPixels(pixels);shopAura.Apply();
         }
-        void DrawShopRankPortrait(Rect rect,Sprite portrait,int star,float burst=0)
+        void DrawShopRankPortrait(Rect rect,Sprite portrait,int star,float burst=0,bool drawOrbit=true)
         {
             if(star>1)
             {
@@ -33,7 +33,7 @@ namespace YesterdayConvoy
                     float angle=i*Mathf.PI/4;Rect outline=rect;outline.position+=new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*spread;DrawTestPortrait(outline,portrait);
                 }
                 GUI.color=previous;
-                Vector2 center=rect.center;int orbits=star==3?3:2;
+                Vector2 center=rect.center;int orbits=drawOrbit?(star==3?3:2):0;
                 for(int orbit=0;orbit<orbits;orbit++)
                 {
                     float head=time*(star==3?1.45f:1.1f)+orbit*Mathf.PI*2/orbits;

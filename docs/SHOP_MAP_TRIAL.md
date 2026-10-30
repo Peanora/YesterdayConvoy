@@ -14,14 +14,14 @@
 - 下沿横向卡槽中，头像在左，星级和名字在右。点击切换编队；拖动时商店自动收起，再拖到红门部署，战斗自动开始。战斗后交易冻结，商店仍可开关查看。
 - 备战角色向下拖入最下沿出售区，出现报价后松手。拖回、区外松手、Esc、失焦均取消；卡槽底部也有足够向下拖动空间。轻点或抖动不出售。
 - “满席两星/满席三星”载入10格材料并展开商店。点击第一张弩手直接购买并合成，不弹确认，分别剩9格/7格，只扣一次；第二张猎狗不能合成时拒绝且不扣钱。
-- 升星时对应备战棋子只播放1秒银色或金色特效，随后头像不再发光、绕光弧或闪烁，只保留静态银/金星级和边框。暂停也按真实时间结束；已有二/三星棋子不自动播放。商店可升星预告仍持续闪烁。不弹中央成功面板，也不显示成功文字。
+- 备战席的星标始终固定，不旋转、不闪烁；升星瞬间也不出现旋转光弧。仅头像播放1秒银色或金色亮起和扩散边框，随后恢复静态头像、银/金星级和边框。暂停也按真实时间结束；已有二/三星棋子不自动播放。商店可升星预告仍持续闪烁。不弹中央成功面板，也不显示成功文字。
 - “重新测试”回默认材料和收起状态；“退出测试”回原怪物菜单并恢复镜头视口/FOV。
 
 ![收起商店的大地图](ui-previews/shop/shop-map-ready.png)
 ![展开的覆盖式商店](ui-previews/shop/shop-map-shop-open.png)
 ![商店银色二星预告](ui-previews/shop/shop-rank-silver-ready.png)
 ![商店金色三星预告](ui-previews/shop/shop-rank-gold-ready.png)
-![合成后备战三星，无成功弹窗](ui-previews/shop/shop-map-three-star.png)
+![合成瞬间备战三星，星标固定且无旋转光弧](ui-previews/shop/shop-map-three-star.png)
 ![二星特效结束，备战席恢复静态](ui-previews/shop/shop-map-two-star-settled.png)
 ![三星特效结束，备战席恢复静态](ui-previews/shop/shop-map-three-star-settled.png)
 
@@ -36,6 +36,8 @@
 仍是10种基础角色测试池（M02/M03/M05/M08、原生源石虫、M15～M19），非完整正式商店或羁绊章节。按角色种类编队，同种只加入一次；沿用原卡DP/生命/冷却/部署次数。星级影响库存、展示和出售，暂不增加战斗属性。未实现战后收入、通关XP、存档、完整高费卡池或复杂首领编队。售出1/2/3星到账c/3c−1/9c−1，返库1/3/9张，规则保持。
 
 ## 实际验证与交付
+
+最新备战静态星标修订：build-bench-static-stars.log构建1495931056 bytes、0错误；player-bench-static-stars.log共20项通过，三星合成瞬间截图已更新。仅显示调整，未重复完整测试；结束后的二/三星静态截图与上一版一致。
 
 备战持续特效修复：4/4地图GPU PlayMode复测通过（play-bench-expiry.xml），二/三星合成特效立即启动，暂停等待1.1秒后结束且星级保留。Windows1495931056 bytes、0错误；独立Player原19项及新增benchEffectsExpire共20项通过。证据：build-bench-expiry.log、player-bench-expiry.log及player-bench-expiry截图。上面的银/金短片展示商店预告；备战静态结果看新增settled截图。
 

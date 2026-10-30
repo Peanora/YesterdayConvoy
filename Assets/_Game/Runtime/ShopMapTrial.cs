@@ -249,8 +249,8 @@ namespace YesterdayConvoy
                 if(active)Fill(new Rect(r.x+1,r.y+1,2,r.height-2),new Color(.52f,.90f,.93f));
                 float burst=ShopBenchPromotionRemaining(p.Instance);
                 var portraitRect=new Rect(r.x+2,r.y+1,46,44);var portrait=OriginalTalulahArt.CardPortrait(shopDefinitions[p.Id].Card);
-                if(burst>0)DrawShopRankPortrait(portraitRect,portrait,p.Star,burst);else DrawTestPortrait(portraitRect,portrait);
-                if(p.Star>1)DrawShopRankBadge(new Rect(r.x+51,r.y+2,48,16),p.Star,burst>0);else DrawShopStars(new Rect(r.x+53,r.y+4,36,11),1,new Color(.75f,.89f,1));
+                if(burst>0)DrawShopRankPortrait(portraitRect,portrait,p.Star,burst,false);else DrawTestPortrait(portraitRect,portrait);
+                if(p.Star>1)DrawShopRankBadge(new Rect(r.x+51,r.y+2,48,16),p.Star,false);else DrawShopStars(new Rect(r.x+53,r.y+4,36,11),1,new Color(.75f,.89f,1));
                 GUI.Label(new Rect(r.x+49,r.y+19,65,24),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.67f,.77f,.82f)}});
             }
             if(shopDrag>=0&&shopMoving)
