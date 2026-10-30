@@ -117,14 +117,13 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result PurchaseShopCard(int slot)
         {
             if(shop==null||Battle.Phase!=BattlePhase.Ready)return new ShopTrialModel.Result{Message="战斗开始后不能招募或升星"};
-            var priorInstances=new HashSet<int>(shop.Bench.Select(p=>p.Instance));
             var result=shop.Purchase(slot);
             if(result.Success)
             {
                 shopMessage=null;shopMessageUntil=0;
                 if(shopLineup.Count<shop.Level&&!shopLineup.Contains(result.Id))shopLineup.Add(result.Id);
                 SyncShopDeck(false);
-                BeginShopArrival(slot,result,!priorInstances.Contains(result.Instance));
+                BeginShopArrival(result);
                 if(result.FinalStar>1){shopPromotionAt=Time.unscaledTime+ShopArrivalDuration;shopPromotedInstance=result.Instance;}
             }
             if(!result.Success)ShopNotice(result.Message);return result;

@@ -41,7 +41,8 @@ namespace YesterdayConvoy
             if(Array.IndexOf(args,"-shopRankMotionEvidence")>=0)yield return CaptureShopRankMotion(dir,"shop-rank-silver");
             var two=PurchaseShopCard(0);bool fullTwo=two.Success&&two.FinalStar==2&&Shop.Bench.Count==9&&Shop.Gold==gold-1;
             bool arrivals=ShopArrivalCount>0;
-            yield return new WaitForSecondsRealtime(.65f);
+            bool localEntry=ShopEntranceModel(two.Instance)!=null&&Mathf.Abs(ShopEntranceModel(two.Instance).transform.localPosition.x-ShopBenchModel(two.Instance).transform.localPosition.x)<.001f;
+            yield return new WaitForSecondsRealtime(.9f);
             bool benchEffectsExpire=ShopBenchPromotionRemaining(two.Instance)>0;
             bool noNotice=string.IsNullOrEmpty(ShopFeedback);
             yield return InteractionFrame(dir,"shop-map-full-two-star");
@@ -54,9 +55,10 @@ namespace YesterdayConvoy
             if(Array.IndexOf(args,"-shopRankMotionEvidence")>=0)yield return CaptureShopRankMotion(dir,"shop-rank-gold");
             var three=PurchaseShopCard(0);bool fullThree=three.Success&&three.FinalStar==3&&Shop.Bench.Count==7&&Shop.Available("CARD_M08")==0&&Shop.Gold==gold-1;
             arrivals&=ShopArrivalCount>0;
+            localEntry&=ShopEntranceModel(three.Instance)!=null&&Mathf.Abs(ShopEntranceModel(three.Instance).transform.localPosition.x-ShopBenchModel(three.Instance).transform.localPosition.x)<.001f;
             bool presentationEvidence=Array.IndexOf(args,"-shopPresentationEvidence")>=0;
             if(presentationEvidence){yield return CaptureShopPresentation(dir,"shop-three-star-arrival",36);benchEffectsExpire&=shopCapturedGoldPeak>.5f;}
-            else {yield return new WaitForSecondsRealtime(.65f);benchEffectsExpire&=ShopBenchPromotionRemaining(three.Instance)>0;}
+            else {yield return new WaitForSecondsRealtime(.9f);benchEffectsExpire&=ShopBenchPromotionRemaining(three.Instance)>0;}
             noNotice&=string.IsNullOrEmpty(ShopFeedback);
             if(!presentationEvidence)yield return InteractionFrame(dir,"shop-map-full-three-star");
             yield return new WaitForSecondsRealtime(1.1f);
@@ -83,10 +85,10 @@ namespace YesterdayConvoy
             bool simulation=Battle.Clock>0&&Battle.Units.Count==1&&Battle.Units[0].Motion.Position!=Battle.Entry;
             Shop.Validate();LeaveShopTrial();yield return null;yield return null;
             bool exit=TestSelectionOpen&&!ShopTrialActive&&!TacticalMapActive&&Camera.main.rect==new Rect(0,0,1,1);
-            bool pass=layout&&framing&&overlay&&flatBench&&fullReject&&rankPreview&&noNotice&&benchEffectsExpire&&transitionSafe&&arrivals&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
+            bool pass=layout&&framing&&overlay&&flatBench&&fullReject&&rankPreview&&noNotice&&benchEffectsExpire&&transitionSafe&&arrivals&&localEntry&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
             Debug.Log($"SHOP_MAP_CHECK: layout={layout}; framing={framing}; overlay={overlay}; flatBench={flatBench}; magnification={magnification:0.00}; fullReject={fullReject}; rankPreview={rankPreview}; noNotice={noNotice}; fullTwo={fullTwo}; fullThree={fullThree}; cancel={cancelSafe}; sale={sale}; level={level}; lock={locked}; refresh={refresh}; gateVisible={gateVisible}; deployed={deployed}; frozen={frozen}; simulation={simulation}; exit={exit}.");
             Debug.Log($"SHOP_BENCH_EFFECTS_EXPIRE: {benchEffectsExpire}");
-            Debug.Log($"SHOP_PRESENTATION_CHECK: closingBlocksMap={transitionSafe}; purchaseArrivals={arrivals}");
+            Debug.Log($"SHOP_PRESENTATION_CHECK: closingBlocksMap={transitionSafe}; purchaseArrivals={arrivals}; reserveCellEntry={localEntry}");
             Time.timeScale=1;Application.Quit(pass?0:1);
         }
         IEnumerator CaptureShopRankMotion(string directory,string prefix)

@@ -53,7 +53,14 @@ namespace YesterdayConvoy.Tests
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
             var bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.True);Assert.That(bought.Id,Is.EqualTo("CARD_M02"));
             Assert.That(c.ShopArrivalCount,Is.EqualTo(1));Assert.That(c.Battle.Units.Count,Is.Zero,"The purchase presentation must not deploy a battle unit.");
-            yield return new WaitForSecondsRealtime(.55f);
+            var entering=c.ShopEntranceModel(bought.Instance);var bench=c.ShopBenchModel(bought.Instance);
+            Assert.That(entering,Is.Not.Null);float startX=entering.transform.localPosition.x,startY=entering.transform.localPosition.y;
+            Assert.That(startX,Is.EqualTo(bench.transform.localPosition.x).Within(.001f),"Entry starts inside its reserve cell, not in the shop.");
+            Assert.That(startY,Is.GreaterThan(bench.transform.localPosition.y));
+            yield return new WaitForSecondsRealtime(.3f);
+            Assert.That(entering.transform.localPosition.x,Is.EqualTo(startX).Within(.001f));
+            Assert.That(entering.transform.localPosition.y,Is.LessThan(startY));Assert.That(entering.color.a,Is.GreaterThan(.5f));
+            yield return new WaitForSecondsRealtime(.5f);
             Assert.That(c.ShopArrivalCount,Is.Zero);Assert.That(c.ShopBenchModel(bought.Instance).sprite.name,Does.StartWith("M02/idle/"));
             var bottom=new Vector2(ManualBattleController.ShopBenchRect(2).center.x,ManualBattleController.ShopBenchRect(2).yMax-2);
             var sale=new Vector2(bottom.x,ManualBattleController.ShopSellRect.yMax-2);
@@ -92,7 +99,7 @@ namespace YesterdayConvoy.Tests
                 var result=c.PurchaseShopCard(0);Assert.That(result.Success,Is.True);Assert.That(result.FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(string.IsNullOrEmpty(c.ShopFeedback),Is.True,"Successful promotion should only animate the piece, without a success notice.");
                 Assert.That(c.ShopArrivalCount,Is.GreaterThan(0));
                 float previousScale=Time.timeScale;Time.timeScale=0;
-                yield return new WaitForSecondsRealtime(.55f);
+                yield return new WaitForSecondsRealtime(.8f);
                 Assert.That(c.ShopBenchPromotionRemaining(result.Instance),Is.GreaterThan(0));
                 yield return new WaitForSecondsRealtime(1.1f);
                 Time.timeScale=previousScale;
@@ -103,6 +110,18 @@ namespace YesterdayConvoy.Tests
                 Assert.That(original.battle,Is.SameAs(originalCard));Assert.That(ManualBattleController.ShopOfferRect(0).yMax,Is.LessThan(ManualBattleController.ShopBenchRect(0).y));
                 c.LeaveShopTrial();yield return null;yield return null;Assert.That(Camera.main.rect,Is.EqualTo(viewport));Assert.That(Camera.main.fieldOfView,Is.EqualTo(originalFov));Assert.That(c.TestSelectionOpen,Is.True);
             }
+        }
+        [UnityTest]public IEnumerator RapidPurchasesAndSaleLeaveNoDuplicateEntranceModels()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();
+            c.Shop.Preset(new ShopTrialModel.Piece[0],new[]{"CARD_M02","CARD_M02","CARD_M02"});
+            for(int i=0;i<3;i++)Assert.That(c.PurchaseShopCard(i).Success,Is.True);
+            var piece=c.Shop.Bench.Single();Assert.That(piece.Star,Is.EqualTo(2));Assert.That(c.ShopArrivalCount,Is.EqualTo(1));
+            var entering=c.ShopEntranceModel(piece.Instance);Assert.That(entering,Is.Not.Null);
+            Assert.That(c.SellShopCard(piece.Instance).Success,Is.True);Assert.That(c.ShopArrivalCount,Is.Zero);Assert.That(c.ShopBenchModel(piece.Instance),Is.Null);
+            yield return null;Assert.That(entering==null,Is.True);Assert.That(c.Battle.Units.Count,Is.Zero);
+            c.LeaveShopTrial();yield return null;
         }
         [UnityTest]public IEnumerator PurchasedArcherDeploysOnCityRouteAndBattleFreezesTrading()
         {
