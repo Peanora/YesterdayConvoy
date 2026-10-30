@@ -15,6 +15,8 @@ namespace YesterdayConvoy
         readonly List<ManualBattleDefinition> shopDeck=new List<ManualBattleDefinition>();
         DefenderTrialDefinition shopMapCopy;
         Rect shopPreviousViewport;
+        float shopPreviousFieldOfView;
+        Vector3 shopMapCameraPosition;
         int shopDrag=-1,shopPending=-1,shopPromotionStar;
         string shopPromotionId,shopMessage;
         Vector2 shopDragStart,shopPointer;
@@ -31,7 +33,7 @@ namespace YesterdayConvoy
 
         public void EnterShopTrial(int preset=0)
         {
-            if(shop==null)shopPreviousViewport=Camera.main.rect;
+            if(shop==null){shopPreviousViewport=Camera.main.rect;shopPreviousFieldOfView=Camera.main.fieldOfView;}
             shopDefinitions.Clear();
             string[] supported={"CARD_M02","CARD_M03","CARD_M05","CARD_M08",OriginalSlugArt.CardId,"CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
             foreach(var option in monsterTests)
@@ -62,6 +64,7 @@ namespace YesterdayConvoy
                 var pixels=new Color[64];for(int i=0;i<64;i++)pixels[i]=new Color(1,1,1,.72f*Mathf.Clamp01(1-i/50f));shopFade.SetPixels(pixels);shopFade.Apply();
             }
             EnterDefense(shopMapCopy);
+            shopMapCameraPosition=Camera.main.transform.position;
             SyncShopDeck();
             ShopNotice(preset==0?"点击商店招募；备战棋子拖到红门部署，向下拖出售":"满席测试：购买第一张弩手，确认后合成并腾出空位");
         }
@@ -76,6 +79,28 @@ namespace YesterdayConvoy
             defenderTrial.battle=effective[0];defenderTrial.rosterCards=effective.Skip(1).ToArray();definition=effective[0];
             ClearViews();Battle=CreateBattle();selectedRosterIndex=0;Selected=false;CancelInteraction();EnableCombatView();
             Camera.main.rect=new Rect(0,.20f,1,.3972f);
+            FrameShopMap();
+        }
+        IEnumerable<Vector3> ShopMapPlayablePoints()
+        {
+            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points){yield return point;yield return point+Vector3.up*.65f;}
+            foreach(var defender in shopMapCopy.defenders){yield return defender.position;yield return defender.position+Camera.main.transform.up*1.65f;}
+        }
+        void FrameShopMap()
+        {
+            var camera=Camera.main;camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
+            var points=ShopMapPlayablePoints().ToArray();
+            // Recenter the playable board, leaving decorative canals outside the framing budget.
+            for(int pass=0;pass<2;pass++)
+            {
+                var projected=points.Select(camera.WorldToViewportPoint).ToArray();
+                float centerX=(projected.Min(p=>p.x)+projected.Max(p=>p.x))*.5f,centerY=(projected.Min(p=>p.y)+projected.Max(p=>p.y))*.5f;
+                float depth=projected.Average(p=>p.z);
+                camera.transform.position+=camera.ViewportToWorldPoint(new Vector3(centerX,centerY,depth))-camera.ViewportToWorldPoint(new Vector3(.5f,.5f,depth));
+            }
+            float extent=points.Select(camera.WorldToViewportPoint).Max(p=>Mathf.Max(Mathf.Abs(p.x-.5f)/.47f,Mathf.Abs(p.y-.5f)/.45f));
+            float zoom=Mathf.Min(1.4f,1/extent);
+            camera.fieldOfView=2*Mathf.Atan(Mathf.Tan(shopPreviousFieldOfView*.5f*Mathf.Deg2Rad)/zoom)*Mathf.Rad2Deg;
         }
         public ShopTrialModel.Result PurchaseShopCard(int slot,bool confirm=false)
         {
@@ -100,7 +125,7 @@ namespace YesterdayConvoy
         public void CancelShopDrag(){shopDrag=-1;shopMoving=false;shopPending=-1;CancelInteraction();}
         public void LeaveShopTrial()
         {
-            CancelShopDrag();shop=null;shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;
+            CancelShopDrag();shop=null;shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
             ReturnToMonsterTests();if(shopMapCopy!=null){Destroy(shopMapCopy);shopMapCopy=null;}
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)

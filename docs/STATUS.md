@@ -2,6 +2,8 @@
 
 ## 2026-10-30：商店上下布局与泵站回廊试玩
 
+同日镜头补充：中间地图放大1.4倍并按有效路线/守军居中，商店、备战席、1920×1080和地图格局保持。3/3地图交互复测通过，验证所有路线/红门可见、购买不累积缩放、退出恢复视口和FOV；最新Windows1495925555 bytes、0错误，Player16项布尔标志全True、magnification=1.40，实际截图已复核。证据：play-zoom.xml、build-zoom.log、player-zoom.log；下文首版完整276/74结果不记为本次重跑。
+
 商店移至屏幕上方、10格备战席在底部；中央大星标晋升，连锁三星只播最终一次。新增独立 `Assets/_Game/ShopTrials/ShopMap.unity`，招募后可把角色拖到泵站回廊红门部署；准备时支持升级、刷新、锁店和向下出售。满席可确认两星/连锁三星，无法合成不扣钱。入口、操作和边界见[地图试玩说明](SHOP_MAP_TRIAL.md)。
 
 完整276 EditMode、74 GPU PlayMode通过；保留原设计并改1920×1080后，3项地图交互复测通过；Windows重建1495921684 bytes、0错误，独立Player15项标志全部True。浏览器Node7/7、Chrome离线上下布局/满席/出售通过。本机EXE：`D:/游戏开发/YesterdayConvoy-ShopUI/Builds/ShopMap/YesterdayConvoy-Shop.exe`，保留整个目录。当前是10种基础角色的独立测试池，星级未改变战斗属性；原复杂角色保护不放宽，非正式完整商店/羁绊章节。未修改原主场景、地图asset、Prefab、Packages或ProjectSettings。

@@ -17,6 +17,8 @@ namespace YesterdayConvoy
             string[] args=Environment.GetCommandLineArgs();int arg=Array.IndexOf(args,"-demoEvidenceDir");string dir=arg>=0&&arg+1<args.Length?args[arg+1]:null;
             yield return null;yield return null;
             bool layout=ShopTrialActive&&TacticalMapId=="city"&&ShopOfferRect(0).yMax<ShopBenchRect(0).y&&Camera.main.rect.height<.6f;
+            float magnification=Mathf.Tan(shopPreviousFieldOfView*.5f*Mathf.Deg2Rad)/Mathf.Tan(Camera.main.fieldOfView*.5f*Mathf.Deg2Rad);
+            bool framing=magnification>1.2f&&ShopMapPlayablePoints().All(p=>ShopBattlefieldRect.Contains(GUIPosition(Camera.main.WorldToScreenPoint(p))));
             yield return InteractionFrame(dir,"shop-map-ready");
             EnterShopTrial(1);yield return null;yield return null;
             int gold=Shop.Gold;var denied=PurchaseShopCard(1);bool fullReject=!denied.Success&&!denied.NeedsConfirmation&&Shop.Gold==gold&&Shop.Bench.Count==10;
@@ -49,8 +51,8 @@ namespace YesterdayConvoy
             bool simulation=Battle.Clock>0&&Battle.Units.Count==1&&Battle.Units[0].Motion.Position!=Battle.Entry;
             Shop.Validate();LeaveShopTrial();yield return null;yield return null;
             bool exit=TestSelectionOpen&&!ShopTrialActive&&!TacticalMapActive&&Camera.main.rect==new Rect(0,0,1,1);
-            bool pass=layout&&fullReject&&fullConfirm&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
-            Debug.Log($"SHOP_MAP_CHECK: layout={layout}; fullReject={fullReject}; fullConfirm={fullConfirm}; fullTwo={fullTwo}; fullThree={fullThree}; cancel={cancelSafe}; sale={sale}; level={level}; lock={locked}; refresh={refresh}; gateVisible={gateVisible}; deployed={deployed}; frozen={frozen}; simulation={simulation}; exit={exit}.");
+            bool pass=layout&&framing&&fullReject&&fullConfirm&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
+            Debug.Log($"SHOP_MAP_CHECK: layout={layout}; framing={framing}; magnification={magnification:0.00}; fullReject={fullReject}; fullConfirm={fullConfirm}; fullTwo={fullTwo}; fullThree={fullThree}; cancel={cancelSafe}; sale={sale}; level={level}; lock={locked}; refresh={refresh}; gateVisible={gateVisible}; deployed={deployed}; frozen={frozen}; simulation={simulation}; exit={exit}.");
             Time.timeScale=1;Application.Quit(pass?0:1);
         }
     }
