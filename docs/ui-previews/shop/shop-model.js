@@ -41,10 +41,12 @@
     const first=available(s.pool,1);if(first.length)add(first[Math.floor(rng()*first.length)].id,1);
     s.offers=draw(s.pool,1);
    }else{
-    s.level=mode==='star3'?7:5;s.xp=XP[s.level]-2;s.gold=40;
-    if(mode==='star3'){add('M08',2);add('M08',2);add('M08',1);add('M08',1);}else{add('M08',1);add('M08',1);}
-    const ids=mode==='star3'?['M08','M11','slug','M18','M20']:['M08','M11','slug','M18','M04'];
+    const three=mode==='star3'||mode==='full3';
+    s.level=three?7:5;s.xp=XP[s.level]-2;s.gold=40;
+    if(three){add('M08',2);add('M08',2);add('M08',1);add('M08',1);}else{add('M08',1);add('M08',1);}
+    const ids=three?['M08','M11','slug','M18','M20']:['M08','M11','slug','M18','M04'];
     s.offers=ids.filter(id=>byId.has(id)&&s.pool[id]>0&&ODDS[s.level][byId.get(id).cost-1]>0).map(id=>{s.pool[id]--;return{id,sold:false};});
+    if(mode==='full2'||mode==='full3')for(const r of byId.values()){if(s.bench.length===10)break;if(r.id!=='M08'&&r.cost<=2&&s.pool[r.id]>0)add(r.id,1);}
    }
    check();return snapshot();
   }

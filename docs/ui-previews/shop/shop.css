@@ -6,6 +6,22 @@
 @media(max-width:760px){body{padding:8px 5px}.reserve-head #hint{display:none}.bench{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.bench-slot{height:73px}.bench-slot .bench-portrait{height:53px}.bench-slot .bench-name{font-size:9px}.topbar{height:66px}.balance{font-size:12px;gap:3px}.balance strong{font-size:24px}.growth{gap:5px}.level-box>span{font-size:12px}.level-box strong{font-size:24px}.xp-track{width:50px}#xpnum{font-size:11px;width:35px}.growth button{margin-left:0;font-size:13px;gap:4px;padding:7px}.growth button .currency-icon{width:15px}.shop-body{height:auto;grid-template-columns:1fr}.offers{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.offer{height:175px}.portrait{left:2%;width:96%;height:91px;top:3px}.info{top:96px;left:6px;right:4px;gap:2px}.name{font-size:10px}.tag{font-size:8px}.price{font-size:12px;bottom:4px;left:6px;gap:4px}.price .currency-icon{width:16px;height:16px}.actions{grid-template-columns:1fr 60px;grid-template-rows:42px;gap:8px}#refresh{display:flex;gap:12px}#refresh>svg{width:23px;height:23px}#refresh>span{font-size:17px}#refresh small{font-size:12px}.demo-nav{gap:12px;flex-wrap:wrap}.demo-nav>span{display:none}#odds{right:0;bottom:35px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .bench-slot[data-instance]{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.screen{height:calc(100vh - 60px);min-height:540px;display:flex;flex-direction:column}
+.shop{order:0;border-top:0;border-bottom:1px solid #405864}
+.reserve{order:2;margin-top:auto;position:relative;padding-bottom:40px;border-top:1px solid #405864}
+#sell-target{position:absolute;bottom:0;left:0;right:0;height:55px;pointer-events:none}
+#sell-zone .sell-tray{width:32px;height:32px}
+#sell-zone>div{flex-direction:row;align-items:center;gap:18px}
+#sell-instruction{font-size:19px}
+#sell-price{font-size:28px}
+#sell-cancel{display:none}
+.merge-announcement{position:absolute;left:50%;top:47%;translate:-50% -50%;width:320px;padding:20px 38px 24px;text-align:center;background:linear-gradient(120deg,#132c3aee,#0a171fee);border:1px solid #84cce1;box-shadow:0 0 65px #6bceef25,inset 0 0 40px #62b3dd15;display:flex;align-items:center;flex-direction:column;color:#c8efff;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.merge-announcement.gold{color:#ffe09c;border-color:#e9c673;background:linear-gradient(120deg,#382f1fec,#15191eea);box-shadow:0 0 70px #e8b95f33,inset 0 0 40px #e8be6920}
+.promotion-kicker{font-size:13px;letter-spacing:8px;margin-left:8px;opacity:.75}
+.promotion-stars{display:flex;gap:8px;margin:10px 0}
+.promotion-stars svg{width:43px;height:43px;fill:currentColor;filter:drop-shadow(0 0 10px currentColor)}
+.merge-announcement strong{font-size:29px;letter-spacing:3px;line-height:1.5;color:#f0f8fc}
+.merge-announcement small{font-size:13px;letter-spacing:3px;opacity:.7}
 .merge-burst{position:absolute;inset:0;color:#b7eaff;pointer-events:none}
 .merge-burst.gold{color:#ffe0a0}
 .merge-halo{position:absolute;width:180px;height:150px;background:radial-gradient(ellipse,rgba(150,224,255,.3) 0,transparent 66%);mix-blend-mode:screen;filter:blur(8px)}

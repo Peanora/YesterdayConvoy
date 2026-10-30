@@ -1,5 +1,13 @@
 # 当前工程状态
 
+## 2026-10-30：商店上下布局与泵站回廊试玩
+
+商店移至屏幕上方、10格备战席在底部；中央大星标晋升，连锁三星只播最终一次。新增独立 `Assets/_Game/ShopTrials/ShopMap.unity`，招募后可把角色拖到泵站回廊红门部署；准备时支持升级、刷新、锁店和向下出售。满席可确认两星/连锁三星，无法合成不扣钱。入口、操作和边界见[地图试玩说明](SHOP_MAP_TRIAL.md)。
+
+完整276 EditMode、74 GPU PlayMode通过；保留原设计并改1920×1080后，3项地图交互复测通过；Windows重建1495921684 bytes、0错误，独立Player15项标志全部True。浏览器Node7/7、Chrome离线上下布局/满席/出售通过。本机EXE：`D:/游戏开发/YesterdayConvoy-ShopUI/Builds/ShopMap/YesterdayConvoy-Shop.exe`，保留整个目录。当前是10种基础角色的独立测试池，星级未改变战斗属性；原复杂角色保护不放宽，非正式完整商店/羁绊章节。未修改原主场景、地图asset、Prefab、Packages或ProjectSettings。
+
+代码、独立场景、必要meta、源石运行PNG与真实来源记录随功能分支和PR #47交付；任务#48。未测第二台电脑和全新克隆构建，不自动合并main、ZIP或Releases。Unity生成的本地.vscode未提交。
+
 ## 2026-10-29：第六批三名六星守军
 
 凛御银灰、圣聆初雪、望的已确认正背面模型及所选S3进入独立试玩。入口：“守军技能测试 · 含六星 → 六星第六批”。当前22名有选定技能，第二/第三批8名仍跳过。[第六批机制、系统连接及未做项](DEFENDER-SKILLS-BATCH6.md)。

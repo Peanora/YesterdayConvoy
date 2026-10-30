@@ -329,6 +329,7 @@ namespace YesterdayConvoy
         private void OnGUI()
         {
             if(Battle==null) return;
+            if(ShopTrialActive){DrawShopTrial();return;}
             if(TestSelectionOpen)
             {
                 EnsureStyles(); Matrix4x4 previousMatrix=GUI.matrix; Color previousBackground=GUI.backgroundColor;

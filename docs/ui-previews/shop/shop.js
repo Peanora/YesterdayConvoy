@@ -3,7 +3,7 @@
  const $=id=>document.getElementById(id),roles=window.SHOP_ROSTER,byId=new Map(roles.map(r=>[r.id,r]));
  const tags=window.SHOP_SYNERGIES||{};
  const mode=new URLSearchParams(location.search).get('demo')||'star2';
- const model=ShopModel.create(roles,{mode:['normal','star2','star3','upgrade'].includes(mode)?mode:'star2'});
+ const model=ShopModel.create(roles,{mode:['normal','star2','star3','upgrade','full2','full3'].includes(mode)?mode:'star2'});
  const pictures=new Map(),motion=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let busy=false,selected=null,toastTimer,confirmIndex=null;
  const starSvg='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 1.8 3.1 6.3 7 .9-5.1 5 .2 7-5.2-3-6.2 3 1.2-7-5.1-5 7-.9Z"/></svg>';
@@ -46,7 +46,7 @@
   }
   updateSelection();
   const starred=s.bench.find(c=>c.id==='M08'&&c.star>1);
-  $('hint').textContent=mode==='normal'?'同种同星三张自动合成':mode==='upgrade'?'点击升级，查看等级与经验变化':starred&&starred.star===(mode==='star3'?3:2)?'弩手已晋升'+(starred.star===3?'三星':'两星'):'再招募一名弩手，查看'+(mode==='star3'?'连锁三星':'两星合成');
+  $('hint').textContent=mode==='normal'?'同种同星三张自动合成':mode==='upgrade'?'点击升级，查看等级与经验变化':starred&&starred.star===((mode==='star3'||mode==='full3')?3:2)?'弩手已晋升'+(starred.star===3?'三星':'两星'):'再招募一名弩手，查看'+((mode==='star3'||mode==='full3')?'连锁三星':'两星合成');
   document.body.dataset.ready='true';
  }
  function spend(value,positive=false){const n=el('span','deduction');n.textContent=(positive?'+':'−')+value;$('money-fx').appendChild(n);animate(n,[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-25px)'}],{duration:650});}
@@ -68,6 +68,10 @@
  async function burst(target,star){
   document.querySelectorAll('.star-banner').forEach(e=>e.remove());
   const gold=star===3,group=el('div','merge-burst'+(gold?' gold':''));group.dataset.star=star;$('fx').appendChild(group);
+  const announcement=el('div','merge-announcement'+(gold?' gold':''));
+  announcement.innerHTML='<span class="promotion-kicker">晋升成功</span><span class="promotion-stars">'+stars(star)+'</span><strong>'+byId.get(model.snapshot().bench.find(p=>p.instance===selected).id).name+'</strong><small>'+star+' 星棋子</small>';
+  $('fx').appendChild(announcement);
+  animate(announcement,[{opacity:0,scale:'.85'},{opacity:1,scale:'1.04',offset:.15},{opacity:1,scale:'1',offset:.72},{opacity:0,scale:'1.02'}],{duration:1900});
   const halo=el('div','merge-halo');Object.assign(halo.style,{left:target.cx-90+'px',top:target.cy-75+'px'});group.appendChild(halo);
   animate(halo,[{opacity:0,transform:'scale(.3)'},{opacity:1,transform:'scale(1)',offset:.25},{opacity:0,transform:'scale(1.25)'}],{duration:1250});
   const sigil=el('div','merge-sigil');Object.assign(sigil.style,{left:target.cx-35+'px',top:target.cy-35+'px'});group.appendChild(sigil);
@@ -137,7 +141,7 @@
  }
  $('sell').onclick=()=>{if(!busy&&selected!==null)sellCard(selected);};
  ShopSellDrag.attach({
-  root:document.querySelector('.screen'),bench:$('bench'),area:document.querySelector('.shop-body'),zone:$('sell-zone'),
+  root:document.querySelector('.screen'),bench:$('bench'),area:$('sell-target'),zone:$('sell-zone'),
   quote:instance=>model.saleQuote(instance),canStart:()=>!busy&&confirmIndex===null,
   onStart:()=>{busy=true;},
   onFinish:async ({instance,commit,x,y})=>{if(commit)await sellCard(instance,{x,y});else{busy=false;await render();}}
@@ -147,7 +151,7 @@
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeConfirm();selected=null;updateSelection();}if(e.key==='Tab'&&!$('confirm').hidden){e.preventDefault();($('confirm-no')===document.activeElement?$('confirm-yes'):$('confirm-no')).focus();}});
  $('reset').onclick=async()=>{if(busy)return;$('fx').replaceChildren();selected=null;$('toast').className='';$('confirm').hidden=true;model.reset();await render();};
  document.querySelectorAll('.demo-nav a').forEach(a=>a.classList.toggle('active',a.search==='?demo='+mode));
- $('hint').textContent=mode==='normal'?'同种同星三张自动合成':mode==='upgrade'?'点击升级，查看等级与经验变化':'再招募一名弩手，查看'+(mode==='star3'?'连锁三星':'两星合成');
+ $('hint').textContent=mode==='normal'?'同种同星三张自动合成':mode==='upgrade'?'点击升级，查看等级与经验变化':'再招募一名弩手，查看'+((mode==='star3'||mode==='full3')?'连锁三星':'两星合成');
  window.preview={roles,model,state:()=>model.snapshot(),reset:async()=>{model.reset();await render();},ready:()=>!busy,portrait};
  await Promise.all(roles.map(portrait));await render();
 })().catch(e=>{console.error(e);document.body.dataset.error=String(e);});

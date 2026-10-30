@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-10-30：商店地图与满备战席合成
+
+[范围、构建和限制](SHOP_MAP_TRIAL.md)。本机证据目录 `D:/游戏开发/artifacts/shop-map/`，测试与构建输出不入Git。
+
+| 实际验证 | 结果 |
+| --- | --- |
+| 完整EditMode / GPU PlayMode | 276/276、74/74通过，0失败/跳过；edit-all.xml、play-all.xml。新增5项事务/3项场景：满席确认两星/连锁三星、失败不扣钱、报价返库、经验溢出、锁定、原地图不变、弩手与新购买猎狗使用自身配置部署、战斗冻结交易。 |
+| 最终Windows / 独立Player | build-delivery.log：1495921684 bytes、0错误。player-delivery.log：layout/fullReject/fullConfirm/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit全部True，无捕获异常；实际可见窗口截图在player-delivery。 |
+| 浏览器 | Node 7/7，Chrome1672×941离线验证商店在上/备战在下、满席2/3星、取消不扣钱、中央大提示和底部出售，无页面错误。 |
+| 画面复核 | 查看最终Player准备/三星截图，修正技能长文字重叠、星形字形裁切与按钮对比度。完整套件在显示修正前通过；保留原设计和1920×1080布局后又通过3/3地图交互（play-layout-final.xml），最终重新构建并重跑独立Player。docs/ui-previews/shop/shop-map-*.png为最终实机。 |
+
+首轮受限环境Unity许可证无法识别，正常Windows环境重试构建成功；首次隐藏窗口截图为黑屏，不作为画面通过证据，后续以可见窗口重新运行并复核。未升级Unity/包或改许可证。未测第二台电脑、全新克隆构建、长时压力、正式数值平衡；10角色基础池和未实现星级战斗倍率不冒称完整自走棋系统。
+
 ## 2026-10-29：第六批三名六星守军
 
 D26/D27/D28的独立所选S3与原生模型接入。具体适配/未做项见[第六批说明](DEFENDER-SKILLS-BATCH6.md)。从实时main34ec756创建新分支，包含未合并#45依赖，不自动写main。
