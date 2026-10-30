@@ -20,8 +20,8 @@
  }
  function captureBench(){return new Map([...document.querySelectorAll('.bench-slot[data-instance]')].map(e=>[Number(e.dataset.instance),box(e)]));}
  function updateSelection(){
-  const c=model.snapshot().bench.find(c=>c.instance===selected);$('sell').hidden=!c;
-  if(c){const value=3**(c.star-1)*byId.get(c.id).cost-(c.star>1?1:0);$('sell').textContent='出售 '+byId.get(c.id).name+' · '+value+' 源石';}
+  const c=model.saleQuote(selected);$('sell').hidden=!c.ok;$('sell').disabled=busy;
+  if(c.ok)$('sell').textContent='出售 '+c.name+' · '+c.value+' 源石';
   document.querySelectorAll('.bench-slot').forEach(e=>e.classList.toggle('selected',Number(e.dataset.instance)===selected));
  }
  async function render(){
@@ -33,7 +33,7 @@
   $('bench-count').textContent=s.bench.length;$('bench').replaceChildren();
   for(let i=0;i<10;i++){
    const c=s.bench[i],slot=el('button','bench-slot'+(c?'':' empty'));slot.disabled=busy||!c;
-   if(c){const r=byId.get(c.id);slot.dataset.instance=c.instance;slot.dataset.star=c.star;slot.innerHTML='<span class="stars">'+stars(c.star)+'</span><img class="bench-portrait" alt="'+r.name+'"><span class="bench-name">'+r.name+'</span>';slot.setAttribute('aria-label',r.name+'，'+c.star+'星');slot.querySelector('img').src=await portrait(r);slot.onclick=()=>{selected=c.instance;updateSelection();};}else{slot.setAttribute('aria-label','空备战格 '+(i+1));}
+   if(c){const r=byId.get(c.id);slot.dataset.instance=c.instance;slot.dataset.star=c.star;slot.innerHTML='<span class="stars">'+stars(c.star)+'</span><img class="bench-portrait" alt="'+r.name+'" draggable="false"><span class="bench-name">'+r.name+'</span>';slot.setAttribute('aria-label',r.name+'，'+c.star+'星，可向下拖至商店出售');slot.title='向下拖至商店出售 · '+model.saleQuote(c.instance).value+' 源石';slot.querySelector('img').src=await portrait(r);slot.onclick=()=>{if(busy)return;selected=c.instance;updateSelection();};}else{slot.setAttribute('aria-label','空备战格 '+(i+1));}
    $('bench').appendChild(slot);
   }
   $('offers').replaceChildren();
@@ -86,7 +86,26 @@
   await sleep(400);busy=false;await render();
  };
  $('lock').onclick=async()=>{if(busy)return;const result=model.toggleLock();await render();toast(result.locked?'本轮棋子已锁定':'已解除锁定');};
- $('sell').onclick=async()=>{if(busy||selected===null)return;const r=model.sell(selected);if(r.ok){selected=null;await render();spend(r.value,true);}else toast(r.reason,true);};
+ async function sellCard(instance,point){
+  busy=true;
+  try{
+   const quote=model.saleQuote(instance),r=model.sell(instance);
+   if(!r.ok){toast(r.reason,true);return;}
+   selected=null;await render();spend(r.value,true);
+   if(point){
+    const bounds=$('fx').getBoundingClientRect(),x=point.x-bounds.left,y=point.y-bounds.top;
+    await fly('assets/originium-ui.png',{x:x-18,y:y-18,width:36,height:36,cx:x,cy:y},box(document.querySelector('.balance')),350);
+   }
+   toast('已出售 '+quote.name+' · +'+r.value+' 源石');
+  }finally{busy=false;await render();}
+ }
+ $('sell').onclick=()=>{if(!busy&&selected!==null)sellCard(selected);};
+ ShopSellDrag.attach({
+  root:document.querySelector('.screen'),bench:$('bench'),area:document.querySelector('.shop-body'),zone:$('sell-zone'),
+  quote:instance=>model.saleQuote(instance),canStart:()=>!busy&&confirmIndex===null,
+  onStart:()=>{busy=true;},
+  onFinish:async ({instance,commit,x,y})=>{if(commit)await sellCard(instance,{x,y});else{busy=false;await render();}}
+ });
  function closeConfirm(){ $('confirm').hidden=true;document.querySelector('.shop').inert=false;document.querySelector('.reserve').inert=false;document.querySelector('.demo-nav').inert=false;confirmIndex=null; }
  $('confirm-no').onclick=closeConfirm;$('confirm-yes').onclick=()=>{const index=confirmIndex;closeConfirm();if(index!==null)purchase(index,true);};
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeConfirm();selected=null;updateSelection();}if(e.key==='Tab'&&!$('confirm').hidden){e.preventDefault();($('confirm-no')===document.activeElement?$('confirm-yes'):$('confirm-no')).focus();}});

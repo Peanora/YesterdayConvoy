@@ -55,3 +55,14 @@ test('weighted refresh and sell sequences preserve every pool across 100 seeded 
   }
  }
 });
+test('sale previews are read-only and match actual one/two/three-star payouts',()=>{
+ const m=create([role('M08')]);
+ let c=m.snapshot().bench[0],before=same(m.snapshot()),q=m.saleQuote(c.instance);
+ assert.equal(q.value,1);assert.equal(q.copies,1);q.value=999;assert.equal(same(m.snapshot()),before);
+ m.purchase(0);m.purchase(1);c=m.snapshot().bench[0];q=m.saleQuote(c.instance);
+ assert.equal(q.star,2);assert.equal(q.value,2);assert.equal(q.copies,3);
+ for(let i=2;i<5;i++)m.purchase(i);m.refresh();for(let i=0;i<3;i++)m.purchase(i);
+ c=m.snapshot().bench[0];q=m.saleQuote(c.instance);assert.equal(q.star,3);assert.equal(q.value,8);assert.equal(q.copies,9);
+ const result=m.sell(c.instance);assert.equal(result.value,q.value);assert.equal(m.saleQuote(c.instance).ok,false);
+ before=same(m.snapshot());assert.equal(m.sell(c.instance).ok,false);assert.equal(same(m.snapshot()),before);m.check();
+});

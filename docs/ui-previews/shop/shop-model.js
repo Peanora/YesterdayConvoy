@@ -79,12 +79,17 @@
    s.gold-=4;s.xp+=4;const from=s.level;while(s.level<10&&s.xp>=XP[s.level]){s.xp-=XP[s.level];s.level++;}if(s.level===10)s.xp=0;
    check();return {ok:true,kind:'upgrade',cost:4,from,to:s.level,gainedXp:4};
   }
+  function saleQuote(instance){
+   const c=s.bench.find(c=>c.instance===instance);if(!c)return fail('先选择要出售的棋子');
+   const r=byId.get(c.id),copies=weight(c.star);
+   return {ok:true,instance:c.instance,id:c.id,name:r.name,star:c.star,copies,value:copies*r.cost-(c.star===1?0:1)};
+  }
   function sell(instance){
    const i=s.bench.findIndex(c=>c.instance===instance);if(i<0)return fail('先选择要出售的棋子');
-   const c=s.bench[i],cost=byId.get(c.id).cost,value=weight(c.star)*cost-(c.star===1?0:1);
+   const c=s.bench[i],value=saleQuote(instance).value;
    s.bench.splice(i,1);s.pool[c.id]+=weight(c.star);s.gold+=value;check();return {ok:true,kind:'sell',value,id:c.id};
   }
-  const api={snapshot,purchase,refresh,upgrade,sell,reset,check,toggleLock(){s.locked=!s.locked;return {ok:true,kind:'lock',locked:s.locked};}};
+  const api={snapshot,purchase,refresh,upgrade,saleQuote,sell,reset,check,toggleLock(){s.locked=!s.locked;return {ok:true,kind:'lock',locked:s.locked};}};
   reset();return api;
  }
  return {create,ODDS,XP};
