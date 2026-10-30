@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             }
             shopAura.SetPixels(pixels);shopAura.Apply();
         }
-        void DrawShopRankPortrait(Rect rect,Sprite portrait,int star,float burst=0,bool drawOrbit=true)
+        void DrawShopRankPortrait(Rect rect,Sprite portrait,int star,float burst=0)
         {
             if(star>1)
             {
@@ -33,20 +33,9 @@ namespace YesterdayConvoy
                     float angle=i*Mathf.PI/4;Rect outline=rect;outline.position+=new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*spread;DrawTestPortrait(outline,portrait);
                 }
                 GUI.color=previous;
-                Vector2 center=rect.center;int orbits=drawOrbit?(star==3?3:2):0;
-                for(int orbit=0;orbit<orbits;orbit++)
-                {
-                    float head=time*(star==3?1.45f:1.1f)+orbit*Mathf.PI*2/orbits;
-                    for(int segment=0;segment<13;segment++)
-                    {
-                        float a=head-segment*.055f,b=a-.055f;
-                        Vector2 radius=new Vector2(rect.width*.47f,rect.height*.44f);
-                        Vector2 from=center+Vector2.Scale(new Vector2(Mathf.Cos(a),Mathf.Sin(a)),radius),to=center+Vector2.Scale(new Vector2(Mathf.Cos(b),Mathf.Sin(b)),radius);
-                        ShopLine(from,to,ShopRankColor(star,(1-segment/13f)*(.55f+.3f*burst)),segment<3?2:1);
-                    }
-                }
                 if(burst>0)
                 {
+                    Vector2 center=rect.center;
                     float radius=1+(1-burst)*.45f;
                     Rect ring=new Rect(center.x-rect.width*.52f*radius,center.y-rect.height*.48f*radius,rect.width*1.04f*radius,rect.height*.96f*radius);
                     ShopBorder(ring,ShopRankColor(star,burst*.7f),1);

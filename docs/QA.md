@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-10-30：商店和备战升星全部取消旋转
+
+删除ShopPromotionEffects共用绘制中的整段旋转光弧和开关参数；两个入口均只保留不旋转的亮起、轮廓和星标，备战仍1秒结束且星标全程静态。build-no-rank-rotation.log：Windows1495930340 bytes、0错误；player-no-rank-rotation.log原19项加特效结束共20项全部True，无捕获异常。商店二/三星各16张连续实机帧已重录，查看两档最终帧，确认没有绕行光弧；银/金截图与WebM均替换为本版，视频8fps仅展示动态，不作为游戏帧率证明。本次仅删除显示逻辑，未重跑EditMode/GPU PlayMode；未测第二台电脑或全新克隆。
+
 ## 2026-10-30：备战星标与升星瞬间取消旋转
 
 备战星标调用始终关闭动画，头像升星反馈明确关闭旋转光弧；保留1秒亮起和扩散边框，商店预告保持。build-bench-static-stars.log：Windows1495931056 bytes、0错误；player-bench-static-stars.log：原19项及特效结束检查共20项全部True，无捕获异常。已查看三星合成瞬间实际截图，备战无旋转光弧，星标固定；shop-map-three-star.png更新为本版。此前结束后的二/三星静态截图与本轮完全一致。本次仅显示调整，未重复完整EditMode或GPU PlayMode；上一轮4/4暂停结束验证仍为历史结果。未测第二台电脑/全新克隆。
