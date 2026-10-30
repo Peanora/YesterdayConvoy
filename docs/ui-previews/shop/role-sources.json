@@ -1,0 +1,312 @@
+{
+  "source_commit": "7ec2860c398b692d73527c3533dd8affa40c1ecf",
+  "description": "38 个角色图像内嵌 roster-data.js；原路径只用于来源核对，预览不读取另一工作区。",
+  "processing": "PNG 原数据内嵌；cell=256 的待机图集在浏览器只取首帧并按 alpha 裁透明边界；其余直接使用立绘。没有重绘。",
+  "rights": "沿用工程内原游戏素材来源及真实权利状态；未新增原作再分发授权声明。原工程来源记录见 docs/art/ASSET_MANIFEST.csv、docs/art/CREDITS.md 及对应角色文档。",
+  "roles": [
+    {
+      "id": "slug",
+      "name": "源石虫",
+      "cost": 1,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/OriginiumSlugOriginal/portrait.png",
+      "sha256": "4e162456a1d1c3bd0ef932fa23068bb9c476272faf9262f84ba1a45140fae760"
+    },
+    {
+      "id": "M02",
+      "name": "猎狗",
+      "cost": 1,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M02/idle-00.png",
+      "sha256": "48317b85b979174d63b88fd42f1fddc4f133c7c1bf9cb6faf410bf0894514d5d"
+    },
+    {
+      "id": "M03",
+      "name": "游击队猎犬",
+      "cost": 1,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M03/idle-00.png",
+      "sha256": "754e025f0b2e20ee72db693173f5c4e4f961c0f3ebf3d334c91d2ec9b2ebb1dd"
+    },
+    {
+      "id": "M04",
+      "name": "高能源石虫",
+      "cost": 2,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M04/idle-00.png",
+      "sha256": "2650165ca39a0d0466ee46a0a7808d1ba5affc739a5a8651de5bb4b969db8313"
+    },
+    {
+      "id": "M05",
+      "name": "酸液源石虫",
+      "cost": 2,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M05/idle-00.png",
+      "sha256": "d0376f731c0155b4a86b3fa06fa0f0d82c75d757f024f2a2996d535e725ecbcd"
+    },
+    {
+      "id": "M06",
+      "name": "冰爆源石虫",
+      "cost": 2,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M06/idle-00.png",
+      "sha256": "6dbd22fdbe9781640e43c345ec999d2686971475ca49a80795f262d32e90bc1c"
+    },
+    {
+      "id": "M07",
+      "name": "士兵",
+      "cost": 1,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M07/idle-00.png",
+      "sha256": "5c2d4bdd487d142272f4ab84aa5b13b7d326dc98adfcb3a3b598f520e3ddb453"
+    },
+    {
+      "id": "M08",
+      "name": "弩手",
+      "cost": 1,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M08/idle-00.png",
+      "sha256": "2e2fa151aec089c8b62271c1c39c6ea15f7db9acac8ec6e2a8d63fbbe79176df"
+    },
+    {
+      "id": "M09",
+      "name": "术师",
+      "cost": 1,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M09/idle-00.png",
+      "sha256": "4c1835e24b68cdb1aab3aa671b0fc26d92146591b932d4a35f2a481c5e92b879"
+    },
+    {
+      "id": "M10",
+      "name": "重装防御者",
+      "cost": 2,
+      "cell": 256,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M10/idle-00.png",
+      "sha256": "52b269d436ce32654e82c0c232670686d1db35b56ea03fed3cdb3bbbdd18a909"
+    },
+    {
+      "id": "M11",
+      "name": "雪怪狙击手",
+      "cost": 1,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M11/portrait.png",
+      "sha256": "53f5839d9f3333a0d7f8ac5c43efd401c974042f64a45626a9311e1b3078cb3c"
+    },
+    {
+      "id": "M12",
+      "name": "雪怪术师",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M12/portrait.png",
+      "sha256": "8e19003e736df602d525cc299b6bf63772b8734699dd558551ef44ee87fb5eae"
+    },
+    {
+      "id": "M13",
+      "name": "雪怪小队凿冰人",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M13/portrait.png",
+      "sha256": "86ce7a0ca26e7ebd5981515ba3ceabbc99b4ab1d40d5453df032fc9d67487f1e"
+    },
+    {
+      "id": "M14",
+      "name": "霜星",
+      "cost": 5,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M14/portrait.png",
+      "sha256": "155eecdda0d8e945a54fe114384f821ef160aaed17832d5e74d6544d69121e13"
+    },
+    {
+      "id": "M15",
+      "name": "游击队战士",
+      "cost": 1,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M15/portrait.png",
+      "sha256": "472fcc8e98e83f4071a5c1d2f41665f6e7cab4d7bd6f650f5170e1764dcf244c"
+    },
+    {
+      "id": "M16",
+      "name": "游击队狙击手",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M16/portrait.png",
+      "sha256": "97ae2b2005e557dfea50232bea06612a957197de11e2a83c45553329f8ce5000"
+    },
+    {
+      "id": "M17",
+      "name": "游击队传令兵",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M17/portrait.png",
+      "sha256": "9cbccb39e93c36cd305210d91b8858fda3d72eb6378bdc75166ed512b93866c6"
+    },
+    {
+      "id": "M18",
+      "name": "游击队盾卫",
+      "cost": 4,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M18/portrait.png",
+      "sha256": "47f10339b13d835f13fe5e881c0fb44401b6a840b7143c7789464f1768f7a13d"
+    },
+    {
+      "id": "M19",
+      "name": "游击队萨卡兹战士",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M19/portrait.png",
+      "sha256": "55f798a84680a92a9d5b4a3447d1a745f3fc73a7eb150b21bd66c85c9f857cc9"
+    },
+    {
+      "id": "M20",
+      "name": "爱国者",
+      "cost": 5,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M20/portrait.png",
+      "sha256": "9717bfe0fc12e170756b60849e8b09de56f59b8ccdddca752e8e8e6fb4a31adc"
+    },
+    {
+      "id": "M21",
+      "name": "宿主士兵",
+      "cost": 1,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M21/portrait.png",
+      "sha256": "15e8715346192283e110451efea3bc4cf5abaec30498790dca84ab593c40a3bf"
+    },
+    {
+      "id": "M22",
+      "name": "宿主拾荒者",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M22/portrait.png",
+      "sha256": "c64a4b85761650b2b3d60cc2db3ac43f8792eb08710dafdab48f3d203f1ad940"
+    },
+    {
+      "id": "M23",
+      "name": "宿主流浪者",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M23/portrait.png",
+      "sha256": "875e16822e2b96ba0429df5d0fd4e6d515a3b304a71dc962a934d6579b793923"
+    },
+    {
+      "id": "M24",
+      "name": "萨卡兹宿主百夫长",
+      "cost": 4,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M24/portrait.png",
+      "sha256": "894db4b2edf05d51ce350002a2c7fd40fe39914df1b8795b99e20aec5261488a"
+    },
+    {
+      "id": "M25",
+      "name": "梅菲斯特",
+      "cost": 5,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M25/portrait.png",
+      "sha256": "95464ffa6dc3d62b9a16d71772291f3a9f5c21742819abc0fe694cd484cbb47e"
+    },
+    {
+      "id": "M26",
+      "name": "泥岩小队掷能者",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M26/portrait.png",
+      "sha256": "ac5682c599ca26ac41c1bc088fa280cca75d36a0f7322b49c39771d88519f3c5"
+    },
+    {
+      "id": "M27",
+      "name": "泥岩小队践行者",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M27/portrait.png",
+      "sha256": "1b755e7bd3d71075637a5ab652f7e672e147f37a4abfdf54e4d29a9f2d3c3b26"
+    },
+    {
+      "id": "M28",
+      "name": "泥岩",
+      "cost": 5,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M28/portrait.png",
+      "sha256": "1e066c54b455150ad9f22c8c23cf128fa7e776879f66dd183e67c268a00f057b"
+    },
+    {
+      "id": "M29",
+      "name": "深池方阵战士",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M29/portrait.png",
+      "sha256": "535f24790141270278d28ec070805260f41658c21a52553b3ba5d3ffe910628c"
+    },
+    {
+      "id": "M30",
+      "name": "深池逐火战士",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M30/portrait.png",
+      "sha256": "25926b7b2f414c2af1de9d08dca976e686627441f199ad23b2fd819d2c83303c"
+    },
+    {
+      "id": "M31",
+      "name": "深池焚毁者",
+      "cost": 4,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M31/portrait.png",
+      "sha256": "a1db1c7517898e9b4e66bdf59e1389a51e256b78fdb7c2e4ac260c0b0c787733"
+    },
+    {
+      "id": "M32",
+      "name": "蔓德拉",
+      "cost": 5,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M32/portrait.png",
+      "sha256": "0f7228954d33cf93d481f33248430405b380e2061ef37045665ca7267837368d"
+    },
+    {
+      "id": "M33",
+      "name": "囊海爬行者",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M33/portrait.png",
+      "sha256": "84d1e7e699554d96bbd8a2066b929469e9c8508e9686eddadbdfea625a041f8a"
+    },
+    {
+      "id": "M34",
+      "name": "钵海收割者",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M34/portrait.png",
+      "sha256": "ebbd27b0697c937f77e6a8d9eb3b90f5427a92fe920ec196dc27c5b736d36652"
+    },
+    {
+      "id": "M35",
+      "name": "壳海狂奔者",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M35/portrait.png",
+      "sha256": "2a94aa1766edf72f6661d83650329530f283a5ad86e1664ee878478a161c37fc"
+    },
+    {
+      "id": "M36",
+      "name": "首言者",
+      "cost": 4,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M36/portrait.png",
+      "sha256": "b41a0d011bac283242fbd8c84d9d844269f761c902559d73c14b8521745fc526"
+    },
+    {
+      "id": "M37",
+      "name": "萨卡兹大剑手",
+      "cost": 2,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M37/portrait.png",
+      "sha256": "0b747bc4e6a8fbdfa1de362dc8e6d081b27ff722182ea66d1c72b739f6e289c1"
+    },
+    {
+      "id": "M38",
+      "name": "萨卡兹术师",
+      "cost": 3,
+      "cell": 0,
+      "source": "Assets/StreamingAssets/MonsterCombatArt/M38/portrait.png",
+      "sha256": "147bade70b1093d296c4a4de41f84a648f8a2908289f2e75e229e17776a6b726"
+    }
+  ]
+}
