@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-10-30：覆盖式商店与扁平备战席
+
+[最新操作与范围](SHOP_MAP_TRIAL.md)。play-overlay.xml：4/4定向GPU PlayMode通过，覆盖默认收起、开关保留钱/库存/镜头、覆盖区不穿透、关闭待确认购买不扣款、拖动自动收起、扁平比例、全部路线/门、满席2/3星、实际部署、购买不叠加缩放及退出恢复。完整276/74未在本轮重跑。
+
+最后仅将出售向下距离22→12虚拟像素适配46像素卡槽，并把独立Player出售流程改为从卡槽底边起拖。build-overlay-final.log：Windows1495927470 bytes、0错误；player-overlay-final.log：layout/framing/overlay/flatBench/fullReject/fullConfirm/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit全True，无捕获异常。18项为布尔标志，magnification是FOV诊断值，不作新屏幕比例指标。
+
+1920×1080实际收起/展开截图已查看：地图高807像素，备战带132像素、单卡69像素，商店上层盖住地图而不改变取景。最终截图保存docs/ui-previews/shop/shop-map-*.png。运行输入与自动验证共用事务和指针函数；没有声称完成第二台电脑或真实人类平衡验收。未改原场景/地图asset、Prefab、包或设置；本地.vscode保持未提交。
+
 ## 2026-10-30：商店地图与满备战席合成
 
 同日镜头补充：中间地图放大1.4倍并按有效路线/守军居中，商店、备战席、1920×1080和地图格局保持。3/3地图交互复测通过，验证所有路线/红门可见、购买不累积缩放、退出恢复视口和FOV；最新Windows1495925555 bytes、0错误，Player16项布尔标志全True、magnification=1.40，实际截图已复核。证据：play-zoom.xml、build-zoom.log、player-zoom.log；下文首版完整276/74结果不记为本次重跑。

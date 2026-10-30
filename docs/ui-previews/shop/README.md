@@ -2,6 +2,8 @@
 
 2026-10-30 · 霍利屹 · [任务 #41](https://github.com/Peanora/YesterdayConvoy/issues/41)、[地图接入 #48](https://github.com/Peanora/YesterdayConvoy/issues/48) · [PR #47](https://github.com/Peanora/YesterdayConvoy/pull/47)
 
+最新Unity试玩已改为大地图、可开关覆盖式商店和扁平备战席，按Tab展开/收起，见[操作说明](../../SHOP_MAP_TRIAL.md)。本目录浏览器保留v12固定上下布局作为历史展示，不冒充最新Unity交互。
+
 商店移到屏幕上方，10格备战席放在底部。购买直接点人物图片，费用用背景色区分，锁定使用锁形图案，角色下面显示羁绊。升星新增屏幕中央大星标、角色名与“晋升成功”；连锁三星只播最终三星，不先播一次两星。
 
 ![当前浏览器界面](preview.png)

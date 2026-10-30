@@ -9,6 +9,24 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class ShopMapSceneTests
     {
+        [UnityTest]public IEnumerator ShopOverlayKeepsCameraAndInventoryStableAndBlocksCoveredMap()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
+            Assert.That(c.ShopVisible,Is.False);Assert.That(ManualBattleController.ShopBenchRect(0).height,Is.LessThan(60));
+            Assert.That(ManualBattleController.ShopBattlefieldRect.height,Is.GreaterThan(500));
+            var viewport=Camera.main.rect;float fov=Camera.main.fieldOfView;var position=Camera.main.transform.position;
+            var offers=c.Shop.Offers.ToArray();int gold=c.Shop.Gold,count=c.Shop.Bench.Count;
+            Vector2 covered=ManualBattleController.ShopOfferRect(0).center;Assert.That(c.ShopMapPointAvailable(covered),Is.True);
+            c.SetShopVisible(true);Assert.That(c.ShopVisible,Is.True);Assert.That(c.ShopMapPointAvailable(covered),Is.False);
+            c.ProcessShopPointer(EventType.MouseDown,covered);Assert.That(c.Battle.Units.Count,Is.Zero);
+            c.SetShopVisible(false);Assert.That(c.ShopMapPointAvailable(covered),Is.True);
+            Assert.That(Camera.main.rect,Is.EqualTo(viewport));Assert.That(Camera.main.fieldOfView,Is.EqualTo(fov));Assert.That(Camera.main.transform.position,Is.EqualTo(position));
+            Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));CollectionAssert.AreEqual(offers,c.Shop.Offers);
+            c.EnterShopTrial(1);Assert.That(c.PurchaseShopCard(0).NeedsConfirmation,Is.True);gold=c.Shop.Gold;c.SetShopVisible(false);
+            Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
+            c.LeaveShopTrial();yield return null;yield return null;
+        }
         [UnityTest]public IEnumerator NewlyPurchasedDogDeploysWithItsOwnCardAndProfile()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
@@ -30,7 +48,7 @@ namespace YesterdayConvoy.Tests
             {
                 c.EnterShopTrial(preset);yield return null;yield return null;
                 float framedFov=Camera.main.fieldOfView;
-                Assert.That(framedFov,Is.LessThan(originalFov/1.2f),"The shop map must be visibly larger than the old camera framing.");
+                Assert.That(Camera.main.rect.height,Is.GreaterThan(.7f),"The map must occupy most of the screen, independent of the overlay.");
                 foreach(var lane in original.lanes)foreach(var point in lane.points)
                 {
                     Vector2 screen=Camera.main.WorldToScreenPoint(point),gui=new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
@@ -51,10 +69,12 @@ namespace YesterdayConvoy.Tests
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
             c.PurchaseShopCard(0);Assert.That(c.Shop.Bench.Single().Star,Is.EqualTo(2));
+            c.SetShopVisible(true);
             Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
             Assert.That(ManualBattleController.ShopBattlefieldRect.Contains(point),Is.True,"The first red gate must remain inside the playable viewport.");
             var start=ManualBattleController.ShopBenchRect(0).center;
             c.ProcessShopPointer(EventType.MouseDown,start);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
+            Assert.That(c.ShopVisible,Is.False,"Dragging a bench piece should uncover the map without moving the camera.");
             Assert.That(c.Battle.Units.Count,Is.EqualTo(1),c.ShopFeedback+" / "+c.Feedback+" / phase="+c.Battle.Phase);Assert.That(c.Battle.Units[0].CardId,Is.EqualTo("CARD_M08"));
             int gold=c.Shop.Gold;Assert.That(c.PurchaseShopCard(0).Success,Is.False);Assert.That(c.SellShopCard(c.Shop.Bench[0].Instance).Success,Is.False);Assert.That(c.Shop.Gold,Is.EqualTo(gold));
             c.LeaveShopTrial();yield return null;yield return null;

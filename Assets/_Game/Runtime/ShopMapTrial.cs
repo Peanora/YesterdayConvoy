@@ -21,15 +21,23 @@ namespace YesterdayConvoy
         string shopPromotionId,shopMessage;
         Vector2 shopDragStart,shopPointer;
         float shopPromotionAt=-100,shopMessageUntil,shopRefreshAt=-100,shopUpgradeAt=-100;
-        bool shopMoving;
+        bool shopMoving,shopVisible;
         Texture2D shopCoin,shopStar,shopFade;
         public bool ShopTrialActive=>shop!=null;
         public ShopTrialModel Shop=>shop;
         public string ShopFeedback=>shopMessage;
-        public static Rect ShopBattlefieldRect=>new Rect(0,290,1280,284);
-        public static Rect ShopSellRect=>new Rect(16,672,1248,42);
+        public bool ShopVisible=>shopVisible;
+        public static Rect ShopBattlefieldRect=>new Rect(0,64,1280,538);
+        public static Rect ShopPanelRect=>new Rect(0,64,1280,199);
+        public static Rect ShopSellRect=>new Rect(16,688,1248,30);
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
-        public static Rect ShopBenchRect(int i)=>new Rect(16+i*125,608,116,80);
+        public static Rect ShopBenchRect(int i)=>new Rect(16+i*125,656,116,46);
+        public bool ShopMapPointAvailable(Vector2 point)=>ShopBattlefieldRect.Contains(point)&&(!shopVisible||!ShopPanelRect.Contains(point));
+        public void SetShopVisible(bool visible)
+        {
+            if(shop==null)return;
+            CancelShopDrag();shopVisible=visible;
+        }
 
         public void EnterShopTrial(int preset=0)
         {
@@ -48,7 +56,7 @@ namespace YesterdayConvoy
             string[] offerIds={"CARD_M08","CARD_M02",OriginalSlugArt.CardId,"CARD_M18","CARD_M05"};
             shop.Preset(pieces,offerIds.Where(shopDefinitions.ContainsKey),preset==2?7:5,preset==2?46:18);
             shopLineup.Clear();shopDeck.Clear();shopLineup.Add("CARD_M08");
-            shopDrag=-1;shopMoving=false;shopPending=-1;shopPromotionAt=-100;
+            shopDrag=-1;shopMoving=false;shopPending=-1;shopPromotionAt=-100;shopVisible=preset>0;
             if(shopMapCopy!=null)Destroy(shopMapCopy);
             shopMapCopy=Instantiate(Resources.Load<DefenderTrialDefinition>("MapTrials/city"));
             shopMapCopy.mapTitle="泵站回廊 · 商店试玩";
@@ -66,7 +74,7 @@ namespace YesterdayConvoy
             EnterDefense(shopMapCopy);
             shopMapCameraPosition=Camera.main.transform.position;
             SyncShopDeck();
-            ShopNotice(preset==0?"点击商店招募；备战棋子拖到红门部署，向下拖出售":"满席测试：购买第一张弩手，确认后合成并腾出空位");
+            ShopNotice(preset==0?"Tab 打开商店；备战棋子拖到红门部署，向下拖出售":"满席测试：购买第一张弩手，确认后合成并腾出空位");
         }
         void SyncShopDeck(bool autoFill=true)
         {
@@ -78,7 +86,7 @@ namespace YesterdayConvoy
             var effective=shopDeck.Count>0?shopDeck:new List<ManualBattleDefinition>{shopDefinitions["CARD_M08"]};
             defenderTrial.battle=effective[0];defenderTrial.rosterCards=effective.Skip(1).ToArray();definition=effective[0];
             ClearViews();Battle=CreateBattle();selectedRosterIndex=0;Selected=false;CancelInteraction();EnableCombatView();
-            Camera.main.rect=new Rect(0,.20f,1,.3972f);
+            Camera.main.rect=new Rect(0,118/720f,1,538/720f);
             FrameShopMap();
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
@@ -135,14 +143,14 @@ namespace YesterdayConvoy
             if(type==EventType.MouseDown&&button==0)
             {
                 for(int i=0;i<shop.Bench.Count;i++)if(ShopBenchRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}
-                if(ShopBattlefieldRect.Contains(point))ProcessPointerDown(ScreenPosition(point));
+                if(ShopMapPointAvailable(point))ProcessPointerDown(ScreenPosition(point));
             }
-            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8;return true;}
+            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8;if(shopMoving)shopVisible=false;return true;}
             if(type!=EventType.MouseUp||button!=0||shopDrag<0)return false;
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
-            if(moved&&ShopSellRect.Contains(point)&&point.y>shopDragStart.y+22){SellShopCard(instance);return true;}
-            if(moved&&ShopBattlefieldRect.Contains(point))
+            if(moved&&ShopSellRect.Contains(point)&&point.y>shopDragStart.y+12){SellShopCard(instance);return true;}
+            if(moved&&ShopMapPointAvailable(point))
             {
                 int index=shopLineup.IndexOf(piece.Id);
                 if(index<0){ShopNotice("编队位已满：点击备战棋子调整编队，或先升级");return true;}
@@ -171,18 +179,30 @@ namespace YesterdayConvoy
             var shopButton=new GUIStyle(buttonStyle);
             foreach(var state in new[]{shopButton.normal,shopButton.hover,shopButton.active,shopButton.focused})state.textColor=new Color(.88f,.95f,.98f);
             bool prep=Battle.Phase==BattlePhase.Ready&&shopPending<0;
-            Fill(new Rect(0,0,1280,263),new Color(.055f,.09f,.11f,.99f));ShopBorder(new Rect(8,8,1264,248),new Color(.32f,.41f,.45f),1);
+            DrawShopDefenderBars();
+            foreach(var unit in Battle.Units)
+            {
+                if(!unit.Active)continue;Vector2 health=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
+                Fill(new Rect(health.x-26,health.y,52,5),new Color(.03f,.05f,.06f));Fill(new Rect(health.x-25,health.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
+            }
+            Fill(new Rect(0,0,1280,64),new Color(.055f,.09f,.11f,.97f));
             Fill(new Rect(22,65,1236,1),new Color(.22f,.31f,.36f));
             GUI.DrawTexture(new Rect(25,25,22,22),shopCoin,ScaleMode.ScaleToFit,true);
             GUI.Label(new Rect(54,17,58,38),"源石",label);
             GUI.Label(new Rect(105,12,170,44),shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
-            GUI.Label(new Rect(820,17,55,38),"等级",label);GUI.Label(new Rect(872,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
-            Fill(new Rect(921,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(921,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
-            GUI.Label(new Rect(1048,18,65,34),shop.Level==10?"MAX":$"{shop.XP}/{ShopTrialModel.Experience[shop.Level]}",new GUIStyle(center){fontSize=12,normal={textColor=new Color(.72f,.85f,.91f)}});
+            GUI.Label(new Rect(650,17,55,38),"等级",label);GUI.Label(new Rect(702,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
+            Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
+            GUI.Label(new Rect(878,18,65,34),shop.Level==10?"MAX":$"{shop.XP}/{ShopTrialModel.Experience[shop.Level]}",new GUIStyle(center){fontSize=12,normal={textColor=new Color(.72f,.85f,.91f)}});
             GUI.enabled=prep;
             GUI.backgroundColor=new Color(.07f,.18f,.22f);
-            if(GUI.Button(new Rect(1125,17,132,37),"升级     4",shopButton)){var r=shop.Upgrade();if(r.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(r.Message);}
-            ShopBorder(new Rect(1125,17,132,37),new Color(.33f,.66f,.73f),1);GUI.DrawTexture(new Rect(1204,26,18,18),shopCoin,ScaleMode.ScaleToFit,true);
+            if(GUI.Button(new Rect(958,17,132,37),"升级     4",shopButton)){var r=shop.Upgrade();if(r.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(r.Message);}
+            ShopBorder(new Rect(958,17,132,37),new Color(.33f,.66f,.73f),1);GUI.DrawTexture(new Rect(1037,26,18,18),shopCoin,ScaleMode.ScaleToFit,true);
+            GUI.enabled=shopPending<0;
+            if(GUI.Button(new Rect(1125,17,132,37),new GUIContent(shopVisible?"收起商店":"打开商店","Tab 切换商店"),shopButton))SetShopVisible(!shopVisible);
+            if(shopVisible)
+            {
+            Fill(ShopPanelRect,new Color(.055f,.09f,.11f,.96f));ShopBorder(new Rect(8,65,1264,191),new Color(.32f,.41f,.45f),1);
+            GUI.enabled=prep;
             var refreshRect=new Rect(1125,78,132,101);GUI.backgroundColor=new Color(.72f,.36f,.07f);
             if(GUI.Button(refreshRect,GUIContent.none,shopButton)){var r=shop.Refresh();if(r.Success)shopRefreshAt=Time.unscaledTime;ShopNotice(r.Message);}
             ShopBorder(refreshRect,new Color(.91f,.65f,.32f),1);DrawShopRefreshIcon(new Vector2(1157,124),new Color(1,.90f,.75f));
@@ -206,17 +226,20 @@ namespace YesterdayConvoy
                 GUI.enabled=prep&&shop.Gold>=role.Cost&&shopPending<0;
                 if(GUI.Button(r,GUIContent.none,GUIStyle.none))PurchaseShopCard(i);GUI.enabled=shopPending<0;
             }
-            Fill(new Rect(0,263,1280,27),new Color(.03f,.06f,.08f,.94f));
-            GUI.Label(new Rect(18,263,550,27),$"泵站回廊 / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
-            if(GUI.Button(new Rect(619,264,115,25),Battle.IsPaused?"继续战斗":"暂停战斗",shopButton)&&Battle.Phase==BattlePhase.Running)Battle.SetPaused(!Battle.IsPaused);
-            if(GUI.Button(new Rect(742,264,115,25),"重新测试",shopButton))EnterShopTrial();
+            }
+            GUI.enabled=shopPending<0;
+            GUI.backgroundColor=new Color(.16f,.27f,.32f);
+            Fill(new Rect(0,602,1280,28),new Color(.03f,.06f,.08f,.94f));
+            GUI.Label(new Rect(18,602,550,27),$"泵站回廊 / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
+            if(GUI.Button(new Rect(619,603,115,25),Battle.IsPaused?"继续战斗":"暂停战斗",shopButton)&&Battle.Phase==BattlePhase.Running)Battle.SetPaused(!Battle.IsPaused);
+            if(GUI.Button(new Rect(742,603,115,25),"重新测试",shopButton))EnterShopTrial();
             GUI.enabled=prep;
-            if(GUI.Button(new Rect(865,264,115,25),"满席两星",shopButton))EnterShopTrial(1);
-            if(GUI.Button(new Rect(988,264,115,25),"满席三星",shopButton))EnterShopTrial(2);GUI.enabled=shopPending<0;
-            if(GUI.Button(new Rect(1111,264,146,25),"退出测试",shopButton)){LeaveShopTrial();GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;return;}GUI.enabled=true;
-            Fill(new Rect(0,574,1280,146),new Color(.04f,.07f,.09f,.98f));
-            ShopBorder(new Rect(8,574,1264,138),new Color(.25f,.35f,.39f),1);
-            GUI.Label(new Rect(18,578,1240,26),$"备战区   {shop.Bench.Count} / 10      编队 {shopLineup.Count}/{shop.Level}       点击切换编队 · 拖到红门部署 · 向下出售",new GUIStyle(smallStyle){fontSize=12,normal={textColor=new Color(.65f,.77f,.82f)}});
+            if(GUI.Button(new Rect(865,603,115,25),"满席两星",shopButton))EnterShopTrial(1);
+            if(GUI.Button(new Rect(988,603,115,25),"满席三星",shopButton))EnterShopTrial(2);GUI.enabled=shopPending<0;
+            if(GUI.Button(new Rect(1111,603,146,25),"退出测试",shopButton)){LeaveShopTrial();GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;return;}GUI.enabled=true;
+            Fill(new Rect(0,632,1280,88),new Color(.04f,.07f,.09f,.98f));
+            ShopBorder(new Rect(8,632,1264,80),new Color(.25f,.35f,.39f),1);
+            GUI.Label(new Rect(18,633,1240,21),$"备战区   {shop.Bench.Count} / 10      编队 {shopLineup.Count}/{shop.Level}       点击切换编队 · 拖到红门部署 · 向下出售",new GUIStyle(smallStyle){fontSize=12,normal={textColor=new Color(.65f,.77f,.82f)}});
             for(int i=0;i<10;i++)
             {
                 var r=ShopBenchRect(i);Fill(r,new Color(.07f,.12f,.15f));ShopBorder(r,new Color(.23f,.34f,.40f),1);
@@ -224,22 +247,16 @@ namespace YesterdayConvoy
                 var p=shop.Bench[i];if(p.Star>1)Fill(new Rect(r.x+1,r.y+1,r.width-2,r.height-2),p.Star==3?new Color(.28f,.24f,.15f):new Color(.17f,.23f,.28f));
                 bool active=shopLineup.Contains(p.Id)&&shop.Bench.Where(b=>b.Id==p.Id).OrderByDescending(b=>b.Star).ThenBy(b=>b.Instance).First().Instance==p.Instance;
                 if(active||p.Star>1)ShopBorder(r,active?new Color(.52f,.90f,.93f):p.Star==3?new Color(.89f,.74f,.38f):new Color(.66f,.72f,.81f),1);
-                DrawTestPortrait(new Rect(r.x+6,r.y+4,104,59),OriginalTalulahArt.CardPortrait(shopDefinitions[p.Id].Card));
-                DrawShopStars(new Rect(r.x+4,r.y+3,36,12),p.Star,p.Star==3?new Color(1,.89f,.61f):new Color(.75f,.89f,1));
-                GUI.Label(new Rect(r.x+2,r.y+60,112,19),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.67f,.77f,.82f)}});
+                DrawTestPortrait(new Rect(r.x+2,r.y+1,46,44),OriginalTalulahArt.CardPortrait(shopDefinitions[p.Id].Card));
+                DrawShopStars(new Rect(r.x+53,r.y+4,36,11),p.Star,p.Star==3?new Color(1,.89f,.61f):new Color(.75f,.89f,1));
+                GUI.Label(new Rect(r.x+49,r.y+19,65,24),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.67f,.77f,.82f)}});
             }
             if(shopDrag>=0&&shopMoving)
             {
-                var q=shop.Quote(shopDrag);bool hit=ShopSellRect.Contains(point)&&point.y>shopDragStart.y+22;
+                var q=shop.Quote(shopDrag);bool hit=ShopSellRect.Contains(point)&&point.y>shopDragStart.y+12;
                 Fill(ShopSellRect,hit?new Color(.42f,.29f,.12f,.98f):new Color(.12f,.17f,.20f,.98f));ShopBorder(ShopSellRect,new Color(.85f,.69f,.36f),2);
                 GUI.Label(ShopSellRect,$"{(hit?"松开出售":"向下拖动出售")}   {q.Message} · {q.FinalStar}星   +{q.Value} 源石",center);
                 if(q.Success)DrawTestPortrait(new Rect(point.x-40,point.y-55,80,80),OriginalTalulahArt.CardPortrait(shopDefinitions[q.Id].Card));
-            }
-            DrawShopDefenderBars();
-            foreach(var unit in Battle.Units)
-            {
-                if(!unit.Active)continue;Vector2 health=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
-                Fill(new Rect(health.x-26,health.y,52,5),new Color(.03f,.05f,.06f));Fill(new Rect(health.x-25,health.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
             }
             if(Battle.Phase==BattlePhase.Won||Battle.Phase==BattlePhase.Lost)GUI.Label(new Rect(450,450,380,45),Battle.Phase==BattlePhase.Won?"突破成功 · 可重新测试":"作战结束 · 可重新测试",title);
             DrawShopPromotion();

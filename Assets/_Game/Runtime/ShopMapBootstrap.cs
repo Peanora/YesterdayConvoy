@@ -14,7 +14,12 @@ namespace YesterdayConvoy
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-shopMapSmokeTest")>=0)
                 yield return controller.VerifyShopMap();
         }
-        void Update(){if(controller!=null&&Input.GetKeyDown(KeyCode.Escape))controller.CancelShopDrag();}
+        void Update()
+        {
+            if(controller==null||!controller.ShopTrialActive)return;
+            if(Input.GetKeyDown(KeyCode.Tab))controller.SetShopVisible(!controller.ShopVisible);
+            if(Input.GetKeyDown(KeyCode.Escape)){controller.CancelShopDrag();controller.SetShopVisible(false);}
+        }
         void OnApplicationFocus(bool focused){if(!focused&&controller!=null)controller.CancelShopDrag();}
     }
 }

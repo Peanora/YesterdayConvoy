@@ -18,7 +18,7 @@ namespace YesterdayConvoy
 
         private static Vector2 GUIPosition(Vector2 screen) => new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
         public static Vector2 ScreenPosition(Vector2 gui) => new Vector2(gui.x*Screen.width/1280,(720-gui.y)*Screen.height/720);
-        private bool IsBattlefield(Vector2 screen) => (ShopTrialActive?ShopBattlefieldRect:new Rect(0,66,1280,486)).Contains(GUIPosition(screen));
+        private bool IsBattlefield(Vector2 screen) => ShopTrialActive?ShopMapPointAvailable(GUIPosition(screen)):new Rect(0,66,1280,486).Contains(GUIPosition(screen));
         private bool PointerGround(Vector2 screen,out Vector3 point)
         {
             Ray ray=Camera.main.ScreenPointToRay(screen);
