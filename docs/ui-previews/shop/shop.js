@@ -51,11 +51,42 @@
  }
  function spend(value,positive=false){const n=el('span','deduction');n.textContent=(positive?'+':'−')+value;$('money-fx').appendChild(n);animate(n,[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-25px)'}],{duration:650});}
  async function fly(image,from,to,duration=400,delay=0){const ghost=el('img','flyer');ghost.src=image;Object.assign(ghost.style,{left:from.x+'px',top:from.y+'px',width:from.width+'px',height:from.height+'px'});$('fx').appendChild(ghost);return animate(ghost,[{opacity:.9,transform:'translate(0,0) scale(.9)'},{opacity:1,offset:.65},{opacity:0,transform:`translate(${to.cx-from.cx}px,${to.cy-from.cy}px) scale(.3)`}],{duration,delay,easing:'cubic-bezier(.4,0,.2,1)'});}
- async function burst(target,star,name){
+ async function converge(image,from,to,star,index){
+  const gold=star===3,dx=to.cx-from.cx,dy=to.cy-from.cy;
+  const ghost=el('img','flyer merge-material'+(gold?' gold':''));ghost.src=image;
+  Object.assign(ghost.style,{left:from.x+'px',top:from.y+'px',width:from.width+'px',height:from.height+'px'});
+  const ray=el('i','merge-ray'+(gold?' gold':''));
+  Object.assign(ray.style,{left:from.cx+'px',top:from.cy+'px',width:Math.hypot(dx,dy)+'px',rotate:Math.atan2(dy,dx)+'rad'});
+  $('fx').append(ray,ghost);
+  animate(ray,[{opacity:0,transform:'scaleX(0)'},{opacity:.8,transform:'scaleX(.85)',offset:.6},{opacity:0,transform:'scaleX(1)'}],{duration:540,delay:index*25});
+  await animate(ghost,[
+   {opacity:.9,transform:'translate(0,0) scale(.85)',filter:'brightness(1)'},
+   {opacity:1,transform:`translate(${dx*.48-dy*.09}px,${dy*.48+dx*.09}px) scale(.7)`,filter:'brightness(1.45)',offset:.5},
+   {opacity:0,transform:`translate(${dx}px,${dy}px) scale(.12)`,filter:'brightness(2)'}
+  ],{duration:540,delay:index*25,easing:'cubic-bezier(.25,.1,.3,1)'});
+ }
+ async function burst(target,star){
   document.querySelectorAll('.star-banner').forEach(e=>e.remove());
-  const gold=star===3,ring=el('div','merge-ring'+(gold?' gold':''));Object.assign(ring.style,{left:target.cx-47+'px',top:target.cy-47+'px'});$('fx').appendChild(ring);animate(ring,[{opacity:0,transform:'scale(.3)'},{opacity:1,offset:.3},{opacity:0,transform:'scale(1.8)'}],{duration:gold?1000:700});
-  for(let i=0;i<(gold?24:14);i++){const p=el('i','particle'+(gold?' gold':'')),angle=i*Math.PI*2/(gold?24:14),radius=gold?95:65;Object.assign(p.style,{left:target.cx+'px',top:target.cy+'px'});$('fx').appendChild(p);animate(p,[{opacity:1,transform:'translate(0,0) rotate(45deg)'},{opacity:0,transform:`translate(${Math.cos(angle)*radius}px,${Math.sin(angle)*radius}px) rotate(180deg)`}],{duration:800,delay:i*5,easing:'cubic-bezier(.1,.7,.3,1)'});}
-  const banner=el('div','star-banner'+(gold?' gold':''));banner.innerHTML='<span class="banner-stars">'+stars(star)+'</span>';Object.assign(banner.style,{left:Math.max(90,target.cx)+'px',top:target.y+target.height-30+'px'});$('fx').appendChild(banner);animate(banner,[{opacity:0,marginTop:'12px'},{opacity:1,marginTop:'0',offset:.18},{opacity:1,offset:.75},{opacity:0,marginTop:'-14px'}],{duration:gold?1750:1300});
+  const gold=star===3,group=el('div','merge-burst'+(gold?' gold':''));group.dataset.star=star;$('fx').appendChild(group);
+  const halo=el('div','merge-halo');Object.assign(halo.style,{left:target.cx-90+'px',top:target.cy-75+'px'});group.appendChild(halo);
+  animate(halo,[{opacity:0,transform:'scale(.3)'},{opacity:1,transform:'scale(1)',offset:.25},{opacity:0,transform:'scale(1.25)'}],{duration:1250});
+  const sigil=el('div','merge-sigil');Object.assign(sigil.style,{left:target.cx-35+'px',top:target.cy-35+'px'});group.appendChild(sigil);
+  animate(sigil,[{opacity:0,transform:'rotate(0deg) scale(.45)'},{opacity:.9,transform:'rotate(45deg) scale(1)',offset:.25},{opacity:0,transform:'rotate(85deg) scale(1.35)'}],{duration:1100});
+  for(let i=0;i<2;i++){
+   const ring=el('div','merge-ring'+(gold?' gold':''));Object.assign(ring.style,{left:target.cx-47+'px',top:target.cy-47+'px'});group.appendChild(ring);
+   animate(ring,[{opacity:0,transform:'scale(.3)'},{opacity:i?.5:1,offset:.23},{opacity:0,transform:`scale(${i?2.1:1.6})`}],{duration:gold?1100:850,delay:i*70});
+  }
+  const count=gold?26:16;
+  for(let i=0;i<count;i++){
+   const p=el('i','particle'+(gold?' gold':'')),angle=i*Math.PI*2/count,radius=45+(i%4)*17;
+   Object.assign(p.style,{left:target.cx+'px',top:target.cy+'px',width:(i%3?3:5)+'px',height:(i%3?3:5)+'px'});group.appendChild(p);
+   animate(p,[{opacity:0,transform:'translate(0,0) rotate(45deg)'},{opacity:1,offset:.13},{opacity:0,transform:`translate(${Math.cos(angle)*radius}px,${Math.sin(angle)*radius*.65-15}px) rotate(135deg)`}],{duration:800+(i%3)*100,delay:i*4,easing:'cubic-bezier(.1,.65,.25,1)'});
+  }
+  const banner=el('div','star-banner'+(gold?' gold':''));banner.innerHTML='<span class="banner-stars">'+stars(star)+'</span>';
+  Object.assign(banner.style,{left:Math.max(65,target.cx)+'px',top:target.y+target.height-30+'px'});group.appendChild(banner);
+  animate(banner,[{opacity:0,marginTop:'9px',scale:'.7'},{opacity:1,marginTop:'0',scale:'1.12',offset:.18},{opacity:1,scale:'1',offset:.55},{opacity:0,marginTop:'-10px',scale:'1'}],{duration:gold?1750:1350});
+  setTimeout(()=>group.remove(),1900);
+  await sleep(gold?850:600);
  }
  async function purchase(index,confirmed=false){
   if(busy)return;const source=document.querySelector('.offer[data-slot="'+index+'"] .portrait'),from=source?box(source):null,old=captureBench(),result=model.purchase(index,confirmed);
@@ -63,11 +94,16 @@
   if(!result.ok){toast(result.reason,true);return;}
   busy=true;selected=result.instance;await render();spend(result.cost);
   const node=document.querySelector('.bench-slot[data-instance="'+result.instance+'"]'),target=box(node),image=await portrait(byId.get(result.id));
-  if(from)await fly(image,from,target);
-  for(const merge of result.merges){
-   await Promise.all(merge.materials.filter(n=>old.has(n)&&n!==merge.target).map((n,i)=>fly(image,old.get(n),target,330,i*40)));
-   node.classList.remove('merged');void node.offsetWidth;node.classList.add('merged');await burst(target,merge.star,byId.get(result.id).name);await sleep(merge.star===3?650:430);
-  }
+  // A chained model transaction is presented as one promotion to its final star.
+  const merge=result.merges.at(-1);
+  if(merge){
+   const sources=[...new Set(result.merges.flatMap(m=>m.materials))].filter(n=>old.has(n)&&n!==merge.target).map(n=>old.get(n));
+   if(from)sources.unshift(from);
+   node.classList.add('merging-in');
+   await Promise.all(sources.map((source,i)=>converge(image,source,target,merge.star,i)));
+   node.classList.remove('merging-in');node.classList.add('merged');
+   await burst(target,merge.star);
+  }else if(from)await fly(image,from,target);
   if(result.merges.length)toast(byId.get(result.id).name+'晋升'+(result.merges.at(-1).star===3?'三星':'两星'));
   busy=false;await render();
  }
