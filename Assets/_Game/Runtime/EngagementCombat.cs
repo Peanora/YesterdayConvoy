@@ -61,12 +61,61 @@ namespace YesterdayConvoy
     {
         public string EntityId { get; }
         public DefenderSettings Settings { get; }
-        public float MaxHealth => Settings.Health;
+        public float MaxHealth {get;internal set;}
         public double LastActionTime { get; internal set; } = double.NegativeInfinity;
         public bool LastActionHealing { get; internal set; }
-        public Vector3 Position { get; }
+        public float LastActionRate {get;internal set;}=1;
+        public float SkillSP {get;internal set;}
+        public int SkillCasts {get;internal set;}
+        public double SkillStartedAt {get;internal set;}=double.NegativeInfinity;
+        public double SkillActiveUntil {get;internal set;}=double.NegativeInfinity;
+        public float SkillHealthRestored {get;internal set;}
+        public int CriticalHits {get;internal set;}
+        public int ExtraHeals {get;internal set;}
+        public bool LastAttackSkill {get;internal set;}
+        public double SkillActionUntil {get;internal set;}=double.NegativeInfinity;
+        public bool AdvancedSkillWasActive {get;internal set;}
+        public double ChargeStartedAt {get;internal set;}
+        public double NextAuraAt {get;internal set;}
+        public double SkillEndedAt {get;internal set;}=double.NegativeInfinity;
+        public float LiberatorBonus {get;internal set;}
+        public float DroneRamp {get;internal set;}=.2f;
+        public string DroneTargetId {get;internal set;}
+        public int DroneHits {get;internal set;}
+        public int FearApplications {get;internal set;}
+        public int AuraHeals {get;internal set;}
+        public int BurnApplications {get;internal set;}
+        public int ErasedProjectiles {get;internal set;}
+        public int LiberatorKills {get;internal set;}
+        public Vector3 WallNormal {get;internal set;}=Vector3.right;
+        private uint randomState=2166136261;
+        internal float Roll(){randomState^=randomState<<13;randomState^=randomState>>17;randomState^=randomState<<5;return(randomState&0xffffff)/16777216f;}
+        public Vector3 Position { get; internal set; }
         public float Health { get; internal set; }
-        public bool Alive => Health > 0;
+        public int ReserveCost {get;internal set;}
+        public int SixthHits {get;internal set;}
+        public int ChessStock {get;internal set;}
+        public int ChessTriggers {get;internal set;}
+        public int SnowHits {get;internal set;}
+        public int Lures {get;internal set;}
+        public bool CostsExchanged {get;internal set;}
+        public string PartnerId {get;internal set;}
+        public double NextSixthAt {get;internal set;}
+        public double NextSnowAt {get;internal set;}=10;
+        public float BudgetReceived {get;internal set;}
+        public bool Reserve {get;internal set;}
+        public bool Departed {get;internal set;}
+        public bool DebtLife {get;internal set;}
+        public float Debt {get;internal set;}
+        public int Ammo {get;internal set;}
+        public int Transfers {get;internal set;}
+        public int Reinforcements {get;internal set;}
+        public int ProtectedHits {get;internal set;}
+        public int TrueHits {get;internal set;}
+        public double LastReceivedDamage {get;internal set;}=double.NegativeInfinity;
+        public double ProtectionUntil {get;internal set;}=double.NegativeInfinity;
+        public bool FifthActive {get;internal set;}
+        public bool Alive => !Reserve&&!Departed&&(Health>0||DebtLife);
         public string TargetId { get; internal set; }
         public bool HighGround {get;internal set;}
         public int BlockedCount { get; internal set; }
@@ -84,7 +133,7 @@ namespace YesterdayConvoy
         public double FrostSlowUntil { get; internal set; } = double.NegativeInfinity;
         internal double NextAttackTime;
         internal DefenderState(DefenderSettings settings)
-        { Settings=settings; EntityId=settings.Id; Position=settings.Position; Health=settings.Health; }
+        { ChessStock=settings.Skill.Kind==DefenderSkillKind.WangGambit?7:0;Settings=settings;ReserveCost=settings.ReserveCost;Reserve=settings.Reserve; EntityId=settings.Id; Position=settings.Position; Health=MaxHealth=settings.Health;SkillSP=settings.Skill.InitialSP;foreach(char c in settings.Id)randomState=(randomState^c)*16777619; }
     }
 
     public sealed class CombatShot
@@ -94,6 +143,9 @@ namespace YesterdayConvoy
         public bool FromDefender { get; }
         public bool Empowered { get; }
         public bool FireRain { get; }
+        public float Vulnerability {get;internal set;}
+        public float IgnoreResistance {get;internal set;}
+        public bool TrueDamage {get;internal set;}
         public bool Healing { get; }
         public CombatDamageType DamageType { get; }
         public float SplashRadius { get; }
@@ -105,6 +157,10 @@ namespace YesterdayConvoy
         public float ColdDuration { get; }
         public float BurnDamage {get;internal set;}
         public float NeuralDamage {get;internal set;}
+        public float HinderDuration {get;internal set;}
+        public bool WallChecked {get;internal set;}
+        public bool Erased {get;internal set;}
+        public bool Drone {get;internal set;}
         public bool Resolved { get; internal set; }
         public bool Applied { get; internal set; }
         public bool FrozenBonusApplied { get; internal set; }
@@ -135,6 +191,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
+            defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); healingCasts.Clear(); skillRequests.Clear(); SkillCasts = 0;
             defenders.Clear();
@@ -150,27 +207,29 @@ namespace YesterdayConvoy
         public DeployedUnitState FindUnit(string id)
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
-        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && CombatSettings.HasSkill && unit!=null && unit.Active &&
-            (CombatSettings.FireRain ? Clock<unit.FireRainStartedAt+CombatSettings.SkillInterval :
-            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+CombatSettings.SkillInterval);
+        public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
+            (UnitCombat(unit).FireRain ? Clock<unit.FireRainStartedAt+UnitCombat(unit).SkillInterval :
+            unit.LastAttackEmpowered && Clock<unit.LastAttackTime+UnitCombat(unit).SkillInterval);
 
         // Readiness stays visible during a full pause; authorization to cast is checked separately.
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
-            return EngagementEnabled && CombatSettings.HasSkill && Phase==BattlePhase.Running && unit!=null && unit.Active &&
-                unit.SkillAmmo==0 && (!CombatSettings.FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=CombatSettings.RequiredSP;
+            return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
+                unit.SkillAmmo==0 && (!UnitCombat(unit).FireRain || !IsSkillActionPlaying(unit)) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
         }
 
         public SkillFailure CheckSkill(string entityId)
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;
             if (!CombatSettings.HasSkill) return SkillFailure.NoSkill;
-            if (IsPaused) return SkillFailure.Paused;
             var unit = FindUnit(entityId);
+            if(unit!=null && !UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
+            if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active) return SkillFailure.MissingEntity;
-            if (unit.SkillAmmo > 0 || CombatSettings.FireRain && IsSkillActionPlaying(unit)) return SkillFailure.AlreadyActive;
-            return unit.SkillSP + 0.00001f >= CombatSettings.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
+            var c=UnitCombat(unit);
+            if (unit.SkillAmmo > 0 || c.FireRain && IsSkillActionPlaying(unit)) return SkillFailure.AlreadyActive;
+            return unit.SkillSP + 0.00001f >= c.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
         }
 
         public SkillFailure TryActivateSkill(int runId, long requestId, string entityId)
@@ -181,10 +240,11 @@ namespace YesterdayConvoy
             SkillFailure failure = CheckSkill(entityId);
             if (failure != SkillFailure.None) return failure;
             var unit = FindUnit(entityId);
-            unit.SkillSP = 0; unit.SkillAmmo = CombatSettings.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
+            var c=UnitCombat(unit);
+            unit.SkillSP = 0; unit.SkillAmmo = c.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
             unit.NextAttackTime = Clock;
-            if(CombatSettings.FireRain)
-            { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+CombatSettings.SkillInterval; }
+            if(c.FireRain)
+            { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+c.SkillInterval; }
             skillRequests.Add(requestId, entityId);
             return SkillFailure.None;
         }
@@ -195,6 +255,8 @@ namespace YesterdayConvoy
         private void StepEngagement(float step)
         {
             EngagementSettings guardSettings=CombatSettings;
+            StepAdvancedDefenders(step);
+            StepDefenderWalls();
             StepFacilities(step);
             ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
             ResolveDeathEffects();ResolveShackles();
@@ -207,7 +269,7 @@ namespace YesterdayConvoy
                 {
                     var healer=FindDefender(shot.SourceId); var recipient=FindDefender(shot.TargetId);
                     if(healer!=null && healer.Alive && recipient!=null && recipient.Alive)
-                    { recipient.Health=Mathf.Min(recipient.MaxHealth,recipient.Health+shot.Attack); shot.Applied=true; }
+                    { HealDefender(healer,recipient,shot.Attack); shot.Applied=true; }
                     continue;
                 }
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
@@ -217,22 +279,31 @@ namespace YesterdayConvoy
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
-                    TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType);
+                    bool wasAlive=unit.Active&&!unit.IsReviving;
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance);
+                    bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
+                    if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
+                    if(damaged)OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);
+                    if(killedByHit)OnLiberatorKill(defender);
+                    if(damaged&&unit.Active&&shot.HinderDuration>0)unit.HinderedUntil=Math.Max(unit.HinderedUntil,Clock+shot.HinderDuration);
                     if(shot.SplashRadius>0)
                         foreach(var other in units)
                             if(other!=unit && CanDefenderTarget(other) && GroundDistance(other.Motion.Position,unit.Motion.Position)<=shot.SplashRadius)
-                                TryDamageUnit(other.EntityId,shot.Attack,shot.DamageType);
+                            {
+                                if(TryDamageUnit(other.EntityId,shot.Attack,shot.DamageType))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
+                            }
                 }
                 else
                 {
                     // Freeze can begin or expire while the projectile is in flight.
-                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && guardSettings.Effects.FrozenAttackMultiplier>1;
-                    float attack=shot.Attack*(shot.FrozenBonusApplied ? guardSettings.Effects.FrozenAttackMultiplier : 1);
+                    var source=UnitCombat(unit);
+                    shot.FrozenBonusApplied=defender.FrozenUntil>Clock && source.Effects.FrozenAttackMultiplier>1;
+                    float attack=shot.Attack*(shot.FrozenBonusApplied ? source.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
                     DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
-                    HealUnit(unit,shot.DamageDealt*guardSettings.Effects.LifeSteal);
-                    if(defender.Alive) defender.ArmorReduction+=guardSettings.Effects.ArmorShred;
+                    HealUnit(unit,shot.DamageDealt*source.Effects.LifeSteal);
+                    if(defender.Alive) defender.ArmorReduction+=source.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                     if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
@@ -259,8 +330,9 @@ namespace YesterdayConvoy
                 bool casting=c.FireRain && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
+                if(StepUnitLure(unit,step)||StepUnitFear(unit,step))continue;
                 foreach(var d in defenders)
-                    if(!d.HighGround && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
+                    if(!d.HighGround && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
@@ -337,51 +409,48 @@ namespace YesterdayConvoy
                 }
             }
             if(Defense==0) return;
+            StepDefenderSkills(step);
             foreach(var d in defenders)
             {
-                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)) continue;
+                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
                 var spec=d.Settings;
-                if(spec.Role!=DefenderRole.Fighter)
+                if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&DefenderSkillActive(d)){ScheduleFifthAttack(d,null,guardSettings.ProjectileTime);continue;}
+                if(CanDefenderHeal(d))
                 {
                     DefenderState wounded=null;
                     foreach(var ally in defenders)
-                        if(ally.Alive && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=spec.HealRange &&
+                        if(ally.Alive && !ally.DebtLife && ally.Health<ally.MaxHealth-.001f && GroundDistance(d.Position,ally.Position)<=DefenderHealRange(d) &&
                             (wounded==null || ally.Health/ally.MaxHealth<wounded.Health/wounded.MaxHealth)) wounded=ally;
                     if(wounded!=null)
                     {
                         d.TargetId=wounded.EntityId;
                         if(Clock+1e-6>=d.NextAttackTime)
                         {
-                            d.LastActionTime=Clock; d.LastActionHealing=true;
-                            d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
-                            combatShots.Add(new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
-                                Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,healing:true));
+                            ScheduleDefenderHealing(d,wounded,guardSettings.ProjectileTime);
                         }
                         continue;
                     }
-                    if(spec.Role==DefenderRole.Medic) { d.TargetId=null; continue; }
+                    if(spec.Role==DefenderRole.Medic||SpotHealing(d)) { d.TargetId=null; continue; }
                 }
+                if(StepAdvancedDefenderAction(d))continue;
+                if(!DefenderCanAttack(d)){d.TargetId=null;continue;}
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
-                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>spec.Range ||
-                    blocks && target.BlockerId!=d.EntityId || HasHigherTauntTarget(d,target,blocks))
+                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>DefenderRange(d) ||
+                    blocks && target.BlockerId!=d.EntityId || HasHigherTauntTarget(d,target,blocks)||
+                    spec.Skill.Kind==DefenderSkillKind.StewardStrike&&Clock+0.000001>=d.NextAttackTime)
                 {
                     target=null;
                     foreach(var unit in units)
                     {
-                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>spec.Range ||
+                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>DefenderRange(d) ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
-                        if(target==null || UnitTaunt(unit)>UnitTaunt(target) ||
-                            UnitTaunt(unit)==UnitTaunt(target) && unit.Motion.DistanceTravelled>target.Motion.DistanceTravelled) target=unit;
+                        if(PreferDefenderTarget(d,unit,target))target=unit;
                     }
                     d.TargetId=target?.EntityId;
                 }
                 if(target==null || Clock+0.000001<d.NextAttackTime) continue;
-                d.LastActionTime=Clock; d.LastActionHealing=false;
-                ShotsFired++; LastShotTime=Clock; LastShotEntityId=target.EntityId; LastShotPosition=target.Motion.Position;
-                d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
-                combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,false,d.Position,target.Motion.Position,
-                    Clock+spec.Windup,guardSettings.ProjectileTime,spec.Attack,damageType:spec.DamageType,splashRadius:spec.SplashRadius));
+                ScheduleDefenderAttack(d,target,guardSettings.ProjectileTime);
             }
         }
 
@@ -389,7 +458,7 @@ namespace YesterdayConvoy
         bool HasHigherTauntTarget(DefenderState defender,DeployedUnitState current,bool blocks)
         {
             foreach(var unit in units)
-                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=defender.Settings.Range &&
+                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=DefenderRange(defender) &&
                     (!blocks || unit.BlockerId==defender.EntityId) && UnitTaunt(unit)>UnitTaunt(current)) return true;
             return false;
         }

@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "task": "D30",
+  "ppu": 131.2,
+  "referenceSpeed": 0.75,
+  "height": 1.25,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5532871659596761,
+      "pivotY": 0.07291666666666667,
+      "sourceBounds": [
+        -231.08251953125,
+        -5.563088417053223,
+        177.23443603515625,
+        434.8832092285156
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 100,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 20,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5532871659596761,
+      "pivotY": 0.07291666666666667,
+      "sourceBounds": [
+        -231.08251953125,
+        -5.563088417053223,
+        177.23443603515625,
+        434.8832092285156
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 61,
+          "width": 1920,
+          "height": 1344
+        }
+      ]
+    },
+    {
+      "key": "skill_end",
+      "source": "Skill_3_End",
+      "count": 21,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5144895680745443,
+      "pivotY": 0.21670485830969283,
+      "sourceBounds": [
+        -342.6978759765625,
+        -122.91242980957031,
+        320.7347412109375,
+        550.0693969726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_end-00.png",
+          "count": 21,
+          "width": 2016,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "skill_idle",
+      "source": "Skill_3_Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5144895680745443,
+      "pivotY": 0.21670485830969283,
+      "sourceBounds": [
+        -342.6978759765625,
+        -122.91242980957031,
+        320.7347412109375,
+        550.0693969726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "skill_idle-01.png",
+          "count": 11,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "skill_attack",
+      "source": "Skill_3_Loop",
+      "count": 72,
+      "duration": 1.2000000476837158,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5144895680745443,
+      "pivotY": 0.21670485830969283,
+      "sourceBounds": [
+        -342.6978759765625,
+        -122.91242980957031,
+        320.7347412109375,
+        550.0693969726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "skill_attack-01.png",
+          "count": 23,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "skill_begin",
+      "source": "Skill_3_Start",
+      "count": 21,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5144895680745443,
+      "pivotY": 0.21670485830969283,
+      "sourceBounds": [
+        -342.6978759765625,
+        -122.91242980957031,
+        320.7347412109375,
+        550.0693969726562
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_begin-00.png",
+          "count": 21,
+          "width": 2016,
+          "height": 864
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "death-00.png",
+      "sha256": "0d7e778a8013ea70032ac912e395ea8f8d419d8116e1d9fe85e22a5026a440bd"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "f83baf4d95afcad9b99fae438f6e9f60e85d2b92217e2871a939d92bb9666d3a"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "ab7759e9291e8dbef9009ea9dd44dd18e815dbc3f8a3020cd3871494e24db3ed"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "00db0137dda96514f034ad504d6c7edbebb816f16080125faf7d5f04a9eab06e"
+    },
+    {
+      "file": "skill_attack-00.png",
+      "sha256": "4d056cae408714df79d615152c35e6396c2f36e9293417855f2d01f69e445828"
+    },
+    {
+      "file": "skill_attack-01.png",
+      "sha256": "8400377022bbf602e86ba8e5c8a6d92c6066ac2c82d25d296880c7df9b736e0c"
+    },
+    {
+      "file": "skill_begin-00.png",
+      "sha256": "a17eba7108bff9618e30a95952021e2fd51e4f29179c14f9dd674ca70a04aecb"
+    },
+    {
+      "file": "skill_end-00.png",
+      "sha256": "0bc0a88d807a54aaf98e3506e5253a3d1f8920488cbe7b48520d000d06c94299"
+    },
+    {
+      "file": "skill_idle-00.png",
+      "sha256": "f46261c9ac5810fe93292883a14732f2e4853fea0a180f4348a7722eb0d4c348"
+    },
+    {
+      "file": "skill_idle-01.png",
+      "sha256": "19f7709bfabbb72a94d5adecc4276daa39826b59150ab1262095730bf1881d9b"
+    }
+  ],
+  "provenance": "Approved direct batch-four integration 2026-10-28. Original Arknights media; open redistribution permission unconfirmed. PNG bytes retained; uniform 1.25-unit idle height and foot-center pivot.",
+  "noOrdinaryAttack": true
+}

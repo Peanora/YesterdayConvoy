@@ -10,7 +10,8 @@ namespace YesterdayConvoy
             float multiplier=EngagementEnabled&&CombatSettings.Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
             if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&HasTacticalCommand)multiplier*=1+.3f/u.Motion.Speed;
             if(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction)multiplier*=1+.1f/u.Motion.Speed;
-            return multiplier;
+            if(u!=null&&Clock<u.HinderedUntil)multiplier*=.2f;
+            return multiplier*DefenderAuraMoveMultiplier(u)*(u==null||PatriotControlImmune(u)?1:u.SnowMove);
         }
         void TryWakeHarvester(DeployedUnitState u)
         {

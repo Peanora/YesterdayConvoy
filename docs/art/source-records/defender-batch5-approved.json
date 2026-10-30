@@ -1,0 +1,215 @@
+{
+  "sources": [
+    {
+      "task": "D23F",
+      "unitId": "D23",
+      "name": "Mon3tr",
+      "variant": "战斗正面",
+      "characterId": "char_4179_monstr",
+      "reference": "https://prts.wiki/w/Mon3tr",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/meta.json",
+      "model": "char_4179_monstr",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_4179_monstr.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.skel",
+          "bytes": 805793,
+          "sha256": "39371927a29e4d83353d070c640eca535185a25c2beb0621ebc5bbdb2f6b1aac"
+        },
+        {
+          "file": "char_4179_monstr.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.atlas",
+          "bytes": 13380,
+          "sha256": "f736dd4ba2e1fcb4ba4fc5f1f600b258189de11624c2a8448efbcc8d93941b36"
+        },
+        {
+          "file": "char_4179_monstr.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.png",
+          "bytes": 164716,
+          "sha256": "6ea5366f675cd85b4daf117e85b0bdae3fabaf43eeeadf8517a2e51327c3f6d7"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D23B",
+      "unitId": "D23",
+      "name": "Mon3tr",
+      "variant": "战斗背面",
+      "characterId": "char_4179_monstr",
+      "reference": "https://prts.wiki/w/Mon3tr",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/meta.json",
+      "model": "char_4179_monstr",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_4179_monstr.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/back/char_4179_monstr.skel",
+          "bytes": 402643,
+          "sha256": "b061d5b237b13798fc556642792468db89ce66ee330e17ecbfe977b9d23266fa"
+        },
+        {
+          "file": "char_4179_monstr.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/back/char_4179_monstr.atlas",
+          "bytes": 6787,
+          "sha256": "e1b544e1ad88c322b770f4b4c60591c941d333f19a791b485aecc13afe1b9ac9"
+        },
+        {
+          "file": "char_4179_monstr.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/back/char_4179_monstr.png",
+          "bytes": 119659,
+          "sha256": "7d42242ecd82266d079c2fe85e4f75a65a37c337a78e1dc1f5a1217cc3bcea6f"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D24F",
+      "unitId": "D24",
+      "name": "新约能天使",
+      "variant": "战斗正面",
+      "characterId": "char_1041_angel2",
+      "reference": "https://prts.wiki/w/%E6%96%B0%E7%BA%A6%E8%83%BD%E5%A4%A9%E4%BD%BF",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/meta.json",
+      "model": "char_1041_angel2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1041_angel2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.skel",
+          "bytes": 1132701,
+          "sha256": "2b53b10e6518af9a2f870e08f0024bae0bfd9022f3e98bfe51eb967299cd9751"
+        },
+        {
+          "file": "char_1041_angel2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.atlas",
+          "bytes": 13950,
+          "sha256": "a16547b88bb0ed7189d8ac75e12d5fa2dfe34d8e21b0bbaa6a7b3f635ff16023"
+        },
+        {
+          "file": "char_1041_angel2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.png",
+          "bytes": 105816,
+          "sha256": "ffcaba985b13cf77b0c5879bf4c88c45f2d7b24722855f73cc115f5f2b38d76f"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D24B",
+      "unitId": "D24",
+      "name": "新约能天使",
+      "variant": "战斗背面",
+      "characterId": "char_1041_angel2",
+      "reference": "https://prts.wiki/w/%E6%96%B0%E7%BA%A6%E8%83%BD%E5%A4%A9%E4%BD%BF",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/meta.json",
+      "model": "char_1041_angel2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1041_angel2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/back/char_1041_angel2.skel",
+          "bytes": 529456,
+          "sha256": "93bc9fecc86e07a162b4f82dbc428e97038310561662069797ae88a6690978e4"
+        },
+        {
+          "file": "char_1041_angel2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/back/char_1041_angel2.atlas",
+          "bytes": 10396,
+          "sha256": "88c5e61915c059cfe26cfcae03f44ca230eb13e728ce8ef1772f6b5e49e0e7d1"
+        },
+        {
+          "file": "char_1041_angel2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/back/char_1041_angel2.png",
+          "bytes": 95712,
+          "sha256": "2155eee25ef87312f523970f7b51c48631055b1bbf555e50596b9b83fe231c3a"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D25F",
+      "unitId": "D25",
+      "name": "斩业星熊",
+      "variant": "战斗正面",
+      "characterId": "char_1044_hsgma2",
+      "reference": "https://prts.wiki/w/%E6%96%A9%E4%B8%9A%E6%98%9F%E7%86%8A",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/meta.json",
+      "model": "char_1044_hsgma2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1044_hsgma2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/front/char_1044_hsgma2.skel",
+          "bytes": 679844,
+          "sha256": "872fd3fcc9d7ed12f0034155601d58b6951a2547b0fddd5e42ef3ad683994986"
+        },
+        {
+          "file": "char_1044_hsgma2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/front/char_1044_hsgma2.atlas",
+          "bytes": 9325,
+          "sha256": "07e67f3d898599890d0823e068ecbd73e88a98ff5775ccd288c48769eba630aa"
+        },
+        {
+          "file": "char_1044_hsgma2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/front/char_1044_hsgma2.png",
+          "bytes": 176677,
+          "sha256": "d4375e2c17e9d786565260beb99409904452bf77b5775d80b0191a5d7d6f76cc"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D25B",
+      "unitId": "D25",
+      "name": "斩业星熊",
+      "variant": "战斗背面",
+      "characterId": "char_1044_hsgma2",
+      "reference": "https://prts.wiki/w/%E6%96%A9%E4%B8%9A%E6%98%9F%E7%86%8A",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/meta.json",
+      "model": "char_1044_hsgma2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1044_hsgma2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/back/char_1044_hsgma2.skel",
+          "bytes": 311128,
+          "sha256": "c50e5e68b80192549ccc68d8e286a699d6e27f1c22f1dee830d741e617f7a0ee"
+        },
+        {
+          "file": "char_1044_hsgma2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/back/char_1044_hsgma2.atlas",
+          "bytes": 5688,
+          "sha256": "819bc5a627b30f0f96d2b5208a8240e760accd6407800ea914f931abe33d1b92"
+        },
+        {
+          "file": "char_1044_hsgma2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1044_hsgma2/defaultskin/back/char_1044_hsgma2.png",
+          "bytes": 159335,
+          "sha256": "b0f3f86d9cc761689bdd6192074b38b7845aa207a918d7d0e2fce468a3d521ff"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights media, open redistribution permission unconfirmed. User integration/upload instruction is not a rights-holder license."
+}

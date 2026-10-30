@@ -13,9 +13,8 @@ namespace YesterdayConvoy.Editor
         public static void Generate()
         {
             Directory.CreateDirectory("Assets/_Game/GuerrillaTrials");AssetDatabase.Refresh();
-            var scene=EditorSceneManager.OpenScene("Assets/_Game/MapPreviews/01-IndustrialTransfer.unity");
-            foreach(var nav in UnityEngine.Object.FindObjectsByType<MapPreviewNavigation>(FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(nav.gameObject);
-            var c=new GameObject("Guerrilla command trial").AddComponent<GuerrillaTrialController>();c.route=MapPreviewTools.RouteFor(0);
+            var scene=AbilityFixtureTools.NewHost();
+            var c=new GameObject("Guerrilla command trial").AddComponent<GuerrillaTrialController>();c.route=AbilityFixtureTools.RouteFor(0);
             c.roles=new[]{"M03","M15","M16","M17","M18","M19"}.Select(id=>AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/_Game/Data/Resources/MonsterTests/"+id+".asset")).ToArray();
             c.interfaceFont=AssetDatabase.LoadAssetAtPath<Font>("Assets/_Game/Art/Fonts/NotoSansSC-Regular.otf");
             if(c.roles.Any(r=>r==null))throw new InvalidOperationException("Missing authored guerrilla role.");

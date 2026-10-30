@@ -1,0 +1,342 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: D22
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: 7c5774d824124fb4d816de76ba3668ee, type: 2}
+  route:
+  - {x: -8.5, y: 0.04, z: 3}
+  - {x: -5.5, y: 0.04, z: 3}
+  - {x: -5.5, y: 0.04, z: 0}
+  - {x: -1.5, y: 0.04, z: 0}
+  - {x: -1.5, y: 0.04, z: 4}
+  - {x: 2.5, y: 0.04, z: 4}
+  - {x: 2.5, y: 0.04, z: 1}
+  - {x: 0.5, y: 0.04, z: 1}
+  - {x: 0.5, y: 0.04, z: -3}
+  - {x: 5.5, y: 0.04, z: -3}
+  - {x: 5.5, y: 0.04, z: 0}
+  - {x: 8.5, y: 0.04, z: 0}
+  defenders:
+  - id: D22
+    displayName: "\u4F59"
+    artId: D22
+    position: {x: -5.5, y: 0.04, z: 3}
+    health: 1600
+    attack: 30
+    armor: 14
+    range: 0.9
+    interval: 1.6
+    windup: 0.4
+    actionDuration: 1.2
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 14
+      initialSP: 33
+      requiredSP: 55
+      spPerSecond: 1
+      duration: 42
+      attackMultiplier: 1.8
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1.8
+      healingInterval: 0
+      healthMultiplier: 1.8
+      effectRadius: 5
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0.07
+      eraseChance: 0.15
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: caster-a
+    displayName: "\u53F2\u90FD\u534E\u5FB7 \xB7 \u6CD5\u672F\u642D\u6863"
+    artId: D08
+    position: {x: -2.5, y: 0.76, z: 2}
+    health: 900
+    attack: 18
+    armor: 12
+    range: 5
+    interval: 2
+    windup: 0.4
+    actionDuration: 1.2
+    blocks: 0
+    role: 0
+    damageType: 1
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: caster-b
+    displayName: "\u708E\u7194 \xB7 \u6CD5\u672F\u642D\u6863"
+    artId: D09
+    position: {x: -3.5, y: 0.76, z: 1}
+    health: 900
+    attack: 18
+    armor: 12
+    range: 5
+    interval: 2
+    windup: 0.4
+    actionDuration: 1.2
+    blocks: 0
+    role: 0
+    damageType: 1
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: helper
+    displayName: "\u7C73\u683C\u9C81 \xB7 \u6D4B\u8BD5\u642D\u6863"
+    artId: D01
+    position: {x: -5.5, y: 0.04, z: 0}
+    health: 900
+    attack: 2
+    armor: 12
+    range: 0.9
+    interval: 2
+    windup: 0.4
+    actionDuration: 1.2
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces:
+  - {fileID: 2100000, guid: c4645c5f488adee49b0a39bfcd1edc36, type: 2}
+  - {fileID: 2100000, guid: 1d10db389e6caa042be5a6fe156f61c9, type: 2}
+  - {fileID: 2100000, guid: 8eda912b43adccc49bb92a15b8b12360, type: 2}
+  - {fileID: 2100000, guid: 5239252ab3622294cbf7468fbdb5682a, type: 2}
+  - {fileID: 2100000, guid: 6deff37f879bc2a4ea334929b97aedd6, type: 2}
+  - {fileID: 2100000, guid: 0f27c354fe70e5d4dbe79030914c0567, type: 2}
+  - {fileID: 2100000, guid: 179a6f4dfda7a2a4cb8b5fbdaceb3e21, type: 2}
+  mapId: defender-D22
+  mapTitle: "\u4F59 \xB7 \u516D\u661F\u6280\u80FD\u6D4B\u8BD5"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: -8.5, y: 0.04, z: 3}
+    - {x: -5.5, y: 0.04, z: 3}
+    - {x: -5.5, y: 0.04, z: 0}
+    - {x: -1.5, y: 0.04, z: 0}
+    - {x: -1.5, y: 0.04, z: 4}
+    - {x: 2.5, y: 0.04, z: 4}
+    - {x: 2.5, y: 0.04, z: 1}
+    - {x: 0.5, y: 0.04, z: 1}
+    - {x: 0.5, y: 0.04, z: -3}
+    - {x: 5.5, y: 0.04, z: -3}
+    - {x: 5.5, y: 0.04, z: 0}
+    - {x: 8.5, y: 0.04, z: 0}
+  raised:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 2, y: 0}
+  - {x: 3, y: 0}
+  - {x: 4, y: 0}
+  - {x: 5, y: 0}
+  - {x: 6, y: 0}
+  - {x: 7, y: 0}
+  - {x: 8, y: 0}
+  - {x: 9, y: 0}
+  - {x: 10, y: 0}
+  - {x: 11, y: 0}
+  - {x: 13, y: 0}
+  - {x: 14, y: 0}
+  - {x: 15, y: 0}
+  - {x: 16, y: 0}
+  - {x: 17, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 2, y: 1}
+  - {x: 3, y: 1}
+  - {x: 4, y: 1}
+  - {x: 5, y: 1}
+  - {x: 6, y: 1}
+  - {x: 15, y: 1}
+  - {x: 16, y: 1}
+  - {x: 4, y: 2}
+  - {x: 5, y: 2}
+  - {x: 6, y: 2}
+  - {x: 8, y: 2}
+  - {x: 9, y: 2}
+  - {x: 10, y: 2}
+  - {x: 13, y: 2}
+  - {x: 15, y: 2}
+  - {x: 16, y: 2}
+  - {x: 0, y: 3}
+  - {x: 1, y: 3}
+  - {x: 2, y: 3}
+  - {x: 4, y: 3}
+  - {x: 5, y: 3}
+  - {x: 6, y: 3}
+  - {x: 8, y: 3}
+  - {x: 9, y: 3}
+  - {x: 10, y: 3}
+  - {x: 13, y: 3}
+  - {x: 0, y: 4}
+  - {x: 1, y: 4}
+  - {x: 2, y: 4}
+  - {x: 4, y: 4}
+  - {x: 5, y: 4}
+  - {x: 6, y: 4}
+  - {x: 8, y: 4}
+  - {x: 12, y: 4}
+  - {x: 13, y: 4}
+  - {x: 14, y: 4}
+  - {x: 17, y: 4}
+  - {x: 0, y: 5}
+  - {x: 1, y: 5}
+  - {x: 2, y: 5}
+  - {x: 8, y: 5}
+  - {x: 10, y: 5}
+  - {x: 12, y: 5}
+  - {x: 0, y: 6}
+  - {x: 1, y: 6}
+  - {x: 2, y: 6}
+  - {x: 3, y: 6}
+  - {x: 4, y: 6}
+  - {x: 5, y: 6}
+  - {x: 6, y: 6}
+  - {x: 8, y: 6}
+  - {x: 10, y: 6}
+  - {x: 12, y: 6}
+  - {x: 15, y: 6}
+  - {x: 17, y: 6}
+  - {x: 0, y: 7}
+  - {x: 1, y: 7}
+  - {x: 2, y: 7}
+  - {x: 3, y: 7}
+  - {x: 4, y: 7}
+  - {x: 8, y: 7}
+  - {x: 10, y: 7}
+  - {x: 15, y: 7}
+  - {x: 17, y: 7}
+  - {x: 0, y: 8}
+  - {x: 1, y: 8}
+  - {x: 2, y: 8}
+  - {x: 3, y: 8}
+  - {x: 4, y: 8}
+  - {x: 6, y: 8}
+  - {x: 7, y: 8}
+  - {x: 8, y: 8}
+  - {x: 15, y: 8}
+  - {x: 17, y: 8}
+  - {x: 0, y: 9}
+  - {x: 1, y: 9}
+  - {x: 2, y: 9}
+  - {x: 3, y: 9}
+  - {x: 4, y: 9}
+  - {x: 6, y: 9}
+  - {x: 7, y: 9}
+  - {x: 17, y: 9}
+  - {x: 9, y: 10}
+  - {x: 10, y: 10}
+  - {x: 11, y: 10}
+  - {x: 12, y: 10}
+  - {x: 13, y: 10}
+  - {x: 14, y: 10}
+  - {x: 15, y: 10}
+  - {x: 16, y: 10}
+  - {x: 17, y: 10}
+  floorTexture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
+  foliageTexture: {fileID: 2800000, guid: cb7097b3454279841bb76e4c90c70afe, type: 3}
+  rosterCards:
+  - {fileID: 11400000, guid: dcd8c0caef1a1e64bbe618f821b306cf, type: 2}
+  - {fileID: 11400000, guid: 5a1b95899121e2d4eabcfc6ad5b8bc2e, type: 2}
+  - {fileID: 11400000, guid: ea94afd637fe0ac4c9cd846f7be5c65b, type: 2}
+  defenderTestId: D22

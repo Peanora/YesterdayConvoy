@@ -19,7 +19,7 @@ namespace YesterdayConvoy.Tests
             float previous=Time.timeScale;
             try
             {
-                yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/FacilityTrials/01-IndustrialTransfer.unity",new LoadSceneParameters(LoadSceneMode.Single));yield return null;Time.timeScale=0;
+                yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Game/Tests/Fixtures/01-IndustrialTransfer.unity",new LoadSceneParameters(LoadSceneMode.Single));yield return null;Time.timeScale=0;
                 var c=Object.FindAnyObjectByType<FacilityTrialController>();Assert.That(c.Deploy(),Is.True);var u=c.Battle.Units[0];var poses=new HashSet<string>();
                 for(int i=0;i<1200&&u.Active;i++)
                 {

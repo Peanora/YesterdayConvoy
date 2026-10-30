@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "task": "D11B",
+  "ppu": 118.4,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.3486841937473842,
+      "pivotY": 0.18695298567414287,
+      "sourceBounds": [
+        -169.92034912109375,
+        -5.906153202056885,
+        348.313720703125,
+        374.97210693359375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.3486841937473842,
+      "pivotY": 0.18695298567414287,
+      "sourceBounds": [
+        -169.92034912109375,
+        -5.906153202056885,
+        348.313720703125,
+        374.97210693359375
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "b499461265db10f66e6774b4e67dbaa1fd9339715f5df584f18f60f603a7cc74"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "164610d2c8fc1b02c7747906c5979c4c0b725d5d1031fe8f7b541f1f2bcef801"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_212_ansel; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

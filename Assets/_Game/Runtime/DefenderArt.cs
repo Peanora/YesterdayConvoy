@@ -8,7 +8,7 @@ namespace YesterdayConvoy
     /// <summary>Approved front battle flipbooks, loaded from tracked StreamingAssets. No Spine runtime shipped.</summary>
     public sealed class DefenderArt
     {
-        [Serializable] private sealed class Manifest { public int version; public string task; public float ppu; public ClipData[] clips; }
+        [Serializable] private sealed class Manifest { public int version; public string task; public float ppu; public bool rearVariant,noOrdinaryAttack; public ClipData[] clips; }
         [Serializable] private sealed class ClipData
         { public string key; public int count, cell, columns; public float duration, pivotX, pivotY; public Page[] pages; }
         [Serializable] private sealed class Page { public string file; public int count, width, height; }
@@ -25,8 +25,11 @@ namespace YesterdayConvoy
         private static readonly Dictionary<string,DefenderArt> Cache=new Dictionary<string,DefenderArt>();
         private readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>();
         public Sprite Portrait { get; private set; }
+        public float ActionDuration => (clips.TryGetValue("attack",out var attack)?attack.Duration:0)+(clips.TryGetValue("attack_start",out var start)?start.Duration:0)+(clips.TryGetValue("attack_end",out var end)?end.Duration:0);
         public Clip this[string key] => clips[key];
         public Sprite HealAt(double age) => clips.TryGetValue("heal",out var clip) ? clip.At(age,false) : ActionAt(age);
+        public float HealDuration=>clips.TryGetValue("heal",out var clip)?clip.Duration:ActionDuration;
+        public Sprite SkillIdleAt(double age)=>clips.TryGetValue("skill",out var clip)&&age<clip.Duration?clip.At(age,false):clips["idle"].At(age,true);
         public Sprite ActionAt(double age)
         {
             if(clips.TryGetValue("attack_start",out var start))
@@ -36,7 +39,18 @@ namespace YesterdayConvoy
                 if(age<loop.Duration) return loop.At(age,false);
                 return clips["attack_end"].At(age-loop.Duration,false);
             }
-            return clips["attack"].At(age,false);
+            return clips.TryGetValue("attack",out var attack)?attack.At(age,false):clips["idle"].At(age,true);
+        }
+        public Sprite AdvancedPose(double age,double remaining,double sinceEnd,bool action,double actionAge,float actionDuration)
+        {
+            if(remaining>0)
+            {
+                if(clips.TryGetValue("skill_begin",out var begin)&&age<begin.Duration)return begin.At(age,false);
+                if(action&&clips.TryGetValue("skill_attack",out var attack))return attack.At(actionDuration>0?actionAge/actionDuration*attack.Duration:actionAge,false);
+                if(clips.TryGetValue("skill_idle",out var idle))return idle.At(age,true);
+            }
+            else if(sinceEnd>=0&&clips.TryGetValue("skill_end",out var end)&&sinceEnd<end.Duration)return end.At(sinceEnd,false);
+            return clips["idle"].At(age,true);
         }
         public static DefenderArt Load(string id)
         {
@@ -74,11 +88,17 @@ namespace YesterdayConvoy
                     if(frames.Count!=item.count) throw new InvalidDataException("Defender frame count mismatch.");
                     art.clips.Add(item.key,new Clip { Frames=frames.ToArray(),Duration=item.duration });
                 }
-                foreach(string key in new[]{"idle","attack","death"}) if(!art.clips.ContainsKey(key)) throw new InvalidDataException("Missing "+key);
+                if(data.rearVariant && !id.EndsWith("B",StringComparison.Ordinal))throw new InvalidDataException("Invalid rear variant.");
+                foreach(string key in data.noOrdinaryAttack ? (data.rearVariant?new[]{"idle"}:new[]{"idle","death"}) : data.rearVariant ? new[]{"idle","attack"} : new[]{"idle","attack","death"}) if(!art.clips.ContainsKey(key)) throw new InvalidDataException("Missing "+key);
                 if(art.clips.ContainsKey("attack_start")!=art.clips.ContainsKey("attack_end")) throw new InvalidDataException("Incomplete attack phases.");
-                var portrait=LoadPng(root,"portrait.png",allocated);
-                art.Portrait=Sprite.Create(portrait,new Rect(0,0,portrait.width,portrait.height),new Vector2(.5f,0),data.ppu);
-                allocated.Add(art.Portrait); Cache.Add(id,art); return art;
+                if(data.rearVariant)art.Portrait=Load(id.Substring(0,id.Length-1)).Portrait;
+                else
+                {
+                    var portrait=LoadPng(root,"portrait.png",allocated);
+                    art.Portrait=Sprite.Create(portrait,new Rect(0,0,portrait.width,portrait.height),new Vector2(.5f,0),data.ppu);
+                    allocated.Add(art.Portrait);
+                }
+                Cache.Add(id,art); return art;
             }
             catch
             {

@@ -13,12 +13,24 @@ namespace YesterdayConvoy
         private Camera borrowedCamera;
         private Vector3 red, blue, cameraPosition;
         private Material[] materials;
+        private bool redActive,blueActive;
+        private bool tactical;
         public void Initialize(InitialDemo bindings,DefenderTrialDefinition data)
         {
             scene=bindings; original=GameObject.Find("Industrial Map");
             if(original!=null) { originalActive=original.activeSelf; original.SetActive(false); }
             borrowedCamera=Camera.main;
             red=scene.RedGate.position; blue=scene.BlueGate.position; cameraPosition=borrowedCamera.transform.position;
+            tactical=data.Tactical;
+            redActive=scene.RedGate.gameObject.activeSelf; blueActive=scene.BlueGate.gameObject.activeSelf;
+            if(tactical)
+            {
+                scene.RedGate.gameObject.SetActive(false); scene.BlueGate.gameObject.SetActive(false);
+                // Preserve the approved forward-facing tilt. Reframe for the larger board and HUD.
+                borrowedCamera.transform.position=borrowedCamera.transform.rotation*new Vector3(0,-1.7f,-35)+new Vector3(0,0,.7f);
+                gameObject.AddComponent<TacticalMapEnvironment>().Build(data);
+                return;
+            }
             scene.RedGate.position=data.route[0]; scene.BlueGate.position=data.route[data.route.Length-1];
             borrowedCamera.transform.position-=borrowedCamera.transform.forward*2.8f;
             materials=(Material[])data.surfaces.Clone();
@@ -106,6 +118,8 @@ namespace YesterdayConvoy
             {
                 if(scene.RedGate!=null) scene.RedGate.position=red;
                 if(scene.BlueGate!=null) scene.BlueGate.position=blue;
+                if(tactical && scene.RedGate!=null) scene.RedGate.gameObject.SetActive(redActive);
+                if(tactical && scene.BlueGate!=null) scene.BlueGate.gameObject.SetActive(blueActive);
             }
             if(original!=null) original.SetActive(originalActive);
             if(borrowedCamera!=null) borrowedCamera.transform.position=cameraPosition;

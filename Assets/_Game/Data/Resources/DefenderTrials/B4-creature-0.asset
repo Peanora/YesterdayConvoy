@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8daae59cfbb1a1d4f9375b5159d4c8c9, type: 3}
+  m_Name: B4-creature-0
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ManualBattleDefinition
+  levelId: DEFENDER_B4-creature-0
+  card: {fileID: 11400000, guid: 8a7696b7e479d3941b7e1b9c26e0e222, type: 2}
+  engagement: {fileID: 11400000, guid: 225156655e820354d9d25f8072c0db0f, type: 2}
+  initialDP: 32
+  initialDefense: 1
+  deploymentCost: 1
+  deploymentLimit: 12
+  deploymentCooldown: 0.7
+  unitHealth: 18000
+  towerRange: 2.8
+  towerDamage: 16
+  shotInterval: 1

@@ -11,9 +11,8 @@ namespace YesterdayConvoy.Editor
         const string Scene="Assets/_Game/GuerrillaTrials/Patriot.unity";
         public static void Generate()
         {
-            var scene=EditorSceneManager.OpenScene("Assets/_Game/MapPreviews/01-IndustrialTransfer.unity");
-            foreach(var nav in UnityEngine.Object.FindObjectsByType<MapPreviewNavigation>())UnityEngine.Object.DestroyImmediate(nav.gameObject);
-            var c=new GameObject("Independent Patriot trial").AddComponent<GuerrillaTrialController>();c.patriotTrial=true;c.route=MapPreviewTools.RouteFor(0);
+            var scene=AbilityFixtureTools.NewHost();
+            var c=new GameObject("Independent Patriot trial").AddComponent<GuerrillaTrialController>();c.patriotTrial=true;c.route=AbilityFixtureTools.RouteFor(0);
             c.roles=new[]{"M20","M15","M16","M17","M18","M19"}.Select(id=>AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/_Game/Data/Resources/MonsterTests/"+id+".asset")).ToArray();
             c.interfaceFont=AssetDatabase.LoadAssetAtPath<Font>("Assets/_Game/Art/Fonts/NotoSansSC-Regular.otf");
             if(c.roles.Any(r=>r==null))throw new InvalidOperationException("Missing authored Patriot trial role.");

@@ -40,6 +40,7 @@ namespace YesterdayConvoy
             var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
+            var advanced=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advanced.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));
@@ -159,10 +160,14 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
+            var sourceUnit=b.FindUnit(shot.SourceId);
+            var sourceCombat=b.UnitCombat(sourceUnit);
+            var sourceCard=owner.CardForUnit(sourceUnit);
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;
-            if(!shot.FromDefender && b.CombatSettings.Melee) { PresentMelee(view,shot,b,cam); return; }
+            if(!shot.FromDefender && sourceCombat.Melee) { PresentMelee(view,shot,b,cam); return; }
             if(shot.FireRain) { PresentFireRain(view,shot,b,cam); return; }
-            if(!shot.FromDefender && owner.Definition.Card.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
+            if(!shot.FromDefender && sourceCard.ArticulatedArt!=null) { PresentTalulahSlash(view,shot,b,cam); return; }
             if(shot.Healing) { PresentHealing(view,shot,b,cam); return; }
             double time = b.Clock;
             float t = Mathf.Clamp01((float)((time - shot.StartedAt) / (shot.ImpactAt - shot.StartedAt)));
@@ -173,8 +178,8 @@ namespace YesterdayConvoy
             float face = cam.transform.InverseTransformDirection(end - origin).x < 0 ? -1 : 1;
             origin += cam.transform.right * (face * 0.45f);
             Color color = shot.FromDefender ? (shot.DamageType==CombatDamageType.Arts ? new Color(.55f,.65f,1) : new Color(1, 0.83f, 0.36f)) : shot.Empowered ? new Color(1, 0.36f, 0.12f) : new Color(0.95f, 0.68f, 0.3f);
-            if(!shot.FromDefender && b.CombatSettings.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
-            else if(!shot.FromDefender && b.CombatSettings.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
+            if(!shot.FromDefender && sourceCombat.Effects.ArmorShred>0) color=new Color(.45f,1,.2f);
+            else if(!shot.FromDefender && sourceCombat.Effects.DamageType==CombatDamageType.Arts) color=new Color(.75f,.35f,1);
             if(shot.FrozenBonusApplied) color=new Color(.45f,.95f,1);
             if(!shot.FromDefender && shot.ColdDuration>0) color=new Color(.2f,.85f,1);
             bool flying = !shot.Resolved && time >= shot.StartedAt && time < shot.ImpactAt;
@@ -194,7 +199,7 @@ namespace YesterdayConvoy
             if (!hit) return;
             color.a = 1 - age / duration;
             float radius = (shot.Empowered ? 0.28f : 0.05f) + age * (shot.Empowered ? 1.3f : 0.8f);
-            if(!shot.FromDefender && owner.Definition.Card.HasFrameAnimation && LocalMonsterArt.For(owner.Definition.Card.CardId)==null)
+            if(!shot.FromDefender && sourceCard.HasFrameAnimation && LocalMonsterArt.For(sourceCard.CardId)==null)
             {
                 // Graphic, black-edged comic burst and source-expression stamp; no extra damage event.
                 view.Rays.enabled=false; view.Ink.enabled=true;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 namespace YesterdayConvoy
 {
@@ -43,8 +43,6 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             string[] args=Environment.GetCommandLineArgs();
-            string requested=Array.Find(args,a=>a.StartsWith("--facility-map="));
-            if(requested!=null&&int.TryParse(requested.Substring(15),out int n)&&n>=0&&n<3&&n!=mapIndex){SceneManager.LoadScene(n);yield break;}
             string selected=Array.Find(args,a=>a.StartsWith("--facility-role="));
             reveal=Array.IndexOf(args,"--ember-reveal")>=0;
             if(selected!=null&&int.TryParse(selected.Substring(16),out int r)&&r>=0&&r<roles.Length)ResetTrial(r);
@@ -285,33 +283,7 @@ namespace YesterdayConvoy
             }
             for(int j=used;j<beams.Count;j++)beams[j].gameObject.SetActive(false);
         }
-        void OnGUI()
-        {
-            if(Battle==null)return;if(interfaceFont!=null)GUI.skin.font=interfaceFont;
-            float scale=Screen.width/1920f;GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));
-            GUI.Box(new Rect(20,18,780,128),"");var title=new GUIStyle(GUI.skin.label){fontSize=25};
-            GUI.Label(new Rect(35,25,750,36),Titles[mapIndex],title);
-            string phase=Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Ready?"待部署":Battle.Phase==BattlePhase.Running?"交战中":Battle.Phase==BattlePhase.Won?"突破成功":"本场结束";
-            GUI.Label(new Rect(35,65,750,26),$"{roles[SelectedRole].Card.DisplayName}  ·  {phase}  ·  时间 {Battle.Clock:0.0}  ·  {feedback}");
-            GUI.Label(new Rect(35,94,750,26),$"祭坛命中 {Battle.AltarHits}  |  封地 {Battle.SealedTileCount}  |  留声机命中 {Battle.GramophoneHits} / 治疗 {Battle.FacilityHealing:0}  |  点燃 {Battle.Ignitions}");
-            float bottom=Screen.height/scale-90;
-            for(int n=0;n<3;n++)if(GUI.Button(new Rect(20+n*150,bottom,140,32),new[]{"工业转运站","雪原中继站","芦苇水道"}[n]))SceneManager.LoadScene(n);
-            for(int n=0;n<roles.Length;n++)if(GUI.Button(new Rect(500+n*170,bottom,160,32),roles[n].Card.DisplayName))ResetTrial(n);
-            if(GUI.Button(new Rect(20,bottom+40,140,35),"部署角色"))Deploy();
-            if(GUI.Button(new Rect(170,bottom+40,140,35),Battle.IsPaused?"继续":"暂停（空格）"))Battle.SetPaused(!Battle.IsPaused);
-            if(GUI.Button(new Rect(320,bottom+40,140,35),"重新开始"))ResetTrial(SelectedRole);
-            if(GUI.Button(new Rect(470,bottom+40,140,35),$"速度 ×{speed:0}"))speed=speed==1?3:1;
-            if(Battle.CombatSettings.Effects.Mandragora&&GUI.Button(new Rect(620,bottom+40,160,35),"向蔓德拉推倒支柱"))ToppleMandragoraPillar();
-            if(Battle.CombatSettings.Effects.Shackler&&GUI.Button(new Rect(620,bottom+40,160,35),"沉默术师 3秒"))SilenceShacklers();
-            if(Battle.CombatSettings.Effects.Shackler&&GUI.Button(new Rect(790,bottom+40,160,35),"眩晕术师 3秒"))foreach(var u in Battle.Units)Battle.TryDisableShackler(u.EntityId,3);
-            if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(620,bottom+40,160,35),"眩晕喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2);
-            if(Battle.CombatSettings.Effects.Flamerazer&&GUI.Button(new Rect(790,bottom+40,160,35),"沉默喷火者 2秒"))foreach(var u in Battle.Units)Battle.TryDisableFlamerazer(u.EntityId,2,true);
-            if(Battle.CombatSettings.Effects.Flamechaser&&GUI.Button(new Rect(620,bottom+40,200,35),reveal?"守军反隐：开（点击重开）":"守军反隐：关（点击重开）"))SetReveal(!reveal);
-            foreach(var u in Battle.Units.Where(u=>u.Active))Label(u.Motion.Position+Vector3.up*2.4f,$"{u.Health:0}/{u.MaxHealth:0}"+(Battle.CombatSettings.Effects.Harvester?$" {(u.HarvesterPhase==HarvesterPhase.Dormant?"待命":u.HarvesterPhase==HarvesterPhase.Waking?"苏醒":"临战")} 失血{u.HarvesterHealthLost:0}":Battle.CombatSettings.Effects.NervousCreeper?$" 刺伤{u.CreeperRetaliations}":Battle.CombatSettings.Effects.Mandragora?$" {(u.MandraPhase==MandragoraPhase.Reborn?"重生":u.MandraPhase==MandragoraPhase.Second?"第二阶段":"第一阶段")} {(u.StoneShield?"石盾":"破盾")}":u.FuelDying?" 燃料爆炸":u.Spray!=null&&!u.Spray.Ended?$" 喷火 {u.Spray.Ticks}跳":"")+
-                (Battle.CombatSettings.Effects.Phalanx?$" 护甲{Battle.UnitArmor(u):0}":u.AltarEmpowered?" 法术化":u.FlamePhase==FlamechaserPhase.Ember?" 隐匿余烬":u.FlamePhase==FlamechaserPhase.Reforming?" 重生中":""));
-            foreach(var d in Battle.Defenders.Where(d=>d.Alive))Label(d.Position+Vector3.up*1.2f,$"守军 {d.Health:0}"+(Battle.DefenderShackled(d)?" 枷锁禁锢":d.NeuralUntil>Battle.Clock?$" 神经爆发 {Math.Max(0,d.NeuralUntil-Battle.Clock):0.0}s":d.NeuralAccumulated>0?$" 神经 {d.NeuralAccumulated:0}/100":Battle.DefenderCamouflaged(d)?" 迷彩":""));
-            foreach(var f in Battle.Facilities)Label(f.Settings.Position+Vector3.up*1.6f,f.Settings.Kind==FacilityKind.Gramophone?$"留声机 {(f.Owner==FacilityOwner.Attackers?"进攻方":f.Owner==FacilityOwner.Defenders?"守方":"未占领")} {f.Capture:0.0}/{f.Settings.CaptureTime:0}":f.Settings.Kind==FacilityKind.Reeds?(f.Burning?"燃烧":"芦苇"):f.Settings.Kind==FacilityKind.Pillar?(f.Collapsed?"支柱已倒塌":"破碎支柱"):"祭坛");
-        }
+
         void Label(Vector3 point,string text)
         {
             var p=Camera.main.WorldToScreenPoint(point);float scale=Screen.width/1920f;

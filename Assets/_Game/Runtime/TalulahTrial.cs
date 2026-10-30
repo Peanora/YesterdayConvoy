@@ -21,8 +21,8 @@ namespace YesterdayConvoy
         private void SwitchTestDefinition(ManualBattleDefinition next, bool keepDefenderTrial=false)
         {
             if(!keepDefenderTrial) LeaveDefenderTrial();
-            ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null; terminalPresentationElapsed=0;
-            definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
+            ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null; terminalPresentationElapsed=0; readyIdleElapsed=0;
+            selectedRosterIndex=0; definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;
             Battle=CreateBattle(); ValidateConfiguration();
             cardView.SetCard(definition.Card); preview.sprite=OriginalTalulahArt.BattleSprite(definition.Card);
             EnableCombatView(); UpdatePreview();
@@ -31,7 +31,13 @@ namespace YesterdayConvoy
 
         private void DrawTrialSelector()
         {
+            if(DefenderSkillTrialActive)
+            {
+                if(GUI.Button(TestReturnRect,"返回守军选择",buttonStyle)){ReturnToMonsterTests();defenderMenuOpen=true;}
+                return;
+            }
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
+            if(TacticalMapActive) return;
             if(DefenderTrialActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"八人防线 · 地面阻挡 / 高台火力 / 医疗支援",smallStyle);

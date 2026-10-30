@@ -1,0 +1,323 @@
+[
+  {
+    "id": "D02",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D02F",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1516846,
+        "sha256": "6fd1fc98e28102b0bce6417cbc25e12c41c9b4f221827c52115c1b99461792f6"
+      },
+      {
+        "file": "death-00.png",
+        "size": 1374079,
+        "sha256": "145236b174b41515d658372ef0a9e9c0889fa5e39585ebf8188667190280d81a"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 2216903,
+        "sha256": "7e53807cd2d333bebd97abac2d7184113c0688782ed15d343f84a3203bbdd902"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 446593,
+        "sha256": "a3e4cb827c671afb109976d9437351c304158e2d9fc502dce0dec9558157957c"
+      },
+      {
+        "file": "manifest.json",
+        "size": 2837,
+        "sha256": "256349d5cc439ab4c778151672ebe30cfd1cdce3cf1807137c6cfbd55c0b2fb1"
+      },
+      {
+        "file": "portrait.png",
+        "size": 58190,
+        "sha256": "0122d4052fb57330d8477c92da4600937d8fea5afdfe4640e7db726055d87e2a"
+      }
+    ]
+  },
+  {
+    "id": "D02B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D02B",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1386869,
+        "sha256": "7e14641cfe32d9a4f2dbd5b83d7a9bcd5ad46122f00093d32f756a187e12b697"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 2169145,
+        "sha256": "18beda5d959ead81c82b999682cc9c561bb439ff0cb2a1d8476bce16ed209740"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 444404,
+        "sha256": "97640f91ed3ef573af1781824993a3c8f149f48f084ab0557da27946ee7c9253"
+      },
+      {
+        "file": "manifest.json",
+        "size": 2011,
+        "sha256": "7c7f40860b5931c02f7999a84c39a3686ae500fc7a44d2fd0d635a7caa6fb5ab"
+      }
+    ]
+  },
+  {
+    "id": "D05",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D05F",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1272299,
+        "sha256": "ce36f81ba2fa60d666310cc0c041cf9942ebc2558843261e39a566baffd00461"
+      },
+      {
+        "file": "attack-01.png",
+        "size": 589578,
+        "sha256": "dcaea3f0cc7284fc2d9aad85c874c4b824ab59a4cbeb4887156a6e58e4d4bb59"
+      },
+      {
+        "file": "death-00.png",
+        "size": 1364860,
+        "sha256": "e0399460943b362488b751a0edcf2261795cf336350207552dfdc897de5d2947"
+      },
+      {
+        "file": "death-01.png",
+        "size": 244162,
+        "sha256": "5918dc01892309275393ae5a02a4ec0e93ade1f28dfc961ae654c7e87ae3089d"
+      },
+      {
+        "file": "extra_attack_end-00.png",
+        "size": 874939,
+        "sha256": "fb8050fff656cef1ac2ee48553ae6db749c16bc1ba4e33b9079523a4d258182a"
+      },
+      {
+        "file": "extra_attack_start-00.png",
+        "size": 900677,
+        "sha256": "7d5dfccad6c9b84e3a2f34dce523be8fd78fc0cf57e4fa11758dd1959502aa0e"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 1035195,
+        "sha256": "960ea10e34b627efd52676533a9639004a7c6c72543dbf66c4d3e67dd06ea374"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 1030239,
+        "sha256": "2af60c5b7887c4db1fb6ca8467f2a14ead59c6f623d540e8354b70b745d016d3"
+      },
+      {
+        "file": "idle-02.png",
+        "size": 506422,
+        "sha256": "0c8959f0ec1d9ddc2597f363d89f9e61bcff13964fad85360924d1bd9ef2ff8d"
+      },
+      {
+        "file": "manifest.json",
+        "size": 4914,
+        "sha256": "a00f647ce3d9f9f33e146f9b6dff0bd88e0fdc7f3be6f2abab50205da4e1b18b"
+      },
+      {
+        "file": "portrait.png",
+        "size": 50191,
+        "sha256": "bafa263cdeb24b110b31f07b48b2a314c15a57f608e5411d4c240bd3be84bc80"
+      }
+    ]
+  },
+  {
+    "id": "D05B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D05B",
+    "ppu": 117.6053691275168,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1038107,
+        "sha256": "f38bb9a685b147bb5b0c672566c2d12c44c476b55930f45d7a489f7c9776e3da"
+      },
+      {
+        "file": "attack-01.png",
+        "size": 500966,
+        "sha256": "eb6a001444f199f60f0a65a03dd07d5ef66e9849bcab9430f04fe2a6d1df212d"
+      },
+      {
+        "file": "extra_attack_end-00.png",
+        "size": 719048,
+        "sha256": "2837659f6f1c87704d3c4ebcdf8b5a724f0d062d1779435b3a4e6ef1a1f1f15e"
+      },
+      {
+        "file": "extra_attack_start-00.png",
+        "size": 765660,
+        "sha256": "0903fecfa13b946d4eb5e393931269c28beb22a97a75616c52db2520ff9b9eee"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 807865,
+        "sha256": "8703035afebb53c5f5562cdce252e5e80627b181d3d4c7dd95c4d76ddb669f02"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 782351,
+        "sha256": "642d48fd0dfd02f4c57f9e90bcd955509b768a61a2a79c4475d6bd0fc2a1a039"
+      },
+      {
+        "file": "idle-02.png",
+        "size": 403868,
+        "sha256": "a8a640d12431c6591645593247e92c1773b46055d685cbba3ada75fadc49e5f4"
+      },
+      {
+        "file": "manifest.json",
+        "size": 3837,
+        "sha256": "957adb66e93e36eb28b1caecdc1be0064e7c556647f4c993b3f84c6f728b9c42"
+      }
+    ]
+  },
+  {
+    "id": "D06",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D06F",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1072859,
+        "sha256": "1daa0b03b3563e414c19a3e92cc68fa8ef53cb01f5e893652e75d4ebba4ca0fe"
+      },
+      {
+        "file": "attack-01.png",
+        "size": 724104,
+        "sha256": "c92b2a84d516b96b19fc01e6be5e9d5273b0a668af6b6f040217402b9764732c"
+      },
+      {
+        "file": "death-00.png",
+        "size": 1049176,
+        "sha256": "310ae9306eed476b4178ae803c1be2a4337bd4d43052ff7c608a2fb6eacfb917"
+      },
+      {
+        "file": "death-01.png",
+        "size": 620279,
+        "sha256": "f077f0bf9ee0bfbdea21b63eb66c5ccf2e6da5e57c5f529a836582ffded9fd43"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 989134,
+        "sha256": "571f7610d8a2bdd0f58eda6bb57bbaff711e28c2bbf1adddd4bba5a1edb23a28"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 1001871,
+        "sha256": "3db377bf58866c3d0e590b7708eb1145dcbca1ea05b71c2dddc9b3c4de6a17a9"
+      },
+      {
+        "file": "idle-02.png",
+        "size": 996309,
+        "sha256": "258d1c9c81069c490b5c259dd86cc46a2953c4553d12d3be9660b7fe6864aa8e"
+      },
+      {
+        "file": "idle-03.png",
+        "size": 998477,
+        "sha256": "f67fbb16d5cd1abcddf842444e7326d0286b75c16dd459d153653e19399c9d5d"
+      },
+      {
+        "file": "idle-04.png",
+        "size": 998289,
+        "sha256": "54c9a89e6b1e6b3204a3c3c8cfcc655cc8d2714e14d0fed17ceb64e326e73b9f"
+      },
+      {
+        "file": "manifest.json",
+        "size": 4155,
+        "sha256": "c34f1c8a775b0be8831213efb10f376c4c1785122f92de3d2dcd4cb2b36292e2"
+      },
+      {
+        "file": "portrait.png",
+        "size": 51536,
+        "sha256": "2d8b24e74798f3807e3b5e1b57f7e5c9d9efa59cbe4169464ec67bd406ac0826"
+      }
+    ]
+  },
+  {
+    "id": "D06B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D06B",
+    "ppu": 120.8496551724138,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1028853,
+        "sha256": "b890dabfc23270a8daaac94e297af875294a301d4c0fcf88c18cf490e041ebf8"
+      },
+      {
+        "file": "attack-01.png",
+        "size": 672866,
+        "sha256": "cfe26ade15454ce48874d44dd3784b4184a84a35840da06dbbafb4e658ae8edd"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 971082,
+        "sha256": "f4d2e9d72e19cc94e9d6bf361d690e2c8d403ba3448b705c2c6eec80be303518"
+      },
+      {
+        "file": "idle-01.png",
+        "size": 657533,
+        "sha256": "d094d529b539170595bf215947e272a44c839bb385b60860d80ea148f33bf18d"
+      },
+      {
+        "file": "manifest.json",
+        "size": 2289,
+        "sha256": "d0b4fd644bbf9fbf9ebce3d010f71de9c273ad61706d00820a7b329e06348612"
+      }
+    ]
+  },
+  {
+    "id": "D11",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D11F",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1492953,
+        "sha256": "58d5edfb504e644734a5a0fbda69da167f9fe070c5216c3352ebda97c3e46a86"
+      },
+      {
+        "file": "death-00.png",
+        "size": 1298667,
+        "sha256": "849e1801c8d5d20d52c4d383cf3069757550e0f283a8adbf2e6a4d9fc17bbd21"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 1348927,
+        "sha256": "daaf0439831b7d165946a029a79410aa3becc934c8d70d5a42edc3ade514def1"
+      },
+      {
+        "file": "manifest.json",
+        "size": 2573,
+        "sha256": "99772f173346d7d16531c29aa0e17ce590a689a0404f9c44a9b0a9b02b4ab0ab"
+      },
+      {
+        "file": "portrait.png",
+        "size": 62728,
+        "sha256": "1293d4b5a97a1ad76c2e6b26c2ce70bc483e7d2fef37e9c6f7166ad0ab7de2ea"
+      }
+    ]
+  },
+  {
+    "id": "D11B",
+    "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-10-23_守军剩余22名-v1\\runtime-packages\\D11B",
+    "ppu": 118.4,
+    "files": [
+      {
+        "file": "attack-00.png",
+        "size": 1313832,
+        "sha256": "b499461265db10f66e6774b4e67dbaa1fd9339715f5df584f18f60f603a7cc74"
+      },
+      {
+        "file": "idle-00.png",
+        "size": 1176337,
+        "sha256": "164610d2c8fc1b02c7747906c5979c4c0b725d5d1031fe8f7b541f1f2bcef801"
+      },
+      {
+        "file": "manifest.json",
+        "size": 1747,
+        "sha256": "3948048cbaea08de9ca351acd2d96ef05ee7145fb291baea8f8b2a1c5ae27e6d"
+      }
+    ]
+  }
+]

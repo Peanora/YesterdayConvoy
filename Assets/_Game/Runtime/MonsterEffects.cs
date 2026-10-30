@@ -71,14 +71,17 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         // One model entry for direct and projectile damage; damage cannot mutate a paused/finished battle.
-        public bool TryDamageUnit(string entityId,float attack,CombatDamageType type)
+        public bool TryDamageUnit(string entityId,float attack,CombatDamageType type,float ignoreResistance=0)
         {
-            if(float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
+            if(float.IsNaN(ignoreResistance)||float.IsInfinity(ignoreResistance)||ignoreResistance<0||float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || UnitInvulnerable(unit)) return false;
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
-            float damage=CalculateDamage(attack,UnitArmor(unit),UnitResistance(unit),type);
+            // Penetration stops at zero; existing resistance debuffs may remain negative.
+            float resistance=UnitResistance(unit);
+            if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
+            float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
             if(CombatSettings.Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
@@ -178,7 +181,8 @@ namespace YesterdayConvoy
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
         private float DefenderAttackRate(DefenderState defender) =>
-            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1);
+            (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1);
         private void DefeatUnit(DeployedUnitState unit)
         {
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}
@@ -221,13 +225,14 @@ namespace YesterdayConvoy
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
-        public float DefenderArmor(DefenderState defender) => defender.Settings.Armor-defender.ArmorReduction;
+        public float DefenderArmor(DefenderState defender) => defender.Settings.Armor*(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?3:1)*
+            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type)
         {
-            defender.Health=Mathf.Max(0,defender.Health-CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance-(defender.BurnUntil>Clock?20:0)),type));
+            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type));
             defender.LastHitTime=Clock;
             if(!defender.Alive) { defender.DeathTime=Clock;defender.TargetId=null; }
         }
