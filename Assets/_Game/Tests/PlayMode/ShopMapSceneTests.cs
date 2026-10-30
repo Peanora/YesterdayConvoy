@@ -23,7 +23,7 @@ namespace YesterdayConvoy.Tests
             c.SetShopVisible(false);Assert.That(c.ShopMapPointAvailable(covered),Is.True);
             Assert.That(Camera.main.rect,Is.EqualTo(viewport));Assert.That(Camera.main.fieldOfView,Is.EqualTo(fov));Assert.That(Camera.main.transform.position,Is.EqualTo(position));
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));CollectionAssert.AreEqual(offers,c.Shop.Offers);
-            c.EnterShopTrial(1);Assert.That(c.PurchaseShopCard(0).NeedsConfirmation,Is.True);gold=c.Shop.Gold;c.SetShopVisible(false);
+            c.EnterShopTrial(1);Assert.That(c.Shop.PreviewPurchase(0).FinalStar,Is.EqualTo(2));gold=c.Shop.Gold;c.SetShopVisible(false);
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
             c.LeaveShopTrial();yield return null;yield return null;
         }
@@ -39,7 +39,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(unit.CardId,Is.EqualTo("CARD_M02"));Assert.That(c.CardForUnit(unit).CardId,Is.EqualTo("CARD_M02"));Assert.That(c.Battle.UnitCombat(unit).HasSkill,Is.False);
             c.LeaveShopTrial();yield return null;yield return null;
         }
-        [UnityTest]public IEnumerator FullBenchMergeIsConfirmedAndMapAssetsStayUnmodified()
+        [UnityTest]public IEnumerator FullBenchMergeIsImmediateAndMapAssetsStayUnmodified()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
             var c=Object.FindAnyObjectByType<ManualBattleController>();var original=Resources.Load<DefenderTrialDefinition>("MapTrials/city");var originalCard=original.battle;
@@ -56,8 +56,8 @@ namespace YesterdayConvoy.Tests
                 }
                 Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));int gold=c.Shop.Gold;
                 Assert.That(c.PurchaseShopCard(1).Success,Is.False);Assert.That(c.Shop.Gold,Is.EqualTo(gold));
-                Assert.That(c.PurchaseShopCard(0).NeedsConfirmation,Is.True);Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
-                var result=c.PurchaseShopCard(0,true);Assert.That(result.Success,Is.True);Assert.That(result.FinalStar,Is.EqualTo(preset==1?2:3));
+                Assert.That(c.Shop.PreviewPurchase(0).FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
+                var result=c.PurchaseShopCard(0);Assert.That(result.Success,Is.True);Assert.That(result.FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(string.IsNullOrEmpty(c.ShopFeedback),Is.True,"Successful promotion should only animate the piece, without a success notice.");
                 Assert.That(c.Shop.Bench.Count,Is.EqualTo(preset==1?9:7));Assert.That(c.Shop.Gold,Is.EqualTo(gold-1));c.Shop.Validate();
                 Assert.That(Camera.main.fieldOfView,Is.EqualTo(framedFov).Within(.001f),"Buying or merging must not accumulate camera zoom.");
                 Assert.That(original.battle,Is.SameAs(originalCard));Assert.That(ManualBattleController.ShopOfferRect(0).yMax,Is.LessThan(ManualBattleController.ShopBenchRect(0).y));

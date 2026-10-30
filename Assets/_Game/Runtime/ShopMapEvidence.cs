@@ -27,16 +27,21 @@ namespace YesterdayConvoy
             yield return InteractionFrame(dir,"shop-map-shop-open");SetShopVisible(false);
             bool overlay=covered&&!ShopVisible&&ShopMapPointAvailable(ShopOfferRect(0).center)&&Camera.main.rect==viewport&&Camera.main.fieldOfView==fov&&Camera.main.transform.position==position&&Shop.Gold==initialGold&&Shop.Offers.SequenceEqual(initialOffers);
             EnterShopTrial(1);yield return null;yield return null;
-            int gold=Shop.Gold;var denied=PurchaseShopCard(1);bool fullReject=!denied.Success&&!denied.NeedsConfirmation&&Shop.Gold==gold&&Shop.Bench.Count==10;
-            var pending=PurchaseShopCard(0);bool fullConfirm=pending.NeedsConfirmation&&Shop.Gold==gold&&Shop.Bench.Count==10;
-            yield return InteractionFrame(dir,"shop-map-full-confirm");shopPending=-1;
-            var two=PurchaseShopCard(0,true);bool fullTwo=two.Success&&two.FinalStar==2&&Shop.Bench.Count==9&&Shop.Gold==gold-1;
+            int gold=Shop.Gold;var denied=PurchaseShopCard(1);bool fullReject=!denied.Success&&Shop.Gold==gold&&Shop.Bench.Count==10;
+            bool rankPreview=Shop.PreviewPurchase(0).FinalStar==2&&Shop.Gold==gold&&Shop.Bench.Count==10;
+            yield return InteractionFrame(dir,"shop-map-silver-ready");
+            if(Array.IndexOf(args,"-shopRankMotionEvidence")>=0)yield return CaptureShopRankMotion(dir,"shop-rank-silver");
+            var two=PurchaseShopCard(0);bool fullTwo=two.Success&&two.FinalStar==2&&Shop.Bench.Count==9&&Shop.Gold==gold-1;
             yield return new WaitForSecondsRealtime(.3f);
+            bool noNotice=string.IsNullOrEmpty(ShopFeedback);
             yield return InteractionFrame(dir,"shop-map-full-two-star");
             EnterShopTrial(2);yield return null;yield return null;
-            gold=Shop.Gold;pending=PurchaseShopCard(0);bool chainPending=pending.NeedsConfirmation&&Shop.Gold==gold;shopPending=-1;
-            var three=PurchaseShopCard(0,true);bool fullThree=chainPending&&three.Success&&three.FinalStar==3&&Shop.Bench.Count==7&&Shop.Available("CARD_M08")==0&&Shop.Gold==gold-1;
+            gold=Shop.Gold;rankPreview&=Shop.PreviewPurchase(0).FinalStar==3&&Shop.Gold==gold;
+            yield return InteractionFrame(dir,"shop-map-gold-ready");
+            if(Array.IndexOf(args,"-shopRankMotionEvidence")>=0)yield return CaptureShopRankMotion(dir,"shop-rank-gold");
+            var three=PurchaseShopCard(0);bool fullThree=three.Success&&three.FinalStar==3&&Shop.Bench.Count==7&&Shop.Available("CARD_M08")==0&&Shop.Gold==gold-1;
             yield return new WaitForSecondsRealtime(.3f);
+            noNotice&=string.IsNullOrEmpty(ShopFeedback);
             yield return InteractionFrame(dir,"shop-map-full-three-star");
             int instance=Shop.Bench.First(p=>p.Id=="CARD_M08").Instance;
             var origin=ShopBenchRect(0).center;
@@ -59,9 +64,13 @@ namespace YesterdayConvoy
             bool simulation=Battle.Clock>0&&Battle.Units.Count==1&&Battle.Units[0].Motion.Position!=Battle.Entry;
             Shop.Validate();LeaveShopTrial();yield return null;yield return null;
             bool exit=TestSelectionOpen&&!ShopTrialActive&&!TacticalMapActive&&Camera.main.rect==new Rect(0,0,1,1);
-            bool pass=layout&&framing&&overlay&&flatBench&&fullReject&&fullConfirm&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
-            Debug.Log($"SHOP_MAP_CHECK: layout={layout}; framing={framing}; overlay={overlay}; flatBench={flatBench}; magnification={magnification:0.00}; fullReject={fullReject}; fullConfirm={fullConfirm}; fullTwo={fullTwo}; fullThree={fullThree}; cancel={cancelSafe}; sale={sale}; level={level}; lock={locked}; refresh={refresh}; gateVisible={gateVisible}; deployed={deployed}; frozen={frozen}; simulation={simulation}; exit={exit}.");
+            bool pass=layout&&framing&&overlay&&flatBench&&fullReject&&rankPreview&&noNotice&&fullTwo&&fullThree&&cancelSafe&&sale&&level&&locked&&refresh&&gateVisible&&deployed&&frozen&&simulation&&exit;
+            Debug.Log($"SHOP_MAP_CHECK: layout={layout}; framing={framing}; overlay={overlay}; flatBench={flatBench}; magnification={magnification:0.00}; fullReject={fullReject}; rankPreview={rankPreview}; noNotice={noNotice}; fullTwo={fullTwo}; fullThree={fullThree}; cancel={cancelSafe}; sale={sale}; level={level}; lock={locked}; refresh={refresh}; gateVisible={gateVisible}; deployed={deployed}; frozen={frozen}; simulation={simulation}; exit={exit}.");
             Time.timeScale=1;Application.Quit(pass?0:1);
+        }
+        IEnumerator CaptureShopRankMotion(string directory,string prefix)
+        {
+            for(int i=0;i<16;i++){yield return new WaitForSecondsRealtime(.08f);yield return InteractionFrame(directory,prefix+"-"+i.ToString("00"));}
         }
     }
 }

@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         }
         public sealed class Result
         {
-            public bool Success, NeedsConfirmation;
+            public bool Success;
             public string Message, Id;
             public int Instance, FinalStar, Value;
         }
@@ -62,11 +62,13 @@ namespace YesterdayConvoy
             foreach(var id in roles.Keys)pool[id]=9-reserved[id];
             Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;Validate();
         }
-        public Result Purchase(int index,bool confirm=false)
+        public Result PreviewPurchase(int index)=>PlanPurchase(index,out _);
+        Result PlanPurchase(int index,out List<Piece> planned)
         {
+            planned=null;
             if(index<0||index>=5||offers[index]==null)return Fail("该位置没有可购买棋子");
-            string id=offers[index];var role=roles[id];if(Gold<role.Cost)return Fail("源石不足");
-            var planned=bench.Select(p=>p.Copy()).ToList();var incoming=new Piece{Instance=sequence+1,Id=id,Star=1};planned.Add(incoming);
+            string id=offers[index];var role=roles[id];
+            planned=bench.Select(p=>p.Copy()).ToList();var incoming=new Piece{Instance=sequence+1,Id=id,Star=1};planned.Add(incoming);
             int target=incoming.Instance,star=1;
             for(int tier=1;tier<3;tier++)
             {
@@ -75,9 +77,13 @@ namespace YesterdayConvoy
                 group[0].Star++;planned.Remove(group[1]);planned.Remove(group[2]);target=group[0].Instance;star=group[0].Star;
             }
             if(planned.Count>10)return Fail("备战席已满；本次不能合成，不扣源石");
-            if(bench.Count==10&&!confirm)return new Result{NeedsConfirmation=true,Message=$"备战席已满。花费{role.Cost}源石，合成{star}星后占用{planned.Count}/10格？"};
-            bench.Clear();bench.AddRange(planned);Gold-=role.Cost;offers[index]=null;sequence++;Validate();
             return new Result{Success=true,Id=id,Instance=target,FinalStar=star,Value=role.Cost,Message=star>1?$"{role.Name} 晋升 {star}星":"招募成功"};
+        }
+        public Result Purchase(int index)
+        {
+            var result=PlanPurchase(index,out var planned);if(!result.Success)return result;
+            if(Gold<result.Value)return Fail("源石不足");
+            bench.Clear();bench.AddRange(planned);Gold-=result.Value;offers[index]=null;sequence++;Validate();return result;
         }
         public Result Quote(int instance)
         {

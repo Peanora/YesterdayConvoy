@@ -8,17 +8,20 @@
 
 本机1920×1080试玩：`D:/游戏开发/YesterdayConvoy-ShopUI/Builds/ShopMap/YesterdayConvoy-Shop.exe`。保留完整ShopMap目录，不能只复制EXE。Unity 6000.6.5f1打开本分支的 `Assets/_Game/ShopTrials/ShopMap.unity` 点Play；重建Windows使用 `YesterdayConvoy.Editor.ShopMapTools.Build`，输出 `Builds/ShopMap`。
 
-- 右上“打开商店/收起商店”或 **Tab** 切换；**Esc** 收起并取消拖动/待确认购买。开关不刷新、不扣款、不移动镜头，不重置棋子或战斗。商店覆盖部分拦截地图点击；展开不自动暂停。
-- 点商店角色图片购买。默认已有两张一星弩手，买第三张合成两星；中央只展示最终晋升，连锁三星不先播两星。
+- 右上“打开商店/收起商店”或 **Tab** 切换；**Esc** 收起并取消拖动。开关不刷新、不扣款、不移动镜头，不重置棋子或战斗。商店覆盖部分拦截地图点击；展开不自动暂停。
+- 点商店角色图片购买。右下角预告买下这一张后的最终二星/三星：二星银色、三星金色，星标在固定位置闪烁，角色图标有对应银/金光效；按最新反馈不使用绕图标旋转的小星星。连锁三星直接显示金色三星；预告不占库存、不扣钱，源石不足时仍不能购买。
 - 升级4源石换4XP，经验溢出保留；刷新2源石，锁店不刷新不扣费。羁绊目前是标签展示。
 - 下沿横向卡槽中，头像在左，星级和名字在右。点击切换编队；拖动时商店自动收起，再拖到红门部署，战斗自动开始。战斗后交易冻结，商店仍可开关查看。
 - 备战角色向下拖入最下沿出售区，出现报价后松手。拖回、区外松手、Esc、失焦均取消；卡槽底部也有足够向下拖动空间。轻点或抖动不出售。
-- “满席两星/满席三星”载入10格材料并展开商店。买第一张弩手先确认，取消保持状态，确认后分别剩9格/7格；第二张猎狗不能合成时拒绝且不扣钱。
+- “满席两星/满席三星”载入10格材料并展开商店。点击第一张弩手直接购买并合成，不弹确认，分别剩9格/7格，只扣一次；第二张猎狗不能合成时拒绝且不扣钱。
+- 升星后仅在对应备战棋子的头像/星标上显示银色或金色反馈，不弹中央成功面板，也不显示成功文字。
 - “重新测试”回默认材料和收起状态；“退出测试”回原怪物菜单并恢复镜头视口/FOV。
 
 ![收起商店的大地图](ui-previews/shop/shop-map-ready.png)
 ![展开的覆盖式商店](ui-previews/shop/shop-map-shop-open.png)
-![最终三星晋升](ui-previews/shop/shop-map-three-star.png)
+![商店银色二星预告](ui-previews/shop/shop-rank-silver-ready.png)
+![商店金色三星预告](ui-previews/shop/shop-rank-gold-ready.png)
+![合成后备战三星，无成功弹窗](ui-previews/shop/shop-map-three-star.png)
 
 ## 比例、连接与范围
 
@@ -32,9 +35,11 @@
 
 ## 实际验证与交付
 
-4/4定向GPU PlayMode通过（play-overlay.xml）：覆盖层默认收起/开关、遮挡不穿透、钱/库存/镜头稳定、取消待确认满席购买、平坦备战比例、拖动自动收起、满席合成、购买不叠加镜头、全部路线/门可见、实际部署与退出恢复。之后仅把出售向下距离从22调至12虚拟像素，适配46像素卡槽，最终Player用卡槽底部起拖验证。
+本轮完整278/278 EditMode（edit-rank.xml）与4/4定向GPU PlayMode（play-rank.xml）通过。验证预告反复读取不改棋子/钱/库存、2/3星预告匹配实际结果、无钱不能买、满席无确认一次合成、重复购买不重复扣款、购买/出售后预告更新；场景覆盖合成后反馈为空、覆盖层、实际部署和地图恢复。
 
-本轮最终构建、独立Player与18项布尔标志结果见[QA](QA.md)。本机证据目录 `D:/游戏开发/artifacts/shop-map/`：play-overlay.xml、build-overlay-final.log、player-overlay-final.log及player-overlay-final截图。原完整276 EditMode/74 PlayMode、Node7/7和浏览器离线检查是此前结果，未记成本轮重跑。浏览器目录保留v12固定上下布局作为历史展示，当前v13覆盖交互在Unity中实现。
+本轮最终构建和独立Player结果见[QA](QA.md)。证据目录 `D:/游戏开发/artifacts/shop-map/`：edit-rank.xml、play-rank.xml、build-rank-final.log、player-rank-final.log与player-rank-final截图。连续实机帧记录固定银色/金色星标的闪烁与光效，旋转小星星已移除；截图本身不能证明动画。[二星动态](ui-previews/shop/silver-rank.webm)、[三星动态](ui-previews/shop/gold-rank.webm)各由16张连续实机帧按8fps合成，仅展示动态，不作精确计时或游戏帧率证明。旧完整74 PlayMode、Node7/7和浏览器检查是历史结果，本轮未重跑；浏览器目录仍保留v12确认/中央面板旧展示，不作为最新Unity行为。
+
+本轮取消确认和成功弹窗是用户最新修订，已同步GDD第7节，覆盖旧文档的确认步骤。视觉参考[官方TFT商店动画及二/三星效果改进方向](https://followthefix.teamfighttactics.leagueoflegends.com/)；银/金光晕、旋转光弧、轮廓及星标均由本项目GUI绘制，没有提取云顶特效贴图或音效。新增ShopPromotionEffects.cs和meta随源码提交，无新增外部运行媒体。
 
 未测第二台电脑、全新克隆构建、长时压力与人类数值平衡。本机通过不代表接收端已验收；接收者需按上述入口验证开关商店、招募/合成/出售/部署与退出。
 

@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-10-30：直接满席合成与银/金星标反馈
+
+完整edit-rank.xml：278/278通过，0失败/跳过；其中商店模型7项，覆盖重复预告只读、2/3星预告等于实际合成、一次满席购买只扣一次、重复购买不扣款、无钱不能买、购买/出售后标记更新。play-rank.xml：4/4 GPU地图交互通过，满席立即合成且ShopFeedback为空，原地图和镜头不变，覆盖店开关/遮挡、编队部署、退出恢复继续通过。
+
+随后仅删除旋转小星星，保留固定位置星标闪烁和银金光效。build-rank-final.log：Windows1495929844 bytes、0错误。player-rank-final.log：layout/framing/overlay/flatBench/fullReject/rankPreview/noNotice/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit共19个布尔标志全True，无捕获异常。预告不实际买牌，满席合成一次点击完成，无确认/中央成功面板或成功文字；失败反馈仍保留。
+
+已查看最终银/金预告、三星合成后截图。每档16张连续实机帧记录光弧和固定星标亮度变化；silver-rank.webm/gold-rank.webm由这些帧8fps编码，不把该视频帧率冒充游戏帧率。docs/ui-previews/shop/shop-rank-*.png与shop-map-three-star.png为最终实机；旧shop-map-confirm.png是历史截图，不代表当前UI。证据根D:/游戏开发/artifacts/shop-map。未重跑其余完整PlayMode、Node/浏览器；未测第二台电脑或全新克隆构建。
+
 ## 2026-10-30：覆盖式商店与扁平备战席
 
 [最新操作与范围](SHOP_MAP_TRIAL.md)。play-overlay.xml：4/4定向GPU PlayMode通过，覆盖默认收起、开关保留钱/库存/镜头、覆盖区不穿透、关闭待确认购买不扣款、拖动自动收起、扁平比例、全部路线/门、满席2/3星、实际部署、购买不叠加缩放及退出恢复。完整276/74未在本轮重跑。
