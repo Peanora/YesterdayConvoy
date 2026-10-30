@@ -1,6 +1,6 @@
 {
   "source_commit": "7ec2860c398b692d73527c3533dd8affa40c1ecf",
-  "description": "38 个角色图像已内嵌 index.html；来源路径为原工程路径，不要求运行时读取另一工作区。",
+  "description": "38 个角色图像内嵌 roster-data.js；原路径只用于来源核对，预览不读取另一工作区。",
   "processing": "PNG 原数据内嵌；cell=256 的待机图集在浏览器只取首帧并按 alpha 裁透明边界；其余直接使用立绘。没有重绘。",
   "rights": "沿用工程内原游戏素材来源及真实权利状态；未新增原作再分发授权声明。原工程来源记录见 docs/art/ASSET_MANIFEST.csv、docs/art/CREDITS.md 及对应角色文档。",
   "roles": [

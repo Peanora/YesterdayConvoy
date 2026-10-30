@@ -8,6 +8,6 @@
   "sha256": "928831f9802e3414248a261acd64b6474b0bbb3f5c33591d3f6d16c9a6850acc",
   "bytes": 3906,
   "original_pixels": "52x53",
-  "processing": "原文件不改像素；HTML内嵌PNG，按CSS等比显示；未生成/重绘。",
+  "processing": "原PNG不改像素；v9通过本目录 assets/originium-ui.png 本地等比显示，未生成或重绘。",
   "rights": "原游戏素材；PRTS 是社区收录站，不是权利人官方托管站。未收到新的公开再分发授权文件；按用户明确上传指令随本预览提交，不将作业用途或社区可下载性记作再分发许可。"
 }
