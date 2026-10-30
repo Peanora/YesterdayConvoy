@@ -50,6 +50,16 @@ namespace YesterdayConvoy
         internal double NextBarrierRefreshAt;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double HinderedUntil {get;internal set;}=double.NegativeInfinity;
+        public double LureUntil {get;internal set;}=double.NegativeInfinity;
+        public double LureDistance {get;internal set;}
+        public double VulnerableUntil {get;internal set;}=double.NegativeInfinity;
+        public float Vulnerability {get;internal set;}
+        public float SnowMove {get;internal set;}=1;
+        public double FearUntil {get;internal set;}=double.NegativeInfinity;
+        public float ScorchAccumulated {get;internal set;}
+        public double ScorchUntil {get;internal set;}=double.NegativeInfinity;
+        public int ScorchBursts {get;internal set;}
+        internal double NextDroneAreaAt;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool Active => Resolution == UnitResolution.Active;

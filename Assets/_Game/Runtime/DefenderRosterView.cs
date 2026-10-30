@@ -39,7 +39,7 @@ namespace YesterdayConvoy
             foreach(var v in visuals)
             {
                 var d=b.FindDefender(v.Id); if(d==null) { v.Renderer.enabled=false; continue; }
-                var r=v.Renderer; double age=clock-d.LastActionTime;
+                var r=v.Renderer;if(d.Reserve){r.enabled=false;continue;} double age=clock-d.LastActionTime;
                 bool action=age>=0 && age<d.Settings.ActionDuration/d.LastActionRate;
                 if(d.Alive && d.FrozenUntil<=b.Clock)
                 {
@@ -65,12 +65,14 @@ namespace YesterdayConvoy
                     }
                 }
                 var art=v.Back && v.Rear!=null?v.Rear:v.Art;
+                if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&b.DefenderSkillActive(d))art=v.Art;
                 double actionAge=d.Settings.ActionDuration>0&&((v.Back&&v.Rear!=null)||d.Settings.Skill.Enabled) ? age*d.LastActionRate*art.ActionDuration/d.Settings.ActionDuration : age;
                 r.enabled=d.Alive || clock-d.DeathTime<v.Art["death"].Duration;
                 if(v.Skill!=null&&!d.Alive)v.Skill.enabled=false;
                 if(!r.enabled) continue;
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
+                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)||b.Clock-d.SkillEndedAt<.5))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno?System.Math.Max(d.SkillActiveUntil,d.ProtectionUntil):d.SkillActiveUntil)-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration);
                 else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge);
                 else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
                 else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);

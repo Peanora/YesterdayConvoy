@@ -40,6 +40,7 @@ namespace YesterdayConvoy
             var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
+            var advanced=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advanced.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));
@@ -159,6 +160,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var sourceUnit=b.FindUnit(shot.SourceId);
             var sourceCombat=b.UnitCombat(sourceUnit);
             var sourceCard=owner.CardForUnit(sourceUnit);

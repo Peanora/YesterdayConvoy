@@ -84,7 +84,7 @@ namespace YesterdayConvoy
         }
         void TrueDamage(DefenderState d,float amount)
         {
-            if(!d.Alive)return;d.Health=Math.Max(0,d.Health-amount);d.LastHitTime=Clock;
+            if(!d.Alive)return;ApplyDefenderLoss(d,amount);d.LastHitTime=Clock;
             if(!d.Alive){d.DeathTime=Clock;d.TargetId=null;}
         }
         public bool TryIgniteReeds(Vector3 position,float radius=1.5f)
@@ -193,7 +193,7 @@ namespace YesterdayConvoy
             else
             {
                 var d=defenders.Where(d=>d.Alive&&d.Health<d.MaxHealth&&GroundDistance(d.Position,s.Position)<=s.Radius).OrderBy(d=>d.Health).FirstOrDefault();
-                if(d!=null){float before=d.Health;d.Health=Math.Min(d.MaxHealth,d.Health+d.MaxHealth*.1f);FacilityHealing+=d.Health-before;}
+                if(d!=null&&!d.DebtLife){float before=d.Health;d.Health=Math.Min(d.MaxHealth,d.Health+d.MaxHealth*.1f);FacilityHealing+=d.Health-before;}
             }
         }
     }

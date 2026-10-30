@@ -1,5 +1,17 @@
 # 授权与分发记录
 
+## 2026-10-29：六星守军第六批
+
+D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。
+
+## 2026-10-29：六星守军第五批
+
+D23 Mon3tr、D24新约能天使、D25斩业星熊的已确认模型/卡面/选定S3动作接入独立试玩；131PNG/135387446字节、6清单及meta随源码交付。原作媒体非CC0，开放再分发权利未确认，上传决定不等于权利人授权。[实现与缺口](../DEFENDER-SKILLS-BATCH5.md)、[具体来源](source-records/defender-batch5-approved.json)、[PNG哈希](DEFENDER-BATCH5-IMPORT.json)。
+
+## 2026-10-28：六星守军第四批
+
+D21荒芜拉普兰德、D22余、D29塞雷娅、D30玛恩纳的已确认正背面模型、卡面和S3动作接入独立试玩；154PNG/168756309字节、8份清单与meta随源码交付。原角色、纹理和动作属于《明日方舟》原权利人，具体画师及开放再分发许可未确认，非CC0；用户接入/上传决定不等于权利人许可。运行路径、缺失的塞雷娅背面S3、程序特效与实际验证边界见[本批说明](../DEFENDER-SKILLS-BATCH4.md)。[具体来源](source-records/defender-batch4-approved.json)、[导入SHA](DEFENDER-BATCH4-IMPORT.json)。余火墙复用highwizard/Animated flame的既有CC0纹理，仅此火焰受CC0许可，不扩大到原作角色。
+
 ## 2026-10-22 M21–M38 已确认接入，银狼排除
 
 18位《明日方舟》敌方角色的卡面、原作离线采样图集与来源记录随源码交付。权利归原作权利人，具体原画/动画师未确认，非CC0且公开再分发许可未确认；用户上传指令不等于权利人授权。PRTS不是开放许可证明。逐个页面、实际下载地址、哈希与当前使用范围见[source-records/m21-m38-approved.json](source-records/m21-m38-approved.json)及[接入记录](M21-M38-INTEGRATION.md)。未向Unity添加Spine运行库，原模型/加工库/预览不入库。

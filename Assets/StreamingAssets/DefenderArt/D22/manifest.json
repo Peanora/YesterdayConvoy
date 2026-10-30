@@ -1,0 +1,413 @@
+{
+  "version": 1,
+  "task": "D22",
+  "ppu": 126.4,
+  "referenceSpeed": 0.75,
+  "height": 1.25,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 384,
+      "duration": 6.400000095367432,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.6158246972825792,
+      "pivotY": 0.23958333333333337,
+      "sourceBounds": [
+        -432.13214111328125,
+        -35.174137115478516,
+        256.5662841796875,
+        424.9365539550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-03.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-04.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-05.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-06.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-07.png",
+          "count": 41,
+          "width": 2016,
+          "height": 1728
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 97,
+      "duration": 1.600000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.6158246972825792,
+      "pivotY": 0.23958333333333337,
+      "sourceBounds": [
+        -432.13214111328125,
+        -35.174137115478516,
+        256.5662841796875,
+        424.9365539550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 48,
+          "width": 2016,
+          "height": 2016
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.6158246972825792,
+      "pivotY": 0.23958333333333337,
+      "sourceBounds": [
+        -432.13214111328125,
+        -35.174137115478516,
+        256.5662841796875,
+        424.9365539550781
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "death-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "skill_begin",
+      "source": "Skill_3_Begin",
+      "count": 97,
+      "duration": 1.600000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.6064165143966674,
+      "pivotY": 0.2643169013261795,
+      "sourceBounds": [
+        -441.70697021484375,
+        -31.196121215820312,
+        262.4791564941406,
+        423.1616516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_begin-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_begin-01.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_begin-02.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1600
+        }
+      ]
+    },
+    {
+      "key": "skill_end",
+      "source": "Skill_3_End",
+      "count": 11,
+      "duration": 0.1666666716337204,
+      "fps": 60,
+      "loop": false,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.6064165143966674,
+      "pivotY": 0.2643169013261795,
+      "sourceBounds": [
+        -441.70697021484375,
+        -31.196121215820312,
+        262.4791564941406,
+        423.1616516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_end-00.png",
+          "count": 11,
+          "width": 1920,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "key": "skill_idle",
+      "source": "Skill_3_Idle",
+      "count": 192,
+      "duration": 3.200000047683716,
+      "fps": 60,
+      "loop": true,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.6064165143966674,
+      "pivotY": 0.2643169013261795,
+      "sourceBounds": [
+        -441.70697021484375,
+        -31.196121215820312,
+        262.4791564941406,
+        423.1616516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_idle-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_idle-01.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_idle-02.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_idle-03.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_idle-04.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_idle-05.png",
+          "count": 12,
+          "width": 1920,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "key": "skill_attack",
+      "source": "Skill_3_Loop",
+      "count": 96,
+      "duration": 1.600000023841858,
+      "fps": 60,
+      "loop": true,
+      "cell": 320,
+      "columns": 6,
+      "pivotX": 0.6064165143966674,
+      "pivotY": 0.2643169013261795,
+      "sourceBounds": [
+        -441.70697021484375,
+        -31.196121215820312,
+        262.4791564941406,
+        423.1616516113281
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "skill_attack-00.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_attack-01.png",
+          "count": 36,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "skill_attack-02.png",
+          "count": 24,
+          "width": 1920,
+          "height": 1280
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "387bcd61f1b6584219d5b5e1b528d8259d32c05f7195b344193910434cfa70ba"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "140769f4579db21426910cc13a375e4398a8223a3ea26425491d43757682a0fb"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "6760f15a679e6752bc38f7d3eb92e6a3841ed466c6dfcdb44627022b29d3c66b"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "0c368a8e977950461871864a968aeb47f044cccc7273602e0a1b81fe3b11143a"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "63b0b9c2b041acbcea24fa260cb9340a64a7c0a09d9c64d018cd1769738cddb4"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "92eb2ec07a6784b4ff289e7e9955f5c5f26a1118b3b28beb969b1a91aa016b4f"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "52642c7ca44c47cf90fdcd84e098c28641b41f404cbbc6311746d78d122cb0e8"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "6e04f964f98ec0efb6ffd5bee50feac5c3cd07cd3fa1634ad7ba2ce33b659b5b"
+    },
+    {
+      "file": "idle-04.png",
+      "sha256": "40b3a9121b3feeca5ec7ebd3f062e91a1b0c7b4a8163529a3b9055c8c8e94660"
+    },
+    {
+      "file": "idle-05.png",
+      "sha256": "2ee76321b8539ed36731259e11b3a34a443539dc1a71c2ee5d6deba09d080b25"
+    },
+    {
+      "file": "idle-06.png",
+      "sha256": "735172356e340bf99c7df5af2d67eeaf32067e7243143be392f9d3f8c91643d1"
+    },
+    {
+      "file": "idle-07.png",
+      "sha256": "132513e8ec2e175422980818718769063a2cc6abd9e074000c54fbe28318ecef"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "be4b8fee48419ced50c5d979e3fdbcc9242b41d4fe20b4f55dcdb18a4b64907d"
+    },
+    {
+      "file": "skill_attack-00.png",
+      "sha256": "dce5a6f2dff019de90bed401101d5a6df95d92c48d11478a0a9e21cfab656079"
+    },
+    {
+      "file": "skill_attack-01.png",
+      "sha256": "c93ca4adb21c23b8be6eafbcdb71a12ea8430a6beed056a85b4880e9eaf14296"
+    },
+    {
+      "file": "skill_attack-02.png",
+      "sha256": "0add8aaa13905f443a58bc6e02f64a92156f60fce0e5b3bee929bae95dd42ba6"
+    },
+    {
+      "file": "skill_begin-00.png",
+      "sha256": "c6cb6bf5249d44cd0ddd433395daafbdb2e2957c487d5e5ac3323cfd91f19d5b"
+    },
+    {
+      "file": "skill_begin-01.png",
+      "sha256": "27338f5de5993da1633d6cd9fe2427b2361d4a7f27aa151ee26b24b9e1f5c0a0"
+    },
+    {
+      "file": "skill_begin-02.png",
+      "sha256": "57de17ff0c81eb047e358f40988eadb6dbbf0fcf0ba2c02ce8aa4292c2e7ed8f"
+    },
+    {
+      "file": "skill_end-00.png",
+      "sha256": "3f503510ffa501ead81ec3b1e5a84e5834ba4021dfa03acfba891c6aeee69eef"
+    },
+    {
+      "file": "skill_idle-00.png",
+      "sha256": "885bd5b0238e2a1b32863157e6d9500ce4a901b0c4b5ac28875553d04054304e"
+    },
+    {
+      "file": "skill_idle-01.png",
+      "sha256": "83a8a974aec16b2cc63b5955e08bce2ee7be9635cfd5e7285d7befaa6c83fb61"
+    },
+    {
+      "file": "skill_idle-02.png",
+      "sha256": "b39115e9a2e07ad43388dabc365d6a68d62206e3cfac079c5c1dbb9a480268e0"
+    },
+    {
+      "file": "skill_idle-03.png",
+      "sha256": "882e64c0d7fb7a24cb5bf5f91facfcf8a6f308705728722a194dee771cb05332"
+    },
+    {
+      "file": "skill_idle-04.png",
+      "sha256": "96ddd0b1e501042cf816627cdb1d73f0d0825a95266945b94367df1023cd7a97"
+    },
+    {
+      "file": "skill_idle-05.png",
+      "sha256": "bfefadec6f8de79f6ddc3efed8c8c2b0dee3f8c1ca0022949afbc3a00af1c91f"
+    }
+  ],
+  "provenance": "Approved direct batch-four integration 2026-10-28. Original Arknights media; open redistribution permission unconfirmed. PNG bytes retained; uniform 1.25-unit idle height and foot-center pivot."
+}

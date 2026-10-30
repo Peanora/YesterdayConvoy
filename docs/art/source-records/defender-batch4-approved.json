@@ -1,0 +1,287 @@
+{
+  "date": "2026-10-28",
+  "scope": "Approved runtime S3 only; no Spine runtime or source model included.",
+  "rights": "Original Arknights rights holders; artist and open redistribution permission unconfirmed; user integration/upload instruction is not a rights-holder license.",
+  "sources": [
+    {
+      "task": "D21F",
+      "unitId": "D21",
+      "name": "荒芜拉普兰德",
+      "variant": "战斗正面",
+      "characterId": "char_1038_whitw2",
+      "reference": "https://prts.wiki/w/%E8%8D%92%E8%8A%9C%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/meta.json",
+      "model": "char_1038_whitw2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1038_whitw2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.skel",
+          "bytes": 784211,
+          "sha256": "6c446a8858053bbd5e2b53d8b7d7adce8e7bf3d270a1132e2eea25ea079815b7"
+        },
+        {
+          "file": "char_1038_whitw2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.atlas",
+          "bytes": 10558,
+          "sha256": "32461e01846edaed201a1e4e74512e18477327e4e35659cfc2af08db60ae7661"
+        },
+        {
+          "file": "char_1038_whitw2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.png",
+          "bytes": 109360,
+          "sha256": "c867cb1a74612b219fa8ba8a8e7e3b4d49d2a12be3c3d990e5535da22b7492e1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D21B",
+      "unitId": "D21",
+      "name": "荒芜拉普兰德",
+      "variant": "战斗背面",
+      "characterId": "char_1038_whitw2",
+      "reference": "https://prts.wiki/w/%E8%8D%92%E8%8A%9C%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/meta.json",
+      "model": "char_1038_whitw2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1038_whitw2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.skel",
+          "bytes": 488070,
+          "sha256": "f474cc0dc48d90887e2ae698144fb143d5d1aad5808a9bcef8b41eb11123bc6e"
+        },
+        {
+          "file": "char_1038_whitw2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.atlas",
+          "bytes": 7109,
+          "sha256": "d751913f375d1bdf34f47a4769a0ce7085601237619e12ff1ecbe865fdd5c5e8"
+        },
+        {
+          "file": "char_1038_whitw2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.png",
+          "bytes": 94016,
+          "sha256": "6d103862736727dca6f230d8bdca54d9b3066fbf05b55116a088d35abb81f0d8"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D22F",
+      "unitId": "D22",
+      "name": "余",
+      "variant": "战斗正面",
+      "characterId": "char_2026_yu",
+      "reference": "https://prts.wiki/w/%E4%BD%99",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/meta.json",
+      "model": "char_2026_yu",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_2026_yu.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.skel",
+          "bytes": 616713,
+          "sha256": "951da8f3ea2311a488e43c34b0ae552d7e1749e5d9d99e798098ff98f511c832"
+        },
+        {
+          "file": "char_2026_yu.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.atlas",
+          "bytes": 12829,
+          "sha256": "5d89894b763c5d3bd02b21fa8c42a0f89a83e1361b2da83068ecec1ed15f7dd0"
+        },
+        {
+          "file": "char_2026_yu.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.png",
+          "bytes": 162843,
+          "sha256": "de8082613fb784e45dcf7816ba9d24bff83933edf8909c79b316a57e992d0e2d"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D22B",
+      "unitId": "D22",
+      "name": "余",
+      "variant": "战斗背面",
+      "characterId": "char_2026_yu",
+      "reference": "https://prts.wiki/w/%E4%BD%99",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/meta.json",
+      "model": "char_2026_yu",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_2026_yu.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.skel",
+          "bytes": 477494,
+          "sha256": "0d5f8aea6e5e394f630456065f4e98704bc9ab0d8fd77368db25203b4afe38f3"
+        },
+        {
+          "file": "char_2026_yu.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.atlas",
+          "bytes": 7996,
+          "sha256": "ed418d933f7a405be37977a3334e4a20ac1c86c82739b3e4cb73364a9a9b9256"
+        },
+        {
+          "file": "char_2026_yu.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.png",
+          "bytes": 136798,
+          "sha256": "db552f069a4834d33657e06b944a728e8865f52403bd16b023b255a86fcc3004"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D29F",
+      "unitId": "D29",
+      "name": "塞雷娅",
+      "variant": "战斗正面",
+      "characterId": "char_202_demkni",
+      "reference": "https://prts.wiki/w/%E5%A1%9E%E9%9B%B7%E5%A8%85",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/meta.json",
+      "model": "char_202_demkni",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_202_demkni.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.skel",
+          "bytes": 163353,
+          "sha256": "2b9adb87ef6fd1137271f13f920d48f73fe5c7817c752bc63879e21e97b39775"
+        },
+        {
+          "file": "char_202_demkni.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.atlas",
+          "bytes": 5017,
+          "sha256": "27876a624e20bd79169eab9217549fa540a6162afafb33071dcb4c3c76ed85ae"
+        },
+        {
+          "file": "char_202_demkni.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.png",
+          "bytes": 80457,
+          "sha256": "d76a9fba34d6c4b8685ccd27a1de6cbefda3e71b560b6cf352ec294ddcdf8d13"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D29B",
+      "unitId": "D29",
+      "name": "塞雷娅",
+      "variant": "战斗背面",
+      "characterId": "char_202_demkni",
+      "reference": "https://prts.wiki/w/%E5%A1%9E%E9%9B%B7%E5%A8%85",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/meta.json",
+      "model": "char_202_demkni",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_202_demkni.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.skel",
+          "bytes": 69838,
+          "sha256": "89f67465d1ec39d76038f55e6693174da282e48622e903c4baa8b6dd5fd509ac"
+        },
+        {
+          "file": "char_202_demkni.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.atlas",
+          "bytes": 3472,
+          "sha256": "75795fcb6058ddbc61e6b98053990da8e44e9c3a44a4276fd12f0e2dab773735"
+        },
+        {
+          "file": "char_202_demkni.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.png",
+          "bytes": 64623,
+          "sha256": "0edd055c0da13f6b4ddbc910aaa9be654debd60e533017d300bcd5ea9882cc78"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D30F",
+      "unitId": "D30",
+      "name": "玛恩纳",
+      "variant": "战斗正面",
+      "characterId": "char_4064_mlynar",
+      "reference": "https://prts.wiki/w/%E7%8E%9B%E6%81%A9%E7%BA%B3",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/meta.json",
+      "model": "char_4064_mlynar",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_4064_mlynar.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.skel",
+          "bytes": 519849,
+          "sha256": "b27519e7d7ea8d71df9b985bac8aad7eba343156af5b10ec4e8c3241fef05d40"
+        },
+        {
+          "file": "char_4064_mlynar.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.atlas",
+          "bytes": 10018,
+          "sha256": "0b23878eecc63b87bf385733bcd2093ace869d7573768df23ca69b12a9fa5b1c"
+        },
+        {
+          "file": "char_4064_mlynar.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.png",
+          "bytes": 84454,
+          "sha256": "16d37cba6dbde0ffe179425917c49ce21985c001c2031cb8513c53f565e8b936"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D30B",
+      "unitId": "D30",
+      "name": "玛恩纳",
+      "variant": "战斗背面",
+      "characterId": "char_4064_mlynar",
+      "reference": "https://prts.wiki/w/%E7%8E%9B%E6%81%A9%E7%BA%B3",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/meta.json",
+      "model": "char_4064_mlynar",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_4064_mlynar.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.skel",
+          "bytes": 353954,
+          "sha256": "f745859793baed9c6b9a886ed3e95602b2b2c84a28c526778ed44b344ef96c79"
+        },
+        {
+          "file": "char_4064_mlynar.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.atlas",
+          "bytes": 5567,
+          "sha256": "4f59a677c48050bed9f4f01053ce7dbd399cea278aad8c71969a1185220f6571"
+        },
+        {
+          "file": "char_4064_mlynar.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.png",
+          "bytes": 62379,
+          "sha256": "03194c437746cb52ba8ee74368e702b676de31cf8bb09ef08dc550fb87073ae7"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ]
+}

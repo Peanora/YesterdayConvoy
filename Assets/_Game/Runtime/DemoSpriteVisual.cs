@@ -83,7 +83,7 @@ namespace YesterdayConvoy
                     bool attacking=facingAge>=0 && facingAge<(original!=null ? combat.UnitInterval : combat.AttackDuration);
                     if(!attacking || tacticalAttack!=deployedUnit.LastAttackTime)
                     {
-                        float dx=deployedUnit.Motion.Direction.x;
+                        float dx=deployedUnit.Motion.Direction.x*(deployedUnit.FearUntil>manualBattle.Clock?-1:1);
                         if(attacking)
                         {
                             tacticalAttack=deployedUnit.LastAttackTime;

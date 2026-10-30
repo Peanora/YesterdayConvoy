@@ -20,7 +20,7 @@ namespace YesterdayConvoy
         public bool PatriotControlImmune(DeployedUnitState u)=>IsPatriot(u)&&u.PatriotPhase!=PatriotPhase.March;
         public bool PatriotCasting(DeployedUnitState u)=>IsPatriot(u)&&u.Active&&u.Spear!=null&&Clock<u.Spear.EndsAt;
         public bool IsPatriotSpear(CombatShot s)=>units.Any(u=>u.Spear?.Shot==s);
-        public float UnitResistance(DeployedUnitState u)=>Mathf.Min(100,UnitCombat(u).Effects.UnitResistance*(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.March?2:1));
+        public float UnitResistance(DeployedUnitState u)=>Mathf.Min(100,UnitCombat(u).Effects.UnitResistance*(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.March?2:1))-(u.ScorchUntil>Clock?20:0);
         float UnitAttackInterval(DeployedUnitState u)=>UnitCombat(u).UnitInterval-(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?.4f:0);
         float UnitAttackWindup(DeployedUnitState u)=>IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?.6833334f:UnitCombat(u).AttackWindup;
         public bool ConfigureDefenderHighGround(string id,bool value)
@@ -47,7 +47,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
                 if(d.Alive&&GroundDistance(d.Position,u.Motion.Position)<=1.75f)
                 {
-                    float hp=d.Health;d.Health=Mathf.Max(0,d.Health-UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f);
+                    float hp=d.Health;ApplyDefenderLoss(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f);
                     u.ImmolationDamage+=hp-d.Health;d.LastHitTime=Clock;if(!d.Alive)d.DeathTime=Clock;
                 }
         }
