@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-10-31：动态模型备战席与商店/购买/三星特效
+
+play-model-bench-final.xml：5/5地图GPU PlayMode通过，0失败/跳过。覆盖暂停时开关进度和待机帧继续变化、快速反向开关不跳位、过渡拦截覆盖地图且不改钱/牌、购买落位不生成战斗实体、台座底边轻点不售/向下拖动可售、满席二/三星合成、落位后特效启动并1秒结束、退出清理实际模型。此后仅补模型拖动跟随、刷新图标在滑动裁剪区的绘制和预览录制，最终重建并实机复核；未重跑完整EditMode或其余PlayMode。
+
+build-model-bench-delivery.log：Windows1495943851 bytes、0错误。player-model-bench-delivery.log：19项SHOP_MAP_CHECK、SHOP_BENCH_EFFECTS_EXPIRE、closingBlocksMap、purchaseArrivals共22项全部True，无捕获异常。已查看实际1920×1080静态/滑入中/飞行中/三星金光截图，刷新图标位置正常、棋子立于台座、无旋转星标或光弧。动态来源为本作现有战斗帧，真实SpriteRenderer对象由独立透明相机渲染，非卡面缩略图、非新增三维网格。
+
+shop-toggle.webm（16帧）、purchase-and-three-star.webm（36帧）及银/金预告短片由实机帧8fps编码，属于慢放演示，不能当作实际游戏帧率或动画精确计时。录制先按真实时间取帧，再编码PNG，避免压缩耗时跳过短暂动画。旧shop-map-confirm.png仍是历史截图。
+
+首轮Player发现新台座底边出售空间不足，已按剩余向下距离适配阈值并加入交互断言；中间录制轮采样过快、未覆盖到落位金光，不记为通过，已修正采样间隔后重录。滑动裁剪区原先旋转矩阵绘制刷新图标位置错误，已改成运行时生成的静态箭头纹理。最终以上22项与画面为交付证据。未测第二台电脑、全新克隆、全部分辨率或长期GPU性能；额外透明模型相机的性能仍需低配机实测。
+
 ## 2026-10-30：商店和备战升星全部取消旋转
 
 删除ShopPromotionEffects共用绘制中的整段旋转光弧和开关参数；两个入口均只保留不旋转的亮起、轮廓和星标，备战仍1秒结束且星标全程静态。build-no-rank-rotation.log：Windows1495930340 bytes、0错误；player-no-rank-rotation.log原19项加特效结束共20项全部True，无捕获异常。商店二/三星各16张连续实机帧已重录，查看两档最终帧，确认没有绕行光弧；银/金截图与WebM均替换为本版，视频8fps仅展示动态，不作为游戏帧率证明。本次仅删除显示逻辑，未重跑EditMode/GPU PlayMode；未测第二台电脑或全新克隆。

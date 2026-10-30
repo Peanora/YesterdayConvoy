@@ -545,6 +545,7 @@ namespace YesterdayConvoy
 
         private void OnDisable()
         {
+            ClearShopBenchModels();
             ClearViews(); CancelInteraction();
             if(preview!=null) preview.enabled=false;
             if(entryOutline!=null) entryOutline.enabled=false;
@@ -552,6 +553,7 @@ namespace YesterdayConvoy
 
         private void OnDestroy()
         {
+            ClearShopBenchModels();
             ClearViews();
             if(preview!=null) Destroy(preview.gameObject);
             if(entryOutline!=null) Destroy(entryOutline.gameObject);
