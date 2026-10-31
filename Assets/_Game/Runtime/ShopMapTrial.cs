@@ -32,7 +32,7 @@ namespace YesterdayConvoy
         public static Rect ShopPanelRect=>new Rect(0,64,1280,199);
         public static Rect ShopSellRect=>new Rect(16,688,1248,30);
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
-        public static Rect ShopBenchRect(int i)=>new Rect(16+i*125,650,116,62);
+        public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
         public bool ShopMapPointAvailable(Vector2 point)=>ShopBattlefieldRect.Contains(point)&&(!(shopVisible||ShopPanelTransitioning)||!ShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
@@ -193,6 +193,7 @@ namespace YesterdayConvoy
             GUI.DrawTexture(new Rect(25,25,22,22),shopCoin,ScaleMode.ScaleToFit,true);
             GUI.Label(new Rect(54,17,58,38),"源石",label);
             GUI.Label(new Rect(105,12,170,44),shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
+            GUI.Label(new Rect(292,19,330,30),$"整备 {shop.Bench.Count}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
             GUI.Label(new Rect(650,17,55,38),"等级",label);GUI.Label(new Rect(702,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
             Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
             GUI.Label(new Rect(878,18,65,34),shop.Level==10?"MAX":$"{shop.XP}/{ShopTrialModel.Experience[shop.Level]}",new GUIStyle(center){fontSize=12,normal={textColor=new Color(.72f,.85f,.91f)}});

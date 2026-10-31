@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-10-31：用户录屏参考长平台、高位落地
+
+查看完整42.17秒本地录屏及购买片段逐帧，参照连续厚平台、从右向左排列和高处快速落地；记录见[来源与观察](ui-previews/shop/REFERENCE-RECORDING.md)。模型正常配色，白色下落光痕、青白落地环/碎光，待机衔接；没有导入录屏中的原作部署图集或UI资产。
+
+- play-recording-bench.xml：6/6定向地图GPU PlayMode通过，0失败/跳过。覆盖右向左布局、入场固定横坐标/下降/待机、快速合成与出售清理、暂停、商店开关拦截、满席直接二/三星、轻点不出售和向下拖动出售、部署及退出恢复。
+- build-recording-bench.log：Windows1495946440 bytes，0错误。
+- player-recording-bench.log：19项交易/布局/部署标志、特效结束及closingBlocksMap/purchaseArrivals/reserveCellEntry共23项全True，无捕获异常。最终可见1920×1080窗口保存94张实机图，已查看准备、上方下落、接地青白环及三星金光。
+- docs/ui-previews/shop：8张截图、4段连续实机帧WebM同步更新。8fps为观察用慢放，不代表实际游戏帧率或精确动画时长。原录屏和参考帧仅位于本地，不提交。
+
+证据根目录D:/游戏开发/artifacts/shop-map/。本轮没有重跑完整EditMode/其他PlayMode；旧278项完整记录为历史结果。第二台电脑、全新克隆构建、长时性能及人类手感验收仍未测。原地图asset、主场景、Prefab、Packages和ProjectSettings保持；Unity生成的.vscode保持未跟踪。
+
 ## 2026-10-31：相连整备格与原地显现落地
 
 用户明确选定角色在整备格内显现、落地，再转入待机。play-reserve-entry-final.xml：6/6地图GPU PlayMode通过，0失败/跳过。验证实际入场模型横坐标始终与目标格一致、先高于地面且逐渐显现下降、0.72秒后转入正常待机；快速连买三张合成仅保留一个结果入场模型，入场中出售会立即清理；此前开关、部署、满席二/三星、底边出售及退出清理继续通过。

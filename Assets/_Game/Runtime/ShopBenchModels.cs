@@ -68,7 +68,7 @@ namespace YesterdayConvoy
         static float ShopModelScale(string id)
         {
             float height=LocalMonsterArt.For(id)?.Height??1;
-            return .42f/1.855f*Mathf.Min(1,2.05f/height);
+            return .50f/1.855f*Mathf.Min(1,2.05f/height);
         }
         static Vector2 ShopModelFoot(int slot)=>new Vector2(ShopBenchRect(slot).center.x,693);
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);
@@ -88,14 +88,14 @@ namespace YesterdayConvoy
         {
             for(int i=shopArrivals.Count-1;i>=0;i--)if(shopArrivals[i].Instance==result.Instance)
             {shopArrivals[i].Model.gameObject.SetActive(false);Destroy(shopArrivals[i].Model.gameObject);shopArrivals.RemoveAt(i);}
-            shopBenchIdleOrigins[result.Instance]=Time.unscaledTime+ShopArrivalDuration*.7f;
+            shopBenchIdleOrigins[result.Instance]=Time.unscaledTime+ShopArrivalDuration*.6f;
             shopArrivals.Add(new ShopArrival{Instance=result.Instance,Id=result.Id,At=Time.unscaledTime,Model=NewShopModel("Entering "+result.Id)});
             UpdateShopBenchModels();
         }
         static Vector2 ShopEntranceFoot(Vector2 destination,float progress)
         {
-            float drop=Mathf.Clamp01((progress-.2f)/.5f);
-            return destination+new Vector2(0,-18*(1-drop*drop));
+            float drop=Mathf.Clamp01((progress-.12f)/.48f);
+            return destination+new Vector2(0,-78*(1-drop*drop));
         }
         void LateUpdate(){if(ShopTrialActive){if(shopModelStage==null)SyncShopBenchModels();else UpdateShopBenchModels();}}
         void UpdateShopBenchModels()
@@ -118,10 +118,10 @@ namespace YesterdayConvoy
                 int slot=shop.Bench.ToList().FindIndex(p=>p.Instance==arrival.Instance);float t=Mathf.Clamp01((Time.unscaledTime-arrival.At)/ShopArrivalDuration);
                 arrival.Model.sprite=ShopIdleFrame(arrival.Id,Time.unscaledTime-shopBenchIdleOrigins[arrival.Instance]);arrival.Model.sortingOrder=100;
                 arrival.Model.transform.localPosition=ShopModelPosition(ShopEntranceFoot(ShopModelFoot(slot),t));
-                float settle=Mathf.Sin(Mathf.Clamp01((t-.7f)/.3f)*Mathf.PI);
-                arrival.Model.transform.localScale=new Vector3(1+.08f*settle,1-.12f*settle,1)*ShopModelScale(arrival.Id);
-                float reveal=Mathf.SmoothStep(0,1,Mathf.Clamp01((t-.08f)/.32f));
-                arrival.Model.color=Color.Lerp(new Color(.3f,.85f,1,reveal),new Color(1,1,1,reveal),Mathf.Clamp01((t-.35f)/.5f));
+                float settle=Mathf.Sin(Mathf.Clamp01((t-.6f)/.4f)*Mathf.PI);
+                arrival.Model.transform.localScale=new Vector3(1+.12f*settle,1-.18f*settle,1)*ShopModelScale(arrival.Id);
+                float reveal=Mathf.SmoothStep(0,1,Mathf.Clamp01(t/.14f));
+                arrival.Model.color=new Color(1,1,1,reveal);
             }
         }
         void ClearShopBenchModels()
@@ -134,21 +134,25 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,632,1280,88),new Color(.035f,.06f,.075f,.98f));
             Fill(new Rect(8,632,1264,1),new Color(.3f,.44f,.48f));
-            GUI.Label(new Rect(18,631,1240,18),$"备战区  {shop.Bench.Count}/10    编队 {shopLineup.Count}/{shop.Level}    点击编队 · 拖到红门部署 · 向下出售",new GUIStyle(center){fontSize=10,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.57f,.72f,.77f)}});
-            Fill(new Rect(12,650,1256,66),new Color(.055f,.09f,.11f));
-            ShopBorder(new Rect(12,650,1256,66),new Color(.23f,.31f,.35f),1);
-            for(int row=0;row<24;row++)Fill(new Rect(17,674+row,1246,1),Color.Lerp(new Color(.16f,.21f,.23f),new Color(.095f,.14f,.16f),row/23f));
-            Fill(new Rect(17,698,1246,3),new Color(.25f,.32f,.35f));
+            // A single raised walkway, as seen in the user's recording; seat hit areas stay invisible.
+            Fill(new Rect(14,656,1252,48),new Color(.018f,.03f,.035f));
+            for(int row=0;row<37;row++)
+            {
+                float inset=12-row*.21f;
+                Fill(new Rect(inset,652+row,1280-2*inset,1),Color.Lerp(new Color(.27f,.34f,.36f),new Color(.36f,.42f,.43f),row/36f));
+            }
+            Fill(new Rect(12,651,1256,2),new Color(.51f,.58f,.59f));
+            foreach(int y in new[]{660,673,686}){Fill(new Rect(13,y,1254,1),new Color(.2f,.27f,.29f));Fill(new Rect(13,y+1,1254,1),new Color(.4f,.47f,.48f));}
+            for(int row=0;row<10;row++)Fill(new Rect(5+row*.6f,689+row,1270-row*1.2f,1),Color.Lerp(new Color(.27f,.33f,.35f),new Color(.1f,.15f,.17f),row/9f));
+            Fill(new Rect(10,699,1260,2),new Color(.035f,.06f,.075f));
+            foreach(int x in new[]{26,410,826,1252}){Fill(new Rect(x,656,3,2),new Color(.17f,.23f,.25f));Fill(new Rect(x,682,3,2),new Color(.17f,.23f,.25f));}
             for(int i=0;i<10;i++)
             {
                 var r=ShopBenchRect(i);var piece=i<shop.Bench.Count?shop.Bench[i]:null;
                 bool active=piece!=null&&shopLineup.Contains(piece.Id)&&shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First().Instance==piece.Instance;
                 Color color=piece!=null&&piece.Star>1?ShopRankColor(piece.Star,.65f):new Color(.24f,.39f,.44f);
-                ShopLine(new Vector2(r.x+7,674),new Vector2(r.x-1,697),new Color(.34f,.41f,.43f),1);
-                ShopLine(new Vector2(r.xMax+7,674),new Vector2(r.xMax-1,697),new Color(.34f,.41f,.43f),1);
-                Fill(new Rect(r.x+5,674,r.width-1,1),new Color(.3f,.38f,.4f));
-                Fill(new Rect(r.x+5,699,r.width-1,2),active?new Color(.45f,.88f,.92f):color);
-                if(piece==null){Fill(new Rect(r.center.x-4,686,8,1),new Color(.28f,.35f,.37f));continue;}
+                if(piece==null)continue;
+                Fill(new Rect(r.center.x-30,694,60,2),active?new Color(.45f,.88f,.92f):color);
                 float burst=ShopBenchPromotionRemaining(piece.Instance);
                 if(burst>0)DrawShopPromotionLight(ShopModelFoot(i),piece.Star,burst);
             }
@@ -170,15 +174,23 @@ namespace YesterdayConvoy
         }
         void DrawShopEntranceGate(Vector2 foot,float progress)
         {
-            float reveal=Mathf.Sin(Mathf.Clamp01(progress/.7f)*Mathf.PI),landing=Mathf.Sin(Mathf.Clamp01((progress-.65f)/.35f)*Mathf.PI);
-            Color previous=GUI.color;GUI.color=new Color(.25f,.8f,1,reveal*.65f);
-            GUI.DrawTexture(new Rect(foot.x-45,foot.y-78,90,90),shopAura,ScaleMode.StretchToFill,true);GUI.color=previous;
-            ShopBorder(new Rect(foot.x-48,foot.y-5,96,10),new Color(.55f,.91f,1,reveal*.8f),1);
-            for(int i=0;i<4;i++)Fill(new Rect(foot.x-33+i*21,foot.y-62,1,58),new Color(.45f,.85f,1,reveal*.28f));
-            float scanY=foot.y-66+Mathf.Clamp01(progress/.7f)*66;
-            Fill(new Rect(foot.x-33,scanY,66,2),new Color(.75f,.96f,1,reveal*.85f));
-            float width=68+landing*34;
-            ShopBorder(new Rect(foot.x-width/2,foot.y-4,width,8),new Color(.75f,.95f,1,landing*.9f),1);
+            float fall=Mathf.Sin(Mathf.Clamp01(progress/.6f)*Mathf.PI),age=Mathf.Clamp01((progress-.56f)/.44f),impact=Mathf.Sin(age*Mathf.PI);
+            Color previous=GUI.color;GUI.color=new Color(.85f,.96f,1,fall*.3f);
+            GUI.DrawTexture(new Rect(foot.x-18,foot.y-142,36,145),shopAura,ScaleMode.StretchToFill,true);
+            float height=foot.y-ShopEntranceFoot(foot,progress).y;
+            for(int i=0;i<3;i++)Fill(new Rect(foot.x-20+i*19,foot.y-height-72+i*8,1,36-i*4),new Color(.9f,.98f,1,fall*.55f));
+            GUI.color=new Color(.35f,1,.87f,impact*.9f);GUI.DrawTexture(new Rect(foot.x-50,foot.y-16,100,30),shopAura,ScaleMode.StretchToFill,true);GUI.color=previous;
+            float radius=20+age*34;
+            for(int segment=0;segment<24;segment++)
+            {
+                float a=segment*Mathf.PI*2/24,b=(segment+1)*Mathf.PI*2/24;
+                ShopLine(foot+new Vector2(Mathf.Cos(a)*radius,Mathf.Sin(a)*radius*.19f),foot+new Vector2(Mathf.Cos(b)*radius,Mathf.Sin(b)*radius*.19f),new Color(.7f,1,.94f,impact*.8f),1);
+            }
+            for(int i=0;i<5;i++)
+            {
+                Vector2 spark=foot+new Vector2((i-2)*19*age,-Mathf.Sin(age*Mathf.PI)*(17+Mathf.Abs(i-2)*10));
+                ShopLine(spark,spark+new Vector2((i-2)*2,-7),new Color(.8f,1,.96f,impact),2);
+            }
         }
         void DrawShopPromotionLight(Vector2 foot,int star,float remaining)
         {

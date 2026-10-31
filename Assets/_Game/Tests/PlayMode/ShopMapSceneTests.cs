@@ -15,6 +15,7 @@ namespace YesterdayConvoy.Tests
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
             Assert.That(c.ShopVisible,Is.False);Assert.That(ManualBattleController.ShopBenchRect(0).height,Is.LessThan(80));
             Assert.That(ManualBattleController.ShopBattlefieldRect.height,Is.GreaterThan(500));
+            Assert.That(ManualBattleController.ShopBenchRect(0).center.x,Is.GreaterThan(ManualBattleController.ShopBenchRect(1).center.x),"Reserve models fill from right to left, matching the supplied recording.");
             var viewport=Camera.main.rect;float fov=Camera.main.fieldOfView;var position=Camera.main.transform.position;
             var offers=c.Shop.Offers.ToArray();int gold=c.Shop.Gold,count=c.Shop.Bench.Count;
             Vector2 covered=ManualBattleController.ShopOfferRect(0).center;Assert.That(c.ShopMapPointAvailable(covered),Is.True);
