@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-10-31：盟约#04格点、源石与传送
+
+[来源、操作与适配边界](STRONGHOLD_MAP_04.md)。原格点转录自固定提交a24a8ad，原始参考JSON仅本地；工程不包含原地图贴图或模型。
+
+| 实际执行 | 最终结果 |
+| --- | --- |
+| edit-stronghold-final.xml | 完整283/283通过，0失败/跳过。5项新逻辑用例检查格点/路线绕开封闭与固定工事、感染攻击/攻速/真实扣血/暂停/清理、3秒传送与不可直接受击、旧图无感染、耗尽失败和重开。 |
+| play-stronghold-final.xml | 8/8定向GPU PlayMode通过：6项既有商店，2项新图。验证新图招募、两路拖动、满席合成、倍率仅本图、旧asset字节不变；实际模型传送时隐藏、暂停不恢复、出场后同模型恢复，无额外实体；切图与退出清理。 |
+| build-stronghold.log | Windows1495965600 bytes、0错误，构建命令StrongholdMapTools.Build。构建后仅补了测试和文档，运行源码未再改。 |
+| player-stronghold.log | layout/framed/purchases/drag/paused/infected/portal/combat/won/merge/reset/isolation/exit共13项全True，无捕获异常。11次部署，模拟30.85秒后2次突破胜利，7次传送、9次感染触发、166点总感染伤害。 |
+| player-stronghold-city.log | 新构建用旧商店Smoke入口回归泵站：原19项、特效结束及3项表现共23项全True，无捕获异常。 |
+| 画面 | 查看实际1920×1080准备、战斗；六张实机证据中准备/商店/18秒战斗/结算四张保存docs/ui-previews/stronghold04。原两图未被覆写。 |
+
+证据根目录D:/游戏开发/artifacts/shop-map/。本轮未测第二台电脑、全新克隆构建、其余完整PlayMode/全角色地图组合、长期性能及人工平衡。原始工事在此为固定结构，不包含原作可移动/可破坏工事；地面路线为本作适配，并非原作飞行Boss轨迹。本机运行通过不记为接收端验收。项目生成.vscode仍未跟踪。
+
 ## 2026-10-31：用户录屏参考长平台、高位落地
 
 查看完整42.17秒本地录屏及购买片段逐帧，参照连续厚平台、从右向左排列和高处快速落地；记录见[来源与观察](ui-previews/shop/REFERENCE-RECORDING.md)。模型正常配色，白色下落光痕、青白落地环/碎光，待机衔接；没有导入录屏中的原作部署图集或UI资产。

@@ -10,7 +10,10 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             yield return null;
-            controller=FindAnyObjectByType<ManualBattleController>();controller.EnterShopTrial();
+            controller=FindAnyObjectByType<ManualBattleController>();
+            bool legacy=Array.IndexOf(Environment.GetCommandLineArgs(),"-shopMapSmokeTest")>=0;
+            controller.EnterShopTrial(0,legacy?"city":StrongholdMapLayout.Id);
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-strongholdMapSmokeTest")>=0)yield return controller.VerifyStrongholdMap();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-shopMapSmokeTest")>=0)
                 yield return controller.VerifyShopMap();
         }

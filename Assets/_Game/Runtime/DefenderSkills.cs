@@ -52,7 +52,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool DefenderSkillActive(DefenderState d)=>d!=null&&d.Alive&&d.Settings.Skill.Enabled&&Clock<d.SkillActiveUntil;
-        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d);
+        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d)*InfectionAttack(d.EntityId);
         public float DefenderHealRange(DefenderState d)=>d.Settings.HealRange+(DefenderSkillActive(d)?d.Settings.Skill.HealRangeBonus:0);
         private float DefenderAnimationRate(DefenderState d)=>DefenderSkillActive(d)?d.Settings.Skill.AttackSpeedMultiplier:1;
         private bool SpotHealing(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode&&DefenderSkillActive(d);

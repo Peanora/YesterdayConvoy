@@ -257,7 +257,7 @@ namespace YesterdayConvoy
             EngagementSettings guardSettings=CombatSettings;
             StepAdvancedDefenders(step);
             StepDefenderWalls();
-            StepFacilities(step);
+            StepFacilities(step);StepStrongholdMap();
             ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
             ResolveDeathEffects();ResolveShackles();
             ResolveHealing();
@@ -274,7 +274,7 @@ namespace YesterdayConvoy
                 }
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
-                if(unit==null || !unit.Active || unit.IsReviving || defender==null || !defender.Alive) continue;
+                if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || defender==null || !defender.Alive) continue;
                 if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
                 shot.Applied=true;
                 if(shot.FromDefender)
@@ -314,6 +314,7 @@ namespace YesterdayConvoy
             {
                 var c=UnitCombat(unit);
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                if(StepStrongholdPortal(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(unit.FuelDying)continue;
                 if(c.Effects.Patriot&&StepPatriotPassive(unit))continue;
                 if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
