@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1de1b4237741e5824497de398e99be, type: 3}
+  m_Name: StrongholdMapArt
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.StrongholdMapArt
+  surfaceShader: {fileID: 4800000, guid: db94d088b42b43999b286bee14f71b2e, type: 3}
+  energyShader: {fileID: 4800000, guid: 9132e1dd24284eca907579f359a03cd0, type: 3}
+  concrete: {fileID: 2800000, guid: d07f3ac70e57bea4a965bbb46de53b06, type: 3}
+  metal01: {fileID: 2800000, guid: 2bb3312c343d2d04e843712ecaf803f3, type: 3}
+  normal01: {fileID: 2800000, guid: 3e0b2aa3f6d447f45a26297c1fc6af0b, type: 3}
+  metal02: {fileID: 2800000, guid: b7738efbc252ad444b9a439b14ecb982, type: 3}
+  normal02: {fileID: 2800000, guid: a39931eb47303d841b8d374a0ce904d2, type: 3}

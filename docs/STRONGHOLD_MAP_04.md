@@ -22,6 +22,18 @@
 ![两翼交战实机](ui-previews/stronghold04/stronghold-combat-18.png)
 ![突破结算实机](ui-previews/stronghold04/stronghold-result.png)
 
+![传送等待光效实机](ui-previews/stronghold04/stronghold-portal-wait.png)
+
+## 地图材质与动态特效
+
+地面接入混凝土纹理，工事/设备接入2K金属图集与匹配法线，增加顶盖紧固点、通风格栅、警戒斜纹、管线和接地层次。源石使用深色多面晶体配橙色能量，保持四块原地形位置。
+
+源石有地面脉冲和上升碎光；感染单位/守军有橙色脚环；传送口有青色呼吸环，实际等待时亮起光柱和能量，出场时扩散闪光，突破蓝门也有短暂蓝光。准备时活动、战斗时跟随模拟时钟，暂停冻结，重开和切图清理。光效集中在一张动态网格中，不额外创建战斗单位。
+
+[源石动态预览](ui-previews/stronghold04/source-effects.webm) · [传送等待与出场预览](ui-previews/stronghold04/portal-effects.webm)。均来自连续实机截图，8fps编码便于观察，不作为游戏帧率或精确计时证明。
+
+贴图来自项目已有CC0资源，文件像素与原导入设置不变；本轮无新下载、AI贴图或原作特效素材。Shader、几何和光效代码为本项目新增。[作者、许可、逐文件哈希和表现边界](art/STRONGHOLD_MAP_MATERIALS.md)。
+
 ## 为什么选这张
 
 原地图有左右两翼、中心连接、上下封闭工事、两侧目标与传送入口；活性源石夹在翼内横向通道，绕行时会把增伤与失血带往下一段。原地块保留5行×17列（原坐标行5～1、列2～18），不把整备区、敌人预览区等也算成作战面积。
@@ -55,3 +67,5 @@ E..###..O..###..E
 Unity6000.6.5f1打开`Assets/_Game/ShopTrials/ShopMap.unity`点Play；`YesterdayConvoy.Editor.StrongholdMapTools.Build`重建Windows至`Builds/StrongholdMap`。旧商店Smoke命令仍载入泵站图，新图用`-strongholdMapSmokeTest`，日志/截图由`-demoEvidenceDir`指定。
 
 实际通过：完整283/283 EditMode、8/8定向GPU PlayMode；Windows构建1495965600 bytes、0错误。新图13项、旧图23项独立Player检查全True。测试编队在30.85秒模拟时间内完成2次突破、7次传送和9次感染触发；另用逻辑测试验证耗尽失败/重开。四张画面为最终构建实际截图。证据文件见[QA](QA.md)。未在第二台电脑或全新克隆构建验收，不把本机成功等同于接收端已验收。
+
+最新材质/特效交付：play-stronghold-polish.xml的9项定向GPU场景测试通过；其后仅补自动验收后台启动与结算闪光收尾，最终build-stronghold-polish-delivery.log重建1496034691 bytes、0错误，player-stronghold-polish-delivery.log的13项玩法和5项视觉检查共18项全True。新编队模拟30.89秒获胜，7次传送和9次感染触发。已复核最终材质画面并更新5张实机图与两段短片。前述283完整逻辑及旧图23项为前一版记录，本轮未重跑。

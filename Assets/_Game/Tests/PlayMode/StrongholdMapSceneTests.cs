@@ -10,6 +10,20 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class StrongholdMapSceneTests
     {
+        [UnityTest]public IEnumerator TexturedMapAndBatchedEffectsFreezeWithCombatAndCleanUp()
+        {
+            yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;
+            var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial(0,StrongholdMapLayout.Id);yield return null;yield return null;
+            var art=Resources.Load<StrongholdMapArt>("StrongholdMapArt");Assert.That(art.metal01.width,Is.EqualTo(2048));Assert.That(art.normal02.width,Is.EqualTo(2048));
+            Assert.That(art.surfaceShader.isSupported&&art.energyShader.isSupported,Is.True);
+            Assert.That(Object.FindAnyObjectByType<StrongholdMapEnvironment>().NormalMappedSurfaceCount,Is.GreaterThanOrEqualTo(3));
+            var fx=Object.FindAnyObjectByType<StrongholdMapVfx>();Assert.That(fx.VertexCount,Is.GreaterThan(0));Assert.That(fx.VertexCount,Is.LessThan(2048));
+            Assert.That(c.Battle.Units,Is.Empty,"Visual effects must not create combat entities.");
+            c.StartBattle();c.Tick(.2f);fx.Present();double clock=fx.VisualClock;c.Battle.SetPaused(true);
+            yield return new WaitForSecondsRealtime(.15f);Assert.That(fx.VisualClock,Is.EqualTo(clock));
+            c.Battle.SetPaused(false);c.Tick(.2f);fx.Present();Assert.That(fx.VisualClock,Is.GreaterThan(clock));
+            c.LeaveShopTrial();yield return null;yield return null;Assert.That(fx==null,Is.True);
+        }
         [UnityTest]public IEnumerator PortalHidesTheExistingModelAndRestoresItAfterTheWait()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;

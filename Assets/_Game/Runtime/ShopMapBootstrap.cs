@@ -7,6 +7,11 @@ namespace YesterdayConvoy
     public sealed class ShopMapBootstrap : MonoBehaviour
     {
         ManualBattleController controller;
+        void Awake()
+        {
+            var args=Environment.GetCommandLineArgs();
+            if(Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
+        }
         IEnumerator Start()
         {
             yield return null;

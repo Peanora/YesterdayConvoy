@@ -17,6 +17,7 @@ namespace YesterdayConvoy
         public bool StrongholdMapEnabled=>strongholdMap;
         public bool StrongholdInfected(string id)=>id!=null&&infectionUntil.TryGetValue(id,out double until)&&Clock<until;
         public bool StrongholdInTransit(string id)=>id!=null&&portalUntil.ContainsKey(id);
+        public float StrongholdTransitRemaining(string id)=>id!=null&&portalUntil.TryGetValue(id,out double until)?(float)Math.Max(0,until-Clock):0;
         public void ConfigureStrongholdMap()
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Configure map before deployment.");

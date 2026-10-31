@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-10-31：地图材质、源石与传送光效
+
+[来源与材质使用范围](art/STRONGHOLD_MAP_MATERIALS.md)。运行纹理复用已有CC0文件及meta，像素/导入设置不变；新增两Shader、显式引用StrongholdMapArt.asset和一张动态特效网格。不改格点、路线和战斗数值。
+
+- play-stronghold-polish.xml：9/9定向GPU PlayMode通过，0失败/跳过。原6项商店、原2项地图继续通过；新增验证2K纹理引用、3类法线材质、两个Shader实际支持、特效不生成战斗实体、战斗暂停冻结/继续推进、退出清理。
+- 此后只补Smoke模式Awake提前后台运行，以及结算时用PresentationClock让瞬时光效结束。build-stronghold-polish-delivery.log：Windows1496034691 bytes、0错误；最终运行源码此后未改。
+- player-stronghold-polish-delivery.log：原13项玩法和texturedSurfaces/batchedEnergy/pause/portalFeedback/effectsEnded共18项全True，无捕获异常/Shader错误。编队30.89秒模拟时间获胜，11次部署、2次突破、7次传送、9次感染触发、166点感染伤害；结算推进1.2秒后瞬时光圈/光柱清空。
+- 最终实际1920×1080窗口59张证据帧，复核贴图/晶体/等待传送/出场；docs/ui-previews/stronghold04更新5张实机截图与24帧源石、28帧传送WebM。8fps观察用编码，不作为实际游戏FPS/精确计时证明。
+- 初次可见窗口失焦停在启动阶段、未生成有效画面，不记通过。提前开启自动验收后台运行后重新构建并以上述最终Player为准。
+
+证据根D:/游戏开发/artifacts/shop-map/。本轮未重跑完整EditMode及其余PlayMode，前一版283逻辑和旧图23项保持历史记录。未测低配GPU/长时性能/第二台电脑或全新克隆构建；不冒称4K全套PBR、烘焙AO或Bloom后处理。原主场景/地图asset/Prefab/Packages/ProjectSettings、共享贴图和meta未改，.vscode继续未跟踪。
+
 ## 2026-10-31：盟约#04格点、源石与传送
 
 [来源、操作与适配边界](STRONGHOLD_MAP_04.md)。原格点转录自固定提交a24a8ad，原始参考JSON仅本地；工程不包含原地图贴图或模型。
