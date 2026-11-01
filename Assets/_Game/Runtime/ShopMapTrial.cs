@@ -311,7 +311,7 @@ namespace YesterdayConvoy
                 Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(defender.Position+Camera.main.transform.up*1.6f));
                 if(!ShopBattlefieldRect.Contains(p))continue;
                 Fill(new Rect(p.x-24,p.y,48,6),new Color(.03f,.05f,.06f));Fill(new Rect(p.x-23,p.y+1,46*defender.Health/defender.MaxHealth,4),new Color(.96f,.66f,.3f));
-                if(Battle.StrongholdChallenge)GUI.Label(new Rect(p.x-72,p.y-20,144,20),defender.Settings.Name+" · "+(defender.HighGround?"高台":"地面"),new GUIStyle(smallStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=defender.HighGround?new Color(.5f,.9f,1):new Color(1,.8f,.5f)}});
+                if(Battle.StrongholdChallenge)GUI.Label(new Rect(p.x-72,p.y-20,144,20),defender.Settings.Name,new GUIStyle(smallStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=defender.HighGround?new Color(.5f,.9f,1):new Color(1,.8f,.5f)}});
                 if(!defender.Settings.Skill.Enabled)continue;
                 bool active=Battle.DefenderSkillActive(defender);
                 float progress=active?(float)((defender.SkillActiveUntil-Battle.Clock)/defender.Settings.Skill.Duration):defender.SkillSP/defender.Settings.Skill.RequiredSP;
