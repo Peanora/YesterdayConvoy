@@ -360,7 +360,7 @@ namespace YesterdayConvoy
                 if(unit.Motion.HasArrived)
                 {
                     unit.Resolution=UnitResolution.Breached; unit.IsMoving=unit.HasCombatTarget=unit.IsBlocked=false;
-                    Breaches++; Defense=Math.Max(0,Defense-Settings.GateDamage); continue;
+                    RegisterStrongholdBreach(unit); continue;
                 }
                 if(c.FireRain && unit.SkillAmmo>0)
                 {
@@ -467,7 +467,7 @@ namespace YesterdayConvoy
         private DefenderState ChooseDefender(DeployedUnitState unit,float range)
         {
             var blocker=FindDefender(unit.BlockerId);
-            if(blocker!=null && blocker.Alive && GroundDistance(unit.Motion.Position,blocker.Position)<=range)
+            if(blocker!=null && blocker.Alive && UnitCanReachDefender(unit,blocker) && GroundDistance(unit.Motion.Position,blocker.Position)<=range)
             { unit.CombatTargetId=blocker.EntityId; return blocker; }
             if(IsRole(unit,"M26"))
             {
@@ -482,11 +482,11 @@ namespace YesterdayConvoy
                 if(protocolTarget!=null){unit.CombatTargetId=protocolTarget.EntityId;return protocolTarget;}
             }
             var previous=FindDefender(unit.CombatTargetId);
-            if(previous!=null && previous.Alive && !DefenderCamouflaged(previous) && GroundDistance(unit.Motion.Position,previous.Position)<=range) return previous;
+            if(previous!=null && previous.Alive && UnitCanReachDefender(unit,previous) && !DefenderCamouflaged(previous) && GroundDistance(unit.Motion.Position,previous.Position)<=range) return previous;
             DefenderState nearest=null; float distance=float.PositiveInfinity;
             foreach(var d in defenders)
             {
-                if(!d.Alive || DefenderCamouflaged(d)) continue;
+                if(!d.Alive || !UnitCanReachDefender(unit,d) || DefenderCamouflaged(d)) continue;
                 float gap=GroundDistance(unit.Motion.Position,d.Position);
                 if(gap>range) continue;
 

@@ -132,8 +132,9 @@ namespace YesterdayConvoy
 
         private ManualBattle CreateBattle()
         {
-            bool stronghold=defenderTrial!=null&&defenderTrial.mapId==StrongholdMapLayout.Id;
-            var result=new ManualBattle(stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
+            bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
+            bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
+            var result=new ManualBattle(challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
@@ -141,10 +142,11 @@ namespace YesterdayConvoy
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
-                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
+                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
                 result.ConfigureCardLoadout(profiles);
             }
-            if(stronghold)result.ConfigureStrongholdMap();
+            if(stronghold)result.ConfigureStrongholdMap(challenge);
+            if(challenge)foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
             return result;
         }
 
@@ -305,7 +307,7 @@ namespace YesterdayConvoy
             var map=defenderTrialMap!=null ? defenderTrialMap.GetComponent<TacticalMapEnvironment>() : null;
             if(map!=null) map.ShowLane(null);
             var stronghold=defenderTrialMap!=null?defenderTrialMap.GetComponent<StrongholdMapEnvironment>():null;
-            if(stronghold!=null)stronghold.ShowLane(null);
+            if(stronghold!=null)stronghold.ShowLane(ShopDragLane());
             preview.enabled=entryOutline.enabled=Selected;
             if(!Selected) return;
             Vector3 point=Battle.Entry;

@@ -56,7 +56,7 @@ namespace YesterdayConvoy
                 var p=StrongholdMapLayout.Cell(col,1,.085f);float phase=Mathf.Repeat((float)VisualClock*.55f+col*.1f,1);
                 Ground(p,.92f,WithAlpha(cyan,.8f));Ground(p,.75f+phase*.5f,WithAlpha(cyan,(1-phase)*.42f));
             }
-            foreach(int col in new[]{2,18})Ground(StrongholdMapLayout.Cell(col,2,.075f),1.1f,WithAlpha(blue,.35f));
+            foreach(var lane in battle.Lanes)Ground(lane.Points[lane.Points.Count-1]+Vector3.up*.035f,1.1f,WithAlpha(blue,.35f));
             if(battle.StrongholdPortalTrips>previousTrips){PulseAt(StrongholdMapLayout.Cell(10,5,.09f),cyan);PortalPulseCount++;previousTrips=battle.StrongholdPortalTrips;}
             foreach(var u in battle.Units)
             {

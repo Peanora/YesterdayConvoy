@@ -170,6 +170,12 @@ namespace YesterdayConvoy
                 if(p.Star>1)DrawShopRankBadge(new Rect(r.xMax-36,650,34,13),p.Star,false);
                 else DrawShopStars(new Rect(r.xMax-20,650,13,12),1,new Color(.75f,.89f,1));
                 GUI.Label(new Rect(r.x,697,r.width,17),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.69f,.8f,.84f)}});
+                if(Battle.StrongholdChallenge)
+                {
+                    var card=Battle.FindCard(p.Id);string state=card!=null?$"{card.Settings.DeploymentCost} DP · {card.RemainingUses}次":shopLineup.Contains(p.Id)&&p.Id==Battle.Settings.CardId?$"{Battle.Settings.DeploymentCost} DP · {Battle.RemainingUses}次":"未编队";
+                    if(card!=null&&Battle.CardCooldown(p.Id)>0)state=$"冷却 {Battle.CardCooldown(p.Id):0.0}秒";
+                    GUI.Label(new Rect(r.x,633,r.width,16),state,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.75f,.88f,.94f)}});
+                }
             }
         }
         void DrawShopEntranceGate(Vector2 foot,float progress)

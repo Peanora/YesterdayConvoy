@@ -11,9 +11,12 @@ namespace YesterdayConvoy
         Material floor,floorAlternate,side,steel,dark,amber,red,blue,cyan,concrete,crystal;
         StrongholdMapArt art;
         Mesh crystalMesh;
+        bool challenge;
+        public bool RouteVisible {get;private set;}
         public int NormalMappedSurfaceCount {get;private set;}
         public void Build(DefenderTrialDefinition data)
         {
+            challenge=data.mapId==StrongholdChallengeLayout.Id;
             art=Resources.Load<StrongholdMapArt>("StrongholdMapArt");
             if(art==null||art.surfaceShader==null||art.energyShader==null)throw new System.InvalidOperationException("Stronghold map art library missing.");
             floor=Surface(new Color(.82f,.87f,.87f),art.concrete,null,new Rect(0,0,1,1),0,.14f);
@@ -25,9 +28,9 @@ namespace YesterdayConvoy
             dark=Mat(new Color(.055f,.085f,.1f));
             amber=Glow(new Color(1,.54f,.05f));red=Glow(new Color(1,.12f,.16f));blue=Glow(new Color(.1f,.75f,1));cyan=Glow(new Color(.23f,.95f,.85f));
             Box("Surrounding service basin",new Vector3(0,-.9f,0),new Vector3(40,.2f,22),dark);
-            for(int row=1;row<=5;row++)for(int col=2;col<=18;col++)
+            for(int row=challenge?-1:1;row<=(challenge?7:5);row++)for(int col=2;col<=18;col++)
             {
-                char tile=StrongholdMapLayout.Tile(col,row);Vector3 p=StrongholdMapLayout.Cell(col,row,0);
+                char tile=challenge?StrongholdChallengeLayout.Tile(col,row):StrongholdMapLayout.Tile(col,row);Vector3 p=StrongholdMapLayout.Cell(col,row,0);
                 if(tile=='#')
                 {
                     Box("Closed bulkhead "+col+","+row,p+Vector3.up*.35f,new Vector3(.99f,.9f,.99f),side);
@@ -36,6 +39,12 @@ namespace YesterdayConvoy
                     for(int n=0;n<5;n++)Box("Bulkhead cooling slot",p+new Vector3(-.3f+n*.15f,.34f,-.504f),new Vector3(.055f,.27f,.025f),dark);
                     foreach(float x in new[]{-.38f,.38f})foreach(float z in new[]{-.38f,.38f})Box("Lid recessed fastener",p+new Vector3(x,.856f,z),new Vector3(.055f,.015f,.055f),dark);
                     Box("Bulkhead lower contact",p+new Vector3(0,-.01f,-.51f),new Vector3(1.04f,.025f,.12f),dark);continue;
+                }
+                if(tile=='H'){
+                    Box("Raised defender platform",p+Vector3.up*.35f,new Vector3(.98f,.72f,.98f),side);
+                    Box("High ground inset",p+Vector3.up*.73f,new Vector3(.95f,.05f,.95f),steel);
+                    for(int n=0;n<4;n++)Box("High ground warning",p+new Vector3(-.32f+n*.21f,.765f,-.4f),new Vector3(.1f,.02f,.1f),cyan);
+                    continue;
                 }
                 Box("Floor "+col+","+row,p-Vector3.up*.17f,new Vector3(.98f,.34f,.98f),side);
                 Box("Tile surface",p,new Vector3(.95f,.035f,.95f),tile=='b'?side:(col+row)%3==0?floorAlternate:floor);
@@ -67,17 +76,17 @@ namespace YesterdayConvoy
             for(int n=0;n<8;n++)
             {
                 float x=-9+n*2.6f;
-                Box("Rear industrial wall",new Vector3(x,.5f,4.5f),new Vector3(2.5f,1.7f,1.8f),concrete);
-                Box("Rear vent recess",new Vector3(x,.9f,3.575f),new Vector3(1.8f,.55f,.05f),dark);
-                for(int fin=0;fin<9;fin++)Box("Rear ventilation fin",new Vector3(x-.75f+fin*.19f,.9f,3.535f),new Vector3(.055f,.48f,.045f),steel);
-                Box("Wall service panel",new Vector3(x+.92f,.65f,3.54f),new Vector3(.35f,1.2f,.07f),side);
-                Box("Rear light rail",new Vector3(x,.45f,3.58f),new Vector3(2.15f,.06f,.04f),cyan);
-                Box("Service fascia",new Vector3(x,-.4f,-3),new Vector3(2.45f,.45f,.5f),steel);
-                for(int vent=0;vent<7;vent++)Box("Front fascia grille",new Vector3(x-.8f+vent*.25f,-.38f,-3.26f),new Vector3(.12f,.22f,.02f),dark);
+                Box("Rear industrial wall",new Vector3(x,.5f,challenge?6.5f:4.5f),new Vector3(2.5f,1.7f,1.8f),concrete);
+                Box("Rear vent recess",new Vector3(x,.9f,(challenge?5.575f:3.575f)),new Vector3(1.8f,.55f,.05f),dark);
+                for(int fin=0;fin<9;fin++)Box("Rear ventilation fin",new Vector3(x-.75f+fin*.19f,.9f,(challenge?5.535f:3.535f)),new Vector3(.055f,.48f,.045f),steel);
+                Box("Wall service panel",new Vector3(x+.92f,.65f,(challenge?5.54f:3.54f)),new Vector3(.35f,1.2f,.07f),side);
+                Box("Rear light rail",new Vector3(x,.45f,(challenge?5.58f:3.58f)),new Vector3(2.15f,.06f,.04f),cyan);
+                Box("Service fascia",new Vector3(x,-.4f,challenge?-5:-3),new Vector3(2.45f,.45f,.5f),steel);
+                for(int vent=0;vent<7;vent++)Box("Front fascia grille",new Vector3(x-.8f+vent*.25f,-.38f,challenge?-5.26f:-3.26f),new Vector3(.12f,.22f,.02f),dark);
             }
             for(int sideIndex=-1;sideIndex<=1;sideIndex+=2)
             {
-                Box("Maintenance side pier",new Vector3(sideIndex*9.5f,-.1f,0),new Vector3(1.3f,.9f,7),side);
+                Box("Maintenance side pier",new Vector3(sideIndex*9.5f,-.1f,0),new Vector3(1.3f,.9f,challenge?11:7),side);
                 for(int row=0;row<4;row++)
                 {
                     var p=new Vector3(sideIndex*9.5f,.65f,-2+row*1.6f);
@@ -115,13 +124,14 @@ namespace YesterdayConvoy
         }
         public void ShowLane(DeploymentLane lane)
         {
-            foreach(var line in preview)line.enabled=false;if(lane==null)return;
+            foreach(var line in preview)line.enabled=false;RouteVisible=lane!=null;if(lane==null)return;
+            int portal=StrongholdChallengeLayout.PortalSource(lane.Points);
             // The portal connector is deliberately omitted: it is not a walkable bridge.
             for(int i=1;i<lane.Points.Count;i++)
             {
-                if(i==7)continue;
+                if(i==portal+1)continue;
                 while(preview.Count<i)preview.Add(NewLine(transform,cyan,.045f));
-                var line=preview[i-1];line.enabled=true;line.SetPositions(new[]{lane.Points[i-1]+Vector3.up*.08f,lane.Points[i]+Vector3.up*.08f});
+                var line=preview[i-1];line.enabled=true;line.sharedMaterial=i<=portal?amber:cyan;line.startColor=line.endColor=Color.white;line.SetPositions(new[]{lane.Points[i-1]+Vector3.up*.08f,lane.Points[i]+Vector3.up*.08f});
             }
         }
         void Gate(Vector3 p,Material color,bool tall)

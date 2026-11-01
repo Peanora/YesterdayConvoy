@@ -28,7 +28,7 @@ namespace YesterdayConvoy
                 scene.RedGate.gameObject.SetActive(false); scene.BlueGate.gameObject.SetActive(false);
                 // Preserve the approved forward-facing tilt. Reframe for the larger board and HUD.
                 borrowedCamera.transform.position=borrowedCamera.transform.rotation*new Vector3(0,-1.7f,-35)+new Vector3(0,0,.7f);
-                if(data.mapId==StrongholdMapLayout.Id)gameObject.AddComponent<StrongholdMapEnvironment>().Build(data);
+                if(StrongholdChallengeLayout.IsStronghold(data.mapId))gameObject.AddComponent<StrongholdMapEnvironment>().Build(data);
                 else gameObject.AddComponent<TacticalMapEnvironment>().Build(data);
                 return;
             }

@@ -34,11 +34,11 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>ShopBattlefieldRect.Contains(point)&&(!(shopVisible||ShopPanelTransitioning)||!ShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>ShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null)return;
-            CancelShopDrag();AnimateShopVisibility(visible);
+            CancelShopDrag();if(visible)CloseDefenderInspector();AnimateShopVisibility(visible);
         }
 
         public void EnterShopTrial(int preset=0,string mapId="city")
@@ -56,14 +56,16 @@ namespace YesterdayConvoy
             if(preset>0)
                 foreach(string id in shopDefinitions.Keys.Where(id=>id!="CARD_M08").OrderBy(id=>id).Take(10-pieces.Count))pieces.Add(new ShopTrialModel.Piece{Id=id,Star=1});
             string[] offerIds={"CARD_M08","CARD_M02",OriginalSlugArt.CardId,"CARD_M18","CARD_M05"};
+            if(mapId==StrongholdChallengeLayout.Id)offerIds[2]="CARD_M17";
             shop.Preset(pieces,offerIds.Where(shopDefinitions.ContainsKey),preset==2?7:5,preset==2?46:18);
+            if(mapId==StrongholdChallengeLayout.Id&&preset==0)shop.Preset(pieces,offerIds.Where(shopDefinitions.ContainsKey),5,18,24);
             shopLineup.Clear();shopDeck.Clear();shopLineup.Add("CARD_M08");
-            shopDrag=-1;shopMoving=false;shopPromotionAt=-100;shopPromotedInstance=-1;shopVisible=preset>0;
+            CloseDefenderInspector();shopDrag=-1;shopMoving=false;shopPromotionAt=-100;shopPromotedInstance=-1;shopVisible=preset>0;
             ResetShopPresentation();
             if(shopMapCopy!=null)Destroy(shopMapCopy);
             var template=Resources.Load<DefenderTrialDefinition>("MapTrials/city");
-            shopMapCopy=mapId==StrongholdMapLayout.Id?StrongholdMapLayout.Create(template):Instantiate(template);
-            if(mapId!=StrongholdMapLayout.Id)shopMapCopy.mapTitle="泵站回廊 · 商店试玩";
+            shopMapCopy=mapId==StrongholdChallengeLayout.Id?StrongholdChallengeLayout.Create(template):mapId==StrongholdMapLayout.Id?StrongholdMapLayout.Create(template):Instantiate(template);
+            if(!StrongholdChallengeLayout.IsStronghold(mapId))shopMapCopy.mapTitle="泵站回廊 · 商店试玩";
             if(shopCoin==null)
             {
                 shopCoin=new Texture2D(2,2,TextureFormat.RGBA32,false);
@@ -143,13 +145,13 @@ namespace YesterdayConvoy
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
-            shopPointer=point;
+            if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
             if(type==EventType.MouseDown&&button==0)
             {
                 for(int i=0;i<shop.Bench.Count;i++)if(ShopBenchRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}
-                if(ShopMapPointAvailable(point))ProcessPointerDown(ScreenPosition(point));
+                if(ShopMapPointAvailable(point)){if(InspectShopDefender(point))return true;CloseDefenderInspector();ProcessPointerDown(ScreenPosition(point));}
             }
-            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8||ShopSalePoint(point);if(shopMoving)AnimateShopVisibility(false);return true;}
+            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8||ShopSalePoint(point);if(shopMoving){CloseDefenderInspector();AnimateShopVisibility(false);}return true;}
             if(type!=EventType.MouseUp||button!=0||shopDrag<0)return false;
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
@@ -189,7 +191,7 @@ namespace YesterdayConvoy
                 if(!unit.Active||Battle.StrongholdInTransit(unit.EntityId))continue;Vector2 health=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
                 Fill(new Rect(health.x-26,health.y,52,5),new Color(.03f,.05f,.06f));Fill(new Rect(health.x-25,health.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
             }
-            if(TacticalMapId==StrongholdMapLayout.Id&&ShopPanelVisibility<.01f)
+            if(StrongholdChallengeLayout.IsStronghold(TacticalMapId)&&ShopPanelVisibility<.01f)
             {
                 Fill(new Rect(16,72,805,26),new Color(.03f,.06f,.08f,.88f));
                 GUI.Label(new Rect(25,72,790,26),"活性源石：攻击与攻速提升，持续失血   ·   青色传送口：等待3秒后返回中央",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.95f,.77f,.48f)}});
@@ -201,7 +203,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(105,12,170,44),shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
             GUI.Label(new Rect(292,19,230,30),$"整备 {shop.Bench.Count}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
             GUI.enabled=Battle.Phase!=BattlePhase.Running;
-            if(GUI.Button(new Rect(526,20,103,28),"换图·重置",shopButton))EnterShopTrial(0,TacticalMapId==StrongholdMapLayout.Id?"city":StrongholdMapLayout.Id);
+            if(GUI.Button(new Rect(526,20,103,28),"换图·重置",shopButton))EnterShopTrial(0,TacticalMapId==StrongholdChallengeLayout.Id?"city":TacticalMapId=="city"?StrongholdMapLayout.Id:StrongholdChallengeLayout.Id);
             GUI.enabled=true;
             GUI.Label(new Rect(650,17,55,38),"等级",label);GUI.Label(new Rect(702,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
             Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
@@ -249,7 +251,7 @@ namespace YesterdayConvoy
             GUI.enabled=true;
             GUI.backgroundColor=new Color(.16f,.27f,.32f);
             Fill(new Rect(0,602,1280,28),new Color(.03f,.06f,.08f,.94f));
-            GUI.Label(new Rect(18,602,550,27),$"{(TacticalMapId==StrongholdMapLayout.Id?"盟约#04 活性源石":"泵站回廊")} / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
+            GUI.Label(new Rect(18,602,550,27),$"{(TacticalMapId==StrongholdChallengeLayout.Id?"盟约#04 六星双翼挑战":TacticalMapId==StrongholdMapLayout.Id?"盟约#04 活性源石":"泵站回廊")} / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
             if(GUI.Button(new Rect(619,603,115,25),Battle.IsPaused?"继续战斗":"暂停战斗",shopButton)&&Battle.Phase==BattlePhase.Running)Battle.SetPaused(!Battle.IsPaused);
             if(GUI.Button(new Rect(742,603,115,25),"重新测试",shopButton))EnterShopTrial(0,TacticalMapId);
             GUI.enabled=prep;
@@ -268,6 +270,7 @@ namespace YesterdayConvoy
             {
                 Fill(new Rect(280,510,720,36),new Color(.04f,.12f,.15f,.94f));GUI.Label(new Rect(280,510,720,36),shopMessage,new GUIStyle(center){fontSize=16});
             }
+            DrawShopRouteLabels(label);DrawDefenderInspector(label,shopButton);
             GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;
         }
         static Color ShopTier(int cost)=>cost==5?new Color(.58f,.43f,.17f):cost==4?new Color(.53f,.28f,.64f):cost==3?new Color(.12f,.34f,.61f):cost==2?new Color(.16f,.44f,.26f):new Color(.48f,.52f,.54f);
@@ -308,6 +311,7 @@ namespace YesterdayConvoy
                 Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(defender.Position+Camera.main.transform.up*1.6f));
                 if(!ShopBattlefieldRect.Contains(p))continue;
                 Fill(new Rect(p.x-24,p.y,48,6),new Color(.03f,.05f,.06f));Fill(new Rect(p.x-23,p.y+1,46*defender.Health/defender.MaxHealth,4),new Color(.96f,.66f,.3f));
+                if(Battle.StrongholdChallenge)GUI.Label(new Rect(p.x-72,p.y-20,144,20),defender.Settings.Name+" · "+(defender.HighGround?"高台":"地面"),new GUIStyle(smallStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=defender.HighGround?new Color(.5f,.9f,1):new Color(1,.8f,.5f)}});
                 if(!defender.Settings.Skill.Enabled)continue;
                 bool active=Battle.DefenderSkillActive(defender);
                 float progress=active?(float)((defender.SkillActiveUntil-Battle.Clock)/defender.Settings.Skill.Duration):defender.SkillSP/defender.Settings.Skill.RequiredSP;
