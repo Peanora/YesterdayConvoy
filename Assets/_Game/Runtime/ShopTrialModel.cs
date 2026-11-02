@@ -60,7 +60,7 @@ namespace YesterdayConvoy
             bench.Clear();sequence=0;foreach(var p in b){p.Instance=++sequence;bench.Add(p);}
             Array.Clear(offers,0,5);Array.Copy(o,offers,o.Length);
             foreach(var id in roles.Keys)pool[id]=9-reserved[id];
-            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;Validate();
+            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;rewards.Clear();WinStreak=0;Validate();
         }
         public Result PreviewPurchase(int index)=>PlanPurchase(index,out _);
         Result PlanPurchase(int index,out List<Piece> planned)
@@ -102,9 +102,9 @@ namespace YesterdayConvoy
             int old=Level;Gold-=4;XP+=4;while(Level<10&&XP>=Experience[Level]){XP-=Experience[Level];Level++;}if(Level==10)XP=0;
             return new Result{Success=true,Value=Level-old,Message=Level>old?$"等级提升至 {Level} · 编队上限 {Level}":"经验 +4"};
         }
-        public Result Refresh()
+        public Result Refresh(bool free=false)
         {
-            if(Locked)return Fail("已锁定，请先解锁");if(Gold<2)return Fail("刷新需要2源石");
+            if(Locked)return Fail("已锁定，请先解锁");if(!free&&Gold<2)return Fail("刷新需要2源石");
             var next=new Dictionary<string,int>(pool);foreach(var id in offers)if(id!=null)next[id]++;
             var row=Odds[Level-1];
             if(!roles.Values.Any(r=>row[r.Cost-1]>0&&next[r.Id]>0))return Fail("当前等级库存已空，不扣费");
@@ -118,8 +118,26 @@ namespace YesterdayConvoy
                 foreach(var r in candidates){k-=next[r.Id];if(k<0){chosen=r;break;}}
                 drawn[slot]=chosen.Id;next[chosen.Id]--;count++;
             }
-            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);Gold-=2;Validate();
+            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(!free)Gold-=2;Validate();
             return new Result{Success=true,Message=count<5?$"库存不足，仅刷新{count}张":"刷新完成"};
+        }
+        public sealed class RoundReward
+        {
+            public string Key; public bool Won;
+            public int Base=5,Interest,Streak,Experience,GoldBefore;
+            public int Total=>Base+Interest+Streak;
+        }
+        readonly Dictionary<string,RoundReward> rewards=new Dictionary<string,RoundReward>();
+        public int WinStreak {get;private set;}
+        public RoundReward SettleRound(string key,bool won)
+        {
+            if(string.IsNullOrEmpty(key))throw new ArgumentException("Missing settlement key");
+            if(rewards.TryGetValue(key,out var old))return old;
+            WinStreak=won?WinStreak+1:0;
+            var receipt=new RoundReward{Key=key,Won=won,GoldBefore=Gold,Interest=Math.Min(5,Gold/10),Streak=won?Math.Min(3,Math.Max(0,WinStreak-1)):0,Experience=won?2:0};
+            Gold+=receipt.Total;XP+=receipt.Experience;
+            while(Level<10&&XP>=Experience[Level]){XP-=Experience[Level];Level++;}if(Level==10)XP=0;
+            rewards.Add(key,receipt);Validate();return receipt;
         }
         public void Validate()
         {

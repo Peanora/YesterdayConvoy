@@ -1,5 +1,7 @@
 # 美术工作进度
 
+2026-11-02：人类已确认“脚底软阴影＋克制冷色环境融合”看稿方向。运行实现为ActorGrounding共享64×64程序阴影和TacticalActor局部染色，PNG原字节/比例/动作不改；无AI生成图导入。已跑299逻辑/84GPU及三个Player，真实对比见[闭环说明](../BATTLE_SHOP_LOOP.md)。AI概念在项目外并注明文字/重绘偏差，不作实机。
+
 ## 2026-10-29：六星守军第六批
 
 D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。

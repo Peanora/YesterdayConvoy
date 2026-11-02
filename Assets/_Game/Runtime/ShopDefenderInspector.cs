@@ -79,7 +79,7 @@ namespace YesterdayConvoy
             if(Battle.StrongholdChallenge&&selected==null&&ShopPanelVisibility<.01f)
             {
                 Fill(new Rect(17,545,490,47),new Color(.02f,.05f,.07f,.84f));
-                GUI.Label(new Rect(25,548,474,42),"两座蓝门各突破一次 · 点击守军查看详情\n高台只能被远程攻击 · 观察技能后再出兵",new GUIStyle(label){fontSize=13,alignment=TextAnchor.MiddleLeft});
+                GUI.Label(new Rect(25,548,474,42),Loop==null?"两座蓝门各突破一次 · 点击守军查看详情\n高台只能被远程攻击 · 观察技能后再出兵":"两座蓝门各突破一次 · 拖动下方怪物到红门\n胜利后结算金币，再购买和调整下一关阵容",new GUIStyle(label){fontSize=13,alignment=TextAnchor.MiddleLeft});
             }
             if(selected==null)return;
             int portal=StrongholdChallengeLayout.PortalSource(selected.Points);

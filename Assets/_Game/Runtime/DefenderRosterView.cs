@@ -20,6 +20,7 @@ namespace YesterdayConvoy
             {
                 var r=new GameObject(d.Settings.Name+" / "+d.EntityId,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
                 r.transform.SetParent(transform,false); r.sharedMaterial=material;
+                if(owner.TacticalMapActive)ActorGrounding.Attach(r);
                 LineRenderer ring=null;
                 if(d.Settings.Skill.Enabled)
                 {

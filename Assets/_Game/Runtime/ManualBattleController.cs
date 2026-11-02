@@ -134,7 +134,7 @@ namespace YesterdayConvoy
         {
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
-            var result=new ManualBattle(challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
+            var result=new ManualBattle(BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot()):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
@@ -142,7 +142,7 @@ namespace YesterdayConvoy
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
-                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
+                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot()):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
                 result.ConfigureCardLoadout(profiles);
             }
             if(stronghold)result.ConfigureStrongholdMap(challenge);
@@ -179,6 +179,7 @@ namespace YesterdayConvoy
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
+            if(Loop!=null&&!Loop.CanDeploy)return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
@@ -191,6 +192,7 @@ namespace YesterdayConvoy
 
         public void RestartBattle()
         {
+            if(Loop!=null){StartBattleShopLoop(Loop.Seed);return;}
             terminalPresentationElapsed=0;
             readyIdleElapsed=0;
             notice=null;
@@ -221,6 +223,7 @@ namespace YesterdayConvoy
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
                 terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
+            StepBattleShopLoop();
             SyncViews();
             UpdatePreview();
         }

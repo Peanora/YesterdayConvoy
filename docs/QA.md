@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-02：两关闭环及角色接地
+
+本轮最终完整299/299 EditMode、84/84 GPU PlayMode，0失败/跳过：artifacts/loop-grounded-EditMode.xml、loop-grounded-PlayMode.xml。新增5项逻辑覆盖奖励幂等/利息先快照/上限/连胜/XP、锁店和库存跨关、免费刷新与购买跨关、失败终局、战斗中不能运营；新增2项GPU为真实两场战斗/购买单位上场/重置与重复结算、失败奖励/禁止运营/新挑战清理，并检查脚底阴影高度和比例。
+
+最终StrongholdMapTools.Build通过：1496083099 bytes、errors=0，artifacts/loop-grounded-build.log。此为Unity构建报告统计，不是EXE大小。artifacts/loop-release-players.json的loop、legacy-shop、legacy-challenge三个最终Player均退出0，无捕获异常。新闭环won/complete/pause/purchased/purchasedUnitInStage2/combatReset/restart/exit全True；旧商店及六星挑战继续通过。已查看结算/商店/通关和接地后实际截图，不以AI看稿替代实机证据。
+
+初次编译测试引用了非公开坐标工具，改用测试局部坐标转换；第一次场景暴露SyncShopDeck的准备阶段限制挡住新关创建，修为显式换关重建，不绕过普通交易限制。独立Player首轮在商店滑回未完就模拟向上方红门出兵，被原覆盖层正确拦截；验收按实际操作等待0.25秒后重新出兵并最终通过，未把该次失败当通过。最后美术接入后上述完整套件和三个Player重新运行。
+
+源图/原动作未改，阴影由本项目程序生成，Shader保留原脚底深度方案，仅增加局部染色；不是完整动态光照。主场景、Prefab、Packages、ProjectSettings未改，原E盘未跟踪PackageManagerSettings.asset的SHA仍312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2，不提交/覆盖。
+
+未测第二台电脑、干净克隆、全随机阵容/种子、低配长时性能和人工平衡；升星仍不增加战斗属性，羁绊仍为标签。此前其他日期验证按其阶段阅读，不算本轮重新执行。详情与截图见[BATTLE_SHOP_LOOP](BATTLE_SHOP_LOOP.md)。
+
+
 2026-11-01名牌修订：仅移除头顶名字后的地形文字，不改战斗规则。build-clean-defender-names.log：1496063048 bytes、0错误；player-clean-defender-names.log：12项全True，14次部署126.35秒0DP通关。已查看无地形后缀的实机名牌并更新5张截图；本轮未重复完整逻辑/场景套件。
 
 ## 2026-11-01：六星挑战扩建版

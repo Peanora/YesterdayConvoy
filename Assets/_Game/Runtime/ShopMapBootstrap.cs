@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         void Awake()
         {
             var args=Environment.GetCommandLineArgs();
-            if(Array.IndexOf(args,"-strongholdChallengeSmokeTest")>=0||Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
+            if(Array.IndexOf(args,"-battleShopLoopSmokeTest")>=0||Array.IndexOf(args,"-strongholdChallengeSmokeTest")>=0||Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
         }
         IEnumerator Start()
         {
@@ -18,7 +18,10 @@ namespace YesterdayConvoy
             controller=FindAnyObjectByType<ManualBattleController>();
             bool legacy=Array.IndexOf(Environment.GetCommandLineArgs(),"-shopMapSmokeTest")>=0;
             bool normal=Array.IndexOf(Environment.GetCommandLineArgs(),"-strongholdMapSmokeTest")>=0;
-            controller.EnterShopTrial(0,legacy?"city":normal?StrongholdMapLayout.Id:StrongholdChallengeLayout.Id);
+            bool challenge=Array.IndexOf(Environment.GetCommandLineArgs(),"-strongholdChallengeSmokeTest")>=0;
+            if(!legacy&&!normal&&!challenge)controller.StartBattleShopLoop();
+            else controller.EnterShopTrial(0,legacy?"city":normal?StrongholdMapLayout.Id:StrongholdChallengeLayout.Id);
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")>=0)yield return controller.VerifyBattleShopLoop();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-strongholdChallengeSmokeTest")>=0)yield return controller.VerifyStrongholdChallenge();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-strongholdMapSmokeTest")>=0)yield return controller.VerifyStrongholdMap();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-shopMapSmokeTest")>=0)
