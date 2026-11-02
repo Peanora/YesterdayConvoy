@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-02：可调整窗口大小
+
+本轮明确按人类“自由调节窗口大小”要求，将ProjectSettings/ProjectSettings.asset的resizableWindow从0设1；普通Player启动在ShopMapBootstrap.Awake设置最多1280×720窗口，只执行一次，显式-screen参数保持。ShopMapTrial在尺寸变化后重算镜头取景，ManualBattleController.Update调用，不改变战斗状态，仅取消未完成拖拽。
+
+window-resize-final-build.log：Windows1496083727 bytes、0错误。window-native-results.json：实际Win32窗口resizeBorder/maximizeButton均True，普通启动1280×720；同一进程通过原生窗口接口调整为980×620、1180×660，各等待2秒后保持，未被程序强制恢复。首次检查过早采到场景加载前的旧尺寸，改为等启动尺寸生效再验收，未把该次失败记为通过。
+
+window-loop-results.json：1024×640与1280×720两例独立Player全部退出0，八项闭环检查全True，无捕获异常，包含购买/实际新单位/通关/暂停/重置/退出。已查看1024×640商店截图。没有写额外镜像测试，也未重跑完整EditMode/PlayMode；下方299/84是此前闭环交付的结果。未穷举极端纵横比、多显示器/DPI与所有旧场景，未做人工拖边手感验收。
+
+
 ## 2026-11-02：两关闭环及角色接地
 
 本轮最终完整299/299 EditMode、84/84 GPU PlayMode，0失败/跳过：artifacts/loop-grounded-EditMode.xml、loop-grounded-PlayMode.xml。新增5项逻辑覆盖奖励幂等/利息先快照/上限/连胜/XP、锁店和库存跨关、免费刷新与购买跨关、失败终局、战斗中不能运营；新增2项GPU为真实两场战斗/购买单位上场/重置与重复结算、失败奖励/禁止运营/新挑战清理，并检查脚底阴影高度和比例。

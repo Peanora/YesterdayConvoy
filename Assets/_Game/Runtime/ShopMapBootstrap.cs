@@ -10,6 +10,14 @@ namespace YesterdayConvoy
         void Awake()
         {
             var args=Environment.GetCommandLineArgs();
+            // Apply once on normal Player startup; never force the size while the user resizes.
+            // Explicit command-line resolution/fullscreen choices remain available for validation.
+            if(!Application.isEditor&&Array.IndexOf(args,"-screen-width")<0&&Array.IndexOf(args,"-screen-height")<0&&Array.IndexOf(args,"-screen-fullscreen")<0)
+            {
+                int width=Mathf.Min(1280,Mathf.Max(640,Screen.currentResolution.width-100));
+                int height=Mathf.Min(720,Mathf.Max(360,Screen.currentResolution.height-100));
+                Screen.SetResolution(width,height,FullScreenMode.Windowed);
+            }
             if(Array.IndexOf(args,"-battleShopLoopSmokeTest")>=0||Array.IndexOf(args,"-strongholdChallengeSmokeTest")>=0||Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
         }
         IEnumerator Start()

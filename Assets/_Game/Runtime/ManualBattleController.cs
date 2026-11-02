@@ -207,6 +207,7 @@ namespace YesterdayConvoy
         private void Update()
         {
             if(Battle==null || TestSelectionOpen) return;
+            if(ShopTrialActive)RefreshShopWindowFrame();
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
             if(Dragging) ProcessPointerMove(Input.mousePosition);
             if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
