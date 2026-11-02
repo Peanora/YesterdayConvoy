@@ -159,6 +159,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(310,i*34+3,80,26),"待制作",menuSmall); GUI.color=previous;
             }
             GUI.EndScrollView();
+            if(GUI.Button(new Rect(790,600,426,26),"后期两关演示",buttonStyle))StartLateBattleShopLoop();
             if(GUI.Button(new Rect(790,630,210,26),"基础两关闭环",buttonStyle))StartBattleShopLoop();
             if(GUI.Button(new Rect(1008,630,210,26),"六星挑战旧版",buttonStyle))EnterShopTrial(0,StrongholdChallengeLayout.Id);
             GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);

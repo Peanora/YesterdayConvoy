@@ -1,5 +1,30 @@
 # 验证证据与回归
 
+## 2026-11-03交付：后期两关、等比例窗口与原生UI
+
+2026-11-02人类已批准项目外UI看稿和具体范围；2026-11-03完成交付整理。沿用codex/battle-shop-loop / PR #51，不合并main。独立后期预置7级/30金币/24DP、5种怪物对抗6名已有完整技能的六星守军；战后购买/编队带入第二关，旧1级基础模式和旧独立试玩保留。规则、文件连接与操作见[BATTLE_SHOP_LOOP](BATTLE_SHOP_LOOP.md)。
+
+| 本轮实际执行证据（本工作目录artifacts） | 结果 |
+| --- | --- |
+| late-editmode-final.xml | 完整306/306 EditMode，0失败/跳过；含两关真实混编获胜、技能保留/站位变化、4种窗口比例的坐标往返和相机比例 |
+| late-playmode-final2.xml | 完整85/85 GPU PlayMode，0失败/跳过；包含原角色/火雨/地图/商店、基础闭环和新增后期两关，战后新购M15实际进入第二关 |
+| late-drag-regression.xml | 最后补齐“关间备战拖动取消保持商店可操作”的修正后，追加1/1后期真实两关场景回归通过；完整85套在这项小修前执行，未假称之后又完整重跑 |
+| late-release-build.log | 最后修正后Windows重建1496100411 bytes、errors=0；为Unity报告产物总量，不是EXE大小 |
+| late-players.json | 最终构建5个独立Player全部退出0，无捕获异常：后期1280×720、后期1024×640、基础闭环、旧商店、旧六星挑战 |
+
+两个后期Player的won/complete/pause/purchased/carry/reset/framing/restart/exit全True。两场均真实部署与技能战斗；关间使用正常金币刷新、购买新增M15并编队，第二关真的出现该单位；金币/等级/库存沿用同一经济对象，DP/实体重建，重开恢复后期初始资源。没有直接扣守军生命/强制胜利来通过。基础闭环的8项、旧商店及购买落地/收起拦截、旧六星挑战12项继续通过。
+
+1024×640真实截图为1024×576内容，上下各32黑边，黑边像素实际为(0,0,0)。缩放和输入统一使用TacticalViewport，未继续分别按宽/高拉伸。真实鼠标检查：弩手拖到上红门24→23DP；暂停后酸液源石虫拖到下红门23→21DP且保持暂停；猎狗拖到非法位置后21DP及4次保持。对同一窗口实际最大化后仍21DP且暂停，画面居中留边、角色/UI比例保持；原生截图[最大化实机](art/late-demo-native-maximized.png)。本轮鼠标拖边未能通过自动化命中窗口边框，未将其记为实测成功；可调整边框属性沿用前轮已验证的窗口设置。本轮已验证最大化和两种独立窗口尺寸，不等于穷举所有拖边/DPI情形。
+
+[战斗](art/late-demo-ready.png) · [结算](art/late-demo-settlement.png) · [商店与原立体备战](art/late-demo-shop.png) · [通关](art/late-demo-complete.png) · [1024×640留黑](art/late-demo-letterbox.png)。均为最终Unity Player截图，非HTML看稿或AI重绘。
+
+验证中修正了遗漏的旧绘制调用与Unity库不支持的LINQ重载；等比例化后旧场景测试的鼠标换算改用新坐标约定，地图可见性在画布内检查。火雨GPU抓图使用独立16:9 RenderTexture的完整视口并恢复现场，避免把桌面窗口留边带入离屏采样；原技能/冻结/收尾断言保留，最终完整套件通过。关间拖动不再收起必需商店，Tab/Esc仅在旧模式继续切换商店；完成小修后追加场景与最终5个Player复验。
+
+本轮不修改场景文件、Prefab、Packages或ProjectSettings；测试/构建期间Unity重写设置的规范化Git内容与HEAD一致，未纳入提交。原E盘工程未切分支，既存未跟踪PackageManagerSettings.asset哈希继续保持312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2，不提交/覆盖。复用原角色/地图/运行素材、保留来源和真实权利记录。新增源码/meta和实际截图随功能分支交付；无ZIP/Releases。
+
+未测第二台电脑离线、全新克隆、全随机商店/阵容、低配长时和多屏/DPI穷举；人类难度仍待试玩调整。当前仅两关/基础10种可运营怪物，升星不加战斗属性、羁绊未实现，不代表完整后期自走棋。真实EXE与对应源码提交见本地BUILD-INFO；旧验证记录按当时版本阅读。
+
+
 ## 2026-11-02：可调整窗口大小
 
 本轮明确按人类“自由调节窗口大小”要求，将ProjectSettings/ProjectSettings.asset的resizableWindow从0设1；普通Player启动在ShopMapBootstrap.Awake设置最多1280×720窗口，只执行一次，显式-screen参数保持。ShopMapTrial在尺寸变化后重算镜头取景，ManualBattleController.Update调用，不改变战斗状态，仅取消未完成拖拽。

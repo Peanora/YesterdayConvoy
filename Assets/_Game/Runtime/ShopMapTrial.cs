@@ -34,7 +34,7 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>(Loop==null||Loop.CanDeploy)&&ShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null||visible&&Loop!=null&&!Loop.CanShop)return;
@@ -93,7 +93,7 @@ namespace YesterdayConvoy
             var effective=shopDeck.Count>0?shopDeck:new List<ManualBattleDefinition>{shopDefinitions["CARD_M08"]};
             defenderTrial.battle=effective[0];defenderTrial.rosterCards=effective.Skip(1).ToArray();definition=effective[0];
             ClearViews();Battle=CreateBattle();selectedRosterIndex=0;Selected=false;CancelInteraction();EnableCombatView();
-            Camera.main.rect=new Rect(0,118/720f,1,538/720f);
+            Camera.main.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);
             FrameShopMap();
             SyncShopBenchModels();
         }
@@ -111,7 +111,7 @@ namespace YesterdayConvoy
         void FrameShopMap()
         {
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
-            var camera=Camera.main;camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
+            var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();
             // Recenter the playable board, leaving decorative canals outside the framing budget.
             for(int pass=0;pass<2;pass++)
@@ -158,20 +158,21 @@ namespace YesterdayConvoy
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
             if(type==EventType.MouseDown&&button==0)
             {
-                for(int i=0;i<shop.Bench.Count;i++)if(ShopBenchRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}
-                if(ShopMapPointAvailable(point)){if(InspectShopDefender(point))return true;CloseDefenderInspector();ProcessPointerDown(ScreenPosition(point));}
+                for(int i=0;i<shop.Bench.Count;i++)if(ShopPieceRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}
+                if(ShopMapPointAvailable(point)){if(HitUnit(ScreenPosition(point))==null&&InspectShopDefender(point))return true;CloseDefenderInspector();ProcessPointerDown(ScreenPosition(point));}
+                else if(Loop!=null&&SkillMenuOpen&&SkillPopupRect.Contains(point)){ProcessPointerDown(ScreenPosition(point));return true;}
             }
-            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8||ShopSalePoint(point);if(shopMoving){CloseDefenderInspector();AnimateShopVisibility(false);}return true;}
+            if(type==EventType.MouseDrag&&shopDrag>=0){shopMoving|=(point-shopDragStart).magnitude>8||ShopSalePoint(point);if(shopMoving){CloseDefenderInspector();if(Loop==null||Loop.CanDeploy)AnimateShopVisibility(false);}return true;}
             if(type!=EventType.MouseUp||button!=0||shopDrag<0)return false;
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
-            if(moved&&ShopSalePoint(point)){SellShopCard(instance);return true;}
+            if(moved&&(Loop==null||Loop.CanShop)&&ShopSalePoint(point)){SellShopCard(instance);return true;}
             if(moved&&ShopMapPointAvailable(point))
             {
                 int index=shopLineup.IndexOf(piece.Id);
                 if(index<0){ShopNotice("编队位已满：点击备战棋子调整编队，或先升级");return true;}
                 selectedRosterIndex=index;Selected=true;
-                if(PointerGround(ScreenPosition(point),out var world)){var result=TryDeployAt(world,true);ShopNotice(result.Success?"部署成功 · 战斗开始后商店锁定":Feedback);}
+                if(PointerGround(ScreenPosition(point),out var world)){var result=TryDeployAt(world,true);if(!result.Success||Loop==null)ShopNotice(result.Success?"部署成功 · 战斗开始后商店锁定":Feedback);}
                 Selected=false;return true;
             }
             if(!moved&&Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop))
@@ -185,10 +186,11 @@ namespace YesterdayConvoy
         }
         void DrawShopTrial()
         {
-            EnsureStyles();var e=Event.current;Vector2 point=new Vector2(e.mousePosition.x*1280/Screen.width,e.mousePosition.y*720/Screen.height);
+            if(Loop!=null){DrawLoopInterface();return;}
+            EnsureStyles();var e=Event.current;Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
             if(ShopPointerEvent(e.type,point,e.button))e.Use();
             Matrix4x4 previous=GUI.matrix;Color old=GUI.color,background=GUI.backgroundColor;
-            GUI.matrix=Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));GUI.backgroundColor=new Color(.16f,.27f,.32f);
+            GUI.matrix=TacticalViewport.Current.Matrix;GUI.backgroundColor=new Color(.16f,.27f,.32f);
             var label=new GUIStyle(textStyle){fontSize=17,alignment=TextAnchor.MiddleLeft};
             var title=new GUIStyle(label){fontSize=24,fontStyle=FontStyle.Bold};
             var center=new GUIStyle(label){alignment=TextAnchor.MiddleCenter};
@@ -284,7 +286,6 @@ namespace YesterdayConvoy
                 Fill(new Rect(280,510,720,36),new Color(.04f,.12f,.15f,.94f));GUI.Label(new Rect(280,510,720,36),shopMessage,new GUIStyle(center){fontSize=16});
             }
             if(Loop==null||ShopPanelVisibility<.01f)DrawShopRouteLabels(label);DrawDefenderInspector(label,shopButton);
-            if(Loop!=null)DrawBattleShopLoop(label,shopButton);
             GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;
         }
         static Color ShopTier(int cost)=>cost==5?new Color(.58f,.43f,.17f):cost==4?new Color(.53f,.28f,.64f):cost==3?new Color(.12f,.34f,.61f):cost==2?new Color(.16f,.44f,.26f):new Color(.48f,.52f,.54f);

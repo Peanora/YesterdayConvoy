@@ -31,7 +31,7 @@ namespace YesterdayConvoy
                     {
                         var gate=GUIPosition(Camera.main.WorldToScreenPoint(Battle.Lanes[sent%2].Entry));int bench=sent%shop.Bench.Count;
                         int before=Battle.Units.Count;
-                        ProcessShopPointer(EventType.MouseDown,ShopBenchRect(bench).center);ProcessShopPointer(EventType.MouseDrag,gate);ProcessShopPointer(EventType.MouseUp,gate);if(Battle.Units.Count>before)sent++;
+                        ProcessShopPointer(EventType.MouseDown,ShopPieceRect(bench).center);ProcessShopPointer(EventType.MouseDrag,gate);ProcessShopPointer(EventType.MouseUp,gate);if(Battle.Units.Count>before)sent++;
                         if(stage==1&&sent==1){Battle.SetPaused(true);double clock=Battle.Clock;Tick(10);paused=Battle.Clock==clock;Battle.SetPaused(false);}
                     }
                     Tick(.1f);if(tick==250)yield return InteractionFrame(dir,"loop-combat-"+stage);

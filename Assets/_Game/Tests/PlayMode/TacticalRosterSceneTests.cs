@@ -119,8 +119,8 @@ namespace YesterdayConvoy.Tests
                     {
                         if(i==3 && c.Battle.Lanes.Count==3){c.Battle.SetPaused(false);c.Tick(1);c.Battle.SetPaused(true);}
                         var data=c.RosterDefinition(i);Vector2 entry=Camera.main.WorldToScreenPoint(c.Battle.Lanes[i%c.Battle.Lanes.Count].Entry);
-                        Vector2 card=c.CardSlot(i).center;
-                        Assert.That(c.ProcessPointerEvent(EventType.MouseDown,new Vector2(card.x*Screen.width/1280,card.y*Screen.height/720),0),Is.True);
+                        Vector2 card=c.CardSlot(i).center;Vector2 cardScreen=ManualBattleController.ScreenPosition(card);
+                        Assert.That(c.ProcessPointerEvent(EventType.MouseDown,new Vector2(cardScreen.x,Screen.height-cardScreen.y),0),Is.True);
                         Assert.That(c.ProcessPointerEvent(EventType.MouseDrag,new Vector2(entry.x,Screen.height-entry.y),0),Is.True);
                         Assert.That(c.ProcessPointerEvent(EventType.MouseUp,new Vector2(entry.x,Screen.height-entry.y),0),Is.True,id+"/"+data.Card.DisplayName);
                         expectedDP-=data.Snapshot().DeploymentCost;Assert.That(c.Battle.DP,Is.EqualTo(expectedDP));

@@ -10,7 +10,7 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class StrongholdChallengeSceneTests
     {
-        static Vector2 Gui(Vector3 p){var v=Camera.main.WorldToScreenPoint(p);return new Vector2(v.x*1280/Screen.width,720-v.y*720/Screen.height);}
+        static Vector2 Gui(Vector3 p){var v=Camera.main.WorldToScreenPoint(p);return TacticalViewport.Current.FromScreen(v);}
         [UnityTest]public IEnumerator BothRedGatesPreviewAndClearTheirEntireRouteBeforeDeployment()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;

@@ -8,7 +8,7 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class BattleShopLoopSceneTests
     {
-        static Vector2 Gui(Vector3 world){var p=Camera.main.WorldToScreenPoint(world);return new Vector2(p.x*1280/Screen.width,(Screen.height-p.y)*720/Screen.height);}
+        static Vector2 Gui(Vector3 world){var p=Camera.main.WorldToScreenPoint(world);return TacticalViewport.Current.FromScreen(p);}
         [UnityTest]public IEnumerator TwoRealBattlesPreservePurchasedCardsAndResetCombat()
         {
             yield return SceneManager.LoadSceneAsync("InitialDemo");yield return null;Time.timeScale=0;
@@ -22,7 +22,7 @@ namespace YesterdayConvoy.Tests
                 int sent=0;
                 for(int tick=0;tick<5000&&c.Loop.CanDeploy;tick++)
                 {
-                    if(tick%30==0&&sent<6){var gate=c.Battle.Lanes[sent%2].Entry;var p=Gui(gate);var bench=ManualBattleController.ShopBenchRect(sent%c.Shop.Bench.Count).center;c.ProcessShopPointer(EventType.MouseDown,bench);c.ProcessShopPointer(EventType.MouseDrag,p);c.ProcessShopPointer(EventType.MouseUp,p);sent++;}
+                    if(tick%30==0&&sent<6){var gate=c.Battle.Lanes[sent%2].Entry;var p=Gui(gate);var bench=c.ShopPieceRect(sent%c.Shop.Bench.Count).center;c.ProcessShopPointer(EventType.MouseDown,bench);c.ProcessShopPointer(EventType.MouseDrag,p);c.ProcessShopPointer(EventType.MouseUp,p);sent++;}
                     c.Tick(.1f);if(tick%100==0)yield return null;
                 }
                 foreach(var view in Object.FindObjectsByType<ActorGrounding>(FindObjectsSortMode.None))Assert.That(view.Shadow.transform.position.y,Is.EqualTo(view.transform.position.y+.016f).Within(.002f));

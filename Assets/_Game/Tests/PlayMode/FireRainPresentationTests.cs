@@ -66,9 +66,10 @@ namespace YesterdayConvoy.Tests
         private static Color32[] Capture(Camera camera)
         {
             var target=new RenderTexture(320,180,24); var image=new Texture2D(320,180,TextureFormat.RGBA32,false);
-            var previousTarget=camera.targetTexture; var previousActive=RenderTexture.active;
-            try { camera.targetTexture=target; camera.Render(); RenderTexture.active=target; image.ReadPixels(new Rect(0,0,320,180),0,0); image.Apply(); return image.GetPixels32(); }
-            finally { camera.targetTexture=previousTarget; RenderTexture.active=previousActive; target.Release(); Object.Destroy(target); Object.Destroy(image); }
+            var previousTarget=camera.targetTexture; var previousActive=RenderTexture.active;var previousRect=camera.rect;
+            // This separate 16:9 render target has no window letterbox; sample the full target.
+            try { camera.targetTexture=target;camera.rect=new Rect(0,0,1,1); camera.Render(); RenderTexture.active=target; image.ReadPixels(new Rect(0,0,320,180),0,0); image.Apply(); return image.GetPixels32(); }
+            finally { camera.targetTexture=previousTarget;camera.rect=previousRect; RenderTexture.active=previousActive; target.Release(); Object.Destroy(target); Object.Destroy(image); }
         }
         private static double Difference(Color32[] a,Color32[] b)
         {

@@ -9,10 +9,11 @@ namespace YesterdayConvoy
         public BattleShopPhase Phase {get;private set;}=BattleShopPhase.Preparation;
         public int Stage {get;private set;}=1;
         public readonly int Seed;
+        public readonly bool LateGame;
         public ShopTrialModel.RoundReward Reward {get;private set;}
         public bool CanShop=>Phase==BattleShopPhase.Shop;
         public bool CanDeploy=>Phase==BattleShopPhase.Preparation||Phase==BattleShopPhase.Fighting;
-        public BattleShopRun(ShopTrialModel economy,int seed){Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;}
+        public BattleShopRun(ShopTrialModel economy,int seed,bool lateGame=false){Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;LateGame=lateGame;}
         public bool Observe(BattlePhase battle)
         {
             if(!CanDeploy)return false;

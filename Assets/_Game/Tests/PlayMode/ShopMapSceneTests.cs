@@ -72,7 +72,7 @@ namespace YesterdayConvoy.Tests
             bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.False,"The already purchased offer stays empty.");
             c.EnterShopTrial();bought=c.PurchaseShopCard(1);
             int slot=c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance);
-            Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
+            Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=TacticalViewport.Current.FromScreen(screen);
             c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.ShopBenchRect(slot).center);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
             Assert.That(c.Battle.Units.Count,Is.EqualTo(1),c.ShopFeedback);var unit=c.Battle.Units.Single();
             Assert.That(unit.CardId,Is.EqualTo("CARD_M02"));Assert.That(c.CardForUnit(unit).CardId,Is.EqualTo("CARD_M02"));Assert.That(c.Battle.UnitCombat(unit).HasSkill,Is.False);
@@ -87,10 +87,10 @@ namespace YesterdayConvoy.Tests
             {
                 c.EnterShopTrial(preset);yield return null;yield return null;
                 float framedFov=Camera.main.fieldOfView;
-                Assert.That(Camera.main.rect.height,Is.GreaterThan(.7f),"The map must occupy most of the screen, independent of the overlay.");
+                Assert.That(Camera.main.rect,Is.EqualTo(TacticalViewport.Current.CameraRect(ManualBattleController.ShopBattlefieldRect)),"The map keeps its intended portion of the letterboxed canvas.");
                 foreach(var lane in original.lanes)foreach(var point in lane.points)
                 {
-                    Vector2 screen=Camera.main.WorldToScreenPoint(point),gui=new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
+                    Vector2 screen=Camera.main.WorldToScreenPoint(point),gui=TacticalViewport.Current.FromScreen(screen);
                     Assert.That(ManualBattleController.ShopBattlefieldRect.Contains(gui),Is.True,"A route or gate was cropped by the enlarged camera.");
                 }
                 Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));int gold=c.Shop.Gold;
@@ -130,7 +130,7 @@ namespace YesterdayConvoy.Tests
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
             c.PurchaseShopCard(0);Assert.That(c.Shop.Bench.Single().Star,Is.EqualTo(2));
             c.SetShopVisible(true);
-            Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
+            Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=TacticalViewport.Current.FromScreen(screen);
             Assert.That(ManualBattleController.ShopBattlefieldRect.Contains(point),Is.True,"The first red gate must remain inside the playable viewport.");
             var start=ManualBattleController.ShopBenchRect(0).center;
             c.ProcessShopPointer(EventType.MouseDown,start);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
