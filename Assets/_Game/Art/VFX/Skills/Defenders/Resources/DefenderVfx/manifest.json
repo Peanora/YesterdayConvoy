@@ -1,0 +1,357 @@
+{
+  "version": 1,
+  "clips": [
+    {
+      "key": "snow-back",
+      "duration": 0.8,
+      "cell": 512,
+      "ppu": 55,
+      "pivotX": 0.5,
+      "pivotY": 0.521484375,
+      "loop": false,
+      "count": 49,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "snow-back-00.png",
+          "count": 16
+        },
+        {
+          "file": "snow-back-01.png",
+          "count": 16
+        },
+        {
+          "file": "snow-back-02.png",
+          "count": 16
+        },
+        {
+          "file": "snow-back-03.png",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "snow-front",
+      "duration": 0.8,
+      "cell": 512,
+      "ppu": 55,
+      "pivotX": 0.5,
+      "pivotY": 0.521484375,
+      "loop": false,
+      "count": 49,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "snow-front-00.png",
+          "count": 16
+        },
+        {
+          "file": "snow-front-01.png",
+          "count": 16
+        },
+        {
+          "file": "snow-front-02.png",
+          "count": 16
+        },
+        {
+          "file": "snow-front-03.png",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "wolf-wake",
+      "duration": 1.2,
+      "cell": 256,
+      "ppu": 120,
+      "pivotX": 0.5,
+      "pivotY": 0.44,
+      "loop": true,
+      "count": 72,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "wolf-wake-00.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-wake-01.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-wake-02.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-wake-03.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-wake-04.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "wolf-hit",
+      "duration": 0.6,
+      "cell": 256,
+      "ppu": 135,
+      "pivotX": 0.5,
+      "pivotY": 0.4,
+      "loop": false,
+      "count": 37,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "wolf-hit-00.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-hit-01.png",
+          "count": 16
+        },
+        {
+          "file": "wolf-hit-02.png",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "key": "yu-fire",
+      "duration": 1.2,
+      "cell": 256,
+      "ppu": 150,
+      "pivotX": 0.5,
+      "pivotY": 0.14,
+      "loop": true,
+      "count": 72,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "yu-fire-00.png",
+          "count": 16
+        },
+        {
+          "file": "yu-fire-01.png",
+          "count": 16
+        },
+        {
+          "file": "yu-fire-02.png",
+          "count": 16
+        },
+        {
+          "file": "yu-fire-03.png",
+          "count": 16
+        },
+        {
+          "file": "yu-fire-04.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "yu-hit",
+      "duration": 0.65,
+      "cell": 256,
+      "ppu": 150,
+      "pivotX": 0.5,
+      "pivotY": 0.34,
+      "loop": false,
+      "count": 40,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "yu-hit-00.png",
+          "count": 16
+        },
+        {
+          "file": "yu-hit-01.png",
+          "count": 16
+        },
+        {
+          "file": "yu-hit-02.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "wang-ink",
+      "duration": 0.75,
+      "cell": 384,
+      "ppu": 150,
+      "pivotX": 0.5,
+      "pivotY": 0.35,
+      "loop": false,
+      "count": 46,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "wang-ink-00.png",
+          "count": 16
+        },
+        {
+          "file": "wang-ink-01.png",
+          "count": 16
+        },
+        {
+          "file": "wang-ink-02.png",
+          "count": 14
+        }
+      ]
+    },
+    {
+      "key": "chess-link",
+      "duration": 1.2,
+      "cell": 256,
+      "ppu": 128,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "loop": true,
+      "count": 72,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "chess-link-00.png",
+          "count": 16
+        },
+        {
+          "file": "chess-link-01.png",
+          "count": 16
+        },
+        {
+          "file": "chess-link-02.png",
+          "count": 16
+        },
+        {
+          "file": "chess-link-03.png",
+          "count": 16
+        },
+        {
+          "file": "chess-link-04.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "saria-field",
+      "duration": 2,
+      "cell": 384,
+      "ppu": 128,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "loop": true,
+      "count": 120,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "saria-field-00.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-01.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-02.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-03.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-04.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-05.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-06.png",
+          "count": 16
+        },
+        {
+          "file": "saria-field-07.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "saria-heal",
+      "duration": 0.7,
+      "cell": 256,
+      "ppu": 150,
+      "pivotX": 0.5,
+      "pivotY": 0.3,
+      "loop": false,
+      "count": 43,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "saria-heal-00.png",
+          "count": 16
+        },
+        {
+          "file": "saria-heal-01.png",
+          "count": 16
+        },
+        {
+          "file": "saria-heal-02.png",
+          "count": 11
+        }
+      ]
+    },
+    {
+      "key": "gold-sweep",
+      "duration": 0.6,
+      "cell": 512,
+      "ppu": 140,
+      "pivotX": 0.5,
+      "pivotY": 0.4,
+      "loop": false,
+      "count": 37,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "gold-sweep-00.png",
+          "count": 16
+        },
+        {
+          "file": "gold-sweep-01.png",
+          "count": 16
+        },
+        {
+          "file": "gold-sweep-02.png",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "key": "gold-hit",
+      "duration": 0.6,
+      "cell": 256,
+      "ppu": 140,
+      "pivotX": 0.5,
+      "pivotY": 0.4,
+      "loop": false,
+      "count": 37,
+      "columns": 4,
+      "pages": [
+        {
+          "file": "gold-hit-00.png",
+          "count": 16
+        },
+        {
+          "file": "gold-hit-01.png",
+          "count": 16
+        },
+        {
+          "file": "gold-hit-02.png",
+          "count": 5
+        }
+      ]
+    }
+  ]
+}

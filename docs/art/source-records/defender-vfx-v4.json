@@ -1,0 +1,300 @@
+{
+  "date": "2026-11-03",
+  "approval": "User approved Pramanix attack-burst V3, and explicitly requested optimizing the other five in this direction and integrating all six in the same turn.",
+  "style": "Layered textured adaptation; not a complete original-game VFX project transplant.",
+  "sources": [
+    {
+      "kind": "PROJECT_AUTHORED",
+      "author": "YesterdayConvoy",
+      "files": "wind/snow, brush slash, ink trigger, calcium grid and healing temporal composition",
+      "source": "Project-authored Canvas export",
+      "rights": "Project-authored composition; underlying sources listed separately."
+    },
+    {
+      "kind": "AI_GENERATED",
+      "tool": "image_gen.imagegen",
+      "file": "spectral-wolf-v4.png",
+      "source": "OpenAI built-in image generation",
+      "sourceURL": "https://openai.com/policies/terms-of-use/",
+      "sourceSHA256": "cd22afccdd0f2e0f659130fa1ae4f8fd17048a847e00ec35b1e43f133dffae95",
+      "rights": "AI-assisted spectral wolf illustration; no claim to original-game rights.",
+      "prompt": "One right-facing grey-white spectral hunting wolf head; brushed smoke/fur, charcoal shadows, ivory eye, translucent tapered trail, readable at 96x48; transparent background, no purple neon, no polygon icon, no scene/UI/text. Actual built-in tool generated one RGBA image; 32 strips flex the trailing smoke, face shape remains stable. This is not a generated full character animation."
+    },
+    {
+      "kind": "REUSED_CC0",
+      "author": "Kenney",
+      "sourceURL": "https://kenney.nl/assets/particle-pack",
+      "files": "Existing particle smoke and star",
+      "rights": "CC0, existing project evidence retained; no new unrelated pack downloaded."
+    },
+    {
+      "kind": "REUSED_CC0",
+      "author": "highwizard",
+      "sourceURL": "https://opengameart.org/content/animated-flame-fire-sprite-sheet",
+      "files": "Existing FireRainEmbers 25-frame derivative",
+      "rights": "CC0 per existing docs/art/source-records/fire-rain-embers.json. Reused project source, not a new license finding."
+    },
+    {
+      "kind": "REFERENCE_ONLY",
+      "sourceURL": "https://www.bilibili.com/video/BV1f7sfzGEor/?t=125",
+      "notes": "Pramanix public gameplay reference actually examined in V2. Video is not an imported texture or redistribution permission."
+    },
+    {
+      "kind": "REFERENCE_ONLY",
+      "sourceURL": "https://www.bilibili.com/video/BV1g2SoYkErQ/",
+      "notes": "Lappland search reference; page found, not a claim to extracted original VFX or completed visual video inspection."
+    },
+    {
+      "kind": "EXISTING_ORIGINAL_ACTORS",
+      "files": "D21/D22/D27/D28/D29/D30 and D28Chess",
+      "rights": "Original Arknights proprietary media, not CC0. Existing source records apply; user integration/upload decision is not rights-holder license. No new original raw skeletons or reference videos imported."
+    }
+  ],
+  "imported": [
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-back-00.png",
+      "bytes": 1067181,
+      "sha256": "7343e651c20b1ab3a26277a78b5394fc09875a97b83ba02651345b51e01067b9"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-back-01.png",
+      "bytes": 1491044,
+      "sha256": "6f5c38d2f30566f955a7272aa7d189ca5b3529aa3efa977c33145d714f6fe46a"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-back-02.png",
+      "bytes": 934346,
+      "sha256": "350a55a2413ac3fdd598b6d1a35509d8c1aabc5f72863b34d4c6f11be2812e72"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-back-03.png",
+      "bytes": 22239,
+      "sha256": "d0e1f4f58289d10df30fa0c00da9e0cbcf8cc9025644e56093858fd44fbb8a6e"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-front-00.png",
+      "bytes": 465711,
+      "sha256": "cfdd214de7deac89cfd69d54436e7aaac7b80f703efcfb84522aabcee7d29d9a"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-front-01.png",
+      "bytes": 584453,
+      "sha256": "085564c9be14c478130b9b831cf95b52197f39229e74ed481d7c83278d0c71d2"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-front-02.png",
+      "bytes": 355641,
+      "sha256": "9f158833f6bde7418bdb5a61ad2511420c92085ad5164b840e876e8bf37f2689"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/snow-front-03.png",
+      "bytes": 22239,
+      "sha256": "d0e1f4f58289d10df30fa0c00da9e0cbcf8cc9025644e56093858fd44fbb8a6e"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-wake-00.png",
+      "bytes": 492402,
+      "sha256": "cf6d332963800e610e5c782b5d9a1d1c70c022aca5907482561d1b669f6e9cdd"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-wake-01.png",
+      "bytes": 479882,
+      "sha256": "0b613e1f8983548252ef31ef7986ac56537589b03c2eba244e963032b200f3c4"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-wake-02.png",
+      "bytes": 493357,
+      "sha256": "978b6fa12e1cb9ed6c096df1d1726eac5b36d611ca64385b3cc36b44f08ee840"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-wake-03.png",
+      "bytes": 474566,
+      "sha256": "195ee4071784c153cb243c85ee432ecbc649ef1f3a81fdfe04fb634d8e43f302"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-wake-04.png",
+      "bytes": 249448,
+      "sha256": "67d3bab4d32f8eece30c1d7732a99dccbc67434c3926421199d0cd15cda592f9"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-hit-00.png",
+      "bytes": 108802,
+      "sha256": "503565c18eea879eb7984e08a9afcac9e764a770b9dcb4b9ad26d837e6fbf643"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-hit-01.png",
+      "bytes": 151951,
+      "sha256": "baad1a77463081244a50675890b4b502dd447aba1b41d367bab7af5d59407dc7"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wolf-hit-02.png",
+      "bytes": 29539,
+      "sha256": "c1872bdff17a4a1ddcd532545c622b953dffebc232309817057be064479f1d25"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-fire-00.png",
+      "bytes": 780874,
+      "sha256": "471f1830f7ecdb134779cc6b0b8aea22c6aaeb88b02768944c6b0a569ee48c12"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-fire-01.png",
+      "bytes": 780034,
+      "sha256": "a89ce20c151aa981671aa27229c82a46ab2ed402e16191125c6d340c6fe02ef9"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-fire-02.png",
+      "bytes": 778933,
+      "sha256": "c96e346d610dcacec67261a84395c8c2087646ae0fa7eeef5585265aa97fd19e"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-fire-03.png",
+      "bytes": 776982,
+      "sha256": "b8d0bf923d8f95f6516c047241a392cce05a2330e1b32d8f77d1976765d3778a"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-fire-04.png",
+      "bytes": 387611,
+      "sha256": "dc0e19b3d5725c72113cfbf5ecd1dd03d346f0ea7af1e74ca93149901965c687"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-hit-00.png",
+      "bytes": 305966,
+      "sha256": "66e2cfe3988dfcd1c22e523fe24b1609d2700db367a027c1141081b55cf5ac92"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-hit-01.png",
+      "bytes": 424443,
+      "sha256": "ab19a70deeb9fa635b59ae8fefd2f07c77ed074ee46fed2a34908f5624072641"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/yu-hit-02.png",
+      "bytes": 103930,
+      "sha256": "98f2a5ff4d41bb6b0ded204cafc8fb2422163328a1d4ad67421aa2a97725486d"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wang-ink-00.png",
+      "bytes": 542682,
+      "sha256": "c76097eca13643fd13aa230fa0a249e7765e4204f4110648358c3a1b179584dc"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wang-ink-01.png",
+      "bytes": 979871,
+      "sha256": "c5a2ea9f6d682d2ac9bcdc9a3263b6844f14d45ee52cc6026f115272426329b0"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/wang-ink-02.png",
+      "bytes": 488300,
+      "sha256": "acda7fe66665593b9ac3e0714a7c8e90cffad85943c96eb8478ece558e0c2368"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/chess-link-00.png",
+      "bytes": 56622,
+      "sha256": "76bb515acf248ae22f17c53c8be56762416556f0047b9c5d6654471896e054f9"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/chess-link-01.png",
+      "bytes": 56819,
+      "sha256": "1c1c7da0debcd12015cce67747d0de14ad9f8a8b07da33f4eb69479626aa7f2f"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/chess-link-02.png",
+      "bytes": 56749,
+      "sha256": "dcda108e96de686a2cb44307af3bf07442d44a7f68992e3036f365de084ac2fd"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/chess-link-03.png",
+      "bytes": 56252,
+      "sha256": "6369b51de2204ed10fdef6315c3948f3e3ca0764e802df00f9c1b64960f7fa19"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/chess-link-04.png",
+      "bytes": 28313,
+      "sha256": "32d353ac2f214d849aadeb4a174d92d7dd946d96d392f49adbe7db7b0a349784"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-00.png",
+      "bytes": 399730,
+      "sha256": "10a7e843961ccfd86710df26633afe6577310102fc12928bed94abdfd858645d"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-01.png",
+      "bytes": 372116,
+      "sha256": "410ac5e70da9cb53e193ab609490fbd0dfdcb6369fd686cbf7895e3d60743855"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-02.png",
+      "bytes": 353263,
+      "sha256": "fb7249436d1bb886278474ef7ce52aeb173216b1bcb623d0ee4cf9555be01dc6"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-03.png",
+      "bytes": 409707,
+      "sha256": "6eabdef75f56cf26e994af7bfc9558cca097222854db28fb27be0dfd27e64364"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-04.png",
+      "bytes": 431378,
+      "sha256": "e6d773c914e771a9947c111fb6b3ecef7ec99eef89c54f87e3a4ec38e73184c7"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-05.png",
+      "bytes": 411285,
+      "sha256": "f14bc6a3a6c7ed384643e943c264ca88acd597a67c9365c92722a3b298eba767"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-06.png",
+      "bytes": 418331,
+      "sha256": "b95486e3243d8baebaf82921484f899550dd3ef2691db4c2838c5b1c8bdba1ba"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-field-07.png",
+      "bytes": 211181,
+      "sha256": "01a1edc160c1fd8f7524b0682c8deb9cbd0da610cc26b949a15b4bcd2e6510ec"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-heal-00.png",
+      "bytes": 234441,
+      "sha256": "96257cee9337bb2cebd5e3981f5047ae2a07be6ebc44713a62691a8a46669d3a"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-heal-01.png",
+      "bytes": 433928,
+      "sha256": "1984c87f106cd63d57d8dd414c5bfb6cdaef70dd62ecc659b313bbb6533c0dfa"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/saria-heal-02.png",
+      "bytes": 149955,
+      "sha256": "2e18f3f684c2f21253f88356890d148f15c81590e6005f42aeaa5807f6f5c857"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-sweep-00.png",
+      "bytes": 1055865,
+      "sha256": "39076ffab60d647d88afee70858f91c41210691ec164165c3a366a0e058c2d4a"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-sweep-01.png",
+      "bytes": 979384,
+      "sha256": "987a42a4c84981155ad46362bcd47387632fa9351dcf92918a99a622043fcb44"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-sweep-02.png",
+      "bytes": 158786,
+      "sha256": "ad059b3e7ec8e420adfbc763e179fed77e13a2c1a17c583ac7f45b900f46c882"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-hit-00.png",
+      "bytes": 228099,
+      "sha256": "93091c07a2d781c8fd356e8c7444b5d924eb4b61fba6c6ee7143244a4eb55468"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-hit-01.png",
+      "bytes": 353501,
+      "sha256": "960729f02c26b214c9ac806f35f2259cb107d92ddae341c43e58cc9e22ec41fa"
+    },
+    {
+      "path": "Assets/_Game/Art/VFX/Skills/Defenders/Resources/DefenderVfx/gold-hit-02.png",
+      "bytes": 43739,
+      "sha256": "99ac984cb3c577f9ef3aaafd0f4d71bfdf5b502070292331c5c9aaa193d175be"
+    }
+  ]
+}

@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-03：六人分层技能特效
+
+接入范围、逐页SHA与来源见[特效说明](art/DEFENDER-SKILL-VFX.md)和[来源记录](art/source-records/defender-vfx-v4.json)。主要改动：AdvancedDefenderView、EngagementView、DefenderRosterView；新增DefenderSkillVfxView、DefenderVfxArt、DefenderVfxImporter、两份测试及49张运行PNG/清单/meta。没有改技能或经济逻辑。
+
+- `vfx-release-edit.xml`：最终完整339/339，0失败/跳过；新增12项非循环有效窗口、纹理尺寸/过滤和持续片段时钟循环检查。PNG共674帧、49页、20,671,871字节，RGBA/尺寸/页内计数/未触边检查通过。
+- `vfx-full-play-final.xml`：完整90/90 GPU场景，0失败/跳过。新增真实六人技能事件的贴图显示、暂停同帧同位置、不推进生命/时钟、初雪攻击间隔无攻击风雪、多目标仅一组前后层、重开清理；大地图沿原部署方案实际通关，全部六组新特效均出现。
+- 随后只加宽金斩纹理、修正火焰循环采样接缝，`vfx-release-play.xml`最终2/2再次通过，并重新采集实际地图画面；完整339也在最终纹理上再次通过。最后保留塞雷娅普通近战原弹道的兼容判断，`vfx-final-saria-play.xml`相关3/3通过；未重复无关完整逻辑与90项场景。
+- `vfx-build-final.log`：最终StrongholdMapTools.Build成功，Windows1,677,286,421 bytes、errors=0（报告总量不是EXE大小）。`vfx-players.json`三个最终独立Player：late/basic/legacy-challenge全部退出0，未捕获运行异常，后期/基础战后商店、卡牌带入下一关及旧挑战仍通过。
+- 查看了真实大地图狼形、火墙、风雪和金斩相机截图；[连续实机相机采样](art/defender-vfx-gameplay.mp4)为60张真实Unity GPU画面、20fps/3秒，含前后风雪展开与散尽，不含OnGUI HUD，也不是人工录屏。项目外看稿不冒充实机证据。
+
+发现并修复：首次图集导入的类型/刷新状态导致Resources返回null；明确2D导入并逐页ForceUpdate校验49页后，最终全部能读取。首次完整GPU89/90发现重开后的望特效池仅隐藏未销毁；按战斗对象/RunId更换销毁池中旧对象，完整90/90复验通过。另修新测试把同对象下正常角色误算成残留的断言，仅检查VFX对象；未弱化棋子旧清理测试。失败日志/XML保留在artifacts。
+
+未运行：人工完整试玩、第二台电脑/全新克隆、性能Profiler/低配压力。原作完整VFX工程仍缺，这组是适配重制；新增PNG约20.7MB磁盘资源，不能等同GPU内存或宣称性能改善。原角色媒体权利状态保持原记录，用户接入/上传决定不构成权利人许可。未制作ZIP/Releases、不自动合并main；PR #51既存冲突另行处理。
+
+
 ## 2026-11-03：场上六名干员动作与原作棋子接入
 
 按人类确认看稿范围接入30段角色追加动作与望棋子3段，共2,755帧、70PNG/93,688,811字节、13清单及必要meta。主要文件为DefenderArt、DefenderRosterView、AdvancedDefenderView、12个角色目录、D28Chess和两份测试；未改战斗结算、技能数值、路线、商店、场景/Prefab、包或工程设置。具体资源与数据流见[接入说明](art/FIELD-ANIMATION-COMPLETION.md)。
