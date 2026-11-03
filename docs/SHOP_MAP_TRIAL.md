@@ -1,5 +1,7 @@
 # 大地图、动态模型备战席与商店特效
 
+当前地图功能分支新增[盟约#04活性源石试玩](STRONGHOLD_MAP_04.md)，独立商店场景默认进入该图；顶部“换图·重置”可回到下述泵站回廊。新图Windows入口为`Builds/StrongholdMap/YesterdayConvoy-Stronghold.exe`，既有ShopMap目录仍保留前一版产物。
+
 2026-10-31 · 霍利屹 · [任务 #48](https://github.com/Peanora/YesterdayConvoy/issues/48) · [PR #47](https://github.com/Peanora/YesterdayConvoy/pull/47)
 
 最新布局：地图占约75%屏幕高度，下沿备战席按用户录屏改成一整条有厚度的工业长平台，保留10个隐形站位，棋子从右往左排列并站立待机。商店默认收起，展开时从上方滑入、收起时滑回并淡出，不缩小或移动地图。保留已确认的商店卡片、羁绊标签、费用渐变色与右侧刷新/锁定排列，使用已有泵站回廊，地图格局和原俯视角度保持。

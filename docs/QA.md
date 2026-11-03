@@ -1,5 +1,53 @@
 # 验证证据与回归
 
+2026-11-01名牌修订：仅移除头顶名字后的地形文字，不改战斗规则。build-clean-defender-names.log：1496063048 bytes、0错误；player-clean-defender-names.log：12项全True，14次部署126.35秒0DP通关。已查看无地形后缀的实机名牌并更新5张截图；本轮未重复完整逻辑/场景套件。
+
+## 2026-11-01：六星挑战扩建版
+
+[试玩、数值、参考打法与边界](STRONGHOLD_SIX_STAR_CHALLENGE.md)。新增9行双翼布局与六星技能混合防线；实际高台/地面近战索敌限制；每个蓝门各突破一次；两个红门拖动路线与点击守军详情。
+
+| 执行证据（D:/游戏开发/artifacts/shop-map/） | 结果 |
+| --- | --- |
+| edit-challenge.xml | 完整292/292通过，0失败/跳过：墙/高台/固定路障绕行、角色深复制不写原asset、近战/远程高台规则、重开、两目标、真实混合通关与单兵种/单翼负例 |
+| challenge-timing.xml | 此后追加参考波次整体提前/延后1秒容错，挑战类11/11通过；原完整套件不重复，总独立逻辑用例294 |
+| play-challenge.xml | 11/11 GPU场景通过：原6商店+原3地图+新2挑战，涵盖双红门预览/移开隐藏、真实平台、详情面板拦截/开店关闭、重开/两旧图切换和清理 |
+| challenge-balance.csv / challenge-balance.log | 180受限脚本6次通关；其余有失败与未完成，不能称人类胜率。保存成功请求重放，未用伤害/生命作弊 |
+| build-challenge-delivery.log | 最终Windows1496063048 bytes、0错误；此前显示修正包括弩手初始编队文字、下移目标说明及去掉易混淆的伤害类型泛称 |
+| player-challenge-delivery.log | 最终Player12项全True：布局/镜头/点击详情/路线/清除路线/购买/拖动部署/暂停/战斗中详情/双目标胜利/重开/旧图 |
+
+实际1920×1080可见Player通过真实备战席拖动14次，126.3500019秒，剩余0DP，7次传送，4次实际穿门（重复同一目标不重复扣另一目标防御）。守军发动次数D21=1、D22=1、D27=1、D28=2、D29=1、D30=1。5张最终截图存docs/ui-previews/stronghold-challenge；已查看路线颜色/编号/箭头、详情实时字段/范围圈、平台/地面身份、战斗和结算画面。
+
+首轮编译发现详情面板使用不存在的名称字段，已修正并重跑；首轮实机发现初始单卡没有多卡状态时误写未编队，以及说明挡住名字，已修正重建、以上述最终日志为准。未把这些失败/旧画面记作最终通过。
+
+未测：人工平衡、第二台电脑/全新克隆构建、完整其余PlayMode、低配及长时性能。原图共享防御规则保持；仅挑战版启用每目标一次与近战不可打高台。星级不加战斗属性。没有新增素材许可声明或新原作媒体。旧记录保持历史证据。
+
+## 2026-10-31：地图材质、源石与传送光效
+
+[来源与材质使用范围](art/STRONGHOLD_MAP_MATERIALS.md)。运行纹理复用已有CC0文件及meta，像素/导入设置不变；新增两Shader、显式引用StrongholdMapArt.asset和一张动态特效网格。不改格点、路线和战斗数值。
+
+- play-stronghold-polish.xml：9/9定向GPU PlayMode通过，0失败/跳过。原6项商店、原2项地图继续通过；新增验证2K纹理引用、3类法线材质、两个Shader实际支持、特效不生成战斗实体、战斗暂停冻结/继续推进、退出清理。
+- 此后只补Smoke模式Awake提前后台运行，以及结算时用PresentationClock让瞬时光效结束。build-stronghold-polish-delivery.log：Windows1496034691 bytes、0错误；最终运行源码此后未改。
+- player-stronghold-polish-delivery.log：原13项玩法和texturedSurfaces/batchedEnergy/pause/portalFeedback/effectsEnded共18项全True，无捕获异常/Shader错误。编队30.89秒模拟时间获胜，11次部署、2次突破、7次传送、9次感染触发、166点感染伤害；结算推进1.2秒后瞬时光圈/光柱清空。
+- 最终实际1920×1080窗口59张证据帧，复核贴图/晶体/等待传送/出场；docs/ui-previews/stronghold04更新5张实机截图与24帧源石、28帧传送WebM。8fps观察用编码，不作为实际游戏FPS/精确计时证明。
+- 初次可见窗口失焦停在启动阶段、未生成有效画面，不记通过。提前开启自动验收后台运行后重新构建并以上述最终Player为准。
+
+证据根D:/游戏开发/artifacts/shop-map/。本轮未重跑完整EditMode及其余PlayMode，前一版283逻辑和旧图23项保持历史记录。未测低配GPU/长时性能/第二台电脑或全新克隆构建；不冒称4K全套PBR、烘焙AO或Bloom后处理。原主场景/地图asset/Prefab/Packages/ProjectSettings、共享贴图和meta未改，.vscode继续未跟踪。
+
+## 2026-10-31：盟约#04格点、源石与传送
+
+[来源、操作与适配边界](STRONGHOLD_MAP_04.md)。原格点转录自固定提交a24a8ad，原始参考JSON仅本地；工程不包含原地图贴图或模型。
+
+| 实际执行 | 最终结果 |
+| --- | --- |
+| edit-stronghold-final.xml | 完整283/283通过，0失败/跳过。5项新逻辑用例检查格点/路线绕开封闭与固定工事、感染攻击/攻速/真实扣血/暂停/清理、3秒传送与不可直接受击、旧图无感染、耗尽失败和重开。 |
+| play-stronghold-final.xml | 8/8定向GPU PlayMode通过：6项既有商店，2项新图。验证新图招募、两路拖动、满席合成、倍率仅本图、旧asset字节不变；实际模型传送时隐藏、暂停不恢复、出场后同模型恢复，无额外实体；切图与退出清理。 |
+| build-stronghold.log | Windows1495965600 bytes、0错误，构建命令StrongholdMapTools.Build。构建后仅补了测试和文档，运行源码未再改。 |
+| player-stronghold.log | layout/framed/purchases/drag/paused/infected/portal/combat/won/merge/reset/isolation/exit共13项全True，无捕获异常。11次部署，模拟30.85秒后2次突破胜利，7次传送、9次感染触发、166点总感染伤害。 |
+| player-stronghold-city.log | 新构建用旧商店Smoke入口回归泵站：原19项、特效结束及3项表现共23项全True，无捕获异常。 |
+| 画面 | 查看实际1920×1080准备、战斗；六张实机证据中准备/商店/18秒战斗/结算四张保存docs/ui-previews/stronghold04。原两图未被覆写。 |
+
+证据根目录D:/游戏开发/artifacts/shop-map/。本轮未测第二台电脑、全新克隆构建、其余完整PlayMode/全角色地图组合、长期性能及人工平衡。原始工事在此为固定结构，不包含原作可移动/可破坏工事；地面路线为本作适配，并非原作飞行Boss轨迹。本机运行通过不记为接收端验收。项目生成.vscode仍未跟踪。
+
 ## 2026-10-31：用户录屏参考长平台、高位落地
 
 查看完整42.17秒本地录屏及购买片段逐帧，参照连续厚平台、从右向左排列和高处快速落地；记录见[来源与观察](ui-previews/shop/REFERENCE-RECORDING.md)。模型正常配色，白色下落光痕、青白落地环/碎光，待机衔接；没有导入录屏中的原作部署图集或UI资产。
