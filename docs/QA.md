@@ -1,5 +1,134 @@
 # 验证证据与回归
 
+## 2026-11-03：两个商店 PR 的历史冲突整合回归
+
+#47（商店）与 #51（两关闭环）均因 #50 squash 带入共享商店/地图代码而冲突。先逐文件核对 #47 与 main：主线包含其全部功能并追加挑战/详情，解决6个冲突后 Git tree 与 e14c8ca 完全一致，未丢弃任意商店行为。#47 正常 squash 合并为0821c2c。#51 吸收整理后的共享历史与实时main，解决9个重叠文件，保留闭环分支及旧入口、TacticalViewport坐标、独立奖励与现有两份证据；最终除本段文档更新外，与cbcdad1的运行文件逐字节相同。
+
+- artifacts/pr-merge-edit.xml：完整339/339 EditMode通过，0失败/跳过。
+- artifacts/pr-merge-play.xml：完整92/92 GPU PlayMode通过，0失败/跳过，覆盖商店、两关闭环、测试结算、旧地图与特效。
+- py -3 tools/check_repository.py：4619跟踪文件通过；差异空白/冲突标记检查通过。
+- artifacts/pr-merge-build.log：STRONGHOLD_BUILD_PASS，1677283162 bytes，0错误，Unity6000.6.5f1、Windows x64 Development。
+- artifacts/pr-merge-player-late.log：后期两关9项全True，购买、跨关、暂停、取景、重开和退出通过，退出0。
+- artifacts/pr-merge-player-basic.log：基础两关8项全True，实际购买卡进入第二关、奖励流程、暂停、重开和退出通过，退出0。
+- artifacts/pr-merge-player-shop.log：原商店19项全True，落地/金光收尾检查True，退出0。
+
+上述为本轮重新执行结果；未重复人工点击全流程、第二台电脑/全新克隆或长期性能。没有新增素材、游戏规则或公共接口，不更新ZIP/Releases。源文件、必要.meta与已有运行资源保持跟踪；本轮合并依据用户明确指令，不绕过GitHub保护。
+
+## 2026-11-03：新版商店与底部卡栏费用底色
+
+定位：git blame确认旧ShopMapTrial中ShopTier/费用渐变来自shigaharuki17的7a4e700；新版BattleShopInterface的DrawLoopShop/DrawLoopRoster只填LoopPanel，缺少该调用。仅修改此绘制文件，新增私有共用底色绘制，原ShopTier和费用/星级/DP数据不变；不改公共接口、素材、场景、Prefab、包或设置。
+
+- cost-background-play.xml：相关5/5 GPU场景通过，无失败/跳过，原基础/后期闭环、招募带入第二关和测试胜负流程保持。未为此低影响绘制修复添加镜像测试或重复全量逻辑/PlayMode。
+- cost-background-build.log：Windows构建1677288333 bytes、errors=0，报告总量不是EXE大小。
+- 最终独立Player通过Windows界面工具实际查看：准备阶段卡栏1费灰、2费绿、3费蓝、4费紫；测试判胜后进入商店，2费商品绿、3费商品蓝且同费同色，图片原配色和名称/价格可读，GUI颜色未泄漏。5费金沿用原映射，本次随机商品中未出现，未作实机5费抽验。
+
+未做第二台电脑或全量回归；没有新增费用规则、5费商品或新美术方向。资料见BATTLE_SHOP_LOOP，源码与新本地构建对应提交见BUILD-INFO；不生成ZIP/Releases或自动合并main。
+
+## 2026-11-03：测试结算开关
+
+改动为BattleShopInterface的开关/面板/测试标记、BattleShopLoop私有控制、ManualBattle程序集内部终态入口、ShopMapTrial面板点穿保护，新增TestSettlementSceneTests及meta。Debug.isDebugBuild保护，普通部署/伤害/胜负判断不调用测试入口。
+
+- test-settlement-edit.xml：相关18/18，0失败/跳过；覆盖原ManualBattle与战后金币/利息/经验/库存/幂等逻辑。
+- test-settlement-play.xml：相关5/5 GPU场景，0失败/跳过；包含新2例准备直接胜利、暂停带单位失败、默认关闭/关闭拒绝/点穿保护、重复请求不改判不发钱、真实购买与第二关重置/通关、失败终局与重开；原基础/后期两关闭环回归同时通过。
+- test-settlement-build.log：StrongholdMapTools.Build成功，Windows1677287732 bytes、errors=0（报告总量，不是EXE大小）。
+- 使用Windows电脑界面工具在此最终独立Player实际点击：展开开关、判胜利，看到第1关测试结算与金币30→38；点击前往商店并真实招募，金币38→35；进入第2关后开关恢复关闭，DP24；展开判失败，看到本次挑战结束与金币35→43，没有商店继续按钮。只操作新开的验证Player，原用户对局未点击/关闭。
+
+未运行完整逻辑/全部PlayMode套件、第二台电脑或非Development Player；后者由条件保护但未另构建。此为测试快捷入口，不将直接判胜当成自然通关或平衡证据。无新美术素材，不改场景/Prefab/包/设置；本地新目录交付，源码仍走功能分支/PR，不合并main或生成ZIP。
+
+## 2026-11-03：六人分层技能特效
+
+接入范围、逐页SHA与来源见[特效说明](art/DEFENDER-SKILL-VFX.md)和[来源记录](art/source-records/defender-vfx-v4.json)。主要改动：AdvancedDefenderView、EngagementView、DefenderRosterView；新增DefenderSkillVfxView、DefenderVfxArt、DefenderVfxImporter、两份测试及49张运行PNG/清单/meta。没有改技能或经济逻辑。
+
+- `vfx-release-edit.xml`：最终完整339/339，0失败/跳过；新增12项非循环有效窗口、纹理尺寸/过滤和持续片段时钟循环检查。PNG共674帧、49页、20,671,871字节，RGBA/尺寸/页内计数/未触边检查通过。
+- `vfx-full-play-final.xml`：完整90/90 GPU场景，0失败/跳过。新增真实六人技能事件的贴图显示、暂停同帧同位置、不推进生命/时钟、初雪攻击间隔无攻击风雪、多目标仅一组前后层、重开清理；大地图沿原部署方案实际通关，全部六组新特效均出现。
+- 随后只加宽金斩纹理、修正火焰循环采样接缝，`vfx-release-play.xml`最终2/2再次通过，并重新采集实际地图画面；完整339也在最终纹理上再次通过。最后保留塞雷娅普通近战原弹道的兼容判断，`vfx-final-saria-play.xml`相关3/3通过；未重复无关完整逻辑与90项场景。
+- `vfx-build-final.log`：最终StrongholdMapTools.Build成功，Windows1,677,286,421 bytes、errors=0（报告总量不是EXE大小）。`vfx-players.json`三个最终独立Player：late/basic/legacy-challenge全部退出0，未捕获运行异常，后期/基础战后商店、卡牌带入下一关及旧挑战仍通过。
+- 查看了真实大地图狼形、火墙、风雪和金斩相机截图；[连续实机相机采样](art/defender-vfx-gameplay.mp4)为60张真实Unity GPU画面、20fps/3秒，含前后风雪展开与散尽，不含OnGUI HUD，也不是人工录屏。项目外看稿不冒充实机证据。
+
+发现并修复：首次图集导入的类型/刷新状态导致Resources返回null；明确2D导入并逐页ForceUpdate校验49页后，最终全部能读取。首次完整GPU89/90发现重开后的望特效池仅隐藏未销毁；按战斗对象/RunId更换销毁池中旧对象，完整90/90复验通过。另修新测试把同对象下正常角色误算成残留的断言，仅检查VFX对象；未弱化棋子旧清理测试。失败日志/XML保留在artifacts。
+
+未运行：人工完整试玩、第二台电脑/全新克隆、性能Profiler/低配压力。原作完整VFX工程仍缺，这组是适配重制；新增PNG约20.7MB磁盘资源，不能等同GPU内存或宣称性能改善。原角色媒体权利状态保持原记录，用户接入/上传决定不构成权利人许可。未制作ZIP/Releases、不自动合并main；PR #51既存冲突另行处理。
+
+
+## 2026-11-03：场上六名干员动作与原作棋子接入
+
+按人类确认看稿范围接入30段角色追加动作与望棋子3段，共2,755帧、70PNG/93,688,811字节、13清单及必要meta。主要文件为DefenderArt、DefenderRosterView、AdvancedDefenderView、12个角色目录、D28Chess和两份测试；未改战斗结算、技能数值、路线、商店、场景/Prefab、包或工程设置。具体资源与数据流见[接入说明](art/FIELD-ANIMATION-COMPLETION.md)。
+
+- `field-full-edit-final.xml`：完整327/327，失败/跳过0。新增9例资源尺度、原点、变体、棋子与销毁缓存恢复检查。首轮全量321/326暴露先前加载的Sprite被Unity清理后仍留在缓存；修复失效检查并增加重现测试，最终完整复验通过。没有为此改变启动加载策略或做性能优化。
+- `field-full-play.xml`：完整88/88 GPU场景，失败/跳过0；新增六人入场→待机、暂停冻结/不推进逻辑、比例/朝向、重开，以及真实棋子创建/触发动画/暂停/清理。旧角色、技能、部署、地图、跨关与商店场景保持。棋子表现测试用具备动作间隙的独立配置保证能触发技能；最初测试配置的动作占满间隔而未释放技能，仅修测试配置，生产数值未改。
+- `field-build.log`：Windows构建1589837955 bytes、errors=0，使用StrongholdMapTools.Build，独立ShopMap入口；报告总量不是EXE大小。
+- `field-players.json`：后期两关、基础两关、旧六星挑战三份最终独立Player退出0，后期won/complete/pause/purchased/carry/reset/framing/restart/exit全部True。隐藏窗口下ScreenCapture失败，本轮不把它当真实屏幕截图通过；画面抽查来自GPU测试的[相机渲染](art/field-late-idle.png)，不含OnGUI HUD，不是HTML看稿或人工实屏验收。
+- `REPOSITORY_CHECK_PASS`；70张运行PNG及对应meta均已进入索引，逐页SHA与导入记录一致，最大PNG3269290 bytes，无单文件上传超限。没有加入原始skel/atlas、加工区、Spine渲染库、构建、AGENTS或缓存。
+
+未运行：第二台电脑、人工完整试玩、启动性能与内存分析。原作完整刀光/风雪/火墙/追猎/治疗特效仍有缺口，塞雷娅原背面三技能仍缺；不能把本轮记为完整技能特效还原。新增资源约94MB，加载优化按人类要求继续暂缓。
+
+本轮沿用PR #51；开工已fetch核实main=e14c8ca。与main的12处既存合并冲突未在本轮改动，不自动合并。EXE对应源码与本地交付目录见BUILD-INFO。
+
+
+## 2026-11-03：取消红门拥堵限制、原生16:9联动窗口
+
+本轮只实现用户要求的两项操作修订，技能还原和启动/卡顿仅答复、未修改相关实现。
+
+- `qol-edit.xml`：完整318/318逻辑，0失败/跳过。原三项拥堵拒绝用例改为占用红门也能部署，同时保留CD/费用/次数/暂停/幂等/非法位置保护；新增8边/角锚点与4种可用区域约束。
+- `qol-play.xml`：最终完整86/86 GPU场景，0失败/跳过。新增暂停五张不同怪物拖入同一红门、同位置五实体/各自扣费次数、同卡CD仍冻结阻止重复部署。原技能/地图/交易/跨关等场景保持。
+- 首轮85/86有一项余消弹场景未形成所需的消弹观测；放开重合后原连续出兵测试的分布发生变化。测试场景明确限制为单弩手持续射击，保留灼燃、治疗、消弹、动作/暂停/清理全部断言；技能代码与原配置未改。随后完整86项复验通过。
+- `qol-build.log`：最终Windows构建1496110308 bytes、errors=0（报告总量，不是EXE大小）。新增原生分支在Windows Mono x64 Player实际编译运行，不把Editor中的条件编译跳过当验证。
+- `qol-players.json`：5个最终Player全部退出0、无捕获异常、均安装窗口约束：native-window、late、basic、legacy-shop、legacy-challenge。后期9项全True、购买角色进入第二关；旧商店/旧六星挑战继续通过。
+
+原生窗口测试对本进程发送Windows WM_SIZING（右边、底边、左上角）并应用返回矩形，实际客户区1408×792、1550×872、1678×944；随后实际最大化为2534×1425，再还原。aspect/axesCoupled/pausedState/noBars全True；宽高比例取整误差<=1像素，窗口内部不出现大片留黑，暂停、DP、时钟未重置。[横边](art/window-coupled-width.png) · [竖边](art/window-coupled-height.png) · [最大化](art/window-coupled-maximized.png)。这是原生消息和系统窗口尺寸验证，未记为人工鼠标拖边验收。独立Player启动请求1024×640后实际1024×576，[真实画面](art/window-coupled-ready.png)，两关闭环通过。Unity编辑器测试不安装窗口消息回调、不调整编辑器布局；其任意比例Game视图仍可留边。
+
+实现只对本进程Windows窗口安装comctl32子类回调，未处理消息转发，销毁时卸载；系统窗口组件无需新包或外部插件。尺寸数学独立，不每帧强制SetResolution；仅启动/系统贴靠等产生非16:9客户区时归一化。实现依据：[WM_SIZING](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing)、[WM_GETMINMAXINFO](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-getminmaxinfo)、[SetWindowSubclass](https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass)。
+
+未改场景、Prefab、Packages、ProjectSettings、技能/素材加载代码。未做第二台电脑、其他Windows/DPI/多屏穷举、真实鼠标所有边角手感或长时缩放压力。性能仅只读代码检查：MonsterTestSelection.BuildMonsterTestCatalog→ManualBattleDefinition.Snapshot→CardDefinition.Portrait/HasFrameAnimation→LocalMonsterArt.For同步读取/解码整套图集、Sprite.Create、Texture2D.Compress；这是确认存在的加载路径，尚未测量各环节时间，未把它推断为所有运行卡顿的唯一瓶颈。本轮没有性能优化或新的原作技能还原。
+
+
+## 2026-11-03交付：后期两关、等比例窗口与原生UI
+
+2026-11-02人类已批准项目外UI看稿和具体范围；2026-11-03完成交付整理。沿用codex/battle-shop-loop / PR #51，不合并main。独立后期预置7级/30金币/24DP、5种怪物对抗6名已有完整技能的六星守军；战后购买/编队带入第二关，旧1级基础模式和旧独立试玩保留。规则、文件连接与操作见[BATTLE_SHOP_LOOP](BATTLE_SHOP_LOOP.md)。
+
+| 本轮实际执行证据（本工作目录artifacts） | 结果 |
+| --- | --- |
+| late-editmode-final.xml | 完整306/306 EditMode，0失败/跳过；含两关真实混编获胜、技能保留/站位变化、4种窗口比例的坐标往返和相机比例 |
+| late-playmode-final2.xml | 完整85/85 GPU PlayMode，0失败/跳过；包含原角色/火雨/地图/商店、基础闭环和新增后期两关，战后新购M15实际进入第二关 |
+| late-drag-regression.xml | 最后补齐“关间备战拖动取消保持商店可操作”的修正后，追加1/1后期真实两关场景回归通过；完整85套在这项小修前执行，未假称之后又完整重跑 |
+| late-release-build.log | 最后修正后Windows重建1496100411 bytes、errors=0；为Unity报告产物总量，不是EXE大小 |
+| late-players.json | 最终构建5个独立Player全部退出0，无捕获异常：后期1280×720、后期1024×640、基础闭环、旧商店、旧六星挑战 |
+
+两个后期Player的won/complete/pause/purchased/carry/reset/framing/restart/exit全True。两场均真实部署与技能战斗；关间使用正常金币刷新、购买新增M15并编队，第二关真的出现该单位；金币/等级/库存沿用同一经济对象，DP/实体重建，重开恢复后期初始资源。没有直接扣守军生命/强制胜利来通过。基础闭环的8项、旧商店及购买落地/收起拦截、旧六星挑战12项继续通过。
+
+1024×640真实截图为1024×576内容，上下各32黑边，黑边像素实际为(0,0,0)。缩放和输入统一使用TacticalViewport，未继续分别按宽/高拉伸。真实鼠标检查：弩手拖到上红门24→23DP；暂停后酸液源石虫拖到下红门23→21DP且保持暂停；猎狗拖到非法位置后21DP及4次保持。对同一窗口实际最大化后仍21DP且暂停，画面居中留边、角色/UI比例保持；原生截图[最大化实机](art/late-demo-native-maximized.png)。本轮鼠标拖边未能通过自动化命中窗口边框，未将其记为实测成功；可调整边框属性沿用前轮已验证的窗口设置。本轮已验证最大化和两种独立窗口尺寸，不等于穷举所有拖边/DPI情形。
+
+[战斗](art/late-demo-ready.png) · [结算](art/late-demo-settlement.png) · [商店与原立体备战](art/late-demo-shop.png) · [通关](art/late-demo-complete.png) · [1024×640留黑](art/late-demo-letterbox.png)。均为最终Unity Player截图，非HTML看稿或AI重绘。
+
+验证中修正了遗漏的旧绘制调用与Unity库不支持的LINQ重载；等比例化后旧场景测试的鼠标换算改用新坐标约定，地图可见性在画布内检查。火雨GPU抓图使用独立16:9 RenderTexture的完整视口并恢复现场，避免把桌面窗口留边带入离屏采样；原技能/冻结/收尾断言保留，最终完整套件通过。关间拖动不再收起必需商店，Tab/Esc仅在旧模式继续切换商店；完成小修后追加场景与最终5个Player复验。
+
+本轮不修改场景文件、Prefab、Packages或ProjectSettings；测试/构建期间Unity重写设置的规范化Git内容与HEAD一致，未纳入提交。原E盘工程未切分支，既存未跟踪PackageManagerSettings.asset哈希继续保持312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2，不提交/覆盖。复用原角色/地图/运行素材、保留来源和真实权利记录。新增源码/meta和实际截图随功能分支交付；无ZIP/Releases。
+
+未测第二台电脑离线、全新克隆、全随机商店/阵容、低配长时和多屏/DPI穷举；人类难度仍待试玩调整。当前仅两关/基础10种可运营怪物，升星不加战斗属性、羁绊未实现，不代表完整后期自走棋。真实EXE与对应源码提交见本地BUILD-INFO；旧验证记录按当时版本阅读。
+
+
+## 2026-11-02：可调整窗口大小
+
+本轮明确按人类“自由调节窗口大小”要求，将ProjectSettings/ProjectSettings.asset的resizableWindow从0设1；普通Player启动在ShopMapBootstrap.Awake设置最多1280×720窗口，只执行一次，显式-screen参数保持。ShopMapTrial在尺寸变化后重算镜头取景，ManualBattleController.Update调用，不改变战斗状态，仅取消未完成拖拽。
+
+window-resize-final-build.log：Windows1496083727 bytes、0错误。window-native-results.json：实际Win32窗口resizeBorder/maximizeButton均True，普通启动1280×720；同一进程通过原生窗口接口调整为980×620、1180×660，各等待2秒后保持，未被程序强制恢复。首次检查过早采到场景加载前的旧尺寸，改为等启动尺寸生效再验收，未把该次失败记为通过。
+
+window-loop-results.json：1024×640与1280×720两例独立Player全部退出0，八项闭环检查全True，无捕获异常，包含购买/实际新单位/通关/暂停/重置/退出。已查看1024×640商店截图。没有写额外镜像测试，也未重跑完整EditMode/PlayMode；下方299/84是此前闭环交付的结果。未穷举极端纵横比、多显示器/DPI与所有旧场景，未做人工拖边手感验收。
+
+
+## 2026-11-02：两关闭环及角色接地
+
+本轮最终完整299/299 EditMode、84/84 GPU PlayMode，0失败/跳过：artifacts/loop-grounded-EditMode.xml、loop-grounded-PlayMode.xml。新增5项逻辑覆盖奖励幂等/利息先快照/上限/连胜/XP、锁店和库存跨关、免费刷新与购买跨关、失败终局、战斗中不能运营；新增2项GPU为真实两场战斗/购买单位上场/重置与重复结算、失败奖励/禁止运营/新挑战清理，并检查脚底阴影高度和比例。
+
+最终StrongholdMapTools.Build通过：1496083099 bytes、errors=0，artifacts/loop-grounded-build.log。此为Unity构建报告统计，不是EXE大小。artifacts/loop-release-players.json的loop、legacy-shop、legacy-challenge三个最终Player均退出0，无捕获异常。新闭环won/complete/pause/purchased/purchasedUnitInStage2/combatReset/restart/exit全True；旧商店及六星挑战继续通过。已查看结算/商店/通关和接地后实际截图，不以AI看稿替代实机证据。
+
+初次编译测试引用了非公开坐标工具，改用测试局部坐标转换；第一次场景暴露SyncShopDeck的准备阶段限制挡住新关创建，修为显式换关重建，不绕过普通交易限制。独立Player首轮在商店滑回未完就模拟向上方红门出兵，被原覆盖层正确拦截；验收按实际操作等待0.25秒后重新出兵并最终通过，未把该次失败当通过。最后美术接入后上述完整套件和三个Player重新运行。
+
+源图/原动作未改，阴影由本项目程序生成，Shader保留原脚底深度方案，仅增加局部染色；不是完整动态光照。主场景、Prefab、Packages、ProjectSettings未改，原E盘未跟踪PackageManagerSettings.asset的SHA仍312F6AF74DD911D570E7F4B6660F4D0D37682F2146564CEE297229B558A230D2，不提交/覆盖。
+
+未测第二台电脑、干净克隆、全随机阵容/种子、低配长时性能和人工平衡；升星仍不增加战斗属性，羁绊仍为标签。此前其他日期验证按其阶段阅读，不算本轮重新执行。详情与截图见[BATTLE_SHOP_LOOP](BATTLE_SHOP_LOOP.md)。
+
+
 2026-11-01名牌修订：仅移除头顶名字后的地形文字，不改战斗规则。build-clean-defender-names.log：1496063048 bytes、0错误；player-clean-defender-names.log：12项全True，14次部署126.35秒0DP通关。已查看无地形后缀的实机名牌并更新5张截图；本轮未重复完整逻辑/场景套件。
 
 ## 2026-11-01：六星挑战扩建版

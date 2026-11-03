@@ -184,6 +184,90 @@
           "height": 864
         }
       ]
+    },
+    {
+      "key": "idle_2",
+      "source": "Idle_2",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.5532871659596761,
+      "pivotY": 0.07515196378032368,
+      "sourceBounds": [
+        -231.08251953125,
+        -5.563088417053223,
+        177.23443603515625,
+        434.8832092285156
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-idle_2-00.png",
+          "count": 60,
+          "width": 1920,
+          "height": 1152
+        }
+      ],
+      "events": [],
+      "pixelsPerUnit": 131.2
+    },
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5280351086438361,
+      "pivotY": 0.051467428667687165,
+      "sourceBounds": [
+        -312.8071594238281,
+        -48.72603988647461,
+        177.6722869873047,
+        2210.743408203125
+      ],
+      "scale": 0.21243925223500765,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-01.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-02.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-03.png",
+          "count": 13,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "events": [
+        {
+          "time": 0.20000000298023224,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 73.34744708745527
     }
   ],
   "files": [

@@ -134,7 +134,7 @@ namespace YesterdayConvoy
         {
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
-            var result=new ManualBattle(challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
+            var result=new ManualBattle(BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
@@ -142,7 +142,7 @@ namespace YesterdayConvoy
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
-                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
+                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
                 result.ConfigureCardLoadout(profiles);
             }
             if(stronghold)result.ConfigureStrongholdMap(challenge);
@@ -179,6 +179,7 @@ namespace YesterdayConvoy
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
+            if(Loop!=null&&!Loop.CanDeploy)return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
@@ -191,6 +192,7 @@ namespace YesterdayConvoy
 
         public void RestartBattle()
         {
+            if(Loop!=null){StartBattleShopLoop(Loop.Seed,Loop.LateGame);return;}
             terminalPresentationElapsed=0;
             readyIdleElapsed=0;
             notice=null;
@@ -204,7 +206,9 @@ namespace YesterdayConvoy
 
         private void Update()
         {
+            if(!ShopTrialActive&&Camera.main!=null&&Camera.main.targetTexture==null)Camera.main.rect=TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720));
             if(Battle==null || TestSelectionOpen) return;
+            if(ShopTrialActive)RefreshShopWindowFrame();
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
             if(Dragging) ProcessPointerMove(Input.mousePosition);
             if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
@@ -221,14 +225,14 @@ namespace YesterdayConvoy
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
                 terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
+            StepBattleShopLoop();
             SyncViews();
             UpdatePreview();
         }
 
         private static bool PointerOnBattlefield()
         {
-            float y=(Screen.height-Input.mousePosition.y)*720f/Screen.height;
-            return y>=66 && y<552;
+            return new Rect(0,66,1280,486).Contains(TacticalViewport.Current.FromScreen(Input.mousePosition));
         }
 
         private bool TryPointerGround(out Vector3 point)
@@ -330,18 +334,17 @@ namespace YesterdayConvoy
             preview.sortingOrder=DemoSpriteVisual.GetSortingOrder(Camera.main,point)+24;
             preview.color=new Color(tint.r,tint.g,tint.b,0.30f);
             entryOutline.startColor=entryOutline.endColor=tint;
-            foreach(var unit in Battle.Units)
-                if(unit.Active && Vector3.Distance(unit.Motion.Position,point)<ManualBattle.EntryClearance) preview.enabled=false;
         }
 
         private void OnGUI()
         {
             if(Battle==null) return;
+            TacticalViewport.Current.DrawBars();
             if(ShopTrialActive){DrawShopTrial();return;}
             if(TestSelectionOpen)
             {
                 EnsureStyles(); Matrix4x4 previousMatrix=GUI.matrix; Color previousBackground=GUI.backgroundColor;
-                GUI.matrix=Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));
+                GUI.matrix=TacticalViewport.Current.Matrix;
                 GUI.backgroundColor=new Color(.55f,.81f,.89f); DrawMonsterTestSelection();
                 GUI.matrix=previousMatrix; GUI.backgroundColor=previousBackground; return;
             }
@@ -354,7 +357,7 @@ namespace YesterdayConvoy
             Matrix4x4 old=GUI.matrix;
             Color oldBackground=GUI.backgroundColor;
             GUI.backgroundColor=new Color(0.55f,0.81f,0.89f);
-            GUI.matrix=Matrix4x4.Scale(new Vector3(Screen.width/1280f,Screen.height/720f,1));
+            GUI.matrix=TacticalViewport.Current.Matrix;
             if(SettlementVisible)
             {
                 DrawSettlement();
@@ -386,7 +389,7 @@ namespace YesterdayConvoy
             {
                 if(!unit.Active) continue;
                 Vector3 screen=Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit));
-                float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
+                Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
                 Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
                 Fill(new Rect(x-29,y+2,58*unit.Health/unit.MaxHealth,3),new Color(0.45f,0.91f,0.61f));
                 if(Battle.Clock<unit.FearUntil)GUI.Label(new Rect(x+38,y-24,100,24),"恐惧",smallStyle);
@@ -479,7 +482,7 @@ namespace YesterdayConvoy
             foreach(var d in Battle.Defenders)
             {
             Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : 1.95f));
-            float x=screen.x*1280f/Screen.width,y=720-screen.y*720f/Screen.height;
+            Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
             if(!d.Alive) continue;
             float width=TacticalMapActive ? 62 : 96;
             Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));

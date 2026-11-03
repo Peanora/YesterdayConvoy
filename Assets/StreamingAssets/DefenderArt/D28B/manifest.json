@@ -196,6 +196,275 @@
           "height": 288
         }
       ]
+    },
+    {
+      "key": "attack_b",
+      "source": "Attack_1_B",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5921987806047712,
+      "pivotY": 0.11940822069134033,
+      "sourceBounds": [
+        -304.6954345703125,
+        -8.596512794494629,
+        195.9979248046875,
+        457.294189453125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-attack_1_b-00.png",
+          "count": 51,
+          "width": 2016,
+          "height": 1344
+        }
+      ],
+      "events": [
+        {
+          "time": 0.30000001192092896,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "attack_2_a",
+      "source": "Attack_2_A",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5921987806047712,
+      "pivotY": 0.11940822069134033,
+      "sourceBounds": [
+        -304.6954345703125,
+        -8.596512794494629,
+        195.9979248046875,
+        457.294189453125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-attack_2_a-00.png",
+          "count": 51,
+          "width": 2016,
+          "height": 1344
+        }
+      ],
+      "events": [
+        {
+          "time": 0.30000001192092896,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "attack_2_b",
+      "source": "Attack_2_B",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5921987806047712,
+      "pivotY": 0.11940822069134033,
+      "sourceBounds": [
+        -304.6954345703125,
+        -8.596512794494629,
+        195.9979248046875,
+        457.294189453125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-attack_2_b-00.png",
+          "count": 51,
+          "width": 2016,
+          "height": 1344
+        }
+      ],
+      "events": [
+        {
+          "time": 0.30000001192092896,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "idle_2",
+      "source": "Idle_2",
+      "count": 100,
+      "duration": 1.6666666269302368,
+      "fps": 60,
+      "loop": true,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.5921987806047712,
+      "pivotY": 0.11940822069134033,
+      "sourceBounds": [
+        -304.6954345703125,
+        -8.596512794494629,
+        195.9979248046875,
+        457.294189453125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-idle_2-00.png",
+          "count": 81,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "completion-idle_2-01.png",
+          "count": 19,
+          "width": 2016,
+          "height": 672
+        }
+      ],
+      "events": [],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "skill_attack_b",
+      "source": "Skill_3_Attack_B",
+      "count": 133,
+      "duration": 2.200000047683716,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.49209076245625816,
+      "pivotY": 0.20495099385579424,
+      "sourceBounds": [
+        -336.6593322753906,
+        -67.9901123046875,
+        348.6480712890625,
+        515.2222900390625
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-skill_3_attack_b-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "completion-skill_3_attack_b-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "completion-skill_3_attack_b-02.png",
+          "count": 35,
+          "width": 2016,
+          "height": 1440
+        }
+      ],
+      "events": [
+        {
+          "time": 1.0333333015441895,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.6380030121122088,
+      "pivotY": 0.11912075877189637,
+      "sourceBounds": [
+        -339.56439208984375,
+        -14.660015106201172,
+        176.86610412597656,
+        463.69659423828125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ],
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
+    },
+    {
+      "key": "start_2",
+      "source": "Start_2",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 224,
+      "columns": 9,
+      "pivotX": 0.6480935212544032,
+      "pivotY": 0.12025987046105518,
+      "sourceBounds": [
+        -339.56439208984375,
+        -16.70471954345703,
+        164.9699249267578,
+        464.3983459472656
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-start_2-00.png",
+          "count": 61,
+          "width": 2016,
+          "height": 1568
+        }
+      ],
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 139.2
     }
   ],
   "files": [

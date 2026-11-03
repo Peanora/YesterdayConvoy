@@ -4,6 +4,8 @@ Shader "YesterdayConvoy/Tactical Actor"
     {
         [PerRendererData] _MainTex ("Sprite", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _EnvironmentTint ("Local ambient tint", Color) = (1,1,1,1)
+        _BodyHeight ("Body height", Float) = 1.25
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
         [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
@@ -23,6 +25,8 @@ Shader "YesterdayConvoy/Tactical Actor"
             #pragma multi_compile_instancing
             #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
             #include "UnitySprites.cginc"
+            fixed4 _EnvironmentTint;
+            float _BodyHeight;
             struct actor_v2f
             {
                 float4 vertex : SV_POSITION;
@@ -30,6 +34,7 @@ Shader "YesterdayConvoy/Tactical Actor"
                 fixed4 color : COLOR;
                 float3 world : TEXCOORD1;
                 float plane : TEXCOORD2;
+                float bodyHeight : TEXCOORD3;
             };
             float3 GroundNormal()
             {
@@ -39,6 +44,7 @@ Shader "YesterdayConvoy/Tactical Actor"
             {
                 v2f sprite=SpriteVert(v);
                 actor_v2f o;o.vertex=sprite.vertex;o.uv=sprite.texcoord;o.color=sprite.color;
+                o.bodyHeight=saturate(v.vertex.y/max(.1,_BodyHeight));
                 o.world=mul(unity_ObjectToWorld,UnityFlipSprite(v.vertex.xyz,_Flip)).xyz;
                 float3 foot=mul(unity_ObjectToWorld,float4(0,0,0,1)).xyz;
                 o.plane=dot(foot-_WorldSpaceCameraPos,GroundNormal());
@@ -48,7 +54,7 @@ Shader "YesterdayConvoy/Tactical Actor"
             actor_output frag(actor_v2f i)
             {
                 actor_output o;
-                o.color=SampleSpriteTexture(i.uv)*i.color;o.color.rgb*=o.color.a;
+                o.color=SampleSpriteTexture(i.uv)*i.color;o.color.rgb*=lerp(_EnvironmentTint.rgb,fixed3(1,1,1),i.bodyHeight);o.color.rgb*=o.color.a;
                 // Draw an undistorted billboard, but test depth on the vertical plane at its feet.
                 // This prevents a high tile slicing through the middle of a camera-facing card.
                 float3 ray=i.world-_WorldSpaceCameraPos;

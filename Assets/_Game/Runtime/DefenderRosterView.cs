@@ -5,7 +5,7 @@ namespace YesterdayConvoy
 {
     public sealed class DefenderRosterView : MonoBehaviour
     {
-        private sealed class View { public string Id; public DefenderArt Art,Rear; public SpriteRenderer Renderer; public LineRenderer Skill; public bool Back,Initialized; public double Action=double.NegativeInfinity; }
+        private sealed class View { public string Id; public DefenderArt Art,Rear; public SpriteRenderer Renderer; public LineRenderer Skill; public bool Back,Initialized; public int ActionVariant=-1; public double Action=double.NegativeInfinity; }
         private readonly List<View> visuals=new List<View>();
         private ManualBattleController owner;
         private Material material;
@@ -20,6 +20,7 @@ namespace YesterdayConvoy
             {
                 var r=new GameObject(d.Settings.Name+" / "+d.EntityId,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
                 r.transform.SetParent(transform,false); r.sharedMaterial=material;
+                if(owner.TacticalMapActive)ActorGrounding.Attach(r);
                 LineRenderer ring=null;
                 if(d.Settings.Skill.Enabled)
                 {
@@ -49,6 +50,7 @@ namespace YesterdayConvoy
                         for(int i=b.CombatShots.Count-1;i>=0;i--)
                         {var shot=b.CombatShots[i];if(shot.FromDefender && shot.SourceId==d.EntityId && shot.StartedAt>=d.LastActionTime){Face(v,d.Position,shot.Destination);break;}}
                         v.Action=d.LastActionTime;v.Initialized=true;
+                        v.ActionVariant++;
                     }
                     else if(!action)
                     {
@@ -72,10 +74,10 @@ namespace YesterdayConvoy
                 if(!r.enabled) continue;
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
-                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)||b.Clock-d.SkillEndedAt<.5))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno?System.Math.Max(d.SkillActiveUntil,d.ProtectionUntil):d.SkillActiveUntil)-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration);
-                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge);
+                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)||b.Clock-d.SkillEndedAt<art.SkillEndDuration))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno?System.Math.Max(d.SkillActiveUntil,d.ProtectionUntil):d.SkillActiveUntil)-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration,v.ActionVariant);
+                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge,v.ActionVariant);
                 else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
-                else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);
+                else r.sprite=art.StartAt(owner.DefenderIdleClock,v.ActionVariant%4>=2)??art.IdleAt(owner.DefenderIdleClock,System.Math.Max(0,v.ActionVariant));
                 r.transform.position=d.Position; r.transform.rotation=camera.transform.rotation;
                 r.transform.localScale=Vector3.one;
                 r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,d.Position)+30;
@@ -85,10 +87,10 @@ namespace YesterdayConvoy
                 {
                     bool healing=d.Settings.Skill.Kind==DefenderSkillKind.CardiganRecovery||d.Settings.Skill.Kind==DefenderSkillKind.AnselRange||d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode||d.Settings.Skill.Kind==DefenderSkillKind.HibiscusHealing;
                     Color color=healing?new Color(.3f,1,.6f):d.Settings.Skill.Kind==DefenderSkillKind.MidnightEnchant?new Color(.65f,.5f,1):new Color(1,.8f,.2f);
-                    v.Skill.enabled=d.Alive&&(b.DefenderSkillActive(d)||b.Clock-d.SkillStartedAt<.7);
+                    v.Skill.enabled=!DefenderVfxArt.Supports(d.Settings.Skill.Kind)&&d.Alive&&(b.DefenderSkillActive(d)||b.Clock-d.SkillStartedAt<.7);
                     v.Skill.startColor=v.Skill.endColor=color;v.Skill.sortingOrder=r.sortingOrder+1;
                     for(int i=0;i<40;i++){float a=i*Mathf.PI*2/40;v.Skill.SetPosition(i,d.Position+new Vector3(Mathf.Cos(a)*.48f,.035f,Mathf.Sin(a)*.48f));}
-                    if(b.DefenderSkillActive(d))r.color=Color.Lerp(r.color,color,.12f);
+                    if(b.DefenderSkillActive(d)&&!DefenderVfxArt.Supports(d.Settings.Skill.Kind))r.color=Color.Lerp(r.color,color,.12f);
                 }
             }
         }

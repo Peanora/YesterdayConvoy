@@ -161,6 +161,13 @@ namespace YesterdayConvoy
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
+            var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
+            if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&
+                (defenderSource.Settings.Skill.Kind!=DefenderSkillKind.SariaCalcification||shot.Healing))
+            {
+                // The textured defender director owns these shots; never stack the old diagnostic ring over it.
+                view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;
+            }
             var sourceUnit=b.FindUnit(shot.SourceId);
             var sourceCombat=b.UnitCombat(sourceUnit);
             var sourceCard=owner.CardForUnit(sourceUnit);

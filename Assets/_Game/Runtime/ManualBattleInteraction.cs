@@ -16,8 +16,8 @@ namespace YesterdayConvoy
         public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
-        private static Vector2 GUIPosition(Vector2 screen) => new Vector2(screen.x*1280/Screen.width,720-screen.y*720/Screen.height);
-        public static Vector2 ScreenPosition(Vector2 gui) => new Vector2(gui.x*Screen.width/1280,(720-gui.y)*Screen.height/720);
+        private static Vector2 GUIPosition(Vector2 screen) => TacticalViewport.Current.FromScreen(screen);
+        public static Vector2 ScreenPosition(Vector2 gui) => TacticalViewport.Current.ToScreen(gui);
         private bool IsBattlefield(Vector2 screen) => ShopTrialActive?ShopMapPointAvailable(GUIPosition(screen)):new Rect(0,66,1280,486).Contains(GUIPosition(screen));
         private bool PointerGround(Vector2 screen,out Vector3 point)
         {

@@ -70,14 +70,14 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void BusyEntryRejectsWithoutSpendingThenBecomesAvailable()
+        public void OccupiedEntryAcceptsAnotherUnitAfterItsNormalCooldown()
         {
             var battle=New(Settings(cooldown:0.1f)); battle.Begin(); battle.TryDeploy(battle.RunId,1,battle.Entry);
+            Assert.That(battle.TryDeploy(battle.RunId,2,battle.Entry).Failure,Is.EqualTo(DeployFailure.CoolingDown));
             battle.Advance(0.1f);
-            Assert.That(battle.TryDeploy(battle.RunId,2,battle.Entry).Failure,Is.EqualTo(DeployFailure.EntryBusy));
-            Assert.That(battle.DP,Is.EqualTo(6));
-            battle.Advance(0.3f);
-            Assert.That(battle.TryDeploy(battle.RunId,3,battle.Entry).Success,Is.True);
+            Assert.That(battle.Units[0].Motion.Position,Is.Not.EqualTo(battle.Entry));
+            Assert.That(battle.TryDeploy(battle.RunId,2,battle.Entry).Success,Is.True);
+            Assert.That(battle.DP,Is.EqualTo(4));
             Assert.That(battle.ActiveCount,Is.EqualTo(2));
             Assert.That(battle.Units[0].EntityId,Is.Not.EqualTo(battle.Units[1].EntityId));
             Assert.That(battle.Units[0].Motion,Is.Not.SameAs(battle.Units[1].Motion));

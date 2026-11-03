@@ -50,7 +50,7 @@ namespace YesterdayConvoy.Tests
                     foreach(var lane in c.Battle.Lanes)
                     {
                         c.RestartBattle();c.StartBattle();c.Battle.SetPaused(true);
-                        Vector2 screen=camera.WorldToScreenPoint(lane.Entry);float guiY=720-screen.y*720/Screen.height;
+                        Vector2 screen=camera.WorldToScreenPoint(lane.Entry);float guiY=TacticalViewport.Current.FromScreen(screen).y;
                         Assert.That(guiY,Is.InRange(70,540),id+"/"+lane.Id+" must clear HUD");
                         c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.CardSlot(0).center));c.ProcessPointerMove(screen);
                         Assert.That(c.ProcessPointerUp(screen).Success,Is.True,id+"/"+lane.Id);

@@ -48,7 +48,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.Settings.Health,Is.EqualTo(c.RosterDefinition(0).Snapshot().Health*4));
             Assert.That(c.PurchaseShopCard(3).Success,Is.True);Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M18"),Is.True);
             c.SetShopVisible(false);yield return new WaitForSecondsRealtime(.3f);
-            var gate=c.Battle.Lanes[1].Entry;var gui=new Vector2(Camera.main.WorldToScreenPoint(gate).x*1280/Screen.width,720-Camera.main.WorldToScreenPoint(gate).y*720/Screen.height);
+            var gate=c.Battle.Lanes[1].Entry;var gui=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(gate));
             var start=ManualBattleController.ShopBenchRect(0).center;
             c.ProcessShopPointer(EventType.MouseDown,start);c.ProcessShopPointer(EventType.MouseDrag,gui);c.ProcessShopPointer(EventType.MouseUp,gui);
             Assert.That(c.Battle.Units.Count,Is.EqualTo(1));Assert.That(c.Battle.Units[0].RouteId,Is.EqualTo(c.Battle.Lanes[1].Id));

@@ -1,0 +1,480 @@
+{
+  "date": "2026-11-03",
+  "sources": [
+    {
+      "task": "D21B",
+      "unitId": "D21",
+      "name": "荒芜拉普兰德",
+      "variant": "战斗背面",
+      "characterId": "char_1038_whitw2",
+      "reference": "https://prts.wiki/w/%E8%8D%92%E8%8A%9C%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/meta.json",
+      "model": "char_1038_whitw2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1038_whitw2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.skel",
+          "bytes": 488070,
+          "sha256": "f474cc0dc48d90887e2ae698144fb143d5d1aad5808a9bcef8b41eb11123bc6e"
+        },
+        {
+          "file": "char_1038_whitw2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.atlas",
+          "bytes": 7109,
+          "sha256": "d751913f375d1bdf34f47a4769a0ce7085601237619e12ff1ecbe865fdd5c5e8"
+        },
+        {
+          "file": "char_1038_whitw2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/back/char_1038_whitw2.png",
+          "bytes": 94016,
+          "sha256": "6d103862736727dca6f230d8bdca54d9b3066fbf05b55116a088d35abb81f0d8"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D21F",
+      "unitId": "D21",
+      "name": "荒芜拉普兰德",
+      "variant": "战斗正面",
+      "characterId": "char_1038_whitw2",
+      "reference": "https://prts.wiki/w/%E8%8D%92%E8%8A%9C%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/meta.json",
+      "model": "char_1038_whitw2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1038_whitw2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.skel",
+          "bytes": 784211,
+          "sha256": "6c446a8858053bbd5e2b53d8b7d7adce8e7bf3d270a1132e2eea25ea079815b7"
+        },
+        {
+          "file": "char_1038_whitw2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.atlas",
+          "bytes": 10558,
+          "sha256": "32461e01846edaed201a1e4e74512e18477327e4e35659cfc2af08db60ae7661"
+        },
+        {
+          "file": "char_1038_whitw2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1038_whitw2/defaultskin/front/char_1038_whitw2.png",
+          "bytes": 109360,
+          "sha256": "c867cb1a74612b219fa8ba8a8e7e3b4d49d2a12be3c3d990e5535da22b7492e1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D22B",
+      "unitId": "D22",
+      "name": "余",
+      "variant": "战斗背面",
+      "characterId": "char_2026_yu",
+      "reference": "https://prts.wiki/w/%E4%BD%99",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/meta.json",
+      "model": "char_2026_yu",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_2026_yu.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.skel",
+          "bytes": 477494,
+          "sha256": "0d5f8aea6e5e394f630456065f4e98704bc9ab0d8fd77368db25203b4afe38f3"
+        },
+        {
+          "file": "char_2026_yu.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.atlas",
+          "bytes": 7996,
+          "sha256": "ed418d933f7a405be37977a3334e4a20ac1c86c82739b3e4cb73364a9a9b9256"
+        },
+        {
+          "file": "char_2026_yu.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/back/char_2026_yu.png",
+          "bytes": 136798,
+          "sha256": "db552f069a4834d33657e06b944a728e8865f52403bd16b023b255a86fcc3004"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D22F",
+      "unitId": "D22",
+      "name": "余",
+      "variant": "战斗正面",
+      "characterId": "char_2026_yu",
+      "reference": "https://prts.wiki/w/%E4%BD%99",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/meta.json",
+      "model": "char_2026_yu",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_2026_yu.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.skel",
+          "bytes": 616713,
+          "sha256": "951da8f3ea2311a488e43c34b0ae552d7e1749e5d9d99e798098ff98f511c832"
+        },
+        {
+          "file": "char_2026_yu.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.atlas",
+          "bytes": 12829,
+          "sha256": "5d89894b763c5d3bd02b21fa8c42a0f89a83e1361b2da83068ecec1ed15f7dd0"
+        },
+        {
+          "file": "char_2026_yu.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2026_yu/defaultskin/front/char_2026_yu.png",
+          "bytes": 162843,
+          "sha256": "de8082613fb784e45dcf7816ba9d24bff83933edf8909c79b316a57e992d0e2d"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D27B",
+      "unitId": "D27",
+      "name": "圣聆初雪",
+      "variant": "战斗背面",
+      "characterId": "char_1046_sbell2",
+      "reference": "https://prts.wiki/w/%E5%9C%A3%E8%81%86%E5%88%9D%E9%9B%AA",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/meta.json",
+      "model": "char_1046_sbell2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_1046_sbell2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.skel",
+          "bytes": 968385,
+          "sha256": "2f3c109bf475f180656a4c6028cd9192ea50e84d33614556caadf9f6c11d6397"
+        },
+        {
+          "file": "char_1046_sbell2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.atlas",
+          "bytes": 8665,
+          "sha256": "3d6be63e4d8edc57bb1ec690859ce89097a374934d5def4e5a28c9ee6cad4783"
+        },
+        {
+          "file": "char_1046_sbell2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/back/char_1046_sbell2.png",
+          "bytes": 180919,
+          "sha256": "cfcae965338f53cc2db4d6434f6f46edc97cc16c98a21c03a69bde2b17daf047"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D27F",
+      "unitId": "D27",
+      "name": "圣聆初雪",
+      "variant": "战斗正面",
+      "characterId": "char_1046_sbell2",
+      "reference": "https://prts.wiki/w/%E5%9C%A3%E8%81%86%E5%88%9D%E9%9B%AA",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/meta.json",
+      "model": "char_1046_sbell2",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_1046_sbell2.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.skel",
+          "bytes": 1230640,
+          "sha256": "5956bcbd4b31aae3376c79d4e5a11d0b132fdc5e86702009cc9841026808bbde"
+        },
+        {
+          "file": "char_1046_sbell2.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.atlas",
+          "bytes": 13170,
+          "sha256": "e5c0e887d90eb481c39e4209dc26f4ffbfa6645a02c83eec1b0629c8c9873a27"
+        },
+        {
+          "file": "char_1046_sbell2.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/front/char_1046_sbell2.png",
+          "bytes": 194758,
+          "sha256": "332e4a02d1bb1e1a62cf15a6dd2450341b53d53c8599361b48967363f9d6cb87"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D28B",
+      "unitId": "D28",
+      "name": "望",
+      "variant": "战斗背面",
+      "characterId": "char_2027_wang",
+      "reference": "https://prts.wiki/w/%E6%9C%9B",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/meta.json",
+      "model": "char_2027_wang",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_2027_wang.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.skel",
+          "bytes": 591471,
+          "sha256": "613fefb84e33295ebaddad313f9c4333469a479ace2b8e76872b4de8b3721bfe"
+        },
+        {
+          "file": "char_2027_wang.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.atlas",
+          "bytes": 8577,
+          "sha256": "283b2d0b82370f3d414b367016a6ae080c4c780ba68d788607c47353858d44ee"
+        },
+        {
+          "file": "char_2027_wang.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/back/char_2027_wang.png",
+          "bytes": 137286,
+          "sha256": "ba0b302cd54107431d65efee285f82f30ec58a3865971d5eff4ab8d7550856a1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D28F",
+      "unitId": "D28",
+      "name": "望",
+      "variant": "战斗正面",
+      "characterId": "char_2027_wang",
+      "reference": "https://prts.wiki/w/%E6%9C%9B",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/meta.json",
+      "model": "char_2027_wang",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_2027_wang.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.skel",
+          "bytes": 968009,
+          "sha256": "3064f5715b6f6b3a755951e856bb65a99e371f03ff8170088e4dbe7f0755ab97"
+        },
+        {
+          "file": "char_2027_wang.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.atlas",
+          "bytes": 12156,
+          "sha256": "fb1b0bdde9941f4d94ccc8a33e5aa45da046a904bedffd656eb1775279722316"
+        },
+        {
+          "file": "char_2027_wang.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_2027_wang/defaultskin/front/char_2027_wang.png",
+          "bytes": 165293,
+          "sha256": "8073905adef15237f2bef0765b46efe80046bdba24ca45d59dedda35a8eb55b1"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D29B",
+      "unitId": "D29",
+      "name": "塞雷娅",
+      "variant": "战斗背面",
+      "characterId": "char_202_demkni",
+      "reference": "https://prts.wiki/w/%E5%A1%9E%E9%9B%B7%E5%A8%85",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/meta.json",
+      "model": "char_202_demkni",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_202_demkni.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.skel",
+          "bytes": 69838,
+          "sha256": "89f67465d1ec39d76038f55e6693174da282e48622e903c4baa8b6dd5fd509ac"
+        },
+        {
+          "file": "char_202_demkni.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.atlas",
+          "bytes": 3472,
+          "sha256": "75795fcb6058ddbc61e6b98053990da8e44e9c3a44a4276fd12f0e2dab773735"
+        },
+        {
+          "file": "char_202_demkni.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/back/char_202_demkni.png",
+          "bytes": 64623,
+          "sha256": "0edd055c0da13f6b4ddbc910aaa9be654debd60e533017d300bcd5ea9882cc78"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D29F",
+      "unitId": "D29",
+      "name": "塞雷娅",
+      "variant": "战斗正面",
+      "characterId": "char_202_demkni",
+      "reference": "https://prts.wiki/w/%E5%A1%9E%E9%9B%B7%E5%A8%85",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/meta.json",
+      "model": "char_202_demkni",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_202_demkni.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.skel",
+          "bytes": 163353,
+          "sha256": "2b9adb87ef6fd1137271f13f920d48f73fe5c7817c752bc63879e21e97b39775"
+        },
+        {
+          "file": "char_202_demkni.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.atlas",
+          "bytes": 5017,
+          "sha256": "27876a624e20bd79169eab9217549fa540a6162afafb33071dcb4c3c76ed85ae"
+        },
+        {
+          "file": "char_202_demkni.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_202_demkni/defaultskin/front/char_202_demkni.png",
+          "bytes": 80457,
+          "sha256": "d76a9fba34d6c4b8685ccd27a1de6cbefda3e71b560b6cf352ec294ddcdf8d13"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D30B",
+      "unitId": "D30",
+      "name": "玛恩纳",
+      "variant": "战斗背面",
+      "characterId": "char_4064_mlynar",
+      "reference": "https://prts.wiki/w/%E7%8E%9B%E6%81%A9%E7%BA%B3",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/meta.json",
+      "model": "char_4064_mlynar",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_4064_mlynar.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.skel",
+          "bytes": 353954,
+          "sha256": "f745859793baed9c6b9a886ed3e95602b2b2c84a28c526778ed44b344ef96c79"
+        },
+        {
+          "file": "char_4064_mlynar.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.atlas",
+          "bytes": 5567,
+          "sha256": "4f59a677c48050bed9f4f01053ce7dbd399cea278aad8c71969a1185220f6571"
+        },
+        {
+          "file": "char_4064_mlynar.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/back/char_4064_mlynar.png",
+          "bytes": 62379,
+          "sha256": "03194c437746cb52ba8ee74368e702b676de31cf8bb09ef08dc550fb87073ae7"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "D30F",
+      "unitId": "D30",
+      "name": "玛恩纳",
+      "variant": "战斗正面",
+      "characterId": "char_4064_mlynar",
+      "reference": "https://prts.wiki/w/%E7%8E%9B%E6%81%A9%E7%BA%B3",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/meta.json",
+      "model": "char_4064_mlynar",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_4064_mlynar.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.skel",
+          "bytes": 519849,
+          "sha256": "b27519e7d7ea8d71df9b985bac8aad7eba343156af5b10ec4e8c3241fef05d40"
+        },
+        {
+          "file": "char_4064_mlynar.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.atlas",
+          "bytes": 10018,
+          "sha256": "0b23878eecc63b87bf385733bcd2093ace869d7573768df23ca69b12a9fa5b1c"
+        },
+        {
+          "file": "char_4064_mlynar.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_4064_mlynar/defaultskin/front/char_4064_mlynar.png",
+          "bytes": 84454,
+          "sha256": "16d37cba6dbde0ffe179425917c49ce21985c001c2031cb8513c53f565e8b936"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed.",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    },
+    {
+      "task": "WANG_PIECE",
+      "model": "token_10064_wang_stone1",
+      "name": "望 / 原作棋子",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/token_10064_wang_stone1/meta.json",
+      "files": [
+        {
+          "file": "token_10064_wang_stone1.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/token_10064_wang_stone1/defaultskin/front/token_10064_wang_stone1.skel",
+          "bytes": 2961,
+          "sha256": "83cbb7cb0a3384623a43ab020cdc5163abca83fda2f349a351fd54f812075526"
+        },
+        {
+          "file": "token_10064_wang_stone1.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/token_10064_wang_stone1/defaultskin/front/token_10064_wang_stone1.atlas",
+          "bytes": 285,
+          "sha256": "a6a92f73cea51deb1332a3fe8a2ad97d6ba923d6cea2c6542e8ed46283660d77"
+        },
+        {
+          "file": "token_10064_wang_stone1.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/token_10064_wang_stone1/defaultskin/front/token_10064_wang_stone1.png",
+          "bytes": 7758,
+          "sha256": "8d019c694f33789885b564630ae0eb7f9b65b5db67c26802d2e31bbe666a3517"
+        }
+      ],
+      "rights": "Original proprietary Arknights media; not CC0; open redistribution permission unconfirmed;",
+      "unityImported": true,
+      "humanApproved": true,
+      "approval": "2026-11-03 user explicitly approved these motion additions and original Wang chess piece; not a rights-holder license.",
+      "runtimeUse": "Human-approved additional motion PNGs; original skeletons and preview runtime are not distributed."
+    }
+  ]
+}

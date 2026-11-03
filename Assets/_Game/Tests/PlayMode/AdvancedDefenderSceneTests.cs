@@ -25,11 +25,13 @@ namespace YesterdayConvoy.Tests
                     c.StartBattle();c.Battle.SetPaused(true);Vector2 gate=Camera.main.WorldToScreenPoint(c.Battle.Entry);
                     c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.CardSlot(2).center));c.ProcessPointerMove(gate);Assert.That(c.ProcessPointerUp(gate).Success,Is.True,id);
                     float sp=d.SkillSP;c.Tick(20);Assert.That(d.SkillSP,Is.EqualTo(sp));Assert.That(c.Battle.Clock,Is.Zero);c.Battle.SetPaused(false);
-                    bool observed=false;int extras=0;
+                    // Use one archer to isolate sustained projectile erasure from group damage.
+                    // Keep this skill fixture stable when spawning overlap is permitted.
+                    bool observed=false;int extras=0,extraLimit=id=="D22"?1:4;
                     for(int i=0;i<2400&&d.Alive&&!observed;i++)
                     {
                         c.Tick(.1f);
-                        if(extras<4&&i>10+extras*18)
+                        if(extras<extraLimit&&i>10+extras*18)
                         {
                             c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.CardSlot(id=="D22"?3:2).center));c.ProcessPointerMove(gate);
                             if(c.ProcessPointerUp(gate).Success)extras++;

@@ -91,6 +91,61 @@
           "height": 1568
         }
       ]
+    },
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 51,
+      "duration": 0.8333333134651184,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.49575277257067296,
+      "pivotY": 0.06209430325889781,
+      "sourceBounds": [
+        -252.53758239746094,
+        -59.07408142089844,
+        268.80645751953125,
+        1736.45849609375
+      ],
+      "scale": 0.26733015374436114,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-01.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-02.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-start-03.png",
+          "count": 3,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "events": [
+        {
+          "time": 0.20000000298023224,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 81.60604693248919
     }
   ],
   "files": [

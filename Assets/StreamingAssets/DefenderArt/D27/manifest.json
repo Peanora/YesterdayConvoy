@@ -244,6 +244,135 @@
           "height": 1024
         }
       ]
+    },
+    {
+      "key": "skill_attack_b",
+      "source": "Skill_3_Attack_B",
+      "count": 121,
+      "duration": 2,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5637046045064926,
+      "pivotY": 0.14096232920885088,
+      "sourceBounds": [
+        -328.3452453613281,
+        -14.290214538574219,
+        242.5116729736328,
+        498.0462341308594
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-skill_3_attack_b-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-skill_3_attack_b-01.png",
+          "count": 57,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 124.8
+    },
+    {
+      "key": "skill_attack_c",
+      "source": "Skill_3_Attack_C",
+      "count": 121,
+      "duration": 2,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5637046045064926,
+      "pivotY": 0.14096232920885088,
+      "sourceBounds": [
+        -328.3452453613281,
+        -14.290214538574219,
+        242.5116729736328,
+        498.0462341308594
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-skill_3_attack_c-00.png",
+          "count": 64,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "completion-skill_3_attack_c-01.png",
+          "count": 57,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 124.8
+    },
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5682336250940958,
+      "pivotY": 0.0887263891763157,
+      "sourceBounds": [
+        -331.2410583496094,
+        -4.530604362487793,
+        227.81324768066406,
+        627.934814453125
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "completion-start-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ],
+      "events": [
+        {
+          "time": 0.3333333432674408,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 124.8
     }
   ],
   "files": [

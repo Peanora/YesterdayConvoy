@@ -48,6 +48,7 @@ namespace YesterdayConvoy
             {
                 if(tacticalMaterial==null)tacticalMaterial=new Material(Resources.Load<Shader>("TacticalActor"));
                 sprite.sharedMaterial=tacticalMaterial;
+                ActorGrounding.Attach(sprite,local?.Height??1.25f);
             }
             tacticalFlip=unit.Motion.Direction.x<-.08f;
             tacticalAttack=double.NegativeInfinity;
