@@ -34,7 +34,7 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null||visible&&Loop!=null&&!Loop.CanShop)return;

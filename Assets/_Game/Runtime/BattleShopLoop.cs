@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             CloseDefenderInspector();CancelShopDrag();SetShopVisible(false);ResetShopPresentation();
             shopMapCopy.defenders=BattleShopStages.Defenders(Loop.Stage,Loop.LateGame);shopMapCopy.mapTitle=(Loop.LateGame?"盟约防线":"基础防线")+" · 第"+Loop.Stage+"关";
-            shopMessage=null;loopMenuOpen=false;
+            shopMessage=null;loopMenuOpen=false;loopTestSettlementOpen=loopWasTestSettled=false;
             SyncShopDeck(false,true);terminalPresentationElapsed=readyIdleElapsed=0;requestSequence=0;
         }
         public bool OpenLoopShop()
@@ -40,6 +40,15 @@ namespace YesterdayConvoy
         void StepBattleShopLoop()
         {
             if(Loop!=null&&Loop.Observe(Battle.Phase)){SetShopVisible(false);CancelShopDrag();CloseDefenderInspector();}
+        }
+        bool TryTestSettlement(bool victory)
+        {
+            if(!Debug.isDebugBuild||!loopTestSettlementOpen||Loop==null||!Loop.CanDeploy||!Battle.FinishForTesting(Battle.RunId,victory))return false;
+            loopTestSettlementOpen=loopMenuOpen=false;loopWasTestSettled=true;
+            CancelInteraction();CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();
+            StepBattleShopLoop();
+            Debug.Log("TEST_SETTLEMENT: stage="+Loop.Stage+"; victory="+victory+"; run="+Battle.RunId);
+            return true;
         }
     }
 }

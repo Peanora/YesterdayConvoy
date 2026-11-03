@@ -241,6 +241,15 @@ namespace YesterdayConvoy
 
         public void SetPaused(bool paused) { if (Phase == BattlePhase.Running) IsPaused = paused; }
 
+        // Developer-only shortcut; ordinary victory, damage and deployment rules never call this.
+        internal bool FinishForTesting(int expectedRun,bool victory)
+        {
+            if(!Debug.isDebugBuild||expectedRun!=RunId||(Phase!=BattlePhase.Ready&&Phase!=BattlePhase.Running))return false;
+            Phase=victory?BattlePhase.Won:BattlePhase.Lost;IsPaused=false;
+            if(victory)Defense=0;
+            return true;
+        }
+
         public bool IsEntry(Vector3 position)
             => FindEntryLane(position)!=null;
 

@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-03：测试结算开关
+
+改动为BattleShopInterface的开关/面板/测试标记、BattleShopLoop私有控制、ManualBattle程序集内部终态入口、ShopMapTrial面板点穿保护，新增TestSettlementSceneTests及meta。Debug.isDebugBuild保护，普通部署/伤害/胜负判断不调用测试入口。
+
+- test-settlement-edit.xml：相关18/18，0失败/跳过；覆盖原ManualBattle与战后金币/利息/经验/库存/幂等逻辑。
+- test-settlement-play.xml：相关5/5 GPU场景，0失败/跳过；包含新2例准备直接胜利、暂停带单位失败、默认关闭/关闭拒绝/点穿保护、重复请求不改判不发钱、真实购买与第二关重置/通关、失败终局与重开；原基础/后期两关闭环回归同时通过。
+- test-settlement-build.log：StrongholdMapTools.Build成功，Windows1677287732 bytes、errors=0（报告总量，不是EXE大小）。
+- 使用Windows电脑界面工具在此最终独立Player实际点击：展开开关、判胜利，看到第1关测试结算与金币30→38；点击前往商店并真实招募，金币38→35；进入第2关后开关恢复关闭，DP24；展开判失败，看到本次挑战结束与金币35→43，没有商店继续按钮。只操作新开的验证Player，原用户对局未点击/关闭。
+
+未运行完整逻辑/全部PlayMode套件、第二台电脑或非Development Player；后者由条件保护但未另构建。此为测试快捷入口，不将直接判胜当成自然通关或平衡证据。无新美术素材，不改场景/Prefab/包/设置；本地新目录交付，源码仍走功能分支/PR，不合并main或生成ZIP。
+
 ## 2026-11-03：六人分层技能特效
 
 接入范围、逐页SHA与来源见[特效说明](art/DEFENDER-SKILL-VFX.md)和[来源记录](art/source-records/defender-vfx-v4.json)。主要改动：AdvancedDefenderView、EngagementView、DefenderRosterView；新增DefenderSkillVfxView、DefenderVfxArt、DefenderVfxImporter、两份测试及49张运行PNG/清单/meta。没有改技能或经济逻辑。

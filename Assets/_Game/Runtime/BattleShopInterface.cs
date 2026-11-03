@@ -6,6 +6,8 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         bool loopMenuOpen;
+        bool loopTestSettlementOpen,loopWasTestSettled;
+        static Rect LoopTestPanelRect=>new Rect(958,62,302,104);
         static readonly Color LoopInk=new Color(.082f,.094f,.11f,.97f);
         static readonly Color LoopPanel=new Color(.125f,.145f,.173f,.97f);
         static readonly Color LoopMuted=new Color(.71f,.74f,.77f);
@@ -54,7 +56,9 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(589,7,45,40),Battle.Defenders.Count(d=>d.Alive).ToString(),LoopText(27));
                 GUI.Label(new Rect(643,10,82,36),"守方防御",LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
                 GUI.Label(new Rect(737,7,60,40),Battle.Defense.ToString(),LoopText(27,TextAnchor.MiddleLeft,new Color(.5f,.78f,.9f)));
-                if(LoopButton(new Rect(1090,11,48,34),"菜单"))loopMenuOpen=!loopMenuOpen;
+                if(Debug.isDebugBuild&&Loop.CanDeploy&&LoopButton(new Rect(958,11,122,34),loopTestSettlementOpen?"测试结算 · 开":"测试结算 · 关"))
+                {loopTestSettlementOpen=!loopTestSettlementOpen;loopMenuOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}
+                if(LoopButton(new Rect(1090,11,48,34),"菜单")){loopMenuOpen=!loopMenuOpen;loopTestSettlementOpen=false;}
                 if(LoopButton(new Rect(1144,11,48,34),SkillMenuOpen?"慢速":SimulationSpeed+"×"))ToggleSpeed();
                 GUI.enabled=Loop.CanDeploy;
                 if(LoopButton(new Rect(1198,11,62,34),Battle.IsPaused?"继续":"暂停"))Battle.SetPaused(!Battle.IsPaused);
@@ -80,6 +84,7 @@ namespace YesterdayConvoy
                 }
                 if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
+                if(Debug.isDebugBuild&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
             }
             finally{GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }
@@ -142,7 +147,7 @@ namespace YesterdayConvoy
             Fill(new Rect(0,56,1280,664),new Color(.05f,.07f,.09f,.91f));
             var reward=Loop.Reward;bool failed=Loop.Phase==BattleShopPhase.Failed;
             Fill(new Rect(195,164,4,364),failed?new Color(.85f,.35f,.28f):Color.white);
-            GUI.Label(new Rect(225,168,330,30),"第"+Loop.Stage+"关结束",LoopText(14,TextAnchor.MiddleLeft,LoopMuted));
+            GUI.Label(new Rect(225,168,330,30),"第"+Loop.Stage+"关结束"+(loopWasTestSettled?" · 测试结算":""),LoopText(14,TextAnchor.MiddleLeft,LoopMuted));
             GUI.Label(new Rect(224,210,345,88),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(54));
             GUI.Label(new Rect(225,312,320,32),shopMapCopy.mapTitle,LoopText(19));
             GUI.Label(new Rect(225,356,320,48),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(13,TextAnchor.UpperLeft,LoopMuted));
@@ -161,6 +166,13 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(1046,116,202,34),"重新开始本次挑战")){int seed=Loop.Seed;bool late=Loop.LateGame;StartBattleShopLoop(seed,late);}
             if(LoopButton(new Rect(1046,158,202,34),"返回测试选择"))LeaveShopTrial();
             if(LoopButton(new Rect(1046,200,202,34),"关闭菜单"))loopMenuOpen=false;
+        }
+        void DrawLoopTestSettlement()
+        {
+            Fill(LoopTestPanelRect,LoopPanel);
+            GUI.Label(new Rect(970,70,278,26),"仅供测试 · 会正常结算奖励",LoopText(12,TextAnchor.MiddleLeft,LoopMuted));
+            if(LoopButton(new Rect(970,108,132,42),"判胜利",true))TryTestSettlement(true);
+            if(LoopButton(new Rect(1116,108,132,42),"判失败"))TryTestSettlement(false);
         }
     }
 }
