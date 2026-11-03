@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-03：两个商店 PR 的历史冲突整合回归
+
+#47（商店）与 #51（两关闭环）均因 #50 squash 带入共享商店/地图代码而冲突。先逐文件核对 #47 与 main：主线包含其全部功能并追加挑战/详情，解决6个冲突后 Git tree 与 e14c8ca 完全一致，未丢弃任意商店行为。#47 正常 squash 合并为0821c2c。#51 吸收整理后的共享历史与实时main，解决9个重叠文件，保留闭环分支及旧入口、TacticalViewport坐标、独立奖励与现有两份证据；最终除本段文档更新外，与cbcdad1的运行文件逐字节相同。
+
+- artifacts/pr-merge-edit.xml：完整339/339 EditMode通过，0失败/跳过。
+- artifacts/pr-merge-play.xml：完整92/92 GPU PlayMode通过，0失败/跳过，覆盖商店、两关闭环、测试结算、旧地图与特效。
+- py -3 tools/check_repository.py：4619跟踪文件通过；差异空白/冲突标记检查通过。
+- artifacts/pr-merge-build.log：STRONGHOLD_BUILD_PASS，1677283162 bytes，0错误，Unity6000.6.5f1、Windows x64 Development。
+- artifacts/pr-merge-player-late.log：后期两关9项全True，购买、跨关、暂停、取景、重开和退出通过，退出0。
+- artifacts/pr-merge-player-basic.log：基础两关8项全True，实际购买卡进入第二关、奖励流程、暂停、重开和退出通过，退出0。
+- artifacts/pr-merge-player-shop.log：原商店19项全True，落地/金光收尾检查True，退出0。
+
+上述为本轮重新执行结果；未重复人工点击全流程、第二台电脑/全新克隆或长期性能。没有新增素材、游戏规则或公共接口，不更新ZIP/Releases。源文件、必要.meta与已有运行资源保持跟踪；本轮合并依据用户明确指令，不绕过GitHub保护。
+
 ## 2026-11-03：新版商店与底部卡栏费用底色
 
 定位：git blame确认旧ShopMapTrial中ShopTier/费用渐变来自shigaharuki17的7a4e700；新版BattleShopInterface的DrawLoopShop/DrawLoopRoster只填LoopPanel，缺少该调用。仅修改此绘制文件，新增私有共用底色绘制，原ShopTier和费用/星级/DP数据不变；不改公共接口、素材、场景、Prefab、包或设置。
