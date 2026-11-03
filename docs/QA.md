@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-11-03：取消红门拥堵限制、原生16:9联动窗口
+
+本轮只实现用户要求的两项操作修订，技能还原和启动/卡顿仅答复、未修改相关实现。
+
+- `qol-edit.xml`：完整318/318逻辑，0失败/跳过。原三项拥堵拒绝用例改为占用红门也能部署，同时保留CD/费用/次数/暂停/幂等/非法位置保护；新增8边/角锚点与4种可用区域约束。
+- `qol-play.xml`：最终完整86/86 GPU场景，0失败/跳过。新增暂停五张不同怪物拖入同一红门、同位置五实体/各自扣费次数、同卡CD仍冻结阻止重复部署。原技能/地图/交易/跨关等场景保持。
+- 首轮85/86有一项余消弹场景未形成所需的消弹观测；放开重合后原连续出兵测试的分布发生变化。测试场景明确限制为单弩手持续射击，保留灼燃、治疗、消弹、动作/暂停/清理全部断言；技能代码与原配置未改。随后完整86项复验通过。
+- `qol-build.log`：最终Windows构建1496110308 bytes、errors=0（报告总量，不是EXE大小）。新增原生分支在Windows Mono x64 Player实际编译运行，不把Editor中的条件编译跳过当验证。
+- `qol-players.json`：5个最终Player全部退出0、无捕获异常、均安装窗口约束：native-window、late、basic、legacy-shop、legacy-challenge。后期9项全True、购买角色进入第二关；旧商店/旧六星挑战继续通过。
+
+原生窗口测试对本进程发送Windows WM_SIZING（右边、底边、左上角）并应用返回矩形，实际客户区1408×792、1550×872、1678×944；随后实际最大化为2534×1425，再还原。aspect/axesCoupled/pausedState/noBars全True；宽高比例取整误差<=1像素，窗口内部不出现大片留黑，暂停、DP、时钟未重置。[横边](art/window-coupled-width.png) · [竖边](art/window-coupled-height.png) · [最大化](art/window-coupled-maximized.png)。这是原生消息和系统窗口尺寸验证，未记为人工鼠标拖边验收。独立Player启动请求1024×640后实际1024×576，[真实画面](art/window-coupled-ready.png)，两关闭环通过。Unity编辑器测试不安装窗口消息回调、不调整编辑器布局；其任意比例Game视图仍可留边。
+
+实现只对本进程Windows窗口安装comctl32子类回调，未处理消息转发，销毁时卸载；系统窗口组件无需新包或外部插件。尺寸数学独立，不每帧强制SetResolution；仅启动/系统贴靠等产生非16:9客户区时归一化。实现依据：[WM_SIZING](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing)、[WM_GETMINMAXINFO](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-getminmaxinfo)、[SetWindowSubclass](https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass)。
+
+未改场景、Prefab、Packages、ProjectSettings、技能/素材加载代码。未做第二台电脑、其他Windows/DPI/多屏穷举、真实鼠标所有边角手感或长时缩放压力。性能仅只读代码检查：MonsterTestSelection.BuildMonsterTestCatalog→ManualBattleDefinition.Snapshot→CardDefinition.Portrait/HasFrameAnimation→LocalMonsterArt.For同步读取/解码整套图集、Sprite.Create、Texture2D.Compress；这是确认存在的加载路径，尚未测量各环节时间，未把它推断为所有运行卡顿的唯一瓶颈。本轮没有性能优化或新的原作技能还原。
+
+
 ## 2026-11-03交付：后期两关、等比例窗口与原生UI
 
 2026-11-02人类已批准项目外UI看稿和具体范围；2026-11-03完成交付整理。沿用codex/battle-shop-loop / PR #51，不合并main。独立后期预置7级/30金币/24DP、5种怪物对抗6名已有完整技能的六星守军；战后购买/编队带入第二关，旧1级基础模式和旧独立试玩保留。规则、文件连接与操作见[BATTLE_SHOP_LOOP](BATTLE_SHOP_LOOP.md)。

@@ -334,8 +334,6 @@ namespace YesterdayConvoy
             preview.sortingOrder=DemoSpriteVisual.GetSortingOrder(Camera.main,point)+24;
             preview.color=new Color(tint.r,tint.g,tint.b,0.30f);
             entryOutline.startColor=entryOutline.endColor=tint;
-            foreach(var unit in Battle.Units)
-                if(unit.Active && Vector3.Distance(unit.Motion.Position,point)<ManualBattle.EntryClearance) preview.enabled=false;
         }
 
         private void OnGUI()

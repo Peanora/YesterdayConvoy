@@ -31,15 +31,16 @@ namespace YesterdayConvoy.Tests
             b.SetPaused(false);b.Advance(2.1f);b.SetPaused(true);
             Assert.That(b.TryDeploy(b.RunId,3,b.Lanes[1].Entry,true).Success,Is.True);
         }
-        [Test] public void BusyGateDoesNotBlockOtherEntryAndInvalidDropIsAtomic()
+        [Test] public void OccupiedGateAndOtherGateAcceptDeploymentWhileInvalidDropIsAtomic()
         {
             var b=New(new[]{Lane("R1",Vector3.zero,Vector3.forward*10),Lane("R2",Vector3.right*3,Vector3.forward*10)});b.Begin();
             b.TryDeploy(b.RunId,1,b.Entry);
             b.Advance(.02f);
-            Assert.That(b.TryDeploy(b.RunId,2,b.Entry).Failure,Is.EqualTo(DeployFailure.EntryBusy));
+            Assert.That(b.TryDeploy(b.RunId,2,b.Entry).Success,Is.True);
+            b.Advance(.02f);
             Assert.That(b.TryDeploy(b.RunId,3,b.Lanes[1].Entry).Success,Is.True);
             Assert.That(b.TryDeploy(b.RunId,4,new Vector3(float.NaN,0,0)).Failure,Is.EqualTo(DeployFailure.WrongEntry));
-            Assert.That(b.Units.Count,Is.EqualTo(2));Assert.That(b.DP,Is.EqualTo(16));
+            Assert.That(b.Units.Count,Is.EqualTo(3));Assert.That(b.DP,Is.EqualTo(14));
         }
         [Test] public void LanesCopyInputAndRejectAmbiguousGateBindings()
         {

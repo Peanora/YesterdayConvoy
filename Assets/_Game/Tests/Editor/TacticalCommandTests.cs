@@ -44,8 +44,8 @@ namespace YesterdayConvoy.Tests
             var h=Deploy(b,1,"M17");Assert.That(b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M17").EntityId,Is.EqualTo(h.EntityId));
             Assert.That(b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M16").Failure,Is.EqualTo(DeployFailure.StaleRun));
             Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M16").Failure,Is.EqualTo(DeployFailure.CoolingDown));b.Advance(.15f);
-            Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M16").Failure,Is.EqualTo(DeployFailure.EntryBusy));
-            b.SetPaused(true);Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M16").Failure,Is.EqualTo(DeployFailure.Paused));
+            Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M16").Success,Is.True);
+            b.SetPaused(true);Assert.That(b.TryDeployRole(b.RunId,3,b.Entry,"CARD_M16").Failure,Is.EqualTo(DeployFailure.Paused));
         }
         [Test]public void RestartRemovesCommandersAndPreservesAuthoredRosterForNextRun()
         {

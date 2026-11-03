@@ -263,8 +263,6 @@ namespace YesterdayConvoy
             if ((card?.RemainingUses??RemainingUses) == 0) return DeployFailure.NoUses;
             if (DP < (card?.Settings.DeploymentCost??Settings.DeploymentCost)) return DeployFailure.NoDP;
             if (Clock + 0.000001 < (card?.NextDeploymentTime??nextDeploymentTime)) return DeployFailure.CoolingDown;
-            foreach (var unit in units)
-                if (unit.Active && Vector3.Distance(unit.Motion.Position, lane.Entry) < EntryClearance) return DeployFailure.EntryBusy;
             return Phase == BattlePhase.Ready ? DeployFailure.NotStarted : DeployFailure.None;
         }
 
