@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+## 2026-11-03：场上动作补齐
+
+荒芜拉普兰德、余、圣聆初雪、望、塞雷娅、玛恩纳追加动作及望棋子：角色/原始纹理/动作属于《明日方舟》相关权利人，具体动画师未确认；来源PRTS Torappu Asset Storage，确切文件URL见[source records](source-records/field-animation-completion-approved.json)。非CC0，开放再分发许可未确认；本项目用户接入与上传决定不构成权利人授权。
+
 ## 2026-10-29：六星守军第六批
 
 D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。

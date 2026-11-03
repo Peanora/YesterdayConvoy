@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-03：场上六名干员动作与原作棋子接入
+
+按人类确认看稿范围接入30段角色追加动作与望棋子3段，共2,755帧、70PNG/93,688,811字节、13清单及必要meta。主要文件为DefenderArt、DefenderRosterView、AdvancedDefenderView、12个角色目录、D28Chess和两份测试；未改战斗结算、技能数值、路线、商店、场景/Prefab、包或工程设置。具体资源与数据流见[接入说明](art/FIELD-ANIMATION-COMPLETION.md)。
+
+- `field-full-edit-final.xml`：完整327/327，失败/跳过0。新增9例资源尺度、原点、变体、棋子与销毁缓存恢复检查。首轮全量321/326暴露先前加载的Sprite被Unity清理后仍留在缓存；修复失效检查并增加重现测试，最终完整复验通过。没有为此改变启动加载策略或做性能优化。
+- `field-full-play.xml`：完整88/88 GPU场景，失败/跳过0；新增六人入场→待机、暂停冻结/不推进逻辑、比例/朝向、重开，以及真实棋子创建/触发动画/暂停/清理。旧角色、技能、部署、地图、跨关与商店场景保持。棋子表现测试用具备动作间隙的独立配置保证能触发技能；最初测试配置的动作占满间隔而未释放技能，仅修测试配置，生产数值未改。
+- `field-build.log`：Windows构建1589837955 bytes、errors=0，使用StrongholdMapTools.Build，独立ShopMap入口；报告总量不是EXE大小。
+- `field-players.json`：后期两关、基础两关、旧六星挑战三份最终独立Player退出0，后期won/complete/pause/purchased/carry/reset/framing/restart/exit全部True。隐藏窗口下ScreenCapture失败，本轮不把它当真实屏幕截图通过；画面抽查来自GPU测试的[相机渲染](art/field-late-idle.png)，不含OnGUI HUD，不是HTML看稿或人工实屏验收。
+- `REPOSITORY_CHECK_PASS`；70张运行PNG及对应meta均已进入索引，逐页SHA与导入记录一致，最大PNG3269290 bytes，无单文件上传超限。没有加入原始skel/atlas、加工区、Spine渲染库、构建、AGENTS或缓存。
+
+未运行：第二台电脑、人工完整试玩、启动性能与内存分析。原作完整刀光/风雪/火墙/追猎/治疗特效仍有缺口，塞雷娅原背面三技能仍缺；不能把本轮记为完整技能特效还原。新增资源约94MB，加载优化按人类要求继续暂缓。
+
+本轮沿用PR #51；开工已fetch核实main=e14c8ca。与main的12处既存合并冲突未在本轮改动，不自动合并。EXE对应源码与本地交付目录见BUILD-INFO。
+
+
 ## 2026-11-03：取消红门拥堵限制、原生16:9联动窗口
 
 本轮只实现用户要求的两项操作修订，技能还原和启动/卡顿仅答复、未修改相关实现。

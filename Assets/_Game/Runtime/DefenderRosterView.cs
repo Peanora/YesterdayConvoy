@@ -5,7 +5,7 @@ namespace YesterdayConvoy
 {
     public sealed class DefenderRosterView : MonoBehaviour
     {
-        private sealed class View { public string Id; public DefenderArt Art,Rear; public SpriteRenderer Renderer; public LineRenderer Skill; public bool Back,Initialized; public double Action=double.NegativeInfinity; }
+        private sealed class View { public string Id; public DefenderArt Art,Rear; public SpriteRenderer Renderer; public LineRenderer Skill; public bool Back,Initialized; public int ActionVariant=-1; public double Action=double.NegativeInfinity; }
         private readonly List<View> visuals=new List<View>();
         private ManualBattleController owner;
         private Material material;
@@ -50,6 +50,7 @@ namespace YesterdayConvoy
                         for(int i=b.CombatShots.Count-1;i>=0;i--)
                         {var shot=b.CombatShots[i];if(shot.FromDefender && shot.SourceId==d.EntityId && shot.StartedAt>=d.LastActionTime){Face(v,d.Position,shot.Destination);break;}}
                         v.Action=d.LastActionTime;v.Initialized=true;
+                        v.ActionVariant++;
                     }
                     else if(!action)
                     {
@@ -73,10 +74,10 @@ namespace YesterdayConvoy
                 if(!r.enabled) continue;
                 if(!d.Alive) r.sprite=v.Art["death"].At(clock-d.DeathTime,false);
                 else if(d.FrozenUntil>b.Clock) { if(r.sprite==null) r.sprite=art["idle"].At(0,true); }
-                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)||b.Clock-d.SkillEndedAt<.5))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno?System.Math.Max(d.SkillActiveUntil,d.ProtectionUntil):d.SkillActiveUntil)-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration);
-                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge);
+                else if(b.IsAdvancedDefender(d)&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)||b.Clock-d.SkillEndedAt<art.SkillEndDuration))r.sprite=art.AdvancedPose(b.Clock-d.SkillStartedAt,(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno?System.Math.Max(d.SkillActiveUntil,d.ProtectionUntil):d.SkillActiveUntil)-b.Clock,b.Clock-d.SkillEndedAt,action,age*d.LastActionRate,d.Settings.ActionDuration,v.ActionVariant);
+                else if(action) r.sprite=d.LastActionHealing ? art.HealAt(d.Settings.ActionDuration>0?age*d.LastActionRate*art.HealDuration/d.Settings.ActionDuration:age) : art.ActionAt(actionAge,v.ActionVariant);
                 else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
-                else r.sprite=art["idle"].At(owner.DefenderIdleClock,true);
+                else r.sprite=art.StartAt(owner.DefenderIdleClock,v.ActionVariant%4>=2)??art.IdleAt(owner.DefenderIdleClock,System.Math.Max(0,v.ActionVariant));
                 r.transform.position=d.Position; r.transform.rotation=camera.transform.rotation;
                 r.transform.localScale=Vector3.one;
                 r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,d.Position)+30;

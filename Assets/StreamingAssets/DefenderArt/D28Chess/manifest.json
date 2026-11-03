@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "task": "D28Chess",
+  "ppu": 140,
+  "auxiliary": true,
+  "clips": [
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 22,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 192,
+      "columns": 10,
+      "pivotX": 0.50150545835495,
+      "pivotY": 0.10743988975882532,
+      "sourceBounds": [
+        -50.23037338256836,
+        15.061261177062988,
+        49.40452194213867,
+        231.57986450195312
+      ],
+      "scale": 0.7,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 22,
+          "width": 1920,
+          "height": 576
+        }
+      ],
+      "events": []
+    },
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 101,
+      "duration": 1.6666666269302368,
+      "fps": 60,
+      "loop": true,
+      "cell": 128,
+      "columns": 16,
+      "pivotX": 0.5013176515698433,
+      "pivotY": 0.21404856517910958,
+      "sourceBounds": [
+        -49.88640594482422,
+        15.646932601928711,
+        49.40452194213867,
+        120.22345733642578
+      ],
+      "scale": 0.7,
+      "pages": [
+        {
+          "file": "completion-idle-00.png",
+          "count": 101,
+          "width": 2048,
+          "height": 896
+        }
+      ],
+      "events": []
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 22,
+      "duration": 0.3333333432674408,
+      "fps": 60,
+      "loop": false,
+      "cell": 128,
+      "columns": 16,
+      "pivotX": 0.4993903607130051,
+      "pivotY": 0.21142450580373412,
+      "sourceBounds": [
+        -65.16861724853516,
+        3.134931802749634,
+        65.39157104492188,
+        133.6951141357422
+      ],
+      "scale": 0.7,
+      "pages": [
+        {
+          "file": "completion-attack-00.png",
+          "count": 22,
+          "width": 2048,
+          "height": 256
+        }
+      ],
+      "events": []
+    }
+  ],
+  "provenance": "Original Arknights Wang chess piece; approved 2026-11-03; open redistribution permission unconfirmed."
+}

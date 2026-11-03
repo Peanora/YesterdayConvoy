@@ -1,5 +1,9 @@
 # 来源调查与第一版方案
 
+## 2026-11-03：六人动作与望原作棋子
+
+复用已经获取的六人正背面PRTS原作模型，按人类确认看稿补出入场/攻击/待机变体；新获取[望棋子元数据](https://torappu.prts.wiki/assets/char_spine/token_10064_wang_stone1/meta.json)及其defaultskin/front下的skel/atlas/PNG。运行时只分发PNG和切片清单，无骨骼运行库；逐URL和SHA见[source records](source-records/field-animation-completion-approved.json)。
+
 ## 2026-10-29：六星守军第六批
 
 D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。

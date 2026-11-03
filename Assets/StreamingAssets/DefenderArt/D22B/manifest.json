@@ -268,6 +268,49 @@
           "height": 1280
         }
       ]
+    },
+    {
+      "key": "start",
+      "source": "Start",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.6888212357627022,
+      "pivotY": 0.18734114004506008,
+      "sourceBounds": [
+        -485.87530517578125,
+        -4.927682876586914,
+        199.6620635986328,
+        478.8526916503906
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "completion-start-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "completion-start-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ],
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 126.4
     }
   ],
   "files": [

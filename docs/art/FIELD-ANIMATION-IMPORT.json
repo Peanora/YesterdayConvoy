@@ -1,0 +1,492 @@
+[
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21B/completion-start-00.png",
+    "bytes": 336584,
+    "sha256": "6868fb01d13ebb8913905fb0c8d39da2865b217c7232a8a5287051ee190574a9",
+    "sourceTask": "D21B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21B/completion-start-01.png",
+    "bytes": 349655,
+    "sha256": "c49c20de77084a09bcb8a76fdf0db52fa3a5255a72ffda1920b9c4a146315858",
+    "sourceTask": "D21B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21B/completion-start-02.png",
+    "bytes": 363182,
+    "sha256": "7167bc2c92c5fa76d2ae2a99e221daa77439effe32acf57ea0dda85d1fcbb073",
+    "sourceTask": "D21B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21B/completion-start-03.png",
+    "bytes": 309594,
+    "sha256": "cdcf12ee6ecea4d4994a31001b65daad11e66dfaac9f87a3da3e8a19e157ef66",
+    "sourceTask": "D21B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21/completion-start-00.png",
+    "bytes": 356156,
+    "sha256": "7252628289edd8bea7a3314e3f010710fb40b73f272cca224aeb92adc8c8d603",
+    "sourceTask": "D21F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21/completion-start-01.png",
+    "bytes": 379806,
+    "sha256": "b3709e65fcff0bb206ceab354c328fc5cd54f6efa77cabb02175360f5d951814",
+    "sourceTask": "D21F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21/completion-start-02.png",
+    "bytes": 396706,
+    "sha256": "514ffd680bdef6d33edcc2adc11ddaf40629fca646b99dc2103dc55ac1bb7bd4",
+    "sourceTask": "D21F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D21/completion-start-03.png",
+    "bytes": 338785,
+    "sha256": "e08b615d5787b991d7f745e88545295c3cf1c3eef132c03ed2d33cf69063f418",
+    "sourceTask": "D21F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D22B/completion-start-00.png",
+    "bytes": 1873510,
+    "sha256": "43d17da87d8b811c828fc8aeaf2131ebe9c446697afe1417e3f4ff759e6e30a2",
+    "sourceTask": "D22B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D22B/completion-start-01.png",
+    "bytes": 468003,
+    "sha256": "71698f0dd13effbfad835ce7767ab2e6250869499f4712d32cc2045d6807177a",
+    "sourceTask": "D22B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D22/completion-start-00.png",
+    "bytes": 2096591,
+    "sha256": "20af112dab9a0d27996992d28dd65a744097f6159f77cc4e3da8bff062d60547",
+    "sourceTask": "D22F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D22/completion-start-01.png",
+    "bytes": 526243,
+    "sha256": "79610b195dd01f46072f580e29c9044072875c912235565b8435dce0eaada751",
+    "sourceTask": "D22F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-skill_3_attack_b-00.png",
+    "bytes": 2930270,
+    "sha256": "861a75c21f66d3f2b284d5d8af909993febe6818bb7bb00e2a8980a86360657a",
+    "sourceTask": "D27B",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-skill_3_attack_b-01.png",
+    "bytes": 2649132,
+    "sha256": "965a297d33ad1eaad8bf822261534e804b45f36b04965596711013efb3a6bcb2",
+    "sourceTask": "D27B",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-skill_3_attack_c-00.png",
+    "bytes": 3128853,
+    "sha256": "d31b0185ceb867246c1e74ad79dca2134e9fe15d73d1baa4994016f2d4bc99fb",
+    "sourceTask": "D27B",
+    "sourceClip": "Skill_3_Attack_C"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-skill_3_attack_c-01.png",
+    "bytes": 2638315,
+    "sha256": "4e4a4847097f51b497ad3795748723f1e88699f3e24c476746ff273f30341e78",
+    "sourceTask": "D27B",
+    "sourceClip": "Skill_3_Attack_C"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-start-00.png",
+    "bytes": 1956389,
+    "sha256": "80bf7efd65e19cf47daa4643d0f15590296775266d5a75c7b78b3be88822a450",
+    "sourceTask": "D27B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27B/completion-start-01.png",
+    "bytes": 572707,
+    "sha256": "b7a8498fa8ff5559881b32d950abd05b25c8a975e8adf3dd3b0297b751c9b2d1",
+    "sourceTask": "D27B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-skill_3_attack_b-00.png",
+    "bytes": 2983766,
+    "sha256": "d2317168577d51eac27af3c139b5d80f3013c77e9c7ab2ae1cfa7206b122bf6d",
+    "sourceTask": "D27F",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-skill_3_attack_b-01.png",
+    "bytes": 2714540,
+    "sha256": "3f97575bb76a4d639b4a2ac8b91c60db966cb6cd5e541425d9a5e30082972706",
+    "sourceTask": "D27F",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-skill_3_attack_c-00.png",
+    "bytes": 3269290,
+    "sha256": "fa711f7cfae28680f95921af442a13e98385b73a82014f145451d2e89dd30251",
+    "sourceTask": "D27F",
+    "sourceClip": "Skill_3_Attack_C"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-skill_3_attack_c-01.png",
+    "bytes": 2795340,
+    "sha256": "0a3e6049306031e9c12e0930658345518eee3c0a9faf87ac7cde0dc9ef466748",
+    "sourceTask": "D27F",
+    "sourceClip": "Skill_3_Attack_C"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-start-00.png",
+    "bytes": 1923428,
+    "sha256": "5b2f642503666d7cfa4c91985c23be7cb7f85c38d18064e161ecfd05bd07f749",
+    "sourceTask": "D27F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D27/completion-start-01.png",
+    "bytes": 604305,
+    "sha256": "e96ebb79a73764bfe7af6e2efba226e84b405c24f0203ebabbbbdf666ad715d0",
+    "sourceTask": "D27F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-attack_1_b-00.png",
+    "bytes": 1962374,
+    "sha256": "87f61187813b3a692a55f3d7d403a0b6745ee3a4eaa3ab65c85f3c8370d5c353",
+    "sourceTask": "D28B",
+    "sourceClip": "Attack_1_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-attack_2_a-00.png",
+    "bytes": 1912346,
+    "sha256": "f7aecb4867dedd1d20301cbd095fafda36698c347bd548809c39bd6cec3f547f",
+    "sourceTask": "D28B",
+    "sourceClip": "Attack_2_A"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-attack_2_b-00.png",
+    "bytes": 1955664,
+    "sha256": "b9c77772e24ffd724eceec864e3e5a87869c0f0025170a533459acca664ea4e7",
+    "sourceTask": "D28B",
+    "sourceClip": "Attack_2_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-idle_2-00.png",
+    "bytes": 2738893,
+    "sha256": "c79f1bb410964c8a177cc1ead229c03a65f24a44b402de1b5882de88601a04c2",
+    "sourceTask": "D28B",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-idle_2-01.png",
+    "bytes": 697654,
+    "sha256": "2d4d1e7d41b364ebee7741c3efad3ada62aed84e4e805986b1d7add501d8d52f",
+    "sourceTask": "D28B",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-skill_3_attack_b-00.png",
+    "bytes": 2014384,
+    "sha256": "1d273d6df64cf95e8d76a9d63407763f04ff3687ca0414915293486b228d7e9f",
+    "sourceTask": "D28B",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-skill_3_attack_b-01.png",
+    "bytes": 2043737,
+    "sha256": "8cef03cdfe611085c310c3fd91e75b2e86e88aabe9b1538f96aed3d241c8b99f",
+    "sourceTask": "D28B",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-skill_3_attack_b-02.png",
+    "bytes": 1469145,
+    "sha256": "f314c39eeffeee5eb8e3afcb6f25a7eb3f4636ce271451c7c957581bd8fb3941",
+    "sourceTask": "D28B",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-start-00.png",
+    "bytes": 1228707,
+    "sha256": "5b5fd1e12d97020953d19c8ef51ec0183766962eeb305e970e6c36ad39814187",
+    "sourceTask": "D28B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28B/completion-start_2-00.png",
+    "bytes": 1357569,
+    "sha256": "df1e3a46b7659d3062ef18d682f2e60c85090cd880e6419c749ef9be2faf32cb",
+    "sourceTask": "D28B",
+    "sourceClip": "Start_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-attack_1_b-00.png",
+    "bytes": 2060073,
+    "sha256": "3c6237d1fabed38c740d4afe42660f45645621f62b3ffc06f10481bdb673a4a4",
+    "sourceTask": "D28F",
+    "sourceClip": "Attack_1_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-attack_2_a-00.png",
+    "bytes": 2014703,
+    "sha256": "0e5c4fbc051c454938ccdaa17524e17b31518f5a4f861310b9fb6e8f82dc219f",
+    "sourceTask": "D28F",
+    "sourceClip": "Attack_2_A"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-attack_2_b-00.png",
+    "bytes": 2029914,
+    "sha256": "f0c65d32f86bb1baca24c6f96f2aaf623a0c396f23aa8e4b8569770aaa1473a5",
+    "sourceTask": "D28F",
+    "sourceClip": "Attack_2_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-00.png",
+    "bytes": 2857307,
+    "sha256": "353cccd5a3a34b1abcfcca0148c51d35db947130ef0cd1320c19033f6811a5bb",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-01.png",
+    "bytes": 2908388,
+    "sha256": "e08440e05b5cb808e159e55fb09d6b2467964945e9d2f85e75fb3d7232c2dc4d",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-02.png",
+    "bytes": 2915066,
+    "sha256": "e7e4897d21f844efae692bed1ed14be38098320c24cdc142ab13a6e280996b08",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-03.png",
+    "bytes": 2889470,
+    "sha256": "055b6da58849013bba82a14ab05ac257ca1241ba138175550db96dcf5b8e4bd6",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-04.png",
+    "bytes": 2940781,
+    "sha256": "55baa7adb922bbeb2adeb798100a441b2b5e067db460b6a9050787f25b10b25b",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-05.png",
+    "bytes": 2869443,
+    "sha256": "85f21521fa568325a668cd82d76518cadfdab3e085e0676f484273f91de7fc05",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-idle_2-06.png",
+    "bytes": 541663,
+    "sha256": "07b9990afdbbffb8c28bd264e8ed0aa1113202156b63d77f9fef00e0c57707b4",
+    "sourceTask": "D28F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-skill_3_attack_b-00.png",
+    "bytes": 2085649,
+    "sha256": "13e6cc7e85bf7b27414ff6171f7f19f4a2683f641ba7dcc5de9198be32d96ac5",
+    "sourceTask": "D28F",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-skill_3_attack_b-01.png",
+    "bytes": 2172541,
+    "sha256": "38450a4a7ee738e3846f6fb54fcb729f92c6f8ebb82f02186fe02fa3d767d665",
+    "sourceTask": "D28F",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-skill_3_attack_b-02.png",
+    "bytes": 1536018,
+    "sha256": "66dfeec14d3a3675afd90612625d75e4482045f9cefb01a4d779362c8ecc4e16",
+    "sourceTask": "D28F",
+    "sourceClip": "Skill_3_Attack_B"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-start-00.png",
+    "bytes": 1266468,
+    "sha256": "9f720016a1ab7f39a791a7d8c30c6d0401df7f35027d1ec06ae82308222f593c",
+    "sourceTask": "D28F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28/completion-start_2-00.png",
+    "bytes": 1419164,
+    "sha256": "a8cc47284cfea5fb10f2c4dda0a854ba9e42b9f9391d61b6bb63b43c6027675d",
+    "sourceTask": "D28F",
+    "sourceClip": "Start_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29B/completion-start-00.png",
+    "bytes": 389454,
+    "sha256": "df374a8ba9b37fe44a4c3ba2d93f6e3370d80eb7255513f1ebd57491258bade5",
+    "sourceTask": "D29B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29B/completion-start-01.png",
+    "bytes": 347400,
+    "sha256": "c077bac983cbabf5fad7146652177f9d1db1ac61bc5976f0efbbeba5306bb1d4",
+    "sourceTask": "D29B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29B/completion-start-02.png",
+    "bytes": 346882,
+    "sha256": "1b770b351969d0638c443a46a99a255df0e2ddfa60db76038c2653c42424fa5f",
+    "sourceTask": "D29B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29B/completion-start-03.png",
+    "bytes": 66102,
+    "sha256": "9fff9da9f2196041184df98fe72313aa13a77cda9993c7e5c4fe93f589ca6e8b",
+    "sourceTask": "D29B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29/completion-start-00.png",
+    "bytes": 437003,
+    "sha256": "73d441385bbd1a8e8bc923899eb8bda1e121d6a2fe338cdfd26f351b7fa7db56",
+    "sourceTask": "D29F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29/completion-start-01.png",
+    "bytes": 405243,
+    "sha256": "c3be2a691af76f3a7a3d48f6e7a11066f61f4456d9b1cdf4dd1e90e768659573",
+    "sourceTask": "D29F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29/completion-start-02.png",
+    "bytes": 413558,
+    "sha256": "4c45faae22411167f4034c2b9ea93ea2ea132e70f415c92e5785fe02d10355de",
+    "sourceTask": "D29F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D29/completion-start-03.png",
+    "bytes": 80009,
+    "sha256": "7687e6b628ae6d3837b1f9611ba2ad9e39c8ed7ba8c9e84843e6e865afe1e5ce",
+    "sourceTask": "D29F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30B/completion-idle_2-00.png",
+    "bytes": 1234087,
+    "sha256": "e1935cc3b948552a01ea0e046bc71bb9053f09f18e442e9bacb0e8e965148454",
+    "sourceTask": "D30B",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30B/completion-start-00.png",
+    "bytes": 233524,
+    "sha256": "b05d77705e0061e5ab447e5cd92639cffe5c03aa0ebbb5add887b7dfbfed15f1",
+    "sourceTask": "D30B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30B/completion-start-01.png",
+    "bytes": 224599,
+    "sha256": "38e6d02fbe473d86378ead23cf5f7681b59bdd1aa89fd501c6c84430f8233842",
+    "sourceTask": "D30B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30B/completion-start-02.png",
+    "bytes": 232414,
+    "sha256": "72b43d8b2e77575096aa77f84d5f433571d1d5db604a03a7dcf23d21ca05ffeb",
+    "sourceTask": "D30B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30B/completion-start-03.png",
+    "bytes": 212670,
+    "sha256": "32993bc59e767b27d7d3238f6319823a22fe1129d56c774805e9fed1a35c069f",
+    "sourceTask": "D30B",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30/completion-idle_2-00.png",
+    "bytes": 1348636,
+    "sha256": "fcc0cea59cef31c461100e10311c3f520ada912a9b21f402ecbbeffcca68fcf8",
+    "sourceTask": "D30F",
+    "sourceClip": "Idle_2"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30/completion-start-00.png",
+    "bytes": 236071,
+    "sha256": "9e666be996634cdf50f51eb864ad3ce4a4f52a3f47880c8c6484bbefae93dc01",
+    "sourceTask": "D30F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30/completion-start-01.png",
+    "bytes": 237621,
+    "sha256": "a21d556cef3794b9af82afc2e6077ca011b8bbed647955a686e2b612b46ab1f8",
+    "sourceTask": "D30F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30/completion-start-02.png",
+    "bytes": 247334,
+    "sha256": "65e192721a9e10a819770d9798ccdaee3859df9a8b615f3b2005b3ab80ed12f9",
+    "sourceTask": "D30F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D30/completion-start-03.png",
+    "bytes": 225317,
+    "sha256": "5065e34651a5c83376954217d2344016f419d3da77851e16fce4565dadb943dd",
+    "sourceTask": "D30F",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28Chess/completion-start-00.png",
+    "bytes": 157301,
+    "sha256": "c16338dd69b5645eb50cc5cbc6eeb8894e0995b6a8ff6b445f2c1befcac12767",
+    "sourceTask": "WANG_PIECE",
+    "sourceClip": "Start"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28Chess/completion-idle-00.png",
+    "bytes": 626706,
+    "sha256": "9a59a1ccfaaa9d0d5b8357e0f1e76b4dca3f109497d6dc45e5860044ea419654",
+    "sourceTask": "WANG_PIECE",
+    "sourceClip": "Idle"
+  },
+  {
+    "path": "Assets/StreamingAssets/DefenderArt/D28Chess/completion-attack-00.png",
+    "bytes": 138609,
+    "sha256": "927e6e50734062f66de0b93f2e8ba4f63a710aac5f3e3a7a6316a22942769b12",
+    "sourceTask": "WANG_PIECE",
+    "sourceClip": "Attack"
+  }
+]

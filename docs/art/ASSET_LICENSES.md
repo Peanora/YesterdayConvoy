@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-11-03：六名场上干员动作补齐与望棋子
+
+经看稿确认，接入30段已取得原作模型中的未接入动作及望棋子3段动作；70张运行PNG、93,688,811字节及清单/meta随源码交付。原作媒体非CC0，开放再分发许可未确认；人类接入/上传决定不是权利人许可。原始skel、工作区和Spine渲染库不进入游戏。逐文件来源见[source records](source-records/field-animation-completion-approved.json)，运行页哈希见[import records](FIELD-ANIMATION-IMPORT.json)。原作完整独立技能特效仍有缺口，不能把人物动作补齐写成特效全还原。
+
 ## 2026-10-29：六星守军第六批
 
 D26凛御银灰、D27圣聆初雪、D28望的已确认正背面模型/卡面/选定S3接入独立试玩；99PNG/196469931字节、6清单及meta随源码交付。原生PNG字节不变，无新AI或骨骼运行库；程序雪格/棋子/协同眼不是原作完整外部特效。原作媒体非CC0，开放再分发许可未确认，人类上传决定不等于权利人许可。[具体来源](source-records/defender-batch6-approved.json)、[逐页SHA](DEFENDER-BATCH6-IMPORT.json)、[实现和缺口](../DEFENDER-SKILLS-BATCH6.md)。VERIFIED仅指QA列出的模型加载、场景/GPU/Player与文件完整性验证，不代表全部原作机制或版权已取得。

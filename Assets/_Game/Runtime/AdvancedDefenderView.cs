@@ -12,6 +12,11 @@ namespace YesterdayConvoy
         readonly List<LineRenderer> lines=new List<LineRenderer>();
         readonly List<SpriteRenderer> flames=new List<SpriteRenderer>();
         readonly Sprite[] flameFrames=new Sprite[25];
+        sealed class ChessVisual { public SpriteRenderer Renderer; public double Created; }
+        readonly Dictionary<SixthCell,ChessVisual> chess=new Dictionary<SixthCell,ChessVisual>();
+        readonly HashSet<SixthCell> seenChess=new HashSet<SixthCell>();
+        readonly List<SixthCell> staleChess=new List<SixthCell>();
+        DefenderArt chessArt;
         int used,flamesUsed;
         public void Bind(Func<ManualBattle> battle)=>source=battle;
         LineRenderer Line(string name,Color color,float width,int points)
@@ -32,14 +37,13 @@ namespace YesterdayConvoy
         }
         void LateUpdate()
         {
-            used=flamesUsed=0;var b=source?.Invoke();var cam=Camera.main;
+            used=flamesUsed=0;seenChess.Clear();var b=source?.Invoke();var cam=Camera.main;
             if(b!=null&&cam!=null)
             {
                 float t=(float)b.Clock;
                 foreach(var cell in b.SnowCells)if(cell.Layers>0&&b.FindDefender(cell.SourceId).Alive)Ring(cell.Position,.35f,new Color(.6f,.9f,1,.3f+cell.Layers*.1f),.025f);
                 foreach(var cell in b.ChessPieces)
-                    if(cell.Time==0)Ring(cell.Position,.25f,cell.Active?new Color(.9f,.9f,.75f,.9f):new Color(.45f,.5f,.6f,.5f),.07f);
-                    else if(b.Clock-cell.Time<.4)Ring(cell.Position,.25f+(float)(b.Clock-cell.Time)*2,new Color(1,.8f,.3f,.8f),.07f);
+                    PresentChess(cell,b.Clock,cam);
                 foreach(var d in b.Defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&b.DefenderSkillActive(d)&&b.FindDefender(d.PartnerId) is DefenderState partner&&partner.Alive)Ring(partner.Position,.55f,new Color(.4f,.8f,1,.8f),.07f);
                 foreach(var v in b.DefenderDrones)
                 {
@@ -105,6 +109,28 @@ namespace YesterdayConvoy
             }
             for(int i=used;i<lines.Count;i++)lines[i].enabled=false;
             for(int i=flamesUsed;i<flames.Count;i++)flames[i].enabled=false;
+            staleChess.Clear();
+            foreach(var pair in chess)if(!seenChess.Contains(pair.Key))staleChess.Add(pair.Key);
+            foreach(var cell in staleChess){Destroy(chess[cell].Renderer.gameObject);chess.Remove(cell);}
+        }
+        void PresentChess(SixthCell cell,double clock,Camera cam)
+        {
+            seenChess.Add(cell);
+            if(chessArt==null)chessArt=DefenderArt.Load("D28Chess");
+            if(!chess.TryGetValue(cell,out var visual))
+            {
+                if(material==null)material=new Material(Shader.Find("Sprites/Default"));
+                var r=new GameObject("Wang original chess piece",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+                r.transform.SetParent(transform,false);r.sharedMaterial=material;
+                visual=new ChessVisual { Renderer=r,Created=clock };chess.Add(cell,visual);
+            }
+            var renderer=visual.Renderer;double age=clock-visual.Created;
+            renderer.enabled=cell.Time==0||clock-cell.Time<chessArt["attack"].Duration;
+            renderer.sprite=cell.Time>0?chessArt["attack"].At(clock-cell.Time,false):chessArt.StartAt(age)??chessArt.IdleAt(age-chessArt.StartDuration);
+            renderer.transform.SetPositionAndRotation(cell.Position,cam.transform.rotation);
+            renderer.transform.localScale=Vector3.one;
+            renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,cell.Position)+28;
+            renderer.color=cell.Active?Color.white:new Color(.65f,.7f,.78f,.8f);
         }
         void OnDestroy(){if(material!=null)Destroy(material);foreach(var frame in flameFrames)if(frame!=null)Destroy(frame);}
     }
