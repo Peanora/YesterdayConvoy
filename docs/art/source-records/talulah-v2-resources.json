@@ -7,13 +7,13 @@
   "files": [
     {
       "source": "https://opengameart.org/sites/default/files/Fire01.png",
-      "local": "Assets/_Game/Art/VFX/Skills/Talulah/fire-stream-cc0.png",
+      "local": "Assets/Art/VFX/Skills/Talulah/fire-stream-cc0.png",
       "sha256": "cee47a14971d54ab3a1f8ea1806e6f807ff9aae1dd62e6a6c7ede61efd92c8c0",
       "changes": "Byte-for-byte original PNG; Unity sprite slicing only"
     },
     {
       "source": "https://opengameart.org/sites/default/files/ToonExplosion31.png",
-      "local": "Assets/_Game/Art/VFX/Skills/Talulah/fire-impact-cc0.png",
+      "local": "Assets/Art/VFX/Skills/Talulah/fire-impact-cc0.png",
       "sha256": "be8b73c5655ae05a4a83be32ce812a366ef157fdd8696f91224565ccf72c0f7f",
       "changes": "Byte-for-byte original PNG; Unity sprite slicing only"
     }

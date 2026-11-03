@@ -7,7 +7,7 @@
   "download": "https://opengameart.org/sites/default/files/firespritesheet.zip",
   "archive_sha256": "f1161a705caf679d23e8b93a819f75b31edccfd4422f5ee7a43c83caaff68aa3",
   "source_frames": "fireb/fireB0001.png through fireB0025.png; 25 RGB black-background images at 128x128",
-  "output": "Assets/_Game/Art/VFX/Skills/Talulah/Resources/FireRainEmbers.png",
+  "output": "Assets/Art/VFX/Skills/Talulah/Resources/FireRainEmbers.png",
   "output_sha256": "b8be9f73b0efc260b043ef19d9fac6626d504379c254b96b2688264d1ef2c003",
   "output_dimensions": "640x640 RGBA; 5x5 grid of 128x128 frames",
   "processing": "tools/prepare_fire_embers.py: alpha=max(R,G,B), zero values below 5, normalized RGB=RGB*255/alpha; preserve emission, remove black matte; no AI redrawing",

@@ -1,5 +1,9 @@
 # 授权与分发记录
 
+## 2026-11-03：霜星冰封
+
+原角色与Skill_1复用已有M14原作帧，权利状态不变、非CC0。新增黑冰为实际OpenAI image_gen生成素材；霜纹/风雪/揭示/碎屑为程序时序，烟雾与项目Kenney Particle Pack CC0原字节相同。原作开放再分发许可仍未确认；本轮人类批准接入与源码上传不是权利人授权。24运行图集及meta随源码提交，来源、生成原图SHA、逐页哈希及实际验证范围见[FROSTNOVA-SKILL](FROSTNOVA-SKILL.md)、[导入记录](FROSTNOVA-SKILL-IMPORT.json)与QA。
+
 ## 2026-11-03：六名场上干员动作补齐与望棋子
 
 经看稿确认，接入30段已取得原作模型中的未接入动作及望棋子3段动作；70张运行PNG、93,688,811字节及清单/meta随源码交付。原作媒体非CC0，开放再分发许可未确认；人类接入/上传决定不是权利人许可。原始skel、工作区和Spine渲染库不进入游戏。逐文件来源见[source records](source-records/field-animation-completion-approved.json)，运行页哈希见[import records](FIELD-ANIMATION-IMPORT.json)。原作完整独立技能特效仍有缺口，不能把人物动作补齐写成特效全还原。

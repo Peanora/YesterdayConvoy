@@ -1,5 +1,7 @@
 # 三人协作开发指南
 
+2026-11-03更新：按[工程结构规范](PROJECT_STRUCTURE.md)，所有地图独立保存于Assets/Scenes，不再运行时整图搭建。主导者日常工程位于E:/珍贵资料/昨日圆车；队友继续在各自克隆目录开发，不需要建立多套Unity工程。当前正式入口为MonsterTrial与BattleShop；旧地图和生成入口已退役。
+
 适用当前仓库：https://github.com/Peanora/YesterdayConvoy 。这是一起开发Unity源工程，游戏仍为离线单机，不是增加联机玩法。
 
 2026-10-20：三名开发者分别使用 Codex。日常 Git / PR 和冲突处理的统一流程见根目录 [CONTRIBUTING.md](../CONTRIBUTING.md)，本指南保留成员、环境、文件责任、检查范围与发布分工，避免维护两套操作步骤。
@@ -22,7 +24,7 @@
 2. File → Clone repository → URL，填`https://github.com/Peanora/YesterdayConvoy.git`，克隆到自己的本地文件夹。不要把三个人的工程放在同一个共享目录，也不要用QQ互传整个工程覆盖。
 3. 安装Unity Hub和精确版本 **6000.6.5f1**，加装Windows Build Support（需要打包的人安装）；不要因Hub提示更新而升级项目。
 4. Unity Hub → Add/Open project from disk，选择克隆后同时含Assets、Packages、ProjectSettings的根目录。首次导入需要等待，Library由本机生成。
-5. 在Unity打开`Assets/_Game/Scenes/InitialDemo.unity`，或用Yesterday Convoy → Initial Demo → Open Current Scene；点Play验证。Game视图选Full HD并关闭Low Resolution Aspect Ratios。
+5. 在Unity打开`Assets/Scenes/MonsterTrial.unity`，或用Yesterday Convoy → Initial Demo → Open Current Scene；点Play验证。Game视图选Full HD并关闭Low Resolution Aspect Ratios。
 6. 先看`docs/STATUS.md`当前状态、`docs/GDD.md`相关规则、本指南及[CONTRIBUTING](../CONTRIBUTING.md)。AGENTS.md不随仓库分发，克隆后缺失是正常的；每人使用Codex前按CONTRIBUTING第1节创建本地引导，已有完整指令时合并，共享流程不依赖主导者私有文件。
 
 只试玩的人无需安装 Unity，向主导者获取已验证、标明源码版本的完整 Windows 构建目录，运行其中的 YesterdayConvoy.exe；保留配套数据与 DLL。GitHub 的 Source code 不是可玩包，旧 Releases 不代表最新 main。需要自行构建的人先按角色说明取得有权使用的运行素材并安装，再用对应版本构建；仅克隆代码可能缺少被许可规则排除的本地媒体。
@@ -37,7 +39,7 @@ Git不能让同一Unity场景安全地随意同时编辑。CODEOWNERS只是审�
 
 | 文件范围 | 当前约定 |
 | --- | --- |
-| InitialDemo.unity、已有共享Prefab、ManualDemo/WisadelVsKroos配置、ProjectSettings、Packages | 默认由干宸骅集成；其他成员要修改先认领，期间主导者也避免同时改 |
+| MonsterTrial.unity、已有共享Prefab、ManualDemo/WisadelVsKroos配置、ProjectSettings、Packages | 默认由干宸骅集成；其他成员要修改先认领，期间主导者也避免同时改 |
 | 普通C#逻辑 | 可按不同脚本分工；共享接口先约定，不能各自改同一大类后最后硬拼 |
 | 新角色/图标/音效 | 每人自己的新增资源目录与配套.meta；先核对统一风格与许可，再由主导者接入主场景 |
 | 独立Prefab/试验场景 | 可各自新增，不直接覆盖主场景；Unity导入生成.meta后一起提交 |

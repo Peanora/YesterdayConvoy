@@ -5,7 +5,7 @@
   "license": "Generated support materials; no CC0 or original-game redistribution permission is claimed.",
   "entries": [
     {
-      "file": "Assets/_Game/Art/Environment/TacticalV2/city-concrete.png",
+      "file": "Assets/Art/Environment/TacticalV2/city-concrete.png",
       "size": [
         1254,
         1254
@@ -17,7 +17,7 @@
       "prompt": "Create a production diffuse/albedo material texture for the APPROVED original industrial tactical map reference. Exactly square, flat orthographic material scan, no perspective, no scene, no props, no UI, no gates. Wet weathered desaturated cool grey concrete with fine mineral grain, subtle age mottling, sparse faint water traces and gentle neutral tone variations. The material should be restrained and elegant at small game-tile scale, not noisy grunge. No large cracks, no grout grid, no painted symbols, no borders and no baked directional lighting or cast shadows. Seamlessly tileable in X and Y; opposite edges match. Single uninterrupted surface filling all 1024x1024 pixels. This is a supporting surface for the approved map, not a new concept. Match the quiet grey-green walkable pavement surfaces in the reference."
     },
     {
-      "file": "Assets/_Game/Art/Environment/TacticalV2/ruins-sandstone.png",
+      "file": "Assets/Art/Environment/TacticalV2/ruins-sandstone.png",
       "size": [
         1254,
         1254
@@ -29,7 +29,7 @@
       "prompt": "Create a production diffuse/albedo material texture for the APPROVED original autumn ruin tactical map reference. Exactly square 1024x1024, flat orthographic material scan with no scene/perspective. Continuous ancient grey-olive sandstone, subtle worn fine pits, restrained dark-green lichen/moss in tiny crevices, a few thin organic weathering traces. Muted cool olive-grey, not vivid yellow or green. Tactile and refined anime strategy environment texture that remains quiet under characters. No tile seams/grout grid, no large symbols or lettering, no objects, no UI or gates, no directional lighting or cast shadows. Seamlessly tileable in X/Y with matching opposite edges. Whole square is the material, no surrounding frame. Match the stone surfaces in the reference while avoiding copying its unique carvings."
     },
     {
-      "file": "Assets/_Game/Art/Environment/TacticalV2/autumn-canopy.png",
+      "file": "Assets/Art/Environment/TacticalV2/autumn-canopy.png",
       "size": [
         1254,
         1254

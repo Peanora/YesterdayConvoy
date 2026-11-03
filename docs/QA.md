@@ -1,5 +1,80 @@
 # 验证证据与回归
 
+## 2026-11-03：塔露拉普攻分层表现
+
+人类确认项目外动态看稿后继续codex/project-layout-scenes / PR53。仅EngagementView私有普攻绘制、内部TalulahAttackVfx、独立Shader和Resources烟雾及测试/文档；不修改战斗模型、卡牌配置、人物动作、火雨、场景、Prefab、Packages或ProjectSettings。既有.vscode与PackageManagerSettings.asset未提交覆盖。
+
+- talulah-attack-play.xml：9/9 GPU PlayMode通过、0失败/跳过，过滤TalulahAttackPresentationTests、TalulahSceneTests、FireRainPresentationTests、TestSettlementSceneTests。新2项验证实际塔露拉交战中的火焰帧/位置连续变化、暂停不推进、真实命中与薄烟/火星、1.7秒间隔/0.65秒命中保持、GPU像素有实际特效、重开/换角色清理和原火雨可见。左右方向使用公共战斗模型从正反侧产生的真实普攻事件，在独立表现宿主检查火焰朝向目标；不冒称自然地图转身验收。
+- 实机图art/talulah-attack-actual.png为1280×720相机RenderTexture读取，不含IMGUI覆盖层；人物已有受击染红未改。项目外视频不是Unity实机。
+- talulah-attack-build.log：Windows x64 Development，BASELINE_BUILD_PASS 1774171185 bytes、0错误，标准Builds/Windows/YesterdayConvoy.exe更新。talulah-attack-player.log原高难度两关闭环9项全True，talulah-attack-player-exit.txt记录真实退出0；这项是通用闭环回归，塔露拉新普攻画面由上述GPU场景验证。
+- 仓库4648跟踪文件及Unity meta检查通过，暂存仅本任务文件。
+- 复用FireRainEmbers原25帧；新烟雾与Assets/Art/VFX/Common/particle-smoke-01.png字节及SHA256相同（e8724c219e8d35859167fc0a7e207e13c72ccf0c29704909b9bb3d3dc71c6cf7），97,452字节，原Kenney CC0依据保持。新Resources文件/Shader/.meta随源码；原作角色权利记录保持。
+
+首轮助手方法重命名笔误DrawDrawSprite造成编译失败，修正后上述9项全部通过。测试失败或未运行项不记通过。本轮为私有表现改动，未重跑全量EditMode/其余PlayMode，不做长时人工、第二机/全新克隆或整体性能优化；没有新增音效或ZIP/Releases。
+
+关键数据流：现有CombatShot/Clock→私有普攻助手→帧/几何/粒子池，仅渲染；未实际命中的事件不伪造爆燃。每帧重采样而非独立计时，暂停停帧，重开清理。只在首次塔露拉普攻时创建助手；深度测试隔离于原FireRainAdditive。
+
+## 2026-11-03：霜星手动冰封与正常商店混编
+
+用户批准霜星看稿后，在具体范围确认中要求同时纳入高难度商店。继续codex/project-layout-scenes / PR53；保留既有未跟踪.vscode与ProjectSettings/PackageManagerSettings.asset，不提交覆盖。
+
+- `frost-final-edit.xml`：完整345/345 EditMode、0失败/跳过。新增4项覆盖1.1秒延迟/范围法伤/只冻最近两名/重复请求、暂停与3秒移动锁及SP、目标死亡后完整施法、混编只复起霜星且回自己的上限、施法者倒下取消未命中事件、互斥技能配置。既有普通攻击/冰环/冻结/复起与经济逻辑回归保持。
+- `frost-final-play.xml`：相关14/14 GPU PlayMode、0失败/跳过，含FrostSealSceneTests、原霜星自然冰环/复起、TestSettlementSceneTests、FireRainPresentationTests、BattleShopLoopSceneTests、LateBattleShopSceneTests、MonsterSelectionTests。实际M14菜单入口、20点初始SP、12.05秒自然就绪、原Skill_1帧连续前进、3秒实际位置锁、真实目标冻结、黑冰/风雪Sprite、暂停停帧、动作结束但尾部仍显示、到期及重开无残留均通过。回归旧火雨/基础闭环与正常后期通关。
+- 混编GPU场景用真实角色列表搜索一个正常随机种子，没有向游戏注入霜星商品：第一关用明确开发测试判胜，首次进店仍保底塔露拉，其他格正常刷出霜星；扣5金币、九张库存、备战M14/idle、第二关真实拖动、按自己的技力施放成功。基础模式不注册霜星，重开移除本次购买。
+- 媒体检查：24PNG、28,411,363字节、570帧/60fps；RGBA、Alpha含0/非零、最大2048、逐页SHA核对，复用烟雾与原Kenney粒子字节相同。源/权利见art/FROSTNOVA-SKILL-IMPORT.json，不把用户上传授权记为原作开放许可。
+- `frost-final-build.log`：BASELINE_BUILD_PASS，Windows x64 Development，1,773,111,245 bytes、0 errors，保持两个显式场景。标准Builds/Windows/YesterdayConvoy.exe已更新。
+- `frost-delivery-frost.log` / `frost-delivery-frost-exit.txt`：独立Player，正常随机种子56、实际购买/拖动/手动施法/暂停/动作锁/尾部/重开汇总True，进程真实退出0。同一最终EXE的frost-delivery-late.log原高难度两关闭环9项全True，frost-delivery-late-exit.txt确认退出0。此霜星证据经开发测试结算进入商店，不冒称人工从第一关自然通关；本轮自动Player没有留存截图，实际图像由GPU相机另验。
+
+实际图像检查：frost-visual-final.xml再次2/2通过（重复覆盖不累加14项），相机RenderTexture读取1280×720实际GPU画面，见[黑冰实机图](art/frostnova-actual.png)。为避免黑冰遮住目标脸部，保持原形状等比例收敛至0.82；没有重画目标或霜星。最终frost-final-build.log再次构建1,773,111,245 bytes/0错误。仓库4638跟踪文件检查通过。
+
+首轮Editor校验访问internal资源类造成编译错误，改为现有配置/文件依据；首轮EditMode 344/345中混编用例未配置独立卡槽导致部署fixture为空，修正为实际ConfigureCardLoadout后完整345通过。失败轮没有记作通过。相关GPU首轮7/7，扩展后最终14/14。实际相机图像复验单项结果见下，不把重复用例累加为额外功能覆盖。
+
+关键连接：只读EngagementDefinition快照→每实体SP/施法事件→FrostSeal延迟伤害与FrozenUntil；DemoSpriteVisual读原Skill_1，FrostSealView/Art读事件和模拟时钟显示，不结算伤害。冷色屏幕微移不改变相机/输入，混编不借用首卡技能。未进行全余下PlayMode、长时人工平衡、第二机/全新克隆或性能优化；不制作ZIP/Releases。
+
+## 2026-11-03：进店免费刷新保证5费塔露拉
+
+明确授权范围及“自动进店第一排”来自用户两项确认，继续codex/project-layout-scenes / PR53；原.vscode与PackageManagerSettings.asset未改/未提交。
+
+- ShopTrialModel内部GuaranteedRefreshOffer只在刷新事务成功时清除，先将未购商品返库，再从实际库存保留第一格；锁店、无钱、卡片未解锁/无库存失败均不扣费/不消耗保底，Preset清理。普通调用签名和抽卡权重保持。
+- BattleShopLoop仅高难度注册现有5费塔露拉，并在第一关胜利打开商店前设置保底；正常免费刷新执行保底。基础卡池不变，后续随机仍按十级费用概率。
+- ShopBenchModels复用塔露拉原待机帧；BasicRosterProfile只为原TALULAH/火雨配置增加明确例外。EngagementCombat技能资格、技能面板/技力条及FireRainView改为读取实际实体配置。此前主卡是无技能弩手时会被错误拒绝，或者缺火雨特效，现由场景用例验证。
+- talulah-shop-all-edit.xml：341/341完整EditMode通过，0失败/跳过，包括原技能兼容、刷新事务与九张库存/保底失败边界。
+- talulah-shop-ready-play.xml：14/14 GPU通过，0失败/跳过。新增实际流程用例先用开发测试结算结束第一关，验证免费首格塔露拉/无额外扣费，购买38→33、备战TalulahOriginal/idle、切换商店不再补货、第二关真实拖动、初动4.2秒技力满、手动火雨成功且VisibleStreams>0，重开移除购买卡，基础模式不注册塔露拉。并回归旧单卡火雨、原商店、测试结算与两关闭环。
+
+最终 talulah-shop-build.log：Windows x64 Development，1672420786 bytes、0错误；talulah-shop-player.log 两关闭环9项全True，自动验收Player实际退出0（见talulah-shop-ready-delivery.out）。本地标准Builds/Windows/YesterdayConvoy.exe已更新，无ZIP/Releases。
+
+首次编译的测试引用了错误的战斗级FireRainStartedAt，改为实体字段；首次GPU购买暴露基础名单拒绝技能角色，下一轮暴露主卡无技能导致NoSkill，修复资格/显示/特效按实体取配置后，上述最终14项通过。失败轮不记通过。未人工完整点选/长时平衡、第二机或重跑全部PlayMode；本次保底为试玩覆盖，不写成正式经济概率。
+
+## 2026-11-03：目录迁移与显式地图场景
+
+主导者E盘最终验证：已切到codex/project-layout-scenes，Unity实际导入及AUTHORED_SCENES_VALIDATION_PASS通过，无缺失脚本；原.vscode三文件与PackageManagerSettings.asset共四文件SHA256核对不变。清掉BattleShop中残留的隐藏Industrial Map后，organized-windows-final.log再次校验通过，正式Builds/Windows/YesterdayConvoy.exe构建1672419494 bytes、0错误。此轮清理仅移除原本已隐藏的重复场地，不改战斗配置；最终E盘Player结果见后续记录。不要再让人类切到Codex工作目录打开工程。
+E盘标准EXE organized-final-player.log：后期两关9项全True，真实购买/带卡/重置/取景及退出通过；未捕获异常。最终校验允许以后在Assets/Scenes新增更多独立地图，不把当前两图数量永久写死。
+
+范围由用户明确确认：从main dc92829吸收PR52原商店恢复；移动资源并保留GUID，保存两个可编辑场景，退役其他地图/生成器与对应场景测试，更新路径/菜单/构建和目录规范；最终同步到主导者E盘单一日常工程。未升级Unity或包。
+
+- layout-edit-final.xml：339/339 EditMode通过。包括新增检查两个实际场景、500以上已保存地形Renderer、持久材质/Mesh、无缺失脚本；原场景数和八人混编测试按退役范围更新。
+- layout-play-final.xml：完整68项中67通过，剩余一项旧断言要求隐藏原地图，与本轮复用静态场地相反；修改该断言后layout-play-confirm.xml三项通过。其余逻辑未为此改动。
+- layout-entry-play.xml：最终11/11 GPU通过，覆盖真实场景返回、重开不重建/不丢弃地块编辑、八人技能、基础/后期购买带卡及测试结算。保留的69个不同场景用例均已覆盖通过（不是单次完整69项运行）。
+- layout-build.log：AUTHORED_SCENES_VALIDATION_PASS；最终Windows1672761774 bytes、0错误。构建明确包含BattleShop与MonsterTrial。
+- layout-player-late.log / layout-player-basic.log：最终独立Player分别9/8项全True，均退出0；完成真实部署、胜利、购买、第二关、暂停和重开。
+- 编辑模式Camera.Render实证：[商店战斗地图](art/BattleShop-authored.png) / [怪物试用地图](art/MonsterTrial-authored.png)，两图均在未进入Play时渲染。并非AI概念稿。角色由运行时生成，商店场景编辑模式显示已保存地形。
+- 仓库检查4562个跟踪文件通过（新增证据图/文档后以最终提交复核数为准），scene/meta/GUID检查通过。核心角色运行图集没有修改或漏传。
+
+迁移首轮编译发现共用截图方法曾在删除的地图诊断文件中，已提取保留；一次性Editor烘焙器改为普通编辑器类后成功；运行回归发现守军独立配置标记Tactical但仍需试用场地，以及退出销毁顺序引用，已修正并以上述最终回归为准。失败轮不记最终通过。
+
+未做：人工遍历每个角色/技能、第二台电脑、全新克隆与长时性能；已退役旧地图宿主中的专门场景回归不再运行，能力核心逻辑保留。同步E盘保留原未跟踪.vscode和PackageManagerSettings.asset，不提交/覆盖；最终导入校验另附本节后续记录。无ZIP/Releases。
+
+## 2026-11-03：恢复霍利屹战后商店
+
+修改BattleShopInterface与ShopMapTrial：把原商店的头部/横卡覆盖层抽为私有DrawShopMarket，让旧商店与关间商店共用同一绘制；原卡面/费用底色/羁绊/刷新/锁店/升星保持。关间只加开始下一战，保留闭环状态机、原子交易、战斗卡栏和现有备战模型；未改公共签名、场景、Prefab、Packages或ProjectSettings。
+
+- restore-shop-final-play.xml：11/11 GPU PlayMode通过，0失败/跳过，覆盖ShopMapSceneTests、TestSettlementSceneTests、LateBattleShopSceneTests、BattleShopLoopSceneTests。扩展既有测试，验证关间收起/展开不改金币/商品/相机，收起也不允许部署，并继续购买、第二关与终局。
+- restore-shop-final-build.log：最终Windows x64 Development，1677281994 bytes、0错误，Unity6000.6.5f1。
+- restore-shop-final-player.log：最终独立Player LATE_BATTLE_SHOP_CHECK 9项全True：两关获胜、通关、暂停、实际购买、带卡、战斗重置、取景、新挑战和退出。
+- 原生窗口首轮实际点击测试结算→胜利→商店，检查顶部五横卡/侧边标签、橙色刷新和锁图标、下方待机平台；点击2费酸液源石虫，金币38→36，商品消失并播放落地。发现底部旧战斗卡栏残影，随后增加清底及下一战文字对比度，再运行以上最终11项和构建。最终新增两行显示修正后未再次完成全套人工按钮点击，不冒称最终人工全流程通过。
+
+本轮完整EditMode/完整PlayMode未重跑；最近339/92完整结果属于前轮合并验证。未测第二台电脑/全新克隆、全分辨率和长期性能，性能优化继续暂缓。本轮无新媒体，无新增授权或运行依赖，不制作ZIP/Releases。最终素材/源码以本分支提交、本地BUILD-INFO及PR为准。
+
 ## 2026-11-03：两个商店 PR 的历史冲突整合回归
 
 #47（商店）与 #51（两关闭环）均因 #50 squash 带入共享商店/地图代码而冲突。先逐文件核对 #47 与 main：主线包含其全部功能并追加挑战/详情，解决6个冲突后 Git tree 与 e14c8ca 完全一致，未丢弃任意商店行为。#47 正常 squash 合并为0821c2c。#51 吸收整理后的共享历史与实时main，解决9个重叠文件，保留闭环分支及旧入口、TacticalViewport坐标、独立奖励与现有两份证据；最终除本段文档更新外，与cbcdad1的运行文件逐字节相同。

@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Game/Scenes/InitialDemo.unity
+    path: Assets/Scenes/BattleShop.unity
+    guid: 6d1cbebb7d8896447b53505be6815986
+  - enabled: 1
+    path: Assets/Scenes/MonsterTrial.unity
     guid: bd8618c477ce2ee4193b97f2d329491c
   m_configObjects: {}
