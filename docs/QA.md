@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-03：恢复霍利屹战后商店
+
+修改BattleShopInterface与ShopMapTrial：把原商店的头部/横卡覆盖层抽为私有DrawShopMarket，让旧商店与关间商店共用同一绘制；原卡面/费用底色/羁绊/刷新/锁店/升星保持。关间只加开始下一战，保留闭环状态机、原子交易、战斗卡栏和现有备战模型；未改公共签名、场景、Prefab、Packages或ProjectSettings。
+
+- restore-shop-final-play.xml：11/11 GPU PlayMode通过，0失败/跳过，覆盖ShopMapSceneTests、TestSettlementSceneTests、LateBattleShopSceneTests、BattleShopLoopSceneTests。扩展既有测试，验证关间收起/展开不改金币/商品/相机，收起也不允许部署，并继续购买、第二关与终局。
+- restore-shop-final-build.log：最终Windows x64 Development，1677281994 bytes、0错误，Unity6000.6.5f1。
+- restore-shop-final-player.log：最终独立Player LATE_BATTLE_SHOP_CHECK 9项全True：两关获胜、通关、暂停、实际购买、带卡、战斗重置、取景、新挑战和退出。
+- 原生窗口首轮实际点击测试结算→胜利→商店，检查顶部五横卡/侧边标签、橙色刷新和锁图标、下方待机平台；点击2费酸液源石虫，金币38→36，商品消失并播放落地。发现底部旧战斗卡栏残影，随后增加清底及下一战文字对比度，再运行以上最终11项和构建。最终新增两行显示修正后未再次完成全套人工按钮点击，不冒称最终人工全流程通过。
+
+本轮完整EditMode/完整PlayMode未重跑；最近339/92完整结果属于前轮合并验证。未测第二台电脑/全新克隆、全分辨率和长期性能，性能优化继续暂缓。本轮无新媒体，无新增授权或运行依赖，不制作ZIP/Releases。最终素材/源码以本分支提交、本地BUILD-INFO及PR为准。
+
 ## 2026-11-03：两个商店 PR 的历史冲突整合回归
 
 #47（商店）与 #51（两关闭环）均因 #50 squash 带入共享商店/地图代码而冲突。先逐文件核对 #47 与 main：主线包含其全部功能并追加挑战/详情，解决6个冲突后 Git tree 与 e14c8ca 完全一致，未丢弃任意商店行为。#47 正常 squash 合并为0821c2c。#51 吸收整理后的共享历史与实时main，解决9个重叠文件，保留闭环分支及旧入口、TacticalViewport坐标、独立奖励与现有两份证据；最终除本段文档更新外，与cbcdad1的运行文件逐字节相同。

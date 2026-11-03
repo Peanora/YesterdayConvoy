@@ -28,6 +28,14 @@ namespace YesterdayConvoy.Tests
                 int gold=c.Shop.Gold;Switch.SetValue(c,true);Assert.That(Finish(c,false),Is.False);c.Tick(10);Assert.That(c.Shop.Gold,Is.EqualTo(gold));
                 Assert.That(c.OpenLoopShop(),Is.True);yield return new WaitForSecondsRealtime(.4f);
                 Assert.That(c.ShopVisible,Is.True);Assert.That(c.Loop.Stage,Is.EqualTo(2));Assert.That((bool)Switch.GetValue(c),Is.False);
+                var offers=c.Shop.Offers.ToArray();int beforeToggle=c.Shop.Gold;
+                var camera=Camera.main;var viewport=camera.rect;var position=camera.transform.position;float fov=camera.fieldOfView;
+                c.SetShopVisible(false);yield return new WaitForSecondsRealtime(.25f);
+                Assert.That(c.ShopVisible,Is.False);Assert.That(c.Loop.CanShop,Is.True);
+                Assert.That(c.ShopMapPointAvailable(new Vector2(640,400)),Is.False,"Closing the shop does not permit between-stage deployment.");
+                c.SetShopVisible(true);yield return new WaitForSecondsRealtime(.3f);
+                Assert.That(c.ShopVisible,Is.True);Assert.That(c.Shop.Offers,Is.EqualTo(offers));Assert.That(c.Shop.Gold,Is.EqualTo(beforeToggle));
+                Assert.That(camera.rect,Is.EqualTo(viewport));Assert.That(camera.transform.position,Is.EqualTo(position));Assert.That(camera.fieldOfView,Is.EqualTo(fov));
                 int slot=Enumerable.Range(0,5).First(i=>c.Shop.Offers[i]!=null);string bought=c.Shop.Offers[slot];
                 Assert.That(c.PurchaseShopCard(slot).Success,Is.True);Assert.That(c.Shop.Bench.Any(p=>p.Id==bought),Is.True);
                 Assert.That(c.StartLoopNextBattle(),Is.True);yield return new WaitForSecondsRealtime(.3f);

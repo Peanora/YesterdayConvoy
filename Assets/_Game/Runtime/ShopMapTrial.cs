@@ -208,14 +208,48 @@ namespace YesterdayConvoy
                 Fill(new Rect(16,72,805,26),new Color(.03f,.06f,.08f,.88f));
                 GUI.Label(new Rect(25,72,790,26),"活性源石：攻击与攻速提升，持续失血   ·   青色传送口：等待3秒后返回中央",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.95f,.77f,.48f)}});
             }
+            DrawShopMarket(prep);
+            Fill(new Rect(0,602,1280,28),new Color(.03f,.06f,.08f,.94f));
+            GUI.Label(new Rect(18,602,550,27),$"{(TacticalMapId==StrongholdChallengeLayout.Id?"盟约#04 六星双翼挑战":TacticalMapId==StrongholdMapLayout.Id?"盟约#04 活性源石":"泵站回廊")} / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
+            if(Loop==null){
+            if(GUI.Button(new Rect(619,603,115,25),Battle.IsPaused?"继续战斗":"暂停战斗",shopButton)&&Battle.Phase==BattlePhase.Running)Battle.SetPaused(!Battle.IsPaused);
+            if(GUI.Button(new Rect(742,603,115,25),"重新测试",shopButton))EnterShopTrial(0,TacticalMapId);
+            GUI.enabled=prep&&(Loop==null||Loop.CanShop);
+            if(GUI.Button(new Rect(865,603,115,25),"满席两星",shopButton))EnterShopTrial(1,TacticalMapId);
+            if(GUI.Button(new Rect(988,603,115,25),"满席三星",shopButton))EnterShopTrial(2,TacticalMapId);GUI.enabled=true;
+            if(GUI.Button(new Rect(1111,603,146,25),"退出测试",shopButton)){LeaveShopTrial();GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;return;}GUI.enabled=true;
+            }
+            GUI.enabled=true;DrawShopBench(center);
+            if(shopDrag>=0&&shopMoving)
+            {
+                var q=shop.Quote(shopDrag);bool hit=ShopSalePoint(point);
+                Fill(ShopSellRect,hit?new Color(.42f,.29f,.12f,.98f):new Color(.12f,.17f,.20f,.98f));ShopBorder(ShopSellRect,new Color(.85f,.69f,.36f),2);
+                GUI.Label(ShopSellRect,$"{(hit?"松开出售":"向下拖动出售")}   {q.Message} · {q.FinalStar}星   +{q.Value} 源石",center);
+            }
+            if(Loop==null&&(Battle.Phase==BattlePhase.Won||Battle.Phase==BattlePhase.Lost))GUI.Label(new Rect(450,450,380,45),Battle.Phase==BattlePhase.Won?"突破成功 · 可重新测试":"作战结束 · 可重新测试",title);
+            if(Time.unscaledTime<shopMessageUntil)
+            {
+                Fill(new Rect(280,510,720,36),new Color(.04f,.12f,.15f,.94f));GUI.Label(new Rect(280,510,720,36),shopMessage,new GUIStyle(center){fontSize=16});
+            }
+            if(Loop==null||ShopPanelVisibility<.01f)DrawShopRouteLabels(label);DrawDefenderInspector(label,shopButton);
+            GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;
+        }
+        // One renderer for Huo's original shop and the between-stage shop.
+        void DrawShopMarket(bool prep)
+        {
+            var label=new GUIStyle(textStyle){fontSize=17,alignment=TextAnchor.MiddleLeft};
+            var title=new GUIStyle(label){fontSize=24,fontStyle=FontStyle.Bold};
+            var center=new GUIStyle(label){alignment=TextAnchor.MiddleCenter};
+            var shopButton=new GUIStyle(buttonStyle);
+            foreach(var state in new[]{shopButton.normal,shopButton.hover,shopButton.active,shopButton.focused})state.textColor=new Color(.88f,.95f,.98f);
             Fill(new Rect(0,0,1280,64),new Color(.055f,.09f,.11f,.97f));
             Fill(new Rect(22,65,1236,1),new Color(.22f,.31f,.36f));
             GUI.DrawTexture(new Rect(25,25,22,22),shopCoin,ScaleMode.ScaleToFit,true);
             GUI.Label(new Rect(54,17,58,38),Loop==null?"源石":"金币",label);
             GUI.Label(new Rect(105,12,170,44),shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
             GUI.Label(new Rect(292,19,230,30),$"整备 {shop.Bench.Count}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
-            GUI.enabled=Loop==null&&Battle.Phase!=BattlePhase.Running;
-            if(GUI.Button(new Rect(526,20,103,28),"换图·重置",shopButton))EnterShopTrial(0,TacticalMapId==StrongholdChallengeLayout.Id?"city":TacticalMapId=="city"?StrongholdMapLayout.Id:StrongholdChallengeLayout.Id);
+            GUI.enabled=Battle.Phase!=BattlePhase.Running;
+            if(Loop==null&&GUI.Button(new Rect(526,20,103,28),"换图·重置",shopButton))EnterShopTrial(0,TacticalMapId==StrongholdChallengeLayout.Id?"city":TacticalMapId=="city"?StrongholdMapLayout.Id:StrongholdChallengeLayout.Id);
             GUI.enabled=true;
             GUI.Label(new Rect(650,17,55,38),"等级",label);GUI.Label(new Rect(702,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
             Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
@@ -263,30 +297,6 @@ namespace YesterdayConvoy
             }
             GUI.enabled=true;
             GUI.backgroundColor=new Color(.16f,.27f,.32f);
-            Fill(new Rect(0,602,1280,28),new Color(.03f,.06f,.08f,.94f));
-            GUI.Label(new Rect(18,602,550,27),$"{(TacticalMapId==StrongholdChallengeLayout.Id?"盟约#04 六星双翼挑战":TacticalMapId==StrongholdMapLayout.Id?"盟约#04 活性源石":"泵站回廊")} / {(Battle.Phase==BattlePhase.Ready?"准备":"战斗中 · 商店锁定")}   DP {Battle.DP}   守方 {Battle.Defense}",new GUIStyle(label){fontSize=13});
-            if(Loop==null){
-            if(GUI.Button(new Rect(619,603,115,25),Battle.IsPaused?"继续战斗":"暂停战斗",shopButton)&&Battle.Phase==BattlePhase.Running)Battle.SetPaused(!Battle.IsPaused);
-            if(GUI.Button(new Rect(742,603,115,25),"重新测试",shopButton))EnterShopTrial(0,TacticalMapId);
-            GUI.enabled=prep&&(Loop==null||Loop.CanShop);
-            if(GUI.Button(new Rect(865,603,115,25),"满席两星",shopButton))EnterShopTrial(1,TacticalMapId);
-            if(GUI.Button(new Rect(988,603,115,25),"满席三星",shopButton))EnterShopTrial(2,TacticalMapId);GUI.enabled=true;
-            if(GUI.Button(new Rect(1111,603,146,25),"退出测试",shopButton)){LeaveShopTrial();GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;return;}GUI.enabled=true;
-            }
-            GUI.enabled=true;DrawShopBench(center);
-            if(shopDrag>=0&&shopMoving)
-            {
-                var q=shop.Quote(shopDrag);bool hit=ShopSalePoint(point);
-                Fill(ShopSellRect,hit?new Color(.42f,.29f,.12f,.98f):new Color(.12f,.17f,.20f,.98f));ShopBorder(ShopSellRect,new Color(.85f,.69f,.36f),2);
-                GUI.Label(ShopSellRect,$"{(hit?"松开出售":"向下拖动出售")}   {q.Message} · {q.FinalStar}星   +{q.Value} 源石",center);
-            }
-            if(Loop==null&&(Battle.Phase==BattlePhase.Won||Battle.Phase==BattlePhase.Lost))GUI.Label(new Rect(450,450,380,45),Battle.Phase==BattlePhase.Won?"突破成功 · 可重新测试":"作战结束 · 可重新测试",title);
-            if(Time.unscaledTime<shopMessageUntil)
-            {
-                Fill(new Rect(280,510,720,36),new Color(.04f,.12f,.15f,.94f));GUI.Label(new Rect(280,510,720,36),shopMessage,new GUIStyle(center){fontSize=16});
-            }
-            if(Loop==null||ShopPanelVisibility<.01f)DrawShopRouteLabels(label);DrawDefenderInspector(label,shopButton);
-            GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;
         }
         static Color ShopTier(int cost)=>cost==5?new Color(.58f,.43f,.17f):cost==4?new Color(.53f,.28f,.64f):cost==3?new Color(.12f,.34f,.61f):cost==2?new Color(.16f,.44f,.26f):new Color(.48f,.52f,.54f);
         static string[] ShopTags(string id)=>id==OriginalSlugArt.CardId||id=="CARD_M05"?new[]{"感染生物"}:id=="CARD_M02"?new[]{"感染生物","整合运动"}:id=="CARD_M03"?new[]{"感染生物","游击队","整合运动"}:id=="CARD_M08"?new[]{"整合运动","战地拾荒"}:id=="CARD_M17"||id=="CARD_M18"?new[]{"游击队","整合运动","战地拾荒"}:id=="CARD_M19"?new[]{"游击队","整合运动","萨卡兹"}:new[]{"游击队","整合运动"};
