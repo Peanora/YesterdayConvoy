@@ -2,6 +2,9 @@
 
 ## 2026-11-03：目录迁移与显式地图场景
 
+主导者E盘最终验证：已切到codex/project-layout-scenes，Unity实际导入及AUTHORED_SCENES_VALIDATION_PASS通过，无缺失脚本；原.vscode三文件与PackageManagerSettings.asset共四文件SHA256核对不变。清掉BattleShop中残留的隐藏Industrial Map后，organized-windows-final.log再次校验通过，正式Builds/Windows/YesterdayConvoy.exe构建1672419494 bytes、0错误。此轮清理仅移除原本已隐藏的重复场地，不改战斗配置；最终E盘Player结果见后续记录。不要再让人类切到Codex工作目录打开工程。
+E盘标准EXE organized-final-player.log：后期两关9项全True，真实购买/带卡/重置/取景及退出通过；未捕获异常。最终校验允许以后在Assets/Scenes新增更多独立地图，不把当前两图数量永久写死。
+
 范围由用户明确确认：从main dc92829吸收PR52原商店恢复；移动资源并保留GUID，保存两个可编辑场景，退役其他地图/生成器与对应场景测试，更新路径/菜单/构建和目录规范；最终同步到主导者E盘单一日常工程。未升级Unity或包。
 
 - layout-edit-final.xml：339/339 EditMode通过。包括新增检查两个实际场景、500以上已保存地形Renderer、持久材质/Mesh、无缺失脚本；原场景数和八人混编测试按退役范围更新。

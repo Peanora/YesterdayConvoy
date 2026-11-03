@@ -23,6 +23,7 @@ namespace YesterdayConvoy.Editor
             if(!path.StartsWith("Assets/Scenes/",StringComparison.Ordinal))throw new InvalidOperationException("Map scenes belong in Assets/Scenes");
             var scene=EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects,NewSceneMode.Single);EditorSceneManager.SaveScene(scene,path);
         }
+        public static void FinalizePrimary(){Migrate();BaselineTools.BuildWindows();}
         public static void CaptureAndBuild()
         {
             Validate();Directory.CreateDirectory("artifacts");
@@ -57,7 +58,7 @@ namespace YesterdayConvoy.Editor
                     if(filter.sharedMesh!=null&&!AssetDatabase.Contains(filter.sharedMesh))AssetDatabase.CreateAsset(filter.sharedMesh,"Assets/Art/Environment/BattleShop/Mesh-"+(mesh++)+".asset");
                 PrefabUtility.SaveAsPrefabAsset(go,MapFolder+"/BattleShopEnvironment.prefab");
             }
-            var industrial=GameObject.Find("Industrial Map");if(industrial!=null)industrial.SetActive(false);
+            var industrial=scene.GetRootGameObjects().FirstOrDefault(r=>r.name=="Industrial Map");if(industrial!=null)UnityEngine.Object.DestroyImmediate(industrial);
             var bindings=UnityEngine.Object.FindAnyObjectByType<InitialDemo>();bindings.RedGate.gameObject.SetActive(false);bindings.BlueGate.gameObject.SetActive(false);
             foreach(var actor in UnityEngine.Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None))actor.enabled=false;
             var camera=Camera.main;camera.transform.rotation=Quaternion.Euler(60,0,0);camera.transform.position=camera.transform.rotation*new Vector3(0,-1.7f,-35)+new Vector3(0,0,.7f);camera.fieldOfView=24;
@@ -69,7 +70,8 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             var scenes=Directory.GetFiles("Assets","*.unity",SearchOption.AllDirectories);
-            if(scenes.Length!=2)throw new InvalidOperationException("Expected exactly two authored scenes, got "+scenes.Length);
+            if(!File.Exists(InitialDemoTools.ScenePath)||!File.Exists(ShopMapTools.ScenePath))throw new InvalidOperationException("Required authored scene missing");
+            if(scenes.Any(path=>!path.Replace('\\','/').StartsWith("Assets/Scenes/",StringComparison.Ordinal)))throw new InvalidOperationException("Every map scene must be in Assets/Scenes");
             foreach(string path in scenes)
             {
                 var scene=EditorSceneManager.OpenScene(path);
