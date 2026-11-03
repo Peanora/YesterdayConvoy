@@ -26,6 +26,7 @@ namespace YesterdayConvoy
             controller=FindAnyObjectByType<ManualBattleController>();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")>=0)controller.StartBattleShopLoop();
             else controller.StartLateBattleShopLoop();
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-frostSealSmokeTest")>=0)yield return controller.VerifyFrostSeal();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")>=0)yield return controller.VerifyBattleShopLoop();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-lateBattleShopSmokeTest")>=0)yield return controller.VerifyLateBattleShop();
         }

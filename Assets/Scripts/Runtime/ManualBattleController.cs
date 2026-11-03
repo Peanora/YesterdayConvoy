@@ -70,6 +70,7 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
+            gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
@@ -147,7 +148,7 @@ namespace YesterdayConvoy
             if(scene==null || definition==null || !IsRegisteredTest(definition) || definition.Engagement==null || !definition.Card.HasFrameAnimation || scene.Monster==null)
                 throw new InvalidOperationException("Current battle scene/configuration is incomplete.");
             var checkedBattle = CreateBattle();
-            if(checkedBattle.CombatSettings.HasSkill && (definition.Card.SkillFrames?.Count ?? 0)==0)
+            if(checkedBattle.CombatSettings.HasSkill && !HasSkillAnimation(definition.Card,checkedBattle.CombatSettings))
                 throw new InvalidOperationException("A skill-enabled card requires skill animation frames.");
             if(talulahDefinition==null || !talulahDefinition.Card.HasFrameAnimation || !talulahDefinition.Engagement.FireRain || talulahDefinition.Engagement.ExtraDefenders.Count!=2)
                 throw new InvalidOperationException("Talulah trial scene binding/configuration is incomplete.");
@@ -269,9 +270,9 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
+            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
-                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : $"请先选择场上的{definition.Card.DisplayName}";
+                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能或施法动作正在进行" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
@@ -385,7 +386,7 @@ namespace YesterdayConvoy
                     GUI.Label(new Rect(x-70,y-28,140,26),$"屏障×{unit.ArtsBarrierLayers}",smallStyle);
                 }
                 if(unit.IsReviving) GUI.Label(new Rect(x-70,y-28,140,26),$"复起 {Math.Max(0,unit.ReviveAt-Battle.Clock):0.0}s",smallStyle);
-                else if(Battle.CombatSettings.Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
+                else if(Battle.UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed) GUI.Label(new Rect(x-70,y-28,140,26),"第二形态",smallStyle);
                 else if(Battle.Clock<unit.LastHealTime+.2) GUI.Label(new Rect(x-70,y-28,140,26),"生命恢复",smallStyle);
                 if(Battle.CombatSettings.Effects.Mudrock) GUI.Label(new Rect(x-70,y+18,140,26),$"蓄力 {Math.Min(6,unit.OrdinaryAttacksFired)}/6",smallStyle);
                 if(unit.Shackle!=null&&!unit.Shackle.Ended)GUI.Label(new Rect(x-70,y-28,180,26),$"枷锁 {20-(Battle.Clock-unit.Shackle.StartedAt):0.0}s",smallStyle);
@@ -416,7 +417,12 @@ namespace YesterdayConvoy
         {
             var combat=Battle.UnitCombat(unit);
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
-            if(combat.FireRain && Battle.IsSkillActionPlaying(unit))
+            if(combat.FrostSeal && Battle.IsSkillActionPlaying(unit))
+            {
+                float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FrostSealStartedAt)/combat.SkillInterval));
+                Fill(new Rect(x-29,y+2,58*remaining,3),new Color(.65f,.9f,1));
+            }
+            else if(combat.FireRain && Battle.IsSkillActionPlaying(unit))
             {
                 float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FireRainStartedAt)/combat.SkillInterval));
                 Fill(new Rect(x-29,y+2,58*remaining,3),new Color(1,.38f,.12f));

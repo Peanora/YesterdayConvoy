@@ -127,6 +127,7 @@ namespace YesterdayConvoy
         public double EmberRevealedUntil {get;internal set;}=double.NegativeInfinity;
         public double ReviveAt { get; internal set; } = double.NegativeInfinity;
         public bool IsReviving { get; internal set; }
+        public double FrostSealStartedAt { get; internal set; } = double.NegativeInfinity;
         public double IceRingStartedAt { get; internal set; } = double.NegativeInfinity;
         internal double NextIceRingAt;
         public double LastAttackTime { get; internal set; } = double.NegativeInfinity;

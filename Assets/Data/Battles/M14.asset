@@ -25,16 +25,17 @@ MonoBehaviour:
   defenderInterval: 1
   blockCount: 0
   blockRadius: 0.65
-  initialSP: 0
-  requiredSP: 0
-  spPerSecond: 0
+  initialSP: 20
+  requiredSP: 32
+  spPerSecond: 1
   skillAmmo: 0
-  skillAttack: 0
-  skillInterval: 0
-  skillRange: 0
+  skillAttack: 72
+  skillInterval: 3
+  skillRange: 2.5
   projectileTime: 0.25
+  frostSeal: 1
   fireRain: 0
-  hasSkill: 0
+  hasSkill: 1
   melee: 0
   attackDuration: 1.6
   attackWindup: 0.8

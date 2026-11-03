@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-11-03：霜星手动冰封与正常商店混编
+
+用户批准霜星看稿后，在具体范围确认中要求同时纳入高难度商店。继续codex/project-layout-scenes / PR53；保留既有未跟踪.vscode与ProjectSettings/PackageManagerSettings.asset，不提交覆盖。
+
+- `frost-final-edit.xml`：完整345/345 EditMode、0失败/跳过。新增4项覆盖1.1秒延迟/范围法伤/只冻最近两名/重复请求、暂停与3秒移动锁及SP、目标死亡后完整施法、混编只复起霜星且回自己的上限、施法者倒下取消未命中事件、互斥技能配置。既有普通攻击/冰环/冻结/复起与经济逻辑回归保持。
+- `frost-final-play.xml`：相关14/14 GPU PlayMode、0失败/跳过，含FrostSealSceneTests、原霜星自然冰环/复起、TestSettlementSceneTests、FireRainPresentationTests、BattleShopLoopSceneTests、LateBattleShopSceneTests、MonsterSelectionTests。实际M14菜单入口、20点初始SP、12.05秒自然就绪、原Skill_1帧连续前进、3秒实际位置锁、真实目标冻结、黑冰/风雪Sprite、暂停停帧、动作结束但尾部仍显示、到期及重开无残留均通过。回归旧火雨/基础闭环与正常后期通关。
+- 混编GPU场景用真实角色列表搜索一个正常随机种子，没有向游戏注入霜星商品：第一关用明确开发测试判胜，首次进店仍保底塔露拉，其他格正常刷出霜星；扣5金币、九张库存、备战M14/idle、第二关真实拖动、按自己的技力施放成功。基础模式不注册霜星，重开移除本次购买。
+- 媒体检查：24PNG、28,411,363字节、570帧/60fps；RGBA、Alpha含0/非零、最大2048、逐页SHA核对，复用烟雾与原Kenney粒子字节相同。源/权利见art/FROSTNOVA-SKILL-IMPORT.json，不把用户上传授权记为原作开放许可。
+- `frost-final-build.log`：BASELINE_BUILD_PASS，Windows x64 Development，1,773,111,245 bytes、0 errors，保持两个显式场景。标准Builds/Windows/YesterdayConvoy.exe已更新。
+- `frost-delivery-frost.log` / `frost-delivery-frost-exit.txt`：独立Player，正常随机种子56、实际购买/拖动/手动施法/暂停/动作锁/尾部/重开汇总True，进程真实退出0。同一最终EXE的frost-delivery-late.log原高难度两关闭环9项全True，frost-delivery-late-exit.txt确认退出0。此霜星证据经开发测试结算进入商店，不冒称人工从第一关自然通关；本轮自动Player没有留存截图，实际图像由GPU相机另验。
+
+实际图像检查：frost-visual-final.xml再次2/2通过（重复覆盖不累加14项），相机RenderTexture读取1280×720实际GPU画面，见[黑冰实机图](art/frostnova-actual.png)。为避免黑冰遮住目标脸部，保持原形状等比例收敛至0.82；没有重画目标或霜星。最终frost-final-build.log再次构建1,773,111,245 bytes/0错误。仓库4638跟踪文件检查通过。
+
+首轮Editor校验访问internal资源类造成编译错误，改为现有配置/文件依据；首轮EditMode 344/345中混编用例未配置独立卡槽导致部署fixture为空，修正为实际ConfigureCardLoadout后完整345通过。失败轮没有记作通过。相关GPU首轮7/7，扩展后最终14/14。实际相机图像复验单项结果见下，不把重复用例累加为额外功能覆盖。
+
+关键连接：只读EngagementDefinition快照→每实体SP/施法事件→FrostSeal延迟伤害与FrozenUntil；DemoSpriteVisual读原Skill_1，FrostSealView/Art读事件和模拟时钟显示，不结算伤害。冷色屏幕微移不改变相机/输入，混编不借用首卡技能。未进行全余下PlayMode、长时人工平衡、第二机/全新克隆或性能优化；不制作ZIP/Releases。
+
 ## 2026-11-03：进店免费刷新保证5费塔露拉
 
 明确授权范围及“自动进店第一排”来自用户两项确认，继续codex/project-layout-scenes / PR53；原.vscode与PackageManagerSettings.asset未改/未提交。

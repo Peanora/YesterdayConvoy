@@ -12,7 +12,12 @@ namespace YesterdayConvoy
         {
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             EnterShopTrial(0,StrongholdChallengeLayout.Id);
-            if(lateGame)shopDefinitions[talulahDefinition.Card.CardId]=talulahDefinition;
+            if(lateGame)
+            {
+                shopDefinitions[talulahDefinition.Card.CardId]=talulahDefinition;
+                var frost=monsterTests.Single(o=>o.Id=="CARD_M14"&&o.Playable).Definition;
+                shopDefinitions[frost.Card.CardId]=frost;
+            }
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             var low=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();
             if(low.Length==0)throw new InvalidOperationException("Low-cost starter required");

@@ -196,10 +196,10 @@ namespace YesterdayConvoy
             // First defeat interrupts this life, including projectiles already in flight.
             foreach(var shot in combatShots)
                 if(!shot.Resolved && (shot.SourceId==unit.EntityId || shot.TargetId==unit.EntityId)) shot.Resolved=true;
-            if(CombatSettings.Effects.FrostNova && !unit.ReviveUsed)
+            if(UnitCombat(unit).Effects.FrostNova && !unit.ReviveUsed)
             {
                 unit.ReviveUsed=true;unit.IsReviving=true;unit.ReviveAt=Clock+5;
-                unit.IceRingStartedAt=double.NegativeInfinity;return;
+                unit.IceRingStartedAt=unit.FrostSealStartedAt=double.NegativeInfinity;return;
             }
             unit.Resolution=UnitResolution.Dead;ScheduleDeathEffect(unit);
         }
@@ -215,7 +215,7 @@ namespace YesterdayConvoy
             foreach(var defender in defenders)
             {
                 if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>2) continue;
-                ring.TargetsHit++;DamageDefender(defender,CombatSettings.UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts);
+                ring.TargetsHit++;DamageDefender(defender,UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts);
                 if(!defender.Alive) continue;
                 if(defender.FrostSlowUntil<=Clock) defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)*2;
                 defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+8);

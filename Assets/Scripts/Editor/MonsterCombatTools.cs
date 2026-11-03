@@ -126,6 +126,12 @@ namespace YesterdayConvoy.Editor
             if(task=="M05" || task=="M09") Set(combat,"defenderArmor",18f);
             foreach(string field in new[]{"initialSP","requiredSP","spPerSecond","skillAttack","skillInterval","skillRange"}) Set(combat,field,0f);
             Set(combat,"skillAmmo",0);Set(combat,"projectileTime",melee ? .02f : .25f);
+            Set(combat,"frostSeal",task=="M14");
+            if(task=="M14")
+            {
+                Set(combat,"frostNova",true);Set(combat,"hasSkill",true);Set(combat,"initialSP",20f);Set(combat,"requiredSP",32f);
+                Set(combat,"spPerSecond",1f);Set(combat,"skillAttack",72f);Set(combat,"skillInterval",3f);Set(combat,"skillRange",2.5f);
+            }
             var level=Create<ManualBattleDefinition>(levelPath);
             Set(level,"levelId",task+"_TEST");Set(level,"card",card);Set(level,"engagement",combat);
             Set(level,"initialDP",12);Set(level,"initialDefense",1);Set(level,"deploymentCost",cost);
@@ -138,7 +144,7 @@ namespace YesterdayConvoy.Editor
             if(level==null || !level.Card.HasFrameAnimation) throw new InvalidOperationException(task+" configuration/local art missing.");
             _=level.Snapshot();
             var settings=level.Engagement.Snapshot();
-            if(settings.HasSkill) throw new InvalidOperationException("Unexpected active skill.");
+            if(settings.HasSkill && !(task=="M14" && settings.FrostSeal && File.Exists("Assets/StreamingAssets/MonsterCombatArt/M14/ExtraClips/manifest.json"))) throw new InvalidOperationException("Unexpected active skill.");
             UnitConfigurationTools.ValidateProject();Debug.Log("MONSTER_CONFIGURATION_PASS: "+task);
         }
         private static T Create<T>(string path) where T:ScriptableObject

@@ -252,6 +252,11 @@ namespace YesterdayConvoy
                     FrameState="Heal";sprite.sprite=local["attack"].At(manualBattle.Clock-deployedUnit.HealingStartedAt,false,out int healIndex);
                     FrameIndex=healIndex;return;
                 }
+                if(manualBattle.UnitCombat(deployedUnit).FrostSeal && manualBattle.IsSkillActionPlaying(deployedUnit))
+                {
+                    FrameState="FrostSeal";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.FrostSealStartedAt,false,out int sealIndex);
+                    FrameIndex=sealIndex;return;
+                }
                 if(manualBattle.UnitCombat(deployedUnit).Effects.FrostNova && manualBattle.Clock<deployedUnit.IceRingStartedAt+3 && local.HasClip("extra_skill_1"))
                 {
                     FrameState="IceRing";

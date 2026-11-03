@@ -140,10 +140,10 @@ namespace YesterdayConvoy
         void Activate(FacilityState f){f.Activations++;f.LastActivation=Clock;}
         void StepSealing()
         {
-            if(!CombatSettings.Effects.FrostNova||sealCandidates.Length==0)return;
+            if(sealCandidates.Length==0)return;
             foreach(var u in units)
             {
-                if(!u.Active||u.IsReviving)continue;
+                if(!u.Active||u.IsReviving||!UnitCombat(u).Effects.FrostNova||UnitCombat(u).FrostSeal)continue;
                 if(!nextSeal.TryGetValue(u.EntityId,out double due))due=u.SpawnTime+30;
                 if(Clock+1e-6<due)continue;nextSeal[u.EntityId]=Clock+30;
                 var options=sealCandidates.Where(p=>!IsTileSealed(p)&&GroundDistance(p,u.Motion.Position)<=2).ToList();

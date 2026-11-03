@@ -41,7 +41,7 @@ namespace YesterdayConvoy
                 try
                 {
                     _=data.Snapshot(); var combat=data.Engagement.Snapshot();
-                    if(!data.Card.HasFrameAnimation || combat.CanAttack && LocalMonsterArt.For(data.Card.CardId)!=null && !LocalMonsterArt.For(data.Card.CardId).HasAttack || combat.HasSkill && (data.Card.SkillFrames?.Count ?? 0)==0)
+                    if(!data.Card.HasFrameAnimation || combat.CanAttack && LocalMonsterArt.For(data.Card.CardId)!=null && !LocalMonsterArt.For(data.Card.CardId).HasAttack || combat.HasSkill && !HasSkillAnimation(data.Card,combat))
                         throw new InvalidOperationException("Missing required battle animation frames.");
                     if(!ids.Add(data.Card.CardId)) throw new InvalidOperationException("Duplicate test card ID.");
                     monsterTests.Add(new MonsterTestOption(data.Card.DisplayName,data));
@@ -58,6 +58,8 @@ namespace YesterdayConvoy
             foreach(var option in monsterTests) names.Add(option.Name);
             foreach(string name in candidates) if(names.Add(name)) monsterTests.Add(new MonsterTestOption(name));
         }
+        private static bool HasSkillAnimation(CardDefinition card,EngagementSettings combat) =>
+            (card.SkillFrames?.Count??0)>0 || combat.FrostSeal && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
         private bool IsRegisteredTest(ManualBattleDefinition data)
         {
             if(defenderTrial!=null && data==defenderTrial.battle) return true;
@@ -115,7 +117,7 @@ namespace YesterdayConvoy
                 float frozenMultiplier=option.Definition.Engagement.Snapshot().Effects.FrozenAttackMultiplier;
                 if(frozenMultiplier>1) detail=$"冻结目标攻击×{frozenMultiplier:0.##}\n物理伤害 / 命中判定";
                 var effects=option.Definition.Engagement.Snapshot().Effects;
-                if(effects.FrostNova) detail="范围冰环 / 降低攻速\n首次倒下复起 / 攻击强化";
+                if(effects.FrostNova) detail="手动冰封 / 范围法伤与冻结\n自动冰环 / 首次倒下复起";
                 if(effects.RegenerationFraction>0) detail=$"自然回血 {effects.RegenerationFraction*100:0.##}% / 秒\n按各实体生命上限恢复";
                 if(effects.LifeSteal>0) detail=$"最多攻击{effects.AttackTargets}个目标\n按实际伤害{effects.LifeSteal*100:0}%恢复生命";
                 if(effects.Healer) detail="最多治疗3名受伤友军\n自动治疗 / 不攻击守军";

@@ -17,6 +17,7 @@ namespace YesterdayConvoy
         [SerializeField] private int skillAmmo = 6;
         [SerializeField] private float skillAttack = 105, skillInterval = 3.2f, skillRange = 3.8f, projectileTime = 0.22f;
         [SerializeField] private bool fireRain;
+        [SerializeField] private bool frostSeal;
         [SerializeField] private bool hasSkill = true;
         [SerializeField] private bool melee;
         [Tooltip("Support/non-attacking art sample. Does not disable defender blocking or damage.")]
@@ -50,6 +51,6 @@ namespace YesterdayConvoy
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
             new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,
                 coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer,artsBarrier,unitResistance,mudrock,phalanx,flamechaser,flamerazer,mandragora,nervousCreeper,harvester,firstSpeaker,shackler,tacticalCommander,orderRunner,orderSniper,tauntLevel,patriot),
-            canAttack: !noOrdinaryAttack,defenderDamageType:defenderDamageType,revealsInvisible:revealsInvisible);
+            canAttack: !noOrdinaryAttack,defenderDamageType:defenderDamageType,revealsInvisible:revealsInvisible,frostSeal:frostSeal);
     }
 }

@@ -1,0 +1,329 @@
+{
+  "version": 1,
+  "approved": "2026-11-03 user approved frostnova-skill-preview-v1.mp4 and requested integration; separately requested late shop inclusion",
+  "frameCount": 570,
+  "fps": 60,
+  "files": [
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/ice-00.png",
+      "bytes": 661742,
+      "sha256": "55d42ff61856eb75287e516c2ce709e72936cab78c541b3affb6e364914ea709",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        254
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/ice-01.png",
+      "bytes": 474089,
+      "sha256": "d163340251affedb4f8ce628ec6e3cbeb0e75dfc64b267670234a23693d98b87",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        254
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/ice-02.png",
+      "bytes": 474089,
+      "sha256": "d163340251affedb4f8ce628ec6e3cbeb0e75dfc64b267670234a23693d98b87",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        254
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/ice-03.png",
+      "bytes": 1298232,
+      "sha256": "90d6103fdd78710ca523b51655c8595e976905cbc9768a45242ee1394bebe6c8",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-00.png",
+      "bytes": 617096,
+      "sha256": "73b9e0fd8d125706f28df9f73b1f002c3286e499794acb707e83750e2fb4c590",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        247
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-01.png",
+      "bytes": 1297951,
+      "sha256": "2bcc10821daf36462813d1e796f4debbdc966fa836d03451e1e6917a2e59bf6b",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        180
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-02.png",
+      "bytes": 1746445,
+      "sha256": "e6f003d319563290c26ac58ffd6d206417ed87170a9fcab03eae73e52b6e57c9",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        216
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-03.png",
+      "bytes": 1533287,
+      "sha256": "6003dfe7957ecc4c30a1809a6aed16357bcc5a8cff8fbfb8c1635c88dec8ff76",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        211
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-04.png",
+      "bytes": 1492626,
+      "sha256": "35f4a72ec63584cde3f9c1966bde600a149526a4c876b68488f59c528d7aba7d",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        212
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-05.png",
+      "bytes": 1459503,
+      "sha256": "453a17628b9be434dc1b430990ebadc316a85078a1fb08d661e373c655921c0a",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        212
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-06.png",
+      "bytes": 1467621,
+      "sha256": "96425002b21a4c724ae50a090147f55f33f5dc8599b693c7d59ceee4229d4d43",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        198
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-07.png",
+      "bytes": 1453536,
+      "sha256": "25c4d06d78d978ed827bcf253a1898366283464231e49575d86e35a9992f08ed",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        186
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-08.png",
+      "bytes": 1449746,
+      "sha256": "07c7eecd9a9aa34fad513239153aecb44f1d1d0b3b0e48841513fd858fc3502c",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        197
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-09.png",
+      "bytes": 1402159,
+      "sha256": "e35ae4929449aa8390875ac98cb54feb526b4f1ab7c18208affd2c80a0fc3b3e",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        131
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-10.png",
+      "bytes": 1423929,
+      "sha256": "d8103383a8854c9dd7a9bdb38f6c6fb2f81ca967b7f6a7f544613c723dc0476a",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        108
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-11.png",
+      "bytes": 1482444,
+      "sha256": "d49e4c5bc477a8a9aab3ad975017575373b9e99ccacecc1de22f6368421d85e2",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        110
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-12.png",
+      "bytes": 1468104,
+      "sha256": "9d61011fcb6a605efc4a58fd4b76cddab232d7f9ba61cdc36f5058524f7a059d",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        106
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-13.png",
+      "bytes": 1392242,
+      "sha256": "9a49292c3b2187845ee2b44afc0b8c5f12d52859cb5b3d1424572764ad529cbb",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        106
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-14.png",
+      "bytes": 1290106,
+      "sha256": "056f4993331bd661282220f62b6caa87f82ca3420bca3dfcad8b14793934a3fa",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        105
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-15.png",
+      "bytes": 878801,
+      "sha256": "447bce8c1db127a341a2246d236cd1ddf6a24731b35371215e2484b7220d8a9a",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        103
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-16.png",
+      "bytes": 714246,
+      "sha256": "1214b5d55cf7a05bb9e1c8cd187a21f0841a73abcc4d3fba1d2d233b29e68a6b",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        101
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-17.png",
+      "bytes": 1256281,
+      "sha256": "6fc5ca0943ec44daaea343f0aaddfb7cb902fb67856e0cb922de78096fe01a43",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        93
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-18.png",
+      "bytes": 1215742,
+      "sha256": "92e0a147165cf8c017d1fa11dcf85ff3660d8c82910f88eff060ed9e99e5e4ed",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        63
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/FrostNova/Resources/FrostSeal/storm-19.png",
+      "bytes": 461346,
+      "sha256": "dede761f00584b4cf5029a765c990875c9c43109bc4ee3e83e1a7d440a06d53e",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        20
+      ]
+    }
+  ],
+  "source": {
+    "character": "Existing Arknights M14 enemy_1505_frstar Skill_1; original rights holders, not CC0; open redistribution license not verified",
+    "blackIce": "OpenAI image_gen generated for approved 2026-11-03 preview; original generated_image exec-85f39dc7-0694-438c-9d8b-023e19b5e062.png",
+    "snowMistFrost": "Approved preview Canvas frost/snow/ice functions. Smoke bytes match Assets/Art/VFX/Common/particle-smoke-01.png; Kenney Particle Pack CC0 per existing project license. https://kenney.nl/assets/particle-pack",
+    "sourceRecord": "External preview ASSET_MANIFEST.json; runtime 60fps transparent flipbooks, no character redraw",
+    "blackIceSHA256": "8ae709ca3e44e749e2d546469bf537fa3e2b09b2d69f8858305c83eafd9a0829",
+    "generationTerms": "https://openai.com/policies/terms-of-use/ ; AI-assisted supplement, not CC0 and not permission for underlying original characters"
+  },
+  "verification": "RGBA/extents/page sizes/hashes checked; Unity results recorded in docs/QA.md, not a blanket copyright or gameplay claim"
+}
