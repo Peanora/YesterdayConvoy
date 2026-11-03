@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-03：新版商店与底部卡栏费用底色
+
+定位：git blame确认旧ShopMapTrial中ShopTier/费用渐变来自shigaharuki17的7a4e700；新版BattleShopInterface的DrawLoopShop/DrawLoopRoster只填LoopPanel，缺少该调用。仅修改此绘制文件，新增私有共用底色绘制，原ShopTier和费用/星级/DP数据不变；不改公共接口、素材、场景、Prefab、包或设置。
+
+- cost-background-play.xml：相关5/5 GPU场景通过，无失败/跳过，原基础/后期闭环、招募带入第二关和测试胜负流程保持。未为此低影响绘制修复添加镜像测试或重复全量逻辑/PlayMode。
+- cost-background-build.log：Windows构建1677288333 bytes、errors=0，报告总量不是EXE大小。
+- 最终独立Player通过Windows界面工具实际查看：准备阶段卡栏1费灰、2费绿、3费蓝、4费紫；测试判胜后进入商店，2费商品绿、3费商品蓝且同费同色，图片原配色和名称/价格可读，GUI颜色未泄漏。5费金沿用原映射，本次随机商品中未出现，未作实机5费抽验。
+
+未做第二台电脑或全量回归；没有新增费用规则、5费商品或新美术方向。资料见BATTLE_SHOP_LOOP，源码与新本地构建对应提交见BUILD-INFO；不生成ZIP/Releases或自动合并main。
+
 ## 2026-11-03：测试结算开关
 
 改动为BattleShopInterface的开关/面板/测试标记、BattleShopLoop私有控制、ManualBattle程序集内部终态入口、ShopMapTrial面板点穿保护，新增TestSettlementSceneTests及meta。Debug.isDebugBuild保护，普通部署/伤害/胜负判断不调用测试入口。

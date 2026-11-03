@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             for(int i=0;i<shopLineup.Count;i++)
             {
                 string id=shopLineup[i];var state=Battle.FindCard(id);if(state==null)continue;
-                var card=shopDefinitions[id].Card;Rect r=LoopRosterRect(i);Fill(r,LoopPanel);
+                var card=shopDefinitions[id].Card;Rect r=LoopRosterRect(i);DrawLoopCostBackground(r,card.RecruitCost);
                 DrawTestPortrait(new Rect(r.x+2,r.y+2,r.width-4,96),OriginalTalulahArt.CardPortrait(card));
                 Fill(new Rect(r.x,r.y,33,30),LoopInk);GUI.Label(new Rect(r.x+6,r.y-1,32,31),state.Settings.DeploymentCost.ToString(),LoopText(23));
                 Fill(new Rect(r.x,r.yMax-26,r.width,26),LoopInk);GUI.Label(new Rect(r.x+6,r.yMax-26,r.width-12,26),card.DisplayName,LoopText(card.DisplayName.Length>6?11:12));
@@ -106,12 +106,23 @@ namespace YesterdayConvoy
                     Fill(new Rect(r.x,r.y,r.width,98),new Color(0,0,0,.66f));
                     GUI.Label(new Rect(r.x,r.y+36,r.width,30),cd>0?$"{cd:0.0}s":state.RemainingUses==0?"次数用尽":"费用不足",LoopText(12,TextAnchor.MiddleCenter));
                 }
-                Fill(new Rect(r.x,r.yMax-2,r.width,2),new Color(.80f,.84f,.86f));
+                Fill(new Rect(r.x,r.yMax-2,r.width,2),ShopTier(card.RecruitCost));
             }
             Fill(new Rect(1108,584,1,106),new Color(.33f,.37f,.40f));
             GUI.Label(new Rect(1130,575,130,29),"战斗费用",LoopText(12,TextAnchor.MiddleLeft,LoopMuted));
             GUI.Label(new Rect(1128,602,140,62),Battle.DP.ToString(),LoopText(48));
             GUI.Label(new Rect(1130,668,130,25),$"编队 {shopLineup.Count} / {shop.Level}",LoopText(12,TextAnchor.MiddleLeft,LoopMuted));
+        }
+        void DrawLoopCostBackground(Rect rect,int recruitCost)
+        {
+            // Reuse the original shop's five-cost palette; deployment DP and merge stars stay separate.
+            Color tier=ShopTier(recruitCost);Fill(rect,Color.Lerp(LoopPanel,tier,.68f));
+            if(shopFade!=null)
+            {
+                Color previous=GUI.color;GUI.color=previous*tier;
+                GUI.DrawTexture(new Rect(rect.x+2,rect.y+2,rect.width-4,rect.height-4),shopFade);GUI.color=previous;
+            }
+            ShopBorder(rect,Color.Lerp(tier,Color.white,.15f),2);
         }
         void DrawLoopShop()
         {
@@ -129,6 +140,7 @@ namespace YesterdayConvoy
                 Rect r=new Rect(24+i*249,136,232,335);Fill(r,LoopPanel);string id=shop.Offers[i];
                 if(id==null){GUI.Label(r,"已购 / 暂无库存",LoopText(14,TextAnchor.MiddleCenter,LoopMuted));continue;}
                 var role=shop.Definition(id);var preview=shop.PreviewPurchase(i);
+                DrawLoopCostBackground(r,role.Cost);
                 DrawShopRankPortrait(new Rect(r.x+6,r.y+4,r.width-12,232),OriginalTalulahArt.CardPortrait(shopDefinitions[id].Card),preview.Success?preview.FinalStar:1);
                 GUI.Label(new Rect(r.x+12,r.y+235,r.width-24,29),role.Name,LoopText(16));
                 GUI.Label(new Rect(r.x+12,r.y+266,r.width-24,22),string.Join(" / ",ShopTags(id)),LoopText(11,TextAnchor.MiddleLeft,LoopMuted));
