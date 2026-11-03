@@ -269,7 +269,7 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? (Battle.CombatSettings.FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
+            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
                 result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能正在生效，剩余弹药尚未用完" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
@@ -414,15 +414,16 @@ namespace YesterdayConvoy
 
         private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
         {
+            var combat=Battle.UnitCombat(unit);
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
-            if(Battle.CombatSettings.FireRain && Battle.IsSkillActionPlaying(unit))
+            if(combat.FireRain && Battle.IsSkillActionPlaying(unit))
             {
-                float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FireRainStartedAt)/Battle.CombatSettings.SkillInterval));
+                float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FireRainStartedAt)/combat.SkillInterval));
                 Fill(new Rect(x-29,y+2,58*remaining,3),new Color(1,.38f,.12f));
             }
             else if(unit.SkillAmmo>0)
             {
-                int capacity=Battle.CombatSettings.SkillAmmo;
+                int capacity=combat.SkillAmmo;
                 float width=(58-2*(capacity-1))/(float)capacity;
                 for(int i=0;i<capacity;i++)
                     Fill(new Rect(x-29+i*(width+2),y+2,width,3),i<unit.SkillAmmo ?
@@ -430,7 +431,7 @@ namespace YesterdayConvoy
             }
             else
             {
-                float charge=Mathf.Clamp01(unit.SkillSP/Battle.CombatSettings.RequiredSP);
+                float charge=Mathf.Clamp01(unit.SkillSP/combat.RequiredSP);
                 Fill(new Rect(x-29,y+2,58*charge,3),new Color(.20f,.61f,1));
             }
         }

@@ -48,5 +48,22 @@ namespace YesterdayConvoy.Tests
             var m=Model();m.Preset(new[]{Piece("R0")},new[]{"R1","R2"});var before=m.Offers.ToArray();Assert.That(m.Upgrade().Success,Is.True);Assert.That(m.Level,Is.EqualTo(6));Assert.That(m.XP,Is.EqualTo(2));CollectionAssert.AreEqual(before,m.Offers);
             m.Locked=true;int gold=m.Gold;Assert.That(m.Refresh().Success,Is.False);Assert.That(m.Gold,Is.EqualTo(gold));CollectionAssert.AreEqual(before,m.Offers);m.Validate();
         }
+        static System.Reflection.PropertyInfo Guarantee=>typeof(ShopTrialModel).GetProperty("GuaranteedRefreshOffer",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+        [Test]public void GuaranteedFirstOfferHonorsLockAndMoneyThenConsumesExactlyOneStock()
+        {
+            var m=new ShopTrialModel(new[]{new ShopTrialModel.Role{Id="T",Name="Talulah",Cost=5},new ShopTrialModel.Role{Id="L",Name="Low",Cost=1}},73);
+            m.Preset(new ShopTrialModel.Piece[0],new[]{"L"},level:7,xp:0,gold:1);Guarantee.SetValue(m,"T");
+            m.Locked=true;Assert.That(m.Refresh(true).Success,Is.False);Assert.That(Guarantee.GetValue(m),Is.EqualTo("T"));
+            m.Locked=false;Assert.That(m.Refresh().Success,Is.False);Assert.That(m.Gold,Is.EqualTo(1));Assert.That(m.Offers[0],Is.EqualTo("L"));
+            Assert.That(m.Refresh(true).Success,Is.True);Assert.That(m.Offers[0],Is.EqualTo("T"));Assert.That(m.Offers.Count(x=>x!=null),Is.EqualTo(5));
+            Assert.That(m.Gold,Is.EqualTo(1));Assert.That(m.Available("T")+m.Offers.Count(x=>x=="T"),Is.EqualTo(9));Assert.That(Guarantee.GetValue(m),Is.Null);m.Validate();
+        }
+        [Test]public void ExhaustedGuaranteedCardCannotChargeOrReplaceOffersAndNewRunClearsGuarantee()
+        {
+            var m=new ShopTrialModel(new[]{new ShopTrialModel.Role{Id="T",Name="Talulah",Cost=5},new ShopTrialModel.Role{Id="L",Name="Low",Cost=1}},73);
+            m.Preset(new[]{Piece("T",3)},new[]{"L"},level:7,xp:0,gold:20);Guarantee.SetValue(m,"T");
+            Assert.That(m.Refresh().Success,Is.False);Assert.That(m.Gold,Is.EqualTo(20));Assert.That(m.Offers[0],Is.EqualTo("L"));Assert.That(m.Available("T"),Is.Zero);m.Validate();
+            m.Preset(new ShopTrialModel.Piece[0],new string[0]);Assert.That(Guarantee.GetValue(m),Is.Null);
+        }
     }
 }

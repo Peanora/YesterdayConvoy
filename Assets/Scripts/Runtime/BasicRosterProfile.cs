@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace YesterdayConvoy
 {
-    // Restricted companion profiles for the independent guerrilla trial, not a shop/formation system.
+    // Authored companion profiles, plus the explicitly approved Talulah fire-rain shop trial.
     public sealed class BasicRosterProfile
     {
         public ManualBattleSettings Unit {get;}
@@ -12,7 +12,8 @@ namespace YesterdayConvoy
         public BasicRosterProfile(ManualBattleSettings unit,EngagementSettings combat)
         {
             string[] allowed={"CARD_M02","CARD_M03","CARD_M05","CARD_M08","CARD_ORIGINIUM_SLUG","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
-            if(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack)
+            bool talulah=unit.CardId=="CARD_TALULAH_TRIAL"&&unit.UnitId=="TALULAH"&&combat.HasSkill&&combat.FireRain&&combat.CanAttack;
+            if(!talulah&&(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack))
                 throw new ArgumentException("Only authored basic guerrilla trial roles are supported.");
             var e=combat.Effects;
             if(e.Patriot||e.FrostNova||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer||e.Flamechaser||e.Flamerazer||e.Mandragora||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||

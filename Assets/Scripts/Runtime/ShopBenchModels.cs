@@ -60,8 +60,9 @@ namespace YesterdayConvoy
             var go=new GameObject(name,typeof(SpriteRenderer));go.layer=31;go.transform.SetParent(shopModelStage.transform,false);
             return go.GetComponent<SpriteRenderer>();
         }
-        static Sprite ShopIdleFrame(string id,double time)
+        Sprite ShopIdleFrame(string id,double time)
         {
+            if(id==talulahDefinition.Card.CardId)return OriginalTalulahArt.For(talulahDefinition.Card)?["idle"].At(time,true,out _)??talulahDefinition.Card.BattleSprite;
             var local=LocalMonsterArt.For(id);if(local!=null)return local["idle"].At(time,true,out _);
             var slug=OriginalSlugArt.For(id);return slug==null?null:slug["idle"].At(time,true,out _);
         }

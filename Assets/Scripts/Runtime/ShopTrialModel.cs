@@ -31,6 +31,7 @@ namespace YesterdayConvoy
         readonly string[] offers=new string[5];
         readonly Random random;
         int sequence;
+        internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;
         public int Level {get;private set;}=5;
         public int XP {get;private set;}=18;
@@ -60,7 +61,7 @@ namespace YesterdayConvoy
             bench.Clear();sequence=0;foreach(var p in b){p.Instance=++sequence;bench.Add(p);}
             Array.Clear(offers,0,5);Array.Copy(o,offers,o.Length);
             foreach(var id in roles.Keys)pool[id]=9-reserved[id];
-            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;rewards.Clear();WinStreak=0;Validate();
+            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;GuaranteedRefreshOffer=null;rewards.Clear();WinStreak=0;Validate();
         }
         public Result PreviewPurchase(int index)=>PlanPurchase(index,out _);
         Result PlanPurchase(int index,out List<Piece> planned)
@@ -107,10 +108,13 @@ namespace YesterdayConvoy
             if(Locked)return Fail("已锁定，请先解锁");if(!free&&Gold<2)return Fail("刷新需要2源石");
             var next=new Dictionary<string,int>(pool);foreach(var id in offers)if(id!=null)next[id]++;
             var row=Odds[Level-1];
+            string guaranteed=GuaranteedRefreshOffer;
+            if(guaranteed!=null&&(!roles.TryGetValue(guaranteed,out var guaranteedRole)||next[guaranteed]<=0||row[guaranteedRole.Cost-1]<=0))return Fail("保底卡当前无库存或未解锁，不扣费");
             if(!roles.Values.Any(r=>row[r.Cost-1]>0&&next[r.Id]>0))return Fail("当前等级库存已空，不扣费");
             var drawn=new string[5];int count=0;
             for(int slot=0;slot<5;slot++)
             {
+                if(slot==0&&guaranteed!=null){drawn[slot]=guaranteed;next[guaranteed]--;count++;continue;}
                 var available=roles.Values.Where(r=>row[r.Cost-1]>0&&next[r.Id]>0).ToArray();if(available.Length==0)break;
                 var costs=available.Select(r=>r.Cost).Distinct().OrderBy(c=>c).ToArray();double n=random.NextDouble()*costs.Sum(c=>row[c-1]);int cost=costs.Last();
                 foreach(int c in costs){n-=row[c-1];if(n<0){cost=c;break;}}
@@ -118,7 +122,7 @@ namespace YesterdayConvoy
                 foreach(var r in candidates){k-=next[r.Id];if(k<0){chosen=r;break;}}
                 drawn[slot]=chosen.Id;next[chosen.Id]--;count++;
             }
-            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(!free)Gold-=2;Validate();
+            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(!free)Gold-=2;GuaranteedRefreshOffer=null;Validate();
             return new Result{Success=true,Message=count<5?$"库存不足，仅刷新{count}张":"刷新完成"};
         }
         public sealed class RoundReward

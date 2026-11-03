@@ -65,5 +65,31 @@ namespace YesterdayConvoy.Tests
             }
             finally{Time.timeScale=previous;}
         }
+        [UnityTest]public IEnumerator LateShopOpensWithTalulahAndPurchaseDeploysHerExistingFireRainInStageTwo()
+        {
+            float previous=Time.timeScale;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("BattleShop");yield return null;yield return null;Time.timeScale=0;
+                var c=Object.FindAnyObjectByType<ManualBattleController>();c.StartLateBattleShopLoop(73);
+                Switch.SetValue(c,true);Assert.That(Finish(c,true),Is.True);int gold=c.Shop.Gold;
+                Assert.That(c.OpenLoopShop(),Is.True);yield return new WaitForSecondsRealtime(.35f);
+                const string id="CARD_TALULAH_TRIAL";Assert.That(c.Shop.Offers[0],Is.EqualTo(id));Assert.That(c.Shop.Gold,Is.EqualTo(gold));
+                Assert.That(c.Shop.Definition(id).Cost,Is.EqualTo(5));var bought=c.PurchaseShopCard(0);Assert.That(bought.Success,Is.True);Assert.That(c.Shop.Gold,Is.EqualTo(gold-5));
+                yield return new WaitForSecondsRealtime(.85f);Assert.That(c.ShopBenchModel(bought.Instance).sprite.name,Does.StartWith("TalulahOriginal/idle/"));
+                c.SetShopVisible(false);c.SetShopVisible(true);Assert.That(c.Shop.Offers[0],Is.Null,"Opening the panel must not create another guaranteed offer.");
+                Assert.That(c.StartLoopNextBattle(),Is.True);yield return new WaitForSecondsRealtime(.3f);
+                int bench=c.Shop.Bench.ToList().FindIndex(p=>p.Id==id);Assert.That(bench,Is.GreaterThanOrEqualTo(0));
+                var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Lanes[0].Entry));
+                c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(bench).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+                Assert.That(c.Battle.Units.Count,Is.EqualTo(1));var unit=c.Battle.Units[0];Assert.That(unit.CardId,Is.EqualTo(id));
+                c.Tick(4.2f);Assert.That(c.Battle.IsSkillReady(unit.EntityId),Is.True);c.SelectSkillUnit(unit.EntityId);
+                Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));Assert.That(unit.SkillsUsed,Is.EqualTo(1));Assert.That(unit.FireRainStartedAt,Is.GreaterThanOrEqualTo(0));
+                c.Tick(.45f);yield return null;Assert.That(Object.FindAnyObjectByType<FireRainView>().VisibleStreams,Is.GreaterThan(0),"Mixed rosters must use the caster card and its own fire-rain duration.");
+                c.Shop.Validate();c.RestartBattle();Assert.That(c.Shop.Bench.Any(p=>p.Id==id),Is.False);
+                c.StartBattleShopLoop(73);Assert.That(c.Shop.Roles.Any(r=>r.Id==id),Is.False);c.LeaveShopTrial();
+            }
+            finally{Time.timeScale=previous;}
+        }
     }
 }

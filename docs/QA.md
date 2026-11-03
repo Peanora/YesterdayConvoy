@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-03：进店免费刷新保证5费塔露拉
+
+明确授权范围及“自动进店第一排”来自用户两项确认，继续codex/project-layout-scenes / PR53；原.vscode与PackageManagerSettings.asset未改/未提交。
+
+- ShopTrialModel内部GuaranteedRefreshOffer只在刷新事务成功时清除，先将未购商品返库，再从实际库存保留第一格；锁店、无钱、卡片未解锁/无库存失败均不扣费/不消耗保底，Preset清理。普通调用签名和抽卡权重保持。
+- BattleShopLoop仅高难度注册现有5费塔露拉，并在第一关胜利打开商店前设置保底；正常免费刷新执行保底。基础卡池不变，后续随机仍按十级费用概率。
+- ShopBenchModels复用塔露拉原待机帧；BasicRosterProfile只为原TALULAH/火雨配置增加明确例外。EngagementCombat技能资格、技能面板/技力条及FireRainView改为读取实际实体配置。此前主卡是无技能弩手时会被错误拒绝，或者缺火雨特效，现由场景用例验证。
+- talulah-shop-all-edit.xml：341/341完整EditMode通过，0失败/跳过，包括原技能兼容、刷新事务与九张库存/保底失败边界。
+- talulah-shop-ready-play.xml：14/14 GPU通过，0失败/跳过。新增实际流程用例先用开发测试结算结束第一关，验证免费首格塔露拉/无额外扣费，购买38→33、备战TalulahOriginal/idle、切换商店不再补货、第二关真实拖动、初动4.2秒技力满、手动火雨成功且VisibleStreams>0，重开移除购买卡，基础模式不注册塔露拉。并回归旧单卡火雨、原商店、测试结算与两关闭环。
+
+最终 talulah-shop-build.log：Windows x64 Development，1672420786 bytes、0错误；talulah-shop-player.log 两关闭环9项全True，自动验收Player实际退出0（见talulah-shop-ready-delivery.out）。本地标准Builds/Windows/YesterdayConvoy.exe已更新，无ZIP/Releases。
+
+首次编译的测试引用了错误的战斗级FireRainStartedAt，改为实体字段；首次GPU购买暴露基础名单拒绝技能角色，下一轮暴露主卡无技能导致NoSkill，修复资格/显示/特效按实体取配置后，上述最终14项通过。失败轮不记通过。未人工完整点选/长时平衡、第二机或重跑全部PlayMode；本次保底为试玩覆盖，不写成正式经济概率。
+
 ## 2026-11-03：目录迁移与显式地图场景
 
 主导者E盘最终验证：已切到codex/project-layout-scenes，Unity实际导入及AUTHORED_SCENES_VALIDATION_PASS通过，无缺失脚本；原.vscode三文件与PackageManagerSettings.asset共四文件SHA256核对不变。清掉BattleShop中残留的隐藏Industrial Map后，organized-windows-final.log再次校验通过，正式Builds/Windows/YesterdayConvoy.exe构建1672419494 bytes、0错误。此轮清理仅移除原本已隐藏的重复场地，不改战斗配置；最终E盘Player结果见后续记录。不要再让人类切到Codex工作目录打开工程。

@@ -222,9 +222,8 @@ namespace YesterdayConvoy
         public SkillFailure CheckSkill(string entityId)
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;
-            if (!CombatSettings.HasSkill) return SkillFailure.NoSkill;
             var unit = FindUnit(entityId);
-            if(unit!=null && !UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
+            if(!UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active) return SkillFailure.MissingEntity;
             var c=UnitCombat(unit);

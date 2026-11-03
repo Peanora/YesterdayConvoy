@@ -12,6 +12,7 @@ namespace YesterdayConvoy
         {
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             EnterShopTrial(0,StrongholdChallengeLayout.Id);
+            if(lateGame)shopDefinitions[talulahDefinition.Card.CardId]=talulahDefinition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             var low=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();
             if(low.Length==0)throw new InvalidOperationException("Low-cost starter required");
@@ -29,7 +30,9 @@ namespace YesterdayConvoy
         }
         public bool OpenLoopShop()
         {
-            if(Loop==null||!Loop.OpenShop())return false;
+            if(Loop==null)return false;
+            if(Loop.LateGame&&Loop.Stage==1&&Loop.Phase==BattleShopPhase.Settlement)shop.GuaranteedRefreshOffer=talulahDefinition.Card.CardId;
+            if(!Loop.OpenShop())return false;
             ConfigureLoopStage();SetShopVisible(true);return true;
         }
         public bool StartLoopNextBattle()

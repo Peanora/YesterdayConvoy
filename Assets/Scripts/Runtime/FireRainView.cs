@@ -51,8 +51,13 @@ namespace YesterdayConvoy
         private void LateUpdate()
         {
             var b=owner?.Battle; var art=owner?.Definition.Card.ArticulatedArt; DeployedUnitState caster=null;
-            if(b!=null && b.EngagementEnabled && b.CombatSettings.FireRain && art!=null)
-                foreach(var u in b.Units) if(b.IsSkillActionPlaying(u)) { caster=u; break; }
+            if(b!=null && b.EngagementEnabled)
+                foreach(var u in b.Units)
+                    if(b.UnitCombat(u).FireRain && b.IsSkillActionPlaying(u))
+                    {
+                        var sourceArt=owner.CardForUnit(u).ArticulatedArt;
+                        if(sourceArt==null)continue;art=sourceArt;caster=u;break;
+                    }
             Camera cam=Camera.main;
             if(cam!=null && (screenEffect==null || screenEffect.gameObject!=cam.gameObject))
             {
@@ -61,7 +66,7 @@ namespace YesterdayConvoy
             }
             VisibleStreams=0;
             if(caster==null || cam==null) { Hide(); return; }
-            float age=(float)(b.Clock-caster.FireRainStartedAt), duration=b.CombatSettings.SkillInterval;
+            float age=(float)(b.Clock-caster.FireRainStartedAt), duration=b.UnitCombat(caster).SkillInterval;
             float strength=Smooth(age/.30f)*Smooth((duration-age)/.45f);
             float warmth=Smooth(age/.25f)*Smooth((duration-age)/.6f);
             screenEffect.Present(age,strength,warmth);
