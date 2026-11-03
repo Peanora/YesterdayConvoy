@@ -76,7 +76,7 @@ namespace YesterdayConvoy
             if(float.IsNaN(ignoreResistance)||float.IsInfinity(ignoreResistance)||ignoreResistance<0||float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
-            var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || UnitInvulnerable(unit)) return false;
+            var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || UnitInvulnerable(unit)) return false;
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
             // Penetration stops at zero; existing resistance debuffs may remain negative.
             float resistance=UnitResistance(unit);
@@ -156,9 +156,9 @@ namespace YesterdayConvoy
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
         public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?.2f:0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?1.5f:1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
-            UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1);
+            UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1)*InfectionAttack(unit.EntityId);
         public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?1.3666667f:unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
-        public float UnitAttackRate(DeployedUnitState unit) => unit.ArtsBarrierRemaining>0 ? 1.5f : 1;
+        public float UnitAttackRate(DeployedUnitState unit) => (unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
         public float UnitArmor(DeployedUnitState unit)
         {
             float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?2:0);
@@ -182,7 +182,7 @@ namespace YesterdayConvoy
         }
         private float DefenderAttackRate(DefenderState defender) =>
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
-            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1);
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1)*InfectionRate(defender.EntityId);
         private void DefeatUnit(DeployedUnitState unit)
         {
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}

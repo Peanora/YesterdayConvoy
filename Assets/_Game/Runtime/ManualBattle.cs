@@ -229,7 +229,7 @@ namespace YesterdayConvoy
             ShotsFired = Breaches = 0; LastShotEntityId = null; LastShotTime = double.NegativeInfinity;
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
             ResetEngagement();
-            ResetFacilities();
+            ResetFacilities();ResetStrongholdMap();
         }
 
         public void Begin()

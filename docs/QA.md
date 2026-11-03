@@ -1,5 +1,127 @@
 # 验证证据与回归
 
+2026-11-01名牌修订：仅移除头顶名字后的地形文字，不改战斗规则。build-clean-defender-names.log：1496063048 bytes、0错误；player-clean-defender-names.log：12项全True，14次部署126.35秒0DP通关。已查看无地形后缀的实机名牌并更新5张截图；本轮未重复完整逻辑/场景套件。
+
+## 2026-11-01：六星挑战扩建版
+
+[试玩、数值、参考打法与边界](STRONGHOLD_SIX_STAR_CHALLENGE.md)。新增9行双翼布局与六星技能混合防线；实际高台/地面近战索敌限制；每个蓝门各突破一次；两个红门拖动路线与点击守军详情。
+
+| 执行证据（D:/游戏开发/artifacts/shop-map/） | 结果 |
+| --- | --- |
+| edit-challenge.xml | 完整292/292通过，0失败/跳过：墙/高台/固定路障绕行、角色深复制不写原asset、近战/远程高台规则、重开、两目标、真实混合通关与单兵种/单翼负例 |
+| challenge-timing.xml | 此后追加参考波次整体提前/延后1秒容错，挑战类11/11通过；原完整套件不重复，总独立逻辑用例294 |
+| play-challenge.xml | 11/11 GPU场景通过：原6商店+原3地图+新2挑战，涵盖双红门预览/移开隐藏、真实平台、详情面板拦截/开店关闭、重开/两旧图切换和清理 |
+| challenge-balance.csv / challenge-balance.log | 180受限脚本6次通关；其余有失败与未完成，不能称人类胜率。保存成功请求重放，未用伤害/生命作弊 |
+| build-challenge-delivery.log | 最终Windows1496063048 bytes、0错误；此前显示修正包括弩手初始编队文字、下移目标说明及去掉易混淆的伤害类型泛称 |
+| player-challenge-delivery.log | 最终Player12项全True：布局/镜头/点击详情/路线/清除路线/购买/拖动部署/暂停/战斗中详情/双目标胜利/重开/旧图 |
+
+实际1920×1080可见Player通过真实备战席拖动14次，126.3500019秒，剩余0DP，7次传送，4次实际穿门（重复同一目标不重复扣另一目标防御）。守军发动次数D21=1、D22=1、D27=1、D28=2、D29=1、D30=1。5张最终截图存docs/ui-previews/stronghold-challenge；已查看路线颜色/编号/箭头、详情实时字段/范围圈、平台/地面身份、战斗和结算画面。
+
+首轮编译发现详情面板使用不存在的名称字段，已修正并重跑；首轮实机发现初始单卡没有多卡状态时误写未编队，以及说明挡住名字，已修正重建、以上述最终日志为准。未把这些失败/旧画面记作最终通过。
+
+未测：人工平衡、第二台电脑/全新克隆构建、完整其余PlayMode、低配及长时性能。原图共享防御规则保持；仅挑战版启用每目标一次与近战不可打高台。星级不加战斗属性。没有新增素材许可声明或新原作媒体。旧记录保持历史证据。
+
+## 2026-10-31：地图材质、源石与传送光效
+
+[来源与材质使用范围](art/STRONGHOLD_MAP_MATERIALS.md)。运行纹理复用已有CC0文件及meta，像素/导入设置不变；新增两Shader、显式引用StrongholdMapArt.asset和一张动态特效网格。不改格点、路线和战斗数值。
+
+- play-stronghold-polish.xml：9/9定向GPU PlayMode通过，0失败/跳过。原6项商店、原2项地图继续通过；新增验证2K纹理引用、3类法线材质、两个Shader实际支持、特效不生成战斗实体、战斗暂停冻结/继续推进、退出清理。
+- 此后只补Smoke模式Awake提前后台运行，以及结算时用PresentationClock让瞬时光效结束。build-stronghold-polish-delivery.log：Windows1496034691 bytes、0错误；最终运行源码此后未改。
+- player-stronghold-polish-delivery.log：原13项玩法和texturedSurfaces/batchedEnergy/pause/portalFeedback/effectsEnded共18项全True，无捕获异常/Shader错误。编队30.89秒模拟时间获胜，11次部署、2次突破、7次传送、9次感染触发、166点感染伤害；结算推进1.2秒后瞬时光圈/光柱清空。
+- 最终实际1920×1080窗口59张证据帧，复核贴图/晶体/等待传送/出场；docs/ui-previews/stronghold04更新5张实机截图与24帧源石、28帧传送WebM。8fps观察用编码，不作为实际游戏FPS/精确计时证明。
+- 初次可见窗口失焦停在启动阶段、未生成有效画面，不记通过。提前开启自动验收后台运行后重新构建并以上述最终Player为准。
+
+证据根D:/游戏开发/artifacts/shop-map/。本轮未重跑完整EditMode及其余PlayMode，前一版283逻辑和旧图23项保持历史记录。未测低配GPU/长时性能/第二台电脑或全新克隆构建；不冒称4K全套PBR、烘焙AO或Bloom后处理。原主场景/地图asset/Prefab/Packages/ProjectSettings、共享贴图和meta未改，.vscode继续未跟踪。
+
+## 2026-10-31：盟约#04格点、源石与传送
+
+[来源、操作与适配边界](STRONGHOLD_MAP_04.md)。原格点转录自固定提交a24a8ad，原始参考JSON仅本地；工程不包含原地图贴图或模型。
+
+| 实际执行 | 最终结果 |
+| --- | --- |
+| edit-stronghold-final.xml | 完整283/283通过，0失败/跳过。5项新逻辑用例检查格点/路线绕开封闭与固定工事、感染攻击/攻速/真实扣血/暂停/清理、3秒传送与不可直接受击、旧图无感染、耗尽失败和重开。 |
+| play-stronghold-final.xml | 8/8定向GPU PlayMode通过：6项既有商店，2项新图。验证新图招募、两路拖动、满席合成、倍率仅本图、旧asset字节不变；实际模型传送时隐藏、暂停不恢复、出场后同模型恢复，无额外实体；切图与退出清理。 |
+| build-stronghold.log | Windows1495965600 bytes、0错误，构建命令StrongholdMapTools.Build。构建后仅补了测试和文档，运行源码未再改。 |
+| player-stronghold.log | layout/framed/purchases/drag/paused/infected/portal/combat/won/merge/reset/isolation/exit共13项全True，无捕获异常。11次部署，模拟30.85秒后2次突破胜利，7次传送、9次感染触发、166点总感染伤害。 |
+| player-stronghold-city.log | 新构建用旧商店Smoke入口回归泵站：原19项、特效结束及3项表现共23项全True，无捕获异常。 |
+| 画面 | 查看实际1920×1080准备、战斗；六张实机证据中准备/商店/18秒战斗/结算四张保存docs/ui-previews/stronghold04。原两图未被覆写。 |
+
+证据根目录D:/游戏开发/artifacts/shop-map/。本轮未测第二台电脑、全新克隆构建、其余完整PlayMode/全角色地图组合、长期性能及人工平衡。原始工事在此为固定结构，不包含原作可移动/可破坏工事；地面路线为本作适配，并非原作飞行Boss轨迹。本机运行通过不记为接收端验收。项目生成.vscode仍未跟踪。
+
+## 2026-10-31：用户录屏参考长平台、高位落地
+
+查看完整42.17秒本地录屏及购买片段逐帧，参照连续厚平台、从右向左排列和高处快速落地；记录见[来源与观察](ui-previews/shop/REFERENCE-RECORDING.md)。模型正常配色，白色下落光痕、青白落地环/碎光，待机衔接；没有导入录屏中的原作部署图集或UI资产。
+
+- play-recording-bench.xml：6/6定向地图GPU PlayMode通过，0失败/跳过。覆盖右向左布局、入场固定横坐标/下降/待机、快速合成与出售清理、暂停、商店开关拦截、满席直接二/三星、轻点不出售和向下拖动出售、部署及退出恢复。
+- build-recording-bench.log：Windows1495946440 bytes，0错误。
+- player-recording-bench.log：19项交易/布局/部署标志、特效结束及closingBlocksMap/purchaseArrivals/reserveCellEntry共23项全True，无捕获异常。最终可见1920×1080窗口保存94张实机图，已查看准备、上方下落、接地青白环及三星金光。
+- docs/ui-previews/shop：8张截图、4段连续实机帧WebM同步更新。8fps为观察用慢放，不代表实际游戏帧率或精确动画时长。原录屏和参考帧仅位于本地，不提交。
+
+证据根目录D:/游戏开发/artifacts/shop-map/。本轮没有重跑完整EditMode/其他PlayMode；旧278项完整记录为历史结果。第二台电脑、全新克隆构建、长时性能及人类手感验收仍未测。原地图asset、主场景、Prefab、Packages和ProjectSettings保持；Unity生成的.vscode保持未跟踪。
+
+## 2026-10-31：相连整备格与原地显现落地
+
+用户明确选定角色在整备格内显现、落地，再转入待机。play-reserve-entry-final.xml：6/6地图GPU PlayMode通过，0失败/跳过。验证实际入场模型横坐标始终与目标格一致、先高于地面且逐渐显现下降、0.72秒后转入正常待机；快速连买三张合成仅保留一个结果入场模型，入场中出售会立即清理；此前开关、部署、满席二/三星、底边出售及退出清理继续通过。
+
+build-reserve-entry.log：Windows1495945652 bytes、0错误。player-reserve-entry.log：原19项、特效结束及closingBlocksMap/purchaseArrivals/reserveCellEntry共23项全部True，无捕获异常。已查看格内显现中、下降中与待机的实际1920×1080画面，备战为相连地板格，无角色从商店飞过地图。四段WebM与八张当前截图同步重录替换，8fps慢放不作为实际游戏帧率证明。
+
+入场使用现有战斗帧配合透明度、短距垂直位移和落地变形，没有新增原作入场逐帧序列或外部媒体。没有重跑完整EditMode/其余PlayMode，未测第二台电脑、全新克隆、全分辨率或长期性能。入口与限制见[试玩指南](SHOP_MAP_TRIAL.md)。
+
+## 2026-10-31：动态模型备战席与商店/购买/三星特效
+
+play-model-bench-final.xml：5/5地图GPU PlayMode通过，0失败/跳过。覆盖暂停时开关进度和待机帧继续变化、快速反向开关不跳位、过渡拦截覆盖地图且不改钱/牌、购买落位不生成战斗实体、台座底边轻点不售/向下拖动可售、满席二/三星合成、落位后特效启动并1秒结束、退出清理实际模型。此后仅补模型拖动跟随、刷新图标在滑动裁剪区的绘制和预览录制，最终重建并实机复核；未重跑完整EditMode或其余PlayMode。
+
+build-model-bench-delivery.log：Windows1495943851 bytes、0错误。player-model-bench-delivery.log：19项SHOP_MAP_CHECK、SHOP_BENCH_EFFECTS_EXPIRE、closingBlocksMap、purchaseArrivals共22项全部True，无捕获异常。已查看实际1920×1080静态/滑入中/飞行中/三星金光截图，刷新图标位置正常、棋子立于台座、无旋转星标或光弧。动态来源为本作现有战斗帧，真实SpriteRenderer对象由独立透明相机渲染，非卡面缩略图、非新增三维网格。
+
+shop-toggle.webm（16帧）、purchase-and-three-star.webm（36帧）及银/金预告短片由实机帧8fps编码，属于慢放演示，不能当作实际游戏帧率或动画精确计时。录制先按真实时间取帧，再编码PNG，避免压缩耗时跳过短暂动画。旧shop-map-confirm.png仍是历史截图。
+
+首轮Player发现新台座底边出售空间不足，已按剩余向下距离适配阈值并加入交互断言；中间录制轮采样过快、未覆盖到落位金光，不记为通过，已修正采样间隔后重录。滑动裁剪区原先旋转矩阵绘制刷新图标位置错误，已改成运行时生成的静态箭头纹理。最终以上22项与画面为交付证据。未测第二台电脑、全新克隆、全部分辨率或长期GPU性能；额外透明模型相机的性能仍需低配机实测。
+
+## 2026-10-30：商店和备战升星全部取消旋转
+
+删除ShopPromotionEffects共用绘制中的整段旋转光弧和开关参数；两个入口均只保留不旋转的亮起、轮廓和星标，备战仍1秒结束且星标全程静态。build-no-rank-rotation.log：Windows1495930340 bytes、0错误；player-no-rank-rotation.log原19项加特效结束共20项全部True，无捕获异常。商店二/三星各16张连续实机帧已重录，查看两档最终帧，确认没有绕行光弧；银/金截图与WebM均替换为本版，视频8fps仅展示动态，不作为游戏帧率证明。本次仅删除显示逻辑，未重跑EditMode/GPU PlayMode；未测第二台电脑或全新克隆。
+
+## 2026-10-30：备战星标与升星瞬间取消旋转
+
+备战星标调用始终关闭动画，头像升星反馈明确关闭旋转光弧；保留1秒亮起和扩散边框，商店预告保持。build-bench-static-stars.log：Windows1495931056 bytes、0错误；player-bench-static-stars.log：原19项及特效结束检查共20项全部True，无捕获异常。已查看三星合成瞬间实际截图，备战无旋转光弧，星标固定；shop-map-three-star.png更新为本版。此前结束后的二/三星静态截图与本轮完全一致。本次仅显示调整，未重复完整EditMode或GPU PlayMode；上一轮4/4暂停结束验证仍为历史结果。未测第二台电脑/全新克隆。
+
+## 2026-10-30：备战席持续特效修复
+
+play-bench-expiry.xml：4/4地图GPU PlayMode通过，0失败/跳过。在原满席二/三星场景增加断言：已有高星棋子静态，本次合成目标立即播放，Time.timeScale=0等待1.1秒后特效归零，星级不变；满席直接合成、无成功文字、地图与镜头恢复继续通过。build-bench-expiry.log：Windows1495931056 bytes、0错误。未重跑完整EditMode或其他PlayMode；278 EditMode为上一轮结果，模型本轮未改。
+
+player-bench-expiry.log：原19项SHOP_MAP_CHECK全部True，新增SHOP_BENCH_EFFECTS_EXPIRE=True（二/三星即时启动、等待后结束且星级保留），共20项。实际1920×1080截图在player-bench-expiry；已查看三星静态备战画面，无头像光晕/光弧，无中央成功提示。二/三星结束后截图随docs/ui-previews/shop保存。未测第二台电脑或全新克隆构建。
+
+## 2026-10-30：直接满席合成与银/金星标反馈
+
+完整edit-rank.xml：278/278通过，0失败/跳过；其中商店模型7项，覆盖重复预告只读、2/3星预告等于实际合成、一次满席购买只扣一次、重复购买不扣款、无钱不能买、购买/出售后标记更新。play-rank.xml：4/4 GPU地图交互通过，满席立即合成且ShopFeedback为空，原地图和镜头不变，覆盖店开关/遮挡、编队部署、退出恢复继续通过。
+
+随后仅删除旋转小星星，保留固定位置星标闪烁和银金光效。build-rank-final.log：Windows1495929844 bytes、0错误。player-rank-final.log：layout/framing/overlay/flatBench/fullReject/rankPreview/noNotice/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit共19个布尔标志全True，无捕获异常。预告不实际买牌，满席合成一次点击完成，无确认/中央成功面板或成功文字；失败反馈仍保留。
+
+已查看最终银/金预告、三星合成后截图。每档16张连续实机帧记录光弧和固定星标亮度变化；silver-rank.webm/gold-rank.webm由这些帧8fps编码，不把该视频帧率冒充游戏帧率。docs/ui-previews/shop/shop-rank-*.png与shop-map-three-star.png为最终实机；旧shop-map-confirm.png是历史截图，不代表当前UI。证据根D:/游戏开发/artifacts/shop-map。未重跑其余完整PlayMode、Node/浏览器；未测第二台电脑或全新克隆构建。
+
+## 2026-10-30：覆盖式商店与扁平备战席
+
+[最新操作与范围](SHOP_MAP_TRIAL.md)。play-overlay.xml：4/4定向GPU PlayMode通过，覆盖默认收起、开关保留钱/库存/镜头、覆盖区不穿透、关闭待确认购买不扣款、拖动自动收起、扁平比例、全部路线/门、满席2/3星、实际部署、购买不叠加缩放及退出恢复。完整276/74未在本轮重跑。
+
+最后仅将出售向下距离22→12虚拟像素适配46像素卡槽，并把独立Player出售流程改为从卡槽底边起拖。build-overlay-final.log：Windows1495927470 bytes、0错误；player-overlay-final.log：layout/framing/overlay/flatBench/fullReject/fullConfirm/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit全True，无捕获异常。18项为布尔标志，magnification是FOV诊断值，不作新屏幕比例指标。
+
+1920×1080实际收起/展开截图已查看：地图高807像素，备战带132像素、单卡69像素，商店上层盖住地图而不改变取景。最终截图保存docs/ui-previews/shop/shop-map-*.png。运行输入与自动验证共用事务和指针函数；没有声称完成第二台电脑或真实人类平衡验收。未改原场景/地图asset、Prefab、包或设置；本地.vscode保持未提交。
+
+## 2026-10-30：商店地图与满备战席合成
+
+同日镜头补充：中间地图放大1.4倍并按有效路线/守军居中，商店、备战席、1920×1080和地图格局保持。3/3地图交互复测通过，验证所有路线/红门可见、购买不累积缩放、退出恢复视口和FOV；最新Windows1495925555 bytes、0错误，Player16项布尔标志全True、magnification=1.40，实际截图已复核。证据：play-zoom.xml、build-zoom.log、player-zoom.log；下文首版完整276/74结果不记为本次重跑。
+
+[范围、构建和限制](SHOP_MAP_TRIAL.md)。本机证据目录 `D:/游戏开发/artifacts/shop-map/`，测试与构建输出不入Git。
+
+| 实际验证 | 结果 |
+| --- | --- |
+| 完整EditMode / GPU PlayMode | 276/276、74/74通过，0失败/跳过；edit-all.xml、play-all.xml。新增5项事务/3项场景：满席确认两星/连锁三星、失败不扣钱、报价返库、经验溢出、锁定、原地图不变、弩手与新购买猎狗使用自身配置部署、战斗冻结交易。 |
+| 最终Windows / 独立Player | build-delivery.log：1495921684 bytes、0错误。player-delivery.log：layout/fullReject/fullConfirm/fullTwo/fullThree/cancel/sale/level/lock/refresh/gateVisible/deployed/frozen/simulation/exit全部True，无捕获异常；实际可见窗口截图在player-delivery。 |
+| 浏览器 | Node 7/7，Chrome1672×941离线验证商店在上/备战在下、满席2/3星、取消不扣钱、中央大提示和底部出售，无页面错误。 |
+| 画面复核 | 查看最终Player准备/三星截图，修正技能长文字重叠、星形字形裁切与按钮对比度。完整套件在显示修正前通过；保留原设计和1920×1080布局后又通过3/3地图交互（play-layout-final.xml），最终重新构建并重跑独立Player。docs/ui-previews/shop/shop-map-*.png为最终实机。 |
+
+首轮受限环境Unity许可证无法识别，正常Windows环境重试构建成功；首次隐藏窗口截图为黑屏，不作为画面通过证据，后续以可见窗口重新运行并复核。未升级Unity/包或改许可证。未测第二台电脑、全新克隆构建、长时压力、正式数值平衡；10角色基础池和未实现星级战斗倍率不冒称完整自走棋系统。
+
 ## 2026-10-29：第六批三名六星守军
 
 D26/D27/D28的独立所选S3与原生模型接入。具体适配/未做项见[第六批说明](DEFENDER-SKILLS-BATCH6.md)。从实时main34ec756创建新分支，包含未合并#45依赖，不自动写main。

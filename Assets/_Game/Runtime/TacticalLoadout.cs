@@ -6,11 +6,11 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         int selectedRosterIndex;
-        public int RosterCount=>TacticalMapActive ? 1+(defenderTrial.rosterCards?.Length??0) : 1;
+        public int RosterCount=>ShopTrialActive ? Mathf.Max(1,shopDeck.Count) : TacticalMapActive ? 1+(defenderTrial.rosterCards?.Length??0) : 1;
         public int SelectedRosterIndex=>selectedRosterIndex;
         string VictoryUnitName {get {foreach(var unit in Battle.Units)if(unit.Resolution==UnitResolution.Breached)return CardForUnit(unit).DisplayName;return definition.Card.DisplayName;}}
         public Rect CardSlot(int index)=>TacticalMapActive ? new Rect(1126-(RosterCount-1-index)*124,556,112,144) : RosterSlot;
-        public ManualBattleDefinition RosterDefinition(int index)=>index==0 ? definition : defenderTrial.rosterCards[index-1];
+        public ManualBattleDefinition RosterDefinition(int index)=>ShopTrialActive ? (shopDeck.Count==0?definition:shopDeck[index]) : index==0 ? definition : defenderTrial.rosterCards[index-1];
         private double RosterDeathTail {get {double tail=0;for(int i=0;i<RosterCount;i++)tail=Math.Max(tail,LocalMonsterArt.For(RosterDefinition(i).Card.CardId)?.DeathDuration??0);return tail;}}
         private ManualBattleDefinition DeploymentDefinition=>RosterDefinition(Mathf.Clamp(selectedRosterIndex,0,RosterCount-1));
         public CardDefinition CardForUnit(DeployedUnitState unit)

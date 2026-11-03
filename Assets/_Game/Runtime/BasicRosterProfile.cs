@@ -11,7 +11,7 @@ namespace YesterdayConvoy
         public EngagementSettings Combat {get;}
         public BasicRosterProfile(ManualBattleSettings unit,EngagementSettings combat)
         {
-            string[] allowed={"CARD_M02","CARD_M03","CARD_M05","CARD_ORIGINIUM_SLUG","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
+            string[] allowed={"CARD_M02","CARD_M03","CARD_M05","CARD_M08","CARD_ORIGINIUM_SLUG","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
             if(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack)
                 throw new ArgumentException("Only authored basic guerrilla trial roles are supported.");
             var e=combat.Effects;
