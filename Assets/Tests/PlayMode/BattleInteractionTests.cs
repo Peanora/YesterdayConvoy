@@ -1,0 +1,227 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+
+namespace YesterdayConvoy.Tests
+{
+    public sealed class BattleInteractionTests
+    {
+        private float originalScale;
+        [SetUp] public void SetUp() => originalScale=Time.timeScale;
+        [TearDown] public void TearDown() => Time.timeScale=originalScale;
+        private static IEnumerator Load()
+        {
+            yield return SceneManager.LoadSceneAsync("MonsterTrial",LoadSceneMode.Single);
+            yield return null; Time.timeScale=0;
+            Object.FindAnyObjectByType<ManualBattleController>().SwitchTrial(false);
+        }
+        private static Vector2 Entry(ManualBattleController c) => Camera.main.WorldToScreenPoint(c.Battle.Entry);
+        private static void BeginDrag(ManualBattleController c) => c.ProcessPointerDown(ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center));
+        private static Vector2 Body(ManualBattleController c,string id) => ManualBattleController.ScreenPosition(c.UnitScreenRect(id).center);
+        private static void Deploy(ManualBattleController c)
+        {
+            BeginDrag(c); c.ProcessPointerMove(Entry(c)); Assert.That(c.ProcessPointerUp(Entry(c)).Success,Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator PausedDragCommitsOnceAndInvalidOrCoolingDropsSpendNothing()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            c.StartBattle(); b.SetPaused(true); BeginDrag(c);
+            Assert.That(c.Dragging,Is.True); Assert.That(b.Units.Count,Is.Zero);
+            c.ProcessPointerMove(Entry(c)); Assert.That(c.ProcessPointerUp(Entry(c)).Success,Is.True);
+            Assert.That(b.IsPaused,Is.True); Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.Units.Count,Is.EqualTo(1));
+            Assert.That(c.Dragging,Is.False); Assert.That(c.Selected,Is.False);
+            c.ProcessPointerUp(Entry(c)); Assert.That(b.Units.Count,Is.EqualTo(1));
+            BeginDrag(c); Assert.That(c.ProcessPointerUp(Entry(c)).Failure,Is.EqualTo(DeployFailure.NoUses));
+            BeginDrag(c); Assert.That(c.ProcessPointerUp(Camera.main.WorldToScreenPoint(b.Entry+Vector3.right*10)).Success,Is.False);
+            c.Tick(30); Assert.That(b.Clock,Is.Zero); Assert.That(b.CooldownRemaining,Is.EqualTo(2));
+            Assert.That(b.Units[0].SkillSP,Is.EqualTo(8)); Assert.That(b.Units[0].Motion.DistanceTravelled,Is.Zero);
+            Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.RemainingUses,Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator BodyClickSlowsEveryClockAndEmptyClickCancelsOrIconCastsOnce()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c); c.Tick(4); string id=b.Units[0].EntityId;
+            Assert.That(b.IsSkillReady(id),Is.True); Assert.That(b.SkillCasts,Is.Zero);
+            c.ToggleSpeed(); c.ProcessPointerDown(Body(c,id));
+            Assert.That(c.SkillMenuOpen,Is.True); Assert.That(c.SelectedEntityId,Is.EqualTo(id)); Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(.03f));
+            double clock=b.Clock,cd=b.CooldownRemaining; int dp=b.DP;
+            c.Tick(1); Assert.That(b.Clock-clock,Is.EqualTo(.03).Within(.0001));
+            Assert.That(b.SkillCasts,Is.Zero); Assert.That(b.DP,Is.EqualTo(dp));
+            c.ProcessPointerDown(ManualBattleController.ScreenPosition(new Vector2(12,500)));
+            Assert.That(c.SkillMenuOpen,Is.False); Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(2)); Assert.That(b.SkillCasts,Is.Zero);
+            c.ProcessPointerDown(Body(c,id));
+            c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.SkillCastRect.center));
+            Assert.That(b.SkillCasts,Is.EqualTo(1)); Assert.That(b.Units[0].SkillAmmo,Is.EqualTo(6));
+            Assert.That(b.IsSkillReady(id),Is.False); Assert.That(c.SkillMenuOpen,Is.False); Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(2));
+            Assert.That(b.DP,Is.EqualTo(dp)); c.ProcessPointerUp(Entry(c)); Assert.That(b.SkillCasts,Is.EqualTo(1));
+        }
+
+        [UnityTest]
+        public IEnumerator FullPauseDominatesSkillFocusAndReadinessStaysVisibleWithoutCasting()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c); c.Tick(4); string id=b.Units[0].EntityId;
+            b.SetPaused(true); c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.ReadyMarkerRect(id).center));
+            Assert.That(c.SkillMenuOpen,Is.True); Assert.That(c.EffectiveSimulationSpeed,Is.Zero); Assert.That(b.IsSkillReady(id),Is.True);
+            double clock=b.Clock; c.Tick(10); Assert.That(b.Clock,Is.EqualTo(clock));
+            Assert.That(c.CastFocusedSkill(),Is.EqualTo(SkillFailure.Paused)); Assert.That(b.SkillCasts,Is.Zero);
+            c.ProcessPointerDown(ManualBattleController.ScreenPosition(new Vector2(12,500)));
+            Assert.That(b.IsPaused,Is.True); Assert.That(c.EffectiveSimulationSpeed,Is.Zero); Assert.That(b.IsSkillReady(id),Is.True);
+            BeginDrag(c); c.CancelInteraction(); c.ProcessPointerUp(Entry(c)); Assert.That(b.Units.Count,Is.EqualTo(1));
+            c.RestartBattle(); Assert.That(c.SkillMenuOpen,Is.False); Assert.That(c.Dragging,Is.False); Assert.That(b.Units.Count,Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator DeadSelectionClosesFocusAndRestartRejectsAnOldDrag()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c); c.Tick(4); string id=b.Units[0].EntityId; c.ProcessPointerDown(Body(c,id));
+            c.Tick(300); yield return null;
+            Assert.That(b.FindUnit(id).Active,Is.False); Assert.That(c.SkillMenuOpen,Is.False); Assert.That(b.IsSkillReady(id),Is.False);
+            Assert.That(c.EffectiveSimulationSpeed,Is.EqualTo(1));
+            c.RestartBattle(); BeginDrag(c); b.Restart();
+            Assert.That(c.ProcessPointerUp(Entry(c)).Failure,Is.EqualTo(DeployFailure.StaleRun)); Assert.That(b.DP,Is.EqualTo(12)); Assert.That(b.Units.Count,Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator LostSettlementBlocksWorldClicksAndRequiresACompleteRestartClick()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c); c.Tick(100); yield return null;
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost)); Assert.That(c.SettlementVisible,Is.True);
+            double clock=b.Clock; int run=b.RunId;
+            Vector2 card=ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center);
+            Vector2 button=ManualBattleController.ScreenPosition(ManualBattleController.SettlementRestartRect.center);
+            Vector2 outside=new Vector2(card.x,Screen.height-card.y),inside=new Vector2(button.x,Screen.height-button.y);
+            c.ProcessPointerEvent(EventType.MouseDown,outside,0); c.ProcessPointerEvent(EventType.MouseUp,outside,0);
+            Assert.That(c.Dragging,Is.False); Assert.That(b.Units.Count,Is.EqualTo(1)); Assert.That(b.DP,Is.EqualTo(10));
+            c.ProcessPointerEvent(EventType.MouseDown,inside,0); c.ProcessPointerEvent(EventType.MouseUp,outside,0);
+            c.ProcessPointerEvent(EventType.MouseUp,inside,0);
+            Assert.That(b.RunId,Is.EqualTo(run)); Assert.That(c.SettlementVisible,Is.True);
+            c.ProcessPointerEvent(EventType.MouseDown,inside,0); c.Tick(5);
+            Assert.That(b.Clock,Is.EqualTo(clock));
+            c.ProcessPointerEvent(EventType.MouseUp,inside,0); yield return null;
+            Assert.That(c.SettlementVisible,Is.False); Assert.That(b.RunId,Is.EqualTo(run+1));
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Ready)); Assert.That(b.Defense,Is.EqualTo(1));
+            Assert.That(b.DP,Is.EqualTo(12)); Assert.That(b.RemainingUses,Is.EqualTo(1)); Assert.That(b.Units.Count,Is.Zero);
+            Assert.That(c.ViewCount,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero); Assert.That(b.SkillCasts,Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator QueuedPointerEdgesCanCompleteAPausedDragWithinOneSimulationFrame()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            c.StartBattle(); b.SetPaused(true);
+            Vector2 card=ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center),entry=Entry(c);
+            foreach(var type in new[]{EventType.MouseDown,EventType.MouseDrag,EventType.MouseUp})
+            {
+                Vector2 screen=type==EventType.MouseDown ? card : entry;
+                Assert.That(c.ProcessPointerEvent(type,new Vector2(screen.x,Screen.height-screen.y),0),Is.True);
+            }
+            Assert.That(b.Units.Count,Is.EqualTo(1)); Assert.That(b.DP,Is.EqualTo(10)); Assert.That(b.Clock,Is.Zero);
+            Assert.That(b.IsPaused,Is.True); Assert.That(c.Dragging,Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator ComicFramesFreezeOnPauseAndUseNormalAndSkillActionsWithoutTurning()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            c.StartBattle(); b.SetPaused(true); Deploy(c); yield return null;
+            var u=b.Units[0]; var v=GameObject.Find(u.EntityId).GetComponentInChildren<DemoSpriteVisual>();
+            Assert.That(v.UsesFrameAnimation,Is.True);
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.BattleSprite),"Paused spawn must use the new idle immediately.");
+            Assert.That(c.Definition.Card.WalkFrames.Count,Is.EqualTo(19));
+            Assert.That(c.Definition.Card.AttackFrames.Count,Is.EqualTo(28));
+            Assert.That(c.Definition.Card.SkillFrames.Count,Is.EqualTo(100));
+            b.SetPaused(false); c.Tick(.15f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Walk")); Assert.That(v.FrameIndex,Is.GreaterThan(0));
+            var frame=v.Renderer.sprite; int index=v.FrameIndex;
+            b.SetPaused(true); c.Tick(20); yield return null;
+            Assert.That(v.Renderer.sprite,Is.SameAs(frame)); Assert.That(v.FrameIndex,Is.EqualTo(index));
+            Assert.That(v.Renderer.flipX,Is.False); Assert.That(v.transform.localScale,Is.EqualTo(Vector3.one));
+            SaveComicCamera("walk");
+            b.SetPaused(false);
+            for(int i=0;i<200 && !u.HasCombatTarget;i++) { c.Tick(.05f); yield return null; }
+            Assert.That(u.HasCombatTarget,Is.True); c.Tick(.2f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Attack")); Assert.That(u.LastAttackEmpowered,Is.False);
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.AttackFrames[v.FrameIndex]));
+            SaveComicCamera("attack");
+            c.SelectSkillUnit(u.EntityId); Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));
+            yield return null; Assert.That(v.FrameState,Is.EqualTo("Skill"));
+            Assert.That(v.FrameIndex,Is.Zero,"Before the first empowered shot, hold its anticipation instead of replaying an old normal attack's elapsed time.");
+            Assert.That(v.Renderer.sprite,Is.SameAs(c.Definition.Card.SkillFrames[v.FrameIndex]));
+            for(int i=0;i<100 && !u.LastAttackEmpowered;i++) { c.Tick(.02f); yield return null; }
+            Assert.That(u.LastAttackEmpowered,Is.True); c.Tick(.5f); yield return null;
+            Assert.That(v.FrameState,Is.EqualTo("Skill")); SaveComicCamera("skill");
+            bool face=false;
+            foreach(var renderer in c.CombatView.GetComponentsInChildren<SpriteRenderer>())
+                if(renderer.gameObject.name=="Comic expression" && renderer.enabled)
+                { face=true; Assert.That(renderer.transform.localScale.x,Is.GreaterThan(.84f),"Empowered impact head is enlarged by 1.75x."); }
+            Assert.That(face,Is.True,"A resolved empowered shot must show the source-expression impact stamp.");
+            frame=v.Renderer.sprite; b.SetPaused(true); c.Tick(30); yield return null;
+            Assert.That(v.Renderer.sprite,Is.SameAs(frame)); Assert.That(v.Renderer.flipX,Is.False);
+            Assert.That(Quaternion.Angle(v.transform.rotation,Camera.main.transform.rotation),Is.LessThan(.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator FiredSkillActionFinishesAfterItsTargetDiesBeforeReturningToWalk()
+        {
+            yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
+            Deploy(c);
+            for(int i=0;i<500 && b.Defender.Alive;i++)
+            {
+                c.Tick(.04f);
+                foreach(var unit in b.Units)
+                    if(b.CheckSkill(unit.EntityId)==SkillFailure.None)
+                    { c.SelectSkillUnit(unit.EntityId); Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None)); }
+                yield return null;
+            }
+            Assert.That(b.Defender.Alive,Is.False);
+            DeployedUnitState killer=null;
+            for(int i=b.CombatShots.Count-1;i>=0;i--)
+                if(!b.CombatShots[i].FromDefender && b.CombatShots[i].Empowered && b.CombatShots[i].Applied)
+                { killer=b.FindUnit(b.CombatShots[i].SourceId); break; }
+            Assert.That(killer,Is.Not.Null); Assert.That(killer.Active,Is.True);
+            var visual=GameObject.Find(killer.EntityId).GetComponentInChildren<DemoSpriteVisual>();
+            Assert.That(killer.HasCombatTarget,Is.False); Assert.That(killer.IsMoving,Is.False);
+            Assert.That(visual.FrameState,Is.EqualTo("Skill"),"Target death cannot interrupt a fired skill gesture.");
+            double distance=killer.Motion.DistanceTravelled; int frame=visual.FrameIndex;
+            c.Tick(.4f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.GreaterThan(frame));
+            Assert.That(killer.Motion.DistanceTravelled,Is.EqualTo(distance),"The complete skill action locks actual movement even after target death.");
+            SaveComicCamera("skill-after-target-death");
+            frame=visual.FrameIndex; b.SetPaused(true); c.Tick(20); yield return null;
+            Assert.That(visual.FrameIndex,Is.EqualTo(frame)); b.SetPaused(false);
+            float remaining=(float)(b.CombatSettings.SkillInterval-(b.Clock-killer.LastAttackTime));
+            c.Tick(remaining-.01f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Skill")); Assert.That(visual.FrameIndex,Is.EqualTo(99));
+            c.Tick(.03f); yield return null;
+            Assert.That(visual.FrameState,Is.EqualTo("Walk")); Assert.That(killer.IsMoving,Is.True);
+            Assert.That(killer.Motion.DistanceTravelled,Is.GreaterThan(distance));
+            c.RestartBattle(); yield return null;
+            Assert.That(c.ViewCount,Is.Zero); Assert.That(b.CombatShots.Count,Is.Zero);
+        }
+
+        private static void SaveComicCamera(string name)
+        {
+            if(SystemInfo.graphicsDeviceType==UnityEngine.Rendering.GraphicsDeviceType.Null) return;
+            var camera=Camera.main; var previous=camera.targetTexture; var active=RenderTexture.active;
+            var target=new RenderTexture(1280,720,24); var image=new Texture2D(1280,720,TextureFormat.RGBA32,false);
+            try
+            {
+                camera.targetTexture=target; camera.Render(); RenderTexture.active=target;
+                image.ReadPixels(new Rect(0,0,1280,720),0,0); image.Apply();
+                System.IO.Directory.CreateDirectory("artifacts/wisadel-gif/camera");
+                System.IO.File.WriteAllBytes("artifacts/wisadel-gif/camera/"+name+".png",image.EncodeToPNG());
+            }
+            finally
+            { camera.targetTexture=previous; RenderTexture.active=active; target.Release(); Object.Destroy(target); Object.Destroy(image); }
+        }
+    }
+}

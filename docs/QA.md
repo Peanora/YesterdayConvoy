@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-11-03：目录迁移与显式地图场景
+
+范围由用户明确确认：从main dc92829吸收PR52原商店恢复；移动资源并保留GUID，保存两个可编辑场景，退役其他地图/生成器与对应场景测试，更新路径/菜单/构建和目录规范；最终同步到主导者E盘单一日常工程。未升级Unity或包。
+
+- layout-edit-final.xml：339/339 EditMode通过。包括新增检查两个实际场景、500以上已保存地形Renderer、持久材质/Mesh、无缺失脚本；原场景数和八人混编测试按退役范围更新。
+- layout-play-final.xml：完整68项中67通过，剩余一项旧断言要求隐藏原地图，与本轮复用静态场地相反；修改该断言后layout-play-confirm.xml三项通过。其余逻辑未为此改动。
+- layout-entry-play.xml：最终11/11 GPU通过，覆盖真实场景返回、重开不重建/不丢弃地块编辑、八人技能、基础/后期购买带卡及测试结算。保留的69个不同场景用例均已覆盖通过（不是单次完整69项运行）。
+- layout-build.log：AUTHORED_SCENES_VALIDATION_PASS；最终Windows1672761774 bytes、0错误。构建明确包含BattleShop与MonsterTrial。
+- layout-player-late.log / layout-player-basic.log：最终独立Player分别9/8项全True，均退出0；完成真实部署、胜利、购买、第二关、暂停和重开。
+- 编辑模式Camera.Render实证：[商店战斗地图](art/BattleShop-authored.png) / [怪物试用地图](art/MonsterTrial-authored.png)，两图均在未进入Play时渲染。并非AI概念稿。角色由运行时生成，商店场景编辑模式显示已保存地形。
+- 仓库检查4562个跟踪文件通过（新增证据图/文档后以最终提交复核数为准），scene/meta/GUID检查通过。核心角色运行图集没有修改或漏传。
+
+迁移首轮编译发现共用截图方法曾在删除的地图诊断文件中，已提取保留；一次性Editor烘焙器改为普通编辑器类后成功；运行回归发现守军独立配置标记Tactical但仍需试用场地，以及退出销毁顺序引用，已修正并以上述最终回归为准。失败轮不记最终通过。
+
+未做：人工遍历每个角色/技能、第二台电脑、全新克隆与长时性能；已退役旧地图宿主中的专门场景回归不再运行，能力核心逻辑保留。同步E盘保留原未跟踪.vscode和PackageManagerSettings.asset，不提交/覆盖；最终导入校验另附本节后续记录。无ZIP/Releases。
+
 ## 2026-11-03：恢复霍利屹战后商店
 
 修改BattleShopInterface与ShopMapTrial：把原商店的头部/横卡覆盖层抽为私有DrawShopMarket，让旧商店与关间商店共用同一绘制；原卡面/费用底色/羁绊/刷新/锁店/升星保持。关间只加开始下一战，保留闭环状态机、原子交易、战斗卡栏和现有备战模型；未改公共签名、场景、Prefab、Packages或ProjectSettings。
