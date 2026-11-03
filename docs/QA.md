@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-03：塔露拉普攻分层表现
+
+人类确认项目外动态看稿后继续codex/project-layout-scenes / PR53。仅EngagementView私有普攻绘制、内部TalulahAttackVfx、独立Shader和Resources烟雾及测试/文档；不修改战斗模型、卡牌配置、人物动作、火雨、场景、Prefab、Packages或ProjectSettings。既有.vscode与PackageManagerSettings.asset未提交覆盖。
+
+- talulah-attack-play.xml：9/9 GPU PlayMode通过、0失败/跳过，过滤TalulahAttackPresentationTests、TalulahSceneTests、FireRainPresentationTests、TestSettlementSceneTests。新2项验证实际塔露拉交战中的火焰帧/位置连续变化、暂停不推进、真实命中与薄烟/火星、1.7秒间隔/0.65秒命中保持、GPU像素有实际特效、重开/换角色清理和原火雨可见。左右方向使用公共战斗模型从正反侧产生的真实普攻事件，在独立表现宿主检查火焰朝向目标；不冒称自然地图转身验收。
+- 实机图art/talulah-attack-actual.png为1280×720相机RenderTexture读取，不含IMGUI覆盖层；人物已有受击染红未改。项目外视频不是Unity实机。
+- talulah-attack-build.log：Windows x64 Development，BASELINE_BUILD_PASS 1774171185 bytes、0错误，标准Builds/Windows/YesterdayConvoy.exe更新。talulah-attack-player.log原高难度两关闭环9项全True，talulah-attack-player-exit.txt记录真实退出0；这项是通用闭环回归，塔露拉新普攻画面由上述GPU场景验证。
+- 仓库4648跟踪文件及Unity meta检查通过，暂存仅本任务文件。
+- 复用FireRainEmbers原25帧；新烟雾与Assets/Art/VFX/Common/particle-smoke-01.png字节及SHA256相同（e8724c219e8d35859167fc0a7e207e13c72ccf0c29704909b9bb3d3dc71c6cf7），97,452字节，原Kenney CC0依据保持。新Resources文件/Shader/.meta随源码；原作角色权利记录保持。
+
+首轮助手方法重命名笔误DrawDrawSprite造成编译失败，修正后上述9项全部通过。测试失败或未运行项不记通过。本轮为私有表现改动，未重跑全量EditMode/其余PlayMode，不做长时人工、第二机/全新克隆或整体性能优化；没有新增音效或ZIP/Releases。
+
+关键数据流：现有CombatShot/Clock→私有普攻助手→帧/几何/粒子池，仅渲染；未实际命中的事件不伪造爆燃。每帧重采样而非独立计时，暂停停帧，重开清理。只在首次塔露拉普攻时创建助手；深度测试隔离于原FireRainAdditive。
+
 ## 2026-11-03：霜星手动冰封与正常商店混编
 
 用户批准霜星看稿后，在具体范围确认中要求同时纳入高难度商店。继续codex/project-layout-scenes / PR53；保留既有未跟踪.vscode与ProjectSettings/PackageManagerSettings.asset，不提交覆盖。

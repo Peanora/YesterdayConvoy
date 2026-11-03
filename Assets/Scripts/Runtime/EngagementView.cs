@@ -8,6 +8,7 @@ namespace YesterdayConvoy
     {
         private sealed class ShotView { public LineRenderer Trail, Impact, Rays, Ink; public SpriteRenderer Face; }
         private sealed class Puff { public LineRenderer Ring; public Vector3 Position; public double Time; public bool Death; }
+        private TalulahAttackVfx talulahAttackVfx;
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
@@ -120,6 +121,8 @@ namespace YesterdayConvoy
             }
             }
             else { kroos.enabled=range.enabled=false; foreach(var v in extraVisuals) v.enabled=false; }
+            if(talulahAttackVfx==null)talulahAttackVfx=new TalulahAttackVfx(transform);
+            talulahAttackVfx.Begin();
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {
@@ -138,6 +141,7 @@ namespace YesterdayConvoy
                 }
                 PresentShot(shots[i], modelShots[i], b, cam);
             }
+            talulahAttackVfx?.End();
             foreach (var unit in b.Units)
             {
                 if (spawned.Add(unit.EntityId)) { AddPuff(unit.Motion.Position, time, false); Play(click, 0.4f); }
@@ -280,34 +284,9 @@ namespace YesterdayConvoy
         private void PresentTalulahSlash(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
         {
             v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
-            float age=(float)(b.Clock-shot.StartedAt),hitAge=(float)(b.Clock-shot.ImpactAt);
-            Vector3 origin=shot.Origin+cam.transform.up*.72f,end=shot.Destination+cam.transform.up*.75f;
-            float face=cam.transform.InverseTransformDirection(end-origin).x<0 ? -1 : 1;
-            if(age>=.38f && age<.78f)
-            {
-                float progress=Mathf.Clamp01((age-.38f)/.28f),alpha=Mathf.Clamp01((.78f-age)/.14f);
-                v.Ink.enabled=v.Trail.enabled=true; v.Ink.loop=v.Trail.loop=false;
-                v.Ink.positionCount=v.Trail.positionCount=24;
-                v.Ink.widthMultiplier=.16f; v.Trail.widthMultiplier=.075f;
-                v.Ink.sortingOrder=23000; v.Trail.sortingOrder=23001;
-                v.Ink.startColor=v.Ink.endColor=new Color(.10f,.015f,.025f,alpha);
-                v.Trail.startColor=new Color(1,.14f,.015f,alpha); v.Trail.endColor=new Color(1,.92f,.50f,alpha);
-                Vector3 center=Vector3.Lerp(origin,end,progress*.75f);
-                for(int j=0;j<24;j++)
-                {
-                    float angle=(Mathf.Lerp(1.9f,-1.3f,j/23f)+progress*.65f);
-                    Vector3 point=center+cam.transform.right*(face*Mathf.Cos(angle)*.82f)+cam.transform.up*(Mathf.Sin(angle)*.78f);
-                    v.Ink.SetPosition(j,point); v.Trail.SetPosition(j,point);
-                }
-            }
-            if(v.Face!=null && hitAge>=0 && hitAge<.54f)
-            {
-                var frames=owner.Definition.Card.ArticulatedArt.ImpactFrames;
-                v.Face.enabled=true; v.Face.sprite=frames[Mathf.Clamp((int)(hitAge*24),0,frames.Count-1)];
-                v.Face.transform.position=end; v.Face.transform.rotation=cam.transform.rotation;
-                v.Face.transform.localScale=Vector3.one*.85f; v.Face.color=new Color(1,.78f,.65f,1-hitAge/.54f);
-                v.Face.sortingOrder=23002;
-            }
+            if(v.Face!=null)v.Face.enabled=false;
+            if(talulahAttackVfx==null)talulahAttackVfx=new TalulahAttackVfx(transform);
+            talulahAttackVfx.Present(shot,b.Clock,cam);
         }
 
         private void Play(AudioClip clip, float volume)
@@ -345,12 +324,13 @@ namespace YesterdayConvoy
 
         private void ClearTransient()
         {
+            talulahAttackVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
-        private void OnDestroy() { ClearTransient(); if (material != null) Destroy(material); }
+        private void OnDestroy() { ClearTransient(); talulahAttackVfx?.Dispose(); if (material != null) Destroy(material); }
     }
 }
