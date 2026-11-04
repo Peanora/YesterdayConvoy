@@ -159,7 +159,7 @@
     "Verified original bundle MD5; UnityPy 1.25.4 with public MooncellWiki/UnityPy AK LZ4 adapter; preview-only Windows platform metadata conversion.",
     "Original shaders rendered in separate Unity 6000.6.5f1 Vulkan project. Raw native shaders failed support checks under default Direct3D; raw bundles are not runtime dependencies.",
     "Deterministic particle seed 7439. Native Animator sampling. Render each effect over black and white in RGBAFloat: RGB=black render; alpha=1-mean(white-black).",
-    "Store sqrt(RGB/32) and effective alpha in lossless PNG. Private runtime shader decodes to premultiplied additive/alpha composition. Linear import, alphaIsTransparency=false, no mipmaps/compression.",
+    "Store sqrt(RGB/32) and effective alpha in lossless source PNG. Private runtime shader decodes premultiplied additive/alpha composition. Linear import, alphaIsTransparency=false, no mipmaps; high-quality BC7 Standalone override reduces player size and texture memory; source PNG bytes retained.",
     "30fps; 4x4 pages, 256px cells or 512px cells for effects wider than 8 world units. Per-clip anchor/world extent; transparent tails trimmed.",
     "Runtime mappings/mounts/scales authored to fit approved V2 and current game; flattened camera-facing output is not a full original 3D effect/script port."
   ],
