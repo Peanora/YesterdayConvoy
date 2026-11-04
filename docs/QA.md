@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-04：塔露拉普攻V8
+
+任务[#58](https://github.com/Peanora/YesterdayConvoy/issues/58)，从main 220741f建立codex/talulah-attack-flipbook-v8。特效源码7f779ef，最终构建源码d510f65；后续交付文档不改变可执行内容。运行图集SHA256、完整生成提示词和权利记录见[独立来源记录](art/source-records/talulah-v8-fire.json)，新素材未被忽略，Resources依赖与必要.meta一起提交。
+
+- `artifacts/talulah-v8-fit-play.xml`：最终地面适配2/2 GPU通过；`talulah-v8-related-play.xml`最终7/7，`talulah-v8-shop-play.xml`3/3，共10个不同相关场景用例通过，非全量PlayMode。
+- 实际单怪攻击检查起焰前无特效、真实命中后绘制、帧持续前进、GPU像素差、暂停时钟/帧/位置冻结、尾部消失、重开/换入口清理；原手动火雨保持。左右攻击为真实战斗模型的专用夹具，检查整体镜像、并发材质帧独立与地形遮挡，不称为自然关卡双向录像。
+- `artifacts/talulah-v8-actual.png`是最终Unity相机真实攻击截图；`talulah-v8-directions.png`是上述方向夹具截图。首轮下方焰尾被地面裁平，保留深度测试后通过画布尺寸和高度适配修正，末次截图已人工查看。
+- `artifacts/talulah-v8-edit.xml`：完整356/356 EditMode通过；仓库静态检查通过。相关商店回归覆盖第一关结算、购买塔露拉、第二关拖动部署、技力和原火雨。
+- 首次专用Player检查发现新Campaign默认入口会覆盖旧塔露拉诊断流程；补充CampaignBootstrap私有参数路由至MonsterTrial，无场景文件或正常游玩入口改变。不是火雨数值回归；修复后重新构建并通过专用Player检查，不以首轮失败冒充通过。
+- `artifacts/talulah-v8-final-build.log`：Unity 6000.6.5f1 Windows x64 Development构建1778282995 bytes、0错误，后处理目录781705361 bytes；图集及Shader在构建资源报告中。`Builds/Windows/YesterdayConvoy.exe`对应源码d510f65，EXE SHA256 `b70442f90f50cd91f7af7bf2272602645fc5d02c4d3156fb221fc27c328d2436`；分发必须连同_Data、UnityPlayer.dll及其余依赖整个目录一起携带。
+- 最终独立Player `talulah-v8-final-tower-player.log`塔露拉13项全True，`talulah-v8-final-player.log`高难度两关闭环9项全True，均退出0；专用入口路由修复通过这次最终Player验证。没有把Editor GPU截图写作独立Player截图。
+
+本轮不声称全量PlayMode、长时平衡、性能优化、第二台电脑或全新克隆测试完成。工程外V8预览与游戏GPU证据分开；没有重画人物或提取参考录屏像素。
+
 ## 2026-11-04：三阶段与首批羁绊接入
 
 基于实时main b4b8b2c，新分支codex/synergy-first-loop吸收前一轮企划提交作为依赖；人类具体确认共享接口、场景和构建清单范围。独立新增Campaign/SynergyTrial，保留原两场景与旧试验；两项原本地未跟踪文件不提交覆盖。规格/关键连接见[v1.1](proposals/CAMPAIGN-SYNERGY-v1.1.md)。
