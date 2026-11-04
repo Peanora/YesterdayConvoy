@@ -260,7 +260,7 @@ namespace YesterdayConvoy
                     clone.SetActive(true);
                 }
                 view.gameObject.SetActive(!Battle.StrongholdInTransit(unit.EntityId));
-                view.position=unit.Motion.Position;
+                view.position=unit.Motion.Position+unit.VisualOffset;
             }
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) CancelInteraction();
             var selectedUnit=Battle.FindUnit(selectedEntityId);

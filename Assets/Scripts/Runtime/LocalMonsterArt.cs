@@ -27,9 +27,9 @@ namespace YesterdayConvoy
         }
         internal static LocalMonsterArt For(string cardId)
         {
-            if(cardId==null||!cardId.StartsWith("CARD_M",StringComparison.Ordinal))return null;
-            string task=cardId.Substring(5);
-            if(task.Length!=3||!int.TryParse(task.Substring(1),out int number)||number<2||number>38)return null;
+            if(cardId==null||cardId!=CampaignBalance.GolemCardId&&!cardId.StartsWith("CARD_M",StringComparison.Ordinal))return null;
+            string task=cardId==CampaignBalance.GolemCardId?"GOLEM":cardId.Substring(5);
+            if(task!="GOLEM"&&(task.Length!=3||!int.TryParse(task.Substring(1),out int number)||number<2||number>38))return null;
             if(cache.TryGetValue(task,out var prior))return prior;
             try
             {

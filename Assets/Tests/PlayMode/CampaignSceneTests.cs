@@ -25,7 +25,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.SynergySandbox);Assert.That(c.ShopVisible);Assert.That(c.Battle.ReunionTier,Is.EqualTo(6));Assert.That(c.Battle.SnowTier,Is.EqualTo(4));
             Assert.That(Object.FindAnyObjectByType<AuthoredBattlefield>(),Is.Not.Null);
             int gold=c.Shop.Gold;
-            for(int i=0;i<8;i++)Assert.That(c.CommissionCampaignCard("CARD_M11").Success);
+            for(int i=0;i<8;i++)
+            {
+                if(c.Shop.Available("CARD_M11")>0)Assert.That(c.CommissionCampaignCard("CARD_M11").Success);
+                else {int slot=Enumerable.Range(0,5).First(n=>c.Shop.Offers[n]=="CARD_M11");Assert.That(c.PurchaseShopCard(slot).Success);}
+            }
             var state=c.Battle.FindCard("CARD_M11");Assert.That(state.Settings.Health,Is.EqualTo(405));Assert.That(state.Settings.DeploymentCost,Is.EqualTo(4));Assert.That(state.Settings.DeploymentLimit,Is.EqualTo(8));
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count(p=>p.Id=="CARD_M11"),Is.EqualTo(1));
             Assert.That(c.CommissionCampaignCard("CARD_M11").Success,Is.False);Assert.That(c.StartLoopNextBattle());

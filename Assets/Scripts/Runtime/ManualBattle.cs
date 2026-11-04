@@ -63,6 +63,11 @@ namespace YesterdayConvoy
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool SynergySupport {get;internal set;}
+        public bool Golem {get;internal set;}
+        public Vector3 VisualOffset {get;internal set;}
+        internal int LastGolemProc;
+        internal float InfectionBlast,InfectionBlastRadius;
+        internal bool InfectionBlastDone;
         public float SynergyShield {get;internal set;}
         public double SynergyShieldUntil {get;internal set;}
         public bool Active => Resolution == UnitResolution.Active;
@@ -302,11 +307,11 @@ namespace YesterdayConvoy
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
             unit.NextIceRingAt=Clock+8.5;
-            if(EngagementEnabled&&CombatSettings.Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
-            if(EngagementEnabled && (CombatSettings.Effects.ArtsBarrier || CombatSettings.Effects.Mudrock))
+            if(EngagementEnabled&&UnitCombat(unit).Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
+            if(EngagementEnabled && (UnitCombat(unit).Effects.ArtsBarrier || UnitCombat(unit).Effects.Mudrock))
             {
-                unit.MaxHealth=unit.Health=Settings.Health*1.5f;
-                unit.ArtsBarrierLayerSize=Settings.Health*(CombatSettings.Effects.Mudrock ? 5500f/45000 : .2f);
+                unit.MaxHealth=unit.Health=spawn.Health*1.5f;
+                unit.ArtsBarrierLayerSize=spawn.Health*(UnitCombat(unit).Effects.Mudrock ? 5500f/45000 : .2f);
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
             // Commit together only after all preconditions and entity initialization succeed.
@@ -316,7 +321,7 @@ namespace YesterdayConvoy
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
-            OnMusterDeployment(unit);
+            OnInfectionDeployment(unit);OnMusterDeployment(unit);
             return receipt;
         }
 

@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         private TalulahAttackVfx talulahAttackVfx;
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
+        private readonly List<LineRenderer> infectionViews=new List<LineRenderer>();
         private readonly List<LineRenderer> shatterViews=new List<LineRenderer>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
         private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
@@ -77,6 +78,12 @@ namespace YesterdayConvoy
                     if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
                     else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
                 }
+            for(int i=0;i<b.InfectionBursts.Count;i++)
+            {
+                if(i>=infectionViews.Count)infectionViews.Add(CreateLine("Infection death burst",.12f));
+                var e=b.InfectionBursts[i];float age=(float)(time-e.At);var line=infectionViews[i];line.enabled=e.Resolved&&age>=0&&age<.65f;
+                if(line.enabled)Ring(line,e.Position+Vector3.up*.12f,Mathf.Lerp(.1f,e.Radius,age/.65f),new Color(1,.48f,.12f,1-age/.65f),null);
+            }
             for(int i=0;i<b.ShatterEvents.Count;i++)
             {
                 if(i>=shatterViews.Count)shatterViews.Add(CreateLine("Snow synergy shatter",.10f));
@@ -335,6 +342,7 @@ namespace YesterdayConvoy
             talulahAttackVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
+            foreach(var ring in infectionViews)Destroy(ring.gameObject);infectionViews.Clear();
             foreach(var ring in shatterViews)Destroy(ring.gameObject);shatterViews.Clear();
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();

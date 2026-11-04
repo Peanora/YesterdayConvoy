@@ -10,13 +10,13 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
-            if(!sandbox&&Array.IndexOf(args,"-synergySandboxSmokeTest")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
+            if(!sandbox&&(Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0)){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
             if(Array.Exists(args,a=>a=="-frostSealSmokeTest"||a=="-lateBattleShopSmokeTest"||a=="-battleShopLoopSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");yield break;}
             var controller=FindAnyObjectByType<ManualBattleController>();
-            bool smoke=Array.IndexOf(args,"-campaignSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0;
+            bool smoke=Array.IndexOf(args,"-campaignSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0;
             if(smoke)Application.runInBackground=true;
             yield return controller.PrepareCampaign(sandbox,smoke?44:0);
-            if(smoke)yield return controller.VerifyCampaign();
+            if(Array.IndexOf(args,"-advancedSynergySmokeTest")>=0)yield return controller.VerifyAdvancedSynergies();else if(smoke)yield return controller.VerifyCampaign();
         }
     }
 }

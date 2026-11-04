@@ -146,6 +146,7 @@ namespace YesterdayConvoy
         public float Vulnerability {get;internal set;}
         public float IgnoreResistance {get;internal set;}
         public bool TrueDamage {get;internal set;}
+        public bool SynergyOrder {get;internal set;}
         public bool Healing { get; }
         public CombatDamageType DamageType { get; }
         public float SplashRadius { get; }
@@ -286,7 +287,7 @@ namespace YesterdayConvoy
                     bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
-                    if(damaged)OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);
+                    if(damaged){OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
                     if(killedByHit)OnLiberatorKill(defender);
                     if(damaged&&unit.Active&&shot.HinderDuration>0)unit.HinderedUntil=Math.Max(unit.HinderedUntil,Clock+shot.HinderDuration);
                     if(shot.SplashRadius>0)
@@ -305,12 +306,16 @@ namespace YesterdayConvoy
                     float health=defender.Health;
                     DamageDefender(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType);
                     shot.DamageDealt=health-defender.Health;
+                    if(!shot.SynergyOrder)
+                    {
+                        RecordSynergyContact(unit);OnGolemHit(unit,defender);
                     HealUnit(unit,shot.DamageDealt*source.Effects.LifeSteal);
                     if(defender.Alive) defender.ArmorReduction+=source.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                     if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
                     OnSynergyDirectHit(unit,defender);
+                    }
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;

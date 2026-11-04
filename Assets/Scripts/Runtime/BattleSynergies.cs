@@ -26,15 +26,15 @@ namespace YesterdayConvoy
         public void ConfigureSupply(){if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException();GuaranteedSupply=true;}
         public bool CompleteSupply(){if(!GuaranteedSupply||Phase!=BattlePhase.Ready)return false;Phase=BattlePhase.Won;IsPaused=false;return true;}
         bool synergyEnabled,reunionRanged;
-        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false)
+        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
             synergyStars.Clear();foreach(var p in lineup)if(CampaignBalance.Supports(p.Id))synergyStars[p.Id]=p.Star;
             int reunion=synergyStars.Keys.Count(CampaignBalance.Reunion),snow=synergyStars.Keys.Count(CampaignBalance.Snow);
             ReunionTier=reunion>=6?6:reunion>=4?4:reunion>=2?2:0;SnowTier=snow>=4?4:snow>=2?2:0;
-            reunionRanged=ranged;synergyEnabled=true;ResetSynergies();
+            reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience);ResetSynergies();
         }
-        void ResetSynergies(){musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
+        void ResetSynergies(){ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
         void OnMusterDeployment(DeployedUnitState trigger)
         {
             if(!synergyEnabled||trigger.SynergySupport||ReunionTier==0||!synergyStars.ContainsKey(trigger.CardId))return;

@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     {
         public float UnitMoveMultiplier(DeployedUnitState u)
         {
-            float multiplier=EngagementEnabled&&CombatSettings.Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
+            float multiplier=EngagementEnabled&&UnitCombat(u).Effects.Harvester&&u!=null&&u.HarvesterPhase==HarvesterPhase.Combat?6:1;
             if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&HasTacticalCommand)multiplier*=1+.3f/u.Motion.Speed;
             if(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction)multiplier*=1+.1f/u.Motion.Speed;
             if(u!=null&&Clock<u.HinderedUntil)multiplier*=.2f;
@@ -39,7 +39,7 @@ namespace YesterdayConvoy
             {
                 // This is a persistent area aura, including camouflaged defenders.
                 if(!d.Alive||GroundDistance(d.Position,u.Motion.Position)>2.5f)continue;
-                ApplyNeuralDamage(d,CombatSettings.UnitAttack*.2f);hit=true;
+                ApplyNeuralDamage(d,UnitCombat(u).UnitAttack*.2f);hit=true;
             }
             if(hit){u.HarvesterAuraTicks++;u.LastHarvesterAuraAt=Clock;}
             return false;

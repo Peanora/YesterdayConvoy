@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-04：三条扩展羁绊与36卡池
+
+基线实时main `220741f`，新分支`codex/synergy-infection-guerrilla-mudrock`。人类确认公共接口与巨像预览，范围见[v1.2](proposals/SYNERGY-EXPANSION-v1.2.md)。保留场景地形/Prefab/包/工程设置及原两个未跟踪项。
+
+- `synergy2-author.log`、`synergy2-compile.log`：GOLEM_SUPPORT_ASSET_PASS，显式创建支援配置、导入原作图集并实际编译通过。
+- `synergy2-final-edit.xml`完整367/367通过。后增半令排除前半参与者边界，`synergy2-boundary-edit.xml`12/12通过，合计368个不同逻辑用例有通过记录，不称为一次完整368。覆盖卡池/五费排除、原库存/星级、分体扣费/穿门0/固有自爆分摊、死亡爆裂幂等、主副形态、军令不递归、半令、暂停/无目标不消费、巨像一次部署/成长和混编固有能力。
+- `synergy2-play.xml`首轮7/8：新4项均通过。旧升星用例最后一张卡已被商店占库而委托失败；用例改为优先购买实际商品，保留九张库存规则。
+- `synergy2-full-play.xml`89/90：巨像暂停生成正确使用Move首帧，用例误要求Idle，修为检查真实GOLEM库及帧0，不改暂停逻辑。
+- `synergy2-final-full-play.xml`完整91/91 GPU通过：36卡/四样板、形态锁定/分体、真实军令、暂停拖动巨像/完整攻击，以及自然胜利获4培养经验、返回整备进入II级；原怪物/守军/两关商店和旧羁绊一并回归。
+
+未做13关完整自然通关、长期经济/强度人工平衡、第二机或新克隆验证。自然胜利证据仅限本次验证地图与部署路径，不承诺全部随机构筑必胜。无ZIP/Releases。构建与独立Player结果将在实际运行后补记。
+
 ## 2026-11-04：三阶段与首批羁绊接入
 
 基于实时main b4b8b2c，新分支codex/synergy-first-loop吸收前一轮企划提交作为依赖；人类具体确认共享接口、场景和构建清单范围。独立新增Campaign/SynergyTrial，保留原两场景与旧试验；两项原本地未跟踪文件不提交覆盖。规格/关键连接见[v1.1](proposals/CAMPAIGN-SYNERGY-v1.1.md)。

@@ -22,17 +22,17 @@ namespace YesterdayConvoy
     {
         readonly List<CorrosiveBubble> bubbles=new List<CorrosiveBubble>();
         public IReadOnlyList<CorrosiveBubble> CorrosiveBubbles=>bubbles.AsReadOnly();
-        public bool FirstSpeakerCasting(DeployedUnitState u)=>EngagementEnabled&&CombatSettings.Effects.FirstSpeaker&&u!=null&&u.Active&&Clock<u.BubbleStartedAt+5;
+        public bool FirstSpeakerCasting(DeployedUnitState u)=>EngagementEnabled&&UnitCombat(u).Effects.FirstSpeaker&&u!=null&&u.Active&&Clock<u.BubbleStartedAt+5;
 
         bool StepFirstSpeaker(DeployedUnitState u)
         {
             if(FirstSpeakerCasting(u)){u.IsMoving=u.HasCombatTarget=false;return true;}
             if(Clock+1e-6<Math.Max(u.SpawnTime+10,u.NextBubbleAt))return false;
-            var target=ChooseDefender(u,CombatSettings.UnitRange);if(target==null)return false;
+            var target=ChooseDefender(u,UnitCombat(u).UnitRange);if(target==null)return false;
             u.BubbleStartedAt=Clock;u.NextBubbleAt=Clock+25;u.NextAttackTime=Clock+5;
             u.IsMoving=u.HasCombatTarget=false;
             bubbles.Add(new CorrosiveBubble{SourceId=u.EntityId,Origin=u.Motion.Position,Anchor=target.Position,
-                StartedAt=Clock,Attack=CombatSettings.UnitAttack*UnitAttackMultiplier(u)*.6f});
+                StartedAt=Clock,Attack=UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.6f});
             return true;
         }
         static bool InBubbleCross(Vector3 position,Vector3 anchor)
