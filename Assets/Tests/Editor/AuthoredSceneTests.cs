@@ -10,7 +10,7 @@ namespace YesterdayConvoy.Tests
     {
         [Test]public void BothMapsExistAsSceneAssetsAndShopTerrainHasPersistentMaterialsAndMeshes()
         {
-            Assert.That(Directory.GetFiles("Assets","*.unity",SearchOption.AllDirectories).Length,Is.EqualTo(2));
+            Assert.That(Directory.GetFiles("Assets","*.unity",SearchOption.AllDirectories).Length,Is.EqualTo(4));
             EditorSceneManager.OpenScene(ShopMapTools.ScenePath);
             var root=Object.FindAnyObjectByType<AuthoredBattlefield>();Assert.That(root,Is.Not.Null);
             var renderers=root.GetComponentsInChildren<Renderer>();Assert.That(renderers.Length,Is.GreaterThan(500));

@@ -159,6 +159,8 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(310,i*34+3,80,26),"待制作",menuSmall); GUI.color=previous;
             }
             GUI.EndScrollView();
+            if(GUI.Button(new Rect(790,538,426,26),"三阶段挑战 · 13关",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
+            if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
             GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
         }

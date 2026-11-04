@@ -62,6 +62,9 @@ namespace YesterdayConvoy
         internal double NextDroneAreaAt;
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
+        public bool SynergySupport {get;internal set;}
+        public float SynergyShield {get;internal set;}
+        public double SynergyShieldUntil {get;internal set;}
         public bool Active => Resolution == UnitResolution.Active;
         public bool IsBlocked { get; internal set; }
         public bool HasCombatTarget { get; internal set; }
@@ -223,7 +226,7 @@ namespace YesterdayConvoy
         public void Restart()
         {
             RunId++;
-            units.Clear(); committed.Clear(); sequence = 0;
+            units.Clear(); committed.Clear(); sequence = 0;ResetSynergies();
             DP = Settings.InitialDP; RemainingUses = Settings.DeploymentLimit; Defense = Settings.InitialDefense;
             Clock = nextDeploymentTime = nextShotTime = 0;
             ResetCards();
@@ -236,6 +239,7 @@ namespace YesterdayConvoy
         public void Begin()
         {
             if (Phase != BattlePhase.Ready) return;
+            if(GuaranteedSupply){CompleteSupply();return;}
             Phase = BattlePhase.Running;
             EvaluateEnd();
         }
@@ -312,6 +316,7 @@ namespace YesterdayConvoy
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
+            OnMusterDeployment(unit);
             return receipt;
         }
 

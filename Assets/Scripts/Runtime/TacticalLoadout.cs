@@ -15,6 +15,7 @@ namespace YesterdayConvoy
         private ManualBattleDefinition DeploymentDefinition=>RosterDefinition(Mathf.Clamp(selectedRosterIndex,0,RosterCount-1));
         public CardDefinition CardForUnit(DeployedUnitState unit)
         {
+            if(unit!=null&&CampaignActive&&shopDefinitions.TryGetValue(unit.CardId,out var data))return data.Card;
             if(unit!=null)for(int i=0;i<RosterCount;i++)if(RosterDefinition(i).Card.CardId==unit.CardId)return RosterDefinition(i).Card;
             return definition.Card;
         }

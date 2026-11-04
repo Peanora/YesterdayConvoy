@@ -82,6 +82,7 @@ namespace YesterdayConvoy
             float resistance=UnitResistance(unit);
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
+            if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;if(damage<=0)return true;}
             if(CombatSettings.Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
@@ -238,7 +239,8 @@ namespace YesterdayConvoy
         }
         private void ScheduleDeathEffect(DeployedUnitState unit)
         {
-            if(CombatSettings.Effects.BlastAttack>0) deathBlasts.Add(new DeathBlast(unit,Clock,CombatSettings.Effects));
+            var effects=UnitCombat(unit).Effects;
+            if(effects.BlastAttack>0) deathBlasts.Add(new DeathBlast(unit,Clock,effects));
         }
         public bool TryApplyCold(string defenderId,float duration)
         {
@@ -247,6 +249,12 @@ namespace YesterdayConvoy
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var defender=FindDefender(defenderId);
             if(defender==null || !defender.Alive) return false;
+            if(synergyEnabled)
+            {
+                if(defender.FrozenUntil>Clock)return true;
+                if(defender.FrozenUntil>0&&Clock<defender.FrozenUntil+1.2)return false;
+                if(defender.ColdUntil>Clock){defender.FrozenUntil=Clock+1.2;defender.ColdUntil=defender.FrozenUntil;return true;}
+            }
             bool cold=defender.ColdUntil>Clock || defender.FrozenUntil>Clock;
             if(cold) defender.FrozenUntil=Math.Max(defender.FrozenUntil,Clock+duration);
             else defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)/.7;
@@ -255,11 +263,10 @@ namespace YesterdayConvoy
         }
         private void ResolveDeathEffects()
         {
-            var effects=CombatSettings.Effects;
             foreach(var blast in deathBlasts)
             {
                 if(blast.Resolved || Clock+1e-6<blast.DetonateAt) continue;
-                blast.Resolved=true;
+                blast.Resolved=true;var effects=UnitCombat(FindUnit(blast.SourceId)).Effects;
                 // Source is already dead. A death burst must survive its source and fire once.
                 foreach(var defender in defenders)
                 {

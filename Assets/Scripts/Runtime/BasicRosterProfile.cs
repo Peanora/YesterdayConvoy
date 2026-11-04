@@ -9,8 +9,9 @@ namespace YesterdayConvoy
     {
         public ManualBattleSettings Unit {get;}
         public EngagementSettings Combat {get;}
-        public BasicRosterProfile(ManualBattleSettings unit,EngagementSettings combat)
+        public BasicRosterProfile(ManualBattleSettings unit,EngagementSettings combat,bool campaign=false)
         {
+            if(campaign){if(!CampaignBalance.Supports(unit.CardId))throw new ArgumentException("Unsupported campaign card");Unit=unit;Combat=combat;return;}
             string[] allowed={"CARD_M02","CARD_M03","CARD_M05","CARD_M08","CARD_ORIGINIUM_SLUG","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
             bool talulah=unit.CardId=="CARD_TALULAH_TRIAL"&&unit.UnitId=="TALULAH"&&combat.HasSkill&&combat.FireRain&&combat.CanAttack;
             bool frost=unit.CardId=="CARD_M14"&&combat.FrostSeal&&combat.Effects.FrostNova&&combat.HasSkill&&combat.CanAttack;
@@ -31,7 +32,7 @@ namespace YesterdayConvoy
         {
             if(!EngagementEnabled||Phase!=BattlePhase.Ready||units.Count!=0)throw new InvalidOperationException("Configure roster before deployment.");
             var snapshot=(profiles??throw new ArgumentNullException(nameof(profiles))).ToArray();
-            if(snapshot.Any(p=>p==null||p.Unit.GateDamage!=Settings.GateDamage)||snapshot.Select(p=>p.Unit.CardId).Distinct().Count()!=snapshot.Length)
+            if(snapshot.Any(p=>p==null)||snapshot.Select(p=>p.Unit.CardId).Distinct().Count()!=snapshot.Length)
                 throw new ArgumentException("Duplicate, missing or incompatible roster profile.");
             rosterProfiles.Clear();foreach(var p in snapshot)rosterProfiles.Add(p.Unit.CardId,p);
         }

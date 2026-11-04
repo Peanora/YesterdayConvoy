@@ -13,10 +13,11 @@ namespace YesterdayConvoy
         static readonly Color LoopMuted=new Color(.71f,.74f,.77f);
         Rect ActiveShopPanelRect=>ShopPanelRect;
         Rect CurrentShopBattlefieldRect=>Loop==null?ShopBattlefieldRect:new Rect(0,56,1280,496);
-        static Rect LoopRosterRect(int index)=>new Rect(22+index*121,581,112,124);
-        static Rect LoopMenuRect=>new Rect(1034,62,226,186);
+        Rect LoopRosterRect(int index)=>CampaignActive?new Rect(22+index*106,581,100,124):new Rect(22+index*121,581,112,124);
+        static Rect LoopMenuRect=>new Rect(1034,62,226,230);
         public Rect ShopPieceRect(int bench)
         {
+            if(CampaignActive)return CampaignPieceRect(bench);
             if(Loop==null||Loop.CanShop)return ShopBenchRect(bench);
             if(bench<0||bench>=shop.Bench.Count)return Rect.zero;
             var piece=shop.Bench[bench];int index=shopLineup.IndexOf(piece.Id);
@@ -85,6 +86,7 @@ namespace YesterdayConvoy
                 {
                     Fill(new Rect(350,514,580,30),LoopInk);GUI.Label(new Rect(365,514,550,30),shopMessage,LoopText(13,TextAnchor.MiddleCenter));
                 }
+                DrawCampaignControls();
                 if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
                 if(Debug.isDebugBuild&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
@@ -102,7 +104,8 @@ namespace YesterdayConvoy
                 DrawTestPortrait(new Rect(r.x+2,r.y+2,r.width-4,96),OriginalTalulahArt.CardPortrait(card));
                 Fill(new Rect(r.x,r.y,33,30),LoopInk);GUI.Label(new Rect(r.x+6,r.y-1,32,31),state.Settings.DeploymentCost.ToString(),LoopText(23));
                 Fill(new Rect(r.x,r.yMax-26,r.width,26),LoopInk);GUI.Label(new Rect(r.x+6,r.yMax-26,r.width-12,26),card.DisplayName,LoopText(card.DisplayName.Length>6?11:12));
-                GUI.Label(new Rect(r.x+58,r.y+3,48,22),state.RemainingUses+"次",LoopText(11,TextAnchor.MiddleRight));
+                GUI.Label(new Rect(r.x+45,r.y+3,48,22),state.RemainingUses+"次",LoopText(11,TextAnchor.MiddleRight));
+                if(CampaignActive)GUI.Label(new Rect(r.x+3,r.y+75,r.width-6,22),new string('★',shop.Bench.Where(p=>p.Id==id).Max(p=>p.Star)),LoopText(13));
                 double cd=Battle.CardCooldown(id);
                 if(cd>0||state.RemainingUses==0||Battle.DP<state.Settings.DeploymentCost)
                 {
@@ -148,21 +151,22 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(225,168,330,30),"第"+Loop.Stage+"关结束"+(loopWasTestSettled?" · 测试结算":""),LoopText(14,TextAnchor.MiddleLeft,LoopMuted));
             GUI.Label(new Rect(224,210,345,88),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(54));
             GUI.Label(new Rect(225,312,320,32),shopMapCopy.mapTitle,LoopText(19));
-            GUI.Label(new Rect(225,356,320,48),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(13,TextAnchor.UpperLeft,LoopMuted));
+            GUI.Label(new Rect(225,356,320,48),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(13,TextAnchor.UpperLeft,LoopMuted));
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,167,500,30),"本场收入",LoopText(14,TextAnchor.MiddleLeft,LoopMuted));
             for(int i=0;i<3;i++){float y=218+i*46;GUI.Label(new Rect(590,y,270,35),names[i],LoopText(18));GUI.Label(new Rect(960,y,126,35),"+"+values[i],LoopText(18,TextAnchor.MiddleRight));Fill(new Rect(590,y+39,496,1),new Color(.26f,.30f,.34f));}
             GUI.Label(new Rect(590,370,200,42),"金币合计",LoopText(18));GUI.Label(new Rect(870,364,216,54),$"{shop.Gold-reward.Total} → {shop.Gold}",LoopText(31,TextAnchor.MiddleRight,new Color(.94f,.83f,.61f)));
-            GUI.Label(new Rect(590,429,490,30),$"经验 +{reward.Experience}    等级 {shop.Level}    {shop.XP}/{ShopTrialModel.Experience[shop.Level]}",LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
-            if(LoopButton(new Rect(590,480,496,48),Loop.Phase==BattleShopPhase.Settlement?"前往商店":"开始新挑战",true))
-            {if(Loop.Phase==BattleShopPhase.Settlement)OpenLoopShop();else StartBattleShopLoop(0,Loop.LateGame);}
+            GUI.Label(new Rect(590,429,490,30),$"经验 +{reward.Experience}    等级 {shop.Level}    {shop.XP}/{shop.NextLevelXP}",LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
+            if(LoopButton(new Rect(590,480,496,48),Loop.Phase==BattleShopPhase.Settlement?"前往商店":SynergySandbox?"返回整备继续验证":"开始新挑战",true))
+            {if(Loop.Phase==BattleShopPhase.Settlement)OpenLoopShop();else if(SynergySandbox)ReplaySandbox();else RestartCurrentRun();}
         }
         void DrawLoopMenu()
         {
             Fill(LoopMenuRect,LoopPanel);
             if(LoopButton(new Rect(1046,74,202,34),Muted?"开启音效":"关闭音效"))Muted=!Muted;
-            if(LoopButton(new Rect(1046,116,202,34),"重新开始本次挑战")){int seed=Loop.Seed;bool late=Loop.LateGame;StartBattleShopLoop(seed,late);}
+            if(LoopButton(new Rect(1046,116,202,34),"重新开始本次挑战")){int seed=Loop.Seed;bool late=Loop.LateGame;RestartCurrentRun();}
             if(LoopButton(new Rect(1046,158,202,34),"返回测试选择"))ReturnToTrialScene();
+            if(CampaignActive&&Loop.CanDeploy&&LoopButton(new Rect(1046,242,202,34),"重开本关（保留运营）"))RestartCampaignEncounter();
             if(LoopButton(new Rect(1046,200,202,34),"关闭菜单"))loopMenuOpen=false;
         }
         void ReturnToTrialScene(){LeaveShopTrial();UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");}

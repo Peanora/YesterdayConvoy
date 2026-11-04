@@ -310,6 +310,7 @@ namespace YesterdayConvoy
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
                     if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
+                    OnSynergyDirectHit(unit,defender);
                 }
             }
             foreach(var d in defenders) d.BlockedCount=0;

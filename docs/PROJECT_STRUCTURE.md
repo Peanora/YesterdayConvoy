@@ -4,9 +4,11 @@
 
 ## 在Unity里查看地图
 
+- `Assets/Scenes/Campaign.unity`：三阶段13关挑战，当前默认构建入口；地形直接保存在场景，关卡仅配置化更换守军。
+- `Assets/Scenes/SynergyTrial.unity`：独立羁绊验证，8级、无限金币，整合/雪怪与升星均真实生效。
 - `Assets/Scenes/MonsterTrial.unity`：怪物试用入口。地图已保存，未运行时即可查看、选择并编辑。Play后选择怪物或进入既有守军技能样板。
 - `Assets/Scenes/BattleShop.unity`：最新六星防线与战后商店。地图地块、工事、材质保存于场景；Play后仍是两关演示与霍利屹原版横卡商店。第二关复用同一地图，只改变守军配置，并不是另一张隐藏地图。
-- Unity菜单 `Yesterday Convoy → Scenes` 可直接打开这两张地图。场景不在Hierarchy里自动全部列出；Hierarchy只列当前打开的场景。
+- Unity菜单 `Yesterday Convoy → Scenes` 可直接打开四个入口。场景不在Hierarchy里自动全部列出；Hierarchy只列当前打开的场景。
 
 ## 目录责任
 
@@ -32,7 +34,7 @@
 3. 禁止在点击Play时用循环重新生成整张地图，也不得用菜单切换同一场景中的隐藏地形生成器代替场景资产。
 4. 允许代码生成战斗角色、动态特效、部署预览和路线反馈。这些是运行表现，不是地形来源。
 5. 修改场景中的地图实例会保留到运行中；重开关卡只清战斗状态，不覆盖地形编辑。场景依赖的材质、Mesh必须为已保存资产，不能引用上次运行临时对象。
-6. 构建场景清单包含两个当前入口，正式试玩默认从BattleShop进入。新增地图须显式加入清单，并补场景引用与实际试玩验证。
+6. 构建场景清单包含Campaign、BattleShop、MonsterTrial、SynergyTrial，正式试玩默认从Campaign进入。新增地图须显式加入清单，并补场景引用与实际试玩验证。
 
 ## 清理范围
 

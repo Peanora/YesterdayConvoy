@@ -37,6 +37,7 @@ namespace YesterdayConvoy
         List<ArtSequence> CurrentBattlePlan()
         {
             var cards=defenderTrial==null?new[]{definition.Card}:new[]{defenderTrial.battle.Card}.Concat((defenderTrial.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card));
+            if(CampaignActive)cards=cards.Concat(new[]{"CARD_M07","CARD_M08"}.Where(shopDefinitions.ContainsKey).Select(id=>shopDefinitions[id].Card));
             return Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),cards,TacticalMapActive);
         }
         void RefreshArtPins()
@@ -89,7 +90,7 @@ namespace YesterdayConvoy
             if(data==null)return;
             QueueArt(Plan(data.defenders,new[]{data.battle.Card}.Concat((data.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card)),data.Tactical),()=>TryEnterDefenderSkillTrial(id),"准备守军动作");
         }
-        void PrepareNextLoopBattle()=>QueueArt(Plan(shopMapCopy.defenders,shopLineup.Select(id=>shopDefinitions[id].Card),true),()=>StartLoopNextBattle(),"准备下一关");
+        void PrepareNextLoopBattle()=>QueueArt(Plan(shopMapCopy.defenders,shopLineup.Concat(CampaignActive?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().Select(id=>shopDefinitions[id].Card),true),()=>StartLoopNextBattle(),"准备下一关");
         void WarmVisibleShop()
         {
             if(ArtLoading||shop==null||!shopVisible)return;

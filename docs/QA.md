@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-04：三阶段与首批羁绊接入
+
+基于实时main b4b8b2c，新分支codex/synergy-first-loop吸收前一轮企划提交作为依赖；人类具体确认共享接口、场景和构建清单范围。独立新增Campaign/SynergyTrial，保留原两场景与旧试验；两项原本地未跟踪文件不提交覆盖。规格/关键连接见[v1.1](proposals/CAMPAIGN-SYNERGY-v1.1.md)。
+
+- `campaign-author.log`：明确编辑器创作保存两个新场景与四项构建清单，不在运行时生成地形，复用已保存Mesh/材质和门户，原两个场景未覆盖。
+- `campaign-edit.xml`首轮350/352，两个失败是旧用例仍要求仅两张场景；改为四张及新默认入口后`campaign-final-edit.xml`352/352。继续新增完整首发角色各星/动作窗口、独立备战和Boss配置检查，`campaign-verified-edit.xml`完整355/355通过。
+- `campaign-play.xml`首轮7/8，暂停拖动用例在商店收起过渡期间立即投放；缩小重现并让用例等待实际收起，同时把羁绊控件从地图左侧中段移到战斗顶部，避免遮挡部署区域。`campaign-new-play.xml`3/3通过。
+- `campaign-natural-play.xml`4/4，包含新关真实冻结/两种直接命中/碎冰、集结援军、最终自然穿门获胜，非强制判胜。
+- `campaign-full-play.xml`完整86/86 GPU通过，覆盖原怪物、各批守军技能、原两关商店、霜星和新四项场景。
+- 最后补充奖励关按Begin也直接保送、碎冰来源不跨冻结批次累计、部署反馈显示实际升星DP：`campaign-final-boundaries.xml`11/11定向EditMode，`campaign-final-play.xml`6/6定向GPU（新四项+原两关闭环）通过。新增一个逻辑用例与先前全量合计356个不同EditMode用例有通过记录，不称为一次全量356/356。
+- 无限金币真正不扣款，500次刷新仍保留原金数和九张库；8次低费委托合到三星；正常委托每次整备限成功一次，失败不扣费/次数；独立备战达到10+2编队后拒绝额外无合成购买。各星读取真实新模式HP/攻击/DP与次数，所有首发原动作窗口保持。
+- `tools/balance/analyze_campaign_economy.py`固定种子对3/7种五费、0/3张已持有、100/140/180额外预算各10000次抽样；收入273～329含开局，最终战前242～293未扣支出。结果为获取模型，不是完整运营/通关概率，不把最后一场收入提前使用。
+
+Windows构建/独立Player另在最终构建后追加。未做完整13关自然通关、长时人工平衡、第二机或完整41卡经济策略模拟；Boss参数和300金币体验仍需试玩。其他七条羁绊、八名五费构筑专属、银狼没有因本轮批准被记作已上线。无ZIP/Releases。
+
 ## 2026-11-04：羁绊与数值企划的纸面检查
 
 本轮仅设计文档与离线分析，基线origin/main为b4b8b2c（已包含加载优化#55），分支codex/synergy-balance-plan。正文见[企划v1.0](proposals/SYNERGY-BALANCE-v1.0.md)，可编辑候选数据见[JSON](proposals/SYNERGY-BALANCE-v1.0.data.json)，复现入口`py -X utf8 tools/balance/check_synergy_plan.py`。

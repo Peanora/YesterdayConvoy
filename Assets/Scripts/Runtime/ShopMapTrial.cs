@@ -34,7 +34,7 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>!(CampaignActive&&CampaignPanelRect.Contains(point))&&(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null||visible&&Loop!=null&&!Loop.CanShop)return;
@@ -87,6 +87,7 @@ namespace YesterdayConvoy
             shopLineup.RemoveAll(id=>!shop.Bench.Any(p=>p.Id==id));
             if(autoFill)foreach(var piece in shop.Bench)
                 if(shopLineup.Count<shop.Level&&!shopLineup.Contains(piece.Id))shopLineup.Add(piece.Id);
+            if(CampaignActive&&!shop.SetLineup(shopLineup)){ShopNotice("独立备战已满，请先出售或合成");return;}
             shopDeck.Clear();foreach(string id in shopLineup)shopDeck.Add(shopDefinitions[id]);
             var effective=shopDeck.Count>0?shopDeck:new List<ManualBattleDefinition>{shopDefinitions["CARD_M08"]};
             defenderTrial.battle=effective[0];defenderTrial.rosterCards=effective.Skip(1).ToArray();definition=effective[0];
@@ -175,7 +176,7 @@ namespace YesterdayConvoy
             }
             if(!moved&&Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop))
             {
-                if(shopLineup.Contains(piece.Id))shopLineup.Remove(piece.Id);
+                if(shopLineup.Contains(piece.Id)){if(CampaignActive&&shop.Bench.Count-shopLineup.Count>=10){ShopNotice("备战已满，无法移出编队");return true;}shopLineup.Remove(piece.Id);}
                 else if(shopLineup.Count<shop.Level)shopLineup.Add(piece.Id);
                 else {ShopNotice("编队位已满，先取消其他棋子或升级");return true;}
                 SyncShopDeck(false);
@@ -244,14 +245,14 @@ namespace YesterdayConvoy
             Fill(new Rect(22,65,1236,1),new Color(.22f,.31f,.36f));
             GUI.DrawTexture(new Rect(25,25,22,22),shopCoin,ScaleMode.ScaleToFit,true);
             GUI.Label(new Rect(54,17,58,38),Loop==null?"源石":"金币",label);
-            GUI.Label(new Rect(105,12,170,44),shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
+            GUI.Label(new Rect(105,12,170,44),shop.UnlimitedGold?"∞":shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
             GUI.Label(new Rect(292,19,230,30),$"整备 {shop.Bench.Count}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
             GUI.enabled=Battle.Phase!=BattlePhase.Running;
 
             GUI.enabled=true;
             GUI.Label(new Rect(650,17,55,38),"等级",label);GUI.Label(new Rect(702,12,50,44),shop.Level.ToString(),new GUIStyle(title){fontSize=29});
-            Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/ShopTrialModel.Experience[shop.Level]),5),new Color(.27f,.78f,.84f));
-            GUI.Label(new Rect(878,18,65,34),shop.Level==10?"MAX":$"{shop.XP}/{ShopTrialModel.Experience[shop.Level]}",new GUIStyle(center){fontSize=12,normal={textColor=new Color(.72f,.85f,.91f)}});
+            Fill(new Rect(751,33,118,5),new Color(.20f,.27f,.30f));Fill(new Rect(751,33,118*(shop.Level==10?1:(float)shop.XP/shop.NextLevelXP),5),new Color(.27f,.78f,.84f));
+            GUI.Label(new Rect(878,18,65,34),shop.Level==10?"MAX":$"{shop.XP}/{shop.NextLevelXP}",new GUIStyle(center){fontSize=12,normal={textColor=new Color(.72f,.85f,.91f)}});
             GUI.enabled=prep&&(Loop==null||Loop.CanShop);
             GUI.backgroundColor=new Color(.07f,.18f,.22f);
             if(GUI.Button(new Rect(958,17,132,37),"升级     4",shopButton)){var r=shop.Upgrade();if(r.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(r.Message);}
@@ -287,7 +288,7 @@ namespace YesterdayConvoy
                 string[] tags=ShopTags(id);for(int t=0;t<tags.Length;t++){Fill(new Rect(r.x+113,r.y+46+t*17,1,12),new Color(.46f,.60f,.65f));GUI.Label(new Rect(r.x+118,r.y+40+t*17,88,23),tags[t],new GUIStyle(label){fontSize=11,normal={textColor=new Color(.76f,.88f,.92f)}});}
                 GUI.DrawTexture(new Rect(r.x+13,r.yMax-31,18,18),shopCoin,ScaleMode.ScaleToFit,true);GUI.Label(new Rect(r.x+38,r.yMax-36,45,28),role.Cost.ToString(),label);
                 if(upgrade>1){ShopBorder(r,ShopRankColor(upgrade,.6f),1);DrawShopRankBadge(new Rect(r.xMax-75,r.yMax-33,64,23),upgrade);}
-                GUI.enabled=trading&&shop.Gold>=role.Cost;
+                GUI.enabled=trading&&shop.CanAfford(role.Cost);
                 if(GUI.Button(r,GUIContent.none,GUIStyle.none))PurchaseShopCard(i);GUI.enabled=true;
             }
             Fill(new Rect(12,offset+196,1256,2),new Color(.48f,.88f,.94f,reveal*.7f));

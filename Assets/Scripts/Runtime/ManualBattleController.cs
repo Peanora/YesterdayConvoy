@@ -119,6 +119,7 @@ namespace YesterdayConvoy
 
         private ManualBattle CreateBattle()
         {
+            if(CampaignActive)return CreateCampaignBattle();
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
             var result=new ManualBattle(BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
@@ -167,20 +168,20 @@ namespace YesterdayConvoy
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
-            if(Loop!=null&&!Loop.CanDeploy)return new DeploymentReceipt(DeployFailure.NotStarted);
+            if(Loop!=null&&(!Loop.CanDeploy||Loop.RewardStage))return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
             if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
             var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
-            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
+            Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.FindCard(DeploymentDefinition.Card.CardId)?.Settings.DeploymentCost??DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
             SyncViews();
             return result;
         }
 
         public void RestartBattle()
         {
-            if(Loop!=null){StartBattleShopLoop(Loop.Seed,Loop.LateGame);return;}
+            if(Loop!=null){RestartCurrentRun();return;}
             terminalPresentationElapsed=0;
             readyIdleElapsed=0;
             notice=null;
