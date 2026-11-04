@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-04：余偏红火墙
+
+用户批准动态方向并明确追加偏红色直接接入。从实时origin/main fdbbc69建立codex/yu-firewall-vfx，仅改余的私有火墙表现、新增内部辅助/Shader、调整表现断言和文档；不改战斗模型、人物资源、其他技能、场景、Prefab、包或工程设置。已知.vscode和PackageManagerSettings.asset保留且不提交。
+
+- `artifacts/yu-firewall-play.xml`首轮4/4 GPU通过，包含第四批四名原技能场景、新火墙2项、六人真实事件场景。
+- `artifacts/yu-firewall-final-play.xml`最终色阶4/4 GPU通过，包含新火墙2项、六人真实事件和实际高难度地图完整获胜计划。与首轮合计5个不同GPU用例通过。验证原1.6秒起势后点燃、实际红色GPU像素、火焰帧变化、两个真实墙法线/中心、暂停几何与帧冻结、原技能结束后收尾、重开/切换清理；其他五名守军特效仍出现，初雪攻击间隔无攻击风雪。
+- `artifacts/yu-firewall-logic.xml`：AdvancedDefenderTests 15/15 EditMode通过，覆盖原消弹、法术穿墙元素量、近战不消除、临时生命强化/回复及第四批其余规则。没有修改这些规则。
+- [实机图](art/yu-firewall-actual.png)来自真实D22单人测试的1280×720相机RenderTexture，不含IMGUI。高难度地图也由GPU场景验证，不把项目外视频称作实机。
+
+- `artifacts/yu-firewall-build.log`：Windows x64 Development，BASELINE_BUILD_PASS **1774183498 bytes、0错误**；标准`Builds/Windows/YesterdayConvoy.exe`已更新。
+- `artifacts/yu-firewall-player.log`：独立Player高难度两关闭环`won/complete/pause/purchased/carry/reset/framing/restart/exit`全部True，`yu-firewall-player-exit.txt`退出0。此项验证独立运行通用闭环，新火墙的具体颜色/几何/生命周期由前述GPU用例验证。
+- 仓库4656个跟踪文件、Unity meta与暂存差异检查通过；新增运行Shader、源码、测试及meta均跟踪，复用的火焰/烟雾PNG原本已跟踪，没有本地媒体缺口。
+
+本轮不跑完整EditMode/其余全部PlayMode，不做长时人工平衡、整体性能优化、全新克隆或第二机。原作角色权利状态保持；火焰/烟雾复用已跟踪CC0资源，新增Shader/meta随源码。不生成ZIP/Releases，不自动合并main。
+
 ## 2026-11-03：塔露拉普攻分层表现
 
 人类确认项目外动态看稿后继续codex/project-layout-scenes / PR53。仅EngagementView私有普攻绘制、内部TalulahAttackVfx、独立Shader和Resources烟雾及测试/文档；不修改战斗模型、卡牌配置、人物动作、火雨、场景、Prefab、Packages或ProjectSettings。既有.vscode与PackageManagerSettings.asset未提交覆盖。

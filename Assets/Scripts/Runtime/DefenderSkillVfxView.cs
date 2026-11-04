@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         readonly List<SpriteRenderer> sprites=new List<SpriteRenderer>();
         readonly HashSet<(string,double)> attacks=new HashSet<(string,double)>();
         Material material;
+        YuFirewallVfx yuWall;
         int used;
         ManualBattle observedBattle;
         int observedRun=-1;
@@ -37,29 +38,31 @@ namespace YesterdayConvoy
             {
                 foreach(var sprite in sprites)Destroy(sprite.gameObject);
                 sprites.Clear();observedBattle=b;observedRun=b?.RunId??-1;
+                yuWall?.Clear();
             }
+            yuWall?.Begin();
             if(b!=null&&cam!=null)
             {
                 PresentFields(b,cam);
                 PresentShots(b,cam);
             }
             for(int i=used;i<sprites.Count;i++)sprites[i].enabled=false;
+            yuWall?.End();
         }
         void PresentFields(ManualBattle b,Camera cam)
         {
             foreach(var d in b.Defenders)
             {
+                if(d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen&&
+                    (b.DefenderWallActive(d)||yuWall!=null))
+                {
+                    if(yuWall==null){yuWall=new YuFirewallVfx(transform);yuWall.Begin();}
+                    yuWall.Present(b,d,cam);
+                }
                 if(!b.DefenderSkillActive(d))continue;
                 double age=b.Clock-d.SkillStartedAt;float alpha=Envelope(age,d.SkillActiveUntil-b.Clock);
                 if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)
                     Draw("saria-field",age,d.Position,cam,Mathf.Max(1,d.Settings.Skill.EffectRadius/1.45f),alpha,27);
-                if(d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen&&b.DefenderWallActive(d))
-                {
-                    var center=b.DefenderWallPoint(d);var axis=Vector3.Cross(d.WallNormal,Vector3.up);
-                    // Contiguous soft tongues overlap along the actual wall, not a screen-space replacement.
-                    for(int k=-12;k<=12;k++)
-                        Draw("yu-fire",age+k*.13+3,center+axis*(k*.48f),cam,.64f+.08f*Mathf.Sin((float)age*2+k),alpha*.72f,29);
-                }
             }
             foreach(var drone in b.DefenderDrones)
             {
@@ -120,6 +123,6 @@ namespace YesterdayConvoy
                 }
             }
         }
-        void OnDestroy(){if(material!=null)Destroy(material);}
+        void OnDestroy(){yuWall?.Dispose();if(material!=null)Destroy(material);}
     }
 }
