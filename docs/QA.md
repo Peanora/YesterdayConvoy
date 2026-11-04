@@ -10,7 +10,16 @@
 - `synergy2-full-play.xml`89/90：巨像暂停生成正确使用Move首帧，用例误要求Idle，修为检查真实GOLEM库及帧0，不改暂停逻辑。
 - `synergy2-final-full-play.xml`完整91/91 GPU通过：36卡/四样板、形态锁定/分体、真实军令、暂停拖动巨像/完整攻击，以及自然胜利获4培养经验、返回整备进入II级；原怪物/守军/两关商店和旧羁绊一并回归。
 
-未做13关完整自然通关、长期经济/强度人工平衡、第二机或新克隆验证。自然胜利证据仅限本次验证地图与部署路径，不承诺全部随机构筑必胜。无ZIP/Releases。构建与独立Player结果将在实际运行后补记。
+未做13关完整自然通关、长期经济/强度人工平衡、第二机或新克隆验证。自然胜利证据仅限本次验证地图与部署路径，不承诺全部随机构筑必胜。无ZIP/Releases。最终构建与独立Player结果如下。
+
+最终运行源码 `da9928c`，`synergy2-build.log`：Windows x64 Development，BASELINE_BUILD_PASS 1797467201 bytes/0 errors（后处理前），离线资源后处理1255文件、替换1193张角色PNG，目录783575272 bytes；源PNG仍随仓库保留。`Builds/Windows/BUILD_INFO.json`登记完整源码提交。
+
+- 最初隐藏窗口启动的`synergy2-player.log`停在初始化，没有完成证据，已终止该测试进程；改为正常可见窗口运行，不修改游戏逻辑。
+- `synergy2-visible-player.log`：pool/split/army/golem/paused/naturalGrowth全部True；退出文件为0，实际自然交战获得4经验再进入II级。
+- `synergy2-campaign-player.log`：passed=True、stage=13、gold=329，退出0。普通战斗为测试判胜，只证明跨关、结算、商店和补给衔接，不称13关自然通关。
+- 最终原生窗口通过computer-use实际点击：领取首补给10→21、进入商店、切换测试、进入无限验证、切换泥岩样板、开始战斗、巨像拖到红门，DP100→96且正确显示巨像，返回整备无报错。窗口留在泥岩样板整备供人类试玩；未把工具截图另存为文件。
+- 仓库4754跟踪文件及Unity元数据检查通过，全部GOLEM运行文件已跟踪、哈希与manifest一致、无100MB以上单文件。暂存差异检查通过；原.vscode/和PackageManagerSettings.asset仍未跟踪，AGENTS未提交。本轮无场景地形、Prefab、Packages或ProjectSettings差异，无ZIP/Releases。
+
 
 ## 2026-11-04：三阶段与首批羁绊接入
 
