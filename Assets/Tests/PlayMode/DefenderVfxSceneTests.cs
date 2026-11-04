@@ -32,7 +32,7 @@ namespace YesterdayConvoy.Tests
                     c.Tick(.05f);yield return null;
                     var fx=Object.FindAnyObjectByType<DefenderSkillVfxView>();
                     if(fx!=null)foreach(string key in wanted)
-                        if(!seen.Contains(key)&&fx.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.sprite!=null&&r.name.EndsWith(key)&&FrameIndex(r)>=6&&FrameIndex(r)<=20))
+                        if(!seen.Contains(key)&&(key=="yu-fire"?HasYuWall(fx.gameObject):fx.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.sprite!=null&&r.name.EndsWith(key)&&FrameIndex(r)>=6&&FrameIndex(r)<=20)))
                         {seen.Add(key);Capture("actual-map-"+key);if(key=="snow-front")recording=true;}
                     if(recording&&video<60)Capture("vfx-map-frames/"+(video++).ToString("D4"));
                 }
@@ -47,6 +47,7 @@ namespace YesterdayConvoy.Tests
         }
         static int FrameIndex(SpriteRenderer renderer)
         {string name=renderer.sprite.name;return int.TryParse(name.Substring(name.LastIndexOf('/')+1),out var index)?index:-1;}
+        static bool HasYuWall(GameObject root)=>root.GetComponentsInChildren<MeshRenderer>().Any(r=>r.enabled&&r.name=="Yu firewall / connected fire");
         [UnityTest] public IEnumerator SixLiveSkillEventsRenderFreezeAndClearWithoutAffectingCombat()
         {
             float prior=Time.timeScale;GameObject root=null;
@@ -75,7 +76,7 @@ namespace YesterdayConvoy.Tests
                             Assert.That(active.Count(r=>r.name.Contains("snow-")),Is.LessThanOrEqualTo(2),"One pair per attack, independent of target count");
                             if(observed&&b.Clock-b.Defender.LastActionTime>1.1&&b.Clock-b.Defender.LastActionTime<1.8)between|=!active.Any(r=>r.name.Contains("snow-"));
                         }
-                        if(observed||!active.Any(r=>r.name.EndsWith(expected[k])))continue;
+                        if(observed||!(k==1?HasYuWall(root):active.Any(r=>r.name.EndsWith(expected[k]))))continue;
                         observed=true;Capture(ids[k]+"-vfx");
                         b.SetPaused(true);var frames=active.Select(r=>r.sprite).ToArray();var positions=active.Select(r=>r.transform.position).ToArray();double clock=b.Clock;float hp=b.Units[0].Health;
                         for(int f=0;f<3;f++){b.Advance(1);yield return null;}
@@ -88,6 +89,7 @@ namespace YesterdayConvoy.Tests
                     if(k==2)Assert.That(between,Is.True,"Attack interval must have no attack snow effect");
                     b.Restart();yield return null;
                     Assert.That(root.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.name.StartsWith("VFX /")),Is.Empty);
+                    Assert.That(HasYuWall(root),Is.False);
                     binding=null;yield return null;Object.Destroy(root);root=null;yield return null;
                 }
             }

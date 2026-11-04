@@ -25,7 +25,7 @@ namespace YesterdayConvoy
         public EngagementDefinition Engagement => engagement;
         public ManualBattleSettings Snapshot()
         {
-            if (string.IsNullOrWhiteSpace(levelId) || card == null || card.Unit == null || card.Portrait == null || card.BattleSprite == null)
+            if (string.IsNullOrWhiteSpace(levelId) || card == null || card.Unit == null || !card.HasVisualDefinition)
                 throw new InvalidOperationException("Manual battle: missing level ID, card, unit or art reference.");
             return new ManualBattleSettings(card.CardId, card.Unit.UnitId, initialDP, initialDefense, deploymentLimit, deploymentCost,
                 deploymentCooldown, unitHealth, card.Unit.MoveSpeed, card.Unit.GateDamage, towerRange, towerDamage, shotInterval);

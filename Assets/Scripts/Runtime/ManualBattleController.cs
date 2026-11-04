@@ -139,6 +139,7 @@ namespace YesterdayConvoy
 
         private void EnableCombatView()
         {
+            RefreshArtPins();
             if(combatView==null) combatView=new GameObject("Kroos engagement presentation").AddComponent<EngagementView>();
             combatView.Initialize(this,definition.Engagement,uiSound,hitSound);
         }
@@ -193,6 +194,7 @@ namespace YesterdayConvoy
 
         private void Update()
         {
+            WarmVisibleShop();if(ArtLoading)return;
             if(!ShopTrialActive&&Camera.main!=null&&Camera.main.targetTexture==null)Camera.main.rect=TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720));
             if(Battle==null || TestSelectionOpen) return;
             if(ShopTrialActive)RefreshShopWindowFrame();
@@ -205,6 +207,7 @@ namespace YesterdayConvoy
 
         public void Tick(float delta)
         {
+            if(ArtLoading)return;
             if(TestSelectionOpen) return;
             // Preparation has visual life but no combat, SP, movement or cooldown progression.
             // Carry this phase into battle; after Begin only the simulation clock advances it.
@@ -322,6 +325,7 @@ namespace YesterdayConvoy
 
         private void OnGUI()
         {
+            if(ArtLoading){DrawArtProgress();return;}
             if(Battle==null) return;
             TacticalViewport.Current.DrawBars();
             if(ShopTrialActive){DrawShopTrial();return;}
@@ -546,6 +550,7 @@ namespace YesterdayConvoy
 
         private void OnDisable()
         {
+            CancelArtPreparation();
             ClearShopBenchModels();
             ClearViews(); CancelInteraction();
             if(preview!=null) preview.enabled=false;

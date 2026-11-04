@@ -18,21 +18,20 @@ namespace YesterdayConvoy
                 int height=Mathf.Min(720,Mathf.Max(360,Screen.currentResolution.height-100));
                 Screen.SetResolution(width,height,FullScreenMode.Windowed);
             }
-            if(Array.IndexOf(args,"-lateBattleShopSmokeTest")>=0||Array.IndexOf(args,"-battleShopLoopSmokeTest")>=0||Array.IndexOf(args,"-strongholdChallengeSmokeTest")>=0||Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
+            if(Array.IndexOf(args,"-frostSealSmokeTest")>=0||Array.IndexOf(args,"-lateBattleShopSmokeTest")>=0||Array.IndexOf(args,"-battleShopLoopSmokeTest")>=0||Array.IndexOf(args,"-strongholdChallengeSmokeTest")>=0||Array.IndexOf(args,"-strongholdMapSmokeTest")>=0||Array.IndexOf(args,"-shopMapSmokeTest")>=0)Application.runInBackground=true;
         }
         IEnumerator Start()
         {
             yield return null;
             controller=FindAnyObjectByType<ManualBattleController>();
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")>=0)controller.StartBattleShopLoop();
-            else controller.StartLateBattleShopLoop();
+            yield return controller.PrepareBattleShop(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")<0);
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-frostSealSmokeTest")>=0)yield return controller.VerifyFrostSeal();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-battleShopLoopSmokeTest")>=0)yield return controller.VerifyBattleShopLoop();
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"-lateBattleShopSmokeTest")>=0)yield return controller.VerifyLateBattleShop();
         }
         void Update()
         {
-            if(controller==null||!controller.ShopTrialActive)return;
+            if(controller==null||controller.ArtLoading||!controller.ShopTrialActive)return;
             if(!controller.BattleShopLoopActive&&Input.GetKeyDown(KeyCode.Tab))controller.SetShopVisible(!controller.ShopVisible);
             if(Input.GetKeyDown(KeyCode.Escape)){controller.CancelShopDrag();if(!controller.BattleShopLoopActive)controller.SetShopVisible(false);controller.CloseDefenderInspector();}
         }

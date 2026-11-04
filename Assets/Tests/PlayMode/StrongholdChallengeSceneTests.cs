@@ -33,6 +33,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return SceneManager.LoadSceneAsync("BattleShop");yield return null;yield return null;
             var c=Object.FindAnyObjectByType<ManualBattleController>();
+            while(c.ArtLoading)yield return null;
             var root=Object.FindAnyObjectByType<AuthoredBattlefield>();Assert.That(root,Is.Not.Null);
             int count=root.GetComponentsInChildren<Renderer>().Length;
             var tile=root.transform.GetChild(1);var changed=tile.localPosition+Vector3.up*.01f;tile.localPosition=changed;

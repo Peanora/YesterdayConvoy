@@ -27,5 +27,6 @@ namespace YesterdayConvoy
         public System.Collections.Generic.IReadOnlyList<Sprite> SkillFrames => skillFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> ComicImpactFaces => comicImpactFaces;
         public bool HasFrameAnimation => LocalMonsterArt.For(cardId)!=null || OriginalSlugArt.For(cardId)!=null || (walkFrames?.Length>0 && attackFrames?.Length>0);
+        public bool HasVisualDefinition => HasFrameAnimation || (portrait!=null&&battleSprite!=null);
     }
 }

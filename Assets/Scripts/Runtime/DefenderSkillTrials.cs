@@ -69,12 +69,12 @@ namespace YesterdayConvoy
             foreach(string id in ids)
             {
                 var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);if(data==null)continue;
-                var selected=data.defenders[0];float x=8+i%4*292,y=i/4*420;i++;var art=DefenderArt.Load(selected.artId);
+                var selected=data.defenders[0];float x=8+i%4*292,y=i/4*420;i++;
                 Fill(new Rect(x,y,272,408),new Color(.065f,.10f,.13f));
-                DrawTestPortrait(new Rect(x+16,y+16,240,204),art.Portrait);
+                DrawTestPortrait(new Rect(x+16,y+16,240,204),DefenderArt.CardPortrait(selected.artId));
                 GUI.Label(new Rect(x+20,y+238,232,35),selected.displayName,menuCardName);
                 GUI.Label(new Rect(x+20,y+282,232,64),DefenderSkillName(selected.skill.kind)+"\n"+(selected.role==DefenderRole.Medic?"高台医疗 · 治疗支援":selected.position.y>.2f?"高台守军 · 远程火力":"地面守军 · 阻挡与技能交战"),menuSmall);
-                if(GUI.Button(new Rect(x+20,y+358,232,40),"进入技能测试",buttonStyle))TryEnterDefenderSkillTrial(id);
+                if(GUI.Button(new Rect(x+20,y+358,232,40),"进入技能测试",buttonStyle))PrepareDefenderEntry(id);
             }
             GUI.EndScrollView();
             GUI.Label(new Rect(56,634,1150,44),"空格暂停；暂停时也能拖动部署。重新开始会重置双方生命、部署次数和技能。",menuBody);

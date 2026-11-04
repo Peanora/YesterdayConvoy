@@ -21,6 +21,7 @@ namespace YesterdayConvoy
         }
         private void SwitchTestDefinition(ManualBattleDefinition next, bool keepDefenderTrial=false)
         {
+            CancelArtPreparation();
             if(!keepDefenderTrial) LeaveDefenderTrial();
             ClearViews(); CancelInteraction(); notice=null; requestSequence=0; selectedEntityId=null; terminalPresentationElapsed=0; readyIdleElapsed=0;
             selectedRosterIndex=0; definition=next; SimulationSpeed=1; TestSelectionOpen=false; settlementPointerDown=selectionReturnPointerDown=false;

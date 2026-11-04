@@ -1,5 +1,48 @@
 # 验证证据与回归
 
+## 2026-11-04：菜单、进关、商店与图集缓存优化
+
+已获共享接口/构建流程具体范围确认。从实时main建立codex/animation-loading，带入PR54火墙依赖。新ArtCatalog/ArtSequence/ArtMemoryCache/ArtPreparation、PreparedArtTools分别负责元数据、按段动作、受保护缓存、入口分帧准备与离线压缩；原四个角色读取器保留调用接口。调整配置校验、菜单、商店/下一关及构建钩子；无场景/Prefab/包/工程设置修改，已知本地未跟踪文件保留。
+
+计时范围是测试内场景初始化/完整余正面动作，在各自独立Unity进程运行同一基准；不含启动编辑器/编译/首次离线预处理，也没有清空操作系统文件缓存，不称作硬盘冷启动或EXE启动成绩。单次同机样本：
+
+| 项目 | 优化前 | 最终独立进程 |
+|---|---:|---:|
+| 怪物菜单初始化 | 26701ms | 328ms |
+| 余全部正面动作 | 1658ms | 205ms |
+| 菜单时Unity已分配内存 | 2143578733 bytes | 409812505 bytes |
+
+- `art-loading-before.xml/.log`与`art-loading-before.txt`为修改前1/1基准；`art-loading-cold-after.xml/.log`、`art-loading-after.txt`为最终独立进程1/1基准。中途混合套件的61/67ms属于已预热结果，不用来宣传。
+- `art-prepare.log`：1176个原PNG及61个独立卡面首次处理91851ms，1237个处理文件共278976175 bytes；后续Play检查`rebuilt=0/hash_bytes=0/198ms`。正式构建校验源内容指纹，Play用长度/修改时间快速识别未变文件。1176个原PNG全部Git跟踪，原图及GUID不移动、不删除；Library派生缓存自动生成。
+- `art-loading-edit.xml`首344/345，修复Unity外部销毁缓存Sprite的重载兼容后，`art-loading-final-edit.xml`完整345/345通过。
+- `art-loading-full-play.xml`完整首79/81。其一是原通用怪物断言仍假定霜星无主动技力，改为读取既定20SP/有技能时暂停不可施放；其二是场景几何用例仍假定进关两帧内完成，增加等待加载结束。`art-loading-final-play.xml`相关6/6通过，覆盖37只怪物部署/暂停/攻击/获胜和重进，以及原地形编辑不被重开覆盖。
+- `art-loading-shop-play.xml`7/7通过：新5项加载/缓存用例、霜星正常购买后走实际下一关预加载入口、原后期两关闭环。包括元数据校验不加载战斗帧、真实预处理页读取/不走PNG回退、活跃保护/离场回收/重载、跨帧准备时模拟冻结、取消旧启动不覆盖新挑战、极小缓存预算下当前商品不被回收而反复加载。保留场景用例均获覆盖；不把补测结果说成一次完整套件零失败。
+- 本关六名完整守军及五张编队分帧准备约2.5秒，313页读取、PNG回退0（测试环境样本）。动作缓存1GiB为软目标，活跃工作集大时可超出；这不是整个游戏内存/显存硬上限。未做降帧、降分辨率或技能数值变化。
+
+首次独立构建验证捕获商店当前商品待机被预算回收导致反复准备，已补入活跃保护并通过上述专门回归。另一个隐藏霜星验证进程因原诊断开关未开启后台运行而停在首帧，已停止，不计通过；补齐该诊断开关后以最终构建重测。最终构建/Player记录见后续条目。
+
+- `art-loading-final-build.log`：Windows x64 Development、0错误；后处理实际装入1237个文件，在Player副本替换1176张PNG，目录当时合计777665295 bytes。Unity原BuildReport在后处理前统计1774194346 bytes，不能把它当成替换后的实际包体。
+- 最终`art-loading-final-late-player.log`高难度两关9项全True；`art-loading-final-basic-player.log`基础两关8项全True；`art-loading-final-frost-player.log`正常种子56购买/拖动/手动技能/暂停/动作锁/尾部清理/重开全True。对应三个`*-exit.txt`均退出0。最终原生进程313页本关准备约1524ms、PNG回退0；当前商店商品只准备一次，不再反复清空。
+- 按最终结果合并核对，82个不同PlayMode用例均有通过记录，无未解决失败；不是一次全量82/82跑完。新增7项商店/预加载回归在最终缓存保护修复后通过。原始PNG仍1176/1176被Git跟踪，源项目没有删除图或改GUID。
+- 最终`art-loading-final-pipeline.log`再次编译/校验处理流程，1176源PNG、重建0、通过；缓存根目录由Application.dataPath推导。仓库4671跟踪文件/meta检查与暂存差异检查通过，暂存仅本任务36个文件，不含已知两个本地未跟踪项、构建、缓存或AGENTS。
+
+尚未进行第二台机器、全新克隆、长时人工试玩或战斗整体CPU/GPU帧率分析，不宣称所有持续卡顿均已解决。不创建ZIP/Releases，原作媒体权利记录保持。
+
+## 2026-11-04：余偏红火墙
+
+用户批准动态方向并明确追加偏红色直接接入。从实时origin/main fdbbc69建立codex/yu-firewall-vfx，仅改余的私有火墙表现、新增内部辅助/Shader、调整表现断言和文档；不改战斗模型、人物资源、其他技能、场景、Prefab、包或工程设置。已知.vscode和PackageManagerSettings.asset保留且不提交。
+
+- `artifacts/yu-firewall-play.xml`首轮4/4 GPU通过，包含第四批四名原技能场景、新火墙2项、六人真实事件场景。
+- `artifacts/yu-firewall-final-play.xml`最终色阶4/4 GPU通过，包含新火墙2项、六人真实事件和实际高难度地图完整获胜计划。与首轮合计5个不同GPU用例通过。验证原1.6秒起势后点燃、实际红色GPU像素、火焰帧变化、两个真实墙法线/中心、暂停几何与帧冻结、原技能结束后收尾、重开/切换清理；其他五名守军特效仍出现，初雪攻击间隔无攻击风雪。
+- `artifacts/yu-firewall-logic.xml`：AdvancedDefenderTests 15/15 EditMode通过，覆盖原消弹、法术穿墙元素量、近战不消除、临时生命强化/回复及第四批其余规则。没有修改这些规则。
+- [实机图](art/yu-firewall-actual.png)来自真实D22单人测试的1280×720相机RenderTexture，不含IMGUI。高难度地图也由GPU场景验证，不把项目外视频称作实机。
+
+- `artifacts/yu-firewall-build.log`：Windows x64 Development，BASELINE_BUILD_PASS **1774183498 bytes、0错误**；标准`Builds/Windows/YesterdayConvoy.exe`已更新。
+- `artifacts/yu-firewall-player.log`：独立Player高难度两关闭环`won/complete/pause/purchased/carry/reset/framing/restart/exit`全部True，`yu-firewall-player-exit.txt`退出0。此项验证独立运行通用闭环，新火墙的具体颜色/几何/生命周期由前述GPU用例验证。
+- 仓库4656个跟踪文件、Unity meta与暂存差异检查通过；新增运行Shader、源码、测试及meta均跟踪，复用的火焰/烟雾PNG原本已跟踪，没有本地媒体缺口。
+
+本轮不跑完整EditMode/其余全部PlayMode，不做长时人工平衡、整体性能优化、全新克隆或第二机。原作角色权利状态保持；火焰/烟雾复用已跟踪CC0资源，新增Shader/meta随源码。不生成ZIP/Releases，不自动合并main。
+
 ## 2026-11-03：塔露拉普攻分层表现
 
 人类确认项目外动态看稿后继续codex/project-layout-scenes / PR53。仅EngagementView私有普攻绘制、内部TalulahAttackVfx、独立Shader和Resources烟雾及测试/文档；不修改战斗模型、卡牌配置、人物动作、火雨、场景、Prefab、Packages或ProjectSettings。既有.vscode与PackageManagerSettings.asset未提交覆盖。
