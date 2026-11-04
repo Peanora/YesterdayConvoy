@@ -98,7 +98,7 @@ namespace YesterdayConvoy
             float drop=Mathf.Clamp01((progress-.12f)/.48f);
             return destination+new Vector2(0,-78*(1-drop*drop));
         }
-        void LateUpdate(){if(ShopTrialActive){if(shopModelStage==null)SyncShopBenchModels();else UpdateShopBenchModels();}}
+        void LateUpdate(){if(!ArtLoading&&ShopTrialActive){if(shopModelStage==null)SyncShopBenchModels();else UpdateShopBenchModels();}}
         void UpdateShopBenchModels()
         {
             for(int i=shopArrivals.Count-1;i>=0;i--)

@@ -17,6 +17,7 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Baseline/Build Windows")]
         public static void BuildWindows()
         {
+            PreparedArtTools.PrepareAll();
             if (File.Exists(DemoArtTools.CardPath)) DemoArtTools.Validate();
             else InitialDemoTools.Validate();
             Directory.CreateDirectory("Builds/Windows");

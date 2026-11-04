@@ -75,6 +75,7 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
+            CancelArtPreparation();
             if(defenderTrial!=null) SwitchTestDefinition(wisadelDefinition);
             else { RestartBattle(); EnableCombatView(); }
             TestSelectionOpen=true; selectionReturnPointerDown=false;
@@ -138,7 +139,7 @@ namespace YesterdayConvoy
                 if(effects.Flamechaser) detail="倒下化为5次受击的隐匿余烬\n余烬存活10秒后重生 / 芦苇灼燃";
                 if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
-                if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) TryEnterMonsterTest(option.Id);
+                if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) PrepareMonsterEntry(option);
                 index++;
             }
             GUI.EndScrollView();

@@ -74,7 +74,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Shop.Offers[0],Is.EqualTo("CARD_TALULAH_TRIAL"));int slot=c.Shop.Offers.ToList().IndexOf(id);Assert.That(slot,Is.GreaterThan(0));
             int gold=c.Shop.Gold;var receipt=c.PurchaseShopCard(slot);Assert.That(receipt.Success,Is.True);Assert.That(c.Shop.Gold,Is.EqualTo(gold-5));c.Shop.Validate();
             yield return new WaitForSecondsRealtime(.85f);Assert.That(c.ShopBenchModel(receipt.Instance).sprite.name,Does.StartWith("M14/idle/"));
-            Assert.That(c.StartLoopNextBattle(),Is.True);yield return new WaitForSecondsRealtime(.3f);
+            typeof(ManualBattleController).GetMethod("PrepareNextLoopBattle",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c,null);
+            while(c.ArtLoading)yield return null;
+            Assert.That(c.Loop.CanDeploy,Is.True);yield return new WaitForSecondsRealtime(.3f);
             int bench=c.Shop.Bench.ToList().FindIndex(p=>p.Id==id);var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Lanes[0].Entry));
             c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(bench).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
             var u=c.Battle.Units.Single();Assert.That(u.CardId,Is.EqualTo(id));Assert.That(c.Battle.UnitCombat(u).FrostSeal,Is.True);

@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         public void StartLateBattleShopLoop(int seed=0)=>StartBattleShopLoop(seed,true);
         public void StartBattleShopLoop(int seed=0,bool lateGame=false)
         {
+            CancelArtPreparation();
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             EnterShopTrial(0,StrongholdChallengeLayout.Id);
             if(lateGame)
@@ -43,6 +44,7 @@ namespace YesterdayConvoy
         public bool StartLoopNextBattle()
         {
             if(Loop==null||!Loop.CanShop||shopLineup.Count==0||shop.Bench.Count==0)return false;
+            CancelArtPreparation();
             SyncShopDeck(false);if(!Loop.PrepareBattle())return false;SetShopVisible(false);CancelShopDrag();return true;
         }
         void StepBattleShopLoop()

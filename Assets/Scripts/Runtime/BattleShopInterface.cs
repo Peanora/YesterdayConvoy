@@ -136,7 +136,7 @@ namespace YesterdayConvoy
             GUI.enabled=Loop.CanShop&&!ShopPanelTransitioning;
             var nextStyle=new GUIStyle(buttonStyle){fontSize=14};
             foreach(var state in new[]{nextStyle.normal,nextStyle.hover,nextStyle.active,nextStyle.focused})state.textColor=new Color(.88f,.95f,.98f);
-            if(GUI.Button(new Rect(1044,603,212,27),"开始下一战",nextStyle)&&!StartLoopNextBattle())ShopNotice("请至少编队一张卡");
+            if(GUI.Button(new Rect(1044,603,212,27),"开始下一战",nextStyle)){if(shopLineup.Count==0)ShopNotice("请至少编队一张卡");else PrepareNextLoopBattle();}
             GUI.enabled=true;
             DrawShopBench(LoopText(12,TextAnchor.MiddleCenter));
         }

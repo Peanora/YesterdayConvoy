@@ -33,7 +33,9 @@ namespace YesterdayConvoy.Tests
                 Assert.That(view.Renderer.sprite.name,Does.StartWith(id.Substring(5)+"/"));
                 var position=unit.Motion.Position;c.Battle.SetPaused(true);int frame=view.FrameIndex;c.Tick(3);yield return null;
                 Assert.That(unit.Motion.Position,Is.EqualTo(position));Assert.That(view.FrameIndex,Is.EqualTo(frame));
-                Assert.That(unit.SkillSP,Is.Zero);Assert.That(c.Battle.CheckSkill(unit.EntityId),Is.EqualTo(SkillFailure.NoSkill));
+                var combat=c.Battle.UnitCombat(unit);
+                Assert.That(unit.SkillSP,Is.EqualTo(combat.HasSkill?combat.InitialSP:0));
+                Assert.That(c.Battle.CheckSkill(unit.EntityId),Is.EqualTo(combat.HasSkill?SkillFailure.Paused:SkillFailure.NoSkill));
                 c.Battle.SetPaused(false);c.Tick(id=="CARD_M34"?3.3f:1.1f);yield return null;Deploy();c.Tick(id=="CARD_M34"?3.3f:1.1f);yield return null;Deploy();
                 c.ToggleSpeed();bool attacked=false;
                 for(int i=0;i<1200 && c.Battle.Phase==BattlePhase.Running;i++)
