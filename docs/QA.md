@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-04：剩余四条羁绊与最新main集成
+
+实时main8f4d604（塔露拉普攻V8 #60），分支codex/synergy-four-traits带入未合并#59。入口CampaignBootstrap及STATUS/QA有冲突，已先报告，逐段保留V8入口和羁绊验证/完整记录，不整文件选单方。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖；不改场景地形、Prefab、包、工程设置。
+
+- four-compile.log：实际Unity导入/编译及41角色配置校验通过。首轮测试编译失败：测试调用internal FinishForTesting，改为反射调用，未扩大运行权限。
+- four-edit2.xml：383/384，唯一失败为60与60.0000038的浮点精确断言，改用合理容差。four-final-edit.xml完整385/385通过，新增覆盖转化队列/原进度/暂停寿命/限额/原生爆炸最终死亡、火种DOT预算/非递归/未来4档原子引爆、承契真实越阈/自损/幂等/指定目标、海嗣保护次数/共享/减甲到期/猎食/跨关幂等。
+- four-play.xml完整96/96 GPU通过，包含全部原怪物/各批守军/商店/旧五条和三项新场景用例：四预置逐个正常卡栏暂停拖动、原M21转化模型与承契爆发、原生M31喷火实际火种及M33反击渗透和培养。未用伪造灼烧代替这条实机触发证据。
+- 最后收紧海嗣接触记录，真实受伤在统一入伤接口登记，输出须实际损失目标生命，不靠无效击打培养；four-boundaries.xml定向16/16通过。four-final-play.xml最终相关GPU 3/3通过，实际模型/拖动/原生火种/反击与跨关仍可用。Player与构建将在实际运行后补记。
+
+完整13关自然通关、长期随机运营/强度平衡、第二机与新克隆未测。深池4档为配置逻辑验证，当前正常卡池只能2档；不将测试快照中的未来M32误标为已入池。转化体沿用原模型/动作和文字状态，火种复用已有地面标记，未新增完整原作美术特效。无ZIP/Releases。
+
 ## 2026-11-04：塔露拉普攻V8
 
 任务[#58](https://github.com/Peanora/YesterdayConvoy/issues/58)，从main 220741f建立codex/talulah-attack-flipbook-v8。特效源码7f779ef，最终构建源码d510f65；后续交付文档不改变可执行内容。运行图集SHA256、完整生成提示词和权利记录见[独立来源记录](art/source-records/talulah-v8-fire.json)，新素材未被忽略，Resources依赖与必要.meta一起提交。

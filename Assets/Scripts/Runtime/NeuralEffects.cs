@@ -36,7 +36,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
             {
                 if(!d.Alive||GroundDistance(d.Position,pulse.Position)>2)continue;
-                pulse.TargetsHit++;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts);
+                pulse.TargetsHit++;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts,source:u);
                 ApplyNeuralDamage(d,UnitCombat(u).UnitAttack);
             }
         }

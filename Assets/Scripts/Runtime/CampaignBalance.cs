@@ -89,6 +89,7 @@ namespace YesterdayConvoy
             {"CARD_M24",new[]{"牧群","萨卡兹"}},
             {"CARD_M26",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M27",new[]{"泥岩小队","萨卡兹"}},
+            {"CARD_M32",new[]{"深池"}}, // Future member metadata; still excluded from Profiles and shop.
             {"CARD_M29",new[]{"深池"}},
             {"CARD_M30",new[]{"深池"}},
             {"CARD_M31",new[]{"深池"}},

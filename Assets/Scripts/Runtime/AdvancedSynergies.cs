@@ -85,7 +85,7 @@ namespace YesterdayConvoy
             foreach(var burst in infectionBursts)
             {
                 if(burst.Resolved||Clock<burst.At)continue;burst.Resolved=true;
-                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())DamageDefender(d,burst.Attack,CombatDamageType.Arts);
+                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
             }
         }
         void RecordSynergyContact(DeployedUnitState source)
@@ -148,8 +148,8 @@ namespace YesterdayConvoy
         void OnGolemHit(DeployedUnitState u,DefenderState target)
         {
             if(!u.Golem||GolemStage<2||u.OrdinaryAttacksFired%3!=0||u.LastGolemProc==u.OrdinaryAttacksFired)return;
-            u.LastGolemProc=u.OrdinaryAttacksFired;DamageDefender(target,GolemStage==2?80:120,CombatDamageType.Physical);
-            if(GolemStage==3)foreach(var d in defenders.Where(d=>d!=target&&d.Alive&&GroundDistance(d.Position,target.Position)<=1).Take(2).ToArray())DamageDefender(d,100,CombatDamageType.Physical);
+            u.LastGolemProc=u.OrdinaryAttacksFired;DamageDefender(target,GolemStage==2?80:120,CombatDamageType.Physical,true);
+            if(GolemStage==3)foreach(var d in defenders.Where(d=>d!=target&&d.Alive&&GroundDistance(d.Position,target.Position)<=1).Take(2).ToArray())DamageDefender(d,100,CombatDamageType.Physical,true);
         }
     }
 }

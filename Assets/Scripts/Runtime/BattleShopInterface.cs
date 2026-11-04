@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -50,6 +51,8 @@ namespace YesterdayConvoy
                     if(!CurrentShopBattlefieldRect.Contains(p))continue;
                     Fill(new Rect(p.x-26,p.y,52,5),LoopInk);Fill(new Rect(p.x-25,p.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
                     if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
+                    if(Battle.IsHerdHost(unit.EntityId))GUI.Label(new Rect(p.x-40,p.y+7,80,20),$"转化 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11));
+                    if(Battle.SarkazTier>0&&unit.CardId==Battle.ContractCard&&!unit.SynergySupport)GUI.Label(new Rect(p.x-40,p.y-24,80,20),"承契 "+(Array.IndexOf(ContractTargets(),unit)+1),LoopText(11));
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
                 }
                 if(!Loop.CanShop&&!ShopPanelTransitioning)
@@ -154,6 +157,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(224,210,345,88),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(54));
             GUI.Label(new Rect(225,312,320,32),shopMapCopy.mapTitle,LoopText(19));
             GUI.Label(new Rect(225,356,320,48),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(13,TextAnchor.UpperLeft,LoopMuted));
+            if(CampaignActive&&Loop.LastMarineGrowth>0)GUI.Label(new Rect(225,448,320,35),$"海嗣培养 +{Loop.LastMarineGrowth} · 累计 {Loop.MarineExperience}",LoopText(14));
             if(CampaignActive&&Loop.LastGolemGrowth>0)GUI.Label(new Rect(225,413,320,48),$"巨像培养 +{Loop.LastGolemGrowth} · 累计 {Loop.GolemExperience}",LoopText(14));
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,167,500,30),"本场收入",LoopText(14,TextAnchor.MiddleLeft,LoopMuted));

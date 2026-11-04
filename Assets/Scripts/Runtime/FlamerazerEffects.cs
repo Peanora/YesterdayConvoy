@@ -107,7 +107,7 @@ namespace YesterdayConvoy
                 foreach(var f in facilities)
                     if(f.Settings.Kind==FacilityKind.Pillar&&!f.Collapsed&&Mathf.Abs(Cell(f.Settings.Position).x-Cell(e.Position).x)+Mathf.Abs(Cell(f.Settings.Position).y-Cell(e.Position).y)<=1)
                         CollapsePillar(f,e.Position);
-                source.Health=0;source.Resolution=UnitResolution.Dead;source.DeathTime=Clock;
+                source.Health=0;source.Resolution=UnitResolution.Dead;source.DeathTime=Clock;OnRemainingDeath(source);
             }
         }
     }

@@ -17,19 +17,23 @@ namespace YesterdayConvoy
         }
         static string[] SandboxRoster(int preset)=>preset==1?new[]{"CARD_ORIGINIUM_SLUG","CARD_M02","CARD_M03","CARD_M04","CARD_M05","CARD_M06","CARD_M11","CARD_M12"}:
             preset==2?new[]{"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M08","CARD_M05"}:
-            preset==3?new[]{"CARD_M26","CARD_M27","CARD_M07","CARD_M08","CARD_M05","CARD_M10"}:new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"};
+            preset==3?new[]{"CARD_M26","CARD_M27","CARD_M07","CARD_M08","CARD_M05","CARD_M10"}:
+            preset==4?new[]{"CARD_M21","CARD_M22","CARD_M23","CARD_M24","CARD_M07","CARD_M08","CARD_M10","CARD_M05"}:
+            preset==5?new[]{"CARD_M29","CARD_M30","CARD_M31","CARD_M08","CARD_M05","CARD_M07","CARD_M10","CARD_M11"}:
+            preset==6?new[]{"CARD_M19","CARD_M24","CARD_M26","CARD_M27","CARD_M37","CARD_M38","CARD_WISADEL_APRIL","CARD_M18"}:
+            preset==7?new[]{"CARD_M33","CARD_M34","CARD_M35","CARD_M36","CARD_M26","CARD_M27","CARD_M08","CARD_M10"}:new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"};
         void PrepareSandboxRoster(int preset)
         {
             var ids=SandboxRoster(preset);var cards=ids.Select(id=>shopDefinitions[id].Card);
-            if(preset==3)cards=cards.Concat(new[]{GolemCard});
+            if(ids.Count(CampaignBalance.MudrockCrew)>=2)cards=cards.Concat(new[]{GolemCard});
             QueueArt(Plan(shopMapCopy.defenders,cards,true),()=>SetSandboxRoster(preset),"准备羁绊样板");
         }
         public bool SetSandboxRoster(int preset)
         {
-            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>3)return false;
+            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>7)return false;
             var ids=SandboxRoster(preset);
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),Math.Max(8,shop.Level),0,10);
-            shopLineup.Clear();shopLineup.AddRange(ids);commissionTarget=ids[0];shop.Refresh(true);ConfigureLoopStage();SetShopVisible(true);return true;
+            contractCard=ids[0];contractTargetIndex=0;shopLineup.Clear();shopLineup.AddRange(ids);commissionTarget=ids[0];shop.Refresh(true);ConfigureLoopStage();SetShopVisible(true);return true;
         }
         public bool UseCampaignOrder(bool half)
         {
