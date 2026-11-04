@@ -38,7 +38,7 @@ namespace YesterdayConvoy
         public bool TryDisableFlamerazer(string entityId,float duration,bool silence=false)
         {
             if(float.IsNaN(duration)||float.IsInfinity(duration)||duration<=0)throw new ArgumentException("Invalid control duration");
-            if(!EngagementEnabled||!CombatSettings.Effects.Flamerazer||Phase!=BattlePhase.Running||IsPaused)return false;
+            if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused)return false;
             var u=FindUnit(entityId);if(u==null||!u.Active||u.FuelDying)return false;
             if(silence)u.SpraySilencedUntil=Math.Max(u.SpraySilencedUntil,Clock+duration);
             else u.SprayStunnedUntil=Math.Max(u.SprayStunnedUntil,Clock+duration);
@@ -59,15 +59,15 @@ namespace YesterdayConvoy
             if(s!=null&&!s.Ended)
             {
                 var target=FindDefender(s.TargetId);
-                if(stunned||silenced||target==null||!target.Alive||GroundDistance(u.Motion.Position,target.Position)>CombatSettings.UnitRange)
+                if(stunned||silenced||target==null||!target.Alive||GroundDistance(u.Motion.Position,target.Position)>UnitCombat(u).UnitRange)
                     EndSpray(u,true);
                 else
                 {
                     while(s.NextTick<=s.StartedAt+10.6+1e-6&&Clock+1e-6>=s.NextTick&&target.Alive)
                     {
                         float hp=target.Health;
-                        DamageDefender(target,CombatSettings.UnitAttack*.12f,CombatDamageType.Arts);
-                        ApplyBurn(target,CombatSettings.UnitAttack*.06f);
+                        DamageDefender(target,UnitCombat(u).UnitAttack*.12f,CombatDamageType.Arts);
+                        ApplyBurn(target,UnitCombat(u).UnitAttack*.06f);
                         s.DamageDealt+=hp-target.Health;s.Ticks++;s.NextTick+=.5;
                     }
                     if(Clock+1e-6>=s.StartedAt+10.6||!target.Alive)EndSpray(u,!target.Alive);
@@ -76,8 +76,8 @@ namespace YesterdayConvoy
             }
             if(stunned||s!=null&&Clock<s.EndedAt+.5333334)
             {u.IsMoving=u.HasCombatTarget=false;return true;}
-            if(silenced||Clock+1e-6<u.NextSprayAt||Clock<u.LastAttackTime+CombatSettings.AttackDuration)return false;
-            var d=ChooseDefender(u,CombatSettings.UnitRange);if(d==null)return false;
+            if(silenced||Clock+1e-6<u.NextSprayAt||Clock<u.LastAttackTime+UnitCombat(u).AttackDuration)return false;
+            var d=ChooseDefender(u,UnitCombat(u).UnitRange);if(d==null)return false;
             var delta=d.Position-u.Motion.Position;
             u.Spray=new FlameSpray{SourceId=u.EntityId,TargetId=d.EntityId,StartedAt=Clock,NextTick=Clock+.5,
                 Direction=Math.Abs(delta.z)>Math.Abs(delta.x)?(delta.z>0?"up":"down"):"front",FlipX=delta.x<0};
@@ -99,11 +99,11 @@ namespace YesterdayConvoy
                 var e=fuelExplosions[i];if(e.Resolved||Clock+1e-6<e.DetonateAt)continue;
                 e.Resolved=true;var source=FindUnit(e.SourceId);
                 foreach(var d in defenders)
-                    if(d.Alive&&GroundDistance(d.Position,e.Position)<=CombatSettings.UnitRange)
-                    {DamageDefender(d,CombatSettings.UnitAttack,CombatDamageType.Arts);e.GuardsHit++;}
+                    if(d.Alive&&GroundDistance(d.Position,e.Position)<=UnitCombat(source).UnitRange)
+                    {DamageDefender(d,UnitCombat(source).UnitAttack,CombatDamageType.Arts);e.GuardsHit++;}
                 foreach(var other in units)
-                    if(other!=source&&other.Active&&!other.FuelDying&&other.UnitId==source.UnitId&&GroundDistance(other.Motion.Position,e.Position)<=CombatSettings.UnitRange)
-                    {TrueDamage(other,CombatSettings.UnitAttack*100);e.ChainHits++;}
+                    if(other!=source&&other.Active&&!other.FuelDying&&other.UnitId==source.UnitId&&GroundDistance(other.Motion.Position,e.Position)<=UnitCombat(source).UnitRange)
+                    {TrueDamage(other,UnitCombat(source).UnitAttack*100);e.ChainHits++;}
                 foreach(var f in facilities)
                     if(f.Settings.Kind==FacilityKind.Pillar&&!f.Collapsed&&Mathf.Abs(Cell(f.Settings.Position).x-Cell(e.Position).x)+Mathf.Abs(Cell(f.Settings.Position).y-Cell(e.Position).y)<=1)
                         CollapsePillar(f,e.Position);

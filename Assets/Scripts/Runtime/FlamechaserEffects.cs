@@ -42,7 +42,7 @@ namespace YesterdayConvoy
                 }
                 u.IsBlocked=false;u.BlockerId=null;u.HasCombatTarget=false;u.CombatTargetId=null;
                 foreach(var d in defenders)
-                    if(d.Alive&&d.BlockedCount<CombatSettings.BlockCount&&GroundDistance(u.Motion.Position,d.Position)<=CombatSettings.BlockRadius)
+                    if(d.Alive&&d.BlockedCount<d.Settings.BlockCount&&GroundDistance(u.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     {u.IsBlocked=true;u.BlockerId=d.EntityId;u.EmberRevealedUntil=Clock+3;d.BlockedCount++;break;}
                 u.IsMoving=!u.IsBlocked;
                 if(u.IsMoving&&PillarObstructs(u,step))u.IsMoving=false;
@@ -53,7 +53,7 @@ namespace YesterdayConvoy
             }
             if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
             u.FlamePhase=FlamechaserPhase.Soldier;u.FlamePhaseStartedAt=Clock;u.EmberRevivals++;
-            u.MaxHealth=u.Health=Settings.Health;u.DeathTime=double.PositiveInfinity;
+            u.MaxHealth=u.Health=u.Profile?.Unit.Health??Settings.Health;u.DeathTime=double.PositiveInfinity;
             u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return false;
         }
         bool ApplyUnitHealthDamage(DeployedUnitState u,float damage)
@@ -64,8 +64,8 @@ namespace YesterdayConvoy
             if(u.Health<=0)DefeatUnit(u);
             else
             {
-                if(CombatSettings.Effects.NervousCreeper)StepCreeperDamage(u);
-                if(CombatSettings.Effects.Harvester)TryWakeHarvester(u);
+                if(UnitCombat(u).Effects.NervousCreeper)StepCreeperDamage(u);
+                if(UnitCombat(u).Effects.Harvester)TryWakeHarvester(u);
             }
             return true;
         }

@@ -14,6 +14,31 @@
 
 本轮不声称全量PlayMode、长时平衡、性能优化、第二台电脑或全新克隆测试完成。工程外V8预览与游戏GPU证据分开；没有重画人物或提取参考录屏像素。
 
+## 2026-11-04：羁绊左栏与正常部署回归
+
+sidebar-edit.xml：13/13定向EditMode通过，检查重复同种卡去重、激活与未激活计数、未实现标签及效果文本。sidebar-final-play.xml：7/7 GPU通过，包含完整卡栏MouseDown/Drag/Up普通部署（97DP）、暂停第二张部署（93DP）且时钟不动、补给/整备拒绝部署且不消费，并保留感染/军令/巨像原五项回归。未重跑全部其余逻辑/场景、13关自然平衡或第二机。本轮未改场景/Prefab/包/工程设置；沿用PR59与原两个未跟踪项隔离。运行源码abd062e：sidebar-build.log构建Windows x64成功，0错误，后处理目录783583847 bytes；sidebar-player.log六项检查全部True、退出0。原生窗口实际点击未激活整合运动1/2，详情显示三档效果和本队成员，关闭后恢复操作。新详情不推进额外模拟、不改变规则。仓库4756文件/meta与暂存差异检查通过。
+
+## 2026-11-04：三条扩展羁绊与36卡池
+
+基线实时main `220741f`，新分支`codex/synergy-infection-guerrilla-mudrock`。人类确认公共接口与巨像预览，范围见[v1.2](proposals/SYNERGY-EXPANSION-v1.2.md)。保留场景地形/Prefab/包/工程设置及原两个未跟踪项。
+
+- `synergy2-author.log`、`synergy2-compile.log`：GOLEM_SUPPORT_ASSET_PASS，显式创建支援配置、导入原作图集并实际编译通过。
+- `synergy2-final-edit.xml`完整367/367通过。后增半令排除前半参与者边界，`synergy2-boundary-edit.xml`12/12通过，合计368个不同逻辑用例有通过记录，不称为一次完整368。覆盖卡池/五费排除、原库存/星级、分体扣费/穿门0/固有自爆分摊、死亡爆裂幂等、主副形态、军令不递归、半令、暂停/无目标不消费、巨像一次部署/成长和混编固有能力。
+- `synergy2-play.xml`首轮7/8：新4项均通过。旧升星用例最后一张卡已被商店占库而委托失败；用例改为优先购买实际商品，保留九张库存规则。
+- `synergy2-full-play.xml`89/90：巨像暂停生成正确使用Move首帧，用例误要求Idle，修为检查真实GOLEM库及帧0，不改暂停逻辑。
+- `synergy2-final-full-play.xml`完整91/91 GPU通过：36卡/四样板、形态锁定/分体、真实军令、暂停拖动巨像/完整攻击，以及自然胜利获4培养经验、返回整备进入II级；原怪物/守军/两关商店和旧羁绊一并回归。
+
+未做13关完整自然通关、长期经济/强度人工平衡、第二机或新克隆验证。自然胜利证据仅限本次验证地图与部署路径，不承诺全部随机构筑必胜。无ZIP/Releases。最终构建与独立Player结果如下。
+
+最终运行源码 `da9928c`，`synergy2-build.log`：Windows x64 Development，BASELINE_BUILD_PASS 1797467201 bytes/0 errors（后处理前），离线资源后处理1255文件、替换1193张角色PNG，目录783575272 bytes；源PNG仍随仓库保留。`Builds/Windows/BUILD_INFO.json`登记完整源码提交。
+
+- 最初隐藏窗口启动的`synergy2-player.log`停在初始化，没有完成证据，已终止该测试进程；改为正常可见窗口运行，不修改游戏逻辑。
+- `synergy2-visible-player.log`：pool/split/army/golem/paused/naturalGrowth全部True；退出文件为0，实际自然交战获得4经验再进入II级。
+- `synergy2-campaign-player.log`：passed=True、stage=13、gold=329，退出0。普通战斗为测试判胜，只证明跨关、结算、商店和补给衔接，不称13关自然通关。
+- 最终原生窗口通过computer-use实际点击：领取首补给10→21、进入商店、切换测试、进入无限验证、切换泥岩样板、开始战斗、巨像拖到红门，DP100→96且正确显示巨像，返回整备无报错。窗口留在泥岩样板整备供人类试玩；未把工具截图另存为文件。
+- 仓库4754跟踪文件及Unity元数据检查通过，全部GOLEM运行文件已跟踪、哈希与manifest一致、无100MB以上单文件。暂存差异检查通过；原.vscode/和PackageManagerSettings.asset仍未跟踪，AGENTS未提交。本轮无场景地形、Prefab、Packages或ProjectSettings差异，无ZIP/Releases。
+
+
 ## 2026-11-04：三阶段与首批羁绊接入
 
 基于实时main b4b8b2c，新分支codex/synergy-first-loop吸收前一轮企划提交作为依赖；人类具体确认共享接口、场景和构建清单范围。独立新增Campaign/SynergyTrial，保留原两场景与旧试验；两项原本地未跟踪文件不提交覆盖。规格/关键连接见[v1.1](proposals/CAMPAIGN-SYNERGY-v1.1.md)。

@@ -49,7 +49,7 @@ namespace YesterdayConvoy
         }
         void StepBattleShopLoop()
         {
-            if(Loop!=null&&Loop.Observe(Battle.Phase)){SetShopVisible(false);CancelShopDrag();CloseDefenderInspector();}
+            if(Loop!=null&&Loop.Observe(Battle.Phase,Battle.GolemGrowthEarned)){SetShopVisible(false);CancelShopDrag();CloseDefenderInspector();}
         }
         bool TryTestSettlement(bool victory)
         {

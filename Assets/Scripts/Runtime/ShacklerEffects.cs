@@ -35,8 +35,8 @@ namespace YesterdayConvoy
         public bool TryDisableShackler(string entityId,float duration,bool silence=false)
         {
             if(float.IsNaN(duration)||float.IsInfinity(duration)||duration<=0)throw new ArgumentException("Invalid control duration");
-            if(!EngagementEnabled||!CombatSettings.Effects.Shackler||Phase!=BattlePhase.Running||IsPaused)return false;
-            var u=FindUnit(entityId);if(u==null||!u.Active)return false;
+            if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused)return false;
+            var u=FindUnit(entityId);if(u==null||!u.Active||!UnitCombat(u).Effects.Shackler)return false;
             if(silence)u.ShackleSilencedUntil=Math.Max(u.ShackleSilencedUntil,Clock+duration);
             else u.ShackleStunnedUntil=Math.Max(u.ShackleStunnedUntil,Clock+duration);
             EndShackle(u,true);return true;
@@ -50,7 +50,7 @@ namespace YesterdayConvoy
                 if(u==null||!u.Active||d==null||!d.Alive||u.PillarStunnedUntil>Clock||u.ShackleStunnedUntil>Clock||u.ShackleSilencedUntil>Clock)
                 {if(u!=null)EndShackle(u,true);continue;}
                 while(s.Ticks<20&&Clock+1e-6>=s.StartedAt+s.Ticks+1&&d.Alive)
-                {s.Ticks++;float hp=d.Health;DamageDefender(d,CombatSettings.UnitAttack*UnitAttackMultiplier(u)*.35f,CombatDamageType.Arts);s.DamageDealt+=hp-d.Health;}
+                {s.Ticks++;float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.35f,CombatDamageType.Arts);s.DamageDealt+=hp-d.Health;}
                 if(!d.Alive)EndShackle(u,true);
                 else if(Clock+1e-6>=s.StartedAt+20)EndShackle(u,false);
             }

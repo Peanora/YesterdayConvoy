@@ -34,7 +34,7 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>!(CampaignActive&&CampaignPanelRect.Contains(point))&&(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>!SynergyBlocksMap(point)&&!(CampaignActive&&CampaignPanelRect.Contains(point))&&(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null||visible&&Loop!=null&&!Loop.CanShop)return;
@@ -144,7 +144,7 @@ namespace YesterdayConvoy
             var r=shop.Sell(instance);if(r.Success)SyncShopDeck(false);ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 源石":r.Message);return r;
         }
         void ShopNotice(string message){shopMessage=message;shopMessageUntil=Time.unscaledTime+3;}
-        public void CancelShopDrag(){shopDrag=-1;shopMoving=false;CancelInteraction();}
+        public void CancelShopDrag(){golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
             Loop=null;
@@ -153,6 +153,9 @@ namespace YesterdayConvoy
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
+            if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
+            {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}
+            if(HandleGolemPointer(type,point,button))return true;
             if(Loop!=null&&!Loop.CanDeploy&&!Loop.CanShop)return false;
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
             if(type==EventType.MouseDown&&button==0)
@@ -166,6 +169,7 @@ namespace YesterdayConvoy
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
             if(moved&&(Loop==null||Loop.CanShop)&&ShopSalePoint(point)){SellShopCard(instance);return true;}
+            if(moved&&Loop!=null&&Loop.CanShop){ShopNotice("当前是整备阶段，请先点击右下方“开始下一次”，再拖到红门部署");return true;}
             if(moved&&ShopMapPointAvailable(point))
             {
                 int index=shopLineup.IndexOf(piece.Id);
@@ -298,7 +302,7 @@ namespace YesterdayConvoy
             GUI.backgroundColor=new Color(.16f,.27f,.32f);
         }
         static Color ShopTier(int cost)=>cost==5?new Color(.58f,.43f,.17f):cost==4?new Color(.53f,.28f,.64f):cost==3?new Color(.12f,.34f,.61f):cost==2?new Color(.16f,.44f,.26f):new Color(.48f,.52f,.54f);
-        static string[] ShopTags(string id)=>id=="CARD_M14"?new[]{"雪怪小队","整合运动"}:id=="CARD_TALULAH_TRIAL"?new[]{"整合运动"}:id==OriginalSlugArt.CardId||id=="CARD_M05"?new[]{"感染生物"}:id=="CARD_M02"?new[]{"感染生物","整合运动"}:id=="CARD_M03"?new[]{"感染生物","游击队","整合运动"}:id=="CARD_M08"?new[]{"整合运动","战地拾荒"}:id=="CARD_M17"||id=="CARD_M18"?new[]{"游击队","整合运动","战地拾荒"}:id=="CARD_M19"?new[]{"游击队","整合运动","萨卡兹"}:new[]{"游击队","整合运动"};
+        static string[] ShopTags(string id)=>CampaignBalance.Tags(id).Select(t=>t=="牧群"||t=="深池"||t=="海嗣"||t=="萨卡兹"?t+"(待)":t).ToArray();
         static void ShopLine(Vector2 a,Vector2 b,Color color,float width=2)
         {
             Matrix4x4 previous=GUI.matrix;GUI.matrix=previous*Matrix4x4.TRS(new Vector3(a.x,a.y,0),Quaternion.Euler(0,0,Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg),Vector3.one);Fill(new Rect(0,-width/2,Vector2.Distance(a,b),width),color);GUI.matrix=previous;

@@ -10,8 +10,10 @@ namespace YesterdayConvoy
         public bool CampaignActive=>Loop!=null&&Loop.Campaign;
         public bool SynergySandbox=>CampaignActive&&Loop.Sandbox;
         string commissionTarget;
+        InfectionForm infectionForm=InfectionForm.Swarm,infectionSecond=InfectionForm.Shell;
+        static CardDefinition GolemCard=>Resources.Load<CardDefinition>("Support/GolemCard");
         bool reunionRanged;
-        Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(16,272,405,174):new Rect(16,64,405,Loop!=null&&(Loop.RewardStage||SynergySandbox)?128:66);
+        Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,250):new Rect(16,365,405,Loop!=null&&SynergySandbox?176:128);
         public IEnumerator PrepareCampaign(bool sandbox,int seed=0)
         {
             var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"}:new[]{"CARD_M07","CARD_M08"};
@@ -29,7 +31,7 @@ namespace YesterdayConvoy
             string[] initial=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
             shop.Preset(initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
-            commissionTarget=initial[0];reunionRanged=false;
+            commissionTarget=initial[0];reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
             if(sandbox){Loop.SandboxPreparation();shop.Refresh(true);}
             ConfigureLoopStage();if(sandbox)SetShopVisible(true);
         }
@@ -44,7 +46,7 @@ namespace YesterdayConvoy
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
             battle.ConfigureStrongholdMap(false);
-            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged);
+            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience);
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
             return battle;
@@ -96,28 +98,44 @@ namespace YesterdayConvoy
         void DrawCampaignControls()
         {
             if(!CampaignActive)return;
-            float y=CampaignPanelRect.y;
-            Fill(CampaignPanelRect,new Color(.04f,.07f,.09f,.94f));
-            string text=$"整合 {Battle.ReunionTier}  ·  雪怪 {Battle.SnowTier}   |  援军 {Battle.MusterUsed}/{(Battle.ReunionTier==0?0:Battle.ReunionTier/2)}  ·  碎冰 {Battle.Shatters}";
-            GUI.Label(new Rect(25,y+6,388,27),text,LoopText(13));
-            GUI.Label(new Rect(25,y+36,388,24),SynergySandbox?"无限金币 · 九张库存保留 · 战斗DP100":"五费2次，4费3次，3费4次，2费6次，1费8次",LoopText(11));
+            var oldMatrix=GUI.matrix;bool oldEnabled=GUI.enabled;
+            try { GUI.enabled=oldEnabled&&inspectedSynergy==null;GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(CampaignPanelRect.x-16,0,0));DrawCampaignSettings(); }
+            finally { GUI.matrix=oldMatrix;GUI.enabled=oldEnabled; }
+            DrawSynergySidebar();
+        }
+        void DrawCampaignSettings()
+        {
+            float y=CampaignPanelRect.y;Fill(new Rect(16,y,405,CampaignPanelRect.height),new Color(.04f,.07f,.09f,.94f));
+            GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",LoopText(12));
+            GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience}":"巨像未解锁"),LoopText(11));
             if(Loop.CanShop)
             {
+                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?"无限金币 · 九张库存 · DP100 · 委托不限次数":"每次整备限一次低费委托，失败不扣费",LoopText(11));
                 var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
-                if(commissionTarget!=null&&LoopButton(new Rect(25,y+67,230,30),"委托目标："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];
+                if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];
                 GUI.enabled=commissionTarget!=null&&(!shop.CommissionUsed||SynergySandbox);
-                if(LoopButton(new Rect(266,y+67,142,30),"委托 原价+2"))
-                CommissionCampaignCard(commissionTarget);
-                GUI.enabled=true;
-                if(LoopButton(new Rect(25,y+106,230,30),reunionRanged?"集结援军：弩手":"集结援军：士兵")){reunionRanged=!reunionRanged;SyncShopDeck(false);}
-                if(LoopButton(new Rect(266,y+106,142,30),"切换测试"))ReturnToTrialScene();
-                GUI.Label(new Rect(25,y+141,380,24),SynergySandbox?"委托不限次数；刷新仍按库存抽取":"每次整备限一次委托；四档可选援军",LoopText(11));
+                if(LoopButton(new Rect(266,y+84,142,30),"委托 原价+2"))CommissionCampaignCard(commissionTarget);GUI.enabled=true;
+                if(LoopButton(new Rect(25,y+121,230,30),reunionRanged?"援军：弩手":"援军：士兵")){reunionRanged=!reunionRanged;SyncShopDeck(false);}
+                if(LoopButton(new Rect(266,y+121,142,30),"切换测试")){ReturnToTrialScene();return;}
+                if(LoopButton(new Rect(25,y+158,230,30),"感染主形态："+FormName(infectionForm)))SetCampaignForms((InfectionForm)(((int)infectionForm+1)%3),infectionSecond);
+                if(LoopButton(new Rect(266,y+158,142,30),"六档副："+FormName(infectionSecond)))SetCampaignForms(infectionForm,(InfectionForm)(((int)infectionSecond+1)%3));
+                GUI.Label(new Rect(25,y+192,388,22),"形态战前锁定；六档副形态只取二档效果",LoopText(11));
+                if(SynergySandbox)
+                    for(int i=0;i<4;i++)if(LoopButton(new Rect(25+i*96,y+218,90,26),new[]{"冰雪样板","感染样板","游击样板","泥岩样板"}[i]))PrepareSandboxRoster(i);
             }
             else if(Loop.RewardStage&&Loop.CanDeploy)
-            {if(LoopButton(new Rect(25,y+75,380,48),"领取补给 · 保送胜利 / 不扣血",true))ClaimCampaignSupply();}
-            else if(SynergySandbox&&Loop.CanDeploy)
-            {if(LoopButton(new Rect(25,y+75,380,48),"结束本次验证，返回整备"))ReplaySandbox();}
+            {if(LoopButton(new Rect(25,y+75,380,48),"补给关无需部署 · 点击领取补给",true))ClaimCampaignSupply();}
+            else
+            {
+                GUI.enabled=Loop.CanDeploy&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused&&Battle.GuerrillaTier>0;
+                if(LoopButton(new Rect(25,y+68,185,32),"协同整令"))UseCampaignOrder(false);
+                GUI.enabled=GUI.enabled&&Battle.GuerrillaTier==6;
+                if(LoopButton(new Rect(220,y+68,185,32),Battle.HalfOrderPending?"后半令 · 3点":"前半令 · 3点"))UseCampaignOrder(true);GUI.enabled=true;
+                GUI.Label(new Rect(25,y+105,388,22),Battle.InfectionTier==0?"感染未激活":"感染："+FormName(infectionForm)+(Battle.InfectionTier==6?" + "+FormName(infectionSecond):""),LoopText(11));
+                if(SynergySandbox&&Loop.CanDeploy&&LoopButton(new Rect(25,y+136,380,30),"结束本次验证，返回整备"))ReplaySandbox();
+                DrawGolemCard();
+            }
         }
     }
 }

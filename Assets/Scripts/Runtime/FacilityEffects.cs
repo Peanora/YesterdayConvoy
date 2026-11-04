@@ -165,7 +165,7 @@ namespace YesterdayConvoy
             if(f.Capture<=-s.CaptureTime+1e-5)f.Owner=FacilityOwner.Defenders;
             foreach(var u in units)
             {
-                if(!u.Active||u.IsReviving||!CombatSettings.Effects.Mudrock||GroundDistance(u.Motion.Position,s.Position)>2.5f)continue;
+                if(!u.Active||u.IsReviving||!UnitCombat(u).Effects.Mudrock||GroundDistance(u.Motion.Position,s.Position)>2.5f)continue;
                 if(!nextCapture.TryGetValue(u.EntityId,out double due))due=u.SpawnTime+20;
                 if(Clock<due)continue;nextCapture[u.EntityId]=Clock+20;f.Capture=s.CaptureTime;f.Owner=FacilityOwner.Attackers;Activate(f);
             }
