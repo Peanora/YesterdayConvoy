@@ -1,0 +1,1191 @@
+{
+  "version": "1.0-proposal",
+  "status": "NOT_APPROVED_NOT_IMPLEMENTED",
+  "roster": [
+    {
+      "id": "M01",
+      "name": "源石虫",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 190,
+      "attack": 28,
+      "armor": 0,
+      "interval": 1.8,
+      "range": 0.7,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "感染生物"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M02",
+      "name": "猎狗",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 125,
+      "attack": 22,
+      "armor": 0,
+      "interval": 1.25,
+      "range": 0.7,
+      "speed": 1.1,
+      "gate": 1,
+      "tags": [
+        "感染生物",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M03",
+      "name": "游击队猎犬",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 150,
+      "attack": 24,
+      "armor": 2,
+      "interval": 1.4,
+      "range": 0.7,
+      "speed": 1.0,
+      "gate": 1,
+      "tags": [
+        "感染生物",
+        "游击队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M04",
+      "name": "高能源石虫",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 200,
+      "attack": 38,
+      "armor": 0,
+      "interval": 2.8,
+      "range": 0.7,
+      "speed": 0.6,
+      "gate": 1,
+      "tags": [
+        "感染生物"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M05",
+      "name": "酸液源石虫",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 190,
+      "attack": 30,
+      "armor": 0,
+      "interval": 2.2,
+      "range": 2.7,
+      "speed": 0.6,
+      "gate": 1,
+      "tags": [
+        "感染生物"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M06",
+      "name": "冰爆源石虫",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 160,
+      "attack": 34,
+      "armor": 0,
+      "interval": 2.8,
+      "range": 0.7,
+      "speed": 0.6,
+      "gate": 1,
+      "tags": [
+        "感染生物",
+        "雪怪小队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M07",
+      "name": "士兵",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 175,
+      "attack": 24,
+      "armor": 4,
+      "interval": 1.8,
+      "range": 0.75,
+      "speed": 0.7,
+      "gate": 1,
+      "tags": [
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M08",
+      "name": "弩手",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 125,
+      "attack": 24,
+      "armor": 1,
+      "interval": 1.9,
+      "range": 3.1,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M09",
+      "name": "术师",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 120,
+      "attack": 30,
+      "armor": 0,
+      "interval": 2.4,
+      "range": 2.6,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "M10",
+      "name": "重装防御者",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 4,
+      "hp": 380,
+      "attack": 34,
+      "armor": 12,
+      "interval": 2.6,
+      "range": 0.75,
+      "speed": 0.5,
+      "gate": 1,
+      "tags": [
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M11",
+      "name": "雪怪狙击手",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 135,
+      "attack": 25,
+      "armor": 1,
+      "interval": 1.9,
+      "range": 3.1,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "雪怪小队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M12",
+      "name": "雪怪术师",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 200,
+      "attack": 45,
+      "armor": 1,
+      "interval": 2.2,
+      "range": 2.7,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "雪怪小队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "M13",
+      "name": "雪怪小队凿冰人",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 390,
+      "attack": 68,
+      "armor": 8,
+      "interval": 3.2,
+      "range": 0.85,
+      "speed": 0.55,
+      "gate": 1,
+      "tags": [
+        "雪怪小队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M14",
+      "name": "霜星",
+      "cost": 5,
+      "dp": 8,
+      "deployments": 2,
+      "hp": 720,
+      "attack": 76,
+      "armor": 6,
+      "interval": 2.4,
+      "range": 3.2,
+      "speed": 0.6,
+      "gate": 2,
+      "tags": [
+        "雪怪小队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "M15",
+      "name": "游击队战士",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 180,
+      "attack": 26,
+      "armor": 4,
+      "interval": 1.8,
+      "range": 0.75,
+      "speed": 0.75,
+      "gate": 1,
+      "tags": [
+        "游击队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M16",
+      "name": "游击队狙击手",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 190,
+      "attack": 45,
+      "armor": 2,
+      "interval": 2.1,
+      "range": 3.2,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "游击队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M17",
+      "name": "游击队传令兵",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 300,
+      "attack": 34,
+      "armor": 4,
+      "interval": 2.2,
+      "range": 2.8,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "游击队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M18",
+      "name": "游击队盾卫",
+      "cost": 4,
+      "dp": 6,
+      "deployments": 3,
+      "hp": 750,
+      "attack": 58,
+      "armor": 18,
+      "interval": 2.5,
+      "range": 0.8,
+      "speed": 0.45,
+      "gate": 2,
+      "tags": [
+        "游击队",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M19",
+      "name": "游击队萨卡兹战士",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 360,
+      "attack": 56,
+      "armor": 8,
+      "interval": 2.0,
+      "range": 0.85,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "游击队",
+        "整合运动",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M20",
+      "name": "爱国者",
+      "cost": 5,
+      "dp": 10,
+      "deployments": 2,
+      "hp": 850,
+      "attack": 144,
+      "armor": 18,
+      "interval": 4.0,
+      "range": 1.0,
+      "speed": 0.4,
+      "gate": 2,
+      "tags": [
+        "游击队",
+        "整合运动",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 4
+    },
+    {
+      "id": "M21",
+      "name": "宿主士兵",
+      "cost": 1,
+      "dp": 2,
+      "deployments": 6,
+      "hp": 170,
+      "attack": 22,
+      "armor": 1,
+      "interval": 1.7,
+      "range": 0.75,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "牧群",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M22",
+      "name": "宿主拾荒者",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 250,
+      "attack": 36,
+      "armor": 4,
+      "interval": 1.9,
+      "range": 0.8,
+      "speed": 0.7,
+      "gate": 1,
+      "tags": [
+        "牧群",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M23",
+      "name": "宿主流浪者",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 350,
+      "attack": 54,
+      "armor": 5,
+      "interval": 1.9,
+      "range": 0.85,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "牧群",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M24",
+      "name": "萨卡兹宿主百夫长",
+      "cost": 4,
+      "dp": 6,
+      "deployments": 3,
+      "hp": 650,
+      "attack": 90,
+      "armor": 10,
+      "interval": 3.0,
+      "range": 1.0,
+      "speed": 0.55,
+      "gate": 2,
+      "tags": [
+        "牧群",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M25",
+      "name": "梅菲斯特",
+      "cost": 5,
+      "dp": 8,
+      "deployments": 2,
+      "hp": 600,
+      "attack": 95,
+      "armor": 7,
+      "interval": 3.0,
+      "range": 3.2,
+      "speed": 0.65,
+      "gate": 2,
+      "tags": [
+        "牧群",
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "heal",
+      "attack_parts": 1
+    },
+    {
+      "id": "M26",
+      "name": "泥岩小队掷能者",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 220,
+      "attack": 42,
+      "armor": 4,
+      "interval": 2.2,
+      "range": 2.5,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "泥岩小队",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M27",
+      "name": "泥岩小队践行者",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 420,
+      "attack": 62,
+      "armor": 10,
+      "interval": 2.2,
+      "range": 0.85,
+      "speed": 0.55,
+      "gate": 1,
+      "tags": [
+        "泥岩小队",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M28",
+      "name": "泥岩",
+      "cost": 5,
+      "dp": 10,
+      "deployments": 2,
+      "hp": 1100,
+      "attack": 108,
+      "armor": 15,
+      "interval": 2.6,
+      "range": 1.0,
+      "speed": 0.45,
+      "gate": 2,
+      "tags": [
+        "泥岩小队",
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M29",
+      "name": "深池方阵战士",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 4,
+      "hp": 320,
+      "attack": 40,
+      "armor": 11,
+      "interval": 2.2,
+      "range": 0.8,
+      "speed": 0.55,
+      "gate": 1,
+      "tags": [
+        "深池"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M30",
+      "name": "深池逐火战士",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 330,
+      "attack": 58,
+      "armor": 6,
+      "interval": 1.8,
+      "range": 0.85,
+      "speed": 0.75,
+      "gate": 1,
+      "tags": [
+        "深池"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M31",
+      "name": "深池焚毁者",
+      "cost": 4,
+      "dp": 6,
+      "deployments": 3,
+      "hp": 520,
+      "attack": 90,
+      "armor": 7,
+      "interval": 3.0,
+      "range": 2.2,
+      "speed": 0.55,
+      "gate": 2,
+      "tags": [
+        "深池"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 6
+    },
+    {
+      "id": "M32",
+      "name": "蔓德拉",
+      "cost": 5,
+      "dp": 9,
+      "deployments": 2,
+      "hp": 800,
+      "attack": 105,
+      "armor": 8,
+      "interval": 2.2,
+      "range": 3.2,
+      "speed": 0.55,
+      "gate": 2,
+      "tags": [
+        "深池"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "M33",
+      "name": "囊海爬行者",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 600,
+      "attack": 0,
+      "armor": 0,
+      "interval": 1.0,
+      "range": 1.6,
+      "speed": 0.45,
+      "gate": 1,
+      "tags": [
+        "海嗣"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "none",
+      "attack_parts": 1
+    },
+    {
+      "id": "M34",
+      "name": "钵海收割者",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 350,
+      "attack": 52,
+      "armor": 6,
+      "interval": 3.0,
+      "range": 0.85,
+      "speed": 0.75,
+      "gate": 1,
+      "tags": [
+        "海嗣"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M35",
+      "name": "壳海狂奔者",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 280,
+      "attack": 52,
+      "armor": 4,
+      "interval": 1.5,
+      "range": 0.75,
+      "speed": 1.1,
+      "gate": 1,
+      "tags": [
+        "海嗣"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M36",
+      "name": "首言者",
+      "cost": 4,
+      "dp": 6,
+      "deployments": 3,
+      "hp": 600,
+      "attack": 82,
+      "armor": 5,
+      "interval": 2.8,
+      "range": 3.3,
+      "speed": 0.6,
+      "gate": 2,
+      "tags": [
+        "海嗣"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "M37",
+      "name": "萨卡兹大剑手",
+      "cost": 2,
+      "dp": 3,
+      "deployments": 5,
+      "hp": 280,
+      "attack": 48,
+      "armor": 7,
+      "interval": 2.1,
+      "range": 0.85,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "M38",
+      "name": "萨卡兹术师",
+      "cost": 3,
+      "dp": 4,
+      "deployments": 4,
+      "hp": 260,
+      "attack": 68,
+      "armor": 1,
+      "interval": 2.8,
+      "range": 2.8,
+      "speed": 0.65,
+      "gate": 1,
+      "tags": [
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    },
+    {
+      "id": "TALULAH",
+      "name": "塔露拉",
+      "cost": 5,
+      "dp": 10,
+      "deployments": 2,
+      "hp": 850,
+      "attack": 112,
+      "armor": 8,
+      "interval": 1.7,
+      "range": 3.2,
+      "speed": 0.55,
+      "gate": 2,
+      "tags": [
+        "整合运动"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "WISADEL",
+      "name": "维维美",
+      "cost": 5,
+      "dp": 9,
+      "deployments": 2,
+      "hp": 680,
+      "attack": 78,
+      "armor": 5,
+      "interval": 1.7,
+      "range": 3.2,
+      "speed": 0.65,
+      "gate": 2,
+      "tags": [
+        "萨卡兹"
+      ],
+      "status": "PLANNED_PROFILE",
+      "attack_kind": "physical",
+      "attack_parts": 1
+    },
+    {
+      "id": "SILVER_WOLF",
+      "name": "银狼",
+      "cost": 5,
+      "dp": 8,
+      "deployments": 2,
+      "hp": 620,
+      "attack": 70,
+      "armor": 4,
+      "interval": 1.9,
+      "range": 3.0,
+      "speed": 0.75,
+      "gate": 2,
+      "tags": [
+        "头号玩家"
+      ],
+      "status": "FUTURE",
+      "attack_kind": "arts",
+      "attack_parts": 1
+    }
+  ],
+  "traits": {
+    "感染生物": [
+      2,
+      4,
+      6
+    ],
+    "整合运动": [
+      2,
+      4,
+      6
+    ],
+    "雪怪小队": [
+      2,
+      4
+    ],
+    "游击队": [
+      2,
+      4,
+      6
+    ],
+    "牧群": [
+      2,
+      4
+    ],
+    "泥岩小队": [
+      2,
+      3
+    ],
+    "深池": [
+      2,
+      4
+    ],
+    "萨卡兹": [
+      2,
+      4,
+      6
+    ],
+    "海嗣": [
+      2,
+      4
+    ]
+  },
+  "odds": [
+    [
+      100,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      100,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      100,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      65,
+      25,
+      10,
+      0,
+      0
+    ],
+    [
+      45,
+      33,
+      20,
+      2,
+      0
+    ],
+    [
+      30,
+      40,
+      25,
+      5,
+      0
+    ],
+    [
+      19,
+      30,
+      40,
+      10,
+      1
+    ],
+    [
+      18,
+      25,
+      32,
+      22,
+      3
+    ],
+    [
+      15,
+      20,
+      25,
+      30,
+      10
+    ],
+    [
+      5,
+      10,
+      20,
+      40,
+      25
+    ]
+  ],
+  "xp": [
+    0,
+    2,
+    4,
+    6,
+    10,
+    14,
+    20,
+    28,
+    36,
+    48,
+    0
+  ],
+  "current_xp": [
+    0,
+    2,
+    4,
+    6,
+    10,
+    20,
+    32,
+    48,
+    70,
+    90,
+    0
+  ],
+  "base_reward": [
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22
+  ],
+  "natural_xp": [
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    0
+  ],
+  "stars": {
+    "normal": {
+      "hp": [
+        1,
+        1.75,
+        3
+      ],
+      "attack": [
+        1,
+        1.5,
+        2.15
+      ],
+      "ability": [
+        1,
+        1.6,
+        2.7
+      ]
+    },
+    "four": {
+      "hp": [
+        1,
+        1.8,
+        3.2
+      ],
+      "attack": [
+        1,
+        1.6,
+        2.6
+      ],
+      "ability": [
+        1,
+        1.75,
+        3.5
+      ]
+    },
+    "five": {
+      "hp": [
+        1,
+        1.9,
+        5
+      ],
+      "attack": [
+        1,
+        1.7,
+        3
+      ],
+      "ability": [
+        1,
+        1.9,
+        5
+      ]
+    }
+  },
+  "lineups": [
+    {
+      "name": "虫群军阵",
+      "ids": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M08",
+        "M17"
+      ],
+      "expected": {
+        "感染生物": 6,
+        "整合运动": 4,
+        "游击队": 2
+      }
+    },
+    {
+      "name": "冻结协同",
+      "ids": [
+        "M06",
+        "M11",
+        "M12",
+        "M13",
+        "M03",
+        "M17",
+        "M05"
+      ],
+      "expected": {
+        "雪怪小队": 4,
+        "整合运动": 6,
+        "游击队": 2
+      }
+    },
+    {
+      "name": "游击推进",
+      "ids": [
+        "M03",
+        "M15",
+        "M16",
+        "M17",
+        "M18",
+        "M19",
+        "M37",
+        "M05"
+      ],
+      "expected": {
+        "游击队": 6,
+        "整合运动": 6,
+        "萨卡兹": 2,
+        "感染生物": 2
+      }
+    },
+    {
+      "name": "养成承契",
+      "ids": [
+        "M26",
+        "M27",
+        "M37",
+        "M38",
+        "M19",
+        "M24",
+        "M21",
+        "M28"
+      ],
+      "expected": {
+        "泥岩小队": 3,
+        "萨卡兹": 6,
+        "牧群": 2,
+        "整合运动": 2
+      }
+    },
+    {
+      "name": "宿主接力",
+      "ids": [
+        "M21",
+        "M22",
+        "M23",
+        "M24",
+        "M07",
+        "M37",
+        "M25",
+        "M19"
+      ],
+      "expected": {
+        "牧群": 4,
+        "整合运动": 6,
+        "萨卡兹": 2
+      }
+    },
+    {
+      "name": "火线突破",
+      "ids": [
+        "M29",
+        "M30",
+        "M31",
+        "M32",
+        "M05",
+        "M04",
+        "TALULAH",
+        "M08"
+      ],
+      "expected": {
+        "深池": 4,
+        "感染生物": 2,
+        "整合运动": 2
+      }
+    },
+    {
+      "name": "适应巨像",
+      "ids": [
+        "M33",
+        "M34",
+        "M35",
+        "M36",
+        "M26",
+        "M27"
+      ],
+      "expected": {
+        "海嗣": 4,
+        "泥岩小队": 2,
+        "萨卡兹": 2
+      }
+    }
+  ]
+}
