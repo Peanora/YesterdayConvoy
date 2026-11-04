@@ -246,7 +246,7 @@ namespace YesterdayConvoy
             GUI.DrawTexture(new Rect(25,25,22,22),shopCoin,ScaleMode.ScaleToFit,true);
             GUI.Label(new Rect(54,17,58,38),Loop==null?"源石":"金币",label);
             GUI.Label(new Rect(105,12,170,44),shop.UnlimitedGold?"∞":shop.Gold.ToString(),new GUIStyle(title){fontSize=29,normal={textColor=new Color(1,.86f,.57f)}});
-            GUI.Label(new Rect(292,19,230,30),$"整备 {shop.Bench.Count}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
+            GUI.Label(new Rect(292,19,230,30),$"备战 {(CampaignActive?shop.Bench.Count-shopLineup.Count:shop.Bench.Count)}/10  ·  编队 {shopLineup.Count}/{shop.Level}",new GUIStyle(label){fontSize=13,normal={textColor=new Color(.64f,.78f,.82f)}});
             GUI.enabled=Battle.Phase!=BattlePhase.Running;
 
             GUI.enabled=true;

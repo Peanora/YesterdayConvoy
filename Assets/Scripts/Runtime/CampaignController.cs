@@ -111,6 +111,7 @@ namespace YesterdayConvoy
                 CommissionCampaignCard(commissionTarget);
                 GUI.enabled=true;
                 if(LoopButton(new Rect(25,y+106,230,30),reunionRanged?"集结援军：弩手":"集结援军：士兵")){reunionRanged=!reunionRanged;SyncShopDeck(false);}
+                if(LoopButton(new Rect(266,y+106,142,30),"切换测试"))ReturnToTrialScene();
                 GUI.Label(new Rect(25,y+141,380,24),SynergySandbox?"委托不限次数；刷新仍按库存抽取":"每次整备限一次委托；四档可选援军",LoopText(11));
             }
             else if(Loop.RewardStage&&Loop.CanDeploy)

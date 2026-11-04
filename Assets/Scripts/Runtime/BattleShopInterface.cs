@@ -54,7 +54,7 @@ namespace YesterdayConvoy
                 if(!Loop.CanShop&&!ShopPanelTransitioning)
                 {
                     Fill(new Rect(0,0,1280,56),LoopInk);
-                    GUI.Label(new Rect(20,10,350,36),shopMapCopy.mapTitle+"  /  "+(Loop.LateGame?"后期预置演示":"基础演示"),LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
+                    GUI.Label(new Rect(20,10,350,36),shopMapCopy.mapTitle+"  /  "+(CampaignActive?SynergySandbox?"羁绊验证":"三阶段挑战":Loop.LateGame?"后期预置演示":"基础演示"),LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
                     GUI.Label(new Rect(486,10,90,36),"剩余干员",LoopText(13,TextAnchor.MiddleRight,LoopMuted));
                     GUI.Label(new Rect(589,7,45,40),Battle.Defenders.Count(d=>d.Alive).ToString(),LoopText(27));
                     GUI.Label(new Rect(643,10,82,36),"守方防御",LoopText(13,TextAnchor.MiddleLeft,LoopMuted));
@@ -87,9 +87,10 @@ namespace YesterdayConvoy
                     Fill(new Rect(350,514,580,30),LoopInk);GUI.Label(new Rect(365,514,550,30),shopMessage,LoopText(13,TextAnchor.MiddleCenter));
                 }
                 DrawCampaignControls();
+                if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
-                if(Debug.isDebugBuild&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
+                if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
             }
             finally{GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }
