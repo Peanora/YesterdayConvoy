@@ -1,5 +1,9 @@
 # 验证证据与回归
 
+## 2026-11-04：羁绊左栏与正常部署回归
+
+sidebar-edit.xml：13/13定向EditMode通过，检查重复同种卡去重、激活与未激活计数、未实现标签及效果文本。sidebar-final-play.xml：7/7 GPU通过，包含完整卡栏MouseDown/Drag/Up普通部署（97DP）、暂停第二张部署（93DP）且时钟不动、补给/整备拒绝部署且不消费，并保留感染/军令/巨像原五项回归。未重跑全部其余逻辑/场景、13关自然平衡或第二机。本轮未改场景/Prefab/包/工程设置；沿用PR59与原两个未跟踪项隔离。构建和最终窗口检查在实际完成后补记。
+
 ## 2026-11-04：三条扩展羁绊与36卡池
 
 基线实时main `220741f`，新分支`codex/synergy-infection-guerrilla-mudrock`。人类确认公共接口与巨像预览，范围见[v1.2](proposals/SYNERGY-EXPANSION-v1.2.md)。保留场景地形/Prefab/包/工程设置及原两个未跟踪项。

@@ -14,6 +14,29 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<900;i++){var c=Object.FindAnyObjectByType<ManualBattleController>();if(c!=null&&c.SynergySandbox&&!c.ArtLoading)yield break;yield return null;}
             Assert.Fail("Sandbox timeout");
         }
+        [UnityTest]public IEnumerator SupplyAndPreparationNeverSpendDeploymentResources()
+        {
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();
+            var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));int dp=c.Battle.DP;
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Count,Is.Zero);Assert.That(c.Battle.DP,Is.EqualTo(dp));
+            c.StartCampaign(false,44);Assert.That(c.Loop.RewardStage);dp=c.Battle.DP;
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Count,Is.Zero);Assert.That(c.Battle.DP,Is.EqualTo(dp));c.ClaimCampaignSupply();Assert.That(c.Loop.Reward,Is.Not.Null);c.LeaveShopTrial();
+        }
+        [UnityTest]public IEnumerator NormalRosterDragDeploysAndPauseKeepsItsClock()
+        {
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(3));Assert.That(c.StartLoopNextBattle());yield return new WaitForSecondsRealtime(.35f);
+            int bench=c.Shop.Bench.ToList().FindIndex(p=>p.Id=="CARD_M26");
+            var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(bench).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Any(u=>u.CardId=="CARD_M26"),Is.True,"Normal card drag must deploy the visible roster card");
+            Assert.That(c.Battle.DP,Is.EqualTo(97));c.Battle.SetPaused(true);
+            bench=c.Shop.Bench.ToList().FindIndex(p=>p.Id=="CARD_M27");
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(bench).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Any(u=>u.CardId=="CARD_M27"),Is.True);Assert.That(c.Battle.DP,Is.EqualTo(93));
+            double clock=c.Battle.Clock;c.Tick(1);Assert.That(c.Battle.Clock,Is.EqualTo(clock));c.LeaveShopTrial();
+        }
         [UnityTest]public IEnumerator ThirtySixCardPoolAndFourConstructionPresetsAreReachable()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(36));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(3));

@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         InfectionForm infectionForm=InfectionForm.Swarm,infectionSecond=InfectionForm.Shell;
         static CardDefinition GolemCard=>Resources.Load<CardDefinition>("Support/GolemCard");
         bool reunionRanged;
-        Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(16,255,405,250):new Rect(16,64,405,Loop!=null&&SynergySandbox?176:128);
+        Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,250):new Rect(16,365,405,Loop!=null&&SynergySandbox?176:128);
         public IEnumerator PrepareCampaign(bool sandbox,int seed=0)
         {
             var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"}:new[]{"CARD_M07","CARD_M08"};
@@ -98,7 +98,14 @@ namespace YesterdayConvoy
         void DrawCampaignControls()
         {
             if(!CampaignActive)return;
-            float y=CampaignPanelRect.y;Fill(CampaignPanelRect,new Color(.04f,.07f,.09f,.94f));
+            var oldMatrix=GUI.matrix;bool oldEnabled=GUI.enabled;
+            try { GUI.enabled=oldEnabled&&inspectedSynergy==null;GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(CampaignPanelRect.x-16,0,0));DrawCampaignSettings(); }
+            finally { GUI.matrix=oldMatrix;GUI.enabled=oldEnabled; }
+            DrawSynergySidebar();
+        }
+        void DrawCampaignSettings()
+        {
+            float y=CampaignPanelRect.y;Fill(new Rect(16,y,405,CampaignPanelRect.height),new Color(.04f,.07f,.09f,.94f));
             GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",LoopText(12));
             GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience}":"巨像未解锁"),LoopText(11));
             if(Loop.CanShop)
@@ -118,7 +125,7 @@ namespace YesterdayConvoy
                     for(int i=0;i<4;i++)if(LoopButton(new Rect(25+i*96,y+218,90,26),new[]{"冰雪样板","感染样板","游击样板","泥岩样板"}[i]))PrepareSandboxRoster(i);
             }
             else if(Loop.RewardStage&&Loop.CanDeploy)
-            {if(LoopButton(new Rect(25,y+75,380,48),"领取补给 · 保送胜利 / 不扣血",true))ClaimCampaignSupply();}
+            {if(LoopButton(new Rect(25,y+75,380,48),"补给关无需部署 · 点击领取补给",true))ClaimCampaignSupply();}
             else
             {
                 GUI.enabled=Loop.CanDeploy&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused&&Battle.GuerrillaTier>0;

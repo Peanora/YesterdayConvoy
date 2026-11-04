@@ -17,6 +17,14 @@ namespace YesterdayConvoy.Tests
             var b=new ManualBattle(Unit(ids[0]),new[]{Vector3.zero,new Vector3(10,0,0)},far?new Vector3(50,0,50):new Vector3(.6f,0,0),Combat(effects));
             b.ConfigureCardLoadout(ids.Skip(1).Select(id=>new BasicRosterProfile(Unit(id),Combat(effects),true)));b.ConfigureSynergies(ids.Select(Piece),false,form,second,xp);b.Begin();return b;
         }
+        [Test]public void SidebarCountsDistinctFormationMembersAndIncludesPendingTags()
+        {
+            var rows=SynergySummary.From(new[]{"CARD_M03","CARD_M03","CARD_M15","CARD_M26","CARD_M37"});
+            Assert.That(rows.Single(r=>r.Name=="游击队").Count,Is.EqualTo(2));Assert.That(rows.Single(r=>r.Name=="游击队").Tier,Is.EqualTo(2));
+            Assert.That(rows.Single(r=>r.Name=="感染生物").Count,Is.EqualTo(1));Assert.That(rows.Single(r=>r.Name=="感染生物").Tier,Is.Zero);
+            Assert.That(rows.Single(r=>r.Name=="萨卡兹").Count,Is.EqualTo(2));Assert.That(rows.Single(r=>r.Name=="萨卡兹").Implemented,Is.False);
+            Assert.That(rows.Any(r=>r.Name=="雪怪小队"),Is.False);Assert.That(rows.All(r=>!string.IsNullOrEmpty(r.Effect)),Is.True);
+        }
         [Test]public void ThirtySixCardsExcludeAllIncompleteFiveCostsAndKeepNativeTags()
         {
             Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(36));

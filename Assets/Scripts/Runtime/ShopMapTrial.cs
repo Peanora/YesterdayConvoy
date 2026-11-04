@@ -34,7 +34,7 @@ namespace YesterdayConvoy
         public static Rect ShopOfferRect(int i)=>new Rect(18+i*219,78,207,165);
         public static Rect ShopBenchRect(int i)=>new Rect(16+(9-i)*125,650,116,62);
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)&&point.y>shopDragStart.y+Mathf.Clamp(ShopSellRect.yMax-shopDragStart.y-3,5,12);
-        public bool ShopMapPointAvailable(Vector2 point)=>!(CampaignActive&&CampaignPanelRect.Contains(point))&&(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
+        public bool ShopMapPointAvailable(Vector2 point)=>!SynergyBlocksMap(point)&&!(CampaignActive&&CampaignPanelRect.Contains(point))&&(Loop==null||Loop.CanDeploy)&&!(Loop!=null&&loopMenuOpen&&LoopMenuRect.Contains(point))&&!(Loop!=null&&loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))&&CurrentShopBattlefieldRect.Contains(point)&&(!DefenderInspectorVisible||!DefenderInspectorRect.Contains(point))&&(!(shopVisible||ShopPanelTransitioning)||!ActiveShopPanelRect.Contains(point));
         public void SetShopVisible(bool visible)
         {
             if(shop==null||visible&&Loop!=null&&!Loop.CanShop)return;
@@ -153,6 +153,8 @@ namespace YesterdayConvoy
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
+            if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
+            {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}
             if(HandleGolemPointer(type,point,button))return true;
             if(Loop!=null&&!Loop.CanDeploy&&!Loop.CanShop)return false;
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
@@ -167,6 +169,7 @@ namespace YesterdayConvoy
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
             if(moved&&(Loop==null||Loop.CanShop)&&ShopSalePoint(point)){SellShopCard(instance);return true;}
+            if(moved&&Loop!=null&&Loop.CanShop){ShopNotice("当前是整备阶段，请先点击右下方“开始下一次”，再拖到红门部署");return true;}
             if(moved&&ShopMapPointAvailable(point))
             {
                 int index=shopLineup.IndexOf(piece.Id);
