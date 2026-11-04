@@ -1,5 +1,39 @@
 # 验证证据与回归
 
+## 2026-11-04：三阶段与首批羁绊接入
+
+基于实时main b4b8b2c，新分支codex/synergy-first-loop吸收前一轮企划提交作为依赖；人类具体确认共享接口、场景和构建清单范围。独立新增Campaign/SynergyTrial，保留原两场景与旧试验；两项原本地未跟踪文件不提交覆盖。规格/关键连接见[v1.1](proposals/CAMPAIGN-SYNERGY-v1.1.md)。
+
+- `campaign-author.log`：明确编辑器创作保存两个新场景与四项构建清单，不在运行时生成地形，复用已保存Mesh/材质和门户，原两个场景未覆盖。
+- `campaign-edit.xml`首轮350/352，两个失败是旧用例仍要求仅两张场景；改为四张及新默认入口后`campaign-final-edit.xml`352/352。继续新增完整首发角色各星/动作窗口、独立备战和Boss配置检查，`campaign-verified-edit.xml`完整355/355通过。
+- `campaign-play.xml`首轮7/8，暂停拖动用例在商店收起过渡期间立即投放；缩小重现并让用例等待实际收起，同时把羁绊控件从地图左侧中段移到战斗顶部，避免遮挡部署区域。`campaign-new-play.xml`3/3通过。
+- `campaign-natural-play.xml`4/4，包含新关真实冻结/两种直接命中/碎冰、集结援军、最终自然穿门获胜，非强制判胜。
+- `campaign-full-play.xml`完整86/86 GPU通过，覆盖原怪物、各批守军技能、原两关商店、霜星和新四项场景。
+- 最后补充奖励关按Begin也直接保送、碎冰来源不跨冻结批次累计、部署反馈显示实际升星DP：`campaign-final-boundaries.xml`11/11定向EditMode，`campaign-final-play.xml`6/6定向GPU（新四项+原两关闭环）通过。新增一个逻辑用例与先前全量合计356个不同EditMode用例有通过记录，不称为一次全量356/356。
+- 无限金币真正不扣款，500次刷新仍保留原金数和九张库；8次低费委托合到三星；正常委托每次整备限成功一次，失败不扣费/次数；独立备战达到10+2编队后拒绝额外无合成购买。各星读取真实新模式HP/攻击/DP与次数，所有首发原动作窗口保持。
+- `tools/balance/analyze_campaign_economy.py`固定种子对3/7种五费、0/3张已持有、100/140/180额外预算各10000次抽样；收入273～329含开局，最终战前242～293未扣支出。结果为获取模型，不是完整运营/通关概率，不把最后一场收入提前使用。
+
+最终窗口检查发现整备顶部旧收藏计数仍写10格，已改为独立备战计数，并在准备面板提供“切换测试”；退出场景后立即停止旧面板绘制。`campaign-ui-play.xml`新四项GPU回归4/4通过；场景退出的空Loop保护由后续独立窗口实际点击核验。
+
+- 最终运行源码提交`56469354c88bd3d456afd527cf32ec3d83bcd2a0`，`campaign-final-build.log`：Windows x64 Development，BASELINE_BUILD_PASS 1775481332 bytes、0错误（Unity后处理前统计）；离线纹理替换完成后目录合计778953042 bytes。1237个处理文件、1176张原PNG保持，不手工重传缓存。
+- `campaign-final-player.log`独立13关流程passed=True、stage=13、gold=329，`campaign-final-player-exit.txt`为0。这里普通战斗使用测试判胜，只验证真实跨关/商店/结算/奖励幂等和最大存钱路径；不称为13关自然通关。
+- `campaign-final-sandbox-player.log`无限金币/九张库存/整合6雪怪4/暂停援军/返回整备passed=True，退出0。此前同功能构建的`campaign-legacy-player.log`原高难度两关9项全True、退出0，原流程另有完整86项及定向6项覆盖。
+- 实际可见原生窗口经computer-use操作：领取首关补给10→21、进入商店、正确独立备战计数、准备时切换测试、选择无限金币关，看到∞/8级/整合6雪怪4及六卡，窗口保留供人类试玩。后台ScreenCapture曾报Failed to capture screen shot，未获得文件，不把它计作截图证据；本次窗口图来自实际界面工具观察。
+- 仓库4698个跟踪文件/meta与暂存差异检查通过，原两个未跟踪项保留。最终文档补记不改变运行源码；Builds内BUILD-INFO记录上述源码提交。
+
+未做完整13关自然通关、长时人工平衡、第二机或完整41卡经济策略模拟；Boss参数和300金币体验仍需试玩。其他七条羁绊、八名五费构筑专属、银狼没有因本轮批准被记作已上线。无ZIP/Releases。
+
+## 2026-11-04：羁绊与数值企划的纸面检查
+
+本轮仅设计文档与离线分析，基线origin/main为b4b8b2c（已包含加载优化#55），分支codex/synergy-balance-plan。正文见[企划v1.0](proposals/SYNERGY-BALANCE-v1.0.md)，可编辑候选数据见[JSON](proposals/SYNERGY-BALANCE-v1.0.data.json)，复现入口`py -X utf8 tools/balance/check_synergy_plan.py`。
+
+- 实际执行纸面脚本并通过：41个唯一角色参数、九条羁绊最高档成员数量、七套阵容已列最高档、升星生命/攻击单调性、概率行总和、累计经验和三条不透支现金预算。
+- 12个有限牌库情景各5000次，固定种子20261104。五格逐槽费用概率、同费剩余库存加权、同店占库和刷新返库；只买一个目标，首店免费，含买牌及后续2金币刷新费用。结果写入本地忽略的artifacts/synergy-plan-analysis.json；正文记录均值/中位数/90分位，脚本随文档提交可重现。
+- 样例：3级指定1费三星均价91.0金币；9级指定5费二星107.3；10级指定5费三星（7种五费）301.9。均不含升级、其他卡购买或利息损失，不解释为通关成本或概率。现有40卡与未来银狼分开计数。
+- 正文UTF-8/本地链接/九条羁绊章节、参数与表格核对通过；仓库静态检查4674个跟踪文件通过，暂存差异检查通过，仅本任务五个文件。全部新增规则标为待确认，不修改GDD或运行资产。
+
+未运行Unity编译、EditMode/PlayMode、独立Player、EXE构建或人工平衡试玩；未模拟完整策略、动态转型、备战位及关卡胜负。现金可支付不等于买得到指定卡或能赢，纸面强度指标不代替实战。纯文档任务按CONTRIBUTING无需重建EXE；原两个本地未跟踪项保留不提交，无ZIP/Releases。
+
 ## 2026-11-04：菜单、进关、商店与图集缓存优化
 
 已获共享接口/构建流程具体范围确认。从实时main建立codex/animation-loading，带入PR54火墙依赖。新ArtCatalog/ArtSequence/ArtMemoryCache/ArtPreparation、PreparedArtTools分别负责元数据、按段动作、受保护缓存、入口分帧准备与离线压缩；原四个角色读取器保留调用接口。调整配置校验、菜单、商店/下一关及构建钩子；无场景/Prefab/包/工程设置修改，已知本地未跟踪文件保留。

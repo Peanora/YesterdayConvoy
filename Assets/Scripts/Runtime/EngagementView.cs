@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         private TalulahAttackVfx talulahAttackVfx;
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
+        private readonly List<LineRenderer> shatterViews=new List<LineRenderer>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
         private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
@@ -76,6 +77,13 @@ namespace YesterdayConvoy
                     if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
                     else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
                 }
+            for(int i=0;i<b.ShatterEvents.Count;i++)
+            {
+                if(i>=shatterViews.Count)shatterViews.Add(CreateLine("Snow synergy shatter",.10f));
+                var effect=b.ShatterEvents[i];float age=(float)(time-effect.At);var line=shatterViews[i];
+                line.enabled=age>=0&&age<.65f;
+                if(line.enabled)Ring(line,effect.Position+Vector3.up*.12f,Mathf.Lerp(.12f,effect.Radius,age/.65f),new Color(.55f,.92f,1,1-age/.65f),null);
+            }
             for(int i=0;i<b.IceRings.Count;i++)
             {
                 if(i>=iceRingViews.Count) iceRingViews.Add(CreateLine("FrostNova ice ring",.09f));
@@ -327,6 +335,7 @@ namespace YesterdayConvoy
             talulahAttackVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
+            foreach(var ring in shatterViews)Destroy(ring.gameObject);shatterViews.Clear();
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();

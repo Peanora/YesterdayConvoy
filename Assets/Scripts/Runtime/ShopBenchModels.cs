@@ -71,7 +71,7 @@ namespace YesterdayConvoy
             float height=LocalMonsterArt.For(id)?.Height??1;
             return .50f/1.855f*Mathf.Min(1,2.05f/height);
         }
-        static Vector2 ShopModelFoot(int slot)=>new Vector2(ShopBenchRect(slot).center.x,693);
+        Vector2 ShopModelFoot(int slot){var r=CampaignActive?CampaignPieceRect(slot):ShopBenchRect(slot);return new Vector2(r.center.x,CampaignActive?r.y+43:693);}
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);
         void SyncShopBenchModels()
         {
@@ -133,6 +133,7 @@ namespace YesterdayConvoy
         }
         void DrawShopBench(GUIStyle center)
         {
+            if(CampaignActive){DrawCampaignBench(center);DrawCampaignModels();return;}
             Fill(new Rect(0,632,1280,88),new Color(.035f,.06f,.075f,.98f));
             Fill(new Rect(8,632,1264,1),new Color(.3f,.44f,.48f));
             // A single raised walkway, as seen in the user's recording; seat hit areas stay invisible.

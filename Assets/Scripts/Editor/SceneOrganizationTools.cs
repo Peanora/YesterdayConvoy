@@ -79,7 +79,7 @@ namespace YesterdayConvoy.Editor
                     if(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject)!=0)throw new InvalidOperationException("Missing script: "+t.name);
                 if(path.Replace('\\','/').EndsWith("BattleShop.unity")&&UnityEngine.Object.FindAnyObjectByType<AuthoredBattlefield>(FindObjectsInactive.Include)==null)throw new InvalidOperationException("Authored shop geometry missing");
             }
-            Debug.Log("AUTHORED_SCENES_VALIDATION_PASS: two scenes, saved geometry, no missing scripts");
+            Debug.Log("AUTHORED_SCENES_VALIDATION_PASS: saved geometry, no missing scripts");
         }
     }
 }

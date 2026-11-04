@@ -30,7 +30,7 @@ namespace YesterdayConvoy
         void ConfigureLoopStage()
         {
             CloseDefenderInspector();CancelShopDrag();SetShopVisible(false);ResetShopPresentation();
-            shopMapCopy.defenders=BattleShopStages.Defenders(Loop.Stage,Loop.LateGame);shopMapCopy.mapTitle=(Loop.LateGame?"盟约防线":"基础防线")+" · 第"+Loop.Stage+"关";
+            shopMapCopy.defenders=CampaignActive?CampaignPlan.Guards(Loop.Stage,SynergySandbox):BattleShopStages.Defenders(Loop.Stage,Loop.LateGame);shopMapCopy.mapTitle=CampaignActive?(SynergySandbox?"羁绊自由试验":CampaignPlan.Title(Loop.Stage)):(Loop.LateGame?"盟约防线":"基础防线")+" · 第"+Loop.Stage+"关";
             shopMessage=null;loopMenuOpen=false;loopTestSettlementOpen=loopWasTestSettled=false;
             SyncShopDeck(false,true);terminalPresentationElapsed=readyIdleElapsed=0;requestSequence=0;
         }

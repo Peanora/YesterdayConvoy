@@ -23,7 +23,7 @@ namespace YesterdayConvoy.Editor
             Directory.CreateDirectory("Builds/Windows");
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { ShopMapTools.ScenePath, InitialDemoTools.ScenePath },
+                scenes = new[] { CampaignTools.CampaignScene, ShopMapTools.ScenePath, InitialDemoTools.ScenePath, CampaignTools.SandboxScene },
                 locationPathName = "Builds/Windows/YesterdayConvoy.exe",
                 target = BuildTarget.StandaloneWindows64,
                 options = BuildOptions.Development
