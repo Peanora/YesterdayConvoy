@@ -129,8 +129,7 @@ namespace YesterdayConvoy
             }
             }
             else { kroos.enabled=range.enabled=false; foreach(var v in extraVisuals) v.enabled=false; }
-            if(talulahAttackVfx==null)talulahAttackVfx=new TalulahAttackVfx(transform);
-            talulahAttackVfx.Begin();
+            talulahAttackVfx?.Begin();
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {
@@ -294,7 +293,13 @@ namespace YesterdayConvoy
             v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
             if(v.Face!=null)v.Face.enabled=false;
             if(talulahAttackVfx==null)talulahAttackVfx=new TalulahAttackVfx(transform);
-            talulahAttackVfx.Present(shot,b.Clock,cam);
+            var unit=b.FindUnit(shot.SourceId);
+            var art=OriginalTalulahArt.For(owner.CardForUnit(unit));
+            if(art==null)return;
+            float travel=(float)(shot.ImpactAt-shot.StartedAt);
+            float recovery=Mathf.Max(.001f,b.UnitCombat(unit).UnitInterval-travel);
+            float sourceRecoveryScale=(art["attack"].Duration-art.AttackContact)/recovery;
+            talulahAttackVfx.Present(shot,b.Clock,cam,sourceRecoveryScale);
         }
 
         private void Play(AudioClip clip, float volume)
