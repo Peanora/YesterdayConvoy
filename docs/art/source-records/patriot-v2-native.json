@@ -1,0 +1,1170 @@
+{
+  "id": "M20-PATRIOT-V2-NATIVE-FX",
+  "date": "2026-11-05",
+  "task": "https://github.com/Peanora/YesterdayConvoy/issues/62",
+  "source_kind": "Original Arknights native VFX rendered into derived portable atlases",
+  "source": {
+    "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_patrt.dat",
+    "index": {
+      "name": "battle/prefabs/effects/patrt.ab",
+      "hash": "8a0780a69cc3a495dcfe0df19e3fab12",
+      "md5": "d2be62e7fcfc084a9acda7c20fac089e",
+      "totalSize": 297523,
+      "abSize": 404484,
+      "pid": "lpack_init3",
+      "cid": 5409
+    }
+  },
+  "resource_version": "26-10-29-15-36-11-33649006",
+  "rights": "Third-party original assets and derivatives; no independently verified public redistribution license attached. User explicitly requested runtime art to accompany source. Educational purpose is not represented as a copyright license; not CC0 or exclusive ownership.",
+  "source_dependencies": [
+    {
+      "name": "battle/prefabs/effects/common.ab",
+      "md5": "7351283c4112821fbfc190ae1dd86cdf",
+      "sha256": "9ded9b434ec46fbfd584587f63f8fa071ed36e93fb49c69a124e1b15aeb76c33"
+    },
+    {
+      "name": "battle/[pack]common.ab",
+      "md5": "8da3a641a53f8f3105884dd8a22aa0db",
+      "sha256": "37f9070775ff736d619bb16f1ab5d93d704ec80829526c89d6a5c9ec9b10becc"
+    },
+    {
+      "name": "refs/fx/material.ab",
+      "md5": "728ecf3922f85ddf79d40cead851ddcc",
+      "sha256": "066267f3593e8f0086a325cc80850ba94917cf72d6a1738d50a9f4d569b5e1f4"
+    },
+    {
+      "name": "refs/fx/model/special.ab",
+      "md5": "d3f16af67413ee70ef5074ce43c4eb0b",
+      "sha256": "49466e217a5c735c6605c4648604ed5d361871090e15b438be093ca15ae8396e"
+    },
+    {
+      "name": "refs/fx/sharedbattle.ab",
+      "md5": "5365790f896dab74ed0aab25e819e088",
+      "sha256": "89f4abb28b1643d0ba465e41d4d3324311f477b46ce4d96138025f6a84ff372c"
+    },
+    {
+      "name": "refs/fx/texture.ab",
+      "md5": "0213adbc3cb7a3752f8cb91feee65c9b",
+      "sha256": "50c4cd6c2393040b772a6d4c5b1ece9481126a605a9f0e67a3c7ba44ad593317"
+    },
+    {
+      "name": "refs/fx/texture/color.ab",
+      "md5": "e5df6f12cb802622aa90d3cc96a5a313",
+      "sha256": "60631769702c003e6a638ce3c9b0d2681f20c905a7e0519f6810fe72cd7de3b3"
+    },
+    {
+      "name": "refs/fx/texture/fire.ab",
+      "md5": "30713384f4f37d430b4a0ee6c1a70d6d",
+      "sha256": "eea37e76323662984f752514d2bf9ed0d2016fa15eb18d7f5bf3efabd3185c7a"
+    },
+    {
+      "name": "refs/fx/texture/flipbook.ab",
+      "md5": "e68b16848a3d5bc54f21d1b06a240d77",
+      "sha256": "980fe0ceed171f6b15b4a2a5a41a8cbd572a02735794824906b3e66e9f0bc5d1"
+    },
+    {
+      "name": "refs/fx/texture/flow.ab",
+      "md5": "a7a4f6dea39f25754c15d0a9573cd4de",
+      "sha256": "e9fabfe551166bc1d9a050e82a78cae473025ad924a8127914428ca9c47c9566"
+    },
+    {
+      "name": "refs/fx/texture/lighting.ab",
+      "md5": "44dd6faf6f95fcafc47ce2a3df1a827e",
+      "sha256": "633df9bcaad97bda3546a35fcca280007868cb3daaf9edc4b29d3d68025232d8"
+    },
+    {
+      "name": "refs/fx/texture/mask.ab",
+      "md5": "a4e3232348dc0f5ca1c374f112dde673",
+      "sha256": "72a3b4613d9ce62fc6f2fb74ca7c344a1823fa816284930f2b7b5e2da59800f8"
+    },
+    {
+      "name": "refs/fx/texture/object.ab",
+      "md5": "65d0846be9d72ee5d8b805c1b5d72a48",
+      "sha256": "df0cc40126db4ca7f11b06d5e8e8b373e8aa2c14517cfc422be1246d2c4080c4"
+    },
+    {
+      "name": "refs/fx/texture/pattern.ab",
+      "md5": "af9572436d7a6e0c7edd0ac501136043",
+      "sha256": "e3f8d7ed8ae7bd011156c11796738413f89fdb10997e2a11fdc47311e53a00cc"
+    },
+    {
+      "name": "refs/fx/texture/ray.ab",
+      "md5": "d562b3b0c90d46af906ea798758f8af5",
+      "sha256": "89fb3ff9948e17da78017215d758d8507a0212f175a8984763b60aa4c7252eff"
+    },
+    {
+      "name": "refs/fx/texture/smoke.ab",
+      "md5": "a3a375814bd961f8708722852d1f6f6b",
+      "sha256": "57737333c738fa8904eab306ccd94e0e29415d9c6c99047a64d10b09dd1ee937"
+    },
+    {
+      "name": "refs/fx/texture/star.ab",
+      "md5": "2d0a58ebc868258cb1f1052ab9fb2d3d",
+      "sha256": "a21ea224961db2237d13073cf5310375cfe0d22aa10e5a9e0bd2fef458f0e087"
+    },
+    {
+      "name": "refs/fx/texture/trail.ab",
+      "md5": "e865e4e5943b33c2138e04fcb583c882",
+      "sha256": "e13c0950fc8414bbe5090ae5fa1a194c6519e1ace37663368680f56dc51dfe0a"
+    },
+    {
+      "name": "refs/fx/texture/vein.ab",
+      "md5": "f0f5b2d118671554ab46792b81fae1a0",
+      "sha256": "3800c93ee0acbed1a0a213e1754d1c921020b83c2ece04d0a3b05e7da22aa220"
+    },
+    {
+      "name": "refs/fx/texture/water.ab",
+      "md5": "001b2fc0c54b7eb74b2917285dbad81f",
+      "sha256": "90055e9344fdfd8718d8ddf1a414b4c9706dd5948dc7c2a17a663881db4e3734"
+    },
+    {
+      "name": "shaders/other.ab",
+      "md5": "33a0faef00c31e08a61ee85b7f9dfb66",
+      "sha256": "8fff7e26fb4a6631c0ead5cd74f03d1e7a2c061760358bd4bffaf31a70ce1cfe"
+    },
+    {
+      "name": "shaders/special.ab",
+      "md5": "116cce44bc391039b4b9c7e769e5af4a",
+      "sha256": "621543c0c8356b0f1cd8b065587104915c77b2e7346b0ed1bd02a4b149c06000"
+    },
+    {
+      "name": "shaders/standard.ab",
+      "md5": "18274c28c066d7cddb1a2d89490af184",
+      "sha256": "799d0435c8e34726a88a1899434f59c62ab370383086396c7f47dd577f9ee1f7"
+    },
+    {
+      "name": "shaders/standardblend.ab",
+      "md5": "8053faccd43f217ff0c7ab76ee6b5b2e",
+      "sha256": "9df47612e8e7c878187f8970382008dc98ef61f34434ff9a1e02b8bccad69863"
+    },
+    {
+      "name": "[uc]shaders.ab",
+      "md5": "7360cdf2154ae56f830dab0df550c9eb",
+      "sha256": "beeea1ee7d65a891fefbbbbb5737b86d6e617269e19206558adaa3c24d41463c"
+    },
+    {
+      "name": "[uc]uishaders.ab",
+      "md5": "c7bc02008eb4543d95edbe1502c221a5",
+      "sha256": "7ddfcd215b0870679505dfe9c1eb26a1dd7b731b6073d217ac77c226e93d2f4f"
+    },
+    {
+      "name": "battle/prefabs/effects/patrt.ab",
+      "md5": "d2be62e7fcfc084a9acda7c20fac089e",
+      "sha256": "8eda236d67ad42d98eddffbf12900fdc5a4ad43e2dda11bebd58f19075aeac44"
+    }
+  ],
+  "animation_source": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/",
+  "process": [
+    "Verified original bundle MD5; UnityPy 1.25.4 with public MooncellWiki/UnityPy AK LZ4 adapter; preview-only Windows platform metadata conversion.",
+    "Original shaders rendered in separate Unity 6000.6.5f1 Vulkan project. Raw native shaders failed support checks under default Direct3D; raw bundles are not runtime dependencies.",
+    "Deterministic particle seed 7439. Native Animator sampling. Render each effect over black and white in RGBAFloat: RGB=black render; alpha=1-mean(white-black).",
+    "Store sqrt(RGB/32) and effective alpha in lossless PNG. Private runtime shader decodes to premultiplied additive/alpha composition. Linear import, alphaIsTransparency=false, no mipmaps/compression.",
+    "30fps; 4x4 pages, 256px cells or 512px cells for effects wider than 8 world units. Per-clip anchor/world extent; transparent tails trimmed.",
+    "Runtime mappings/mounts/scales authored to fit approved V2 and current game; flattened camera-facing output is not a full original 3D effect/script port."
+  ],
+  "tool_attribution": [
+    {
+      "url": "https://github.com/MooncellWiki/UnityPy/commit/781badde6d636f101279fef76f461bb8dd0e1ffc",
+      "license": "MIT",
+      "use": "Reference for AK LZ4 byte-layout adaptation used in local processing; library source not redistributed in game"
+    }
+  ],
+  "bake_check": {
+    "peakRGB": 30.25122,
+    "transmissionChannelError": 1.430511e-06,
+    "clippedPixels": 0
+  },
+  "edge_check": [
+    {
+      "name": "patrt_attack_01_hit",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_attack_01_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_attack_02_hit",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_attack_02_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_attack_02_start_02",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_02_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_02_start_02",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_03_range",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_03_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_04_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_04_start_02",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_04_start_03",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_buff_04_start_04",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_die_01_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_skill_01_end",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_skill_01_hit",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_skill_01_hit_02",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_skill_01_start",
+      "borderRGB": 0
+    },
+    {
+      "name": "patrt_skill_01_start_02",
+      "borderRGB": 0
+    }
+  ],
+  "runtime_clips": 19,
+  "runtime_files": [
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/catalog.json",
+      "sha256": "b8e2d9139c9a41d56919dda45a406a7e2448bb9e12dd1867f717a63ebac18f7d",
+      "bytes": 7823
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/PatriotPortable.shader",
+      "sha256": "0a20b855d3e61f1af67d14ff491b6d9cd56012e10271f058a9e099ba76d8d1d4",
+      "bytes": 1292
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_hit-00.png",
+      "sha256": "f50bf2775d8f5b7c4500dbbadbfee404b14d94cb57b3d4faa825955e8fd4882a",
+      "bytes": 238968,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_hit-01.png",
+      "sha256": "76e9194ebab97d77ffb132efb8f229b3bf6e6f2966473d398fce896c3c305ac8",
+      "bytes": 45199,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-00.png",
+      "sha256": "6e692ef405af4067204ed014cc5c4267dc6d04e4a9dc748256c0ff66f6f9b96d",
+      "bytes": 30921,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-01.png",
+      "sha256": "654b4d3a3d815cea61824d04a600aee68b80a3c8c70cb8ea2bb71567427a265f",
+      "bytes": 87469,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-02.png",
+      "sha256": "a2ae30692409b43bb156379b604ff097456ceb1e3db5f0e4ca6cffddfce71b33",
+      "bytes": 37764,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-03.png",
+      "sha256": "0f2a5ebae7cefba9f0892c773e97acc4d71a32ed0c452f15ef5165917a3b63d0",
+      "bytes": 18616,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-04.png",
+      "sha256": "0f2a5ebae7cefba9f0892c773e97acc4d71a32ed0c452f15ef5165917a3b63d0",
+      "bytes": 18616,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-05.png",
+      "sha256": "0f2a5ebae7cefba9f0892c773e97acc4d71a32ed0c452f15ef5165917a3b63d0",
+      "bytes": 18616,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_01_start-06.png",
+      "sha256": "007204e149b4a4ca4a2d94f65a24202a6af10d3289ca2fb40789c3697fd2a7b5",
+      "bytes": 18563,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_hit-00.png",
+      "sha256": "25e5eac95edd3b14258b42de0bcb0609bad8ede3e2d1739bbf6ff4df0d57da06",
+      "bytes": 201236,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_hit-01.png",
+      "sha256": "dc4c1ec31bc6ca1573a02b67fa8fca58c16a76d2b4fae64e37692cdc703df7f1",
+      "bytes": 20166,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start-00.png",
+      "sha256": "34e87416f764f61d19c02556502c9a75edf15b5a944cd9abe214fdd0a89d38a0",
+      "bytes": 139720,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start-01.png",
+      "sha256": "c4fc878452c3e96b338f84e7a7bedd96654859b6d4a7b3eae08f2ae3b2753828",
+      "bytes": 165008,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start-02.png",
+      "sha256": "fdf2ab156da05ab4c502b1602d2f4a7a8e93ef2633dbec7053c000e4c4e33c6d",
+      "bytes": 30334,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start-03.png",
+      "sha256": "164c64001ca6a09adb72425dee1e22aeba6c3ca361cc0fea3b269e616863d827",
+      "bytes": 18449,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start_02-00.png",
+      "sha256": "76e14241725a860ca0c01ac7145c08f6e4b37298b83ba1ec4f2375dab353942e",
+      "bytes": 331161,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start_02-01.png",
+      "sha256": "55aa2a7dac8d230990479493490124ff56e5a4bb77df59035be830b815a92924",
+      "bytes": 60646,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_attack_02_start_02-02.png",
+      "sha256": "b7099d1fdcf6a452b0d9fc5abea818945b4523d5bfb7a630267890b758aca841",
+      "bytes": 19151,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-00.png",
+      "sha256": "d386bf8ab0811dee23d418256dcf54a10b7681ca0e627d0e66c8378ac0e1fb40",
+      "bytes": 260494,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-01.png",
+      "sha256": "556f55efa91a8f6250be7f338679e582fb01b22dbf65e3fa1393b8cef943e2e8",
+      "bytes": 176540,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-02.png",
+      "sha256": "2a197d70c8a10d8c1b29d47fdf500f253c5bfff9759fbcec4a2645e9646143d1",
+      "bytes": 52544,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-03.png",
+      "sha256": "929d1821cd77cb5dfd1b37a6148956fe94160f4780a723673d95a9565a01fc1f",
+      "bytes": 29493,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-04.png",
+      "sha256": "6dd98865aa0c803aa71174a4c56d53c9362f2d1f5072fae55eb176999f0d49bf",
+      "bytes": 19865,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start-05.png",
+      "sha256": "43b37140d0d218d6bb70d3d8e7df69fb3ac16f16f603b171c3aac0f5da03397b",
+      "bytes": 18407,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-00.png",
+      "sha256": "d61a0a6e80dad0f5a5154d6c25b8f74f12bf2995a1aac78dcc849ea3b8ad7883",
+      "bytes": 92850,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-01.png",
+      "sha256": "bc89ab60d57e7a5d1484335050cd17ebbaf1cfc1e056c97107960286d96d1e75",
+      "bytes": 97809,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-02.png",
+      "sha256": "d7010f221d4ccd58706839db4a68f8b72ff4044e23d735e437b0243eb2e034ba",
+      "bytes": 103926,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-03.png",
+      "sha256": "9868b1077d453c5e68da7067a1c190c26bde22ac1f32b748f9814f4f20ad6f50",
+      "bytes": 99867,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-04.png",
+      "sha256": "58a3eff6bcdb49bad3c4781ddb6d26304d74982b4f71b35f4fc71e316d46b41c",
+      "bytes": 105912,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-05.png",
+      "sha256": "f45cb3825a00e3d6ff64c4f4bd4af4db9afca2ca6aceed0b45eecf91ee62b746",
+      "bytes": 99487,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_02_start_02-06.png",
+      "sha256": "ecc1a69bc8cd62649bd35ae77f9641b05f48ea2fef3f35f4c0380ec60e84c54d",
+      "bytes": 79279,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-00.png",
+      "sha256": "1daa6dcef7518d8b38d6dba42fc4089ad91911639e24f10cc7b47dd0531c22ec",
+      "bytes": 634946,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-01.png",
+      "sha256": "b670924ab54d97ad97ed186cd6dc94e234e924648c509c4c5a2691695e865462",
+      "bytes": 643299,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-02.png",
+      "sha256": "64f62571846ae4677364b132a5195133ea802e895f8ebf1b215ebc80df93f8ce",
+      "bytes": 686978,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-03.png",
+      "sha256": "5f06359472acb7068cb398b710fe87e31eb63f64e5c80278789dce0a3f5cc0a0",
+      "bytes": 652703,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-04.png",
+      "sha256": "e2cb9e96c1bbadf86af22439f0cfa62a8a97884bf45e2383a74ad19800909cec",
+      "bytes": 552223,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_range-05.png",
+      "sha256": "1aeadf97b9192e085af4feba455633d90c4f97aa006b61ec88b492cf375573d9",
+      "bytes": 537857,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_start-00.png",
+      "sha256": "95ff1a2bc4ab6bc41a925671280fcf5432ea1608756b767159bbd32018cab228",
+      "bytes": 345385,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_03_start-01.png",
+      "sha256": "f88e6712391ccec8cecc24f107b304b90ce7593a92348290e55cbfb14989ef5c",
+      "bytes": 179755,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-00.png",
+      "sha256": "3483559c8716d54e198e38acf6f1ae10159708e56dac0c641e80f574ff5f5b01",
+      "bytes": 1265092,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-01.png",
+      "sha256": "baa685c850dc8fd58d5a23296005bc9eff1f98a47ba6e79246fad66239d8f9c7",
+      "bytes": 1618754,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-02.png",
+      "sha256": "0d381a8d52169b004d049f52fd55ca9fe34437389174609471f7b7765f155857",
+      "bytes": 594609,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-03.png",
+      "sha256": "bf2992eabcba6a7c589d7ee989343f73852194cda271fc86f18f9cf926f73cba",
+      "bytes": 393805,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-04.png",
+      "sha256": "7eebc7081a851c736c9af6c5cb59181c7cd52eab9b1f22899c4ba026d44aeb74",
+      "bytes": 290113,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start-05.png",
+      "sha256": "b93a2084ef5a8d75af6295a6856eb70056463432c0a7e9dad1273bb9e05680b7",
+      "bytes": 110966,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_02-00.png",
+      "sha256": "5936c641f249beaa3e32688a28269325831e67a933124de02c826121cf45e1c4",
+      "bytes": 111539,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_02-01.png",
+      "sha256": "cf426cec2088c26af0112827f975f95ad86f5f4025402794e5598275a8694e86",
+      "bytes": 163367,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-00.png",
+      "sha256": "dfb73be4ea5b90158a5ebcce2ecd4191faae1d58d15530721daa07846523959d",
+      "bytes": 73381,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-01.png",
+      "sha256": "305e39caf76622813e963e41f4df9afe1604d6e202d796fbdfb32ef7338310d2",
+      "bytes": 449865,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-02.png",
+      "sha256": "13309a75a415ae957fe2f89541118d1421984b03c5c7e42b9da1bfd257653a05",
+      "bytes": 1141323,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-03.png",
+      "sha256": "c1949b23fce6f236e84023cdbe70691f0a07317a105e703afdf4e33a391426a5",
+      "bytes": 849217,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-04.png",
+      "sha256": "17dec06937056f9f8b23981b018ddd15804f7d8bb69c370489c6d834302dfadb",
+      "bytes": 591669,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_03-05.png",
+      "sha256": "382839dd10ee622c8df8b1b9608b3bfeb5dde79caaa05e98b3e3c8739c24e104",
+      "bytes": 208510,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-00.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-01.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-02.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-03.png",
+      "sha256": "49bb1feb929825a6809e7f91ced2d6cbecb975ae658460b5333f229e57c88265",
+      "bytes": 31939,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-04.png",
+      "sha256": "6ad143b6e9c7db16353575fcde632132b6177e3f09bf05ca5e8d16f60baf9955",
+      "bytes": 90760,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-05.png",
+      "sha256": "684dd382e1325543a9f3b9a422688df3aa05ec1ea25b3b4aae163c1a0fcac0bf",
+      "bytes": 159697,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-06.png",
+      "sha256": "3dacaecbb464a4c736787842df0d09fe40dd316f1066dc11d25b55f2bb535dea",
+      "bytes": 149409,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_buff_04_start_04-07.png",
+      "sha256": "8891f01863512d9be32b626281b66b981671813741de0fba87ae9981eb15c021",
+      "bytes": 43331,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-00.png",
+      "sha256": "4e91d5bff67b66946004b1061df2c002e9503c47446578638ec0f39cf7e60cfe",
+      "bytes": 164594,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-01.png",
+      "sha256": "d37315422cf67895ae2196fed16017d9bed119a8e927bac7c546224e01a2c676",
+      "bytes": 112585,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-02.png",
+      "sha256": "ed6638dcc27e9c1ecb0af8b11f5cb245f2542e97b46a6783329ae65f370e0091",
+      "bytes": 228625,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-03.png",
+      "sha256": "2489dfdf883dc8a292f103856f9e2cdcc2d31d4e80391eb3e7dcbc7f663f5241",
+      "bytes": 244970,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-04.png",
+      "sha256": "675bdfecb13d5b9a495f7b523dfba1525f8347d6e6589b822e59216f53c8badc",
+      "bytes": 326829,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-05.png",
+      "sha256": "c35eb353f3189bd922668ef9c968fce41b217af74d4abfba3d0886266d750c67",
+      "bytes": 548641,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-06.png",
+      "sha256": "bef739d4157bb9f66f5e89c6698194d4573d2918b88dd46c905db8e099a8d6d6",
+      "bytes": 765079,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-07.png",
+      "sha256": "073cdffcf5db7dd2af5cfd471b266fc9538d6f5bcfba430357596df9312335f4",
+      "bytes": 468294,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-08.png",
+      "sha256": "8407bbd020defc02af58563c647584de2b1188047c529ed16481d6b1c473e6b2",
+      "bytes": 388137,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-09.png",
+      "sha256": "07024814710ac5f6810f8a67b97fac9ff5bb51b303bd2d732cc06edbed133f69",
+      "bytes": 221679,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-10.png",
+      "sha256": "f7085bc668eb6ba5ee769c060de2805dbbfcacc67ca7ac1baab0cbd2e4ee37e8",
+      "bytes": 143142,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_die_01_start-11.png",
+      "sha256": "a98dd92f9c0e95795afa2cf37555e596109a4c25cc06387fbc58cfec46b791f8",
+      "bytes": 83061,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_end-00.png",
+      "sha256": "296264463e5ae6f3598725675fcc3c97ea3bcd1e78ef5ce0d53509e452baec79",
+      "bytes": 78996,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_end-01.png",
+      "sha256": "120d7c691e2ed36b90cf50d31691854259c041f6acc906ae10a4fc712d1ca038",
+      "bytes": 121293,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_end-02.png",
+      "sha256": "04331bbbef0a69e3719f3687193a0dc8000468b8a0c5541660553d8866d19c04",
+      "bytes": 53540,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-00.png",
+      "sha256": "a5ee339f29d7495db62c88ed158fe05e0b8271a67f9cb37ff4160082f97fd58a",
+      "bytes": 115572,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-01.png",
+      "sha256": "4c87efda2bd620021941c7d1ef569145f3ae676953c639277971ca5468549d64",
+      "bytes": 150321,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-02.png",
+      "sha256": "44c2af3ebcd82f3a147f1e02e908037e2aed88093f9a8d16d2f5939e436aded8",
+      "bytes": 285933,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-03.png",
+      "sha256": "97326576cc0fb66bc51e2d5d5444ecd454ca20d720ac1fb4da05297bd53ec289",
+      "bytes": 267503,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-04.png",
+      "sha256": "c1e36070bcc13ef24b5e7f4f14fb21b4b1cd2b3e63096a9eff794056d72ac3b4",
+      "bytes": 257022,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-05.png",
+      "sha256": "1fbe87879f7914cba78f0d34febfcb43f5f07473bfc2a59ede76a9603d81f6ff",
+      "bytes": 281353,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit-06.png",
+      "sha256": "780cb872fa0eed131a4dea53a77f4a29c02ee6baab521354369f8105fcef7d77",
+      "bytes": 207609,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-00.png",
+      "sha256": "57b382675e1e2aa7bf13d99fa532ac837eb897364704c94ef3c4dfad6b34eef9",
+      "bytes": 474844,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-01.png",
+      "sha256": "5c492ee30eb22fa4c45df75e0562f60a0e60e9ceeb8a55aaccd47d2b0dffa085",
+      "bytes": 465952,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-02.png",
+      "sha256": "ec3cda0a5f355281407f29f47fd5a4eb276a3d84e607ef4ecedddb206a9d64b0",
+      "bytes": 357327,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-03.png",
+      "sha256": "1862512b30d5648eda7811a431b094765fd133cf3ceda34bddc51454e56ca02a",
+      "bytes": 295162,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-04.png",
+      "sha256": "43da5f1c18b952c9ffa9451a05a39c4e8d72981d3deb2287d734fad5629db05a",
+      "bytes": 247863,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_hit_02-05.png",
+      "sha256": "6d037a7ac12260156d0a03f17efa5c860632ba6d9c3fc682254c30d4fc987821",
+      "bytes": 117612,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start-00.png",
+      "sha256": "9e52584afe2256f7de098a2812695739554f94ab4d600f995a67f9f595b86c6d",
+      "bytes": 237036,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start-01.png",
+      "sha256": "b50c7db05d992ce23c08a0286d7483b8c5a0f2ef1f1a262d2862b8f3e2401887",
+      "bytes": 215086,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start-02.png",
+      "sha256": "4292dd2a0bfd9d525e953e940baa61ab76ff2d08a4c745373cbb1e47aaac43df",
+      "bytes": 76846,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start-03.png",
+      "sha256": "0d740754e5edb09ac997d12c6d8113cd89a4bbd5d0e54b830de3038e755b21eb",
+      "bytes": 29148,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start-04.png",
+      "sha256": "889726171ea6bead06d5efff6a8236b5ca72228522462afc975ba99300c204af",
+      "bytes": 18428,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start_02-00.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start_02-01.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start_02-02.png",
+      "sha256": "208df88c76c65dc808f9d42486296a112c0c12d338daed52624546c40c96bbfc",
+      "bytes": 18397,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start_02-03.png",
+      "sha256": "98c5b7585228cb0d4758409777f7325436e9228518a8dc4233ee75ec185e57cc",
+      "bytes": 170519,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "path": "Assets/Art/VFX/Skills/Patriot/Resources/PatriotVfx/patrt_skill_01_start_02-04.png",
+      "sha256": "642308ecc65b52214349d13d455c6d2f873c210268017e15701117d8be5e1f98",
+      "bytes": 30626,
+      "dimensions": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "excluded": [
+    "Original AB/DAT files and extraction/dependency caches; not needed to build or play from repository.",
+    "External preview movies, source actor export cache and scratch Unity project; runtime uses existing M20 character frames."
+  ],
+  "limitations": [
+    "No audio added.",
+    "Original whole-combat pre-delay/speed orchestration not verified against full combat video. Source skeletal Skill OnAttack is 1.7s; this is not asserted to be the original whole skill charge rule.",
+    "Original bound combinations are adapted presentation; not all 22 original prefab names claimed to have verified original game bindings."
+  ],
+  "text_hash_normalization": "Non-PNG runtime hashes use repository LF text bytes; PNG hashes use exact binary bytes."
+}

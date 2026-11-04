@@ -180,6 +180,11 @@ namespace YesterdayConvoy
                 view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;
             }
             var sourceUnit=b.FindUnit(shot.SourceId);
+            if(!shot.FromDefender&&b.IsPatriot(sourceUnit))
+            {
+                // Patriot's original-atlas director owns every hit and spear, including cancelled casts.
+                view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;
+            }
             var sourceCombat=b.UnitCombat(sourceUnit);
             var sourceCard=owner.CardForUnit(sourceUnit);
             view.Ink.enabled=false; if(view.Face!=null) view.Face.enabled=false;

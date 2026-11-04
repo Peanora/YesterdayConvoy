@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
+    // Source skeletal events from the approved V2, not a claim about the original game's full cast scheduler.
+    internal static class PatriotTiming
+    {
+        internal const float MarchContact=.6333333f, MarchSpacing=.1f, DestructionRelease=.5333333f;
+        internal const float DestructionFlight=.1866667f, SpearRelease=1.7f, SpearFlight=.22f;
+        internal const float RiseDuration=3.6666667f;
+    }
     public enum PatriotPhase { March, Reborn, Destruction }
     public sealed class PatriotSpear
     {
@@ -22,7 +29,7 @@ namespace YesterdayConvoy
         public bool IsPatriotSpear(CombatShot s)=>units.Any(u=>u.Spear?.Shot==s);
         public float UnitResistance(DeployedUnitState u)=>Mathf.Min(100,UnitCombat(u).Effects.UnitResistance*(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.March?2:1))-(u.ScorchUntil>Clock?20:0);
         float UnitAttackInterval(DeployedUnitState u)=>UnitCombat(u).UnitInterval-(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?.4f:0);
-        float UnitAttackWindup(DeployedUnitState u)=>IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?.6833334f:UnitCombat(u).AttackWindup;
+        float UnitAttackWindup(DeployedUnitState u)=>IsPatriot(u)?u.PatriotPhase==PatriotPhase.Destruction?PatriotTiming.DestructionRelease:PatriotTiming.MarchContact:UnitCombat(u).AttackWindup;
         public bool ConfigureDefenderHighGround(string id,bool value)
         {
             if(!EngagementEnabled||Phase!=BattlePhase.Ready||units.Count!=0)return false;
@@ -71,7 +78,7 @@ namespace YesterdayConvoy
         bool StepPatriotAction(DeployedUnitState u)
         {
             if(PatriotCasting(u)){u.IsMoving=u.HasCombatTarget=false;return true;}
-            if(u.PatriotPhase!=PatriotPhase.Destruction||Clock+1e-6<u.NextSpearAt||Clock<u.LastAttackTime+UnitActionDuration(u))return false;
+            if(u.PatriotPhase!=PatriotPhase.Destruction||Clock+1e-6<u.NextSpearAt||Clock<u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate)return false;
             DefenderState target=null;float farthest=-1;
             foreach(var d in defenders)
             {
@@ -80,7 +87,7 @@ namespace YesterdayConvoy
                 target=d;farthest=distance;
             }
             if(target==null)return false;
-            var shot=new CombatShot(u.EntityId,target.EntityId,false,true,u.Motion.Position,target.Position,Clock+3,.22f,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*1.35f);
+            var shot=new CombatShot(u.EntityId,target.EntityId,false,true,u.Motion.Position,target.Position,Clock+PatriotTiming.SpearRelease,PatriotTiming.SpearFlight,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*1.35f);
             combatShots.Add(shot);u.Spear=new PatriotSpear{TargetId=target.EntityId,StartedAt=Clock,Shot=shot};
             u.NextSpearAt=u.Spear.EndsAt+20;u.NextAttackTime=Math.Max(u.NextAttackTime,u.Spear.EndsAt);
             u.IsMoving=u.HasCombatTarget=false;return true;
