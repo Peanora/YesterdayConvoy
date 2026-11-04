@@ -38,11 +38,15 @@ namespace YesterdayConvoy
             EnsureStyles();var e=Event.current;
             Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Space)e.Use();
-            if(ShopPointerEvent(e.type,point,e.button))e.Use();
+            bool synergyModal=CampaignActive&&inspectedSynergy!=null;
+            if(!synergyModal&&ShopPointerEvent(e.type,point,e.button))e.Use();
+            EventType originalEvent=e.type;
             Matrix4x4 previous=GUI.matrix;Color old=GUI.color,background=GUI.backgroundColor;
             GUI.matrix=TacticalViewport.Current.Matrix;
             try
             {
+                // Preserve control IDs while preventing the covered shop and battlefield from receiving input.
+                if(synergyModal&&originalEvent!=EventType.Repaint&&originalEvent!=EventType.Layout)e.type=EventType.Ignore;
                 DrawShopDefenderBars();
                 foreach(var unit in Battle.Units)
                 {
@@ -90,13 +94,14 @@ namespace YesterdayConvoy
                 {
                     Fill(new Rect(350,514,580,30),LoopInk);GUI.Label(new Rect(365,514,550,30),shopMessage,LoopText(13,TextAnchor.MiddleCenter));
                 }
+                if(synergyModal)e.type=originalEvent;
                 DrawCampaignControls();
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
                 if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
             }
-            finally{GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
+            finally{if(synergyModal&&e.type==EventType.Ignore)e.type=originalEvent;GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }
         void DrawLoopRoster(Vector2 point)
         {

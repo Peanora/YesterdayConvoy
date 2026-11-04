@@ -16,6 +16,16 @@ namespace YesterdayConvoy.Tests
             Assert.Fail("Sandbox timeout");
         }
         static void Replay(ManualBattleController c)=>typeof(ManualBattleController).GetMethod("ReplaySandbox",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c,null);
+        [UnityTest]public IEnumerator SynergyDetailBlocksDragBehindItWithoutSpendingResources()
+        {
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();c.SetSandboxRoster(7);c.StartLoopNextBattle();c.Battle.Begin();yield return new WaitForSecondsRealtime(.35f);
+            var field=typeof(ManualBattleController).GetField("inspectedSynergy",BindingFlags.Instance|BindingFlags.NonPublic);field.SetValue(c,"海嗣");
+            var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Count,Is.Zero);Assert.That(c.Battle.DP,Is.EqualTo(100));field.SetValue(c,null);
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
+            Assert.That(c.Battle.Units.Any(u=>u.CardId=="CARD_M33"));yield return null;c.LeaveShopTrial();
+        }
         [UnityTest]public IEnumerator FourAdditionalPresetsUseExistingCardsAndNormalPausedDrag()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();

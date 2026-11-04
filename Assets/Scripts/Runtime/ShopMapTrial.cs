@@ -153,6 +153,7 @@ namespace YesterdayConvoy
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
+            if(CampaignActive&&inspectedSynergy!=null)return false;
             if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
             {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}
             if(HandleGolemPointer(type,point,button))return true;
