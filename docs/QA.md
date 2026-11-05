@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-05：塔露拉火雨V12运行接入
+
+人类批准项目外V12。实时main为2c04ba7，本地已整合爱国者的4cb5aa8作为依赖，功能分支codex/talulah-fire-rain-v12；本轮运行源码a0769a8d845b1c5998f7de50a5d37e185fa4e517。未修改场景文件、Prefab、Packages、ProjectSettings或技能规则，保留原两个未跟踪项。
+
+- `artifacts/fire-v12-edit.xml`：完整409/409 EditMode通过，含既有高生命值下6波/18目标伤害、暂停、施法锁定和重开逻辑。
+- `artifacts/fire-v12-final-play.xml`：最终18/18相关GPU用例通过，覆盖新原素材动态图集/像素/地面、五行齐头、暂停屏幕与帧冻结、自然尾段/重开/切换，原攻击、怪物选择、基础/后期两关与Campaign回归。BattleShop实际保存地图通过测试结算进入商店购买塔露拉，再拖动进第二关真实施法，完整地面覆盖截图已目视核对；测试结算不是自然通关证据。
+- 早期开发轮因在MonoBehaviour字段初始化MaterialPropertyBlock导致异常，已移至Awake；随后新夹具误假定弱守军始终承受18次命中，改为核对6波弹药耗尽、真实阵亡和余焰不新增伤害，强生命值18次由原逻辑用例验证。中间曾有测试直接调用internal接口编译失败，已复用原测试结算入口。最终通过记录为上列文件，不把这些开发失败计为通过。
+- `artifacts/fire-v12-build.log`：Unity6000.6.5f1/Windows x64 Development，BASELINE_BUILD_PASS 2241177910 bytes、0错误；缓存后处理后的完整Windows目录约1213.7MB。构建对应运行源码a0769a8，后续文档提交不改变可执行内容。
+- `artifacts/fire-v12-player.log`、`fire-v12-player/fire-v12-result.json`与退出文件：从工程外工作目录运行实际EXE，Direct3D12/RTX4060，passed=true，退出0。真实相机开/关火焰平均RGB绝对差12.1285/255，118处地面火焰，正常弱守军实际产生15个目标命中后阵亡；原6秒施法结束后余焰没有追加事件。相邻采样的帧和位置变化、暂停像素不变、逻辑相机不被震动移动、自然结束/重开/切换清理均通过。截图已目视核对，Editor大地图截图不冒称来自Player。
+- 仓库检查5275文件通过；9张运行PNG、JSON、Shader和.meta无忽略遗漏，保留加色RGB，BC7由专属导入器配置。源说明与打包脚本入库，原包、外部加工工作区、构建、日志、本地AGENTS不入Git。
+
+未做全量PlayMode、完整人工关卡平衡试玩、第二台电脑或全新克隆验收。效果为固定镜头离线帧与本作地形组合；6秒玩法使用三面2秒间隔的稀疏火流，不能称原作十波调度逐像素还原。原媒体真实权利状态见[来源与接入说明](art/TALULAH-FIRE-RAIN-V12.md)。沿用功能分支推送/PR/人工合并，不自动合并main、ZIP或Releases。
+
 ## 2026-11-05：爱国者V2接入
 
 任务[#62](https://github.com/Peanora/YesterdayConvoy/issues/62)，基线main `8f4d604`，分支 `codex/patriot-native-vfx`。功能源码 `ef02d37`，最终Windows纹理优化源码 `b0d4b7fbe1ec7be625ac53aa59d47be9f9b86fee`；后续状态/QA文档不改变可执行内容。
