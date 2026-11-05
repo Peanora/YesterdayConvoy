@@ -15,7 +15,7 @@ namespace YesterdayConvoy
             Time.timeScale=0;
             PrepareSandboxRoster(10);
             for(int ready=0;ready<3;){yield return null;ready=ArtLoading?0:ready+1;}
-            bool pool=shop.Roles.Count==39&&shop.Roles.Count(r=>r.Cost==5)==4;
+            bool pool=shop.Roles.Count==42&&shop.Roles.Count(r=>r.Cost==5)==7;
             bool preset=Battle.GolemStage==4&&Battle.MudrockTier==5&&Battle.Defenders.Count==6&&Battle.Defenders.All(d=>d.Settings.Skill.Enabled);
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"01-golem-training.png"));yield return null;yield return null;}
             StartLoopNextBattle();Battle.Begin();Battle.SetPaused(true);yield return null;

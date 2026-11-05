@@ -106,6 +106,7 @@ namespace YesterdayConvoy
             public double ImpactAt { get; internal set; }
             public bool Resolved { get; internal set; }
             public float HealthRestored { get; internal set; }
+            public IReadOnlyList<string> AppliedTargetIds { get; internal set; } = Array.Empty<string>();
         }
         private readonly List<HealingCast> healingCasts=new List<HealingCast>();
         public IReadOnlyList<HealingCast> HealingCasts => healingCasts.AsReadOnly();
@@ -125,11 +126,14 @@ namespace YesterdayConvoy
                 if(cast.Resolved || Clock+1e-6<cast.ImpactAt) continue;
                 cast.Resolved=true;var source=FindUnit(cast.SourceId);
                 if(source==null || !source.Active || source.IsReviving) continue;
+                var applied=new List<string>();
                 foreach(string id in cast.TargetIds)
                 {
                     var target=FindUnit(id);if(target==null) continue;
-                    cast.HealthRestored+=HealUnit(target,UnitCombat(source).UnitAttack);
+                    float restored=HealUnit(target,UnitCombat(source).UnitAttack);
+                    cast.HealthRestored+=restored;if(restored>0)applied.Add(id);
                 }
+                cast.AppliedTargetIds=applied.AsReadOnly();
                 source.HealingDone+=cast.HealthRestored;
             }
         }

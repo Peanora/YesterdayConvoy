@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-05：42卡本地整合与加强羁绊测试
+
+- 基线实时main a37f0e5；用户确认新分支codex/synergy-test-integration，在唯一E盘工程吸收#75 d0ea863及#74 155e6b5（含#69/#71），未自动合并GitHub main。先用merge-tree报告ManualBattleController与GDD/STATUS/QA四处冲突，确认后逐段兼容双方死亡尾段及文档，没有整文件选一方。原.vscode/及PackageManagerSettings.asset保留未跟踪。
+- 静态审计：42种实际CardId与CampaignBalance逐一对应，原41名除银狼、加M42/M43；费用9/10/11/5/7。41个人物资源根、53份身体清单、589页及.meta在目标Git树跟踪且无缺页；维维美用现有Sprite。完整名单/真实技能缺口见MONSTER_COMPLETION_AUDIT，不将模型或导入资源等同全部原作机制完成。
+- 仅自由验证快照加强：怪物HP×4、基础攻击/治疗/SkillAttack预算×2、固有爆炸×2；守军HP×12/攻击×8；巨像及IV原基准保持。新SynergySandboxTuningTests验证混编爱国者、技能和医疗、暂停扣DP、重开不叠乘、源资产及正常模式不变、IV基准6000HP。固定羁绊伤害未统一放大。
+- synergy-integration-edit.xml完整EditMode421/421，通过、零跳过。首轮synergy-integration-play.xml完整场景110/116，6失败：三名新五费诊断的二星HP仍是旧值、雪怪三星测试旧HP405、原角色数量断言40，以及加强守军后的单兵深池不能完成自然击杀。对应修正诊断期望、42卡和405×4；深池用四名真实成员协作击杀，不强制造伤或改触发规则。最终synergy-integration-play-final.xml完整GPU D3D11 PlayMode116/116，通过、零跳过，83.19秒；含三名原生特效像素、原塔露拉/火雨/死亡、商店/技能/九条羁绊及新倍率边界。
+- 提交前仓库检查5688个已跟踪文件及meta通过（Word文件加入前）；暂存差异无冲突标记。Windows构建与独立Player尚待本轮执行，不引用历史分支通过结果替代。
+- docs/SYNERGY_PLAYTEST_GUIDE.md及Word手册完成，13页实际渲染并逐页检查。Windows无LibreOffice，使用独立隐藏Word16 COM只读导出PDF，再由原render_docx.py/Poppler栅格化；中间文件与报告在artifacts/synergy-guide，未进入源码交付。原稿与Word源校验一致，表头重复、表格行不拆分；不把文档排版检查算游戏测试。
+
 ## 2026-11-05：塔露拉原素材普攻、动作资源与死亡显示
 
 人类通过单独普攻看稿并要求将死亡等此前动作一起接入。本轮沿用PR #75与`codex/talulah-map-fire-facing`，保留早期橙色火雨及原战斗数值。当前触发和未绑定资源明确分开，见[接入清单](art/TALULAH-NATIVE-VISUALS.md)。
@@ -31,6 +40,44 @@
 运行源码`755ac92cd10d28af420314364454a927d4bf9b92`通过Windows构建，`artifacts/fire-orange-build.log`记录`BASELINE_BUILD_PASS`、0错误。随后从工程外工作目录启动独立EXE、Direct3D12/RTX4060，`fire-orange-player/fire-orange-result.json`为passed=true，真实进程退出0；平均RGB差20.6019/255、峰值37条火浪、六秒/15次实际目标伤害、动画/暂停/自然结束/重开/切换检查通过，已目视核对真实Player截图。开发验证沿用旧`-talulahFireRainV12Test`参数以兼容既有入口，当前验证的是恢复后的橙色版。
 
 最新本机入口`Builds/Windows/YesterdayConvoy.exe`，同目录`SOURCE.txt`绑定上述运行源码；后续文档提交不改变可执行内容。未创建ZIP/Releases。完整人工关卡、第二台电脑和长期性能未测。
+
+## 2026-11-05：爱国者五费商店、混编与原版表现
+
+任务[#73](https://github.com/Peanora/YesterdayConvoy/issues/73)，分支codex/patriot-five-cost-shop，main基线a37f0e5；本地保留PR #71（含#69）而非丢弃已完成角色。M20实际卡牌、动画和原生19组/99页资源均已在main跟踪，本轮只复用，未改忽略规则。源文件/配套.meta继续提交，原.vscode隔离保留。来源与权限状态不变，见[M20说明](monsters/M20_PATRIOT_VFX.md)。
+
+- 完整EditMode **421/421通过、零跳过**，artifacts/patriot-shop-edit.xml。新增五项覆盖白名单、星级与标签、次卡实例防御/四次接触、三星60秒复起及高台投矛、双实例指挥不叠加/重开、五费刷新/有限库存/满席合成与普通经济只扣5。
+- 最终相关GPU **36/36通过、零跳过**，artifacts/patriot-shop-gpu-final.xml。含M20商店专属、原M20全部阶段/朝向、M25、M32、其他角色能力、羁绊、Campaign、高难度商店、霜星。首轮35/36，唯一失败是新诊断把无限金币当普通扣费；已修正为保留无限金币并校验购买价值5，未改真实经济。
+- 专属验证从SynergyTrial真实五费九张、满备战合成二星、原M20模型、暂停拖动到实际红门；随后使用明确的近静止开发夹具，以M08为主卡、二星M20为次卡验证四连击、60秒倒地、1140最大生命复起、保护、毁灭、自动高台投矛、真实伤害/灼烧、最终死亡和重开/返回清理。七阶段均有同相机开关原生表现的实际GPU像素差，不能把夹具称为普通关自然完整通关。
+- 运行源码**ba014335eed5f7de6b3cb7efc7aa75babb47ae51** Windows构建报告2,309,684,448 bytes、0错误，实际Windows目录1,282,187,423 bytes。独立窗口1920×1080/Direct3D12运行，16项PATRIOT_SHOP_EVENT全True、PATRIOT_SHOP_CHECK passed=True、退出0。artifacts/patriot-shop-build.log / patriot-shop-player.log / patriot-shop-player/十张实际截图与结果文本。已目视核对五费卡面、二星模型备战、真实部署和原生特效。七阶段开/关RGB平均像素差约0.606/3.794/36.349/4.548/5.573/10.010/0.375，均有可见GPU贡献。
+- .gitignore继续允许已跟踪的角色/特效资源，没有全局取消规则；仓库5431文件/meta检查通过。未做第二机、新克隆、全13关平衡与长期性能；原音效和五费构筑专属仍未新增。无场景/Prefab/Packages/ProjectSettings变化，不自动ZIP/Releases或合并main。
+
+## 2026-11-05：梅菲斯特原生治疗、五费入池和实际Player
+
+任务[#72](https://github.com/Peanora/YesterdayConvoy/issues/72)，用户确认V1并要求接入游戏和商店。继续codex/mephisto-native-vfx-preview / PR #71，保留已完成曼德拉#69依赖。新运行素材为4PNG/285帧及清单、原比例挂点和.meta，复用已跟踪的兼容材质/Shader；页SHA256、四组布局、无采样边界、全部忽略来源/实际跟踪检查通过。原包和加工区不入Git，真实权利/适配见[M25说明](monsters/M25-NATIVE-VFX.md)。
+
+- 完整EditMode首415/416，唯一失败为旧卡池总数40断言；按新增M25更新后最终416/416通过、零跳过。artifacts/mephisto-edit-final.xml。
+- 专属GPU两项最终通过：真实五费九张库存、满备战合成二星、原模型、暂停拖动、三目标治疗与不提前发光、实际像素、无伤害普攻、暂停冻结、重复/并发、朝向、死亡取消、增幅解除尾段、重开/返回。诊断夹具初版缺守军图号已补齐；正常入口画面采样从粒子起始空帧移到命中后0.3秒。最终广域相关GPU33/33通过、零跳过，含M25、旧角色能力、曼德拉、羁绊/牧群、Campaign、后期商店、霜星；不是全工程GPU遍历。artifacts/mephisto-regression.xml。
+- 源码93eaa20dc7fa201e00c65508096aaa11d4c46207 Windows构建报告2,309,677,578 bytes/0错误，目录1,282,180,435 bytes。独立窗口1920×1080、Direct3D12运行，21项MEPHI_EVENT全True，MEPHISTO_VFX_CHECK passed=True，进程退出0。artifacts/mephisto-build.log / mephisto-player.log / mephisto-player/七张完整截图。
+- 开/关特效同相机同时间RGB差：命中3595像素、手部35、持续回复473、正常单怪自然受伤治疗363；编辑器与独立Player均可见，已目视核对完整HUD/模型/亮部。多目标夹具为明确诊断用的近静止四路线与主动造伤，保留实际地形遮挡；普通M25入口不注入受伤，真实守军攻击触发治疗。
+- 无场景/Prefab/Packages/ProjectSettings修改，.vscode保持。当前Builds/Windows是本轮版本；未做第二机、全新克隆构建、13关自然平衡、长时性能、原作逐帧完整调度或音效。不自动ZIP/Releases，不自动合并main。
+
+## 2026-11-05：蔓德拉原作特效、升星与商店
+
+任务[#67](https://github.com/Peanora/YesterdayConvoy/issues/67)，从main 2c04ba7继续codex/mandragora-vfx-preview。用户确认原作V1动态看稿后要求接入游戏与商店。无场景/Prefab/Packages/ProjectSettings修改，原.vscode/保持。
+
+提交6e2be32创建PR #69后，主线已更新为a37f0e5（塔露拉火雨V12及爱国者原生特效）。已先报告CampaignBootstrap、QA、STATUS三处冲突，逐项保留全部测试路由和双方记录，未整文件选择一方。`mandragora-main-edit.xml`完整412/412通过；`mandragora-main-gpu.xml`相关27/27通过，包含蔓德拉、爱国者、塔露拉火雨、商店及羁绊。仓库5393文件/meta检查通过。下列早期验证记录仍对应同步前版本，最终集成版本以本段后续构建/Player记录为准。
+
+最终整合版 `mandragora-main-build.log`：Windows 2,307,445,781 bytes / 0错误，后处理后完整目录1,279,948,491字节。从工程外工作目录运行 `mandragora-main-player.log`可见窗口、`mandragora-main-patriot.log`与`mandragora-main-fire.log`三个独立D3D11 Player均退出0，分别得到MANDRAGORA_VFX_CHECK passed=True、PATRIOT_VFX_CHECK_PASS、FIRE_RAIN_V12_PASS。三项保留原伤害、暂停及清理边界；最终蔓德拉实际窗口截图随源码保存于monsters/previews/M32-native。此轮仍未做第二机、新克隆和完整自然战斗通关。
+
+- `mandragora-edit.xml`：56/56定向逻辑通过，覆盖原M32技能边界、升星副卡复起生命和伤害、混编对空/柱击破盾、五费刷新与满席三合一，以及相关Campaign/羁绊逻辑。
+- `mandragora-gpu.xml`：21个相关GPU用例首轮20通过，新增蔓德拉用例的普攻取帧早于真实0.833秒出手加0.22秒弹道和首模拟步，调整为1.2秒。`mandragora-final-gpu.xml`蔓德拉2/2最终通过；19个其他商店、霜星、泥岩和羁绊场景回归已通过，共21个不同用例。没有把重复跑过次数相加。
+- 初次本轮后台测试卡在原有WaitForEndOfFrame截图等待，停止本轮进程后改为跨帧截图与显式相机输出。补盾夹具最初忽略35法抗导致伤害未跨40%阈值，修正开发测试输入，不放宽技能阈值。实际普攻一次出手/一次命中、凝视暂停冻结、破盾中断、封地断束、左右朝向、两个实例各自光束、重开清理均通过。
+- 原生Vulkan捕获后，三方向倒柱边界检查发现裁切，扩大取景并重烘焙；最终42段2595帧48页、无捕获边界裁切。一个原脚本容器输出全透明，未放入清单冒充图像。`check_atlas.py`检查42/48布局通过，PNG总15,220,657字节，所有必要meta成对。忽略检查没有排除新增运行素材，未取消.gitignore。
+- Windows `mandragora-build.log`：BASELINE_BUILD_PASS 2,081,468,345 bytes、0错误；PreparedArt预处理仍可重建并随Player自动安装，运行图集采用Windows BC7。此为Unity构建报告大小，后处理后的完整目录约1.05GB。
+- `mandragora-player.log`后台独立D3D11 Player退出0，事件全部True；该次ScreenCapture全黑，不作为画面证据。`mandragora-player-visible.log`可见独立窗口复验退出0，实际商店/备战模型/战斗截图已人工查看。凝视仅关闭光束得到739/810个变化像素，倒柱仅关闭本次左向倒塌得到5422个变化像素；破盾13069、复起19449、死亡2844。两实例光束数2。不是仅凭Renderer计数验收。
+- 移除两处旧的“等待蔓德拉入池”界面提示后，`mandragora-final-build.log`重建同为2,081,468,345 bytes / 0错误；`mandragora-final-player.log`最终可见独立Player全部True、退出0。`mandragora-campaign-player.log`既有正式挑战自动结算闭环通过（stage13 / gold329 / 退出0），不记为完整自然战斗通关。
+
+正常商店购买、满席两星合成与暂停红门拖动走真实入口；复起/倒柱/破盾等后期用明确开发夹具，在实际地图相机中读取真实模拟事件。夹具使用固定位置/低移速/高生命测试守军，经伤害接口触发阶段，不能算作正常13关自然通关。正常地图未新增支柱，倒柱要求地图配置已有支柱。新原作媒体来源、权利状态与适配见[说明](monsters/M32-NATIVE-VFX.md)和[源记录](art/source-records/mandragora-native.json)。无音效；第二机/全新克隆、长期性能和强度平衡未测。不自动合并/ZIP/Releases。
 
 ## 2026-11-05：塔露拉火雨V12运行接入
 

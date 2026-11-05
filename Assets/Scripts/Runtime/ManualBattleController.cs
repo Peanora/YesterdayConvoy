@@ -42,7 +42,8 @@ namespace YesterdayConvoy
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
         private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
-        private double UnitDeathTail(DeployedUnitState unit) => OriginalTalulahArt.For(CardForUnit(unit))?.DeathDuration ?? DefaultDeathTail;
+        private double UnitDeathTail(DeployedUnitState unit) => OriginalTalulahArt.For(CardForUnit(unit))?.DeathDuration ??
+            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0);
         private double DeathTail
         {
             get

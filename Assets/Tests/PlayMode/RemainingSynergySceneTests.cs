@@ -31,8 +31,8 @@ namespace YesterdayConvoy.Tests
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();
             for(int preset=4;preset<8;preset++)
             {
-                Assert.That(c.SetSandboxRoster(preset));int[] tiers={c.Battle.HerdTier,c.Battle.DeepTier,c.Battle.SarkazTier,c.Battle.MarineTier};Assert.That(tiers[preset-4],Is.EqualTo(new[]{4,2,6,4}[preset-4]));
-                Assert.That(c.Shop.Roles.Count,Is.EqualTo(39));Assert.That(c.Shop.Roles.All(r=>r.Id!="CARD_M32"));
+                Assert.That(c.SetSandboxRoster(preset));int[] tiers={c.Battle.HerdTier,c.Battle.DeepTier,c.Battle.SarkazTier,c.Battle.MarineTier};Assert.That(tiers[preset-4],Is.EqualTo(new[]{4,4,6,4}[preset-4]));
+                Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Shop.Roles.Any(r=>r.Id=="CARD_M32"));Assert.That(c.Shop.Roles.Any(r=>r.Id=="CARD_M25"));
                 string id=c.Shop.Bench[0].Id;Assert.That(c.StartLoopNextBattle());c.Battle.Begin();c.Battle.SetPaused(true);yield return new WaitForSecondsRealtime(.35f);
                 var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));int before=c.Battle.DP;
                 c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);
@@ -56,8 +56,9 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator NativeDeepSprayCreatesSeedsAndMarineRetaliationEarnsPersistentGrowth()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();c.SetSandboxRoster(5);c.StartLoopNextBattle();c.Battle.Begin();
-            Assert.That(c.Battle.TryDeployRole(c.Battle.RunId,1,c.Battle.Entry,"CARD_M31").Success);
-            for(int i=0;i<1600&&c.Battle.DeepCharges==0;i++){c.Tick(.1f);if(i%20==0)yield return null;}
+            long request=0;
+            foreach(var id in new[]{"CARD_M29","CARD_M30","CARD_M31","CARD_M32"})Assert.That(c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,id).Success);
+            for(int i=0;i<2600&&c.Battle.DeepCharges==0&&c.Loop.CanDeploy;i++){c.Tick(.1f);if(i%20==0)yield return null;}
             Assert.That(c.Battle.DeepCharges,Is.GreaterThan(0),"Native burn and normal kill must trigger the real deep-pool chain");
             Replay(c);c.SetSandboxRoster(7);c.SetRemainingChoices("CARD_M33",MarineAdaptation.Infiltration,MarineAdaptation.Hunt);c.StartLoopNextBattle();c.Battle.Begin();
             var u=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,2,c.Battle.Entry,"CARD_M33").EntityId);
