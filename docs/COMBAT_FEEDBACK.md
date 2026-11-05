@@ -40,4 +40,4 @@
 
 接入时补丁锚点和 `git apply --check` 通过，保留已提交塔露拉阶段与九条羁绊场景改动。使用现有 Unity 引用独立 Roslyn 编译 Runtime、Editor、Editor.Tests、PlayMode.Tests 四个程序集，均退出 0；这没有启动 Unity，也没有执行测试方法。第一次仅重编 Runtime 后的 Editor.Tests 失败来自旧 Editor 引用未包含新 `GameSceneCatalog`，随后按 Runtime→Editor→两种测试程序集重编通过。
 
-**上述测试尚未在 Unity 执行，GPU 字体/遮挡、不同窗口尺寸、终局尾段和最终 Windows EXE 尚待主任务验证**。后续真实结果统一补入 `docs/QA.md` / `docs/STATUS.md`。
+上述为接入时的静态检查记录。现已完成Unity全量逻辑433/433、相关GPU52/52与D3D11独立Player53项检查，实际伤害/冻结图像已复核；不同窗口尺寸完整组合、全菜单人工点选与第二机仍未测。真实范围见 `docs/QA.md` / `docs/STATUS.md`。
