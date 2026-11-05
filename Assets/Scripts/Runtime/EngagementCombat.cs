@@ -262,7 +262,7 @@ namespace YesterdayConvoy
         {
             StepRemainingSynergies(step);
             EngagementSettings guardSettings=CombatSettings;
-            ResolveFrostSeals();
+            ResolveFrostSeals();StepSnowstorms();
             StepGramophones(step);
             StepAdvancedDefenders(step);
             StepDefenderWalls();
@@ -334,7 +334,7 @@ namespace YesterdayConvoy
                 if(c.Effects.Patriot&&StepPatriotPassive(unit))continue;
                 if(c.Effects.Mandragora&&StepMandragoraPassive(unit,step))continue;
                 if(c.Effects.Harvester&&StepHarvesterPassive(unit,step))continue;
-                if(unit.PillarStunnedUntil>Clock&&!PatriotControlImmune(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
+                if(unit.PillarStunnedUntil>Clock&&!UnitControlImmune(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Flamechaser&&StepFlamechaser(unit,step))continue;
                 if(unit.IsReviving)
                 {

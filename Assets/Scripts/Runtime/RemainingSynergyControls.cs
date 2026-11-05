@@ -15,7 +15,10 @@ namespace YesterdayConvoy
         {
             if(!CampaignActive||!Loop.CanShop||inspectedSynergy!=null)return;
             var rect=new Rect(680,270,580,224);Fill(rect,LoopInk);
-            GUI.Label(new Rect(694,278,550,26),"构筑选择 · 开战后锁定",LoopText(15));
+            GUI.Label(new Rect(694,278,300,26),"构筑选择 · 开战后锁定",LoopText(15));
+            if(LoopButton(new Rect(1000,277,116,28),"阵营选择"))golemTrainingTab=false;
+            if(LoopButton(new Rect(1124,277,120,28),"巨像培养"))golemTrainingTab=true;
+            if(golemTrainingTab){DrawGolemTraining();return;}
             string selected=shopLineup.Contains(contractCard)?contractCard:shopLineup.FirstOrDefault();
             if(selected==null)return;
             if(LoopButton(new Rect(694,313,550,31),"承契卡："+shop.Definition(selected).Name+" · 点击切换"))

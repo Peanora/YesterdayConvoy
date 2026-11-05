@@ -1527,3 +1527,15 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 最终运行源码bb7db8e，Windows构建0错误，1997621649字节；产物Builds/Windows/YesterdayConvoy.exe。
 - 最终正常窗口Player：artifacts/mudrock-native-final.log中MUDROCK_PLAYER的drag/pause/charge/capture/actionLock/device/restart=True；四张真实截图位于artifacts/mudrock-native-final，已目视核对泥岩卡面、原模型、屏障、就绪标志、占据动作与装置位置。Player自动流程完成并退出，无异常。
 - 原两个未跟踪文件不提交。未自动ZIP/Releases；源码和运行素材走功能PR，不自动合并。
+
+
+## 2026-11-05 感染/雪怪/泥岩成长重制
+
+- 分支codex/synergy-growth-rework；远端main=8f4d604，已正常fetch并核对，按授权吸收未合并PR64依赖。原有.vscode/和PackageManagerSettings.asset保留。
+- SynergyReworkTools.Prepare真实运行成功；只向Campaign/SynergyTrial各增加三台已保存装置，没有重生成地形/路线或覆盖主场景。
+- EditMode第一次407/408：新增风雪测试漏配FrostNova标志；修正测试配置。中途新增PlayMode测试误用internal读取器造成编译失败，改用公开资源入口。最终Logs/synergy-rework-edit3.xml为408/408，无跳过。
+- D3D11完整PlayMode：Logs/synergy-rework-play.xml为100/101；唯一失败为既有全怪物用例仍断言37个CARD_M角色。改为39，Logs/synergy-rework-roster.xml该全遍历1/1通过；最终101项均实际覆盖，没有将失败结果隐藏为一次全绿运行。
+- 新增验证：独立双爆炸115实际伤害、雪怪4人低档/5人不消耗冻结、0/2/4/6秒脉冲、暂停/重开、成长全部门槛、投入扣费与唯一关间上限、补给不产培养、终极三目标只回血一次与第三击全场伤害；图形验证真实卡面、动作资源、暂停拖动、泥岩占据配置与三台锚点。
+- 终极巨像基准：现有Maps/BattleShop完整六星配置、原固定路线/高低台/技能与索敌，单巨像28.300000秒清空6名守军，1次守军技能实际施放，存活且末次回复后HP6000。测试没有降低守军数值或关闭技能；这不是所有未来守军与地图必胜证明。
+- 新增组长27张动作图集＋2卡面PNG共17546295字节，680帧/60fps。项目外10秒视频已完整解码；运行清单、源URL/哈希、原权利状态与meta随源码。外部Spine代码/原工作区不入项目。
+- 当前未完成：Windows构建/独立Player、第二机、长期平衡和完整局成型概率。后续实际结果追加于此。

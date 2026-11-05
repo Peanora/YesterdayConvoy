@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     {
         public IEnumerator VerifyAdvancedSynergies()
         {
-            bool pool=shop.Roles.Count==36&&shop.Roles.Count(r=>r.Cost==5)==3;
+            bool pool=shop.Roles.Count==39&&shop.Roles.Count(r=>r.Cost==5)==4;
             SetSandboxRoster(1);StartLoopNextBattle();Battle.Begin();Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_ORIGINIUM_SLUG");
             bool split=Battle.InfectionTier==6&&Battle.Units.Count==3&&Battle.DP==98;
             Battle.SetPaused(true);Tick(1);bool paused=Battle.Clock==0;Battle.SetPaused(false);ReplaySandbox();
@@ -25,7 +25,7 @@ namespace YesterdayConvoy
                 if(i>0&&i%50==0)foreach(var piece in shop.Bench)Battle.TryDeployRole(Battle.RunId,++request,Battle.Entry,piece.Id);
                 Tick(.1f);if(i%20==0)yield return null;
             }
-            bool growth=Battle.Phase==BattlePhase.Won&&Loop.GolemExperience==4;ReplaySandbox();growth&=Battle.GolemStage==2;
+            bool growth=Battle.Phase==BattlePhase.Won&&Loop.GolemExperience==3;ReplaySandbox();growth&=Battle.GolemStage==1;
             Debug.Log($"ADVANCED_SYNERGY_PLAYER_CHECK: pool={pool}; split={split}; army={army}; golem={golem}; paused={paused}; naturalGrowth={growth}");
             Application.Quit(pool&&split&&army&&golem&&paused&&growth?0:1);
         }

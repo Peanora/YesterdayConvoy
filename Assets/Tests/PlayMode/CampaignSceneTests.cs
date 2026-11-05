@@ -22,7 +22,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator SandboxHasAuthoredMapUnlimitedShopAndRealThreeStarStats()
         {
             yield return Load("SynergyTrial");var c=Object.FindAnyObjectByType<ManualBattleController>();
-            Assert.That(c.SynergySandbox);Assert.That(c.ShopVisible);Assert.That(c.Battle.ReunionTier,Is.EqualTo(6));Assert.That(c.Battle.SnowTier,Is.EqualTo(4));
+            Assert.That(c.SynergySandbox);Assert.That(c.ShopVisible);Assert.That(c.Battle.ReunionTier,Is.EqualTo(6));Assert.That(c.Battle.SnowTier,Is.EqualTo(5));
             Assert.That(Object.FindAnyObjectByType<AuthoredBattlefield>(),Is.Not.Null);
             int gold=c.Shop.Gold;
             for(int i=0;i<8;i++)

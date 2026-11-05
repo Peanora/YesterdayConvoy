@@ -39,11 +39,11 @@ namespace YesterdayConvoy.Tests
         }
         [UnityTest]public IEnumerator ThirtySixCardPoolAndFourConstructionPresetsAreReachable()
         {
-            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(36));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(3));
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(39));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(4));
             Assert.That(c.SetSandboxRoster(1));Assert.That(c.Battle.InfectionTier,Is.EqualTo(6));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M04"));
             Assert.That(c.SetSandboxRoster(2));Assert.That(c.Battle.GuerrillaTier,Is.EqualTo(6));
             Assert.That(c.SetSandboxRoster(3));Assert.That(c.Battle.MudrockTier,Is.EqualTo(2));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M26"));
-            Assert.That(c.SetSandboxRoster(0));Assert.That(c.Battle.SnowTier,Is.EqualTo(4));yield return null;c.LeaveShopTrial();
+            Assert.That(c.SetSandboxRoster(0));Assert.That(c.Battle.SnowTier,Is.EqualTo(5));yield return null;c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator InfectionFormsLockAtStartAndSplitBodiesHaveSeparateVisualPositions()
         {
@@ -73,7 +73,7 @@ namespace YesterdayConvoy.Tests
             yield return null;Assert.That(visual.FrameState,Is.EqualTo("Attack"));Assert.That(visual.FrameIndex,Is.GreaterThan(0));
             Assert.That(c.Battle.UnitCombat(golem).AttackDuration,Is.EqualTo(5.166667f));c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator NaturalMudrockBattleAwardsGrowthAndNextPreparationBuildsStageTwo()
+        [UnityTest]public IEnumerator NaturalMudrockBattleAwardsGrowthButInvestmentStillGatesStageTwo()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(3));Assert.That(c.StartLoopNextBattle());c.Battle.Begin();
             long request=500;foreach(var p in c.Shop.Bench)c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,p.Id);Assert.That(c.Battle.TryDeployGolem(c.Battle.RunId,++request,c.Battle.Entry).Success);
@@ -82,9 +82,9 @@ namespace YesterdayConvoy.Tests
                 if(i>0&&i%50==0)foreach(var p in c.Shop.Bench)c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,p.Id);
                 c.Tick(.1f);if(i%10==0)yield return null;
             }
-            Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won));Assert.That(c.Loop.GolemExperience,Is.EqualTo(4));
+            Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won));Assert.That(c.Loop.GolemExperience,Is.EqualTo(3));
             typeof(ManualBattleController).GetMethod("ReplaySandbox",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(c,null);
-            Assert.That(c.Battle.GolemStage,Is.EqualTo(2));Assert.That(c.Battle.GolemDeployed,Is.False);c.LeaveShopTrial();
+            Assert.That(c.Battle.GolemStage,Is.EqualTo(1));Assert.That(c.Battle.GolemDeployed,Is.False);c.LeaveShopTrial();
         }
     }
 }

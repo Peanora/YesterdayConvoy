@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "task": "M42",
+  "ppu": 80,
+  "referenceSpeed": 0.65,
+  "height": 2.025,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 100,
+      "duration": 1.6666666269302368,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4849889638688829,
+      "pivotY": 0.23092714111010237,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 2,
+          "width": 2016,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 64,
+      "duration": 1.0666667222976685,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4849889638688829,
+      "pivotY": 0.23092714111010237,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "walk-01.png",
+          "count": 15,
+          "width": 2016,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4849889638688829,
+      "pivotY": 0.23092714111010237,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.4849889638688829,
+      "pivotY": 0.23092714111010237,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "death-01.png",
+          "count": 12,
+          "width": 2016,
+          "height": 576
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "8b46e3a4699cd4ceba5ee45c2015102947e6107a887ccd48dee4cb8eee5da9f9"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "6e37903a2da2ac6d8ec0de5ea4560221226609d8c7a44c092003ce80ed0ba032"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "47018e41776b17fae7a708b1c59e5846248889cf16a0c134fd0a3b3119a18ad8"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "d8325269d43b2832312544705798c6d4d0a3efb53fe12923a7ad29af276261da"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "2023f0dc099d76ef9b8df086b0a8e97410ad0691312cc102c978f7a14501a307"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "2a4fecb0e2b2b33e6e7d6769c7dbbb91806485ed9443db2913554754ffd57eef"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "3240612b084bbe118e2050e95cff9276f322e9791aee3d3e0751d946c24d9cfb"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "79afbab7a3c5843d18cab56d2ca5fe8ee25ccd6a3c4e8c1a0557b7972af7a673"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "be7e6bc9aa5f5ddc515e4a683438e6f7fb864c138781ed4ab0954d60391c7e08"
+    }
+  ],
+  "provenance": "Approved original-media preview 2026-11-05; original rights retained, open redistribution license unconfirmed; see docs/art/source-records/mudrock-crew-leaders.json"
+}

@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "task": "M43",
+  "ppu": 80,
+  "referenceSpeed": 0.5,
+  "height": 1.8,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 160,
+      "duration": 2.6666667461395264,
+      "fps": 60,
+      "loop": true,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.42269208561290394,
+      "pivotY": 0.3161737164584073,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-03.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-04.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-05.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "idle-06.png",
+          "count": 10,
+          "width": 1760,
+          "height": 704
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 80,
+      "duration": 1.3333333730697632,
+      "fps": 60,
+      "loop": true,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.42269208561290394,
+      "pivotY": 0.3161737164584073,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "walk-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "walk-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "walk-03.png",
+          "count": 5,
+          "width": 1760,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 97,
+      "duration": 1.600000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.42269208561290394,
+      "pivotY": 0.3161737164584073,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "attack-03.png",
+          "count": 22,
+          "width": 1760,
+          "height": 1760
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 57,
+      "duration": 0.9333333373069763,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.42269208561290394,
+      "pivotY": 0.3161737164584073,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "death-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "death-02.png",
+          "count": 7,
+          "width": 1760,
+          "height": 704
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "fa5a5d621a7dbd0aa22227b3bcc4bc646e1e7b1ec8ed197d256d111a98937041"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "27ce2288eac73bebb2bb105e67c2751d516f6af79889736fd934d07716ada18e"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "685c1f8c03c0c062754fcbd635f05b80ae756571d1af8f6c539accc7577f6a51"
+    },
+    {
+      "file": "attack-03.png",
+      "sha256": "ff84decf579f222e303bdd16fa678a52a83195974e687b9ae819babc7c41f73c"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "d5ff5289b28ba617de84d528088572a7f4bf75be476d9233fcb2cf3d2426efac"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "3978c8560b0502b43b818338fe73835d24e4ef68ae1e9dba895c3cf82d5085aa"
+    },
+    {
+      "file": "death-02.png",
+      "sha256": "950a00abe3557b34664347f4a0211d2b27ae498f26f508084ea7bb138546c0ed"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "4319809c3ae2ae727af6ae42c676694d2ebf72d2df7ffbec36de55ea14e3c813"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "f35e4601b733a3987f1d038d16c2314050bad679ca8d3f9aa3db740cea31c189"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "c8f322ace49b1aebc7ab6c2c9a3b4d87f545c230cb5dff3bcf0dfe8a0b4cbd4f"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "cbc7596f2180eb0740ffce473788b73acbbd2520e34c6734ce4b286707ff4b9e"
+    },
+    {
+      "file": "idle-04.png",
+      "sha256": "3d7ef3996b221332d5e63988db63d83d066f4b869953fc7afc7120354c4e9e19"
+    },
+    {
+      "file": "idle-05.png",
+      "sha256": "95f38f89b3276d56b73da673638fbce20a8beb3ef88c18ae3596c5346d03b358"
+    },
+    {
+      "file": "idle-06.png",
+      "sha256": "889953c1413a1832ab0c1b7207117062f2db35e2ed24e15d255a8bcf2258a6f4"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "c57f1b311fdf760f608172662a0d69177a8a3c7ffac6c84a18a21051dd425d04"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "714d3b836fd1aaa86e026173b855b60ef0ca0b9b6fd15f52cecfffe8c50e740a"
+    },
+    {
+      "file": "walk-02.png",
+      "sha256": "6b4a89275be83628a48e824e2ca213a5279509181a120ca2a181969e662bf4e8"
+    },
+    {
+      "file": "walk-03.png",
+      "sha256": "c19fdf936db74ee8217ab81287c96c59efd563ac5530c414aae3affb6899ef8d"
+    }
+  ],
+  "provenance": "Approved original-media preview 2026-11-05; original rights retained, open redistribution license unconfirmed; see docs/art/source-records/mudrock-crew-leaders.json"
+}

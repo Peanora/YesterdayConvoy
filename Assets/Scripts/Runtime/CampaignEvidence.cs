@@ -13,7 +13,7 @@ namespace YesterdayConvoy
             var args=Environment.GetCommandLineArgs();int evidence=Array.IndexOf(args,"-demoEvidenceDir");
             string dir=evidence>=0&&evidence+1<args.Length?args[evidence+1]:null;
             if(dir!=null){Directory.CreateDirectory(dir);ScreenCapture.CaptureScreenshot(Path.Combine(dir,sandbox?"synergy-preparation.png":"campaign-opening.png"));yield return null;yield return null;}
-            bool snapshot=CampaignActive&&(!sandbox||Battle.ReunionTier==6&&Battle.SnowTier==4);
+            bool snapshot=CampaignActive&&(!sandbox||Battle.ReunionTier==6&&Battle.SnowTier==5);
             if(sandbox)
             {
                 int gold=shop.Gold;for(int i=0;i<100;i++)shop.Refresh();

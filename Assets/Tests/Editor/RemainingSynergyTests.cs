@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
         {
             var rows=SynergySummary.From(CampaignBalance.Profiles.Keys);Assert.That(rows.Length,Is.EqualTo(9));Assert.That(rows.All(r=>r.Implemented));
             Assert.That(rows.Single(r=>r.Name=="深池").Count,Is.EqualTo(3));Assert.That(rows.Single(r=>r.Name=="深池").Tier,Is.EqualTo(2));
-            Assert.That(CampaignBalance.Supports("CARD_M32"),Is.False);Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(36));
+            Assert.That(CampaignBalance.Supports("CARD_M32"),Is.False);Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(39));
         }
         [Test]public void HerdContinuesAtOriginalProgressAndCannotConvertAgain()
         {

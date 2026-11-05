@@ -40,6 +40,9 @@ namespace YesterdayConvoy
             {"CARD_M24",new Stats(4,6,650,90,10,3.0f,1.0f,0.55f,2)},
             {"CARD_M26",new Stats(2,3,220,42,4,2.2f,2.5f,0.65f,1)},
             {"CARD_M27",new Stats(3,4,420,62,10,2.2f,0.85f,0.55f,1)},
+            {"CARD_M28",new Stats(5,10,1500,140,24,2.5f,1.2f,0.5f,2)},
+            {"CARD_M42",new Stats(3,4,350,66,6,2.2f,2.7f,0.65f,1)},
+            {"CARD_M43",new Stats(4,6,850,105,18,2.4f,1.0f,0.5f,2)},
             {"CARD_M29",new Stats(2,3,320,40,11,2.2f,0.8f,0.55f,1)},
             {"CARD_M30",new Stats(3,4,330,58,6,1.8f,0.85f,0.75f,1)},
             {"CARD_M31",new Stats(4,6,520,90,7,3.0f,2.2f,0.55f,2)},
@@ -61,7 +64,7 @@ namespace YesterdayConvoy
         public static bool Infected(string id)=>id!=null&&InfectedMembers.Contains(id);
         static readonly HashSet<string> GuerrillaMembers=new HashSet<string>{"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
         public static bool Guerrilla(string id)=>id!=null&&GuerrillaMembers.Contains(id);
-        static readonly HashSet<string> MudrockCrewMembers=new HashSet<string>{"CARD_M26","CARD_M27"};
+        static readonly HashSet<string> MudrockCrewMembers=new HashSet<string>{"CARD_M26","CARD_M27","CARD_M42","CARD_M43","CARD_M28"};
         public static bool MudrockCrew(string id)=>id!=null&&MudrockCrewMembers.Contains(id);
         static readonly Dictionary<string,string[]> labels=new Dictionary<string,string[]>{
             {"CARD_ORIGINIUM_SLUG",new[]{"感染生物"}},
@@ -89,6 +92,9 @@ namespace YesterdayConvoy
             {"CARD_M24",new[]{"牧群","萨卡兹"}},
             {"CARD_M26",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M27",new[]{"泥岩小队","萨卡兹"}},
+            {"CARD_M28",new[]{"泥岩小队","萨卡兹"}},
+            {"CARD_M42",new[]{"泥岩小队","萨卡兹"}},
+            {"CARD_M43",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M32",new[]{"深池"}}, // Future member metadata; still excluded from Profiles and shop.
             {"CARD_M29",new[]{"深池"}},
             {"CARD_M30",new[]{"深池"}},
@@ -117,7 +123,7 @@ namespace YesterdayConvoy
             var combat=new EngagementSettings((r.Attack>0?r.Attack*AttackScale(r.Cost,star):c.UnitAttack*ability),r.Armor+2*(star-1),r.Range,interval,
                 c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,c.BlockCount,c.BlockRadius,
                 c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,c.SkillAttack*ability,c.SkillInterval,c.SkillRange,c.ProjectileTime,
-                c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,effects,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal);
+                c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,effects,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);
             var unit=new ManualBattleSettings(s.CardId,s.UnitId,initialDP,defense,CampaignPlan.Uses(r.Cost),CampaignPlan.DP(r.Cost,r.BaseDP,star),
                 new[]{0,2,3,4,5,8}[r.Cost],Mathf.Floor(r.HP*HPScale(r.Cost,star)+.5f),r.Speed,r.Gate+(star==3?1:0),s.TowerRange,s.TowerDamage,s.ShotInterval);
             return new BasicRosterProfile(unit,combat,true);
@@ -134,6 +140,6 @@ namespace YesterdayConvoy
             orderSniper:e.OrderSniper,tauntLevel:e.TauntLevel,patriot:e.Patriot);
         public static EngagementSettings CopyCombat(EngagementSettings c,float attack,float armor,MonsterEffectSettings e)=>new EngagementSettings(
             attack,armor,c.UnitRange,c.UnitInterval,c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,c.BlockCount,c.BlockRadius,
-            c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,c.SkillAttack,c.SkillInterval,c.SkillRange,c.ProjectileTime,c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,e,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal);
+            c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,c.SkillAttack,c.SkillInterval,c.SkillRange,c.ProjectileTime,c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,e,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);
     }
 }

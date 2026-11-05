@@ -17,7 +17,7 @@ namespace YesterdayConvoy
             if(!StrongholdChallenge||brokenExits.Add(unit.ExitId))Defense=Math.Max(0,Defense-(unit.SynergySupport?0:unit.Profile?.Unit.GateDamage??Settings.GateDamage));
         }
         public float DefenderEffectiveInterval(DefenderState d)=>d.Settings.Interval/DefenderAttackRate(d);
-        bool UnitCanReachDefender(DeployedUnitState u,DefenderState d)=>(!StrongholdChallenge&&!synergyEnabled)||!d.HighGround||!UnitCombat(u).Melee;
+        bool UnitCanReachDefender(DeployedUnitState u,DefenderState d)=>(!StrongholdChallenge&&!synergyEnabled)||!d.HighGround||!UnitCombat(u).Melee||u.Golem&&GolemStage==4;
         readonly Dictionary<string,double> infectionUntil=new Dictionary<string,double>(),infectionTick=new Dictionary<string,double>();
         readonly Dictionary<string,double> portalUntil=new Dictionary<string,double>();
         readonly HashSet<string> portalPassed=new HashSet<string>();

@@ -59,7 +59,7 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            diagnostic = Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();

@@ -68,7 +68,7 @@ namespace YesterdayConvoy
         public bool SynergySupport {get;internal set;}
         public bool Golem {get;internal set;}
         public Vector3 VisualOffset {get;internal set;}
-        internal int LastGolemProc;
+        internal int LastGolemProc,LastGolemHeal;
         internal float InfectionBlast,InfectionBlastRadius;
         internal bool InfectionBlastDone;
         public float SynergyShield {get;internal set;}

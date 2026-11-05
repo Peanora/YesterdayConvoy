@@ -27,9 +27,9 @@ namespace YesterdayConvoy.Tests
         }
         [Test]public void ThirtySixCardsExcludeAllIncompleteFiveCostsAndKeepNativeTags()
         {
-            Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(36));
-            Assert.That(CampaignBalance.Profiles.Count(p=>p.Value.Cost==5),Is.EqualTo(3));
-            foreach(string id in new[]{"CARD_M20","CARD_M25","CARD_M28","CARD_M32","CARD_SILVER_WOLF"})Assert.That(CampaignBalance.Supports(id),Is.False);
+            Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(39));
+            Assert.That(CampaignBalance.Profiles.Count(p=>p.Value.Cost==5),Is.EqualTo(4));
+            foreach(string id in new[]{"CARD_M20","CARD_M25","CARD_M32","CARD_SILVER_WOLF"})Assert.That(CampaignBalance.Supports(id),Is.False);
             Assert.That(CampaignBalance.Reunion("CARD_M33"),Is.False);Assert.That(CampaignBalance.MudrockCrew("CARD_M26"));Assert.That(CampaignBalance.Tags("CARD_M26"),Does.Contain("萨卡兹"));
         }
         [Test]public void SwarmPaysOnceAndOnlyPrimaryCanDamageGate()
@@ -90,18 +90,18 @@ namespace YesterdayConvoy.Tests
         [Test]public void PausedGolemDeploymentIsAtomicLimitedAndKeepsFullAttack()
         {
             var b=Battle(new[]{"CARD_M26","CARD_M27"},xp:100);b.SetPaused(true);
-            Assert.That(b.GolemStage,Is.EqualTo(3));Assert.That(b.TryDeployGolem(b.RunId,10,b.Entry).Failure,Is.EqualTo(DeployFailure.Paused));
+            Assert.That(b.GolemStage,Is.EqualTo(1));Assert.That(b.TryDeployGolem(b.RunId,10,b.Entry).Failure,Is.EqualTo(DeployFailure.Paused));
             var r=b.TryDeployGolem(b.RunId,10,b.Entry,true);Assert.That(r.Success);var u=b.FindUnit(r.EntityId);
-            Assert.That(b.DP,Is.EqualTo(94));Assert.That(b.TryDeployGolem(b.RunId,10,b.Entry,true).EntityId,Is.EqualTo(r.EntityId));Assert.That(b.Units.Count,Is.EqualTo(1));
+            Assert.That(b.DP,Is.EqualTo(96));Assert.That(b.TryDeployGolem(b.RunId,10,b.Entry,true).EntityId,Is.EqualTo(r.EntityId));Assert.That(b.Units.Count,Is.EqualTo(1));
             Assert.That(b.TryDeployGolem(b.RunId,11,b.Entry,true).Failure,Is.EqualTo(DeployFailure.NoUses));
             Assert.That(b.UnitCombat(u).AttackDuration,Is.EqualTo(5.166667f));b.Advance(20);Assert.That(b.Clock,Is.Zero);
         }
         [Test]public void GolemGrowthRequiresRealContactsAndSettlesOnce()
         {
             var b=Battle(new[]{"CARD_M26","CARD_M27"});b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M26");b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M27");b.TryDeployGolem(b.RunId,3,b.Entry);b.Advance(3.3f);
-            Assert.That(b.GolemGrowthEarned,Is.Zero);Win(b);Assert.That(b.GolemGrowthEarned,Is.EqualTo(4));
+            Assert.That(b.GolemGrowthEarned,Is.Zero);Win(b);Assert.That(b.GolemGrowthEarned,Is.EqualTo(3));
             var e=new ShopTrialModel(new[]{new ShopTrialModel.Role{Id="A",Name="A",Cost=1}});e.Preset(new[]{Piece("A")},Array.Empty<string>(),1,0,10);
-            var run=new BattleShopRun(e,1,false,true);Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned));Assert.That(run.GolemExperience,Is.EqualTo(4));Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned),Is.False);Assert.That(run.GolemExperience,Is.EqualTo(4));
+            var run=new BattleShopRun(e,1,false,true);run.Observe(BattlePhase.Won);run.OpenShop();run.PrepareBattle();run.Observe(BattlePhase.Won);run.OpenShop();run.PrepareBattle();Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned));Assert.That(run.GolemExperience,Is.EqualTo(3));Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned),Is.False);Assert.That(run.GolemExperience,Is.EqualTo(3));
             var empty=Battle(new[]{"CARD_M26","CARD_M27"});Win(empty);Assert.That(empty.GolemGrowthEarned,Is.Zero);
         }
         static void Win(ManualBattle battle)=>typeof(ManualBattle).GetMethod("FinishForTesting",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(battle,new object[]{battle.RunId,true});

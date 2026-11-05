@@ -32,7 +32,7 @@ namespace YesterdayConvoy.Tests
             for(int preset=4;preset<8;preset++)
             {
                 Assert.That(c.SetSandboxRoster(preset));int[] tiers={c.Battle.HerdTier,c.Battle.DeepTier,c.Battle.SarkazTier,c.Battle.MarineTier};Assert.That(tiers[preset-4],Is.EqualTo(new[]{4,2,6,4}[preset-4]));
-                Assert.That(c.Shop.Roles.Count,Is.EqualTo(36));Assert.That(c.Shop.Roles.All(r=>r.Id!="CARD_M32"));
+                Assert.That(c.Shop.Roles.Count,Is.EqualTo(39));Assert.That(c.Shop.Roles.All(r=>r.Id!="CARD_M32"));
                 string id=c.Shop.Bench[0].Id;Assert.That(c.StartLoopNextBattle());c.Battle.Begin();c.Battle.SetPaused(true);yield return new WaitForSecondsRealtime(.35f);
                 var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));int before=c.Battle.DP;
                 c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);

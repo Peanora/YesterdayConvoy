@@ -121,3 +121,8 @@ D01/D03/D04/D07/D08/D09/D10/D12采用上轮本地预览的默认原作模型。�
 ## 2026-11-05 泥岩及留声机
 
 原作媒体，非CC0，公开再分发许可未确认；人类确认使用与上传不等于权利人许可。原模型、特效、装置来源及获取哈希见[source record](source-records/mudrock-gramophones-approved.json)。外部GPL工具仅在项目外加工，未带入运行代码。
+
+
+## 2026-11-05 泥岩小队两名组长
+
+M42/M43来自PRTS具体敌人原作页面，原模型为enemy_1090_mdsnpr_2、enemy_1091_mdhmmr_2。权利属于原游戏创作者；未确认开放修改/游戏或原文件再分发许可。人类确认看稿及源码交付，不代表权利人授权。Spine只在项目外烘焙，未引入其运行时代码。具体URL、哈希和权利记录见[source record](source-records/mudrock-crew-leaders.json)。

@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
         public IEnumerator PrepareCampaign(bool sandbox,int seed=0)
         {
-            var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"}:new[]{"CARD_M07","CARD_M08"};
+            var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{"CARD_M07","CARD_M08"};
             var cards=monsterTests.Where(o=>o.Playable&&ids.Contains(o.Id)).Select(o=>o.Definition.Card);
             return Prepare(Plan(CampaignPlan.Guards(3,sandbox),cards,true),()=>StartCampaign(sandbox,seed),"准备羁绊挑战");
         }
@@ -29,10 +29,10 @@ namespace YesterdayConvoy
             foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             shop.EnableCampaign(sandbox);
-            string[] initial=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
+            string[] initial=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
             shop.Preset(initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
-            commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
+            golemBenchmark=false;golemTrainingTab=false;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
             if(sandbox){Loop.SandboxPreparation();shop.Refresh(true);}
             ConfigureLoopStage();if(sandbox)SetShopVisible(true);
         }
@@ -47,7 +47,8 @@ namespace YesterdayConvoy
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
             battle.ConfigureStrongholdMap(false);
-            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience);
+            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,Loop.GolemInvestment);
+            battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
             return battle;
@@ -108,7 +109,7 @@ namespace YesterdayConvoy
         {
             float y=CampaignPanelRect.y;Fill(new Rect(16,y,405,CampaignPanelRect.height),new Color(.04f,.07f,.09f,.94f));
             GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",LoopText(12));
-            GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience}":"巨像未解锁"),LoopText(11));
+            GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),LoopText(11));
             if(Loop.CanShop)
             {
                 GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?"无限金币 · 九张库存 · DP100 · 委托不限次数":"每次整备限一次低费委托，失败不扣费",LoopText(11));

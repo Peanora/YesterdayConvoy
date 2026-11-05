@@ -19,7 +19,7 @@ namespace YesterdayConvoy.Tests
         public IEnumerator StartupMenuBlocksBattleAndPendingChoicesDoNotMutateResources()
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>();
-            Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.MonsterTests.Count,Is.EqualTo(41));
+            Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.MonsterTests.Count,Is.EqualTo(43));
             Assert.That(c.MonsterTests.Count(x=>x.Playable),Is.EqualTo(2+Resources.LoadAll<ManualBattleDefinition>("MonsterTests").Count(d=>d.Card.HasFrameAnimation)));
             var battle=c.Battle; int dp=battle.DP;
             c.SelectCard(true); c.StartBattle();
