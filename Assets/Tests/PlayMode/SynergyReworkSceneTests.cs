@@ -39,7 +39,17 @@ namespace YesterdayConvoy.Tests
             foreach(var d in c.Battle.Defenders){c.Battle.TryApplyCold(d.EntityId,10);c.Battle.TryApplyCold(d.EntityId,10);}
             Assert.That(c.Battle.TryActivateSkill(c.Battle.RunId,901,u.EntityId),Is.EqualTo(SkillFailure.None));c.Tick(.7f);yield return null;yield return null;
             Assert.That(c.Battle.SnowstormPulses.Count,Is.EqualTo(1));Assert.That(c.Battle.SnowstormPulses[0].Targets.Count,Is.EqualTo(c.Battle.Defenders.Count));
-            Assert.That(c.GetComponent<FrostSealView>().VisibleEffects,Is.GreaterThan(0));c.LeaveShopTrial();
+            var view=c.GetComponent<FrostSealView>();Assert.That(view.VisibleEffects,Is.GreaterThan(0));
+            var camera=Camera.main;var prior=camera.targetTexture;var target=new RenderTexture(640,360,24);target.Create();camera.targetTexture=target;
+            var active=RenderTexture.active;var image=new Texture2D(640,360,TextureFormat.RGB24,false);
+            var renderers=view.GetComponentsInChildren<SpriteRenderer>().Where(v=>v.enabled).ToArray();
+            camera.Render();RenderTexture.active=target;image.ReadPixels(new Rect(0,0,640,360),0,0);image.Apply();var visible=image.GetPixels32();
+            foreach(var renderer in renderers)renderer.enabled=false;
+            camera.Render();image.ReadPixels(new Rect(0,0,640,360),0,0);image.Apply();var hidden=image.GetPixels32();
+            int changed=0;for(int i=0;i<visible.Length;i++)if(System.Math.Abs(visible[i].r-hidden[i].r)+System.Math.Abs(visible[i].g-hidden[i].g)+System.Math.Abs(visible[i].b-hidden[i].b)>12)changed++;
+            foreach(var renderer in renderers)renderer.enabled=true;
+            camera.targetTexture=prior;RenderTexture.active=active;target.Release();Object.Destroy(target);Object.Destroy(image);
+            Assert.That(changed,Is.GreaterThan(30),"Storm must contribute actual pixels above the authored terrain, not merely enable a renderer");c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator TrainingPresetAndInvestmentSurviveReadySnapshotAndPauseGolemDrag()
         {
