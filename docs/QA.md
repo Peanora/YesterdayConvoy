@@ -1541,3 +1541,7 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 当前未完成：Windows构建/独立Player、第二机、长期平衡和完整局成型概率。后续实际结果追加于此。
 
 补充：完整场景验证后增加“已冻结目标仍有天气”的3/3定向通过，逻辑15/15复验。实机目视发现低位风雪被已保存地形遮挡，新增天气显示只抬高视觉节点0.8相机上方向，不改逻辑位置或原冰封特效挂点；D3D11真实相机启用/禁用风雪像素差异1/1通过（>30像素实际变化），不再只依赖renderer.enabled。独立Player六项全True、退出0；交付版本仍在复验。
+
+最终交付：运行源码cfad4a2，Logs/synergy-rework-build-verified.log记录BASELINE_BUILD_PASS 2015199842 bytes、0 errors。Logs/synergy-rework-verified-player.log六项(pool/preset/pausedDrag/ultimateSoloClear/investment/snowPulsesAndReset)全部True；通过Python等待真实Player进程退出，VERIFIED_PLAYER_EXIT_CODE=0。Logs/synergy-rework-verified下四张截图已目视核对，培养面板明确标注预置，不把加载页截图当完成。最后只把天气抬升限制到新增脉冲调用，原冰封挂点保持。共408项完整逻辑通过、最后15项逻辑复验；102种GPU场景用例均获通过验证（100/101原整套＋角色总数修正全遍历1/1＋天气3/3＋像素1/1）。
+
+进入：EXE默认挑战，菜单→返回测试选择→羁绊验证·无限金币，右侧“巨像培养”提供I–IV；IV预置直接设培养24/投入80/五人二星并换完整六星防线，开始下一战后拖巨像卡即可。正式模式不提供这种进度赠送。第二机、完整局成型概率/长期平衡及所有GUI按钮真实鼠标逐项点击未做。不ZIP/Releases，不自动合并。原作素材开放授权仍未确认，来源与权利记录保留。
