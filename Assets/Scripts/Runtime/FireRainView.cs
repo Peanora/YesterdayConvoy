@@ -1,156 +1,166 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Approved fire-wave presentation. Reads the battle clock; never applies damage.</summary>
-    public sealed class FireRainView : MonoBehaviour
+    /// <summary>Approved native waves and terrain-bound burning. Read-only battle presentation.</summary>
+    public sealed class FireRainView:MonoBehaviour
     {
-        private const int Lanes=6, WavesPerLane=8;
-        private readonly SpriteRenderer[] streams=new SpriteRenderer[Lanes*WavesPerLane];
-        private readonly SpriteRenderer[] tails=new SpriteRenderer[Lanes*WavesPerLane];
-        private readonly SpriteRenderer[] tongues=new SpriteRenderer[30], sparks=new SpriteRenderer[100];
-        private readonly MeshRenderer[] glows=new MeshRenderer[Lanes*WavesPerLane];
-        private readonly Sprite[] emberFrames=new Sprite[25];
-        private ManualBattleController owner;
-        private Material material;
-        private Mesh glowMesh;
-        private Sprite spark;
-        private FireRainScreenEffect screenEffect;
-        public int VisibleStreams { get; private set; }
-        public void Initialize(ManualBattleController value) { owner=value; }
+        const int Rows=5,WaveCapacity=30;
+        const float Speed=2.5f,WaveSpacing=2,Afterglow=1.6f;
+        sealed class Cast { internal double Start;internal float Duration; }
+        sealed class Floor { internal Vector3 Position;internal SpriteRenderer Flame;internal float Phase,Scale; }
+        readonly List<Cast> casts=new List<Cast>();
+        readonly Dictionary<string,double> seen=new Dictionary<string,double>();
+        readonly List<Floor> floors=new List<Floor>();
+        readonly SpriteRenderer[] streams=new SpriteRenderer[WaveCapacity],impacts=new SpriteRenderer[24];
+        MaterialPropertyBlock heatProperties;
+        ManualBattleController owner;
+        ManualBattle sampled;
+        int run;
+        Material fire,heat;
+        Mesh heatMesh;
+        MeshRenderer heatRenderer;
+        FireRainArt.Clip streamClip,groundClip,impactClip;
+        FireRainScreenEffect screenEffect;
+        Bounds bounds;
+        public int VisibleStreams {get;private set;}
+        void Awake(){heatProperties=new MaterialPropertyBlock();}
+        public void Initialize(ManualBattleController value){owner=value;}
 
-        private void Awake()
+        void EnsureArt()
         {
-            material=new Material(Resources.Load<Shader>("FireRainAdditive"));
-            glowMesh=MakeGlow();
-            var texture=Resources.Load<Texture2D>("FireRainEmbers");
-            for(int i=0;i<25;i++) emberFrames[i]=Sprite.Create(texture,new Rect(i%5*128,(4-i/5)*128,128,128),new Vector2(.5f,.5f),128);
-            spark=Sprite.Create(Texture2D.whiteTexture,new Rect(0,0,1,1),new Vector2(.5f,.5f),1);
-            for(int i=0;i<streams.Length;i++)
+            if(fire!=null)return;
+            fire=new Material(Resources.Load<Shader>("TalulahFireRain/NativeFire"));
+            heat=new Material(Resources.Load<Shader>("TalulahFireRain/GroundHeat"));
+            streamClip=FireRainArt.Load("stream");groundClip=FireRainArt.Load("ground");impactClip=FireRainArt.Load("impact");
+            for(int i=0;i<streams.Length;i++)streams[i]=NewSprite("Talulah native fire stream");
+            for(int i=0;i<impacts.Length;i++)impacts[i]=NewSprite("Talulah native fire impact");
+        }
+        SpriteRenderer NewSprite(string label)
+        {
+            var s=new GameObject(label,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            s.transform.SetParent(transform,false);s.sharedMaterial=fire;s.enabled=false;return s;
+        }
+        void BuildFloor()
+        {
+            foreach(var f in floors)if(f.Flame!=null)Destroy(f.Flame.gameObject);floors.Clear();
+            if(heatRenderer!=null)Destroy(heatRenderer.gameObject);if(heatMesh!=null)Destroy(heatMesh);
+            var vertices=new List<Vector3>();var uv=new List<Vector2>();var triangles=new List<int>();
+            bool first=true;
+            foreach(var r in FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
             {
-                streams[i]=NewSprite("Horizontal fire stream",22500);
-                tails[i]=NewSprite("Turbulent flame tail",22500);
-                var glow=new GameObject("Fire reflected glow",typeof(MeshFilter),typeof(MeshRenderer));
-                glow.transform.SetParent(transform,false); glow.GetComponent<MeshFilter>().sharedMesh=glowMesh;
-                glows[i]=glow.GetComponent<MeshRenderer>(); glows[i].sharedMaterial=material;
-                glows[i].sortingOrder=22499; glows[i].enabled=false;
+                string n=r.name;
+                // Read authored surfaces, never the old preview's screen-space mask.
+                if(!r.enabled||!(n.StartsWith("Cell ")||n=="Tile surface"||n=="High ground inset"||n.StartsWith("Platform cap ")))continue;
+                Bounds b=r.bounds;if(b.size.x<.4f||b.size.z<.4f)continue;
+                Vector3 p=new Vector3(b.center.x,b.max.y+.025f,b.center.z);
+                if(first){bounds=new Bounds(p,Vector3.zero);first=false;}else bounds.Encapsulate(p);
+                float x=b.extents.x*.985f,z=b.extents.z*.985f;int j=vertices.Count;
+                vertices.Add(p+new Vector3(-x,0,-z));vertices.Add(p+new Vector3(-x,0,z));vertices.Add(p+new Vector3(x,0,z));vertices.Add(p+new Vector3(x,0,-z));
+                uv.Add(Vector2.zero);uv.Add(Vector2.up);uv.Add(Vector2.one);uv.Add(Vector2.right);
+                triangles.AddRange(new[]{j,j+1,j+2,j,j+2,j+3});
+                int k=floors.Count;
+                floors.Add(new Floor{Position=p,Flame=NewSprite("Talulah ground flame"),Phase=Mathf.Repeat(k*.618034f,1)*4.8f,Scale=1.1f+Mathf.Repeat(k*.381966f,1)*.35f});
             }
-            for(int i=0;i<tongues.Length;i++) tongues[i]=NewSprite("Airborne fire tongue",22510);
-            for(int i=0;i<sparks.Length;i++) { sparks[i]=NewSprite("Fire ember",22511); sparks[i].sprite=spark; }
+            if(first){bounds=new Bounds(owner.Battle.Entry,new Vector3(12,0,7));return;}
+            bounds.Expand(new Vector3(.95f,0,.95f));
+            fire.SetVector("_GroundBounds",new Vector4(bounds.min.x,bounds.max.x,0,0));
+            heatMesh=new Mesh{name="Talulah authored-ground heat",vertices=vertices.ToArray(),uv=uv.ToArray(),triangles=triangles.ToArray()};heatMesh.RecalculateBounds();
+            var go=new GameObject("Talulah ground heat",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(transform,false);
+            go.GetComponent<MeshFilter>().sharedMesh=heatMesh;heatRenderer=go.GetComponent<MeshRenderer>();heatRenderer.sharedMaterial=heat;heatRenderer.enabled=false;
         }
-
-        private SpriteRenderer NewSprite(string label,int order)
+        static float Smooth(float x){x=Mathf.Clamp01(x);return x*x*(3-2*x);}
+        float TailEnd(Cast c)
         {
-            var renderer=new GameObject(label,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-            renderer.transform.SetParent(transform,false); renderer.sharedMaterial=material;
-            renderer.sortingOrder=order; renderer.enabled=false; return renderer;
+            // Six-second casts group six damage events into three sparse visual fronts.
+            float last=Mathf.Max(0,Mathf.Ceil(c.Duration/WaveSpacing)-1)*WaveSpacing+.25f;
+            return last+bounds.size.x/Speed+Afterglow;
         }
-        private static float Smooth(float value) { value=Mathf.Clamp01(value); return value*value*(3-2*value); }
-        private static float Random01(int seed) => Mathf.Repeat(Mathf.Sin(seed*91.319f+17.281f)*43758.5453f,1);
-
-        private void LateUpdate()
+        void LateUpdate()
         {
-            var b=owner?.Battle; var art=owner?.Definition.Card.ArticulatedArt; DeployedUnitState caster=null;
-            if(b!=null && b.EngagementEnabled)
-                foreach(var u in b.Units)
-                    if(b.UnitCombat(u).FireRain && b.IsSkillActionPlaying(u))
+            var b=owner?.Battle;var cam=Camera.main;VisibleStreams=0;
+            if(b==null||cam==null){Hide();return;}
+            if(sampled!=b||run!=b.RunId)
+            {
+                Hide();sampled=b;run=b.RunId;casts.Clear();seen.Clear();
+                if(fire!=null)BuildFloor();
+            }
+            if(b.Phase!=BattlePhase.Running){Hide();return;}
+            foreach(var u in b.Units)
+            {
+                if(!b.UnitCombat(u).FireRain||double.IsInfinity(u.FireRainStartedAt)||double.IsNaN(u.FireRainStartedAt))continue;
+                if(seen.TryGetValue(u.EntityId,out double last)&&last==u.FireRainStartedAt)continue;
+                EnsureArt();if(floors.Count==0)BuildFloor();
+                seen[u.EntityId]=u.FireRainStartedAt;
+                casts.Add(new Cast{Start=u.FireRainStartedAt,Duration=b.UnitCombat(u).SkillInterval});
+            }
+            if(casts.Count==0){Hide();return;}
+            if(screenEffect==null||screenEffect.gameObject!=cam.gameObject)
+            {if(screenEffect!=null)Destroy(screenEffect);screenEffect=cam.gameObject.AddComponent<FireRainScreenEffect>();}
+            HideRenderers();Cast groundCast=null;float strength=0,screenAge=0;int index=0;
+            for(int i=casts.Count-1;i>=0;i--)
+            {
+                var c=casts[i];float age=(float)(b.Clock-c.Start),end=TailEnd(c);
+                if(age>=end){casts.RemoveAt(i);continue;}
+                float level=Smooth(age/.3f)*Smooth((end-age)/Afterglow);
+                if(level>=strength){groundCast=c;strength=level;screenAge=age;}
+                int count=Mathf.CeilToInt(c.Duration/WaveSpacing);
+                for(int wave=0;wave<count;wave++)
+                {
+                    float elapsed=age-.25f-wave*WaveSpacing;
+                    if(elapsed<0||elapsed>=bounds.size.x/Speed)continue;
+                    float x=bounds.min.x+elapsed*Speed;
+                    for(int row=0;row<Rows&&index<streams.Length;row++)
                     {
-                        var sourceArt=owner.CardForUnit(u).ArticulatedArt;
-                        if(sourceArt==null)continue;art=sourceArt;caster=u;break;
+                        var s=streams[index++];s.sprite=streamClip.At(elapsed);s.enabled=s.sprite!=null;s.flipX=true;
+                        var p=new Vector3(x,.07f,Mathf.Lerp(bounds.min.z+.25f,bounds.max.z-.25f,row/(float)(Rows-1)));
+                        Place(s,cam,p,1.05f,new Color(1,1,1,Smooth(elapsed/.16f)*Smooth((bounds.max.x-x)/.6f)));
+                        if(s.enabled)VisibleStreams++;
                     }
-            Camera cam=Camera.main;
-            if(cam!=null && (screenEffect==null || screenEffect.gameObject!=cam.gameObject))
-            {
-                if(screenEffect!=null) Destroy(screenEffect);
-                screenEffect=cam.gameObject.AddComponent<FireRainScreenEffect>();
+                }
             }
-            VisibleStreams=0;
-            if(caster==null || cam==null) { Hide(); return; }
-            float age=(float)(b.Clock-caster.FireRainStartedAt), duration=b.UnitCombat(caster).SkillInterval;
-            float strength=Smooth(age/.30f)*Smooth((duration-age)/.45f);
-            float warmth=Smooth(age/.25f)*Smooth((duration-age)/.6f);
-            screenEffect.Present(age,strength,warmth);
-            for(int i=0;i<streams.Length;i++)
+            if(groundCast==null){Hide();return;}
+            float groundAge=(float)(b.Clock-groundCast.Start);
+            foreach(var f in floors)
             {
-                int row=i/WavesPerLane, wave=i%WavesPerLane, id=row*17+wave+20;
-                float elapsed=age-wave*.91f-row*.075f;
-                // Spawn from off-screen, never wrap an existing flame across the map.
-                float x=-220+elapsed*465;
-                bool visible=strength>0 && elapsed>=0 && x<1580;
-                streams[i].enabled=tails[i].enabled=glows[i].enabled=visible;
-                if(!visible) continue;
-                float y=165+row*77, size=(.78f+row*.075f)*(.9f+Random01(id)*.22f);
-                float width=(235+Random01(id+9)*40)*size, height=155*size;
-                streams[i].sprite=art.FireFrames[Mathf.FloorToInt(age*28+id*5)%art.FireFrames.Count];
-                streams[i].color=new Color(1.25f,1.12f,1,strength);
-                // Source bright head points down; +90 degrees makes it travel right.
-                Place(streams[i],cam,x-width*.28f,y,width,height,90);
-                streams[i].transform.position+=cam.transform.up*(Mathf.Sin(age*11+id)*3/720*ViewHeight(cam));
-                tails[i].sprite=art.FireFrames[Mathf.FloorToInt(age*31.64f+id*11+9)%art.FireFrames.Count];
-                tails[i].color=new Color(1.25f,.98f,.8f,strength*.56f);
-                Place(tails[i],cam,x-width*.66f-width*.38f*.28f,y-Mathf.Sin(age*3+id)*8,width*.38f,height*.47f,90);
-                glows[i].transform.position=Point(cam,x-30,y+16);
-                glows[i].transform.rotation=cam.transform.rotation;
-                float unit=ViewHeight(cam)/720;
-                glows[i].transform.localScale=new Vector3(width*.73f*unit,height*.9f*unit,1)*strength;
-                VisibleStreams++;
+                float age=groundAge-.25f-(f.Position.x-bounds.min.x)/Speed;
+                f.Flame.enabled=age>=0&&strength>0;
+                if(!f.Flame.enabled)continue;
+                f.Flame.sprite=groundClip.At(age+f.Phase,true);f.Flame.flipX=((int)(f.Phase*10)&1)!=0;
+                float pulse=.83f+.17f*Mathf.Cos(age*Mathf.PI);
+                Place(f.Flame,cam,f.Position,f.Scale,new Color(1,.68f,.4f,strength*Smooth(age/.55f)*.28f*pulse));
             }
-            for(int i=0;i<tongues.Length;i++)
+            if(heatRenderer!=null)
             {
-                var s=tongues[i]; s.enabled=strength>0;
-                float p=Mathf.Repeat(age*(.4f+Random01(i+90)*.2f)+Random01(i+30),1);
-                float x=15+p*1400, y=150+Random01(i+40)*480-Mathf.Sin(p*Mathf.PI)*22;
-                s.sprite=emberFrames[Mathf.FloorToInt(Mathf.Repeat(age*.72f+Random01(i),1)*25)];
-                s.color=new Color(1,1,1,strength*.48f);
-                float width=33+Random01(i+12)*24; Place(s,cam,x,y,width,width*1.1f,0);
+                heatRenderer.enabled=true;heatProperties.SetFloat("_Age",groundAge-.25f);heatProperties.SetFloat("_Strength",strength);
+                heatProperties.SetFloat("_Left",bounds.min.x);heatProperties.SetFloat("_Speed",Speed);heatRenderer.SetPropertyBlock(heatProperties);
             }
-            for(int i=0;i<sparks.Length;i++)
+            index=0;
+            foreach(var shot in b.CombatShots)
             {
-                var s=sparks[i]; s.enabled=strength>0;
-                float p=Mathf.Repeat(age*(.21f+Random01(i+119)*.19f)+Random01(i+1),1);
-                float x=Mathf.Repeat(Random01(i+15)+age*.15f,1)*1400-60,y=125+Random01(i+28)*510-p*55;
-                float alpha=strength*Mathf.Sin(p*Mathf.PI)*(.3f+Random01(i+23)*.6f);
-                s.color=new Color(1,.65f+Random01(i)*.25f,.27f,alpha);
-                float size=.7f+Random01(i+80)*1.4f; Place(s,cam,x,y,size*3.5f,size*1.5f,15);
+                double age=b.Clock-shot.ImpactAt;
+                if(!shot.FireRain||!shot.Applied||age<0||age>=1.3||index>=impacts.Length)continue;
+                var s=impacts[index++];s.sprite=impactClip.At(age);s.enabled=s.sprite!=null;
+                Place(s,cam,shot.Destination,1.05f,new Color(1,1,1,Smooth((1.3f-(float)age)/.3f)));
             }
+            screenEffect.Present(screenAge,strength,strength);
         }
-        // Camera-facing plane keeps the approved pixel proportions at any game resolution.
-        private static float ViewHeight(Camera camera) => camera.orthographic ? camera.orthographicSize*2 : 10*Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
-        private static Vector3 Point(Camera camera,float x,float y) => camera.ViewportToWorldPoint(new Vector3(x/1280,1-y/720,5));
-        private static void Place(SpriteRenderer s,Camera camera,float x,float y,float width,float height,float roll)
+        static void Place(SpriteRenderer s,Camera cam,Vector3 position,float scale,Color color)
         {
-            s.transform.position=Point(camera,x,y); s.transform.rotation=camera.transform.rotation*Quaternion.Euler(0,0,roll);
-            float unit=ViewHeight(camera)/720; Vector2 size=s.sprite.bounds.size;
-            s.transform.localScale=roll==90 ? new Vector3(height*unit/size.x,width*unit/size.y,1) : new Vector3(width*unit/size.x,height*unit/size.y,1);
+            s.transform.position=position+cam.transform.up*.14f;s.transform.rotation=cam.transform.rotation;s.transform.localScale=Vector3.one*scale;
+            s.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,position)-8;s.color=color;
         }
-        private void Hide()
+        void HideRenderers()
         {
-            foreach(var s in streams) if(s!=null) s.enabled=false;
-            foreach(var s in tails) if(s!=null) s.enabled=false;
-            foreach(var s in tongues) if(s!=null) s.enabled=false;
-            foreach(var s in sparks) if(s!=null) s.enabled=false;
-            foreach(var g in glows) if(g!=null) g.enabled=false;
-            if(screenEffect!=null) screenEffect.Present(0,0,0);
-            VisibleStreams=0;
+            foreach(var s in streams)if(s!=null)s.enabled=false;
+            foreach(var s in impacts)if(s!=null)s.enabled=false;
+            foreach(var f in floors)if(f.Flame!=null)f.Flame.enabled=false;
+            if(heatRenderer!=null)heatRenderer.enabled=false;
         }
-        private static Mesh MakeGlow()
-        {
-            var vertices=new Vector3[25]; var colors=new Color[25]; var indices=new int[72];
-            colors[0]=new Color(1,.34f,.045f,.23f);
-            for(int i=0;i<24;i++)
-            {
-                float angle=i*Mathf.PI/12; vertices[i+1]=new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0);
-                colors[i+1]=new Color(.4f,.04f,0,0); indices[i*3]=0;indices[i*3+1]=i+1;indices[i*3+2]=(i+1)%24+1;
-            }
-            var mesh=new Mesh{name="Soft fire illumination",vertices=vertices,colors=colors,triangles=indices};mesh.RecalculateBounds();return mesh;
-        }
-        private void OnDisable() => Hide();
-        private void OnDestroy()
-        {
-            Hide(); if(screenEffect!=null) Destroy(screenEffect);
-            if(material!=null) Destroy(material); if(glowMesh!=null) Destroy(glowMesh);
-            foreach(var frame in emberFrames) if(frame!=null) Destroy(frame);
-            if(spark!=null) Destroy(spark);
-        }
+        void Hide(){HideRenderers();VisibleStreams=0;if(screenEffect!=null)screenEffect.Present(0,0,0);}
+        void OnDisable(){Hide();}
+        void OnDestroy(){Hide();if(screenEffect!=null)Destroy(screenEffect);if(fire!=null)Destroy(fire);if(heat!=null)Destroy(heat);if(heatMesh!=null)Destroy(heatMesh);}
     }
 }

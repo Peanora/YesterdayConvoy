@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "fps": 30,
+  "clips": [
+    {
+      "key": "ground",
+      "width": 144,
+      "height": 176,
+      "columns": 14,
+      "count": 144,
+      "ppu": 96,
+      "pivotX": 0.5,
+      "pivotY": 0.31818181818181823,
+      "pages": [
+        {
+          "file": "ground-00.png",
+          "count": 144
+        }
+      ]
+    },
+    {
+      "key": "stream",
+      "width": 448,
+      "height": 144,
+      "columns": 4,
+      "count": 351,
+      "ppu": 56,
+      "pivotX": 0.42857142857142855,
+      "pivotY": 0.5555555555555556,
+      "pages": [
+        {
+          "file": "stream-00.png",
+          "count": 56
+        },
+        {
+          "file": "stream-01.png",
+          "count": 56
+        },
+        {
+          "file": "stream-02.png",
+          "count": 56
+        },
+        {
+          "file": "stream-03.png",
+          "count": 56
+        },
+        {
+          "file": "stream-04.png",
+          "count": 56
+        },
+        {
+          "file": "stream-05.png",
+          "count": 56
+        },
+        {
+          "file": "stream-06.png",
+          "count": 15
+        }
+      ]
+    },
+    {
+      "key": "impact",
+      "width": 160,
+      "height": 144,
+      "columns": 12,
+      "count": 39,
+      "ppu": 96,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "pages": [
+        {
+          "file": "impact-00.png",
+          "count": 39
+        }
+      ]
+    }
+  ]
+}

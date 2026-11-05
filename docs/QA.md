@@ -1,5 +1,34 @@
 # 验证证据与回归
 
+## 2026-11-05：塔露拉火雨V12运行接入
+
+人类批准项目外V12。实时main为2c04ba7，本地已整合爱国者的4cb5aa8作为依赖，功能分支codex/talulah-fire-rain-v12；本轮运行源码a0769a8d845b1c5998f7de50a5d37e185fa4e517。未修改场景文件、Prefab、Packages、ProjectSettings或技能规则，保留原两个未跟踪项。
+
+- `artifacts/fire-v12-edit.xml`：完整409/409 EditMode通过，含既有高生命值下6波/18目标伤害、暂停、施法锁定和重开逻辑。
+- `artifacts/fire-v12-final-play.xml`：最终18/18相关GPU用例通过，覆盖新原素材动态图集/像素/地面、五行齐头、暂停屏幕与帧冻结、自然尾段/重开/切换，原攻击、怪物选择、基础/后期两关与Campaign回归。BattleShop实际保存地图通过测试结算进入商店购买塔露拉，再拖动进第二关真实施法，完整地面覆盖截图已目视核对；测试结算不是自然通关证据。
+- 早期开发轮因在MonoBehaviour字段初始化MaterialPropertyBlock导致异常，已移至Awake；随后新夹具误假定弱守军始终承受18次命中，改为核对6波弹药耗尽、真实阵亡和余焰不新增伤害，强生命值18次由原逻辑用例验证。中间曾有测试直接调用internal接口编译失败，已复用原测试结算入口。最终通过记录为上列文件，不把这些开发失败计为通过。
+- `artifacts/fire-v12-build.log`：Unity6000.6.5f1/Windows x64 Development，BASELINE_BUILD_PASS 2241177910 bytes、0错误；缓存后处理后的完整Windows目录约1213.7MB。构建对应运行源码a0769a8，后续文档提交不改变可执行内容。
+- `artifacts/fire-v12-player.log`、`fire-v12-player/fire-v12-result.json`与退出文件：从工程外工作目录运行实际EXE，Direct3D12/RTX4060，passed=true，退出0。真实相机开/关火焰平均RGB绝对差12.1285/255，118处地面火焰，正常弱守军实际产生15个目标命中后阵亡；原6秒施法结束后余焰没有追加事件。相邻采样的帧和位置变化、暂停像素不变、逻辑相机不被震动移动、自然结束/重开/切换清理均通过。截图已目视核对，Editor大地图截图不冒称来自Player。
+- 仓库检查5275文件通过；9张运行PNG、JSON、Shader和.meta无忽略遗漏，保留加色RGB，BC7由专属导入器配置。源说明与打包脚本入库，原包、外部加工工作区、构建、日志、本地AGENTS不入Git。
+
+未做全量PlayMode、完整人工关卡平衡试玩、第二台电脑或全新克隆验收。效果为固定镜头离线帧与本作地形组合；6秒玩法使用三面2秒间隔的稀疏火流，不能称原作十波调度逐像素还原。原媒体真实权利状态见[来源与接入说明](art/TALULAH-FIRE-RAIN-V12.md)。沿用功能分支推送/PR/人工合并，不自动合并main、ZIP或Releases。
+
+## 2026-11-05：爱国者V2接入
+
+任务[#62](https://github.com/Peanora/YesterdayConvoy/issues/62)，基线main `8f4d604`，分支 `codex/patriot-native-vfx`。功能源码 `ef02d37`，最终Windows纹理优化源码 `b0d4b7fbe1ec7be625ac53aa59d47be9f9b86fee`；后续状态/QA文档不改变可执行内容。
+
+- `artifacts/patriot-full-edit.xml`：完整357/357通过；新增真实四次伤害接触边界，投矛1.7秒出手/1.92秒命中，原60秒复起、15秒保护、目标、伤害、取消等13项专属逻辑通过。
+- `artifacts/patriot-full-play.xml`：首轮87/88，原CampaignSceneTests的SandboxHasAuthoredMapUnlimitedShopAndRealThreeStarStats在开始下一战断言失败；独立`patriot-campaign-recheck.xml`4/4通过，完整复跑`patriot-full-play-recheck.xml`88/88通过。未修改商店/战役逻辑来掩盖失败；该首次失败原因尚未单独确定，不称作已修复根因。
+- `artifacts/patriot-hq-play.xml`：最终高清图集2/2专属GPU通过；Windows压缩后`patriot-bc7-play.xml`再2/2通过。实际主入口自然部署并命中；明确的阶段开发夹具覆盖四连击、首次倒下、复起末段、毁灭普攻、远端高台投矛、灼烧、最终死亡。检查真实GPU显示/隐藏像素差、材质支持、暂停位置与帧冻结、重开/换战斗清理。
+- 第二个GPU用例使用真实战斗模型分别向左右投矛，检查原角色动作与上抛效果一致镜像；蓄力中致命伤害取消真实待发投矛及整套蓄力/落矛表现，不留假命中特效。
+- 原生Vulkan烘焙采用固定粒子种子与黑白背景浮点合成；最终HDR峰值30.25122，小于编码范围32，亮度截断像素0，各通道透射误差峰值约1.43e-6。19组完整图集的最外边缘亮度均为0，修正早期复起方形裁边；512像素大效果/256像素其余效果，30fps。
+- 来源记录逐项核验101个运行文件（99 PNG+catalog+Shader）的暂存哈希。检查仓库.gitignore、共享info/exclude、可用全局忽略来源，所有新增任务文件无被忽略项；必要.meta与资源配对、GUID保留。不修改共享资源CSV、场景、Prefab、Packages/ProjectSettings，原未跟踪.vscode保留不提交。
+- Windows专用BC7保留零alpha像素的加色RGB；与未压缩独立Player截图对比，8张全图RGB平均绝对误差最大约0.305/255（不是逐像素无损）。`PatriotArtTools.Configure`只处理本角色目录；源PNG不变，全部99个GUID保持。
+- `artifacts/patriot-final-windows-build.log`：Windows x64 Development构建0错误，Unity后处理前1976537795 bytes；处理1237个缓存文件/替换Player内1176张角色PNG后，整个Windows目录979961019 bytes（约980MB）。源PNG保留；缓存可重建，不需队友另传。未优化时约1574MB，最终纹理设置减少约595MB。
+- `artifacts/patriot-final-player.log`、`patriot-final-player/patriot-runtime-check.json`：从工程外工作目录启动实际打包程序，Direct3D12、普通爱国者入口/阶段夹具/真实伤害/暂停/重开均passed；`patriot-final-player-exit.txt`为0。8张GPU截图在同证据目录。测试使用`-patriotVfxSmokeTest`，普通启动不运行夹具。
+
+本机试玩入口：`Builds/Windows/YesterdayConvoy.exe`，必须保留整个Windows目录。BUILD-INFO记录最终源码b0d4b7f。对外拉取的源工程包含全部新增Resources依赖与.meta，本地构建和独立运行已验证；未实际做第二台机器或全新克隆构建，不扩大这一结论。原作效果是离线生成的固定视角二维表现，不是原作三维粒子/全部战斗脚本的移植；本次无音效，整段原作蓄力前置调度未逐帧核对。真实来源、权利状态与逐文件哈希见[独立记录](art/source-records/patriot-v2-native.json)。不自动合并、ZIP或Releases。
+
 ## 2026-11-04：剩余四条羁绊与最新main集成
 
 实时main8f4d604（塔露拉普攻V8 #60），分支codex/synergy-four-traits带入未合并#59。入口CampaignBootstrap及STATUS/QA有冲突，已先报告，逐段保留V8入口和羁绊验证/完整记录，不整文件选单方。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖；不改场景地形、Prefab、包、工程设置。
@@ -1545,3 +1574,8 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 最终交付：运行源码cfad4a2，Logs/synergy-rework-build-verified.log记录BASELINE_BUILD_PASS 2015199842 bytes、0 errors。Logs/synergy-rework-verified-player.log六项(pool/preset/pausedDrag/ultimateSoloClear/investment/snowPulsesAndReset)全部True；通过Python等待真实Player进程退出，VERIFIED_PLAYER_EXIT_CODE=0。Logs/synergy-rework-verified下四张截图已目视核对，培养面板明确标注预置，不把加载页截图当完成。最后只把天气抬升限制到新增脉冲调用，原冰封挂点保持。共408项完整逻辑通过、最后15项逻辑复验；102种GPU场景用例均获通过验证（100/101原整套＋角色总数修正全遍历1/1＋天气3/3＋像素1/1）。
 
 进入：EXE默认挑战，菜单→返回测试选择→羁绊验证·无限金币，右侧“巨像培养”提供I–IV；IV预置直接设培养24/投入80/五人二星并换完整六星防线，开始下一战后拖巨像卡即可。正式模式不提供这种进度赠送。第二机、完整局成型概率/长期平衡及所有GUI按钮真实鼠标逐项点击未做。不ZIP/Releases，不自动合并。原作素材开放授权仍未确认，来源与权利记录保留。
+
+
+## 2026-11-05 本地双角色特效整合
+
+2026-11-05 本地试玩：main 2c04ba7 + 爱国者 V2 14bda74，运行源码 9826603。塔露拉 V8 已在 main。Windows 构建 0 错误，两个角色 GPU 回归 4/4。爱国者、塔露拉火雨、塔露拉动作、羁绊试玩共四个独立 Player 进程退出 0。复起和投矛使用开发阶段测试。未重跑全套测试或第二机。 本轮验证日志在 Logs/local-vfx-integration 和 Logs/local-patriot-talulah-build.log。

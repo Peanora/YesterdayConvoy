@@ -57,8 +57,11 @@ namespace YesterdayConvoy.Tests
             double distance=unit.Motion.DistanceTravelled; c.Tick(4.2f); yield return null;
             foreach(var defender in c.Battle.Defenders) Assert.That(defender.Alive,Is.False);
             Assert.That(fire.VisibleStreams,Is.GreaterThan(0)); Assert.That(unit.Motion.DistanceTravelled,Is.EqualTo(distance));
-            c.Tick(.45f); yield return null; Assert.That(fire.VisibleStreams,Is.Zero);
+            c.Tick(.45f); yield return null;
             Assert.That(unit.Motion.DistanceTravelled,Is.GreaterThan(distance));
+            // Native waves have a tail independent of the unchanged six-second cast.
+            for(int i=0;i<300&&fire.VisibleStreams>0;i++){c.Tick(.05f);yield return null;}
+            c.Tick(2);yield return null;Assert.That(fire.VisibleStreams,Is.Zero);
             var effect=cam.GetComponent<FireRainScreenEffect>(); var restored=Capture(cam); effect.enabled=false;
             Assert.That(Difference(restored,Capture(cam)),Is.LessThan(.01),"Natural completion must restore the untouched image.");
         }

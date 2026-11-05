@@ -14,6 +14,14 @@ namespace YesterdayConvoy.Tests
         static ManualBattle Create(Vector3? guard=null,int blocks=0,float armor=0,Vector3[] extra=null,float speed=1)=>new ManualBattle(S(speed:speed),new[]{Vector3.zero,Vector3.forward*100},guard??Vector3.right*.4f,C(blocks:blocks,armor:armor),extra);
         static DeployedUnitState Start(ManualBattle b){b.Begin();var r=b.TryDeploy(b.RunId,1,b.Entry);Assert.That(r.Success,Is.True);return b.FindUnit(r.EntityId);}
         static void Reborn(ManualBattle b,DeployedUnitState u){Assert.That(b.TryDamageUnit(u.EntityId,100000,CombatDamageType.Arts),Is.True);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Reborn));}
+        [Test]public void MarchContactsMatchTheFourOriginalAnimationEventsWithoutAnExtraProjectileDelay()
+        {
+            var b=Create(blocks:1);var u=Start(b);b.Advance(.05f);
+            var shots=b.CombatShots.Where(s=>!s.FromDefender).ToArray();Assert.That(shots.Length,Is.EqualTo(4));
+            for(int i=0;i<4;i++)Assert.That(shots[i].ImpactAt-u.LastAttackTime,Is.EqualTo(.6333333+i*.1).Within(.00001));
+            b.Advance((float)(shots[0].ImpactAt-b.Clock-.01));Assert.That(shots[0].Applied,Is.False);
+            b.Advance(.02f);Assert.That(shots[0].Applied,Is.True);Assert.That(shots[1].Applied,Is.False);
+        }
         [Test]public void MarchDefenseResistanceTauntAndFourSeparateBlockedHits()
         {
             var b=Create(blocks:1,armor:100);var u=Start(b);Assert.That(b.UnitArmor(u),Is.EqualTo(21));Assert.That(b.UnitResistance(u),Is.EqualTo(90));Assert.That(b.UnitTaunt(u),Is.EqualTo(2));
@@ -41,6 +49,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.ConfigureDefenderHighGround(b.Defenders[0].EntityId,true),Is.True);Assert.That(b.ConfigureDefenderHighGround(b.Defenders[1].EntityId,true),Is.True);
             var u=Start(b);Reborn(b,u);b.Advance(60.1f);b.Advance(14.7f);Assert.That(u.Spear,Is.Null);b.Advance(.4f);
             Assert.That(u.Spear,Is.Not.Null);Assert.That(u.Spear.TargetId,Is.EqualTo(b.Defenders[1].EntityId),"Farther ground guard is not a high-ground target.");Assert.That(u.Spear.Shot.Applied,Is.False);
+            Assert.That(u.Spear.Shot.StartedAt-u.Spear.StartedAt,Is.EqualTo(1.7).Within(.00001));
+            Assert.That(u.Spear.Shot.ImpactAt-u.Spear.StartedAt,Is.EqualTo(1.92).Within(.00001));
             b.Advance(3.3f);Assert.That(u.Spear.Shot.Applied,Is.True);Assert.That(u.Spear.Shot.DamageDealt,Is.EqualTo(135).Within(.01));Assert.That(b.Defenders[2].Health,Is.EqualTo(10000));
             var first=u.Spear;b.Advance(19.5f);Assert.That(u.Spear,Is.SameAs(first));b.Advance(1);Assert.That(u.Spear,Is.Not.SameAs(first));
         }

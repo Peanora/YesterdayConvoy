@@ -1,0 +1,281 @@
+{
+  "cell": 256,
+  "columns": 4,
+  "fps": 30,
+  "worldSize": 7.199999809265137,
+  "rgbRange": 32.0,
+  "anchorX": 0.5,
+  "anchorY": 0.5,
+  "clips": [
+    {
+      "name": "patrt_attack_01_hit",
+      "frames": 27,
+      "pages": [
+        "patrt_attack_01_hit-00",
+        "patrt_attack_01_hit-01"
+      ],
+      "worldSize": 2.2581844329833984,
+      "anchorX": 0.4890597462654114,
+      "anchorY": 0.4647228419780731
+    },
+    {
+      "name": "patrt_attack_01_start",
+      "frames": 108,
+      "pages": [
+        "patrt_attack_01_start-00",
+        "patrt_attack_01_start-01",
+        "patrt_attack_01_start-02",
+        "patrt_attack_01_start-03",
+        "patrt_attack_01_start-04",
+        "patrt_attack_01_start-05",
+        "patrt_attack_01_start-06"
+      ],
+      "worldSize": 7.429835796356201,
+      "anchorX": 0.6288642883300781,
+      "anchorY": 0.4980502426624298
+    },
+    {
+      "name": "patrt_attack_02_hit",
+      "frames": 17,
+      "pages": [
+        "patrt_attack_02_hit-00",
+        "patrt_attack_02_hit-01"
+      ],
+      "worldSize": 2.6637773513793945,
+      "anchorX": 0.5567294955253601,
+      "anchorY": 0.38730737566947937
+    },
+    {
+      "name": "patrt_attack_02_start",
+      "frames": 49,
+      "pages": [
+        "patrt_attack_02_start-00",
+        "patrt_attack_02_start-01",
+        "patrt_attack_02_start-02",
+        "patrt_attack_02_start-03"
+      ],
+      "worldSize": 2.8692498207092285,
+      "anchorX": 0.44058969616889954,
+      "anchorY": 0.42158281803131104
+    },
+    {
+      "name": "patrt_attack_02_start_02",
+      "frames": 33,
+      "pages": [
+        "patrt_attack_02_start_02-00",
+        "patrt_attack_02_start_02-01",
+        "patrt_attack_02_start_02-02"
+      ],
+      "worldSize": 4.473228931427002,
+      "anchorX": 0.45228397846221924,
+      "anchorY": 0.32313644886016846
+    },
+    {
+      "name": "patrt_buff_02_start",
+      "frames": 81,
+      "pages": [
+        "patrt_buff_02_start-00",
+        "patrt_buff_02_start-01",
+        "patrt_buff_02_start-02",
+        "patrt_buff_02_start-03",
+        "patrt_buff_02_start-04",
+        "patrt_buff_02_start-05"
+      ],
+      "worldSize": 2.5351250171661377,
+      "anchorX": 0.6266703605651855,
+      "anchorY": 0.4941074550151825
+    },
+    {
+      "name": "patrt_buff_02_start_02",
+      "frames": 108,
+      "pages": [
+        "patrt_buff_02_start_02-00",
+        "patrt_buff_02_start_02-01",
+        "patrt_buff_02_start_02-02",
+        "patrt_buff_02_start_02-03",
+        "patrt_buff_02_start_02-04",
+        "patrt_buff_02_start_02-05",
+        "patrt_buff_02_start_02-06"
+      ],
+      "worldSize": 2.0,
+      "anchorX": 0.6753737926483154,
+      "anchorY": 0.49535083770751953
+    },
+    {
+      "name": "patrt_buff_03_range",
+      "frames": 96,
+      "pages": [
+        "patrt_buff_03_range-00",
+        "patrt_buff_03_range-01",
+        "patrt_buff_03_range-02",
+        "patrt_buff_03_range-03",
+        "patrt_buff_03_range-04",
+        "patrt_buff_03_range-05"
+      ],
+      "worldSize": 4.711068153381348,
+      "anchorX": 0.50379478931427,
+      "anchorY": 0.49686795473098755
+    },
+    {
+      "name": "patrt_buff_03_start",
+      "frames": 24,
+      "pages": [
+        "patrt_buff_03_start-00",
+        "patrt_buff_03_start-01"
+      ],
+      "worldSize": 2.4136250019073486,
+      "anchorX": 0.4920971989631653,
+      "anchorY": 0.274796724319458
+    },
+    {
+      "name": "patrt_buff_04_start",
+      "frames": 87,
+      "pages": [
+        "patrt_buff_04_start-00",
+        "patrt_buff_04_start-01",
+        "patrt_buff_04_start-02",
+        "patrt_buff_04_start-03",
+        "patrt_buff_04_start-04",
+        "patrt_buff_04_start-05"
+      ],
+      "worldSize": 20.031644821166992,
+      "anchorX": 0.4978817403316498,
+      "anchorY": 0.46712201833724976
+    },
+    {
+      "name": "patrt_buff_04_start_02",
+      "frames": 30,
+      "pages": [
+        "patrt_buff_04_start_02-00",
+        "patrt_buff_04_start_02-01"
+      ],
+      "worldSize": 4.006965637207031,
+      "anchorX": 0.5014974474906921,
+      "anchorY": 0.4942474365234375
+    },
+    {
+      "name": "patrt_buff_04_start_03",
+      "frames": 96,
+      "pages": [
+        "patrt_buff_04_start_03-00",
+        "patrt_buff_04_start_03-01",
+        "patrt_buff_04_start_03-02",
+        "patrt_buff_04_start_03-03",
+        "patrt_buff_04_start_03-04",
+        "patrt_buff_04_start_03-05"
+      ],
+      "worldSize": 15.277183532714844,
+      "anchorX": 0.436710000038147,
+      "anchorY": 0.4771172106266022
+    },
+    {
+      "name": "patrt_buff_04_start_04",
+      "frames": 120,
+      "pages": [
+        "patrt_buff_04_start_04-00",
+        "patrt_buff_04_start_04-01",
+        "patrt_buff_04_start_04-02",
+        "patrt_buff_04_start_04-03",
+        "patrt_buff_04_start_04-04",
+        "patrt_buff_04_start_04-05",
+        "patrt_buff_04_start_04-06",
+        "patrt_buff_04_start_04-07"
+      ],
+      "worldSize": 2.9603748321533203,
+      "anchorX": 0.4281677305698395,
+      "anchorY": 0.41449588537216187
+    },
+    {
+      "name": "patrt_die_01_start",
+      "frames": 180,
+      "pages": [
+        "patrt_die_01_start-00",
+        "patrt_die_01_start-01",
+        "patrt_die_01_start-02",
+        "patrt_die_01_start-03",
+        "patrt_die_01_start-04",
+        "patrt_die_01_start-05",
+        "patrt_die_01_start-06",
+        "patrt_die_01_start-07",
+        "patrt_die_01_start-08",
+        "patrt_die_01_start-09",
+        "patrt_die_01_start-10",
+        "patrt_die_01_start-11"
+      ],
+      "worldSize": 10.525634765625,
+      "anchorX": 0.5,
+      "anchorY": 0.45310235023498535
+    },
+    {
+      "name": "patrt_skill_01_end",
+      "frames": 44,
+      "pages": [
+        "patrt_skill_01_end-00",
+        "patrt_skill_01_end-01",
+        "patrt_skill_01_end-02"
+      ],
+      "worldSize": 2.7477500438690186,
+      "anchorX": 0.5016116499900818,
+      "anchorY": 0.5077106356620789
+    },
+    {
+      "name": "patrt_skill_01_hit",
+      "frames": 108,
+      "pages": [
+        "patrt_skill_01_hit-00",
+        "patrt_skill_01_hit-01",
+        "patrt_skill_01_hit-02",
+        "patrt_skill_01_hit-03",
+        "patrt_skill_01_hit-04",
+        "patrt_skill_01_hit-05",
+        "patrt_skill_01_hit-06"
+      ],
+      "worldSize": 3.936826229095459,
+      "anchorX": 0.5,
+      "anchorY": 0.5053187012672424
+    },
+    {
+      "name": "patrt_skill_01_hit_02",
+      "frames": 90,
+      "pages": [
+        "patrt_skill_01_hit_02-00",
+        "patrt_skill_01_hit_02-01",
+        "patrt_skill_01_hit_02-02",
+        "patrt_skill_01_hit_02-03",
+        "patrt_skill_01_hit_02-04",
+        "patrt_skill_01_hit_02-05"
+      ],
+      "worldSize": 10.83452320098877,
+      "anchorX": 0.5198134183883667,
+      "anchorY": 0.26618099212646484
+    },
+    {
+      "name": "patrt_skill_01_start",
+      "frames": 66,
+      "pages": [
+        "patrt_skill_01_start-00",
+        "patrt_skill_01_start-01",
+        "patrt_skill_01_start-02",
+        "patrt_skill_01_start-03",
+        "patrt_skill_01_start-04"
+      ],
+      "worldSize": 6.049178600311279,
+      "anchorX": 0.5,
+      "anchorY": 0.4970739483833313
+    },
+    {
+      "name": "patrt_skill_01_start_02",
+      "frames": 75,
+      "pages": [
+        "patrt_skill_01_start_02-00",
+        "patrt_skill_01_start_02-01",
+        "patrt_skill_01_start_02-02",
+        "patrt_skill_01_start_02-03",
+        "patrt_skill_01_start_02-04"
+      ],
+      "worldSize": 3.9403045177459717,
+      "anchorX": 0.5456072688102722,
+      "anchorY": 0.12226620316505432
+    }
+  ]
+}
