@@ -4,7 +4,7 @@
 
 任务[#73](https://github.com/Peanora/YesterdayConvoy/issues/73)，`codex/patriot-five-cost-shop`从最新main a37f0e5开工，保留待审梅菲斯特#71与曼德拉#69成果。原M20进入Campaign、无限羁绊验证与高难度战后商店：五费九张、正常刷新/出售返库、满备战合成、星级数值和模型部署；卡池42种/五费7种，游击样板直接可选。原四连击、60秒复起、自动投矛、灼烧与原版特效保留，无新主动/五费搭档专属。详情及一至三星数值见[M20说明](monsters/M20_PATRIOT_VFX.md)。
 
-完整421/421 EditMode、最终36/36相关GPU通过、零跳过。GPU覆盖真实商店满席购买二星/原模型/暂停拖动，再以明确开发夹具验证混编各阶段、实际像素、暂停和清理；包括梅菲斯特、曼德拉及原有爱国者回归。Windows构建和独立Player待本轮后续验证；不将编辑器结果称作接收端验收。保留原.vscode，不改场景/Prefab/包/项目设置，不自动合并或ZIP/Releases。
+完整421/421 EditMode、最终36/36相关GPU通过、零跳过。GPU覆盖真实商店满席购买二星/原模型/暂停拖动，再以明确开发夹具验证混编各阶段、实际像素、暂停和清理；包括梅菲斯特、曼德拉及原有爱国者回归。运行源码ba014335eed5f7de6b3cb7efc7aa75babb47ae51的Windows构建0错误，独立1920×1080 Direct3D12 Player全部16项检查True、退出0；已目视核对商店、二星模型、真实部署及特效截图。本机入口Builds/Windows/YesterdayConvoy.exe；不是第二机/新克隆验收。保留原.vscode，不改场景/Prefab/包/项目设置，不自动合并或ZIP/Releases。
 
 ## 2026-11-05：梅菲斯特原版治疗与五费商店
 

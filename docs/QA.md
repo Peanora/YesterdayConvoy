@@ -7,7 +7,8 @@
 - 完整EditMode **421/421通过、零跳过**，artifacts/patriot-shop-edit.xml。新增五项覆盖白名单、星级与标签、次卡实例防御/四次接触、三星60秒复起及高台投矛、双实例指挥不叠加/重开、五费刷新/有限库存/满席合成与普通经济只扣5。
 - 最终相关GPU **36/36通过、零跳过**，artifacts/patriot-shop-gpu-final.xml。含M20商店专属、原M20全部阶段/朝向、M25、M32、其他角色能力、羁绊、Campaign、高难度商店、霜星。首轮35/36，唯一失败是新诊断把无限金币当普通扣费；已修正为保留无限金币并校验购买价值5，未改真实经济。
 - 专属验证从SynergyTrial真实五费九张、满备战合成二星、原M20模型、暂停拖动到实际红门；随后使用明确的近静止开发夹具，以M08为主卡、二星M20为次卡验证四连击、60秒倒地、1140最大生命复起、保护、毁灭、自动高台投矛、真实伤害/灼烧、最终死亡和重开/返回清理。七阶段均有同相机开关原生表现的实际GPU像素差，不能把夹具称为普通关自然完整通关。
-- Windows构建/独立Player尚待本轮后续执行。未做第二机、新克隆、全13关平衡与长期性能；原音效和五费构筑专属仍未新增。无场景/Prefab/Packages/ProjectSettings变化，不自动ZIP/Releases或合并main。
+- 运行源码**ba014335eed5f7de6b3cb7efc7aa75babb47ae51** Windows构建报告2,309,684,448 bytes、0错误，实际Windows目录1,282,187,423 bytes。独立窗口1920×1080/Direct3D12运行，16项PATRIOT_SHOP_EVENT全True、PATRIOT_SHOP_CHECK passed=True、退出0。artifacts/patriot-shop-build.log / patriot-shop-player.log / patriot-shop-player/十张实际截图与结果文本。已目视核对五费卡面、二星模型备战、真实部署和原生特效。七阶段开/关RGB平均像素差约0.606/3.794/36.349/4.548/5.573/10.010/0.375，均有可见GPU贡献。
+- .gitignore继续允许已跟踪的角色/特效资源，没有全局取消规则；仓库5431文件/meta检查通过。未做第二机、新克隆、全13关平衡与长期性能；原音效和五费构筑专属仍未新增。无场景/Prefab/Packages/ProjectSettings变化，不自动ZIP/Releases或合并main。
 
 ## 2026-11-05：梅菲斯特原生治疗、五费入池和实际Player
 
