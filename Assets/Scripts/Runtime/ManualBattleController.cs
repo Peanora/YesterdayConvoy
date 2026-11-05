@@ -73,7 +73,13 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
-            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
+            gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
+            if(Debug.isDebugBuild&&Array.IndexOf(args,"-patriotVfxSmokeTest")>=0)
+            {
+                diagnostic=true;Application.runInBackground=true;int evidence=Array.IndexOf(args,"-demoEvidenceDir");
+                StartCoroutine(VerifyPatriotPresentation(evidence>=0&&evidence+1<args.Length?args[evidence+1]:Path.Combine(Application.persistentDataPath,"PatriotVfx"),true));
+            }
+            bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)

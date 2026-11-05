@@ -404,9 +404,11 @@ namespace YesterdayConvoy
                     unit.LastAttackRate=empowered ? 1 : UnitAttackRate(unit);
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : UnitAttackInterval(unit))/unit.LastAttackRate;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
-                        unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,c.ProjectileTime,(empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                        unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,
+                        c.Effects.Patriot?(unit.PatriotPhase==PatriotPhase.March?0:PatriotTiming.DestructionFlight/unit.LastAttackRate):c.ProjectileTime,
+                        (empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
                     if(c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.March&&!empowered)
-                        for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+c.AttackWindup+hit*.2f,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(unit)));
+                        for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+(PatriotTiming.MarchContact+hit*PatriotTiming.MarchSpacing)/unit.LastAttackRate,0,c.UnitAttack*UnitAttackMultiplier(unit)));
                     if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;
                     if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
                     if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);

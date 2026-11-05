@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-11-05：爱国者V2接入
+
+任务[#62](https://github.com/Peanora/YesterdayConvoy/issues/62)，基线main `8f4d604`，分支 `codex/patriot-native-vfx`。功能源码 `ef02d37`，最终Windows纹理优化源码 `b0d4b7fbe1ec7be625ac53aa59d47be9f9b86fee`；后续状态/QA文档不改变可执行内容。
+
+- `artifacts/patriot-full-edit.xml`：完整357/357通过；新增真实四次伤害接触边界，投矛1.7秒出手/1.92秒命中，原60秒复起、15秒保护、目标、伤害、取消等13项专属逻辑通过。
+- `artifacts/patriot-full-play.xml`：首轮87/88，原CampaignSceneTests的SandboxHasAuthoredMapUnlimitedShopAndRealThreeStarStats在开始下一战断言失败；独立`patriot-campaign-recheck.xml`4/4通过，完整复跑`patriot-full-play-recheck.xml`88/88通过。未修改商店/战役逻辑来掩盖失败；该首次失败原因尚未单独确定，不称作已修复根因。
+- `artifacts/patriot-hq-play.xml`：最终高清图集2/2专属GPU通过；Windows压缩后`patriot-bc7-play.xml`再2/2通过。实际主入口自然部署并命中；明确的阶段开发夹具覆盖四连击、首次倒下、复起末段、毁灭普攻、远端高台投矛、灼烧、最终死亡。检查真实GPU显示/隐藏像素差、材质支持、暂停位置与帧冻结、重开/换战斗清理。
+- 第二个GPU用例使用真实战斗模型分别向左右投矛，检查原角色动作与上抛效果一致镜像；蓄力中致命伤害取消真实待发投矛及整套蓄力/落矛表现，不留假命中特效。
+- 原生Vulkan烘焙采用固定粒子种子与黑白背景浮点合成；最终HDR峰值30.25122，小于编码范围32，亮度截断像素0，各通道透射误差峰值约1.43e-6。19组完整图集的最外边缘亮度均为0，修正早期复起方形裁边；512像素大效果/256像素其余效果，30fps。
+- 来源记录逐项核验101个运行文件（99 PNG+catalog+Shader）的暂存哈希。检查仓库.gitignore、共享info/exclude、可用全局忽略来源，所有新增任务文件无被忽略项；必要.meta与资源配对、GUID保留。不修改共享资源CSV、场景、Prefab、Packages/ProjectSettings，原未跟踪.vscode保留不提交。
+- Windows专用BC7保留零alpha像素的加色RGB；与未压缩独立Player截图对比，8张全图RGB平均绝对误差最大约0.305/255（不是逐像素无损）。`PatriotArtTools.Configure`只处理本角色目录；源PNG不变，全部99个GUID保持。
+- `artifacts/patriot-final-windows-build.log`：Windows x64 Development构建0错误，Unity后处理前1976537795 bytes；处理1237个缓存文件/替换Player内1176张角色PNG后，整个Windows目录979961019 bytes（约980MB）。源PNG保留；缓存可重建，不需队友另传。未优化时约1574MB，最终纹理设置减少约595MB。
+- `artifacts/patriot-final-player.log`、`patriot-final-player/patriot-runtime-check.json`：从工程外工作目录启动实际打包程序，Direct3D12、普通爱国者入口/阶段夹具/真实伤害/暂停/重开均passed；`patriot-final-player-exit.txt`为0。8张GPU截图在同证据目录。测试使用`-patriotVfxSmokeTest`，普通启动不运行夹具。
+
+本机试玩入口：`Builds/Windows/YesterdayConvoy.exe`，必须保留整个Windows目录。BUILD-INFO记录最终源码b0d4b7f。对外拉取的源工程包含全部新增Resources依赖与.meta，本地构建和独立运行已验证；未实际做第二台机器或全新克隆构建，不扩大这一结论。原作效果是离线生成的固定视角二维表现，不是原作三维粒子/全部战斗脚本的移植；本次无音效，整段原作蓄力前置调度未逐帧核对。真实来源、权利状态与逐文件哈希见[独立记录](art/source-records/patriot-v2-native.json)。不自动合并、ZIP或Releases。
+
 ## 2026-11-04：剩余四条羁绊与最新main集成
 
 实时main8f4d604（塔露拉普攻V8 #60），分支codex/synergy-four-traits带入未合并#59。入口CampaignBootstrap及STATUS/QA有冲突，已先报告，逐段保留V8入口和羁绊验证/完整记录，不整文件选单方。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖；不改场景地形、Prefab、包、工程设置。

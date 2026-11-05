@@ -97,6 +97,18 @@ namespace YesterdayConvoy
                 }
                 sprite.flipX=tacticalFlip;
             }
+            if(manualBattle.IsPatriot(deployedUnit))
+            {
+                // A spear can choose a high-ground defender behind the route direction.
+                // Match the source actor and its effects in both ordinary and tactical maps.
+                if(deployedUnit.Active&&!manualBattle.IsPaused)
+                {
+                    var target=manualBattle.FindDefender(manualBattle.PatriotCasting(deployedUnit)?deployedUnit.Spear.TargetId:deployedUnit.CombatTargetId);
+                    var direction=target!=null?target.Position-deployedUnit.Motion.Position:deployedUnit.Motion.Direction;
+                    float dx=Vector3.Dot(direction,Camera.main.transform.right);if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;
+                }
+                sprite.flipX=tacticalFlip;
+            }
             transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
             if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
@@ -151,7 +163,7 @@ namespace YesterdayConvoy
                 {FrameState="PatriotSpear";sprite.sprite=local["extra_skill"].At(manualBattle.Clock-u.Spear.StartedAt,false,out int spearIndex);FrameIndex=spearIndex;return;}
                 if(u.PatriotPhase==PatriotPhase.Destruction&&u.Active)
                 {
-                    double attackAge=manualBattle.Clock-u.LastAttackTime;string action=attackAge>=0&&attackAge<manualBattle.UnitActionDuration(u)?"extra_attack_2":u.IsMoving?"extra_move_2":"extra_idle_2";
+                    double attackAge=(manualBattle.Clock-u.LastAttackTime)*u.LastAttackRate;string action=attackAge>=0&&attackAge<manualBattle.UnitActionDuration(u)?"extra_attack_2":u.IsMoving?"extra_move_2":"extra_idle_2";
                     double elapsed=action=="extra_attack_2"?attackAge:u.IsMoving?u.Motion.DistanceTravelled/(u.Motion.Speed+.1f):age;
                     FrameState=action=="extra_attack_2"?"PatriotAttack":u.IsMoving?"PatriotWalk":"PatriotIdle";
                     sprite.sprite=local[action].At(elapsed,action!="extra_attack_2",out int secondIndex);FrameIndex=secondIndex;return;
