@@ -13,7 +13,8 @@ namespace YesterdayConvoy.Tests
         {
             var settings=new ManualBattleSettings("FEEDBACK","FEEDBACK",1000,1,200,1,.1f,health,.1f,1,1,1,1);
             var combat=new EngagementSettings(unitAttack:1,unitArmor:0,unitRange:.1f,defenderHealth:1000,defenderAttack:1,
-                defenderArmor:0,defenderRange:.1f,blockCount:0,hasSkill:false,effects:effects);
+                defenderArmor:0,defenderRange:.1f,blockCount:0,initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,
+                skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,effects:effects);
             var result=new ManualBattle(settings,new[]{Vector3.zero,Vector3.forward*1000},Vector3.right*50,combat);result.Begin();return result;
         }
         static DeployedUnitState Deploy(ManualBattle b,long request=1)
