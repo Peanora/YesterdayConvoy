@@ -12,7 +12,9 @@
 
 关键连接：`FireRainView`读取每个实体的施法时刻与`Battle.Clock`；仅施法时从当前场景启用的地表顶面四角取得投影范围，动态分配行数/火浪实例并更新暖光和碎焰。宽图只调整表现速度，穿过守军不检测碰撞；伤害仍由原CombatShot负责。`EngagementView`恢复原CC0命中帧，`FireRainScreenEffect`恢复早期暖暗和震动。32帧火流、25帧碎焰和Shader已在Git中，未新下载或遗漏运行素材。
 
-本轮Windows构建、独立Player与源码提交在完成后补记；目前不将Editor结果当成EXE验收。完整人工关卡、第二台电脑和长期性能未测。
+运行源码`755ac92cd10d28af420314364454a927d4bf9b92`通过Windows构建，`artifacts/fire-orange-build.log`记录`BASELINE_BUILD_PASS`、0错误。随后从工程外工作目录启动独立EXE、Direct3D12/RTX4060，`fire-orange-player/fire-orange-result.json`为passed=true，真实进程退出0；平均RGB差20.6019/255、峰值37条火浪、六秒/15次实际目标伤害、动画/暂停/自然结束/重开/切换检查通过，已目视核对真实Player截图。开发验证沿用旧`-talulahFireRainV12Test`参数以兼容既有入口，当前验证的是恢复后的橙色版。
+
+最新本机入口`Builds/Windows/YesterdayConvoy.exe`，同目录`SOURCE.txt`绑定上述运行源码；后续文档提交不改变可执行内容。未创建ZIP/Releases。完整人工关卡、第二台电脑和长期性能未测。
 
 ## 2026-11-05：塔露拉火雨V12运行接入
 
