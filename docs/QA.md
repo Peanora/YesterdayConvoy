@@ -1520,3 +1520,10 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 完整EditMode393/393通过（artifacts/mudrock-edit-final.xml）；完整D3D11 GPU PlayMode99/99通过（artifacts/mudrock-gpu-full.xml），其中2项泥岩实际场景、8项新纯逻辑。覆盖延迟/幂等占据、全施法锁移动、暂停、死亡取消、不耗费无目标、实际攻疗、邻接守军夺回、重开与配置原子拒绝；场景检查有原模型/图集/Shader实际绘制。首轮旧场景数量和即时补盾断言已按本轮确认范围改为5场景与原Skill_2命中时机，复验全过。
 
 新Shader保留预乘与加法RGB，24非空图层58页PNG约23.6MB；角色原始动作继续走已有加载缓存。构建/独立Player证据待下方补充，不把编辑器通过当作已构建。未测：第二机、任意镜头逐像素对照、长期平衡、完整原作声音/留声机外部弹道。
+
+最终交付补充：
+- 首次源码badbba8独立Player逻辑全True；batchmode截图为黑帧，仅作为逻辑检查，不作为视觉证据。正常窗口重新运行后取得真实画面，发现底部仍是维维美卡面与东装置过低，修正启动绑定并移动装置后新增断言。
+- 修正后9/9相关GPU通过（artifacts/mudrock-final-boundary.xml，泥岩/原交战/商店闭环）。
+- 最终运行源码bb7db8e，Windows构建0错误，1997621649字节；产物Builds/Windows/YesterdayConvoy.exe。
+- 最终正常窗口Player：artifacts/mudrock-native-final.log中MUDROCK_PLAYER的drag/pause/charge/capture/actionLock/device/restart=True；四张真实截图位于artifacts/mudrock-native-final，已目视核对泥岩卡面、原模型、屏障、就绪标志、占据动作与装置位置。Player自动流程完成并退出，无异常。
+- 原两个未跟踪文件不提交。未自动ZIP/Releases；源码和运行素材走功能PR，不自动合并。
