@@ -51,7 +51,7 @@ A组既有普攻仍沿用0.65秒命中、1.7秒周期；手动火雨保持六秒
 ## 资源与处理
 
 - 既有A组5组特效在 `Assets/Art/VFX/Skills/Talulah/Resources/TalulahNative`，393帧、5页，继续使用。新增十九段仅在本场开启三星双阶段时加入加载/缓存固定计划，一二星和商店待机不加载全套B。
-- B/阶段原特效通过 `ArtSequence / ArtMemoryCache` 读取；`PreparedArtTools` 仅选择所用11组的41页做离线预处理，排除未绑定的915帧灼息和晶体等页。本轮尚未实际执行这次Unity预处理或构建。
+- B/阶段原特效通过 `ArtSequence / ArtMemoryCache` 读取；`PreparedArtTools` 仅选择所用11组的41页做离线预处理，排除未绑定的915帧灼息和晶体等页。本轮已执行预处理与Windows构建，阶段所用页随Player交付。
 - 全部特效共39组、4218帧、83页，PNG约22.3MB。打包细节及哈希见未绑定目录的 `package-report.json`。
 - 原骨骼 `enemy_1515_bsnake` / Spine 3.8.99；源索引为 <https://torappu.prts.wiki/assets/enemy_spine/enemy_1515_bsnake/enemy_1515_bsnake.skel>。身体来源、缩放与逐页记录在 ExtraClips 的 `SOURCE-RECORD.json`。
 - 原特效来自官方Android资源包 `pkgrps_btl_pfb_fx_enemy_1.dat`，资源版本 `26-10-29-15-36-11-33649006`。具体地址：<https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_1.dat>。源缓存 MD5 `46ac009a973053d7ee3a8f4cdd1b201e`。
@@ -66,3 +66,7 @@ A组既有普攻仍沿用0.65秒命中、1.7秒周期；手动火雨保持六秒
 既有A组原普攻/普通死亡的历史Unity、构建与独立Player结果见 `docs/QA.md`，不覆盖本轮新增三星阶段。
 
 新增阶段目前仅完成补丁核对、源图清单/网格/原生Alpha格式静态检查，以及独立Roslyn的Runtime、Editor、Editor.Tests静态编译；新增10项领域/朝向/加载边界测试尚未执行。**本轮真Unity测试、源页实际预处理、独立自然承伤场景生成、Player试玩和录像均待主任务统一完成。** 不能据静态编译声称转阶段、朝向、火浪覆盖或完整尾段已经通过实机验证。
+
+### 2026-11-06 统一集成验证补记
+
+以上“待主任务验证”为接入提交当时状态。现已真实执行Unity：全量EditMode433/433、相关GPU52/52；自然三克洛丝射击覆盖首倒/首雨/B/终倒/终雨/真死亡，另覆盖B手动技能和暂停。4379d35运行源码构建0错误，D3D11可见Player53项检查通过，并复核伤害、B施法、阶段和最终尾段图像。旧“IMPORTED_NOT_BOUND”的其余机制依旧未接；不是所有原作片段、所有帧、所有窗口尺寸都已人工审查。依据见docs/QA.md。

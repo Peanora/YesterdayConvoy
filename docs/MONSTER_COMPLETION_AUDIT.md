@@ -109,3 +109,5 @@
 - [爱国者](monsters/M20_PATRIOT_VFX.md)、[梅菲斯特](monsters/M25-NATIVE-VFX.md)、[蔓德拉](monsters/M32-NATIVE-VFX.md)、[塔露拉已绑定／未绑定清单](art/TALULAH-NATIVE-VISUALS.md)。
 
 [MONSTER_BACKLOG](MONSTER_BACKLOG.md)中仍有历史“待做／C未做”字样，不能单凭旧条目否定已存在的实现；遇到不一致先核最新STATUS、具体交付说明和代码。本文不删除那些历史记录，也不将所有旧待做项一并标完。
+
+2026-11-06补记：三星塔露拉双阶段现已通过自然承伤场景与独立Player验证；一二星单阶段保留。详见QA与塔露拉来源/绑定文档，不能把这次阶段完成扩大为点燃/引爆/晶体全规则完成。
