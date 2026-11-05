@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-06：V5界面回归
+
+- 基线main a37f0e5，吸收057e090依赖；保留原两个本地未跟踪项。
+- 全量EditMode421/421；最终GPU PlayMode23/23（ApprovedUi、ShopMap、Campaign、基础/后期两关闭环与Stronghold交互）。XML：artifacts/ui-v5-edit.xml、ui-v5-final-play.xml。
+- 首次全量GPU运行无进展中止，不记通过。定向回归定位红门投影进入新卡栏，已修复取景预算。暂停拖动、侧清单原子购买、左右出售/取消、字体、两关真实通关及买卡带入第二关通过。
+- 尚待独立Player构建/截图复核；第二机、全角色自然通关与长期平衡未测。
+
+
 ## 2026-11-05：42卡本地整合与加强羁绊测试
 
 - 基线实时main a37f0e5；用户确认新分支codex/synergy-test-integration，在唯一E盘工程吸收#75 d0ea863及#74 155e6b5（含#69/#71），未自动合并GitHub main。先用merge-tree报告ManualBattleController与GDD/STATUS/QA四处冲突，确认后逐段兼容双方死亡尾段及文档，没有整文件选一方。原.vscode/及PackageManagerSettings.asset保留未跟踪。
