@@ -1,62 +1,107 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    // Read-only presentation of the approved V8 flipbook. Never schedules damage.
+    // Native caster and target layers are separate. This renderer never creates combat events.
     internal sealed class TalulahAttackVfx:IDisposable
     {
-        sealed class View
+        [Serializable]sealed class Manifest{public int version,fps;public Data[] clips;}
+        [Serializable]sealed class Data
         {
-            internal SpriteRenderer Renderer;
-            internal readonly MaterialPropertyBlock Properties=new MaterialPropertyBlock();
+            public string key,status;public int count,width,height,columns;public float ppu,pivotX,pivotY,duration,hdrRange;public Page[] pages;
         }
-        readonly Transform parent;
+        [Serializable]sealed class Page{public string file;public int count;}
+        sealed class Clip{internal Data Data;internal Sprite[] Frames;}
+        sealed class View{internal SpriteRenderer Renderer;internal readonly MaterialPropertyBlock Properties=new MaterialPropertyBlock();}
+        static Manifest manifest;
+        static readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>();
         readonly List<View> views=new List<View>();
-        readonly Sprite canvas;
+        readonly Transform parent;
         readonly Material material;
         int used;
-        static readonly int Frame=Shader.PropertyToID("_Frame"),Opacity=Shader.PropertyToID("_Opacity");
+        const float VerticalProjection=.9f,FootLift=.12f;
         public TalulahAttackVfx(Transform root)
         {
             parent=root;
-            var texture=Resources.Load<Texture2D>("TalulahAttackFlipbook");
-            var shader=Resources.Load<Shader>("TalulahAttackFlipbook");
-            if(texture==null||shader==null)throw new InvalidOperationException("Talulah V8 attack resources are missing.");
-            material=new Material(shader){name="Talulah V8 painted fire",mainTexture=texture};
-            canvas=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),new Vector2(.5f,.5f),384,0,SpriteMeshType.FullRect);
+            var shader=Resources.Load<Shader>("TalulahNative");
+            if(shader==null)throw new InvalidOperationException("Missing Talulah native VFX shader");
+            material=new Material(shader){name="Talulah original native effects"};
         }
-        static float Smooth(float x)=>Mathf.SmoothStep(0,1,Mathf.Clamp01(x));
+        static Clip Load(string key)
+        {
+            if(clips.TryGetValue(key,out var clip)&&clip.Frames[0]!=null)return clip;
+            if(manifest==null)
+            {
+                var text=Resources.Load<TextAsset>("TalulahNative/manifest");
+                if(text==null)throw new InvalidDataException("Missing Talulah native VFX manifest");
+                manifest=JsonUtility.FromJson<Manifest>(text.text);
+            }
+            if(manifest.version!=1||manifest.fps!=30)throw new InvalidDataException("Unsupported Talulah native VFX format");
+            var d=Array.Find(manifest.clips,c=>c.key==key);
+            if(d==null||d.count<=0||d.ppu<=0||d.width<=0||d.height<=0||d.duration<=0||d.hdrRange<=0||d.columns<=0)
+                throw new InvalidDataException("Invalid Talulah native clip: "+key);
+            var frames=new List<Sprite>();
+            foreach(var page in d.pages)
+            {
+                var texture=Resources.Load<Texture2D>("TalulahNative/"+Path.GetFileNameWithoutExtension(page.file));
+                if(texture==null)throw new InvalidDataException("Missing Talulah native page: "+page.file);
+                if(page.count>d.columns*(texture.height/d.height))throw new InvalidDataException("Invalid Talulah native page grid: "+page.file+" loaded="+texture.width+"x"+texture.height+" cell="+d.width+"x"+d.height+" columns="+d.columns+" frames="+page.count);
+                for(int i=0;i<page.count;i++)
+                {
+                    var sprite=Sprite.Create(texture,new Rect(i%d.columns*d.width,texture.height-(i/d.columns+1)*d.height,d.width,d.height),new Vector2(d.pivotX,d.pivotY),d.ppu,0,SpriteMeshType.FullRect);
+                    sprite.name="TalulahNative/"+key+"/"+frames.Count;sprite.hideFlags=HideFlags.DontSave;frames.Add(sprite);
+                }
+            }
+            if(frames.Count!=d.count)throw new InvalidDataException("Incomplete Talulah native clip: "+key);
+            clip=new Clip{Data=d,Frames=frames.ToArray()};clips[key]=clip;return clip;
+        }
         public void Begin()=>used=0;
         public void Present(CombatShot shot,double clock,Camera camera,float sourceRecoveryScale)
         {
-            float age=(float)(clock-shot.ImpactAt)*sourceRecoveryScale;
-            if(camera==null||shot.Erased||!shot.Applied||age<0||age>.68f)return;
-            float frame=age<.045f?age/.045f*3:age<.10f?3+(age-.045f)/.055f*2:
-                age<.31f?5+(age-.10f)/.21f*3:age<.54f?8+(age-.31f)/.23f*3:11;
-            float opacity=Smooth(age/.015f)*(1-Smooth((age-.54f)/.14f));
-            if(opacity<=0)return;
+            double age=clock-shot.StartedAt;if(camera==null||age<0)return;
+            double travel=shot.ImpactAt-shot.StartedAt;
+            // Match the actor's piecewise source time without moving the existing hit event.
+            double sourceTime=age<=travel?age/Math.Max(.001,travel)*1.0333333:
+                1.0333333+(clock-shot.ImpactAt)*sourceRecoveryScale;
+            bool flip=Vector3.Dot(shot.Destination-shot.Origin,camera.transform.right)<0;
+            Show("attack-A-caster",sourceTime,shot.Origin,camera,flip,false,8);
+            if(shot.Applied&&!shot.Erased)
+                Show("attack-A-hit",clock-shot.ImpactAt,shot.Destination+camera.transform.up*.65f,camera,flip,false,35);
+        }
+        public void PresentUnit(ManualBattle battle,DeployedUnitState unit,Camera camera,bool flip)
+        {
+            if(!unit.Active)return;
+            var p=unit.Motion.Position+unit.VisualOffset;
+            double age=battle.Clock-unit.SpawnTime;
+            Show("ambient-A-foot",age,p,camera,flip,true,-2);
+            if(unit.IsMoving)Show("movement-A-foot",age,p,camera,flip,true,-1);
+            if(!battle.IsSkillActionPlaying(unit)||!battle.UnitCombat(unit).FireRain)return;
+            double elapsed=battle.Clock-unit.FireRainStartedAt,total=battle.UnitCombat(unit).SkillInterval;
+            double raise=Math.Min(.8,total*.2),lower=Math.Min(.6,total*.2),hold=1.1666667;
+            double time=elapsed<raise?elapsed/raise*hold:elapsed<total-lower?hold:
+                hold+(elapsed-(total-lower))/lower*(1.9666667-hold);
+            Show("firecast-A-hand",time,p,camera,flip,false,6);
+        }
+        void Show(string key,double age,Vector3 position,Camera camera,bool flip,bool loop,int order)
+        {
+            if(age<0||double.IsNaN(age)||double.IsInfinity(age))return;
+            var clip=Load(key);if(!loop&&age>=clip.Data.duration)return;
+            if(loop)age%=clip.Data.duration;
+            int frame=Mathf.Clamp((int)(age*manifest.fps+1e-5),0,clip.Frames.Length-1);
             if(used==views.Count)
             {
-                var renderer=new GameObject("Talulah attack / painted fire",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-                renderer.transform.SetParent(parent,false);renderer.sprite=canvas;renderer.sharedMaterial=material;
-                views.Add(new View{Renderer=renderer});
+                var renderer=new GameObject("Talulah native / "+key,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+                renderer.transform.SetParent(parent,false);renderer.sharedMaterial=material;views.Add(new View{Renderer=renderer});
             }
-            var view=views[used++];var r=view.Renderer;r.enabled=true;
-            // Source actor faces right, painted fire faces left; mirror anchor and body together.
-            float dx=shot.Destination.x-shot.Origin.x;
-            if(Mathf.Abs(dx)<.08f)dx=Vector3.Dot(shot.Destination-shot.Origin,camera.transform.right);
-            float mirror=dx<0?1:-1;
-            // A browser canvas has no floor. Fit the full painted tail above the
-            // actor's ground point instead of disabling depth tests to hide clipping.
-            r.transform.SetPositionAndRotation(shot.Origin+camera.transform.right*(-.175f*mirror)+
-                camera.transform.up*1.50f,camera.transform.rotation);
-            r.transform.localScale=new Vector3(mirror*3.70f/canvas.bounds.size.x,
-                3.29f/canvas.bounds.size.y,1);
-            r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,shot.Origin)+8;
-            view.Properties.SetFloat(Frame,Mathf.Min(11,frame));view.Properties.SetFloat(Opacity,opacity);
-            r.SetPropertyBlock(view.Properties);
+            var view=views[used++];var r=view.Renderer;r.name="Talulah native / "+key;
+            r.enabled=true;r.sprite=clip.Frames[frame];r.flipX=flip;r.color=Color.white;
+            r.transform.SetPositionAndRotation(position+camera.transform.up*FootLift,camera.transform.rotation);
+            r.transform.localScale=new Vector3(1,1/VerticalProjection,1);
+            r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,position)+order;
+            view.Properties.SetFloat("_HdrRange",clip.Data.hdrRange);r.SetPropertyBlock(view.Properties);
         }
         public void End(){for(int i=used;i<views.Count;i++)views[i].Renderer.enabled=false;}
         public void Clear()
@@ -64,6 +109,6 @@ namespace YesterdayConvoy
             foreach(var view in views)if(view.Renderer!=null){view.Renderer.enabled=false;UnityEngine.Object.Destroy(view.Renderer.gameObject);}
             views.Clear();used=0;
         }
-        public void Dispose(){Clear();UnityEngine.Object.Destroy(canvas);UnityEngine.Object.Destroy(material);}
+        public void Dispose(){Clear();UnityEngine.Object.Destroy(material);}
     }
 }

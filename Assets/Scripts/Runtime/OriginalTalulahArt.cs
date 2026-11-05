@@ -7,12 +7,17 @@ namespace YesterdayConvoy
     {
         internal const string CardId="CARD_TALULAH_TRIAL";
         static OriginalTalulahArt cached;
+        static readonly string[] RuntimeClips={"idle","walk","attack","cast","death"};
         readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>();
         ArtCatalog catalog;
         internal Sprite Portrait=>catalog.Portrait;
         internal float ReferenceSpeed=>catalog.Speed;
         internal float AttackContact=>catalog.Contact;
-        internal IEnumerable<ArtSequence> Sequences=>catalog.Clips.Values;
+        internal float DeathDuration=>clips["death"].Duration;
+        internal IEnumerable<ArtSequence> Sequences
+        {
+            get { foreach(string key in RuntimeClips)yield return clips[key].Sequence; }
+        }
         internal Clip this[string key]=>clips[key];
         internal sealed class Clip
         {
@@ -32,7 +37,9 @@ namespace YesterdayConvoy
             try
             {
                 var art=new OriginalTalulahArt{catalog=ArtCatalog.Read("TalulahOriginal")};
-                foreach(var pair in art.catalog.Clips){pair.Value.Name="TalulahOriginal/"+pair.Key;art.clips.Add(pair.Key,new Clip{Sequence=pair.Value});}
+                // The other approved actions are imported but have no gameplay state yet.
+                art.catalog.Extras(new[]{"death"});
+                foreach(string key in RuntimeClips){var sequence=art.catalog.Clips[key];sequence.Name="TalulahOriginal/"+key;art.clips.Add(key,new Clip{Sequence=sequence});}
                 cached=art;return art;
             }
             catch(Exception e){Debug.LogWarning("TALULAH_ORIGINAL_UNAVAILABLE: "+e.Message);return null;}

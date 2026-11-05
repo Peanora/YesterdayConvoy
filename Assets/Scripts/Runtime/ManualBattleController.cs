@@ -41,12 +41,22 @@ namespace YesterdayConvoy
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
-        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private double UnitDeathTail(DeployedUnitState unit) => OriginalTalulahArt.For(CardForUnit(unit))?.DeathDuration ?? DefaultDeathTail;
+        private double DeathTail
+        {
+            get
+            {
+                double tail=DefaultDeathTail;
+                if(Battle!=null)foreach(var unit in Battle.Units)tail=Math.Max(tail,UnitDeathTail(unit));
+                return tail;
+            }
+        }
         private bool DeathPresentationPending
         {
             get
             {
-                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail) return true;
+                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit)) return true;
                 foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
                 if(DefenderTrialActive) foreach(var d in Battle.Defenders) if(!d.Alive && PresentationClock<d.DeathTime+1) return true;
                 return false;
@@ -255,7 +265,7 @@ namespace YesterdayConvoy
             foreach(var pair in views)
             {
                 bool alive=false;
-                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || DeathTail>0 && unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail)) { alive=true; break; }
+                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit))) { alive=true; break; }
                 if(!alive) { if(pair.Value!=null) { pair.Value.gameObject.SetActive(false); Destroy(pair.Value.gameObject); } removed.Add(pair.Key); }
             }
             foreach(string id in removed) views.Remove(id);

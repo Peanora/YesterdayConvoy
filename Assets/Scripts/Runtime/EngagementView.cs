@@ -150,7 +150,17 @@ namespace YesterdayConvoy
             }
             }
             else { kroos.enabled=range.enabled=false; foreach(var v in extraVisuals) v.enabled=false; }
+            foreach(var unit in b.Units)
+                if(unit.Active&&owner.CardForUnit(unit).CardId==OriginalTalulahArt.CardId)
+                {if(talulahAttackVfx==null)talulahAttackVfx=new TalulahAttackVfx(transform);break;}
             talulahAttackVfx?.Begin();
+            if(talulahAttackVfx!=null)foreach(var unit in b.Units)
+            {
+                if(!unit.Active||owner.CardForUnit(unit).CardId!=OriginalTalulahArt.CardId)continue;
+                var target=b.FindDefender(unit.CombatTargetId);
+                var direction=target!=null?target.Position-unit.Motion.Position:unit.Motion.Direction;
+                talulahAttackVfx.PresentUnit(b,unit,cam,Vector3.Dot(direction,cam.transform.right)<0);
+            }
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {

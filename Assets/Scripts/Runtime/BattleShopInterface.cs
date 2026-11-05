@@ -97,7 +97,7 @@ namespace YesterdayConvoy
                 if(synergyModal)e.type=originalEvent;
                 DrawCampaignControls();
                 if(Loop==null)return;
-                if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
+                if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
                 if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
             }

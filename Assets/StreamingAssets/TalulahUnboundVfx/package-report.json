@@ -1,0 +1,1927 @@
+{
+  "status": "PASS",
+  "unityRun": false,
+  "missing": [],
+  "boundClips": [
+    "attack-A-caster",
+    "attack-A-hit",
+    "ambient-A-foot",
+    "movement-A-foot",
+    "firecast-A-hand"
+  ],
+  "unboundClips": [
+    "attack-B-caster",
+    "attack-B-hit",
+    "ambient-B-foot",
+    "movement-B-foot",
+    "ambient-B-head",
+    "ambient-B-wing",
+    "first_transition_start",
+    "first_transition_end",
+    "final_transition_start",
+    "final_transition_end",
+    "ignite-A-caster",
+    "ignite-A-target",
+    "explode-A-caster",
+    "explode-A-target",
+    "ignite-B-caster",
+    "ignite-B-target",
+    "explode-B-caster",
+    "explode-B-target",
+    "summon-B-caster",
+    "target-burn-loop",
+    "orb-birth-model-source-fx",
+    "orb-body-die",
+    "orb-body-idle",
+    "orb-cast-model-source-fx",
+    "orb-four-way-fire",
+    "orb-map_fire_crystal_birth_01_buff",
+    "orb-map_fire_crystal_birth_01_start",
+    "orb-map_fire_crystal_buff_01_start",
+    "orb-map_fire_crystal_die_01_start",
+    "orb-map_fire_crystal_skill_01_start",
+    "original-fire-stream",
+    "original-fire-impact",
+    "original-energy-stream",
+    "original-target-burn"
+  ],
+  "missingBoundClips": [],
+  "frames": 4218,
+  "pages": 83,
+  "pngBytes": 22323799,
+  "boundPngBytes": 1577240,
+  "unboundPngBytes": 20746559,
+  "cellAlignment": 4,
+  "nativeToGameScale": 1.60714285694,
+  "encoding": "Original sqrt(RGB/hdrRange) plus effective alpha; unchanged encoded PNG values; right/bottom zero padding",
+  "clips": [
+    {
+      "key": "attack-A-caster",
+      "status": "BOUND",
+      "source": "native-probe/runtime-sampling-v1/attack-A-caster",
+      "sourceCount": 70,
+      "sourceCrop": [
+        132,
+        152,
+        366,
+        318
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 236,
+      "runtimeCellHeight": 168,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4661016949152542,
+        0.3452200208391462
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "2b1a22fae33427a5b57b12b5e4b025b62671704d2fcd8df2225a1075eeb7af78",
+      "sourceReportSha256": "9d3fa5f20ab1d750e62d6f03c325a3dbef77d0b73fdc37bec5d030ca02752dbc",
+      "encodedFramesLosslesslyChecked": 70,
+      "pages": [
+        {
+          "file": "attack-A-caster-00.png",
+          "bytes": 552076,
+          "width": 1888,
+          "height": 1512,
+          "sha256": "30ef0fdb3613e8742a78c9fa68e37c39181f769a6ebb0d47133603339a268bc1"
+        }
+      ]
+    },
+    {
+      "key": "attack-A-hit",
+      "status": "BOUND",
+      "source": "native-probe/runtime-sampling-v1/attack-A-hit",
+      "sourceCount": 48,
+      "sourceCrop": [
+        72,
+        132,
+        318,
+        321
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 248,
+      "runtimeCellHeight": 192,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.25,
+        0.3072679837544759
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "b26c5072ff08149eae131c8eb6ead45fc688ad175036d11485b81b98c10b5d5f",
+      "sourceReportSha256": "da31411fb14f026841dad66f1d3a5044b5876ae56aeee1bbc39adaaeee472ddc",
+      "encodedFramesLosslesslyChecked": 48,
+      "pages": [
+        {
+          "file": "attack-A-hit-00.png",
+          "bytes": 240654,
+          "width": 1984,
+          "height": 1152,
+          "sha256": "1f347f951cf1d5ab91e38bcacae0b1f1104a7a84ce766e1abfc800312c2b8c6a"
+        }
+      ]
+    },
+    {
+      "key": "ambient-A-foot",
+      "status": "BOUND",
+      "source": "native-probe/runtime-sampling-v1/ambient-A-foot",
+      "sourceCount": 108,
+      "sourceCrop": [
+        214,
+        189,
+        333,
+        280
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 120,
+      "runtimeCellHeight": 92,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.6416666666666667,
+        0.1738636182702106
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "d95928bde0f77a0edc6fa1c04881cef1b177475c30bb2015f6b7a77eb9403e06",
+      "sourceReportSha256": "a7ed1ea5ce5fd08f33f1fe72776f92b52422566e8085f40b2953b45a8ef06896",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "ambient-A-foot-00.png",
+          "bytes": 706290,
+          "width": 2040,
+          "height": 644,
+          "sha256": "ab33c7875a35d77d6910faf10420d71af3bde63f52ff66db22ae7136629b29d4"
+        }
+      ]
+    },
+    {
+      "key": "movement-A-foot",
+      "status": "BOUND",
+      "source": "native-probe/runtime-sampling-v1/movement-A-foot",
+      "sourceCount": 108,
+      "sourceCrop": [
+        225,
+        229,
+        348,
+        268
+      ],
+      "sourcePPU": 51.20000076293945,
+      "runtimePPU": 31.85777825651682,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 124,
+      "runtimeCellHeight": 40,
+      "sourcePivot": [
+        0.5,
+        0.4859303832054138
+      ],
+      "runtimePivot": [
+        0.7419354838709677,
+        0.14490890502929688
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "0599907035fbec6ea65352af5ce43b92b50fb2ddb8f6e066efb2e986b28b1d78",
+      "sourceReportSha256": "542312421eebc232993c39fd110520a2b420b7dfc8e4c6526e2d0a8a4e0b83b7",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "movement-A-foot-00.png",
+          "bytes": 34732,
+          "width": 1984,
+          "height": 280,
+          "sha256": "cd4c77ac9ce67f2188886114ec4cd52c3922713cfbd22080ac978d4e0f0aa4cc"
+        }
+      ]
+    },
+    {
+      "key": "attack-B-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/attack-B-caster",
+      "sourceCount": 70,
+      "sourceCrop": [
+        132,
+        152,
+        366,
+        318
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 236,
+      "runtimeCellHeight": 168,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4661016949152542,
+        0.3452200208391462
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "ee0414726a8e12bcc24c3c1c488091881f5cfcc19b7b2fc9c90d0f80f2fdedd9",
+      "sourceReportSha256": "69e349ddacc1e8a35bd859f89b6bec691ebc2e6e0605843633c96c628710eb93",
+      "encodedFramesLosslesslyChecked": 70,
+      "pages": [
+        {
+          "file": "attack-B-caster-00.png",
+          "bytes": 580829,
+          "width": 1888,
+          "height": 1512,
+          "sha256": "a425e02526c92c701cb97a66ffbeff8dbb595aca58885c5c76137ad9ba524249"
+        }
+      ]
+    },
+    {
+      "key": "attack-B-hit",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/attack-B-hit",
+      "sourceCount": 48,
+      "sourceCrop": [
+        72,
+        132,
+        333,
+        334
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 264,
+      "runtimeCellHeight": 204,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.2916666666666667,
+        0.3480169258865656
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "284352ca3be0b652538062ea08ef37bcdc7fd463a86554a1e4879f6627eb6711",
+      "sourceReportSha256": "4eefb4d7ac4117000475be0848f153150699a41a50e53a22b061b116f4bd3a77",
+      "encodedFramesLosslesslyChecked": 48,
+      "pages": [
+        {
+          "file": "attack-B-hit-00.png",
+          "bytes": 304877,
+          "width": 1848,
+          "height": 1428,
+          "sha256": "04564dec3c993f01a5b264328c95b588830d5ecc0f1014331ffbc1d7bf259bb6"
+        }
+      ]
+    },
+    {
+      "key": "ambient-B-foot",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ambient-B-foot",
+      "sourceCount": 108,
+      "sourceCrop": [
+        214,
+        189,
+        314,
+        282
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 100,
+      "runtimeCellHeight": 96,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.58,
+        0.2082859675089518
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "4372e17f24095386584a75b4efe37a6e38573762c66435cdaa066d48b2d1ba40",
+      "sourceReportSha256": "9af404089c4455c65ca741a628d207d473cfefb09e132740aaa395b5906cf679",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "ambient-B-foot-00.png",
+          "bytes": 795943,
+          "width": 2000,
+          "height": 576,
+          "sha256": "a9a03b86b283897a7c5062af0580cdcc59002de6521a6591fbdac203766d9382"
+        }
+      ]
+    },
+    {
+      "key": "movement-B-foot",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/movement-B-foot",
+      "sourceCount": 108,
+      "sourceCrop": [
+        220,
+        228,
+        343,
+        267
+      ],
+      "sourcePPU": 51.20000076293945,
+      "runtimePPU": 31.85777825651682,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 124,
+      "runtimeCellHeight": 40,
+      "sourcePivot": [
+        0.5,
+        0.4859303832054138
+      ],
+      "runtimePivot": [
+        0.7016129032258065,
+        0.11990890502929688
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "6022b7695d128102b8f539220c9b5da5d7a60929c3af97c30da092090c68a821",
+      "sourceReportSha256": "dd71b9d4c6d62d5cb2ff7ba24404fb33333bc0c8ce73793f46742eae59dd5c6f",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "movement-B-foot-00.png",
+          "bytes": 35595,
+          "width": 1984,
+          "height": 280,
+          "sha256": "22ca864a0352d79f11b6247827af2abdb46c036c1559d8f608067895712f19ff"
+        }
+      ]
+    },
+    {
+      "key": "ambient-B-head",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ambient-B-head",
+      "sourceCount": 108,
+      "sourceCrop": [
+        221,
+        254,
+        280,
+        270
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 60,
+      "runtimeCellHeight": 16,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4,
+        0.49981021881103516
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "1fe64a6dc5b725c50dfdff76345a3c6be938edde079f4bfc87e7cc0b6deba446",
+      "sourceReportSha256": "bd0c877f82992dfe125f35c1b2e8ef08956dc723b5d3f23e48ef87f77e146a76",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "ambient-B-head-00.png",
+          "bytes": 13854,
+          "width": 2040,
+          "height": 64,
+          "sha256": "0dd868dd1f2a7c99b27a5ac512cf51ea8e5ae722c09714c9076f221e983898ee"
+        }
+      ]
+    },
+    {
+      "key": "ambient-B-wing",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ambient-B-wing",
+      "sourceCount": 108,
+      "sourceCrop": [
+        227,
+        217,
+        341,
+        296
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 116,
+      "runtimeCellHeight": 80,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.7327586206896551,
+        0.43746204376220704
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "c1f5ef53d82b21c7eb27130ab7ff9b493ec6453256c65944355ce3302c260be6",
+      "sourceReportSha256": "91ab164aea035655d3581af1ec407a2c5656a3ec160267dc796f08f20141a26f",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "ambient-B-wing-00.png",
+          "bytes": 358803,
+          "width": 1972,
+          "height": 560,
+          "sha256": "87ee3060a845f71897ba419d23b475f7315f3114ae4b9842424c37f7cc726403"
+        }
+      ]
+    },
+    {
+      "key": "first_transition_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/first_transition_start",
+      "sourceCount": 150,
+      "sourceCrop": [
+        134,
+        147,
+        635,
+        600
+      ],
+      "sourcePPU": 27.428571701049805,
+      "runtimePPU": 17.06666683836296,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 504,
+      "runtimeCellHeight": 456,
+      "sourcePivot": [
+        0.5,
+        0.49497514963150024
+      ],
+      "runtimePivot": [
+        0.498015873015873,
+        0.4718002520109478
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "9be9667842ea8b8bef7e7bd6d7d2d7611ef7448b35b39a223b9800d924e40f8a",
+      "sourceReportSha256": "563791b3dcc12c14344ea8a9ee0266ba92bd37e0255ba5c1443a50bee636d594",
+      "encodedFramesLosslesslyChecked": 150,
+      "pages": [
+        {
+          "file": "first_transition_start-00.png",
+          "bytes": 343439,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "0c14424b56e1579d98d2bdbcc35d5ea294764d4bd03e470fc15aac26826b1ccd"
+        },
+        {
+          "file": "first_transition_start-01.png",
+          "bytes": 1013321,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "95bae004e76e4f206bb3782f449419cf8899f33e93f47e993dc0c8c87f9c98bf"
+        },
+        {
+          "file": "first_transition_start-02.png",
+          "bytes": 85639,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "c28f7f40b194bcfe69a36784319b7463e55bbba261ce2b5e29524fed89cae545"
+        },
+        {
+          "file": "first_transition_start-03.png",
+          "bytes": 68836,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "6520d63235762774438c0c9c169971a3adc8fda9ccd0ce60a98caf0d389e30af"
+        },
+        {
+          "file": "first_transition_start-04.png",
+          "bytes": 253940,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "4c91b65147d6164b9ebbaa05ba33e58763c986b7897e38c52849e7e0f53c6419"
+        },
+        {
+          "file": "first_transition_start-05.png",
+          "bytes": 696671,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "2e23f9d79dc84a4d907279ab2c9ae24ef94f75ef380bb542bb8882e729dcb74e"
+        },
+        {
+          "file": "first_transition_start-06.png",
+          "bytes": 211809,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "35d38e6a3bedc00a85f62a2b3b4885af56ce82e37110c130c83e59a21477466d"
+        },
+        {
+          "file": "first_transition_start-07.png",
+          "bytes": 142505,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "46d22e3c4f05d47047bf96af188e0ca86f5d00b1cbc972c34234eda76d756d94"
+        },
+        {
+          "file": "first_transition_start-08.png",
+          "bytes": 147794,
+          "width": 2016,
+          "height": 1824,
+          "sha256": "392185051562ea4bdfe56858c9da96de91cbda641f39c3df09ffa367a2d8adb6"
+        },
+        {
+          "file": "first_transition_start-09.png",
+          "bytes": 38095,
+          "width": 2016,
+          "height": 912,
+          "sha256": "7035fff25f52486745171dcd8681946a8719bad3981b58b648d35c349fe3e50f"
+        }
+      ]
+    },
+    {
+      "key": "first_transition_end",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/first_transition_end",
+      "sourceCount": 83,
+      "sourceCrop": [
+        78,
+        115,
+        622,
+        571
+      ],
+      "sourcePPU": 38.400001525878906,
+      "runtimePPU": 23.893334285784967,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 544,
+      "runtimeCellHeight": 456,
+      "sourcePivot": [
+        0.5,
+        0.4929651916027069
+      ],
+      "runtimePivot": [
+        0.4375,
+        0.3982396209449099
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "ac439cc97f9739feb4e66baf5c010bddcd7ddb1d666b67e5b534199f0d5e1377",
+      "sourceReportSha256": "f3b780b1e2320d8d9ae1d5ae87471b5bfe39a6032b47e1a832ef84a7744f28e1",
+      "encodedFramesLosslesslyChecked": 83,
+      "pages": [
+        {
+          "file": "first_transition_end-00.png",
+          "bytes": 51076,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "1b7545873ff1c9c353a69aa945c8963772ac394d29f0ad954b8db71ac839287a"
+        },
+        {
+          "file": "first_transition_end-01.png",
+          "bytes": 45944,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "b51373d9ea57d8de70d078fbbef0dce8b1737487c74dc4532468e0a24a79c1f1"
+        },
+        {
+          "file": "first_transition_end-02.png",
+          "bytes": 742426,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "672d7a3e40de338e230457dbb6e1622afe99d4fef80813b6416318a46d42e888"
+        },
+        {
+          "file": "first_transition_end-03.png",
+          "bytes": 156927,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "aebd3b3bacf82659f5a4e2a31693808cd0fc6583d8f7df2599633340b1cd9e6b"
+        },
+        {
+          "file": "first_transition_end-04.png",
+          "bytes": 122235,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "0bf4b39954e0098807b5be9330a241210afc69d9367cecb68855110364796c22"
+        },
+        {
+          "file": "first_transition_end-05.png",
+          "bytes": 129110,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "f669e73b9a55a1a5a4a64414ed7209740e5d35153f82f86d17756d2482678ef7"
+        },
+        {
+          "file": "first_transition_end-06.png",
+          "bytes": 109644,
+          "width": 1632,
+          "height": 1824,
+          "sha256": "e5728b3c5c0e7c61d2d15c2e5d9e203f368e792e419a1292989ad78d406f38bb"
+        }
+      ]
+    },
+    {
+      "key": "final_transition_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/final_transition_start",
+      "sourceCount": 160,
+      "sourceCrop": [
+        178,
+        287,
+        881,
+        668
+      ],
+      "sourcePPU": 32.0,
+      "runtimePPU": 19.911111113624337,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 704,
+      "runtimeCellHeight": 384,
+      "sourcePivot": [
+        0.5,
+        0.4956032633781433
+      ],
+      "runtimePivot": [
+        0.5241477272727273,
+        0.40233786900838214
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "026a699e3bb04df653462251ded7baaa0862b57db57608f1a299c0987b3bed8c",
+      "sourceReportSha256": "11c94b58a666680745f3d124ba8edf3a6b3aa6b4daa3faf527ae166f68abf5d0",
+      "encodedFramesLosslesslyChecked": 160,
+      "pages": [
+        {
+          "file": "final_transition_start-00.png",
+          "bytes": 40655,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "cdf298e790843b54c633c21d386e311c4ff25e4f7ee5080ebf4300931371c1ea"
+        },
+        {
+          "file": "final_transition_start-01.png",
+          "bytes": 45912,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "178da817ddb1abfe73f9ce1eb27dd94404c8c49fd53f96032cdd4128bd71a812"
+        },
+        {
+          "file": "final_transition_start-02.png",
+          "bytes": 51478,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "cd65233530347f5c305387c9ff8c63dffa74d2b4342883e6fd8d76faa4536f52"
+        },
+        {
+          "file": "final_transition_start-03.png",
+          "bytes": 53942,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "a91315624fe5771be291ff270b767fc6762f45eb1c3cc1b7dd3177d4b4420850"
+        },
+        {
+          "file": "final_transition_start-04.png",
+          "bytes": 48832,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "6e3b549ec8286b42cb00e44bc1dd046abe68e152a5a54811badcc6b9cdf10182"
+        },
+        {
+          "file": "final_transition_start-05.png",
+          "bytes": 43412,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "56fd66462a3f4f3622029bce75e9ceb90780c02585a24b9a26b6ec06edb42fd5"
+        },
+        {
+          "file": "final_transition_start-06.png",
+          "bytes": 36254,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "357b0c07bffec20dcc5e94d2beadd6ebc1e06b0c94d56e06cc580b465747e46c"
+        },
+        {
+          "file": "final_transition_start-07.png",
+          "bytes": 33246,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "cba1aafed1a951a40fe82187d3b0ea3b3f14f4b9d0125d7297bfeae51fa777af"
+        },
+        {
+          "file": "final_transition_start-08.png",
+          "bytes": 30015,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "094f106f68795855a06246022669713179f260e8758e6af13e371b531ae9d589"
+        },
+        {
+          "file": "final_transition_start-09.png",
+          "bytes": 68205,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "288ab0b23c8d8719768f339ff47d2e7f68afb2edc314f9e3efdb1a6480f60773"
+        },
+        {
+          "file": "final_transition_start-10.png",
+          "bytes": 52787,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "307399450ab8e5c348e0ec095f5e965e1fdaec6890783af524e8cad54c71920a"
+        },
+        {
+          "file": "final_transition_start-11.png",
+          "bytes": 33247,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "8fa1f197b877270a6a3157abfd56a93cd770bbbe8f4c4cbf3aa3012ca6ec5718"
+        },
+        {
+          "file": "final_transition_start-12.png",
+          "bytes": 682457,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "06adb74ce2290d30661e394b45b8bb1bd512e9cccdeac5d8d963c83f43783407"
+        },
+        {
+          "file": "final_transition_start-13.png",
+          "bytes": 387482,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "03211cfd2026475d8991ffe0e69ff80b86389fc9ddaafe6bbf4b29538531dd0f"
+        },
+        {
+          "file": "final_transition_start-14.png",
+          "bytes": 164418,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "99b232d875587af6ddbcece5cdb32003a1c2e3da8a0f47b9e51da337416e88a2"
+        },
+        {
+          "file": "final_transition_start-15.png",
+          "bytes": 120679,
+          "width": 1408,
+          "height": 1920,
+          "sha256": "145b1000ec8b5d57cc83cd68336b5030616900903e0b70886f19a87e4555bad8"
+        }
+      ]
+    },
+    {
+      "key": "final_transition_end",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/final_transition_end",
+      "sourceCount": 37,
+      "sourceCrop": [
+        355,
+        334,
+        446,
+        396
+      ],
+      "sourcePPU": 38.400001525878906,
+      "runtimePPU": 23.893334285784967,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 92,
+      "runtimeCellHeight": 64,
+      "sourcePivot": [
+        0.5,
+        0.4929651916027069
+      ],
+      "runtimePivot": [
+        0.6739130434782609,
+        0.1343322992324829
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "5cecadf23d69031d5a3c67035c52826a7aecdb467a00d45ccd5430acb9abd255",
+      "sourceReportSha256": "a18e1146ae24ea5383aac7e0fd310bad633cfaff13ed2382f7be84e2fe7be698",
+      "encodedFramesLosslesslyChecked": 37,
+      "pages": [
+        {
+          "file": "final_transition_end-00.png",
+          "bytes": 54617,
+          "width": 2024,
+          "height": 128,
+          "sha256": "8d888ad62f6017a2bf4c3c45791399348c9cc48bf4746c1c69c000750ca39e53"
+        }
+      ]
+    },
+    {
+      "key": "ignite-A-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ignite-A-caster",
+      "sourceCount": 59,
+      "sourceCrop": [
+        163,
+        194,
+        300,
+        284
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 140,
+      "runtimeCellHeight": 92,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.3142857142857143,
+        0.2608365597932235
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "874df994bfb308463825d1269a95d7a3c7ae88bcd502544624be012ec0767ce5",
+      "sourceReportSha256": "75090dc1917be11252ef594e3822a36f0a6460e6c10012f41b4448b63f8d1ce1",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "ignite-A-caster-00.png",
+          "bytes": 185152,
+          "width": 1960,
+          "height": 460,
+          "sha256": "86fbcf9142afae68eff0f8cee34d6147fb799c500d834bbfface65e07c217d2b"
+        }
+      ]
+    },
+    {
+      "key": "ignite-A-target",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ignite-A-target",
+      "sourceCount": 48,
+      "sourceCrop": [
+        219,
+        225,
+        293,
+        298
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 76,
+      "runtimeCellHeight": 76,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4868421052631579,
+        0.5131179408023232
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "b28c34cfc81742fbc93ed777f75c92ea9f59bc11a4373ba66198d84347128516",
+      "sourceReportSha256": "9975cce31b861662c9ce296fd4582c1a8cd2f42a3550462c854c70f9ede1bdd3",
+      "encodedFramesLosslesslyChecked": 48,
+      "pages": [
+        {
+          "file": "ignite-A-target-00.png",
+          "bytes": 92591,
+          "width": 1976,
+          "height": 152,
+          "sha256": "700cc1a4cd5da01199facd645fc69d6a123f42939f7c544f71d96434ca5e1480"
+        }
+      ]
+    },
+    {
+      "key": "explode-A-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/explode-A-caster",
+      "sourceCount": 59,
+      "sourceCrop": [
+        75,
+        155,
+        434,
+        359
+      ],
+      "sourcePPU": 25.600000381469727,
+      "runtimePPU": 15.92888912825841,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 360,
+      "runtimeCellHeight": 204,
+      "sourcePivot": [
+        0.5,
+        0.4929651916027069
+      ],
+      "runtimePivot": [
+        0.49444444444444446,
+        0.48724597108130363
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "5c2281a6f58c2f4120e9fc55a3c5be9d43458f25aca359858d1108f0d26f1ffb",
+      "sourceReportSha256": "014f9efcfadd5a879b90fe27d30902b94de911fa43864a524f290f07e51c3fda",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "explode-A-caster-00.png",
+          "bytes": 226454,
+          "width": 1800,
+          "height": 2040,
+          "sha256": "ffe1353cf73ac446a21870a1e46b40df690adc2e86c861175f590002584c421d"
+        },
+        {
+          "file": "explode-A-caster-01.png",
+          "bytes": 21498,
+          "width": 1800,
+          "height": 408,
+          "sha256": "d3779e8987b44da4d5e50b733b14d751fd53ce709b308e4403a05a3a0985a16f"
+        }
+      ]
+    },
+    {
+      "key": "explode-A-target",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/explode-A-target",
+      "sourceCount": 59,
+      "sourceCrop": [
+        153,
+        162,
+        373,
+        367
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 220,
+      "runtimeCellHeight": 208,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.5318181818181819,
+        0.5192161706777719
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "865c9bfd64999553cb9b442347ac02920ca3b7ba4fedcd114301d0df215c1cdb",
+      "sourceReportSha256": "f6b0526f7b7c8318f24ee14483b5d5970e6aca477eb1814bfb36149f0ec2e365",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "explode-A-target-00.png",
+          "bytes": 590077,
+          "width": 1980,
+          "height": 1456,
+          "sha256": "fa910dfc4a54014a9394f812bc06c2a4f925f4468c3f51219d574fb6b3b89d75"
+        }
+      ]
+    },
+    {
+      "key": "ignite-B-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ignite-B-caster",
+      "sourceCount": 59,
+      "sourceCrop": [
+        163,
+        155,
+        363,
+        318
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 200,
+      "runtimeCellHeight": 164,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.535,
+        0.3475424603718083
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "647616e2dd992ce82f2417387ce8cfcc3a42b515f5014b1d641e80a5c58d317e",
+      "sourceReportSha256": "16719b48b25b0548babd03f8f4493e3e6d1843a168b9e4093129a19dcbc6a6f2",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "ignite-B-caster-00.png",
+          "bytes": 433533,
+          "width": 2000,
+          "height": 984,
+          "sha256": "7dbd5bff05e5735f12fbb00834bde21858a548660f6d0129aa74fdbe9b478840"
+        }
+      ]
+    },
+    {
+      "key": "ignite-B-target",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/ignite-B-target",
+      "sourceCount": 48,
+      "sourceCrop": [
+        219,
+        224,
+        293,
+        298
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 76,
+      "runtimeCellHeight": 76,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4868421052631579,
+        0.4999600460654811
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "7cb2035cbb549ba3ab9400302fa29eda7bf9d4b05c1553df2987aabd7a4cc77f",
+      "sourceReportSha256": "e15adff0e3eb822592921f59d575470d3a2109200fc8703d201196d4516cd6a5",
+      "encodedFramesLosslesslyChecked": 48,
+      "pages": [
+        {
+          "file": "ignite-B-target-00.png",
+          "bytes": 111946,
+          "width": 1976,
+          "height": 152,
+          "sha256": "dc6b5b8442e793aa062cec9fd0c524dd4ef9f2f7a2457b41781c42077dc21c36"
+        }
+      ]
+    },
+    {
+      "key": "explode-B-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/explode-B-caster",
+      "sourceCount": 59,
+      "sourceCrop": [
+        75,
+        155,
+        434,
+        359
+      ],
+      "sourcePPU": 25.600000381469727,
+      "runtimePPU": 15.92888912825841,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 360,
+      "runtimeCellHeight": 204,
+      "sourcePivot": [
+        0.5,
+        0.4929651916027069
+      ],
+      "runtimePivot": [
+        0.49444444444444446,
+        0.48724597108130363
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "b88af7fedf21e9132aa76f0b27256486c0da838c5f1af70e897ac78f58924fa9",
+      "sourceReportSha256": "5742cf2bc10393e572cbd262393284edd242c887989c27e61caa5515ef9d6b26",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "explode-B-caster-00.png",
+          "bytes": 382823,
+          "width": 1800,
+          "height": 2040,
+          "sha256": "fd2eefdf969e9ceb99c05405f61c30304a2dfb8f540edc4aaae2b62a1dd08377"
+        },
+        {
+          "file": "explode-B-caster-01.png",
+          "bytes": 20368,
+          "width": 1800,
+          "height": 408,
+          "sha256": "cea8190b3b31c94e4a14123d73bc7e54e333df863e914606b1f4e05bfa04fb86"
+        }
+      ]
+    },
+    {
+      "key": "explode-B-target",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/explode-B-target",
+      "sourceCount": 59,
+      "sourceCrop": [
+        153,
+        162,
+        373,
+        367
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 220,
+      "runtimeCellHeight": 208,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.5318181818181819,
+        0.5192161706777719
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "706ebb2d793fdc5bfb13275e5ae6fd3031379534d34371d3fdde4ade3d2978f1",
+      "sourceReportSha256": "59da2be19abcdb3bc55ef7e38d79a5baaf5006d668844c5d1ca57f829746de01",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "explode-B-target-00.png",
+          "bytes": 635629,
+          "width": 1980,
+          "height": 1456,
+          "sha256": "43e42f3864c43b955670e6b4f18bd96af5a974e7d1baf601167edbac782db2fd"
+        }
+      ]
+    },
+    {
+      "key": "summon-B-caster",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/summon-B-caster",
+      "sourceCount": 70,
+      "sourceCrop": [
+        174,
+        156,
+        354,
+        307
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 1,
+      "runtimeCellWidth": 180,
+      "runtimeCellHeight": 152,
+      "sourcePivot": [
+        0.5,
+        0.4899502694606781
+      ],
+      "runtimePivot": [
+        0.5444444444444444,
+        0.3082535392359683
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "98f06060826a335268c7e01bdd72427a1633a29f5c5fc07ef8e42aaee2e36258",
+      "sourceReportSha256": "64aa593c296a6eacac7d8457fd2a1bd8ca62393d6c22f214d16481c8d771c27a",
+      "encodedFramesLosslesslyChecked": 70,
+      "pages": [
+        {
+          "file": "summon-B-caster-00.png",
+          "bytes": 445019,
+          "width": 1980,
+          "height": 1064,
+          "sha256": "3cac8a548c4c554a8420025ecbaa9cdbf3c08b40c847cd5fbaa99505caf24b82"
+        }
+      ]
+    },
+    {
+      "key": "target-burn-loop",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/runtime-sampling-v1/target-burn-loop",
+      "sourceCount": 108,
+      "sourceCrop": [
+        212,
+        185,
+        301,
+        289
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 92,
+      "runtimeCellHeight": 104,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.4891304347826087,
+        0.2307255084698017
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "494bb8caa59beef6f35a8f40a52f9a821e8cd97488cccb3dc87f5dad22b8be7d",
+      "sourceReportSha256": "45f149c1ed83f1ebf08830b6591ad5c2d420fcc687938adf44e57ac034b995d4",
+      "encodedFramesLosslesslyChecked": 108,
+      "pages": [
+        {
+          "file": "target-burn-loop-00.png",
+          "bytes": 240375,
+          "width": 2024,
+          "height": 520,
+          "sha256": "143dba6ac7f1ffb9b8c344c016e5c78b5152972b4173680b9cde191133ca0601"
+        }
+      ]
+    },
+    {
+      "key": "firecast-A-hand",
+      "status": "BOUND",
+      "source": "native-probe/runtime-sampling-v1/current-firecast-A-hand",
+      "sourceCount": 59,
+      "sourceCrop": [
+        206,
+        194,
+        300,
+        271
+      ],
+      "sourcePPU": 42.66666793823242,
+      "runtimePPU": 26.548148942695587,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 96,
+      "runtimeCellHeight": 80,
+      "sourcePivot": [
+        0.5,
+        0.48827531933784485
+      ],
+      "runtimePivot": [
+        0.4583333333333333,
+        0.14996204376220704
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "64d0747412ca8ff7da6001ec6490ffde97d858e0f46c4de954ddabdd561d68d8",
+      "sourceReportSha256": "ef5b56b994fdeeee63c866ad382feb7f85974c964dcc96fa890bd67221322867",
+      "encodedFramesLosslesslyChecked": 59,
+      "pages": [
+        {
+          "file": "firecast-A-hand-00.png",
+          "bytes": 43488,
+          "width": 2016,
+          "height": 240,
+          "sha256": "559e416c878f9d1737a5e86671a0f24e6a054eb776a8f58ba65fefe6c1001c1a"
+        }
+      ]
+    },
+    {
+      "key": "orb-birth-model-source-fx",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/birth-model-source-fx",
+      "sourceCount": 96,
+      "sourceCrop": [
+        168,
+        183,
+        345,
+        401
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 180,
+      "runtimeCellHeight": 220,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.49444444444444446,
+        0.6207164417613636
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "dd6e6071d339696e5c234b513b3fa03fd80f923b6ba7ec4418311d75e78236aa",
+      "sourceReportSha256": "170e4dd5b2e1356a29c469488105cd293acf0133f9f57b590eda907779d73c5b",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-birth-model-source-fx-00.png",
+          "bytes": 473649,
+          "width": 1980,
+          "height": 1980,
+          "sha256": "fe4a7667bf6d62714ba02c864dadd1bc91324375e29733810eb32b799950d8ce"
+        }
+      ]
+    },
+    {
+      "key": "orb-body-die",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/body-die",
+      "sourceCount": 96,
+      "sourceCrop": [
+        204,
+        172,
+        345,
+        314
+      ],
+      "sourcePPU": 51.20000076293945,
+      "runtimePPU": 31.85777825651682,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 144,
+      "runtimeCellHeight": 144,
+      "sourcePivot": [
+        0.5,
+        0.47144660353660583
+      ],
+      "runtimePivot": [
+        0.6180555555555556,
+        0.3151434792412652
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "83639adb9239c47fdb7abd5e6745079366b83e5e565bc54be3a8f2f47fa7d805",
+      "sourceReportSha256": "f9328ecc3d4dd2656a666200ad833a513473848de83eab153f68973a01b803d9",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-body-die-00.png",
+          "bytes": 259179,
+          "width": 2016,
+          "height": 1008,
+          "sha256": "ac8e6214e8d8617903d1590809ad63765883d462b7994ce91b78713db88d4d19"
+        }
+      ]
+    },
+    {
+      "key": "orb-body-idle",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/body-idle",
+      "sourceCount": 60,
+      "sourceCrop": [
+        232,
+        258,
+        280,
+        314
+      ],
+      "sourcePPU": 51.20000076293945,
+      "runtimePPU": 31.85777825651682,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 48,
+      "runtimeCellHeight": 56,
+      "sourcePivot": [
+        0.5,
+        0.47144660353660583
+      ],
+      "runtimePivot": [
+        0.5,
+        0.7746546609061105
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "6ee01cd1549a3e175f177fa57176a063f12cff579cb93f3945abbd9703be9c7e",
+      "sourceReportSha256": "3a43f789c3f191beea5cef2c50efb3d67ed512b0dea681d55ed9879faabb9785",
+      "encodedFramesLosslesslyChecked": 60,
+      "pages": [
+        {
+          "file": "orb-body-idle-00.png",
+          "bytes": 11068,
+          "width": 2016,
+          "height": 112,
+          "sha256": "9482fe6532c83cdf016263b8def9c05ef3d2e766b5850627add71b831e04dd5f"
+        }
+      ]
+    },
+    {
+      "key": "orb-cast-model-source-fx",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/cast-model-source-fx",
+      "sourceCount": 96,
+      "sourceCrop": [
+        153,
+        180,
+        342,
+        342
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 192,
+      "runtimeCellHeight": 164,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.4479166666666667,
+        0.4729122999237805
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "8619ee5ceb38d0d9bdeaae226cb5ff4b777d0a423eb1a60636c3335a53756a1e",
+      "sourceReportSha256": "b6d76ed6bbdd5b1ef15f933162042d9ad8e935259a41618ed326792ab4228926",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-cast-model-source-fx-00.png",
+          "bytes": 496800,
+          "width": 1920,
+          "height": 1640,
+          "sha256": "f2a661529e382d2dd50097a9c52708042da23c941e27c13917e42b48127d8fdb"
+        }
+      ]
+    },
+    {
+      "key": "orb-four-way-fire",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/four-way-fire",
+      "sourceCount": 96,
+      "sourceCrop": [
+        126,
+        175,
+        642,
+        601
+      ],
+      "sourcePPU": 32.0,
+      "runtimePPU": 19.911111113624337,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 516,
+      "runtimeCellHeight": 428,
+      "sourcePivot": [
+        0.5,
+        0.4941376745700836
+      ],
+      "runtimePivot": [
+        0.5,
+        0.5011629300696827
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "b862228bba09010a1a3f28d981fa5291b2c44eaf95dd5ef208aba91ebc170534",
+      "sourceReportSha256": "73bcb7a363e8bccb08cd6acac987c9001ef47ed6b1fbcc0f2841ec53d4517ab5",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-four-way-fire-00.png",
+          "bytes": 47914,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "356921941b5451dd897527bf80058a744ffcc476ba0c7450ac3c59177f2f0512"
+        },
+        {
+          "file": "orb-four-way-fire-01.png",
+          "bytes": 87343,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "907530b9bfd9af502a68096b7dd591d20c6c006a2677c9c08e5febf29cecfab4"
+        },
+        {
+          "file": "orb-four-way-fire-02.png",
+          "bytes": 100911,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "299c0b4bb844e6cacdd596c357424c3e6b58c09069505674d5b2cabdda30236f"
+        },
+        {
+          "file": "orb-four-way-fire-03.png",
+          "bytes": 98827,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "41d06c96f2e445aa366e7eb289eb86697cb84551713381f884b0f20b88593635"
+        },
+        {
+          "file": "orb-four-way-fire-04.png",
+          "bytes": 100851,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "38ef12d88ca41ab7958198863d29107e3c7cb9ddcd3c652411807f110f835949"
+        },
+        {
+          "file": "orb-four-way-fire-05.png",
+          "bytes": 95380,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "d8a4517996e6dbc2e0305fad272357cf6c822eaf7f47d24874ff6437dbf20197"
+        },
+        {
+          "file": "orb-four-way-fire-06.png",
+          "bytes": 100964,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "2dd7280d89633c618e374892beb109db2d042411effb23b6028f8b0637ff956c"
+        },
+        {
+          "file": "orb-four-way-fire-07.png",
+          "bytes": 95184,
+          "width": 1548,
+          "height": 1712,
+          "sha256": "44de06d0708a6595e209f4b321665065ce5869f2e8822d9e9b761577e014ccc9"
+        }
+      ]
+    },
+    {
+      "key": "orb-map_fire_crystal_birth_01_buff",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/map_fire_crystal_birth_01_buff",
+      "sourceCount": 96,
+      "sourceCrop": [
+        244,
+        262,
+        268,
+        340
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 24,
+      "runtimeCellHeight": 80,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.5,
+        0.94447021484375
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "3760513b5250551cb3168fb6c0ae9c7335da7673a6591dc000b49c81f9364939",
+      "sourceReportSha256": "030dbeccea9e22e9e66732f3e2aa61f681a2406b4f8406b1918558aa24b77222",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-map_fire_crystal_birth_01_buff-00.png",
+          "bytes": 27861,
+          "width": 2040,
+          "height": 160,
+          "sha256": "0f2c5758676c220ce057a901f8cd44464def8889211166113304dcda7f4dfdae"
+        }
+      ]
+    },
+    {
+      "key": "orb-map_fire_crystal_birth_01_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/map_fire_crystal_birth_01_start",
+      "sourceCount": 96,
+      "sourceCrop": [
+        168,
+        183,
+        345,
+        401
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 180,
+      "runtimeCellHeight": 220,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.49444444444444446,
+        0.6207164417613636
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "31f049fb64e90d77599129e26c89d13bbea19881a29cbb9a7ba33115e4f7fc75",
+      "sourceReportSha256": "357fe09242d6d54a610676f5415d0f9b086c771a192252fe694cfe0a163089ca",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-map_fire_crystal_birth_01_start-00.png",
+          "bytes": 453134,
+          "width": 1980,
+          "height": 1980,
+          "sha256": "7c0cf76d9295a289dadbdac02ac247875b14dae927a30c9ba5f332309b0b3f2c"
+        }
+      ]
+    },
+    {
+      "key": "orb-map_fire_crystal_buff_01_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/map_fire_crystal_buff_01_start",
+      "sourceCount": 96,
+      "sourceCrop": [
+        235,
+        233,
+        273,
+        274
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 40,
+      "runtimeCellHeight": 44,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.425,
+        0.23994584517045456
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "343b2234eb62a9ef1869cc45203a8ffbd64629a9f99a0ed59f04372561fb56e4",
+      "sourceReportSha256": "fe2f85a44f05075ac5c544172170ac5f7af671143307b5307d0302cc6ab561e9",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-map_fire_crystal_buff_01_start-00.png",
+          "bytes": 55605,
+          "width": 2040,
+          "height": 88,
+          "sha256": "f0f6d97db3776d7eff8d095fc92e0043e1688ebc7b6d5d797a93f56c7e5169d4"
+        }
+      ]
+    },
+    {
+      "key": "orb-map_fire_crystal_die_01_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/map_fire_crystal_die_01_start",
+      "sourceCount": 96,
+      "sourceCrop": [
+        194,
+        203,
+        301,
+        343
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 1,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 108,
+      "runtimeCellHeight": 140,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.4166666666666667,
+        0.5468401227678571
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "fde6aa32648725595ad7638bbac38b928333455a546d7c982ecca94d284e3624",
+      "sourceReportSha256": "5090853f6bcb45d18004ca7b97c503d14f07acdc9e39ec4eb5f6ad8c6c0d3bfd",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-map_fire_crystal_die_01_start-00.png",
+          "bytes": 159582,
+          "width": 1944,
+          "height": 840,
+          "sha256": "6a23ce50b6ffcabbe52ed3278a28163dbb07873000c179edbebba1e79306d508"
+        }
+      ]
+    },
+    {
+      "key": "orb-map_fire_crystal_skill_01_start",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/orb-native/map_fire_crystal_skill_01_start",
+      "sourceCount": 96,
+      "sourceCrop": [
+        153,
+        180,
+        342,
+        342
+      ],
+      "sourcePPU": 36.57143020629883,
+      "runtimePPU": 22.75555657568042,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 2,
+      "runtimeCellWidth": 192,
+      "runtimeCellHeight": 164,
+      "sourcePivot": [
+        0.5,
+        0.47960472106933594
+      ],
+      "runtimePivot": [
+        0.4479166666666667,
+        0.4729122999237805
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "d30503b801218dcd7bbae4e592d38f0ad2076db12d8ad1542cbf33ac7997fa35",
+      "sourceReportSha256": "2301819fd5a02f1bb9d5092408a647e78d28bbf941896db02565047d00cde780",
+      "encodedFramesLosslesslyChecked": 96,
+      "pages": [
+        {
+          "file": "orb-map_fire_crystal_skill_01_start-00.png",
+          "bytes": 378776,
+          "width": 1920,
+          "height": 1640,
+          "sha256": "74bed2bff665ec8830961d545eb36b97f9fcbc0f992fedbdf531ec90dc7162b1"
+        }
+      ]
+    },
+    {
+      "key": "original-fire-stream",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/final/fire-stream",
+      "sourceCount": 240,
+      "sourceCrop": [
+        481,
+        453,
+        938,
+        562
+      ],
+      "sourcePPU": 56.88888931274414,
+      "runtimePPU": 35.397531132397646,
+      "cellAlignment": 4,
+      "paddingRight": 3,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 460,
+      "runtimeCellHeight": 112,
+      "sourcePivot": [
+        0.5,
+        0.4921835660934448
+      ],
+      "runtimePivot": [
+        0.9260869565217391,
+        0.40174974714006695
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "465a34b5d53e2bcde178887310e03503391fd9d0cd3d4853da0ec3823971c0c3",
+      "sourceReportSha256": "14f2c5b0fe7d5808833b57850334565e4e7a8259f0b2e13315ec9007e9c8c8e5",
+      "encodedFramesLosslesslyChecked": 240,
+      "pages": [
+        {
+          "file": "original-fire-stream-00.png",
+          "bytes": 614713,
+          "width": 1840,
+          "height": 2016,
+          "sha256": "fe16a0d669edb095b20e2fb02a098ed5837d107ac2cbfac5493a94d02a1fb094"
+        },
+        {
+          "file": "original-fire-stream-01.png",
+          "bytes": 635215,
+          "width": 1840,
+          "height": 2016,
+          "sha256": "63406985b7c683caab413bb10c1851319f1840cbe78e0114319ff16ec83963d8"
+        },
+        {
+          "file": "original-fire-stream-02.png",
+          "bytes": 644904,
+          "width": 1840,
+          "height": 2016,
+          "sha256": "f47c112d890842f0556b64e33fbdbf8b285fc89e8aec7dcdefbe47de3932dcb5"
+        },
+        {
+          "file": "original-fire-stream-03.png",
+          "bytes": 206334,
+          "width": 1840,
+          "height": 672,
+          "sha256": "33be59b6a969bd7793c042a409b3f3b110d8badb9d52ed48c0da9ad1cd0a9cc4"
+        }
+      ]
+    },
+    {
+      "key": "original-fire-impact",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/final/fire-impact",
+      "sourceCount": 48,
+      "sourceCrop": [
+        179,
+        195,
+        333,
+        335
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 156,
+      "runtimeCellHeight": 140,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.4935897435897436,
+        0.49996752057756694
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "2006e3a408f43ebc0f337dab26e64850268aea9abebb2744832931fefab4983d",
+      "sourceReportSha256": "c73a3d5b15aa2860556fda28cf30dde34864a420e0ddebbdc1ac6b6361a387f7",
+      "encodedFramesLosslesslyChecked": 48,
+      "pages": [
+        {
+          "file": "original-fire-impact-00.png",
+          "bytes": 225710,
+          "width": 2028,
+          "height": 560,
+          "sha256": "2913e4d3acf09b23903da5f2bfdbb8c6734b71bf596d36ab7290f8f16e7b35b6"
+        }
+      ]
+    },
+    {
+      "key": "original-energy-stream",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/final/energy-stream",
+      "sourceCount": 90,
+      "sourceCrop": [
+        122,
+        211,
+        392,
+        304
+      ],
+      "sourcePPU": 51.20000076293945,
+      "runtimePPU": 31.85777825651682,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 3,
+      "runtimeCellWidth": 272,
+      "runtimeCellHeight": 96,
+      "sourcePivot": [
+        0.5,
+        0.4859303832054138
+      ],
+      "runtimePivot": [
+        0.5,
+        0.45621204376220703
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "ef25445dd881c6d376542ca6b277ce1d2361997b857de322c2a8b84b59c91e2d",
+      "sourceReportSha256": "294eb35a8a202d9263ad1ad3ac230a28baeb32df27b64cee1897c526d1d85dec",
+      "encodedFramesLosslesslyChecked": 90,
+      "pages": [
+        {
+          "file": "original-energy-stream-00.png",
+          "bytes": 323466,
+          "width": 1904,
+          "height": 1248,
+          "sha256": "ddae564c8e0ab9bcb277d92934745a738fd82b866db243ef47add649a0785da8"
+        }
+      ]
+    },
+    {
+      "key": "original-target-burn",
+      "status": "IMPORTED_NOT_BOUND",
+      "source": "native-probe/final/target-burn",
+      "sourceCount": 915,
+      "sourceCrop": [
+        211,
+        169,
+        301,
+        289
+      ],
+      "sourcePPU": 64.0,
+      "runtimePPU": 39.82222222724867,
+      "cellAlignment": 4,
+      "paddingRight": 2,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 92,
+      "runtimeCellHeight": 120,
+      "sourcePivot": [
+        0.5,
+        0.48241299390792847
+      ],
+      "runtimePivot": [
+        0.4891304347826087,
+        0.1999621073404948
+      ],
+      "mirrorX": true,
+      "sourceFrameSetSha256": "3003716ba397dd9f751cfc6d987a7f49736b943a8dea84a7b7d03aeda27a7cc5",
+      "sourceReportSha256": "e0bd5471dc1d068caa5a486d4e082438e51986fc27f304c4d44fb7cfe16c866e",
+      "encodedFramesLosslesslyChecked": 915,
+      "pages": [
+        {
+          "file": "original-target-burn-00.png",
+          "bytes": 948429,
+          "width": 2024,
+          "height": 2040,
+          "sha256": "4de7c80898cda334feb63850a0c2a5b1fc913d7092d9cd93d523ba0fdd66390a"
+        },
+        {
+          "file": "original-target-burn-01.png",
+          "bytes": 1577494,
+          "width": 2024,
+          "height": 2040,
+          "sha256": "4e1e65effbc51d3d1e13694853c77a07274b0b6722c965868b7bd3cc3c6375ab"
+        },
+        {
+          "file": "original-target-burn-02.png",
+          "bytes": 744851,
+          "width": 2024,
+          "height": 960,
+          "sha256": "24e6753f2947d5064f277823c3be5b3acdebd16167769170931d32f23f88c55e"
+        }
+      ]
+    }
+  ]
+}

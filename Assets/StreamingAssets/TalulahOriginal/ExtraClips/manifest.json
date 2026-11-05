@@ -1,0 +1,422 @@
+{
+  "version": 1,
+  "cardId": "CARD_TALULAH_TRIAL",
+  "ppu": 88.8888889,
+  "referenceSpeed": 0.75,
+  "clips": [
+    {
+      "key": "extra_attack_b",
+      "source": "Attack_B",
+      "duration": 2.3333332538604736,
+      "fps": 30,
+      "count": 70,
+      "cellWidth": 356,
+      "cellHeight": 228,
+      "columns": 5,
+      "pivotX": 0.5280898876404494,
+      "pivotY": 0.12280701754385964,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_attack_b-0.png",
+          "width": 1780,
+          "height": 1824,
+          "count": 40
+        },
+        {
+          "file": "extra_attack_b-1.png",
+          "width": 1780,
+          "height": 1368,
+          "count": 30
+        }
+      ],
+      "sourceCrop": [
+        68,
+        196,
+        424,
+        424
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "duration": 2.6666667461395264,
+      "fps": 30,
+      "count": 80,
+      "cellWidth": 240,
+      "cellHeight": 176,
+      "columns": 8,
+      "pivotX": 0.4666666666666667,
+      "pivotY": 0.09090909090909091,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "death-0.png",
+          "width": 1920,
+          "height": 1760,
+          "count": 80
+        }
+      ],
+      "sourceCrop": [
+        144,
+        236,
+        384,
+        412
+      ],
+      "bindingStatus": "BOUND_DEATH_PRESENTATION"
+    },
+    {
+      "key": "extra_idle_b",
+      "source": "Idle_B",
+      "duration": 9.600000381469727,
+      "fps": 30,
+      "count": 288,
+      "cellWidth": 232,
+      "cellHeight": 188,
+      "columns": 8,
+      "pivotX": 0.6724137931034483,
+      "pivotY": 0.06382978723404255,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_idle_b-0.png",
+          "width": 1856,
+          "height": 1880,
+          "count": 80
+        },
+        {
+          "file": "extra_idle_b-1.png",
+          "width": 1856,
+          "height": 1880,
+          "count": 80
+        },
+        {
+          "file": "extra_idle_b-2.png",
+          "width": 1856,
+          "height": 1880,
+          "count": 80
+        },
+        {
+          "file": "extra_idle_b-3.png",
+          "width": 1856,
+          "height": 1128,
+          "count": 48
+        }
+      ],
+      "sourceCrop": [
+        100,
+        220,
+        332,
+        408
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_move_b",
+      "source": "Move_B",
+      "duration": 3.5999999046325684,
+      "fps": 30,
+      "count": 108,
+      "cellWidth": 236,
+      "cellHeight": 176,
+      "columns": 8,
+      "pivotX": 0.6440677966101694,
+      "pivotY": 0.045454545454545456,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_move_b-0.png",
+          "width": 1888,
+          "height": 1936,
+          "count": 88
+        },
+        {
+          "file": "extra_move_b-1.png",
+          "width": 1888,
+          "height": 528,
+          "count": 20
+        }
+      ],
+      "sourceCrop": [
+        104,
+        228,
+        340,
+        404
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_reborn_1_end",
+      "source": "Reborn_1_End",
+      "duration": 2.7666666507720947,
+      "fps": 30,
+      "count": 83,
+      "cellWidth": 332,
+      "cellHeight": 292,
+      "columns": 6,
+      "pivotX": 0.7349397590361446,
+      "pivotY": 0.0821917808219178,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_reborn_1_end-0.png",
+          "width": 1992,
+          "height": 2044,
+          "count": 42
+        },
+        {
+          "file": "extra_reborn_1_end-1.png",
+          "width": 1992,
+          "height": 2044,
+          "count": 41
+        }
+      ],
+      "sourceCrop": [
+        12,
+        128,
+        344,
+        420
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_reborn_1_start",
+      "source": "Reborn_1_Start",
+      "duration": 3.133333444595337,
+      "fps": 30,
+      "count": 94,
+      "cellWidth": 272,
+      "cellHeight": 268,
+      "columns": 7,
+      "pivotX": 0.6764705882352942,
+      "pivotY": 0.1044776119402985,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_reborn_1_start-0.png",
+          "width": 1904,
+          "height": 1876,
+          "count": 49
+        },
+        {
+          "file": "extra_reborn_1_start-1.png",
+          "width": 1904,
+          "height": 1876,
+          "count": 45
+        }
+      ],
+      "sourceCrop": [
+        72,
+        156,
+        344,
+        424
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_reborn_2_end",
+      "source": "Reborn_2_End",
+      "duration": 1.2333333492279053,
+      "fps": 30,
+      "count": 37,
+      "cellWidth": 320,
+      "cellHeight": 232,
+      "columns": 6,
+      "pivotX": 0.6,
+      "pivotY": 0.06896551724137931,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_reborn_2_end-0.png",
+          "width": 1920,
+          "height": 1624,
+          "count": 37
+        }
+      ],
+      "sourceCrop": [
+        64,
+        180,
+        384,
+        412
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_reborn_2_start",
+      "source": "Reborn_2_Start",
+      "duration": 5.333333492279053,
+      "fps": 30,
+      "count": 160,
+      "cellWidth": 324,
+      "cellHeight": 344,
+      "columns": 6,
+      "pivotX": 0.5802469135802469,
+      "pivotY": 0.06976744186046512,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_reborn_2_start-0.png",
+          "width": 1944,
+          "height": 1720,
+          "count": 30
+        },
+        {
+          "file": "extra_reborn_2_start-1.png",
+          "width": 1944,
+          "height": 1720,
+          "count": 30
+        },
+        {
+          "file": "extra_reborn_2_start-2.png",
+          "width": 1944,
+          "height": 1720,
+          "count": 30
+        },
+        {
+          "file": "extra_reborn_2_start-3.png",
+          "width": 1944,
+          "height": 1720,
+          "count": 30
+        },
+        {
+          "file": "extra_reborn_2_start-4.png",
+          "width": 1944,
+          "height": 1720,
+          "count": 30
+        },
+        {
+          "file": "extra_reborn_2_start-5.png",
+          "width": 1944,
+          "height": 688,
+          "count": 10
+        }
+      ],
+      "sourceCrop": [
+        68,
+        76,
+        392,
+        420
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_skill_3",
+      "source": "Skill_3",
+      "duration": 2.3333332538604736,
+      "fps": 30,
+      "count": 70,
+      "cellWidth": 300,
+      "cellHeight": 268,
+      "columns": 6,
+      "pivotX": 0.6666666666666666,
+      "pivotY": 0.05970149253731343,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_skill_3-0.png",
+          "width": 1800,
+          "height": 1876,
+          "count": 42
+        },
+        {
+          "file": "extra_skill_3-1.png",
+          "width": 1800,
+          "height": 1340,
+          "count": 28
+        }
+      ],
+      "sourceCrop": [
+        56,
+        144,
+        356,
+        412
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_skill_1_b",
+      "source": "Skill_1_B",
+      "duration": 1.9666666984558105,
+      "fps": 30,
+      "count": 59,
+      "cellWidth": 272,
+      "cellHeight": 224,
+      "columns": 7,
+      "pivotX": 0.6323529411764706,
+      "pivotY": 0.14285714285714285,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_skill_1_b-0.png",
+          "width": 1904,
+          "height": 2016,
+          "count": 59
+        }
+      ],
+      "sourceCrop": [
+        84,
+        204,
+        356,
+        428
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_skill_2_a",
+      "source": "Skill_2_A",
+      "duration": 1.9666666984558105,
+      "fps": 30,
+      "count": 59,
+      "cellWidth": 268,
+      "cellHeight": 220,
+      "columns": 7,
+      "pivotX": 0.6567164179104478,
+      "pivotY": 0.12727272727272726,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_skill_2_a-0.png",
+          "width": 1876,
+          "height": 1980,
+          "count": 59
+        }
+      ],
+      "sourceCrop": [
+        80,
+        204,
+        348,
+        424
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "key": "extra_skill_2_b",
+      "source": "Skill_2_B",
+      "duration": 1.9666666984558105,
+      "fps": 30,
+      "count": 59,
+      "cellWidth": 260,
+      "cellHeight": 220,
+      "columns": 7,
+      "pivotX": 0.6307692307692307,
+      "pivotY": 0.12727272727272726,
+      "pixelsPerUnit": 88.8888889,
+      "pages": [
+        {
+          "file": "extra_skill_2_b-0.png",
+          "width": 1820,
+          "height": 1980,
+          "count": 59
+        }
+      ],
+      "sourceCrop": [
+        92,
+        204,
+        352,
+        424
+      ],
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    }
+  ]
+}

@@ -61,7 +61,8 @@ namespace YesterdayConvoy
         private void LateUpdate()
         {
             if(deployedUnit==null) { FaceCamera(); return; }
-            Color tint=manualBattle.Clock<deployedUnit.LastHitTime+.18 ? new Color(1,.48f,.48f) : Color.white;
+            Color tint=original!=null&&deployedUnit.Resolution==UnitResolution.Dead ? Color.white :
+                manualBattle.Clock<deployedUnit.LastHitTime+.18 ? new Color(1,.48f,.48f) : Color.white;
             PresentFrames(tint);
         }
 
@@ -330,6 +331,12 @@ namespace YesterdayConvoy
 
         private void PresentOriginal()
         {
+            if(deployedUnit.Resolution==UnitResolution.Dead)
+            {
+                FrameState="Death";sprite.color=Color.white;
+                double elapsed=(presentationClock?.Invoke()??manualBattle.Clock)-deployedUnit.DeathTime;
+                sprite.sprite=original["death"].At(elapsed,false,out int deathIndex);FrameIndex=deathIndex;return;
+            }
             double age = manualBattle.Clock - deployedUnit.LastAttackTime;
             string clip;
             double sourceTime;

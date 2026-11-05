@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "fps": 30,
+  "clips": [
+    {
+      "key": "attack-A-caster",
+      "count": 70,
+      "width": 236,
+      "height": 168,
+      "columns": 8,
+      "ppu": 26.548148942695587,
+      "pivotX": 0.4661016949152542,
+      "pivotY": 0.3452200208391462,
+      "duration": 2.3333333333333335,
+      "hdrRange": 64.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "attack-A-caster-00.png",
+          "count": 70
+        }
+      ]
+    },
+    {
+      "key": "attack-A-hit",
+      "count": 48,
+      "width": 248,
+      "height": 192,
+      "columns": 8,
+      "ppu": 39.82222222724867,
+      "pivotX": 0.25,
+      "pivotY": 0.3072679837544759,
+      "duration": 1.6,
+      "hdrRange": 32.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "attack-A-hit-00.png",
+          "count": 48
+        }
+      ]
+    },
+    {
+      "key": "ambient-A-foot",
+      "count": 108,
+      "width": 120,
+      "height": 92,
+      "columns": 17,
+      "ppu": 39.82222222724867,
+      "pivotX": 0.6416666666666667,
+      "pivotY": 0.1738636182702106,
+      "duration": 3.6,
+      "hdrRange": 32.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "ambient-A-foot-00.png",
+          "count": 108
+        }
+      ]
+    },
+    {
+      "key": "movement-A-foot",
+      "count": 108,
+      "width": 124,
+      "height": 40,
+      "columns": 16,
+      "ppu": 31.85777825651682,
+      "pivotX": 0.7419354838709677,
+      "pivotY": 0.14490890502929688,
+      "duration": 3.6,
+      "hdrRange": 32.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "movement-A-foot-00.png",
+          "count": 108
+        }
+      ]
+    },
+    {
+      "key": "firecast-A-hand",
+      "count": 59,
+      "width": 96,
+      "height": 80,
+      "columns": 21,
+      "ppu": 26.548148942695587,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.14996204376220704,
+      "duration": 1.9666666666666666,
+      "hdrRange": 64.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "firecast-A-hand-00.png",
+          "count": 59
+        }
+      ]
+    }
+  ]
+}

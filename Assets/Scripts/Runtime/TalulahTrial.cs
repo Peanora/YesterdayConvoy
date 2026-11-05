@@ -122,6 +122,7 @@ namespace YesterdayConvoy
 
         private IEnumerator VerifyTalulah(string directory)
         {
+            if(directory!=null)yield return VerifyTalulahNativeLayers(directory);
             Time.timeScale=0; SwitchTrial(true); Battle.Begin(); Battle.SetPaused(true);
             Vector2 card=ScreenPosition(RosterSlot.center), entry=Camera.main.WorldToScreenPoint(Battle.Entry);
             ProcessPointerDown(card); ProcessPointerMove(entry);

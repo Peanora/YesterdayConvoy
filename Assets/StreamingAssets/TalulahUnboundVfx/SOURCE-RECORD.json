@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "sourceCharacter": "enemy_1515_bsnake",
+  "sourceGame": "明日方舟",
+  "author": "原权利人；具体画师未核实",
+  "sourcePackageUrl": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_1.dat",
+  "sourcePackageMd5": "46ac009a973053d7ee3a8f4cdd1b201e",
+  "sourceVersion": "26-10-29-15-36-11-33649006",
+  "license": "Original proprietary game media; open redistribution permission not obtained",
+  "userApproval": "Approved import and source delivery; not a rights-holder license",
+  "processing": ["Original native Shader and particle sampling in external Unity Vulkan tool", "Common bounds crop", "Single horizontal mirror with pivot conversion", "Zero padding to four-pixel-aligned atlas cells", "Per-clip HDR encoding preserved"],
+  "boundRuntimePath": "Assets/Art/VFX/Skills/Talulah/Resources/TalulahNative",
+  "unboundRuntimePath": "Assets/StreamingAssets/TalulahUnboundVfx",
+  "bindingStatus": "See each manifest clip; unbound effects do not create gameplay events",
+  "limits": "Original Torappu orchestration and global effect shrink coefficient are not fully reproduced; original audio not added"
+}
