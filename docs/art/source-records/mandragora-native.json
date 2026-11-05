@@ -1,0 +1,440 @@
+{
+  "character": "enemy_1523_mandra",
+  "version": "26-10-29-15-36-11-33649006",
+  "scope": "M32 approved preview integrated into battle and five-cost shop by user on 2026-11-05",
+  "license": "Original Arknights game media. Public redistribution permission unconfirmed. Repository owner authorized runtime asset upload; this is not a rightsholder license.",
+  "bundles": [
+    {
+      "name": "battle/enm_pfb_18.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_enm_pfb_18.dat",
+      "md5": "7977a52b3249bd3c882c8a8f36157e2a",
+      "sha256": "8716e8bdd8d7ea2dbd34e77a53d95c3c11f171d018d89dc3d9304860cdcba4c6",
+      "bytes": 895456,
+      "cab": "CAB-0df5f4c8c8dade07e2ee475a972da576",
+      "externals": [
+        "archive:/CAB-658d74aab777086fc32b93f385be999a/CAB-658d74aab777086fc32b93f385be999a",
+        "archive:/CAB-91cea44584a6ec97d898d56400e40207/CAB-91cea44584a6ec97d898d56400e40207",
+        "archive:/CAB-bb3091942f0741c935b32a0901cd5792/CAB-bb3091942f0741c935b32a0901cd5792",
+        "archive:/CAB-707573abb9d8c8e50fd1bc46762dd80e/CAB-707573abb9d8c8e50fd1bc46762dd80e",
+        "archive:/CAB-892107b966da7c6f78bbf0b49009eb93/CAB-892107b966da7c6f78bbf0b49009eb93"
+      ],
+      "container": [
+        {
+          "name": "dyn/battle/prefabs/enemies/enemy_1523_mandra.prefab",
+          "id": 1568014500378618673
+        }
+      ]
+    },
+    {
+      "name": "pkgrps/btl_pfb_fx_enemy_7.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_7.dat",
+      "md5": "2c077ae23f368227ed04889392d1c631",
+      "sha256": "a7237db43a09e566fbf9cee62c555854ed3ac028c087977c723c5cb79b8bcdd8",
+      "bytes": 3508790,
+      "cab": "CAB-4068dd123ac81540631d72aefad72ac4",
+      "externals": [
+        "archive:/CAB-658d74aab777086fc32b93f385be999a/CAB-658d74aab777086fc32b93f385be999a",
+        "archive:/CAB-0d0c905b03658da84d810b34eba903e0/CAB-0d0c905b03658da84d810b34eba903e0",
+        "archive:/CAB-5edea5af85bbd22eb07df1eb29c4f175/CAB-5edea5af85bbd22eb07df1eb29c4f175",
+        "Library/unity default resources",
+        "archive:/CAB-1b70e77fd118dea4a32415ac87839ac6/CAB-1b70e77fd118dea4a32415ac87839ac6",
+        "archive:/CAB-d78082c54cca29d82a1f4895c6b873e6/CAB-d78082c54cca29d82a1f4895c6b873e6",
+        "archive:/CAB-3fcda8e432a735264d43b49ecbf8fbee/CAB-3fcda8e432a735264d43b49ecbf8fbee",
+        "archive:/CAB-967586173c51ac60f86de17c3e4b1a32/CAB-967586173c51ac60f86de17c3e4b1a32",
+        "archive:/CAB-fe644cd0cf84f312dc9d6de3bfc17d34/CAB-fe644cd0cf84f312dc9d6de3bfc17d34",
+        "archive:/CAB-c2c688f710a565b7cce0cc93f7bd219f/CAB-c2c688f710a565b7cce0cc93f7bd219f",
+        "archive:/CAB-1512fc0efbde6852b5d5a28ec9cec589/CAB-1512fc0efbde6852b5d5a28ec9cec589",
+        "archive:/CAB-92fdf60cd1676328e17f73f0bf852e97/CAB-92fdf60cd1676328e17f73f0bf852e97",
+        "archive:/CAB-9e18acd2831f8cef6fdd0163df5a3104/CAB-9e18acd2831f8cef6fdd0163df5a3104",
+        "archive:/CAB-38dfd52763d3e93a929240c854b1fb51/CAB-38dfd52763d3e93a929240c854b1fb51",
+        "archive:/CAB-44d0abb60db2170b734217b0b04fcf36/CAB-44d0abb60db2170b734217b0b04fcf36",
+        "archive:/CAB-f3fc56defbd98dc38ed79050873172a0/CAB-f3fc56defbd98dc38ed79050873172a0",
+        "archive:/CAB-b2739f24071ea30492cad3b1c540173a/CAB-b2739f24071ea30492cad3b1c540173a",
+        "archive:/CAB-895a9c6afcb47c5c7f43c8589b1fe2fc/CAB-895a9c6afcb47c5c7f43c8589b1fe2fc",
+        "archive:/CAB-a1620becb3839aebe0c9da8f7cca77f8/CAB-a1620becb3839aebe0c9da8f7cca77f8"
+      ],
+      "container": [
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_block_01.prefab",
+          "id": -1496313220964755991
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_attack_hit.prefab",
+          "id": -3929455781494541689
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_attack_start_01.prefab",
+          "id": -9166529576893637680
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_attack_start_02.prefab",
+          "id": -7544104685869400785
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_01_beam.prefab",
+          "id": 5858858445755700850
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_01_beamshield_01.prefab",
+          "id": -2158891874624145612
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_01_hit.prefab",
+          "id": -1063237729173101245
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_02_begin_01.prefab",
+          "id": 7210726727575972818
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_02_buff_01.prefab",
+          "id": 196582280774497604
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_02_end_01.prefab",
+          "id": -633849336623555103
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_02_hit.prefab",
+          "id": 4577665547308820852
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c1_skill_02_shieldglow.prefab",
+          "id": 7134060889778542293
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_attack_01_hit.prefab",
+          "id": 297052734103698719
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_attack_01_start_01.prefab",
+          "id": -7328643039644161563
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_attack_01_start_02.prefab",
+          "id": -8769880547707222401
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_attack_01_trail_01.prefab",
+          "id": -5473311215622596920
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_die_01.prefab",
+          "id": 6626598189937695046
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_01_beamshield_01.prefab",
+          "id": -4133059351744911720
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_begin_01.prefab",
+          "id": 6620464277480058581
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_buff_01.prefab",
+          "id": 3916240635975776992
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_buff_02.prefab",
+          "id": 6171863933095557637
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_buff_02_end.prefab",
+          "id": 1940092205410699143
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_buff_03.prefab",
+          "id": -1714113916609301376
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_end_01.prefab",
+          "id": 4479828093211654587
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_02_shieldglow.prefab",
+          "id": -3935483700178320345
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_03_hand_01.prefab",
+          "id": 9151065703802358541
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_03_start_01.prefab",
+          "id": -2733063651339985692
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_c2_skill_03_start_02.prefab",
+          "id": 2250069370041081986
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_reborn_end_01.prefab",
+          "id": -6463756584901520028
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_reborn_end_02.prefab",
+          "id": -3647244276592010798
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_reborn_loop_01.prefab",
+          "id": 1703956043328733058
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_reborn_loop_02.prefab",
+          "id": -6410906088307456463
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_reborn_start_01.prefab",
+          "id": 1105827974520556086
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_skill_03_pillar_01.prefab",
+          "id": 6305159073428126617
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_skill_03_pillar_ground_01.prefab",
+          "id": -1958771243904398904
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_skill_03_stones_01.prefab",
+          "id": -3558140726051307131
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_warning_ground_01.prefab",
+          "id": 2501379865569814881
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/enemy_mandra_warning_head_01.prefab",
+          "id": 1957087988330463740
+        }
+      ]
+    },
+    {
+      "name": "battle/prefabs/effects/stonepillar.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_stonepillar.dat",
+      "md5": "1979eac63874a1f935dc233fad260dcb",
+      "sha256": "76a22ea55fdba2d2bd3fc22076dcd74cd1c670437df25b29684a3af0a5a3ebd6",
+      "bytes": 258600,
+      "cab": "CAB-614bdb4a2f050199c3cc61a100acebe5",
+      "externals": [
+        "archive:/CAB-658d74aab777086fc32b93f385be999a/CAB-658d74aab777086fc32b93f385be999a",
+        "archive:/CAB-1b70e77fd118dea4a32415ac87839ac6/CAB-1b70e77fd118dea4a32415ac87839ac6",
+        "archive:/CAB-c2c688f710a565b7cce0cc93f7bd219f/CAB-c2c688f710a565b7cce0cc93f7bd219f",
+        "archive:/CAB-d000ef0c36c1f8ec9df1698fde86d5b2/CAB-d000ef0c36c1f8ec9df1698fde86d5b2",
+        "archive:/CAB-0d0c905b03658da84d810b34eba903e0/CAB-0d0c905b03658da84d810b34eba903e0",
+        "archive:/CAB-967586173c51ac60f86de17c3e4b1a32/CAB-967586173c51ac60f86de17c3e4b1a32",
+        "archive:/CAB-92fdf60cd1676328e17f73f0bf852e97/CAB-92fdf60cd1676328e17f73f0bf852e97",
+        "archive:/CAB-1512fc0efbde6852b5d5a28ec9cec589/CAB-1512fc0efbde6852b5d5a28ec9cec589",
+        "archive:/CAB-44d0abb60db2170b734217b0b04fcf36/CAB-44d0abb60db2170b734217b0b04fcf36",
+        "archive:/CAB-fe644cd0cf84f312dc9d6de3bfc17d34/CAB-fe644cd0cf84f312dc9d6de3bfc17d34",
+        "archive:/CAB-b2739f24071ea30492cad3b1c540173a/CAB-b2739f24071ea30492cad3b1c540173a"
+      ],
+      "container": [
+        {
+          "name": "dyn/battle/prefabs/effects/stonepillar_collapse_01_down.prefab",
+          "id": -5475885955883629199
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/stonepillar_collapse_01_left.prefab",
+          "id": -9045028474665315919
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/stonepillar_collapse_01_right.prefab",
+          "id": -8634192146073459269
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/stonepillar_collapse_01_up.prefab",
+          "id": 867934725272678760
+        },
+        {
+          "name": "dyn/battle/prefabs/effects/stonepillar_idle_01_buff.prefab",
+          "id": -7050822873531855744
+        }
+      ]
+    },
+    {
+      "name": "battle/prefabs/[uc]projectiles.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_[uc]projectiles.dat",
+      "md5": "ea64d1e051721104a9dd0a43faa40d82",
+      "sha256": "d7015e88d8839086c14b11c766367716834000c7556e09ccda79b8f5e35a887c",
+      "bytes": 1905498,
+      "cab": "CAB-34af01ecb5d2ad63aca01b6e0d71279d",
+      "externals": [
+        "archive:/CAB-658d74aab777086fc32b93f385be999a/CAB-658d74aab777086fc32b93f385be999a",
+        "archive:/CAB-0d0c905b03658da84d810b34eba903e0/CAB-0d0c905b03658da84d810b34eba903e0",
+        "archive:/CAB-91cea44584a6ec97d898d56400e40207/CAB-91cea44584a6ec97d898d56400e40207",
+        "archive:/CAB-bb3091942f0741c935b32a0901cd5792/CAB-bb3091942f0741c935b32a0901cd5792",
+        "archive:/CAB-967586173c51ac60f86de17c3e4b1a32/CAB-967586173c51ac60f86de17c3e4b1a32",
+        "Library/unity default resources",
+        "archive:/CAB-1b70e77fd118dea4a32415ac87839ac6/CAB-1b70e77fd118dea4a32415ac87839ac6",
+        "archive:/CAB-fe644cd0cf84f312dc9d6de3bfc17d34/CAB-fe644cd0cf84f312dc9d6de3bfc17d34"
+      ],
+      "container": [
+        {
+          "name": "dyn/battle/prefabs/[uc]projectiles/projectile_enemy_mandra_p2.prefab",
+          "id": -6587696840079229592
+        },
+        {
+          "name": "dyn/battle/prefabs/[uc]projectiles/projectile_enemy_mandra_ray.prefab",
+          "id": 5544870176932493191
+        }
+      ]
+    }
+  ],
+  "bake": {
+    "clips": 42,
+    "pages": 48,
+    "captureBorder": [],
+    "emptyNotIncluded": [
+      "enemy_mandra_skill_03_pillar_01"
+    ]
+  },
+  "render": {
+    "unity": "6000.6.5f1",
+    "nativeBackend": "Vulkan",
+    "runtimeBackend": "Direct3D11",
+    "fps": 30,
+    "blend": "premultiplied RGB plus additive RGB where alpha=0; Blend One OneMinusSrcAlpha",
+    "scope": "native particle, material, texture and animation sampling; UV scroll driver adapted from original fields; fixed camera offline bake; original full scheduler and audio not included"
+  },
+  "sharedDependencies": {
+    "record": "Patriot-Skills-2026-11-04/V2/source-check.json",
+    "usage": "Shared native materials/textures/shaders only; patrt.ab excluded; dependency records copied below",
+    "files": [
+      {
+        "name": "battle/prefabs/effects/common.ab",
+        "md5": "7351283c4112821fbfc190ae1dd86cdf",
+        "sha256": "9ded9b434ec46fbfd584587f63f8fa071ed36e93fb49c69a124e1b15aeb76c33"
+      },
+      {
+        "name": "battle/[pack]common.ab",
+        "md5": "8da3a641a53f8f3105884dd8a22aa0db",
+        "sha256": "37f9070775ff736d619bb16f1ab5d93d704ec80829526c89d6a5c9ec9b10becc"
+      },
+      {
+        "name": "refs/fx/material.ab",
+        "md5": "728ecf3922f85ddf79d40cead851ddcc",
+        "sha256": "066267f3593e8f0086a325cc80850ba94917cf72d6a1738d50a9f4d569b5e1f4"
+      },
+      {
+        "name": "refs/fx/model/special.ab",
+        "md5": "d3f16af67413ee70ef5074ce43c4eb0b",
+        "sha256": "49466e217a5c735c6605c4648604ed5d361871090e15b438be093ca15ae8396e"
+      },
+      {
+        "name": "refs/fx/sharedbattle.ab",
+        "md5": "5365790f896dab74ed0aab25e819e088",
+        "sha256": "89f4abb28b1643d0ba465e41d4d3324311f477b46ce4d96138025f6a84ff372c"
+      },
+      {
+        "name": "refs/fx/texture.ab",
+        "md5": "0213adbc3cb7a3752f8cb91feee65c9b",
+        "sha256": "50c4cd6c2393040b772a6d4c5b1ece9481126a605a9f0e67a3c7ba44ad593317"
+      },
+      {
+        "name": "refs/fx/texture/color.ab",
+        "md5": "e5df6f12cb802622aa90d3cc96a5a313",
+        "sha256": "60631769702c003e6a638ce3c9b0d2681f20c905a7e0519f6810fe72cd7de3b3"
+      },
+      {
+        "name": "refs/fx/texture/fire.ab",
+        "md5": "30713384f4f37d430b4a0ee6c1a70d6d",
+        "sha256": "eea37e76323662984f752514d2bf9ed0d2016fa15eb18d7f5bf3efabd3185c7a"
+      },
+      {
+        "name": "refs/fx/texture/flipbook.ab",
+        "md5": "e68b16848a3d5bc54f21d1b06a240d77",
+        "sha256": "980fe0ceed171f6b15b4a2a5a41a8cbd572a02735794824906b3e66e9f0bc5d1"
+      },
+      {
+        "name": "refs/fx/texture/flow.ab",
+        "md5": "a7a4f6dea39f25754c15d0a9573cd4de",
+        "sha256": "e9fabfe551166bc1d9a050e82a78cae473025ad924a8127914428ca9c47c9566"
+      },
+      {
+        "name": "refs/fx/texture/lighting.ab",
+        "md5": "44dd6faf6f95fcafc47ce2a3df1a827e",
+        "sha256": "633df9bcaad97bda3546a35fcca280007868cb3daaf9edc4b29d3d68025232d8"
+      },
+      {
+        "name": "refs/fx/texture/mask.ab",
+        "md5": "a4e3232348dc0f5ca1c374f112dde673",
+        "sha256": "72a3b4613d9ce62fc6f2fb74ca7c344a1823fa816284930f2b7b5e2da59800f8"
+      },
+      {
+        "name": "refs/fx/texture/object.ab",
+        "md5": "65d0846be9d72ee5d8b805c1b5d72a48",
+        "sha256": "df0cc40126db4ca7f11b06d5e8e8b373e8aa2c14517cfc422be1246d2c4080c4"
+      },
+      {
+        "name": "refs/fx/texture/pattern.ab",
+        "md5": "af9572436d7a6e0c7edd0ac501136043",
+        "sha256": "e3f8d7ed8ae7bd011156c11796738413f89fdb10997e2a11fdc47311e53a00cc"
+      },
+      {
+        "name": "refs/fx/texture/ray.ab",
+        "md5": "d562b3b0c90d46af906ea798758f8af5",
+        "sha256": "89fb3ff9948e17da78017215d758d8507a0212f175a8984763b60aa4c7252eff"
+      },
+      {
+        "name": "refs/fx/texture/smoke.ab",
+        "md5": "a3a375814bd961f8708722852d1f6f6b",
+        "sha256": "57737333c738fa8904eab306ccd94e0e29415d9c6c99047a64d10b09dd1ee937"
+      },
+      {
+        "name": "refs/fx/texture/star.ab",
+        "md5": "2d0a58ebc868258cb1f1052ab9fb2d3d",
+        "sha256": "a21ea224961db2237d13073cf5310375cfe0d22aa10e5a9e0bd2fef458f0e087"
+      },
+      {
+        "name": "refs/fx/texture/trail.ab",
+        "md5": "e865e4e5943b33c2138e04fcb583c882",
+        "sha256": "e13c0950fc8414bbe5090ae5fa1a194c6519e1ace37663368680f56dc51dfe0a"
+      },
+      {
+        "name": "refs/fx/texture/vein.ab",
+        "md5": "f0f5b2d118671554ab46792b81fae1a0",
+        "sha256": "3800c93ee0acbed1a0a213e1754d1c921020b83c2ece04d0a3b05e7da22aa220"
+      },
+      {
+        "name": "refs/fx/texture/water.ab",
+        "md5": "001b2fc0c54b7eb74b2917285dbad81f",
+        "sha256": "90055e9344fdfd8718d8ddf1a414b4c9706dd5948dc7c2a17a663881db4e3734"
+      },
+      {
+        "name": "shaders/other.ab",
+        "md5": "33a0faef00c31e08a61ee85b7f9dfb66",
+        "sha256": "8fff7e26fb4a6631c0ead5cd74f03d1e7a2c061760358bd4bffaf31a70ce1cfe"
+      },
+      {
+        "name": "shaders/special.ab",
+        "md5": "116cce44bc391039b4b9c7e769e5af4a",
+        "sha256": "621543c0c8356b0f1cd8b065587104915c77b2e7346b0ed1bd02a4b149c06000"
+      },
+      {
+        "name": "shaders/standard.ab",
+        "md5": "18274c28c066d7cddb1a2d89490af184",
+        "sha256": "799d0435c8e34726a88a1899434f59c62ab370383086396c7f47dd577f9ee1f7"
+      },
+      {
+        "name": "shaders/standardblend.ab",
+        "md5": "8053faccd43f217ff0c7ab76ee6b5b2e",
+        "sha256": "9df47612e8e7c878187f8970382008dc98ef61f34434ff9a1e02b8bccad69863"
+      },
+      {
+        "name": "[uc]shaders.ab",
+        "md5": "7360cdf2154ae56f830dab0df550c9eb",
+        "sha256": "beeea1ee7d65a891fefbbbbb5737b86d6e617269e19206558adaa3c24d41463c"
+      },
+      {
+        "name": "[uc]uishaders.ab",
+        "md5": "c7bc02008eb4543d95edbe1502c221a5",
+        "sha256": "7ddfcd215b0870679505dfe9c1eb26a1dd7b731b6073d217ac77c226e93d2f4f"
+      },
+      {
+        "name": "battle/prefabs/effects/patrt.ab",
+        "md5": "d2be62e7fcfc084a9acda7c20fac089e",
+        "sha256": "8eda236d67ad42d98eddffbf12900fdc5a4ad43e2dda11bebd58f19075aeac44"
+      }
+    ]
+  }
+}

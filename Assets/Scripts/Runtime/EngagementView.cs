@@ -16,7 +16,6 @@ namespace YesterdayConvoy
         private readonly List<LineRenderer> golemPulseViews=new List<LineRenderer>();
         private readonly List<LineRenderer> shatterViews=new List<LineRenderer>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
-        private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
         private ManualBattleController owner;
         private EngagementDefinition definition;
@@ -43,7 +42,8 @@ namespace YesterdayConvoy
             if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
             deathEffects.Initialize(controller);
             var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
-            var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle);
+            var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle,()=>controller.PresentationClock);
+            var mephi=GetComponent<MephistoEffectView>()??gameObject.AddComponent<MephistoEffectView>();mephi.Bind(()=>controller.Battle);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
             var advanced=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advanced.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
@@ -67,19 +67,6 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
-            int healingIndex=0;
-            foreach(var cast in b.HealingCasts)
-                foreach(string targetId in cast.TargetIds)
-                {
-                    if(healingIndex>=healingViews.Count) healingViews.Add(CreateLine("Healing link",.035f));
-                    var line=healingViews[healingIndex++];var source=b.FindUnit(cast.SourceId);var healed=b.FindUnit(targetId);
-                    double age=time-cast.ImpactAt;
-                    line.enabled=cast.Resolved && cast.HealthRestored>0 && age>=0 && age<.6 && source!=null && healed!=null && source.Active && healed.Active;
-                    if(!line.enabled) continue;
-                    line.startColor=line.endColor=new Color(.25f,1,.55f,1-(float)age/.6f);
-                    if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
-                    else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
-                }
             for(int i=0;i<b.DeepSeeds.Count;i++)
             {
                 if(i>=seedViews.Count)seedViews.Add(CreateLine("Deep seed marker",.07f));
@@ -192,7 +179,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
-            if(!shot.FromDefender&&b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
+            if(!shot.FromDefender&&(b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock||b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mandragora)){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
             if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&
@@ -365,7 +352,6 @@ namespace YesterdayConvoy
             foreach(var ring in shatterViews)Destroy(ring.gameObject);shatterViews.Clear();
             foreach(var ring in golemPulseViews)Destroy(ring.gameObject);golemPulseViews.Clear();
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
-            foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
         private void OnDestroy() { ClearTransient(); talulahAttackVfx?.Dispose(); if (material != null) Destroy(material); }

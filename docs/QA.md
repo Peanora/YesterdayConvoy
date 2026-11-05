@@ -1,5 +1,33 @@
 # 验证证据与回归
 
+## 2026-11-05：梅菲斯特原生治疗、五费入池和实际Player
+
+任务[#72](https://github.com/Peanora/YesterdayConvoy/issues/72)，用户确认V1并要求接入游戏和商店。继续codex/mephisto-native-vfx-preview / PR #71，保留已完成曼德拉#69依赖。新运行素材为4PNG/285帧及清单、原比例挂点和.meta，复用已跟踪的兼容材质/Shader；页SHA256、四组布局、无采样边界、全部忽略来源/实际跟踪检查通过。原包和加工区不入Git，真实权利/适配见[M25说明](monsters/M25-NATIVE-VFX.md)。
+
+- 完整EditMode首415/416，唯一失败为旧卡池总数40断言；按新增M25更新后最终416/416通过、零跳过。artifacts/mephisto-edit-final.xml。
+- 专属GPU两项最终通过：真实五费九张库存、满备战合成二星、原模型、暂停拖动、三目标治疗与不提前发光、实际像素、无伤害普攻、暂停冻结、重复/并发、朝向、死亡取消、增幅解除尾段、重开/返回。诊断夹具初版缺守军图号已补齐；正常入口画面采样从粒子起始空帧移到命中后0.3秒。最终广域相关GPU33/33通过、零跳过，含M25、旧角色能力、曼德拉、羁绊/牧群、Campaign、后期商店、霜星；不是全工程GPU遍历。artifacts/mephisto-regression.xml。
+- 源码93eaa20dc7fa201e00c65508096aaa11d4c46207 Windows构建报告2,309,677,578 bytes/0错误，目录1,282,180,435 bytes。独立窗口1920×1080、Direct3D12运行，21项MEPHI_EVENT全True，MEPHISTO_VFX_CHECK passed=True，进程退出0。artifacts/mephisto-build.log / mephisto-player.log / mephisto-player/七张完整截图。
+- 开/关特效同相机同时间RGB差：命中3595像素、手部35、持续回复473、正常单怪自然受伤治疗363；编辑器与独立Player均可见，已目视核对完整HUD/模型/亮部。多目标夹具为明确诊断用的近静止四路线与主动造伤，保留实际地形遮挡；普通M25入口不注入受伤，真实守军攻击触发治疗。
+- 无场景/Prefab/Packages/ProjectSettings修改，.vscode保持。当前Builds/Windows是本轮版本；未做第二机、全新克隆构建、13关自然平衡、长时性能、原作逐帧完整调度或音效。不自动ZIP/Releases，不自动合并main。
+
+## 2026-11-05：蔓德拉原作特效、升星与商店
+
+任务[#67](https://github.com/Peanora/YesterdayConvoy/issues/67)，从main 2c04ba7继续codex/mandragora-vfx-preview。用户确认原作V1动态看稿后要求接入游戏与商店。无场景/Prefab/Packages/ProjectSettings修改，原.vscode/保持。
+
+提交6e2be32创建PR #69后，主线已更新为a37f0e5（塔露拉火雨V12及爱国者原生特效）。已先报告CampaignBootstrap、QA、STATUS三处冲突，逐项保留全部测试路由和双方记录，未整文件选择一方。`mandragora-main-edit.xml`完整412/412通过；`mandragora-main-gpu.xml`相关27/27通过，包含蔓德拉、爱国者、塔露拉火雨、商店及羁绊。仓库5393文件/meta检查通过。下列早期验证记录仍对应同步前版本，最终集成版本以本段后续构建/Player记录为准。
+
+最终整合版 `mandragora-main-build.log`：Windows 2,307,445,781 bytes / 0错误，后处理后完整目录1,279,948,491字节。从工程外工作目录运行 `mandragora-main-player.log`可见窗口、`mandragora-main-patriot.log`与`mandragora-main-fire.log`三个独立D3D11 Player均退出0，分别得到MANDRAGORA_VFX_CHECK passed=True、PATRIOT_VFX_CHECK_PASS、FIRE_RAIN_V12_PASS。三项保留原伤害、暂停及清理边界；最终蔓德拉实际窗口截图随源码保存于monsters/previews/M32-native。此轮仍未做第二机、新克隆和完整自然战斗通关。
+
+- `mandragora-edit.xml`：56/56定向逻辑通过，覆盖原M32技能边界、升星副卡复起生命和伤害、混编对空/柱击破盾、五费刷新与满席三合一，以及相关Campaign/羁绊逻辑。
+- `mandragora-gpu.xml`：21个相关GPU用例首轮20通过，新增蔓德拉用例的普攻取帧早于真实0.833秒出手加0.22秒弹道和首模拟步，调整为1.2秒。`mandragora-final-gpu.xml`蔓德拉2/2最终通过；19个其他商店、霜星、泥岩和羁绊场景回归已通过，共21个不同用例。没有把重复跑过次数相加。
+- 初次本轮后台测试卡在原有WaitForEndOfFrame截图等待，停止本轮进程后改为跨帧截图与显式相机输出。补盾夹具最初忽略35法抗导致伤害未跨40%阈值，修正开发测试输入，不放宽技能阈值。实际普攻一次出手/一次命中、凝视暂停冻结、破盾中断、封地断束、左右朝向、两个实例各自光束、重开清理均通过。
+- 原生Vulkan捕获后，三方向倒柱边界检查发现裁切，扩大取景并重烘焙；最终42段2595帧48页、无捕获边界裁切。一个原脚本容器输出全透明，未放入清单冒充图像。`check_atlas.py`检查42/48布局通过，PNG总15,220,657字节，所有必要meta成对。忽略检查没有排除新增运行素材，未取消.gitignore。
+- Windows `mandragora-build.log`：BASELINE_BUILD_PASS 2,081,468,345 bytes、0错误；PreparedArt预处理仍可重建并随Player自动安装，运行图集采用Windows BC7。此为Unity构建报告大小，后处理后的完整目录约1.05GB。
+- `mandragora-player.log`后台独立D3D11 Player退出0，事件全部True；该次ScreenCapture全黑，不作为画面证据。`mandragora-player-visible.log`可见独立窗口复验退出0，实际商店/备战模型/战斗截图已人工查看。凝视仅关闭光束得到739/810个变化像素，倒柱仅关闭本次左向倒塌得到5422个变化像素；破盾13069、复起19449、死亡2844。两实例光束数2。不是仅凭Renderer计数验收。
+- 移除两处旧的“等待蔓德拉入池”界面提示后，`mandragora-final-build.log`重建同为2,081,468,345 bytes / 0错误；`mandragora-final-player.log`最终可见独立Player全部True、退出0。`mandragora-campaign-player.log`既有正式挑战自动结算闭环通过（stage13 / gold329 / 退出0），不记为完整自然战斗通关。
+
+正常商店购买、满席两星合成与暂停红门拖动走真实入口；复起/倒柱/破盾等后期用明确开发夹具，在实际地图相机中读取真实模拟事件。夹具使用固定位置/低移速/高生命测试守军，经伤害接口触发阶段，不能算作正常13关自然通关。正常地图未新增支柱，倒柱要求地图配置已有支柱。新原作媒体来源、权利状态与适配见[说明](monsters/M32-NATIVE-VFX.md)和[源记录](art/source-records/mandragora-native.json)。无音效；第二机/全新克隆、长期性能和强度平衡未测。不自动合并/ZIP/Releases。
+
 ## 2026-11-05：塔露拉火雨V12运行接入
 
 人类批准项目外V12。实时main为2c04ba7，本地已整合爱国者的4cb5aa8作为依赖，功能分支codex/talulah-fire-rain-v12；本轮运行源码a0769a8d845b1c5998f7de50a5d37e185fa4e517。未修改场景文件、Prefab、Packages、ProjectSettings或技能规则，保留原两个未跟踪项。

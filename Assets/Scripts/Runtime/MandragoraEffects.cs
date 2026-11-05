@@ -33,7 +33,7 @@ namespace YesterdayConvoy
         readonly List<PillarCommand> pillarCommands=new List<PillarCommand>();
         public IReadOnlyList<PetrifyingGaze> Gazes=>gazes.AsReadOnly();
         public IReadOnlyList<PillarCommand> PillarCommands=>pillarCommands.AsReadOnly();
-        public bool UnitAirborne(DeployedUnitState u)=>EngagementEnabled&&CombatSettings.Effects.Mandragora&&u!=null&&u.Active&&u.MandraPhase==MandragoraPhase.Second&&u.StoneShield;
+        public bool UnitAirborne(DeployedUnitState u)=>EngagementEnabled&&u!=null&&UnitCombat(u).Effects.Mandragora&&u.Active&&u.MandraPhase==MandragoraPhase.Second&&u.StoneShield;
         bool HasGazeSlow(DefenderState d)=>gazes.Exists(g=>!g.Ended&&g.TargetId==d.EntityId);
         void EndGaze(DeployedUnitState u,bool interrupted)
         {
@@ -65,7 +65,7 @@ namespace YesterdayConvoy
             {
                 if(Clock+1e-6<u.MandraPhaseStartedAt+5)return true;
                 u.MandraPhase=MandragoraPhase.Second;u.MandraPhaseStartedAt=Clock;
-                u.Health=u.MaxHealth=Settings.Health;u.MandraInvulnerableUntil=Clock+3;
+                u.Health=u.MaxHealth=u.Profile?.Unit.Health??Settings.Health;u.MandraInvulnerableUntil=Clock+3;
                 u.StoneShield=true;u.NextGazeAt=Clock+10;u.NextMandraPillarAt=Clock+20;u.NextStoneAuraAt=Clock+1;
                 u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return true;
             }
@@ -79,7 +79,7 @@ namespace YesterdayConvoy
                 u.NextStoneAuraAt=Clock+1;
                 foreach(var d in defenders)
                     if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=1.7f)
-                    {DamageDefender(d,CombatSettings.UnitAttack*.3f,CombatDamageType.Arts);u.StoneAuraHits++;}
+                    {DamageDefender(d,UnitCombat(u).UnitAttack*.3f,CombatDamageType.Arts);u.StoneAuraHits++;}
             }
             return false;
         }
@@ -111,7 +111,7 @@ namespace YesterdayConvoy
                     if(GroundDistance(u.Motion.Position,d.Position)>1.5f){EndGaze(u,true);return true;}
                     while(g.NextTick<=g.StartedAt+7.1+1e-6&&Clock+1e-6>=g.NextTick&&d.Alive)
                     {
-                        float hp=d.Health;DamageDefender(d,CombatSettings.UnitAttack,CombatDamageType.Arts);
+                        float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts);
                         g.Ticks++;g.DamageDealt+=hp-d.Health;g.NextTick+=1;
                     }
                     if(!d.Alive)
@@ -123,9 +123,9 @@ namespace YesterdayConvoy
                 }
                 u.IsMoving=u.HasCombatTarget=false;return true;
             }
-            if(g!=null&&Clock<g.EndedAt+1.0/3||Clock<u.PillarCommandStartedAt+1.5||Clock<u.StoneShieldRestoredAt+(u.MandraPhase==MandragoraPhase.Ground?1.5:1.3333334))
+            if(g!=null&&Clock<g.EndedAt+1.0/3||Clock<u.PillarCommandStartedAt+1.5||Clock<u.StoneShieldRestoredAt+1.5)
             {u.IsMoving=u.HasCombatTarget=false;return true;}
-            if(!u.StoneShield||Clock<u.LastAttackTime+CombatSettings.AttackDuration)return false;
+            if(!u.StoneShield||Clock<u.LastAttackTime+UnitCombat(u).AttackDuration/u.LastAttackRate)return false;
             if(u.MandraPhase==MandragoraPhase.Second&&Clock+1e-6>=u.NextMandraPillarAt&&TryCommandPillar(u))
             {u.NextMandraPillarAt=Clock+15;u.PillarCommandStartedAt=Clock;u.IsMoving=u.HasCombatTarget=false;return true;}
             if(Clock+1e-6<u.NextGazeAt)return false;

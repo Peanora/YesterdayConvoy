@@ -27,7 +27,7 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(976,352,268,31),"第二适应："+AdaptationName(marineSecond)))SetRemainingChoices(selected,marineForm,(MarineAdaptation)(((int)marineSecond+1)%3));
             GUI.Label(new Rect(694,390,550,25),$"海嗣培养 XP{Loop.MarineExperience} · 阶段{Battle.MarineStage}（0 / 3 / 7）",LoopText(13));
             var hint=LoopText(12);hint.wordWrap=true;
-            GUI.Label(new Rect(694,421,550,66),"4海嗣且培养进入II阶段后，副适应取I阶段效果。深池当前有3名非五费，4档等待曼德拉完整技能后开放。转化体沿用原角色动作，不复制主动或固有能力。",hint);
+            GUI.Label(new Rect(694,421,550,66),"4海嗣且培养进入II阶段后，副适应取I阶段效果。集齐深池四名成员可解锁火种引爆。转化体沿用原角色动作，不复制主动或固有能力。",hint);
         }
         DeployedUnitState[] ContractTargets()=>Battle.Units.Where(u=>u.Active&&!u.IsReviving&&!u.SynergySupport&&u.CardId==Battle.ContractCard).ToArray();
         public bool UseContract()

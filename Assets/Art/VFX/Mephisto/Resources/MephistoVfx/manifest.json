@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "fps": 30,
+  "sourceVersion": "26-10-29-15-36-11-33649006",
+  "clips": [
+    {
+      "key": "attack_01_start",
+      "width": 116,
+      "height": 100,
+      "columns": 16,
+      "count": 90,
+      "duration": 3.0,
+      "ppu": 64.0,
+      "pivotX": 0.034482758620689655,
+      "pivotY": 0.5900000000000001,
+      "loop": false,
+      "pages": [
+        {
+          "file": "attack_01_start-00.png",
+          "count": 90,
+          "sha256": "aa4cf3ddf57884e000f523a20ba43e701d6994d2b66d08a611f25fff5c6f8337"
+        }
+      ]
+    },
+    {
+      "key": "attack_01_hit",
+      "width": 88,
+      "height": 104,
+      "columns": 16,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 64.0,
+      "pivotX": 0.48863636363636365,
+      "pivotY": 0.2692307692307693,
+      "loop": false,
+      "pages": [
+        {
+          "file": "attack_01_hit-00.png",
+          "count": 75,
+          "sha256": "045630b4926d7961ef4d057ff9865af09e124654bc39e0be8be6b392f1da9f7c"
+        }
+      ]
+    },
+    {
+      "key": "buff_01_start",
+      "width": 52,
+      "height": 40,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.2692307692307692,
+      "pivotY": 0.5,
+      "loop": true,
+      "pages": [
+        {
+          "file": "buff_01_start-00.png",
+          "count": 60,
+          "sha256": "74a38c4783501b585d051dd7621acb25cde506ffc888e8a96df70dbe52218132"
+        }
+      ]
+    },
+    {
+      "key": "buff_01_end",
+      "width": 48,
+      "height": 40,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.2708333333333333,
+      "pivotY": 0.5,
+      "loop": false,
+      "pages": [
+        {
+          "file": "buff_01_end-00.png",
+          "count": 60,
+          "sha256": "9b7e9f81f321ffcb88be1f46514b2ba398ba308293a54a40c159bab9d47cf12a"
+        }
+      ]
+    }
+  ]
+}

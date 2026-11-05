@@ -38,6 +38,7 @@ namespace YesterdayConvoy
             {"CARD_M22",new Stats(2,3,250,36,4,1.9f,0.8f,0.7f,1)},
             {"CARD_M23",new Stats(3,4,350,54,5,1.9f,0.85f,0.65f,1)},
             {"CARD_M24",new Stats(4,6,650,90,10,3.0f,1.0f,0.55f,2)},
+            {"CARD_M25",new Stats(5,8,600,95,7,3.0f,3.2f,0.65f,2)},
             {"CARD_M26",new Stats(2,3,220,42,4,2.2f,2.5f,0.65f,1)},
             {"CARD_M27",new Stats(3,4,420,62,10,2.2f,0.85f,0.55f,1)},
             {"CARD_M28",new Stats(5,10,1500,140,24,2.5f,1.2f,0.5f,2)},
@@ -46,6 +47,7 @@ namespace YesterdayConvoy
             {"CARD_M29",new Stats(2,3,320,40,11,2.2f,0.8f,0.55f,1)},
             {"CARD_M30",new Stats(3,4,330,58,6,1.8f,0.85f,0.75f,1)},
             {"CARD_M31",new Stats(4,6,520,90,7,3.0f,2.2f,0.55f,2)},
+            {"CARD_M32",new Stats(5,10,1000,110,10,1.8f,1.5f,0.5f,2)},
             {"CARD_M33",new Stats(3,4,600,0,0,1.0f,1.6f,0.45f,1)},
             {"CARD_M34",new Stats(3,4,350,52,6,3.0f,0.85f,0.75f,1)},
             {"CARD_M35",new Stats(3,4,280,52,4,1.5f,0.75f,1.1f,1)},
@@ -57,7 +59,7 @@ namespace YesterdayConvoy
         };
         public static bool Supports(string id)=>id!=null&&Profiles.ContainsKey(id);
         static readonly HashSet<string> ReunionMembers=new HashSet<string>{"CARD_M02","CARD_M03","CARD_M06","CARD_M07","CARD_M08","CARD_M09","CARD_M10","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M21","CARD_M22","CARD_M23","CARD_TALULAH_TRIAL"};
-        public static bool Reunion(string id)=>id!=null&&ReunionMembers.Contains(id);
+        public static bool Reunion(string id)=>id!=null&&(id=="CARD_M25"||ReunionMembers.Contains(id));
         static readonly HashSet<string> SnowMembers=new HashSet<string>{"CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14"};
         public static bool Snow(string id)=>id!=null&&SnowMembers.Contains(id);
         static readonly HashSet<string> InfectedMembers=new HashSet<string>{"CARD_ORIGINIUM_SLUG","CARD_M02","CARD_M03","CARD_M04","CARD_M05","CARD_M06"};
@@ -90,12 +92,13 @@ namespace YesterdayConvoy
             {"CARD_M22",new[]{"牧群","整合运动"}},
             {"CARD_M23",new[]{"牧群","整合运动"}},
             {"CARD_M24",new[]{"牧群","萨卡兹"}},
+            {"CARD_M25",new[]{"牧群","整合运动"}},
             {"CARD_M26",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M27",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M28",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M42",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M43",new[]{"泥岩小队","萨卡兹"}},
-            {"CARD_M32",new[]{"深池"}}, // Future member metadata; still excluded from Profiles and shop.
+            {"CARD_M32",new[]{"深池"}},
             {"CARD_M29",new[]{"深池"}},
             {"CARD_M30",new[]{"深池"}},
             {"CARD_M31",new[]{"深池"}},

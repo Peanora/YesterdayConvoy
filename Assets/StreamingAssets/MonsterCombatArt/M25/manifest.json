@@ -176,5 +176,5 @@
       "sha256": "95464ffa6dc3d62b9a16d71772291f3a9f5c21742819abc0fe694cd484cbb47e"
     }
   ],
-  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1507_mephi. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1507_mephi. Public redistribution permission unconfirmed. M25 automatic healing uses its original Attack pose; native healing VFX integrated with user approval 2026-11-05. No damage ordinary attack or new manual skill. Media bytes unchanged."
 }

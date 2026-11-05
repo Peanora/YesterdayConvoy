@@ -1,5 +1,7 @@
 # M32 蔓德拉：石盾、重生、凝视与倒柱
 
+2026-11-05 更新：经本轮用户预览确认，原作特效与五费商店接入见[最新说明](M32-NATIVE-VFX.md)及[任务 #67](https://github.com/Peanora/YesterdayConvoy/issues/67)。下文是 10 月 25 日样板历史，旧 EXE / 目录与代码绘制特效说明不代表当前入口。
+
 霍利屹 / Codex，2026-10-25。[任务29](https://github.com/Peanora/YesterdayConvoy/issues/29)、[PR27](https://github.com/Peanora/YesterdayConvoy/pull/27)，继续 `codex/monster-deep-pool-effects`。这是已有原模型的独立角色效果样板，供干宸骅审查，不代表正式关卡和平衡已验收。
 
 ## 直接试玩
