@@ -304,15 +304,8 @@ namespace YesterdayConvoy
         private void PresentFireRain(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
         {
             v.Trail.enabled=v.Ink.enabled=v.Impact.enabled=v.Rays.enabled=false;
-            var art=owner.Definition.Card.ArticulatedArt;
-            if(v.Face==null || art==null) return;
-            float age=(float)(b.Clock-shot.ImpactAt);
-            v.Face.enabled=age>=0 && age<.66f;
-            if(!v.Face.enabled) return;
-            v.Face.sprite=art.ImpactFrames[Mathf.Clamp((int)(age*24),0,art.ImpactFrames.Count-1)];
-            v.Face.transform.position=shot.Destination+cam.transform.up*.65f;
-            v.Face.transform.rotation=cam.transform.rotation; v.Face.transform.localScale=Vector3.one*1.05f;
-            v.Face.sortingOrder=23003; v.Face.color=new Color(1,1,1,1-age/.66f);
+            // Native impact frames are owned by FireRainView for trial, shop and campaign cards.
+            if(v.Face!=null)v.Face.enabled=false;
         }
 
         private void PresentTalulahSlash(ShotView v,CombatShot shot,ManualBattle b,Camera cam)
