@@ -6,7 +6,10 @@
 - 静态审计：42种实际CardId与CampaignBalance逐一对应，原41名除银狼、加M42/M43；费用9/10/11/5/7。41个人物资源根、53份身体清单、589页及.meta在目标Git树跟踪且无缺页；维维美用现有Sprite。完整名单/真实技能缺口见MONSTER_COMPLETION_AUDIT，不将模型或导入资源等同全部原作机制完成。
 - 仅自由验证快照加强：怪物HP×4、基础攻击/治疗/SkillAttack预算×2、固有爆炸×2；守军HP×12/攻击×8；巨像及IV原基准保持。新SynergySandboxTuningTests验证混编爱国者、技能和医疗、暂停扣DP、重开不叠乘、源资产及正常模式不变、IV基准6000HP。固定羁绊伤害未统一放大。
 - synergy-integration-edit.xml完整EditMode421/421，通过、零跳过。首轮synergy-integration-play.xml完整场景110/116，6失败：三名新五费诊断的二星HP仍是旧值、雪怪三星测试旧HP405、原角色数量断言40，以及加强守军后的单兵深池不能完成自然击杀。对应修正诊断期望、42卡和405×4；深池用四名真实成员协作击杀，不强制造伤或改触发规则。最终synergy-integration-play-final.xml完整GPU D3D11 PlayMode116/116，通过、零跳过，83.19秒；含三名原生特效像素、原塔露拉/火雨/死亡、商店/技能/九条羁绊及新倍率边界。
-- 提交前仓库检查5688个已跟踪文件及meta通过（Word文件加入前）；暂存差异无冲突标记。Windows构建与独立Player尚待本轮执行，不引用历史分支通过结果替代。
+- 仓库最终5689个已跟踪文件及meta检查通过；无冲突标记/缺失GUID，场景、Prefab、Packages、ProjectSettings无变更。导入器自动补的52个非覆盖WebGL默认段经逐文件验证只有该段变化后清除，保留已提交源meta与Standalone设置，未改他人文件。
+- 最终运行源码d4e6552ae7679278668bd5174223ada7fef4e412；synergy-integration-build.log：BASELINE_BUILD_PASS 2380009757 bytes / 0 errors。Builds/Windows/SOURCE.txt绑定源码/分支/依赖，邻接羁绊测试.cmd正常启动-synergySandbox而非诊断参数，目录保留完整EXE/Data/DLL及Word手册，无ZIP/Releases。
+- 从系统TEMP工作目录运行最终独立D3D11 EXE：synergy-player-sandbox.log的snapshot passed；advanced日志pool/split/army/golem/paused/naturalGrowth全部True；remaining日志pool/herd/nativeDeep/contract/marineGrowth全True；rework日志pool/preset/pausedDrag/ultimateSoloClear/investment/snowPulsesAndReset全True；patriot日志16项事件全True且七组GPU像素差非零。五个独立进程真实退出码均0。培养/深池包含自然交战；契约/后期复起/强制结算等沿用明确诊断夹具，不能称为所有阶段自然通关。
+- 正常可见窗口额外使用-synergySandbox（无SmokeTest），实际看到∞、8级/雪怪5整合6、42卡商店；鼠标点开始下一战后，将士兵拖上方红门，DP100→98；空格暂停，再拖弩手到同红门，DP98→96，暂停保持且人物显示；点击结束验证返回∞整备。使用Computer Use实际窗口截图逐次观察，没有以后台黑图或进程存活代替画面。窗口留在整备页供用户继续试玩，日志synergy-normal-launch.log无异常。未进行完整13关人工自然通关、42角色逐个自然触发全部机制、第二机/新克隆或长时平衡/性能测量。
 - docs/SYNERGY_PLAYTEST_GUIDE.md及Word手册完成，13页实际渲染并逐页检查。Windows无LibreOffice，使用独立隐藏Word16 COM只读导出PDF，再由原render_docx.py/Poppler栅格化；中间文件与报告在artifacts/synergy-guide，未进入源码交付。原稿与Word源校验一致，表头重复、表格行不拆分；不把文档排版检查算游戏测试。
 
 ## 2026-11-05：塔露拉原素材普攻、动作资源与死亡显示
