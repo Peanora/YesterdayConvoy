@@ -41,4 +41,6 @@
 
 实际相机开关效果差异：三目标命中3595像素、手部35像素、持续回复473像素、正常单怪入口363像素（960×540相同时间/相同相机采样）。多目标夹具明确使用近乎静止的多路线部署和主动造伤，只用于覆盖，不能冒称正式地图自然触发。
 
-关联GPU回归、Windows构建与最终独立Player结果完成后记录在[QA](../QA.md)。未做第二台电脑、全新克隆构建、13关自然平衡或长期性能测试。不自动ZIP/Releases，不自动合并main。
+最终源码`93eaa20dc7fa201e00c65508096aaa11d4c46207`完整416/416逻辑、33/33相关GPU场景通过、零跳过；图集布局/285帧覆盖、页SHA256、忽略来源和必要.meta检查通过。Windows构建2,309,677,578 bytes报告/0错误，实际目录约1.282GB。独立1920×1080 Direct3D12 Player的21项事件检查全部True，`MEPHISTO_VFX_CHECK passed=True`，进程退出0。已查看实际商店、二星部署、多目标夹具、正常入口自然治疗完整截图；多目标夹具中保留实际地形遮挡，不是正式可行走路线证明。
+
+实机：[五费商店](previews/M25-native/shop.png)、[正常入口自然治疗](previews/M25-native/natural-healing.png)。原始7张完整截图和日志仅本地artifacts/mephisto-player/及mephisto-player.log；逻辑与GPU记录见artifacts/mephisto-edit-final.xml、mephisto-regression.xml。构建来源/精确目录见Builds/Windows/BUILD-INFO.md，[QA](../QA.md)汇总证据。未做第二台电脑、全新克隆构建、13关自然平衡或长期性能测试。不自动ZIP/Releases，不自动合并main。

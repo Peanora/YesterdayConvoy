@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-05：梅菲斯特原生治疗、五费入池和实际Player
+
+任务[#72](https://github.com/Peanora/YesterdayConvoy/issues/72)，用户确认V1并要求接入游戏和商店。继续codex/mephisto-native-vfx-preview / PR #71，保留已完成曼德拉#69依赖。新运行素材为4PNG/285帧及清单、原比例挂点和.meta，复用已跟踪的兼容材质/Shader；页SHA256、四组布局、无采样边界、全部忽略来源/实际跟踪检查通过。原包和加工区不入Git，真实权利/适配见[M25说明](monsters/M25-NATIVE-VFX.md)。
+
+- 完整EditMode首415/416，唯一失败为旧卡池总数40断言；按新增M25更新后最终416/416通过、零跳过。artifacts/mephisto-edit-final.xml。
+- 专属GPU两项最终通过：真实五费九张库存、满备战合成二星、原模型、暂停拖动、三目标治疗与不提前发光、实际像素、无伤害普攻、暂停冻结、重复/并发、朝向、死亡取消、增幅解除尾段、重开/返回。诊断夹具初版缺守军图号已补齐；正常入口画面采样从粒子起始空帧移到命中后0.3秒。最终广域相关GPU33/33通过、零跳过，含M25、旧角色能力、曼德拉、羁绊/牧群、Campaign、后期商店、霜星；不是全工程GPU遍历。artifacts/mephisto-regression.xml。
+- 源码93eaa20dc7fa201e00c65508096aaa11d4c46207 Windows构建报告2,309,677,578 bytes/0错误，目录1,282,180,435 bytes。独立窗口1920×1080、Direct3D12运行，21项MEPHI_EVENT全True，MEPHISTO_VFX_CHECK passed=True，进程退出0。artifacts/mephisto-build.log / mephisto-player.log / mephisto-player/七张完整截图。
+- 开/关特效同相机同时间RGB差：命中3595像素、手部35、持续回复473、正常单怪自然受伤治疗363；编辑器与独立Player均可见，已目视核对完整HUD/模型/亮部。多目标夹具为明确诊断用的近静止四路线与主动造伤，保留实际地形遮挡；普通M25入口不注入受伤，真实守军攻击触发治疗。
+- 无场景/Prefab/Packages/ProjectSettings修改，.vscode保持。当前Builds/Windows是本轮版本；未做第二机、全新克隆构建、13关自然平衡、长时性能、原作逐帧完整调度或音效。不自动ZIP/Releases，不自动合并main。
+
 ## 2026-11-05：蔓德拉原作特效、升星与商店
 
 任务[#67](https://github.com/Peanora/YesterdayConvoy/issues/67)，从main 2c04ba7继续codex/mandragora-vfx-preview。用户确认原作V1动态看稿后要求接入游戏与商店。无场景/Prefab/Packages/ProjectSettings修改，原.vscode/保持。
