@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-05：早期橙色火浪恢复与实时地图范围
+
+从实时`origin/main`的a37f0e5建立`codex/talulah-map-fire-facing`。人类看图确认恢复2026-10-21橙色火焰版；没有采用V13原作尖头火球。修改只限表现、相关验证和说明，原两个未跟踪项保留，未修改场景、Prefab、Packages、ProjectSettings、技能数值或寻路。
+
+- `artifacts/fire-orange-edit.xml`：FireRainTests 3/3通过，覆盖原全场六波伤害、幂等、暂停、施法锁定与SP恢复。
+- `artifacts/fire-orange-play.xml`：9项相关GPU场景首轮8通过，唯一失败是新增地图扩张测试夹具复制了静态合批地块，其Renderer仍用原烘焙bounds。缩小到单例确认后，改用真实可移动的新测试地块；`fire-orange-adaptive-real-geometry.xml`最终1/1通过。9项均获覆盖，包括大地图商店买入/部署、原普攻、动作、暂停像素冻结、自然结束与重开清理。
+- `fire-orange-gpu/fire-orange-result.json`：真实相机平均RGB差20.6057/255；峰值37条橙色火浪；弱守军实际产生15次目标伤害后阵亡，完整18事件由逻辑用例验证。施法仍六秒，余焰未追加伤害。
+- [大地图实机相机截图](art/talulah-fire-orange-actual.png)：来自BattleShop关间商店买入塔露拉、第二关正常拖动部署和手动施放后的相机，已目视检查。不是历史看稿背景，也不是完整HUD录像。
+- 项目外V14方向片15秒、450帧、完整解码通过；原Move_A支撑足向左回蹬，默认前进朝右。V13将未镜像原图配负向位移导致倒走；游戏朝向本来正确，未反转`DemoSpriteVisual`。方向片未作为游戏资源导入。
+
+关键连接：`FireRainView`读取每个实体的施法时刻与`Battle.Clock`；仅施法时从当前场景启用的地表顶面四角取得投影范围，动态分配行数/火浪实例并更新暖光和碎焰。宽图只调整表现速度，穿过守军不检测碰撞；伤害仍由原CombatShot负责。`EngagementView`恢复原CC0命中帧，`FireRainScreenEffect`恢复早期暖暗和震动。32帧火流、25帧碎焰和Shader已在Git中，未新下载或遗漏运行素材。
+
+本轮Windows构建、独立Player与源码提交在完成后补记；目前不将Editor结果当成EXE验收。完整人工关卡、第二台电脑和长期性能未测。
+
 ## 2026-11-05：塔露拉火雨V12运行接入
 
 人类批准项目外V12。实时main为2c04ba7，本地已整合爱国者的4cb5aa8作为依赖，功能分支codex/talulah-fire-rain-v12；本轮运行源码a0769a8d845b1c5998f7de50a5d37e185fa4e517。未修改场景文件、Prefab、Packages、ProjectSettings或技能规则，保留原两个未跟踪项。
