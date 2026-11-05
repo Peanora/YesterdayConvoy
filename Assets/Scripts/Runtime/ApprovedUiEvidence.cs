@@ -27,7 +27,7 @@ namespace YesterdayConvoy
                 string talulah=talulahDefinition.Card.CardId;
                 string[] ids={"CARD_M14","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M08","CARD_M05","CARD_M28"};
                 var pieces=ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=id=="CARD_M14"?2:1}).ToList();
-                pieces.AddRange(new[]{new ShopTrialModel.Piece{Id="CARD_M08",Star=1},new ShopTrialModel.Piece{Id="CARD_M11",Star=1},new ShopTrialModel.Piece{Id="CARD_M20",Star=2},new ShopTrialModel.Piece{Id=talulah,Star=1}});
+                pieces.AddRange(new[]{new ShopTrialModel.Piece{Id="CARD_M11",Star=1},new ShopTrialModel.Piece{Id="CARD_M20",Star=2}});
                 shop.Preset(pieces,new[]{talulah,"CARD_M18","CARD_M13","CARD_M05","CARD_M11"},8,12,38);shopLineup.Clear();shopLineup.AddRange(ids);SyncShopDeck(false);SetShopVisible(true);
                 yield return new WaitForSecondsRealtime(.8f);
                 check("threeStaticFontFaces",new[]{"Regular","Semibold","Bold"}.All(face=>Resources.Load<Font>("UI/YesterdayConvoyUI-"+face)!=null));
