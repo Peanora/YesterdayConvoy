@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-05：蔓德拉原作特效、升星与商店
+
+任务[#67](https://github.com/Peanora/YesterdayConvoy/issues/67)，从main 2c04ba7继续codex/mandragora-vfx-preview。用户确认原作V1动态看稿后要求接入游戏与商店。无场景/Prefab/Packages/ProjectSettings修改，原.vscode/保持。
+
+- `mandragora-edit.xml`：56/56定向逻辑通过，覆盖原M32技能边界、升星副卡复起生命和伤害、混编对空/柱击破盾、五费刷新与满席三合一，以及相关Campaign/羁绊逻辑。
+- `mandragora-gpu.xml`：21个相关GPU用例首轮20通过，新增蔓德拉用例的普攻取帧早于真实0.833秒出手加0.22秒弹道和首模拟步，调整为1.2秒。`mandragora-final-gpu.xml`蔓德拉2/2最终通过；19个其他商店、霜星、泥岩和羁绊场景回归已通过，共21个不同用例。没有把重复跑过次数相加。
+- 初次本轮后台测试卡在原有WaitForEndOfFrame截图等待，停止本轮进程后改为跨帧截图与显式相机输出。补盾夹具最初忽略35法抗导致伤害未跨40%阈值，修正开发测试输入，不放宽技能阈值。实际普攻一次出手/一次命中、凝视暂停冻结、破盾中断、封地断束、左右朝向、两个实例各自光束、重开清理均通过。
+- 原生Vulkan捕获后，三方向倒柱边界检查发现裁切，扩大取景并重烘焙；最终42段2595帧48页、无捕获边界裁切。一个原脚本容器输出全透明，未放入清单冒充图像。`check_atlas.py`检查42/48布局通过，PNG总15,220,657字节，所有必要meta成对。忽略检查没有排除新增运行素材，未取消.gitignore。
+- Windows `mandragora-build.log`：BASELINE_BUILD_PASS 2,081,468,345 bytes、0错误；PreparedArt预处理仍可重建并随Player自动安装，运行图集采用Windows BC7。此为Unity构建报告大小，后处理后的完整目录约1.05GB。
+- `mandragora-player.log`后台独立D3D11 Player退出0，事件全部True；该次ScreenCapture全黑，不作为画面证据。`mandragora-player-visible.log`可见独立窗口复验退出0，实际商店/备战模型/战斗截图已人工查看。凝视仅关闭光束得到739/810个变化像素，倒柱仅关闭本次左向倒塌得到5422个变化像素；破盾13069、复起19449、死亡2844。两实例光束数2。不是仅凭Renderer计数验收。
+- 移除两处旧的“等待蔓德拉入池”界面提示后，`mandragora-final-build.log`重建同为2,081,468,345 bytes / 0错误；`mandragora-final-player.log`最终可见独立Player全部True、退出0。`mandragora-campaign-player.log`既有正式挑战自动结算闭环通过（stage13 / gold329 / 退出0），不记为完整自然战斗通关。
+
+正常商店购买、满席两星合成与暂停红门拖动走真实入口；复起/倒柱/破盾等后期用明确开发夹具，在实际地图相机中读取真实模拟事件。夹具使用固定位置/低移速/高生命测试守军，经伤害接口触发阶段，不能算作正常13关自然通关。正常地图未新增支柱，倒柱要求地图配置已有支柱。新原作媒体来源、权利状态与适配见[说明](monsters/M32-NATIVE-VFX.md)和[源记录](art/source-records/mandragora-native.json)。无音效；第二机/全新克隆、长期性能和强度平衡未测。不自动合并/ZIP/Releases。
+
 ## 2026-11-04：剩余四条羁绊与最新main集成
 
 实时main8f4d604（塔露拉普攻V8 #60），分支codex/synergy-four-traits带入未合并#59。入口CampaignBootstrap及STATUS/QA有冲突，已先报告，逐段保留V8入口和羁绊验证/完整记录，不整文件选单方。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖；不改场景地形、Prefab、包、工程设置。

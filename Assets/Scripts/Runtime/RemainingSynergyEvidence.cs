@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     {
         public IEnumerator VerifyRemainingSynergies()
         {
-            bool pool=shop.Roles.Count==36&&shop.Roles.Count(r=>r.Cost==5)==3&&SynergySummary.From(shop.Roles.Select(r=>r.Id)).All(s=>s.Implemented);
+            bool pool=shop.Roles.Count==40&&shop.Roles.Count(r=>r.Cost==5)==5&&SynergySummary.From(shop.Roles.Select(r=>r.Id)).All(s=>s.Implemented);
             SetSandboxRoster(4);StartLoopNextBattle();Battle.Begin();var r=Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M21");Battle.TryDamageUnit(r.EntityId,100000,CombatDamageType.Physical);Tick(.05f);
             bool herd=Battle.HerdTier==4&&Battle.Units.Any(u=>Battle.IsHerdHost(u.EntityId)&&u.SynergySupport&&!Battle.UnitCombat(u).HasSkill);ReplaySandbox();
             SetSandboxRoster(5);StartLoopNextBattle();Battle.Begin();Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M31");

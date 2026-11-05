@@ -41,7 +41,8 @@ namespace YesterdayConvoy
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
-        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private double DeathTail => Math.Max(Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),HasMandragora?2:0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private bool HasMandragora { get {if(Battle!=null&&Battle.EngagementEnabled)foreach(var u in Battle.Units)if(Battle.UnitCombat(u).Effects.Mandragora)return true;return false;} }
         private bool DeathPresentationPending
         {
             get
