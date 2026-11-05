@@ -53,7 +53,7 @@ namespace YesterdayConvoy.Editor
                 AssetDatabase.SaveAssets();GameSceneCatalog.UpdateBuildSettings();
                 Debug.Log("TALULAH_PHASE_SCENE_PREPARED: saved original terrain; A4250/336/12; three original Kroos models at 50000/140/40, interval1.");
             }
-            finally {EditorSceneManager.RestoreSceneManagerSetup(setup);}
+            finally {if(setup.Any(s=>s.isLoaded&&s.isActive&&!string.IsNullOrEmpty(s.path)))EditorSceneManager.RestoreSceneManagerSetup(setup);}
         }
     }
 }

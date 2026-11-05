@@ -29,7 +29,8 @@ namespace YesterdayConvoy.Editor
                     var encounter=AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(entry.EncounterPath);
                     if(encounter==null)
                     {
-                        encounter=Object.Instantiate(source);encounter.name=entry.Id+"-defenders";
+                        // Opening a different scene unloads unreferenced source assets; reacquire per iteration.
+                        encounter=Object.Instantiate(AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>("Assets/Data/Resources/Maps/BattleShop.asset"));encounter.name=entry.Id+"-defenders";
                         encounter.mapTitle=entry.Title+" · 专项验证";encounter.defenders=DefaultDefenders(entry.Id);
                         AssetDatabase.CreateAsset(encounter,entry.EncounterPath);
                     }
@@ -56,7 +57,7 @@ namespace YesterdayConvoy.Editor
                 AssetDatabase.SaveAssets();GameSceneCatalog.UpdateBuildSettings();ValidateExistingScenes();
                 Debug.Log("DEDICATED_SYNERGY_SCENES_PREPARED: nine independently saved scenes; no runtime terrain generation.");
             }
-            finally {EditorSceneManager.RestoreSceneManagerSetup(setup);}
+            finally {if(setup.Any(s=>s.isLoaded&&s.isActive&&!string.IsNullOrEmpty(s.path)))EditorSceneManager.RestoreSceneManagerSetup(setup);}
         }
         [MenuItem("Yesterday Convoy/Synergy Trials/Validate Authored Scenes")]
         public static void ValidateExistingScenes()
@@ -83,7 +84,7 @@ namespace YesterdayConvoy.Editor
                         throw new InvalidOperationException("Authored renderers are missing: "+entry.ScenePath);
                 }
             }
-            finally {EditorSceneManager.RestoreSceneManagerSetup(setup);}
+            finally {if(setup.Any(s=>s.isLoaded&&s.isActive&&!string.IsNullOrEmpty(s.path)))EditorSceneManager.RestoreSceneManagerSetup(setup);}
         }
         static void EnsureFolder(string path)
         {
