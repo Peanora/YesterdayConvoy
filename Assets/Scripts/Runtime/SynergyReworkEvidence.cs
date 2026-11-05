@@ -35,7 +35,8 @@ namespace YesterdayConvoy
             var receipt=Battle.TryDeployRole(Battle.RunId,8001,Battle.Entry,"CARD_M14");var frost=Battle.FindUnit(receipt.EntityId);
             for(int i=0;i<250&&frost!=null&&!Battle.IsSkillReady(frost.EntityId);i++){Tick(.1f);if(i%10==0)yield return null;}
             bool snow=frost!=null&&Battle.SnowTier==5&&Battle.TryActivateSkill(Battle.RunId,8002,frost.EntityId)==SkillFailure.None;
-            Tick(.7f);yield return null;
+            Tick(.7f);yield return null;yield return null;
+            snow&=GetComponent<FrostSealView>().VisibleEffects>0;
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"04-five-snow-storm.png"));yield return null;yield return null;}
             Tick(8);snow&=Battle.SnowstormPulses.Count==4;ReplaySandbox();snow&=Battle.SnowstormPulses.Count==0;
             Debug.Log($"SYNERGY_REWORK_PLAYER_CHECK: pool={pool}; preset={preset}; pausedDrag={deployment}; ultimateSoloClear={clear}; investment={investment}; snowPulsesAndReset={snow}");

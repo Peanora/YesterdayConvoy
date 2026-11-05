@@ -31,10 +31,10 @@ namespace YesterdayConvoy
                 var pulse=new SnowstormPulse{At=snowstormStartedAt+snowstormNextPulse++*2};snowstormPulses.Add(pulse);
                 foreach(var d in defenders.Where(d=>d.Alive))
                 {
+                    pulse.targets.Add(d.EntityId); // Weather remains visible even when control is resisted/protected.
                     if(d.FrozenUntil>Clock||stormFreezeProtection.TryGetValue(d.EntityId,out double until)&&Clock<until)continue;
                     bool cold=d.ColdUntil>Clock;
                     if(!TryApplyCold(d.EntityId,3.5f))continue;
-                    pulse.targets.Add(d.EntityId);
                     // Only the extra storm respects this additional protection; it does not rewrite character skills.
                     if(cold&&d.FrozenUntil>Clock)stormFreezeProtection[d.EntityId]=d.FrozenUntil+3;
                 }
