@@ -87,6 +87,13 @@ namespace YesterdayConvoy
         public float HealingDone { get; internal set; }
         public double HealingStartedAt { get; internal set; } = double.NegativeInfinity;
         internal double NextHealAt;
+        public TalulahPhase TalulahPhase {get;internal set;}
+        public double TalulahPhaseStartedAt {get;internal set;}=double.NegativeInfinity;
+        public double TalulahInvulnerableUntil {get;internal set;}=double.NegativeInfinity;
+        public double TalulahAutomaticRainStartedAt {get;internal set;}=double.NegativeInfinity;
+        public double TalulahAutomaticRainEndsAt {get;internal set;}=double.NegativeInfinity;
+        public int TalulahAutomaticWavesFired {get;internal set;}
+        internal float TalulahFirstPhaseMaxHealth;
         public bool ReviveUsed { get; internal set; }
         public bool AltarEmpowered { get; internal set; }
         public HarvesterPhase HarvesterPhase {get;internal set;}
@@ -308,6 +315,7 @@ namespace YesterdayConvoy
             string id = $"run-{RunId}/unit-{sequence + 1}";
             var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
+            if(EngagementEnabled&&IsTalulah(unit))unit.TalulahPhaseStartedAt=Clock;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
             unit.NextIceRingAt=Clock+8.5;
             if(EngagementEnabled&&UnitCombat(unit).Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}

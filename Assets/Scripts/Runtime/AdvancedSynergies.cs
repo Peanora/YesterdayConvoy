@@ -105,7 +105,7 @@ namespace YesterdayConvoy
         }
         bool CanReceiveOrder(DeployedUnitState u)
         {
-            if(!u.Active||u.IsReviving||u.SynergySupport||u.SkillAmmo>0||StrongholdInTransit(u.EntityId)||IsSkillActionPlaying(u)||u.FuelDying||u.PillarStunnedUntil>Clock||u.FearUntil>Clock||u.LureUntil>Clock||u.ShackleStunnedUntil>Clock||u.SprayStunnedUntil>Clock)return false;
+            if(!u.Active||u.IsReviving||TalulahTransitionLocked(u)||u.SynergySupport||u.SkillAmmo>0||StrongholdInTransit(u.EntityId)||IsSkillActionPlaying(u)||u.FuelDying||u.PillarStunnedUntil>Clock||u.FearUntil>Clock||u.LureUntil>Clock||u.ShackleStunnedUntil>Clock||u.SprayStunnedUntil>Clock)return false;
             var c=UnitCombat(u);
             if(c.Effects.Flamerazer&&!u.IsBlocked||c.Effects.Harvester&&!u.IsBlocked)return false;
             if(!c.CanAttack||Clock<u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate||c.Effects.FrostNova&&Clock<u.IceRingStartedAt+3||FirstSpeakerCasting(u))return false;

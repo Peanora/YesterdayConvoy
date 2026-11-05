@@ -17,7 +17,8 @@ namespace YesterdayConvoy
         struct Cast
         {
             internal TalulahArtDefinition Art;
-            internal float Age,Duration,Strength,Warmth;
+            internal float Age,Duration,Strength,Warmth,Spacing,StartDelay;
+            internal int WaveCount;
         }
         readonly List<Wave> waves=new List<Wave>();
         readonly List<SpriteRenderer> tongues=new List<SpriteRenderer>(),sparks=new List<SpriteRenderer>();
@@ -112,15 +113,21 @@ namespace YesterdayConvoy
             float screenStrength=0,screenWarmth=0,screenAge=0;
             foreach(var unit in battle.Units)
             {
-                if(!battle.UnitCombat(unit).FireRain||!battle.IsSkillActionPlaying(unit)
-                    ||double.IsInfinity(unit.FireRainStartedAt)||double.IsNaN(unit.FireRainStartedAt))continue;
+                if(!battle.UnitCombat(unit).FireRain)continue;
+                bool automatic=battle.TalulahAutomaticRainActive(unit);
+                if(!automatic&&!battle.IsSkillActionPlaying(unit))continue;
+                double began=automatic?unit.TalulahAutomaticRainStartedAt:unit.FireRainStartedAt;
+                if(double.IsInfinity(began)||double.IsNaN(began))continue;
                 var art=owner.CardForUnit(unit).ArticulatedArt;
                 if(art==null||art.FireFrames==null||art.FireFrames.Count==0)continue;
-                float age=(float)(battle.Clock-unit.FireRainStartedAt),duration=battle.UnitCombat(unit).SkillInterval;
+                float age=(float)(battle.Clock-began),duration=automatic?(float)(unit.TalulahAutomaticRainEndsAt-began):battle.UnitCombat(unit).SkillInterval;
                 if(age<0||age>=duration)continue;
                 float strength=Smooth(age/.30f)*Smooth((duration-age)/.45f);
                 float warmth=Smooth(age/.25f)*Smooth((duration-age)/.6f);
-                casts.Add(new Cast{Art=art,Age=age,Duration=duration,Strength=strength,Warmth=warmth});
+                casts.Add(new Cast{Art=art,Age=age,Duration=duration,Strength=strength,Warmth=warmth,
+                    Spacing=automatic?(float)TalulahTiming.WaveInterval:WaveSpacing,
+                    StartDelay=automatic?(float)TalulahTiming.FirstWave:0,
+                    WaveCount=automatic?TalulahTiming.AutomaticWaves:Mathf.CeilToInt(duration/WaveSpacing)});
                 if(strength>=screenStrength){screenStrength=strength;screenAge=age;}
                 screenWarmth=Mathf.Max(screenWarmth,warmth);
             }
@@ -133,21 +140,21 @@ namespace YesterdayConvoy
             // Preserve the approved flame proportions per terrain tile. Include both map edges;
             // deeper maps gain rows instead of stretching a fixed six-row screen band.
             rowCount=Mathf.Max(2,Mathf.CeilToInt(area.height/(cellWidth*.85f))+1);int capacity=0;
-            foreach(var cast in casts)capacity+=rowCount*Mathf.CeilToInt(cast.Duration/WaveSpacing);
+            foreach(var cast in casts)capacity+=rowCount*cast.WaveCount;
             EnsureCapacity(capacity,casts.Count);
             int index=0;
             for(int castIndex=0;castIndex<casts.Count;castIndex++)
             {
                 var cast=casts[castIndex];float age=cast.Age,strength=cast.Strength;
-                int count=Mathf.CeilToInt(cast.Duration/WaveSpacing);
+                int count=cast.WaveCount;
                 // The first front must still cross an unusually wide edited map inside the
                 // existing skill window; this adapts presentation speed, never damage timing.
-                float travelSpeed=Mathf.Max(cellWidth*5.3f,(area.width+cellWidth*6)/Mathf.Max(.35f,cast.Duration-.375f-.45f));
+                float travelSpeed=Mathf.Max(cellWidth*5.3f,(area.width+cellWidth*6)/Mathf.Max(.35f,cast.Duration-cast.StartDelay-.375f-.45f));
                 for(int row=0;row<rowCount;row++)for(int wave=0;wave<count;wave++)
                 {
                     float rowFraction=row/(float)(rowCount-1);
                     // Retain the old .375s total stagger even when the map has more rows.
-                    float elapsed=age-wave*WaveSpacing-rowFraction*.375f;
+                    float elapsed=age-cast.StartDelay-wave*cast.Spacing-rowFraction*.375f;
                     float x=area.xMin-cellWidth*2.5f+elapsed*travelSpeed;
                     if(strength<=0||elapsed<0||x>=area.xMax+cellWidth*3.5f)continue;
                     var item=waves[index++];int id=row*17+wave+20+castIndex*457;

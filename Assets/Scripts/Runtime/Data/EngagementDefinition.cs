@@ -42,6 +42,8 @@ namespace YesterdayConvoy
         [SerializeField] private bool mudrock;
         [SerializeField] private bool phalanx;
         [SerializeField] private bool flamechaser, revealsInvisible, flamerazer, mandragora, nervousCreeper, harvester, firstSpeaker, shackler, tacticalCommander, orderRunner, orderSniper, patriot;
+        [Tooltip("Standalone three-star Talulah trial only. Campaign derives this from the card star.")]
+        [SerializeField] private bool talulahSecondPhase;
         [SerializeField] private Vector3[] extraDefenders = new Vector3[0];
         public System.Collections.Generic.IReadOnlyList<Vector3> ExtraDefenders => extraDefenders;
         public bool FireRain => fireRain;
@@ -51,7 +53,7 @@ namespace YesterdayConvoy
             defenderHealth, defenderAttack, defenderArmor, defenderRange, defenderInterval, blockCount, blockRadius,
             initialSP, requiredSP, spPerSecond, skillAmmo, skillAttack, skillInterval, skillRange, projectileTime, fireRain, hasSkill, melee, attackDuration, attackWindup,
             new MonsterEffectSettings(damageType,defenderResistance,armorShred,blastAttack,blastRadius,blastDelay,coldDuration,frozenAttackMultiplier,
-                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer,artsBarrier,unitResistance,mudrock,phalanx,flamechaser,flamerazer,mandragora,nervousCreeper,harvester,firstSpeaker,shackler,tacticalCommander,orderRunner,orderSniper,tauntLevel,patriot),
+                coldAttackEvery,attackColdDuration,frostNova,regenerationFraction,attackTargets,lifeSteal,healer,artsBarrier,unitResistance,mudrock,phalanx,flamechaser,flamerazer,mandragora,nervousCreeper,harvester,firstSpeaker,shackler,tacticalCommander,orderRunner,orderSniper,tauntLevel,patriot,talulahSecondPhase),
             canAttack: !noOrdinaryAttack,defenderDamageType:defenderDamageType,revealsInvisible:revealsInvisible,frostSeal:frostSeal,mudrockCapture:mudrockCapture);
     }
 }

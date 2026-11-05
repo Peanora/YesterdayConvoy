@@ -123,7 +123,7 @@ namespace YesterdayConvoy
             if(star<1||star>3)throw new ArgumentOutOfRangeException(nameof(star));
             var s=data.Snapshot();var c=data.Engagement.Snapshot();var r=Profiles[s.CardId];
             float ability=AbilityScale(r.Cost,star);var e=c.Effects;
-            var effects=CopyEffects(e,ability);
+            var effects=CopyEffects(e,ability,talulahSecondPhase:s.CardId==TalulahTiming.CardId&&star==3);
             // Never shorten a complete authored attack clip to fit a spreadsheet interval.
             float interval=Mathf.Max(r.Interval,c.AttackDuration);
             var combat=new EngagementSettings((r.Attack>0?r.Attack*AttackScale(r.Cost,star):c.UnitAttack*ability),r.Armor+2*(star-1),r.Range,interval,
@@ -135,7 +135,7 @@ namespace YesterdayConvoy
             return new BasicRosterProfile(unit,combat,true);
         }
 
-        public static MonsterEffectSettings CopyEffects(MonsterEffectSettings e,float ability=1,float blastFraction=1,bool secondary=false)=>new MonsterEffectSettings(
+        public static MonsterEffectSettings CopyEffects(MonsterEffectSettings e,float ability=1,float blastFraction=1,bool secondary=false,bool? talulahSecondPhase=null)=>new MonsterEffectSettings(
             damageType:e.DamageType,resistance:e.Resistance,armorShred:secondary?0:e.ArmorShred,blastAttack:e.BlastAttack*ability*blastFraction,
             blastRadius:e.BlastRadius,blastDelay:e.BlastDelay,coldDuration:secondary?0:e.ColdDuration,frozenAttackMultiplier:e.FrozenAttackMultiplier,
             coldAttackEvery:secondary?0:e.ColdAttackEvery,attackColdDuration:secondary?0:e.AttackColdDuration,frostNova:e.FrostNova,regenerationFraction:e.RegenerationFraction,
@@ -143,7 +143,7 @@ namespace YesterdayConvoy
             unitResistance:e.UnitResistance,mudrock:e.Mudrock,phalanx:e.Phalanx,flamechaser:e.Flamechaser,
             flamerazer:e.Flamerazer,mandragora:e.Mandragora,nervousCreeper:e.NervousCreeper,harvester:e.Harvester,
             firstSpeaker:e.FirstSpeaker,shackler:e.Shackler,tacticalCommander:e.TacticalCommander,orderRunner:e.OrderRunner,
-            orderSniper:e.OrderSniper,tauntLevel:e.TauntLevel,patriot:e.Patriot);
+            orderSniper:e.OrderSniper,tauntLevel:e.TauntLevel,patriot:e.Patriot,talulahSecondPhase:talulahSecondPhase??e.TalulahSecondPhase);
         public static EngagementSettings CopyCombat(EngagementSettings c,float attack,float armor,MonsterEffectSettings e)=>new EngagementSettings(
             attack,armor,c.UnitRange,c.UnitInterval,c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,c.BlockCount,c.BlockRadius,
             c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,c.SkillAttack,c.SkillInterval,c.SkillRange,c.ProjectileTime,c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,e,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);

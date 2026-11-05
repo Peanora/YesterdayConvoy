@@ -42,6 +42,7 @@ namespace YesterdayConvoy
             if(effects.NervousCreeper&&(canAttack||hasSkill))throw new ArgumentException("Creeper cannot use ordinary attacks or ammo skills.");
             if(effects.Healer && (canAttack || hasSkill)) throw new ArgumentException("Healer uses automatic treatment, not damage attacks or ammunition skills.");
             if(defenderDamageType!=CombatDamageType.Physical && defenderDamageType!=CombatDamageType.Arts) throw new ArgumentException("Invalid defender damage type.");
+            if(effects.TalulahSecondPhase&&(!fireRain||!hasSkill||!canAttack))throw new ArgumentException("Talulah second phase requires her ordinary attack and manual fire rain.");
             if(effects.Patriot&&unitInterval<=.4f)throw new ArgumentException("Patriot requires a positive second-phase attack interval.");
             Effects=effects;
             DefenderDamageType=defenderDamageType;
@@ -219,7 +220,7 @@ namespace YesterdayConvoy
         {
             var unit=FindUnit(entityId);
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
-                !unit.IsReviving && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
+                !unit.IsReviving && !TalulahTransitionLocked(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
                 (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
         }
 
@@ -230,6 +231,7 @@ namespace YesterdayConvoy
             if(!UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active || unit.IsReviving) return SkillFailure.MissingEntity;
+            if(TalulahTransitionLocked(unit))return SkillFailure.AlreadyActive;
             var c=UnitCombat(unit);
             if (unit.SkillAmmo > 0 || (c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit) || c.FrostSeal && Clock<unit.IceRingStartedAt+3) return SkillFailure.AlreadyActive;
             if(c.MudrockCapture && (Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration || ChooseGramophone(unit)==null))return SkillFailure.NoTarget;
@@ -329,6 +331,7 @@ namespace YesterdayConvoy
             {
                 var c=UnitCombat(unit);
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                if(StepTalulahPhase(unit))continue;
                 if(StepStrongholdPortal(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(unit.FuelDying)continue;
                 if(c.Effects.Patriot&&StepPatriotPassive(unit))continue;

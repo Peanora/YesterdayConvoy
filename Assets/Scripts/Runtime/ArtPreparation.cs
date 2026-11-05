@@ -22,9 +22,18 @@ namespace YesterdayConvoy
             if(sequence==null)yield break;
             foreach(var clip in sequence)if(!idleOnly||clip.Key=="idle")yield return clip;
         }
-        static List<ArtSequence> Plan(IEnumerable<DefenderPlacement> defenders,IEnumerable<CardDefinition> cards,bool tactical)
+        static List<ArtSequence> Plan(IEnumerable<DefenderPlacement> defenders,IEnumerable<CardDefinition> cards,bool tactical,bool talulahSecondPhase=false)
         {
-            var clips=new List<ArtSequence>();foreach(var card in cards)clips.AddRange(CardSequences(card));
+            var clips=new List<ArtSequence>();foreach(var card in cards)
+            {
+                clips.AddRange(CardSequences(card));
+                if(talulahSecondPhase&&card!=null&&card.CardId==OriginalTalulahArt.CardId)
+                {
+                    var original=OriginalTalulahArt.For(card);
+                    if(original==null)throw new InvalidOperationException("Talulah original art is required for the second phase.");
+                    clips.AddRange(original.SecondPhaseSequences);clips.AddRange(TalulahAttackVfx.SecondPhaseSequences);
+                }
+            }
             foreach(var defender in defenders)
             {
                 if(string.IsNullOrEmpty(defender.artId))continue;
@@ -38,7 +47,16 @@ namespace YesterdayConvoy
         {
             var cards=defenderTrial==null?new[]{definition.Card}:new[]{defenderTrial.battle.Card}.Concat((defenderTrial.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card));
             if(CampaignActive)cards=cards.Concat(new[]{"CARD_M07","CARD_M08"}.Where(shopDefinitions.ContainsKey).Select(id=>shopDefinitions[id].Card)).Concat(shopLineup.Count(CampaignBalance.MudrockCrew)>=2?new[]{GolemCard}:Array.Empty<CardDefinition>());
-            return Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),cards,TacticalMapActive);
+            var snapshot=cards.ToArray();
+            return Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),snapshot,TacticalMapActive,NeedsTalulahSecondPhase(snapshot));
+        }
+        bool NeedsTalulahSecondPhase(IEnumerable<CardDefinition> cards)
+        {
+            if(!cards.Any(card=>card!=null&&card.CardId==OriginalTalulahArt.CardId))return false;
+            if(CampaignActive)return shopLineup.Contains(OriginalTalulahArt.CardId)&&shop.Bench.Any(p=>p.Id==OriginalTalulahArt.CardId&&p.Star==3);
+            if(Battle!=null&&Battle.EngagementEnabled&&Battle.CombatSettings.Effects.TalulahSecondPhase)return true;
+            if(definition?.Card.CardId==OriginalTalulahArt.CardId&&definition.Engagement.Snapshot().Effects.TalulahSecondPhase)return true;
+            return defenderTrial?.rosterCards?.Any(data=>data.Card.CardId==OriginalTalulahArt.CardId&&data.Engagement.Snapshot().Effects.TalulahSecondPhase)==true;
         }
         void RefreshArtPins()
         {
@@ -83,14 +101,19 @@ namespace YesterdayConvoy
             if(!lateGame)cards=monsterTests.Where(o=>o.Playable&&o.Definition.Card.RecruitCost==1).Select(o=>o.Definition.Card);
             return Prepare(Plan(BattleShopStages.Defenders(1,lateGame),cards,true),()=>StartBattleShopLoop(seed,lateGame),"准备本关角色");
         }
-        void PrepareMonsterEntry(MonsterTestOption option)=>QueueArt(Plan(Array.Empty<DefenderPlacement>(),new[]{option.Definition.Card},false),()=>TryEnterMonsterTest(option.Id),"准备怪物动作");
+        void PrepareMonsterEntry(MonsterTestOption option)=>QueueArt(Plan(Array.Empty<DefenderPlacement>(),new[]{option.Definition.Card},false,option.Definition.Engagement.Snapshot().Effects.TalulahSecondPhase),()=>TryEnterMonsterTest(option.Id),"准备怪物动作");
         void PrepareDefenderEntry(string id)
         {
             var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);
             if(data==null)return;
             QueueArt(Plan(data.defenders,new[]{data.battle.Card}.Concat((data.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card)),data.Tactical),()=>TryEnterDefenderSkillTrial(id),"准备守军动作");
         }
-        void PrepareNextLoopBattle()=>QueueArt(Plan(shopMapCopy.defenders,shopLineup.Concat(CampaignActive?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().Select(id=>shopDefinitions[id].Card).Concat(CampaignActive&&shopLineup.Count(CampaignBalance.MudrockCrew)>=2?new[]{GolemCard}:Array.Empty<CardDefinition>()),true),()=>StartLoopNextBattle(),"准备下一关");
+        void PrepareNextLoopBattle()
+        {
+            var cards=shopLineup.Concat(CampaignActive?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().Select(id=>shopDefinitions[id].Card)
+                .Concat(CampaignActive&&shopLineup.Count(CampaignBalance.MudrockCrew)>=2?new[]{GolemCard}:Array.Empty<CardDefinition>()).ToArray();
+            QueueArt(Plan(shopMapCopy.defenders,cards,true,NeedsTalulahSecondPhase(cards)),()=>StartLoopNextBattle(),"准备下一关");
+        }
         void WarmVisibleShop()
         {
             if(ArtLoading||shop==null||!shopVisible)return;
