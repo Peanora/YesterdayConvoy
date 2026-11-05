@@ -10,7 +10,11 @@
 - `artifacts/talulah-original-edit.xml`：完整EditMode409/409通过。BattleShop结算绘制采用同一死亡显示门限，经济与战斗结束仍按原模型立即结算。
 - [原生普攻真实相机截图](art/talulah-native-attack-actual.png)：已目视检查，来自运行中的MonsterTrial，原生剑焰与真实目标命中均可见。不是V13固定背景合成。
 
-死亡测试使用明确夹具调用正常Defeat路径并置终局，以验证最后一个实体死亡后仍播完整片段；不冒称自然关卡中触发。完整机制还原、二阶段、点燃/引爆/晶体触发、音效、第二台电脑及长时间性能未验证。构建/独立Player将在完成后另记，包清单PASS不等于Player通过。
+运行源码`09c2c64d75060ed69e299b0696093de0c1b5945d`的Windows构建通过，`artifacts/talulah-original-build.log`为0错误。工程外工作目录启动独立Direct3D12 Player（显式batch自动化夹具），`talulah-original-player/talulah-native-result.json`为passed=true，真实进程退出0；施法者/目标GPU平均RGB差17.3238/255、暂停和完整死亡检查通过。随后原`TALULAH_CHECK`的拖动、暂停部署、技力、慢速选技、橙色火雨、全场伤害、施法锁定、胜利、重开与返回13项均为True。
+
+[独立Player死亡截图](art/talulah-native-death-actual.png)已目视核对；截图为死亡第1秒，不把单张图称为全段录像。死亡测试使用明确夹具调用正常Defeat路径并置终局，以验证最后一个实体死亡后仍播完整片段；不冒称自然关卡中触发。Player内额外确认78页未绑定特效PNG与死亡PreparedArt资源随包存在，不依赖作者外部工作区。
+
+本机`Builds/Windows/YesterdayConvoy.exe`已更新，`SOURCE.txt`绑定上述运行源码，后续文档提交不改变可执行内容；不创建ZIP/Releases。完整机制还原、二阶段、点燃/引爆/晶体触发、音效、完整人工通关、第二台电脑及长时间性能未验证。
 
 ## 2026-11-05：早期橙色火浪恢复与实时地图范围
 
