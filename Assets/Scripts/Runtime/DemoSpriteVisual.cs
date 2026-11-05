@@ -78,7 +78,7 @@ namespace YesterdayConvoy
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
-            if(WorldUpright && (local!=null || slug!=null || original!=null))
+            if(WorldUpright && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null || original!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
@@ -103,6 +103,27 @@ namespace YesterdayConvoy
                     if(target!=null&&Mathf.Abs(target.Position.x-deployedUnit.Motion.Position.x)>.01f)
                         sprite.flipX=tacticalFlip=target.Position.x<deployedUnit.Motion.Position.x;
                 }
+            }
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Healer)
+            {
+                if(deployedUnit.Active&&!manualBattle.IsPaused)
+                {
+                    bool casting=manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.UnitCombat(deployedUnit).AttackDuration;
+                    Vector3 direction=deployedUnit.Motion.Direction;
+                    if(casting&&tacticalAttack!=deployedUnit.HealingStartedAt)
+                    {
+                        tacticalAttack=deployedUnit.HealingStartedAt;
+                        for(int i=manualBattle.HealingCasts.Count-1;i>=0;i--)
+                        {
+                            var cast=manualBattle.HealingCasts[i];if(cast.SourceId!=deployedUnit.EntityId)continue;
+                            foreach(var id in cast.TargetIds){var target=manualBattle.FindUnit(id);if(target!=null&&target!=deployedUnit){direction=target.Motion.Position-deployedUnit.Motion.Position;break;}}
+                            break;
+                        }
+                        float dx=Vector3.Dot(direction,Camera.main.transform.right);if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;
+                    }
+                    else if(!casting){float dx=Vector3.Dot(direction,Camera.main.transform.right);if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;}
+                }
+                sprite.flipX=tacticalFlip;
             }
             if(manualBattle.IsPatriot(deployedUnit))
             {

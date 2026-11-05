@@ -20,6 +20,8 @@ namespace YesterdayConvoy
                 shopDefinitions[frost.Card.CardId]=frost;
                 var mandra=monsterTests.Single(o=>o.Id=="CARD_M32"&&o.Playable).Definition;
                 shopDefinitions[mandra.Card.CardId]=mandra;
+                var mephi=monsterTests.Single(o=>o.Id=="CARD_M25"&&o.Playable).Definition;
+                shopDefinitions[mephi.Card.CardId]=mephi;
             }
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             var low=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();
