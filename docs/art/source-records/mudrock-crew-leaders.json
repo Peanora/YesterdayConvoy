@@ -1,0 +1,59 @@
+{
+  "records": [
+    {
+      "task": "M42",
+      "model": "enemy_1090_mdsnpr_2",
+      "name": "泥岩小队掷能者组长",
+      "files": [
+        {
+          "file": "enemy_1090_mdsnpr_2.skel",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr_2/enemy_1090_mdsnpr_2.skel",
+          "sha256": "026b62d0c282ab9e21384f6e0af22adedf5f9b01135fcd17dfd06f82c5f4cd77",
+          "bytes": 115607
+        },
+        {
+          "file": "enemy_1090_mdsnpr_2.atlas",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr_2/enemy_1090_mdsnpr_2.atlas",
+          "sha256": "48bc716a7c1691e7211b2beeb4b94a51ba9892ec3e629f11042cf8cf3a843810",
+          "bytes": 2641
+        },
+        {
+          "file": "enemy_1090_mdsnpr_2.png",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1090_mdsnpr_2/enemy_1090_mdsnpr_2.png",
+          "sha256": "80105858cff2ede6d8c2cbb6c64ec6398317a8e793e07e01c085b19b028b6f40",
+          "bytes": 53996
+        }
+      ],
+      "page": "https://prts.wiki/w/泥岩小队掷能者组长",
+      "rights": "Original game media; redistribution permission unconfirmed. External preview only."
+    },
+    {
+      "task": "M43",
+      "model": "enemy_1091_mdhmmr_2",
+      "name": "泥岩小队践行者组长",
+      "files": [
+        {
+          "file": "enemy_1091_mdhmmr_2.skel",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr_2/enemy_1091_mdhmmr_2.skel",
+          "sha256": "5407c5c4e7e0be05db9c01bfbc9fbb4fa3682ae0bffa0398d460cd35d6029967",
+          "bytes": 49454
+        },
+        {
+          "file": "enemy_1091_mdhmmr_2.atlas",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr_2/enemy_1091_mdhmmr_2.atlas",
+          "sha256": "db50e25b4dbc40572f3ac5e0bdf32b4df002f75caf0454a9156b1cc490d17e66",
+          "bytes": 2896
+        },
+        {
+          "file": "enemy_1091_mdhmmr_2.png",
+          "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1091_mdhmmr_2/enemy_1091_mdhmmr_2.png",
+          "sha256": "712d16aecfea57c32ea28462f4f7c2d81412cd28bd90f863be2302c45be1292e",
+          "bytes": 53820
+        }
+      ],
+      "page": "https://prts.wiki/w/泥岩小队践行者组长",
+      "rights": "Original game media; redistribution permission unconfirmed. External preview only."
+    }
+  ],
+  "approved": "User confirmed preview and integration 2026-11-05; this is not rightsholder permission."
+}

@@ -1,0 +1,36 @@
+{
+  "version": "26-10-29-15-36-11-33649006",
+  "files": [
+    {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_enm_pfb_18.dat",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\original-bundles\\enm_pfb_18.ab",
+      "bytes": 895456,
+      "sha256": "8716e8bdd8d7ea2dbd34e77a53d95c3c11f171d018d89dc3d9304860cdcba4c6"
+    },
+    {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_tokens_0.dat",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\original-bundles\\btl_pfb_tokens_0.ab",
+      "bytes": 5040896,
+      "sha256": "257b95f9a7a3e17429b0df44e65a6f8d22b6126688f21b762053f170e6918745"
+    },
+    {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_8.dat",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\original-bundles\\btl_pfb_fx_enemy_8.ab",
+      "bytes": 3654084,
+      "sha256": "bfd871b76d6032053b1439220de2e5268ff36bb8e2859b161cc1479191c49e49"
+    },
+    {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_skins_trap.dat",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\original-bundles\\trap.ab",
+      "bytes": 695750,
+      "sha256": "1db50460e83cec1db0e2e6d6915d10fdaa32d581b13fe0e8f4a9a7fee67b9254"
+    }
+  ],
+  "rights": "Original Hypergryph game media. Public redistribution permission unconfirmed. External research/preview only.",
+  "approval": "2026-11-05 human approved original-material preview and standalone Mudrock / contested gramophones implementation",
+  "model": "enemy_1511_mdrock",
+  "runtime": "Assets/Art/VFX/Mudrock/Resources/MudrockVfx",
+  "mediaRights": "Original proprietary Arknights media, public redistribution permission unconfirmed; user approval does not confer rights-holder authorization.",
+  "tools": "UnityPy + lz4inv; external GPL Stronghold Protocol extractor/renderer used for offline rasterization only, no tool code shipped in Unity.",
+  "baking": "60 fps, fixed 2.5D camera, premultiplied/additive RGB preserved; runtime atlases derived from 15 selected action/effect clips, split into 24 nonempty layers."
+}

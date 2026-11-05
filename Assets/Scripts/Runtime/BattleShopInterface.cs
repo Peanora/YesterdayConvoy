@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -37,11 +38,15 @@ namespace YesterdayConvoy
             EnsureStyles();var e=Event.current;
             Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Space)e.Use();
-            if(ShopPointerEvent(e.type,point,e.button))e.Use();
+            bool synergyModal=CampaignActive&&inspectedSynergy!=null;
+            if(!synergyModal&&ShopPointerEvent(e.type,point,e.button))e.Use();
+            EventType originalEvent=e.type;
             Matrix4x4 previous=GUI.matrix;Color old=GUI.color,background=GUI.backgroundColor;
             GUI.matrix=TacticalViewport.Current.Matrix;
             try
             {
+                // Preserve control IDs while preventing the covered shop and battlefield from receiving input.
+                if(synergyModal&&originalEvent!=EventType.Repaint&&originalEvent!=EventType.Layout)e.type=EventType.Ignore;
                 DrawShopDefenderBars();
                 foreach(var unit in Battle.Units)
                 {
@@ -49,6 +54,9 @@ namespace YesterdayConvoy
                     Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
                     if(!CurrentShopBattlefieldRect.Contains(p))continue;
                     Fill(new Rect(p.x-26,p.y,52,5),LoopInk);Fill(new Rect(p.x-25,p.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
+                    if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
+                    if(Battle.IsHerdHost(unit.EntityId))GUI.Label(new Rect(p.x-40,p.y+7,80,20),$"转化 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11));
+                    if(Battle.SarkazTier>0&&unit.CardId==Battle.ContractCard&&!unit.SynergySupport)GUI.Label(new Rect(p.x-40,p.y-24,80,20),"承契 "+(Array.IndexOf(ContractTargets(),unit)+1),LoopText(11));
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
                 }
                 if(!Loop.CanShop&&!ShopPanelTransitioning)
@@ -86,13 +94,14 @@ namespace YesterdayConvoy
                 {
                     Fill(new Rect(350,514,580,30),LoopInk);GUI.Label(new Rect(365,514,550,30),shopMessage,LoopText(13,TextAnchor.MiddleCenter));
                 }
+                if(synergyModal)e.type=originalEvent;
                 DrawCampaignControls();
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop)DrawLoopSettlement();
                 if(loopMenuOpen)DrawLoopMenu();
                 if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)DrawLoopTestSettlement();
             }
-            finally{GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
+            finally{if(synergyModal&&e.type==EventType.Ignore)e.type=originalEvent;GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }
         void DrawLoopRoster(Vector2 point)
         {
@@ -153,6 +162,8 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(224,210,345,88),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(54));
             GUI.Label(new Rect(225,312,320,32),shopMapCopy.mapTitle,LoopText(19));
             GUI.Label(new Rect(225,356,320,48),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(13,TextAnchor.UpperLeft,LoopMuted));
+            if(CampaignActive&&Loop.LastMarineGrowth>0)GUI.Label(new Rect(225,448,320,35),$"海嗣培养 +{Loop.LastMarineGrowth} · 累计 {Loop.MarineExperience}",LoopText(14));
+            if(CampaignActive&&Loop.LastGolemGrowth>0)GUI.Label(new Rect(225,413,320,48),$"巨像培养 +{Loop.LastGolemGrowth} · 累计 {Loop.GolemExperience}",LoopText(14));
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,167,500,30),"本场收入",LoopText(14,TextAnchor.MiddleLeft,LoopMuted));
             for(int i=0;i<3;i++){float y=218+i*46;GUI.Label(new Rect(590,y,270,35),names[i],LoopText(18));GUI.Label(new Rect(960,y,126,35),"+"+values[i],LoopText(18,TextAnchor.MiddleRight));Fill(new Rect(590,y+39,496,1),new Color(.26f,.30f,.34f));}

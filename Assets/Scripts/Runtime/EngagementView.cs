@@ -11,6 +11,9 @@ namespace YesterdayConvoy
         private TalulahAttackVfx talulahAttackVfx;
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
+        private readonly List<LineRenderer> seedViews=new List<LineRenderer>();
+        private readonly List<LineRenderer> infectionViews=new List<LineRenderer>();
+        private readonly List<LineRenderer> golemPulseViews=new List<LineRenderer>();
         private readonly List<LineRenderer> shatterViews=new List<LineRenderer>();
         private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
         private readonly List<LineRenderer> healingViews=new List<LineRenderer>();
@@ -77,6 +80,24 @@ namespace YesterdayConvoy
                     if(source==healed) Ring(line,healed.Motion.Position+Vector3.up*.08f,.3f+(float)age,new Color(.25f,1,.55f,1-(float)age/.6f),null);
                     else {line.loop=false;line.positionCount=2;line.SetPosition(0,source.Motion.Position+cam.transform.up*.8f);line.SetPosition(1,healed.Motion.Position+cam.transform.up*.8f);}
                 }
+            for(int i=0;i<b.DeepSeeds.Count;i++)
+            {
+                if(i>=seedViews.Count)seedViews.Add(CreateLine("Deep seed marker",.07f));
+                var seed=b.DeepSeeds[i];var line=seedViews[i];line.enabled=!seed.Spent;
+                if(line.enabled)Ring(line,seed.Position+Vector3.up*.1f,.18f,new Color(1,.48f,.12f,.8f),null);
+            }
+            for(int i=0;i<b.InfectionBursts.Count;i++)
+            {
+                if(i>=infectionViews.Count)infectionViews.Add(CreateLine("Infection death burst",.12f));
+                var e=b.InfectionBursts[i];float age=(float)(time-e.At);var line=infectionViews[i];line.enabled=e.Resolved&&age>=0&&age<.65f;
+                if(line.enabled)Ring(line,e.Position+Vector3.up*.12f,Mathf.Lerp(.1f,e.Radius,age/.65f),new Color(1,.48f,.12f,1-age/.65f),null);
+            }
+            for(int i=0;i<b.GolemPulses.Count;i++)
+            {
+                if(i>=golemPulseViews.Count)golemPulseViews.Add(CreateLine("Golem global pulse",.18f));
+                var e=b.GolemPulses[i];float age=(float)(time-e.At);var line=golemPulseViews[i];line.enabled=age>=0&&age<.8f;
+                if(line.enabled)Ring(line,e.Position+Vector3.up*.15f,Mathf.Lerp(.2f,e.Radius,age/.8f),new Color(.85f,.37f,.18f,1-age/.8f),null);
+            }
             for(int i=0;i<b.ShatterEvents.Count;i++)
             {
                 if(i>=shatterViews.Count)shatterViews.Add(CreateLine("Snow synergy shatter",.10f));
@@ -171,6 +192,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            if(!shot.FromDefender&&b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
             if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&
@@ -340,7 +362,10 @@ namespace YesterdayConvoy
             talulahAttackVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
             foreach (var p in puffs) Destroy(p.Ring.gameObject);
+            foreach(var ring in seedViews)Destroy(ring.gameObject);seedViews.Clear();
+            foreach(var ring in infectionViews)Destroy(ring.gameObject);infectionViews.Clear();
             foreach(var ring in shatterViews)Destroy(ring.gameObject);shatterViews.Clear();
+            foreach(var ring in golemPulseViews)Destroy(ring.gameObject);golemPulseViews.Clear();
             foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             foreach(var line in healingViews) Destroy(line.gameObject);healingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();

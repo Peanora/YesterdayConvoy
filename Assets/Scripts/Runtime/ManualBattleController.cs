@@ -59,18 +59,20 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            diagnostic = Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
-            BuildMonsterTestCatalog();
+            if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
             scene.Monster.gameObject.SetActive(false);
             cardView = FindAnyObjectByType<DemoCardView>();
+            if(cardView!=null)cardView.SetCard(definition.Card);
             Battle = CreateBattle();
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
+            gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke;
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
@@ -133,6 +135,7 @@ namespace YesterdayConvoy
                 foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
                 result.ConfigureCardLoadout(profiles);
             }
+            var mudrockTrial=FindAnyObjectByType<MudrockTrialBootstrap>();if(mudrockTrial!=null)mudrockTrial.Configure(result);
             if(stronghold)result.ConfigureStrongholdMap(challenge);
             if(challenge)foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
             return result;
@@ -260,7 +263,7 @@ namespace YesterdayConvoy
                     clone.SetActive(true);
                 }
                 view.gameObject.SetActive(!Battle.StrongholdInTransit(unit.EntityId));
-                view.position=unit.Motion.Position;
+                view.position=unit.Motion.Position+unit.VisualOffset;
             }
             if(Battle.Phase==BattlePhase.Won || Battle.Phase==BattlePhase.Lost) CancelInteraction();
             var selectedUnit=Battle.FindUnit(selectedEntityId);
@@ -274,9 +277,9 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
+            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
-                result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能或施法动作正在进行" : $"请先选择场上的{definition.Card.DisplayName}";
+                result==SkillFailure.NoTarget ? "没有可占据的留声机，或正在刷新屏障" : result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能或施法动作正在进行" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
@@ -422,7 +425,9 @@ namespace YesterdayConvoy
         {
             var combat=Battle.UnitCombat(unit);
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
-            if(combat.FrostSeal && Battle.IsSkillActionPlaying(unit))
+            if(combat.MudrockCapture&&Battle.IsSkillActionPlaying(unit))
+            {float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.MudrockCaptureStartedAt)/1.5));Fill(new Rect(x-29,y+2,58*remaining,3),new Color(.9f,.25f,.25f));}
+            else if(combat.FrostSeal && Battle.IsSkillActionPlaying(unit))
             {
                 float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.FrostSealStartedAt)/combat.SkillInterval));
                 Fill(new Rect(x-29,y+2,58*remaining,3),new Color(.65f,.9f,1));

@@ -45,6 +45,12 @@ namespace YesterdayConvoy
             lineup.Clear();foreach(var id in next)lineup.Add(id);return true;
         }
         public void BeginPreparation(){CommissionUsed=false;}
+        internal int TrainingCrewCount=>lineup.Count(CampaignBalance.MudrockCrew);
+        internal bool SpendTrainingGold(int amount)
+        {
+            if(!CampaignEconomy||amount<=0||!CanAfford(amount))return false;
+            if(!UnlimitedGold)Gold-=amount;return true;
+        }
         bool Fits(List<Piece> pieces)=>pieces.Count<=(CampaignEconomy?10+lineup.Count(id=>pieces.Any(p=>p.Id==id)):10);
         internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;

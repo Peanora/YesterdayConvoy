@@ -118,7 +118,7 @@ namespace YesterdayConvoy
         }
         public float DefenderAuraMoveMultiplier(DeployedUnitState u)
         {
-            if(u==null)return 1;float result=1;
+            if(u==null||u.Golem&&GolemStage==4)return 1;float result=1;
             foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
                 result=Math.Min(result,d.Settings.Skill.MoveMultiplier);
             foreach(var drone in defenderDrones)
@@ -127,7 +127,7 @@ namespace YesterdayConvoy
         }
         bool StepUnitFear(DeployedUnitState u,float step)
         {
-            if(Clock>=u.FearUntil||PatriotControlImmune(u))return false;
+            if(Clock>=u.FearUntil||UnitControlImmune(u))return false;
             u.IsBlocked=u.HasCombatTarget=false;u.BlockerId=u.CombatTargetId=null;
             u.IsMoving=!IsSkillActionPlaying(u)&&Clock>=u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate;
             if(u.IsMoving)u.Motion.Retreat(step*UnitMoveMultiplier(u));
@@ -160,7 +160,7 @@ namespace YesterdayConvoy
                 if(!v.Locked)
                 {
                     v.Locked=true;v.NextAttackAt=Clock;
-                    if(!PatriotControlImmune(target)){target.FearUntil=Math.Max(target.FearUntil,Clock+2);d.FearApplications++;}
+                    if(!UnitControlImmune(target)){target.FearUntil=Math.Max(target.FearUntil,Clock+2);d.FearApplications++;}
                 }
                 if(Clock+1e-6<v.NextAttackAt)continue;
                 v.NextAttackAt=Clock+d.Settings.Interval;d.DroneHits++;

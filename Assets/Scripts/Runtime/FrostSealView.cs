@@ -41,6 +41,13 @@ namespace YesterdayConvoy
             {
                 if(screen==null||screen.gameObject!=camera.gameObject)
                 {if(screen!=null)Destroy(screen);screen=camera.gameObject.AddComponent<FrostSealScreenEffect>();}
+                foreach(var pulse in battle.SnowstormPulses)
+                {
+                    double age=battle.Clock-pulse.At;
+                    if(age<0||age>=1.4)continue;
+                    foreach(string id in pulse.Targets)
+                    {var d=battle.FindDefender(id);if(d!=null)Draw("storm",age,d.Position+camera.transform.up*.8f,camera,30);}
+                }
                 foreach(var cast in battle.FrostSeals)
                 {
                     if(!cast.Resolved||cast.Cancelled)continue;

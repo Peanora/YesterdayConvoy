@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-04：剩余四条羁绊与最新main集成
+
+实时main8f4d604（塔露拉普攻V8 #60），分支codex/synergy-four-traits带入未合并#59。入口CampaignBootstrap及STATUS/QA有冲突，已先报告，逐段保留V8入口和羁绊验证/完整记录，不整文件选单方。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖；不改场景地形、Prefab、包、工程设置。
+
+- four-compile.log：实际Unity导入/编译及41角色配置校验通过。首轮测试编译失败：测试调用internal FinishForTesting，改为反射调用，未扩大运行权限。
+- four-edit2.xml：383/384，唯一失败为60与60.0000038的浮点精确断言，改用合理容差。four-final-edit.xml完整385/385通过，新增覆盖转化队列/原进度/暂停寿命/限额/原生爆炸最终死亡、火种DOT预算/非递归/未来4档原子引爆、承契真实越阈/自损/幂等/指定目标、海嗣保护次数/共享/减甲到期/猎食/跨关幂等。
+- four-play.xml完整96/96 GPU通过，包含全部原怪物/各批守军/商店/旧五条和三项新场景用例：四预置逐个正常卡栏暂停拖动、原M21转化模型与承契爆发、原生M31喷火实际火种及M33反击渗透和培养。未用伪造灼烧代替这条实机触发证据。
+- 最后收紧海嗣接触记录，真实受伤在统一入伤接口登记，输出须实际损失目标生命，不靠无效击打培养；four-boundaries.xml定向16/16通过。four-final-play.xml最终相关GPU 3/3通过，实际模型/拖动/原生火种/反击与跨关仍可用。首版运行源码a7ecc12，four-build.log构建0错误；four-player.log五项全部True，four-campaign-player.log结算流程通过/stage13/gold329，four-talulah-player.log全部13项True，三个退出文件均0。
+
+窗口实际检查已看到八种样板、海嗣4/泥岩2/萨卡兹2、主副适应、完整效果和成员。发现详情关闭按钮点击穿透到后方商品，会误购买；修复为弹窗期间保留GUI控件序号但忽略底层商店/战场输入，并阻断原始拖动入口。four-modal-play.xml相关4/4通过，包含弹窗后方不能部署/不扣费、关闭后可正常拖动。最终原生关闭按钮的鼠标复验因窗口控制工具本轮后段不可用而未执行，不把此前发现问题的点击记作修复后通过。最终运行源码36808ca，four-final-build.log：BASELINE_BUILD_PASS 1800304349 bytes、0错误；预处理1255文件、1193源PNG保留，后处理目录786412537 bytes。four-final-player.log以独立EXE batchmode/D3D11运行，pool/herd/nativeDeep/contract/marineGrowth五项全True、退出0；该次不是人工鼠标验证。仓库4773跟踪文件/meta与暂存检查通过，未提交原两项本地文件。
+
+完整13关自然通关、长期随机运营/强度平衡、第二机与新克隆未测。深池4档为配置逻辑验证，当前正常卡池只能2档；不将测试快照中的未来M32误标为已入池。转化体沿用原模型/动作和文字状态，火种复用已有地面标记，未新增完整原作美术特效。无ZIP/Releases。
+
 ## 2026-11-04：塔露拉普攻V8
 
 任务[#58](https://github.com/Peanora/YesterdayConvoy/issues/58)，从main 220741f建立codex/talulah-attack-flipbook-v8。特效源码7f779ef，最终构建源码d510f65；后续交付文档不改变可执行内容。运行图集SHA256、完整生成提示词和权利记录见[独立来源记录](art/source-records/talulah-v8-fire.json)，新素材未被忽略，Resources依赖与必要.meta一起提交。
@@ -13,6 +26,31 @@
 - 最终独立Player `talulah-v8-final-tower-player.log`塔露拉13项全True，`talulah-v8-final-player.log`高难度两关闭环9项全True，均退出0；专用入口路由修复通过这次最终Player验证。没有把Editor GPU截图写作独立Player截图。
 
 本轮不声称全量PlayMode、长时平衡、性能优化、第二台电脑或全新克隆测试完成。工程外V8预览与游戏GPU证据分开；没有重画人物或提取参考录屏像素。
+
+## 2026-11-04：羁绊左栏与正常部署回归
+
+sidebar-edit.xml：13/13定向EditMode通过，检查重复同种卡去重、激活与未激活计数、未实现标签及效果文本。sidebar-final-play.xml：7/7 GPU通过，包含完整卡栏MouseDown/Drag/Up普通部署（97DP）、暂停第二张部署（93DP）且时钟不动、补给/整备拒绝部署且不消费，并保留感染/军令/巨像原五项回归。未重跑全部其余逻辑/场景、13关自然平衡或第二机。本轮未改场景/Prefab/包/工程设置；沿用PR59与原两个未跟踪项隔离。运行源码abd062e：sidebar-build.log构建Windows x64成功，0错误，后处理目录783583847 bytes；sidebar-player.log六项检查全部True、退出0。原生窗口实际点击未激活整合运动1/2，详情显示三档效果和本队成员，关闭后恢复操作。新详情不推进额外模拟、不改变规则。仓库4756文件/meta与暂存差异检查通过。
+
+## 2026-11-04：三条扩展羁绊与36卡池
+
+基线实时main `220741f`，新分支`codex/synergy-infection-guerrilla-mudrock`。人类确认公共接口与巨像预览，范围见[v1.2](proposals/SYNERGY-EXPANSION-v1.2.md)。保留场景地形/Prefab/包/工程设置及原两个未跟踪项。
+
+- `synergy2-author.log`、`synergy2-compile.log`：GOLEM_SUPPORT_ASSET_PASS，显式创建支援配置、导入原作图集并实际编译通过。
+- `synergy2-final-edit.xml`完整367/367通过。后增半令排除前半参与者边界，`synergy2-boundary-edit.xml`12/12通过，合计368个不同逻辑用例有通过记录，不称为一次完整368。覆盖卡池/五费排除、原库存/星级、分体扣费/穿门0/固有自爆分摊、死亡爆裂幂等、主副形态、军令不递归、半令、暂停/无目标不消费、巨像一次部署/成长和混编固有能力。
+- `synergy2-play.xml`首轮7/8：新4项均通过。旧升星用例最后一张卡已被商店占库而委托失败；用例改为优先购买实际商品，保留九张库存规则。
+- `synergy2-full-play.xml`89/90：巨像暂停生成正确使用Move首帧，用例误要求Idle，修为检查真实GOLEM库及帧0，不改暂停逻辑。
+- `synergy2-final-full-play.xml`完整91/91 GPU通过：36卡/四样板、形态锁定/分体、真实军令、暂停拖动巨像/完整攻击，以及自然胜利获4培养经验、返回整备进入II级；原怪物/守军/两关商店和旧羁绊一并回归。
+
+未做13关完整自然通关、长期经济/强度人工平衡、第二机或新克隆验证。自然胜利证据仅限本次验证地图与部署路径，不承诺全部随机构筑必胜。无ZIP/Releases。最终构建与独立Player结果如下。
+
+最终运行源码 `da9928c`，`synergy2-build.log`：Windows x64 Development，BASELINE_BUILD_PASS 1797467201 bytes/0 errors（后处理前），离线资源后处理1255文件、替换1193张角色PNG，目录783575272 bytes；源PNG仍随仓库保留。`Builds/Windows/BUILD_INFO.json`登记完整源码提交。
+
+- 最初隐藏窗口启动的`synergy2-player.log`停在初始化，没有完成证据，已终止该测试进程；改为正常可见窗口运行，不修改游戏逻辑。
+- `synergy2-visible-player.log`：pool/split/army/golem/paused/naturalGrowth全部True；退出文件为0，实际自然交战获得4经验再进入II级。
+- `synergy2-campaign-player.log`：passed=True、stage=13、gold=329，退出0。普通战斗为测试判胜，只证明跨关、结算、商店和补给衔接，不称13关自然通关。
+- 最终原生窗口通过computer-use实际点击：领取首补给10→21、进入商店、切换测试、进入无限验证、切换泥岩样板、开始战斗、巨像拖到红门，DP100→96且正确显示巨像，返回整备无报错。窗口留在泥岩样板整备供人类试玩；未把工具截图另存为文件。
+- 仓库4754跟踪文件及Unity元数据检查通过，全部GOLEM运行文件已跟踪、哈希与manifest一致、无100MB以上单文件。暂存差异检查通过；原.vscode/和PackageManagerSettings.asset仍未跟踪，AGENTS未提交。本轮无场景地形、Prefab、Packages或ProjectSettings差异，无ZIP/Releases。
+
 
 ## 2026-11-04：三阶段与首批羁绊接入
 
@@ -1474,3 +1512,36 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 实际查看造型总览/离线页、Mon3tr/圣聆初雪/玛恩纳技能的MP4帧与修复后翎羽Move姿势序列；新约能天使取样实际存在。完整原作粒子/形态实体、AI与游戏机制未实现；自动检查不替代人类美术确认。普通治疗、无普攻角色、基础攻击多段、技能各阶段、基建行走均明确区分。
 - 本轮没有Unity资源/代码改动，未运行Unity导入、EditMode、PlayMode、Windows构建或实机交战，不更新EXE/ZIP/Releases。原始加工区与未接入预览仅项目外保留；确认后实际运行素材仍随代码上传。文档核对30唯一ID、首批8/其余22的状态、链接及仓库静态检查；具体文件见[本批记录](art/DEFENDERS-REMAINING22-PREVIEW.md)。
 - 文档交付核对：30个唯一守军ID、首批8人/余22人状态和本轮相对链接全部通过；git diff --cached --check通过，repository-checks检查1144个跟踪文件通过。本轮仅6份Markdown改动，无运行资产或代码改动。
+
+## 2026-11-05 泥岩与留声机独立试玩
+
+基线origin/main 8f4d604，带入已确认PR61依赖4aead99，新分支codex/mudrock-gramophone。新增静态保存的MudrockTrial场景，保留原四场景与两个既存未跟踪项。
+
+完整EditMode393/393通过（artifacts/mudrock-edit-final.xml）；完整D3D11 GPU PlayMode99/99通过（artifacts/mudrock-gpu-full.xml），其中2项泥岩实际场景、8项新纯逻辑。覆盖延迟/幂等占据、全施法锁移动、暂停、死亡取消、不耗费无目标、实际攻疗、邻接守军夺回、重开与配置原子拒绝；场景检查有原模型/图集/Shader实际绘制。首轮旧场景数量和即时补盾断言已按本轮确认范围改为5场景与原Skill_2命中时机，复验全过。
+
+新Shader保留预乘与加法RGB，24非空图层58页PNG约23.6MB；角色原始动作继续走已有加载缓存。构建/独立Player证据待下方补充，不把编辑器通过当作已构建。未测：第二机、任意镜头逐像素对照、长期平衡、完整原作声音/留声机外部弹道。
+
+最终交付补充：
+- 首次源码badbba8独立Player逻辑全True；batchmode截图为黑帧，仅作为逻辑检查，不作为视觉证据。正常窗口重新运行后取得真实画面，发现底部仍是维维美卡面与东装置过低，修正启动绑定并移动装置后新增断言。
+- 修正后9/9相关GPU通过（artifacts/mudrock-final-boundary.xml，泥岩/原交战/商店闭环）。
+- 最终运行源码bb7db8e，Windows构建0错误，1997621649字节；产物Builds/Windows/YesterdayConvoy.exe。
+- 最终正常窗口Player：artifacts/mudrock-native-final.log中MUDROCK_PLAYER的drag/pause/charge/capture/actionLock/device/restart=True；四张真实截图位于artifacts/mudrock-native-final，已目视核对泥岩卡面、原模型、屏障、就绪标志、占据动作与装置位置。Player自动流程完成并退出，无异常。
+- 原两个未跟踪文件不提交。未自动ZIP/Releases；源码和运行素材走功能PR，不自动合并。
+
+
+## 2026-11-05 感染/雪怪/泥岩成长重制
+
+- 分支codex/synergy-growth-rework；远端main=8f4d604，已正常fetch并核对，按授权吸收未合并PR64依赖。原有.vscode/和PackageManagerSettings.asset保留。
+- SynergyReworkTools.Prepare真实运行成功；只向Campaign/SynergyTrial各增加三台已保存装置，没有重生成地形/路线或覆盖主场景。
+- EditMode第一次407/408：新增风雪测试漏配FrostNova标志；修正测试配置。中途新增PlayMode测试误用internal读取器造成编译失败，改用公开资源入口。最终Logs/synergy-rework-edit3.xml为408/408，无跳过。
+- D3D11完整PlayMode：Logs/synergy-rework-play.xml为100/101；唯一失败为既有全怪物用例仍断言37个CARD_M角色。改为39，Logs/synergy-rework-roster.xml该全遍历1/1通过；最终101项均实际覆盖，没有将失败结果隐藏为一次全绿运行。
+- 新增验证：独立双爆炸115实际伤害、雪怪4人低档/5人不消耗冻结、0/2/4/6秒脉冲、暂停/重开、成长全部门槛、投入扣费与唯一关间上限、补给不产培养、终极三目标只回血一次与第三击全场伤害；图形验证真实卡面、动作资源、暂停拖动、泥岩占据配置与三台锚点。
+- 终极巨像基准：现有Maps/BattleShop完整六星配置、原固定路线/高低台/技能与索敌，单巨像28.300000秒清空6名守军，1次守军技能实际施放，存活且末次回复后HP6000。测试没有降低守军数值或关闭技能；这不是所有未来守军与地图必胜证明。
+- 新增组长27张动作图集＋2卡面PNG共17546295字节，680帧/60fps。项目外10秒视频已完整解码；运行清单、源URL/哈希、原权利状态与meta随源码。外部Spine代码/原工作区不入项目。
+- 当前未完成：Windows构建/独立Player、第二机、长期平衡和完整局成型概率。后续实际结果追加于此。
+
+补充：完整场景验证后增加“已冻结目标仍有天气”的3/3定向通过，逻辑15/15复验。实机目视发现低位风雪被已保存地形遮挡，新增天气显示只抬高视觉节点0.8相机上方向，不改逻辑位置或原冰封特效挂点；D3D11真实相机启用/禁用风雪像素差异1/1通过（>30像素实际变化），不再只依赖renderer.enabled。独立Player六项全True、退出0；交付版本仍在复验。
+
+最终交付：运行源码cfad4a2，Logs/synergy-rework-build-verified.log记录BASELINE_BUILD_PASS 2015199842 bytes、0 errors。Logs/synergy-rework-verified-player.log六项(pool/preset/pausedDrag/ultimateSoloClear/investment/snowPulsesAndReset)全部True；通过Python等待真实Player进程退出，VERIFIED_PLAYER_EXIT_CODE=0。Logs/synergy-rework-verified下四张截图已目视核对，培养面板明确标注预置，不把加载页截图当完成。最后只把天气抬升限制到新增脉冲调用，原冰封挂点保持。共408项完整逻辑通过、最后15项逻辑复验；102种GPU场景用例均获通过验证（100/101原整套＋角色总数修正全遍历1/1＋天气3/3＋像素1/1）。
+
+进入：EXE默认挑战，菜单→返回测试选择→羁绊验证·无限金币，右侧“巨像培养”提供I–IV；IV预置直接设培养24/投入80/五人二星并换完整六星防线，开始下一战后拖巨像卡即可。正式模式不提供这种进度赠送。第二机、完整局成型概率/长期平衡及所有GUI按钮真实鼠标逐项点击未做。不ZIP/Releases，不自动合并。原作素材开放授权仍未确认，来源与权利记录保留。

@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "task": "GOLEM",
+  "ppu": 80,
+  "referenceSpeed": 0.45,
+  "height": 2.4,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 192,
+      "duration": 3.200000047683716,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5059692700703938,
+      "pivotY": 0.2228971023029751,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-02.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "idle-03.png",
+          "count": 45,
+          "width": 2016,
+          "height": 2016
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Move",
+      "count": 120,
+      "duration": 2,
+      "fps": 60,
+      "loop": true,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5059692700703938,
+      "pivotY": 0.2228971023029751,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "walk-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "walk-02.png",
+          "count": 22,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 311,
+      "duration": 5.166666507720947,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5059692700703938,
+      "pivotY": 0.2228971023029751,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-01.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-02.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-03.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-04.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-05.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "attack-06.png",
+          "count": 17,
+          "width": 2016,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Die",
+      "count": 71,
+      "duration": 1.1666666269302368,
+      "fps": 60,
+      "loop": false,
+      "cell": 288,
+      "columns": 7,
+      "pivotX": 0.5059692700703938,
+      "pivotY": 0.2228971023029751,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 2016
+        },
+        {
+          "file": "death-01.png",
+          "count": 22,
+          "width": 2016,
+          "height": 1152
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "0b304046962966d4761d815c7f3714fd5914a426771613af1fefa77813513de1"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "c2de1e7f2c3b41f71eb82bd0adc36ef002ed556a822c42c319f1d22921bc1892"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "88499ec5f37fab7cf99066a925d47c9c3aa6cad7fcf312e70beb2c980fbb8e23"
+    },
+    {
+      "file": "attack-03.png",
+      "sha256": "4c8b1592a45c3915c98819193897032d869cd05f4a9f09880a0880965182a6c4"
+    },
+    {
+      "file": "attack-04.png",
+      "sha256": "1ed6bc809995c310846f9d060b105fd6a2ad3f615f528e454f9a8a8ffa813b7a"
+    },
+    {
+      "file": "attack-05.png",
+      "sha256": "7a0c7f3b57752182b869aedb7a15a6efab4d93808f602accf2daff825f7aabb7"
+    },
+    {
+      "file": "attack-06.png",
+      "sha256": "c4468973b2eb07a87a6d76ef6251b0f7c2e824556e6c0c715380d92195e2a23c"
+    },
+    {
+      "file": "death-00.png",
+      "sha256": "55cbb7fd3b10e953c33b0fc9b779e76e6c38394786bcd10e81b3383d7a5db25f"
+    },
+    {
+      "file": "death-01.png",
+      "sha256": "c497c3a1a0c94ed648f73d4408855a2e5a708a8cf7323963bb9601f953cf318f"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "16631f6589a239858a8bf2ae768e3c10c56ac6da159caf323497d50e4c5e98a3"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "6acab049afdae47fae2b2ca2b5318cd3e69b6e7cf3f669a8a096a3d10c082708"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "5660f0b6093cb662e18e492e26e3340e3448018804acab7978b4255ca2bc3dd4"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "984e53f615b3e0a5227b5e47c95be06a956239a57d66a49dce8d1e4685831ff5"
+    },
+    {
+      "file": "walk-00.png",
+      "sha256": "3405e5c78f83504618a8d763052cf770f5b5550db70f6bdf5515f54eaf6836e5"
+    },
+    {
+      "file": "walk-01.png",
+      "sha256": "b54bbc140548e5954dac3fdc7a5f057c9aed3220632e316243708b8d1644ef53"
+    },
+    {
+      "file": "walk-02.png",
+      "sha256": "c88c3133688228ae17a34c0267e97f2ede1f4be8c1734da9438c6bc07ed5865d"
+    },
+    {
+      "file": "portrait.png",
+      "sha256": "2a3790849a9ac0456d684365de055e2579dd760a9c114fad04dec23918a68f2c"
+    }
+  ],
+  "provenance": "User-approved PRTS enemy_1092_mdgint preview 2026-11-04; original Hypergryph art; no open redistribution license confirmed. See docs/art/GOLEM-SUPPORT.md."
+}

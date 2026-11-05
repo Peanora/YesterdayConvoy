@@ -46,7 +46,7 @@ namespace YesterdayConvoy
                     break;
                 case DefenderSkillKind.PramanixSnow:
                     d.NextSnowAt=Clock+1.5;
-                    foreach(var u in units)if(CanDefenderTarget(u)&&!PatriotControlImmune(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))
+                    foreach(var u in units)if(CanDefenderTarget(u)&&!UnitControlImmune(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))
                     {u.LureUntil=Clock+10;u.LureDistance=u.Motion.ProjectDistance(d.Position);d.Lures++;}
                     break;
                 case DefenderSkillKind.WangGambit:
@@ -59,7 +59,7 @@ namespace YesterdayConvoy
         }
         bool StepUnitLure(DeployedUnitState u,float dt)
         {
-            if(u.LureUntil<=Clock||PatriotControlImmune(u))return false;
+            if(u.LureUntil<=Clock||UnitControlImmune(u))return false;
             if(IsSkillActionPlaying(u))return false;
             u.IsBlocked=u.HasCombatTarget=false;u.BlockerId=u.CombatTargetId=null;
             if(Clock<u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate){u.IsMoving=false;return true;}

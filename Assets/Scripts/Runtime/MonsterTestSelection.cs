@@ -59,7 +59,7 @@ namespace YesterdayConvoy
             foreach(string name in candidates) if(names.Add(name)) monsterTests.Add(new MonsterTestOption(name));
         }
         private static bool HasSkillAnimation(CardDefinition card,EngagementSettings combat) =>
-            (card.SkillFrames?.Count??0)>0 || combat.FrostSeal && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
+            (card.SkillFrames?.Count??0)>0 || (combat.FrostSeal||combat.MudrockCapture) && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
         private bool IsRegisteredTest(ManualBattleDefinition data)
         {
             if(defenderTrial!=null && data==defenderTrial.battle) return true;
@@ -75,6 +75,7 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
+            if(FindAnyObjectByType<MudrockTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             CancelArtPreparation();
             if(defenderTrial!=null) SwitchTestDefinition(wisadelDefinition);
             else { RestartBattle(); EnableCombatView(); }
@@ -100,6 +101,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(56,126,680,42),"每次只测试一种怪物。重新进入时，战斗状态完整重置。",menuBody);
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 含六星",buttonStyle))defenderMenuOpen=true;
+            if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));

@@ -26,19 +26,20 @@ MonoBehaviour:
   blockCount: 0
   blockRadius: 0.65
   initialSP: 0
-  requiredSP: 0
-  spPerSecond: 0
+  requiredSP: 35
+  spPerSecond: 1
   skillAmmo: 0
-  skillAttack: 0
-  skillInterval: 0
-  skillRange: 0
+  skillAttack: 1
+  skillInterval: 1.5
+  skillRange: 999
   projectileTime: 0.02
   fireRain: 0
-  hasSkill: 0
+  hasSkill: 1
+  mudrockCapture: 1
   melee: 1
   noOrdinaryAttack: 0
   attackDuration: 2
-  attackWindup: 0.8
+  attackWindup: 1.1333333
   damageType: 0
   defenderResistance: 0
   armorShred: 0

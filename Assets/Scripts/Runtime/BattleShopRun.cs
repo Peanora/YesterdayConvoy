@@ -8,6 +8,13 @@ namespace YesterdayConvoy
         public ShopTrialModel Economy {get;}
         public BattleShopPhase Phase {get;private set;}=BattleShopPhase.Preparation;
         public int Stage {get;private set;}=1;
+        public int GolemExperience {get;private set;}
+        public int LastGolemGrowth {get;private set;}
+        public int GolemInvestment {get;private set;}
+        int investmentStage=-1,investmentThisStage;
+        public int GolemInvestmentRemaining=>investmentStage==Stage?10-investmentThisStage:10;
+        public int MarineExperience {get;private set;}
+        public int LastMarineGrowth {get;private set;}
         public readonly int Seed;
         public readonly bool LateGame;
         public readonly bool Campaign,Sandbox;
@@ -17,12 +24,14 @@ namespace YesterdayConvoy
         public bool CanShop=>Phase==BattleShopPhase.Shop;
         public bool CanDeploy=>Phase==BattleShopPhase.Preparation||Phase==BattleShopPhase.Fighting;
         public BattleShopRun(ShopTrialModel economy,int seed,bool lateGame=false,bool campaign=false,bool sandbox=false){Campaign=campaign;Sandbox=sandbox;Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;LateGame=lateGame;}
-        public bool Observe(BattlePhase battle)
+        public bool Observe(BattlePhase battle,int golemGrowth=0,int marineGrowth=0)
         {
             if(!CanDeploy)return false;
             if(battle==BattlePhase.Running)Phase=BattleShopPhase.Fighting;
             if(battle!=BattlePhase.Won&&battle!=BattlePhase.Lost)return false;
-            bool won=battle==BattlePhase.Won;Reward=Economy.SettleRound("stage-"+Stage,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
+            if(marineGrowth<0||marineGrowth>3)throw new ArgumentOutOfRangeException(nameof(marineGrowth));
+            if(golemGrowth<0||golemGrowth>4)throw new ArgumentOutOfRangeException(nameof(golemGrowth));
+            bool won=battle==BattlePhase.Won;LastGolemGrowth=Campaign&&won&&!RewardStage?golemGrowth:0;GolemExperience+=LastGolemGrowth;LastMarineGrowth=Campaign&&won?marineGrowth:0;MarineExperience+=LastMarineGrowth;Reward=Economy.SettleRound("stage-"+Stage,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
             Phase=!won?BattleShopPhase.Failed:Stage==TotalStages?BattleShopPhase.Complete:BattleShopPhase.Settlement;return true;
         }
         public bool OpenShop()
@@ -34,6 +43,17 @@ namespace YesterdayConvoy
         }
         public bool RestartEncounter(){if(!Campaign||!CanDeploy)return false;Phase=BattleShopPhase.Preparation;return true;}
         internal void SandboxPreparation(){if(!Sandbox)throw new InvalidOperationException();Phase=BattleShopPhase.Shop;}
+        public bool InvestGolem(int amount)
+        {
+            if(!Campaign||!CanShop||Economy.TrainingCrewCount<2||amount<=0||amount>GolemInvestmentRemaining||!Economy.SpendTrainingGold(amount))return false;
+            if(investmentStage!=Stage){investmentStage=Stage;investmentThisStage=0;}
+            investmentThisStage+=amount;GolemInvestment+=amount;return true;
+        }
+        internal void PresetGolemGrowth(int experience,int investment)
+        {
+            if(!Sandbox||!CanShop||experience<0||investment<0)throw new InvalidOperationException();
+            GolemExperience=experience;GolemInvestment=investment;
+        }
         public bool PrepareBattle(){if(!CanShop)return false;Phase=BattleShopPhase.Preparation;return true;}
     }
 }
