@@ -36,7 +36,11 @@ namespace YesterdayConvoy
         void ConfigureLoopStage()
         {
             CloseDefenderInspector();CancelShopDrag();SetShopVisible(false);ResetShopPresentation();
-            shopMapCopy.defenders=CampaignActive?(SynergySandbox&&golemBenchmark?BattleShopStages.Defenders(2,true):CampaignPlan.Guards(Loop.Stage,SynergySandbox)):BattleShopStages.Defenders(Loop.Stage,Loop.LateGame);shopMapCopy.mapTitle=CampaignActive?(SynergySandbox?"羁绊自由试验":CampaignPlan.Title(Loop.Stage)):(Loop.LateGame?"盟约防线":"基础防线")+" · 第"+Loop.Stage+"关";
+            var dedicated=SynergySandbox?activeSynergyTrial:null;
+            // The explicit IV benchmark keeps its existing original-stat six-star lineup.
+            // Every normal restart re-copies the dedicated asset before applying sandbox multipliers.
+            shopMapCopy.defenders=dedicated!=null&&!golemBenchmark?dedicated.CopyDefenders():CampaignActive?(SynergySandbox&&golemBenchmark?BattleShopStages.Defenders(2,true):CampaignPlan.Guards(Loop.Stage,SynergySandbox)):BattleShopStages.Defenders(Loop.Stage,Loop.LateGame);
+            shopMapCopy.mapTitle=dedicated!=null?dedicated.displayTitle+(golemBenchmark?" · IV原数值基准":""):CampaignActive?(SynergySandbox?"羁绊自由试验":CampaignPlan.Title(Loop.Stage)):(Loop.LateGame?"盟约防线":"基础防线")+" · 第"+Loop.Stage+"关";
             if(BoostSandboxStats)foreach(var guard in shopMapCopy.defenders){guard.health*=SandboxDefenderHealth;guard.attack*=SandboxDefenderAttack;}
             shopMessage=null;loopMenuOpen=false;loopTestSettlementOpen=loopWasTestSettled=false;
             SyncShopDeck(false,true);terminalPresentationElapsed=readyIdleElapsed=0;requestSequence=0;

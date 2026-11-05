@@ -68,9 +68,9 @@ namespace YesterdayConvoy
             CancelShopDrag();if(visible)CloseDefenderInspector();AnimateShopVisibility(visible);
         }
 
-        public void EnterShopTrial(int preset=0,string mapId=StrongholdChallengeLayout.Id)
+        public void EnterShopTrial(int preset=0,string mapId=StrongholdChallengeLayout.Id,DefenderTrialDefinition encounter=null)
         {
-            Loop=null;
+            activeSynergyTrial=null;Loop=null;
             if(shop==null){shopPreviousViewport=Camera.main.rect;shopPreviousFieldOfView=Camera.main.fieldOfView;}
             shopDefinitions.Clear();
             string[] supported={"CARD_M02","CARD_M03","CARD_M05","CARD_M08",OriginalSlugArt.CardId,"CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};
@@ -91,7 +91,7 @@ namespace YesterdayConvoy
             CloseDefenderInspector();shopDrag=-1;shopMoving=false;shopPromotionAt=-100;shopPromotedInstance=-1;shopVisible=preset>0;
             ResetShopPresentation();
             if(shopMapCopy!=null)Destroy(shopMapCopy);
-            shopMapCopy=Instantiate(Resources.Load<DefenderTrialDefinition>("Maps/BattleShop"));
+            shopMapCopy=Instantiate(encounter!=null?encounter:Resources.Load<DefenderTrialDefinition>("Maps/BattleShop"));
             if(shopCoin==null)
             {
                 shopCoin=new Texture2D(2,2,TextureFormat.RGBA32,false);
@@ -178,7 +178,7 @@ namespace YesterdayConvoy
         public void CancelShopDrag(){golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
-            Loop=null;
+            activeSynergyTrial=null;Loop=null;
             CancelShopDrag();ClearShopBenchModels();shop=null;shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
             ReturnToMonsterTests();if(shopMapCopy!=null){Destroy(shopMapCopy);shopMapCopy=null;}
         }

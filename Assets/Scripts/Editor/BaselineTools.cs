@@ -20,10 +20,11 @@ namespace YesterdayConvoy.Editor
             PreparedArtTools.PrepareAll();
             if (File.Exists(DemoArtTools.CardPath)) DemoArtTools.Validate();
             else InitialDemoTools.Validate();
+            GameSceneCatalog.UpdateBuildSettings();
             Directory.CreateDirectory("Builds/Windows");
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { CampaignTools.CampaignScene, ShopMapTools.ScenePath, InitialDemoTools.ScenePath, CampaignTools.SandboxScene, MudrockTrialTools.ScenePath },
+                scenes = GameSceneCatalog.BuildPaths(),
                 locationPathName = "Builds/Windows/YesterdayConvoy.exe",
                 target = BuildTarget.StandaloneWindows64,
                 options = BuildOptions.Development

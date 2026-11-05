@@ -96,7 +96,7 @@ namespace YesterdayConvoy
                 StartCoroutine(VerifyPatriotPresentation(evidence>=0&&evidence+1<args.Length?args[evidence+1]:Path.Combine(Application.persistentDataPath,"PatriotVfx"),true));
             }
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-talulahFireRainV12Test" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
-            TestSelectionOpen=!smoke;
+            TestSelectionOpen=!smoke&&FindAnyObjectByType<TalulahPhaseTrialBootstrap>()==null;
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)
             {
@@ -143,6 +143,7 @@ namespace YesterdayConvoy
 
         private ManualBattle CreateBattle()
         {
+            if(TalulahPhaseTrialActive)return talulahPhaseTrial.CreateBattle(talulahDefinition);
             if(CampaignActive)return CreateCampaignBattle();
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;

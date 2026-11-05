@@ -15,7 +15,7 @@ namespace YesterdayConvoy.Editor
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             if(!File.Exists(ScenePath)) throw new InvalidOperationException("Restore the current scene from Git; legacy generation has been removed.");
             EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
-            EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ShopMapTools.ScenePath,true),new EditorBuildSettingsScene(ScenePath,true)};
+            GameSceneCatalog.UpdateBuildSettings();
             Validate();
         }
 

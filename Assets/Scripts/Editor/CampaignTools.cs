@@ -21,7 +21,7 @@ namespace YesterdayConvoy.Editor
                 var go=new GameObject(sandbox?"Synergy free trial":"Three act challenge");go.AddComponent<CampaignBootstrap>().sandbox=sandbox;
                 EditorSceneManager.SaveScene(scene,sandbox?SandboxScene:CampaignScene);
             }
-            EditorBuildSettings.scenes=new[]{CampaignScene,ShopMapTools.ScenePath,InitialDemoTools.ScenePath,SandboxScene}.Select(p=>new EditorBuildSettingsScene(p,true)).ToArray();
+            GameSceneCatalog.UpdateBuildSettings();
             AssetDatabase.SaveAssets();Debug.Log("CAMPAIGN_SCENES_PASS: serialized terrain, four build scenes");
         }
     }

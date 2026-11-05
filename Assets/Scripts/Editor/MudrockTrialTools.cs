@@ -31,7 +31,7 @@ namespace YesterdayConvoy.Editor
             foreach(int i in Enumerable.Range(0,3)){var go=new GameObject("L-44 "+names[i]);go.transform.SetParent(root.transform);go.transform.position=positions[i];go.transform.rotation=Camera.main.transform.rotation;var anchor=go.AddComponent<GramophoneAnchor>();anchor.deviceId=names[i];anchor.initialCharge=i==1?100:50;boot.devices[i]=anchor;var renderer=go.AddComponent<SpriteRenderer>();renderer.sprite=MudrockVfxArt.Load("towerIdle_all").At(0);renderer.sharedMaterial=existing;
                 // Store a persistent sprite subasset, never a temporary runtime sprite reference.
                 var persistent=UnityEngine.Object.Instantiate(renderer.sprite);persistent.hideFlags=HideFlags.None;string spritePath="Assets/Art/VFX/Mudrock/TowerEditorSprite.asset";var saved=AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);if(saved==null){AssetDatabase.CreateAsset(persistent,spritePath);saved=persistent;}else UnityEngine.Object.DestroyImmediate(persistent);renderer.sprite=saved;}
-            EditorSceneManager.SaveScene(scene,ScenePath);EditorBuildSettings.scenes=new[]{CampaignTools.CampaignScene,ShopMapTools.ScenePath,InitialDemoTools.ScenePath,CampaignTools.SandboxScene,ScenePath}.Select(x=>new EditorBuildSettingsScene(x,true)).ToArray();AssetDatabase.SaveAssets();Debug.Log("MUDROCK_AUTHORED_SCENE_PASS");
+            EditorSceneManager.SaveScene(scene,ScenePath);GameSceneCatalog.UpdateBuildSettings();AssetDatabase.SaveAssets();Debug.Log("MUDROCK_AUTHORED_SCENE_PASS");
         }
     }
 }

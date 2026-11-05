@@ -64,7 +64,7 @@ namespace YesterdayConvoy.Editor
             var camera=Camera.main;camera.transform.rotation=Quaternion.Euler(60,0,0);camera.transform.position=camera.transform.rotation*new Vector3(0,-1.7f,-35)+new Vector3(0,0,.7f);camera.fieldOfView=24;
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
-            EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ShopMapTools.ScenePath,true),new EditorBuildSettingsScene(InitialDemoTools.ScenePath,true)};
+            GameSceneCatalog.UpdateBuildSettings();
             Validate();Debug.Log("AUTHORED_SCENES_MIGRATION_PASS");
         }
         public static void Validate()

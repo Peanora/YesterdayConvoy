@@ -25,24 +25,37 @@ namespace YesterdayConvoy
         bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
             !Loop.CanShop&&Loop.CanDeploy&&(CampaignQuickActionsRect.Contains(point)||Battle.MudrockTier>=2&&GolemCardRect.Contains(point)));
         GUIStyle CampaignText(int size=13,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
-        public IEnumerator PrepareCampaign(bool sandbox,int seed=0)
+        public IEnumerator PrepareCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null)
         {
-            var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{"CARD_M07","CARD_M08"};
-            var cards=monsterTests.Where(o=>o.Playable&&ids.Contains(o.Id)).Select(o=>o.Definition.Card);
-            return Prepare(Plan(CampaignPlan.Guards(3,sandbox),cards,true),()=>StartCampaign(sandbox,seed),"准备羁绊挑战");
+            if(trial!=null){if(!sandbox)throw new InvalidOperationException("Dedicated trials require sandbox mode.");trial.Validate();}
+            var ids=trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{"CARD_M07","CARD_M08"};
+            var preloadIds=ids.Concat(ids.Count(CampaignBalance.Reunion)>=2?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().ToArray();
+            if(ids.Except(monsterTests.Where(o=>o.Playable).Select(o=>o.Id)).Any())throw new InvalidOperationException("A starting trial member has no playable model.");
+            var cards=monsterTests.Where(o=>o.Playable&&preloadIds.Contains(o.Id)).Select(o=>o.Definition.Card);
+            if(ids.Count(CampaignBalance.MudrockCrew)>=2)cards=cards.Concat(new[]{GolemCard});
+            var guards=trial!=null?trial.encounter.defenders:CampaignPlan.Guards(3,sandbox);
+            bool secondPhase=trial!=null&&trial.initialMembers.Any(m=>m.cardId=="CARD_TALULAH_TRIAL"&&m.star==3);
+            return Prepare(Plan(guards,cards,true,talulahSecondPhase:secondPhase),()=>StartCampaign(sandbox,seed,trial),trial!=null?"准备"+trial.displayTitle:"准备羁绊挑战");
         }
-        public void StartCampaign(bool sandbox,int seed=0)
+        public void StartCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null)
         {
-            CancelArtPreparation();EnterShopTrial(0,StrongholdChallengeLayout.Id);
+            if(trial!=null){if(!sandbox)throw new InvalidOperationException("Dedicated trials require sandbox mode.");trial.Validate();}
+            CancelArtPreparation();EnterShopTrial(0,StrongholdChallengeLayout.Id,trial?.encounter);activeSynergyTrial=trial;
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             shopDefinitions.Clear();
             foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             shop.EnableCampaign(sandbox);
-            string[] initial=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
-            shop.Preset(initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),sandbox?8:1,0,10);
+            string[] initial=trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
+            shop.Preset(trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),trial!=null?trial.initialLevel:sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
             golemBenchmark=false;golemTrainingTab=false;campaignConstructOpen=false;campaignConstructTab=0;campaignSynergyScroll=Vector2.zero;inspectedSynergy=null;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
+            if(trial!=null)
+            {
+                infectionForm=trial.infectionPrimary;infectionSecond=trial.infectionSecondary;
+                marineForm=trial.marinePrimary;marineSecond=trial.marineSecondary;
+                if(!string.IsNullOrEmpty(trial.contractCardId))contractCard=trial.contractCardId;
+            }
             if(sandbox){Loop.SandboxPreparation();shop.Refresh(true);}
             ConfigureLoopStage();if(sandbox)SetShopVisible(true);
         }
@@ -83,7 +96,7 @@ namespace YesterdayConvoy
         public bool RestartCampaignEncounter(){if(!CampaignActive||!Loop.RestartEncounter())return false;ConfigureLoopStage();return true;}
         void RestartCurrentRun()
         {
-            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
+            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
         }
         bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First().Instance==piece.Instance;
         Rect CampaignPieceRect(int index)

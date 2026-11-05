@@ -75,6 +75,7 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
+            if(FindAnyObjectByType<TalulahPhaseTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             if(FindAnyObjectByType<MudrockTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             CancelArtPreparation();
             if(defenderTrial!=null) SwitchTestDefinition(wisadelDefinition);
@@ -93,6 +94,7 @@ namespace YesterdayConvoy
                 menuSmall=new GUIStyle(smallStyle){fontSize=15,wordWrap=true};
                 menuSearch=new GUIStyle(GUI.skin.textField){font=scene.InterfaceFont,fontSize=16,padding=new RectOffset(9,9,6,6)};
             }
+            if(dedicatedSynergyMenuOpen){DrawDedicatedSynergyMenu();return;}
             if(defenderMenuOpen){DrawDefenderSelection();return;}
             Fill(new Rect(0,0,1280,720),new Color(.025f,.04f,.055f,.99f));
             Fill(new Rect(0,0,10,720),new Color(.37f,.8f,.86f));
@@ -101,6 +103,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(56,126,680,42),"每次只测试一种怪物。重新进入时，战斗状态完整重置。",menuBody);
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 含六星",buttonStyle))defenderMenuOpen=true;
+            if(GUI.Button(new Rect(790,91,428,40),"三星塔露拉 · 完整双阶段",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(TalulahPhaseTrialBootstrap.SceneName);
             if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
@@ -164,6 +167,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(790,538,426,26),"三阶段挑战 · 13关",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
+            if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;
             GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
         }
         private static void DrawTestPortrait(Rect bounds,Sprite sprite)
