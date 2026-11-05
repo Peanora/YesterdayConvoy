@@ -17,10 +17,11 @@ namespace YesterdayConvoy
             bool frost=unit.CardId=="CARD_M14"&&combat.FrostSeal&&combat.Effects.FrostNova&&combat.HasSkill&&combat.CanAttack;
             bool mandra=unit.CardId=="CARD_M32"&&unit.UnitId.StartsWith("M32_",StringComparison.Ordinal)&&combat.Effects.Mandragora&&!combat.HasSkill&&combat.CanAttack;
             bool mephi=unit.CardId=="CARD_M25"&&unit.UnitId=="M25_MEPHISTO"&&combat.Effects.Healer&&!combat.HasSkill&&!combat.CanAttack;
-            if(!talulah&&!frost&&!mandra&&!mephi&&(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack))
+            bool patriot=unit.CardId=="CARD_M20"&&unit.UnitId=="M20_PATRIOT"&&combat.Effects.Patriot&&!combat.HasSkill&&combat.CanAttack;
+            if(!talulah&&!frost&&!mandra&&!mephi&&!patriot&&(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack))
                 throw new ArgumentException("Only authored basic guerrilla trial roles are supported.");
             var e=combat.Effects;
-            if(e.Patriot||e.FrostNova&&!frost||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer&&!mephi||e.Flamechaser||e.Flamerazer||e.Mandragora&&!mandra||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||
+            if(e.Patriot&&!patriot||e.FrostNova&&!frost||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer&&!mephi||e.Flamechaser||e.Flamerazer||e.Mandragora&&!mandra||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||
                 e.RegenerationFraction>0||e.LifeSteal>0||e.BlastAttack>0||e.ColdAttackEvery>0||e.FrozenAttackMultiplier>1||(e.ArmorShred>0&&unit.CardId!="CARD_M05")||e.AttackTargets>1)
                 throw new ArgumentException("This roster supports basic unit profiles and tactical orders only.");
             Unit=unit;Combat=combat;
