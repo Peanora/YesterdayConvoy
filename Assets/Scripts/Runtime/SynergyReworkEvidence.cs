@@ -13,7 +13,8 @@ namespace YesterdayConvoy
             string dir=index>=0&&index+1<args.Length?args[index+1]:null;
             if(dir!=null)Directory.CreateDirectory(dir);
             Time.timeScale=0;
-            PrepareSandboxRoster(10);while(ArtLoading)yield return null;yield return null;
+            PrepareSandboxRoster(10);
+            for(int ready=0;ready<3;){yield return null;ready=ArtLoading?0:ready+1;}
             bool pool=shop.Roles.Count==39&&shop.Roles.Count(r=>r.Cost==5)==4;
             bool preset=Battle.GolemStage==4&&Battle.MudrockTier==5&&Battle.Defenders.Count==6&&Battle.Defenders.All(d=>d.Settings.Skill.Enabled);
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"01-golem-training.png"));yield return null;yield return null;}
@@ -34,7 +35,7 @@ namespace YesterdayConvoy
             var receipt=Battle.TryDeployRole(Battle.RunId,8001,Battle.Entry,"CARD_M14");var frost=Battle.FindUnit(receipt.EntityId);
             for(int i=0;i<250&&frost!=null&&!Battle.IsSkillReady(frost.EntityId);i++){Tick(.1f);if(i%10==0)yield return null;}
             bool snow=frost!=null&&Battle.SnowTier==5&&Battle.TryActivateSkill(Battle.RunId,8002,frost.EntityId)==SkillFailure.None;
-            Tick(.15f);yield return null;
+            Tick(.7f);yield return null;
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"04-five-snow-storm.png"));yield return null;yield return null;}
             Tick(8);snow&=Battle.SnowstormPulses.Count==4;ReplaySandbox();snow&=Battle.SnowstormPulses.Count==0;
             Debug.Log($"SYNERGY_REWORK_PLAYER_CHECK: pool={pool}; preset={preset}; pausedDrag={deployment}; ultimateSoloClear={clear}; investment={investment}; snowPulsesAndReset={snow}");
