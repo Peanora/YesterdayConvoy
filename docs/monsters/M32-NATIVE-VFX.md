@@ -2,6 +2,8 @@
 
 2026-11-05，霍利屹。[任务 #67](https://github.com/Peanora/YesterdayConvoy/issues/67)。用户确认工程外 V1 预览后要求接入战斗与商店。功能分支 `codex/mandragora-vfx-preview`，基于 main `2c04ba7`。
 
+[PR #69](https://github.com/Peanora/YesterdayConvoy/pull/69)已吸收后续main `a37f0e5`，保留塔露拉火雨V12与爱国者特效。最终集成结果见QA最新记录与本地BUILD-INFO。
+
 ## 怎样试玩
 
 Unity 精确版本为 **6000.6.5f1**。本地 Windows 入口是 `Builds/Windows/YesterdayConvoy.exe`，保留整个 Windows 目录。
