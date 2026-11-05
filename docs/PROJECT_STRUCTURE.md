@@ -4,6 +4,7 @@
 
 ## 在Unity里查看地图
 
+- `Assets/Scenes/MudrockTrial.unity`：泥岩与可争夺留声机独立试玩，地形和装置位置均保存于场景。
 - `Assets/Scenes/Campaign.unity`：三阶段13关挑战，当前默认构建入口；地形直接保存在场景，关卡仅配置化更换守军。
 - `Assets/Scenes/SynergyTrial.unity`：独立羁绊验证，8级、无限金币，整合/雪怪与升星均真实生效。
 - `Assets/Scenes/MonsterTrial.unity`：怪物试用入口。地图已保存，未运行时即可查看、选择并编辑。Play后选择怪物或进入既有守军技能样板。

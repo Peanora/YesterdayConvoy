@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator AuthoredDevicesManualCapturePauseAndRestartHaveActualOriginalVisuals()
         {
             yield return SceneManager.LoadSceneAsync("MudrockTrial");yield return null;yield return null;Time.timeScale=0;
-            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.TestSelectionOpen,Is.False);Assert.That(c.Battle.Gramophones.Count,Is.EqualTo(3));
+            var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(Object.FindAnyObjectByType<DemoCardView>().Card,Is.SameAs(c.Definition.Card));Assert.That(c.TestSelectionOpen,Is.False);Assert.That(c.Battle.Gramophones.Count,Is.EqualTo(3));
             c.StartBattle();c.SelectCard(true);Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);c.Tick(35.1f);yield return null;
             var u=c.Battle.Units[0];Assert.That(u.Active,Is.True);Assert.That(c.Battle.IsSkillReady(u.EntityId),Is.True);c.SelectSkillUnit(u.EntityId);Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));var point=u.Motion.Position;
             c.Tick(.9f);yield return null;Assert.That(c.Battle.Gramophones.Any(g=>g.Owner==GramophoneOwner.Monsters),Is.True);Assert.That(u.Motion.Position,Is.EqualTo(point));Assert.That(c.GetComponent<MudrockVfxView>().VisibleEffects,Is.GreaterThan(0));

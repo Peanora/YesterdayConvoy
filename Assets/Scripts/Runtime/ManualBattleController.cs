@@ -66,6 +66,7 @@ namespace YesterdayConvoy
             scene.enabled = false;
             scene.Monster.gameObject.SetActive(false);
             cardView = FindAnyObjectByType<DemoCardView>();
+            if(cardView!=null)cardView.SetCard(definition.Card);
             Battle = CreateBattle();
             CreatePreview();
             EnableCombatView();

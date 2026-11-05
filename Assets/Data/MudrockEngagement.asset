@@ -75,4 +75,4 @@ MonoBehaviour:
   orderSniper: 0
   patriot: 0
   extraDefenders:
-  - {x: 2, y: 0.35, z: -1}
+  - {x: 2, y: 0.35, z: 0}
