@@ -6,7 +6,7 @@ namespace YesterdayConvoy
 {
     public sealed partial class ManualBattleController
     {
-        const float ShopArrivalDuration=.72f;
+        const float ShopArrivalDuration=.63f;
         readonly Dictionary<int,SpriteRenderer> shopBenchModels=new Dictionary<int,SpriteRenderer>();
         readonly Dictionary<int,float> shopBenchIdleOrigins=new Dictionary<int,float>();
         readonly List<ShopArrival> shopArrivals=new List<ShopArrival>();
@@ -20,6 +20,8 @@ namespace YesterdayConvoy
             internal string Id;
             internal float At;
             internal SpriteRenderer Model;
+            internal Vector2 Origin;
+            internal bool BoundToFlow,Merge;
         }
         public float ShopPanelVisibility
         {
@@ -69,9 +71,9 @@ namespace YesterdayConvoy
         static float ShopModelScale(string id)
         {
             float height=LocalMonsterArt.For(id)?.Height??1;
-            return .50f/1.855f*Mathf.Min(1,2.05f/height);
+            return .57f/1.855f*Mathf.Min(1,2.05f/height);
         }
-        Vector2 ShopModelFoot(int slot){var r=CampaignActive?CampaignPieceRect(slot):ShopBenchRect(slot);return new Vector2(r.center.x,CampaignActive?r.y+43:693);}
+        Vector2 ShopModelFoot(int slot){var r=ShopPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);
         void SyncShopBenchModels()
         {
@@ -98,7 +100,7 @@ namespace YesterdayConvoy
             float drop=Mathf.Clamp01((progress-.12f)/.48f);
             return destination+new Vector2(0,-78*(1-drop*drop));
         }
-        void LateUpdate(){if(!ArtLoading&&ShopTrialActive){if(shopModelStage==null)SyncShopBenchModels();else UpdateShopBenchModels();}}
+        void LateUpdate(){if(!ArtLoading&&ShopTrialActive){PruneShopFlows();if(shopModelStage==null)SyncShopBenchModels();else UpdateShopBenchModels();}}
         void UpdateShopBenchModels()
         {
             for(int i=shopArrivals.Count-1;i>=0;i--)
@@ -108,76 +110,72 @@ namespace YesterdayConvoy
             {
                 var piece=shop.Bench[i];if(!shopBenchModels.TryGetValue(piece.Instance,out var model))continue;
                 model.sprite=ShopIdleFrame(piece.Id,Time.unscaledTime-shopBenchIdleOrigins[piece.Instance]);
-                float burst=ShopBenchPromotionRemaining(piece.Instance),scale=ShopModelScale(piece.Id)*(1+.12f*Mathf.Sin((1-burst)*Mathf.PI)*burst);
+                var bounds=ShopPieceRect(i);model.enabled=bounds.width>0&&bounds.height>0;
+                float burst=ShopFlowPromotionRemaining(piece.Instance),scale=ShopModelScale(piece.Id)*(1+.08f*Mathf.Sin((1-burst)*Mathf.PI)*burst);
                 model.transform.localScale=Vector3.one*scale;model.transform.localPosition=ShopModelPosition(ShopModelFoot(i));model.sortingOrder=10;
                 if(shopMoving&&shopDrag==piece.Instance){model.transform.localPosition=ShopModelPosition(shopPointer+new Vector2(0,-8));model.transform.localScale*=1.15f;model.sortingOrder=110;}
-                float alpha=shopArrivals.Any(a=>a.Instance==piece.Instance)?0:1;
+                float alpha=shopArrivals.Any(a=>a.Instance==piece.Instance&&!a.Merge)?0:1;
                 model.color=piece.Star==3&&burst>0?new Color(1,1,.65f+.35f*(1-burst),alpha):new Color(1,1,1,alpha);
             }
             foreach(var arrival in shopArrivals)
             {
                 int slot=shop.Bench.ToList().FindIndex(p=>p.Instance==arrival.Instance);float t=Mathf.Clamp01((Time.unscaledTime-arrival.At)/ShopArrivalDuration);
                 arrival.Model.sprite=ShopIdleFrame(arrival.Id,Time.unscaledTime-shopBenchIdleOrigins[arrival.Instance]);arrival.Model.sortingOrder=100;
-                arrival.Model.transform.localPosition=ShopModelPosition(ShopEntranceFoot(ShopModelFoot(slot),t));
-                float settle=Mathf.Sin(Mathf.Clamp01((t-.6f)/.4f)*Mathf.PI);
-                arrival.Model.transform.localScale=new Vector3(1+.12f*settle,1-.18f*settle,1)*ShopModelScale(arrival.Id);
+                var destination=ShopModelFoot(slot);
+                arrival.Model.transform.localPosition=ShopModelPosition(arrival.BoundToFlow?ShopFlowPoint(arrival.Origin,destination,ShopFlowEase(Mathf.Clamp01((Time.unscaledTime-arrival.At-.055f)/.56f))):ShopEntranceFoot(destination,t));
+                arrival.Model.transform.localScale=Vector3.one*ShopModelScale(arrival.Id)*(arrival.BoundToFlow?.54f:1);
                 float reveal=Mathf.SmoothStep(0,1,Mathf.Clamp01(t/.14f));
-                arrival.Model.color=new Color(1,1,1,reveal);
+                arrival.Model.color=new Color(1,1,1,arrival.Merge?0:reveal*.65f);
             }
         }
         void ClearShopBenchModels()
         {
             if(shopModelStage!=null){shopModelStage.SetActive(false);Destroy(shopModelStage);shopModelStage=null;}
             if(shopModelTarget!=null){shopModelTarget.Release();Destroy(shopModelTarget);shopModelTarget=null;}
-            shopModelCamera=null;shopBenchModels.Clear();shopBenchIdleOrigins.Clear();shopArrivals.Clear();
+            shopModelCamera=null;shopBenchModels.Clear();shopBenchIdleOrigins.Clear();shopArrivals.Clear();ClearShopFlows();
         }
         void DrawShopBench(GUIStyle center)
         {
-            if(CampaignActive){DrawCampaignBench(center);DrawCampaignModels();return;}
-            Fill(new Rect(0,632,1280,88),new Color(.035f,.06f,.075f,.98f));
-            Fill(new Rect(8,632,1264,1),new Color(.3f,.44f,.48f));
-            // A single raised walkway, as seen in the user's recording; seat hit areas stay invisible.
-            Fill(new Rect(14,656,1252,48),new Color(.018f,.03f,.035f));
-            for(int row=0;row<37;row++)
+            // A continuous raised platform per row; occupied pads retain the full recruitment-cost colour.
+            DrawShopWalkway(ApprovedUi.LineupSlot(0),shop.Level,true);
+            DrawShopWalkway(ApprovedUi.ReserveSlot(0),10,false);
+            int reserve=shop.Bench.Count(p=>!IsLineupPiece(p));
+            var title=ApprovedUi.Text(scene.InterfaceFont,13,TextAnchor.MiddleLeft,Color.white,600);
+            var hint=ApprovedUi.Text(scene.InterfaceFont,10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
+            Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shopLineup.Count}/{shop.Level}",title);
+            Fill(new Rect(188,594,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,594,145,21),$"备战席  {reserve}/10",title);
+            GUI.Label(new Rect(730,493,398,21),"点击移入备战 · 同名限编队一张",hint);
+            GUI.Label(new Rect(730,604,398,21),"点击编入队伍 · 拖到左右两侧出售",hint);
+            for(int i=0;i<shop.Bench.Count;i++)
             {
-                float inset=12-row*.21f;
-                Fill(new Rect(inset,652+row,1280-2*inset,1),Color.Lerp(new Color(.27f,.34f,.36f),new Color(.36f,.42f,.43f),row/36f));
-            }
-            Fill(new Rect(12,651,1256,2),new Color(.51f,.58f,.59f));
-            foreach(int y in new[]{660,673,686}){Fill(new Rect(13,y,1254,1),new Color(.2f,.27f,.29f));Fill(new Rect(13,y+1,1254,1),new Color(.4f,.47f,.48f));}
-            for(int row=0;row<10;row++)Fill(new Rect(5+row*.6f,689+row,1270-row*1.2f,1),Color.Lerp(new Color(.27f,.33f,.35f),new Color(.1f,.15f,.17f),row/9f));
-            Fill(new Rect(10,699,1260,2),new Color(.035f,.06f,.075f));
-            foreach(int x in new[]{26,410,826,1252}){Fill(new Rect(x,656,3,2),new Color(.17f,.23f,.25f));Fill(new Rect(x,682,3,2),new Color(.17f,.23f,.25f));}
-            for(int i=0;i<10;i++)
-            {
-                var r=ShopBenchRect(i);var piece=i<shop.Bench.Count?shop.Bench[i]:null;
-                bool active=piece!=null&&shopLineup.Contains(piece.Id)&&shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First().Instance==piece.Instance;
-                Color color=piece!=null&&piece.Star>1?ShopRankColor(piece.Star,.65f):new Color(.24f,.39f,.44f);
-                if(piece==null)continue;
-                Fill(new Rect(r.center.x-30,694,60,2),active?new Color(.45f,.88f,.92f):color);
-                float burst=ShopBenchPromotionRemaining(piece.Instance);
-                if(burst>0)DrawShopPromotionLight(ShopModelFoot(i),piece.Star,burst);
-            }
-            foreach(var arrival in shopArrivals)
-            {
-                int slot=shop.Bench.ToList().FindIndex(p=>p.Instance==arrival.Instance);if(slot<0)continue;
-                float t=Mathf.Clamp01((Time.unscaledTime-arrival.At)/ShopArrivalDuration);
-                DrawShopEntranceGate(ShopModelFoot(slot),t);
+                var p=shop.Bench[i];var r=ShopPieceRect(i);if(r.width<=0||r.height<=0)continue;
+                DrawLoopCostBackground(r,shop.Definition(p.Id).Cost);
+                Fill(new Rect(r.x+15,r.y+51,r.width-30,5),new Color(.04f,.09f,.13f,.31f));
             }
             if(Event.current.type==EventType.Repaint&&shopModelCamera!=null)shopModelCamera.Render();
             if(shopModelTarget!=null)GUI.DrawTexture(new Rect(0,0,1280,720),shopModelTarget,ScaleMode.StretchToFill,true);
             for(int i=0;i<shop.Bench.Count;i++)
             {
-                var p=shop.Bench[i];var r=ShopBenchRect(i);
-                if(p.Star>1)DrawShopRankBadge(new Rect(r.xMax-36,650,34,13),p.Star,false);
-                else DrawShopStars(new Rect(r.xMax-20,650,13,12),1,new Color(.75f,.89f,1));
-                GUI.Label(new Rect(r.x,697,r.width,17),shop.Definition(p.Id).Name,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.69f,.8f,.84f)}});
-                if(Battle.StrongholdChallenge)
-                {
-                    var card=Battle.FindCard(p.Id);string state=card!=null?$"{card.Settings.DeploymentCost} DP · {card.RemainingUses}次":shopLineup.Contains(p.Id)&&p.Id==Battle.Settings.CardId?$"{Battle.Settings.DeploymentCost} DP · {Battle.RemainingUses}次":"未编队";
-                    if(card!=null&&Battle.CardCooldown(p.Id)>0)state=$"冷却 {Battle.CardCooldown(p.Id):0.0}秒";
-                    GUI.Label(new Rect(r.x,633,r.width,16),state,new GUIStyle(center){fontSize=10,normal={textColor=new Color(.75f,.88f,.94f)}});
-                }
+                var p=shop.Bench[i];var r=ShopPieceRect(i);if(r.width<=0||r.height<=0)continue;
+                int cost=shop.Definition(p.Id).Cost;Fill(new Rect(r.x+3,r.y+2,15,15),new Color(.12f,.23f,.32f,.9f));
+                GUI.Label(new Rect(r.x+3,r.y+1,15,16),cost.ToString(),ApprovedUi.Text(scene.InterfaceFont,12,TextAnchor.MiddleCenter,Color.white,700));
+                int star=ShopDisplayedStar(p);DrawShopStars(new Rect(r.xMax-8-star*12,r.y+2,star*12,12),star,new Color(1,.94f,.72f));
+                Fill(new Rect(r.x,r.y+55,r.width,16),Color.Lerp(ApprovedUi.Tier(cost),Color.black,.3f));
+                GUI.Label(new Rect(r.x+1,r.y+55,r.width-2,16),shop.Definition(p.Id).Name,ApprovedUi.Text(scene.InterfaceFont,11,TextAnchor.MiddleCenter,Color.white,600));
+            }
+        }
+        void DrawShopWalkway(Rect first,int unlocked,bool lineup)
+        {
+            var deck=new Rect(first.x-4,first.y,950,73);Fill(deck,new Color(.51f,.59f,.64f));
+            Fill(new Rect(deck.x,deck.y,deck.width,3),new Color(.69f,.77f,.81f));
+            Fill(new Rect(deck.x,deck.yMax,deck.width,5),new Color(.25f,.35f,.43f));
+            Fill(new Rect(deck.x,deck.yMax+5,deck.width,2),new Color(.13f,.23f,.30f));
+            for(int i=0;i<10;i++)
+            {
+                var r=lineup?ApprovedUi.LineupSlot(i):ApprovedUi.ReserveSlot(i);
+                Fill(r,new Color(.29f,.39f,.46f,lineup&&i>=unlocked?.55f:.2f));
+                Fill(new Rect(r.xMax-1,r.y,1,r.height),new Color(.75f,.83f,.87f,.25f));
+                if(lineup&&i>=unlocked)GUI.Label(r,"·",ApprovedUi.Text(scene.InterfaceFont,22,TextAnchor.MiddleCenter,new Color(.77f,.84f,.88f,.5f)));
             }
         }
         void DrawShopEntranceGate(Vector2 foot,float progress)

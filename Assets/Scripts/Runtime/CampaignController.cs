@@ -14,7 +14,17 @@ namespace YesterdayConvoy
         InfectionForm infectionForm=InfectionForm.Swarm,infectionSecond=InfectionForm.Shell;
         static CardDefinition GolemCard=>Resources.Load<CardDefinition>("Support/GolemCard");
         bool reunionRanged;
+        bool campaignConstructOpen;
+        int campaignConstructTab;
+        Vector2 campaignSynergyScroll;
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
+        static Rect CampaignConstructRect=>new Rect(252,155,722,352);
+        bool CampaignUiModalOpen=>CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
+        Rect CampaignConstructToggleRect=>new Rect(16,SynergyListRect.yMax+6,157,28);
+        Rect CampaignQuickActionsRect=>new Rect(16,CampaignConstructToggleRect.yMax+7,157,222);
+        bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
+            !Loop.CanShop&&Loop.CanDeploy&&(CampaignQuickActionsRect.Contains(point)||Battle.MudrockTier>=2&&GolemCardRect.Contains(point)));
+        GUIStyle CampaignText(int size=13,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
         public IEnumerator PrepareCampaign(bool sandbox,int seed=0)
         {
             var ids=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{"CARD_M07","CARD_M08"};
@@ -32,7 +42,7 @@ namespace YesterdayConvoy
             string[] initial=sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
             shop.Preset(initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
-            golemBenchmark=false;golemTrainingTab=false;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
+            golemBenchmark=false;golemTrainingTab=false;campaignConstructOpen=false;campaignConstructTab=0;campaignSynergyScroll=Vector2.zero;inspectedSynergy=null;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
             if(sandbox){Loop.SandboxPreparation();shop.Refresh(true);}
             ConfigureLoopStage();if(sandbox)SetShopVisible(true);
         }
@@ -66,8 +76,8 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result CommissionCampaignCard(string id)
         {
             if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready)return new ShopTrialModel.Result{Message="仅整备时可委托"};
-            var result=shop.Commission(id);
-            if(result.Success){SyncShopDeck(false);BeginShopArrival(result);}
+            var snapshot=CaptureShopFlowSnapshot();var result=shop.Commission(id);
+            if(result.Success){SyncShopDeck(false);BeginShopArrival(result);BeginShopFlow(snapshot,result,shopPointer);}
             ShopNotice(result.Message);return result;
         }
         public bool RestartCampaignEncounter(){if(!CampaignActive||!Loop.RestartEncounter())return false;ConfigureLoopStage();return true;}
@@ -81,38 +91,89 @@ namespace YesterdayConvoy
             if(index<0||index>=shop.Bench.Count)return Rect.zero;
             var piece=shop.Bench[index];
             if(!Loop.CanShop)return IsLineupPiece(piece)?LoopRosterRect(shopLineup.IndexOf(piece.Id)):Rect.zero;
-            int slot=IsLineupPiece(piece)?shopLineup.IndexOf(piece.Id):shop.Bench.Where(p=>!IsLineupPiece(p)).ToList().FindIndex(p=>p.Instance==piece.Instance);
-            return new Rect(16+slot*124,IsLineupPiece(piece)?531:650,116,62);
-        }
-        void DrawCampaignBench(GUIStyle style)
-        {
-            Fill(new Rect(0,508,1280,89),LoopInk);Fill(new Rect(0,632,1280,88),LoopInk);
-            GUI.Label(new Rect(16,507,1100,23),$"编队 {shopLineup.Count}/{shop.Level}（上排） · 独立备战 {shop.Bench.Count-shopLineup.Count}/10（下排） · 点击调整，向下拖出售",style);
-            for(int i=0;i<shop.Bench.Count;i++)
-            {
-                var piece=shop.Bench[i];var r=CampaignPieceRect(i);DrawLoopCostBackground(r,shop.Definition(piece.Id).Cost);
-                if(ShopBenchModel(piece.Instance)==null)DrawTestPortrait(new Rect(r.x+2,r.y+1,42,51),OriginalTalulahArt.CardPortrait(shopDefinitions[piece.Id].Card));
-                GUI.Label(new Rect(r.x+43,r.y+4,73,23),new string('★',piece.Star),style);
-                GUI.Label(new Rect(r.x+2,r.y+39,112,22),shop.Definition(piece.Id).Name,new GUIStyle(style){fontSize=11});
-            }
+            return ShopPreparationPieceRect(index);
         }
         void DrawCampaignModels(){if(Event.current.type==EventType.Repaint&&shopModelCamera!=null)shopModelCamera.Render();if(shopModelTarget!=null)GUI.DrawTexture(new Rect(0,0,1280,720),shopModelTarget,ScaleMode.StretchToFill,true);}
         void DrawCampaignControls()
         {
             if(!CampaignActive)return;
+            if(!Loop.CanShop&&!Loop.CanDeploy){campaignConstructOpen=false;inspectedSynergy=null;return;}
+            var e=Event.current;Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
+            if(CampaignUiModalOpen&&e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape)
+            {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
+            if(CampaignUiModalOpen&&e.type==EventType.MouseDown&&e.button==0)
+            {
+                Rect panel=campaignConstructOpen?CampaignConstructRect:SynergyDetailRect;
+                if(!panel.Contains(point)&&!SynergyListRect.Contains(point)&&!CampaignConstructToggleRect.Contains(point))
+                {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
+            }
+            DrawSynergySidebar();
+            if(LoopButton(CampaignConstructToggleRect,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开"))
+            {campaignConstructOpen=!campaignConstructOpen;inspectedSynergy=null;CancelShopDrag();}
+            bool enabled=GUI.enabled;GUI.enabled=enabled&&!CampaignUiModalOpen;
+            if(!Loop.CanShop&&Loop.CanDeploy)DrawCampaignQuickActions();
+            GUI.enabled=enabled;
+            if(campaignConstructOpen)DrawCampaignConstructOverlay();
+        }
+        void DrawCampaignConstructOverlay()
+        {
+            Rect r=CampaignConstructRect;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+            GUI.Label(new Rect(r.x+16,r.y+10,545,27),Loop.CanShop?"构筑与培养":"构筑与培养 · 本场已锁定",CampaignText(18,weight:700));
+            if(LoopButton(new Rect(r.xMax-69,r.y+10,53,27),"关闭")){campaignConstructOpen=false;return;}
+            if(LoopButton(new Rect(r.x+16,r.y+45,160,28),"运营与测试样板",campaignConstructTab==0))campaignConstructTab=0;
+            if(LoopButton(new Rect(r.x+184,r.y+45,160,28),"阵营选择与培养",campaignConstructTab==1))campaignConstructTab=1;
             var oldMatrix=GUI.matrix;bool oldEnabled=GUI.enabled;
-            try { GUI.enabled=oldEnabled&&inspectedSynergy==null;GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(CampaignPanelRect.x-16,0,0));if(inspectedSynergy==null)DrawCampaignSettings(); }
-            finally { GUI.matrix=oldMatrix;GUI.enabled=oldEnabled; }
-            DrawRemainingPreparation();DrawSynergySidebar();
+            try
+            {
+                if(campaignConstructTab==0)
+                {
+                    GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(r.x, r.y+84-CampaignPanelRect.y,0));
+                    DrawCampaignSettings();
+                }
+                else
+                {
+                    GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(r.x+16-680,r.y+84-270,0));
+                    DrawRemainingPreparation();
+                }
+            }
+            finally {GUI.matrix=oldMatrix;GUI.enabled=oldEnabled;}
+        }
+        void DrawCampaignQuickActions()
+        {
+            float x=CampaignQuickActionsRect.x,y=CampaignQuickActionsRect.y;
+            if(Loop.RewardStage)
+            {
+                Fill(new Rect(x,y,157,48),ApprovedUi.Paper);
+                GUI.Label(new Rect(x+8,y+3,141,18),"补给关 · 无需部署",CampaignText(11));
+                if(LoopButton(new Rect(x+5,y+22,147,23),"领取补给 · 无损通关",true))ClaimCampaignSupply();
+                return;
+            }
+            bool enabled=GUI.enabled;
+            if(Battle.ReunionTier>0||Battle.SnowTier>0)
+            {
+                Fill(new Rect(x,y,157,20),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,20),$"援军 {Battle.MusterUsed} · 碎冰 {Battle.Shatters}",CampaignText(11));y+=22;
+            }
+            if(Battle.GuerrillaTier>0)
+            {
+                Fill(new Rect(x,y,157,20),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,20),"军令 "+Battle.Orders,CampaignText(11));y+=22;
+                GUI.enabled=enabled&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused;
+                if(LoopButton(new Rect(x,y,Battle.GuerrillaTier==6?76:157,25),"协同整令"))UseCampaignOrder(false);
+                if(Battle.GuerrillaTier==6&&LoopButton(new Rect(x+81,y,76,25),Battle.HalfOrderPending?"后半令":"前半令"))UseCampaignOrder(true);
+                y+=29;GUI.enabled=enabled;
+            }
+            y=DrawRemainingBattleActions(x,y);
+            if(SynergySandbox&&Loop.CanDeploy&&LoopButton(new Rect(x,y+4,157,26),"结束验证，返回整备"))ReplaySandbox();
+            if(Battle.MudrockTier>=2)DrawGolemCard();
+            GUI.enabled=enabled;
         }
         void DrawCampaignSettings()
         {
-            float y=CampaignPanelRect.y;Fill(new Rect(16,y,405,CampaignPanelRect.height),new Color(.04f,.07f,.09f,.94f));
-            GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",LoopText(12));
-            GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),LoopText(11));
+            float y=CampaignPanelRect.y;
+            GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",CampaignText(12,weight:600));
+            GUI.Label(new Rect(25,y+31,388,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders} · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
-                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV原数值基准 · 无限金币 · 九张库存 · DP100":"测试倍率：怪物血×4 伤×2 · 守军血×12 伤×8"):"每次整备限一次低费委托，失败不扣费",LoopText(11));
+                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV原数值基准 · 无限金币 · 九张库存 · DP100":"测试倍率：怪物血×4 伤×2 · 守军血×12 伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
                 var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
                 if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];
@@ -122,21 +183,14 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(266,y+121,142,30),"切换测试")){ReturnToTrialScene();return;}
                 if(LoopButton(new Rect(25,y+158,230,30),"感染主形态："+FormName(infectionForm)))SetCampaignForms((InfectionForm)(((int)infectionForm+1)%3),infectionSecond);
                 if(LoopButton(new Rect(266,y+158,142,30),"六档副："+FormName(infectionSecond)))SetCampaignForms(infectionForm,(InfectionForm)(((int)infectionSecond+1)%3));
-                GUI.Label(new Rect(25,y+192,388,22),"形态战前锁定；六档副形态只取二档效果",LoopText(11));
+                GUI.Label(new Rect(25,y+192,388,22),"形态战前锁定；六档副形态只取二档效果",CampaignText(11));
                 if(SynergySandbox)
-                    for(int i=0;i<8;i++)if(LoopButton(new Rect(25+(i%4)*96,y+214+(i/4)*20,90,18),new[]{"冰雪样板","感染样板","游击样板","泥岩样板","牧群样板","深池样板","承契样板","海嗣样板"}[i]))PrepareSandboxRoster(i);
+                    for(int i=0;i<8;i++)if(LoopButton(new Rect(25+(i%4)*96,y+214+(i/4)*20,90,18),new[]{"冰雪样板","感染样板","游击样板","泥岩样板","牧群样板","深池样板","承契样板","海嗣样板"}[i])){campaignConstructOpen=false;PrepareSandboxRoster(i);}
             }
-            else if(Loop.RewardStage&&Loop.CanDeploy)
-            {if(LoopButton(new Rect(25,y+75,380,48),"补给关无需部署 · 点击领取补给",true))ClaimCampaignSupply();}
             else
             {
-                GUI.enabled=Loop.CanDeploy&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused&&Battle.GuerrillaTier>0;
-                if(LoopButton(new Rect(25,y+68,185,32),"协同整令"))UseCampaignOrder(false);
-                GUI.enabled=GUI.enabled&&Battle.GuerrillaTier==6;
-                if(LoopButton(new Rect(220,y+68,185,32),Battle.HalfOrderPending?"后半令 · 3点":"前半令 · 3点"))UseCampaignOrder(true);GUI.enabled=true;
-                DrawRemainingBattle(y);
-                if(SynergySandbox&&Loop.CanDeploy&&LoopButton(new Rect(25,y+190,380,28),"结束本次验证，返回整备"))ReplaySandbox();
-                DrawGolemCard();
+                GUI.Label(new Rect(25,y+69,620,28),$"援军选择：{(reunionRanged?"弩手":"士兵")}    感染主形态：{FormName(infectionForm)}    副形态：{FormName(infectionSecond)}",CampaignText(13));
+                GUI.Label(new Rect(25,y+108,620,55),"构筑选择已于开战前锁定。本场军令、承契爆发和火种等操作在左侧动作栏。\n战斗暂停时可以部署，技能与羁绊主动仍需恢复后使用。",CampaignText(12));
             }
         }
     }
