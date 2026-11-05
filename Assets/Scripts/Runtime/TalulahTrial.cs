@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         [SerializeField] private ManualBattleDefinition talulahDefinition;
         private ManualBattleDefinition wisadelDefinition;
         public bool TalulahActive => definition==talulahDefinition && talulahDefinition!=null;
-        public string SkillName => Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封" :
+        public string SkillName => Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据" : Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封" :
             Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "焚天火雨" : definition==wisadelDefinition ? "爆裂黎明" : "主动技能";
 
         public void SwitchTrial(bool talulah)

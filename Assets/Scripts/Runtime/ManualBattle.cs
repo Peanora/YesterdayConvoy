@@ -48,6 +48,9 @@ namespace YesterdayConvoy
         public double BarrierRefreshStartedAt { get; internal set; } = double.NegativeInfinity;
         public int BarrierRefreshes { get; internal set; }
         internal double NextBarrierRefreshAt;
+        internal bool BarrierRefreshApplied;
+        public double BarrierBrokenAt {get;internal set;}=double.NegativeInfinity;
+        public double MudrockCaptureStartedAt {get;internal set;}=double.NegativeInfinity;
         public double LastHitTime { get; internal set; } = double.NegativeInfinity;
         public double HinderedUntil {get;internal set;}=double.NegativeInfinity;
         public double LureUntil {get;internal set;}=double.NegativeInfinity;

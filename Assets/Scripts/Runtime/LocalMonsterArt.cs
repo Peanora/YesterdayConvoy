@@ -34,7 +34,7 @@ namespace YesterdayConvoy
             try
             {
                 var catalog=ArtCatalog.Read("MonsterCombatArt/"+task);
-                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1"} :
+                string[] extraKeys=task=="M14" ? new[]{"extra_skill_1"} : task=="M28" ? new[]{"extra_attack_2","extra_skill_1","extra_skill_2"} :
                     task=="M20" ? new[]{"extra_attack_2","extra_idle_2","extra_move_2","extra_skill","extra_revive_1","extra_revive_2","extra_revive_3"} :
                     task=="M19" ? new[]{"extra_attack_2","extra_die_2","extra_idle_2","extra_move_2"} :
                     task=="M38" ? new[]{"extra_skill_begin","extra_skill_loop","extra_skill_end"} :

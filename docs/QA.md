@@ -1512,3 +1512,11 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 实际查看造型总览/离线页、Mon3tr/圣聆初雪/玛恩纳技能的MP4帧与修复后翎羽Move姿势序列；新约能天使取样实际存在。完整原作粒子/形态实体、AI与游戏机制未实现；自动检查不替代人类美术确认。普通治疗、无普攻角色、基础攻击多段、技能各阶段、基建行走均明确区分。
 - 本轮没有Unity资源/代码改动，未运行Unity导入、EditMode、PlayMode、Windows构建或实机交战，不更新EXE/ZIP/Releases。原始加工区与未接入预览仅项目外保留；确认后实际运行素材仍随代码上传。文档核对30唯一ID、首批8/其余22的状态、链接及仓库静态检查；具体文件见[本批记录](art/DEFENDERS-REMAINING22-PREVIEW.md)。
 - 文档交付核对：30个唯一守军ID、首批8人/余22人状态和本轮相对链接全部通过；git diff --cached --check通过，repository-checks检查1144个跟踪文件通过。本轮仅6份Markdown改动，无运行资产或代码改动。
+
+## 2026-11-05 泥岩与留声机独立试玩
+
+基线origin/main 8f4d604，带入已确认PR61依赖4aead99，新分支codex/mudrock-gramophone。新增静态保存的MudrockTrial场景，保留原四场景与两个既存未跟踪项。
+
+完整EditMode393/393通过（artifacts/mudrock-edit-final.xml）；完整D3D11 GPU PlayMode99/99通过（artifacts/mudrock-gpu-full.xml），其中2项泥岩实际场景、8项新纯逻辑。覆盖延迟/幂等占据、全施法锁移动、暂停、死亡取消、不耗费无目标、实际攻疗、邻接守军夺回、重开与配置原子拒绝；场景检查有原模型/图集/Shader实际绘制。首轮旧场景数量和即时补盾断言已按本轮确认范围改为5场景与原Skill_2命中时机，复验全过。
+
+新Shader保留预乘与加法RGB，24非空图层58页PNG约23.6MB；角色原始动作继续走已有加载缓存。构建/独立Player证据待下方补充，不把编辑器通过当作已构建。未测：第二机、任意镜头逐像素对照、长期平衡、完整原作声音/留声机外部弹道。

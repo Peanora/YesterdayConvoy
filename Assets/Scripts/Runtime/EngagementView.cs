@@ -185,6 +185,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            if(!shot.FromDefender&&b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
             if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&

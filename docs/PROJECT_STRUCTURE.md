@@ -43,3 +43,5 @@
 当前大地图的迁移工具仅用于一次性将既有几何保存成资产，不在Play调用，也不是以后创建地图的默认入口。共享地图Prefab供测试在怪物试用宿主中复用；正式BattleShop使用自己场景里已保存的地图实例。
 
 本机标准试玩：`Builds/Windows/YesterdayConvoy.exe`，构建用Yesterday Convoy → Baseline → Build Windows。保留整个Windows目录。地图编辑时查看场景地形；进入Play后才创建战斗角色、HUD和商店。
+
+2026-11-05新增 Assets/Scenes/MudrockTrial.unity：独立泥岩/留声机争夺试玩，场景保存地形和装置位置。共五个构建场景，默认Campaign保持。

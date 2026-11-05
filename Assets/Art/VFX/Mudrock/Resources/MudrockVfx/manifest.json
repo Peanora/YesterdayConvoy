@@ -1,0 +1,550 @@
+{
+  "version": 1,
+  "fps": 60,
+  "clips": [
+    {
+      "key": "shield1_ground",
+      "width": 268,
+      "height": 228,
+      "columns": 7,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.4552238805970149,
+      "pivotY": 0.35526315789473684,
+      "pages": [
+        {
+          "file": "shield1_ground-00.png",
+          "count": 56
+        },
+        {
+          "file": "shield1_ground-01.png",
+          "count": 56
+        },
+        {
+          "file": "shield1_ground-02.png",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "key": "shield1_over",
+      "width": 340,
+      "height": 280,
+      "columns": 6,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.28823529411764703,
+      "pivotY": 0.46071428571428574,
+      "pages": [
+        {
+          "file": "shield1_over-00.png",
+          "count": 42
+        },
+        {
+          "file": "shield1_over-01.png",
+          "count": 42
+        },
+        {
+          "file": "shield1_over-02.png",
+          "count": 36
+        }
+      ]
+    },
+    {
+      "key": "shield2_ground",
+      "width": 196,
+      "height": 160,
+      "columns": 10,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.49489795918367346,
+      "pivotY": 0.09375,
+      "pages": [
+        {
+          "file": "shield2_ground-00.png",
+          "count": 120
+        }
+      ]
+    },
+    {
+      "key": "shield2_over",
+      "width": 196,
+      "height": 184,
+      "columns": 10,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.5102040816326531,
+      "pivotY": 0.19565217391304346,
+      "pages": [
+        {
+          "file": "shield2_over-00.png",
+          "count": 110
+        },
+        {
+          "file": "shield2_over-01.png",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "key": "shield3_ground",
+      "width": 196,
+      "height": 172,
+      "columns": 10,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.49489795918367346,
+      "pivotY": 0.10465116279069764,
+      "pages": [
+        {
+          "file": "shield3_ground-00.png",
+          "count": 110
+        },
+        {
+          "file": "shield3_ground-01.png",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "key": "shield3_over",
+      "width": 208,
+      "height": 176,
+      "columns": 9,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.47115384615384615,
+      "pivotY": 0.03409090909090906,
+      "pages": [
+        {
+          "file": "shield3_over-00.png",
+          "count": 99
+        },
+        {
+          "file": "shield3_over-01.png",
+          "count": 21
+        }
+      ]
+    },
+    {
+      "key": "shieldRefresh_over",
+      "width": 196,
+      "height": 172,
+      "columns": 10,
+      "count": 138,
+      "duration": 2.3,
+      "ppu": 128,
+      "pivotX": 0.45918367346938777,
+      "pivotY": 0.10465116279069764,
+      "pages": [
+        {
+          "file": "shieldRefresh_over-00.png",
+          "count": 110
+        },
+        {
+          "file": "shieldRefresh_over-01.png",
+          "count": 28
+        }
+      ]
+    },
+    {
+      "key": "shieldBreak_ground",
+      "width": 344,
+      "height": 292,
+      "columns": 5,
+      "count": 150,
+      "duration": 2.5,
+      "ppu": 128,
+      "pivotX": 0.5,
+      "pivotY": 0.23287671232876717,
+      "pages": [
+        {
+          "file": "shieldBreak_ground-00.png",
+          "count": 35
+        },
+        {
+          "file": "shieldBreak_ground-01.png",
+          "count": 35
+        },
+        {
+          "file": "shieldBreak_ground-02.png",
+          "count": 35
+        },
+        {
+          "file": "shieldBreak_ground-03.png",
+          "count": 35
+        },
+        {
+          "file": "shieldBreak_ground-04.png",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "key": "shieldBreak_over",
+      "width": 260,
+      "height": 260,
+      "columns": 7,
+      "count": 150,
+      "duration": 2.5,
+      "ppu": 128,
+      "pivotX": 0.49230769230769234,
+      "pivotY": 0.1807692307692308,
+      "pages": [
+        {
+          "file": "shieldBreak_over-00.png",
+          "count": 49
+        },
+        {
+          "file": "shieldBreak_over-01.png",
+          "count": 49
+        },
+        {
+          "file": "shieldBreak_over-02.png",
+          "count": 49
+        },
+        {
+          "file": "shieldBreak_over-03.png",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "captureStart_ground",
+      "width": 256,
+      "height": 156,
+      "columns": 8,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.44140625,
+      "pivotY": 0.5064102564102564,
+      "pages": [
+        {
+          "file": "captureStart_ground-00.png",
+          "count": 104
+        },
+        {
+          "file": "captureStart_ground-01.png",
+          "count": 16
+        }
+      ]
+    },
+    {
+      "key": "captureStart_over",
+      "width": 276,
+      "height": 264,
+      "columns": 7,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.11594202898550725,
+      "pivotY": 0.48484848484848486,
+      "pages": [
+        {
+          "file": "captureStart_over-00.png",
+          "count": 49
+        },
+        {
+          "file": "captureStart_over-01.png",
+          "count": 49
+        },
+        {
+          "file": "captureStart_over-02.png",
+          "count": 22
+        }
+      ]
+    },
+    {
+      "key": "captureRange_ground",
+      "width": 380,
+      "height": 336,
+      "columns": 5,
+      "count": 150,
+      "duration": 2.5,
+      "ppu": 32,
+      "pivotX": 0.5,
+      "pivotY": 0.5595238095238095,
+      "pages": [
+        {
+          "file": "captureRange_ground-00.png",
+          "count": 30
+        },
+        {
+          "file": "captureRange_ground-01.png",
+          "count": 30
+        },
+        {
+          "file": "captureRange_ground-02.png",
+          "count": 30
+        },
+        {
+          "file": "captureRange_ground-03.png",
+          "count": 30
+        },
+        {
+          "file": "captureRange_ground-04.png",
+          "count": 30
+        }
+      ]
+    },
+    {
+      "key": "captureRange_over",
+      "width": 368,
+      "height": 352,
+      "columns": 5,
+      "count": 150,
+      "duration": 2.5,
+      "ppu": 32,
+      "pivotX": 0.49728260869565216,
+      "pivotY": 0.48011363636363635,
+      "pages": [
+        {
+          "file": "captureRange_over-00.png",
+          "count": 25
+        },
+        {
+          "file": "captureRange_over-01.png",
+          "count": 25
+        },
+        {
+          "file": "captureRange_over-02.png",
+          "count": 25
+        },
+        {
+          "file": "captureRange_over-03.png",
+          "count": 25
+        },
+        {
+          "file": "captureRange_over-04.png",
+          "count": 25
+        },
+        {
+          "file": "captureRange_over-05.png",
+          "count": 25
+        }
+      ]
+    },
+    {
+      "key": "captureHit_ground",
+      "width": 212,
+      "height": 184,
+      "columns": 9,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.49528301886792453,
+      "pivotY": 0.06521739130434778,
+      "pages": [
+        {
+          "file": "captureHit_ground-00.png",
+          "count": 99
+        },
+        {
+          "file": "captureHit_ground-01.png",
+          "count": 21
+        }
+      ]
+    },
+    {
+      "key": "attack1_ground",
+      "width": 188,
+      "height": 188,
+      "columns": 10,
+      "count": 72,
+      "duration": 1.2,
+      "ppu": 128,
+      "pivotX": 0.48936170212765956,
+      "pivotY": 0.5106382978723405,
+      "pages": [
+        {
+          "file": "attack1_ground-00.png",
+          "count": 72
+        }
+      ]
+    },
+    {
+      "key": "attack1_over",
+      "width": 340,
+      "height": 236,
+      "columns": 6,
+      "count": 72,
+      "duration": 1.2,
+      "ppu": 128,
+      "pivotX": 0.3764705882352941,
+      "pivotY": 0.5084745762711864,
+      "pages": [
+        {
+          "file": "attack1_over-00.png",
+          "count": 48
+        },
+        {
+          "file": "attack1_over-01.png",
+          "count": 24
+        }
+      ]
+    },
+    {
+      "key": "attack2_ground",
+      "width": 188,
+      "height": 188,
+      "columns": 10,
+      "count": 72,
+      "duration": 1.2,
+      "ppu": 128,
+      "pivotX": 0.48936170212765956,
+      "pivotY": 0.5106382978723405,
+      "pages": [
+        {
+          "file": "attack2_ground-00.png",
+          "count": 72
+        }
+      ]
+    },
+    {
+      "key": "attack2_over",
+      "width": 340,
+      "height": 236,
+      "columns": 6,
+      "count": 72,
+      "duration": 1.2,
+      "ppu": 128,
+      "pivotX": 0.3764705882352941,
+      "pivotY": 0.5084745762711864,
+      "pages": [
+        {
+          "file": "attack2_over-00.png",
+          "count": 48
+        },
+        {
+          "file": "attack2_over-01.png",
+          "count": 24
+        }
+      ]
+    },
+    {
+      "key": "attack3_ground",
+      "width": 280,
+      "height": 188,
+      "columns": 7,
+      "count": 90,
+      "duration": 1.5,
+      "ppu": 128,
+      "pivotX": 0.32857142857142857,
+      "pivotY": 0.5106382978723405,
+      "pages": [
+        {
+          "file": "attack3_ground-00.png",
+          "count": 70
+        },
+        {
+          "file": "attack3_ground-01.png",
+          "count": 20
+        }
+      ]
+    },
+    {
+      "key": "attack3_over",
+      "width": 383,
+      "height": 303,
+      "columns": 5,
+      "count": 90,
+      "duration": 1.5,
+      "ppu": 128,
+      "pivotX": 0.33159268929503916,
+      "pivotY": 0.4752475247524752,
+      "pages": [
+        {
+          "file": "attack3_over-00.png",
+          "count": 30
+        },
+        {
+          "file": "attack3_over-01.png",
+          "count": 30
+        },
+        {
+          "file": "attack3_over-02.png",
+          "count": 30
+        }
+      ]
+    },
+    {
+      "key": "attackStart_over",
+      "width": 184,
+      "height": 252,
+      "columns": 11,
+      "count": 120,
+      "duration": 2,
+      "ppu": 128,
+      "pivotX": 0.021739130434782608,
+      "pivotY": 0.21031746031746035,
+      "pages": [
+        {
+          "file": "attackStart_over-00.png",
+          "count": 88
+        },
+        {
+          "file": "attackStart_over-01.png",
+          "count": 32
+        }
+      ]
+    },
+    {
+      "key": "towerIdle_all",
+      "width": 88,
+      "height": 104,
+      "columns": 23,
+      "count": 123,
+      "duration": 2.0333334,
+      "ppu": 128,
+      "pivotX": 0.48863636363636365,
+      "pivotY": 0.07692307692307687,
+      "pages": [
+        {
+          "file": "towerIdle_all-00.png",
+          "count": 123
+        }
+      ]
+    },
+    {
+      "key": "towerCapture_all",
+      "width": 88,
+      "height": 116,
+      "columns": 23,
+      "count": 59,
+      "duration": 0.9666667,
+      "ppu": 128,
+      "pivotX": 0.5,
+      "pivotY": 0.03448275862068961,
+      "pages": [
+        {
+          "file": "towerCapture_all-00.png",
+          "count": 59
+        }
+      ]
+    },
+    {
+      "key": "towerOccupied_all",
+      "width": 88,
+      "height": 120,
+      "columns": 23,
+      "count": 90,
+      "duration": 1.5,
+      "ppu": 128,
+      "pivotX": 0.48863636363636365,
+      "pivotY": 0.050000000000000044,
+      "pages": [
+        {
+          "file": "towerOccupied_all-00.png",
+          "count": 90
+        }
+      ]
+    }
+  ]
+}

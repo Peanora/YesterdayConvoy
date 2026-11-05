@@ -91,7 +91,7 @@ namespace YesterdayConvoy
                 float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;
                 if(unit.ArtsBarrierRemaining<=.00001f)
                 {
-                    unit.ArtsBarrierRemaining=0;unit.MaxHealth=unit.Profile?.Unit.Health??Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
+                    unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=unit.Profile?.Unit.Health??Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
                     unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
                 }
             }
@@ -174,13 +174,20 @@ namespace YesterdayConvoy
         }
         private bool StepMudrock(DeployedUnitState unit)
         {
-            if(Clock<unit.BarrierRefreshStartedAt+1.5) {unit.IsMoving=unit.HasCombatTarget=false;return true;}
-            if(Clock+1e-6<unit.NextBarrierRefreshAt || Clock<unit.LastAttackTime+UnitCombat(unit).AttackDuration/unit.LastAttackRate) return false;
-            bool broken=unit.ArtsBarrierRemaining<=0;
-            unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=(unit.Profile?.Unit.Health??Settings.Health)*1.5f;
-            if(broken) unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)/1.5;
-            unit.BarrierRefreshes++;unit.BarrierRefreshStartedAt=Clock;unit.NextBarrierRefreshAt=Clock+17;
-            unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+1.5);
+            if(Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration)
+            {
+                if(!unit.BarrierRefreshApplied&&Clock+1e-6>=unit.BarrierRefreshStartedAt+.7333334)
+                {
+                    bool broken=unit.ArtsBarrierRemaining<=0;
+                    unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=(unit.Profile?.Unit.Health??Settings.Health)*1.5f;
+                    if(broken)unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)/1.5;
+                    unit.BarrierRefreshApplied=true;unit.BarrierRefreshes++;
+                }
+                unit.IsMoving=unit.HasCombatTarget=false;return true;
+            }
+            if(Clock+1e-6<unit.NextBarrierRefreshAt||IsSkillActionPlaying(unit)||Clock<unit.LastAttackTime+UnitCombat(unit).AttackDuration/unit.LastAttackRate)return false;
+            unit.BarrierRefreshApplied=false;unit.BarrierRefreshStartedAt=Clock;unit.NextBarrierRefreshAt=Clock+MudrockRefreshDuration+17;
+            unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+MudrockRefreshDuration);
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
         private float DefenderAttackRate(DefenderState defender) =>

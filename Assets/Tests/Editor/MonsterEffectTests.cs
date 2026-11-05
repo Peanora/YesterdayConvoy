@@ -257,7 +257,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(shots.Skip(5).All(s=>Mathf.Abs(s.Attack-92)<.001),Is.True);
             Assert.That(unit.BarrierRefreshes,Is.Zero);float hp=unit.Health;
             b.SetPaused(true);b.Advance(100);Assert.That(unit.BarrierRefreshes,Is.Zero);
-            b.SetPaused(false);b.Advance(.2f);Assert.That(unit.BarrierRefreshes,Is.EqualTo(1));
+            b.SetPaused(false);b.Advance(.2f);Assert.That(unit.BarrierRefreshes,Is.Zero,"Shield applies at the original Skill_2 impact, not its start.");b.Advance(.75f);Assert.That(unit.BarrierRefreshes,Is.EqualTo(1));
             Assert.That(unit.ArtsBarrierLayers,Is.EqualTo(3));Assert.That(unit.MaxHealth,Is.EqualTo(1500));
             Assert.That(unit.Health,Is.LessThanOrEqualTo(hp),"Refreshing a barrier must not grant direct healing.");
             Assert.That(b.UnitAttackRate(unit),Is.EqualTo(1.5f));

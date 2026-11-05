@@ -26,7 +26,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(defender.transform.position,Is.EqualTo(c.Definition.Engagement.DefenderPosition));
             foreach(string name in new[]{"Defense Tower","Tower Range","Tower Shot","Raised Tactical Board"})
                 Assert.That(GameObject.Find(name),Is.Null,name);
-            Assert.That(EditorBuildSettings.scenes.Length,Is.EqualTo(4));
+            Assert.That(EditorBuildSettings.scenes.Length,Is.EqualTo(5));
             Assert.That(EditorBuildSettings.scenes[0].path,Is.EqualTo(CampaignTools.CampaignScene));
         }
 

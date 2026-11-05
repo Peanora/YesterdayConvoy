@@ -242,9 +242,13 @@ namespace YesterdayConvoy
                     sprite.sprite=local[key].At(spray.Ended?manualBattle.Clock-spray.EndedAt:phase=="start"?elapsed:elapsed-.5,phase=="loop",out int sprayFrame);
                     sprite.flipX=spray.FlipX;FrameIndex=sprayFrame;return;
                 }
-                if(manualBattle.UnitCombat(deployedUnit).Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+1.5 && local.HasClip("extra_skill_1"))
+                if(manualBattle.UnitCombat(deployedUnit).MudrockCapture && manualBattle.IsSkillActionPlaying(deployedUnit) && local.HasClip("extra_skill_1"))
                 {
-                    FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
+                    FrameState="MudrockCapture";sprite.sprite=local["extra_skill_1"].At(manualBattle.Clock-deployedUnit.MudrockCaptureStartedAt,false,out int captureIndex);FrameIndex=captureIndex;return;
+                }
+                if(manualBattle.UnitCombat(deployedUnit).Effects.Mudrock && manualBattle.Clock<deployedUnit.BarrierRefreshStartedAt+ManualBattle.MudrockRefreshDuration && local.HasClip("extra_skill_2"))
+                {
+                    FrameState="BarrierRefresh";sprite.sprite=local["extra_skill_2"].At(manualBattle.Clock-deployedUnit.BarrierRefreshStartedAt,false,out int shieldIndex);
                     FrameIndex=shieldIndex;return;
                 }
                 if(manualBattle.UnitCombat(deployedUnit).Effects.Healer && manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.UnitCombat(deployedUnit).AttackDuration)
