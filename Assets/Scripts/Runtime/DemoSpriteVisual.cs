@@ -26,6 +26,7 @@ namespace YesterdayConvoy
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
+        public string EntityId=>deployedUnit?.EntityId;
 
         private void OnEnable()
         {
@@ -96,6 +97,12 @@ namespace YesterdayConvoy
                     }
                 }
                 sprite.flipX=tacticalFlip;
+                if(manualBattle.UnitCombat(deployedUnit).Effects.Mandragora&&deployedUnit.Gaze!=null&&!deployedUnit.Gaze.Ended)
+                {
+                    var target=manualBattle.FindDefender(deployedUnit.Gaze.TargetId);
+                    if(target!=null&&Mathf.Abs(target.Position.x-deployedUnit.Motion.Position.x)>.01f)
+                        sprite.flipX=tacticalFlip=target.Position.x<deployedUnit.Motion.Position.x;
+                }
             }
             if(manualBattle.IsPatriot(deployedUnit))
             {
@@ -211,9 +218,9 @@ namespace YesterdayConvoy
                     clip=prefix+"skill_1_"+part;time=g.Ended?manualBattle.Clock-g.EndedAt:part=="begin"?age:age-.8333334;
                     loop=part=="loop";FrameState="Gaze"+part;
                 }
-                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_2";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
-                else if(manualBattle.Clock<u.StoneShieldRestoredAt+(u.MandraPhase==MandragoraPhase.Ground?1.5:1.3333334))
-                {clip=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_skill_2":"extra_c2_skill_3";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
+                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_3";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
+                else if(manualBattle.Clock<u.StoneShieldRestoredAt+1.5)
+                {clip=prefix+"skill_2";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
                 else if(u.MandraPhase==MandragoraPhase.Second&&manualBattle.Clock<u.PillarStunnedUntil){clip="extra_c2_stun";time=manualBattle.Clock-u.StoneShieldBrokenAt;FrameState="StoneShieldBreak";loop=true;}
                 else
                 {
@@ -222,7 +229,7 @@ namespace YesterdayConvoy
                     string idle=ground?"extra_c1_idle":u.StoneShield?"extra_c2_idle_1":"idle";
                     string walk=ground?"extra_c1_move":u.StoneShield?"extra_c2_move_1":"walk";
                     string attack=ground?"extra_c1_attack":u.StoneShield?"extra_c2_attack_1":"attack";
-                    if(age>=0&&age<1.5){clip=attack;time=age;FrameState="Attack";}
+                    if(age>=0&&age<1.5/u.LastAttackRate){clip=attack;time=age*u.LastAttackRate;FrameState="Attack";}
                     else if(u.IsMoving){clip=walk;time=u.Motion.DistanceTravelled/local.ReferenceSpeed;loop=true;FrameState="Walk";}
                     else{clip=idle;time=manualBattle.Clock-u.SpawnTime;loop=true;FrameState="Idle";}
                 }

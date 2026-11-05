@@ -26,8 +26,8 @@ namespace YesterdayConvoy.Tests
         [Test]public void AllNineTraitsHaveRuntimeThresholdsAndAllAvailableMembersAreInPool()
         {
             var rows=SynergySummary.From(CampaignBalance.Profiles.Keys);Assert.That(rows.Length,Is.EqualTo(9));Assert.That(rows.All(r=>r.Implemented));
-            Assert.That(rows.Single(r=>r.Name=="深池").Count,Is.EqualTo(3));Assert.That(rows.Single(r=>r.Name=="深池").Tier,Is.EqualTo(2));
-            Assert.That(CampaignBalance.Supports("CARD_M32"),Is.False);Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(39));
+            Assert.That(rows.Single(r=>r.Name=="深池").Count,Is.EqualTo(4));Assert.That(rows.Single(r=>r.Name=="深池").Tier,Is.EqualTo(4));
+            Assert.That(CampaignBalance.Supports("CARD_M32"));Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(40));
         }
         [Test]public void HerdContinuesAtOriginalProgressAndCannotConvertAgain()
         {
@@ -63,14 +63,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.DeepCharges,Is.EqualTo(1));float hp=b.Defenders[1].Health;b.Advance(1);Assert.That(hp-b.Defenders[1].Health,Is.EqualTo(15).Within(.4));
             Hit(b,b.Defenders[1],1000,true);Assert.That(b.DeepCharges,Is.EqualTo(1));Assert.That(b.TryDetonateDeep(b.RunId,1),Is.False);
         }
-        [Test]public void FutureDeepFourCanDetonateAtomicallyWithoutAddingUnfinishedCardToShop()
+        [Test]public void DeepFourCanDetonateAtomicallyWithApprovedMandragoraInShop()
         {
             var b=Make(new[]{"CARD_M29","CARD_M30","CARD_M31"},snapshot:new[]{"CARD_M29","CARD_M30","CARD_M31","CARD_M32"});Assert.That(b.DeepTier,Is.EqualTo(4));
             Burning(b,b.Defenders[0]);Hit(b,b.Defenders[0],1000);Burning(b,b.Defenders[1]);Hit(b,b.Defenders[1],1000);
             Assert.That(b.DeepCharges,Is.EqualTo(2));b.SetPaused(true);Assert.That(b.TryDetonateDeep(b.RunId,1),Is.False);Assert.That(b.DeepCharges,Is.EqualTo(2));b.SetPaused(false);
             float health=b.Defenders[2].Health;Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(health-b.Defenders[2].Health,Is.EqualTo(120));
             Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(b.DeepCharges,Is.Zero);Assert.That(b.DeepDetonations,Is.EqualTo(1));
-            Assert.That(b.TryDetonateDeep(b.RunId-1,2),Is.False);Assert.That(CampaignBalance.Supports("CARD_M32"),Is.False);
+            Assert.That(b.TryDetonateDeep(b.RunId-1,2),Is.False);Assert.That(CampaignBalance.Supports("CARD_M32"));
         }
         [Test]public void ContractUsesRealHealthCrossingAndTargetsOnlyChosenCard()
         {

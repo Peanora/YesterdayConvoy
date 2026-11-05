@@ -46,6 +46,7 @@ namespace YesterdayConvoy
             {"CARD_M29",new Stats(2,3,320,40,11,2.2f,0.8f,0.55f,1)},
             {"CARD_M30",new Stats(3,4,330,58,6,1.8f,0.85f,0.75f,1)},
             {"CARD_M31",new Stats(4,6,520,90,7,3.0f,2.2f,0.55f,2)},
+            {"CARD_M32",new Stats(5,10,1000,110,10,1.8f,1.5f,0.5f,2)},
             {"CARD_M33",new Stats(3,4,600,0,0,1.0f,1.6f,0.45f,1)},
             {"CARD_M34",new Stats(3,4,350,52,6,3.0f,0.85f,0.75f,1)},
             {"CARD_M35",new Stats(3,4,280,52,4,1.5f,0.75f,1.1f,1)},
@@ -95,7 +96,7 @@ namespace YesterdayConvoy
             {"CARD_M28",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M42",new[]{"泥岩小队","萨卡兹"}},
             {"CARD_M43",new[]{"泥岩小队","萨卡兹"}},
-            {"CARD_M32",new[]{"深池"}}, // Future member metadata; still excluded from Profiles and shop.
+            {"CARD_M32",new[]{"深池"}},
             {"CARD_M29",new[]{"深池"}},
             {"CARD_M30",new[]{"深池"}},
             {"CARD_M31",new[]{"深池"}},

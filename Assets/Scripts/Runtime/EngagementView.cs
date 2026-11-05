@@ -43,7 +43,7 @@ namespace YesterdayConvoy
             if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
             deathEffects.Initialize(controller);
             var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
-            var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle);
+            var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
             var advanced=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advanced.Bind(()=>controller.Battle);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
@@ -192,7 +192,7 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
-            if(!shot.FromDefender&&b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
+            if(!shot.FromDefender&&(b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock||b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mandragora)){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
             if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&
