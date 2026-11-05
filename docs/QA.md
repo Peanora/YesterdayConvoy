@@ -8,6 +8,8 @@
 - 尚待独立Player构建/截图复核；第二机、全角色自然通关与长期平衡未测。
 
 
+独立Windows构建31085d3通过（0错误），D3D11 Player的11项指针夹具检查全部通过。隐藏窗口的屏幕截图全黑，不作为图像证据；可见Player重跑已查看合并、真实出售报价与暂停部署画面。截图保存在artifacts/ui-v5-visible；首张仍在启动闪屏，未采用。根据画面追加角色头顶取景余量，后续最终集成回归验证。
+
 ## 2026-11-05：42卡本地整合与加强羁绊测试
 
 - 基线实时main a37f0e5；用户确认新分支codex/synergy-test-integration，在唯一E盘工程吸收#75 d0ea863及#74 155e6b5（含#69/#71），未自动合并GitHub main。先用merge-tree报告ManualBattleController与GDD/STATUS/QA四处冲突，确认后逐段兼容双方死亡尾段及文档，没有整文件选一方。原.vscode/及PackageManagerSettings.asset保留未跟踪。

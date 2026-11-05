@@ -125,7 +125,7 @@ namespace YesterdayConvoy
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
-            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points){yield return point;yield return point+Vector3.up*.65f;}
+            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points){yield return point;yield return point+Camera.main.transform.up*1.65f;}
             foreach(var defender in shopMapCopy.defenders){yield return defender.position;yield return defender.position+Camera.main.transform.up*1.65f;}
         }
         int shopWindowWidth,shopWindowHeight;
