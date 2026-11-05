@@ -57,6 +57,7 @@ namespace YesterdayConvoy
         {
             get
             {
+                if(CombatFeedbackPresentationPending)return true;
                 foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit)) return true;
                 foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
                 if(DefenderTrialActive) foreach(var d in Battle.Defenders) if(!d.Alive && PresentationClock<d.DeathTime+1) return true;
@@ -70,7 +71,7 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            diagnostic = Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
@@ -85,6 +86,7 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
+            InitializeCombatFeedback();
             if(Debug.isDebugBuild&&Array.IndexOf(args,"-talulahFireRainV12Test")>=0)
             {
                 diagnostic=true;Application.runInBackground=true;int evidence=Array.IndexOf(args,"-demoEvidenceDir");
@@ -240,7 +242,7 @@ namespace YesterdayConvoy
             // Carry this phase into battle; after Begin only the simulation clock advances it.
             if(Battle.Phase==BattlePhase.Ready && !Battle.IsPaused) readyIdleElapsed+=delta;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
-                terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
+                terminalPresentationElapsed=Math.Min(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
             StepBattleShopLoop();
             SyncViews();

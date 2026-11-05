@@ -60,7 +60,9 @@ namespace YesterdayConvoy
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u)||damage<=0)return false;
             if(u.FlamePhase==FlamechaserPhase.Ember)damage=1;
+            float feedbackHealth=u.Health;Vector3 feedbackPosition=u.Motion.Position;
             u.Health=Mathf.Max(0,u.Health-damage);u.LastHitTime=Clock;
+            RecordUnitHealthLoss(u,feedbackHealth,feedbackPosition);
             if(u.Health<=0)DefeatUnit(u);
             else
             {

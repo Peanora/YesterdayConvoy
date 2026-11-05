@@ -193,7 +193,7 @@ namespace YesterdayConvoy
             else
             {
                 var d=defenders.Where(d=>d.Alive&&d.Health<d.MaxHealth&&GroundDistance(d.Position,s.Position)<=s.Radius).OrderBy(d=>d.Health).FirstOrDefault();
-                if(d!=null&&!d.DebtLife){float before=d.Health;d.Health=Math.Min(d.MaxHealth,d.Health+d.MaxHealth*.1f);FacilityHealing+=d.Health-before;}
+                if(d!=null&&!d.DebtLife){FacilityHealing+=RestoreDefenderHealth(d,d.MaxHealth*.1f);}
             }
         }
     }

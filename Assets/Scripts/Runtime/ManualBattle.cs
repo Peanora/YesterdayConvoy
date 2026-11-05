@@ -240,7 +240,7 @@ namespace YesterdayConvoy
 
         public void Restart()
         {
-            RunId++;
+            RunId++;ResetCombatFeedback();
             units.Clear(); committed.Clear(); sequence = 0;ResetSynergies();
             DP = Settings.InitialDP; RemainingUses = Settings.DeploymentLimit; Defense = Settings.InitialDefense;
             Clock = nextDeploymentTime = nextShotTime = 0;
@@ -349,6 +349,7 @@ namespace YesterdayConvoy
                 if (EngagementEnabled)
                 {
                     StepEngagement(step);
+                    RefreshCombatFeedbackStatuses();
                     EvaluateEnd();
                     if(Phase==BattlePhase.Won || Phase==BattlePhase.Lost)
                         foreach(var shot in combatShots) if(!shot.Resolved) shot.Resolved=true;
@@ -378,7 +379,9 @@ namespace YesterdayConvoy
                     }
                     if (target != null)
                     {
+                        float feedbackHealth=target.Health;Vector3 feedbackPosition=target.Motion.Position;
                         target.Health = Mathf.Max(0, target.Health - Settings.TowerDamage);
+                        RecordUnitHealthLoss(target,feedbackHealth,feedbackPosition);
                         target.LastHitTime = LastShotTime = Clock; LastShotEntityId = target.EntityId;
                         LastShotPosition = target.Motion.Position; ShotsFired++; nextShotTime = Clock + Settings.ShotInterval;
                         if (target.Health == 0) { target.Resolution = UnitResolution.Dead; target.DeathTime=Clock; }

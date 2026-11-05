@@ -121,7 +121,7 @@ namespace YesterdayConvoy
                 {
                     var target=FindDefender(action.TargetId);if(target==null||!target.Alive)continue;
                     float before=target.Health;
-                    if(action.Healing){if(!target.DebtLife)target.Health=Mathf.Min(target.MaxHealth,target.Health+target.MaxHealth*.1f);}else DamageDefender(target,target.MaxHealth*.05f,CombatDamageType.Arts);
+                    if(action.Healing){RestoreDefenderHealth(target,target.MaxHealth*.1f);}else DamageDefender(target,target.MaxHealth*.05f,CombatDamageType.Arts);
                     action.Amount=Mathf.Abs(target.Health-before);action.Applied=action.Amount>0;
                 }
             }

@@ -84,11 +84,11 @@ namespace YesterdayConvoy
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
             damage*=MarineIncoming(unit,ranged);
-            if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;if(damage<=0)return true;}
+            if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
             if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
-                float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;
+                float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);
                 if(unit.ArtsBarrierRemaining<=.00001f)
                 {
                     unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=unit.Profile?.Unit.Health??Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
@@ -117,6 +117,7 @@ namespace YesterdayConvoy
             float restored=Mathf.Min(amount,unit.MaxHealth-unit.Health);
             if(restored<=0) return 0;
             unit.Health+=restored;unit.HealthRecovered+=restored;unit.LastHealTime=Clock;
+            combatFeedback.Add(Clock,CombatFeedbackTarget.Monster,unit.EntityId,unit.Motion.Position,CombatFeedbackKind.HealthRestored,restored);
             return restored;
         }
         private void ResolveHealing()
@@ -268,15 +269,15 @@ namespace YesterdayConvoy
             if(defender==null || !defender.Alive) return false;
             if(synergyEnabled)
             {
-                if(defender.FrozenUntil>Clock)return true;
+                if(defender.FrozenUntil>Clock){RefreshCombatFeedbackStatuses();return true;}
                 if(defender.FrozenUntil>0&&Clock<defender.FrozenUntil+1.2)return false;
-                if(defender.ColdUntil>Clock){defender.FrozenUntil=Clock+1.2;defender.ColdUntil=defender.FrozenUntil;return true;}
+                if(defender.ColdUntil>Clock){defender.FrozenUntil=Clock+1.2;defender.ColdUntil=defender.FrozenUntil;RefreshCombatFeedbackStatuses();return true;}
             }
             bool cold=defender.ColdUntil>Clock || defender.FrozenUntil>Clock;
             if(cold) defender.FrozenUntil=Math.Max(defender.FrozenUntil,Clock+duration);
             else defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)/.7;
             defender.ColdUntil=Math.Max(defender.ColdUntil,Clock+duration);
-            return true;
+            RefreshCombatFeedbackStatuses();return true;
         }
         private void ResolveDeathEffects()
         {
