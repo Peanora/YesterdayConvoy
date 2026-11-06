@@ -1,0 +1,835 @@
+{
+  "version": 1,
+  "fps": 30,
+  "sourceVersion": "26-10-29-15-36-11-33649006",
+  "clips": [
+    {
+      "key": "block_01",
+      "width": 140,
+      "height": 144,
+      "columns": 14,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4785714285714286,
+      "pivotY": 0.5972222222222222,
+      "loop": false,
+      "pages": [
+        {
+          "file": "block_01-00.png",
+          "count": 60,
+          "sha256": "e4c1fec743225082bd6e41854a41a74202e4cd66b7bc0b9a51ba98aee70c2a4f"
+        }
+      ]
+    },
+    {
+      "key": "c1_attack_hit",
+      "width": 84,
+      "height": 80,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.525,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_attack_hit-00.png",
+          "count": 60,
+          "sha256": "8a267238b2f0d4ea1b6534dc17addf7431b393c560805d5dda268d389c7e4751"
+        }
+      ]
+    },
+    {
+      "key": "c1_attack_start_01",
+      "width": 92,
+      "height": 92,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.532608695652174,
+      "pivotY": 0.5108695652173914,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_attack_start_01-00.png",
+          "count": 60,
+          "sha256": "f36f19a8012b1521a1157a43616854112cc8f5263fed83f8b29903b6ade55c1e"
+        }
+      ]
+    },
+    {
+      "key": "c1_attack_start_02",
+      "width": 152,
+      "height": 120,
+      "columns": 13,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.02631578947368421,
+      "pivotY": 0.17500000000000004,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_attack_start_02-00.png",
+          "count": 60,
+          "sha256": "4c516de40298fe4da106de970279efb11a3f5328df8100dc820165454f4b2dc6"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_01_beam",
+      "width": 204,
+      "height": 32,
+      "columns": 10,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.0196078431372549,
+      "pivotY": 0.53125,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c1_skill_01_beam-00.png",
+          "count": 60,
+          "sha256": "139af252736deaee02090c5b301da8c10ec685f0dc9b2412ca54edd1e22b1651"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_01_beamshield_01",
+      "width": 68,
+      "height": 76,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.16176470588235295,
+      "pivotY": 0.10526315789473684,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c1_skill_01_beamshield_01-00.png",
+          "count": 60,
+          "sha256": "6dbe95d5b9c4acd02f689a16f9b0fbf68c7af83f7684b3808e7e67947be22ab3"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_01_hit",
+      "width": 120,
+      "height": 104,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6153846153846154,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c1_skill_01_hit-00.png",
+          "count": 60,
+          "sha256": "b7a9d0b17f18ec9da8e8f3132ea3b4aa0bccf40d7018ee364ec2c2f7b0c0d2eb"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_02_begin_01",
+      "width": 248,
+      "height": 228,
+      "columns": 8,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5120967741935484,
+      "pivotY": 0.32894736842105265,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_skill_02_begin_01-00.png",
+          "count": 60,
+          "sha256": "65dd99d67ed495974bcae0318df2896d13199eab328717b730f1c9bcfc285dc9"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_02_buff_01",
+      "width": 116,
+      "height": 104,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.46551724137931033,
+      "pivotY": 0.17307692307692313,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c1_skill_02_buff_01-00.png",
+          "count": 60,
+          "sha256": "cc9fef8b7f7f1024a48c497c7d8146196dad0b20adc87a41ab90c5fd3f27854e"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_02_end_01",
+      "width": 144,
+      "height": 156,
+      "columns": 14,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5416666666666666,
+      "pivotY": 0.3846153846153846,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_skill_02_end_01-00.png",
+          "count": 60,
+          "sha256": "fa18e54c54b51641b070875259ecc16d9ddfd101785c075f2d72d74d4c1b48cb"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_02_hit",
+      "width": 100,
+      "height": 92,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.49,
+      "pivotY": 0.5978260869565217,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_skill_02_hit-00.png",
+          "count": 60,
+          "sha256": "cde5c37c1ebdf51457aabf7568e67b3fb4effa71e29c0a12f70b7231ea031acd"
+        }
+      ]
+    },
+    {
+      "key": "c1_skill_02_shieldglow",
+      "width": 92,
+      "height": 80,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5217391304347826,
+      "pivotY": 0.16249999999999998,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c1_skill_02_shieldglow-00.png",
+          "count": 60,
+          "sha256": "2beb69ee45fec556c4204b21939561296ae1f9e9ab40cf14072223b9c2953341"
+        }
+      ]
+    },
+    {
+      "key": "c2_attack_01_hit",
+      "width": 136,
+      "height": 140,
+      "columns": 15,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.45588235294117646,
+      "pivotY": 0.5357142857142857,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_attack_01_hit-00.png",
+          "count": 60,
+          "sha256": "94b94c11de96793bafdc8823ddcd429d363f872c67386638b640be971a886429"
+        }
+      ]
+    },
+    {
+      "key": "c2_attack_01_start_01",
+      "width": 92,
+      "height": 80,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4673913043478261,
+      "pivotY": 0.525,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_attack_01_start_01-00.png",
+          "count": 60,
+          "sha256": "4b1ea41d7f371708944c4fbc4cab6ed4295ebdd11518d27f448b7521675d7ff4"
+        }
+      ]
+    },
+    {
+      "key": "c2_attack_01_start_02",
+      "width": 112,
+      "height": 108,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4732142857142857,
+      "pivotY": 0.5277777777777778,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_attack_01_start_02-00.png",
+          "count": 60,
+          "sha256": "09919adaca92b0159c369e4053e23693c1a3133578d0d48d4ef0514122aa24cf"
+        }
+      ]
+    },
+    {
+      "key": "c2_attack_01_trail_01",
+      "width": 60,
+      "height": 32,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.5625,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c2_attack_01_trail_01-00.png",
+          "count": 60,
+          "sha256": "c6849ac0121b4708d6370e7acc368929c2f43c11e5c42c3d3ad8c167fa295041"
+        }
+      ]
+    },
+    {
+      "key": "c2_die_01",
+      "width": 120,
+      "height": 144,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.49166666666666664,
+      "pivotY": 0.3402777777777778,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_die_01-00.png",
+          "count": 60,
+          "sha256": "dfcdc4743016f10c8bd3bf2ad2abbe47d4bb438fb3b2a0b963bd6e7fa200ed86"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_01_beamshield_01",
+      "width": 96,
+      "height": 92,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.3020833333333333,
+      "pivotY": 0.05434782608695654,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c2_skill_01_beamshield_01-00.png",
+          "count": 60,
+          "sha256": "a92d39fcbee28ee27e74bb0daf60cd866665861ad483022292eeba15f40b662c"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_begin_01",
+      "width": 340,
+      "height": 324,
+      "columns": 6,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5294117647058824,
+      "pivotY": 0.4104938271604939,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_02_begin_01-00.png",
+          "count": 36,
+          "sha256": "183042186db6f122d00b6ab10dbfca853910e5307062ed9fce24e67c2b899a43"
+        },
+        {
+          "file": "c2_skill_02_begin_01-01.png",
+          "count": 24,
+          "sha256": "547fa3cc102b95bd56ac761732d4161fccd3d416056907be2581562f4bc606ed"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_buff_01",
+      "width": 140,
+      "height": 112,
+      "columns": 14,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4857142857142857,
+      "pivotY": 0.2589285714285714,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c2_skill_02_buff_01-00.png",
+          "count": 60,
+          "sha256": "1d3e020d533a8a70b704f3824ae884f67ff36782c1480b6cfe0802cef94cee77"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_buff_02",
+      "width": 60,
+      "height": 92,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5166666666666667,
+      "pivotY": 0.1630434782608695,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c2_skill_02_buff_02-00.png",
+          "count": 60,
+          "sha256": "51d0bd738b99e31aac933974ff5a1290ab86e4df13d9e9b67bcec23036f1ea47"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_buff_02_end",
+      "width": 60,
+      "height": 92,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5166666666666667,
+      "pivotY": 0.1630434782608695,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_02_buff_02_end-00.png",
+          "count": 60,
+          "sha256": "e87ae695359d84e1cb8b6f0c5640680e19930ea9c3c848d095c52d923fbe9898"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_buff_03",
+      "width": 260,
+      "height": 228,
+      "columns": 7,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.48846153846153845,
+      "pivotY": 0.49122807017543857,
+      "loop": true,
+      "pages": [
+        {
+          "file": "c2_skill_02_buff_03-00.png",
+          "count": 56,
+          "sha256": "81db5c361fa7bcc5dd040fe4de66632d483b34d7ebdd481451603f866c68098e"
+        },
+        {
+          "file": "c2_skill_02_buff_03-01.png",
+          "count": 4,
+          "sha256": "e2607cf1abeecf55bad9b763a259ca9e5c4d93caeb00570a6e10264cb16a5820"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_end_01",
+      "width": 264,
+      "height": 248,
+      "columns": 7,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5113636363636364,
+      "pivotY": 0.44354838709677424,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_02_end_01-00.png",
+          "count": 56,
+          "sha256": "ad3a9766539520677a394031aee9ba2e25b2b385fcdb1312d800d862bff33ef5"
+        },
+        {
+          "file": "c2_skill_02_end_01-01.png",
+          "count": 4,
+          "sha256": "d1816f854349949cf3f6e3375f783f0cde66466c3fbcdc7a719c3945dc90b65a"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_02_shieldglow",
+      "width": 112,
+      "height": 112,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5357142857142857,
+      "pivotY": 0.1875,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_02_shieldglow-00.png",
+          "count": 60,
+          "sha256": "97ab4c621f6dbaf9046fc5dd8e6e9a4b8477416260af20ae41b25dd0fbdc28a8"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_03_hand_01",
+      "width": 60,
+      "height": 56,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4666666666666667,
+      "pivotY": 0.5357142857142857,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_03_hand_01-00.png",
+          "count": 60,
+          "sha256": "da2a833901e1a32e3af7907c754dba0b355aa69102a214f381f7fc02273c7e7f"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_03_start_01",
+      "width": 220,
+      "height": 152,
+      "columns": 9,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.11842105263157898,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_03_start_01-00.png",
+          "count": 60,
+          "sha256": "6f74bdeef585af8263e9eb75256ec90364f33933c181182f1e64fb706267b6dd"
+        }
+      ]
+    },
+    {
+      "key": "c2_skill_03_start_02",
+      "width": 188,
+      "height": 148,
+      "columns": 10,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4946808510638298,
+      "pivotY": 0.1351351351351351,
+      "loop": false,
+      "pages": [
+        {
+          "file": "c2_skill_03_start_02-00.png",
+          "count": 60,
+          "sha256": "bf81a503ebbb8ffe44781ad6ae82b5161adabf7e14ee96081421bc413e8a17f4"
+        }
+      ]
+    },
+    {
+      "key": "reborn_end_01",
+      "width": 208,
+      "height": 192,
+      "columns": 9,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4519230769230769,
+      "pivotY": 0.35416666666666663,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_end_01-00.png",
+          "count": 60,
+          "sha256": "bc98755f20f29aa4e91964b49b8958c07a109b7286831584d2ee5f1242d2be12"
+        }
+      ]
+    },
+    {
+      "key": "reborn_end_02",
+      "width": 172,
+      "height": 156,
+      "columns": 11,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5116279069767442,
+      "pivotY": 0.5576923076923077,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_end_02-00.png",
+          "count": 60,
+          "sha256": "0fb53770f55fd737c2df247b5dda4f0cb97cade15eea731fdcd88fca4045c7b4"
+        }
+      ]
+    },
+    {
+      "key": "reborn_loop_01",
+      "width": 120,
+      "height": 120,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5083333333333333,
+      "pivotY": 0.2416666666666667,
+      "loop": true,
+      "pages": [
+        {
+          "file": "reborn_loop_01-00.png",
+          "count": 60,
+          "sha256": "f412684d0540409899f2d7c79a3e5f3b215c89a136f880c34e2a56cb090f729e"
+        }
+      ]
+    },
+    {
+      "key": "reborn_loop_02",
+      "width": 232,
+      "height": 204,
+      "columns": 8,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4956896551724138,
+      "pivotY": 0.5098039215686274,
+      "loop": true,
+      "pages": [
+        {
+          "file": "reborn_loop_02-00.png",
+          "count": 60,
+          "sha256": "df5bb1ec41a4088ece3b468f83beff74a7772866cd1a2b3a366bce6c5348e3c1"
+        }
+      ]
+    },
+    {
+      "key": "reborn_start_01",
+      "width": 156,
+      "height": 160,
+      "columns": 13,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 64.0,
+      "pivotX": 0.4935897435897436,
+      "pivotY": 0.3125,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_start_01-00.png",
+          "count": 75,
+          "sha256": "e13d8786745f67622fa04914abdc2ece8f7568eb9ce96973a25db252bc238670"
+        }
+      ]
+    },
+    {
+      "key": "skill_03_pillar_ground_01",
+      "width": 100,
+      "height": 184,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.46,
+      "pivotY": 0.8695652173913043,
+      "loop": true,
+      "pages": [
+        {
+          "file": "skill_03_pillar_ground_01-00.png",
+          "count": 60,
+          "sha256": "42ad9579ca4a87e4ab996405c9975577c0dd27707d5e3e7e5e168d07f62eb1d9"
+        }
+      ]
+    },
+    {
+      "key": "skill_03_stones_01",
+      "width": 120,
+      "height": 120,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5166666666666667,
+      "pivotY": 0.575,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_03_stones_01-00.png",
+          "count": 60,
+          "sha256": "ee9b4eff9e252853c84d4595f1705e25192c7f3ae7ad42f1001388897b8cf87d"
+        }
+      ]
+    },
+    {
+      "key": "warning_ground_01",
+      "width": 72,
+      "height": 64,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4861111111111111,
+      "pivotY": 0.515625,
+      "loop": true,
+      "pages": [
+        {
+          "file": "warning_ground_01-00.png",
+          "count": 60,
+          "sha256": "5c9e2c3c32c9e2d30aab64a8265687253e8cb1c4741f797b37c9d2258c3dca0d"
+        }
+      ]
+    },
+    {
+      "key": "warning_head_01",
+      "width": 32,
+      "height": 28,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4375,
+      "pivotY": 0.25,
+      "loop": true,
+      "pages": [
+        {
+          "file": "warning_head_01-00.png",
+          "count": 60,
+          "sha256": "7de36c4fa60a03196f5e2a2cbed9444b336afcb2a7d4edb525d826b4971b7714"
+        }
+      ]
+    },
+    {
+      "key": "stonepillar_idle_01_buff",
+      "width": 72,
+      "height": 76,
+      "columns": 16,
+      "count": 60,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.07894736842105265,
+      "loop": true,
+      "pages": [
+        {
+          "file": "stonepillar_idle_01_buff-00.png",
+          "count": 60,
+          "sha256": "45452adb0e518b4112869b6b1982d6184602c7e2025169ae605e1906f6e37367"
+        }
+      ]
+    },
+    {
+      "key": "stonepillar_collapse_01_down",
+      "width": 224,
+      "height": 228,
+      "columns": 9,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5892857142857143,
+      "pivotY": 0.17105263157894735,
+      "loop": false,
+      "pages": [
+        {
+          "file": "stonepillar_collapse_01_down-00.png",
+          "count": 72,
+          "sha256": "0f0c69bd80ee41ddf38baed39612fa507f567e76f4b7823b8ea8a3170f838a96"
+        },
+        {
+          "file": "stonepillar_collapse_01_down-01.png",
+          "count": 3,
+          "sha256": "71fac03922e85a038de83816c3357491d6fa3ced4c9680da3e3b10f059f4a2d6"
+        }
+      ]
+    },
+    {
+      "key": "stonepillar_collapse_01_left",
+      "width": 160,
+      "height": 312,
+      "columns": 12,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.46875,
+      "pivotY": 0.17948717948717952,
+      "loop": false,
+      "pages": [
+        {
+          "file": "stonepillar_collapse_01_left-00.png",
+          "count": 72,
+          "sha256": "4a8e7804fcfc2939c5c0898efe861722cc4daf3f6a85a155a8ca5bab8f6fab5f"
+        },
+        {
+          "file": "stonepillar_collapse_01_left-01.png",
+          "count": 3,
+          "sha256": "0f3d7c54ef8ae407cd7b7559b538c23f20636348f3749ba3d352a3afe234680f"
+        }
+      ]
+    },
+    {
+      "key": "stonepillar_collapse_01_right",
+      "width": 160,
+      "height": 224,
+      "columns": 12,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.46875,
+      "pivotY": 0.2678571428571429,
+      "loop": false,
+      "pages": [
+        {
+          "file": "stonepillar_collapse_01_right-00.png",
+          "count": 75,
+          "sha256": "f2034beca383429cd8eeccfc9b4d93554f092c64de298662c177e8a2e467957b"
+        }
+      ]
+    },
+    {
+      "key": "stonepillar_collapse_01_up",
+      "width": 224,
+      "height": 236,
+      "columns": 9,
+      "count": 75,
+      "duration": 2.5,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.41517857142857145,
+      "pivotY": 0.15254237288135597,
+      "loop": false,
+      "pages": [
+        {
+          "file": "stonepillar_collapse_01_up-00.png",
+          "count": 72,
+          "sha256": "8cc8b8251f84534f0387ed07604322cd45d5cd4423d6ba8f9dcd907592562c4d"
+        },
+        {
+          "file": "stonepillar_collapse_01_up-01.png",
+          "count": 3,
+          "sha256": "c4964e4131076a78c246969c23b5aff5c43eb7312699473c220f27ee5f3fe061"
+        }
+      ]
+    }
+  ]
+}

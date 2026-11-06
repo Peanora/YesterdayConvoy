@@ -86,8 +86,7 @@ namespace YesterdayConvoy
                 if(skill.Kind==DefenderSkillKind.BeagleGuard)d.SkillActionUntil=Clock+1;
                 if(skill.Kind==DefenderSkillKind.CardiganRecovery)
                 {
-                    float before=d.Health;d.Health=Math.Min(d.MaxHealth,d.Health+d.MaxHealth*skill.HealFraction);
-                    d.SkillHealthRestored+=d.Health-before;
+                    d.SkillHealthRestored+=RestoreDefenderHealth(d,d.MaxHealth*skill.HealFraction);
                 }
                 // Preserve the remaining attack fraction when attack speed changes.
                 d.NextAttackTime=Clock+Math.Max(0,d.NextAttackTime-Clock)/skill.AttackSpeedMultiplier;

@@ -25,7 +25,7 @@ namespace YesterdayConvoy
                 "普通实体首次直接攻击或受击+1军令，每种卡最多2点；支援/分体不产点。\n2/4/6档：整令消耗4/5/6点，本场1/2/2次，最多6/8/12人追加60/80/90%攻击。\n4/6档近战获10/15%生命护盾3/5秒。6档可拆两次3点半令，参与者不重复。暂停或无目标不消耗。",
                 "2/4/5档：胚体 / 进阶培养 / 终极资格。正式胜利且2种小队成员真实交战+3培养；4档且巨像交战再+1。补给不培养。每个关间最多投入10金币。\nI/II/III/IV需培养0/4/12/24、投入0/20/45/80、成员2/2/4/5；IV还需5人全二星。\n生命360/550/1800/6000，攻击60/84/240/1600，DP4/5/8/14。每场一次，不扣门血。IV至多3目标、每第三击全场80%攻击法伤、每次命中回8%生命，免疫控制。",
                 "牧群：全队非五费正常实体最终死亡后生成短时转化体。2档前3个、35%生命/攻击、4甲、10秒；4档前5个、45%生命/攻击、6甲、12秒，可保留远程基础攻击（2.5射程、攻击再乘85%）。\n转化沿原位置/路线，穿门0，不复制主动、爆炸、羁绊资源或再次转化。原动作较长时攻击间隔保留完整动作。",
-                "深池：被灼烧守军遭正常伤害击杀留下火种。2档最多4枚，传播半径1.2、最多2人、15法伤/秒持续3秒；4档最多6枚、半径1.6、3人、25/秒。\n4档可消耗2火种手动引爆，半径1.8、最多4人、120法伤，每场2次。伤害每成员平均星级增加25%。衍生击杀不再产火种。当前4档等待曼德拉入池。",
+                "深池：被灼烧守军遭正常伤害击杀留下火种。2档最多4枚，传播半径1.2、最多2人、15法伤/秒持续3秒；4档最多6枚、半径1.6、3人、25/秒。\n4档可消耗2火种手动引爆，半径1.8、最多4人、120法伤，每场2次。伤害每成员平均星级增加25%。衍生击杀不再产火种。",
                 "海嗣：胜利时每种实际交战成员+1培养，2档最多2、4档最多3；0/3/7经验到I/II/III。\n屏障：首次远程直接命中减伤30%；II前2次30%；III前2次40%并给附近非海嗣一份20%保护。\n猎食：对低于35%生命目标伤害+12/18/25%；III首次击杀治疗附近两人各5%生命。\n渗透：各实体首次命中使护甲-3/5/7，4/5/5秒，同名不叠。4档II阶段解锁另一种I阶段副适应。",
                 "萨卡兹：战前指定承契卡，其余普通友军首次由直接伤害跨入40%生命以下贡献1点，每种卡最多2点。4点手动选择存活承契实体爆发，不扣DP。\n2/4/6档：攻击+20/30/40%、15/25/30%生命盾，持续6/8/10秒，本场1/2/2次。6档其他普通友军各获承契者10%生命盾、最多200。\n自损、转化体、巨像和援军不贡献；同一实体只贡献一次。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
@@ -36,29 +36,49 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         string inspectedSynergy;
-        Rect SynergyListRect=>new Rect(16,Loop.CanShop?268:64,230,28+CurrentSynergies.Length*23);
-        static Rect SynergyDetailRect=>new Rect(258,70,510,355);
+        Rect SynergyListRect=>new Rect(16,69,157,28+Mathf.Min(350,CurrentSynergies.Length*46));
+        static Rect SynergyDetailRect=>new Rect(252,90,620,415);
         SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup);
-        bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null&&SynergyDetailRect.Contains(point));
+        bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
         void DrawSynergySidebar()
         {
             if(!CampaignActive)return;
-            var summaries=CurrentSynergies;Fill(SynergyListRect,LoopInk);
-            GUI.Label(new Rect(25,SynergyListRect.y+2,210,23),"羁绊 · 不同种类 / 点击查看",LoopText(12));
-            for(int i=0;i<summaries.Length;i++)
+            var summaries=CurrentSynergies;var bounds=SynergyListRect;
+            Fill(new Rect(bounds.x,bounds.y,bounds.width,25),ApprovedUi.Paper);
+            GUI.Label(new Rect(bounds.x+8,bounds.y,55,25),"羁绊",CampaignText(12,weight:600));
+            GUI.Label(new Rect(bounds.x+58,bounds.y,91,25),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+            if(summaries.Length==0){inspectedSynergy=null;return;}
+            Rect viewport=new Rect(bounds.x,bounds.y+28,bounds.width,bounds.height-28);
+            float contentWidth=summaries.Length*46>viewport.height?139:157;
+            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*46)),false,false);
+            try
             {
-                var s=summaries[i];string state=!s.Implemented?"待实现":s.Tier>0?"已激活":"未激活";
-                string target=s.Implemented?"/"+(s.Thresholds.FirstOrDefault(t=>t>s.Count)>0?s.Thresholds.First(t=>t>s.Count):s.Thresholds.Last()):"";
-                if(LoopButton(new Rect(23,SynergyListRect.y+27+i*23,216,21),$"{s.Name} {s.Count}{target} · {state}"))inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;
+                for(int i=0;i<summaries.Length;i++)
+                {
+                    var s=summaries[i];Rect row=new Rect(0,i*46,contentWidth,41);
+                    if(GUI.Button(row,GUIContent.none,GUIStyle.none))
+                    {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
+                    bool active=s.Tier>0;Color ink=active?ApprovedUi.Ink:ApprovedUi.Muted;
+                    Fill(row,active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
+                    Fill(new Rect(row.x,row.y,3,row.height),active?new Color(.72f,.59f,.30f):ApprovedUi.Rule);
+                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name,CampaignText(13,color:ink,weight:600));
+                    GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
+                    for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*22,row.y+31,19,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
+                    string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
+                    GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+                }
             }
+            finally {GUI.EndScrollView();}
             var detail=summaries.FirstOrDefault(s=>s.Name==inspectedSynergy);if(detail==null){inspectedSynergy=null;return;}
-            Fill(SynergyDetailRect,LoopPanel);
-            GUI.Label(new Rect(272,80,430,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),LoopText(17));
-            if(LoopButton(new Rect(714,80,40,28),"关闭")){inspectedSynergy=null;return;}
-            var body=LoopText(14);body.wordWrap=true;body.alignment=TextAnchor.UpperLeft;
-            GUI.Label(new Rect(272,118,480,210),detail.Effect,body);
+            Fill(SynergyDetailRect,ApprovedUi.Paper);ApprovedUi.Border(SynergyDetailRect,ApprovedUi.Rule);
+            GUI.Label(new Rect(268,102,510,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),CampaignText(17,weight:700));
+            if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}
+            var body=CampaignText(14,TextAnchor.UpperLeft);body.wordWrap=true;
+            GUI.Label(new Rect(268,149,588,269),detail.Effect,body);
             string members=string.Join("、",detail.Members.Select(id=>shop.Definition(id).Name));
-            GUI.Label(new Rect(272,335,480,75),"编队成员："+members+"\n按战前编队锁定；未部署或死亡不改变档位。",body);
+            Fill(new Rect(268,430,588,1),ApprovedUi.Rule);
+            var memberStyle=CampaignText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);memberStyle.wordWrap=true;
+            GUI.Label(new Rect(268,441,588,54),"编队成员："+members+"\n按战前编队锁定；未部署或死亡不改变档位。",memberStyle);
         }
     }
 }

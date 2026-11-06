@@ -14,10 +14,10 @@ namespace YesterdayConvoy.Tests
         float oldTime;
         [SetUp]public void Setup()=>oldTime=Time.timeScale;
         [TearDown]public void Cleanup()=>Time.timeScale=oldTime;
-        static SpriteRenderer[] Effects()=>Object.FindObjectsByType<SpriteRenderer>().Where(r=>r.enabled&&r.name.StartsWith("Talulah attack / ")).ToArray();
-        static float Frame(SpriteRenderer renderer){var block=new MaterialPropertyBlock();renderer.GetPropertyBlock(block);return block.GetFloat("_Frame");}
+        static SpriteRenderer[] Effects()=>Object.FindObjectsByType<SpriteRenderer>().Where(r=>r.enabled&&r.name.StartsWith("Talulah native / attack-")).ToArray();
+        static int Frame(SpriteRenderer renderer)=>int.Parse(renderer.sprite.name.Substring(renderer.sprite.name.LastIndexOf('/')+1));
 
-        [UnityTest]public IEnumerator PaintedSlashStartsAtTheRealStrokeFlowsPausesAndClearsWithoutChangingCombatOrFireRain()
+        [UnityTest]public IEnumerator NativeCasterAndActualTargetHitAnimateIndependentlyWithoutChangingCombatOrFireRain()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;Time.timeScale=0;
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.SwitchTrial(true);c.SelectCard(true);
@@ -25,17 +25,19 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<160&&!c.Battle.CombatShots.Any(s=>!s.FromDefender&&!s.FireRain);i++)c.Tick(.05f);
             var shot=c.Battle.CombatShots.First(s=>!s.FromDefender&&!s.FireRain);
             c.Tick((float)(shot.ImpactAt-.02-c.Battle.Clock));yield return null;
-            Assert.That(Effects(),Is.Empty,"V8 must not ignite during the actor's windup.");
+            Assert.That(Effects().Any(r=>r.name.EndsWith("attack-A-caster")),Is.True,"Native caster effects belong to the original windup.");
+            Assert.That(Effects().Any(r=>r.name.EndsWith("attack-A-hit")),Is.False,"Target effects must wait for the real hit.");
             c.Tick(.10f);yield return null;
             Assert.That(shot.Applied,Is.True);
-            var flame=Effects().Single();float frame=Frame(flame);
-            Assert.That(flame.sharedMaterial.shader.name,Is.EqualTo("YesterdayConvoy/TalulahAttackFlipbook"));
+            var flame=Effects().Single(r=>r.name.EndsWith("attack-A-caster"));int frame=Frame(flame);
+            Assert.That(Effects().Any(r=>r.name.EndsWith("attack-A-hit")),Is.True);
+            Assert.That(flame.sharedMaterial.shader.name,Is.EqualTo("YesterdayConvoy/TalulahNative"));
             Assert.That(flame.sharedMaterial.shader.isSupported,Is.True);
-            Assert.That(frame,Is.InRange(4f,6f),"Painted blade must match the source actor's post-contact recovery clock.");
-            var visible=Effects();var image=Capture(Camera.main,"talulah-v8-actual.png");
+            Assert.That(frame,Is.InRange(32,36),"Native caster frames must match the actor's source-time recovery.");
+            var visible=Effects();var image=Capture(Camera.main,"talulah-native-actual.png");
             foreach(var r in visible)r.enabled=false;
             var hidden=Capture(Camera.main,null);foreach(var r in visible)r.enabled=true;
-            Assert.That(image.Zip(hidden,(a,b)=>Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b)).Average(),Is.GreaterThan(.02),"Actual GPU image must contain the painted fire.");
+            Assert.That(image.Zip(hidden,(a,b)=>Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b)).Average(),Is.GreaterThan(.02),"Actual GPU image must contain native caster and target effects.");
             c.Tick(.05f);yield return null;Assert.That(Frame(flame),Is.GreaterThan(frame));
             c.Battle.SetPaused(true);double clock=c.Battle.Clock;frame=Frame(flame);Vector3 point=flame.transform.position;
             c.Tick(10);yield return null;Assert.That(c.Battle.Clock,Is.EqualTo(clock));
@@ -43,7 +45,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.CombatSettings.UnitInterval,Is.EqualTo(1.7f));
             Assert.That(shot.ImpactAt-shot.StartedAt,Is.EqualTo(.65).Within(.001));
             c.Battle.SetPaused(false);c.Tick(.70f);yield return null;
-            Assert.That(Effects(),Is.Empty,"The completed stroke must not leave an idle aura.");
+            Assert.That(Effects().All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"),Is.True);
             c.RestartBattle();yield return null;Assert.That(Effects(),Is.Empty);
             c.SelectCard(true);c.TryDeployAt(c.Battle.Entry);c.Tick(4.05f);c.SelectSkillUnit(c.Battle.Units[0].EntityId);
             Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));c.Tick(.45f);yield return null;
@@ -69,13 +71,14 @@ namespace YesterdayConvoy.Tests
                     double clock=shot.ImpactAt+(side<0?.05:.10);
                     type.GetMethod("Present").Invoke(helper,new object[]{shot,clock,Camera.main,1.3f/1.05f});
                     var fire=root.GetComponentsInChildren<SpriteRenderer>().Last(r=>r.enabled);
-                    Assert.That(Mathf.Sign(fire.transform.localScale.x),Is.EqualTo((float)side),"Left-facing source texture must mirror towards the shot target.");
+                    Assert.That(fire.flipX,Is.EqualTo(side>0),"Right-facing native frames mirror towards the actual shot target.");
                 }
                 type.GetMethod("End").Invoke(helper,null);
                 var simultaneous=root.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled).ToArray();
-                Assert.That(simultaneous.Length,Is.EqualTo(2));
-                Assert.That(Frame(simultaneous[0]),Is.LessThan(Frame(simultaneous[1])),"Per-shot material properties must not overwrite another Talulah's painted frame.");
-                Capture(Camera.main,"talulah-v8-directions.png");
+                Assert.That(simultaneous.Length,Is.EqualTo(4));
+                var casters=simultaneous.Where(r=>r.name.EndsWith("attack-A-caster")).ToArray();
+                Assert.That(Frame(casters[0]),Is.LessThan(Frame(casters[1])),"Each attack must keep its own native frame.");
+                Capture(Camera.main,"talulah-native-directions.png");
                 type.GetMethod("Clear").Invoke(helper,null);
                 Assert.That(root.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled),Is.False);
             }

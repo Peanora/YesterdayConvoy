@@ -40,6 +40,12 @@ namespace YesterdayConvoy
             }
             if(GUI.Button(TestReturnRect,"返回怪物选择",buttonStyle)) ReturnToMonsterTests();
             if(TacticalMapActive) return;
+            if(TalulahPhaseTrialActive)
+            {
+                GUI.Label(new Rect(24,631,820,28),"三星塔露拉 · 原作A/B动作与双阶段 · 首倒/终倒自动火雨",smallStyle);
+                GUI.Label(new Rect(24,659,820,26),"本场部署1次；守军自然承伤推进阶段；手动火雨仍可释放；空格暂停",smallStyle);
+                return;
+            }
             if(DefenderTrialActive)
             {
                 GUI.Label(new Rect(24,631,650,28),"八人防线 · 地面阻挡 / 高台火力 / 医疗支援",smallStyle);
@@ -122,6 +128,7 @@ namespace YesterdayConvoy
 
         private IEnumerator VerifyTalulah(string directory)
         {
+            if(directory!=null)yield return VerifyTalulahNativeLayers(directory);
             Time.timeScale=0; SwitchTrial(true); Battle.Begin(); Battle.SetPaused(true);
             Vector2 card=ScreenPosition(RosterSlot.center), entry=Camera.main.WorldToScreenPoint(Battle.Entry);
             ProcessPointerDown(card); ProcessPointerMove(entry);

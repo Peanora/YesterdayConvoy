@@ -12,12 +12,13 @@ namespace YesterdayConvoy
         internal void Present(float age,float strength,float warm)
         {
             warmth=warm;
+            float since=age-.18f;
+            flash=since>=0 ? Mathf.Exp(-since*9)*strength : 0;
             float pulse=0;
-            for(int i=0;i<6;i++) { float elapsed=age-(.25f+i); if(elapsed>=0) pulse+=Mathf.Exp(-elapsed*5); }
-            flash=Mathf.Min(1,pulse)*strength;
-            float amplitude=Mathf.Min(3.2f,2.4f*Mathf.Exp(-age/.23f)+2.8f*pulse)*strength;
-            offset=new Vector2(amplitude*Mathf.Sin(age*86)/1280,
-                amplitude*.55f*Mathf.Sin(age*119+.6f)/720);
+            for(int i=0;i<6;i++) { float elapsed=age-(.18f+i*1.05f); if(elapsed>=0) pulse+=Mathf.Exp(-elapsed*13); }
+            float amplitude=5.5f*flash+strength*.65f+pulse*strength;
+            offset=new Vector2(amplitude*(Mathf.Sin(age*71)*.7f+Mathf.Sin(age*97)*.3f)/1280,
+                amplitude*(Mathf.Sin(age*83+.8f)*.65f+Mathf.Sin(age*49)*.35f)/720);
         }
         private void OnRenderImage(RenderTexture source,RenderTexture destination)
         {

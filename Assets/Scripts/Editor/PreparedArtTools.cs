@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -19,22 +20,41 @@ namespace YesterdayConvoy.Editor
         {
             if(report.summary.platform!=BuildTarget.StandaloneWindows64)return;
             string output=Path.Combine(Path.GetDirectoryName(report.summary.outputPath),Path.GetFileNameWithoutExtension(report.summary.outputPath)+"_Data/StreamingAssets");
-            int installed=0,replaced=0;
+            int installed=0,replaced=0;var phasePages=TalulahPhasePages();
             foreach(string file in Directory.GetFiles(Cache,"*.ycart",SearchOption.AllDirectories))
             {
-                string relative=file.Substring(Cache.Length+1),target=Path.Combine(output,relative);Directory.CreateDirectory(Path.GetDirectoryName(target));File.Copy(file,target,true);
+                string relative=file.Substring(Cache.Length+1);
+                if(relative.Replace('\\','/').StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&!phasePages.Contains(Path.GetFileName(relative.Substring(0,relative.Length-6))))continue;
+                string target=Path.Combine(output,relative);Directory.CreateDirectory(Path.GetDirectoryName(target));File.Copy(file,target,true);
                 installed++;string source=target.Substring(0,target.Length-6);if(File.Exists(source)){File.Delete(source);replaced++;} // Player copy only; never touches Assets.
             }
             long bytes=0;foreach(string file in Directory.GetFiles(Path.GetDirectoryName(report.summary.outputPath),"*",SearchOption.AllDirectories))bytes+=new FileInfo(file).Length;
             Debug.Log("PREPARED_ART_PLAYER_PASS: installed="+installed+"; actor_png_replaced="+replaced+"; player_directory_bytes="+bytes+"; source PNGs retained in project.");
         }
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
-        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal"};
+        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx"};
+        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-B-caster"};
         [InitializeOnLoadMethod]static void InstallPreparation()
         {EditorApplication.playModeStateChanged+=state=>{if(state==PlayModeStateChange.ExitingEditMode)Prepare(false);};}
         [Serializable]sealed class Manifest {public string task;public float ppu;public bool rearVariant,auxiliary;public Clip[] clips;}
         [Serializable]sealed class Clip {public string key;public int cell,cellWidth,cellHeight;public Page[] pages;}
         [Serializable]sealed class Page {public string file;}
+        static HashSet<string> TalulahPhasePages()
+        {
+            string path=Path.Combine(Application.streamingAssetsPath,"TalulahUnboundVfx/manifest.json");
+            var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(path));var pages=new HashSet<string>(StringComparer.Ordinal);
+            foreach(string key in TalulahPhaseKeys)
+            {
+                var clip=Array.Find(data.clips,c=>c.key==key);
+                if(clip?.pages==null||clip.pages.Length==0)throw new InvalidDataException("Missing required Talulah phase VFX: "+key);
+                foreach(var page in clip.pages)
+                {
+                    if(string.IsNullOrEmpty(page.file)||Path.GetFileName(page.file)!=page.file)throw new InvalidDataException("Invalid Talulah phase VFX page");
+                    pages.Add(page.file);
+                }
+            }
+            return pages;
+        }
         [MenuItem("Yesterday Convoy/Art/Prepare Actor Textures")]
         public static void PrepareAll()=>Prepare(true);
         static void Prepare(bool strict)
@@ -43,8 +63,10 @@ namespace YesterdayConvoy.Editor
             foreach(string folder in Roots)
             {
                 string root=Path.Combine(Application.streamingAssetsPath,folder);if(!Directory.Exists(root))continue;
+                var phasePages=folder=="TalulahUnboundVfx"?TalulahPhasePages():null;
                 foreach(string file in Directory.GetFiles(root,"*.png",SearchOption.AllDirectories))
                 {
+                    if(phasePages!=null&&!phasePages.Contains(Path.GetFileName(file)))continue;
                     string relative=file.Substring(Application.streamingAssetsPath.Length+1),target=Path.Combine(Cache,relative+".ycart");
                     var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks;
                     string record=File.Exists(target+".hash")?File.ReadAllText(target+".hash"):"";total++;

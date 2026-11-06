@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
-            (PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
+            (TalulahTransitionLocked(u)||IsTalulah(u)&&Clock<u.TalulahInvulnerableUntil||PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
         public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil&&!SixthReveals(u);
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!StrongholdInTransit(u.EntityId)&&!UnitInvulnerable(u)&&
             (!UnitInvisible(u)||CombatSettings.RevealsInvisible||SixthReveals(u))&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
@@ -60,7 +60,9 @@ namespace YesterdayConvoy
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u)||damage<=0)return false;
             if(u.FlamePhase==FlamechaserPhase.Ember)damage=1;
+            float feedbackHealth=u.Health;Vector3 feedbackPosition=u.Motion.Position;
             u.Health=Mathf.Max(0,u.Health-damage);u.LastHitTime=Clock;
+            RecordUnitHealthLoss(u,feedbackHealth,feedbackPosition);
             if(u.Health<=0)DefeatUnit(u);
             else
             {

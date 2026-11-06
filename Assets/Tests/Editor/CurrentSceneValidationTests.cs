@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -26,7 +27,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(defender.transform.position,Is.EqualTo(c.Definition.Engagement.DefenderPosition));
             foreach(string name in new[]{"Defense Tower","Tower Range","Tower Shot","Raised Tactical Board"})
                 Assert.That(GameObject.Find(name),Is.Null,name);
-            Assert.That(EditorBuildSettings.scenes.Length,Is.EqualTo(5));
+            var catalog=GameSceneCatalog.BuildPaths();CollectionAssert.AreEqual(catalog,EditorBuildSettings.scenes.Select(s=>s.path),"The build must retain every authored scene in catalog order.");
+            Assert.That(EditorBuildSettings.scenes.All(s=>s.enabled),Is.True);
             Assert.That(EditorBuildSettings.scenes[0].path,Is.EqualTo(CampaignTools.CampaignScene));
         }
 

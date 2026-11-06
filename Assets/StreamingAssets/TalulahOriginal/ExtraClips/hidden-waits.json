@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "meaning": "Invisible zero-duration source states; not ordinary playable clips.",
+  "sourceRootPixels": [
+    320,
+    495
+  ],
+  "packagedRootPixels": [
+    256,
+    396
+  ],
+  "states": [
+    {
+      "source": "Reborn_1_Idle",
+      "sourceDuration": 0,
+      "file": "reborn_1_idle-hidden.png",
+      "width": 512,
+      "height": 512,
+      "pixelsPerUnit": 88.8888889,
+      "visible": false,
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    },
+    {
+      "source": "Reborn_2_Idle",
+      "sourceDuration": 0,
+      "file": "reborn_2_idle-hidden.png",
+      "width": 512,
+      "height": 512,
+      "pixelsPerUnit": 88.8888889,
+      "visible": false,
+      "bindingStatus": "IMPORTED_NOT_BOUND"
+    }
+  ]
+}

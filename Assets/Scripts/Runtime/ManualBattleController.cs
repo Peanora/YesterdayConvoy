@@ -41,12 +41,24 @@ namespace YesterdayConvoy
         public double PresentationClock => Battle.Clock+terminalPresentationElapsed;
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
-        private double DeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
+        private double UnitDeathTail(DeployedUnitState unit) => OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
+            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0);
+        private double DeathTail
+        {
+            get
+            {
+                double tail=DefaultDeathTail;
+                if(Battle!=null)foreach(var unit in Battle.Units)tail=Math.Max(tail,UnitDeathTail(unit));
+                return tail;
+            }
+        }
         private bool DeathPresentationPending
         {
             get
             {
-                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail) return true;
+                if(CombatFeedbackPresentationPending)return true;
+                foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit)) return true;
                 foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
                 if(DefenderTrialActive) foreach(var d in Battle.Defenders) if(!d.Alive && PresentationClock<d.DeathTime+1) return true;
                 return false;
@@ -59,7 +71,7 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            diagnostic = Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
@@ -74,6 +86,7 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
+            InitializeCombatFeedback();
             if(Debug.isDebugBuild&&Array.IndexOf(args,"-talulahFireRainV12Test")>=0)
             {
                 diagnostic=true;Application.runInBackground=true;int evidence=Array.IndexOf(args,"-demoEvidenceDir");
@@ -85,7 +98,7 @@ namespace YesterdayConvoy
                 StartCoroutine(VerifyPatriotPresentation(evidence>=0&&evidence+1<args.Length?args[evidence+1]:Path.Combine(Application.persistentDataPath,"PatriotVfx"),true));
             }
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-talulahFireRainV12Test" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
-            TestSelectionOpen=!smoke;
+            TestSelectionOpen=!smoke&&FindAnyObjectByType<TalulahPhaseTrialBootstrap>()==null;
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)
             {
@@ -132,6 +145,7 @@ namespace YesterdayConvoy
 
         private ManualBattle CreateBattle()
         {
+            if(TalulahPhaseTrialActive)return talulahPhaseTrial.CreateBattle(talulahDefinition);
             if(CampaignActive)return CreateCampaignBattle();
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
@@ -228,7 +242,7 @@ namespace YesterdayConvoy
             // Carry this phase into battle; after Begin only the simulation clock advances it.
             if(Battle.Phase==BattlePhase.Ready && !Battle.IsPaused) readyIdleElapsed+=delta;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
-                terminalPresentationElapsed=Math.Min(DeathTail+.1,terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
+                terminalPresentationElapsed=Math.Min(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
             Battle.Advance(delta*EffectiveSimulationSpeed);
             StepBattleShopLoop();
             SyncViews();
@@ -255,7 +269,7 @@ namespace YesterdayConvoy
             foreach(var pair in views)
             {
                 bool alive=false;
-                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || DeathTail>0 && unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+DeathTail)) { alive=true; break; }
+                foreach(var unit in Battle.Units) if(unit.EntityId==pair.Key && (unit.Active || unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit))) { alive=true; break; }
                 if(!alive) { if(pair.Value!=null) { pair.Value.gameObject.SetActive(false); Destroy(pair.Value.gameObject); } removed.Add(pair.Key); }
             }
             foreach(string id in removed) views.Remove(id);

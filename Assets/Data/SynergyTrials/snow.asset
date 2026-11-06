@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3b04467e9104812b2d39cb917490272, type: 3}
+  m_Name: snow
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.SynergyTrialDefinition
+  trialId: snow
+  displayTitle: "\u96EA\u602A\u5C0F\u961F \xB7 \u4E13\u9879\u9A8C\u8BC1"
+  initialLevel: 8
+  initialMembers:
+  - cardId: CARD_M06
+    star: 1
+  - cardId: CARD_M11
+    star: 1
+  - cardId: CARD_M12
+    star: 1
+  - cardId: CARD_M13
+    star: 1
+  - cardId: CARD_M14
+    star: 1
+  encounter: {fileID: 11400000, guid: 11aef9ed4f12ab246a2ed71562bf32d1, type: 2}
+  infectionPrimary: 0
+  infectionSecondary: 1
+  marinePrimary: 0
+  marineSecondary: 1
+  contractCardId: 

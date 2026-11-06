@@ -39,7 +39,7 @@ namespace YesterdayConvoy.Tests
         }
         [UnityTest]public IEnumerator ThirtySixCardPoolAndFourConstructionPresetsAreReachable()
         {
-            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(39));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(4));
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(7));
             Assert.That(c.SetSandboxRoster(1));Assert.That(c.Battle.InfectionTier,Is.EqualTo(6));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M04"));
             Assert.That(c.SetSandboxRoster(2));Assert.That(c.Battle.GuerrillaTier,Is.EqualTo(6));
             Assert.That(c.SetSandboxRoster(3));Assert.That(c.Battle.MudrockTier,Is.EqualTo(2));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M26"));

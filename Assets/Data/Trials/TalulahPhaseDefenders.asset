@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: TalulahPhaseDefenders
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: 5ac2d238e4a9a45488063873ea1145c7, type: 2}
+  route:
+  - {x: -5, y: 0.04, z: 1}
+  - {x: -5, y: 0.04, z: -1}
+  - {x: -2, y: 0.04, z: -1}
+  - {x: -2, y: 0.04, z: 0}
+  - {x: 2, y: 0.04, z: 0}
+  - {x: 2, y: 0.04, z: -1}
+  - {x: 5, y: 0.04, z: -1}
+  - {x: 5, y: 0.04, z: 1}
+  defenders:
+  - id: talulah-phase-kroos-0
+    displayName: "\u514B\u6D1B\u4E1D \xB7 \u53CC\u9636\u6BB5\u6D4B\u8BD5"
+    artId: D07
+    position: {x: -1, y: 0.35, z: 1}
+    health: 50000
+    attack: 140
+    armor: 40
+    range: 9
+    interval: 1
+    windup: 0.4333333
+    actionDuration: 0.9333333
+    blocks: 0
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: talulah-phase-kroos-1
+    displayName: "\u514B\u6D1B\u4E1D \xB7 \u53CC\u9636\u6BB5\u6D4B\u8BD5"
+    artId: D07
+    position: {x: 1, y: 0.35, z: -2}
+    health: 50000
+    attack: 140
+    armor: 40
+    range: 9
+    interval: 1
+    windup: 0.4333333
+    actionDuration: 0.9333333
+    blocks: 0
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: talulah-phase-kroos-2
+    displayName: "\u514B\u6D1B\u4E1D \xB7 \u53CC\u9636\u6BB5\u6D4B\u8BD5"
+    artId: D07
+    position: {x: 3, y: 0.35, z: 2}
+    health: 50000
+    attack: 140
+    armor: 40
+    range: 9
+    interval: 1
+    windup: 0.4333333
+    actionDuration: 0.9333333
+    blocks: 0
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces: []
+  mapId: talulah-phase-trial
+  mapTitle: "\u4E09\u661F\u5854\u9732\u62C9 \xB7 \u81EA\u7136\u627F\u4F24\u53CC\u9636\u6BB5"
+  autumnRuins: 0
+  lanes: []
+  raised: []
+  floorTexture: {fileID: 0}
+  foliageTexture: {fileID: 0}
+  rosterCards: []
+  defenderTestId: 

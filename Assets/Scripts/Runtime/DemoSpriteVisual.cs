@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         private DeployedUnitState deployedUnit;
         private CardDefinition frameCard;
         private OriginalTalulahArt original;
+        private TalulahAttackVfx terminalTalulahVfx;
         private OriginalSlugArt slug;
         private LocalMonsterArt local;
         private Func<double> presentationClock;
@@ -26,6 +27,7 @@ namespace YesterdayConvoy
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
+        public string EntityId=>deployedUnit?.EntityId;
 
         private void OnEnable()
         {
@@ -51,7 +53,7 @@ namespace YesterdayConvoy
                 sprite.sharedMaterial=tacticalMaterial;
                 ActorGrounding.Attach(sprite,local?.Height??1.25f);
             }
-            tacticalFlip=unit.Motion.Direction.x<-.08f;
+            tacticalFlip=original!=null?Vector3.Dot(unit.Motion.Direction,Camera.main!=null?Camera.main.transform.right:Vector3.right)<-.08f:unit.Motion.Direction.x<-.08f;
             tacticalAttack=double.NegativeInfinity;
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
@@ -61,7 +63,8 @@ namespace YesterdayConvoy
         private void LateUpdate()
         {
             if(deployedUnit==null) { FaceCamera(); return; }
-            Color tint=manualBattle.Clock<deployedUnit.LastHitTime+.18 ? new Color(1,.48f,.48f) : Color.white;
+            Color tint=original!=null&&deployedUnit.Resolution==UnitResolution.Dead ? Color.white :
+                manualBattle.Clock<deployedUnit.LastHitTime+.18 ? new Color(1,.48f,.48f) : Color.white;
             PresentFrames(tint);
         }
 
@@ -77,7 +80,7 @@ namespace YesterdayConvoy
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
-            if(WorldUpright && (local!=null || slug!=null || original!=null))
+            if(WorldUpright && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
@@ -96,6 +99,33 @@ namespace YesterdayConvoy
                     }
                 }
                 sprite.flipX=tacticalFlip;
+                if(manualBattle.UnitCombat(deployedUnit).Effects.Mandragora&&deployedUnit.Gaze!=null&&!deployedUnit.Gaze.Ended)
+                {
+                    var target=manualBattle.FindDefender(deployedUnit.Gaze.TargetId);
+                    if(target!=null&&Mathf.Abs(target.Position.x-deployedUnit.Motion.Position.x)>.01f)
+                        sprite.flipX=tacticalFlip=target.Position.x<deployedUnit.Motion.Position.x;
+                }
+            }
+            if(manualBattle.UnitCombat(deployedUnit).Effects.Healer)
+            {
+                if(deployedUnit.Active&&!manualBattle.IsPaused)
+                {
+                    bool casting=manualBattle.Clock<deployedUnit.HealingStartedAt+manualBattle.UnitCombat(deployedUnit).AttackDuration;
+                    Vector3 direction=deployedUnit.Motion.Direction;
+                    if(casting&&tacticalAttack!=deployedUnit.HealingStartedAt)
+                    {
+                        tacticalAttack=deployedUnit.HealingStartedAt;
+                        for(int i=manualBattle.HealingCasts.Count-1;i>=0;i--)
+                        {
+                            var cast=manualBattle.HealingCasts[i];if(cast.SourceId!=deployedUnit.EntityId)continue;
+                            foreach(var id in cast.TargetIds){var target=manualBattle.FindUnit(id);if(target!=null&&target!=deployedUnit){direction=target.Motion.Position-deployedUnit.Motion.Position;break;}}
+                            break;
+                        }
+                        float dx=Vector3.Dot(direction,Camera.main.transform.right);if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;
+                    }
+                    else if(!casting){float dx=Vector3.Dot(direction,Camera.main.transform.right);if(Mathf.Abs(dx)>.08f)tacticalFlip=dx<0;}
+                }
+                sprite.flipX=tacticalFlip;
             }
             if(manualBattle.IsPatriot(deployedUnit))
             {
@@ -112,8 +142,8 @@ namespace YesterdayConvoy
             transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
             if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
-            if(manualBattle.IsPaused) return;
             if(original!=null) { PresentOriginal(); return; }
+            if(manualBattle.IsPaused) return;
             double age=manualBattle.Clock-deployedUnit.LastAttackTime;
             double skillDuration=manualBattle.UnitCombat(deployedUnit).SkillInterval;
             // A fired skill gesture owns its full window, independently of target lifetime or resumed movement.
@@ -211,9 +241,9 @@ namespace YesterdayConvoy
                     clip=prefix+"skill_1_"+part;time=g.Ended?manualBattle.Clock-g.EndedAt:part=="begin"?age:age-.8333334;
                     loop=part=="loop";FrameState="Gaze"+part;
                 }
-                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_2";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
-                else if(manualBattle.Clock<u.StoneShieldRestoredAt+(u.MandraPhase==MandragoraPhase.Ground?1.5:1.3333334))
-                {clip=u.MandraPhase==MandragoraPhase.Ground?"extra_c1_skill_2":"extra_c2_skill_3";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
+                else if(manualBattle.Clock<u.PillarCommandStartedAt+1.5){clip="extra_c2_skill_3";time=manualBattle.Clock-u.PillarCommandStartedAt;FrameState="PillarCommand";}
+                else if(manualBattle.Clock<u.StoneShieldRestoredAt+1.5)
+                {clip=prefix+"skill_2";time=manualBattle.Clock-u.StoneShieldRestoredAt;FrameState="StoneShieldRestore";}
                 else if(u.MandraPhase==MandragoraPhase.Second&&manualBattle.Clock<u.PillarStunnedUntil){clip="extra_c2_stun";time=manualBattle.Clock-u.StoneShieldBrokenAt;FrameState="StoneShieldBreak";loop=true;}
                 else
                 {
@@ -222,7 +252,7 @@ namespace YesterdayConvoy
                     string idle=ground?"extra_c1_idle":u.StoneShield?"extra_c2_idle_1":"idle";
                     string walk=ground?"extra_c1_move":u.StoneShield?"extra_c2_move_1":"walk";
                     string attack=ground?"extra_c1_attack":u.StoneShield?"extra_c2_attack_1":"attack";
-                    if(age>=0&&age<1.5){clip=attack;time=age;FrameState="Attack";}
+                    if(age>=0&&age<1.5/u.LastAttackRate){clip=attack;time=age*u.LastAttackRate;FrameState="Attack";}
                     else if(u.IsMoving){clip=walk;time=u.Motion.DistanceTravelled/local.ReferenceSpeed;loop=true;FrameState="Walk";}
                     else{clip=idle;time=manualBattle.Clock-u.SpawnTime;loop=true;FrameState="Idle";}
                 }
@@ -330,43 +360,83 @@ namespace YesterdayConvoy
 
         private void PresentOriginal()
         {
-            double age = manualBattle.Clock - deployedUnit.LastAttackTime;
-            string clip;
-            double sourceTime;
-            bool loop;
-            if (manualBattle.IsSkillActionPlaying(deployedUnit))
+            var unit=deployedUnit;var camera=Camera.main;
+            // Both A and B exports face right. Mirror the visual towards real screen
+            // travel/target direction; never rotate or negatively scale the route root.
+            tacticalFlip=OriginalTalulahArt.VisualFlip(manualBattle,unit,camera,tacticalFlip);
+            sprite.flipX=tacticalFlip;
+            bool second=manualBattle.TalulahSecondForm(unit);
+            if(unit.Resolution==UnitResolution.Dead)
             {
-                FrameState = "Skill"; clip = "cast"; loop = false;
-                double elapsed = manualBattle.Clock - deployedUnit.FireRainStartedAt;
-                double total = manualBattle.UnitCombat(deployedUnit).SkillInterval;
-                double raise = Math.Min(.8, total * .2), lower = Math.Min(.6, total * .2);
-                double holdPose = 1.1666667;
-                sourceTime = elapsed < raise ? elapsed / raise * holdPose :
-                    elapsed < total - lower ? holdPose :
-                    holdPose + (elapsed - (total - lower)) / lower * (original["cast"].Duration - holdPose);
+                bool phaseEnd=unit.TalulahPhase==TalulahPhase.Dead;
+                FrameState=phaseEnd?"TalulahFinalEnd":"Death";sprite.color=Color.white;
+                double clock=presentationClock?.Invoke()??manualBattle.Clock;
+                sprite.sprite=original[phaseEnd?"final-end":"death"].At(clock-unit.DeathTime,false,out int deathIndex);FrameIndex=deathIndex;
+                if(phaseEnd)
+                {
+                    if(terminalTalulahVfx==null)terminalTalulahVfx=new TalulahAttackVfx(transform.parent);
+                    terminalTalulahVfx.Begin();terminalTalulahVfx.PresentTerminal(unit,clock,camera,tacticalFlip);terminalTalulahVfx.End();
+                }
+                return;
             }
-            else if (deployedUnit.IsMoving)
+            double phaseAge=manualBattle.Clock-unit.TalulahPhaseStartedAt;
+            string phaseClip=null;
+            if(unit.TalulahPhase==TalulahPhase.FirstFall){FrameState="TalulahFirstFall";phaseClip="first-fall";}
+            else if(unit.TalulahPhase==TalulahPhase.FirstRain)
+            {FrameState="TalulahFirstRain";sprite.enabled=false;FrameIndex=0;return;}
+            else if(unit.TalulahPhase==TalulahPhase.Second&&phaseAge<original["first-return"].Duration)
+            {FrameState="TalulahReappear";phaseClip="first-return";}
+            else if(unit.TalulahPhase==TalulahPhase.FinalFall){FrameState="TalulahFinalFall";phaseClip="final-fall";}
+            else if(unit.TalulahPhase==TalulahPhase.FinalRain)
             {
-                FrameState = "Walk"; clip = "walk"; loop = true;
-                sourceTime = deployedUnit.Motion.DistanceTravelled / original.ReferenceSpeed;
+                // Logical rain begins at +5s, while the native start lasts 5.3333s.
+                // Keep its final .3333s visible over the beginning of the orange rain.
+                phaseAge=manualBattle.Clock-(unit.TalulahAutomaticRainStartedAt-TalulahTiming.FallDuration);
+                FrameState="TalulahFinalRain";
+                if(phaseAge>=original["final-fall"].Duration){sprite.enabled=false;FrameIndex=0;return;}
+                phaseClip="final-fall";
             }
-            else if (deployedUnit.HasCombatTarget && age >= 0 && age < manualBattle.UnitCombat(deployedUnit).UnitInterval)
+            if(phaseClip!=null)
             {
-                FrameState = "Attack"; clip = "attack"; loop = false;
-                // Align the source OnAttack marker with this game's existing hit time. Never reschedule damage.
-                double contact = Math.Min(manualBattle.UnitCombat(deployedUnit).ProjectileTime, manualBattle.UnitCombat(deployedUnit).UnitInterval * .8);
-                sourceTime = age <= contact ? age / contact * original.AttackContact :
-                    original.AttackContact + (age - contact) / (manualBattle.UnitCombat(deployedUnit).UnitInterval - contact) *
-                    (original["attack"].Duration - original.AttackContact);
+                // FirstFall has a transparent native waiting tail; do not freeze a
+                // visible last pose between the start clip and the automatic rain.
+                if(phaseClip=="first-fall"&&phaseAge>=original[phaseClip].Duration)
+                {sprite.enabled=false;FrameIndex=original[phaseClip].Frames.Length-1;return;}
+                sprite.color=Color.white;sprite.sprite=original[phaseClip].At(phaseAge,false,out int phaseIndex);FrameIndex=phaseIndex;return;
+            }
+            double age=manualBattle.Clock-unit.LastAttackTime;
+            string clip;double sourceTime;bool loop;
+            if(manualBattle.IsSkillActionPlaying(unit))
+            {
+                FrameState=second?"SkillB":"Skill";clip=second?"cast-b":"cast";loop=false;
+                double elapsed=manualBattle.Clock-unit.FireRainStartedAt,total=manualBattle.UnitCombat(unit).SkillInterval;
+                double raise=Math.Min(.8,total*.2),lower=Math.Min(.6,total*.2),holdPose=1.1666667;
+                sourceTime=elapsed<raise?elapsed/raise*holdPose:elapsed<total-lower?holdPose:
+                    holdPose+(elapsed-(total-lower))/lower*(original[clip].Duration-holdPose);
+            }
+            else if(unit.IsMoving)
+            {
+                FrameState=second?"WalkB":"Walk";clip=second?"walk-b":"walk";loop=true;
+                sourceTime=unit.Motion.DistanceTravelled/original.ReferenceSpeed;
+            }
+            else if(unit.HasCombatTarget&&age>=0&&age<manualBattle.UnitCombat(unit).UnitInterval)
+            {
+                FrameState=second?"AttackB":"Attack";clip=second?"attack-b":"attack";loop=false;
+                double interval=manualBattle.UnitCombat(unit).UnitInterval;
+                double contact=Math.Min(manualBattle.UnitCombat(unit).ProjectileTime,interval*.8);
+                sourceTime=age<=contact?age/contact*original.AttackContact:
+                    original.AttackContact+(age-contact)/(interval-contact)*(original[clip].Duration-original.AttackContact);
             }
             else
             {
-                FrameState = "Idle"; clip = "idle"; loop = true;
-                sourceTime = manualBattle.Clock - deployedUnit.SpawnTime;
+                FrameState=second?"IdleB":"Idle";clip=second?"idle-b":"idle";loop=true;
+                sourceTime=manualBattle.Clock-unit.SpawnTime;
             }
-            sprite.sprite = original[clip].At(sourceTime, loop, out int index);
-            FrameIndex = index;
+            sprite.sprite=original[clip].At(sourceTime,loop,out int index);FrameIndex=index;
         }
+
+        private void OnDisable()=>terminalTalulahVfx?.Clear();
+        private void OnDestroy(){terminalTalulahVfx?.Dispose();terminalTalulahVfx=null;}
 
         private bool FaceCamera()
         {

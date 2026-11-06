@@ -9,19 +9,20 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class ShopMapSceneTests
     {
+        [TearDown]public void RestoreClock(){Time.timeScale=1;}
         [UnityTest]public IEnumerator ShopOverlayKeepsCameraAndInventoryStableAndBlocksCoveredMap()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;
             var c=Object.FindAnyObjectByType<ManualBattleController>();c.EnterShopTrial();yield return null;yield return null;
             Assert.That(c.ShopVisible,Is.False);Assert.That(ManualBattleController.ShopBenchRect(0).height,Is.LessThan(80));
             Assert.That(ManualBattleController.ShopBattlefieldRect.height,Is.GreaterThan(500));
-            Assert.That(ManualBattleController.ShopBenchRect(0).center.x,Is.GreaterThan(ManualBattleController.ShopBenchRect(1).center.x),"Reserve models fill from right to left, matching the supplied recording.");
+            Assert.That(ManualBattleController.ShopBenchRect(0).center.x,Is.LessThan(ManualBattleController.ShopBenchRect(1).center.x),"Both preparation rows fill from left to right.");
             var viewport=Camera.main.rect;float fov=Camera.main.fieldOfView;var position=Camera.main.transform.position;
             var offers=c.Shop.Offers.ToArray();int gold=c.Shop.Gold,count=c.Shop.Bench.Count;
             Vector2 covered=ManualBattleController.ShopOfferRect(0).center;Assert.That(c.ShopMapPointAvailable(covered),Is.True);
             c.SetShopVisible(true);Assert.That(c.ShopVisible,Is.True);Assert.That(c.ShopMapPointAvailable(covered),Is.False);
             c.ProcessShopPointer(EventType.MouseDown,covered);Assert.That(c.Battle.Units.Count,Is.Zero);
-            c.SetShopVisible(false);Assert.That(c.ShopMapPointAvailable(covered),Is.True);
+            c.SetShopVisible(false);yield return new WaitForSecondsRealtime(.22f);Assert.That(c.ShopMapPointAvailable(covered),Is.True);
             Assert.That(Camera.main.rect,Is.EqualTo(viewport));Assert.That(Camera.main.fieldOfView,Is.EqualTo(fov));Assert.That(Camera.main.transform.position,Is.EqualTo(position));
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));CollectionAssert.AreEqual(offers,c.Shop.Offers);
             c.EnterShopTrial(1);Assert.That(c.Shop.PreviewPurchase(0).FinalStar,Is.EqualTo(2));gold=c.Shop.Gold;c.SetShopVisible(false);
@@ -55,25 +56,29 @@ namespace YesterdayConvoy.Tests
             var bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.True);Assert.That(bought.Id,Is.EqualTo("CARD_M02"));
             Assert.That(c.ShopArrivalCount,Is.EqualTo(1));Assert.That(c.Battle.Units.Count,Is.Zero,"The purchase presentation must not deploy a battle unit.");
             var entering=c.ShopEntranceModel(bought.Instance);var bench=c.ShopBenchModel(bought.Instance);
-            Assert.That(entering,Is.Not.Null);float startX=entering.transform.localPosition.x,startY=entering.transform.localPosition.y;
-            Assert.That(startX,Is.EqualTo(bench.transform.localPosition.x).Within(.001f),"Entry starts inside its reserve cell, not in the shop.");
-            Assert.That(startY,Is.GreaterThan(bench.transform.localPosition.y));
+            Assert.That(entering,Is.Not.Null);var source=ManualBattleController.ShopOfferRect(1).center;
+            var sourcePosition=new Vector3(source.x*.01f,(720-source.y)*.01f,0);
+            var start=entering.transform.localPosition;
+            Assert.That(Vector3.Distance(start,sourcePosition),Is.LessThan(.05f),"The purchase flows from its offer, rather than dropping vertically above the platform.");
+            float initialDistance=Vector3.Distance(start,bench.transform.localPosition);
             yield return new WaitForSecondsRealtime(.3f);
-            Assert.That(entering.transform.localPosition.x,Is.EqualTo(startX).Within(.001f));
-            Assert.That(entering.transform.localPosition.y,Is.LessThan(startY));Assert.That(entering.color.a,Is.GreaterThan(.5f));
+            Assert.That(Vector3.Distance(entering.transform.localPosition,bench.transform.localPosition),Is.LessThan(initialDistance));
+            Assert.That(entering.color.a,Is.GreaterThan(.5f));
             yield return new WaitForSecondsRealtime(.5f);
             Assert.That(c.ShopArrivalCount,Is.Zero);Assert.That(c.ShopBenchModel(bought.Instance).sprite.name,Does.StartWith("M02/idle/"));
-            var bottom=new Vector2(ManualBattleController.ShopBenchRect(2).center.x,ManualBattleController.ShopBenchRect(2).yMax-2);
-            var sale=new Vector2(bottom.x,ManualBattleController.ShopSellRect.yMax-2);
+            int boughtSlot=c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance);var bounds=c.ShopPieceRect(boughtSlot);
+            var bottom=new Vector2(bounds.center.x,bounds.yMax-2);
+            var sale=ManualBattleController.ShopSellRightRect.center;
             int gold=c.Shop.Gold;
             c.ProcessShopPointer(EventType.MouseDown,bottom);c.ProcessShopPointer(EventType.MouseUp,bottom);Assert.That(c.Shop.Gold,Is.EqualTo(gold),"A tap near the lower edge must not sell.");
+            bounds=c.ShopPieceRect(c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance));bottom=new Vector2(bounds.center.x,bounds.yMax-2);
             c.ProcessShopPointer(EventType.MouseDown,bottom);c.ProcessShopPointer(EventType.MouseDrag,sale);c.ProcessShopPointer(EventType.MouseUp,sale);
-            Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.False,"The lower edge must have enough room to drag down and sell.");
+            Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.False,"Dragging to the right edge sells the selected instance.");
             bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.False,"The already purchased offer stays empty.");
             c.EnterShopTrial();bought=c.PurchaseShopCard(1);
             int slot=c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance);
             Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=TacticalViewport.Current.FromScreen(screen);
-            c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.ShopBenchRect(slot).center);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
+            c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(slot).center);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
             Assert.That(c.Battle.Units.Count,Is.EqualTo(1),c.ShopFeedback);var unit=c.Battle.Units.Single();
             Assert.That(unit.CardId,Is.EqualTo("CARD_M02"));Assert.That(c.CardForUnit(unit).CardId,Is.EqualTo("CARD_M02"));Assert.That(c.Battle.UnitCombat(unit).HasSkill,Is.False);
             c.LeaveShopTrial();yield return null;yield return null;
@@ -100,9 +105,9 @@ namespace YesterdayConvoy.Tests
                 var result=c.PurchaseShopCard(0);Assert.That(result.Success,Is.True);Assert.That(result.FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(string.IsNullOrEmpty(c.ShopFeedback),Is.True,"Successful promotion should only animate the piece, without a success notice.");
                 Assert.That(c.ShopArrivalCount,Is.GreaterThan(0));
                 float previousScale=Time.timeScale;Time.timeScale=0;
-                yield return new WaitForSecondsRealtime(.8f);
+                yield return new WaitForSecondsRealtime(preset==1?.8f:1.45f);
                 Assert.That(c.ShopBenchPromotionRemaining(result.Instance),Is.GreaterThan(0));
-                yield return new WaitForSecondsRealtime(1.1f);
+                yield return new WaitForSecondsRealtime(.75f);
                 Time.timeScale=previousScale;
                 Assert.That(c.ShopBenchPromotionRemaining(result.Instance),Is.Zero,"Bench effects must finish even while gameplay is paused.");
                 Assert.That(c.Shop.Bench.Single(p=>p.Instance==result.Instance).Star,Is.EqualTo(result.FinalStar),"Ending the effect must preserve the rank.");
@@ -132,7 +137,7 @@ namespace YesterdayConvoy.Tests
             c.SetShopVisible(true);
             Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=TacticalViewport.Current.FromScreen(screen);
             Assert.That(ManualBattleController.ShopBattlefieldRect.Contains(point),Is.True,"The first red gate must remain inside the playable viewport.");
-            var start=ManualBattleController.ShopBenchRect(0).center;
+            var start=c.ShopPieceRect(0).center;
             c.ProcessShopPointer(EventType.MouseDown,start);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
             Assert.That(c.ShopVisible,Is.False,"Dragging a bench piece should uncover the map without moving the camera.");
             Assert.That(c.Battle.Units.Count,Is.EqualTo(1),c.ShopFeedback+" / "+c.Feedback+" / phase="+c.Battle.Phase);Assert.That(c.Battle.Units[0].CardId,Is.EqualTo("CARD_M08"));

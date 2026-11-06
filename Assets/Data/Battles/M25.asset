@@ -38,7 +38,7 @@ MonoBehaviour:
   melee: 0
   noOrdinaryAttack: 1
   attackDuration: 3.1666667
-  attackWindup: 1.2
+  attackWindup: 1.1
   damageType: 0
   defenderResistance: 0
   armorShred: 0

@@ -79,7 +79,7 @@ namespace YesterdayConvoy
             {
                 if(!ally.Alive||ally.DebtLife||!globalRecovery&&ally.Settings.Skill.Kind!=DefenderSkillKind.YuKitchen)continue;
                 float amount=ally.MaxHealth*.015f*step;
-                float gain=Math.Min(amount,ally.MaxHealth-ally.Health);ally.Health+=gain;
+                float gain=RestoreDefenderHealth(ally,amount);
                 ally.BurnAccumulated=Math.Max(0,ally.BurnAccumulated-amount);ally.NeuralAccumulated=Math.Max(0,ally.NeuralAccumulated-amount);
                 if(gain>0)foreach(var source in defenders)if(source.Alive&&source.Settings.Skill.Kind==DefenderSkillKind.YuKitchen&&
                     (source==ally||DefenderSkillActive(source))){source.SkillHealthRestored+=gain;break;}
@@ -102,7 +102,7 @@ namespace YesterdayConvoy
         void HealDefender(DefenderState source,DefenderState target,float amount)
         {
             if(target.DebtLife)return;
-            float gain=Math.Min(amount,target.MaxHealth-target.Health);target.Health+=gain;
+            float gain=RestoreDefenderHealth(target,amount);
             if(source.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)
             {
                 source.SkillHealthRestored+=gain;if(DefenderSkillActive(source))source.AuraHeals++;

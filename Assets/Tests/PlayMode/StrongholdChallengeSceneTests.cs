@@ -19,8 +19,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(GameObject.Find("Raised defender platform"),Is.Not.Null);
             foreach(var lane in c.Battle.Lanes)
             {
-                c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.ShopBenchRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,Gui(lane.Entry));c.Tick(0);
-                Assert.That(environment.RouteVisible,Is.True);Assert.That(c.Battle.Units,Is.Empty);
+                c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(0).center);c.ProcessShopPointer(EventType.MouseDrag,Gui(lane.Entry));c.Tick(0);
+                Assert.That(environment.RouteVisible,Is.True,"entry="+Gui(lane.Entry)+" available="+c.ShopMapPointAvailable(Gui(lane.Entry))+" shop="+c.ShopVisible);Assert.That(c.Battle.Units,Is.Empty);
                 c.ProcessShopPointer(EventType.MouseDrag,new Vector2(640,400));c.Tick(0);Assert.That(environment.RouteVisible,Is.False);
                 c.CancelShopDrag();
             }
