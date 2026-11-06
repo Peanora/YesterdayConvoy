@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-11-06：原作特效全范围接入验证
+
+- 已确认完整看稿及剩余同范围直接接入。194段独立原素材（怪物/共用80、守军114）、199页、12369帧进入StreamingAssets并随源码交付。保留原五名导演、角色身体/棋子、塔露拉橙火浪与全部既有规则；只额外按本轮要求修维维美朝向与群伤。
+- 首批D27实际Windows D3D11 Player8项通过、5467个效果开关差像素，已检查中心棋盘截图；构建/运行证据在artifacts/native-d27-centered。该证据不是所有194段逐项人工验收。
+- 集成EditMode首次462/463；唯一旧断言把总预热固定为5/24，新增公共层后失效。改为验证二阶段相对增加19段且不解码纹理，TalulahPhase定向10/10通过。按用例取最新结果，463项逻辑全部通过。
+- 集成GPU PlayMode首次125/131。六项失败分别为旧霜星层数/余mesh节点断言、守军技能夹具在普通出手提前结束，以及两处结算夹具未等待新原死亡尾段。修复后定向回归与最终独立Player仍待本轮执行，不将首轮失败写为通过。
+- 安赛尔/凛御银灰两条拖尾缺原驱动；望额外独爆和原邻接线未定位；余按规则结束清除原循环，尚未重放原StopEmitting尾。原空控制节点不是可见资源。来源与适配见art/source-records/original-defender-vfx-2026-11-06.json及art/MONSTER_ORIGINAL_VFX-2026-11-06.md。
+
+## 2026-11-06：维维美朝向/群伤与原特效准备
+
+- 实时main a37f0e5，功能分支codex/vivi-facing-splash承接未合并#80，保留两个已确认本地隔离项。
+- 全量EditMode451/451（artifacts/vivi-edit.xml）。ViviCombatTests覆盖群伤边界/独立护甲、原目标先死、6弹/SP/暂停/取消、默认非Vivi行为、朝向/免控/动作锁；ViviMovementSceneTests核对两种实际SpriteRenderer模式与GIF退行时帧仍正播。
+- 图形首次19/20，失败为旧BattleInteraction结算夹具未等待上一轮新跳字1.05秒尾段；改测试等待并验证战斗Clock不走，重跑9/9。按fullname取最新结果，相关20个用例全通过；不是新增第二轮20个测试，也未称全量PlayMode通过。文件vivi-play.xml与vivi-play-final.xml。
+- 独立Player专用-viviCombatSmokeTest只在Development显式触发，运行快照夹具不改资产：右行/左转/恐惧/暂停，以及三原克洛丝5000HP/3甲、落点0/1.8/2.4的真实普攻→技力→手动技能群伤。b385cb9运行源码构建0错误，D3D11实际Player14项检查全部true（artifacts/vivi-player/result.json），两近目标各102实际伤害、2.4外目标0，消费1发弹药；已查看左右/恐惧/群伤截图。
+- 此条为开工时取源/采样记录，后续已通过完整看稿并进入上述集成验证。原代表探针不等于整套生命周期或游戏接入完成。全部范围见art/VFX-ORIGINAL-REPLACEMENT.md。
+
+
 ## 2026-11-06：战斗可观察性与专项场景集成
 
 - 基线main a37f0e5，吸收V5和已确认角色整合成果。只保留原.vscode/与PackageManagerSettings.asset，不提交覆盖；不自动合并。

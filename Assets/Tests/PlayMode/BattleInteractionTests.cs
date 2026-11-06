@@ -94,7 +94,13 @@ namespace YesterdayConvoy.Tests
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>(); var b=c.Battle;
             Deploy(c); c.Tick(100); yield return null;
-            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost)); Assert.That(c.SettlementVisible,Is.True);
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost));
+            Assert.That(c.SettlementVisible,Is.False,"The final applied damage remains visible before settlement.");
+            double settledAt=b.Clock;c.Tick((float)CombatFeedbackPresentation.Lifetime+.05f);yield return null;
+            Assert.That(c.SettlementVisible,Is.False,"The original death effect outlasts the damage popup.");
+            c.Tick((float)System.Math.Max(0,c.CombatView.NativeEffectsUntil-c.PresentationClock)+.05f);yield return null;
+            Assert.That(b.Clock,Is.EqualTo(settledAt),"Only presentation advances after the result.");
+            Assert.That(c.SettlementVisible,Is.True);
             double clock=b.Clock; int run=b.RunId;
             Vector2 card=ManualBattleController.ScreenPosition(ManualBattleController.RosterSlot.center);
             Vector2 button=ManualBattleController.ScreenPosition(ManualBattleController.SettlementRestartRect.center);

@@ -61,6 +61,10 @@ namespace YesterdayConvoy.Tests
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>();
             c.TryEnterMonsterTest(Id(c,"维维美")); c.SelectCard(true); c.TryDeployAt(c.Battle.Entry); c.Tick(100);
+            Assert.That(c.SettlementVisible,Is.False,"The emitted death effect finishes before the return button appears.");
+            double combatClock=c.Battle.Clock;
+            c.Tick((float)System.Math.Max(CombatFeedbackPresentation.Lifetime,c.CombatView.NativeEffectsUntil-c.PresentationClock)+.05f);yield return null;
+            Assert.That(c.Battle.Clock,Is.EqualTo(combatClock));
             Assert.That(c.SettlementVisible,Is.True);
             Vector2 s=ManualBattleController.ScreenPosition(ManualBattleController.SettlementReturnRect.center);
             Vector2 gui=new Vector2(s.x,Screen.height-s.y);

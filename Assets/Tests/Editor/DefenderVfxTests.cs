@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -5,28 +9,53 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class DefenderVfxTests
     {
-        [TestCase("snow-back")][TestCase("snow-front")][TestCase("wolf-hit")]
-        [TestCase("yu-hit")][TestCase("wang-ink")][TestCase("saria-heal")]
-        [TestCase("gold-sweep")][TestCase("gold-hit")]
-        public void AttackFlipbooksHaveFiniteWindowAndNoTerminalHold(string key)
+        [Serializable] sealed class Manifest {public int version,fps;public string encoding;public Data[] clips;}
+        [Serializable] sealed class Data {public string key,sourcePrefab;public int count,width,height;public float duration,ppu;public bool loop;public Page[] pages;}
+        [Serializable] sealed class Page {public string file;public int count,width,height;}
+        static Manifest Read()=>JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"OriginalCombatVfx/Defenders/manifest.json")));
+        [Test] public void InitialSnowOnlyPreloadsItsAttackAndTargetLayers()
         {
-            var clip=DefenderVfxArt.Load(key);
-            Assert.That(clip.Frames.Length,Is.GreaterThan(30));Assert.That(clip.At(.1),Is.Not.Null);
-            Assert.That(clip.At(-1),Is.Null);Assert.That(clip.At(clip.Duration),Is.Null);Assert.That(clip.At(1000),Is.Null);
-            Assert.That(clip.At(double.PositiveInfinity),Is.Null);
-            foreach(var frame in clip.Frames)
+            Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27","D27"}),Is.EquivalentTo(new[]{
+                "defender/D27/sbell2_skill_03_start_01","defender/D27/sbell2_skill_03_hit"}));
+            var data=Read();
+            foreach(var c in data.clips.Where(c=>c.key.StartsWith("defender/D27/sbell2_skill_03_start_01",StringComparison.Ordinal)))
+                Assert.That(c.loop,Is.False,"An attack burst cannot turn into an idle snow loop.");
+        }
+        [Test] public void EveryRequestedPrivateLayerHasTrackedBoundedPagesAndOriginalSourceKey()
+        {
+            var data=Read();Assert.That(data.version,Is.EqualTo(1));Assert.That(data.fps,Is.EqualTo(30));
+            Assert.That(data.encoding,Is.EqualTo("sqrt-linear-rgb-effective-alpha"));
+            var all=data.clips.ToDictionary(c=>c.key);
+            foreach(string key in DefenderVfxArt.RequiredKeysForArtIds(new[]{"D03","D05","D08","D09","D11","D12","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30"}).Where(k=>k.StartsWith("defender/",StringComparison.Ordinal)))
             {
-                Assert.That(frame.bounds.size.magnitude,Is.LessThan(15));
-                Assert.That(frame.texture.width,Is.LessThanOrEqualTo(2048));
-                Assert.That(frame.texture.filterMode,Is.EqualTo(FilterMode.Bilinear));
+                Assert.That(all.ContainsKey(key),Is.True,"Missing runtime dependency: "+key);var clip=all[key];
+                Assert.That(clip.sourcePrefab,Is.Not.Null.And.Not.Empty);Assert.That(clip.count,Is.InRange(1,600));
+                Assert.That(clip.ppu,Is.GreaterThan(0));Assert.That(clip.duration,Is.EqualTo(clip.count/30f).Within(.0001));
+                Assert.That(clip.width%4,Is.Zero);Assert.That(clip.height%4,Is.Zero);
+                Assert.That(clip.pages.Sum(p=>p.count),Is.EqualTo(clip.count));
+                foreach(var page in clip.pages)
+                {
+                    Assert.That(page.width,Is.InRange(4,2048));Assert.That(page.height,Is.InRange(4,2048));
+                    Assert.That(File.Exists(Path.Combine(Application.streamingAssetsPath,"OriginalCombatVfx/Defenders",page.file)),Is.True,page.file);
+                }
             }
         }
-        [TestCase("wolf-wake")][TestCase("yu-fire")][TestCase("chess-link")][TestCase("saria-field")]
-        public void PersistentSkillsUseSeamlessSimulationTimeLoops(string key)
+        [TestCase("D03","spot_skill_01_hit")][TestCase("D05","midn_skill_01_hit")]
+        [TestCase("D08","stward_skill_01_hit")][TestCase("D09","lava_attack_01_hit")]
+        [TestCase("D12","orchid_attack_01_hit")][TestCase("D22","yu_skill3_hit_01")]
+        [TestCase("D23","monstr_skill_03_hit")][TestCase("D24","angel2_skill_3_loop_hit_01")]
+        [TestCase("D25","hsgma2_skill_03_hit_02_3")][TestCase("D26","svash2_skill_03_range_01")]
+        [TestCase("D28","wang_passive_01_buff_02")][TestCase("D29","demkni_attack_01_hit")]
+        [TestCase("D30","mlynar_skill_03_hit_01")]
+        public void NormalAndSelectedSkillEventsUseTheirOwnOriginalFamily(string id,string raw)
+        {Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{id}),Does.Contain("defender/"+id+"/"+raw));}
+        [Test] public void UnimplementedModelsAreNotFalselyClaimedAsCompleteEffects()
         {
-            var clip=DefenderVfxArt.Load(key);Assert.That(clip.Loop,Is.True);
-            Assert.That(clip.At(.1),Is.SameAs(clip.At(clip.Duration+.1)));
-            Assert.That(clip.At(-.1),Is.Null);
+            for(int n=1;n<=12;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n.ToString("D2")),Is.True);
+            for(int n=21;n<=30;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n),Is.True);
+            for(int n=13;n<=20;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n),Is.False);
+            Assert.That(DefenderVfxArt.SupportsArtId(null),Is.False);
+            Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"unknown"}),Is.Empty);
         }
     }
 }

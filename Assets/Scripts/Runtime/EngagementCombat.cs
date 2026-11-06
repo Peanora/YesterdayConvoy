@@ -285,6 +285,7 @@ namespace YesterdayConvoy
                 }
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
+                if(ResolveViviSkillSplash(shot,unit))continue;
                 if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || defender==null || !defender.Alive) continue;
                 if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
                 shot.Applied=true;
@@ -409,7 +410,8 @@ namespace YesterdayConvoy
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,
                         c.Effects.Patriot?(unit.PatriotPhase==PatriotPhase.March?0:PatriotTiming.DestructionFlight/unit.LastAttackRate):c.ProjectileTime,
-                        (empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration));
+                        (empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration,
+                        splashRadius:empowered&&ViviCombat.IsVivi(unit.CardId)?ViviCombat.SkillSplashRadius:0));
                     if(c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.March&&!empowered)
                         for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+(PatriotTiming.MarchContact+hit*PatriotTiming.MarchSpacing)/unit.LastAttackRate,0,c.UnitAttack*UnitAttackMultiplier(unit)));
                     if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;

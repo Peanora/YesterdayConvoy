@@ -1,0 +1,3115 @@
+{
+  "version": 1,
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "defender/D03/spot_skill_01_trail",
+      "count": 72,
+      "width": 144,
+      "height": 52,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.8819444444444444,
+      "pivotY": 0.519143324631911,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D03/spot_skill_01_trail-00.png",
+          "count": 72,
+          "width": 1152,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "spot_skill_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\spot_skill_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/spot.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D03/spot_skill_01_hit",
+      "count": 27,
+      "width": 80,
+      "height": 76,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.43415069580078125,
+      "duration": 0.9,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D03/spot_skill_01_hit-00.png",
+          "count": 27,
+          "width": 640,
+          "height": 304
+        }
+      ],
+      "sourcePrefab": "spot_skill_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\spot_skill_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/spot.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D05/midn_attack_01_trail",
+      "count": 72,
+      "width": 144,
+      "height": 36,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.9027777777777778,
+      "pivotY": 0.49987369113498265,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D05/midn_attack_01_trail-00.png",
+          "count": 72,
+          "width": 1152,
+          "height": 324
+        }
+      ],
+      "sourcePrefab": "midn_attack_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\midn_attack_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/midn.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D05/midn_attack_01_hit",
+      "count": 17,
+      "width": 92,
+      "height": 116,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4891304347826087,
+      "pivotY": 0.508581490352236,
+      "duration": 0.5666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D05/midn_attack_01_hit-00.png",
+          "count": 17,
+          "width": 736,
+          "height": 348
+        }
+      ],
+      "sourcePrefab": "midn_attack_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\midn_attack_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/midn.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D05/midn_skill_01_trail",
+      "count": 72,
+      "width": 144,
+      "height": 36,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.9027777777777778,
+      "pivotY": 0.49987369113498265,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D05/midn_skill_01_trail-00.png",
+          "count": 72,
+          "width": 1152,
+          "height": 324
+        }
+      ],
+      "sourcePrefab": "midn_skill_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\midn_skill_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/midn.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D05/midn_skill_01_hit",
+      "count": 17,
+      "width": 92,
+      "height": 116,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4891304347826087,
+      "pivotY": 0.508581490352236,
+      "duration": 0.5666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D05/midn_skill_01_hit-00.png",
+          "count": 17,
+          "width": 736,
+          "height": 348
+        }
+      ],
+      "sourcePrefab": "midn_skill_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\midn_skill_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/midn.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D08/stward_skill_01_trail",
+      "count": 72,
+      "width": 188,
+      "height": 100,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.8457446808510638,
+      "pivotY": 0.5099545288085937,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D08/stward_skill_01_trail-00.png",
+          "count": 72,
+          "width": 1504,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "stward_skill_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\stward_skill_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/stward.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D08/stward_skill_01_hit",
+      "count": 17,
+      "width": 120,
+      "height": 112,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.49103082929338726,
+      "duration": 0.5666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D08/stward_skill_01_hit-00.png",
+          "count": 17,
+          "width": 960,
+          "height": 336
+        }
+      ],
+      "sourcePrefab": "stward_skill_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\stward_skill_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/stward.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D09/lava_attack_01_hit",
+      "count": 37,
+      "width": 224,
+      "height": 180,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4955357142857143,
+      "pivotY": 0.5721969604492188,
+      "duration": 1.2333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D09/lava_attack_01_hit-00.png",
+          "count": 37,
+          "width": 1792,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "lava_attack_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\lava_attack_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/lava.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D12/orchid_attack_01_trail",
+      "count": 72,
+      "width": 112,
+      "height": 36,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.8482142857142857,
+      "pivotY": 0.49987369113498265,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D12/orchid_attack_01_trail-00.png",
+          "count": 72,
+          "width": 896,
+          "height": 324
+        }
+      ],
+      "sourcePrefab": "orchid_attack_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\orchid_attack_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/orchid.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D12/orchid_attack_01_hit",
+      "count": 19,
+      "width": 76,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5526315789473685,
+      "pivotY": 0.5749431610107422,
+      "duration": 0.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D12/orchid_attack_01_hit-00.png",
+          "count": 19,
+          "width": 608,
+          "height": 240
+        }
+      ],
+      "sourcePrefab": "orchid_attack_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\orchid_attack_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/orchid.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_attack_01_start",
+      "count": 65,
+      "width": 100,
+      "height": 120,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.55,
+      "pivotY": 0.5416287740071615,
+      "duration": 2.1666666666666665,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_attack_01_start-00.png",
+          "count": 65,
+          "width": 800,
+          "height": 1080
+        }
+      ],
+      "sourcePrefab": "whitw2_attack_01_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_attack_01_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_attack_01_trail",
+      "count": 72,
+      "width": 244,
+      "height": 32,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.9672131147540983,
+      "pivotY": 0.43735790252685547,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_attack_01_trail-00.png",
+          "count": 72,
+          "width": 1952,
+          "height": 288
+        }
+      ],
+      "sourcePrefab": "whitw2_attack_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_attack_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_hit_01",
+      "count": 45,
+      "width": 128,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4140625,
+      "pivotY": 0.5624431610107422,
+      "duration": 1.5,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_hit_01-00.png",
+          "count": 45,
+          "width": 1024,
+          "height": 480
+        }
+      ],
+      "sourcePrefab": "whitw2_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_token_01",
+      "count": 72,
+      "width": 44,
+      "height": 44,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.36363636363636365,
+      "pivotY": 0.3180784745649858,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_token_01-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 396
+        }
+      ],
+      "sourcePrefab": "whitw2_token_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_token_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_token_hit_01",
+      "count": 26,
+      "width": 176,
+      "height": 76,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.6079545454545454,
+      "pivotY": 0.3157296431692023,
+      "duration": 0.8666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_token_hit_01-00.png",
+          "count": 26,
+          "width": 1408,
+          "height": 304
+        }
+      ],
+      "sourcePrefab": "whitw2_token_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_token_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_skill_03_start_01",
+      "count": 27,
+      "width": 60,
+      "height": 48,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.11666666666666667,
+      "pivotY": 0.09289042154947917,
+      "duration": 0.9,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_skill_03_start_01-00.png",
+          "count": 27,
+          "width": 480,
+          "height": 192
+        }
+      ],
+      "sourcePrefab": "whitw2_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_skill_03_token_hit_01",
+      "count": 42,
+      "width": 160,
+      "height": 156,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.475,
+      "pivotY": 0.474329826159355,
+      "duration": 1.4,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_skill_03_token_hit_01-00.png",
+          "count": 42,
+          "width": 1280,
+          "height": 936
+        }
+      ],
+      "sourcePrefab": "whitw2_skill_03_token_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_token_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_skill_03_buff_start",
+      "count": 65,
+      "width": 236,
+      "height": 144,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4957627118644068,
+      "pivotY": 0.47219064500596786,
+      "duration": 2.1666666666666665,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_skill_03_buff_start-00.png",
+          "count": 65,
+          "width": 1888,
+          "height": 1296
+        }
+      ],
+      "sourcePrefab": "whitw2_skill_03_buff_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_buff_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_attack_01",
+      "count": 50,
+      "width": 152,
+      "height": 44,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5328947368421053,
+      "pivotY": 0.20444211092862216,
+      "duration": 1.6666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_attack_01-00.png",
+          "count": 50,
+          "width": 1216,
+          "height": 308
+        }
+      ],
+      "sourcePrefab": "yu_attack_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_attack_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_hit_01",
+      "count": 23,
+      "width": 116,
+      "height": 92,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.41379310344827586,
+      "pivotY": 0.4890810095745584,
+      "duration": 0.7666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_hit_01-00.png",
+          "count": 23,
+          "width": 928,
+          "height": 276
+        }
+      ],
+      "sourcePrefab": "yu_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_attack_01",
+      "count": 34,
+      "width": 80,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.35,
+      "pivotY": 0.22036038912259615,
+      "duration": 1.1333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_attack_01-00.png",
+          "count": 34,
+          "width": 640,
+          "height": 260
+        }
+      ],
+      "sourcePrefab": "yu_skill3_attack_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_attack_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_hit_01",
+      "count": 39,
+      "width": 148,
+      "height": 96,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.3310810810810811,
+      "pivotY": 0.48953596750895184,
+      "duration": 1.3,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_hit_01-00.png",
+          "count": 39,
+          "width": 1184,
+          "height": 480
+        }
+      ],
+      "sourcePrefab": "yu_skill3_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_buff_01",
+      "count": 72,
+      "width": 128,
+      "height": 100,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5390625,
+      "pivotY": 0.09995452880859375,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_buff_01-00.png",
+          "count": 72,
+          "width": 1024,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "yu_skill3_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_annex_01",
+      "count": 28,
+      "width": 92,
+      "height": 84,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5760869565217391,
+      "pivotY": 0.5594696771530878,
+      "duration": 0.9333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_annex_01-00.png",
+          "count": 28,
+          "width": 736,
+          "height": 336
+        }
+      ],
+      "sourcePrefab": "yu_skill3_annex_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_annex_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01",
+      "count": 72,
+      "width": 60,
+      "height": 56,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.7403346470424107,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01-00.png",
+          "count": 72,
+          "width": 480,
+          "height": 504
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_l",
+      "count": 72,
+      "width": 44,
+      "height": 68,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.7273344152113971,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_l-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 612
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_l",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_r",
+      "count": 72,
+      "width": 44,
+      "height": 68,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.7714520622702206,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_r-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 612
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_r",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_l_end",
+      "count": 72,
+      "width": 60,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.7972834660456731,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_l_end-00.png",
+          "count": 72,
+          "width": 480,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_l_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_r_end",
+      "count": 72,
+      "width": 60,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.7972834660456731,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_r_end-00.png",
+          "count": 72,
+          "width": 480,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_r_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_l_u_end",
+      "count": 72,
+      "width": 44,
+      "height": 48,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.8012237548828125,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_l_u_end-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 432
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_l_u_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_u_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_l_d_end",
+      "count": 72,
+      "width": 48,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.4791666666666667,
+      "pivotY": 0.6434373121995193,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_l_d_end-00.png",
+          "count": 72,
+          "width": 384,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_l_d_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_d_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_r_u_end",
+      "count": 72,
+      "width": 44,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.7780526968149039,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_r_u_end-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_r_u_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_u_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D22/yu_skill3_range_01_r_d_end",
+      "count": 72,
+      "width": 44,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.6434373121995193,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D22/yu_skill3_range_01_r_d_end-00.png",
+          "count": 72,
+          "width": 352,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "yu_skill3_range_01_r_d_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_d_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/yu.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_attack_start_01",
+      "count": 49,
+      "width": 48,
+      "height": 48,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.8958333333333334,
+      "pivotY": -0.312594731648763,
+      "duration": 1.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_attack_start_01-00.png",
+          "count": 49,
+          "width": 384,
+          "height": 336
+        }
+      ],
+      "sourcePrefab": "monstr_attack_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_attack_trail",
+      "count": 72,
+      "width": 280,
+      "height": 48,
+      "columns": 7,
+      "ppu": 64.0,
+      "pivotX": 0.9107142857142857,
+      "pivotY": 0.4790719350179036,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_attack_trail-00.png",
+          "count": 72,
+          "width": 1960,
+          "height": 528
+        }
+      ],
+      "sourcePrefab": "monstr_attack_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_attack_hit_01",
+      "count": 41,
+      "width": 88,
+      "height": 88,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.48863636363636365,
+      "pivotY": 0.48858469182794745,
+      "duration": 1.3666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_attack_hit_01-00.png",
+          "count": 41,
+          "width": 704,
+          "height": 528
+        }
+      ],
+      "sourcePrefab": "monstr_attack_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_heal",
+      "count": 44,
+      "width": 48,
+      "height": 48,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.6458333333333334,
+      "pivotY": 0.08323860168457031,
+      "duration": 1.4666666666666666,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_heal-00.png",
+          "count": 44,
+          "width": 384,
+          "height": 288
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_heal",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_heal\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_start_01",
+      "count": 36,
+      "width": 152,
+      "height": 88,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5197368421052632,
+      "pivotY": 0.33475841175426135,
+      "duration": 1.2,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_start_01-00.png",
+          "count": 36,
+          "width": 1216,
+          "height": 440
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_hit",
+      "count": 16,
+      "width": 104,
+      "height": 104,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.49038461538461536,
+      "pivotY": 0.4903408930851863,
+      "duration": 0.5333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_hit-00.png",
+          "count": 16,
+          "width": 832,
+          "height": 208
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_begin_01",
+      "count": 60,
+      "width": 132,
+      "height": 100,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48484848484848486,
+      "pivotY": 0.19458740234375,
+      "duration": 2.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_begin_01-00.png",
+          "count": 60,
+          "width": 1056,
+          "height": 800
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_begin_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_begin_02",
+      "count": 63,
+      "width": 180,
+      "height": 184,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5333333333333333,
+      "pivotY": 0.3369318091351053,
+      "duration": 2.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_begin_02-00.png",
+          "count": 63,
+          "width": 1440,
+          "height": 1472
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_begin_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_begin_03",
+      "count": 105,
+      "width": 120,
+      "height": 72,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.49166666666666664,
+      "pivotY": 0.47215906778971356,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_begin_03-00.png",
+          "count": 105,
+          "width": 960,
+          "height": 1008
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_begin_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_end_01",
+      "count": 9,
+      "width": 68,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": -0.08755683898925781,
+      "duration": 0.3,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_end_01-00.png",
+          "count": 9,
+          "width": 544,
+          "height": 160
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_end_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_end_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_end_02",
+      "count": 31,
+      "width": 120,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.49166666666666664,
+      "pivotY": 0.4249431610107422,
+      "duration": 1.0333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_end_02-00.png",
+          "count": 31,
+          "width": 960,
+          "height": 320
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_end_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_end_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_01",
+      "count": 72,
+      "width": 92,
+      "height": 28,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.40217391304347827,
+      "pivotY": 0.3926947457449777,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_buff_01-00.png",
+          "count": 72,
+          "width": 736,
+          "height": 252
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_02",
+      "count": 72,
+      "width": 36,
+      "height": 52,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5833333333333334,
+      "pivotY": 0.4806817861703726,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_buff_02-00.png",
+          "count": 72,
+          "width": 288,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_03",
+      "count": 72,
+      "width": 40,
+      "height": 16,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.525,
+      "pivotY": 0.4661712646484375,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_buff_03-00.png",
+          "count": 72,
+          "width": 320,
+          "height": 144
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_buff_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_04",
+      "count": 72,
+      "width": 64,
+      "height": 20,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.515625,
+      "pivotY": 0.49977264404296873,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_buff_04-00.png",
+          "count": 72,
+          "width": 512,
+          "height": 180
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_buff_04",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_04\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_05",
+      "count": 72,
+      "width": 104,
+      "height": 64,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5384615384615384,
+      "pivotY": 0.15617895126342773,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_skill_03_buff_05-00.png",
+          "count": 72,
+          "width": 832,
+          "height": 576
+        }
+      ],
+      "sourcePrefab": "monstr_skill_03_buff_05",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_05\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_attack_loop_start_01",
+      "count": 18,
+      "width": 164,
+      "height": 56,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.2073170731707317,
+      "pivotY": 0.4106330871582031,
+      "duration": 0.6,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_attack_loop_start_01-00.png",
+          "count": 18,
+          "width": 1312,
+          "height": 168
+        }
+      ],
+      "sourcePrefab": "angel2_attack_loop_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_attack_loop_trail_01",
+      "count": 72,
+      "width": 20,
+      "height": 12,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.41628774007161456,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_attack_loop_trail_01-00.png",
+          "count": 72,
+          "width": 160,
+          "height": 108
+        }
+      ],
+      "sourcePrefab": "angel2_attack_loop_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_attack_loop_hit_01",
+      "count": 17,
+      "width": 160,
+      "height": 68,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.30625,
+      "pivotY": 0.4264037188361673,
+      "duration": 0.5666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_attack_loop_hit_01-00.png",
+          "count": 17,
+          "width": 1280,
+          "height": 204
+        }
+      ],
+      "sourcePrefab": "angel2_attack_loop_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_begin_trail_01",
+      "count": 72,
+      "width": 176,
+      "height": 32,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.9261363636363636,
+      "pivotY": 0.34360790252685547,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_begin_trail_01-00.png",
+          "count": 72,
+          "width": 1408,
+          "height": 288
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_begin_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_begin_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_begin_range_01",
+      "count": 42,
+      "width": 196,
+      "height": 152,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.49489795918367346,
+      "pivotY": 0.6082811857524671,
+      "duration": 1.4,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_begin_range_01-00.png",
+          "count": 42,
+          "width": 1568,
+          "height": 912
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_begin_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_begin_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_loop_start_01",
+      "count": 25,
+      "width": 288,
+      "height": 124,
+      "columns": 7,
+      "ppu": 64.0,
+      "pivotX": 0.2152777777777778,
+      "pivotY": 0.4999633296843498,
+      "duration": 0.8333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_loop_start_01-00.png",
+          "count": 25,
+          "width": 2016,
+          "height": 496
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_loop_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_loop_trail_01",
+      "count": 72,
+      "width": 20,
+      "height": 12,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.41628774007161456,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_loop_trail_01-00.png",
+          "count": 72,
+          "width": 160,
+          "height": 108
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_loop_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_loop_hit_01",
+      "count": 10,
+      "width": 168,
+      "height": 72,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.2916666666666667,
+      "pivotY": 0.4027146233452691,
+      "duration": 0.3333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_loop_hit_01-00.png",
+          "count": 10,
+          "width": 1344,
+          "height": 144
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_loop_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_buff_01",
+      "count": 72,
+      "width": 140,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5571428571428572,
+      "pivotY": 0.1624431610107422,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_buff_01-00.png",
+          "count": 72,
+          "width": 1120,
+          "height": 720
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_ground_01",
+      "count": 105,
+      "width": 104,
+      "height": 64,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.48430395126342773,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_ground_01-00.png",
+          "count": 105,
+          "width": 832,
+          "height": 896
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_ground_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_ground_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_attack_01_start_01",
+      "count": 24,
+      "width": 108,
+      "height": 64,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.3055555555555556,
+      "pivotY": 0.21867895126342773,
+      "duration": 0.8,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_attack_01_start_01-00.png",
+          "count": 24,
+          "width": 864,
+          "height": 192
+        }
+      ],
+      "sourcePrefab": "hsgma2_attack_01_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_attack_01_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_attack_01_hit_01",
+      "count": 40,
+      "width": 92,
+      "height": 76,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.40217391304347827,
+      "pivotY": 0.36836122211657074,
+      "duration": 1.3333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_attack_01_hit_01-00.png",
+          "count": 40,
+          "width": 736,
+          "height": 380
+        }
+      ],
+      "sourcePrefab": "hsgma2_attack_01_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_attack_01_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_01",
+      "count": 62,
+      "width": 84,
+      "height": 76,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.2619047619047619,
+      "pivotY": 0.33498342413651316,
+      "duration": 2.066666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_01-00.png",
+          "count": 62,
+          "width": 672,
+          "height": 608
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_02",
+      "count": 63,
+      "width": 104,
+      "height": 108,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.4230769230769231,
+      "pivotY": 0.44869203920717593,
+      "duration": 2.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_02-00.png",
+          "count": 63,
+          "width": 832,
+          "height": 864
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_03",
+      "count": 66,
+      "width": 112,
+      "height": 100,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5892857142857143,
+      "pivotY": 0.44458740234375,
+      "duration": 2.2,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_03-00.png",
+          "count": 66,
+          "width": 896,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_04",
+      "count": 62,
+      "width": 84,
+      "height": 76,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.2619047619047619,
+      "pivotY": 0.33498342413651316,
+      "duration": 2.066666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_04-00.png",
+          "count": 62,
+          "width": 672,
+          "height": 608
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_04",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_04\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_05",
+      "count": 63,
+      "width": 108,
+      "height": 108,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.4351851851851852,
+      "pivotY": 0.44869203920717593,
+      "duration": 2.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_05-00.png",
+          "count": 63,
+          "width": 864,
+          "height": 864
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_05",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_05\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_start_06",
+      "count": 66,
+      "width": 112,
+      "height": 100,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5892857142857143,
+      "pivotY": 0.44458740234375,
+      "duration": 2.2,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_start_06-00.png",
+          "count": 66,
+          "width": 896,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_start_06",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_06\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_01",
+      "count": 41,
+      "width": 164,
+      "height": 164,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4329268292682927,
+      "pivotY": 0.4816795907369474,
+      "duration": 1.3666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_01-00.png",
+          "count": 41,
+          "width": 1312,
+          "height": 984
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_01_1",
+      "count": 43,
+      "width": 212,
+      "height": 116,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.41509433962264153,
+      "pivotY": 0.6465125248349947,
+      "duration": 1.4333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_01_1-00.png",
+          "count": 43,
+          "width": 1696,
+          "height": 696
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_01_1",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_01_1\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_02",
+      "count": 49,
+      "width": 140,
+      "height": 156,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.35,
+      "pivotY": 0.6345862364157652,
+      "duration": 1.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_02-00.png",
+          "count": 49,
+          "width": 1120,
+          "height": 1092
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_02_1",
+      "count": 46,
+      "width": 196,
+      "height": 108,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.46938775510204084,
+      "pivotY": 0.2684764155635127,
+      "duration": 1.5333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_02_1-00.png",
+          "count": 46,
+          "width": 1568,
+          "height": 648
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_02_1",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_1\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_02_2",
+      "count": 46,
+      "width": 236,
+      "height": 100,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4067796610169492,
+      "pivotY": 0.5299545288085937,
+      "duration": 1.5333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_02_2-00.png",
+          "count": 46,
+          "width": 1888,
+          "height": 600
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_02_2",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_2\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_hit_02_3",
+      "count": 49,
+      "width": 124,
+      "height": 152,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4112903225806452,
+      "pivotY": 0.3749700847424959,
+      "duration": 1.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_hit_02_3-00.png",
+          "count": 49,
+          "width": 992,
+          "height": 1064
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_hit_02_3",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_3\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_buff_01",
+      "count": 72,
+      "width": 108,
+      "height": 60,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5185185185185185,
+      "pivotY": -0.016742451985677084,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_buff_01-00.png",
+          "count": 72,
+          "width": 864,
+          "height": 540
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_buff_02",
+      "count": 72,
+      "width": 124,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5403225806451613,
+      "pivotY": 0.09994316101074219,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_buff_02-00.png",
+          "count": 72,
+          "width": 992,
+          "height": 720
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_buff_03",
+      "count": 72,
+      "width": 80,
+      "height": 52,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5375,
+      "pivotY": 0.12420654296875,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_buff_03-00.png",
+          "count": 72,
+          "width": 640,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_buff_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_range_01",
+      "count": 105,
+      "width": 220,
+      "height": 148,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.4909090909090909,
+      "pivotY": 0.54364013671875,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_range_01-00.png",
+          "count": 104,
+          "width": 1760,
+          "height": 1924
+        },
+        {
+          "file": "D25/hsgma2_skill_03_range_01-01.png",
+          "count": 1,
+          "width": 1760,
+          "height": 148
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D25/hsgma2_skill_03_range_02",
+      "count": 105,
+      "width": 220,
+      "height": 156,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.4909090909090909,
+      "pivotY": 0.5157611553485577,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D25/hsgma2_skill_03_range_02-00.png",
+          "count": 104,
+          "width": 1760,
+          "height": 2028
+        },
+        {
+          "file": "D25/hsgma2_skill_03_range_02-01.png",
+          "count": 1,
+          "width": 1760,
+          "height": 156
+        }
+      ],
+      "sourcePrefab": "hsgma2_skill_03_range_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_range_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_attack_start_a_01",
+      "count": 34,
+      "width": 212,
+      "height": 68,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.27358490566037735,
+      "pivotY": 0.14699195413028493,
+      "duration": 1.1333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_attack_start_a_01-00.png",
+          "count": 34,
+          "width": 1696,
+          "height": 340
+        }
+      ],
+      "sourcePrefab": "svash2_attack_start_a_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_a_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_attack_start_a_02",
+      "count": 33,
+      "width": 24,
+      "height": 36,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.1943181355794271,
+      "duration": 1.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_attack_start_a_02-00.png",
+          "count": 33,
+          "width": 192,
+          "height": 180
+        }
+      ],
+      "sourcePrefab": "svash2_attack_start_a_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_a_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_attack_start_b_01",
+      "count": 32,
+      "width": 176,
+      "height": 164,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4772727272727273,
+      "pivotY": 0.39021617610280107,
+      "duration": 1.0666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_attack_start_b_01-00.png",
+          "count": 32,
+          "width": 1408,
+          "height": 656
+        }
+      ],
+      "sourcePrefab": "svash2_attack_start_b_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_b_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_attack_start_c_01",
+      "count": 32,
+      "width": 196,
+      "height": 132,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.45918367346938777,
+      "pivotY": 0.40905646121863165,
+      "duration": 1.0666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_attack_start_c_01-00.png",
+          "count": 32,
+          "width": 1568,
+          "height": 528
+        }
+      ],
+      "sourcePrefab": "svash2_attack_start_c_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_c_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_attack_hit_01",
+      "count": 20,
+      "width": 160,
+      "height": 88,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.35,
+      "pivotY": 0.4772210554643111,
+      "duration": 0.6666666666666666,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_attack_hit_01-00.png",
+          "count": 20,
+          "width": 1280,
+          "height": 264
+        }
+      ],
+      "sourcePrefab": "svash2_attack_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_combat_start_01_2",
+      "count": 28,
+      "width": 84,
+      "height": 60,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5357142857142857,
+      "pivotY": 0.24097900390625,
+      "duration": 0.9333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_combat_start_01_2-00.png",
+          "count": 28,
+          "width": 672,
+          "height": 240
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_combat_start_01_2",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_combat_start_01_2\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_combat_start_02",
+      "count": 31,
+      "width": 120,
+      "height": 84,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.475,
+      "pivotY": 0.20784214564732142,
+      "duration": 1.0333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_combat_start_02-00.png",
+          "count": 31,
+          "width": 960,
+          "height": 336
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_combat_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_combat_start_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_buff_01",
+      "count": 72,
+      "width": 132,
+      "height": 88,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5606060606060606,
+      "pivotY": 0.18176651000976562,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_buff_01-00.png",
+          "count": 72,
+          "width": 1056,
+          "height": 792
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_buff_weapon_01",
+      "count": 72,
+      "width": 32,
+      "height": 28,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.3125,
+      "pivotY": 0.03555188860212054,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_buff_weapon_01-00.png",
+          "count": 72,
+          "width": 256,
+          "height": 252
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_buff_weapon_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_buff_weapon_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_deploy_01",
+      "count": 35,
+      "width": 108,
+      "height": 52,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.26851851851851855,
+      "pivotY": 0.038374093862680286,
+      "duration": 1.1666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_deploy_01-00.png",
+          "count": 35,
+          "width": 864,
+          "height": 260
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_deploy_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_deploy_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_range_01",
+      "count": 105,
+      "width": 236,
+      "height": 176,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.3855932203389831,
+      "pivotY": 0.5423792058771307,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_skill_03_range_01-00.png",
+          "count": 88,
+          "width": 1888,
+          "height": 1936
+        },
+        {
+          "file": "D26/svash2_skill_03_range_01-01.png",
+          "count": 17,
+          "width": 1888,
+          "height": 528
+        }
+      ],
+      "sourcePrefab": "svash2_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D26/svash2_eagle_fly_01",
+      "count": 72,
+      "width": 52,
+      "height": 44,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 1.1730769230769231,
+      "pivotY": -0.20464879816228693,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D26/svash2_eagle_fly_01-00.png",
+          "count": 72,
+          "width": 416,
+          "height": 396
+        }
+      ],
+      "sourcePrefab": "svash2_eagle_fly_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_eagle_fly_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/svash2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_start_01",
+      "count": 49,
+      "width": 416,
+      "height": 240,
+      "columns": 4,
+      "ppu": 64.0,
+      "pivotX": 0.4423076923076923,
+      "pivotY": 0.5583143870035807,
+      "duration": 1.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_start_01-00.png",
+          "count": 32,
+          "width": 1664,
+          "height": 1920
+        },
+        {
+          "file": "D27/sbell2_skill_03_start_01-01.png",
+          "count": 17,
+          "width": 1664,
+          "height": 1200
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\sbell2_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Original attack-only emission/tail complete sequence compressed from 1.633 seconds into 1.2 presentation seconds; quiet attack interval, no combat rate change."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_hit",
+      "count": 45,
+      "width": 128,
+      "height": 72,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4609375,
+      "pivotY": 0.48604795667860246,
+      "duration": 1.5,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_hit-00.png",
+          "count": 45,
+          "width": 1024,
+          "height": 432
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_03_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\sbell2_skill_03_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_skill_03_range_start",
+      "count": 49,
+      "width": 272,
+      "height": 156,
+      "columns": 7,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.20220588235294118,
+      "pivotY": 0.5029406425280448,
+      "duration": 1.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_skill_03_range_start-00.png",
+          "count": 49,
+          "width": 1904,
+          "height": 1092
+        }
+      ],
+      "sourcePrefab": "wang_skill_03_range_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_range_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_skill_03_buff_02",
+      "count": 72,
+      "width": 100,
+      "height": 48,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5207386016845703,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_skill_03_buff_02-00.png",
+          "count": 72,
+          "width": 800,
+          "height": 432
+        }
+      ],
+      "sourcePrefab": "wang_skill_03_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_skill_03_range",
+      "count": 72,
+      "width": 220,
+      "height": 152,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.1409090909090909,
+      "pivotY": 0.5030180278577303,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_skill_03_range-00.png",
+          "count": 72,
+          "width": 1760,
+          "height": 1368
+        }
+      ],
+      "sourcePrefab": "wang_skill_03_range",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_range\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_attack_01_start",
+      "count": 37,
+      "width": 104,
+      "height": 72,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.1346153846153846,
+      "pivotY": 0.16660351223415798,
+      "duration": 1.2333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_attack_01_start-00.png",
+          "count": 37,
+          "width": 832,
+          "height": 360
+        }
+      ],
+      "sourcePrefab": "wang_attack_01_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_attack_01_trail",
+      "count": 72,
+      "width": 260,
+      "height": 32,
+      "columns": 7,
+      "ppu": 64.0,
+      "pivotX": 0.9153846153846154,
+      "pivotY": 0.46860790252685547,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_attack_01_trail-00.png",
+          "count": 72,
+          "width": 1820,
+          "height": 352
+        }
+      ],
+      "sourcePrefab": "wang_attack_01_trail",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_trail\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_attack_01_hit",
+      "count": 35,
+      "width": 116,
+      "height": 104,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.43103448275862066,
+      "pivotY": 0.4903408930851863,
+      "duration": 1.1666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_attack_01_hit-00.png",
+          "count": 35,
+          "width": 928,
+          "height": 520
+        }
+      ],
+      "sourcePrefab": "wang_attack_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_passive_01_start",
+      "count": 38,
+      "width": 40,
+      "height": 76,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.475,
+      "pivotY": 0.22362438001130758,
+      "duration": 1.2666666666666666,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_passive_01_start-00.png",
+          "count": 38,
+          "width": 320,
+          "height": 380
+        }
+      ],
+      "sourcePrefab": "wang_passive_01_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_passive_01_buff",
+      "count": 72,
+      "width": 104,
+      "height": 128,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6015269756317139,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_passive_01_buff-00.png",
+          "count": 72,
+          "width": 832,
+          "height": 1152
+        }
+      ],
+      "sourcePrefab": "wang_passive_01_buff",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_buff\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D28/wang_passive_01_buff_02",
+      "count": 72,
+      "width": 72,
+      "height": 72,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4999368455674913,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D28/wang_passive_01_buff_02-00.png",
+          "count": 72,
+          "width": 576,
+          "height": 648
+        }
+      ],
+      "sourcePrefab": "wang_passive_01_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/wang.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D29/demkni_attack_01_hit",
+      "count": 9,
+      "width": 104,
+      "height": 92,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5769230769230769,
+      "pivotY": 0.5325592704441237,
+      "duration": 0.3,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D29/demkni_attack_01_hit-00.png",
+          "count": 9,
+          "width": 832,
+          "height": 184
+        }
+      ],
+      "sourcePrefab": "demkni_attack_01_hit",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_attack_01_hit\\report.json",
+      "sourceBundle": "battle/prefabs/effects/demkni.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D29/demkni_skill_03_range",
+      "count": 72,
+      "width": 284,
+      "height": 212,
+      "columns": 7,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5,
+      "pivotY": 0.5304657558225235,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D29/demkni_skill_03_range-00.png",
+          "count": 63,
+          "width": 1988,
+          "height": 1908
+        },
+        {
+          "file": "D29/demkni_skill_03_range-01.png",
+          "count": 9,
+          "width": 1988,
+          "height": 424
+        }
+      ],
+      "sourcePrefab": "demkni_skill_03_range",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_range\\report.json",
+      "sourceBundle": "battle/prefabs/effects/demkni.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D29/demkni_skill_03_self",
+      "count": 72,
+      "width": 96,
+      "height": 92,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.4791666666666667,
+      "pivotY": 0.30429840087890625,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D29/demkni_skill_03_self-00.png",
+          "count": 72,
+          "width": 768,
+          "height": 828
+        }
+      ],
+      "sourcePrefab": "demkni_skill_03_self",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_self\\report.json",
+      "sourceBundle": "battle/prefabs/effects/demkni.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D29/demkni_skill_03_buff",
+      "count": 72,
+      "width": 48,
+      "height": 60,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5208333333333334,
+      "pivotY": 0.26659088134765624,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D29/demkni_skill_03_buff-00.png",
+          "count": 72,
+          "width": 384,
+          "height": 540
+        }
+      ],
+      "sourcePrefab": "demkni_skill_03_buff",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_buff\\report.json",
+      "sourceBundle": "battle/prefabs/effects/demkni.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_buff_01",
+      "count": 33,
+      "width": 120,
+      "height": 36,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.3333333333333333,
+      "pivotY": 0.49987369113498265,
+      "duration": 1.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_buff_01-00.png",
+          "count": 33,
+          "width": 960,
+          "height": 180
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_range_01",
+      "count": 28,
+      "width": 196,
+      "height": 148,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.22959183673469388,
+      "pivotY": 0.5368833799619932,
+      "duration": 0.9333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_range_01-00.png",
+          "count": 28,
+          "width": 1568,
+          "height": 592
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_start_01",
+      "count": 23,
+      "width": 88,
+      "height": 56,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48863636363636365,
+      "pivotY": 0.22247750418526785,
+      "duration": 0.7666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_start_01-00.png",
+          "count": 23,
+          "width": 704,
+          "height": 168
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_hit_01",
+      "count": 32,
+      "width": 108,
+      "height": 92,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5277777777777778,
+      "pivotY": 0.4673418791397758,
+      "duration": 1.0666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_hit_01-00.png",
+          "count": 32,
+          "width": 864,
+          "height": 368
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_buff_02",
+      "count": 72,
+      "width": 124,
+      "height": 100,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5241935483870968,
+      "pivotY": 0.20995452880859375,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_buff_02-00.png",
+          "count": 72,
+          "width": 992,
+          "height": 900
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_buff_03",
+      "count": 72,
+      "width": 188,
+      "height": 160,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.18617021276595744,
+      "pivotY": 0.5341171264648438,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_skill_03_buff_03-00.png",
+          "count": 72,
+          "width": 1504,
+          "height": 1440
+        }
+      ],
+      "sourcePrefab": "mlynar_skill_03_buff_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D21/whitw2_skill_03_token_trail_01",
+      "count": 72,
+      "width": 200,
+      "height": 56,
+      "columns": 8,
+      "ppu": 32.0,
+      "pivotX": 0.905,
+      "pivotY": 0.776745115007673,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_skill_03_token_trail_01-00.png",
+          "count": 72,
+          "width": 1600,
+          "height": 504
+        }
+      ],
+      "sourcePrefab": "whitw2_skill_03_token_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_token_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Original follow-direction wolf effect; flip horizontally rather than rotate the creature. Native moving capture PPU32 after edge repair."
+    },
+    {
+      "key": "defender/D21/whitw2_skill_03_trail_01",
+      "count": 72,
+      "width": 144,
+      "height": 24,
+      "columns": 8,
+      "ppu": 32.0,
+      "pivotX": 0.9652777777777778,
+      "pivotY": 0.3540719350179036,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D21/whitw2_skill_03_trail_01-00.png",
+          "count": 72,
+          "width": 1152,
+          "height": 216
+        }
+      ],
+      "sourcePrefab": "whitw2_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+      "adaptation": "Native shader capture; independent anchor; no style repaint."
+    }
+  ]
+}

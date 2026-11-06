@@ -32,7 +32,7 @@ namespace YesterdayConvoy.Editor
             Debug.Log("PREPARED_ART_PLAYER_PASS: installed="+installed+"; actor_png_replaced="+replaced+"; player_directory_bytes="+bytes+"; source PNGs retained in project.");
         }
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
-        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx"};
+        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx"};
         static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-B-caster"};
         [InitializeOnLoadMethod]static void InstallPreparation()
         {EditorApplication.playModeStateChanged+=state=>{if(state==PlayModeStateChange.ExitingEditMode)Prepare(false);};}
