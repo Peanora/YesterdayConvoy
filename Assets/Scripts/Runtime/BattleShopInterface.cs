@@ -40,7 +40,7 @@ namespace YesterdayConvoy
         void DrawLoopHeader()
         {
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
-            string mode=Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
+            string mode=Loop==null?(TacticalMapId==BlackForestLayout.Id?"地形试走 · 暂无守军":"商店试验"):CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
             GUI.Label(new Rect(28,11,165,24),shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));

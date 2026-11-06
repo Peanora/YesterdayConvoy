@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-11-07：树海PR吸收资源分类后的复验
+
+- 运行源码83c783394468d8d2297df6eac843937b601e0a09，已吸收main b1d55e7；四份文档新增段落全部保留，原场景与门资源不回退。
+- merged-edit-results.xml：完整EditMode510/510、0失败/跳过。merged-play-results.xml：BlackForestSceneTests、ArtLoadingTests与MonsterSelectionTests共10/10，0失败/跳过；不冒称全量PlayMode。
+- 仓库7387跟踪文件静态检查通过。merged-build.log：Windows构建1058042785报告字节、0错误；实际输出目录约1.37GB，报告汇总不等于目录总体积。
+- merged-player.log：可见1280×720 Direct3D11 Player，三路真实备战指针部署与完整模拟走线，geometry/materials/nativeGates/fixedRoutes/pause/sharedDefense/restart全部True，退出0。已查看merged-player/forest-ready.png，原地形、三红两蓝和弩手备战正常显示。保留显式Tick(.05)步进条件，不把它当成人工完整长局测试。
+- 本次复验不重测main上所有新增角色的完整战斗；原门装饰动画、第二机、低配长局、平衡与新克隆试玩仍未验收。
+
+## 2026-11-07：树海原素材与原版门接入
+
+- 运行源码bcd3417，独立BlackForestCrossing场景。原素材看稿确认后接入；原地形238格与路线38/40/42不变，无碰撞/射线或地形效果新增。
+- Unity6000.6.5f1全量EditMode449/449；GPU PlayMode BlackForestSceneTests 1/1，覆盖真实拖动部署、商店交易、暂停、地块编辑后重开保留及退出清理。XML在本机artifacts/map-draft-20261106/native/edit-results.xml、play-results.xml。
+- NativeAssets验证通过：3 tile_start/2 tile_end、原网格/材质/贴图持久化，无LineRenderer占位门，无碰撞体；原临时门已替换。142环境模型及8门层部件保留原UV/法线，门保留顶点色，兼容Shader透明与加色。
+- 仓库6655跟踪文件检查通过；Windows构建0错误（windows-build.log，报告2430901013 bytes，含构建阶段数据，目录实际大小以交付BUILD-INFO为准）。
+- 可见1280×720 Direct3D11独立Player，正常准备入口后三个红门逐一通过备战指针拖动部署，沿完整路线自然穿门；固定路线/绑定蓝门、暂停、共享防御、重开与nativeGates/materials均True，退出0。截图player/forest-ready.png、forest-lane-1/2/3.png、forest-restarted.png已目视核对角色与地图。模拟测试使用Time.timeScale=0并显式Tick(.05)，不注入伤害或跳过路程；不将其称为人工完整长局试玩。
+- 原门装饰粒子与动画、原场景Shader/烘焙光照/后处理未复刻；守军、平衡、第二机/新克隆、低配长时性能未验收。未将项目外看稿作为Player证据。
+
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
 - 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。
@@ -142,7 +159,6 @@
 - 图形首次19/20，失败为旧BattleInteraction结算夹具未等待上一轮新跳字1.05秒尾段；改测试等待并验证战斗Clock不走，重跑9/9。按fullname取最新结果，相关20个用例全通过；不是新增第二轮20个测试，也未称全量PlayMode通过。文件vivi-play.xml与vivi-play-final.xml。
 - 独立Player专用-viviCombatSmokeTest只在Development显式触发，运行快照夹具不改资产：右行/左转/恐惧/暂停，以及三原克洛丝5000HP/3甲、落点0/1.8/2.4的真实普攻→技力→手动技能群伤。b385cb9运行源码构建0错误，D3D11实际Player14项检查全部true（artifacts/vivi-player/result.json），两近目标各102实际伤害、2.4外目标0，消费1发弹药；已查看左右/恐惧/群伤截图。
 - 此条为开工时取源/采样记录，后续已通过完整看稿并进入上述集成验证。原代表探针不等于整套生命周期或游戏接入完成。全部范围见art/VFX-ORIGINAL-REPLACEMENT.md。
-
 
 ## 2026-11-06：战斗可观察性与专项场景集成
 
