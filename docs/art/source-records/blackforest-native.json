@@ -1,0 +1,111 @@
+{
+  "previewOnly": false,
+  "gameIntegrated": true,
+  "resourceVersion": "26-10-29-15-36-11-33649006",
+  "sources": [
+    {
+      "name": "scenes/obt/roguelike/ro6/level_rogue6_t-4/level_rogue6_t-4.ab",
+      "hash": "d74efcdc5f76abc9e2ee56ee60a25b3e",
+      "md5": "ea351690ce551b9ea4d4a3574726a481",
+      "totalSize": 2145614,
+      "abSize": 2629603,
+      "pid": "lpack_scene10",
+      "cid": 14422,
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/scenes_obt_roguelike_ro6_level_rogue6_t-4_level_rogue6_t-4.dat",
+      "version": "26-10-29-15-36-11-33649006",
+      "sha256": "a3803cc210a8658596ff3ec2ff6045522a7b8958656aad389bad72b986b8b03d"
+    },
+    {
+      "name": "arts/maps/map_flowersea/res.ab",
+      "hash": "4499adb7e985263c136eacb3e9143bc9",
+      "md5": "eafc5d9fcd1e93d062d426d434f99dfd",
+      "totalSize": 3852824,
+      "abSize": 4127633,
+      "pid": "lpack_lart1",
+      "cid": 11961,
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/arts_maps_map_flowersea_res.dat",
+      "version": "26-10-29-15-36-11-33649006",
+      "sha256": "0cddd7bd394a9c411dd341ca081238cf5b4abc03d8d4b0df4d1f93a12a619349"
+    },
+    {
+      "name": "battle/prefabs/effects/tile.ab",
+      "hash": "f9029572532bf86a7101611ba76fadc5",
+      "md5": "5eefe9a08ec9272452885d95d94a0cae",
+      "totalSize": 737838,
+      "abSize": 902963,
+      "pid": "lpack_init3",
+      "cid": 5546,
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_tile.dat",
+      "version": "26-10-29-15-36-11-33649006",
+      "sha256": "e39293172ad48082bdf3a9b68af9e44cfc462eaa2c8cd63c3f9462b02f2b1f5d"
+    },
+    {
+      "name": "arts/effects/[pack]map.ab",
+      "hash": "a3ea59a5cdba726099e986ff8687d8f0",
+      "md5": "be5054fbe0e7cd1d37aef1ce8a74a36d",
+      "totalSize": 115903,
+      "abSize": 150923,
+      "pid": "lpack_init4",
+      "cid": 6162,
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/arts_effects_[pack]map.dat",
+      "version": "26-10-29-15-36-11-33649006",
+      "sha256": "9523834d9a8d3c7272e014a80364c54277262006eb6a9dd7305e41eca4399f8f"
+    }
+  ],
+  "models": 142,
+  "textureNames": [
+    "TX_FlowerSea_BG.png",
+    "TX_FlowerSea_common_D.png",
+    "TX_FlowerSea_common_E.png",
+    "TX_FlowerSea_D.png",
+    "TX_FlowerSea_E.png",
+    "TX_FlowerSea_M.png",
+    "TX_FlowerSea_N.png",
+    "TX_FlowerSea_plant_D.png",
+    "TX_FlowerSea_plant_E.png",
+    "TX_FlowerSea_plant_M.png",
+    "TX_FlowerSea_plant_N.png"
+  ],
+  "tool": "UnityPy existing local cp313 + AK LZ4 layout adapter (MooncellWiki/UnityPy 781badde6d636f101279fef76f461bb8dd0e1ffc; MIT); Unity 6000.6.5f1",
+  "rights": "Arknights media belongs to its respective rights holders; redistribution/commercial media license not verified. MIT parser license does not grant media rights. User-requested local game integration; no public upload performed.",
+  "adaptations": [
+    "Extract static-batch renderer submesh ranges from source scene, preserve original UVs and normals, rotate source coordinates into project Y-up",
+    "Rearrange original meshes over approved 17x14 layout; high platforms scaled to .72",
+    "Unity Standard compatible materials, source diffuse and reduced emission; source shader, baked lighting and postprocess not reproduced",
+    "Native root-pattern ground localized to visual-only zones; no amber-generated substitute used",
+    "Gate outlines and optional route overlay are preview adaptations, not original gate prefabs",
+    "Original tile_start and tile_end mesh renderers replace temporary gate outlines; deployment, fixed routes and shared defense remain unchanged"
+  ],
+  "validation": {
+    "meshIndicesValid": true,
+    "pairedNormalsUVs": true,
+    "all142MeshesSourceDerived": true
+  },
+  "exports": {
+    "material-table.json": "9ee2aeea2b854fde8cfce4d53331e36bd450f4a9946d1170fca69a460937e038",
+    "materials.json": "26f097f14332e8a3c46fed0d1310180edc42266274d2b5f0c08fc85888d9ff65",
+    "models.json": "cf553a61097384332a8a5e15b98c6eedbf2818bd3a436a9aa3a9d9ea34de815b",
+    "TX_FlowerSea_BG.png": "597a10030c0f3aea0d21ab982f9073eadc907e9ea34813ef31355bff20a660cf",
+    "TX_FlowerSea_common_D.png": "5a0de89804146b7ad623308ec1f431bd3425bb19a96e58076a68d114701d3eaa",
+    "TX_FlowerSea_common_E.png": "d0f503eb0b24e002ef9fd1ee942fdff295ca401d8cc52f9fa5e60b8e69135f00",
+    "TX_FlowerSea_D.png": "30bcde1f827ac2500f075d46ba7086bcd2257a6597924926397d1fafbede5fba",
+    "TX_FlowerSea_E.png": "9a49498fef6fde282eb7601d50f0b8182861907320627ca9c9037203b284d80f",
+    "TX_FlowerSea_M.png": "ebe4547e87b4d8e0dfafd30f378a2941000af557e8e4f840ab5e0e65376b8811",
+    "TX_FlowerSea_N.png": "d1e190c04fcdda268e9286b997fb073e34ae2cd22d566ccf499fb676e9ddd330",
+    "TX_FlowerSea_plant_D.png": "699461e670e10ac69ecc462188da6fcaf47079822d1bcfd0c35cb8d002a5ad4c",
+    "TX_FlowerSea_plant_E.png": "ce0037405acfa5df50542b66fc9a05158171e6ace188dcb8e4e6b444d54c2fa2",
+    "TX_FlowerSea_plant_M.png": "8ad67b3abc7b7993eb64659ee87b583f6a6d3c77a4349ef093842d48304e1e83",
+    "TX_FlowerSea_plant_N.png": "f3070f8495a370f6f586354a0b6f8e3c091aa7a40b5aaaa45d76786aa0e16b68"
+  },
+  "integrationDate": "2026-11-07",
+  "gates": {
+    "redPrefab": "dyn/battle/prefabs/effects/tile_start.prefab",
+    "redRootPathID": "3417487498484636784",
+    "bluePrefab": "dyn/battle/prefabs/effects/tile_end.prefab",
+    "blueRootPathID": "1267938938249517941",
+    "redCount": 3,
+    "blueCount": 2,
+    "exportedPartsPerGate": 4,
+    "compatibility": "Original mesh/UV/vertex colors and textures; compatible vertex-color alpha/additive shader. Fixed mesh markers only; ambient particles and animation not ported."
+  }
+}

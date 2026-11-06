@@ -37,9 +37,11 @@ namespace YesterdayConvoy
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-demoEvidenceDir");
             string dir=at>=0&&at+1<args.Length?args[at+1]:Path.Combine(Application.persistentDataPath,"BlackForestEvidence");
             bool geometry=FindObjectsByType<BlackForestTile>(FindObjectsSortMode.None).Length==238;
-            bool materials=FindObjectsByType<Renderer>(FindObjectsSortMode.None).Where(r=>r.GetComponentInParent<BlackForestTile>()!=null).All(r=>r.sharedMaterial!=null&&r.sharedMaterial.shader.isSupported);
+            var field=FindAnyObjectByType<AuthoredBattlefield>();
+            bool materials=field!=null&&field.GetComponentsInChildren<Renderer>().All(r=>r.sharedMaterials.All(m=>m!=null&&m.shader.isSupported&&m.mainTexture!=null));
+            bool nativeGates=field!=null&&field.GetComponentsInChildren<Transform>().Count(t=>t.name.Contains(" / Native tile_start"))==3&&field.GetComponentsInChildren<Transform>().Count(t=>t.name.Contains(" / Native tile_end"))==2&&field.GetComponentsInChildren<LineRenderer>().Length==0;
             bool routes=true,pause=true,reset=true,shared=true;
-            Time.timeScale=0;SetShopVisible(false);yield return new WaitForSecondsRealtime(.3f);yield return InteractionFrame(dir,"forest-ready");
+            Time.timeScale=0;SetShopVisible(false);yield return new WaitForSecondsRealtime(3.2f);yield return InteractionFrame(dir,"forest-ready");
             for(int lane=0;lane<3;lane++){
                 if(lane>0)EnterShopTrial(0,BlackForestLayout.Id);
                 yield return null;
@@ -62,8 +64,8 @@ namespace YesterdayConvoy
                 EnterShopTrial(0,BlackForestLayout.Id);reset&=Battle.Phase==BattlePhase.Ready&&Battle.Units.Count==0&&TacticalMapId==BlackForestLayout.Id;
             }
             yield return InteractionFrame(dir,"forest-restarted");Time.timeScale=1;
-            bool ok=geometry&&materials&&routes&&pause&&shared&&reset;
-            Debug.Log($"BLACK_FOREST_CHECK: geometry={geometry}; materials={materials}; fixedRoutes={routes}; pause={pause}; sharedDefense={shared}; restart={reset}; authoredTiles=238; visualOnlyTerrain=True");
+            bool ok=geometry&&materials&&nativeGates&&routes&&pause&&shared&&reset;
+            Debug.Log($"BLACK_FOREST_CHECK: geometry={geometry}; materials={materials}; nativeGates={nativeGates}; fixedRoutes={routes}; pause={pause}; sharedDefense={shared}; restart={reset}; authoredTiles=238; visualOnlyTerrain=True");
             Application.Quit(ok?0:1);
         }
     }

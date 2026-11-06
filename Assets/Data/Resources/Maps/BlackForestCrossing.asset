@@ -26,12 +26,19 @@ MonoBehaviour:
   - {x: 8, y: 0, z: 2.5}
   defenders: []
   surfaces:
-  - {fileID: 2100000, guid: 5553a02a4397ba949ad83ebfc6dba68a, type: 2}
-  - {fileID: 2100000, guid: b14aa067b143971468bebfb5d7b64896, type: 2}
-  - {fileID: 2100000, guid: e1307eafe6598a3428d36b6e2ecf7618, type: 2}
-  - {fileID: 2100000, guid: aa6f74f2c18720648b3b6aa576b8d10c, type: 2}
-  - {fileID: 2100000, guid: 02e61c09eb45cd044a8c6b7e5ea1edf9, type: 2}
-  - {fileID: 2100000, guid: 6f759d339d4274b44ad587703eba4652, type: 2}
+  - {fileID: 2100000, guid: b81cc2ca7cc507549bc8ad00199496e4, type: 2}
+  - {fileID: 2100000, guid: 79186d1163d097e4aa7d324d09455510, type: 2}
+  - {fileID: 2100000, guid: 55931db253bb29c40843ab49594280b1, type: 2}
+  - {fileID: 2100000, guid: 8c3dc49e6b5ceed40b250923d28baedc, type: 2}
+  - {fileID: 2100000, guid: 1b84fd84fbc1d384ba04695922b3e194, type: 2}
+  - {fileID: 2100000, guid: a05105b2890f0204981997fbde225599, type: 2}
+  - {fileID: 2100000, guid: 9e5d371602ac25d4e8a81b1e087b25f9, type: 2}
+  - {fileID: 2100000, guid: 1f01be149620aac44be0986837ff4d84, type: 2}
+  - {fileID: 2100000, guid: 645c0ac897da9cf4bbd298effcbe53dd, type: 2}
+  - {fileID: 2100000, guid: 40f9b1293e44a70408e8d0dfc39401d9, type: 2}
+  - {fileID: 2100000, guid: 5c7ee6d4ec38e1f4b888150004608709, type: 2}
+  - {fileID: 2100000, guid: 971749b858271114b965d904cdaf449f, type: 2}
+  - {fileID: 2100000, guid: a8a80f443df34c34a95ac8ffce8a58f0, type: 2}
   mapId: BLACKFOREST_CROSSING
   mapTitle: "\u6811\u6D77 \xB7 \u4EA4\u9519\u56DE\u5ECA"
   autumnRuins: 0
