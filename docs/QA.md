@@ -5,8 +5,13 @@
 - 已确认完整看稿及剩余同范围直接接入。194段独立原素材（怪物/共用80、守军114）、199页、12369帧进入StreamingAssets并随源码交付。保留原五名导演、角色身体/棋子、塔露拉橙火浪与全部既有规则；只额外按本轮要求修维维美朝向与群伤。
 - 首批D27实际Windows D3D11 Player8项通过、5467个效果开关差像素，已检查中心棋盘截图；构建/运行证据在artifacts/native-d27-centered。该证据不是所有194段逐项人工验收。
 - 集成EditMode首次462/463；唯一旧断言把总预热固定为5/24，新增公共层后失效。改为验证二阶段相对增加19段且不解码纹理，TalulahPhase定向10/10通过。按用例取最新结果，463项逻辑全部通过。
-- 集成GPU PlayMode首次125/131。六项失败分别为旧霜星层数/余mesh节点断言、守军技能夹具在普通出手提前结束，以及两处结算夹具未等待新原死亡尾段。修复后定向回归与最终独立Player仍待本轮执行，不将首轮失败写为通过。
-- 安赛尔/凛御银灰两条拖尾缺原驱动；望额外独爆和原邻接线未定位；余按规则结束清除原循环，尚未重放原StopEmitting尾。原空控制节点不是可见资源。来源与适配见art/source-records/original-defender-vfx-2026-11-06.json及art/MONSTER_ORIGINAL_VFX-2026-11-06.md。
+- 集成GPU PlayMode首次125/131。六项失败分别为旧霜星层数/余mesh节点断言、守军技能夹具在普通出手提前结束，以及两处结算夹具未等待新原死亡尾段。修复后native-play-final.xml定向21/21，包含恢复的原大地图六人S3特效及原StrongholdChallengeSolution真实通关/重开；不改敌方或伤害凑测试。
+- 实机发现足底billboard下半被地板裁，新增显式XZ地面投影与俯角补偿，保留挂点/PPU/原图及正常深度遮挡。native-ground-play.xml首次17/18；新角点测试误把Sprite.bounds的非零Z厚度当实际图面，改为真实XY平面后native-ground-final.xml 1/1，严格正交误差<.01px及实际轻透视下上下半GPU/opaque遮挡通过。不是放宽阈值或改Shader绕过地板。
+- 当前133项场景用例按上述全量/定向记录取最新结果全部通过；余旧“EmbersEnd”测试改名为“OriginalLoopsClear”描述真实原循环清除，合并统计时视为同一用例。并非宣称单次全量133/133或逐帧人工验收全部素材。
+- 最终Windows构建源9a113a4，2444013103字节、0错误（native-ground-build.log）。D3D11可见Player：D27 8/8、同刻开关效果差10282像素；D22 8/8、差4360像素，均核真实事件、原Shader/单位Renderer尺度、暂停不扣血、相机绘制不改伤害及重开清理；已检查两幅实际截图。证据native-ground-d27/result.json与native-ground-d22/result.json。D22早先探针错误要求近战余发出CombatShot，远程怪停在范围外导致夹具未收敛；最终改核真实火墙施放事件，不改正常战斗。
+- 开发期间main以b3d947a压缩合并#80，其文件树与已继承的1f29370完全相同。保留旧工作分支，从实时main新建codex/vivi-original-vfx重落本轮增量为2ca5b7c，跟已实测9a113a4文件树完全相同；后续仅文档，无需重建相同运行文件。未直接改main、未重写旧分支或整文件丢弃双方修改。
+- 仓库6350个跟踪文件/meta检查通过；本轮场景、Prefab、Packages、ProjectSettings无变更。导入器52处只增未覆盖WebGL段，经逐文件比较后恢复；原.vscode/及PackageManagerSettings.asset仍保留未跟踪。第二机、全角色人工长局和完整原客户端附加控制脚本未验收。
+- 安赛尔/凛御银灰两条拖尾缺原驱动；望额外独爆和原邻接线未定位；荒芜拉普兰德一层额外自身UV旋流未重放；余按规则结束清除原循环，尚未重放原StopEmitting尾。原空控制节点不是可见资源。来源与适配见art/source-records/original-defender-vfx-2026-11-06.json及art/MONSTER_ORIGINAL_VFX-2026-11-06.md。
 
 ## 2026-11-06：维维美朝向/群伤与原特效准备
 
