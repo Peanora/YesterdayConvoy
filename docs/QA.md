@@ -5,7 +5,8 @@
 - 原因在TalulahAttackVfx.PresentUnit：B点火层与身体抬手共用hold=1.1666667，六秒动作的0.8–5.4秒冻结在ignite-B-caster/035。原素材59帧有变化，不是全局Clock停走。仅B附着层改为读取本次施法的真实经过时间，按原速单次1.9667秒完成爆发/消散；保留身体抬手和六秒地面火浪/移动锁、A表现、伤害/SP及全部阶段。
 - 先加真实场景回归，修复前talulah-manual-before.xml 0/1，明确在1.25→1.5秒仍同035帧处失败；未放宽断言。修复后talulah-manual-play.xml相关D3D11 PlayMode11/11，包含自然克洛丝伤害→首倒/自动雨→B、自然技力满后手动施放、实际附着层GPU开关差、换帧/地火位移、暂停/恢复、2.1秒短层清除而火雨/锁仍在、4秒持续、6.1秒清除与普攻恢复、重开，并回归原A攻击/死亡/橙雨/地图适配。
 - talulah-manual-edit.xml相关EditMode13/13，回归两次倒下、10波自动雨、保护、取消/死亡、星级开关、手动六波/SP及暂停。没有重跑全量Edit/Play或正式平衡测试。独立Player复用SandboxFeaturesEvidence自然阶段路径，补B手焰换帧/暂停/消散与六秒结束检查，新增显式-talulahManualRainSmokeTest仅运行塔露拉段；普通启动不执行。
-- Windows构建及独立Player结果待本轮补充。分支从实时main b3d947a建立、FF承接9d90d1e的现有试玩依赖，不自动合并；仅本轮表现/证据/回归与状态文档变动，不改场景、Prefab、Packages或ProjectSettings。原.vscode/与PackageManagerSettings.asset保留不提交覆盖。
+- 运行源码843a34eb85be1dc286511784fc7a5872ee6c61f3的Windows构建2444460790字节、0错误（talulah-manual-build.log）。可见D3D11独立Player13/13（talulah-manual-player/result.json），以-sandboxFeaturesSmokeTest配合-talulahManualRainSmokeTest运行塔露拉自然阶段段落：克洛丝真实射击约12.15秒首倒、45.15秒B、77.25秒终倒、110.25秒真死亡；自然SP就绪后手动施放，手焰可见/换帧/暂停恢复/单次消散而火雨继续、六秒正常结束均通过。已查看1.25秒、1.5秒与2.15秒实机截图，确认爆发→展开→消散而非保持大贴图。不是鼠标点击或全九场景重验。
+- 分支从实时main b3d947a建立、FF承接9d90d1e的现有试玩依赖，不自动合并；仅本轮表现/证据/回归与状态文档变动，不改场景、Prefab、Packages或ProjectSettings。52处仅默认未覆盖WebGL导入段经逐文件比对恢复；仓库6388文件/meta校验通过。原.vscode/与PackageManagerSettings.asset保留不提交覆盖。全量测试、第二机、密集多塔露拉并发和长期自然平衡未测；构建后仅补文档，运行文件与843a34e相同。
 
 ## 2026-11-06：感染形态与爆裂反馈接入
 
