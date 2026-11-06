@@ -388,8 +388,8 @@ namespace YesterdayConvoy
                 }
             }
             float heading=alpha*S(age/.12f);
-            Text("全域追击",38,FontStyle.Bold,new Vector2(960,158),Rgba(233,250,255,heading));
-            Text(impactTargetCount+" 个目标  ·  总伤害 "+DamageNumber(displayedDamage),24,FontStyle.Bold,new Vector2(960,199),Rgba(153,225,255,heading));
+            Text("全域追击",38,FontStyle.Bold,new Vector2(960,790),Rgba(233,250,255,heading));
+            Text(impactTargetCount+" 个目标  ·  总伤害 "+DamageNumber(displayedDamage),24,FontStyle.Bold,new Vector2(960,832),Rgba(153,225,255,heading));
             if(captionFont!=null)caption.Texture=captionFont.material.mainTexture;
         }
         static string DamageNumber(float damage)=>damage<10?damage.ToString("0.#"):Math.Round(damage,MidpointRounding.AwayFromZero).ToString("0");
