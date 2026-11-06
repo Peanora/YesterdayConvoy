@@ -17,6 +17,34 @@ namespace YesterdayConvoy
             public int plays;
         }
 
+        bool GuerrillaLayerCoversGui(GuerrillaOrderView view)
+        {
+            var screen=ScreenCapture.CaptureScreenshotAsTexture();
+            var bounds=view.ScreenBounds;
+            var target=new RenderTexture(Mathf.RoundToInt(bounds.width),Mathf.RoundToInt(bounds.height),0,RenderTextureFormat.ARGB32);
+            var reference=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);
+            var previous=RenderTexture.active;bool covered=true;
+            try
+            {
+                target.Create();Graphics.Blit(view.PrepareMaterial().mainTexture,target,view.PrepareMaterial());
+                RenderTexture.active=target;reference.ReadPixels(new Rect(0,0,target.width,target.height),0,0);reference.Apply();
+                // Actual screenshot pixels at header, gold/pause controls, health bars,
+                // central notice and bottom cards must match the opaque cut-in itself.
+                foreach(var point in new[]{new Vector2(45,22),new Vector2(1050,26),new Vector2(1190,25),
+                    new Vector2(700,100),new Vector2(640,345),new Vector2(380,640),new Vector2(650,620)})
+                {
+                    var a=(Color32)screen.GetPixel(Mathf.RoundToInt(bounds.x+point.x/1280*bounds.width),
+                        Screen.height-1-Mathf.RoundToInt(bounds.y+point.y/720*bounds.height));
+                    var b=(Color32)reference.GetPixel(Mathf.RoundToInt(point.x/1280*target.width),
+                        target.height-1-Mathf.RoundToInt(point.y/720*target.height));
+                    int delta=Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b);
+                    if(delta>15){covered=false;Debug.Log("GUERRILLA_LAYER_PIXEL "+point+" screen="+a+" expected="+b+" delta="+delta);}
+                }
+            }
+            finally{RenderTexture.active=previous;target.Release();Destroy(target);Destroy(reference);Destroy(screen);}
+            return covered;
+        }
+
         IEnumerator ChargeGuerrillaForEvidence(bool missing)
         {
             if(!SetSandboxRoster(2))throw new InvalidOperationException("Cannot prepare guerrilla formation.");
@@ -86,6 +114,8 @@ namespace YesterdayConvoy
                 check("pausedFailureDoesNotReplay",!UseCampaignOrder(false)&&view.PlayCount==1);
                 Battle.SetPaused(false);Tick(.1f);yield return null;yield return null;
                 check("peakReached",view.Opacity>.99f);
+                yield return new WaitForEndOfFrame();
+                check("actualFullScreenLayerCoversHud",GuerrillaLayerCoversGui(view));
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"full-formation-peak.png"));yield return null;
                 ToggleSpeed();clock=PresentationClock;Tick(.05f);yield return null;
                 check("doubleSpeedUsesPresentationClock",Math.Abs(PresentationClock-clock-.1)<.0001);ToggleSpeed();

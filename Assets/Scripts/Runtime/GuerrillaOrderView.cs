@@ -132,18 +132,21 @@ namespace YesterdayConvoy
 
         void OnGUI()
         {
+            // GUI.depth belongs to this GUI behaviour, not to one draw command. Retain it
+            // for every GUI event; restoring it before returning would undo the sort order.
+            GUI.depth = -2000;
             if (Event.current.type != EventType.Repaint || !Playing) return;
             var production = PrepareMaterial();
             PrepareFrame(production);
-            Matrix4x4 matrix = GUI.matrix; Color color = GUI.color; int depth = GUI.depth;
+            Matrix4x4 matrix = GUI.matrix; Color color = GUI.color;
             try
             {
-                GUI.matrix = Matrix4x4.identity; GUI.color = Color.white; GUI.depth = -2000;
+                GUI.matrix = Matrix4x4.identity; GUI.color = Color.white;
                 // Queue the already composed straight-alpha image with the rest of IMGUI. A direct
                 // Graphics.DrawTexture here bypasses GUI.depth and lets later HUD batches cover it.
                 GUI.DrawTexture(ScreenBounds, frame, ScaleMode.StretchToFill, true);
             }
-            finally { GUI.matrix = matrix; GUI.color = color; GUI.depth = depth; }
+            finally { GUI.matrix = matrix; GUI.color = color; }
         }
         void PrepareFrame(Material production)
         {
