@@ -44,7 +44,8 @@ namespace YesterdayConvoy
         private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
         private double UnitDeathTail(DeployedUnitState unit) => Math.Max(MonsterOriginalVfx.DeathTail(unit),OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
             Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0));
-        private double NativeVfxPendingUntil => Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity);
+        private double NativeVfxPendingUntil => Math.Max(guerrillaOrderView?.PendingUntil??double.NegativeInfinity,
+            Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity));
         private double DeathTail
         {
             get
@@ -87,6 +88,7 @@ namespace YesterdayConvoy
             gameObject.AddComponent<FireRainView>().Initialize(this);
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle,()=>PresentationClock);
             gameObject.AddComponent<SnowstormView>().Initialize(this);
+            InitializeGuerrillaOrderPresentation();
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
             InitializeCombatFeedback();

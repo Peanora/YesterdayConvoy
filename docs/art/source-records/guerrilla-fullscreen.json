@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-06",
+  "approval": "User approved the V1 cut-in and requested direct integration with empty missing-member slices, two future profession-change slots, fade-in/out and a short shing.",
+  "source": "Built-in image_gen, approved concept generated in this chat from the seven existing project portraits and late-demo-ready battlefield reference.",
+  "source_sha256": "8a5883dcb661468342e57c5a60713ef75004a16c0e07cfd5861d4f6510b73127",
+  "source_bytes": 2633324,
+  "runtime_art": "Assets/Art/VFX/GuerrillaOrder/Resources/GuerrillaOrder/approved-cut-in.png",
+  "processing": "Source image bytes retained; runtime shader selects fixed member slices and masks absent members. Two extension slots accept future supplied portraits.",
+  "members": [
+    "CARD_M03",
+    "CARD_M15",
+    "CARD_M16",
+    "CARD_M17",
+    "CARD_M18",
+    "CARD_M19",
+    "CARD_M20"
+  ],
+  "display_scope": "Current formation at successful order time, including undeployed members, excluding reserve-only cards. No change to damage recipients.",
+  "rights": "AI-assisted derived concept based on existing Arknights character design references; preserves their original source and unconfirmed redistribution rights. User approval to integrate or upload is not rights-holder authorization.",
+  "reference_limit": "Currency Wars pursuit all-out-attack reference video could not actually be played; timing and synthesized sound are this project's trial values, not a verified frame-exact recreation."
+}

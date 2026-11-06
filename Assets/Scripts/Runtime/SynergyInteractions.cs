@@ -40,6 +40,7 @@ namespace YesterdayConvoy
         {
             if(!CampaignActive||!Loop.CanDeploy)return false;
             bool ok=Battle.TryGuerrillaOrder(Battle.RunId,++requestSequence,half);
+            if(ok)ShowGuerrillaOrder();
             if(!ok)ShopNotice("军令/次数不足，或没有完成动作且有合法目标的单位");return ok;
         }
         bool HandleGolemPointer(EventType type,Vector2 point,int button)

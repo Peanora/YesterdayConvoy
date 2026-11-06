@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-06：游击队全屏闪现与shing
+
+- 用户已认可V1构图，明确“按当前编队显示”，缺席成员固定空位、预留两个转职槽、淡入淡出与短音效。新分支codex/guerrilla-fullscreen-cutin自实时main b3d947a建立，FF承接当前试玩0e98e1d依赖；原.vscode/和PackageManagerSettings.asset保留。没有改场景、Prefab、Packages或ProjectSettings，没有实现转职玩法或更改军令数值。
+- `artifacts/guerrilla-order-edit.xml`完整EditMode485/485；`artifacts/guerrilla-order-play.xml`相关D3D11 PlayMode23/23。新增3个综合场景用例验证真实部署/普通攻击产令后成功才播、准备/暂停失败不播、完整编队包含未部署M20、普通点击把M15退入备战后固定空位、暂停时实际AudioSource.timeSamples与透明度不推进、2倍速、自然淡出和重开。GPU使用生产材质逐个缺席七名人物，对应人物区域变化且其余人物区域不变；真实Sprite显示在两扩展槽，第3名不挤掉原成员。其余回归AdvancedSynergySceneTests、CampaignSceneTests、BattleInteractionTests、OverlappingEntrySceneTests；不是全量PlayMode。
+- 新测试和显式Player入口使用百万生命、延后守军攻击的运行时夹具，部署、普通攻击、军令积累与支出走原事务；没有写军令值或强制触发成功，不作为自然难度/平衡证明。Windows构建、完整屏幕实图和Player淡出/终局仍待运行。
+- `shing.wav`原创程序合成，无原作采样或人声。ffprobe/ffmpeg核对0.64秒、48kHz双声道PCM16、峰值约-6dBFS、0削波、首尾静音和重复生成SHA一致。作者未实际试听，不称为精确复刻参考音色。参考货币战争公开视频未成功实际播放，.72秒节奏是本项目试验值。
+
 ## 2026-11-06：感染集群误关窗与重新达档弹窗
 
 - 旧843a34e运行源码的1920×1080可见Player，Sky实际点击左侧感染行后点击集群主按钮，窗口立即关闭且主形态仍为爆裂，已复现（infection-choice-before-player/reproduction.json，复现后主动结束本次诊断，不算通过）。原因是GUI矩阵前后的鼠标坐标被重复换算，左列落在面板边界外。只改私有DrawCampaignControls取外层正确逻辑点，原形态事务保留。
