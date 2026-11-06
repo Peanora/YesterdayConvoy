@@ -95,7 +95,8 @@
       "Git ignore query",
       "Unity import and resource loading",
       "GPU 0.9-second cue, once-only, pause samples and speed checks",
-      "Standalone D3D11 Player 25/25 (a5b844e)"
+      "Standalone D3D11 Player 25/25 (a5b844e)",
+      "e747ff0: GPU fixed original pitch at 1x/2x, real pause samples and standalone Player 28/28"
     ],
     "checks_pending": []
   },

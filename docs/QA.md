@@ -1,16 +1,22 @@
 # 验证证据与回归
 
-## 2026-11-06：游击演出恒速与真实全场追击（验证中）
+## 2026-11-06：游击演出恒速与真实全场追击
 
 - 人类本轮明确二倍速不影响演出，并回答“全场守军都实际受伤”。沿用原分支/PR #88，实时main仍b3d947a，开始时仅有已约定保留的两未跟踪项。模型统一全场命中与演出反馈在本轮授权范围，未改场景/Prefab/Packages/ProjectSettings。
-- Unity6000.6.5f1完整EditMode490/490（guerrilla-global-edit.xml）、相关D3D11 PlayMode27/27（guerrilla-global-play-final.xml）通过。新增5个模型case与3个综合GPU场景case；覆盖全场/远路/高台、混合物法与减免、真实HP预算、.89前无伤/.9统一一次、半令/幂等/来源死亡/暂停/终局取消/重开，以及1×/2×同实际时间同动画像素、战斗仍2×、原声pitch1、真实命中数字独立GPU贡献。首轮26/27唯一失败是多目标用例误选双守军泛用场景；改为实际四守军GuerrillaTrial，保留提前死亡后仍多目标的断言后27/27通过。Windows构建和独立Player待验；下面V2记录为旧版历史。
+- Unity6000.6.5f1完整EditMode490/490（guerrilla-global-edit.xml）、相关D3D11 PlayMode27/27（guerrilla-global-play-final.xml）通过。新增5个模型case与3个综合GPU场景case；覆盖全场/远路/高台、混合物法与减免、真实HP预算、.89前无伤/.9统一一次、半令/幂等/来源死亡/暂停/终局取消/重开，以及1×/2×同实际时间同动画像素、战斗仍2×、原声pitch1、真实命中数字独立GPU贡献。首轮26/27唯一失败是多目标用例误选双守军泛用场景；改为实际四守军GuerrillaTrial，保留提前死亡后仍多目标的断言后27/27通过。最终布局将合计条移到下方空区，GPU重跑27/27（guerrilla-global-play-layout.xml）通过；下面V2记录为旧版历史。
 
 | 项目 | 采用来源 | 真实触发/时钟 | 运行读取点 | 当前状态 |
 |---|---|---|---|---|
-| 九角色切面 | 已确认V2原图/几何 | 成功军令编队快照；独立演出时钟 | GuerrillaOrderView | BOUND，GPU恒速通过 |
-| 原总攻音 | 已确认原Wwise声段 | 0.9演出秒；1×/2×同音高 | followup-original/UpdateSound | BOUND，样本暂停/音高通过 |
-| 全场实际伤害 | 本轮人类明确规则 | 模型GuerrillaOrderVolley；Advance双delta | 每个存活守军DamageDefender | BOUND，模型/GPU实际HP通过 |
-| 扫击/受伤数字 | 现有原生网格/字体 | 只读同批实际Hits；重开/终局取消清理 | BattlefieldImpact/BindVolley | BOUND，GPU开关对照通过；Player待验 |
+| 九角色切面 | 已确认V2原图/几何 | 成功军令编队快照；独立演出时钟 | GuerrillaOrderView | VERIFIED，GPU/Player恒速通过 |
+| 原总攻音 | 已确认原Wwise声段 | 0.9演出秒；1×/2×同音高 | followup-original/UpdateSound | VERIFIED，样本暂停/音高通过 |
+| 全场实际伤害 | 本轮人类明确规则 | 模型GuerrillaOrderVolley；Advance双delta | 每个存活守军DamageDefender | VERIFIED，模型/GPU/Player实际HP通过 |
+| 扫击/受伤数字 | 现有原生网格/字体 | 只读同批实际Hits；重开/终局取消清理 | BattlefieldImpact/BindVolley | VERIFIED，GPU开关/Player实图通过 |
+
+
+- 最终运行源码e747ff0bd9183ea924fba28166e128b06e1a2f46，模型/核心测试代码与c2c534b的Edit490/490完全一致，最终GPU27/27；Windows构建2449425852字节、0错误（guerrilla-global-build-final.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。没有新增图片/音频资源或改GUID，新增群攻模型及meta随源码跟踪，仓库6417文件检查通过。
+- 1920×1080可见D3D11最终Player28/28（guerrilla-global-player-final/result.json）通过：.85前HP未变/原音未播，.9统一真实全场结算，四个guard各实际损失927.8125、合计3711.25；1.3秒目标数字/合计与记录一致。2×战斗时Tick(.05)推进Clock .10、演出Age .05、原音pitch1；捕获第84帧Age79/60仍在播放，完整2.6演出秒后清理。实际全屏七点覆盖、缺位/扩展、暂停/重开、终局取消不扣血与尾段均通过，已看全场命中实图；合计下移避免遮住头顶数字。
+- 最终捕获204张实际Player逐演出帧，2×标头，60fps/3.4秒；项目外guerrilla-global-2x.mp4后配同一跟踪原声、增益0.55，在视频1.0秒出手（0.1前导+0.9演出），不是实时系统音视频录制。耐久/延后普攻、自然排空旧弹道仅为真实军令独立验证夹具，不假造Orders或Hits；源码军令伤害不受该夹具影响。最终进程54692正常退出，未在本轮重现下方旧版导帧UIAutomation退出异常。
+- 未运行全量PlayMode、第二机、全分辨率及长局自然平衡，未另行主观试听。全场每目标预算保留原档位倍率属于本轮试验实现，尚未宣布平衡定案；原参与者资格仍需已有合法近战/射程目标，未部署拼屏角色不贡献伤害。最终构建后仅文档/来源记录变化，不自动ZIP/Releases或合并main。
 
 ## 2026-11-06：游击队V2真实几何汇聚与原音
 

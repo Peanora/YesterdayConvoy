@@ -22,6 +22,6 @@ UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员�
 
 角色设计和音频均保留其原有真实权利状态。用户看稿确认、接入及源码上传要求不是权利人授权，不将原音或派生图登记为CC0。
 
-此前a5b844e的验证为单体追击/倍速耦合旧版历史，本轮恒速与全场追击的新结果以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+本轮e747ff0运行源码的模型Edit490/490、最终GPU Play27/27、1920×1080独立Player28/28及Windows构建0错误通过，具体范围与未测项以QA为准。此前a5b844e的验证只代表旧单体追击/倍速耦合版历史。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐演出帧画面，追加-guerrillaOrderCaptureDoubleSpeed验证2×战斗时仍完整播放；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
 
 Windows产物保持Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe；Editor入口YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows复用原角色准备、场景清单和配置验证。不自动ZIP/Releases，不自动合并PR。
