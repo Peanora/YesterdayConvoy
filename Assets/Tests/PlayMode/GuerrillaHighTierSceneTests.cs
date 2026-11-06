@@ -82,6 +82,29 @@ namespace YesterdayConvoy.Tests
             float delta=age-view.Age;Assert.That(delta,Is.GreaterThanOrEqualTo(-.0001f));
             controller.Tick(Mathf.Max(0,delta)/Mathf.Min(1,controller.EffectiveSimulationSpeed));
         }
+        static Color32[] Capture(GuerrillaOrderView view)
+        {
+            Assert.That(SystemInfo.graphicsDeviceType,Is.Not.EqualTo(UnityEngine.Rendering.GraphicsDeviceType.Null),"Requires actual GPU rendering.");
+            var target=new RenderTexture(640,360,0,RenderTextureFormat.ARGB32);
+            var image=new Texture2D(640,360,TextureFormat.RGBA32,false);var previous=RenderTexture.active;
+            try
+            {
+                target.Create();view.RenderTo(target);RenderTexture.active=target;
+                image.ReadPixels(new Rect(0,0,640,360),0,0);image.Apply();return image.GetPixels32();
+            }
+            finally{RenderTexture.active=previous;target.Release();Object.Destroy(target);Object.Destroy(image);}
+        }
+        static int PortraitPixelDifference(Color32[] a,Color32[] b,int slot)
+        {
+            var point=new Vector2(slot==7?.61f:.39f,.77f);int changed=0;
+            for(int y=(int)((1-point.y-.07f)*360);y<(int)((1-point.y+.07f)*360);y++)
+                for(int x=(int)((point.x-.07f)*640);x<(int)((point.x+.07f)*640);x++)
+                {
+                    int i=y*640+x;
+                    if(Math.Abs(a[i].r-b[i].r)+Math.Abs(a[i].g-b[i].g)+Math.Abs(a[i].b-b[i].b)+Math.Abs(a[i].a-b[i].a)>24)changed++;
+                }
+            return changed;
+        }
         [UnityTest]public IEnumerator TransferSelectionUsesOwnedKindsAndSurvivesPromotionButNotFinalSaleOrNewChallenge()
         {
             yield return Load();Preset(true);yield return WaitForPreparation();
@@ -194,6 +217,49 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.LatestGuerrillaOrder.SourceIds,Is.Not.Empty);
             Assert.That(view.SlotMembers[7],Is.Null,"The first selected transfer kept in reserve leaves its own fixed slot empty.");
             Assert.That(view.SlotMembers[8],Is.EqualTo("CARD_M08"),"The second transfer must not shift into the first slot.");
+        }
+        [UnityTest]public IEnumerator TalulahTransferUsesPreparedOriginalPortraitInTheActualOrderAndRenderedExtension()
+        {
+            const string talulah="CARD_TALULAH_TRIAL";
+            yield return Load();var roster=Roster.Select(id=>id=="CARD_M07"?talulah:id).ToArray();
+            // Only the owned inventory is a fixture. Art preparation, transfer selection,
+            // deployment and the successful order all use their production paths.
+            controller.Shop.Preset(roster.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),9,0,100);
+            var lineup=(List<string>)typeof(ManualBattleController).GetField("shopLineup",Hidden).GetValue(controller);
+            lineup.Clear();lineup.AddRange(roster);Invoke("SyncShopDeck",false,false);controller.SetShopVisible(true);Field("inspectedSynergy",null);
+            yield return WaitForPreparation();
+            yield return (IEnumerator)Invoke("Prepare",Invoke("CurrentBattlePlan"),null,"准备塔露拉转职回归");
+            Assert.That(controller.ArtLoading,Is.False);Assert.That(controller.Loop.CanShop,Is.True);
+            Assert.That(controller.SetGuerrillaTransfer(talulah,true),Is.True);
+            Assert.That(controller.SetGuerrillaTransfer("CARD_M08",true),Is.True);
+            Invoke("PrepareNextLoopBattle");yield return WaitForPreparation();
+            Assert.That(controller.Loop.CanShop,Is.False,"The normal preparation completion must enter the encounter.");
+            var b=controller.Battle;Assert.That(b.GuerrillaTier,Is.EqualTo(9));Assert.That(b.Orders,Is.Zero);
+            b.Begin();Assert.That(b.Orders,Is.EqualTo(2));
+            yield return Deploy("CARD_M03");StopOrdinary();
+            Assert.That(b.Units.Single().OrdinaryAttacksFired,Is.Zero);
+            Assert.That(controller.UseCampaignOrder(false),Is.True,"The nine-member early order must create the real presentation.");
+            var view=controller.GetComponent<GuerrillaOrderView>();AdvanceTo(view,.65f);
+            var definitions=(Dictionary<string,ManualBattleDefinition>)typeof(ManualBattleController).GetField("shopDefinitions",Hidden).GetValue(controller);
+            var card=definitions[talulah].Card;
+            var originalType=typeof(CardDefinition).Assembly.GetType("YesterdayConvoy.OriginalTalulahArt",true);
+            var original=originalType.GetMethod("For",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{card});
+            Assert.That(original,Is.Not.Null);
+            var expected=(Sprite)originalType.GetProperty("Portrait",Hidden).GetValue(original);
+            var serialized=(Sprite)typeof(CardDefinition).GetField("portrait",Hidden).GetValue(card);
+            Assert.That(expected,Is.Not.Null);Assert.That(expected.name,Is.EqualTo("TalulahOriginal/portrait"));
+            Assert.That(serialized,Is.Not.Null);Assert.That(serialized,Is.Not.SameAs(expected),"Keep the genuine previous serialized art as the negative control.");
+            Assert.That(card.Portrait,Is.SameAs(expected));
+            int slot=view.SlotMembers.ToList().IndexOf(talulah);Assert.That(slot,Is.InRange(7,8));
+            var actualSprites=(Sprite[])typeof(GuerrillaOrderView).GetField("extensions",Hidden).GetValue(view);
+            Assert.That(actualSprites[slot-7],Is.SameAs(expected),"The real controller bridge must supply the original portrait.");
+            Assert.That(view.VisiblePortraitCount,Is.EqualTo(9));var actual=Capture(view);
+            var portraits=new Dictionary<string,Sprite>{{talulah,expected},{"CARD_M08",definitions["CARD_M08"].Card.Portrait}};
+            var members=b.GuerrillaMemberIds.ToArray();var assignments=controller.GuerrillaTransferIds.ToArray();
+            view.Play(members,portraits,assignments);AdvanceTo(view,.65f);var originalPixels=Capture(view);
+            CollectionAssert.AreEqual(originalPixels,actual,"The actual order pixels must match an explicitly supplied original portrait at the same animation age.");
+            portraits[talulah]=serialized;view.Play(members,portraits,assignments);AdvanceTo(view,.65f);var legacyPixels=Capture(view);
+            Assert.That(PortraitPixelDifference(originalPixels,legacyPixels,slot),Is.GreaterThan(20),"The Talulah extension must visibly differ from the previous serialized portrait.");
         }
     }
 }

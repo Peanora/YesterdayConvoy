@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-06：塔露拉转职追击头像修复
+
+- 原因：ShowGuerrillaOrder经CardDefinition.Portrait读取转职肖像，通用getter漏了OriginalTalulahArt分支，因而回退到Talulah.asset序列化的旧TalulahComic/V2卡面；原作PNG及PreparedArt源哈希正常。现优先读取已有TalulahOriginal/portrait，不新增/替换图片，不改场景、Prefab、配置资产或GUID。
+- Unity6000.6.5f1：完整EditMode501/501（artifacts/talulah-pursuit-edit.xml）、相关D3D11 PlayMode26/26（artifacts/talulah-pursuit-play.xml）通过。覆盖原游击高档/恒速全场演出、塔露拉阶段/攻击/死亡，以及冷读原作单头像≤1纹理、其他卡序列化回退。新增真实九种编队准备→两转职→Begin赠令→M03远距部署→成功军令，0.65秒实际第九槽Sprite等于原作；实际RenderTo与显式原作供图像素相同，与旧serialized图在塔露拉区域显著不同。
+- 独立Player与本地Windows构建待本次源码提交后执行；未运行全量PlayMode、第二机或缺失/损坏原作媒体故障注入。本次使用现存原作运行素材，未重新生成美术。
+
 ## 2026-11-06：游击8/9档、整令无次数上限及真实转职
 
 - 人类已确认8/9草案并覆盖为所有档位取消整令次数上限，后续明确本轮加入准备阶段手动指定最多两种转职角色。保持原功能分支/PR #88，实时main仍b3d947a，两个既有本地未跟踪项保留。没有改场景、Prefab、配置资产、Packages或ProjectSettings。
