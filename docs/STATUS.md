@@ -1,5 +1,11 @@
 # 当前工程状态
 
+## 2026-11-07：树海PR与最新素材目录兼容验证
+
+已按用户指定SSH上传`codex/blackforest-crossing`并创建[PR #92](https://github.com/Peanora/YesterdayConvoy/pull/92)。吸收main `b1d55e7`资源分类与运行包生成改动；四份文档顶部冲突保留双方新增内容，未覆盖main的美术或运行机制。
+
+合并后运行源码`83c7833`：全量EditMode510/510，地图/角色加载/菜单GPU PlayMode10/10，仓库7387跟踪文件检查通过。Windows构建0错误；可见1280×720 Direct3D11 Player三路实际部署、固定路线/目标、共享防御、暂停、原素材门/材质和重开全部True，退出0，已查看合并版实际截图。原本地启动入口保持。证据在artifacts/map-draft-20261106/native/merged-*；未自动合并PR或发布Releases，第二机和正式难度仍未验收。下方449项等为吸收新main前的历史结果。
+
 ## 2026-11-07 树海原素材正式接入本地试玩
 
 用户确认原素材看稿并再次要求接入。BlackForestCrossing已替换为ro6_t-4/map_flowersea原网格与贴图；三红门/两蓝门改用原tile_start/tile_end网格、顶点色及透明/加色纹理，临时线框移除。238个编辑地块、路线配置和原玩法保持；编辑模式可查看、修改、保存，无运行时建图。原门的装饰粒子/动画及原场景光照后处理未复刻，兼容材质与来源见[地图说明](BLACK_FOREST_CROSSING.md)。

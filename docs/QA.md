@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-07：树海PR吸收资源分类后的复验
+
+- 运行源码83c783394468d8d2297df6eac843937b601e0a09，已吸收main b1d55e7；四份文档新增段落全部保留，原场景与门资源不回退。
+- merged-edit-results.xml：完整EditMode510/510、0失败/跳过。merged-play-results.xml：BlackForestSceneTests、ArtLoadingTests与MonsterSelectionTests共10/10，0失败/跳过；不冒称全量PlayMode。
+- 仓库7387跟踪文件静态检查通过。merged-build.log：Windows构建1058042785报告字节、0错误；实际输出目录约1.37GB，报告汇总不等于目录总体积。
+- merged-player.log：可见1280×720 Direct3D11 Player，三路真实备战指针部署与完整模拟走线，geometry/materials/nativeGates/fixedRoutes/pause/sharedDefense/restart全部True，退出0。已查看merged-player/forest-ready.png，原地形、三红两蓝和弩手备战正常显示。保留显式Tick(.05)步进条件，不把它当成人工完整长局测试。
+- 本次复验不重测main上所有新增角色的完整战斗；原门装饰动画、第二机、低配长局、平衡与新克隆试玩仍未验收。
+
 ## 2026-11-07：树海原素材与原版门接入
 
 - 运行源码bcd3417，独立BlackForestCrossing场景。原素材看稿确认后接入；原地形238格与路线38/40/42不变，无碰撞/射线或地形效果新增。
