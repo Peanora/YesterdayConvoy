@@ -200,6 +200,13 @@ namespace YesterdayConvoy.Tests
                 Assert.That(GL.modelview,Is.EqualTo(inheritedModelView),"RenderTo must restore its caller's model-view state.");
             }
             finally{GL.modelview=previousModelView;}
+            var clipCommands=new UnityEngine.Rendering.CommandBuffer();
+            try
+            {
+                clipCommands.EnableScissorRect(new Rect(0,0,640,22));Graphics.ExecuteCommandBuffer(clipCommands);
+                CollectionAssert.AreEqual(gathered,Capture(view),"A previous GUI clip must not crop the effect to a top strip.");
+            }
+            finally{clipCommands.Clear();clipCommands.DisableScissorRect();Graphics.ExecuteCommandBuffer(clipCommands);clipCommands.Release();}
             Assert.That(ChangedPixels(arriving,gathered),Is.GreaterThan(1000));Assert.That(arrivalVertices.SequenceEqual(gatheredVertices),Is.False,"Opaque portrait geometry must move toward the centre.");
             Assert.That(arrivalOffsets.Take(7).Any(p=>p.sqrMagnitude>100),Is.True);Assert.That(view.PaneOffsets.All(p=>p.sqrMagnitude<.01f),Is.True,"Every pane must arrive at its fixed radial slot.");
             float peakOpacity=view.Opacity;
@@ -238,6 +245,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(view.SlotMembers[0],Is.Null);CollectionAssert.AreEqual(Originals.Skip(1),view.SlotMembers.Skip(1).Take(6));
             controller.Tick(.65f);var actualMissing=Capture(view);
             view.Play(Originals);controller.Tick(.65f);var full=Capture(view);
+            if(Difference(full,actualMissing,Probes[0])<=20)
+            {
+                var failure=new Texture2D(640,360,TextureFormat.RGBA32,false);failure.SetPixels32(full);failure.Apply();
+                System.IO.Directory.CreateDirectory("artifacts");System.IO.File.WriteAllBytes("artifacts/guerrilla-render-failure.png",failure.EncodeToPNG());Object.Destroy(failure);
+            }
             Assert.That(Difference(full,actualMissing,Probes[0]),Is.GreaterThan(20),"The removed warrior must disappear from real output pixels.");
             for(int missing=0;missing<7;missing++)
             {

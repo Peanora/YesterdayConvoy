@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace YesterdayConvoy
 {
@@ -25,6 +26,7 @@ namespace YesterdayConvoy
         float builtAt=float.NaN;
         Material material; Texture2D approved; Font captionFont;
         RenderTexture frame,accumulation;
+        CommandBuffer renderCommands;
         AudioClip followup; AudioSource sound;
         Batch behind,panes,front,caption;
         readonly Batch[] extras=new Batch[2];
@@ -42,7 +44,9 @@ namespace YesterdayConvoy
             readonly List<Color> colors=new List<Color>(4096);
             readonly List<Vector2> uvs=new List<Vector2>(4096),flags=new List<Vector2>(4096);
             readonly List<int> indices=new List<int>(6144);
+            readonly MaterialPropertyBlock properties=new MaterialPropertyBlock();
             internal Texture Texture;
+            internal bool AlphaOnly;
             internal Batch(string name)
             {Mesh=new Mesh{name=name,hideFlags=HideFlags.DontSave};Mesh.MarkDynamic();}
             internal void Clear(){Vertices.Clear();colors.Clear();uvs.Clear();flags.Clear();indices.Clear();}
@@ -50,7 +54,7 @@ namespace YesterdayConvoy
             {
                 int start=Vertices.Count;
                 for(int i=0;i<points.Length;i++)
-                {Vertices.Add(new Vector3(points[i].x,points[i].y,0));colors.Add(tint[i]);uvs.Add(uv==null?Vector2.zero:uv[i]);flags.Add(new Vector2(uv==null?0:1,0));}
+                {Vertices.Add(new Vector3(points[i].x,points[i].y,0));colors.Add(tint[i]);uvs.Add(uv==null?Vector2.zero:uv[i]);flags.Add(new Vector2(uv==null?0:1,AlphaOnly?1:0));}
                 for(int i=1;i<points.Length-1;i++){indices.Add(start);indices.Add(start+i);indices.Add(start+i+1);}
             }
             internal void Fill(Vector2[] p,Color color,Vector2[] uv=null)
@@ -59,8 +63,12 @@ namespace YesterdayConvoy
             {Fill(new[]{new Vector2(r.x,r.y),new Vector2(r.xMax,r.y),new Vector2(r.xMax,r.yMax),new Vector2(r.x,r.yMax)},color);}
             internal void Upload()
             {Mesh.Clear();if(Vertices.Count==0)return;Mesh.SetVertices(Vertices);Mesh.SetColors(colors);Mesh.SetUVs(0,uvs);Mesh.SetUVs(1,flags);Mesh.SetTriangles(indices,0);Mesh.RecalculateBounds();}
-            internal void Draw(Material material)
-            {if(Vertices.Count==0)return;material.mainTexture=Texture==null?Texture2D.whiteTexture:Texture;if(material.SetPass(0))Graphics.DrawMeshNow(Mesh,Matrix4x4.identity);}
+            internal void Draw(CommandBuffer commands,Material material)
+            {
+                if(Vertices.Count==0)return;
+                properties.SetTexture("_MainTex",Texture==null?Texture2D.whiteTexture:Texture);
+                commands.DrawMesh(Mesh,Matrix4x4.identity,material,0,0,properties);
+            }
             internal void Dispose(){if(Mesh!=null)UnityEngine.Object.Destroy(Mesh);}
         }
 
@@ -117,6 +125,7 @@ namespace YesterdayConvoy
             material=new Material(shader){name="Guerrilla V2 / premultiplied mesh composition",hideFlags=HideFlags.DontSave,mainTexture=approved};
             behind=new Batch("Guerrilla V2 / backdrop and attraction");panes=new Batch("Guerrilla V2 / native portraits and glass");
             front=new Batch("Guerrilla V2 / crystal beams and shards");caption=new Batch("Guerrilla V2 / native caption");
+            caption.AlphaOnly=true;
             for(int i=0;i<2;i++)extras[i]=new Batch("Guerrilla V2 / future-member glass "+i);
             sound=gameObject.AddComponent<AudioSource>();sound.playOnAwake=false;sound.loop=false;sound.spatialBlend=0;sound.volume=.55f;sound.clip=followup;
             return material;
@@ -135,7 +144,14 @@ namespace YesterdayConvoy
             paneCount=portraitCount=fragmentCount=outerFragmentCount=0;geometry.Clear();
             if(sound!=null)sound.Stop();
         }
-        void LateUpdate(){CheckIdentity();UpdateSound();}
+        void LateUpdate()
+        {
+            CheckIdentity();UpdateSound();
+            if(!Playing)return;
+            Rect bounds=ScreenBounds;
+            EnsureTexture(ref frame,Mathf.Max(1,Mathf.RoundToInt(bounds.width)),Mathf.Max(1,Mathf.RoundToInt(bounds.height)),"Guerrilla V2 / foreground frame");
+            RenderTo(frame);
+        }
         void OnFontTextureRebuilt(Font rebuilt){if(rebuilt==captionFont)dirty=true;}
         void UpdateSound()
         {
@@ -356,20 +372,24 @@ namespace YesterdayConvoy
             RenderTexture previous=RenderTexture.active;
             try
             {
-                if(!Playing){RenderTexture.active=target;GL.Clear(false,true,Color.clear);return;}
-                EnsureTexture(ref accumulation,target.width,target.height,"Guerrilla V2 / premultiplied layers");
-                RenderTexture.active=accumulation;GL.Clear(false,true,Color.clear);
-                GL.PushMatrix();
-                try
+                if(renderCommands==null)renderCommands=new CommandBuffer{name="Guerrilla V2 / isolated screen composition"};
+                renderCommands.Clear();
+                if(!Playing)
                 {
-                    // IMGUI and the last camera leave a non-identity model-view matrix.
-                    // Pixel projection alone does not reset it; isolate this screen-space mesh.
-                    GL.modelview=Matrix4x4.identity;GL.LoadPixelMatrix(0,1920,1080,0);
-                    foreach(var b in Batches())b.Draw(material);
+                    renderCommands.SetRenderTarget(target);renderCommands.SetViewport(new Rect(0,0,target.width,target.height));
+                    renderCommands.DisableScissorRect();renderCommands.ClearRenderTarget(false,true,Color.clear);
+                    Graphics.ExecuteCommandBuffer(renderCommands);return;
                 }
-                finally{GL.PopMatrix();}
-                // The final IMGUI blend needs straight alpha. Undo layer accumulation's premultiplication once.
-                Graphics.Blit(accumulation,target,material,1);
+                EnsureTexture(ref accumulation,target.width,target.height,"Guerrilla V2 / premultiplied layers");
+                renderCommands.SetRenderTarget(accumulation);
+                renderCommands.SetViewport(new Rect(0,0,target.width,target.height));
+                renderCommands.DisableScissorRect();
+                renderCommands.ClearRenderTarget(false,true,Color.clear);
+                renderCommands.SetViewProjectionMatrices(Matrix4x4.identity,Matrix4x4.Ortho(0,1920,1080,0,-1,1));
+                foreach(var b in Batches())b.Draw(renderCommands,material);
+                // Resolve before IMGUI. Its viewport/clip state must never be used for the mesh pass.
+                renderCommands.Blit(accumulation,target,material,1);
+                Graphics.ExecuteCommandBuffer(renderCommands);
             }
             finally{RenderTexture.active=previous;}
         }
@@ -377,9 +397,8 @@ namespace YesterdayConvoy
         {
             // GUI.depth belongs to this behaviour. Restoring it at return undoes its foreground order.
             GUI.depth=-2000;
-            if(Event.current.type!=EventType.Repaint||!Playing)return;
-            Rect bounds=ScreenBounds;EnsureTexture(ref frame,Mathf.Max(1,Mathf.RoundToInt(bounds.width)),Mathf.Max(1,Mathf.RoundToInt(bounds.height)),"Guerrilla V2 / foreground frame");
-            RenderTo(frame);Matrix4x4 matrix=GUI.matrix;Color color=GUI.color;
+            if(Event.current.type!=EventType.Repaint||!Playing||frame==null)return;
+            Rect bounds=ScreenBounds;Matrix4x4 matrix=GUI.matrix;Color color=GUI.color;
             try{GUI.matrix=Matrix4x4.identity;GUI.color=Color.white;GUI.DrawTexture(bounds,frame,ScaleMode.StretchToFill,true);}
             finally{GUI.matrix=matrix;GUI.color=color;}
         }
@@ -396,6 +415,7 @@ namespace YesterdayConvoy
         void OnDestroy()
         {
             Clear();Font.textureRebuilt-=OnFontTextureRebuilt;Release(ref frame);Release(ref accumulation);
+            renderCommands?.Release();renderCommands=null;
             if(material!=null)Destroy(material);if(sound!=null)Destroy(sound);
             behind?.Dispose();panes?.Dispose();front?.Dispose();caption?.Dispose();foreach(var b in extras)b?.Dispose();
         }

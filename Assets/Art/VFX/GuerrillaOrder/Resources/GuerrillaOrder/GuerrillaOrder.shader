@@ -16,15 +16,16 @@ Shader "YesterdayConvoy/GuerrillaOrder"
             #include "UnityCG.cginc"
             sampler2D _MainTex;
             struct Input { float4 vertex:POSITION; float2 uv:TEXCOORD0; float2 flags:TEXCOORD1; float4 color:COLOR; };
-            struct Output { float4 vertex:SV_POSITION; float2 uv:TEXCOORD0; float textured:TEXCOORD1; float4 color:COLOR; };
+            struct Output { float4 vertex:SV_POSITION; float2 uv:TEXCOORD0; float2 flags:TEXCOORD1; float4 color:COLOR; };
             Output vert(Input v)
             {
-                Output o; o.vertex=UnityObjectToClipPos(v.vertex); o.uv=v.uv; o.textured=v.flags.x; o.color=v.color; return o;
+                Output o; o.vertex=UnityObjectToClipPos(v.vertex); o.uv=v.uv; o.flags=v.flags; o.color=v.color; return o;
             }
             fixed4 frag(Output i):SV_Target
             {
                 fixed4 sampled=tex2D(_MainTex,i.uv);
-                fixed4 color=i.color*lerp(fixed4(1,1,1,1),sampled,saturate(i.textured));
+                sampled=lerp(sampled,fixed4(1,1,1,sampled.a),saturate(i.flags.y));
+                fixed4 color=i.color*lerp(fixed4(1,1,1,1),sampled,saturate(i.flags.x));
                 return fixed4(color.rgb*color.a,color.a);
             }
             ENDCG

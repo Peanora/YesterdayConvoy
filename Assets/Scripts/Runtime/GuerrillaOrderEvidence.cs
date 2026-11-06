@@ -100,6 +100,19 @@ namespace YesterdayConvoy
             try
             {
                 yield return new WaitForSecondsRealtime(1);Time.timeScale=0;
+                if(Environment.GetCommandLineArgs().Contains("-guerrillaOrderRenderProbe"))
+                {
+                    // Focused reproduction: no deployments, combat or order charging.
+                    SetSandboxRoster(2);while(ArtLoading)yield return null;
+                    StartLoopNextBattle();while(ArtLoading||ShopPanelTransitioning)yield return null;
+                    Battle.Begin();view.Play(new[]{"CARD_M15","CARD_M16","CARD_M03","CARD_M20","CARD_M19","CARD_M18","CARD_M17"});
+                    Tick(.65f);yield return null;yield return null;
+                    slots=view.SlotMembers.ToArray();
+                    yield return new WaitForEndOfFrame();
+                    check("isolatedActualFullScreenLayerCoversHud",GuerrillaLayerCoversGui(view));
+                    yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"render-probe.png"));yield return null;
+                    complete=true;yield break;
+                }
                 check("failureDoesNotPlay",!UseCampaignOrder(false)&&view.PlayCount==0);
                 var charge=ChargeGuerrillaForEvidence(false);
                 while(charge.MoveNext())yield return charge.Current;
