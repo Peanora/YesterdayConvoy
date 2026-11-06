@@ -256,6 +256,7 @@ namespace YesterdayConvoy
             if (Phase != BattlePhase.Ready) return;
             if(GuaranteedSupply){CompleteSupply();return;}
             Phase = BattlePhase.Running;
+            Orders+=GuerrillaRules.ForTier(GuerrillaTier).InitialOrders;
             EvaluateEnd();
         }
 

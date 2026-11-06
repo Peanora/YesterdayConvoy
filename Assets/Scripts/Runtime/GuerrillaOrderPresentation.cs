@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -18,9 +19,14 @@ namespace YesterdayConvoy
 
         void ShowGuerrillaOrder()
         {
-            // A formation snapshot, independent of deployment, survival or order recipients.
-            // Future profession changes should extend this membership query and supply their portraits.
-            guerrillaOrderView.Play(shopLineup.Where(CampaignBalance.Guerrilla).Distinct().ToArray());
+            // The model owns the same locked membership used for tier calculation, including transfers.
+            var members=Battle.GuerrillaMemberIds.ToArray();
+            var portraits=new Dictionary<string,Sprite>();
+            foreach(string id in members)
+                if(!CampaignBalance.Guerrilla(id)&&shopDefinitions.TryGetValue(id,out var card))
+                    portraits[id]=card.Card.Portrait;
+            var assignments=GuerrillaTransferIds;
+            guerrillaOrderView.Play(members,portraits,assignments.Count>0?assignments:null);
             guerrillaOrderView.BindVolley(Battle.LatestGuerrillaOrder);
         }
     }

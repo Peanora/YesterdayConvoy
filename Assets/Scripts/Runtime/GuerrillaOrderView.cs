@@ -107,17 +107,23 @@ namespace YesterdayConvoy
             Clear();owner=controller;Font.textureRebuilt-=OnFontTextureRebuilt;captionFont=font;Font.textureRebuilt+=OnFontTextureRebuilt;
             observed=owner.Battle;run=observed?.RunId??-1;PrepareMaterial();
         }
-        public void Play(IEnumerable<string> members,IReadOnlyDictionary<string,Sprite> extraPortraits=null)
+        public void Play(IEnumerable<string> members,IReadOnlyDictionary<string,Sprite> extraPortraits=null,IReadOnlyList<string> extensionSlotIds=null)
         {
             if(members==null)throw new ArgumentNullException(nameof(members));
             CheckIdentity();if(owner==null||owner.Battle==null)return;
             Clear();var unique=new HashSet<string>(members.Where(id=>!string.IsNullOrEmpty(id)),StringComparer.Ordinal);
             for(int i=0;i<7;i++){string id=GuerrillaOrderGeometry.Definition(i).CardId;if(unique.Remove(id))slots[i]=id;}
             int extension=0;
-            foreach(string id in unique.OrderBy(id=>id,StringComparer.Ordinal))
+            var assigned=extensionSlotIds==null?unique.OrderBy(id=>id,StringComparer.Ordinal):extensionSlotIds.Where(id=>!string.IsNullOrEmpty(id)).Distinct(StringComparer.Ordinal);
+            foreach(string id in assigned)
             {
-                if(extension==2)break;slots[7+extension]=id;
-                if(extraPortraits!=null&&extraPortraits.TryGetValue(id,out var image))extensions[extension]=image;
+                if(extension==2)break;
+                // A selected transfer kept in reserve leaves its own glass slot empty.
+                if(unique.Contains(id))
+                {
+                    slots[7+extension]=id;
+                    if(extraPortraits!=null&&extraPortraits.TryGetValue(id,out var image))extensions[extension]=image;
+                }
                 extension++;
             }
             observed=owner.Battle;run=observed.RunId;elapsed=0;active=true;PlayCount++;dirty=true;PrepareMaterial();

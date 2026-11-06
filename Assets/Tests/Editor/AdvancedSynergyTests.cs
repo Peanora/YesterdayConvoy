@@ -77,7 +77,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.Orders,Is.Zero);Assert.That(b.Units.Sum(u=>u.OrdinaryAttacksFired),Is.EqualTo(attacks));
             float health=b.Defender.Health;Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);b.Advance(.1f);
             Assert.That(b.LatestGuerrillaOrder,Is.SameAs(volley));Assert.That(b.Defender.Health,Is.EqualTo(health));
-            Assert.That(b.TryGuerrillaOrder(b.RunId,101),Is.False);Assert.That(b.OrdersUsed,Is.EqualTo(1));
+            Assert.That(b.TryGuerrillaOrder(b.RunId,101),Is.False,"No points remain; OrdersUsed is now statistics, not a cast cap.");Assert.That(b.OrdersUsed,Is.EqualTo(1));
         }
         [Test]public void NoTargetOrPauseCannotSpendOrders()
         {
