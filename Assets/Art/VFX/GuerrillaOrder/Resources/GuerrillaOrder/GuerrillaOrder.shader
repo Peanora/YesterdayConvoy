@@ -20,7 +20,9 @@ Shader "YesterdayConvoy/GuerrillaOrder"
     {
         Tags { "Queue"="Overlay" "RenderType"="Transparent" "IgnoreProjector"="True" }
         Cull Off ZWrite Off ZTest Always
-        Blend SrcAlpha OneMinusSrcAlpha
+        // Preserve straight RGB and the fade alpha in the intermediate image. IMGUI performs
+        // the single screen blend when its foreground draw is processed with GUI.depth.
+        Blend Off
         Pass
         {
             CGPROGRAM

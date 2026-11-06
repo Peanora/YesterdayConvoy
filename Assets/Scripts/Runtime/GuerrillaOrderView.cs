@@ -27,6 +27,7 @@ namespace YesterdayConvoy
         bool active, pausedSound;
         Material material;
         Texture2D approved;
+        RenderTexture frame;
         AudioClip shing;
         AudioSource sound;
 
@@ -133,13 +134,39 @@ namespace YesterdayConvoy
         {
             if (Event.current.type != EventType.Repaint || !Playing) return;
             var production = PrepareMaterial();
+            PrepareFrame(production);
             Matrix4x4 matrix = GUI.matrix; Color color = GUI.color; int depth = GUI.depth;
             try
             {
                 GUI.matrix = Matrix4x4.identity; GUI.color = Color.white; GUI.depth = -2000;
-                Graphics.DrawTexture(ScreenBounds, approved, new Rect(0, 0, 1, 1), 0, 0, 0, 0, Color.white, production);
+                // Queue the already composed straight-alpha image with the rest of IMGUI. A direct
+                // Graphics.DrawTexture here bypasses GUI.depth and lets later HUD batches cover it.
+                GUI.DrawTexture(ScreenBounds, frame, ScaleMode.StretchToFill, true);
             }
             finally { GUI.matrix = matrix; GUI.color = color; GUI.depth = depth; }
+        }
+        void PrepareFrame(Material production)
+        {
+            Rect bounds = ScreenBounds;
+            int width = Mathf.Max(1, Mathf.RoundToInt(bounds.width)), height = Mathf.Max(1, Mathf.RoundToInt(bounds.height));
+            if (frame == null || frame.width != width || frame.height != height)
+            {
+                ReleaseFrame();
+                frame = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)
+                {
+                    name = "Guerrilla order / IMGUI composition", hideFlags = HideFlags.DontSave,
+                    filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp
+                };
+                frame.Create();
+            }
+            RenderTexture previous = RenderTexture.active;
+            try { Graphics.Blit(approved, frame, production); }
+            finally { RenderTexture.active = previous; }
+        }
+        void ReleaseFrame()
+        {
+            if (frame == null) return;
+            frame.Release(); Destroy(frame); frame = null;
         }
         void ConfigureExtension(int index)
         {
@@ -158,7 +185,7 @@ namespace YesterdayConvoy
         void OnDisable() => Clear();
         void OnDestroy()
         {
-            Clear(); if (material != null) Destroy(material); if (sound != null) Destroy(sound);
+            Clear(); ReleaseFrame(); if (material != null) Destroy(material); if (sound != null) Destroy(sound);
         }
     }
 }
