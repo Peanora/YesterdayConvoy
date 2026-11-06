@@ -1,0 +1,2334 @@
+{
+  "version": "26-10-29-15-36-11-33649006",
+  "rights": "Original Hypergryph/Arknights assets. No open redistribution licence established. User explicitly requested source upload; this is not rights-holder permission.",
+  "tool": "Original Android bundles converted to standalone platform metadata; original shaders/particles sampled by external Unity6000.6.5f1 Vulkan. Actor/target reference artwork is not baked into runtime layers.",
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "adaptations": [
+    "Fixed frontal60-degree camera; source UVTween/FxDelay and deterministic particle clock replayed. Game Torappu orchestration absent; caster/target mounts supplied explicitly.",
+    "One-shot calculated native particles retained to last lifetime. Looping source layers sample4seconds and repeat only while their genuine game state/event owns them.",
+    "FrostNova source revival9.2667seconds mapped to existing5second game revive; relative layer delays preserved. No gameplay timing changed.",
+    "M31 and dmage original two-point LineRenderers receive caster/target endpoint fixture; runtime ShowBeam maps reference length to actual mounts. Original material/UV/line width remain.",
+    "Functional explosive-death danger radius remains a UI marker; native blasts replace old geometric burst/shards."
+  ],
+  "sources": [
+    {
+      "name": "battle/prefabs/effects/common.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_common.dat",
+      "md5": "7351283c4112821fbfc190ae1dd86cdf",
+      "sha256": "9ded9b434ec46fbfd584587f63f8fa071ed36e93fb49c69a124e1b15aeb76c33",
+      "bytes": 2321972
+    },
+    {
+      "name": "battle/prefabs/effects/dmage.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_dmage.dat",
+      "md5": "a1721edf3b4246c2afba9f5b1f64b603",
+      "sha256": "3e8615070002d757dbcb6480810f39172fc88742eca2f9b6d257091be26ac7f5",
+      "bytes": 73936
+    },
+    {
+      "name": "pkgrps/btl_pfb_fx_enemy_3.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_3.dat",
+      "md5": "59c1d7569d12738807e81e3add0aaf0a",
+      "sha256": "d3f7a1f1306bd5eaad75c6c4e7d378a68691255d62072181bff16ef31587eb65",
+      "bytes": 2971562
+    },
+    {
+      "name": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_4.dat",
+      "md5": "fd77ba442158005f939944afd89157e2",
+      "sha256": "7844a78f36fdd040cffcb097e40f16e2b27018616b17655e27a4791f5c0403f0",
+      "bytes": 3305910
+    },
+    {
+      "name": "battle/prefabs/effects/firstar.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_firstar.dat",
+      "md5": "e918fbb2c25a45dbf0d106d775b1652f",
+      "sha256": "4132c1d2a70c35048b3949e1c3dcb52a51fca6cf6576d80950685dcfcb8629af",
+      "bytes": 284657
+    },
+    {
+      "name": "battle/prefabs/effects/bslime.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_bslime.dat",
+      "md5": "c06c0e326412219f71a003c0c6c909d6",
+      "sha256": "2a3ae23d84c680788c030115df18660a4c91bf34dbfed6964fa928c4eeb49cc7",
+      "bytes": 61926
+    },
+    {
+      "name": "battle/prefabs/effects/snslime.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_snslime.dat",
+      "md5": "eb4fbbffbcc36a120729ce8150864379",
+      "sha256": "2d9217b5da3a036644ddd6762b4c559afd2ee327f6958fbe92cab59ee5a81bea",
+      "bytes": 68915
+    },
+    {
+      "name": "battle/prefabs/effects/mslime.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_mslime.dat",
+      "md5": "d0bb75c5479c52507f76f4545937eb6e",
+      "sha256": "82a792eedb909bfea4e03cb0b854f4a78df3a9708ff6d39380ac05d1bb29338b",
+      "bytes": 50944
+    },
+    {
+      "name": "battle/prefabs/effects/snmage.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_snmage.dat",
+      "md5": "46ce427341eb77d7cfe7267d562a878b",
+      "sha256": "2158d8114003ffdc8aa0882da8eba674cf30be0258cf3c01dc1b4dc3aeb06ba1",
+      "bytes": 134754
+    },
+    {
+      "name": "battle/prefabs/effects/sotisp.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_sotisp.dat",
+      "md5": "351435ee490697fcd21b0e0649114961",
+      "sha256": "475f0477c138dbf014b3bfcaa1fc657740ee632e79bc35372480b02922502cd3",
+      "bytes": 49543
+    },
+    {
+      "name": "pkgrps/btl_pfb_fx_enemy_8.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/pkgrps_btl_pfb_fx_enemy_8.dat",
+      "md5": "923499be9fe81f8caa0b8662a8368ec2",
+      "sha256": "bfd871b76d6032053b1439220de2e5268ff36bb8e2859b161cc1479191c49e49",
+      "bytes": 3654084
+    }
+  ],
+  "clips": [
+    {
+      "key": "monster/bslime_die_01_start",
+      "rawKey": "bslime_die_01_start",
+      "sourceBundle": "battle/prefabs/effects/bslime.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 80,
+        "visibleFrames": 25,
+        "peak": 3.8338327407836914,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        160,
+        180,
+        216,
+        236
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 0.5,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_char_birth_01",
+      "rawKey": "common_char_birth_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 44,
+        "visibleFrames": 38,
+        "peak": 3.865255832672119,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 9.5367431640625e-07
+      },
+      "crop": [
+        136,
+        84,
+        268,
+        256
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_cuting_hit_01",
+      "rawKey": "common_cuting_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 23,
+        "visibleFrames": 10,
+        "peak": 2.3756253719329834,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        156,
+        152,
+        244,
+        232
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 0.35,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_enemy_die_01",
+      "rawKey": "common_enemy_die_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 65,
+        "visibleFrames": 18,
+        "peak": 1.2392578125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.9802322387695312e-08
+      },
+      "crop": [
+        140,
+        172,
+        220,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_enemy_hit_01",
+      "rawKey": "common_enemy_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 20,
+        "visibleFrames": 4,
+        "peak": 1.96875,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        148,
+        164,
+        232,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_firemagic_hit_01",
+      "rawKey": "common_firemagic_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 27,
+        "visibleFrames": 21,
+        "peak": 5.520436763763428,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 7.152557373046875e-07
+      },
+      "crop": [
+        152,
+        160,
+        228,
+        248
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_gongjian_trail_01",
+      "rawKey": "common_gongjian_trail_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "genuine Unity PlayMode TrailRenderer clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 29,
+        "visibleFrames": 27,
+        "peak": 2.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        156,
+        188,
+        200,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_heal_hit_01",
+      "rawKey": "common_heal_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 42,
+        "visibleFrames": 31,
+        "peak": 4.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        156,
+        168,
+        228,
+        232
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_heal_range_01",
+      "rawKey": "common_heal_range_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 3.5521745681762695,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.364418029785156e-07
+      },
+      "crop": [
+        96,
+        144,
+        284,
+        280
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_heal_start_01",
+      "rawKey": "common_heal_start_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 46,
+        "visibleFrames": 33,
+        "peak": 2.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        148,
+        132,
+        240,
+        216
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_hit_01",
+      "rawKey": "common_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 23,
+        "visibleFrames": 13,
+        "peak": 2.9829273223876953,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        160,
+        168,
+        220,
+        236
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_ignite_attack",
+      "rawKey": "common_ignite_attack",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 117,
+        "peak": 2.2618961334228516,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.172325134277344e-07
+      },
+      "crop": [
+        136,
+        128,
+        248,
+        244
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_ignite_defense",
+      "rawKey": "common_ignite_defense",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 2.30298113822937,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.364418029785156e-07
+      },
+      "crop": [
+        136,
+        132,
+        252,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_ignite_support",
+      "rawKey": "common_ignite_support",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 116,
+        "peak": 1.1768803596496582,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.172325134277344e-07
+      },
+      "crop": [
+        132,
+        136,
+        252,
+        244
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_magic_hit_01",
+      "rawKey": "common_magic_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 22,
+        "visibleFrames": 11,
+        "peak": 2.6564927101135254,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        148,
+        156,
+        236,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_magic_hit_01_m",
+      "rawKey": "common_magic_hit_01_m",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 22,
+        "visibleFrames": 11,
+        "peak": 1.7958984375,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        152,
+        156,
+        232,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_magic_trail_01",
+      "rawKey": "common_magic_trail_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 119,
+        "peak": 15.985237121582031,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.430511474609375e-06
+      },
+      "crop": [
+        164,
+        172,
+        216,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_magic_trail_01_m",
+      "rawKey": "common_magic_trail_01_m",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 185,
+        "visibleFrames": 178,
+        "peak": 14.987735748291016,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.0265579223632812e-06
+      },
+      "crop": [
+        164,
+        172,
+        216,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 5.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_nerve_injury_01_hit",
+      "rawKey": "common_nerve_injury_01_hit",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 41,
+        "visibleFrames": 30,
+        "peak": 10.04121208190918,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539062e-07
+      },
+      "crop": [
+        144,
+        152,
+        236,
+        244
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_ranger_hit_01",
+      "rawKey": "common_ranger_hit_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 47,
+        "visibleFrames": 30,
+        "peak": 7.786307334899902,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 7.152557373046875e-07
+      },
+      "crop": [
+        144,
+        148,
+        240,
+        252
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "common/common_speedup_01",
+      "rawKey": "common_speedup_01",
+      "sourceBundle": "battle/prefabs/effects/common.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 2.269061326980591,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        132,
+        136,
+        252,
+        228
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/dmage_skill_01_buff",
+      "rawKey": "dmage_skill_01_buff",
+      "sourceBundle": "battle/prefabs/effects/dmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 0.24169921875,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539063e-08
+      },
+      "crop": [
+        172,
+        172,
+        212,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/dmage_skill_01_line",
+      "rawKey": "dmage_skill_01_line",
+      "sourceBundle": "battle/prefabs/effects/dmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 0.12030029296875,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.1920928955078125e-07
+      },
+      "crop": [
+        112,
+        160,
+        272,
+        200
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": 3.00543197038887
+    },
+    {
+      "key": "monster/dmage_skill_01_start",
+      "rawKey": "dmage_skill_01_start",
+      "sourceBundle": "battle/prefabs/effects/dmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 185,
+        "visibleFrames": 185,
+        "peak": 0.49957847595214844,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        172,
+        180,
+        236,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 5.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dslntc_attack_01_hit",
+      "rawKey": "enemy_dslntc_attack_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_3.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 15,
+        "peak": 3.984375,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        168,
+        172,
+        220,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dslntc_buff_01",
+      "rawKey": "enemy_dslntc_buff_01",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_3.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 0.763399064540863,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 8.940696716308594e-08
+      },
+      "crop": [
+        164,
+        168,
+        216,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dslntc_buff_02",
+      "rawKey": "enemy_dslntc_buff_02",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_3.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 114,
+        "peak": 2.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        196,
+        168,
+        220,
+        196
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dslntc_skill_begin_buff",
+      "rawKey": "enemy_dslntc_skill_begin_buff",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_3.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 29,
+        "visibleFrames": 29,
+        "peak": 2.2141735553741455,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.4901161193847656e-07
+      },
+      "crop": [
+        152,
+        172,
+        232,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_01_hit",
+      "rawKey": "enemy_dsmant_attack_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 21,
+        "peak": 3.984375,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        164,
+        172,
+        216,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_01_start",
+      "rawKey": "enemy_dsmant_attack_01_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 50,
+        "visibleFrames": 15,
+        "peak": 1.5169200897216797,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        184,
+        164,
+        240,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_01_trail",
+      "rawKey": "enemy_dsmant_attack_01_trail",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 42,
+        "visibleFrames": 18,
+        "peak": 1.4946613311767578,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539063e-08
+      },
+      "crop": [
+        184,
+        184,
+        204,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 1.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_02_hit",
+      "rawKey": "enemy_dsmant_attack_02_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 22,
+        "peak": 3.984375,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        168,
+        172,
+        220,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_02_start",
+      "rawKey": "enemy_dsmant_attack_02_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 29,
+        "visibleFrames": 18,
+        "peak": 3.529797315597534,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        168,
+        172,
+        224,
+        204
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_attack_02_start_02",
+      "rawKey": "enemy_dsmant_attack_02_start_02",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 29,
+        "visibleFrames": 18,
+        "peak": 2.822624683380127,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.1920928955078125e-07
+      },
+      "crop": [
+        184,
+        176,
+        228,
+        204
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_skill_01_buff",
+      "rawKey": "enemy_dsmant_skill_01_buff",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 1.6546881198883057,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        164,
+        152,
+        220,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_skill_01_buff_02",
+      "rawKey": "enemy_dsmant_skill_01_buff_02",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 0.626953125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.980232238769531e-07
+      },
+      "crop": [
+        156,
+        156,
+        220,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_skill_01_buff_03",
+      "rawKey": "enemy_dsmant_skill_01_buff_03",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 2.1160552501678467,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        144,
+        164,
+        240,
+        288
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_skill_01_hit",
+      "rawKey": "enemy_dsmant_skill_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 70,
+        "visibleFrames": 60,
+        "peak": 5.030584335327148,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        152,
+        96,
+        232,
+        236
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsmant_skill_01_start",
+      "rawKey": "enemy_dsmant_skill_01_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 119,
+        "visibleFrames": 57,
+        "peak": 3.466352939605713,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        160,
+        68,
+        224,
+        204
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsurch_01_start",
+      "rawKey": "enemy_dsurch_01_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 28,
+        "visibleFrames": 18,
+        "peak": 2.365753173828125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        136,
+        148,
+        248,
+        236
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_dsurch_01_start_02",
+      "rawKey": "enemy_dsurch_01_start_02",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 20,
+        "visibleFrames": 5,
+        "peak": 0.7315128445625305,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539063e-08
+      },
+      "crop": [
+        180,
+        180,
+        208,
+        204
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_attack_hit",
+      "rawKey": "enemy_duskls_attack_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 23,
+        "visibleFrames": 16,
+        "peak": 3.219221830368042,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        168,
+        172,
+        216,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_attack_start",
+      "rawKey": "enemy_duskls_attack_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 40,
+        "visibleFrames": 26,
+        "peak": 2.883570909500122,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.682209014892578e-07
+      },
+      "crop": [
+        152,
+        168,
+        236,
+        216
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_idle_2",
+      "rawKey": "enemy_duskls_idle_2",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 4.7767839431762695,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.364418029785156e-07
+      },
+      "crop": [
+        180,
+        176,
+        220,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_revive_2",
+      "rawKey": "enemy_duskls_revive_2",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 76,
+        "visibleFrames": 54,
+        "peak": 1.8303810358047485,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        164,
+        168,
+        212,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_revive_3",
+      "rawKey": "enemy_duskls_revive_3",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 119,
+        "visibleFrames": 78,
+        "peak": 2.0582051277160645,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        160,
+        164,
+        224,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_revive_4",
+      "rawKey": "enemy_duskls_revive_4",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 29,
+        "visibleFrames": 7,
+        "peak": 1.0888671875,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539063e-08
+      },
+      "crop": [
+        172,
+        172,
+        216,
+        204
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duskls_weapon_buff",
+      "rawKey": "enemy_duskls_weapon_buff",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 1.96619713306427,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        188,
+        172,
+        228,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duspfr_2_attack_01_front_start2",
+      "rawKey": "enemy_duspfr_2_attack_01_front_start2",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 4.760425567626953,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 8.344650268554688e-07
+      },
+      "crop": [
+        100,
+        136,
+        272,
+        216
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": 3.00543197038887
+    },
+    {
+      "key": "monster/enemy_duspfr_2_attack_01_hit",
+      "rawKey": "enemy_duspfr_2_attack_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 65,
+        "visibleFrames": 42,
+        "peak": 6.529905319213867,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 7.152557373046875e-07
+      },
+      "crop": [
+        164,
+        168,
+        220,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 1.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duspfr_2_die_01",
+      "rawKey": "enemy_duspfr_2_die_01",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 53,
+        "visibleFrames": 25,
+        "peak": 15.5336332321167,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.9073486328125e-06
+      },
+      "crop": [
+        136,
+        144,
+        252,
+        260
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duspfr_2_die_01_hit",
+      "rawKey": "enemy_duspfr_2_die_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 65,
+        "visibleFrames": 48,
+        "peak": 6.560659408569336,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.364418029785156e-07
+      },
+      "crop": [
+        160,
+        168,
+        220,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duspfr_2_die_02",
+      "rawKey": "enemy_duspfr_2_die_02",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 68,
+        "visibleFrames": 59,
+        "peak": 4.543038368225098,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        184,
+        180,
+        236,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_duspfr_2_die_03",
+      "rawKey": "enemy_duspfr_2_die_03",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_4.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 68,
+        "visibleFrames": 49,
+        "peak": 4.673325061798096,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539062e-07
+      },
+      "crop": [
+        176,
+        176,
+        224,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_mdsnpr_attack_01_hit",
+      "rawKey": "enemy_mdsnpr_attack_01_hit",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_8.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 22,
+        "peak": 1.390030860900879,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.1920928955078125e-07
+      },
+      "crop": [
+        144,
+        172,
+        236,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_mdsnpr_attack_01_start",
+      "rawKey": "enemy_mdsnpr_attack_01_start",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_8.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 30,
+        "visibleFrames": 14,
+        "peak": 2.61962890625,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        172,
+        144,
+        292,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/enemy_mdsnpr_attack_01_trail",
+      "rawKey": "enemy_mdsnpr_attack_01_trail",
+      "sourceBundle": "pkgrps/btl_pfb_fx_enemy_8.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 50,
+        "visibleFrames": 37,
+        "peak": 0.8999484181404114,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        180,
+        180,
+        224,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 1.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_attack_01_hit",
+      "rawKey": "firstar_attack_01_hit",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 24,
+        "peak": 5.71484375,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        164,
+        172,
+        216,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_attack_01_start",
+      "rawKey": "firstar_attack_01_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 62,
+        "visibleFrames": 25,
+        "peak": 1.1767578125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.4901161193847656e-08
+      },
+      "crop": [
+        192,
+        184,
+        220,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_attack_01_trail",
+      "rawKey": "firstar_attack_01_trail",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 61,
+        "visibleFrames": 47,
+        "peak": 1.4249110221862793,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        176,
+        176,
+        208,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 1.0,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_attack_02_start",
+      "rawKey": "firstar_attack_02_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 26,
+        "peak": 1.6806975603103638,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        164,
+        164,
+        228,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_buff_01_start",
+      "rawKey": "firstar_buff_01_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 200,
+        "visibleFrames": 101,
+        "peak": 1.2783203125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.7881393432617188e-07
+      },
+      "crop": [
+        152,
+        160,
+        228,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_buff_02_start",
+      "rawKey": "firstar_buff_02_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 215,
+        "visibleFrames": 21,
+        "peak": 2.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        156,
+        172,
+        228,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_buff_03_start",
+      "rawKey": "firstar_buff_03_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 278,
+        "visibleFrames": 68,
+        "peak": 11.740053176879883,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        124,
+        168,
+        268,
+        224
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_01_buff",
+      "rawKey": "firstar_skill_01_buff",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 115,
+        "peak": 1.1845703125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        176,
+        176,
+        208,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_01_range",
+      "rawKey": "firstar_skill_01_range",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 45,
+        "visibleFrames": 25,
+        "peak": 5.814453125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        104,
+        148,
+        272,
+        252
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_02_range",
+      "rawKey": "firstar_skill_02_range",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 104,
+        "visibleFrames": 85,
+        "peak": 4.030655860900879,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        152,
+        160,
+        232,
+        272
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 3.5,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_02_range_02",
+      "rawKey": "firstar_skill_02_range_02",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 1.1455078125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 0.0
+      },
+      "crop": [
+        168,
+        180,
+        216,
+        220
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_02_start",
+      "rawKey": "firstar_skill_02_start",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 68,
+        "visibleFrames": 43,
+        "peak": 2.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        160,
+        164,
+        228,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/firstar_skill_02_trail",
+      "rawKey": "firstar_skill_02_trail",
+      "sourceBundle": "battle/prefabs/effects/firstar.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 62,
+        "visibleFrames": 25,
+        "peak": 1.1767578125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.4901161193847656e-08
+      },
+      "crop": [
+        192,
+        184,
+        220,
+        208
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/mslime_attack_01_hit",
+      "rawKey": "mslime_attack_01_hit",
+      "sourceBundle": "battle/prefabs/effects/mslime.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 20,
+        "visibleFrames": 16,
+        "peak": 1.1533203125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.960464477539063e-08
+      },
+      "crop": [
+        148,
+        148,
+        224,
+        248
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/mslime_attack_01_trail",
+      "rawKey": "mslime_attack_01_trail",
+      "sourceBundle": "battle/prefabs/effects/mslime.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 119,
+        "peak": 0.3876953125,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        172,
+        180,
+        212,
+        216
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snmage_attack_01_hit",
+      "rawKey": "snmage_attack_01_hit",
+      "sourceBundle": "battle/prefabs/effects/snmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 26,
+        "visibleFrames": 20,
+        "peak": 4.624554634094238,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 3.5762786865234375e-07
+      },
+      "crop": [
+        148,
+        148,
+        244,
+        240
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snmage_attack_01_start",
+      "rawKey": "snmage_attack_01_start",
+      "sourceBundle": "battle/prefabs/effects/snmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 84,
+        "visibleFrames": 55,
+        "peak": 5.401957988739014,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 4.76837158203125e-07
+      },
+      "crop": [
+        176,
+        152,
+        260,
+        236
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snmage_attack_01_trail",
+      "rawKey": "snmage_attack_01_trail",
+      "sourceBundle": "battle/prefabs/effects/snmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 119,
+        "peak": 5.676696300506592,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 6.556510925292969e-07
+      },
+      "crop": [
+        164,
+        172,
+        216,
+        232
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snmage_skill_01_buff",
+      "rawKey": "snmage_skill_01_buff",
+      "sourceBundle": "battle/prefabs/effects/snmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 120,
+        "visibleFrames": 120,
+        "peak": 2.3843994140625,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 5.364418029785156e-07
+      },
+      "crop": [
+        164,
+        172,
+        228,
+        228
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snmage_skill_01_start",
+      "rawKey": "snmage_skill_01_start",
+      "sourceBundle": "battle/prefabs/effects/snmage.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 84,
+        "visibleFrames": 75,
+        "peak": 5.866693019866943,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 7.152557373046875e-07
+      },
+      "crop": [
+        152,
+        120,
+        264,
+        244
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/snslime_die_01_start",
+      "rawKey": "snslime_die_01_start",
+      "sourceBundle": "battle/prefabs/effects/snslime.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 110,
+        "visibleFrames": 103,
+        "peak": 9.358930587768555,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.1920928955078125e-06
+      },
+      "crop": [
+        136,
+        160,
+        240,
+        276
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/sotisp_attack_01_hit",
+      "rawKey": "sotisp_attack_01_hit",
+      "sourceBundle": "battle/prefabs/effects/sotisp.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 26,
+        "peak": 4.0,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 2.384185791015625e-07
+      },
+      "crop": [
+        160,
+        168,
+        224,
+        228
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": -1,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Full calculated one-shot particles plus 0.15s transparent tail.",
+      "beamReferenceLength": null
+    },
+    {
+      "key": "monster/sotisp_attack_01_trail",
+      "rawKey": "sotisp_attack_01_trail",
+      "sourceBundle": "battle/prefabs/effects/sotisp.ab",
+      "captureDriver": "NativeCompositeJobs explicit particle clock",
+      "nativeReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 35,
+        "visibleFrames": 22,
+        "peak": 0.8039230108261108,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "maxTransmissionError": 1.1920928955078125e-07
+      },
+      "crop": [
+        152,
+        184,
+        200,
+        212
+      ],
+      "nativeToGame": 1.0,
+      "explicitOwnerStop": 0.5,
+      "nativeWarmup": 0,
+      "loopAdaptation": "Native particles and UVs; caller supplies finite ownership/StopEmitting. Sustained clips repeat a sampled native state; not original full-client script.",
+      "beamReferenceLength": null
+    }
+  ]
+}

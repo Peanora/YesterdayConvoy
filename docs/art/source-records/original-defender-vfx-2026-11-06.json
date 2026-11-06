@@ -1,0 +1,574 @@
+{
+  "date": "2026-11-06",
+  "version": "26-10-29-15-36-11-33649006",
+  "status": "Runtime imported; original source/shader sampled; full integration PlayMode/Player checks are recorded in QA after execution.",
+  "author": "Arknights original rights holders; individual effect artists not identified",
+  "rights": "Original Hypergryph proprietary media; source acquisition and user import/upload approval do not constitute open redistribution permission.",
+  "scope": "22 already-skilled defenders via dedicated14 + shared8 directors; no new skills or balance changes",
+  "originalPackages": [
+    {
+      "name": "battle/prefabs/effects/sbell2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_sbell2.dat",
+      "sourceSHA256": "96d67b5675e1419ed7d87f68e13464c5724816b6ee82c11faf9af25da360c4c7",
+      "bytes": 1769609
+    },
+    {
+      "name": "battle/prefabs/effects/yu.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_yu.dat",
+      "sourceSHA256": "62d7aa295f03ffa156a5a4fd59a1abc56d3bff3414f5b4ae87177700a612ea2c",
+      "bytes": 1554990
+    },
+    {
+      "name": "battle/prefabs/effects/mlynar.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_mlynar.dat",
+      "sourceSHA256": "e345ac45857f284069b65165a54bc9744f46dfd2ce744fabd85f15d7d9582da9",
+      "bytes": 1691914
+    },
+    {
+      "name": "battle/prefabs/effects/whitw2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_whitw2.dat",
+      "sourceSHA256": "dfd473ed8c918a1a112e7467b839d92df7196c798ec875c4d41c006a15128ca3",
+      "bytes": 1751813
+    },
+    {
+      "name": "battle/prefabs/effects/demkni.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_demkni.dat",
+      "sourceSHA256": "cfab1ff8f1b43a5e0929f92e30fefa4e0035216be853b3be31884f5a95584b95",
+      "bytes": 1183079
+    },
+    {
+      "name": "battle/prefabs/effects/wang.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_wang.dat",
+      "sourceSHA256": "2e78dbe4bd284087ea07b3ab87407db741ea8709e69e3738539efd3e14f7bf55",
+      "bytes": 287976
+    },
+    {
+      "name": "battle/prefabs/effects/monstr.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_monstr.dat",
+      "sourceSHA256": "e300231905773bfb388fe7d10c664b048e40368ee587eee3fe2ce10b42209556",
+      "bytes": 1355689
+    },
+    {
+      "name": "battle/prefabs/effects/angel2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_angel2.dat",
+      "sourceSHA256": "6f99368aff7e65139b7b0513303872eec0d12ee51df9249671916980d97a732f",
+      "bytes": 1495681
+    },
+    {
+      "name": "battle/prefabs/effects/hsgma2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_hsgma2.dat",
+      "sourceSHA256": "95d4f65e9d0faf3061132a98e504b8795cbc78ecde54d56a3e04f84ba644332b",
+      "bytes": 5067321
+    },
+    {
+      "name": "battle/prefabs/effects/svash2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_svash2.dat",
+      "sourceSHA256": "0ba1db8c3b6bd1b48d1dbcb0d600db5a5d9f66973a4925149436d54baaa7dba1",
+      "bytes": 4791440
+    },
+    {
+      "name": "battle/prefabs/effects/spot.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_spot.dat",
+      "sourceSHA256": "7b5d43e39e134f77691e74f4b2a7b3d7c80c088b02d849fa595cf76378724cfc",
+      "bytes": 71517
+    },
+    {
+      "name": "battle/prefabs/effects/midn.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_midn.dat",
+      "sourceSHA256": "747632ded9b02315b2a7d122ef434201d6a84f413a73080fc8663d203630bedb",
+      "bytes": 57026
+    },
+    {
+      "name": "battle/prefabs/effects/kroos.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_kroos.dat",
+      "sourceSHA256": "2d3c91bf1c61acc66ac8de9b29926ac38ce4d578028f6127ffaafdedc337a7af",
+      "bytes": 120430
+    },
+    {
+      "name": "battle/prefabs/effects/stward.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_stward.dat",
+      "sourceSHA256": "f5cf1fe9006266f492f99a2afab634a37829bf673819a59c69f5356b261caa8b",
+      "bytes": 72134
+    },
+    {
+      "name": "battle/prefabs/effects/lava.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_lava.dat",
+      "sourceSHA256": "b189a576f0002437013512acc5b4e78801bf6d2ee53329f42cec831fbecf4330",
+      "bytes": 63859
+    },
+    {
+      "name": "battle/prefabs/effects/ansel.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_ansel.dat",
+      "sourceSHA256": "5809c1bf27750144ca46436b7c99f05db9ff1c313f923d974180ff95462cad94",
+      "bytes": 58070
+    },
+    {
+      "name": "battle/prefabs/effects/orchid.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_orchid.dat",
+      "sourceSHA256": "6ed62c49029f2629d703dd652e25b6032e84a5ba672515bc9f4761dab8b69eaf",
+      "bytes": 58805
+    },
+    {
+      "name": "battle/prefabs/effects/common.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_common.dat",
+      "md5": "7351283c4112821fbfc190ae1dd86cdf",
+      "sha256": "9ded9b434ec46fbfd584587f63f8fa071ed36e93fb49c69a124e1b15aeb76c33",
+      "bytes": 2321972
+    },
+    {
+      "name": "battle/prefabs/[uc]projectiles.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_[uc]projectiles.dat",
+      "md5": "ea64d1e051721104a9dd0a43faa40d82",
+      "sha256": "d7015e88d8839086c14b11c766367716834000c7556e09ccda79b8f5e35a887c",
+      "bytes": 1905498
+    },
+    {
+      "name": "config/buff_template_holder.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/config_buff_template_holder.dat",
+      "md5": "4f76dac60b7b9d5d9b154145f4b71340",
+      "sha256": "2fea8a8bf140d8f9505024227f32b9c038aa3f9abe591c64d1b93a8b51fd2784",
+      "bytes": 2151534
+    },
+    {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_[uc]skills.dat",
+      "sourceMD5": "e2c2a951a87cc131caed1b92f01a6fff",
+      "sourceSHA256": "79d02364b562f2bf8ba93d95e0a55a6cb0a2dd8f8534ce9c15c1d9d25f04f38a"
+    }
+  ],
+  "originalActorBindings": [
+    {
+      "artId": "D01",
+      "name": "米格鲁",
+      "characterId": "char_122_beagle",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_122_beagle.dat",
+      "sha256": "aa3063426a79e401602b91e126226917cad58f7c6c931aa1e9276e2bca392720"
+    },
+    {
+      "artId": "D03",
+      "name": "斑点",
+      "characterId": "char_284_spot",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_284_spot.dat",
+      "sha256": "b118313847413da52e8f29c898387f6ac101094c5d9f67c41fccf526846190be"
+    },
+    {
+      "artId": "D04",
+      "name": "玫兰莎",
+      "characterId": "char_208_melan",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_208_melan.dat",
+      "sha256": "1415180a6ff19d0bc1ba94be787e72cea51f8432301d77f09d54b1406aa43b09"
+    },
+    {
+      "artId": "D07",
+      "name": "克洛丝",
+      "characterId": "char_124_kroos",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_124_kroos.dat",
+      "sha256": "46d71f91a53a713641d90a7cd4e2b19d3b0b1d1c5d7b49711ba818c5e5861b57"
+    },
+    {
+      "artId": "D08",
+      "name": "史都华德",
+      "characterId": "char_210_stward",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_210_stward.dat",
+      "sha256": "22063179eb53b0767c6e125b70f117c732fb190000621e2e0df2bc1a243730d2"
+    },
+    {
+      "artId": "D09",
+      "name": "炎熔",
+      "characterId": "char_121_lava",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_121_lava.dat",
+      "sha256": "9d35a3dd7f9c0d38bb6b4a4f3368572bd63f706ff8a75bb4a15b92ceae8750e5"
+    },
+    {
+      "artId": "D10",
+      "name": "芙蓉",
+      "characterId": "char_120_hibisc",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_120_hibisc.dat",
+      "sha256": "5139124fd474d2543f51449fe3e948222887bcb5ab165a8b3a8655944e3d3c8d"
+    },
+    {
+      "artId": "D12",
+      "name": "梓兰",
+      "characterId": "char_278_orchid",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_278_orchid.dat",
+      "sha256": "2798653f5798298a07799588e132c033d2b7ad9c75e9ed914e739f90d6351731"
+    },
+    {
+      "artId": "D02",
+      "name": "卡缇",
+      "characterId": "char_209_ardign",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_209_ardign.dat",
+      "sha256": "46dca665d0381c4c613f3fea8f51730f78c333e94daf81885c28d9cf5e1e6473"
+    },
+    {
+      "artId": "D05",
+      "name": "月见夜",
+      "characterId": "char_283_midn",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_283_midn.dat",
+      "sha256": "dabab89d81236d7bd64b55b341843991d2a054a41b9b77ef72cc92db98067232"
+    },
+    {
+      "artId": "D06",
+      "name": "翎羽",
+      "characterId": "char_192_falco",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_192_falco.dat",
+      "sha256": "8461a8800c360b1d847998ea82e643dd3727a1ce0ce8d92b2c69e935140b04cd"
+    },
+    {
+      "artId": "D11",
+      "name": "安赛尔",
+      "characterId": "char_212_ansel",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_212_ansel.dat",
+      "sha256": "e4ad2386a8b7de5a7d12162bf9d354e0da9d863f99a89e8d6e33ec1d9721fd71"
+    },
+    {
+      "artId": "D21",
+      "name": "荒芜拉普兰德",
+      "characterId": "char_1038_whitw2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1038_whitw2.dat",
+      "sha256": "eb091a4a1851e0daa90ad8f2e6869e9861c78a649cef5cdc652c7ba018b88d39"
+    },
+    {
+      "artId": "D22",
+      "name": "余",
+      "characterId": "char_2026_yu",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_2026_yu.dat",
+      "sha256": "34071b840d333b945b54ce371c51ccae18ef0bfa25cbb499e7a6faf17ec5ef48"
+    },
+    {
+      "artId": "D23",
+      "name": "Mon3tr",
+      "characterId": "char_4179_monstr",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_4179_monstr.dat",
+      "sha256": "a54ec62e861d2cbe5e1cd1ea462930a1211d90726f9e49023481aadde33591d3"
+    },
+    {
+      "artId": "D24",
+      "name": "新约能天使",
+      "characterId": "char_1041_angel2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1041_angel2.dat",
+      "sha256": "57fa23f610d5ee6f3ebbfd04784b407644996e3bd107d712fdf47eb7453aa036"
+    },
+    {
+      "artId": "D25",
+      "name": "斩业星熊",
+      "characterId": "char_1044_hsgma2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1044_hsgma2.dat",
+      "sha256": "9b8ecf7ef6c5935797f47ad2f08bcba9c1388f1f1b86f6b99645f3ae34285cad"
+    },
+    {
+      "artId": "D26",
+      "name": "凛御银灰",
+      "characterId": "char_1045_svash2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1045_svash2.dat",
+      "sha256": "2088415a4bd4aac984e168646f8f94044f01337dbd1d188ef2879dd84f74f1c8"
+    },
+    {
+      "artId": "D27",
+      "name": "圣聆初雪",
+      "characterId": "char_1046_sbell2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1046_sbell2.dat",
+      "sha256": "c31f90f6ae0833db54d6da7ff51996e3c731d726657d6137a6a11a168a1855d6"
+    },
+    {
+      "artId": "D28",
+      "name": "望",
+      "characterId": "char_2027_wang",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_2027_wang.dat",
+      "sha256": "2937ef14f99b88b3a4c1af2309f9047bbdbff684c9b5c48046db1958dd74e9b5"
+    },
+    {
+      "artId": "D29",
+      "name": "塞雷娅",
+      "characterId": "char_202_demkni",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_202_demkni.dat",
+      "sha256": "7cb767cbd64aa67771607c47d691ad81fd74d6effa782c1140ed834b508b3e13"
+    },
+    {
+      "artId": "D30",
+      "name": "玛恩纳",
+      "characterId": "char_4064_mlynar",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_4064_mlynar.dat",
+      "sha256": "139d5f0799c7bda1b81d69f6affb33e584e1daf6011fd40f59cc3470d2fecc99"
+    }
+  ],
+  "runtime": {
+    "root": "Assets/StreamingAssets/OriginalCombatVfx/Defenders",
+    "encoding": "sqrt-linear-rgb-effective-alpha",
+    "clips": 114,
+    "pages": 119,
+    "frames": 6147,
+    "pngBytes": 17928306
+  },
+  "exactRuntimeEventKeys": {
+    "D03": [
+      "spot_skill_01_trail",
+      "spot_skill_01_hit",
+      "common/common_hit_01"
+    ],
+    "D05": [
+      "midn_attack_01_trail",
+      "midn_attack_01_hit",
+      "midn_skill_01_trail",
+      "midn_skill_01_hit"
+    ],
+    "D08": [
+      "stward_skill_01_trail",
+      "stward_skill_01_hit"
+    ],
+    "D09": [
+      "lava_attack_01_hit"
+    ],
+    "D11": [
+      "ansel_attack_01_trail",
+      "common/common_heal_hit_01"
+    ],
+    "D12": [
+      "orchid_attack_01_trail",
+      "orchid_attack_01_hit"
+    ],
+    "D21": [
+      "whitw2_attack_01_start",
+      "whitw2_attack_01_trail",
+      "whitw2_hit_01",
+      "whitw2_token_01",
+      "whitw2_token_hit_01",
+      "whitw2_skill_03_start_01",
+      "whitw2_skill_03_token_hit_01",
+      "whitw2_skill_03_token_trail_01",
+      "whitw2_skill_03_trail_01",
+      "whitw2_skill_03_buff_start"
+    ],
+    "D22": [
+      "yu_attack_01",
+      "yu_hit_01",
+      "yu_skill3_attack_01",
+      "yu_skill3_hit_01",
+      "yu_skill3_buff_01",
+      "yu_skill3_annex_01",
+      "yu_skill3_range_01",
+      "yu_skill3_range_01_l",
+      "yu_skill3_range_01_r",
+      "yu_skill3_range_01_l_end",
+      "yu_skill3_range_01_r_end",
+      "yu_skill3_range_01_l_u_end",
+      "yu_skill3_range_01_l_d_end",
+      "yu_skill3_range_01_r_u_end",
+      "yu_skill3_range_01_r_d_end"
+    ],
+    "D23": [
+      "monstr_attack_start_01",
+      "monstr_attack_trail",
+      "monstr_attack_hit_01",
+      "monstr_skill_03_heal",
+      "monstr_skill_03_start_01",
+      "monstr_skill_03_hit",
+      "monstr_skill_03_begin_01",
+      "monstr_skill_03_begin_02",
+      "monstr_skill_03_begin_03",
+      "monstr_skill_03_end_01",
+      "monstr_skill_03_end_02",
+      "monstr_skill_03_buff_01",
+      "monstr_skill_03_buff_02",
+      "monstr_skill_03_buff_03",
+      "monstr_skill_03_buff_04",
+      "monstr_skill_03_buff_05"
+    ],
+    "D24": [
+      "angel2_attack_loop_start_01",
+      "angel2_attack_loop_trail_01",
+      "angel2_attack_loop_hit_01",
+      "angel2_skill_3_begin_start_001",
+      "angel2_skill_3_begin_trail_01",
+      "angel2_skill_3_begin_range_01",
+      "angel2_skill_3_loop_start_01",
+      "angel2_skill_3_loop_trail_01",
+      "angel2_skill_3_loop_hit_01",
+      "angel2_skill_3_buff_01",
+      "angel2_skill_3_ground_01"
+    ],
+    "D25": [
+      "hsgma2_attack_01_start_01",
+      "hsgma2_attack_01_hit_01",
+      "hsgma2_skill_03_start_01",
+      "hsgma2_skill_03_start_02",
+      "hsgma2_skill_03_start_03",
+      "hsgma2_skill_03_start_04",
+      "hsgma2_skill_03_start_05",
+      "hsgma2_skill_03_start_06",
+      "hsgma2_skill_03_hit_01",
+      "hsgma2_skill_03_hit_01_1",
+      "hsgma2_skill_03_hit_02",
+      "hsgma2_skill_03_hit_02_1",
+      "hsgma2_skill_03_hit_02_2",
+      "hsgma2_skill_03_hit_02_3",
+      "hsgma2_skill_03_buff_01",
+      "hsgma2_skill_03_buff_02",
+      "hsgma2_skill_03_buff_03",
+      "hsgma2_skill_03_range_01",
+      "hsgma2_skill_03_range_02"
+    ],
+    "D26": [
+      "svash2_attack_start_a_01",
+      "svash2_attack_start_a_02",
+      "svash2_attack_start_b_01",
+      "svash2_attack_start_c_01",
+      "svash2_attack_hit_01",
+      "svash2_skill_03_combat_start_01",
+      "svash2_skill_03_combat_start_01_2",
+      "svash2_skill_03_combat_start_02",
+      "svash2_skill_03_buff_01",
+      "svash2_skill_03_buff_weapon_01",
+      "svash2_skill_03_deploy_01",
+      "svash2_skill_03_range_01",
+      "svash2_eagle_fly_01"
+    ],
+    "D27": [
+      "sbell2_skill_03_start_01",
+      "sbell2_skill_03_hit"
+    ],
+    "D28": [
+      "wang_skill_03_range_start",
+      "wang_skill_03_buff_02",
+      "wang_skill_03_range",
+      "wang_attack_01_start",
+      "wang_attack_01_trail",
+      "wang_attack_01_hit",
+      "wang_passive_01_start",
+      "wang_passive_01_buff",
+      "wang_passive_01_buff_02"
+    ],
+    "D29": [
+      "demkni_attack_01_hit",
+      "demkni_skill_03_range",
+      "demkni_skill_03_self",
+      "demkni_skill_03_buff",
+      "common/common_heal_hit_01"
+    ],
+    "D30": [
+      "mlynar_skill_03_buff_01",
+      "mlynar_skill_03_range_01",
+      "mlynar_skill_03_start_01",
+      "mlynar_skill_03_hit_01",
+      "mlynar_skill_03_buff_02",
+      "mlynar_skill_03_buff_03"
+    ]
+  },
+  "knownExcludedNodes": [
+    {
+      "artId": "D11",
+      "key": "defender/D11/ansel_attack_01_trail",
+      "status": "NATIVE_LAYER_NOT_AVAILABLE",
+      "reason": "Original TrailRenderer point-age playback pending verified adapter."
+    },
+    {
+      "artId": "D24",
+      "key": "defender/D24/angel2_skill_3_begin_start_001",
+      "status": "NATIVE_LAYER_NOT_AVAILABLE",
+      "reason": "Original EmptyEffect control with no visible Renderer, intentional no-op."
+    },
+    {
+      "artId": "D26",
+      "key": "defender/D26/svash2_skill_03_combat_start_01",
+      "status": "NATIVE_LAYER_NOT_AVAILABLE",
+      "reason": "Original weapon-mount TrailRenderer requires point-age/mount driver validation."
+    }
+  ],
+  "lifecycleAndProjectionAdaptations": [
+    "Native Android bundle processing copies target Windows Vulkan externally; runtime uses independent HDR baked images, not Android bundles.",
+    "Missing original game controllers are replaced only by existing actual game-event timestamps and mounts; source ParticleSystem/mesh/material/shader unchanged.",
+    "D27 complete original 1.633-second caster sequence compressed into 1.2 presentation seconds only; no wind during attack gap, no logical attack-rate change.",
+    "Field clips replay finite native captures while actual original-compatible skill state remains active; not claimed as complete original Torappu runtime.",
+    "Yu source grid children use this game unchanged +/-5.76 wall geometry; caster/target/field separate.",
+    "D21 original moving capture was widened to orthographic8 with PPU recomputed32 after zero-edge revalidation.",
+    "Original projectile +X trajectory/reference forward retained; actual projectile camera projection rotates directional bullet layers. Wolf follow-direction layer flips without rotating creature.",
+    "Yu original grid parts are intrinsic loops. Original pooled StopEmitting/outro driver is unavailable: actual rule end clears the loop and does not invent a temporal ember tail. Raw *_end prefabs are spatial end caps, not finish animation.",
+    "Ground-anchored native layers (D27 attack caster, Yu grid/caps, foot fields/auras and Wang cell markers) use shared ShowGround: the real XZ plane at the unchanged event anchor, camera-pitch inverse projection compensation for the approved apparent PPU, and original depth testing. No actor scaling, source texture repaint, hidden lift or ZTest Always. Lifted/flying projectiles, eye actors, weapon glints and body impacts remain billboards."
+  ],
+  "preserved": [
+    "All original 22 actor bodies/front-back/action sheets",
+    "D28 original chess actor",
+    "Existing damage/attack timing/route/SP/skills/map/scene/prefab/project settings"
+  ],
+  "nativeVerification": {
+    "nativeSourceClips": 143,
+    "passAfterD21EdgeRepair": 139,
+    "emptyControlOrMissingDriver": 4,
+    "allImportedReports": "PASS, supported original Vulkan shaders, no HDR clipping and zero edge pixels",
+    "sourceHdr": "sqrt(max(nativeLinearRGB,0)/hdrRange), alpha=1-transmission; additive RGB at alpha zero retained",
+    "captureCamera": [
+      0,
+      12,
+      -8
+    ],
+    "captureTarget": [
+      0,
+      0.25,
+      0
+    ],
+    "gameScale": "Native pixels-per-world-unit and projected source-origin pivot, adjusted by crop only; runtime transform scale one; D27 centered Player fixture confirmed actual shader pixels"
+  },
+  "performedChecks": {
+    "defenderEditTests": {
+      "passed": 16,
+      "total": 16,
+      "evidence": "artifacts/native-all-edit.xml"
+    },
+    "D27Player": {
+      "passed": true,
+      "changedPixels": 5467,
+      "checks": [
+        "durableFixtureDeployed=True",
+        "originalDirectorOwnsRole=True",
+        "realAttackAndNativeSprites=True",
+        "nativeShaderAndUnitScale=True",
+        "pauseFreezesGameplay=True",
+        "gpuPixelsActuallyChange=True",
+        "renderingDoesNotApplyDamage=True",
+        "restartClearsUnits=True"
+      ]
+    },
+    "fullIntegrationPlayMode": "Pending root validation at record creation; results belong to docs/QA.md"
+  },
+  "bindingNotes": [
+    "Caster keys attach to actual launched attack origin; native target effects fire only on Applied impact and cache the true observed target point.",
+    "Sustained skill attacks also derive active-at-launch from real SkillStartedAt/SkillActiveUntil; CombatShot.Empowered alone is insufficient for Yu/Lappland/Mlynar.",
+    "Original low-star skills: defense->common_ignite_defense; attack/quickattack/enchant/chant->common_ignite_attack; healing/range/Spot mode->common_ignite_support; Cardigan self heal->common_heal_hit_01. Kroos/Steward instant attacks receive no invented aura.",
+    "Lava has an original inputTargetEffect lava_attack_01_hit and common_firemagic_hit_01 impact, no original standalone projectile. Steward empowered projectile uses stward_skill_01_trail/hit, ordinary uses common magic.",
+    "Wang original actor/chess are preserved. Triggered stone marker wang_passive_01_buff_02 is original; token_wang_skill_03_hit separate burst resource was not found in the necessary source closure and no normal-hit substitute is presented as that burst.",
+    "All original actor Character._deadEffect are empty in this selected set: original Die bodies remain, no enemy_die is imposed on defenders.",
+    "Runtime known exclusions are explicit and omitted from strict prewarm; no fallback texture or source-style substitute is silently introduced."
+  ],
+  "unavailableOriginalLayers": [
+    {
+      "artId": "D28",
+      "key": "token_wang_skill_03_hit",
+      "status": "NOT_LOCATED_IN_NECESSARY_SOURCE_CLOSURE",
+      "event": "Original selected S3 stone independent explosion. Never replaced with normal wang_attack_01_hit."
+    },
+    {
+      "artId": "D28",
+      "key": null,
+      "status": "ORIGINAL_ADJACENCY_LINE_NOT_LOCATED",
+      "event": "Original client connected-stone line; old self-made chess-link has been retired, no fabricated native line."
+    }
+  ],
+  "wangRuntimeLayerRoles": [
+    {
+      "key": "wang_passive_01_start",
+      "event": "Actual new piece placement; native pulse, separate from original D28Chess body"
+    },
+    {
+      "key": "wang_passive_01_buff",
+      "event": "Native tile state marker on an actually active chess cell; source projectile effectsToTileWhenStart"
+    },
+    {
+      "key": "wang_passive_01_buff_02",
+      "event": "Actual piece trigger; exact original WangStoneHitBehaviour.triggeredEffect. Played once for the finite captured presentation window, not claimed as the missing token_wang_skill_03_hit explosion"
+    }
+  ],
+  "functionalMarkerAdaptations": [
+    "Snow accumulation ring remains a restrained gameplay/information marker keyed by actual SnowCell.Layers; it is not labeled as original snow-ground particle art.",
+    "Connected-chess active/inactive information remains in the original chess body tint and native per-cell passive marker. Original adjacency line has not been located.",
+    "Source YuS3 grid children cover the unchanged logical wall +/-5.76 extent. Skill/debuff HUD icons remain game information rather than original client graphics."
+  ]
+}

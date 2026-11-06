@@ -14,7 +14,9 @@ namespace YesterdayConvoy.Tests
         float previous;
         [SetUp]public void Setup()=>previous=Time.timeScale;
         [TearDown]public void Cleanup()=>Time.timeScale=previous;
-        static MeshRenderer[] Visible(GameObject root)=>root.GetComponentsInChildren<MeshRenderer>().Where(r=>r.enabled&&r.name.StartsWith("Yu firewall / ")).ToArray();
+        static SpriteRenderer[] Visible(GameObject root)=>root.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&
+            r.name.StartsWith("Original VFX / defender/D22/yu_skill3_range_01",StringComparison.Ordinal)).ToArray();
+        static SpriteRenderer[] GridSegments(GameObject root)=>Visible(root).Where(r=>!r.name.EndsWith("_end",StringComparison.Ordinal)).ToArray();
         [UnityTest]public IEnumerator ActualYuTrialRendersRedFireAfterGestureFreezesAndRestarts()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;Time.timeScale=0;
@@ -31,18 +33,22 @@ namespace YesterdayConvoy.Tests
                 if(i%100==0)yield return null;
             }
             Assert.That(before&&seen,Is.True,"Original gesture must precede the real skill wall.");
-            var renderers=Visible(fx.gameObject);Assert.That(renderers.Length,Is.EqualTo(6),"Layered quads are batched, not one object per flame.");
-            var body=renderers.Single(r=>r.name.EndsWith("connected fire"));var mesh=body.GetComponent<MeshFilter>().sharedMesh;
-            var oldUV=mesh.uv;c.Tick(.12f);yield return null;Assert.That(mesh.uv.SequenceEqual(oldUV),Is.False);
+            var renderers=Visible(fx.gameObject);Assert.That(renderers.Length,Is.EqualTo(14),"Twelve native grid children and two spatial end caps.");
+            Assert.That(GridSegments(fx.gameObject).Length,Is.EqualTo(12));
+            Assert.That(renderers.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"&&r.transform.localScale==Vector3.one),Is.True);
+            var body=GridSegments(fx.gameObject)[0];var priorFrame=body.sprite;c.Tick(.12f);yield return null;
+            Assert.That(body.sprite,Is.Not.SameAs(priorFrame),"The source particle capture must advance on the simulation clock.");
             var image=Capture(true);foreach(var r in renderers)r.enabled=false;var hidden=Capture(false);foreach(var r in renderers)r.enabled=true;
             int reds=image.Zip(hidden,(a,b)=>a.r>110&&a.r>a.g*1.7f&&a.r>a.b*1.5f&&a.r-b.r>20?1:0).Sum();
-            Assert.That(reds,Is.GreaterThan(100),"Actual GPU output must have visible red fire, not just correctly named meshes.");
-            c.Battle.SetPaused(true);double clock=c.Battle.Clock;var vertices=mesh.vertices;oldUV=mesh.uv;c.Tick(10);yield return null;
-            Assert.That(c.Battle.Clock,Is.EqualTo(clock));Assert.That(mesh.vertices,Is.EqualTo(vertices));Assert.That(mesh.uv,Is.EqualTo(oldUV));
+            Assert.That(reds,Is.GreaterThan(100),"Actual GPU output must have visible original red fire, not just correctly named renderers.");
+            c.Battle.SetPaused(true);double clock=c.Battle.Clock;
+            var frames=renderers.Select(r=>r.sprite).ToArray();var positions=renderers.Select(r=>r.transform.position).ToArray();
+            c.Tick(10);yield return null;Assert.That(c.Battle.Clock,Is.EqualTo(clock));
+            for(int n=0;n<renderers.Length;n++){Assert.That(renderers[n].sprite,Is.SameAs(frames[n]));Assert.That(renderers[n].transform.position,Is.EqualTo(positions[n]));}
             c.RestartBattle();yield return null;Assert.That(Visible(fx.gameObject),Is.Empty);
             c.SwitchTrial(false);yield return null;
         }
-        [UnityTest]public IEnumerator WallFollowsBothRealNormalsAndEmbersEndOnSimulationClock()
+        [UnityTest]public IEnumerator WallFollowsBothRealNormalsAndOriginalLoopsClearOnSimulationClock()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;Time.timeScale=0;
             foreach(var position in new[]{Vector3.right*2,Vector3.forward*2})
@@ -55,13 +61,20 @@ namespace YesterdayConvoy.Tests
                 {
                     b.Begin();b.TryDeploy(b.RunId,1,b.Entry);b.Advance(1.5f);yield return null;Assert.That(Visible(root),Is.Empty);
                     b.Advance(.6f);yield return null;Assert.That(b.DefenderWallActive(b.Defender),Is.True);
-                    var body=Visible(root).Single(r=>r.name.EndsWith("connected fire"));var bounds=body.GetComponent<MeshFilter>().sharedMesh.bounds;
-                    var axis=Vector3.Cross(b.Defender.WallNormal,Vector3.up);
-                    Assert.That(Vector3.Distance(bounds.center,b.DefenderWallPoint(b.Defender)),Is.LessThan(.5));
-                    Assert.That(Math.Abs(Vector3.Dot(bounds.size,axis)),Is.GreaterThan(11));
-                    b.Advance(2.1f);yield return null;Assert.That(b.DefenderWallActive(b.Defender),Is.False);Assert.That(Visible(root),Is.Not.Empty);
+                    var walls=Visible(root);Assert.That(walls.Length,Is.EqualTo(14));
+                    var center=b.DefenderWallPoint(b.Defender);var axis=Vector3.Cross(b.Defender.WallNormal,Vector3.up).normalized;
+                    // The source sprites billboard; gameplay geometry lives in their independent world attachments.
+                    var anchors=walls.Select(r=>r.transform.parent.position).ToArray();
+                    var mean=anchors.Aggregate(Vector3.zero,(a,z)=>a+z)/anchors.Length;
+                    Assert.That(Vector3.Distance(mean,center),Is.LessThan(.01));
+                    var extent=anchors.Select(p=>Vector3.Dot(p-center,axis)).ToArray();
+                    Assert.That(extent.Max()-extent.Min(),Is.EqualTo(11.52).Within(.02));
+                    Assert.That(anchors.All(p=>Math.Abs(Vector3.Dot(p-center,b.Defender.WallNormal))<.01),Is.True);
+                    // Native *_end keys are spatial caps, not a temporal ember/outro animation.
+                    // The missing original pool/StopEmitting controller is explicitly adapted by clearing this loop.
+                    b.Advance(2.1f);yield return null;Assert.That(b.DefenderWallActive(b.Defender),Is.False);Assert.That(Visible(root),Is.Empty);
                     b.Advance(1.3f);yield return null;Assert.That(Visible(root),Is.Empty);
-                    b.Restart();yield return null;Assert.That(root.GetComponentsInChildren<MeshRenderer>(),Is.Empty);
+                    b.Restart();yield return null;Assert.That(Visible(root),Is.Empty);
                     binding=null;yield return null;
                 }
                 finally{Object.Destroy(root);}
@@ -74,7 +87,7 @@ namespace YesterdayConvoy.Tests
             try
             {
                 cam.targetTexture=target;cam.rect=new Rect(0,0,1,1);cam.Render();RenderTexture.active=target;texture.ReadPixels(new Rect(0,0,1280,720),0,0);texture.Apply();
-                if(save)System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath("artifacts/yu-firewall-actual.png"),texture.EncodeToPNG());
+                if(save&&Environment.GetCommandLineArgs().Contains("-defenderVfxEvidence"))System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath("artifacts/yu-firewall-actual.png"),texture.EncodeToPNG());
                 return texture.GetPixels32();
             }
             finally{cam.targetTexture=previous;cam.rect=rect;RenderTexture.active=active;target.Release();Object.Destroy(target);Object.Destroy(texture);}

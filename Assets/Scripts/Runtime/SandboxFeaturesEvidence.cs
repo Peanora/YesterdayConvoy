@@ -20,7 +20,8 @@ namespace YesterdayConvoy
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install()
         {
-            if(!Debug.isDebugBuild||!Environment.GetCommandLineArgs().Contains("-sandboxFeaturesSmokeTest")||FindAnyObjectByType<SandboxFeaturesEvidence>()!=null)return;
+            var args=Environment.GetCommandLineArgs();
+            if(!Debug.isDebugBuild||!(args.Contains("-sandboxFeaturesSmokeTest")||args.Contains("-talulahManualRainSmokeTest"))||FindAnyObjectByType<SandboxFeaturesEvidence>()!=null)return;
             var go=new GameObject("Sandbox feature verification");DontDestroyOnLoad(go);go.AddComponent<SandboxFeaturesEvidence>();
         }
         IEnumerator Frame(string name)
@@ -63,12 +64,28 @@ namespace YesterdayConvoy
                 if(phase==TalulahPhase.Second&&!manualChecked&&c.Battle.Clock>unit.TalulahPhaseStartedAt+3&&c.Battle.IsSkillReady(unit.EntityId))
                 {
                     Check("secondPhaseManualSkill",c.Battle.TryActivateSkill(c.Battle.RunId,50001,unit.EntityId)==SkillFailure.None);
-                    c.Tick(.4f);yield return Frame("talulah-second-form-manual");manualChecked=true;
+                    c.Tick(1.25f);yield return Frame("talulah-second-form-manual");
+                    var hand=FindObjectsByType<SpriteRenderer>().FirstOrDefault(r=>r.enabled&&r.name=="Talulah native / ignite-B-caster");
+                    Check("manualBHandVisible",hand!=null);var first=hand?.sprite;
+                    c.Tick(.25f);yield return Frame("talulah-second-form-manual-progress");
+                    Check("manualBHandAnimates",hand!=null&&hand.enabled&&hand.sprite!=first);
+                    c.Battle.SetPaused(true);double clock=c.Battle.Clock;var paused=hand?.sprite;
+                    c.Tick(5);yield return null;Check("manualBHandPause",c.Battle.Clock==clock&&hand!=null&&hand.sprite==paused);
+                    c.Battle.SetPaused(false);c.Tick(.25f);yield return null;
+                    Check("manualBHandResumes",hand!=null&&hand.enabled&&hand.sprite!=paused);
+                    c.Tick(.4f);yield return Frame("talulah-second-form-manual-dissipated");
+                    Check("manualBHandEndsWhileRainContinues",!FindObjectsByType<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Talulah native / ignite-B-caster")&&
+                        c.Battle.IsSkillActionPlaying(unit)&&FindAnyObjectByType<FireRainView>().VisibleStreams>0);
+                    c.Tick(3.95f);yield return null;
+                    Check("manualBRainEndsAtSixSeconds",!c.Battle.IsSkillActionPlaying(unit)&&unit.SkillAmmo==0&&FindAnyObjectByType<FireRainView>().VisibleStreams==0);
+                    manualChecked=true;
                 }
                 if(i%10==0)yield return null;
             }
+            Check("secondPhaseManualChecked",manualChecked);
             Check("naturalTwoFallsAndFinalDeath",seen.Contains(TalulahPhase.FirstFall)&&seen.Contains(TalulahPhase.FirstRain)&&seen.Contains(TalulahPhase.Second)&&seen.Contains(TalulahPhase.FinalFall)&&seen.Contains(TalulahPhase.FinalRain)&&unit.TalulahPhase==TalulahPhase.Dead&&unit.Resolution==UnitResolution.Dead);
             Check("phaseActualDamageJournal",damageSeen);c.Tick(.4f);yield return Frame("talulah-final-death");c.Tick(2);yield return Frame("talulah-settlement");
+            if(Environment.GetCommandLineArgs().Contains("-talulahManualRainSmokeTest"))yield break;
             foreach(string scene in new[]{"ReunionTrial","SnowTrial","InfectionTrial","GuerrillaTrial","MudrockCrewTrial","HerdTrial","DeepPoolTrial","MarineTrial","SarkazTrial"})
             {
                 yield return SceneManager.LoadSceneAsync(scene);yield return null;yield return null;

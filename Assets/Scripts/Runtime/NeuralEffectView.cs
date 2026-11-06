@@ -4,91 +4,86 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
+    /// <summary>Native Seaborn layers follow actual retaliation, phase, bubble and shackle events.</summary>
     public sealed class NeuralEffectView:MonoBehaviour
     {
-        Func<ManualBattle> source;
-        Material material;
-        readonly List<LineRenderer> lines=new List<LineRenderer>();
-        int used;
-        public void Bind(Func<ManualBattle> battle){source=battle;}
-        LineRenderer Line(float width,Color color,int count)
-        {
-            if(used==lines.Count)
-            {
-                var line=new GameObject("Neural injury effect").AddComponent<LineRenderer>();line.transform.SetParent(transform,false);
-                if(material==null)material=new Material(Shader.Find("Sprites/Default"));line.sharedMaterial=material;lines.Add(line);
-            }
-            var l=lines[used++];l.enabled=true;l.sortingOrder=19010;l.widthMultiplier=width;l.startColor=l.endColor=color;l.positionCount=count;return l;
-        }
+        sealed class Impact{internal double At;internal Vector3 Position;}
+        readonly List<Impact> impacts=new List<Impact>();
+        readonly Dictionary<CorrosiveBubble,double> observedHits=new Dictionary<CorrosiveBubble,double>();
+        Func<ManualBattle> source;Func<double> presentation;ManualBattle observed;
+        OriginalCombatVfxLayer layer;int run=-1;
+        public int VisibleEffects=>layer?.VisibleCount??0;
+        public void Bind(Func<ManualBattle> battle,Func<double> presentationClock=null){source=battle;presentation=presentationClock;}
+        void Draw(string raw,double age,Vector3 pos,Camera cam,int order,bool loop=false)
+        {if(age>=0)layer.ShowGround("monster/"+raw,age,pos,cam,false,order,loop);}
         void LateUpdate()
         {
-            used=0;var b=source?.Invoke();
-            if(b!=null)
+            var b=source?.Invoke();var cam=Camera.main;
+            if(layer==null)layer=new OriginalCombatVfxLayer(transform);
+            if(observed!=b||run!=(b?.RunId??-1))
+            {layer.Clear();impacts.Clear();observedHits.Clear();observed=b;run=b?.RunId??-1;}
+            layer.Begin();
+            if(b!=null&&cam!=null)
             {
-                foreach(var pulse in b.CreeperPulses)
+                double now=presentation?.Invoke()??b.Clock;
+                foreach(var e in b.CreeperPulses)
                 {
-                    float age=(float)(b.Clock-pulse.Time);if(age<0||age>.5f)continue;
-                    float distance=.3f+Mathf.Min(1,age/.25f)*1.5f;
-                    for(int k=0;k<16;k++)
+                    Draw("enemy_dsurch_01_start",now-e.Time,e.Position,cam,24);
+                    Draw("enemy_dsurch_01_start_02",now-e.Time,e.Position,cam,25);
+                }
+                foreach(var u in b.Units)
+                {
+                    if(u.CardId!="CARD_M34"||!u.Active)continue;
+                    if(u.HarvesterPhase==HarvesterPhase.Waking)
+                        Draw("enemy_dslntc_skill_begin_buff",now-u.HarvesterPhaseStartedAt,u.Motion.Position,cam,22);
+                    else if(u.HarvesterPhase==HarvesterPhase.Combat)
+                        Draw("enemy_dslntc_buff_01",now-u.HarvesterPhaseStartedAt,u.Motion.Position,cam,22,true);
+                }
+                foreach(var e in b.Shackles)
+                {
+                    var u=b.FindUnit(e.SourceId);var d=b.FindDefender(e.TargetId);if(u==null||d==null)continue;
+                    double age=now-e.StartedAt;
+                    if(!e.Ended&&u.Active&&d.Alive&&b.DefenderShackled(d))
                     {
-                        float a=k*Mathf.PI/8;var dir=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));
-                        var spike=Line(.045f,new Color(.72f,.96f,.74f,1-age/.5f),3);
-                        spike.SetPosition(0,pulse.Position+dir*distance+Vector3.up*.25f);
-                        spike.SetPosition(1,pulse.Position+dir*(distance+.3f)+Vector3.up*.55f);
-                        spike.SetPosition(2,pulse.Position+dir*(distance+.36f)+Vector3.up*.2f);
+                        Vector3 start=u.Motion.Position+cam.transform.up*1.1f,end=d.Position+cam.transform.up*.8f;
+                        layer.Show("monster/dmage_skill_01_start",age,start,cam,false,22);
+                        layer.ShowBeam("monster/dmage_skill_01_line",age,start,end,cam,3.005432f,28,true);
+                        // Original projectile_dmage attaches this layer to the target.
+                        Draw("dmage_skill_01_buff",age,d.Position,cam,32,true);
                     }
                 }
-                if(b.EngagementEnabled&&b.CombatSettings.Effects.Harvester)
-                    foreach(var u in b.Units)
-                    {
-                        if(!u.Active||u.HarvesterPhase!=HarvesterPhase.Combat)continue;
-                        bool pulse=b.Clock-u.LastHarvesterAuraAt<.3;
-                        var aura=Line(pulse?.035f:.012f,new Color(.25f,.9f,.7f,pulse?.65f:.25f),49);
-                        for(int k=0;k<=48;k++){float a=k*Mathf.PI/24;aura.SetPosition(k,u.Motion.Position+new Vector3(Mathf.Cos(a)*2.5f,.15f,Mathf.Sin(a)*2.5f));}
-                    }
-                foreach(var cast in b.Shackles)
+                foreach(var e in b.CorrosiveBubbles)
                 {
-                    if(cast.Ended)continue;var u=b.FindUnit(cast.SourceId);var d=b.FindDefender(cast.TargetId);
-                    if(u==null||!u.Active||d==null||!b.DefenderShackled(d))continue;
-                    var up=Camera.main!=null?Camera.main.transform.up:Vector3.up;
-                    Vector3 from=u.Motion.Position+up*1.1f,to=d.Position+up*.8f;
-                    var chain=Line(.055f,new Color(.85f,.35f,1,.9f),17);
-                    for(int k=0;k<=16;k++)chain.SetPosition(k,Vector3.Lerp(from,to,k/16f)+up*((k%2==0?1:-1)*.06f));
-                    var seal=Line(.04f,new Color(.85f,.4f,1),33);
-                    var right=Camera.main!=null?Camera.main.transform.right:Vector3.right;
-                    for(int k=0;k<=32;k++){float a=k*Mathf.PI/16;seal.SetPosition(k,to+right*(Mathf.Cos(a)*.4f)+up*(Mathf.Sin(a)*.6f));}
+                    double age=now-e.StartedAt;var u=b.FindUnit(e.SourceId);
+                    if(age>=0&&age<5)
+                    {
+                        Draw("enemy_dsmant_skill_01_start",age,e.Origin,cam,24);
+                        if(u!=null&&u.Active)
+                        {
+                            Draw("enemy_dsmant_skill_01_buff",age,u.Motion.Position,cam,26,true);
+                            Draw("enemy_dsmant_skill_01_buff_02",age,u.Motion.Position,cam,27,true);
+                        }
+                        Draw("enemy_dsmant_skill_01_buff_03",age,e.Anchor,cam,28,true);
+                    }
+                    if(!double.IsNegativeInfinity(e.LastPulseAt)&&(!observedHits.TryGetValue(e,out double at)||at!=e.LastPulseAt))
+                    {
+                        observedHits[e]=e.LastPulseAt;var d=b.FindDefender(e.LastTargetId);
+                        if(d!=null)impacts.Add(new Impact{At=e.LastPulseAt,Position=d.Position});
+                    }
                 }
-                foreach(var bubble in b.CorrosiveBubbles)
+                for(int i=impacts.Count-1;i>=0;i--)
                 {
-                    float age=(float)(b.Clock-bubble.StartedAt);if(age<0||age>5.5f)continue;
-                    var lift=Camera.main!=null?Camera.main.transform.up:Vector3.up;
-                    var center=Vector3.Lerp(bubble.Origin,bubble.Anchor,Mathf.Clamp01(age/3))+lift*2.35f;
-                    var orb=Line(.055f,new Color(.6f,.85f,1,.85f),33);
-                    var up=Camera.main!=null?Camera.main.transform.up:Vector3.up;
-                    var right=Camera.main!=null?Camera.main.transform.right:Vector3.right;
-                    for(int k=0;k<=32;k++){float a=k*Mathf.PI/16;orb.SetPosition(k,center+(up*Mathf.Sin(a)+right*Mathf.Cos(a))*(.3f+.05f*Mathf.Sin(age*8)));}
-                    foreach(var offset in new[]{Vector3.zero,Vector3.left,Vector3.right,Vector3.forward,Vector3.back})
-                    {
-                        var tile=Line(.025f,new Color(.45f,.7f,1,.4f),5);var pos=bubble.Anchor+offset+Vector3.up*.14f;
-                        tile.SetPosition(0,pos+new Vector3(-.45f,0,-.45f));tile.SetPosition(1,pos+new Vector3(-.45f,0,.45f));
-                        tile.SetPosition(2,pos+new Vector3(.45f,0,.45f));tile.SetPosition(3,pos+new Vector3(.45f,0,-.45f));tile.SetPosition(4,tile.GetPosition(0));
-                    }
-                    var target=b.FindDefender(bubble.LastTargetId);
-                    if(target!=null&&b.Clock-bubble.LastPulseAt<.25)
-                    {var beam=Line(.07f,new Color(.85f,.65f,1),2);beam.SetPosition(0,center);beam.SetPosition(1,target.Position+Vector3.up*.7f);}
+                    var hit=impacts[i];double age=now-hit.At;
+                    if(age>=MonsterOriginalVfx.Duration("enemy_dsmant_skill_01_hit")){impacts.RemoveAt(i);continue;}
+                    Draw("enemy_dsmant_skill_01_hit",age,hit.Position,cam,34);
                 }
                 foreach(var d in b.Defenders)
-                {
-                    if(!d.Alive||d.NeuralUntil<=b.Clock)continue;
-                    Vector3 up=Camera.main!=null?Camera.main.transform.up:Vector3.up;
-                    Vector3 right=Camera.main!=null?Camera.main.transform.right:Vector3.right;
-                    var halo=Line(.04f,new Color(1,.86f,.25f),33);
-                    for(int k=0;k<=32;k++)
-                    {float a=k*Mathf.PI/16+(float)b.Clock*2;halo.SetPosition(k,d.Position+up*1.55f+right*(Mathf.Cos(a)*.28f)+Vector3.forward*(Mathf.Sin(a)*.18f));}
-                }
+                    if(!double.IsNegativeInfinity(d.LastNeuralBurstAt))
+                        layer.ShowGround("common/common_nerve_injury_01_hit",now-d.LastNeuralBurstAt,d.Position,cam,false,38);
             }
-            for(int i=used;i<lines.Count;i++)lines[i].enabled=false;
+            layer.End();
         }
-        void OnDestroy(){if(material!=null)Destroy(material);}
+        void OnDisable(){layer?.Clear();impacts.Clear();observedHits.Clear();}
+        void OnDestroy(){layer?.Dispose();}
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Approved front battle flipbooks, loaded from tracked StreamingAssets. No Spine runtime shipped.</summary>
+    /// <summary>Approved front battle flipbooks from classified source art or the compiled Player payload.</summary>
     public sealed class DefenderArt
     {
         public sealed class Clip

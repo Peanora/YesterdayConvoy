@@ -17,7 +17,8 @@ namespace YesterdayConvoy.Editor
         private bool playing = true;
         private double started, nextRepaint;
         private string error;
-        private static string Root => Path.Combine(Application.streamingAssetsPath, "ArcherOriginal");
+        private static string Root => ArtSourcePaths.ImageDirectory("ArcherOriginal");
+        private static string Manifest => ArtSourcePaths.Resolve("ArcherOriginal/manifest.json");
 
         [MenuItem("Yesterday Convoy/Art/M08 Archer Approved Preview")]
         public static void Open()
@@ -42,7 +43,7 @@ namespace YesterdayConvoy.Editor
         {
             GUILayout.Label("M08 普通弩手 · 已确认 V1 美术", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("卡面、待机、原地行走和射击共用同一原版模型。仅美术预览；尚未注册可玩战斗样板。", MessageType.Info);
-            if (!File.Exists(Path.Combine(Root, "manifest.json")))
+            if (!File.Exists(Manifest))
             {
                 EditorGUILayout.HelpBox("本地可选素材未安装。请按 docs/art/M08-ARCHER-INTEGRATION.md 安装，不从公共仓库自动下载原作媒体。", MessageType.Warning);
                 return;
@@ -100,7 +101,7 @@ namespace YesterdayConvoy.Editor
         // Also provides a real Unity compile/load check without opening or changing a scene.
         public static void ValidateLocalPackage()
         {
-            if (!File.Exists(Path.Combine(Root, "manifest.json"))) throw new FileNotFoundException("M08 media manifest is missing.");
+            if (!File.Exists(Manifest)) throw new FileNotFoundException("M08 media manifest is missing.");
             foreach (string key in Keys)
                 for (int i = 0; i < FrameCount; i++)
                 {

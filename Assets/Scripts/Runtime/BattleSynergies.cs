@@ -22,14 +22,33 @@ namespace YesterdayConvoy
         readonly Dictionary<string,double> shatterCooldown=new Dictionary<string,double>();
         readonly Dictionary<string,double> frozenHitEpoch=new Dictionary<string,double>();
         readonly Dictionary<string,int> synergyStars=new Dictionary<string,int>();
+        readonly HashSet<string> guerrillaMembers=new HashSet<string>(StringComparer.Ordinal);
+        IReadOnlyList<string> guerrillaMemberIds=Array.Empty<string>();
+        public IReadOnlyList<string> GuerrillaMemberIds=>guerrillaMemberIds;
+        public bool IsGuerrillaMember(string id)=>id!=null&&guerrillaMembers.Contains(id);
         public bool GuaranteedSupply {get;private set;}
         public void ConfigureSupply(){if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException();GuaranteedSupply=true;}
         public bool CompleteSupply(){if(!GuaranteedSupply||Phase!=BattlePhase.Ready)return false;Phase=BattlePhase.Won;IsPaused=false;return true;}
         bool synergyEnabled,reunionRanged;
-        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,int golemInvestment=0)
+        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,int golemInvestment=0,IEnumerable<string> extraGuerrillaMembers=null)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
-            synergyStars.Clear();foreach(var p in lineup)if(CampaignBalance.Tags(p.Id).Length>0)synergyStars[p.Id]=p.Star;
+            // Validate and materialize external enumerables before mutating any existing snapshot.
+            var pieces=lineup?.ToArray()??throw new ArgumentNullException(nameof(lineup));
+            if(pieces.Any(p=>p==null||string.IsNullOrWhiteSpace(p.Id)))throw new ArgumentException("Invalid lineup.",nameof(lineup));
+            var lineupIds=new HashSet<string>(pieces.Select(p=>p.Id),StringComparer.Ordinal);
+            var extras=new HashSet<string>(StringComparer.Ordinal);
+            foreach(string id in extraGuerrillaMembers??Enumerable.Empty<string>())
+            {
+                if(string.IsNullOrWhiteSpace(id)||!CampaignBalance.Supports(id)||!lineupIds.Contains(id))
+                    throw new ArgumentException("Extra guerrilla members must be known cards in this formation.",nameof(extraGuerrillaMembers));
+                if(!CampaignBalance.Guerrilla(id))extras.Add(id);
+            }
+            if(extras.Count>2)throw new ArgumentException("At most two non-native guerrilla kinds may be assigned.",nameof(extraGuerrillaMembers));
+            var members=pieces.Select(p=>p.Id).Where(id=>CampaignBalance.Guerrilla(id)||extras.Contains(id)).Distinct(StringComparer.Ordinal).ToArray();
+            synergyStars.Clear();foreach(var p in pieces)if(CampaignBalance.Tags(p.Id).Length>0)synergyStars[p.Id]=p.Star;
+            guerrillaMembers.Clear();foreach(string id in members)guerrillaMembers.Add(id);
+            guerrillaMemberIds=Array.AsReadOnly(members);
             int reunion=synergyStars.Keys.Count(CampaignBalance.Reunion),snow=synergyStars.Keys.Count(CampaignBalance.Snow);
             ReunionTier=reunion>=6?6:reunion>=4?4:reunion>=2?2:0;SnowTier=snow>=5?5:snow>=2?2:0;
             reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience,golemInvestment);ConfigureRemainingSynergies(contract,adaptation,secondAdaptation,marineExperience);ResetSynergies();
@@ -74,6 +93,7 @@ namespace YesterdayConvoy
             {
                 float before=d.Health;DamageDefender(d,attack,CombatDamageType.Arts,true);ShatterDamage+=before-d.Health;ev.Hits++;
             }
+            OnSnowstormShatter();
         }
     }
 }

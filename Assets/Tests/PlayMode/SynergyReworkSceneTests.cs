@@ -34,10 +34,9 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator StormWeatherStillRendersWhenFrozenTargetsCannotReceiveMoreControl()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(0));c.StartLoopNextBattle();c.Battle.Begin();
-            var r=c.Battle.TryDeployRole(c.Battle.RunId,900,c.Battle.Entry,"CARD_M14");var u=c.Battle.FindUnit(r.EntityId);
-            for(int i=0;i<250&&!c.Battle.IsSkillReady(u.EntityId);i++)c.Tick(.1f);
+            yield return SnowstormSceneTests.TriggerThreeShatters(c);
             foreach(var d in c.Battle.Defenders){c.Battle.TryApplyCold(d.EntityId,10);c.Battle.TryApplyCold(d.EntityId,10);}
-            Assert.That(c.Battle.TryActivateSkill(c.Battle.RunId,901,u.EntityId),Is.EqualTo(SkillFailure.None));c.Tick(.7f);yield return null;yield return null;
+            c.Tick(.7f);yield return null;yield return null;
             Assert.That(c.Battle.SnowstormPulses.Count,Is.EqualTo(1));Assert.That(c.Battle.SnowstormPulses[0].Targets.Count,Is.EqualTo(c.Battle.Defenders.Count));
             var view=c.GetComponent<FrostSealView>();Assert.That(view.VisibleEffects,Is.GreaterThan(0));
             var camera=Camera.main;var prior=camera.targetTexture;var target=new RenderTexture(640,360,24);target.Create();camera.targetTexture=target;

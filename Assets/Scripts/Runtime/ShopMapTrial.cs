@@ -96,7 +96,7 @@ namespace YesterdayConvoy
             if(shopCoin==null)
             {
                 shopCoin=new Texture2D(2,2,TextureFormat.RGBA32,false);
-                shopCoin.LoadImage(File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath,"ShopTrial/originium.png")));
+                shopCoin.LoadImage(File.ReadAllBytes(ArtSourcePaths.Resolve("ShopTrial/originium.png")));
             }
             if(shopStar==null)shopStar=CreateShopStar();EnsureShopAura();
             if(shopFade==null)
@@ -112,6 +112,7 @@ namespace YesterdayConvoy
         void SyncShopDeck(bool autoFill=true,bool newStage=false)
         {
             if(shop==null||!newStage&&(Battle.Phase!=BattlePhase.Ready||Loop!=null&&!Loop.CanShop))return;
+            PruneGuerrillaTransfers();
             shopLineup.RemoveAll(id=>!shop.Bench.Any(p=>p.Id==id));
             if(autoFill)foreach(var piece in shop.Bench)
                 if(shopLineup.Count<shop.Level&&!shopLineup.Contains(piece.Id))shopLineup.Add(piece.Id);
@@ -123,6 +124,7 @@ namespace YesterdayConvoy
             Camera.main.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);
             FrameShopMap();
             SyncShopBenchModels();
+            RefreshInfectionChoicePrompt();
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
@@ -180,7 +182,7 @@ namespace YesterdayConvoy
         public void LeaveShopTrial()
         {
             activeSynergyTrial=null;Loop=null;
-            CancelShopDrag();ClearShopBenchModels();shop=null;shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
+            CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
             ReturnToMonsterTests();if(shopMapCopy!=null){Destroy(shopMapCopy);shopMapCopy=null;}
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)

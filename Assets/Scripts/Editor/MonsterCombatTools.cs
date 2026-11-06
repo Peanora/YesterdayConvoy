@@ -144,7 +144,7 @@ namespace YesterdayConvoy.Editor
             if(level==null || !level.Card.HasFrameAnimation) throw new InvalidOperationException(task+" configuration/local art missing.");
             _=level.Snapshot();
             var settings=level.Engagement.Snapshot();
-            if(settings.HasSkill && !(task=="M14" && settings.FrostSeal && File.Exists("Assets/StreamingAssets/MonsterCombatArt/M14/ExtraClips/manifest.json"))) throw new InvalidOperationException("Unexpected active skill.");
+            if(settings.HasSkill && !(task=="M14" && settings.FrostSeal && File.Exists(ArtSourcePaths.Resolve("MonsterCombatArt/M14/ExtraClips/manifest.json")))) throw new InvalidOperationException("Unexpected active skill.");
             UnitConfigurationTools.ValidateProject();Debug.Log("MONSTER_CONFIGURATION_PASS: "+task);
         }
         private static T Create<T>(string path) where T:ScriptableObject

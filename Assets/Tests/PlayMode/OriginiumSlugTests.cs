@@ -75,7 +75,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Lost));Assert.That(c.SettlementVisible,Is.False);
             Assert.That(c.ViewCount,Is.EqualTo(1));double clock=c.Battle.Clock;
             c.Tick(.2f);yield return null;Assert.That(c.ViewCount,Is.EqualTo(1));Assert.That(c.SettlementVisible,Is.False);
-            c.Tick(.31f);yield return null;Assert.That(c.ViewCount,Is.Zero);Assert.That(c.SettlementVisible,Is.True);
+            c.Tick(.31f);yield return null;Assert.That(c.ViewCount,Is.Zero);
+            Assert.That(c.SettlementVisible,Is.False,"The body can finish while the independent original death particles remain.");
+            c.Tick((float)System.Math.Max(0,c.CombatView.NativeEffectsUntil-c.PresentationClock)+.05f);yield return null;
+            Assert.That(c.SettlementVisible,Is.True);
             Assert.That(c.Battle.Clock,Is.EqualTo(clock),"Post-battle death presentation must not tick combat.");
             c.RestartBattle();Assert.That(c.SettlementVisible,Is.False);Assert.That(c.PresentationClock,Is.Zero);
         }

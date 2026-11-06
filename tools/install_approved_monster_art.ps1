@@ -29,8 +29,11 @@ foreach ($taskName in @('M02','M03','M04','M05')) {
     $copies += @{ input=(Join-Path $packageRoot 'manifest.json'); relative=($taskName+'/manifest.json') }
 }
 # Validate all packages before any writes; only fixed known relative paths are copied.
-$destinationRoot = Join-Path (Split-Path -Parent $PSScriptRoot) 'Assets/StreamingAssets/ApprovedMonsterArt'
+$projectRoot = Split-Path -Parent $PSScriptRoot
+$imageRoot = Join-Path $projectRoot 'Assets/Art/Characters/Monsters/Previews/ApprovedMonsterArt'
+$manifestRoot = Join-Path $projectRoot 'Assets/Data/ArtCatalogs/ApprovedMonsterArt'
 foreach ($copy in $copies) {
+    $destinationRoot = if ([IO.Path]::GetExtension($copy.relative) -eq '.json') { $manifestRoot } else { $imageRoot }
     $outputFile = Join-Path $destinationRoot $copy.relative
     New-Item -ItemType Directory -Path (Split-Path -Parent $outputFile) -Force | Out-Null
     Copy-Item -LiteralPath $copy.input -Destination $outputFile -Force

@@ -67,7 +67,7 @@
     "TX_FlowerSea_plant_N.png"
   ],
   "tool": "UnityPy existing local cp313 + AK LZ4 layout adapter (MooncellWiki/UnityPy 781badde6d636f101279fef76f461bb8dd0e1ffc; MIT); Unity 6000.6.5f1",
-  "rights": "Arknights media belongs to its respective rights holders; redistribution/commercial media license not verified. MIT parser license does not grant media rights. User-requested local game integration; no public upload performed.",
+  "rights": "Arknights media belongs to its respective rights holders; redistribution/commercial media license not verified. MIT parser license does not grant media rights. User explicitly requested upload of this game integration to the specified repository and creation of a PR; this authorization is not a rights-holder license.",
   "adaptations": [
     "Extract static-batch renderer submesh ranges from source scene, preserve original UVs and normals, rotate source coordinates into project Y-up",
     "Rearrange original meshes over approved 17x14 layout; high platforms scaled to .72",
@@ -107,5 +107,12 @@
     "blueCount": 2,
     "exportedPartsPerGate": 4,
     "compatibility": "Original mesh/UV/vertex colors and textures; compatible vertex-color alpha/additive shader. Fixed mesh markers only; ambient particles and animation not ported."
+  },
+  "publication": {
+    "authorizedByUser": true,
+    "repository": "git@github.com:Peanora/YesterdayConvoy.git",
+    "branch": "codex/blackforest-crossing",
+    "pullRequest": "https://github.com/Peanora/YesterdayConvoy/pull/92",
+    "scope": "Map source code and accompanying imported native map/gate assets and meta; no raw bundles, executables or caches."
   }
 }

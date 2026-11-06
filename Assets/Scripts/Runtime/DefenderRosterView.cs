@@ -22,7 +22,7 @@ namespace YesterdayConvoy
                 r.transform.SetParent(transform,false); r.sharedMaterial=material;
                 if(owner.TacticalMapActive)ActorGrounding.Attach(r);
                 LineRenderer ring=null;
-                if(d.Settings.Skill.Enabled)
+                if(d.Settings.Skill.Enabled&&!DefenderVfxArt.SupportsArtId(d.Settings.ArtId))
                 {
                     if(skillMaterial==null)skillMaterial=new Material(Shader.Find("Sprites/Default"));
                     ring=new GameObject("Defender skill feedback",typeof(LineRenderer)).GetComponent<LineRenderer>();ring.transform.SetParent(transform,false);
@@ -87,10 +87,10 @@ namespace YesterdayConvoy
                 {
                     bool healing=d.Settings.Skill.Kind==DefenderSkillKind.CardiganRecovery||d.Settings.Skill.Kind==DefenderSkillKind.AnselRange||d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode||d.Settings.Skill.Kind==DefenderSkillKind.HibiscusHealing;
                     Color color=healing?new Color(.3f,1,.6f):d.Settings.Skill.Kind==DefenderSkillKind.MidnightEnchant?new Color(.65f,.5f,1):new Color(1,.8f,.2f);
-                    v.Skill.enabled=!DefenderVfxArt.Supports(d.Settings.Skill.Kind)&&d.Alive&&(b.DefenderSkillActive(d)||b.Clock-d.SkillStartedAt<.7);
+                    v.Skill.enabled=!DefenderVfxArt.SupportsArtId(d.Settings.ArtId)&&d.Alive&&(b.DefenderSkillActive(d)||b.Clock-d.SkillStartedAt<.7);
                     v.Skill.startColor=v.Skill.endColor=color;v.Skill.sortingOrder=r.sortingOrder+1;
                     for(int i=0;i<40;i++){float a=i*Mathf.PI*2/40;v.Skill.SetPosition(i,d.Position+new Vector3(Mathf.Cos(a)*.48f,.035f,Mathf.Sin(a)*.48f));}
-                    if(b.DefenderSkillActive(d)&&!DefenderVfxArt.Supports(d.Settings.Skill.Kind))r.color=Color.Lerp(r.color,color,.12f);
+                    if(b.DefenderSkillActive(d)&&!DefenderVfxArt.SupportsArtId(d.Settings.ArtId))r.color=Color.Lerp(r.color,color,.12f);
                 }
             }
         }

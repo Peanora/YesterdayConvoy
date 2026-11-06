@@ -2,7 +2,9 @@
 
 2026-11-06树海地图：新增 `Assets/Scenes/BlackForestCrossing.unity`，共16个保存场景，由GameSceneCatalog自动纳入构建。17×14地形、三红两蓝、根系与三种视觉特殊地面直接保存在场景；从怪物测试选择进入“树海交错回廊 · 地形试走”。本轮无守军，不替换既有挑战地图，编辑与操作见[树海地图说明](BLACK_FOREST_CROSSING.md)。
 
-2026-11-06当前保存场景总数15：原Campaign、BattleShop、MonsterTrial、SynergyTrial、MudrockTrial；新增TalulahPhaseTrial，以及Assets/Scenes/SynergyTrials下9个专项。全部由GameSceneCatalog统一进入构建。专项源配置在Assets/Data/SynergyTrials，塔露拉守军在Assets/Data/Trials。新增场景沿用保存地形副本，可独立编辑，不在Play重建地图；具体入口和修改方法见DEDICATED_SYNERGY_TRIALS.md。下文旧入口数量属于目录迁移初版记录。
+2026-11-06资源分类整理：原StreamingAssets运行原图已迁入下表的Art分类；JSON清单和来源记录移入`Assets/Data/ArtCatalogs`。工程内StreamingAssets只留说明，Windows构建时自动收集运行清单与预处理纹理到Player的StreamingAssets。逻辑包名、原图内容和GUID保留；这不表示同意删除早期美术。
+
+2026-11-06树海地图加入前保存场景总数15（加入树海后16）：原Campaign、BattleShop、MonsterTrial、SynergyTrial、MudrockTrial；新增TalulahPhaseTrial，以及Assets/Scenes/SynergyTrials下9个专项。全部由GameSceneCatalog统一进入构建。专项源配置在Assets/Data/SynergyTrials，塔露拉守军在Assets/Data/Trials。新增场景沿用保存地形副本，可独立编辑，不在Play重建地图；具体入口和修改方法见DEDICATED_SYNERGY_TRIALS.md。下文旧入口数量属于目录迁移初版记录。
 
 2026-11-03 · 人类确认。日常只打开 `E:/珍贵资料/昨日圆车` 这一个Unity工程，不要把Git工作目录、试玩构建目录当作多个游戏工程来回切换。分支与PR用于协作，不能代替清晰的Assets目录。
 
@@ -20,17 +22,17 @@
 | 目录 | 内容 |
 | --- | --- |
 | Assets/Scenes | 所有正式地图场景，每张地图一份独立.unity |
-| Assets/Art/Characters | 人物与怪物的Unity导入资源 |
+| Assets/Art/Characters | 人物与怪物；Defenders/Flipbooks和Monsters/Flipbooks为守军/怪物动作图集，Boss/TalulahOriginal及OriginiumSlugOriginal为独立原版动作包 |
 | Assets/Art/Environment | 地图纹理、地形配套材质与网格 |
 | Assets/Art/Cards、UI、VFX、Materials | 卡面、界面、特效、共用材质/Shader |
 | Assets/Audio、Fonts | 音频与字体 |
 | Assets/Prefabs | 可复用对象；Resources/Maps保存已制作地图的共享预制资源 |
-| Assets/Data | 卡牌、守军、地图、技能等配置，Resources内保留稳定加载名 |
+| Assets/Data | 卡牌、守军、地图、技能等配置；ArtCatalogs按逻辑包保存动画/特效JSON清单和来源记录；Resources内保留稳定加载名 |
 | Assets/Scripts/Runtime、Editor | 运行脚本、编辑器工具，分别保留程序集边界 |
 | Assets/Tests | EditMode与PlayMode测试，不包含其他可玩地图场景 |
-| Assets/StreamingAssets | 现有逐帧动画原始运行图集、清单等；这是Unity专用目录，不是第二套项目 |
+| Assets/StreamingAssets | 仅说明文件；Windows Player中的同名目录由构建工具生成，不再存放工程源图集 |
 
-角色在StreamingAssets中的已跟踪动画继续保留，避免无关改变加载格式。使用运行图集的人应从Data角色配置和来源记录定位，不复制同一套资源。
+角色PNG按角色分类保存在Art，特效在Art/VFX/OriginalCombat与Art/VFX/Skills/Talulah/Unbound，商店源石图在Art/UI/Shop。`ArtSourcePaths`把稳定逻辑名解析为编辑器源路径或Player路径；清单内页名、动作时序和Library/PreparedArt缓存键保持。使用运行图集的人应从Data角色配置、ArtCatalogs和来源记录定位，不复制同一套资源。首次导入会生成正常TextureImporter预览；实际动作仍读原PNG或预处理纹理，详情见[角色加载说明](ART_LOADING.md)。
 
 ## 新地图必须遵守
 
