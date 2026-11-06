@@ -116,11 +116,12 @@ namespace YesterdayConvoy
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]static void Install()
         {
             if(started||!Debug.isDebugBuild||!Environment.GetCommandLineArgs().Contains("-herdSpiritSmokeTest"))return;
+            Debug.Log("HERD_SPIRIT_DRIVER_INSTALL");
             started=true;var go=new GameObject("Herd spirit Player verification");DontDestroyOnLoad(go);go.AddComponent<HerdSpiritSmokeDriver>();
         }
         IEnumerator LoadAndVerify(string directory)
         {
-            Application.runInBackground=true;yield return null;yield return SceneManager.LoadSceneAsync("HerdTrial");
+            Application.runInBackground=true;Debug.Log("HERD_SPIRIT_DRIVER_LOADING");yield return null;yield return SceneManager.LoadSceneAsync("HerdTrial");
             double deadline=Time.realtimeSinceStartupAsDouble+600;ManualBattleController controller=null;
             while(Time.realtimeSinceStartupAsDouble<deadline)
             {
@@ -133,6 +134,7 @@ namespace YesterdayConvoy
         }
         IEnumerator Start()
         {
+            Debug.Log("HERD_SPIRIT_DRIVER_START");
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-demoEvidenceDir");
             string directory=at>=0&&at+1<args.Length?args[at+1]:Path.GetFullPath("artifacts/herd-spirit-player");Directory.CreateDirectory(directory);
             var stack=new Stack<IEnumerator>();stack.Push(LoadAndVerify(directory));
