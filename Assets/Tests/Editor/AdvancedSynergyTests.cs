@@ -25,11 +25,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(rows.Single(r=>r.Name=="萨卡兹").Count,Is.EqualTo(2));Assert.That(rows.Single(r=>r.Name=="萨卡兹").Implemented,Is.True);
             Assert.That(rows.Any(r=>r.Name=="雪怪小队"),Is.False);Assert.That(rows.All(r=>!string.IsNullOrEmpty(r.Effect)),Is.True);
         }
-        [Test]public void FortyTwoCardsIncludeApprovedNativeBossesAndKeepTags()
+        [Test]public void ApprovedRosterIncludesSilverWolfAndKeepsBossTags()
         {
-            Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(42));
-            Assert.That(CampaignBalance.Profiles.Count(p=>p.Value.Cost==5),Is.EqualTo(7));
-            Assert.That(CampaignBalance.Supports("CARD_SILVER_WOLF"),Is.False);
+            Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(43));
+            Assert.That(CampaignBalance.Profiles.Count(p=>p.Value.Cost==5),Is.EqualTo(8));
+            Assert.That(CampaignBalance.Profiles[SilverWolfCombat.CardId].Cost,Is.EqualTo(5));
             Assert.That(CampaignBalance.Supports("CARD_M20"));
             Assert.That(CampaignBalance.Tags("CARD_M25"),Is.EqualTo(new[]{"牧群","整合运动"}));
             Assert.That(CampaignBalance.Supports("CARD_M32"));

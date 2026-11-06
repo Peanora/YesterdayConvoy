@@ -37,9 +37,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.Units.Any(u=>u.CardId=="CARD_M27"),Is.True);Assert.That(c.Battle.DP,Is.EqualTo(93));
             double clock=c.Battle.Clock;c.Tick(1);Assert.That(c.Battle.Clock,Is.EqualTo(clock));c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator ThirtySixCardPoolAndFourConstructionPresetsAreReachable()
+        [UnityTest]public IEnumerator CampaignPoolAndFourConstructionPresetsAreReachable()
         {
-            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(7));
+            yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));Assert.That(c.Shop.Roles.Count(r=>r.Cost==5),Is.EqualTo(8));
+            Assert.That(c.Shop.Definition(SilverWolfCombat.CardId).Cost,Is.EqualTo(5));
+            Assert.That(c.Shop.Available(SilverWolfCombat.CardId)+c.Shop.Offers.Count(id=>id==SilverWolfCombat.CardId),Is.EqualTo(9));
             Assert.That(c.SetSandboxRoster(1));Assert.That(c.Battle.InfectionTier,Is.EqualTo(6));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M04"));
             Assert.That(c.SetSandboxRoster(2));Assert.That(c.Battle.GuerrillaTier,Is.EqualTo(6));
             Assert.That(c.SetSandboxRoster(3));Assert.That(c.Battle.MudrockTier,Is.EqualTo(2));Assert.That(c.Shop.Bench.Any(p=>p.Id=="CARD_M26"));

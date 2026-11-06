@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator ApprovedLeadersHaveRealClipsAndMudrockKeepsCaptureInThePool()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(10));
-            Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Battle.GolemStage,Is.EqualTo(4));Assert.That(c.Battle.MudrockTier,Is.EqualTo(5));
+            Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));Assert.That(c.Battle.GolemStage,Is.EqualTo(4));Assert.That(c.Battle.MudrockTier,Is.EqualTo(5));
             Assert.That(c.Battle.Gramophones.Count,Is.EqualTo(3));Assert.That(Object.FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Length,Is.EqualTo(3));
             Assert.That(c.Battle.Defenders.Count,Is.EqualTo(6));Assert.That(c.Battle.Defenders.All(d=>d.Settings.Skill.Enabled));
             foreach(string id in new[]{"CARD_M42","CARD_M43"})

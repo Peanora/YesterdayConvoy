@@ -25,7 +25,7 @@ namespace YesterdayConvoy.Tests
         static void Replay(ManualBattleController c)=>typeof(ManualBattleController).GetMethod("ReplaySandbox",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c,null);
         static void AssertPool(ManualBattleController c)
         {
-            Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Shop.UnlimitedGold,Is.True);
+            Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));Assert.That(c.Shop.UnlimitedGold,Is.True);
             foreach(var role in c.Shop.Roles)
             {
                 int owned=c.Shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>p.Star==3?9:p.Star==2?3:1);

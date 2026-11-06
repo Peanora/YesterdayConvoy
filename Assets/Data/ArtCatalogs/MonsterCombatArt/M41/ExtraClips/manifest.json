@@ -1,0 +1,352 @@
+{
+  "version": 1,
+  "task": "M41",
+  "cardId": "CARD_M41",
+  "ppu": 66.95,
+  "referenceSpeed": 0.365,
+  "height": 2.15,
+  "attackContact": 0.8,
+  "clips": [
+    {
+      "key": "extra_transform",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_transform",
+      "count": 86,
+      "duration": 1.43,
+      "fps": 60.13986,
+      "loop": false,
+      "cellWidth": 240,
+      "cellHeight": 208,
+      "columns": 8,
+      "pivotX": 0.4666666666666667,
+      "pivotY": 0.1298076923076923,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_transform-00.png",
+          "count": 72,
+          "width": 1920,
+          "height": 1872
+        },
+        {
+          "file": "extra_transform-01.png",
+          "count": 14,
+          "width": 1920,
+          "height": 416
+        }
+      ]
+    },
+    {
+      "key": "extra_fly",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_fly",
+      "count": 72,
+      "duration": 1.2,
+      "fps": 60.0,
+      "loop": true,
+      "cellWidth": 200,
+      "cellHeight": 144,
+      "columns": 10,
+      "pivotX": 0.66,
+      "pivotY": 0.02083333333333337,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_fly-00.png",
+          "count": 72,
+          "width": 2000,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "extra_hover",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_hover",
+      "count": 72,
+      "duration": 1.2,
+      "fps": 60.0,
+      "loop": true,
+      "cellWidth": 148,
+      "cellHeight": 184,
+      "columns": 13,
+      "pivotX": 0.6148648648648649,
+      "pivotY": 0.03260869565217395,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_hover-00.png",
+          "count": 72,
+          "width": 1924,
+          "height": 1104
+        }
+      ]
+    },
+    {
+      "key": "extra_sword",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_sword",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 224,
+      "cellHeight": 240,
+      "columns": 9,
+      "pivotX": 0.4107142857142857,
+      "pivotY": 0.025000000000000022,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_sword-00.png",
+          "count": 72,
+          "width": 2016,
+          "height": 1920
+        },
+        {
+          "file": "extra_sword-01.png",
+          "count": 66,
+          "width": 2016,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_bomb",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_bomb",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 248,
+      "cellHeight": 240,
+      "columns": 8,
+      "pivotX": 0.4717741935483871,
+      "pivotY": 0.025000000000000022,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_bomb-00.png",
+          "count": 64,
+          "width": 1984,
+          "height": 1920
+        },
+        {
+          "file": "extra_bomb-01.png",
+          "count": 64,
+          "width": 1984,
+          "height": 1920
+        },
+        {
+          "file": "extra_bomb-02.png",
+          "count": 10,
+          "width": 1984,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "extra_bean",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_bean",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 220,
+      "cellHeight": 240,
+      "columns": 9,
+      "pivotX": 0.41818181818181815,
+      "pivotY": 0.025000000000000022,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "extra_bean-00.png",
+          "count": 72,
+          "width": 1980,
+          "height": 1920
+        },
+        {
+          "file": "extra_bean-01.png",
+          "count": 66,
+          "width": 1980,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "extra_fx_punch",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_fx_punch",
+      "count": 68,
+      "duration": 1.7,
+      "fps": 40.0,
+      "loop": false,
+      "cellWidth": 52,
+      "cellHeight": 112,
+      "columns": 16,
+      "pivotX": 0.5192307692307693,
+      "pivotY": 0.0625,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_fx_punch-00.png",
+          "count": 68,
+          "width": 832,
+          "height": 560
+        }
+      ]
+    },
+    {
+      "key": "extra_fx_sword",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_fx_sword",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 160,
+      "cellHeight": 264,
+      "columns": 12,
+      "pivotX": 0.50625,
+      "pivotY": 0.23106060606060608,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_fx_sword-00.png",
+          "count": 84,
+          "width": 1920,
+          "height": 1848
+        },
+        {
+          "file": "extra_fx_sword-01.png",
+          "count": 54,
+          "width": 1920,
+          "height": 1320
+        }
+      ]
+    },
+    {
+      "key": "extra_fx_bomb",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_fx_bomb",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 256,
+      "cellHeight": 208,
+      "columns": 8,
+      "pivotX": 0.49609375,
+      "pivotY": 0.36057692307692313,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_fx_bomb-00.png",
+          "count": 72,
+          "width": 2048,
+          "height": 1872
+        },
+        {
+          "file": "extra_fx_bomb-01.png",
+          "count": 66,
+          "width": 2048,
+          "height": 1872
+        }
+      ]
+    },
+    {
+      "key": "extra_fx_bean",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_fx_bean",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 100,
+      "cellHeight": 104,
+      "columns": 16,
+      "pivotX": 0.45,
+      "pivotY": 0.25,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_fx_bean-00.png",
+          "count": 138,
+          "width": 1600,
+          "height": 936
+        }
+      ]
+    },
+    {
+      "key": "extra_proj_sword",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_proj_sword",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 212,
+      "cellHeight": 180,
+      "columns": 9,
+      "pivotX": 0.3490566037735849,
+      "pivotY": 0.17222222222222228,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_proj_sword-00.png",
+          "count": 99,
+          "width": 1908,
+          "height": 1980
+        },
+        {
+          "file": "extra_proj_sword-01.png",
+          "count": 39,
+          "width": 1908,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "key": "extra_proj_bomb",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_proj_bomb",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 164,
+      "cellHeight": 252,
+      "columns": 12,
+      "pivotX": 0.3597560975609756,
+      "pivotY": 0.11904761904761907,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_proj_bomb-00.png",
+          "count": 96,
+          "width": 1968,
+          "height": 2016
+        },
+        {
+          "file": "extra_proj_bomb-01.png",
+          "count": 42,
+          "width": 1968,
+          "height": 1008
+        }
+      ]
+    },
+    {
+      "key": "extra_proj_bean",
+      "source": "Approved Silver Wolf LV.999 V14 / extra_proj_bean",
+      "count": 138,
+      "duration": 4.6,
+      "fps": 30.0,
+      "loop": false,
+      "cellWidth": 168,
+      "cellHeight": 104,
+      "columns": 12,
+      "pivotX": 0.43452380952380953,
+      "pivotY": 0.04807692307692313,
+      "pixelsPerUnit": 59.739999999999995,
+      "pages": [
+        {
+          "file": "extra_proj_bean-00.png",
+          "count": 138,
+          "width": 2016,
+          "height": 1248
+        }
+      ]
+    }
+  ],
+  "provenance": "Approved V14 fan-art preview of Silver Wolf LV.999 (Honkai: Star Rail). Gait retargeted from Talulah reference. Character rights remain with original owners. No open redistribution license established. Death is an adapted fall and fade."
+}

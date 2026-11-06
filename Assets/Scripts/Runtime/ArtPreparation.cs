@@ -52,7 +52,9 @@ namespace YesterdayConvoy
             var cards=defenderTrial==null?new[]{definition.Card}:new[]{defenderTrial.battle.Card}.Concat((defenderTrial.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card));
             if(CampaignActive)cards=cards.Concat(new[]{"CARD_M07","CARD_M08"}.Where(shopDefinitions.ContainsKey).Select(id=>shopDefinitions[id].Card)).Concat(shopLineup.Count(id=>CampaignBalance.MudrockCrew(id)||PreparedMudrockTransferIds.Contains(id))>=2?new[]{GolemCard}:Array.Empty<CardDefinition>());
             var snapshot=cards.ToArray();
-            return Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),snapshot,TacticalMapActive,NeedsTalulahSecondPhase(snapshot));
+            var plan=Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),snapshot,TacticalMapActive,NeedsTalulahSecondPhase(snapshot));
+            if(defenderTrial==null)AddWolfTrialTarget(plan,definition.Card);
+            return plan;
         }
         bool NeedsTalulahSecondPhase(IEnumerable<CardDefinition> cards)
         {
@@ -106,7 +108,18 @@ namespace YesterdayConvoy
             if(!lateGame)cards=monsterTests.Where(o=>o.Playable&&o.Definition.Card.RecruitCost==1).Select(o=>o.Definition.Card);
             return Prepare(Plan(BattleShopStages.Defenders(1,lateGame),cards,true),()=>StartBattleShopLoop(seed,lateGame),"准备本关角色");
         }
-        void PrepareMonsterEntry(MonsterTestOption option)=>QueueArt(Plan(Array.Empty<DefenderPlacement>(),new[]{option.Definition.Card},false,option.Definition.Engagement.Snapshot().Effects.TalulahSecondPhase),()=>TryEnterMonsterTest(option.Id),"准备怪物动作");
+        static void AddWolfTrialTarget(List<ArtSequence> plan,CardDefinition card)
+        {
+            if(card.CardId!=SilverWolfCombat.CardId)return;
+            foreach(var clip in OriginalSlugArt.For(OriginalSlugArt.CardId).Sequences)
+                if(clip.Key=="idle" || clip.Key=="attack" || clip.Key=="death")plan.Add(clip);
+        }
+        void PrepareMonsterEntry(MonsterTestOption option)
+        {
+            var plan=Plan(Array.Empty<DefenderPlacement>(),new[]{option.Definition.Card},false,option.Definition.Engagement.Snapshot().Effects.TalulahSecondPhase);
+            AddWolfTrialTarget(plan,option.Definition.Card);
+            QueueArt(plan,()=>TryEnterMonsterTest(option.Id),"准备怪物动作");
+        }
         void PrepareDefenderEntry(string id)
         {
             var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);

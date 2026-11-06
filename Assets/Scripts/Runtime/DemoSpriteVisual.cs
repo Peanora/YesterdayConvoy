@@ -97,7 +97,7 @@ namespace YesterdayConvoy
                 tacticalFlip=ViviCombat.VisualFlip(manualBattle,deployedUnit,Camera.main,tacticalFlip);
                 sprite.flipX=tacticalFlip;
             }
-            if(WorldUpright && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
+            if(WorldUpright && frameCard.CardId!=SilverWolfCombat.CardId && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
@@ -158,6 +158,11 @@ namespace YesterdayConvoy
             }
             transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
             if(PresentHerdTransition())return;
+            if(frameCard.CardId==SilverWolfCombat.CardId)
+            {
+                PresentSilverWolf();
+                return;
+            }
             if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
             if(original!=null) { PresentOriginal(); return; }
@@ -234,6 +239,62 @@ namespace YesterdayConvoy
             else if(slug!=null)
             {var clip=slug["death"];sprite.sprite=clip.At(collapsed*Math.Min(.65,clip.Duration*.65),false,out int index);FrameIndex=index;}
             else {sprite.sprite=frameCard.BattleSprite;FrameIndex=0;}
+        }
+
+        // Movement, transform and attacks share the world root. Only the sprite flips at its foot pivot.
+        private void PresentSilverWolf()
+        {
+            var unit=deployedUnit;
+            double now=presentationClock?.Invoke()??manualBattle.Clock;
+            double age=now-unit.LastAttackTime;
+            bool boxAttack=unit.LastAttackEmpowered && unit.LastWolfBox!=WolfBoxKind.None;
+            double actionTime=boxAttack?age:age*unit.LastAttackRate;
+            string actionKey=boxAttack?SilverWolfView.ActorClip(unit.LastWolfBox):"attack";
+            bool attacking=age>=0 && actionTime<local[actionKey].Duration;
+            bool transforming=SilverWolfCombat.Transforming(unit,now);
+
+            string clip;
+            double elapsed;
+            bool loop=false;
+            if(unit.Resolution==UnitResolution.Dead || unit.IsReviving)
+            {
+                FrameState="Death";clip="death";elapsed=now-unit.DeathTime;sprite.color=Color.white;
+            }
+            else if(transforming)
+            {
+                FrameState="WolfTransform";clip="extra_transform";elapsed=now-unit.WolfTransformAt;
+            }
+            else if(attacking)
+            {
+                // Lock the facing for the complete swing, even if the victim dies or targeting changes.
+                if(tacticalAttack!=unit.LastAttackTime)
+                {
+                    tacticalAttack=unit.LastAttackTime;
+                    for(int i=manualBattle.CombatShots.Count-1;i>=0;i--)
+                    {
+                        var shot=manualBattle.CombatShots[i];
+                        if(shot.SourceId!=unit.EntityId || shot.WolfActionAt!=unit.LastAttackTime)continue;
+                        tacticalFlip=SilverWolfView.Facing(shot.Destination-shot.Origin,Camera.main,tacticalFlip);
+                        break;
+                    }
+                }
+                FrameState=boxAttack?"Wolf"+unit.LastWolfBox:"Attack";clip=actionKey;elapsed=actionTime;
+            }
+            else
+            {
+                var target=manualBattle.FindDefender(unit.CombatTargetId);
+                Vector3 direction=unit.IsMoving||target==null?unit.Motion.Direction:target.Position-unit.Motion.Position;
+                if(unit.IsMoving && unit.FearUntil>manualBattle.Clock)direction=-direction;
+                tacticalFlip=SilverWolfView.Facing(direction,Camera.main,tacticalFlip);
+                bool flying=unit.SkillAmmo>0 && now>=unit.WolfTransformAt+SilverWolfCombat.TransformDuration;
+                clip=unit.IsMoving?(flying?"extra_fly":"walk"):(flying?"extra_hover":"idle");
+                FrameState=unit.IsMoving?(flying?"WolfFly":"Walk"):(flying?"WolfHover":"Idle");
+                elapsed=unit.IsMoving?unit.Motion.DistanceTravelled/local.ReferenceSpeed:now-(flying?unit.WolfTransformAt:unit.SpawnTime);
+                loop=true;
+            }
+            sprite.flipX=tacticalFlip;
+            sprite.sprite=local[clip].At(elapsed,loop,out int index);
+            FrameIndex=index;
         }
 
         private void PresentLocal()
