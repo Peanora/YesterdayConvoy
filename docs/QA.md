@@ -4,7 +4,8 @@
 
 - 原因：ShowGuerrillaOrder经CardDefinition.Portrait读取转职肖像，通用getter漏了OriginalTalulahArt分支，因而回退到Talulah.asset序列化的旧TalulahComic/V2卡面；原作PNG及PreparedArt源哈希正常。现优先读取已有TalulahOriginal/portrait，不新增/替换图片，不改场景、Prefab、配置资产或GUID。
 - Unity6000.6.5f1：完整EditMode501/501（artifacts/talulah-pursuit-edit.xml）、相关D3D11 PlayMode26/26（artifacts/talulah-pursuit-play.xml）通过。覆盖原游击高档/恒速全场演出、塔露拉阶段/攻击/死亡，以及冷读原作单头像≤1纹理、其他卡序列化回退。新增真实九种编队准备→两转职→Begin赠令→M03远距部署→成功军令，0.65秒实际第九槽Sprite等于原作；实际RenderTo与显式原作供图像素相同，与旧serialized图在塔露拉区域显著不同。
-- 独立Player与本地Windows构建待本次源码提交后执行；未运行全量PlayMode、第二机或缺失/损坏原作媒体故障注入。本次使用现存原作运行素材，未重新生成美术。
+- 运行源码728c37de7aa73b9d1b01774906a0fdf61f5c1f78：Windows构建2449477554字节、0错误（artifacts/talulah-pursuit-build.log），本地Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。可见1920×1080 D3D11独立Player9/9通过（artifacts/talulah-pursuit-player/result.json），进程9136正常退出；实际第九槽为TalulahOriginal/portrait，112324个区域像素与原作对照差0、与旧图差98565。已查看talulah-pursuit-peak.png，左下为当前原作塔露拉。真实只执行一次军令并消耗开战2点，其余三次Play仅为同年龄纯渲染对照与恢复，不新增军令/伤害。
+- 仓库6429跟踪文件检查通过，必要新脚本meta已跟踪，现有原作图片/meta持续跟踪。构建产生的52处默认未覆盖WebGL导入噪声逐文件严格比对后恢复，仅保留原.vscode/和PackageManagerSettings.asset未跟踪项。未运行全量PlayMode、第二机或缺失/损坏原作媒体故障注入；未重新生成美术，不自动ZIP/Releases或合并main。构建后仅文档补记。
 
 ## 2026-11-06：游击8/9档、整令无次数上限及真实转职
 

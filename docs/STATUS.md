@@ -2,7 +2,7 @@
 
 ## 2026-11-06：塔露拉追击头像读取修复
 
-通用CardDefinition.Portrait补上已有OriginalTalulahArt来源，转职追击读取当前原作头像，避免回退到旧漫画卡面。未替换素材或改GUID；完整Edit501/501、相关D3D11 Play26/26通过，包含真实九人转职军令的实际Sprite与原作/旧图GPU对照。Windows构建及独立Player待本次源码提交后执行，下面为此前版本记录。
+通用CardDefinition.Portrait补上已有OriginalTalulahArt来源，转职追击读取当前原作头像，避免回退到旧漫画卡面。未替换素材或改GUID；完整Edit501/501、相关D3D11 Play26/26、可见独立Player9/9通过，包含真实九人转职军令的实际Sprite与原作/旧图GPU对照。运行源码728c37d，本地Windows构建2449477554字节、0错误，入口Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe，已查看实际追击截图，正常退出。未测全量Play、第二机或媒体故障注入；下面为此前版本记录。
 
 ## 2026-11-06：游击8/9档、无整令次数上限与手动转职
 
