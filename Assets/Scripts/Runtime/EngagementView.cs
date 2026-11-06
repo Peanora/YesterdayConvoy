@@ -11,7 +11,8 @@ namespace YesterdayConvoy
         private TalulahAttackVfx talulahAttackVfx;
         private CommonCombatVfxDirector commonVfx;
         private AdvancedDefenderView advancedVfx;
-        public double NativeEffectsUntil => System.Math.Max(CommonCombatVfxDirector.PendingUntil(owner?.Battle),advancedVfx?.PendingUntil??double.NegativeInfinity);
+        private InfectionBurstFeedback infectionFeedback;
+        public double NativeEffectsUntil => System.Math.Max(System.Math.Max(CommonCombatVfxDirector.PendingUntil(owner?.Battle),advancedVfx?.PendingUntil??double.NegativeInfinity),infectionFeedback?.PendingUntil??double.NegativeInfinity);
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
         private readonly List<LineRenderer> seedViews=new List<LineRenderer>();
@@ -34,6 +35,7 @@ namespace YesterdayConvoy
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             ClearTransient(); runId=-1;
             if(commonVfx==null)commonVfx=new CommonCombatVfxDirector(transform);
+            infectionFeedback=GetComponent<InfectionBurstFeedback>()??gameObject.AddComponent<InfectionBurstFeedback>();infectionFeedback.Bind(controller);
             if(rosterView!=null) { rosterView.gameObject.SetActive(false); Destroy(rosterView.gameObject); rosterView=null; }
             if(controller.DefenderTrialActive)
             { rosterView=new GameObject("Eight original defenders").AddComponent<DefenderRosterView>();

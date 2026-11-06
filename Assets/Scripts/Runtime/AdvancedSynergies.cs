@@ -5,9 +5,25 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum InfectionForm { Swarm, Shell, Burst }
+    public sealed class InfectionBurstHit
+    {
+        public string EntityId {get;}
+        public Vector3 Position {get;}
+        public float Damage {get;}
+        internal InfectionBurstHit(string entityId,Vector3 position,float damage)
+        {EntityId=entityId;Position=position;Damage=damage;}
+    }
     public sealed class InfectionBurst
     {
         public Vector3 Position;public double At;public float Attack,Radius;public bool Resolved;
+        public string SourceId {get;internal set;}
+        public string CardId {get;internal set;}
+        public float TotalDamage {get;private set;}
+        readonly List<InfectionBurstHit> hits=new List<InfectionBurstHit>();
+        IReadOnlyList<InfectionBurstHit> visibleHits;
+        public IReadOnlyList<InfectionBurstHit> Hits=>visibleHits??(visibleHits=hits.AsReadOnly());
+        internal void RecordHit(string entityId,Vector3 position,float damage)
+        {hits.Add(new InfectionBurstHit(entityId,position,damage));TotalDamage+=damage;}
     }
     public sealed partial class ManualBattle
     {
@@ -83,14 +99,18 @@ namespace YesterdayConvoy
         void OnAdvancedSynergyDeath(DeployedUnitState unit)
         {
             if(unit.InfectionBlast<=0||unit.InfectionBlastDone)return;
-            unit.InfectionBlastDone=true;infectionBursts.Add(new InfectionBurst{Position=unit.Motion.Position,At=Clock+.2,Attack=unit.InfectionBlast,Radius=unit.InfectionBlastRadius});
+            unit.InfectionBlastDone=true;infectionBursts.Add(new InfectionBurst{SourceId=unit.EntityId,CardId=unit.CardId,Position=unit.Motion.Position,At=Clock+.2,Attack=unit.InfectionBlast,Radius=unit.InfectionBlastRadius});
         }
         void ResolveInfectionBursts()
         {
             foreach(var burst in infectionBursts)
             {
                 if(burst.Resolved||Clock<burst.At)continue;burst.Resolved=true;
-                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
+                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())
+                {
+                    float before=d.Health;DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
+                    burst.RecordHit(d.EntityId,d.Position,Mathf.Max(0,before-d.Health));
+                }
             }
         }
         void RecordSynergyContact(DeployedUnitState source)

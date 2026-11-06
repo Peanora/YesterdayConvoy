@@ -37,7 +37,7 @@ namespace YesterdayConvoy
     {
         string inspectedSynergy;
         Rect SynergyListRect=>new Rect(16,69,157,28+Mathf.Min(350,CurrentSynergies.Length*46));
-        static Rect SynergyDetailRect=>new Rect(252,90,620,415);
+        Rect SynergyDetailRect=>inspectedSynergy=="感染生物"?InfectionFormPanelRect:new Rect(252,90,620,415);
         SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
         void DrawSynergySidebar()
@@ -62,10 +62,11 @@ namespace YesterdayConvoy
                     bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
                     Color ink=snowstorm?SnowstormInk:active?ApprovedUi.Ink:ApprovedUi.Muted;
                     Fill(row,snowstorm?SnowstormPaper:active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
-                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?new Color(.72f,.59f,.30f):ApprovedUi.Rule);
-                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name,CampaignText(13,color:ink,weight:600));
+                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?(s.Name=="感染生物"?InfectionOrange:new Color(.72f,.59f,.30f)):ApprovedUi.Rule);
+                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(13,color:ink,weight:600));
                     GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
-                    if(snowstorm)DrawSnowstormRow(row);
+                    if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
+                    else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
                     else
                     {
@@ -77,6 +78,7 @@ namespace YesterdayConvoy
             }
             finally {GUI.EndScrollView();}
             var detail=summaries.FirstOrDefault(s=>s.Name==inspectedSynergy);if(detail==null){inspectedSynergy=null;return;}
+            if(detail.Name=="感染生物"){DrawInfectionFormPanel(detail);return;}
             Fill(SynergyDetailRect,ApprovedUi.Paper);ApprovedUi.Border(SynergyDetailRect,ApprovedUi.Rule);
             GUI.Label(new Rect(268,102,510,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),CampaignText(17,weight:700));
             if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}

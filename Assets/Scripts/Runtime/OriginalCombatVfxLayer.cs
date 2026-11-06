@@ -45,14 +45,19 @@ namespace YesterdayConvoy
         // PPU at this camera pitch. The caller supplies the real ground height; no lift
         // or depth override hides geometry that should occlude the effect.
         internal bool ShowGround(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,bool loop=false,float rollDegrees=0)
+            =>ShowGroundScaled(key,age,position,camera,flipX,sortingOffset,1,loop,rollDegrees);
+        // Explicit producer-requested uniform size adaptation. Existing ground calls keep scale=1;
+        // this never edits the source PPU/pivot or the size of another pooled effect.
+        internal bool ShowGroundScaled(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,float scale,bool loop=false,float rollDegrees=0)
         {
             if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
+            if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<=0)throw new ArgumentOutOfRangeException(nameof(scale));
             var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,0);if(view==null)return false;
             Vector3 forward=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
             float projection=Mathf.Abs(Vector3.Dot(camera.transform.up,forward));
             if(projection<.0001f)throw new InvalidOperationException("A ground effect needs a camera with a downward viewing angle.");
             view.Basis.rotation=Quaternion.LookRotation(-Vector3.up,forward);
-            view.Basis.localScale=new Vector3(1,1/projection,1);
+            view.Basis.localScale=new Vector3(scale,scale/projection,scale);
             view.Renderer.transform.localRotation=Quaternion.Euler(0,0,rollDegrees);
             return true;
         }

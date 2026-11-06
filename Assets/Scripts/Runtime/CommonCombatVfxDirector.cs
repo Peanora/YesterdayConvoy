@@ -168,7 +168,12 @@ namespace YesterdayConvoy
         {
             if(battle==null||camera==null)return;
             foreach(var burst in battle.InfectionBursts)if(burst.Resolved)
-                layer.ShowGround(FireHit,clock-burst.At,burst.Position,camera,false,8);
+            {
+                var clip=OriginalCombatVfxArt.Get(FireHit);
+                float capturedWidth=clip.Sequence.Width/clip.Sequence.Ppu;
+                // Only this new synergy adapts its original common impact to the real blast diameter.
+                layer.ShowGroundScaled(FireHit,clock-burst.At,burst.Position,camera,false,38,burst.Radius*2/capturedWidth);
+            }
             foreach(var pulse in battle.GolemPulses)
                 layer.ShowGround(CutHit,clock-pulse.At,pulse.Position,camera,false,8);
             foreach(var shatter in battle.ShatterEvents)

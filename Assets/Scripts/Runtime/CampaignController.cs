@@ -194,9 +194,10 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(266,y+84,142,30),"委托 原价+2"))CommissionCampaignCard(commissionTarget);GUI.enabled=true;
                 if(LoopButton(new Rect(25,y+121,230,30),reunionRanged?"援军：弩手":"援军：士兵")){reunionRanged=!reunionRanged;SyncShopDeck(false);}
                 if(LoopButton(new Rect(266,y+121,142,30),"切换测试")){ReturnToTrialScene();return;}
-                if(LoopButton(new Rect(25,y+158,230,30),"感染主形态："+FormName(infectionForm)))SetCampaignForms((InfectionForm)(((int)infectionForm+1)%3),infectionSecond);
-                if(LoopButton(new Rect(266,y+158,142,30),"六档副："+FormName(infectionSecond)))SetCampaignForms(infectionForm,(InfectionForm)(((int)infectionSecond+1)%3));
-                GUI.Label(new Rect(25,y+192,388,22),"形态战前锁定；六档副形态只取二档效果",CampaignText(11));
+                if(LoopButton(new Rect(25,y+158,383,30),"选择感染形态  ·  主："+FormName(infectionForm)+
+                    (Battle.InfectionTier>=6?" / 副："+FormName(infectionSecond):" / 副形态6档解锁")))
+                {inspectedSynergy="感染生物";campaignConstructOpen=false;CancelShopDrag();}
+                GUI.Label(new Rect(25,y+192,388,22),"也可直接点击左侧感染生物；开战时锁定",CampaignText(11));
                 if(SynergySandbox)
                     for(int i=0;i<8;i++)if(LoopButton(new Rect(25+(i%4)*96,y+214+(i/4)*20,90,18),new[]{"冰雪样板","感染样板","游击样板","泥岩样板","牧群样板","深池样板","承契样板","海嗣样板"}[i])){campaignConstructOpen=false;PrepareSandboxRoster(i);}
             }
