@@ -50,7 +50,7 @@ namespace YesterdayConvoy
         List<ArtSequence> CurrentBattlePlan()
         {
             var cards=defenderTrial==null?new[]{definition.Card}:new[]{defenderTrial.battle.Card}.Concat((defenderTrial.rosterCards??Array.Empty<ManualBattleDefinition>()).Select(d=>d.Card));
-            if(CampaignActive)cards=cards.Concat(new[]{"CARD_M07","CARD_M08"}.Where(shopDefinitions.ContainsKey).Select(id=>shopDefinitions[id].Card)).Concat(shopLineup.Count(CampaignBalance.MudrockCrew)>=2?new[]{GolemCard}:Array.Empty<CardDefinition>());
+            if(CampaignActive)cards=cards.Concat(new[]{"CARD_M07","CARD_M08"}.Where(shopDefinitions.ContainsKey).Select(id=>shopDefinitions[id].Card)).Concat(shopLineup.Count(id=>CampaignBalance.MudrockCrew(id)||PreparedMudrockTransferIds.Contains(id))>=2?new[]{GolemCard}:Array.Empty<CardDefinition>());
             var snapshot=cards.ToArray();
             return Plan(defenderTrial?.defenders??Array.Empty<DefenderPlacement>(),snapshot,TacticalMapActive,NeedsTalulahSecondPhase(snapshot));
         }
@@ -116,7 +116,7 @@ namespace YesterdayConvoy
         void PrepareNextLoopBattle()
         {
             var cards=shopLineup.Concat(CampaignActive?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().Select(id=>shopDefinitions[id].Card)
-                .Concat(CampaignActive&&shopLineup.Count(CampaignBalance.MudrockCrew)>=2?new[]{GolemCard}:Array.Empty<CardDefinition>()).ToArray();
+                .Concat(CampaignActive&&shopLineup.Count(id=>CampaignBalance.MudrockCrew(id)||PreparedMudrockTransferIds.Contains(id))>=2?new[]{GolemCard}:Array.Empty<CardDefinition>()).ToArray();
             QueueArt(Plan(shopMapCopy.defenders,cards,true,NeedsTalulahSecondPhase(cards)),()=>StartLoopNextBattle(),"准备下一关");
         }
         void WarmVisibleShop()

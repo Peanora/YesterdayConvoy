@@ -19,8 +19,14 @@ namespace YesterdayConvoy.Tests
             foreach(var entry in SynergyTrialCatalog.Entries)
             {
                 var data=AssetDatabase.LoadAssetAtPath<SynergyTrialDefinition>(entry.DefinitionPath);data.Validate();
-                Assert.That(data.initialMembers.Select(m=>m.cardId),Is.EqualTo(entry.Members));
-                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.MaximumTier));
+                var initial=entry.Id=="mudrock"?entry.Members.Concat(new[]{"CARD_M08"}):entry.Members;
+                Assert.That(data.initialMembers.Select(m=>m.cardId),Is.EqualTo(initial));
+                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.MaximumTier));
+                if(entry.Id=="mudrock")
+                {
+                    Assert.That(entry.MaximumTier,Is.EqualTo(6));Assert.That(data.initialMembers.All(m=>m.star==1),Is.True);
+                    Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId),extraMudrockMembers:new[]{"CARD_M08"}).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(6));
+                }
                 Assert.That(AssetDatabase.LoadAssetAtPath<SceneAsset>(entry.ScenePath),Is.Not.Null);
                 var snapshot=data.CopyDefenders();float original=data.encounter.defenders[0].health;snapshot[0].health=1;
                 Assert.That(data.encounter.defenders[0].health,Is.EqualTo(original),"Runtime multiplier/mutation must not reach the baseline asset.");

@@ -1,5 +1,12 @@
 # 当前工程状态
 
+## 2026-11-07：泥岩经验培养与连续试玩（验证中）
+
+已接入0/6/16/30/48经验升级，人数与总星级控制上限和每场自动经验，移除培养投金币与接敌任务。新增免费一名额泥岩转职，IV保留原强度，V为7500血/2000攻；专项连续培养、真实库存补卡、I-V明示预置及经验增长/升级/封顶反馈已接线。原52项VFX meta与两个未跟踪项沿用此前确认保留，不暂存提交。
+
+本轮Unity/Player验证正在执行，完成后以实际结果更新本段。
+
+
 ## 2026-11-07：StreamingAssets源资源分类迁移
 
 已将原StreamingAssets的1644个资源文件分类移动：PNG在Art的角色/特效/UI目录，117份JSON在Data/ArtCatalogs（103份运行manifest、14份来源/维护记录）。1527张PNG原始字节与1848个既有文件/目录GUID均保留；工程内StreamingAssets仅留说明。ArtSourcePaths统一编辑器/Player路径，PreparedArtTools保留原缓存键并按当前清单生成Player资源；安装器、预览器、塔露拉打包器及素材清单同步新路径。没有删除早期美术或修改玩法、场景、Prefab、Packages、ProjectSettings。

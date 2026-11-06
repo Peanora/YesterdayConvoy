@@ -35,6 +35,28 @@ namespace YesterdayConvoy.Tests
             Assert.That(m.Commission("A").Success,Is.False);m.Validate();
             for(int i=0;i<500;i++)m.Refresh();Assert.That(m.Gold,Is.EqualTo(10));m.Validate();
         }
+        [TestCase(4)][TestCase(5)]public void HighCostCommissionsAreSandboxOnlyAndConsumeRealStockThroughPromotion(int cost)
+        {
+            var roles=new[]{new ShopTrialModel.Role{Id="HIGH",Name="High",Cost=cost},new ShopTrialModel.Role{Id="OTHER",Name="Other",Cost=1}};
+            var normal=new ShopTrialModel(roles);normal.EnableCampaign();normal.Preset(new[]{new ShopTrialModel.Piece{Id="HIGH",Star=1}},Array.Empty<string>(),8,0,100);
+            Assert.That(normal.Commission("HIGH").Success,Is.False);Assert.That(normal.Gold,Is.EqualTo(100));Assert.That(normal.Available("HIGH"),Is.EqualTo(8));Assert.That(normal.CommissionUsed,Is.False);
+            var sandbox=new ShopTrialModel(roles);sandbox.EnableCampaign(true);sandbox.Preset(new[]{new ShopTrialModel.Piece{Id="HIGH",Star=1}},Array.Empty<string>(),8,0,10);
+            for(int copy=0;copy<8;copy++)Assert.That(sandbox.Commission("HIGH").Success,Is.True);
+            Assert.That(sandbox.Bench.Single().Star,Is.EqualTo(3));Assert.That(sandbox.Available("HIGH"),Is.Zero);
+            Assert.That(sandbox.Gold,Is.EqualTo(10));Assert.That(sandbox.Commission("HIGH").Success,Is.False);sandbox.Validate();
+        }
+        [Test]public void SandboxHighCostCommissionCannotTakeDisplayedStockOrPartiallyMutateAFullBench()
+        {
+            var roles=Enumerable.Range(0,11).Select(i=>new ShopTrialModel.Role{Id="R"+i,Name="R"+i,Cost=i==0?5:1}).ToArray();
+            var shop=new ShopTrialModel(roles);shop.EnableCampaign(true);
+            shop.Preset(new[]{new ShopTrialModel.Piece{Id="R0",Star=2},new ShopTrialModel.Piece{Id="R0",Star=2}},new[]{"R0","R0","R0"},8,0,10);
+            Assert.That(shop.Commission("R0").Success,Is.False,"Displayed cards already occupy the remaining three copies.");
+            Assert.That(shop.Bench.Count,Is.EqualTo(2));Assert.That(shop.Available("R0"),Is.Zero);shop.Validate();
+            shop.Preset(Enumerable.Range(0,10).Select(i=>new ShopTrialModel.Piece{Id="R"+i,Star=1}),Array.Empty<string>(),8,0,10);
+            int stock=shop.Available("R0");var before=shop.Bench.Select(p=>p.Instance+":"+p.Id+":"+p.Star).ToArray();
+            Assert.That(shop.Commission("R0").Success,Is.False);CollectionAssert.AreEqual(before,shop.Bench.Select(p=>p.Instance+":"+p.Id+":"+p.Star));
+            Assert.That(shop.Available("R0"),Is.EqualTo(stock));Assert.That(shop.Gold,Is.EqualTo(10));Assert.That(shop.CommissionUsed,Is.False);shop.Validate();
+        }
         [Test]public void SupplyHasNoCombatOrHPDeductionAndSettlementIsIdempotent()
         {
             var m=Economy();var loop=new BattleShopRun(m,1,false,true);var b=Battle();int hp=b.Defense;

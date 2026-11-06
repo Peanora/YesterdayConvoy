@@ -1828,3 +1828,15 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 ## 2026-11-05 本地双角色特效整合
 
 2026-11-05 本地试玩：main 2c04ba7 + 爱国者 V2 14bda74，运行源码 9826603。塔露拉 V8 已在 main。Windows 构建 0 错误，两个角色 GPU 回归 4/4。爱国者、塔露拉火雨、塔露拉动作、羁绊试玩共四个独立 Player 进程退出 0。复起和投矛使用开发阶段测试。未重跑全套测试或第二机。 本轮验证日志在 Logs/local-vfx-integration 和 Logs/local-patriot-talulah-build.log。
+
+## 2026-11-07 泥岩经验培养、6档和连续专项
+
+基线为实时main b1d55e7，功能分支codex/mudrock-growth-feedback。原52项Mandragora/Mephisto PNG.meta及.vscode/、PackageManagerSettings.asset按此前已确认方案保留，不纳入任务提交。无场景地形/Prefab/包/工程设置修改；泥岩专项只调整自己的卡组与守军配置。
+
+- Unity6000.6.5f1完整EditMode：artifacts/mudrock-growth-edit.xml 538/538通过，真实进程退出0。
+- 相关D3D11 PlayMode：artifacts/mudrock-growth-play.xml 24/24通过，覆盖原羁绊/九专项/暂停部署/商店/游击转职回归。
+- 首轮发现新增场景测试meta GUID为33位，Unity忽略该资产；已更正为生成的32位GUID并单独补跑。artifacts/mudrock-growth-new-play.xml四项中三项通过：免费转职生命周期、自动经验/封顶/连轮、默认专项真实招募合成和自然四战从0培养至48/V；唯一失败为测试运行器禁止batchmode的WaitForEndOfFrame，尚未进入像素断言。
+- 同一UI像素用例改用非batch窗口渲染运行，artifacts/mudrock-growth-ui-play.xml 1/1通过、退出0，实际屏幕XP条前后像素差、I→II提示、实际获得量和封顶说明均通过。共28个不同相关PlayMode用例已获通过，不将首次3/4失败记录改称一次全绿。
+- 经验阈值、阵容容量、无部署/击杀任务、Won/Lost自动结算、补给/中断不发、实际增量截断、历史XP保留、三星补偿一星、九张库存/正式高费委托拒绝已由逻辑测试覆盖。自然测试使用现有正常战斗和真实委托，不使用FinishForTesting或篡改守军。
+
+本轮Windows构建/独立Player与可见窗口验收尚未运行，完成后追加实际结果。未做完整13关自然成型率、长期平衡、第二机或全分辨率验收。

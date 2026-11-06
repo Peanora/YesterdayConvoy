@@ -45,6 +45,7 @@ namespace YesterdayConvoy
             shopDefinitions.Clear();
             foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
+            ResetMudrockTransfers();
             shop.EnableCampaign(sandbox);
             string[] initial=trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
             shop.Preset(trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),trial!=null?trial.initialLevel:sandbox?8:1,0,10);
@@ -71,8 +72,8 @@ namespace YesterdayConvoy
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
             battle.ConfigureStrongholdMap(false);
-            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,Loop.GolemInvestment,
-                extraGuerrillaMembers:PreparedGuerrillaTransferIds);
+            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
+                extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
@@ -86,6 +87,7 @@ namespace YesterdayConvoy
         }
         void ReplaySandbox()
         {
+            CompleteGolemExperienceFeedback();
             Loop.SandboxPreparation();ConfigureLoopStage();SetShopVisible(true);
         }
         public ShopTrialModel.Result CommissionCampaignCard(string id)
@@ -124,7 +126,7 @@ namespace YesterdayConvoy
                 if(!panel.Contains(point)&&!SynergyListRect.Contains(point)&&!CampaignConstructToggleRect.Contains(point))
                 {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
             }
-            DrawGuerrillaTransferBadges();DrawSynergySidebar();
+            DrawGuerrillaTransferBadges();DrawMudrockTransferBadges();DrawSynergySidebar();
             if(LoopButton(CampaignConstructToggleRect,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开"))
             {campaignConstructOpen=!campaignConstructOpen;inspectedSynergy=null;CancelShopDrag();}
             bool enabled=GUI.enabled;GUI.enabled=enabled&&!CampaignUiModalOpen;
@@ -140,6 +142,7 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(r.x+16,r.y+45,160,28),"运营与测试样板",campaignConstructTab==0))campaignConstructTab=0;
             if(LoopButton(new Rect(r.x+184,r.y+45,160,28),"阵营选择与培养",campaignConstructTab==1))campaignConstructTab=1;
             if(LoopButton(GuerrillaTransferTabRect,"游击转职 "+GuerrillaTransferIds.Count+"/2",campaignConstructTab==2))campaignConstructTab=2;
+            if(LoopButton(MudrockTransferTabRect,"泥岩转职 "+MudrockTransferIds.Count+"/1",campaignConstructTab==3))campaignConstructTab=3;
             var oldMatrix=GUI.matrix;bool oldEnabled=GUI.enabled;
             try
             {
@@ -153,7 +156,8 @@ namespace YesterdayConvoy
                     GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(r.x+16-680,r.y+84-270,0));
                     DrawRemainingPreparation();
                 }
-                else DrawGuerrillaTransferPanel();
+                else if(campaignConstructTab==2)DrawGuerrillaTransferPanel();
+                else DrawMudrockTransferPanel();
             }
             finally {GUI.matrix=oldMatrix;GUI.enabled=oldEnabled;}
         }
@@ -191,11 +195,11 @@ namespace YesterdayConvoy
             float y=CampaignPanelRect.y;
             GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",CampaignText(12,weight:600));
             var rule=GuerrillaRules.ForTier(Battle.GuerrillaTier);
-            GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 整令{rule.Cost}点 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),CampaignText(11));
+            GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 整令{rule.Cost}点 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}/{Battle.GolemCapacity}级 XP{Loop.GolemExperience}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
-                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV原数值基准 · 无限金币 · 九张库存 · DP100":"测试倍率：怪物血×4 伤×2 · 守军血×12 伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
-                var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
+                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 九张库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
+                var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>SynergySandbox||shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
                 if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];
                 GUI.enabled=commissionTarget!=null&&(!shop.CommissionUsed||SynergySandbox);

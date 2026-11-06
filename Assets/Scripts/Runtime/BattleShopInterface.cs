@@ -180,12 +180,12 @@ namespace YesterdayConvoy
             var reward=Loop.Reward;bool failed=Loop.Phase==BattleShopPhase.Failed;
             Color accent=failed?new Color(.65f,.31f,.25f):new Color(.28f,.47f,.61f);
             Fill(new Rect(176,152,5,416),accent);
-            GUI.Label(new Rect(206,173,340,29),"第"+Loop.Stage+"关结束"+(loopWasTestSettled?" · 测试结算":""),LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
+            GUI.Label(new Rect(206,173,340,29),(SynergySandbox?"第"+Loop.SandboxRound+"轮验证结束":"第"+Loop.Stage+"关结束")+(loopWasTestSettled?" · 测试结算":""),LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":SynergySandbox?"作战胜利":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
             GUI.Label(new Rect(206,306,330,32),shopMapCopy.mapTitle,LoopText(18,TextAnchor.MiddleLeft,null,600));
-            GUI.Label(new Rect(206,350,330,45),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
-            if(CampaignActive&&Loop.LastMarineGrowth>0)GUI.Label(new Rect(206,437,330,28),$"海嗣培养 +{Loop.LastMarineGrowth} · 累计 {Loop.MarineExperience}",LoopText(12));
-            if(CampaignActive&&Loop.LastGolemGrowth>0)GUI.Label(new Rect(206,405,330,28),$"巨像培养 +{Loop.LastGolemGrowth} · 累计 {Loop.GolemExperience}",LoopText(12));
+            GUI.Label(new Rect(206,350,330,45),SynergySandbox?"保留阵容和培养，返回整备继续下一轮":failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
+            if(CampaignActive&&Loop.LastMarineGrowth>0)GUI.Label(new Rect(206,510,330,28),$"海嗣培养 +{Loop.LastMarineGrowth} · 累计 {Loop.MarineExperience}",LoopText(12));
+            DrawGolemSettlementFeedback();
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,174,496,28),"本场收入",LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             for(int i=0;i<3;i++)
