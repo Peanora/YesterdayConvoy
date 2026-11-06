@@ -32,9 +32,9 @@ namespace YesterdayConvoy.Tests
             owned.Clear();
         }
 
-        IEnumerator LoadFormation()
+        IEnumerator LoadFormation(string sceneName="SynergyTrial")
         {
-            yield return SceneManager.LoadSceneAsync("SynergyTrial");
+            yield return SceneManager.LoadSceneAsync(sceneName);
             for(int i=0;i<1200;i++)
             {
                 controller=Object.FindAnyObjectByType<ManualBattleController>();
@@ -78,7 +78,7 @@ namespace YesterdayConvoy.Tests
             }
         }
 
-        IEnumerator EarnAndUseOrder()
+        IEnumerator EarnAndUseOrder(bool isolateOrdinaryDamage=false)
         {
             yield return StartRunning();var battle=controller.Battle;
             var cards=controller.Shop.Bench.Select(p=>p.Id).Where(id=>id!="CARD_M20"&&battle.FindCard(id)!=null).ToArray();
@@ -99,10 +99,24 @@ namespace YesterdayConvoy.Tests
             bool used=false;
             for(int i=0;i<1600&&battle.Phase==BattlePhase.Running;i++)
             {
-                if(battle.Orders>=6&&controller.UseCampaignOrder(false)){used=true;break;}
+                if(battle.Orders>=6)
+                {
+                    if(isolateOrdinaryDamage)
+                    {
+                        // Explicit runtime fixture: preserve real credit/eligibility, stop new ordinary
+                        // attacks and let existing projectiles finish naturally before the order commits.
+                        foreach(var unit in battle.Units)
+                            typeof(DeployedUnitState).GetField("NextAttackTime",PrivateInstance).SetValue(unit,battle.Clock+1000);
+                        if(battle.CombatShots.Any(s=>!s.Resolved))
+                        {controller.Tick(.05f);if(i%10==0)yield return null;continue;}
+                    }
+                    if(controller.UseCampaignOrder(false)){used=true;break;}
+                }
                 controller.Tick(.05f);if(i%10==0)yield return null;
             }
             Assert.That(used,Is.True,"Ordinary combat must earn and successfully spend a full military order.");
+            if(isolateOrdinaryDamage)foreach(var unit in battle.Units)
+                typeof(DeployedUnitState).GetField("NextAttackTime",PrivateInstance).SetValue(unit,battle.Clock+1000);
             Assert.That(battle.OrderStrikes,Is.GreaterThan(0));
             Assert.That(battle.Units.Any(u=>u.CardId=="CARD_M20"),Is.False);
             Assert.That(battle.CombatShots.Any(s=>!s.FromDefender&&!s.SynergyOrder&&s.Applied),Is.True);
@@ -167,7 +181,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(view.ScreenBounds.width,Is.GreaterThan(Screen.width*.5f).And.LessThanOrEqualTo(Screen.width+.1f));
             Assert.That(view.ScreenBounds.height,Is.GreaterThan(Screen.height*.5f).And.LessThanOrEqualTo(Screen.height+.1f));
             Assert.That(view.ScreenBounds.width/view.ScreenBounds.height,Is.EqualTo(16f/9).Within(.001f));
-            Assert.That(view.PendingUntil-controller.PresentationClock,Is.EqualTo(2.6).Within(.0001));
+            Assert.That(view.Remaining,Is.EqualTo(2.6).Within(.0001));
             var battle=controller.Battle;
             int strikes=battle.OrderStrikes,orders=battle.Orders,dp=battle.DP;
             long committed=(long)typeof(ManualBattleController).GetField("requestSequence",PrivateInstance).GetValue(controller);
@@ -176,10 +190,12 @@ namespace YesterdayConvoy.Tests
             Assert.That(view.PlayCount,Is.EqualTo(1));Assert.That(battle.OrderStrikes,Is.EqualTo(strikes));Assert.That(battle.Orders,Is.EqualTo(orders));Assert.That(battle.DP,Is.EqualTo(dp));
             battle.SetPaused(true);Assert.That(controller.UseCampaignOrder(false),Is.False);Assert.That(controller.UseCampaignOrder(true),Is.False);Assert.That(view.PlayCount,Is.EqualTo(1));
             Assert.That(battle.Units.Any(u=>u.CardId=="CARD_M20"),Is.False,"Patriot is a visible formation member, not an invented order recipient.");
-            Assert.That(battle.CombatShots.Where(s=>s.SynergyOrder).All(s=>battle.FindUnit(s.SourceId)?.CardId!="CARD_M20"),Is.True);
+            Assert.That(battle.LatestGuerrillaOrder,Is.Not.Null);
+            Assert.That(battle.LatestGuerrillaOrder.SourceIds.All(id=>battle.FindUnit(id)?.CardId!="CARD_M20"),Is.True);
+            Assert.That(battle.CombatShots.Any(s=>s.SynergyOrder),Is.False,"The committed volley replaces the old per-target order shots.");
         }
 
-        [UnityTest]public IEnumerator GeometryConvergesShattersAndClearsWhilePauseSpeedAndAudioUseTheSameClock()
+        [UnityTest]public IEnumerator GeometryConvergesAndAudioIgnoresBattleDoubleSpeedWhilePauseAndSkillSlowMotionRemain()
         {
             yield return LoadFormation();
             // A normal FrostNova deployment provides the real skill-menu slow-motion control.
@@ -209,10 +225,10 @@ namespace YesterdayConvoy.Tests
             finally{clipCommands.Clear();clipCommands.DisableScissorRect();Graphics.ExecuteCommandBuffer(clipCommands);clipCommands.Release();}
             Assert.That(ChangedPixels(arriving,gathered),Is.GreaterThan(1000));Assert.That(arrivalVertices.SequenceEqual(gatheredVertices),Is.False,"Opaque portrait geometry must move toward the centre.");
             Assert.That(arrivalOffsets.Take(7).Any(p=>p.sqrMagnitude>100),Is.True);Assert.That(view.PaneOffsets.All(p=>p.sqrMagnitude<.01f),Is.True,"Every pane must arrive at its fixed radial slot.");
-            float peakOpacity=view.Opacity;
             AdvanceTo(view,.85f);Capture(view);Assert.That(view.SoundPlayCount,Is.Zero,"The approved original sound belongs to breakup, not entrance.");
             AdvanceTo(view,1.10f);var fractured=Capture(view);yield return null;
-            Assert.That(view.VisibleFragmentCount,Is.GreaterThan(30));Assert.That(view.Opacity,Is.EqualTo(peakOpacity).Within(.001f));
+            Assert.That(view.VisibleFragmentCount,Is.GreaterThan(30));
+            Assert.That(gatheredVertices.SequenceEqual(view.GeometryVertices),Is.False,"Actual textured fragments still move as the battle is revealed.");
             Assert.That(ChangedPixels(gathered,fractured),Is.GreaterThan(1000),"Breakup must alter the actual opaque geometry, not only the whole-frame alpha.");
             Assert.That(view.SoundPlayCount,Is.EqualTo(1));
             var originalSound=Resources.Load<AudioClip>("GuerrillaOrder/followup-original");Assert.That(originalSound,Is.Not.Null);
@@ -226,8 +242,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(battle.Clock,Is.EqualTo(clock));Assert.That(view.Age,Is.EqualTo(age));
             CollectionAssert.AreEqual(pausedVertices,view.GeometryVertices);CollectionAssert.AreEqual(pausedImage,Capture(view));
             Assert.That(sound.timeSamples,Is.EqualTo(sample),"The actual original AudioSource must freeze with the vertices.");
-            battle.SetPaused(false);controller.ToggleSpeed();controller.Tick(.05f);yield return null;
-            Assert.That(view.Age-age,Is.EqualTo(.1).Within(.0001));Assert.That(view.SoundPaused,Is.False);Assert.That(view.SoundPlayCount,Is.EqualTo(1));
+            battle.SetPaused(false);controller.ToggleSpeed();clock=battle.Clock;controller.Tick(.05f);yield return null;
+            Assert.That(battle.Clock-clock,Is.EqualTo(.1).Within(.0001));
+            Assert.That(view.Age-age,Is.EqualTo(.05).Within(.0001));Assert.That(sound.pitch,Is.EqualTo(1).Within(.001f));
+            Assert.That(view.SoundPaused,Is.False);Assert.That(view.SoundPlayCount,Is.EqualTo(1));
             controller.ToggleSpeed();controller.OpenSkillMenu(receipt.EntityId);Assert.That(controller.SkillMenuOpen,Is.True);
             age=view.Age;controller.Tick(1);yield return null;
             Assert.That(view.Age-age,Is.EqualTo(.03).Within(.0001));Assert.That(sound.pitch,Is.EqualTo(.03f).Within(.001f));controller.CloseSkillMenu();
@@ -268,6 +286,108 @@ namespace YesterdayConvoy.Tests
             Assert.That(Difference(full,extended,new Vector2(.39f,.77f)),Is.GreaterThan(20));
             foreach(var probe in Probes)Assert.That(Difference(full,extended,probe),Is.Zero,"Extensions cannot displace original members.");
             yield return null;
+        }
+
+        [UnityTest]public IEnumerator OneAndTwoBattleSpeedHaveIdenticalElapsedTimeGeometryPixelsAndOriginalSoundRate()
+        {
+            yield return LoadFormation();yield return StartRunning();
+            var battle=controller.Battle;var view=controller.GetComponent<GuerrillaOrderView>();
+            view.Play(Originals);double clock=battle.Clock;controller.Tick(.65f);
+            Assert.That(view.Age,Is.EqualTo(.65f).Within(.0001));Assert.That(battle.Clock-clock,Is.EqualTo(.65).Within(.0001));
+            var oneSpeed=Capture(view);var oneVertices=view.GeometryVertices.ToArray();
+            controller.ToggleSpeed();Assert.That(controller.EffectiveSimulationSpeed,Is.EqualTo(2));
+            view.Play(Originals);clock=battle.Clock;controller.Tick(.65f);
+            Assert.That(view.Age,Is.EqualTo(.65f).Within(.0001));Assert.That(battle.Clock-clock,Is.EqualTo(1.3).Within(.0001));
+            CollectionAssert.AreEqual(oneSpeed,Capture(view),"The complete effect must have the same actual pixels after equal real delta, regardless of battle speed.");
+            CollectionAssert.AreEqual(oneVertices,view.GeometryVertices);Assert.That(view.Remaining,Is.EqualTo(1.95f).Within(.0001));
+            controller.Tick(.45f);Capture(view);yield return null;
+            var source=controller.GetComponents<AudioSource>().Single(s=>s.clip==Resources.Load<AudioClip>("GuerrillaOrder/followup-original"));
+            Assert.That(view.Age,Is.EqualTo(1.10f).Within(.0001));Assert.That(source.pitch,Is.EqualTo(1).Within(.001));
+            Assert.That(view.Playing,Is.True,"Two-times battle speed cannot finish the 2.6-second presentation early.");
+            controller.Tick(1.51f);Assert.That(view.Playing,Is.False);Assert.That(Cleared(Capture(view)),Is.True);
+        }
+
+        [UnityTest]public IEnumerator RealVolleyWaitsForThePresentationImpactThenDamagesEveryAliveGuardAndRendersThoseExactHits()
+        {
+            // The authored dedicated encounter supplies four guards; the generic sandbox only has two.
+            // Keep a real multi-target impact after the explicit early-death boundary below.
+            yield return LoadFormation("GuerrillaTrial");yield return EarnAndUseOrder(true);
+            var battle=controller.Battle;var view=controller.GetComponent<GuerrillaOrderView>();var volley=battle.LatestGuerrillaOrder;
+            Assert.That(volley,Is.Not.Null);Assert.That(volley.Resolved||volley.Cancelled,Is.False);
+            Assert.That(volley.SourceIds.Count,Is.GreaterThan(0));Assert.That(volley.Hits.Count,Is.Zero);
+            Assert.That(battle.CombatShots.Any(s=>!s.Resolved),Is.False,"All pre-order ordinary projectiles finished naturally before this explicit non-attacking fixture.");
+            Assert.That(battle.CombatShots.Any(s=>s.SynergyOrder),Is.False);
+            var guards=battle.Defenders.Where(d=>d.Alive).ToArray();Assert.That(guards.Length,Is.GreaterThanOrEqualTo(3));
+            var participants=volley.SourceIds.Select(battle.FindUnit).ToArray();Assert.That(participants.All(u=>u!=null&&u.Active),Is.True);
+            var distant=guards.Last();
+            // Explicit far, visible runtime target, beyond every original participant's normal range.
+            // Authored assets are unchanged, and targeting eligibility was already checked by the real commit.
+            var farPoints=new[]{new Vector3(6,.04f,-3),new Vector3(-6,.04f,-3),new Vector3(6,.04f,3),new Vector3(-6,.04f,3)};
+            var far=farPoints.OrderByDescending(p=>participants.Min(u=>GroundDistance(p,u.Motion.Position)-battle.UnitCombat(u).UnitRange)).First();
+            typeof(DefenderState).GetProperty("Position").SetValue(distant,far);
+            Assert.That(participants.All(u=>GroundDistance(distant.Position,u.Motion.Position)>battle.UnitCombat(u).UnitRange+.1f),Is.True);
+            var before=guards.ToDictionary(d=>d.EntityId,d=>d.Health);
+            controller.Tick(.85f);Capture(view);
+            Assert.That(view.Age,Is.EqualTo(.85f).Within(.0001));Assert.That(volley.Age,Is.EqualTo(.85f).Within(.0001));
+            Assert.That(volley.Resolved||volley.Cancelled,Is.False);Assert.That(volley.Hits.Count,Is.Zero);
+            foreach(var guard in guards)Assert.That(guard.Health,Is.EqualTo(before[guard.EntityId]),"No pursuit damage before the .9-second cue: "+guard.EntityId);
+            // Explicit early-death boundary fixture: the real committed order must use the
+            // living targets at impact and must not invent a hit/number for this removed guard.
+            var departed=guards.First(d=>d!=distant);
+            typeof(DefenderState).GetProperty("Health").SetValue(departed,0f);
+            guards=guards.Where(d=>d.Alive).ToArray();
+            Assert.That(guards.Length,Is.GreaterThanOrEqualTo(2));
+            battle.SetPaused(true);controller.Tick(2);yield return null;
+            Assert.That(view.Age,Is.EqualTo(.85f).Within(.0001));Assert.That(volley.Age,Is.EqualTo(.85f).Within(.0001));
+            Assert.That(volley.Hits.Count,Is.Zero);battle.SetPaused(false);
+            controller.ToggleSpeed();double clock=battle.Clock;controller.Tick(.04f);
+            Assert.That(battle.Clock-clock,Is.EqualTo(.08).Within(.0001));Assert.That(view.Age,Is.EqualTo(.89f).Within(.0001));
+            Assert.That(volley.Resolved,Is.False);Assert.That(volley.Hits.Count,Is.Zero);
+            controller.Tick(.02f);Capture(view);
+            Assert.That(view.Age,Is.EqualTo(.91f).Within(.0001));Assert.That(volley.Resolved,Is.True);Assert.That(volley.Cancelled,Is.False);
+            CollectionAssert.AreEquivalent(guards.Select(d=>d.EntityId),volley.Hits.Select(h=>h.TargetId));
+            Assert.That(volley.Hits.Select(h=>h.TargetId).Distinct().Count(),Is.EqualTo(guards.Length),"Exactly one aggregate result per damaged guard.");
+            Assert.That(volley.Hits.Any(h=>h.TargetId==departed.EntityId),Is.False);Assert.That(departed.Health,Is.Zero);
+            foreach(var hit in volley.Hits)
+            {
+                var target=battle.FindDefender(hit.TargetId);
+                Assert.That(hit.Damage,Is.GreaterThan(0));
+                Assert.That(before[hit.TargetId]-target.Health,Is.EqualTo(hit.Damage).Within(.01),"Visible hit values must be actual HP loss, not nominal attack: "+hit.TargetId);
+                Assert.That((hit.WorldPosition-target.Position).sqrMagnitude,Is.LessThan(.00001f));
+            }
+            Assert.That(volley.Hits.Any(h=>h.TargetId==distant.EntityId&&h.Damage>0),Is.True,"The distant guard is included by the all-field order.");
+            Assert.That(battle.CombatShots.Any(s=>s.SynergyOrder),Is.False,"There is no old per-target shot in addition to the all-field volley.");
+            float total=volley.Hits.Sum(h=>h.Damage);var after=guards.ToDictionary(d=>d.EntityId,d=>d.Health);
+            controller.Tick(.39f);var impact=Capture(view);float age=view.Age;
+            Assert.That(view.VisibleImpactTargetCount,Is.EqualTo(guards.Length));Assert.That(view.DisplayedDamage,Is.EqualTo(total).Within(.01));
+            view.BindVolley(null);var withoutImpact=Capture(view);
+            Assert.That(view.VisibleImpactTargetCount,Is.Zero);Assert.That(view.DisplayedDamage,Is.Zero);
+            Assert.That(ChangedPixels(impact,withoutImpact),Is.GreaterThan(100),"The true target flashes and damage digits must contribute independent GPU pixels, beyond the generic cinematic.");
+            view.BindVolley(volley);CollectionAssert.AreEqual(impact,Capture(view));Assert.That(view.Age,Is.EqualTo(age));
+            foreach(var guard in guards)Assert.That(guard.Health,Is.EqualTo(after[guard.EntityId]),"Repeated render/binding cannot apply a second hit.");
+            controller.Tick(.10f);Capture(view);
+            Assert.That(battle.LatestGuerrillaOrder,Is.SameAs(volley));Assert.That(volley.Hits.Count,Is.EqualTo(guards.Length));
+            foreach(var guard in guards)Assert.That(guard.Health,Is.EqualTo(after[guard.EntityId]),"Resolved volley is idempotent.");
+        }
+
+        static float GroundDistance(Vector3 a,Vector3 b)
+        {Vector3 delta=a-b;delta.y=0;return delta.magnitude;}
+
+        [UnityTest]public IEnumerator TerminalBeforeImpactCancelsActualVolleyButLetsTheIndependentVisualTailFinishWithoutFakeDamage()
+        {
+            yield return LoadFormation();yield return EarnAndUseOrder(true);
+            var battle=controller.Battle;var view=controller.GetComponent<GuerrillaOrderView>();var volley=battle.LatestGuerrillaOrder;
+            controller.Tick(.35f);var health=battle.Defenders.ToDictionary(d=>d.EntityId,d=>d.Health);double clock=battle.Clock;
+            Assert.That(volley.Resolved||volley.Cancelled,Is.False);
+            var finish=typeof(ManualBattle).GetMethod("FinishForTesting",PrivateInstance);
+            Assert.That((bool)finish.Invoke(battle,new object[]{battle.RunId,false}),Is.True);controller.Tick(0);
+            Assert.That(view.Playing,Is.True);Assert.That(controller.SettlementVisible,Is.False);
+            controller.Tick(.95f);Capture(view);
+            Assert.That(volley.Cancelled,Is.True);Assert.That(volley.Hits.Count,Is.Zero);Assert.That(battle.Clock,Is.EqualTo(clock));
+            Assert.That(view.VisibleImpactTargetCount,Is.Zero);Assert.That(view.DisplayedDamage,Is.Zero);
+            foreach(var guard in battle.Defenders)Assert.That(guard.Health,Is.EqualTo(health[guard.EntityId]));
+            controller.Tick(1.31f);Assert.That(view.Playing,Is.False);Assert.That(Cleared(Capture(view)),Is.True);
+            Assert.That(controller.SettlementVisible,Is.True);Assert.That(volley.Hits.Count,Is.Zero);
         }
 
         Sprite Solid(Color color)

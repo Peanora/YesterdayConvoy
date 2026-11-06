@@ -62,6 +62,7 @@ namespace YesterdayConvoy
         }
         void ResetAdvancedSynergies()
         {
+            ResetGuerrillaOrders();
             golemPulses.Clear();orderEntities.Clear();crewContacts.Clear();halfEntities.Clear();orderKinds.Clear();orderRequests.Clear();infectionBursts.Clear();
             Orders=OrdersUsed=OrderStrikes=0;HalfOrderPending=GolemDeployed=golemContact=false;
         }
@@ -142,11 +143,13 @@ namespace YesterdayConvoy
             if(targets.Length==0)return false;
             Orders-=cost;orderRequests[requestId]=half;
             bool completing=half&&HalfOrderPending;
+            float power=GuerrillaTier==2?.6f:GuerrillaTier==4?.8f:.9f;
+            CommitGuerrillaOrder(targets,power);
             foreach(var u in targets)
             {
-                var c=UnitCombat(u);var d=ChooseDefender(u,c.UnitRange);float power=GuerrillaTier==2?.6f:GuerrillaTier==4?.8f:.9f;
+                var c=UnitCombat(u);
                 u.LastAttackTime=Clock;u.LastAttackEmpowered=false;u.IsMoving=false;
-                combatShots.Add(new CombatShot(u.EntityId,d.EntityId,false,false,u.Motion.Position,d.Position,Clock+c.AttackWindup/u.LastAttackRate,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(u)*power){SynergyOrder=true});OrderStrikes++;
+                OrderStrikes++;
                 if(half&&!completing)halfEntities.Add(u.EntityId);
                 if(GuerrillaTier>=4&&c.Melee){u.SynergyShield=Mathf.Max(u.SynergyShield,u.MaxHealth*(GuerrillaTier==4?.10f:.15f));u.SynergyShieldUntil=Clock+(GuerrillaTier==4?3:5);}
             }

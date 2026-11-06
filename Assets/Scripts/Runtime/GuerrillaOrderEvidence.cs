@@ -15,6 +15,19 @@ namespace YesterdayConvoy
             public bool passed;
             public string[] checks,slots;
             public int plays,sounds;
+            public string[] impactTargets;
+            public float[] impactDamage;
+            public float totalDamage;
+        }
+
+        void AdvanceGuerrillaEvidenceTo(GuerrillaOrderView view,float targetAge)
+        {
+            float remaining=targetAge-view.Age;
+            if(remaining<-.0001f)throw new InvalidOperationException("Guerrilla evidence already passed target age "+targetAge+": "+view.Age);
+            if(remaining<=0)return;
+            float rate=Mathf.Min(1,EffectiveSimulationSpeed);
+            if(rate<=0)throw new InvalidOperationException("Cannot advance guerrilla evidence while paused.");
+            Tick(remaining/rate);
         }
 
         bool GuerrillaLayerCoversGui(GuerrillaOrderView view)
@@ -84,7 +97,14 @@ namespace YesterdayConvoy
             }
             for(int i=0;i<1600&&Battle.Phase==BattlePhase.Running;i++)
             {
-                if(Battle.Orders>=6&&UseCampaignOrder(false))yield break;
+                if(Battle.Orders>=6)
+                {
+                    // Only isolate this measurement after real deployment/contact earned its
+                    // points. Drain already-fired ordinary shots before accepting the wave;
+                    // no pending ordinary damage can then pollute the actual HP comparison.
+                    foreach(var unit in Battle.Units)unit.NextAttackTime=Battle.Clock+1000;
+                    if(Battle.CombatShots.All(shot=>shot.Resolved)&&UseCampaignOrder(false))yield break;
+                }
                 Tick(.05f);if(i%10==0)yield return null;
             }
             throw new InvalidOperationException("Real combat could not earn/spend a guerrilla order: phase="+Battle.Phase+" points="+Battle.Orders+" tier="+Battle.GuerrillaTier+" used="+Battle.OrdersUsed);
@@ -97,6 +117,7 @@ namespace YesterdayConvoy
             Action<string,bool> check=(name,value)=>{checks.Add(name+"="+value);passed&=value;Debug.Log("GUERRILLA_ORDER_EVENT "+name+"="+value);};
             var view=GetComponent<GuerrillaOrderView>();
             string[] slots=null;
+            string[] impactTargets=null;float[] impactDamage=null;float totalDamage=0;
             try
             {
                 yield return new WaitForSecondsRealtime(1);Time.timeScale=0;
@@ -117,25 +138,31 @@ namespace YesterdayConvoy
                 var charge=ChargeGuerrillaForEvidence(false);
                 while(charge.MoveNext())yield return charge.Current;
                 slots=view.SlotMembers.ToArray();
-                check("realOrderSuccessPlaysOnce",view.PlayCount==1&&Battle.OrdersUsed==1&&Battle.OrderStrikes>0);
+                var volley=Battle.LatestGuerrillaOrder;
+                var guardHealth=Battle.Defenders.Where(d=>d.Alive).ToDictionary(d=>d.EntityId,d=>d.Health);
+                check("realOrderSuccessPlaysOnce",view.PlayCount==1&&Battle.OrdersUsed==1&&volley!=null&&!volley.Resolved&&!volley.Cancelled&&volley.SourceIds.Count>0);
                 check("allSevenFormationMembersAndTwoEmptyExtensions",slots.Take(7).All(id=>id!=null)&&slots.Skip(7).All(id=>id==null));
                 check("undeployedPatriotStillDisplayed",slots.Contains("CARD_M20")&&Battle.Units.All(u=>u.CardId!="CARD_M20"));
                 check("resourcesAndShaderAvailable",view.AssetsReady&&view.PrepareMaterial().shader.isSupported);
                 int initialSounds=view.SoundPlayCount;
-                Tick(.22f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,.22f);yield return null;yield return null;
                 var entering=view.GeometryVertices.ToArray();var offsets=view.PaneOffsets.ToArray();
                 check("independentPanesEnterFromOutside",offsets.Take(7).Any(p=>p.sqrMagnitude>100)&&view.VisiblePaneCount>0&&view.SoundPlayCount==initialSounds);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"converging.png"));yield return null;
-                Tick(.43f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,.65f);yield return null;yield return null;
                 check("sevenPortraitsGatherWithTwoReservedSlots",view.VisiblePaneCount==9&&view.VisiblePortraitCount==7&&view.VisibleFragmentCount==0&&
                     view.PaneOffsets.All(p=>p.sqrMagnitude<.01f)&&!entering.SequenceEqual(view.GeometryVertices));
                 yield return new WaitForEndOfFrame();
                 check("actualFullScreenLayerCoversHud",GuerrillaLayerCoversGui(view));
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"full-formation-peak.png"));yield return null;
-                Tick(.20f);yield return null;
-                check("originalSoundWaitsForBreakup",view.SoundPlayCount==initialSounds);
-                Tick(.20f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,.85f);yield return null;
+                check("originalSoundAndActualWaveWaitForBreakup",view.SoundPlayCount==initialSounds&&!volley.Resolved&&volley.Hits.Count==0&&
+                    guardHealth.All(p=>Battle.FindDefender(p.Key).Health==p.Value));
+                AdvanceGuerrillaEvidenceTo(view,1.05f);yield return null;yield return null;
                 check("portraitGlassFracturesAndOriginalSoundStartsOnce",view.VisibleFragmentCount>30&&view.SoundPlayCount==initialSounds+1);
+                impactTargets=volley.Hits.Select(h=>h.TargetId).ToArray();impactDamage=volley.Hits.Select(h=>h.Damage).ToArray();totalDamage=impactDamage.Sum();
+                check("fullFieldWaveDealsRecordedActualHealthLoss",volley.Resolved&&!volley.Cancelled&&volley.Hits.Count==guardHealth.Count&&
+                    volley.Hits.All(h=>h.Damage>0&&guardHealth.ContainsKey(h.TargetId)&&Math.Abs(guardHealth[h.TargetId]-Battle.FindDefender(h.TargetId).Health-h.Damage)<.01f));
                 Battle.SetPaused(true);Tick(0);yield return null;
                 double clock=PresentationClock;float age=view.Age;var frozen=view.GeometryVertices.ToArray();
                 var sound=GetComponents<AudioSource>().Single(s=>s.clip==Resources.Load<AudioClip>("GuerrillaOrder/followup-original"));
@@ -145,32 +172,37 @@ namespace YesterdayConvoy
                     sample==sound.timeSamples&&frozen.SequenceEqual(view.GeometryVertices));
                 check("pausedFailureDoesNotReplay",!UseCampaignOrder(false)&&view.PlayCount==1);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"fracture-paused.png"));yield return null;
-                Battle.SetPaused(false);ToggleSpeed();clock=PresentationClock;Tick(.05f);yield return null;
-                check("doubleSpeedUsesPresentationClock",Math.Abs(PresentationClock-clock-.1)<.0001&&view.SoundPlayCount==initialSounds+1);ToggleSpeed();
-                Tick(.50f);yield return null;yield return null;
+                Battle.SetPaused(false);ToggleSpeed();clock=Battle.Clock;age=view.Age;Tick(.05f);yield return null;
+                check("doubleSpeedKeepsFixedAnimationAndOriginalPitch",Math.Abs(Battle.Clock-clock-.1)<.0001&&Math.Abs(view.Age-age-.05f)<.0001f&&
+                    Math.Abs(view.Age-1.10f)<.0001f&&Math.Abs(sound.pitch-1)<.0001f&&view.SoundPlayCount==initialSounds+1);ToggleSpeed();
                 check("fragmentsDriftAndDissolveIndependently",view.VisibleFragmentCount>0&&!frozen.SequenceEqual(view.GeometryVertices));
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"dissolving.png"));yield return null;
-                Tick(.55f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,1.30f);yield return null;yield return null;
+                check("visibleGlobalImpactFeedbackUsesActualTotals",view.VisibleImpactTargetCount==volley.Hits.Count&&Math.Abs(view.DisplayedDamage-totalDamage)<.01f);
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"full-field-hit-damage.png"));yield return null;
+                AdvanceGuerrillaEvidenceTo(view,2.20f);yield return null;yield return null;
                 check("portraitsDisappearBeforeLightTail",view.Playing&&view.VisiblePortraitCount==0&&view.VisibleFragmentCount==0);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"light-tail.png"));yield return null;
-                Tick(.41f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,2.61f);yield return null;yield return null;
                 check("completeMotionClears",!view.Playing&&view.GeometryVertices.Count==0&&view.SoundPlayCount==initialSounds+1);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"effect-ended.png"));yield return null;
                 ReplaySandbox();while(ArtLoading)yield return null;yield return null;
                 check("replayClearsEffect",!view.Playing&&double.IsNegativeInfinity(view.PendingUntil));
                 charge=ChargeGuerrillaForEvidence(true);
                 while(charge.MoveNext())yield return charge.Current;
+                var terminalVolley=Battle.LatestGuerrillaOrder;
                 check("removedFormationMemberStaysEmpty",view.SlotMembers[4]==null&&view.SlotMembers[3]=="CARD_M20"&&view.SlotMembers[7]==null&&view.SlotMembers[8]==null);
-                Tick(.65f);yield return null;yield return null;
+                AdvanceGuerrillaEvidenceTo(view,.65f);yield return null;yield return null;
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"missing-member-peak.png"));yield return null;
                 check("missingPortraitDoesNotDeployPatriot",view.VisiblePortraitCount==6&&Battle.Units.All(u=>u.CardId!="CARD_M20"));
-                Tick(.07f);yield return null;
+                AdvanceGuerrillaEvidenceTo(view,.72f);yield return null;
                 int terminalSounds=view.SoundPlayCount;
                 loopTestSettlementOpen=true;check("explicitTerminalFixture",TryTestSettlement(false));
                 clock=Battle.Clock;var health=Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health)).ToArray();
                 Tick(.30f);yield return null;yield return null;
                 check("terminalCrossesSoundCueWithoutMoreCombat",view.Playing&&view.VisibleFragmentCount>30&&Battle.Clock==clock&&!SettlementVisible&&
-                    view.SoundPlayCount==terminalSounds+1&&health.SequenceEqual(Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health))));
+                    view.SoundPlayCount==terminalSounds+1&&terminalVolley.Cancelled&&terminalVolley.Resolved&&terminalVolley.Hits.Count==0&&
+                    health.SequenceEqual(Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health))));
                 Tick(1.20f);yield return null;
                 check("terminalKeepsOnlyLightTail",view.Playing&&view.VisiblePortraitCount==0&&Battle.Clock==clock);
                 Tick(.50f);yield return null;yield return null;
@@ -183,17 +215,23 @@ namespace YesterdayConvoy
                     ReplaySandbox();while(ArtLoading)yield return null;
                     charge=ChargeGuerrillaForEvidence(false);
                     while(charge.MoveNext())yield return charge.Current;
+                    bool captureAtDoubleSpeed=Environment.GetCommandLineArgs().Contains("-guerrillaOrderCaptureDoubleSpeed");
+                    if(captureAtDoubleSpeed&&SimulationSpeed!=2)ToggleSpeed();
                     string frames=Path.Combine(directory,"frames");Directory.CreateDirectory(frames);
                     int captureSounds=view.SoundPlayCount;
+                    var capturedVolley=Battle.LatestGuerrillaOrder;
                     // Actual Player-rendered simulation frames, not interpolated concept art.
                     // Six simulation-zero lead frames, then the complete 2.6-second effect and clear tail.
                     for(int frame=0;frame<204;frame++)
                     {
                         if(frame>=6)Tick(1f/60);
+                        if(frame==84&&captureAtDoubleSpeed)
+                            check("doubleSpeedCaptureKeepsFullCinematicDuration",SimulationSpeed==2&&view.Playing&&Math.Abs(view.Age-79f/60)<.001f);
                         yield return new WaitForEndOfFrame();
                         ScreenCapture.CaptureScreenshot(Path.Combine(frames,frame.ToString("D3")+".png"));yield return null;
                     }
-                    check("capturedCompleteLiveMotion",!view.Playing&&view.GeometryVertices.Count==0&&view.SoundPlayCount==captureSounds+1);
+                    check("capturedCompleteLiveMotion",!view.Playing&&view.GeometryVertices.Count==0&&view.SoundPlayCount==captureSounds+1&&
+                        capturedVolley.Resolved&&!capturedVolley.Cancelled&&capturedVolley.Hits.Count>0);
                 }
                 complete=true;
             }
@@ -201,7 +239,8 @@ namespace YesterdayConvoy
             {
                 Time.timeScale=scale;passed&=complete;
                 File.WriteAllText(Path.Combine(directory,"result.json"),JsonUtility.ToJson(new GuerrillaOrderEvidenceResult
-                    {passed=passed,checks=checks.ToArray(),slots=slots,plays=view!=null?view.PlayCount:0,sounds=view!=null?view.SoundPlayCount:0},true));
+                    {passed=passed,checks=checks.ToArray(),slots=slots,plays=view!=null?view.PlayCount:0,sounds=view!=null?view.SoundPlayCount:0,
+                        impactTargets=impactTargets,impactDamage=impactDamage,totalDamage=totalDamage},true));
                 Debug.Log("GUERRILLA_ORDER_PLAYER_CHECK passed="+passed);Application.Quit(passed?0:1);
             }
         }

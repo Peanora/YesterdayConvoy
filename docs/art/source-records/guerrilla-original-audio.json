@@ -4,7 +4,7 @@
   "resource_key": "GuerrillaOrder/followup-original",
   "status": "Approved V2 source integrated; Unity import, GPU scene timing/pause checks and standalone D3D11 Player passed",
   "user_confirmed_scope": "The Currency Wars follow-up team's screen-shatter / all-out-attack release sound; V2 dynamic preview approved for game integration",
-  "runtime_sync": "Play once at the V2 screen-shatter / attack-release moment, 0.9 simulated seconds after the cut-in starts",
+  "runtime_sync": "Play once at the V2 screen-shatter / attack-release moment, 0.9 cinematic seconds after the cut-in starts; original pitch at both 1x and 2x combat speed, pause freezes playback",
   "source_game": "Honkai: Star Rail / Currency Wars",
   "event": {
     "name": "Ev_sfx_GridFight_FollowUp_Timeline",

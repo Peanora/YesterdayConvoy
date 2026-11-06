@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-06：游击演出恒速与真实全场追击（验证中）
+
+- 人类本轮明确二倍速不影响演出，并回答“全场守军都实际受伤”。沿用原分支/PR #88，实时main仍b3d947a，开始时仅有已约定保留的两未跟踪项。模型统一全场命中与演出反馈在本轮授权范围，未改场景/Prefab/Packages/ProjectSettings。
+- Unity6000.6.5f1完整EditMode490/490（guerrilla-global-edit.xml）、相关D3D11 PlayMode27/27（guerrilla-global-play-final.xml）通过。新增5个模型case与3个综合GPU场景case；覆盖全场/远路/高台、混合物法与减免、真实HP预算、.89前无伤/.9统一一次、半令/幂等/来源死亡/暂停/终局取消/重开，以及1×/2×同实际时间同动画像素、战斗仍2×、原声pitch1、真实命中数字独立GPU贡献。首轮26/27唯一失败是多目标用例误选双守军泛用场景；改为实际四守军GuerrillaTrial，保留提前死亡后仍多目标的断言后27/27通过。Windows构建和独立Player待验；下面V2记录为旧版历史。
+
+| 项目 | 采用来源 | 真实触发/时钟 | 运行读取点 | 当前状态 |
+|---|---|---|---|---|
+| 九角色切面 | 已确认V2原图/几何 | 成功军令编队快照；独立演出时钟 | GuerrillaOrderView | BOUND，GPU恒速通过 |
+| 原总攻音 | 已确认原Wwise声段 | 0.9演出秒；1×/2×同音高 | followup-original/UpdateSound | BOUND，样本暂停/音高通过 |
+| 全场实际伤害 | 本轮人类明确规则 | 模型GuerrillaOrderVolley；Advance双delta | 每个存活守军DamageDefender | BOUND，模型/GPU实际HP通过 |
+| 扫击/受伤数字 | 现有原生网格/字体 | 只读同批实际Hits；重开/终局取消清理 | BattlefieldImpact/BindVolley | BOUND，GPU开关对照通过；Player待验 |
+
 ## 2026-11-06：游击队V2真实几何汇聚与原音
 
 - 用户在项目外V2动态视频看稿后明确“可以，做进游戏”，确认声段为拼屏碎裂/总攻击出手。沿用codex/guerrilla-fullscreen-cutin及原PR #88；实时main仍b3d947a，当前V1基线c8a3281，原两个本地未跟踪项不动。没有改场景、Prefab、Packages或ProjectSettings，不改军令事务及伤害。

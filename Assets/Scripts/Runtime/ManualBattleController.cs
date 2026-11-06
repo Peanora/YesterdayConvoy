@@ -44,8 +44,7 @@ namespace YesterdayConvoy
         private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
         private double UnitDeathTail(DeployedUnitState unit) => Math.Max(MonsterOriginalVfx.DeathTail(unit),OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
             Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0));
-        private double NativeVfxPendingUntil => Math.Max(guerrillaOrderView?.PendingUntil??double.NegativeInfinity,
-            Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity));
+        private double NativeVfxPendingUntil => Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity);
         private double DeathTail
         {
             get
@@ -59,6 +58,7 @@ namespace YesterdayConvoy
         {
             get
             {
+                if(guerrillaOrderView?.Playing==true)return true;
                 if(CombatFeedbackPresentationPending)return true;
                 if(PresentationClock<NativeVfxPendingUntil)return true;
                 foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit)) return true;
@@ -250,7 +250,9 @@ namespace YesterdayConvoy
                 terminalPresentationElapsed=Math.Max(terminalPresentationElapsed,
                     Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),
                         terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
-            Battle.Advance(delta*EffectiveSimulationSpeed);
+            float orderDelta=delta*GuerrillaPresentationRate;
+            Battle.Advance(delta*EffectiveSimulationSpeed,orderDelta);
+            guerrillaOrderView?.AdvancePresentation(orderDelta);
             StepBattleShopLoop();
             SyncViews();
             UpdatePreview();

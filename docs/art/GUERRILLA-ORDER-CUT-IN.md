@@ -1,4 +1,4 @@
-# 游击队V2独立切面聚拢与碎裂
+# 游击队恒速拼屏与真实全场追击
 
 人类于2026-11-06认可项目外V2动态视频并授权接入。V1只改变整屏图片透明度的演出已被否决，旧技术结果保留在QA历史中，不能作为V2完成证据。
 
@@ -8,7 +8,11 @@
 
 UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员交给独立GuerrillaOrderView。显示层不选择攻击受益者，不写资源、军令或伤害。Play可额外接收已判定的转职成员ID与Sprite；现阶段上游仍只有原生成员，因此两扩展槽为空，本轮不新增转职玩法。成功的前/后半令可各播一次，失败不播。
 
-根据已批准视频采用2.6模拟秒试验节奏：0.08秒开始逐片入场，约0.475秒聚齐、0.49秒冲击、0.59–0.90秒短停；0.90–2.10秒每片分成12个独立带纹理碎片，随后只留少量碎光至2.60秒。原生渲染读取共享PresentationClock，暂停冻结所有几何和音频，倍速/技能慢速跟随；终局只延续表现尾，不推进战斗。重开、换关和禁用清理。
+2026-11-06追加人类要求后采用2.6演出秒节奏（1×/2×相同）：0.08秒开始逐片入场，约0.475秒聚齐、0.49秒冲击、0.59–0.90秒短停；0.90–2.10秒每片分成12个独立带纹理碎片，随后只留少量碎光至2.60秒。演出使用由Controller.Tick推进的独立累计时间，1×/2×等速；原音pitch保持1，暂停冻结几何和音频，既有技能菜单0.03×慢速保留。终局直接等待Playing结束，不将该时域混入战斗PresentationClock；终局不再结算新军令伤害。重开、换关和禁用清理。
+
+最新人类明确选择“全场守军都实际受伤”。模型TryGuerrillaOrder成功时提交GuerrillaOrderVolley，保留费用/次数/参与人数/资格/半令排除和近战护盾；Advance(战斗delta,演出delta)在0.9演出秒对每个存活守军各结算原参与者60/80/90%攻击预算，逐源保留物/法、冻结增伤以及目标护甲/抗性/减免；不再叠加旧单体CombatShot，不分摊全场总量，不递归产令或固有技能。来源提前死亡/复起/离场不贡献，终局取消未出手批次。
+
+每批Hits只记录各目标实际HP损失。碎裂点接蓝白贯穿扫击，暗幕在0.94–1.36秒退开，玻璃碎片仍漂移但迅速降低遮挡；真实受伤点爆光和大号数字、目标数/总伤害读同批Hits，不预测Attack或写HP。View的BindVolley只绑定记录，绘制和音效不触发伤害。普通战斗在2×仍加速，军令出手与原声保持固定节奏。
 
 完整几何、晶核、吸入线、交叉光束和碎光通过同一独立CommandBuffer离屏渲染路径生成，显式设全viewport、关闭scissor并为每层绑定纹理；LateUpdate提前合成，OnGUI只绘制最终RT，支持实际GPU输出验证；透明度正确合成后用IMGUI前景绘制，保持既有16:9视口与输入。运行时资源只包含人物纹理、必要Shader、原声音频和meta，不导入看稿HTML、参考录屏或加工工作区。
 
@@ -18,6 +22,6 @@ UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员�
 
 角色设计和音频均保留其原有真实权利状态。用户看稿确认、接入及源码上传要求不是权利人授权，不将原音或派生图登记为CC0。
 
-最终运行源码a5b844e的Edit485/485、相关GPU Play24/24、独立Player25/25及Windows构建0错误通过；具体范围与未测限制以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+此前a5b844e的验证为单体追击/倍速耦合旧版历史，本轮恒速与全场追击的新结果以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
 
 Windows产物保持Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe；Editor入口YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows复用原角色准备、场景清单和配置验证。不自动ZIP/Releases，不自动合并PR。
