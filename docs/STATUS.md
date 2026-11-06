@@ -1,5 +1,13 @@
 # 当前工程状态
 
+## 2026-11-07：StreamingAssets源资源分类迁移
+
+已将原StreamingAssets的1644个资源文件分类移动：PNG在Art的角色/特效/UI目录，117份JSON在Data/ArtCatalogs（103份运行manifest、14份来源/维护记录）。1527张PNG原始字节与1848个既有文件/目录GUID均保留；工程内StreamingAssets仅留说明。ArtSourcePaths统一编辑器/Player路径，PreparedArtTools保留原缓存键并按当前清单生成Player资源；安装器、预览器、塔露拉打包器及素材清单同步新路径。没有删除早期美术或修改玩法、场景、Prefab、Packages、ProjectSettings。
+
+运行源码`b3b7e2b`：完整EditMode504/504、相关D3D11 PlayMode32/32通过；Windows x64构建成功、0错误，本地入口`Builds/Windows/YesterdayConvoy.exe`。独立Player实际上传1551个预处理纹理、验证103份清单及商店PNG，零PNG回退；1655个输出文件与预期/缓存逐文件比对无缺失、多余或字节差异。另有可见初雪8/8、塔露拉自然双倒下/手动火雨13/13通过，已查看截图。未运行全量PlayMode、第二机、全分辨率、长局平衡或人工完整通关；详细数据见QA。目录说明见[工程结构](PROJECT_STRUCTURE.md)及[角色加载](ART_LOADING.md)。
+
+分支`codex/streaming-assets-layout`从实时main `b3d947a`建立并快进承接当前试玩`8ca1c11`（未合并PR #88）；人类确认后将原52项Mandragora/Mephisto .meta修改及两个未跟踪项原样保留、不提交。早期美术已在项目外整理12组/213资源预览，静态优先候选25项等待人类另行确认，本轮未删。以下均为此前历史记录。
+
 ## 2026-11-06：塔露拉追击头像读取修复
 
 通用CardDefinition.Portrait补上已有OriginalTalulahArt来源，转职追击读取当前原作头像，避免回退到旧漫画卡面。未替换素材或改GUID；完整Edit501/501、相关D3D11 Play26/26、可见独立Player9/9通过，包含真实九人转职军令的实际Sprite与原作/旧图GPU对照。运行源码728c37d，本地Windows构建2449477554字节、0错误，入口Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe，已查看实际追击截图，正常退出。未测全量Play、第二机或媒体故障注入；下面为此前版本记录。

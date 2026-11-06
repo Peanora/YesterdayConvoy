@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-07：StreamingAssets源资源分类与构建交付
+
+- 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。
+- 1644个源文件按图片/JSON分类迁移，StreamingAssets仅保留说明。迁移前后逐文件SHA256和GUID核对通过；独立Git blob核查1527张PNG与1848个既有文件/目录GUID保持。117份JSON含103份运行manifest及14份来源/维护记录，原图/清单/必要meta全部随源码跟踪；来源及权利状态不因迁移改变。原DefaultImporter已由Unity真实导入为TextureImporter（图片）/对应文本导入器，GUID未重建；首次导入的版本升级提示不冒称C#编译失败。
+- `artifacts/asset-layout-edit.xml`：Unity6000.6.5f1完整EditMode **504/504**，0失败/跳过。新增3项覆盖分类清单/不解码、ExtraClips/阶段白名单与陈旧缓存排除、拒绝向工程源目录导出。原塔露拉19段增量和41页阶段断言保留；缩略图指纹包含裁切模式及cell，避免同PNG改清单格子后复用旧裁切。
+- `artifacts/asset-layout-play.xml`：D3D11相关PlayMode **32/32**，0失败/跳过。涵盖ArtLoading、MonsterSelection、Campaign、ShopMap、DefenderVfx、MonsterOriginalVfx、OriginalCombatVfxLayer、TalulahScene/Phase/Attack/Death；不是全量PlayMode。准备阶段实际复用1487源PNG缓存，重建64张v2指纹缩略；动作帧/模拟时序和原PNG内容未改。
+- 运行源码`b3b7e2b73744ff9435495f09e45d61c0e24280b1`，`BaselineTools.BuildWindows`真实成功、退出0、0错误（`artifacts/asset-layout-build.log`）。BuildReport汇总1,045,805,952字节；此值不包括后处理另外复制的资源，不将它与旧版本汇总值直接比较为包体缩减。后处理按manifest生成1655文件：1551个ycart、103个manifest、1个商店PNG，共316,257,980字节；没有复制14份来源记录、37张未绑定塔露拉页或旧Library散落缓存。有效ExtraClips继续交付。项目源文件保留，不要求队友另传缓存。
+- `artifacts/asset-layout-build-audit.json`：独立按源manifest重算预期并逐文件比较构建产物/源JSON或缓存SHA256，1655文件缺失0、多余0、字节差异0。`-artPayloadSmokeTest`开发Player真实逐页读取和GPU上传全部1551纹理，六大包均有manifest和图集，商店PNG实际解码，PNG回退0、错误0、退出0（`asset-layout-payload-player/result.json`）。这是加载验证，不是1551项独立玩法测试。
+- 可见1280×720 D3D11 Player：`-nativeVfxSmokeTest D27` **8/8**，真实事件/原生Sprite/Shader与尺寸/暂停/实际GPU变化/不写伤害/重开通过，10282个原生层开关差像素；`-talulahManualRainSmokeTest` **13/13**，自然承伤双倒下与最终死亡、B阶段手动火雨、手焰换帧/暂停/恢复/自然消散及六秒雨结束通过。已查看D27全屏和塔露拉B火焰展开实图；没有把测试夹具或脚本Tick冒称OS鼠标操作/自然平衡。日志与PNG分别在`artifacts/asset-layout-native-player`、`asset-layout-talulah-player`。
+- 维护脚本实际验证：5套PowerShell安装器解析、2套Python AST、动作包只读12段/1167帧/25页+2隐藏等待态、native只读39段/4218帧/83页，源报告哈希/帧SHA/逐像素/网格/填充/枢轴通过。未执行重新安装或重打包写入。
+- 本地交付`Builds/Windows/YesterdayConvoy.exe`，应保留整个Windows目录。未运行第二机离线、所有分辨率、完整PlayMode、长局平衡或人工完整通关。本轮没有早期美术删除授权：项目外12组/213资源预览保留，A06/A08/A10/A11共25资源约4.37MiB仅静态未发现引用，等待人类看稿确认后另行删除并验证。
+
 ## 2026-11-06：塔露拉转职追击头像修复
 
 - 原因：ShowGuerrillaOrder经CardDefinition.Portrait读取转职肖像，通用getter漏了OriginalTalulahArt分支，因而回退到Talulah.asset序列化的旧TalulahComic/V2卡面；原作PNG及PreparedArt源哈希正常。现优先读取已有TalulahOriginal/portrait，不新增/替换图片，不改场景、Prefab、配置资产或GUID。
