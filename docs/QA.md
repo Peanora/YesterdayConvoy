@@ -1840,3 +1840,11 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 - 经验阈值、阵容容量、无部署/击杀任务、Won/Lost自动结算、补给/中断不发、实际增量截断、历史XP保留、三星补偿一星、九张库存/正式高费委托拒绝已由逻辑测试覆盖。自然测试使用现有正常战斗和真实委托，不使用FinishForTesting或篡改守军。
 
 本轮Windows构建/独立Player与可见窗口验收尚未运行，完成后追加实际结果。未做完整13关自然成型率、长期平衡、第二机或全分辨率验收。
+
+
+独立Player补充：运行源码aabb23b、artifacts/mudrock-growth-build.log构建1045846289字节、0错误、真实Unity退出0。以TEMP为工作目录启动1920×1080 Direct3D11可见Player，`-mudrockGrowthSmokeTest -mudrockGrowthRequireClicks`的20项检查全部True、真实Player退出0（artifacts/mudrock-growth-player/result.json）。正常委托/三合一及7次自然胜利形成XP0→6→6→14→24→30→42→48，无FinishForTesting或临时生命/攻击夹具；V正常部署验证7500血/2000攻/14DP/每场一次/免控。鼠标真实点击构筑、阵营培养、巨像培养和免费弩手转职，六次GUI等待均由实际窗口操作完成；看过初始培养页、真实经验插值/升级、封顶说明、转职及自然V结算截图。17张截图仅本地artifacts，显式IV/V预置与自然链分开记录。
+
+之后仅新增普通`-mudrockCultivation`启动路由及tools/play_mudrock_trial.cmd，源码c2e568e；用于交付可正常持续游玩的直达入口，不带自动化烟测。最终同目录构建、直达入口结果在下方追加；上述7战自然链对应aabb23b的完全相同培养/战斗代码。未做正式13关自然成型概率、长期平衡、第二机或全分辨率验证。保留原52项meta字节一致、两个未跟踪项不动；不ZIP/Releases、不自动合并main。
+
+
+最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。
