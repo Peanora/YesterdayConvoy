@@ -39,7 +39,8 @@ namespace YesterdayConvoy
         }
         IEnumerator HerdEvidenceMotion(string directory)
         {
-            if(!StartLoopNextBattle())throw new InvalidOperationException("Motion capture could not enter the saved trial.");
+            if(Loop.CanShop&&!StartLoopNextBattle())throw new InvalidOperationException("Motion capture could not enter the saved trial.");
+            if(!Loop.CanDeploy)throw new InvalidOperationException("Motion capture requires a prepared encounter.");
             Battle.Begin();Battle.SetPaused(false);
             var receipt=Battle.TryDeployRole(Battle.RunId,++requestSequence,Battle.Entry,"CARD_M21");
             if(!receipt.Success)throw new InvalidOperationException("Motion capture deployment failed.");
