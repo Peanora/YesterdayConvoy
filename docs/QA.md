@@ -1,5 +1,149 @@
 # 验证证据与回归
 
+## 2026-11-07：StreamingAssets源资源分类与构建交付
+
+- 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。
+- 1644个源文件按图片/JSON分类迁移，StreamingAssets仅保留说明。迁移前后逐文件SHA256和GUID核对通过；独立Git blob核查1527张PNG与1848个既有文件/目录GUID保持。117份JSON含103份运行manifest及14份来源/维护记录，原图/清单/必要meta全部随源码跟踪；来源及权利状态不因迁移改变。原DefaultImporter已由Unity真实导入为TextureImporter（图片）/对应文本导入器，GUID未重建；首次导入的版本升级提示不冒称C#编译失败。
+- `artifacts/asset-layout-edit.xml`：Unity6000.6.5f1完整EditMode **504/504**，0失败/跳过。新增3项覆盖分类清单/不解码、ExtraClips/阶段白名单与陈旧缓存排除、拒绝向工程源目录导出。原塔露拉19段增量和41页阶段断言保留；缩略图指纹包含裁切模式及cell，避免同PNG改清单格子后复用旧裁切。
+- `artifacts/asset-layout-play.xml`：D3D11相关PlayMode **32/32**，0失败/跳过。涵盖ArtLoading、MonsterSelection、Campaign、ShopMap、DefenderVfx、MonsterOriginalVfx、OriginalCombatVfxLayer、TalulahScene/Phase/Attack/Death；不是全量PlayMode。准备阶段实际复用1487源PNG缓存，重建64张v2指纹缩略；动作帧/模拟时序和原PNG内容未改。
+- 运行源码`b3b7e2b73744ff9435495f09e45d61c0e24280b1`，`BaselineTools.BuildWindows`真实成功、退出0、0错误（`artifacts/asset-layout-build.log`）。BuildReport汇总1,045,805,952字节；此值不包括后处理另外复制的资源，不将它与旧版本汇总值直接比较为包体缩减。后处理按manifest生成1655文件：1551个ycart、103个manifest、1个商店PNG，共316,257,980字节；没有复制14份来源记录、37张未绑定塔露拉页或旧Library散落缓存。有效ExtraClips继续交付。项目源文件保留，不要求队友另传缓存。
+- `artifacts/asset-layout-build-audit.json`：独立按源manifest重算预期并逐文件比较构建产物/源JSON或缓存SHA256，1655文件缺失0、多余0、字节差异0。`-artPayloadSmokeTest`开发Player真实逐页读取和GPU上传全部1551纹理，六大包均有manifest和图集，商店PNG实际解码，PNG回退0、错误0、退出0（`asset-layout-payload-player/result.json`）。这是加载验证，不是1551项独立玩法测试。
+- 可见1280×720 D3D11 Player：`-nativeVfxSmokeTest D27` **8/8**，真实事件/原生Sprite/Shader与尺寸/暂停/实际GPU变化/不写伤害/重开通过，10282个原生层开关差像素；`-talulahManualRainSmokeTest` **13/13**，自然承伤双倒下与最终死亡、B阶段手动火雨、手焰换帧/暂停/恢复/自然消散及六秒雨结束通过。已查看D27全屏和塔露拉B火焰展开实图；没有把测试夹具或脚本Tick冒称OS鼠标操作/自然平衡。日志与PNG分别在`artifacts/asset-layout-native-player`、`asset-layout-talulah-player`。
+- 维护脚本实际验证：5套PowerShell安装器解析、2套Python AST、动作包只读12段/1167帧/25页+2隐藏等待态、native只读39段/4218帧/83页，源报告哈希/帧SHA/逐像素/网格/填充/枢轴通过。未执行重新安装或重打包写入。
+- 本地交付`Builds/Windows/YesterdayConvoy.exe`，应保留整个Windows目录。未运行第二机离线、所有分辨率、完整PlayMode、长局平衡或人工完整通关。本轮没有早期美术删除授权：项目外12组/213资源预览保留，A06/A08/A10/A11共25资源约4.37MiB仅静态未发现引用，等待人类看稿确认后另行删除并验证。
+
+## 2026-11-06：塔露拉转职追击头像修复
+
+- 原因：ShowGuerrillaOrder经CardDefinition.Portrait读取转职肖像，通用getter漏了OriginalTalulahArt分支，因而回退到Talulah.asset序列化的旧TalulahComic/V2卡面；原作PNG及PreparedArt源哈希正常。现优先读取已有TalulahOriginal/portrait，不新增/替换图片，不改场景、Prefab、配置资产或GUID。
+- Unity6000.6.5f1：完整EditMode501/501（artifacts/talulah-pursuit-edit.xml）、相关D3D11 PlayMode26/26（artifacts/talulah-pursuit-play.xml）通过。覆盖原游击高档/恒速全场演出、塔露拉阶段/攻击/死亡，以及冷读原作单头像≤1纹理、其他卡序列化回退。新增真实九种编队准备→两转职→Begin赠令→M03远距部署→成功军令，0.65秒实际第九槽Sprite等于原作；实际RenderTo与显式原作供图像素相同，与旧serialized图在塔露拉区域显著不同。
+- 运行源码728c37de7aa73b9d1b01774906a0fdf61f5c1f78：Windows构建2449477554字节、0错误（artifacts/talulah-pursuit-build.log），本地Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。可见1920×1080 D3D11独立Player9/9通过（artifacts/talulah-pursuit-player/result.json），进程9136正常退出；实际第九槽为TalulahOriginal/portrait，112324个区域像素与原作对照差0、与旧图差98565。已查看talulah-pursuit-peak.png，左下为当前原作塔露拉。真实只执行一次军令并消耗开战2点，其余三次Play仅为同年龄纯渲染对照与恢复，不新增军令/伤害。
+- 仓库6429跟踪文件检查通过，必要新脚本meta已跟踪，现有原作图片/meta持续跟踪。构建产生的52处默认未覆盖WebGL导入噪声逐文件严格比对后恢复，仅保留原.vscode/和PackageManagerSettings.asset未跟踪项。未运行全量PlayMode、第二机或缺失/损坏原作媒体故障注入；未重新生成美术，不自动ZIP/Releases或合并main。构建后仅文档补记。
+
+## 2026-11-06：游击8/9档、整令无次数上限及真实转职
+
+- 人类已确认8/9草案并覆盖为所有档位取消整令次数上限，后续明确本轮加入准备阶段手动指定最多两种转职角色。保持原功能分支/PR #88，实时main仍b3d947a，两个既有本地未跟踪项保留。没有改场景、Prefab、配置资产、Packages或ProjectSettings。
+- 完整EditMode501/501（guerrilla-high-edit-final.xml）、相关D3D11 PlayMode48/48（guerrilla-high-play-final.xml）通过。核心新增11个case证明2/4/6/8/9各可超过原次数并仅受资源限制、9远距先手/8补点、20普通实体全参与、技能/控制/支援排除、普通动作/CD不重置、开战赠令唯一、6档半令循环、额外成员快照原子/去重/锁档。新增4个综合Play证明真实转职生命周期、正式补给→实战→跨关、真实积令支持第5次整令、9张真实肖像与备战空槽不挤位、8/9实际HP和恒速音画；回归商店/跨关/9专项与旧羁绊。首次编译修正详情滚动区局部变量重名；首次场景46/48两失败是补给关已Won无法开发判胜、长HP窗口混入留声机治疗，改走正式补给流程及.89→.91命中瞬间后保留严格断言。最终Windows与真实点击Player结果如下；下面旧条目仅代表历史。
+
+
+- 运行源码774743815c70b91120bf24f882ba8a4846d3d15d：Windows构建2449462995字节、0错误（guerrilla-high-build.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。仓库6427个跟踪文件/meta检查通过，新增规则/转职/验证脚本meta完整；现有图集、原声和角色卡面复用，未增加位图或音频，原PNG/音频字节与GUID保持。每轮52处仅默认未覆盖WebGL导入噪声均经逐文件严格比对恢复，两个原本本地未跟踪项保留。
+- 1920×1080渲染的可见D3D11独立Player32/32（guerrilla-high-player/result.json）通过。通过computer-use对实际窗口完成5次点击：构筑入口→转职tab→指定士兵M07→指定弩手M08→关闭，侧栏实际7→8→9、两个已购卡显示徽标，prepare-eight-tier/prepare-nine-tier截图确认；不是只调SetGuerrillaTransfer接口冒充GUI。验证程序gui-step/ack只等待与核对外部点击，不注入GUI事件。
+- 8档开战2点不能整令，第一次真实接触补到3后按180%整令扣3；9档未接敌、尚未普攻的单源即可耗2先手，全场4守军在.9演出秒各实际损失140、合计560，严格.89→.91 HP窗口与Hits相等，后续留声机治疗正常保留。真实额外收入10点加初始2点支持6次整令，随后余额0拒绝；军令派生不产点，重复Begin/同场同步不刷2，新场Begin恰给2一次，转职跨同shop重开保持。8/9只整令，战斗锁定成员，固定七原生+两真实转职肖像、2×恒速/原声pitch1、真实声音样本暂停与全场数字均通过。
+- 可选输出204张实际Player逐演出帧，9名普通来源、9张肖像、2×标头及完整2.6秒演出。项目外guerrilla-nine-tier.mp4为60fps/3.4秒实机逐帧，后配同一原声资源0.55增益、视频1.0秒出手，非实时系统录音；视频是另一次九来源出手，界面总伤害11743为取整显示，不能与上述单源严格窗口560混写。已看准备界面、九肖像峰值和实际扣血图，最终进程45240正常退出。
+- 未运行全量PlayMode、第二机、全分辨率、长局自然平衡或另行主观试听。9级9种库存、耐久守军、延后守军攻击/技能和测试用补给/结算是明确夹具，部署、真实接触收入、整令支出和HP仍走生产逻辑；无人工写Orders/Hits。转职按种类、免费整备指定，不涉及道具掉落或跨挑战存档。转职肖像复用原卡面，未重绘高清头像。构建后仅文档/来源记录更新，不自动ZIP/Releases或合并main。
+
+## 2026-11-06：游击演出恒速与真实全场追击
+
+- 人类本轮明确二倍速不影响演出，并回答“全场守军都实际受伤”。沿用原分支/PR #88，实时main仍b3d947a，开始时仅有已约定保留的两未跟踪项。模型统一全场命中与演出反馈在本轮授权范围，未改场景/Prefab/Packages/ProjectSettings。
+- Unity6000.6.5f1完整EditMode490/490（guerrilla-global-edit.xml）、相关D3D11 PlayMode27/27（guerrilla-global-play-final.xml）通过。新增5个模型case与3个综合GPU场景case；覆盖全场/远路/高台、混合物法与减免、真实HP预算、.89前无伤/.9统一一次、半令/幂等/来源死亡/暂停/终局取消/重开，以及1×/2×同实际时间同动画像素、战斗仍2×、原声pitch1、真实命中数字独立GPU贡献。首轮26/27唯一失败是多目标用例误选双守军泛用场景；改为实际四守军GuerrillaTrial，保留提前死亡后仍多目标的断言后27/27通过。最终布局将合计条移到下方空区，GPU重跑27/27（guerrilla-global-play-layout.xml）通过；下面V2记录为旧版历史。
+
+| 项目 | 采用来源 | 真实触发/时钟 | 运行读取点 | 当前状态 |
+|---|---|---|---|---|
+| 九角色切面 | 已确认V2原图/几何 | 成功军令编队快照；独立演出时钟 | GuerrillaOrderView | VERIFIED，GPU/Player恒速通过 |
+| 原总攻音 | 已确认原Wwise声段 | 0.9演出秒；1×/2×同音高 | followup-original/UpdateSound | VERIFIED，样本暂停/音高通过 |
+| 全场实际伤害 | 本轮人类明确规则 | 模型GuerrillaOrderVolley；Advance双delta | 每个存活守军DamageDefender | VERIFIED，模型/GPU/Player实际HP通过 |
+| 扫击/受伤数字 | 现有原生网格/字体 | 只读同批实际Hits；重开/终局取消清理 | BattlefieldImpact/BindVolley | VERIFIED，GPU开关/Player实图通过 |
+
+
+- 最终运行源码e747ff0bd9183ea924fba28166e128b06e1a2f46，模型/核心测试代码与c2c534b的Edit490/490完全一致，最终GPU27/27；Windows构建2449425852字节、0错误（guerrilla-global-build-final.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。没有新增图片/音频资源或改GUID，新增群攻模型及meta随源码跟踪，仓库6417文件检查通过。
+- 1920×1080可见D3D11最终Player28/28（guerrilla-global-player-final/result.json）通过：.85前HP未变/原音未播，.9统一真实全场结算，四个guard各实际损失927.8125、合计3711.25；1.3秒目标数字/合计与记录一致。2×战斗时Tick(.05)推进Clock .10、演出Age .05、原音pitch1；捕获第84帧Age79/60仍在播放，完整2.6演出秒后清理。实际全屏七点覆盖、缺位/扩展、暂停/重开、终局取消不扣血与尾段均通过，已看全场命中实图；合计下移避免遮住头顶数字。
+- 最终捕获204张实际Player逐演出帧，2×标头，60fps/3.4秒；项目外guerrilla-global-2x.mp4后配同一跟踪原声、增益0.55，在视频1.0秒出手（0.1前导+0.9演出），不是实时系统音视频录制。耐久/延后普攻、自然排空旧弹道仅为真实军令独立验证夹具，不假造Orders或Hits；源码军令伤害不受该夹具影响。最终进程54692正常退出，未在本轮重现下方旧版导帧UIAutomation退出异常。
+- 未运行全量PlayMode、第二机、全分辨率及长局自然平衡，未另行主观试听。全场每目标预算保留原档位倍率属于本轮试验实现，尚未宣布平衡定案；原参与者资格仍需已有合法近战/射程目标，未部署拼屏角色不贡献伤害。最终构建后仅文档/来源记录变化，不自动ZIP/Releases或合并main。
+
+## 2026-11-06：游击队V2真实几何汇聚与原音
+
+- 用户在项目外V2动态视频看稿后明确“可以，做进游戏”，确认声段为拼屏碎裂/总攻击出手。沿用codex/guerrilla-fullscreen-cutin及原PR #88；实时main仍b3d947a，当前V1基线c8a3281，原两个本地未跟踪项不动。没有改场景、Prefab、Packages或ProjectSettings，不改军令事务及伤害。
+- 原音源为Ev_sfx_GridFight_FollowUp_Timeline的Double_Speed媒体745947550前0.90秒，和已批准V2样本字节一致；末30ms原有淡出，PCM16/48kHz/双声道，峰值-1.14807dBFS，RMS-12.366999。只读原包获取及两次公开视频波形匹配见art/source-records/guerrilla-original-audio.json。原合成音和生成器退役，不把用户接入/上传授权登记为权利人授权。
+- 最终运行源码a5b844e9fb0a2d482f3423ab03ed50cb4e0b3835：Unity6000.6.5f1完整EditMode485/485（artifacts/guerrilla-v2-edit-final.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play-final.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟保持单调，避免PendingUntil消失后回退。
+- 早期独立Player两次暴露完整效果仅出现在顶部窄条，离屏参考七点均为零，显式modelview重置没有解决。缩小到不含战斗的RenderProbe后，改为独立CommandBuffer明确目标/全viewport/关闭scissor/独立矩阵，每batch用PropertyBlock绑定纹理，LateUpdate先合成，OnGUI只绘制RT；同时修正原生字体取Alpha。GPU增加继承变换/状态恢复及22px硬件scissor回归；最终无战斗Probe1/1通过，不再把早期离屏通过冒称屏幕正确。
+- 最终Windows构建2449412581字节、0错误（guerrilla-v2-build-final.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe对应a5b844e。1920×1080可见D3D11 Player25/25通过（guerrilla-v2-player-final/result.json）：实际攒令/支出、未部署M20、满编/退编M19空位、聚拢/碎裂/独立消散/清理、0.9秒原音及真实暂停样本、2倍速、重开、终局跨声点且HP/Clock不变、尾段结束后不复活。完整屏幕在顶部按钮/血条/通知/底部卡栏七点对照生产合成通过；已查看实际满编、缺位、碎片消散和恢复战场PNG。
+- 可选入口输出204张真实Player逐模拟帧（60fps/3.4秒，含前导和清理），项目外MP4后配同一跟踪原音资源及运行增益0.55，不是实时系统音视频录制。图片、原音、Shader和必要meta随源码正常跟踪；完整仓库6415文件检查通过。每次Unity产生的52个默认未覆盖WebGL导入段均逐文件与HEAD严格比对后恢复，原两个本地未跟踪项保留。
+- 额外退出复验：导出204帧的50508进程在25项完成后退出时曾残留，正常CloseMainWindow后日志出现UIAutomationCore/UiaDisconnectAllProviders、USER32/COM及UnityPlayer原生异常栈；仅清理了本次验证进程。相同EXE随后不导帧复验24/24通过（guerrilla-v2-player-exit/result.json），进程4012正常退出，日志有完整CodeReloadManager/PlayerConnection清理。未定位该次原生异常根因，不将其登记为已修复，也不归因为特效脚本或截图；第二机未验。
+- 未运行完整PlayMode、第二台电脑、全分辨率、长局自然平衡或另行主观试听。耐久守军/延后攻击和显式终局仅为开发夹具，部署、命中、攒令与军令支出仍走实际事务。构建后仅更新文档和来源验证状态，不自动ZIP/Releases或合并main。下面V1结果仅为历史。
+
+## 2026-11-06：游击队V1历史技术结果（表现已被否决）
+
+- 用户已认可V1构图，明确“按当前编队显示”，缺席成员固定空位、预留两个转职槽、淡入淡出与短音效。新分支codex/guerrilla-fullscreen-cutin自实时main b3d947a建立，FF承接当前试玩0e98e1d依赖；原.vscode/和PackageManagerSettings.asset保留。没有改场景、Prefab、Packages或ProjectSettings，没有实现转职玩法或更改军令数值。
+- `artifacts/guerrilla-order-edit.xml`完整EditMode485/485；`artifacts/guerrilla-order-play.xml`相关D3D11 PlayMode23/23。新增3个综合场景用例验证真实部署/普通攻击产令后成功才播、准备/暂停失败不播、完整编队包含未部署M20、普通点击把M15退入备战后固定空位、暂停时实际AudioSource.timeSamples与透明度不推进、2倍速、自然淡出和重开。GPU使用生产材质逐个缺席七名人物，对应人物区域变化且其余人物区域不变；真实Sprite显示在两扩展槽，第3名不挤掉原成员。其余回归AdvancedSynergySceneTests、CampaignSceneTests、BattleInteractionTests、OverlappingEntrySceneTests；不是全量PlayMode。
+- 新测试和显式Player入口使用百万生命、延后守军攻击的运行时夹具，部署、普通攻击、军令积累与支出走原事务；没有写军令值或强制触发成功，不作为自然难度/平衡证明。首个Player在退编后取源夹具未收敛且隐藏窗口截图全黑，未计通过；改保留原守军坐标并按正常CD顺序部署两轮，嵌套异常保证写失败结果。没有改军令值/伤害或放宽成功条件。
+- 可见Player首次发现HUD、血条和卡栏盖在闪现图上。先改完整Shader合成到复用RenderTexture并用GUI队列绘制，相关图形重跑`guerrilla-order-play-final.xml`23/23，但完整屏幕仍暴露排序被撤销；缩小到GUIBehaviour的depth在finally被恢复，改每个GUI事件保留本组件深度。增加真实屏幕与生产材质在顶部按钮、血条、中央通知和底部卡栏的7点像素对照，不只检查离屏素材。该最终排序改动由下一条Player补验，没有把先前23项冒称成最新排序的全量GUI验证。
+- 最终运行源码`6fadf6d`的Windows构建2449336168字节、0错误（`artifacts/guerrilla-order-build-layer.log`）。1920×1080 Direct3D11独立Player`artifacts/guerrilla-order-player-layer/result.json`19/19通过：真实产令成功一次、失败/暂停失败不重播、未部署M20仍显示、七成员和两个空扩展、淡入/峰值/淡出、实际声音暂停、2倍速、自然消失、重开、正常退编后原槽空、终局表现不推进战斗，以及完整屏幕实际遮住HUD。已查看满编、右上缺位、淡入及淡出PNG；不是只看离屏Shader或反射字段。
+- 可选逐帧入口输出66张实际Player画面；项目外`guerrilla-in-game-v1.mp4`按60fps编码，并后配同一音效资源及运行音量0.55，方便用户看淡入淡出/试听；它是逐模拟帧预览，非实时音视频录屏。最终未重跑完整PlayMode、第二台电脑、全分辨率、长局自然难度或主观音色验收。源码构建后仅补文档，运行文件与6fadf6d相同；本轮52处仅默认未覆盖WebGL导入段经逐文件比对恢复，不覆盖他人改动，原两未跟踪项保持。仓库6414个跟踪文件与Unity元数据检查通过。
+- `shing.wav`原创程序合成，无原作采样或人声。ffprobe/ffmpeg核对0.64秒、48kHz双声道PCM16、峰值约-6dBFS、0削波、首尾静音和重复生成SHA一致。作者未实际试听，不称为精确复刻参考音色。参考货币战争公开视频未成功实际播放，.72秒节奏是本项目试验值。
+
+## 2026-11-06：感染集群误关窗与重新达档弹窗
+
+- 旧843a34e运行源码的1920×1080可见Player，Sky实际点击左侧感染行后点击集群主按钮，窗口立即关闭且主形态仍为爆裂，已复现（infection-choice-before-player/reproduction.json，复现后主动结束本次诊断，不算通过）。原因是GUI矩阵前后的鼠标坐标被重复换算，左列落在面板边界外。只改私有DrawCampaignControls取外层正确逻辑点，原形态事务保留。
+- 感染当前档位在SyncShopDeck成功刷新后比较，2/4/6上升边沿弹，下降更新观察值但不弹；普通同档重建/刷新/换形态不弹。StartCampaign新挑战重置，普通换关/返回整备保持。复用既有面板，无新美术、规则数值或场景变动。
+- infection-prompts-play.xml：相关D3D11 PlayMode32/32通过。新两项使用实际编队卡点击处理完成6→4→6重达，以及全退编到0再逐一回编1/2/3/4/5/6的提示/同档边界；初始6自动打开、选择集群后面板保持、刷新/形态重建不重复、开战选择与换预置拒绝、返回整备同档不弹、新挑战重弹均通过。关闭弹窗为明确UI完成反射夹具；不直接写档位或编队。实际鼠标另验，不将处理器测试冒称OS点击。原爆裂测试完成初始选择后继续核真实命中、GPU、暂停/终局/重开；回归九场景、其他羁绊、商店/UI、Campaign和拖动。
+- ff1e84de6ad05ca5a9820560904df2ee18733c03运行源码Windows构建2444461405字节、0错误（infection-prompts-build.log）。1920×1080可见D3D11独立Player16/16（infection-prompts-player/result.json）：实际鼠标选择集群后立即显示“主集群”且窗口保持，再选择甲壳/爆裂及副形态，低档禁用与战斗锁定通过；初始6自动打开、直接编队夹具降4不弹/恢复6自动重开也通过。2/4/6逐一退编/回编的操作处理器路径由上述场景测试验证，未冒称全部OS鼠标操作。旧爆裂两目标实际85伤害、786个独立效果开关差像素、暂停/尾段/重开复验通过，沿用明确耐久靶/显式致死/终局夹具，不作自然平衡证明。已核对即时集群选中画面与保存的形态/低档实图。
+- 本轮未重跑EditMode或全量套件；第二机、所有分辨率和长局平衡未验收。分支codex/infection-choice-prompts从实时main b3d947a建立，FF承接当前试玩0f8ee06（未合并#85及其依赖）；原两个本地未跟踪项隔离保留，不自动合并。52处仅默认WebGL导入段逐文件比对后恢复；仓库6388文件/meta检查通过。构建后仅补验证文档，运行文件与ff1e84d相同。
+
+## 2026-11-06：塔露拉B阶段手动火雨卡帧
+
+- 原因在TalulahAttackVfx.PresentUnit：B点火层与身体抬手共用hold=1.1666667，六秒动作的0.8–5.4秒冻结在ignite-B-caster/035。原素材59帧有变化，不是全局Clock停走。仅B附着层改为读取本次施法的真实经过时间，按原速单次1.9667秒完成爆发/消散；保留身体抬手和六秒地面火浪/移动锁、A表现、伤害/SP及全部阶段。
+- 先加真实场景回归，修复前talulah-manual-before.xml 0/1，明确在1.25→1.5秒仍同035帧处失败；未放宽断言。修复后talulah-manual-play.xml相关D3D11 PlayMode11/11，包含自然克洛丝伤害→首倒/自动雨→B、自然技力满后手动施放、实际附着层GPU开关差、换帧/地火位移、暂停/恢复、2.1秒短层清除而火雨/锁仍在、4秒持续、6.1秒清除与普攻恢复、重开，并回归原A攻击/死亡/橙雨/地图适配。
+- talulah-manual-edit.xml相关EditMode13/13，回归两次倒下、10波自动雨、保护、取消/死亡、星级开关、手动六波/SP及暂停。没有重跑全量Edit/Play或正式平衡测试。独立Player复用SandboxFeaturesEvidence自然阶段路径，补B手焰换帧/暂停/消散与六秒结束检查，新增显式-talulahManualRainSmokeTest仅运行塔露拉段；普通启动不执行。
+- 运行源码843a34eb85be1dc286511784fc7a5872ee6c61f3的Windows构建2444460790字节、0错误（talulah-manual-build.log）。可见D3D11独立Player13/13（talulah-manual-player/result.json），以-sandboxFeaturesSmokeTest配合-talulahManualRainSmokeTest运行塔露拉自然阶段段落：克洛丝真实射击约12.15秒首倒、45.15秒B、77.25秒终倒、110.25秒真死亡；自然SP就绪后手动施放，手焰可见/换帧/暂停恢复/单次消散而火雨继续、六秒正常结束均通过。已查看1.25秒、1.5秒与2.15秒实机截图，确认爆发→展开→消散而非保持大贴图。不是鼠标点击或全九场景重验。
+- 分支从实时main b3d947a建立、FF承接9d90d1e的现有试玩依赖，不自动合并；仅本轮表现/证据/回归与状态文档变动，不改场景、Prefab、Packages或ProjectSettings。52处仅默认未覆盖WebGL导入段经逐文件比对恢复；仓库6388文件/meta校验通过。原.vscode/与PackageManagerSettings.asset保留不提交覆盖。全量测试、第二机、密集多塔露拉并发和长期自然平衡未测；构建后仅补文档，运行文件与843a34e相同。
+
+## 2026-11-06：感染形态与爆裂反馈接入
+
+- 人类采用外部V1并确认共享接口/UI/反馈范围，codex/infection-feedback自实时main b3d947a建立并FF承接#83的68bbc2b依赖；保留原两个未跟踪项，不改场景、Prefab、Packages或ProjectSettings。
+- `infection-edit.xml`完整485/485。新增8项覆盖只读源信息/40法抗与三星、实际致死截断、目标数/边界/死者、暂停/重复死亡/重开、零命中、固有90物爆与羁绊35法爆独立、集群副体不重复爆裂。命中结果来自原结算，不通过显示层猜测。
+- `infection-play.xml`D3D11相关28/28。新增实际感染场景运行时耐久守军拷贝，原部署/最终死亡/0.2秒延迟触发两目标各85；检查预告、独立效果GPU开关、实际命中标签、暂停几何/时钟/伤害、终局1.2秒短尾及重开。运行时守军改数值用于明确夹具，原资产健康值保持。回归包括原感染/牧群自然受击触发、独立九场景、GUI遮挡/商店/拖动及原特效地面投影；并非全量PlayMode或自然整局平衡。
+- 最终运行源码af5c1899fab3c505c8f4860c24030e8005161c5a的Windows构建2444458990字节、0错误（infection-build-final.log）。可见D3D11独立Player13/13（infection-player-verified/result.json）：使用真实鼠标逐次点选三种主形态、不同副形态、4档禁用项和战斗锁定项；不是调用选择API代替GUI。已检查shape-choice-player、shape-four-tier-player及infection-burst-player实图，独立爆裂层开关差786像素。
+- Player爆裂段为明确开发夹具：猎狗走原部署事务，在保存路线的可见位置承受显式致死；两名100000生命耐久守军在真实半径内、其余移远并延后攻击，原事件结算两次实际85法伤/合计170。暂停延迟不推进、恢复只结算一次、原特效/实际命中标签、终局表现尾和重开通过。终局调用既有显式验证入口，不冒称自然通关或正常数值平衡；界面选择段使用真实场景与原选择事务。
+- 初始PowerShell点击辅助因Windows前台限制退出，不算通过且已从最终交付删除；首个Sky实机尝试超过旧30秒等待失败，随后仅将开发证据等待改为300秒、超时写失败并退出，重新执行上述最终Player通过。没有放宽游戏或伤害断言。52处仅默认WebGL导入噪声经逐文件比对恢复。仓库6388个跟踪文件与Unity元数据检查通过。构建后只更新文档并移除不可用辅助脚本，运行文件未变；原两个未跟踪项保留。第二机、全分辨率和多单位爆裂密集叠加的长期主观可读性未验收。
+
+## 2026-11-06：暴风雪伤害与5档冰封触发
+
+- 人类确认5档双触发与每波“60+目标最大生命2%”法伤试验值；沿用codex/snowstorm-feedback / PR #83，main仍b3d947a，原两个未跟踪项继续隔离。不新增美术，复用已通过的风雪与真实伤害反馈。
+- `snow-damage-edit.xml`完整EditMode477/477：四波法伤、平均星级/40法抗、真实扣血反馈、冻结保护不免伤、死者跳过、2/4档霜星冰封不触发、5档冰封可触发、自动环不触发、部分寒意清零、天气期间第二实体开大不续时/不清已有脉冲、三次碎冰原路径、暂停/重开/无第五波均通过。
+- `snow-damage-play.xml`D3D11相关图形/交互17/17通过，包括无霜星部署的真实三次碎冰、四批天气GPU差、暂停顶点/倒计时、天气淡出、提前终局/晚观察清理、重开、Campaign与拖动入口。
+- 运行源码7b8cae9b48a607a60e2c50be0f0cfa397aad10fc Windows构建2444426724字节、0错误（snow-damage-build.log）。可见D3D11独立Player16/16、天气开关差81520像素（snow-damage-player/result.json）。原14项外新增实际全场扣血反馈、仅部署霜星自然充满SP后手动冰封启动天气；后一条5档、0次碎冰、1次角色技能。已查看frostnova-weather-start截图的天气、提示与实际就绪消耗，不将截图当自然通关证据。
+- Player采用既有显式开发夹具：近门百万生命耐久靶、延后守军攻击/技能、第一条路径提供寒冷状态；真实普通攻击和手动技能仍走正常模型，未写天气计数或私有启动。伤害表达式与法抗/死亡/保护边界由领域测试精确核对，不以夸大的夹具血量认定正式平衡。场景、Prefab、包、工程设置不改；52处仅默认WebGL导入噪声经逐文件比对恢复。原两个未跟踪项保留；自然整局平衡、第二机、长期极端组合未验收。
+
+## 2026-11-06：暴风雪三次碎冰触发修订
+
+- 人类明确确认“雪怪5档累计3次羁绊碎冰→自动8秒暴风雪”；继续codex/snowstorm-feedback / PR #83，实时main仍b3d947a，保留#82依赖和原两个未跟踪隔离项。
+- `snow-charge-edit.xml`完整EditMode468/468。正常普攻与明确冻结状态夹具验证1/2/3进度、单次三目标碎冰仅计1、2档不蓄积、霜星冰封/自动冰环不触发、天气期间不蓄积或续时、结束后新三次、8秒四脉冲且天气不直接扣血、角色死亡及暂停/重开。
+- `snow-charge-play.xml`D3D11相关PlayMode17/17。实际SynergyTrial五种战前快照，仅部署M11/M12，以TryApplyCold状态夹具提供冻结，真实不同原卡普攻产生三次碎冰；未直接写寒意计数、未调用私有天气启动，也未改变角色或守军资产。图形差异、暂停顶点/倒计时、自然尾段、提前终局/晚观察、重开及现有Campaign/拖动交互通过。
+- `snow-charge-reset.xml`补充“累计1点后重开，再真实碎冰只得到新1点”1/1通过。当前469个领域用例按完整468加新增1项的最新结果均通过，未称单次全量469/469。
+- 运行源码6a548f9314b1dfdc85f4b1dc5d890cec078bd072 Windows构建2444424328字节、0错误（snow-charge-build.log）。可见D3D11独立Player14/14，四批天气独立开关差81520像素（snow-charge-player/result.json），已检查charge-two-of-three和weather-running图。检查真实三次碎冰、未部署霜星、归零、四批天气、实际提示、暂停、恢复、2倍、期间不积、提前终局清理、重开及8秒四次寒潮/尾段。
+- 开发Player证据入口使用明确近门耐久靶/延后守军攻击及寒冷状态夹具，真实普攻产生碎冰；终局沿用现有显式调试按钮，不是自然失败证明。没有修改角色/守军资产、场景、Prefab、Packages、ProjectSettings；52处默认WebGL导入噪声经逐文件比较恢复。原两个未跟踪项保留。自然阵容触发频率与整局平衡、第二机、极端并发技能长期测试尚未验收。
+
+## 2026-11-06：雪怪暴风雪反馈
+
+- 人类采用项目外动态看稿及明确接口范围；从实时main b3d947a建立codex/snowstorm-feedback，带入未合并#82的9d12217依赖。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖。
+- `snowstorm-edit.xml`全量466/466；新增/扩展真实不续时、到期可重触发、暂停、霜星取消/复起/最终死亡不撤销天气、2档不触发和只读起止/剩余时间。原脉冲/保护/伤害不变。
+- `snowstorm-play.xml`相关D3D11 19/19。新两项从真实五人阵容与霜星蓄SP施法开始，核四批天气Mesh的独立GPU开关差、显示不改Clock/HP、暂停顶点/剩余时间冻结、恢复运动、8秒四脉冲及0.65尾、重开。提前终局使用明确FinishForTesting夹具，核HUD立即隐藏、0.5秒表现尾、Clock/HP不再推进；不是自然胜负证据。
+- 首次独立Player11/12，发现提前结算后首次画面观察较晚时尾段起点延后。改为冻结的战斗Clock作为真实结算时刻，并把“无首帧观察即推进0.7秒”加入原终局测试；`snowstorm-play-final.xml`两项2/2，相关19项最新结果均通过，未放宽断言或改战斗规则。
+- 最终运行源码1f9be45 Windows构建2444422571字节、0错误（snowstorm-build-final.log）。可见D3D11独立Player12/12，天气四批网格开关产生81604个明显差异像素；真实五人编队/霜星蓄技施法、天气提示、暂停顶点与倒计时、恢复运动、2倍同钟、提前结算清除、重开、8秒四脉冲和自然淡出全部通过。提前结算是明确的原调试按钮夹具，未称自然胜负。
+- 实际查看weather-start-paused、weather-running、weather-ended截图；后者保留仍未到期的目标状态，不借天气结束统一解冻。证据artifacts/snowstorm-player-final/result.json。原纹理/程序风声已随源码，未宣称原作天气技能或完整Shader复现。
+- 仓库6377个跟踪文件/meta检查通过；52处仅新增默认未覆盖WebGL段的导入噪声经逐文件核对恢复。场景、Prefab、Packages、ProjectSettings未变，两个原本地未跟踪项保留。第二机及多首领同时开技能的长期组合/声音主观平衡未验收。
+
+## 2026-11-06：原作特效全范围接入验证
+
+- 已确认完整看稿及剩余同范围直接接入。194段独立原素材（怪物/共用80、守军114）、199页、12369帧进入StreamingAssets并随源码交付。保留原五名导演、角色身体/棋子、塔露拉橙火浪与全部既有规则；只额外按本轮要求修维维美朝向与群伤。
+- 首批D27实际Windows D3D11 Player8项通过、5467个效果开关差像素，已检查中心棋盘截图；构建/运行证据在artifacts/native-d27-centered。该证据不是所有194段逐项人工验收。
+- 集成EditMode首次462/463；唯一旧断言把总预热固定为5/24，新增公共层后失效。改为验证二阶段相对增加19段且不解码纹理，TalulahPhase定向10/10通过。按用例取最新结果，463项逻辑全部通过。
+- 集成GPU PlayMode首次125/131。六项失败分别为旧霜星层数/余mesh节点断言、守军技能夹具在普通出手提前结束，以及两处结算夹具未等待新原死亡尾段。修复后native-play-final.xml定向21/21，包含恢复的原大地图六人S3特效及原StrongholdChallengeSolution真实通关/重开；不改敌方或伤害凑测试。
+- 实机发现足底billboard下半被地板裁，新增显式XZ地面投影与俯角补偿，保留挂点/PPU/原图及正常深度遮挡。native-ground-play.xml首次17/18；新角点测试误把Sprite.bounds的非零Z厚度当实际图面，改为真实XY平面后native-ground-final.xml 1/1，严格正交误差<.01px及实际轻透视下上下半GPU/opaque遮挡通过。不是放宽阈值或改Shader绕过地板。
+- 当前133项场景用例按上述全量/定向记录取最新结果全部通过；余旧“EmbersEnd”测试改名为“OriginalLoopsClear”描述真实原循环清除，合并统计时视为同一用例。并非宣称单次全量133/133或逐帧人工验收全部素材。
+- 最终Windows构建源9a113a4，2444013103字节、0错误（native-ground-build.log）。D3D11可见Player：D27 8/8、同刻开关效果差10282像素；D22 8/8、差4360像素，均核真实事件、原Shader/单位Renderer尺度、暂停不扣血、相机绘制不改伤害及重开清理；已检查两幅实际截图。证据native-ground-d27/result.json与native-ground-d22/result.json。D22早先探针错误要求近战余发出CombatShot，远程怪停在范围外导致夹具未收敛；最终改核真实火墙施放事件，不改正常战斗。
+- 开发期间main以b3d947a压缩合并#80，其文件树与已继承的1f29370完全相同。保留旧工作分支，从实时main新建codex/vivi-original-vfx重落本轮增量为2ca5b7c，跟已实测9a113a4文件树完全相同；后续仅文档，无需重建相同运行文件。未直接改main、未重写旧分支或整文件丢弃双方修改。
+- 仓库6350个跟踪文件/meta检查通过；本轮场景、Prefab、Packages、ProjectSettings无变更。导入器52处只增未覆盖WebGL段，经逐文件比较后恢复；原.vscode/及PackageManagerSettings.asset仍保留未跟踪。第二机、全角色人工长局和完整原客户端附加控制脚本未验收。
+- 安赛尔/凛御银灰两条拖尾缺原驱动；望额外独爆和原邻接线未定位；荒芜拉普兰德一层额外自身UV旋流未重放；余按规则结束清除原循环，尚未重放原StopEmitting尾。原空控制节点不是可见资源。来源与适配见art/source-records/original-defender-vfx-2026-11-06.json及art/MONSTER_ORIGINAL_VFX-2026-11-06.md。
+
+## 2026-11-06：维维美朝向/群伤与原特效准备
+
+- 实时main a37f0e5，功能分支codex/vivi-facing-splash承接未合并#80，保留两个已确认本地隔离项。
+- 全量EditMode451/451（artifacts/vivi-edit.xml）。ViviCombatTests覆盖群伤边界/独立护甲、原目标先死、6弹/SP/暂停/取消、默认非Vivi行为、朝向/免控/动作锁；ViviMovementSceneTests核对两种实际SpriteRenderer模式与GIF退行时帧仍正播。
+- 图形首次19/20，失败为旧BattleInteraction结算夹具未等待上一轮新跳字1.05秒尾段；改测试等待并验证战斗Clock不走，重跑9/9。按fullname取最新结果，相关20个用例全通过；不是新增第二轮20个测试，也未称全量PlayMode通过。文件vivi-play.xml与vivi-play-final.xml。
+- 独立Player专用-viviCombatSmokeTest只在Development显式触发，运行快照夹具不改资产：右行/左转/恐惧/暂停，以及三原克洛丝5000HP/3甲、落点0/1.8/2.4的真实普攻→技力→手动技能群伤。b385cb9运行源码构建0错误，D3D11实际Player14项检查全部true（artifacts/vivi-player/result.json），两近目标各102实际伤害、2.4外目标0，消费1发弹药；已查看左右/恐惧/群伤截图。
+- 此条为开工时取源/采样记录，后续已通过完整看稿并进入上述集成验证。原代表探针不等于整套生命周期或游戏接入完成。全部范围见art/VFX-ORIGINAL-REPLACEMENT.md。
+
+
 ## 2026-11-06：战斗可观察性与专项场景集成
 
 - 基线main a37f0e5，吸收V5和已确认角色整合成果。只保留原.vscode/与PackageManagerSettings.asset，不提交覆盖；不自动合并。

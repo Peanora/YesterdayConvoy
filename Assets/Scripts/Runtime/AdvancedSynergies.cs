@@ -5,9 +5,25 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum InfectionForm { Swarm, Shell, Burst }
+    public sealed class InfectionBurstHit
+    {
+        public string EntityId {get;}
+        public Vector3 Position {get;}
+        public float Damage {get;}
+        internal InfectionBurstHit(string entityId,Vector3 position,float damage)
+        {EntityId=entityId;Position=position;Damage=damage;}
+    }
     public sealed class InfectionBurst
     {
         public Vector3 Position;public double At;public float Attack,Radius;public bool Resolved;
+        public string SourceId {get;internal set;}
+        public string CardId {get;internal set;}
+        public float TotalDamage {get;private set;}
+        readonly List<InfectionBurstHit> hits=new List<InfectionBurstHit>();
+        IReadOnlyList<InfectionBurstHit> visibleHits;
+        public IReadOnlyList<InfectionBurstHit> Hits=>visibleHits??(visibleHits=hits.AsReadOnly());
+        internal void RecordHit(string entityId,Vector3 position,float damage)
+        {hits.Add(new InfectionBurstHit(entityId,position,damage));TotalDamage+=damage;}
     }
     public sealed partial class ManualBattle
     {
@@ -39,13 +55,14 @@ namespace YesterdayConvoy
         {
             if(experience<0||invested<0||!Enum.IsDefined(typeof(InfectionForm),form)||!Enum.IsDefined(typeof(InfectionForm),second))throw new ArgumentException();
             int n=synergyStars.Keys.Count(CampaignBalance.Infected);InfectionTier=n>=6?6:n>=4?4:n>=2?2:0;
-            n=synergyStars.Keys.Count(CampaignBalance.Guerrilla);GuerrillaTier=n>=6?6:n>=4?4:n>=2?2:0;
+            GuerrillaTier=GuerrillaRules.TierForCount(guerrillaMembers.Count);
             n=synergyStars.Keys.Count(CampaignBalance.MudrockCrew);MudrockTier=n>=5?5:n>=4?4:n>=2?2:0;
             GolemCrewTwoStar=n==5&&synergyStars.Where(p=>CampaignBalance.MudrockCrew(p.Key)).All(p=>p.Value>=2);GolemInvestment=invested;
             InfectionShape=form;InfectionSecondShape=second==form?(InfectionForm)(((int)form+1)%3):second;GolemExperience=experience;
         }
         void ResetAdvancedSynergies()
         {
+            ResetGuerrillaOrders();
             golemPulses.Clear();orderEntities.Clear();crewContacts.Clear();halfEntities.Clear();orderKinds.Clear();orderRequests.Clear();infectionBursts.Clear();
             Orders=OrdersUsed=OrderStrikes=0;HalfOrderPending=GolemDeployed=golemContact=false;
         }
@@ -83,14 +100,18 @@ namespace YesterdayConvoy
         void OnAdvancedSynergyDeath(DeployedUnitState unit)
         {
             if(unit.InfectionBlast<=0||unit.InfectionBlastDone)return;
-            unit.InfectionBlastDone=true;infectionBursts.Add(new InfectionBurst{Position=unit.Motion.Position,At=Clock+.2,Attack=unit.InfectionBlast,Radius=unit.InfectionBlastRadius});
+            unit.InfectionBlastDone=true;infectionBursts.Add(new InfectionBurst{SourceId=unit.EntityId,CardId=unit.CardId,Position=unit.Motion.Position,At=Clock+.2,Attack=unit.InfectionBlast,Radius=unit.InfectionBlastRadius});
         }
         void ResolveInfectionBursts()
         {
             foreach(var burst in infectionBursts)
             {
                 if(burst.Resolved||Clock<burst.At)continue;burst.Resolved=true;
-                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
+                foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())
+                {
+                    float before=d.Health;DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
+                    burst.RecordHit(d.EntityId,d.Position,Mathf.Max(0,before-d.Health));
+                }
             }
         }
         void RecordSynergyContact(DeployedUnitState source)
@@ -107,26 +128,28 @@ namespace YesterdayConvoy
         {
             if(!u.Active||u.IsReviving||TalulahTransitionLocked(u)||u.SynergySupport||u.SkillAmmo>0||StrongholdInTransit(u.EntityId)||IsSkillActionPlaying(u)||u.FuelDying||u.PillarStunnedUntil>Clock||u.FearUntil>Clock||u.LureUntil>Clock||u.ShackleStunnedUntil>Clock||u.SprayStunnedUntil>Clock)return false;
             var c=UnitCombat(u);
+            bool expanded=GuerrillaRules.ForTier(GuerrillaTier).ExpandedEligibility;
             if(c.Effects.Flamerazer&&!u.IsBlocked||c.Effects.Harvester&&!u.IsBlocked)return false;
-            if(!c.CanAttack||Clock<u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate||c.Effects.FrostNova&&Clock<u.IceRingStartedAt+3||FirstSpeakerCasting(u))return false;
+            if(!c.CanAttack||!expanded&&Clock<u.LastAttackTime+UnitActionDuration(u)/u.LastAttackRate||c.Effects.FrostNova&&Clock<u.IceRingStartedAt+3||FirstSpeakerCasting(u))return false;
             if(u.Spray!=null&&!u.Spray.Ended||u.Shackle!=null&&!u.Shackle.Ended||c.Effects.Harvester&&u.HarvesterPhase!=HarvesterPhase.Combat||c.Effects.Flamechaser&&u.FlamePhase!=FlamechaserPhase.Soldier)return false;
-            return ChooseDefender(u,c.UnitRange)!=null;
+            return expanded||ChooseDefender(u,c.UnitRange)!=null;
         }
         public bool TryGuerrillaOrder(int runId,long requestId,bool half=false)
         {
             if(runId!=RunId||Phase!=BattlePhase.Running||IsPaused)return false;
             if(orderRequests.TryGetValue(requestId,out bool prior))return prior==half;
-            int cap=GuerrillaTier==2?1:2,cost=half?3:GuerrillaTier==2?4:GuerrillaTier==4?5:6;
-            if(GuerrillaTier==0||OrdersUsed>=cap||half&&GuerrillaTier!=6||!half&&HalfOrderPending||Orders<cost)return false;
-            var targets=units.Where(u=>CanReceiveOrder(u)&&(!half||!HalfOrderPending||!halfEntities.Contains(u.EntityId))).Take(half?6:GuerrillaTier==6?12:GuerrillaTier==4?8:6).ToArray();
+            var rule=GuerrillaRules.ForTier(GuerrillaTier);int cost=half?3:rule.Cost;
+            if(GuerrillaTier==0||half&&!rule.AllowsHalf||!half&&HalfOrderPending||Orders<cost||!defenders.Any(d=>d.Alive))return false;
+            var targets=units.Where(u=>CanReceiveOrder(u)&&(!half||!HalfOrderPending||!halfEntities.Contains(u.EntityId))).Take(half?6:rule.ParticipantLimit).ToArray();
             if(targets.Length==0)return false;
             Orders-=cost;orderRequests[requestId]=half;
             bool completing=half&&HalfOrderPending;
+            CommitGuerrillaOrder(targets,rule.AttackMultiplier);
             foreach(var u in targets)
             {
-                var c=UnitCombat(u);var d=ChooseDefender(u,c.UnitRange);float power=GuerrillaTier==2?.6f:GuerrillaTier==4?.8f:.9f;
-                u.LastAttackTime=Clock;u.LastAttackEmpowered=false;u.IsMoving=false;
-                combatShots.Add(new CombatShot(u.EntityId,d.EntityId,false,false,u.Motion.Position,d.Position,Clock+c.AttackWindup/u.LastAttackRate,c.ProjectileTime,c.UnitAttack*UnitAttackMultiplier(u)*power){SynergyOrder=true});OrderStrikes++;
+                var c=UnitCombat(u);
+                if(!rule.ExpandedEligibility){u.LastAttackTime=Clock;u.LastAttackEmpowered=false;u.IsMoving=false;}
+                OrderStrikes++;
                 if(half&&!completing)halfEntities.Add(u.EntityId);
                 if(GuerrillaTier>=4&&c.Melee){u.SynergyShield=Mathf.Max(u.SynergyShield,u.MaxHealth*(GuerrillaTier==4?.10f:.15f));u.SynergyShieldUntil=Clock+(GuerrillaTier==4?3:5);}
             }

@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         {
             root=root.Replace('\\','/');
             if(catalogs.TryGetValue(root,out var found))return found;
-            var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,root,"manifest.json")));
+            var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve(root+"/manifest.json")));
             if(data==null||data.version!=1||data.ppu<=0||data.clips==null)throw new InvalidDataException("Invalid art manifest: "+root);
             string id=Path.GetFileName(root);
             if((root.StartsWith("DefenderArt/")||root.StartsWith("MonsterCombatArt/"))&&data.task!=id)throw new InvalidDataException("Art ID mismatch: "+root);
@@ -31,7 +31,7 @@ namespace YesterdayConvoy
         public void Extras(string[] wanted)
         {
             if(wanted.Length==0)return;
-            string root=Root+"/ExtraClips";var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,root,"manifest.json")));
+            string root=Root+"/ExtraClips";var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve(root+"/manifest.json")));
             foreach(var item in data.clips)if(Array.IndexOf(wanted,item.key)>=0&&!Clips.ContainsKey(item.key))Add(root,new[]{item});
             foreach(string key in wanted)if(!Clips.ContainsKey(key))throw new InvalidDataException("Missing required clip: "+key);
         }
@@ -43,7 +43,7 @@ namespace YesterdayConvoy
                 foreach(var page in item.pages)
                 {
                     if(string.IsNullOrEmpty(page.file)||Path.GetFileName(page.file)!=page.file||page.count<=0||page.width<=0||page.height<=0||page.width>2048||page.height>2048)throw new InvalidDataException("Invalid art page.");
-                    string file=Path.Combine(Application.streamingAssetsPath,root,page.file);
+                    string file=ArtSourcePaths.Resolve(root+"/"+page.file);
                     if(!File.Exists(file)&&!File.Exists(file+".ycart"))throw new FileNotFoundException("Art page is missing",file);
                 }
                 Clips.Add(item.key,new ArtSequence{Root=root,Key=item.key,Name=Path.GetFileName(Root)+"/"+item.key,Count=item.count,Duration=item.duration,Fps=item.fps,Ppu=item.pixelsPerUnit>0?item.pixelsPerUnit:Ppu,PivotX=item.pivotX,PivotY=item.pivotY,Width=item.cell>0?item.cell:item.cellWidth,Height=item.cell>0?item.cell:item.cellHeight,Columns=item.columns,Pages=item.pages});
@@ -59,7 +59,7 @@ namespace YesterdayConvoy
                 {
                     // Prepared thumbnails are cropped from the exact old portrait, including M02-M10 idle crops.
                     string file=Path.Combine(Root,"card-preview.png");
-                    if(!File.Exists(Path.Combine(Application.streamingAssetsPath,file)+".ycart")&&!File.Exists(Path.Combine(Application.dataPath,"../Library/PreparedArt",file+".ycart")))file=Path.Combine(Root,"portrait.png");
+                    if(!File.Exists(ArtSourcePaths.Resolve(file)+".ycart")&&!File.Exists(Path.Combine(Application.dataPath,"../Library/PreparedArt",file+".ycart")))file=Path.Combine(Root,"portrait.png");
                     var texture=ArtMemoryCache.Texture(file,value);var sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),new Vector2(.5f,0),Ppu,0,SpriteMeshType.FullRect);
                     sprite.name=Path.GetFileName(Root)+"/portrait";value.Objects.Add(sprite);value.Frames=new[]{sprite};ArtMemoryCache.Put(key,value);return sprite;
                 }

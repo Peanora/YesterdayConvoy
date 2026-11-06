@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Tests
             foreach(string suffix in new[]{"","B"})
             {
                 string role=id+suffix;
-                var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"DefenderArt",role,"manifest.json")));
+                var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("DefenderArt/"+role+"/manifest.json")));
                 var idle=Array.Find(data.clips,c=>c.key=="idle");var art=DefenderArt.Load(role);
                 Assert.That(art.StartDuration,Is.GreaterThan(0));
                 foreach(var clip in data.clips)if(clip.pixelsPerUnit>0)

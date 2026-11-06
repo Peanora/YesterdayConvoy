@@ -26,18 +26,36 @@ namespace YesterdayConvoy.Tests
             c.Tick(.3f);yield return null;Assert.That(visual.FrameIndex,Is.GreaterThan(frame));
             c.Tick(.65f);yield return null;Assert.That(c.Battle.FrostSeals[0].FrozenTargets.Count,Is.EqualTo(1));
             Assert.That(c.Battle.Defender.FrozenUntil,Is.GreaterThan(c.Battle.Clock));Assert.That(unit.Motion.Position,Is.EqualTo(point));
-            var view=Object.FindAnyObjectByType<FrostSealView>();Assert.That(view.VisibleEffects,Is.EqualTo(2));
+            var view=Object.FindAnyObjectByType<FrostSealView>();var cast=c.Battle.FrostSeals.Single();
+            Assert.That(cast.SourceId,Is.EqualTo(unit.EntityId));Assert.That(cast.Resolved&&!cast.Cancelled,Is.True);
+            var target=c.Battle.FindDefender(cast.FrozenTargets.Single());
+            var casterStart=NativeLayer(view,"firstar_skill_02_start");
+            var targetIce=NativeLayer(view,"firstar_skill_02_range_02");
+            Assert.That(Vector3.Distance(casterStart.transform.position,cast.Position),Is.LessThan(.0001f),"Caster layers stay on the actual source.");
+            Assert.That(Vector3.Distance(targetIce.transform.position,target.Position),Is.LessThan(.0001f),"Black ice belongs to the frozen target, not the caster.");
+            Assert.That(targetIce.transform.position,Is.Not.EqualTo(casterStart.transform.position));
+            Assert.That(targetIce.sharedMaterial.shader.name,Is.EqualTo("YesterdayConvoy/TalulahNative"));
             CaptureEvidence(Camera.main);
-            var ice=view.GetComponentsInChildren<SpriteRenderer>().Single(r=>r.enabled&&r.sprite.name.StartsWith("FrostSeal/ice/"));
-            Sprite frozenFrame=ice.sprite;double clock=c.Battle.Clock;var camera=Camera.main;var cameraPosition=camera.transform.position;
-            c.Battle.SetPaused(true);c.Tick(10);yield return null;Assert.That(c.Battle.Clock,Is.EqualTo(clock));Assert.That(ice.sprite,Is.SameAs(frozenFrame));
+            var layers=view.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled).ToArray();
+            var frozenFrames=layers.Select(r=>r.sprite).ToArray();var frozenPositions=layers.Select(r=>r.transform.position).ToArray();
+            double clock=c.Battle.Clock,presentation=c.PresentationClock,freezeUntil=target.FrozenUntil;int pausedBodyFrame=visual.FrameIndex;
+            var camera=Camera.main;var cameraPosition=camera.transform.position;
+            c.Battle.SetPaused(true);c.Tick(10);yield return null;Assert.That(c.Battle.Clock,Is.EqualTo(clock));
+            Assert.That(c.PresentationClock,Is.EqualTo(presentation));Assert.That(target.FrozenUntil,Is.EqualTo(freezeUntil));Assert.That(visual.FrameIndex,Is.EqualTo(pausedBodyFrame));
+            for(int i=0;i<layers.Length;i++)
+            {Assert.That(layers[i].sprite,Is.SameAs(frozenFrames[i]));Assert.That(layers[i].transform.position,Is.EqualTo(frozenPositions[i]));}
             Assert.That(camera.transform.position,Is.EqualTo(cameraPosition));
             c.Battle.SetPaused(false);c.Tick(1.6f);yield return null;Assert.That(c.Battle.IsSkillActionPlaying(unit),Is.False);
             CaptureEvidence(Camera.main);
-            Assert.That(visual.FrameState,Is.Not.EqualTo("FrostSeal"));Assert.That(view.VisibleEffects,Is.GreaterThan(0),"VFX tail outlives the cast.");
-            c.Tick(3.7f);yield return null;Assert.That(view.VisibleEffects,Is.Zero);
+            Assert.That(visual.FrameState,Is.Not.EqualTo("FrostSeal"));Assert.That(target.FrozenUntil,Is.GreaterThan(c.Battle.Clock));
+            Assert.That(NativeLayer(view,"firstar_skill_02_range_02").transform.position,Is.EqualTo(target.Position),"The target's original ice remains after the caster action finishes.");
+            c.Tick(3.7f);yield return null;Assert.That(target.FrozenUntil,Is.LessThanOrEqualTo(c.Battle.Clock));
+            Assert.That(view.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.sprite!=null&&r.sprite.name.StartsWith("OriginalVfx/monster/firstar_skill_02_",System.StringComparison.Ordinal)),Is.False,"The completed manual cast leaves no caster/black-ice layer; a later real automatic ice ring is allowed.");
             c.RestartBattle();yield return null;Assert.That(view.VisibleEffects,Is.Zero);Assert.That(c.Battle.FrostSeals,Is.Empty);
         }
+
+        static SpriteRenderer NativeLayer(FrostSealView view,string rawKey)=>view.GetComponentsInChildren<SpriteRenderer>()
+            .Single(r=>r.enabled&&r.sprite!=null&&r.sprite.name.StartsWith("OriginalVfx/monster/"+rawKey+"/",System.StringComparison.Ordinal));
 
         static void CaptureEvidence(Camera camera)
         {

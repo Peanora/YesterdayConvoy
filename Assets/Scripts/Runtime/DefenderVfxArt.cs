@@ -1,50 +1,48 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Read-only, imported texture flipbooks. Rendering never schedules a combat event.</summary>
+    /// <summary>Original source-key registry. Only requested defenders contribute their actual effect sequences.</summary>
     public static class DefenderVfxArt
     {
-        [Serializable] sealed class Manifest { public int version; public Data[] clips; }
-        [Serializable] sealed class Data { public string key; public float duration,ppu,pivotX,pivotY; public int cell,count,columns; public bool loop; public Page[] pages; }
-        [Serializable] sealed class Page { public string file; public int count; }
-        public sealed class Clip
+        static readonly HashSet<string> supported=new HashSet<string>(StringComparer.Ordinal)
+        { "D01","D02","D03","D04","D05","D06","D07","D08","D09","D10","D11","D12","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30" };
+        static readonly Dictionary<string,string[]> keys=new Dictionary<string,string[]>(StringComparer.Ordinal)
         {
-            public Sprite[] Frames { get; internal set; }
-            public float Duration { get; internal set; }
-            public bool Loop { get; internal set; }
-            public Sprite At(double age)
-            {
-                if(double.IsNaN(age)||double.IsInfinity(age)||age<0||!Loop&&age>=Duration)return null;
-                if(Loop)age%=Duration;
-                return Frames[Mathf.Clamp((int)((age+1e-7)*60),0,Frames.Length-1)];
-            }
-        }
-        static Manifest manifest;
-        static readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>();
-        public static bool Supports(DefenderSkillKind kind)=>kind==DefenderSkillKind.LapplandHavoc||kind==DefenderSkillKind.YuKitchen||kind==DefenderSkillKind.PramanixSnow||kind==DefenderSkillKind.WangGambit||kind==DefenderSkillKind.SariaCalcification||kind==DefenderSkillKind.MlynarGlory;
-        public static Clip Load(string key)
+            ["D03"] = new[] { "defender/D03/spot_skill_01_trail","defender/D03/spot_skill_01_hit","common/common_hit_01" },
+            ["D05"] = new[] { "defender/D05/midn_attack_01_trail","defender/D05/midn_attack_01_hit","defender/D05/midn_skill_01_trail","defender/D05/midn_skill_01_hit" },
+            ["D08"] = new[] { "defender/D08/stward_skill_01_trail","defender/D08/stward_skill_01_hit" },
+            ["D09"] = new[] { "defender/D09/lava_attack_01_hit" },
+            ["D11"] = new[] { "common/common_heal_hit_01" },
+            ["D12"] = new[] { "defender/D12/orchid_attack_01_trail","defender/D12/orchid_attack_01_hit" },
+            ["D21"] = new[] { "defender/D21/whitw2_attack_01_start","defender/D21/whitw2_attack_01_trail","defender/D21/whitw2_hit_01","defender/D21/whitw2_token_01","defender/D21/whitw2_token_hit_01","defender/D21/whitw2_skill_03_start_01","defender/D21/whitw2_skill_03_token_hit_01","defender/D21/whitw2_skill_03_token_trail_01","defender/D21/whitw2_skill_03_trail_01","defender/D21/whitw2_skill_03_buff_start" },
+            ["D22"] = new[] { "defender/D22/yu_attack_01","defender/D22/yu_hit_01","defender/D22/yu_skill3_attack_01","defender/D22/yu_skill3_hit_01","defender/D22/yu_skill3_buff_01","defender/D22/yu_skill3_annex_01","defender/D22/yu_skill3_range_01","defender/D22/yu_skill3_range_01_l","defender/D22/yu_skill3_range_01_r","defender/D22/yu_skill3_range_01_l_end","defender/D22/yu_skill3_range_01_r_end","defender/D22/yu_skill3_range_01_l_u_end","defender/D22/yu_skill3_range_01_l_d_end","defender/D22/yu_skill3_range_01_r_u_end","defender/D22/yu_skill3_range_01_r_d_end" },
+            ["D23"] = new[] { "defender/D23/monstr_attack_start_01","defender/D23/monstr_attack_trail","defender/D23/monstr_attack_hit_01","defender/D23/monstr_skill_03_heal","defender/D23/monstr_skill_03_start_01","defender/D23/monstr_skill_03_hit","defender/D23/monstr_skill_03_begin_01","defender/D23/monstr_skill_03_begin_02","defender/D23/monstr_skill_03_begin_03","defender/D23/monstr_skill_03_end_01","defender/D23/monstr_skill_03_end_02","defender/D23/monstr_skill_03_buff_01","defender/D23/monstr_skill_03_buff_02","defender/D23/monstr_skill_03_buff_03","defender/D23/monstr_skill_03_buff_04","defender/D23/monstr_skill_03_buff_05" },
+            ["D24"] = new[] { "defender/D24/angel2_attack_loop_start_01","defender/D24/angel2_attack_loop_trail_01","defender/D24/angel2_attack_loop_hit_01","defender/D24/angel2_skill_3_begin_trail_01","defender/D24/angel2_skill_3_begin_range_01","defender/D24/angel2_skill_3_loop_start_01","defender/D24/angel2_skill_3_loop_trail_01","defender/D24/angel2_skill_3_loop_hit_01","defender/D24/angel2_skill_3_buff_01","defender/D24/angel2_skill_3_ground_01" },
+            ["D25"] = new[] { "defender/D25/hsgma2_attack_01_start_01","defender/D25/hsgma2_attack_01_hit_01","defender/D25/hsgma2_skill_03_start_01","defender/D25/hsgma2_skill_03_start_02","defender/D25/hsgma2_skill_03_start_03","defender/D25/hsgma2_skill_03_start_04","defender/D25/hsgma2_skill_03_start_05","defender/D25/hsgma2_skill_03_start_06","defender/D25/hsgma2_skill_03_hit_01","defender/D25/hsgma2_skill_03_hit_01_1","defender/D25/hsgma2_skill_03_hit_02","defender/D25/hsgma2_skill_03_hit_02_1","defender/D25/hsgma2_skill_03_hit_02_2","defender/D25/hsgma2_skill_03_hit_02_3","defender/D25/hsgma2_skill_03_buff_01","defender/D25/hsgma2_skill_03_buff_02","defender/D25/hsgma2_skill_03_buff_03","defender/D25/hsgma2_skill_03_range_01","defender/D25/hsgma2_skill_03_range_02" },
+            ["D26"] = new[] { "defender/D26/svash2_attack_start_a_01","defender/D26/svash2_attack_start_a_02","defender/D26/svash2_attack_start_b_01","defender/D26/svash2_attack_start_c_01","defender/D26/svash2_attack_hit_01","defender/D26/svash2_skill_03_combat_start_01_2","defender/D26/svash2_skill_03_combat_start_02","defender/D26/svash2_skill_03_buff_01","defender/D26/svash2_skill_03_buff_weapon_01","defender/D26/svash2_skill_03_deploy_01","defender/D26/svash2_skill_03_range_01","defender/D26/svash2_eagle_fly_01" },
+            ["D27"] = new[] { "defender/D27/sbell2_skill_03_start_01","defender/D27/sbell2_skill_03_hit" },
+            ["D28"] = new[] { "defender/D28/wang_skill_03_range_start","defender/D28/wang_skill_03_buff_02","defender/D28/wang_skill_03_range","defender/D28/wang_attack_01_start","defender/D28/wang_attack_01_trail","defender/D28/wang_attack_01_hit","defender/D28/wang_passive_01_start","defender/D28/wang_passive_01_buff","defender/D28/wang_passive_01_buff_02" },
+            ["D29"] = new[] { "defender/D29/demkni_attack_01_hit","defender/D29/demkni_skill_03_range","defender/D29/demkni_skill_03_self","defender/D29/demkni_skill_03_buff","common/common_heal_hit_01" },
+            ["D30"] = new[] { "defender/D30/mlynar_skill_03_buff_01","defender/D30/mlynar_skill_03_range_01","defender/D30/mlynar_skill_03_start_01","defender/D30/mlynar_skill_03_hit_01","defender/D30/mlynar_skill_03_buff_02","defender/D30/mlynar_skill_03_buff_03" },
+        };
+        static readonly Dictionary<string,string> knownGaps=new Dictionary<string,string>(StringComparer.Ordinal)
         {
-            if(clips.TryGetValue(key,out var found)&&found.Frames[0]!=null&&found.Frames[0].texture!=null)return found;
-            if(manifest==null)manifest=JsonUtility.FromJson<Manifest>(Resources.Load<TextAsset>("DefenderVfx/manifest").text);
-            var data=Array.Find(manifest.clips,c=>c.key==key);
-            if(data==null||manifest.version!=1||data.duration<=0||data.ppu<=0||data.cell<=0||data.columns<=0)throw new InvalidDataException("Invalid defender VFX: "+key);
-            var frames=new List<Sprite>();
-            foreach(var page in data.pages)
-            {
-                var texture=Resources.Load<Texture2D>("DefenderVfx/"+Path.GetFileNameWithoutExtension(page.file));
-                if(texture==null)throw new InvalidDataException("Missing defender VFX texture: "+page.file);
-                for(int i=0;i<page.count;i++)
-                {
-                    var sprite=Sprite.Create(texture,new Rect(i%data.columns*data.cell,texture.height-(i/data.columns+1)*data.cell,data.cell,data.cell),new Vector2(data.pivotX,data.pivotY),data.ppu,0,SpriteMeshType.FullRect);
-                    sprite.name="DefenderVfx/"+key+"/"+frames.Count;sprite.hideFlags=HideFlags.DontSave;frames.Add(sprite);
-                }
-            }
-            if(frames.Count!=data.count)throw new InvalidDataException("Incomplete defender VFX: "+key);
-            found=new Clip{Frames=frames.ToArray(),Duration=data.duration,Loop=data.loop};clips[key]=found;return found;
+            ["defender/D11/ansel_attack_01_trail"] = "Original TrailRenderer point-age playback pending verified adapter.",
+            ["defender/D24/angel2_skill_3_begin_start_001"] = "Original EmptyEffect control with no visible Renderer, intentional no-op.",
+            ["defender/D26/svash2_skill_03_combat_start_01"] = "Original weapon-mount TrailRenderer requires point-age/mount driver validation.",
+        };
+        public static IReadOnlyDictionary<string,string> KnownGaps=>knownGaps;
+        public static bool SupportsArtId(string artId)=>artId!=null&&supported.Contains(artId);
+        public static bool SupportsDefender(DefenderState defender)=>defender!=null&&SupportsArtId(defender.Settings.ArtId);
+        public static bool Supports(DefenderSkillKind kind)=>kind>DefenderSkillKind.None&&kind<=DefenderSkillKind.WangGambit;
+        public static IEnumerable<string> RequiredKeysForArtIds(IEnumerable<string> artIds)
+        {
+            if(artIds==null)throw new ArgumentNullException(nameof(artIds));
+            var seen=new HashSet<string>(StringComparer.Ordinal);
+            foreach(string id in artIds)if(id!=null&&keys.TryGetValue(id,out var needed))
+                foreach(string key in needed)if(seen.Add(key))yield return key;
         }
     }
 }

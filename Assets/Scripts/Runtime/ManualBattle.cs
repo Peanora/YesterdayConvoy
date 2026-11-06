@@ -256,6 +256,7 @@ namespace YesterdayConvoy
             if (Phase != BattlePhase.Ready) return;
             if(GuaranteedSupply){CompleteSupply();return;}
             Phase = BattlePhase.Running;
+            Orders+=GuerrillaRules.ForTier(GuerrillaTier).InitialOrders;
             EvaluateEnd();
         }
 
@@ -266,6 +267,7 @@ namespace YesterdayConvoy
         {
             if(!Debug.isDebugBuild||expectedRun!=RunId||(Phase!=BattlePhase.Ready&&Phase!=BattlePhase.Running))return false;
             Phase=victory?BattlePhase.Won:BattlePhase.Lost;IsPaused=false;
+            CancelGuerrillaOrders();
             if(victory)Defense=0;
             return true;
         }
@@ -336,11 +338,15 @@ namespace YesterdayConvoy
             return receipt;
         }
 
-        public void Advance(float delta)
+        public void Advance(float delta)=>Advance(delta,delta);
+
+        public void Advance(float delta,float presentationDelta)
         {
             if (float.IsNaN(delta) || float.IsInfinity(delta) || delta < 0) throw new ArgumentOutOfRangeException(nameof(delta));
+            if (float.IsNaN(presentationDelta) || float.IsInfinity(presentationDelta) || presentationDelta < 0) throw new ArgumentOutOfRangeException(nameof(presentationDelta));
             if (Phase != BattlePhase.Running || IsPaused || delta == 0) return;
             double remaining = delta;
+            double presentationRatio=(double)presentationDelta/delta;
             // Bound combat steps so a long frame cannot skip the tower's range or fire interval.
             while (remaining > 0.00000001 && Phase == BattlePhase.Running && !IsPaused)
             {
@@ -349,6 +355,7 @@ namespace YesterdayConvoy
                 if (EngagementEnabled)
                 {
                     StepEngagement(step);
+                    if(Defense>0)AdvanceGuerrillaOrders((float)(step*presentationRatio));
                     RefreshCombatFeedbackStatuses();
                     EvaluateEnd();
                     if(Phase==BattlePhase.Won || Phase==BattlePhase.Lost)
@@ -366,7 +373,7 @@ namespace YesterdayConvoy
                     }
                 }
                 // Resolve arrivals before exhaustion and before firing at already departed entities.
-                if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; break; }
+                if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false;CancelGuerrillaOrders(); break; }
                 if (Clock + 0.000001 >= nextShotTime)
                 {
                     DeployedUnitState target = null;
@@ -397,6 +404,7 @@ namespace YesterdayConvoy
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
             else if (!HasPendingDeathBlast && ActiveCount == 0 && !HasAffordableCard())
             { Phase = BattlePhase.Lost; IsPaused = false; }
+            if(Phase==BattlePhase.Won||Phase==BattlePhase.Lost)CancelGuerrillaOrders();
             // Affordable uses remain: wait for cooldown/input. There is no timeout or passive DP recovery.
         }
     }

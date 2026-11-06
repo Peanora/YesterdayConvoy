@@ -24,6 +24,7 @@ namespace YesterdayConvoy
         }
         static List<ArtSequence> Plan(IEnumerable<DefenderPlacement> defenders,IEnumerable<CardDefinition> cards,bool tactical,bool talulahSecondPhase=false)
         {
+            defenders=defenders.ToArray();cards=cards.ToArray();
             var clips=new List<ArtSequence>();foreach(var card in cards)
             {
                 clips.AddRange(CardSequences(card));
@@ -41,6 +42,9 @@ namespace YesterdayConvoy
                 if(tactical)clips.AddRange(DefenderArt.Load(defender.artId+"B").Sequences);
                 if(defender.skill?.kind==DefenderSkillKind.WangGambit)clips.AddRange(DefenderArt.Load("D28Chess").Sequences);
             }
+            clips.AddRange(OriginalCombatVfxArt.SequencesFor(DefenderVfxArt.RequiredKeysForArtIds(defenders.Select(d=>d.artId))));
+            clips.AddRange(CommonCombatVfxDirector.SequencesFor());
+            clips.AddRange(OriginalCombatVfxArt.SequencesFor(MonsterOriginalVfx.RequiredKeysForCards(cards.Where(c=>c!=null).Select(c=>c.CardId))));
             return clips.GroupBy(s=>s.CacheKey).Select(g=>g.First()).ToList();
         }
         List<ArtSequence> CurrentBattlePlan()
@@ -88,6 +92,7 @@ namespace YesterdayConvoy
                     ArtLoadingProgress=(i+1f)/plan.Count;
                 }
                 artCompleting=true;try{complete?.Invoke();}finally{artCompleting=false;}
+                SnowstormArt.WarmFor(Battle?.SnowTier??0);
                 RefreshArtPins();yield return null;if(generation!=artGeneration)yield break;ArtMemoryCache.Trim();
                 Debug.Log("ART_PREPARE: "+title+"; ms="+timer.ElapsedMilliseconds+"; prepared_pages="+(ArtMemoryCache.PreparedLoads-prepared)+"; png_fallback="+(ArtMemoryCache.RuntimePngLoads-raw)+"; resident="+ArtMemoryCache.ResidentBytes+"; budget="+ArtMemoryCache.BudgetBytes);
             }

@@ -7,15 +7,15 @@ namespace YesterdayConvoy
     public sealed class EngagementView : MonoBehaviour
     {
         private sealed class ShotView { public LineRenderer Trail, Impact, Rays, Ink; public SpriteRenderer Face; }
-        private sealed class Puff { public LineRenderer Ring; public Vector3 Position; public double Time; public bool Death; }
+        private sealed class Puff { public Vector3 Position; public double Time; public bool Death; public string CardId; }
         private TalulahAttackVfx talulahAttackVfx;
+        private CommonCombatVfxDirector commonVfx;
+        private AdvancedDefenderView advancedVfx;
+        private InfectionBurstFeedback infectionFeedback;
+        public double NativeEffectsUntil => System.Math.Max(System.Math.Max(CommonCombatVfxDirector.PendingUntil(owner?.Battle),advancedVfx?.PendingUntil??double.NegativeInfinity),infectionFeedback?.PendingUntil??double.NegativeInfinity);
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
         private readonly List<LineRenderer> seedViews=new List<LineRenderer>();
-        private readonly List<LineRenderer> infectionViews=new List<LineRenderer>();
-        private readonly List<LineRenderer> golemPulseViews=new List<LineRenderer>();
-        private readonly List<LineRenderer> shatterViews=new List<LineRenderer>();
-        private readonly List<LineRenderer> iceRingViews=new List<LineRenderer>();
         private readonly HashSet<string> spawned = new HashSet<string>(), dead = new HashSet<string>();
         private ManualBattleController owner;
         private EngagementDefinition definition;
@@ -34,6 +34,8 @@ namespace YesterdayConvoy
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             ClearTransient(); runId=-1;
+            if(commonVfx==null)commonVfx=new CommonCombatVfxDirector(transform);
+            infectionFeedback=GetComponent<InfectionBurstFeedback>()??gameObject.AddComponent<InfectionBurstFeedback>();infectionFeedback.Bind(controller);
             if(rosterView!=null) { rosterView.gameObject.SetActive(false); Destroy(rosterView.gameObject); rosterView=null; }
             if(controller.DefenderTrialActive)
             { rosterView=new GameObject("Eight original defenders").AddComponent<DefenderRosterView>();
@@ -41,11 +43,12 @@ namespace YesterdayConvoy
             var deathEffects=GetComponent<MonsterDeathEffectView>();
             if(deathEffects==null) deathEffects=gameObject.AddComponent<MonsterDeathEffectView>();
             deathEffects.Initialize(controller);
-            var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle);
+            var fuel=GetComponent<FlamerazerEffectView>()??gameObject.AddComponent<FlamerazerEffectView>();fuel.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var mephi=GetComponent<MephistoEffectView>()??gameObject.AddComponent<MephistoEffectView>();mephi.Bind(()=>controller.Battle);
-            var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle);
-            var advanced=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advanced.Bind(()=>controller.Battle);
+            var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle,()=>controller.PresentationClock);
+            var monsterOriginal=GetComponent<MonsterOriginalEffectView>()??gameObject.AddComponent<MonsterOriginalEffectView>();monsterOriginal.Bind(()=>controller.Battle,()=>controller.PresentationClock);
+            advancedVfx=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advancedVfx.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
             extraVisuals.Clear();
             if(material==null) material = new Material(Shader.Find("Sprites/Default"));
@@ -67,37 +70,15 @@ namespace YesterdayConvoy
             // so starting does not snap the pose; thereafter pause/speed use only the shared clock.
             if (b.Phase == BattlePhase.Ready) readyIdleTime += Time.deltaTime;
             double time = b.Clock;
+            double fxTime=owner.PresentationClock;
+            commonVfx.Begin();
+            commonVfx.PresentBattleBursts(b,cam,fxTime);
+            commonVfx.PresentDefenderBuffs(b,cam,fxTime);
             for(int i=0;i<b.DeepSeeds.Count;i++)
             {
                 if(i>=seedViews.Count)seedViews.Add(CreateLine("Deep seed marker",.07f));
                 var seed=b.DeepSeeds[i];var line=seedViews[i];line.enabled=!seed.Spent;
                 if(line.enabled)Ring(line,seed.Position+Vector3.up*.1f,.18f,new Color(1,.48f,.12f,.8f),null);
-            }
-            for(int i=0;i<b.InfectionBursts.Count;i++)
-            {
-                if(i>=infectionViews.Count)infectionViews.Add(CreateLine("Infection death burst",.12f));
-                var e=b.InfectionBursts[i];float age=(float)(time-e.At);var line=infectionViews[i];line.enabled=e.Resolved&&age>=0&&age<.65f;
-                if(line.enabled)Ring(line,e.Position+Vector3.up*.12f,Mathf.Lerp(.1f,e.Radius,age/.65f),new Color(1,.48f,.12f,1-age/.65f),null);
-            }
-            for(int i=0;i<b.GolemPulses.Count;i++)
-            {
-                if(i>=golemPulseViews.Count)golemPulseViews.Add(CreateLine("Golem global pulse",.18f));
-                var e=b.GolemPulses[i];float age=(float)(time-e.At);var line=golemPulseViews[i];line.enabled=age>=0&&age<.8f;
-                if(line.enabled)Ring(line,e.Position+Vector3.up*.15f,Mathf.Lerp(.2f,e.Radius,age/.8f),new Color(.85f,.37f,.18f,1-age/.8f),null);
-            }
-            for(int i=0;i<b.ShatterEvents.Count;i++)
-            {
-                if(i>=shatterViews.Count)shatterViews.Add(CreateLine("Snow synergy shatter",.10f));
-                var effect=b.ShatterEvents[i];float age=(float)(time-effect.At);var line=shatterViews[i];
-                line.enabled=age>=0&&age<.65f;
-                if(line.enabled)Ring(line,effect.Position+Vector3.up*.12f,Mathf.Lerp(.12f,effect.Radius,age/.65f),new Color(.55f,.92f,1,1-age/.65f),null);
-            }
-            for(int i=0;i<b.IceRings.Count;i++)
-            {
-                if(i>=iceRingViews.Count) iceRingViews.Add(CreateLine("FrostNova ice ring",.09f));
-                var ring=b.IceRings[i];float age=(float)(time-ring.Time);
-                var line=iceRingViews[i];line.enabled=age>=0 && age<1;
-                if(line.enabled) Ring(line,ring.Position+Vector3.up*.08f,Mathf.Lerp(.1f,2,age),new Color(.4f,.9f,1,1-age),null);
             }
             if(rosterView==null)
             {
@@ -169,17 +150,15 @@ namespace YesterdayConvoy
             talulahAttackVfx?.End();
             foreach (var unit in b.Units)
             {
-                if (spawned.Add(unit.EntityId)) { AddPuff(unit.Motion.Position, time, false); Play(click, 0.4f); }
-                if (unit.Resolution == UnitResolution.Dead && dead.Add(unit.EntityId)) AddPuff(unit.Motion.Position, time, true);
+                string cardId=owner.CardForUnit(unit).CardId;
+                if (spawned.Add(unit.EntityId)) { AddPuff(unit.Motion.Position, unit.SpawnTime, false,cardId); Play(click, 0.4f); }
+                if (unit.Resolution == UnitResolution.Dead && dead.Add(unit.EntityId)) AddPuff(unit.Motion.Position, unit.DeathTime, true,cardId);
             }
             foreach (var puff in puffs)
             {
-                float age = (float)(time - puff.Time), duration = puff.Death ? 0.5f : 0.35f;
-                puff.Ring.enabled = age < duration;
-                if (!puff.Ring.enabled) continue;
-                Color color = puff.Death ? new Color(0.65f, 0.16f, 0.1f, 1 - age / duration) : new Color(0.25f, 0.9f, 0.8f, 1 - age / duration);
-                Ring(puff.Ring, puff.Position + Vector3.up * 0.02f, 0.12f + age * 0.8f, color, null);
+                commonVfx.PresentPuff(puff.Position,fxTime-puff.Time,puff.Death,cam,puff.CardId);
             }
+            commonVfx.End();
             if ((int)b.Phase != lastPhase)
             { if (b.Phase == BattlePhase.Won || b.Phase == BattlePhase.Lost) Play(click, 0.7f); lastPhase = (int)b.Phase; }
             audioSource.mute = owner.Muted;
@@ -189,11 +168,12 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            if(commonVfx.PresentShot(shot,b,cam,owner.PresentationClock,owner.CardForUnit(b.FindUnit(shot.SourceId))))
+            {view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(!shot.FromDefender&&(b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock||b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mandragora)){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(shot.Erased){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             var defenderSource=shot.FromDefender?b.FindDefender(shot.SourceId):null;
-            if(defenderSource!=null&&DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)&&
-                (defenderSource.Settings.Skill.Kind!=DefenderSkillKind.SariaCalcification||shot.Healing))
+            if(defenderSource!=null&&(DefenderVfxArt.SupportsDefender(defenderSource)||DefenderVfxArt.Supports(defenderSource.Settings.Skill.Kind)))
             {
                 // The textured defender director owns these shots; never stack the old diagnostic ring over it.
                 view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;
@@ -241,6 +221,7 @@ namespace YesterdayConvoy
             if (!hit) return;
             color.a = 1 - age / duration;
             float radius = (shot.Empowered ? 0.28f : 0.05f) + age * (shot.Empowered ? 1.3f : 0.8f);
+            if(ViviCombat.SkillShell(sourceUnit,shot))radius=shot.SplashRadius*Mathf.Lerp(.55f,1,Mathf.Clamp01(age/duration));
             if(!shot.FromDefender && sourceCard.HasFrameAnimation && LocalMonsterArt.For(sourceCard.CardId)==null)
             {
                 // Graphic, black-edged comic burst and source-expression stamp; no extra damage event.
@@ -356,21 +337,17 @@ namespace YesterdayConvoy
             }
         }
 
-        private void AddPuff(Vector3 position, double time, bool death)
-        { puffs.Add(new Puff { Ring = CreateLine(death ? "Death dissolve" : "Deployment pulse", 0.035f), Position = position, Time = time, Death = death }); }
+        private void AddPuff(Vector3 position, double time, bool death,string cardId)
+        { puffs.Add(new Puff { Position = position, Time = time, Death = death,CardId=cardId }); }
 
         private void ClearTransient()
         {
             talulahAttackVfx?.Clear();
+            commonVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
-            foreach (var p in puffs) Destroy(p.Ring.gameObject);
             foreach(var ring in seedViews)Destroy(ring.gameObject);seedViews.Clear();
-            foreach(var ring in infectionViews)Destroy(ring.gameObject);infectionViews.Clear();
-            foreach(var ring in shatterViews)Destroy(ring.gameObject);shatterViews.Clear();
-            foreach(var ring in golemPulseViews)Destroy(ring.gameObject);golemPulseViews.Clear();
-            foreach(var ring in iceRingViews) Destroy(ring.gameObject);iceRingViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }
-        private void OnDestroy() { ClearTransient(); talulahAttackVfx?.Dispose(); if (material != null) Destroy(material); }
+        private void OnDestroy() { ClearTransient(); commonVfx?.Dispose();talulahAttackVfx?.Dispose(); if (material != null) Destroy(material); }
     }
 }

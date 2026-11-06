@@ -1,70 +1,71 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Approved flipbooks follow actual cast/impact events; no damage or timers are owned here.</summary>
+    /// <summary>Native FrostNova caster, ground and target layers. Damage stays in ManualBattle.</summary>
     public sealed class FrostSealView:MonoBehaviour
     {
-        Func<ManualBattle> source;
-        ManualBattle observed;
-        int run=-1,used;
-        Material material;
-        readonly List<SpriteRenderer> sprites=new List<SpriteRenderer>();
-        FrostSealScreenEffect screen;
-        public int VisibleEffects=>used;
-        public void Bind(Func<ManualBattle> battle)=>source=battle;
-        void Draw(string key,double age,Vector3 position,Camera camera,int order,bool flip=false)
-        {
-            var frame=FrostSealArt.Load(key).At(age);if(frame==null)return;
-            if(used==sprites.Count)
-            {
-                var r=new GameObject("FrostSeal / "+key,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-                r.transform.SetParent(transform,false);
-                if(material==null)material=new Material(Shader.Find("Sprites/Default"));r.sharedMaterial=material;sprites.Add(r);
-            }
-            var renderer=sprites[used++];renderer.sprite=frame;renderer.enabled=true;renderer.flipX=flip;
-            renderer.transform.localScale=Vector3.one*(key=="ice"?.82f:1);
-            renderer.transform.SetPositionAndRotation(position,camera.transform.rotation);
-            renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,position)+order;
-        }
+        Func<ManualBattle> source;Func<double> presentation;
+        ManualBattle observed;int run=-1;
+        OriginalCombatVfxLayer layer;
+        public int VisibleEffects=>layer?.VisibleCount??0;
+        public void Bind(Func<ManualBattle> battle,Func<double> presentationClock=null){source=battle;presentation=presentationClock;}
+        void Draw(string raw,double age,Vector3 pos,Camera camera,int order,bool loop=false)
+        {if(age>=0)layer.ShowGround("monster/"+raw,age,pos,camera,false,order,loop);}
         void LateUpdate()
         {
-            var battle=source?.Invoke();var camera=Camera.main;used=0;
-            if(observed!=battle||run!=(battle?.RunId??-1))
+            var b=source?.Invoke();var cam=Camera.main;
+            if(layer==null)layer=new OriginalCombatVfxLayer(transform);
+            if(observed!=b||run!=(b?.RunId??-1)){layer.Clear();observed=b;run=b?.RunId??-1;}
+            layer.Begin();
+            if(b!=null&&cam!=null)
             {
-                foreach(var r in sprites)Destroy(r.gameObject);sprites.Clear();observed=battle;run=battle?.RunId??-1;
-            }
-            float pulseAge=-1;
-            if(battle!=null&&camera!=null)
-            {
-                if(screen==null||screen.gameObject!=camera.gameObject)
-                {if(screen!=null)Destroy(screen);screen=camera.gameObject.AddComponent<FrostSealScreenEffect>();}
-                foreach(var pulse in battle.SnowstormPulses)
+                double now=presentation?.Invoke()??b.Clock;
+                foreach(var u in b.Units)
                 {
-                    double age=battle.Clock-pulse.At;
-                    if(age<0||age>=1.4)continue;
-                    foreach(string id in pulse.Targets)
-                    {var d=battle.FindDefender(id);if(d!=null)Draw("storm",age,d.Position+camera.transform.up*.8f,camera,30);}
-                }
-                foreach(var cast in battle.FrostSeals)
-                {
-                    if(!cast.Resolved||cast.Cancelled)continue;
-                    double age=battle.Clock-cast.ImpactAt;
-                    if(age<0||age>=5.3)continue;
-                    Draw("storm",age,cast.Position,camera,34);
-                    for(int i=0;i<cast.FrozenTargets.Count;i++)
+                    if(u.CardId!="CARD_M14")continue;
+                    double ringAge=now-u.IceRingStartedAt;
+                    if(u.Active&&!u.IsReviving&&ringAge>=0&&ringAge<3)
+                        Draw("firstar_skill_01_buff",ringAge,u.Motion.Position,cam,18,true);
+                    if(u.IsReviving)
                     {
-                        var target=battle.FindDefender(cast.FrozenTargets[i]);
-                        if(target!=null)Draw("ice",age,target.Position,camera,38,i%2==1);
+                        // Preserve all three original delayed layers, fitted to this game's5s revive.
+                        double nativeAge=(now-(u.ReviveAt-5))*MonsterOriginalVfx.Duration("firstar_buff_03_start",9.266667f)/5;
+                        Draw("firstar_buff_01_start",nativeAge,u.Motion.Position,cam,24);
+                        Draw("firstar_buff_02_start",nativeAge,u.Motion.Position,cam,25);
+                        Draw("firstar_buff_03_start",nativeAge,u.Motion.Position,cam,26);
                     }
-                    if(age<.35)pulseAge=(float)age;
+                }
+                foreach(var e in b.IceRings)Draw("firstar_skill_01_range",now-e.Time,e.Position,cam,24);
+                foreach(var e in b.SnowstormPulses)
+                    foreach(var id in e.Targets)
+                    {var d=b.FindDefender(id);if(d!=null)Draw("firstar_skill_01_range",now-e.At,d.Position,cam,24);}
+                foreach(var e in b.FrostSeals)
+                {
+                    if(e.Cancelled)continue;
+                    double castAge=now-e.StartedAt;
+                    var caster=b.FindUnit(e.SourceId);
+                    if(caster!=null&&caster.Active&&!caster.IsReviving)
+                    {
+                        Draw("firstar_skill_02_start",castAge,e.Position,cam,20);
+                        Draw("firstar_skill_02_trail",castAge,e.Position,cam,21);
+                    }
+                    if(!e.Resolved)continue;
+                    double age=now-e.ImpactAt;
+                    Draw("firstar_skill_01_range",age,e.Position,cam,25);
+                    if(age<0||age>=FrostSealCast.FreezeDuration)continue;
+                    foreach(var id in e.FrozenTargets)
+                    {
+                        var d=b.FindDefender(id);if(d==null)continue;
+                        Draw("firstar_skill_02_range",now-e.StartedAt,d.Position,cam,27);
+                        Draw("firstar_skill_02_range_02",age,d.Position,cam,28,true);
+                    }
                 }
             }
-            for(int i=used;i<sprites.Count;i++)sprites[i].enabled=false;
-            if(screen!=null)screen.Present(pulseAge);
+            layer.End();
         }
-        void OnDestroy(){if(material!=null)Destroy(material);if(screen!=null)Destroy(screen);}
+        void OnDisable(){layer?.Clear();}
+        void OnDestroy(){layer?.Dispose();}
     }
 }

@@ -22,6 +22,7 @@ namespace YesterdayConvoy
         public bool WorldUpright {get;set;}
         private bool tacticalFlip;
         private double tacticalAttack=double.NegativeInfinity;
+        private double viviWalkDistance,viviPreviousDistance;
         private static Material tacticalMaterial;
         Vector3 VisualScale=>Vector3.one;
         public string FrameState { get; private set; } = "Idle";
@@ -53,7 +54,8 @@ namespace YesterdayConvoy
                 sprite.sharedMaterial=tacticalMaterial;
                 ActorGrounding.Attach(sprite,local?.Height??1.25f);
             }
-            tacticalFlip=original!=null?Vector3.Dot(unit.Motion.Direction,Camera.main!=null?Camera.main.transform.right:Vector3.right)<-.08f:unit.Motion.Direction.x<-.08f;
+            tacticalFlip=original!=null||ViviCombat.IsVivi(frames.CardId)?Vector3.Dot(unit.Motion.Direction,Camera.main!=null?Camera.main.transform.right:Vector3.right)<-.08f:unit.Motion.Direction.x<-.08f;
+            viviWalkDistance=0;viviPreviousDistance=unit.Motion.DistanceTravelled;
             tacticalAttack=double.NegativeInfinity;
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
@@ -80,6 +82,14 @@ namespace YesterdayConvoy
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
+            if(ViviCombat.IsVivi(frameCard.CardId))
+            {
+                if(deployedUnit.IsMoving&&!manualBattle.IsPaused)
+                    viviWalkDistance+=Math.Abs(deployedUnit.Motion.DistanceTravelled-viviPreviousDistance);
+                viviPreviousDistance=deployedUnit.Motion.DistanceTravelled;
+                tacticalFlip=ViviCombat.VisualFlip(manualBattle,deployedUnit,Camera.main,tacticalFlip);
+                sprite.flipX=tacticalFlip;
+            }
             if(WorldUpright && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
@@ -161,7 +171,7 @@ namespace YesterdayConvoy
                 // At the authored 0.75 move speed, retain the GIF's 0.95-second cycle; distance freezes on stop/pause.
                 FrameIndex=manualBattle.UnitCombat(deployedUnit).FireRain ?
                     (int)(deployedUnit.Motion.DistanceTravelled/.9*frameCard.WalkFrames.Count)%frameCard.WalkFrames.Count :
-                    (int)(deployedUnit.Motion.DistanceTravelled/.75*20)%frameCard.WalkFrames.Count;
+                    (int)((ViviCombat.IsVivi(frameCard.CardId)?viviWalkDistance:deployedUnit.Motion.DistanceTravelled)/.75*20)%frameCard.WalkFrames.Count;
                 sprite.sprite=frameCard.WalkFrames[FrameIndex]; return;
             }
             if(!deployedUnit.HasCombatTarget)

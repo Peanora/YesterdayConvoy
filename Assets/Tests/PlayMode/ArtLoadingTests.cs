@@ -21,9 +21,29 @@ namespace YesterdayConvoy.Tests
             foreach(var option in c.MonsterTests.Where(o=>o.Playable))Assert.That(option.DefinitionForArtTest(),Is.True);
             // Every role was validated; none of their full action sets were requested.
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before));
+            var talulah=c.MonsterTests.Single(o=>o.Id=="CARD_TALULAH_TRIAL");
+            var property=typeof(MonsterTestOption).GetProperty("Definition",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
+            var card=((ManualBattleDefinition)property.GetValue(talulah)).Card;
+            var portrait=card.Portrait;Assert.That(portrait,Is.Not.Null);Assert.That(portrait.name,Is.EqualTo("TalulahOriginal/portrait"));
+            Assert.That(ArtMemoryCache.TextureLoads-before,Is.LessThanOrEqualTo(1),"Reading the original Talulah portrait must not decode her action atlases.");
+            Assert.That(card.Portrait,Is.SameAs(portrait));
+            before=ArtMemoryCache.TextureLoads;
             var art=DefenderArt.Load("D22");Assert.That(art.ActionDuration,Is.GreaterThan(0));Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before));
             Assert.That(art.Portrait,Is.Not.Null);Assert.That(ArtMemoryCache.TextureLoads-before,Is.LessThanOrEqualTo(1));
             Assert.That(ArtMemoryCache.ResidentBytes,Is.LessThan(96L*1024*1024));
+        }
+        [Test]public void NonOriginalCardRetainsItsSerializedPortraitFallback()
+        {
+            var card=ScriptableObject.CreateInstance<CardDefinition>();var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);
+            var sentinel=Sprite.Create(texture,new Rect(0,0,2,2),new Vector2(.5f,.5f));
+            try
+            {
+                var flags=System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic;
+                typeof(CardDefinition).GetField("cardId",flags).SetValue(card,"PORTRAIT_FALLBACK_TEST");
+                typeof(CardDefinition).GetField("portrait",flags).SetValue(card,sentinel);
+                Assert.That(card.Portrait,Is.SameAs(sentinel),"A card without original or local art keeps its serialized fallback.");
+            }
+            finally{Object.Destroy(sentinel);Object.Destroy(texture);Object.Destroy(card);}
         }
         [UnityTest]public IEnumerator PreparedPixelsKeepFramesAndSafeEvictionReloadsOnlyUnusedClips()
         {

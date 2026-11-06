@@ -8,6 +8,10 @@ namespace YesterdayConvoy
     public sealed class AdvancedDefenderView:MonoBehaviour
     {
         Func<ManualBattle> source;
+        Func<double> presentationClock;
+        DefenderSkillVfxView skillEffects;
+        public double PendingUntil=>skillEffects?.PendingUntil??double.NegativeInfinity;
+        public bool EffectPending=>skillEffects!=null&&skillEffects.EffectPending;
         Material material;
         readonly List<LineRenderer> lines=new List<LineRenderer>();
         sealed class ChessVisual { public SpriteRenderer Renderer; public double Created; }
@@ -17,10 +21,12 @@ namespace YesterdayConvoy
         DefenderArt chessArt;
         int used;
         public void Bind(Func<ManualBattle> battle)
+            =>Bind(battle,null);
+        public void Bind(Func<ManualBattle> battle,Func<double> presentationClock)
         {
-            source=battle;
-            var effects=GetComponent<DefenderSkillVfxView>()??gameObject.AddComponent<DefenderSkillVfxView>();
-            effects.Bind(battle);
+            source=battle;this.presentationClock=presentationClock;
+            skillEffects=GetComponent<DefenderSkillVfxView>()??gameObject.AddComponent<DefenderSkillVfxView>();
+            skillEffects.Bind(battle,presentationClock);
         }
         LineRenderer Line(string name,Color color,float width,int points)
         {
@@ -46,15 +52,8 @@ namespace YesterdayConvoy
                 // Snow accumulation is a passive gameplay marker, separate from the short attack burst.
                 foreach(var cell in b.SnowCells)if(cell.Layers>0&&b.FindDefender(cell.SourceId).Alive)
                     Ring(cell.Position,.35f,new Color(.6f,.9f,1,.12f+cell.Layers*.035f),.018f);
-                foreach(var cell in b.ChessPieces)PresentChess(cell,b.Clock,cam);
-                foreach(var d in b.Defenders)
-                {
-                    if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&b.DefenderSkillActive(d)&&b.FindDefender(d.PartnerId) is DefenderState partner&&partner.Alive)
-                        Ring(partner.Position,.55f,new Color(.4f,.8f,1,.8f),.07f);
-                    if(b.IsFifth(d)&&d.Alive)
-                    {Ring(d.Settings.RelayPosition,.42f,new Color(.3f,1,.75f,.7f),.04f);if(b.IsFifthActive(d))Ring(d.Position,.65f,new Color(1,.45f,.2f,.7f),.045f);}
-                }
-                foreach(var u in b.Units)if(u.Active&&u.ScorchUntil>b.Clock)Ring(u.Motion.Position,.45f,new Color(1,.34f,.08f,.65f),.05f);
+                foreach(var cell in b.ChessPieces)PresentChess(cell,presentationClock?.Invoke()??b.Clock,cam);
+
             }
             for(int i=used;i<lines.Count;i++)lines[i].enabled=false;
             staleChess.Clear();foreach(var pair in chess)if(!seenChess.Contains(pair.Key))staleChess.Add(pair.Key);

@@ -17,7 +17,12 @@ foreach($file in $expected) {
     $record=@($data.files | Where-Object { $_.file -ceq $file })
     if($record.Count -ne 1 -or (Get-FileHash -LiteralPath (Join-Path $packageRoot $file) -Algorithm SHA256).Hash -ine $record[0].sha256) { throw "Hash mismatch: $file" }
 }
-$target=Join-Path (Split-Path -Parent $PSScriptRoot) ('Assets/StreamingAssets/MonsterCombatArt/'+$Task)
-New-Item -ItemType Directory -Force -Path $target | Out-Null
-foreach($file in ($expected+@('manifest.json'))) { Copy-Item -LiteralPath (Join-Path $packageRoot $file) -Destination (Join-Path $target $file) -Force }
+$projectRoot=Split-Path -Parent $PSScriptRoot
+$imageRoot=Join-Path $projectRoot ('Assets/Art/Characters/Monsters/Flipbooks/'+$Task)
+$manifestRoot=Join-Path $projectRoot ('Assets/Data/ArtCatalogs/MonsterCombatArt/'+$Task)
+foreach($file in ($expected+@('manifest.json'))) {
+    $target=if([IO.Path]::GetExtension($file) -eq '.json') { $manifestRoot } else { $imageRoot }
+    New-Item -ItemType Directory -Force -Path $target | Out-Null
+    Copy-Item -LiteralPath (Join-Path $packageRoot $file) -Destination (Join-Path $target $file) -Force
+}
 Write-Output "$Task local combat media installed. Not licensed for public redistribution."

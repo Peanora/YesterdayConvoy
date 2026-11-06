@@ -18,7 +18,12 @@ foreach($slugFile in $slugFiles) {
     if(-not (Test-Path -LiteralPath (Join-Path $slugSource $slugFile) -PathType Leaf)) { throw "Missing $slugFile" }
 }
 $slugProject=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$slugDestination=Join-Path $slugProject 'Assets/StreamingAssets/OriginiumSlugOriginal'
-New-Item -ItemType Directory -Force -Path $slugDestination | Out-Null
-foreach($slugFile in $slugFiles) { Copy-Item -LiteralPath (Join-Path $slugSource $slugFile) -Destination (Join-Path $slugDestination $slugFile) -Force }
+$slugImageRoot=Join-Path $slugProject 'Assets/Art/Characters/Monsters/OriginiumSlugOriginal'
+$slugManifestRoot=Join-Path $slugProject 'Assets/Data/ArtCatalogs/OriginiumSlugOriginal'
+# Copy only the verified package files; existing Unity .meta files stay untouched.
+foreach($slugFile in $slugFiles) {
+    $slugDestination=if([IO.Path]::GetExtension($slugFile) -eq '.json') { $slugManifestRoot } else { $slugImageRoot }
+    New-Item -ItemType Directory -Force -Path $slugDestination | Out-Null
+    Copy-Item -LiteralPath (Join-Path $slugSource $slugFile) -Destination (Join-Path $slugDestination $slugFile) -Force
+}
 Write-Output "Installed $($slugFiles.Count) files. Runtime media is tracked with source; this installer is optional. No redistribution rights are granted."

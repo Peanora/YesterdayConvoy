@@ -1,0 +1,566 @@
+{
+  "RANGED_MONSTER_NATIVE_BINDINGS.json": [
+    {
+      "card": "M05",
+      "model": "enemy_1004_mslime",
+      "path": "enemy_1004_mslime/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_mslime"
+    },
+    {
+      "card": "M05",
+      "model": "enemy_1004_mslime",
+      "path": "enemy_1004_mslime/Talents/DefDown",
+      "field": "/_additiveActiveBuffs/0/overrideEffectKey",
+      "value": "buff_defdown"
+    },
+    {
+      "card": "M11",
+      "model": "enemy_1066_snbow",
+      "path": "enemy_1066_snbow/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_crossbow"
+    },
+    {
+      "card": "M12",
+      "model": "enemy_1068_snmage",
+      "path": "enemy_1068_snmage/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_snow_magic_ball"
+    },
+    {
+      "card": "M12",
+      "model": "enemy_1068_snmage",
+      "path": "enemy_1068_snmage/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "snmage_attack_01_start"
+    },
+    {
+      "card": "M12",
+      "model": "enemy_1068_snmage",
+      "path": "enemy_1068_snmage/Skills/ColdAttack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_snow_magic_ball"
+    },
+    {
+      "card": "M12",
+      "model": "enemy_1068_snmage",
+      "path": "enemy_1068_snmage/Skills/ColdAttack",
+      "field": "/_effect",
+      "value": "snmage_skill_01_buff"
+    },
+    {
+      "card": "M12",
+      "model": "enemy_1068_snmage",
+      "path": "enemy_1068_snmage/Skills/ColdAttack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "snmage_skill_01_start"
+    },
+    {
+      "card": "M16",
+      "model": "enemy_1079_sotisp",
+      "path": "enemy_1079_sotisp/Mode/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_sotisp"
+    },
+    {
+      "card": "M16",
+      "model": "enemy_1079_sotisp",
+      "path": "enemy_1079_sotisp/Mode/Strength/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_sotisp"
+    },
+    {
+      "card": "M16",
+      "model": "enemy_1079_sotisp",
+      "path": "enemy_1079_sotisp/Mode/Strength/Talent/SwitchModeRevert",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "sotidp_buff_01_start"
+    },
+    {
+      "card": "M26",
+      "model": "enemy_1090_mdsnpr",
+      "path": "enemy_1090_mdsnpr/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_mdsnpr"
+    },
+    {
+      "card": "M26",
+      "model": "enemy_1090_mdsnpr",
+      "path": "enemy_1090_mdsnpr/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_mdsnpr_attack_01_start"
+    },
+    {
+      "card": "M42",
+      "model": "enemy_1090_mdsnpr_2",
+      "path": "enemy_1090_mdsnpr_2/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_mdsnpr"
+    },
+    {
+      "card": "M42",
+      "model": "enemy_1090_mdsnpr_2",
+      "path": "enemy_1090_mdsnpr_2/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_mdsnpr_attack_01_start"
+    },
+    {
+      "projectile": "projectile_mslime",
+      "field": "/_mainEffect",
+      "value": "mslime_attack_01_trail"
+    },
+    {
+      "projectile": "projectile_mslime",
+      "field": "/_effectsWhenHit/0",
+      "value": "mslime_attack_01_hit"
+    },
+    {
+      "projectile": "projectile_crossbow",
+      "field": "/_mainEffect",
+      "value": "common_gongjian_trail_01"
+    },
+    {
+      "projectile": "projectile_crossbow",
+      "field": "/_effectsWhenHit/0",
+      "value": "common_hit_01"
+    },
+    {
+      "projectile": "projectile_enemy_snow_magic_ball",
+      "field": "/_mainEffect",
+      "value": "snmage_attack_01_trail"
+    },
+    {
+      "projectile": "projectile_enemy_snow_magic_ball",
+      "field": "/_effectsWhenHit/0",
+      "value": "snmage_attack_01_hit"
+    },
+    {
+      "projectile": "projectile_sotisp",
+      "field": "/_mainEffect",
+      "value": "sotisp_attack_01_trail"
+    },
+    {
+      "projectile": "projectile_sotisp",
+      "field": "/_effectsWhenHit/0",
+      "value": "sotisp_attack_01_hit"
+    },
+    {
+      "projectile": "projectile_enemy_mdsnpr",
+      "field": "/_mainEffect",
+      "value": "enemy_mdsnpr_attack_01_trail"
+    },
+    {
+      "projectile": "projectile_enemy_mdsnpr",
+      "field": "/_effectsWhenHit/0",
+      "value": "enemy_mdsnpr_attack_01_hit"
+    }
+  ],
+  "FROSTNOVA_NATIVE_BINDINGS.json": [
+    {
+      "path": "enemy_1505_frstar/Modes/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_frstar"
+    },
+    {
+      "path": "enemy_1505_frstar/Modes/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "firstar_attack_02_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Modes/Default/Body/Attack",
+      "field": "/_castEffects/1/_effects/0",
+      "value": "firstar_attack_01_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/ArcticBlast",
+      "field": "/_activeBuffs/0/overrideEffectKey",
+      "value": "firstar_skill_01_buff"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/ArcticBlast",
+      "field": "/_projectileKey",
+      "value": "projectile_frstar_s1"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/IceShield",
+      "field": "/_tileEffect",
+      "value": "firstar_skill_02_range_02"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/IceShield",
+      "field": "/_startEffect",
+      "value": "firstar_skill_02_range"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/IceShield",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "firstar_skill_02_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Skills/IceShield",
+      "field": "/_castEffects/1/_effects/0",
+      "value": "firstar_skill_02_trail"
+    },
+    {
+      "path": "enemy_1505_frstar/Talents/Reborn",
+      "field": "/_effects/0",
+      "value": "firstar_buff_01_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Talents/Reborn",
+      "field": "/_effects/1",
+      "value": "firstar_buff_02_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Talents/Reborn",
+      "field": "/_effects/2",
+      "value": "firstar_buff_03_start"
+    },
+    {
+      "path": "enemy_1505_frstar/Others/SleepImmune",
+      "field": "/_buffs/0/buffKey",
+      "value": "frstar_c"
+    }
+  ],
+  "FLAMERAZER_NATIVE_BINDINGS.json": [
+    {
+      "path": "enemy_1173_duspfr/Modes/Default/Body/Combat",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "common_enemy_hit_01"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/DeadBoom/PullDupilr",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_duspfr_2_Die_01_hit"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/DeadBoom/PullDupilr",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_duspfr_2_Die_01"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/DeadBoom/Damage",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_duspfr_2_Die_01_hit"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/DeadBoom/KillDuspfr",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_duspfr_2_Die_01_hit"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/DeadBoom/KillDuspfr/Selector",
+      "field": "/_buffKey",
+      "value": "duspfr_t[deadboom]"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/Flame",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_duspfr"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/Flame",
+      "field": "/_buffs/0/buffKey",
+      "value": "duspfr_flame[cd]"
+    },
+    {
+      "path": "enemy_1173_duspfr/Skills/Flame",
+      "field": "/_buffs/0/templateKey",
+      "value": "enemy_duspfr_flame[cd]"
+    },
+    {
+      "path": "enemy_1173_duspfr/Talents/Dead2Boom",
+      "field": "/_buffs/0/buffKey",
+      "value": "duspfr_t[deadboom]"
+    },
+    {
+      "path": "enemy_1173_duspfr/Talents/Dead2Boom",
+      "field": "/_buffs/0/templateKey",
+      "value": "enemy_duspfr_t[deadboom]"
+    }
+  ],
+  "SPECIAL_MONSTER_NATIVE_BINDINGS.json": [
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls",
+      "field": "/_deadEffect",
+      "value": "common_empty"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Default/Body/Attack",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_duskls_attack_hit"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_duskls_attack_start"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Default/Talents/aura",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "enemy_duskls_weapon_buff"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Prop/Talents/Revive[Trigger]",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "enemy_duskls_idle_2"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Prop/Talents/RebornToDefault",
+      "field": "/_effects/0",
+      "value": "enemy_duskls_revive_3"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Prop/Talents/RebornToDefault",
+      "field": "/_effects/1",
+      "value": "enemy_duskls_revive_4"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Prop/Talents/Invisible",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "common_invisible"
+    },
+    {
+      "card": "M30",
+      "model": "enemy_1288_duskls",
+      "path": "enemy_1288_duskls/Modes/Prop/Skills/BornAnim",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "enemy_duskls_revive_2"
+    },
+    {
+      "card": "M33",
+      "model": "enemy_1152_dsurch",
+      "path": "enemy_1152_dsurch/Mode/Default/Skills/Stab",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_dsurch_01_start"
+    },
+    {
+      "card": "M33",
+      "model": "enemy_1152_dsurch",
+      "path": "enemy_1152_dsurch/Mode/Default/Skills/Stab",
+      "field": "/_castEffects/1/_effects/0",
+      "value": "enemy_dsurch_01_start_02"
+    },
+    {
+      "card": "M34",
+      "model": "enemy_1151_dslntc",
+      "path": "enemy_1151_dslntc/Mode/Normal/Body/Combat",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_dslntc_attack_01_hit"
+    },
+    {
+      "card": "M34",
+      "model": "enemy_1151_dslntc",
+      "path": "enemy_1151_dslntc/Mode/Normal/Talent/Revive",
+      "field": "/_buffs/1/overrideEffectKey",
+      "value": "enemy_dslntc_buff_01"
+    },
+    {
+      "card": "M34",
+      "model": "enemy_1151_dslntc",
+      "path": "enemy_1151_dslntc/Mode/Normal/Talent/Revive",
+      "field": "/_buffs/2/overrideEffectKey",
+      "value": "enemy_dslntc_skill_begin_buff"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Modes/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_dsmant"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Modes/Default/Body/Attack",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_dsmant_attack_01_start"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Modes/Default/Body/Combat",
+      "field": "/_hitEffects/0/_effects/0",
+      "value": "enemy_dsmant_attack_02_hit"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Modes/Default/Body/Combat",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_dsmant_attack_02_start"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Modes/Default/Body/Combat",
+      "field": "/_castEffects/1/_effects/0",
+      "value": "enemy_dsmant_attack_02_start_02"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Skills/Spear",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_dsmant_s"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Skills/Spear",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "enemy_dsmant_skill_01_start"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Skills/Spear",
+      "field": "/_castEffects/1/_effects/0",
+      "value": "enemy_dsmant_skill_01_buff"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Skills/Spear",
+      "field": "/_inputTargetEffects/0/_effects/0",
+      "value": "enemy_dsmant_skill_01_buff_03"
+    },
+    {
+      "card": "M36",
+      "model": "enemy_1154_dsmant",
+      "path": "enemy_1154_dsmant/Skills/Spear",
+      "field": "/_buffs/0/overrideEffectKey",
+      "value": "enemy_dsmant_skill_01_buff_02"
+    },
+    {
+      "card": "M38",
+      "model": "enemy_1022_dmage",
+      "path": "enemy_1022_dmage/Default/Body/Attack",
+      "field": "/_projectileKey",
+      "value": "projectile_enemy_magic_ball"
+    },
+    {
+      "card": "M38",
+      "model": "enemy_1022_dmage",
+      "path": "enemy_1022_dmage/Skills/Lasso",
+      "field": "/_projectileKey",
+      "value": "projectile_dmage"
+    },
+    {
+      "card": "M38",
+      "model": "enemy_1022_dmage",
+      "path": "enemy_1022_dmage/Skills/Lasso",
+      "field": "/_castEffects/0/_effects/0",
+      "value": "dmage_skill_01_start"
+    }
+  ],
+  "SPECIAL_PROJECTILE_NATIVE_BINDINGS.json": [
+    {
+      "projectile": "projectile_enemy_dsmant",
+      "field": "/_mainEffect",
+      "value": "enemy_dsmant_attack_01_trail"
+    },
+    {
+      "projectile": "projectile_enemy_dsmant",
+      "field": "/_effectsWhenHit/0",
+      "value": "enemy_dsmant_attack_01_hit"
+    },
+    {
+      "projectile": "projectile_enemy_dsmant_s",
+      "field": "/_effectsWhenHit/0",
+      "value": "enemy_dsmant_skill_01_hit"
+    },
+    {
+      "projectile": "projectile_enemy_magic_ball",
+      "field": "/_mainEffect",
+      "value": "common_magic_trail_01_m"
+    },
+    {
+      "projectile": "projectile_enemy_magic_ball",
+      "field": "/_effectsWhenHit/0",
+      "value": "common_magic_hit_01_m"
+    },
+    {
+      "projectile": "projectile_dmage",
+      "field": "/_effectsWhenHit/0",
+      "value": "dmage_skill_01_buff"
+    },
+    {
+      "projectile": "projectile_dmage",
+      "field": "/_effectsWhenHit/1",
+      "value": "common_enemy_hit_01"
+    },
+    {
+      "projectile": "projectile_dmage",
+      "field": "/_mainEffect",
+      "value": "dmage_skill_01_line"
+    }
+  ],
+  "PROJECTILE_NATIVE_BINDINGS.json": [
+    {
+      "key": "projectile_enemy_duspfr",
+      "field": "/_effectsWhenHit/0",
+      "value": "enemy_duspfr_2_attack_01_hit"
+    },
+    {
+      "key": "projectile_enemy_duspfr",
+      "field": "/_mainEffect",
+      "value": "enemy_duspfr_2_attack_01_front_start2"
+    },
+    {
+      "key": "projectile_frstar",
+      "field": "/_mainEffect",
+      "value": "firstar_attack_01_trail"
+    },
+    {
+      "key": "projectile_frstar",
+      "field": "/_effectsWhenHit/0",
+      "value": "firstar_attack_01_hit"
+    },
+    {
+      "key": "projectile_frstar_s1",
+      "field": "/_effectsWhenHit/0",
+      "value": "firstar_attack_01_hit"
+    },
+    {
+      "key": "projectile_frstar_s1",
+      "field": "/_effectsToTargetWhenStart/0",
+      "value": "firstar_skill_01_range"
+    }
+  ],
+  "NERVE_NATIVE_BINDINGS.json": [
+    {
+      "field": "/_templates/490/eventToActions/_items/0/value/SerializedState",
+      "value": "[{\"_buff\":{\"attributes\":{\"abnormalFlags\":[],\"abnormalImmunes\":[],\"abnormalAntis\":[],\"abnormalCombos\":[],\"abnormalComboImmunes\":[],\"attributeModifiers\":[]},\"buffKey\":\"stun\",\"loadFromDB\":true,\"isDurableBuff\":false,\"isDamageMissable\":false,\"isSilenceable\":false,\"isStunnable\":false,\"isFreezable\":false,\"isLevitatable\":false,\"isGroundBoundable\":false,\"statusResistable\":\"AUTOMATIC\",\"templateKey\":\"empty\",\"disableOverride\":false,\"overrideKey\":null,\"overrideType\":\"DEFAULT\",\"maxStackCnt\":1,\"refreshRemainingTimeWhenStackMax\":false,\"clearAllStackCntWhenTimeUp\":false,\"maxValidStackCnt\":-1,\"independentCharacterSource\":false,\"overrideEffectKey\":null,\"overrideOnEventPriority\":false,\"onEventPriority\":\"DEFAULT\",\"audioSignal\":null,\"lifeTimeType\":\"LIMITED\",\"takeSnapshotWhenExtend\":false,\"durationKey\":null,\"remainingTimeKey\":null,\"lifeTime\":0.0,\"triggerLifeType\":\"IMMEDIATELY\",\"triggerCnt\":0,\"triggerInterval\":-1.0,\"waitFirstTriggerInterval\":true,\"firstTriggerInterval\":-1.0,\"priority\":-1,\"priorityBBKeys\":[],\"stripBlackboardParamsWithBuffKey\":false,\"blackboard\":[],\"enableInitDirectionFromSource\":false},\"_buffOwner\":\"BUFF_OWNER\",\"_useSpecialBuffSource\":false,\"_specialBuffSource\":\"BUFF_SOURCE\",\"_isDerivedBuff\":false,\"_finishDerivedBuffIfParentFinish\":false,\"_inherateSourceProjectileFromParentBuff\":false,\"_hookEffectKeyFromSourceProjectile\":false,\"$type\":\"Torappu.Battle.Action.Nodes+CreateBuff\"},{\"_buff\":{\"attributes\":{\"abnormalFlags\":[],\"abnormalImmunes\":[],\"abnormalAntis\":[],\"abnormalCombos\":[],\"abnormalComboImmunes\":[],\"attributeModifiers\":[]},\"buffKey\":\"ep_break_sanity[epfree]\",\"loadFromDB\":false,\"isDurableBuff\":false,\"isDamageMissable\":false,\"isSilenceable\":false,\"isStunnable\":false,\"isFreezable\":false,\"isLevitatable\":false,\"isGroundBoundable\":false,\"statusResistable\":\"AUTOMATIC\",\"templateKey\":\"empty\",\"disableOverride\":false,\"overrideKey\":null,\"overrideType\":\"DEFAULT\",\"maxStackCnt\":1,\"refreshRemainingTimeWhenStackMax\":false,\"clearAllStackCntWhenTimeUp\":false,\"maxValidStackCnt\":-1,\"independentCharacterSource\":false,\"overrideEffectKey\":\"common_nerve_injury_01_hit\",\"overrideOnEventPriority\":false,\"onEventPriority\":\"DEFAULT\",\"audioSignal\":\"ep_break_sanity_audio\",\"lifeTimeType\":\"LIMITED\",\"takeSnapshotWhenExtend\":false,\"durationKey\":\"ep_break_duration\",\"remainingTimeKey\":null,\"lifeTime\":0.0,\"triggerLifeType\":\"IMMEDIATELY\",\"triggerCnt\":0,\"triggerInterval\":-1.0,\"waitFirstTriggerInterval\":true,\"firstTriggerInterval\":-1.0,\"priority\":-1,\"priorityBBKeys\":[],\"stripBlackboardParamsWithBuffKey\":false,\"blackboard\":[],\"enableInitDirectionFromSource\":false},\"_buffOwner\":\"BUFF_OWNER\",\"_useSpecialBuffSource\":false,\"_specialBuffSource\":\"BUFF_SOURCE\",\"_isDerivedBuff\":false,\"_finishDerivedBuffIfParentFinish\":false,\"_inherateSourceProjectileFromParentBuff\":false,\"_hookEffectKeyFromSourceProjectile\":false,\"$type\":\"Torappu.Battle.Action.Nodes+CreateBuff\"},{\"_damageType\":\"PURE\",\"_damageKey\":\"ep_sanity_damage\",\"_ignoreForSp\":false,\"_damageWithoutModify\":false,\"_attackType\":\"NONE\",\"_isEnvDamage\":false,\"_isUndeadable\":false,\"_ignoreCancelReasonMask\":\"NONE\",\"_instantKillLikeDamage\":false,\"_isNotChangeableValue\":false,\"_multiplierByKey\":false,\"_multiplierKey\":\"cnt\",\"_modifierKey\":\"\",\"_setOriginalSource\":false,\"_originalSourceType\":\"SOURCE\",\"$type\":\"Torappu.Battle.Action.Nodes+NoSourceDamage\"}]"
+    },
+    {
+      "field": "/_templates/2588/eventToActions/_items/1/value/SerializedState",
+      "value": "[{\"_buff\":{\"attributes\":{\"abnormalFlags\":[],\"abnormalImmunes\":[],\"abnormalAntis\":[],\"abnormalCombos\":[],\"abnormalComboImmunes\":[],\"attributeModifiers\":[{\"attributeType\":\"ATK\",\"formulaItem\":\"MULTIPLIER\",\"value\":0.0,\"loadFromBlackboard\":true,\"fetchBaseValueFromSourceEntity\":false}]},\"buffKey\":\"arkdex_trait_1[attr]\",\"loadFromDB\":false,\"isDurableBuff\":true,\"isDamageMissable\":false,\"isSilenceable\":false,\"isStunnable\":false,\"isFreezable\":false,\"isLevitatable\":false,\"isGroundBoundable\":false,\"statusResistable\":\"AUTOMATIC\",\"templateKey\":\"empty\",\"disableOverride\":false,\"overrideKey\":null,\"overrideType\":\"DEFAULT\",\"maxStackCnt\":1,\"refreshRemainingTimeWhenStackMax\":false,\"clearAllStackCntWhenTimeUp\":false,\"maxValidStackCnt\":-1,\"independentCharacterSource\":false,\"overrideEffectKey\":\"arkdex_personality_nervous_01\",\"overrideOnEventPriority\":false,\"onEventPriority\":\"DEFAULT\",\"audioSignal\":null,\"lifeTimeType\":\"INFINITY\",\"takeSnapshotWhenExtend\":false,\"durationKey\":null,\"remainingTimeKey\":null,\"lifeTime\":0.0,\"triggerLifeType\":\"IMMEDIATELY\",\"triggerCnt\":0,\"triggerInterval\":-1.0,\"waitFirstTriggerInterval\":true,\"firstTriggerInterval\":-1.0,\"priority\":-1,\"priorityBBKeys\":[],\"stripBlackboardParamsWithBuffKey\":false,\"blackboard\":[],\"enableInitDirectionFromSource\":false},\"_buffOwner\":\"BUFF_OWNER\",\"_useSpecialBuffSource\":false,\"_specialBuffSource\":\"BUFF_SOURCE\",\"_isDerivedBuff\":false,\"_finishDerivedBuffIfParentFinish\":false,\"_inherateSourceProjectileFromParentBuff\":false,\"_hookEffectKeyFromSourceProjectile\":false,\"$type\":\"Torappu.Battle.Action.Nodes+CreateBuff\"}]"
+    }
+  ],
+  "usage": {
+    "M14": "FrostSealView reads IceRings/FrostSeals/SnowstormPulses and real IsReviving state. Original target tile layers bind FrozenTargets, caster start/trail bind source; source revival9.2667s adapted to gameplay5s only.",
+    "M31": "FlamerazerEffectView reads actual FlameSprays.Ticks/FuelExplosions; original two-point line reference3.005432 projected units maps actual nozzle→target.",
+    "M04/M06": "MonsterDeathEffectView reads existing DeathBlasts. Functional warning circle remains UI; original bslime/snslime particle replaces blast/shards.",
+    "M33/M34/M36/M38": "NeuralEffectView reads real Stab/Harvester/bubble/shackle/neural-break states. No additional damage or abilities.",
+    "M30": "MonsterOriginalEffectView reads FlamePhase. Native revive_2 is Prop BornAnim; revive_3/4 are RebornToDefault; weapon_buff requires existing NearBurningReeds state.",
+    "common ordinary shots": "Shared original common director uses exact original ranged chains where traced; unspecified ordinary melee/ranged families are explicitly common-original visual adaptation, not an exclusive effect attributed to that character."
+  }
+}

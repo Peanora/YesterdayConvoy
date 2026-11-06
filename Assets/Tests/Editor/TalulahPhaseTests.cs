@@ -179,14 +179,17 @@ namespace YesterdayConvoy.Tests
                 return result.Cast<object>().Select(clip=>(string)clip.GetType().GetProperty("CacheKey").GetValue(clip)).ToArray();
             }
             int before=ArtMemoryCache.TextureLoads;
-            Assert.That(Keys(false).Length,Is.EqualTo(5));var phase=Keys(true);
-            Assert.That(phase.Length,Is.EqualTo(24));Assert.That(phase,Does.Contain("TalulahOriginal/ExtraClips/extra_move_b"));
+            var baseline=Keys(false);var phase=Keys(true);
+            Assert.That(baseline.Count(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.EqualTo(5));
+            Assert.That(phase.Except(baseline).Count(),Is.EqualTo(19),"Shared combat effects must not inflate the second-phase increment.");
+            Assert.That(phase,Does.Contain("TalulahOriginal/ExtraClips/extra_move_b"));
             Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
             Assert.That(phase.Any(key=>key.Contains("original-target-burn")||key.Contains("orb-")),Is.False);
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
-            var method=typeof(YesterdayConvoy.Editor.PreparedArtTools).GetMethod("TalulahPhasePages",BindingFlags.Static|BindingFlags.NonPublic);
-            var pages=(HashSet<string>)method.Invoke(null,null);
-            Assert.That(pages.Count,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
+            var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
+                .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
+                .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
+            Assert.That(pages.Length,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
             Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
         }
     }

@@ -27,7 +27,7 @@ namespace YesterdayConvoy
             unit.FrostSealStartedAt=Clock;
             unit.IsMoving=unit.HasCombatTarget=false;
             unit.NextAttackTime=Clock+UnitCombat(unit).SkillInterval;
-            StartSnowstorm(unit);
+            if(unit.CardId=="CARD_M14")StartSnowstorm();
             frostSeals.Add(new FrostSealCast{SourceId=unit.EntityId,Position=unit.Motion.Position,StartedAt=Clock});
         }
         void ResolveFrostSeals()

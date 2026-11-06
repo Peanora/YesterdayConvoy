@@ -52,7 +52,7 @@ namespace YesterdayConvoy
             bool external=d==null;
             if(external)
             {
-                if(phaseManifest==null)phaseManifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"TalulahUnboundVfx/manifest.json")));
+                if(phaseManifest==null)phaseManifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
                 if(phaseManifest==null||phaseManifest.version!=1||phaseManifest.fps!=30)throw new InvalidDataException("Invalid Talulah phase VFX manifest");
                 d=Array.Find(phaseManifest.clips,c=>c.key==key);
             }
@@ -128,10 +128,16 @@ namespace YesterdayConvoy
             }
             if(!battle.IsSkillActionPlaying(unit)||!battle.UnitCombat(unit).FireRain)return;
             double elapsed=battle.Clock-unit.FireRainStartedAt,total=battle.UnitCombat(unit).SkillInterval;
+            if(second)
+            {
+                // B ignition is a native one-shot burst, not the actor's held hand pose.
+                // Let it play and dissipate at source speed while the six-second rain continues.
+                Show("ignite-B-caster",elapsed,p,camera,flip,false,6);return;
+            }
             double raise=Math.Min(.8,total*.2),lower=Math.Min(.6,total*.2),hold=1.1666667;
             double time=elapsed<raise?elapsed/raise*hold:elapsed<total-lower?hold:
                 hold+(elapsed-(total-lower))/lower*(1.9666667-hold);
-            Show(second?"ignite-B-caster":"firecast-A-hand",time,p,camera,flip,false,6);
+            Show("firecast-A-hand",time,p,camera,flip,false,6);
         }
         // EngagementView only visits active units. The actor's original presenter
         // calls this final tail using PresentationClock after logical final death.

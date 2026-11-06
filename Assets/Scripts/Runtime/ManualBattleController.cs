@@ -42,8 +42,9 @@ namespace YesterdayConvoy
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
         private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
-        private double UnitDeathTail(DeployedUnitState unit) => OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
-            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0);
+        private double UnitDeathTail(DeployedUnitState unit) => Math.Max(MonsterOriginalVfx.DeathTail(unit),OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
+            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0));
+        private double NativeVfxPendingUntil => Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity);
         private double DeathTail
         {
             get
@@ -57,7 +58,9 @@ namespace YesterdayConvoy
         {
             get
             {
+                if(guerrillaOrderView?.Playing==true)return true;
                 if(CombatFeedbackPresentationPending)return true;
+                if(PresentationClock<NativeVfxPendingUntil)return true;
                 foreach(var unit in Battle.Units) if(unit.Resolution==UnitResolution.Dead && PresentationClock<unit.DeathTime+UnitDeathTail(unit)) return true;
                 foreach(var blast in Battle.DeathBlasts) if(blast.Resolved && PresentationClock<blast.DetonateAt+.65) return true;
                 if(DefenderTrialActive) foreach(var d in Battle.Defenders) if(!d.Alive && PresentationClock<d.DeathTime+1) return true;
@@ -83,7 +86,9 @@ namespace YesterdayConvoy
             CreatePreview();
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
-            gameObject.AddComponent<FrostSealView>().Bind(()=>Battle);
+            gameObject.AddComponent<FrostSealView>().Bind(()=>Battle,()=>PresentationClock);
+            gameObject.AddComponent<SnowstormView>().Initialize(this);
+            InitializeGuerrillaOrderPresentation();
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
             InitializeCombatFeedback();
@@ -242,8 +247,12 @@ namespace YesterdayConvoy
             // Carry this phase into battle; after Begin only the simulation clock advances it.
             if(Battle.Phase==BattlePhase.Ready && !Battle.IsPaused) readyIdleElapsed+=delta;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
-                terminalPresentationElapsed=Math.Min(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
-            Battle.Advance(delta*EffectiveSimulationSpeed);
+                terminalPresentationElapsed=Math.Max(terminalPresentationElapsed,
+                    Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),
+                        terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
+            float orderDelta=delta*GuerrillaPresentationRate;
+            Battle.Advance(delta*EffectiveSimulationSpeed,orderDelta);
+            guerrillaOrderView?.AdvancePresentation(orderDelta);
             StepBattleShopLoop();
             SyncViews();
             UpdatePreview();

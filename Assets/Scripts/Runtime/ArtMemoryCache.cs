@@ -66,7 +66,7 @@ namespace YesterdayConvoy
         public static void Clear(){pinned.Clear();Trim(true);}
         internal static Texture2D Texture(string relative,Resource owner,bool readable=false)
         {
-            string source=Path.Combine(Application.streamingAssetsPath,relative);
+            string source=ArtSourcePaths.Resolve(relative);
             string prepared=Application.isEditor?Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt",relative+".ycart")):source+".ycart";
             Texture2D texture;
             if(File.Exists(prepared)&&!readable)

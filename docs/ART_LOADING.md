@@ -13,13 +13,15 @@
 
 ## 编辑器与EXE
 
-1. Git保留原PNG、JSON及meta；不移动原资源或修改GUID。
+1. Git保留原PNG、JSON及meta。2026-11-06已分类移动源资源并保留GUID：守军/怪物动作图在`Art/Characters`，特效在`Art/VFX`，商店图标在`Art/UI/Shop`；运行清单及来源JSON在`Data/ArtCatalogs`。`ArtSourcePaths`解析源目录，逻辑包名和缓存键保持。工程内StreamingAssets只留说明。
 2. 编辑器首次Play或构建时，`PreparedArtTools`自动生成`Library/PreparedArt`。首次处理需要等待，后续按源文件内容指纹增量更新；也可用菜单Yesterday Convoy → Art → Prepare Actor Textures提前执行。
 3. 处理仍使用原来的Unity纹理压缩质量，只把PNG解码与压缩从游戏中移到准备阶段。缓存保存带尺寸/格式头的预压缩纹理块，再作无损Deflate存储；未对齐压缩块的小卡面保持RGBA。不是新增美术或AI改图。
-4. Windows构建自动把派生结果装入Player的StreamingAssets，并仅在**构建副本**中替换对应PNG。项目Assets内原图不删除。运行时直接还原纹理块和上传，不再为这些动画现场解PNG/压缩。
+4. Windows构建按当前manifest白名单把运行JSON、预处理纹理和商店源石PNG装入Player的StreamingAssets。先核对依赖，再仅清理构建目录内已知资源包；不枚举复制整个Library缓存，不打包来源/维护记录、未接入塔露拉特效页或陈旧缓存。所有有效ExtraClips继续交付。项目Assets内原图不删除；Player直接还原纹理块并上传，不再为这些动画现场解PNG/压缩。独立的`Resources/TalulahNative`资源沿用原路径。
 5. `Library`与`Builds`是可重建产物，不加入Git；所有原图和生成工具随源码。队友克隆后自动生成，不存在手工遗漏素材依赖。删Library后首次准备会重做；已打包EXE不需要准备缓存。
 
 编辑器未准备时，兼容入口可回退原PNG读取；正常Player构建应使用派生结果。日志`ART_PREPARE`记录准备时长、预处理页数、PNG回退和缓存估算；回退数用于发现未走优化路径的角色。
+
+菜单`Yesterday Convoy → Art → Validate Classified Runtime Sources`只检查清单和源页；`Prepare Actor Textures`负责生成派生纹理。缺少源页或预处理文件会令构建失败。可选开发Player参数`-artPayloadSmokeTest -demoEvidenceDir <目录>`逐页实际上传所有打包纹理，并核对六类资源包、manifest页和商店PNG；结果不代替自然关卡试玩。维护安装器和塔露拉打包脚本也已分流Art/Data，避免以后重新写回StreamingAssets。
 
 ## 验收与计时边界
 
