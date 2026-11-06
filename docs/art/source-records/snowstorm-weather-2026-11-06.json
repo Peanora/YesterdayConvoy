@@ -277,5 +277,15 @@
     "windowsBuildErrors": 0,
     "d3d11Player": "14/14; 81520 changed pixels",
     "scope": "Real ordinary projectiles with explicit cold/durable-target fixture; no deployed FrostNova; screenshots of charge2/3 and weather; not natural run balance or second-machine validation"
+  },
+  "damageRevisionVerification": {
+    "runtimeSource": "7b8cae9b48a607a60e2c50be0f0cfa397aad10fc",
+    "rules": "Snow tier5 required for both three-shatter and manual FrostNova Ice Seal triggers; shared8s weather, no stacking or refreshing",
+    "damage": "Each0/2/4/6s pulse: (60+targetMaxHP*.02)*(1+.35*(average prebattle snow star-1)); Arts, derived, control protection does not grant damage immunity",
+    "editMode": "477/477",
+    "relatedD3D11PlayMode": "17/17",
+    "windowsBuildErrors": 0,
+    "d3d11Player": "16/16;81520 changed pixels",
+    "scope": "Real ordinary attack and manual-skill paths with explicit durable-target/cold fixture, actual damage feedback and screenshot review; not natural campaign balance or second-machine validation"
   }
 }
