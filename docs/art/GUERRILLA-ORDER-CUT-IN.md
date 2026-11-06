@@ -1,19 +1,23 @@
-# 游击队全屏协同闪现
+# 游击队V2独立切面聚拢与碎裂
 
-人类于2026-11-06认可项目外V1，并明确以当前编队为显示范围：尚未部署的编队成员也显示，备战未入编队者对应切面留空。固定位置依次为左上战士M15、左中狙击手M16、左下猎犬M03、中央爱国者M20、右上萨卡兹战士M19、右中盾卫M18、右下传令兵M17。缺位不重排其他人物。
+人类于2026-11-06认可项目外V2动态视频并授权接入。V1只改变整屏图片透明度的演出已被否决，旧技术结果保留在QA历史中，不能作为V2完成证据。
 
-左右两侧保留暗色斜切扩展槽。`GuerrillaOrderView.Play`接受已判定的成员ID和可选Sprite字典，未来非原生成员进入这两槽；目前上游仅查询现有游击队名单，扩展槽保持空，未实现转职装备/改标签或改变羁绊档位。
+新演出依次为中央晶核出现、角色玻璃切面各自从外围向中心聚拢、短暂冲击与停留、切面裂为独立三角碎片、旋转漂移/收缩并逐渐消散、恢复战场。人物纹理来自此前认可的七角色AI概念裁片，原PNG字节保持；不会把整张海报或预制视频当作动态演出播放。
 
-军令成功事务在`SynergyInteractions.UseCampaignOrder`调用`ShowGuerrillaOrder`，从当前`shopLineup`复制去重的成员列表。独立`GuerrillaOrderView`不读取部署/存活状态、不选择攻击受益者、不写战斗资源。原伤害与护盾仍由`ManualBattle.TryGuerrillaOrder`结算。失败不播放；成功的前/后半令各可播放一次。
+九个放射切面的成员顺序固定为M15战士、M16狙击手、M03猎犬、M20爱国者、M19萨卡兹战士、M18盾卫、M17传令兵，再加底部两个扩展槽。切面角度为230/190/150/270/310/350/30/70/110度（屏幕向右为0，顺时针）。当前编队决定显示，未部署或已经离场也仍显示，未入编队者原位留暗玻璃，不挤动其他人。
 
-资源为已认可AI概念PNG原字节及一个生产Shader，按固定分区遮住未入编队人物，主标题共享。两扩展Sprite同样在这一Shader中合成，没有固定整图露出全部人物。16:9等比例适配共用`TacticalViewport`，不消费鼠标事件。0.14秒平滑淡入、0.18秒停留、0.40秒平滑淡出（共0.72秒）为本项目试验值；读取`PresentationClock`，暂停冻结、2倍/技能慢速跟随。终局只延续表现尾，不推进战斗伤害；重开/切关/禁用停止并清除。
+UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员交给独立GuerrillaOrderView。显示层不选择攻击受益者，不写资源、军令或伤害。Play可额外接收已判定的转职成员ID与Sprite；现阶段上游仍只有原生成员，因此两扩展槽为空，本轮不新增转职玩法。成功的前/后半令可各播一次，失败不播。
 
-生产材质以straight alpha合成到复用RenderTexture，再通过IMGUI队列绘制；本组件每次OnGUI保留自身排序深度，使峰值全屏盖住HUD、血条和卡栏，淡入淡出时平滑恢复下层画面。矩阵/颜色恢复不影响其他绘制。实际屏幕对照和1920×1080实图已验证，不只依赖离屏材质像素。
+根据已批准视频采用2.6模拟秒试验节奏：0.08秒开始逐片入场，约0.475秒聚齐、0.49秒冲击、0.59–0.90秒短停；0.90–2.10秒每片分成12个独立带纹理碎片，随后只留少量碎光至2.60秒。原生渲染读取共享PresentationClock，暂停冻结所有几何和音频，倍速/技能慢速跟随；终局只延续表现尾，不推进战斗。重开、换关和禁用清理。
 
-原创合成音效`GuerrillaOrder/shing`为0.64秒、48kHz双声道PCM16，约-6dBFS峰值。无原作采样、无人声说sing。`tools/art/build_guerrilla_shing.py`可复现，播放器跟随静音、暂停及速度。作者通过解码和数值验证，但未实际试听；最终音色和音量由用户听感确认。
+完整几何、晶核、吸入线、交叉光束和碎光通过同一原生离屏渲染路径生成，支持实际GPU输出验证；透明度正确合成后用IMGUI前景绘制，保持既有16:9视口与输入。运行时资源只包含人物纹理、必要Shader、原声音频和meta，不导入看稿HTML、参考录屏或加工工作区。
 
-AI图使用项目现有七种原作角色卡面作身份参考，不是原客户端立绘提取或已取得权利人授权；用户批准接入和源码上传不改变既有角色来源/权利限制。原稿和音效来源记录为`source-records/guerrilla-fullscreen.json`、`source-records/guerrilla-shing.json`，Atlas旁另有`SOURCE.md`。货币战争视频本轮未能实际播放，不声称逐帧复现其节奏或音色。
+用户明确要“拼屏碎裂／总攻击出手声”。GuerrillaOrder/followup-original是从本机《崩坏：星穹铁道》只读取得的原Wwise事件Ev_sfx_GridFight_FollowUp_Timeline二倍速媒体745947550的前0.90秒，与已批准V2样本字节一致。保持原音高，只含样本原有末30ms淡出；48kHz双声道PCM16，在演出0.90秒碎裂时播放一次，运行增益0.55与看稿一致。它不是入场声，也不是合成替代音；旧shing和生成器已退役。
 
-真实验证见`docs/QA.md`。独立Player显式开发入口为`-guerrillaOrderSmokeTest -demoEvidenceDir <目录>`；可选`-guerrillaOrderCaptureFrames`输出逐模拟帧的实际Player画面。该入口只在Development且显式参数下安装，不影响正常玩家流程；耐久守军夹具不是自然平衡验证。
+实际参考为[货币战争追击总攻击视频](https://www.bilibili.com/video/BV1so1QBNEzs/)的145.75秒起片段，已查看完整入场、停留、碎裂与返回战场关键帧。两次视频中原声起音与本机媒体存在实际波形对应，见source-records/guerrilla-original-audio.json；这里借用原作运动结构，不声称原客户端完整粒子/Timeline工程逐帧移植。原图来源见source-records/guerrilla-fullscreen.json及Atlas旁SOURCE.md。
 
-本轮Windows输出到`Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe`，避免覆盖用户当前运行的旧`Builds/Windows`试玩。对应Editor构建入口为`YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows`，复用项目角色准备、场景清单及已有配置验证。
+角色设计和音频均保留其原有真实权利状态。用户看稿确认、接入及源码上传要求不是权利人授权，不将原音或派生图登记为CC0。
+
+测试与限制以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+
+Windows产物保持Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe；Editor入口YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows复用原角色准备、场景清单和配置验证。不自动ZIP/Releases，不自动合并PR。

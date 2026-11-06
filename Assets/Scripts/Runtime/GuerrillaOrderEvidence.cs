@@ -14,7 +14,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string[] checks,slots;
-            public int plays;
+            public int plays,sounds;
         }
 
         bool GuerrillaLayerCoversGui(GuerrillaOrderView view)
@@ -22,14 +22,14 @@ namespace YesterdayConvoy
             var screen=ScreenCapture.CaptureScreenshotAsTexture();
             var bounds=view.ScreenBounds;
             var target=new RenderTexture(Mathf.RoundToInt(bounds.width),Mathf.RoundToInt(bounds.height),0,RenderTextureFormat.ARGB32);
-            var reference=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);
+            var reference=new Texture2D(target.width,target.height,TextureFormat.RGBA32,false);
             var previous=RenderTexture.active;bool covered=true;
             try
             {
-                target.Create();Graphics.Blit(view.PrepareMaterial().mainTexture,target,view.PrepareMaterial());
+                target.Create();view.RenderTo(target);
                 RenderTexture.active=target;reference.ReadPixels(new Rect(0,0,target.width,target.height),0,0);reference.Apply();
                 // Actual screenshot pixels at header, gold/pause controls, health bars,
-                // central notice and bottom cards must match the opaque cut-in itself.
+                // central notice and bottom cards must match the full V2 composition.
                 foreach(var point in new[]{new Vector2(45,22),new Vector2(1050,26),new Vector2(1190,25),
                     new Vector2(700,100),new Vector2(640,345),new Vector2(380,640),new Vector2(650,620)})
                 {
@@ -38,7 +38,10 @@ namespace YesterdayConvoy
                     var b=(Color32)reference.GetPixel(Mathf.RoundToInt(point.x/1280*target.width),
                         target.height-1-Mathf.RoundToInt(point.y/720*target.height));
                     int delta=Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b);
-                    if(delta>15){covered=false;Debug.Log("GUERRILLA_LAYER_PIXEL "+point+" screen="+a+" expected="+b+" delta="+delta);}
+                    // Its background is intentionally translucent. Allow the maximum residual
+                    // contribution of the covered scene; opaque portrait pixels remain strict.
+                    int tolerance=18+3*(255-b.a);
+                    if(b.a<230||delta>tolerance){covered=false;Debug.Log("GUERRILLA_LAYER_PIXEL "+point+" screen="+a+" expected="+b+" delta="+delta+" tolerance="+tolerance);}
                 }
             }
             finally{RenderTexture.active=previous;target.Release();Destroy(target);Destroy(reference);Destroy(screen);}
@@ -105,52 +108,79 @@ namespace YesterdayConvoy
                 check("allSevenFormationMembersAndTwoEmptyExtensions",slots.Take(7).All(id=>id!=null)&&slots.Skip(7).All(id=>id==null));
                 check("undeployedPatriotStillDisplayed",slots.Contains("CARD_M20")&&Battle.Units.All(u=>u.CardId!="CARD_M20"));
                 check("resourcesAndShaderAvailable",view.AssetsReady&&view.PrepareMaterial().shader.isSupported);
-                Tick(.07f);yield return null;yield return null;
-                float inOpacity=view.Opacity;check("fadeInIsPartial",inOpacity>0&&inOpacity<1);
-                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"fade-in.png"));yield return null;
-                Battle.SetPaused(true);double clock=PresentationClock;float age=view.Age;
-                Tick(3);yield return null;yield return null;
-                check("pauseFreezesFadeAndAudio",PresentationClock==clock&&view.Age==age&&view.Opacity==inOpacity&&view.SoundPaused);
-                check("pausedFailureDoesNotReplay",!UseCampaignOrder(false)&&view.PlayCount==1);
-                Battle.SetPaused(false);Tick(.1f);yield return null;yield return null;
-                check("peakReached",view.Opacity>.99f);
+                int initialSounds=view.SoundPlayCount;
+                Tick(.22f);yield return null;yield return null;
+                var entering=view.GeometryVertices.ToArray();var offsets=view.PaneOffsets.ToArray();
+                check("independentPanesEnterFromOutside",offsets.Take(7).Any(p=>p.sqrMagnitude>100)&&view.VisiblePaneCount>0&&view.SoundPlayCount==initialSounds);
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"converging.png"));yield return null;
+                Tick(.43f);yield return null;yield return null;
+                check("sevenPortraitsGatherWithTwoReservedSlots",view.VisiblePaneCount==9&&view.VisiblePortraitCount==7&&view.VisibleFragmentCount==0&&
+                    view.PaneOffsets.All(p=>p.sqrMagnitude<.01f)&&!entering.SequenceEqual(view.GeometryVertices));
                 yield return new WaitForEndOfFrame();
                 check("actualFullScreenLayerCoversHud",GuerrillaLayerCoversGui(view));
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"full-formation-peak.png"));yield return null;
-                ToggleSpeed();clock=PresentationClock;Tick(.05f);yield return null;
-                check("doubleSpeedUsesPresentationClock",Math.Abs(PresentationClock-clock-.1)<.0001);ToggleSpeed();
-                Tick(.25f);yield return null;yield return null;
-                check("fadeOutIsPartial",view.Opacity>0&&view.Opacity<1);
-                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"fade-out.png"));yield return null;
-                Tick(.5f);yield return null;yield return null;
-                check("effectClears",!view.Playing&&view.Opacity==0);
+                Tick(.20f);yield return null;
+                check("originalSoundWaitsForBreakup",view.SoundPlayCount==initialSounds);
+                Tick(.20f);yield return null;yield return null;
+                check("portraitGlassFracturesAndOriginalSoundStartsOnce",view.VisibleFragmentCount>30&&view.SoundPlayCount==initialSounds+1);
+                Battle.SetPaused(true);Tick(0);yield return null;
+                double clock=PresentationClock;float age=view.Age;var frozen=view.GeometryVertices.ToArray();
+                var sound=GetComponents<AudioSource>().Single(s=>s.clip==Resources.Load<AudioClip>("GuerrillaOrder/followup-original"));
+                int sample=sound.timeSamples;
+                Tick(3);yield return new WaitForSecondsRealtime(.06f);
+                check("pauseFreezesActualVerticesAndOriginalAudio",PresentationClock==clock&&view.Age==age&&view.SoundPaused&&
+                    sample==sound.timeSamples&&frozen.SequenceEqual(view.GeometryVertices));
+                check("pausedFailureDoesNotReplay",!UseCampaignOrder(false)&&view.PlayCount==1);
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"fracture-paused.png"));yield return null;
+                Battle.SetPaused(false);ToggleSpeed();clock=PresentationClock;Tick(.05f);yield return null;
+                check("doubleSpeedUsesPresentationClock",Math.Abs(PresentationClock-clock-.1)<.0001&&view.SoundPlayCount==initialSounds+1);ToggleSpeed();
+                Tick(.50f);yield return null;yield return null;
+                check("fragmentsDriftAndDissolveIndependently",view.VisibleFragmentCount>0&&!frozen.SequenceEqual(view.GeometryVertices));
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"dissolving.png"));yield return null;
+                Tick(.55f);yield return null;yield return null;
+                check("portraitsDisappearBeforeLightTail",view.Playing&&view.VisiblePortraitCount==0&&view.VisibleFragmentCount==0);
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"light-tail.png"));yield return null;
+                Tick(.41f);yield return null;yield return null;
+                check("completeMotionClears",!view.Playing&&view.GeometryVertices.Count==0&&view.SoundPlayCount==initialSounds+1);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"effect-ended.png"));yield return null;
                 ReplaySandbox();while(ArtLoading)yield return null;yield return null;
                 check("replayClearsEffect",!view.Playing&&double.IsNegativeInfinity(view.PendingUntil));
                 charge=ChargeGuerrillaForEvidence(true);
                 while(charge.MoveNext())yield return charge.Current;
                 check("removedFormationMemberStaysEmpty",view.SlotMembers[4]==null&&view.SlotMembers[3]=="CARD_M20"&&view.SlotMembers[7]==null&&view.SlotMembers[8]==null);
-                Tick(.18f);yield return null;yield return null;
+                Tick(.65f);yield return null;yield return null;
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"missing-member-peak.png"));yield return null;
+                check("missingPortraitDoesNotDeployPatriot",view.VisiblePortraitCount==6&&Battle.Units.All(u=>u.CardId!="CARD_M20"));
+                Tick(.07f);yield return null;
+                int terminalSounds=view.SoundPlayCount;
                 loopTestSettlementOpen=true;check("explicitTerminalFixture",TryTestSettlement(false));
-                clock=Battle.Clock;Tick(.18f);yield return null;yield return null;
-                check("terminalRetainsFadeWithoutCombat",view.Playing&&Battle.Clock==clock&&!SettlementVisible);
-                Tick(5);yield return null;yield return null;
-                check("terminalFadeEnds",!view.Playing&&Battle.Clock==clock);
+                clock=Battle.Clock;var health=Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health)).ToArray();
+                Tick(.30f);yield return null;yield return null;
+                check("terminalCrossesSoundCueWithoutMoreCombat",view.Playing&&view.VisibleFragmentCount>30&&Battle.Clock==clock&&!SettlementVisible&&
+                    view.SoundPlayCount==terminalSounds+1&&health.SequenceEqual(Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health))));
+                Tick(1.20f);yield return null;
+                check("terminalKeepsOnlyLightTail",view.Playing&&view.VisiblePortraitCount==0&&Battle.Clock==clock);
+                Tick(.50f);yield return null;yield return null;
+                check("terminalMotionEnds",!view.Playing&&Battle.Clock==clock&&view.GeometryVertices.Count==0);
+                Tick(.20f);yield return null;
+                check("terminalTailCannotReappear",!view.Playing&&SettlementVisible&&view.SoundPlayCount==terminalSounds+1&&Battle.Clock==clock&&
+                    health.SequenceEqual(Battle.Units.Select(u=>u.Health).Concat(Battle.Defenders.Select(d=>d.Health))));
                 if(Environment.GetCommandLineArgs().Contains("-guerrillaOrderCaptureFrames"))
                 {
                     ReplaySandbox();while(ArtLoading)yield return null;
                     charge=ChargeGuerrillaForEvidence(false);
                     while(charge.MoveNext())yield return charge.Current;
                     string frames=Path.Combine(directory,"frames");Directory.CreateDirectory(frames);
+                    int captureSounds=view.SoundPlayCount;
                     // Actual Player-rendered simulation frames, not interpolated concept art.
-                    for(int frame=0;frame<66;frame++)
+                    // Six simulation-zero lead frames, then the complete 2.6-second effect and clear tail.
+                    for(int frame=0;frame<204;frame++)
                     {
                         if(frame>=6)Tick(1f/60);
                         yield return new WaitForEndOfFrame();
                         ScreenCapture.CaptureScreenshot(Path.Combine(frames,frame.ToString("D3")+".png"));yield return null;
                     }
-                    check("capturedCompleteFade",!view.Playing);
+                    check("capturedCompleteLiveMotion",!view.Playing&&view.GeometryVertices.Count==0&&view.SoundPlayCount==captureSounds+1);
                 }
                 complete=true;
             }
@@ -158,7 +188,7 @@ namespace YesterdayConvoy
             {
                 Time.timeScale=scale;passed&=complete;
                 File.WriteAllText(Path.Combine(directory,"result.json"),JsonUtility.ToJson(new GuerrillaOrderEvidenceResult
-                    {passed=passed,checks=checks.ToArray(),slots=slots,plays=view!=null?view.PlayCount:0},true));
+                    {passed=passed,checks=checks.ToArray(),slots=slots,plays=view!=null?view.PlayCount:0,sounds=view!=null?view.SoundPlayCount:0},true));
                 Debug.Log("GUERRILLA_ORDER_PLAYER_CHECK passed="+passed);Application.Quit(passed?0:1);
             }
         }

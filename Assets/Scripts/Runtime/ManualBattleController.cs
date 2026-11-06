@@ -247,7 +247,9 @@ namespace YesterdayConvoy
             // Carry this phase into battle; after Begin only the simulation clock advances it.
             if(Battle.Phase==BattlePhase.Ready && !Battle.IsPaused) readyIdleElapsed+=delta;
             if(Battle.Phase==BattlePhase.Lost || Battle.Phase==BattlePhase.Won)
-                terminalPresentationElapsed=Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),terminalPresentationElapsed+delta*EffectiveSimulationSpeed);
+                terminalPresentationElapsed=Math.Max(terminalPresentationElapsed,
+                    Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),
+                        terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
             Battle.Advance(delta*EffectiveSimulationSpeed);
             StepBattleShopLoop();
             SyncViews();

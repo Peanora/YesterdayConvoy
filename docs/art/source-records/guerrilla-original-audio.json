@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-06",
+  "asset": "Assets/Audio/SFX/Resources/GuerrillaOrder/followup-original.wav",
+  "resource_key": "GuerrillaOrder/followup-original",
+  "status": "Approved V2 source integrated; Unity import and GPU scene audio timing/pause checks passed; standalone Player pending",
+  "user_confirmed_scope": "The Currency Wars follow-up team's screen-shatter / all-out-attack release sound; V2 dynamic preview approved for game integration",
+  "runtime_sync": "Play once at the V2 screen-shatter / attack-release moment, 0.9 simulated seconds after the cut-in starts",
+  "source_game": "Honkai: Star Rail / Currency Wars",
+  "event": {
+    "name": "Ev_sfx_GridFight_FollowUp_Timeline",
+    "event_id": 2541209532,
+    "event_bank_id": 1320015174,
+    "event_bank_file": "Banks9.pck",
+    "event_bank_offset": 63692020,
+    "action_id": 76539816,
+    "sound_container_id": 862201505,
+    "sound_bank_id": 663728430,
+    "sound_bank_file": "Banks4.pck",
+    "sound_bank_offset": 73654222
+  },
+  "speed_state": {
+    "group_name": "State_Battle_Speed",
+    "group_id": 566398793,
+    "selected": "Double_Speed",
+    "selected_state_id": 54353430,
+    "selected_sound_node_id": 934921973,
+    "selected_media_id": 745947550,
+    "selected_full_duration_seconds": 3.85,
+    "normal_state_id": 3023464624,
+    "normal_sound_node_id": 415385741,
+    "normal_media_id": 824744591,
+    "normal_full_duration_seconds": 5.45,
+    "verification": "State and event names match standard lowercase Wwise FNV1 IDs; the sound container routes Normal_Speed and Double_Speed to the respective source objects"
+  },
+  "local_original": {
+    "installation_audio_directory": "E:/MiHoYo/Star Rail Game/StarRail_Data/StreamingAssets/Audio/AudioPackage/Windows",
+    "package": "Banks11.pck",
+    "media_bank_id": 1585646126,
+    "media_bank_offset": 64548950,
+    "wem_offset": 64549014,
+    "wem_bytes": 92575,
+    "wem_sha256": "a07c3cc8e96bafa78d4869ecc395191efda299a1b4b73d5ea901e0f024d011bf",
+    "retrieval": "Read-only standard unencrypted AKPK/BKHD/HIRC/DIDX/DATA parsing; preserved original RIFF WEM bytes; no game file writes, key recovery or decryption"
+  },
+  "decoder": {
+    "tool": "vgmstream-cli bundled with AnimeWwise",
+    "source": "https://github.com/Escartem/AnimeWwise",
+    "source_revision": "deba68978cec74d44bff6989bf1066953a73a173",
+    "operation": "Custom Vorbis WEM to 48000 Hz stereo PCM16 WAV"
+  },
+  "public_design_reference": "https://gitlab.com/Dimbreath/turnbasedgamedata/-/blob/main/Config/ConfigAbility/BattleEvent/GridFight/3.5/OriginAbility/GridFight_Origin_2001_StageAbility.json",
+  "video_verification": {
+    "source": "https://www.bilibili.com/video/BV1so1QBNEzs/",
+    "method": "Normalized local waveform cross-correlation after 1500-14000 Hz band-pass, using the original media's first 1.0 second",
+    "first_match_seconds": 56.504875,
+    "first_normalized_correlation": 0.7150342416931007,
+    "second_match_seconds": 147.457625,
+    "second_normalized_correlation": 0.7075677174765782,
+    "meaning": "Both matches corroborate the same original sound at the screen-shatter / attack-release phase",
+    "limit": "This is the user-confirmed shatter/attack sound; no claim that it is the earlier portrait-entry UI ring"
+  },
+  "processing": {
+    "full_decoded_source_sha256": "eddf14dcb93ccece0c8aec038f470c748ffe77bc677c07181773903f7d6e5002",
+    "excerpt_start_seconds": 0,
+    "excerpt_duration_seconds": 0.9,
+    "tail_fade_start_seconds": 0.87,
+    "tail_fade_duration_seconds": 0.03,
+    "gain": "Unchanged from decoded original",
+    "command": "ffmpeg -i original-followup-media-745947550.wav -t 0.9 -af afade=t=out:st=0.87:d=0.03 -c:a pcm_s16le original-followup-opening-cue-0.9s.wav",
+    "not_performed": ["Synthesis", "Pitch change", "BGM removal", "Voice removal", "Stem separation"],
+    "approved_preview_source": "guerrilla-v2/audio/original-followup-opening-cue-0.9s.wav",
+    "integration_copy": "Direct byte-identical copy of the approved V2 preview source"
+  },
+  "asset_validation": {
+    "sha256": "bb1c9f39eba70c5f90b6b4db3a95ecf2e99c8f9e07e5272f46bf2bce655cba05",
+    "bytes": 172878,
+    "codec": "pcm_s16le",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "bits_per_sample": 16,
+    "frames": 43200,
+    "duration_seconds": 0.9,
+    "ffmpeg_peak_dbfs": -1.14807,
+    "ffmpeg_rms_dbfs": -12.366999,
+    "checks_run": ["ffprobe decode and metadata", "ffmpeg astats", "Source and copied asset byte equality", "Git ignore query"],
+    "checks_pending": ["Unity import", "Runtime sync and pause/mute behavior", "Windows Player playback"]
+  },
+  "unity_import": {
+    "directory_guid_preserved": "18bc1b82d66e4cfa8bfdde3c99309bc9",
+    "audio_guid_preserved_from_replaced_clip": "2496aef49ae94bc79ae3834bb56421b9",
+    "decompress_on_load": true,
+    "preload_audio_data": true,
+    "compression_format": "PCM",
+    "force_to_mono": false,
+    "normalize": false,
+    "three_dimensional": false
+  },
+  "rights": "Third-party Honkai: Star Rail game sound, not CC0; open redistribution permission has not been established. User approval of V2 integration and source upload is not recorded as rights-holder authorization.",
+  "agent_listening_status": "Agent used metadata, spectral and waveform analysis and has not personally auditioned playback; the user approved the V2 dynamic preview containing this source."
+}

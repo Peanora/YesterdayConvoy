@@ -1,6 +1,12 @@
 # 验证证据与回归
 
-## 2026-11-06：游击队全屏闪现与shing
+## 2026-11-06：游击队V2真实几何汇聚与原音
+
+- 用户在项目外V2动态视频看稿后明确“可以，做进游戏”，确认声段为拼屏碎裂/总攻击出手。沿用codex/guerrilla-fullscreen-cutin及原PR #88；实时main仍b3d947a，当前V1基线c8a3281，原两个本地未跟踪项不动。没有改场景、Prefab、Packages或ProjectSettings，不改军令事务及伤害。
+- 原音源为Ev_sfx_GridFight_FollowUp_Timeline的Double_Speed媒体745947550前0.90秒，和已批准V2样本字节一致；末30ms原有淡出，PCM16/48kHz/双声道，峰值-1.14807dBFS，RMS-12.366999。只读原包获取及两次公开视频波形匹配见art/source-records/guerrilla-original-audio.json。原合成音和生成器退役，不把用户接入/上传授权登记为权利人授权。
+- 本轮Unity6000.6.5f1完整EditMode485/485（guerrilla-v2-edit.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟改为单调，避免PendingUntil消失后回退。Windows构建与独立Player待验；下面V1结果只保留历史。
+
+## 2026-11-06：游击队V1历史技术结果（表现已被否决）
 
 - 用户已认可V1构图，明确“按当前编队显示”，缺席成员固定空位、预留两个转职槽、淡入淡出与短音效。新分支codex/guerrilla-fullscreen-cutin自实时main b3d947a建立，FF承接当前试玩0e98e1d依赖；原.vscode/和PackageManagerSettings.asset保留。没有改场景、Prefab、Packages或ProjectSettings，没有实现转职玩法或更改军令数值。
 - `artifacts/guerrilla-order-edit.xml`完整EditMode485/485；`artifacts/guerrilla-order-play.xml`相关D3D11 PlayMode23/23。新增3个综合场景用例验证真实部署/普通攻击产令后成功才播、准备/暂停失败不播、完整编队包含未部署M20、普通点击把M15退入备战后固定空位、暂停时实际AudioSource.timeSamples与透明度不推进、2倍速、自然淡出和重开。GPU使用生产材质逐个缺席七名人物，对应人物区域变化且其余人物区域不变；真实Sprite显示在两扩展槽，第3名不挤掉原成员。其余回归AdvancedSynergySceneTests、CampaignSceneTests、BattleInteractionTests、OverlappingEntrySceneTests；不是全量PlayMode。
