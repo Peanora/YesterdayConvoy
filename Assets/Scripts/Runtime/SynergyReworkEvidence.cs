@@ -30,14 +30,14 @@ namespace YesterdayConvoy
             bool clear=golem!=null&&golem.Health>0&&Battle.Defenders.All(d=>!d.Alive)&&Battle.Defenders.Sum(d=>d.SkillCasts)>0;
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"03-six-star-defense-cleared.png"));yield return null;yield return null;}
             ReplaySandbox();PrepareSandboxRoster(8);while(ArtLoading)yield return null;
-            bool investment=InvestCampaignGolem(10)&&Loop.GolemInvestment==30&&!InvestCampaignGolem(1)&&Battle.GolemStage==2;
+            bool cultivation=Loop.GolemExperience==6&&Battle.GolemStage==2&&Battle.GolemGrowthEarned==0;
             ReplaySandbox();yield return ChargeStormForEvidence(8001);
             bool snow=Battle.SnowTier==5&&Battle.Shatters==3&&Battle.SnowstormActive&&Battle.Units.All(u=>u.CardId!="CARD_M14");
             snow&=GetComponent<FrostSealView>().VisibleEffects>0;
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"04-five-snow-storm.png"));yield return null;yield return null;}
             Tick(8);snow&=Battle.SnowstormPulses.Count==4;ReplaySandbox();snow&=Battle.SnowstormPulses.Count==0;
-            Debug.Log($"SYNERGY_REWORK_PLAYER_CHECK: pool={pool}; preset={preset}; pausedDrag={deployment}; ultimateSoloClear={clear}; investment={investment}; snowPulsesAndReset={snow}");
-            Application.Quit(pool&&preset&&deployment&&clear&&investment&&snow?0:1);
+            Debug.Log($"SYNERGY_REWORK_PLAYER_CHECK: pool={pool}; preset={preset}; pausedDrag={deployment}; ultimateSoloClear={clear}; cultivation={cultivation}; snowPulsesAndReset={snow}");
+            Application.Quit(pool&&preset&&deployment&&clear&&cultivation&&snow?0:1);
         }
     }
 }

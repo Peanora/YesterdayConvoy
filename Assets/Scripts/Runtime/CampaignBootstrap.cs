@@ -13,6 +13,7 @@ namespace YesterdayConvoy
             var args=Environment.GetCommandLineArgs();
             if(Array.IndexOf(args,"-approvedUiSmokeTest")>=0||Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0)yield break; // Explicit driver owns this diagnostic startup.
             if(!sandbox&&Array.IndexOf(args,"-synergySandbox")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
+            if(!sandbox&&Array.IndexOf(args,"-mudrockCultivation")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("MudrockCrewTrial");yield break;}
             if(Array.IndexOf(args,"-mudrockSmokeTest")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene(MudrockTrialBootstrap.SceneName);yield break;}
             if(Array.Exists(args,a=>a=="-talulahSmokeTest"||a=="-talulahMotionEvidence"||a=="-talulahFireRainV12Test"||a=="-patriotVfxSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
             if(!sandbox&&(Array.IndexOf(args,"-patriotShopSmokeTest")>=0||Array.IndexOf(args,"-mephistoVfxSmokeTest")>=0||Array.IndexOf(args,"-mandragoraVfxSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0||Array.IndexOf(args,"-remainingSynergySmokeTest")>=0||Array.IndexOf(args,"-synergyReworkSmokeTest")>=0)){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}

@@ -73,7 +73,7 @@ namespace YesterdayConvoy.Tests
             yield return null;Assert.That(visual.FrameState,Is.EqualTo("Attack"));Assert.That(visual.FrameIndex,Is.GreaterThan(0));
             Assert.That(c.Battle.UnitCombat(golem).AttackDuration,Is.EqualTo(5.166667f));c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator NaturalMudrockBattleAwardsGrowthButInvestmentStillGatesStageTwo()
+        [UnityTest]public IEnumerator NaturalMudrockBattleAwardsAutomaticGrowthAndPreservesItForTheNextRound()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(3));Assert.That(c.StartLoopNextBattle());c.Battle.Begin();
             long request=500;foreach(var p in c.Shop.Bench)c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,p.Id);Assert.That(c.Battle.TryDeployGolem(c.Battle.RunId,++request,c.Battle.Entry).Success);

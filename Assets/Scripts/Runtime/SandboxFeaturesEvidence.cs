@@ -106,7 +106,7 @@ namespace YesterdayConvoy
                 }
                 for(int tick=0;tick<60;tick++){c.Tick(.05f);if(tick%10==0)yield return null;}
                 Check(scene+"/savedTerrain",FindAnyObjectByType<AuthoredBattlefield>()!=null);c.Shop.Validate();
-                if(scene=="MudrockCrewTrial")Check("cultivationNotGifted",c.Battle.GolemExperience==0&&c.Battle.GolemInvestment==0);
+                if(scene=="MudrockCrewTrial")Check("cultivationNotGifted",c.Battle.GolemExperience==0);
             }
             yield return Frame("sarkaz-trial");
         }
