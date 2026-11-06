@@ -153,7 +153,8 @@ namespace YesterdayConvoy
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
             definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
-            defenderTrial!=null ? defenderTrial.LaneSnapshot() : null);
+            defenderTrial!=null ? defenderTrial.LaneSnapshot() : null,
+            allowEmptyRoster:defenderTrial!=null&&defenderTrial.terrainOnly);
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();

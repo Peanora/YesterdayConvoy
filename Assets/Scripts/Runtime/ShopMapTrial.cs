@@ -70,6 +70,7 @@ namespace YesterdayConvoy
 
         public void EnterShopTrial(int preset=0,string mapId=StrongholdChallengeLayout.Id,DefenderTrialDefinition encounter=null)
         {
+            if(encounter==null&&mapId==BlackForestLayout.Id)encounter=Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource);
             activeSynergyTrial=null;Loop=null;
             if(shop==null){shopPreviousViewport=Camera.main.rect;shopPreviousFieldOfView=Camera.main.fieldOfView;}
             shopDefinitions.Clear();

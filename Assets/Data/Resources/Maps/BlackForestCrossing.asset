@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: BlackForestCrossing
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: fe9dd4ad299fdbc4b8bdf5dcdf1e34db, type: 2}
+  route:
+  - {x: -8, y: 0, z: 4.5}
+  - {x: -4, y: 0, z: 4.5}
+  - {x: -4, y: 0, z: 0.5}
+  - {x: 0, y: 0, z: 0.5}
+  - {x: 0, y: 0, z: 4.5}
+  - {x: 4, y: 0, z: 4.5}
+  - {x: 4, y: 0, z: -3.5}
+  - {x: 6, y: 0, z: -3.5}
+  - {x: 6, y: 0, z: 2.5}
+  - {x: 8, y: 0, z: 2.5}
+  defenders: []
+  surfaces:
+  - {fileID: 2100000, guid: 5553a02a4397ba949ad83ebfc6dba68a, type: 2}
+  - {fileID: 2100000, guid: b14aa067b143971468bebfb5d7b64896, type: 2}
+  - {fileID: 2100000, guid: e1307eafe6598a3428d36b6e2ecf7618, type: 2}
+  - {fileID: 2100000, guid: aa6f74f2c18720648b3b6aa576b8d10c, type: 2}
+  - {fileID: 2100000, guid: 02e61c09eb45cd044a8c6b7e5ea1edf9, type: 2}
+  - {fileID: 2100000, guid: 6f759d339d4274b44ad587703eba4652, type: 2}
+  mapId: BLACKFOREST_CROSSING
+  mapTitle: "\u6811\u6D77 \xB7 \u4EA4\u9519\u56DE\u5ECA"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: -8, y: 0, z: 4.5}
+    - {x: -4, y: 0, z: 4.5}
+    - {x: -4, y: 0, z: 0.5}
+    - {x: 0, y: 0, z: 0.5}
+    - {x: 0, y: 0, z: 4.5}
+    - {x: 4, y: 0, z: 4.5}
+    - {x: 4, y: 0, z: -3.5}
+    - {x: 6, y: 0, z: -3.5}
+    - {x: 6, y: 0, z: 2.5}
+    - {x: 8, y: 0, z: 2.5}
+  - id: R2
+    exitId: B2
+    points:
+    - {x: -8, y: 0, z: -3.5}
+    - {x: -6, y: 0, z: -3.5}
+    - {x: -6, y: 0, z: 0.5}
+    - {x: -4, y: 0, z: 0.5}
+    - {x: -4, y: 0, z: -5.5}
+    - {x: 0, y: 0, z: -5.5}
+    - {x: 0, y: 0, z: -1.5}
+    - {x: 2, y: 0, z: -1.5}
+    - {x: 2, y: 0, z: 2.5}
+    - {x: 6, y: 0, z: 2.5}
+    - {x: 6, y: 0, z: -3.5}
+    - {x: 8, y: 0, z: -3.5}
+  - id: R3
+    exitId: B1
+    points:
+    - {x: -2, y: 0, z: 6.5}
+    - {x: -2, y: 0, z: 2.5}
+    - {x: -6, y: 0, z: 2.5}
+    - {x: -6, y: 0, z: -1.5}
+    - {x: 0, y: 0, z: -1.5}
+    - {x: 0, y: 0, z: -5.5}
+    - {x: 4, y: 0, z: -5.5}
+    - {x: 4, y: 0, z: 0.5}
+    - {x: 2, y: 0, z: 0.5}
+    - {x: 2, y: 0, z: 2.5}
+    - {x: 8, y: 0, z: 2.5}
+  raised:
+  - {x: 6, y: 3}
+  - {x: 8, y: 3}
+  - {x: 14, y: 3}
+  - {x: 15, y: 3}
+  - {x: 16, y: 3}
+  - {x: 2, y: 4}
+  - {x: 3, y: 4}
+  - {x: 4, y: 4}
+  - {x: 6, y: 4}
+  - {x: 8, y: 4}
+  - {x: 10, y: 4}
+  - {x: 11, y: 4}
+  - {x: 12, y: 4}
+  - {x: 14, y: 4}
+  - {x: 15, y: 4}
+  - {x: 16, y: 4}
+  - {x: 2, y: 5}
+  - {x: 8, y: 5}
+  - {x: 10, y: 5}
+  - {x: 2, y: 6}
+  - {x: 4, y: 6}
+  - {x: 6, y: 6}
+  - {x: 7, y: 6}
+  - {x: 8, y: 6}
+  - {x: 10, y: 6}
+  - {x: 12, y: 6}
+  - {x: 14, y: 6}
+  - {x: 16, y: 6}
+  - {x: 2, y: 7}
+  - {x: 10, y: 7}
+  - {x: 14, y: 7}
+  - {x: 16, y: 7}
+  - {x: 2, y: 8}
+  - {x: 4, y: 8}
+  - {x: 7, y: 8}
+  - {x: 9, y: 8}
+  - {x: 16, y: 8}
+  - {x: 2, y: 9}
+  - {x: 12, y: 9}
+  - {x: 14, y: 9}
+  - {x: 16, y: 9}
+  - {x: 2, y: 10}
+  - {x: 7, y: 10}
+  - {x: 11, y: 10}
+  - {x: 14, y: 10}
+  - {x: 16, y: 10}
+  - {x: 4, y: 11}
+  - {x: 6, y: 11}
+  - {x: 7, y: 11}
+  - {x: 8, y: 11}
+  - {x: 10, y: 11}
+  - {x: 11, y: 11}
+  - {x: 12, y: 11}
+  - {x: 2, y: 12}
+  - {x: 3, y: 12}
+  - {x: 4, y: 12}
+  - {x: 7, y: 12}
+  - {x: 8, y: 12}
+  - {x: 11, y: 12}
+  - {x: 12, y: 12}
+  - {x: 14, y: 12}
+  - {x: 15, y: 12}
+  - {x: 16, y: 12}
+  - {x: 2, y: 13}
+  - {x: 3, y: 13}
+  - {x: 4, y: 13}
+  - {x: 14, y: 13}
+  - {x: 15, y: 13}
+  - {x: 16, y: 13}
+  floorTexture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
+  foliageTexture: {fileID: 2800000, guid: cb7097b3454279841bb76e4c90c70afe, type: 3}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 1

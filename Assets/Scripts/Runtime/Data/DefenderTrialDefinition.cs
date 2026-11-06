@@ -39,6 +39,8 @@ namespace YesterdayConvoy
         public Texture2D floorTexture, foliageTexture;
         public ManualBattleDefinition[] rosterCards;
         public string defenderTestId;
+        [Tooltip("Explicit terrain-only authored map preview; no defenders or combat balance are configured.")]
+        public bool terrainOnly;
         public bool Tactical => lanes!=null && lanes.Length>0;
         public DeploymentLane[] LaneSnapshot()
         {
@@ -49,7 +51,7 @@ namespace YesterdayConvoy
         }
         public DefenderSettings[] Snapshot()
         {
-            if (battle==null || defenders==null || defenders.Length==0 || defenders.Length>30) throw new InvalidOperationException("One to thirty defenders required.");
+            if (battle==null || defenders==null || defenders.Length==0&&!terrainOnly || defenders.Length>30) throw new InvalidOperationException("One to thirty defenders required unless this is an explicit terrain-only map.");
             var ids=new HashSet<string>(); var result=new DefenderSettings[defenders.Length];
             for(int i=0;i<result.Length;i++)
             {

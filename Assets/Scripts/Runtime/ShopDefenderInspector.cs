@@ -67,6 +67,7 @@ namespace YesterdayConvoy
         }
         void DrawShopRouteLabels(GUIStyle label)
         {
+            if(TacticalMapId==BlackForestLayout.Id){DrawBlackForestRouteLabels(label);return;}
             if(!StrongholdChallengeLayout.IsStronghold(TacticalMapId))return;
             var selected=ShopDragLane();
             foreach(var lane in Battle.Lanes)

@@ -198,13 +198,13 @@ namespace YesterdayConvoy
         public double CooldownRemaining => CardCooldown(Settings.CardId);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null, bool allowEmptyRoster = false)
         {
             Settings = settings;
             engagement = combat;
             if(roster!=null)
             {
-                if(!combat.HasValue || roster.Count==0) throw new ArgumentException("Roster requires combat settings.");
+                if(!combat.HasValue || roster.Count==0&&!allowEmptyRoster) throw new ArgumentException("Roster requires combat settings and at least one defender unless explicitly terrain-only.");
                 defenderRoster=new DefenderSettings[roster.Count]; var rosterIds=new HashSet<string>();
                 for(int i=0;i<roster.Count;i++)
                 { if(!rosterIds.Add(roster[i].Id) || roster[i].Health<=0) throw new ArgumentException("Invalid roster."); defenderRoster[i]=roster[i]; }

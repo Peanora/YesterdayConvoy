@@ -1,5 +1,7 @@
 # 工程目录与场景规范
 
+2026-11-06树海地图：新增 `Assets/Scenes/BlackForestCrossing.unity`，共16个保存场景，由GameSceneCatalog自动纳入构建。17×14地形、三红两蓝、根系与三种视觉特殊地面直接保存在场景；从怪物测试选择进入“树海交错回廊 · 地形试走”。本轮无守军，不替换既有挑战地图，编辑与操作见[树海地图说明](BLACK_FOREST_CROSSING.md)。
+
 2026-11-06当前保存场景总数15：原Campaign、BattleShop、MonsterTrial、SynergyTrial、MudrockTrial；新增TalulahPhaseTrial，以及Assets/Scenes/SynergyTrials下9个专项。全部由GameSceneCatalog统一进入构建。专项源配置在Assets/Data/SynergyTrials，塔露拉守军在Assets/Data/Trials。新增场景沿用保存地形副本，可独立编辑，不在Play重建地图；具体入口和修改方法见DEDICATED_SYNERGY_TRIALS.md。下文旧入口数量属于目录迁移初版记录。
 
 2026-11-03 · 人类确认。日常只打开 `E:/珍贵资料/昨日圆车` 这一个Unity工程，不要把Git工作目录、试玩构建目录当作多个游戏工程来回切换。分支与PR用于协作，不能代替清晰的Assets目录。
