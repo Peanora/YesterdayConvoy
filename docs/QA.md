@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-07：树海原素材与原版门接入
+
+- 运行源码bcd3417，独立BlackForestCrossing场景。原素材看稿确认后接入；原地形238格与路线38/40/42不变，无碰撞/射线或地形效果新增。
+- Unity6000.6.5f1全量EditMode449/449；GPU PlayMode BlackForestSceneTests 1/1，覆盖真实拖动部署、商店交易、暂停、地块编辑后重开保留及退出清理。XML在本机artifacts/map-draft-20261106/native/edit-results.xml、play-results.xml。
+- NativeAssets验证通过：3 tile_start/2 tile_end、原网格/材质/贴图持久化，无LineRenderer占位门，无碰撞体；原临时门已替换。142环境模型及8门层部件保留原UV/法线，门保留顶点色，兼容Shader透明与加色。
+- 仓库6655跟踪文件检查通过；Windows构建0错误（windows-build.log，报告2430901013 bytes，含构建阶段数据，目录实际大小以交付BUILD-INFO为准）。
+- 可见1280×720 Direct3D11独立Player，正常准备入口后三个红门逐一通过备战指针拖动部署，沿完整路线自然穿门；固定路线/绑定蓝门、暂停、共享防御、重开与nativeGates/materials均True，退出0。截图player/forest-ready.png、forest-lane-1/2/3.png、forest-restarted.png已目视核对角色与地图。模拟测试使用Time.timeScale=0并显式Tick(.05)，不注入伤害或跳过路程；不将其称为人工完整长局试玩。
+- 原门装饰粒子与动画、原场景Shader/烘焙光照/后处理未复刻；守军、平衡、第二机/新克隆、低配长时性能未验收。未将项目外看稿作为Player证据。
+
 ## 2026-11-06：战斗可观察性与专项场景集成
 
 - 基线main a37f0e5，吸收V5和已确认角色整合成果。只保留原.vscode/与PackageManagerSettings.asset，不提交覆盖；不自动合并。
