@@ -15,6 +15,11 @@ namespace YesterdayConvoy
     }
     public sealed class SilverWolfTrial : MonoBehaviour
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+        static void BackgroundForEvidence()
+        {
+            if(Debug.isDebugBuild && Environment.GetCommandLineArgs().Contains("-silverWolfSmokeTest"))Application.runInBackground=true;
+        }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install()
         {
@@ -31,6 +36,7 @@ namespace YesterdayConvoy
             if(c==null||c.Battle==null){Debug.LogError("Silver Wolf trial unavailable");if(verify)Application.Quit(1);yield break;}
             var option=c.MonsterTests.FirstOrDefault(o=>o.Id==SilverWolfCombat.CardId&&o.Playable);
             if(option==null){Debug.LogError("Silver Wolf not present in playable catalog");if(verify)Application.Quit(1);yield break;}
+            if(verify) Debug.Log("WOLF_PLAYER: preparing authored trial");
             c.LoadWolfTrial(option);while(c.ArtLoading)yield return null;
             if(verify)
             {
