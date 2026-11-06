@@ -43,6 +43,7 @@ namespace YesterdayConvoy
         void DrawSynergySidebar()
         {
             if(!CampaignActive)return;
+            DrawSnowstormFeedback();
             var summaries=CurrentSynergies;var bounds=SynergyListRect;
             Fill(new Rect(bounds.x,bounds.y,bounds.width,25),ApprovedUi.Paper);
             GUI.Label(new Rect(bounds.x+8,bounds.y,55,25),"羁绊",CampaignText(12,weight:600));
@@ -58,14 +59,19 @@ namespace YesterdayConvoy
                     var s=summaries[i];Rect row=new Rect(0,i*46,contentWidth,41);
                     if(GUI.Button(row,GUIContent.none,GUIStyle.none))
                     {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
-                    bool active=s.Tier>0;Color ink=active?ApprovedUi.Ink:ApprovedUi.Muted;
-                    Fill(row,active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
-                    Fill(new Rect(row.x,row.y,3,row.height),active?new Color(.72f,.59f,.30f):ApprovedUi.Rule);
+                    bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
+                    Color ink=snowstorm?SnowstormInk:active?ApprovedUi.Ink:ApprovedUi.Muted;
+                    Fill(row,snowstorm?SnowstormPaper:active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
+                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?new Color(.72f,.59f,.30f):ApprovedUi.Rule);
                     GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name,CampaignText(13,color:ink,weight:600));
                     GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
-                    for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*22,row.y+31,19,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
-                    string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
-                    GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+                    if(snowstorm)DrawSnowstormRow(row);
+                    else
+                    {
+                        for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*22,row.y+31,19,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
+                        string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
+                        GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+                    }
                 }
             }
             finally {GUI.EndScrollView();}
