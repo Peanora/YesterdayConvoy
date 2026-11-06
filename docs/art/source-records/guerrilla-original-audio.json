@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "asset": "Assets/Audio/SFX/Resources/GuerrillaOrder/followup-original.wav",
   "resource_key": "GuerrillaOrder/followup-original",
-  "status": "Approved V2 source integrated; Unity import and GPU scene audio timing/pause checks passed; standalone Player pending",
+  "status": "Approved V2 source integrated; Unity import, GPU scene timing/pause checks and standalone D3D11 Player passed",
   "user_confirmed_scope": "The Currency Wars follow-up team's screen-shatter / all-out-attack release sound; V2 dynamic preview approved for game integration",
   "runtime_sync": "Play once at the V2 screen-shatter / attack-release moment, 0.9 simulated seconds after the cut-in starts",
   "source_game": "Honkai: Star Rail / Currency Wars",
@@ -67,7 +67,13 @@
     "tail_fade_duration_seconds": 0.03,
     "gain": "Unchanged from decoded original",
     "command": "ffmpeg -i original-followup-media-745947550.wav -t 0.9 -af afade=t=out:st=0.87:d=0.03 -c:a pcm_s16le original-followup-opening-cue-0.9s.wav",
-    "not_performed": ["Synthesis", "Pitch change", "BGM removal", "Voice removal", "Stem separation"],
+    "not_performed": [
+      "Synthesis",
+      "Pitch change",
+      "BGM removal",
+      "Voice removal",
+      "Stem separation"
+    ],
     "approved_preview_source": "guerrilla-v2/audio/original-followup-opening-cue-0.9s.wav",
     "integration_copy": "Direct byte-identical copy of the approved V2 preview source"
   },
@@ -82,8 +88,16 @@
     "duration_seconds": 0.9,
     "ffmpeg_peak_dbfs": -1.14807,
     "ffmpeg_rms_dbfs": -12.366999,
-    "checks_run": ["ffprobe decode and metadata", "ffmpeg astats", "Source and copied asset byte equality", "Git ignore query"],
-    "checks_pending": ["Unity import", "Runtime sync and pause/mute behavior", "Windows Player playback"]
+    "checks_run": [
+      "ffprobe decode and metadata",
+      "ffmpeg astats",
+      "Source and copied asset byte equality",
+      "Git ignore query",
+      "Unity import and resource loading",
+      "GPU 0.9-second cue, once-only, pause samples and speed checks",
+      "Standalone D3D11 Player 25/25 (a5b844e)"
+    ],
+    "checks_pending": []
   },
   "unity_import": {
     "directory_guid_preserved": "18bc1b82d66e4cfa8bfdde3c99309bc9",

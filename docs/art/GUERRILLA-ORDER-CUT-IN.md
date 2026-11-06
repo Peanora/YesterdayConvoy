@@ -10,7 +10,7 @@ UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员�
 
 根据已批准视频采用2.6模拟秒试验节奏：0.08秒开始逐片入场，约0.475秒聚齐、0.49秒冲击、0.59–0.90秒短停；0.90–2.10秒每片分成12个独立带纹理碎片，随后只留少量碎光至2.60秒。原生渲染读取共享PresentationClock，暂停冻结所有几何和音频，倍速/技能慢速跟随；终局只延续表现尾，不推进战斗。重开、换关和禁用清理。
 
-完整几何、晶核、吸入线、交叉光束和碎光通过同一原生离屏渲染路径生成，支持实际GPU输出验证；透明度正确合成后用IMGUI前景绘制，保持既有16:9视口与输入。运行时资源只包含人物纹理、必要Shader、原声音频和meta，不导入看稿HTML、参考录屏或加工工作区。
+完整几何、晶核、吸入线、交叉光束和碎光通过同一独立CommandBuffer离屏渲染路径生成，显式设全viewport、关闭scissor并为每层绑定纹理；LateUpdate提前合成，OnGUI只绘制最终RT，支持实际GPU输出验证；透明度正确合成后用IMGUI前景绘制，保持既有16:9视口与输入。运行时资源只包含人物纹理、必要Shader、原声音频和meta，不导入看稿HTML、参考录屏或加工工作区。
 
 用户明确要“拼屏碎裂／总攻击出手声”。GuerrillaOrder/followup-original是从本机《崩坏：星穹铁道》只读取得的原Wwise事件Ev_sfx_GridFight_FollowUp_Timeline二倍速媒体745947550的前0.90秒，与已批准V2样本字节一致。保持原音高，只含样本原有末30ms淡出；48kHz双声道PCM16，在演出0.90秒碎裂时播放一次，运行增益0.55与看稿一致。它不是入场声，也不是合成替代音；旧shing和生成器已退役。
 
@@ -18,6 +18,6 @@ UseCampaignOrder成功后，ShowGuerrillaOrder复制去重的编队游击成员�
 
 角色设计和音频均保留其原有真实权利状态。用户看稿确认、接入及源码上传要求不是权利人授权，不将原音或派生图登记为CC0。
 
-测试与限制以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+最终运行源码a5b844e的Edit485/485、相关GPU Play24/24、独立Player25/25及Windows构建0错误通过；具体范围与未测限制以QA为准。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐模拟帧画面；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
 
 Windows产物保持Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe；Editor入口YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows复用原角色准备、场景清单和配置验证。不自动ZIP/Releases，不自动合并PR。

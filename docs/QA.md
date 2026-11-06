@@ -4,7 +4,11 @@
 
 - 用户在项目外V2动态视频看稿后明确“可以，做进游戏”，确认声段为拼屏碎裂/总攻击出手。沿用codex/guerrilla-fullscreen-cutin及原PR #88；实时main仍b3d947a，当前V1基线c8a3281，原两个本地未跟踪项不动。没有改场景、Prefab、Packages或ProjectSettings，不改军令事务及伤害。
 - 原音源为Ev_sfx_GridFight_FollowUp_Timeline的Double_Speed媒体745947550前0.90秒，和已批准V2样本字节一致；末30ms原有淡出，PCM16/48kHz/双声道，峰值-1.14807dBFS，RMS-12.366999。只读原包获取及两次公开视频波形匹配见art/source-records/guerrilla-original-audio.json。原合成音和生成器退役，不把用户接入/上传授权登记为权利人授权。
-- 本轮Unity6000.6.5f1完整EditMode485/485（guerrilla-v2-edit.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟改为单调，避免PendingUntil消失后回退。Windows构建与独立Player待验；下面V1结果只保留历史。
+- 最终运行源码a5b844e9fb0a2d482f3423ab03ed50cb4e0b3835：Unity6000.6.5f1完整EditMode485/485（artifacts/guerrilla-v2-edit-final.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play-final.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟保持单调，避免PendingUntil消失后回退。
+- 早期独立Player两次暴露完整效果仅出现在顶部窄条，离屏参考七点均为零，显式modelview重置没有解决。缩小到不含战斗的RenderProbe后，改为独立CommandBuffer明确目标/全viewport/关闭scissor/独立矩阵，每batch用PropertyBlock绑定纹理，LateUpdate先合成，OnGUI只绘制RT；同时修正原生字体取Alpha。GPU增加继承变换/状态恢复及22px硬件scissor回归；最终无战斗Probe1/1通过，不再把早期离屏通过冒称屏幕正确。
+- 最终Windows构建2449412581字节、0错误（guerrilla-v2-build-final.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe对应a5b844e。1920×1080可见D3D11 Player25/25通过（guerrilla-v2-player-final/result.json）：实际攒令/支出、未部署M20、满编/退编M19空位、聚拢/碎裂/独立消散/清理、0.9秒原音及真实暂停样本、2倍速、重开、终局跨声点且HP/Clock不变、尾段结束后不复活。完整屏幕在顶部按钮/血条/通知/底部卡栏七点对照生产合成通过；已查看实际满编、缺位、碎片消散和恢复战场PNG。
+- 可选入口输出204张真实Player逐模拟帧（60fps/3.4秒，含前导和清理），项目外MP4后配同一跟踪原音资源及运行增益0.55，不是实时系统音视频录制。图片、原音、Shader和必要meta随源码正常跟踪；完整仓库6415文件检查通过。每次Unity产生的52个默认未覆盖WebGL导入段均逐文件与HEAD严格比对后恢复，原两个本地未跟踪项保留。
+- 未运行完整PlayMode、第二台电脑、全分辨率、长局自然平衡或另行主观试听。耐久守军/延后攻击和显式终局仅为开发夹具，部署、命中、攒令与军令支出仍走实际事务。构建后仅更新文档和来源验证状态，不自动ZIP/Releases或合并main。下面V1结果仅为历史。
 
 ## 2026-11-06：游击队V1历史技术结果（表现已被否决）
 
