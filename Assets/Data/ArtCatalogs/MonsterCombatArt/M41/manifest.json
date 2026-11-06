@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "task": "M41",
+  "cardId": "CARD_M41",
+  "ppu": 66.95,
+  "referenceSpeed": 0.365,
+  "height": 2.15,
+  "attackContact": 0.8,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Approved Silver Wolf LV.999 V14 / idle",
+      "count": 1,
+      "duration": 1,
+      "fps": 1.0,
+      "loop": true,
+      "cellWidth": 96,
+      "cellHeight": 152,
+      "columns": 1,
+      "pivotX": 0.6145833333333334,
+      "pivotY": 0.03289473684210531,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 1,
+          "width": 96,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "walk",
+      "source": "Approved Silver Wolf LV.999 V14 / walk",
+      "count": 432,
+      "duration": 3.6,
+      "fps": 120.0,
+      "loop": true,
+      "cellWidth": 96,
+      "cellHeight": 152,
+      "columns": 16,
+      "pivotX": 0.625,
+      "pivotY": 0.02631578947368418,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "walk-00.png",
+          "count": 208,
+          "width": 1536,
+          "height": 1976
+        },
+        {
+          "file": "walk-01.png",
+          "count": 208,
+          "width": 1536,
+          "height": 1976
+        },
+        {
+          "file": "walk-02.png",
+          "count": 16,
+          "width": 1536,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Approved Silver Wolf LV.999 V14 / attack",
+      "count": 204,
+      "duration": 1.7,
+      "fps": 120.0,
+      "loop": false,
+      "cellWidth": 124,
+      "cellHeight": 184,
+      "columns": 16,
+      "pivotX": 0.5725806451612904,
+      "pivotY": 0.02717391304347827,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 176,
+          "width": 1984,
+          "height": 2024
+        },
+        {
+          "file": "attack-01.png",
+          "count": 28,
+          "width": 1984,
+          "height": 368
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Approved Silver Wolf LV.999 V14 / death",
+      "count": 30,
+      "duration": 0.75,
+      "fps": 40.0,
+      "loop": false,
+      "cellWidth": 172,
+      "cellHeight": 180,
+      "columns": 11,
+      "pivotX": 0.7906976744186046,
+      "pivotY": 0.18333333333333335,
+      "pixelsPerUnit": 66.95,
+      "pages": [
+        {
+          "file": "death-00.png",
+          "count": 30,
+          "width": 1892,
+          "height": 540
+        }
+      ]
+    }
+  ],
+  "provenance": "Approved V14 fan-art preview of Silver Wolf LV.999 (Honkai: Star Rail). Gait retargeted from Talulah reference. Character rights remain with original owners. No open redistribution license established. Death is an adapted fall and fade."
+}

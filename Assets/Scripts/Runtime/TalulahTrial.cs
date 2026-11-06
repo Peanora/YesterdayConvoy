@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         [SerializeField] private ManualBattleDefinition talulahDefinition;
         private ManualBattleDefinition wisadelDefinition;
         public bool TalulahActive => definition==talulahDefinition && talulahDefinition!=null;
-        public string SkillName => Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据" : Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封" :
+        public string SkillName => SilverWolfCombat.IsWolf(Battle?.FindUnit(selectedEntityId)) ? "无敌玩家" : Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据" : Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封" :
             Battle!=null && Battle.EngagementEnabled && Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "焚天火雨" : definition==wisadelDefinition ? "爆裂黎明" : "主动技能";
 
         public void SwitchTrial(bool talulah)
@@ -56,6 +56,11 @@ namespace YesterdayConvoy
             {
                 GUI.Label(new Rect(24,631,650,28),"源石虫 · 近战普通攻击 · 无主动技能",smallStyle);
                 GUI.Label(new Rect(24,659,650,26),"可部署3次 · 单次1 DP · 空格暂停 / 支持暂停部署",smallStyle);
+            }
+            else if(definition.Card.CardId==SilverWolfCombat.CardId)
+            {
+                GUI.Label(new Rect(24,631,710,28),"银狼 LV.999 · 对战源石虫 · 满技力时点银狼，释放「无敌玩家」",smallStyle);
+                GUI.Label(new Rect(24,659,710,26),"变身后的三次攻击各随机开一个盲盒 · 同一种结果可以再次出现",smallStyle);
             }
             else if(CurrentLocalArt!=null)
             {

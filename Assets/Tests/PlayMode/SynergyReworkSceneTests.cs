@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator ApprovedLeadersHaveRealClipsAndMudrockKeepsCaptureInThePool()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(10));
-            Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));Assert.That(c.Battle.GolemStage,Is.EqualTo(4));Assert.That(c.Battle.MudrockTier,Is.EqualTo(5));
+            Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));Assert.That(c.Battle.GolemStage,Is.EqualTo(4));Assert.That(c.Battle.MudrockTier,Is.EqualTo(5));
             Assert.That(c.Battle.Gramophones.Count,Is.EqualTo(3));Assert.That(Object.FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Length,Is.EqualTo(3));
             Assert.That(c.Battle.Defenders.Count,Is.EqualTo(6));Assert.That(c.Battle.Defenders.All(d=>d.Settings.Skill.Enabled));
             foreach(string id in new[]{"CARD_M42","CARD_M43"})
@@ -29,7 +29,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(card.BattleSprite,Is.Not.Null);
             }
             Assert.That(c.StartLoopNextBattle());c.Battle.Begin();var r=c.Battle.TryDeployRole(c.Battle.RunId,50,c.Battle.Entry,"CARD_M28");Assert.That(r.Success);
-            var mudrock=c.Battle.FindUnit(r.EntityId);Assert.That(c.Battle.UnitCombat(mudrock).MudrockCapture);Assert.That(c.InvestCampaignGolem(1),Is.False);c.LeaveShopTrial();
+            var mudrock=c.Battle.FindUnit(r.EntityId);Assert.That(c.Battle.UnitCombat(mudrock).MudrockCapture);c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator StormWeatherStillRendersWhenFrozenTargetsCannotReceiveMoreControl()
         {
@@ -50,10 +50,9 @@ namespace YesterdayConvoy.Tests
             camera.targetTexture=prior;RenderTexture.active=active;target.Release();Object.Destroy(target);Object.Destroy(image);
             Assert.That(changed,Is.GreaterThan(30),"Storm must contribute actual pixels above the authored terrain, not merely enable a renderer");c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator TrainingPresetAndInvestmentSurviveReadySnapshotAndPauseGolemDrag()
+        [UnityTest]public IEnumerator TrainingPresetSurvivesReadySnapshotAndPauseGolemDrag()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(8));Assert.That(c.Battle.GolemStage,Is.EqualTo(2));
-            Assert.That(c.InvestCampaignGolem(10));Assert.That(c.Loop.GolemInvestment,Is.EqualTo(30));Assert.That(c.InvestCampaignGolem(1),Is.False);
             Assert.That(c.SetSandboxRoster(10));Assert.That(c.Battle.GolemStage,Is.EqualTo(4));Assert.That(c.StartLoopNextBattle());c.Battle.Begin();c.Battle.SetPaused(true);yield return null;
             var gate=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(c.Battle.Entry));
             c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.GolemCardRect.center);c.ProcessShopPointer(EventType.MouseDrag,gate);c.ProcessShopPointer(EventType.MouseUp,gate);

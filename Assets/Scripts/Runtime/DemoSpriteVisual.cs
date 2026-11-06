@@ -12,6 +12,7 @@ namespace YesterdayConvoy
         private CardDefinition frameCard;
         private OriginalTalulahArt original;
         private TalulahAttackVfx terminalTalulahVfx;
+        private HerdSpiritVisual herdVisual;
         private OriginalSlugArt slug;
         private LocalMonsterArt local;
         private Func<double> presentationClock;
@@ -60,6 +61,11 @@ namespace YesterdayConvoy
             sprite.sprite=original != null ? original["idle"].Frames[0] : frames.BattleSprite; FrameState="Idle"; FrameIndex=0;
             if(original==null && frames.ArticulatedArt!=null)
             { Rig=gameObject.AddComponent<TalulahRig>(); Rig.Bind(frames.ArticulatedArt,sprite.sharedMaterial); }
+            if(battle.HerdSpiritFor(unit.EntityId)!=null)
+            {
+                herdVisual=gameObject.AddComponent<HerdSpiritVisual>();
+                herdVisual.Bind(sprite,battle,unit,local?.Height??1.25f,WorldUpright,presentationClock);
+            }
         }
 
         private void LateUpdate()
@@ -68,6 +74,7 @@ namespace YesterdayConvoy
             Color tint=original!=null&&deployedUnit.Resolution==UnitResolution.Dead ? Color.white :
                 manualBattle.Clock<deployedUnit.LastHitTime+.18 ? new Color(1,.48f,.48f) : Color.white;
             PresentFrames(tint);
+            herdVisual?.Present();
         }
 
         // Source frames retain their aspect ratio. Facing changes only the visual, never the route root.
@@ -90,7 +97,7 @@ namespace YesterdayConvoy
                 tacticalFlip=ViviCombat.VisualFlip(manualBattle,deployedUnit,Camera.main,tacticalFlip);
                 sprite.flipX=tacticalFlip;
             }
-            if(WorldUpright && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
+            if(WorldUpright && frameCard.CardId!=SilverWolfCombat.CardId && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
@@ -150,6 +157,12 @@ namespace YesterdayConvoy
                 sprite.flipX=tacticalFlip;
             }
             transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
+            if(PresentHerdTransition())return;
+            if(frameCard.CardId==SilverWolfCombat.CardId)
+            {
+                PresentSilverWolf();
+                return;
+            }
             if(local!=null) { PresentLocal(); return; }
             if(slug!=null) { PresentSlug(); return; }
             if(original!=null) { PresentOriginal(); return; }
@@ -185,6 +198,103 @@ namespace YesterdayConvoy
             double duration=skill ? manualBattle.UnitCombat(deployedUnit).SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
+        }
+
+        private bool PresentHerdTransition()
+        {
+            var from=manualBattle.HerdSpiritFrom(deployedUnit.EntityId);
+            var spirit=manualBattle.HerdSpiritFor(deployedUnit.EntityId);
+            if(from!=null&&deployedUnit.Resolution==UnitResolution.Dead)
+            {
+                double age=manualBattle.Clock-from.StartedAt;FrameState="HerdFall";
+                if(age>=HerdSpiritState.FallDuration){sprite.enabled=false;FrameState="HerdGone";return true;}
+                HerdPose(deployedUnit,Mathf.Clamp01((float)(age/HerdSpiritState.FallDuration)));return true;
+            }
+            if(spirit==null)return false;
+            if(deployedUnit.Resolution==UnitResolution.Dead)
+            {
+                FrameState="HerdDissolve";FrameIndex=0;
+                sprite.sprite=local!=null?local["idle"].Frames[0]:slug!=null?slug["idle"].Frames[0]:frameCard.BattleSprite;
+                return true;
+            }
+            if(manualBattle.Clock>=spirit.ReadyAt)return false;
+            double elapsed=manualBattle.Clock-spirit.StartedAt;
+            if(elapsed<HerdSpiritState.FallDuration){sprite.enabled=false;FrameState="HerdForming";FrameIndex=0;return true;}
+            FrameState="HerdRise";
+            var source=manualBattle.FindUnit(spirit.SourceId)??deployedUnit;
+            HerdPose(source,1-Mathf.Clamp01((float)((elapsed-HerdSpiritState.FallDuration)/HerdSpiritState.RiseDuration)));
+            return true;
+        }
+
+        // Reconstruct from the visible collapse prefix. Never reverse a transparent death tail.
+        // This is an adapted native death gesture, not a newly authored skeletal revive clip.
+        void HerdPose(DeployedUnitState source,float collapsed)
+        {
+            if(local!=null)
+            {
+                string key=source.AltarEmpowered&&frameCard.CardId=="CARD_M19"&&local.HasClip("extra_die_2")?"extra_die_2":
+                    source.FlamePhase!=FlamechaserPhase.Soldier&&local.HasClip("extra_die_2")?"extra_die_2":"death";
+                var clip=local[key];sprite.sprite=clip.At(collapsed*Math.Min(.65,clip.Duration*.65),false,out int index);FrameIndex=index;
+            }
+            else if(slug!=null)
+            {var clip=slug["death"];sprite.sprite=clip.At(collapsed*Math.Min(.65,clip.Duration*.65),false,out int index);FrameIndex=index;}
+            else {sprite.sprite=frameCard.BattleSprite;FrameIndex=0;}
+        }
+
+        // Movement, transform and attacks share the world root. Only the sprite flips at its foot pivot.
+        private void PresentSilverWolf()
+        {
+            var unit=deployedUnit;
+            double now=presentationClock?.Invoke()??manualBattle.Clock;
+            double age=now-unit.LastAttackTime;
+            bool boxAttack=unit.LastAttackEmpowered && unit.LastWolfBox!=WolfBoxKind.None;
+            double actionTime=boxAttack?age:age*unit.LastAttackRate;
+            string actionKey=boxAttack?SilverWolfView.ActorClip(unit.LastWolfBox):"attack";
+            bool attacking=age>=0 && actionTime<local[actionKey].Duration;
+            bool transforming=SilverWolfCombat.Transforming(unit,now);
+
+            string clip;
+            double elapsed;
+            bool loop=false;
+            if(unit.Resolution==UnitResolution.Dead || unit.IsReviving)
+            {
+                FrameState="Death";clip="death";elapsed=now-unit.DeathTime;sprite.color=Color.white;
+            }
+            else if(transforming)
+            {
+                FrameState="WolfTransform";clip="extra_transform";elapsed=now-unit.WolfTransformAt;
+            }
+            else if(attacking)
+            {
+                // Lock the facing for the complete swing, even if the victim dies or targeting changes.
+                if(tacticalAttack!=unit.LastAttackTime)
+                {
+                    tacticalAttack=unit.LastAttackTime;
+                    for(int i=manualBattle.CombatShots.Count-1;i>=0;i--)
+                    {
+                        var shot=manualBattle.CombatShots[i];
+                        if(shot.SourceId!=unit.EntityId || shot.WolfActionAt!=unit.LastAttackTime)continue;
+                        tacticalFlip=SilverWolfView.Facing(shot.Destination-shot.Origin,Camera.main,tacticalFlip);
+                        break;
+                    }
+                }
+                FrameState=boxAttack?"Wolf"+unit.LastWolfBox:"Attack";clip=actionKey;elapsed=actionTime;
+            }
+            else
+            {
+                var target=manualBattle.FindDefender(unit.CombatTargetId);
+                Vector3 direction=unit.IsMoving||target==null?unit.Motion.Direction:target.Position-unit.Motion.Position;
+                if(unit.IsMoving && unit.FearUntil>manualBattle.Clock)direction=-direction;
+                tacticalFlip=SilverWolfView.Facing(direction,Camera.main,tacticalFlip);
+                bool flying=unit.SkillAmmo>0 && now>=unit.WolfTransformAt+SilverWolfCombat.TransformDuration;
+                clip=unit.IsMoving?(flying?"extra_fly":"walk"):(flying?"extra_hover":"idle");
+                FrameState=unit.IsMoving?(flying?"WolfFly":"Walk"):(flying?"WolfHover":"Idle");
+                elapsed=unit.IsMoving?unit.Motion.DistanceTravelled/local.ReferenceSpeed:now-(flying?unit.WolfTransformAt:unit.SpawnTime);
+                loop=true;
+            }
+            sprite.flipX=tacticalFlip;
+            sprite.sprite=local[clip].At(elapsed,loop,out int index);
+            FrameIndex=index;
         }
 
         private void PresentLocal()
