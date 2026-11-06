@@ -11,12 +11,16 @@ namespace YesterdayConvoy
     }
     public sealed partial class ManualBattle
     {
+        public const float SnowstormDuration=8;
         readonly List<SnowstormPulse> snowstormPulses=new List<SnowstormPulse>();
         readonly Dictionary<string,double> stormFreezeProtection=new Dictionary<string,double>();
         double snowstormStartedAt=double.NegativeInfinity;
         int snowstormNextPulse;
         public IReadOnlyList<SnowstormPulse> SnowstormPulses=>snowstormPulses.AsReadOnly();
-        public bool SnowstormActive=>SnowTier==5&&Clock<snowstormStartedAt+8;
+        public double SnowstormStartedAt=>snowstormStartedAt;
+        public double SnowstormEndsAt=>snowstormStartedAt+SnowstormDuration;
+        public double SnowstormRemaining=>SnowstormActive?Math.Max(0,SnowstormEndsAt-Clock):0;
+        public bool SnowstormActive=>SnowTier==5&&Clock<SnowstormEndsAt;
         void ResetSnowstorms(){snowstormPulses.Clear();stormFreezeProtection.Clear();snowstormStartedAt=double.NegativeInfinity;snowstormNextPulse=0;}
         void StartSnowstorm(DeployedUnitState unit)
         {
@@ -26,7 +30,7 @@ namespace YesterdayConvoy
         void StepSnowstorms()
         {
             if(SnowTier!=5||double.IsNegativeInfinity(snowstormStartedAt))return;
-            while(snowstormNextPulse<4&&Clock+1e-6>=snowstormStartedAt+snowstormNextPulse*2)
+            while(snowstormNextPulse*2<SnowstormDuration&&Clock+1e-6>=snowstormStartedAt+snowstormNextPulse*2)
             {
                 var pulse=new SnowstormPulse{At=snowstormStartedAt+snowstormNextPulse++*2};snowstormPulses.Add(pulse);
                 foreach(var d in defenders.Where(d=>d.Alive))
