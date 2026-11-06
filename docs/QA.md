@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-07：牧群冰蓝灵体与倒下起身
+
+- 人类先认可项目外V1冰蓝半透明看稿，再明确授权接入与倒下起身。`codex/herd-spirit`从实时`origin/main b1d55e7`建立，FF承接当前已验收试玩`52dcad5`（未合并PR #90），不自动合并。原52个Mandragora/Mephisto meta和两个本地未跟踪项按既有确认隔离；开工保存52项字节SHA，本轮Unity后核对无变化。
+- Unity6000.6.5f1/D3D11完整EditMode544/544，`artifacts/herd-spirit-edit.xml`。新增逻辑覆盖非牧群源卡也适用、来源/实体关联、不再花费部署、重组期间全门禁/暂停、恢复交战、完整10/12有效寿命、不递归、最后一张卡不提前判负与重开。
+- 相关GPU PlayMode25/25，`herd-spirit-play.xml`：HerdSpiritSceneTests、RemainingSynergySceneTests、DedicatedSynergySceneTests、MonsterAbilitySceneTests、FieldAnimationSceneTests、TalulahDeathPresentationTests中实际匹配的25项。新增三项验证真实守军击杀→倒下/原尸体隐藏→起身→原动作、暂停帧/Shader/散雾几何冻结、隔离相机明暗底实际GPU蓝色/透光、多实体与死亡/终局/重开清理。
+- 静态交叉审查发现并在GPU验证前修正实心接触阴影残留、自然寿命到期瞬间复亮。再增加到期不复亮与阴影归零的实际回归，`herd-spirit-expiry.xml`3/3；这是上述三个用例的复验，不累计为额外不同测试。寿命段停用守军后续攻击为明确隔离夹具，真实自然守军击杀另有用例。
+- 核心模型/表现与测试提交`ef708eb958650d7036990b2f3db37edf32d382c1`，之后两次提交只修正显式验收启动与可选连续导帧，不改普通入口或模型/Shader。最终运行源码`c550c75`，Windows x64构建1045880387字节、0错误（`herd-spirit-build-delivery.log`），本地Builds/Windows/YesterdayConvoy.exe。
+- 可见1600×900 D3D11最终Player，参数`-herdSpiritSmokeTest -herdSpiritMotionEvidence -demoEvidenceDir <绝对目录>`：`artifacts/herd-spirit-player-delivery/result.json`17项全True，进程27456完成后正常结束。由真实守军伤害触发首个M21最终死亡，原位置/路线、单实体倒下、冰蓝重组替换原尸体、起身期间逻辑门禁、暂停帧/Shader/散雾、恢复原动作及完整寿命、材质实际GPU差566像素均通过。之后显式致死仅为消散验证夹具，检查不递归、暂停消散、释放角色、正常重开及清空关联。已实际查看完整屏幕original/falling/rising/active/dissolved截图，不将模型字段当画面。
+- 可选导帧重新使用重开后的原关卡、正常部署与自然守军击杀，保存91张30fps实际Player帧，项目外编码约3.03秒全屏与局部放大无声MP4；这是逐模拟帧预览，不是实时系统音视频录屏。前65%/最多0.65源秒的原死亡帧适配倒下/反向起身，不声称重新制作了原作骨骼动画。
+- 首轮独立Player52052因本轮验收flag无条件跳过新载HerdTrial的PrepareCampaign而一直等待，停止本次诊断，不计通过；把排除限定到初始非sandbox后，第二轮Player13096的17检查已全True，但可选录制再次调用已重开的StartLoopNextBattle返回false，整轮结果仍记false。最小复现收敛到已准备战场：仅在CanShop时调用StartLoopNextBattle，CanDeploy时直接进入，最终27456全部通过。没有因此修改正式玩法或放宽任何检查。
+- 仓库6566跟踪文件检查通过；该脚本不代替Unity或Player。无新增运行图片/外部依赖，原图集保持，新增Shader/C#/meta正常跟踪，来源与数据连接见art/HERD-SPIRIT.md。
+- 未运行完整PlayMode、第二机、全分辨率、所有怪物逐一人工动作验收或长期自然平衡。不自动ZIP/Releases，不提交概念加工图、日志、构建或本地AGENTS。
+
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
 - 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。
