@@ -30,6 +30,11 @@ namespace YesterdayConvoy
             // Shatters inside the weather cannot charge another storm from its own control effects.
             if(!synergyEnabled||SnowTier!=5||SnowstormActive)return;
             if(++SnowstormCharge<SnowstormChargeRequired)return;
+            StartSnowstorm();
+        }
+        void StartSnowstorm()
+        {
+            if(!synergyEnabled||SnowTier!=5||SnowstormActive)return;
             SnowstormCharge=0;
             snowstormStartedAt=Clock;snowstormNextPulse=0;
         }
@@ -39,9 +44,13 @@ namespace YesterdayConvoy
             while(snowstormNextPulse*2<SnowstormDuration&&Clock+1e-6>=snowstormStartedAt+snowstormNextPulse*2)
             {
                 var pulse=new SnowstormPulse{At=snowstormStartedAt+snowstormNextPulse++*2};snowstormPulses.Add(pulse);
+                float power=1+.35f*((float)synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Average(p=>p.Value)-1);
                 foreach(var d in defenders.Where(d=>d.Alive))
                 {
                     pulse.targets.Add(d.EntityId); // Weather remains visible even when control is resisted/protected.
+                    // Control protection never negates damage. Derived damage cannot produce another shatter.
+                    DamageDefender(d,(60+d.MaxHealth*.02f)*power,CombatDamageType.Arts,derived:true);
+                    if(!d.Alive)continue;
                     if(d.FrozenUntil>Clock||stormFreezeProtection.TryGetValue(d.EntityId,out double until)&&Clock<until)continue;
                     bool cold=d.ColdUntil>Clock;
                     if(!TryApplyCold(d.EntityId,3.5f))continue;

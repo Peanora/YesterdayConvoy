@@ -44,7 +44,7 @@ namespace YesterdayConvoy
                         SnowstormFill(new Rect(start.x,start.y,3,start.height),SnowstormBlue);
                         DrawSnowstormMark(new Vector2(start.x+28,start.y+29),13);
                         GUI.Label(new Rect(start.x+58,start.y+4,364,29),"雪怪小队 · 暴风雪",CampaignText(21,weight:600));
-                        GUI.Label(new Rect(start.x+58,start.y+33,364,21),$"全场寒潮已触发 · 持续{ManualBattle.SnowstormDuration:0}秒",CampaignText(12,color:SnowstormInk));
+                        GUI.Label(new Rect(start.x+58,start.y+33,364,21),$"全场法伤与寒冷 · 持续{ManualBattle.SnowstormDuration:0}秒",CampaignText(12,color:SnowstormInk));
                     }
                     finally {GUI.color=previous;}
                 }

@@ -11,7 +11,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         [Serializable] sealed class SnowstormEvidenceResult {public bool passed;public int changedPixels;public string[] checks;}
-        IEnumerator ChargeStormForEvidence(long request,string directory=null)
+        IEnumerator ChargeStormForEvidence(long request,string directory=null,bool frostSkill=false)
         {
             if(!SetSandboxRoster(0)||!StartLoopNextBattle())throw new InvalidOperationException("Cannot enter the five-member snow lineup.");
             while(ArtLoading||ShopPanelTransitioning)yield return null;
@@ -22,6 +22,16 @@ namespace YesterdayConvoy
             foreach(var guard in Battle.Defenders)
             {guard.Health=guard.MaxHealth=1000000;guard.NextAttackTime=Battle.Clock+1000;guard.SkillSP=-1000;guard.Position=Battle.Entry+Vector3.forward*100;}
             target.Position=Battle.Entry+Vector3.forward*.8f;
+            if(frostSkill)
+            {
+                var receipt=Battle.TryDeployRole(Battle.RunId,request++,Battle.Entry,"CARD_M14");
+                if(!receipt.Success)throw new InvalidOperationException("FrostNova deployment failed.");
+                var frost=Battle.FindUnit(receipt.EntityId);
+                for(int i=0;i<250&&!Battle.IsSkillReady(frost.EntityId);i++){Tick(.1f);if(i%10==0)yield return null;}
+                if(Battle.TryActivateSkill(Battle.RunId,request,frost.EntityId)!=SkillFailure.None)
+                    throw new InvalidOperationException("FrostNova skill did not activate.");
+                Tick(.45f);yield return null;yield return null;yield break;
+            }
             foreach(string card in new[]{"CARD_M11","CARD_M12"})
             {
                 var receipt=Battle.TryDeployRole(Battle.RunId,request++,Battle.Entry,card);
@@ -59,6 +69,8 @@ namespace YesterdayConvoy
                 check("chargeClearedAtWeatherStart",Battle.SnowstormCharge==0);
                 check("fourBatchedWeatherLayers",weather.VisibleLayers==4&&renderers.Length==4&&renderers.All(r=>r.sharedMaterial.shader.isSupported));
                 check("actualWeatherNotice",SnowstormHudActive&&SnowstormColdPulses==1);
+                var distant=Battle.Defenders.Last();
+                check("globalColdPulseHasRealDamageFeedback",distant.Health<distant.MaxHealth&&Battle.CombatFeedback.Any(e=>e.TargetId==distant.EntityId&&e.Kind==CombatFeedbackKind.HealthLost&&e.Amount>0));
                 Battle.SetPaused(true);double clock=Battle.Clock,remaining=Battle.SnowstormRemaining;float health=Battle.Units[0].Health;
                 var snow=renderers.Single(r=>r.name=="Snowstorm / snow").GetComponent<MeshFilter>().sharedMesh;var vertices=snow.vertices;
                 Tick(2);yield return null;
@@ -89,7 +101,9 @@ namespace YesterdayConvoy
                 check("terminalClearsWeatherAndNotice",weather.VisibleLayers==0&&!SnowstormHudActive&&!SnowstormHudVisible&&Battle.Clock==clock);
                 ReplaySandbox();yield return null;yield return null;
                 check("replayClearsWeatherState",Battle.SnowstormPulses.Count==0&&double.IsNegativeInfinity(Battle.SnowstormStartedAt)&&weather.VisibleLayers==0);
-                yield return ChargeStormForEvidence(61000);
+                yield return ChargeStormForEvidence(61000,frostSkill:true);
+                check("fiveTierFrostNovaAlsoStartsWeather",Battle.SnowTier==5&&Battle.SkillCasts==1&&Battle.Shatters==0&&Battle.SnowstormActive&&Battle.SnowstormPulses.Count==1);
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"frostnova-weather-start.png"));yield return null;yield return null;
                 Tick(8.4f);yield return null;yield return null;
                 check("eightSecondsFourPulsesAndTail",Battle.SnowstormPulses.Count==4&&!Battle.SnowstormActive&&weather.VisibleLayers==0);
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"weather-ended.png"));yield return null;yield return null;
