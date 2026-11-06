@@ -268,5 +268,14 @@
     "windowsBuildErrors": 0,
     "d3d11Player": "12/12; 81604 changed pixels",
     "scope": "Actual five-member manual skill, batched weather GPU pixels, pause/countdown, 2x, terminal long frame, reset and8s four pulses; screenshot review; not full original-game shader/client or second-machine validation"
+  },
+  "triggerRevisionVerification": {
+    "runtimeSource": "6a548f9314b1dfdc85f4b1dc5d890cec078bd072",
+    "trigger": "Snow tier5: three completed synergy shatters; no charge during weather; FrostNova skill is independent",
+    "editMode": "468/468 full + 1/1 newly added partial-charge restart test",
+    "relatedPlayMode": "17/17 D3D11",
+    "windowsBuildErrors": 0,
+    "d3d11Player": "14/14; 81520 changed pixels",
+    "scope": "Real ordinary projectiles with explicit cold/durable-target fixture; no deployed FrostNova; screenshots of charge2/3 and weather; not natural run balance or second-machine validation"
   }
 }
