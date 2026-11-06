@@ -86,6 +86,7 @@ namespace YesterdayConvoy
             EnableCombatView();
             gameObject.AddComponent<FireRainView>().Initialize(this);
             gameObject.AddComponent<FrostSealView>().Bind(()=>Battle,()=>PresentationClock);
+            gameObject.AddComponent<SnowstormView>().Initialize(this);
             gameObject.AddComponent<MudrockVfxView>().Bind(()=>Battle);
             gameObject.AddComponent<PatriotEffectView>().Bind(()=>Battle,()=>PresentationClock);
             InitializeCombatFeedback();

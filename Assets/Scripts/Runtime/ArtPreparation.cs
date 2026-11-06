@@ -85,6 +85,7 @@ namespace YesterdayConvoy
             {
                 yield return null; // Present loading feedback before uploading the first atlas.
                 if(generation!=artGeneration)yield break;
+                SnowstormArt.WarmFor(plan);
                 for(int i=0;i<plan.Count;i++)
                 {
                     var clip=plan[i];ArtLoadingMessage=title+"  "+(i+1)+" / "+plan.Count;

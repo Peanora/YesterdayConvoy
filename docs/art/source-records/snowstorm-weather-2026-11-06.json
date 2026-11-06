@@ -1,0 +1,263 @@
+{
+  "status": "APPROVED_IMPORTED_PENDING_UNITY",
+  "method": "Existing UnityPy Texture2D.image decoded from original bundle dependency, no Unity run; no texture paint, tint, crop or re-encode beyond PNG serialization.",
+  "sourceAcquisition": {
+    "name": "battle/prefabs/effects/sbell2.ab",
+    "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_sbell2.dat",
+    "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\original-bundles\\sbell2.ab",
+    "downloadMD5": "1af7e1f3bda1ae4a7980fe01ef958757",
+    "sourceSHA256": "96d67b5675e1419ed7d87f68e13464c5724816b6ee82c11faf9af25da360c4c7",
+    "downloadBytes": 1417433,
+    "bytes": 1769609
+  },
+  "sourceAcquisitionRecord": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\ACQUISITION.json",
+  "sourceBundleSHA256": "96d67b5675e1419ed7d87f68e13464c5724816b6ee82c11faf9af25da360c4c7",
+  "rights": "Original Arknights proprietary media, rights remain with original holders; no open redistribution license established. This extraction is an external preview asset and does not establish rights-holder permission.",
+  "presentationLimit": "Canvas 8-second continuous weather using these textures is a program composition for YesterdayConvoy; not an original-game synergy effect, nor full native shader reconstruction.",
+  "textures": [
+    {
+      "name": "smoke_47",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_雪怪暴风雪-v1\\source-textures\\smoke_47.png",
+      "width": 512,
+      "height": 512,
+      "format": 47,
+      "decodedMode": "RGBA",
+      "channelExtrema": [
+        [
+          255,
+          255
+        ],
+        [
+          255,
+          255
+        ],
+        [
+          255,
+          255
+        ],
+        [
+          0,
+          247
+        ]
+      ],
+      "sourceCab": "CAB-895a9c6afcb47c5c7f43c8589b1fe2fc",
+      "sourcePathID": 4795310593168521635,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\smoke.ab",
+      "sourceDependencySHA256": "57737333c738fa8904eab306ccd94e0e29415d9c6c99047a64d10b09dd1ee937",
+      "outputSHA256": "9e7797bcb5c77d7ed1da082893b73a041fb7fcbfda789b4835375f1e3d0d2bf6",
+      "usage": "Smoke/fog; 2x2 atlas, each tile 256x256. Original material also uses masks/disturb; raw texture is not native shader output.",
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "star_69",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_雪怪暴风雪-v1\\source-textures\\star_69.png",
+      "width": 128,
+      "height": 64,
+      "format": 47,
+      "decodedMode": "RGBA",
+      "channelExtrema": [
+        [
+          255,
+          255
+        ],
+        [
+          255,
+          255
+        ],
+        [
+          255,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-3fcda8e432a735264d43b49ecbf8fbee",
+      "sourcePathID": 9159779468514873026,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\star.ab",
+      "sourceDependencySHA256": "a21ea224961db2237d13073cf5310375cfe0d22aa10e5a9e0bd2fef458f0e087",
+      "outputSHA256": "bea75f1cda37a46bb51c193ac93e8983fa8fadf92573ae5bafddb35b462c8ce8",
+      "usage": "Snow particles; 4x2 atlas, each tile 32x32; choose individual tile rather than draw entire atlas.",
+      "grid": [
+        4,
+        2
+      ]
+    },
+    {
+      "name": "flow_269_2",
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_雪怪暴风雪-v1\\source-textures\\flow_269_2.png",
+      "width": 256,
+      "height": 256,
+      "format": 50,
+      "decodedMode": "RGBA",
+      "channelExtrema": [
+        [
+          254,
+          255
+        ],
+        [
+          254,
+          255
+        ],
+        [
+          254,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-c2c688f710a565b7cce0cc93f7bd219f",
+      "sourcePathID": 3689492313597786505,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\flow.ab",
+      "sourceDependencySHA256": "e9fabfe551166bc1d9a050e82a78cae473025ad924a8127914428ca9c47c9566",
+      "outputSHA256": "b11e1fdfd47539e95b505426028522ac676cb0babedcff5d761b2a467a85da76",
+      "usage": "Flow/fog field texture; original material also uses dissolve/disturb textures. Program scrolling/tinting is an adaptation.",
+      "grid": [
+        1,
+        1
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "texture": "smoke_47",
+      "prefab": "sbell2_skill_03_start_01",
+      "node": "sbell2_skill_03_start_01/static_offset/fixed/smoke",
+      "material": "ctrail_08_smoke",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "star_69",
+      "prefab": "sbell2_skill_03_range",
+      "node": "sbell2_skill_03_range/static_offset/fixed/snow",
+      "material": "star_69_ab_zt",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "flow_269_2",
+      "prefab": "sbell2_skill_03_flow",
+      "node": "sbell2_skill_03_flow/static_offset/fixed/flow_in",
+      "material": "sbell_17_flow",
+      "property": "_MainTex",
+      "scale": {
+        "x": 4.0,
+        "y": 0.5
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "flow_269_2",
+      "prefab": "sbell2_skill_03_buff_01",
+      "node": "sbell2_skill_03_buff_01/static_offset/rotation_y/flow_3",
+      "material": "sbell_22_flow_3",
+      "property": "_MainTex",
+      "scale": {
+        "x": 0.5,
+        "y": 1.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": -0.25
+      }
+    },
+    {
+      "texture": "star_69",
+      "prefab": "sbell2_skill_03_buff_01",
+      "node": "sbell2_skill_03_buff_01/static_offset/rotation_y/snow_1",
+      "material": "star_69_ab_zt",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "star_69",
+      "prefab": "sbell2_skill_03_buff_01",
+      "node": "sbell2_skill_03_buff_01/static_offset/rotation_y/snow_2",
+      "material": "star_69_ab_zt",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "flow_269_2",
+      "prefab": "sbell2_skill_03_buff_01",
+      "node": "sbell2_skill_03_buff_01/static_offset/rotation_y/flow_l",
+      "material": "sbell_27_flow",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.2000000476837158,
+        "y": 0.5
+      },
+      "offset": {
+        "x": -0.10000000149011612,
+        "y": 0.0
+      }
+    },
+    {
+      "texture": "flow_269_2",
+      "prefab": "sbell2_skill_03_buff_01",
+      "node": "sbell2_skill_03_buff_01/static_offset/rotation_y/flow_r",
+      "material": "sbell_27_flow 1",
+      "property": "_MainTex",
+      "scale": {
+        "x": 1.2000000476837158,
+        "y": 0.5
+      },
+      "offset": {
+        "x": -0.10000000149011612,
+        "y": 0.25
+      }
+    }
+  ],
+  "approval": "2026-11-06 user accepted preview and implementation range",
+  "runtimeTextures": {
+    "star_69.png": "E:\\珍贵资料\\昨日圆车\\Assets\\Art\\VFX\\Weather\\Resources\\SnowstormWeather\\snow.png",
+    "smoke_47.png": "E:\\珍贵资料\\昨日圆车\\Assets\\Art\\VFX\\Weather\\Resources\\SnowstormWeather\\fog.png",
+    "flow_269_2.png": "E:\\珍贵资料\\昨日圆车\\Assets\\Art\\VFX\\Weather\\Resources\\SnowstormWeather\\wind.png"
+  },
+  "audio": {
+    "source": "Project-authored deterministic band-limited noise, RNG seed 6906; not original game audio",
+    "files": [
+      "E:\\珍贵资料\\昨日圆车\\Assets\\Audio\\SFX\\Resources\\SnowstormWeather\\wind-loop.wav",
+      "E:\\珍贵资料\\昨日圆车\\Assets\\Audio\\SFX\\Resources\\SnowstormWeather\\gust.wav"
+    ]
+  },
+  "presentation": "Program-composed weather for the existing 8-second synergy; keeps original three textures, does not claim original-game synergy or full native shader replay"
+}
