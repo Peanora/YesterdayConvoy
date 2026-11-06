@@ -31,26 +31,32 @@ namespace YesterdayConvoy
             if(!StartLoopNextBattle())throw new InvalidOperationException("Cannot start guerrilla battle.");
             while(ArtLoading||ShopPanelTransitioning)yield return null;
             Battle.Begin();
-            // Explicit development fixture: durable guards near the entry; real ordinary
-            // attacks/deployments still earn and spend orders through the normal model.
+            // Explicit durable/non-attacking runtime fixture. Keep the authored guard
+            // positions/routes; real deployments and ordinary contact still earn orders.
             foreach(var guard in Battle.Defenders)
             {
                 guard.Health=guard.MaxHealth=1000000;
                 guard.NextAttackTime=Battle.Clock+1000;guard.SkillSP=-1000;
-                guard.Position=Battle.Entry+Vector3.forward*100;
             }
-            var target=Battle.Defenders.First(d=>d.Alive);
-            target.Position=Battle.Entry+Vector3.forward*.8f;
             long request=80000;
-            var attackers=new[]{"CARD_M03","CARD_M15","CARD_M16","CARD_M19","CARD_M08"}.Where(shopLineup.Contains).ToArray();
-            for(int i=0;i<1200;i++)
+            var attackers=shopLineup.Where(id=>id!="CARD_M20"&&Battle.FindCard(id)!=null).ToArray();
+            for(int pass=0;pass<2&&Battle.Orders<6;pass++)foreach(string id in attackers)
             {
-                if(i%20==0)foreach(string id in attackers)
-                    Battle.TryDeployRole(Battle.RunId,++request,Battle.Entry,id);
+                bool deployed=false;
+                for(int i=0;i<180&&Battle.Phase==BattlePhase.Running;i++)
+                {
+                    if(Battle.TryDeployRole(Battle.RunId,++request,Battle.Entry,id).Success){deployed=true;break;}
+                    Tick(.05f);if(i%10==0)yield return null;
+                }
+                if(!deployed)throw new InvalidOperationException("Normal deployment failed: "+id);
+                Tick(.5f);yield return null;
+            }
+            for(int i=0;i<1600&&Battle.Phase==BattlePhase.Running;i++)
+            {
                 if(Battle.Orders>=6&&UseCampaignOrder(false))yield break;
                 Tick(.05f);if(i%10==0)yield return null;
             }
-            throw new InvalidOperationException("Real combat could not earn/spend a guerrilla order.");
+            throw new InvalidOperationException("Real combat could not earn/spend a guerrilla order: phase="+Battle.Phase+" points="+Battle.Orders+" tier="+Battle.GuerrillaTier+" used="+Battle.OrdersUsed);
         }
 
         internal IEnumerator VerifyGuerrillaOrder(string directory)
@@ -64,7 +70,8 @@ namespace YesterdayConvoy
             {
                 yield return new WaitForSecondsRealtime(1);Time.timeScale=0;
                 check("failureDoesNotPlay",!UseCampaignOrder(false)&&view.PlayCount==0);
-                yield return ChargeGuerrillaForEvidence(false);
+                var charge=ChargeGuerrillaForEvidence(false);
+                while(charge.MoveNext())yield return charge.Current;
                 slots=view.SlotMembers.ToArray();
                 check("realOrderSuccessPlaysOnce",view.PlayCount==1&&Battle.OrdersUsed==1&&Battle.OrderStrikes>0);
                 check("allSevenFormationMembersAndTwoEmptyExtensions",slots.Take(7).All(id=>id!=null)&&slots.Skip(7).All(id=>id==null));
@@ -90,7 +97,8 @@ namespace YesterdayConvoy
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"effect-ended.png"));yield return null;
                 ReplaySandbox();while(ArtLoading)yield return null;yield return null;
                 check("replayClearsEffect",!view.Playing&&double.IsNegativeInfinity(view.PendingUntil));
-                yield return ChargeGuerrillaForEvidence(true);
+                charge=ChargeGuerrillaForEvidence(true);
+                while(charge.MoveNext())yield return charge.Current;
                 check("removedFormationMemberStaysEmpty",view.SlotMembers[4]==null&&view.SlotMembers[3]=="CARD_M20"&&view.SlotMembers[7]==null&&view.SlotMembers[8]==null);
                 Tick(.18f);yield return null;yield return null;
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"missing-member-peak.png"));yield return null;
@@ -102,7 +110,8 @@ namespace YesterdayConvoy
                 if(Environment.GetCommandLineArgs().Contains("-guerrillaOrderCaptureFrames"))
                 {
                     ReplaySandbox();while(ArtLoading)yield return null;
-                    yield return ChargeGuerrillaForEvidence(false);
+                    charge=ChargeGuerrillaForEvidence(false);
+                    while(charge.MoveNext())yield return charge.Current;
                     string frames=Path.Combine(directory,"frames");Directory.CreateDirectory(frames);
                     // Actual Player-rendered simulation frames, not interpolated concept art.
                     for(int frame=0;frame<66;frame++)
