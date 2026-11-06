@@ -210,6 +210,15 @@ namespace YesterdayConvoy.Tests
             Assert.That(battle.SnowstormPulses.Count,Is.EqualTo(1));
             CollectionAssert.AreEqual(health,Health(battle),"The terminal fade cannot apply more combat damage.");
             Assert.That(Hud(controller,"SnowstormHudActive"),Is.False);
+            // A long presentation step can happen before the view observes the result at all.
+            // The fade must start at the frozen combat result time, not that late observation.
+            yield return StartRealStorm();battle=controller.Battle;view=controller.GetComponent<SnowstormView>();
+            Assert.That((bool)finish.Invoke(battle,new object[]{battle.RunId,false}),Is.True);
+            clock=battle.Clock;health=Health(battle);controller.Tick(.7f);
+            yield return null;yield return null;
+            Assert.That(view.VisibleLayers,Is.Zero,"A delayed first terminal frame cannot restart the weather fade.");
+            Assert.That(Hud(controller,"SnowstormHudVisible"),Is.False);
+            Assert.That(battle.Clock,Is.EqualTo(clock));CollectionAssert.AreEqual(health,Health(battle));
         }
     }
 }

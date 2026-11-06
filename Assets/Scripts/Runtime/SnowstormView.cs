@@ -118,7 +118,13 @@ namespace YesterdayConvoy
             Strength=Smooth(WeatherAge/.3f)*(1-Smooth((WeatherAge-ManualBattle.SnowstormDuration)/.65f));
             if(b.Phase==BattlePhase.Won||b.Phase==BattlePhase.Lost)
             {
-                if(double.IsNegativeInfinity(terminalAt)){terminalAt=owner.PresentationClock;terminalStrength=Strength;}
+                if(double.IsNegativeInfinity(terminalAt))
+                {
+                    // Combat.Clock is the authoritative result time, even when a long frame
+                    // advances presentation before this component first observes the result.
+                    terminalAt=b.Clock;float endAge=(float)(terminalAt-started);
+                    terminalStrength=Smooth(endAge/.3f)*(1-Smooth((endAge-ManualBattle.SnowstormDuration)/.65f));
+                }
                 Strength=terminalStrength*(1-Smooth((float)(owner.PresentationClock-terminalAt)/.5f));
             }
             if(WeatherAge<0||Strength<=.001f){Hide();return;}
