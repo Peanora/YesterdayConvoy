@@ -110,7 +110,7 @@ namespace YesterdayConvoy
                     Fill(new Rect(282,333,690,28),ApprovedUi.Paper);GUI.Label(new Rect(294,333,666,28),shopMessage,LoopText(12,TextAnchor.MiddleCenter));
                 }
                 if(campaignModal&&suppressed)e.type=originalEvent;
-                DrawCampaignControls();
+                DrawCampaignControls(point);
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)
                 {if(suppressed)e.type=originalEvent;DrawLoopSettlement();}

@@ -25,6 +25,17 @@ namespace YesterdayConvoy
             var primary=InfectionPrimaryRect(form);return primary.width<=0?Rect.zero:new Rect(primary.xMax+6,primary.y,primary.width,primary.height);
         }
         bool InfectionChoiceEditable=>CampaignActive&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready;
+        int lastInfectionChoiceTier;
+        void RefreshInfectionChoicePrompt()
+        {
+            if(!InfectionChoiceEditable)return;
+            int tier=Battle.InfectionTier,previous=lastInfectionChoiceTier;
+            // Remember the current tier, not the highest tier ever reached. Losing members
+            // rearms the next upward crossing, while buying duplicates or changing forms does not.
+            lastInfectionChoiceTier=tier;
+            if(tier<2||tier<=previous)return;
+            inspectedSynergy="感染生物";campaignConstructOpen=false;CancelShopDrag();
+        }
         InfectionForm VisibleInfectionMain=>InfectionChoiceEditable?infectionForm:Battle.InfectionShape;
         InfectionForm VisibleInfectionSecond=>InfectionChoiceEditable?infectionSecond:Battle.InfectionSecondShape;
 

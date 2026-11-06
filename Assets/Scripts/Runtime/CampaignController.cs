@@ -56,6 +56,7 @@ namespace YesterdayConvoy
                 marineForm=trial.marinePrimary;marineSecond=trial.marineSecondary;
                 if(!string.IsNullOrEmpty(trial.contractCardId))contractCard=trial.contractCardId;
             }
+            lastInfectionChoiceTier=0;
             if(sandbox){Loop.SandboxPreparation();shop.Refresh(true);}
             ConfigureLoopStage();if(sandbox)SetShopVisible(true);
         }
@@ -107,11 +108,13 @@ namespace YesterdayConvoy
             return ShopPreparationPieceRect(index);
         }
         void DrawCampaignModels(){if(Event.current.type==EventType.Repaint&&shopModelCamera!=null)shopModelCamera.Render();if(shopModelTarget!=null)GUI.DrawTexture(new Rect(0,0,1280,720),shopModelTarget,ScaleMode.StretchToFill,true);}
-        void DrawCampaignControls()
+        void DrawCampaignControls(Vector2 point)
         {
             if(!CampaignActive)return;
             if(!Loop.CanShop&&!Loop.CanDeploy){campaignConstructOpen=false;inspectedSynergy=null;return;}
-            var e=Event.current;Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
+            // DrawLoopInterface supplies the point converted before GUI.matrix was applied.
+            // Converting Event.mousePosition again here closes the left column at large sizes.
+            var e=Event.current;
             if(CampaignUiModalOpen&&e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape)
             {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
             if(CampaignUiModalOpen&&e.type==EventType.MouseDown&&e.button==0)

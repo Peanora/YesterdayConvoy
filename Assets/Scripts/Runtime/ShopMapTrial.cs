@@ -122,6 +122,7 @@ namespace YesterdayConvoy
             Camera.main.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);
             FrameShopMap();
             SyncShopBenchModels();
+            RefreshInfectionChoicePrompt();
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {

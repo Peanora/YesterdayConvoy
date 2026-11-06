@@ -18,6 +18,31 @@ namespace YesterdayConvoy.Tests
         [SetUp]public void Setup()=>scale=Time.timeScale;
         [TearDown]public void Cleanup()
         {if(controller!=null)controller.LeaveShopTrial();Time.timeScale=scale;if(trial!=null)Object.Destroy(trial);if(encounter!=null)Object.Destroy(encounter);}
+        string InspectedSynergy=>(string)typeof(ManualBattleController).GetField("inspectedSynergy",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
+        void CompleteChoiceFixture()
+        {
+            // Explicit modal-completion fixture only. Real pointer selection/closing is checked in Player.
+            typeof(ManualBattleController).GetField("inspectedSynergy",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(controller,null);
+        }
+        IEnumerator LoadInfection()
+        {
+            yield return SceneManager.LoadSceneAsync("InfectionTrial");
+            for(int i=0;i<1200;i++){controller=Object.FindAnyObjectByType<ManualBattleController>();if(controller!=null&&controller.CampaignActive&&!controller.ArtLoading)break;yield return null;}
+            Assert.That(controller,Is.Not.Null);Assert.That(controller.ArtLoading,Is.False);Time.timeScale=0;
+        }
+        void ClickPiece(string id)
+        {
+            int index=controller.Shop.Bench.ToList().FindIndex(p=>p.Id==id);
+            Assert.That(index,Is.GreaterThanOrEqualTo(0),id);
+            Vector2 point=controller.ShopPieceRect(index).center;
+            controller.ProcessShopPointer(EventType.MouseDown,point);
+            controller.ProcessShopPointer(EventType.MouseUp,point);
+        }
+        void AssertPrompt(int tier,bool open)
+        {
+            Assert.That(controller.Battle.InfectionTier,Is.EqualTo(tier));
+            Assert.That(InspectedSynergy,Is.EqualTo(open?"感染生物":null),"Prompt should follow the current tier crossing, not its historical maximum.");
+        }
         static Renderer[] InfectionRenderers()=>Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
             .Where(r=>r.enabled&&(r.name.StartsWith("Infection burst / ")||r.name=="Original VFX / common/common_firemagic_hit_01")).ToArray();
         static int Pixels(Renderer[] renderers)
@@ -36,9 +61,7 @@ namespace YesterdayConvoy.Tests
         }
         [UnityTest]public IEnumerator RealBurstShowsActualHitsFreezesWithPauseAndCleansItsTerminalTail()
         {
-            yield return SceneManager.LoadSceneAsync("InfectionTrial");
-            for(int i=0;i<1200;i++){controller=Object.FindAnyObjectByType<ManualBattleController>();if(controller!=null&&controller.CampaignActive&&!controller.ArtLoading)break;yield return null;}
-            Assert.That(controller,Is.Not.Null);Assert.That(controller.ArtLoading,Is.False);Time.timeScale=0;
+            yield return LoadInfection();
             var original=Object.FindAnyObjectByType<CampaignBootstrap>().trialDefinition;
             var originalHealth=original.encounter.defenders.Select(d=>d.health).ToArray();
             trial=Object.Instantiate(original);encounter=Object.Instantiate(original.encounter);trial.encounter=encounter;
@@ -48,6 +71,7 @@ namespace YesterdayConvoy.Tests
             {var d=encounter.defenders[i];d.health=100000;d.attack=1;d.range=.05f;d.noOrdinaryAttack=true;d.skill=null;if(i<2)d.position=entry+new Vector3(i==0?-.5f:.5f,0,.3f);}
             yield return controller.PrepareCampaign(true,65,trial);
             Assert.That(controller.SetCampaignForms(InfectionForm.Burst,InfectionForm.Shell),Is.True);
+            CompleteChoiceFixture();
             Assert.That(controller.StartLoopNextBattle(),Is.True);while(controller.ArtLoading||controller.ShopPanelTransitioning)yield return null;
             var b=controller.Battle;b.Begin();var receipt=b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M02");Assert.That(receipt.Success,Is.True);
             Assert.That(b.TryDamageUnit(receipt.EntityId,1000000,CombatDamageType.Arts),Is.True);controller.Tick(.1f);yield return null;yield return null;
@@ -72,6 +96,62 @@ namespace YesterdayConvoy.Tests
             typeof(ManualBattleController).GetMethod("ReplaySandbox",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(controller,null);yield return null;yield return null;
             Assert.That(controller.Battle.InfectionBursts,Is.Empty);Assert.That(view.VisibleMarkers,Is.Zero);
             CollectionAssert.AreEqual(originalHealth,original.encounter.defenders.Select(d=>d.health));
+        }
+
+        [UnityTest]public IEnumerator InfectionChoicePromptsOnEveryUpwardTierCrossingIncludingRegainedTiers()
+        {
+            yield return LoadInfection();
+            var ids=Object.FindAnyObjectByType<CampaignBootstrap>().trialDefinition.initialMembers.Select(m=>m.cardId).ToArray();
+            Assert.That(ids.Length,Is.EqualTo(6));AssertPrompt(6,true);
+            Assert.That(controller.SetCampaignForms(InfectionForm.Swarm,InfectionForm.Shell),Is.True);
+            Assert.That(controller.Battle.InfectionShape,Is.EqualTo(InfectionForm.Swarm));AssertPrompt(6,true);
+            CompleteChoiceFixture();
+            Assert.That(controller.SetCampaignForms(InfectionForm.Burst,InfectionForm.Shell),Is.True);AssertPrompt(6,false);
+
+            ClickPiece(ids[0]);AssertPrompt(4,false);
+            ClickPiece(ids[1]);AssertPrompt(4,false);
+            ClickPiece(ids[0]);AssertPrompt(4,false);
+            ClickPiece(ids[1]);AssertPrompt(6,true);
+            CompleteChoiceFixture();
+
+            // Remove every member via the same pointer handler as bench/lineup clicks.
+            for(int i=0;i<ids.Length;i++)
+            {
+                ClickPiece(ids[i]);int count=ids.Length-i-1;
+                AssertPrompt(count>=4?4:count>=2?2:0,false);
+            }
+            for(int i=0;i<ids.Length;i++)
+            {
+                ClickPiece(ids[i]);int count=i+1;bool crossed=count==2||count==4||count==6;
+                AssertPrompt(count>=6?6:count>=4?4:count>=2?2:0,crossed);
+                if(crossed)CompleteChoiceFixture();
+            }
+            Assert.That(controller.SetCampaignForms(InfectionForm.Swarm,InfectionForm.Burst),Is.True);AssertPrompt(6,false);
+            controller.Shop.Refresh(true);AssertPrompt(6,false);
+            yield return null;AssertPrompt(6,false);
+        }
+
+        [UnityTest]public IEnumerator InfectionChoiceStaysLockedInBattleAndResetsOnlyForANewChallenge()
+        {
+            yield return LoadInfection();
+            var original=Object.FindAnyObjectByType<CampaignBootstrap>().trialDefinition;
+            AssertPrompt(6,true);CompleteChoiceFixture();
+            Assert.That(controller.SetCampaignForms(InfectionForm.Swarm,InfectionForm.Shell),Is.True);AssertPrompt(6,false);
+            Assert.That(controller.StartLoopNextBattle(),Is.True);
+            while(controller.ArtLoading||controller.ShopPanelTransitioning)yield return null;
+            controller.Battle.Begin();var battle=controller.Battle;
+            Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running));
+            Assert.That(controller.SetCampaignForms(InfectionForm.Burst,InfectionForm.Shell),Is.False);
+            Assert.That(controller.SetSandboxRoster(1),Is.False);
+            ClickPiece(original.initialMembers[0].cardId);
+            Assert.That(controller.Battle,Is.SameAs(battle));AssertPrompt(6,false);
+            Assert.That(battle.InfectionShape,Is.EqualTo(InfectionForm.Swarm));
+
+            // The sandbox's normal return-to-preparation path must not re-prompt an unchanged tier.
+            typeof(ManualBattleController).GetMethod("ReplaySandbox",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(controller,null);
+            Assert.That(controller.Battle.Phase,Is.EqualTo(BattlePhase.Ready));AssertPrompt(6,false);
+            controller.StartCampaign(true,918,original);AssertPrompt(6,true);
+            yield return null;
         }
     }
 }
