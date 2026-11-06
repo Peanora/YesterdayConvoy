@@ -22,12 +22,16 @@ namespace YesterdayConvoy
             var viewport=TacticalViewport.Current;Vector2 screen=viewport.ToScreen(rect.center);
             int id=++infectionClickSequence;
             File.WriteAllText(Path.Combine(directory,"gui-step.json"),JsonUtility.ToJson(new InfectionClick{id=id,name=name,x=screen.x,y=Screen.height-screen.y,width=Screen.width,height=Screen.height}));
-            double deadline=Time.realtimeSinceStartupAsDouble+30;
+            double deadline=Time.realtimeSinceStartupAsDouble+300;
             while(true)
             {
                 string ack=Path.Combine(directory,"gui-ack.txt");
                 if(File.Exists(ack)&&File.ReadAllText(ack).Trim()==id.ToString()&&accepted())break;
-                if(Time.realtimeSinceStartupAsDouble>deadline)throw new InvalidOperationException("GUI click timeout: "+name);
+                if(Time.realtimeSinceStartupAsDouble>deadline)
+                {
+                    File.WriteAllText(Path.Combine(directory,"result.json"),JsonUtility.ToJson(new InfectionEvidenceResult{passed=false,checks=new[]{"GUI click timeout: "+name}},true));
+                    Application.Quit(1);throw new InvalidOperationException("GUI click timeout: "+name);
+                }
                 yield return null;
             }
             yield return null;yield return null;
