@@ -12,6 +12,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public const float SnowstormDuration=8;
+        public const int SnowstormChargeRequired=3;
         readonly List<SnowstormPulse> snowstormPulses=new List<SnowstormPulse>();
         readonly Dictionary<string,double> stormFreezeProtection=new Dictionary<string,double>();
         double snowstormStartedAt=double.NegativeInfinity;
@@ -21,10 +22,15 @@ namespace YesterdayConvoy
         public double SnowstormEndsAt=>snowstormStartedAt+SnowstormDuration;
         public double SnowstormRemaining=>SnowstormActive?Math.Max(0,SnowstormEndsAt-Clock):0;
         public bool SnowstormActive=>SnowTier==5&&Clock<SnowstormEndsAt;
-        void ResetSnowstorms(){snowstormPulses.Clear();stormFreezeProtection.Clear();snowstormStartedAt=double.NegativeInfinity;snowstormNextPulse=0;}
-        void StartSnowstorm(DeployedUnitState unit)
+        public int SnowstormCharge {get;private set;}
+        void ResetSnowstorms(){snowstormPulses.Clear();stormFreezeProtection.Clear();snowstormStartedAt=double.NegativeInfinity;snowstormNextPulse=0;SnowstormCharge=0;}
+        void OnSnowstormShatter()
         {
-            if(!synergyEnabled||SnowTier!=5||unit.CardId!="CARD_M14"||SnowstormActive)return;
+            // Count completed synergy shatters, not individual hits, victims or a particular character's skill.
+            // Shatters inside the weather cannot charge another storm from its own control effects.
+            if(!synergyEnabled||SnowTier!=5||SnowstormActive)return;
+            if(++SnowstormCharge<SnowstormChargeRequired)return;
+            SnowstormCharge=0;
             snowstormStartedAt=Clock;snowstormNextPulse=0;
         }
         void StepSnowstorms()

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -20,12 +19,10 @@ namespace YesterdayConvoy
             if(snow==null||fog==null||wind==null||bed==null||gust==null)throw new InvalidOperationException("Missing snowstorm weather resources.");
             Snow=snow;Fog=fog;Wind=wind;Bed=bed;Gust=gust;
         }
-        internal static void WarmFor(IEnumerable<ArtSequence> plan)
+        internal static void WarmFor(int snowTier)
         {
-            var roles=new HashSet<string>(StringComparer.Ordinal);
-            foreach(var clip in plan)foreach(string id in new[]{"M06","M11","M12","M13","M14"})
-                if(clip.Root=="MonsterCombatArt/"+id||clip.Root.StartsWith("MonsterCombatArt/"+id+"/",StringComparison.Ordinal))roles.Add(id);
-            if(roles.Count==5)Warm();
+            // The battle snapshot owns the tier. Future emblems must not depend on five specific art roots.
+            if(snowTier>=5)Warm();
         }
     }
 }

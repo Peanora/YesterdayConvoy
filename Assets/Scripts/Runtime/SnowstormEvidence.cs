@@ -11,15 +11,37 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         [Serializable] sealed class SnowstormEvidenceResult {public bool passed;public int changedPixels;public string[] checks;}
-        IEnumerator ChargeStormForEvidence(long request)
+        IEnumerator ChargeStormForEvidence(long request,string directory=null)
         {
             if(!SetSandboxRoster(0)||!StartLoopNextBattle())throw new InvalidOperationException("Cannot enter the five-member snow lineup.");
             while(ArtLoading||ShopPanelTransitioning)yield return null;
-            Battle.Begin();var receipt=Battle.TryDeployRole(Battle.RunId,request,Battle.Entry,"CARD_M14");
-            if(!receipt.Success)throw new InvalidOperationException("FrostNova deployment failed.");
-            var frost=Battle.FindUnit(receipt.EntityId);
-            for(int i=0;i<250&&!Battle.IsSkillReady(frost.EntityId);i++){Tick(.1f);if(i%10==0)yield return null;}
-            if(Battle.TryActivateSkill(Battle.RunId,request+1,frost.EntityId)!=SkillFailure.None)throw new InvalidOperationException("FrostNova skill did not activate.");
+            Battle.Begin();
+            // Explicit development fixture: keep one durable target by the entry, disable guard attacks,
+            // and supply cold. Real ordinary projectiles from two different cards must cause all three shatters.
+            var target=Battle.Defenders.First(d=>d.Alive);
+            foreach(var guard in Battle.Defenders)
+            {guard.Health=guard.MaxHealth=1000000;guard.NextAttackTime=Battle.Clock+1000;guard.SkillSP=-1000;guard.Position=Battle.Entry+Vector3.forward*100;}
+            target.Position=Battle.Entry+Vector3.forward*.8f;
+            foreach(string card in new[]{"CARD_M11","CARD_M12"})
+            {
+                var receipt=Battle.TryDeployRole(Battle.RunId,request++,Battle.Entry,card);
+                if(!receipt.Success)throw new InvalidOperationException("Snowstorm fixture deployment failed: "+card);
+            }
+            for(int n=1;n<=3;n++)
+            {
+                for(int i=0;i<600&&Battle.Shatters<n;i++)
+                {
+                    if(target.FrozenUntil<=Battle.Clock){Battle.TryApplyCold(target.EntityId,10);Battle.TryApplyCold(target.EntityId,10);}
+                    Tick(.05f);if(i%10==0)yield return null;
+                }
+                if(Battle.Shatters!=n||Battle.SnowstormCharge!=(n<3?n:0)||Battle.SnowstormActive!=(n==3))
+                    throw new InvalidOperationException("Three-shatter trigger/progress did not match at "+n);
+                if(n==2&&directory!=null)
+                {
+                    yield return null;yield return new WaitForEndOfFrame();
+                    ScreenCapture.CaptureScreenshot(Path.Combine(directory,"charge-two-of-three.png"));yield return null;yield return null;
+                }
+            }
             Tick(.45f);yield return null;yield return null;
         }
         internal IEnumerator VerifySnowstormWeather(string directory)
@@ -30,10 +52,11 @@ namespace YesterdayConvoy
             try
             {
                 yield return new WaitForSecondsRealtime(2.5f);Time.timeScale=0;
-                yield return ChargeStormForEvidence(60000);
+                yield return ChargeStormForEvidence(60000,directory);
                 var weather=GetComponent<SnowstormView>();
                 var renderers=GetComponentsInChildren<MeshRenderer>().Where(r=>r.enabled&&r.name.StartsWith("Snowstorm /",StringComparison.Ordinal)).ToArray();
-                check("fiveMemberRealManualSkill",Battle.SnowTier==5&&Battle.SnowstormActive&&Battle.SnowstormPulses.Count==1);
+                check("threeShattersWithoutDeployedFrostNova",Battle.SnowTier==5&&Battle.Shatters==3&&Battle.SnowstormActive&&Battle.SnowstormPulses.Count==1&&Battle.Units.All(u=>u.CardId!="CARD_M14"));
+                check("chargeClearedAtWeatherStart",Battle.SnowstormCharge==0);
                 check("fourBatchedWeatherLayers",weather.VisibleLayers==4&&renderers.Length==4&&renderers.All(r=>r.sharedMaterial.shader.isSupported));
                 check("actualWeatherNotice",SnowstormHudActive&&SnowstormColdPulses==1);
                 Battle.SetPaused(true);double clock=Battle.Clock,remaining=Battle.SnowstormRemaining;float health=Battle.Units[0].Health;
@@ -58,6 +81,7 @@ namespace YesterdayConvoy
                 check("resumeMovesSnow",!snow.vertices.SequenceEqual(vertices));
                 ToggleSpeed();clock=Battle.Clock;Tick(.1f);yield return null;
                 check("doubleSpeedUsesSameClock",Math.Abs(Battle.Clock-clock-.2)<.001);ToggleSpeed();
+                check("weatherDoesNotAccumulateCharge",Battle.SnowstormCharge==0);
                 Tick(2);yield return null;yield return null;
                 yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,"weather-running.png"));yield return null;yield return null;
                 loopTestSettlementOpen=true;check("explicitEarlySettlementFixture",TryTestSettlement(false));

@@ -85,7 +85,6 @@ namespace YesterdayConvoy
             {
                 yield return null; // Present loading feedback before uploading the first atlas.
                 if(generation!=artGeneration)yield break;
-                SnowstormArt.WarmFor(plan);
                 for(int i=0;i<plan.Count;i++)
                 {
                     var clip=plan[i];ArtLoadingMessage=title+"  "+(i+1)+" / "+plan.Count;
@@ -93,6 +92,7 @@ namespace YesterdayConvoy
                     ArtLoadingProgress=(i+1f)/plan.Count;
                 }
                 artCompleting=true;try{complete?.Invoke();}finally{artCompleting=false;}
+                SnowstormArt.WarmFor(Battle?.SnowTier??0);
                 RefreshArtPins();yield return null;if(generation!=artGeneration)yield break;ArtMemoryCache.Trim();
                 Debug.Log("ART_PREPARE: "+title+"; ms="+timer.ElapsedMilliseconds+"; prepared_pages="+(ArtMemoryCache.PreparedLoads-prepared)+"; png_fallback="+(ArtMemoryCache.RuntimePngLoads-raw)+"; resident="+ArtMemoryCache.ResidentBytes+"; budget="+ArtMemoryCache.BudgetBytes);
             }

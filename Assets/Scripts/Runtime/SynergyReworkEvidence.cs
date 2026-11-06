@@ -31,11 +31,8 @@ namespace YesterdayConvoy
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"03-six-star-defense-cleared.png"));yield return null;yield return null;}
             ReplaySandbox();PrepareSandboxRoster(8);while(ArtLoading)yield return null;
             bool investment=InvestCampaignGolem(10)&&Loop.GolemInvestment==30&&!InvestCampaignGolem(1)&&Battle.GolemStage==2;
-            PrepareSandboxRoster(0);while(ArtLoading)yield return null;StartLoopNextBattle();Battle.Begin();
-            var receipt=Battle.TryDeployRole(Battle.RunId,8001,Battle.Entry,"CARD_M14");var frost=Battle.FindUnit(receipt.EntityId);
-            for(int i=0;i<250&&frost!=null&&!Battle.IsSkillReady(frost.EntityId);i++){Tick(.1f);if(i%10==0)yield return null;}
-            bool snow=frost!=null&&Battle.SnowTier==5&&Battle.TryActivateSkill(Battle.RunId,8002,frost.EntityId)==SkillFailure.None;
-            Tick(.7f);yield return null;yield return null;
+            ReplaySandbox();yield return ChargeStormForEvidence(8001);
+            bool snow=Battle.SnowTier==5&&Battle.Shatters==3&&Battle.SnowstormActive&&Battle.Units.All(u=>u.CardId!="CARD_M14");
             snow&=GetComponent<FrostSealView>().VisibleEffects>0;
             if(dir!=null){ScreenCapture.CaptureScreenshot(Path.Combine(dir,"04-five-snow-storm.png"));yield return null;yield return null;}
             Tick(8);snow&=Battle.SnowstormPulses.Count==4;ReplaySandbox();snow&=Battle.SnowstormPulses.Count==0;

@@ -18,12 +18,39 @@ namespace YesterdayConvoy.Tests
             var b=new ManualBattle(U(ids[0]),new[]{Vector3.zero,Vector3.forward*50},Vector3.right*.5f,combat??C());
             b.ConfigureCardLoadout(ids.Skip(1).Select(id=>new BasicRosterProfile(U(id),C(),true)));return b;
         }
-        static ManualBattle SnowBattle(int members=5)
+        static ManualBattle SnowBattle(int members=5,int targets=1,bool deployAttackers=true)
         {
-            var c=new EngagementSettings(unitAttack:1,unitRange:.1f,unitInterval:2,defenderHealth:10000,defenderAttack:1,defenderRange:.1f,blockCount:0,
+            var ordinary=new EngagementSettings(unitAttack:1,unitRange:3,unitInterval:.25f,defenderHealth:10000,defenderAttack:1,defenderRange:.1f,blockCount:0,
+                initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,projectileTime:.05f);
+            var frost=new EngagementSettings(unitAttack:1,unitRange:.1f,unitInterval:2,defenderHealth:10000,defenderAttack:1,defenderRange:.1f,blockCount:0,
                 initialSP:1,requiredSP:1,spPerSecond:1,skillAmmo:0,skillAttack:1,skillInterval:3,skillRange:.1f,hasSkill:true,canAttack:false,frostSeal:true,effects:new MonsterEffectSettings(frostNova:true));
-            var b=B(new[]{"CARD_M14"},c);b.ConfigureSynergies(Snow.Skip(Snow.Length-members).Select(id=>P(id)));b.Begin();
-            Assert.That(b.TryDeploy(b.RunId,1,b.Entry).Success,Is.True);return b;
+            var guards=Enumerable.Range(0,targets).Select(i=>new DefenderSettings("snow-guard-"+i,"guard","D01",Vector3.right*(.5f+.2f*i),10000,1,10,.1f,10,canAttack:false)).ToArray();
+            var b=new ManualBattle(U("CARD_M11"),new[]{Vector3.zero,Vector3.forward*50},Vector3.right*.5f,ordinary,null,guards);
+            var frostUnit=new ManualBattleSettings("CARD_M14","CARD_M14",100,5,8,2,.1f,200,.01f,1,1,1,1);
+            b.ConfigureCardLoadout(new[]{new BasicRosterProfile(U("CARD_M12"),ordinary,true),new BasicRosterProfile(frostUnit,frost,true)});
+            b.ConfigureSynergies(Snow.Take(members).Select(id=>P(id)));b.Begin();
+            if(deployAttackers)
+            {
+                Assert.That(b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M11").Success,Is.True);
+                Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M12").Success,Is.True);
+            }
+            return b;
+        }
+        // Freeze is an explicit control fixture; only real ordinary projectiles can complete a shatter.
+        static void NextSnowShatter(ManualBattle b)
+        {
+            int before=b.Shatters;
+            for(int i=0;i<400&&b.Shatters==before;i++)
+            {
+                b.TryApplyCold(b.Defender.EntityId,3.5f);b.TryApplyCold(b.Defender.EntityId,3.5f);b.Advance(.025f);
+            }
+            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Running));
+            Assert.That(b.Shatters,Is.EqualTo(before+1),"Two distinct normal cards must actually complete exactly one new shatter.");
+        }
+        static void StopSnowAttackers(ManualBattle b)
+        {
+            foreach(var unit in b.Units.Where(u=>u.CardId!="CARD_M14"&&!u.SynergySupport&&u.Active).ToArray())
+                Assert.That(b.TryDamageUnit(unit.EntityId,10000,CombatDamageType.Arts),Is.True);
         }
         [TestCase(100,100,2,true,2)]
         [TestCase(12,44,4,true,2)]
@@ -66,47 +93,83 @@ namespace YesterdayConvoy.Tests
             b.TryApplyCold(b.Defender.EntityId,3.5f);b.TryApplyCold(b.Defender.EntityId,3.5f);b.Advance(.5f);
             Assert.That(b.Shatters,Is.EqualTo(1));Assert.That(b.ShatterDamage,Is.EqualTo(damage));Assert.That(b.Defender.FrozenUntil>b.Clock,Is.EqualTo(frozen));
         }
-        [Test]public void FiveSnowManualSkillPulsesGloballyWithoutDirectDamageAndPauseOrRestartLeaks()
+        [Test]public void FiveSnowCountsCompletedShattersOncePerEventAndThirdStartsWeatherWithoutDeployingFrostNova()
         {
-            var b=SnowBattle();var u=b.Units[0];Assert.That(b.SnowTier,Is.EqualTo(5));
-            Assert.That(ManualBattle.SnowstormDuration,Is.EqualTo(8));Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));
+            var b=SnowBattle(targets:3);Assert.That(b.SnowTier,Is.EqualTo(5));
+            Assert.That(ManualBattle.SnowstormChargeRequired,Is.EqualTo(3));Assert.That(b.SnowstormCharge,Is.Zero);
+            Assert.That(b.Units.Any(u=>u.CardId=="CARD_M14"),Is.False);
+            NextSnowShatter(b);Assert.That(b.ShatterEvents[0].Hits,Is.EqualTo(3));Assert.That(b.SnowstormCharge,Is.EqualTo(1));Assert.That(b.SnowstormActive,Is.False);
+            b.SetPaused(true);double clock=b.Clock;b.Advance(30);
+            Assert.That(b.Clock,Is.EqualTo(clock));Assert.That(b.SnowstormCharge,Is.EqualTo(1));Assert.That(b.Shatters,Is.EqualTo(1));b.SetPaused(false);
+            NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.EqualTo(2));Assert.That(b.SnowstormActive,Is.False);
+            NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormActive,Is.True);
+            Assert.That(b.SnowstormStartedAt,Is.EqualTo(b.Clock));Assert.That(b.SnowstormRemaining,Is.EqualTo(8));Assert.That(b.SkillCasts,Is.Zero);
+        }
+        [Test]public void RestartDiscardsPartialColdChargeBeforeNewCombat()
+        {
+            var b=SnowBattle();NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.EqualTo(1));
+            b.Restart();Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.Shatters,Is.Zero);
+            Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));
+            b.Begin();Assert.That(b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M11").Success,Is.True);
+            Assert.That(b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M12").Success,Is.True);
+            NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.EqualTo(1));Assert.That(b.SnowstormActive,Is.False);
+        }
+        [Test]public void ShatterWeatherPulsesGloballyWithoutDirectDamageAndPauseOrRestartLeaks()
+        {
+            var b=SnowBattle();Assert.That(ManualBattle.SnowstormDuration,Is.EqualTo(8));
+            Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));
             Assert.That(b.SnowstormEndsAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormRemaining,Is.Zero);
-            Assert.That(b.TryActivateSkill(b.RunId,2,u.EntityId),Is.EqualTo(SkillFailure.None));
-            Assert.That(b.SnowstormActive,Is.True);Assert.That(b.SnowstormStartedAt,Is.Zero);Assert.That(b.SnowstormEndsAt,Is.EqualTo(8));Assert.That(b.SnowstormRemaining,Is.EqualTo(8));
+            for(int i=0;i<3;i++)NextSnowShatter(b);
+            double started=b.SnowstormStartedAt;Assert.That(b.SnowstormEndsAt,Is.EqualTo(started+8));
+            StopSnowAttackers(b);float health=b.Defender.Health;
             b.Advance(.1f);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(1));Assert.That(b.SnowstormRemaining,Is.EqualTo(7.9).Within(.0001));
             b.SetPaused(true);double time=b.Clock,remaining=b.SnowstormRemaining;b.Advance(30);
             Assert.That(b.Clock,Is.EqualTo(time));Assert.That(b.SnowstormRemaining,Is.EqualTo(remaining));Assert.That(b.SnowstormPulses.Count,Is.EqualTo(1));b.SetPaused(false);
             b.Advance(7.85f);Assert.That(b.SnowstormActive,Is.True);Assert.That(b.SnowstormRemaining,Is.EqualTo(.05).Within(.0001));
-            Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{0,2,4,6}));
-            b.Advance(.1f);Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormRemaining,Is.Zero);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(4));Assert.That(b.Defender.Health,Is.EqualTo(10000));
+            Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{started,started+2,started+4,started+6}));
+            b.Advance(.1f);Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormRemaining,Is.Zero);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(4));Assert.That(b.Defender.Health,Is.EqualTo(health));
             b.Restart();Assert.That(b.SnowstormPulses,Is.Empty);Assert.That(b.SnowstormActive,Is.False);
-            Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormEndsAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormRemaining,Is.Zero);
+            Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormEndsAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormRemaining,Is.Zero);Assert.That(b.SnowstormCharge,Is.Zero);
         }
-        [Test]public void RepeatedFrostSealDoesNotRefreshWeatherButCanStartANewStormAfterExpiry()
+        [Test]public void ShattersDuringWeatherCannotChargeOrRefreshItAndNextWeatherNeedsThreeFreshEvents()
         {
-            var b=SnowBattle();var u=b.Units[0];Assert.That(b.TryActivateSkill(b.RunId,2,u.EntityId),Is.EqualTo(SkillFailure.None));
-            b.Advance(4.1f);Assert.That(b.TryActivateSkill(b.RunId,3,u.EntityId),Is.EqualTo(SkillFailure.None));Assert.That(b.SkillCasts,Is.EqualTo(2));
-            Assert.That(b.SnowstormStartedAt,Is.Zero);Assert.That(b.SnowstormEndsAt,Is.EqualTo(8));Assert.That(b.SnowstormRemaining,Is.EqualTo(3.9).Within(.0001));
-            b.Advance(4);Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{0,2,4,6}));
-            double started=b.Clock;Assert.That(b.TryActivateSkill(b.RunId,4,u.EntityId),Is.EqualTo(SkillFailure.None));
-            Assert.That(b.SnowstormStartedAt,Is.EqualTo(started));Assert.That(b.SnowstormEndsAt,Is.EqualTo(started+8));Assert.That(b.SnowstormRemaining,Is.EqualTo(8));
-            b.Advance(.1f);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(5));Assert.That(b.SnowstormPulses[4].At,Is.EqualTo(started));
+            var b=SnowBattle();for(int i=0;i<3;i++)NextSnowShatter(b);
+            double first=b.SnowstormStartedAt;
+            NextSnowShatter(b);Assert.That(b.SnowstormActive,Is.True);Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormStartedAt,Is.EqualTo(first));
+            NextSnowShatter(b);Assert.That(b.SnowstormActive,Is.True);Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormEndsAt,Is.EqualTo(first+8));
+            StopSnowAttackers(b);b.Advance((float)(b.SnowstormEndsAt-b.Clock)+.05f);
+            Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(4));
+            Assert.That(b.TryDeployRole(b.RunId,20,b.Entry,"CARD_M11").Success,Is.True);
+            Assert.That(b.TryDeployRole(b.RunId,21,b.Entry,"CARD_M12").Success,Is.True);
+            for(int i=1;i<=2;i++){NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.EqualTo(i));Assert.That(b.SnowstormActive,Is.False);}
+            NextSnowShatter(b);double second=b.Clock;
+            Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormStartedAt,Is.EqualTo(second));Assert.That(second,Is.GreaterThan(first+8));Assert.That(b.SnowstormRemaining,Is.EqualTo(8));
+            b.Advance(.1f);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(5));Assert.That(b.SnowstormPulses[4].At,Is.EqualTo(second));
         }
-        [Test]public void WeatherSurvivesInterruptedFrostSealRevivalAndFinalCasterDeath()
+        [Test]public void WeatherSurvivesTriggeringUnitsDeathAndInterruptedFrostSealRevivalOrFinalDeath()
         {
-            var b=SnowBattle();var u=b.Units[0];Assert.That(b.TryActivateSkill(b.RunId,2,u.EntityId),Is.EqualTo(SkillFailure.None));
+            var b=SnowBattle();for(int i=0;i<3;i++)NextSnowShatter(b);double started=b.SnowstormStartedAt;
+            StopSnowAttackers(b);var receipt=b.TryDeployRole(b.RunId,30,b.Entry,"CARD_M14");Assert.That(receipt.Success,Is.True);var u=b.FindUnit(receipt.EntityId);
+            Assert.That(b.TryActivateSkill(b.RunId,31,u.EntityId),Is.EqualTo(SkillFailure.None));
             Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(u.IsReviving,Is.True);
             b.Advance(5.1f);Assert.That(b.FrostSeals[0].Cancelled,Is.True);Assert.That(u.IsReviving,Is.False);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(3));
             Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(u.Active,Is.False);Assert.That(b.SnowstormActive,Is.True);
-            Assert.That(b.SnowstormStartedAt,Is.Zero);Assert.That(b.SnowstormEndsAt,Is.EqualTo(8));
-            b.Advance(3);Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{0,2,4,6}));Assert.That(b.SnowstormRemaining,Is.Zero);
+            Assert.That(b.SnowstormStartedAt,Is.EqualTo(started));Assert.That(b.SnowstormEndsAt,Is.EqualTo(started+8));
+            b.Advance(3);Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{started,started+2,started+4,started+6}));Assert.That(b.SnowstormRemaining,Is.Zero);
         }
-        [Test]public void TwoSnowMembersIncludingFrostNovaCannotStartWeather()
+        [Test]public void FrostSealAndAutomaticIceRingCannotStartOrChargeWeatherWithoutShatters()
         {
-            var b=SnowBattle(2);Assert.That(b.SnowTier,Is.EqualTo(2));
-            Assert.That(b.TryActivateSkill(b.RunId,2,b.Units[0].EntityId),Is.EqualTo(SkillFailure.None));b.Advance(.1f);
+            var b=SnowBattle(deployAttackers:false);Assert.That(b.TryDeployRole(b.RunId,30,b.Entry,"CARD_M14").Success,Is.True);var u=b.Units[0];
+            Assert.That(b.TryActivateSkill(b.RunId,31,u.EntityId),Is.EqualTo(SkillFailure.None));b.Advance(10);
+            Assert.That(b.FrostSeals.Single().Resolved,Is.True);Assert.That(b.IceRings.Count,Is.GreaterThan(0));Assert.That(b.Shatters,Is.Zero);Assert.That(b.SnowstormCharge,Is.Zero);
             Assert.That(b.SnowstormPulses,Is.Empty);Assert.That(b.SnowstormActive,Is.False);Assert.That(b.SnowstormRemaining,Is.Zero);
             Assert.That(b.SnowstormStartedAt,Is.EqualTo(double.NegativeInfinity));Assert.That(b.SnowstormEndsAt,Is.EqualTo(double.NegativeInfinity));
+        }
+        [Test]public void TwoSnowMembersCannotChargeWeatherEvenAfterThreeActualShatters()
+        {
+            var b=SnowBattle(2);Assert.That(b.SnowTier,Is.EqualTo(2));
+            for(int i=0;i<3;i++)NextSnowShatter(b);
+            Assert.That(b.Shatters,Is.EqualTo(3));Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormPulses,Is.Empty);Assert.That(b.SnowstormActive,Is.False);
         }
         [Test]public void UltimateCleaveHealsOnceAndThirdHitGlobalPulseIsOncePerAttack()
         {

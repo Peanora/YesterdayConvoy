@@ -40,21 +40,49 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<300&&controller.ShopPanelTransitioning;i++)yield return null;
             Assert.That(controller.ShopPanelTransitioning,Is.False);
 
+            yield return TriggerThreeShatters(controller);
             var battle=controller.Battle;
-            Assert.That(battle.SnowTier,Is.EqualTo(5));
-            battle.Begin();
-            var receipt=battle.TryDeployRole(battle.RunId,9001,battle.Entry,"CARD_M14");
-            Assert.That(receipt.Success,Is.True);
-            var frost=battle.FindUnit(receipt.EntityId);
-            Assert.That(frost,Is.Not.Null);
-            for(int i=0;i<250&&!battle.IsSkillReady(frost.EntityId);i++)controller.Tick(.1f);
-            Assert.That(battle.IsSkillReady(frost.EntityId),Is.True,"Charge SP through the actual simulation.");
-            Assert.That(battle.TryActivateSkill(battle.RunId,9002,frost.EntityId),Is.EqualTo(SkillFailure.None));
             controller.Tick(.7f);
             yield return null;yield return null;
             Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running));
             Assert.That(battle.SnowstormActive,Is.True);
             Assert.That(battle.SnowstormPulses.Count,Is.EqualTo(1));
+        }
+
+        internal static IEnumerator TriggerThreeShatters(ManualBattleController owner)
+        {
+            var battle=owner.Battle;
+            Assert.That(battle.SnowTier,Is.EqualTo(5));
+            Assert.That(battle.SnowstormCharge,Is.Zero);
+            Assert.That(battle.SnowstormActive,Is.False);
+            battle.Begin();
+            foreach(string id in new[]{"CARD_M11","CARD_M12"})
+                Assert.That(battle.TryDeployRole(battle.RunId,id=="CARD_M11"?9001:9002,battle.Entry,id).Success,Is.True,id);
+
+            // Explicit cold-state fixture: it isolates the new trigger from how a team creates cold.
+            // Ordinary attacks, distinct card sources, target cooldown and AoE all use real combat.
+            // FrostNova stays in the prebattle snapshot and is never deployed or asked to cast.
+            int observed=0;
+            for(int i=0;i<2400&&battle.Shatters<ManualBattle.SnowstormChargeRequired&&battle.Phase==BattlePhase.Running;i++)
+            {
+                foreach(var defender in battle.Defenders.Where(d=>d.Alive))
+                {battle.TryApplyCold(defender.EntityId,10);battle.TryApplyCold(defender.EntityId,10);}
+                owner.Tick(.05f);
+                if(battle.Shatters!=observed)
+                {
+                    observed=battle.Shatters;
+                    Assert.That(observed,Is.LessThanOrEqualTo(ManualBattle.SnowstormChargeRequired));
+                    Assert.That(battle.SnowstormCharge,Is.EqualTo(observed==3?0:observed));
+                    Assert.That(battle.SnowstormActive,Is.EqualTo(observed==3));
+                }
+                if(i%10==0)yield return null;
+            }
+            Assert.That(battle.Phase,Is.EqualTo(BattlePhase.Running),"Cold-state fixture must not end the encounter.");
+            Assert.That(battle.Shatters,Is.EqualTo(3),"Two real normal attackers must complete the three-shatter trigger.");
+            Assert.That(battle.SnowstormCharge,Is.Zero);
+            Assert.That(battle.SnowstormActive,Is.True);
+            Assert.That(battle.SkillCasts,Is.Zero,"Weather no longer needs any personal skill.");
+            Assert.That(battle.Units.Any(u=>u.CardId=="CARD_M14"),Is.False,"No deployed FrostNova may be needed.");
         }
 
         static bool Hud(ManualBattleController owner,string name)
@@ -172,6 +200,7 @@ namespace YesterdayConvoy.Tests
             yield return null;yield return null;
             Assert.That(controller.ArtLoading,Is.False);
             Assert.That(controller.Battle.SnowstormPulses,Is.Empty);
+            Assert.That(controller.Battle.SnowstormCharge,Is.Zero);
             Assert.That(controller.Battle.SnowstormActive,Is.False);
             Assert.That(view.VisibleLayers,Is.Zero);
             Assert.That(Hud(controller,"SnowstormHudActive"),Is.False);

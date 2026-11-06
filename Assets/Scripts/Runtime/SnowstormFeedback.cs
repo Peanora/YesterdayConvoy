@@ -14,6 +14,7 @@ namespace YesterdayConvoy
         bool SnowstormHudVisible=>CampaignActive&&Loop.CanDeploy&&Battle!=null&&Battle.Phase==BattlePhase.Running&&
             !loopMenuOpen&&!loopTestSettlementOpen&&!shopVisible&&!ShopPanelTransitioning&&!CampaignUiModalOpen;
         bool SnowstormHudActive=>SnowstormHudVisible&&Battle.SnowstormActive;
+        bool SnowstormChargeHudVisible=>SnowstormHudVisible&&Battle.SnowTier==5&&!Battle.SnowstormActive;
         int SnowstormColdPulses=>Math.Min(4,Battle.SnowstormPulses.Count(p=>p.At>=Battle.SnowstormStartedAt&&p.At<Battle.SnowstormEndsAt));
 
         void DrawSnowstormFeedback()
@@ -70,6 +71,15 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(row.x+9,row.y+22,65,16),$"寒潮{SnowstormColdPulses}/4",CampaignText(10,color:SnowstormInk));
             GUI.Label(new Rect(row.xMax-62,row.y+22,54,16),$"{Battle.SnowstormRemaining:0.0}秒",CampaignText(10,TextAnchor.MiddleRight,SnowstormInk,600));
             DrawSnowstormRemaining(new Rect(row.x+9,row.yMax-3,row.width-18,2));
+        }
+
+        void DrawSnowstormChargeRow(Rect row)
+        {
+            GUI.Label(new Rect(row.x+9,row.y+22,65,16),$"寒意{Battle.SnowstormCharge}/{ManualBattle.SnowstormChargeRequired}",CampaignText(10,color:SnowstormInk));
+            GUI.Label(new Rect(row.xMax-62,row.y+22,54,16),"碎冰蓄积",CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+            Rect line=new Rect(row.x+9,row.yMax-3,row.width-18,2);
+            Fill(line,ApprovedUi.Rule);
+            Fill(new Rect(line.x,line.y,line.width*Mathf.Clamp01((float)Battle.SnowstormCharge/ManualBattle.SnowstormChargeRequired),line.height),SnowstormBlue);
         }
 
         void DrawSnowstormRemaining(Rect line)

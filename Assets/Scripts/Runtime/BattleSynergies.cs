@@ -74,6 +74,7 @@ namespace YesterdayConvoy
             {
                 float before=d.Health;DamageDefender(d,attack,CombatDamageType.Arts,true);ShatterDamage+=before-d.Health;ev.Hits++;
             }
+            OnSnowstormShatter();
         }
     }
 }
