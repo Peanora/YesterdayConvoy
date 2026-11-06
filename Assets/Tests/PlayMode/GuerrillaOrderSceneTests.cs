@@ -191,6 +191,15 @@ namespace YesterdayConvoy.Tests
             AdvanceTo(view,.20f);var arriving=Capture(view);var arrivalVertices=view.GeometryVertices.ToArray();var arrivalOffsets=view.PaneOffsets.ToArray();
             AdvanceTo(view,.65f);var gathered=Capture(view);var gatheredVertices=view.GeometryVertices.ToArray();
             Assert.That(view.VisiblePaneCount,Is.EqualTo(9));Assert.That(view.VisiblePortraitCount,Is.EqualTo(7));Assert.That(view.VisibleFragmentCount,Is.Zero);
+            var previousModelView=GL.modelview;
+            try
+            {
+                GL.modelview=Matrix4x4.TRS(new Vector3(640,900,-20),Quaternion.Euler(20,0,15),new Vector3(2,-3,1));
+                var inheritedModelView=GL.modelview;
+                CollectionAssert.AreEqual(gathered,Capture(view),"Screen-space composition must ignore inherited IMGUI/camera transforms.");
+                Assert.That(GL.modelview,Is.EqualTo(inheritedModelView),"RenderTo must restore its caller's model-view state.");
+            }
+            finally{GL.modelview=previousModelView;}
             Assert.That(ChangedPixels(arriving,gathered),Is.GreaterThan(1000));Assert.That(arrivalVertices.SequenceEqual(gatheredVertices),Is.False,"Opaque portrait geometry must move toward the centre.");
             Assert.That(arrivalOffsets.Take(7).Any(p=>p.sqrMagnitude>100),Is.True);Assert.That(view.PaneOffsets.All(p=>p.sqrMagnitude<.01f),Is.True,"Every pane must arrive at its fixed radial slot.");
             float peakOpacity=view.Opacity;

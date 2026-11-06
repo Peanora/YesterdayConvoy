@@ -360,7 +360,13 @@ namespace YesterdayConvoy
                 EnsureTexture(ref accumulation,target.width,target.height,"Guerrilla V2 / premultiplied layers");
                 RenderTexture.active=accumulation;GL.Clear(false,true,Color.clear);
                 GL.PushMatrix();
-                try{GL.LoadPixelMatrix(0,1920,1080,0);foreach(var b in Batches())b.Draw(material);}
+                try
+                {
+                    // IMGUI and the last camera leave a non-identity model-view matrix.
+                    // Pixel projection alone does not reset it; isolate this screen-space mesh.
+                    GL.modelview=Matrix4x4.identity;GL.LoadPixelMatrix(0,1920,1080,0);
+                    foreach(var b in Batches())b.Draw(material);
+                }
                 finally{GL.PopMatrix();}
                 // The final IMGUI blend needs straight alpha. Undo layer accumulation's premultiplication once.
                 Graphics.Blit(accumulation,target,material,1);
