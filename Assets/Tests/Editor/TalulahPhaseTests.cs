@@ -186,9 +186,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
             Assert.That(phase.Any(key=>key.Contains("original-target-burn")||key.Contains("orb-")),Is.False);
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
-            var method=typeof(YesterdayConvoy.Editor.PreparedArtTools).GetMethod("TalulahPhasePages",BindingFlags.Static|BindingFlags.NonPublic);
-            var pages=(HashSet<string>)method.Invoke(null,null);
-            Assert.That(pages.Count,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
+            var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
+                .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
+                .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
+            Assert.That(pages.Length,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
             Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
         }
     }

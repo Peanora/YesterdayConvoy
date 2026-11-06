@@ -12,7 +12,7 @@ namespace YesterdayConvoy.Tests
         [Serializable] sealed class Manifest {public int version,fps;public string encoding;public Data[] clips;}
         [Serializable] sealed class Data {public string key,sourcePrefab;public int count,width,height;public float duration,ppu;public bool loop;public Page[] pages;}
         [Serializable] sealed class Page {public string file;public int count,width,height;}
-        static Manifest Read()=>JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"OriginalCombatVfx/Defenders/manifest.json")));
+        static Manifest Read()=>JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/manifest.json")));
         [Test] public void InitialSnowOnlyPreloadsItsAttackAndTargetLayers()
         {
             Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27","D27"}),Is.EquivalentTo(new[]{
@@ -36,7 +36,7 @@ namespace YesterdayConvoy.Tests
                 foreach(var page in clip.pages)
                 {
                     Assert.That(page.width,Is.InRange(4,2048));Assert.That(page.height,Is.InRange(4,2048));
-                    Assert.That(File.Exists(Path.Combine(Application.streamingAssetsPath,"OriginalCombatVfx/Defenders",page.file)),Is.True,page.file);
+                    Assert.That(File.Exists(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/"+page.file)),Is.True,page.file);
                 }
             }
         }

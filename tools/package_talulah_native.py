@@ -108,12 +108,13 @@ def pack_clip(key,folder,bound,job,out,project,source):
 
 def verify_package(project,source):
     """Read-only source-to-atlas verification; never creates files or metas."""
-    roots=[project/"Assets/Art/VFX/Skills/Talulah/Resources/TalulahNative",project/"Assets/StreamingAssets/TalulahUnboundVfx"]
-    package=json.loads((roots[1]/"package-report.json").read_text(encoding="utf8"))
+    roots=[project/"Assets/Art/VFX/Skills/Talulah/Resources/TalulahNative",project/"Assets/Art/VFX/Skills/Talulah/Unbound"]
+    catalogs=[roots[0],project/"Assets/Data/ArtCatalogs/TalulahUnboundVfx"]
+    package=json.loads((catalogs[1]/"package-report.json").read_text(encoding="utf8"))
     infos={i["key"]:i for i in package["clips"]};clip_count=page_count=frame_count=0;png_bytes=0
     fields={"key","count","width","height","columns","ppu","pivotX","pivotY","duration","hdrRange","status","pages"}
-    for root in roots:
-        manifest=json.loads((root/"manifest.json").read_text(encoding="utf8"));referenced=set()
+    for root,catalog in zip(roots,catalogs):
+        manifest=json.loads((catalog/"manifest.json").read_text(encoding="utf8"));referenced=set()
         if set(manifest)!={"version","fps","clips"} or manifest["version"]!=1 or manifest["fps"]!=30:raise ValueError("Manifest schema mismatch")
         for clip in manifest["clips"]:
             if set(clip)!=fields:raise ValueError(f"{clip['key']}: clip schema mismatch")
@@ -161,19 +162,23 @@ def main():
     if args.verify_only:
         verify_package(project,source);return
     bound_root=project/"Assets/Art/VFX/Skills/Talulah/Resources/TalulahNative"
-    unbound_root=project/"Assets/StreamingAssets/TalulahUnboundVfx"
-    for root in (bound_root,unbound_root):root.mkdir(parents=True,exist_ok=True);meta(root,project,True)
+    unbound_root=project/"Assets/Art/VFX/Skills/Talulah/Unbound"
+    unbound_catalog=project/"Assets/Data/ArtCatalogs/TalulahUnboundVfx"
+    for output in (bound_root,unbound_root,unbound_catalog):
+        if source==output or source in output.parents or output in source.parents:raise ValueError("Source captures and package output must not overlap")
     ready=[];missing=[]
     for entry in entries(source,args.core_only):
         if not (entry[1]/"report.json").exists():missing.append(entry[0])
         else:ready.append(entry)
     if missing and not args.allow_missing:raise FileNotFoundError("Captures not ready: "+", ".join(missing))
+    # Validate source selection before writing. Only these dedicated package roots are touched.
+    for root in (bound_root,unbound_root,unbound_catalog):root.mkdir(parents=True,exist_ok=True);meta(root,project,True)
     manifests={True:dict(version=1,fps=30,clips=[]),False:dict(version=1,fps=30,clips=[])};infos=[]
     for key,folder,bound,job in ready:
         clip,info=pack_clip(key,folder,bound,job,bound_root if bound else unbound_root,project,source)
         manifests[bound]["clips"].append(clip);infos.append(info)
         print("PACKED",key,clip["count"],f"{clip['width']}x{clip['height']}",len(clip["pages"]),sum(p["bytes"] for p in info["pages"]),flush=True)
-    for is_bound,root in [(True,bound_root),(False,unbound_root)]:
+    for is_bound,root in [(True,bound_root),(False,unbound_catalog)]:
         write_json(root/"manifest.json",manifests[is_bound]);meta(root/"manifest.json",project)
     summary=dict(status="PARTIAL" if args.core_only or missing else "PASS",unityRun=False,missing=missing,
         boundClips=[c["key"] for c in manifests[True]["clips"]],unboundClips=[c["key"] for c in manifests[False]["clips"]],
@@ -182,7 +187,7 @@ def main():
         boundPngBytes=sum(p["bytes"] for i in infos if i["status"]=="BOUND" for p in i["pages"]),
         unboundPngBytes=sum(p["bytes"] for i in infos if i["status"]=="IMPORTED_NOT_BOUND" for p in i["pages"]),
         cellAlignment=4,nativeToGameScale=NATIVE_TO_GAME,encoding="Original sqrt(RGB/hdrRange) plus effective alpha; unchanged encoded PNG values; right/bottom zero padding",clips=infos)
-    report=unbound_root/"package-report.json";write_json(report,summary);meta(report,project)
+    report=unbound_catalog/"package-report.json";write_json(report,summary);meta(report,project)
     print("TALULAH_NATIVE_PACKAGE_"+summary["status"],json.dumps({k:v for k,v in summary.items() if k!="clips"},ensure_ascii=False),flush=True)
 
 if __name__=="__main__":main()

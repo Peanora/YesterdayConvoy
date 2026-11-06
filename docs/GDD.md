@@ -145,7 +145,7 @@ M02、M03、M07、M10 等已接入角色按各自编号提供相同层级；目�
 .\tools\install_monster_combat.ps1 -Source "E:\素材交接\CombatPackages" -Task M08
 ```
 
-`-Source` 指向含 `M08` 的父目录。脚本核验清单、四种动作与文件哈希，再安装到 `Assets/StreamingAssets/MonsterCombatArt/M08`。这是战斗运行包，与仅用于预览的 `ArcherOriginal` 包不同；角色有独立技能等额外依赖时一并交代。其他资源路线沿用各自已有安装说明，不强行改造为本格式。
+`-Source` 指向含 `M08` 的父目录。脚本核验清单、四种动作与文件哈希，再把PNG安装到 `Assets/Art/Characters/Monsters/Flipbooks/M08`、JSON安装到 `Assets/Data/ArtCatalogs/MonsterCombatArt/M08`。这是战斗运行包，与仅用于预览的 `ArcherOriginal` 包不同；角色有独立技能等额外依赖时一并交代。其他资源路线沿用各自已有安装说明，不强行改造为本格式。2026-11-06分类迁移保持原逻辑包名与GUID，Player所需StreamingAssets由构建生成，见[角色加载说明](ART_LOADING.md)。
 
 **接收端最小验收：** 核对源码 / 素材版本，按说明安装，确认菜单开放对应角色，实际部署并检查移动、攻击及相关技能，再检查死亡或穿门、暂停和重开中本次涉及的边界。检查范围随改动风险调整，无需每次重跑全部测试。记录验收电脑、日期、入口、实际结果及未测项；作者本机证据单独保留，不代填接收端结果。
 

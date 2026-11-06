@@ -1,7 +1,8 @@
 """Package approved V13 body frames without changing Talulah's four existing clips.
 
 Run with the project's agreed Python runtime, passing --source to the V13 preview
-directory. Only ExtraClips is written; existing PNG/.meta files are never moved.
+directory. ExtraClips PNGs go to Art; catalogs and source records go to Data.
+Existing .meta files are never rewritten or moved by this tool.
 """
 from __future__ import annotations
 
@@ -105,8 +106,8 @@ def package_clip(source: Path, output: Path, clip: dict, fps: int) -> dict:
     }
 
 
-def verify(output: Path) -> dict:
-    manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+def verify(output: Path, catalogs: Path) -> dict:
+    manifest = json.loads((catalogs / "manifest.json").read_text(encoding="utf-8"))
     assert {clip["key"] for clip in manifest["clips"]} == set(KEYS.values())
     total_frames = 0
     total_pages = 0
@@ -124,7 +125,7 @@ def verify(output: Path) -> dict:
                 assert page["count"] <= clip["columns"] * (image.height // clip["cellHeight"])
         total_frames += clip["count"]
         total_pages += len(clip["pages"])
-    hidden = json.loads((output / "hidden-waits.json").read_text(encoding="utf-8"))
+    hidden = json.loads((catalogs / "hidden-waits.json").read_text(encoding="utf-8"))
     assert {row["source"] for row in hidden["states"]} == {"Reborn_1_Idle", "Reborn_2_Idle"}
     for state in hidden["states"]:
         assert state["sourceDuration"] == 0 and state["bindingStatus"] == "IMPORTED_NOT_BOUND"
@@ -143,15 +144,30 @@ def main() -> None:
     parser.add_argument("--verify-only", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    output = root / "Assets/StreamingAssets/TalulahOriginal/ExtraClips"
+    output = root / "Assets/Art/Characters/Monsters/Boss/TalulahOriginal/ExtraClips"
+    catalogs = root / "Assets/Data/ArtCatalogs/TalulahOriginal/ExtraClips"
     if args.verify_only:
-        print(json.dumps(verify(output), ensure_ascii=False))
+        print(json.dumps(verify(output, catalogs), ensure_ascii=False))
         return
     source = args.source.resolve(strict=True)
     data = json.loads((source / "body-manifest.json").read_text(encoding="utf-8"))
     assert (data["width"], data["height"], data["fps"]) == (640, 640, 30)
     assert data["pivotX"] * 640 == SOURCE_ROOT[0] and (1 - data["pivotY"]) * 640 == SOURCE_ROOT[1]
+    # Check the complete approved input set before creating or replacing output files.
+    if source == output or source in output.parents or output in source.parents:
+        raise ValueError("Source captures and packaged Art output must not overlap.")
+    allowed = MAIN_ACTIONS | set(KEYS) | {"Reborn_1_Idle", "Reborn_2_Idle"}
+    if len({clip["name"] for clip in data["clips"]}) != len(data["clips"]):
+        raise ValueError("Duplicate body action name.")
+    for clip in data["clips"]:
+        folder = (source / clip["folder"]).resolve()
+        if not folder.is_relative_to(source) or clip["name"] not in allowed:
+            raise ValueError("Unsupported body action or source path.")
+        for first in range(0, clip["count"], 12):
+            if not (folder / f"{first}.png").is_file():
+                raise FileNotFoundError(folder / f"{first}.png")
     output.mkdir(parents=True, exist_ok=True)
+    catalogs.mkdir(parents=True, exist_ok=True)
     manifest = {"version": 1, "cardId": "CARD_TALULAH_TRIAL", "ppu": PPU,
                 "referenceSpeed": .75, "clips": []}
     hidden = {"version": 1, "meaning": "Invisible zero-duration source states; not ordinary playable clips.",
@@ -175,9 +191,9 @@ def main() -> None:
         else:
             manifest["clips"].append(package_clip(source, output, clip, data["fps"]))
             print(clip["name"], manifest["clips"][-1]["count"], flush=True)
-    (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    (output / "hidden-waits.json").write_text(json.dumps(hidden, ensure_ascii=False, indent=2), encoding="utf-8")
-    result = verify(output)
+    (catalogs / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    (catalogs / "hidden-waits.json").write_text(json.dumps(hidden, ensure_ascii=False, indent=2), encoding="utf-8")
+    result = verify(output, catalogs)
     record = {
         "version": 1, "sourceModel": "enemy_1515_bsnake", "sourceSpineVersion": "3.8.99",
         "sourceModelUrl": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1515_bsnake/enemy_1515_bsnake.skel",
@@ -189,7 +205,7 @@ def main() -> None:
         "rights": "Original Arknights character, textures and animation belong to Hypergryph/original rights holders. Public redistribution permission unconfirmed; user upload instruction is not a rights-holder license.",
         "verification": result,
     }
-    (output / "SOURCE-RECORD.json").write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
+    (catalogs / "SOURCE-RECORD.json").write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False), flush=True)
 
 

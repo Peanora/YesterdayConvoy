@@ -52,7 +52,7 @@ namespace YesterdayConvoy
             bool external=d==null;
             if(external)
             {
-                if(phaseManifest==null)phaseManifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"TalulahUnboundVfx/manifest.json")));
+                if(phaseManifest==null)phaseManifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
                 if(phaseManifest==null||phaseManifest.version!=1||phaseManifest.fps!=30)throw new InvalidDataException("Invalid Talulah phase VFX manifest");
                 d=Array.Find(phaseManifest.clips,c=>c.key==key);
             }

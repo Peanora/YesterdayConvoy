@@ -23,7 +23,8 @@ namespace YesterdayConvoy.Editor
         private bool playing = true;
         private double started, nextRepaint;
         private string error;
-        private string Root => Path.Combine(Application.streamingAssetsPath, "ApprovedMonsterArt", Tasks[monster]);
+        private string Root => ArtSourcePaths.ImageDirectory("ApprovedMonsterArt/" + Tasks[monster]);
+        private string Manifest => ArtSourcePaths.Resolve("ApprovedMonsterArt/" + Tasks[monster] + "/manifest.json");
 
         [MenuItem("Yesterday Convoy/Art/Approved Monster Previews")]
         public static void Open()
@@ -58,7 +59,7 @@ namespace YesterdayConvoy.Editor
             if (monster == 3) EditorGUILayout.HelpBox("仅喷吐动作；酸液弹道、命中特效与削甲尚未接入。", MessageType.Warning);
             if (monster == 2) EditorGUILayout.HelpBox("死亡仅含蓄爆动作；完整爆炸特效未补。", MessageType.Warning);
             EditorGUILayout.HelpBox("卡面、待机、原地行走和射击共用同一原版模型。仅美术预览；尚未注册可玩战斗样板。", MessageType.Info);
-            if (!File.Exists(Path.Combine(Root, "manifest.json")))
+            if (!File.Exists(Manifest))
             {
                 EditorGUILayout.HelpBox("本地可选素材未安装。请按 docs/art/MONSTER_ART_PREVIEWS.md 安装，不从公共仓库自动下载原作媒体。", MessageType.Warning);
                 return;
@@ -117,8 +118,8 @@ namespace YesterdayConvoy.Editor
         {
             for (int m = 0; m < Tasks.Length; m++)
             {
-                string root = Path.Combine(Application.streamingAssetsPath, "ApprovedMonsterArt", Tasks[m]);
-                if (!File.Exists(Path.Combine(root, "manifest.json"))) throw new FileNotFoundException("Missing manifest: " + Tasks[m]);
+                string root = ArtSourcePaths.ImageDirectory("ApprovedMonsterArt/" + Tasks[m]);
+                if (!File.Exists(ArtSourcePaths.Resolve("ApprovedMonsterArt/" + Tasks[m] + "/manifest.json"))) throw new FileNotFoundException("Missing manifest: " + Tasks[m]);
                 for (int c = 0; c < ClipKeys[m].Length; c++)
                     for (int i = 0; i < Counts[m][c]; i++)
                     {

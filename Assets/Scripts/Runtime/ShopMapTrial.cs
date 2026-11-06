@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             if(shopCoin==null)
             {
                 shopCoin=new Texture2D(2,2,TextureFormat.RGBA32,false);
-                shopCoin.LoadImage(File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath,"ShopTrial/originium.png")));
+                shopCoin.LoadImage(File.ReadAllBytes(ArtSourcePaths.Resolve("ShopTrial/originium.png")));
             }
             if(shopStar==null)shopStar=CreateShopStar();EnsureShopAura();
             if(shopFade==null)

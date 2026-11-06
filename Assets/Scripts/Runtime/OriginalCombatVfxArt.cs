@@ -88,7 +88,7 @@ namespace YesterdayConvoy
             string root=RootFor(key);
             if(!loaded.Contains(root))
             {
-                string file=Path.Combine(Application.streamingAssetsPath,root,"manifest.json");
+                string file=ArtSourcePaths.Resolve(root+"/manifest.json");
                 if(!File.Exists(file))return false;
                 // Commit the metadata package only after all entries validate.
                 var package=ReadPackage(root,File.ReadAllText(file));

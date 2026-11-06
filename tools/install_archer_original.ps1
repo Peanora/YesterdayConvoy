@@ -18,8 +18,10 @@ foreach ($relativeName in $expected) {
 }
 # All inputs are checked before writing. Only fixed, known relative paths are copied.
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$destination = Join-Path $projectRoot 'Assets/StreamingAssets/ArcherOriginal'
+$imageRoot = Join-Path $projectRoot 'Assets/Art/Characters/Monsters/Previews/ArcherOriginal'
+$manifestRoot = Join-Path $projectRoot 'Assets/Data/ArtCatalogs/ArcherOriginal'
 foreach ($relativeName in ($expected + 'manifest.json')) {
+    $destination = if ([IO.Path]::GetExtension($relativeName) -eq '.json') { $manifestRoot } else { $imageRoot }
     $outputFile = Join-Path $destination $relativeName
     New-Item -ItemType Directory -Path (Split-Path -Parent $outputFile) -Force | Out-Null
     Copy-Item -LiteralPath (Join-Path $sourceRoot $relativeName) -Destination $outputFile -Force
