@@ -1,5 +1,5 @@
 {
-  "status": "APPROVED_IMPORTED_PENDING_UNITY",
+  "status": "VERIFIED_SCOPED_EDITOR_AND_PLAYER",
   "method": "Existing UnityPy Texture2D.image decoded from original bundle dependency, no Unity run; no texture paint, tint, crop or re-encode beyond PNG serialization.",
   "sourceAcquisition": {
     "name": "battle/prefabs/effects/sbell2.ab",
@@ -259,5 +259,14 @@
       "E:\\珍贵资料\\昨日圆车\\Assets\\Audio\\SFX\\Resources\\SnowstormWeather\\gust.wav"
     ]
   },
-  "presentation": "Program-composed weather for the existing 8-second synergy; keeps original three textures, does not claim original-game synergy or full native shader replay"
+  "presentation": "Program-composed weather for the existing 8-second synergy; keeps original three textures, does not claim original-game synergy or full native shader replay",
+  "verification": {
+    "unity": "6000.6.5f1",
+    "runtimeSource": "1f9be458c76248312a0b34619f5fa05e9d1e8988",
+    "editMode": "466/466",
+    "relatedPlayModeLatest": "19 current cases passed; final weather subset2/2",
+    "windowsBuildErrors": 0,
+    "d3d11Player": "12/12; 81604 changed pixels",
+    "scope": "Actual five-member manual skill, batched weather GPU pixels, pause/countdown, 2x, terminal long frame, reset and8s four pulses; screenshot review; not full original-game shader/client or second-machine validation"
+  }
 }

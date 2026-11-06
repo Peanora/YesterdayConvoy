@@ -5,7 +5,10 @@
 - 人类采用项目外动态看稿及明确接口范围；从实时main b3d947a建立codex/snowstorm-feedback，带入未合并#82的9d12217依赖。保留原.vscode/及PackageManagerSettings.asset，不提交覆盖。
 - `snowstorm-edit.xml`全量466/466；新增/扩展真实不续时、到期可重触发、暂停、霜星取消/复起/最终死亡不撤销天气、2档不触发和只读起止/剩余时间。原脉冲/保护/伤害不变。
 - `snowstorm-play.xml`相关D3D11 19/19。新两项从真实五人阵容与霜星蓄SP施法开始，核四批天气Mesh的独立GPU开关差、显示不改Clock/HP、暂停顶点/剩余时间冻结、恢复运动、8秒四脉冲及0.65尾、重开。提前终局使用明确FinishForTesting夹具，核HUD立即隐藏、0.5秒表现尾、Clock/HP不再推进；不是自然胜负证据。
-- 原纹理/程序风声与来源记录已接入；独立构建/Player及最终画面待本轮继续，不据静态或Editor测试称EXE通过。
+- 首次独立Player11/12，发现提前结算后首次画面观察较晚时尾段起点延后。改为冻结的战斗Clock作为真实结算时刻，并把“无首帧观察即推进0.7秒”加入原终局测试；`snowstorm-play-final.xml`两项2/2，相关19项最新结果均通过，未放宽断言或改战斗规则。
+- 最终运行源码1f9be45 Windows构建2444422571字节、0错误（snowstorm-build-final.log）。可见D3D11独立Player12/12，天气四批网格开关产生81604个明显差异像素；真实五人编队/霜星蓄技施法、天气提示、暂停顶点与倒计时、恢复运动、2倍同钟、提前结算清除、重开、8秒四脉冲和自然淡出全部通过。提前结算是明确的原调试按钮夹具，未称自然胜负。
+- 实际查看weather-start-paused、weather-running、weather-ended截图；后者保留仍未到期的目标状态，不借天气结束统一解冻。证据artifacts/snowstorm-player-final/result.json。原纹理/程序风声已随源码，未宣称原作天气技能或完整Shader复现。
+- 仓库6377个跟踪文件/meta检查通过；52处仅新增默认未覆盖WebGL段的导入噪声经逐文件核对恢复。场景、Prefab、Packages、ProjectSettings未变，两个原本地未跟踪项保留。第二机及多首领同时开技能的长期组合/声音主观平衡未验收。
 
 ## 2026-11-06：原作特效全范围接入验证
 
