@@ -49,7 +49,7 @@ namespace YesterdayConvoy.Tests
         {
             var b=Make(Herd.Take(2).ToArray());var u=Deploy(b,Herd[0],1);b.TryDamageUnit(u.EntityId,1000,CombatDamageType.Physical);b.Advance(.02f);var host=b.Units.Single(o=>o.SynergySupport);
             b.SetPaused(true);double remaining=b.HerdRemaining(host.EntityId);b.Advance(20);Assert.That(b.HerdRemaining(host.EntityId),Is.EqualTo(remaining));
-            b.SetPaused(false);b.Advance(10.1f);Assert.That(host.Active,Is.False);Assert.That(b.HerdUsed,Is.EqualTo(1));Assert.That(b.DeepCharges,Is.Zero);
+            b.SetPaused(false);b.Advance((float)(HerdSpiritState.FallDuration+HerdSpiritState.RiseDuration+10.1));Assert.That(host.Active,Is.False);Assert.That(b.HerdUsed,Is.EqualTo(1));Assert.That(b.DeepCharges,Is.Zero);
         }
         [Test]public void HerdCapsConversionsAndFiveCostsNeverConsumeSlots()
         {

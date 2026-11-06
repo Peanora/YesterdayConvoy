@@ -52,30 +52,6 @@ namespace YesterdayConvoy.Tests
             foreach(var unit in b.Units.Where(u=>u.CardId!="CARD_M14"&&!u.SynergySupport&&u.Active).ToArray())
                 Assert.That(b.TryDamageUnit(unit.EntityId,10000,CombatDamageType.Arts),Is.True);
         }
-        [TestCase(100,100,2,true,2)]
-        [TestCase(12,44,4,true,2)]
-        [TestCase(11,45,4,true,2)]
-        [TestCase(12,45,4,true,3)]
-        [TestCase(24,80,5,false,3)]
-        [TestCase(24,79,5,true,3)]
-        [TestCase(23,80,5,true,3)]
-        [TestCase(24,80,5,true,4)]
-        public void ProgressRequiresEveryGate(int xp,int gold,int count,bool stars,int stage)=>Assert.That(GolemGrowth.Stage(xp,gold,count,stars),Is.EqualTo(stage));
-
-        [Test]public void InvestmentIsAtomicCappedPerUniqueIntermissionAndCannotCreateSupplyGrowth()
-        {
-            var shop=new ShopTrialModel(Crew.Select(id=>new ShopTrialModel.Role{Id=id,Name=id,Cost=CampaignBalance.Profiles[id].Cost}));shop.EnableCampaign();
-            shop.Preset(Crew.Select(id=>P(id)),Array.Empty<string>(),8,0,40);shop.SetLineup(Crew);
-            var run=new BattleShopRun(shop,1,campaign:true);
-            Assert.That(run.InvestGolem(1),Is.False);
-            Assert.That(run.Observe(BattlePhase.Won,4));Assert.That(run.GolemExperience,Is.Zero,"Supply stops cannot award training");run.OpenShop();
-            int before=shop.Gold;Assert.That(run.InvestGolem(5));Assert.That(run.InvestGolem(5));Assert.That(shop.Gold,Is.EqualTo(before-10));
-            shop.BeginPreparation();shop.Refresh(true);Assert.That(run.OpenShop(),Is.False);Assert.That(run.InvestGolem(1),Is.False);Assert.That(run.GolemInvestment,Is.EqualTo(10));
-            run.PrepareBattle();run.RestartEncounter();Assert.That(run.InvestGolem(1),Is.False);run.Observe(BattlePhase.Won,4);Assert.That(run.GolemExperience,Is.Zero);
-            run.OpenShop();Assert.That(run.GolemInvestmentRemaining,Is.EqualTo(10));Assert.That(run.InvestGolem(10));run.PrepareBattle();run.Observe(BattlePhase.Won,3);
-            Assert.That(run.GolemExperience,Is.EqualTo(3));Assert.That(run.Observe(BattlePhase.Won,3),Is.False);Assert.That(run.GolemExperience,Is.EqualTo(3));
-            var fresh=new BattleShopRun(shop,2,campaign:true);Assert.That(fresh.GolemExperience+fresh.GolemInvestment,Is.Zero);
-        }
         [Test]public void InfectionAddsArtsOnceWithoutReplacingOrDuplicatingIntrinsicPhysicalBlast()
         {
             var b=B(new[]{"CARD_M04","CARD_M02"},C(new MonsterEffectSettings(blastAttack:90,blastRadius:1.6f,blastDelay:1)));
@@ -229,21 +205,26 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<3;i++)NextSnowShatter(b);
             Assert.That(b.Shatters,Is.EqualTo(3));Assert.That(b.SnowstormCharge,Is.Zero);Assert.That(b.SnowstormPulses,Is.Empty);Assert.That(b.SnowstormActive,Is.False);
         }
-        [Test]public void UltimateCleaveHealsOnceAndThirdHitGlobalPulseIsOncePerAttack()
+        [TestCase(4,6000,1600,480,1280)]
+        [TestCase(5,7500,2000,600,1600)]
+        public void UltimateCleaveHealsOnceAndThirdHitGlobalPulseIsOncePerAttack(int stage,float health,float attack,float healing,float pulse)
         {
             var guards=Enumerable.Range(0,4).Select(i=>new DefenderSettings("g"+i,"guard","D01",new Vector3(.5f+i*.2f,0,0),50000,1,0,.1f,10,canAttack:false)).ToArray();
             var b=new ManualBattle(U("CARD_M26"),new[]{Vector3.zero,Vector3.forward*100},Vector3.right,C(),null,guards);
-            b.ConfigureSynergies(Crew.Select(id=>P(id,2)),golemExperience:24,golemInvestment:80);b.Begin();var u=b.FindUnit(b.TryDeployGolem(b.RunId,1,b.Entry).EntityId);
+            b.ConfigureSynergies(Crew.Select(id=>P(id,2)).Concat(stage==5?new[]{P("CARD_M07",2)}:Array.Empty<ShopTrialModel.Piece>()),
+                golemExperience:stage==5?48:30,extraMudrockMembers:stage==5?new[]{"CARD_M07"}:null);b.Begin();var u=b.FindUnit(b.TryDeployGolem(b.RunId,1,b.Entry).EntityId);
+            Assert.That(b.GolemStage,Is.EqualTo(stage));Assert.That(u.MaxHealth,Is.EqualTo(health));Assert.That(b.UnitCombat(u).UnitAttack,Is.EqualTo(attack));
             Assert.That(b.UnitControlImmune(u));Assert.That(b.DP,Is.EqualTo(86));b.TryDamageUnit(u.EntityId,1100,CombatDamageType.Physical);float damaged=u.Health;
-            b.Advance(3);Assert.That(b.Defenders.Count(d=>d.Health<50000),Is.EqualTo(3));Assert.That(u.Health,Is.EqualTo(damaged+480));
-            b.Advance(10.5f);Assert.That(b.GolemPulses.Count,Is.EqualTo(1));Assert.That(b.Defenders[3].Health,Is.EqualTo(50000-1280));
+            b.Advance(3);Assert.That(b.Defenders.Count(d=>d.Health<50000),Is.EqualTo(3));Assert.That(u.Health,Is.EqualTo(damaged+healing));
+            b.Advance(10.5f);Assert.That(b.GolemPulses.Count,Is.EqualTo(1));Assert.That(b.Defenders[3].Health,Is.EqualTo(50000-pulse));
             Assert.That(b.UnitCombat(u).AttackDuration,Is.EqualTo(5.166667f));Assert.That(b.UnitResistance(u),Is.EqualTo(60));
         }
-        [Test]public void UltimateAloneClearsTheCompleteSixStarDefenseWithRealSkillsAndMapRoutes()
+        [TestCase(4)][TestCase(5)]public void UltimateAloneClearsTheCompleteSixStarDefenseWithRealSkillsAndMapRoutes(int stage)
         {
             var map=Resources.Load<DefenderTrialDefinition>("Maps/BattleShop");Assert.That(map.defenders.Length,Is.EqualTo(6));
             var b=new ManualBattle(U("CARD_M26"),map.route,Vector3.right,C(),null,map.Snapshot(),map.LaneSnapshot());
-            b.ConfigureStrongholdMap(false);b.ConfigureSynergies(Crew.Select(id=>P(id,2)),golemExperience:24,golemInvestment:80);
+            b.ConfigureStrongholdMap(false);b.ConfigureSynergies(Crew.Select(id=>P(id,2)).Concat(stage==5?new[]{P("CARD_M07",2)}:Array.Empty<ShopTrialModel.Piece>()),
+                golemExperience:stage==5?48:30,extraMudrockMembers:stage==5?new[]{"CARD_M07"}:null);
             foreach(var d in b.Defenders)b.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
             b.Begin();var u=b.FindUnit(b.TryDeployGolem(b.RunId,1,b.Entry).EntityId);Assert.That(u,Is.Not.Null);
             for(int i=0;i<12000&&u.Active&&b.Defenders.Any(d=>d.Alive);i++)b.Advance(.05f);

@@ -181,7 +181,7 @@ namespace YesterdayConvoy
         public void LeaveShopTrial()
         {
             activeSynergyTrial=null;Loop=null;
-            CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
+            CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();ResetMudrockTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
             ReturnToMonsterTests();if(shopMapCopy!=null){Destroy(shopMapCopy);shopMapCopy=null;}
         }
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)

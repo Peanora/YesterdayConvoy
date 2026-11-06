@@ -118,7 +118,7 @@ namespace YesterdayConvoy
         }
         public float DefenderAuraMoveMultiplier(DeployedUnitState u)
         {
-            if(u==null||u.Golem&&GolemStage==4)return 1;float result=1;
+            if(u==null||u.Golem&&GolemStage>=4)return 1;float result=1;
             foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
                 result=Math.Min(result,d.Settings.Skill.MoveMultiplier);
             foreach(var drone in defenderDrones)

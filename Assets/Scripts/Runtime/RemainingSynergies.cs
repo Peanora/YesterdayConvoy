@@ -35,6 +35,7 @@ namespace YesterdayConvoy
         readonly HashSet<string> herdDeaths=new HashSet<string>();
         readonly Queue<DeployedUnitState> herdQueue=new Queue<DeployedUnitState>();
         readonly Dictionary<string,double> herdLifetimes=new Dictionary<string,double>(),contractWindows=new Dictionary<string,double>();
+        readonly Dictionary<string,HerdSpiritState> herdSpirits=new Dictionary<string,HerdSpiritState>(),herdSources=new Dictionary<string,HerdSpiritState>();
         readonly Dictionary<string,FireBurn> deepBurns=new Dictionary<string,FireBurn>();
         readonly Dictionary<string,Penetration> marinePenetration=new Dictionary<string,Penetration>();
         readonly Dictionary<string,int> marineBarrierHits=new Dictionary<string,int>(),contractKinds=new Dictionary<string,int>();
@@ -56,7 +57,7 @@ namespace YesterdayConvoy
         }
         void ResetRemainingSynergies()
         {
-            deepSeeds.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();contractWindows.Clear();deepBurns.Clear();marinePenetration.Clear();
+            deepSeeds.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();herdSpirits.Clear();herdSources.Clear();contractWindows.Clear();deepBurns.Clear();marinePenetration.Clear();
             marineBarrierHits.Clear();contractKinds.Clear();contractRequests.Clear();deepRequests.Clear();contractedEntities.Clear();marineContacts.Clear();marineProtected.Clear();marineFirstHits.Clear();
             HerdUsed=DeepDetonations=ContractPoints=ContractUses=0;marineMealUsed=false;
         }
@@ -74,17 +75,24 @@ namespace YesterdayConvoy
                 var motion=new RouteMotion(lane.Points,.65f);motion.Advance((float)(original.Motion.DistanceTravelled/.65));
                 var u=new DeployedUnitState($"run-{RunId}/host-{++sequence}",original.UnitId,motion,original.MaxHealth*ratio,Clock)
                     {CardId=original.CardId,RouteId=original.RouteId,ExitId=original.ExitId,SynergySupport=true};
+                var spirit=new HerdSpiritState(original.EntityId,u.EntityId,original.DeathTime);
+                // The replacement already counts as pending force, but cannot fight or move until it rises.
+                // Reuse the same simulation-clock gate as existing rebirth instead of adding a visual-only lock.
+                u.IsReviving=true;u.ReviveAt=spirit.ReadyAt;u.IsMoving=false;u.DeathTime=spirit.StartedAt;
                 float attack=source.UnitAttack*ratio*(ranged?.85f:1);
                 var c=new EngagementSettings(unitAttack:attack,unitArmor:HerdTier==4?6:4,unitRange:ranged?2.5f:.75f,unitInterval:Mathf.Max(2,source.AttackDuration),
                     initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,melee:!ranged,
                     attackDuration:source.AttackDuration,attackWindup:source.AttackWindup,canAttack:source.CanAttack);
                 var basis=original.Profile?.Unit??Settings;
                 var s=new ManualBattleSettings(u.CardId,u.UnitId,Settings.InitialDP,Settings.InitialDefense,1,1,1,u.MaxHealth,.65f,1,basis.TowerRange,basis.TowerDamage,basis.ShotInterval);
-                u.Profile=new BasicRosterProfile(s,c,true);units.Add(u);herdLifetimes[u.EntityId]=Clock+(HerdTier==4?12:10);
+                u.Profile=new BasicRosterProfile(s,c,true);units.Add(u);herdLifetimes[u.EntityId]=spirit.ReadyAt+(HerdTier==4?12:10);
+                herdSpirits.Add(u.EntityId,spirit);herdSources.Add(original.EntityId,spirit);
             }
         }
         public bool IsHerdHost(string entity)=>herdLifetimes.ContainsKey(entity);
-        public double HerdRemaining(string entity)=>herdLifetimes.TryGetValue(entity,out var until)?Math.Max(0,until-Clock):0;
+        public HerdSpiritState HerdSpiritFor(string entityId)=>entityId!=null&&herdSpirits.TryGetValue(entityId,out var spirit)?spirit:null;
+        public HerdSpiritState HerdSpiritFrom(string sourceId)=>sourceId!=null&&herdSources.TryGetValue(sourceId,out var spirit)?spirit:null;
+        public double HerdRemaining(string entity)=>herdLifetimes.TryGetValue(entity,out var until)?Math.Max(0,until-Math.Max(Clock,herdSpirits[entity].ReadyAt)):0;
         void StepRemainingSynergies(float step)
         {
             FlushHerd();

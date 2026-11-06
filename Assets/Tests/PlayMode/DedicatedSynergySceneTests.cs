@@ -41,8 +41,14 @@ namespace YesterdayConvoy.Tests
                 Assert.That(data,Is.Not.Null);Assert.That(data.trialId,Is.EqualTo(entry.Id));
                 Assert.That(Object.FindAnyObjectByType<AuthoredBattlefield>(),Is.Not.Null);Assert.That(Object.FindObjectsByType<CampaignBootstrap>(FindObjectsSortMode.None).Length,Is.EqualTo(1));
                 Assert.That(Object.FindAnyObjectByType<ShopMapBootstrap>(),Is.Null);Assert.That(c.ShopVisible,Is.True);Assert.That(c.Loop.CanShop,Is.True);
-                Assert.That(c.Shop.Level,Is.EqualTo(data.initialLevel));Assert.That(c.Shop.Bench.Select(p=>p.Id),Is.EquivalentTo(entry.Members));
-                Assert.That(SynergySummary.From(c.Shop.Bench.Select(p=>p.Id)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.MaximumTier));
+                Assert.That(c.Shop.Level,Is.EqualTo(data.initialLevel));Assert.That(c.Shop.Bench.Select(p=>p.Id),Is.EquivalentTo(data.initialMembers.Select(m=>m.cardId)));
+                Assert.That(SynergySummary.From(c.Shop.Bench.Select(p=>p.Id)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.MaximumTier));
+                if(entry.Id=="mudrock")
+                {
+                    Assert.That(c.Loop.GolemExperience,Is.Zero);Assert.That(c.MudrockTransferIds,Is.Empty);
+                    Assert.That(c.SetMudrockTransfer("CARD_M08",true),Is.True);Assert.That(c.Battle.MudrockTier,Is.EqualTo(6));
+                    Assert.That(c.Battle.GolemStage,Is.EqualTo(1),"The sixth starter is a normal card, not a gifted level.");
+                }
                 Assert.That(c.Battle.DP,Is.EqualTo(100));AssertPool(c);
                 var baseline=data.encounter.defenders.Select(d=>d.health).ToArray();
                 for(int i=0;i<baseline.Length;i++)Assert.That(c.Battle.Defenders[i].MaxHealth,Is.EqualTo(baseline[i]*12));

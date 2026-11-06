@@ -17,7 +17,7 @@ namespace YesterdayConvoy
                 var entry=SynergyTrialCatalog.Entries[i];var rect=new Rect(48+i%3*398,137+i/3*174,382,154);
                 Fill(rect,new Color(.96f,.97f,.98f));ApprovedUi.Border(rect,ApprovedUi.Rule);
                 GUI.Label(new Rect(rect.x+16,rect.y+12,340,30),entry.Title,ApprovedUi.Text(scene.InterfaceFont,21,TextAnchor.MiddleLeft,ApprovedUi.Ink,700));
-                string note=entry.Id=="guerrilla"?"初始6档 · 构筑面板可转职冲8/9档":entry.Id=="mudrock"?"5人 · 胚体I起步 · 培养/投入/二星晋升":entry.Id=="marine"?"4人 · 适应I起步 · 胜利接敌培养":entry.Members.Count+"人 · 初始达成最高"+entry.MaximumTier+"档";
+                string note=entry.Id=="guerrilla"?"初始6档 · 构筑面板可转职冲8/9档":entry.Id=="mudrock"?"I级0经验起步 · 连战培养 · 免费转职达6档":entry.Id=="marine"?"4人 · 适应I起步 · 胜利接敌培养":entry.Members.Count+"人 · 初始达成最高"+entry.MaximumTier+"档";
                 GUI.Label(new Rect(rect.x+16,rect.y+52,350,28),note,ApprovedUi.Text(scene.InterfaceFont,12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
                 if(LoopButton(new Rect(rect.x+16,rect.y+100,350,36),"进入 "+entry.Title+" 试验",true))SceneManager.LoadScene(entry.SceneName);
             }

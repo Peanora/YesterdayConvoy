@@ -35,36 +35,36 @@ namespace YesterdayConvoy
         public int OrderStrikes {get;private set;}
         public bool HalfOrderPending {get;private set;}
         public int GolemExperience {get;private set;}
-        public int GolemInvestment {get;private set;}
-        public bool GolemCrewTwoStar {get;private set;}
-        public int GolemStage=>GolemGrowth.Stage(GolemExperience,GolemInvestment,MudrockTier,GolemCrewTwoStar);
+        public int MudrockTotalStars {get;private set;}
+        public int GolemCapacity=>GolemGrowth.Capacity(MudrockCrewCount,MudrockTotalStars);
+        public int GolemStage=>GolemGrowth.Stage(GolemExperience,GolemCapacity);
         public int GolemCost=>GolemGrowth.Cost(GolemStage);
         public bool GolemDeployed {get;private set;}
-        public int GolemGrowthEarned=>Phase==BattlePhase.Won&&!GuaranteedSupply&&MudrockTier>=2&&crewContacts.Count>=2?3+(MudrockTier>=4&&golemContact?1:0):0;
+        public int GolemBattleExperience=>GolemGrowth.BattleXP(MudrockTier,MudrockTotalStars);
+        public int GolemGrowthEarned=>(Phase==BattlePhase.Won||Phase==BattlePhase.Lost)&&!GuaranteedSupply?GolemGrowth.Award(GolemExperience,GolemCapacity,GolemBattleExperience):0;
         public InfectionForm InfectionShape {get;private set;}
         public InfectionForm InfectionSecondShape {get;private set;}
-        readonly HashSet<string> orderEntities=new HashSet<string>(),crewContacts=new HashSet<string>(),halfEntities=new HashSet<string>();
+        readonly HashSet<string> orderEntities=new HashSet<string>(),halfEntities=new HashSet<string>();
         readonly Dictionary<string,int> orderKinds=new Dictionary<string,int>();
         readonly Dictionary<long,bool> orderRequests=new Dictionary<long,bool>();
         readonly List<InfectionBurst> infectionBursts=new List<InfectionBurst>();
         public IReadOnlyList<InfectionBurst> InfectionBursts=>infectionBursts.AsReadOnly();
-        bool golemContact;
         readonly List<ShatterEvent> golemPulses=new List<ShatterEvent>();
         public IReadOnlyList<ShatterEvent> GolemPulses=>golemPulses.AsReadOnly();
-        void ConfigureAdvancedSynergies(InfectionForm form,InfectionForm second,int experience,int invested)
+        void ConfigureAdvancedSynergies(InfectionForm form,InfectionForm second,int experience)
         {
-            if(experience<0||invested<0||!Enum.IsDefined(typeof(InfectionForm),form)||!Enum.IsDefined(typeof(InfectionForm),second))throw new ArgumentException();
+            if(experience<0||!Enum.IsDefined(typeof(InfectionForm),form)||!Enum.IsDefined(typeof(InfectionForm),second))throw new ArgumentException();
             int n=synergyStars.Keys.Count(CampaignBalance.Infected);InfectionTier=n>=6?6:n>=4?4:n>=2?2:0;
             GuerrillaTier=GuerrillaRules.TierForCount(guerrillaMembers.Count);
-            n=synergyStars.Keys.Count(CampaignBalance.MudrockCrew);MudrockTier=n>=5?5:n>=4?4:n>=2?2:0;
-            GolemCrewTwoStar=n==5&&synergyStars.Where(p=>CampaignBalance.MudrockCrew(p.Key)).All(p=>p.Value>=2);GolemInvestment=invested;
+            MudrockTier=GolemGrowth.TierForCount(MudrockCrewCount);
+            MudrockTotalStars=mudrockMembers.Sum(id=>synergyStars[id]);
             InfectionShape=form;InfectionSecondShape=second==form?(InfectionForm)(((int)form+1)%3):second;GolemExperience=experience;
         }
         void ResetAdvancedSynergies()
         {
             ResetGuerrillaOrders();
-            golemPulses.Clear();orderEntities.Clear();crewContacts.Clear();halfEntities.Clear();orderKinds.Clear();orderRequests.Clear();infectionBursts.Clear();
-            Orders=OrdersUsed=OrderStrikes=0;HalfOrderPending=GolemDeployed=golemContact=false;
+            golemPulses.Clear();orderEntities.Clear();halfEntities.Clear();orderKinds.Clear();orderRequests.Clear();infectionBursts.Clear();
+            Orders=OrdersUsed=OrderStrikes=0;HalfOrderPending=GolemDeployed=false;
         }
         int FormTier(InfectionForm form)=>InfectionTier==0?0:InfectionShape==form?InfectionTier:InfectionTier==6&&InfectionSecondShape==form?2:0;
         void OnInfectionDeployment(DeployedUnitState primary)
@@ -117,9 +117,8 @@ namespace YesterdayConvoy
         void RecordSynergyContact(DeployedUnitState source)
         {
             if(!synergyEnabled||source==null)return;
-            if(source.Golem){golemContact=true;return;}
+            if(source.Golem)return;
             if(source.SynergySupport)return;
-            if(CampaignBalance.MudrockCrew(source.CardId))crewContacts.Add(source.CardId);
             if(GuerrillaTier==0||!orderEntities.Add(source.EntityId))return;
             orderKinds.TryGetValue(source.CardId,out int n);if(n>=2)return;
             orderKinds[source.CardId]=n+1;Orders++;
@@ -165,11 +164,11 @@ namespace YesterdayConvoy
             var lane=FindEntryLane(position);if(lane==null)return new DeploymentReceipt(DeployFailure.WrongEntry);
             if(MudrockTier<2||GolemDeployed)return new DeploymentReceipt(DeployFailure.NoUses);
             if(DP<GolemCost)return new DeploymentReceipt(DeployFailure.NoDP);
-            int stage=GolemStage;float hp=stage==1?360:stage==2?550:stage==3?1800:6000,attack=stage==1?60:stage==2?84:stage==3?240:1600;
+            int stage=GolemStage;float hp=stage==1?360:stage==2?550:stage==3?1800:stage==4?6000:7500,attack=stage==1?60:stage==2?84:stage==3?240:stage==4?1600:2000;
             var spec=new ManualBattleSettings(CampaignBalance.GolemCardId,"SYNERGY_GOLEM",Settings.InitialDP,Settings.InitialDefense,1,GolemCost,1,hp,.45f,1,1,1,1);
-            var c=new EngagementSettings(unitAttack:attack,unitArmor:stage==1?8:stage==2?10:stage==3?20:60,unitRange:stage==4?2.2f:1.1f,unitInterval:5.2f,
+            var c=new EngagementSettings(unitAttack:attack,unitArmor:stage==1?8:stage==2?10:stage==3?20:60,unitRange:stage>=4?2.2f:1.1f,unitInterval:5.2f,
                 initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,projectileTime:.02f,hasSkill:false,melee:true,attackDuration:5.166667f,attackWindup:2.746667f,
-                effects:new MonsterEffectSettings(unitResistance:stage==4?60:stage==3?30:0,attackTargets:stage==4?3:1));
+                effects:new MonsterEffectSettings(unitResistance:stage>=4?60:stage==3?30:0,attackTargets:stage>=4?3:1));
             var u=new DeployedUnitState($"run-{RunId}/golem-{++sequence}",spec.UnitId,new RouteMotion(lane.Points,spec.Speed),hp,Clock)
                 {CardId=spec.CardId,Profile=new BasicRosterProfile(spec,c,true),RouteId=lane.Id,ExitId=lane.ExitId,SynergySupport=true,Golem=true};
             units.Add(u);DP-=GolemCost;GolemDeployed=true;var receipt=new DeploymentReceipt(DeployFailure.None,u.EntityId);committed.Add(requestId,receipt);return receipt;
@@ -177,11 +176,11 @@ namespace YesterdayConvoy
         void OnGolemHit(DeployedUnitState u,DefenderState target)
         {
             if(!u.Golem)return;
-            if(GolemStage==4&&u.LastGolemHeal!=u.OrdinaryAttacksFired)
+            if(GolemStage>=4&&u.LastGolemHeal!=u.OrdinaryAttacksFired)
             {u.LastGolemHeal=u.OrdinaryAttacksFired;HealUnit(u,u.MaxHealth*.08f);}
             if(GolemStage<2||u.OrdinaryAttacksFired%3!=0||u.LastGolemProc==u.OrdinaryAttacksFired)return;
             u.LastGolemProc=u.OrdinaryAttacksFired;
-            if(GolemStage==4)
+            if(GolemStage>=4)
             {
                 golemPulses.Add(new ShatterEvent{Position=u.Motion.Position,At=Clock,Radius=6});
                 foreach(var d in defenders.Where(d=>d.Alive).ToArray())DamageDefender(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.8f,CombatDamageType.Arts,true);
