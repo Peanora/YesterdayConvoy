@@ -4,7 +4,10 @@
 
 - 用户已认可V1构图，明确“按当前编队显示”，缺席成员固定空位、预留两个转职槽、淡入淡出与短音效。新分支codex/guerrilla-fullscreen-cutin自实时main b3d947a建立，FF承接当前试玩0e98e1d依赖；原.vscode/和PackageManagerSettings.asset保留。没有改场景、Prefab、Packages或ProjectSettings，没有实现转职玩法或更改军令数值。
 - `artifacts/guerrilla-order-edit.xml`完整EditMode485/485；`artifacts/guerrilla-order-play.xml`相关D3D11 PlayMode23/23。新增3个综合场景用例验证真实部署/普通攻击产令后成功才播、准备/暂停失败不播、完整编队包含未部署M20、普通点击把M15退入备战后固定空位、暂停时实际AudioSource.timeSamples与透明度不推进、2倍速、自然淡出和重开。GPU使用生产材质逐个缺席七名人物，对应人物区域变化且其余人物区域不变；真实Sprite显示在两扩展槽，第3名不挤掉原成员。其余回归AdvancedSynergySceneTests、CampaignSceneTests、BattleInteractionTests、OverlappingEntrySceneTests；不是全量PlayMode。
-- 新测试和显式Player入口使用百万生命、延后守军攻击的运行时夹具，部署、普通攻击、军令积累与支出走原事务；没有写军令值或强制触发成功，不作为自然难度/平衡证明。Windows构建、完整屏幕实图和Player淡出/终局仍待运行。
+- 新测试和显式Player入口使用百万生命、延后守军攻击的运行时夹具，部署、普通攻击、军令积累与支出走原事务；没有写军令值或强制触发成功，不作为自然难度/平衡证明。首个Player在退编后取源夹具未收敛且隐藏窗口截图全黑，未计通过；改保留原守军坐标并按正常CD顺序部署两轮，嵌套异常保证写失败结果。没有改军令值/伤害或放宽成功条件。
+- 可见Player首次发现HUD、血条和卡栏盖在闪现图上。先改完整Shader合成到复用RenderTexture并用GUI队列绘制，相关图形重跑`guerrilla-order-play-final.xml`23/23，但完整屏幕仍暴露排序被撤销；缩小到GUIBehaviour的depth在finally被恢复，改每个GUI事件保留本组件深度。增加真实屏幕与生产材质在顶部按钮、血条、中央通知和底部卡栏的7点像素对照，不只检查离屏素材。该最终排序改动由下一条Player补验，没有把先前23项冒称成最新排序的全量GUI验证。
+- 最终运行源码`6fadf6d`的Windows构建2449336168字节、0错误（`artifacts/guerrilla-order-build-layer.log`）。1920×1080 Direct3D11独立Player`artifacts/guerrilla-order-player-layer/result.json`19/19通过：真实产令成功一次、失败/暂停失败不重播、未部署M20仍显示、七成员和两个空扩展、淡入/峰值/淡出、实际声音暂停、2倍速、自然消失、重开、正常退编后原槽空、终局表现不推进战斗，以及完整屏幕实际遮住HUD。已查看满编、右上缺位、淡入及淡出PNG；不是只看离屏Shader或反射字段。
+- 可选逐帧入口输出66张实际Player画面；项目外`guerrilla-in-game-v1.mp4`按60fps编码，并后配同一音效资源及运行音量0.55，方便用户看淡入淡出/试听；它是逐模拟帧预览，非实时音视频录屏。最终未重跑完整PlayMode、第二台电脑、全分辨率、长局自然难度或主观音色验收。源码构建后仅补文档，运行文件与6fadf6d相同；本轮52处仅默认未覆盖WebGL导入段经逐文件比对恢复，不覆盖他人改动，原两未跟踪项保持。仓库6414个跟踪文件与Unity元数据检查通过。
 - `shing.wav`原创程序合成，无原作采样或人声。ffprobe/ffmpeg核对0.64秒、48kHz双声道PCM16、峰值约-6dBFS、0削波、首尾静音和重复生成SHA一致。作者未实际试听，不称为精确复刻参考音色。参考货币战争公开视频未成功实际播放，.72秒节奏是本项目试验值。
 
 ## 2026-11-06：感染集群误关窗与重新达档弹窗

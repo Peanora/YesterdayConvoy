@@ -8,6 +8,8 @@
 
 资源为已认可AI概念PNG原字节及一个生产Shader，按固定分区遮住未入编队人物，主标题共享。两扩展Sprite同样在这一Shader中合成，没有固定整图露出全部人物。16:9等比例适配共用`TacticalViewport`，不消费鼠标事件。0.14秒平滑淡入、0.18秒停留、0.40秒平滑淡出（共0.72秒）为本项目试验值；读取`PresentationClock`，暂停冻结、2倍/技能慢速跟随。终局只延续表现尾，不推进战斗伤害；重开/切关/禁用停止并清除。
 
+生产材质以straight alpha合成到复用RenderTexture，再通过IMGUI队列绘制；本组件每次OnGUI保留自身排序深度，使峰值全屏盖住HUD、血条和卡栏，淡入淡出时平滑恢复下层画面。矩阵/颜色恢复不影响其他绘制。实际屏幕对照和1920×1080实图已验证，不只依赖离屏材质像素。
+
 原创合成音效`GuerrillaOrder/shing`为0.64秒、48kHz双声道PCM16，约-6dBFS峰值。无原作采样、无人声说sing。`tools/art/build_guerrilla_shing.py`可复现，播放器跟随静音、暂停及速度。作者通过解码和数值验证，但未实际试听；最终音色和音量由用户听感确认。
 
 AI图使用项目现有七种原作角色卡面作身份参考，不是原客户端立绘提取或已取得权利人授权；用户批准接入和源码上传不改变既有角色来源/权利限制。原稿和音效来源记录为`source-records/guerrilla-fullscreen.json`、`source-records/guerrilla-shing.json`，Atlas旁另有`SOURCE.md`。货币战争视频本轮未能实际播放，不声称逐帧复现其节奏或音色。
