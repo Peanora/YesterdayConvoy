@@ -90,11 +90,13 @@ namespace YesterdayConvoy
                 foreach(var unit in Battle.Units)
                 {
                     if(!unit.Active||Battle.StrongholdInTransit(unit.EntityId))continue;
+                    var spirit=Battle.HerdSpiritFor(unit.EntityId);
+                    if(spirit!=null&&Battle.Clock<spirit.StartedAt+HerdSpiritState.FallDuration)continue;
                     Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
                     if(!CurrentShopBattlefieldRect.Contains(p))continue;
                     Fill(new Rect(p.x-26,p.y,52,5),LoopInk);Fill(new Rect(p.x-25,p.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
                     if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
-                    if(Battle.IsHerdHost(unit.EntityId))GUI.Label(new Rect(p.x-40,p.y+7,80,20),$"转化 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,Color.white));
+                    if(spirit!=null)GUI.Label(new Rect(p.x-40,p.y+7,80,20),unit.IsReviving?$"凝聚 {Math.Max(0,spirit.ReadyAt-Battle.Clock):0.0}s":$"灵体 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,new Color(.55f,.88f,1)));
                     if(Battle.SarkazTier>0&&unit.CardId==Battle.ContractCard&&!unit.SynergySupport)GUI.Label(new Rect(p.x-40,p.y-24,80,20),"承契 "+(Array.IndexOf(ContractTargets(),unit)+1),LoopText(11,TextAnchor.MiddleCenter,Color.white));
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
                 }

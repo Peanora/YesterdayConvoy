@@ -70,7 +70,7 @@ namespace YesterdayConvoy
         }
         bool StepStrongholdPortal(DeployedUnitState u)
         {
-            if(!strongholdMap||portalPassed.Contains(u.EntityId))return false;
+            if(!strongholdMap||u.IsReviving||portalPassed.Contains(u.EntityId))return false;
             var lane=lanes.FirstOrDefault(l=>l.Id==u.RouteId);if(lane==null||lane.Points.Count<8)return false;
             int portal=StrongholdChallengeLayout.PortalSource(lane.Points);
             double source=0;for(int i=1;i<=portal;i++)source+=Vector3.Distance(lane.Points[i-1],lane.Points[i]);
