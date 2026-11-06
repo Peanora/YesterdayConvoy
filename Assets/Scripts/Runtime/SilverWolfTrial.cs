@@ -98,14 +98,14 @@ namespace YesterdayConvoy
                 }
                 SelectCard(true);var receipt=TryDeployAt(Battle.Entry);check("deploy-"+pass,receipt.Success);
                 if(!receipt.Success)break;
-                var u=Battle.FindUnit(receipt.EntityId);Tick(.35f);yield return null;
+                var u=Battle.FindUnit(receipt.EntityId);Tick(.35f);yield return new WaitForEndOfFrame();
                 var actor=FindObjectsByType<DemoSpriteVisual>(FindObjectsSortMode.None).Single(v=>v.EntityId==u.EntityId && v.gameObject.activeInHierarchy);
                 bool facing=Vector3.Dot(u.Motion.Direction,Camera.main.transform.right)<0;
                 check("walk-"+pass,actor.FrameState=="Walk"&&u.IsMoving&&actor.Renderer.flipX==facing);
                 if(pass==1)check("actual-left-route",facing);
                 yield return WolfGpuFrame(folder,pass==0?"01-normal-walk":"03-walk-left");
                 for(int i=0;i<900 && double.IsNegativeInfinity(u.LastAttackTime);i++)Tick(.05f);
-                Tick(.88f);yield return null;
+                Tick(.88f);yield return new WaitForEndOfFrame();
                 check("actual-uppercut-"+pass,actor.FrameState=="Attack"&&Battle.CombatShots.Any(s=>s.SourceId==u.EntityId&&s.Applied&&s.WolfBox==WolfBoxKind.None));
                 check("actual-slug-"+pass,combatView.DefenderVisual.sprite!=null&&combatView.DefenderVisual.sprite.name.StartsWith("OriginiumSlug/"));
                 yield return WolfGpuFrame(folder,pass==0?"02-normal-punch":"04-left-punch");
@@ -113,25 +113,25 @@ namespace YesterdayConvoy
                 for(int n=0;n<400&&!Battle.IsSkillReady(u.EntityId);n++)Tick(.05f);
                 SelectSkillUnit(u.EntityId);check("manual-transform",ActivateSelectedSkill()==SkillFailure.None);
                 for(int n=0;n<80 && Battle.Clock<u.WolfTransformAt+.90;n++)Tick(.05f);
-                yield return null;
+                yield return new WaitForEndOfFrame();
                 check("visor-transformation",actor.FrameState=="WolfTransform");yield return WolfGpuFrame(folder,"05-visor-left");
                 var seen=new HashSet<WolfBoxKind>();int captures=0;
                 for(int i=0;i<8400 && seen.Count<3 && u.Active && Battle.Phase==BattlePhase.Running;i++)
                 {
                     if(u.SkillAmmo==0&&Battle.IsSkillReady(u.EntityId)){SelectSkillUnit(u.EntityId);ActivateSelectedSkill();}
                     Tick(.05f);
-                    if(i%8==0)yield return null;
+                    if(i%8==0)yield return new WaitForEndOfFrame();
                     var shot=Battle.CombatShots.LastOrDefault(s=>s.SourceId==u.EntityId&&s.WolfBox!=WolfBoxKind.None);
                     if(shot==null||!shot.Applied||seen.Contains(shot.WolfBox)||Battle.Clock<shot.ImpactAt+.1||Battle.Clock>shot.ImpactAt+.35)continue;
-                    yield return null;
+                    yield return new WaitForEndOfFrame();
                     seen.Add(shot.WolfBox);
                     check("visible-left-"+shot.WolfBox,actor.FrameState=="Wolf"+shot.WolfBox&&actor.Renderer.flipX&&combatView.WolfEffectCount>0&&shot.DamageDealt>0);
                     yield return WolfGpuFrame(folder,"06-left-"+shot.WolfBox);
-                    if(captures++==0){double clock=Battle.Clock;int index=actor.FrameIndex;Battle.SetPaused(true);Tick(2);yield return null;check("pause",Battle.Clock==clock&&actor.FrameIndex==index);Battle.SetPaused(false);}
+                    if(captures++==0){double clock=Battle.Clock;int index=actor.FrameIndex;Battle.SetPaused(true);Tick(2);yield return new WaitForEndOfFrame();check("pause",Battle.Clock==clock&&actor.FrameIndex==index);Battle.SetPaused(false);}
                 }
                 check("three-loot-outcomes",seen.Count==3);
             }
-            RestartBattle();yield return null;check("reset",Battle.Units.Count==0&&Battle.CombatShots.Count==0&&combatView.WolfEffectCount==0);
+            RestartBattle();yield return new WaitForEndOfFrame();check("reset",Battle.Units.Count==0&&Battle.CombatShots.Count==0&&combatView.WolfEffectCount==0);
             check("gpu-actor-and-three-effects",wolfCaptureValid);File.WriteAllLines(Path.Combine(folder,"wolf-checks.txt"),checks);Debug.Log("WOLF_PLAYER_PASS="+valid);
             Application.Quit(valid?0:1);
         }
