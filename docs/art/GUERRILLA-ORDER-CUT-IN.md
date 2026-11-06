@@ -24,6 +24,8 @@ UseCampaignOrder成功后，ShowGuerrillaOrder读取模型GuerrillaMemberIds战�
 
 角色设计和音频均保留其原有真实权利状态。用户看稿确认、接入及源码上传要求不是权利人授权，不将原音或派生图登记为CC0。
 
-本轮e747ff0运行源码的模型Edit490/490、最终GPU Play27/27、1920×1080独立Player28/28及Windows构建0错误通过，具体范围与未测项以QA为准。此前a5b844e的验证只代表旧单体追击/倍速耦合版历史。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐演出帧画面，追加-guerrillaOrderCaptureDoubleSpeed验证2×战斗时仍完整播放；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+最新7747438包含8/9档、无整令次数上限和真实转职：完整Edit501/501、相关GPU Play48/48、实际点击独立Player32/32、Windows构建0错误通过。原恒速全场追击e747ff0为历史版本，具体范围及未测项以QA为准。此前a5b844e的验证只代表旧单体追击/倍速耦合版历史。独立Player显式入口保持-guerrillaOrderSmokeTest -demoEvidenceDir <目录>，可选-guerrillaOrderCaptureFrames输出实际逐演出帧画面，追加-guerrillaOrderCaptureDoubleSpeed验证2×战斗时仍完整播放；只在Development显式参数下运行。耐久守军只作开发夹具，不代表自然平衡通过。
+
+高档独立验收参数为-guerrillaHighTierSmokeTest（可追加-guerrillaHighTierCaptureFrames）；该入口以9级9种库存与耐久/延后攻击守军作明确夹具，GUI需实际操作，不自动假点选。
 
 Windows产物保持Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe；Editor入口YesterdayConvoy.Editor.GuerrillaOrderBuildTools.BuildWindows复用原角色准备、场景清单和配置验证。不自动ZIP/Releases，不自动合并PR。

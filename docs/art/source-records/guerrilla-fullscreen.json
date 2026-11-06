@@ -5,7 +5,7 @@
   "source_sha256": "8a5883dcb661468342e57c5a60713ef75004a16c0e07cfd5861d4f6510b73127",
   "source_bytes": 2633324,
   "runtime_art": "Assets/Art/VFX/GuerrillaOrder/Resources/GuerrillaOrder/approved-cut-in.png",
-  "processing": "Source image bytes retained as a portrait atlas. Native CPU meshes crop seven portraits into nine fixed radial glass panes. Independent panes converge, split into twelve textured triangles each, rotate, shrink and dissolve over 2.6 simulation seconds. Missing members retain empty glass; two extension slots bind manually designated owned non-native cards using their existing portrait sprites, retaining reserve gaps. No video playback or whole-poster fade. Follow-up user revision: cinematic duration is identical at 1x/2x; model-backed global impact feedback and actual damage labels reveal the battlefield after fracture.",
+  "processing": "Source image bytes retained as a portrait atlas. Native CPU meshes crop seven portraits into nine fixed radial glass panes. Independent panes converge, split into twelve textured triangles each, rotate, shrink and dissolve over 2.6 cinematic seconds. Missing members retain empty glass; two extension slots bind manually designated owned non-native cards using their existing portrait sprites, retaining reserve gaps. No video playback or whole-poster fade. Follow-up user revision: cinematic duration is identical at 1x/2x; model-backed global impact feedback and actual damage labels reveal the battlefield after fracture.",
   "members": [
     "CARD_M03",
     "CARD_M15",
