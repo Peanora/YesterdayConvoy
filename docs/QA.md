@@ -5,7 +5,9 @@
 - Unity6000.6.5f1，无引擎或依赖升级。完整EditMode **749/749**（artifacts/balance-first-pass/edit-all-final.xml/log），相关D3D11非batch PlayMode **30/30**（play-related-final.xml/log）。覆盖新增总星/跨档/四星/真实六波伤害和旧样板独立性，以及10组相关场景夹具：新增BalanceFirstPass2、Campaign4、Dedicated3、DeepPool1、GuerrillaHighTier5、MudrockGrowth4、ReunionCoalition3、ShopSeatInteraction3、Snowstorm2、SynergyRework3。
 - 首轮Edit746/749：新测试宽泛按卡ID查询时取到守军塔露拉副本（60技能预算），真实主场景绑定TalulahTrial→TalulahFireRain48；固定真实入口资源，并保持原样板序列化前后不变检查，未改生产数值迎合断言。旧日志edit-all.xml/log保留。首轮Play batch28/30：旧正式免费转职预期按新测试/正式边界更新，另一例WaitForEndOfFrame不支持batch，改非batch重跑原30例通过，保留play-related.xml/log。
 - 新增显式开发Player入口`-balanceFirstPassSmokeTest -balanceEvidenceDir <目录>`，使用保存ReunionTrial、合法有限库存预置、实际出战实例和生产ProcessShopPointer，随后选择正式第7/8/11关夹具自然交战；不注入战斗伤害、不强制胜负、不伪称OS鼠标或自然十三关成型。
-- 截至测试结束，原56份既存文件SHA256零变化；仅本轮源码、测试和文档纳入交付。尚未完成本轮独立Windows构建/Player验收；第二机、自然十三关、全部阵容和最终长局平衡未测。
+- 运行源码 **685cd45784c0d2393c3e0a5c1b4d15f9ae93e252**；复用现有ReunionBuildTools.BuildWindows，Windows x64 Development构建 **1063614574 bytes / 0 errors**，build.log明确退出0；不修改工程构建设置。工程外TEMP启动可见D3D11独立Player：1600×900与1280×720各 **50/50、退出0**（player-visible-1600/result.json、player-visible-1280/result.json及各自exit.json）。新四星弩手实际2124HP/162攻、部署扣5DP；整合总星9→10同档倍率增加，雪怪/深池显示真实总星3及其倍率。三关D07实际220/260/340生命、24/30/48攻击，双方实际命中且首次发射距离约3.17，暂停/重开与正式免费转职禁用通过。
+- 首次隐藏Player逻辑50/50、退出0，但10张截图全黑（player-1600），未计可见画面验收。之后可见窗口各生成10张实际游戏相机截图；已实看1600雪怪详情/第11关及1280深池详情/第8关代表图。详情数字、完整说明和角色对射可见；既有长关卡标题在顶部窄栏换行裁切仍是UI待修项，本轮未改该布局。
+- 完整1972文件同步常用Builds/Windows，存在/长度0差异，Runtime DLL SHA256为407DC39469E0137DC147349F8D82B3256448A51D31D1AE888BD576E78B15C935，SOURCE.txt绑定运行源码（copy-check.json）。原56份既存文件SHA256零变化；只提交本轮源码、测试和文档，无场景/Prefab/Packages/ProjectSettings/新美术改动，不自动合并main、ZIP或Releases。第二机、自然十三关、徽章获取经济、全部阵容和最终长局平衡未测。
 
 ## 2026-11-07：牌库与自由席位
 
