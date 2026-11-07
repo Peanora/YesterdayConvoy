@@ -6,7 +6,9 @@
 - 9张256×256透明PNG与批准V3逐字节一致，必要meta与来源记录随源码。保留原徽/原合约与六枚改编设计的区别；显示颜色不烘焙进PNG。资源键UI/Synergies/{id}，无mipmap、Bilinear/Clamp、sRGB、RGBA32不压缩，不开ReadWrite。
 - 完整EditMode512/512，0失败/跳过（artifacts/synergy-badge-edit.xml）。新增4例验证九个独立资源、雪怪2/5与泥岩2/4/5等真实门槛、合法游击转职7→8→9和镀彩多色族，不改人数/库存。
 - 相关D3D11 PlayMode15/15，0失败/跳过（artifacts/synergy-badge-play.xml）。新增GPU透明轮廓上传、真实Campaign/SynergyTrial档位与详情阻断；回归ApprovedUi、感染弹窗/锁定、天气状态和已有羁绊详情后方输入。此处GPU纹理检查不等同完整OnGUI截图。
-- Windows构建与独立Player的实际阶色、多色采样、两步真实详情点击尚待运行。显式验收参数-synergyBadgeSmokeTest，独立结果将补记；未测全量PlayMode、第二机或自然长局平衡。
+- 运行源码689a30e7cf47031bb8668d2ab54ada6fa26cf718：BaselineTools.BuildWindows成功，1048888761字节、0错误（artifacts/synergy-badge-build.log）。本地Builds/Windows/YesterdayConvoy.exe与SOURCE.txt交付，PreparedArt校验/构建收集保持，未创建ZIP或Release。代码与素材提交后构建，后续仅补验证文档。
+- 显式-synergyBadgeSmokeTest的1920×1080与1280×720可见D3D11独立Player均29/29通过，八张完整OnGUI截图/轮；结果分别在artifacts/synergy-badge-player-1920/result.json及synergy-badge-player-1280/result.json。两轮各以computer-use实际点击游击队行打开详情、点击关闭，共4次OS鼠标点击；gui-step/ack只等待并核对外部操作，没有注入GUI事件或直接设置详情状态。实际8/9档与关闭后的彩色图标区均采得6个色相族，库存、DP、档位及详情后方输入保护通过，两轮进程均正常退出。已查看实际UI和裁切阶色对照，未把Camera-only渲染当成OnGUI证据。
+- Player使用真实Campaign与SynergyTrial场景，明确的1星Shop.Preset库存夹具和正常转职操作形成未激活/铜/银/金/8彩/9彩；不直接改羁绊档位、伤害或军令值，不冒称自然运营/长局通关。未测全量PlayMode、第二机、缺失资源故障注入或自然长局平衡。仓库6587跟踪文件校验通过；九PNG/meta均跟踪，构建后原52处meta逐字节保持，ProjectSettings/Packages无任务差异，两个既有本地项不提交。
 
 ## 2026-11-07：游击自动五段、蓄力重斩与震屏
 
