@@ -117,7 +117,14 @@ namespace YesterdayConvoy
             for(;;)
             {
                 string ack=Path.Combine(directory,"gui-ack.txt");
-                if(File.Exists(ack)&&File.ReadAllText(ack).Trim()==id.ToString()&&accepted())break;
+                bool acknowledged=false;
+                try {acknowledged=File.Exists(ack)&&File.ReadAllText(ack).Trim()==id.ToString();}
+                catch(IOException)
+                {
+                    // An external writer may briefly hold or atomically replace this file.
+                    // Retry next frame; the real GUI state and original deadline still apply.
+                }
+                if(acknowledged&&accepted())break;
                 if(Time.realtimeSinceStartupAsDouble>deadline)throw new InvalidOperationException("Actual badge UI click timed out: "+name);
                 yield return null;
             }
