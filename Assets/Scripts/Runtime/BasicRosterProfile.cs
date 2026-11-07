@@ -18,7 +18,8 @@ namespace YesterdayConvoy
             bool mandra=unit.CardId=="CARD_M32"&&unit.UnitId.StartsWith("M32_",StringComparison.Ordinal)&&combat.Effects.Mandragora&&!combat.HasSkill&&combat.CanAttack;
             bool mephi=unit.CardId=="CARD_M25"&&unit.UnitId=="M25_MEPHISTO"&&combat.Effects.Healer&&!combat.HasSkill&&!combat.CanAttack;
             bool patriot=unit.CardId=="CARD_M20"&&unit.UnitId=="M20_PATRIOT"&&combat.Effects.Patriot&&!combat.HasSkill&&combat.CanAttack;
-            if(!talulah&&!frost&&!mandra&&!mephi&&!patriot&&(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack))
+            bool wolf=unit.CardId==SilverWolfCombat.CardId&&unit.UnitId=="M41_SILVER_WOLF"&&combat.HasSkill&&combat.CanAttack&&combat.SkillAmmo==3;
+            if(!wolf&&!talulah&&!frost&&!mandra&&!mephi&&!patriot&&(!allowed.Contains(unit.CardId)||unit.CardId!="CARD_ORIGINIUM_SLUG"&&!unit.UnitId.StartsWith(unit.CardId.Substring(5)+"_",StringComparison.Ordinal)||combat.HasSkill||!combat.CanAttack))
                 throw new ArgumentException("Only authored basic guerrilla trial roles are supported.");
             var e=combat.Effects;
             if(e.Patriot&&!patriot||e.FrostNova&&!frost||e.ArtsBarrier||e.Mudrock||e.Phalanx||e.Healer&&!mephi||e.Flamechaser||e.Flamerazer||e.Mandragora&&!mandra||e.NervousCreeper||e.Harvester||e.FirstSpeaker||e.Shackler||

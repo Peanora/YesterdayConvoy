@@ -79,6 +79,8 @@ namespace YesterdayConvoy
         internal string CombatTargetId, BlockerId;
         public bool IsMoving { get; internal set; } = true;
         public float SkillSP { get; internal set; }
+        public WolfBoxKind LastWolfBox {get;internal set;}
+        public double WolfTransformAt {get;internal set;}=double.NegativeInfinity;
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public int OrdinaryAttacksFired { get; internal set; }

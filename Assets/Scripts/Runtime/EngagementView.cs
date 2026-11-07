@@ -9,10 +9,13 @@ namespace YesterdayConvoy
         private sealed class ShotView { public LineRenderer Trail, Impact, Rays, Ink; public SpriteRenderer Face; }
         private sealed class Puff { public Vector3 Position; public double Time; public bool Death; public string CardId; }
         private TalulahAttackVfx talulahAttackVfx;
+        private SilverWolfView wolfVfx;
+        private bool wolfSlugTrial;
+        public int WolfEffectCount => wolfVfx?.VisibleCount??0;
         private CommonCombatVfxDirector commonVfx;
         private AdvancedDefenderView advancedVfx;
         private InfectionBurstFeedback infectionFeedback;
-        public double NativeEffectsUntil => System.Math.Max(System.Math.Max(CommonCombatVfxDirector.PendingUntil(owner?.Battle),advancedVfx?.PendingUntil??double.NegativeInfinity),infectionFeedback?.PendingUntil??double.NegativeInfinity);
+        public double NativeEffectsUntil => System.Math.Max(wolfVfx?.PendingUntil??double.NegativeInfinity,System.Math.Max(System.Math.Max(CommonCombatVfxDirector.PendingUntil(owner?.Battle),advancedVfx?.PendingUntil??double.NegativeInfinity),infectionFeedback?.PendingUntil??double.NegativeInfinity));
         private readonly List<ShotView> shots = new List<ShotView>();
         private readonly List<Puff> puffs = new List<Puff>();
         private readonly List<LineRenderer> seedViews=new List<LineRenderer>();
@@ -34,6 +37,7 @@ namespace YesterdayConvoy
         {
             owner = controller; definition = data; click = uiSound; impact = hitSound;
             ClearTransient(); runId=-1;
+            wolfSlugTrial=!controller.DefenderTrialActive && !controller.TacticalMapActive && controller.Definition.Card.CardId==SilverWolfCombat.CardId;
             if(commonVfx==null)commonVfx=new CommonCombatVfxDirector(transform);
             infectionFeedback=GetComponent<InfectionBurstFeedback>()??gameObject.AddComponent<InfectionBurstFeedback>();infectionFeedback.Bind(controller);
             if(rosterView!=null) { rosterView.gameObject.SetActive(false); Destroy(rosterView.gameObject); rosterView=null; }
@@ -47,6 +51,7 @@ namespace YesterdayConvoy
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var mephi=GetComponent<MephistoEffectView>()??gameObject.AddComponent<MephistoEffectView>();mephi.Bind(()=>controller.Battle);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle,()=>controller.PresentationClock);
+            var marine=GetComponent<MarineTideView>()??gameObject.AddComponent<MarineTideView>();marine.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var monsterOriginal=GetComponent<MonsterOriginalEffectView>()??gameObject.AddComponent<MonsterOriginalEffectView>();monsterOriginal.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             advancedVfx=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advancedVfx.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);
@@ -80,7 +85,14 @@ namespace YesterdayConvoy
                 var seed=b.DeepSeeds[i];var line=seedViews[i];line.enabled=!seed.Spent;
                 if(line.enabled)Ring(line,seed.Position+Vector3.up*.1f,.18f,new Color(1,.48f,.12f,.8f),null);
             }
-            if(rosterView==null)
+            if(wolfSlugTrial)
+            {
+                SilverWolfView.PresentSlug(kroos,b,d,cam,fxTime,readyIdleTime);
+                for(int i=0;i<extraVisuals.Count;i++)
+                    SilverWolfView.PresentSlug(extraVisuals[i],b,b.Defenders[i+1],cam,fxTime,readyIdleTime);
+                range.enabled=false;
+            }
+            else if(rosterView==null)
             {
             float death = d.Alive ? 0 : Mathf.Clamp01((float)(time - d.DeathTime) / 0.45f);
             kroos.enabled = death < 1;
@@ -129,6 +141,7 @@ namespace YesterdayConvoy
                 var direction=target!=null?target.Position-unit.Motion.Position:unit.Motion.Direction;
                 talulahAttackVfx.PresentUnit(b,unit,cam,Vector3.Dot(direction,cam.transform.right)<0);
             }
+            wolfVfx?.Begin();
             var modelShots = b.CombatShots;
             for (int i = 0; i < modelShots.Count; i++)
             {
@@ -147,6 +160,7 @@ namespace YesterdayConvoy
                 }
                 PresentShot(shots[i], modelShots[i], b, cam);
             }
+            wolfVfx?.End();
             talulahAttackVfx?.End();
             foreach (var unit in b.Units)
             {
@@ -168,6 +182,18 @@ namespace YesterdayConvoy
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
         {
+            bool wolfShot=!double.IsNegativeInfinity(shot.WolfActionAt);
+            if(wolfShot || wolfSlugTrial && shot.FromDefender)
+            {
+                if(wolfShot)
+                {
+                    if(wolfVfx==null)wolfVfx=new SilverWolfView(transform,material);
+                    wolfVfx.Present(shot,b,cam,owner.PresentationClock);
+                }
+                view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;
+                if(view.Face!=null)view.Face.enabled=false;
+                return;
+            }
             if(commonVfx.PresentShot(shot,b,cam,owner.PresentationClock,owner.CardForUnit(b.FindUnit(shot.SourceId))))
             {view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(!shot.FromDefender&&(b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock||b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mandragora)){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
@@ -342,6 +368,7 @@ namespace YesterdayConvoy
 
         private void ClearTransient()
         {
+            wolfVfx?.Clear();
             talulahAttackVfx?.Clear();
             commonVfx?.Clear();
             foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }

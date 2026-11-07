@@ -39,7 +39,7 @@ namespace YesterdayConvoy
             {
                 // This is a persistent area aura, including camouflaged defenders.
                 if(!d.Alive||GroundDistance(d.Position,u.Motion.Position)>2.5f)continue;
-                ApplyNeuralDamage(d,UnitCombat(u).UnitAttack*.2f);hit=true;
+                ApplyNeuralDamage(d,UnitCombat(u).UnitAttack*.2f,u);hit=true;
             }
             if(hit){u.HarvesterAuraTicks++;u.LastHarvesterAuraAt=Clock;}
             return false;

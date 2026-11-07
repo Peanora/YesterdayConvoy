@@ -53,7 +53,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(Grade(reunion),Is.EqualTo(SynergyVisualGrade.Gold),"The count bubble is nine while the activated threshold and plate remain six/gold.");
             var sequences=new Dictionary<string,int[]>{
                 {"reunion",new[]{2,4,6}},{"snow",new[]{2,5}},{"infection",new[]{2,4,6}},
-                {"guerrilla",new[]{2,4,6,8,9}},{"mudrock",new[]{2,4,5}},
+                {"guerrilla",new[]{2,4,6,8,9}},{"mudrock",new[]{2,4,5,6}},
                 {"herd",new[]{2,4}},{"deep-pool",new[]{2,4}},{"marine",new[]{2,4}},{"sarkaz",new[]{2,4,6}}
             };
             foreach(var pair in sequences)CollectionAssert.AreEqual(pair.Value,Summary(pair.Key,1).Thresholds,pair.Key+" keeps the complete sequence, including inactive future thresholds.");

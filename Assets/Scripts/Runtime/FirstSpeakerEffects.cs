@@ -57,8 +57,9 @@ namespace YesterdayConvoy
                     }
                     if(target==null)continue;
                     bubble.LastTargetId=target.EntityId;bubble.LastPulseAt=Clock;bubble.Record(target.EntityId);
-                    DamageDefender(target,bubble.Attack,CombatDamageType.Physical);
-                    ApplyNeuralDamage(target,bubble.Attack);
+                    var source=FindUnit(bubble.SourceId);
+                    DamageDefender(target,bubble.Attack,CombatDamageType.Physical,source:source);
+                    ApplyNeuralDamage(target,bubble.Attack,source);
                 }
             }
         }

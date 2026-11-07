@@ -1,5 +1,9 @@
 # 美术资源 Credits
 
+2026-11-07 海嗣溟痕：原素材来自《明日方舟》26-10-29客户端的tile_creep方向特效与实际纹理依赖；具体作者未确认，原权利人权利保留，开放再分发许可未确认。用户指定接入/上传不是权利人许可。原图、本作Shader/反馈适配及精确来源见[溟痕说明](MARINE-TIDE.md)和[来源记录](source-records/marine-tide-original.json)。
+
+2026-11-07 M41 银狼 LV.999：基于用户提供形象参考和确认的 V14 看稿接入。角色、步态参考、源石虫、适配项及权利边界见[来源说明](SILVER-WOLF-LV999.md)。
+
 ## 2026-11-03：场上动作补齐
 
 荒芜拉普兰德、余、圣聆初雪、望、塞雷娅、玛恩纳追加动作及望棋子：角色/原始纹理/动作属于《明日方舟》相关权利人，具体动画师未确认；来源PRTS Torappu Asset Storage，确切文件URL见[source records](source-records/field-animation-completion-approved.json)。非CC0，开放再分发许可未确认；本项目用户接入与上传决定不构成权利人授权。

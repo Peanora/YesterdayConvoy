@@ -15,13 +15,18 @@ namespace YesterdayConvoy
         readonly List<CreeperPulse> creeperPulses=new List<CreeperPulse>();
         public IReadOnlyList<CreeperPulse> CreeperPulses=>creeperPulses.AsReadOnly();
         public int NeuralBursts {get{int count=0;foreach(var d in defenders)count+=d.NeuralBursts;return count;}}
-        void ApplyNeuralDamage(DefenderState d,float amount)
+        float ApplyNeuralDamage(DefenderState d,float amount,DeployedUnitState source=null)
         {
-            if(!d.Alive||amount<=0||d.NeuralUntil>Clock)return;
-            d.NeuralAccumulated+=amount;
-            if(d.NeuralAccumulated<100)return;
+            if(!d.Alive||amount<=0||d.NeuralUntil>Clock)return 0;
+            if(source!=null)OnMarineContact(source);
+            float multiplier=source==null?1:MarineNeuralMultiplier(source);
+            float applied=Mathf.Min(amount*multiplier,Mathf.Max(0,100-d.NeuralAccumulated));
+            MarineBonusNeuralDealt+=Mathf.Max(0,applied-amount);
+            d.NeuralAccumulated+=applied;
+            if(d.NeuralAccumulated<100-.00001f)return applied;
             d.NeuralAccumulated=0;d.NeuralUntil=Clock+10;d.LastNeuralBurstAt=Clock;d.NeuralBursts++;
             d.BlockedCount=0;TrueDamage(d,100);
+            return applied;
         }
         void StepCreeperDamage(DeployedUnitState u)
         {
@@ -37,7 +42,7 @@ namespace YesterdayConvoy
             {
                 if(!d.Alive||GroundDistance(d.Position,pulse.Position)>2)continue;
                 pulse.TargetsHit++;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts,source:u);
-                ApplyNeuralDamage(d,UnitCombat(u).UnitAttack);
+                ApplyNeuralDamage(d,UnitCombat(u).UnitAttack,u);
             }
         }
     }

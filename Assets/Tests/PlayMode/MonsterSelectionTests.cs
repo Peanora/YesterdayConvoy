@@ -16,7 +16,7 @@ namespace YesterdayConvoy.Tests
         private static IEnumerator Load() { yield return SceneManager.LoadSceneAsync("MonsterTrial"); yield return null; Time.timeScale=0; }
 
         [UnityTest]
-        public IEnumerator StartupMenuBlocksBattleAndPendingChoicesDoNotMutateResources()
+        public IEnumerator StartupMenuBlocksBattleUntilAPlayableMonsterIsChosen()
         {
             yield return Load(); var c=Object.FindAnyObjectByType<ManualBattleController>();
             Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.MonsterTests.Count,Is.EqualTo(43));
@@ -27,10 +27,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.ProcessPointerUp(Camera.main.WorldToScreenPoint(battle.Entry)).Success,Is.False);
             c.Tick(100); Assert.That(c.Dragging,Is.False); Assert.That(battle.Units,Is.Empty);
             Assert.That(battle.Clock,Is.Zero); Assert.That(c.EffectiveSimulationSpeed,Is.Zero);
-            Assert.That(c.TryEnterMonsterTest(Id(c,"银狼")),Is.False); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
+            Assert.That(c.MonsterTests.Single(x=>x.Name=="银狼 LV.999").Playable,Is.True); Assert.That(c.TryEnterMonsterTest("unknown"),Is.False);
             Assert.That(c.TestSelectionOpen,Is.True); Assert.That(c.Battle,Is.SameAs(battle)); Assert.That(battle.DP,Is.EqualTo(dp));
-            Assert.That(c.TryEnterMonsterTest(Id(c,"维维美")),Is.True);
-            Assert.That(c.TestSelectionOpen,Is.False); Assert.That(c.Definition.Card.DisplayName,Is.EqualTo("维维美"));
+            Assert.That(c.TryEnterMonsterTest(Id(c,"银狼 LV.999")),Is.True);
+            Assert.That(c.TestSelectionOpen,Is.False); Assert.That(c.Definition.Card.DisplayName,Is.EqualTo("银狼 LV.999"));
             c.SelectCard(true); Assert.That(c.TryDeployAt(c.Battle.Entry).Success,Is.True);
         }
 
