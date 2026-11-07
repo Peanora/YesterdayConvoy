@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-08：树海六星防线V2接入
+
+- 运行源码`f9449c20c5aae50a67e301ee8b07de1e358d421d`，Unity6000.6.5f1；同一日常工程从实时main7862d09创建功能分支并FF承接待审PR #102平衡提交43a72a1。地图资源写入九守军/六六星，源技能/前摇/完整动作复用，地形与路线未改。8级八人正常库存预置，测试仅开放自由整备，战斗保持正常面板/50DP/6防御。
+- 完整EditMode **755/755**（`artifacts/blackforest-six-star/edit-final.xml/log`），涵盖新增树海配置与海嗣半格中心/蔓延/神经查找/重开回归。相关非batch可见Direct3D11 PlayMode **15/15**（`play-related.xml/log`）：AdvancedDefender1、BlackForest2、Campaign4、FifthDefender1、MarineTide3、ShopSeatInteraction3、SixthDefender1；不是全量PlayMode。
+- 首次Editor编译未进入测试：新证据脚本使用的GetInstanceID在当前Unity报CS0619，三处改用保存地块对象集合比较后，上述完整最终测试通过。失败日志`edit-all.log`保留，不称为首次全绿。
+- 构建入口`YesterdayConvoy.Editor.ReunionBuildTools.BuildWindows`，动态完整场景目录、不写EditorBuildSettings；Windows x64 Development构建 **1063644138 bytes、0 errors**，退出0（`build.log`），输出`Builds/Windows-Reunion`。完整1972文件同步常用`Builds/Windows`并逐文件SHA256比较一致（`copy-check.json`）；SOURCE.txt与本地“树海六星试玩.cmd”指向本次运行源码/入口。首次复制比较仅SOURCE.txt因旧构建侧元数据不同，统一为本次来源记录后重新比较通过。
+- 工程外TEMP工作目录启动可见D3D11独立Player，**1600×900、1280×720各47/47**，均退出0（`player-1600`与`player-1280/result.json`及对应log）。检查生产场景/原门/238地块/九守军六六星、真实库存/正常面板/50DP6防御、三门生产ProcessShopPointer拖放、暂停中立即扣费/次数/CD但时钟/生命/SP/位置冻结、CD不绕过、重开与原资产不变；未冒称OS鼠标操作。
+- 默认八张预置各部署一次、自动触发合法玩家技能，两个分辨率均自然 **Won，93.9模拟秒、8名正常实体、4次穿门、6共享防御降0、余9DP、守军全灭、6次守军技能/3次玩家技能、55次治疗**。直接攻击记录2955.93HP、观察到守军生命回升954.77；不把变身加血算治疗，不注入伤害/HP、不FinishForTesting；自然获胜仅记录结果，不是烟测通过条件。8张EndOfFrame截图均非黑，已实看整备、三门暂停、实际交战/治疗/技能与结算/重开。暂停图玛恩纳高空位置已核为原生落地动作首帧冻结，非错枢轴；正常时钟继续播放，未修改其素材。
+- 树海跳过旧盟约地图源石与传送规则，溟痕采用本图所有真实可走格及Z=.5偏移；原整数地图以默认零偏移兼容。52份既存Mandragora/Mephisto VFX meta逐文件SHA256与开工相同，`.vscode/`、PackageManagerSettings.asset原样保留不提交；无场景/Prefab/Packages/ProjectSettings改动，无新原作媒体、ZIP/Releases或自动合并main。
+- 未执行第二机离线、新克隆、所有构筑/三路同资源胜率、自然十三关成型与长局最终平衡。默认自动策略和自由整备不能代替这些验收，试玩数值允许人类反馈后调整。
+
 ## 2026-11-08：首轮总星级、角色预算与后期普通关平衡
 
 - Unity6000.6.5f1，无引擎或依赖升级。完整EditMode **749/749**（artifacts/balance-first-pass/edit-all-final.xml/log），相关D3D11非batch PlayMode **30/30**（play-related-final.xml/log）。覆盖新增总星/跨档/四星/真实六波伤害和旧样板独立性，以及10组相关场景夹具：新增BalanceFirstPass2、Campaign4、Dedicated3、DeepPool1、GuerrillaHighTier5、MudrockGrowth4、ReunionCoalition3、ShopSeatInteraction3、Snowstorm2、SynergyRework3。
