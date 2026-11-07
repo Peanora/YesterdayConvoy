@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-07：泥岩六档彩色徽记修正
+
+- 运行源码`7c7ad44`：仅`SynergyBadgePresentation.GradeFor`为泥岩6档选择现有Prismatic，其余2/4/5档保持铜/银/金；侧栏与激活反馈复用同一选择，未修改实际门槛、转职、培养或战斗。显示说明表同步，未改素材、场景、Prefab、Packages或ProjectSettings。
+- Unity6000.6.5f1相关EditMode **19/19**（`artifacts/mudrock-prismatic/edit.xml`），D3D11 PlayMode **4/4**（`play.xml`），0失败/跳过。既有测试补充真实五原生+第六人转职的彩色映射，以及移出第六人退金、重新编入恢复彩色。仓库检查7628跟踪文件通过，`git diff --check`通过。
+- 现有`DeepPoolBuildTools.BuildWindows`按动态完整场景目录构建，**1063504436 bytes / 0 errors / 退出0**（`build.log`）；未改构建设置。同步全部1973文件到常用`Builds/Windows`，无缺失/长度差；运行DLL SHA256一致，`SOURCE.txt`记录7c7ad44。
+- 先以隐藏窗口运行泥岩专项，截图黑色，经验动画中间帧检查失败（19/20，退出1，`player/result.json`）；不计为可见画面通过，也未为此改生产逻辑。改为工程外TEMP启动1280×720可见D3D11独立Player，**20/20、退出0**（`player-visible/result.json`）。已实看`01-zero-xp-cultivation.png`的五人金色与`10-free-sixth-member-transfer.png`的六人青绿虹彩/人数6。此专项操作由既有控制器驱动，不冒称OS人工点击；保留七次真实战斗结算及后续明示IV/V预置的原验证边界。
+- 原52份VFX导入meta与开工SHA256逐文件相同，`.vscode/`与`ProjectSettings/PackageManagerSettings.asset`继续保留不提交。只提交本任务显示代码、既有测试断言和文档，沿PR #94交付；未创建ZIP/Releases、未自动合并main。未执行全量Edit/PlayMode、第二机、其他分辨率或自然长局平衡。
+
 ## 2026-11-07：PR 冲突整理与海嗣依赖整合
 
 - 最终以同一工程合并海嗣依赖与树海：运行源码6b02a5900cbcea0045628c306b626ef69b4098b1，完整EditMode619/619，0失败/跳过（edit-final.xml）。新版徽记下泥岩/溟痕补充行采用共用坐标，1px经验条不画覆盖填充的边框。新增地图沿用保存地形、显式terrainOnly及兼容旧调用的可选参数；启动路由组合各专项和原诊断，不改原有主场景或Packages。
