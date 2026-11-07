@@ -66,6 +66,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(Grade(Summary("snow",5)),Is.EqualTo(SynergyVisualGrade.Silver));
             Assert.That(Grade(Summary("mudrock",4)),Is.EqualTo(SynergyVisualGrade.Silver));
             Assert.That(Grade(Summary("mudrock",5)),Is.EqualTo(SynergyVisualGrade.Gold),"Five kinds mean different grades for snow and Mudrock.");
+            var mudrock=SynergySummary.From(SynergyTrialCatalog.Find("mudrock").Members.Concat(new[]{"CARD_M07"}),
+                extraMudrockMembers:new[]{"CARD_M07"}).Single(row=>row.Name=="泥岩小队");
+            Assert.That(mudrock.Count,Is.EqualTo(6));Assert.That(mudrock.Tier,Is.EqualTo(6));
+            Assert.That(Grade(mudrock),Is.EqualTo(SynergyVisualGrade.Prismatic),"The transferred sixth kind activates the prismatic plate.");
             foreach(string id in new[]{"reunion","infection","sarkaz"})Assert.That(Grade(Summary(id,6)),Is.EqualTo(SynergyVisualGrade.Gold),id);
             foreach(string id in new[]{"herd","deep-pool","marine"})Assert.That(Grade(Summary(id,4)),Is.EqualTo(SynergyVisualGrade.Silver),id);
             foreach(var entry in SynergyTrialCatalog.Entries)Assert.That(SynergyBadgePresentation.GradeFor(entry.Tag,0),Is.EqualTo(SynergyVisualGrade.Inactive),entry.Tag);

@@ -82,12 +82,15 @@ namespace YesterdayConvoy.Tests
             int gold=controller.Shop.Gold;Assert.That(controller.SetMudrockTransfer("CARD_M07",true),Is.True);
             Assert.That(controller.SetMudrockTransfer("CARD_M07",true),Is.True);Assert.That(controller.SetMudrockTransfer("CARD_M08",true),Is.False);
             Assert.That(controller.Shop.Gold,Is.EqualTo(gold));Assert.That(controller.Battle.MudrockTier,Is.EqualTo(6));
+            Assert.That(SynergyBadgePresentation.GradeFor("泥岩小队",controller.Battle.MudrockTier),Is.EqualTo(SynergyVisualGrade.Prismatic));
             Assert.That(controller.Battle.MudrockTotalStars,Is.EqualTo(11));Assert.That(controller.Battle.GolemCapacity,Is.EqualTo(4));
             Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.True,"The two designation systems retain their separate slots.");
             Assert.That(controller.IsMudrockTransfer("CARD_M07"),Is.True);Assert.That(controller.IsGuerrillaTransfer("CARD_M07"),Is.True);
             ClickPiece("CARD_M07");Assert.That(controller.IsMudrockTransfer("CARD_M07"),Is.True);
             Assert.That(controller.PreparedMudrockTransferIds,Is.Empty);Assert.That(controller.Battle.MudrockCrewCount,Is.EqualTo(5));
+            Assert.That(SynergyBadgePresentation.GradeFor("泥岩小队",controller.Battle.MudrockTier),Is.EqualTo(SynergyVisualGrade.Gold));
             ClickPiece("CARD_M07");Assert.That(controller.Battle.MudrockCrewCount,Is.EqualTo(6));
+            Assert.That(SynergyBadgePresentation.GradeFor("泥岩小队",controller.Battle.MudrockTier),Is.EqualTo(SynergyVisualGrade.Prismatic));
             Assert.That(controller.CommissionCampaignCard("CARD_M07").Success,Is.True);
             Assert.That(controller.CommissionCampaignCard("CARD_M07").Success,Is.True);
             Assert.That(controller.Shop.Bench.Single(p=>p.Id=="CARD_M07").Star,Is.EqualTo(2));
