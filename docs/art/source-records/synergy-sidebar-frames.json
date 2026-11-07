@@ -126,7 +126,8 @@
     "new_guid_generation": "UUID4, checked against existing Assets .meta GUIDs",
     "unity_import": "Unity 6000.6.5f1 full EditMode 513/513 and relevant D3D11 PlayMode 16/16 passed; see docs/QA.md",
     "resource_loading": "All six frames load and upload to GPU with transparent corners and visible bodies; root Unity verification passed",
-    "build": "not run by asset writer; root integration verification pending",
+    "build": "Source 1f4967b: local Windows x64 build passed, 1050473302 bytes, 0 errors; see docs/QA.md",
+    "native_player": "Visible D3D11 1920x1080 and 1280x720 each passed 48/48; actual plate has five hue families with a white glyph. Real OS scrolling and clicks passed, and both processes exited normally.",
     "git_ignore": "All 20 new files checked with git check-ignore --no-index; none ignored.",
     "new_guid_collisions": 0
   },

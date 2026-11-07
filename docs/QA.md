@@ -3,9 +3,12 @@
 ## 2026-11-07：确认稿菱形底牌、白徽与实际人数
 
 - 人类确认项目外侧栏原稿V1后要求接入。沿用codex/synergy-icons-tier-ui和PR #96；本轮fetch确认origin/main仍b1d55e7、任务分支与origin一致后继续。仅显示与验证代码、六张小型运行PNG/必要meta及SVG作者源/来源记录；九枚V3徽记不变。原52处VFX meta逐文件SHA256保持、两个本地未跟踪项不提交。
-- Unity6000.6.5f1完整EditMode513/513，0失败/跳过（artifacts/synergy-diamond-edit.xml）；相关D3D11 PlayMode16/16，0失败/跳过（artifacts/synergy-diamond-play.xml）。新增帧资源导入及透明GPU上传、真实9种整合仍6档金底但人数9、全九种完整门槛、合法十卡覆盖九行、雪怪5/感染2副行、滚动后的末行点击坐标与构筑/完整快捷区不侵占552部署栏。保留详情输入保护、商店/感染/雪怪既有回归。几何反射夹具不冒称真实OS点击。
+- Unity6000.6.5f1完整EditMode513/513，0失败/跳过（artifacts/synergy-diamond-edit.xml）；相关D3D11 PlayMode首轮与感染副行修正后均16/16，0失败/跳过（artifacts/synergy-diamond-play.xml、synergy-diamond-play-final.xml）。新增帧资源导入及透明GPU上传、真实9种整合仍6档金底但人数9、全九种完整门槛、合法十卡覆盖九行、雪怪5/感染2副行、滚动后的末行点击坐标与构筑/完整快捷区不侵占552部署栏。保留详情输入保护、商店/感染/雪怪既有回归。几何反射夹具不冒称真实OS点击；最后的开发回执IO重试由后续双分辨率Player实际验证。
 - 菱形底牌从批准稿SVG确定性导出，五个金属灰/铜/银/金/镀彩底与一个无数字黑圆点共六张256RGBA32PNG。白徽、人数与门槛由现有数据独立绘制；currentTier只决定底牌，Count决定圆点，完整门槛当前档加粗白色。运行图片、meta及来源随源码，未改羁绊逻辑或场景/Prefab/包/设置。
-- Windows构建与双分辨率可见Player验证待执行；下方旧版数据仅为历史，不作为新侧栏完成证据。
+- 运行源码1f4967b833acd0c7574a0a87bda081526191ccdd：BaselineTools.BuildWindows成功，1050473302字节、0错误（artifacts/synergy-diamond-build-delivery.log）。入口Builds/Windows/YesterdayConvoy.exe，SOURCE.txt注明提交与环境。构建后仅更新验证文档；不创建ZIP/Releases。
+- 最终1920×1080和1280×720可见D3D11独立Player分别48/48，结果为artifacts/synergy-diamond-delivery-1920/result.json及synergy-diamond-delivery-1280/result.json，均正常退出。两轮各5次真实OS点击＋1次真实滚动：打开/关闭游击详情、列表滚动到底、末行萨卡兹详情开关、原快捷按钮返回整备。gui-step/ack只等待外部操作并核对真实GUI状态，不注入GUI事件或直接设置滚动/详情状态。每轮13张完整OnGUI截图，实际8/9档及关闭详情后的彩底均采到5种色相族，白徽分别183/86个合格像素；不是对旧彩色glyph采样。已看完整九条整备、四条战斗滚动及动态副行，两种分辨率均无感染文字裁切。
+- 早期实机发现战斗滚动区缩窄后感染副行自动换行、12高裁切；已压缩空格、明确单行并按真实字体测量必要时降10→9字号，Play16/16及最终两轮实图复验。早期1280和一次1920验收被ack文件并发读写的Sharing violation中断，原子替换仍能短暂占用；开发driver现捕获IOException下一帧重试，保留300秒超时、匹配ID与accepted()状态双检查。未把早期中断/修正前画面当最终通过证据。
+- 仓库6607个跟踪文件与Unity元数据检查通过；原52处VFX meta与开工快照逐文件SHA256完全一致，九徽PNG/meta不变，无场景/Prefab/Packages/ProjectSettings任务修改。Player使用真实场景及明确合法库存/转职夹具，不宣称自然运营或完整通关；未运行全量PlayMode、第二机、缺失资源故障注入或自然长局平衡。下方旧版数据仅为历史。
 
 ## 2026-11-07：九羁绊图标、铜银金与超高档镀彩
 
