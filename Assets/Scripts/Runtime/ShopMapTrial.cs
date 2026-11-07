@@ -123,6 +123,7 @@ namespace YesterdayConvoy
             Camera.main.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);
             FrameShopMap();
             SyncShopBenchModels();
+            RefreshSynergyActivationFeedback();
             RefreshInfectionChoicePrompt();
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
@@ -180,6 +181,7 @@ namespace YesterdayConvoy
         public void CancelShopDrag(){golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
+            ClearSynergyActivationFeedback();synergyActivationShop=null;
             activeSynergyTrial=null;Loop=null;
             CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
             ReturnToMonsterTests();if(shopMapCopy!=null){Destroy(shopMapCopy);shopMapCopy=null;}

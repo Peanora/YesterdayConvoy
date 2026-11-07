@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 namespace YesterdayConvoy
 {
     /// <summary>Live glass/portrait motion with a pause-aware cinematic clock, independent of combat speed.</summary>
-    public sealed class GuerrillaOrderView : MonoBehaviour
+    public sealed partial class GuerrillaOrderView : MonoBehaviour
     {
         public const float FadeInDuration=.16f, HoldDuration=.74f, FadeOutDuration=1.70f;
         public const float Duration=GuerrillaOrderGeometry.Duration, SoundCueAt=.90f;
@@ -23,12 +23,14 @@ namespace YesterdayConvoy
         ManualBattleController owner; ManualBattle observed; int run=-1;
         float elapsed;
         GuerrillaOrderVolley volley;
-        bool active,pausedSound,cueTriggered,dirty=true;
+        bool active,pausedSound,cueTriggered,pausedSlashSound,slashCueTriggered,dirty=true;
         float builtAt=float.NaN;
+        int builtStrikes=-1;bool builtCancelled;
         Material material; Texture2D approved; Font captionFont;
         RenderTexture frame,accumulation;
         CommandBuffer renderCommands;
-        AudioClip followup; AudioSource sound;
+        AudioClip followup,slashTrack; AudioSource sound,slashSound;
+        GuerrillaOrderScreenEffect screenEffect;
         Batch behind,panes,front,caption;
         readonly Batch[] extras=new Batch[2];
         int paneCount,portraitCount,fragmentCount,outerFragmentCount;
@@ -38,7 +40,7 @@ namespace YesterdayConvoy
         static float S(float value)=>GuerrillaOrderGeometry.Smooth(value);
         static float Out(float value)=>GuerrillaOrderGeometry.Out(value);
         static float Rand(int seed)=>GuerrillaOrderGeometry.LightRandom(seed);
-        static float Backdrop(float time)=>S(time/.16f)*(1-S((time-.94f)/.42f));
+        static float Backdrop(float time)=>S(time/.16f)*(1-S((time-.91f)/.28f));
         static Color Rgba(float r,float g,float b,float a=1)=>new Color(r/255,g/255,b/255,a);
 
         sealed class Batch
@@ -79,6 +81,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<string> SlotMembers{get{CheckIdentity();return visibleSlots??(visibleSlots=Array.AsReadOnly(slots));}}
         public int PlayCount{get;private set;}
         public int SoundPlayCount{get;private set;}
+        public int SlashSoundPlayCount{get;private set;}
         public bool Playing{get{CheckIdentity();return active&&CanPresent&&CurrentAge<Duration;}}
         public float Age{get{CheckIdentity();return active?CurrentAge:0;}}
         // Compatibility envelope: darkening only. Character panes have their own geometry and individual alpha.
@@ -88,7 +91,9 @@ namespace YesterdayConvoy
         public float Remaining=>Playing?Mathf.Max(0,Duration-CurrentAge):0;
         public bool SoundPaused{get{CheckIdentity();return Playing&&sound!=null&&pausedSound;}}
         public bool SoundPlaying{get{CheckIdentity();return Playing&&!pausedSound&&sound!=null&&sound.isPlaying;}}
-        public bool AssetsReady=>approved!=null&&material!=null&&material.shader.isSupported&&followup!=null;
+        public bool SlashSoundPaused{get{CheckIdentity();return Playing&&slashSound!=null&&pausedSlashSound;}}
+        public bool SlashSoundPlaying{get{CheckIdentity();return Playing&&!pausedSlashSound&&slashSound!=null&&slashSound.isPlaying;}}
+        public bool AssetsReady=>approved!=null&&material!=null&&material.shader.isSupported&&followup!=null&&slashTrack!=null;
         public Rect ScreenBounds{get{var v=TacticalViewport.Current;return new Rect(v.Offset.x,v.Offset.y,1280*v.Scale,720*v.Scale);}}
         public int VisiblePaneCount{get{BuildGeometry();return paneCount;}}
         public int VisiblePortraitCount{get{BuildGeometry();return portraitCount;}}
@@ -96,6 +101,9 @@ namespace YesterdayConvoy
         public int VisibleOuterFragmentCount{get{BuildGeometry();return outerFragmentCount;}}
         public int VisibleImpactTargetCount{get{BuildGeometry();return impactTargetCount;}}
         public float DisplayedDamage{get{BuildGeometry();return displayedDamage;}}
+        public int DisplayedStrikeCount{get{BuildGeometry();return displayedStrikeCount;}}
+        public float ChargeProgress=>Playing&&CanCharge(Age)?S((Age-ChargeStart)/(FinalStrikeAt-ChargeStart)):0;
+        public GuerrillaOrderScreenEffect ScreenEffect=>screenEffect;
         public IReadOnlyList<Vector3> GeometryVertices{get{BuildGeometry();return visibleGeometry??(visibleGeometry=geometry.AsReadOnly());}}
         public IReadOnlyList<Vector2> PaneOffsets{get{BuildGeometry();return visibleOffsets??(visibleOffsets=Array.AsReadOnly(offsets));}}
         float CurrentAge=>elapsed;
@@ -129,12 +137,18 @@ namespace YesterdayConvoy
             observed=owner.Battle;run=observed.RunId;elapsed=0;active=true;PlayCount++;dirty=true;PrepareMaterial();
         }
         public void BindVolley(GuerrillaOrderVolley committedVolley)
-        {volley=committedVolley;dirty=true;}
+        {volley=committedVolley;if(volley!=null)elapsed=Mathf.Clamp(volley.Age,0,Duration);dirty=true;}
         public void AdvancePresentation(float delta)
         {
             CheckIdentity();
             if(float.IsNaN(delta)||float.IsInfinity(delta)||delta<0)throw new ArgumentOutOfRangeException(nameof(delta));
-            if(active&&CanPresent&&!owner.Battle.IsPaused)elapsed=Mathf.Min(Duration,elapsed+delta);
+            if(active&&CanPresent&&!owner.Battle.IsPaused)
+            {
+                // Automatic orders may commit inside a simulation substep. The model already
+                // owns their elapsed presentation time, so never add the whole frame twice.
+                elapsed=Mathf.Min(Duration,volley!=null&&owner.Battle.Phase==BattlePhase.Running?volley.Age:elapsed+delta);
+            }
+            UpdateScreenEffect();
         }
         /// <summary>The production mesh shader. Use RenderTo for the complete multi-layer composition.</summary>
         public Material PrepareMaterial()
@@ -143,13 +157,15 @@ namespace YesterdayConvoy
             approved=Resources.Load<Texture2D>("GuerrillaOrder/approved-cut-in");
             var shader=Resources.Load<Shader>("GuerrillaOrder/GuerrillaOrder");
             followup=Resources.Load<AudioClip>("GuerrillaOrder/followup-original");
-            if(approved==null||shader==null||followup==null)throw new InvalidOperationException("Missing approved guerrilla V2 illustration, mesh shader or follow-up sound.");
+            slashTrack=Resources.Load<AudioClip>("GuerrillaOrder/five-slash-charge");
+            if(approved==null||shader==null||followup==null||slashTrack==null)throw new InvalidOperationException("Missing approved guerrilla illustration, mesh shader or follow-up/strike sounds.");
             material=new Material(shader){name="Guerrilla V2 / premultiplied mesh composition",hideFlags=HideFlags.DontSave,mainTexture=approved};
             behind=new Batch("Guerrilla V2 / backdrop and attraction");panes=new Batch("Guerrilla V2 / native portraits and glass");
             front=new Batch("Guerrilla V2 / crystal beams and shards");caption=new Batch("Guerrilla V2 / native caption");
             caption.AlphaOnly=true;
             for(int i=0;i<2;i++)extras[i]=new Batch("Guerrilla V2 / future-member glass "+i);
             sound=gameObject.AddComponent<AudioSource>();sound.playOnAwake=false;sound.loop=false;sound.spatialBlend=0;sound.volume=.55f;sound.clip=followup;
+            slashSound=gameObject.AddComponent<AudioSource>();slashSound.playOnAwake=false;slashSound.loop=false;slashSound.spatialBlend=0;slashSound.volume=1;slashSound.clip=slashTrack;
             return material;
         }
         void CheckIdentity()
@@ -161,14 +177,14 @@ namespace YesterdayConvoy
         }
         void Clear()
         {
-            active=false;elapsed=0;volley=null;pausedSound=cueTriggered=false;dirty=true;builtAt=float.NaN;
+            active=false;elapsed=0;volley=null;pausedSound=cueTriggered=pausedSlashSound=slashCueTriggered=false;dirty=true;builtAt=float.NaN;builtStrikes=-1;
             Array.Clear(slots,0,slots.Length);Array.Clear(extensions,0,extensions.Length);Array.Clear(offsets,0,offsets.Length);
-            paneCount=portraitCount=fragmentCount=outerFragmentCount=impactTargetCount=0;displayedDamage=0;geometry.Clear();
-            if(sound!=null)sound.Stop();
+            paneCount=portraitCount=fragmentCount=outerFragmentCount=impactTargetCount=displayedStrikeCount=0;displayedDamage=0;geometry.Clear();
+            if(sound!=null)sound.Stop();if(slashSound!=null)slashSound.Stop();screenEffect?.ClearPresentation();
         }
         void LateUpdate()
         {
-            CheckIdentity();UpdateSound();
+            CheckIdentity();UpdateSound();UpdateScreenEffect();
             if(!Playing)return;
             Rect bounds=ScreenBounds;
             EnsureTexture(ref frame,Mathf.Max(1,Mathf.RoundToInt(bounds.width)),Mathf.Max(1,Mathf.RoundToInt(bounds.height)),"Guerrilla V2 / foreground frame");
@@ -177,41 +193,65 @@ namespace YesterdayConvoy
         void OnFontTextureRebuilt(Font rebuilt){if(rebuilt==captionFont)dirty=true;}
         void UpdateSound()
         {
-            if(!Playing){if(sound!=null)sound.Stop();pausedSound=false;return;}
-            if(sound==null)return;
-            float age=Age,relative=age-SoundCueAt;
-            sound.mute=owner.Muted;sound.pitch=Mathf.Clamp(owner.GuerrillaPresentationRate,.03f,1);
-            if(!cueTriggered&&relative>=0)
+            if(!Playing)
             {
-                cueTriggered=true;
-                // Do not replay a past transient when the first observer arrives after its sound window.
-                if(relative<followup.length)
-                {
-                    sound.timeSamples=Mathf.Clamp(Mathf.RoundToInt(relative*followup.frequency),0,followup.samples-1);
-                    sound.Play();SoundPlayCount++;
-                }
+                if(sound!=null)sound.Stop();if(slashSound!=null)slashSound.Stop();pausedSound=pausedSlashSound=false;return;
             }
-            if(!cueTriggered||relative<0)return;
-            if(relative>=followup.length){sound.Stop();pausedSound=false;return;}
-            if(owner.Battle.IsPaused){if(!pausedSound&&sound.isPlaying){sound.Pause();pausedSound=true;}return;}
-            if(pausedSound){sound.UnPause();pausedSound=false;}
-            int sample=Mathf.Clamp(Mathf.RoundToInt(relative*followup.frequency),0,followup.samples-1);
-            if(sound.isPlaying&&Math.Abs(sound.timeSamples-sample)>followup.frequency*.045f)sound.timeSamples=sample;
+            bool firstPermitted=volley==null||volley.CompletedStrikes>0;
+            if(UpdateTrack(sound,followup,Age-SoundCueAt,firstPermitted?followup.length:0,ref cueTriggered,ref pausedSound))SoundPlayCount++;
+            float until=slashTrack.length;
+            if(volley!=null&&volley.Cancelled)
+            {
+                // The track has silent gaps, four short slashes and one charge/final window.
+                // A cancelled fourth strike may keep its tail, never start a fresh charge.
+                float[] allowedEnds={0,1.09f,1.39f,1.69f,ChargeStart,3.38f};
+                until=Mathf.Min(until,allowedEnds[Mathf.Clamp(volley.CompletedStrikes,0,5)]);
+            }
+            if(UpdateTrack(slashSound,slashTrack,Age,until,ref slashCueTriggered,ref pausedSlashSound))SlashSoundPlayCount++;
+        }
+        bool UpdateTrack(AudioSource source,AudioClip clip,float relative,float until,ref bool triggered,ref bool paused)
+        {
+            if(source==null||clip==null)return false;
+            source.mute=owner.Muted;source.pitch=Mathf.Clamp(owner.GuerrillaPresentationRate,.03f,1);
+            if(relative<0)return false;
+            if(relative>=until){source.Stop();paused=false;return false;}
+            bool started=false;
+            if(!triggered)
+            {
+                triggered=true;source.timeSamples=Mathf.Clamp(Mathf.RoundToInt(relative*clip.frequency),0,clip.samples-1);
+                source.Play();started=true;
+            }
+            if(owner.Battle.IsPaused)
+            {if(!paused&&source.isPlaying){source.Pause();paused=true;}return started;}
+            if(paused){source.UnPause();paused=false;}
+            int sample=Mathf.Clamp(Mathf.RoundToInt(relative*clip.frequency),0,clip.samples-1);
+            if(source.isPlaying&&Math.Abs(source.timeSamples-sample)>clip.frequency*.045f)source.timeSamples=sample;
+            return started;
+        }
+        void UpdateScreenEffect()
+        {
+            if(!Playing){screenEffect?.ClearPresentation();return;}
+            var camera=Camera.main;if(camera==null)return;
+            if(screenEffect==null||screenEffect.gameObject!=camera.gameObject)
+            {
+                if(screenEffect!=null)Destroy(screenEffect);
+                screenEffect=camera.GetComponent<GuerrillaOrderScreenEffect>()??camera.gameObject.AddComponent<GuerrillaOrderScreenEffect>();
+            }
+            screenEffect.Present(Age,volley,CanCharge(Age)?ChargeProgress:0);
         }
 
         void BuildGeometry()
         {
             CheckIdentity();PrepareMaterial();bool show=Playing;float time=show?Age:-1;
-            if(!dirty&&builtAt==time)return;
-            dirty=false;builtAt=time;
+            int strikes=volley?.CompletedStrikes??0;bool cancelled=volley?.Cancelled??false;
+            if(!dirty&&builtAt==time&&builtStrikes==strikes&&builtCancelled==cancelled)return;
+            dirty=false;builtAt=time;builtStrikes=strikes;builtCancelled=cancelled;
             behind.Clear();panes.Clear();front.Clear();caption.Clear();foreach(var b in extras)b.Clear();
-            paneCount=portraitCount=fragmentCount=outerFragmentCount=impactTargetCount=0;displayedDamage=0;geometry.Clear();Array.Clear(offsets,0,offsets.Length);
+            paneCount=portraitCount=fragmentCount=outerFragmentCount=impactTargetCount=displayedStrikeCount=0;displayedDamage=0;geometry.Clear();Array.Clear(offsets,0,offsets.Length);
             behind.Texture=panes.Texture=front.Texture=approved;
             if(show)
             {
-                Scenery(time);Attraction(time);Portraits(time);Crystal(time);BurstAndTail(time);Caption(time);BattlefieldImpact(time);
-                float white=Mathf.Exp(-Mathf.Pow((time-.975f)/.032f,2))*.28f;
-                if(white>.005f)front.Rect(new Rect(0,0,1920,1080),Rgba(196,232,255,white));
+                Scenery(time);ChargeBackdrop(time);Attraction(time);Portraits(time);Crystal(time);BurstAndTail(time);Caption(time);BattlefieldImpact(time);
             }
             foreach(var b in Batches()){b.Upload();geometry.AddRange(b.Vertices);}
         }
@@ -219,7 +259,9 @@ namespace YesterdayConvoy
         {yield return behind;yield return panes;yield return extras[0];yield return extras[1];yield return front;yield return caption;}
         void Portraits(float time)
         {
-            if(time>=GuerrillaOrderGeometry.CharactersGoneAt)return;
+            // The approved five-strike draft reveals the real targets during the first slash.
+            // Small outer shards retain the long tail; large portrait fragments clear sooner.
+            if(time>=1.19f)return;
             for(int slot=0;slot<SlotCount;slot++)
             {
                 var entry=GuerrillaOrderGeometry.Entrance(slot,time);offsets[slot]=entry.Offset;if(!entry.Visible)continue;
@@ -252,7 +294,7 @@ namespace YesterdayConvoy
         void PaintPane(Batch b,int slot,Vector2[] original,GuerrillaOrderGeometry.Pose pose,bool picture,Rect source,Texture image,GuerrillaOrderGeometry.Mapping map)
         {
             // Keep the drifting glass tail, but reveal the actual battlefield at the strike.
-            float alpha=pose.Alpha*(1-.88f*S((CurrentAge-.93f)/.40f));
+            float alpha=pose.Alpha*(1-S((CurrentAge-.90f)/.29f));
             var points=new Vector2[original.Length];var colors=new Color[points.Length];var uv=picture?new Vector2[points.Length]:null;
             for(int i=0;i<points.Length;i++)
             {
@@ -292,7 +334,7 @@ namespace YesterdayConvoy
         }
         void Crystal(float t)
         {
-            float build=S(t/.18f),breaking=S((t-.88f)/.7f),fade=1-S((t-1.2f)/1.25f);
+            float build=S(t/.18f),breaking=S((t-.88f)/.7f),fade=1-S((t-.90f)/.29f);
             float impact=Mathf.Exp(-Mathf.Pow((t-.49f)/.045f,2)),burst=Mathf.Exp(-Mathf.Pow((t-.98f)/.10f,2));
             float radius=(8+23*build+impact*21+burst*22)*fade;
             Glow(front,C,180+impact*160+burst*320,Rgba(77,183,255,(.45f+impact*.5f+burst*.35f)*fade));
@@ -323,15 +365,6 @@ namespace YesterdayConvoy
                     if(i>0)Line(front,previous,point,Rgba(106,182,255,opacity*.42f),1.8f,4);previous=point;
                 }
             }
-            for(int j=0;j<4;j++)
-            {
-                float p=Mathf.Clamp01((age-.025f*j)/.62f),a=-.31f+j*.19f,alpha=Mathf.Sin(p*Mathf.PI)*(1-S((age-.44f)/.7f));
-                if(alpha<=0)continue;
-                float length=180+Out(p)*1700,offset=Mathf.Sin(p*Mathf.PI)*40*(j-1.5f);
-                Vector2 d=new Vector2(Mathf.Cos(a),Mathf.Sin(a))*length,origin=C+new Vector2(0,offset);
-                Line(front,origin-d,origin+d,Rgba(58,139,255,alpha*.28f),22*(1-p)+3,28);
-                Line(front,origin-d,origin+d,Rgba(222,250,255,alpha*.75f),4*(1-p)+.5f,12);
-            }
             for(int i=0;i<92;i++)
             {
                 float delay=Rand(i+901)*.13f,p=Mathf.Clamp01((age-delay)/(1.1f+Rand(i+2000)*.6f));if(p<=0||p>=1)continue;
@@ -349,54 +382,6 @@ namespace YesterdayConvoy
             Text("游击队",28,FontStyle.Bold,new Vector2(C.x,C.y+108),Rgba(234,245,252,alpha));
             Text("协同进攻",15,FontStyle.Normal,new Vector2(C.x,C.y+137),Rgba(159,199,223,alpha));
             caption.Texture=captionFont.material.mainTexture;
-        }
-        void BattlefieldImpact(float time)
-        {
-            // Read only the committed model result. Drawing cannot produce damage or invent targets.
-            if(volley==null||!volley.Resolved||volley.Cancelled||time<GuerrillaOrderVolley.ImpactDelay)return;
-            float age=time-GuerrillaOrderVolley.ImpactDelay;
-            float alpha=1-S((age-1.05f)/.50f);
-            if(alpha<=0)return;
-            foreach(var hit in volley.Hits)if(hit.Damage>0){impactTargetCount++;displayedDamage+=hit.Damage;}
-            if(impactTargetCount==0)return;
-
-            float pulse=Mathf.Exp(-Mathf.Pow((age-.08f)/.065f,2));
-            front.Rect(new Rect(0,0,1920,1080),Rgba(187,235,255,pulse*.25f));
-            float sweep=Mathf.Clamp01(age/.40f);
-            if(sweep<1)
-            {
-                float x=Mathf.Lerp(-240,2160,Out(sweep)),power=Mathf.Sin(sweep*Mathf.PI);
-                Vector2 a=new Vector2(x-180,-100),b=new Vector2(x+180,1180);
-                Line(front,a,b,Rgba(37,138,255,power*.32f),125,55);
-                Line(front,a,b,Rgba(218,250,255,power*.83f),8,24);
-            }
-            var camera=Camera.main;
-            if(camera!=null)
-            {
-                foreach(var hit in volley.Hits)
-                {
-                    if(hit.Damage<=0)continue;
-                    Vector3 screen=camera.WorldToScreenPoint(hit.WorldPosition+camera.transform.up*.90f);
-                    if(screen.z<=0)continue;
-                    Vector2 point=TacticalViewport.Current.FromScreen(screen)*1.5f;
-                    float burst=1-S(age/.52f),radius=12+Out(age/.38f)*55;
-                    Glow(front,point,110*burst,Rgba(159,229,255,burst*.95f));
-                    for(int i=0;i<8;i++)
-                    {
-                        float a=i*Mathf.PI/4;
-                        Vector2 d=new Vector2(Mathf.Cos(a),Mathf.Sin(a));
-                        Line(front,point+d*radius*.22f,point+d*radius,Rgba(234,253,255,burst),3,8);
-                    }
-                    Vector2 label=point+new Vector2(0,-70-30*Out(age/.7f));
-                    string number="−"+DamageNumber(hit.Damage);
-                    Text(number,36,FontStyle.Bold,label+new Vector2(2,3),Rgba(1,10,18,alpha));
-                    Text(number,36,FontStyle.Bold,label,Rgba(255,235,198,alpha));
-                }
-            }
-            float heading=alpha*S(age/.12f);
-            Text("全域追击",38,FontStyle.Bold,new Vector2(960,790),Rgba(233,250,255,heading));
-            Text(impactTargetCount+" 个目标  ·  总伤害 "+DamageNumber(displayedDamage),24,FontStyle.Bold,new Vector2(960,832),Rgba(153,225,255,heading));
-            if(captionFont!=null)caption.Texture=captionFont.material.mainTexture;
         }
         static string DamageNumber(float damage)=>damage<10?damage.ToString("0.#"):Math.Round(damage,MidpointRounding.AwayFromZero).ToString("0");
         void Text(string value,int size,FontStyle style,Vector2 baseline,Color color)
@@ -441,7 +426,7 @@ namespace YesterdayConvoy
         /// <summary>Render the same complete live composition used by IMGUI into a caller-owned texture.</summary>
         public void RenderTo(RenderTexture target)
         {
-            if(target==null)throw new ArgumentNullException(nameof(target));PrepareMaterial();UpdateSound();BuildGeometry();
+            if(target==null)throw new ArgumentNullException(nameof(target));PrepareMaterial();UpdateSound();UpdateScreenEffect();BuildGeometry();
             if(!target.IsCreated())target.Create();
             RenderTexture previous=RenderTexture.active;
             try
@@ -490,7 +475,7 @@ namespace YesterdayConvoy
         {
             Clear();Font.textureRebuilt-=OnFontTextureRebuilt;Release(ref frame);Release(ref accumulation);
             renderCommands?.Release();renderCommands=null;
-            if(material!=null)Destroy(material);if(sound!=null)Destroy(sound);
+            if(material!=null)Destroy(material);if(sound!=null)Destroy(sound);if(slashSound!=null)Destroy(slashSound);if(screenEffect!=null)Destroy(screenEffect);
             behind?.Dispose();panes?.Dispose();front?.Dispose();caption?.Dispose();foreach(var b in extras)b?.Dispose();
         }
     }

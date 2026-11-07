@@ -101,6 +101,7 @@ namespace YesterdayConvoy
                 DrawLoopHeader();
                 if(Loop.CanShop||ShopPanelTransitioning)DrawLoopShop();else DrawLoopRoster(point);
                 DrawShopFlows();
+                DrawSynergyActivationFeedback();
                 if(Loop.CanDeploy&&!shopVisible&&!ShopPanelTransitioning)
                 {
                     DrawShopRouteLabels(LoopText(12,TextAnchor.MiddleLeft,Color.white));DrawInteractionOverlay();DrawDefenderInspector(LoopText(),buttonStyle);

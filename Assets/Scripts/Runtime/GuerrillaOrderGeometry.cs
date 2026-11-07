@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     public static class GuerrillaOrderGeometry
     {
         public const float Width = 1920, Height = 1080;
-        public const float ImpactAt = .49f, ShatterAt = .90f, CharactersGoneAt = 2.10f, Duration = 2.60f;
+        public const float ImpactAt = .49f, ShatterAt = .90f, CharactersGoneAt = 2.10f, Duration = GuerrillaOrderVolley.PresentationDuration;
         public static readonly Vector2 Center = new Vector2(960, 520);
         public readonly struct Pane
         {

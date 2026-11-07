@@ -15,17 +15,17 @@ namespace YesterdayConvoy
         public string[] Members {get;internal set;}
         static string GuerrillaEffect()
         {
-            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。所有档整令不限次数。"};
+            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。达到本档点数且有合格出手者时自动整令，不限次数；演出结束后才能再次触发。"};
             foreach(int tier in new[]{2,4,6,8,9})
             {
                 var rule=GuerrillaRules.ForTier(tier);
                 string people=rule.ParticipantLimit==int.MaxValue?"全部合格普通实体":"最多"+rule.ParticipantLimit+"人";
                 lines.Add($"{tier}档：整令{rule.Cost}点 / {people} / {Mathf.RoundToInt(rule.AttackMultiplier*100)}%攻击"+(rule.InitialOrders>0?$"，开战+{rule.InitialOrders}军令。":"。"));
             }
-            lines.Add("0.9演出秒，对每名存活守军各结算一份参与者预算，逐名过护甲/抗性；不递归产点。");
+            lines.Add("0.9/1.2/1.5/1.8/2.8演出秒全场五段命中；前四段各15%，蓄力末段40%。原完整预算先过护甲/抗性再分段，不递归产点。1×/2×演出等速。");
             lines.Add("2/4/6需普攻收手且有射程内目标；8/9可在移动/普攻中参加，无需射程目标。技能、复起、控制锁照旧。");
             lines.Add("4档参与近战护盾10%生命3秒；6/8/9档15%生命5秒。");
-            lines.Add("仅6档可拆两次3点半令，后半排除前半参与者；半令未完成不能插入整令。暂停或无合格单位/存活守军不扣费。");
+            lines.Add("仅6档保留手动两次3点半令，后半排除前半参与者；半令未完成时自动整令等待。暂停、演出中或无合格单位/存活守军不扣费。");
             return string.Join("\n",lines);
         }
         public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null)
@@ -53,7 +53,34 @@ namespace YesterdayConvoy
     {
         string inspectedSynergy;
         Vector2 guerrillaDetailScroll;
-        Rect SynergyListRect=>new Rect(16,69,157,28+Mathf.Min(350,CurrentSynergies.Length*46));
+        const float SynergyRowPitch=48;
+        const float SynergyHeaderHeight=26;
+        Rect SynergyBoundsFor(int count,bool preparation)
+        {
+            int rows=Mathf.Min(count,preparation?9:4);
+            // Nine complete preparation rows still leave the construction button above y552.
+            float top=preparation&&rows==9?60:65;
+            return new Rect(12,top,174,SynergyHeaderHeight+rows*SynergyRowPitch);
+        }
+        Rect SynergyViewportFor(Rect bounds)=>new Rect(bounds.x,bounds.y+SynergyHeaderHeight,bounds.width,bounds.height-SynergyHeaderHeight);
+        float SynergyWidthFor(int count,Rect viewport)=>count*SynergyRowPitch>viewport.height?156:174;
+        Rect SynergyRowAtWidth(int index,float width)=>new Rect(0,index*SynergyRowPitch,width,SynergyRowPitch);
+        Rect SynergyListRect=>SynergyBoundsFor(CurrentSynergies.Length,Loop!=null&&Loop.CanShop);
+        Rect SynergyRowsViewportRect=>SynergyViewportFor(SynergyListRect);
+        float SynergyContentWidth=>SynergyWidthFor(CurrentSynergies.Length,SynergyRowsViewportRect);
+        Rect SynergyRowContentRect(int index)=>SynergyRowAtWidth(index,SynergyContentWidth);
+        Rect SynergyRowScreenRect(int index)
+        {
+            var row=SynergyRowContentRect(index);var viewport=SynergyRowsViewportRect;
+            return new Rect(viewport.x+row.x-campaignSynergyScroll.x,viewport.y+row.y-campaignSynergyScroll.y,row.width,row.height);
+        }
+        Rect SynergyBadgeRect(Rect row)=>new Rect(row.x+2,row.y+1,44,44);
+        Rect SynergyGlyphRect(Rect row)=>new Rect(row.x+10,row.y+9,28,28);
+        Rect SynergyCountRect(Rect row)=>new Rect(row.x+31.44f,row.y+30.44f,16.8f,16.8f);
+        Rect SynergyNameRect(Rect row)=>new Rect(row.x+58,row.y,row.width-64,20);
+        Rect SynergyThresholdRect(Rect row)=>new Rect(row.x+56,row.y+20,row.width-62,15);
+        Rect SynergySupplementRect(Rect row)=>new Rect(row.x+58,row.y+35,row.width-64,12);
+        Rect SynergyProgressRect(Rect row)=>new Rect(row.x+58,row.y+47,row.width-64,1);
         Rect SynergyDetailRect=>inspectedSynergy=="感染生物"?InfectionFormPanelRect:new Rect(252,90,620,415);
         SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
@@ -61,37 +88,29 @@ namespace YesterdayConvoy
         {
             if(!CampaignActive)return;
             DrawSnowstormFeedback();
-            var summaries=CurrentSynergies;var bounds=SynergyListRect;
-            Fill(new Rect(bounds.x,bounds.y,bounds.width,25),ApprovedUi.Paper);
-            GUI.Label(new Rect(bounds.x+8,bounds.y,55,25),"羁绊",CampaignText(12,weight:600));
-            GUI.Label(new Rect(bounds.x+58,bounds.y,91,25),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+            var summaries=CurrentSynergies;var bounds=SynergyBoundsFor(summaries.Length,Loop.CanShop);
+            Fill(new Rect(0,bounds.y,bounds.xMax,bounds.height),new Color(.065f,.11f,.165f,.95f));
+            GUI.Label(new Rect(bounds.x+1,bounds.y,55,22),"羁绊",CampaignText(12,color:new Color(.92f,.95f,.98f),weight:600));
+            GUI.Label(new Rect(bounds.x+65,bounds.y,bounds.width-70,22),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,new Color(.61f,.70f,.80f)));
+            Fill(new Rect(bounds.x,bounds.y+22,bounds.width,1),new Color(.54f,.65f,.77f,.17f));
             if(summaries.Length==0){inspectedSynergy=null;return;}
-            Rect viewport=new Rect(bounds.x,bounds.y+28,bounds.width,bounds.height-28);
-            float contentWidth=summaries.Length*46>viewport.height?139:157;
-            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*46)),false,false);
+            Rect viewport=SynergyViewportFor(bounds);float contentWidth=SynergyWidthFor(summaries.Length,viewport);
+            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*SynergyRowPitch)),false,false);
             try
             {
                 for(int i=0;i<summaries.Length;i++)
                 {
-                    var s=summaries[i];Rect row=new Rect(0,i*46,contentWidth,41);
+                    var s=summaries[i];Rect row=SynergyRowAtWidth(i,contentWidth);
                     if(GUI.Button(row,GUIContent.none,GUIStyle.none))
                     {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
                     bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
-                    Color ink=snowstorm?SnowstormInk:active?ApprovedUi.Ink:ApprovedUi.Muted;
-                    Fill(row,snowstorm?SnowstormPaper:active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
-                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?(s.Name=="感染生物"?InfectionOrange:new Color(.72f,.59f,.30f)):ApprovedUi.Rule);
-                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(13,color:ink,weight:600));
-                    GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
+                    Color ink=active?new Color(.95f,.965f,.98f):new Color(.65f,.70f,.77f);
+                    SynergyBadgePresentation.DrawBadge(SynergyBadgeRect(row),s.Name,s.Tier,s.Count,scene.InterfaceFont);
+                    GUI.Label(SynergyNameRect(row),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(14,color:ink,weight:600));
+                    SynergyBadgePresentation.DrawThresholds(SynergyThresholdRect(row),s.Thresholds,s.Tier,scene.InterfaceFont);
                     if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
-                    else
-                    {
-                        float pitch=s.Thresholds.Length>3?12:22,width=s.Thresholds.Length>3?10:19;
-                        for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*pitch,row.y+31,width,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
-                        string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
-                        GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
-                    }
                 }
             }
             finally {GUI.EndScrollView();}

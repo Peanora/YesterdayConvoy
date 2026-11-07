@@ -1,5 +1,78 @@
 # 验证证据与回归
 
+## 2026-11-07：档位变化即时中断与已出现条目去重
+
+- 用户报告4泥岩/4萨卡兹演出期间加入第五位泥岩应立即改播5泥岩；进一步明确“已经出现过就算已播”，被打断但同档不变的4萨卡兹不补播，未开始的才保留。沿原codex/synergy-icons-tier-ui与PR #96继续，fetch确认main b1d55e7为祖先，原52处VFX meta及两个本地项隔离保留。
+- 根因是旧Feedback仅将新档追加，且未区分已开始与尚未开始。现在任何真实Tier变化都立即重建最新候选、清旧Age/gap、分配新Sequence；原音通过已有Sequence同步立即停止。候选取原活动/待播及变化条目，按最新视觉档位/内置顺序排序，使用最新Members。首次有效正向Advance记录该名/档已开始；Age0或paused不记录，同档刷新保持Age/Sequence。未完成入场标记随重建保留，不提前给空卡位播放。Clear(false)不复活被主动清掉的旧队列，真实退档/归零后再达仍可重播。
+- 实际配置M26/M27/M42/M43前四为4泥岩+4萨卡兹，M28加入后为5泥岩金、萨卡兹人数5但Tier仍4银。去重按真实Tier，不按人数或仅按颜色。没有改标签、门槛、库存、伤害、场景、Prefab、包、工程设置或V4绘制/音源。
+- Unity6000.6.5f1完整EditMode **527/527**（`artifacts/synergy-interrupt-edit.xml`），反馈14/14，覆盖萨卡兹未开始/已开始未完/已完三时点、Age0阻塞、旧gap立即取消、快速6→4→2→0→2、同档刷新、入场标记、Clear(false)及浮点边界。D3D11 PlayMode **26/26**（`artifacts/synergy-interrupt-play.xml`），反馈交互7/7及原界面/感染/商店/侧栏19项，0失败/跳过；合法泥岩阵容覆盖三分支、旧音立即停/新音一次、5→4立即新反馈。仓库检查6630个跟踪文件及差异空白检查通过。
+- 运行源码 **064fb9e4c6daa2e77b2a1c19d0172e86a206d46b**；`SynergyActivationTools.BuildWindows`真实Windows x64 Development构建 **1050818044字节、0错误**（`artifacts/synergy-interrupt-build.log`）。完整同步至通常入口`Builds/Windows/YesterdayConvoy.exe`及SOURCE.txt；1937个构建文件无缺失/长度差，EXE、YesterdayConvoy.Runtime.dll、resources.assets/resS、globalgamemanagers及源码标记哈希一致（`artifacts/synergy-interrupt-build-copy-check.json`）。
+- 独立Player **15/15**，1280×720，正常退出。入口`-synergyActivationInterruptSmokeTest`，结果`artifacts/synergy-interrupt-player-1280/result.json`明确mode=`mudrock-interruption-two-scenarios`，只跑本次两个独立合法五张库存夹具，不冒称旧54项流程或自然挑战。两次真实OS点击M28入队：先在4泥岩Age.5时升级，后在4萨卡兹Age.5时升级；两者都立即换新Sequence/Age0、停止旧AudioSource，再独立起一次5泥岩原音。第一种保留未开始4萨卡兹、第二种不补播已开始4萨卡兹，最终队列/声音清理且库存/金币不变。
+- 捕获并实看九张完整OnGUI图，含中断前、重算Age0旧框消失、5泥岩峰值、未开始4萨卡兹保留、已开始4萨卡兹被替换及清理；路径`artifacts/synergy-interrupt-player-1280/interrupt-01...09*.png`。画面为独立Player输出，非Camera-only或项目外合成；测试夹具及手动呈现推进不冒称实时自然长局通关。
+- 原52处Mandragora/Mephisto meta与本轮开工哈希逐字节保持，.vscode/及PackageManagerSettings本地项未提交。未重跑全量PlayMode、旧54项Player全流程、1920尺寸、第二台电脑、自然长局、专项帧时或主观听感；V4绘制及音源未变，前次双尺寸结果只作旧版本证据。无ZIP/Releases、不自动合并main。
+
+## 2026-11-07：V4旋转亮框、阶色优先与逐条播放
+
+- 人类确认项目外V4并明确排序后接入。延续codex/synergy-icons-tier-ui及既有PR #96，fetch确认main为b1d55e7且是本分支祖先，没有另建工程或切换工作目录。修改限定Feedback/Presentation/UI/Evidence、两组现有测试及表现文档/STATUS/QA。
+- `SynergyActivationFeedback`观察真实Tier/Members，同一观察的升档按`GradeFor`视觉档位降序、同阶按`SynergyTrialCatalog.Entries`内置顺序；每个Batch只有一条Pulse、单独Sequence，1.78秒后净空0.27秒。后来的触发追加、不重启有效活动条；降档/移出裁剪活动与待播，暂停冻结条及间隔，切战/离开全部清理。Edit用反向九条输入和泥岩5金先于萨卡兹6金，排除输入顺序及人数二次排序；近终点浮点舍入和大步跨间隔同样覆盖。
+- `SynergyActivationPresentation`按确认V4移植整圈亮框、外框−64°→+6°→0、内框短反旋与缩放回落，白徽延后0.13秒显现且不跟随旋转。IMGUI柔光用两张首次生成后缓存的遮罩近似Canvas模糊，没有每帧纹理/Material；扫光按矩形转角切段，减少冗余短线。原九徽、各档底牌、青绿最高阶及原音字节不改。
+- `SynergyActivationUI`按每条Sequence起一次原音，追加/模态恢复不重起；按队列边界重新检查购买到位。复核发现已播放条可能被随后同ID副本的购买光流误暂停，已将到位等待限定在Age==0，并以合法双份商店的两次真实购买验证不冻结、不重播、不额外升档/合成。
+- Unity6000.6.5f1完整EditMode **522/522**（`artifacts/synergy-v4-edit.xml`），其中反馈9/9；最终D3D11 PlayMode **25/25**（`artifacts/synergy-v4-play-final.xml`），包含反馈6/6及ApprovedUi、感染、商店与侧栏原19项回归，均0失败/跳过。首轮Play25/25后补入同类复购边界，再次跑最终25/25；不把重复运行累加为新测试数。仓库检查6630个跟踪文件及差异空白检查通过。
+- 运行源码 **b05643edbeebf880162ec7fd12b06072184cb2b5**，`SynergyActivationTools.BuildWindows`真实Windows x64 Development构建 **1050808480字节、0错误**，日志`artifacts/synergy-v4-build.log`。验证后将Windows-SynergyActivation完整同步至常用`Builds/Windows`，1937文件无缺失/长度差异，EXE、实际`YesterdayConvoy.Runtime.dll`、resources.assets/resS、globalgamemanagers及SOURCE.txt逐字节哈希一致；记录`artifacts/synergy-v4-build-copy-check.json`。
+- 最终可见独立Player：`artifacts/synergy-v4-player-1280/result.json`和`...-1920/result.json`各 **54/54**，尺寸实为1280×720/1920×1080，均正常退出。每轮7次真实OS点击，含原单条入队/移出/重达、关闭菜单、M16一次入队同时触发金整合与铜游击、净空菜单关闭、感染提示关闭。合法七张库存及模态打开夹具明确标识，没有注入Tier、伤害或非法库存，不冒称自然通关。
+- 捕获完整OnGUI `.08/.20/.40/.66s`四张旋转帧，及金、净空、铜、清理与模态前后画面；根与只读复核均实看关键画面。金档六关联卡徽记差异像素720p为285–328、1080p为653–742；六卡四边像素每边720p至少208、1080p至少456。铜档只亮两游击卡，四边720p至少161、1080p至少390；其余成员没有复用金徽，无关海嗣及净空无残留徽记。逐条独立原音、净空静音、菜单Age/采样和净空计时冻结、关闭恢复不重起、感染模态不吞反馈、切战与离开清理均通过。
+- 原52处Mandragora/Mephisto meta与本轮开工快照逐字节保持，原`.vscode/`和PackageManagerSettings本地项不提交；场景/Prefab/Packages/ProjectSettings没有任务修改。未重跑全量PlayMode、第二台电脑、自然长局、低配专项帧时或主观听感。IMGUI线条略硬、柔光略窄；首卡徽记短时经过编队栏标题，与确认稿相同，费用/星级/卡名仍可辨。源素材权利状态沿用记录，不把接入授权写成权利人授权。无ZIP/Releases、不自动合并main。
+
+## 2026-11-07：羁绊达档反馈与原版金档提示音
+
+- Unity6000.6.5f1完整EditMode **518/518**，0失败/跳过（`artifacts/synergy-activation-edit.xml`）；相关D3D11 PlayMode新用例最终 **5/5**（`synergy-activation-play-delivery.xml`），原侧栏/感染提示/商店界面回归 **19/19**（`synergy-activation-regression.xml`），均0失败/跳过。覆盖真实2/4/6档、消失/降档后重达、同档换人剪除、同批多羁绊、游击8到9同阶色仍触发、菜单时钟/静音/切战/新挑战、实际购买原入场未完成不提前播。
+- 首次新GPU运行没有发现测试（新增测试meta GUID长度不合法），0项不计成功；修正GUID后发现Ready阶段的战斗暂停本来无效，按既有规则将准备冻结用例改为真实整备菜单阻断，没有改变战斗暂停机制。新增购买到位用例后最终5/5。首轮Player误复用会主动关闭模态的侧栏夹具；最终改成合法感染编队降档再重达，自动打开原形态提示，并将验收菜单关闭目标改为原生关闭按钮。
+- 最终运行源码 **ad0ebc6555379c1ab89ac137030a493338a15356**，本机Windows x64 Development / D3D11构建 **1050790156 bytes，0 errors**（`artifacts/synergy-activation-build-final.log`）。完整专项目录`Builds/Windows-SynergyActivation`验证后同步到常用`Builds/Windows`，`SOURCE.txt`记录源码；不创建ZIP或Releases。
+- 最终可见独立Player：`artifacts/synergy-activation-player-final-1280/result.json`与`...-1920/result.json`各 **24/24**。每轮5次真实OS鼠标点击：备战入队、关闭整备菜单、移出、重新入队、关闭感染提示。菜单打开是显式状态夹具；事件和档位来自合法库存及原编队/输入路径，没有写Battle.Tier/伤害或篡改库存规则。两轮均正常退出。
+- 捕获完整OnGUI触发前、.5秒峰值、菜单冻结、消退以及感染提示前后六帧/轮，均已实看。实际卡顶反馈像素：1280为士兵187、弩手252、术师256、重装253、游击战士259、狙击手255；1920分别442/546/564/556/564/556。无关海嗣两轮均 **0**，可排除给全队误加同一徽记。检查音源确为交付的Resources原音、同批只起一次，菜单中Age与音频采样冻结、恢复不重播；同档重建安静，感染模态不吞反馈，切战/离开立即清理。
+- 原音为本机原始Wwise媒体的未剪裁PCM解码，事件与真实媒体链见`docs/art/source-records/synergy-activation-original-audio.json`。Gold名称由哈希与同bank多条语义一致事件推断，不是明文表恢复；没有声称与官方银蓝片段逐波形一致，或复制所有档位独立声音。源WAV和带音项目外看稿完整解码通过，未进行主观人工听感验收。
+- 原52处Mandragora/Mephisto meta与开工基线逐字节保持，`.vscode/`、PackageManagerSettings本地项不提交；场景、Prefab、Packages、ProjectSettings没有任务修改。未重跑全量PlayMode、第二机或自然长局平衡。模型、夹具及OS点击验收不冒称完整自然挑战通关。
+
+## 2026-11-07：最高阶V2青绿校色、旧粉色预留
+
+- 人类确认项目外V2青绿虹彩并要求原粉色留供后续五费专属。沿用codex/synergy-icons-tier-ui及PR #96；fetch确认main仍b1d55e7、任务分支与origin一致且PR未合并。原52处VFX meta与开工快照逐文件SHA一致，原两个本地未跟踪项不提交。无场景/Prefab/Packages/ProjectSettings任务修改。
+- 现用最高阶PNG逐字节等于确认V2（SHA256 e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7），原meta/GUID保持。原粉色PNG逐字节保存为Reserved/plate-five-cost-exclusive-pink.png（SHA256 4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25），原SVG也逐字节保留；预留PNG及目录用独立新GUID，无碰撞、未忽略，不在Resources内且无运行代码引用。原九徽及其他档位不改，不新增五费专属玩法。
+- Unity6000.6.5f1相关EditMode5/5（artifacts/synergy-mint-edit.xml）、D3D11 PlayMode3/3（artifacts/synergy-mint-play.xml）通过，0失败/跳过；验证真实档位、资源独立加载与透明GPU上传、九条布局及滚动后详情输入保护。未重跑全量测试。
+- 既有“多色”条件无法区分旧粉色与新青绿色，因此Player额外检查真实底牌上部6%–18%的青绿色差，排除白徽、人数圆点及边缘；至少8样本，平均G-R>.08且B-R>.03，仍保留完整真实编队/滚动/点击状态检查。源PNG只读对照：确认V2该区G-R约+.294，旧粉约-.106，不能将源图静态对照当成实机验证。下面旧版测试不作为本轮完成证据。
+- 运行源码7cdb33d6092a36d376ac7b6576e81ba01acd7f33：Windows x64构建1050474618字节、0错误（artifacts/synergy-mint-build.log）。本地Builds/Windows/YesterdayConvoy.exe及SOURCE.txt记录对应源码；后续仅补验证文档，不生成ZIP或Releases。
+- 1920×1080与1280×720可见D3D11独立Player各51/51（artifacts/synergy-mint-player-1920/result.json、synergy-mint-player-1280/result.json），均正常退出。两轮各实际5次点击＋1次滚动，完成游击详情开关、九条战斗列表到底、末行详情开关和返回整备；13张完整OnGUI截图/轮，原合法库存/转职夹具保持。实际8/9档及详情关闭后的底牌均为4种色相族，1920上部72样本G-R=.2913、B-R=.2202，1280上部30样本G-R=.2944、B-R=.2227；白徽合格像素分别182/86。已实看两种尺寸青绿→冰蓝→淡紫与确认V2一致，人数和完整档位可读。
+- 仓库6611跟踪文件及Unity元数据检查通过；粉色原PNG/SVG原字节与新活跃资源GUID均保持，原52处VFX meta与开工快照仍完全一致。预留粉色无运行引用，未来五费专属机制尚未实现。未重跑全量Edit/Play、第二机、故障注入或自然长局平衡，不将验证夹具当自然完整通关。
+
+## 2026-11-07：确认稿菱形底牌、白徽与实际人数
+
+- 人类确认项目外侧栏原稿V1后要求接入。沿用codex/synergy-icons-tier-ui和PR #96；本轮fetch确认origin/main仍b1d55e7、任务分支与origin一致后继续。仅显示与验证代码、六张小型运行PNG/必要meta及SVG作者源/来源记录；九枚V3徽记不变。原52处VFX meta逐文件SHA256保持、两个本地未跟踪项不提交。
+- Unity6000.6.5f1完整EditMode513/513，0失败/跳过（artifacts/synergy-diamond-edit.xml）；相关D3D11 PlayMode首轮与感染副行修正后均16/16，0失败/跳过（artifacts/synergy-diamond-play.xml、synergy-diamond-play-final.xml）。新增帧资源导入及透明GPU上传、真实9种整合仍6档金底但人数9、全九种完整门槛、合法十卡覆盖九行、雪怪5/感染2副行、滚动后的末行点击坐标与构筑/完整快捷区不侵占552部署栏。保留详情输入保护、商店/感染/雪怪既有回归。几何反射夹具不冒称真实OS点击；最后的开发回执IO重试由后续双分辨率Player实际验证。
+- 菱形底牌从批准稿SVG确定性导出，五个金属灰/铜/银/金/镀彩底与一个无数字黑圆点共六张256RGBA32PNG。白徽、人数与门槛由现有数据独立绘制；currentTier只决定底牌，Count决定圆点，完整门槛当前档加粗白色。运行图片、meta及来源随源码，未改羁绊逻辑或场景/Prefab/包/设置。
+- 运行源码1f4967b833acd0c7574a0a87bda081526191ccdd：BaselineTools.BuildWindows成功，1050473302字节、0错误（artifacts/synergy-diamond-build-delivery.log）。入口Builds/Windows/YesterdayConvoy.exe，SOURCE.txt注明提交与环境。构建后仅更新验证文档；不创建ZIP/Releases。
+- 最终1920×1080和1280×720可见D3D11独立Player分别48/48，结果为artifacts/synergy-diamond-delivery-1920/result.json及synergy-diamond-delivery-1280/result.json，均正常退出。两轮各5次真实OS点击＋1次真实滚动：打开/关闭游击详情、列表滚动到底、末行萨卡兹详情开关、原快捷按钮返回整备。gui-step/ack只等待外部操作并核对真实GUI状态，不注入GUI事件或直接设置滚动/详情状态。每轮13张完整OnGUI截图，实际8/9档及关闭详情后的彩底均采到5种色相族，白徽分别183/86个合格像素；不是对旧彩色glyph采样。已看完整九条整备、四条战斗滚动及动态副行，两种分辨率均无感染文字裁切。
+- 早期实机发现战斗滚动区缩窄后感染副行自动换行、12高裁切；已压缩空格、明确单行并按真实字体测量必要时降10→9字号，Play16/16及最终两轮实图复验。早期1280和一次1920验收被ack文件并发读写的Sharing violation中断，原子替换仍能短暂占用；开发driver现捕获IOException下一帧重试，保留300秒超时、匹配ID与accepted()状态双检查。未把早期中断/修正前画面当最终通过证据。
+- 仓库6607个跟踪文件与Unity元数据检查通过；原52处VFX meta与开工快照逐文件SHA256完全一致，九徽PNG/meta不变，无场景/Prefab/Packages/ProjectSettings任务修改。Player使用真实场景及明确合法库存/转职夹具，不宣称自然运营或完整通关；未运行全量PlayMode、第二机、缺失资源故障注入或自然长局平衡。下方旧版数据仅为历史。
+
+## 2026-11-07：九羁绊图标、铜银金与超高档镀彩
+
+- 人类确认V3九枚图标并要求接入、按激活档位显示阶色。当前任务分支codex/synergy-icons-tier-ui，从已同步origin/main b1d55e7建立，快进保留已在GitHub的五斩e096351；不自动合并PR #95或main。原52处VFX meta逐文件比对保持，.vscode/和PackageManagerSettings.asset不提交。只改侧栏显示与开发验证入口，无场景、Prefab、包或项目设置任务修改。
+- 9张256×256透明PNG与批准V3逐字节一致，必要meta与来源记录随源码。保留原徽/原合约与六枚改编设计的区别；显示颜色不烘焙进PNG。资源键UI/Synergies/{id}，无mipmap、Bilinear/Clamp、sRGB、RGBA32不压缩，不开ReadWrite。
+- 完整EditMode512/512，0失败/跳过（artifacts/synergy-badge-edit.xml）。新增4例验证九个独立资源、雪怪2/5与泥岩2/4/5等真实门槛、合法游击转职7→8→9和镀彩多色族，不改人数/库存。
+- 相关D3D11 PlayMode15/15，0失败/跳过（artifacts/synergy-badge-play.xml）。新增GPU透明轮廓上传、真实Campaign/SynergyTrial档位与详情阻断；回归ApprovedUi、感染弹窗/锁定、天气状态和已有羁绊详情后方输入。此处GPU纹理检查不等同完整OnGUI截图。
+- 运行源码689a30e7cf47031bb8668d2ab54ada6fa26cf718：BaselineTools.BuildWindows成功，1048888761字节、0错误（artifacts/synergy-badge-build.log）。本地Builds/Windows/YesterdayConvoy.exe与SOURCE.txt交付，PreparedArt校验/构建收集保持，未创建ZIP或Release。代码与素材提交后构建，后续仅补验证文档。
+- 显式-synergyBadgeSmokeTest的1920×1080与1280×720可见D3D11独立Player均29/29通过，八张完整OnGUI截图/轮；结果分别在artifacts/synergy-badge-player-1920/result.json及synergy-badge-player-1280/result.json。两轮各以computer-use实际点击游击队行打开详情、点击关闭，共4次OS鼠标点击；gui-step/ack只等待并核对外部操作，没有注入GUI事件或直接设置详情状态。实际8/9档与关闭后的彩色图标区均采得6个色相族，库存、DP、档位及详情后方输入保护通过，两轮进程均正常退出。已查看实际UI和裁切阶色对照，未把Camera-only渲染当成OnGUI证据。
+- Player使用真实Campaign与SynergyTrial场景，明确的1星Shop.Preset库存夹具和正常转职操作形成未激活/铜/银/金/8彩/9彩；不直接改羁绊档位、伤害或军令值，不冒称自然运营/长局通关。未测全量PlayMode、第二机、缺失资源故障注入或自然长局平衡。仓库6587跟踪文件校验通过；九PNG/meta均跟踪，构建后原52处meta逐字节保持，ProjectSettings/Packages无任务差异，两个既有本地项不提交。
+
+## 2026-11-07：游击自动五段、蓄力重斩与震屏
+
+- 用户确认项目外五斩V2后授权接入。基线实时origin/main b1d55e7，分支codex/guerrilla-auto-five-strikes。保留原52处VFX meta（逐文件SHA与开始时一致）、.vscode/和PackageManagerSettings.asset；不提交这些既存本地项。无场景/Prefab/Packages/ProjectSettings任务修改。
+- Unity6000.6.5f1：最终完整EditMode508/508（artifacts/guerrilla-auto-edit-final.xml）、相关D3D11 PlayMode38/38（artifacts/guerrilla-auto-play-final.xml）通过。模型覆盖真实收入自动发令、无人/控制/暂停/半令待完成不空放、所有档无次数cap、忙碌尾段防重叠、逐刀混伤/护甲/最小伤害预算、来源/目标失效、取消保留已损、精确五时点和1×2×同结果。GPU覆盖实际自动军令/9槽原作塔露拉、每刀真实HP与记录、15/40分配、蓄力保持四段、两源暂停采样/原音高、真实镜头后处理像素/三帧hold/位移/归零、原作头像加载、战役/专项/其他羁绊流程。
+- 过程记录：首轮编译发现新增验收夹具误把DeployedUnit.NextHealAt写在Defender，删除无效行后编译通过。首轮Edit505/508的3失败均为float子步累计导致Age在精确2.8低约1.43微秒，内部改double累计、公开float不变后508/508，未放宽2.8断言。首轮GPU35/38：一例仍手动花已被自动消费的军令；两例严格HP夹具的旧多源弹道无法在第一刀前排空。改为检测实际自动批次、严格分支真实8档单M03首接敌补第三点自动发令，保留排空与.85秒上界后38/38。清掉旧版额外4束扫光和.975白闪，五刀仅由真实Strikes驱动。
+- 最终运行源码221c515884fb05d63a2e5f3b18b43c10bd377605：Windows构建1046503985字节、0错误（artifacts/guerrilla-auto-build.log），产物Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。可见1920×1080 D3D11独立Player49/49通过（artifacts/guerrilla-auto-player/result.json），进程58912正常退出、日志完整清理。9级9种库存/两真实转职/Begin初始2点，空源不空放，实际M03部署后自动一次；未写假Orders/Hits。每守军前四段各实际21、末段56，4名守军总实际掉血560；逐段HP、累计记录、末刀更高与原作塔露拉绑定通过。
+- 已查看原作九肖像、蓄力4/5、末刀5/5及实际伤害/震屏截图。两源原音/FX各在两个完整批次只播一次，暂停timeSamples冻结；单独迟观察的终局批次不补播已过声段。1×/2×峰值生产层像素一致、伤害一致，2×逐帧Age最大误差2.3841858e-7秒，普通模拟仍2×。后处理GPU开关差2073597像素，逻辑相机不动；终局保留第一段已损且取消其余，末尾两源/hold/Offset/Zoom/Roll和重开清理通过。
+- 导出246张实际Player逐演出帧、60fps/4.1秒（含0.1秒前导及清理），项目外guerrilla-auto-five-in-game.mp4已完整解码检查。视频后配同一跟踪原声（.55）及纯FX（1）并对齐前导，不称实时系统音频录制。耐久守军1000HP、延后普攻/独立装置攻击治疗仅为隔离军令预算的明确夹具，不代表自然长局平衡验收。原Unity/GPU测例夹具不同，细节见代码。
+- 仓库6555跟踪文件检查通过，新纯FX资源649004字节、3.38秒及Shader/meta均随源码跟踪，原followup出手声哈希不变且不重复混入。原52处meta开始/结束SHA全部一致，两个本地项未提交。未运行全量PlayMode、第二机、全分辨率或自然长局平衡，未另行主观试听；不自动ZIP/Releases或合并main。构建后仅文档补记。
+
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
 - 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。

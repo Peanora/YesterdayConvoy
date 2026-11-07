@@ -50,13 +50,25 @@ namespace YesterdayConvoy.Tests
         public void AllTiersCanExceedFormerCastCapsUntilEarnedOrdersRunOut(int tier,int casts,int remaining,int participants)
         {
             var b=Fixture(tier);EarnAllContacts(b);
-            Assert.That(b.Orders,Is.EqualTo(tier>=8?22:20));
-            for(int cast=0;cast<casts;cast++)Assert.That(b.TryGuerrillaOrder(b.RunId,1000+cast),Is.True,"Cast "+(cast+1));
+            int earned=tier>=8?22:20,cost=GuerrillaRules.ForTier(tier).Cost;
+            Assert.That(b.Orders+cost*b.OrdersUsed,Is.EqualTo(earned),"Initial and contact points are conserved even when the first batch starts automatically.");
+            var previous=b.LatestGuerrillaOrder;Assert.That(previous,Is.Not.Null);int lastSequence=previous.Sequence;
+            for(int i=0;i<1000&&(b.OrdersUsed<casts||b.GuerrillaOrderBusy);i++)
+            {
+                b.Advance(.05f,.05f);
+                if(b.LatestGuerrillaOrder.Sequence!=lastSequence)
+                {
+                    Assert.That(previous.Age,Is.EqualTo(GuerrillaOrderVolley.PresentationDuration));
+                    Assert.That(previous.Resolved,Is.True);Assert.That(previous.CompletedStrikes,Is.EqualTo(5));
+                    Assert.That(b.LatestGuerrillaOrder.Sequence,Is.EqualTo(lastSequence+1));
+                    previous=b.LatestGuerrillaOrder;lastSequence=previous.Sequence;
+                }
+            }
             Assert.That(b.OrdersUsed,Is.EqualTo(casts));Assert.That(b.Orders,Is.EqualTo(remaining));
             var last=b.LatestGuerrillaOrder;Assert.That(last.SourceIds.Count,Is.EqualTo(participants));
             Assert.That(b.TryGuerrillaOrder(b.RunId,2000),Is.False);Assert.That(b.LatestGuerrillaOrder,Is.SameAs(last));Assert.That(b.OrdersUsed,Is.EqualTo(casts));
             Assert.That(b.CombatShots.Any(s=>s.SynergyOrder),Is.False);
-            b.Advance(.91f,.91f);Assert.That(last.Resolved,Is.True);Assert.That(last.Hits.Count,Is.EqualTo(2));Assert.That(b.Orders,Is.EqualTo(remaining),"Global orders cannot recharge themselves.");
+            b.Advance(4,4);Assert.That(last.Resolved,Is.True);Assert.That(last.CompletedStrikes,Is.EqualTo(5));Assert.That(last.Hits.Count,Is.EqualTo(2));Assert.That(b.Orders,Is.EqualTo(remaining),"Global orders cannot recharge themselves.");
         }
 
         [Test]public void EightNeedsOneRealContactAndDoesNotResetAnUnfinishedOrdinaryAction()
@@ -64,15 +76,15 @@ namespace YesterdayConvoy.Tests
             var b=Fixture(8,actionDuration:1);Assert.That(b.Orders,Is.EqualTo(2));
             var receipt=b.TryDeployRole(b.RunId,1,b.Entry,Native[0]);Assert.That(receipt.Success,Is.True);
             Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.False);Assert.That(b.LatestGuerrillaOrder,Is.Null);
-            b.Advance(.15f);var source=b.FindUnit(receipt.EntityId);Assert.That(b.Orders,Is.EqualTo(3));
+            b.Advance(.05f);var source=b.FindUnit(receipt.EntityId);Assert.That(b.Orders,Is.EqualTo(2));Assert.That(b.LatestGuerrillaOrder,Is.Null);
             Assert.That(b.Clock-source.LastAttackTime,Is.LessThan(1),"The real ordinary animation is still inside its action window.");
             double attack=source.LastAttackTime,next=(double)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).GetValue(source);
             int ordinary=source.OrdinaryAttacksFired;bool moving=source.IsMoving,empowered=source.LastAttackEmpowered;
-            Assert.That(b.TryGuerrillaOrder(b.RunId,101),Is.True);Assert.That(b.Orders,Is.Zero);
+            b.Advance(.05f);Assert.That(b.LatestGuerrillaOrder,Is.Not.Null);Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(b.Orders,Is.Zero);
             Assert.That(source.LastAttackTime,Is.EqualTo(attack));Assert.That(source.LastAttackEmpowered,Is.EqualTo(empowered));Assert.That(source.IsMoving,Is.EqualTo(moving));
             Assert.That((double)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).GetValue(source),Is.EqualTo(next));Assert.That(source.OrdinaryAttacksFired,Is.EqualTo(ordinary));
             Assert.That(source.SynergyShield,Is.EqualTo(source.MaxHealth*.15f));
-            b.Advance(.91f,.91f);Assert.That(b.LatestGuerrillaOrder.Hits.All(h=>Math.Abs(h.Damage-18)<.001f),Is.True);
+            b.Advance(2.81f,2.81f);Assert.That(b.LatestGuerrillaOrder.Hits.All(h=>Math.Abs(h.Damage-18)<.2f),Is.True);
         }
 
         [Test]public void NineCanOpenFromOutsideAllAttackRangesWithoutStoppingTheMovingSource()
@@ -81,9 +93,11 @@ namespace YesterdayConvoy.Tests
             var receipt=b.TryDeployRole(b.RunId,1,b.Entry,Native[0]);Assert.That(receipt.Success,Is.True);b.Advance(.05f,0);
             var source=b.FindUnit(receipt.EntityId);Assert.That(source.IsMoving,Is.True);Assert.That(source.OrdinaryAttacksFired,Is.Zero);
             Assert.That(b.TryGuerrillaOrder(b.RunId,100,true),Is.False,"Only the six-member tier can split orders.");
-            Assert.That(b.TryGuerrillaOrder(b.RunId,101),Is.True);Assert.That(source.IsMoving,Is.True);Assert.That(b.Orders,Is.Zero);
+            Assert.That(b.LatestGuerrillaOrder,Is.Not.Null);Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(source.IsMoving,Is.True);Assert.That(b.Orders,Is.Zero);
             var volley=b.LatestGuerrillaOrder;b.Advance(.89f,.89f);Assert.That(volley.Hits,Is.Empty);b.Advance(.02f,.02f);
-            Assert.That(volley.Hits.Count,Is.EqualTo(2));Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-30)<.001f),Is.True);
+            Assert.That(volley.Hits.Count,Is.EqualTo(2));Assert.That(volley.Resolved,Is.False);Assert.That(volley.CompletedStrikes,Is.EqualTo(1));
+            Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-4.5f)<.2f),Is.True);
+            b.Advance(1.9f,1.9f);Assert.That(volley.Resolved,Is.True);Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-30)<.2f),Is.True);
         }
 
         [Test]public void HighTierStillRejectsSkillRevivalControlAndSupportOnlySources()
@@ -105,19 +119,44 @@ namespace YesterdayConvoy.Tests
             Assert.That(support.TryGuerrillaOrder(support.RunId,100),Is.False);Assert.That(support.Orders,Is.EqualTo(2));
         }
 
-        [Test]public void SixMemberHalfOrdersCanCompleteThreePairsAndReuseOnlyAfterEachPairCloses()
+        [Test]public void AutomaticOrderWaitsForLiveEligibleSourcesAndResumeThenKeepsAllFiveCuesAndTail()
         {
-            var b=Fixture(6);EarnAllContacts(b);Assert.That(b.Orders,Is.EqualTo(20));
-            for(int pair=0;pair<3;pair++)
-            {
-                Assert.That(b.TryGuerrillaOrder(b.RunId,1000+pair*3,true),Is.True);var first=b.LatestGuerrillaOrder;int points=b.Orders;
-                Assert.That(b.HalfOrderPending,Is.True);Assert.That(b.TryGuerrillaOrder(b.RunId,1001+pair*3,false),Is.False);Assert.That(b.Orders,Is.EqualTo(points));
-                Assert.That(b.TryGuerrillaOrder(b.RunId,1002+pair*3,true),Is.True);var second=b.LatestGuerrillaOrder;
-                Assert.That(first.SourceIds.Intersect(second.SourceIds),Is.Empty);Assert.That(first.SourceIds.Count,Is.EqualTo(6));Assert.That(second.SourceIds.Count,Is.EqualTo(6));
-                Assert.That(b.HalfOrderPending,Is.False);Assert.That(b.OrdersUsed,Is.EqualTo(pair+1));
-            }
-            Assert.That(b.Orders,Is.EqualTo(2));Assert.That(b.TryGuerrillaOrder(b.RunId,2000,true),Is.False);
-            b.Advance(.91f,.91f);Assert.That(b.LatestGuerrillaOrder.Resolved,Is.True);Assert.That(b.Orders,Is.EqualTo(2));
+            var b=Fixture(9,near:false);b.Advance(.1f,.1f);
+            Assert.That(b.LatestGuerrillaOrder,Is.Null);Assert.That(b.Orders,Is.EqualTo(2),"A full balance cannot be spent into an empty field.");
+            var receipt=b.TryDeployRole(b.RunId,1,b.Entry,Native[0]);Assert.That(receipt.Success,Is.True);var source=b.FindUnit(receipt.EntityId);
+            b.SetPaused(true);double clock=b.Clock;b.Advance(3,3);
+            Assert.That(b.Clock,Is.EqualTo(clock));Assert.That(b.LatestGuerrillaOrder,Is.Null);Assert.That(b.Orders,Is.EqualTo(2));
+            b.SetPaused(false);typeof(DeployedUnitState).GetProperty("FearUntil").SetValue(source,100d);b.Advance(.1f,.1f);
+            Assert.That(b.LatestGuerrillaOrder,Is.Null);Assert.That(b.Orders,Is.EqualTo(2));
+            typeof(DeployedUnitState).GetProperty("FearUntil").SetValue(source,double.NegativeInfinity);b.Advance(.05f,.05f);
+            var order=b.LatestGuerrillaOrder;Assert.That(order,Is.Not.Null);Assert.That(order.Age,Is.Zero,"The commit does not inherit elapsed time from the substep that found its source.");
+            Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(b.Orders,Is.Zero);Assert.That(source.OrdinaryAttacksFired,Is.Zero);
+            b.Advance(2.79f,2.79f);Assert.That(order.CompletedStrikes,Is.EqualTo(4));Assert.That(order.Resolved,Is.False);
+            foreach(var hit in order.Hits)Assert.That(hit.Damage,Is.EqualTo(18).Within(.2f));
+            b.Advance(.01f,.01f);Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(order.Resolved,Is.True);
+            foreach(var hit in order.Strikes[4].Hits)Assert.That(hit.Damage,Is.EqualTo(12).Within(.2f));
+            Assert.That(b.GuerrillaOrderBusy,Is.True,"The final real hit cannot permit an overlapping cinematic during its recoil.");
+            b.Advance(.74f,.74f);Assert.That(b.GuerrillaOrderBusy,Is.True);b.Advance(.02f,.02f);Assert.That(b.GuerrillaOrderBusy,Is.False);
+            Assert.That(b.LatestGuerrillaOrder,Is.SameAs(order));Assert.That(b.Orders,Is.Zero);Assert.That(b.OrdersUsed,Is.EqualTo(1));
+        }
+
+        [Test]public void SixMemberPendingHalfBlocksAutomaticFullUntilFreshBackHalfAndItsTailComplete()
+        {
+            var b=Fixture(6);long request=1;
+            foreach(string id in Native.Take(3))Assert.That(b.TryDeployRole(b.RunId,request++,b.Entry,id).Success,Is.True);
+            b.Advance(.15f);Assert.That(b.Orders,Is.EqualTo(3));Assert.That(b.LatestGuerrillaOrder,Is.Null);
+            Assert.That(b.TryGuerrillaOrder(b.RunId,1000,true),Is.True);var first=b.LatestGuerrillaOrder;
+            foreach(var card in b.Cards.Skip(3))Assert.That(b.TryDeployRole(b.RunId,request++,b.Entry,card.Settings.CardId).Success,Is.True);
+            b.Advance(.35f);foreach(var unit in b.Units)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).SetValue(unit,1000d);
+            Assert.That(b.Orders,Is.EqualTo(7));Assert.That(b.TryGuerrillaOrder(b.RunId,1001,true),Is.False);
+            b.Advance(GuerrillaOrderVolley.PresentationDuration-first.Age+.01f);
+            Assert.That(b.LatestGuerrillaOrder,Is.SameAs(first));Assert.That(b.HalfOrderPending,Is.True);Assert.That(b.Orders,Is.EqualTo(7));
+            Assert.That(b.TryGuerrillaOrder(b.RunId,1002),Is.False);
+            Assert.That(b.TryGuerrillaOrder(b.RunId,1003,true),Is.True);var second=b.LatestGuerrillaOrder;
+            Assert.That(first.SourceIds.Intersect(second.SourceIds),Is.Empty);Assert.That(second.SourceIds.Count,Is.EqualTo(6));
+            Assert.That(b.HalfOrderPending,Is.False);Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(b.Orders,Is.EqualTo(4));
+            b.Advance(GuerrillaOrderVolley.PresentationDuration+.01f);Assert.That(second.Resolved,Is.True);
+            Assert.That(b.LatestGuerrillaOrder,Is.SameAs(second),"Four remaining points cannot start a six-point full order.");
         }
 
         [Test]public void ExtraMembershipIsAnAtomicDistinctSnapshotAndReplacementKeepsOtherTags()

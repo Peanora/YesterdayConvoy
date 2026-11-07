@@ -67,17 +67,14 @@ namespace YesterdayConvoy
 
         void DrawSnowstormRow(Rect row)
         {
-            // Keep the original row height and scroll view: nine tags still leave every button accessible.
-            GUI.Label(new Rect(row.x+9,row.y+22,65,16),$"寒潮{SnowstormColdPulses}/4",CampaignText(10,color:SnowstormInk));
-            GUI.Label(new Rect(row.xMax-62,row.y+22,54,16),$"{Battle.SnowstormRemaining:0.0}秒",CampaignText(10,TextAnchor.MiddleRight,SnowstormInk,600));
-            DrawSnowstormRemaining(new Rect(row.x+9,row.yMax-3,row.width-18,2));
+            GUI.Label(SynergySupplementRect(row),$"寒潮{SnowstormColdPulses}/4 · {Battle.SnowstormRemaining:0.0}秒",CampaignText(10,color:new Color(.66f,.86f,.91f)));
+            DrawSnowstormRemaining(SynergyProgressRect(row));
         }
 
         void DrawSnowstormChargeRow(Rect row)
         {
-            GUI.Label(new Rect(row.x+9,row.y+22,65,16),$"寒意{Battle.SnowstormCharge}/{ManualBattle.SnowstormChargeRequired}",CampaignText(10,color:SnowstormInk));
-            GUI.Label(new Rect(row.xMax-62,row.y+22,54,16),"碎冰蓄积",CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
-            Rect line=new Rect(row.x+9,row.yMax-3,row.width-18,2);
+            GUI.Label(SynergySupplementRect(row),$"寒意{Battle.SnowstormCharge}/{ManualBattle.SnowstormChargeRequired} · 碎冰蓄积",CampaignText(10,color:new Color(.66f,.86f,.91f)));
+            Rect line=SynergyProgressRect(row);
             Fill(line,ApprovedUi.Rule);
             Fill(new Rect(line.x,line.y,line.width*Mathf.Clamp01((float)Battle.SnowstormCharge/ManualBattle.SnowstormChargeRequired),line.height),SnowstormBlue);
         }

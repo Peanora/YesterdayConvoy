@@ -1,0 +1,140 @@
+{
+  "date": "2026-11-07",
+  "asset": "Assets/Audio/SFX/Resources/GuerrillaOrder/five-slash-charge.wav",
+  "resource_key": "GuerrillaOrder/five-slash-charge",
+  "status": "Added to Assets for the user-approved V2 integration. Unity import, audio lifecycle/playtests and Windows build have not yet been run for this addition.",
+  "source_kind": "Original deterministic procedural synthesis, preserving the approved V2 five-slash/charge timing and tones.",
+  "user_confirmed_scope": "V2 automatic full-order five-slash preview, with charge, brief pre-strike vacuum and heavier fifth finish; user approved game integration.",
+  "separation_from_existing_original": {
+    "this_asset_contains_original_game_cue": false,
+    "method": "Regenerated only slash(0..3), charge() and heavy_finish() synthesis functions; did not subtract or separate the approved mixed audio.",
+    "existing_original_asset": "Assets/Audio/SFX/Resources/GuerrillaOrder/followup-original.wav",
+    "existing_original_sha256": "bb1c9f39eba70c5f90b6b4db3a95ecf2e99c8f9e07e5272f46bf2bce655cba05",
+    "existing_original_source_record": "docs/art/source-records/guerrilla-original-audio.json",
+    "existing_original_unchanged": true,
+    "playback": "Keep the existing followup-original resource once at cinematic age0.9/volume0.55; never replay the complete7.2s preview mix alongside it."
+  },
+  "cinematic_sync": {
+    "time_origin": "Start of the cut-in; removes the external preview video1.15s lead.",
+    "start_age_seconds": 0,
+    "source_volume": 1,
+    "normal_1x_2x_pitch": 1,
+    "five_hit_onsets_seconds": [
+      0.9,
+      1.2,
+      1.5,
+      1.8,
+      2.8
+    ],
+    "individual_hit_windows_seconds": [
+      [
+        0.9,
+        1.09
+      ],
+      [
+        1.2,
+        1.39
+      ],
+      [
+        1.5,
+        1.69
+      ],
+      [
+        1.8,
+        1.99
+      ],
+      [
+        2.8,
+        3.38
+      ]
+    ],
+    "charge_window_seconds": [
+      1.97,
+      2.765
+    ],
+    "silent_vacuum_window_seconds": [
+      2.765,
+      2.8
+    ],
+    "end_age_seconds": 3.38,
+    "lifecycle_requirement": "Pause/seek/mute follow the same presentation clock; clear/disable/restart stop the new source. Late cancellation must suppress unperformed future cues. No second original cue is embedded."
+  },
+  "approved_preview": {
+    "workspace_relative_path": "guerrilla-five-slash-preview-v2/audio/guerrilla-five-slash-charge-v2-7.2s.wav",
+    "sha256": "874a87dcd9a33606e446de5dfac0eb999253579d4fc165f1b77212e5bf02647d",
+    "mix_comparison": {
+      "operation": "FX atvolume1 plus unchanged original atvolume.55/.9s versus approved V2 mix cropped at1.15s. Quantization-only differences are expected.",
+      "max_error_pcm16_lsb": 1.3000000000010914,
+      "rms_error_pcm16_lsb": 0.20641915244014072,
+      "remixed_sample_peak_dbfs": -6.020599913279624,
+      "approved_mix_sha256": "874a87dcd9a33606e446de5dfac0eb999253579d4fc165f1b77212e5bf02647d",
+      "original_sha256": "bb1c9f39eba70c5f90b6b4db3a95ecf2e99c8f9e07e5272f46bf2bce655cba05"
+    }
+  },
+  "synthesis_recipe": {
+    "sample_rate": 48000,
+    "random_seeds": {
+      "first_four": [
+        2026110700,
+        2026110701,
+        2026110702,
+        2026110703
+      ],
+      "charge": 2026110705,
+      "finish": 2026110706
+    },
+    "first_four": "High-pass noise, short downward metallic glides/transients, alternating light stereo pan; peaks0.18/0.19/0.20/0.21.",
+    "charge": "Ascending510-to2450Hz layered tone/noise crescendo, peak0.12, short fade into35ms exact silence.",
+    "finish": "Short bright wind cut with descending low/mid body,0.58s tail, centered with a small stereo side layer; peak0.50.",
+    "recipe_scripts_workspace_relative": [
+      {
+        "path": "guerrilla-five-slash-preview/audio/build_preview_audio.py",
+        "sha256": "bd316515eb3292253da94755e120bab24b8420a24615697ee94f783544feb391",
+        "functions": "slash(0..3)"
+      },
+      {
+        "path": "guerrilla-five-slash-preview-v2/audio/build_charge_preview_audio.py",
+        "sha256": "136ac2be9d46ddb6e63402883cff4217cf429ee03fd6e1837a5404dc339addb9",
+        "functions": "charge(),heavy_finish()"
+      },
+      {
+        "path": "guerrilla-five-slash-preview-v2/audio/build_runtime_fx_candidate.py",
+        "sha256": "f13d9f1b37d6e26c4c52e3736602a9c5a479042f491d83c48fddf7aab899cdc0",
+        "operation": "Assemble pure FX on cinematic clock; PCM16 quantization only."
+      }
+    ],
+    "runtime_dependency": "Only the committed WAV and meta are required at runtime; project-external recipe scripts are provenance, not runtime dependencies."
+  },
+  "asset_validation": {
+    "sha256": "efeb071719530bffd89b27e5e309b0775ad9e0adbc2640647d69ec6e027b0646",
+    "bytes": 649004,
+    "meta_guid": "473d7bd5fd7149e58b4c1c72a791e8d3",
+    "codec": "pcm_s16le",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "bits_per_sample": 16,
+    "frames": 162240,
+    "duration_seconds": 3.38,
+    "sample_peak_dbfs": -6.020599913279624,
+    "true_peak_dbtp_rounded": -6.0,
+    "rms_dbfs": -32.55290250860016,
+    "clipped_samples": 0,
+    "checks_run": [
+      "ffprobe metadata and decode",
+      "FFmpeg true-peak analysis",
+      "Exact timing and35ms silent vacuum",
+      "Pure FX plus separate original remix comparison",
+      "Source-to-Assets WAV/meta byte equality",
+      "Existing original SHA unchanged",
+      "Git ignore query: all three new files are not ignored"
+    ],
+    "not_yet_run": [
+      "Unity audio import/resource loading",
+      "GPU audio pause/seek/pitch/cancellation tests",
+      "Standalone Player",
+      "Windows build",
+      "Human audio audition"
+    ]
+  },
+  "rights_status": "This new layer is programmatically synthesized. The separate existing game cue retains its recorded third-party rights; preview, integration and upload approval are not rightsholder authorization. No new original-game media was sourced for this layer."
+}
