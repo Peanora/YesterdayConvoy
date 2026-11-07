@@ -20,8 +20,8 @@ namespace YesterdayConvoy
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
         static Rect CampaignConstructRect=>new Rect(252,155,722,352);
         bool CampaignUiModalOpen=>CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
-        public Rect CampaignConstructToggleRect=>new Rect(16,SynergyListRect.yMax+6,157,28);
-        Rect CampaignQuickActionsRect=>new Rect(16,CampaignConstructToggleRect.yMax+7,157,222);
+        public Rect CampaignConstructToggleRect=>new Rect(12,SynergyListRect.yMax+6,174,28);
+        Rect CampaignQuickActionsRect=>new Rect(12,CampaignConstructToggleRect.yMax+7,174,222);
         bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
             !Loop.CanShop&&Loop.CanDeploy&&(CampaignQuickActionsRect.Contains(point)||Battle.MudrockTier>=2&&GolemCardRect.Contains(point)));
         GUIStyle CampaignText(int size=13,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
@@ -125,7 +125,11 @@ namespace YesterdayConvoy
                 {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
             }
             DrawGuerrillaTransferBadges();DrawSynergySidebar();
-            if(LoopButton(CampaignConstructToggleRect,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开"))
+            var toggle=CampaignConstructToggleRect;
+            Fill(toggle,new Color(.125f,.195f,.28f));ApprovedUi.Border(toggle,new Color(.52f,.60f,.69f,.38f));
+            bool toggleClicked=GUI.Button(toggle,GUIContent.none,GUIStyle.none);
+            GUI.Label(toggle,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开",CampaignText(12,TextAnchor.MiddleCenter,new Color(.90f,.94f,.97f),600));
+            if(toggleClicked)
             {campaignConstructOpen=!campaignConstructOpen;inspectedSynergy=null;CancelShopDrag();}
             bool enabled=GUI.enabled;GUI.enabled=enabled&&!CampaignUiModalOpen;
             if(!Loop.CanShop&&Loop.CanDeploy)DrawCampaignQuickActions();

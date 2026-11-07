@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -17,10 +18,16 @@ namespace YesterdayConvoy
     {
         const int PrismaticBands = 16;
         static readonly Dictionary<string, Texture2D> icons = new Dictionary<string, Texture2D>();
+        static readonly Dictionary<string, Texture2D> frames = new Dictionary<string, Texture2D>();
+        static Texture2D counter;
+        static bool counterLoaded;
         static readonly Color InactiveColor = new Color(.48f, .53f, .58f);
         static readonly Color BronzeColor = new Color(.84f, .57f, .34f);
         static readonly Color SilverColor = new Color(.83f, .89f, .95f);
         static readonly Color GoldColor = new Color(1f, .82f, .43f);
+        static readonly Color PastThresholdColor = new Color32(0xb7, 0xc3, 0xd2, 0xff);
+        static readonly Color FutureThresholdColor = new Color32(0x64, 0x74, 0x8a, 0xff);
+        static readonly Color ThresholdSlashColor = new Color32(0x50, 0x62, 0x7a, 0xff);
         static readonly Color[] PrismaticColors =
         {
             new Color(1f, .79f, .88f),
@@ -90,6 +97,109 @@ namespace YesterdayConvoy
                 icons.Add(id, icon);
             }
             return icon;
+        }
+
+        public static Texture2D FrameFor(SynergyVisualGrade grade)
+        {
+            string id;
+            switch (grade)
+            {
+                case SynergyVisualGrade.Bronze: id = "bronze"; break;
+                case SynergyVisualGrade.Silver: id = "silver"; break;
+                case SynergyVisualGrade.Gold: id = "gold"; break;
+                case SynergyVisualGrade.Prismatic: id = "prismatic"; break;
+                default: id = "inactive"; break;
+            }
+            if (!frames.TryGetValue(id, out var frame))
+            {
+                frame = Resources.Load<Texture2D>("UI/Synergies/Frames/plate-" + id);
+                frames.Add(id, frame);
+            }
+            return frame;
+        }
+
+        public static Texture2D CounterFor()
+        {
+            if (!counterLoaded)
+            {
+                counter = Resources.Load<Texture2D>("UI/Synergies/Frames/count-dot");
+                counterLoaded = true;
+            }
+            return counter;
+        }
+
+        static Rect Centered(Vector2 center, float size)
+            => new Rect(center.x - size * .5f, center.y - size * .5f, size, size);
+
+        public static void DrawBadge(Rect diamondBounds, string name, int tier, int count, Font fallbackFont)
+        {
+            if (diamondBounds.width <= 0 || diamondBounds.height <= 0) return;
+            float scale = Mathf.Min(diamondBounds.width, diamondBounds.height) / 44f;
+            Vector2 center = diamondBounds.center;
+            var grade = GradeFor(name, tier);
+            Color previous = GUI.color;
+            try
+            {
+                // The authored PNG already contains the metal, rim and shadow. Drawing it at
+                // 52 units preserves its four-unit transparent/shadow margin around the 44-unit plate.
+                GUI.color = new Color(1, 1, 1, previous.a);
+                var frame = FrameFor(grade);
+                if (frame != null) GUI.DrawTexture(Centered(center, 52f * scale), frame, ScaleMode.StretchToFill, true);
+
+                var icon = IconFor(name);
+                if (icon != null)
+                {
+                    // Identity glyphs stay white; grade is represented only by the backplate.
+                    GUI.color = new Color(1, 1, 1, previous.a * (grade == SynergyVisualGrade.Inactive ? .48f : 1f));
+                    GUI.DrawTexture(Centered(center, 28f * scale), icon, ScaleMode.StretchToFill, true);
+                }
+
+                GUI.color = new Color(1, 1, 1, previous.a);
+                Vector2 counterCenter = center + new Vector2(15.84f, 15.84f) * scale;
+                var dot = CounterFor();
+                if (dot != null) GUI.DrawTexture(Centered(counterCenter, 24.8f * scale), dot, ScaleMode.StretchToFill, true);
+                GUI.Label(Centered(counterCenter, 16.8f * scale), count.ToString(CultureInfo.InvariantCulture),
+                    ApprovedUi.Text(fallbackFont, Mathf.Max(1, Mathf.RoundToInt(13f * scale)),
+                        TextAnchor.MiddleCenter, Color.white, 600));
+            }
+            finally
+            {
+                GUI.color = previous;
+            }
+        }
+
+        public static void DrawThresholds(Rect bounds, int[] thresholds, int activeTier, Font fallbackFont)
+        {
+            if (bounds.width <= 0 || bounds.height <= 0 || thresholds == null || thresholds.Length == 0) return;
+            float preferredWidth = 8f + thresholds.Length * 10f + (thresholds.Length - 1) * 6f;
+            // Normal sidebar rows use the full 12px type. A narrower caller still keeps every
+            // threshold by uniformly reducing the spacing and type, rather than dropping values.
+            float scale = Mathf.Min(1f, bounds.width / preferredWidth);
+            int fontSize = Mathf.Max(1, Mathf.RoundToInt(12f * scale));
+            Color previous = GUI.color;
+            try
+            {
+                GUI.color = new Color(13f / 255f, 23f / 255f, 37f / 255f, previous.a * .8f);
+                GUI.DrawTexture(new Rect(bounds.x, bounds.y, preferredWidth * scale, bounds.height), Texture2D.whiteTexture);
+                GUI.color = new Color(1, 1, 1, previous.a);
+                float x = bounds.x + 4f * scale;
+                for (int i = 0; i < thresholds.Length; i++)
+                {
+                    int value = thresholds[i];
+                    Color ink = value == activeTier ? Color.white : value < activeTier ? PastThresholdColor : FutureThresholdColor;
+                    GUI.Label(new Rect(x, bounds.y, 10f * scale, bounds.height), value.ToString(CultureInfo.InvariantCulture),
+                        ApprovedUi.Text(fallbackFont, fontSize, TextAnchor.MiddleCenter, ink, value == activeTier ? 700 : 500));
+                    x += 10f * scale;
+                    if (i == thresholds.Length - 1) continue;
+                    GUI.Label(new Rect(x, bounds.y, 6f * scale, bounds.height), "/",
+                        ApprovedUi.Text(fallbackFont, fontSize, TextAnchor.MiddleCenter, ThresholdSlashColor, 500));
+                    x += 6f * scale;
+                }
+            }
+            finally
+            {
+                GUI.color = previous;
+            }
         }
 
         // vertical is measured from the top of the displayed icon or strip.

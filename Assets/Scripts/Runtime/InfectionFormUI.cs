@@ -43,8 +43,8 @@ namespace YesterdayConvoy
         {
             string main=FormName(VisibleInfectionMain);
             string secondary=tier>=6?"副 "+FormName(VisibleInfectionSecond):"副6档解锁";
-            GUI.Label(new Rect(row.x+9,row.y+22,row.width-17,16),"主 "+main+" · "+secondary,
-                CampaignText(10,color:tier>0?InfectionOrange:ApprovedUi.Muted));
+            GUI.Label(SynergySupplementRect(row),"主 "+main+" · "+secondary,
+                CampaignText(10,color:tier>0?new Color(.68f,.75f,.83f):new Color(.55f,.62f,.71f)));
         }
         static string InfectionEffect(InfectionForm form,int tier)
         {

@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         int infectionClickSequence;
         Rect InfectionEvidenceRow
         {
-            get {int i=Array.FindIndex(CurrentSynergies,s=>s.Name=="感染生物");return new Rect(SynergyListRect.x,SynergyListRect.y+28+i*46,139,41);}
+            get {int i=Array.FindIndex(CurrentSynergies,s=>s.Name=="感染生物");return i<0?Rect.zero:SynergyRowScreenRect(i);}
         }
         IEnumerator InfectionGuiClick(string directory,string name,Rect rect,Func<bool> accepted)
         {

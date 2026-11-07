@@ -34,6 +34,31 @@ namespace YesterdayConvoy.Tests
         }
         static SynergyVisualGrade Grade(SynergySummary row)=>SynergyBadgePresentation.GradeFor(row.Name,row.Tier);
 
+        [Test]public void DiamondFramesLoadSeparatelyAndFullThresholdsDoNotReplaceActualCounts()
+        {
+            var frames=new HashSet<Texture2D>();
+            foreach(SynergyVisualGrade grade in Enum.GetValues(typeof(SynergyVisualGrade)))
+            {
+                var frame=SynergyBadgePresentation.FrameFor(grade);Assert.That(frame,Is.Not.Null,grade.ToString());
+                Assert.That(frame.width,Is.EqualTo(256));Assert.That(frame.height,Is.EqualTo(256));
+                Assert.That(AssetDatabase.GetAssetPath(frame),Does.EndWith("/UI/Synergies/Frames/plate-"+grade.ToString().ToLowerInvariant()+".png"));
+                Assert.That(frames.Add(frame),Is.True,"A separate plate supplies each grade, instead of tinting the white glyph.");
+            }
+            var counter=SynergyBadgePresentation.CounterFor();Assert.That(counter,Is.Not.Null);
+            Assert.That(counter.width,Is.EqualTo(256));Assert.That(counter.height,Is.EqualTo(256));
+            Assert.That(AssetDatabase.GetAssetPath(counter),Does.EndWith("/UI/Synergies/Frames/count-dot.png"));
+            var roster=new[]{"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M20","CARD_M07","CARD_M08"};
+            var reunion=SynergySummary.From(roster).Single(row=>row.Name=="整合运动");
+            Assert.That(reunion.Count,Is.EqualTo(9));Assert.That(reunion.Tier,Is.EqualTo(6));
+            Assert.That(Grade(reunion),Is.EqualTo(SynergyVisualGrade.Gold),"The count bubble is nine while the activated threshold and plate remain six/gold.");
+            var sequences=new Dictionary<string,int[]>{
+                {"reunion",new[]{2,4,6}},{"snow",new[]{2,5}},{"infection",new[]{2,4,6}},
+                {"guerrilla",new[]{2,4,6,8,9}},{"mudrock",new[]{2,4,5}},
+                {"herd",new[]{2,4}},{"deep-pool",new[]{2,4}},{"marine",new[]{2,4}},{"sarkaz",new[]{2,4,6}}
+            };
+            foreach(var pair in sequences)CollectionAssert.AreEqual(pair.Value,Summary(pair.Key,1).Thresholds,pair.Key+" keeps the complete sequence, including inactive future thresholds.");
+        }
+
         [Test]public void UnequalRosterThresholdsKeepTheirActualMetalGrades()
         {
             var snowFour=Summary("snow",4);Assert.That(snowFour.Count,Is.EqualTo(4));Assert.That(snowFour.Tier,Is.EqualTo(2));

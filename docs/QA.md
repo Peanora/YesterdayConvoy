@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-07：确认稿菱形底牌、白徽与实际人数
+
+- 人类确认项目外侧栏原稿V1后要求接入。沿用codex/synergy-icons-tier-ui和PR #96；本轮fetch确认origin/main仍b1d55e7、任务分支与origin一致后继续。仅显示与验证代码、六张小型运行PNG/必要meta及SVG作者源/来源记录；九枚V3徽记不变。原52处VFX meta逐文件SHA256保持、两个本地未跟踪项不提交。
+- Unity6000.6.5f1完整EditMode513/513，0失败/跳过（artifacts/synergy-diamond-edit.xml）；相关D3D11 PlayMode16/16，0失败/跳过（artifacts/synergy-diamond-play.xml）。新增帧资源导入及透明GPU上传、真实9种整合仍6档金底但人数9、全九种完整门槛、合法十卡覆盖九行、雪怪5/感染2副行、滚动后的末行点击坐标与构筑/完整快捷区不侵占552部署栏。保留详情输入保护、商店/感染/雪怪既有回归。几何反射夹具不冒称真实OS点击。
+- 菱形底牌从批准稿SVG确定性导出，五个金属灰/铜/银/金/镀彩底与一个无数字黑圆点共六张256RGBA32PNG。白徽、人数与门槛由现有数据独立绘制；currentTier只决定底牌，Count决定圆点，完整门槛当前档加粗白色。运行图片、meta及来源随源码，未改羁绊逻辑或场景/Prefab/包/设置。
+- Windows构建与双分辨率可见Player验证待执行；下方旧版数据仅为历史，不作为新侧栏完成证据。
+
 ## 2026-11-07：九羁绊图标、铜银金与超高档镀彩
 
 - 人类确认V3九枚图标并要求接入、按激活档位显示阶色。当前任务分支codex/synergy-icons-tier-ui，从已同步origin/main b1d55e7建立，快进保留已在GitHub的五斩e096351；不自动合并PR #95或main。原52处VFX meta逐文件比对保持，.vscode/和PackageManagerSettings.asset不提交。只改侧栏显示与开发验证入口，无场景、Prefab、包或项目设置任务修改。
