@@ -2,6 +2,11 @@
 
 ## 2026-11-07：PR 冲突整理与海嗣依赖整合
 
+- 最终以同一工程合并海嗣依赖与树海：运行源码6b02a5900cbcea0045628c306b626ef69b4098b1，完整EditMode619/619，0失败/跳过（edit-final.xml）。新版徽记下泥岩/溟痕补充行采用共用坐标，1px经验条不画覆盖填充的边框。新增地图沿用保存地形、显式terrainOnly及兼容旧调用的可选参数；启动路由组合各专项和原诊断，不改原有主场景或Packages。
+- D3D11 PlayMode首轮32项31过1败：游击六档多人夹具未提交自动整令。生产自动整令链与main相同；单项在增强诊断后1/1通过，最终游击与泥岩两类11/11（play-order-repro-fixed.xml、play-followup.xml）。因此32个不同相关用例均获得通过，但不是单次32/32；未稳定复现并定位首轮组合顺序问题，不以改玩法或减少断言消除失败。诊断文字初次误用不存在的RouteMotion.Distance导致编译退出，已更正为实际DistanceTravelled；原失败日志保留。
+- Windows构建入口DeepPoolBuildTools.BuildWindows使用动态场景目录，包含树海及全部既有场景，1063504437 bytes / 0 errors / 退出0（build-final.log）。同一运行源码的独立Player均从工程外TEMP启动，1280×720、Direct3D11：树海geometry/materials/nativeGates/fixedRoutes/pause/sharedDefense/restart七项全True；海嗣15/15、自然Won、16格/4次爆发、实际地面开关差9018像素；深池17/17、2.85秒首次燎烧/8.25秒首种、同刻两目标引爆360真实HP。三个可见窗口均退出0，已目视核对实际地图、覆盖/神经HUD及引爆截图。范围查看通过生产ToggleMarineCoverage调用，部署走普通ProcessShopPointer，不冒称OS鼠标操作。结果分别在player-forest-visible.log、player-marine-visible/result.json、player-deep-visible/result.json。
+- 初轮隐藏Player：树海逻辑七项通过但截图全黑；海嗣13/15，HUD与像素失败且地面差0。此轮不计画面通过，重新打开实际窗口后以上可见Player全部通过。保留黑图与失败结果，未改生产画面或放宽像素门槛。
+- 完整构建已复制到Builds/Windows，EXE、运行DLL与SOURCE.txt对应6b02a59；无ZIP/Releases。仓库7628跟踪文件检查通过。开工56文件快照与收尾SHA256一致；原52处meta只有自动新增未启用WebGL配置，按既有确认保留不提交。未运行完整PlayMode、第二机、全分辨率或自然长局/全部阵容平衡。
 - 实时 main 为 f6d52bd（#97），本地原深池 e7a9aff 与它文件树相同。13 个旧 PR 已通过 #80/#89/#96 完整进入 main；以原头祖先关系及整合分支/main 全树相等核实后关闭重复 PR，保留原分支与历史说明。
 - 将 #94（包含 #90 泥岩、#91 牧群与 #93 银狼）同 main 逐段合并：保留深池 LastTick/首击产种/耗尽尾伤、游击五斩与新版徽记，同时接溟痕落种、灵体起身、泥岩培养与银狼。泥岩/溟痕补充行改用当前徽记侧栏坐标，避免覆盖名称与门槛。
 - 初轮完整 EditMode 613 项：612 通过、1 失败，为旧徽记测试仍期待泥岩 2/4/5，而新规则已开放 6 档；按实际规则更新期待后该测试类 5/5 通过。结果在 artifacts/pr-conflict-integration/edit-marine.xml 与 edit-marine-fix.xml。该阶段尚未运行 GPU/独立 Player；后续整合验收另记。
