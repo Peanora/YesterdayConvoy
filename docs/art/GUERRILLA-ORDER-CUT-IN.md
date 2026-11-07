@@ -6,15 +6,17 @@
 
 | 项目 | 采用看稿/来源 | 触发与读取点 | 接线状态 |
 |---|---|---|---|
-| 自动整令 | 已确认五斩V2 | ManualBattle.Advance子步/GuerrillaOrderVolley；Controller按批次一次桥接 | VERIFIED，Edit/GPU通过，待Player |
-| 五次全场斩击/数字 | V2原生Bezier刀光与实际Strikes | 0.9/1.2/1.5/1.8/2.8演出秒，GuerrillaOrderView | VERIFIED，逐刀实际HP/GPU通过，待Player |
-| 蓄力与重斩 | V2压暗/碎光内收/金白主刃 | 1.97–2.8秒聚力，仅真实末击后画命中 | VERIFIED，4段保持/40%末刀通过，待Player |
-| 三帧停顿与震屏 | V2战场衰减反馈 | GuerrillaOrderScreenEffect/专用Shader；不改Camera Transform或输入 | VERIFIED，实际GPU保持/位移/清理通过，待Player |
-| 声音 | 原总攻音＋V2纯合成FX | followup-original在.9秒音量.55；five-slash-charge从0秒音量1 | VERIFIED，双源暂停采样/音高/尾通过，待Player |
+| 自动整令 | 已确认五斩V2 | ManualBattle.Advance子步/GuerrillaOrderVolley；Controller按批次一次桥接 | VERIFIED，Edit/GPU/Player真实收入与扣点 |
+| 五次全场斩击/数字 | V2原生Bezier刀光与实际Strikes | 0.9/1.2/1.5/1.8/2.8演出秒，GuerrillaOrderView | VERIFIED，逐刀实际HP/GPU/Player |
+| 蓄力与重斩 | V2压暗/碎光内收/金白主刃 | 1.97–2.8秒聚力，仅真实末击后画命中 | VERIFIED，4段保持/40%末刀/Player实图 |
+| 三帧停顿与震屏 | V2战场衰减反馈 | GuerrillaOrderScreenEffect/专用Shader；不改Camera Transform或输入 | VERIFIED，GPU/Player保持/位移/清理 |
+| 声音 | 原总攻音＋V2纯合成FX | followup-original在.9秒音量.55；five-slash-charge从0秒音量1 | VERIFIED，双源暂停采样/音高/尾/Player |
 
 完整演出3.55秒；二倍速不加速演出或音高，技能菜单既有0.03慢速语义保留，暂停冻结。取消只停止未来攻击/蓄力，已发生Strikes/Hits留给真实数字与末击尾光；重开/禁用清空两声源和屏幕变换。新的纯FX资源长3.38秒，不含原作出手音，不会把完整预览混音叠播两遍。新增WAV、Shader、源码和必要meta随源码提交；HTML、MP4和加工文件只留项目外。来源见source-records/guerrilla-five-slash-audio.json。
 
-本轮从实时main b1d55e7新建codex/guerrilla-auto-five-strikes，原52处VFX meta和两个本地未跟踪项保留。旧-guerrillaOrderSmokeTest/-guerrillaHighTierSmokeTest转到新的自动五斩验收，独立RenderProbe仍走原探针；旧测试文字及下文单次/2.6秒描述为历史，最新QA覆盖。最终完整Edit508/508、相关D3D11 Play38/38通过；Windows构建及独立Player验证待执行。
+本轮从实时main b1d55e7新建codex/guerrilla-auto-five-strikes，原52处VFX meta和两个本地未跟踪项保留。运行源码221c515：完整Edit508/508、相关D3D11 Play38/38、可见1920×1080 Player49/49，Windows构建1046503985字节、0错误。实机各守军21/21/21/21/56、合计560，1×/2×峰值像素与总伤一致；已查看蓄力、末刀、原作头像及清理画面。详见QA的真实夹具与未测范围。
+
+新独立Player入口-guerrillaAutoFiveSmokeTest -demoEvidenceDir <目录>，可选-guerrillaFiveCaptureFrames导246张实际逐演出帧（含前导/清理）。旧-guerrillaOrderSmokeTest/-guerrillaHighTierSmokeTest转到这个验收，两个旧capture参数也继续接受；独立RenderProbe仍走原探针。旧测试文字及下文单次/2.6秒描述仅为历史。项目外MP4后配同一运行音源，未声称实时系统声音录制；不自动ZIP/Releases或合并main。
 
 ## 2026-11-06：历史接入与来源
 

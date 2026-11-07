@@ -5,7 +5,10 @@
 - 用户确认项目外五斩V2后授权接入。基线实时origin/main b1d55e7，分支codex/guerrilla-auto-five-strikes。保留原52处VFX meta（逐文件SHA与开始时一致）、.vscode/和PackageManagerSettings.asset；不提交这些既存本地项。无场景/Prefab/Packages/ProjectSettings任务修改。
 - Unity6000.6.5f1：最终完整EditMode508/508（artifacts/guerrilla-auto-edit-final.xml）、相关D3D11 PlayMode38/38（artifacts/guerrilla-auto-play-final.xml）通过。模型覆盖真实收入自动发令、无人/控制/暂停/半令待完成不空放、所有档无次数cap、忙碌尾段防重叠、逐刀混伤/护甲/最小伤害预算、来源/目标失效、取消保留已损、精确五时点和1×2×同结果。GPU覆盖实际自动军令/9槽原作塔露拉、每刀真实HP与记录、15/40分配、蓄力保持四段、两源暂停采样/原音高、真实镜头后处理像素/三帧hold/位移/归零、原作头像加载、战役/专项/其他羁绊流程。
 - 过程记录：首轮编译发现新增验收夹具误把DeployedUnit.NextHealAt写在Defender，删除无效行后编译通过。首轮Edit505/508的3失败均为float子步累计导致Age在精确2.8低约1.43微秒，内部改double累计、公开float不变后508/508，未放宽2.8断言。首轮GPU35/38：一例仍手动花已被自动消费的军令；两例严格HP夹具的旧多源弹道无法在第一刀前排空。改为检测实际自动批次、严格分支真实8档单M03首接敌补第三点自动发令，保留排空与.85秒上界后38/38。清掉旧版额外4束扫光和.975白闪，五刀仅由真实Strikes驱动。
-- 运行源码提交后待本地Windows构建与独立Player复验；尚未运行全量PlayMode、第二机、全分辨率及自然长局平衡。新纯FX资源649004字节、3.38秒，五刀.9/1.2/1.5/1.8/2.8，原followup出手声独立保留不重复混入；WAV/meta及来源记录均随源码跟踪。
+- 最终运行源码221c515884fb05d63a2e5f3b18b43c10bd377605：Windows构建1046503985字节、0错误（artifacts/guerrilla-auto-build.log），产物Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。可见1920×1080 D3D11独立Player49/49通过（artifacts/guerrilla-auto-player/result.json），进程58912正常退出、日志完整清理。9级9种库存/两真实转职/Begin初始2点，空源不空放，实际M03部署后自动一次；未写假Orders/Hits。每守军前四段各实际21、末段56，4名守军总实际掉血560；逐段HP、累计记录、末刀更高与原作塔露拉绑定通过。
+- 已查看原作九肖像、蓄力4/5、末刀5/5及实际伤害/震屏截图。两源原音/FX各在两个完整批次只播一次，暂停timeSamples冻结；单独迟观察的终局批次不补播已过声段。1×/2×峰值生产层像素一致、伤害一致，2×逐帧Age最大误差2.3841858e-7秒，普通模拟仍2×。后处理GPU开关差2073597像素，逻辑相机不动；终局保留第一段已损且取消其余，末尾两源/hold/Offset/Zoom/Roll和重开清理通过。
+- 导出246张实际Player逐演出帧、60fps/4.1秒（含0.1秒前导及清理），项目外guerrilla-auto-five-in-game.mp4已完整解码检查。视频后配同一跟踪原声（.55）及纯FX（1）并对齐前导，不称实时系统音频录制。耐久守军1000HP、延后普攻/独立装置攻击治疗仅为隔离军令预算的明确夹具，不代表自然长局平衡验收。原Unity/GPU测例夹具不同，细节见代码。
+- 仓库6555跟踪文件检查通过，新纯FX资源649004字节、3.38秒及Shader/meta均随源码跟踪，原followup出手声哈希不变且不重复混入。原52处meta开始/结束SHA全部一致，两个本地项未提交。未运行全量PlayMode、第二机、全分辨率或自然长局平衡，未另行主观试听；不自动ZIP/Releases或合并main。构建后仅文档补记。
 
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
