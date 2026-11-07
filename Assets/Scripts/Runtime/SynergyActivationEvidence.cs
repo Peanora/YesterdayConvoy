@@ -71,7 +71,7 @@ namespace YesterdayConvoy
                 check("preparationMenuFreezesProductionAgeAndAudioSamples",Mathf.Abs(age-.5f)<.0001f&&synergyActivationFeedback.ActiveAge==age&&
                     synergyActivationSource!=null&&!synergyActivationSource.isPlaying&&Math.Abs(synergyActivationSource.timeSamples-sample)<=1024);
                 yield return SynergyActivationFrame(directory,"activation-03-paused");
-                yield return SynergyBadgeGuiClick(directory,"close-preparation-menu",new Rect(1222,8,42,42),()=>!loopMenuOpen);
+                yield return SynergyBadgeGuiClick(directory,"close-preparation-menu",new Rect(LoopMenuRect.xMax-36,LoopMenuRect.y+9,24,24),()=>!loopMenuOpen);
                 Tick(1.31f);
                 check("pulseAndSoundClearAfterTheWindow",synergyActivationFeedback.Active==null&&synergyActivationSource!=null&&!synergyActivationSource.isPlaying);
                 yield return SynergyActivationFrame(directory,"activation-04-cleared",value=>clear=value);
@@ -97,7 +97,13 @@ namespace YesterdayConvoy
             Tick(.12f);
             check("regainingThresholdPlaysOneNewCue",synergyActivationSoundPlayCount==sounds+2&&synergyActivationFeedback.Active!=null);
 
-            yield return PrepareSynergyBadgeEvidenceRoster(SynergyTrialCatalog.Find("infection").Members.ToArray());
+            var infectionMembers=SynergyTrialCatalog.Find("infection").Members.ToArray();
+            yield return PrepareSynergyBadgeEvidenceRoster(infectionMembers);
+            // The shared badge-layout fixture intentionally closes modals after setup. Reenter
+            // the real threshold through ordinary lineup synchronization, which opens this prompt.
+            string infectionNewcomer=infectionMembers[infectionMembers.Length-1];
+            shopLineup.Remove(infectionNewcomer);SyncShopDeck(false);
+            shopLineup.Add(infectionNewcomer);SyncShopDeck(false);
             check("realInfectionThresholdKeepsItsExistingPrompt",Battle.InfectionTier==6&&inspectedSynergy=="感染生物"&&synergyActivationFeedback.Active!=null);
             float blockedAge=synergyActivationFeedback.ActiveAge;int blockedSounds=synergyActivationSoundPlayCount;
             Tick(.7f);
