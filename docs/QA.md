@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-08：普通开局、放大树海与清理红门文字
+
+- 人类先反馈简单、随后明确可能是预置过好并要求普通阵容；本轮不加强守军。新开局M07/M08/M15二星、M16/M10/M05/M04/M38一星，无三星/五费，14基础牌/等价20招募金币/首轮25DP；四档整合、二档游击/感染，无雪怪。旧8名整合成员实际仅六档（两编制），不误记为八档。
+- `YesterdayConvoy.Editor.BlackForestRosterTools.Evaluate`真实ManualBattle **12组**，.05秒步长/300秒上限，保留完整编队羁绊、原九守军、正常面板、50DP/6防御，源配置JSON未变。旧首发93.9秒胜利精确复现上一版可见Player；普通前三名在R1/R2/R3各一组300秒均无穿门；普通八人首发300秒剩4防御/25DP；尽早消耗预算126秒自然失败；等守军清空后合法补兵248.95秒自然胜利、16次普通部署、余0DP、189.7秒开始补兵。结果见`artifacts/blackforest-feedback/roster-comparison.json`，这是固定策略比较，不给全构筑通关率。
+- 运行源码`a7d001e034b08240045d3dfa5a3c58acc9e22f9f`：完整EditMode **755/755**（`edit-startup-final.xml/log`；主要实现先前`edit-final`亦755/755），相关非batch D3D11 PlayMode **12/12**（`play-final.xml/log`，树海2、Campaign4、感染反馈3、席位3）。覆盖新普通库存/面板、感染选择兼容、三门可见与暂停扣费/CD、重开/返回整备；不是完整PlayMode。
+- Windows x64 Development构建 **1063647451 bytes、0 errors**（`build-final.log`），输出Windows-Reunion；完整1972文件同步常用Windows并逐文件SHA256一致（`copy-check.json`）。SOURCE.txt记录运行提交，既有“树海六星试玩.cmd”直达。
+- 可见D3D11独立Player **1600×900与1280×720各49/49，退出0**（`player-1600-final`、`player-1280-final`）。已实看普通卡栏、放大地形/原门、无门旁白字、三门暂停部署与伤害/治疗。逻辑1280画布路线地砖外缘bbox约708.10×432.69；全部位于HUD/部署栏之外，三个门仍可生产指针拖放；箭头线路保留。普通预置无手动技能，条件化“不要求施放”检查，守军实际施放9次；300秒首轮结果Running、剩4防御/25DP，未强行判负或判胜。
+- 首次独立Player在资源准备时失焦暂停，日志保留`player-1600.log`，不是最终通过。将仅-smoke启动的runInBackground提前至BeforeSceneLoad后重新构建并完成上述两尺寸；普通试玩失焦暂停不变。烟测接受已有默认感染形态并关闭模态页，普通启动仍保留人类形态选择；未冒称OS拖放操作。
+- 本轮源地图守军资产、保存地形、Prefab、Packages/ProjectSettings与新美术无差异，52份既存特效meta SHA256零变化，两本地未跟踪项保留。源码沿codex/blackforest-six-star与PR #103推送，无main自动合并、ZIP/Releases。第二机、其他阵容/真人部署策略、自然十三关与最终长局平衡未测。
+
 ## 2026-11-08：树海六星防线V2接入
 
 - 运行源码`f9449c20c5aae50a67e301ee8b07de1e358d421d`，Unity6000.6.5f1；同一日常工程从实时main7862d09创建功能分支并FF承接待审PR #102平衡提交43a72a1。地图资源写入九守军/六六星，源技能/前摇/完整动作复用，地形与路线未改。8级八人正常库存预置，测试仅开放自由整备，战斗保持正常面板/50DP/6防御。
