@@ -240,7 +240,7 @@ namespace YesterdayConvoy
         }
         private readonly List<DeathBlast> deathBlasts=new List<DeathBlast>();
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
-        public bool HasPendingDeathBlast => herdQueue.Count>0||infectionBursts.Exists(x=>!x.Resolved)||deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
+        public bool HasPendingDeathBlast => HasPendingDeepBurn||herdQueue.Count>0||infectionBursts.Exists(x=>!x.Resolved)||deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
         public float DefenderArmor(DefenderState defender) => defender.Settings.Armor*(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?3:1)*
             (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction-MarineArmorReduction(defender);
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>

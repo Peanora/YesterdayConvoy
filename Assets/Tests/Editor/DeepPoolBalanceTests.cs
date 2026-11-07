@@ -76,6 +76,25 @@ namespace YesterdayConvoy.Tests
             b.Restart();Assert.That(b.DeepSeeds,Is.Empty);Assert.That(b.DeepBurnRemaining(b.Defender.EntityId),Is.Zero);
         }
 
+        [Test]public void ExhaustedArmyWaitsForTheLastBurnToFinishAndPauseFreezesThatWait()
+        {
+            var settings=new ManualBattleSettings("CARD_M29","M29",1,1,1,1,.01f,100,.01f,1,1,1,1);
+            var guard=Guard("last-target",20,1000);
+            var b=new ManualBattle(settings,Route,guard.Position,QuietCombat(),roster:new[]{guard});
+            // M30 contributes to the battle snapshot but is not an available deployment card.
+            b.ConfigureSynergies(Deep.Take(2).Select(id=>Piece(id)));b.Begin();var source=Deploy(b);
+            Assert.That(b.DP,Is.Zero);Assert.That(b.RemainingUses,Is.Zero);
+            Hit(b,b.Defender,1,source);float hp=b.Defender.Health;
+            Assert.That(b.TryDamageUnit(source.EntityId,1000,CombatDamageType.Arts),Is.True);Assert.That(source.Active,Is.False);
+            Advance(b,.5f);Assert.That(b.Phase,Is.EqualTo(BattlePhase.Running));
+            Assert.That(hp-b.Defender.Health,Is.EqualTo(7.5f).Within(.05));
+            double clock=b.Clock,remaining=b.DeepBurnRemaining(b.Defender.EntityId);float pausedHP=b.Defender.Health;
+            b.SetPaused(true);b.Advance(100);Assert.That(b.Clock,Is.EqualTo(clock));Assert.That(b.Defender.Health,Is.EqualTo(pausedHP));
+            Assert.That(b.DeepBurnRemaining(b.Defender.EntityId),Is.EqualTo(remaining));Assert.That(b.Phase,Is.EqualTo(BattlePhase.Running));
+            b.SetPaused(false);Advance(b,3.6f);Assert.That(b.DeepBurnRemaining(b.Defender.EntityId),Is.Zero);
+            Assert.That(hp-b.Defender.Health,Is.EqualTo(60).Within(.1));Assert.That(b.Phase,Is.EqualTo(BattlePhase.Lost));
+        }
+
         [Test]public void DerivedAndNonDeepDamageDoNotIgniteAndOneKindDoesNotActivateTheTrait()
         {
             var b=Quiet();var a=Deploy(b);var outsider=Deploy(b,"CARD_M07",2);

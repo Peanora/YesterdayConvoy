@@ -4,7 +4,7 @@
 
 - 人类确认本轮方案并确认既存52处Mandragora/Mephisto VFX meta和两个本地项原样保留。fetch核实UI PR #96已squash合入最新main `2b7e449`（树与原UI分支`fb82933`相同），当前`codex/deep-pool-balance`从该main建立；原文件哈希快照在`artifacts/deep-pool/preexisting-hashes.json`，不纳入任务提交。
 - 2/4深池普攻/原生技能真实命中即独立燎烧，15/25×Q法伤/秒、4秒、同名取高刷新，原生灼燃减抗独立。首击击杀和燎烧击杀可留种，每守军一次、本场累计4/6枚（含已用），传播1.8/2.2格最多2/3人。4档耗1种、180×Q、1.8半径最多4人、本场2次；从全部未耗种选有活目标的一枚，引爆不返种。来源补齐M31喷火/死爆与M32注目/光环，既有状态标记/伤害反馈及详情同步。
-- Unity6000.6.5f1完整EditMode **554/554**，0失败/跳过（`artifacts/deep-pool/edit-final.xml`），新增深池27项。相关D3D11 PlayMode **12个不同用例全部通过**：首轮已有11项通过，修正新用例的VFX宿主定位后单项1/1通过（`play.xml`与`play-final.xml`）。未声称全量PlayMode。
+- Unity6000.6.5f1完整EditMode **555/555**，0失败/跳过（`artifacts/deep-pool/edit-delivery.xml`），新增深池28项。相关D3D11 PlayMode **12个不同用例全部通过**：首轮已有11项通过，修正新用例的VFX宿主定位后单项1/1通过（`play.xml`与`play-final.xml`）。未声称全量PlayMode。
 - 首轮Edit 550/552：M32夹具技能观察窗太短/尚未完全隔离普通攻击，以及三星低血目标要求严格少一轮攻击，均修正测试而非抬高伤害。新Play meta初建GUID多一位，修正并按32位hex/唯一性复查；GPU首轮新用例错误从Controller找VFX，实际应从绑定CombatView获取，Evidence一并修正。失败记录保留，不计通过。
 - 正式CampaignBalance原属性、无芦苇、同阵容开关羁绊的自然对照：一星方阵+逐火对400血/4甲，8.10→6.30秒；1200血/18甲，36.90→26.00秒。硬目标二/三星20.70→16.10、13.50→10.70秒。三星400血目标同为3.35秒，但前2秒伤害202.70→227.45，离散攻击轮次未减少。四成员一星六守军：密集30.75→20.60秒，稀疏60.05→57.65秒。数据见本地`balance.csv`；密集组新规则包括合法主动引爆，稀疏无合法引爆目标，不能把该差值当纯DOT倍率。
 - 单次燎烧4秒预算60/100×Q，按法抗结算；新测试覆盖1/2/3星、50法抗、分步积分、不自续、重复命中不叠、普通/原生来源、暂停重开、首击/持续伤害产种、去重/累计上限及引爆事务/有效旧种选择/四目标上限。Q保持`1+0.25×(平均星级−1)`。数值仅通过上述确定性对照，不代表十三关随机平衡或所有阵容最终定案。
@@ -76,7 +76,7 @@
 ## 2026-11-07：游击自动五段、蓄力重斩与震屏
 
 - 用户确认项目外五斩V2后授权接入。基线实时origin/main b1d55e7，分支codex/guerrilla-auto-five-strikes。保留原52处VFX meta（逐文件SHA与开始时一致）、.vscode/和PackageManagerSettings.asset；不提交这些既存本地项。无场景/Prefab/Packages/ProjectSettings任务修改。
-- Unity6000.6.5f1：最终完整EditMode508/508（artifacts/guerrilla-auto-edit-final.xml）、相关D3D11 PlayMode38/38（artifacts/guerrilla-auto-play-final.xml）通过。模型覆盖真实收入自动发令、无人/控制/暂停/半令待完成不空放、所有档无次数cap、忙碌尾段防重叠、逐刀混伤/护甲/最小伤害预算、来源/目标失效、取消保留已损、精确五时点和1×2×同结果。GPU覆盖实际自动军令/9槽原作塔露拉、每刀真实HP与记录、15/40分配、蓄力保持四段、两源暂停采样/原音高、真实镜头后处理像素/三帧hold/位移/归零、原作头像加载、战役/专项/其他羁绊流程。
+- Unity6000.6.5f1：最终完整EditMode508/508（artifacts/guerrilla-auto-edit-delivery.xml）、相关D3D11 PlayMode38/38（artifacts/guerrilla-auto-play-final.xml）通过。模型覆盖真实收入自动发令、无人/控制/暂停/半令待完成不空放、所有档无次数cap、忙碌尾段防重叠、逐刀混伤/护甲/最小伤害预算、来源/目标失效、取消保留已损、精确五时点和1×2×同结果。GPU覆盖实际自动军令/9槽原作塔露拉、每刀真实HP与记录、15/40分配、蓄力保持四段、两源暂停采样/原音高、真实镜头后处理像素/三帧hold/位移/归零、原作头像加载、战役/专项/其他羁绊流程。
 - 过程记录：首轮编译发现新增验收夹具误把DeployedUnit.NextHealAt写在Defender，删除无效行后编译通过。首轮Edit505/508的3失败均为float子步累计导致Age在精确2.8低约1.43微秒，内部改double累计、公开float不变后508/508，未放宽2.8断言。首轮GPU35/38：一例仍手动花已被自动消费的军令；两例严格HP夹具的旧多源弹道无法在第一刀前排空。改为检测实际自动批次、严格分支真实8档单M03首接敌补第三点自动发令，保留排空与.85秒上界后38/38。清掉旧版额外4束扫光和.975白闪，五刀仅由真实Strikes驱动。
 - 最终运行源码221c515884fb05d63a2e5f3b18b43c10bd377605：Windows构建1046503985字节、0错误（artifacts/guerrilla-auto-build.log），产物Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。可见1920×1080 D3D11独立Player49/49通过（artifacts/guerrilla-auto-player/result.json），进程58912正常退出、日志完整清理。9级9种库存/两真实转职/Begin初始2点，空源不空放，实际M03部署后自动一次；未写假Orders/Hits。每守军前四段各实际21、末段56，4名守军总实际掉血560；逐段HP、累计记录、末刀更高与原作塔露拉绑定通过。
 - 已查看原作九肖像、蓄力4/5、末刀5/5及实际伤害/震屏截图。两源原音/FX各在两个完整批次只播一次，暂停timeSamples冻结；单独迟观察的终局批次不补播已过声段。1×/2×峰值生产层像素一致、伤害一致，2×逐帧Age最大误差2.3841858e-7秒，普通模拟仍2×。后处理GPU开关差2073597像素，逻辑相机不动；终局保留第一段已损且取消其余，末尾两源/hold/Offset/Zoom/Roll和重开清理通过。
@@ -105,7 +105,7 @@
 ## 2026-11-06：游击8/9档、整令无次数上限及真实转职
 
 - 人类已确认8/9草案并覆盖为所有档位取消整令次数上限，后续明确本轮加入准备阶段手动指定最多两种转职角色。保持原功能分支/PR #88，实时main仍b3d947a，两个既有本地未跟踪项保留。没有改场景、Prefab、配置资产、Packages或ProjectSettings。
-- 完整EditMode501/501（guerrilla-high-edit-final.xml）、相关D3D11 PlayMode48/48（guerrilla-high-play-final.xml）通过。核心新增11个case证明2/4/6/8/9各可超过原次数并仅受资源限制、9远距先手/8补点、20普通实体全参与、技能/控制/支援排除、普通动作/CD不重置、开战赠令唯一、6档半令循环、额外成员快照原子/去重/锁档。新增4个综合Play证明真实转职生命周期、正式补给→实战→跨关、真实积令支持第5次整令、9张真实肖像与备战空槽不挤位、8/9实际HP和恒速音画；回归商店/跨关/9专项与旧羁绊。首次编译修正详情滚动区局部变量重名；首次场景46/48两失败是补给关已Won无法开发判胜、长HP窗口混入留声机治疗，改走正式补给流程及.89→.91命中瞬间后保留严格断言。最终Windows与真实点击Player结果如下；下面旧条目仅代表历史。
+- 完整EditMode501/501（guerrilla-high-edit-delivery.xml）、相关D3D11 PlayMode48/48（guerrilla-high-play-final.xml）通过。核心新增11个case证明2/4/6/8/9各可超过原次数并仅受资源限制、9远距先手/8补点、20普通实体全参与、技能/控制/支援排除、普通动作/CD不重置、开战赠令唯一、6档半令循环、额外成员快照原子/去重/锁档。新增4个综合Play证明真实转职生命周期、正式补给→实战→跨关、真实积令支持第5次整令、9张真实肖像与备战空槽不挤位、8/9实际HP和恒速音画；回归商店/跨关/9专项与旧羁绊。首次编译修正详情滚动区局部变量重名；首次场景46/48两失败是补给关已Won无法开发判胜、长HP窗口混入留声机治疗，改走正式补给流程及.89→.91命中瞬间后保留严格断言。最终Windows与真实点击Player结果如下；下面旧条目仅代表历史。
 
 
 - 运行源码774743815c70b91120bf24f882ba8a4846d3d15d：Windows构建2449462995字节、0错误（guerrilla-high-build.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe。仓库6427个跟踪文件/meta检查通过，新增规则/转职/验证脚本meta完整；现有图集、原声和角色卡面复用，未增加位图或音频，原PNG/音频字节与GUID保持。每轮52处仅默认未覆盖WebGL导入噪声均经逐文件严格比对恢复，两个原本本地未跟踪项保留。
@@ -136,7 +136,7 @@
 
 - 用户在项目外V2动态视频看稿后明确“可以，做进游戏”，确认声段为拼屏碎裂/总攻击出手。沿用codex/guerrilla-fullscreen-cutin及原PR #88；实时main仍b3d947a，当前V1基线c8a3281，原两个本地未跟踪项不动。没有改场景、Prefab、Packages或ProjectSettings，不改军令事务及伤害。
 - 原音源为Ev_sfx_GridFight_FollowUp_Timeline的Double_Speed媒体745947550前0.90秒，和已批准V2样本字节一致；末30ms原有淡出，PCM16/48kHz/双声道，峰值-1.14807dBFS，RMS-12.366999。只读原包获取及两次公开视频波形匹配见art/source-records/guerrilla-original-audio.json。原合成音和生成器退役，不把用户接入/上传授权登记为权利人授权。
-- 最终运行源码a5b844e9fb0a2d482f3423ab03ed50cb4e0b3835：Unity6000.6.5f1完整EditMode485/485（artifacts/guerrilla-v2-edit-final.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play-final.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟保持单调，避免PendingUntil消失后回退。
+- 最终运行源码a5b844e9fb0a2d482f3423ab03ed50cb4e0b3835：Unity6000.6.5f1完整EditMode485/485（artifacts/guerrilla-v2-edit-delivery.xml）、相关D3D11 PlayMode24/24（guerrilla-v2-play-final.xml）通过。4个综合游击用例验证真实交战产令/成功快照、失败不播、九槽逐个缺位/两扩展GPU、切面真实外移到聚齐、108碎片几何、原声0.90秒只播一次、实际AudioSource样本/几何/GPU暂停冻结、2倍/0.03倍、重开与终局不再复闪。终局表现时钟保持单调，避免PendingUntil消失后回退。
 - 早期独立Player两次暴露完整效果仅出现在顶部窄条，离屏参考七点均为零，显式modelview重置没有解决。缩小到不含战斗的RenderProbe后，改为独立CommandBuffer明确目标/全viewport/关闭scissor/独立矩阵，每batch用PropertyBlock绑定纹理，LateUpdate先合成，OnGUI只绘制RT；同时修正原生字体取Alpha。GPU增加继承变换/状态恢复及22px硬件scissor回归；最终无战斗Probe1/1通过，不再把早期离屏通过冒称屏幕正确。
 - 最终Windows构建2449412581字节、0错误（guerrilla-v2-build-final.log），本机Builds/Windows-GuerrillaOrder/YesterdayConvoy.exe对应a5b844e。1920×1080可见D3D11 Player25/25通过（guerrilla-v2-player-final/result.json）：实际攒令/支出、未部署M20、满编/退编M19空位、聚拢/碎裂/独立消散/清理、0.9秒原音及真实暂停样本、2倍速、重开、终局跨声点且HP/Clock不变、尾段结束后不复活。完整屏幕在顶部按钮/血条/通知/底部卡栏七点对照生产合成通过；已查看实际满编、缺位、碎片消散和恢复战场PNG。
 - 可选入口输出204张真实Player逐模拟帧（60fps/3.4秒，含前导和清理），项目外MP4后配同一跟踪原音资源及运行增益0.55，不是实时系统音视频录制。图片、原音、Shader和必要meta随源码正常跟踪；完整仓库6415文件检查通过。每次Unity产生的52个默认未覆盖WebGL导入段均逐文件与HEAD严格比对后恢复，原两个本地未跟踪项保留。
@@ -230,7 +230,7 @@
 ## 2026-11-06：战斗可观察性与专项场景集成
 
 - 基线main a37f0e5，吸收V5和已确认角色整合成果。只保留原.vscode/与PackageManagerSettings.asset，不提交覆盖；不自动合并。
-- Unity6000.6.5f1：全量EditMode433/433（features-edit-final.xml）；新增GPU PlayMode6/6（features-play-new.xml），受影响回归46/46（features-play-regression.xml），合计52/52。未称全量PlayMode通过。
+- Unity6000.6.5f1：全量EditMode433/433（features-edit-delivery.xml）；新增GPU PlayMode6/6（features-play-new.xml），受影响回归46/46（features-play-regression.xml），合计52/52。未称全量PlayMode通过。
 - 九关逐个实际载入，最高档初始成员、42卡、正常九张库存、无限金币、默认独立守军和重开/改Inspector不重复倍率均通过。感染/牧群以正常守军攻击自然触发。其余羁绊的完整自然操作/培养平衡尚未逐项验收。
 - 三星塔露拉专项使用真实克洛丝射击，无注入致死：经过FirstFall/FirstRain/Second/FinalFall/FinalRain/Dead；最终6375上限、守军存活与重开4250通过。10项领域边界覆盖单阶段、暂停/SP、保护、只终死一次、Lure/Fear朝向与取消剑光。
 - 跳字8项逻辑+2项场景覆盖实际过量伤害/治疗、盾吸收分离、复起不虚报、冻结刷新/免控、256日志/96屏显上限、暂停/重开、点击与拖动不被消费。
@@ -308,7 +308,7 @@
 
 任务[#72](https://github.com/Peanora/YesterdayConvoy/issues/72)，用户确认V1并要求接入游戏和商店。继续codex/mephisto-native-vfx-preview / PR #71，保留已完成曼德拉#69依赖。新运行素材为4PNG/285帧及清单、原比例挂点和.meta，复用已跟踪的兼容材质/Shader；页SHA256、四组布局、无采样边界、全部忽略来源/实际跟踪检查通过。原包和加工区不入Git，真实权利/适配见[M25说明](monsters/M25-NATIVE-VFX.md)。
 
-- 完整EditMode首415/416，唯一失败为旧卡池总数40断言；按新增M25更新后最终416/416通过、零跳过。artifacts/mephisto-edit-final.xml。
+- 完整EditMode首415/416，唯一失败为旧卡池总数40断言；按新增M25更新后最终416/416通过、零跳过。artifacts/mephisto-edit-delivery.xml。
 - 专属GPU两项最终通过：真实五费九张库存、满备战合成二星、原模型、暂停拖动、三目标治疗与不提前发光、实际像素、无伤害普攻、暂停冻结、重复/并发、朝向、死亡取消、增幅解除尾段、重开/返回。诊断夹具初版缺守军图号已补齐；正常入口画面采样从粒子起始空帧移到命中后0.3秒。最终广域相关GPU33/33通过、零跳过，含M25、旧角色能力、曼德拉、羁绊/牧群、Campaign、后期商店、霜星；不是全工程GPU遍历。artifacts/mephisto-regression.xml。
 - 源码93eaa20dc7fa201e00c65508096aaa11d4c46207 Windows构建报告2,309,677,578 bytes/0错误，目录1,282,180,435 bytes。独立窗口1920×1080、Direct3D12运行，21项MEPHI_EVENT全True，MEPHISTO_VFX_CHECK passed=True，进程退出0。artifacts/mephisto-build.log / mephisto-player.log / mephisto-player/七张完整截图。
 - 开/关特效同相机同时间RGB差：命中3595像素、手部35、持续回复473、正常单怪自然受伤治疗363；编辑器与独立Player均可见，已目视核对完整HUD/模型/亮部。多目标夹具为明确诊断用的近静止四路线与主动造伤，保留实际地形遮挡；普通M25入口不注入受伤，真实守军攻击触发治疗。
@@ -542,7 +542,7 @@ E盘标准EXE organized-final-player.log：后期两关9项全True，真实购�
 
 范围由用户明确确认：从main dc92829吸收PR52原商店恢复；移动资源并保留GUID，保存两个可编辑场景，退役其他地图/生成器与对应场景测试，更新路径/菜单/构建和目录规范；最终同步到主导者E盘单一日常工程。未升级Unity或包。
 
-- layout-edit-final.xml：339/339 EditMode通过。包括新增检查两个实际场景、500以上已保存地形Renderer、持久材质/Mesh、无缺失脚本；原场景数和八人混编测试按退役范围更新。
+- layout-edit-delivery.xml：339/339 EditMode通过。包括新增检查两个实际场景、500以上已保存地形Renderer、持久材质/Mesh、无缺失脚本；原场景数和八人混编测试按退役范围更新。
 - layout-play-final.xml：完整68项中67通过，剩余一项旧断言要求隐藏原地图，与本轮复用静态场地相反；修改该断言后layout-play-confirm.xml三项通过。其余逻辑未为此改动。
 - layout-entry-play.xml：最终11/11 GPU通过，覆盖真实场景返回、重开不重建/不丢弃地块编辑、八人技能、基础/后期购买带卡及测试结算。保留的69个不同场景用例均已覆盖通过（不是单次完整69项运行）。
 - layout-build.log：AUTHORED_SCENES_VALIDATION_PASS；最终Windows1672761774 bytes、0错误。构建明确包含BattleShop与MonsterTrial。
@@ -619,7 +619,7 @@ E盘标准EXE organized-final-player.log：后期两关9项全True，真实购�
 
 按人类确认看稿范围接入30段角色追加动作与望棋子3段，共2,755帧、70PNG/93,688,811字节、13清单及必要meta。主要文件为DefenderArt、DefenderRosterView、AdvancedDefenderView、12个角色目录、D28Chess和两份测试；未改战斗结算、技能数值、路线、商店、场景/Prefab、包或工程设置。具体资源与数据流见[接入说明](art/FIELD-ANIMATION-COMPLETION.md)。
 
-- `field-full-edit-final.xml`：完整327/327，失败/跳过0。新增9例资源尺度、原点、变体、棋子与销毁缓存恢复检查。首轮全量321/326暴露先前加载的Sprite被Unity清理后仍留在缓存；修复失效检查并增加重现测试，最终完整复验通过。没有为此改变启动加载策略或做性能优化。
+- `field-full-edit-delivery.xml`：完整327/327，失败/跳过0。新增9例资源尺度、原点、变体、棋子与销毁缓存恢复检查。首轮全量321/326暴露先前加载的Sprite被Unity清理后仍留在缓存；修复失效检查并增加重现测试，最终完整复验通过。没有为此改变启动加载策略或做性能优化。
 - `field-full-play.xml`：完整88/88 GPU场景，失败/跳过0；新增六人入场→待机、暂停冻结/不推进逻辑、比例/朝向、重开，以及真实棋子创建/触发动画/暂停/清理。旧角色、技能、部署、地图、跨关与商店场景保持。棋子表现测试用具备动作间隙的独立配置保证能触发技能；最初测试配置的动作占满间隔而未释放技能，仅修测试配置，生产数值未改。
 - `field-build.log`：Windows构建1589837955 bytes、errors=0，使用StrongholdMapTools.Build，独立ShopMap入口；报告总量不是EXE大小。
 - `field-players.json`：后期两关、基础两关、旧六星挑战三份最终独立Player退出0，后期won/complete/pause/purchased/carry/reset/framing/restart/exit全部True。隐藏窗口下ScreenCapture失败，本轮不把它当真实屏幕截图通过；画面抽查来自GPU测试的[相机渲染](art/field-late-idle.png)，不含OnGUI HUD，不是HTML看稿或人工实屏验收。
@@ -1088,7 +1088,7 @@ M12每第三次普通攻击的命中施加10秒寒冷，逐实体计数；两只
 - 授权/基线：用户确认已展示18位素材，明确排除银狼，并确认继续PR #15、原main既存未跟踪设置隔离与公共不普攻接口范围。开工fetch核实main仍6be1300、功能分支333f437，独立目录干净；未改原main或其设置，不自动合并。
 - 资源/配置：新增18张透明卡面、119段10,519帧；312 PNG、26份清单，72份Card/Unit/Engagement/MonsterTests配置。71段基础清单中的梅菲斯特治疗施法仅保留，不作攻击；实际使用70段基础动作，48段ExtraClips仅留存。无M41文件/配置/图像，也未带入原骨骼、加工运行库或预览。
 - Unity导入：6000.6.5f1，PrepareRemainingBatch实际退出0，18个MONSTER_CONFIGURATION_PASS、40份单位与InitialDemo场景校验通过。首次导入因新增测试误访问内部CombatTargetId出现CS1061，改为通过公开HasCombatTarget和实际弹道/伤害验证，重新导入退出0。
-- EditMode：最终72/72，0失败/跳过，artifacts/m21-edit-final.xml。新增覆盖不普攻单位过射程仍移动且无己方伤害、暂停、穿门一次、仍能阻挡和受伤死亡、既存配置默认攻击及仅两份新配置禁用。首次Edit为71/72，新增测试误用new EngagementSettings()得到结构体零值；改为显式调用既有带参构造，不改产品构造语义；最终重跑通过，失败记录保留。
+- EditMode：最终72/72，0失败/跳过，artifacts/m21-edit-delivery.xml。新增覆盖不普攻单位过射程仍移动且无己方伤害、暂停、穿门一次、仍能阻挡和受伤死亡、既存配置默认攻击及仅两份新配置禁用。首次Edit为71/72，新增测试误用new EngagementSettings()得到结构体零值；改为显式调用既有带参构造，不改产品构造语义；最终重跑通过，失败记录保留。
 - GPU PlayMode：32/32，0失败/跳过，artifacts/m21-play.xml。Roster遍历全部37个CARD_M（M02–M38），检查正常注册、实际图帧、暂停冻结、无技能、三次部署、按配置攻击/不攻击、通关穿门、重进清理、死亡原帧及根节点不移动；既有维维美/塔露拉/源石虫等回归同套通过。菜单与底栏后续文案修正后另3/3入口Play通过，artifacts/m21-menu-final.xml。
 - Windows：最终BuildWindows退出0，BASELINE_BUILD_PASS 846218362字节、0错误，artifacts/m21-build-final.log；运行源码6608c96139dbe544e06e56ab327fe87dea8f0b08。后续仅补证据文档。构建SOURCE.txt绑定该提交和真实覆盖范围。
 - 18只独立Player：artifacts/player-m21-m38/results.json，M21–M38均退出0；entered/paused/hit/resolved/three/won/noSkill/clean均True。16只攻击者attacked=True，M25/M33为False且独立MONSTER_ATTACK_POLICY_CHECK policy=True（受到敌方伤害时仍移动、没有普攻）；frozen为旧M06专用分支默认值，不作为新怪冻结能力证据。此轮在底栏文案修正前构建上运行，战斗与素材和最终相同。
@@ -1878,7 +1878,7 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 
 基线origin/main 8f4d604，带入已确认PR61依赖4aead99，新分支codex/mudrock-gramophone。新增静态保存的MudrockTrial场景，保留原四场景与两个既存未跟踪项。
 
-完整EditMode393/393通过（artifacts/mudrock-edit-final.xml）；完整D3D11 GPU PlayMode99/99通过（artifacts/mudrock-gpu-full.xml），其中2项泥岩实际场景、8项新纯逻辑。覆盖延迟/幂等占据、全施法锁移动、暂停、死亡取消、不耗费无目标、实际攻疗、邻接守军夺回、重开与配置原子拒绝；场景检查有原模型/图集/Shader实际绘制。首轮旧场景数量和即时补盾断言已按本轮确认范围改为5场景与原Skill_2命中时机，复验全过。
+完整EditMode393/393通过（artifacts/mudrock-edit-delivery.xml）；完整D3D11 GPU PlayMode99/99通过（artifacts/mudrock-gpu-full.xml），其中2项泥岩实际场景、8项新纯逻辑。覆盖延迟/幂等占据、全施法锁移动、暂停、死亡取消、不耗费无目标、实际攻疗、邻接守军夺回、重开与配置原子拒绝；场景检查有原模型/图集/Shader实际绘制。首轮旧场景数量和即时补盾断言已按本轮确认范围改为5场景与原Skill_2命中时机，复验全过。
 
 新Shader保留预乘与加法RGB，24非空图层58页PNG约23.6MB；角色原始动作继续走已有加载缓存。构建/独立Player证据待下方补充，不把编辑器通过当作已构建。未测：第二机、任意镜头逐像素对照、长期平衡、完整原作声音/留声机外部弹道。
 
