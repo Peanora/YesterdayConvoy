@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-07：羁绊达档反馈与原版金档提示音
+
+- Unity6000.6.5f1完整EditMode **518/518**，0失败/跳过（`artifacts/synergy-activation-edit.xml`）；相关D3D11 PlayMode新用例最终 **5/5**（`synergy-activation-play-delivery.xml`），原侧栏/感染提示/商店界面回归 **19/19**（`synergy-activation-regression.xml`），均0失败/跳过。覆盖真实2/4/6档、消失/降档后重达、同档换人剪除、同批多羁绊、游击8到9同阶色仍触发、菜单时钟/静音/切战/新挑战、实际购买原入场未完成不提前播。
+- 首次新GPU运行没有发现测试（新增测试meta GUID长度不合法），0项不计成功；修正GUID后发现Ready阶段的战斗暂停本来无效，按既有规则将准备冻结用例改为真实整备菜单阻断，没有改变战斗暂停机制。新增购买到位用例后最终5/5。首轮Player误复用会主动关闭模态的侧栏夹具；最终改成合法感染编队降档再重达，自动打开原形态提示，并将验收菜单关闭目标改为原生关闭按钮。
+- 最终运行源码 **ad0ebc6555379c1ab89ac137030a493338a15356**，本机Windows x64 Development / D3D11构建 **1050790156 bytes，0 errors**（`artifacts/synergy-activation-build-final.log`）。完整专项目录`Builds/Windows-SynergyActivation`验证后同步到常用`Builds/Windows`，`SOURCE.txt`记录源码；不创建ZIP或Releases。
+- 最终可见独立Player：`artifacts/synergy-activation-player-final-1280/result.json`与`...-1920/result.json`各 **24/24**。每轮5次真实OS鼠标点击：备战入队、关闭整备菜单、移出、重新入队、关闭感染提示。菜单打开是显式状态夹具；事件和档位来自合法库存及原编队/输入路径，没有写Battle.Tier/伤害或篡改库存规则。两轮均正常退出。
+- 捕获完整OnGUI触发前、.5秒峰值、菜单冻结、消退以及感染提示前后六帧/轮，均已实看。实际卡顶反馈像素：1280为士兵187、弩手252、术师256、重装253、游击战士259、狙击手255；1920分别442/546/564/556/564/556。无关海嗣两轮均 **0**，可排除给全队误加同一徽记。检查音源确为交付的Resources原音、同批只起一次，菜单中Age与音频采样冻结、恢复不重播；同档重建安静，感染模态不吞反馈，切战/离开立即清理。
+- 原音为本机原始Wwise媒体的未剪裁PCM解码，事件与真实媒体链见`docs/art/source-records/synergy-activation-original-audio.json`。Gold名称由哈希与同bank多条语义一致事件推断，不是明文表恢复；没有声称与官方银蓝片段逐波形一致，或复制所有档位独立声音。源WAV和带音项目外看稿完整解码通过，未进行主观人工听感验收。
+- 原52处Mandragora/Mephisto meta与开工基线逐字节保持，`.vscode/`、PackageManagerSettings本地项不提交；场景、Prefab、Packages、ProjectSettings没有任务修改。未重跑全量PlayMode、第二机或自然长局平衡。模型、夹具及OS点击验收不冒称完整自然挑战通关。
+
 ## 2026-11-07：最高阶V2青绿校色、旧粉色预留
 
 - 人类确认项目外V2青绿虹彩并要求原粉色留供后续五费专属。沿用codex/synergy-icons-tier-ui及PR #96；fetch确认main仍b1d55e7、任务分支与origin一致且PR未合并。原52处VFX meta与开工快照逐文件SHA一致，原两个本地未跟踪项不提交。无场景/Prefab/Packages/ProjectSettings任务修改。
