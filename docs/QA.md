@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-07：承契部署永久化与萨卡兹徽章
+
+- 人类最新修订覆盖本日早先主动方案：所有档位部署一次触发、永久攻击强化、一次护盾，九档也不再定时补发。数值、六档半额/八九档全额、萨卡兹常驻生命保持；不改个人主动/SP。承契者仅限编队萨卡兹，准备时拖徽章指定，战斗锁定。继续`codex/sarkaz-souls`与既有PR #98；实时main仍f6d52bd（当前头的祖先），未另建项目或切目录。
+- `SarkazContract`删除窗口/主动请求/补盾时钟，`ManualBattle.DeployProfile`仅在真实部署提交后发一次盾；`RemainingSynergies`只接受萨卡兹承契卡，旧外族配置回落合法成员。`SarkazContractBadge`将整备选择写回战前快照，统一ShopPointerEvent在购买/出售/卡牌操作前接管整个手势；非法释放、右键、取消、失焦、模态均清理拖动，外族拒绝不改目标或资源。UI使用既有Sarkaz图标/徽记，编队卡和头顶显示承契身份，无新美术/场景/Prefab/包/工程设置。
+- Unity6000.6.5f1完整EditMode **658/658**、0失败/跳过（`artifacts/sarkaz-passive/edit.xml`）。38个萨卡兹用例包括五档真实伤害/吸盾、跨65秒常驻、盾不补、外族配置不得受益、同卡多个实体、暂停/重开、泥岩破回法盾与爱国者复起不重发。
+- D3D11 PlayMode首轮 **14/15**：旧`ActualHerdArtAndPermanentContractRemainPlayable`在Replay之后商店转场未完即指定，被新输入门禁拒绝。只补夹具等待ArtLoading/ShopPanelTransitioning完成，保留生产门禁；萨卡兹与剩余羁绊整组 **7/7**（`play-final.xml`）。因此所选15个不同用例均获通过，不称单次15/15。徽章最终布局调整后同真实指针三用例另 **3/3**（`play-badge-final.xml`），涵盖成功/精确外族报错/重复释放/取消/商品释放/模态不穿透/战斗锁定/五档暂停正常部署与库存守恒。未跑全量PlayMode。
+- 初次实际OS鼠标复验在`6abeb73`发现徽章覆盖首商品价格角标；仅将来源徽章及右侧说明移至顶部空白HUD，避免标题和商品。最终运行源码 **`3740a8d958632ba4189bcefbac049b90dd13c7ae`**，沿现有`DeepPoolBuildTools.BuildWindows`动态完整场景目录构建 **1063532307 bytes / 0 errors / 退出0**（`build-final.log`）。完整1974文件同步常用Builds/Windows，逐文件存在/长度一致，SOURCE.txt对应源码；运行DLL SHA256均为`5DAAEBDD73C4DD8DBAC652832E060981076DDCD7D8CEDB129FE3B988D0140D6C`。
+- 最终工程外TEMP启动1600×900可见D3D11独立Player **64/64、退出0**（`player-final/result.json`、`player-final-exit.txt`）。生产样板和真实指针拖徽章→M37、外族M18精确拒绝且保留库存/金币/原目标、取消/重复松手/战斗锁定、五档暂停部署即生效、六档半额/八九档共享均通过。真实二/九档射击攻击129.6/240、实际扣血125.6/236；九档生命1792/初始盾1075.2，正常受击消耗后跨21秒不补发且攻击仍常驻。沿用专项生命×4/攻击×2，不是正式平衡结论。该部分由生产指针/控制器驱动，不冒称OS鼠标。
+- 另外用computer-use在最终普通`-sarkazTrial`窗口实际OS鼠标复验：顶部徽章→M38成功且卡上标记；正常购买M15后徽章→M15准确显示“无法使羁绊外的角色成为承契者”，M38仍保留标记，7/8编队保持；新布局五商品价格无遮挡。通过窗口截图实际观察，未将工具截图payload另行存盘；自动证据图在`player-final/01-badge-drag-to-sarkaz.png`、`03-outsider-rejected-with-message.png`与`11-nine-tier-one-time-ward-after-twenty-seconds.png`等。普通窗口不自动退出，留供试玩。
+- 仓库7641跟踪文件与meta检查通过，原52处VFX meta开工/收尾SHA256一致，.vscode/及PackageManagerSettings.asset继续保留不提交。无ZIP/Releases或自动合并main。未执行第二机、全分辨率、自然13关成型率/长局平衡；最新触发/身份规则已确认，既有倍率仍是待长期试玩的参数。
+
+
 ## 2026-11-07：萨卡兹2/4/6/8/9众魂之契
 
 - 从实时main `f6d52bd`建立`codex/sarkaz-souls`，快进承接当前已在用且待审的集成头`3f34762`（PR #94），保留既有角色/地图与运行素材。仅本任务脚本、测试、规则/验证记录与试玩快捷脚本纳入提交；无场景/Prefab/Packages/ProjectSettings/素材改动，无ZIP/Releases或自动合并main。
