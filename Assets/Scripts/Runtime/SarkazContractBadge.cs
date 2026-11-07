@@ -18,11 +18,10 @@ namespace YesterdayConvoy
             get
             {
                 if(!CampaignActive||shop==null)return Rect.zero;
-                var summaries=CurrentSynergies;int index=Array.FindIndex(summaries,s=>s.Name=="萨卡兹");
-                if(index<0)return Rect.zero;
-                var row=SynergyRowScreenRect(index);var viewport=SynergyRowsViewportRect;
-                float y=Mathf.Clamp(row.y+2,viewport.y+2,Mathf.Max(viewport.y+2,viewport.yMax-42));
-                return new Rect(SynergyListRect.xMax+12,y,40,40);
+                if(!CurrentSynergies.Any(s=>s.Name=="萨卡兹"))return Rect.zero;
+                // The header's blank space keeps the badge clear of shop prices and cards.
+                // Include the authored frame's four-unit margin beyond the old mode title.
+                return new Rect(SynergyListRect.xMax+20,12,40,40);
             }
         }
 
@@ -92,8 +91,8 @@ namespace YesterdayConvoy
             if(!covered)
             {
                 DrawSarkazContractBadgeArt(badge,Loop.CanShop?1:.65f);
-                GUI.Label(new Rect(badge.x-5,badge.yMax+1,50,15),"承契徽章",CampaignText(9,TextAnchor.MiddleCenter,Color.white,600));
-                GUI.Label(new Rect(badge.x-8,badge.yMax+15,56,14),Loop.CanShop?"拖至编队":"本场锁定",CampaignText(9,TextAnchor.MiddleCenter,new Color(.78f,.83f,.90f)));
+                GUI.Label(new Rect(badge.xMax+6,badge.y+4,66,15),"承契徽章",CampaignText(9,TextAnchor.MiddleLeft,Color.white,600));
+                GUI.Label(new Rect(badge.xMax+6,badge.y+20,66,14),Loop.CanShop?"拖至编队":"本场锁定",CampaignText(9,TextAnchor.MiddleLeft,new Color(.78f,.83f,.90f)));
             }
             if(shop==null)return;
             for(int i=0;i<shop.Bench.Count;i++)
