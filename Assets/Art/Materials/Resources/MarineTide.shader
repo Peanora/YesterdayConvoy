@@ -48,7 +48,8 @@ Shader "YesterdayConvoy/MarineTide"
                     max((1-smoothstep(.012,.060,i.uv.y))*_Edges.z,(1-smoothstep(.012,.060,1-i.uv.y))*_Edges.w));
                 float pulse=.5+.5*sin(t*1.6+vein*4);
                 float newborn=(1-smoothstep(.25,1.15,_BornAge))*_Active;
-                float3 color=lerp(ground.rgb,detail.rgb,.23)*lerp(.58,1,_Active);
+                // Preserve the original 028_03 material's cold MainColor rather than washing it into the concrete floor.
+                float3 color=lerp(ground.rgb,detail.rgb,.12)*float3(.485,.771,.846)*lerp(.58,1,_Active);
                 color+=float3(.09,.31,.38)*vein*(.055+pulse*.065)*_Active;
                 color+=float3(.22,.65,.70)*boundary*(_Highlight*.95+newborn*.35);
                 float root=(1-smoothstep(.055,.075,abs(radial-.16)))*_Seed*newborn;
