@@ -8,6 +8,12 @@ namespace YesterdayConvoy
     {
         public DefenderTrialDefinition encounter;
         ManualBattleController controller;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void PrepareSmokeRun()
+        {
+            // Preparation also needs frames before the diagnostic coroutine can take ownership.
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-blackForestSmokeTest")>=0)Application.runInBackground=true;
+        }
         IEnumerator Start()
         {
             yield return null;
