@@ -77,13 +77,12 @@ namespace YesterdayConvoy
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || UnitInvulnerable(unit)) return false;
-            OnMarineContact(unit);
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
             // Penetration stops at zero; existing resistance debuffs may remain negative.
             float resistance=UnitResistance(unit);
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
-            damage*=MarineIncoming(unit,ranged);
+            damage=AbsorbContractShield(unit,damage);if(damage<=0)return true;
             if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
             if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
@@ -91,12 +90,13 @@ namespace YesterdayConvoy
                 float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);
                 if(unit.ArtsBarrierRemaining<=.00001f)
                 {
-                    unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=unit.Profile?.Unit.Health??Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
+                    unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=UnitBaseHealth(unit);unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
                     unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
                 }
             }
             if(damage<=0){unit.LastHitTime=Clock;return true;}
-            float before=unit.Health;bool applied=ApplyUnitHealthDamage(unit,damage);if(applied)OnContractDamage(unit,before);return applied;
+            OnMarineContact(unit);
+            return ApplyUnitHealthDamage(unit,damage);
         }
         public sealed class HealingCast
         {
@@ -184,7 +184,7 @@ namespace YesterdayConvoy
                 if(!unit.BarrierRefreshApplied&&Clock+1e-6>=unit.BarrierRefreshStartedAt+.7333334)
                 {
                     bool broken=unit.ArtsBarrierRemaining<=0;
-                    unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=(unit.Profile?.Unit.Health??Settings.Health)*1.5f;
+                    unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=UnitBaseHealth(unit)*1.5f;
                     if(broken)unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)/1.5;
                     unit.BarrierRefreshApplied=true;unit.BarrierRefreshes++;
                 }
@@ -242,18 +242,18 @@ namespace YesterdayConvoy
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => HasPendingDeepBurn||herdQueue.Count>0||infectionBursts.Exists(x=>!x.Resolved)||deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
         public float DefenderArmor(DefenderState defender) => defender.Settings.Armor*(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?3:1)*
-            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction-MarineArmorReduction(defender);
+            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type,bool derived=false,DeployedUnitState source=null,float damageScale=1)
         {
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*MarineHunt(source,defender));
+            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
             if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);
-            if(source!=null&&!derived&&defender.Health<healthBefore){OnMarineContact(source);OnMarineHit(source,defender,alive&&!defender.Alive);}
+            if(source!=null&&!derived&&defender.Health<healthBefore)OnMarineContact(source);
             defender.LastHitTime=Clock;
             if(!defender.Alive) { defender.DeathTime=Clock;defender.TargetId=null; }
         }

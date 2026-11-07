@@ -8,14 +8,14 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class LateBattleShopSceneTests
     {
-        [UnityTest]public IEnumerator LatePresetKeepsNineCopyStockAndBoughtRoleEntersRealSecondBattle()
+        [UnityTest]public IEnumerator LatePresetKeepsCostBasedStockAndBoughtRoleEntersRealSecondBattle()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;Time.timeScale=0;
             try
             {
                 var c=Object.FindAnyObjectByType<ManualBattleController>();c.StartLateBattleShopLoop(73);yield return null;
                 Assert.That(c.Shop.Level,Is.EqualTo(7));Assert.That(c.Shop.Gold,Is.EqualTo(30));Assert.That(c.Shop.Bench.Count,Is.EqualTo(5));
-                foreach(var piece in c.Shop.Bench)Assert.That(c.Shop.Available(piece.Id),Is.EqualTo(8));
+                foreach(var piece in c.Shop.Bench)Assert.That(c.Shop.Available(piece.Id),Is.EqualTo(c.Shop.Capacity(piece.Id)-1));
                 var economy=c.Shop;string bought=null;
                 for(int stage=1;stage<=2;stage++)
                 {

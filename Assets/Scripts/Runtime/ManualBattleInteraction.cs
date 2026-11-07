@@ -225,6 +225,11 @@ namespace YesterdayConvoy
             DrawSkillIcon(new Rect(button.x+9,button.y+9,48,48),ready ? new Color(.06f,.10f,.13f) : new Color(.55f,.62f,.65f));
             var combat=Battle.UnitCombat(selected);
             string charge=combat.MudrockCapture&&Battle.IsSkillActionPlaying(selected)?"占据施法中":combat.MudrockCapture&&Battle.CheckSkill(selectedEntityId)==SkillFailure.NoTarget?"无可占据装置":combat.FrostSeal && Battle.IsSkillActionPlaying(selected) ? "冰封施法中" : combat.FireRain && Battle.IsSkillActionPlaying(selected) ? $"火雨 {selected.SkillAmmo} 波" : selected.SkillAmmo>0 ? $"弹药 {selected.SkillAmmo}/6" : $"技力 {selected.SkillSP:0}/{combat.RequiredSP:0}";
+            if(SilverWolfCombat.IsWolf(selected))
+            {
+                if(SilverWolfCombat.Transforming(selected,Battle.Clock)) charge="变身中";
+                else if(selected.SkillAmmo>0 || Battle.IsSkillActionPlaying(selected)) charge=$"盲盒 {selected.SkillAmmo}/{combat.SkillAmmo}";
+            }
             GUI.Label(new Rect(panel.x+93,panel.y+45,116,26),charge,smallStyle);
             GUI.Label(new Rect(panel.x+93,panel.y+76,116,26),Battle.IsPaused ? "暂停中" : ready ? "点击释放" : Battle.IsSkillActionPlaying(selected)||selected.SkillAmmo>0 ? "技能生效中" : combat.FrostSeal && Battle.Clock<selected.IceRingStartedAt+3 ? "冰环动作中" : "技力回复中",smallStyle);
             GUI.Label(new Rect(panel.x+14,panel.y+119,194,25),Battle.IsPaused ? "恢复后可释放技能" : "0.03×  ·  点空白处取消",smallStyle);

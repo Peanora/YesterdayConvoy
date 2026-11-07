@@ -127,7 +127,7 @@ namespace YesterdayConvoy
 
                 foreach(string id in reunion)
                 {
-                    var r=ApprovedUi.LineupSlot(shopLineup.IndexOf(id));
+                    var r=ShopPieceRect(shop.Bench.ToList().FindIndex(p=>p.Instance==ShopLineupPiece(id)?.Instance));
                     int top=SynergyActivationChangedTopPixels(goldPeak,clear,r);var sides=SynergyActivationChangedFrameSides(goldPeak,clear,r);
                     Debug.Log("SYNERGY_ACTIVATION_V4_GOLD_PIXELS "+id+" top="+top+" sides="+string.Join(",",sides));
                     check("goldOnGuiEmblemAndFourFrameSides_"+id,top>=8&&sides.All(pixels=>pixels>=4));
@@ -141,7 +141,7 @@ namespace YesterdayConvoy
                     else check("bronzeDoesNotReuseGoldMember_"+id,bronzePixels<=2);
                     check("clearIntervalHasNoLingeringEmblem_"+id,SynergyActivationChangedTopPixels(gap,clear,r)<=2);
                 }
-                var untouched=ApprovedUi.LineupSlot(shopLineup.IndexOf(unrelated));
+                var untouched=ShopPieceRect(shop.Bench.ToList().FindIndex(p=>p.Instance==ShopLineupPiece(unrelated)?.Instance));
                 check("unrelatedMarineCardStaysUnlitAcrossBothPulses",SynergyActivationChangedTopPixels(goldPeak,clear,untouched)<=2&&
                     SynergyActivationChangedTopPixels(bronzePeak,clear,untouched)<=2);
             }
@@ -231,7 +231,7 @@ namespace YesterdayConvoy
         internal IEnumerator VerifySynergyActivation(string directory,Action<string,bool> check)
         {
             diagnostic=true;Time.timeScale=0;Battle.SetPaused(false);
-            string[] reunion=SynergyTrialCatalog.Find("reunion").Members.ToArray();
+            string[] reunion=SynergyTrialCatalog.Find("reunion").Members.Take(6).ToArray();
             const string newcomer="CARD_M10",unrelated="CARD_M33";
             yield return PrepareSynergyBadgeEvidenceRoster(reunion.Concat(new[]{unrelated}).ToArray());
             shopLineup.Remove(newcomer);SyncShopDeck(false);ClearSynergyActivationFeedback(false);
@@ -268,11 +268,11 @@ namespace YesterdayConvoy
                 yield return SynergyActivationFrame(directory,"activation-04-cleared",value=>clear=value);
                 foreach(string id in reunion)
                 {
-                    int pixels=SynergyActivationChangedTopPixels(peak,clear,ApprovedUi.LineupSlot(shopLineup.IndexOf(id)));
+                    int pixels=SynergyActivationChangedTopPixels(peak,clear,ShopPieceRect(shop.Bench.ToList().FindIndex(p=>p.Instance==ShopLineupPiece(id)?.Instance)));
                     Debug.Log("SYNERGY_ACTIVATION_PIXELS "+id+"="+pixels);
                     check("actualOnGuiTopEmblemVisible_"+id,pixels>=8);
                 }
-                int untouched=SynergyActivationChangedTopPixels(peak,clear,ApprovedUi.LineupSlot(shopLineup.IndexOf(unrelated)));
+                int untouched=SynergyActivationChangedTopPixels(peak,clear,ShopPieceRect(shop.Bench.ToList().FindIndex(p=>p.Instance==ShopLineupPiece(unrelated)?.Instance)));
                 Debug.Log("SYNERGY_ACTIVATION_PIXELS unrelated="+untouched);
                 check("unrelatedCardHasNoOnGuiFeedback",untouched<=2);
             }

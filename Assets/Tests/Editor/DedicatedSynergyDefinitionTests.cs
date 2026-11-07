@@ -19,31 +19,38 @@ namespace YesterdayConvoy.Tests
             foreach(var entry in SynergyTrialCatalog.Entries)
             {
                 var data=AssetDatabase.LoadAssetAtPath<SynergyTrialDefinition>(entry.DefinitionPath);data.Validate();
-                Assert.That(data.initialMembers.Select(m=>m.cardId),Is.EqualTo(entry.Members));
-                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.MaximumTier));
+                var initial=entry.Id=="mudrock"?entry.Members.Concat(new[]{"CARD_M08"}):entry.Members;
+                Assert.That(data.initialMembers.Select(m=>m.cardId),Is.EqualTo(initial));
+                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.Id=="sarkaz"?6:entry.MaximumTier));
+                if(entry.Id=="sarkaz")Assert.That(entry.MaximumTier,Is.EqualTo(9),"The authored six-member start does not limit the reachable ninth tier.");
+                if(entry.Id=="mudrock")
+                {
+                    Assert.That(entry.MaximumTier,Is.EqualTo(6));Assert.That(data.initialMembers.All(m=>m.star==1),Is.True);
+                    Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId),extraMudrockMembers:new[]{"CARD_M08"}).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(6));
+                }
                 Assert.That(AssetDatabase.LoadAssetAtPath<SceneAsset>(entry.ScenePath),Is.Not.Null);
                 var snapshot=data.CopyDefenders();float original=data.encounter.defenders[0].health;snapshot[0].health=1;
                 Assert.That(data.encounter.defenders[0].health,Is.EqualTo(original),"Runtime multiplier/mutation must not reach the baseline asset.");
             }
         }
-        [Test]public void InfiniteGoldStillReservesOneThreeOrNineCopiesPerStartingCard()
+        [Test]public void InfiniteGoldStillReservesRealCopiesAndUsesPerCostStockForStartingCards()
         {
             var roles=CampaignBalance.Profiles.Select(p=>new ShopTrialModel.Role{Id=p.Key,Name=p.Key,Cost=p.Value.Cost});
             foreach(var entry in SynergyTrialCatalog.Entries)
             {
                 var data=AssetDatabase.LoadAssetAtPath<SynergyTrialDefinition>(entry.DefinitionPath);Assert.That(data,Is.Not.Null);
-                var pieces=data.StartingPieces();pieces[0].Star=3;
+                var pieces=data.StartingPieces();pieces[0].Star=ShopTrialModel.MaxStarForCost(CampaignBalance.Profiles[pieces[0].Id].Cost);
                 var shop=new ShopTrialModel(roles,44);shop.EnableCampaign(true);shop.Preset(pieces,Array.Empty<string>(),data.initialLevel,0,10);
-                Assert.That(shop.UnlimitedGold,Is.True);Assert.That(shop.Available(pieces[0].Id),Is.Zero);
+                Assert.That(shop.UnlimitedGold,Is.True);Assert.That(shop.Available(pieces[0].Id),Is.EqualTo(shop.Capacity(pieces[0].Id)-ShopTrialModel.Copies(pieces[0].Star)));
                 for(int r=0;r<3;r++)
                 {
                     Assert.That(shop.Refresh(true).Success,Is.True);
                     foreach(var role in shop.Roles)
                     {
-                        int owned=shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>p.Star==3?9:p.Star==2?3:1);
-                        Assert.That(shop.Available(role.Id)+owned+shop.Offers.Count(id=>id==role.Id),Is.EqualTo(9),role.Id);
+                        int owned=shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>ShopTrialModel.Copies(p.Star));
+                        Assert.That(shop.Available(role.Id)+owned+shop.Offers.Count(id=>id==role.Id),Is.EqualTo(shop.Capacity(role.Id)),role.Id);
                     }
-                    Assert.That(shop.Offers.Contains(pieces[0].Id),Is.False);shop.Validate();
+                    if(shop.Capacity(pieces[0].Id)==ShopTrialModel.Copies(pieces[0].Star))Assert.That(shop.Offers.Contains(pieces[0].Id),Is.False);shop.Validate();
                 }
             }
         }
@@ -56,7 +63,7 @@ namespace YesterdayConvoy.Tests
                 copy.initialLevel=1;Assert.Throws<InvalidOperationException>(()=>copy.Validate());copy.initialLevel=8;
                 copy.initialMembers=new[]{new SynergyTrialStartingCard{cardId="CARD_M11"},new SynergyTrialStartingCard{cardId="CARD_M11"}};
                 Assert.Throws<InvalidOperationException>(()=>copy.Validate());
-                copy.initialMembers=new[]{new SynergyTrialStartingCard{cardId="CARD_M11",star=4}};Assert.Throws<InvalidOperationException>(()=>copy.Validate());
+                copy.initialMembers=new[]{new SynergyTrialStartingCard{cardId="CARD_M12",star=4}};Assert.Throws<InvalidOperationException>(()=>copy.Validate());
             }
             finally {UnityEngine.Object.DestroyImmediate(copy);}
             Assert.That(source.initialLevel,Is.EqualTo(8));source.Validate();

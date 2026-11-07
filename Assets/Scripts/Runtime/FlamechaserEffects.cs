@@ -53,7 +53,7 @@ namespace YesterdayConvoy
             }
             if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
             u.FlamePhase=FlamechaserPhase.Soldier;u.FlamePhaseStartedAt=Clock;u.EmberRevivals++;
-            u.MaxHealth=u.Health=u.Profile?.Unit.Health??Settings.Health;u.DeathTime=double.PositiveInfinity;
+            u.MaxHealth=u.Health=UnitBaseHealth(u);u.DeathTime=double.PositiveInfinity;
             u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return false;
         }
         bool ApplyUnitHealthDamage(DeployedUnitState u,float damage)

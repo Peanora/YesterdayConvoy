@@ -66,6 +66,8 @@ namespace YesterdayConvoy
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool SynergySupport {get;internal set;}
+        public bool ReunionEliteSupport {get;internal set;}
+        public bool ReunionEntryShieldPending {get;internal set;}
         public bool Golem {get;internal set;}
         public Vector3 VisualOffset {get;internal set;}
         internal int LastGolemProc,LastGolemHeal;
@@ -79,6 +81,8 @@ namespace YesterdayConvoy
         internal string CombatTargetId, BlockerId;
         public bool IsMoving { get; internal set; } = true;
         public float SkillSP { get; internal set; }
+        public WolfBoxKind LastWolfBox {get;internal set;}
+        public double WolfTransformAt {get;internal set;}=double.NegativeInfinity;
         public int SkillAmmo { get; internal set; }
         public int SkillsUsed { get; internal set; }
         public int OrdinaryAttacksFired { get; internal set; }
@@ -198,13 +202,13 @@ namespace YesterdayConvoy
         public double CooldownRemaining => CardCooldown(Settings.CardId);
         public int ActiveCount { get { int count = 0; foreach (var unit in units) if (unit.Active) count++; return count; } }
 
-        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null)
+        public ManualBattle(ManualBattleSettings settings, IReadOnlyList<Vector3> waypoints, Vector3 tower, EngagementSettings? combat = null, IReadOnlyList<Vector3> extraDefenders = null, IReadOnlyList<DefenderSettings> roster = null, IReadOnlyList<DeploymentLane> deploymentLanes = null, bool allowEmptyRoster = false)
         {
             Settings = settings;
             engagement = combat;
             if(roster!=null)
             {
-                if(!combat.HasValue || roster.Count==0) throw new ArgumentException("Roster requires combat settings.");
+                if(!combat.HasValue || roster.Count==0&&!allowEmptyRoster) throw new ArgumentException("Roster requires combat settings and at least one defender unless explicitly terrain-only.");
                 defenderRoster=new DefenderSettings[roster.Count]; var rosterIds=new HashSet<string>();
                 for(int i=0;i<roster.Count;i++)
                 { if(!rosterIds.Add(roster[i].Id) || roster[i].Health<=0) throw new ArgumentException("Invalid roster."); defenderRoster[i]=roster[i]; }
@@ -315,7 +319,7 @@ namespace YesterdayConvoy
             var lane=FindEntryLane(position);
             var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*SarkazHealthMultiplier(requestedCard), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsTalulah(unit))unit.TalulahPhaseStartedAt=Clock;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
@@ -323,7 +327,7 @@ namespace YesterdayConvoy
             if(EngagementEnabled&&UnitCombat(unit).Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
             if(EngagementEnabled && (UnitCombat(unit).Effects.ArtsBarrier || UnitCombat(unit).Effects.Mudrock))
             {
-                unit.MaxHealth=unit.Health=spawn.Health*1.5f;
+                unit.MaxHealth=unit.Health=UnitBaseHealth(unit)*1.5f;
                 unit.ArtsBarrierLayerSize=spawn.Health*(UnitCombat(unit).Effects.Mudrock ? 5500f/45000 : .2f);
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
@@ -334,7 +338,7 @@ namespace YesterdayConvoy
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
-            OnInfectionDeployment(unit);OnMusterDeployment(unit);
+            OnInfectionDeployment(unit);OnMusterDeployment(unit);ApplyContractDeployment(unit);
             return receipt;
         }
 

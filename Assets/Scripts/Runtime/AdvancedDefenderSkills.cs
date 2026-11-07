@@ -118,7 +118,7 @@ namespace YesterdayConvoy
         }
         public float DefenderAuraMoveMultiplier(DeployedUnitState u)
         {
-            if(u==null||u.Golem&&GolemStage==4)return 1;float result=1;
+            if(u==null||u.Golem&&GolemStage>=4)return 1;float result=1;
             foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
                 result=Math.Min(result,d.Settings.Skill.MoveMultiplier);
             foreach(var drone in defenderDrones)
@@ -177,7 +177,7 @@ namespace YesterdayConvoy
                 }
                 if(strongest==null){u.NextDroneAreaAt=Clock+1;continue;}
                 if(Clock+1e-6<u.NextDroneAreaAt)continue;u.NextDroneAreaAt=Clock+1;
-                if(TryDamageUnit(u.EntityId,DefenderSkillAttack(strongest),CombatDamageType.Arts))OnAdvancedDefenderHit(strongest,u,CombatDamageType.Arts,origin,true);
+                if(TryDefenderDamageUnit(u,DefenderSkillAttack(strongest),CombatDamageType.Arts))OnAdvancedDefenderHit(strongest,u,CombatDamageType.Arts,origin,true);
             }
             defenderDrones.RemoveAll(v=>!DefenderSkillActive(FindDefender(v.SourceId)));
         }
@@ -219,8 +219,14 @@ namespace YesterdayConvoy
         }
         void ApplyPureUnitDamage(DeployedUnitState u,float amount)
         {
-            if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
-            ApplyUnitHealthDamage(u,u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u));
+            if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!u.Active||u.IsReviving||UnitInvulnerable(u)||amount<=0)return;
+            TryActivateReunionEntryShield(u);
+            float damage=u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u);
+            // This entry is only for defender-inflicted true damage / elemental bursts, never self-loss.
+            // Record effective contact before a fatal hit removes the living source, as normal damage does.
+            if(damage>0)OnMarineContact(u);
+            damage=AbsorbContractShield(u,damage);
+            ApplyUnitHealthDamage(u,AbsorbReunionEliteShield(u,damage));
         }
         void AddScorch(DeployedUnitState u,float amount)
         {

@@ -115,7 +115,7 @@ namespace YesterdayConvoy
                 model.transform.localScale=Vector3.one*scale;model.transform.localPosition=ShopModelPosition(ShopModelFoot(i));model.sortingOrder=10;
                 if(shopMoving&&shopDrag==piece.Instance){model.transform.localPosition=ShopModelPosition(shopPointer+new Vector2(0,-8));model.transform.localScale*=1.15f;model.sortingOrder=110;}
                 float alpha=shopArrivals.Any(a=>a.Instance==piece.Instance&&!a.Merge)?0:1;
-                model.color=piece.Star==3&&burst>0?new Color(1,1,.65f+.35f*(1-burst),alpha):new Color(1,1,1,alpha);
+                model.color=piece.Star>=3&&burst>0?new Color(1,1,.65f+.35f*(1-burst),alpha):new Color(1,1,1,alpha);
             }
             foreach(var arrival in shopArrivals)
             {
@@ -144,8 +144,8 @@ namespace YesterdayConvoy
             var hint=ApprovedUi.Text(scene.InterfaceFont,10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
             Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shopLineup.Count}/{shop.Level}",title);
             Fill(new Rect(188,594,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,594,145,21),$"备战席  {reserve}/10",title);
-            GUI.Label(new Rect(730,493,398,21),"点击移入备战 · 同名限编队一张",hint);
-            GUI.Label(new Rect(730,604,398,21),"点击编入队伍 · 拖到左右两侧出售",hint);
+            GUI.Label(new Rect(650,493,478,21),"自由拖放位置 · 重叠交换 · 开战自动向左收拢空位",hint);
+            GUI.Label(new Rect(650,604,478,21),"可跨排拖放交换 · 同名限编队一张 · 两侧出售",hint);
             for(int i=0;i<shop.Bench.Count;i++)
             {
                 var p=shop.Bench[i];var r=ShopPieceRect(i);if(r.width<=0||r.height<=0)continue;
@@ -163,6 +163,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(r.x,r.y+55,r.width,16),Color.Lerp(ApprovedUi.Tier(cost),Color.black,.3f));
                 GUI.Label(new Rect(r.x+1,r.y+55,r.width-2,16),shop.Definition(p.Id).Name,ApprovedUi.Text(scene.InterfaceFont,11,TextAnchor.MiddleCenter,Color.white,600));
             }
+            DrawShopSeatDropTarget();
         }
         void DrawShopWalkway(Rect first,int unlocked,bool lineup)
         {

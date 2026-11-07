@@ -1,5 +1,68 @@
 # 验证证据与回归
 
+## 2026-11-07：牌库与自由席位
+
+- Unity6000.6.5f1。完整EditMode **720/720**，0失败/跳过（`artifacts/pool-roster/edit-delivery.xml/log`）。模型覆盖五档容量、四星27张占库/余3张、售价26/返库27/重复售出、满席链式升星/主实例保留、其他费用拒绝四星、独立10备战；席位覆盖同排/跨排、同名、满席、稳定压紧与预置实例重用。真实ManualBattle对照M07普通400血4甲：三星9击14.90秒→四星7击11.30秒；1200血18甲36击63.50秒→25击43.70秒。10血一击和100甲最低伤害25击边界相同，未通过额外质变强行减少轮次。
+- 初轮Edit712项710过2败，新增主卡夹具沿用不合法xp18，改xp0；新增Player证据误用公开指针重载导致一次编译失败，改用已有私有带按钮handler；后轮720项719过1败，M25期望错用能力5倍，实际Campaign基表正攻击应沿攻击3倍，仅修夹具。最终完整720/720包含全部改动。原失败日志保留。
+- D3D11相关Play首轮34项31过3败（`play.xml`）：旧三星封顶与总10容量预期，以及批处理诊断跳过失焦；按新规则适配真实10备战/继续追四星，显式进入普通玩家focus回调。第二轮33/34（`play-final.xml`），失焦取消已过，但新测试误期待整备进入战斗暂停；实际Ready阶段SetPaused不改变状态，改断言仍Ready/Clock0。末轮席位类 **3/3**（`play-seat-final.xml/log`），包含最后一项成功，因此本轮34个不同相关用例均获得通过，非单次34/34。未以修改生产门禁迎合旧断言。
+- 本轮从实时main f6d52bd建立codex/pool-roster-layout并快进承接当前495c63e，保留待审的整合/萨卡兹/海嗣等既有功能。原56份既存文件与开工SHA256相同，52份meta均仅未启用WebGL自动配置；.vscode三份及PackageManagerSettings.asset保留。仓库7672跟踪文件检查通过，无新素材或场景/Prefab/包/工程设置任务修改。
+- 最终运行源码 **fc5564deff22a57b7f93acad3858b5e9b3834b4f**。复用现有ReunionBuildTools.BuildWindows动态完整场景目录，Windows x64 Development真实构建 **1063588065 bytes / 0 errors**（`build-final.log`）；未修改工程构建设置。工程外TEMP启动1280×720与1600×900可见D3D11独立Player，各 **16/16**（`player-final-1280/result.json`、`player-final-1600/result.json`），后者捕获进程正常退出0；前者WaitForExit确认结束但Get-Process未保留退出码，不宣称捕获其退出码。两尺寸真实四星连锁（1→2→3→4）保留主实例/余3张、空位、同排/跨排交换、取消、备战第9格保留、开战稳定收拢、暂停普通指针部署与库存守恒通过。四星M08实际2124生命/134.4攻击，DP100→95、Clock0；这是既有专项生命×4/攻击×2倍率，非正式一星基表或全局平衡。
+- 首轮Player运行源码ff91b3b、构建1063588039字节，15/16，交换已实际成功，但验收错误要求士兵回备战第一格；被交换猎狗原先保留在第六格，应准确继承第六格。仅将验收改为比较交换前真实来源席位（fc5564d），不改生产席位规则/放宽断言。初轮失败结果保留。已查看最终双尺寸四星、空位/跨排交换PNG和实际收拢部署栏；操作为生产ProcessShopPointer/控制器，未声称真实OS鼠标或人工长局试玩。
+- 完整1972文件已同步常用`Builds/Windows`，文件存在/长度0差异，实际Runtime DLL SHA256 **BA6340D846D420152F67EF6D1DA078614064EFCD3E89A5477264D3EDDC6F469B**一致，SOURCE.txt记录运行源码（`copy-check.json`）。复制后唯一标记差是更新目标SOURCE.txt导致，统一源/目标标记后复核0差异；无二进制漏拷。最终原56份既存文件SHA256与开工相同。
+- 未运行全量PlayMode、第二机、全部分辨率、十三关随机追四星成型率或长局平衡。四星倍率与26售价为实现试验值；对数学/确定性对照的通过不作最终平衡结论。
+
+## 2026-11-07：整合运动2/4/6/8跨编制集结
+
+- 精确Unity6000.6.5f1，无包升级。完整EditMode **682/682**（artifacts/reunion/edit-all-final.xml/log）、D3D11相关PlayMode **27/27**（play-related.xml/log），均退出0。Play包含整合场景3、徽记4、激活7、战役4、九专项3、萨卡兹3及高级/第五/第六批干员各1。
+- 新增模型：ReunionSynergyTests9项，覆盖编制门槛、1/2/4/6预算、种类去重/事务重试、非整合/非法部署、暂停重开、四档弩手与均星舍入；ReunionEntryShieldTests12项覆盖首攻/物法真首击、无敌/暂停、赶路、一次盾/到期、设施/自损区别及旧盾真伤语义。新增Play3项走生产指针部署、自然交战起盾和暂停、新Battle重开。
+- 首轮Edit673/673，但日志揭示主控新增集结测试及Play新增文件各有33位GUID、被Unity忽略；已改32位。最终XML确认新增9个集结Edit、12个盾Edit和3个Play用例实际参与。首轮不当作完整新增覆盖。
+- 运行源码 **139d42a1748390811ba6a191bd4fdca86158307a**；ReunionBuildTools.BuildWindows真实Windows x64构建 **1063565329 bytes / 0 errors / 退出0**（build.log），动态完整保存场景目录不改工程构建设置。1600×900与1280×720可见D3D11独立Player从工程外TEMP启动，各 **74/74**、退出0（player-1600/result.json、player-1280/result.json）；四档真实库存与生产指针部署、暂停扣费/次数/冷却、援军路由与类型/属性、自然首交战28盾/5秒不续及重开清理通过。八档实际士兵200生命、弩手140生命；自然弩手在0.05模拟秒出手启动28盾，士兵当时仍在移动且未启动盾。
+- 已查看实际保存的整备、详情、暂停集结与护盾PNG。自动验收的详情仅为截图设置诊断显示，不当成真实点击。另在普通`-reunionTrial`窗口通过computer-use实际OS鼠标点击整合行、滚动至完整规则、关闭详情、开始战斗；拖M07后暂停，再拖M08/M09到南红门，实际HUD呈现DP100→98→96→94、集结1/3→2/3→0/3、援军1/3轮及新增实体，暂停保持。此为OS输入复验，不称人工长局试玩（manual-notes.json及本轮工具截图）；普通窗口保持暂停供试玩。多羁绊动作区溢出由PlayMode几何/输入边界回归验证，未用OS逐一试完所有密集组合。
+- 完整1972个构建文件同步常用Builds/Windows，逐文件存在/长度一致；运行DLL SHA256为4BA427E5868FEB1BB7A9676149C9707496132591BDE047A62991DE754FACDA69，SOURCE.txt对应运行源码（copy-check.json），新增整合运动试玩.cmd。仓库7656个跟踪文件检查通过；原56份既存文件SHA256与开工一致，不混入提交。无新美术、场景/Prefab/包/工程设置任务改动，无main自动合并、ZIP或Releases；完整PlayMode、自然十三关成型、长局平衡和第二机未测。
+
+## 2026-11-07：承契部署永久化与萨卡兹徽章
+
+- 人类最新修订覆盖本日早先主动方案：所有档位部署一次触发、永久攻击强化、一次护盾，九档也不再定时补发。数值、六档半额/八九档全额、萨卡兹常驻生命保持；不改个人主动/SP。承契者仅限编队萨卡兹，准备时拖徽章指定，战斗锁定。继续`codex/sarkaz-souls`与既有PR #98；实时main仍f6d52bd（当前头的祖先），未另建项目或切目录。
+- `SarkazContract`删除窗口/主动请求/补盾时钟，`ManualBattle.DeployProfile`仅在真实部署提交后发一次盾；`RemainingSynergies`只接受萨卡兹承契卡，旧外族配置回落合法成员。`SarkazContractBadge`将整备选择写回战前快照，统一ShopPointerEvent在购买/出售/卡牌操作前接管整个手势；非法释放、右键、取消、失焦、模态均清理拖动，外族拒绝不改目标或资源。UI使用既有Sarkaz图标/徽记，编队卡和头顶显示承契身份，无新美术/场景/Prefab/包/工程设置。
+- Unity6000.6.5f1完整EditMode **658/658**、0失败/跳过（`artifacts/sarkaz-passive/edit.xml`）。38个萨卡兹用例包括五档真实伤害/吸盾、跨65秒常驻、盾不补、外族配置不得受益、同卡多个实体、暂停/重开、泥岩破回法盾与爱国者复起不重发。
+- D3D11 PlayMode首轮 **14/15**：旧`ActualHerdArtAndPermanentContractRemainPlayable`在Replay之后商店转场未完即指定，被新输入门禁拒绝。只补夹具等待ArtLoading/ShopPanelTransitioning完成，保留生产门禁；萨卡兹与剩余羁绊整组 **7/7**（`play-final.xml`）。因此所选15个不同用例均获通过，不称单次15/15。徽章最终布局调整后同真实指针三用例另 **3/3**（`play-badge-final.xml`），涵盖成功/精确外族报错/重复释放/取消/商品释放/模态不穿透/战斗锁定/五档暂停正常部署与库存守恒。未跑全量PlayMode。
+- 初次实际OS鼠标复验在`6abeb73`发现徽章覆盖首商品价格角标；仅将来源徽章及右侧说明移至顶部空白HUD，避免标题和商品。最终运行源码 **`3740a8d958632ba4189bcefbac049b90dd13c7ae`**，沿现有`DeepPoolBuildTools.BuildWindows`动态完整场景目录构建 **1063532307 bytes / 0 errors / 退出0**（`build-final.log`）。完整1974文件同步常用Builds/Windows，逐文件存在/长度一致，SOURCE.txt对应源码；运行DLL SHA256均为`5DAAEBDD73C4DD8DBAC652832E060981076DDCD7D8CEDB129FE3B988D0140D6C`。
+- 最终工程外TEMP启动1600×900可见D3D11独立Player **64/64、退出0**（`player-final/result.json`、`player-final-exit.txt`）。生产样板和真实指针拖徽章→M37、外族M18精确拒绝且保留库存/金币/原目标、取消/重复松手/战斗锁定、五档暂停部署即生效、六档半额/八九档共享均通过。真实二/九档射击攻击129.6/240、实际扣血125.6/236；九档生命1792/初始盾1075.2，正常受击消耗后跨21秒不补发且攻击仍常驻。沿用专项生命×4/攻击×2，不是正式平衡结论。该部分由生产指针/控制器驱动，不冒称OS鼠标。
+- 另外用computer-use在最终普通`-sarkazTrial`窗口实际OS鼠标复验：顶部徽章→M38成功且卡上标记；正常购买M15后徽章→M15准确显示“无法使羁绊外的角色成为承契者”，M38仍保留标记，7/8编队保持；新布局五商品价格无遮挡。通过窗口截图实际观察，未将工具截图payload另行存盘；自动证据图在`player-final/01-badge-drag-to-sarkaz.png`、`03-outsider-rejected-with-message.png`与`11-nine-tier-one-time-ward-after-twenty-seconds.png`等。普通窗口不自动退出，留供试玩。
+- 仓库7641跟踪文件与meta检查通过，原52处VFX meta开工/收尾SHA256一致，.vscode/及PackageManagerSettings.asset继续保留不提交。无ZIP/Releases或自动合并main。未执行第二机、全分辨率、自然13关成型率/长局平衡；最新触发/身份规则已确认，既有倍率仍是待长期试玩的参数。
+
+
+## 2026-11-07：萨卡兹2/4/6/8/9众魂之契
+
+- 从实时main `f6d52bd`建立`codex/sarkaz-souls`，快进承接当前已在用且待审的集成头`3f34762`（PR #94），保留既有角色/地图与运行素材。仅本任务脚本、测试、规则/验证记录与试玩快捷脚本纳入提交；无场景/Prefab/Packages/ProjectSettings/素材改动，无ZIP/Releases或自动合并main。
+- `SarkazContract`持有承契窗口、20秒CD、请求幂等及独立众魂盾池；编队快照固定2/4/6/8/9，部署按萨卡兹常驻生命系数初始化，伤害入口消耗真实盾并发护盾吸收反馈；UI读取真实状态。`UnitBaseHealth`保留泥岩法盾破/回时的生命倍率。新增入场体获得剩余窗口一次盾，九档每实体20秒补盾，支援/灵体/分体排除。设施真伤在原生无敌时提前拒绝，避免白扣盾。个人SP/动作/复起阶段不重置。
+- Unity6000.6.5f1完整EditMode **654/654**（`artifacts/sarkaz/edit.xml`）；后续补原生无敌回归并复验萨卡兹/徽记 **41/41**（`edit-final.xml`，含新增1项）。相关D3D11 PlayMode **13/13**（`play.xml`）：五档真实预置/库存守恒/暂停普通拖动、九场景初始编队、牧群/深池/海嗣既有交互、泥岩原作法盾、爱国者双阶段与伤害反馈。未跑全量PlayMode。
+- `f27a12b`首轮Player69/70，唯一失败为九档自然受击未发生：验收选择M38，其原生20秒枷锁覆盖首次补盾观察期。保留`player/result.json`和截图/日志；仅将6/8/9验收伙伴改为无控制M26，不修改生产数值/地形/伤害、不过滤失败断言、不注入生命/SP/时钟/胜利。
+- 最终运行源码 **`bef9d82b58e1f7ba3ff602297e64282b48f29852`**；现有`DeepPoolBuildTools.BuildWindows`按动态完整保存场景目录构建，**1063527732 bytes / 0 errors / 退出0**（`build-final.log`）。完整1974文件同步常用`Builds/Windows`，逐文件存在/长度核对一致，运行DLL SHA256 `87C92DEA718E7C3BF7DE58168A8F004A16BF1D767E3BD92115C3A96988EC9418`一致；SOURCE.txt记录该源码，新增萨卡兹试玩.cmd快捷入口。
+- 工程外TEMP启动1600×900可见D3D11独立Player **70/70、退出0**（`player-final/result.json`、`player-final-exit.txt`）。五档生产预置与普通指针部署、无伤启动、同卡共享/六档半额/八档完整、暂停/幂等/CD均通过。两名普通实体即可享九档；实际二/九档射击攻击129.6/240、实际扣血125.6/236，九档生命1792与盾1075.2，守军真实受击消耗盾后20秒自动补盾通过。使用既有专项怪物生命×4/攻击×2测试倍率，不作为正式战役平衡结论。已实看`01-nine-tier-preparation.png`、`08-nine-tier-auto-refill.png`等真实渲染截图，紫色盾条、共鸣/补盾HUD、完整五档说明与彩色徽记可见。动作由现有生产指针/控制器驱动，不冒称OS人工鼠标操作。
+- 仓库7639跟踪文件校验通过；原52项VFX meta与开工SHA256逐文件相同，`.vscode/`和`PackageManagerSettings.asset`保留不提交。未执行第二机、全分辨率、自然13关成型率/长局平衡；当前强度仍是获准接入的试玩参数。
+
+
+## 2026-11-07：泥岩六档彩色徽记修正
+
+- 运行源码`7c7ad44`：仅`SynergyBadgePresentation.GradeFor`为泥岩6档选择现有Prismatic，其余2/4/5档保持铜/银/金；侧栏与激活反馈复用同一选择，未修改实际门槛、转职、培养或战斗。显示说明表同步，未改素材、场景、Prefab、Packages或ProjectSettings。
+- Unity6000.6.5f1相关EditMode **19/19**（`artifacts/mudrock-prismatic/edit.xml`），D3D11 PlayMode **4/4**（`play.xml`），0失败/跳过。既有测试补充真实五原生+第六人转职的彩色映射，以及移出第六人退金、重新编入恢复彩色。仓库检查7628跟踪文件通过，`git diff --check`通过。
+- 现有`DeepPoolBuildTools.BuildWindows`按动态完整场景目录构建，**1063504436 bytes / 0 errors / 退出0**（`build.log`）；未改构建设置。同步全部1973文件到常用`Builds/Windows`，无缺失/长度差；运行DLL SHA256一致，`SOURCE.txt`记录7c7ad44。
+- 先以隐藏窗口运行泥岩专项，截图黑色，经验动画中间帧检查失败（19/20，退出1，`player/result.json`）；不计为可见画面通过，也未为此改生产逻辑。改为工程外TEMP启动1280×720可见D3D11独立Player，**20/20、退出0**（`player-visible/result.json`）。已实看`01-zero-xp-cultivation.png`的五人金色与`10-free-sixth-member-transfer.png`的六人青绿虹彩/人数6。此专项操作由既有控制器驱动，不冒称OS人工点击；保留七次真实战斗结算及后续明示IV/V预置的原验证边界。
+- 原52份VFX导入meta与开工SHA256逐文件相同，`.vscode/`与`ProjectSettings/PackageManagerSettings.asset`继续保留不提交。只提交本任务显示代码、既有测试断言和文档，沿PR #94交付；未创建ZIP/Releases、未自动合并main。未执行全量Edit/PlayMode、第二机、其他分辨率或自然长局平衡。
+
+## 2026-11-07：PR 冲突整理与海嗣依赖整合
+
+- 最终以同一工程合并海嗣依赖与树海：运行源码6b02a5900cbcea0045628c306b626ef69b4098b1，完整EditMode619/619，0失败/跳过（edit-final.xml）。新版徽记下泥岩/溟痕补充行采用共用坐标，1px经验条不画覆盖填充的边框。新增地图沿用保存地形、显式terrainOnly及兼容旧调用的可选参数；启动路由组合各专项和原诊断，不改原有主场景或Packages。
+- D3D11 PlayMode首轮32项31过1败：游击六档多人夹具未提交自动整令。生产自动整令链与main相同；单项在增强诊断后1/1通过，最终游击与泥岩两类11/11（play-order-repro-fixed.xml、play-followup.xml）。因此32个不同相关用例均获得通过，但不是单次32/32；未稳定复现并定位首轮组合顺序问题，不以改玩法或减少断言消除失败。诊断文字初次误用不存在的RouteMotion.Distance导致编译退出，已更正为实际DistanceTravelled；原失败日志保留。
+- Windows构建入口DeepPoolBuildTools.BuildWindows使用动态场景目录，包含树海及全部既有场景，1063504437 bytes / 0 errors / 退出0（build-final.log）。同一运行源码的独立Player均从工程外TEMP启动，1280×720、Direct3D11：树海geometry/materials/nativeGates/fixedRoutes/pause/sharedDefense/restart七项全True；海嗣15/15、自然Won、16格/4次爆发、实际地面开关差9018像素；深池17/17、2.85秒首次燎烧/8.25秒首种、同刻两目标引爆360真实HP。三个可见窗口均退出0，已目视核对实际地图、覆盖/神经HUD及引爆截图。范围查看通过生产ToggleMarineCoverage调用，部署走普通ProcessShopPointer，不冒称OS鼠标操作。结果分别在player-forest-visible.log、player-marine-visible/result.json、player-deep-visible/result.json。
+- 初轮隐藏Player：树海逻辑七项通过但截图全黑；海嗣13/15，HUD与像素失败且地面差0。此轮不计画面通过，重新打开实际窗口后以上可见Player全部通过。保留黑图与失败结果，未改生产画面或放宽像素门槛。
+- 完整构建已复制到Builds/Windows，EXE、运行DLL与SOURCE.txt对应6b02a59；无ZIP/Releases。仓库7628跟踪文件检查通过。开工56文件快照与收尾SHA256一致；原52处meta只有自动新增未启用WebGL配置，按既有确认保留不提交。未运行完整PlayMode、第二机、全分辨率或自然长局/全部阵容平衡。
+- 实时 main 为 f6d52bd（#97），本地原深池 e7a9aff 与它文件树相同。13 个旧 PR 已通过 #80/#89/#96 完整进入 main；以原头祖先关系及整合分支/main 全树相等核实后关闭重复 PR，保留原分支与历史说明。
+- 将 #94（包含 #90 泥岩、#91 牧群与 #93 银狼）同 main 逐段合并：保留深池 LastTick/首击产种/耗尽尾伤、游击五斩与新版徽记，同时接溟痕落种、灵体起身、泥岩培养与银狼。泥岩/溟痕补充行改用当前徽记侧栏坐标，避免覆盖名称与门槛。
+- 初轮完整 EditMode 613 项：612 通过、1 失败，为旧徽记测试仍期待泥岩 2/4/5，而新规则已开放 6 档；按实际规则更新期待后该测试类 5/5 通过。结果在 artifacts/pr-conflict-integration/edit-marine.xml 与 edit-marine-fix.xml。该阶段尚未运行 GPU/独立 Player；后续整合验收另记。
+- 仓库检查 6785 跟踪文件通过。原 52 项特效 meta、.vscode 与 PackageManagerSettings.asset 保留不提交；未 stash、未新建项目副本、未强推或远端合并 main。
+
 ## 2026-11-07：深池命中燎烧与单火种引爆
 
 - 人类确认本轮方案并确认既存52处Mandragora/Mephisto VFX meta和两个本地项原样保留。fetch核实UI PR #96已squash合入最新main `2b7e449`（树与原UI分支`fb82933`相同），当前`codex/deep-pool-balance`从该main建立；原文件哈希快照在`artifacts/deep-pool/preexisting-hashes.json`，不纳入任务提交。
@@ -85,6 +148,55 @@
 - 已查看原作九肖像、蓄力4/5、末刀5/5及实际伤害/震屏截图。两源原音/FX各在两个完整批次只播一次，暂停timeSamples冻结；单独迟观察的终局批次不补播已过声段。1×/2×峰值生产层像素一致、伤害一致，2×逐帧Age最大误差2.3841858e-7秒，普通模拟仍2×。后处理GPU开关差2073597像素，逻辑相机不动；终局保留第一段已损且取消其余，末尾两源/hold/Offset/Zoom/Roll和重开清理通过。
 - 导出246张实际Player逐演出帧、60fps/4.1秒（含0.1秒前导及清理），项目外guerrilla-auto-five-in-game.mp4已完整解码检查。视频后配同一跟踪原声（.55）及纯FX（1）并对齐前导，不称实时系统音频录制。耐久守军1000HP、延后普攻/独立装置攻击治疗仅为隔离军令预算的明确夹具，不代表自然长局平衡验收。原Unity/GPU测例夹具不同，细节见代码。
 - 仓库6555跟踪文件检查通过，新纯FX资源649004字节、3.38秒及Shader/meta均随源码跟踪，原followup出手声哈希不变且不重复混入。原52处meta开始/结束SHA全部一致，两个本地项未提交。未运行全量PlayMode、第二机、全分辨率或自然长局平衡，未另行主观试听；不自动ZIP/Releases或合并main。构建后仅文档补记。
+
+## 2026-11-07：海嗣溟痕蔓延
+
+- 最新main实时核实为b1d55e7；同一工程从同步main建立codex/marine-nethersea，再快进承接当前已可试玩76f0bd2（泥岩、牧群与银狼12个尚未进main的依赖提交），不自动合并main。原52份Mandragora/Mephisto meta与两个本地未跟踪项按既定方案原样保留，SHA256核对未变。
+- Unity6000.6.5f1：完整EditMode首轮及最终均562/562（artifacts/marine-edit.xml、marine-edit-final.xml）。新增核心边界与旧适应参数退役回归；后续补充致死纯真伤接触，最终完整复验覆盖。
+- D3D11相关PlayMode29个不同用例均获通过：首轮27/29暴露范围查看绑定错误及新Battle查看状态残留；修正实际combatView桥与状态同步后28/29，剩余为单格范围高亮实际相机仅17像素、低于30像素要求。增强实际边缘对比与宽度后，末轮MarineTideSceneTests 3/3（marine-visual-focused.xml）。没有降低断言。其余回归含RemainingSynergy、DedicatedSynergy、FirstSpeaker、GuerrillaOrder、HerdSpirit与BattleInteraction；最终不同用例共29，非完整PlayMode。
+- artifacts/marine-balance.json：正式CampaignBalance星级/DP/守方防御、正式第6/10/13关守军及保存路线，1–3星、两种2人组合、4人组合与同4人关闭效果对照共36组。固定轮换部署、真实费用/CD/技能/神经/胜负，无注血或强制判胜。较弱第6关可能无爆发已结束；1星第10关四人首次爆发由9.2秒提前到3.6秒，第13关11.4→8.05秒；通关时间还受路线、部署预算与高台影响，不承诺总是更快。该审计不包含商店运营、成型概率或最优操作。
+- 本轮新增8张原作溟痕PNG共381201字节及必要meta，Shader使用01/04/03/flow_43_2四张；另外四张保留同一原依赖来源，不宣称它们已参与画面。原版本、包MD5、CAB/PathID和PNG SHA256见art/source-records/marine-tide-original.json。原图加本作模拟时钟Shader适配，非完整原客户端材质/粒子重建。
+- 最终运行源码`8322d2a145b43790a4a712009e84bb5affeeb9b1`：Windows x64构建1046241663字节、0错误（artifacts/marine-build-final.log）。实机看稿后保留原PNG字节，Shader主层改取原028_03材质冷色参数，减少灰石块观感；该Shader变更单独GPU3/3复验（marine-cold-tint.xml）。此前971f651构建0错误/14项Player通过保留为初稿记录，不冒称最终构建。
+- 最终1600×900、D3D11可见独立Player14/14全True（artifacts/marine-tide-player-final/result.json），生产部署/费用/CD/真实接敌/原生神经均正常，实际鼠标点击左侧范围查看。0.55模拟秒首次落种，4.55秒首次扩散，最终16格、4次爆发，自然Won，覆盖开关在实际屏幕贡献13965个差异像素，暂停与重开清理通过，最终进程62364正常退出。专项攻击×2的首爆0.8秒不作为正式1星平衡证据；正常属性对照见36组预算审计。未注血/伤害、未用FinishForTesting证明自然结果，未把模型部署调用冒称OS拖动部署。
+- 已查看真实游戏相机/屏幕中的原纹理、覆盖亮边、受益标志、神经条与爆发倒计时。图片01至06在artifacts/marine-tide-player-final；源码manifest标明只有4张纹理实际进入Shader，其余原依赖不冒称绑定。模型/界面均没有海嗣XP结算或旧适应效果。最终预算审计marine-balance-final.log正常退出，完整Edit562/562、29个不同相关GPU案例与最终冷色GPU3/3的验证范围分开记录。
+- 本地普通启动Builds/Windows/海嗣溟痕.cmd（-marineTide），不会运行自动验收或自动退出；工具入口tools/play_marine_tide.cmd。保留整个Windows目录。原52份meta及本地.vscode/、PackageManagerSettings.asset SHA256再次核对原样未变、不入本任务提交。未测完整PlayMode、第二台电脑、全分辨率和正式13关自然运营平衡；不自动ZIP/Releases。
+
+## 2026-11-07：银狼 LV.999 / 左右向与三种盲盒
+
+- Unity 6000.6.5f1：完整 EditMode 549/549，包含三结果分别命中、资源仅结算一次、连抽同款、第三发动作锁与普攻中排队变身；D3D11 相关 PlayMode 22/22（选择、战役与羁绊卡池）。后续只调整独立验收入口的后台运行和相机取证时机；最终运行源码 eadffc0 Windows x64 构建 1,045,906,436 字节，0错误，正式美术打包 105份清单。未运行全量 PlayMode。
+- 最终独立 Player 1600×900、Direct3D 11、退出0：19项全部通过。普通入口部署、原路线和显式反向路线、左右出拳、真实源石虫、手动变身、三结果各自命中、暂停和重开均已验。独立验证以固定随机种子覆盖三种结果；玩家正常游玩没有固定种子。准备50页、PNG回退0。
+- 最初提前编译遇到尚未写完的表现类，随后修复验收脚本引用。第一次隐藏窗口没有推进；开启验收专用后台运行后，交换链截图全黑，不能算图像证据。改从真实游戏相机读回；修正先读状态后绘制的一帧偏差，最终8张1600×900实机图均检查。隐藏银狼再重绘，角色差异9176–20638像素；三种命中层差异12022–42727像素。该相机图不包含屏幕 IMGUI。
+- 直接复验：YesterdayConvoy.exe -silverWolfSmokeTest -force-d3d11 -screen-width 1600 -screen-height 900 -demoEvidenceDir <独立目录>；普通试玩用 -silverWolfTrial。未做第二台电脑、全分辨率和长期平衡试玩。未修改场景、Prefab、Packages或ProjectSettings，52项原有VFX meta和已有本地未跟踪文件未提交。
+
+## 2026-11-07：牧群冰蓝灵体与倒下起身
+
+- 人类先认可项目外V1冰蓝半透明看稿，再明确授权接入与倒下起身。`codex/herd-spirit`从实时`origin/main b1d55e7`建立，FF承接当前已验收试玩`52dcad5`（未合并PR #90），不自动合并。原52个Mandragora/Mephisto meta和两个本地未跟踪项按既有确认隔离；开工保存52项字节SHA，本轮Unity后核对无变化。
+- Unity6000.6.5f1/D3D11完整EditMode544/544，`artifacts/herd-spirit-edit.xml`。新增逻辑覆盖非牧群源卡也适用、来源/实体关联、不再花费部署、重组期间全门禁/暂停、恢复交战、完整10/12有效寿命、不递归、最后一张卡不提前判负与重开。
+- 相关GPU PlayMode25/25，`herd-spirit-play.xml`：HerdSpiritSceneTests、RemainingSynergySceneTests、DedicatedSynergySceneTests、MonsterAbilitySceneTests、FieldAnimationSceneTests、TalulahDeathPresentationTests中实际匹配的25项。新增三项验证真实守军击杀→倒下/原尸体隐藏→起身→原动作、暂停帧/Shader/散雾几何冻结、隔离相机明暗底实际GPU蓝色/透光、多实体与死亡/终局/重开清理。
+- 静态交叉审查发现并在GPU验证前修正实心接触阴影残留、自然寿命到期瞬间复亮。再增加到期不复亮与阴影归零的实际回归，`herd-spirit-expiry.xml`3/3；这是上述三个用例的复验，不累计为额外不同测试。寿命段停用守军后续攻击为明确隔离夹具，真实自然守军击杀另有用例。
+- 核心模型/表现与测试提交`ef708eb958650d7036990b2f3db37edf32d382c1`，之后两次提交只修正显式验收启动与可选连续导帧，不改普通入口或模型/Shader。最终运行源码`c550c75`，Windows x64构建1045880387字节、0错误（`herd-spirit-build-delivery.log`），本地Builds/Windows/YesterdayConvoy.exe。
+- 可见1600×900 D3D11最终Player，参数`-herdSpiritSmokeTest -herdSpiritMotionEvidence -demoEvidenceDir <绝对目录>`：`artifacts/herd-spirit-player-delivery/result.json`17项全True，进程27456完成后正常结束。由真实守军伤害触发首个M21最终死亡，原位置/路线、单实体倒下、冰蓝重组替换原尸体、起身期间逻辑门禁、暂停帧/Shader/散雾、恢复原动作及完整寿命、材质实际GPU差566像素均通过。之后显式致死仅为消散验证夹具，检查不递归、暂停消散、释放角色、正常重开及清空关联。已实际查看完整屏幕original/falling/rising/active/dissolved截图，不将模型字段当画面。
+- 可选导帧重新使用重开后的原关卡、正常部署与自然守军击杀，保存91张30fps实际Player帧，项目外编码约3.03秒全屏与局部放大无声MP4；这是逐模拟帧预览，不是实时系统音视频录屏。前65%/最多0.65源秒的原死亡帧适配倒下/反向起身，不声称重新制作了原作骨骼动画。
+- 首轮独立Player52052因本轮验收flag无条件跳过新载HerdTrial的PrepareCampaign而一直等待，停止本次诊断，不计通过；把排除限定到初始非sandbox后，第二轮Player13096的17检查已全True，但可选录制再次调用已重开的StartLoopNextBattle返回false，整轮结果仍记false。最小复现收敛到已准备战场：仅在CanShop时调用StartLoopNextBattle，CanDeploy时直接进入，最终27456全部通过。没有因此修改正式玩法或放宽任何检查。
+- 仓库6566跟踪文件检查通过；该脚本不代替Unity或Player。无新增运行图片/外部依赖，原图集保持，新增Shader/C#/meta正常跟踪，来源与数据连接见art/HERD-SPIRIT.md。
+- 未运行完整PlayMode、第二机、全分辨率、所有怪物逐一人工动作验收或长期自然平衡。不自动ZIP/Releases，不提交概念加工图、日志、构建或本地AGENTS。
+
+## 2026-11-07：树海PR吸收资源分类后的复验
+
+- 运行源码83c783394468d8d2297df6eac843937b601e0a09，已吸收main b1d55e7；四份文档新增段落全部保留，原场景与门资源不回退。
+- merged-edit-results.xml：完整EditMode510/510、0失败/跳过。merged-play-results.xml：BlackForestSceneTests、ArtLoadingTests与MonsterSelectionTests共10/10，0失败/跳过；不冒称全量PlayMode。
+- 仓库7387跟踪文件静态检查通过。merged-build.log：Windows构建1058042785报告字节、0错误；实际输出目录约1.37GB，报告汇总不等于目录总体积。
+- merged-player.log：可见1280×720 Direct3D11 Player，三路真实备战指针部署与完整模拟走线，geometry/materials/nativeGates/fixedRoutes/pause/sharedDefense/restart全部True，退出0。已查看merged-player/forest-ready.png，原地形、三红两蓝和弩手备战正常显示。保留显式Tick(.05)步进条件，不把它当成人工完整长局测试。
+- 本次复验不重测main上所有新增角色的完整战斗；原门装饰动画、第二机、低配长局、平衡与新克隆试玩仍未验收。
+
+## 2026-11-07：树海原素材与原版门接入
+
+- 运行源码bcd3417，独立BlackForestCrossing场景。原素材看稿确认后接入；原地形238格与路线38/40/42不变，无碰撞/射线或地形效果新增。
+- Unity6000.6.5f1全量EditMode449/449；GPU PlayMode BlackForestSceneTests 1/1，覆盖真实拖动部署、商店交易、暂停、地块编辑后重开保留及退出清理。XML在本机artifacts/map-draft-20261106/native/edit-results.xml、play-results.xml。
+- NativeAssets验证通过：3 tile_start/2 tile_end、原网格/材质/贴图持久化，无LineRenderer占位门，无碰撞体；原临时门已替换。142环境模型及8门层部件保留原UV/法线，门保留顶点色，兼容Shader透明与加色。
+- 仓库6655跟踪文件检查通过；Windows构建0错误（windows-build.log，报告2430901013 bytes，含构建阶段数据，目录实际大小以交付BUILD-INFO为准）。
+- 可见1280×720 Direct3D11独立Player，正常准备入口后三个红门逐一通过备战指针拖动部署，沿完整路线自然穿门；固定路线/绑定蓝门、暂停、共享防御、重开与nativeGates/materials均True，退出0。截图player/forest-ready.png、forest-lane-1/2/3.png、forest-restarted.png已目视核对角色与地图。模拟测试使用Time.timeScale=0并显式Tick(.05)，不注入伤害或跳过路程；不将其称为人工完整长局试玩。
+- 原门装饰粒子与动画、原场景Shader/烘焙光照/后处理未复刻；守军、平衡、第二机/新克隆、低配长时性能未验收。未将项目外看稿作为Player证据。
 
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
@@ -228,7 +340,6 @@
 - 图形首次19/20，失败为旧BattleInteraction结算夹具未等待上一轮新跳字1.05秒尾段；改测试等待并验证战斗Clock不走，重跑9/9。按fullname取最新结果，相关20个用例全通过；不是新增第二轮20个测试，也未称全量PlayMode通过。文件vivi-play.xml与vivi-play-final.xml。
 - 独立Player专用-viviCombatSmokeTest只在Development显式触发，运行快照夹具不改资产：右行/左转/恐惧/暂停，以及三原克洛丝5000HP/3甲、落点0/1.8/2.4的真实普攻→技力→手动技能群伤。b385cb9运行源码构建0错误，D3D11实际Player14项检查全部true（artifacts/vivi-player/result.json），两近目标各102实际伤害、2.4外目标0，消费1发弹药；已查看左右/恐惧/群伤截图。
 - 此条为开工时取源/采样记录，后续已通过完整看稿并进入上述集成验证。原代表探针不等于整套生命周期或游戏接入完成。全部范围见art/VFX-ORIGINAL-REPLACEMENT.md。
-
 
 ## 2026-11-06：战斗可观察性与专项场景集成
 
@@ -1914,3 +2025,23 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 ## 2026-11-05 本地双角色特效整合
 
 2026-11-05 本地试玩：main 2c04ba7 + 爱国者 V2 14bda74，运行源码 9826603。塔露拉 V8 已在 main。Windows 构建 0 错误，两个角色 GPU 回归 4/4。爱国者、塔露拉火雨、塔露拉动作、羁绊试玩共四个独立 Player 进程退出 0。复起和投矛使用开发阶段测试。未重跑全套测试或第二机。 本轮验证日志在 Logs/local-vfx-integration 和 Logs/local-patriot-talulah-build.log。
+
+## 2026-11-07 泥岩经验培养、6档和连续专项
+
+基线为实时main b1d55e7，功能分支codex/mudrock-growth-feedback。原52项Mandragora/Mephisto PNG.meta及.vscode/、PackageManagerSettings.asset按此前已确认方案保留，不纳入任务提交。无场景地形/Prefab/包/工程设置修改；泥岩专项只调整自己的卡组与守军配置。
+
+- Unity6000.6.5f1完整EditMode：artifacts/mudrock-growth-edit.xml 538/538通过，真实进程退出0。
+- 相关D3D11 PlayMode：artifacts/mudrock-growth-play.xml 24/24通过，覆盖原羁绊/九专项/暂停部署/商店/游击转职回归。
+- 首轮发现新增场景测试meta GUID为33位，Unity忽略该资产；已更正为生成的32位GUID并单独补跑。artifacts/mudrock-growth-new-play.xml四项中三项通过：免费转职生命周期、自动经验/封顶/连轮、默认专项真实招募合成和自然四战从0培养至48/V；唯一失败为测试运行器禁止batchmode的WaitForEndOfFrame，尚未进入像素断言。
+- 同一UI像素用例改用非batch窗口渲染运行，artifacts/mudrock-growth-ui-play.xml 1/1通过、退出0，实际屏幕XP条前后像素差、I→II提示、实际获得量和封顶说明均通过。共28个不同相关PlayMode用例已获通过，不将首次3/4失败记录改称一次全绿。
+- 经验阈值、阵容容量、无部署/击杀任务、Won/Lost自动结算、补给/中断不发、实际增量截断、历史XP保留、三星补偿一星、九张库存/正式高费委托拒绝已由逻辑测试覆盖。自然测试使用现有正常战斗和真实委托，不使用FinishForTesting或篡改守军。
+
+本轮Windows构建/独立Player与可见窗口验收尚未运行，完成后追加实际结果。未做完整13关自然成型率、长期平衡、第二机或全分辨率验收。
+
+
+独立Player补充：运行源码aabb23b、artifacts/mudrock-growth-build.log构建1045846289字节、0错误、真实Unity退出0。以TEMP为工作目录启动1920×1080 Direct3D11可见Player，`-mudrockGrowthSmokeTest -mudrockGrowthRequireClicks`的20项检查全部True、真实Player退出0（artifacts/mudrock-growth-player/result.json）。正常委托/三合一及7次自然胜利形成XP0→6→6→14→24→30→42→48，无FinishForTesting或临时生命/攻击夹具；V正常部署验证7500血/2000攻/14DP/每场一次/免控。鼠标真实点击构筑、阵营培养、巨像培养和免费弩手转职，六次GUI等待均由实际窗口操作完成；看过初始培养页、真实经验插值/升级、封顶说明、转职及自然V结算截图。17张截图仅本地artifacts，显式IV/V预置与自然链分开记录。
+
+之后仅新增普通`-mudrockCultivation`启动路由及tools/play_mudrock_trial.cmd，源码c2e568e；用于交付可正常持续游玩的直达入口，不带自动化烟测。最终同目录构建、直达入口结果在下方追加；上述7战自然链对应aabb23b的完全相同培养/战斗代码。未做正式13关自然成型概率、长期平衡、第二机或全分辨率验证。保留原52项meta字节一致、两个未跟踪项不动；不ZIP/Releases、不自动合并main。
+
+
+最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。

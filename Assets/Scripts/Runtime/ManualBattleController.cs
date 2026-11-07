@@ -154,15 +154,22 @@ namespace YesterdayConvoy
             if(CampaignActive)return CreateCampaignBattle();
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
-            var result=new ManualBattle(BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
+            var settings=BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot();
+            var primary=ShopTrialActive?ShopStarProfile(definition,settings):null;
+            var result=new ManualBattle(primary?.Unit??settings,
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
-            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
+            definition.Engagement.DefenderPosition,primary?.Combat??definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
-            defenderTrial!=null ? defenderTrial.LaneSnapshot() : null);
+            defenderTrial!=null ? defenderTrial.LaneSnapshot() : null,
+            allowEmptyRoster:defenderTrial!=null&&defenderTrial.terrainOnly);
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
-                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
+                foreach(var data in defenderTrial.rosterCards)
+                {
+                    var mapped=BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot();
+                    profiles.Add(ShopTrialActive?ShopStarProfile(data,mapped):new BasicRosterProfile(mapped,data.Engagement.Snapshot()));
+                }
                 result.ConfigureCardLoadout(profiles);
             }
             var mudrockTrial=FindAnyObjectByType<MudrockTrialBootstrap>();if(mudrockTrial!=null)mudrockTrial.Configure(result);
@@ -197,14 +204,14 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { if(TestSelectionOpen) return; Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
             if(Loop!=null&&(!Loop.CanDeploy||Loop.RewardStage))return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
-            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
+            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) { CompactShopLineupSeats(); Battle.Begin(); }
             var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
             Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.FindCard(DeploymentDefinition.Card.CardId)?.Settings.DeploymentCost??DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
@@ -236,7 +243,7 @@ namespace YesterdayConvoy
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
             if(Dragging) ProcessPointerMove(Input.mousePosition);
             if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
-            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) CancelInteraction();
+            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) { if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); }
             Tick(Time.deltaTime);
         }
 
@@ -316,14 +323,14 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
+            Feedback=result==SkillFailure.None ? (SilverWolfCombat.IsWolf(Battle.FindUnit(selectedEntityId)) ? "无敌玩家启动，接下来三次攻击各随机开启一个盲盒" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
                 result==SkillFailure.NoTarget ? "没有可占据的留声机，或正在刷新屏障" : result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能或施法动作正在进行" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
         private void OnApplicationFocus(bool focus)
-        { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); CancelInteraction(); } }
+        { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); } }
 
         private void CreatePreview()
         {
@@ -357,6 +364,8 @@ namespace YesterdayConvoy
             Vector3 p=(lane!=null ? lane.Entry : point)+Vector3.up*.015f;
             entryOutline.SetPositions(new[]{p+new Vector3(-.6f,0,-.6f),p+new Vector3(-.6f,0,.6f),p+new Vector3(.6f,0,.6f),p+new Vector3(.6f,0,-.6f),p+new Vector3(-.6f,0,-.6f)});
             preview.sprite=OriginalTalulahArt.BattleSprite(DeploymentDefinition.Card);
+            preview.flipX=DeploymentDefinition.Card.CardId==SilverWolfCombat.CardId && lane!=null &&
+                SilverWolfView.Facing(lane.Points[1]-lane.Entry,Camera.main,false);
             DeployFailure failure=Battle.CheckCardDeployment(DeploymentDefinition.Card.CardId,point,Dragging);
             bool valid=failure==DeployFailure.None || failure==DeployFailure.NotStarted;
             Color tint=valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
@@ -463,6 +472,12 @@ namespace YesterdayConvoy
         private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
         {
             var combat=Battle.UnitCombat(unit);
+            if(SilverWolfCombat.IsWolf(unit) && unit.LastAttackEmpowered && unit.LastWolfBox!=WolfBoxKind.None)
+            {
+                double age=Battle.Clock-unit.LastAttackTime;
+                if(age>=1.45 && age<combat.SkillInterval)
+                    GUI.Label(new Rect(x-50,y-34,140,25),SilverWolfView.ResultName(unit.LastWolfBox),smallStyle);
+            }
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
             if(combat.MudrockCapture&&Battle.IsSkillActionPlaying(unit))
             {float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.MudrockCaptureStartedAt)/1.5));Fill(new Rect(x-29,y+2,58*remaining,3),new Color(.9f,.25f,.25f));}
@@ -520,10 +535,10 @@ namespace YesterdayConvoy
         {
             foreach(var d in Battle.Defenders)
             {
-            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : 1.95f));
+            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : definition.Card.CardId==SilverWolfCombat.CardId ? .95f : 1.95f));
             Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
             if(!d.Alive) continue;
-            float width=TacticalMapActive ? 62 : 96;
+            float width=TacticalMapActive || definition.Card.CardId==SilverWolfCombat.CardId ? 62 : 96;
             Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
             if(d.Settings.Skill.Enabled)

@@ -46,8 +46,11 @@ namespace YesterdayConvoy
             switch (name)
             {
                 case "整合运动":
+                    return tier >= 8 ? SynergyVisualGrade.Prismatic :
+                        tier >= 6 ? SynergyVisualGrade.Gold :
+                        tier >= 4 ? SynergyVisualGrade.Silver :
+                        tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 case "感染生物":
-                case "萨卡兹":
                     return tier >= 6 ? SynergyVisualGrade.Gold :
                         tier >= 4 ? SynergyVisualGrade.Silver :
                         tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
@@ -55,12 +58,14 @@ namespace YesterdayConvoy
                     return tier >= 5 ? SynergyVisualGrade.Silver :
                         tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 case "游击队":
+                case "萨卡兹":
                     return tier >= 8 ? SynergyVisualGrade.Prismatic :
                         tier >= 6 ? SynergyVisualGrade.Gold :
                         tier >= 4 ? SynergyVisualGrade.Silver :
                         tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 case "泥岩小队":
-                    return tier >= 5 ? SynergyVisualGrade.Gold :
+                    return tier >= 6 ? SynergyVisualGrade.Prismatic :
+                        tier >= 5 ? SynergyVisualGrade.Gold :
                         tier >= 4 ? SynergyVisualGrade.Silver :
                         tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 case "牧群":

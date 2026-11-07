@@ -144,6 +144,11 @@ namespace YesterdayConvoy
         public string TargetId { get; }
         public bool FromDefender { get; }
         public bool Empowered { get; }
+        public double WolfActionAt {get;internal set;}=double.NegativeInfinity;
+        public float WolfActionRate {get;internal set;}=1;
+        public WolfBoxKind WolfBox {get;internal set;}
+        public string WolfBonusTargetId {get;internal set;}
+        internal bool WolfFinished;
         public bool FireRain { get; }
         public float Vulnerability {get;internal set;}
         public float IgnoreResistance {get;internal set;}
@@ -202,7 +207,7 @@ namespace YesterdayConvoy
             if(defenderRoster!=null) { foreach(var spec in defenderRoster) defenders.Add(new DefenderState(spec)); return; }
             var c=CombatSettings;
             for(int i=0;i<defenderPositions.Length;i++)
-                defenders.Add(new DefenderState(new DefenderSettings(i==0 ? "kroos" : "kroos-"+i,"克洛丝",null,
+                defenders.Add(new DefenderState(new DefenderSettings(i==0 ? "kroos" : "kroos-"+i,Settings.CardId==SilverWolfCombat.CardId?"源石虫":"克洛丝",null,
                     defenderPositions[i],c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,
                     c.BlockCount,damageType:c.DefenderDamageType,blockRadius:c.BlockRadius)));
         }
@@ -211,16 +216,18 @@ namespace YesterdayConvoy
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
         public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
-            (UnitCombat(unit).MudrockCapture ? Clock<unit.MudrockCaptureStartedAt+1.5 : UnitCombat(unit).FrostSeal ? !unit.IsReviving && Clock<unit.FrostSealStartedAt+UnitCombat(unit).SkillInterval :
+            (SilverWolfCombat.Transforming(unit,Clock) ? true : UnitCombat(unit).MudrockCapture ? Clock<unit.MudrockCaptureStartedAt+1.5 : UnitCombat(unit).FrostSeal ? !unit.IsReviving && Clock<unit.FrostSealStartedAt+UnitCombat(unit).SkillInterval :
             UnitCombat(unit).FireRain ? Clock<unit.FireRainStartedAt+UnitCombat(unit).SkillInterval :
             unit.LastAttackEmpowered && Clock<unit.LastAttackTime+UnitCombat(unit).SkillInterval);
 
         // Readiness stays visible during a full pause; authorization to cast is checked separately.
+        private bool WolfActionBusy(DeployedUnitState u)=>SilverWolfCombat.IsWolf(u) && IsSkillActionPlaying(u);
+
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
-                !unit.IsReviving && !TalulahTransitionLocked(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
+                !unit.IsReviving && !TalulahTransitionLocked(unit) && !WolfActionBusy(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
                 (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
         }
 
@@ -231,7 +238,7 @@ namespace YesterdayConvoy
             if(!UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active || unit.IsReviving) return SkillFailure.MissingEntity;
-            if(TalulahTransitionLocked(unit))return SkillFailure.AlreadyActive;
+            if(TalulahTransitionLocked(unit)||WolfActionBusy(unit))return SkillFailure.AlreadyActive;
             var c=UnitCombat(unit);
             if (unit.SkillAmmo > 0 || (c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit) || c.FrostSeal && Clock<unit.IceRingStartedAt+3) return SkillFailure.AlreadyActive;
             if(c.MudrockCapture && (Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration || ChooseGramophone(unit)==null))return SkillFailure.NoTarget;
@@ -249,6 +256,7 @@ namespace YesterdayConvoy
             var c=UnitCombat(unit);
             unit.SkillSP = 0; unit.SkillAmmo = c.SkillAmmo; unit.SkillsUsed++; SkillCasts++;
             unit.NextAttackTime = Clock;
+            if(SilverWolfCombat.IsWolf(unit)){unit.WolfTransformAt=Math.Max(Clock, unit.LastAttackTime+UnitActionDuration(unit)/unit.LastAttackRate);unit.IsMoving=false;unit.NextAttackTime=unit.WolfTransformAt+SilverWolfCombat.TransformDuration;}
             if(c.FrostSeal) StartFrostSeal(unit);
             if(c.MudrockCapture) StartMudrockCapture(unit);
             if(c.FireRain)
@@ -274,6 +282,8 @@ namespace YesterdayConvoy
             ResolveHealing();
             foreach(var shot in combatShots)
             {
+                if(shot.Resolved && shot.WolfBox==WolfBoxKind.Sword && !shot.WolfFinished && Clock>=shot.StartedAt+SilverWolfCombat.SwordFinish)
+                    FinishWolfSword(shot);
                 if(shot.Resolved || Clock+0.000001<shot.ImpactAt) continue;
                 shot.Resolved=true;
                 if(shot.Healing)
@@ -285,6 +295,7 @@ namespace YesterdayConvoy
                 }
                 var unit=FindUnit(shot.FromDefender ? shot.TargetId : shot.SourceId);
                 var defender=FindDefender(shot.FromDefender ? shot.SourceId : shot.TargetId);
+                if(shot.WolfBox!=WolfBoxKind.None){ResolveWolfBox(shot,unit);continue;}
                 if(ResolveViviSkillSplash(shot,unit))continue;
                 if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || defender==null || !defender.Alive) continue;
                 if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
@@ -292,17 +303,17 @@ namespace YesterdayConvoy
                 if(shot.FromDefender)
                 {
                     float preHitHealth=unit.Health;bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack*MarineIncoming(unit,defender.Settings.Range>1.2f)):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDefenderDamageUnit(unit,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
-                    if(damaged){OnMarineContact(unit);OnContractDamage(unit,preHitHealth);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
+                    if(damaged){if(unit.Health<preHitHealth)OnMarineContact(unit);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
                     if(killedByHit)OnLiberatorKill(defender);
                     if(damaged&&unit.Active&&shot.HinderDuration>0)unit.HinderedUntil=Math.Max(unit.HinderedUntil,Clock+shot.HinderDuration);
                     if(shot.SplashRadius>0)
                         foreach(var other in units)
                             if(other!=unit && CanDefenderTarget(other) && GroundDistance(other.Motion.Position,unit.Motion.Position)<=shot.SplashRadius)
                             {
-                                if(TryDamageUnit(other.EntityId,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
+                                if(TryDefenderDamageUnit(other,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
                             }
                 }
                 else
@@ -321,7 +332,7 @@ namespace YesterdayConvoy
                     if(defender.Alive) defender.ArmorReduction+=source.Effects.ArmorShred;
                     if(defender.Alive && shot.ColdDuration>0) TryApplyCold(defender.EntityId,shot.ColdDuration);
                     if(defender.Alive && shot.BurnDamage>0)ApplyBurn(defender,shot.BurnDamage);
-                    if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage);
+                    if(defender.Alive && shot.NeuralDamage>0)ApplyNeuralDamage(defender,shot.NeuralDamage,unit);
                     OnSynergyDirectHit(unit,defender);
                     }
                 }
@@ -348,12 +359,13 @@ namespace YesterdayConvoy
                 }
                 HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=(c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit);
-                if(c.HasSkill && unit.SkillAmmo==0 && !casting) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                if(c.HasSkill && unit.SkillAmmo==0 && !casting && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 unit.IsBlocked=false; unit.BlockerId=null;
                 if(StepUnitLure(unit,step)||StepUnitFear(unit,step))continue;
                 foreach(var d in defenders)
                     if(!d.HighGround && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(SilverWolfCombat.Transforming(unit,Clock)){unit.IsMoving=false;continue;}
                 if((c.FrostSeal||c.MudrockCapture) && casting){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.NervousCreeper&&Clock<unit.LastRetaliationAt+.3){unit.IsMoving=unit.HasCombatTarget=false;continue;}
@@ -399,6 +411,7 @@ namespace YesterdayConvoy
                 target=ordinary ? ChooseDefender(unit,range) : null; unit.HasCombatTarget=target!=null;
                 if(target!=null && !casting && Clock+0.000001>=unit.NextAttackTime)
                 {
+                    TryActivateReunionEntryShield(unit);
                     bool empowered=!c.FireRain && unit.SkillAmmo>0;
                     if(empowered) unit.SkillAmmo--;
                     else unit.OrdinaryAttacksFired++;
@@ -407,11 +420,13 @@ namespace YesterdayConvoy
                     unit.LastAttackTime=Clock; unit.LastAttackEmpowered=empowered;
                     unit.LastAttackRate=empowered ? 1 : UnitAttackRate(unit);
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : UnitAttackInterval(unit))/unit.LastAttackRate;
+                    if(empowered && SilverWolfCombat.IsWolf(unit)){StartWolfShot(unit,target,c);continue;}
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,
                         c.Effects.Patriot?(unit.PatriotPhase==PatriotPhase.March?0:PatriotTiming.DestructionFlight/unit.LastAttackRate):c.ProjectileTime,
                         (empowered ? c.SkillAttack : c.UnitAttack)*UnitAttackMultiplier(unit),coldDuration:coldDuration,
                         splashRadius:empowered&&ViviCombat.IsVivi(unit.CardId)?ViviCombat.SkillSplashRadius:0));
+                    if(SilverWolfCombat.IsWolf(unit)){var attack=combatShots[combatShots.Count-1];attack.WolfActionAt=Clock;attack.WolfActionRate=unit.LastAttackRate;}
                     if(c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.March&&!empowered)
                         for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+(PatriotTiming.MarchContact+hit*PatriotTiming.MarchSpacing)/unit.LastAttackRate,0,c.UnitAttack*UnitAttackMultiplier(unit)));
                     if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;

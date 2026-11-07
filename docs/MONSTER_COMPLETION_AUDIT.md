@@ -1,5 +1,7 @@
 # 怪物接入核对：42种可玩配置与真实缺口
 
+2026-11-07 增量：M41 银狼 LV.999 已加入正常五费招募和单怪测试，现有43种商店卡、8种五费。[角色说明](art/SILVER-WOLF-LV999.md)。以下42种为11月5日核对快照。
+
 核对日期：2026-11-05。对象为本地 `codex/synergy-test-integration` 整合候选，来源包括霍利屹的 [PR #74](https://github.com/Peanora/YesterdayConvoy/pull/74)（含 #69 蔓德拉、#71 梅菲斯特依赖）以及 [PR #75](https://github.com/Peanora/YesterdayConvoy/pull/75) 的塔露拉原普攻、死亡与橙色火浪。前者核对到 `155e6b5`，后者核对到 `d0ea863`；这不是声称这些PR已经在GitHub合入main。最终试玩来源以本轮构建记录及[QA](QA.md)为准。
 
 2026-11-06塔露拉补充：`d61e14d` 已接入三星首次倒下、B阶段与最终退场的领域状态，并绑定8段B/阶段身体和11组原特效。当前已保存自然承伤试验场景，三星阶段通过真实Unity/Player验证；细节与限制见本轮QA。下文旧整合版的测试数量不覆盖这些新增阶段，详情见[塔露拉绑定清单](art/TALULAH-NATIVE-VISUALS.md)。

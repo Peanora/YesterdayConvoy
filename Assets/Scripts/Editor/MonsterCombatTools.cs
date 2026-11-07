@@ -64,6 +64,11 @@ namespace YesterdayConvoy.Editor
         }
         private static void Prepare(string task)
         {
+            if(task=="M41")
+            {
+                ValidateTask(task);
+                return;
+            }
             string name,id;float speed,health,attack,armor,interval,windup,defenseHealth=140;int cost=1,recruitCost=0;
             float range=.75f,duration=1,resistance=0,shred=0,blast=0,blastRadius=0,blastDelay=0,cold=0;bool melee=true,canAttack=true;int damageType=0;
             switch(task)
@@ -144,7 +149,14 @@ namespace YesterdayConvoy.Editor
             if(level==null || !level.Card.HasFrameAnimation) throw new InvalidOperationException(task+" configuration/local art missing.");
             _=level.Snapshot();
             var settings=level.Engagement.Snapshot();
-            if(settings.HasSkill && !(task=="M14" && settings.FrostSeal && File.Exists(ArtSourcePaths.Resolve("MonsterCombatArt/M14/ExtraClips/manifest.json")))) throw new InvalidOperationException("Unexpected active skill.");
+            if(task=="M41")
+            {
+                if(level.Card.CardId!=SilverWolfCombat.CardId || level.Card.RecruitCost!=5 || !settings.HasSkill ||
+                    settings.SkillAmmo!=3 || !Mathf.Approximately(settings.SkillInterval,4.6f))
+                    throw new InvalidOperationException("Silver Wolf needs her five-cost card and three blind-box attacks.");
+            }
+            else if(settings.HasSkill && !(task=="M14" && settings.FrostSeal && File.Exists(ArtSourcePaths.Resolve("MonsterCombatArt/M14/ExtraClips/manifest.json"))))
+                throw new InvalidOperationException("Unexpected active skill.");
             UnitConfigurationTools.ValidateProject();Debug.Log("MONSTER_CONFIGURATION_PASS: "+task);
         }
         private static T Create<T>(string path) where T:ScriptableObject

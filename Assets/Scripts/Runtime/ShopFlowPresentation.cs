@@ -49,12 +49,12 @@ namespace YesterdayConvoy
                 Origin=origin,OldStar=snapshot.Pieces.FirstOrDefault(p=>p.Instance==result.Instance)?.Star??1};
             // This repeats the model's read-only grouping order only to locate consumed visual sources.
             // The incoming placeholder is never a real card ID and never reaches game state.
-            const int incoming=int.MinValue;
+            const int incoming=int.MaxValue;
             var planned=snapshot.Pieces.Select(p=>p.Copy()).ToList();
             planned.Add(new ShopTrialModel.Piece{Id=result.Id,Instance=incoming,Star=1});
-            for(int tier=1;tier<3;tier++)
+            for(int tier=1;tier<shop.MaxStar(result.Id);tier++)
             {
-                var group=planned.Where(p=>p.Id==result.Id&&p.Star==tier).Take(3).ToArray();
+                var group=planned.Where(p=>p.Id==result.Id&&p.Star==tier).OrderByDescending(p=>shop.IsLineupInstance(p.Instance)).ThenBy(p=>p.Instance).Take(3).ToArray();
                 if(group.Length!=3)continue;
                 var step=new ShopFlowStep{Star=tier+1,Anchor=snapshot.Bounds.TryGetValue(group[0].Instance,out var anchor)?anchor:new Rect(origin,Vector2.one)};
                 foreach(var material in group)
@@ -148,7 +148,7 @@ namespace YesterdayConvoy
                     if(!final&&local>.620f&&local<.890f)
                     {
                         DrawShopFlowPortrait(flow.Id,anchor+new Vector2(0,-22),53,Mathf.Min(1,(.890f-local)/.150f));
-                        GUI.Label(new Rect(anchor.x-32,anchor.y-59,64,19),"★★",ApprovedUi.Text(scene.InterfaceFont,13,TextAnchor.MiddleCenter,color,600));
+                        GUI.Label(new Rect(anchor.x-32,anchor.y-59,64,19),new string('★',step.Star),ApprovedUi.Text(scene.InterfaceFont,13,TextAnchor.MiddleCenter,color,600));
                     }
                 }
             }

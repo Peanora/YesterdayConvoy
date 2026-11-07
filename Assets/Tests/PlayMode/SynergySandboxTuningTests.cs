@@ -28,7 +28,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator MixedRosterBoostsSurviveRebuildWithoutChangingAuthoredOrNormalStats()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();
-            Assert.That(c.SetSandboxRoster(2));Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));
+            Assert.That(c.SetSandboxRoster(2));Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));
             var data=Resources.Load<ManualBattleDefinition>("MonsterTests/M20");
             var baseline=CampaignBalance.Build(data,1,100,6);float authored=data.Snapshot().Health;
             var ordinaryGuard=CampaignPlan.Guards(1,true)[0];

@@ -17,7 +17,7 @@ namespace YesterdayConvoy
             if(!StrongholdChallenge||brokenExits.Add(unit.ExitId))Defense=Math.Max(0,Defense-(unit.SynergySupport?0:unit.Profile?.Unit.GateDamage??Settings.GateDamage));
         }
         public float DefenderEffectiveInterval(DefenderState d)=>d.Settings.Interval/DefenderAttackRate(d);
-        bool UnitCanReachDefender(DeployedUnitState u,DefenderState d)=>(!StrongholdChallenge&&!synergyEnabled)||!d.HighGround||!UnitCombat(u).Melee||u.Golem&&GolemStage==4;
+        bool UnitCanReachDefender(DeployedUnitState u,DefenderState d)=>(!StrongholdChallenge&&!synergyEnabled)||!d.HighGround||!UnitCombat(u).Melee||u.Golem&&GolemStage>=4;
         readonly Dictionary<string,double> infectionUntil=new Dictionary<string,double>(),infectionTick=new Dictionary<string,double>();
         readonly Dictionary<string,double> portalUntil=new Dictionary<string,double>();
         readonly HashSet<string> portalPassed=new HashSet<string>();
@@ -70,7 +70,7 @@ namespace YesterdayConvoy
         }
         bool StepStrongholdPortal(DeployedUnitState u)
         {
-            if(!strongholdMap||portalPassed.Contains(u.EntityId))return false;
+            if(!strongholdMap||u.IsReviving||portalPassed.Contains(u.EntityId))return false;
             var lane=lanes.FirstOrDefault(l=>l.Id==u.RouteId);if(lane==null||lane.Points.Count<8)return false;
             int portal=StrongholdChallengeLayout.PortalSource(lane.Points);
             double source=0;for(int i=1;i<=portal;i++)source+=Vector3.Distance(lane.Points[i-1],lane.Points[i]);

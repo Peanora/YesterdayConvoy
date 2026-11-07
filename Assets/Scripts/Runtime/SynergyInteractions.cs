@@ -26,15 +26,21 @@ namespace YesterdayConvoy
         {
             var ids=SandboxRoster(preset);var cards=ids.Select(id=>shopDefinitions[id].Card);
             if(ids.Count(CampaignBalance.MudrockCrew)>=2)cards=cards.Concat(new[]{GolemCard});
-            QueueArt(Plan(preset==10?BattleShopStages.Defenders(2,true):shopMapCopy.defenders,cards,true),()=>SetSandboxRoster(preset),"准备羁绊样板");
+            QueueArt(Plan(preset>=10?BattleShopStages.Defenders(2,true):shopMapCopy.defenders,cards,true),()=>SetSandboxRoster(preset),"准备羁绊样板");
         }
         public bool SetSandboxRoster(int preset)
         {
-            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>10)return false;
-            var ids=SandboxRoster(preset);golemBenchmark=preset==10;
-            shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=preset==10&&CampaignBalance.MudrockCrew(id)?2:1}),Array.Empty<string>(),Math.Max(8,shop.Level),0,10);
-            if(preset==3||preset>=8){Loop.PresetGolemGrowth(preset==8?4:preset==9?12:preset==10?24:0,preset==8?20:preset==9?45:preset==10?80:0);golemTrainingTab=true;}
-            contractCard=ids[0];contractTargetIndex=0;shopLineup.Clear();shopLineup.AddRange(ids);commissionTarget=ids[0];shop.Refresh(true);ConfigureLoopStage();SetShopVisible(true);return true;
+            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>11)return false;
+            CompleteGolemExperienceFeedback();
+            var ids=SandboxRoster(preset);golemBenchmark=preset>=10;
+            shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=preset>=9&&(CampaignBalance.MudrockCrew(id)||preset==11&&id=="CARD_M08")?2:1}),Array.Empty<string>(),Math.Max(8,shop.Level),0,10);
+            ResetMudrockTransfers();
+            // Explicit validation presets may be applied while art is still completing.
+            // They set their own formation; normal interactive transfers remain locked during loading.
+            if(preset==11)mudrockTransfers.Add("CARD_M08");
+            if(preset==3||preset>=8){Loop.PresetGolemGrowth(preset==8?6:preset==9?16:preset==10?30:preset==11?48:0);ResetGolemExperienceFeedback();golemTrainingTab=true;}
+            contractCard=ids[0];contractTargetIndex=0;shopLineup.Clear();shopLineup.AddRange(ids);commissionTarget=ids[0];shop.Refresh(true);ConfigureLoopStage();SetShopVisible(true);
+            return true;
         }
         public bool UseCampaignOrder(bool half)
         {

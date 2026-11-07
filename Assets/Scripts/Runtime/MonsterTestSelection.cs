@@ -53,13 +53,13 @@ namespace YesterdayConvoy
                 "游击队战士","游击队狙击手","游击队传令兵","游击队盾卫","游击队萨卡兹战士","爱国者",
                 "宿主士兵","宿主拾荒者","宿主流浪者","萨卡兹宿主百夫长","梅菲斯特",
                 "泥岩小队掷能者","泥岩小队践行者","泥岩","深池方阵战士","深池逐火战士","深池焚毁者","蔓德拉",
-                "囊海爬行者","钵海收割者","壳海狂奔者","首言者","萨卡兹大剑手","萨卡兹术师","银狼"};
+                "囊海爬行者","钵海收割者","壳海狂奔者","首言者","萨卡兹大剑手","萨卡兹术师","银狼 LV.999"};
             var names=new HashSet<string>(StringComparer.Ordinal);
             foreach(var option in monsterTests) names.Add(option.Name);
             foreach(string name in candidates) if(names.Add(name)) monsterTests.Add(new MonsterTestOption(name));
         }
         private static bool HasSkillAnimation(CardDefinition card,EngagementSettings combat) =>
-            (card.SkillFrames?.Count??0)>0 || (combat.FrostSeal||combat.MudrockCapture) && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
+            (card.SkillFrames?.Count??0)>0 || card.CardId==SilverWolfCombat.CardId && LocalMonsterArt.For(card.CardId)?.HasClip("extra_transform")==true || (combat.FrostSeal||combat.MudrockCapture) && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
         private bool IsRegisteredTest(ManualBattleDefinition data)
         {
             if(defenderTrial!=null && data==defenderTrial.battle) return true;
@@ -75,6 +75,7 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
+            if(FindAnyObjectByType<BlackForestBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             if(FindAnyObjectByType<TalulahPhaseTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             if(FindAnyObjectByType<MudrockTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             CancelArtPreparation();
@@ -104,6 +105,7 @@ namespace YesterdayConvoy
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 含六星",buttonStyle))defenderMenuOpen=true;
             if(GUI.Button(new Rect(790,91,428,40),"三星塔露拉 · 完整双阶段",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(TalulahPhaseTrialBootstrap.SceneName);
+            if(GUI.Button(new Rect(790,42,428,40),"树海交错回廊 · 地形试走",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
             if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
@@ -123,6 +125,7 @@ namespace YesterdayConvoy
                 float frozenMultiplier=option.Definition.Engagement.Snapshot().Effects.FrozenAttackMultiplier;
                 if(frozenMultiplier>1) detail=$"冻结目标攻击×{frozenMultiplier:0.##}\n物理伤害 / 命中判定";
                 var effects=option.Definition.Engagement.Snapshot().Effects;
+                if(option.Id==SilverWolfCombat.CardId) detail="上勾拳 / 手动变身\n三次攻击各自抽取盲盒";
                 if(effects.FrostNova) detail="手动冰封 / 范围法伤与冻结\n自动冰环 / 首次倒下复起";
                 if(effects.RegenerationFraction>0) detail=$"自然回血 {effects.RegenerationFraction*100:0.##}% / 秒\n按各实体生命上限恢复";
                 if(effects.LifeSteal>0) detail=$"最多攻击{effects.AttackTargets}个目标\n按实际伤害{effects.LifeSteal*100:0}%恢复生命";
@@ -149,21 +152,31 @@ namespace YesterdayConvoy
             }
             GUI.EndScrollView();
             Fill(new Rect(774,242,452,384),new Color(.045f,.07f,.095f));
-            GUI.Label(new Rect(794,256,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
-            GUI.SetNextControlName("MonsterTestSearch");
-            pendingFilter=GUI.TextField(new Rect(794,301,410,32),pendingFilter,40,menuSearch);
-            if(string.IsNullOrEmpty(pendingFilter)) GUI.Label(new Rect(805,305,380,24),"输入名字筛选待制作怪物",menuSmall);
-            var pending=new List<MonsterTestOption>();
-            foreach(var option in monsterTests) if(!option.Playable && (string.IsNullOrEmpty(pendingFilter) || option.Name.IndexOf(pendingFilter,StringComparison.OrdinalIgnoreCase)>=0)) pending.Add(option);
-            pendingScroll=GUI.BeginScrollView(new Rect(790,346,426,252),pendingScroll,new Rect(0,0,400,pending.Count*34));
-            for(int i=0;i<pending.Count;i++)
+            var wolfOption=monsterTests.Find(o=>o.Id==SilverWolfCombat.CardId && o.Playable);
+            if(count==monsterTests.Count && wolfOption!=null)
             {
-                Fill(new Rect(0,i*34,396,30),i%2==0 ? new Color(.075f,.105f,.13f) : new Color(.055f,.08f,.105f));
-                GUI.Label(new Rect(12,i*34+3,282,26),pending[i].Name,menuSmall);
-                Color previous=GUI.color; GUI.color=new Color(.56f,.64f,.69f);
-                GUI.Label(new Rect(310,i*34+3,80,26),"待制作",menuSmall); GUI.color=previous;
+                GUI.Label(new Rect(794,256,410,34),"银狼 LV.999",menuHeading);
+                GUI.Label(new Rect(794,304,410,60),"部署后点银狼释放变身，三次强化攻击各抽一个盲盒。",menuBody);
+                if(GUI.Button(new Rect(794,382,410,44),"进入银狼测试",buttonStyle))PrepareMonsterEntry(wolfOption);
             }
-            GUI.EndScrollView();
+            else
+            {
+                GUI.Label(new Rect(794,256,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
+                GUI.SetNextControlName("MonsterTestSearch");
+                pendingFilter=GUI.TextField(new Rect(794,301,410,32),pendingFilter,40,menuSearch);
+                if(string.IsNullOrEmpty(pendingFilter)) GUI.Label(new Rect(805,305,380,24),"输入名字筛选待制作怪物",menuSmall);
+                var pending=new List<MonsterTestOption>();
+                foreach(var option in monsterTests) if(!option.Playable && (string.IsNullOrEmpty(pendingFilter) || option.Name.IndexOf(pendingFilter,StringComparison.OrdinalIgnoreCase)>=0)) pending.Add(option);
+                pendingScroll=GUI.BeginScrollView(new Rect(790,346,426,252),pendingScroll,new Rect(0,0,400,pending.Count*34));
+                for(int i=0;i<pending.Count;i++)
+                {
+                    Fill(new Rect(0,i*34,396,30),i%2==0 ? new Color(.075f,.105f,.13f) : new Color(.055f,.08f,.105f));
+                    GUI.Label(new Rect(12,i*34+3,282,26),pending[i].Name,menuSmall);
+                    Color previous=GUI.color; GUI.color=new Color(.56f,.64f,.69f);
+                    GUI.Label(new Rect(310,i*34+3,80,26),"待制作",menuSmall); GUI.color=previous;
+                }
+                GUI.EndScrollView();
+            }
             if(GUI.Button(new Rect(790,538,426,26),"三阶段挑战 · 13关",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
@@ -182,7 +195,7 @@ namespace YesterdayConvoy
         {
             Time.timeScale=0; ReturnToMonsterTests();
             int playable=0;foreach(var option in MonsterTests) if(option.Playable) playable++;
-            bool initial=TestSelectionOpen && MonsterTests.Count==41 && playable==40;
+            bool initial=TestSelectionOpen && MonsterTests.Count==43 && playable==43;
             yield return InteractionFrame(directory,"monster-selection");
             // Show the formerly poster-backed cards beside a later transparent portrait.
             int portraitIndex=monsterTests.FindIndex(option=>option.Id=="CARD_M09");
@@ -194,7 +207,9 @@ namespace YesterdayConvoy
             }
             double clock=Battle.Clock; SelectCard(true); TryDeployAt(Battle.Entry); Tick(3);
             bool blocked=Battle.Units.Count==0 && Battle.Clock==clock && !Dragging;
-            bool pending=!TryEnterMonsterTest("pending/银狼") && TestSelectionOpen;
+            bool wolf=TryEnterMonsterTest(SilverWolfCombat.CardId) && Battle.Settings.CardId==SilverWolfCombat.CardId;
+            ReturnToMonsterTests();
+            bool invalid=!TryEnterMonsterTest("unknown") && TestSelectionOpen;
             bool wisadel=TryEnterMonsterTest(wisadelDefinition.Card.CardId) && !TestSelectionOpen;
             SelectCard(true); bool deployed=TryDeployAt(Battle.Entry).Success;
             Tick(4.05f); OpenSkillMenu(Battle.Units[0].EntityId); ReturnToMonsterTests(); yield return null;
@@ -206,8 +221,8 @@ namespace YesterdayConvoy
             bool fireCleared=FindAnyObjectByType<FireRainView>().VisibleStreams==0 && Battle.SkillCasts==0;
             TryEnterMonsterTest(wisadelDefinition.Card.CardId); bool fresh=Battle.Units.Count==0 && Battle.Defenders.Count==1 && Battle.Defender.Alive && Battle.SkillCasts==0;
             yield return InteractionFrame(directory,"selection-wisadel");
-            Debug.Log($"MONSTER_SELECTION_CHECK: initial={initial}; blocked={blocked}; pending={pending}; wisadel={wisadel}; deployed={deployed}; cleared={cleared}; talulah={talulah}; fireCleared={fireCleared}; fresh={fresh}.");
-            Time.timeScale=1; Application.Quit(initial && blocked && pending && wisadel && deployed && cleared && talulah && fireCleared && fresh ? 0 : 1);
+            Debug.Log($"MONSTER_SELECTION_CHECK: initial={initial}; blocked={blocked}; wolf={wolf}; invalid={invalid}; wisadel={wisadel}; deployed={deployed}; cleared={cleared}; talulah={talulah}; fireCleared={fireCleared}; fresh={fresh}.");
+            Time.timeScale=1; Application.Quit(initial && blocked && wolf && invalid && wisadel && deployed && cleared && talulah && fireCleared && fresh ? 0 : 1);
         }
     }
 }

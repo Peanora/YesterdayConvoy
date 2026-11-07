@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MudrockTrial.unity
     guid: ad7a782bbc0b01241b0978151c5859b9
   - enabled: 1
+    path: Assets/Scenes/BlackForestCrossing.unity
+    guid: 9a0466a7b255a4e4998071966d8133b0
+  - enabled: 1
     path: Assets/Scenes/SynergyTrials/DeepPoolTrial.unity
     guid: b1a260aaf40de8c4398cf2ab657a41ad
   - enabled: 1

@@ -5,11 +5,11 @@ namespace YesterdayConvoy
 {
     public sealed partial class ManualBattleController
     {
-        static string AdaptationName(MarineAdaptation value)=>value==MarineAdaptation.Barrier?"屏障":value==MarineAdaptation.Hunt?"猎食":"渗透";
         public bool SetRemainingChoices(string contract,MarineAdaptation form,MarineAdaptation second)
         {
-            if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready||!shopLineup.Contains(contract)||!Enum.IsDefined(typeof(MarineAdaptation),form)||!Enum.IsDefined(typeof(MarineAdaptation),second))return false;
-            contractCard=contract;marineForm=form;marineSecond=form==second?(MarineAdaptation)(((int)form+1)%3):second;contractTargetIndex=0;SyncShopDeck(false);return true;
+            if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready||!Enum.IsDefined(typeof(MarineAdaptation),form)||!Enum.IsDefined(typeof(MarineAdaptation),second))return false;
+            if(!TryAssignSarkazContract(contract))return false;
+            marineForm=form;marineSecond=form==second?(MarineAdaptation)(((int)form+1)%3):second;return true;
         }
         void DrawRemainingPreparation()
         {
@@ -22,36 +22,29 @@ namespace YesterdayConvoy
             try
             {
                 if(golemTrainingTab){DrawGolemTraining();return;}
-                string selected=shopLineup.Contains(contractCard)?contractCard:shopLineup.FirstOrDefault();
-                if(selected==null)return;
-                if(LoopButton(new Rect(694,313,550,31),"承契卡："+shop.Definition(selected).Name+" · 点击切换"))
-                    SetRemainingChoices(shopLineup[(shopLineup.IndexOf(selected)+1)%shopLineup.Count],marineForm,marineSecond);
-                if(LoopButton(new Rect(694,352,268,31),"海嗣主适应："+AdaptationName(marineForm)))SetRemainingChoices(selected,(MarineAdaptation)(((int)marineForm+1)%3),marineSecond);
-                if(LoopButton(new Rect(976,352,268,31),"第二适应："+AdaptationName(marineSecond)))SetRemainingChoices(selected,marineForm,(MarineAdaptation)(((int)marineSecond+1)%3));
-                GUI.Label(new Rect(694,390,550,25),$"海嗣培养 XP{Loop.MarineExperience} · 阶段{Battle.MarineStage}（0 / 3 / 7）",CampaignText(13));
+                string selected=PreparedContractCard;
+                string core=selected!=null?shop.Definition(selected).Name:"无萨卡兹成员";
+                GUI.Label(new Rect(694,313,550,31),"承契者："+core+" · 拖动左侧徽章至萨卡兹编队卡更换",CampaignText(12,weight:600));
+                if(Battle.SarkazTier>0||activeSynergyTrial?.trialId=="sarkaz")
+                {DrawSarkazPreparation();return;}
+                GUI.Label(new Rect(694,352,550,27),"海嗣 · 溟痕蔓延 · 每场重新展开",CampaignText(15,color:MarineInk,weight:600));
                 var hint=CampaignText(12,TextAnchor.UpperLeft);hint.wordWrap=true;
-                GUI.Label(new Rect(694,421,550,66),"4海嗣且培养进入II阶段后，副适应取I阶段效果。集齐深池四名成员可解锁火种引爆。转化体沿用原角色动作，不复制主动或固有能力。",hint);
+                GUI.Label(new Rect(694,386,550,49),"每种海嗣首次有效接敌在脚下落种。2/4档每6/4秒扩散，覆盖至多8/16格；驻留溟痕的海嗣原生神经损伤×1.5/2。",hint);
+                GUI.Label(new Rect(694,439,550,46),"地面守军踩溟痕每秒积累3点神经损伤。战斗中可点左侧「查看溟痕范围」观察覆盖；无存活海嗣时休眠。",hint);
             }
             finally {GUI.enabled=oldEnabled;}
         }
-        DeployedUnitState[] ContractTargets()=>Battle.Units.Where(u=>u.Active&&!u.IsReviving&&!u.SynergySupport&&u.CardId==Battle.ContractCard).ToArray();
-        public bool UseContract()
-        {
-            var targets=ContractTargets();if(targets.Length==0)return false;
-            return Battle.TryActivateContract(Battle.RunId,++requestSequence,targets[contractTargetIndex%targets.Length].EntityId);
-        }
+        public bool UseContract()=>Battle.TryActivateContract(Battle.RunId,++requestSequence);
         float DrawRemainingBattleActions(float x,float y)
         {
-            var targets=ContractTargets();bool oldEnabled=GUI.enabled;
+            bool oldEnabled=GUI.enabled;
             bool enabled=oldEnabled&&Loop.CanDeploy&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused;
             if(Battle.SarkazTier>0)
             {
-                GUI.enabled=enabled&&targets.Length>0;
-                string name=targets.Length==0?"未部署":$"承契 {contractTargetIndex%targets.Length+1}/{targets.Length}";
-                if(LoopButton(new Rect(x,y,76,25),name))contractTargetIndex++;
-                GUI.enabled=GUI.enabled&&Battle.ContractPoints>=4;
-                if(LoopButton(new Rect(x+81,y,76,25),$"爆发 {Battle.ContractPoints}/4"))UseContract();
-                y+=29;
+                Fill(new Rect(x,y,157,25),ApprovedUi.Paper);
+                GUI.Label(new Rect(x+6,y,145,25),Battle.SarkazTier>=9?"众魂归乡 · 常驻共鸣":"众魂之契 · 部署生效",CampaignText(12,weight:600));
+                y+=27;
+                GUI.Label(new Rect(x+3,y,154,18),"永久强化 · 一次入场护盾",CampaignText(10,color:ApprovedUi.Muted));y+=20;
             }
             if(Battle.DeepTier>0)
             {
@@ -66,7 +59,7 @@ namespace YesterdayConvoy
             }
             if(Battle.MarineTier>0)
             {
-                Fill(new Rect(x,y,157,19),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,19),$"海嗣 {AdaptationName(Battle.Adaptation)} {Battle.MarineStage} · {Loop.MarineExperience}XP",CampaignText(10));y+=21;
+                y=DrawMarineBattleActions(x,y);
             }
             return y;
         }

@@ -5,7 +5,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         Texture2D shopAura;
-        static Color ShopRankColor(int star,float alpha=1)=>star==3?new Color(1,.78f,.28f,alpha):new Color(.81f,.87f,.96f,alpha);
+        static Color ShopRankColor(int star,float alpha=1)=>star>=3?new Color(1,.78f,.28f,alpha):new Color(.81f,.87f,.96f,alpha);
         void EnsureShopAura()
         {
             if(shopAura!=null)return;

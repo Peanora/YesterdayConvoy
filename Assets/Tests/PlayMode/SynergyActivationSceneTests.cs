@@ -223,7 +223,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest] public IEnumerator RealSimultaneousCrossingsPlayByGradeThenBuiltinOrderWithSilentPausedGaps()
         {
             yield return Load();
-            string[] reunion = SynergyTrialCatalog.Find("reunion").Members.ToArray();
+            string[] reunion = SynergyTrialCatalog.Find("reunion").Members.Take(6).ToArray();
             const string newcomer = "CARD_M16", unrelated = "CARD_M33";
             yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster", (object)reunion.Concat(new[] { unrelated }).ToArray());
             Click(newcomer);

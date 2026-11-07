@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     {
         public IEnumerator VerifyAdvancedSynergies()
         {
-            bool pool=shop.Roles.Count==42&&shop.Roles.Count(r=>r.Cost==5)==7;
+            bool pool=shop.Roles.Count==43&&shop.Roles.Count(r=>r.Cost==5)==8;
             SetSandboxRoster(1);StartLoopNextBattle();Battle.Begin();Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_ORIGINIUM_SLUG");
             bool split=Battle.InfectionTier==6&&Battle.Units.Count==3&&Battle.DP==98;
             Battle.SetPaused(true);Tick(1);bool paused=Battle.Clock==0;Battle.SetPaused(false);ReplaySandbox();

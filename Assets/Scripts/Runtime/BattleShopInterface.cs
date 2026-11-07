@@ -21,8 +21,7 @@ namespace YesterdayConvoy
             if(shop==null||bench<0||bench>=shop.Bench.Count)return Rect.zero;
             if(Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop)return ShopPreparationPieceRect(bench);
             var piece=shop.Bench[bench];int index=shopLineup.IndexOf(piece.Id);
-            var best=shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First();
-            return index<0||piece.Instance!=best.Instance?Rect.zero:LoopRosterRect(index);
+            return index<0||!IsLineupPiece(piece)?Rect.zero:LoopRosterRect(index);
         }
         GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
             =>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
@@ -40,7 +39,7 @@ namespace YesterdayConvoy
         void DrawLoopHeader()
         {
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
-            string mode=Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
+            string mode=Loop==null?(TacticalMapId==BlackForestLayout.Id?"地形试走 · 暂无守军":"商店试验"):CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
             GUI.Label(new Rect(28,11,165,24),shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));
@@ -90,12 +89,20 @@ namespace YesterdayConvoy
                 foreach(var unit in Battle.Units)
                 {
                     if(!unit.Active||Battle.StrongholdInTransit(unit.EntityId))continue;
+                    var spirit=Battle.HerdSpiritFor(unit.EntityId);
+                    if(spirit!=null&&Battle.Clock<spirit.StartedAt+HerdSpiritState.FallDuration)continue;
                     Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(unit.Motion.Position+Camera.main.transform.up*UnitVisualHeight(unit)));
                     if(!CurrentShopBattlefieldRect.Contains(p))continue;
                     Fill(new Rect(p.x-26,p.y,52,5),LoopInk);Fill(new Rect(p.x-25,p.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
                     if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
-                    if(Battle.IsHerdHost(unit.EntityId))GUI.Label(new Rect(p.x-40,p.y+7,80,20),$"转化 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,Color.white));
-                    if(Battle.SarkazTier>0&&unit.CardId==Battle.ContractCard&&!unit.SynergySupport)GUI.Label(new Rect(p.x-40,p.y-24,80,20),"承契 "+(Array.IndexOf(ContractTargets(),unit)+1),LoopText(11,TextAnchor.MiddleCenter,Color.white));
+                    float soulShield=Battle.ContractShieldRemaining(unit);
+                    if(soulShield>0)Fill(new Rect(p.x-25,p.y-6,50*Mathf.Clamp01(soulShield/unit.MaxHealth),2),new Color(.81f,.65f,1));
+                    if(spirit!=null)GUI.Label(new Rect(p.x-40,p.y+7,80,20),unit.IsReviving?$"凝聚 {Math.Max(0,spirit.ReadyAt-Battle.Clock):0.0}s":$"灵体 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,new Color(.55f,.88f,1)));
+                    if(Battle.SarkazTier>0&&Battle.IsContractBeneficiary(unit))
+                    {
+                        string contract=unit.CardId==Battle.ContractCard?"承契者":Battle.ContractAttackBonus(unit)>0?"众魂共鸣":null;
+                        if(contract!=null)GUI.Label(new Rect(p.x-48,p.y-24,96,20),contract,LoopText(11,TextAnchor.MiddleCenter,Color.white));
+                    }
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
                 }
                 DrawLoopHeader();
@@ -112,6 +119,7 @@ namespace YesterdayConvoy
                 }
                 if(campaignModal&&suppressed)e.type=originalEvent;
                 DrawCampaignControls(point);
+                DrawSarkazContractBadges();
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)
                 {if(suppressed)e.type=originalEvent;DrawLoopSettlement();}
@@ -137,7 +145,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(r.x,r.yMax-27,r.width,27),Color.Lerp(ApprovedUi.Tier(card.RecruitCost),Color.black,.34f));
                 GUI.Label(new Rect(r.x+5,r.yMax-27,r.width-10,17),card.DisplayName,LoopText(card.DisplayName.Length>6?10:11,TextAnchor.MiddleLeft,Color.white,600));
                 GUI.Label(new Rect(r.x+5,r.yMax-12,r.width-10,12),state.RemainingUses+"次",LoopText(9,TextAnchor.MiddleLeft,new Color(.88f,.93f,.96f)));
-                int star=shop.Bench.Where(p=>p.Id==id).Select(p=>p.Star).DefaultIfEmpty(1).Max();
+                int star=ShopLineupPiece(id)?.Star??1;
                 GUI.Label(new Rect(r.x+37,r.y+4,r.width-41,21),new string('★',star),LoopText(12,TextAnchor.MiddleRight,new Color(1,.94f,.73f),600));
                 double cd=Battle.CardCooldown(id);
                 if(cd>0||state.RemainingUses==0||Battle.DP<state.Settings.DeploymentCost)
@@ -181,12 +189,11 @@ namespace YesterdayConvoy
             var reward=Loop.Reward;bool failed=Loop.Phase==BattleShopPhase.Failed;
             Color accent=failed?new Color(.65f,.31f,.25f):new Color(.28f,.47f,.61f);
             Fill(new Rect(176,152,5,416),accent);
-            GUI.Label(new Rect(206,173,340,29),"第"+Loop.Stage+"关结束"+(loopWasTestSettled?" · 测试结算":""),LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
+            GUI.Label(new Rect(206,173,340,29),(SynergySandbox?"第"+Loop.SandboxRound+"轮验证结束":"第"+Loop.Stage+"关结束")+(loopWasTestSettled?" · 测试结算":""),LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":SynergySandbox?"作战胜利":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
             GUI.Label(new Rect(206,306,330,32),shopMapCopy.mapTitle,LoopText(18,TextAnchor.MiddleLeft,null,600));
-            GUI.Label(new Rect(206,350,330,45),failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
-            if(CampaignActive&&Loop.LastMarineGrowth>0)GUI.Label(new Rect(206,437,330,28),$"海嗣培养 +{Loop.LastMarineGrowth} · 累计 {Loop.MarineExperience}",LoopText(12));
-            if(CampaignActive&&Loop.LastGolemGrowth>0)GUI.Label(new Rect(206,405,330,28),$"巨像培养 +{Loop.LastGolemGrowth} · 累计 {Loop.GolemExperience}",LoopText(12));
+            GUI.Label(new Rect(206,350,330,45),SynergySandbox?"保留阵容和培养，返回整备继续下一轮":failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
+            DrawGolemSettlementFeedback();
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,174,496,28),"本场收入",LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             for(int i=0;i<3;i++)

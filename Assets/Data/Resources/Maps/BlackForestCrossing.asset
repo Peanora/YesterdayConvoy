@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: BlackForestCrossing
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: fe9dd4ad299fdbc4b8bdf5dcdf1e34db, type: 2}
+  route:
+  - {x: -8, y: 0, z: 4.5}
+  - {x: -4, y: 0, z: 4.5}
+  - {x: -4, y: 0, z: 0.5}
+  - {x: 0, y: 0, z: 0.5}
+  - {x: 0, y: 0, z: 4.5}
+  - {x: 4, y: 0, z: 4.5}
+  - {x: 4, y: 0, z: -3.5}
+  - {x: 6, y: 0, z: -3.5}
+  - {x: 6, y: 0, z: 2.5}
+  - {x: 8, y: 0, z: 2.5}
+  defenders: []
+  surfaces:
+  - {fileID: 2100000, guid: b81cc2ca7cc507549bc8ad00199496e4, type: 2}
+  - {fileID: 2100000, guid: 79186d1163d097e4aa7d324d09455510, type: 2}
+  - {fileID: 2100000, guid: 55931db253bb29c40843ab49594280b1, type: 2}
+  - {fileID: 2100000, guid: 8c3dc49e6b5ceed40b250923d28baedc, type: 2}
+  - {fileID: 2100000, guid: 1b84fd84fbc1d384ba04695922b3e194, type: 2}
+  - {fileID: 2100000, guid: a05105b2890f0204981997fbde225599, type: 2}
+  - {fileID: 2100000, guid: 9e5d371602ac25d4e8a81b1e087b25f9, type: 2}
+  - {fileID: 2100000, guid: 1f01be149620aac44be0986837ff4d84, type: 2}
+  - {fileID: 2100000, guid: 645c0ac897da9cf4bbd298effcbe53dd, type: 2}
+  - {fileID: 2100000, guid: 40f9b1293e44a70408e8d0dfc39401d9, type: 2}
+  - {fileID: 2100000, guid: 5c7ee6d4ec38e1f4b888150004608709, type: 2}
+  - {fileID: 2100000, guid: 971749b858271114b965d904cdaf449f, type: 2}
+  - {fileID: 2100000, guid: a8a80f443df34c34a95ac8ffce8a58f0, type: 2}
+  mapId: BLACKFOREST_CROSSING
+  mapTitle: "\u6811\u6D77 \xB7 \u4EA4\u9519\u56DE\u5ECA"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: -8, y: 0, z: 4.5}
+    - {x: -4, y: 0, z: 4.5}
+    - {x: -4, y: 0, z: 0.5}
+    - {x: 0, y: 0, z: 0.5}
+    - {x: 0, y: 0, z: 4.5}
+    - {x: 4, y: 0, z: 4.5}
+    - {x: 4, y: 0, z: -3.5}
+    - {x: 6, y: 0, z: -3.5}
+    - {x: 6, y: 0, z: 2.5}
+    - {x: 8, y: 0, z: 2.5}
+  - id: R2
+    exitId: B2
+    points:
+    - {x: -8, y: 0, z: -3.5}
+    - {x: -6, y: 0, z: -3.5}
+    - {x: -6, y: 0, z: 0.5}
+    - {x: -4, y: 0, z: 0.5}
+    - {x: -4, y: 0, z: -5.5}
+    - {x: 0, y: 0, z: -5.5}
+    - {x: 0, y: 0, z: -1.5}
+    - {x: 2, y: 0, z: -1.5}
+    - {x: 2, y: 0, z: 2.5}
+    - {x: 6, y: 0, z: 2.5}
+    - {x: 6, y: 0, z: -3.5}
+    - {x: 8, y: 0, z: -3.5}
+  - id: R3
+    exitId: B1
+    points:
+    - {x: -2, y: 0, z: 6.5}
+    - {x: -2, y: 0, z: 2.5}
+    - {x: -6, y: 0, z: 2.5}
+    - {x: -6, y: 0, z: -1.5}
+    - {x: 0, y: 0, z: -1.5}
+    - {x: 0, y: 0, z: -5.5}
+    - {x: 4, y: 0, z: -5.5}
+    - {x: 4, y: 0, z: 0.5}
+    - {x: 2, y: 0, z: 0.5}
+    - {x: 2, y: 0, z: 2.5}
+    - {x: 8, y: 0, z: 2.5}
+  raised:
+  - {x: 6, y: 3}
+  - {x: 8, y: 3}
+  - {x: 14, y: 3}
+  - {x: 15, y: 3}
+  - {x: 16, y: 3}
+  - {x: 2, y: 4}
+  - {x: 3, y: 4}
+  - {x: 4, y: 4}
+  - {x: 6, y: 4}
+  - {x: 8, y: 4}
+  - {x: 10, y: 4}
+  - {x: 11, y: 4}
+  - {x: 12, y: 4}
+  - {x: 14, y: 4}
+  - {x: 15, y: 4}
+  - {x: 16, y: 4}
+  - {x: 2, y: 5}
+  - {x: 8, y: 5}
+  - {x: 10, y: 5}
+  - {x: 2, y: 6}
+  - {x: 4, y: 6}
+  - {x: 6, y: 6}
+  - {x: 7, y: 6}
+  - {x: 8, y: 6}
+  - {x: 10, y: 6}
+  - {x: 12, y: 6}
+  - {x: 14, y: 6}
+  - {x: 16, y: 6}
+  - {x: 2, y: 7}
+  - {x: 10, y: 7}
+  - {x: 14, y: 7}
+  - {x: 16, y: 7}
+  - {x: 2, y: 8}
+  - {x: 4, y: 8}
+  - {x: 7, y: 8}
+  - {x: 9, y: 8}
+  - {x: 16, y: 8}
+  - {x: 2, y: 9}
+  - {x: 12, y: 9}
+  - {x: 14, y: 9}
+  - {x: 16, y: 9}
+  - {x: 2, y: 10}
+  - {x: 7, y: 10}
+  - {x: 11, y: 10}
+  - {x: 14, y: 10}
+  - {x: 16, y: 10}
+  - {x: 4, y: 11}
+  - {x: 6, y: 11}
+  - {x: 7, y: 11}
+  - {x: 8, y: 11}
+  - {x: 10, y: 11}
+  - {x: 11, y: 11}
+  - {x: 12, y: 11}
+  - {x: 2, y: 12}
+  - {x: 3, y: 12}
+  - {x: 4, y: 12}
+  - {x: 7, y: 12}
+  - {x: 8, y: 12}
+  - {x: 11, y: 12}
+  - {x: 12, y: 12}
+  - {x: 14, y: 12}
+  - {x: 15, y: 12}
+  - {x: 16, y: 12}
+  - {x: 2, y: 13}
+  - {x: 3, y: 13}
+  - {x: 4, y: 13}
+  - {x: 14, y: 13}
+  - {x: 15, y: 13}
+  - {x: 16, y: 13}
+  floorTexture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
+  foliageTexture: {fileID: 2800000, guid: cb7097b3454279841bb76e4c90c70afe, type: 3}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 1
