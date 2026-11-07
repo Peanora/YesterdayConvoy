@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-07：档位变化即时中断与已出现条目去重
+
+- 用户报告4泥岩/4萨卡兹演出期间加入第五位泥岩应立即改播5泥岩；进一步明确“已经出现过就算已播”，被打断但同档不变的4萨卡兹不补播，未开始的才保留。沿原codex/synergy-icons-tier-ui与PR #96继续，fetch确认main b1d55e7为祖先，原52处VFX meta及两个本地项隔离保留。
+- 根因是旧Feedback仅将新档追加，且未区分已开始与尚未开始。现在任何真实Tier变化都立即重建最新候选、清旧Age/gap、分配新Sequence；原音通过已有Sequence同步立即停止。候选取原活动/待播及变化条目，按最新视觉档位/内置顺序排序，使用最新Members。首次有效正向Advance记录该名/档已开始；Age0或paused不记录，同档刷新保持Age/Sequence。未完成入场标记随重建保留，不提前给空卡位播放。Clear(false)不复活被主动清掉的旧队列，真实退档/归零后再达仍可重播。
+- 实际配置M26/M27/M42/M43前四为4泥岩+4萨卡兹，M28加入后为5泥岩金、萨卡兹人数5但Tier仍4银。去重按真实Tier，不按人数或仅按颜色。没有改标签、门槛、库存、伤害、场景、Prefab、包、工程设置或V4绘制/音源。
+- Unity6000.6.5f1完整EditMode **527/527**（`artifacts/synergy-interrupt-edit.xml`），反馈14/14，覆盖萨卡兹未开始/已开始未完/已完三时点、Age0阻塞、旧gap立即取消、快速6→4→2→0→2、同档刷新、入场标记、Clear(false)及浮点边界。D3D11 PlayMode **26/26**（`artifacts/synergy-interrupt-play.xml`），反馈交互7/7及原界面/感染/商店/侧栏19项，0失败/跳过；合法泥岩阵容覆盖三分支、旧音立即停/新音一次、5→4立即新反馈。仓库检查6630个跟踪文件及差异空白检查通过。
+- 运行源码 **064fb9e4c6daa2e77b2a1c19d0172e86a206d46b**；`SynergyActivationTools.BuildWindows`真实Windows x64 Development构建 **1050818044字节、0错误**（`artifacts/synergy-interrupt-build.log`）。完整同步至通常入口`Builds/Windows/YesterdayConvoy.exe`及SOURCE.txt；1937个构建文件无缺失/长度差，EXE、YesterdayConvoy.Runtime.dll、resources.assets/resS、globalgamemanagers及源码标记哈希一致（`artifacts/synergy-interrupt-build-copy-check.json`）。
+- 独立Player **15/15**，1280×720，正常退出。入口`-synergyActivationInterruptSmokeTest`，结果`artifacts/synergy-interrupt-player-1280/result.json`明确mode=`mudrock-interruption-two-scenarios`，只跑本次两个独立合法五张库存夹具，不冒称旧54项流程或自然挑战。两次真实OS点击M28入队：先在4泥岩Age.5时升级，后在4萨卡兹Age.5时升级；两者都立即换新Sequence/Age0、停止旧AudioSource，再独立起一次5泥岩原音。第一种保留未开始4萨卡兹、第二种不补播已开始4萨卡兹，最终队列/声音清理且库存/金币不变。
+- 捕获并实看九张完整OnGUI图，含中断前、重算Age0旧框消失、5泥岩峰值、未开始4萨卡兹保留、已开始4萨卡兹被替换及清理；路径`artifacts/synergy-interrupt-player-1280/interrupt-01...09*.png`。画面为独立Player输出，非Camera-only或项目外合成；测试夹具及手动呈现推进不冒称实时自然长局通关。
+- 原52处Mandragora/Mephisto meta与本轮开工哈希逐字节保持，.vscode/及PackageManagerSettings本地项未提交。未重跑全量PlayMode、旧54项Player全流程、1920尺寸、第二台电脑、自然长局、专项帧时或主观听感；V4绘制及音源未变，前次双尺寸结果只作旧版本证据。无ZIP/Releases、不自动合并main。
+
 ## 2026-11-07：V4旋转亮框、阶色优先与逐条播放
 
 - 人类确认项目外V4并明确排序后接入。延续codex/synergy-icons-tier-ui及既有PR #96，fetch确认main为b1d55e7且是本分支祖先，没有另建工程或切换工作目录。修改限定Feedback/Presentation/UI/Evidence、两组现有测试及表现文档/STATUS/QA。
