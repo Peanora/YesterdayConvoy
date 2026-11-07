@@ -29,9 +29,10 @@ namespace YesterdayConvoy
         public MarineAdaptation Adaptation {get;private set;}
         public MarineAdaptation SecondAdaptation {get;private set;}
         public IReadOnlyList<DeepSeed> DeepSeeds=>deepSeeds.AsReadOnly();
-        sealed class FireBurn {internal double Until;internal float Power;}
+        sealed class FireBurn {internal double Until,LastTick;internal float Power;}
         sealed class Penetration {internal double Until;internal float Armor;}
         readonly List<DeepSeed> deepSeeds=new List<DeepSeed>();
+        readonly HashSet<string> deepDeaths=new HashSet<string>();
         readonly HashSet<string> herdDeaths=new HashSet<string>();
         readonly Queue<DeployedUnitState> herdQueue=new Queue<DeployedUnitState>();
         readonly Dictionary<string,double> herdLifetimes=new Dictionary<string,double>(),contractWindows=new Dictionary<string,double>();
@@ -56,7 +57,7 @@ namespace YesterdayConvoy
         }
         void ResetRemainingSynergies()
         {
-            deepSeeds.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();contractWindows.Clear();deepBurns.Clear();marinePenetration.Clear();
+            deepSeeds.Clear();deepDeaths.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();contractWindows.Clear();deepBurns.Clear();marinePenetration.Clear();
             marineBarrierHits.Clear();contractKinds.Clear();contractRequests.Clear();deepRequests.Clear();contractedEntities.Clear();marineContacts.Clear();marineProtected.Clear();marineFirstHits.Clear();
             HerdUsed=DeepDetonations=ContractPoints=ContractUses=0;marineMealUsed=false;
         }
@@ -95,33 +96,48 @@ namespace YesterdayConvoy
             }
             foreach(var pair in deepBurns.ToArray())
             {
-                var d=FindDefender(pair.Key);if(d==null||!d.Alive||Clock>pair.Value.Until){deepBurns.Remove(pair.Key);continue;}
-                DamageDefender(d,pair.Value.Power,CombatDamageType.Arts,true,damageScale:step);
+                var d=FindDefender(pair.Key);var burn=pair.Value;
+                if(d==null||!d.Alive){deepBurns.Remove(pair.Key);continue;}
+                float elapsed=(float)Math.Max(0,Math.Min(Clock,burn.Until)-burn.LastTick);
+                burn.LastTick=Clock;
+                if(elapsed>0)
+                {
+                    DamageDefender(d,burn.Power,CombatDamageType.Arts,true,damageScale:elapsed);
+                    // Only this trait's DOT may pass the torch; detonations and other derived damage cannot.
+                    if(!d.Alive)OnDeepKill(d,true);
+                }
+                if(!d.Alive||Clock>=burn.Until)deepBurns.Remove(pair.Key);
             }
         }
+        public double DeepBurnRemaining(string defenderId)=>defenderId!=null&&deepBurns.TryGetValue(defenderId,out var burn)?Math.Max(0,burn.Until-Clock):0;
+        public float DeepBurnPower(string defenderId)=>DeepBurnRemaining(defenderId)>0?deepBurns[defenderId].Power:0;
+        bool HasPendingDeepBurn=>deepBurns.Any(p=>p.Value.Until>Clock&&FindDefender(p.Key)?.Alive==true);
         bool DeepBurning(DefenderState d)=>d.BurnUntil>Clock||deepBurns.TryGetValue(d.EntityId,out var burn)&&burn.Until>Clock;
         float DeepScale=>1+.25f*((float)synergyStars.Where(p=>Tag(p.Key,"深池")).Select(p=>p.Value).DefaultIfEmpty(1).Average()-1);
+        bool IsDeepHit(DeployedUnitState source)=>synergyEnabled&&DeepTier>0&&source!=null&&!source.SynergySupport&&Tag(source.CardId,"深池");
+        void ApplyDeepBurn(DefenderState d)
+        {
+            if(!d.Alive)return;
+            float power=(DeepTier==4?25:15)*DeepScale;
+            if(!deepBurns.TryGetValue(d.EntityId,out var burn))deepBurns[d.EntityId]=burn=new FireBurn{LastTick=Clock};
+            burn.Power=Mathf.Max(burn.Power,power);burn.Until=Clock+4;
+        }
         void OnDeepKill(DefenderState d,bool burning)
         {
-            if(!synergyEnabled||DeepTier==0||!burning||deepSeeds.Count>=(DeepTier==4?6:4))return;
+            if(!synergyEnabled||DeepTier==0||!burning||deepSeeds.Count>=(DeepTier==4?6:4)||!deepDeaths.Add(d.EntityId))return;
             deepSeeds.Add(new DeepSeed{Position=d.Position,At=Clock});
-            foreach(var other in defenders.Where(o=>o.Alive&&GroundDistance(o.Position,d.Position)<=(DeepTier==4?1.6f:1.2f)).OrderBy(o=>GroundDistance(o.Position,d.Position)).Take(DeepTier==4?3:2))
-            {
-                float power=(DeepTier==4?25:15)*DeepScale;
-                if(!deepBurns.TryGetValue(other.EntityId,out var burn))deepBurns[other.EntityId]=burn=new FireBurn();
-                burn.Power=Mathf.Max(burn.Power,power);burn.Until=Clock+3;
-            }
+            foreach(var other in defenders.Where(o=>o.Alive&&GroundDistance(o.Position,d.Position)<=(DeepTier==4?2.2f:1.8f)).OrderBy(o=>GroundDistance(o.Position,d.Position)).Take(DeepTier==4?3:2))ApplyDeepBurn(other);
         }
         public bool TryDetonateDeep(int runId,long request)
         {
             if(runId!=RunId||Phase!=BattlePhase.Running||IsPaused||DeepTier<4)return false;
             if(deepRequests.Contains(request))return true;
-            var seeds=deepSeeds.Where(s=>!s.Spent).Take(2).ToArray();
-            if(seeds.Length<2||DeepDetonations>=2)return false;
-            var targets=defenders.Where(d=>d.Alive&&seeds.Any(s=>GroundDistance(s.Position,d.Position)<=1.8f)).OrderBy(d=>seeds.Min(s=>GroundDistance(s.Position,d.Position))).Take(4).ToArray();
-            if(targets.Length==0)return false;
-            deepRequests.Add(request);foreach(var s in seeds)s.Spent=true;DeepDetonations++;
-            foreach(var d in targets)DamageDefender(d,120*DeepScale,CombatDamageType.Arts,true);return true;
+            if(DeepDetonations>=2)return false;
+            var seed=deepSeeds.FirstOrDefault(s=>!s.Spent&&defenders.Any(d=>d.Alive&&GroundDistance(s.Position,d.Position)<=1.8f));
+            if(seed==null)return false;
+            var targets=defenders.Where(d=>d.Alive&&GroundDistance(seed.Position,d.Position)<=1.8f).OrderBy(d=>GroundDistance(seed.Position,d.Position)).Take(4).ToArray();
+            deepRequests.Add(request);seed.Spent=true;DeepDetonations++;
+            foreach(var d in targets)DamageDefender(d,180*DeepScale,CombatDamageType.Arts,true);return true;
         }
         void OnContractDamage(DeployedUnitState u,float healthBefore)
         {

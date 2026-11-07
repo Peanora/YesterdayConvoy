@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07 Asia/Shanghai",
+  "asset_set": "synergy-badges-v3",
+  "scope": "User-approved V3 nine-badge integration; source PNGs copied unchanged. Tier colors are runtime presentation and are not baked into these source PNGs.",
+  "user_confirmation": "User approved the V3 preview and integration of all nine badges. This records project-use approval only and is not rights-holder authorization.",
+  "groups": {
+    "preserved_v2_originals": [
+      "reunion",
+      "mudrock",
+      "deep-pool"
+    ],
+    "six_new_svg_designs": [
+      "snow",
+      "infection",
+      "guerrilla",
+      "herd",
+      "marine",
+      "sarkaz"
+    ]
+  },
+  "rights": {
+    "original_game": "Original Arknights emblems, item/contract images and reference imagery remain the intellectual property of their respective Arknights rights holders, including Shanghai Hypergryph Network Technology Co., Ltd. and associated entities.",
+    "open_redistribution_license": "not established",
+    "public_source_access_is_license": false,
+    "user_approval_is_rightsholder_authorization": false,
+    "redraw_status": "The six hand-authored adaptations are project designs, not official Arknights emblems. Redrawing does not establish permission for underlying referenced material.",
+    "not_cc0": true
+  },
+  "texture_import": {
+    "texture_type": "Default Texture2D, 2D shape",
+    "resources_load_type": "Texture2D",
+    "mipmaps": false,
+    "read_write": false,
+    "wrap": "Clamp",
+    "filter": "Bilinear",
+    "sRGB": true,
+    "alpha_from_input": true,
+    "alpha_is_transparency": true,
+    "max_texture_size": 256,
+    "default_platform_format": "RGBA32",
+    "standalone_override_format": "RGBA32",
+    "texture_compression": "Uncompressed",
+    "crunch": false
+  },
+  "validation": {
+    "png_byte_identity": "9/9 source copies compared byte-for-byte and by SHA-256",
+    "rgba_transparent_256": "9/9 verified with Pillow",
+    "new_guids": "Generated UUID4 values checked against all existing Assets .meta GUIDs before writing",
+    "unity_import": "not run by asset writer; to be verified in integration by root",
+    "resource_load": "not run by asset writer; to be verified in integration by root",
+    "player_build": "not run by asset writer; to be verified in integration by root"
+  },
+  "assets": [
+    {
+      "id": "reunion",
+      "name": "整合运动",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/reunion.png",
+      "resource_key": "UI/Synergies/reunion",
+      "guid": "ae7edafb014e4acda2ba23722c19871f",
+      "preview_source": "synergy-icons-v3/png/256/reunion.png",
+      "preview_sha256": "237538be913c7a51f41c916020d4398cdc40d464d89acb44d16126a7bb0e397a",
+      "imported_source_sha256": "237538be913c7a51f41c916020d4398cdc40d464d89acb44d16126a7bb0e397a",
+      "bytes": 23578,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "preserved_v2_original_game_material",
+      "preserved_from_v2": true,
+      "original_reference": {
+        "page_url": "https://arknights.wiki.gg/wiki/File:Reunion.png",
+        "image_url": "https://arknights.wiki.gg/images/Reunion.png?630dba",
+        "identity": "Original Reunion Movement emblem; normalized in V2 without redraw or recoloring.",
+        "original_download_sha256": "545aafe68fc0bf73bb7157eb0e96162a40d1f076f2556fc1bf59e50cf628f7c7"
+      }
+    },
+    {
+      "id": "snow",
+      "name": "雪怪小队",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/snow.png",
+      "resource_key": "UI/Synergies/snow",
+      "guid": "4e3f0537c6b64ea38c5b6c38f7e0960f",
+      "preview_source": "synergy-icons-v3/png/256/snow.png",
+      "preview_sha256": "b0b3285a288434f0cd970d648f1c6d16b32fafefbc7bdb06e6ede011d0268145",
+      "imported_source_sha256": "b0b3285a288434f0cd970d648f1c6d16b32fafefbc7bdb06e6ede011d0268145",
+      "bytes": 8189,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/snow.svg",
+      "source_svg_sha256": "bec4fab148d8ec61ac6106779dccc3cd231b798e9581af4b2a3a0b99eb3d3afb",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E6%B3%B0%E6%8B%89%E5%A4%A7%E5%85%B8:%E7%BB%84%E7%BB%87/%E6%95%B4%E5%90%88%E8%BF%90%E5%8A%A8",
+        "identity": "New six-faceted ice-blade motif for FrostNova and the Yeti Squadron; no independently verified official squad emblem is claimed."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    },
+    {
+      "id": "infection",
+      "name": "感染生物",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/infection.png",
+      "resource_key": "UI/Synergies/infection",
+      "guid": "c4ee93da2fb04b8a85def304f7b746e1",
+      "preview_source": "synergy-icons-v3/png/256/infection.png",
+      "preview_sha256": "0acfec519d894151762176295d3eabb9c0e706a694ffd2ca2bd0e07e9956a0d8",
+      "imported_source_sha256": "0acfec519d894151762176295d3eabb9c0e706a694ffd2ca2bd0e07e9956a0d8",
+      "bytes": 6905,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/infection.svg",
+      "source_svg_sha256": "d0b3e6ecae9eb65e22a4682082bdc0cf4cb2c88bf72b5a5439fe12db4f7965ef",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B2",
+        "identity": "New Originium crystal/corrupted-shell motif for infected creatures; not an official category emblem."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    },
+    {
+      "id": "guerrilla",
+      "name": "游击队",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/guerrilla.png",
+      "resource_key": "UI/Synergies/guerrilla",
+      "guid": "9a74d2aae59c41d88166c80169646cdb",
+      "preview_source": "synergy-icons-v3/png/256/guerrilla.png",
+      "preview_sha256": "2b19d3cdc3a1d5e3f21dcc60c34946f359f97de6120688cb215ea43a964b0599",
+      "imported_source_sha256": "2b19d3cdc3a1d5e3f21dcc60c34946f359f97de6120688cb215ea43a964b0599",
+      "bytes": 11930,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/guerrilla.svg",
+      "source_svg_sha256": "30ca73134a4907b44a9b1ac43914b14754dde84c7c974754484c6871e9a484f4",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E6%B8%B8%E5%87%BB%E9%98%9F%E5%91%98%E5%BE%BD%E7%AB%A0",
+        "image_url": "https://torappu.prts.wiki/assets/item_icon/act9d4_point_token.png",
+        "reference_sha256": "1c175f90e574da9c3d035fb9f18fb3c00ad85b452a5e35de898520489667fa99",
+        "identity": "Hand-drawn monochrome adaptation of the ring and crossing folded blades on the original Guerrilla Squad Member Badge item. It is not a direct original PNG export or a claim of a formal faction logo."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    },
+    {
+      "id": "mudrock",
+      "name": "泥岩小队",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/mudrock.png",
+      "resource_key": "UI/Synergies/mudrock",
+      "guid": "93888d3694204e30a136dffe55b63a45",
+      "preview_source": "synergy-icons-v3/png/256/mudrock.png",
+      "preview_sha256": "a67db6b5f4b134c45ca320ff09f9d6690b79bfe0b857d5a4fae9e09b7d2b5d52",
+      "imported_source_sha256": "a67db6b5f4b134c45ca320ff09f9d6690b79bfe0b857d5a4fae9e09b7d2b5d52",
+      "bytes": 48564,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "preserved_v2_original_game_material",
+      "preserved_from_v2": true,
+      "original_reference": {
+        "page_url": "https://m.prts.wiki/w/%E5%8D%B1%E6%9C%BA%E5%90%88%E7%BA%A6/%E5%8E%86%E5%8F%B2%E5%90%88%E7%BA%A6",
+        "image_url": "https://media.prts.wiki/8/81/Enemy_mdgint_1.png",
+        "identity": "Original Contingency Contract icon targeting Mudrock Colossi; borrowed to represent the golem-growing synergy, not asserted to be the official Mudrock Squad emblem.",
+        "original_download_sha256": "d12dfdd54c0fcc7c7910c51e9a12012c552ebba0faf9ede5f09b4f47e204e911"
+      }
+    },
+    {
+      "id": "herd",
+      "name": "牧群",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/herd.png",
+      "resource_key": "UI/Synergies/herd",
+      "guid": "a57c2b39019e475488997dfe0cfb3079",
+      "preview_source": "synergy-icons-v3/png/256/herd.png",
+      "preview_sha256": "c61c583873095df1ce12c8f6699228f45052c19848f92a5882c40151a23496da",
+      "imported_source_sha256": "c61c583873095df1ce12c8f6699228f45052c19848f92a5882c40151a23496da",
+      "bytes": 8256,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/herd.svg",
+      "source_svg_sha256": "4e88e6e157d1433643fb7537ce2f0fc32ac0d21dc3602a6523a8c38f5b6c1a33",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E5%AE%BF%E4%B8%BB%E5%A3%AB%E5%85%B5",
+        "identity": "New host-control and three-host branching motif for Mephisto's herd; not an independently verified original herd emblem."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    },
+    {
+      "id": "deep-pool",
+      "name": "深池",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/deep-pool.png",
+      "resource_key": "UI/Synergies/deep-pool",
+      "guid": "f927825125a64719a9101b04480a3a00",
+      "preview_source": "synergy-icons-v3/png/256/deep-pool.png",
+      "preview_sha256": "33f03e4c039645aea876eca979a17ad597808a95ff4448582c17c7204f563a3b",
+      "imported_source_sha256": "33f03e4c039645aea876eca979a17ad597808a95ff4448582c17c7204f563a3b",
+      "bytes": 11486,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "preserved_v2_original_game_material",
+      "preserved_from_v2": true,
+      "original_reference": {
+        "page_url": "https://prts.wiki/w/%E6%96%87%E4%BB%B6:Logo_%E6%B7%B1%E6%B1%A0.png",
+        "image_url": "https://raw.githubusercontent.com/MooncellWiki/prts-design/master/preview/assets/camp/dublinn.png",
+        "identity": "Original Dublinn faction emblem from the extracted game ui_camp_logo set; normalized in V2 without redraw or recoloring.",
+        "original_download_sha256": "057a8c102966d23dc3eb83ddaf9b1bc8695211e65dd13b899c7831581cae06aa"
+      }
+    },
+    {
+      "id": "marine",
+      "name": "海嗣",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/marine.png",
+      "resource_key": "UI/Synergies/marine",
+      "guid": "dc11e27cf1ae4131ad6bda6788faadce",
+      "preview_source": "synergy-icons-v3/png/256/marine.png",
+      "preview_sha256": "022c261b74bdb439e8d6a5e1eaed098dba5db68ff4ae056226f4c54b954e32d2",
+      "imported_source_sha256": "022c261b74bdb439e8d6a5e1eaed098dba5db68ff4ae056226f4c54b954e32d2",
+      "bytes": 9104,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/marine.svg",
+      "source_svg_sha256": "8f0ea42a986ac0161241f5c89e1ca9799753fc55fe1c92b6db4ad84e011b65e1",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E6%B8%B8%E6%88%8F%E5%86%85%E5%AE%B9%E5%89%8D%E7%9E%BB#%E5%8A%BF%E5%8A%9B",
+        "evidence_image_url": "https://media.prts.wiki/9/90/2%E5%91%A8%E5%B9%B4pv%E9%98%B5%E8%90%A5.png",
+        "identity": "New marine bone-crown/tail-spine design referencing the Seaborn visual motif. A clean standalone original emblem was not acquired; this is neither a direct PV extraction nor the Abyssal Hunters/Church of the Deep insignia."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    },
+    {
+      "id": "sarkaz",
+      "name": "萨卡兹",
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/sarkaz.png",
+      "resource_key": "UI/Synergies/sarkaz",
+      "guid": "6ed912529cfb4806852f2d37807cd476",
+      "preview_source": "synergy-icons-v3/png/256/sarkaz.png",
+      "preview_sha256": "130ffca13b6dec4e1395ce2fdfe2585eb3d95ea7715d793f47fe1b38d109f69e",
+      "imported_source_sha256": "130ffca13b6dec4e1395ce2fdfe2585eb3d95ea7715d793f47fe1b38d109f69e",
+      "bytes": 8527,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "processing_for_integration": "Byte-for-byte copy of the user-approved V3 256px source; no redraw, tint, recoloring, crop or recompression applied to the PNG.",
+      "authorship": "manual_svg_design_or_adaptation",
+      "preserved_from_v2": false,
+      "source_svg": "synergy-icons-v3/svg/sarkaz.svg",
+      "source_svg_sha256": "613740268d1d1b88b52854ae320c41c9c95a0d99dff86471d64554f59c4614fc",
+      "reference": {
+        "page_url": "https://prts.wiki/w/%E7%8E%8B%E5%BA%AD%E7%9B%9F%E7%BA%A6",
+        "identity": "New paired-horn and blood-contract motif. No universal Sarkaz species emblem was confirmed; Kazdel, the Military Commission and Babel insignia are not substituted."
+      },
+      "render_method": "Hand-authored SVG rasterized with resvg for approved V3 preview; no image-generation model used."
+    }
+  ]
+}

@@ -20,8 +20,8 @@ namespace YesterdayConvoy
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
         static Rect CampaignConstructRect=>new Rect(252,155,722,352);
         bool CampaignUiModalOpen=>CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
-        public Rect CampaignConstructToggleRect=>new Rect(16,SynergyListRect.yMax+6,157,28);
-        Rect CampaignQuickActionsRect=>new Rect(16,CampaignConstructToggleRect.yMax+7,157,222);
+        public Rect CampaignConstructToggleRect=>new Rect(12,SynergyListRect.yMax+6,174,28);
+        Rect CampaignQuickActionsRect=>new Rect(12,CampaignConstructToggleRect.yMax+7,174,222);
         bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
             !Loop.CanShop&&Loop.CanDeploy&&(CampaignQuickActionsRect.Contains(point)||Battle.MudrockTier>=2&&GolemCardRect.Contains(point)));
         GUIStyle CampaignText(int size=13,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
@@ -125,7 +125,11 @@ namespace YesterdayConvoy
                 {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
             }
             DrawGuerrillaTransferBadges();DrawSynergySidebar();
-            if(LoopButton(CampaignConstructToggleRect,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开"))
+            var toggle=CampaignConstructToggleRect;
+            Fill(toggle,new Color(.125f,.195f,.28f));ApprovedUi.Border(toggle,new Color(.52f,.60f,.69f,.38f));
+            bool toggleClicked=GUI.Button(toggle,GUIContent.none,GUIStyle.none);
+            GUI.Label(toggle,campaignConstructOpen?"收起构筑与培养":"构筑与培养  展开",CampaignText(12,TextAnchor.MiddleCenter,new Color(.90f,.94f,.97f),600));
+            if(toggleClicked)
             {campaignConstructOpen=!campaignConstructOpen;inspectedSynergy=null;CancelShopDrag();}
             bool enabled=GUI.enabled;GUI.enabled=enabled&&!CampaignUiModalOpen;
             if(!Loop.CanShop&&Loop.CanDeploy)DrawCampaignQuickActions();
@@ -175,9 +179,12 @@ namespace YesterdayConvoy
             if(Battle.GuerrillaTier>0)
             {
                 var rule=GuerrillaRules.ForTier(Battle.GuerrillaTier);
-                Fill(new Rect(x,y,157,20),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,20),"军令 "+Battle.Orders+" · 整令不限次",CampaignText(11));y+=22;
-                GUI.enabled=enabled&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused;
-                if(LoopButton(new Rect(x,y,rule.AllowsHalf?76:157,25),rule.AllowsHalf?"整令 "+rule.Cost+"点":"协同整令 · "+rule.Cost+"点"))UseCampaignOrder(false);
+                Fill(new Rect(x,y,157,20),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,18),$"军令 {Battle.Orders} · 满{rule.Cost}自动",CampaignText(11));
+                Fill(new Rect(x+7,y+18,143*Mathf.Clamp01((float)Battle.Orders/rule.Cost),2),ApprovedUi.Gold);y+=22;
+                string status=Battle.HalfOrderPending?"等待后半":Battle.GuerrillaOrderBusy?"五段追击中":Battle.Orders>=rule.Cost?"等待出手者":"积攒军令";
+                Fill(new Rect(x,y,rule.AllowsHalf?76:157,25),ApprovedUi.Paper);
+                GUI.Label(new Rect(x+5,y,rule.AllowsHalf?71:147,25),status,CampaignText(10));
+                GUI.enabled=enabled&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused&&!Battle.GuerrillaOrderBusy&&Battle.Orders>=3;
                 if(rule.AllowsHalf&&LoopButton(new Rect(x+81,y,76,25),Battle.HalfOrderPending?"后半3点":"前半3点"))UseCampaignOrder(true);
                 y+=29;GUI.enabled=enabled;
             }
@@ -191,7 +198,7 @@ namespace YesterdayConvoy
             float y=CampaignPanelRect.y;
             GUI.Label(new Rect(25,y+5,388,26),$"整合{Battle.ReunionTier} 雪怪{Battle.SnowTier} 感染{Battle.InfectionTier} 游击{Battle.GuerrillaTier} 泥岩{Battle.MudrockTier}",CampaignText(12,weight:600));
             var rule=GuerrillaRules.ForTier(Battle.GuerrillaTier);
-            GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 整令{rule.Cost}点 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),CampaignText(11));
+            GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 满{rule.Cost}点自动整令 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}级 XP{Loop.GolemExperience} 投{Loop.GolemInvestment}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
                 GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV原数值基准 · 无限金币 · 九张库存 · DP100":"测试倍率：怪物血×4 伤×2 · 守军血×12 伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));

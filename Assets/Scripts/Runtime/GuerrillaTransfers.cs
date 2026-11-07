@@ -79,7 +79,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(268,238,690,23),"准备阶段免费指定最多两种非原生游击角色；开战锁定",CampaignText(13,weight:600));
             var summary=CurrentSynergies.FirstOrDefault(s=>s.Name=="游击队");
             var rule=GuerrillaRules.ForTier(summary?.Tier??0);
-            string preview=summary==null||summary.Tier==0?"游击未达2种":$"游击{summary.Count}种 / {summary.Tier}档 · 整令{rule.Cost}点 · 开战军令{rule.InitialOrders}";
+            string preview=summary==null||summary.Tier==0?"游击未达2种":$"游击{summary.Count}种 / {summary.Tier}档 · 满{rule.Cost}点自动整令 · 开战军令{rule.InitialOrders}";
             GUI.Label(new Rect(268,263,690,20),$"已指定 {selected}/2 · 当前入编 {prepared}/2    "+preview,CampaignText(11,color:ApprovedUi.Muted));
             var list=GuerrillaTransferListRect;Fill(list,new Color(.84f,.89f,.92f,.75f));
             guerrillaTransferScroll=GUI.BeginScrollView(list,guerrillaTransferScroll,

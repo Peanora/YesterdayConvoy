@@ -55,9 +55,13 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator RealGuerrillaUnitsEarnAndSpendOrdersWithoutChangingRosterTiers()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();Assert.That(c.SetSandboxRoster(2));Assert.That(c.StartLoopNextBattle());c.Battle.Begin();
+            var members=c.Battle.GuerrillaMemberIds.ToArray();
             long request=100;foreach(var p in c.Shop.Bench)c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,p.Id);
-            bool used=false;for(int i=0;i<400&&c.Loop.CanDeploy;i++){c.Tick(.1f);if(c.Battle.Orders>=6&&c.UseCampaignOrder(false)){used=true;break;}if(i%10==0)yield return null;}
-            Assert.That(used);Assert.That(c.Battle.OrderStrikes,Is.GreaterThan(0));Assert.That(c.Battle.GuerrillaTier,Is.EqualTo(6));Assert.That(c.Battle.OrdersUsed,Is.EqualTo(1));
+            for(int i=0;i<2000&&c.Loop.CanDeploy&&c.Battle.LatestGuerrillaOrder==null;i++){c.Tick(.02f);if(i%10==0)yield return null;}
+            Assert.That(c.Battle.LatestGuerrillaOrder,Is.Not.Null,"Actual ordinary combat must automatically earn and spend the full order.");
+            Assert.That(c.Battle.OrderStrikes,Is.GreaterThan(0));Assert.That(c.Battle.GuerrillaTier,Is.EqualTo(6));Assert.That(c.Battle.OrdersUsed,Is.EqualTo(1));
+            CollectionAssert.AreEqual(members,c.Battle.GuerrillaMemberIds);
+            Assert.That(c.GetComponent<GuerrillaOrderView>().PlayCount,Is.EqualTo(1),"The automatic transaction must be observed by the actual controller presentation.");
             c.Battle.SetPaused(true);int points=c.Battle.Orders;Assert.That(c.UseCampaignOrder(true),Is.False);Assert.That(c.Battle.Orders,Is.EqualTo(points));c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator GolemDragsDuringPauseAndPlaysOriginalFullAttack()

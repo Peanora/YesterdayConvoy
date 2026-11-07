@@ -1,0 +1,554 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07 Asia/Shanghai",
+  "asset_set": "synergy-sidebar-frames",
+  "scope": "Native sidebar resources: four lower-grade backplates, approved V2 mint/ice-blue/lavender regular highest-tier backplate and one blank count dot. The original pink highest-tier PNG/SVG are preserved as an unreferenced, non-Resources project reserve for possible future five-cost-exclusive synergies; no such gameplay is implemented.",
+  "user_confirmation": "User explicitly approved the mint/ice-blue/lavender V2 highest-tier preview in this round, requested native integration, and requested preservation of the previous pink palette for future five-cost-exclusive synergies. This is design/project integration approval, not original-game rightsholder permission.",
+  "authorship": {
+    "kind": "project-authored deterministic code-native geometry export",
+    "original_game_png": false,
+    "ai_generated": false,
+    "nine_existing_glyphs_changed": false,
+    "method": "Deterministic code-native SVG/resvg export, without AI raster generation. Four lower-grade gradients, all badge geometry and shadow remain from the approved native draft; the regular highest-tier color gradient/rim is superseded by the explicitly approved V2. The original pink export is preserved byte-for-byte in the unreferenced reserve."
+  },
+  "approved_draft": {
+    "source": "synergy-sidebar-draft-v1/draw_draft.cjs",
+    "sha256": "35562f27e0cab336d5dbcf6d614929954f8f20796e1de2b1e53aa44ebd8d2c35",
+    "preview_status_at_export": "User-approved for native integration",
+    "removed_elements": [
+      "white V3 glyph image",
+      "count text"
+    ],
+    "scope": "Initial geometry and lower-grade source; original highest-tier gradient superseded for regular synergies by highest_tier_revision and preserved as a reserve.",
+    "original_export_retained_elements": [
+      "five original linearGradient definitions copied verbatim",
+      "badgeShadow filter copied verbatim",
+      "r22 sharp-corner diamond geometry",
+      "top facet opacity and top rim stroke",
+      "black r8.4 count circle and thin border"
+    ],
+    "retained_elements": [
+      "four original lower-grade linearGradient definitions",
+      "badgeShadow filter",
+      "r22 sharp-corner diamond geometry",
+      "top facet opacity and top rim stroke",
+      "black r8.4 count circle and thin border"
+    ]
+  },
+  "reproduction": {
+    "author_sources": "docs/art/source-records/synergy-sidebar-frames/*.svg",
+    "renderer": "@resvg/resvg-js 2.6.2",
+    "render_call": "new Resvg(svgText).render().asPng()",
+    "intrinsic_svg_output": [
+      256,
+      256
+    ],
+    "source_png_transfer": "Each approved project-external PNG was copied byte-for-byte; PNGs were not rerendered, recolored or recompressed during project import."
+  },
+  "native_usage": {
+    "plate_destination": "Draw at 52x52 logical units centered on the badge center, retaining the original 44-unit diamond. Do not squeeze the complete padded texture into a 44-unit rectangle.",
+    "white_glyph": "Draw approved V3 PNG unchanged, centered on the badge, at r*1.27 = 27.94 logical units. Inactive glyph opacity remains 0.48 as specified by the draft.",
+    "count_dot": "Draw count-dot at 24.8x24.8 logical units, centered at badge center +(15.84,15.84). Paint actual count separately in the approved 12.5-size semibold style.",
+    "layer_order": "Backplate, white glyph, black count dot, actual count text.",
+    "shadow": "Original badgeShadow dx0/dy1.5/stdDeviation1.3/#020711/opacity0.5 reused. Separate circle export carries the same original shadow filter. At integration, compare the separated-layer overlap with the approved combined-group rendering."
+  },
+  "logical_metrics": {
+    "plate": {
+      "canvas": [
+        52,
+        52
+      ],
+      "diamond": [
+        44,
+        44
+      ],
+      "radius": 22,
+      "canvas_center": [
+        26,
+        26
+      ],
+      "draw_origin_relative_to_badge_center": [
+        -26,
+        -26
+      ],
+      "shadow_margin": 4
+    },
+    "count_dot": {
+      "canvas": [
+        24.8,
+        24.8
+      ],
+      "circle_diameter": 16.8,
+      "canvas_center": [
+        12.4,
+        12.4
+      ],
+      "draw_origin_relative_to_dot_center": [
+        -12.4,
+        -12.4
+      ],
+      "dot_center_relative_to_badge_center": [
+        15.84,
+        15.84
+      ],
+      "shadow_margin": 4
+    },
+    "shadow": {
+      "dx": 0,
+      "dy": 1.5,
+      "std_deviation": 1.3,
+      "flood_color": "#020711",
+      "opacity": 0.5
+    },
+    "shadow_edge_note": "Four logical units of padding preserve the visible shadow; faint Gaussian tails meet the bottom image edge with alpha no more than 4/255 (plates at most 3/255). No source glyph or text exists in these six exported assets."
+  },
+  "texture_import": {
+    "type": "Default Texture2D",
+    "shape": "2D",
+    "max_size": 256,
+    "default_format": "RGBA32",
+    "standalone_override": "RGBA32",
+    "compression": "Uncompressed",
+    "mipmaps": false,
+    "read_write": false,
+    "wrap": "Clamp",
+    "filter": "Bilinear",
+    "sRGB": true,
+    "alpha_from_input": true,
+    "alpha_is_transparency": true
+  },
+  "rights": {
+    "plate_geometry": "Project-authored deterministic export of the approved native SVG draft; no original-game PNG imagery is embedded.",
+    "separate_identity_glyphs": "Unchanged V3 badge glyphs retain docs/art/source-records/synergy-badges-v3.json and their original Arknights rights records.",
+    "user_review_is_rightsholder_permission": false,
+    "original_reference_open_redistribution_license": "not established by the design approval",
+    "ai_generation_used": false,
+    "palette_reference": "The supplied highest-tier screenshot is a palette reference. The V2 PNG is project-authored SVG geometry, not an extracted original-game PNG. User preview approval does not establish permission for underlying original-game references."
+  },
+  "verification": {
+    "rgba_256_transparency": "6/6 passed",
+    "source_has_no_embedded_glyph_or_text": "6/6 passed",
+    "existing_nine_pngs_and_metas": "18/18 unchanged across this asset-writer operation",
+    "new_guid_count": 7,
+    "new_guid_generation": "UUID4, checked against existing Assets .meta GUIDs",
+    "unity_import": "V2: Unity 6000.6.5f1 targeted EditMode 5/5 and D3D11 PlayMode 3/3 passed; see docs/QA.md. Earlier V1 full-suite results remain historical.",
+    "resource_loading": "All six frames load and upload to GPU with transparent corners and visible bodies; root Unity verification passed",
+    "build": "V2 source 7cdb33d6092a36d376ac7b6576e81ba01acd7f33: local Windows x64 build passed, 1050474618 bytes, 0 errors; see docs/QA.md.",
+    "native_player": "V2 visible D3D11 1920x1080 and 1280x720 each passed 51/51 and exited normally. Actual upper-plate mean G-R/B-R: .2913/.2202 (72 samples) and .2944/.2227 (30 samples); four hue families and visible white glyphs. Real OS clicks and scrolling passed, and both screenshots were inspected.",
+    "git_ignore": "All 20 new files checked with git check-ignore --no-index; none ignored.",
+    "new_guid_collisions": 0,
+    "highest_tier_revision": {
+      "active_v2_png_svg_byte_identity": "2/2 passed",
+      "reserved_old_pink_png_svg_byte_identity": "2/2 passed",
+      "preserved_active_meta_guid": "Original meta bytes and GUID unchanged",
+      "other_existing_synergy_assets": "All existing PNG/meta bytes unchanged except the explicitly replaced active prismatic PNG",
+      "rgba_256_transparent": "2/2 current and reserved PNGs passed",
+      "new_guid_count": 2,
+      "new_guid_collision_check": "checked against all current Assets meta GUIDs",
+      "reserved_runtime_hookup": "None; outside Resources, no UI code or gameplay was changed by the asset writer",
+      "unity_import": "Root verified targeted EditMode 5/5 and D3D11 PlayMode 3/3 with the imported V2 frame",
+      "player_build": "Root Windows build and visible 1920x1080 / 1280x720 Player verification passed; source 7cdb33d, 51/51 checks per resolution",
+      "ignored_files": 0
+    },
+    "initial_external_png_byte_identity": "6/6 passed",
+    "initial_author_svg_byte_identity": "6/6 passed"
+  },
+  "assets": [
+    {
+      "id": "plate-inactive",
+      "svg": "plate-inactive.svg",
+      "png": "plate-inactive.png",
+      "svg_sha256": "df36d41c76e58b055eeedc382d600037cfb9ce0d4ca4f12705314370abb54355",
+      "png_sha256": "0339e17c0dea3b0c359370fe78e3d5372953033cc7b5b3c163d4b795c50b37e6",
+      "approved_draft_grade": "inactive",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#566477",
+      "border_opacity": 0.48,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/plate-inactive.png",
+      "resource_key": "UI/Synergies/Frames/plate-inactive",
+      "guid": "7d84d2a07f584b9a8a62a118dbdf9304",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-inactive.svg",
+      "imported_png_sha256": "0339e17c0dea3b0c359370fe78e3d5372953033cc7b5b3c163d4b795c50b37e6",
+      "committed_svg_sha256": "df36d41c76e58b055eeedc382d600037cfb9ce0d4ca4f12705314370abb54355",
+      "bytes": 11046
+    },
+    {
+      "id": "plate-bronze",
+      "svg": "plate-bronze.svg",
+      "png": "plate-bronze.png",
+      "svg_sha256": "df385c47171d2e92a08efd78d5e685c9855da0bdb8f4eb955237fb9b7eee8737",
+      "png_sha256": "b06819d4e96a5c7ed124f9430abfa535b1d75a907f21de8e3782b2f57ac6d770",
+      "approved_draft_grade": "bronze",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#d6b391",
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/plate-bronze.png",
+      "resource_key": "UI/Synergies/Frames/plate-bronze",
+      "guid": "4d7f5201bc1a44f2a6be7ae1007ca3b7",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-bronze.svg",
+      "imported_png_sha256": "b06819d4e96a5c7ed124f9430abfa535b1d75a907f21de8e3782b2f57ac6d770",
+      "committed_svg_sha256": "df385c47171d2e92a08efd78d5e685c9855da0bdb8f4eb955237fb9b7eee8737",
+      "bytes": 25873
+    },
+    {
+      "id": "plate-silver",
+      "svg": "plate-silver.svg",
+      "png": "plate-silver.png",
+      "svg_sha256": "962861183e94c7b2db97da290559faf8e5c72c6a61b025332c1dfa90343ee774",
+      "png_sha256": "e8c4484e7e59df4de7d5a42644164cab3f51e7844204381538c6b33e3732d7dd",
+      "approved_draft_grade": "silver",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#eef4fb",
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/plate-silver.png",
+      "resource_key": "UI/Synergies/Frames/plate-silver",
+      "guid": "c55babb08e204a14a43876fccf353bba",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-silver.svg",
+      "imported_png_sha256": "e8c4484e7e59df4de7d5a42644164cab3f51e7844204381538c6b33e3732d7dd",
+      "committed_svg_sha256": "962861183e94c7b2db97da290559faf8e5c72c6a61b025332c1dfa90343ee774",
+      "bytes": 28361
+    },
+    {
+      "id": "plate-gold",
+      "svg": "plate-gold.svg",
+      "png": "plate-gold.png",
+      "svg_sha256": "35d35f12e03ab5c6d2e5277e582fc8b9f7cef1321e7cb2100a4b56c68748c4f7",
+      "png_sha256": "c775acbba594af8010c55251463b32d9c6bd952050f21c48239159ec2b1918a6",
+      "approved_draft_grade": "gold",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#fff1bc",
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/plate-gold.png",
+      "resource_key": "UI/Synergies/Frames/plate-gold",
+      "guid": "a341339c4f544f72b32cb527488a4a4f",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-gold.svg",
+      "imported_png_sha256": "c775acbba594af8010c55251463b32d9c6bd952050f21c48239159ec2b1918a6",
+      "committed_svg_sha256": "35d35f12e03ab5c6d2e5277e582fc8b9f7cef1321e7cb2100a4b56c68748c4f7",
+      "bytes": 29701
+    },
+    {
+      "id": "plate-prismatic",
+      "svg": "plate-prismatic.svg",
+      "png": "plate-prismatic.png",
+      "svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+      "png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
+      "approved_draft_grade": "prism",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/plate-prismatic.png",
+      "resource_key": "UI/Synergies/Frames/plate-prismatic",
+      "guid": "c39c2d16f5c2424f9332a2204c2b1025",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-prismatic.svg",
+      "imported_png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
+      "committed_svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+      "bytes": 13546,
+      "variant": "regular-highest-tier-mint-ice-blue-lavender-v2",
+      "preview_source": "synergy-prismatic-color-v2/plate-prismatic-v2.png",
+      "preview_author_source": "synergy-prismatic-color-v2/plate-prismatic-v2.svg",
+      "palette_status": "User-approved V2, replacing the regular highest-tier pink/yellow palette",
+      "border_gradient": {
+        "id": "rim",
+        "coordinates": [
+          0,
+          0,
+          44,
+          44
+        ],
+        "units": "userSpaceOnUse",
+        "stops": [
+          [
+            0,
+            "#dcfff3"
+          ],
+          [
+            0.5,
+            "#e4f7ff"
+          ],
+          [
+            1,
+            "#eee8ff"
+          ]
+        ]
+      },
+      "fill_gradient": {
+        "id": "prism",
+        "coordinates": [
+          22,
+          0,
+          22,
+          44
+        ],
+        "units": "userSpaceOnUse",
+        "stops": [
+          [
+            0,
+            "#b0f1dd"
+          ],
+          [
+            0.22,
+            "#6fcbb7"
+          ],
+          [
+            0.45,
+            "#72bac2"
+          ],
+          [
+            0.64,
+            "#95b4ce"
+          ],
+          [
+            0.83,
+            "#b8a4cf"
+          ],
+          [
+            0.94,
+            "#d3b8d1"
+          ],
+          [
+            1,
+            "#ede3ce"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "count-dot",
+      "svg": "count-dot.svg",
+      "png": "count-dot.png",
+      "svg_sha256": "1dd326a84375e017bb2be688b1d1e2f6db2e9e7127f5bc121272e2a04ed7cab6",
+      "png_sha256": "96256e8cd0918d325520d3bd012cbf3e97c74f101f883c9a4067066cfaaad2f8",
+      "logical_canvas": [
+        24.8,
+        24.8
+      ],
+      "shape_center_in_canvas": [
+        12.4,
+        12.4
+      ],
+      "circle_diameter": 16.8,
+      "border_width": 0.85,
+      "fill": "#08111e",
+      "border": "#dbe5f2",
+      "border_opacity": 0.28,
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        24.8,
+        24.8
+      ],
+      "native_draw_origin_from_dot_center": [
+        -12.4,
+        -12.4
+      ],
+      "dot_center_offset_from_badge_center": [
+        15.84,
+        15.84
+      ],
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/Frames/count-dot.png",
+      "resource_key": "UI/Synergies/Frames/count-dot",
+      "guid": "3d2c7a005f094f1682fd53de2886bdf3",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/count-dot.svg",
+      "imported_png_sha256": "96256e8cd0918d325520d3bd012cbf3e97c74f101f883c9a4067066cfaaad2f8",
+      "committed_svg_sha256": "1dd326a84375e017bb2be688b1d1e2f6db2e9e7127f5bc121272e2a04ed7cab6",
+      "bytes": 24034
+    }
+  ],
+  "reserved_assets": [
+    {
+      "id": "plate-five-cost-exclusive-pink",
+      "svg": "plate-five-cost-exclusive-pink.svg",
+      "png": "plate-five-cost-exclusive-pink.png",
+      "svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
+      "png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
+      "approved_draft_grade": "prism",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#f5f3ff",
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Reserved/plate-five-cost-exclusive-pink.png",
+      "resource_key": null,
+      "guid": "9ac0a5426f3c42a4a7a482c820cd9eb0",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-five-cost-exclusive-pink.svg",
+      "imported_png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
+      "committed_svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
+      "bytes": 17902,
+      "variant": "original-approved-pink-yellow-palette",
+      "status": "reserved_unwired",
+      "intended_future_use": "Future five-cost exclusive synergy visuals, as requested by the user; no exclusive gameplay, registration or UI hookup is implemented in this change.",
+      "preservation": "Original runtime pink PNG and SVG copied byte-for-byte before the V2 replacement.",
+      "previous_runtime_guid": "c39c2d16f5c2424f9332a2204c2b1025",
+      "resources_directory": false
+    }
+  ],
+  "approval_history": [
+    {
+      "scope": "Initial native sidebar draft integration",
+      "confirmation": "In the current round the user approved synergy-sidebar-draft-v1 and requested integration. This confirms the project design/integration scope and does not grant original-game rights."
+    },
+    {
+      "date": "2026-11-07 Asia/Shanghai",
+      "scope": "V2 regular highest-tier palette and old-pink asset preservation",
+      "confirmation": "User explicitly approved the mint/ice-blue/lavender V2 highest-tier preview in this round, requested native integration, and requested preservation of the previous pink palette for future five-cost-exclusive synergies. This is design/project integration approval, not original-game rightsholder permission."
+    }
+  ],
+  "highest_tier_revision": {
+    "version": 2,
+    "date": "2026-11-07 Asia/Shanghai",
+    "status": "user_approved_imported_source; Unity verification pending",
+    "approved_preview": "synergy-prismatic-color-v2/最高阶-配色修订V2.png",
+    "author_draft": "synergy-prismatic-color-v2/draw.cjs",
+    "author_draft_sha256": "f0929a3fb61fdcc87b5e8ebb20304de51b57ca0bb2dd2b68b7d048c23e82cd2c",
+    "palette_reference_sha256": "f7efa232adc4f7f1aaf98e3ec6dc424d3248c80b60b44c9853701bf8f70e7abd",
+    "external_preview_record_sha256": "ecc41c58d97d68ea6bd11c8ed7e05adfc55561fd1eea6a7e7300c86c8b991ce5",
+    "preview_record_status_note": "The archived project-external preview record said approval pending when authored; the current explicit user confirmation supersedes that historical status.",
+    "changed": "Only the regular highest-tier backplate PNG/SVG colors and gradient coordinates; the original meta/GUID remains byte-for-byte unchanged.",
+    "active_png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
+    "active_svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+    "preserved_active_guid": "c39c2d16f5c2424f9332a2204c2b1025",
+    "preserved_active_meta_sha256": "a2fba81e4dcad5dbd5157eaf9383987556887ef2b884b7811926e082c3c74705",
+    "old_pink_disposition": "Copied into Assets/Art/UI/Synergies/Reserved outside Resources with its own new GUID and no runtime registration."
+  }
+}

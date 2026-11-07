@@ -66,7 +66,7 @@ namespace YesterdayConvoy
                     while(s.NextTick<=s.StartedAt+10.6+1e-6&&Clock+1e-6>=s.NextTick&&target.Alive)
                     {
                         float hp=target.Health;
-                        DamageDefender(target,UnitCombat(u).UnitAttack*.12f,CombatDamageType.Arts);
+                        DamageDefender(target,UnitCombat(u).UnitAttack*.12f,CombatDamageType.Arts,source:u);
                         ApplyBurn(target,UnitCombat(u).UnitAttack*.06f);
                         s.DamageDealt+=hp-target.Health;s.Ticks++;s.NextTick+=.5;
                     }
@@ -100,7 +100,7 @@ namespace YesterdayConvoy
                 e.Resolved=true;var source=FindUnit(e.SourceId);
                 foreach(var d in defenders)
                     if(d.Alive&&GroundDistance(d.Position,e.Position)<=UnitCombat(source).UnitRange)
-                    {DamageDefender(d,UnitCombat(source).UnitAttack,CombatDamageType.Arts);e.GuardsHit++;}
+                    {DamageDefender(d,UnitCombat(source).UnitAttack,CombatDamageType.Arts,source:source);e.GuardsHit++;}
                 foreach(var other in units)
                     if(other!=source&&other.Active&&!other.FuelDying&&other.UnitId==source.UnitId&&GroundDistance(other.Motion.Position,e.Position)<=UnitCombat(source).UnitRange)
                     {TrueDamage(other,UnitCombat(source).UnitAttack*100);e.ChainHits++;}

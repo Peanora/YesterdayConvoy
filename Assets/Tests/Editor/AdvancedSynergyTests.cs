@@ -66,14 +66,14 @@ namespace YesterdayConvoy.Tests
         [Test]public void OrdersUseDirectContactsOnceAndDoNotRecursivelyGenerateOrResetAttackCycles()
         {
             var ids=new[]{"CARD_M15","CARD_M16","CARD_M07","CARD_M08"};var b=Battle(ids);
-            for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);b.Advance(.4f);
+            for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);EarnQuietContacts(b);
             Assert.That(b.Orders,Is.EqualTo(4));int attacks=b.Units.Sum(u=>u.OrdinaryAttacksFired);
             Assert.That(b.TryGuerrillaOrder(b.RunId,100));Assert.That(b.Orders,Is.Zero);Assert.That(b.OrdersUsed,Is.EqualTo(1));
             int strikes=b.OrderStrikes;Assert.That(b.TryGuerrillaOrder(b.RunId,100));Assert.That(b.OrderStrikes,Is.EqualTo(strikes));
             var volley=b.LatestGuerrillaOrder;Assert.That(volley,Is.Not.Null);Assert.That(volley.SourceIds.Count,Is.EqualTo(strikes));
             Assert.That(b.CombatShots.Any(s=>s.SynergyOrder),Is.False,"A military order must not also emit the old single-target shot.");
             b.Advance(.3f);Assert.That(volley.Resolved,Is.False);
-            b.Advance(.61f);Assert.That(volley.Resolved,Is.True);Assert.That(volley.Hits.Count,Is.EqualTo(1));
+            b.Advance(2.51f);Assert.That(volley.Resolved,Is.True);Assert.That(volley.CompletedStrikes,Is.EqualTo(5));Assert.That(volley.Hits.Count,Is.EqualTo(1));
             Assert.That(b.Orders,Is.Zero);Assert.That(b.Units.Sum(u=>u.OrdinaryAttacksFired),Is.EqualTo(attacks));
             float health=b.Defender.Health;Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);b.Advance(.1f);
             Assert.That(b.LatestGuerrillaOrder,Is.SameAs(volley));Assert.That(b.Defender.Health,Is.EqualTo(health));
@@ -81,7 +81,7 @@ namespace YesterdayConvoy.Tests
         }
         [Test]public void NoTargetOrPauseCannotSpendOrders()
         {
-            var ids=new[]{"CARD_M15","CARD_M16","CARD_M07","CARD_M08"};var b=Battle(ids);for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);b.Advance(.4f);
+            var ids=new[]{"CARD_M15","CARD_M16","CARD_M07","CARD_M08"};var b=Battle(ids);for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);EarnQuietContacts(b);
             b.SetPaused(true);Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.False);Assert.That(b.Orders,Is.EqualTo(4));
             Assert.That(b.LatestGuerrillaOrder,Is.Null);
             b.SetPaused(false);foreach(var u in b.Units.Where(u=>!u.SynergySupport))b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts);
@@ -90,28 +90,53 @@ namespace YesterdayConvoy.Tests
         [Test]public void HalfOrdersRequireFreshParticipantsAndDoNotDoubleStrikeFirstHalf()
         {
             var ids=new[]{"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"};var b=Battle(ids);
-            for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);b.Advance(.4f);Assert.That(b.Orders,Is.EqualTo(6));
+            for(int i=0;i<ids.Length;i++)b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]);EarnQuietContacts(b);Assert.That(b.Orders,Is.EqualTo(6));
             Assert.That(b.TryGuerrillaOrder(b.RunId,100,true));Assert.That(b.HalfOrderPending);Assert.That(b.Orders,Is.EqualTo(3));
             var first=b.LatestGuerrillaOrder;
             Assert.That(b.TryGuerrillaOrder(b.RunId,101,true),Is.False);Assert.That(b.Orders,Is.EqualTo(3));Assert.That(b.TryGuerrillaOrder(b.RunId,102),Is.False);
-            b.TryDeployRole(b.RunId,30,b.Entry,"CARD_M15");b.Advance(.3f);Assert.That(b.TryGuerrillaOrder(b.RunId,103,true));
+            b.TryDeployRole(b.RunId,30,b.Entry,"CARD_M15");b.Advance(.3f);
+            Assert.That(b.TryGuerrillaOrder(b.RunId,103,true),Is.False,"The back half cannot overlap the front-half presentation.");
+            Assert.That(b.TryGuerrillaOrder(b.RunId,100,true),Is.True,"The committed front-half request remains idempotent while busy.");
+            b.Advance(GuerrillaOrderVolley.PresentationDuration-first.Age+.001f);
+            Assert.That(b.TryGuerrillaOrder(b.RunId,103,true));
             Assert.That(b.HalfOrderPending,Is.False);Assert.That(b.OrdersUsed,Is.EqualTo(1));
             var second=b.LatestGuerrillaOrder;
             Assert.That(first.SourceIds.Count+second.SourceIds.Count,Is.EqualTo(7));Assert.That(first.SourceIds.Intersect(second.SourceIds),Is.Empty);
             Assert.That(b.OrderStrikes,Is.EqualTo(7));Assert.That(b.CombatShots.Any(s=>s.SynergyOrder),Is.False);
-            b.Advance(.61f);Assert.That(first.Resolved,Is.True);Assert.That(second.Resolved,Is.False);
-            b.Advance(.3f);Assert.That(second.Resolved,Is.True);Assert.That(first.Hits.Count,Is.EqualTo(1));Assert.That(second.Hits.Count,Is.EqualTo(1));
+            b.Advance(.91f);Assert.That(first.Resolved,Is.True);Assert.That(second.Resolved,Is.False);Assert.That(second.CompletedStrikes,Is.EqualTo(1));
+            b.Advance(1.90f);Assert.That(second.Resolved,Is.True);Assert.That(first.Hits.Count,Is.EqualTo(1));Assert.That(second.Hits.Count,Is.EqualTo(1));
+        }
+
+        static void EarnQuietContacts(ManualBattle b)
+        {
+            // Launch ordinary projectiles, then temporarily keep their sources inside an
+            // unfinished ordinary action so automatic full orders cannot claim this fixture.
+            // The projectiles land normally and generate every point; no order/HP is injected.
+            const BindingFlags hidden=BindingFlags.Instance|BindingFlags.NonPublic;
+            b.Advance(.01f,0);var attackTimes=b.Units.ToDictionary(u=>u.EntityId,u=>u.LastAttackTime);
+            for(int i=0;i<40;i++)
+            {
+                foreach(var unit in b.Units)
+                {
+                    typeof(DeployedUnitState).GetField("NextAttackTime",hidden).SetValue(unit,1000d);
+                    typeof(DeployedUnitState).GetProperty("LastAttackTime").SetValue(unit,1000d);
+                }
+                b.Advance(.01f,0);
+            }
+            foreach(var unit in b.Units)typeof(DeployedUnitState).GetProperty("LastAttackTime").SetValue(unit,attackTimes.TryGetValue(unit.EntityId,out double at)?at:double.NegativeInfinity);
+            Assert.That(b.LatestGuerrillaOrder,Is.Null,"The quiet fixture holds eligibility, not military-order income.");
+            Assert.That(b.CombatShots.Any(s=>!s.Resolved),Is.False);
         }
 
         static EngagementSettings VolleyCombat(float attack,CombatDamageType type,float resistance)=>new EngagementSettings(
             unitAttack:attack,unitRange:3,unitInterval:100,defenderHealth:10000,defenderAttack:1,defenderRange:.1f,blockCount:0,
             initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,
             effects:new MonsterEffectSettings(damageType:type,resistance:resistance));
-        static ManualBattle VolleyBattle(bool mixed=true)
+        static ManualBattle VolleyBattle(bool mixed=true,float nearArmor=5)
         {
             var ids=new[]{"CARD_M15","CARD_M16","CARD_M07","CARD_M08"};
             var guards=new[]{
-                new DefenderSettings("near","Near",null,new Vector3(.6f,0,0),10000,1,5,.1f,100,canAttack:false),
+                new DefenderSettings("near","Near",null,new Vector3(.6f,0,0),10000,1,nearArmor,.1f,100,canAttack:false),
                 new DefenderSettings("other-lane","Other lane",null,new Vector3(3,0,12),10000,1,10,.1f,100,canAttack:false),
                 new DefenderSettings("far","Far",null,new Vector3(40,0,40),10000,1,0,.1f,100,canAttack:false),
                 new DefenderSettings("reserve","Reserve",null,new Vector3(1,0,1),10000,1,0,.1f,100,canAttack:false,reserve:true)};
@@ -122,11 +147,7 @@ namespace YesterdayConvoy.Tests
                 VolleyCombat(mixed&&index%2==0?40:20,mixed&&index%2==0?CombatDamageType.Arts:CombatDamageType.Physical,25),true)));
             b.ConfigureSynergies(ids.Select(Piece));b.Begin();b.ConfigureDefenderHighGround("far",true);
             for(int i=0;i<ids.Length;i++)Assert.That(b.TryDeployRole(b.RunId,i+1,b.Entry,ids[i]).Success,Is.True);
-            b.Advance(.4f);Assert.That(b.Orders,Is.EqualTo(4),"Orders must come from real ordinary hits.");
-            // Quiet-combat fixture only: let existing projectiles land, then isolate the volley
-            // from new ordinary attacks, including the normal Reunion reinforcement.
-            foreach(var unit in b.Units)typeof(DeployedUnitState).GetField("NextAttackTime",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(unit,1000d);
-            b.Advance(.4f);return b;
+            EarnQuietContacts(b);Assert.That(b.Orders,Is.EqualTo(4),"Orders must come from real ordinary hits.");return b;
         }
 
         [Test]public void GlobalOrderHitsEveryLivingLaneAndHighGroundWithMixedBudgetsAndRealFeedback()
@@ -135,12 +156,20 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);var order=b.LatestGuerrillaOrder;
             Assert.That(order.SourceIds.Count,Is.EqualTo(4));Assert.That(b.OrderStrikes,Is.EqualTo(4));Assert.That(order.Hits,Is.Empty);
             b.Advance(.89f,.89f);Assert.That(order.Resolved,Is.False);CollectionAssert.AreEqual(before,b.Defenders.Select(d=>d.Health));
-            b.Advance(.01f,.01f);Assert.That(order.Resolved,Is.True);Assert.That(order.Cancelled,Is.False);
+            b.Advance(.01f,.01f);Assert.That(order.Resolved,Is.False);Assert.That(order.CompletedStrikes,Is.EqualTo(1));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(7.5f).Within(.01));
+            b.Advance(1.90f,1.90f);Assert.That(order.Resolved,Is.True);Assert.That(order.Cancelled,Is.False);
             CollectionAssert.AreEquivalent(new[]{"near","other-lane","far"},order.Hits.Select(h=>h.TargetId));
             // Each defender receives 2*(20*.6-armor) plus 2*(40*.6*.75), independently.
-            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(50).Within(.001));
-            Assert.That(order.Hits.Single(h=>h.TargetId=="other-lane").Damage,Is.EqualTo(40).Within(.001));
-            Assert.That(order.Hits.Single(h=>h.TargetId=="far").Damage,Is.EqualTo(60).Within(.001));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(50).Within(.01));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="other-lane").Damage,Is.EqualTo(40).Within(.01));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="far").Damage,Is.EqualTo(60).Within(.01));
+            Assert.That(order.Strikes.Count,Is.EqualTo(5));
+            for(int i=0;i<5;i++)
+            {
+                var strike=order.Strikes[i];Assert.That(strike.Index,Is.EqualTo(i));Assert.That(strike.At,Is.EqualTo(new[]{.9f,1.2f,1.5f,1.8f,2.8f}[i]));
+                Assert.That(strike.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(i==4?20:7.5f).Within(.01));
+            }
             Assert.That(b.FindDefender("reserve").Health,Is.EqualTo(before[3]));
             foreach(var hit in order.Hits)
             {
@@ -153,7 +182,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.CombatShots.Any(s=>s.SynergyOrder),Is.False);
         }
 
-        [Test]public void SamePresentationTimeResolvesAtPointNineRegardlessOfOneOrTwoSpeedSimulation()
+        [Test]public void SamePresentationTimeResolvesAllFiveStrikesRegardlessOfOneOrTwoSpeedSimulation()
         {
             var one=VolleyBattle();var two=VolleyBattle();
             Assert.That(one.TryGuerrillaOrder(one.RunId,100));Assert.That(two.TryGuerrillaOrder(two.RunId,100));
@@ -163,6 +192,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(one.LatestGuerrillaOrder.Age,Is.EqualTo(two.LatestGuerrillaOrder.Age).Within(.00001));
             Assert.That(one.LatestGuerrillaOrder.Resolved||two.LatestGuerrillaOrder.Resolved,Is.False);
             one.Advance(.01f,.01f);two.Advance(.02f,.01f);
+            Assert.That(one.LatestGuerrillaOrder.CompletedStrikes,Is.EqualTo(1));Assert.That(two.LatestGuerrillaOrder.CompletedStrikes,Is.EqualTo(1));
+            one.Advance(1.9f,1.9f);two.Advance(3.8f,1.9f);
+            Assert.That(one.LatestGuerrillaOrder.Age,Is.EqualTo(2.8f).Within(.000001f));
+            Assert.That(two.LatestGuerrillaOrder.Age,Is.EqualTo(2.8f).Within(.000001f));
             Assert.That(one.LatestGuerrillaOrder.Resolved&&two.LatestGuerrillaOrder.Resolved,Is.True);
             CollectionAssert.AreEqual(one.LatestGuerrillaOrder.Hits.Select(h=>h.Damage),two.LatestGuerrillaOrder.Hits.Select(h=>h.Damage));
         }
@@ -182,9 +215,50 @@ namespace YesterdayConvoy.Tests
         {
             var b=VolleyBattle(false);Assert.That(b.TryGuerrillaOrder(b.RunId,100));var order=b.LatestGuerrillaOrder;
             foreach(string id in killAll?order.SourceIds:order.SourceIds.Take(1).ToArray())Assert.That(b.TryDamageUnit(id,100000,CombatDamageType.Arts),Is.True);
-            var before=b.Defenders.Select(d=>d.Health).ToArray();b.Advance(.91f,.91f);Assert.That(order.Resolved,Is.True);
+            var before=b.Defenders.Select(d=>d.Health).ToArray();b.Advance(2.81f,2.81f);Assert.That(order.Resolved,Is.True);
             if(killAll){Assert.That(order.Cancelled,Is.True);Assert.That(order.Hits,Is.Empty);CollectionAssert.AreEqual(before,b.Defenders.Select(d=>d.Health));}
-            else {Assert.That(order.Cancelled,Is.False);Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(21).Within(.001));}
+            else {Assert.That(order.Cancelled,Is.False);Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(21).Within(.01));}
+        }
+        [Test]public void StrikeBoundariesKeepFinalFortyPercentAndMinimumDamageBudgetWithoutRenderSideEffects()
+        {
+            var b=VolleyBattle(false,100);Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);var order=b.LatestGuerrillaOrder;
+            var start=b.Defenders.ToDictionary(d=>d.EntityId,d=>d.Health);
+            for(int i=0;i<5;i++)
+            {
+                float at=new[]{.9f,1.2f,1.5f,1.8f,2.8f}[i];float step=at-order.Age-.005f;
+                b.Advance(step,step);Assert.That(order.CompletedStrikes,Is.EqualTo(i));
+                b.Advance(.005f,.005f);Assert.That(order.CompletedStrikes,Is.EqualTo(i+1));
+                var hit=order.Strikes[i].Hits.Single(h=>h.TargetId=="near");
+                Assert.That(hit.Damage,Is.EqualTo(i==4?1.6f:.6f).Within(.01),"Four sources each retain one full minimum-damage budget, divided after mitigation.");
+                Assert.That(order.Resolved,Is.EqualTo(i==4));
+            }
+            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(4).Within(.01));
+            Assert.That(start["near"]-b.FindDefender("near").Health,Is.EqualTo(order.Hits.Single(h=>h.TargetId=="near").Damage));
+            Assert.That(b.Orders,Is.Zero);Assert.That(b.OrdersUsed,Is.EqualTo(1));
+            var immutableFirst=order.Strikes[0].Hits.Select(h=>h.Damage).ToArray();b.Advance(1,1);
+            CollectionAssert.AreEqual(immutableFirst,order.Strikes[0].Hits.Select(h=>h.Damage));Assert.That(order.CompletedStrikes,Is.EqualTo(5));
+        }
+        [Test]public void DeathBetweenStrikesAndTerminalCancellationRetainOnlyPreviouslyAppliedLosses()
+        {
+            var b=VolleyBattle();Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);var order=b.LatestGuerrillaOrder;b.Advance(.91f,.91f);
+            var removed=b.FindDefender("far");typeof(DefenderState).GetProperty("Health").SetValue(removed,0f);
+            b.Advance(.30f,.30f);Assert.That(order.CompletedStrikes,Is.EqualTo(2));
+            Assert.That(order.Strikes[1].Hits.Any(h=>h.TargetId==removed.EntityId),Is.False);
+            Assert.That(order.Hits.Single(h=>h.TargetId==removed.EntityId).Damage,Is.EqualTo(order.Strikes[0].Hits.Single(h=>h.TargetId==removed.EntityId).Damage));
+            var totals=order.Hits.Select(h=>h.Damage).ToArray();var hp=b.Defenders.Select(d=>d.Health).ToArray();
+            typeof(ManualBattle).GetMethod("FinishForTesting",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(b,new object[]{b.RunId,false});b.Advance(10,10);
+            Assert.That(order.Cancelled&&order.Resolved,Is.True);Assert.That(order.CompletedStrikes,Is.EqualTo(2));
+            CollectionAssert.AreEqual(totals,order.Hits.Select(h=>h.Damage));CollectionAssert.AreEqual(hp,b.Defenders.Select(d=>d.Health));
+        }
+        [Test]public void LosingEverySourceAfterFirstStrikeCancelsOnlyTheRemainderAndStillKeepsItsPresentationBusy()
+        {
+            var b=VolleyBattle(false);Assert.That(b.TryGuerrillaOrder(b.RunId,100),Is.True);var order=b.LatestGuerrillaOrder;b.Advance(.91f,.91f);
+            foreach(string id in order.SourceIds)Assert.That(b.TryDamageUnit(id,100000,CombatDamageType.Arts),Is.True);
+            var hp=b.Defenders.Select(d=>d.Health).ToArray();var totals=order.Hits.Select(h=>h.Damage).ToArray();
+            b.Advance(.30f,.30f);Assert.That(order.Cancelled&&order.Resolved,Is.True);Assert.That(order.CompletedStrikes,Is.EqualTo(1));
+            Assert.That(b.GuerrillaOrderBusy,Is.True);CollectionAssert.AreEqual(hp,b.Defenders.Select(d=>d.Health));CollectionAssert.AreEqual(totals,order.Hits.Select(h=>h.Damage));
+            b.Advance(3,3);Assert.That(order.Age,Is.EqualTo(GuerrillaOrderVolley.PresentationDuration));Assert.That(b.GuerrillaOrderBusy,Is.False);
+            Assert.That(order.CompletedStrikes,Is.EqualTo(1));Assert.That(b.LatestGuerrillaOrder,Is.SameAs(order));
         }
         [Test]public void PausedGolemDeploymentIsAtomicLimitedAndKeepsFullAttack()
         {

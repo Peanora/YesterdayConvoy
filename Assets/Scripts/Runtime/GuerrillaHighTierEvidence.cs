@@ -199,7 +199,7 @@ namespace YesterdayConvoy
         static bool started;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]static void Install()
         {
-            if(started||!Debug.isDebugBuild||!Environment.GetCommandLineArgs().Contains("-guerrillaHighTierSmokeTest"))return;
+            if(started||!Debug.isDebugBuild||GuerrillaAutoFiveSmokeDriver.Requested||!Environment.GetCommandLineArgs().Contains("-guerrillaHighTierSmokeTest"))return;
             started=true;var go=new GameObject("Guerrilla high-tier explicit Player verification");DontDestroyOnLoad(go);go.AddComponent<GuerrillaHighTierSmokeDriver>();
         }
         IEnumerator Start()

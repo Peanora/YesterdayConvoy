@@ -1,0 +1,68 @@
+{
+  "event_name": "Ev_sfx_ui_feedback_activity_GridFight_Trait_Gold",
+  "event_id": 4218176806,
+  "event_name_status": "Hash-resolved event name consistent with five other same-bank GridFight UI names; media graph and bank presence verified. Not recovered from a plaintext event-name table.",
+  "event_bank": {
+    "file": "Banks18.pck",
+    "id": 2544103578,
+    "size": 3382,
+    "offset": 76435417
+  },
+  "action_id": 352755496,
+  "target_id": 542425892,
+  "sound_bank": {
+    "file": "Banks7.pck",
+    "id": 1058834420,
+    "size": 34469,
+    "offset": 67458772
+  },
+  "game_audio_directory": "E:\\MiHoYo\\Star Rail Game\\StarRail_Data\\StreamingAssets\\Audio\\AudioPackage\\Windows",
+  "media_id": 177615830,
+  "wem_offset": 67458836,
+  "wem_bytes": 34142,
+  "wem_sha256": "1b644377ce88cca4a3d5e0472994651b992c443eebf98ca66710fac16ab99c96",
+  "wav_file": "Assets/Audio/SFX/Resources/SynergyActivation/bond-original.wav",
+  "wav_sha256": "7bf88b988687ab83828b64a4468039954311e06f70cad5e4abbde86b13ae928c",
+  "stats": {
+    "channels": 2,
+    "sample_rate": 48000,
+    "frames": 71544,
+    "duration_seconds": 1.4905,
+    "sample_peak_dbfs": -16.965545249616987,
+    "rms_dbfs": -38.418678879056465
+  },
+  "decoding": "Original RIFF Wwise media decoded with vgmstream-cli from the AnimeWwise tool bundle; no decryption, synthesis, time stretching, pitch change, EQ, noise removal, normalization, or trimming",
+  "usage": "Original Gold trait UI cue, adapted as the common cue for all nine synergies and all upward thresholds in this game. No claim that original Bronze/Silver/Prismatic sounds or the silver promotional-video waveform were all reproduced.",
+  "rights": "Third-party Honkai: Star Rail game audio. User integration/upload approval does not establish rights-holder redistribution permission.",
+  "agent_listening_status": "Not personally auditioned; based on source event/media graph, PCM inspection and waveform analysis.",
+  "semantic_support": [
+    {
+      "name": "Ev_sfx_ui_feedback_activity_GridFight_Coin_Refresh",
+      "event_id": 787152312
+    },
+    {
+      "name": "Ev_sfx_ui_feedback_activity_GridFight_ExpLevelup",
+      "event_id": 2557236177
+    },
+    {
+      "name": "Ev_sfx_ui_feedback_activity_GridFight_Equip_Active",
+      "event_id": 1971321106
+    },
+    {
+      "name": "Ev_sfx_ui_feedback_activity_GridFight_Trait_Gold",
+      "event_id": 4218176806
+    },
+    {
+      "name": "Ev_sfx_ui_feedback_activity_GridFight_LevelUp",
+      "event_id": 3694726200
+    }
+  ],
+  "integration": {
+    "resource_key": "SynergyActivation/bond-original",
+    "pause_mute_cleanup": "Shares controller pause/mute and clears on battle transition/leave/disable",
+    "volume": 0.65,
+    "cue_seconds": 0.033333333,
+    "once_per_batch": true,
+    "pitch": 1
+  }
+}

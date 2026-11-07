@@ -65,6 +65,11 @@ namespace YesterdayConvoy.Tests
                 typeof(DefenderState).GetField("NextAttackTime",Hidden).SetValue(d,1000000d);
                 typeof(DefenderState).GetProperty("SkillSP").SetValue(d,-1000f);
             }
+            foreach(var device in b.Gramophones)
+            {
+                typeof(GramophoneState).GetField("NextAttack",Hidden).SetValue(device,b.Clock+1000);
+                typeof(GramophoneState).GetField("NextHeal",Hidden).SetValue(device,b.Clock+1000);
+            }
         }
         IEnumerator Deploy(string id)
         {
@@ -157,52 +162,52 @@ namespace YesterdayConvoy.Tests
             yield return Load();Preset();yield return WaitForPreparation();
             Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.True);Assert.That(controller.SetGuerrillaTransfer("CARD_M08",true),Is.True);
             yield return Start(9);var b=controller.Battle;var view=controller.GetComponent<GuerrillaOrderView>();
-            Assert.That(controller.UseCampaignOrder(false),Is.False,"No deployed source spends nothing.");Assert.That(b.Orders,Is.EqualTo(2));
+            controller.Tick(.05f);Assert.That(b.LatestGuerrillaOrder,Is.Null,"No deployed source may spend the initial points.");Assert.That(b.Orders,Is.EqualTo(2));
             yield return Deploy("CARD_M03");Assert.That(b.Units.Single().OrdinaryAttacksFired,Is.Zero);StopOrdinary();
-            Assert.That(controller.UseCampaignOrder(false),Is.True,"First cast needs neither a prior ordinary attack nor local range contact.");
-            Assert.That(b.Orders,Is.Zero);Assert.That(controller.UseCampaignOrder(true),Is.False);
-            var volley=b.LatestGuerrillaOrder;var hp=b.Defenders.Where(d=>d.Alive).ToDictionary(d=>d.EntityId,d=>d.Health);
+            Assert.That(b.LatestGuerrillaOrder,Is.Null,"Deployment alone does not advance the simulation.");
+            controller.Tick(.05f);var volley=b.LatestGuerrillaOrder;
+            Assert.That(volley,Is.Not.Null,"The next positive simulation step automatically spends the full starting order.");
+            Assert.That(b.Orders,Is.Zero);Assert.That(view.PlayCount,Is.EqualTo(1));Assert.That(volley.Age,Is.EqualTo(0).Within(.0001));
+            Assert.That(controller.UseCampaignOrder(true),Is.False);
+            var hp=b.Defenders.Where(d=>d.Alive).ToDictionary(d=>d.EntityId,d=>d.Health);
             CollectionAssert.AreEqual(NativeSlots,view.SlotMembers.Take(7));CollectionAssert.AreEqual(new[]{"CARD_M07","CARD_M08"},view.SlotMembers.Skip(7));
-            AdvanceTo(view,.65f);yield return null;yield return null;
-            Assert.That(view.VisiblePortraitCount,Is.EqualTo(9),"Both non-native slots require real supplied portraits.");
-            AdvanceTo(view,.85f);Assert.That(volley.Resolved,Is.False);Assert.That(volley.Hits,Is.Empty);
-            b.SetPaused(true);controller.Tick(3);Assert.That(view.Age,Is.EqualTo(.85f).Within(.0001));
-            Assert.That(hp.All(p=>b.FindDefender(p.Key).Health==p.Value),Is.True);
+            AdvanceTo(view,.65f);yield return null;yield return null;Assert.That(view.VisiblePortraitCount,Is.EqualTo(9));
+            AdvanceTo(view,.85f);Assert.That(volley.CompletedStrikes,Is.Zero);Assert.That(volley.Hits,Is.Empty);
+            b.SetPaused(true);controller.Tick(3);Assert.That(view.Age,Is.EqualTo(.85f).Within(.0001));Assert.That(hp.All(pair=>b.FindDefender(pair.Key).Health==pair.Value),Is.True);
             b.SetPaused(false);if(controller.SimulationSpeed!=2)controller.ToggleSpeed();double clock=b.Clock;
-            controller.Tick(.04f);
-            Assert.That(b.Clock-clock,Is.EqualTo(.08).Within(.0001));Assert.That(view.Age,Is.EqualTo(.89f).Within(.0001));
-            Assert.That(volley.Resolved,Is.False);Assert.That(hp.All(p=>b.FindDefender(p.Key).Health==p.Value),Is.True);
-            // The saved defender-owned gramophone can heal after impact. Compare actual HP
-            // immediately across .89 -> .91 rather than including later device healing.
-            controller.Tick(.02f);
-            Assert.That(volley.Resolved&&!volley.Cancelled,Is.True);Assert.That(volley.Hits.Count,Is.EqualTo(hp.Count));
-            foreach(var hit in volley.Hits)
-            {
-                Assert.That(hit.Damage,Is.GreaterThan(0));
-                Assert.That(hp[hit.TargetId]-b.FindDefender(hit.TargetId).Health,Is.EqualTo(hit.Damage).Within(.01f),"Immediate actual HP loss: "+hit.TargetId);
-            }
-            AdvanceTo(view,1.3f);yield return null;yield return null;
-            Assert.That(view.VisibleImpactTargetCount,Is.EqualTo(hp.Count));Assert.That(view.DisplayedDamage,Is.EqualTo(volley.Hits.Sum(h=>h.Damage)).Within(.01));
-            var sound=controller.GetComponents<AudioSource>().Single(s=>s.clip==Resources.Load<AudioClip>("GuerrillaOrder/followup-original"));
-            Assert.That(sound.pitch,Is.EqualTo(1));b.SetPaused(true);controller.Tick(0);int samples=sound.timeSamples;
-            controller.Tick(3);yield return new WaitForSecondsRealtime(.06f);Assert.That(sound.timeSamples,Is.EqualTo(samples));Assert.That(view.SoundPaused,Is.True);
-            b.SetPaused(false);AdvanceTo(view,2.61f);b.Begin();Assert.That(b.Orders,Is.Zero,"Re-entering Begin cannot refill the starting grant.");
-            foreach(var u in b.Units)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).SetValue(u,0d);
+            controller.Tick(.04f);Assert.That(b.Clock-clock,Is.EqualTo(.08).Within(.0001));Assert.That(view.Age,Is.EqualTo(.89f).Within(.0001));
+            controller.Tick(.02f);Assert.That(volley.CompletedStrikes,Is.EqualTo(1));Assert.That(volley.Resolved,Is.False);
+            foreach(var hit in volley.Strikes[0].Hits)Assert.That(hp[hit.TargetId]-b.FindDefender(hit.TargetId).Health,Is.EqualTo(hit.Damage).Within(.01f));
+            AdvanceTo(view,1.05f);Capture(view);yield return null;
+            var original=controller.GetComponents<AudioSource>().Single(source=>source.clip==Resources.Load<AudioClip>("GuerrillaOrder/followup-original"));
+            var slash=controller.GetComponents<AudioSource>().Single(source=>source.clip==Resources.Load<AudioClip>("GuerrillaOrder/five-slash-charge"));
+            Assert.That(original.pitch,Is.EqualTo(1));Assert.That(slash.pitch,Is.EqualTo(1));
+            b.SetPaused(true);Capture(view);int originalSample=original.timeSamples,slashSample=slash.timeSamples;float frozen=view.Age;
+            controller.Tick(3);yield return new WaitForSecondsRealtime(.06f);
+            Assert.That(original.timeSamples,Is.EqualTo(originalSample));Assert.That(slash.timeSamples,Is.EqualTo(slashSample));
+            Assert.That(view.SoundPaused&&view.SlashSoundPaused,Is.True);Assert.That(view.Age,Is.EqualTo(frozen));
+            b.SetPaused(false);AdvanceTo(view,2.4f);Capture(view);
+            Assert.That(volley.CompletedStrikes,Is.EqualTo(4));Assert.That(view.DisplayedStrikeCount,Is.EqualTo(4));Assert.That(view.ChargeProgress,Is.GreaterThan(0));
+            b.SetPaused(true);Capture(view);slashSample=slash.timeSamples;controller.Tick(3);yield return new WaitForSecondsRealtime(.06f);
+            Assert.That(view.SlashSoundPaused,Is.True);Assert.That(slash.timeSamples,Is.EqualTo(slashSample));
+            b.SetPaused(false);AdvanceTo(view,2.81f);Capture(view);
+            Assert.That(volley.Resolved&&!volley.Cancelled,Is.True);Assert.That(volley.CompletedStrikes,Is.EqualTo(5));
+            Assert.That(volley.Strikes[4].Hits.Sum(hit=>hit.Damage),Is.GreaterThan(volley.Strikes[0].Hits.Sum(hit=>hit.Damage)*2.5f));
+            Assert.That(view.DisplayedStrikeCount,Is.EqualTo(5));Assert.That(view.DisplayedDamage,Is.EqualTo(volley.Hits.Sum(hit=>hit.Damage)).Within(.01));
+            AdvanceTo(view,GuerrillaOrderVolley.PresentationDuration+.01f);Capture(view);b.Begin();Assert.That(b.Orders,Is.Zero,"Begin cannot replenish a spent starting grant.");
+            foreach(var unit in b.Units)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).SetValue(unit,0d);
             foreach(string id in Roster.Where(id=>id!="CARD_M20"&&id!="CARD_M03")){yield return Deploy(id);controller.Tick(.2f);}
             foreach(string id in new[]{"CARD_M07","CARD_M08"}){yield return Deploy(id);controller.Tick(.2f);}
-            for(int i=0;i<2400&&b.OrdersUsed<5&&b.Phase==BattlePhase.Running;i++)
-            {
-                if(b.Orders>=2&&controller.UseCampaignOrder(false))controller.Tick(2.61f);
-                else controller.Tick(.05f);
-                if(i%10==0)yield return null;
-            }
-            Assert.That(b.OrdersUsed,Is.GreaterThanOrEqualTo(5),"Actual first contacts must support casting beyond the old four-order cap.");
-            Assert.That(b.CombatShots.Any(s=>!s.FromDefender&&!s.SynergyOrder&&s.Applied),Is.True);
-            StopOrdinary();for(int i=0;i<120&&b.CombatShots.Any(s=>!s.Resolved);i++)controller.Tick(.05f);
-            for(int i=0;i<12&&b.Orders>=2;i++){Assert.That(controller.UseCampaignOrder(false),Is.True);controller.Tick(2.61f);}
-            Assert.That(b.Orders,Is.LessThan(2));int points=b.Orders,plays=view.PlayCount;
-            Assert.That(controller.UseCampaignOrder(false),Is.False);Assert.That(b.Orders,Is.EqualTo(points));Assert.That(view.PlayCount,Is.EqualTo(plays));
-            Assert.That(b.Orders+2*b.OrdersUsed-2,Is.LessThanOrEqualTo(2*Roster.Length),"Unlimited casts never create contact income.");
+            for(int i=0;i<3200&&b.OrdersUsed<5&&b.Phase==BattlePhase.Running;i++)
+            {controller.Tick(.05f);if(i%10==0)yield return null;}
+            Assert.That(b.OrdersUsed,Is.GreaterThanOrEqualTo(5),"Real finite contact income must automatically support the fifth full order, beyond the old cap.");
+            Assert.That(b.CombatShots.Any(shot=>!shot.FromDefender&&!shot.SynergyOrder&&shot.Applied),Is.True);
+            StopOrdinary();
+            for(int i=0;i<3200&&(b.Orders>=2||b.GuerrillaOrderBusy||b.CombatShots.Any(shot=>!shot.Resolved));i++)
+            {controller.Tick(.05f);if(i%10==0)yield return null;}
+            Assert.That(b.Orders,Is.LessThan(2));int points=b.Orders,used=b.OrdersUsed,plays=view.PlayCount;
+            controller.Tick(1);Assert.That(b.OrdersUsed,Is.EqualTo(used));Assert.That(b.Orders,Is.EqualTo(points));Assert.That(view.PlayCount,Is.EqualTo(plays));
+            Assert.That(b.Orders+2*b.OrdersUsed-2,Is.InRange(8,2*Roster.Length),"Automatic orders cannot recursively manufacture contact points.");
         }
         [UnityTest]public IEnumerator EightTierNeedsOneRealContactBeforeSpendingItsStartingTwoPoints()
         {
@@ -210,9 +215,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.SetGuerrillaTransfer("CARD_M08",true),Is.True);ClickPiece("CARD_M07");
             yield return Start(8);var b=controller.Battle;var view=controller.GetComponent<GuerrillaOrderView>();yield return Deploy("CARD_M03");
             Assert.That(controller.UseCampaignOrder(false),Is.False);Assert.That(b.Orders,Is.EqualTo(2));Assert.That(view.PlayCount,Is.Zero);
-            for(int i=0;i<1800&&b.Orders<3&&b.Phase==BattlePhase.Running;i++){controller.Tick(.05f);if(i%10==0)yield return null;}
-            Assert.That(b.Orders,Is.EqualTo(3));Assert.That(controller.UseCampaignOrder(true),Is.False);
-            Assert.That(controller.UseCampaignOrder(false),Is.True);Assert.That(b.Orders,Is.Zero);
+            for(int i=0;i<1800&&b.LatestGuerrillaOrder==null&&b.Phase==BattlePhase.Running;i++){controller.Tick(.02f);if(i%10==0)yield return null;}
+            Assert.That(b.LatestGuerrillaOrder,Is.Not.Null,"The first real contact supplies point3 and automatically commits the full order.");
+            Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(controller.UseCampaignOrder(true),Is.False);Assert.That(b.Orders,Is.Zero);
             Assert.That(GuerrillaRules.ForTier(b.GuerrillaTier).AttackMultiplier,Is.EqualTo(1.8f));
             Assert.That(b.LatestGuerrillaOrder.SourceIds,Is.Not.Empty);
             Assert.That(view.SlotMembers[7],Is.Null,"The first selected transfer kept in reserve leaves its own fixed slot empty.");
@@ -238,7 +243,7 @@ namespace YesterdayConvoy.Tests
             b.Begin();Assert.That(b.Orders,Is.EqualTo(2));
             yield return Deploy("CARD_M03");StopOrdinary();
             Assert.That(b.Units.Single().OrdinaryAttacksFired,Is.Zero);
-            Assert.That(controller.UseCampaignOrder(false),Is.True,"The nine-member early order must create the real presentation.");
+            controller.Tick(.05f);Assert.That(b.LatestGuerrillaOrder,Is.Not.Null,"The nine-member early full order is automatic.");Assert.That(b.OrdersUsed,Is.EqualTo(1));
             var view=controller.GetComponent<GuerrillaOrderView>();AdvanceTo(view,.65f);
             var definitions=(Dictionary<string,ManualBattleDefinition>)typeof(ManualBattleController).GetField("shopDefinitions",Hidden).GetValue(controller);
             var card=definitions[talulah].Card;
@@ -256,9 +261,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(view.VisiblePortraitCount,Is.EqualTo(9));var actual=Capture(view);
             var portraits=new Dictionary<string,Sprite>{{talulah,expected},{"CARD_M08",definitions["CARD_M08"].Card.Portrait}};
             var members=b.GuerrillaMemberIds.ToArray();var assignments=controller.GuerrillaTransferIds.ToArray();
-            view.Play(members,portraits,assignments);AdvanceTo(view,.65f);var originalPixels=Capture(view);
+            view.Play(members,portraits,assignments);view.AdvancePresentation(.65f);var originalPixels=Capture(view);
             CollectionAssert.AreEqual(originalPixels,actual,"The actual order pixels must match an explicitly supplied original portrait at the same animation age.");
-            portraits[talulah]=serialized;view.Play(members,portraits,assignments);AdvanceTo(view,.65f);var legacyPixels=Capture(view);
+            portraits[talulah]=serialized;view.Play(members,portraits,assignments);view.AdvancePresentation(.65f);var legacyPixels=Capture(view);
             Assert.That(PortraitPixelDifference(originalPixels,legacyPixels,slot),Is.GreaterThan(20),"The Talulah extension must visibly differ from the previous serialized portrait.");
         }
     }

@@ -15,17 +15,17 @@ namespace YesterdayConvoy
         public string[] Members {get;internal set;}
         static string GuerrillaEffect()
         {
-            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。所有档整令不限次数。"};
+            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。达到本档点数且有合格出手者时自动整令，不限次数；演出结束后才能再次触发。"};
             foreach(int tier in new[]{2,4,6,8,9})
             {
                 var rule=GuerrillaRules.ForTier(tier);
                 string people=rule.ParticipantLimit==int.MaxValue?"全部合格普通实体":"最多"+rule.ParticipantLimit+"人";
                 lines.Add($"{tier}档：整令{rule.Cost}点 / {people} / {Mathf.RoundToInt(rule.AttackMultiplier*100)}%攻击"+(rule.InitialOrders>0?$"，开战+{rule.InitialOrders}军令。":"。"));
             }
-            lines.Add("0.9演出秒，对每名存活守军各结算一份参与者预算，逐名过护甲/抗性；不递归产点。");
+            lines.Add("0.9/1.2/1.5/1.8/2.8演出秒全场五段命中；前四段各15%，蓄力末段40%。原完整预算先过护甲/抗性再分段，不递归产点。1×/2×演出等速。");
             lines.Add("2/4/6需普攻收手且有射程内目标；8/9可在移动/普攻中参加，无需射程目标。技能、复起、控制锁照旧。");
             lines.Add("4档参与近战护盾10%生命3秒；6/8/9档15%生命5秒。");
-            lines.Add("仅6档可拆两次3点半令，后半排除前半参与者；半令未完成不能插入整令。暂停或无合格单位/存活守军不扣费。");
+            lines.Add("仅6档保留手动两次3点半令，后半排除前半参与者；半令未完成时自动整令等待。暂停、演出中或无合格单位/存活守军不扣费。");
             return string.Join("\n",lines);
         }
         public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null)
@@ -41,7 +41,7 @@ namespace YesterdayConvoy
                 GuerrillaEffect(),
                 "2/4/5档：胚体 / 进阶培养 / 终极资格。正式胜利且2种小队成员真实交战+3培养；4档且巨像交战再+1。补给不培养。每个关间最多投入10金币。\nI/II/III/IV需培养0/4/12/24、投入0/20/45/80、成员2/2/4/5；IV还需5人全二星。\n生命360/550/1800/6000，攻击60/84/240/1600，DP4/5/8/14。每场一次，不扣门血。IV至多3目标、每第三击全场80%攻击法伤、每次命中回8%生命，免疫控制。",
                 "牧群：全队非五费正常实体最终死亡后生成短时转化体。2档前3个、35%生命/攻击、4甲、10秒；4档前5个、45%生命/攻击、6甲、12秒，可保留远程基础攻击（2.5射程、攻击再乘85%）。\n转化沿原位置/路线，穿门0，不复制主动、爆炸、羁绊资源或再次转化。原动作较长时攻击间隔保留完整动作。",
-                "深池：被灼烧守军遭正常伤害击杀留下火种。2档最多4枚，传播半径1.2、最多2人、15法伤/秒持续3秒；4档最多6枚、半径1.6、3人、25/秒。\n4档可消耗2火种手动引爆，半径1.8、最多4人、120法伤，每场2次。伤害每成员平均星级增加25%。衍生击杀不再产火种。",
+                "深池：成员普攻/原生技能有效命中即燎烧，持续4秒，同名取高刷新。2档15法伤/秒，4档25/秒；独立于原生灼燃，不自带减法抗。\n燎烧或原生灼燃目标被正常伤害/深池燎烧消灭后留火种，首击击杀也有效。2档本场累计最多4枚、传播半径1.8/最多2人；4档6枚、2.2/3人，已消耗仍计上限。\n4档消耗1火种引爆，优先有活目标的火种，半径1.8/最多4人、180法伤，每场2次。引爆不返火种；伤害每成员平均星级增加25%。",
                 "海嗣：胜利时每种实际交战成员+1培养，2档最多2、4档最多3；0/3/7经验到I/II/III。\n屏障：首次远程直接命中减伤30%；II前2次30%；III前2次40%并给附近非海嗣一份20%保护。\n猎食：对低于35%生命目标伤害+12/18/25%；III首次击杀治疗附近两人各5%生命。\n渗透：各实体首次命中使护甲-3/5/7，4/5/5秒，同名不叠。4档II阶段解锁另一种I阶段副适应。",
                 "萨卡兹：战前指定承契卡，其余普通友军首次由直接伤害跨入40%生命以下贡献1点，每种卡最多2点。4点手动选择存活承契实体爆发，不扣DP。\n2/4/6档：攻击+20/30/40%、15/25/30%生命盾，持续6/8/10秒，本场1/2/2次。6档其他普通友军各获承契者10%生命盾、最多200。\n自损、转化体、巨像和援军不贡献；同一实体只贡献一次。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
@@ -53,7 +53,34 @@ namespace YesterdayConvoy
     {
         string inspectedSynergy;
         Vector2 guerrillaDetailScroll;
-        Rect SynergyListRect=>new Rect(16,69,157,28+Mathf.Min(350,CurrentSynergies.Length*46));
+        const float SynergyRowPitch=48;
+        const float SynergyHeaderHeight=26;
+        Rect SynergyBoundsFor(int count,bool preparation)
+        {
+            int rows=Mathf.Min(count,preparation?9:4);
+            // Nine complete preparation rows still leave the construction button above y552.
+            float top=preparation&&rows==9?60:65;
+            return new Rect(12,top,174,SynergyHeaderHeight+rows*SynergyRowPitch);
+        }
+        Rect SynergyViewportFor(Rect bounds)=>new Rect(bounds.x,bounds.y+SynergyHeaderHeight,bounds.width,bounds.height-SynergyHeaderHeight);
+        float SynergyWidthFor(int count,Rect viewport)=>count*SynergyRowPitch>viewport.height?156:174;
+        Rect SynergyRowAtWidth(int index,float width)=>new Rect(0,index*SynergyRowPitch,width,SynergyRowPitch);
+        Rect SynergyListRect=>SynergyBoundsFor(CurrentSynergies.Length,Loop!=null&&Loop.CanShop);
+        Rect SynergyRowsViewportRect=>SynergyViewportFor(SynergyListRect);
+        float SynergyContentWidth=>SynergyWidthFor(CurrentSynergies.Length,SynergyRowsViewportRect);
+        Rect SynergyRowContentRect(int index)=>SynergyRowAtWidth(index,SynergyContentWidth);
+        Rect SynergyRowScreenRect(int index)
+        {
+            var row=SynergyRowContentRect(index);var viewport=SynergyRowsViewportRect;
+            return new Rect(viewport.x+row.x-campaignSynergyScroll.x,viewport.y+row.y-campaignSynergyScroll.y,row.width,row.height);
+        }
+        Rect SynergyBadgeRect(Rect row)=>new Rect(row.x+2,row.y+1,44,44);
+        Rect SynergyGlyphRect(Rect row)=>new Rect(row.x+10,row.y+9,28,28);
+        Rect SynergyCountRect(Rect row)=>new Rect(row.x+31.44f,row.y+30.44f,16.8f,16.8f);
+        Rect SynergyNameRect(Rect row)=>new Rect(row.x+58,row.y,row.width-64,20);
+        Rect SynergyThresholdRect(Rect row)=>new Rect(row.x+56,row.y+20,row.width-62,15);
+        Rect SynergySupplementRect(Rect row)=>new Rect(row.x+58,row.y+35,row.width-64,12);
+        Rect SynergyProgressRect(Rect row)=>new Rect(row.x+58,row.y+47,row.width-64,1);
         Rect SynergyDetailRect=>inspectedSynergy=="感染生物"?InfectionFormPanelRect:new Rect(252,90,620,415);
         SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
@@ -61,37 +88,29 @@ namespace YesterdayConvoy
         {
             if(!CampaignActive)return;
             DrawSnowstormFeedback();
-            var summaries=CurrentSynergies;var bounds=SynergyListRect;
-            Fill(new Rect(bounds.x,bounds.y,bounds.width,25),ApprovedUi.Paper);
-            GUI.Label(new Rect(bounds.x+8,bounds.y,55,25),"羁绊",CampaignText(12,weight:600));
-            GUI.Label(new Rect(bounds.x+58,bounds.y,91,25),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
+            var summaries=CurrentSynergies;var bounds=SynergyBoundsFor(summaries.Length,Loop.CanShop);
+            Fill(new Rect(0,bounds.y,bounds.xMax,bounds.height),new Color(.065f,.11f,.165f,.95f));
+            GUI.Label(new Rect(bounds.x+1,bounds.y,55,22),"羁绊",CampaignText(12,color:new Color(.92f,.95f,.98f),weight:600));
+            GUI.Label(new Rect(bounds.x+65,bounds.y,bounds.width-70,22),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,new Color(.61f,.70f,.80f)));
+            Fill(new Rect(bounds.x,bounds.y+22,bounds.width,1),new Color(.54f,.65f,.77f,.17f));
             if(summaries.Length==0){inspectedSynergy=null;return;}
-            Rect viewport=new Rect(bounds.x,bounds.y+28,bounds.width,bounds.height-28);
-            float contentWidth=summaries.Length*46>viewport.height?139:157;
-            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*46)),false,false);
+            Rect viewport=SynergyViewportFor(bounds);float contentWidth=SynergyWidthFor(summaries.Length,viewport);
+            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*SynergyRowPitch)),false,false);
             try
             {
                 for(int i=0;i<summaries.Length;i++)
                 {
-                    var s=summaries[i];Rect row=new Rect(0,i*46,contentWidth,41);
+                    var s=summaries[i];Rect row=SynergyRowAtWidth(i,contentWidth);
                     if(GUI.Button(row,GUIContent.none,GUIStyle.none))
                     {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
                     bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
-                    Color ink=snowstorm?SnowstormInk:active?ApprovedUi.Ink:ApprovedUi.Muted;
-                    Fill(row,snowstorm?SnowstormPaper:active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
-                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?(s.Name=="感染生物"?InfectionOrange:new Color(.72f,.59f,.30f)):ApprovedUi.Rule);
-                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(13,color:ink,weight:600));
-                    GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
+                    Color ink=active?new Color(.95f,.965f,.98f):new Color(.65f,.70f,.77f);
+                    SynergyBadgePresentation.DrawBadge(SynergyBadgeRect(row),s.Name,s.Tier,s.Count,scene.InterfaceFont);
+                    GUI.Label(SynergyNameRect(row),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(14,color:ink,weight:600));
+                    SynergyBadgePresentation.DrawThresholds(SynergyThresholdRect(row),s.Thresholds,s.Tier,scene.InterfaceFont);
                     if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
-                    else
-                    {
-                        float pitch=s.Thresholds.Length>3?12:22,width=s.Thresholds.Length>3?10:19;
-                        for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*pitch,row.y+31,width,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
-                        string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
-                        GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
-                    }
                 }
             }
             finally {GUI.EndScrollView();}

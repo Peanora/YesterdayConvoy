@@ -138,11 +138,23 @@ namespace YesterdayConvoy
         {
             if(runId!=RunId||Phase!=BattlePhase.Running||IsPaused)return false;
             if(orderRequests.TryGetValue(requestId,out bool prior))return prior==half;
+            if(!TryCommitGuerrillaOrder(half))return false;
+            orderRequests[requestId]=half;return true;
+        }
+        void TryAutomaticGuerrillaOrder()
+        {
+            // A pending front half belongs to the player. Automatic full orders cannot
+            // consume its remaining points or replace its participant exclusion set.
+            if(!HalfOrderPending)TryCommitGuerrillaOrder(false);
+        }
+        bool TryCommitGuerrillaOrder(bool half)
+        {
+            if(Phase!=BattlePhase.Running||IsPaused||GuerrillaOrderBusy)return false;
             var rule=GuerrillaRules.ForTier(GuerrillaTier);int cost=half?3:rule.Cost;
             if(GuerrillaTier==0||half&&!rule.AllowsHalf||!half&&HalfOrderPending||Orders<cost||!defenders.Any(d=>d.Alive))return false;
             var targets=units.Where(u=>CanReceiveOrder(u)&&(!half||!HalfOrderPending||!halfEntities.Contains(u.EntityId))).Take(half?6:rule.ParticipantLimit).ToArray();
             if(targets.Length==0)return false;
-            Orders-=cost;orderRequests[requestId]=half;
+            Orders-=cost;
             bool completing=half&&HalfOrderPending;
             CommitGuerrillaOrder(targets,rule.AttackMultiplier);
             foreach(var u in targets)

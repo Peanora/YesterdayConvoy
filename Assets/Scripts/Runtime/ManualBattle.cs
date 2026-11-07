@@ -358,6 +358,9 @@ namespace YesterdayConvoy
                     if(Defense>0)AdvanceGuerrillaOrders((float)(step*presentationRatio));
                     RefreshCombatFeedbackStatuses();
                     EvaluateEnd();
+                    // Commit after this step's real contacts and terminal checks. A new
+                    // batch starts at age zero; it does not inherit the elapsed step.
+                    if(Phase==BattlePhase.Running)TryAutomaticGuerrillaOrder();
                     if(Phase==BattlePhase.Won || Phase==BattlePhase.Lost)
                         foreach(var shot in combatShots) if(!shot.Resolved) shot.Resolved=true;
                     continue;
