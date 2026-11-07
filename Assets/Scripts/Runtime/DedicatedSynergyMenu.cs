@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,0,1280,720),new Color(.90f,.92f,.93f));
             GUI.Label(new Rect(48,28,900,38),"九羁绊专项试验",ApprovedUi.Text(scene.InterfaceFont,28,TextAnchor.MiddleLeft,ApprovedUi.Ink,700));
-            GUI.Label(new Rect(48,74,1115,40),"每张地图在编辑器内独立保存；无限金币、九张库存。初始构筑可改，战斗结束可返回整备。",ApprovedUi.Text(scene.InterfaceFont,15,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(48,74,1115,40),"每张地图在编辑器内独立保存；无限金币、分费用有限库存。初始构筑可改，战斗结束可返回整备。",ApprovedUi.Text(scene.InterfaceFont,15,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             if(LoopButton(new Rect(1065,28,166,38),"返回角色测试")){dedicatedSynergyMenuOpen=false;return;}
             for(int i=0;i<SynergyTrialCatalog.Entries.Count;i++)
             {

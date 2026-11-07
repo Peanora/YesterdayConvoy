@@ -9,7 +9,7 @@ namespace YesterdayConvoy
     public sealed class SynergyTrialStartingCard
     {
         public string cardId;
-        [Range(1,3)] public int star=1;
+        [Range(1,4)] public int star=1;
     }
 
     [CreateAssetMenu(menuName="Yesterday Convoy/Synergy Trial")]
@@ -39,9 +39,10 @@ namespace YesterdayConvoy
             var ids=new HashSet<string>(StringComparer.Ordinal);
             foreach(var member in initialMembers)
             {
-                if(member==null||!CampaignBalance.Supports(member.cardId)||member.star<1||member.star>3||!ids.Add(member.cardId))
+                if(member==null||!CampaignBalance.Supports(member.cardId)||member.star<1||
+                    member.star>ShopTrialModel.MaxStarForCost(CampaignBalance.Profiles[member.cardId].Cost)||!ids.Add(member.cardId))
                     throw new InvalidOperationException("Invalid or duplicate starting card: "+name);
-                // A starting 1/2/3-star card reserves 1/3/9 copies through Shop.Preset, never an infinite stock.
+                // Starting 1/2/3/4-star cards reserve 1/3/9/27 real copies through Shop.Preset.
             }
             if(!string.IsNullOrEmpty(contractCardId)&&!ids.Contains(contractCardId))
                 throw new InvalidOperationException("Contract owner must be a starting member: "+name);

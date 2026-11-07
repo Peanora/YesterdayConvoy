@@ -46,7 +46,9 @@ namespace YesterdayConvoy
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
             // Validate and materialize external enumerables before mutating any existing snapshot.
             var pieces=lineup?.ToArray()??throw new ArgumentNullException(nameof(lineup));
-            if(pieces.Any(p=>p==null||string.IsNullOrWhiteSpace(p.Id)||p.Star<1||p.Star>3))throw new ArgumentException("Invalid lineup.",nameof(lineup));
+            if(pieces.Any(p=>p==null||string.IsNullOrWhiteSpace(p.Id)||p.Star<1||
+                p.Star>(CampaignBalance.Profiles.TryGetValue(p.Id,out var profile)?ShopTrialModel.MaxStarForCost(profile.Cost):3)))
+                throw new ArgumentException("Invalid lineup.",nameof(lineup));
             if(golemExperience<0||!Enum.IsDefined(typeof(InfectionForm),form)||!Enum.IsDefined(typeof(InfectionForm),second))throw new ArgumentException("Invalid golem experience or infection form.");
             var lineupIds=new HashSet<string>(pieces.Select(p=>p.Id),StringComparer.Ordinal);
             var extras=new HashSet<string>(StringComparer.Ordinal);

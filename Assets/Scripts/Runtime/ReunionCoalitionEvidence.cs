@@ -75,7 +75,7 @@ namespace YesterdayConvoy
                     check(prefix+"real-prebattle-snapshot",Battle.ReunionTier==tier&&Battle.ReunionCount==tier&&
                         Battle.ReunionFormationCount==ReunionRules.FormationCount(ids)&&Math.Abs(Battle.ReunionAverageStar-1)<.001f);
                     shop.Validate();check(prefix+"stock-stays-finite",shop.Roles.All(role=>shop.Available(role.Id)+
-                        shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>p.Star==3?9:p.Star==2?3:1)+shop.Offers.Count(id=>id==role.Id)==9));
+                        shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>ShopTrialModel.Copies(p.Star))+shop.Offers.Count(id=>id==role.Id)==shop.Capacity(role.Id)));
                     if(!StartLoopNextBattle())throw new InvalidOperationException("Cannot begin Reunion tier "+tier+".");
                     yield return ReunionEvidenceReady();Battle.Begin();Battle.SetPaused(true);
                     int initialDP=Battle.DP,normalCost=0,required=Battle.ReunionMusterRequirement;
@@ -160,10 +160,10 @@ namespace YesterdayConvoy
     public sealed class ReunionCoalitionSmokeDriver:MonoBehaviour
     {
         static bool installed;
-        public static bool Requested=>Environment.GetCommandLineArgs().Any(a=>a=="-reunionCoalitionTest"||a=="-reunionTrial");
+        public static bool Requested=>Environment.GetCommandLineArgs().Any(a=>a=="-reunionCoalitionTest"||a=="-reunionTrial"||a=="-rosterLayoutTest");
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
-            var args=Environment.GetCommandLineArgs();bool smoke=Debug.isDebugBuild&&args.Contains("-reunionCoalitionTest");
+            var args=Environment.GetCommandLineArgs();bool smoke=Debug.isDebugBuild&&(args.Contains("-reunionCoalitionTest")||args.Contains("-rosterLayoutTest"));
             if(installed||(!smoke&&!args.Contains("-reunionTrial")))return;
             installed=true;var go=new GameObject("Reunion explicit verification");DontDestroyOnLoad(go);go.AddComponent<ReunionCoalitionSmokeDriver>();
         }
@@ -181,11 +181,12 @@ namespace YesterdayConvoy
                 yield return null;
             }
             if(controller==null||!controller.SynergySandbox||!controller.Loop.CanShop||controller.ArtLoading||controller.ShopPanelTransitioning)throw new InvalidOperationException("ReunionTrial startup timed out.");
-            yield return controller.VerifyReunionCoalition(directory);
+            if(Environment.GetCommandLineArgs().Contains("-rosterLayoutTest"))yield return controller.VerifyShopRoster(directory);
+            else yield return controller.VerifyReunionCoalition(directory);
         }
         IEnumerator Start()
         {
-            var args=Environment.GetCommandLineArgs();bool smoke=Debug.isDebugBuild&&args.Contains("-reunionCoalitionTest");
+            var args=Environment.GetCommandLineArgs();bool smoke=Debug.isDebugBuild&&(args.Contains("-reunionCoalitionTest")||args.Contains("-rosterLayoutTest"));
             int at=Array.IndexOf(args,"-demoEvidenceDir");
             string directory=at>=0&&at+1<args.Length?Path.GetFullPath(args[at+1]):Path.GetFullPath("artifacts/reunion-player");
             if(smoke)Directory.CreateDirectory(directory);

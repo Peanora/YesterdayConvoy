@@ -26,8 +26,8 @@ namespace YesterdayConvoy.Tests
         {
             foreach(var role in c.Shop.Roles)
             {
-                int owned=c.Shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>p.Star==3?9:p.Star==2?3:1);
-                Assert.That(c.Shop.Available(role.Id)+owned+c.Shop.Offers.Count(id=>id==role.Id),Is.EqualTo(9),role.Id);
+                int owned=c.Shop.Bench.Where(p=>p.Id==role.Id).Sum(p=>ShopTrialModel.Copies(p.Star));
+                Assert.That(c.Shop.Available(role.Id)+owned+c.Shop.Offers.Count(id=>id==role.Id),Is.EqualTo(c.Shop.Capacity(role.Id)),role.Id);
             }
             c.Shop.Validate();
         }

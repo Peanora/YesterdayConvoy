@@ -9,8 +9,7 @@ namespace YesterdayConvoy
 
         BasicRosterProfile CampaignProfile(string id,int dp,int defense)
         {
-            int star=1;
-            foreach(var piece in shop.Bench)if(piece.Id==id&&piece.Star>star)star=piece.Star;
+            int star=ShopLineupPiece(id)?.Star??1;
             var source=CampaignBalance.Build(shopDefinitions[id],star,dp,defense);
             if(!BoostSandboxStats)return source;
             var u=source.Unit;var c=source.Combat;

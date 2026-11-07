@@ -92,7 +92,7 @@ namespace YesterdayConvoy
                 GUI.Label(owned,"持有 "+copies,LoopText(9,TextAnchor.MiddleCenter,ApprovedUi.Ink,500));
             }
             bool enabled=GUI.enabled;GUI.enabled=enabled&&trading&&shop.CanAfford(role.Cost);
-            if(GUI.Button(rect,new GUIContent(string.Empty,role.Name+" · "+role.Cost+"金币 · 持有"+copies+"/9"),GUIStyle.none))
+            if(GUI.Button(rect,new GUIContent(string.Empty,role.Name+" · "+role.Cost+"金币 · 持有"+copies+"/"+shop.Capacity(id)),GUIStyle.none))
             {shopPurchaseOrigin=global.center;PurchaseShopCard(slot);}
             GUI.enabled=enabled;
         }
@@ -122,7 +122,7 @@ namespace YesterdayConvoy
                     Fill(new Rect(row.x,row.y,3,row.height),Color.Lerp(ApprovedUi.Tier(role.Cost),Color.white,.25f));
                     DrawTestPortrait(new Rect(row.x+5,row.y+1,31,32),OriginalTalulahArt.CardPortrait(shopDefinitions[id].Card));
                     GUI.Label(new Rect(row.x+42,row.y+2,row.width-76,17),role.Name,LoopText(12,TextAnchor.MiddleLeft,null,600));
-                    string tags=(copies>0?"持有 "+copies+"/9 · ":"")+string.Join(" / ",ShopTags(id));
+                    string tags=(copies>0?"持有 "+copies+"/"+shop.Capacity(id)+" · ":"")+string.Join(" / ",ShopTags(id));
                     GUI.Label(new Rect(row.x+42,row.y+20,row.width-79,12),tags,LoopText(8,TextAnchor.MiddleLeft,upgrade>0?new Color(.52f,.39f,.16f):ApprovedUi.Muted));
                     if(shopCoin!=null)GUI.DrawTexture(new Rect(row.xMax-29,row.y+11,11,11),shopCoin,ScaleMode.ScaleToFit,true);
                     GUI.Label(new Rect(row.xMax-16,row.y+4,13,26),role.Cost.ToString(),LoopText(16,TextAnchor.MiddleCenter,null,600));

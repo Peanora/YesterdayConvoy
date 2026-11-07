@@ -154,16 +154,22 @@ namespace YesterdayConvoy
             if(CampaignActive)return CreateCampaignBattle();
             bool stronghold=defenderTrial!=null&&StrongholdChallengeLayout.IsStronghold(defenderTrial.mapId);
             bool challenge=defenderTrial!=null&&defenderTrial.mapId==StrongholdChallengeLayout.Id;
-            var result=new ManualBattle(BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot(),
+            var settings=BattleShopLoopActive?BattleShopStages.Settings(definition.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(definition.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(definition.Snapshot()):definition.Snapshot();
+            var primary=ShopTrialActive?ShopStarProfile(definition,settings):null;
+            var result=new ManualBattle(primary?.Unit??settings,
             defenderTrial!=null ? defenderTrial.route : scene.Waypoints,
-            definition.Engagement.DefenderPosition,definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
+            definition.Engagement.DefenderPosition,primary?.Combat??definition.Engagement.Snapshot(),definition.Engagement.ExtraDefenders,
             defenderTrial!=null ? defenderTrial.Snapshot() : null,
             defenderTrial!=null ? defenderTrial.LaneSnapshot() : null,
             allowEmptyRoster:defenderTrial!=null&&defenderTrial.terrainOnly);
             if(TacticalMapActive && defenderTrial.rosterCards?.Length>0)
             {
                 var profiles=new System.Collections.Generic.List<BasicRosterProfile>();
-                foreach(var data in defenderTrial.rosterCards)profiles.Add(new BasicRosterProfile(BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot(),data.Engagement.Snapshot()));
+                foreach(var data in defenderTrial.rosterCards)
+                {
+                    var mapped=BattleShopLoopActive?BattleShopStages.Settings(data.Snapshot(),Loop.LateGame):challenge?StrongholdChallengeLayout.Settings(data.Snapshot()):stronghold?StrongholdMapLayout.TrialSettings(data.Snapshot()):data.Snapshot();
+                    profiles.Add(ShopTrialActive?ShopStarProfile(data,mapped):new BasicRosterProfile(mapped,data.Engagement.Snapshot()));
+                }
                 result.ConfigureCardLoadout(profiles);
             }
             var mudrockTrial=FindAnyObjectByType<MudrockTrialBootstrap>();if(mudrockTrial!=null)mudrockTrial.Configure(result);
@@ -198,14 +204,14 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { if(TestSelectionOpen) return; Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
             if(Loop!=null&&(!Loop.CanDeploy||Loop.RewardStage))return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
-            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) Battle.Begin();
+            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) { CompactShopLineupSeats(); Battle.Begin(); }
             var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
             Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.FindCard(DeploymentDefinition.Card.CardId)?.Settings.DeploymentCost??DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
@@ -237,7 +243,7 @@ namespace YesterdayConvoy
             if(Input.GetKeyDown(KeyCode.Space)) Battle.SetPaused(!Battle.IsPaused);
             if(Dragging) ProcessPointerMove(Input.mousePosition);
             if(Input.GetKeyDown(KeyCode.E) && SkillMenuOpen) CastFocusedSkill();
-            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) CancelInteraction();
+            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) { if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); }
             Tick(Time.deltaTime);
         }
 
@@ -324,7 +330,7 @@ namespace YesterdayConvoy
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
         private void OnApplicationFocus(bool focus)
-        { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); CancelInteraction(); } }
+        { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); } }
 
         private void CreatePreview()
         {

@@ -21,8 +21,7 @@ namespace YesterdayConvoy
             if(shop==null||bench<0||bench>=shop.Bench.Count)return Rect.zero;
             if(Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop)return ShopPreparationPieceRect(bench);
             var piece=shop.Bench[bench];int index=shopLineup.IndexOf(piece.Id);
-            var best=shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First();
-            return index<0||piece.Instance!=best.Instance?Rect.zero:LoopRosterRect(index);
+            return index<0||!IsLineupPiece(piece)?Rect.zero:LoopRosterRect(index);
         }
         GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
             =>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
@@ -146,7 +145,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(r.x,r.yMax-27,r.width,27),Color.Lerp(ApprovedUi.Tier(card.RecruitCost),Color.black,.34f));
                 GUI.Label(new Rect(r.x+5,r.yMax-27,r.width-10,17),card.DisplayName,LoopText(card.DisplayName.Length>6?10:11,TextAnchor.MiddleLeft,Color.white,600));
                 GUI.Label(new Rect(r.x+5,r.yMax-12,r.width-10,12),state.RemainingUses+"次",LoopText(9,TextAnchor.MiddleLeft,new Color(.88f,.93f,.96f)));
-                int star=shop.Bench.Where(p=>p.Id==id).Select(p=>p.Star).DefaultIfEmpty(1).Max();
+                int star=ShopLineupPiece(id)?.Star??1;
                 GUI.Label(new Rect(r.x+37,r.y+4,r.width-41,21),new string('★',star),LoopText(12,TextAnchor.MiddleRight,new Color(1,.94f,.73f),600));
                 double cd=Battle.CardCooldown(id);
                 if(cd>0||state.RemainingUses==0||Battle.DP<state.Settings.DeploymentCost)

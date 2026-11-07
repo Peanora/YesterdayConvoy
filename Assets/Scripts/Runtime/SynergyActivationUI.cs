@@ -125,7 +125,10 @@ namespace YesterdayConvoy
             if(!SynergyActivationCanPrepare||CampaignUiModalOpen||loopMenuOpen||SynergyActivationWaitingForArrival)return;
             var batch=synergyActivationFeedback.Active;if(batch==null)return;
             for(int index=0;index<shopLineup.Count;index++)
-                SynergyActivationPresentation.DrawCard(ApprovedUi.LineupSlot(index),shopLineup[index],batch);
+                {
+                int piece=shop.Bench.ToList().FindIndex(p=>p.Instance==ShopLineupPiece(shopLineup[index])?.Instance);
+                if(piece>=0)SynergyActivationPresentation.DrawCard(ShopPieceRect(piece),shopLineup[index],batch);
+                }
         }
 
         void DisableSynergyActivationFeedback()

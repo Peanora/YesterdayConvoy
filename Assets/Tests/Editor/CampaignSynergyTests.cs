@@ -25,13 +25,13 @@ namespace YesterdayConvoy.Tests
             var m=Economy();var one=m.Commission("A");Assert.That(one.Success);Assert.That(m.Gold,Is.EqualTo(7));
             Assert.That(m.Commission("A").Success,Is.False);m.BeginPreparation();
             Assert.That(m.Commission("A").Success);Assert.That(m.Bench.Single().Star,Is.EqualTo(2));
-            Assert.That(m.Available("A"),Is.EqualTo(6));m.Validate();
+            Assert.That(m.Available("A"),Is.EqualTo(27));m.Validate();
             m.BeginPreparation();int gold=m.Gold;Assert.That(m.Commission("B").Success,Is.False);Assert.That(m.Gold,Is.EqualTo(gold));Assert.That(m.CommissionUsed,Is.False);
         }
-        [Test]public void InfiniteCurrencyStillConservesNineCopiesAndMergesToThreeStars()
+        [Test]public void InfiniteCurrencyStillConservesThirtyCopiesAndMergesOneCostToFourStars()
         {
-            var m=Economy(true);for(int i=0;i<8;i++)Assert.That(m.Commission("A").Success);
-            Assert.That(m.Bench.Single().Star,Is.EqualTo(3));Assert.That(m.Gold,Is.EqualTo(10));Assert.That(m.Available("A"),Is.Zero);
+            var m=Economy(true);for(int i=0;i<26;i++)Assert.That(m.Commission("A").Success);
+            Assert.That(m.Bench.Single().Star,Is.EqualTo(4));Assert.That(m.Gold,Is.EqualTo(10));Assert.That(m.Available("A"),Is.EqualTo(3));
             Assert.That(m.Commission("A").Success,Is.False);m.Validate();
             for(int i=0;i<500;i++)m.Refresh();Assert.That(m.Gold,Is.EqualTo(10));m.Validate();
         }
@@ -39,10 +39,10 @@ namespace YesterdayConvoy.Tests
         {
             var roles=new[]{new ShopTrialModel.Role{Id="HIGH",Name="High",Cost=cost},new ShopTrialModel.Role{Id="OTHER",Name="Other",Cost=1}};
             var normal=new ShopTrialModel(roles);normal.EnableCampaign();normal.Preset(new[]{new ShopTrialModel.Piece{Id="HIGH",Star=1}},Array.Empty<string>(),8,0,100);
-            Assert.That(normal.Commission("HIGH").Success,Is.False);Assert.That(normal.Gold,Is.EqualTo(100));Assert.That(normal.Available("HIGH"),Is.EqualTo(8));Assert.That(normal.CommissionUsed,Is.False);
+            Assert.That(normal.Commission("HIGH").Success,Is.False);Assert.That(normal.Gold,Is.EqualTo(100));Assert.That(normal.Available("HIGH"),Is.EqualTo(normal.Capacity("HIGH")-1));Assert.That(normal.CommissionUsed,Is.False);
             var sandbox=new ShopTrialModel(roles);sandbox.EnableCampaign(true);sandbox.Preset(new[]{new ShopTrialModel.Piece{Id="HIGH",Star=1}},Array.Empty<string>(),8,0,10);
             for(int copy=0;copy<8;copy++)Assert.That(sandbox.Commission("HIGH").Success,Is.True);
-            Assert.That(sandbox.Bench.Single().Star,Is.EqualTo(3));Assert.That(sandbox.Available("HIGH"),Is.Zero);
+            Assert.That(sandbox.Bench.Single().Star,Is.EqualTo(3));Assert.That(sandbox.Available("HIGH"),Is.EqualTo(sandbox.Capacity("HIGH")-9));
             Assert.That(sandbox.Gold,Is.EqualTo(10));Assert.That(sandbox.Commission("HIGH").Success,Is.False);sandbox.Validate();
         }
         [Test]public void SandboxHighCostCommissionCannotTakeDisplayedStockOrPartiallyMutateAFullBench()

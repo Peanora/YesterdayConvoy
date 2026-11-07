@@ -76,6 +76,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.False,"Dragging to the right edge sells the selected instance.");
             bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.False,"The already purchased offer stays empty.");
             c.EnterShopTrial();bought=c.PurchaseShopCard(1);
+            Assert.That(bought.Success,Is.True);
+            Assert.That(c.MoveShopCard(bought.Instance,true,1),Is.True,"Explicitly choose the dog's lineup position before deploying it.");
             int slot=c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance);
             Vector2 screen=Camera.main.WorldToScreenPoint(c.Battle.Entry),point=TacticalViewport.Current.FromScreen(screen);
             c.ProcessShopPointer(EventType.MouseDown,c.ShopPieceRect(slot).center);c.ProcessShopPointer(EventType.MouseDrag,point);c.ProcessShopPointer(EventType.MouseUp,point);
@@ -98,7 +100,13 @@ namespace YesterdayConvoy.Tests
                     Vector2 screen=Camera.main.WorldToScreenPoint(point),gui=TacticalViewport.Current.FromScreen(screen);
                     Assert.That(ManualBattleController.ShopBattlefieldRect.Contains(gui),Is.True,"A route or gate was cropped by the enlarged camera.");
                 }
-                Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));int gold=c.Shop.Gold;
+                Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
+                // Owned cards include the separate lineup. Fill all ten reserve seats explicitly.
+                var fullReserve=c.Shop.Bench.ToArray();
+                for(int i=0;i<fullReserve.Length;i++)Assert.That(c.MoveShopCard(fullReserve[i].Instance,false,i),Is.True);
+                for(int i=0;i<fullReserve.Length;i++)
+                    Assert.That(c.ShopPieceRect(c.Shop.Bench.ToList().FindIndex(p=>p.Instance==fullReserve[i].Instance)),Is.EqualTo(ManualBattleController.ShopBenchRect(i)));
+                int gold=c.Shop.Gold;
                 Assert.That(c.PurchaseShopCard(1).Success,Is.False);Assert.That(c.Shop.Gold,Is.EqualTo(gold));
                 Assert.That(c.Shop.PreviewPurchase(0).FinalStar,Is.EqualTo(preset==1?2:3));Assert.That(c.Shop.Bench.Count,Is.EqualTo(10));
                 foreach(var piece in c.Shop.Bench)Assert.That(c.ShopBenchPromotionRemaining(piece.Instance),Is.Zero,"Existing ranked pieces must be static.");

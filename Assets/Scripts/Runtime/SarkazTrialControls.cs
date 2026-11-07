@@ -26,7 +26,7 @@ namespace YesterdayConvoy
                 Loop.PresetGolemGrowth(0);ResetGolemExperienceFeedback();golemBenchmark=false;golemTrainingTab=false;
                 contractCard=ids[0];contractTargetIndex=0;shopLineup.Clear();shopLineup.AddRange(ids);commissionTarget=ids[0];shop.Refresh(true);
                 ConfigureLoopStage();SetShopVisible(true);
-                ShopNotice($"萨卡兹{tier}档试验预置 · 全员1星 · 真实九张库存");
+                ShopNotice($"萨卡兹{tier}档试验预置 · 全员1星 · 分费用真实库存");
             },$"准备萨卡兹{tier}档");
             return true;
         }

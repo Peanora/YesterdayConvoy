@@ -73,7 +73,7 @@ namespace YesterdayConvoy
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
             battle.ConfigureStrongholdMap(false);
-            battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
+            battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
@@ -111,7 +111,7 @@ namespace YesterdayConvoy
         {
             if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
         }
-        bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shop.Bench.Where(p=>p.Id==piece.Id).OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First().Instance==piece.Instance;
+        bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shopSeats.InLineup(piece.Instance);
         Rect CampaignPieceRect(int index)
         {
             if(index<0||index>=shop.Bench.Count)return Rect.zero;
@@ -243,7 +243,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 满{rule.Cost}点自动整令 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}/{Battle.GolemCapacity}级 XP{Loop.GolemExperience}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
-                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 九张库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
+                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 分费用库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
                 var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>SynergySandbox||shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
                 if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];

@@ -59,7 +59,7 @@ namespace YesterdayConvoy
         bool NeedsTalulahSecondPhase(IEnumerable<CardDefinition> cards)
         {
             if(!cards.Any(card=>card!=null&&card.CardId==OriginalTalulahArt.CardId))return false;
-            if(CampaignActive)return shopLineup.Contains(OriginalTalulahArt.CardId)&&shop.Bench.Any(p=>p.Id==OriginalTalulahArt.CardId&&p.Star==3);
+            if(CampaignActive)return ShopLineupPiece(OriginalTalulahArt.CardId)?.Star==3;
             if(Battle!=null&&Battle.EngagementEnabled&&Battle.CombatSettings.Effects.TalulahSecondPhase)return true;
             if(definition?.Card.CardId==OriginalTalulahArt.CardId&&definition.Engagement.Snapshot().Effects.TalulahSecondPhase)return true;
             return defenderTrial?.rosterCards?.Any(data=>data.Card.CardId==OriginalTalulahArt.CardId&&data.Engagement.Snapshot().Effects.TalulahSecondPhase)==true;

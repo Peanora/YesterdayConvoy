@@ -56,7 +56,7 @@ namespace YesterdayConvoy
 
         public static SupportStats ForSupport(int tier, bool ranged, float averageStar = 1)
         {
-            if (averageStar < 1 || averageStar > 3 || float.IsNaN(averageStar))
+            if (averageStar < 1 || averageStar > 4 || float.IsNaN(averageStar))
                 throw new ArgumentOutOfRangeException(nameof(averageStar));
             float health, attack, armor;
             switch (tier)

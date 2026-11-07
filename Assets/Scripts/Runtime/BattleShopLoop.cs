@@ -59,7 +59,7 @@ namespace YesterdayConvoy
             if(Loop==null||!Loop.CanShop||shopLineup.Count==0||shop.Bench.Count==0)return false;
             CompleteGolemExperienceFeedback();
             CancelArtPreparation();
-            SyncShopDeck(false);if(!Loop.PrepareBattle())return false;SetShopVisible(false);CancelShopDrag();return true;
+            CompactShopLineupSeats();SyncShopDeck(false);if(!Loop.PrepareBattle())return false;SetShopVisible(false);CancelShopDrag();return true;
         }
         void StepBattleShopLoop()
         {

@@ -35,17 +35,23 @@ namespace YesterdayConvoy
         public bool UnlimitedGold {get;private set;}
         public bool CommissionUsed {get;private set;}
         readonly HashSet<string> lineup=new HashSet<string>();
+        readonly HashSet<int> lineupInstances=new HashSet<int>();
         public int NextLevelXP=> (CampaignEconomy?CampaignPlan.XP:Experience)[Level];
         public bool CanAfford(int amount)=>UnlimitedGold||Gold>=amount;
         public void EnableCampaign(bool unlimited=false){CampaignEconomy=true;UnlimitedGold=unlimited;}
-        public bool SetLineup(IEnumerable<string> ids)
+        public bool IsLineupInstance(int instance)=>lineupInstances.Contains(instance);
+        public bool SetLineup(IEnumerable<string> ids,IEnumerable<int> preferredInstances=null)
         {
             var next=new HashSet<string>(ids);
-            if(next.Count>Level||next.Any(id=>!bench.Any(p=>p.Id==id))||CampaignEconomy&&bench.Count-next.Count>10)return false;
-            lineup.Clear();foreach(var id in next)lineup.Add(id);return true;
+            if(next.Count>Level||next.Any(id=>!bench.Any(p=>p.Id==id))||bench.Count-next.Count>10)return false;
+            var preferred=new HashSet<int>(preferredInstances??Enumerable.Empty<int>());
+            var selected=bench.Where(p=>preferred.Contains(p.Instance)).ToArray();
+            if(preferredInstances!=null&&(preferred.Count!=next.Count||selected.Length!=preferred.Count||selected.Any(p=>!next.Contains(p.Id))||selected.Select(p=>p.Id).Distinct().Count()!=next.Count))return false;
+            lineup.Clear();foreach(var id in next)lineup.Add(id);
+            lineupInstances.Clear();foreach(int instance in preferred)lineupInstances.Add(instance);return true;
         }
         public void BeginPreparation(){CommissionUsed=false;}
-        bool Fits(List<Piece> pieces)=>pieces.Count<=(CampaignEconomy?10+lineup.Count(id=>pieces.Any(p=>p.Id==id)):10);
+        bool Fits(List<Piece> pieces)=>pieces.Count<=10+lineup.Count(id=>pieces.Any(p=>p.Id==id));
         internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;
         public int Level {get;private set;}=5;
@@ -56,27 +62,31 @@ namespace YesterdayConvoy
         public IReadOnlyCollection<Role> Roles=>roles.Values;
         public int Available(string id)=>pool[id];
         public Role Definition(string id)=>roles[id];
-        public static int Copies(int star)=>star==3?9:star==2?3:1;
+        public int Capacity(string id)=>StockForCost(roles[id].Cost);
+        public int MaxStar(string id)=>MaxStarForCost(roles[id].Cost);
+        public static int StockForCost(int cost)=>cost switch {1=>30,2=>25,3=>18,4=>10,5=>9,_=>throw new ArgumentOutOfRangeException(nameof(cost))};
+        public static int MaxStarForCost(int cost){_=StockForCost(cost);return cost==1?4:3;}
+        public static int Copies(int star)=>star switch {1=>1,2=>3,3=>9,4=>27,_=>throw new ArgumentOutOfRangeException(nameof(star))};
         static Result Fail(string text)=>new Result {Message=text};
 
         public ShopTrialModel(IEnumerable<Role> definitions,int seed=73191)
         {
             roles=definitions.ToDictionary(r=>r.Id,StringComparer.Ordinal);
             if(roles.Count==0||roles.Values.Any(r=>r.Cost<1||r.Cost>5))throw new ArgumentException("Invalid shop roles");
-            pool=roles.Keys.ToDictionary(id=>id,id=>9);random=new Random(seed);
+            pool=roles.Keys.ToDictionary(id=>id,Capacity);random=new Random(seed);
         }
         public void Preset(IEnumerable<Piece> pieces,IEnumerable<string> cards,int level=5,int xp=18,int gold=80)
         {
             var b=pieces.Select(p=>p.Copy()).ToArray();var o=cards.ToArray();
             if(b.Length>10||o.Length>5||level<1||level>10||gold<0||xp<0||level<10&&xp>=(CampaignEconomy?CampaignPlan.XP:Experience)[level])throw new ArgumentException("Invalid trial preset");
             var reserved=roles.Keys.ToDictionary(id=>id,id=>0);
-            foreach(var p in b){if(p.Star<1||p.Star>3||!roles.ContainsKey(p.Id))throw new ArgumentException("Invalid piece");reserved[p.Id]+=Copies(p.Star);}
+            foreach(var p in b){if(!roles.ContainsKey(p.Id)||p.Star<1||p.Star>MaxStar(p.Id))throw new ArgumentException("Invalid piece");reserved[p.Id]+=Copies(p.Star);}
             foreach(var id in o){if(!roles.ContainsKey(id))throw new ArgumentException("Invalid offer");reserved[id]++;}
-            if(reserved.Values.Any(n=>n>9))throw new ArgumentException("Preset exceeds stock");
+            if(reserved.Any(pair=>pair.Value>Capacity(pair.Key)))throw new ArgumentException("Preset exceeds stock");
             bench.Clear();sequence=0;foreach(var p in b){p.Instance=++sequence;bench.Add(p);}
             Array.Clear(offers,0,5);Array.Copy(o,offers,o.Length);
-            foreach(var id in roles.Keys)pool[id]=9-reserved[id];
-            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;GuaranteedRefreshOffer=null;rewards.Clear();WinStreak=0;lineup.Clear();CommissionUsed=false;Validate();
+            foreach(var id in roles.Keys)pool[id]=Capacity(id)-reserved[id];
+            Level=level;XP=level==10?0:xp;Gold=gold;Locked=false;GuaranteedRefreshOffer=null;rewards.Clear();WinStreak=0;lineup.Clear();lineupInstances.Clear();CommissionUsed=false;Validate();
         }
         public Result PreviewPurchase(int index)=>PlanPurchase(index,out _);
         Result PlanPurchase(int index,out List<Piece> planned)
@@ -90,9 +100,9 @@ namespace YesterdayConvoy
             var role=roles[id];
             planned=bench.Select(p=>p.Copy()).ToList();var incoming=new Piece{Instance=sequence+1,Id=id,Star=1};planned.Add(incoming);
             int target=incoming.Instance,star=1;
-            for(int tier=1;tier<3;tier++)
+            for(int tier=1;tier<MaxStar(id);tier++)
             {
-                var group=planned.Where(p=>p.Id==id&&p.Star==tier).Take(3).ToArray();
+                var group=planned.Where(p=>p.Id==id&&p.Star==tier).OrderByDescending(p=>IsLineupInstance(p.Instance)).ThenBy(p=>p.Instance).Take(3).ToArray();
                 if(group.Length!=3)continue;
                 group[0].Star++;planned.Remove(group[1]);planned.Remove(group[2]);target=group[0].Instance;star=group[0].Star;
             }
@@ -114,7 +124,7 @@ namespace YesterdayConvoy
         public Result Sell(int instance)
         {
             var quote=Quote(instance);if(!quote.Success)return quote;
-            bench.RemoveAll(p=>p.Instance==instance);if(!UnlimitedGold)Gold+=quote.Value;pool[quote.Id]+=Copies(quote.FinalStar);Validate();return quote;
+            bench.RemoveAll(p=>p.Instance==instance);lineupInstances.Remove(instance);if(!UnlimitedGold)Gold+=quote.Value;pool[quote.Id]+=Copies(quote.FinalStar);Validate();return quote;
         }
         public Result Upgrade()
         {
@@ -148,7 +158,7 @@ namespace YesterdayConvoy
         {
             if(!CampaignEconomy)return Fail("本模式未开放委托");
             if(CommissionUsed&&!UnlimitedGold)return Fail("本关委托已使用");
-            if(!roles.TryGetValue(id,out var role)||role.Cost>3&&!UnlimitedGold||!bench.Any(p=>p.Id==id)||bench.Any(p=>p.Id==id&&p.Star==3)||Odds[Level-1][role.Cost-1]==0)return Fail(UnlimitedGold?"委托需已持有、已解锁且未三星的角色":"委托需已持有、已解锁且未三星的1–3费角色");
+            if(!roles.TryGetValue(id,out var role)||role.Cost>3&&!UnlimitedGold||!bench.Any(p=>p.Id==id)||bench.Any(p=>p.Id==id&&p.Star>=MaxStar(id))||Odds[Level-1][role.Cost-1]==0)return Fail(UnlimitedGold?"委托需已持有、已解锁且未达最高星的角色":"委托需已持有、已解锁且未达最高星的1–3费角色");
             if(pool[id]<=0)return Fail("无可抽库存；请检查当前商品");
             var result=PlanIncoming(id,out var planned);if(!result.Success)return result;
             result.Value=role.Cost+2;
@@ -177,9 +187,9 @@ namespace YesterdayConvoy
         }
         public void Validate()
         {
-            if(Gold<0||bench.Count>(CampaignEconomy?10+lineup.Count(id=>bench.Any(p=>p.Id==id)):10)||bench.Select(p=>p.Instance).Distinct().Count()!=bench.Count)throw new InvalidOperationException("Invalid shop state");
+            if(Gold<0||bench.Count>10+lineup.Count(id=>bench.Any(p=>p.Id==id))||bench.Select(p=>p.Instance).Distinct().Count()!=bench.Count||bench.Any(p=>!roles.ContainsKey(p.Id)||p.Star<1||p.Star>MaxStar(p.Id)))throw new InvalidOperationException("Invalid shop state");
             foreach(var id in roles.Keys)
-                if(pool[id]<0||pool[id]+offers.Count(o=>o==id)+bench.Where(p=>p.Id==id).Sum(p=>Copies(p.Star))!=9)throw new InvalidOperationException("Stock mismatch: "+id);
+                if(pool[id]<0||pool[id]+offers.Count(o=>o==id)+bench.Where(p=>p.Id==id).Sum(p=>Copies(p.Star))!=Capacity(id))throw new InvalidOperationException("Stock mismatch: "+id);
         }
     }
 }

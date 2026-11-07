@@ -157,7 +157,7 @@ namespace YesterdayConvoy
                 for(int i=0;i<ids.Length;i++)
                 {
                     string id=ids[i];
-                    GUI.enabled=enabled&&shop.Bench.Any(p=>p.Id==id)&&!shop.Bench.Any(p=>p.Id==id&&p.Star==3)&&shop.Available(id)>0;
+                    GUI.enabled=enabled&&shop.Bench.Any(p=>p.Id==id)&&!shop.Bench.Any(p=>p.Id==id&&p.Star>=shop.MaxStar(id))&&shop.Available(id)>0;
                     if(LoopButton(new Rect(694+i*110,445,104,20),"补1张 "+names[i]))CommissionCampaignCard(id);
                 }
                 GUI.enabled=enabled;

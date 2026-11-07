@@ -41,10 +41,8 @@ namespace YesterdayConvoy
         Rect ShopPreparationPieceRect(int index)
         {
             if(shop==null||index<0||index>=shop.Bench.Count)return Rect.zero;
-            var piece=shop.Bench[index];
-            if(IsLineupPiece(piece))return ApprovedUi.LineupSlot(shopLineup.IndexOf(piece.Id));
-            int slot=shop.Bench.Where(p=>!IsLineupPiece(p)).ToList().FindIndex(p=>p.Instance==piece.Instance);
-            return slot<0?Rect.zero:ApprovedUi.ReserveSlot(slot);
+            var seat=shopSeats.For(shop.Bench[index].Instance);
+            return !seat.HasValue?Rect.zero:seat.Value.Lineup?ApprovedUi.LineupSlot(seat.Value.Index):ApprovedUi.ReserveSlot(seat.Value.Index);
         }
         bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)||ShopSellRightRect.Contains(point);
         bool ShopUiBlocksPoint(Vector2 point)
@@ -106,17 +104,18 @@ namespace YesterdayConvoy
             }
             EnterDefense(shopMapCopy);
             shopMapCameraPosition=Camera.main.transform.position;
-            SyncShopDeck();
+            SyncShopDeck(true);
             ShopNotice(preset==0?"Tab 打开商店；拖到红门部署，拖到左右两侧出售":"满席测试：点击第一张弩手，直接合成并腾出空位");
         }
-        void SyncShopDeck(bool autoFill=true,bool newStage=false)
+        void SyncShopDeck(bool autoFill=false,bool newStage=false)
         {
             if(shop==null||!newStage&&(Battle.Phase!=BattlePhase.Ready||Loop!=null&&!Loop.CanShop))return;
             PruneGuerrillaTransfers();
             shopLineup.RemoveAll(id=>!shop.Bench.Any(p=>p.Id==id));
             if(autoFill)foreach(var piece in shop.Bench)
                 if(shopLineup.Count<shop.Level&&!shopLineup.Contains(piece.Id))shopLineup.Add(piece.Id);
-            if(CampaignActive&&!shop.SetLineup(shopLineup)){ShopNotice("独立备战已满，请先出售或合成");return;}
+            SyncShopSeats();
+            if(!shop.SetLineup(shopLineup,shop.Bench.Where(IsLineupPiece).Select(p=>p.Instance))){ShopNotice("独立备战已满，请先出售或合成");return;}
             shopDeck.Clear();foreach(string id in shopLineup)shopDeck.Add(shopDefinitions[id]);
             var effective=shopDeck.Count>0?shopDeck:new List<ManualBattleDefinition>{shopDefinitions["CARD_M08"]};
             defenderTrial.battle=effective[0];defenderTrial.rosterCards=effective.Skip(1).ToArray();definition=effective[0];
@@ -176,7 +175,11 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result SellShopCard(int instance)
         {
             if(shop==null||Battle.Phase!=BattlePhase.Ready||Loop!=null&&!Loop.CanShop)return new ShopTrialModel.Result{Message="战斗中不能出售"};
-            var r=shop.Sell(instance);if(r.Success)SyncShopDeck(false);ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 金币":r.Message);return r;
+            var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);
+            bool wasLineup=piece!=null&&IsLineupPiece(piece);
+            var r=shop.Sell(instance);
+            if(r.Success){if(wasLineup)shopLineup.Remove(r.Id);SyncShopDeck(false);}
+            ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 金币":r.Message);return r;
         }
         void ShopNotice(string message){shopMessage=message;shopMessageUntil=Time.unscaledTime+3;}
         public void CancelShopDrag(){CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
@@ -190,7 +193,9 @@ namespace YesterdayConvoy
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
             if(shop==null)return false;
-            if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen){CancelSarkazContractBadgeDrag();return false;}
+            if(type==EventType.KeyDown&&Event.current!=null&&Event.current.keyCode==KeyCode.Escape){CancelShopDrag();return false;}
+            if(button!=0&&(shopDrag>=0||sarkazContractBadgeDragging)){CancelShopDrag();return true;}
+            if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen){CancelShopDrag();return false;}
             if(button!=0&&sarkazContractBadgeDragging){CancelSarkazContractBadgeDrag();return true;}
             if(button==0&&ProcessSarkazContractBadgePointer(type,point))return true;
             if(Loop==null&&Battle.Phase!=BattlePhase.Ready&&Battle.Phase!=BattlePhase.Running)return false;
@@ -219,21 +224,19 @@ namespace YesterdayConvoy
             int instance=shopDrag;bool moved=shopMoving;shopDrag=-1;shopMoving=false;
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==instance);if(piece==null)return true;
             if(moved&&(Loop==null||Loop.CanShop)&&ShopSalePoint(point)){SellShopCard(instance);return true;}
+            if(moved&&ShopSeatsEditable&&ShopSeatAt(point,out bool lineup,out int slot)){MoveShopCard(instance,lineup,slot);return true;}
             if(moved&&Loop!=null&&Loop.CanShop)return true;
             if(moved&&ShopMapPointAvailable(point))
             {
                 int index=shopLineup.IndexOf(piece.Id);
-                if(index<0){ShopNotice("编队位已满：点击备战棋子调整编队，或先升级");return true;}
+                if(index<0||!IsLineupPiece(piece)){ShopNotice("请先将这张备战卡拖入编队，再部署");return true;}
                 selectedRosterIndex=index;Selected=true;
                 if(PointerGround(ScreenPosition(point),out var world)){var result=TryDeployAt(world,true);if(!result.Success||Loop==null)ShopNotice(result.Success?"部署成功 · 战斗开始后商店锁定":Feedback);}
                 Selected=false;return true;
             }
             if(!moved&&Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop))
             {
-                if(shopLineup.Contains(piece.Id)){if(CampaignActive&&shop.Bench.Count-shopLineup.Count>=10){ShopNotice("备战已满，无法移出编队");return true;}shopLineup.Remove(piece.Id);}
-                else if(shopLineup.Count<shop.Level)shopLineup.Add(piece.Id);
-                else {ShopNotice("编队位已满，先取消其他棋子或升级");return true;}
-                SyncShopDeck(false);
+                ToggleShopSeat(piece);
             }
             return true;
         }
