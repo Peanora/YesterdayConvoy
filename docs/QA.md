@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-07：V4旋转亮框、阶色优先与逐条播放
+
+- 人类确认项目外V4并明确排序后接入。延续codex/synergy-icons-tier-ui及既有PR #96，fetch确认main为b1d55e7且是本分支祖先，没有另建工程或切换工作目录。修改限定Feedback/Presentation/UI/Evidence、两组现有测试及表现文档/STATUS/QA。
+- `SynergyActivationFeedback`观察真实Tier/Members，同一观察的升档按`GradeFor`视觉档位降序、同阶按`SynergyTrialCatalog.Entries`内置顺序；每个Batch只有一条Pulse、单独Sequence，1.78秒后净空0.27秒。后来的触发追加、不重启有效活动条；降档/移出裁剪活动与待播，暂停冻结条及间隔，切战/离开全部清理。Edit用反向九条输入和泥岩5金先于萨卡兹6金，排除输入顺序及人数二次排序；近终点浮点舍入和大步跨间隔同样覆盖。
+- `SynergyActivationPresentation`按确认V4移植整圈亮框、外框−64°→+6°→0、内框短反旋与缩放回落，白徽延后0.13秒显现且不跟随旋转。IMGUI柔光用两张首次生成后缓存的遮罩近似Canvas模糊，没有每帧纹理/Material；扫光按矩形转角切段，减少冗余短线。原九徽、各档底牌、青绿最高阶及原音字节不改。
+- `SynergyActivationUI`按每条Sequence起一次原音，追加/模态恢复不重起；按队列边界重新检查购买到位。复核发现已播放条可能被随后同ID副本的购买光流误暂停，已将到位等待限定在Age==0，并以合法双份商店的两次真实购买验证不冻结、不重播、不额外升档/合成。
+- Unity6000.6.5f1完整EditMode **522/522**（`artifacts/synergy-v4-edit.xml`），其中反馈9/9；最终D3D11 PlayMode **25/25**（`artifacts/synergy-v4-play-final.xml`），包含反馈6/6及ApprovedUi、感染、商店与侧栏原19项回归，均0失败/跳过。首轮Play25/25后补入同类复购边界，再次跑最终25/25；不把重复运行累加为新测试数。仓库检查6630个跟踪文件及差异空白检查通过。
+- 运行源码 **b05643edbeebf880162ec7fd12b06072184cb2b5**，`SynergyActivationTools.BuildWindows`真实Windows x64 Development构建 **1050808480字节、0错误**，日志`artifacts/synergy-v4-build.log`。验证后将Windows-SynergyActivation完整同步至常用`Builds/Windows`，1937文件无缺失/长度差异，EXE、实际`YesterdayConvoy.Runtime.dll`、resources.assets/resS、globalgamemanagers及SOURCE.txt逐字节哈希一致；记录`artifacts/synergy-v4-build-copy-check.json`。
+- 最终可见独立Player：`artifacts/synergy-v4-player-1280/result.json`和`...-1920/result.json`各 **54/54**，尺寸实为1280×720/1920×1080，均正常退出。每轮7次真实OS点击，含原单条入队/移出/重达、关闭菜单、M16一次入队同时触发金整合与铜游击、净空菜单关闭、感染提示关闭。合法七张库存及模态打开夹具明确标识，没有注入Tier、伤害或非法库存，不冒称自然通关。
+- 捕获完整OnGUI `.08/.20/.40/.66s`四张旋转帧，及金、净空、铜、清理与模态前后画面；根与只读复核均实看关键画面。金档六关联卡徽记差异像素720p为285–328、1080p为653–742；六卡四边像素每边720p至少208、1080p至少456。铜档只亮两游击卡，四边720p至少161、1080p至少390；其余成员没有复用金徽，无关海嗣及净空无残留徽记。逐条独立原音、净空静音、菜单Age/采样和净空计时冻结、关闭恢复不重起、感染模态不吞反馈、切战与离开清理均通过。
+- 原52处Mandragora/Mephisto meta与本轮开工快照逐字节保持，原`.vscode/`和PackageManagerSettings本地项不提交；场景/Prefab/Packages/ProjectSettings没有任务修改。未重跑全量PlayMode、第二台电脑、自然长局、低配专项帧时或主观听感。IMGUI线条略硬、柔光略窄；首卡徽记短时经过编队栏标题，与确认稿相同，费用/星级/卡名仍可辨。源素材权利状态沿用记录，不把接入授权写成权利人授权。无ZIP/Releases、不自动合并main。
+
 ## 2026-11-07：羁绊达档反馈与原版金档提示音
 
 - Unity6000.6.5f1完整EditMode **518/518**，0失败/跳过（`artifacts/synergy-activation-edit.xml`）；相关D3D11 PlayMode新用例最终 **5/5**（`synergy-activation-play-delivery.xml`），原侧栏/感染提示/商店界面回归 **19/19**（`synergy-activation-regression.xml`），均0失败/跳过。覆盖真实2/4/6档、消失/降档后重达、同档换人剪除、同批多羁绊、游击8到9同阶色仍触发、菜单时钟/静音/切战/新挑战、实际购买原入场未完成不提前播。
