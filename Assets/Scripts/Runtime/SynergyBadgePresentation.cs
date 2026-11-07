@@ -46,6 +46,10 @@ namespace YesterdayConvoy
             switch (name)
             {
                 case "整合运动":
+                    return tier >= 8 ? SynergyVisualGrade.Prismatic :
+                        tier >= 6 ? SynergyVisualGrade.Gold :
+                        tier >= 4 ? SynergyVisualGrade.Silver :
+                        tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 case "感染生物":
                     return tier >= 6 ? SynergyVisualGrade.Gold :
                         tier >= 4 ? SynergyVisualGrade.Silver :

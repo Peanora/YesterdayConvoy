@@ -163,14 +163,14 @@ namespace YesterdayConvoy
             check("realSandboxScene",SceneManager.GetActiveScene().name=="SynergyTrial"&&SynergySandbox);
             var icons=SynergyTrialCatalog.Entries.Select(entry=>SynergyBadgePresentation.IconFor(entry.Tag)).ToArray();
             check("nineDistinctRealResourcesLoad",icons.All(icon=>icon!=null&&icon.width==256&&icon.height==256)&&icons.Distinct().Count()==9);
-            foreach(int count in new[]{2,4,6})
+            foreach(int count in new[]{2,4,6,8})
             {
                 yield return PrepareSynergyBadgeEvidenceRoster(SynergyTrialCatalog.Find("reunion").Members.Take(count).ToArray());
                 var row=CurrentSynergies.Single(summary=>summary.Name=="整合运动");
-                var expected=count==2?SynergyVisualGrade.Bronze:count==4?SynergyVisualGrade.Silver:SynergyVisualGrade.Gold;
+                var expected=count==2?SynergyVisualGrade.Bronze:count==4?SynergyVisualGrade.Silver:count==6?SynergyVisualGrade.Gold:SynergyVisualGrade.Prismatic;
                 check("real"+count+"KindRosterUses"+expected,row.Count==count&&row.Tier==count&&SynergyBadgePresentation.GradeFor(row.Name,row.Tier)==expected);
                 check("stockConservedAt"+count,shop.Roles.All(role=>shop.Available(role.Id)+shop.Bench.Where(piece=>piece.Id==role.Id).Sum(piece=>piece.Star==3?9:piece.Star==2?3:1)+shop.Offers.Count(id=>id==role.Id)==9));
-                yield return SynergyBadgeEvidenceFrame(directory,count==2?"diamond-02-bronze":count==4?"diamond-03-silver":"diamond-04-gold",check);
+                yield return SynergyBadgeEvidenceFrame(directory,count==2?"diamond-02-bronze":count==4?"diamond-03-silver":count==6?"diamond-04-gold":"diamond-04b-reunion-eight-prismatic",check,count==8?"整合运动":null);
             }
             yield return PrepareSynergyBadgeEvidenceRoster(SynergyBadgeGuerrillaRoster);
             var native=CurrentSynergies.Single(row=>row.Name=="游击队");

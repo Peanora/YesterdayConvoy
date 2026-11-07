@@ -75,13 +75,19 @@ namespace YesterdayConvoy.Tests
             yield return Load("Campaign");Assert.That(controller.SynergySandbox,Is.False);
             Assert.That(Rows.Length,Is.GreaterThan(0));Assert.That(Rows.All(row=>row.Tier==0&&SynergyBadgePresentation.GradeFor(row.Name,row.Tier)==SynergyVisualGrade.Inactive),Is.True);
             yield return Load("SynergyTrial");Assert.That(controller.SynergySandbox,Is.True);
-            foreach(int count in new[]{2,4,6})
+            foreach(int count in new[]{2,4,6,8})
             {
                 yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster",(object)SynergyTrialCatalog.Find("reunion").Members.Take(count).ToArray());
                 var row=Rows.Single(item=>item.Name=="整合运动");
-                var expected=count==2?SynergyVisualGrade.Bronze:count==4?SynergyVisualGrade.Silver:SynergyVisualGrade.Gold;
+                var expected=count==2?SynergyVisualGrade.Bronze:count==4?SynergyVisualGrade.Silver:count==6?SynergyVisualGrade.Gold:SynergyVisualGrade.Prismatic;
                 Assert.That(row.Tier,Is.EqualTo(count));Assert.That(SynergyBadgePresentation.GradeFor(row.Name,row.Tier),Is.EqualTo(expected));controller.Shop.Validate();
             }
+            string[] twoFormations={"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M20","CARD_M07"};
+            yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster",(object)twoFormations);
+            var limited=Rows.Single(item=>item.Name=="整合运动");
+            Assert.That(limited.Count,Is.EqualTo(8));Assert.That(limited.Tier,Is.EqualTo(6));
+            Assert.That(controller.Battle.ReunionCount,Is.EqualTo(8));Assert.That(controller.Battle.ReunionFormationCount,Is.EqualTo(2));
+            Assert.That(controller.Battle.ReunionTier,Is.EqualTo(limited.Tier),"The live sidebar and battle must agree when population is sufficient but formations are missing.");
             string[] ids={"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M20","CARD_M07","CARD_M08"};
             yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster",(object)ids);
             Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.True);Assert.That(controller.Battle.GuerrillaTier,Is.EqualTo(8));
@@ -98,6 +104,30 @@ namespace YesterdayConvoy.Tests
             controller.ProcessShopPointer(EventType.MouseDown,piece);controller.ProcessShopPointer(EventType.MouseDrag,entry);controller.ProcessShopPointer(EventType.MouseUp,entry);
             Assert.That(controller.Battle.Units,Is.Empty);Assert.That(controller.Battle.DP,Is.EqualTo(dp));Assert.That(controller.Shop.Bench.Count,Is.EqualTo(owned));
             Field("inspectedSynergy",null);Assert.That(controller.ShopMapPointAvailable(entry),Is.True);controller.Shop.Validate();
+        }
+
+        [UnityTest]public IEnumerator DenseLegalLineupScrollsActionsWithinTheSameBlockedViewport()
+        {
+            yield return Load("SynergyTrial");
+            yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster",(object)SynergyTrialCatalog.Find("reunion").Members.ToArray());
+            Assert.That(controller.StartLoopNextBattle(),Is.True);controller.SetShopVisible(false);yield return Wait();
+            var viewport=Rectangle("CampaignQuickActionsRect");
+            Assert.That((float)Invoke("CampaignQuickActionsContentHeight"),Is.LessThanOrEqualTo(viewport.height),"The default eight-kind trial needs no scrolling.");
+            Invoke("ReplaySandbox");
+            string[] dense={"CARD_M03","CARD_M19","CARD_M21","CARD_M24","CARD_M29","CARD_M30","CARD_M33","CARD_M34","CARD_M02","CARD_M07"};
+            yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster",(object)dense);
+            Assert.That(controller.StartLoopNextBattle(),Is.True);controller.SetShopVisible(false);yield return Wait();
+            controller.Battle.Begin();controller.Battle.SetPaused(true);Field("inspectedSynergy",null);
+            viewport=Rectangle("CampaignQuickActionsRect");float content=(float)Invoke("CampaignQuickActionsContentHeight");
+            Assert.That(content,Is.GreaterThan(viewport.height));Assert.That(viewport.yMax,Is.LessThan(552));controller.Shop.Validate();
+            // Geometry fixture only; actual scroll-wheel input is checked in the visible Player.
+            Field("campaignQuickActionsScroll",new Vector2(0,content-viewport.height));
+            var returnButton=new Rect(viewport.x,viewport.y+content-26-(content-viewport.height),157,26);
+            Assert.That(returnButton.yMin,Is.GreaterThanOrEqualTo(viewport.yMin));Assert.That(returnButton.yMax,Is.EqualTo(viewport.yMax));
+            Assert.That((bool)Invoke("CampaignOverlayBlocksPoint",returnButton.center),Is.True);
+            Assert.That(controller.ShopMapPointAvailable(returnButton.center),Is.False);
+            var below=new Vector2(viewport.center.x,viewport.yMax+2);
+            Assert.That((bool)Invoke("CampaignOverlayBlocksPoint",below),Is.False,"The clipped offscreen content must not extend the blocked map area.");
         }
 
         [UnityTest]public IEnumerator NineTagLayoutPreservesSupplementsScrollHitAreasAndReachableBattleActions()

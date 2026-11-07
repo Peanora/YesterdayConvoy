@@ -80,7 +80,9 @@ namespace YesterdayConvoy
         void TrueDamage(DeployedUnitState u,float amount)
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
-            ApplyUnitHealthDamage(u,AbsorbContractShield(u,amount));
+            // Facilities can consume an already active elite shield, but never
+            // begin its first-engagement window or change other shields' rules.
+            ApplyUnitHealthDamage(u,AbsorbReunionEliteShield(u,AbsorbContractShield(u,amount)));
         }
         void TrueDamage(DefenderState d,float amount)
         {

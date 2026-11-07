@@ -118,7 +118,7 @@ namespace YesterdayConvoy
                 foreach(var u in units)if(u.Active&&!u.IsReviving&&!UnitAirborne(u)&&GroundDistance(cell.Position,u.Motion.Position)<.7f)
                 {
                     now.Add(u.EntityId);u.SnowMove=Math.Min(u.SnowMove,1-cell.Layers*.1f);
-                    if(!cell.Visitors.Contains(u.EntityId)){TryDamageUnit(u.EntityId,d.Settings.Attack*.6f,CombatDamageType.Arts);d.SnowHits++;}
+                    if(!cell.Visitors.Contains(u.EntityId)){TryDefenderDamageUnit(u,d.Settings.Attack*.6f,CombatDamageType.Arts);d.SnowHits++;}
                 }
                 bool departed=false;foreach(string id in cell.Visitors)if(!now.Contains(id)){departed=true;break;}
                 cell.Visitors.Clear();foreach(string id in now)cell.Visitors.Add(id);
@@ -130,7 +130,7 @@ namespace YesterdayConvoy
                 if(!piece.Active)continue;bool trigger=false;
                 foreach(var u in units)trigger|=CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,piece.Position)<.85f;
                 if(!trigger)continue;piece.Active=false;piece.Time=Clock;d.ChessTriggers++;
-                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=1.5f)TryDamageUnit(u.EntityId,d.Settings.Attack*3.2f,CombatDamageType.Arts);
+                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=1.5f)TryDefenderDamageUnit(u,d.Settings.Attack*3.2f,CombatDamageType.Arts);
             }
             chessPieces.RemoveAll(c=>c.Time>0&&Clock-c.Time>.5);
         }

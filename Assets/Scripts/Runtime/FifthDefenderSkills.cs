@@ -21,7 +21,7 @@ namespace YesterdayConvoy
                 if(reserve!=null)
                 {
                     reserve.Reserve=false;reserve.Position=d.Settings.RelayPosition;reserve.HighGround=false;reserve.SkillSP=Math.Min(reserve.Settings.Skill.RequiredSP,reserve.SkillSP+6);d.Reinforcements++;
-                    foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,reserve.Position)<=1.3f)TryDamageUnit(u.EntityId,DefenderSkillAttack(d)*2.5f,CombatDamageType.Physical);
+                    foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,reserve.Position)<=1.3f)TryDefenderDamageUnit(u,DefenderSkillAttack(d)*2.5f,CombatDamageType.Physical);
                 }
             }
             if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno){d.MaxHealth=d.Settings.Health*1.7f;d.Health*=1.7f;}
@@ -96,7 +96,7 @@ namespace YesterdayConvoy
             }
         }
         bool ApplyFifthTrueDamage(DeployedUnitState u,float amount)
-        {if(!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount);return true;}
+        {if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount);return true;}
         bool ScheduleFifthAttack(DefenderState d,DeployedUnitState primary,float travel)
         {
             if(!IsFifth(d)||!IsFifthActive(d))return false;

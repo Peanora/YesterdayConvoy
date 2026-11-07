@@ -13,6 +13,16 @@ namespace YesterdayConvoy
         public bool Implemented=>Thresholds.Length>0;
         public string Effect {get;internal set;}
         public string[] Members {get;internal set;}
+        static string ReunionEffect()=>
+            "按战前编队不同整合卡种锁档；每种卡只属于本队、雪怪、游击、牧群中的一种编制。\n"+
+            "2档：2种，无编制限制；每轮部署2种，追加1名士兵，本场1轮，共1名。\n"+
+            "4档：4种，无编制限制；每轮部署3种，追加1名所选士兵或弩手，本场2轮，共2名。\n"+
+            "6档：6种且至少2编制；每轮部署3种，追加士兵、弩手各1，本场2轮，共4名。\n"+
+            "8档：8种且至少3编制；每轮部署3种，追加士兵、弩手各1，本场3轮，共6名。援军首次实际交战时获得自身最大生命20%护盾，持续5模拟秒。\n"+
+            "集结只计正常整合卡的成功部署，同种本轮只计一次；不要求同时存活，也无时间限制。每轮触发即清空，下轮可复用同种卡；触发部署不重复计入下一轮。战斗中不额外检查编制。\n"+
+            "援军随触发部署的红门与路线出现，不消耗DP或卡牌次数，穿门不扣防御。援军不参与集结、军令、牧群转化、碎冰等羁绊资源，不成为承契者；仍可正常攻击、承伤与接受基础治疗。\n"+
+            "援军基础生命/攻击/护甲：2档士兵80/14/0；4档士兵120/22/2、弩手90/24/0；6档士兵160/28/4、弩手110/30/1；8档士兵200/36/6、弩手140/38/2。\n"+
+            "生命、攻击乘[1+0.5×(战前整合平均星级−1)]，四舍五入；护甲不成长。均为物理普攻，间隔1.8秒、速度0.7；士兵射程0.75、弩手2.7。暂停冻结行动及护盾时间。";
         static string GuerrillaEffect()
         {
             var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。达到本档点数且有合格出手者时自动整令，不限次数；演出结束后才能再次触发。"};
@@ -34,9 +44,9 @@ namespace YesterdayConvoy
             var transfers=new HashSet<string>((extraMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.Guerrilla(id)));
             var mudrockTransfers=new HashSet<string>((extraMudrockMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.MudrockCrew(id)));
             string[] names={"整合运动","雪怪小队","感染生物","游击队","泥岩小队","牧群","深池","海嗣","萨卡兹"};
-            int[][] levels={new[]{2,4,6},new[]{2,5},new[]{2,4,6},new[]{2,4,6,8,9},new[]{2,4,5,6},new[]{2,4},new[]{2,4},new[]{2,4},new[]{2,4,6,8,9}};
+            int[][] levels={ReunionRules.Thresholds,new[]{2,5},new[]{2,4,6},new[]{2,4,6,8,9},new[]{2,4,5,6},new[]{2,4},new[]{2,4},new[]{2,4},new[]{2,4,6,8,9}};
             string[] effects={
-                "2档：部署2种不同卡触发1名援军，本场1次。\n4档：部署3种触发2名所选援军，本场2次。\n6档：部署3种触发士兵与弩手各1，本场3次；援军获15%生命护盾4秒。援军不扣蓝门防御。",
+                ReunionEffect(),
                 "冻结守军在2.5秒内受到两种不同原卡直接命中时碎冰。\n2档：50法伤，半径0.9/最多2人；消耗冻结，目标冷却4秒。\n5档：120法伤，半径1.5/最多5人；保留冻结，目标冷却3秒。\n仅5档：3次碎冰或霜星手动冰封发动8秒暴风雪，开启清零寒意；每次碎冰只计1点，天气期间不积累、不叠加、不续时。\n0/2/4/6秒全场寒潮，每次(60+目标最大生命2%)法伤、过法抗；碎冰/寒潮按雪怪平均星级每升1星+35%。\n寒冷：攻速70%；再次受寒冷冻结1.2秒。天气冻结结束后保护3秒，只防控制、不免寒潮伤害。",
                 "战前选主形态，6档再选另一种2档副形态。\n集群2/4/6：2只×55%、2只×70%、3只×55%生命/攻击；一次扣费，额外分体不扣蓝门。\n甲壳：18/30/35%生命护盾6秒，护甲+0/2/3。\n爆裂：原体死亡造成35/65/85法伤，半径1/1.2/1.3，最多2/3/3人；每升一星+35%。原有死亡爆炸独立保留并按自身范围/伤害类型结算；额外爆裂只算一次，不重复寒冷。",
                 GuerrillaEffect(),
@@ -46,7 +56,7 @@ namespace YesterdayConvoy
                 "海嗣 · 溟痕蔓延：每种海嗣本场首次有效输出或外来承伤，在脚下落种一次；重复部署、无敌、自损和支援不重复落种。\n2/4档：每6/4秒向相邻通行地面扩散一圈，全场覆盖至多8/16格；为尚未接敌的每种海嗣预留1格，高台不铺。\n海嗣站在溟痕上，原生神经损伤×1.5/2；地面守军踩溟痕每秒积累3点神经损伤，该地面积累不再乘倍率。壳海负责前锋落种，不新增神经普攻。\n神经积累100时爆发：100真实伤害、10秒眩晕，其间不再积累。无存活海嗣时溟痕休眠，后续部署恢复；战后清空。\n战斗中点击「查看溟痕范围」突出边界；守军神经条和海嗣×倍率标识显示真实状态。",
                 "众魂之契：战前把侧栏旁的萨卡兹徽章拖到萨卡兹编队卡，指定该卡为承契者；该卡所有正常部署实体统一受益，开战后锁定。羁绊外角色不能成为承契者。\n各档部署时自动触发，持续本场，无需手动释放、低血或阵亡充能，不消耗DP/技力。\n2/4/6/8/9档，全体萨卡兹最大生命+10/20/30/40/60%。\n2档：承契者攻击+35%、一次20%生命护盾。\n4档：攻击+60%、一次30%护盾。\n6档：攻击+90%、一次40%护盾；其他萨卡兹获一半攻击加成与入场盾。\n8档：攻击+120%、一次50%护盾；其他萨卡兹共享完整效果。\n9档「众魂归乡」：全体萨卡兹攻击永久+150%，部署时获得一次自身最大生命60%护盾。\n护盾按各自最终最大生命计算，同名取高、不累计；没有时限，但消耗后不定时补发。复起不重新触发；巨像、援军、转化体与分体不参与。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
-                .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
+                .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="整合运动"?ReunionRules.TierFor(s.Members):s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
                 .Where(s=>s.Count>0).OrderByDescending(s=>s.Tier>0).ThenByDescending(s=>s.Count).ToArray();
         }
     }
@@ -55,6 +65,10 @@ namespace YesterdayConvoy
         string inspectedSynergy;
         Vector2 guerrillaDetailScroll;
         Vector2 sarkazDetailScroll;
+        Vector2 reunionDetailScroll;
+        ManualBattle reunionNoticeBattle;
+        int reunionNoticeRun,reunionObservedMusters;
+        double reunionArrivalUntil=double.NegativeInfinity;
         const float SynergyRowPitch=48;
         const float SynergyHeaderHeight=26;
         Rect SynergyBoundsFor(int count,bool preparation)
@@ -89,7 +103,7 @@ namespace YesterdayConvoy
         void DrawSynergySidebar()
         {
             if(!CampaignActive)return;
-            DrawSnowstormFeedback();DrawMarineFieldFeedback();
+            DrawSnowstormFeedback();DrawMarineFieldFeedback();DrawReunionArrivalFeedback();
             var summaries=CurrentSynergies;var bounds=SynergyBoundsFor(summaries.Length,Loop.CanShop);
             Fill(new Rect(0,bounds.y,bounds.xMax,bounds.height),new Color(.065f,.11f,.165f,.95f));
             GUI.Label(new Rect(bounds.x+1,bounds.y,55,22),"羁绊",CampaignText(12,color:new Color(.92f,.95f,.98f),weight:600));
@@ -113,7 +127,8 @@ namespace YesterdayConvoy
                     SynergyBadgePresentation.DrawBadge(SynergyBadgeRect(row),s.Name,s.Tier,s.Count,scene.InterfaceFont);
                     GUI.Label(SynergyNameRect(row),s.Name+(s.Name=="泥岩小队"||s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(14,color:ink,weight:600));
                     SynergyBadgePresentation.DrawThresholds(SynergyThresholdRect(row),s.Thresholds,s.Tier,scene.InterfaceFont);
-                    if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
+                    if(s.Name=="整合运动")DrawReunionRow(row,s);
+                    else if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(s.Name=="泥岩小队")DrawGolemSidebarProgress(row);
                     else if(s.Name=="海嗣"&&s.Tier>0)DrawMarineRow(row);
                     else if(snowstorm)DrawSnowstormRow(row);
@@ -123,6 +138,7 @@ namespace YesterdayConvoy
             finally {GUI.EndScrollView();}
             var detail=summaries.FirstOrDefault(s=>s.Name==inspectedSynergy);if(detail==null){inspectedSynergy=null;return;}
             if(detail.Name=="感染生物"){DrawInfectionFormPanel(detail);return;}
+            if(detail.Name=="整合运动"){DrawReunionDetail(detail);return;}
             Fill(SynergyDetailRect,ApprovedUi.Paper);ApprovedUi.Border(SynergyDetailRect,ApprovedUi.Rule);
             GUI.Label(new Rect(268,102,510,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),CampaignText(17,weight:700));
             if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}
@@ -141,6 +157,114 @@ namespace YesterdayConvoy
             Fill(new Rect(268,430,588,1),ApprovedUi.Rule);
             var memberStyle=CampaignText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);memberStyle.wordWrap=true;
             GUI.Label(new Rect(268,441,588,54),"编队成员："+members+"\n按战前编队锁定；未部署或死亡不改变档位。",memberStyle);
+        }
+
+        static string ReunionCompositionProgress(SynergySummary summary)
+        {
+            int next=summary.Thresholds.FirstOrDefault(tier=>tier>summary.Tier);
+            if(next==0)next=8;
+            int formations=ReunionRules.FormationCount(summary.Members),required=ReunionRules.RequiredFormations(next);
+            return $"人数{summary.Count}/{next} · 编制{formations}"+(next>=6?$"/{required}":"");
+        }
+
+        void DrawReunionRow(Rect row,SynergySummary summary)
+        {
+            GUI.Label(SynergySupplementRect(row),ReunionCompositionProgress(summary),CampaignText(9,color:new Color(.77f,.88f,.82f)));
+        }
+
+        float DrawReunionBattleActions(float x,float y)
+        {
+            if(Battle.ReunionTier==0)return y;
+            bool complete=Battle.MusterUsed>=Battle.ReunionMusterLimit;
+            Rect panel=new Rect(x,y,157,65);Fill(panel,ApprovedUi.Paper);
+            if(GUI.Button(panel,GUIContent.none,GUIStyle.none)){inspectedSynergy="整合运动";campaignConstructOpen=false;CancelShopDrag();}
+            string label=complete?$"援军已齐 · {Battle.MusterUsed}/{Battle.ReunionMusterLimit}轮":$"集结 {Battle.MusterMemberIds.Count}/{Battle.ReunionMusterRequirement} · {Battle.MusterUsed}/{Battle.ReunionMusterLimit}轮";
+            GUI.Label(new Rect(x+7,y+1,143,19),label,CampaignText(11,weight:600));
+            DrawReunionMusterPortraits(new Vector2(x+7,y+24),complete?Array.Empty<string>():Battle.MusterMemberIds,complete?0:Battle.ReunionMusterRequirement,32,8);
+            if(complete)GUI.Label(new Rect(x+7,y+25,143,28),"点击查看编制与援军",CampaignText(10,color:ApprovedUi.Muted));
+            Fill(new Rect(x+7,y+60,143,2),ApprovedUi.Rule);
+            Fill(new Rect(x+7,y+60,143*(complete?1:Mathf.Clamp01((float)Battle.MusterMemberIds.Count/Battle.ReunionMusterRequirement)),2),ApprovedUi.Gold);
+            return y+69;
+        }
+
+        void DrawReunionMusterPortraits(Vector2 origin,IReadOnlyList<string> ids,int slots,float size,float gap)
+        {
+            for(int i=0;i<slots;i++)
+            {
+                Rect icon=new Rect(origin.x+i*(size+gap),origin.y,size,size);
+                Fill(icon,i<ids.Count?new Color(.72f,.86f,.76f):new Color(.86f,.88f,.87f));
+                ApprovedUi.Border(icon,i<ids.Count?new Color(.27f,.54f,.36f):ApprovedUi.Rule);
+                if(i<ids.Count&&shopDefinitions.TryGetValue(ids[i],out var definition))
+                {
+                    DrawTestPortrait(new Rect(icon.x+2,icon.y+2,size-4,size-4),definition.Card.Portrait);
+                    GUI.Label(icon,new GUIContent("",shop.Definition(ids[i]).Name),GUIStyle.none);
+                }
+                else GUI.Label(icon,"待集结",CampaignText(9,TextAnchor.MiddleCenter,ApprovedUi.Muted));
+            }
+        }
+
+        bool ReunionBattleHudVisible=>CampaignActive&&Loop.CanDeploy&&Battle!=null&&Battle.Phase==BattlePhase.Running&&
+            !loopMenuOpen&&!loopTestSettlementOpen&&!shopVisible&&!ShopPanelTransitioning&&!CampaignUiModalOpen;
+
+        void DrawReunionArrivalFeedback()
+        {
+            if(Battle==null)return;
+            if(!ReferenceEquals(reunionNoticeBattle,Battle)||reunionNoticeRun!=Battle.RunId)
+            {
+                reunionNoticeBattle=Battle;reunionNoticeRun=Battle.RunId;reunionObservedMusters=0;
+                reunionArrivalUntil=double.NegativeInfinity;
+            }
+            if(Battle.MusterUsed<reunionObservedMusters||Battle.Phase!=BattlePhase.Running)reunionArrivalUntil=double.NegativeInfinity;
+            if(Battle.MusterUsed>reunionObservedMusters&&Battle.Phase==BattlePhase.Running)reunionArrivalUntil=Battle.Clock+2;
+            reunionObservedMusters=Battle.MusterUsed;
+            if(!ReunionBattleHudVisible||Battle.ReunionTier==0||Battle.Clock>=reunionArrivalUntil)return;
+            Rect notice=new Rect(440,184,432,43);Fill(notice,ApprovedUi.Paper);ApprovedUi.Border(notice,ApprovedUi.Rule);
+            Fill(new Rect(notice.x,notice.y,3,notice.height),ApprovedUi.Gold);
+            GUI.Label(new Rect(notice.x+14,notice.y+3,404,22),$"整合运动 · 援军抵达 {Battle.MusterUsed}/{Battle.ReunionMusterLimit}轮",CampaignText(15,weight:600));
+            GUI.Label(new Rect(notice.x+14,notice.y+25,404,15),"沿刚才部署的红门进军 · 不额外消耗DP或次数",CampaignText(10,color:ApprovedUi.Muted));
+        }
+
+        void DrawReunionDetail(SynergySummary detail)
+        {
+            Fill(SynergyDetailRect,ApprovedUi.Paper);ApprovedUi.Border(SynergyDetailRect,ApprovedUi.Rule);
+            GUI.Label(new Rect(268,102,510,28),$"整合运动 · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":"未达2种"),CampaignText(17,weight:700));
+            if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}
+            GUI.Label(new Rect(268,135,588,22),ReunionCompositionProgress(detail)+"  ·  2/4不限编制，6需2编制，8需3编制",CampaignText(12,color:ApprovedUi.Muted));
+            Rect viewport=new Rect(268,164,588,326);float width=viewport.width-18;
+            var body=CampaignText(12,TextAnchor.UpperLeft);body.wordWrap=true;
+            float rulesHeight=body.CalcHeight(new GUIContent(detail.Effect),width)+10;
+            reunionDetailScroll=GUI.BeginScrollView(viewport,reunionDetailScroll,new Rect(0,0,width,344+rulesHeight),false,false);
+            try
+            {
+                if(Battle.ReunionTier>0)
+                {
+                    bool complete=Battle.MusterUsed>=Battle.ReunionMusterLimit;
+                    GUI.Label(new Rect(0,0,width,21),$"本轮集结 {Battle.MusterMemberIds.Count}/{Battle.ReunionMusterRequirement} · 已触发 {Battle.MusterUsed}/{Battle.ReunionMusterLimit}轮"+(complete?" · 本场已用尽":""),CampaignText(13,weight:600));
+                    DrawReunionMusterPortraits(new Vector2(0,25),Battle.MusterMemberIds,complete?0:Battle.ReunionMusterRequirement,30,9);
+                    GUI.Label(new Rect(130,25,width-130,32),$"整合平均 {Battle.ReunionAverageStar:0.##}星 · 援军生命/攻击×{ReunionRules.StarScale(Battle.ReunionAverageStar):0.##}",CampaignText(11,color:ApprovedUi.Muted));
+                }
+                else GUI.Label(new Rect(0,0,width,45),"先把两种不同整合卡编入队伍。成功部署才累计本轮集结。",body);
+                bool enabled=GUI.enabled;GUI.enabled=enabled&&Loop.CanShop&&Battle.ReunionTier==4;
+                if(LoopButton(new Rect(0,63,190,27),reunionRanged?"四档援军：弩手":"四档援军：士兵")){reunionRanged=!reunionRanged;SyncShopDeck(false);}
+                GUI.enabled=enabled;
+                GUI.Label(new Rect(202,66,width-202,21),Loop.CanShop?"仅影响四档，可在开战前更换":"开战时锁定；六/八档一近一远",CampaignText(10,color:ApprovedUi.Muted));
+                for(int formation=1;formation<=4;formation++)
+                {
+                    float top=102+(formation-1)*54;var members=detail.Members.Where(id=>ReunionRules.FormationOf(id)==formation).ToArray();
+                    GUI.Label(new Rect(0,top,78,20),ReunionRules.FormationName(formation),CampaignText(12,weight:600));
+                    GUI.Label(new Rect(0,top+21,78,17),members.Length+"种入编",CampaignText(10,color:ApprovedUi.Muted));
+                    if(members.Length==0)GUI.Label(new Rect(84,top+4,width-84,31),"尚未编入",CampaignText(11,color:ApprovedUi.Muted));
+                    for(int i=0;i<members.Length;i++)
+                    {
+                        float left=84+i*64;string id=members[i];
+                        if(shopDefinitions.TryGetValue(id,out var definition))DrawTestPortrait(new Rect(left+9,top,30,30),definition.Card.Portrait);
+                        GUI.Label(new Rect(left-4,top+32,62,17),shop.Definition(id).Name,CampaignText(9,TextAnchor.MiddleCenter));
+                    }
+                }
+                Fill(new Rect(0,323,width,1),ApprovedUi.Rule);
+                GUI.Label(new Rect(0,332,width,rulesHeight),detail.Effect,body);
+            }
+            finally{GUI.EndScrollView();}
         }
     }
 }

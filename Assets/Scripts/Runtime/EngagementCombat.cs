@@ -303,7 +303,7 @@ namespace YesterdayConvoy
                 if(shot.FromDefender)
                 {
                     float preHitHealth=unit.Health;bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDefenderDamageUnit(unit,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
                     if(damaged){if(unit.Health<preHitHealth)OnMarineContact(unit);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
@@ -313,7 +313,7 @@ namespace YesterdayConvoy
                         foreach(var other in units)
                             if(other!=unit && CanDefenderTarget(other) && GroundDistance(other.Motion.Position,unit.Motion.Position)<=shot.SplashRadius)
                             {
-                                if(TryDamageUnit(other.EntityId,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
+                                if(TryDefenderDamageUnit(other,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
                             }
                 }
                 else
@@ -411,6 +411,7 @@ namespace YesterdayConvoy
                 target=ordinary ? ChooseDefender(unit,range) : null; unit.HasCombatTarget=target!=null;
                 if(target!=null && !casting && Clock+0.000001>=unit.NextAttackTime)
                 {
+                    TryActivateReunionEntryShield(unit);
                     bool empowered=!c.FireRain && unit.SkillAmmo>0;
                     if(empowered) unit.SkillAmmo--;
                     else unit.OrdinaryAttacksFired++;

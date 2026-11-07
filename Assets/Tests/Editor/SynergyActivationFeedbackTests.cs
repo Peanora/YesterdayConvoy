@@ -21,10 +21,10 @@ namespace YesterdayConvoy.Tests
         {
             var feedback = new SynergyActivationFeedback();
             Assert.That(feedback.Observe(ReunionRows(1)), Is.False);
-            foreach (int count in new[] { 2, 3, 4, 5, 6 })
+            foreach (int count in new[] { 2, 3, 4, 5, 6, 7, 8 })
             {
                 int previous = feedback.Revision;
-                bool crossed = count == 2 || count == 4 || count == 6;
+                bool crossed = count == 2 || count == 4 || count == 6 || count == 8;
                 var rows = ReunionRows(count);
                 Assert.That(feedback.Observe(rows), Is.EqualTo(crossed));
                 Assert.That(feedback.Revision, Is.EqualTo(previous + (crossed ? 1 : 0)));
@@ -34,6 +34,31 @@ namespace YesterdayConvoy.Tests
                 feedback.Advance(10);
                 Assert.That(feedback.Pending, Is.False);
             }
+        }
+
+        [Test] public void SameCountFormationReplacementChangesTheActualTierAndUsesOnlyCurrentMembers()
+        {
+            string[] two={"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M20","CARD_M07"};
+            string[] three=two.Where(id=>id!="CARD_M20").Concat(new[]{"CARD_M11"}).ToArray();
+            Func<string[],SynergySummary[]> reunion=ids=>Rows(ids).Where(row=>row.Name=="整合运动").ToArray();
+            var feedback=new SynergyActivationFeedback();feedback.Observe(reunion(two));feedback.Advance(.1f);
+            Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(6));int revision=feedback.Revision;
+            Assert.That(feedback.Observe(reunion(three)),Is.True);Assert.That(feedback.Revision,Is.EqualTo(revision+1));
+            var eight=Pulse(feedback,"整合运动");Assert.That(eight.Tier,Is.EqualTo(8));Assert.That(eight.Members.Count,Is.EqualTo(8));
+            Assert.That(eight.ContainsMember("CARD_M11"),Is.True);Assert.That(eight.ContainsMember("CARD_M20"),Is.False);
+            Assert.That(SynergyBadgePresentation.GradeFor(eight.Name,eight.Tier),Is.EqualTo(SynergyVisualGrade.Prismatic));
+            Assert.That(feedback.Observe(reunion(two)),Is.True);Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(6));
+            Assert.That(feedback.PendingCount,Is.EqualTo(1),"The old prismatic pulse must not survive a formation downgrade.");
+        }
+
+        [Test] public void ANewKindWithinOneFormationDoesNotPretendToCrossTheSixKindTier()
+        {
+            string[] native={"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M20"};
+            var feedback=new SynergyActivationFeedback();
+            feedback.Observe(Rows(native.Take(4).ToArray()).Where(row=>row.Name=="整合运动").ToArray());feedback.Advance(.1f);
+            int revision=feedback.Revision;
+            Assert.That(feedback.Observe(Rows(native.Take(6).ToArray()).Where(row=>row.Name=="整合运动").ToArray()),Is.False);
+            Assert.That(feedback.Revision,Is.EqualTo(revision));Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(4));
         }
 
         [Test] public void SameTierReplacementPrunesTheOldMemberAndAnAbsentRowRearmsTheThreshold()

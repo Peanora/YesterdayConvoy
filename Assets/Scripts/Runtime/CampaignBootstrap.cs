@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(!sandbox&&ReunionCoalitionSmokeDriver.Requested)yield break;
             if(Array.Exists(args,a=>a=="-blackForest"||a=="-blackForestSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);yield break;}
             if(!sandbox&&Array.IndexOf(args,"-marineTideSmokeTest")>=0)yield break;
             if(!sandbox&&Array.IndexOf(args,"-marineTide")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("MarineTrial");yield break;}

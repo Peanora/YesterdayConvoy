@@ -66,6 +66,8 @@ namespace YesterdayConvoy
         public double DeathTime { get; internal set; } = double.PositiveInfinity;
         public UnitResolution Resolution { get; internal set; }
         public bool SynergySupport {get;internal set;}
+        public bool ReunionEliteSupport {get;internal set;}
+        public bool ReunionEntryShieldPending {get;internal set;}
         public bool Golem {get;internal set;}
         public Vector3 VisualOffset {get;internal set;}
         internal int LastGolemProc,LastGolemHeal;

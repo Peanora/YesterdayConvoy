@@ -231,7 +231,7 @@ namespace YesterdayConvoy
         internal IEnumerator VerifySynergyActivation(string directory,Action<string,bool> check)
         {
             diagnostic=true;Time.timeScale=0;Battle.SetPaused(false);
-            string[] reunion=SynergyTrialCatalog.Find("reunion").Members.ToArray();
+            string[] reunion=SynergyTrialCatalog.Find("reunion").Members.Take(6).ToArray();
             const string newcomer="CARD_M10",unrelated="CARD_M33";
             yield return PrepareSynergyBadgeEvidenceRoster(reunion.Concat(new[]{unrelated}).ToArray());
             shopLineup.Remove(newcomer);SyncShopDeck(false);ClearSynergyActivationFeedback(false);

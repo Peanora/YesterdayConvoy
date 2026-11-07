@@ -11,6 +11,12 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public int ReunionTier {get;private set;}
+        public int ReunionCount {get;private set;}
+        public int ReunionFormationCount {get;private set;}
+        public float ReunionAverageStar {get;private set;}=1;
+        public int ReunionMusterLimit=>ReunionRules.MusterLimit(ReunionTier);
+        public int ReunionMusterRequirement=>ReunionRules.KindsPerMuster(ReunionTier);
+        public IReadOnlyList<string> MusterMemberIds=>Array.AsReadOnly(musterKinds.OrderBy(id=>id,StringComparer.Ordinal).ToArray());
         public int SnowTier {get;private set;}
         public int MusterUsed {get;private set;}
         public int Shatters {get;private set;}
@@ -67,32 +73,40 @@ namespace YesterdayConvoy
             guerrillaMemberIds=Array.AsReadOnly(members);
             mudrockMembers.Clear();foreach(string id in crew)mudrockMembers.Add(id);
             mudrockMemberIds=Array.AsReadOnly(crew);
-            int reunion=synergyStars.Keys.Count(CampaignBalance.Reunion),snow=synergyStars.Keys.Count(CampaignBalance.Snow);
-            ReunionTier=reunion>=6?6:reunion>=4?4:reunion>=2?2:0;SnowTier=snow>=5?5:snow>=2?2:0;
+            var reunion=synergyStars.Keys.Where(CampaignBalance.Reunion).ToArray();
+            ReunionCount=reunion.Length;ReunionFormationCount=ReunionRules.FormationCount(reunion);
+            ReunionAverageStar=reunion.Length==0?1:(float)reunion.Average(id=>synergyStars[id]);
+            ReunionTier=ReunionRules.TierForCount(ReunionCount,ReunionFormationCount);
+            int snow=synergyStars.Keys.Count(CampaignBalance.Snow);SnowTier=snow>=5?5:snow>=2?2:0;
             reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience);ConfigureRemainingSynergies(contract,adaptation,secondAdaptation,marineExperience);ResetSynergies();
         }
         void ResetSynergies(){ResetSnowstorms();ResetRemainingSynergies();ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
         void OnMusterDeployment(DeployedUnitState trigger)
         {
-            if(!synergyEnabled||trigger.SynergySupport||ReunionTier==0||!synergyStars.ContainsKey(trigger.CardId))return;
-            int cap=ReunionTier==2?1:ReunionTier==4?2:3;
-            if(MusterUsed>=cap)return;
-            musterKinds.Add(trigger.CardId);if(musterKinds.Count<(ReunionTier==2?2:3))return;
+            if(!synergyEnabled||trigger.SynergySupport||ReunionTier==0||!CampaignBalance.Reunion(trigger.CardId)||!synergyStars.ContainsKey(trigger.CardId))return;
+            if(MusterUsed>=ReunionMusterLimit)return;
+            musterKinds.Add(trigger.CardId);if(musterKinds.Count<ReunionMusterRequirement)return;
             musterKinds.Clear();MusterUsed++;
-            int count=ReunionTier==2?1:2;
+            int count=ReunionRules.SupportsPerMuster(ReunionTier);
             for(int i=0;i<count;i++)
             {
                 var lane=lanes.First(l=>l.Id==trigger.RouteId);
-                bool archer=ReunionTier==6?i==1:ReunionTier==4&&reunionRanged;
-                var u=new DeployedUnitState($"run-{RunId}/support-{++sequence}",archer?"M08_ARCHER":"M07_SOLDIER",new RouteMotion(lane.Points,.7f),ReunionTier==2?80:ReunionTier==4?100:120,Clock)
-                    {CardId=archer?"CARD_M08":"CARD_M07",RouteId=lane.Id,ExitId=lane.ExitId,SynergySupport=true};
-                var combat=new EngagementSettings(unitAttack:ReunionTier==2?14:ReunionTier==4?18:22,unitArmor:0,unitRange:archer?2.7f:.75f,unitInterval:1.8f,
+                bool archer=ReunionTier>=6?i==1:ReunionTier==4&&reunionRanged;
+                var stats=ReunionRules.ForSupport(ReunionTier,archer,ReunionAverageStar);
+                var u=new DeployedUnitState($"run-{RunId}/support-{++sequence}",archer?"M08_ARCHER":"M07_SOLDIER",new RouteMotion(lane.Points,.7f),stats.Health,Clock)
+                    {CardId=archer?"CARD_M08":"CARD_M07",RouteId=lane.Id,ExitId=lane.ExitId,SynergySupport=true,ReunionEliteSupport=ReunionTier==8,ReunionEntryShieldPending=ReunionTier==8};
+                var combat=new EngagementSettings(unitAttack:stats.Attack,unitArmor:stats.Armor,unitRange:stats.Range,unitInterval:1.8f,
                     initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,melee:!archer);
                 var settings=new ManualBattleSettings(u.CardId,u.UnitId,1,1,1,1,1,u.MaxHealth,.7f,1,1,1,1);
-                if(archer)u.MaxHealth=u.Health=u.Health*.8f;
-                if(ReunionTier==6){u.SynergyShield=u.MaxHealth*.15f;u.SynergyShieldUntil=Clock+4;}
                 u.Profile=new BasicRosterProfile(settings,combat,true);units.Add(u);
             }
+        }
+        void TryActivateReunionEntryShield(DeployedUnitState unit)
+        {
+            if(!unit.Active||!unit.ReunionEliteSupport||!unit.ReunionEntryShieldPending)return;
+            unit.ReunionEntryShieldPending=false;
+            unit.SynergyShield=Mathf.Floor(unit.MaxHealth*.2f+.5f);
+            unit.SynergyShieldUntil=Clock+5;
         }
         void OnSynergyDirectHit(DeployedUnitState source,DefenderState target)
         {

@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             {Id=id;Title=title;SceneName=sceneName;Tag=tag;MaximumTier=maximum;members=roster;}
         }
         static readonly Entry[] entries={
-            new Entry("reunion","整合运动","ReunionTrial","整合运动",6,"CARD_M07","CARD_M08","CARD_M09","CARD_M10","CARD_M15","CARD_M16"),
+            new Entry("reunion","整合运动","ReunionTrial","整合运动",8,"CARD_M07","CARD_M08","CARD_M09","CARD_M10","CARD_M15","CARD_M16","CARD_M11","CARD_M21"),
             new Entry("snow","雪怪小队","SnowTrial","雪怪小队",5,"CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14"),
             new Entry("infection","感染生物","InfectionTrial","感染生物",6,"CARD_ORIGINIUM_SLUG","CARD_M02","CARD_M03","CARD_M04","CARD_M05","CARD_M06"),
             new Entry("guerrilla","游击队","GuerrillaTrial","游击队",6,"CARD_M03","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19"),
