@@ -22,7 +22,6 @@ namespace YesterdayConvoy.Tests
         }
         static DeployedUnitState Deploy(ManualBattle b,string id,long request)=>b.FindUnit(b.TryDeployRole(b.RunId,request,b.Entry,id).EntityId);
         static void Hit(ManualBattle b,DefenderState d,float attack,bool derived=false,DeployedUnitState source=null)=>Call(b,"DamageDefender",d,attack,CombatDamageType.Arts,derived,source,1f);
-        static void Burning(ManualBattle b,DefenderState d)=>d.GetType().GetProperty("BurnUntil").SetValue(d,b.Clock+10);
         [Test]public void AllNineTraitsHaveRuntimeThresholdsAndAllAvailableMembersAreInPool()
         {
             var rows=SynergySummary.From(CampaignBalance.Profiles.Keys);Assert.That(rows.Length,Is.EqualTo(9));Assert.That(rows.All(r=>r.Implemented));
@@ -57,19 +56,20 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<6;i++){var u=Deploy(b,Herd[0],10+i);Assert.That(u,Is.Not.Null);b.TryDamageUnit(u.EntityId,1000,CombatDamageType.Physical);b.Advance(.11f);}
             Assert.That(b.HerdUsed,Is.EqualTo(5));
         }
-        [Test]public void DeepSpreadHasCorrectDotBudgetAndDerivedKillsNeverCreateSeeds()
+        [Test]public void DeepSpreadHasCorrectDotBudgetAndNonDeepDerivedKillsNeverCreateSeeds()
         {
-            var b=Make(new[]{"CARD_M29","CARD_M30"});Burning(b,b.Defenders[0]);Hit(b,b.Defenders[0],1000);
+            var b=Make(new[]{"CARD_M29","CARD_M30"});var source=Deploy(b,"CARD_M29",1);Hit(b,b.Defenders[0],1000,source:source);
             Assert.That(b.DeepCharges,Is.EqualTo(1));float hp=b.Defenders[1].Health;b.Advance(1);Assert.That(hp-b.Defenders[1].Health,Is.EqualTo(15).Within(.4));
             Hit(b,b.Defenders[1],1000,true);Assert.That(b.DeepCharges,Is.EqualTo(1));Assert.That(b.TryDetonateDeep(b.RunId,1),Is.False);
+            Assert.That(b.DeepBurnRemaining(b.Defenders[2].EntityId),Is.EqualTo(3).Within(.06));
         }
         [Test]public void DeepFourCanDetonateAtomicallyWithApprovedMandragoraInShop()
         {
             var b=Make(new[]{"CARD_M29","CARD_M30","CARD_M31"},snapshot:new[]{"CARD_M29","CARD_M30","CARD_M31","CARD_M32"});Assert.That(b.DeepTier,Is.EqualTo(4));
-            Burning(b,b.Defenders[0]);Hit(b,b.Defenders[0],1000);Burning(b,b.Defenders[1]);Hit(b,b.Defenders[1],1000);
+            var source=Deploy(b,"CARD_M29",1);Hit(b,b.Defenders[0],1000,source:source);Hit(b,b.Defenders[1],1000,source:source);
             Assert.That(b.DeepCharges,Is.EqualTo(2));b.SetPaused(true);Assert.That(b.TryDetonateDeep(b.RunId,1),Is.False);Assert.That(b.DeepCharges,Is.EqualTo(2));b.SetPaused(false);
-            float health=b.Defenders[2].Health;Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(health-b.Defenders[2].Health,Is.EqualTo(120));
-            Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(b.DeepCharges,Is.Zero);Assert.That(b.DeepDetonations,Is.EqualTo(1));
+            float health=b.Defenders[2].Health;Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(health-b.Defenders[2].Health,Is.EqualTo(180));
+            Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(b.DeepCharges,Is.EqualTo(1));Assert.That(b.DeepDetonations,Is.EqualTo(1));
             Assert.That(b.TryDetonateDeep(b.RunId-1,2),Is.False);Assert.That(CampaignBalance.Supports("CARD_M32"));
         }
         [Test]public void ContractUsesRealHealthCrossingAndTargetsOnlyChosenCard()

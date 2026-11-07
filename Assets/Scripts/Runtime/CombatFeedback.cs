@@ -126,7 +126,7 @@ namespace YesterdayConvoy
                 else AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Cold,d.ColdUntil);
                 AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Hindered,d.FrostSlowUntil);
                 AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Neural,d.NeuralUntil);
-                AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Burning,d.BurnUntil);
+                AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Burning,Math.Max(d.BurnUntil,Clock+DeepBurnRemaining(d.EntityId)));
                 if(DefenderShackled(d))
                 {
                     double until=Clock;
