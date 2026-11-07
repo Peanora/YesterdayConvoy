@@ -30,12 +30,15 @@ namespace YesterdayConvoy
         static readonly Color ThresholdSlashColor = new Color32(0x50, 0x62, 0x7a, 0xff);
         static readonly Color[] PrismaticColors =
         {
-            new Color(1f, .79f, .88f),
-            new Color(1f, .93f, .69f),
-            new Color(.73f, .94f, .98f),
-            new Color(.78f, .82f, 1f),
-            new Color(.92f, .77f, .98f)
+            new Color32(0xb0, 0xf1, 0xdd, 0xff),
+            new Color32(0x6f, 0xcb, 0xb7, 0xff),
+            new Color32(0x72, 0xba, 0xc2, 0xff),
+            new Color32(0x95, 0xb4, 0xce, 0xff),
+            new Color32(0xb8, 0xa4, 0xcf, 0xff),
+            new Color32(0xd3, 0xb8, 0xd1, 0xff),
+            new Color32(0xed, 0xe3, 0xce, 0xff)
         };
+        static readonly float[] PrismaticStops = { 0f, .22f, .45f, .64f, .83f, .94f, 1f };
 
         // Tier is the activated threshold from SynergySummary, never the raw member count.
         public static SynergyVisualGrade GradeFor(string name, int tier)
@@ -212,9 +215,12 @@ namespace YesterdayConvoy
                 case SynergyVisualGrade.Silver: return SilverColor;
                 case SynergyVisualGrade.Gold: return GoldColor;
                 case SynergyVisualGrade.Prismatic:
-                    float position = Mathf.Clamp01(vertical) * (PrismaticColors.Length - 1);
-                    int index = Mathf.Min(Mathf.FloorToInt(position), PrismaticColors.Length - 2);
-                    return Color.Lerp(PrismaticColors[index], PrismaticColors[index + 1], position - index);
+                    float position = Mathf.Clamp01(vertical);
+                    for (int index = 0; index < PrismaticStops.Length - 1; index++)
+                        if (position <= PrismaticStops[index + 1])
+                            return Color.Lerp(PrismaticColors[index], PrismaticColors[index + 1],
+                                Mathf.InverseLerp(PrismaticStops[index], PrismaticStops[index + 1], position));
+                    return PrismaticColors[PrismaticColors.Length - 1];
                 default: return InactiveColor;
             }
         }

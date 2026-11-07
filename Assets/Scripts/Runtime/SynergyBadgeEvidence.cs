@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -38,7 +39,8 @@ namespace YesterdayConvoy
             return SynergyRowScreenRect(index);
         }
 
-        static int SynergyBadgePlateScreenHues(Texture2D screen,Rect diamond,Rect glyph,Rect counter)
+        static int SynergyBadgePlateScreenHues(Texture2D screen,Rect diamond,Rect glyph,Rect counter,
+            out int upperSamples,out float upperMeanGreenMinusRed,out float upperMeanBlueMinusRed)
         {
             var viewport=new TacticalViewport(screen.width,screen.height);
             int left=Mathf.Clamp(Mathf.CeilToInt(viewport.Offset.x+diamond.x*viewport.Scale),0,screen.width-1);
@@ -46,15 +48,26 @@ namespace YesterdayConvoy
             int bottom=Mathf.Clamp(Mathf.CeilToInt(screen.height-viewport.Offset.y-diamond.yMax*viewport.Scale),0,screen.height-1);
             int top=Mathf.Clamp(Mathf.FloorToInt(screen.height-viewport.Offset.y-diamond.y*viewport.Scale),bottom+1,screen.height);
             var hues=new HashSet<int>();
+            upperSamples=0;float upperGreenSum=0,upperBlueSum=0;
             for(int y=bottom;y<top;y++)for(int x=left;x<right;x++)
             {
                 var point=viewport.FromTopLeft(new Vector2(x+.5f,screen.height-y-.5f));
                 float radius=Mathf.Abs(point.x-diamond.center.x)/(diamond.width*.5f)+Mathf.Abs(point.y-diamond.center.y)/(diamond.height*.5f);
                 if(radius>.88f||glyph.Contains(point)||counter.Contains(point))continue;
-                Color.RGBToHSV(screen.GetPixel(x,y),out float h,out float saturation,out float value);
+                Color pixel=screen.GetPixel(x,y);
+                float vertical=(point.y-diamond.yMin)/diamond.height;
+                // The approved V2 is mint at the top. The previous pink plate was also
+                // multicolored, so hue diversity alone cannot establish the correct asset.
+                if(vertical>=.06f&&vertical<=.18f)
+                {
+                    upperSamples++;upperGreenSum+=pixel.g-pixel.r;upperBlueSum+=pixel.b-pixel.r;
+                }
+                Color.RGBToHSV(pixel,out float h,out float saturation,out float value);
                 // Sample the colored plate, not the white glyph, count text, shadow or scene.
                 if(saturation>.14f&&value>.38f)hues.Add(Mathf.Min(11,Mathf.FloorToInt(h*12)));
             }
+            upperMeanGreenMinusRed=upperSamples>0?upperGreenSum/upperSamples:0;
+            upperMeanBlueMinusRed=upperSamples>0?upperBlueSum/upperSamples:0;
             return hues.Count;
         }
 
@@ -95,11 +108,15 @@ namespace YesterdayConvoy
                 if(prismaticName!=null)
                 {
                     var row=SynergyBadgeEvidenceRow(prismaticName);
-                    int hues=SynergyBadgePlateScreenHues(screen,SynergyBadgeRect(row),SynergyGlyphRect(row),SynergyCountRect(row));
+                    int hues=SynergyBadgePlateScreenHues(screen,SynergyBadgeRect(row),SynergyGlyphRect(row),SynergyCountRect(row),
+                        out int upperSamples,out float upperGreenMinusRed,out float upperBlueMinusRed);
                     int whites=SynergyBadgeWhiteGlyphPixels(screen,SynergyGlyphRect(row),SynergyBadgePresentation.IconFor(prismaticName));
                     check(file+"ActualPlateHasAtLeastThreeHueFamilies",hues>=3);
+                    check(file+"ActualUpperPlateUsesMintV2",upperSamples>=8&&upperGreenMinusRed>.08f&&upperBlueMinusRed>.03f);
                     check(file+"OriginalGlyphRemainsVisibleWhite",whites>=2);
-                    Debug.Log("SYNERGY_BADGE_SCREEN_PLATE_HUES "+file+"="+hues+"; whiteGlyphPixels="+whites);
+                    Debug.Log(string.Format(CultureInfo.InvariantCulture,
+                        "SYNERGY_BADGE_SCREEN_PLATE_HUES {0}={1}; whiteGlyphPixels={2}; upperSamples={3}; meanGMinusR={4:F4}; meanBMinusR={5:F4}",
+                        file,hues,whites,upperSamples,upperGreenMinusRed,upperBlueMinusRed));
                 }
             }
             finally {Destroy(screen);}

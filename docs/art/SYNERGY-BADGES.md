@@ -8,7 +8,9 @@
 
 整合运动与深池为原作徽标，泥岩使用原作巨像专属合约图标；六枚重绘是本作改编图形，不称为官方原徽。来源、原图与改编边界、SHA256及真实权利状态见 [来源记录](source-records/synergy-badges-v3.json)。看稿和接入认可不记为原权利人的开放再分发许可。
 
-五种菱形底牌与空白人数圆点取自已确认原稿的确定性SVG导出，256×256透明PNG位于同目录的 `Frames`。徽记和人数没有烘焙进底牌。六份小型SVG作者源、导出方法与校验值见 [底牌来源记录](source-records/synergy-sidebar-frames.json)。原有九枚徽记及GUID保持。
+五种菱形底牌与空白人数圆点为确定性SVG导出，256×256透明PNG位于同目录的 `Frames`。2026-11-07人类纠正最高阶配色并确认V2：青绿上部、冰蓝过渡、淡紫下沿、冷白描边；现用 `plate-prismatic` 保持原GUID并替换为确认文件。徽记和人数没有烘焙进底牌。小型SVG作者源、导出方法与校验值见 [底牌来源记录](source-records/synergy-sidebar-frames.json)。原有九枚徽记及GUID保持。
+
+人类同时要求原粉色留给后续五费专属羁绊。原PNG与SVG逐字节保存在 `Assets/Art/UI/Synergies/Reserved/plate-five-cost-exclusive-pink.png` 及 `source-records/synergy-sidebar-frames/plate-five-cost-exclusive-pink.svg`，新资产使用独立GUID；Reserved位于Resources外，未绑定任何现有羁绊。本轮只保留素材与用途，不新增五费专属规则、枚举或显示入口。
 
 ## 显示映射
 
@@ -30,7 +32,7 @@
 
 `SynergySummary.From` 从真实编队及游击转职快照生成名称、人数和档位。`SynergyBadgePresentation` 缓存徽记、金属底牌与人数圆点的Resources纹理；`DrawBadge` 按底牌→白色徽记→黑圆点→实际人数绘制。`DrawThresholds` 保留全部门槛（包括游击2/4/6/8/9），当前档白色加粗，已过档与未达档分级减淡。
 
-五种底牌的金属渐变、边缘和阴影直接来自确认稿，使用缓存静态纹理，不生成运行纹理或新增Shader/材质。44单位菱形配28单位白徽记，人数圆点直径16.8。绘制恢复原来的 `GUI.color`，继续使用现有1280×720逻辑坐标和滚动裁切。
+五种底牌的金属渐变、边缘和阴影来自相应确认稿，使用缓存静态纹理，不生成运行纹理或新增Shader/材质。最高阶V2用明确的SVG坐标保证青绿到淡紫的完整色带位于菱形内；旧 `ColorFor/DrawIcon/DrawGradeStrip` 兼容路径同步V2色阶，生产侧栏仍绘制静态底牌。44单位菱形配28单位白徽记，人数圆点直径16.8。绘制恢复原来的 `GUI.color`，继续使用现有1280×720逻辑坐标和滚动裁切。
 
 左侧使用深色窄栏和48行距，名称、门槛、动态信息各占一行。整备最多九行（九行时栏顶60，其他为65），构筑按钮始终在底部卡栏之前；战斗最多四行并可滚动，其下完整保留构筑与原快捷操作。整行点击和详情阻挡保持；输入与验证共享滚动后的屏幕坐标。感染形态、雪怪寒意、寒潮次数与天气剩余时间保留原逻辑，改为深底可读的浅色副行。没有修改场景、Prefab、Packages、ProjectSettings或羁绊机制。
 

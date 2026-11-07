@@ -2,29 +2,37 @@
   "schema_version": 1,
   "date": "2026-11-07 Asia/Shanghai",
   "asset_set": "synergy-sidebar-frames",
-  "scope": "Native UI resources separated from the user-approved sidebar draft. Five diamond backplates and one blank count dot only; no identity glyphs or count digits are baked into these resources.",
-  "user_confirmation": "In the current round the user approved synergy-sidebar-draft-v1 and requested integration. This confirms the project design/integration scope and does not grant original-game rights.",
+  "scope": "Native sidebar resources: four lower-grade backplates, approved V2 mint/ice-blue/lavender regular highest-tier backplate and one blank count dot. The original pink highest-tier PNG/SVG are preserved as an unreferenced, non-Resources project reserve for possible future five-cost-exclusive synergies; no such gameplay is implemented.",
+  "user_confirmation": "User explicitly approved the mint/ice-blue/lavender V2 highest-tier preview in this round, requested native integration, and requested preservation of the previous pink palette for future five-cost-exclusive synergies. This is design/project integration approval, not original-game rightsholder permission.",
   "authorship": {
     "kind": "project-authored deterministic code-native geometry export",
     "original_game_png": false,
     "ai_generated": false,
     "nine_existing_glyphs_changed": false,
-    "method": "Deterministic code-native SVG/resvg export. The five linearGradient definitions and badgeShadow filter are copied verbatim from the user-approved draft. Paths and paint values retain the approved r22 badge geometry with translation only. No AI image generation or redraw was used."
+    "method": "Deterministic code-native SVG/resvg export, without AI raster generation. Four lower-grade gradients, all badge geometry and shadow remain from the approved native draft; the regular highest-tier color gradient/rim is superseded by the explicitly approved V2. The original pink export is preserved byte-for-byte in the unreferenced reserve."
   },
   "approved_draft": {
     "source": "synergy-sidebar-draft-v1/draw_draft.cjs",
     "sha256": "35562f27e0cab336d5dbcf6d614929954f8f20796e1de2b1e53aa44ebd8d2c35",
     "preview_status_at_export": "User-approved for native integration",
-    "retained_elements": [
+    "removed_elements": [
+      "white V3 glyph image",
+      "count text"
+    ],
+    "scope": "Initial geometry and lower-grade source; original highest-tier gradient superseded for regular synergies by highest_tier_revision and preserved as a reserve.",
+    "original_export_retained_elements": [
       "five original linearGradient definitions copied verbatim",
       "badgeShadow filter copied verbatim",
       "r22 sharp-corner diamond geometry",
       "top facet opacity and top rim stroke",
       "black r8.4 count circle and thin border"
     ],
-    "removed_elements": [
-      "white V3 glyph image",
-      "count text"
+    "retained_elements": [
+      "four original lower-grade linearGradient definitions",
+      "badgeShadow filter",
+      "r22 sharp-corner diamond geometry",
+      "top facet opacity and top rim stroke",
+      "black r8.4 count circle and thin border"
     ]
   },
   "reproduction": {
@@ -114,22 +122,36 @@
     "separate_identity_glyphs": "Unchanged V3 badge glyphs retain docs/art/source-records/synergy-badges-v3.json and their original Arknights rights records.",
     "user_review_is_rightsholder_permission": false,
     "original_reference_open_redistribution_license": "not established by the design approval",
-    "ai_generation_used": false
+    "ai_generation_used": false,
+    "palette_reference": "The supplied highest-tier screenshot is a palette reference. The V2 PNG is project-authored SVG geometry, not an extracted original-game PNG. User preview approval does not establish permission for underlying original-game references."
   },
   "verification": {
-    "external_png_byte_identity": "6/6 passed",
-    "author_svg_byte_identity": "6/6 passed",
     "rgba_256_transparency": "6/6 passed",
     "source_has_no_embedded_glyph_or_text": "6/6 passed",
     "existing_nine_pngs_and_metas": "18/18 unchanged across this asset-writer operation",
     "new_guid_count": 7,
     "new_guid_generation": "UUID4, checked against existing Assets .meta GUIDs",
-    "unity_import": "Unity 6000.6.5f1 full EditMode 513/513 and relevant D3D11 PlayMode 16/16 passed; see docs/QA.md",
+    "unity_import": "V2: Unity 6000.6.5f1 targeted EditMode 5/5 and D3D11 PlayMode 3/3 passed; see docs/QA.md. Earlier V1 full-suite results remain historical.",
     "resource_loading": "All six frames load and upload to GPU with transparent corners and visible bodies; root Unity verification passed",
-    "build": "Source 1f4967b: local Windows x64 build passed, 1050473302 bytes, 0 errors; see docs/QA.md",
-    "native_player": "Visible D3D11 1920x1080 and 1280x720 each passed 48/48; actual plate has five hue families with a white glyph. Real OS scrolling and clicks passed, and both processes exited normally.",
+    "build": "V2 Windows build pending. V1 source 1f4967b and its previous build are historical; see docs/QA.md.",
+    "native_player": "V2 visible Player verification pending; previous V1 48/48 runs do not establish the corrected highest-tier colors.",
     "git_ignore": "All 20 new files checked with git check-ignore --no-index; none ignored.",
-    "new_guid_collisions": 0
+    "new_guid_collisions": 0,
+    "highest_tier_revision": {
+      "active_v2_png_svg_byte_identity": "2/2 passed",
+      "reserved_old_pink_png_svg_byte_identity": "2/2 passed",
+      "preserved_active_meta_guid": "Original meta bytes and GUID unchanged",
+      "other_existing_synergy_assets": "All existing PNG/meta bytes unchanged except the explicitly replaced active prismatic PNG",
+      "rgba_256_transparent": "2/2 current and reserved PNGs passed",
+      "new_guid_count": 2,
+      "new_guid_collision_check": "checked against all current Assets meta GUIDs",
+      "reserved_runtime_hookup": "None; outside Resources, no UI code or gameplay was changed by the asset writer",
+      "unity_import": "Root verified targeted EditMode 5/5 and D3D11 PlayMode 3/3 with the imported V2 frame",
+      "player_build": "not run by asset writer",
+      "ignored_files": 0
+    },
+    "initial_external_png_byte_identity": "6/6 passed",
+    "initial_author_svg_byte_identity": "6/6 passed"
   },
   "assets": [
     {
@@ -304,8 +326,8 @@
       "id": "plate-prismatic",
       "svg": "plate-prismatic.svg",
       "png": "plate-prismatic.png",
-      "svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
-      "png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
+      "svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+      "png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
       "approved_draft_grade": "prism",
       "logical_canvas": [
         52,
@@ -330,7 +352,6 @@
         -26
       ],
       "border_width": 1,
-      "border_color": "#f5f3ff",
       "border_opacity": 0.88,
       "glyphs_baked": false,
       "numbers_baked": false,
@@ -338,9 +359,77 @@
       "resource_key": "UI/Synergies/Frames/plate-prismatic",
       "guid": "c39c2d16f5c2424f9332a2204c2b1025",
       "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-prismatic.svg",
-      "imported_png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
-      "committed_svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
-      "bytes": 17902
+      "imported_png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
+      "committed_svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+      "bytes": 13546,
+      "variant": "regular-highest-tier-mint-ice-blue-lavender-v2",
+      "preview_source": "synergy-prismatic-color-v2/plate-prismatic-v2.png",
+      "preview_author_source": "synergy-prismatic-color-v2/plate-prismatic-v2.svg",
+      "palette_status": "User-approved V2, replacing the regular highest-tier pink/yellow palette",
+      "border_gradient": {
+        "id": "rim",
+        "coordinates": [
+          0,
+          0,
+          44,
+          44
+        ],
+        "units": "userSpaceOnUse",
+        "stops": [
+          [
+            0,
+            "#dcfff3"
+          ],
+          [
+            0.5,
+            "#e4f7ff"
+          ],
+          [
+            1,
+            "#eee8ff"
+          ]
+        ]
+      },
+      "fill_gradient": {
+        "id": "prism",
+        "coordinates": [
+          22,
+          0,
+          22,
+          44
+        ],
+        "units": "userSpaceOnUse",
+        "stops": [
+          [
+            0,
+            "#b0f1dd"
+          ],
+          [
+            0.22,
+            "#6fcbb7"
+          ],
+          [
+            0.45,
+            "#72bac2"
+          ],
+          [
+            0.64,
+            "#95b4ce"
+          ],
+          [
+            0.83,
+            "#b8a4cf"
+          ],
+          [
+            0.94,
+            "#d3b8d1"
+          ],
+          [
+            1,
+            "#ede3ce"
+          ]
+        ]
+      }
     },
     {
       "id": "count-dot",
@@ -383,5 +472,83 @@
       "committed_svg_sha256": "1dd326a84375e017bb2be688b1d1e2f6db2e9e7127f5bc121272e2a04ed7cab6",
       "bytes": 24034
     }
-  ]
+  ],
+  "reserved_assets": [
+    {
+      "id": "plate-five-cost-exclusive-pink",
+      "svg": "plate-five-cost-exclusive-pink.svg",
+      "png": "plate-five-cost-exclusive-pink.png",
+      "svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
+      "png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
+      "approved_draft_grade": "prism",
+      "logical_canvas": [
+        52,
+        52
+      ],
+      "shape_center_in_canvas": [
+        26,
+        26
+      ],
+      "geometric_diamond_radius": 22,
+      "geometric_diamond_size": [
+        44,
+        44
+      ],
+      "transparent_shadow_margin": 4,
+      "native_draw_size": [
+        52,
+        52
+      ],
+      "native_draw_origin_from_badge_center": [
+        -26,
+        -26
+      ],
+      "border_width": 1,
+      "border_color": "#f5f3ff",
+      "border_opacity": 0.88,
+      "glyphs_baked": false,
+      "numbers_baked": false,
+      "asset": "Assets/Art/UI/Synergies/Reserved/plate-five-cost-exclusive-pink.png",
+      "resource_key": null,
+      "guid": "9ac0a5426f3c42a4a7a482c820cd9eb0",
+      "author_svg": "docs/art/source-records/synergy-sidebar-frames/plate-five-cost-exclusive-pink.svg",
+      "imported_png_sha256": "4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25",
+      "committed_svg_sha256": "b9119178e23d92f9f856d65bc49fd922c426a125c183471ac5c360a4ae9048dd",
+      "bytes": 17902,
+      "variant": "original-approved-pink-yellow-palette",
+      "status": "reserved_unwired",
+      "intended_future_use": "Future five-cost exclusive synergy visuals, as requested by the user; no exclusive gameplay, registration or UI hookup is implemented in this change.",
+      "preservation": "Original runtime pink PNG and SVG copied byte-for-byte before the V2 replacement.",
+      "previous_runtime_guid": "c39c2d16f5c2424f9332a2204c2b1025",
+      "resources_directory": false
+    }
+  ],
+  "approval_history": [
+    {
+      "scope": "Initial native sidebar draft integration",
+      "confirmation": "In the current round the user approved synergy-sidebar-draft-v1 and requested integration. This confirms the project design/integration scope and does not grant original-game rights."
+    },
+    {
+      "date": "2026-11-07 Asia/Shanghai",
+      "scope": "V2 regular highest-tier palette and old-pink asset preservation",
+      "confirmation": "User explicitly approved the mint/ice-blue/lavender V2 highest-tier preview in this round, requested native integration, and requested preservation of the previous pink palette for future five-cost-exclusive synergies. This is design/project integration approval, not original-game rightsholder permission."
+    }
+  ],
+  "highest_tier_revision": {
+    "version": 2,
+    "date": "2026-11-07 Asia/Shanghai",
+    "status": "user_approved_imported_source; Unity verification pending",
+    "approved_preview": "synergy-prismatic-color-v2/最高阶-配色修订V2.png",
+    "author_draft": "synergy-prismatic-color-v2/draw.cjs",
+    "author_draft_sha256": "f0929a3fb61fdcc87b5e8ebb20304de51b57ca0bb2dd2b68b7d048c23e82cd2c",
+    "palette_reference_sha256": "f7efa232adc4f7f1aaf98e3ec6dc424d3248c80b60b44c9853701bf8f70e7abd",
+    "external_preview_record_sha256": "ecc41c58d97d68ea6bd11c8ed7e05adfc55561fd1eea6a7e7300c86c8b991ce5",
+    "preview_record_status_note": "The archived project-external preview record said approval pending when authored; the current explicit user confirmation supersedes that historical status.",
+    "changed": "Only the regular highest-tier backplate PNG/SVG colors and gradient coordinates; the original meta/GUID remains byte-for-byte unchanged.",
+    "active_png_sha256": "e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7",
+    "active_svg_sha256": "129067e50ea44966e11f404bc61a91d3d0941dfb8fb858d27b809e3d41b95ac6",
+    "preserved_active_guid": "c39c2d16f5c2424f9332a2204c2b1025",
+    "preserved_active_meta_sha256": "a2fba81e4dcad5dbd5157eaf9383987556887ef2b884b7811926e082c3c74705",
+    "old_pink_disposition": "Copied into Assets/Art/UI/Synergies/Reserved outside Resources with its own new GUID and no runtime registration."
+  }
 }

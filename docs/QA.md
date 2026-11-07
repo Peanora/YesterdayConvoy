@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-07：最高阶V2青绿校色、旧粉色预留
+
+- 人类确认项目外V2青绿虹彩并要求原粉色留供后续五费专属。沿用codex/synergy-icons-tier-ui及PR #96；fetch确认main仍b1d55e7、任务分支与origin一致且PR未合并。原52处VFX meta与开工快照逐文件SHA一致，原两个本地未跟踪项不提交。无场景/Prefab/Packages/ProjectSettings任务修改。
+- 现用最高阶PNG逐字节等于确认V2（SHA256 e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7），原meta/GUID保持。原粉色PNG逐字节保存为Reserved/plate-five-cost-exclusive-pink.png（SHA256 4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25），原SVG也逐字节保留；预留PNG及目录用独立新GUID，无碰撞、未忽略，不在Resources内且无运行代码引用。原九徽及其他档位不改，不新增五费专属玩法。
+- Unity6000.6.5f1相关EditMode5/5（artifacts/synergy-mint-edit.xml）、D3D11 PlayMode3/3（artifacts/synergy-mint-play.xml）通过，0失败/跳过；验证真实档位、资源独立加载与透明GPU上传、九条布局及滚动后详情输入保护。未重跑全量测试。Windows构建及独立Player待执行。
+- 既有“多色”条件无法区分旧粉色与新青绿色，因此Player额外检查真实底牌上部6%–18%的青绿色差，排除白徽、人数圆点及边缘；至少8样本，平均G-R>.08且B-R>.03，仍保留完整真实编队/滚动/点击状态检查。源PNG只读对照：确认V2该区G-R约+.294，旧粉约-.106，不能将源图静态对照当成实机验证。下面旧版测试不作为本轮完成证据。
+
 ## 2026-11-07：确认稿菱形底牌、白徽与实际人数
 
 - 人类确认项目外侧栏原稿V1后要求接入。沿用codex/synergy-icons-tier-ui和PR #96；本轮fetch确认origin/main仍b1d55e7、任务分支与origin一致后继续。仅显示与验证代码、六张小型运行PNG/必要meta及SVG作者源/来源记录；九枚V3徽记不变。原52处VFX meta逐文件SHA256保持、两个本地未跟踪项不提交。
