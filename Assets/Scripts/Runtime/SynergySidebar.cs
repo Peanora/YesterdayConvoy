@@ -43,7 +43,7 @@ namespace YesterdayConvoy
                 "2/4/5/6档：按战前编队的不同种类与总星级S确定培养上限。\n2种可养至II；4种且S≥7至III；5种且S≥10至IV；6种且S≥12至V。每种只算最高星，备战不计；可免费转职一种非原生成员。\nI/II/III/IV/V累计经验门槛0/6/16/30/48。每场实际战斗结束自动获得：档位＋⌊S/2⌋经验，胜负都结算；补给与中途退出不发。达到当前上限停止获得，不预存未来经验，历史经验不扣。\n生命360/550/1800/6000/7500，攻击60/84/240/1600/2000，DP4/5/8/14/14。每场一次、不扣门血；IV/V至多3目标、每第三击全场80%攻击法伤、每次命中回8%生命一次、免疫控制。",
                 "牧群：全队非五费正常实体最终死亡后生成短时转化体。2档前3个、35%生命/攻击、4甲、10秒；4档前5个、45%生命/攻击、6甲、12秒，可保留远程基础攻击（2.5射程、攻击再乘85%）。\n转化沿原位置/路线，穿门0，不复制主动、爆炸、羁绊资源或再次转化。原动作较长时攻击间隔保留完整动作。",
                 "深池：被灼烧守军遭正常伤害击杀留下火种。2档最多4枚，传播半径1.2、最多2人、15法伤/秒持续3秒；4档最多6枚、半径1.6、3人、25/秒。\n4档可消耗2火种手动引爆，半径1.8、最多4人、120法伤，每场2次。伤害每成员平均星级增加25%。衍生击杀不再产火种。",
-                "海嗣：胜利时每种实际交战成员+1培养，2档最多2、4档最多3；0/3/7经验到I/II/III。\n屏障：首次远程直接命中减伤30%；II前2次30%；III前2次40%并给附近非海嗣一份20%保护。\n猎食：对低于35%生命目标伤害+12/18/25%；III首次击杀治疗附近两人各5%生命。\n渗透：各实体首次命中使护甲-3/5/7，4/5/5秒，同名不叠。4档II阶段解锁另一种I阶段副适应。",
+                "海嗣 · 溟痕蔓延：每种海嗣本场首次有效输出或外来承伤，在脚下落种一次；重复部署、无敌、自损和支援不重复落种。\n2/4档：每6/4秒向相邻通行地面扩散一圈，全场覆盖至多8/16格；为尚未接敌的每种海嗣预留1格，高台不铺。\n海嗣站在溟痕上，原生神经损伤×1.5/2；地面守军踩溟痕每秒积累3点神经损伤，该地面积累不再乘倍率。壳海负责前锋落种，不新增神经普攻。\n神经积累100时爆发：100真实伤害、10秒眩晕，其间不再积累。无存活海嗣时溟痕休眠，后续部署恢复；战后清空。\n战斗中点击「查看溟痕范围」突出边界；守军神经条和海嗣×倍率标识显示真实状态。",
                 "萨卡兹：战前指定承契卡，其余普通友军首次由直接伤害跨入40%生命以下贡献1点，每种卡最多2点。4点手动选择存活承契实体爆发，不扣DP。\n2/4/6档：攻击+20/30/40%、15/25/30%生命盾，持续6/8/10秒，本场1/2/2次。6档其他普通友军各获承契者10%生命盾、最多200。\n自损、转化体、巨像和援军不贡献；同一实体只贡献一次。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
                 .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
@@ -61,7 +61,7 @@ namespace YesterdayConvoy
         void DrawSynergySidebar()
         {
             if(!CampaignActive)return;
-            DrawSnowstormFeedback();
+            DrawSnowstormFeedback();DrawMarineFieldFeedback();
             var summaries=CurrentSynergies;var bounds=SynergyListRect;
             Fill(new Rect(bounds.x,bounds.y,bounds.width,25),ApprovedUi.Paper);
             GUI.Label(new Rect(bounds.x+8,bounds.y,55,25),"羁绊",CampaignText(12,weight:600));
@@ -88,6 +88,7 @@ namespace YesterdayConvoy
                     GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
                     if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(s.Name=="泥岩小队")DrawGolemSidebarProgress(row);
+                    else if(s.Name=="海嗣"&&s.Tier>0)DrawMarineRow(row);
                     else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
                     else

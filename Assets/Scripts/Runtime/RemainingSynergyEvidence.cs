@@ -20,9 +20,9 @@ namespace YesterdayConvoy
             bool contract=Battle.ContractPoints==4&&UseContract()&&Battle.ContractAttackBonus(target)>.39f&&target.SynergyShield>0;ReplaySandbox();
             SetSandboxRoster(7);SetRemainingChoices("CARD_M33",MarineAdaptation.Infiltration,MarineAdaptation.Hunt);StartLoopNextBattle();Battle.Begin();
             var sea=Battle.FindUnit(Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M33").EntityId);float armor=Battle.DefenderArmor(Battle.Defender);Battle.TryDamageUnit(sea.EntityId,sea.MaxHealth*.16f,CombatDamageType.Physical);
-            bool marine=Battle.CreeperPulses.Count>0&&Battle.DefenderArmor(Battle.Defender)<armor;
-            Battle.FinishForTesting(Battle.RunId,true);Tick(.01f);int xp=Loop.MarineExperience;ReplaySandbox();marine&=xp>0&&Battle.MarineExperience==xp;
-            Debug.Log($"REMAINING_SYNERGY_PLAYER_CHECK: pool={pool}; herd={herd}; nativeDeep={deep}; contract={contract}; marineGrowth={marine}");
+            bool marine=Battle.CreeperPulses.Count>0&&Battle.DefenderArmor(Battle.Defender)==armor&&Battle.MarineCells.Count==1;
+            Battle.FinishForTesting(Battle.RunId,true);Tick(.01f);ReplaySandbox();marine&=Loop.MarineExperience==0&&Battle.MarineCells.Count==0;
+            Debug.Log($"REMAINING_SYNERGY_PLAYER_CHECK: pool={pool}; herd={herd}; nativeDeep={deep}; contract={contract}; marineTerrain={marine}");
             Application.Quit(pool&&herd&&deep&&contract&&marine?0:1);
         }
     }

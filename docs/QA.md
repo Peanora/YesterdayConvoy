@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-07：海嗣溟痕蔓延
+
+- 最新main实时核实为b1d55e7；同一工程从同步main建立codex/marine-nethersea，再快进承接当前已可试玩76f0bd2（泥岩、牧群与银狼12个尚未进main的依赖提交），不自动合并main。原52份Mandragora/Mephisto meta与两个本地未跟踪项按既定方案原样保留，SHA256核对未变。
+- Unity6000.6.5f1：完整EditMode首轮及最终均562/562（artifacts/marine-edit.xml、marine-edit-final.xml）。新增核心边界与旧适应参数退役回归；后续补充致死纯真伤接触，最终完整复验覆盖。
+- D3D11相关PlayMode29个不同用例均获通过：首轮27/29暴露范围查看绑定错误及新Battle查看状态残留；修正实际combatView桥与状态同步后28/29，剩余为单格范围高亮实际相机仅17像素、低于30像素要求。增强实际边缘对比与宽度后，末轮MarineTideSceneTests 3/3（marine-visual-focused.xml）。没有降低断言。其余回归含RemainingSynergy、DedicatedSynergy、FirstSpeaker、GuerrillaOrder、HerdSpirit与BattleInteraction；最终不同用例共29，非完整PlayMode。
+- artifacts/marine-balance.json：正式CampaignBalance星级/DP/守方防御、正式第6/10/13关守军及保存路线，1–3星、两种2人组合、4人组合与同4人关闭效果对照共36组。固定轮换部署、真实费用/CD/技能/神经/胜负，无注血或强制判胜。较弱第6关可能无爆发已结束；1星第10关四人首次爆发由9.2秒提前到3.6秒，第13关11.4→8.05秒；通关时间还受路线、部署预算与高台影响，不承诺总是更快。该审计不包含商店运营、成型概率或最优操作。
+- 本轮新增8张原作溟痕PNG共381201字节及必要meta，Shader使用01/04/03/flow_43_2四张；另外四张保留同一原依赖来源，不宣称它们已参与画面。原版本、包MD5、CAB/PathID和PNG SHA256见art/source-records/marine-tide-original.json。原图加本作模拟时钟Shader适配，非完整原客户端材质/粒子重建。
+- Windows构建、实际屏幕交互及运行源码提交待本轮后续补记。未测完整PlayMode、第二台电脑、全分辨率和正式13关自然运营平衡；不自动ZIP/Releases。
+
 ## 2026-11-07：银狼 LV.999 / 左右向与三种盲盒
 
 - Unity 6000.6.5f1：完整 EditMode 549/549，包含三结果分别命中、资源仅结算一次、连抽同款、第三发动作锁与普攻中排队变身；D3D11 相关 PlayMode 22/22（选择、战役与羁绊卡池）。后续只调整独立验收入口的后台运行和相机取证时机；最终运行源码 eadffc0 Windows x64 构建 1,045,906,436 字节，0错误，正式美术打包 105份清单。未运行全量 PlayMode。

@@ -74,6 +74,14 @@ namespace YesterdayConvoy
             battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(id=>shop.Bench.Where(p=>p.Id==id).OrderByDescending(p=>p.Star).First()),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
+            var marineGround=new List<Vector3>();
+            bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
+            for(int row=expanded?-1:1;row<=(expanded?7:5);row++)for(int col=2;col<=18;col++)
+            {
+                char tile=expanded?StrongholdChallengeLayout.Tile(col,row):StrongholdMapLayout.Tile(col,row);
+                if(tile!='#'&&tile!='H'&&tile!='h')marineGround.Add(StrongholdMapLayout.Cell(col,row));
+            }
+            battle.ConfigureMarineTerrain(marineGround);
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);

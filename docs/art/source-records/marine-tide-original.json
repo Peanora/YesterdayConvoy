@@ -1,0 +1,2808 @@
+{
+  "date": "2026-11-07",
+  "version": "26-10-29-15-36-11-33649006",
+  "status": "BOUND",
+  "approval": "2026-11-07 user explicitly requested original Arknights nethersea-brand art and immediate synergy implementation.",
+  "rights": "Original proprietary Arknights media, rights remain with original rights holders; source acquisition and user approval do not establish an open redistribution license or rights-holder permission.",
+  "sourceIdentification": "Original tile_creep / tile_creepf _creepDirectionEffects reference map_028_juntan_range_[up/down/left/right]_[A/B] and map_028_juntan_range_B; actual source RGBA textures decoded without repaint, tint, crop or resample.",
+  "presentationLimit": "Raw source textures plus YesterdayConvoy-compatible shader, simulation-clock animation, per-cell growth/dormancy/inspection feedback. This is not a complete native-client shader/mesh/particle reconstruction.",
+  "textures": [
+    {
+      "name": "Special_juntan_01",
+      "width": 256,
+      "height": 256,
+      "format": 47,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          162
+        ],
+        [
+          0,
+          232
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-a1620becb3839aebe0c9da8f7cca77f8",
+      "sourcePathID": -3520176881769604690,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\vein.ab",
+      "outputSHA256": "925ed3424beaae311fb37ae24f8fd581532643ab85f6259019fdadb0688519d8",
+      "sourceDependencySHA256": "3800c93ee0acbed1a0a213e1754d1c921020b83c2ece04d0a3b05e7da22aa220",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_vein.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/Special_juntan_01.png",
+      "resourcesPath": "MarineTide/Special_juntan_01",
+      "sourceDependencyMD5": "f0f5b2d118671554ab46792b81fae1a0"
+    },
+    {
+      "name": "Special_juntan_03",
+      "width": 256,
+      "height": 256,
+      "format": 34,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          255,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-a1620becb3839aebe0c9da8f7cca77f8",
+      "sourcePathID": -2632201981432457869,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\vein.ab",
+      "outputSHA256": "963f3d8a7236698741a9c8499c1e16c5230c420c5d0132d784e09ef0279ec5c7",
+      "sourceDependencySHA256": "3800c93ee0acbed1a0a213e1754d1c921020b83c2ece04d0a3b05e7da22aa220",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_vein.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/Special_juntan_03.png",
+      "resourcesPath": "MarineTide/Special_juntan_03",
+      "sourceDependencyMD5": "f0f5b2d118671554ab46792b81fae1a0"
+    },
+    {
+      "name": "Special_juntan_04",
+      "width": 256,
+      "height": 256,
+      "format": 47,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          162
+        ],
+        [
+          0,
+          244
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -772937988994094934,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-07_海嗣溟痕-v1\\original-bundles\\battle\\prefabs\\effects\\map.ab",
+      "outputSHA256": "61a15d57ce8c64acefcb3a2b660a830b0ac78d0cb4c7de52e6c7eb1e80874a1a",
+      "sourceDependencySHA256": "a67f1e4fc359dd184783d6a495093b2d227fa6ecdb6271702aa4da22c01f2f51",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_map.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/Special_juntan_04.png",
+      "resourcesPath": "MarineTide/Special_juntan_04",
+      "sourceDependencyMD5": "b2f9fe7a5aaa4f81401ff96cf651b19a"
+    },
+    {
+      "name": "Special_juntan_05",
+      "width": 256,
+      "height": 256,
+      "format": 47,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          182
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -2201679427064062281,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-07_海嗣溟痕-v1\\original-bundles\\battle\\prefabs\\effects\\map.ab",
+      "outputSHA256": "2c624110741184a9ec0a89e65c4ddaf81b42ae66248595bf79c02848c11cc097",
+      "sourceDependencySHA256": "a67f1e4fc359dd184783d6a495093b2d227fa6ecdb6271702aa4da22c01f2f51",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_map.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/Special_juntan_05.png",
+      "resourcesPath": "MarineTide/Special_juntan_05",
+      "sourceDependencyMD5": "b2f9fe7a5aaa4f81401ff96cf651b19a"
+    },
+    {
+      "name": "flow_43_2",
+      "width": 128,
+      "height": 128,
+      "format": 47,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          3,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-c2c688f710a565b7cce0cc93f7bd219f",
+      "sourcePathID": -2120772828790436590,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\flow.ab",
+      "outputSHA256": "12db43dd36754125e4363160d2061498a1a568d46d5822766bf021ad9c95c790",
+      "sourceDependencySHA256": "e9fabfe551166bc1d9a050e82a78cae473025ad924a8127914428ca9c47c9566",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_flow.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/flow_43_2.png",
+      "resourcesPath": "MarineTide/flow_43_2",
+      "sourceDependencyMD5": "a7a4f6dea39f25754c15d0a9573cd4de"
+    },
+    {
+      "name": "flow_57",
+      "width": 128,
+      "height": 128,
+      "format": 34,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          5,
+          189
+        ],
+        [
+          5,
+          189
+        ],
+        [
+          5,
+          189
+        ],
+        [
+          255,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-c2c688f710a565b7cce0cc93f7bd219f",
+      "sourcePathID": 4249621393576650867,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\flow.ab",
+      "outputSHA256": "a2d3c58d5152ee523009565916be1d66bf738d3b6f12a4e199c8421a1dd058de",
+      "sourceDependencySHA256": "e9fabfe551166bc1d9a050e82a78cae473025ad924a8127914428ca9c47c9566",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_flow.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/flow_57.png",
+      "resourcesPath": "MarineTide/flow_57",
+      "sourceDependencyMD5": "a7a4f6dea39f25754c15d0a9573cd4de"
+    },
+    {
+      "name": "mask_30",
+      "width": 256,
+      "height": 256,
+      "format": 34,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          3,
+          255
+        ],
+        [
+          3,
+          255
+        ],
+        [
+          3,
+          255
+        ],
+        [
+          255,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-92fdf60cd1676328e17f73f0bf852e97",
+      "sourcePathID": 1475945865705079393,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\mask.ab",
+      "outputSHA256": "865e034b7aa113cd8bbe032f8af30bbb92a6eaecf0f08adc9adeb5097be9ad9d",
+      "sourceDependencySHA256": "72a3b4613d9ce62fc6f2fb74ca7c344a1823fa816284930f2b7b5e2da59800f8",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_mask.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/mask_30.png",
+      "resourcesPath": "MarineTide/mask_30",
+      "sourceDependencyMD5": "a4e3232348dc0f5ca1c374f112dde673"
+    },
+    {
+      "name": "mask_99",
+      "width": 128,
+      "height": 128,
+      "format": 34,
+      "mode": "RGBA",
+      "channelExtrema": [
+        [
+          0,
+          208
+        ],
+        [
+          0,
+          208
+        ],
+        [
+          0,
+          208
+        ],
+        [
+          255,
+          255
+        ]
+      ],
+      "sourceCab": "CAB-92fdf60cd1676328e17f73f0bf852e97",
+      "sourcePathID": -1585108520199118999,
+      "sourceDependency": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-05_泥岩原作技能-v1\\client-assets\\refs\\fx\\texture\\mask.ab",
+      "outputSHA256": "2b234a0fae7e4449ab69c8d9a0715e3fd54dd9f3d8eb55338d50c2a84958ed62",
+      "sourceDependencySHA256": "72a3b4613d9ce62fc6f2fb74ca7c344a1823fa816284930f2b7b5e2da59800f8",
+      "sourceURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_fx_texture_mask.dat",
+      "runtimePath": "Assets/Art/VFX/Marine/Resources/MarineTide/mask_99.png",
+      "resourcesPath": "MarineTide/mask_99",
+      "sourceDependencyMD5": "a4e3232348dc0f5ca1c374f112dde673"
+    }
+  ],
+  "sourceMaterials": [
+    {
+      "name": "Default-Particle",
+      "sourceCab": "CAB-967586173c51ac60f86de17c3e4b1a32",
+      "sourcePathID": -1258035316725772468,
+      "shader": "Legacy Shaders/Particles/Alpha Blended Premultiply",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 5681093337556782924
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_InvFade",
+            1.0
+          ],
+          [
+            "_Shininess",
+            0.078125
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_SpecColor",
+            {
+              "r": 0.5,
+              "g": 0.5,
+              "b": 0.5,
+              "a": 1.0
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_MainTex": {
+          "name": "Default-Particle",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_24",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": 6999641399850692889,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": 1475945865705079393
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -2201679427064062281
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "mask_30",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_05",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "star_02_add_ZT",
+      "sourceCab": "CAB-0d0c905b03658da84d810b34eba903e0",
+      "sourcePathID": -3908600049531056002,
+      "shader": "Torappu/Particles/Additive",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": -1074696917881622342
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_AddFactor",
+            1.0
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_InvFade",
+            1.0
+          ],
+          [
+            "_MainTexChannel",
+            0.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            0.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_MainTex": {
+          "name": "star_02",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "1128_spmage_04",
+      "sourceCab": "CAB-5edea5af85bbd22eb07df1eb29c4f175",
+      "sourcePathID": -2323980895804911622,
+      "shader": "Torappu/Particles/AlphaBlend",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 18,
+                "m_PathID": 419054967253152037
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_MainTexChannel",
+            0.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_PremultiplyAlpha",
+            5.0
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            0.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 0.7279999852180481
+            }
+          ],
+          [
+            "_UVTween",
+            {
+              "r": -1.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_MainTex": {
+          "name": "blood_09",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "star_23_add_ZT",
+      "sourceCab": "CAB-0d0c905b03658da84d810b34eba903e0",
+      "sourcePathID": -2056062478308788428,
+      "shader": "Torappu/Particles/Additive",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": -6042231430977390818
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_MainTexChannel",
+            0.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            0.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_MainTex": {
+          "name": "star_23",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_01",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": 3672086372758648423,
+      "shader": "Torappu/Particles/Dissolve/Dissolve Add UVTween",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex",
+            {
+              "m_Texture": {
+                "m_FileID": 16,
+                "m_PathID": -2632201981432457869
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 4,
+                "m_PathID": 4249621393576650867
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount",
+            0.19200000166893005
+          ],
+          [
+            "_BorderWidth",
+            1.0
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.47058820724487305,
+              "g": 0.7152130007743835,
+              "b": 1.0,
+              "a": 0.953000009059906
+            }
+          ],
+          [
+            "_UVTween",
+            {
+              "r": 0.0,
+              "g": -0.30000001192092896,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex": {
+          "name": "Special_juntan_03",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "flow_57",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_25",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": 1057562349828988161,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": -1585108520199118999
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -2201679427064062281
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "mask_99",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_05",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_15",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -1820741566322144744,
+      "shader": "Torappu/Particles/Disturb/Disturb Origin",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DisturTex",
+            {
+              "m_Texture": {
+                "m_FileID": 4,
+                "m_PathID": -2120772828790436590
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -2201679427064062281
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_CullMode",
+            0.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            10.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_IntensityU",
+            0.02199999988079071
+          ],
+          [
+            "_IntensityV",
+            0.029999999329447746
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            5.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_MainColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.7590000033378601
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DisturTex": {
+          "name": "flow_43_2",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_05",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_13",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -1307107266775302656,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": 1475945865705079393
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 16,
+                "m_PathID": -3520176881769604690
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "mask_30",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_01",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_12",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": 656071313440676371,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": -1585108520199118999
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 16,
+                "m_PathID": -3520176881769604690
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "mask_99",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_01",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_08",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -4574341204386093626,
+      "shader": "Torappu/Particles/Disturb/Disturb Origin",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DisturTex",
+            {
+              "m_Texture": {
+                "m_FileID": 4,
+                "m_PathID": -2120772828790436590
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -772937988994094934
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_CullMode",
+            0.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            10.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_IntensityU",
+            0.02199999988079071
+          ],
+          [
+            "_IntensityV",
+            0.029999999329447746
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            5.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_MainColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.7590000033378601
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DisturTex": {
+          "name": "flow_43_2",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_04",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_18",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -2247657135248987957,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 4,
+                "m_PathID": 8847127746684990483
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -2201679427064062281
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": -1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "flow_22",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_05",
+          "scale": {
+            "x": -1.0,
+            "y": -1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "028_19",
+      "sourceCab": "CAB-3a104c08efc3fe721b0b60471e323366",
+      "sourcePathID": -2756553904456943421,
+      "shader": "Torappu/Particles/Dissolve/Dissolve AB Double",
+      "properties": {
+        "m_TexEnvs": [
+          [
+            "_DissolveTex_01",
+            {
+              "m_Texture": {
+                "m_FileID": 3,
+                "m_PathID": -4535900769944147465
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_DissolveTex_02",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "m_Scale": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ],
+          [
+            "_MainTex",
+            {
+              "m_Texture": {
+                "m_FileID": 0,
+                "m_PathID": -2201679427064062281
+              },
+              "m_Scale": {
+                "x": -1.0,
+                "y": -1.0
+              },
+              "m_Offset": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            }
+          ]
+        ],
+        "m_Ints": [],
+        "m_Floats": [
+          [
+            "_Amount_01",
+            0.0
+          ],
+          [
+            "_Amount_02",
+            0.5
+          ],
+          [
+            "_BorderWidth",
+            0.33799999952316284
+          ],
+          [
+            "_BorderWidth_01",
+            0.10000000149011612
+          ],
+          [
+            "_BorderWidth_02",
+            0.10000000149011612
+          ],
+          [
+            "_BumpScale",
+            1.0
+          ],
+          [
+            "_Cutoff",
+            0.5
+          ],
+          [
+            "_DetailNormalMapScale",
+            1.0
+          ],
+          [
+            "_DstBlend",
+            0.0
+          ],
+          [
+            "_GlossMapScale",
+            1.0
+          ],
+          [
+            "_Glossiness",
+            0.5
+          ],
+          [
+            "_GlossyReflections",
+            1.0
+          ],
+          [
+            "_Metallic",
+            0.0
+          ],
+          [
+            "_Mode",
+            0.0
+          ],
+          [
+            "_OcclusionStrength",
+            1.0
+          ],
+          [
+            "_Parallax",
+            0.019999999552965164
+          ],
+          [
+            "_SmoothnessTextureChannel",
+            0.0
+          ],
+          [
+            "_SpecularHighlights",
+            1.0
+          ],
+          [
+            "_SrcBlend",
+            1.0
+          ],
+          [
+            "_UVSec",
+            0.0
+          ],
+          [
+            "_ZTest",
+            4.0
+          ],
+          [
+            "_ZWrite",
+            1.0
+          ],
+          [
+            "_pow",
+            1.0
+          ]
+        ],
+        "m_Colors": [
+          [
+            "_Color",
+            {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_Edgecolor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 0.0
+            }
+          ],
+          [
+            "_EmissionColor",
+            {
+              "r": 0.0,
+              "g": 0.0,
+              "b": 0.0,
+              "a": 1.0
+            }
+          ],
+          [
+            "_TintColor",
+            {
+              "r": 0.48496970534324646,
+              "g": 0.7709773778915405,
+              "b": 0.845588207244873,
+              "a": 0.5090000033378601
+            }
+          ]
+        ]
+      },
+      "textures": {
+        "_DissolveTex_01": {
+          "name": "mask_59_2",
+          "scale": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_MainTex": {
+          "name": "Special_juntan_05",
+          "scale": {
+            "x": -1.0,
+            "y": -1.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "sourcePrefabs": [
+    "map_028_juntan_range_a",
+    "map_028_juntan_range_b",
+    "map_028_juntan_range_down_a"
+  ],
+  "binding": {
+    "base": "Special_juntan_01",
+    "variantBase": "Special_juntan_05",
+    "disturbedOverlay": "Special_juntan_04",
+    "veins": "Special_juntan_03",
+    "flow": "flow_57",
+    "distortion": "flow_43_2",
+    "dissolveMasks": [
+      "mask_30",
+      "mask_99"
+    ]
+  },
+  "verification": {
+    "editor": "Full EditMode 562/562",
+    "gpu": "MarineTideSceneTests 3/3, real-camera visibility/inspection and paused-clock/restart checks",
+    "player": "Pending Windows build and visible Player verification"
+  },
+  "sourceBundles": [
+    {
+      "name": "battle/prefabs/effects/tile.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_tile.dat",
+      "md5": "5eefe9a08ec9272452885d95d94a0cae",
+      "sha256": "e39293172ad48082bdf3a9b68af9e44cfc462eaa2c8cd63c3f9462b02f2b1f5d",
+      "bytes": 902963
+    },
+    {
+      "name": "battle/prefabs/[uc]tiles.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_[uc]tiles.dat",
+      "md5": "2d8f1765b39f8b3841c6d62bf159638d",
+      "sha256": "6eabf8100c0a99df85a205b9dc2aefa94972ced7edbc3de61707e64995470304",
+      "bytes": 55552
+    },
+    {
+      "name": "battle/prefabs/effects/map.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_map.dat",
+      "md5": "b2f9fe7a5aaa4f81401ff96cf651b19a",
+      "sha256": "a67f1e4fc359dd184783d6a495093b2d227fa6ecdb6271702aa4da22c01f2f51",
+      "bytes": 5649484
+    }
+  ],
+  "runtimeLayers": {
+    "used": [
+      "Special_juntan_01",
+      "Special_juntan_04",
+      "Special_juntan_03",
+      "flow_43_2"
+    ],
+    "otherImportedDependencies": "Remaining source textures retain exact origin; not claimed as currently used shader layers."
+  }
+}

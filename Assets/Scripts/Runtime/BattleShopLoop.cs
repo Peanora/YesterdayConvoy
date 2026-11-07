@@ -64,7 +64,7 @@ namespace YesterdayConvoy
         void StepBattleShopLoop()
         {
             int before=Loop?.GolemExperience??0;
-            if(Loop!=null&&Loop.Observe(Battle.Phase,Battle.GolemGrowthEarned,Battle.MarineGrowthEarned,Battle.GolemCapacity))
+            if(Loop!=null&&Loop.Observe(Battle.Phase,Battle.GolemGrowthEarned,golemCapacity:Battle.GolemCapacity))
             {BeginGolemExperienceFeedback(before);SetShopVisible(false);CancelShopDrag();CloseDefenderInspector();}
         }
         bool TryTestSettlement(bool victory)

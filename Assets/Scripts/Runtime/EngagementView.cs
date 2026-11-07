@@ -51,6 +51,7 @@ namespace YesterdayConvoy
             var mandra=GetComponent<MandragoraEffectView>()??gameObject.AddComponent<MandragoraEffectView>();mandra.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var mephi=GetComponent<MephistoEffectView>()??gameObject.AddComponent<MephistoEffectView>();mephi.Bind(()=>controller.Battle);
             var neural=GetComponent<NeuralEffectView>()??gameObject.AddComponent<NeuralEffectView>();neural.Bind(()=>controller.Battle,()=>controller.PresentationClock);
+            var marine=GetComponent<MarineTideView>()??gameObject.AddComponent<MarineTideView>();marine.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             var monsterOriginal=GetComponent<MonsterOriginalEffectView>()??gameObject.AddComponent<MonsterOriginalEffectView>();monsterOriginal.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             advancedVfx=GetComponent<AdvancedDefenderView>()??gameObject.AddComponent<AdvancedDefenderView>();advancedVfx.Bind(()=>controller.Battle,()=>controller.PresentationClock);
             foreach(var v in extraVisuals) if(v!=null) Destroy(v.gameObject);

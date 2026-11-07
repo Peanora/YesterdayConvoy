@@ -53,7 +53,7 @@ namespace YesterdayConvoy.Tests
             long request=10;foreach(var id in new[]{"CARD_M19","CARD_M24","CARD_M26","CARD_M27"}){var u=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,id).EntityId);c.Battle.TryDamageUnit(u.EntityId,100000,CombatDamageType.Physical);}
             Assert.That(c.Battle.ContractPoints,Is.EqualTo(4));Assert.That(c.UseContract());Assert.That(c.Battle.ContractAttackBonus(target),Is.EqualTo(.4f));Assert.That(target.SynergyShield,Is.GreaterThan(0));yield return null;c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator NativeDeepSprayCreatesSeedsAndMarineRetaliationEarnsPersistentGrowth()
+        [UnityTest]public IEnumerator NativeDeepSprayCreatesSeedsAndMarineRetaliationSeedsPerBattleTerrain()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();c.SetSandboxRoster(5);c.StartLoopNextBattle();c.Battle.Begin();
             long request=0;
@@ -63,9 +63,10 @@ namespace YesterdayConvoy.Tests
             Replay(c);c.SetSandboxRoster(7);c.SetRemainingChoices("CARD_M33",MarineAdaptation.Infiltration,MarineAdaptation.Hunt);c.StartLoopNextBattle();c.Battle.Begin();
             var u=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,2,c.Battle.Entry,"CARD_M33").EntityId);
             float armor=c.Battle.DefenderArmor(c.Battle.Defender);c.Battle.TryDamageUnit(u.EntityId,u.MaxHealth*.16f,CombatDamageType.Physical);
-            Assert.That(c.Battle.CreeperPulses.Count,Is.GreaterThan(0));Assert.That(c.Battle.DefenderArmor(c.Battle.Defender),Is.LessThan(armor));
+            Assert.That(c.Battle.CreeperPulses.Count,Is.GreaterThan(0));Assert.That(c.Battle.DefenderArmor(c.Battle.Defender),Is.EqualTo(armor));
+            Assert.That(c.Battle.MarineCells.Count,Is.EqualTo(1));
             typeof(ManualBattle).GetMethod("FinishForTesting",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c.Battle,new object[]{c.Battle.RunId,true});c.Tick(.01f);
-            Assert.That(c.Loop.LastMarineGrowth,Is.GreaterThan(0));int xp=c.Loop.MarineExperience;Replay(c);Assert.That(c.Battle.MarineExperience,Is.EqualTo(xp));yield return null;c.LeaveShopTrial();
+            Assert.That(c.Loop.LastMarineGrowth,Is.Zero);Assert.That(c.Loop.MarineExperience,Is.Zero);Replay(c);Assert.That(c.Battle.MarineCells,Is.Empty);yield return null;c.LeaveShopTrial();
         }
     }
 }

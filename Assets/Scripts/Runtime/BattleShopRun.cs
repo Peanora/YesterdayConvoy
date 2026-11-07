@@ -13,8 +13,9 @@ namespace YesterdayConvoy
         public int LastGolemExperienceBefore {get;private set;}
         public int LastGolemCapacity {get;private set;}=1;
         public int SandboxRound {get;private set;}=1;
-        public int MarineExperience {get;private set;}
-        public int LastMarineGrowth {get;private set;}
+        // Legacy read surface for old trial assets/callers. Marine growth retired in favour of per-battle terrain.
+        public int MarineExperience=>0;
+        public int LastMarineGrowth=>0;
         public readonly int Seed;
         public readonly bool LateGame;
         public readonly bool Campaign,Sandbox;
@@ -36,7 +37,6 @@ namespace YesterdayConvoy
             LastGolemExperienceBefore=GolemExperience;LastGolemCapacity=golemCapacity;
             LastGolemGrowth=Campaign&&!RewardStage?GolemGrowth.Award(GolemExperience,golemCapacity,golemGrowth):0;
             GolemExperience+=LastGolemGrowth;
-            LastMarineGrowth=Campaign&&won?marineGrowth:0;MarineExperience+=LastMarineGrowth;
             string receipt=Sandbox?"sandbox-round-"+SandboxRound:"stage-"+Stage;
             Reward=Economy.SettleRound(receipt,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
             Phase=!won?BattleShopPhase.Failed:Stage==TotalStages?BattleShopPhase.Complete:BattleShopPhase.Settlement;return true;

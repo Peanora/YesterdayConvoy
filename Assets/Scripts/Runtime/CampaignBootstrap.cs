@@ -11,6 +11,8 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(!sandbox&&Array.IndexOf(args,"-marineTideSmokeTest")>=0)yield break;
+            if(!sandbox&&Array.IndexOf(args,"-marineTide")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("MarineTrial");yield break;}
             if(Array.IndexOf(args,"-approvedUiSmokeTest")>=0||Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0||!sandbox&&Array.IndexOf(args,"-herdSpiritSmokeTest")>=0)yield break; // The herd driver still needs the saved sandbox's normal preparation.
             if(!sandbox&&Array.IndexOf(args,"-synergySandbox")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
             if(!sandbox&&Array.IndexOf(args,"-mudrockCultivation")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("MudrockCrewTrial");yield break;}

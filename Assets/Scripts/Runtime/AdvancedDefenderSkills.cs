@@ -220,7 +220,11 @@ namespace YesterdayConvoy
         void ApplyPureUnitDamage(DeployedUnitState u,float amount)
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
-            ApplyUnitHealthDamage(u,u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u));
+            float damage=u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u);
+            // This entry is only for defender-inflicted true damage / elemental bursts, never self-loss.
+            // Record effective contact before a fatal hit removes the living source, as normal damage does.
+            if(damage>0)OnMarineContact(u);
+            ApplyUnitHealthDamage(u,damage);
         }
         void AddScorch(DeployedUnitState u,float amount)
         {
