@@ -12,10 +12,6 @@ namespace YesterdayConvoy
         {
             DeploymentLane selected=null;
             if(shopDrag>=0&&shopMoving&&PointerGround(ScreenPosition(shopPointer),out var world))selected=Battle.FindEntryLane(world);
-            foreach(var lane in Battle.Lanes){
-                var p=GUIPosition(Camera.main.WorldToScreenPoint(lane.Entry));
-                GUI.Label(new Rect(p.x-45,p.y-36,110,24),lane.Id+" → "+lane.ExitId,label);
-            }
             if(selected==null)return;
             Color color=new Color(1,.77f,.34f);
             for(int i=1;i<selected.Points.Count;i++){

@@ -106,6 +106,9 @@ namespace YesterdayConvoy.Tests
         {
             var pieces=BlackForestChallengePlan.StartingPieces();Assert.That(pieces.Length,Is.EqualTo(BlackForestChallengePlan.InitialLevel));
             Assert.That(pieces.Select(p=>p.Id).Distinct().Count(),Is.EqualTo(pieces.Length));
+            Assert.That(pieces.Count(p=>p.Star==2),Is.EqualTo(3));Assert.That(pieces.Count(p=>p.Star==1),Is.EqualTo(5));
+            Assert.That(pieces.All(p=>CampaignBalance.Profiles[p.Id].Cost<=3),Is.True,"The ordinary start must not include a five-cost carry.");
+            Assert.That(pieces.Count(p=>CampaignBalance.Snow(p.Id)),Is.Zero,"Do not pre-assemble the five-Snow global weather build.");
             var roles=CampaignBalance.Profiles.Select(p=>new ShopTrialModel.Role{Id=p.Key,Name=p.Key,Cost=p.Value.Cost});
             var shop=new ShopTrialModel(roles,61108);shop.EnableCampaign(true);shop.Preset(pieces,Array.Empty<string>(),BlackForestChallengePlan.InitialLevel,0,10);
             for(int refresh=0;refresh<3;refresh++)

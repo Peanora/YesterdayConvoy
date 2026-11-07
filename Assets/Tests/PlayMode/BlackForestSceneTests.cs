@@ -25,6 +25,8 @@ namespace YesterdayConvoy.Tests
             {controller=Object.FindAnyObjectByType<ManualBattleController>();yield return null;}
             Assert.That(controller,Is.Not.Null);Assert.That(controller.BlackForestChallengeActive,Is.True);
             Assert.That(controller.ArtLoading||controller.ShopPanelTransitioning,Is.False,"Forest preparation did not finish.");
+            // This fixture accepts the configured default form; normal play still shows the existing prompt.
+            typeof(ManualBattleController).GetField("inspectedSynergy",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(controller,null);
             yield return null;
         }
         IEnumerator Load()
@@ -48,6 +50,11 @@ namespace YesterdayConvoy.Tests
             }
             Assert.That(controller.Battle.Lanes.Count,Is.EqualTo(3));
             Assert.That(controller.Battle.Lanes.Select(l=>l.ExitId).Distinct().Count(),Is.EqualTo(2));
+            foreach(var lane in controller.Battle.Lanes)
+            {
+                var position=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(lane.Entry));
+                Assert.That(new Rect(185,60,1095,492).Contains(position),Is.True,"The enlarged map must keep every red gate clear of HUD and cards.");
+            }
             Assert.That(Object.FindObjectsByType<BlackForestTile>(FindObjectsSortMode.None).Length,Is.EqualTo(238));
         }
         void AssertStock()
@@ -87,7 +94,7 @@ namespace YesterdayConvoy.Tests
             int gold=c.Shop.Gold,offer=Enumerable.Range(0,5).First(i=>c.Shop.Offers[i]!=null);
             Assert.That(c.PurchaseShopCard(offer).Success,Is.True);Assert.That(c.Shop.Gold,Is.EqualTo(gold));AssertStock();
             Assert.That(tile.transform.position,Is.EqualTo(moved));
-            Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();Drag("CARD_M18",2);
+            Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();Drag("CARD_M07",2);
             Assert.That(c.Battle.Units.Single(u=>!u.SynergySupport).RouteId,Is.EqualTo("R3"));
             c.Battle.SetPaused(true);Vector3 position=c.Battle.Units[0].Motion.Position;c.Tick(5);
             Assert.That(c.Battle.Units[0].Motion.Position,Is.EqualTo(position));
@@ -100,7 +107,7 @@ namespace YesterdayConvoy.Tests
         {
             yield return Load();var c=controller;Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();
             c.Battle.Begin();c.Battle.SetPaused(true);double clock=c.Battle.Clock;
-            var names=new[]{"CARD_M18","CARD_M16","CARD_M19"};int expectedDP=BlackForestChallengePlan.InitialDP;
+            var names=new[]{"CARD_M07","CARD_M08","CARD_M15"};int expectedDP=BlackForestChallengePlan.InitialDP;
             var health=c.Battle.Defenders.Select(d=>d.Health).ToArray();var sp=c.Battle.Defenders.Select(d=>d.SkillSP).ToArray();
             for(int lane=0;lane<3;lane++)
             {

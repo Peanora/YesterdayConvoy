@@ -10,14 +10,14 @@ namespace YesterdayConvoy
         public const string Title="树海 · 六星防线";
 
         public static ShopTrialModel.Piece[] StartingPieces()=>new[]{
-            new ShopTrialModel.Piece{Id="CARD_M18",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M16",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M19",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M06",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M11",Star=3},
-            new ShopTrialModel.Piece{Id="CARD_M12",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M13",Star=2},
-            new ShopTrialModel.Piece{Id="CARD_M14",Star=1}
+            new ShopTrialModel.Piece{Id="CARD_M07",Star=2},
+            new ShopTrialModel.Piece{Id="CARD_M08",Star=2},
+            new ShopTrialModel.Piece{Id="CARD_M15",Star=2},
+            new ShopTrialModel.Piece{Id="CARD_M16",Star=1},
+            new ShopTrialModel.Piece{Id="CARD_M10",Star=1},
+            new ShopTrialModel.Piece{Id="CARD_M05",Star=1},
+            new ShopTrialModel.Piece{Id="CARD_M04",Star=1},
+            new ShopTrialModel.Piece{Id="CARD_M38",Star=1}
         };
 
         public static string[] StartingIds=>Array.ConvertAll(StartingPieces(),piece=>piece.Id);

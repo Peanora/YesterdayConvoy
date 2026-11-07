@@ -128,7 +128,12 @@ namespace YesterdayConvoy
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
-            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points){yield return point;yield return point+Camera.main.transform.up*1.65f;}
+            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points)
+            {
+                yield return point;yield return point+Camera.main.transform.up*1.65f;
+                if(TacticalMapId==BlackForestLayout.Id)
+                    foreach(float x in new[]{-.5f,.5f})foreach(float z in new[]{-.5f,.5f})yield return point+new Vector3(x,0,z);
+            }
             foreach(var defender in shopMapCopy.defenders){yield return defender.position;yield return defender.position+Camera.main.transform.up*1.65f;}
         }
         int shopWindowWidth,shopWindowHeight;
@@ -145,13 +150,22 @@ namespace YesterdayConvoy
             // Keep interactive terrain between the trait rail, header and bottom card bar.
             // Decorative geometry still fills the full camera; only the fit budget is inset.
             var center=new Vector2(.56f,.61f);
+            var halfExtent=new Vector2(.39f,.26f);
+            if(TacticalMapId==BlackForestLayout.Id)
+            {
+                // The forest fills more of the battlefield; tile corners keep the lowest row clear of cards.
+                var fit=TacticalViewport.Current.CameraRect(new Rect(200,66,1060,478));
+                var viewport=camera.rect;
+                center=new Vector2((fit.center.x-viewport.x)/viewport.width,(fit.center.y-viewport.y)/viewport.height);
+                halfExtent=new Vector2(fit.width/(2*viewport.width),fit.height/(2*viewport.height));
+            }
             for(int pass=0;pass<5;pass++)
             {
                 var projected=points.Select(camera.WorldToViewportPoint).ToArray();
                 float centerX=(projected.Min(p=>p.x)+projected.Max(p=>p.x))*.5f,centerY=(projected.Min(p=>p.y)+projected.Max(p=>p.y))*.5f;
                 float depth=projected.Average(p=>p.z);
                 camera.transform.position+=camera.ViewportToWorldPoint(new Vector3(centerX,centerY,depth))-camera.ViewportToWorldPoint(new Vector3(center.x,center.y,depth));
-                float extent=points.Select(camera.WorldToViewportPoint).Max(p=>Mathf.Max(Mathf.Abs(p.x-center.x)/.39f,Mathf.Abs(p.y-center.y)/.26f));
+                float extent=points.Select(camera.WorldToViewportPoint).Max(p=>Mathf.Max(Mathf.Abs(p.x-center.x)/halfExtent.x,Mathf.Abs(p.y-center.y)/halfExtent.y));
                 float zoom=1/Mathf.Max(.05f,extent);
                 camera.fieldOfView=2*Mathf.Atan(Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad)/zoom)*Mathf.Rad2Deg;
             }

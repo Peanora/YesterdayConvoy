@@ -14,13 +14,13 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string scene, error, naturalOutcome;
-            public string scope="Production Black Forest V2 encounter and its default eight-member lineup. Production shop pointer handlers, normal star profiles, finite stock, paused deployment and natural combat. The automated deployment/skill policy is a diagnostic, not human play or a full challenge balance verdict. No injected damage, forced victory or changed encounter values.";
-            public string deploymentPolicy="Deploy each default member once: M18/M11 at R1; M16/M06/M13/M14 at R2; M19/M12 at R3. Activate every legal ready player skill. Observe up to 300 simulation seconds; victory is recorded but is not a pass requirement.";
+            public string scope="Production Black Forest encounter with the ordinary eight-member lineup. Production shop pointer handlers, normal star profiles, finite stock, paused deployment and natural combat. The diagnostic accepts the existing default infection form and closes its modal. This is not human play or a full balance verdict. No injected damage, forced victory or changed encounter values.";
+            public string deploymentPolicy="Deploy each default member once: M07/M10 at R1; M08/M16/M04/M38 at R2; M15/M05 at R3. Activate legal ready skills only if present. Observe up to 300 simulation seconds; victory is recorded but is not a pass requirement.";
             public string[] checks, startingLineup;
             public int screenWidth, screenHeight, defendersAtStart, sixStarDefenders, deployed, survivingDefenders,
                 breached, remainingDefense, remainingDP, defenderHits, playerHits, healingShots, defenderSkillCasts, playerSkillCasts;
             public double observedSeconds;
-            public float directDamageToDefenders, observedPlayerHealthLoss, observedDefenderHealthRestored;
+            public float directDamageToDefenders, observedPlayerHealthLoss, observedDefenderHealthRestored,routeScreenWidth,routeScreenHeight;
         }
 
         IEnumerator BlackForestEvidenceReady()
@@ -28,6 +28,8 @@ namespace YesterdayConvoy
             double deadline=Time.realtimeSinceStartupAsDouble+600;
             while((ArtLoading||ShopPanelTransitioning)&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
             if(ArtLoading||ShopPanelTransitioning)throw new InvalidOperationException("Black Forest evidence preparation timed out.");
+            // Accept the already-selected default form for this diagnostic; ordinary play keeps its prompt.
+            if(inspectedSynergy=="感染生物")inspectedSynergy=null;
             yield return null;
         }
 
@@ -114,18 +116,27 @@ namespace YesterdayConvoy
             check("no-retired-stronghold-map-rules",!Battle.StrongholdMapEnabled&&!Battle.StrongholdChallenge&&Battle.StrongholdPortalTrips==0&&Battle.StrongholdInfectionTouches==0);
             check("three-fixed-routes-and-shared-target-doors",Battle.Lanes.Count==3&&
                 Battle.Lanes.Select(lane=>lane.Id+"/"+lane.ExitId).SequenceEqual(new[]{"R1/B1","R2/B2","R3/B1"}));
+            check("ordinary-roster-without-prebuilt-endgame-synergies",shop.Bench.Count(piece=>piece.Star==2)==3&&
+                shop.Bench.Count(piece=>piece.Star==1)==5&&shop.Bench.All(piece=>CampaignBalance.Profiles[piece.Id].Cost<=3)&&
+                Battle.SnowTier==0&&Battle.ReunionTier==4);
+            var floorEdges=Battle.Lanes.SelectMany(lane=>lane.Points).SelectMany(point=>new[]{
+                point+new Vector3(-.5f,0,-.5f),point+new Vector3(-.5f,0,.5f),point+new Vector3(.5f,0,-.5f),point+new Vector3(.5f,0,.5f)})
+                .Select(point=>GUIPosition(Camera.main.WorldToScreenPoint(point))).ToArray();
+            result.routeScreenWidth=floorEdges.Max(point=>point.x)-floorEdges.Min(point=>point.x);
+            result.routeScreenHeight=floorEdges.Max(point=>point.y)-floorEdges.Min(point=>point.y);
+            check("enlarged-route-tile-edges-stay-clear-of-hud-and-cards",floorEdges.All(point=>new Rect(185,60,1095,492).Contains(point)));
             yield return BlackForestEvidenceCapture(directory,"01-production-preparation",check);
 
             check("production-start-battle",StartLoopNextBattle());
             yield return BlackForestEvidenceReady();
             var firstLane=Battle.Lanes[0];
             int firstDP=Battle.DP;
-            var firstCard=Battle.FindCard("CARD_M18");
+            var firstCard=Battle.FindCard("CARD_M07");
             int firstUses=firstCard.RemainingUses;
-            check("production-pointer-r1-deployment",BlackForestEvidenceDrag("CARD_M18",firstLane.Entry));
+            check("production-pointer-r1-deployment",BlackForestEvidenceDrag("CARD_M07",firstLane.Entry));
             check("r1-starts-running-and-charges-once",Battle.Phase==BattlePhase.Running&&Battle.DP==firstDP-firstCard.Settings.DeploymentCost&&firstCard.RemainingUses==firstUses-1);
             Battle.SetPaused(true);
-            string[] pausedCards={"CARD_M16","CARD_M19"};
+            string[] pausedCards={"CARD_M08","CARD_M15"};
             for(int lane=1;lane<3;lane++)
             {
                 string cardId=pausedCards[lane-1];var card=Battle.FindCard(cardId);
@@ -141,7 +152,7 @@ namespace YesterdayConvoy
             var cooldowns=Battle.Cards.Select(card=>Battle.CardCooldown(card.Settings.CardId)).ToArray();
             var defenderSP=Battle.Defenders.Select(guard=>guard.SkillSP).ToArray();double pausedClock=Battle.Clock;
             int beforeRepeat=Battle.DP,unitsBeforeRepeat=Battle.Units.Count;
-            check("paused-repeat-does-not-bypass-card-cooldown",!BlackForestEvidenceDrag("CARD_M16",Battle.Lanes[1].Entry)&&
+            check("paused-repeat-does-not-bypass-card-cooldown",!BlackForestEvidenceDrag("CARD_M08",Battle.Lanes[1].Entry)&&
                 Battle.DP==beforeRepeat&&Battle.Units.Count==unitsBeforeRepeat);
             Tick(5);
             check("pause-freezes-clock-position-health-sp-and-deployment-cd",Battle.Clock==pausedClock&&Battle.IsPaused&&
@@ -159,12 +170,14 @@ namespace YesterdayConvoy
             check("restart-preserves-exact-authored-terrain",terrainSet.SetEquals(FindObjectsByType<BlackForestTile>()));
             yield return BlackForestEvidenceCapture(directory,"03-encounter-restarted",check);
 
-            string[] deploymentOrder={"CARD_M18","CARD_M16","CARD_M19","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14"};
+            string[] deploymentOrder=BlackForestChallengePlan.StartingIds;
             int[] laneForCard={0,1,2,1,0,2,1,1};
             for(int i=0;i<deploymentOrder.Length;i++)
                 check("natural-default-pointer-deploy-"+deploymentOrder[i],BlackForestEvidenceDrag(deploymentOrder[i],Battle.Lanes[laneForCard[i]].Entry));
             var combatBattle=Battle;
-            check("deployed-attacks-retain-normal-star-profiles",combatBattle.Units.Where(unit=>!unit.SynergySupport).All(unit=>
+            bool hasManualSkill=combatBattle.Units.Any(unit=>!unit.SynergySupport&&combatBattle.UnitCombat(unit).HasSkill);
+            // Infection shapes legitimately derive their own scaled combat snapshot on deployment.
+            check("deployed-non-infected-attacks-use-normal-star-profiles",combatBattle.Units.Where(unit=>!unit.SynergySupport&&!CampaignBalance.Infected(unit.CardId)).All(unit=>
             {
                 var piece=shop.Bench.Single(item=>item.Id==unit.CardId&&IsLineupPiece(item));
                 return Math.Abs(combatBattle.UnitCombat(unit).UnitAttack-CampaignBalance.Build(shopDefinitions[unit.CardId],piece.Star,50,6).Combat.UnitAttack)<.0001f;
@@ -187,7 +200,7 @@ namespace YesterdayConvoy
                 {exchangeCapture=true;yield return BlackForestEvidenceCapture(directory,"04-natural-damage-exchange",check);}
                 if(!healingCapture&&result.observedDefenderHealthRestored>0&&combatBattle.CombatShots.Any(shot=>shot.Healing&&shot.Applied))
                 {healingCapture=true;yield return BlackForestEvidenceCapture(directory,"05-natural-defender-healing",check);}
-                if(!skillCapture&&combatBattle.Defenders.Any(guard=>guard.SkillCasts>0)&&combatBattle.SkillCasts>0)
+                if(!skillCapture&&combatBattle.Defenders.Any(guard=>guard.SkillCasts>0)&&(!hasManualSkill||combatBattle.SkillCasts>0))
                 {skillCapture=true;yield return BlackForestEvidenceCapture(directory,"06-natural-skills",check);}
                 if(step%4==0)yield return null;
             }
@@ -202,7 +215,7 @@ namespace YesterdayConvoy
             result.directDamageToDefenders=combatBattle.CombatShots.Where(shot=>!shot.FromDefender&&shot.Applied).Sum(shot=>Math.Max(0,shot.DamageDealt));
             check("natural-two-way-health-damage",result.directDamageToDefenders>0&&result.observedPlayerHealthLoss>0);
             check("natural-defender-healing-observed",result.observedDefenderHealthRestored>0&&result.healingShots>0);
-            check("natural-defender-and-manual-player-skills-observed",result.defenderSkillCasts>0&&result.playerSkillCasts>0);
+            check("natural-defender-skills-and-applicable-player-skills",result.defenderSkillCasts>0&&(!hasManualSkill||result.playerSkillCasts>0));
             check("deployed-units-retain-entry-route-and-target",combatBattle.Units.Where(unit=>!unit.SynergySupport).All(unit=>
                 combatBattle.Lanes.Any(lane=>lane.Id==unit.RouteId&&lane.ExitId==unit.ExitId)));
             check("finite-stock-remains-conserved-after-natural-combat",BlackForestEvidenceStockConserved());
