@@ -84,7 +84,11 @@ namespace YesterdayConvoy
                     var core=Battle.Units.Last(u=>u.CardId=="CARD_M37"&&!u.SynergySupport);
                     float baseHealth=core.Profile?.Unit.Health??Battle.Settings.Health;
                     check(prefix+"actual-health-and-cost",Math.Abs(core.MaxHealth-baseHealth*life[i])<.02f&&Math.Abs(core.Health-core.MaxHealth)<.02f&&Battle.DP==dp-Battle.FindCard(core.CardId).Settings.DeploymentCost);
-                    string partner=shopLineup.First(id=>id!="CARD_M37"&&id!="CARD_M28"&&id!="CARD_M42"&&id!="CARD_M43");
+                    // The caster's original twenty-second shackle would suppress the
+                    // guard throughout the first automatic refill. Use the ordinary
+                    // thrower in the larger presets so natural hits can consume ward.
+                    string partner=tier>=6&&shopLineup.Contains("CARD_M26")?"CARD_M26":
+                        shopLineup.First(id=>id!="CARD_M37"&&id!="CARD_M28"&&id!="CARD_M42"&&id!="CARD_M43");
                     check(prefix+"second-normal-drag",SarkazEvidenceDrag(partner));
                     var other=Battle.Units.Last(u=>u.CardId==partner&&!u.SynergySupport);
                     check(prefix+"paused-cannot-cast",!UseContract()&&Battle.ContractUses==0);
