@@ -74,7 +74,7 @@ namespace YesterdayConvoy
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
-            diagnostic = Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
+            diagnostic = SynergyActivationSmokeDriver.Requested || Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
@@ -228,6 +228,7 @@ namespace YesterdayConvoy
 
         private void Update()
         {
+            UpdateSynergyActivationSound();
             WarmVisibleShop();if(ArtLoading)return;
             if(!ShopTrialActive&&Camera.main!=null&&Camera.main.targetTexture==null)Camera.main.rect=TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720));
             if(Battle==null || TestSelectionOpen) return;
@@ -257,6 +258,7 @@ namespace YesterdayConvoy
             bool newOrder=ObserveGuerrillaOrder();
             guerrillaOrderView?.AdvancePresentation(newOrder?0:orderDelta);
             StepBattleShopLoop();
+            TickSynergyActivationFeedback(delta);
             SyncViews();
             UpdatePreview();
         }
@@ -593,6 +595,7 @@ namespace YesterdayConvoy
 
         private void OnDisable()
         {
+            DisableSynergyActivationFeedback();
             CancelArtPreparation();
             ClearShopBenchModels();
             ClearViews(); CancelInteraction();
@@ -602,6 +605,7 @@ namespace YesterdayConvoy
 
         private void OnDestroy()
         {
+            ClearSynergyActivationFeedback();
             ClearShopBenchModels();
             ClearViews();
             if(preview!=null) Destroy(preview.gameObject);
