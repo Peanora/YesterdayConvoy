@@ -39,8 +39,8 @@ namespace YesterdayConvoy
                 ClearSynergyActivationFeedback();synergyActivationShop=shop;
             }
             synergyActivationFeedback.Observe(CurrentSynergies);
-            // Appending another threshold must not restart a still-playing cue. Each
-            // queued trait has its own identity, including two traits on the same card.
+            // Rebuilt priorities have fresh identities: stop an obsolete cue immediately.
+            // An unchanged tier keeps its identity, including after a modal resumes.
             SynchronizeSynergyActivationSoundSequence();
         }
 

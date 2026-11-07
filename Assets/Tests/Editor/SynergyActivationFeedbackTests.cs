@@ -50,7 +50,7 @@ namespace YesterdayConvoy.Tests
                 "A same-tier newcomer does not inherit an older activation's pulse.");
             Assert.That(feedback.Active.IsAddedMember(Reunion[2]), Is.False);
             Assert.That(feedback.Active.Age, Is.EqualTo(.2f).Within(.0001f));
-            Assert.That(feedback.Observe(Rows()), Is.False);
+            Assert.That(feedback.Observe(Rows()), Is.True);
             Assert.That(feedback.Active, Is.Null);
             Assert.That(feedback.Observe(Rows(Reunion[0], Reunion[2])), Is.True,
                 "Rows with zero members disappear from SynergySummary and still must rearm.");
@@ -111,39 +111,86 @@ namespace YesterdayConvoy.Tests
                 "Designating an already prepared card is not a new-card entrance.");
         }
 
-        [Test] public void LaterObservationsAppendWithoutRestartingAnAchievedActiveThresholdOrItsGap()
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void ANewMudrockTierImmediatelyReplacesTheScheduleAndDoesNotReplayAnAlreadyShownSarkaz(int sarkazProgress)
         {
             var feedback = new SynergyActivationFeedback();
-            feedback.Observe(new[] { Row("整合运动", 2) });
-            feedback.Advance(.3f);
-            int first = feedback.Active.Sequence;
-            var later = new[] { Row("整合运动", 4), Row("萨卡兹", 6) };
-            Assert.That(feedback.Observe(later), Is.True);
-            Assert.That(feedback.Active.Sequence, Is.EqualTo(first));
-            Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(2),
-                "A still-achieved lower threshold can finish while a newly reached higher threshold waits.");
-            Assert.That(feedback.Active.Age, Is.EqualTo(.3f).Within(.00001f));
-            Assert.That(feedback.QueuedCount, Is.EqualTo(2));
-            feedback.Advance(SynergyActivationFeedback.Lifetime - feedback.Active.Age);
-            Assert.That(feedback.Active, Is.Null);
-            feedback.Advance(.1f);
-            float gap = feedback.SecondsToTransition;
-            Assert.That(feedback.Observe(later.Concat(new[] { Row("雪怪小队", 5) }).ToArray()), Is.True);
-            Assert.That(feedback.Active, Is.Null);
-            Assert.That(feedback.SecondsToTransition, Is.EqualTo(gap).Within(.00001f));
-            Assert.That(feedback.QueuedCount, Is.EqualTo(3));
-            feedback.Advance(gap);
-            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
-            feedback.Advance(SynergyActivationFeedback.Lifetime + SynergyActivationFeedback.Gap);
-            var reunion = feedback.Active;
-            Assert.That(reunion.Activations.Single().Name, Is.EqualTo("整合运动"));
-            Assert.That(reunion.Activations.Single().Tier, Is.EqualTo(4));
-            CollectionAssert.AreEquivalent(Reunion.Skip(2).Take(2), reunion.AddedMembers,
-                "Only this pulse's truly new member IDs gate its arrival; unrelated Sarkaz recruits do not.");
-            feedback.Advance(SynergyActivationFeedback.Lifetime + SynergyActivationFeedback.Gap);
-            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("雪怪小队"));
-            feedback.Advance(10);
+            feedback.Observe(new[] { Row("萨卡兹", 4), Row("泥岩小队", 4) });
+            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+            if (sarkazProgress == 0) feedback.Advance(.3f);
+            else
+            {
+                feedback.Advance(SynergyActivationFeedback.Lifetime + SynergyActivationFeedback.Gap);
+                Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
+                feedback.Advance(sarkazProgress == 1 ? .3f : SynergyActivationFeedback.Lifetime);
+            }
+            Assert.That(feedback.HasShown("萨卡兹", 4), Is.EqualTo(sarkazProgress > 0));
+            int revision = feedback.Revision;
+            Assert.That(feedback.Observe(new[] { Row("泥岩小队", 5), Row("萨卡兹", 4) }), Is.True);
+            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+            Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(5));
+            Assert.That(feedback.Active.Age, Is.Zero, "The new Gold tier starts immediately, without an old tail or gap.");
+            Assert.That(feedback.Active.Sequence, Is.GreaterThan(revision));
+            Assert.That(feedback.HasShown("泥岩小队", 5), Is.False);
+            Assert.That(feedback.PendingCount, Is.EqualTo(sarkazProgress == 0 ? 2 : 1));
+            if (sarkazProgress == 0)
+            {
+                feedback.Advance(SynergyActivationFeedback.Lifetime + SynergyActivationFeedback.Gap);
+                Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
+                Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(4));
+                Assert.That(feedback.HasShown("萨卡兹", 4), Is.False, "Age zero has not displayed the pending trait yet.");
+                feedback.Advance(SynergyActivationFeedback.Lifetime);
+            }
+            else Assert.That(feedback.Advance(10), Is.False, "A partly or fully shown unchanged Sarkaz4 is not replayed.");
             Assert.That(feedback.Pending, Is.False);
+        }
+
+        [Test] public void AnUnstartedBlockedItemSurvivesRebuildWithLatestMembersAndItsOriginalArrivalMarkers()
+        {
+            var feedback = new SynergyActivationFeedback();
+            var mudrock = Row("泥岩小队", 4);
+            feedback.Observe(new[] { mudrock, Row("萨卡兹", 4) });
+            int sequence = feedback.Active.Sequence;
+            feedback.Advance(100, true);
+            feedback.Advance(0);
+            Assert.That(feedback.HasShown("泥岩小队", 4), Is.False);
+            Assert.That(feedback.HasShown("萨卡兹", 4), Is.False);
+            var sarkaz = SynergyTrialCatalog.Find("sarkaz").Members.ToArray();
+            string[] latestSarkaz = { sarkaz[0], sarkaz[1], sarkaz[2], sarkaz[4] };
+            var latest = Rows(latestSarkaz).Single(row => row.Name == "萨卡兹");
+            Assert.That(feedback.Observe(new[] { latest, Row("泥岩小队", 5) }), Is.True);
+            Assert.That(feedback.Active.Sequence, Is.GreaterThan(sequence));
+            CollectionAssert.AreEqual(Row("泥岩小队", 5).Members, feedback.Active.Activations.Single().Members);
+            Assert.That(mudrock.Members.All(feedback.Active.IsAddedMember), Is.True,
+                "Previously observed purchase IDs still block their not-yet-started replacement until arrival.");
+            feedback.Advance(SynergyActivationFeedback.Lifetime + SynergyActivationFeedback.Gap);
+            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
+            CollectionAssert.AreEqual(latestSarkaz, feedback.Active.Activations.Single().Members);
+            CollectionAssert.AreEquivalent(latestSarkaz, feedback.Active.AddedMembers,
+                "Retain original pending additions, discard departed members and merge truly new IDs.");
+            Assert.That(feedback.HasShown("萨卡兹", 4), Is.False);
+            feedback.Advance(.01f);
+            Assert.That(feedback.HasShown("萨卡兹", 4), Is.True);
+        }
+
+        [Test] public void AChangeDuringTheClearGapImmediatelyReordersWithoutWaitingTheOldGap()
+        {
+            var feedback = new SynergyActivationFeedback();
+            feedback.Observe(new[] { Row("泥岩小队", 4), Row("萨卡兹", 4) });
+            feedback.Advance(SynergyActivationFeedback.Lifetime + .1f);
+            Assert.That(feedback.Active, Is.Null);
+            Assert.That(feedback.Pending, Is.True);
+            Assert.That(feedback.SecondsToTransition, Is.LessThan(SynergyActivationFeedback.Gap));
+            int revision = feedback.Revision;
+            feedback.Observe(new[] { Row("泥岩小队", 5), Row("萨卡兹", 4) });
+            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+            Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(5));
+            Assert.That(feedback.Active.Age, Is.Zero);
+            Assert.That(feedback.Active.Sequence, Is.GreaterThan(revision));
+            Assert.That(feedback.SecondsToTransition, Is.EqualTo(SynergyActivationFeedback.Lifetime));
+            Assert.That(feedback.PendingCount, Is.EqualTo(2));
         }
 
         [Test] public void PauseFreezesBothActiveItemsAndGapsAndLargeStepsRetainTheirRemainder()
@@ -171,35 +218,62 @@ namespace YesterdayConvoy.Tests
             Assert.That(feedback.SecondsToTransition, Is.Zero);
         }
 
-        [Test] public void DowngradedAndDepartedItemsArePrunedBeforeQueuedItemsPlayAndClearDropsEverything()
+        [Test] public void RapidTierChangesKeepOnlyTheLatestTierAndAnInactiveRowDoesNotInterrupt()
         {
             var feedback = new SynergyActivationFeedback();
-            var marine = SynergyTrialCatalog.Find("marine").Members.ToArray();
-            feedback.Observe(new[] { Row("整合运动", 6), Row("雪怪小队", 5), Row("海嗣", 2) });
+            feedback.Observe(ReunionRows(6));
             feedback.Advance(.2f);
-            int priorRevision = feedback.Revision;
-            var replacement = Rows(marine[0], marine[2]).Single(row => row.Name == "海嗣");
-            var current = new[] { Row("整合运动", 4), Row("雪怪小队", 2), replacement };
-            Assert.That(feedback.Observe(current), Is.False);
-            Assert.That(feedback.Revision, Is.EqualTo(priorRevision));
-            Assert.That(feedback.Active, Is.Null, "The playing Gold threshold is no longer achieved.");
-            Assert.That(feedback.PendingCount, Is.EqualTo(1), "The queued Silver snow threshold must also be removed.");
-            Assert.That(feedback.SecondsToTransition, Is.EqualTo(SynergyActivationFeedback.Gap));
-            feedback.Advance(SynergyActivationFeedback.Gap);
-            var retained = feedback.Active;
-            Assert.That(retained.Activations.Single().Name, Is.EqualTo("海嗣"));
-            CollectionAssert.AreEqual(new[] { marine[0] }, retained.Activations.Single().Members);
-            CollectionAssert.AreEqual(new[] { marine[0] }, retained.AddedMembers);
-            Assert.That(retained.Activations.Single().ContainsMember(marine[2]), Is.False,
-                "A same-tier replacement does not inherit the departed member's stale queued badge.");
+            Assert.That(feedback.HasShown("整合运动", 6), Is.True);
+            int sequence = feedback.Active.Sequence;
+            Assert.That(feedback.Observe(ReunionRows(4)), Is.True);
+            Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(4));
+            Assert.That(feedback.Active.Sequence, Is.GreaterThan(sequence));
+            Assert.That(feedback.Active.Age, Is.Zero);
+            Assert.That(feedback.HasShown("整合运动", 4), Is.False);
+            Assert.That(feedback.Observe(ReunionRows(2)), Is.True);
+            Assert.That(feedback.Active.Activations.Single().Tier, Is.EqualTo(2));
+            Assert.That(feedback.PendingCount, Is.EqualTo(1), "An obsolete unstarted Silver entry cannot remain queued.");
+            Assert.That(feedback.Observe(ReunionRows(1)), Is.True);
+            Assert.That(feedback.Pending, Is.False);
+            Assert.That(feedback.SecondsToTransition, Is.Zero);
+            Assert.That(feedback.Observe(ReunionRows(2)), Is.True);
+            feedback.Advance(.01f);
+            Assert.That(feedback.HasShown("整合运动", 2), Is.True);
+            sequence = feedback.Active.Sequence;
+            float age = feedback.Active.Age;
+            // Tier-zero rows can appear/disappear as isolated units enter or leave the lineup.
+            var inactiveSnow = Row("雪怪小队", 1);
+            Assert.That(feedback.Observe(ReunionRows(2).Concat(new[] { inactiveSnow }).ToArray()), Is.False);
+            Assert.That(feedback.Observe(ReunionRows(2)), Is.False);
+            Assert.That(feedback.Active.Sequence, Is.EqualTo(sequence));
+            Assert.That(feedback.Active.Age, Is.EqualTo(age));
+        }
+
+        [Test] public void StageClearDoesNotResurrectAnUnshownTraitWhenAnUnrelatedTierChanges()
+        {
+            var feedback = new SynergyActivationFeedback();
+            var reunion = ReunionRows(2);
+            feedback.Observe(reunion);
+            int sequence = feedback.Active.Sequence;
+            Assert.That(feedback.HasShown("整合运动", 2), Is.False);
             feedback.Clear(false);
             Assert.That(feedback.Pending, Is.False);
             Assert.That(feedback.QueuedCount, Is.Zero);
-            Assert.That(feedback.Observe(current), Is.False);
+            Assert.That(feedback.Observe(reunion), Is.False);
+            var current = reunion.Concat(new[] { Row("雪怪小队", 2) }).ToArray();
+            Assert.That(feedback.Observe(current), Is.True);
+            Assert.That(feedback.Active.Activations.Single().Name, Is.EqualTo("雪怪小队"));
+            Assert.That(feedback.PendingCount, Is.EqualTo(1),
+                "A cleared old positive tier is not a candidate merely because it is still positive and unshown.");
+            feedback.Advance(.01f);
+            Assert.That(feedback.HasShown("雪怪小队", 2), Is.True);
+            feedback.Clear(false);
+            Assert.That(feedback.HasShown("雪怪小队", 2), Is.True);
             feedback.Clear();
             Assert.That(feedback.Observe(current), Is.True);
-            Assert.That(feedback.Active.Sequence, Is.GreaterThan(priorRevision));
-            Assert.That(feedback.PendingCount, Is.EqualTo(3));
+            Assert.That(feedback.HasShown("雪怪小队", 2), Is.False);
+            Assert.That(feedback.Active.Sequence, Is.GreaterThan(sequence));
+            Assert.That(feedback.PendingCount, Is.EqualTo(2));
             feedback.Clear();
             Assert.That(feedback.Pending, Is.False);
             Assert.That(feedback.SecondsToTransition, Is.Zero);

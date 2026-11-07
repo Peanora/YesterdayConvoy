@@ -153,6 +153,81 @@ namespace YesterdayConvoy
             shop.Validate();
         }
 
+        IEnumerator PrepareSynergyActivationMudrockInterruptFixture()
+        {
+            yield return PrepareSynergyBadgeEvidenceRoster(SynergyTrialCatalog.Find("mudrock").Members.ToArray());
+            // Reset presentation observation only, then synchronize an authored, legal four-card
+            // lineup. Every member really has both tags; no battle tier or stock is injected.
+            ClearSynergyActivationFeedback();
+            shopLineup.Remove("CARD_M28");SyncShopDeck(false);
+            inspectedSynergy=null;campaignConstructOpen=false;loopMenuOpen=false;
+            shop.Validate();
+        }
+
+        internal IEnumerator VerifySynergyActivationInterrupt(string directory,Action<string,bool> check)
+        {
+            diagnostic=true;Time.timeScale=0;
+            for(int scenario=0;scenario<2;scenario++)
+            {
+                yield return PrepareSynergyActivationMudrockInterruptFixture();
+                int sounds=synergyActivationSoundPlayCount,owned=shop.Bench.Count,gold=shop.Gold;
+                string prefix=scenario==0?"unstartedSarkaz":"startedSarkaz";
+                check(prefix+"_legalFourMudrockAndFourSarkazNeedNoTransfer",owned==5&&shopLineup.Count==4&&Battle.MudrockTier==4&&Battle.SarkazTier==4&&
+                    synergyActivationFeedback.Active!=null&&synergyActivationFeedback.Active.Activations.Single().Name=="泥岩小队"&&synergyActivationFeedback.PendingCount==2);
+                if(scenario==0)
+                {
+                    Tick(.50f);
+                    check(prefix+"_fourMudrockAppearedButFourSarkazHasNot",synergyActivationFeedback.HasShown("泥岩小队",4)&&
+                        !synergyActivationFeedback.HasShown("萨卡兹",4)&&synergyActivationSoundPlayCount==sounds+1);
+                    yield return SynergyActivationFrame(directory,"interrupt-01-four-mudrock-playing");
+                }
+                else
+                {
+                    Tick(.12f);var mudrock=synergyActivationFeedback.Active;
+                    Tick(mudrock.Duration-mudrock.Age+SynergyActivationFeedback.Gap+.50f);
+                    check(prefix+"_fourSarkazAlreadyAppearedBeforeItsTailEnds",synergyActivationFeedback.Active!=null&&
+                        synergyActivationFeedback.Active.Activations.Single().Name=="萨卡兹"&&synergyActivationFeedback.ActiveAge<synergyActivationFeedback.Active.Duration&&
+                        synergyActivationFeedback.HasShown("萨卡兹",4)&&synergyActivationSoundPlayCount==sounds+2);
+                    yield return SynergyActivationFrame(directory,"interrupt-06-four-sarkaz-playing");
+                }
+
+                var interrupted=synergyActivationFeedback.Active;int beforeSounds=synergyActivationSoundPlayCount;
+                int reserve=shop.Bench.ToList().FindIndex(piece=>piece.Id=="CARD_M28");
+                string action=scenario==0?"interrupt-upgrade-mudrock-before-sarkaz-starts":"interrupt-upgrade-mudrock-after-sarkaz-started";
+                yield return SynergyBadgeGuiClick(directory,action,ShopPieceRect(reserve),()=>
+                    Battle.MudrockTier==5&&Battle.SarkazTier==4&&synergyActivationFeedback.Active!=null&&
+                    synergyActivationFeedback.Active.Sequence!=interrupted.Sequence&&synergyActivationFeedback.Active.Activations.Single().Name=="泥岩小队");
+                var replacement=synergyActivationFeedback.Active;
+                check(prefix+"_tierChangeReplacesTheOldTailImmediatelyAtAgeZero",replacement.Age==0&&replacement.Sequence>interrupted.Sequence&&
+                    replacement.Activations.Single().Tier==5&&synergyActivationFeedback.PendingCount==(scenario==0?2:1));
+                check(prefix+"_interruptedOriginalCueStopsBeforeTheNewCue",synergyActivationSource!=null&&!synergyActivationSource.isPlaying&&
+                    synergyActivationSoundPlayCount==beforeSounds);
+                yield return SynergyActivationFrame(directory,scenario==0?"interrupt-02-five-mudrock-age-zero":"interrupt-07-five-mudrock-replaces-sarkaz-age-zero");
+                Tick(.50f);
+                check(prefix+"_newFiveMudrockCuePlaysExactlyOnce",synergyActivationFeedback.Active==replacement&&synergyActivationSoundPlayCount==beforeSounds+1&&
+                    replacement.Activations.Single().Members.Count==5&&Battle.MudrockTier==5&&Battle.SarkazTier==4);
+                yield return SynergyActivationFrame(directory,scenario==0?"interrupt-03-five-mudrock-peak":"interrupt-08-five-mudrock-without-sarkaz-replay");
+                Tick(replacement.Duration-replacement.Age+SynergyActivationFeedback.Gap+.50f);
+                if(scenario==0)
+                {
+                    check(prefix+"_unshownFourSarkazIsRetainedAfterTheNewGoldTier",synergyActivationFeedback.Active!=null&&
+                        synergyActivationFeedback.Active.Activations.Single().Name=="萨卡兹"&&synergyActivationFeedback.Active.Activations.Single().Tier==4&&
+                        synergyActivationSoundPlayCount==beforeSounds+2);
+                    yield return SynergyActivationFrame(directory,"interrupt-04-unshown-four-sarkaz-retained");
+                    Tick(synergyActivationFeedback.Active.Duration-synergyActivationFeedback.ActiveAge+.01f);
+                }
+                else check(prefix+"_alreadyStartedFourSarkazIsNotReplayed",!synergyActivationFeedback.Pending&&synergyActivationFeedback.Active==null&&
+                    synergyActivationSoundPlayCount==beforeSounds+1);
+                check(prefix+"_latestQueueAndSoundClearWithoutChangingInventory",!synergyActivationFeedback.Pending&&synergyActivationFeedback.Active==null&&
+                    !synergyActivationSource.isPlaying&&shop.Bench.Count==owned&&shop.Gold==gold&&shopLineup.Count==5);
+                yield return SynergyActivationFrame(directory,scenario==0?"interrupt-05-first-case-cleared":"interrupt-09-final-cleared");
+                shop.Validate();
+            }
+            LeaveShopTrial();
+            check("interruptLeavingClearsPresentationAndSound",!synergyActivationFeedback.Pending&&synergyActivationFeedback.Active==null&&
+                (synergyActivationSource==null||!synergyActivationSource.isPlaying));
+        }
+
         internal IEnumerator VerifySynergyActivation(string directory,Action<string,bool> check)
         {
             diagnostic=true;Time.timeScale=0;Battle.SetPaused(false);
@@ -206,12 +281,17 @@ namespace YesterdayConvoy
             check("sameTierRebuildDoesNotReplay",synergyActivationFeedback.Revision==revision+1&&synergyActivationFeedback.Active==null&&synergyActivationSoundPlayCount==sounds+1);
             reserve=shop.Bench.ToList().FindIndex(piece=>piece.Id==newcomer);
             yield return SynergyBadgeGuiClick(directory,"remove-reunion-member",ShopPieceRect(reserve),()=>Battle.ReunionTier==4);
-            check("downwardCrossingDoesNotPlay",synergyActivationSoundPlayCount==sounds+1&&synergyActivationFeedback.Active==null);
+            check("lowerStillActivatedTierRebuildsImmediately",synergyActivationFeedback.Active!=null&&synergyActivationFeedback.ActiveAge==0&&
+                synergyActivationFeedback.Active.Activations.Single().Name=="整合运动"&&synergyActivationFeedback.Active.Activations.Single().Tier==4);
+            Tick(.12f);
+            check("lowerActivatedTierPlaysOneNewCue",synergyActivationSoundPlayCount==sounds+2);
+            int lowerRevision=synergyActivationFeedback.Revision;
             reserve=shop.Bench.ToList().FindIndex(piece=>piece.Id==newcomer);
             yield return SynergyBadgeGuiClick(directory,"reach-six-reunion-again",ShopPieceRect(reserve),()=>
-                Battle.ReunionTier==6&&synergyActivationFeedback.Revision==revision+2);
+                Battle.ReunionTier==6&&synergyActivationFeedback.Revision>lowerRevision);
             Tick(.12f);
-            check("regainingThresholdPlaysOneNewCue",synergyActivationSoundPlayCount==sounds+2&&synergyActivationFeedback.Active!=null);
+            check("regainingThresholdPlaysOneNewCue",synergyActivationSoundPlayCount==sounds+3&&synergyActivationFeedback.Active!=null&&
+                synergyActivationFeedback.Active.Activations.Single().Tier==6);
 
             yield return VerifySynergyActivationQueue(directory,check,reunion,unrelated);
 
@@ -240,9 +320,10 @@ namespace YesterdayConvoy
 
     public sealed class SynergyActivationSmokeDriver:MonoBehaviour
     {
-        public static bool Requested=>Debug.isDebugBuild&&Environment.GetCommandLineArgs().Contains("-synergyActivationSmokeTest");
+        public static bool InterruptRequested=>Debug.isDebugBuild&&Environment.GetCommandLineArgs().Contains("-synergyActivationInterruptSmokeTest");
+        public static bool Requested=>Debug.isDebugBuild&&(Environment.GetCommandLineArgs().Contains("-synergyActivationSmokeTest")||InterruptRequested);
         static bool started;
-        [Serializable]sealed class Result{public bool passed;public int width,height;public string fixture="Legal inventory in real SynergyTrial; actual OS clicks acknowledged by existing GUI protocol; single and queued threshold crossings; full OnGUI rotating-stage and four-frame-side pixel evidence. No natural campaign/balance claim.";public string[] checks;}
+        [Serializable]sealed class Result{public bool passed;public int width,height;public string mode,fixture="Legal inventory in real SynergyTrial; actual OS clicks acknowledged by existing GUI protocol; requested production-feedback scenario and full OnGUI screenshots. No natural campaign/balance claim.";public string[] checks;}
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]static void Install()
         {
             if(started||!Requested)return;started=true;
@@ -259,15 +340,17 @@ namespace YesterdayConvoy
                 yield return null;
             }
             if(controller==null||controller.ArtLoading||!controller.SynergySandbox)throw new InvalidOperationException("Activation Player startup timed out.");
-            yield return controller.VerifySynergyActivation(directory,check);
+            if(InterruptRequested)yield return controller.VerifySynergyActivationInterrupt(directory,check);
+            else yield return controller.VerifySynergyActivation(directory,check);
         }
         IEnumerator Start()
         {
             Application.runInBackground=true;
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-demoEvidenceDir");
-            string directory=at>=0&&at+1<args.Length?args[at+1]:Path.GetFullPath("artifacts/synergy-activation-player");Directory.CreateDirectory(directory);
+            string directory=at>=0&&at+1<args.Length?args[at+1]:Path.GetFullPath(InterruptRequested?"artifacts/synergy-activation-interrupt-player":"artifacts/synergy-activation-player");Directory.CreateDirectory(directory);
             var checks=new List<string>();bool passed=true,complete=true;
-            var result=new Result{width=Screen.width,height=Screen.height};float oldScale=Time.timeScale;
+            var result=new Result{width=Screen.width,height=Screen.height,mode=InterruptRequested?"mudrock-interruption-two-scenarios":"standard-synergy-activation"};float oldScale=Time.timeScale;
+            if(InterruptRequested)result.fixture="Only two independent legal Mudrock/Sarkaz interruption scenarios in real SynergyTrial, using five authored Mudrock cards and two actual OS clicks to add M28. Full OnGUI before/age-zero/replacement/retained-or-skipped/cleared screenshots. This flag does not run the standard activation queue, modal or resolution-wide regression workflow; no natural campaign/balance claim.";
             Action<string,bool> check=(name,value)=>{checks.Add(name+"="+value);passed&=value;Debug.Log("SYNERGY_ACTIVATION_EVENT "+name+"="+value);};
             var stack=new Stack<IEnumerator>();stack.Push(Run(directory,check));
             while(stack.Count>0)

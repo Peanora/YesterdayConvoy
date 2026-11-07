@@ -77,6 +77,7 @@ namespace YesterdayConvoy.Tests
             Click(Trio[0]); // Three to two: same tier.
             Click(Trio[1]); // Two to one: below the first threshold.
             Assert.That(controller.Battle.ReunionTier, Is.Zero);
+            Assert.That(Feedback.Pending, Is.False, "A drop to zero has no activated tier to present.");
             Click(Trio[0]); // One to two: a real upward crossing.
             Assert.That(controller.Battle.ReunionTier, Is.EqualTo(2));
             Assert.That(Feedback.Active, Is.Not.Null);
@@ -290,6 +291,99 @@ namespace YesterdayConvoy.Tests
             Assert.That(Feedback.Active.Sequence, Is.GreaterThan(tiedFirst.Sequence));
             Assert.That(SoundCount, Is.EqualTo(tiedSounds + 2));
             controller.Shop.Validate();
+        }
+
+        IEnumerator PrepareFourMudrock()
+        {
+            var members = SynergyTrialCatalog.Find("mudrock").Members.ToArray();
+            yield return (IEnumerator)Invoke("PrepareSynergyBadgeEvidenceRoster", (object)members);
+            // Independent presentation fixture, observing the real card tags afresh. No battle
+            // tier or inventory field is edited: the normal click moves the fifth card to reserve.
+            Invoke("ClearSynergyActivationFeedback", true);
+            Click("CARD_M28");
+            Assert.That(controller.Battle.MudrockTier, Is.EqualTo(4));
+            Assert.That(controller.Battle.SarkazTier, Is.EqualTo(4));
+            Assert.That(Feedback.Active.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+            Assert.That(Feedback.PendingCount, Is.EqualTo(2));
+            Assert.That(Feedback.Active.Age, Is.Zero);
+            controller.Shop.Validate();
+        }
+
+        [UnityTest] public IEnumerator RealMudrockTierChangeRecomputesImmediatelyAndOnlyUnshownSarkazIsRetained()
+        {
+            yield return Load();
+            // 0: Mudrock4 already visible, Sarkaz4 unstarted. 1: Sarkaz4 visible but unfinished.
+            // 2: A detail modal kept both at age zero; neither counts as having appeared.
+            for (int scenario = 0; scenario < 3; scenario++)
+            {
+                yield return PrepareFourMudrock();
+                if (scenario == 1)
+                {
+                    controller.Tick(.12f);
+                    var mudrock = Feedback.Active;
+                    controller.Tick(mudrock.Duration - mudrock.Age + SynergyActivationFeedback.Gap + .50f);
+                    Assert.That(Feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
+                    Assert.That(Feedback.Active.Age, Is.LessThan(Feedback.Active.Duration));
+                    Assert.That(Feedback.HasShown("萨卡兹", 4), Is.True);
+                }
+                else if (scenario == 0)
+                {
+                    controller.Tick(.50f);
+                    Assert.That(Feedback.HasShown("泥岩小队", 4), Is.True);
+                    Assert.That(Feedback.HasShown("萨卡兹", 4), Is.False);
+                }
+                else
+                {
+                    SetField("inspectedSynergy", "泥岩小队");
+                    controller.Tick(.70f);
+                    Assert.That(Feedback.Active.Age, Is.Zero);
+                    Assert.That(Feedback.HasShown("泥岩小队", 4), Is.False);
+                    Assert.That(Feedback.HasShown("萨卡兹", 4), Is.False);
+                    // Explicit completion fixture. Player evidence uses real OS card clicks.
+                    SetField("inspectedSynergy", null);
+                }
+
+                int oldSequence = Feedback.Active.Sequence, sounds = SoundCount;
+                Click("CARD_M28");
+                Assert.That(controller.Battle.MudrockTier, Is.EqualTo(5));
+                Assert.That(controller.Battle.SarkazTier, Is.EqualTo(4), "Five Sarkaz kinds still activate the four-kind threshold.");
+                var latest = Feedback.Active;
+                Assert.That(latest, Is.Not.Null);
+                Assert.That(latest.Sequence, Is.GreaterThan(oldSequence));
+                Assert.That(latest.Age, Is.Zero, "A real tier change replaces the old tail/gap immediately.");
+                Assert.That(latest.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+                Assert.That(latest.Activations.Single().Tier, Is.EqualTo(5));
+                Assert.That(Feedback.PendingCount, Is.EqualTo(scenario == 1 ? 1 : 2));
+                Assert.That(Source == null || !Source.isPlaying, Is.True, "The interrupted cue stops before the replacement starts.");
+                Assert.That(SoundCount, Is.EqualTo(sounds));
+                controller.Tick(.12f);
+                Assert.That(SoundCount, Is.EqualTo(sounds + 1));
+
+                controller.Tick(latest.Duration - latest.Age + SynergyActivationFeedback.Gap + .12f);
+                if (scenario == 1)
+                {
+                    Assert.That(Feedback.Pending, Is.False, "Already visible Sarkaz4 is not replayed after interruption.");
+                    Assert.That(SoundCount, Is.EqualTo(sounds + 1));
+                }
+                else
+                {
+                    Assert.That(Feedback.Active, Is.Not.Null);
+                    Assert.That(Feedback.Active.Activations.Single().Name, Is.EqualTo("萨卡兹"));
+                    Assert.That(Feedback.Active.Activations.Single().Tier, Is.EqualTo(4));
+                    Assert.That(SoundCount, Is.EqualTo(sounds + 2));
+                    controller.Tick(Feedback.Active.Duration - Feedback.Active.Age + .01f);
+                    Assert.That(Feedback.Pending, Is.False);
+                }
+                controller.Shop.Validate();
+            }
+            int beforeDowngrade = SoundCount;
+            Click("CARD_M28");
+            Assert.That(controller.Battle.MudrockTier, Is.EqualTo(4));
+            Assert.That(Feedback.Active.Activations.Single().Name, Is.EqualTo("泥岩小队"));
+            Assert.That(Feedback.Active.Activations.Single().Tier, Is.EqualTo(4));
+            Assert.That(Feedback.Active.Age, Is.Zero, "Dropping to a still-active tier also replaces the schedule.");
+            controller.Tick(.12f);
+            Assert.That(SoundCount, Is.EqualTo(beforeDowngrade + 1));
         }
     }
 }
