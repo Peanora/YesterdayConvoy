@@ -46,8 +46,9 @@ namespace YesterdayConvoy
             check("pointer-retains-interior-gap",rect("CARD_M08")==ShopLineupRect(7)&&rect("CARD_M07")==ShopLineupRect(1));
             drag("CARD_M07",ShopLineupRect(2).center);
             check("pointer-swaps-occupied-field-seats",rect("CARD_M07")==ShopLineupRect(2)&&rect("CARD_M09")==ShopLineupRect(1));
+            var reserveOrigin=rect("CARD_M02");
             drag("CARD_M02",ShopLineupRect(2).center);
-            check("pointer-cross-row-swap",rect("CARD_M02")==ShopLineupRect(2)&&rect("CARD_M07")==ShopBenchRect(0));
+            check("pointer-cross-row-swap",rect("CARD_M02")==ShopLineupRect(2)&&rect("CARD_M07")==reserveOrigin);
             yield return ReunionEvidenceCapture(directory,"02-free-gaps-and-cross-row-swap");
             var before=rect("CARD_M07");
             ProcessShopPointer(EventType.MouseDown,before.center);ProcessShopPointer(EventType.MouseDrag,ShopBenchRect(8).center);
