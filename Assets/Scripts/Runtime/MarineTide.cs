@@ -20,10 +20,11 @@ namespace YesterdayConvoy
         readonly HashSet<Vector2Int> marineTerrain=new HashSet<Vector2Int>();
         readonly HashSet<string> marineSeededKinds=new HashSet<string>(StringComparer.Ordinal);
         bool marineTerrainConfigured;
+        Vector2 marineGridOffset;
         double marineSpreadElapsed;
         static readonly Vector2Int[] MarineNeighbours={Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left};
 
-        // Cells use world-grid x/z, matching StrongholdMapLayout.Cell's integer centres.
+        // Cell keys are relative to the authored grid; their world centres include its x/z offset.
         public IReadOnlyList<MarineCellState> MarineCells=>marineCells.AsReadOnly();
         public bool MarineActive=>synergyEnabled&&MarineTier>0&&Phase==BattlePhase.Running&&units.Any(IsLivingMarine);
         public int MarineTileLimit=>MarineTier==4?16:MarineTier==2?8:0;
@@ -34,18 +35,21 @@ namespace YesterdayConvoy
         public float MarineGroundNeuralDealt {get;private set;}
         public float MarineBonusNeuralDealt {get;private set;}
 
-        static Vector2Int MarineCell(Vector3 position)=>new Vector2Int(Mathf.FloorToInt(position.x+.5f),Mathf.FloorToInt(position.z+.5f));
+        Vector2Int MarineCell(Vector3 position)=>new Vector2Int(Mathf.FloorToInt(position.x-marineGridOffset.x+.5f),Mathf.FloorToInt(position.z-marineGridOffset.y+.5f));
+        Vector3 MarineWorldPosition(Vector2Int cell,float height=0)=>new Vector3(cell.x+marineGridOffset.x,height,cell.y+marineGridOffset.y);
         bool IsLivingMarine(DeployedUnitState unit)=>unit!=null&&unit.Active&&!unit.IsReviving&&!unit.SynergySupport&&!StrongholdInTransit(unit.EntityId)&&Tag(unit.CardId,"海嗣");
 
         /// <summary>Explicit authored floor cells; configuration survives a restart, runtime growth does not.</summary>
-        public void ConfigureMarineTerrain(IEnumerable<Vector3> groundCells)
+        public void ConfigureMarineTerrain(IEnumerable<Vector3> groundCells,Vector2 gridOffset=default)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Configure marine terrain before deployment.");
             if(groundCells==null)throw new ArgumentNullException(nameof(groundCells));
+            if(float.IsNaN(gridOffset.x)||float.IsInfinity(gridOffset.x)||float.IsNaN(gridOffset.y)||float.IsInfinity(gridOffset.y))
+                throw new ArgumentException("Marine grid offset must be finite.",nameof(gridOffset));
             var cells=groundCells.ToArray();
             if(cells.Any(p=>float.IsNaN(p.x)||float.IsInfinity(p.x)||float.IsNaN(p.y)||float.IsInfinity(p.y)||float.IsNaN(p.z)||float.IsInfinity(p.z)))
                 throw new ArgumentException("Marine terrain must contain finite world positions.",nameof(groundCells));
-            marineTerrain.Clear();
+            marineGridOffset=gridOffset;marineTerrain.Clear();
             foreach(var p in cells)marineTerrain.Add(MarineCell(p));
             marineTerrainConfigured=true;ResetMarineTide();
         }
@@ -66,7 +70,7 @@ namespace YesterdayConvoy
         void AddMarineCell(Vector2Int cell,bool seed)
         {
             if(marineCellLookup.TryGetValue(cell,out var existing)){if(seed)existing.IsSeed=true;return;}
-            var state=new MarineCellState{Cell=cell,Position=new Vector3(cell.x,.065f,cell.y),BornAt=Clock,IsSeed=seed};
+            var state=new MarineCellState{Cell=cell,Position=MarineWorldPosition(cell,.065f),BornAt=Clock,IsSeed=seed};
             marineCells.Add(state);marineCellLookup.Add(cell,state);
         }
 
@@ -84,7 +88,7 @@ namespace YesterdayConvoy
 
         float MarineCandidateDistance(Vector2Int cell,bool defendersFirst)
         {
-            var p=new Vector3(cell.x,0,cell.y);
+            var p=MarineWorldPosition(cell);
             if(defendersFirst)
                 return defenders.Where(d=>d.Alive&&!d.HighGround).Select(d=>GroundDistance(p,d.Position)).DefaultIfEmpty(float.MaxValue).Min();
             return units.Where(IsLivingMarine).Select(u=>GroundDistance(p,u.Motion.Position)).DefaultIfEmpty(float.MaxValue).Min();

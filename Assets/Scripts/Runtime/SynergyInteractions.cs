@@ -24,13 +24,14 @@ namespace YesterdayConvoy
             preset==7?new[]{"CARD_M33","CARD_M34","CARD_M35","CARD_M36","CARD_M26","CARD_M27","CARD_M08","CARD_M10"}:new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"};
         void PrepareSandboxRoster(int preset)
         {
+            if(BlackForestChallengeActive&&preset>=10){ShopNotice("树海试玩保留本关六星防线，可在商店自由调整编队");return;}
             var ids=SandboxRoster(preset);var cards=ids.Select(id=>shopDefinitions[id].Card);
             if(ids.Count(CampaignBalance.MudrockCrew)>=2)cards=cards.Concat(new[]{GolemCard});
             QueueArt(Plan(preset>=10?BattleShopStages.Defenders(2,true):shopMapCopy.defenders,cards,true),()=>SetSandboxRoster(preset),"准备羁绊样板");
         }
         public bool SetSandboxRoster(int preset)
         {
-            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>11)return false;
+            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>11||BlackForestChallengeActive&&preset>=10)return false;
             CompleteGolemExperienceFeedback();
             var ids=SandboxRoster(preset);golemBenchmark=preset>=10;
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=preset>=9&&(CampaignBalance.MudrockCrew(id)||preset==11&&id=="CARD_M08")?2:1}),Array.Empty<string>(),Math.Max(8,shop.Level),0,10);

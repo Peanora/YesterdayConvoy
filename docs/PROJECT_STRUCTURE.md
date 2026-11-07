@@ -1,5 +1,7 @@
 # 工程目录与场景规范
 
+2026-11-08树海六星防线：`Assets/Scenes/BlackForestCrossing.unity`保持保存地形，`Assets/Data/Resources/Maps/BlackForestCrossing.asset`已配置九名守军（六名六星）。从测试选择进入“树海交错回廊 · 六星防线”，8级自由整备、正常角色数值、50DP/6共享防御。入口和规则见[地图说明](BLACK_FOREST_CROSSING.md)，覆盖下文此前无守军的阶段记录。
+
 2026-11-06树海地图：新增 `Assets/Scenes/BlackForestCrossing.unity`，共16个保存场景，由GameSceneCatalog自动纳入构建。17×14地形、三红两蓝、根系与三种视觉特殊地面直接保存在场景；从怪物测试选择进入“树海交错回廊 · 地形试走”。本轮无守军，不替换既有挑战地图，编辑与操作见[树海地图说明](BLACK_FOREST_CROSSING.md)。
 
 2026-11-06资源分类整理：原StreamingAssets运行原图已迁入下表的Art分类；JSON清单和来源记录移入`Assets/Data/ArtCatalogs`。工程内StreamingAssets只留说明，Windows构建时自动收集运行清单与预处理纹理到Player的StreamingAssets。逻辑包名、原图内容和GUID保留；这不表示同意删除早期美术。

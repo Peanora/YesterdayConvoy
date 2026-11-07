@@ -161,7 +161,7 @@ namespace YesterdayConvoy
                     if(LoopButton(new Rect(694+i*110,445,104,20),"补1张 "+names[i]))CommissionCampaignCard(id);
                 }
                 GUI.enabled=enabled;
-                for(int i=0;i<5;i++)if(LoopButton(new Rect(694+i*110,465,104,26),new[]{"I 从零","II 成长","III 巨像","IV 终极","V 完全体"}[i]))PrepareSandboxRoster(i==0?3:i+7);
+                for(int i=0;i<(BlackForestChallengeActive?3:5);i++)if(LoopButton(new Rect(694+i*110,465,104,26),new[]{"I 从零","II 成长","III 巨像","IV 终极","V 完全体"}[i]))PrepareSandboxRoster(i==0?3:i+7);
             }
             else GUI.Label(new Rect(694,437,550,42),"战斗结束自动培养，不用投入金币、不要求每人二星。\n经验跨关保留；新挑战清零。左侧小队条目可随时查看。",hint);
         }

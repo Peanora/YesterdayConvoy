@@ -9,6 +9,7 @@ namespace YesterdayConvoy
     {
         public bool CampaignActive=>Loop!=null&&Loop.Campaign;
         public bool SynergySandbox=>CampaignActive&&Loop.Sandbox;
+        public bool BlackForestChallengeActive=>CampaignActive&&TacticalMapId==BlackForestLayout.Id;
         string commissionTarget;
         string contractCard;MarineAdaptation marineForm=MarineAdaptation.Barrier,marineSecond=MarineAdaptation.Hunt;int contractTargetIndex;
         InfectionForm infectionForm=InfectionForm.Swarm,infectionSecond=InfectionForm.Shell;
@@ -38,18 +39,20 @@ namespace YesterdayConvoy
             bool secondPhase=trial!=null&&trial.initialMembers.Any(m=>m.cardId=="CARD_TALULAH_TRIAL"&&m.star==3);
             return Prepare(Plan(guards,cards,true,talulahSecondPhase:secondPhase),()=>StartCampaign(sandbox,seed,trial),trial!=null?"准备"+trial.displayTitle:"准备羁绊挑战");
         }
-        public void StartCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null)
+        public void StartCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null,DefenderTrialDefinition encounterOverride=null)
         {
             if(trial!=null){if(!sandbox)throw new InvalidOperationException("Dedicated trials require sandbox mode.");trial.Validate();}
-            CancelArtPreparation();EnterShopTrial(0,StrongholdChallengeLayout.Id,trial?.encounter);activeSynergyTrial=trial;
+            bool forest=encounterOverride!=null;
+            if(forest&&(!sandbox||trial!=null||encounterOverride.mapId!=BlackForestLayout.Id))throw new ArgumentException("A forest encounter requires its independent sandbox.");
+            CancelArtPreparation();EnterShopTrial(0,forest?BlackForestLayout.Id:StrongholdChallengeLayout.Id,encounterOverride??trial?.encounter);activeSynergyTrial=trial;
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             shopDefinitions.Clear();
             foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             ResetMudrockTransfers();
             shop.EnableCampaign(sandbox);
-            string[] initial=trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
-            shop.Preset(trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),trial!=null?trial.initialLevel:sandbox?8:1,0,10);
+            string[] initial=forest?BlackForestChallengePlan.StartingIds:trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
+            shop.Preset(forest?BlackForestChallengePlan.StartingPieces():trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),forest?BlackForestChallengePlan.InitialLevel:trial!=null?trial.initialLevel:sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
             golemBenchmark=false;golemTrainingTab=false;campaignConstructOpen=false;campaignConstructTab=0;campaignSynergyScroll=Vector2.zero;inspectedSynergy=null;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
             if(trial!=null)
@@ -66,23 +69,28 @@ namespace YesterdayConvoy
         {
             var deck=shopLineup.Where(shopDefinitions.ContainsKey).ToList();
             if(deck.Count==0)deck.Add("CARD_M08");
-            int dp=SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
-            int defense=SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
+            int dp=BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
+            int defense=BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
             var profiles=deck.Select(id=>CampaignProfile(id,dp,defense)).ToArray();
             var first=profiles[0];
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
-            battle.ConfigureStrongholdMap(false);
+            if(!BlackForestChallengeActive)battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
-            for(int row=expanded?-1:1;row<=(expanded?7:5);row++)for(int col=2;col<=18;col++)
+            if(BlackForestChallengeActive)
+            {
+                for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
+                    if(BlackForestLayout.Walkable(col,row))marineGround.Add(BlackForestLayout.Cell(col,row));
+            }
+            else for(int row=expanded?-1:1;row<=(expanded?7:5);row++)for(int col=2;col<=18;col++)
             {
                 char tile=expanded?StrongholdChallengeLayout.Tile(col,row):StrongholdMapLayout.Tile(col,row);
                 if(tile!='#'&&tile!='H'&&tile!='h')marineGround.Add(StrongholdMapLayout.Cell(col,row));
             }
-            battle.ConfigureMarineTerrain(marineGround);
+            battle.ConfigureMarineTerrain(marineGround,BlackForestChallengeActive?new Vector2(0,.5f):Vector2.zero);
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
@@ -109,7 +117,7 @@ namespace YesterdayConvoy
         public bool RestartCampaignEncounter(){if(!CampaignActive||!Loop.RestartEncounter())return false;ConfigureLoopStage();return true;}
         void RestartCurrentRun()
         {
-            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
+            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial,BlackForestChallengeActive?Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource):null);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
         }
         bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shopSeats.InLineup(piece.Instance);
         Rect CampaignPieceRect(int index)
@@ -243,7 +251,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 满{rule.Cost}点自动整令 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}/{Battle.GolemCapacity}级 XP{Loop.GolemExperience}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
-                GUI.Label(new Rect(25,y+56,388,22),SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 分费用库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
+                GUI.Label(new Rect(25,y+56,388,22),BlackForestChallengeActive?"自由整备 · 正常角色数值 · 50DP / 6防御":SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 分费用库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
                 var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>SynergySandbox||shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
                 if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];

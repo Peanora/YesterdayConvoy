@@ -17,13 +17,14 @@ namespace YesterdayConvoy.Tests
             skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,projectileTime:.05f,hasSkill:false,canAttack:attacks,effects:effects??new MonsterEffectSettings());
         static IEnumerable<Vector3> Square(int radius=4)
         {for(int z=-radius;z<=radius;z++)for(int x=-radius;x<=radius;x++)yield return new Vector3(x,.04f,z);}
-        static ManualBattle Make(int kinds=4,IEnumerable<Vector3> terrain=null,EngagementSettings? combat=null,Vector3? guard=null,string first=null)
+        static ManualBattle Make(int kinds=4,IEnumerable<Vector3> terrain=null,EngagementSettings? combat=null,Vector3? guard=null,string first=null,Vector2 gridOffset=default)
         {
             var ids=(first==null?Sea:new[]{first}.Concat(Sea.Where(id=>id!=first))).Take(kinds).ToList();
-            var c=combat??Combat();var b=new ManualBattle(Unit(ids[0]),new[]{Vector3.zero,Vector3.right*100},guard??Vector3.right*3,c);
+            var origin=new Vector3(gridOffset.x,0,gridOffset.y);
+            var c=combat??Combat();var b=new ManualBattle(Unit(ids[0]),new[]{origin,origin+Vector3.right*100},guard??origin+Vector3.right*3,c);
             b.ConfigureCardLoadout(ids.Skip(1).Select(id=>new BasicRosterProfile(Unit(id),c,true)));
             b.ConfigureSynergies(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}));
-            b.ConfigureMarineTerrain(terrain??Square());return b;
+            b.ConfigureMarineTerrain(terrain??Square(),gridOffset);return b;
         }
         static DeployedUnitState Deploy(ManualBattle b,string id,long request)
         {if(b.Phase==BattlePhase.Ready)b.Begin();var result=b.TryDeployRole(b.RunId,request,b.Entry,id);Assert.That(result.Success,Is.True);return b.FindUnit(result.EntityId);}
@@ -77,6 +78,45 @@ namespace YesterdayConvoy.Tests
             Assert.Throws<InvalidOperationException>(()=>b.ConfigureMarineTerrain(Square()));
             var invalid=Make();Assert.Throws<ArgumentException>(()=>invalid.ConfigureMarineTerrain(new[]{new Vector3(float.NaN,0,0)}));
             var unknown=Make(terrain:Array.Empty<Vector3>());var v=Deploy(unknown,Sea[0],1);Hurt(unknown,v);Assert.That(unknown.MarineCells,Is.Empty);
+        }
+
+        [Test]public void OffsetTerrainSeedsAndSpreadsOnItsAuthoredWorldCentres()
+        {
+            var offset=new Vector2(.25f,.5f);var origin=new Vector3(offset.x,.04f,offset.y);
+            var terrain=new[]{origin,origin+Vector3.right,origin+Vector3.forward,origin+Vector3.right*3};
+            var b=Make(terrain:terrain,gridOffset:offset);var u=Deploy(b,Sea[0],1);Hurt(b,u);
+            Assert.That(b.MarineCells.Single().Cell,Is.EqualTo(Vector2Int.zero));
+            Assert.That(b.MarineCells.Single().Position,Is.EqualTo(new Vector3(.25f,.065f,.5f)));
+            b.Advance(4.1f);
+            CollectionAssert.AreEquivalent(new[]{Vector2Int.zero,Vector2Int.right,Vector2Int.up},b.MarineCells.Select(c=>c.Cell));
+            CollectionAssert.AreEquivalent(terrain.Take(3).Select(p=>new Vector3(p.x,.065f,p.z)),b.MarineCells.Select(c=>c.Position));
+            Assert.That(b.MarineSpreadCount,Is.EqualTo(2));
+        }
+
+        [Test]public void HalfRowGroundOccupancyAndOffsetSurviveRestartWithoutLeakingIntoAdjacentTiles()
+        {
+            var centre=new Vector3(0,.04f,.5f);
+            var b=Make(2,terrain:new[]{centre},guard:new Vector3(.3f,0,.1f),gridOffset:new Vector2(0,.5f));
+            var u=Deploy(b,Sea[0],1);Hurt(b,u);b.Advance(2);
+            Assert.That(b.MarineNeuralMultiplier(u),Is.EqualTo(1.5f));
+            Assert.That(b.Defender.NeuralAccumulated,Is.EqualTo(6).Within(.001));
+            Set(b.Defender,"Position",new Vector3(.3f,0,-.1f));b.Advance(1);
+            Assert.That(b.MarineGroundNeuralDealt,Is.EqualTo(6).Within(.001),"The adjacent tile below z=0 is not covered.");
+            b.Restart();Assert.That(b.MarineCells,Is.Empty);Assert.That(b.MarineGroundNeuralDealt,Is.Zero);
+            var next=Deploy(b,Sea[0],2);Hurt(b,next);b.Advance(2);
+            Assert.That(b.MarineCells.Single().Position,Is.EqualTo(new Vector3(0,.065f,.5f)));
+            Assert.That(b.Defender.NeuralAccumulated,Is.EqualTo(6).Within(.001));
+        }
+
+        [Test]public void NonFiniteGridOffsetsAreRejectedWithoutReplacingThePreviousTerrain()
+        {
+            foreach(var invalid in new[]{new Vector2(float.NaN,0),new Vector2(0,float.PositiveInfinity),new Vector2(float.NegativeInfinity,0)})
+            {
+                var b=Make(terrain:new[]{new Vector3(0,.04f,.5f)},gridOffset:new Vector2(0,.5f));
+                Assert.Throws<ArgumentException>(()=>b.ConfigureMarineTerrain(new[]{Vector3.right*10},invalid));
+                var u=Deploy(b,Sea[0],1);Hurt(b,u);
+                Assert.That(b.MarineCells.Single().Position,Is.EqualTo(new Vector3(0,.065f,.5f)));
+            }
         }
 
         [Test]public void CapPrioritizesTheBattlefrontAndReservesRoomForUnseededKinds()
