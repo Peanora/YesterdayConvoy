@@ -336,7 +336,7 @@ namespace YesterdayConvoy
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
-            OnInfectionDeployment(unit);OnMusterDeployment(unit);ApplyContractWindow(unit);
+            OnInfectionDeployment(unit);OnMusterDeployment(unit);ApplyContractDeployment(unit);
             return receipt;
         }
 

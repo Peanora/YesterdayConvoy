@@ -7,8 +7,9 @@ namespace YesterdayConvoy
     {
         public bool SetRemainingChoices(string contract,MarineAdaptation form,MarineAdaptation second)
         {
-            if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready||!shopLineup.Contains(contract)||!Enum.IsDefined(typeof(MarineAdaptation),form)||!Enum.IsDefined(typeof(MarineAdaptation),second))return false;
-            contractCard=contract;marineForm=form;marineSecond=form==second?(MarineAdaptation)(((int)form+1)%3):second;contractTargetIndex=0;SyncShopDeck(false);return true;
+            if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready||!Enum.IsDefined(typeof(MarineAdaptation),form)||!Enum.IsDefined(typeof(MarineAdaptation),second))return false;
+            if(!TryAssignSarkazContract(contract))return false;
+            marineForm=form;marineSecond=form==second?(MarineAdaptation)(((int)form+1)%3):second;return true;
         }
         void DrawRemainingPreparation()
         {
@@ -21,10 +22,9 @@ namespace YesterdayConvoy
             try
             {
                 if(golemTrainingTab){DrawGolemTraining();return;}
-                string selected=shopLineup.Contains(contractCard)?contractCard:shopLineup.FirstOrDefault();
-                if(selected==null)return;
-                if(LoopButton(new Rect(694,313,550,31),"承契卡："+shop.Definition(selected).Name+" · 点击切换"))
-                    SetRemainingChoices(shopLineup[(shopLineup.IndexOf(selected)+1)%shopLineup.Count],marineForm,marineSecond);
+                string selected=PreparedContractCard;
+                string core=selected!=null?shop.Definition(selected).Name:"无萨卡兹成员";
+                GUI.Label(new Rect(694,313,550,31),"承契者："+core+" · 拖动左侧徽章至萨卡兹编队卡更换",CampaignText(12,weight:600));
                 if(Battle.SarkazTier>0||activeSynergyTrial?.trialId=="sarkaz")
                 {DrawSarkazPreparation();return;}
                 GUI.Label(new Rect(694,352,550,27),"海嗣 · 溟痕蔓延 · 每场重新展开",CampaignText(15,color:MarineInk,weight:600));
@@ -41,22 +41,10 @@ namespace YesterdayConvoy
             bool enabled=oldEnabled&&Loop.CanDeploy&&Battle.Phase==BattlePhase.Running&&!Battle.IsPaused;
             if(Battle.SarkazTier>0)
             {
-                GUI.enabled=enabled&&Battle.CanActivateContract;
-                if(Battle.SarkazTier>=9)
-                {
-                    GUI.enabled=oldEnabled;
-                    Fill(new Rect(x,y,157,25),ApprovedUi.Paper);
-                    GUI.Label(new Rect(x+6,y,145,25),"众魂归乡 · 常驻共鸣",CampaignText(12,weight:600));
-                }
-                else
-                {
-                    string action=Battle.IsPaused?"已暂停 · 恢复后承契":Battle.ContractCooldownRemaining>0?$"承契冷却 {Battle.ContractCooldownRemaining:0.0}秒":Battle.CanActivateContract?"众魂承契 · 立即发动":"众魂承契 · 等待部署";
-                    if(LoopButton(new Rect(x,y,157,25),action))UseContract();
-                }
-                GUI.enabled=oldEnabled;
+                Fill(new Rect(x,y,157,25),ApprovedUi.Paper);
+                GUI.Label(new Rect(x+6,y,145,25),Battle.SarkazTier>=9?"众魂归乡 · 常驻共鸣":"众魂之契 · 部署生效",CampaignText(12,weight:600));
                 y+=27;
-                string state=Battle.SarkazTier>=9?Battle.ContractNextShieldRemaining>0?$"下次补盾 {Battle.ContractNextShieldRemaining:0.0}秒":"部署即获盾 · 每20秒补盾":Battle.ContractRemaining>0?$"共鸣剩余 {Battle.ContractRemaining:0.0}秒":"20秒冷却 · 本场不限次数";
-                GUI.Label(new Rect(x+3,y,154,18),state,CampaignText(10,color:ApprovedUi.Muted));y+=20;
+                GUI.Label(new Rect(x+3,y,154,18),"永久强化 · 一次入场护盾",CampaignText(10,color:ApprovedUi.Muted));y+=20;
             }
             if(Battle.DeepTier>0)
             {

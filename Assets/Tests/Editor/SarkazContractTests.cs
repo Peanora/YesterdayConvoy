@@ -41,110 +41,105 @@ namespace YesterdayConvoy.Tests
         {
             var b=Make(count);Assert.That(b.SarkazTier,Is.EqualTo(expected));Assert.That(b.Units,Is.Empty);
             var first=Deploy(b,"CARD_M37",1);b.Advance(.02f);Deploy(b,"CARD_M37",2);
-            Assert.That(b.SarkazTier,Is.EqualTo(expected));
-            b.TryDamageUnit(first.EntityId,100000,CombatDamageType.Physical);Assert.That(b.SarkazTier,Is.EqualTo(expected));
-            var summary=SynergySummary.From(Members.Take(count)).Single(s=>s.Name=="萨卡兹");
+            Assert.That(b.SarkazTier,Is.EqualTo(expected));b.TryDamageUnit(first.EntityId,100000,CombatDamageType.Physical);Assert.That(b.SarkazTier,Is.EqualTo(expected));
+            var summary=SynergySummary.From(Members.Take(count)).Single(row=>row.Name=="萨卡兹");
             CollectionAssert.AreEqual(new[]{2,4,6,8,9},summary.Thresholds);Assert.That(summary.Tier,Is.EqualTo(expected));
         }
 
         [TestCase(2,1100,.35f,220)][TestCase(4,1200,.60f,360)][TestCase(6,1300,.90f,520)]
         [TestCase(8,1400,1.20f,700)][TestCase(9,1600,1.50f,960)]
-        public void ApprovedTierStatsAndShieldsAffectActualDamage(int count,float hp,float attack,float shield)
+        public void DeploymentImmediatelyGrantsApprovedStatsAndOneShieldThatAbsorbsRealDamage(int count,float hp,float attack,float shield)
         {
             var b=Make(count);var u=Deploy(b,"CARD_M37",1);
             Assert.That(u.MaxHealth,Is.EqualTo(hp).Within(.001f));Assert.That(u.Health,Is.EqualTo(hp).Within(.001f));
-            if(count<9)Assert.That(b.TryActivateContract(b.RunId,100),Is.True);
-            else Assert.That(b.TryActivateContract(b.RunId,100),Is.False,"Nine is automatic, not another paid activation.");
-            Assert.That(b.ContractAttackBonus(u),Is.EqualTo(attack).Within(.001f));
-            Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield).Within(.001f));
-            Assert.That(b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical),Is.True);
-            Assert.That(u.Health,Is.EqualTo(hp).Within(.001f));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield-100).Within(.001f));
-            Assert.That(b.TryDamageUnit(u.EntityId,shield-90,CombatDamageType.Arts),Is.True);
-            Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(u.Health,Is.EqualTo(hp-10).Within(.001f));
+            Assert.That(b.CanActivateContract,Is.False);Assert.That(b.TryActivateContract(b.RunId,100,u.EntityId),Is.False);
+            Assert.That(b.ContractAttackBonus(u),Is.EqualTo(attack).Within(.001f));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield).Within(.001f));
+            b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical);Assert.That(u.Health,Is.EqualTo(hp).Within(.001f));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield-100).Within(.001f));
+            b.TryDamageUnit(u.EntityId,shield-90,CombatDamageType.Arts);Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(u.Health,Is.EqualTo(hp-10).Within(.001f));
+            b.Advance(65);Assert.That(b.ContractAttackBonus(u),Is.EqualTo(attack).Within(.001f));Assert.That(b.ContractShieldRemaining(u),Is.Zero,"No tier periodically refills its entry shield.");
         }
 
-        [Test]public void TwoCardFormationCanOpenAtFullHealthWithoutSacrificingTheOtherCard()
+        [Test]public void TwoCardFormationNeedsNeitherManualActivationNorSacrifice()
         {
-            var b=Make(2,extra:Array.Empty<string>());Assert.That(b.CanActivateContract,Is.False);
-            Assert.That(b.TryActivateContract(b.RunId,10),Is.False);Assert.That(b.ContractCooldownRemaining,Is.Zero);
-            var u=Deploy(b,"CARD_M37",1);Assert.That(b.CanActivateContract,Is.True);
-            Assert.That(b.TryActivateContract(b.RunId,11),Is.True);Assert.That(b.ContractPoints,Is.Zero);
-            Assert.That(u.Health,Is.EqualTo(u.MaxHealth));Assert.That(b.ContractUses,Is.EqualTo(1));
+            var b=Make(2,extra:Array.Empty<string>());var u=Deploy(b,"CARD_M37",1);
+            Assert.That(b.ContractPoints,Is.Zero);Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);
+            Assert.That(u.Health,Is.EqualTo(u.MaxHealth));Assert.That(b.ContractAttackBonus(u),Is.EqualTo(.35f).Within(.001f));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(220).Within(.001f));
+            Assert.That(b.Units.Count,Is.EqualTo(1));Assert.That(double.IsPositiveInfinity(b.ContractRemaining),Is.True);
         }
 
-        [Test]public void EveryCopyAndLaterDeploymentShareOnlyTheRemainingWindow()
+        [Test]public void EveryNormallyDeployedCopyGetsItsOwnPermanentBonusAndOneEntryShield()
         {
-            var b=Make(2);var first=Deploy(b,"CARD_M37",1);b.Advance(.02f);var second=Deploy(b,"CARD_M37",2);
-            Assert.That(b.TryActivateContract(b.RunId,100),Is.True);
-            Assert.That(b.ContractAttackBonus(first),Is.EqualTo(.35f).Within(.001f));Assert.That(b.ContractAttackBonus(second),Is.EqualTo(.35f).Within(.001f));
-            b.Advance(3);var later=Deploy(b,"CARD_M37",3);
-            Assert.That(b.ContractAttackBonus(later),Is.EqualTo(.35f).Within(.001f));Assert.That(b.ContractRemaining,Is.EqualTo(5).Within(.001));
-            Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(220).Within(.001f));b.Advance(5.02f);
-            foreach(var u in new[]{first,second,later}){Assert.That(b.ContractAttackBonus(u),Is.Zero);Assert.That(b.ContractShieldRemaining(u),Is.Zero);}
+            var b=Make(2);var first=Deploy(b,"CARD_M37",1);b.TryDamageUnit(first.EntityId,100,CombatDamageType.Physical);
+            b.Advance(.02f);var second=Deploy(b,"CARD_M37",2);b.Advance(61);var later=Deploy(b,"CARD_M37",3);
+            foreach(var u in new[]{first,second,later})Assert.That(b.ContractAttackBonus(u),Is.EqualTo(.35f).Within(.001f));
+            Assert.That(b.ContractShieldRemaining(first),Is.EqualTo(120).Within(.001f));Assert.That(b.ContractShieldRemaining(second),Is.EqualTo(220).Within(.001f));Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(220).Within(.001f));
+            var replay=b.TryDeployRole(b.RunId,3,b.Entry,"CARD_M37");Assert.That(replay.EntityId,Is.EqualTo(later.EntityId));
+            b.TryDamageUnit(later.EntityId,100,CombatDamageType.Physical);b.TryDeployRole(b.RunId,3,b.Entry,"CARD_M37");
+            Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(120).Within(.001f));Assert.That(b.Units.Count,Is.EqualTo(3));
         }
 
         [TestCase(2,0,0)][TestCase(4,0,0)][TestCase(6,.45f,260)][TestCase(8,1.20f,700)][TestCase(9,1.50f,960)]
-        public void SharingUsesEachRecipientOwnMaximumAndNeverIncludesUnchosenOutsiders(int count,float bonus,float shield)
+        public void SharingUsesEachRecipientOwnMaximumAndNeverIncludesOutsiders(int count,float bonus,float shield)
         {
             var b=Make(count);var core=Deploy(b,"CARD_M37",1);var other=Deploy(b,"CARD_M38",2);var outsider=Deploy(b,"CARD_M07",3);
-            if(count<9)Assert.That(b.TryActivateContract(b.RunId,100),Is.True);
             Assert.That(b.ContractAttackBonus(other),Is.EqualTo(bonus).Within(.001f));Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(shield).Within(.001f));
-            Assert.That(outsider.MaxHealth,Is.EqualTo(1000));Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);
-            Assert.That(b.ContractAttackBonus(core),Is.GreaterThan(0));
+            Assert.That(outsider.MaxHealth,Is.EqualTo(1000));Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);Assert.That(b.ContractAttackBonus(core),Is.GreaterThan(0));
         }
 
-        [Test]public void NonSarkazChosenCardKeepsItsBaseHealthAndReceivesTheFullContract()
+        [Test]public void LegacyNonSarkazConfigurationCannotMakeAnOutsiderTheContractOwner()
         {
-            var b=Make(6,contract:"CARD_M07");var core=Deploy(b,"CARD_M07",1);var sarkaz=Deploy(b,"CARD_M37",2);
-            Assert.That(b.TryActivateContract(b.RunId,100),Is.True);Assert.That(core.MaxHealth,Is.EqualTo(1000));
-            Assert.That(b.ContractAttackBonus(core),Is.EqualTo(.9f).Within(.001f));Assert.That(b.ContractShieldRemaining(core),Is.EqualTo(400).Within(.001f));
-            Assert.That(b.ContractShieldRemaining(sarkaz),Is.EqualTo(260).Within(.001f));
+            var b=Make(6,contract:"CARD_M07");var outsider=Deploy(b,"CARD_M07",1);var sarkaz=Deploy(b,"CARD_M37",2);
+            Assert.That(b.ContractCard,Is.EqualTo("CARD_M37"));Assert.That(outsider.MaxHealth,Is.EqualTo(1000));Assert.That(b.IsContractBeneficiary(outsider),Is.False);
+            Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);
+            Assert.That(b.ContractAttackBonus(sarkaz),Is.EqualTo(.9f).Within(.001f));Assert.That(b.ContractShieldRemaining(sarkaz),Is.EqualTo(520).Within(.001f));
         }
 
-        [Test]public void SixCanOpenForSharedRecipientsBeforeTheChosenCardIsDeployed()
+        [Test]public void AFormationWithoutSarkazNeverCreatesAContractOwnerOrEntryBuff()
+        {
+            var b=Make(0,contract:"CARD_M07",members:new[]{"CARD_M07","CARD_M08"},extra:Array.Empty<string>());var outsider=Deploy(b,"CARD_M07",1);
+            Assert.That(b.SarkazTier,Is.Zero);Assert.That(b.ContractCard,Is.Null);Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);
+        }
+
+        [Test]public void SharedSarkazReceivesItsEntryEffectEvenBeforeTheOwnerIsDeployed()
         {
             var b=Make(6);var other=Deploy(b,"CARD_M38",1);
-            Assert.That(b.TryActivateContract(b.RunId,100,other.EntityId),Is.False,"Legacy explicit targets still validate the selected card.");
-            Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);
-            Assert.That(b.TryActivateContract(b.RunId,101),Is.True);Assert.That(b.ContractAttackBonus(other),Is.EqualTo(.45f).Within(.001f));
+            Assert.That(b.ContractAttackBonus(other),Is.EqualTo(.45f).Within(.001f));Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(260).Within(.001f));
+            Assert.That(b.TryActivateContract(b.RunId,100,other.EntityId),Is.False);Assert.That(b.ContractUses,Is.Zero);
         }
 
-        [Test]public void CooldownIsIdempotentFreezesOnPauseAndHasNoFormerPerBattleLimit()
+        [Test]public void ManualRequestsCannotRefillTheShieldConsumeResourcesOrIntroduceACooldown()
         {
             var b=Make(2);var u=Deploy(b,"CARD_M37",1);int dp=b.DP,uses=b.FindCard("CARD_M37").RemainingUses;float sp=u.SkillSP;
-            Assert.That(b.TryActivateContract(b.RunId,100),Is.True);b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical);
-            Assert.That(b.TryActivateContract(b.RunId,100),Is.True);Assert.That(b.ContractUses,Is.EqualTo(1));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(120).Within(.001f));
-            Assert.That(b.TryActivateContract(b.RunId-1,101),Is.False);Assert.That(b.TryActivateContract(b.RunId,101),Is.False);
-            b.SetPaused(true);b.Advance(100);Assert.That(b.ContractRemaining,Is.EqualTo(8));Assert.That(b.ContractCooldownRemaining,Is.EqualTo(20));
-            Assert.That(b.TryActivateContract(b.RunId,102),Is.False);b.SetPaused(false);
-            for(int i=0;i<3;i++){b.Advance(20.01f);Assert.That(b.TryActivateContract(b.RunId,200+i),Is.True);}
-            Assert.That(b.ContractUses,Is.EqualTo(4));Assert.That(b.DP,Is.EqualTo(dp));Assert.That(b.FindCard("CARD_M37").RemainingUses,Is.EqualTo(uses));Assert.That(u.SkillSP,Is.EqualTo(sp));
+            b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical);b.SetPaused(true);double at=b.Clock;b.Advance(100);
+            Assert.That(b.Clock,Is.EqualTo(at));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(120).Within(.001f));Assert.That(b.ContractAttackBonus(u),Is.EqualTo(.35f).Within(.001f));
+            foreach(int request in new[]{100,100,101})Assert.That(b.TryActivateContract(b.RunId,request),Is.False);
+            b.SetPaused(false);b.Advance(61);Assert.That(b.TryActivateContract(b.RunId-1,102,u.EntityId),Is.False);Assert.That(b.TryActivateContract(b.RunId,103,u.EntityId),Is.False);
+            Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);Assert.That(b.ContractNextShieldRemaining,Is.Zero);Assert.That(b.ContractShieldRefreshRemaining(u),Is.Zero);
+            Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(120).Within(.001f));Assert.That(b.DP,Is.EqualTo(dp));Assert.That(b.FindCard("CARD_M37").RemainingUses,Is.EqualTo(uses));Assert.That(u.SkillSP,Is.EqualTo(sp));
         }
 
-        [Test]public void OtherShieldLifetimesCannotKeepAnExpiredContractAlive()
+        [Test]public void AnotherShieldExpiryNeitherExpiresNorRefillsTheIndependentEntryShield()
         {
-            var b=Make(2);var u=Deploy(b,"CARD_M37",1);Assert.That(b.TryActivateContract(b.RunId,100),Is.True);
-            Set(u,"SynergyShield",900f);Set(u,"SynergyShieldUntil",100d);b.Advance(8.01f);
-            Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(b.ContractAttackBonus(u),Is.Zero);
-            Assert.That(b.TryDamageUnit(u.EntityId,10,CombatDamageType.Physical),Is.True);Assert.That(u.SynergyShield,Is.EqualTo(890));Assert.That(u.Health,Is.EqualTo(u.MaxHealth));
+            var b=Make(2);var u=Deploy(b,"CARD_M37",1);Set(u,"SynergyShield",900f);Set(u,"SynergyShieldUntil",4d);
+            b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical);Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(120).Within(.001f));Assert.That(u.SynergyShield,Is.EqualTo(900));
+            b.Advance(8.1f);b.TryDamageUnit(u.EntityId,150,CombatDamageType.Physical);
+            Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(u.Health,Is.EqualTo(1070).Within(.001f));Assert.That(b.ContractAttackBonus(u),Is.EqualTo(.35f).Within(.001f));
         }
 
-        [Test]public void NineRefreshesPerEntityEveryTwentySimulationSecondsWithoutStacking()
+        [TestCase(2,220,.35f)][TestCase(9,960,1.5f)]
+        public void ConsumedEntryShieldsNeverRegenerateAtTheFormerTwentySecondBoundary(int count,float initial,float attack)
         {
-            var b=Make(9);var first=Deploy(b,"CARD_M37",1);Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractAttackBonus(first),Is.EqualTo(1.5f));
-            b.TryDamageUnit(first.EntityId,100,CombatDamageType.Physical);b.SetPaused(true);b.Advance(50);
-            Assert.That(b.ContractShieldRemaining(first),Is.EqualTo(860).Within(.001f));b.SetPaused(false);b.Advance(19);
-            var later=Deploy(b,"CARD_M38",2);Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(960).Within(.001f));b.TryDamageUnit(later.EntityId,100,CombatDamageType.Physical);
-            b.Advance(1.01f);Assert.That(b.ContractShieldRemaining(first),Is.EqualTo(960).Within(.001f));Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(860).Within(.001f));
-            b.Advance(19.01f);Assert.That(b.ContractShieldRemaining(later),Is.EqualTo(960).Within(.001f));
-            b.Advance(20.01f);Assert.That(b.ContractShieldRemaining(first),Is.EqualTo(960).Within(.001f));Assert.That(b.ContractAttackBonus(first),Is.EqualTo(1.5f));
+            var b=Make(count);var u=Deploy(b,"CARD_M37",1);b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical);
+            b.Advance(19);Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(initial-100).Within(.001f));b.Advance(1.01f);Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(initial-100).Within(.001f));
+            b.Advance(45);Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(initial-100).Within(.001f));Assert.That(b.ContractAttackBonus(u),Is.EqualTo(attack).Within(.001f));
         }
 
-        [Test]public void NineDoesNotRequireDeployingAllNineToAffectARealOrdinaryHit()
+        [TestCase(2,135)][TestCase(9,250)]
+        public void DeploymentAutomaticallyBoostsRealOrdinaryHitsWithOnlyOneBodyInPlay(int count,float damage)
         {
-            var b=Make(9,near:true);var u=Deploy(b,"CARD_M37",1);b.Advance(.5f);
+            var b=Make(count,near:true);var u=Deploy(b,"CARD_M37",1);b.Advance(.5f);
             Assert.That(b.Units.Count(o=>!o.SynergySupport),Is.EqualTo(1));var shot=b.CombatShots.Single(s=>s.SourceId==u.EntityId&&!s.FromDefender);
-            Assert.That(shot.Applied,Is.True);Assert.That(shot.DamageDealt,Is.EqualTo(250).Within(.001f));
+            Assert.That(shot.Applied,Is.True);Assert.That(shot.DamageDealt,Is.EqualTo(damage).Within(.001f));Assert.That(b.ContractUses,Is.Zero);
         }
 
         [Test]public void GolemAndSameSpeciesHerdSpiritCannotBorrowTheSarkazContract()
@@ -153,27 +148,19 @@ namespace YesterdayConvoy.Tests
             var receipt=b.TryDeployGolem(b.RunId,2,b.Entry);Assert.That(receipt.Success,Is.True);var golem=b.FindUnit(receipt.EntityId);
             Assert.That(golem.MaxHealth,Is.EqualTo(360));Assert.That(b.ContractAttackBonus(golem),Is.Zero);Assert.That(b.ContractShieldRemaining(golem),Is.Zero);
             b.TryDamageUnit(source.EntityId,100000,CombatDamageType.Physical);b.Advance(1.5f);
-            var spirit=b.Units.Single(u=>b.IsHerdHost(u.EntityId));Assert.That(spirit.SynergySupport,Is.True);
-            Assert.That(spirit.MaxHealth,Is.EqualTo(720).Within(.001f),"The conversion inherits its original ratio, without another Sarkaz HP multiplier.");
+            var spirit=b.Units.Single(u=>b.IsHerdHost(u.EntityId));Assert.That(spirit.SynergySupport,Is.True);Assert.That(spirit.MaxHealth,Is.EqualTo(720).Within(.001f));
             Assert.That(b.ContractAttackBonus(spirit),Is.Zero);Assert.That(b.ContractShieldRemaining(spirit),Is.Zero);
         }
 
-        [Test]public void PatriotRebirthCannotWasteAShortContractOrResetItsNativePhase()
+        [TestCase(2,1100,.35f)][TestCase(9,1600,1.5f)]
+        public void NativePatriotRebirthKeepsPermanentAttackButCannotGrantAnotherEntryShield(int count,float hp,float attack)
         {
-            var b=Make(2,contract:"CARD_M20",members:new[]{"CARD_M20","CARD_M37"},nativeId:"CARD_M20",nativeEffects:new MonsterEffectSettings(patriot:true));
-            var u=Deploy(b,"CARD_M20",1);b.TryDamageUnit(u.EntityId,100000,CombatDamageType.Arts);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Reborn));
-            Assert.That(b.TryActivateContract(b.RunId,100),Is.False);Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);
-            b.Advance(60.1f);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Destruction));Assert.That(u.Health,Is.EqualTo(1100).Within(.001f));
-            Assert.That(b.TryActivateContract(b.RunId,101),Is.True);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Destruction));
-        }
-
-        [Test]public void NineWaitsThroughNativeRebirthThenRestoresItsWardWithoutResettingTheCharacter()
-        {
-            var b=Make(9,contract:"CARD_M20",nativeId:"CARD_M20",nativeEffects:new MonsterEffectSettings(patriot:true));var u=Deploy(b,"CARD_M20",1);
+            string[] members=count==2?new[]{"CARD_M20","CARD_M37"}:null;
+            var b=Make(count,contract:"CARD_M20",members:members,nativeId:"CARD_M20",nativeEffects:new MonsterEffectSettings(patriot:true));var u=Deploy(b,"CARD_M20",1);
             b.TryDamageUnit(u.EntityId,100000,CombatDamageType.Arts);b.Advance(25);
-            Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Reborn));Assert.That(u.Health,Is.Zero);Assert.That(b.ContractShieldRemaining(u),Is.Zero);
-            b.Advance(35.2f);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Destruction));Assert.That(u.Health,Is.EqualTo(1600).Within(.001f));
-            Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(960).Within(.001f));Assert.That(b.ContractAttackBonus(u),Is.EqualTo(1.5f));Assert.That(b.ContractUses,Is.Zero);
+            Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Reborn));Assert.That(u.Health,Is.Zero);Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(b.ContractAttackBonus(u),Is.Zero);
+            b.Advance(35.2f);Assert.That(u.PatriotPhase,Is.EqualTo(PatriotPhase.Destruction));Assert.That(u.Health,Is.EqualTo(hp).Within(.001f));
+            Assert.That(b.ContractShieldRemaining(u),Is.Zero);Assert.That(b.ContractAttackBonus(u),Is.EqualTo(attack).Within(.001f));Assert.That(b.ContractUses,Is.Zero);
         }
 
         [Test]public void SarkazHealthPersistsThroughMudrockNativeBarrierBreakAndRefresh()
@@ -182,28 +169,24 @@ namespace YesterdayConvoy.Tests
             Assert.That(u.MaxHealth,Is.EqualTo(1650).Within(.001f));b.TryDamageUnit(u.EntityId,400,CombatDamageType.Arts);
             Assert.That(u.ArtsBarrierRemaining,Is.Zero);Assert.That(u.MaxHealth,Is.EqualTo(1100).Within(.001f));float health=u.Health;
             b.Advance(18.1f);Assert.That(u.BarrierRefreshes,Is.EqualTo(1));Assert.That(u.MaxHealth,Is.EqualTo(1650).Within(.001f));
-            Assert.That(u.Health,Is.LessThanOrEqualTo(health),"Native shield refresh cannot heal or compound the permanent HP bonus.");
-            b.TryDamageUnit(u.EntityId,400,CombatDamageType.Arts);Assert.That(u.MaxHealth,Is.EqualTo(1100).Within(.001f));
+            Assert.That(u.Health,Is.LessThanOrEqualTo(health));b.TryDamageUnit(u.EntityId,400,CombatDamageType.Arts);Assert.That(u.MaxHealth,Is.EqualTo(1100).Within(.001f));
         }
 
         [Test]public void NativeInvulnerabilityRejectsFacilityTrueDamageBeforeSpendingTheContractWard()
         {
             var b=Make(9,contract:"CARD_M20",nativeId:"CARD_M20",nativeEffects:new MonsterEffectSettings(patriot:true));var u=Deploy(b,"CARD_M20",1);
-            Set(u,"PatriotInvulnerableUntil",b.Clock+10);Assert.That(b.UnitInvulnerable(u),Is.True);
-            float hp=u.Health,shield=b.ContractShieldRemaining(u);
-            var hit=typeof(ManualBattle).GetMethod("TrueDamage",State,null,new[]{typeof(DeployedUnitState),typeof(float)},null);
-            Assert.That(hit,Is.Not.Null);hit.Invoke(b,new object[]{u,100f});
-            Assert.That(u.Health,Is.EqualTo(hp));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield));
-            Set(u,"PatriotInvulnerableUntil",double.NegativeInfinity);hit.Invoke(b,new object[]{u,100f});
+            Set(u,"PatriotInvulnerableUntil",b.Clock+10);Assert.That(b.UnitInvulnerable(u),Is.True);float hp=u.Health,shield=b.ContractShieldRemaining(u);
+            var hit=typeof(ManualBattle).GetMethod("TrueDamage",State,null,new[]{typeof(DeployedUnitState),typeof(float)},null);Assert.That(hit,Is.Not.Null);hit.Invoke(b,new object[]{u,100f});
+            Assert.That(u.Health,Is.EqualTo(hp));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield));Set(u,"PatriotInvulnerableUntil",double.NegativeInfinity);hit.Invoke(b,new object[]{u,100f});
             Assert.That(u.Health,Is.EqualTo(hp));Assert.That(b.ContractShieldRemaining(u),Is.EqualTo(shield-100).Within(.001f));
         }
 
-        [Test]public void RestartClearsTheOldWindowWardAndRequestButKeepsTheFormationTier()
+        [Test]public void RestartClearsEntryShieldStateAndNewDeploymentGrantsExactlyOneNewShield()
         {
-            var b=Make(2);var u=Deploy(b,"CARD_M37",1);int previousRun=b.RunId;Assert.That(b.TryActivateContract(b.RunId,100),Is.True);
-            b.Restart();Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractRemaining,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);Assert.That(b.Units,Is.Empty);Assert.That(b.SarkazTier,Is.EqualTo(2));
-            b.Begin();var next=Deploy(b,"CARD_M37",1);Assert.That(next.Health,Is.EqualTo(1100).Within(.001f));Assert.That(b.ContractShieldRemaining(next),Is.Zero);
-            Assert.That(b.TryActivateContract(previousRun,100),Is.False);Assert.That(b.TryActivateContract(b.RunId,100),Is.True);Assert.That(b.ContractUses,Is.EqualTo(1));
+            var b=Make(2);var old=Deploy(b,"CARD_M37",1);b.TryDamageUnit(old.EntityId,100,CombatDamageType.Physical);int previousRun=b.RunId;
+            b.Restart();Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);Assert.That(b.Units,Is.Empty);Assert.That(b.SarkazTier,Is.EqualTo(2));Assert.That(b.ContractShieldRemaining(old),Is.Zero);
+            b.Begin();var next=Deploy(b,"CARD_M37",1);Assert.That(next.Health,Is.EqualTo(1100).Within(.001f));Assert.That(b.ContractShieldRemaining(next),Is.EqualTo(220).Within(.001f));
+            Assert.That(b.TryActivateContract(previousRun,100),Is.False);Assert.That(b.TryActivateContract(b.RunId,100),Is.False);Assert.That(b.ContractUses,Is.Zero);
         }
     }
 }

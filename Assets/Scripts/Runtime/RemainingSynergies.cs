@@ -47,7 +47,7 @@ namespace YesterdayConvoy
             if(experience<0||!Enum.IsDefined(typeof(MarineAdaptation),adaptation)||!Enum.IsDefined(typeof(MarineAdaptation),second))throw new ArgumentException();
             HerdTier=MemberTier("牧群",4);DeepTier=MemberTier("深池",4);int sarkaz=synergyStars.Keys.Count(id=>Tag(id,"萨卡兹"));
             SarkazTier=sarkaz>=9?9:sarkaz>=8?8:sarkaz>=6?6:sarkaz>=4?4:sarkaz>=2?2:0;MarineTier=MemberTier("海嗣",4);
-            ContractCard=contract!=null&&synergyStars.ContainsKey(contract)?contract:synergyStars.Keys.FirstOrDefault();
+            ContractCard=contract!=null&&synergyStars.ContainsKey(contract)&&Tag(contract,"萨卡兹")?contract:synergyStars.Keys.FirstOrDefault(id=>Tag(id,"萨卡兹"));
             Adaptation=adaptation;SecondAdaptation=second==adaptation?(MarineAdaptation)(((int)adaptation+1)%3):second;
         }
         void ResetRemainingSynergies()
@@ -92,7 +92,6 @@ namespace YesterdayConvoy
         {
             FlushHerd();
             StepMarineTide(step);
-            StepContract();
             foreach(var pair in herdLifetimes)
             {
                 var u=FindUnit(pair.Key);if(u==null||!u.Active||Clock<pair.Value)continue;

@@ -42,8 +42,8 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(694,352,550,25),"萨卡兹 · 众魂之契 · "+Battle.SarkazTier+"档",CampaignText(15,weight:600));
             var hint=CampaignText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);hint.wordWrap=true;
             GUI.Label(new Rect(694,382,550,48),Battle.SarkazTier>=9?
-                "众魂归乡：承契者与全体萨卡兹攻击永久+150%；部署及每20秒获60%生命护盾。全体萨卡兹生命+60%。":
-                "开战即可承契，无需低血或阵亡充能；发动起冷却20秒，本场不限次数。承契卡全部正常实体统一受益，6档开始共享给同胞。",hint);
+                "众魂归乡：全体萨卡兹攻击永久+150%、生命+60%；每个实体部署时获得一次60%生命护盾，消耗后不补发。":
+                "各档部署即触发，攻击强化持续本场；入场护盾只发一次，承契不额外消耗DP/技力。拖动左侧萨卡兹徽章至编队卡指定承契者，开战锁定。",hint);
             if(SynergySandbox)
             {
                 bool enabled=GUI.enabled;GUI.enabled=enabled&&!ArtLoading;

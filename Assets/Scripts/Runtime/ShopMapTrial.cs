@@ -179,7 +179,7 @@ namespace YesterdayConvoy
             var r=shop.Sell(instance);if(r.Success)SyncShopDeck(false);ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 金币":r.Message);return r;
         }
         void ShopNotice(string message){shopMessage=message;shopMessageUntil=Time.unscaledTime+3;}
-        public void CancelShopDrag(){golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
+        public void CancelShopDrag(){CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
             ClearSynergyActivationFeedback();synergyActivationShop=null;
@@ -190,7 +190,9 @@ namespace YesterdayConvoy
         bool ShopPointerEvent(EventType type,Vector2 point,int button=0)
         {
             if(shop==null)return false;
-            if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen)return false;
+            if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen){CancelSarkazContractBadgeDrag();return false;}
+            if(button!=0&&sarkazContractBadgeDragging){CancelSarkazContractBadgeDrag();return true;}
+            if(button==0&&ProcessSarkazContractBadgePointer(type,point))return true;
             if(Loop==null&&Battle.Phase!=BattlePhase.Ready&&Battle.Phase!=BattlePhase.Running)return false;
             if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
             {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}

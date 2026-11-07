@@ -101,7 +101,7 @@ namespace YesterdayConvoy
                     if(spirit!=null)GUI.Label(new Rect(p.x-40,p.y+7,80,20),unit.IsReviving?$"凝聚 {Math.Max(0,spirit.ReadyAt-Battle.Clock):0.0}s":$"灵体 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,new Color(.55f,.88f,1)));
                     if(Battle.SarkazTier>0&&Battle.IsContractBeneficiary(unit))
                     {
-                        string contract=Battle.ContractAttackBonus(unit)>0?"众魂共鸣":unit.CardId==Battle.ContractCard?"承契者":null;
+                        string contract=unit.CardId==Battle.ContractCard?"承契者":Battle.ContractAttackBonus(unit)>0?"众魂共鸣":null;
                         if(contract!=null)GUI.Label(new Rect(p.x-48,p.y-24,96,20),contract,LoopText(11,TextAnchor.MiddleCenter,Color.white));
                     }
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
@@ -120,6 +120,7 @@ namespace YesterdayConvoy
                 }
                 if(campaignModal&&suppressed)e.type=originalEvent;
                 DrawCampaignControls(point);
+                DrawSarkazContractBadges();
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)
                 {if(suppressed)e.type=originalEvent;DrawLoopSettlement();}

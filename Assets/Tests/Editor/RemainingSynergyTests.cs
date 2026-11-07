@@ -72,25 +72,21 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryDetonateDeep(b.RunId,1));Assert.That(b.DeepCharges,Is.EqualTo(1));Assert.That(b.DeepDetonations,Is.EqualTo(1));
             Assert.That(b.TryDetonateDeep(b.RunId-1,2),Is.False);Assert.That(CampaignBalance.Supports("CARD_M32"));
         }
-        [Test]public void ContractOpensWithoutHealthLossAndSharesAtSixMembers()
-        {
-            var b=Make(Sark,contract:"CARD_M37");var target=Deploy(b,"CARD_M37",1);
-            var other=Deploy(b,Sark[0],2);
-            Assert.That(target.Health,Is.EqualTo(260).Within(.001f));Assert.That(b.ContractPoints,Is.Zero);
-            b.SetPaused(true);Assert.That(b.TryActivateContract(b.RunId,100,target.EntityId),Is.False);b.SetPaused(false);
-            Assert.That(b.TryActivateContract(b.RunId,100,target.EntityId));Assert.That(b.ContractPoints,Is.Zero);Assert.That(b.ContractUses,Is.EqualTo(1));
-            Assert.That(b.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(b.ContractShieldRemaining(target),Is.EqualTo(104).Within(.001f));
-            Assert.That(b.TryActivateContract(b.RunId,100,target.EntityId));Assert.That(b.ContractUses,Is.EqualTo(1));
-            Assert.That(b.ContractAttackBonus(other),Is.EqualTo(.45f).Within(.001f));Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(52).Within(.001f));
-            b.Advance(12.1f);Assert.That(b.ContractAttackBonus(target),Is.Zero);Assert.That(b.ContractShieldRemaining(target),Is.Zero);
-        }
-        [Test]public void DamageDoesNotChargeContractOrBypassItsCooldown()
+        [Test]public void ContractAutomaticallyStartsOnDeploymentAndSharesAtSixMembers()
         {
             var b=Make(Sark,contract:"CARD_M37");var target=Deploy(b,"CARD_M37",1);var other=Deploy(b,Sark[0],2);
-            Assert.That(b.TryActivateContract(b.RunId,20,target.EntityId));
+            Assert.That(target.Health,Is.EqualTo(260).Within(.001f));Assert.That(b.ContractPoints,Is.Zero);Assert.That(b.ContractUses,Is.Zero);
+            Assert.That(b.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(b.ContractShieldRemaining(target),Is.EqualTo(104).Within(.001f));
+            Assert.That(b.ContractAttackBonus(other),Is.EqualTo(.45f).Within(.001f));Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(52).Within(.001f));
+            b.SetPaused(true);Assert.That(b.TryActivateContract(b.RunId,100,target.EntityId),Is.False);b.SetPaused(false);b.Advance(13);
+            Assert.That(b.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(b.ContractShieldRemaining(target),Is.EqualTo(104).Within(.001f));
+        }
+        [Test]public void DamageHealingAndManualRequestsCannotRefillTheEntryShield()
+        {
+            var b=Make(Sark,contract:"CARD_M37");Deploy(b,"CARD_M37",1);var other=Deploy(b,Sark[0],2);
             Call(b,"ApplyUnitHealthDamage",other,160f);b.TryDamageUnit(other.EntityId,1,CombatDamageType.Physical);Call(b,"HealUnit",other,200f);
-            Assert.That(b.ContractPoints,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.EqualTo(20).Within(.001));
-            Assert.That(b.TryActivateContract(b.RunId,21),Is.False);Assert.That(b.ContractUses,Is.EqualTo(1));
+            Assert.That(b.ContractPoints,Is.Zero);Assert.That(b.ContractCooldownRemaining,Is.Zero);Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(51).Within(.001f));
+            Assert.That(b.TryActivateContract(b.RunId,21),Is.False);Assert.That(b.ContractUses,Is.Zero);Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(51).Within(.001f));
         }
         [TestCase(MarineAdaptation.Barrier)] [TestCase(MarineAdaptation.Hunt)] [TestCase(MarineAdaptation.Infiltration)]
         public void RetiredMarineParametersCannotRestoreOldEffectsOrExperience(MarineAdaptation choice)

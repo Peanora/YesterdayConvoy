@@ -41,16 +41,19 @@ namespace YesterdayConvoy.Tests
             }
             yield return null;c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator ActualHerdArtAndContractBurstRemainPlayable()
+        [UnityTest]public IEnumerator ActualHerdArtAndPermanentContractRemainPlayable()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();c.SetSandboxRoster(4);c.StartLoopNextBattle();c.Battle.Begin();
             var receipt=c.Battle.TryDeployRole(c.Battle.RunId,1,c.Battle.Entry,"CARD_M21");c.Battle.TryDamageUnit(receipt.EntityId,100000,CombatDamageType.Physical);c.Tick(.05f);yield return null;
             var host=c.Battle.Units.Single(u=>c.Battle.IsHerdHost(u.EntityId));Assert.That(host.CardId,Is.EqualTo("CARD_M21"));Assert.That(c.Battle.UnitCombat(host).HasSkill,Is.False);
             Assert.That(Object.FindObjectsByType<DemoSpriteVisual>(FindObjectsSortMode.None).Any(v=>v.Renderer.sprite!=null&&v.Renderer.sprite.name.StartsWith("M21/")));
-            Replay(c);c.SetSandboxRoster(6);Assert.That(c.SetRemainingChoices("CARD_M37",MarineAdaptation.Hunt,MarineAdaptation.Infiltration));c.StartLoopNextBattle();c.Battle.Begin();
-            Assert.That(c.SetRemainingChoices("CARD_M19",MarineAdaptation.Barrier,MarineAdaptation.Hunt),Is.False);
+            Replay(c);Assert.That(c.SetSandboxRoster(6),Is.True);
+            for(int i=0;i<900&&(c.ArtLoading||c.ShopPanelTransitioning);i++)yield return null;
+            Assert.That(c.ArtLoading||c.ShopPanelTransitioning,Is.False,"Preparation must finish before assigning the contract badge.");
+            Assert.That(c.TryAssignSarkazContract("CARD_M37"),Is.True);c.StartLoopNextBattle();c.Battle.Begin();
+            Assert.That(c.TryAssignSarkazContract("CARD_M19"),Is.False);
             var target=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,2,c.Battle.Entry,"CARD_M37").EntityId);
-            Assert.That(c.Battle.ContractPoints,Is.Zero);Assert.That(c.UseContract());Assert.That(c.Battle.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(c.Battle.ContractShieldRemaining(target),Is.GreaterThan(0));yield return null;c.LeaveShopTrial();
+            Assert.That(c.Battle.ContractPoints,Is.Zero);Assert.That(c.UseContract(),Is.False);Assert.That(c.Battle.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(c.Battle.ContractShieldRemaining(target),Is.GreaterThan(0));yield return null;c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator NativeDeepSprayCreatesSeedsAndMarineRetaliationSeedsPerBattleTerrain()
         {
@@ -59,7 +62,7 @@ namespace YesterdayConvoy.Tests
             foreach(var id in new[]{"CARD_M29","CARD_M30","CARD_M31","CARD_M32"})Assert.That(c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,id).Success);
             for(int i=0;i<2600&&c.Battle.DeepCharges==0&&c.Loop.CanDeploy;i++){c.Tick(.1f);if(i%20==0)yield return null;}
             Assert.That(c.Battle.DeepCharges,Is.GreaterThan(0),"Native burn and normal kill must trigger the real deep-pool chain");
-            Replay(c);c.SetSandboxRoster(7);c.SetRemainingChoices("CARD_M33",MarineAdaptation.Infiltration,MarineAdaptation.Hunt);c.StartLoopNextBattle();c.Battle.Begin();
+            Replay(c);c.SetSandboxRoster(7);c.StartLoopNextBattle();c.Battle.Begin();
             var u=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,2,c.Battle.Entry,"CARD_M33").EntityId);
             float armor=c.Battle.DefenderArmor(c.Battle.Defender);c.Battle.TryDamageUnit(u.EntityId,u.MaxHealth*.16f,CombatDamageType.Physical);
             Assert.That(c.Battle.CreeperPulses.Count,Is.GreaterThan(0));Assert.That(c.Battle.DefenderArmor(c.Battle.Defender),Is.EqualTo(armor));
