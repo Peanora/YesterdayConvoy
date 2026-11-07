@@ -55,8 +55,8 @@ namespace YesterdayConvoy
             }
             if(Battle.DeepTier>0)
             {
-                GUI.enabled=enabled&&Battle.DeepTier==4;
-                if(LoopButton(new Rect(x,y,157,25),Battle.DeepTier<4?$"火种 {Battle.DeepCharges} · 4档引爆":$"引爆火种 {Battle.DeepCharges}"))Battle.TryDetonateDeep(Battle.RunId,++requestSequence);
+                GUI.enabled=enabled&&Battle.DeepTier==4&&Battle.DeepCharges>0&&Battle.DeepDetonations<2;
+                if(LoopButton(new Rect(x,y,157,25),Battle.DeepTier<4?$"火种 {Battle.DeepCharges} · 4档引爆":$"引爆1枚 · {Battle.DeepCharges}枚/{2-Battle.DeepDetonations}次"))Battle.TryDetonateDeep(Battle.RunId,++requestSequence);
                 y+=29;
             }
             GUI.enabled=oldEnabled;

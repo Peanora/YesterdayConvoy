@@ -248,9 +248,11 @@ namespace YesterdayConvoy
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type,bool derived=false,DeployedUnitState source=null,float damageScale=1)
         {
-            float healthBefore=defender.Health;bool alive=defender.Alive,burning=DeepBurning(defender);
+            float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
             ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*MarineHunt(source,defender));
-            if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning);
+            bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
+            if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
+            if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);
             if(source!=null&&!derived&&defender.Health<healthBefore){OnMarineContact(source);OnMarineHit(source,defender,alive&&!defender.Alive);}
             defender.LastHitTime=Clock;
             if(!defender.Alive) { defender.DeathTime=Clock;defender.TargetId=null; }

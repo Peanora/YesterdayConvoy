@@ -79,7 +79,7 @@ namespace YesterdayConvoy
                 u.NextStoneAuraAt=Clock+1;
                 foreach(var d in defenders)
                     if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=1.7f)
-                    {DamageDefender(d,UnitCombat(u).UnitAttack*.3f,CombatDamageType.Arts);u.StoneAuraHits++;}
+                    {DamageDefender(d,UnitCombat(u).UnitAttack*.3f,CombatDamageType.Arts,source:u);u.StoneAuraHits++;}
             }
             return false;
         }
@@ -111,7 +111,7 @@ namespace YesterdayConvoy
                     if(GroundDistance(u.Motion.Position,d.Position)>1.5f){EndGaze(u,true);return true;}
                     while(g.NextTick<=g.StartedAt+7.1+1e-6&&Clock+1e-6>=g.NextTick&&d.Alive)
                     {
-                        float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts);
+                        float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts,source:u);
                         g.Ticks++;g.DamageDealt+=hp-d.Health;g.NextTick+=1;
                     }
                     if(!d.Alive)
