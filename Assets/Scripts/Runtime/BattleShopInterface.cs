@@ -96,8 +96,14 @@ namespace YesterdayConvoy
                     if(!CurrentShopBattlefieldRect.Contains(p))continue;
                     Fill(new Rect(p.x-26,p.y,52,5),LoopInk);Fill(new Rect(p.x-25,p.y+1,50*unit.Health/unit.MaxHealth,3),new Color(.4f,.9f,.55f));
                     if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
+                    float soulShield=Battle.ContractShieldRemaining(unit);
+                    if(soulShield>0)Fill(new Rect(p.x-25,p.y-6,50*Mathf.Clamp01(soulShield/unit.MaxHealth),2),new Color(.81f,.65f,1));
                     if(spirit!=null)GUI.Label(new Rect(p.x-40,p.y+7,80,20),unit.IsReviving?$"凝聚 {Math.Max(0,spirit.ReadyAt-Battle.Clock):0.0}s":$"灵体 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,new Color(.55f,.88f,1)));
-                    if(Battle.SarkazTier>0&&unit.CardId==Battle.ContractCard&&!unit.SynergySupport)GUI.Label(new Rect(p.x-40,p.y-24,80,20),"承契 "+(Array.IndexOf(ContractTargets(),unit)+1),LoopText(11,TextAnchor.MiddleCenter,Color.white));
+                    if(Battle.SarkazTier>0&&Battle.IsContractBeneficiary(unit))
+                    {
+                        string contract=Battle.ContractAttackBonus(unit)>0?"众魂共鸣":unit.CardId==Battle.ContractCard?"承契者":null;
+                        if(contract!=null)GUI.Label(new Rect(p.x-48,p.y-24,96,20),contract,LoopText(11,TextAnchor.MiddleCenter,Color.white));
+                    }
                     if(Battle.UnitCombat(unit).HasSkill)DrawSkillResourceBar(p.x,p.y+7,unit);
                 }
                 DrawLoopHeader();

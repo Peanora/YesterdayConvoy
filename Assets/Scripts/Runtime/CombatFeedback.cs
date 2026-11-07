@@ -114,7 +114,9 @@ namespace YesterdayConvoy
                 AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Silenced,Math.Max(u.ShackleSilencedUntil,u.SpraySilencedUntil));
                 AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Burning,u.ScorchUntil);
                 AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Vulnerable,u.VulnerableUntil);
-                if(u.SynergyShield>.00001f&&u.SynergyShieldUntil>Clock)
+                if(ContractShieldRemaining(u)>.00001f)
+                    AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Shielded,contractWards[u.EntityId].Until);
+                else if(u.SynergyShield>.00001f&&u.SynergyShieldUntil>Clock)
                     AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Shielded,u.SynergyShieldUntil);
                 else if(u.ArtsBarrierRemaining>.00001f)
                     AddFeedbackStatus(CombatFeedbackTarget.Monster,u.EntityId,p,CombatFeedbackStatus.Shielded,double.PositiveInfinity);

@@ -27,7 +27,7 @@ namespace YesterdayConvoy
             new Entry("herd","牧群","HerdTrial","牧群",4,"CARD_M21","CARD_M22","CARD_M23","CARD_M24","CARD_M25"),
             new Entry("deep-pool","深池","DeepPoolTrial","深池",4,"CARD_M29","CARD_M30","CARD_M31","CARD_M32"),
             new Entry("marine","海嗣","MarineTrial","海嗣",4,"CARD_M33","CARD_M34","CARD_M35","CARD_M36"),
-            new Entry("sarkaz","萨卡兹","SarkazTrial","萨卡兹",6,"CARD_M19","CARD_M24","CARD_M26","CARD_M27","CARD_M37","CARD_M38"),
+            new Entry("sarkaz","萨卡兹","SarkazTrial","萨卡兹",9,"CARD_M19","CARD_M24","CARD_M26","CARD_M27","CARD_M37","CARD_M38"),
         };
         public static IReadOnlyList<Entry> Entries=>Array.AsReadOnly(entries);
         public static Entry Find(string id)=>entries.FirstOrDefault(e=>string.Equals(e.Id,id,StringComparison.Ordinal));

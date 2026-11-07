@@ -224,7 +224,7 @@ namespace YesterdayConvoy
             // This entry is only for defender-inflicted true damage / elemental bursts, never self-loss.
             // Record effective contact before a fatal hit removes the living source, as normal damage does.
             if(damage>0)OnMarineContact(u);
-            ApplyUnitHealthDamage(u,damage);
+            ApplyUnitHealthDamage(u,AbsorbContractShield(u,damage));
         }
         void AddScorch(DeployedUnitState u,float amount)
         {

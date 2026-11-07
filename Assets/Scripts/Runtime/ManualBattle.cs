@@ -317,7 +317,7 @@ namespace YesterdayConvoy
             var lane=FindEntryLane(position);
             var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health, Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*SarkazHealthMultiplier(requestedCard), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsTalulah(unit))unit.TalulahPhaseStartedAt=Clock;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
@@ -325,7 +325,7 @@ namespace YesterdayConvoy
             if(EngagementEnabled&&UnitCombat(unit).Effects.Mandragora){unit.StoneShield=true;unit.NextGazeAt=Clock+5;}
             if(EngagementEnabled && (UnitCombat(unit).Effects.ArtsBarrier || UnitCombat(unit).Effects.Mudrock))
             {
-                unit.MaxHealth=unit.Health=spawn.Health*1.5f;
+                unit.MaxHealth=unit.Health=UnitBaseHealth(unit)*1.5f;
                 unit.ArtsBarrierLayerSize=spawn.Health*(UnitCombat(unit).Effects.Mudrock ? 5500f/45000 : .2f);
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
@@ -336,7 +336,7 @@ namespace YesterdayConvoy
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
-            OnInfectionDeployment(unit);OnMusterDeployment(unit);
+            OnInfectionDeployment(unit);OnMusterDeployment(unit);ApplyContractWindow(unit);
             return receipt;
         }
 

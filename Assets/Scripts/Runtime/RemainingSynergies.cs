@@ -20,8 +20,6 @@ namespace YesterdayConvoy
         public int HerdUsed {get;private set;}
         public int DeepDetonations {get;private set;}
         public int DeepCharges=>deepSeeds.Count(s=>!s.Spent);
-        public int ContractPoints {get;private set;}
-        public int ContractUses {get;private set;}
         public string ContractCard {get;private set;}
         // Compatibility reads for old callers: marine growth and adaptation effects have been retired.
         public int MarineExperience=>0;
@@ -35,13 +33,10 @@ namespace YesterdayConvoy
         readonly HashSet<string> deepDeaths=new HashSet<string>();
         readonly HashSet<string> herdDeaths=new HashSet<string>();
         readonly Queue<DeployedUnitState> herdQueue=new Queue<DeployedUnitState>();
-        readonly Dictionary<string,double> herdLifetimes=new Dictionary<string,double>(),contractWindows=new Dictionary<string,double>();
+        readonly Dictionary<string,double> herdLifetimes=new Dictionary<string,double>();
         readonly Dictionary<string,HerdSpiritState> herdSpirits=new Dictionary<string,HerdSpiritState>(),herdSources=new Dictionary<string,HerdSpiritState>();
         readonly Dictionary<string,FireBurn> deepBurns=new Dictionary<string,FireBurn>();
-        readonly Dictionary<string,int> contractKinds=new Dictionary<string,int>();
-        readonly Dictionary<long,string> contractRequests=new Dictionary<long,string>();
         readonly HashSet<long> deepRequests=new HashSet<long>();
-        readonly HashSet<string> contractedEntities=new HashSet<string>();
         static bool Tag(string id,string name)=>CampaignBalance.Tags(id).Contains(name);
         int MemberTier(string tag,int high,int middle=0)
         {
@@ -50,15 +45,16 @@ namespace YesterdayConvoy
         void ConfigureRemainingSynergies(string contract,MarineAdaptation adaptation,MarineAdaptation second,int experience)
         {
             if(experience<0||!Enum.IsDefined(typeof(MarineAdaptation),adaptation)||!Enum.IsDefined(typeof(MarineAdaptation),second))throw new ArgumentException();
-            HerdTier=MemberTier("牧群",4);DeepTier=MemberTier("深池",4);SarkazTier=MemberTier("萨卡兹",6,4);MarineTier=MemberTier("海嗣",4);
+            HerdTier=MemberTier("牧群",4);DeepTier=MemberTier("深池",4);int sarkaz=synergyStars.Keys.Count(id=>Tag(id,"萨卡兹"));
+            SarkazTier=sarkaz>=9?9:sarkaz>=8?8:sarkaz>=6?6:sarkaz>=4?4:sarkaz>=2?2:0;MarineTier=MemberTier("海嗣",4);
             ContractCard=contract!=null&&synergyStars.ContainsKey(contract)?contract:synergyStars.Keys.FirstOrDefault();
             Adaptation=adaptation;SecondAdaptation=second==adaptation?(MarineAdaptation)(((int)adaptation+1)%3):second;
         }
         void ResetRemainingSynergies()
         {
-            deepSeeds.Clear();deepDeaths.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();herdSpirits.Clear();herdSources.Clear();contractWindows.Clear();deepBurns.Clear();
-            contractKinds.Clear();contractRequests.Clear();deepRequests.Clear();contractedEntities.Clear();ResetMarineTide();
-            HerdUsed=DeepDetonations=ContractPoints=ContractUses=0;
+            deepSeeds.Clear();deepDeaths.Clear();herdQueue.Clear();herdDeaths.Clear();herdLifetimes.Clear();herdSpirits.Clear();herdSources.Clear();deepBurns.Clear();
+            deepRequests.Clear();ResetMarineTide();ResetContract();
+            HerdUsed=DeepDetonations=0;
         }
         void OnRemainingDeath(DeployedUnitState u)
         {
@@ -96,6 +92,7 @@ namespace YesterdayConvoy
         {
             FlushHerd();
             StepMarineTide(step);
+            StepContract();
             foreach(var pair in herdLifetimes)
             {
                 var u=FindUnit(pair.Key);if(u==null||!u.Active||Clock<pair.Value)continue;
@@ -146,24 +143,5 @@ namespace YesterdayConvoy
             deepRequests.Add(request);seed.Spent=true;DeepDetonations++;
             foreach(var d in targets)DamageDefender(d,180*DeepScale,CombatDamageType.Arts,true);return true;
         }
-        void OnContractDamage(DeployedUnitState u,float healthBefore)
-        {
-            if(!synergyEnabled||SarkazTier==0||healthBefore<=u.MaxHealth*.4f||u.SynergySupport||u.CardId==ContractCard||u.Health>u.MaxHealth*.4f||ContractUses>=(SarkazTier==2?1:2)||!contractedEntities.Add(u.EntityId))return;
-            contractKinds.TryGetValue(u.CardId,out int n);if(n>=2)return;contractKinds[u.CardId]=n+1;ContractPoints=Math.Min(4,ContractPoints+1);
-        }
-        public bool TryActivateContract(int runId,long request,string entity)
-        {
-            if(runId!=RunId||Phase!=BattlePhase.Running||IsPaused)return false;
-            if(contractRequests.TryGetValue(request,out var prior))return prior==entity;
-            var u=FindUnit(entity);
-            if(SarkazTier==0||ContractPoints<4||ContractUses>=(SarkazTier==2?1:2)||u==null||!u.Active||u.IsReviving||u.SynergySupport||u.CardId!=ContractCard)return false;
-            ContractPoints=0;ContractUses++;contractRequests[request]=entity;
-            double until=Clock+(SarkazTier==2?6:SarkazTier==4?8:10);contractWindows[entity]=until;
-            u.SynergyShield=Mathf.Max(u.SynergyShield,u.MaxHealth*(SarkazTier==2?.15f:SarkazTier==4?.25f:.30f));u.SynergyShieldUntil=Math.Max(u.SynergyShieldUntil,until);
-            if(SarkazTier==6)foreach(var other in units.Where(o=>o.Active&&!o.IsReviving&&!o.SynergySupport&&o!=u))
-            {other.SynergyShield=Mathf.Max(other.SynergyShield,Mathf.Min(200,u.MaxHealth*.1f));other.SynergyShieldUntil=Math.Max(other.SynergyShieldUntil,until);}
-            return true;
-        }
-        public float ContractAttackBonus(DeployedUnitState u)=>contractWindows.TryGetValue(u.EntityId,out var until)&&until>Clock?(SarkazTier==2?.2f:SarkazTier==4?.3f:.4f):0;
     }
 }

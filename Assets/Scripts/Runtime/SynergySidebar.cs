@@ -34,7 +34,7 @@ namespace YesterdayConvoy
             var transfers=new HashSet<string>((extraMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.Guerrilla(id)));
             var mudrockTransfers=new HashSet<string>((extraMudrockMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.MudrockCrew(id)));
             string[] names={"整合运动","雪怪小队","感染生物","游击队","泥岩小队","牧群","深池","海嗣","萨卡兹"};
-            int[][] levels={new[]{2,4,6},new[]{2,5},new[]{2,4,6},new[]{2,4,6,8,9},new[]{2,4,5,6},new[]{2,4},new[]{2,4},new[]{2,4},new[]{2,4,6}};
+            int[][] levels={new[]{2,4,6},new[]{2,5},new[]{2,4,6},new[]{2,4,6,8,9},new[]{2,4,5,6},new[]{2,4},new[]{2,4},new[]{2,4},new[]{2,4,6,8,9}};
             string[] effects={
                 "2档：部署2种不同卡触发1名援军，本场1次。\n4档：部署3种触发2名所选援军，本场2次。\n6档：部署3种触发士兵与弩手各1，本场3次；援军获15%生命护盾4秒。援军不扣蓝门防御。",
                 "冻结守军在2.5秒内受到两种不同原卡直接命中时碎冰。\n2档：50法伤，半径0.9/最多2人；消耗冻结，目标冷却4秒。\n5档：120法伤，半径1.5/最多5人；保留冻结，目标冷却3秒。\n仅5档：3次碎冰或霜星手动冰封发动8秒暴风雪，开启清零寒意；每次碎冰只计1点，天气期间不积累、不叠加、不续时。\n0/2/4/6秒全场寒潮，每次(60+目标最大生命2%)法伤、过法抗；碎冰/寒潮按雪怪平均星级每升1星+35%。\n寒冷：攻速70%；再次受寒冷冻结1.2秒。天气冻结结束后保护3秒，只防控制、不免寒潮伤害。",
@@ -44,7 +44,7 @@ namespace YesterdayConvoy
                 "牧群：全队非五费正常实体最终死亡后生成短时转化体。2档前3个、35%生命/攻击、4甲、10秒；4档前5个、45%生命/攻击、6甲、12秒，可保留远程基础攻击（2.5射程、攻击再乘85%）。\n转化沿原位置/路线，穿门0，不复制主动、爆炸、羁绊资源或再次转化。原动作较长时攻击间隔保留完整动作。",
                 "深池：成员普攻/原生技能有效命中即燎烧，持续4秒，同名取高刷新。2档15法伤/秒，4档25/秒；独立于原生灼燃，不自带减法抗。\n燎烧或原生灼燃目标被正常伤害/深池燎烧消灭后留火种，首击击杀也有效。2档本场累计最多4枚、传播半径1.8/最多2人；4档6枚、2.2/3人，已消耗仍计上限。\n4档消耗1火种引爆，优先有活目标的火种，半径1.8/最多4人、180法伤，每场2次。引爆不返火种；伤害每成员平均星级增加25%。",
                 "海嗣 · 溟痕蔓延：每种海嗣本场首次有效输出或外来承伤，在脚下落种一次；重复部署、无敌、自损和支援不重复落种。\n2/4档：每6/4秒向相邻通行地面扩散一圈，全场覆盖至多8/16格；为尚未接敌的每种海嗣预留1格，高台不铺。\n海嗣站在溟痕上，原生神经损伤×1.5/2；地面守军踩溟痕每秒积累3点神经损伤，该地面积累不再乘倍率。壳海负责前锋落种，不新增神经普攻。\n神经积累100时爆发：100真实伤害、10秒眩晕，其间不再积累。无存活海嗣时溟痕休眠，后续部署恢复；战后清空。\n战斗中点击「查看溟痕范围」突出边界；守军神经条和海嗣×倍率标识显示真实状态。",
-                "萨卡兹：战前指定承契卡，其余普通友军首次由直接伤害跨入40%生命以下贡献1点，每种卡最多2点。4点手动选择存活承契实体爆发，不扣DP。\n2/4/6档：攻击+20/30/40%、15/25/30%生命盾，持续6/8/10秒，本场1/2/2次。6档其他普通友军各获承契者10%生命盾、最多200。\n自损、转化体、巨像和援军不贡献；同一实体只贡献一次。"};
+                "众魂之契：战前指定一张编队卡为承契者，该卡所有正常实体统一受益。无需低血或阵亡充能，不消耗DP/技力。\n2/4/6/8/9档，全体萨卡兹最大生命+10/20/30/40/60%。\n2档：承契者攻击+35%、20%生命护盾，8秒。\n4档：攻击+60%、30%护盾，10秒。\n6档：攻击+90%、40%护盾，12秒；其他萨卡兹获一半攻击加成与护盾。\n8档：攻击+120%、50%护盾，15秒；其他萨卡兹共享完整效果。\n2—8档开战就绪，发动起冷却20秒，本场不限次数，无需逐个选实体。\n9档「众魂归乡」：承契者与全体萨卡兹攻击永久+150%；部署时及每20秒自动获得自身最大生命60%护盾。\n护盾按各自最终最大生命计算，同名取高、不累计。2—8档盾随窗口结束；暂停冻结，复起中不浪费效果。巨像、援军、转化体与分体不参与。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
                 .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
                 .Where(s=>s.Count>0).OrderByDescending(s=>s.Tier>0).ThenByDescending(s=>s.Count).ToArray();
@@ -54,6 +54,7 @@ namespace YesterdayConvoy
     {
         string inspectedSynergy;
         Vector2 guerrillaDetailScroll;
+        Vector2 sarkazDetailScroll;
         const float SynergyRowPitch=48;
         const float SynergyHeaderHeight=26;
         Rect SynergyBoundsFor(int count,bool preparation)
@@ -126,10 +127,12 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(268,102,510,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),CampaignText(17,weight:700));
             if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}
             var body=CampaignText(14,TextAnchor.UpperLeft);body.wordWrap=true;
-            if(detail.Name=="游击队")
+            if(detail.Name=="游击队"||detail.Name=="萨卡兹")
             {
                 var detailViewport=new Rect(268,149,588,269);float content=body.CalcHeight(new GUIContent(detail.Effect),detailViewport.width-18)+8;
-                guerrillaDetailScroll=GUI.BeginScrollView(detailViewport,guerrillaDetailScroll,new Rect(0,0,detailViewport.width-18,Mathf.Max(detailViewport.height,content)),false,false);
+                var scroll=detail.Name=="萨卡兹"?sarkazDetailScroll:guerrillaDetailScroll;
+                scroll=GUI.BeginScrollView(detailViewport,scroll,new Rect(0,0,detailViewport.width-18,Mathf.Max(detailViewport.height,content)),false,false);
+                if(detail.Name=="萨卡兹")sarkazDetailScroll=scroll;else guerrillaDetailScroll=scroll;
                 try{GUI.Label(new Rect(0,0,detailViewport.width-18,content),detail.Effect,body);}
                 finally{GUI.EndScrollView();}
             }

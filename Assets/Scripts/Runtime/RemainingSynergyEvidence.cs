@@ -15,9 +15,8 @@ namespace YesterdayConvoy
             for(int i=0;i<2600&&Battle.DeepCharges==0&&Loop.CanDeploy;i++){Tick(.1f);if(i%20==0)yield return null;}
             bool deep=Battle.DeepTier==4&&Battle.DeepCharges>0;ReplaySandbox();
             SetSandboxRoster(6);SetRemainingChoices("CARD_M37",MarineAdaptation.Hunt,MarineAdaptation.Infiltration);StartLoopNextBattle();Battle.Begin();
-            var target=Battle.FindUnit(Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M37").EntityId);long request=10;
-            foreach(var id in new[]{"CARD_M19","CARD_M24","CARD_M26","CARD_M27"}){var u=Battle.FindUnit(Battle.TryDeployRole(Battle.RunId,++request,Battle.Entry,id).EntityId);Battle.TryDamageUnit(u.EntityId,100000,CombatDamageType.Physical);}
-            bool contract=Battle.ContractPoints==4&&UseContract()&&Battle.ContractAttackBonus(target)>.39f&&target.SynergyShield>0;ReplaySandbox();
+            var target=Battle.FindUnit(Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M37").EntityId);
+            bool contract=Battle.ContractPoints==0&&UseContract()&&Battle.ContractAttackBonus(target)>.89f&&Battle.ContractShieldRemaining(target)>0;ReplaySandbox();
             SetSandboxRoster(7);SetRemainingChoices("CARD_M33",MarineAdaptation.Infiltration,MarineAdaptation.Hunt);StartLoopNextBattle();Battle.Begin();
             var sea=Battle.FindUnit(Battle.TryDeployRole(Battle.RunId,1,Battle.Entry,"CARD_M33").EntityId);float armor=Battle.DefenderArmor(Battle.Defender);Battle.TryDamageUnit(sea.EntityId,sea.MaxHealth*.16f,CombatDamageType.Physical);
             bool marine=Battle.CreeperPulses.Count>0&&Battle.DefenderArmor(Battle.Defender)==armor&&Battle.MarineCells.Count==1;

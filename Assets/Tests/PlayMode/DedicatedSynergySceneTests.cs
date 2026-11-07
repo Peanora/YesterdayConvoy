@@ -42,7 +42,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(Object.FindAnyObjectByType<AuthoredBattlefield>(),Is.Not.Null);Assert.That(Object.FindObjectsByType<CampaignBootstrap>(FindObjectsSortMode.None).Length,Is.EqualTo(1));
                 Assert.That(Object.FindAnyObjectByType<ShopMapBootstrap>(),Is.Null);Assert.That(c.ShopVisible,Is.True);Assert.That(c.Loop.CanShop,Is.True);
                 Assert.That(c.Shop.Level,Is.EqualTo(data.initialLevel));Assert.That(c.Shop.Bench.Select(p=>p.Id),Is.EquivalentTo(data.initialMembers.Select(m=>m.cardId)));
-                Assert.That(SynergySummary.From(c.Shop.Bench.Select(p=>p.Id)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.MaximumTier));
+                Assert.That(SynergySummary.From(c.Shop.Bench.Select(p=>p.Id)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.Id=="sarkaz"?6:entry.MaximumTier));
                 if(entry.Id=="mudrock")
                 {
                     Assert.That(c.Loop.GolemExperience,Is.Zero);Assert.That(c.MudrockTransferIds,Is.Empty);

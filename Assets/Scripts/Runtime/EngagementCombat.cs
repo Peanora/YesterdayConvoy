@@ -306,7 +306,7 @@ namespace YesterdayConvoy
                     bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDamageUnit(unit.EntityId,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
-                    if(damaged){if(unit.Health<preHitHealth)OnMarineContact(unit);OnContractDamage(unit,preHitHealth);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
+                    if(damaged){if(unit.Health<preHitHealth)OnMarineContact(unit);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
                     if(killedByHit)OnLiberatorKill(defender);
                     if(damaged&&unit.Active&&shot.HinderDuration>0)unit.HinderedUntil=Math.Max(unit.HinderedUntil,Clock+shot.HinderDuration);
                     if(shot.SplashRadius>0)

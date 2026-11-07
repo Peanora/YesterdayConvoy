@@ -21,7 +21,8 @@ namespace YesterdayConvoy.Tests
                 var data=AssetDatabase.LoadAssetAtPath<SynergyTrialDefinition>(entry.DefinitionPath);data.Validate();
                 var initial=entry.Id=="mudrock"?entry.Members.Concat(new[]{"CARD_M08"}):entry.Members;
                 Assert.That(data.initialMembers.Select(m=>m.cardId),Is.EqualTo(initial));
-                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.MaximumTier));
+                Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId)).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(entry.Id=="mudrock"?5:entry.Id=="sarkaz"?6:entry.MaximumTier));
+                if(entry.Id=="sarkaz")Assert.That(entry.MaximumTier,Is.EqualTo(9),"The authored six-member start does not limit the reachable ninth tier.");
                 if(entry.Id=="mudrock")
                 {
                     Assert.That(entry.MaximumTier,Is.EqualTo(6));Assert.That(data.initialMembers.All(m=>m.star==1),Is.True);

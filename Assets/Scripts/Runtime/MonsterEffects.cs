@@ -82,6 +82,7 @@ namespace YesterdayConvoy
             float resistance=UnitResistance(unit);
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
+            damage=AbsorbContractShield(unit,damage);if(damage<=0)return true;
             if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
             if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
@@ -89,13 +90,13 @@ namespace YesterdayConvoy
                 float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);
                 if(unit.ArtsBarrierRemaining<=.00001f)
                 {
-                    unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=unit.Profile?.Unit.Health??Settings.Health;unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
+                    unit.BarrierBrokenAt=Clock;unit.ArtsBarrierRemaining=0;unit.MaxHealth=UnitBaseHealth(unit);unit.Health=Mathf.Min(unit.Health,unit.MaxHealth);
                     unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
                 }
             }
             if(damage<=0){unit.LastHitTime=Clock;return true;}
             OnMarineContact(unit);
-            float before=unit.Health;bool applied=ApplyUnitHealthDamage(unit,damage);if(applied)OnContractDamage(unit,before);return applied;
+            return ApplyUnitHealthDamage(unit,damage);
         }
         public sealed class HealingCast
         {
@@ -183,7 +184,7 @@ namespace YesterdayConvoy
                 if(!unit.BarrierRefreshApplied&&Clock+1e-6>=unit.BarrierRefreshStartedAt+.7333334)
                 {
                     bool broken=unit.ArtsBarrierRemaining<=0;
-                    unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=(unit.Profile?.Unit.Health??Settings.Health)*1.5f;
+                    unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=UnitBaseHealth(unit)*1.5f;
                     if(broken)unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)/1.5;
                     unit.BarrierRefreshApplied=true;unit.BarrierRefreshes++;
                 }

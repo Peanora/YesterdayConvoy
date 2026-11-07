@@ -65,7 +65,7 @@ namespace YesterdayConvoy
             {
                 if(Clock+1e-6<u.MandraPhaseStartedAt+5)return true;
                 u.MandraPhase=MandragoraPhase.Second;u.MandraPhaseStartedAt=Clock;
-                u.Health=u.MaxHealth=u.Profile?.Unit.Health??Settings.Health;u.MandraInvulnerableUntil=Clock+3;
+                u.Health=u.MaxHealth=UnitBaseHealth(u);u.MandraInvulnerableUntil=Clock+3;
                 u.StoneShield=true;u.NextGazeAt=Clock+10;u.NextMandraPillarAt=Clock+20;u.NextStoneAuraAt=Clock+1;
                 u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return true;
             }

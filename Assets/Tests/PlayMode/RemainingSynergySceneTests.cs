@@ -50,8 +50,7 @@ namespace YesterdayConvoy.Tests
             Replay(c);c.SetSandboxRoster(6);Assert.That(c.SetRemainingChoices("CARD_M37",MarineAdaptation.Hunt,MarineAdaptation.Infiltration));c.StartLoopNextBattle();c.Battle.Begin();
             Assert.That(c.SetRemainingChoices("CARD_M19",MarineAdaptation.Barrier,MarineAdaptation.Hunt),Is.False);
             var target=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,2,c.Battle.Entry,"CARD_M37").EntityId);
-            long request=10;foreach(var id in new[]{"CARD_M19","CARD_M24","CARD_M26","CARD_M27"}){var u=c.Battle.FindUnit(c.Battle.TryDeployRole(c.Battle.RunId,++request,c.Battle.Entry,id).EntityId);c.Battle.TryDamageUnit(u.EntityId,100000,CombatDamageType.Physical);}
-            Assert.That(c.Battle.ContractPoints,Is.EqualTo(4));Assert.That(c.UseContract());Assert.That(c.Battle.ContractAttackBonus(target),Is.EqualTo(.4f));Assert.That(target.SynergyShield,Is.GreaterThan(0));yield return null;c.LeaveShopTrial();
+            Assert.That(c.Battle.ContractPoints,Is.Zero);Assert.That(c.UseContract());Assert.That(c.Battle.ContractAttackBonus(target),Is.EqualTo(.9f).Within(.001f));Assert.That(c.Battle.ContractShieldRemaining(target),Is.GreaterThan(0));yield return null;c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator NativeDeepSprayCreatesSeedsAndMarineRetaliationSeedsPerBattleTerrain()
         {

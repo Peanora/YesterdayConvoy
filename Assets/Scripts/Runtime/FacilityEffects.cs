@@ -79,8 +79,8 @@ namespace YesterdayConvoy
         }
         void TrueDamage(DeployedUnitState u,float amount)
         {
-            if(!u.Active||u.IsReviving)return;
-            ApplyUnitHealthDamage(u,amount);
+            if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
+            ApplyUnitHealthDamage(u,AbsorbContractShield(u,amount));
         }
         void TrueDamage(DefenderState d,float amount)
         {

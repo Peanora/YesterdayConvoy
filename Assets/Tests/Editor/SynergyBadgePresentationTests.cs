@@ -54,7 +54,7 @@ namespace YesterdayConvoy.Tests
             var sequences=new Dictionary<string,int[]>{
                 {"reunion",new[]{2,4,6}},{"snow",new[]{2,5}},{"infection",new[]{2,4,6}},
                 {"guerrilla",new[]{2,4,6,8,9}},{"mudrock",new[]{2,4,5,6}},
-                {"herd",new[]{2,4}},{"deep-pool",new[]{2,4}},{"marine",new[]{2,4}},{"sarkaz",new[]{2,4,6}}
+                {"herd",new[]{2,4}},{"deep-pool",new[]{2,4}},{"marine",new[]{2,4}},{"sarkaz",new[]{2,4,6,8,9}}
             };
             foreach(var pair in sequences)CollectionAssert.AreEqual(pair.Value,Summary(pair.Key,1).Thresholds,pair.Key+" keeps the complete sequence, including inactive future thresholds.");
         }
@@ -85,6 +85,20 @@ namespace YesterdayConvoy.Tests
             var nine=guerrilla(new[]{"CARD_M07","CARD_M08"});Assert.That(nine.Tier,Is.EqualTo(9));Assert.That(Grade(nine),Is.EqualTo(SynergyVisualGrade.Prismatic));
             Assert.That(Grade(guerrilla(new[]{"CARD_M07","CARD_M07"})),Is.EqualTo(SynergyVisualGrade.Prismatic),"Duplicate designations cannot fabricate a ninth member.");
             Assert.That(guerrilla(new[]{"CARD_M07","CARD_M07"}).Count,Is.EqualTo(8));
+        }
+
+        [Test]public void ElevenNativeSarkazMembersReachEightAndNineWithPrismaticPlates()
+        {
+            var native=CampaignBalance.Profiles.Keys.Where(id=>CampaignBalance.Tags(id).Contains("萨卡兹")).OrderBy(id=>id,StringComparer.Ordinal).ToArray();
+            Assert.That(native.Length,Is.EqualTo(11),"The two Mudrock squad leaders join the original nine native members.");
+            Func<int,SynergySummary> sarkaz=count=>SynergySummary.From(native.Take(count)).Single(row=>row.Name=="萨卡兹");
+            CollectionAssert.AreEqual(new[]{2,4,6,8,9},sarkaz(1).Thresholds);
+            var seven=sarkaz(7);Assert.That(seven.Count,Is.EqualTo(7));Assert.That(seven.Tier,Is.EqualTo(6));Assert.That(Grade(seven),Is.EqualTo(SynergyVisualGrade.Gold));
+            var eight=sarkaz(8);Assert.That(eight.Count,Is.EqualTo(8));Assert.That(eight.Tier,Is.EqualTo(8));Assert.That(Grade(eight),Is.EqualTo(SynergyVisualGrade.Prismatic));
+            var nine=sarkaz(9);Assert.That(nine.Count,Is.EqualTo(9));Assert.That(nine.Tier,Is.EqualTo(9));Assert.That(Grade(nine),Is.EqualTo(SynergyVisualGrade.Prismatic));
+            var all=sarkaz(11);Assert.That(all.Count,Is.EqualTo(11));Assert.That(all.Tier,Is.EqualTo(9));Assert.That(Grade(all),Is.EqualTo(SynergyVisualGrade.Prismatic));
+            var duplicate=SynergySummary.From(native.Take(8).Concat(new[]{native[0]})).Single(row=>row.Name=="萨卡兹");
+            Assert.That(duplicate.Count,Is.EqualTo(8));Assert.That(duplicate.Tier,Is.EqualTo(8),"Repeating a native card cannot activate the ninth-kind tier.");
         }
 
         [Test]public void OnlyPrismaticUsesSeveralHueFamiliesWhileMetalColorsStayStable()
