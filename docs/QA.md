@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-08：首轮总星级、角色预算与后期普通关平衡
+
+- Unity6000.6.5f1，无引擎或依赖升级。完整EditMode **749/749**（artifacts/balance-first-pass/edit-all-final.xml/log），相关D3D11非batch PlayMode **30/30**（play-related-final.xml/log）。覆盖新增总星/跨档/四星/真实六波伤害和旧样板独立性，以及10组相关场景夹具：新增BalanceFirstPass2、Campaign4、Dedicated3、DeepPool1、GuerrillaHighTier5、MudrockGrowth4、ReunionCoalition3、ShopSeatInteraction3、Snowstorm2、SynergyRework3。
+- 首轮Edit746/749：新测试宽泛按卡ID查询时取到守军塔露拉副本（60技能预算），真实主场景绑定TalulahTrial→TalulahFireRain48；固定真实入口资源，并保持原样板序列化前后不变检查，未改生产数值迎合断言。旧日志edit-all.xml/log保留。首轮Play batch28/30：旧正式免费转职预期按新测试/正式边界更新，另一例WaitForEndOfFrame不支持batch，改非batch重跑原30例通过，保留play-related.xml/log。
+- 新增显式开发Player入口`-balanceFirstPassSmokeTest -balanceEvidenceDir <目录>`，使用保存ReunionTrial、合法有限库存预置、实际出战实例和生产ProcessShopPointer，随后选择正式第7/8/11关夹具自然交战；不注入战斗伤害、不强制胜负、不伪称OS鼠标或自然十三关成型。
+- 截至测试结束，原56份既存文件SHA256零变化；仅本轮源码、测试和文档纳入交付。尚未完成本轮独立Windows构建/Player验收；第二机、自然十三关、全部阵容和最终长局平衡未测。
+
 ## 2026-11-07：牌库与自由席位
 
 - Unity6000.6.5f1。完整EditMode **720/720**，0失败/跳过（`artifacts/pool-roster/edit-delivery.xml/log`）。模型覆盖五档容量、四星27张占库/余3张、售价26/返库27/重复售出、满席链式升星/主实例保留、其他费用拒绝四星、独立10备战；席位覆盖同排/跨排、同名、满席、稳定压紧与预置实例重用。真实ManualBattle对照M07普通400血4甲：三星9击14.90秒→四星7击11.30秒；1200血18甲36击63.50秒→25击43.70秒。10血一击和100甲最低伤害25击边界相同，未通过额外质变强行减少轮次。

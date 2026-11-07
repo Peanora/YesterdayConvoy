@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         public static Rect MudrockTransferListRect=>new Rect(268,290,690,188);
         public bool MudrockTransfersVisible=>CampaignActive&&campaignConstructOpen&&campaignConstructTab==3;
         public bool GolemTrainingPanelVisible=>CampaignActive&&campaignConstructOpen&&campaignConstructTab==1&&golemTrainingTab;
-        bool MudrockTransfersEditable=>CampaignActive&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready&&!Battle.IsPaused&&!ArtLoading;
+        bool MudrockTransfersEditable=>SynergySandbox&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready&&!Battle.IsPaused&&!ArtLoading;
 
         public IReadOnlyList<string> MudrockTransferIds
         {
@@ -81,7 +81,7 @@ namespace YesterdayConvoy
         void DrawMudrockTransferPanel()
         {
             var ids=MudrockTransferCandidateIds;int selected=MudrockTransferIds.Count,prepared=PreparedMudrockTransferIds.Count;
-            GUI.Label(new Rect(268,238,690,23),"准备阶段免费指定一种非原生角色加入泥岩小队；开战锁定",CampaignText(13,weight:600));
+            GUI.Label(new Rect(268,238,690,23),SynergySandbox?"测试关免费指定一种非原生角色加入泥岩小队；开战锁定":"正式转职需泥岩小队徽章；可在取得徽章后整备",CampaignText(13,weight:600));
             var summary=CurrentSynergies.FirstOrDefault(s=>s.Name=="泥岩小队");
             string preview=summary==null||summary.Tier==0?"小队未达2种":$"小队{summary.Count}种 / {summary.Tier}档 · 总星级{Battle.MudrockTotalStars} · 巨像上限{Battle.GolemCapacity}级";
             GUI.Label(new Rect(268,263,690,20),$"已指定 {selected}/1 · 当前入编 {prepared}/1    "+preview,CampaignText(11,color:ApprovedUi.Muted));
@@ -105,7 +105,7 @@ namespace YesterdayConvoy
                 }
             }
             finally{GUI.EndScrollView();}
-            GUI.Label(new Rect(268,482,690,19),MudrockTransfersEditable?"免费，可取消；升星继承，售光回收名额，新挑战清空；与游击转职独立。":"本场已锁定；下一次整备可更改，游击转职不受影响。",CampaignText(11,color:ApprovedUi.Muted));
+            GUI.Label(new Rect(268,482,690,19),!SynergySandbox?"正式转职需要对应徽章；免费指定仅在测试关开放。":MudrockTransfersEditable?"测试专用免费指定，可取消；升星继承，售光释放；与游击转职独立。":"本场已锁定；下一次整备可更改，游击转职不受影响。",CampaignText(11,color:ApprovedUi.Muted));
         }
         void DrawMudrockTransferBadges()
         {

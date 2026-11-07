@@ -44,7 +44,7 @@ namespace YesterdayConvoy
             while(snowstormNextPulse*2<SnowstormDuration&&Clock+1e-6>=snowstormStartedAt+snowstormNextPulse*2)
             {
                 var pulse=new SnowstormPulse{At=snowstormStartedAt+snowstormNextPulse++*2};snowstormPulses.Add(pulse);
-                float power=1+.35f*((float)synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Average(p=>p.Value)-1);
+                float power=SnowStarMultiplier;
                 foreach(var d in defenders.Where(d=>d.Alive))
                 {
                     pulse.targets.Add(d.EntityId); // Weather remains visible even when control is resisted/protected.

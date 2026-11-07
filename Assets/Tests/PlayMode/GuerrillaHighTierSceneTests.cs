@@ -134,7 +134,7 @@ namespace YesterdayConvoy.Tests
             yield return controller.PrepareCampaign(true,9711);
             Assert.That(controller.GuerrillaTransferIds,Is.Empty,"A new challenge cannot inherit the old designations.");
         }
-        [UnityTest]public IEnumerator TransferSnapshotLocksInCombatAndPersistsAcrossRealCampaignStageTransition()
+        [UnityTest]public IEnumerator FormalCampaignRejectsTestTransfersAcrossStageTransition()
         {
             yield return Load();yield return controller.PrepareCampaign(false,9712);
             // The first two ordinary campaign encounters are guaranteed supply stops.
@@ -147,15 +147,17 @@ namespace YesterdayConvoy.Tests
                 yield return WaitForPreparation();
             }
             Assert.That(controller.Loop.Stage,Is.EqualTo(3));Preset();yield return WaitForPreparation();
-            Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.True);Assert.That(controller.SetGuerrillaTransfer("CARD_M08",true),Is.True);
+            Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.False);Assert.That(controller.SetGuerrillaTransfer("CARD_M08",true),Is.False);
+            Assert.That(controller.GuerrillaTransferIds,Is.Empty);
             Assert.That(controller.StartLoopNextBattle(),Is.True);yield return WaitForPreparation();controller.Battle.Begin();
             var members=controller.Battle.GuerrillaMemberIds.ToArray();
             Assert.That(controller.SetGuerrillaTransfer("CARD_M07",false),Is.False);
             CollectionAssert.AreEqual(members,controller.Battle.GuerrillaMemberIds);
             Field("loopTestSettlementOpen",true);Assert.That((bool)Invoke("TryTestSettlement",true),Is.True);
             Assert.That(controller.OpenLoopShop(),Is.True);
-            CollectionAssert.AreEquivalent(new[]{"CARD_M07","CARD_M08"},controller.GuerrillaTransferIds);
-            Assert.That(controller.Battle.GuerrillaTier,Is.EqualTo(9));
+            Assert.That(controller.GuerrillaTransferIds,Is.Empty);
+            Assert.That(controller.SetGuerrillaTransfer("CARD_M07",true),Is.False);
+            Assert.That(controller.Battle.GuerrillaTier,Is.EqualTo(6),"Seven native kinds cannot reach badge-gated tiers through the test shortcut.");
         }
         [UnityTest]public IEnumerator NineTierEarlyOrderHasRealExtensionPortraitsGlobalDamageFixedSpeedAndFiniteIncomeBeyondFifthCast()
         {

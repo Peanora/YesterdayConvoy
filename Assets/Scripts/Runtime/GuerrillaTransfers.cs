@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         public static Rect GuerrillaTransferTabRect=>new Rect(604,200,180,28);
         public static Rect GuerrillaTransferListRect=>new Rect(268,290,690,188);
         public bool GuerrillaTransfersVisible=>CampaignActive&&campaignConstructOpen&&campaignConstructTab==2;
-        bool GuerrillaTransfersEditable=>CampaignActive&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready&&!Battle.IsPaused&&!ArtLoading;
+        bool GuerrillaTransfersEditable=>SynergySandbox&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready&&!Battle.IsPaused&&!ArtLoading;
 
         public IReadOnlyList<string> GuerrillaTransferIds
         {
@@ -76,7 +76,7 @@ namespace YesterdayConvoy
         void DrawGuerrillaTransferPanel()
         {
             var ids=GuerrillaTransferCandidateIds;int selected=GuerrillaTransferIds.Count,prepared=PreparedGuerrillaTransferIds.Count;
-            GUI.Label(new Rect(268,238,690,23),"准备阶段免费指定最多两种非原生游击角色；开战锁定",CampaignText(13,weight:600));
+            GUI.Label(new Rect(268,238,690,23),SynergySandbox?"测试关免费指定最多两种非原生游击角色；开战锁定":"正式转职需游击徽章；可在取得徽章后整备",CampaignText(13,weight:600));
             var summary=CurrentSynergies.FirstOrDefault(s=>s.Name=="游击队");
             var rule=GuerrillaRules.ForTier(summary?.Tier??0);
             string preview=summary==null||summary.Tier==0?"游击未达2种":$"游击{summary.Count}种 / {summary.Tier}档 · 满{rule.Cost}点自动整令 · 开战军令{rule.InitialOrders}";
@@ -101,7 +101,7 @@ namespace YesterdayConvoy
                 }
             }
             finally{GUI.EndScrollView();}
-            GUI.Label(new Rect(268,482,690,19),GuerrillaTransfersEditable?"免费，可取消；同名升星继承，卖完该种类归还名额，新挑战清空。":"本场已锁定；转职仅在下一次整备阶段可更改。",CampaignText(11,color:ApprovedUi.Muted));
+            GUI.Label(new Rect(268,482,690,19),!SynergySandbox?"正式转职需要对应徽章；免费指定仅在测试关开放。":GuerrillaTransfersEditable?"测试专用免费指定，可取消；升星继承、售光释放，新挑战清空。":"本场已锁定；转职仅在下一次整备阶段可更改。",CampaignText(11,color:ApprovedUi.Muted));
         }
         void DrawGuerrillaTransferBadges()
         {

@@ -15,6 +15,8 @@ namespace YesterdayConvoy
     {
         public int HerdTier {get;private set;}
         public int DeepTier {get;private set;}
+        public int DeepTotalStars {get;private set;}
+        public float DeepStarMultiplier=>SynergyStarScaling.Deep(DeepTotalStars,DeepTier);
         public int SarkazTier {get;private set;}
         public int MarineTier {get;private set;}
         public int HerdUsed {get;private set;}
@@ -46,6 +48,7 @@ namespace YesterdayConvoy
         {
             if(experience<0||!Enum.IsDefined(typeof(MarineAdaptation),adaptation)||!Enum.IsDefined(typeof(MarineAdaptation),second))throw new ArgumentException();
             HerdTier=MemberTier("牧群",4);DeepTier=MemberTier("深池",4);int sarkaz=synergyStars.Keys.Count(id=>Tag(id,"萨卡兹"));
+            DeepTotalStars=synergyStars.Where(p=>Tag(p.Key,"深池")).Sum(p=>p.Value);
             SarkazTier=sarkaz>=9?9:sarkaz>=8?8:sarkaz>=6?6:sarkaz>=4?4:sarkaz>=2?2:0;MarineTier=MemberTier("海嗣",4);
             ContractCard=contract!=null&&synergyStars.ContainsKey(contract)&&Tag(contract,"萨卡兹")?contract:synergyStars.Keys.FirstOrDefault(id=>Tag(id,"萨卡兹"));
             Adaptation=adaptation;SecondAdaptation=second==adaptation?(MarineAdaptation)(((int)adaptation+1)%3):second;
@@ -116,7 +119,7 @@ namespace YesterdayConvoy
         public float DeepBurnPower(string defenderId)=>DeepBurnRemaining(defenderId)>0?deepBurns[defenderId].Power:0;
         bool HasPendingDeepBurn=>deepBurns.Any(p=>p.Value.Until>Clock&&FindDefender(p.Key)?.Alive==true);
         bool DeepBurning(DefenderState d)=>d.BurnUntil>Clock||deepBurns.TryGetValue(d.EntityId,out var burn)&&burn.Until>Clock;
-        float DeepScale=>1+.25f*((float)synergyStars.Where(p=>Tag(p.Key,"深池")).Select(p=>p.Value).DefaultIfEmpty(1).Average()-1);
+        float DeepScale=>DeepStarMultiplier;
         bool IsDeepHit(DeployedUnitState source)=>synergyEnabled&&DeepTier>0&&source!=null&&!source.SynergySupport&&Tag(source.CardId,"深池");
         void ApplyDeepBurn(DefenderState d)
         {

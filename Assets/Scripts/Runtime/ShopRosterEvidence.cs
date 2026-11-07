@@ -65,7 +65,7 @@ namespace YesterdayConvoy
             check("four-star-profile-in-real-battle",Math.Abs(Battle.FindCard("CARD_M08").Settings.Health-2124)<.01f);
             check("four-star-pointer-deploys-while-paused",ReunionEvidenceDrag("CARD_M08"));
             var unit=Battle.Units.Last(u=>u.CardId=="CARD_M08");result.fourStarHealth=unit.MaxHealth;result.fourStarAttack=Battle.UnitCombat(unit).UnitAttack;
-            check("normal-progression-health-attack-and-dp",unit.MaxHealth==2124&&Math.Abs(result.fourStarAttack-134.4f)<.01f&&Battle.DP==95&&Battle.Clock==0);
+            check("normal-progression-health-attack-and-dp",unit.MaxHealth==2124&&Math.Abs(result.fourStarAttack-162f)<.01f&&Battle.DP==95&&Battle.Clock==0);
             shop.Validate();check("final-stock-conserved",shop.Roles.All(r=>shop.Available(r.Id)+shop.Offers.Count(id=>id==r.Id)+shop.Bench.Where(p=>p.Id==r.Id).Sum(p=>ShopTrialModel.Copies(p.Star))==shop.Capacity(r.Id)));
             yield return ReunionEvidenceCapture(directory,"04-compacted-roster-and-four-star-deployment");
             result.passed=valid;result.checks=checks.ToArray();File.WriteAllText(Path.Combine(directory,"result.json"),JsonUtility.ToJson(result,true));

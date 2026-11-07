@@ -60,14 +60,14 @@ namespace YesterdayConvoy.Tests
             b.Advance(.3f);Assert.That(b.Defender.Health,Is.EqualTo(9965));Assert.That(b.DeathBlasts.Count,Is.EqualTo(1));
             b.Advance(.8f);Assert.That(b.Defender.Health,Is.EqualTo(9885));Assert.That(b.InfectionBursts.Count,Is.EqualTo(1));Assert.That(b.Defender.ColdUntil,Is.LessThan(0));
         }
-        [TestCase(4,2,false,50)]
+        [TestCase(4,2,false,65.975395f)]
         [TestCase(5,5,true,120)]
         public void SnowFourKeepsLowerTierAndFivePreservesFreeze(int count,int tier,bool frozen,float damage)
         {
             var b=B(new[]{"CARD_M11","CARD_M12"});var ids=Snow.Take(count);b.ConfigureSynergies(ids.Select(id=>P(id)));Assert.That(b.SnowTier,Is.EqualTo(tier));b.Begin();
             b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M11");b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M12");
             b.TryApplyCold(b.Defender.EntityId,3.5f);b.TryApplyCold(b.Defender.EntityId,3.5f);b.Advance(.5f);
-            Assert.That(b.Shatters,Is.EqualTo(1));Assert.That(b.ShatterDamage,Is.EqualTo(damage));Assert.That(b.Defender.FrozenUntil>b.Clock,Is.EqualTo(frozen));
+            Assert.That(b.Shatters,Is.EqualTo(1));Assert.That(b.ShatterDamage,Is.EqualTo(damage).Within(.002f));Assert.That(b.Defender.FrozenUntil>b.Clock,Is.EqualTo(frozen));
         }
         [Test]public void FiveSnowCountsCompletedShattersOncePerEventAndThirdStartsWeatherWithoutDeployingFrostNova()
         {
@@ -91,8 +91,8 @@ namespace YesterdayConvoy.Tests
             NextSnowShatter(b);Assert.That(b.SnowstormCharge,Is.EqualTo(1));Assert.That(b.SnowstormActive,Is.False);
         }
         [TestCase(1,0,260)]
-        [TestCase(2,40,210.6f)]
-        [TestCase(3,40,265.2f)]
+        [TestCase(2,40,205.843234f)]
+        [TestCase(3,40,242.08791f)]
         public void ShatterWeatherDealsFourArtsPulsesWithStarScalingResistanceFeedbackAndPauseOrRestart(int star,float resistance,float pulseDamage)
         {
             var b=SnowBattle(star:star,resistance:resistance);Assert.That(ManualBattle.SnowstormDuration,Is.EqualTo(8));

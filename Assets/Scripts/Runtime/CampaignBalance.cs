@@ -21,8 +21,8 @@ namespace YesterdayConvoy
             {"CARD_M04",new Stats(2,3,200,38,0,2.8f,0.7f,0.6f,1)},
             {"CARD_M05",new Stats(2,3,190,30,0,2.2f,2.7f,0.6f,1)},
             {"CARD_M06",new Stats(2,3,160,34,0,2.8f,0.7f,0.6f,1)},
-            {"CARD_M07",new Stats(1,2,175,24,4,1.8f,0.75f,0.7f,1)},
-            {"CARD_M08",new Stats(1,2,125,24,1,1.9f,3.1f,0.65f,1)},
+            {"CARD_M07",new Stats(1,2,205,24,4,1.8f,0.75f,0.7f,1)},
+            {"CARD_M08",new Stats(1,2,125,27,1,1.9f,3.1f,0.65f,1)},
             {"CARD_M09",new Stats(1,2,120,30,0,2.4f,2.6f,0.65f,1)},
             {"CARD_M10",new Stats(2,3,380,34,12,2.6f,0.75f,0.5f,1)},
             {"CARD_M11",new Stats(1,2,135,25,1,1.9f,3.1f,0.65f,1)},
@@ -119,7 +119,7 @@ namespace YesterdayConvoy
         public static string[] Tags(string id)=>labels.TryGetValue(id,out var list)?(string[])list.Clone():Array.Empty<string>();
         // One-cost four-star cards continue the ordinary curve; they gain no new boss mechanic.
         public static float HPScale(int cost,int star)=>star==4&&cost==1?4.25f:star==1?1:cost==5?star==2?1.9f:5:cost==4?star==2?1.8f:3.2f:star==2?1.75f:3;
-        public static float AttackScale(int cost,int star)=>star==4&&cost==1?2.8f:star==1?1:cost==5?star==2?1.7f:3:cost==4?star==2?1.6f:2.6f:star==2?1.5f:2.15f;
+        public static float AttackScale(int cost,int star)=>star==4&&cost==1?3.0f:star==1?1:cost==5?star==2?1.7f:3:cost==4?star==2?1.6f:2.6f:star==2?1.5f:2.15f;
         public static float AbilityScale(int cost,int star)=>star==4&&cost==1?3.8f:star==1?1:cost==5?star==2?1.9f:5:cost==4?star==2?1.75f:3.5f:star==2?1.6f:2.7f;
         public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int initialDP,int defense)
         {
@@ -129,9 +129,11 @@ namespace YesterdayConvoy
             var effects=CopyEffects(e,ability,talulahSecondPhase:s.CardId==TalulahTiming.CardId&&star==3);
             // Never shorten a complete authored attack clip to fit a spreadsheet interval.
             float interval=Mathf.Max(r.Interval,c.AttackDuration);
+            // Campaign-only manual rain budget; the legacy profile and attack-based automatic rain stay independent.
+            float skillAttack=s.CardId==TalulahTiming.CardId?star==1?80:star==2?140:240:c.SkillAttack*ability;
             var combat=new EngagementSettings((r.Attack>0?r.Attack*AttackScale(r.Cost,star):c.UnitAttack*ability),r.Armor+2*(star-1),r.Range,interval,
                 c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,c.BlockCount,c.BlockRadius,
-                c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,c.SkillAttack*ability,c.SkillInterval,c.SkillRange,c.ProjectileTime,
+                c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,skillAttack,c.SkillInterval,c.SkillRange,c.ProjectileTime,
                 c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,effects,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);
             var unit=new ManualBattleSettings(s.CardId,s.UnitId,initialDP,defense,CampaignPlan.Uses(r.Cost),CampaignPlan.DP(r.Cost,r.BaseDP,star),
                 new[]{0,2,3,4,5,8}[r.Cost],Mathf.Floor(r.HP*HPScale(r.Cost,star)+.5f),r.Speed,r.Gate+(star>=3?1:0),s.TowerRange,s.TowerDamage,s.ShotInterval);

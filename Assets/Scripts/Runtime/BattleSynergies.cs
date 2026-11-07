@@ -13,11 +13,16 @@ namespace YesterdayConvoy
         public int ReunionTier {get;private set;}
         public int ReunionCount {get;private set;}
         public int ReunionFormationCount {get;private set;}
+        public int ReunionTotalStars {get;private set;}
+        public float ReunionStarMultiplier=>SynergyStarScaling.Reunion(ReunionTotalStars,ReunionTier);
+        // Retained for existing inspectors/diagnostics; no longer drives synergy power.
         public float ReunionAverageStar {get;private set;}=1;
         public int ReunionMusterLimit=>ReunionRules.MusterLimit(ReunionTier);
         public int ReunionMusterRequirement=>ReunionRules.KindsPerMuster(ReunionTier);
         public IReadOnlyList<string> MusterMemberIds=>Array.AsReadOnly(musterKinds.OrderBy(id=>id,StringComparer.Ordinal).ToArray());
         public int SnowTier {get;private set;}
+        public int SnowTotalStars {get;private set;}
+        public float SnowStarMultiplier=>SynergyStarScaling.Snow(SnowTotalStars,SnowTier);
         public int MusterUsed {get;private set;}
         public int Shatters {get;private set;}
         public float ShatterDamage {get;private set;}
@@ -77,9 +82,11 @@ namespace YesterdayConvoy
             mudrockMemberIds=Array.AsReadOnly(crew);
             var reunion=synergyStars.Keys.Where(CampaignBalance.Reunion).ToArray();
             ReunionCount=reunion.Length;ReunionFormationCount=ReunionRules.FormationCount(reunion);
-            ReunionAverageStar=reunion.Length==0?1:(float)reunion.Average(id=>synergyStars[id]);
+            ReunionTotalStars=reunion.Sum(id=>synergyStars[id]);
+            ReunionAverageStar=reunion.Length==0?1:(float)ReunionTotalStars/reunion.Length;
             ReunionTier=ReunionRules.TierForCount(ReunionCount,ReunionFormationCount);
             int snow=synergyStars.Keys.Count(CampaignBalance.Snow);SnowTier=snow>=5?5:snow>=2?2:0;
+            SnowTotalStars=synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Sum(p=>p.Value);
             reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience);ConfigureRemainingSynergies(contract,adaptation,secondAdaptation,marineExperience);ResetSynergies();
         }
         void ResetSynergies(){ResetSnowstorms();ResetRemainingSynergies();ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
@@ -94,7 +101,7 @@ namespace YesterdayConvoy
             {
                 var lane=lanes.First(l=>l.Id==trigger.RouteId);
                 bool archer=ReunionTier>=6?i==1:ReunionTier==4&&reunionRanged;
-                var stats=ReunionRules.ForSupport(ReunionTier,archer,ReunionAverageStar);
+                var stats=ReunionRules.ForTotalStars(ReunionTier,archer,ReunionTotalStars);
                 var u=new DeployedUnitState($"run-{RunId}/support-{++sequence}",archer?"M08_ARCHER":"M07_SOLDIER",new RouteMotion(lane.Points,.7f),stats.Health,Clock)
                     {CardId=archer?"CARD_M08":"CARD_M07",RouteId=lane.Id,ExitId=lane.ExitId,SynergySupport=true,ReunionEliteSupport=ReunionTier==8,ReunionEntryShieldPending=ReunionTier==8};
                 var combat=new EngagementSettings(unitAttack:stats.Attack,unitArmor:stats.Armor,unitRange:stats.Range,unitInterval:1.8f,
@@ -120,8 +127,7 @@ namespace YesterdayConvoy
             hits[source.CardId]=Clock;if(hits.Count<2)return;
             hits.Clear();shatterCooldown[target.EntityId]=Clock+(SnowTier==5?3:4);
             if(SnowTier==2)target.FrozenUntil=target.ColdUntil=Clock;
-            float avg=(float)synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Average(p=>p.Value);
-            float attack=(SnowTier==2?50:120)*(1+.35f*(avg-1)),radius=SnowTier==2?.9f:1.5f;
+            float attack=(SnowTier==2?50:120)*SnowStarMultiplier,radius=SnowTier==2?.9f:1.5f;
             var ev=new ShatterEvent{Position=target.Position,At=Clock,Radius=radius};shatterEvents.Add(ev);Shatters++;
             foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,target.Position)<=radius).OrderBy(d=>GroundDistance(d.Position,target.Position)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).Take(SnowTier==2?2:5).ToArray())
             {

@@ -30,7 +30,7 @@ namespace YesterdayConvoy.Editor.Tests
             var data=Definition("CARD_M08");var mapped=StrongholdChallengeLayout.Settings(data.Snapshot());var authored=data.Engagement.Snapshot();
             var four=ShopStarProfiles.Build(mapped,authored,1,4);
             Assert.That(four.Unit.Health,Is.EqualTo(Mathf.Floor(mapped.Health*4.25f+.5f)));
-            Assert.That(four.Combat.UnitAttack,Is.EqualTo(authored.UnitAttack*2.8f).Within(.001f));
+            Assert.That(four.Combat.UnitAttack,Is.EqualTo(authored.UnitAttack*3.0f).Within(.001f));
             Assert.That(four.Unit.DeploymentCost,Is.EqualTo(mapped.DeploymentCost+3));
             Assert.That(four.Combat.UnitArmor,Is.EqualTo(authored.UnitArmor+6));
             Assert.That(four.Unit.DeploymentLimit,Is.EqualTo(mapped.DeploymentLimit));
