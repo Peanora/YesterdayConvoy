@@ -42,9 +42,13 @@ namespace YesterdayConvoy
         void DrawInfectionFormRow(Rect row,int tier)
         {
             string main=FormName(VisibleInfectionMain);
-            string secondary=tier>=6?"副 "+FormName(VisibleInfectionSecond):"副6档解锁";
-            GUI.Label(SynergySupplementRect(row),"主 "+main+" · "+secondary,
-                CampaignText(10,color:tier>0?new Color(.68f,.75f,.83f):new Color(.55f,.62f,.71f)));
+            string secondary=tier>=6?"副"+FormName(VisibleInfectionSecond):"副6档解锁";
+            string caption="主"+main+" · "+secondary;
+            var bounds=SynergySupplementRect(row);
+            var style=CampaignText(10,color:tier>0?new Color(.68f,.75f,.83f):new Color(.55f,.62f,.71f));
+            style.wordWrap=false;
+            if(style.CalcSize(new GUIContent(caption)).x>bounds.width)style.fontSize=9;
+            GUI.Label(bounds,caption,style);
         }
         static string InfectionEffect(InfectionForm form,int tier)
         {
