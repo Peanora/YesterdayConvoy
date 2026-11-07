@@ -6,7 +6,9 @@ namespace YesterdayConvoy
     /// <summary>Presentation-only upward-threshold observation. It never changes a lineup or a battle.</summary>
     public sealed class SynergyActivationFeedback
     {
-        public const float Lifetime = 1.8f;
+        public const float Lifetime = 1.78f;
+        public const float Gap = .27f;
+        const double BoundaryTolerance = .0000001;
 
         public sealed class Pulse
         {
@@ -61,12 +63,18 @@ namespace YesterdayConvoy
 
         readonly Dictionary<string, int> observedTiers = new Dictionary<string, int>(StringComparer.Ordinal);
         readonly HashSet<string> observedMembers = new HashSet<string>(StringComparer.Ordinal);
+        readonly List<Batch> queued = new List<Batch>();
+        static readonly Dictionary<string, int> builtinOrder = CreateBuiltinOrder();
+        float gapRemaining;
         public Batch Active { get; private set; }
         public int Revision { get; private set; }
-        public bool Pending => Active != null;
+        public int QueuedCount => queued.Count;
+        public int PendingCount => (Active != null ? 1 : 0) + queued.Count;
+        public bool Pending => Active != null || queued.Count > 0;
         public float ActiveAge => Active != null ? Active.Age : 0;
+        public float SecondsToTransition => Active != null ? Math.Max(0, Lifetime - Active.Age) : queued.Count > 0 ? Math.Max(0, gapRemaining) : 0;
 
-        /// <returns>True only when one or more upward crossings create a new batch.</returns>
+        /// <returns>True only when one or more upward crossings append new single-synergy batches.</returns>
         public bool Observe(SynergySummary[] current)
         {
             var rows = new Dictionary<string, Pulse>(StringComparer.Ordinal);
@@ -83,16 +91,32 @@ namespace YesterdayConvoy
                 if (pulse.Tier > 0 && pulse.Tier > previous) raised.Add(pulse);
             }
 
+            bool cancelledActive = Active != null && !PruneBatch(Active, rows);
+            if (cancelledActive) Active = null;
+            for (int i = queued.Count - 1; i >= 0; i--)
+                if (!PruneBatch(queued[i], rows)) queued.RemoveAt(i);
+
             bool changed = raised.Count > 0;
             if (changed)
             {
-                var added = new List<string>();
-                foreach (var row in rows.Values)
-                    foreach (string member in row.Members)
-                        if (!observedMembers.Contains(member) && !added.Contains(member)) added.Add(member);
-                Active = new Batch(++Revision, raised, added);
+                raised.Sort(ComparePulses);
+                foreach (var pulse in raised)
+                {
+                    var added = new List<string>();
+                    foreach (string member in pulse.Members)
+                        if (!observedMembers.Contains(member)) added.Add(member);
+                    queued.Add(new Batch(++Revision, new List<Pulse> { pulse }, added));
+                }
             }
-            else PruneActive(rows, currentMembers);
+
+            // Later observations append after the existing queue. A still-achieved active threshold
+            // keeps its age and sound identity; only an invalidated threshold is interrupted.
+            if (Active == null && queued.Count > 0)
+            {
+                if (cancelledActive) gapRemaining = Math.Max(gapRemaining, Gap);
+                if (gapRemaining <= 0) StartNext();
+            }
+            else if (Active == null) gapRemaining = 0;
 
             // Store the current tier rather than a historical maximum. Removing a member therefore
             // rearms the same threshold; refreshing, combining duplicates or same-tier substitutions do not.
@@ -103,34 +127,47 @@ namespace YesterdayConvoy
             return changed;
         }
 
-        void PruneActive(Dictionary<string, Pulse> rows, HashSet<string> currentMembers)
+        static Dictionary<string, int> CreateBuiltinOrder()
         {
-            if (Active == null) return;
-            var retained = new List<Pulse>();
-            bool changed = false;
-            foreach (var pulse in Active.Activations)
-            {
-                if (!rows.TryGetValue(pulse.Name, out var row) || row.Tier != pulse.Tier)
-                {
-                    changed = true;
-                    continue;
-                }
-                var members = new List<string>();
-                foreach (string member in pulse.Members)
-                    if (row.ContainsMember(member)) members.Add(member);
-                if (members.Count == 0) { changed = true; continue; }
-                if (members.Count != pulse.Members.Count)
-                {
-                    changed = true;
-                    retained.Add(new Pulse(pulse.Name, pulse.Tier, members.ToArray()));
-                }
-                else retained.Add(pulse);
-            }
-            if (retained.Count == 0) { Active = null; return; }
+            var result = new Dictionary<string, int>(StringComparer.Ordinal);
+            // This registration order matches the original nine-name order in SynergySummary.From,
+            // before that method sorts its display rows by active status and member count.
+            foreach (var entry in SynergyTrialCatalog.Entries) result.Add(entry.Tag, result.Count);
+            return result;
+        }
+
+        static int ComparePulses(Pulse a, Pulse b)
+        {
+            int grade = SynergyBadgePresentation.GradeFor(b.Name, b.Tier).CompareTo(SynergyBadgePresentation.GradeFor(a.Name, a.Tier));
+            if (grade != 0) return grade;
+            int orderA = builtinOrder.TryGetValue(a.Name, out int first) ? first : int.MaxValue;
+            int orderB = builtinOrder.TryGetValue(b.Name, out int second) ? second : int.MaxValue;
+            int order = orderA.CompareTo(orderB);
+            return order != 0 ? order : StringComparer.Ordinal.Compare(a.Name, b.Name);
+        }
+
+        static bool PruneBatch(Batch batch, Dictionary<string, Pulse> rows)
+        {
+            var pulse = batch.Activations[0];
+            if (!rows.TryGetValue(pulse.Name, out var row) || row.Tier < pulse.Tier) return false;
+            var members = new List<string>();
+            foreach (string member in pulse.Members)
+                if (row.ContainsMember(member)) members.Add(member);
+            if (members.Count == 0) return false;
             var added = new List<string>();
-            foreach (string member in Active.AddedMembers)
-                if (currentMembers.Contains(member)) added.Add(member);
-            if (changed || added.Count != Active.AddedMembers.Count) Active.Replace(retained, added);
+            foreach (string member in batch.AddedMembers)
+                if (members.Contains(member)) added.Add(member);
+            if (members.Count != pulse.Members.Count || added.Count != batch.AddedMembers.Count)
+                batch.Replace(new List<Pulse> { new Pulse(pulse.Name, pulse.Tier, members.ToArray()) }, added);
+            return true;
+        }
+
+        void StartNext()
+        {
+            if (queued.Count == 0) return;
+            Active = queued[0];
+            queued.RemoveAt(0);
+            gapRemaining = 0;
         }
 
         static string[] SnapshotMembers(string[] source)
@@ -143,19 +180,50 @@ namespace YesterdayConvoy
             return result.ToArray();
         }
 
-        /// <returns>Whether a batch remains active after this presentation step.</returns>
+        /// <returns>Whether a current or queued item remains, including an inter-item gap.</returns>
         public bool Advance(float delta, bool paused = false)
         {
-            if (Active == null) return false;
+            if (!Pending) return false;
             if (paused || delta <= 0 || float.IsNaN(delta) || float.IsInfinity(delta)) return true;
-            Active.Age = Math.Min(Lifetime, Active.Age + delta);
-            if (Active.Age >= Lifetime) Active = null;
-            return Active != null;
+            double remaining = delta;
+            while (Pending)
+            {
+                if (Active != null)
+                {
+                    float untilEnd = Math.Max(0, Lifetime - Active.Age);
+                    if (remaining + BoundaryTolerance < untilEnd)
+                    {
+                        Active.Age += (float)remaining;
+                        if (Active.Age < Lifetime) return true;
+                        // A sub-remaining float step can round Age to the endpoint. Finish that
+                        // boundary now rather than exposing an active item with zero time left.
+                        remaining = 0;
+                    }
+                    else remaining = Math.Max(0, remaining - untilEnd);
+                    Active.Age = Lifetime;
+                    Active = null;
+                    if (queued.Count == 0) { gapRemaining = 0; return false; }
+                    gapRemaining = Gap;
+                }
+                if (remaining + BoundaryTolerance < gapRemaining)
+                {
+                    gapRemaining -= (float)remaining;
+                    if (gapRemaining > 0) return true;
+                    remaining = 0;
+                }
+                else remaining = Math.Max(0, remaining - gapRemaining);
+                gapRemaining = 0;
+                StartNext();
+                if (remaining <= 0) return Pending;
+            }
+            return false;
         }
 
         public void Clear(bool resetObserved = true)
         {
             Active = null;
+            queued.Clear();
+            gapRemaining = 0;
             if (!resetObserved) return;
             observedTiers.Clear();
             observedMembers.Clear();

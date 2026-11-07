@@ -12,6 +12,7 @@ namespace YesterdayConvoy
         ShopTrialModel synergyActivationShop;
         AudioSource synergyActivationSource;
         bool synergyActivationSoundStarted,synergyActivationSoundPaused;
+        int synergyActivationSoundSequence=-1;
         int synergyActivationSoundPlayCount;
 
         bool SynergyActivationCanPrepare=>CampaignActive&&Loop.CanShop&&Battle!=null&&Battle.Phase==BattlePhase.Ready;
@@ -19,9 +20,10 @@ namespace YesterdayConvoy
         {
             get
             {
-                var batch=synergyActivationFeedback.Active;if(batch==null)return false;
+                var batch=synergyActivationFeedback.Active;if(batch==null||batch.Age>0)return false;
                 // Purchases join the real model before their existing .63s arrival finishes.
-                // Wait for that presentation's reveal; clicking a reserve card has no such wait.
+                // Wait only before this pulse starts. A later purchase of the same kind must
+                // not hide/freeze an already visible pulse because its flow shares the same ID.
                 return shopFlows.Any(flow=>batch.IsAddedMember(flow.Id)&&Time.unscaledTime-flow.At<flow.Reveal);
             }
         }
@@ -36,8 +38,10 @@ namespace YesterdayConvoy
             {
                 ClearSynergyActivationFeedback();synergyActivationShop=shop;
             }
-            if(!synergyActivationFeedback.Observe(CurrentSynergies))return;
-            StopSynergyActivationSound();
+            synergyActivationFeedback.Observe(CurrentSynergies);
+            // Appending another threshold must not restart a still-playing cue. Each
+            // queued trait has its own identity, including two traits on the same card.
+            SynchronizeSynergyActivationSoundSequence();
         }
 
         void TickSynergyActivationFeedback(float delta)
@@ -47,13 +51,33 @@ namespace YesterdayConvoy
                 if(synergyActivationFeedback.Pending)ClearSynergyActivationFeedback(false);
                 UpdateSynergyActivationSound();return;
             }
-            synergyActivationFeedback.Advance(delta,SynergyActivationBlocked);
+            if(delta>0&&!float.IsNaN(delta)&&!float.IsInfinity(delta))
+            {
+                float remaining=delta;
+                while(remaining>0&&synergyActivationFeedback.Pending&&!SynergyActivationBlocked)
+                {
+                    // A new queued item may still be waiting for the real purchase
+                    // arrival. Recheck that blocker at every item/gap boundary.
+                    float step=Mathf.Min(remaining,synergyActivationFeedback.SecondsToTransition);
+                    if(step<=0)break;
+                    synergyActivationFeedback.Advance(step);
+                    remaining=Mathf.Max(0,remaining-step);
+                }
+            }
             UpdateSynergyActivationSound();
+        }
+
+        void SynchronizeSynergyActivationSoundSequence()
+        {
+            int sequence=synergyActivationFeedback.Active?.Sequence??-1;
+            if(sequence==synergyActivationSoundSequence)return;
+            StopSynergyActivationSound();synergyActivationSoundSequence=sequence;
         }
 
         void UpdateSynergyActivationSound()
         {
             var batch=synergyActivationFeedback.Active;
+            SynchronizeSynergyActivationSoundSequence();
             if(batch==null||!SynergyActivationCanPrepare){StopSynergyActivationSound();return;}
             if(synergyActivationSource!=null)synergyActivationSource.mute=Muted;
             if(SynergyActivationBlocked)
@@ -93,7 +117,7 @@ namespace YesterdayConvoy
 
         void ClearSynergyActivationFeedback(bool resetObserved=true)
         {
-            synergyActivationFeedback.Clear(resetObserved);StopSynergyActivationSound();
+            synergyActivationFeedback.Clear(resetObserved);StopSynergyActivationSound();synergyActivationSoundSequence=-1;
         }
 
         void DrawSynergyActivationFeedback()
