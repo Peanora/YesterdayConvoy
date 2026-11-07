@@ -311,7 +311,7 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
-            Feedback=result==SkillFailure.None ? (Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
+            Feedback=result==SkillFailure.None ? (SilverWolfCombat.IsWolf(Battle.FindUnit(selectedEntityId)) ? "无敌玩家启动，接下来三次攻击各随机开启一个盲盒" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
                 result==SkillFailure.Paused ? "暂停中：恢复后再确认释放技能" :
                 result==SkillFailure.NoTarget ? "没有可占据的留声机，或正在刷新屏障" : result==SkillFailure.NotReady ? "技力尚未回满" : result==SkillFailure.AlreadyActive ? "技能或施法动作正在进行" : $"请先选择场上的{definition.Card.DisplayName}";
             return result;
@@ -352,6 +352,8 @@ namespace YesterdayConvoy
             Vector3 p=(lane!=null ? lane.Entry : point)+Vector3.up*.015f;
             entryOutline.SetPositions(new[]{p+new Vector3(-.6f,0,-.6f),p+new Vector3(-.6f,0,.6f),p+new Vector3(.6f,0,.6f),p+new Vector3(.6f,0,-.6f),p+new Vector3(-.6f,0,-.6f)});
             preview.sprite=OriginalTalulahArt.BattleSprite(DeploymentDefinition.Card);
+            preview.flipX=DeploymentDefinition.Card.CardId==SilverWolfCombat.CardId && lane!=null &&
+                SilverWolfView.Facing(lane.Points[1]-lane.Entry,Camera.main,false);
             DeployFailure failure=Battle.CheckCardDeployment(DeploymentDefinition.Card.CardId,point,Dragging);
             bool valid=failure==DeployFailure.None || failure==DeployFailure.NotStarted;
             Color tint=valid ? new Color(0.4f,1,0.7f) : new Color(1,0.35f,0.3f);
@@ -458,6 +460,12 @@ namespace YesterdayConvoy
         private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
         {
             var combat=Battle.UnitCombat(unit);
+            if(SilverWolfCombat.IsWolf(unit) && unit.LastAttackEmpowered && unit.LastWolfBox!=WolfBoxKind.None)
+            {
+                double age=Battle.Clock-unit.LastAttackTime;
+                if(age>=1.45 && age<combat.SkillInterval)
+                    GUI.Label(new Rect(x-50,y-34,140,25),SilverWolfView.ResultName(unit.LastWolfBox),smallStyle);
+            }
             Fill(new Rect(x-31,y,62,7),new Color(0.03f,0.05f,0.06f));
             if(combat.MudrockCapture&&Battle.IsSkillActionPlaying(unit))
             {float remaining=1-Mathf.Clamp01((float)((Battle.Clock-unit.MudrockCaptureStartedAt)/1.5));Fill(new Rect(x-29,y+2,58*remaining,3),new Color(.9f,.25f,.25f));}
@@ -515,10 +523,10 @@ namespace YesterdayConvoy
         {
             foreach(var d in Battle.Defenders)
             {
-            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : 1.95f));
+            Vector3 screen=Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*(TacticalMapActive ? 1.6f : defenderTrial!=null ? 1.32f : definition.Card.CardId==SilverWolfCombat.CardId ? .95f : 1.95f));
             Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
             if(!d.Alive) continue;
-            float width=TacticalMapActive ? 62 : 96;
+            float width=TacticalMapActive || definition.Card.CardId==SilverWolfCombat.CardId ? 62 : 96;
             Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
             Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
             if(d.Settings.Skill.Enabled)

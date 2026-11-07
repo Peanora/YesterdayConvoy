@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
         {
             var rows=SynergySummary.From(CampaignBalance.Profiles.Keys);Assert.That(rows.Length,Is.EqualTo(9));Assert.That(rows.All(r=>r.Implemented));
             Assert.That(rows.Single(r=>r.Name=="深池").Count,Is.EqualTo(4));Assert.That(rows.Single(r=>r.Name=="深池").Tier,Is.EqualTo(4));
-            Assert.That(CampaignBalance.Supports("CARD_M32"));Assert.That(CampaignBalance.Supports("CARD_M25"));Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(42));
+            Assert.That(CampaignBalance.Supports("CARD_M32"));Assert.That(CampaignBalance.Supports("CARD_M25"));Assert.That(CampaignBalance.Profiles.Count,Is.EqualTo(43));
         }
         [Test]public void HerdContinuesAtOriginalProgressAndCannotConvertAgain()
         {
@@ -49,7 +49,7 @@ namespace YesterdayConvoy.Tests
         {
             var b=Make(Herd.Take(2).ToArray());var u=Deploy(b,Herd[0],1);b.TryDamageUnit(u.EntityId,1000,CombatDamageType.Physical);b.Advance(.02f);var host=b.Units.Single(o=>o.SynergySupport);
             b.SetPaused(true);double remaining=b.HerdRemaining(host.EntityId);b.Advance(20);Assert.That(b.HerdRemaining(host.EntityId),Is.EqualTo(remaining));
-            b.SetPaused(false);b.Advance(10.1f);Assert.That(host.Active,Is.False);Assert.That(b.HerdUsed,Is.EqualTo(1));Assert.That(b.DeepCharges,Is.Zero);
+            b.SetPaused(false);b.Advance((float)(HerdSpiritState.FallDuration+HerdSpiritState.RiseDuration+10.1));Assert.That(host.Active,Is.False);Assert.That(b.HerdUsed,Is.EqualTo(1));Assert.That(b.DeepCharges,Is.Zero);
         }
         [Test]public void HerdCapsConversionsAndFiveCostsNeverConsumeSlots()
         {
@@ -90,36 +90,14 @@ namespace YesterdayConvoy.Tests
             Call(b,"HealUnit",other,200f);b.TryDamageUnit(other.EntityId,121,CombatDamageType.Physical);Assert.That(b.ContractPoints,Is.EqualTo(1));
             Assert.That(b.TryActivateContract(b.RunId,20,other.EntityId),Is.False);
         }
-        [TestCase(0,70,100)] [TestCase(3,70,70)] [TestCase(7,60,60)]
-        public void MarineBarrierOnlyProtectsLimitedRemoteHits(int xp,float first,float second)
+        [TestCase(MarineAdaptation.Barrier)] [TestCase(MarineAdaptation.Hunt)] [TestCase(MarineAdaptation.Infiltration)]
+        public void RetiredMarineParametersCannotRestoreOldEffectsOrExperience(MarineAdaptation choice)
         {
-            var b=Make(Sea,xp:xp);var u=Deploy(b,Sea[0],1);b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical,ranged:true);Assert.That(u.Health,Is.EqualTo(200-first));
-            b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical,ranged:true);Assert.That(u.Health,Is.EqualTo(200-first-second));
-        }
-        [Test]public void MarineBarrierThreeSharesOneRemoteProtectionWithNearbyNonSeaAlly()
-        {
-            var b=Make(Sea,xp:7);var sea=Deploy(b,Sea[0],1);var ally=Deploy(b,"CARD_M07",2);
-            b.TryDamageUnit(sea.EntityId,100,CombatDamageType.Physical,ranged:true);b.TryDamageUnit(ally.EntityId,100,CombatDamageType.Physical,ranged:true);Assert.That(ally.Health,Is.EqualTo(120));
-            b.TryDamageUnit(ally.EntityId,100,CombatDamageType.Physical,ranged:true);Assert.That(ally.Health,Is.EqualTo(20));
-        }
-        [Test]public void MarineInfiltrationExpiresAndDoesNotStackPerAttacker()
-        {
-            var b=Make(Sea,MarineAdaptation.Infiltration,7);var a=Deploy(b,Sea[0],1);var c=Deploy(b,Sea[1],2);float armor=b.DefenderArmor(b.Defender);
-            Hit(b,b.Defender,20,source:a);Hit(b,b.Defender,20,source:c);Assert.That(b.DefenderArmor(b.Defender),Is.EqualTo(armor-7));
-            b.Advance(5.1f);Assert.That(b.DefenderArmor(b.Defender),Is.EqualTo(armor));Hit(b,b.Defender,20,source:a);Assert.That(b.DefenderArmor(b.Defender),Is.EqualTo(armor));
-        }
-        [Test]public void MarineHuntOnlyIncreasesDamageBelowThresholdAndDoesNotMultiplySupportDamage()
-        {
-            var b=Make(Sea,MarineAdaptation.Hunt);var u=Deploy(b,Sea[0],1);Hit(b,b.Defender,20,source:u);Assert.That(b.Defender.Health,Is.EqualTo(480));
-            Hit(b,b.Defender,310);float hp=b.Defender.Health;Hit(b,b.Defender,20,source:u);Assert.That(hp-b.Defender.Health,Is.EqualTo(22.4f).Within(.001));
-        }
-        [Test]public void MarineGrowthIsCappedRequiresVictoryAndRunSettlementIsIdempotent()
-        {
-            var b=Make(Sea);foreach(var id in Sea.Take(4)){var u=Deploy(b,id,id.GetHashCode());Hit(b,b.Defender,1,source:u);Hit(b,b.Defender,1,source:u);}
-            Assert.That(b.MarineGrowthEarned,Is.Zero);Call(b,"FinishForTesting",b.RunId,true);Assert.That(b.MarineGrowthEarned,Is.EqualTo(3));
-            var shop=new ShopTrialModel(new[]{new ShopTrialModel.Role{Id="x",Name="x",Cost=1}},1);var run=new BattleShopRun(shop,1,campaign:true);
-            Assert.That(run.Observe(BattlePhase.Won,0,b.MarineGrowthEarned));Assert.That(run.Observe(BattlePhase.Won,0,3),Is.False);Assert.That(run.MarineExperience,Is.EqualTo(3));
-            var lost=Make(Sea);Call(lost,"FinishForTesting",lost.RunId,false);Assert.That(lost.MarineGrowthEarned,Is.Zero);
+            var b=Make(Sea,choice,7);var u=Deploy(b,Sea[0],1);float armor=b.DefenderArmor(b.Defender);
+            b.TryDamageUnit(u.EntityId,100,CombatDamageType.Physical,ranged:true);Assert.That(u.Health,Is.EqualTo(100));
+            Hit(b,b.Defender,340);float health=b.Defender.Health;Hit(b,b.Defender,20,source:u);
+            Assert.That(health-b.Defender.Health,Is.EqualTo(20));Assert.That(b.DefenderArmor(b.Defender),Is.EqualTo(armor));
+            Call(b,"FinishForTesting",b.RunId,true);Assert.That(b.MarineGrowthEarned,Is.Zero);Assert.That(b.MarineExperience,Is.Zero);
         }
     }
 }

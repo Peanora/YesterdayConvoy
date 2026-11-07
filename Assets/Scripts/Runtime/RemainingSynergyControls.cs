@@ -5,7 +5,6 @@ namespace YesterdayConvoy
 {
     public sealed partial class ManualBattleController
     {
-        static string AdaptationName(MarineAdaptation value)=>value==MarineAdaptation.Barrier?"屏障":value==MarineAdaptation.Hunt?"猎食":"渗透";
         public bool SetRemainingChoices(string contract,MarineAdaptation form,MarineAdaptation second)
         {
             if(!CampaignActive||!Loop.CanShop||Battle.Phase!=BattlePhase.Ready||!shopLineup.Contains(contract)||!Enum.IsDefined(typeof(MarineAdaptation),form)||!Enum.IsDefined(typeof(MarineAdaptation),second))return false;
@@ -26,11 +25,10 @@ namespace YesterdayConvoy
                 if(selected==null)return;
                 if(LoopButton(new Rect(694,313,550,31),"承契卡："+shop.Definition(selected).Name+" · 点击切换"))
                     SetRemainingChoices(shopLineup[(shopLineup.IndexOf(selected)+1)%shopLineup.Count],marineForm,marineSecond);
-                if(LoopButton(new Rect(694,352,268,31),"海嗣主适应："+AdaptationName(marineForm)))SetRemainingChoices(selected,(MarineAdaptation)(((int)marineForm+1)%3),marineSecond);
-                if(LoopButton(new Rect(976,352,268,31),"第二适应："+AdaptationName(marineSecond)))SetRemainingChoices(selected,marineForm,(MarineAdaptation)(((int)marineSecond+1)%3));
-                GUI.Label(new Rect(694,390,550,25),$"海嗣培养 XP{Loop.MarineExperience} · 阶段{Battle.MarineStage}（0 / 3 / 7）",CampaignText(13));
+                GUI.Label(new Rect(694,352,550,27),"海嗣 · 溟痕蔓延 · 每场重新展开",CampaignText(15,color:MarineInk,weight:600));
                 var hint=CampaignText(12,TextAnchor.UpperLeft);hint.wordWrap=true;
-                GUI.Label(new Rect(694,421,550,66),"4海嗣且培养进入II阶段后，副适应取I阶段效果。集齐深池四名成员可解锁火种引爆。转化体沿用原角色动作，不复制主动或固有能力。",hint);
+                GUI.Label(new Rect(694,386,550,49),"每种海嗣首次有效接敌在脚下落种。2/4档每6/4秒扩散，覆盖至多8/16格；驻留溟痕的海嗣原生神经损伤×1.5/2。",hint);
+                GUI.Label(new Rect(694,439,550,46),"地面守军踩溟痕每秒积累3点神经损伤。战斗中可点左侧「查看溟痕范围」观察覆盖；无存活海嗣时休眠。",hint);
             }
             finally {GUI.enabled=oldEnabled;}
         }
@@ -66,7 +64,7 @@ namespace YesterdayConvoy
             }
             if(Battle.MarineTier>0)
             {
-                Fill(new Rect(x,y,157,19),ApprovedUi.Paper);GUI.Label(new Rect(x+7,y,143,19),$"海嗣 {AdaptationName(Battle.Adaptation)} {Battle.MarineStage} · {Loop.MarineExperience}XP",CampaignText(10));y+=21;
+                y=DrawMarineBattleActions(x,y);
             }
             return y;
         }

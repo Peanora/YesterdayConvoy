@@ -77,13 +77,11 @@ namespace YesterdayConvoy
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || UnitInvulnerable(unit)) return false;
-            OnMarineContact(unit);
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
             // Penetration stops at zero; existing resistance debuffs may remain negative.
             float resistance=UnitResistance(unit);
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
-            damage*=MarineIncoming(unit,ranged);
             if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
             if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=.4f;
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
@@ -96,6 +94,7 @@ namespace YesterdayConvoy
                 }
             }
             if(damage<=0){unit.LastHitTime=Clock;return true;}
+            OnMarineContact(unit);
             float before=unit.Health;bool applied=ApplyUnitHealthDamage(unit,damage);if(applied)OnContractDamage(unit,before);return applied;
         }
         public sealed class HealingCast
@@ -242,16 +241,16 @@ namespace YesterdayConvoy
         public IReadOnlyList<DeathBlast> DeathBlasts => deathBlasts.AsReadOnly();
         public bool HasPendingDeathBlast => herdQueue.Count>0||infectionBursts.Exists(x=>!x.Resolved)||deathBlasts.Exists(x=>!x.Resolved)||fuelExplosions.Exists(x=>!x.Resolved)||pillarCommands.Exists(x=>!x.Resolved);
         public float DefenderArmor(DefenderState defender) => defender.Settings.Armor*(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?3:1)*
-            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction-MarineArmorReduction(defender);
+            (DefenderSkillActive(defender)?defender.Settings.Skill.DefenseMultiplier:1)-defender.ArmorReduction;
         public static float CalculateDamage(float attack,float armor,float resistance,CombatDamageType type) =>
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type,bool derived=false,DeployedUnitState source=null,float damageScale=1)
         {
             float healthBefore=defender.Health;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*MarineHunt(source,defender));
+            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning);
-            if(source!=null&&!derived&&defender.Health<healthBefore){OnMarineContact(source);OnMarineHit(source,defender,alive&&!defender.Alive);}
+            if(source!=null&&!derived&&defender.Health<healthBefore)OnMarineContact(source);
             defender.LastHitTime=Clock;
             if(!defender.Alive) { defender.DeathTime=Clock;defender.TargetId=null; }
         }

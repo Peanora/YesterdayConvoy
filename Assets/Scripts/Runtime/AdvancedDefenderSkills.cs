@@ -118,7 +118,7 @@ namespace YesterdayConvoy
         }
         public float DefenderAuraMoveMultiplier(DeployedUnitState u)
         {
-            if(u==null||u.Golem&&GolemStage==4)return 1;float result=1;
+            if(u==null||u.Golem&&GolemStage>=4)return 1;float result=1;
             foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
                 result=Math.Min(result,d.Settings.Skill.MoveMultiplier);
             foreach(var drone in defenderDrones)
@@ -220,7 +220,11 @@ namespace YesterdayConvoy
         void ApplyPureUnitDamage(DeployedUnitState u,float amount)
         {
             if(!u.Active||u.IsReviving||UnitInvulnerable(u))return;
-            ApplyUnitHealthDamage(u,u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u));
+            float damage=u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u);
+            // This entry is only for defender-inflicted true damage / elemental bursts, never self-loss.
+            // Record effective contact before a fatal hit removes the living source, as normal damage does.
+            if(damage>0)OnMarineContact(u);
+            ApplyUnitHealthDamage(u,damage);
         }
         void AddScorch(DeployedUnitState u,float amount)
         {

@@ -26,6 +26,8 @@ MonoBehaviour:
     star: 1
   - cardId: CARD_M28
     star: 1
+  - cardId: CARD_M08
+    star: 1
   encounter: {fileID: 11400000, guid: dbb2a77324a2e7a40b39019bf5b9281c, type: 2}
   infectionPrimary: 0
   infectionSecondary: 1

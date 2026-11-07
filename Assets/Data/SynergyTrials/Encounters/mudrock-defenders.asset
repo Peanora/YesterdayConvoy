@@ -32,8 +32,8 @@ MonoBehaviour:
     displayName: "\u7C73\u683C\u9C81 \xB7 \u5317\u7EBF"
     artId: D01
     position: {x: 0, y: 0.04, z: 2.4}
-    health: 200
-    attack: 12
+    health: 120
+    attack: 4
     armor: 4
     range: 1.05
     interval: 1.8
@@ -77,8 +77,8 @@ MonoBehaviour:
     displayName: "\u73AB\u5170\u838E \xB7 \u5317\u7EBF"
     artId: D04
     position: {x: 0.8, y: 0.04, z: 2.1}
-    health: 200
-    attack: 12
+    health: 120
+    attack: 4
     armor: 4
     range: 1.05
     interval: 1.8
@@ -122,8 +122,8 @@ MonoBehaviour:
     displayName: "\u7C73\u683C\u9C81 \xB7 \u5357\u7EBF"
     artId: D01
     position: {x: 2, y: 0.04, z: -1}
-    health: 200
-    attack: 12
+    health: 120
+    attack: 4
     armor: 4
     range: 1.05
     interval: 1.8
@@ -167,8 +167,8 @@ MonoBehaviour:
     displayName: "\u73AB\u5170\u838E \xB7 \u5357\u7EBF"
     artId: D04
     position: {x: 2, y: 0.04, z: 0}
-    health: 200
-    attack: 12
+    health: 120
+    attack: 4
     armor: 4
     range: 1.05
     interval: 1.8

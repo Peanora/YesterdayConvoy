@@ -45,12 +45,6 @@ namespace YesterdayConvoy
             lineup.Clear();foreach(var id in next)lineup.Add(id);return true;
         }
         public void BeginPreparation(){CommissionUsed=false;}
-        internal int TrainingCrewCount=>lineup.Count(CampaignBalance.MudrockCrew);
-        internal bool SpendTrainingGold(int amount)
-        {
-            if(!CampaignEconomy||amount<=0||!CanAfford(amount))return false;
-            if(!UnlimitedGold)Gold-=amount;return true;
-        }
         bool Fits(List<Piece> pieces)=>pieces.Count<=(CampaignEconomy?10+lineup.Count(id=>pieces.Any(p=>p.Id==id)):10);
         internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;
@@ -154,7 +148,7 @@ namespace YesterdayConvoy
         {
             if(!CampaignEconomy)return Fail("本模式未开放委托");
             if(CommissionUsed&&!UnlimitedGold)return Fail("本关委托已使用");
-            if(!roles.TryGetValue(id,out var role)||role.Cost>3||!bench.Any(p=>p.Id==id)||bench.Any(p=>p.Id==id&&p.Star==3)||Odds[Level-1][role.Cost-1]==0)return Fail("委托需已持有、已解锁且未三星的1–3费角色");
+            if(!roles.TryGetValue(id,out var role)||role.Cost>3&&!UnlimitedGold||!bench.Any(p=>p.Id==id)||bench.Any(p=>p.Id==id&&p.Star==3)||Odds[Level-1][role.Cost-1]==0)return Fail(UnlimitedGold?"委托需已持有、已解锁且未三星的角色":"委托需已持有、已解锁且未三星的1–3费角色");
             if(pool[id]<=0)return Fail("无可抽库存；请检查当前商品");
             var result=PlanIncoming(id,out var planned);if(!result.Success)return result;
             result.Value=role.Cost+2;

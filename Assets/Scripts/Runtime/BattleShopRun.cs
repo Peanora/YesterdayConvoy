@@ -10,11 +10,12 @@ namespace YesterdayConvoy
         public int Stage {get;private set;}=1;
         public int GolemExperience {get;private set;}
         public int LastGolemGrowth {get;private set;}
-        public int GolemInvestment {get;private set;}
-        int investmentStage=-1,investmentThisStage;
-        public int GolemInvestmentRemaining=>investmentStage==Stage?10-investmentThisStage:10;
-        public int MarineExperience {get;private set;}
-        public int LastMarineGrowth {get;private set;}
+        public int LastGolemExperienceBefore {get;private set;}
+        public int LastGolemCapacity {get;private set;}=1;
+        public int SandboxRound {get;private set;}=1;
+        // Legacy read surface for old trial assets/callers. Marine growth retired in favour of per-battle terrain.
+        public int MarineExperience=>0;
+        public int LastMarineGrowth=>0;
         public readonly int Seed;
         public readonly bool LateGame;
         public readonly bool Campaign,Sandbox;
@@ -24,14 +25,20 @@ namespace YesterdayConvoy
         public bool CanShop=>Phase==BattleShopPhase.Shop;
         public bool CanDeploy=>Phase==BattleShopPhase.Preparation||Phase==BattleShopPhase.Fighting;
         public BattleShopRun(ShopTrialModel economy,int seed,bool lateGame=false,bool campaign=false,bool sandbox=false){Campaign=campaign;Sandbox=sandbox;Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;LateGame=lateGame;}
-        public bool Observe(BattlePhase battle,int golemGrowth=0,int marineGrowth=0)
+        public bool Observe(BattlePhase battle,int golemGrowth=0,int marineGrowth=0,int golemCapacity=5)
         {
             if(!CanDeploy)return false;
             if(battle==BattlePhase.Running)Phase=BattleShopPhase.Fighting;
             if(battle!=BattlePhase.Won&&battle!=BattlePhase.Lost)return false;
             if(marineGrowth<0||marineGrowth>3)throw new ArgumentOutOfRangeException(nameof(marineGrowth));
-            if(golemGrowth<0||golemGrowth>4)throw new ArgumentOutOfRangeException(nameof(golemGrowth));
-            bool won=battle==BattlePhase.Won;LastGolemGrowth=Campaign&&won&&!RewardStage?golemGrowth:0;GolemExperience+=LastGolemGrowth;LastMarineGrowth=Campaign&&won?marineGrowth:0;MarineExperience+=LastMarineGrowth;Reward=Economy.SettleRound("stage-"+Stage,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
+            if(golemGrowth<0||golemGrowth>15)throw new ArgumentOutOfRangeException(nameof(golemGrowth));
+            GolemGrowth.Threshold(golemCapacity);
+            bool won=battle==BattlePhase.Won;
+            LastGolemExperienceBefore=GolemExperience;LastGolemCapacity=golemCapacity;
+            LastGolemGrowth=Campaign&&!RewardStage?GolemGrowth.Award(GolemExperience,golemCapacity,golemGrowth):0;
+            GolemExperience+=LastGolemGrowth;
+            string receipt=Sandbox?"sandbox-round-"+SandboxRound:"stage-"+Stage;
+            Reward=Economy.SettleRound(receipt,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
             Phase=!won?BattleShopPhase.Failed:Stage==TotalStages?BattleShopPhase.Complete:BattleShopPhase.Settlement;return true;
         }
         public bool OpenShop()
@@ -42,17 +49,16 @@ namespace YesterdayConvoy
             return true;
         }
         public bool RestartEncounter(){if(!Campaign||!CanDeploy)return false;Phase=BattleShopPhase.Preparation;return true;}
-        internal void SandboxPreparation(){if(!Sandbox)throw new InvalidOperationException();Phase=BattleShopPhase.Shop;}
-        public bool InvestGolem(int amount)
+        internal void SandboxPreparation()
         {
-            if(!Campaign||!CanShop||Economy.TrainingCrewCount<2||amount<=0||amount>GolemInvestmentRemaining||!Economy.SpendTrainingGold(amount))return false;
-            if(investmentStage!=Stage){investmentStage=Stage;investmentThisStage=0;}
-            investmentThisStage+=amount;GolemInvestment+=amount;return true;
+            if(!Sandbox)throw new InvalidOperationException();
+            if(Phase==BattleShopPhase.Complete||Phase==BattleShopPhase.Failed)SandboxRound++;
+            Phase=BattleShopPhase.Shop;
         }
-        internal void PresetGolemGrowth(int experience,int investment)
+        internal void PresetGolemGrowth(int experience)
         {
-            if(!Sandbox||!CanShop||experience<0||investment<0)throw new InvalidOperationException();
-            GolemExperience=experience;GolemInvestment=investment;
+            if(!Sandbox||!CanShop||experience<0)throw new InvalidOperationException();
+            GolemExperience=experience;
         }
         public bool PrepareBattle(){if(!CanShop)return false;Phase=BattleShopPhase.Preparation;return true;}
     }
