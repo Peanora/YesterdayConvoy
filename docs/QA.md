@@ -7,7 +7,10 @@
 - D3D11相关PlayMode29个不同用例均获通过：首轮27/29暴露范围查看绑定错误及新Battle查看状态残留；修正实际combatView桥与状态同步后28/29，剩余为单格范围高亮实际相机仅17像素、低于30像素要求。增强实际边缘对比与宽度后，末轮MarineTideSceneTests 3/3（marine-visual-focused.xml）。没有降低断言。其余回归含RemainingSynergy、DedicatedSynergy、FirstSpeaker、GuerrillaOrder、HerdSpirit与BattleInteraction；最终不同用例共29，非完整PlayMode。
 - artifacts/marine-balance.json：正式CampaignBalance星级/DP/守方防御、正式第6/10/13关守军及保存路线，1–3星、两种2人组合、4人组合与同4人关闭效果对照共36组。固定轮换部署、真实费用/CD/技能/神经/胜负，无注血或强制判胜。较弱第6关可能无爆发已结束；1星第10关四人首次爆发由9.2秒提前到3.6秒，第13关11.4→8.05秒；通关时间还受路线、部署预算与高台影响，不承诺总是更快。该审计不包含商店运营、成型概率或最优操作。
 - 本轮新增8张原作溟痕PNG共381201字节及必要meta，Shader使用01/04/03/flow_43_2四张；另外四张保留同一原依赖来源，不宣称它们已参与画面。原版本、包MD5、CAB/PathID和PNG SHA256见art/source-records/marine-tide-original.json。原图加本作模拟时钟Shader适配，非完整原客户端材质/粒子重建。
-- Windows构建、实际屏幕交互及运行源码提交待本轮后续补记。未测完整PlayMode、第二台电脑、全分辨率和正式13关自然运营平衡；不自动ZIP/Releases。
+- 最终运行源码`8322d2a145b43790a4a712009e84bb5affeeb9b1`：Windows x64构建1046241663字节、0错误（artifacts/marine-build-final.log）。实机看稿后保留原PNG字节，Shader主层改取原028_03材质冷色参数，减少灰石块观感；该Shader变更单独GPU3/3复验（marine-cold-tint.xml）。此前971f651构建0错误/14项Player通过保留为初稿记录，不冒称最终构建。
+- 最终1600×900、D3D11可见独立Player14/14全True（artifacts/marine-tide-player-final/result.json），生产部署/费用/CD/真实接敌/原生神经均正常，实际鼠标点击左侧范围查看。0.55模拟秒首次落种，4.55秒首次扩散，最终16格、4次爆发，自然Won，覆盖开关在实际屏幕贡献13965个差异像素，暂停与重开清理通过，最终进程62364正常退出。专项攻击×2的首爆0.8秒不作为正式1星平衡证据；正常属性对照见36组预算审计。未注血/伤害、未用FinishForTesting证明自然结果，未把模型部署调用冒称OS拖动部署。
+- 已查看真实游戏相机/屏幕中的原纹理、覆盖亮边、受益标志、神经条与爆发倒计时。图片01至06在artifacts/marine-tide-player-final；源码manifest标明只有4张纹理实际进入Shader，其余原依赖不冒称绑定。模型/界面均没有海嗣XP结算或旧适应效果。最终预算审计marine-balance-final.log正常退出，完整Edit562/562、29个不同相关GPU案例与最终冷色GPU3/3的验证范围分开记录。
+- 本地普通启动Builds/Windows/海嗣溟痕.cmd（-marineTide），不会运行自动验收或自动退出；工具入口tools/play_marine_tide.cmd。保留整个Windows目录。原52份meta及本地.vscode/、PackageManagerSettings.asset SHA256再次核对原样未变、不入本任务提交。未测完整PlayMode、第二台电脑、全分辨率和正式13关自然运营平衡；不自动ZIP/Releases。
 
 ## 2026-11-07：银狼 LV.999 / 左右向与三种盲盒
 

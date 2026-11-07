@@ -1,7 +1,7 @@
 {
   "date": "2026-11-07",
   "version": "26-10-29-15-36-11-33649006",
-  "status": "BOUND",
+  "status": "VERIFIED",
   "approval": "2026-11-07 user explicitly requested original Arknights nethersea-brand art and immediate synergy implementation.",
   "rights": "Original proprietary Arknights media, rights remain with original rights holders; source acquisition and user approval do not establish an open redistribution license or rights-holder permission.",
   "sourceIdentification": "Original tile_creep / tile_creepf _creepDirectionEffects reference map_028_juntan_range_[up/down/left/right]_[A/B] and map_028_juntan_range_B; actual source RGBA textures decoded without repaint, tint, crop or resample.",
@@ -2771,7 +2771,8 @@
   "verification": {
     "editor": "Full EditMode 562/562",
     "gpu": "MarineTideSceneTests 3/3, real-camera visibility/inspection and paused-clock/restart checks",
-    "player": "Pending Windows build and visible Player verification"
+    "player": "8322d2a Windows x64 / Direct3D11 / 1600x900 visible Player: 14/14 true, actual OS click, natural Won, source-texture screen contribution 13965 pixels, pause and new-battle cleanup; process 62364 exited normally",
+    "limits": "Verification applies to four used shader layers and actual gameplay feedback. The other four raw source dependencies remain imported-only; no full original particle/mesh reconstruction, second-machine or full-campaign balance claim."
   },
   "sourceBundles": [
     {
