@@ -77,10 +77,13 @@ namespace YesterdayConvoy
                     if(GUI.Button(row,GUIContent.none,GUIStyle.none))
                     {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
                     bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
+                    var grade=SynergyBadgePresentation.GradeFor(s.Name,s.Tier);
                     Color ink=snowstorm?SnowstormInk:active?ApprovedUi.Ink:ApprovedUi.Muted;
                     Fill(row,snowstorm?SnowstormPaper:active?ApprovedUi.Paper:new Color(.85f,.89f,.91f,.89f));
-                    Fill(new Rect(row.x,row.y,3,row.height),snowstorm?SnowstormBlue:active?(s.Name=="感染生物"?InfectionOrange:new Color(.72f,.59f,.30f)):ApprovedUi.Rule);
-                    GUI.Label(new Rect(9,row.y+3,contentWidth-43,21),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(13,color:ink,weight:600));
+                    SynergyBadgePresentation.DrawGradeStrip(new Rect(row.x,row.y,3,row.height),grade);
+                    Fill(new Rect(row.x+5,row.y+1,24,22),new Color(.13f,.17f,.21f));
+                    SynergyBadgePresentation.DrawIcon(new Rect(row.x+7,row.y+2,20,20),s.Name,s.Tier);
+                    GUI.Label(new Rect(35,row.y+3,contentWidth-70,21),s.Name+(s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(13,color:ink,weight:600));
                     GUI.Label(new Rect(contentWidth-31,row.y+1,23,23),s.Count.ToString(),CampaignText(15,TextAnchor.MiddleRight,ink,600));
                     if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(snowstorm)DrawSnowstormRow(row);
@@ -88,7 +91,12 @@ namespace YesterdayConvoy
                     else
                     {
                         float pitch=s.Thresholds.Length>3?12:22,width=s.Thresholds.Length>3?10:19;
-                        for(int t=0;t<s.Thresholds.Length;t++)Fill(new Rect(10+t*pitch,row.y+31,width,2),s.Count>=s.Thresholds[t]?new Color(.66f,.53f,.23f):new Color(.68f,.75f,.80f));
+                        for(int t=0;t<s.Thresholds.Length;t++)
+                        {
+                            var mark=new Rect(10+t*pitch,row.y+31,width,2);
+                            if(s.Count>=s.Thresholds[t])SynergyBadgePresentation.DrawGradeStrip(mark,SynergyBadgePresentation.GradeFor(s.Name,s.Thresholds[t]));
+                            else Fill(mark,new Color(.68f,.75f,.80f));
+                        }
                         string target=s.Tier>0?s.Tier+"档":s.Implemented?s.Count+"/"+s.Thresholds[0]:"待实现";
                         GUI.Label(new Rect(contentWidth-62,row.y+22,54,16),target,CampaignText(10,TextAnchor.MiddleRight,ApprovedUi.Muted));
                     }

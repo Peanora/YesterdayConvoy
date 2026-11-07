@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-07：九羁绊图标、铜银金与超高档镀彩
+
+- 人类确认V3九枚图标并要求接入、按激活档位显示阶色。当前任务分支codex/synergy-icons-tier-ui，从已同步origin/main b1d55e7建立，快进保留已在GitHub的五斩e096351；不自动合并PR #95或main。原52处VFX meta逐文件比对保持，.vscode/和PackageManagerSettings.asset不提交。只改侧栏显示与开发验证入口，无场景、Prefab、包或项目设置任务修改。
+- 9张256×256透明PNG与批准V3逐字节一致，必要meta与来源记录随源码。保留原徽/原合约与六枚改编设计的区别；显示颜色不烘焙进PNG。资源键UI/Synergies/{id}，无mipmap、Bilinear/Clamp、sRGB、RGBA32不压缩，不开ReadWrite。
+- 完整EditMode512/512，0失败/跳过（artifacts/synergy-badge-edit.xml）。新增4例验证九个独立资源、雪怪2/5与泥岩2/4/5等真实门槛、合法游击转职7→8→9和镀彩多色族，不改人数/库存。
+- 相关D3D11 PlayMode15/15，0失败/跳过（artifacts/synergy-badge-play.xml）。新增GPU透明轮廓上传、真实Campaign/SynergyTrial档位与详情阻断；回归ApprovedUi、感染弹窗/锁定、天气状态和已有羁绊详情后方输入。此处GPU纹理检查不等同完整OnGUI截图。
+- Windows构建与独立Player的实际阶色、多色采样、两步真实详情点击尚待运行。显式验收参数-synergyBadgeSmokeTest，独立结果将补记；未测全量PlayMode、第二机或自然长局平衡。
+
 ## 2026-11-07：游击自动五段、蓄力重斩与震屏
 
 - 用户确认项目外五斩V2后授权接入。基线实时origin/main b1d55e7，分支codex/guerrilla-auto-five-strikes。保留原52处VFX meta（逐文件SHA与开始时一致）、.vscode/和PackageManagerSettings.asset；不提交这些既存本地项。无场景/Prefab/Packages/ProjectSettings任务修改。

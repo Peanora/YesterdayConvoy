@@ -11,7 +11,7 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
-            if(Array.IndexOf(args,"-approvedUiSmokeTest")>=0||Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0)yield break; // Explicit driver owns this diagnostic startup.
+            if(Array.IndexOf(args,"-approvedUiSmokeTest")>=0||Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0||SynergyBadgeSmokeDriver.Requested)yield break; // Explicit driver owns this diagnostic startup.
             if(!sandbox&&Array.IndexOf(args,"-synergySandbox")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
             if(Array.IndexOf(args,"-mudrockSmokeTest")>=0){UnityEngine.SceneManagement.SceneManager.LoadScene(MudrockTrialBootstrap.SceneName);yield break;}
             if(Array.Exists(args,a=>a=="-talulahSmokeTest"||a=="-talulahMotionEvidence"||a=="-talulahFireRainV12Test"||a=="-patriotVfxSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
