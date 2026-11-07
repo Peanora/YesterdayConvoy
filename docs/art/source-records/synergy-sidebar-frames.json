@@ -133,8 +133,8 @@
     "new_guid_generation": "UUID4, checked against existing Assets .meta GUIDs",
     "unity_import": "V2: Unity 6000.6.5f1 targeted EditMode 5/5 and D3D11 PlayMode 3/3 passed; see docs/QA.md. Earlier V1 full-suite results remain historical.",
     "resource_loading": "All six frames load and upload to GPU with transparent corners and visible bodies; root Unity verification passed",
-    "build": "V2 Windows build pending. V1 source 1f4967b and its previous build are historical; see docs/QA.md.",
-    "native_player": "V2 visible Player verification pending; previous V1 48/48 runs do not establish the corrected highest-tier colors.",
+    "build": "V2 source 7cdb33d6092a36d376ac7b6576e81ba01acd7f33: local Windows x64 build passed, 1050474618 bytes, 0 errors; see docs/QA.md.",
+    "native_player": "V2 visible D3D11 1920x1080 and 1280x720 each passed 51/51 and exited normally. Actual upper-plate mean G-R/B-R: .2913/.2202 (72 samples) and .2944/.2227 (30 samples); four hue families and visible white glyphs. Real OS clicks and scrolling passed, and both screenshots were inspected.",
     "git_ignore": "All 20 new files checked with git check-ignore --no-index; none ignored.",
     "new_guid_collisions": 0,
     "highest_tier_revision": {
@@ -147,7 +147,7 @@
       "new_guid_collision_check": "checked against all current Assets meta GUIDs",
       "reserved_runtime_hookup": "None; outside Resources, no UI code or gameplay was changed by the asset writer",
       "unity_import": "Root verified targeted EditMode 5/5 and D3D11 PlayMode 3/3 with the imported V2 frame",
-      "player_build": "not run by asset writer",
+      "player_build": "Root Windows build and visible 1920x1080 / 1280x720 Player verification passed; source 7cdb33d, 51/51 checks per resolution",
       "ignored_files": 0
     },
     "initial_external_png_byte_identity": "6/6 passed",

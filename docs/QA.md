@@ -4,8 +4,11 @@
 
 - 人类确认项目外V2青绿虹彩并要求原粉色留供后续五费专属。沿用codex/synergy-icons-tier-ui及PR #96；fetch确认main仍b1d55e7、任务分支与origin一致且PR未合并。原52处VFX meta与开工快照逐文件SHA一致，原两个本地未跟踪项不提交。无场景/Prefab/Packages/ProjectSettings任务修改。
 - 现用最高阶PNG逐字节等于确认V2（SHA256 e934697f80f04426ee7cfe46824276ad514e73b34112ca6972ca0b97ad5727d7），原meta/GUID保持。原粉色PNG逐字节保存为Reserved/plate-five-cost-exclusive-pink.png（SHA256 4f8e1d273289a87617c5ab945470490cf2c72ad4f74a9276e941dd695b2c3f25），原SVG也逐字节保留；预留PNG及目录用独立新GUID，无碰撞、未忽略，不在Resources内且无运行代码引用。原九徽及其他档位不改，不新增五费专属玩法。
-- Unity6000.6.5f1相关EditMode5/5（artifacts/synergy-mint-edit.xml）、D3D11 PlayMode3/3（artifacts/synergy-mint-play.xml）通过，0失败/跳过；验证真实档位、资源独立加载与透明GPU上传、九条布局及滚动后详情输入保护。未重跑全量测试。Windows构建及独立Player待执行。
+- Unity6000.6.5f1相关EditMode5/5（artifacts/synergy-mint-edit.xml）、D3D11 PlayMode3/3（artifacts/synergy-mint-play.xml）通过，0失败/跳过；验证真实档位、资源独立加载与透明GPU上传、九条布局及滚动后详情输入保护。未重跑全量测试。
 - 既有“多色”条件无法区分旧粉色与新青绿色，因此Player额外检查真实底牌上部6%–18%的青绿色差，排除白徽、人数圆点及边缘；至少8样本，平均G-R>.08且B-R>.03，仍保留完整真实编队/滚动/点击状态检查。源PNG只读对照：确认V2该区G-R约+.294，旧粉约-.106，不能将源图静态对照当成实机验证。下面旧版测试不作为本轮完成证据。
+- 运行源码7cdb33d6092a36d376ac7b6576e81ba01acd7f33：Windows x64构建1050474618字节、0错误（artifacts/synergy-mint-build.log）。本地Builds/Windows/YesterdayConvoy.exe及SOURCE.txt记录对应源码；后续仅补验证文档，不生成ZIP或Releases。
+- 1920×1080与1280×720可见D3D11独立Player各51/51（artifacts/synergy-mint-player-1920/result.json、synergy-mint-player-1280/result.json），均正常退出。两轮各实际5次点击＋1次滚动，完成游击详情开关、九条战斗列表到底、末行详情开关和返回整备；13张完整OnGUI截图/轮，原合法库存/转职夹具保持。实际8/9档及详情关闭后的底牌均为4种色相族，1920上部72样本G-R=.2913、B-R=.2202，1280上部30样本G-R=.2944、B-R=.2227；白徽合格像素分别182/86。已实看两种尺寸青绿→冰蓝→淡紫与确认V2一致，人数和完整档位可读。
+- 仓库6611跟踪文件及Unity元数据检查通过；粉色原PNG/SVG原字节与新活跃资源GUID均保持，原52处VFX meta与开工快照仍完全一致。预留粉色无运行引用，未来五费专属机制尚未实现。未重跑全量Edit/Play、第二机、故障注入或自然长局平衡，不将验证夹具当自然完整通关。
 
 ## 2026-11-07：确认稿菱形底牌、白徽与实际人数
 
