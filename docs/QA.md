@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-07：游击自动五段、蓄力重斩与震屏
+
+- 用户确认项目外五斩V2后授权接入。基线实时origin/main b1d55e7，分支codex/guerrilla-auto-five-strikes。保留原52处VFX meta（逐文件SHA与开始时一致）、.vscode/和PackageManagerSettings.asset；不提交这些既存本地项。无场景/Prefab/Packages/ProjectSettings任务修改。
+- Unity6000.6.5f1：最终完整EditMode508/508（artifacts/guerrilla-auto-edit-final.xml）、相关D3D11 PlayMode38/38（artifacts/guerrilla-auto-play-final.xml）通过。模型覆盖真实收入自动发令、无人/控制/暂停/半令待完成不空放、所有档无次数cap、忙碌尾段防重叠、逐刀混伤/护甲/最小伤害预算、来源/目标失效、取消保留已损、精确五时点和1×2×同结果。GPU覆盖实际自动军令/9槽原作塔露拉、每刀真实HP与记录、15/40分配、蓄力保持四段、两源暂停采样/原音高、真实镜头后处理像素/三帧hold/位移/归零、原作头像加载、战役/专项/其他羁绊流程。
+- 过程记录：首轮编译发现新增验收夹具误把DeployedUnit.NextHealAt写在Defender，删除无效行后编译通过。首轮Edit505/508的3失败均为float子步累计导致Age在精确2.8低约1.43微秒，内部改double累计、公开float不变后508/508，未放宽2.8断言。首轮GPU35/38：一例仍手动花已被自动消费的军令；两例严格HP夹具的旧多源弹道无法在第一刀前排空。改为检测实际自动批次、严格分支真实8档单M03首接敌补第三点自动发令，保留排空与.85秒上界后38/38。清掉旧版额外4束扫光和.975白闪，五刀仅由真实Strikes驱动。
+- 运行源码提交后待本地Windows构建与独立Player复验；尚未运行全量PlayMode、第二机、全分辨率及自然长局平衡。新纯FX资源649004字节、3.38秒，五刀.9/1.2/1.5/1.8/2.8，原followup出手声独立保留不重复混入；WAV/meta及来源记录均随源码跟踪。
+
 ## 2026-11-07：StreamingAssets源资源分类与构建交付
 
 - 分支从实时`origin/main b3d947a`建立，FF承接当前试玩`8ca1c11`及未合并#88依赖；人类已确认既存52项特效meta原样保留。本任务不暂存/提交这些改动，也保留.vscode/与PackageManagerSettings.asset；不改场景、Prefab、Packages或ProjectSettings，不自动合并main，不创建ZIP/Releases。

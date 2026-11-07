@@ -252,7 +252,10 @@ namespace YesterdayConvoy
                         terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
             float orderDelta=delta*GuerrillaPresentationRate;
             Battle.Advance(delta*EffectiveSimulationSpeed,orderDelta);
-            guerrillaOrderView?.AdvancePresentation(orderDelta);
+            // Automatic orders can be born partway through a simulation step. Bind once,
+            // starting at their actual model age instead of advancing a full extra frame.
+            bool newOrder=ObserveGuerrillaOrder();
+            guerrillaOrderView?.AdvancePresentation(newOrder?0:orderDelta);
             StepBattleShopLoop();
             SyncViews();
             UpdatePreview();

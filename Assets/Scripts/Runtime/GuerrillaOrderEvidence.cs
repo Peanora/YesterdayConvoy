@@ -251,7 +251,7 @@ namespace YesterdayConvoy
         static bool started;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]static void Install()
         {
-            if(started||!Debug.isDebugBuild||!Environment.GetCommandLineArgs().Contains("-guerrillaOrderSmokeTest"))return;
+            if(started||!Debug.isDebugBuild||GuerrillaAutoFiveSmokeDriver.Requested||!Environment.GetCommandLineArgs().Contains("-guerrillaOrderSmokeTest"))return;
             started=true;var go=new GameObject("Guerrilla order explicit Player verification");DontDestroyOnLoad(go);go.AddComponent<GuerrillaOrderSmokeDriver>();
         }
         IEnumerator Start()

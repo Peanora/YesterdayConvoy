@@ -15,17 +15,17 @@ namespace YesterdayConvoy
         public string[] Members {get;internal set;}
         static string GuerrillaEffect()
         {
-            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。所有档整令不限次数。"};
+            var lines=new List<string>{"普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。达到本档点数且有合格出手者时自动整令，不限次数；演出结束后才能再次触发。"};
             foreach(int tier in new[]{2,4,6,8,9})
             {
                 var rule=GuerrillaRules.ForTier(tier);
                 string people=rule.ParticipantLimit==int.MaxValue?"全部合格普通实体":"最多"+rule.ParticipantLimit+"人";
                 lines.Add($"{tier}档：整令{rule.Cost}点 / {people} / {Mathf.RoundToInt(rule.AttackMultiplier*100)}%攻击"+(rule.InitialOrders>0?$"，开战+{rule.InitialOrders}军令。":"。"));
             }
-            lines.Add("0.9演出秒，对每名存活守军各结算一份参与者预算，逐名过护甲/抗性；不递归产点。");
+            lines.Add("0.9/1.2/1.5/1.8/2.8演出秒全场五段命中；前四段各15%，蓄力末段40%。原完整预算先过护甲/抗性再分段，不递归产点。1×/2×演出等速。");
             lines.Add("2/4/6需普攻收手且有射程内目标；8/9可在移动/普攻中参加，无需射程目标。技能、复起、控制锁照旧。");
             lines.Add("4档参与近战护盾10%生命3秒；6/8/9档15%生命5秒。");
-            lines.Add("仅6档可拆两次3点半令，后半排除前半参与者；半令未完成不能插入整令。暂停或无合格单位/存活守军不扣费。");
+            lines.Add("仅6档保留手动两次3点半令，后半排除前半参与者；半令未完成时自动整令等待。暂停、演出中或无合格单位/存活守军不扣费。");
             return string.Join("\n",lines);
         }
         public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null)

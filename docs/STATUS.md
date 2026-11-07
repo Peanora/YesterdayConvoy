@@ -1,5 +1,9 @@
 # 当前工程状态
 
+## 2026-11-07：游击自动五斩待独立Player验收
+
+已按确认V2接线满点自动整令、五段真实群攻（15/15/15/15/40）、末击前蓄力与战场震屏，整令UI改为自动状态，六档手动半令保留。演出共3.55秒，使用模型独立时钟/逐刀实际Hits，原作头像及出手声保持；纯合成FX另轨接入。完整Edit508/508、相关D3D11 Play38/38通过；本地Windows构建与独立Player待执行。基线为实时main b1d55e7，原52处meta及两个本地项不提交。见[表现与绑定](art/GUERRILLA-ORDER-CUT-IN.md)。
+
 ## 2026-11-07：StreamingAssets源资源分类迁移
 
 已将原StreamingAssets的1644个资源文件分类移动：PNG在Art的角色/特效/UI目录，117份JSON在Data/ArtCatalogs（103份运行manifest、14份来源/维护记录）。1527张PNG原始字节与1848个既有文件/目录GUID均保留；工程内StreamingAssets仅留说明。ArtSourcePaths统一编辑器/Player路径，PreparedArtTools保留原缓存键并按当前清单生成Player资源；安装器、预览器、塔露拉打包器及素材清单同步新路径。没有删除早期美术或修改玩法、场景、Prefab、Packages、ProjectSettings。

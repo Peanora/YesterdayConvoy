@@ -1,5 +1,23 @@
 # 游击队恒速拼屏与真实全场追击
 
+## 2026-11-07：已确认的自动五斩与蓄力重斩
+
+用户确认项目外guerrilla-five-slash-preview-v2后授权接入。原生九切面/原作塔露拉继续复用，手动整令按钮改为真实军令余额、目标和自动状态；六档手动半令保留。模型满费用且有合格出手者时自动提交，三点五五秒内不重叠，不因无人、暂停或半令待完成丢点。前四刀各占15%，末刀40%，仅重新分配原预算；每段完整攻击先过防御再乘权重，逐刀记录真实HP损失。View按模型Age/Strikes呈现，终局尾独立继续，绘制不写HP。
+
+| 项目 | 采用看稿/来源 | 触发与读取点 | 接线状态 |
+|---|---|---|---|
+| 自动整令 | 已确认五斩V2 | ManualBattle.Advance子步/GuerrillaOrderVolley；Controller按批次一次桥接 | VERIFIED，Edit/GPU通过，待Player |
+| 五次全场斩击/数字 | V2原生Bezier刀光与实际Strikes | 0.9/1.2/1.5/1.8/2.8演出秒，GuerrillaOrderView | VERIFIED，逐刀实际HP/GPU通过，待Player |
+| 蓄力与重斩 | V2压暗/碎光内收/金白主刃 | 1.97–2.8秒聚力，仅真实末击后画命中 | VERIFIED，4段保持/40%末刀通过，待Player |
+| 三帧停顿与震屏 | V2战场衰减反馈 | GuerrillaOrderScreenEffect/专用Shader；不改Camera Transform或输入 | VERIFIED，实际GPU保持/位移/清理通过，待Player |
+| 声音 | 原总攻音＋V2纯合成FX | followup-original在.9秒音量.55；five-slash-charge从0秒音量1 | VERIFIED，双源暂停采样/音高/尾通过，待Player |
+
+完整演出3.55秒；二倍速不加速演出或音高，技能菜单既有0.03慢速语义保留，暂停冻结。取消只停止未来攻击/蓄力，已发生Strikes/Hits留给真实数字与末击尾光；重开/禁用清空两声源和屏幕变换。新的纯FX资源长3.38秒，不含原作出手音，不会把完整预览混音叠播两遍。新增WAV、Shader、源码和必要meta随源码提交；HTML、MP4和加工文件只留项目外。来源见source-records/guerrilla-five-slash-audio.json。
+
+本轮从实时main b1d55e7新建codex/guerrilla-auto-five-strikes，原52处VFX meta和两个本地未跟踪项保留。旧-guerrillaOrderSmokeTest/-guerrillaHighTierSmokeTest转到新的自动五斩验收，独立RenderProbe仍走原探针；旧测试文字及下文单次/2.6秒描述为历史，最新QA覆盖。最终完整Edit508/508、相关D3D11 Play38/38通过；Windows构建及独立Player验证待执行。
+
+## 2026-11-06：历史接入与来源
+
 人类于2026-11-06认可项目外V2动态视频并授权接入。V1只改变整屏图片透明度的演出已被否决，旧技术结果保留在QA历史中，不能作为V2完成证据。
 
 新演出依次为中央晶核出现、角色玻璃切面各自从外围向中心聚拢、短暂冲击与停留、切面裂为独立三角碎片、旋转漂移/收缩并逐渐消散、恢复战场。人物纹理来自此前认可的七角色AI概念裁片，原PNG字节保持；不会把整张海报或预制视频当作动态演出播放。
