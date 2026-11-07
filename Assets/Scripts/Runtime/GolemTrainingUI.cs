@@ -107,7 +107,7 @@ namespace YesterdayConvoy
                 float x=rect.x+rect.width*GolemGrowth.Threshold(stage)/target;
                 Fill(new Rect(x,rect.y,1,rect.height),new Color(.96f,.94f,.87f,.8f));
             }
-            ApprovedUi.Border(rect,new Color(.42f,.43f,.38f),1);
+            if(rect.height>2)ApprovedUi.Border(rect,new Color(.42f,.43f,.38f),1);
         }
         void DrawGolemSettlementFeedback()
         {

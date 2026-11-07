@@ -105,7 +105,7 @@ namespace YesterdayConvoy.Tests
             }
             for(int i=0;i<2400&&battle.LatestGuerrillaOrder==null&&battle.Phase==BattlePhase.Running;i++)
             {controller.Tick(.02f);if(i%10==0)yield return null;}
-            Assert.That(battle.LatestGuerrillaOrder,Is.Not.Null,"Real ordinary contact must automatically spend the full order.");
+            Assert.That(battle.LatestGuerrillaOrder,Is.Not.Null,$"Real ordinary contact must automatically spend the full order. Tier={battle.GuerrillaTier}, orders={battle.Orders}, phase={battle.Phase}, clock={battle.Clock:0.00}; "+string.Join("; ",battle.Units.Select(u=>$"{u.CardId}: active={u.Active}, attacks={u.OrdinaryAttacksFired}, progress={u.Motion.DistanceTravelled:0.00}")));
             Assert.That(battle.OrdersUsed,Is.EqualTo(1));
             if(isolateOrdinaryDamage)
             {
