@@ -58,7 +58,7 @@ namespace YesterdayConvoy
         string JourneyCompletionText()
         {
             var results=CampaignJourneySession.Current.CompletedRounds;
-            return $"十三关行动完成 · {results.Count(r=>!r.supply)}场战斗\n累计伤害 {results.Sum(r=>r.damage):0} · 部署 {results.Sum(r=>r.deployments)}次\n终局 {shop.Level}级 · {shop.Bench.Count}张收藏";
+            return $"{results.Count(r=>!r.supply)}场战斗 · 部署{results.Sum(r=>r.deployments)}次 · {shop.Level}级\n累计伤害 {results.Sum(r=>r.damage):0} · 收藏{shop.Bench.Count}张";
         }
         bool AdvanceJourney()
         {
