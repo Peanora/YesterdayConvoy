@@ -327,7 +327,8 @@ namespace YesterdayConvoy
                 Require("stage-"+trace.stage+"-ordinary-scene-and-session",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&observed.scene==trace.sceneName&&map.id==trace.mapId&&
                     controller.Battle.CampaignV2Enabled&&controller.Battle.CampaignV2Stage==trace.stage&&!controller.SynergySandbox&&!controller.ApprovedMapActive);
                 Require("stage-"+trace.stage+"-saved-terrain-present",Object.FindObjectsByType<ApprovedMapTile>(FindObjectsSortMode.None).Length==map.width*map.height);
-                Require("stage-"+trace.stage+"-exact-opening-shop",shop.Gold==trace.openingGold&&shop.Level==trace.openingLevel&&shop.Offers.SequenceEqual(trace.initialOffers));
+                Require("stage-"+trace.stage+"-exact-opening-shop",shop.Gold==trace.openingGold&&shop.Level==trace.openingLevel&&trace.initialOffers!=null&&
+                    shop.Offers.Count==trace.initialOffers.Length&&shop.Offers.Select(id=>id??string.Empty).SequenceEqual(trace.initialOffers.Select(id=>id??string.Empty)));
                 var commands=trace.shopCommands??Array.Empty<CampaignJourneyReplayShopCommand>();
                 for(int i=0;i<commands.Length;i++)yield return ShopCommand(trace.stage,i,commands[i]);
                 var selected=CampaignJourneyEvidenceProbe.Lineup(controller);
