@@ -242,7 +242,7 @@ namespace YesterdayConvoy
                 y+=29;GUI.enabled=enabled;
             }
             y=DrawRemainingBattleActions(x,y);
-            if(SynergySandbox&&Loop.CanDeploy&&LoopButton(new Rect(x,y+4,157,26),"结束验证，返回整备"))ReplaySandbox();
+            if(SynergySandbox&&Loop.CanDeploy&&LoopButton(new Rect(x,y+4,157,26),BlackForestChallengeActive?"放弃本次，返回整备":"结束验证，返回整备"))ReplaySandbox();
             GUI.enabled=enabled;
         }
         void DrawCampaignSettings()

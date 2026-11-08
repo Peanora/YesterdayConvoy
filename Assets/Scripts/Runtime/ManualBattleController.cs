@@ -260,7 +260,16 @@ namespace YesterdayConvoy
                     Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),
                         terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
             float orderDelta=delta*GuerrillaPresentationRate;
+            int priorWave=Battle.CurrentWaveIndex;
+            bool priorAdvance=Battle.FinalAdvanceActive;
             Battle.Advance(delta*EffectiveSimulationSpeed,orderDelta);
+            if(Battle.WavesEnabled&&Battle.Phase==BattlePhase.Running&&
+                (priorWave!=Battle.CurrentWaveIndex||priorAdvance!=Battle.FinalAdvanceActive))
+            {
+                CancelWaveCardClick();golemDragging=false;
+                ShopNotice(Battle.FinalAdvanceActive?"出兵结束：场上单位继续推进，仍可使用技能":
+                    $"第 {Battle.CurrentWaveIndex+1} 波：开放 {Battle.CurrentWaveLaneId}，本波 {Battle.CurrentWaveBudget} DP，余量已重置");
+            }
             // Automatic orders can be born partway through a simulation step. Bind once,
             // starting at their actual model age instead of advancing a full extra frame.
             bool newOrder=ObserveGuerrillaOrder();

@@ -67,20 +67,31 @@ namespace YesterdayConvoy
             int total=(int)Math.Ceiling(Math.Max(0,seconds));
             return $"{total/60:00}:{total%60:00}";
         }
+        public Rect WaveHeaderContentRect
+        {
+            get
+            {
+                var badge=SarkazContractBadgeRect;
+                float left=badge.width>0?Mathf.Max(219,badge.xMax+78):219;
+                return new Rect(left,11,560-left,39);
+            }
+        }
         void DrawWaveHeader(bool preparing)
         {
             if(!Battle.WavesEnabled)return;
             ValidateWaveCardClick();
             var waves=Battle.WavePlan.Waves;
-            Fill(new Rect(209,8,361,46),ApprovedUi.Paper);
+            var content=WaveHeaderContentRect;
+            // Keep the existing white badge caption over the dark battlefield, outside this paper panel.
+            Fill(new Rect(content.x-4,8,574-content.x,46),ApprovedUi.Paper);
             Fill(new Rect(737,8,273,46),ApprovedUi.Paper);
             if(preparing)
             {
-                float width=341f/Math.Max(1,waves.Count);
+                float width=content.width/Math.Max(1,waves.Count);
                 for(int i=0;i<waves.Count;i++)
                 {
-                    float x=219+i*width;
-                    GUI.Label(new Rect(x,11,width-5,21),$"{i+1}波 {waves[i].LaneId} · {waves[i].DP}DP",LoopText(12,TextAnchor.MiddleLeft,null,600));
+                    float x=content.x+i*width;
+                    GUI.Label(new Rect(x,11,width-5,21),$"{i+1}波 {waves[i].LaneId} · {waves[i].DP}DP",LoopText(11,TextAnchor.MiddleLeft,null,600));
                     GUI.Label(new Rect(x,33,width-5,16),$"出兵 {waves[i].DeploymentSeconds:0} 秒",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
                 }
                 GUI.Label(new Rect(747,11,253,22),$"全程 {WaveClockText(Battle.WavePlan.TotalDuration)} · 末段推进 {Battle.WavePlan.FinalAdvanceSeconds:0} 秒",LoopText(12,TextAnchor.MiddleLeft,null,600));
@@ -91,8 +102,8 @@ namespace YesterdayConvoy
             string phase=terminal?(Battle.TimedOut?"时间耗尽":Battle.Phase==BattlePhase.Won?"突破成功":"作战结束"):
                 Battle.FinalAdvanceActive?"最终推进 · 禁止出兵":$"第 {Battle.CurrentWaveIndex+1}/{Battle.WaveCount} 波 · {Battle.CurrentWaveLaneId}";
             string remaining=terminal?"":$"  {WaveClockText(Battle.WaveRemaining)}";
-            GUI.Label(new Rect(219,11,341,22),phase+remaining,LoopText(15,TextAnchor.MiddleLeft,null,700));
-            GUI.Label(new Rect(219,35,341,15),Battle.FinalAdvanceActive?"部署已关闭 · 场上单位继续作战，仍可释放技能":
+            GUI.Label(new Rect(content.x,11,content.width,22),phase+remaining,LoopText(15,TextAnchor.MiddleLeft,null,700));
+            GUI.Label(new Rect(content.x,35,content.width,15),Battle.FinalAdvanceActive?"停止出兵 · 场上继续作战 / 可用技能":
                 $"本波预算 {Battle.CurrentWaveBudget} DP · 当前 {Battle.DP} DP · 整关共享次数",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             int next=Battle.CurrentWaveIndex+1;
             string preview=next<waves.Count?$"下波 {waves[next].LaneId} · {waves[next].DP} DP · {waves[next].DeploymentSeconds:0} 秒":

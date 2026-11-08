@@ -69,6 +69,14 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator PausedCardClickCommitsOnceAtTheOpenGateAndCooldownRejectsRepeat()
         {
             yield return Load();var b=controller.Battle;b.SetPaused(true);
+            var badge=controller.SarkazContractBadgeRect;
+            if(badge.width>0)
+            {
+                var badgeAndCaption=new Rect(badge.x-4,badge.y-4,badge.width+76,badge.height+8);
+                Assert.That(controller.WaveHeaderContentRect.Overlaps(badgeAndCaption),Is.False,
+                    "Wave title and all three preparation columns must clear the existing contract badge and caption.");
+                Assert.That(controller.WaveHeaderContentRect.width,Is.GreaterThanOrEqualTo(210));
+            }
             string id="CARD_M07";var state=b.FindCard(id);int dp=b.DP,uses=state.RemainingUses;
             var point=Card(id);controller.ProcessShopPointer(EventType.MouseDown,point);
             Assert.That(NormalUnits,Is.Zero,"Press alone cannot spend resources.");
