@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         ManualBattle damageRankingBattle;
         Vector2 damageRankingScroll;
         int damageRankingFrame=-1;
+        GUIStyle damageRankingScrollbar;
 
         void RefreshDamageRankingRows()
         {
@@ -50,8 +51,9 @@ namespace YesterdayConvoy
                 Fill(new Rect(8,50,panel.width-16,1),ApprovedUi.Rule);
                 var viewport=new Rect(6,54,panel.width-12,160);
                 bool scrolling=damageRankingRows.Count>5;
-                float width=viewport.width-(scrolling?15:0);
-                damageRankingScroll=GUI.BeginScrollView(viewport,damageRankingScroll,new Rect(0,0,width,Mathf.Max(viewport.height,damageRankingRows.Count*32)),false,false);
+                if(damageRankingScrollbar==null)damageRankingScrollbar=new GUIStyle(GUI.skin.verticalScrollbar){fixedWidth=8,margin=new RectOffset(4,0,0,0)};
+                float width=viewport.width-(scrolling?18:0);
+                damageRankingScroll=GUI.BeginScrollView(viewport,damageRankingScroll,new Rect(0,0,width,Mathf.Max(viewport.height,damageRankingRows.Count*32)),false,false,GUIStyle.none,damageRankingScrollbar);
                 try
                 {
                     float highest=damageRankingRows.Count>0?damageRankingRows[0].Damage:0;
