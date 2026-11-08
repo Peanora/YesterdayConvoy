@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-08：黑流树海波次机制（验证中）
+
+- 同一日常工程，Unity6000.6.5f1；实时main7862d09，codex/wave-blackforest，兼容承接树海#103/伤害排行#104（集成026d255），不合并远端main。用户确认原52份VFX meta及本地配置原地保留。
+- 首轮完整EditMode **787/787**，`artifacts/wave-battle/edit-all.xml/log`。涵盖17个波次模型用例及3个波次配置/全43卡CD快照回归；旧非波次profile保持原CD/次数/面板。测试包括预算替换、门禁、跨波状态、暂停、幂等、末刻穿门/爆炸、255硬截止、巨像旁路和重开。
+- `WaveBattleTools.Evaluate`真实ManualBattle三种固定策略，.05秒/1倍：默认轮询192.95秒失败、剩1防御；低费优先193.70秒失败、剩3；各波延后10秒203.40秒失败、剩1。三组均16次普通部署、守军自然清空，配置未回写。记录`artifacts/wave-blackforest/model-strategies.json`及`artifacts/wave-battle/policies.log`；不将清守军当成胜利，不注伤害/强制胜负，不宣称全构筑胜率。
+- 相关非batch D3D11 PlayMode **32/32**，`artifacts/wave-battle/play-related.xml/log`：WaveBattleInteraction6、BlackForest2、Campaign4以及伤害排行/ApprovedUI/自由席位/旧商店闭环与地图回归。新增巨像用例经生产整备入口换阵，验证排行中心/角落/旧交叠区域点击不扣费、不出兵，巨像原卡松开恰好一次部署、重复点击与暂停保持正确。巨像卡移至排行上方，保留旧非波次拖放。
+- 最终配置读取与诊断计划接线后，完整EditMode再次 **787/787**（`edit-final.xml/log`），树海/波次相关D3D11 PlayMode再次 **8/8**（`play-final.xml/log`）。重开本关按现有规则返回整备，只有点击开始作战才启动波次计时。原56份既存文件逐文件SHA256保持。
+- `WaveBattleTools.EvaluateStrategies`以完整默认8人编队、正常面板、原九守军与16/16/18预算执行36组固定优先级/分批策略；18组自然Won，其余自然Lost，不将该比例当作玩家胜率。seed20261109在193.40秒自然胜利，16部署、6穿门、10次守军技能、7255.0898实际伤害；完整部署日志在`artifacts/wave-blackforest/model-strategy-search.json`。源配置保持，未改DP/CD/次数/血量求胜。Player将复现该合法单击计划核对模型与实机。
+- 可见Player和最终EXE构建正在进行；本节将在真实完成后更新。
+
 ## 2026-11-08：普通开局、放大树海与清理红门文字
 
 - 人类先反馈简单、随后明确可能是预置过好并要求普通阵容；本轮不加强守军。新开局M07/M08/M15二星、M16/M10/M05/M04/M38一星，无三星/五费，14基础牌/等价20招募金币/首轮25DP；四档整合、二档游击/感染，无雪怪。旧8名整合成员实际仅六档（两编制），不误记为八档。

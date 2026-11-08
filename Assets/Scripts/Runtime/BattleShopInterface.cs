@@ -39,7 +39,7 @@ namespace YesterdayConvoy
         void DrawLoopHeader()
         {
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
-            string mode=BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
+            string mode=Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
             GUI.Label(new Rect(28,11,165,24),shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));
@@ -59,6 +59,7 @@ namespace YesterdayConvoy
             GUI.enabled=enabled;
             if(LoopButton(new Rect(1222,8,42,42),"菜单"))
             {loopMenuOpen=!loopMenuOpen;loopTestSettlementOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}
+            DrawWaveHeader(preparing);
         }
         static void DrawLoopShield(Vector2 origin,Color color)
         {
@@ -135,7 +136,7 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,552,1280,168),new Color(.12f,.20f,.26f,.35f));
             GUI.Label(new Rect(18,553,160,24),"部署栏",LoopText(14,TextAnchor.MiddleLeft,Color.white,600));
-            GUI.Label(new Rect(150,553,520,24),"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
+            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 仍可点击角色使用技能"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
             for(int i=0;i<shopLineup.Count;i++)
             {
                 string id=shopLineup[i];var state=Battle.FindCard(id);if(state==null)continue;
@@ -149,21 +150,22 @@ namespace YesterdayConvoy
                 int star=ShopLineupPiece(id)?.Star??1;
                 GUI.Label(new Rect(r.x+37,r.y+4,r.width-41,21),new string('★',star),LoopText(12,TextAnchor.MiddleRight,new Color(1,.94f,.73f),600));
                 double cd=Battle.CardCooldown(id);
-                if(cd>0||state.RemainingUses==0||Battle.DP<state.Settings.DeploymentCost)
+                bool waveClosed=Battle.WavesEnabled&&!Battle.DeploymentWindowOpen;
+                if(waveClosed||cd>0||state.RemainingUses==0||Battle.DP<state.Settings.DeploymentCost)
                 {
                     Fill(new Rect(r.x,r.y,r.width,97),new Color(.08f,.14f,.20f,.68f));
-                    GUI.Label(new Rect(r.x,r.y+36,r.width,30),cd>0?$"{cd:0.0}s":state.RemainingUses==0?"次数用尽":"费用不足",LoopText(12,TextAnchor.MiddleCenter,Color.white));
+                    GUI.Label(new Rect(r.x,r.y+36,r.width,30),waveClosed?"出兵结束":cd>0?$"{cd:0.0}s":state.RemainingUses==0?"次数用尽":"费用不足",LoopText(12,TextAnchor.MiddleCenter,Color.white));
                 }
             }
             Fill(new Rect(1125,582,137,117),ApprovedUi.Paper);Fill(new Rect(1125,582,137,2),new Color(.35f,.49f,.60f));
-            GUI.Label(new Rect(1138,590,113,23),"部署点 DP",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(1138,590,113,23),Battle.WavesEnabled?"本波剩余 DP":"部署点 DP",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(1136,612,113,54),Battle.DP.ToString(),LoopText(42,TextAnchor.MiddleLeft,null,700));
             GUI.Label(new Rect(1138,671,113,19),$"编队 {shopLineup.Count} / {shop.Level}",LoopText(11,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             if(Battle.IsPaused)
             {
                 Fill(new Rect(508,278,264,61),new Color(.90f,.93f,.95f,.94f));
                 GUI.Label(new Rect(522,283,236,29),"暂停中",LoopText(24,TextAnchor.MiddleCenter,null,600));
-                GUI.Label(new Rect(522,312,236,18),"可拖动部署 · 空格继续",LoopText(11,TextAnchor.MiddleCenter,ApprovedUi.Muted));
+                GUI.Label(new Rect(522,312,236,18),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?"可点击部署 · 空格继续":"出兵已结束 · 空格继续"):"可拖动部署 · 空格继续",LoopText(11,TextAnchor.MiddleCenter,ApprovedUi.Muted));
             }
         }
         void DrawLoopCostBackground(Rect rect,int recruitCost)

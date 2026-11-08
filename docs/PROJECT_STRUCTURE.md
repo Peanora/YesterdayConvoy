@@ -1,5 +1,7 @@
 # 工程目录与场景规范
 
+2026-11-08波次试玩：`BlackForestCrossing.unity`继续保存全部地形；地图配置新增`attackWaves`，引用`Assets/Data/Resources/Maps/BlackForestWaves.asset`保存三波入口/独立DP/部署时长/末段推进。编辑配置无需修改场景，运行状态由ManualBattle独立持有。默认十三关及旧专项不自动套用波次；树海入口改为“黑流树海 · 波次试玩”。
+
 2026-11-08树海六星防线：`Assets/Scenes/BlackForestCrossing.unity`保持保存地形，`Assets/Data/Resources/Maps/BlackForestCrossing.asset`已配置九名守军（六名六星）。从测试选择进入“树海交错回廊 · 六星防线”，8级自由整备、正常角色数值、50DP/6共享防御。入口和规则见[地图说明](BLACK_FOREST_CROSSING.md)，覆盖下文此前无守军的阶段记录。
 
 2026-11-06树海地图：新增 `Assets/Scenes/BlackForestCrossing.unity`，共16个保存场景，由GameSceneCatalog自动纳入构建。17×14地形、三红两蓝、根系与三种视觉特殊地面直接保存在场景；从怪物测试选择进入“树海交错回廊 · 地形试走”。本轮无守军，不替换既有挑战地图，编辑与操作见[树海地图说明](BLACK_FOREST_CROSSING.md)。

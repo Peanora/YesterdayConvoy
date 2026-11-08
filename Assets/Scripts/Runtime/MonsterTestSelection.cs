@@ -105,7 +105,7 @@ namespace YesterdayConvoy
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 含六星",buttonStyle))defenderMenuOpen=true;
             if(GUI.Button(new Rect(790,91,428,40),"三星塔露拉 · 完整双阶段",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(TalulahPhaseTrialBootstrap.SceneName);
-            if(GUI.Button(new Rect(790,42,428,40),"树海交错回廊 · 六星防线",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
+            if(GUI.Button(new Rect(790,42,428,40),"黑流树海 · 波次试玩",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
             if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;

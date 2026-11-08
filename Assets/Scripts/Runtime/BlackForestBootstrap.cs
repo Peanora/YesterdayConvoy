@@ -12,14 +12,13 @@ namespace YesterdayConvoy
         static void PrepareSmokeRun()
         {
             // Preparation also needs frames before the diagnostic coroutine can take ownership.
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-blackForestSmokeTest")>=0)Application.runInBackground=true;
+            if(Array.Exists(Environment.GetCommandLineArgs(),a=>a=="-blackForestSmokeTest"||a=="-waveBattleSmokeTest"))Application.runInBackground=true;
         }
         IEnumerator Start()
         {
             yield return null;
             controller=FindAnyObjectByType<ManualBattleController>();
             yield return controller.PrepareBlackForest(encounter);
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-blackForestSmokeTest")>=0){Application.runInBackground=true;yield return controller.VerifyBlackForest();}
         }
         void Update()
         {

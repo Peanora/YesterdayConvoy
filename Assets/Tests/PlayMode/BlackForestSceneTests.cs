@@ -67,15 +67,14 @@ namespace YesterdayConvoy.Tests
             }
             controller.Shop.Validate();
         }
-        void Drag(string cardId,int lane)
+        void Click(string cardId)
         {
             int index=controller.Shop.Bench.ToList().FindIndex(p=>p.Id==cardId);
             Assert.That(index,Is.GreaterThanOrEqualTo(0));
-            Vector2 target=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(controller.Battle.Lanes[lane].Entry));
-            Assert.That(controller.ShopMapPointAvailable(target),Is.True,"Red gate "+(lane+1)+" must remain interactive outside UI.");
             int before=controller.Battle.Units.Count(u=>!u.SynergySupport);
-            controller.ProcessShopPointer(EventType.MouseDown,controller.ShopPieceRect(index).center);
-            controller.ProcessShopPointer(EventType.MouseDrag,target);controller.ProcessShopPointer(EventType.MouseUp,target);
+            var point=controller.ShopPieceRect(index).center;
+            controller.ProcessShopPointer(EventType.MouseDown,point);
+            controller.ProcessShopPointer(EventType.MouseUp,point);
             Assert.That(controller.Battle.Units.Count(u=>!u.SynergySupport),Is.EqualTo(before+1),cardId+" / "+controller.ShopFeedback);
         }
         [UnityTest]public IEnumerator SavedTerrainPersistsAcrossShopTransactionsRestartAndSceneExit()
@@ -94,8 +93,8 @@ namespace YesterdayConvoy.Tests
             int gold=c.Shop.Gold,offer=Enumerable.Range(0,5).First(i=>c.Shop.Offers[i]!=null);
             Assert.That(c.PurchaseShopCard(offer).Success,Is.True);Assert.That(c.Shop.Gold,Is.EqualTo(gold));AssertStock();
             Assert.That(tile.transform.position,Is.EqualTo(moved));
-            Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();Drag("CARD_M07",2);
-            Assert.That(c.Battle.Units.Single(u=>!u.SynergySupport).RouteId,Is.EqualTo("R3"));
+            Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();Click("CARD_M07");
+            Assert.That(c.Battle.Units.Single(u=>!u.SynergySupport).RouteId,Is.EqualTo("R1"));
             c.Battle.SetPaused(true);Vector3 position=c.Battle.Units[0].Motion.Position;c.Tick(5);
             Assert.That(c.Battle.Units[0].Motion.Position,Is.EqualTo(position));
             Assert.That(c.RestartCampaignEncounter(),Is.True);yield return Ready();AssertEncounter();
@@ -103,7 +102,7 @@ namespace YesterdayConvoy.Tests
             c.LeaveShopTrial();yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;
             Assert.That(Object.FindAnyObjectByType<BlackForestTile>(),Is.Null);
         }
-        [UnityTest]public IEnumerator PausedThreeGateDeploymentKeepsRealCostsRoutesAndTheForestOnReturnToPreparation()
+        [UnityTest]public IEnumerator PausedActiveGateClicksKeepRealCostsAndTheForestOnReturnToPreparation()
         {
             yield return Load();var c=controller;Assert.That(c.StartLoopNextBattle(),Is.True);yield return Ready();
             c.Battle.Begin();c.Battle.SetPaused(true);double clock=c.Battle.Clock;
@@ -112,8 +111,8 @@ namespace YesterdayConvoy.Tests
             for(int lane=0;lane<3;lane++)
             {
                 var card=c.Battle.FindCard(names[lane]);int uses=card.RemainingUses;expectedDP-=card.Settings.DeploymentCost;
-                Drag(names[lane],lane);var unit=c.Battle.Units.Single(u=>!u.SynergySupport&&u.CardId==names[lane]);
-                Assert.That(unit.RouteId,Is.EqualTo("R"+(lane+1)));Assert.That(unit.ExitId,Is.EqualTo(lane==1?"B2":"B1"));
+                Click(names[lane]);var unit=c.Battle.Units.Single(u=>!u.SynergySupport&&u.CardId==names[lane]);
+                Assert.That(unit.RouteId,Is.EqualTo("R1"));Assert.That(unit.ExitId,Is.EqualTo("B1"));
                 Assert.That(card.RemainingUses,Is.EqualTo(uses-1));Assert.That(c.Battle.CardCooldown(names[lane]),Is.GreaterThan(0));
                 Assert.That(c.Battle.DP,Is.EqualTo(expectedDP));
             }

@@ -53,7 +53,7 @@ namespace YesterdayConvoy.Editor
                 Id=definition.Card.CardId,Name=definition.Card.DisplayName,Cost=definition.Card.RecruitCost}),61108);
             shop.EnableCampaign(true);shop.Preset(pieces,Array.Empty<string>(),BlackForestChallengePlan.InitialLevel,0,10);shop.Validate();
             var profiles=definitions.Select((definition,i)=>CampaignBalance.Build(definition,pieces[i].Star,
-                BlackForestChallengePlan.InitialDP,BlackForestChallengePlan.Defense)).ToArray();
+                BlackForestChallengePlan.TotalDP,BlackForestChallengePlan.Defense)).ToArray();
             var guards=BlackForestChallengePlan.CopyDefenders().Select(guard=>guard.Snapshot()).ToArray();
             var first=profiles[0];
             var battle=new ManualBattle(first.Unit,encounter.route,definitions[0].Engagement.DefenderPosition,

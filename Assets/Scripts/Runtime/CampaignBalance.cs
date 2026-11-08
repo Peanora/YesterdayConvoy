@@ -121,7 +121,7 @@ namespace YesterdayConvoy
         public static float HPScale(int cost,int star)=>star==4&&cost==1?4.25f:star==1?1:cost==5?star==2?1.9f:5:cost==4?star==2?1.8f:3.2f:star==2?1.75f:3;
         public static float AttackScale(int cost,int star)=>star==4&&cost==1?3.0f:star==1?1:cost==5?star==2?1.7f:3:cost==4?star==2?1.6f:2.6f:star==2?1.5f:2.15f;
         public static float AbilityScale(int cost,int star)=>star==4&&cost==1?3.8f:star==1?1:cost==5?star==2?1.9f:5:cost==4?star==2?1.75f:3.5f:star==2?1.6f:2.7f;
-        public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int initialDP,int defense)
+        public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int initialDP,int defense,bool waveMode=false)
         {
             var s=data.Snapshot();var c=data.Engagement.Snapshot();var r=Profiles[s.CardId];
             if(star<1||star>ShopTrialModel.MaxStarForCost(r.Cost))throw new ArgumentOutOfRangeException(nameof(star));
@@ -136,7 +136,7 @@ namespace YesterdayConvoy
                 c.InitialSP,c.RequiredSP,c.SPPerSecond,c.SkillAmmo,skillAttack,c.SkillInterval,c.SkillRange,c.ProjectileTime,
                 c.FireRain,c.HasSkill,c.Melee,c.AttackDuration,c.AttackWindup,effects,c.CanAttack,c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);
             var unit=new ManualBattleSettings(s.CardId,s.UnitId,initialDP,defense,CampaignPlan.Uses(r.Cost),CampaignPlan.DP(r.Cost,r.BaseDP,star),
-                new[]{0,2,3,4,5,8}[r.Cost],Mathf.Floor(r.HP*HPScale(r.Cost,star)+.5f),r.Speed,r.Gate+(star>=3?1:0),s.TowerRange,s.TowerDamage,s.ShotInterval);
+                waveMode?WaveDeploymentCadence.ForCard(s.CardId,r.Cost):new[]{0,2,3,4,5,8}[r.Cost],Mathf.Floor(r.HP*HPScale(r.Cost,star)+.5f),r.Speed,r.Gate+(star>=3?1:0),s.TowerRange,s.TowerDamage,s.ShotInterval);
             return new BasicRosterProfile(unit,combat,true);
         }
 

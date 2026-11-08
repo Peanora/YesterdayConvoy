@@ -211,7 +211,8 @@ namespace YesterdayConvoy
             if(Loop!=null&&(!Loop.CanDeploy||Loop.RewardStage))return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
-            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) { CompactShopLineupSeats(); Battle.Begin(); }
+            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point) &&
+                (!Battle.WavesEnabled||Battle.CanDeployOnLane(Battle.FindEntryLane(point)?.Id))) { CompactShopLineupSeats(); Battle.Begin(); }
             var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
             Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.FindCard(DeploymentDefinition.Card.CardId)?.Settings.DeploymentCost??DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
@@ -591,6 +592,8 @@ namespace YesterdayConvoy
             switch(reason)
             {
                 case DeployFailure.WrongEntry: return "无法部署：只有红门是合法入口";
+                case DeployFailure.WaveEntryClosed: return "本波入口未开放，请使用白线路线对应的红门";
+                case DeployFailure.DeploymentWindowEnded: return "部署阶段已结束，等待场上单位完成最后推进";
                 case DeployFailure.NoDP: return "费用不足：等待场上单位继续进攻";
                 case DeployFailure.NoUses: return "本场部署次数已用尽";
                 case DeployFailure.CoolingDown: return "部署冷却中，请稍候";

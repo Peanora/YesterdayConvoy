@@ -11,6 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
   m_Name: BlackForestCrossing
+  attackWaves: {fileID: 11400000, guid: 3fae238fcf7d42b5a447d10941dc477b, type: 2}
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
   battle: {fileID: 11400000, guid: fe9dd4ad299fdbc4b8bdf5dcdf1e34db, type: 2}
   route:

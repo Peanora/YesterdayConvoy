@@ -10,6 +10,7 @@ namespace YesterdayConvoy
     {
         void DrawBlackForestRouteLabels(GUIStyle label)
         {
+            if(Battle.WavesEnabled){DrawWaveRoutes();return;}
             DeploymentLane selected=null;
             if(shopDrag>=0&&shopMoving&&PointerGround(ScreenPosition(shopPointer),out var world))selected=Battle.FindEntryLane(world);
             if(selected==null)return;
@@ -28,7 +29,7 @@ namespace YesterdayConvoy
             var cards=monsterTests.Where(o=>o.Playable&&ids.Contains(o.Id)).Select(o=>o.Definition.Card);
             return Prepare(Plan(encounter.defenders,cards,true),()=>{
                 StartCampaign(true,encounterOverride:encounter);
-                ShopNotice("六星防线：已备好8级编队；可自由整备，点击开始战斗后拖至任一红门");
+                ShopNotice("波次进攻：整备时查看三波入口与预算；开始战斗后点击卡牌部署，次数与冷却跨波保留");
             },"准备树海六星防线");
         }
     }

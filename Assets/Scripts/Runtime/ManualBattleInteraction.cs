@@ -13,7 +13,8 @@ namespace YesterdayConvoy
         private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
-        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
+        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f :
+            Battle.WavesEnabled&&Battle.GuerrillaOrderBusy?Mathf.Min(1,SimulationSpeed):SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
         private static Vector2 GUIPosition(Vector2 screen) => TacticalViewport.Current.FromScreen(screen);

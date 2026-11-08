@@ -200,7 +200,7 @@ namespace YesterdayConvoy
             ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 金币":r.Message);return r;
         }
         void ShopNotice(string message){shopMessage=message;shopMessageUntil=Time.unscaledTime+3;}
-        public void CancelShopDrag(){CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
+        public void CancelShopDrag(){CancelWaveCardClick();CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
             ClearSynergyActivationFeedback();synergyActivationShop=null;
@@ -212,7 +212,7 @@ namespace YesterdayConvoy
         {
             if(shop==null)return false;
             if(type==EventType.KeyDown&&Event.current!=null&&Event.current.keyCode==KeyCode.Escape){CancelShopDrag();return false;}
-            if(button!=0&&(shopDrag>=0||sarkazContractBadgeDragging)){CancelShopDrag();return true;}
+            if(button!=0&&(shopDrag>=0||sarkazContractBadgeDragging||waveClickInstance>=0)){CancelShopDrag();return true;}
             if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen){CancelShopDrag();return false;}
             if(button!=0&&sarkazContractBadgeDragging){CancelSarkazContractBadgeDrag();return true;}
             if(button==0&&ProcessSarkazContractBadgePointer(type,point))return true;
@@ -222,6 +222,7 @@ namespace YesterdayConvoy
             if(HandleGolemPointer(type,point,button))return true;
             if(Loop!=null&&!Loop.CanDeploy&&!Loop.CanShop)return false;
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
+            if(HandleWaveCardPointer(type,point,button))return true;
             if(type==EventType.MouseDown&&button==0)
             {
                 if(Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop)&&shopVisible&&!ShopPanelTransitioning)

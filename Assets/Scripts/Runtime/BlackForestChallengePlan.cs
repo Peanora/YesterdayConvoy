@@ -6,8 +6,8 @@ namespace YesterdayConvoy
     // Independent encounter defaults; player profiles use the normal Campaign balance.
     public static class BlackForestChallengePlan
     {
-        public const int InitialDP=50, Defense=6, InitialLevel=8;
-        public const string Title="树海 · 六星防线";
+        public const int InitialDP=16, TotalDP=50, Defense=6, InitialLevel=8;
+        public const string Title="黑流树海 · 三波攻势";
 
         public static ShopTrialModel.Piece[] StartingPieces()=>new[]{
             new ShopTrialModel.Piece{Id="CARD_M07",Star=2},

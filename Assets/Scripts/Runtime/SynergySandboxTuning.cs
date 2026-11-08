@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         BasicRosterProfile CampaignProfile(string id,int dp,int defense)
         {
             int star=ShopLineupPiece(id)?.Star??1;
-            var source=CampaignBalance.Build(shopDefinitions[id],star,dp,defense);
+            var source=CampaignBalance.Build(shopDefinitions[id],star,dp,defense,waveMode:shopMapCopy!=null&&shopMapCopy.attackWaves!=null);
             if(!BoostSandboxStats)return source;
             var u=source.Unit;var c=source.Combat;
             var unit=new ManualBattleSettings(u.CardId,u.UnitId,u.InitialDP,u.InitialDefense,u.DeploymentLimit,u.DeploymentCost,

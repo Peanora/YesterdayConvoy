@@ -174,6 +174,7 @@ namespace YesterdayConvoy
             if(Phase!=BattlePhase.Running)return new DeploymentReceipt(Phase==BattlePhase.Ready?DeployFailure.NotStarted:DeployFailure.Finished);
             if(IsPaused&&!allowWhilePaused)return new DeploymentReceipt(DeployFailure.Paused);
             var lane=FindEntryLane(position);if(lane==null)return new DeploymentReceipt(DeployFailure.WrongEntry);
+            var waveFailure=CheckWaveDeployment(lane.Id);if(waveFailure!=DeployFailure.None)return new DeploymentReceipt(waveFailure);
             if(MudrockTier<2||GolemDeployed)return new DeploymentReceipt(DeployFailure.NoUses);
             if(DP<GolemCost)return new DeploymentReceipt(DeployFailure.NoDP);
             int stage=GolemStage;float hp=stage==1?360:stage==2?550:stage==3?1800:stage==4?6000:7500,attack=stage==1?60:stage==2?84:stage==3?240:stage==4?1600:2000;
