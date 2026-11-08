@@ -50,8 +50,16 @@ namespace YesterdayConvoy
         IEnumerator WaveEvidenceReady()
         {
             double deadline=Time.realtimeSinceStartupAsDouble+600;
-            while((ArtLoading||ShopPanelTransitioning)&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
-            if(ArtLoading||ShopPanelTransitioning)throw new InvalidOperationException("Wave evidence preparation timed out.");
+            int stableFrames=0;
+            while(stableFrames<2&&Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                // Restart may expose new shop offers before Update queues their idle art.
+                // Queue that same production work now, then require two completed ready frames.
+                WarmVisibleShop();
+                stableFrames=ArtLoading||ShopPanelTransitioning?0:stableFrames+1;
+                yield return null;
+            }
+            if(ArtLoading||ShopPanelTransitioning||stableFrames<2)throw new InvalidOperationException("Wave evidence preparation timed out.");
             // The default infection form is accepted only by this diagnostic.
             if(inspectedSynergy=="感染生物")inspectedSynergy=null;
             CloseSkillMenu();CloseDefenderInspector();yield return null;
