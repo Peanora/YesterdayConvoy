@@ -275,6 +275,7 @@ namespace YesterdayConvoy
             bool newOrder=ObserveGuerrillaOrder();
             guerrillaOrderView?.AdvancePresentation(newOrder?0:orderDelta);
             StepBattleShopLoop();
+            ValidateDefenderInspector();
             TickSynergyActivationFeedback(delta);
             SyncViews();
             UpdatePreview();

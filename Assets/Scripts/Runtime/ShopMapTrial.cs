@@ -36,7 +36,8 @@ namespace YesterdayConvoy
         public static Rect ShopSellRightRect=>ApprovedUi.SellRight;
         public static Rect ShopRightSaleDropRect=>Rect.MinMaxRect(ShopSellRightRect.x,DamageRankingPanelRect.yMax+4,ShopSellRightRect.xMax,ShopSellRightRect.yMax);
         public static Rect DamageRankingPanelRect=>ApprovedUi.RecruitList;
-        public bool DamageRankingVisible=>ShopTrialActive;
+        public static Rect ShopMapSafeRect=>Rect.MinMaxRect(200,66,DamageRankingPanelRect.x-14,544);
+        public bool DamageRankingVisible=>ShopTrialActive&&!CampaignUiModalOpen;
         // Retained geometry aliases for existing tooling; these are no longer purchase targets.
         public static Rect ShopRecruitListRect=>DamageRankingPanelRect;
         public static Rect ShopRecruitRowRect(int i)=>new Rect(ShopRecruitListRect.x+6,ShopRecruitListRect.y+35+i*37,ShopRecruitListRect.width-12,34);
@@ -132,6 +133,13 @@ namespace YesterdayConvoy
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
+            if(TacticalMapId==BlackForestLayout.Id)
+                for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
+                {
+                    if(BlackForestLayout.Tile(col,row)=='#')continue;
+                    var cell=BlackForestLayout.Cell(col,row,BlackForestLayout.Tile(col,row)=='H'?.72f:0);
+                    foreach(float x in new[]{-.5f,.5f})foreach(float z in new[]{-.5f,.5f})yield return cell+new Vector3(x,0,z);
+                }
             foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points)
             {
                 yield return point;yield return point+Camera.main.transform.up*1.65f;
@@ -151,18 +159,12 @@ namespace YesterdayConvoy
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
             var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();
-            // Keep interactive terrain between the trait rail, header and bottom card bar.
+            // Keep interactive terrain between the trait rail, ranking sidebar, header and cards.
             // Decorative geometry still fills the full camera; only the fit budget is inset.
-            var center=new Vector2(.56f,.61f);
-            var halfExtent=new Vector2(.39f,.26f);
-            if(TacticalMapId==BlackForestLayout.Id)
-            {
-                // The forest fills more of the battlefield; tile corners keep the lowest row clear of cards.
-                var fit=TacticalViewport.Current.CameraRect(new Rect(200,66,1060,478));
-                var viewport=camera.rect;
-                center=new Vector2((fit.center.x-viewport.x)/viewport.width,(fit.center.y-viewport.y)/viewport.height);
-                halfExtent=new Vector2(fit.width/(2*viewport.width),fit.height/(2*viewport.height));
-            }
+            var fit=TacticalViewport.Current.CameraRect(ShopMapSafeRect);
+            var viewport=camera.rect;
+            var center=new Vector2((fit.center.x-viewport.x)/viewport.width,(fit.center.y-viewport.y)/viewport.height);
+            var halfExtent=new Vector2(fit.width/(2*viewport.width),fit.height/(2*viewport.height));
             for(int pass=0;pass<5;pass++)
             {
                 var projected=points.Select(camera.WorldToViewportPoint).ToArray();

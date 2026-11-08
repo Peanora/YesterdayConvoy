@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -68,6 +69,8 @@ namespace YesterdayConvoy.Tests
             for(int i=0;i<1200&&(controller.ArtLoading||controller.ShopPanelTransitioning);i++)yield return null;
             Assert.That(controller.ArtLoading||controller.ShopPanelTransitioning,Is.False);
             var battle=controller.Battle;battle.Begin();
+            Assert.That(battle.TotalGuerrillaDamage,Is.Zero);
+            Assert.That(battle.DamageRanking.All(entry=>entry.GuerrillaDamage==0),Is.True);
             // Explicit durable/non-attacking runtime fixture: deployment, targeting, ordinary hits,
             // per-entity military-order credit and spending all remain real game operations.
             foreach(var defender in battle.Defenders)
@@ -327,9 +330,12 @@ namespace YesterdayConvoy.Tests
             var initial=guards.ToDictionary(guard=>guard.EntityId,guard=>guard.Health);
             AdvanceTo(view,.85f);Capture(view);Assert.That(volley.Hits,Is.Empty);
             foreach(var guard in guards)Assert.That(guard.Health,Is.EqualTo(initial[guard.EntityId]));
+            Assert.That(battle.TotalGuerrillaDamage,Is.Zero,"The real ordinary contact must not be classified as pursuit damage.");
+            AssertPursuitSubtotal(battle);
             var departed=guards.First(guard=>guard!=distant);typeof(DefenderState).GetProperty("Health").SetValue(departed,0f);
             guards=guards.Where(guard=>guard.Alive).ToArray();
-            battle.SetPaused(true);controller.Tick(2);Capture(view);Assert.That(volley.Age,Is.EqualTo(.85f).Within(.0001));battle.SetPaused(false);
+            battle.SetPaused(true);controller.Tick(2);Capture(view);Assert.That(volley.Age,Is.EqualTo(.85f).Within(.0001));
+            Assert.That(battle.TotalGuerrillaDamage,Is.Zero);battle.SetPaused(false);
             controller.ToggleSpeed();double clock=battle.Clock;controller.Tick(.04f);
             Assert.That(battle.Clock-clock,Is.EqualTo(.08).Within(.0001));Assert.That(view.Age,Is.EqualTo(.89f).Within(.0001));
             float firstDamage=0;
@@ -341,12 +347,15 @@ namespace YesterdayConvoy.Tests
                     Assert.That(volley.CompletedStrikes,Is.EqualTo(4));Assert.That(volley.Resolved,Is.False);
                     Assert.That(view.DisplayedStrikeCount,Is.EqualTo(4));Assert.That(view.ChargeProgress,Is.GreaterThan(0));
                     Assert.That(charge.Any(pixel=>pixel.a>0),Is.True,"Charging must contribute real full-screen pixels.");
+                    float pausedPursuit=battle.TotalGuerrillaDamage;
                     battle.SetPaused(true);controller.Tick(1);CollectionAssert.AreEqual(charge,Capture(view));
-                    Assert.That(volley.Hits.Sum(hit=>hit.Damage),Is.EqualTo(chargeTotal));battle.SetPaused(false);
+                    Assert.That(volley.Hits.Sum(hit=>hit.Damage),Is.EqualTo(chargeTotal));
+                    Assert.That(battle.TotalGuerrillaDamage,Is.EqualTo(pausedPursuit));battle.SetPaused(false);
                 }
                 AdvanceTo(view,GuerrillaOrderVolley.StrikeTime(index)-.01f);
                 Assert.That(volley.CompletedStrikes,Is.EqualTo(index));
                 var before=guards.ToDictionary(guard=>guard.EntityId,guard=>guard.Health);
+                float pursuitBefore=battle.TotalGuerrillaDamage,totalBefore=battle.TotalPlayerDamage;
                 AdvanceTo(view,GuerrillaOrderVolley.StrikeTime(index)+.01f);var impact=Capture(view);
                 Assert.That(volley.CompletedStrikes,Is.EqualTo(index+1));var strike=volley.Strikes[index];
                 Assert.That(strike.Index,Is.EqualTo(index));Assert.That(strike.At,Is.EqualTo(GuerrillaOrderVolley.StrikeTime(index)));
@@ -365,6 +374,10 @@ namespace YesterdayConvoy.Tests
                 view.BindVolley(volley);CollectionAssert.AreEqual(impact,Capture(view));
                 foreach(var hit in strike.Hits)Assert.That(before[hit.TargetId]-battle.FindDefender(hit.TargetId).Health,Is.EqualTo(hit.Damage).Within(.01),"Rendering cannot deal damage.");
                 float amount=strike.Hits.Sum(hit=>hit.Damage);if(index==0)firstDamage=amount;
+                Assert.That(battle.TotalGuerrillaDamage-pursuitBefore,Is.EqualTo(amount).Within(.01),"Only this strike's real HP loss enters the pursuit subset.");
+                Assert.That(battle.TotalPlayerDamage-totalBefore,Is.EqualTo(amount).Within(.01),"The subset cannot add a second copy to total damage.");
+                Assert.That(battle.TotalGuerrillaDamage,Is.EqualTo(volley.Hits.Sum(hit=>hit.Damage)).Within(.01));
+                AssertPursuitSubtotal(battle);
                 if(index==4)Assert.That(amount,Is.GreaterThan(firstDamage*2.5f),"The40% finish must exceed the15% opening cut.");
                 Assert.That(volley.Resolved,Is.EqualTo(index==4));
             }
@@ -377,6 +390,45 @@ namespace YesterdayConvoy.Tests
             CollectionAssert.AreEqual(finalHealth,guards.Select(guard=>guard.Health));Assert.That(view.Playing,Is.False);
             Assert.That(view.ScreenEffect.Offset,Is.EqualTo(Vector2.zero));Assert.That(view.ScreenEffect.Zoom,Is.EqualTo(1));Assert.That(view.ScreenEffect.Roll,Is.Zero);
             Assert.That(view.SoundPlaying||view.SlashSoundPlaying,Is.False);
+            Assert.That(battle.TotalGuerrillaDamage,Is.GreaterThan(0));
+            Assert.That(battle.DamageRanking.Single(entry=>entry.CardId=="CARD_M03").GuerrillaDamage,Is.EqualTo(battle.TotalGuerrillaDamage).Within(.01));
+            Assert.That(controller.DamageRankingVisible,Is.True);
+            if(!Application.isBatchMode)
+            {
+                // Test evidence uses the existing durable fixture, not a natural battle/balance run.
+                // Let the stable positive totals receive completed UI repaint frames first.
+                // Avoid WaitForEndOfFrame: an unfocused Editor Game view can suspend it.
+                yield return null;yield return null;
+                var screen=ScreenCapture.CaptureScreenshotAsTexture();
+                try
+                {
+                    Assert.That(screen,Is.Not.Null);
+                    string path=Path.GetFullPath("artifacts/wave-feedback/pursuit-ranking.png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllBytes(path,screen.EncodeToPNG());
+                }
+                finally{if(screen!=null)Object.Destroy(screen);}
+            }
+            // Keep the durable runtime fixture, but restore one real ordinary attack opportunity.
+            // No direct damage helper is called: targeting, windup and projectile impact run normally.
+            var ordinarySource=participants.Single();var ordinaryTarget=guards.First();
+            typeof(DefenderState).GetProperty("Position").SetValue(ordinaryTarget,ordinarySource.Motion.Position+Vector3.right*.2f);
+            battle.ConfigureDefenderHighGround(ordinaryTarget.EntityId,false);
+            typeof(DeployedUnitState).GetField("NextAttackTime",PrivateInstance).SetValue(ordinarySource,battle.Clock);
+            float pursuitFinal=battle.TotalGuerrillaDamage,totalFinal=battle.TotalPlayerDamage;
+            for(int i=0;i<200&&battle.TotalPlayerDamage<=totalFinal;i++)
+            {controller.Tick(.02f);if(i%20==0)yield return null;}
+            Assert.That(battle.TotalPlayerDamage,Is.GreaterThan(totalFinal),"A real later ordinary impact must occur in the fixture.");
+            Assert.That(battle.TotalGuerrillaDamage,Is.EqualTo(pursuitFinal),"Later ordinary attacks cannot inherit the pursuit classification.");
+            AssertPursuitSubtotal(battle);
+            battle.Restart();Assert.That(battle.TotalPlayerDamage,Is.Zero);Assert.That(battle.TotalGuerrillaDamage,Is.Zero);
+            Assert.That(battle.DamageRanking,Is.Empty);
+        }
+
+        static void AssertPursuitSubtotal(ManualBattle battle)
+        {
+            Assert.That(battle.DamageRanking.Sum(entry=>entry.GuerrillaDamage),Is.EqualTo(battle.TotalGuerrillaDamage).Within(.01));
+            foreach(var entry in battle.DamageRanking)
+                Assert.That(entry.GuerrillaDamage,Is.InRange(0,entry.Damage+.01f),entry.CardId);
         }
         static Color32[] ReadTarget(RenderTexture target)
         {

@@ -25,7 +25,7 @@ namespace YesterdayConvoy
             public int referenceSeed=-1;
             public int deployments, breaches, defense, dp, guardsAlive, playerHits, defenderHits, healingShots,
                 defenderSkillCasts, playerSkillCasts;
-            public float damage, directShotDamage, observedPlayerHealthLoss, referenceDamage, damageDeltaFromModel;
+            public float damage, pursuitDamage, directShotDamage, observedPlayerHealthLoss, referenceDamage, damageDeltaFromModel;
             public bool timedOut, manualSkillUnitObserved, playerHealthLossSampled, requiresVictory, modelOutcomeAndTimeMatch;
             public string[] deploymentLog, ranking;
         }
@@ -98,6 +98,33 @@ namespace YesterdayConvoy
         bool WaveEvidenceOnlyCurrentGate()=>Battle.Lanes.Count(lane=>Battle.CanDeployOnLane(lane.Id))==1&&
             Battle.Lanes.All(lane=>Battle.CanDeployOnLane(lane.Id)==(lane.Id==Battle.CurrentWaveLaneId));
 
+        bool WaveEvidenceMapFits()
+        {
+            var safe=ShopMapSafeRect;safe.xMin-=2;safe.xMax+=2;safe.yMin-=2;safe.yMax+=2;
+            return ShopMapPlayablePoints().All(world=>
+            {
+                var point=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(world));
+                return safe.Contains(point)&&!DamageRankingPanelRect.Contains(point);
+            });
+        }
+        bool WaveEvidenceRoutesMatchMotion()
+        {
+            var strokes=WaveRouteGuideStrokes();if(strokes.Count==0)return false;
+            foreach(var stroke in strokes)
+            {
+                var lane=Battle.Lanes.Single(item=>item.Id==stroke.LaneId);var p=stroke.Projection;
+                var motion=new RouteMotion(lane.Points,1);
+                motion.ApproachDistance(p.Source.FromDistance,1000);
+                if(Vector3.Distance(motion.Position,p.Source.From)>.001f)return false;
+                motion.ApproachDistance(p.Source.ToDistance,1000);
+                if(Vector3.Distance(motion.Position,p.Source.To)>.001f)return false;
+                Vector2 from=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(p.Source.From));
+                Vector2 to=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(p.Source.To));
+                if(Vector2.Distance(from,p.From)>.1f||Vector2.Distance(to,p.To)>.1f||p.Source.ToDistance<=p.Source.FromDistance)return false;
+            }
+            return strokes.Where(s=>s.Open).All(s=>s.LaneId==Battle.CurrentWaveLaneId);
+        }
+
         IEnumerator WaveEvidenceAdvanceTo(double target)
         {
             int step=0;
@@ -113,7 +140,7 @@ namespace YesterdayConvoy
             run.outcome=Battle.Phase.ToString();run.seconds=Battle.Clock;run.timedOut=Battle.TimedOut;
             run.deployments=Battle.Units.Count(unit=>!unit.SynergySupport);run.breaches=Battle.Breaches;
             run.defense=Battle.Defense;run.dp=Battle.DP;run.guardsAlive=Battle.Defenders.Count(guard=>guard.Alive);
-            run.damage=Battle.TotalPlayerDamage;run.playerSkillCasts=Battle.SkillCasts;
+            run.damage=Battle.TotalPlayerDamage;run.pursuitDamage=Battle.TotalGuerrillaDamage;run.playerSkillCasts=Battle.SkillCasts;
             run.defenderSkillCasts=Battle.Defenders.Sum(guard=>guard.SkillCasts);
             run.playerHits=Battle.CombatShots.Count(shot=>!shot.FromDefender&&shot.Applied&&shot.DamageDealt>0);
             run.defenderHits=Battle.CombatShots.Count(shot=>shot.FromDefender&&!shot.Healing&&shot.Applied&&shot.DamageDealt>0);
@@ -126,7 +153,7 @@ namespace YesterdayConvoy
                 run.modelOutcomeAndTimeMatch=run.outcome==run.referenceOutcome&&Math.Abs(run.secondsDeltaFromModel)<.15;
             }
             run.deploymentLog=deployments.ToArray();
-            run.ranking=Battle.DamageRanking.Select(row=>row.CardId+":"+row.Damage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+            run.ranking=Battle.DamageRanking.Select(row=>row.CardId+":"+row.Damage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)+"/pursuit="+row.GuerrillaDamage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)).ToArray();
             Debug.Log($"WAVE_BATTLE_NATURAL: policy={run.policy}; outcome={run.outcome}; time={run.seconds:F3}; timedOut={run.timedOut}; deployments={run.deployments}; damage={run.damage}; breaches={run.breaches}; defense={run.defense}; skills={run.playerSkillCasts}/{run.defenderSkillCasts}; requiresVictory={run.requiresVictory}; referenceSeed={run.referenceSeed}; modelTimeDelta={run.secondsDeltaFromModel:F4}; modelDamageDelta={run.damageDeltaFromModel:F4}");
         }
 
@@ -154,6 +181,12 @@ namespace YesterdayConvoy
             check("preparation-first-budget-one-open-gate-no-countdown",Battle.Phase==BattlePhase.Ready&&Battle.Clock==0&&Battle.DP==16&&
                 Battle.CurrentWaveIndex==0&&Battle.CurrentWaveLaneId=="R1"&&WaveEvidenceOnlyCurrentGate());
             check("damage-ranking-retained-and-blocks-world-input",DamageRankingVisible&&!ShopMapPointAvailable(DamageRankingPanelRect.center));
+            check("complete-forest-and-defenders-fit-left-of-ranking",WaveEvidenceMapFits());
+            check("route-lines-match-motion-and-root-canvas",WaveEvidenceRoutesMatchMotion());
+            inspectedSynergy="感染生物";
+            check("ranking-hidden-while-infection-modal-owns-map",CampaignUiModalOpen&&!DamageRankingVisible&&!ShopMapPointAvailable(ShopMapSafeRect.center));
+            inspectedSynergy=null;
+            check("ranking-restored-after-modal-closes",DamageRankingVisible);
             check("finite-stock-reservations-conserved",BlackForestEvidenceStockConserved());
             yield return WaveEvidenceCapture(directory,"01-wave-preparation",check);
 
@@ -176,7 +209,11 @@ namespace YesterdayConvoy
             var positions=Battle.Units.Select(unit=>unit.Motion.Position).ToArray();var health=Battle.Units.Select(unit=>unit.Health).ToArray();
             var sp=Battle.Units.Select(unit=>unit.SkillSP).ToArray();var guardSP=Battle.Defenders.Select(guard=>guard.SkillSP).ToArray();
             var cooldowns=Battle.Cards.Select(card=>Battle.CardCooldown(card.Settings.CardId)).ToArray();
+            var pausedRoutes=WaveRouteGuideStrokes();
             Tick(5);
+            var afterRoutes=WaveRouteGuideStrokes();
+            check("pause-freezes-visible-route-flow",pausedRoutes.Count==afterRoutes.Count&&pausedRoutes.Select((stroke,i)=>
+                stroke.Projection.From==afterRoutes[i].Projection.From&&stroke.Projection.To==afterRoutes[i].Projection.To).All(same=>same));
             check("pause-freezes-wave-clock-entities-sp-and-card-cd",Battle.Clock==pausedSnapshot.clock&&Battle.BattleTimeRemaining==pausedSnapshot.remaining&&
                 Battle.Units.Select((unit,i)=>unit.Motion.Position==positions[i]&&unit.Health==health[i]&&unit.SkillSP==sp[i]).All(same=>same)&&
                 Battle.Defenders.Select((guard,i)=>guard.SkillSP==guardSP[i]).All(same=>same)&&
@@ -208,6 +245,7 @@ namespace YesterdayConvoy
                     guards.All(guard=>Battle.Defenders.Any(current=>ReferenceEquals(guard,current)))&&dead.All(guard=>!guard.Alive)&&
                     Battle.Defenders.Sum(guard=>guard.SkillCasts)>=guardCasts&&Battle.TotalPlayerDamage>=damage);
                 checkpoints.Add(WaveEvidenceSnapshot("after-"+boundary));
+                check("route-lines-follow-live-wave-"+boundary,WaveEvidenceRoutesMatchMotion());
                 yield return WaveEvidenceCapture(directory,boundary==45?"03-wave-two":"04-wave-three",check);
             }
             yield return WaveEvidenceAdvanceTo(135.01);
@@ -240,7 +278,7 @@ namespace YesterdayConvoy
             double[] plannedTimes={0,.25,6.25,6.5,12.5,50,50.25,56.25,56.5,62.5,100,100.25,106.25,106.5,112.5,112.75};
             string[] plannedIds={"M07","M08","M07","M08","M07","M16","M08","M08","M15","M16","M15","M08","M15","M08","M15","M08"};
             var log=new List<string>();int cursor=0;
-            bool correctLanes=true,clockStarted=false,combatCapture=false;
+            bool correctLanes=true,clockStarted=false,combatCapture=false,deadClickChecked=false;
             for(int step=0;step<5400&&(Battle.Phase==BattlePhase.Ready||Battle.Phase==BattlePhase.Running);step++)
             {
                 if(cursor<plannedTimes.Length&&Battle.Clock+.000001>=plannedTimes[cursor])
@@ -266,6 +304,16 @@ namespace YesterdayConvoy
                 for(int i=0;i<units.Length;i++)if(units[i].MaxHealth==max[i])attempt.observedPlayerHealthLoss+=Math.Max(0,hp[i]-units[i].Health);
                 if(!combatCapture&&Battle.TotalPlayerDamage>0&&attempt.observedPlayerHealthLoss>0)
                 {combatCapture=true;yield return WaveEvidenceCapture(directory,"07-natural-two-way-combat",check);}
+                if(!deadClickChecked&&Battle.Phase==BattlePhase.Running)
+                    foreach(var guard in Battle.Defenders.Where(item=>!item.Alive))
+                    {
+                        Vector2 point=TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(guard.Position+Camera.main.transform.up*.75f));
+                        if(!ShopMapPointAvailable(point))continue;
+                        ProcessShopPointer(EventType.MouseDown,point);ProcessShopPointer(EventType.MouseUp,point);
+                        check("naturally-dead-defender-is-not-inspectable",InspectedDefenderId!=guard.EntityId&&
+                            (InspectedDefenderId==null||Battle.FindDefender(InspectedDefenderId).Alive));
+                        CloseDefenderInspector();deadClickChecked=true;break;
+                    }
                 if(step%4==0)yield return null;
                 if(!clockStarted&&step>100)throw new InvalidOperationException("The production card click did not start the strategy attempt.");
             }
@@ -278,6 +326,9 @@ namespace YesterdayConvoy
             check("seed-20261109-reproduces-natural-model-win-and-time",attempt.outcome=="Won"&&attempt.defense==0&&!attempt.timedOut&&attempt.modelOutcomeAndTimeMatch);
             check("ranking-remains-correct-after-combat",DamageRankingVisible&&Math.Abs(Battle.DamageRanking.Sum(row=>row.Damage)-Battle.TotalPlayerDamage)<.1f&&
                 Battle.DamageRanking.Select(row=>row.Damage).SequenceEqual(Battle.DamageRanking.Select(row=>row.Damage).OrderByDescending(damage=>damage)));
+            check("natural-dead-footprint-check-executed",deadClickChecked);
+            check("pursuit-subtotal-is-conserved-without-double-counting",Math.Abs(Battle.DamageRanking.Sum(row=>row.GuerrillaDamage)-Battle.TotalGuerrillaDamage)<.1f&&
+                Battle.DamageRanking.All(row=>row.GuerrillaDamage>=0&&row.GuerrillaDamage<=row.Damage+.01f));
             check("finite-stock-conserved-after-wave-combat",BlackForestEvidenceStockConserved());
             yield return WaveEvidenceCapture(directory,"08-natural-strategy-result",check);
             RestartCurrentRun();yield return WaveEvidenceReady();

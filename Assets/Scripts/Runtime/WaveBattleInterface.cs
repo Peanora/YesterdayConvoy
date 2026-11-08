@@ -112,46 +112,61 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(747,35,253,15),$"总截止剩余 {WaveClockText(Battle.BattleTimeRemaining)} · 余量不结转",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
         }
 
-        // The path is a presentation of immutable model lanes. Its phase uses the combat clock.
-        void DrawWaveRoutes()
+        // Visible-Player evidence can inspect these same projected path segments and moving pulse tips.
+        public IReadOnlyList<WaveRouteGuideStroke> WaveRouteGuideStrokes()
         {
-            if(!Battle.WavesEnabled||Camera.main==null)return;
+            var result=new List<WaveRouteGuideStroke>();
+            if(Battle==null||!Battle.WavesEnabled||Camera.main==null)return result;
             var occupied=new HashSet<string>(Battle.Units.Where(u=>u.Active).Select(u=>u.RouteId));
             string current=Battle.CurrentWaveLaneId;
-            var clip=new Rect(0,60,1280,492);
-            GUI.BeginGroup(clip);
+            var clip=new Rect(0,62,1280,488);var view=TacticalViewport.Current;var camera=Camera.main;
+            foreach(var lane in Battle.Lanes.OrderBy(l=>l.Id==current?1:0))
+            {
+                bool open=lane.Id==current&&Battle.DeploymentWindowOpen;
+                if(!open&&!occupied.Contains(lane.Id))continue;
+                AppendWaveRouteStrokes(result,lane,false,open,RouteGuideGeometry.FullPath(lane.Points),camera,view,clip);
+                AppendWaveRouteStrokes(result,lane,true,open,RouteGuideGeometry.Pulses(lane.Points,Battle.Clock),camera,view,clip);
+            }
+            return result;
+        }
+        static void AppendWaveRouteStrokes(List<WaveRouteGuideStroke> result,DeploymentLane lane,bool pulse,bool open,
+            List<RouteGuideSpan> spans,Camera camera,TacticalViewport view,Rect clip)
+        {
+            foreach(var span in spans)
+                if(RouteGuideGeometry.TryProject(span,camera.WorldToScreenPoint,view,clip,out var projection))
+                    result.Add(new WaveRouteGuideStroke(lane.Id,open,pulse,projection));
+        }
+        void DrawWaveRoutes()
+        {
+            if(Event.current.type!=EventType.Repaint)return;
+            // No BeginGroup: rotating GUI.matrix inside a group also transforms its clip/origin.
+            // All endpoints remain in the same 1280x720 canvas as projected unit feet and HUD.
+            foreach(var stroke in WaveRouteGuideStrokes())
+            {
+                var p=stroke.Projection;
+                if(!stroke.Pulse)
+                {
+                    DrawWaveRouteStroke(p.From,p.To,new Color(1,1,1,stroke.Open?.18f:.055f),1);
+                    continue;
+                }
+                Color color=new Color(1,1,1,stroke.Open?.96f:.22f);
+                if(stroke.Open)DrawWaveRouteStroke(p.From,p.To,new Color(.015f,.025f,.035f,.7f),4);
+                DrawWaveRouteStroke(p.From,p.To,color,2);
+                if(!p.HeadVisible)continue;
+                Vector2 direction=(p.To-p.From).normalized,wing=new Vector2(-direction.y,direction.x)*2.5f;
+                DrawWaveRouteStroke(p.To-direction*4+wing,p.To,color,1.6f);
+                DrawWaveRouteStroke(p.To-direction*4-wing,p.To,color,1.6f);
+            }
+        }
+        static void DrawWaveRouteStroke(Vector2 from,Vector2 to,Color color,float width)
+        {
+            Matrix4x4 previous=GUI.matrix;
             try
             {
-                foreach(var lane in Battle.Lanes)
-                {
-                    bool open=lane.Id==current&&Battle.DeploymentWindowOpen;
-                    if(!open&&!occupied.Contains(lane.Id))continue;
-                    DrawWaveLane(lane,open?new Color(1,1,1,.96f):new Color(1,1,1,.28f),clip.position);
-                }
+                GUI.matrix=RouteGuideGeometry.StrokeMatrix(previous,from,to);
+                Fill(new Rect(0,-width*.5f,Vector2.Distance(from,to),width),color);
             }
-            finally{GUI.EndGroup();}
-        }
-        void DrawWaveLane(DeploymentLane lane,Color color,Vector2 origin)
-        {
-            const double spacing=.9,dash=.4;
-            double phase=Battle.Clock*.8%spacing,travelled=0;
-            for(int i=1;i<lane.Points.Count;i++)
-            {
-                Vector3 a=lane.Points[i-1],b=lane.Points[i];double length=Vector3.Distance(a,b);
-                if(length<.0001)continue;
-                double end=travelled+length;
-                double start=Math.Floor((travelled-phase)/spacing)*spacing+phase;
-                for(;start<end;start+=spacing)
-                {
-                    double from=Math.Max(travelled,start),to=Math.Min(end,start+dash);
-                    if(to<=from)continue;
-                    Vector3 p=Vector3.Lerp(a,b,(float)((from-travelled)/length))+Vector3.up*.06f;
-                    Vector3 q=Vector3.Lerp(a,b,(float)((to-travelled)/length))+Vector3.up*.06f;
-                    Vector2 p2=GUIPosition(Camera.main.WorldToScreenPoint(p))-origin,q2=GUIPosition(Camera.main.WorldToScreenPoint(q))-origin;
-                    ShopLine(p2,q2,color,2);
-                }
-                travelled=end;
-            }
+            finally{GUI.matrix=previous;}
         }
     }
 }

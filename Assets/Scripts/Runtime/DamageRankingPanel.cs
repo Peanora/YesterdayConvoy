@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         {
             internal string CardId;
             internal float Damage;
+            internal float GuerrillaDamage;
         }
         readonly List<DamageRankingRow> damageRankingRows=new List<DamageRankingRow>();
         ManualBattle damageRankingBattle;
@@ -28,12 +29,12 @@ namespace YesterdayConvoy
             foreach(var entry in Battle.DamageRanking)
             {
                 int index=damageRankingRows.FindIndex(row=>row.CardId==entry.CardId);
-                var row=new DamageRankingRow{CardId=entry.CardId,Damage=entry.Damage};
+                var row=new DamageRankingRow{CardId=entry.CardId,Damage=entry.Damage,GuerrillaDamage=entry.GuerrillaDamage};
                 if(index>=0)damageRankingRows[index]=row;else damageRankingRows.Add(row);
             }
             damageRankingRows.Sort((a,b)=>{int order=b.Damage.CompareTo(a.Damage);return order!=0?order:string.CompareOrdinal(a.CardId,b.CardId);});
         }
-        static string RankingDamageText(float amount)=>amount.ToString("N0",CultureInfo.InvariantCulture);
+        static string RankingDamageText(float amount)=>amount.ToString(amount>0&&amount<1?"0.##":"N0",CultureInfo.InvariantCulture);
 
         void DrawDamageRanking()
         {
@@ -47,7 +48,8 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(10,5,118,25),"伤害排行",LoopText(14,TextAnchor.MiddleLeft,null,700));
                 string state=Battle.Phase==BattlePhase.Ready?"待开战":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"实时统计":"本场结算";
                 GUI.Label(new Rect(150,8,92,20),state,LoopText(9,TextAnchor.MiddleRight,ApprovedUi.Muted));
-                GUI.Label(new Rect(10,30,230,18),"总伤害  "+RankingDamageText(Battle.TotalPlayerDamage),LoopText(10,TextAnchor.MiddleLeft,null,600));
+                GUI.Label(new Rect(10,30,130,18),"总伤害  "+RankingDamageText(Battle.TotalPlayerDamage),LoopText(10,TextAnchor.MiddleLeft,null,600));
+                GUI.Label(new Rect(139,30,101,18),"含追击 "+RankingDamageText(Battle.TotalGuerrillaDamage),LoopText(9,TextAnchor.MiddleRight,ApprovedUi.Muted));
                 Fill(new Rect(8,50,panel.width-16,1),ApprovedUi.Rule);
                 var viewport=new Rect(6,54,panel.width-12,160);
                 bool scrolling=damageRankingRows.Count>5;
@@ -76,8 +78,9 @@ namespace YesterdayConvoy
                         GUI.Label(new Rect(53,row.y+1,width-118,16),new GUIContent(name,name+"："+RankingDamageText(entry.Damage)),text);
                         GUI.Label(new Rect(width-64,row.y+1,60,16),RankingDamageText(entry.Damage),LoopText(11,TextAnchor.MiddleRight,null,600));
                         float barWidth=width-98;
-                        Fill(new Rect(53,row.y+22,barWidth,4),new Color(.79f,.84f,.87f));
-                        if(highest>0)Fill(new Rect(53,row.y+22,barWidth*entry.Damage/highest,4),accent);
+                        if(entry.GuerrillaDamage>0)GUI.Label(new Rect(53,row.y+16,barWidth-5,11),"追击 "+RankingDamageText(entry.GuerrillaDamage),LoopText(8,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+                        Fill(new Rect(53,row.y+27,barWidth,3),new Color(.79f,.84f,.87f));
+                        if(highest>0)Fill(new Rect(53,row.y+27,barWidth*entry.Damage/highest,3),accent);
                         float share=Battle.TotalPlayerDamage>0?entry.Damage/Battle.TotalPlayerDamage:0;
                         GUI.Label(new Rect(width-42,row.y+16,38,13),share.ToString("P0",CultureInfo.InvariantCulture),LoopText(8,TextAnchor.MiddleRight,ApprovedUi.Muted));
                     }

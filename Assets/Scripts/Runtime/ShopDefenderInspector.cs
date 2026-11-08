@@ -6,17 +6,36 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         string inspectedDefender;
+        DefenderState inspectedDefenderState;
+        ManualBattle inspectedDefenderBattle;
+        int inspectedDefenderRun;
         public static Rect DefenderInspectorRect=>new Rect(681,110,316,410);
-        public bool DefenderInspectorVisible=>ShopTrialActive&&Battle.Defenders.Any(d=>d.EntityId==inspectedDefender);
-        public string InspectedDefenderId=>inspectedDefender;
-        public void CloseDefenderInspector()=>inspectedDefender=null;
+        public bool DefenderInspectorVisible=>ResolveDefenderInspectorTarget()!=null;
+        public string InspectedDefenderId=>ResolveDefenderInspectorTarget()?.EntityId;
+        public void CloseDefenderInspector()
+        {
+            inspectedDefender=null;inspectedDefenderState=null;inspectedDefenderBattle=null;inspectedDefenderRun=0;
+        }
+        DefenderState ResolveDefenderInspectorTarget()
+        {
+            // Alive includes reserve/departure and Hoshiguma's valid debt-life phase, unlike HP > 0.
+            if(!ShopTrialActive||Battle==null||inspectedDefenderState==null||
+                !ReferenceEquals(Battle,inspectedDefenderBattle)||Battle.RunId!=inspectedDefenderRun||
+                !inspectedDefenderState.Alive||!Battle.Defenders.Contains(inspectedDefenderState))
+            {CloseDefenderInspector();return null;}
+            return inspectedDefenderState;
+        }
+        internal void ValidateDefenderInspector(){ResolveDefenderInspectorTarget();}
         bool InspectShopDefender(Vector2 point)
         {
-            var candidate=Battle.Defenders.Select(d=>new{Defender=d,Foot=GUIPosition(Camera.main.WorldToScreenPoint(d.Position)),Head=GUIPosition(Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.5f))})
+            ValidateDefenderInspector();
+            if(!ShopTrialActive||Battle==null||Camera.main==null)return false;
+            var candidate=Battle.Defenders.Where(d=>d.Alive).Select(d=>new{Defender=d,Foot=GUIPosition(Camera.main.WorldToScreenPoint(d.Position)),Head=GUIPosition(Camera.main.WorldToScreenPoint(d.Position+Camera.main.transform.up*1.5f))})
                 .Where(p=>new Rect(p.Foot.x-23,p.Head.y-8,46,p.Foot.y-p.Head.y+20).Contains(point))
                 .OrderBy(p=>Vector2.Distance(point,(p.Foot+p.Head)*.5f)).FirstOrDefault();
             if(candidate==null)return false;
-            inspectedDefender=candidate.Defender.EntityId;return true;
+            inspectedDefenderState=candidate.Defender;inspectedDefender=inspectedDefenderState.EntityId;
+            inspectedDefenderBattle=Battle;inspectedDefenderRun=Battle.RunId;return true;
         }
         DeploymentLane ShopDragLane()
         {
@@ -38,7 +57,7 @@ namespace YesterdayConvoy
         }
         void DrawDefenderInspector(GUIStyle label,GUIStyle button)
         {
-            if(!DefenderInspectorVisible)return;var d=Battle.Defenders.First(p=>p.EntityId==inspectedDefender);var r=DefenderInspectorRect;
+            var d=ResolveDefenderInspectorTarget();if(d==null)return;var r=DefenderInspectorRect;
             var tint=d.HighGround?new Color(.35f,.85f,1):new Color(1,.73f,.36f);
             var center=GUIPosition(Camera.main.WorldToScreenPoint(d.Position));
             for(int i=0;i<40;i++)
