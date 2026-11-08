@@ -1,6 +1,6 @@
 # 验证证据与回归
 
-## 2026-11-08：黑流树海波次机制（验证中）
+## 2026-11-08：黑流树海波次机制
 
 - 同一日常工程，Unity6000.6.5f1；实时main7862d09，codex/wave-blackforest，兼容承接树海#103/伤害排行#104（集成026d255），不合并远端main。用户确认原52份VFX meta及本地配置原地保留。
 - 首轮完整EditMode **787/787**，`artifacts/wave-battle/edit-all.xml/log`。涵盖17个波次模型用例及3个波次配置/全43卡CD快照回归；旧非波次profile保持原CD/次数/面板。测试包括预算替换、门禁、跨波状态、暂停、幂等、末刻穿门/爆炸、255硬截止、巨像旁路和重开。
@@ -8,7 +8,11 @@
 - 相关非batch D3D11 PlayMode **32/32**，`artifacts/wave-battle/play-related.xml/log`：WaveBattleInteraction6、BlackForest2、Campaign4以及伤害排行/ApprovedUI/自由席位/旧商店闭环与地图回归。新增巨像用例经生产整备入口换阵，验证排行中心/角落/旧交叠区域点击不扣费、不出兵，巨像原卡松开恰好一次部署、重复点击与暂停保持正确。巨像卡移至排行上方，保留旧非波次拖放。
 - 最终配置读取与诊断计划接线后，完整EditMode再次 **787/787**（`edit-final.xml/log`），树海/波次相关D3D11 PlayMode再次 **8/8**（`play-final.xml/log`）。重开本关按现有规则返回整备，只有点击开始作战才启动波次计时。原56份既存文件逐文件SHA256保持。
 - `WaveBattleTools.EvaluateStrategies`以完整默认8人编队、正常面板、原九守军与16/16/18预算执行36组固定优先级/分批策略；18组自然Won，其余自然Lost，不将该比例当作玩家胜率。seed20261109在193.40秒自然胜利，16部署、6穿门、10次守军技能、7255.0898实际伤害；完整部署日志在`artifacts/wave-blackforest/model-strategy-search.json`。源配置保持，未改DP/CD/次数/血量求胜。Player将复现该合法单击计划核对模型与实机。
-- 可见Player和最终EXE构建正在进行；本节将在真实完成后更新。
+- 最终交付源码`2bbe5ed741c8e1ce1b7ac4f6cfd65dc796892060`，`WaveBattleTools.BuildWindows`真实Windows x64 Development构建 **1063718964 bytes / 0 errors / 退出0**（`artifacts/wave-battle/build-delivery.log`），动态完整保存场景目录，不修改Packages/ProjectSettings或保存地形/Prefab。末次仅将整备计划缩为清晰两行；功能与时序保持。
+- 工程外TEMP工作目录启动可见D3D11独立Player：**1600×900、1280×720各63/63，退出0**（`player-1600-delivery`、`player-1280-delivery/result.json`及exit.json/log）。通过生产指针Down/Up单击，覆盖当前门唯一、DP16→16→18、余量清零、同卡CD/整关次数/实体/守军/SP跨波保持、暂停冻结、135秒封部署、重开/源配置/238地块保持。稀疏4次合法部署的真实对局在 **255.0秒TimedOut/Lost**，守方余6；独立重开精确复现seed20261109的16次合法单击，在 **193.400000000013秒自然Won**、6次穿门、10次守军技能，实际伤害7255.08984375，与模型差0。不注血/伤害、不强制胜负；默认普通编队无手动技能，未伪造施放。截图9张/尺寸均非黑，已实际查看两行计划、承契避让、换波通知/流动路线、推进封卡及胜利收入面板。
+- 泥岩旧场景/培养的非波次D3D11 PlayMode额外 **6/6**（`play-mudrock-final.xml/log`），确认巨像卡位置调整不破坏旧入口。首批32与后续11/6为分组及部分复验，不宣称单次全量PlayMode。
+- 完整 **1973个**源构建文件逐文件SHA256同步常用`Builds/Windows`（`copy-check.json`，差异0），SOURCE.txt记录运行提交；保留目标目录既有试玩脚本/许可/说明，不删除用户文件。实际Runtime DLL SHA256 **8E029072E4016AC843419DD854D42FBC1505D9DA5288F8FB4180FB4B3E92EC45**。新增本地“黑流树海波次试玩.cmd”，源码脚本`tools/play_wave_blackforest_trial.cmd`随分支交付。
+- 普通无-smoke的`-blackForest`已从常用EXE启动并实看整备/形态弹窗；computer-use检测到用户输入后停止接管，未完成且未声称真实OS鼠标点击复验。此前自动单击均为生产控制器指针，不冒称OS操作。未执行第二机、新克隆、所有人类策略/构筑和最终长局平衡；源码正常推送功能分支/PR，不自动合并main，不创建ZIP/Releases。
 - 首次源码f352017真实Windows构建1063718316字节/0 errors（`build.log`）；1600×900可见Player63/63、退出0（`player-1600`），真实稀疏对局255秒超时、seed20261109自然Won193.4秒，伤害7255.0898与模型完全相同。实看截图发现承契徽章/说明遮挡波次标题，已给波次文字独立预留区域、保留徽章暗底，换波通知也改读当前入口/预算；相关树海/波次/承契D3D11 PlayMode **11/11**（`play-layout-final.xml/log`），并增加标题与徽章说明不重叠断言。该首构建不作为最终交付，正在重建并检查两尺寸最终画面。
 
 ## 2026-11-08：普通开局、放大树海与清理红门文字
