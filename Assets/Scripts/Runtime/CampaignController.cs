@@ -43,6 +43,7 @@ namespace YesterdayConvoy
         }
         public void StartCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null,DefenderTrialDefinition encounterOverride=null)
         {
+            CampaignJourneySession.Clear();
             if(trial!=null){if(!sandbox)throw new InvalidOperationException("Dedicated trials require sandbox mode.");trial.Validate();}
             bool independent=encounterOverride!=null;
             bool forest=independent&&encounterOverride.mapId==BlackForestLayout.Id;
@@ -75,18 +76,19 @@ namespace YesterdayConvoy
             var deck=shopLineup.Where(shopDefinitions.ContainsKey).ToList();
             if(deck.Count==0)deck.Add("CARD_M08");
             var wavePlan=shopMapCopy.WaveSnapshot();
-            int dp=wavePlan!=null?wavePlan.Waves[0].DP:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
-            int defense=BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
+            int dp=JourneyActive?JourneyStage.dp:wavePlan!=null?wavePlan.Waves[0].DP:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
+            int defense=JourneyActive?Math.Max(1,JourneyStage.defense):BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
             var profiles=deck.Select(id=>CampaignProfile(id,dp,defense)).ToArray();
             var first=profiles[0];
-            var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
+            var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot(),allowEmptyRoster:JourneyActive&&JourneyStage.IsSupply);
             battle.ConfigureCardLoadout(profiles.Skip(1));
-            if(!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
+            if(JourneyActive)battle.ConfigureCampaignV2(Loop.Stage);
+            if(!JourneyActive&&!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
-            if(ApprovedMapActive)marineGround.AddRange(ApprovedMap.WalkablePoints());
+            if(ApprovedMapActive||JourneyActive)marineGround.AddRange(ApprovedMap.WalkablePoints());
             else if(BlackForestChallengeActive)
             {
                 for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
@@ -97,12 +99,12 @@ namespace YesterdayConvoy
                 char tile=expanded?StrongholdChallengeLayout.Tile(col,row):StrongholdMapLayout.Tile(col,row);
                 if(tile!='#'&&tile!='H'&&tile!='h')marineGround.Add(StrongholdMapLayout.Cell(col,row));
             }
-            battle.ConfigureMarineTerrain(marineGround,ApprovedMapActive?ApprovedMap.MarineOrigin:BlackForestChallengeActive?new Vector2(0,.5f):Vector2.zero);
+            battle.ConfigureMarineTerrain(marineGround,ApprovedMapActive||JourneyActive?ApprovedMap.MarineOrigin:BlackForestChallengeActive?new Vector2(0,.5f):Vector2.zero);
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
-            if(Loop.RewardStage)battle.ConfigureSupply();
+            if(Loop.RewardStage)battle.ConfigureSupply(JourneyActive);
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
             if(wavePlan!=null)battle.ConfigureWaves(wavePlan);
-            if(ApprovedMapActive)battle.ConfigureApprovedMapEffects(ApprovedMap.mechanics);
+            if(ApprovedMapActive||JourneyActive)battle.ConfigureApprovedMapEffects(ApprovedMap.mechanics);
             return battle;
         }
         public void ClaimCampaignSupply()
@@ -126,6 +128,7 @@ namespace YesterdayConvoy
         public bool RestartCampaignEncounter(){if(!CampaignActive||!Loop.RestartEncounter())return false;ConfigureLoopStage();return true;}
         void RestartCurrentRun()
         {
+            if(JourneyActive){BeginJourney(Loop.Seed);return;}
             if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial,ApprovedMapActive?ApprovedMap.encounter:BlackForestChallengeActive?Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource):null);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
         }
         bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shopSeats.InLineup(piece.Instance);
@@ -171,8 +174,13 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(r.xMax-69,r.y+10,53,27),"关闭")){campaignConstructOpen=false;return;}
             if(LoopButton(new Rect(r.x+16,r.y+45,160,28),"运营与测试样板",campaignConstructTab==0))campaignConstructTab=0;
             if(LoopButton(new Rect(r.x+184,r.y+45,160,28),"阵营选择与培养",campaignConstructTab==1))campaignConstructTab=1;
-            if(LoopButton(GuerrillaTransferTabRect,"游击转职 "+GuerrillaTransferIds.Count+"/2",campaignConstructTab==2))campaignConstructTab=2;
-            if(LoopButton(MudrockTransferTabRect,"泥岩转职 "+MudrockTransferIds.Count+"/1",campaignConstructTab==3))campaignConstructTab=3;
+            if(JourneyActive)
+            {if(LoopButton(GuerrillaTransferTabRect,"关卡情报 · 十三关",campaignConstructTab==4))campaignConstructTab=4;}
+            else
+            {
+                if(LoopButton(GuerrillaTransferTabRect,"游击转职 "+GuerrillaTransferIds.Count+"/2",campaignConstructTab==2))campaignConstructTab=2;
+                if(LoopButton(MudrockTransferTabRect,"泥岩转职 "+MudrockTransferIds.Count+"/1",campaignConstructTab==3))campaignConstructTab=3;
+            }
             var oldMatrix=GUI.matrix;bool oldEnabled=GUI.enabled;
             try
             {
@@ -186,6 +194,7 @@ namespace YesterdayConvoy
                     GUI.matrix=oldMatrix*Matrix4x4.Translate(new Vector3(r.x+16-680,r.y+84-270,0));
                     DrawRemainingPreparation();
                 }
+                else if(campaignConstructTab==4)DrawJourneyBriefing();
                 else if(campaignConstructTab==2)DrawGuerrillaTransferPanel();
                 else DrawMudrockTransferPanel();
             }

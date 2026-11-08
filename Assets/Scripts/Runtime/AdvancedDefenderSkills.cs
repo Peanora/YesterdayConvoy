@@ -42,7 +42,7 @@ namespace YesterdayConvoy
             if(!IsAdvancedDefender(d))return;
             var s=d.Settings.Skill;d.AdvancedSkillWasActive=true;
             if(BeginSixthSkill(d)||BeginFifthSkill(d))return;
-            d.SkillActionUntil=Clock+(s.Kind==DefenderSkillKind.YuKitchen?1.6:s.Kind==DefenderSkillKind.LapplandHavoc?1:s.Kind==DefenderSkillKind.SariaCalcification?.7:1d/3);
+            d.SkillActionUntil=Clock+(s.Kind==DefenderSkillKind.YuKitchen?1.6:s.Kind==DefenderSkillKind.LapplandHavoc?1:s.Kind==DefenderSkillKind.SariaCalcification?V2DefenderSkill(d,"startupSeconds",.7f):V2DefenderSkill(d,"startupSeconds",1f/3));
             d.NextAttackTime=Math.Max(d.NextAttackTime,d.SkillActionUntil);d.NextAuraAt=d.SkillActionUntil;
             if(s.Kind==DefenderSkillKind.YuKitchen)
             {
@@ -52,7 +52,7 @@ namespace YesterdayConvoy
                 var direction=nearest==null?Vector3.left:nearest.Motion.Position-d.Position;direction.y=0;
                 d.WallNormal=Mathf.Abs(direction.x)>=Mathf.Abs(direction.z)?new Vector3(Mathf.Sign(direction.x),0,0):new Vector3(0,0,Mathf.Sign(direction.z));
             }
-            if(s.Kind==DefenderSkillKind.MlynarGlory)d.LiberatorBonus=4*DefenderCharge(d);
+            if(s.Kind==DefenderSkillKind.MlynarGlory)d.LiberatorBonus=V2DefenderSkill(d,"skillChargeAttackBonus",4)*DefenderCharge(d);
             if(s.Kind==DefenderSkillKind.LapplandHavoc)
             {
                 defenderDrones.RemoveAll(v=>v.SourceId==d.EntityId);
@@ -73,7 +73,7 @@ namespace YesterdayConvoy
                     {d.Health=Math.Min(d.Settings.Health,d.Health/d.Settings.Skill.HealthMultiplier);d.MaxHealth=d.Settings.Health;}
                     d.AdvancedSkillWasActive=false;d.SkillEndedAt=d.SkillActiveUntil;d.ChargeStartedAt=d.SkillActiveUntil;d.LiberatorBonus=0;
                 }
-                if(d.Alive&&d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&!DefenderSkillActive(d))d.LiberatorBonus=2*DefenderCharge(d);
+                if(d.Alive&&d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&!DefenderSkillActive(d))d.LiberatorBonus=V2DefenderSkill(d,"idleChargeAttackBonus",2)*DefenderCharge(d);
                 globalRecovery|=d.Alive&&d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen&&DefenderSkillActive(d);
             }
             if(alive>=4)foreach(var ally in defenders)
@@ -91,12 +91,12 @@ namespace YesterdayConvoy
         {
             if(d.Settings.Skill.Kind!=DefenderSkillKind.SariaCalcification||!DefenderSkillActive(d))return false;
             if(Clock+1e-6<d.NextAttackTime)return true;
-            d.NextAttackTime=Clock+1;d.LastActionTime=Clock;d.LastActionHealing=true;d.LastActionRate=1;
+            d.NextAttackTime=Clock+V2DefenderSkill(d,"auraHealingInterval",1);d.LastActionTime=Clock;d.LastActionHealing=true;d.LastActionRate=1;
             foreach(var ally in defenders)
             {
                 if(!ally.Alive||ally.Health>=ally.MaxHealth-.001f||GroundDistance(d.Position,ally.Position)>d.Settings.Skill.EffectRadius)continue;
                 d.TargetId=ally.EntityId;
-                combatShots.Add(new CombatShot(d.EntityId,ally.EntityId,true,true,d.Position,ally.Position,Clock,.05f,DefenderSkillAttack(d)*d.Settings.Skill.HealFraction,healing:true));
+                combatShots.Add(new CombatShot(d.EntityId,ally.EntityId,true,true,d.Position,ally.Position,Clock,.05f,DefenderSkillAttack(d)*V2DefenderSkill(d,"healAttackFractionPerSecond",d.Settings.Skill.HealFraction),healing:true));
             }
             return true;
         }
@@ -107,7 +107,7 @@ namespace YesterdayConvoy
             if(source.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)
             {
                 source.SkillHealthRestored+=gain;if(DefenderSkillActive(source))source.AuraHeals++;
-                if(target.Settings.Skill.Enabled&&!DefenderSkillActive(target))target.SkillSP=Math.Min(target.Settings.Skill.RequiredSP,target.SkillSP+1);
+                if((!CampaignV2Enabled||gain>0)&&target.Settings.Skill.Enabled&&!DefenderSkillActive(target))target.SkillSP=Math.Min(target.Settings.Skill.RequiredSP,target.SkillSP+V2DefenderSkill(source,"spPerEffectiveHeal",1));
             }
         }
         public float UnitArtsVulnerability(DeployedUnitState u)
@@ -216,7 +216,7 @@ namespace YesterdayConvoy
         void OnLiberatorKill(DefenderState d)
         {
             if(d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||!DefenderSkillActive(d))return;
-            d.LiberatorBonus=Math.Max(0,d.LiberatorBonus-.1f);d.LiberatorKills++;
+            d.LiberatorBonus=Math.Max(0,d.LiberatorBonus-V2DefenderSkill(d,"attackBonusLossPerOrdinaryKill",.1f));d.LiberatorKills++;
         }
         void ApplyPureUnitDamage(DeployedUnitState u,float amount)
         {

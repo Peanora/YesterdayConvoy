@@ -1,0 +1,3397 @@
+{
+  "schema": "yesterday-convoy-balance-v2-synergies-1.0",
+  "status": "PROJECT_EXTERNAL_DRAFT_NOT_IMPLEMENTED",
+  "scope": "2026-11-08，13次结算完整挑战优先；不改项目。保留九条已定机制、成员、档位、开战快照和动作。",
+  "referenceCombatScale": {
+    "oneStarCostHP": [
+      180,
+      300,
+      480,
+      800,
+      1250
+    ],
+    "oneStarCostDPS": [
+      15,
+      24,
+      39,
+      62.5,
+      95
+    ],
+    "fourCostTwoStar": {
+      "hp": 1440,
+      "dps": 93.75
+    },
+    "threeCostThreeStar": {
+      "hp": 1555.2,
+      "dps": 87.75
+    },
+    "fiveCostTwoStar": {
+      "hp": 2500,
+      "dps": 171
+    }
+  },
+  "globalRules": {
+    "snapshot": "战前编队不同种类与实际出战星级锁定；同名只计出战实例，备战、支援、重复部署不计；死亡、穿门、跨波不改档。",
+    "time": "所有逻辑使用共享模拟时钟；暂停冻结；波次跨波保留双方、CD、次数、SP、资源与待结算事件。",
+    "tier": "同羁绊只取最高档，不叠加低档；六感染的二档副形态是已定例外。",
+    "derived": "援军、灵体、巨像、感染副体均为支援；不产军令、不再牧群转化、不触发羁绊递归、不作为羁绊人数或总星。派生伤害不递归产军令/碎冰；仅深池自身燎烧保留已定传火例外。",
+    "noNewGlobalCap": "不引入统一伤害上限、回费上限或额外全局CD。各机制现有次数、资源、目标上限分别控制。",
+    "scaling": "整合Q=(S/K)^0.5；雪怪Q=(S/K)^0.4；深池Q=(S/K)^(1/3)。S为该羁绊全部出战成员总星，K为最高激活档门槛。其余不额外套成员星级倍率。",
+    "stacking": "攻击星级先生成一次面板。萨卡兹攻击加成与传令/爱国者攻击光环在同一加法项合并；原生阶段倍率仍另乘。雪怪/深池各自独立伤害不再乘承契攻击；海嗣只加神经积累、不乘普通伤害；军令读取已修饰攻击一次。",
+    "supportGate": "全部支援体穿门0；感染集群仅主实体保留原穿门，副体0。已核对EngagementCombat.RegisterStrongholdBreach出口按SynergySupport直接扣0，构造参数中的Gate=1不会使正式交战支援扣蓝门。"
+  },
+  "synergies": [
+    {
+      "id": "reunion",
+      "name": "整合运动",
+      "members": [
+        "CARD_M02",
+        "CARD_M03",
+        "CARD_M06",
+        "CARD_M07",
+        "CARD_M08",
+        "CARD_M09",
+        "CARD_M10",
+        "CARD_M11",
+        "CARD_M12",
+        "CARD_M13",
+        "CARD_M14",
+        "CARD_M15",
+        "CARD_M16",
+        "CARD_M17",
+        "CARD_M18",
+        "CARD_M19",
+        "CARD_M20",
+        "CARD_M21",
+        "CARD_M22",
+        "CARD_M23",
+        "CARD_M25",
+        "CARD_TALULAH_TRIAL"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/ReunionRules.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/BattleSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/ReunionEntryShield.cs"
+      ],
+      "scope": "整合成员部署计调集，免费援军在触发者当前路线生成；援军本身不再次调集。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "requiredFormations",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "distinctKindsPerMuster",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "musterLimit",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "supportsPerMuster",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeHP",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeAttack",
+              "value": 16,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeArmor",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "intervalSeconds",
+              "value": 1.8,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "meleeRange",
+              "value": 0.75,
+              "unit": "world_units"
+            },
+            {
+              "key": "speed",
+              "value": 0.7,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "entryShieldFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "entryShieldSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "每部署2种不同整合成员调集1近战援军，最多1批。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "requiredFormations",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "distinctKindsPerMuster",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "musterLimit",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "supportsPerMuster",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeHP",
+              "value": 150,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeAttack",
+              "value": 24,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeArmor",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedHP",
+              "value": 110,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedAttack",
+              "value": 30,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedArmor",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "intervalSeconds",
+              "value": 1.8,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "meleeRange",
+              "value": 0.75,
+              "unit": "world_units"
+            },
+            {
+              "key": "rangedRange",
+              "value": 2.7,
+              "unit": "world_units"
+            },
+            {
+              "key": "speed",
+              "value": 0.7,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "entryShieldFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "entryShieldSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "每3种成员调集1名整备时选定近战/弩手，最多2批。"
+        },
+        {
+          "count": 6,
+          "parameters": [
+            {
+              "key": "requiredFormations",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "distinctKindsPerMuster",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "musterLimit",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "supportsPerMuster",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeHP",
+              "value": 210,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeAttack",
+              "value": 32,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeArmor",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedHP",
+              "value": 150,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedAttack",
+              "value": 40,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedArmor",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "intervalSeconds",
+              "value": 1.8,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "meleeRange",
+              "value": 0.75,
+              "unit": "world_units"
+            },
+            {
+              "key": "rangedRange",
+              "value": 2.7,
+              "unit": "world_units"
+            },
+            {
+              "key": "speed",
+              "value": 0.7,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "entryShieldFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "entryShieldSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "至少2编制；每3种成员调集1近战+1弩手，最多2批。"
+        },
+        {
+          "count": 8,
+          "parameters": [
+            {
+              "key": "requiredFormations",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "distinctKindsPerMuster",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "musterLimit",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "supportsPerMuster",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeHP",
+              "value": 280,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeAttack",
+              "value": 44,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeArmor",
+              "value": 6,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedHP",
+              "value": 200,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedAttack",
+              "value": 54,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedArmor",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "intervalSeconds",
+              "value": 1.8,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "meleeRange",
+              "value": 0.75,
+              "unit": "world_units"
+            },
+            {
+              "key": "rangedRange",
+              "value": 2.7,
+              "unit": "world_units"
+            },
+            {
+              "key": "speed",
+              "value": 0.7,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "entryShieldFraction",
+              "value": 0.2,
+              "unit": "ratio"
+            },
+            {
+              "key": "entryShieldSeconds",
+              "value": 5,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "至少3编制；每3种成员调集精英近战+弩手，最多3批。各精英首次承受合法守军攻击时获得20%最大生命盾，5秒，一次。"
+        }
+      ],
+      "starScaling": "仅援军HP与攻击×sqrt(S/K)，分别四舍五入；护甲/范围/数量/次数不乘。",
+      "interactions": [
+        "每批清空本批不同种类记录，后续重复部署可重新贡献种类。",
+        "援军不吃萨卡兹、感染、牧群、深池、溟痕成员收益；仍可吃现有全队传令光环，其影响须另计。"
+      ],
+      "notes": [
+        "8档必须人数与编制同时满足；未满足编制按低档回退。",
+        "本表比当前援军略强，但不把援军做成五费替代品。"
+      ]
+    },
+    {
+      "id": "snow",
+      "name": "雪怪小队",
+      "members": [
+        "CARD_M06",
+        "CARD_M11",
+        "CARD_M12",
+        "CARD_M13",
+        "CARD_M14"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/BattleSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/SnowstormSynergy.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/MonsterEffects.cs"
+      ],
+      "scope": "冻住守军后由全队不同普通卡种协同碎冰；天气全场守军。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "requiredDistinctHitKinds",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "hitWindowSeconds",
+              "value": 2.5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "targetShatterCooldownSeconds",
+              "value": 4,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shatterArts",
+              "value": 50,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "shatterRadius",
+              "value": 0.9,
+              "unit": "world_units"
+            },
+            {
+              "key": "shatterTargets",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "consumeFreeze",
+              "value": true,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "freezeSeconds",
+              "value": 1.2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "baseFreezeProtectionSeconds",
+              "value": 1.2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "coldAttackRateMultiplier",
+              "value": 0.7,
+              "unit": "ratio"
+            },
+            {
+              "key": "weatherCharges",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "weatherDurationSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "被冻结守军在2.5秒内被2种普通单位命中，碎冰50Q法伤，最多2目标；二档消费当前寒冷/冻结。"
+        },
+        {
+          "count": 5,
+          "parameters": [
+            {
+              "key": "requiredDistinctHitKinds",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "hitWindowSeconds",
+              "value": 2.5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "targetShatterCooldownSeconds",
+              "value": 3,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shatterArts",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "shatterRadius",
+              "value": 1.5,
+              "unit": "world_units"
+            },
+            {
+              "key": "shatterTargets",
+              "value": 5,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "consumeFreeze",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "freezeSeconds",
+              "value": 1.2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "baseFreezeProtectionSeconds",
+              "value": 1.2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "coldAttackRateMultiplier",
+              "value": 0.7,
+              "unit": "ratio"
+            },
+            {
+              "key": "weatherCharges",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "weatherDurationSeconds",
+              "value": 8,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "weatherPulseAt",
+              "value": [
+                0,
+                2,
+                4,
+                6
+              ],
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "weatherFlatArts",
+              "value": 40,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "weatherTargetMaxHPFraction",
+              "value": 0.0125,
+              "unit": "ratio"
+            },
+            {
+              "key": "weatherColdSeconds",
+              "value": 3.5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "weatherExtraFreezeProtectionSeconds",
+              "value": 3,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "碎冰100Q法伤、最多5目标；成功碎冰每次积1寒意，3点触发8秒暴风雪。四次寒潮对每名存活守军各造成(40+1.25%目标最大生命)Q法伤并按既有寒冷/冻结/保护结算。霜星手动冰封起手可启动同一天气。"
+        }
+      ],
+      "starScaling": "碎冰与天气伤害统一Q=(S/K)^0.4；不再乘攻击倍率；控制时长/保护/寒意不随星级增长。",
+      "interactions": [
+        "任何不同普通卡种可凑双击，支援不算；一次碎冰命中多人只积1寒意。",
+        "天气期间不积寒意、不叠加不续时；自动冰环/不足5档冰封不启动天气。",
+        "寒冷/冻结保护只阻控制不阻寒潮伤害；派生碎冰与天气不产下一次碎冰或军令。"
+      ],
+      "notes": [
+        "保留2/5档与3次碎冰天气机制，仅压低5档跨目标伤害，以适配后期总有效HP3500–6500标尺。"
+      ]
+    },
+    {
+      "id": "infection",
+      "name": "感染生物",
+      "members": [
+        "CARD_ORIGINIUM_SLUG",
+        "CARD_M02",
+        "CARD_M03",
+        "CARD_M04",
+        "CARD_M05",
+        "CARD_M06"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/AdvancedSynergies.cs"
+      ],
+      "scope": "仅普通感染成员部署生效；2/4档选主形态，6档再选不同二档副形态。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "swarmBodies",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "swarmHPFraction",
+              "value": 0.55,
+              "unit": "ratio"
+            },
+            {
+              "key": "swarmAttackFraction",
+              "value": 0.55,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellShieldFraction",
+              "value": 0.18,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellArmorAdd",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "shellShieldSeconds",
+              "value": 6,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "burstBaseArts",
+              "value": 35,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstRadius",
+              "value": 1,
+              "unit": "world_units"
+            },
+            {
+              "key": "burstTargets",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstDelaySeconds",
+              "value": 0.2,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "集群：共2个实体（含主实体），各55%HP/攻击；甲壳：18%最大生命盾6秒；爆裂：主实体最终死亡35×个人星级式法伤，最多2人。三选一。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "swarmBodies",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "swarmHPFraction",
+              "value": 0.65,
+              "unit": "ratio"
+            },
+            {
+              "key": "swarmAttackFraction",
+              "value": 0.65,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellShieldFraction",
+              "value": 0.28,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellArmorAdd",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "shellShieldSeconds",
+              "value": 6,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "burstBaseArts",
+              "value": 70,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstRadius",
+              "value": 1.2,
+              "unit": "world_units"
+            },
+            {
+              "key": "burstTargets",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstDelaySeconds",
+              "value": 0.2,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "集群2体各65%；甲壳28%盾+2甲；爆裂70基值、最多3人。"
+        },
+        {
+          "count": 6,
+          "parameters": [
+            {
+              "key": "swarmBodies",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "swarmHPFraction",
+              "value": 0.5,
+              "unit": "ratio"
+            },
+            {
+              "key": "swarmAttackFraction",
+              "value": 0.5,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellShieldFraction",
+              "value": 0.38,
+              "unit": "ratio"
+            },
+            {
+              "key": "shellArmorAdd",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "shellShieldSeconds",
+              "value": 6,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "burstBaseArts",
+              "value": 110,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstRadius",
+              "value": 1.3,
+              "unit": "world_units"
+            },
+            {
+              "key": "burstTargets",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burstDelaySeconds",
+              "value": 0.2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "secondaryTier",
+              "value": 2,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "主形态：集群3体各50%、甲壳38%盾+3甲、爆裂110基值；另获不同副形态二档。"
+        }
+      ],
+      "starScaling": "集群HP/攻击读取角色已升星面板再乘一次各自比例；爆裂=档位基值×[1+0.30×(该卡星级−1)]；盾读变形后实体MaxHP，不再套能力倍率。",
+      "interactions": [
+        "集群数量含主实体，不能描述成额外多出2/3体；副体支援不产点/再转化/穿门。",
+        "原生死亡爆炸总预算在集群各体间均分1/体数；羁绊爆裂只给主实体一次，与原生爆炸独立。",
+        "六档爆裂主+集群副时主实体伤害比例降低，但羁绊爆裂基值不额外按副体数翻倍。"
+      ],
+      "notes": [
+        "保留三形态与6档二档副形态；不新增召唤专属库存或额外DP。"
+      ]
+    },
+    {
+      "id": "guerrilla",
+      "name": "游击队",
+      "members": [
+        "CARD_M03",
+        "CARD_M15",
+        "CARD_M16",
+        "CARD_M17",
+        "CARD_M18",
+        "CARD_M19",
+        "CARD_M20"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/GuerrillaRules.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/AdvancedSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/GuerrillaOrderVolley.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/GuerrillaTransfers.cs"
+      ],
+      "scope": "军令获取与出手覆盖全队普通实体，不限游击成员；追击对全场每名存活守军分别结算。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "fullOrderCost",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "initialOrders",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "participantLimit",
+              "value": 6,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "attackMultiplier",
+              "value": 0.35,
+              "unit": "ratio"
+            },
+            {
+              "key": "halfAllowed",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeShieldFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "expandedEligibility",
+              "value": false,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "4点自动整令，最多6普通实体各贡献35%当前攻击。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "fullOrderCost",
+              "value": 5,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "initialOrders",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "participantLimit",
+              "value": 8,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "attackMultiplier",
+              "value": 0.5,
+              "unit": "ratio"
+            },
+            {
+              "key": "halfAllowed",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeShieldFraction",
+              "value": 0.08,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldSeconds",
+              "value": 3,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "expandedEligibility",
+              "value": false,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "5点自动整令，最多8实体各50%攻击；出手机会中的近战各获8%MaxHP临时盾3秒。"
+        },
+        {
+          "count": 6,
+          "parameters": [
+            {
+              "key": "fullOrderCost",
+              "value": 6,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "initialOrders",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "participantLimit",
+              "value": 12,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "attackMultiplier",
+              "value": 0.65,
+              "unit": "ratio"
+            },
+            {
+              "key": "halfAllowed",
+              "value": true,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "halfOrderCost",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "halfParticipantLimit",
+              "value": 6,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeShieldFraction",
+              "value": 0.12,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldSeconds",
+              "value": 5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "expandedEligibility",
+              "value": false,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "6点自动整令，最多12实体各65%；允许手动3点前半令+3点后半令，各最多6，后半排除前半实体；近战12%盾5秒。"
+        },
+        {
+          "count": 8,
+          "parameters": [
+            {
+              "key": "fullOrderCost",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "initialOrders",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "participantLimit",
+              "value": "all_eligible_normal_entities",
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "attackMultiplier",
+              "value": 1.8,
+              "unit": "ratio"
+            },
+            {
+              "key": "halfAllowed",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeShieldFraction",
+              "value": 0.12,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldSeconds",
+              "value": 5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "expandedEligibility",
+              "value": true,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "保留高档奖励：开战2点，3点自动整令，全体合格普通实体180%；不受普通射程/普攻动作窗口限制、不重置普攻。"
+        },
+        {
+          "count": 9,
+          "parameters": [
+            {
+              "key": "fullOrderCost",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "initialOrders",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "participantLimit",
+              "value": "all_eligible_normal_entities",
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "attackMultiplier",
+              "value": 3,
+              "unit": "ratio"
+            },
+            {
+              "key": "halfAllowed",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "meleeShieldFraction",
+              "value": 0.12,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldSeconds",
+              "value": 5,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "expandedEligibility",
+              "value": true,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "开战2点，2点自动整令，全体合格普通实体300%。稀有终局，不作为普通13关通关要求。"
+        }
+      ],
+      "starScaling": "读取角色已修饰UnitAttack一次；不加另一军令星级倍数。原生冻结增伤若已有则仍作用，须在角色预算中扣除。",
+      "resourceRules": {
+        "contactPointsPerEntity": 1,
+        "maxContactPointsPerKindPerBattle": 2,
+        "pointsFromSupports": 0,
+        "pointsFromDerived": 0,
+        "maxFullOrderCasts": "no_artificial_cap",
+        "presentationDurationSeconds": 3.55,
+        "strikeAtSeconds": [
+          0.9,
+          1.2,
+          1.5,
+          1.8,
+          2.8
+        ],
+        "strikeWeights": [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.4
+        ],
+        "maxTransfers": 2,
+        "transferGoldCost": 0,
+        "transferCostMeaning": "测试关免费指定；正式需要真实徽章，未引入新的金币购买渠道。"
+      },
+      "interactions": [
+        "军令预算先按来源对每名守军过甲/抗，随后拆五段15/15/15/15/40%；不能五次扣甲。",
+        "自动整令只在有点、有合格参与者、活守军且演出闲置时提交；暂停/忙碌/待后半令不扣余额。",
+        "低档要求普通射程和动作门禁；所有档仍禁支援、复起、施法/特殊锁定、硬控、传送等现有不合格状态。",
+        "来源在后续段前死亡/无效便停止该来源剩余段；终局取消未结算段。",
+        "近战临时盾为同一个SynergyShield槽取高刷新，不逐次累加；不覆盖为另一套无限叠盾。"
+      ],
+      "notes": [
+        "原2/4/6倍率0.60/0.80/0.90改为0.35/0.50/0.65；8/9已定1.8/3保留。",
+        "正常10人阵容最多20点接敌收入，高档再加2初始点；这是资源上界，不代表能用完，也不能按游击成员数代替全队种类数。",
+        "8/9必须7原生+1/2转职；正式徽章获取尚未实现，基线无额外赠送，因此普通自然13关无8/9通关依赖。"
+      ]
+    },
+    {
+      "id": "mudrock",
+      "name": "泥岩小队",
+      "members": [
+        "CARD_M26",
+        "CARD_M27",
+        "CARD_M42",
+        "CARD_M43",
+        "CARD_M28"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/GolemGrowth.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/AdvancedSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/MudrockTransfers.cs",
+        "E:/珍贵资料/昨日圆车/docs/GDD.md"
+      ],
+      "scope": "巨像作为一场一次的付DP支援；历史培养跨关，开战人数/总星决定可用上限。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "maximumStage",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "requiredTotalStars",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "battleXPFormula",
+              "value": "tier+floor(S/2)",
+              "unit": "XP"
+            },
+            {
+              "key": "goldInvestment",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "开启巨像I→II培养；至少2种成员。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "maximumStage",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "requiredTotalStars",
+              "value": 7,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "battleXPFormula",
+              "value": "tier+floor(S/2)",
+              "unit": "XP"
+            },
+            {
+              "key": "goldInvestment",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "至少4种且总星7，允许巨像III；低于7星仍受上限II。"
+        },
+        {
+          "count": 5,
+          "parameters": [
+            {
+              "key": "maximumStage",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "requiredTotalStars",
+              "value": 10,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "battleXPFormula",
+              "value": "tier+floor(S/2)",
+              "unit": "XP"
+            },
+            {
+              "key": "goldInvestment",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "至少5种且总星10，允许IV；不要求每一名都二星，只检验星级总和。"
+        },
+        {
+          "count": 6,
+          "parameters": [
+            {
+              "key": "maximumStage",
+              "value": 5,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "requiredTotalStars",
+              "value": 12,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "battleXPFormula",
+              "value": "tier+floor(S/2)",
+              "unit": "XP"
+            },
+            {
+              "key": "goldInvestment",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "maxTransfers",
+              "value": 1,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "至少6种且总星12，允许V；现5名原生，需1泥岩徽章转职。"
+        }
+      ],
+      "starScaling": "S为小队全部出战成员总星，转职同样计入；巨像阶段按固定表，不把巨像HP/攻击再乘队伍星级。",
+      "growth": {
+        "initialXP": 0,
+        "stageThresholds": [
+          0,
+          6,
+          16,
+          30,
+          48
+        ],
+        "battleXPFormula": "highestTier+floor(totalStars/2)",
+        "victoryRequired": false,
+        "deployedOrHitRequired": false,
+        "goldInvestmentPerXP": 0,
+        "goldInvestmentMeaning": "金币投资已退役；不提供金币→巨像XP转换。",
+        "supplyXP": 0,
+        "restartXP": 0,
+        "exitXP": 0,
+        "awardFormula": "min(rawXP,max(0,threshold(currentCapacity)-historicalXP))",
+        "overflowStored": false,
+        "historyDecreasesOnDowngrade": false,
+        "lowerFormationLimitsNextBattleStage": true,
+        "newChallengeResetsXP": true,
+        "formalTransferAvailability": "运行只有测试免费指定；正式真实徽章取得规则不在此数值重设计新增。"
+      },
+      "interactions": [
+        "支援不占普通卡库存或编队位，但占当场DP及唯一巨像使用次数；不穿门、不接军令、不产军令、不能牧群转化。",
+        "既有全队指挥光环仍可影响巨像攻击；巨像第三击全场法伤不能反过来积军令/碎冰。",
+        "IV/V回血每轮实际普攻命中最多一次，不按三目标多回3次。"
+      ],
+      "notes": [
+        "保持最新2/4/5/6档与I–V，覆盖旧2/4/5+金币投资草案。",
+        "普通终局无IV/V必备要求；可用III或其他体系通关。"
+      ]
+    },
+    {
+      "id": "herd",
+      "name": "牧群",
+      "members": [
+        "CARD_M21",
+        "CARD_M22",
+        "CARD_M23",
+        "CARD_M24",
+        "CARD_M25"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/RemainingSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/HerdSpiritState.cs"
+      ],
+      "scope": "全队非五费普通实体最终死亡转冰蓝灵体，并非仅牧群成员。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "conversionsPerBattle",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "spiritHPFraction",
+              "value": 0.3,
+              "unit": "ratio"
+            },
+            {
+              "key": "spiritAttackFraction",
+              "value": 0.3,
+              "unit": "ratio"
+            },
+            {
+              "key": "spiritArmor",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "effectiveLifetimeSeconds",
+              "value": 10,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "fallSeconds",
+              "value": 0.7,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "riseSeconds",
+              "value": 0.55,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "spiritRange",
+              "value": 0.75,
+              "unit": "world_units"
+            },
+            {
+              "key": "spiritMinimumIntervalSeconds",
+              "value": 2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "speed",
+              "value": 0.65,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedInherited",
+              "value": false,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedAttackMultiplier",
+              "value": 1,
+              "unit": "ratio"
+            },
+            {
+              "key": "gateDamage",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "最多3次，灵体30%原体MaxHP/攻击，2甲、近战0.75，起身后有效10秒。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "conversionsPerBattle",
+              "value": 5,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "spiritHPFraction",
+              "value": 0.4,
+              "unit": "ratio"
+            },
+            {
+              "key": "spiritAttackFraction",
+              "value": 0.4,
+              "unit": "ratio"
+            },
+            {
+              "key": "spiritArmor",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "effectiveLifetimeSeconds",
+              "value": 12,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "fallSeconds",
+              "value": 0.7,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "riseSeconds",
+              "value": 0.55,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "spiritRange",
+              "value": 2.5,
+              "unit": "world_units"
+            },
+            {
+              "key": "spiritMinimumIntervalSeconds",
+              "value": 2,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "speed",
+              "value": 0.65,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedInherited",
+              "value": true,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "rangedAttackMultiplier",
+              "value": 0.85,
+              "unit": "ratio"
+            },
+            {
+              "key": "gateDamage",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "最多5次，灵体40%原体MaxHP/攻击，4甲；保留原远程者2.5射程并额外×0.85攻击，近战仍0.75；有效12秒。"
+        }
+      ],
+      "starScaling": "读取来源已升星MaxHP/UnitAttack各乘一次比例；不重新升星、不继承完整技能或被动效果；来源动作总时长限制灵体最小攻击间隔。",
+      "interactions": [
+        "灵体在原死亡路线进度起身；倒下0.7+起身0.55秒内不移动/攻击/阻挡/受伤/被选取，有效寿命从就绪后计。",
+        "灵体为支援，不继续转灵体、不生产军令、不参与萨卡兹/感染/深池/溟痕机制。",
+        "五费、巨像、援军、感染副体排除。"
+      ],
+      "notes": [
+        "2/4档比例由35/45%降30/40%，生命与攻击同时生效，不能解释为30/40%完整原体战斗强度。"
+      ]
+    },
+    {
+      "id": "deep-pool",
+      "name": "深池",
+      "members": [
+        "CARD_M29",
+        "CARD_M30",
+        "CARD_M31",
+        "CARD_M32"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/RemainingSynergies.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/SynergyStarScaling.cs"
+      ],
+      "scope": "深池普通成员原生普攻/技能有效命中施加独立燎烧；火种传播与四档手动引爆。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "burnArtsPerSecond",
+              "value": 12,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burnDurationSeconds",
+              "value": 4,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "seedLifetime",
+              "value": "entire_battle",
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "seedCumulativeLimit",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "spreadRadius",
+              "value": 1.8,
+              "unit": "world_units"
+            },
+            {
+              "key": "spreadTargets",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationCasts",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationSeedCost",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationArts",
+              "value": 0,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationRadius",
+              "value": 0,
+              "unit": "world_units"
+            },
+            {
+              "key": "detonationTargets",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "燎烧12Q法伤/秒4秒；燃烧守军被正常伤害或深池燎烧消灭留火种，累计最多4；向1.8内最多2目标传播。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "burnArtsPerSecond",
+              "value": 22,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "burnDurationSeconds",
+              "value": 4,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "seedLifetime",
+              "value": "entire_battle",
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "seedCumulativeLimit",
+              "value": 6,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "spreadRadius",
+              "value": 2.2,
+              "unit": "world_units"
+            },
+            {
+              "key": "spreadTargets",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationCasts",
+              "value": 2,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationSeedCost",
+              "value": 1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationArts",
+              "value": 160,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationRadius",
+              "value": 1.8,
+              "unit": "world_units"
+            },
+            {
+              "key": "detonationTargets",
+              "value": 4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "detonationCooldownSeconds",
+              "value": 0,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "燎烧22Q/秒4秒；最多6枚累计火种，传播2.2内3目标。手动引爆自动取有活目标的未耗火种，耗1枚、160Q法伤、1.8内最多4目标、全场2次。"
+        }
+      ],
+      "starScaling": "燎烧和引爆仅×Q=(S/K)^(1/3)，不再吃来源攻击/技能星级第二倍率。",
+      "interactions": [
+        "同名燎烧取高刷新、不按来源数叠加；与角色原生灼燃独立。",
+        "燎烧本身不附赠原生减法抗；目标若已有原生减抗则按既有抗性管道结算。",
+        "首击击杀也可留种；累计上限含已消耗种；引爆伤害不留种/返种、不无限自繁殖。",
+        "无合法目标/暂停/失败请求不扣种；保持幂等。"
+      ],
+      "notes": [
+        "不接入火种充当逐火环境火源，仍为未实现边界。"
+      ]
+    },
+    {
+      "id": "sarkaz",
+      "name": "萨卡兹",
+      "members": [
+        "CARD_M19",
+        "CARD_M20",
+        "CARD_M24",
+        "CARD_M26",
+        "CARD_M27",
+        "CARD_M28",
+        "CARD_M42",
+        "CARD_M43",
+        "CARD_M37",
+        "CARD_M38",
+        "CARD_WISADEL_APRIL"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/SarkazContract.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/RemainingSynergies.cs"
+      ],
+      "scope": "全萨卡兹生命加成；整备指定一名当前萨卡兹承契者，普通部署时自动入场盾+全场攻击加成。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "allSarkazHPAdd",
+              "value": 0.08,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderAttackAdd",
+              "value": 0.25,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderShieldMaxHPFraction",
+              "value": 0.15,
+              "unit": "ratio"
+            },
+            {
+              "key": "otherShareFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldDurationSeconds",
+              "value": "until_consumed_or_final_removal",
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shieldReapplicationsPerEntity",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "全萨卡兹HP+8%；承契者攻击+25%、一次15%MaxHP盾。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "allSarkazHPAdd",
+              "value": 0.15,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderAttackAdd",
+              "value": 0.45,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderShieldMaxHPFraction",
+              "value": 0.25,
+              "unit": "ratio"
+            },
+            {
+              "key": "otherShareFraction",
+              "value": 0,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldDurationSeconds",
+              "value": "until_consumed_or_final_removal",
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shieldReapplicationsPerEntity",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "全体HP+15%；承契者攻击+45%、一次25%盾。"
+        },
+        {
+          "count": 6,
+          "parameters": [
+            {
+              "key": "allSarkazHPAdd",
+              "value": 0.22,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderAttackAdd",
+              "value": 0.65,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderShieldMaxHPFraction",
+              "value": 0.35,
+              "unit": "ratio"
+            },
+            {
+              "key": "otherShareFraction",
+              "value": 0.5,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldDurationSeconds",
+              "value": "until_consumed_or_final_removal",
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shieldReapplicationsPerEntity",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "全体HP+22%；承契者攻击+65%、35%盾，其他萨卡兹半额分享攻击与盾。"
+        },
+        {
+          "count": 8,
+          "parameters": [
+            {
+              "key": "allSarkazHPAdd",
+              "value": 0.3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderAttackAdd",
+              "value": 0.85,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderShieldMaxHPFraction",
+              "value": 0.45,
+              "unit": "ratio"
+            },
+            {
+              "key": "otherShareFraction",
+              "value": 1,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldDurationSeconds",
+              "value": "until_consumed_or_final_removal",
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shieldReapplicationsPerEntity",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "全体HP+30%；全萨卡兹完整分享攻击+85%、一次45%盾。"
+        },
+        {
+          "count": 9,
+          "parameters": [
+            {
+              "key": "allSarkazHPAdd",
+              "value": 0.4,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderAttackAdd",
+              "value": 1.1,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "holderShieldMaxHPFraction",
+              "value": 0.55,
+              "unit": "ratio"
+            },
+            {
+              "key": "otherShareFraction",
+              "value": 1,
+              "unit": "ratio"
+            },
+            {
+              "key": "shieldDurationSeconds",
+              "value": "until_consumed_or_final_removal",
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "shieldReapplicationsPerEntity",
+              "value": 0,
+              "unit": "specified_in_effect"
+            }
+          ],
+          "effectText": "全体HP+40%；全萨卡兹攻击+110%、一次55%盾；稀有9人成型奖励。"
+        }
+      ],
+      "starScaling": "生命与攻击只通过已升星角色面板成长；盾=加成后的实体MaxHP×档位盾比例×分享比例；不再套技能成长。",
+      "interactions": [
+        "同实体只在合法部署一次发盾，原生复起/阶段变化不重发；不是周期补盾或手动技。",
+        "承契者必须为已编入萨卡兹，不能把无此标签者变为承契者；开战锁定，其他萨卡兹分享门槛保持6/8。",
+        "攻击与TacticalAttackMultiplier内全队光环按加法合并，例如1名10%指挥+四档承契=1+0.10+0.45=1.55，而不是1.10×1.45。",
+        "支援体排除；盾保留原伤害类型吸收与真实伤害绕盾规则，不新增真伤吸收。"
+      ],
+      "notes": [
+        "当前存在11名原生萨卡兹，9档无需虚构转职来源，但需要9编队位和高费成员收集。"
+      ]
+    },
+    {
+      "id": "marine",
+      "name": "海嗣",
+      "members": [
+        "CARD_M33",
+        "CARD_M34",
+        "CARD_M35",
+        "CARD_M36"
+      ],
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/MarineTide.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/NeuralEffects.cs"
+      ],
+      "scope": "普通海嗣真实接敌落种，四邻地面扩散；海嗣站在溟痕上时原生神经积累强化；地面守军受地面侵蚀。",
+      "tiers": [
+        {
+          "count": 2,
+          "parameters": [
+            {
+              "key": "spreadIntervalSeconds",
+              "value": 6,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "tileLimit",
+              "value": 8,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "nativeNeuralMultiplier",
+              "value": 1.35,
+              "unit": "ratio"
+            },
+            {
+              "key": "groundNeuralPerSecond",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralThreshold",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralBurstTrueDamage",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralBurstDurationSeconds",
+              "value": 10,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "扩散6秒、最多8格；驻留溟痕海嗣原生神经×1.35；地面守军每秒+3神经积累。"
+        },
+        {
+          "count": 4,
+          "parameters": [
+            {
+              "key": "spreadIntervalSeconds",
+              "value": 4,
+              "unit": "simulation_seconds"
+            },
+            {
+              "key": "tileLimit",
+              "value": 16,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "nativeNeuralMultiplier",
+              "value": 1.75,
+              "unit": "ratio"
+            },
+            {
+              "key": "groundNeuralPerSecond",
+              "value": 3,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralThreshold",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralBurstTrueDamage",
+              "value": 100,
+              "unit": "specified_in_effect"
+            },
+            {
+              "key": "neuralBurstDurationSeconds",
+              "value": 10,
+              "unit": "simulation_seconds"
+            }
+          ],
+          "effectText": "扩散4秒、最多16格；原生神经×1.75；地面侵蚀仍每秒3，不随倍率再乘。"
+        }
+      ],
+      "starScaling": "不另加平均/总星倍率；原生神经若取攻击基值已随角色星级成长，地面3点固定。",
+      "interactions": [
+        "每种海嗣本场只落一个接敌根；扩散预留尚未接敌成员落种格；每次只长一圈四邻，不递归铺全图。",
+        "只铺保存的地面格，高台不铺，同格不叠；无存活普通海嗣时休眠，重新有单位后续进度，跨波保留、跨关清空。",
+        "100积累触发100真伤和10秒爆发，期间不再积累且不能行动/阻挡；保留原机制，不能再加同类控制延长。",
+        "不恢复旧跨关海嗣经验/适应、金币投资或转职。"
+      ],
+      "notes": [
+        "海嗣强项是路径控制与占地，不拿100神经积累当作100直接DPS。",
+        "多源原生神经可接近长时间控制，已有10秒爆发期间不积累构成间隔；须用实际守军保护与技能复验。"
+      ]
+    }
+  ],
+  "summons": [
+    {
+      "id": "mudrock-golem",
+      "name": "泥岩巨像",
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/GolemGrowth.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/AdvancedSynergies.cs"
+      ],
+      "scope": "已实现I–V；下列为项目外重设值，保留原动作、5.2秒间隔、唯一部署与高档机制。",
+      "common": {
+        "usesPerBattle": 1,
+        "speed": 0.45,
+        "intervalSeconds": 5.2,
+        "attackDurationSeconds": 5.166667,
+        "windupSeconds": 2.746667,
+        "projectileSeconds": 0.02,
+        "gateDamage": 0,
+        "SP": 0,
+        "skill": 0,
+        "synergySupport": true
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "requiredXP": 0,
+          "requiredKinds": 2,
+          "requiredTotalStars": 2,
+          "hp": 500,
+          "attack": 100,
+          "armor": 8,
+          "resistance": 0,
+          "dp": 4,
+          "range": 1.1,
+          "targets": 1,
+          "thirdHitPrimaryPhysical": 0,
+          "thirdHitSidePhysical": 0,
+          "thirdHitSideTargets": 0,
+          "globalThirdHitArtsFraction": 0,
+          "healPerSuccessfulAttackFraction": 0,
+          "controlImmune": false,
+          "canHitHighGround": false
+        },
+        {
+          "stage": 2,
+          "requiredXP": 6,
+          "requiredKinds": 2,
+          "requiredTotalStars": 2,
+          "hp": 900,
+          "attack": 170,
+          "armor": 10,
+          "resistance": 0,
+          "dp": 5,
+          "range": 1.1,
+          "targets": 1,
+          "thirdHitPrimaryPhysical": 80,
+          "thirdHitSidePhysical": 0,
+          "thirdHitSideTargets": 0,
+          "globalThirdHitArtsFraction": 0,
+          "healPerSuccessfulAttackFraction": 0,
+          "controlImmune": false,
+          "canHitHighGround": false
+        },
+        {
+          "stage": 3,
+          "requiredXP": 16,
+          "requiredKinds": 4,
+          "requiredTotalStars": 7,
+          "hp": 2200,
+          "attack": 380,
+          "armor": 18,
+          "resistance": 20,
+          "dp": 8,
+          "range": 1.1,
+          "targets": 1,
+          "thirdHitPrimaryPhysical": 120,
+          "thirdHitSidePhysical": 100,
+          "thirdHitSideTargets": 2,
+          "thirdHitSideRadius": 1,
+          "globalThirdHitArtsFraction": 0,
+          "healPerSuccessfulAttackFraction": 0,
+          "controlImmune": false,
+          "canHitHighGround": false
+        },
+        {
+          "stage": 4,
+          "requiredXP": 30,
+          "requiredKinds": 5,
+          "requiredTotalStars": 10,
+          "hp": 4000,
+          "attack": 520,
+          "armor": 22,
+          "resistance": 30,
+          "dp": 14,
+          "range": 2.2,
+          "targets": 3,
+          "thirdHitPrimaryPhysical": 0,
+          "thirdHitSidePhysical": 0,
+          "thirdHitSideTargets": 0,
+          "globalThirdHitArtsFraction": 0.8,
+          "healPerSuccessfulAttackFraction": 0.08,
+          "controlImmune": true,
+          "canHitHighGround": true
+        },
+        {
+          "stage": 5,
+          "requiredXP": 48,
+          "requiredKinds": 6,
+          "requiredTotalStars": 12,
+          "hp": 5200,
+          "attack": 700,
+          "armor": 26,
+          "resistance": 40,
+          "dp": 16,
+          "range": 2.2,
+          "targets": 3,
+          "thirdHitPrimaryPhysical": 0,
+          "thirdHitSidePhysical": 0,
+          "thirdHitSideTargets": 0,
+          "globalThirdHitArtsFraction": 0.8,
+          "healPerSuccessfulAttackFraction": 0.08,
+          "controlImmune": true,
+          "canHitHighGround": true
+        }
+      ],
+      "notes": [
+        "实际第三次普攻命中才触发；无命中不触发、无目标不空放。IV/V每轮多目标只回8%一次。",
+        "巨像不承担普通终战必须达到的伤害阈值；III也可用于常规，IV/V是高投入培养路径。",
+        "本表删除旧60甲/60抗对低攻击守军近免伤，并把IV/V攻击1600/2000改为520/700。"
+      ]
+    }
+  ],
+  "specials": [
+    {
+      "id": "silver-wolf-lv999",
+      "name": "银狼LV.999：已接入战斗",
+      "cardId": "CARD_M41",
+      "source": [
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/SilverWolfCombat.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/EngagementCombat.cs",
+        "E:/珍贵资料/昨日圆车/Assets/Data/Battles/M41.asset"
+      ],
+      "status": "战斗已实现，以下为项目外新数值；准备阶段接入/补丁/管理员接管仍暂缓。",
+      "scope": "常态面板由怪物总表定义，不重复覆盖；技能仅覆盖已实现变身三盒。",
+      "parameters": [
+        {
+          "key": "initialSP",
+          "value": 24,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "requiredSP",
+          "value": 28,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "spPerSecond",
+          "value": 1,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "skillAmmo",
+          "value": 3,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "transformSeconds",
+          "value": 1.43,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "boxActionSeconds",
+          "value": 4.6,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "skillRange",
+          "value": 3.8,
+          "unit": "world_units"
+        },
+        {
+          "key": "boxArtsBudgetByStar",
+          "value": [
+            225,
+            450,
+            1125
+          ],
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "swordProbability",
+          "value": 0.3333333333333333,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "bombProbability",
+          "value": 0.3333333333333333,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "beanProbability",
+          "value": 0.3333333333333333,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "swordHitSeconds",
+          "value": 1.76,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "swordFinishSeconds",
+          "value": 2.96,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "bombHitSeconds",
+          "value": 2.54,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "beanHitSeconds",
+          "value": 2.29,
+          "unit": "simulation_seconds"
+        },
+        {
+          "key": "swordBonusActualDamageFraction",
+          "value": 0.2,
+          "unit": "ratio"
+        },
+        {
+          "key": "bombDP",
+          "value": 2,
+          "unit": "DP"
+        },
+        {
+          "key": "beanSelfSP",
+          "value": 3,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "resourceDisplayCost",
+          "value": 0,
+          "unit": "specified_in_effect"
+        }
+      ],
+      "starScaling": "技能表225/450/1125已经是最终星级独立预算，与player-roster.json一致；只应用当前战斗攻击修饰一次，不再乘技能星级成长。",
+      "interactions": [
+        "每盒独立等概率，可重复；每盒法伤总预算在当时存活守军之间均分，不按人数复制预算。",
+        "大剑追加该盒实际总伤20%真伤给追击时HP最高存活守军；炸弹+2全队DP，豆+3自身SP。",
+        "三盒完且完整动作结束回常态；技能期间停自然回SP，豆回SP可留下一轮；暂停冻结，无额外回费上限。",
+        "准备阶段头号玩家羁绊接入、补丁及三星管理员接管不设计为已实现能力。"
+      ],
+      "notes": [
+        "与player-roster.json共用角色技能数值；该表是候选参数，银狼制作仍暂停，不恢复准备阶段接入/补丁/接管。"
+      ]
+    },
+    {
+      "id": "not-implemented-five-cost-construction",
+      "name": "五费准备阶段专属边界",
+      "status": "不作为推荐基线新增机制",
+      "parameters": [
+        {
+          "key": "newRecruitmentPrivileges",
+          "value": 0,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "newGoldSources",
+          "value": 0,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "newFreeRerolls",
+          "value": 0,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "newTransferSources",
+          "value": 0,
+          "unit": "specified_in_effect"
+        },
+        {
+          "key": "newAdministratorXP",
+          "value": 0,
+          "unit": "XP"
+        },
+        {
+          "key": "newAdministratorLevels",
+          "value": 0,
+          "unit": "specified_in_effect"
+        }
+      ],
+      "notes": [
+        "塔露拉领袖/爱国者搭档/霜星备战协议等旧构筑专属未实施的部分不因本轮重设数值伪装完成。",
+        "已接入的角色普攻、复起、原生技能由怪物总表单列；本文件只给羁绊相互作用。"
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "id": "guerrilla-requested-matrix",
+      "status": "PASS_FORMULA",
+      "formula": "targets*participants*max(1,averageAttack*multiplier-armor); full volley weights sum1, not 5 armor deductions",
+      "rows": [
+        {
+          "tier": 2,
+          "averageAttack": 90,
+          "participants": 4,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 1,
+          "perDefender": 46,
+          "total": 46
+        },
+        {
+          "tier": 2,
+          "averageAttack": 90,
+          "participants": 4,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 3,
+          "perDefender": 46,
+          "total": 138
+        },
+        {
+          "tier": 2,
+          "averageAttack": 90,
+          "participants": 4,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 5,
+          "perDefender": 46,
+          "total": 230
+        },
+        {
+          "tier": 4,
+          "averageAttack": 90,
+          "participants": 6,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 1,
+          "perDefender": 150,
+          "total": 150
+        },
+        {
+          "tier": 4,
+          "averageAttack": 90,
+          "participants": 6,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 3,
+          "perDefender": 150,
+          "total": 450
+        },
+        {
+          "tier": 4,
+          "averageAttack": 90,
+          "participants": 6,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 5,
+          "perDefender": 150,
+          "total": 750
+        },
+        {
+          "tier": 6,
+          "averageAttack": 90,
+          "participants": 8,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 1,
+          "perDefender": 308,
+          "total": 308
+        },
+        {
+          "tier": 6,
+          "averageAttack": 90,
+          "participants": 8,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 3,
+          "perDefender": 308,
+          "total": 924
+        },
+        {
+          "tier": 6,
+          "averageAttack": 90,
+          "participants": 8,
+          "armor": 20,
+          "resistance": 0,
+          "defenders": 5,
+          "perDefender": 308,
+          "total": 1540
+        }
+      ],
+      "limitations": "无过量伤害、来源中途失效、冻结增伤、减伤、护盾和治疗；是一次完整整令的物理伤害预算，不是DPS/实际胜率。"
+    },
+    {
+      "id": "nonrecursive-invariants",
+      "status": "PASS_SPECIFICATION",
+      "checks": {
+        "nineSynergies": true,
+        "golemStages": true,
+        "volleyWeightsSum": 1,
+        "allSynergyTierSequencesExplicit": true,
+        "noInvestmentSystemRestored": true,
+        "noAdminFeatureInvented": true
+      },
+      "notRuntimeTest": true
+    },
+    {
+      "id": "snow-multitarget-envelope",
+      "status": "CALCULATED_UPPER_ENVELOPE",
+      "rows": [
+        {
+          "averageSnowStar": 1,
+          "totalStars": 5,
+          "K": 5,
+          "Q": 1,
+          "targetHP": 1000,
+          "targets": 1,
+          "oneWeatherDamage": 210,
+          "threeShattersPlusWeather": 510
+        },
+        {
+          "averageSnowStar": 1,
+          "totalStars": 5,
+          "K": 5,
+          "Q": 1,
+          "targetHP": 1000,
+          "targets": 3,
+          "oneWeatherDamage": 630,
+          "threeShattersPlusWeather": 1530
+        },
+        {
+          "averageSnowStar": 1,
+          "totalStars": 5,
+          "K": 5,
+          "Q": 1,
+          "targetHP": 1000,
+          "targets": 5,
+          "oneWeatherDamage": 1050,
+          "threeShattersPlusWeather": 2550
+        },
+        {
+          "averageSnowStar": 2,
+          "totalStars": 10,
+          "K": 5,
+          "Q": 1.319508,
+          "targetHP": 1000,
+          "targets": 1,
+          "oneWeatherDamage": 277.096661,
+          "threeShattersPlusWeather": 672.949034
+        },
+        {
+          "averageSnowStar": 2,
+          "totalStars": 10,
+          "K": 5,
+          "Q": 1.319508,
+          "targetHP": 1000,
+          "targets": 3,
+          "oneWeatherDamage": 831.289984,
+          "threeShattersPlusWeather": 2018.847103
+        },
+        {
+          "averageSnowStar": 2,
+          "totalStars": 10,
+          "K": 5,
+          "Q": 1.319508,
+          "targetHP": 1000,
+          "targets": 5,
+          "oneWeatherDamage": 1385.483306,
+          "threeShattersPlusWeather": 3364.745172
+        },
+        {
+          "averageSnowStar": 3,
+          "totalStars": 15,
+          "K": 5,
+          "Q": 1.551846,
+          "targetHP": 1000,
+          "targets": 1,
+          "oneWeatherDamage": 325.887571,
+          "threeShattersPlusWeather": 791.441243
+        },
+        {
+          "averageSnowStar": 3,
+          "totalStars": 15,
+          "K": 5,
+          "Q": 1.551846,
+          "targetHP": 1000,
+          "targets": 3,
+          "oneWeatherDamage": 977.662712,
+          "threeShattersPlusWeather": 2374.323728
+        },
+        {
+          "averageSnowStar": 3,
+          "totalStars": 15,
+          "K": 5,
+          "Q": 1.551846,
+          "targetHP": 1000,
+          "targets": 5,
+          "oneWeatherDamage": 1629.437853,
+          "threeShattersPlusWeather": 3957.206213
+        }
+      ],
+      "limitations": "假定每次3碎冰都覆盖全部≤5名目标，且天气四波全部命中未提前死亡；实际需双卡命中与冻结窗口，霜星手动触发则不同时附赠3次碎冰。"
+    },
+    {
+      "id": "golem-1-3-5-target-dps",
+      "status": "CALCULATED_STATIONARY_CEILING",
+      "rows": [
+        {
+          "stage": 1,
+          "targets": 1,
+          "DP": 4,
+          "HP": 500,
+          "autoDPS": 19.230769,
+          "thirdHitDPS": 0,
+          "totalDPS": 19.230769,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 1,
+          "targets": 3,
+          "DP": 4,
+          "HP": 500,
+          "autoDPS": 19.230769,
+          "thirdHitDPS": 0,
+          "totalDPS": 19.230769,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 1,
+          "targets": 5,
+          "DP": 4,
+          "HP": 500,
+          "autoDPS": 19.230769,
+          "thirdHitDPS": 0,
+          "totalDPS": 19.230769,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 2,
+          "targets": 1,
+          "DP": 5,
+          "HP": 900,
+          "autoDPS": 32.692308,
+          "thirdHitDPS": 5.128205,
+          "totalDPS": 37.820513,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 2,
+          "targets": 3,
+          "DP": 5,
+          "HP": 900,
+          "autoDPS": 32.692308,
+          "thirdHitDPS": 5.128205,
+          "totalDPS": 37.820513,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 2,
+          "targets": 5,
+          "DP": 5,
+          "HP": 900,
+          "autoDPS": 32.692308,
+          "thirdHitDPS": 5.128205,
+          "totalDPS": 37.820513,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 3,
+          "targets": 1,
+          "DP": 8,
+          "HP": 2200,
+          "autoDPS": 73.076923,
+          "thirdHitDPS": 7.692308,
+          "totalDPS": 80.769231,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 3,
+          "targets": 3,
+          "DP": 8,
+          "HP": 2200,
+          "autoDPS": 73.076923,
+          "thirdHitDPS": 20.512821,
+          "totalDPS": 93.589744,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 3,
+          "targets": 5,
+          "DP": 8,
+          "HP": 2200,
+          "autoDPS": 73.076923,
+          "thirdHitDPS": 20.512821,
+          "totalDPS": 93.589744,
+          "healPerSecondCeiling": 0
+        },
+        {
+          "stage": 4,
+          "targets": 1,
+          "DP": 14,
+          "HP": 4000,
+          "autoDPS": 100,
+          "thirdHitDPS": 26.666667,
+          "totalDPS": 126.666667,
+          "healPerSecondCeiling": 61.538462
+        },
+        {
+          "stage": 4,
+          "targets": 3,
+          "DP": 14,
+          "HP": 4000,
+          "autoDPS": 300,
+          "thirdHitDPS": 80,
+          "totalDPS": 380,
+          "healPerSecondCeiling": 61.538462
+        },
+        {
+          "stage": 4,
+          "targets": 5,
+          "DP": 14,
+          "HP": 4000,
+          "autoDPS": 300,
+          "thirdHitDPS": 133.333333,
+          "totalDPS": 433.333333,
+          "healPerSecondCeiling": 61.538462
+        },
+        {
+          "stage": 5,
+          "targets": 1,
+          "DP": 16,
+          "HP": 5200,
+          "autoDPS": 134.615385,
+          "thirdHitDPS": 35.897436,
+          "totalDPS": 170.512821,
+          "healPerSecondCeiling": 80
+        },
+        {
+          "stage": 5,
+          "targets": 3,
+          "DP": 16,
+          "HP": 5200,
+          "autoDPS": 403.846154,
+          "thirdHitDPS": 107.692308,
+          "totalDPS": 511.538462,
+          "healPerSecondCeiling": 80
+        },
+        {
+          "stage": 5,
+          "targets": 5,
+          "DP": 16,
+          "HP": 5200,
+          "autoDPS": 403.846154,
+          "thirdHitDPS": 179.487179,
+          "totalDPS": 583.333333,
+          "healPerSecondCeiling": 80
+        }
+      ],
+      "limitations": "无甲/抗、无走路/施法/击杀损失，长期稳态；三次攻击才有首次脉冲，不能从0秒套稳态脉冲DPS；三目标还需均在2.2范围。"
+    },
+    {
+      "id": "reunion-complete-muster-envelope",
+      "status": "CALCULATED_UPPER_ENVELOPE",
+      "rows": [
+        {
+          "S": 4,
+          "K": 2,
+          "Q": 1.414214,
+          "maximumBatches": 1,
+          "maximumMelee": 1,
+          "maximumRanged": 0,
+          "totalSupportHP": 141,
+          "totalSupportDPS": 12.777778,
+          "note": ""
+        },
+        {
+          "S": 8,
+          "K": 4,
+          "Q": 1.414214,
+          "maximumBatches": 2,
+          "maximumMelee": 2,
+          "maximumRanged": 0,
+          "totalSupportHP": 424,
+          "totalSupportDPS": 37.777778,
+          "note": "本行选近战；可替换弩手而非两者同时得。"
+        },
+        {
+          "S": 12,
+          "K": 6,
+          "Q": 1.414214,
+          "maximumBatches": 2,
+          "maximumMelee": 2,
+          "maximumRanged": 2,
+          "totalSupportHP": 1018,
+          "totalSupportDPS": 113.333333,
+          "note": ""
+        },
+        {
+          "S": 16,
+          "K": 8,
+          "Q": 1.414214,
+          "maximumBatches": 3,
+          "maximumMelee": 3,
+          "maximumRanged": 3,
+          "totalSupportHP": 2037,
+          "totalSupportDPS": 230,
+          "note": ""
+        },
+        {
+          "S": 32,
+          "K": 8,
+          "Q": 2,
+          "maximumBatches": 3,
+          "maximumMelee": 3,
+          "maximumRanged": 3,
+          "totalSupportHP": 2880,
+          "totalSupportDPS": 326.666667,
+          "note": ""
+        }
+      ],
+      "limitations": "假设每批合法触发且所有援军同时存活并持续攻击；非瞬时/平均实战DPS，不含指挥光环。"
+    },
+    {
+      "id": "silver-wolf-exact-27-box-outcomes",
+      "status": "PASS_EXACT_ENUMERATION",
+      "outcomes": 27,
+      "enumerationChecks": {
+        "outcomesPerStar": 27,
+        "meanDamageByStar": [
+          720.0,
+          1440.0,
+          3600.0
+        ],
+        "meanDP": 2,
+        "meanSP": 3,
+        "zeroBombOutcomes": 8,
+        "threeSwordOutcomes": 1,
+        "threeBombOutcomes": 1,
+        "threeBeanOutcomes": 1
+      },
+      "rows": [
+        {
+          "star": 1,
+          "threeBoxesArtsTotal": 675,
+          "expectedSwordBonus": 45.0,
+          "expectedDamageAtZeroResistance": 720.0,
+          "minimumDamageNoSwords": 675,
+          "maximumDamageThreeSwords": 810.0,
+          "expectedBombDP": 2.0,
+          "maxBombDP": 6,
+          "probabilityZeroBomb": 0.2962962962962963,
+          "expectedBeanSP": 3.0,
+          "maxBeanSP": 9
+        },
+        {
+          "star": 2,
+          "threeBoxesArtsTotal": 1350,
+          "expectedSwordBonus": 90.0,
+          "expectedDamageAtZeroResistance": 1440.0,
+          "minimumDamageNoSwords": 1350,
+          "maximumDamageThreeSwords": 1620.0,
+          "expectedBombDP": 2.0,
+          "maxBombDP": 6,
+          "probabilityZeroBomb": 0.2962962962962963,
+          "expectedBeanSP": 3.0,
+          "maxBeanSP": 9
+        },
+        {
+          "star": 3,
+          "threeBoxesArtsTotal": 3375,
+          "expectedSwordBonus": 225.0,
+          "expectedDamageAtZeroResistance": 3600.0,
+          "minimumDamageNoSwords": 3375,
+          "maximumDamageThreeSwords": 4050.0,
+          "expectedBombDP": 2.0,
+          "maxBombDP": 6,
+          "probabilityZeroBomb": 0.2962962962962963,
+          "expectedBeanSP": 3.0,
+          "maxBeanSP": 9
+        }
+      ],
+      "limitations": "无抗、无过量伤害、来源/目标存活；大剑按实际伤害追击，因此有抗/护盾/死亡时低于本值。不得将均分预算复制给每个守军。"
+    },
+    {
+      "id": "marine-accumulation-versus-dps",
+      "status": "CALCULATED_CONTINUOUS_RATE_APPROXIMATION",
+      "rows": [
+        {
+          "nativeNeuralPerSecond": 0,
+          "multiplier": 1.35,
+          "ground": 3,
+          "totalAccumulationPerSecond": 3,
+          "firstBurstSeconds": 33.333333,
+          "longRunTrueDPS": 2.307692,
+          "longRunControlFraction": 0.230769
+        },
+        {
+          "nativeNeuralPerSecond": 0,
+          "multiplier": 1.75,
+          "ground": 3,
+          "totalAccumulationPerSecond": 3,
+          "firstBurstSeconds": 33.333333,
+          "longRunTrueDPS": 2.307692,
+          "longRunControlFraction": 0.230769
+        },
+        {
+          "nativeNeuralPerSecond": 10,
+          "multiplier": 1.35,
+          "ground": 3,
+          "totalAccumulationPerSecond": 16.5,
+          "firstBurstSeconds": 6.060606,
+          "longRunTrueDPS": 6.226415,
+          "longRunControlFraction": 0.622642
+        },
+        {
+          "nativeNeuralPerSecond": 10,
+          "multiplier": 1.75,
+          "ground": 3,
+          "totalAccumulationPerSecond": 20.5,
+          "firstBurstSeconds": 4.878049,
+          "longRunTrueDPS": 6.721311,
+          "longRunControlFraction": 0.672131
+        },
+        {
+          "nativeNeuralPerSecond": 20,
+          "multiplier": 1.35,
+          "ground": 3,
+          "totalAccumulationPerSecond": 30,
+          "firstBurstSeconds": 3.333333,
+          "longRunTrueDPS": 7.5,
+          "longRunControlFraction": 0.75
+        },
+        {
+          "nativeNeuralPerSecond": 20,
+          "multiplier": 1.75,
+          "ground": 3,
+          "totalAccumulationPerSecond": 38,
+          "firstBurstSeconds": 2.631579,
+          "longRunTrueDPS": 7.916667,
+          "longRunControlFraction": 0.791667
+        },
+        {
+          "nativeNeuralPerSecond": 40,
+          "multiplier": 1.35,
+          "ground": 3,
+          "totalAccumulationPerSecond": 57,
+          "firstBurstSeconds": 1.754386,
+          "longRunTrueDPS": 8.507463,
+          "longRunControlFraction": 0.850746
+        },
+        {
+          "nativeNeuralPerSecond": 40,
+          "multiplier": 1.75,
+          "ground": 3,
+          "totalAccumulationPerSecond": 73,
+          "firstBurstSeconds": 1.369863,
+          "longRunTrueDPS": 8.795181,
+          "longRunControlFraction": 0.879518
+        },
+        {
+          "nativeNeuralPerSecond": 80,
+          "multiplier": 1.35,
+          "ground": 3,
+          "totalAccumulationPerSecond": 111,
+          "firstBurstSeconds": 0.900901,
+          "longRunTrueDPS": 9.173554,
+          "longRunControlFraction": 0.917355
+        },
+        {
+          "nativeNeuralPerSecond": 80,
+          "multiplier": 1.75,
+          "ground": 3,
+          "totalAccumulationPerSecond": 143,
+          "firstBurstSeconds": 0.699301,
+          "longRunTrueDPS": 9.346405,
+          "longRunControlFraction": 0.934641
+        }
+      ],
+      "limitations": "原生神经实际上按命中离散结算；站位、休眠、走路与施法降低覆盖。保留10秒不积累规则，未新增神经硬控豁免。"
+    },
+    {
+      "id": "sarkaz-multipliers",
+      "status": "CALCULATED_NO_ARMOR_EHP_ENVELOPE",
+      "rows": [
+        {
+          "tier": 2,
+          "holderHPFactor": 1.08,
+          "holderAttackFactorWithoutAura": 1.25,
+          "holderFullShieldEHPFactor": 1.242,
+          "holderAttackFactorOneCommander": 1.35,
+          "note": "实际盾若未完全消耗则有效承伤低于本上界。"
+        },
+        {
+          "tier": 4,
+          "holderHPFactor": 1.15,
+          "holderAttackFactorWithoutAura": 1.45,
+          "holderFullShieldEHPFactor": 1.4375,
+          "holderAttackFactorOneCommander": 1.55,
+          "note": "实际盾若未完全消耗则有效承伤低于本上界。"
+        },
+        {
+          "tier": 6,
+          "holderHPFactor": 1.22,
+          "holderAttackFactorWithoutAura": 1.65,
+          "holderFullShieldEHPFactor": 1.647,
+          "holderAttackFactorOneCommander": 1.75,
+          "note": "实际盾若未完全消耗则有效承伤低于本上界。"
+        },
+        {
+          "tier": 8,
+          "holderHPFactor": 1.3,
+          "holderAttackFactorWithoutAura": 1.85,
+          "holderFullShieldEHPFactor": 1.885,
+          "holderAttackFactorOneCommander": 1.95,
+          "note": "实际盾若未完全消耗则有效承伤低于本上界。"
+        },
+        {
+          "tier": 9,
+          "holderHPFactor": 1.4,
+          "holderAttackFactorWithoutAura": 2.1,
+          "holderFullShieldEHPFactor": 2.17,
+          "holderAttackFactorOneCommander": 2.2,
+          "note": "实际盾若未完全消耗则有效承伤低于本上界。"
+        }
+      ]
+    },
+    {
+      "id": "golem-natural-13-stage-check",
+      "status": "PASS_PIECEWISE_ASSUMED_ROSTER",
+      "rows": [
+        {
+          "stage": 3,
+          "crew": 2,
+          "S": 2,
+          "rawXP": 3,
+          "capacity": 2,
+          "beforeXP": 0,
+          "awardXP": 3,
+          "afterXP": 3,
+          "stageAfterSettlement": 1
+        },
+        {
+          "stage": 4,
+          "crew": 2,
+          "S": 2,
+          "rawXP": 3,
+          "capacity": 2,
+          "beforeXP": 3,
+          "awardXP": 3,
+          "afterXP": 6,
+          "stageAfterSettlement": 2
+        },
+        {
+          "stage": 6,
+          "crew": 4,
+          "S": 7,
+          "rawXP": 7,
+          "capacity": 3,
+          "beforeXP": 6,
+          "awardXP": 7,
+          "afterXP": 13,
+          "stageAfterSettlement": 2
+        },
+        {
+          "stage": 7,
+          "crew": 4,
+          "S": 7,
+          "rawXP": 7,
+          "capacity": 3,
+          "beforeXP": 13,
+          "awardXP": 3,
+          "afterXP": 16,
+          "stageAfterSettlement": 3
+        },
+        {
+          "stage": 8,
+          "crew": 5,
+          "S": 10,
+          "rawXP": 10,
+          "capacity": 4,
+          "beforeXP": 16,
+          "awardXP": 10,
+          "afterXP": 26,
+          "stageAfterSettlement": 3
+        },
+        {
+          "stage": 10,
+          "crew": 5,
+          "S": 10,
+          "rawXP": 10,
+          "capacity": 4,
+          "beforeXP": 26,
+          "awardXP": 4,
+          "afterXP": 30,
+          "stageAfterSettlement": 4
+        },
+        {
+          "stage": 11,
+          "crew": 5,
+          "S": 10,
+          "rawXP": 10,
+          "capacity": 4,
+          "beforeXP": 30,
+          "awardXP": 0,
+          "afterXP": 30,
+          "stageAfterSettlement": 4
+        },
+        {
+          "stage": 13,
+          "crew": 5,
+          "S": 10,
+          "rawXP": 10,
+          "capacity": 4,
+          "beforeXP": 30,
+          "awardXP": 0,
+          "afterXP": 30,
+          "stageAfterSettlement": 4
+        }
+      ],
+      "result": "该示例IV在第10关结算后解锁，可第11关部署；V不出现。每个补给0XP，0金币投资。",
+      "limitations": "假设所列成员/星级能实际招募；未证明获取概率。"
+    },
+    {
+      "id": "feasible-label-coexistence",
+      "status": "CHECKED_MEMBERSHIP_CONSTRAINT",
+      "example": [
+        "CARD_M06",
+        "CARD_M11",
+        "CARD_M12",
+        "CARD_M13",
+        "CARD_M14",
+        "CARD_M03",
+        "CARD_M15",
+        "CARD_M07"
+      ],
+      "activeTiers": {
+        "reunion": 8,
+        "snow": 5,
+        "guerrilla": 2,
+        "infection": 2
+      },
+      "exampleSlotCount": 8,
+      "excludedHighTiers": [
+        "不存在另4海嗣/5泥岩席位",
+        "仅2游击，不能按6/8/9军令计算"
+      ],
+      "note": "不能把全部九条羁绊最高档独立乘在一个假想阵容上；此阵容的雪怪/整合/感染/游击并发仍需正式关战斗验证。"
+    },
+    {
+      "id": "multiple-label-and-native-burst-warning",
+      "status": "UPDATED_WITH_FINAL_M28_COMBINATION",
+      "warnings": [
+        "M28已采用最终每层12%、6层1.72，并用逐星攻击140/252/420重算。依然保留原生/承契/指挥/军令组合警报，不能在满层攻击外再乘一次屏障攻速1.5给军令。",
+        "冻伤额外倍率、爱国者多段/阶段、塔露拉三星第二阶段、治疗与护盾应由角色总表预算，不重复免费附加。",
+        "8/9军令和巨像IV/V为强奖励，不能据此提升所有普通关的最低通关门槛。"
+      ]
+    },
+    {
+      "id": "m28-final-roster-cross-check",
+      "status": "PASS_FORMULA_WITH_FINAL_PLAYER_FILE",
+      "source": "C:\\Users\\31016\\.codex\\visualizations\\2026\\11\\08\\01a1ba66-d4f3-78b0-9e10-2ae990018769\\balance-v2\\inputs\\player-roster.json",
+      "formula": "baseAttack*(1+sum(livingCommanderAdds)+patriotAura+contractShare)*(1+.12*min(6,ordinaryAttacks)); attackRate1.5 affects ordinary DPS, never order attack budget",
+      "rows": [
+        {
+          "star": 1,
+          "case": "native_only",
+          "baseAttack": 140,
+          "commanderAttackAdd": 0,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0,
+          "additiveBucket": 1,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 240.8,
+          "fullyStackedNoBarrierDPS": 96.32,
+          "fullyStackedBarrierDPS": 144.48,
+          "guerrilla4ContributionPerArmor20Target": 100.4,
+          "guerrilla4ContributionForFiveTargets": 502.0
+        },
+        {
+          "star": 1,
+          "case": "sarkaz4_holder_plus_commander",
+          "baseAttack": 140,
+          "commanderAttackAdd": 0.08,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0.45,
+          "additiveBucket": 1.53,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 368.424,
+          "fullyStackedNoBarrierDPS": 147.3696,
+          "fullyStackedBarrierDPS": 221.0544,
+          "guerrilla4ContributionPerArmor20Target": 164.212,
+          "guerrilla4ContributionForFiveTargets": 821.06
+        },
+        {
+          "star": 1,
+          "case": "sarkaz6_holder_plus_commander_plus_patriot",
+          "baseAttack": 140,
+          "commanderAttackAdd": 0.08,
+          "patriotAttackAdd": 0.2,
+          "contractAttackAdd": 0.65,
+          "additiveBucket": 1.93,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 464.744,
+          "fullyStackedNoBarrierDPS": 185.8976,
+          "fullyStackedBarrierDPS": 278.8464,
+          "guerrilla4ContributionPerArmor20Target": 212.372,
+          "guerrilla4ContributionForFiveTargets": 1061.86
+        },
+        {
+          "star": 2,
+          "case": "native_only",
+          "baseAttack": 252,
+          "commanderAttackAdd": 0,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0,
+          "additiveBucket": 1,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 433.44,
+          "fullyStackedNoBarrierDPS": 173.376,
+          "fullyStackedBarrierDPS": 260.064,
+          "guerrilla4ContributionPerArmor20Target": 196.72,
+          "guerrilla4ContributionForFiveTargets": 983.6
+        },
+        {
+          "star": 2,
+          "case": "sarkaz4_holder_plus_commander",
+          "baseAttack": 252,
+          "commanderAttackAdd": 0.1,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0.45,
+          "additiveBucket": 1.55,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 671.832,
+          "fullyStackedNoBarrierDPS": 268.7328,
+          "fullyStackedBarrierDPS": 403.0992,
+          "guerrilla4ContributionPerArmor20Target": 315.916,
+          "guerrilla4ContributionForFiveTargets": 1579.58
+        },
+        {
+          "star": 2,
+          "case": "sarkaz6_holder_plus_commander_plus_patriot",
+          "baseAttack": 252,
+          "commanderAttackAdd": 0.1,
+          "patriotAttackAdd": 0.2,
+          "contractAttackAdd": 0.65,
+          "additiveBucket": 1.95,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 845.208,
+          "fullyStackedNoBarrierDPS": 338.0832,
+          "fullyStackedBarrierDPS": 507.1248,
+          "guerrilla4ContributionPerArmor20Target": 402.604,
+          "guerrilla4ContributionForFiveTargets": 2013.02
+        },
+        {
+          "star": 3,
+          "case": "native_only",
+          "baseAttack": 420,
+          "commanderAttackAdd": 0,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0,
+          "additiveBucket": 1,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 722.4,
+          "fullyStackedNoBarrierDPS": 288.96,
+          "fullyStackedBarrierDPS": 433.44,
+          "guerrilla4ContributionPerArmor20Target": 341.2,
+          "guerrilla4ContributionForFiveTargets": 1706.0
+        },
+        {
+          "star": 3,
+          "case": "sarkaz4_holder_plus_commander",
+          "baseAttack": 420,
+          "commanderAttackAdd": 0.14,
+          "patriotAttackAdd": 0,
+          "contractAttackAdd": 0.45,
+          "additiveBucket": 1.59,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 1148.616,
+          "fullyStackedNoBarrierDPS": 459.4464,
+          "fullyStackedBarrierDPS": 689.1696,
+          "guerrilla4ContributionPerArmor20Target": 554.308,
+          "guerrilla4ContributionForFiveTargets": 2771.54
+        },
+        {
+          "star": 3,
+          "case": "sarkaz6_holder_plus_commander_plus_patriot",
+          "baseAttack": 420,
+          "commanderAttackAdd": 0.14,
+          "patriotAttackAdd": 0.2,
+          "contractAttackAdd": 0.65,
+          "additiveBucket": 1.99,
+          "nativeRamp": 1.72,
+          "modifiedAttack": 1437.576,
+          "fullyStackedNoBarrierDPS": 575.0304,
+          "fullyStackedBarrierDPS": 862.5456,
+          "guerrilla4ContributionPerArmor20Target": 698.788,
+          "guerrilla4ContributionForFiveTargets": 3493.94
+        }
+      ],
+      "limitations": "全部为满六层、来源存活且动作合法的上界。六层不是开场拥有，补盾动作/走路/失盾/死亡降低实际输出；三星五费仅稀有终局。"
+    },
+    {
+      "id": "feasible-multi-label-volley-snapshots",
+      "status": "CALCULATED_SLOT_AND_DP_FEASIBLE_UPPER_ENVELOPE",
+      "rows": [
+        {
+          "case": "seven_slots_34DP",
+          "slots": 7,
+          "deploymentDP": 34,
+          "recruitValueWithoutRerolls": 50,
+          "guerrillaTier": 4,
+          "sarkazTier": 4,
+          "contractHolder": "CARD_M28",
+          "roster": {
+            "CARD_M28": 2,
+            "CARD_M19": 2,
+            "CARD_M26": 2,
+            "CARD_M27": 2,
+            "CARD_M17": 2,
+            "CARD_M03": 1,
+            "CARD_M15": 1
+          },
+          "contributions": [
+            {
+              "id": "CARD_M28",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 252,
+              "additiveBucket": 1.55,
+              "nativeMultiplier": 1.72,
+              "orderAttackBudget": 335.916,
+              "afterArmor20OrMR20": 315.916
+            },
+            {
+              "id": "CARD_M19",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 120,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 66.0,
+              "afterArmor20OrMR20": 46.0
+            },
+            {
+              "id": "CARD_M26",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 79.2,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 43.56,
+              "afterArmor20OrMR20": 23.56
+            },
+            {
+              "id": "CARD_M27",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 79.2,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 43.56,
+              "afterArmor20OrMR20": 23.56
+            },
+            {
+              "id": "CARD_M17",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 66,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 36.3,
+              "afterArmor20OrMR20": 16.3
+            },
+            {
+              "id": "CARD_M03",
+              "star": 1,
+              "type": "physical",
+              "baseAttack": 23.8,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 13.09,
+              "afterArmor20OrMR20": 1
+            },
+            {
+              "id": "CARD_M15",
+              "star": 1,
+              "type": "physical",
+              "baseAttack": 24.3,
+              "additiveBucket": 1.1,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 13.365,
+              "afterArmor20OrMR20": 1
+            }
+          ],
+          "oneOrderTotalByDefenderCount": {
+            "1": 427.336,
+            "3": 1282.008,
+            "5": 2136.68
+          }
+        },
+        {
+          "case": "eight_slots_50DP",
+          "slots": 8,
+          "deploymentDP": 50,
+          "recruitValueWithoutRerolls": 76,
+          "guerrillaTier": 4,
+          "sarkazTier": 6,
+          "contractHolder": "CARD_M28",
+          "roster": {
+            "CARD_M28": 2,
+            "CARD_M19": 2,
+            "CARD_M20": 2,
+            "CARD_M24": 2,
+            "CARD_M26": 2,
+            "CARD_M27": 2,
+            "CARD_M17": 2,
+            "CARD_M03": 1
+          },
+          "contributions": [
+            {
+              "id": "CARD_M28",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 252,
+              "additiveBucket": 1.95,
+              "nativeMultiplier": 1.72,
+              "orderAttackBudget": 422.604,
+              "afterArmor20OrMR20": 402.604
+            },
+            {
+              "id": "CARD_M19",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 120,
+              "additiveBucket": 1.625,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 97.5,
+              "afterArmor20OrMR20": 77.5
+            },
+            {
+              "id": "CARD_M20",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 115.2,
+              "additiveBucket": 1.625,
+              "nativeMultiplier": 1.5,
+              "orderAttackBudget": 140.4,
+              "afterArmor20OrMR20": 120.4
+            },
+            {
+              "id": "CARD_M24",
+              "star": 2,
+              "type": "arts",
+              "baseAttack": 157.5,
+              "additiveBucket": 1.625,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 127.96875,
+              "afterArmor20OrMR20": 102.375
+            },
+            {
+              "id": "CARD_M26",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 79.2,
+              "additiveBucket": 1.625,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 64.35,
+              "afterArmor20OrMR20": 44.35
+            },
+            {
+              "id": "CARD_M27",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 79.2,
+              "additiveBucket": 1.625,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 64.35,
+              "afterArmor20OrMR20": 44.35
+            },
+            {
+              "id": "CARD_M17",
+              "star": 2,
+              "type": "physical",
+              "baseAttack": 66,
+              "additiveBucket": 1.3,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 42.9,
+              "afterArmor20OrMR20": 22.9
+            },
+            {
+              "id": "CARD_M03",
+              "star": 1,
+              "type": "physical",
+              "baseAttack": 23.8,
+              "additiveBucket": 1.3,
+              "nativeMultiplier": 1,
+              "orderAttackBudget": 15.47,
+              "afterArmor20OrMR20": 1
+            }
+          ],
+          "oneOrderTotalByDefenderCount": {
+            "1": 815.479,
+            "3": 2446.437,
+            "5": 4077.395
+          }
+        }
+      ],
+      "limitations": "这是完整一令的伤害预算，不是DPS，也不是这些卡从零招募的概率；所有参与者同时射程/动作就绪仅是乐观快照，无血量截断/治疗/伤害转移/控制失效。M20军令不乘普攻四连段数，M24军令不乘普攻三目标数；全场效果本身已逐守军结算。"
+    },
+    {
+      "id": "cross-file-public-parameter-audit",
+      "status": "PASS_AFTER_SILVER_WOLF_CONFLICT_RESOLUTION",
+      "checksPassed": 29,
+      "checks": [
+        "silver-initialSP",
+        "silver-requiredSP",
+        "silver-spPerSecond",
+        "silver-skillAmmo",
+        "silver-transformSeconds",
+        "silver-boxActionSeconds",
+        "silver-skillRange",
+        "silver-swordProbability",
+        "silver-bombProbability",
+        "silver-beanProbability",
+        "silver-swordHitSeconds",
+        "silver-swordFinishSeconds",
+        "silver-bombHitSeconds",
+        "silver-beanHitSeconds",
+        "silver-swordBonusActualDamageFraction",
+        "silver-bombDP",
+        "silver-beanSelfSP",
+        "silver-three-star-budgets",
+        "silver-exact-enumeration",
+        "public-neural-threshold",
+        "neural-common-assumption",
+        "burn-common-assumption",
+        "native-frostseal-separate",
+        "native-mudrock-ramp",
+        "commander-per-star",
+        "patriot-aura-additive",
+        "feasible-seven_slots_34DP",
+        "feasible-eight_slots_50DP",
+        "volley-weight-sum"
+      ],
+      "resolvedConflict": {
+        "silverWolfBoxDamageBudget": [
+          225,
+          450,
+          1125
+        ],
+        "initialSP": 24,
+        "owner": "player-roster.json"
+      },
+      "publicElements": {
+        "neuralThreshold": 100,
+        "neuralTrueDamage": 100,
+        "neuralStateSeconds": 10,
+        "burnThreshold": 100,
+        "burnArtsDamage": 120,
+        "burnResistanceReduction": 20,
+        "burnStateSeconds": 10,
+        "synergyRepeatedColdFreezeSeconds": 1.2,
+        "frostSealNativeFreezeSeconds": 3.3,
+        "stormAdditionalFreezeProtectionSeconds": 3
+      },
+      "semantics": "1.2秒是羁绊模式重复寒冷造成的冻结，不覆盖原生霜封3.3秒；雪怪技能和天气共享已有保护，控制与伤害预算分开。"
+    }
+  ],
+  "limitations": [
+    "本文件是数值建议和公式核算，不是Unity实现、实际战斗模拟或真实玩家胜率。",
+    "完整战斗需父任务集成后验证路线、阻挡、射程、技能前摇/复起/控制、治疗、护甲/法抗、部署时序、成员收集和星级分布。",
+    "高档转职获取尚未正式接入；不以测试关免费指定推导正式成型率。"
+  ],
+  "documentationAdoption": {
+    "date": "2026-11-08",
+    "status": "人类已同意写入核心文档，作为v2后续实现与试玩基线",
+    "implementation": "本次只更新文档；未修改或验证Unity运行数值",
+    "frozenBalance": false,
+    "approvalScope": "完整角色、各星、守军、羁绊、十三关与经济数值；银狼暂缓与未开放正式获取入口仍保留"
+  }
+}

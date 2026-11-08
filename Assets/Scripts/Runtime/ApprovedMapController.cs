@@ -16,8 +16,8 @@ namespace YesterdayConvoy
             if(approvedLaunchMenuShown||SceneManager.GetActiveScene().name!="MonsterTrial"||FindAnyObjectByType<ApprovedMapBootstrap>()!=null||Array.IndexOf(Environment.GetCommandLineArgs(),"-approvedMaps")<0)return;
             approvedLaunchMenuShown=true;OpenApprovedMapMenu();
         }
-        public ApprovedMapDefinition ApprovedMap=>activeApprovedMap!=null&&TacticalMapId==activeApprovedMap.id?activeApprovedMap:null;
-        public bool ApprovedMapActive=>CampaignActive&&ApprovedMap!=null;
+        public ApprovedMapDefinition ApprovedMap=>JourneyActive?JourneyMap:activeApprovedMap!=null&&TacticalMapId==activeApprovedMap.id?activeApprovedMap:null;
+        public bool ApprovedMapActive=>CampaignActive&&!JourneyActive&&ApprovedMap!=null;
         public bool ApprovedMapMenuOpen=>approvedMapMenuOpen;
         public void OpenApprovedMapMenu(){approvedMapMenuOpen=true;TestSelectionOpen=true;}
         public IEnumerator PrepareApprovedMap(ApprovedMapDefinition map)

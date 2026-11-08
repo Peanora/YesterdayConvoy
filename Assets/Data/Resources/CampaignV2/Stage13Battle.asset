@@ -1,0 +1,287 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: Stage13Battle
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: 2f541873a376f99408d2cf84996a1089, type: 2}
+  route:
+  - {x: -6.5, y: 0, z: 2.5}
+  - {x: -5.5, y: 0, z: 2.5}
+  - {x: -4.5, y: 0, z: 2.5}
+  - {x: -3.5, y: 0, z: 2.5}
+  - {x: -3.5, y: 0, z: 1.5}
+  - {x: -2.5, y: 0, z: 1.5}
+  - {x: -1.5, y: 0, z: 1.5}
+  - {x: -1.5, y: 0, z: 0.5}
+  - {x: -1.5, y: 0, z: -0.5}
+  - {x: -1.5, y: 0, z: -1.5}
+  - {x: -0.5, y: 0, z: -1.5}
+  - {x: 0.5, y: 0, z: -1.5}
+  - {x: 1.5, y: 0, z: -1.5}
+  - {x: 2.5, y: 0, z: -1.5}
+  - {x: 2.5, y: 0, z: -0.5}
+  - {x: 2.5, y: 0, z: 0.5}
+  - {x: 2.5, y: 0, z: 1.5}
+  - {x: 2.5, y: 0, z: 2.5}
+  - {x: 3.5, y: 0, z: 2.5}
+  - {x: 4.5, y: 0, z: 2.5}
+  - {x: 5.5, y: 0, z: 2.5}
+  - {x: 6.5, y: 0, z: 2.5}
+  defenders:
+  - id: D25
+    displayName: "\u65A9\u4E1A\u661F\u718A"
+    artId: D25
+    position: {x: -1.5, y: 0, z: -0.5}
+    health: 1170
+    attack: 38
+    armor: 28
+    range: 0.9
+    interval: 1.6
+    windup: 0.35
+    actionDuration: 1.6
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 19
+      initialSP: 22
+      requiredSP: 50
+      spPerSecond: 1
+      duration: 32
+      attackMultiplier: 2.2
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1.5
+      effectRadius: 2.5
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 2
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: -5.5, y: 0.04, z: 2}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D30
+    displayName: "\u739B\u6069\u7EB3"
+    artId: D30
+    position: {x: 1.5, y: 0, z: -4.5}
+    health: 1080
+    attack: 18
+    armor: 18
+    range: 0.9
+    interval: 1.2
+    windup: 0.4
+    actionDuration: 1.2
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 16
+      initialSP: 15
+      requiredSP: 50
+      spPerSecond: 1
+      duration: 22
+      attackMultiplier: 1.5
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 3.5
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 40
+      targets: 5
+    noOrdinaryAttack: 1
+    kasimierz: 1
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D24
+    displayName: "\u65B0\u7EA6\u80FD\u5929\u4F7F"
+    artId: D24
+    position: {x: 4.5, y: 0, z: -4.5}
+    health: 760
+    attack: 28
+    armor: 12
+    range: 3.5
+    interval: 1.333333
+    windup: 0.35
+    actionDuration: 1.333333
+    blocks: 1
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 18
+      initialSP: 22
+      requiredSP: 38
+      spPerSecond: 1
+      duration: 99999
+      attackMultiplier: 1.2
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: -5.5, y: 0.04, z: 2}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D29
+    displayName: "\u585E\u96F7\u5A05"
+    artId: D29
+    position: {x: 2.5, y: 0, z: -1.5}
+    health: 1148
+    attack: 60
+    armor: 26
+    range: 0.9
+    interval: 1.2
+    windup: 0.4
+    actionDuration: 1.1666666
+    blocks: 3
+    role: 1
+    damageType: 0
+    splashRadius: 0
+    healingRange: 4
+    skill:
+      kind: 15
+      initialSP: 40
+      requiredSP: 65
+      spPerSecond: 1
+      duration: 18
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0.25
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 4
+      damageAmplification: 1.35
+      moveMultiplier: 0.45
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces:
+  - {fileID: 2100000, guid: a074836f893c262468eeb237f708f4e8, type: 2}
+  - {fileID: 2100000, guid: 50374104d1e4de84b9bfd0b23a88a069, type: 2}
+  - {fileID: 2100000, guid: e265ec9033832b24a9b97dc504e3bf13, type: 2}
+  - {fileID: 2100000, guid: e1a960f16d5613544a41e20c72dbe060, type: 2}
+  - {fileID: 2100000, guid: a42d10a447846264cacb144597d677f5, type: 2}
+  - {fileID: 2100000, guid: da7e8dff54717a341bdac87a1dd92606, type: 2}
+  - {fileID: 2100000, guid: 6094b264059d1e74ebd93323278ee4f7, type: 2}
+  - {fileID: 2100000, guid: f7e6abcf8272a7a47a8ba77a0726e552, type: 2}
+  - {fileID: 2100000, guid: 7a1e14eb38b673244b22006c925e2ab9, type: 2}
+  - {fileID: 2100000, guid: e41a3572bee8977479fad3f7d02f09b1, type: 2}
+  - {fileID: 2100000, guid: 56d1fbae35b61a44abd3a8627ff32c7c, type: 2}
+  - {fileID: 2100000, guid: 6fe60fcbce3ba83408fc3c75b57f0fd6, type: 2}
+  mapId: approved-map-08
+  mapTitle: "\u9000\u6F6E\u8D27\u6E2F\xB7\u6700\u7EC8\u9632\u7EBF"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: -6.5, y: 0, z: 2.5}
+    - {x: -5.5, y: 0, z: 2.5}
+    - {x: -4.5, y: 0, z: 2.5}
+    - {x: -3.5, y: 0, z: 2.5}
+    - {x: -3.5, y: 0, z: 1.5}
+    - {x: -2.5, y: 0, z: 1.5}
+    - {x: -1.5, y: 0, z: 1.5}
+    - {x: -1.5, y: 0, z: 0.5}
+    - {x: -1.5, y: 0, z: -0.5}
+    - {x: -1.5, y: 0, z: -1.5}
+    - {x: -0.5, y: 0, z: -1.5}
+    - {x: 0.5, y: 0, z: -1.5}
+    - {x: 1.5, y: 0, z: -1.5}
+    - {x: 2.5, y: 0, z: -1.5}
+    - {x: 2.5, y: 0, z: -0.5}
+    - {x: 2.5, y: 0, z: 0.5}
+    - {x: 2.5, y: 0, z: 1.5}
+    - {x: 2.5, y: 0, z: 2.5}
+    - {x: 3.5, y: 0, z: 2.5}
+    - {x: 4.5, y: 0, z: 2.5}
+    - {x: 5.5, y: 0, z: 2.5}
+    - {x: 6.5, y: 0, z: 2.5}
+  - id: R2
+    exitId: B2
+    points:
+    - {x: -4.5, y: 0, z: -4.5}
+    - {x: -4.5, y: 0, z: -3.5}
+    - {x: -4.5, y: 0, z: -2.5}
+    - {x: -3.5, y: 0, z: -2.5}
+    - {x: -2.5, y: 0, z: -2.5}
+    - {x: -1.5, y: 0, z: -2.5}
+    - {x: -0.5, y: 0, z: -2.5}
+    - {x: 0.5, y: 0, z: -2.5}
+    - {x: 0.5, y: 0, z: -3.5}
+    - {x: 0.5, y: 0, z: -4.5}
+    - {x: 1.5, y: 0, z: -4.5}
+    - {x: 2.5, y: 0, z: -4.5}
+    - {x: 3.5, y: 0, z: -4.5}
+    - {x: 4.5, y: 0, z: -4.5}
+    - {x: 5.5, y: 0, z: -4.5}
+    - {x: 6.5, y: 0, z: -4.5}
+  raised: []
+  floorTexture: {fileID: 0}
+  foliageTexture: {fileID: 0}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 0
+  attackWaves: {fileID: 0}

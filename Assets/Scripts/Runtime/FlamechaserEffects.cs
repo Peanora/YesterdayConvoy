@@ -12,7 +12,7 @@ namespace YesterdayConvoy
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!StrongholdInTransit(u.EntityId)&&!UnitInvulnerable(u)&&
             (!UnitInvisible(u)||CombatSettings.RevealsInvisible||SixthReveals(u))&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
         public bool NearBurningReeds(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Soldier&&
-            facilities.Exists(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning&&GroundDistance(u.Motion.Position,f.Settings.Position)<=1.5f);
+            facilities.Exists(f=>f.Settings.Kind==FacilityKind.Reeds&&f.Burning&&GroundDistance(u.Motion.Position,f.Settings.Position)<=V2Skill(u,"reedsBurn","reedsRadius",1.5f));
         void CancelUnitShots(DeployedUnitState u)
         {
             foreach(var s in combatShots)if(!s.Resolved&&(s.SourceId==u.EntityId||s.TargetId==u.EntityId))s.Resolved=true;
@@ -20,7 +20,7 @@ namespace YesterdayConvoy
         void StartEmber(DeployedUnitState u)
         {
             CancelUnitShots(u);u.FlamePhase=FlamechaserPhase.Transforming;u.FlamePhaseStartedAt=Clock;
-            u.EmberTransformations++;u.MaxHealth=u.Health=5;u.DeathTime=Clock;
+            u.EmberTransformations++;u.MaxHealth=u.Health=V2Skill(u,"ember","emberHp",5);u.DeathTime=Clock;
             u.EmberRevealedUntil=double.NegativeInfinity;
             u.IsMoving=u.HasCombatTarget=u.IsBlocked=false;u.BlockerId=u.CombatTargetId=null;
         }
@@ -30,12 +30,12 @@ namespace YesterdayConvoy
             if(u.FlamePhase==FlamechaserPhase.Soldier)return false;
             if(u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming)
             {
-                if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
-                u.FlamePhase=FlamechaserPhase.Ember;u.FlamePhaseStartedAt+=1;
+                if(Clock+1e-6<u.FlamePhaseStartedAt+V2Skill(u,"ember","transformDuration",1))return true;
+                u.FlamePhase=FlamechaserPhase.Ember;u.FlamePhaseStartedAt+=V2Skill(u,"ember","transformDuration",1);
             }
             if(u.FlamePhase==FlamechaserPhase.Ember)
             {
-                if(Clock+1e-6>=u.FlamePhaseStartedAt+10)
+                if(Clock+1e-6>=u.FlamePhaseStartedAt+V2Skill(u,"ember","emberDuration",10))
                 {
                     CancelUnitShots(u);u.FlamePhase=FlamechaserPhase.Reforming;u.FlamePhaseStartedAt=Clock;
                     u.IsMoving=u.IsBlocked=u.HasCombatTarget=false;u.BlockerId=u.CombatTargetId=null;return true;
@@ -43,7 +43,7 @@ namespace YesterdayConvoy
                 u.IsBlocked=false;u.BlockerId=null;u.HasCombatTarget=false;u.CombatTargetId=null;
                 foreach(var d in defenders)
                     if(d.Alive&&d.BlockedCount<d.Settings.BlockCount&&GroundDistance(u.Motion.Position,d.Position)<=d.Settings.BlockRadius)
-                    {u.IsBlocked=true;u.BlockerId=d.EntityId;u.EmberRevealedUntil=Clock+3;d.BlockedCount++;break;}
+                    {u.IsBlocked=true;u.BlockerId=d.EntityId;u.EmberRevealedUntil=Clock+V2Skill(u,"ember","revealAfterBlock",3);d.BlockedCount++;break;}
                 u.IsMoving=!u.IsBlocked;
                 if(u.IsMoving&&PillarObstructs(u,step))u.IsMoving=false;
                 if(u.IsMoving)u.Motion.Advance(step);
@@ -51,9 +51,9 @@ namespace YesterdayConvoy
                 {u.Resolution=UnitResolution.Breached;u.IsMoving=u.IsBlocked=false;Breaches++;Defense=Math.Max(0,Defense-Settings.GateDamage);}
                 return true;
             }
-            if(Clock+1e-6<u.FlamePhaseStartedAt+1)return true;
+            if(Clock+1e-6<u.FlamePhaseStartedAt+V2Skill(u,"ember","reformDuration",1))return true;
             u.FlamePhase=FlamechaserPhase.Soldier;u.FlamePhaseStartedAt=Clock;u.EmberRevivals++;
-            u.MaxHealth=u.Health=UnitBaseHealth(u);u.DeathTime=double.PositiveInfinity;
+            u.MaxHealth=u.Health=V2Skill(u,"ember","reformHp",UnitBaseHealth(u));u.DeathTime=double.PositiveInfinity;
             u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return false;
         }
         bool ApplyUnitHealthDamage(DeployedUnitState u,float damage)

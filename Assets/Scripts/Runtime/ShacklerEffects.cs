@@ -23,13 +23,13 @@ namespace YesterdayConvoy
         bool ShackleActive(ShackleCast s)
         {
             var u=FindUnit(s.SourceId);var d=FindDefender(s.TargetId);
-            return !s.Ended&&u!=null&&u.Active&&d!=null&&d.Alive&&Clock<s.StartedAt+20&&
+            return !s.Ended&&u!=null&&u.Active&&d!=null&&d.Alive&&Clock<s.StartedAt+V2Skill(u,"shackle","duration",20)&&
                 Clock>=u.PillarStunnedUntil&&Clock>=u.ShackleStunnedUntil&&Clock>=u.ShackleSilencedUntil;
         }
         void EndShackle(DeployedUnitState u,bool interrupted)
         {
             var s=u.Shackle;if(s==null||s.Ended)return;
-            s.EndedAt=Clock;s.Interrupted=interrupted;u.NextAttackTime=Math.Max(u.NextAttackTime,Clock+2.0/3);
+            s.EndedAt=Clock;s.Interrupted=interrupted;u.NextAttackTime=Math.Max(u.NextAttackTime,Clock+V2Skill(u,"shackle","postActionRecovery",2f/3));
         }
         // Ability-scoped control entry, also used by the independent trial's real buttons.
         public bool TryDisableShackler(string entityId,float duration,bool silence=false)
@@ -49,16 +49,16 @@ namespace YesterdayConvoy
                 var u=FindUnit(s.SourceId);var d=FindDefender(s.TargetId);
                 if(u==null||!u.Active||d==null||!d.Alive||u.PillarStunnedUntil>Clock||u.ShackleStunnedUntil>Clock||u.ShackleSilencedUntil>Clock)
                 {if(u!=null)EndShackle(u,true);continue;}
-                while(s.Ticks<20&&Clock+1e-6>=s.StartedAt+s.Ticks+1&&d.Alive)
-                {s.Ticks++;float hp=d.Health;DamageDefenderFrom(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.35f,CombatDamageType.Arts,u);s.DamageDealt+=hp-d.Health;}
+                while(s.Ticks<(int)V2Skill(u,"shackle","ticks",20)&&Clock+1e-6>=s.StartedAt+(s.Ticks+1)*V2Skill(u,"shackle","tickInterval",1)&&d.Alive)
+                {s.Ticks++;float hp=d.Health;DamageDefenderFrom(d,NativeSkillDamage(u,"shackle","damagePerTick",UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.35f),CombatDamageType.Arts,u);s.DamageDealt+=hp-d.Health;}
                 if(!d.Alive)EndShackle(u,true);
-                else if(Clock+1e-6>=s.StartedAt+20)EndShackle(u,false);
+                else if(Clock+1e-6>=s.StartedAt+V2Skill(u,"shackle","duration",20))EndShackle(u,false);
             }
         }
         bool StepShackler(DeployedUnitState u)
         {
             var current=u.Shackle;
-            if(u.ShackleStunnedUntil>Clock||current!=null&&(!current.Ended||Clock<current.EndedAt+2.0/3))
+            if(u.ShackleStunnedUntil>Clock||current!=null&&(!current.Ended||Clock<current.EndedAt+V2Skill(u,"shackle","postActionRecovery",2f/3)))
             {u.IsMoving=u.HasCombatTarget=false;return true;}
             if(current!=null||u.ShackleSilencedUntil>Clock)return false;
             DefenderState target=null;float distance=float.PositiveInfinity;
@@ -66,7 +66,7 @@ namespace YesterdayConvoy
             {
                 if(!d.Alive||d.NeuralUntil>Clock||d.FrozenUntil>Clock||DefenderShackled(d)||DefenderCamouflaged(d))continue;
                 float gap=GroundDistance(u.Motion.Position,d.Position);
-                if(gap<=3&&gap<distance){target=d;distance=gap;}
+                if(gap<=V2Skill(u,"shackle","range",3)&&gap<distance){target=d;distance=gap;}
             }
             if(target==null)return false;
             var s=new ShackleCast{SourceId=u.EntityId,TargetId=target.EntityId,StartedAt=Clock};shackles.Add(s);u.Shackle=s;

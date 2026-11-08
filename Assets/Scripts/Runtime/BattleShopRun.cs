@@ -18,13 +18,13 @@ namespace YesterdayConvoy
         public int LastMarineGrowth=>0;
         public readonly int Seed;
         public readonly bool LateGame;
-        public readonly bool Campaign,Sandbox;
+        public readonly bool Campaign,Sandbox,JourneyV2;
         public bool RewardStage=>Campaign&&!Sandbox&&CampaignPlan.Supply(Stage);
         public int TotalStages=>Campaign?Sandbox?1:CampaignPlan.Count:2;
         public ShopTrialModel.RoundReward Reward {get;private set;}
         public bool CanShop=>Phase==BattleShopPhase.Shop;
         public bool CanDeploy=>Phase==BattleShopPhase.Preparation||Phase==BattleShopPhase.Fighting;
-        public BattleShopRun(ShopTrialModel economy,int seed,bool lateGame=false,bool campaign=false,bool sandbox=false){Campaign=campaign;Sandbox=sandbox;Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;LateGame=lateGame;}
+        public BattleShopRun(ShopTrialModel economy,int seed,bool lateGame=false,bool campaign=false,bool sandbox=false,bool journeyV2=false){Campaign=campaign;Sandbox=sandbox;JourneyV2=journeyV2;Economy=economy??throw new ArgumentNullException(nameof(economy));Seed=seed;LateGame=lateGame;}
         public bool Observe(BattlePhase battle,int golemGrowth=0,int marineGrowth=0,int golemCapacity=5)
         {
             if(!CanDeploy)return false;
@@ -38,7 +38,7 @@ namespace YesterdayConvoy
             LastGolemGrowth=Campaign&&!RewardStage?GolemGrowth.Award(GolemExperience,golemCapacity,golemGrowth):0;
             GolemExperience+=LastGolemGrowth;
             string receipt=Sandbox?"sandbox-round-"+SandboxRound:"stage-"+Stage;
-            Reward=Economy.SettleRound(receipt,won,Campaign?CampaignPlan.BaseGold[Stage-1]:5,Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
+            Reward=Economy.SettleRound(receipt,won,JourneyV2?CampaignJourneyCatalog.Stage(Stage).baseGold:Campaign?CampaignPlan.BaseGold[Stage-1]:5,JourneyV2?CampaignJourneyCatalog.Stage(Stage).naturalXP:Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
             Phase=!won?BattleShopPhase.Failed:Stage==TotalStages?BattleShopPhase.Complete:BattleShopPhase.Settlement;return true;
         }
         public bool OpenShop()

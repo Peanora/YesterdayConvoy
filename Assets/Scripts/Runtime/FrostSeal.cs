@@ -11,7 +11,8 @@ namespace YesterdayConvoy
         public string SourceId {get; internal set;}
         public Vector3 Position {get; internal set;}
         public double StartedAt {get; internal set;}
-        public double ImpactAt=>StartedAt+Windup;
+        public float WindupSeconds {get;internal set;}=Windup;
+        public double ImpactAt=>StartedAt+WindupSeconds;
         public bool Resolved {get; internal set;}
         public bool Cancelled {get; internal set;}
         public IReadOnlyList<string> FrozenTargets=>targets.AsReadOnly();
@@ -28,7 +29,7 @@ namespace YesterdayConvoy
             unit.IsMoving=unit.HasCombatTarget=false;
             unit.NextAttackTime=Clock+UnitCombat(unit).SkillInterval;
             if(unit.CardId=="CARD_M14")StartSnowstorm();
-            frostSeals.Add(new FrostSealCast{SourceId=unit.EntityId,Position=unit.Motion.Position,StartedAt=Clock});
+            frostSeals.Add(new FrostSealCast{SourceId=unit.EntityId,Position=unit.Motion.Position,StartedAt=Clock,WindupSeconds=V2Skill(unit,"frostSeal","windup",FrostSealCast.Windup)});
         }
         void ResolveFrostSeals()
         {
@@ -44,10 +45,10 @@ namespace YesterdayConvoy
                 var c=UnitCombat(unit);
                 var targets=defenders.Where(d=>d.Alive&&GroundDistance(cast.Position,d.Position)<=c.SkillRange)
                     .OrderBy(d=>GroundDistance(cast.Position,d.Position)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).ToArray();
-                foreach(var d in targets)DamageDefenderFrom(d,c.SkillAttack*UnitAttackMultiplier(unit),CombatDamageType.Arts,unit);
-                foreach(var d in targets.Where(d=>d.Alive).Take(2))
+                foreach(var d in targets)DamageDefenderFrom(d,c.SkillAttack*V2IndependentAttackMultiplier(unit),CombatDamageType.Arts,unit);
+                foreach(var d in targets.Where(d=>d.Alive).Take((int)V2Skill(unit,"frostSeal","freezeTargets",2)))
                 {
-                    d.FrozenUntil=Math.Max(d.FrozenUntil,Clock+FrostSealCast.FreezeDuration);
+                    d.FrozenUntil=Math.Max(d.FrozenUntil,Clock+V2Skill(unit,"frostSeal","freezeDuration",FrostSealCast.FreezeDuration));
                     // Preserve attack recovery while frozen; expiry cannot release a delayed attack early.
                     d.NextAttackTime=Math.Max(d.NextAttackTime,d.FrozenUntil);
                     cast.targets.Add(d.EntityId);

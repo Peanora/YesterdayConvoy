@@ -1,0 +1,390 @@
+{
+  "version": "Adopted v2 with approved thirteen-stage map/placement draft",
+  "sources": [
+    "campaign.json",
+    "defenders.json",
+    "flow-plan.json"
+  ],
+  "stages": [
+    {
+      "stage": 1,
+      "title": "出发登记",
+      "tip": "看懂金币与战斗DP的区别，确认随机赠送的一费卡。\n不要求购物或合成；领取一次补给，获得第一笔运营资金。\n只有领取补给，没有模拟战斗；奖励、经验与连胜只结算一次。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 10,
+      "naturalXP": 2,
+      "guards": []
+    },
+    {
+      "stage": 2,
+      "title": "集结采购",
+      "tip": "学习买牌、备战与出战席、升级预览、锁店。\n从免费商店补不同一费；撞到对子才演示升星，不强制随机店给出同名牌。\n当前只有一费商品。可提示下次整备购买经验到3级；不要为了找二费卡在2级刷新。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 12,
+      "naturalXP": 2,
+      "guards": []
+    },
+    {
+      "stage": 3,
+      "title": "检疫口·第一次突破",
+      "tip": "认识阻挡、批次部署、暂停与穿门胜利。\n两条路线在米格鲁处形成共同阻挡点；先投承伤单位，再跟输出。\n建议3个不同一费和一名二星主力；二星是期望质量，不是开战门槛，不锁定某个角色。",
+      "type": "Battle",
+      "mapIndex": 7,
+      "dp": 16,
+      "defense": 1,
+      "baseGold": 12,
+      "naturalXP": 2,
+      "guards": [
+        {
+          "id": "D01",
+          "tier": 1,
+          "hpFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 6
+          }
+        }
+      ]
+    },
+    {
+      "stage": 4,
+      "title": "街心交火",
+      "tip": "识别远程覆盖与地面阻挡是两种威胁。\n米格鲁卡住R2/R3交点，克洛丝覆盖R1/R2；选适合队伍的一路集中进攻，避免均分火力。\n普通近战不能攻击高台；已有远程可考虑R1/R2，没有合适远程则可走避开克洛丝的R3，不把某类卡设成必需。",
+      "type": "Battle",
+      "mapIndex": 1,
+      "dp": 20,
+      "defense": 2,
+      "baseGold": 14,
+      "naturalXP": 3,
+      "guards": [
+        {
+          "id": "D01",
+          "tier": 1,
+          "hpFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 5
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 1,
+          "hpFactor": 1,
+          "cell": {
+            "x": 6,
+            "y": 3
+          }
+        }
+      ]
+    },
+    {
+      "stage": 5,
+      "title": "桥头补给",
+      "tip": "第一次围绕明确守军配置运营。\n预览塞雷娅与史都华德；补破甲/法术输出与承伤，准备升到6级。\n不用为首次Boss追五费：6级五费概率仍为0。有限委托用于已有低费的关键一张。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 18,
+      "naturalXP": 3,
+      "guards": []
+    },
+    {
+      "stage": 6,
+      "title": "排洪防线·首领一",
+      "tip": "学会处理治疗覆盖，而非把所有单位撞向同一个重装。\n长R1接受史都华德火力，短R3快速接敌塞雷娅，R2提供中间节奏；集中压穿一侧或分批拉开接敌。\n24DP有限，先看一轮投入费用再留续投。坑洞只作不可通行地形，无推击奖励。",
+      "type": "Boss",
+      "mapIndex": 2,
+      "dp": 24,
+      "defense": 3,
+      "baseGold": 22,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D29",
+          "tier": 2,
+          "hpFactor": 0.7,
+          "cell": {
+            "x": 11,
+            "y": 7
+          }
+        },
+        {
+          "id": "D08",
+          "tier": 2,
+          "hpFactor": 0.9,
+          "cell": {
+            "x": 8,
+            "y": 8
+          }
+        }
+      ]
+    },
+    {
+      "stage": 7,
+      "title": "雨夜交叉口",
+      "tip": "Boss后巩固阵容，学习避开群攻重叠。\n斑点堵住R1/R2，炎熔与克洛丝覆盖三路。分批进入同一路，避免同帧挤成一团。\n允许利用三门到达时间差；每个门仍是固定路线，交点不会换道。",
+      "type": "Battle",
+      "mapIndex": 3,
+      "dp": 28,
+      "defense": 3,
+      "baseGold": 16,
+      "naturalXP": 3,
+      "guards": [
+        {
+          "id": "D03",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 6
+          }
+        },
+        {
+          "id": "D09",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 4
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 5,
+            "y": 4
+          }
+        }
+      ]
+    },
+    {
+      "stage": 8,
+      "title": "地下邮运",
+      "tip": "在现有战斗上加入地道带来的到达时间选择。\nR1经地道快速抵达卡缇，R2走地表接触玫兰莎；芙蓉覆盖两人，梓兰控制前庭。\n地道耗1.5模拟秒；等完整动作与已发射弹道结束才入洞，暂停不能偷走通行时间。",
+      "type": "Battle",
+      "mapIndex": 4,
+      "dp": 32,
+      "defense": 4,
+      "baseGold": 18,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D02",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 2
+          }
+        },
+        {
+          "id": "D04",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 5
+          }
+        },
+        {
+          "id": "D10",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 3
+          }
+        },
+        {
+          "id": "D12",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 5
+          }
+        }
+      ]
+    },
+    {
+      "stage": 9,
+      "title": "转运整备",
+      "tip": "决定继续追低费，还是转向四费核心。\n均衡线升8级，提高四费出现率；低费线可留7级补质量。预览星熊最终保护与玛恩纳技能状态。\n明确显示星熊不能在最终保护内被伤害提前击倒；不给本关限定的免费转职或五费卡。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 20,
+      "naturalXP": 4,
+      "guards": []
+    },
+    {
+      "stage": 10,
+      "title": "矿运封锁·首领二",
+      "tip": "第一次完整处理首领状态窗口与续投。\n星熊控制R1/R3后段，玛恩纳控制R2，安赛尔同时覆盖两边；选择主攻路线，保留DP接替前排。\n玛恩纳常态不攻击不阻挡，可以抢窗口；星熊最终保护应等待/绕行，不要求硬杀或全歼。",
+      "type": "Boss",
+      "mapIndex": 6,
+      "dp": 38,
+      "defense": 5,
+      "baseGold": 24,
+      "naturalXP": 5,
+      "guards": [
+        {
+          "id": "D25",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 7
+          }
+        },
+        {
+          "id": "D30",
+          "tier": 2,
+          "hpFactor": 0.8,
+          "cell": {
+            "x": 5,
+            "y": 4
+          }
+        },
+        {
+          "id": "D11",
+          "tier": 2,
+          "hpFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 5
+          }
+        }
+      ]
+    },
+    {
+      "stage": 11,
+      "title": "热站总检",
+      "tip": "以较低总伤预算巩固Boss战经验，测试全队持续作战。\n短R1穿过三处喷口并接触米格鲁；长R2全程避开热泵，但在远程火力下停留更久。先看相位预览再选路线。\n克洛丝处于芙蓉治疗圈外，存在可集火薄点；首次见热泵也可走安全外线。",
+      "type": "Battle",
+      "mapIndex": 5,
+      "dp": 42,
+      "defense": 5,
+      "baseGold": 20,
+      "naturalXP": 5,
+      "guards": [
+        {
+          "id": "D01",
+          "tier": 3,
+          "hpFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 5
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 3,
+          "hpFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 6
+          }
+        },
+        {
+          "id": "D09",
+          "tier": 3,
+          "hpFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 5
+          }
+        },
+        {
+          "id": "D12",
+          "tier": 3,
+          "hpFactor": 1,
+          "cell": {
+            "x": 5,
+            "y": 2
+          }
+        },
+        {
+          "id": "D10",
+          "tier": 3,
+          "hpFactor": 1,
+          "cell": {
+            "x": 6,
+            "y": 5
+          }
+        }
+      ]
+    },
+    {
+      "stage": 12,
+      "title": "港前最终整备",
+      "tip": "展示终战完整情报，完成最后一次大转型。\n均衡线升9级并核对前排、主输出、远程覆盖和羁绊；领取本关奖励后，在第13关整备继续采购。\n不能在领取前花本关的24基础金币；也不能预支第13关的28基础奖励。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 24,
+      "naturalXP": 6,
+      "guards": []
+    },
+    {
+      "stage": 13,
+      "title": "退潮货港·最终防线",
+      "tip": "综合检验构筑、选路、首领窗口和资源分批投入。\nR1先接触星熊再接近塞雷娅，R2先经过玛恩纳再接触新约能天使；先集中一线，再用剩余DP续投或换线。\n四人均为地面守军，新约能天使阻挡1；终战不为下一关保利息，不把五费二星、游击8/9或巨像V列为必需。",
+      "type": "Boss",
+      "mapIndex": 8,
+      "dp": 50,
+      "defense": 6,
+      "baseGold": 28,
+      "naturalXP": 0,
+      "guards": [
+        {
+          "id": "D25",
+          "tier": 3,
+          "hpFactor": 0.9,
+          "cell": {
+            "x": 5,
+            "y": 5
+          }
+        },
+        {
+          "id": "D30",
+          "tier": 3,
+          "hpFactor": 0.9,
+          "cell": {
+            "x": 8,
+            "y": 9
+          }
+        },
+        {
+          "id": "D24",
+          "tier": 3,
+          "hpFactor": 0.8,
+          "cell": {
+            "x": 11,
+            "y": 9
+          }
+        },
+        {
+          "id": "D29",
+          "tier": 3,
+          "hpFactor": 0.85,
+          "cell": {
+            "x": 9,
+            "y": 6
+          }
+        }
+      ]
+    }
+  ]
+}

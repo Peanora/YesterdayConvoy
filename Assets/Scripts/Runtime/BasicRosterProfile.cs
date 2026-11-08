@@ -48,8 +48,8 @@ namespace YesterdayConvoy
         }
         public int TacticalCommanders=>units.Count(u=>u.Active&&!u.IsReviving&&UnitCombat(u).Effects.TacticalCommander);
         public bool HasTacticalCommand=>TacticalCommanders>0||PatriotPresent;
-        public float TacticalAttackMultiplier=>1+TacticalCommanders*.1f+(PatriotPresent?.2f:0);
-        public float TacticalArmorBonus=>TacticalCommanders+(PatriotPresent?2:0);
-        public int UnitAttackTargets(DeployedUnitState u)=>Math.Max(Math.Max(1,UnitCombat(u).Effects.AttackTargets),UnitCombat(u).Effects.OrderSniper&&HasTacticalCommand?2:1);
+        public float TacticalAttackMultiplier=>CampaignV2Enabled?V2TacticalAttackMultiplier:1+TacticalCommanders*.1f+(PatriotPresent?.2f:0);
+        public float TacticalArmorBonus=>CampaignV2Enabled?V2TacticalArmorBonus:TacticalCommanders+(PatriotPresent?2:0);
+        public int UnitAttackTargets(DeployedUnitState u)=>Math.Max(Math.Max(1,UnitCombat(u).Effects.AttackTargets),UnitCombat(u).Effects.OrderSniper&&HasTacticalCommand?(int)V2Skill(u,"commandShot","targets",2):1);
     }
 }

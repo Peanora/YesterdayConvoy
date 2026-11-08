@@ -1,0 +1,164 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+
+namespace YesterdayConvoy.Editor
+{
+    /// <summary>Creates only formal campaign data; the eight authored scenes and sandbox assets are read-only.</summary>
+    public static class CampaignJourneyTools
+    {
+        const string Sources = "Assets/Data/CampaignV2";
+        const string Output = "Assets/Data/Resources/CampaignV2";
+        public const string JourneyPath = Output + "/Journey.asset";
+        [Serializable] sealed class Source { public StageSource[] stages; }
+        [Serializable] sealed class StageSource
+        {
+            public int stage, mapIndex, dp, defense, baseGold, naturalXP;
+            public string title, tip, type;
+            public GuardSource[] guards;
+        }
+        [Serializable] sealed class Cell { public int x, y; }
+        [Serializable] sealed class GuardSource { public string id; public int tier; public float hpFactor; public Cell cell; }
+        [Serializable] sealed class DefenderSource { public Unit[] units; }
+        [Serializable] sealed class Unit { public string id, name; public Panel[] stages; public Skill[] skills; }
+        [Serializable] sealed class Panel
+        {
+            public int tier, blocks;
+            public float hp, attack, armor, resistance, interval, range, windup, actionDuration, splashRadius, healingRange;
+            public float rangedAttackMultiplier, criticalChance, criticalMultiplier, extraHealChance, blockRadius;
+            public string damageType;
+            public bool highGround, noOrdinaryAttack;
+        }
+        [Serializable] sealed class Skill { public string id; public Parameter[] parameters; }
+        [Serializable] sealed class Parameter
+        {
+            public string key;
+            public float tier1, tier2, tier3;
+            public float At(int tier) => tier == 1 ? tier1 : tier == 2 ? tier2 : tier3;
+        }
+
+        [MenuItem("Yesterday Convoy/Campaign V2/Author Formal Journey Data")]
+        public static void Author()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Stop Play before authoring campaign data.");
+            var flow = Read<Source>("journey-authoring.json"); var defenders = Read<DefenderSource>("defenders.json");
+            EnsureFolder(Output);
+            var journey = AssetDatabase.LoadAssetAtPath<CampaignJourneyDefinition>(JourneyPath);
+            if (journey == null) { journey = ScriptableObject.CreateInstance<CampaignJourneyDefinition>(); journey.name = "Journey"; AssetDatabase.CreateAsset(journey, JourneyPath); }
+            journey.stages = flow.stages.OrderBy(s => s.stage).Select(stage => BuildStage(stage, defenders)).ToArray();
+            EditorUtility.SetDirty(journey); AssetDatabase.SaveAssets(); Validate();
+            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 13 stages, 5 noncombat supply receipts, 8 independent encounters, 24 adopted-v2 defenders; existing map scenes and sandbox encounters untouched.");
+        }
+
+        static CampaignJourneyStage BuildStage(StageSource source, DefenderSource roster)
+        {
+            var stage = new CampaignJourneyStage { stage = source.stage, title = source.title, tip = source.tip,
+                type = (CampaignJourneyStageType)Enum.Parse(typeof(CampaignJourneyStageType), source.type),
+                dp = source.dp, defense = source.defense, baseGold = source.baseGold, naturalXP = source.naturalXP };
+            if (stage.IsSupply) return stage;
+            var map = ApprovedMapCatalog.All.Single(m => m.index == source.mapIndex); map.Validate(); stage.map = map;
+            string path = Output + "/Stage" + source.stage.ToString("00") + "Battle.asset";
+            var encounter = AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(path);
+            if (encounter == null) { encounter = ScriptableObject.CreateInstance<DefenderTrialDefinition>(); encounter.name = "Stage" + source.stage.ToString("00") + "Battle"; AssetDatabase.CreateAsset(encounter, path); }
+            encounter.battle = map.encounter.battle; encounter.route = (Vector3[])map.encounter.route.Clone();
+            encounter.mapId = map.id; encounter.mapTitle = stage.title; encounter.autumnRuins = map.encounter.autumnRuins;
+            encounter.lanes = Array.ConvertAll(map.encounter.lanes, l => new TacticalLane { id = l.id, exitId = l.exitId, points = (Vector3[])l.points.Clone() });
+            encounter.surfaces = map.encounter.surfaces == null ? Array.Empty<Material>() : (Material[])map.encounter.surfaces.Clone();
+            encounter.raised = map.encounter.raised == null ? Array.Empty<Vector2Int>() : (Vector2Int[])map.encounter.raised.Clone();
+            encounter.floorTexture = map.encounter.floorTexture; encounter.foliageTexture = map.encounter.foliageTexture;
+            encounter.rosterCards = Array.Empty<ManualBattleDefinition>(); encounter.defenderTestId = null; encounter.terrainOnly = false; encounter.attackWaves = null;
+            encounter.defenders = source.guards.Select(g => BuildGuard(map, g, roster)).ToArray();
+            stage.encounter = encounter; stage.guardTiers = source.guards.Select(g => g.tier).ToArray(); stage.guardHPFactors = source.guards.Select(g => g.hpFactor).ToArray();
+            stage.guardTuning = source.guards.Select(g => {
+                var unit = roster.units.Single(u => u.id == g.id);
+                return new CampaignJourneyGuardTuning { id = g.id, tier = g.tier, hpFactor = g.hpFactor,
+                    parameters = unit.skills.SelectMany(s => s.parameters).Select(p => new CampaignJourneyNumber { key = p.key, value = p.At(g.tier) }).ToArray() };
+            }).ToArray();
+            EditorUtility.SetDirty(encounter); return stage;
+        }
+
+        static DefenderPlacement BuildGuard(ApprovedMapDefinition map, GuardSource source, DefenderSource roster)
+        {
+            var data = roster.units.Single(u => u.id == source.id); var panel = data.stages.Single(p => p.tier == source.tier);
+            if (panel.resistance != 0 || Mathf.Abs(panel.blockRadius - .65f) > .000001f)
+                throw new InvalidOperationException("This defender requires a new explicit placement field; do not silently drop resistance/block radius: " + source.id);
+            var original = Resources.Load<DefenderTrialDefinition>("DefenderTrials/" + source.id);
+            if (original == null) throw new InvalidOperationException("Saved defender art/action configuration missing: " + source.id);
+            var template = original.defenders.Single(d => d.id == source.id);
+            var guard = JsonUtility.FromJson<DefenderPlacement>(JsonUtility.ToJson(template));
+            guard.id = source.id; guard.displayName = data.name; guard.artId = template.artId;
+            guard.position = map.Cell(source.cell.x, source.cell.y, panel.highGround ? map.platformHeight : 0);
+            if (panel.highGround != (map.Tile(source.cell.x, source.cell.y) == 'H') || !panel.highGround && !map.Walkable(source.cell.x, source.cell.y))
+                throw new InvalidOperationException("Formal campaign placement does not match saved terrain: " + map.id + "/" + source.id);
+            guard.health = Mathf.Floor(panel.hp * source.hpFactor + .5f); guard.attack = panel.attack; guard.armor = panel.armor;
+            guard.range = panel.range; guard.interval = panel.interval; guard.blocks = panel.blocks; guard.windup = panel.windup; guard.actionDuration = panel.actionDuration;
+            guard.damageType = (CombatDamageType)Enum.Parse(typeof(CombatDamageType), panel.damageType); guard.splashRadius = panel.splashRadius; guard.healingRange = panel.healingRange;
+            guard.noOrdinaryAttack = panel.noOrdinaryAttack; guard.rangedAttackMultiplier = panel.rangedAttackMultiplier;
+            guard.criticalChance = panel.criticalChance; guard.criticalMultiplier = panel.criticalMultiplier; guard.extraHealChance = panel.extraHealChance; guard.reserve = false;
+            if (data.skills.Length != 1) throw new InvalidOperationException("Map guard needs an explicit multi-skill adapter: " + source.id);
+            var skill = data.skills[0]; guard.skill = new DefenderSkillDefinition { kind = (DefenderSkillKind)Enum.Parse(typeof(DefenderSkillKind), skill.id) };
+            foreach (var parameter in skill.parameters)
+            {
+                // Generic fields are direct snapshots. Additional original-mechanic constants are
+                // retained in stage.guardTuning and read only by the scoped formal-campaign adapter.
+                var field = typeof(DefenderSkillDefinition).GetField(parameter.key, BindingFlags.Public | BindingFlags.Instance);
+                if (field == null) continue;
+                float value = parameter.At(source.tier);
+                if (field.FieldType == typeof(float)) field.SetValue(guard.skill, value);
+                else if (field.FieldType == typeof(int)) field.SetValue(guard.skill, Mathf.RoundToInt(value));
+                else throw new InvalidOperationException("Unsupported generic defender field type: " + parameter.key);
+            }
+            _ = guard.Snapshot(); return guard;
+        }
+
+        [MenuItem("Yesterday Convoy/Campaign V2/Validate Formal Journey Data")]
+        public static void Validate()
+        {
+            var flow = Read<Source>("journey-authoring.json"); var roster = Read<DefenderSource>("defenders.json");
+            var journey = AssetDatabase.LoadAssetAtPath<CampaignJourneyDefinition>(JourneyPath);
+            if (journey == null) throw new InvalidOperationException("Persistent journey missing."); journey.Validate(); int guardCount = 0;
+            foreach (var expected in flow.stages)
+            {
+                var actual = journey.Stage(expected.stage);
+                if (actual.title != expected.title || actual.tip != expected.tip || actual.dp != expected.dp || actual.defense != expected.defense || actual.baseGold != expected.baseGold || actual.naturalXP != expected.naturalXP)
+                    throw new InvalidOperationException("Journey progression drift: " + expected.stage);
+                if (actual.IsSupply) continue;
+                if (!AssetDatabase.Contains(actual.map) || !AssetDatabase.Contains(actual.encounter) || actual.map.index != expected.mapIndex)
+                    throw new InvalidOperationException("Journey must reference persistent existing maps and independent encounters.");
+                if (actual.encounter.defenders.Length != expected.guards.Length) throw new InvalidOperationException("Formal defender count drift.");
+                for (int i = 0; i < expected.guards.Length; i++)
+                {
+                    var source = expected.guards[i]; var guard = actual.encounter.defenders[i]; var target = BuildGuard(actual.map, source, roster);
+                    if (JsonUtility.ToJson(guard) != JsonUtility.ToJson(target)) throw new InvalidOperationException("Adopted-v2 defender snapshot drift: stage " + expected.stage + "/" + source.id);
+                    if (actual.guardTiers[i] != source.tier || actual.guardHPFactors[i] != source.hpFactor) throw new InvalidOperationException("Defender stage provenance drift.");
+                    var parameters = roster.units.Single(u => u.id == source.id).skills.Single().parameters;
+                    foreach (var p in parameters) if (Mathf.Abs(actual.GuardValue(source.id, p.key, float.NaN) - p.At(source.tier)) > .000001f || float.IsNaN(actual.GuardValue(source.id, p.key, float.NaN)))
+                        throw new InvalidOperationException("Additional defender mechanic parameter missing: " + source.id + "/" + p.key);
+                    guardCount++;
+                }
+                for (int lane = 0; lane < actual.map.encounter.lanes.Length; lane++)
+                {
+                    var a = actual.encounter.lanes[lane]; var b = actual.map.encounter.lanes[lane];
+                    if (a.id != b.id || a.exitId != b.exitId || !a.points.SequenceEqual(b.points)) throw new InvalidOperationException("Journey changed the approved fixed map route.");
+                }
+            }
+            if (guardCount != 24) throw new InvalidOperationException("Twenty-four formal defender placements required.");
+            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 13 stages / 8 distinct existing maps / 24 exact v2 defender panels and skill snapshots / preserved sandbox data / no scene writes.");
+        }
+
+        public static void BuildWindows() { Validate(); BaselineTools.BuildWindows(); }
+        static T Read<T>(string file)
+        {
+            string path = Sources + "/" + file; if (!File.Exists(path)) throw new InvalidOperationException("Campaign authoring source missing: " + path);
+            return JsonUtility.FromJson<T>(File.ReadAllText(path));
+        }
+        static void EnsureFolder(string folder)
+        {
+            if (AssetDatabase.IsValidFolder(folder)) return; string parent = Path.GetDirectoryName(folder).Replace('\\', '/'); EnsureFolder(parent);
+            if (string.IsNullOrEmpty(AssetDatabase.CreateFolder(parent, Path.GetFileName(folder)))) throw new InvalidOperationException("Cannot create campaign data folder.");
+        }
+    }
+}

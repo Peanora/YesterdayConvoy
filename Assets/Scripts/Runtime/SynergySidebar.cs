@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 namespace YesterdayConvoy
@@ -38,7 +39,69 @@ namespace YesterdayConvoy
             lines.Add("仅6档保留手动两次3点半令，后半排除前半参与者；半令未完成时自动整令等待。暂停、演出中或无合格单位/存活守军不扣费。");
             return string.Join("\n",lines);
         }
-        public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null,IEnumerable<string> extraMudrockMembers=null)
+        static readonly Dictionary<string,string> v2EffectCache=new Dictionary<string,string>();
+        static string V2Effect(string name)
+        {
+            if(v2EffectCache.TryGetValue(name,out var cached))return cached;
+            float V(string id,int tier,string key)=>CampaignV2Balance.SynergyValue(id,tier,key);
+            string N(float value)=>value.ToString("0.###",CultureInfo.InvariantCulture);
+            string P(float value)=>N(value*100)+"%";
+            var lines=new List<string>();
+            switch(name)
+            {
+                case "整合运动":
+                    lines.Add("战前按不同整合卡种与编制锁档：2/4档不限编制；6档需至少2编制，8档需至少3编制。成功部署才累计集结，同种本轮只计一次；不要求同时存活。每轮清空后可复用，触发部署不重复计入下一轮。");
+                    foreach(int t in new[]{2,4,6,8})
+                    {
+                        string melee=$"士兵 {N(V("reunion",t,"meleeHP"))}/{N(V("reunion",t,"meleeAttack"))}/{N(V("reunion",t,"meleeArmor"))}";
+                        string ranged=t>=4?$"；弩手 {N(V("reunion",t,"rangedHP"))}/{N(V("reunion",t,"rangedAttack"))}/{N(V("reunion",t,"rangedArmor"))}":"";
+                        lines.Add($"{t}档：每轮{N(V("reunion",t,"distinctKindsPerMuster"))}种，{N(V("reunion",t,"musterLimit"))}轮，每轮{N(V("reunion",t,"supportsPerMuster"))}名。基础生命/攻击/护甲：{melee}{ranged}。");
+                    }
+                    lines.Add("4档可选士兵或弩手，6/8档一近一远；8档援军首次实际交战获得20%最大生命护盾，持续5模拟秒。生命、攻击乘√(S/K)后四舍五入，护甲不成长；间隔1.8秒、速度0.7，近/远射程0.75/2.7。");
+                    lines.Add("援军沿触发红门固定路线出现，不花DP/次数，穿门不扣防御；不产羁绊资源、不成为承契者。S计全部整合编队成员总星，额外成员也贡献；备战、重复部署不计，暂停冻结行动及护盾。");break;
+                case "雪怪小队":
+                    lines.Add("冻结守军在2.5秒内受两种不同原卡直接命中才碎冰。碎冰及天气伤害乘(S/K)^0.4，S为全部雪怪编队总星，K为当前2/5档。");
+                    foreach(int t in new[]{2,5})lines.Add($"{t}档：{N(V("snow",t,"shatterArts"))}法伤，半径{N(V("snow",t,"shatterRadius"))}/至多{N(V("snow",t,"shatterTargets"))}人，目标冷却{N(V("snow",t,"targetShatterCooldownSeconds"))}秒；"+(t==2?"消耗冻结。":"保留冻结。"));
+                    lines.Add($"仅5档：{N(V("snow",5,"weatherCharges"))}次碎冰或霜星手动冰封开启{N(V("snow",5,"weatherDurationSeconds"))}秒暴风雪，清零寒意；天气期间不积累、不叠加、不续时。");
+                    lines.Add($"0/2/4/6秒全场寒潮，每次({N(V("snow",5,"weatherFlatArts"))}+目标最大生命{P(V("snow",5,"weatherTargetMaxHPFraction"))})法伤、过法抗。寒冷攻速70%，再次受寒冻结1.2秒；天气冻结结束另保护3秒，只防控制，不免伤。");break;
+                case "感染生物":
+                    lines.Add("战前选择主形态；6档可再选另一种2档副形态。一次部署只扣一次DP/次数；额外分体不扣蓝门，不重复产羁绊资源。");
+                    foreach(int t in new[]{2,4,6})lines.Add($"{t}档集群：{N(V("infection",t,"swarmBodies"))}只，各{P(V("infection",t,"swarmHPFraction"))}生命/{P(V("infection",t,"swarmAttackFraction"))}攻击；甲壳：{P(V("infection",t,"shellShieldFraction"))}生命护盾{N(V("infection",t,"shellShieldSeconds"))}秒、护甲+{N(V("infection",t,"shellArmorAdd"))}；爆裂：{N(V("infection",t,"burstBaseArts"))}法伤，半径{N(V("infection",t,"burstRadius"))}/至多{N(V("infection",t,"burstTargets"))}人。");
+                    lines.Add("爆裂仅原体最终死亡后0.2秒触发一次，每升一星+35%；原生死亡爆炸独立保留自身预算，不重复寒冷。");break;
+                case "游击队":
+                    lines.Add("普通实体首次有效直接攻击/受击+1军令，每种卡最多2点；支援/分体不产点。足点且有合格单位时自动整令，不限次数；演出结束后再触发。");
+                    foreach(int t in new[]{2,4,6,8,9})
+                    {
+                        string people=t>=8?"全部合格普通实体":$"最多{N(V("guerrilla",t,"participantLimit"))}人";
+                        lines.Add($"{t}档：整令{N(V("guerrilla",t,"fullOrderCost"))}点，{people}，{P(V("guerrilla",t,"attackMultiplier"))}攻击；开战+{N(V("guerrilla",t,"initialOrders"))}点。"+(t>=4?$"参与近战获{P(V("guerrilla",t,"meleeShieldFraction"))}生命护盾{N(V("guerrilla",t,"shieldSeconds"))}秒。":""));
+                    }
+                    lines.Add("0.9/1.2/1.5/1.8/2.8演出秒全场五段，前四段各15%、末段40%；完整预算先过甲/抗再分段，不递归产点，1×/2×演出等速。2/4/6需普攻收手且有射程内目标；8/9可移动/普攻中参加，无需射程目标，技能/复起/控制锁照旧。");
+                    lines.Add("仅6档可手动两次3点、各至多6人的半令，后半排除前半参与者；未完成半令时自动整令等待。暂停、演出或无合格单位/活守军时不扣费。正式徽章获取尚未开放。");break;
+                case "泥岩小队":
+                    lines.Add("按战前不同种类与总星级S确定上限：2种至II；4种且S≥7至III；5种且S≥10至IV；6种且S≥12至V。实际战斗结束获得档位+⌊S/2⌋经验；补给/中途退出不发，达到当前上限不预存未来经验，历史经验保留，新挑战清零。不投入金币。");
+                    foreach(int s in Enumerable.Range(1,5))lines.Add($"巨像{s}：累计XP{N(CampaignV2Balance.SummonValue(s,"requiredXP"))}，生命{N(CampaignV2Balance.SummonValue(s,"hp"))}，攻击{N(CampaignV2Balance.SummonValue(s,"attack"))}，护甲{N(CampaignV2Balance.SummonValue(s,"armor"))}/法抗{N(CampaignV2Balance.SummonValue(s,"resistance"))}，DP{N(CampaignV2Balance.SummonValue(s,"dp"))}。");
+                    lines.Add("每场只部署一次，不扣蓝门，无主动技能，普攻间隔5.2秒。II每第三击主目标额外80物伤；III主目标120、周围至多2人各100。IV/V至多3目标、可打高台，每第三击全场80%攻击法伤，每轮成功普攻回8%生命一次，免疫控制。正式转职徽章获取未定。");break;
+                case "牧群":
+                    lines.Add("全队非五费正常实体最终死亡后，沿原位置/路线生成转化体；穿门0，不复制主动、爆炸、羁绊资源，不再转化。");
+                    foreach(int t in new[]{2,4})lines.Add($"{t}档：前{N(V("herd",t,"conversionsPerBattle"))}个，{P(V("herd",t,"spiritHPFraction"))}生命/{P(V("herd",t,"spiritAttackFraction"))}攻击，{N(V("herd",t,"spiritArmor"))}甲，有效存活{N(V("herd",t,"effectiveLifetimeSeconds"))}秒。"+(t==4?"可继承远程基础攻击，2.5射程、攻击再乘85%。":"近战射程0.75。"));
+                    lines.Add("倒下0.7秒、复起0.55秒后开始计算有效存活时间；间隔至少2秒，保留更长完整动作，暂停冻结。");break;
+                case "深池":
+                    lines.Add("成员普攻/原生技能有效命中施加燎烧，同名取高刷新；独立于原生灼燃，不自带减法抗。燎烧或原生灼燃目标被正常伤害/深池燎烧消灭后留火种，首击击杀也有效；伤害乘(S/K)立方根。");
+                    foreach(int t in new[]{2,4})lines.Add($"{t}档：{N(V("deep-pool",t,"burnArtsPerSecond"))}法伤/秒，持续{N(V("deep-pool",t,"burnDurationSeconds"))}秒；本场火种累计至多{N(V("deep-pool",t,"seedCumulativeLimit"))}枚，传播半径{N(V("deep-pool",t,"spreadRadius"))}/至多{N(V("deep-pool",t,"spreadTargets"))}人，已消耗仍计上限。");
+                    lines.Add($"4档：每次消耗1枚火种，优先有活目标的火种；{N(V("deep-pool",4,"detonationArts"))}法伤，半径{N(V("deep-pool",4,"detonationRadius"))}/至多{N(V("deep-pool",4,"detonationTargets"))}人，每场{N(V("deep-pool",4,"detonationCasts"))}次，不返火种。S计全部深池编队成员总星。");break;
+                case "海嗣":
+                    lines.Add("每种海嗣首次有效输出或外来承伤在脚下落种一次，重复部署/无敌/自损/支援不重复。溟痕只铺通行地面；每次向相邻地面扩散一圈，为尚未接敌的种类预留根格，高台不铺。");
+                    foreach(int t in new[]{2,4})lines.Add($"{t}档：每{N(V("marine",t,"spreadIntervalSeconds"))}秒扩散，至多{N(V("marine",t,"tileLimit"))}格；海嗣站溟痕上，原生神经损伤×{N(V("marine",t,"nativeNeuralMultiplier"))}。地面守军每秒积累{N(V("marine",t,"groundNeuralPerSecond"))}点，该地面积累不乘倍率。");
+                    lines.Add("神经积累100爆发100真实伤害、10秒眩晕，其间不积累。壳海只负责前锋落种，无新增神经普攻。无存活海嗣时休眠，后续部署恢复，战后清空。");break;
+                case "萨卡兹":
+                    lines.Add("战前指定一张萨卡兹编队卡为承契者，所有正常部署实体统一受益，开战锁定。部署自动触发，不花DP/技力，无手动释放与低血/阵亡充能。");
+                    foreach(int t in new[]{2,4,6,8,9})lines.Add($"{t}档：全体萨卡兹最大生命+{P(V("sarkaz",t,"allSarkazHPAdd"))}；承契者攻击+{P(V("sarkaz",t,"holderAttackAdd"))}、一次{P(V("sarkaz",t,"holderShieldMaxHPFraction"))}自身最终最大生命护盾；其他萨卡兹共享{P(V("sarkaz",t,"otherShareFraction"))}攻击加成与入场盾。");
+                    lines.Add("护盾同名取高、不叠加，无时限，耗尽不补发，复起不重新触发；支援/巨像/转化体/分体不参与。各档持续本场，9档为众魂归乡。这里只指定承契者，不提供未定的转职徽章。");break;
+                default:throw new ArgumentException("Unknown v2 synergy: "+name);
+            }
+            return v2EffectCache[name]="正式战役 v2\n"+string.Join("\n",lines);
+        }
+        public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null,IEnumerable<string> extraMudrockMembers=null,bool campaignV2=false)
         {
             var ids=lineup.Distinct().ToArray();
             var transfers=new HashSet<string>((extraMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.Guerrilla(id)));
@@ -55,7 +118,7 @@ namespace YesterdayConvoy
                 "深池：成员普攻/原生技能有效命中即燎烧，持续4秒，同名取高刷新。2档15法伤/秒，4档25/秒；独立于原生灼燃，不自带减法抗。\n燎烧或原生灼燃目标被正常伤害/深池燎烧消灭后留火种，首击击杀也有效。2档本场累计最多4枚、传播半径1.8/最多2人；4档6枚、2.2/3人，已消耗仍计上限。\n4档消耗1火种引爆，优先有活目标的火种，半径1.8/最多4人、180法伤，每场2次。引爆不返火种；伤害乘(S/K)的立方根；S为全部深池编队成员总星级，K为当前档2或4，额外成员也贡献。",
                 "海嗣 · 溟痕蔓延：每种海嗣本场首次有效输出或外来承伤，在脚下落种一次；重复部署、无敌、自损和支援不重复落种。\n2/4档：每6/4秒向相邻通行地面扩散一圈，全场覆盖至多8/16格；为尚未接敌的每种海嗣预留1格，高台不铺。\n海嗣站在溟痕上，原生神经损伤×1.5/2；地面守军踩溟痕每秒积累3点神经损伤，该地面积累不再乘倍率。壳海负责前锋落种，不新增神经普攻。\n神经积累100时爆发：100真实伤害、10秒眩晕，其间不再积累。无存活海嗣时溟痕休眠，后续部署恢复；战后清空。\n战斗中点击「查看溟痕范围」突出边界；守军神经条和海嗣×倍率标识显示真实状态。",
                 "众魂之契：战前把侧栏旁的萨卡兹徽章拖到萨卡兹编队卡，指定该卡为承契者；该卡所有正常部署实体统一受益，开战后锁定。羁绊外角色不能成为承契者。\n各档部署时自动触发，持续本场，无需手动释放、低血或阵亡充能，不消耗DP/技力。\n2/4/6/8/9档，全体萨卡兹最大生命+10/20/30/40/60%。\n2档：承契者攻击+35%、一次20%生命护盾。\n4档：攻击+60%、一次30%护盾。\n6档：攻击+90%、一次40%护盾；其他萨卡兹获一半攻击加成与入场盾。\n8档：攻击+120%、一次50%护盾；其他萨卡兹共享完整效果。\n9档「众魂归乡」：全体萨卡兹攻击永久+150%，部署时获得一次自身最大生命60%护盾。\n护盾按各自最终最大生命计算，同名取高、不累计；没有时限，但消耗后不定时补发。复起不重新触发；巨像、援军、转化体与分体不参与。"};
-            return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=effects[i]})
+            return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=campaignV2?V2Effect(name):effects[i]})
                 .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="整合运动"?ReunionRules.TierFor(s.Members):s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
                 .Where(s=>s.Count>0).OrderByDescending(s=>s.Tier>0).ThenByDescending(s=>s.Count).ToArray();
         }
@@ -99,7 +162,7 @@ namespace YesterdayConvoy
         Rect SynergySupplementRect(Rect row)=>new Rect(row.x+58,row.y+35,row.width-64,12);
         Rect SynergyProgressRect(Rect row)=>new Rect(row.x+58,row.y+47,row.width-64,1);
         Rect SynergyDetailRect=>inspectedSynergy=="感染生物"?InfectionFormPanelRect:new Rect(252,90,620,415);
-        SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds,PreparedMudrockTransferIds);
+        SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds,PreparedMudrockTransferIds,Battle?.CampaignV2Enabled==true);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
         void DrawSynergySidebar()
         {

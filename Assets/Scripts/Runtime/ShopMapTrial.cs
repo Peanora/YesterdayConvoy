@@ -207,6 +207,7 @@ namespace YesterdayConvoy
         public void CancelShopDrag(){CancelWaveCardClick();CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
+            if(JourneyActive)CampaignJourneySession.Clear();
             ClearSynergyActivationFeedback();synergyActivationShop=null;
             activeSynergyTrial=null;Loop=null;
             CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();ResetMudrockTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;

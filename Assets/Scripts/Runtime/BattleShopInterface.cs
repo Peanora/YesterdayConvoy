@@ -39,7 +39,7 @@ namespace YesterdayConvoy
         void DrawLoopHeader()
         {
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
-            string mode=Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
+            string mode=JourneyActive?"十三关行动 · v2":Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
             GUI.Label(new Rect(28,11,165,24),shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));
@@ -181,7 +181,7 @@ namespace YesterdayConvoy
             DrawShopBench(LoopText(12,TextAnchor.MiddleCenter));
             GUI.Label(new Rect(1142,624,120,18),"开战后锁定本场编队",LoopText(10,TextAnchor.MiddleCenter,Color.white));
             GUI.enabled=Loop.CanShop&&!ShopPanelTransitioning;
-            if(LoopButton(new Rect(1142,643,120,50),BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
+            if(LoopButton(new Rect(1142,643,120,50),JourneyActive&&Loop.RewardStage?"领取补给  ▶":JourneyActive||BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
             {if(shopLineup.Count==0)ShopNotice("请至少编队一张卡");else PrepareNextLoopBattle();}
             GUI.enabled=true;
         }
@@ -193,9 +193,9 @@ namespace YesterdayConvoy
             Color accent=failed?new Color(.65f,.31f,.25f):new Color(.28f,.47f,.61f);
             Fill(new Rect(176,152,5,416),accent);
             GUI.Label(new Rect(206,173,340,29),(BlackForestChallengeActive?"黑流树海 · 三波作战结束":SynergySandbox?"第"+Loop.SandboxRound+"轮验证结束":"第"+Loop.Stage+"关结束")+(loopWasTestSettled?" · 测试结算":""),LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":SynergySandbox?"作战胜利":Loop.Phase==BattleShopPhase.Complete?"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
+            GUI.Label(new Rect(204,219,346,70),failed?"作战失败":SynergySandbox?"作战胜利":Loop.Phase==BattleShopPhase.Complete?JourneyActive?"挑战通关":"演示通关":"作战胜利",LoopText(43,TextAnchor.MiddleLeft,accent,700));
             GUI.Label(new Rect(206,306,330,32),shopMapCopy.mapTitle,LoopText(18,TextAnchor.MiddleLeft,null,600));
-            GUI.Label(new Rect(206,350,330,45),BlackForestChallengeActive?"保留编队，返回整备调整后再次挑战":SynergySandbox?"保留阵容和培养，返回整备继续下一轮":failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(206,350,330,45),JourneyActive&&Loop.Phase==BattleShopPhase.Complete?JourneyCompletionText():BlackForestChallengeActive?"保留编队，返回整备调整后再次挑战":SynergySandbox?"保留阵容和培养，返回整备继续下一轮":failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
             DrawGolemSettlementFeedback();
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
             GUI.Label(new Rect(590,174,376,28),"本场收入",LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
@@ -209,7 +209,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(693,364,273,44),shop.UnlimitedGold?"∞":$"{reward.GoldBefore} → {shop.Gold}",LoopText(29,TextAnchor.MiddleRight,new Color(.49f,.36f,.16f),600));
             GUI.Label(new Rect(590,427,376,28),$"经验 +{reward.Experience}    等级 {shop.Level}    {shop.XP}/{shop.NextLevelXP}",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             if(LoopButton(new Rect(590,488,376,48),Loop.Phase==BattleShopPhase.Settlement?"前往商店":BlackForestChallengeActive?"返回整备再次挑战":SynergySandbox?"返回整备继续验证":"开始新挑战",true))
-            {if(Loop.Phase==BattleShopPhase.Settlement)OpenLoopShop();else if(SynergySandbox)ReplaySandbox();else RestartCurrentRun();}
+            {if(Loop.Phase==BattleShopPhase.Settlement)OpenLoopShop();else if(JourneyActive)BeginJourney();else if(SynergySandbox)ReplaySandbox();else RestartCurrentRun();}
         }
         void DrawLoopMenu()
         {
@@ -228,7 +228,7 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(x,y,width,30),"返回测试选择")){ReturnToTrialScene();return;}y+=37;
             if(CampaignActive&&Loop.CanDeploy)
             {if(LoopButton(new Rect(x,y,width,30),"重开本关（保留运营）")){RestartCampaignEncounter();return;}y+=37;}
-            if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy)
+            if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&!JourneyActive)
             {
                 if(LoopButton(new Rect(x,y,width,30),"验证工具 · 直接结算"))
                 {loopTestSettlementOpen=true;loopMenuOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}y+=37;
@@ -237,6 +237,7 @@ namespace YesterdayConvoy
         }
         void ReturnToTrialScene()
         {
+            if(JourneyActive){ExitJourney();return;}
             if(ApprovedMapActive){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             LeaveShopTrial();UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");
         }

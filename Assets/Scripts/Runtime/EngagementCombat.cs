@@ -22,9 +22,10 @@ namespace YesterdayConvoy
             float initialSP = 8, float requiredSP = 12, float spPerSecond = 1, int skillAmmo = 6,
             float skillAttack = 105, float skillInterval = 3.2f, float skillRange = 2.6f, float projectileTime = 0.22f, bool fireRain = false, bool hasSkill = true, bool melee = false, float attackDuration = 0, float attackWindup = 0, MonsterEffectSettings effects = default, bool canAttack = true,CombatDamageType defenderDamageType=CombatDamageType.Physical,bool revealsInvisible=false,bool defenderCanHitAir=true,bool frostSeal=false,bool mudrockCapture=false)
         {
-            foreach (float value in new[] { unitAttack, unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
+            foreach (float value in new[] { unitRange, unitInterval, defenderHealth, defenderAttack, defenderRange,
                 defenderInterval, blockRadius, projectileTime })
                 if (!Finite(value) || value <= 0) throw new ArgumentException("Combat values must be finite and positive.");
+            if(!Finite(unitAttack)||unitAttack<0||canAttack&&unitAttack==0)throw new ArgumentException("An attacking unit requires positive attack; non-attacking units may have zero attack.");
             if (!Finite(unitArmor) || !Finite(defenderArmor) || !Finite(initialSP) || unitArmor < 0 || defenderArmor < 0 ||
                 initialSP < 0 || blockCount < 0)
                 throw new ArgumentException("Invalid combat armor, block count or initial SP.");
@@ -356,7 +357,7 @@ namespace YesterdayConvoy
                 {
                     if(Clock+1e-6<unit.ReviveAt) continue;
                     unit.IsReviving=false;unit.Health=unit.MaxHealth;unit.DeathTime=double.PositiveInfinity;
-                    unit.NextIceRingAt=Clock+8.5;unit.NextAttackTime=Clock;
+                    unit.NextIceRingAt=Clock+V2Skill(unit,"iceRing","cooldown",8.5f);unit.NextAttackTime=Clock;
                 }
                 HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=(c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit);
@@ -383,7 +384,7 @@ namespace YesterdayConvoy
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
-                float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.Destruction?.85f:c.UnitRange;
+                float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.Destruction?V2Skill(unit,"rebirth","destructionRange",.85f):c.UnitRange;
                 bool ordinary=c.CanAttack&&(!c.Effects.Patriot||unit.PatriotPhase==PatriotPhase.Destruction||unit.IsBlocked)&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked)&&(!c.Effects.Harvester||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.IsBlocked);
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
                 if(!c.CanAttack) unit.CombatTargetId=null;
@@ -413,7 +414,7 @@ namespace YesterdayConvoy
                     // Six timed waves, with an explicit launch delay. Every living defender is hit,
                     // regardless of ordinary range. The caster holds its pose through the full window.
                     int wave=c.SkillAmmo-unit.SkillAmmo;
-                    double due=unit.FireRainStartedAt+(wave+.25)*c.SkillInterval/c.SkillAmmo;
+                    double due=unit.FireRainStartedAt+(wave+V2Skill(unit,"manualRain","firstWaveFractionOfCadence",.25f))*c.SkillInterval/c.SkillAmmo;
                     if(Clock+0.000001>=due)
                     {
                         unit.SkillAmmo--;
@@ -442,10 +443,10 @@ namespace YesterdayConvoy
                         splashRadius:empowered&&ViviCombat.IsVivi(unit.CardId)?ViviCombat.SkillSplashRadius:0));
                     if(SilverWolfCombat.IsWolf(unit)){var attack=combatShots[combatShots.Count-1];attack.WolfActionAt=Clock;attack.WolfActionRate=unit.LastAttackRate;}
                     if(c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.March&&!empowered)
-                        for(int hit=1;hit<4;hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+(PatriotTiming.MarchContact+hit*PatriotTiming.MarchSpacing)/unit.LastAttackRate,0,c.UnitAttack*UnitAttackMultiplier(unit)));
-                    if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.4f;
-                    if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=c.UnitAttack*UnitAttackMultiplier(unit)*.1f;
-                    if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=c.UnitAttack*UnitAttackMultiplier(unit);
+                        for(int hit=1;hit<(int)V2Skill(unit,"march","hits",4);hit++)combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,false,unit.Motion.Position,target.Position,Clock+(V2Skill(unit,"march","firstHitDelay",PatriotTiming.MarchContact)+hit*V2Skill(unit,"march","hitSpacing",PatriotTiming.MarchSpacing))/unit.LastAttackRate,0,c.UnitAttack*UnitAttackMultiplier(unit)));
+                    if(c.Effects.FirstSpeaker&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=V2Skill(unit,"neuralHit","neuralPerHit",c.UnitAttack*UnitAttackMultiplier(unit)*.4f);
+                    if(c.Effects.Harvester&&!empowered)combatShots[combatShots.Count-1].NeuralDamage=V2Skill(unit,"neuralAura","ordinaryNeuralOnHit",c.UnitAttack*UnitAttackMultiplier(unit)*.1f);
+                    if(c.Effects.Flamechaser&&NearBurningReeds(unit))combatShots[combatShots.Count-1].BurnDamage=V2Skill(unit,"reedsBurn","burnAccumulationPerHit",c.UnitAttack*UnitAttackMultiplier(unit));
                     int attackTargets=UnitAttackTargets(unit);
                     if(!empowered && attackTargets>1)
                     {

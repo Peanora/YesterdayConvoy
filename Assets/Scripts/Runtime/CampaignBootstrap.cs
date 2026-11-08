@@ -13,6 +13,7 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(!sandbox&&Array.IndexOf(args,"-campaignJourneySmokeTest")>=0)yield break;
             if(ApprovedMapSmokeDriver.Requested)yield break;
             if(!approvedLaunchConsumed&&Array.IndexOf(args,"-approvedMaps")>=0){approvedLaunchConsumed=true;UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
             int approved=Array.IndexOf(args,"-approvedMap");
@@ -36,6 +37,7 @@ namespace YesterdayConvoy
             var controller=FindAnyObjectByType<ManualBattleController>();
             bool smoke=Array.IndexOf(args,"-patriotShopSmokeTest")>=0||Array.IndexOf(args,"-mephistoVfxSmokeTest")>=0||Array.IndexOf(args,"-mandragoraVfxSmokeTest")>=0||Array.IndexOf(args,"-campaignSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0||Array.IndexOf(args,"-remainingSynergySmokeTest")>=0||Array.IndexOf(args,"-synergyReworkSmokeTest")>=0;
             if(smoke)Application.runInBackground=true;
+            if(!sandbox&&!smoke){controller.BeginJourney();yield break;}
             yield return controller.PrepareCampaign(sandbox,smoke?44:0,trialDefinition);
             if(Array.IndexOf(args,"-patriotShopSmokeTest")>=0)yield return controller.VerifyPatriotShop();else if(Array.IndexOf(args,"-mephistoVfxSmokeTest")>=0)yield return controller.VerifyMephisto();else if(Array.IndexOf(args,"-mandragoraVfxSmokeTest")>=0)yield return controller.VerifyMandragora();else if(Array.IndexOf(args,"-synergyReworkSmokeTest")>=0)yield return controller.VerifySynergyRework();else if(Array.IndexOf(args,"-remainingSynergySmokeTest")>=0)yield return controller.VerifyRemainingSynergies();else if(Array.IndexOf(args,"-advancedSynergySmokeTest")>=0)yield return controller.VerifyAdvancedSynergies();else if(smoke)yield return controller.VerifyCampaign();
         }

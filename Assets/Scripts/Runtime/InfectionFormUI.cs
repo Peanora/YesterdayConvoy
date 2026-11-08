@@ -50,9 +50,16 @@ namespace YesterdayConvoy
             if(style.CalcSize(new GUIContent(caption)).x>bounds.width)style.fontSize=9;
             GUI.Label(bounds,caption,style);
         }
-        static string InfectionEffect(InfectionForm form,int tier)
+        string InfectionEffect(InfectionForm form,int tier)
         {
             if(tier<2)return "2种感染生物激活后生效";
+            if(Battle?.CampaignV2Enabled==true)
+            {
+                float V(string key)=>CampaignV2Balance.SynergyValue("infection",tier,key);
+                if(form==InfectionForm.Swarm)return $"{V("swarmBodies"):0}只，各{V("swarmHPFraction")*100:0}%生命 / {V("swarmAttackFraction")*100:0}%攻击";
+                if(form==InfectionForm.Shell)return $"{V("shellShieldFraction")*100:0}%生命护盾，护甲＋{V("shellArmorAdd"):0}";
+                return $"{V("burstBaseArts"):0}法伤 · 半径{V("burstRadius"):0.#} · 最多{V("burstTargets"):0}目标";
+            }
             if(form==InfectionForm.Swarm)return tier>=6?"3只，各55%生命 / 攻击":tier>=4?"2只，各70%生命 / 攻击":"2只，各55%生命 / 攻击";
             if(form==InfectionForm.Shell)return tier>=6?"35%生命护盾，护甲＋3":tier>=4?"30%生命护盾，护甲＋2":"18%最大生命护盾";
             return tier>=6?"85法伤 · 半径1.3 · 最多3目标":tier>=4?"65法伤 · 半径1.2 · 最多3目标":"35法伤 · 半径1 · 最多2目标";

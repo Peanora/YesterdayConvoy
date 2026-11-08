@@ -179,7 +179,7 @@ namespace YesterdayConvoy
                 }
                 GUI.EndScrollView();
             }
-            if(GUI.Button(new Rect(790,538,426,26),"三阶段挑战 · 13关",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
+            if(GUI.Button(new Rect(790,538,426,26),"十三关行动 · v2完整挑战",buttonStyle))BeginJourney();
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
             if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;

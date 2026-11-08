@@ -17,7 +17,8 @@ namespace YesterdayConvoy
         public string TargetId {get;internal set;}
         public double StartedAt {get;internal set;}
         public CombatShot Shot {get;internal set;}
-        public double EndsAt=>StartedAt+3.4333334;
+        internal float ActionDuration=3.4333334f;
+        public double EndsAt=>StartedAt+ActionDuration;
     }
     public sealed partial class ManualBattle
     {
@@ -28,8 +29,8 @@ namespace YesterdayConvoy
         public bool PatriotCasting(DeployedUnitState u)=>IsPatriot(u)&&u.Active&&u.Spear!=null&&Clock<u.Spear.EndsAt;
         public bool IsPatriotSpear(CombatShot s)=>units.Any(u=>u.Spear?.Shot==s);
         public float UnitResistance(DeployedUnitState u)=>Mathf.Min(100,UnitCombat(u).Effects.UnitResistance*(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.March?2:1))-(u.ScorchUntil>Clock?20:0);
-        float UnitAttackInterval(DeployedUnitState u)=>UnitCombat(u).UnitInterval-(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?.4f:0);
-        float UnitAttackWindup(DeployedUnitState u)=>IsPatriot(u)?u.PatriotPhase==PatriotPhase.Destruction?PatriotTiming.DestructionRelease:PatriotTiming.MarchContact:UnitCombat(u).AttackWindup;
+        float UnitAttackInterval(DeployedUnitState u)=>IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction?V2Skill(u,"rebirth","destructionInterval",UnitCombat(u).UnitInterval-.4f):UnitCombat(u).UnitInterval;
+        float UnitAttackWindup(DeployedUnitState u)=>IsPatriot(u)?u.PatriotPhase==PatriotPhase.Destruction?PatriotTiming.DestructionRelease:V2Skill(u,"march","firstHitDelay",PatriotTiming.MarchContact):UnitCombat(u).AttackWindup;
         public bool ConfigureDefenderHighGround(string id,bool value)
         {
             if(!EngagementEnabled||Phase!=BattlePhase.Ready||units.Count!=0)return false;
@@ -50,11 +51,11 @@ namespace YesterdayConvoy
         }
         void PulsePatriot(DeployedUnitState u)
         {
-            u.NextImmolationAt=Clock+.8;u.LastImmolationAt=Clock;u.ImmolationTicks++;
+            u.NextImmolationAt=Clock+V2Skill(u,"immolation","tickInterval",.8f);u.LastImmolationAt=Clock;u.ImmolationTicks++;
             foreach(var d in defenders)
-                if(d.Alive&&GroundDistance(d.Position,u.Motion.Position)<=1.75f)
+                if(d.Alive&&GroundDistance(d.Position,u.Motion.Position)<=V2Skill(u,"immolation","radius",1.75f))
                 {
-                    float hp=d.Health;ApplyRankedDefenderLoss(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f,u,true);
+                    float hp=d.Health;ApplyRankedDefenderLoss(d,NativeSkillDamage(u,"immolation","damagePerTick",UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f),u,true);
                     u.ImmolationDamage+=hp-d.Health;d.LastHitTime=Clock;if(!d.Alive)d.DeathTime=Clock;
                 }
         }
@@ -62,10 +63,10 @@ namespace YesterdayConvoy
         {
             if(u.PatriotPhase==PatriotPhase.Reborn)
             {
-                if(Clock+1e-6>=u.PatriotPhaseStartedAt+60)
+                if(Clock+1e-6>=u.PatriotPhaseStartedAt+V2Skill(u,"rebirth","rebirthDuration",60))
                 {
-                    u.PatriotPhase=PatriotPhase.Destruction;u.PatriotPhaseStartedAt=Clock;u.Health=u.MaxHealth;
-                    u.PatriotInvulnerableUntil=Clock+15;u.NextSpearAt=Clock+15;u.NextImmolationAt=Clock+.8;
+                    u.PatriotPhase=PatriotPhase.Destruction;u.PatriotPhaseStartedAt=Clock;u.Health=V2Skill(u,"rebirth","restoredHp",u.MaxHealth);
+                    u.PatriotInvulnerableUntil=Clock+V2Skill(u,"rebirth","protectionDuration",15);u.NextSpearAt=Clock+V2Skill(u,"spear","firstDelay",15);u.NextImmolationAt=Clock+V2Skill(u,"immolation","tickInterval",.8f);
                     u.NextAttackTime=Clock;u.LastAttackTime=double.NegativeInfinity;return true;
                 }
                 if(Clock+1e-6>=u.NextImmolationAt)PulsePatriot(u);
@@ -83,13 +84,13 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
             {
                 float distance=GroundDistance(d.Position,u.Motion.Position);
-                if(!d.Alive||!d.HighGround||DefenderCamouflaged(d)||distance>20||distance<=farthest)continue;
+                if(!d.Alive||!d.HighGround||DefenderCamouflaged(d)||distance>V2Skill(u,"spear","range",20)||distance<=farthest)continue;
                 target=d;farthest=distance;
             }
             if(target==null)return false;
-            var shot=new CombatShot(u.EntityId,target.EntityId,false,true,u.Motion.Position,target.Position,Clock+PatriotTiming.SpearRelease,PatriotTiming.SpearFlight,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*1.35f);
-            combatShots.Add(shot);u.Spear=new PatriotSpear{TargetId=target.EntityId,StartedAt=Clock,Shot=shot};
-            u.NextSpearAt=u.Spear.EndsAt+20;u.NextAttackTime=Math.Max(u.NextAttackTime,u.Spear.EndsAt);
+            var shot=new CombatShot(u.EntityId,target.EntityId,false,true,u.Motion.Position,target.Position,Clock+V2Skill(u,"spear","releaseDelay",PatriotTiming.SpearRelease),V2Skill(u,"spear","flight",PatriotTiming.SpearFlight),NativeSkillDamage(u,"spear","damage",UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*1.35f));
+            combatShots.Add(shot);u.Spear=new PatriotSpear{TargetId=target.EntityId,StartedAt=Clock,Shot=shot,ActionDuration=V2Skill(u,"spear","actionDuration",3.4333334f)};
+            u.NextSpearAt=u.Spear.EndsAt+V2Skill(u,"spear","afterEndCooldown",20);u.NextAttackTime=Math.Max(u.NextAttackTime,u.Spear.EndsAt);
             u.IsMoving=u.HasCombatTarget=false;return true;
         }
     }

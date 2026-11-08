@@ -27,8 +27,8 @@ namespace YesterdayConvoy
         // Cell keys are relative to the authored grid; their world centres include its x/z offset.
         public IReadOnlyList<MarineCellState> MarineCells=>marineCells.AsReadOnly();
         public bool MarineActive=>synergyEnabled&&MarineTier>0&&Phase==BattlePhase.Running&&units.Any(IsLivingMarine);
-        public int MarineTileLimit=>MarineTier==4?16:MarineTier==2?8:0;
-        public float MarineSpreadInterval=>MarineTier==4?4:6;
+        public int MarineTileLimit=>(int)V2Synergy("marine",MarineTier,"tileLimit",MarineTier==4?16:MarineTier==2?8:0);
+        public float MarineSpreadInterval=>V2Synergy("marine",MarineTier,"spreadIntervalSeconds",MarineTier==4?4:6);
         public double MarineSpreadRemaining=>MarineCells.Count==0?MarineSpreadInterval:Math.Max(0,MarineSpreadInterval-marineSpreadElapsed);
         public int MarineSeededKinds=>marineSeededKinds.Count;
         public int MarineSpreadCount {get;private set;}
@@ -84,7 +84,7 @@ namespace YesterdayConvoy
             marineSeededKinds.Add(unit.CardId);AddMarineCell(cell,true);
         }
 
-        public float MarineNeuralMultiplier(DeployedUnitState unit)=>MarineActive&&IsLivingMarine(unit)&&marineCellLookup.ContainsKey(MarineCell(unit.Motion.Position))?(MarineTier==4?2:1.5f):1;
+        public float MarineNeuralMultiplier(DeployedUnitState unit)=>MarineActive&&IsLivingMarine(unit)&&marineCellLookup.ContainsKey(MarineCell(unit.Motion.Position))?V2Synergy("marine",MarineTier,"nativeNeuralMultiplier",MarineTier==4?2:1.5f):1;
 
         float MarineCandidateDistance(Vector2Int cell,bool defendersFirst)
         {
@@ -115,7 +115,7 @@ namespace YesterdayConvoy
             {marineSpreadElapsed=Math.Max(0,marineSpreadElapsed-MarineSpreadInterval);SpreadMarineTide();}
             foreach(var defender in defenders)
                 if(defender.Alive&&!defender.HighGround&&marineCellLookup.ContainsKey(MarineCell(defender.Position)))
-                    MarineGroundNeuralDealt+=ApplyNeuralDamage(defender,3*step);
+                    MarineGroundNeuralDealt+=ApplyNeuralDamage(defender,V2Synergy("marine",MarineTier,"groundNeuralPerSecond",3)*step);
         }
     }
 }

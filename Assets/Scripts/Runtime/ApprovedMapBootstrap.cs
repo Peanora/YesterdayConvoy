@@ -13,7 +13,8 @@ namespace YesterdayConvoy
             if(map==null)throw new System.InvalidOperationException("Missing saved map profile");
             controller=FindAnyObjectByType<ManualBattleController>();
             heatMarkers=FindObjectsByType<ApprovedHeatMarker>(FindObjectsInactive.Include,FindObjectsSortMode.None);
-            yield return controller.PrepareApprovedMap(map);
+            if(CampaignJourneySession.Current!=null)yield return controller.PrepareJourneyStage();
+            else yield return controller.PrepareApprovedMap(map);
         }
         void Update()
         {

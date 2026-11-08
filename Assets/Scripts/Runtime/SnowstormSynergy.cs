@@ -19,7 +19,7 @@ namespace YesterdayConvoy
         int snowstormNextPulse;
         public IReadOnlyList<SnowstormPulse> SnowstormPulses=>snowstormPulses.AsReadOnly();
         public double SnowstormStartedAt=>snowstormStartedAt;
-        public double SnowstormEndsAt=>snowstormStartedAt+SnowstormDuration;
+        public double SnowstormEndsAt=>snowstormStartedAt+V2Synergy("snow",SnowTier,"weatherDurationSeconds",SnowstormDuration);
         public double SnowstormRemaining=>SnowstormActive?Math.Max(0,SnowstormEndsAt-Clock):0;
         public bool SnowstormActive=>SnowTier==5&&Clock<SnowstormEndsAt;
         public int SnowstormCharge {get;private set;}
@@ -29,7 +29,7 @@ namespace YesterdayConvoy
             // Count completed synergy shatters, not individual hits, victims or a particular character's skill.
             // Shatters inside the weather cannot charge another storm from its own control effects.
             if(!synergyEnabled||SnowTier!=5||SnowstormActive)return;
-            if(++SnowstormCharge<SnowstormChargeRequired)return;
+            if(++SnowstormCharge<V2Synergy("snow",SnowTier,"weatherCharges",SnowstormChargeRequired))return;
             StartSnowstorm();
         }
         void StartSnowstorm()
@@ -41,21 +41,22 @@ namespace YesterdayConvoy
         void StepSnowstorms()
         {
             if(SnowTier!=5||double.IsNegativeInfinity(snowstormStartedAt))return;
-            while(snowstormNextPulse*2<SnowstormDuration&&Clock+1e-6>=snowstormStartedAt+snowstormNextPulse*2)
+            var times=CampaignV2Enabled?CampaignV2Balance.SynergyList("snow",SnowTier,"weatherPulseAt"):new[]{0f,2f,4f,6f};
+            while(snowstormNextPulse<times.Length&&Clock+1e-6>=snowstormStartedAt+times[snowstormNextPulse])
             {
-                var pulse=new SnowstormPulse{At=snowstormStartedAt+snowstormNextPulse++*2};snowstormPulses.Add(pulse);
+                var pulse=new SnowstormPulse{At=snowstormStartedAt+times[snowstormNextPulse++]};snowstormPulses.Add(pulse);
                 float power=SnowStarMultiplier;
                 foreach(var d in defenders.Where(d=>d.Alive))
                 {
                     pulse.targets.Add(d.EntityId); // Weather remains visible even when control is resisted/protected.
                     // Control protection never negates damage. Derived damage cannot produce another shatter.
-                    DamageDefender(d,(60+d.MaxHealth*.02f)*power,CombatDamageType.Arts,derived:true);
+                    DamageDefender(d,(V2Synergy("snow",SnowTier,"weatherFlatArts",60)+d.MaxHealth*V2Synergy("snow",SnowTier,"weatherTargetMaxHPFraction",.02f))*power,CombatDamageType.Arts,derived:true);
                     if(!d.Alive)continue;
                     if(d.FrozenUntil>Clock||stormFreezeProtection.TryGetValue(d.EntityId,out double until)&&Clock<until)continue;
                     bool cold=d.ColdUntil>Clock;
-                    if(!TryApplyCold(d.EntityId,3.5f))continue;
+                    if(!TryApplyCold(d.EntityId,V2Synergy("snow",SnowTier,"weatherColdSeconds",3.5f)))continue;
                     // Only the extra storm respects this additional protection; it does not rewrite character skills.
-                    if(cold&&d.FrozenUntil>Clock)stormFreezeProtection[d.EntityId]=d.FrozenUntil+3;
+                    if(cold&&d.FrozenUntil>Clock)stormFreezeProtection[d.EntityId]=d.FrozenUntil+V2Synergy("snow",SnowTier,"weatherExtraFreezeProtectionSeconds",3);
                 }
             }
         }

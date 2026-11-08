@@ -32,7 +32,7 @@ namespace YesterdayConvoy
         public bool TalulahTransitionLocked(DeployedUnitState unit)=>HasTalulahSecondPhase(unit)&&unit.Active&&
             (unit.TalulahPhase==TalulahPhase.FirstFall||unit.TalulahPhase==TalulahPhase.FirstRain||
              unit.TalulahPhase==TalulahPhase.FinalFall||unit.TalulahPhase==TalulahPhase.FinalRain||
-             unit.TalulahPhase==TalulahPhase.Second&&Clock<unit.TalulahPhaseStartedAt+TalulahTiming.ReappearanceDuration);
+             unit.TalulahPhase==TalulahPhase.Second&&Clock<unit.TalulahPhaseStartedAt+V2Skill(unit,"threeStarPhase","returnAnimation",(float)TalulahTiming.ReappearanceDuration));
 
         public bool TalulahAutomaticRainActive(DeployedUnitState unit)=>HasTalulahSecondPhase(unit)&&unit.Active&&
             (unit.TalulahPhase==TalulahPhase.FirstRain||unit.TalulahPhase==TalulahPhase.FinalRain)&&
@@ -68,7 +68,7 @@ namespace YesterdayConvoy
             unit.TalulahPhase=final?TalulahPhase.FinalRain:TalulahPhase.FirstRain;
             unit.TalulahPhaseStartedAt=began;
             unit.TalulahAutomaticRainStartedAt=began;
-            unit.TalulahAutomaticRainEndsAt=began+TalulahTiming.RainDuration;
+            unit.TalulahAutomaticRainEndsAt=began+V2Skill(unit,"threeStarPhase","rainDuration",(float)TalulahTiming.RainDuration);
             unit.TalulahAutomaticWavesFired=0;
         }
 
@@ -76,12 +76,14 @@ namespace YesterdayConvoy
         {
             // Automatic waves own no manual ammo/SP and cannot recursively earn
             // on-hit resources. Their actual area damage uses the existing loss path.
-            while(unit.TalulahAutomaticWavesFired<TalulahTiming.AutomaticWaves&&
-                  Clock+1e-6>=unit.TalulahAutomaticRainStartedAt+TalulahTiming.FirstWave+
-                    unit.TalulahAutomaticWavesFired*TalulahTiming.WaveInterval)
+            while(unit.TalulahAutomaticWavesFired<(int)V2Skill(unit,"threeStarPhase","automaticWaves",TalulahTiming.AutomaticWaves)&&
+                  Clock+1e-6>=unit.TalulahAutomaticRainStartedAt+V2Skill(unit,"threeStarPhase","firstWaveDelay",(float)TalulahTiming.FirstWave)+
+                    unit.TalulahAutomaticWavesFired*V2Skill(unit,"threeStarPhase","waveInterval",(float)TalulahTiming.WaveInterval))
             {
                 unit.TalulahAutomaticWavesFired++;
-                float attack=UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit);
+                float phaseMultiplier=TalulahSecondForm(unit)?V2Skill(unit,"threeStarPhase","secondFormAttackMultiplier",1.5f):1;
+                string key=unit.TalulahPhase==TalulahPhase.FinalRain?"finalRainDamagePerTargetPerWave":"firstRainDamagePerTargetPerWave";
+                float attack=V2Skill(unit,"threeStarPhase",key,UnitCombat(unit).UnitAttack*phaseMultiplier)*UnitAttackMultiplier(unit)/phaseMultiplier;
                 foreach(var defender in defenders)
                     if(defender.Alive)DamageDefenderFrom(defender,attack,CombatDamageType.Arts,unit,derived:true);
             }
@@ -101,9 +103,9 @@ namespace YesterdayConvoy
             HoldTalulah(unit);
             if(unit.TalulahPhase==TalulahPhase.FirstFall||unit.TalulahPhase==TalulahPhase.FinalFall)
             {
-                if(Clock+1e-6<unit.TalulahPhaseStartedAt+TalulahTiming.FallDuration)return true;
+                if(Clock+1e-6<unit.TalulahPhaseStartedAt+V2Skill(unit,"threeStarPhase","fallDuration",(float)TalulahTiming.FallDuration))return true;
                 bool final=unit.TalulahPhase==TalulahPhase.FinalFall;
-                BeginTalulahAutomaticRain(unit,final,unit.TalulahPhaseStartedAt+TalulahTiming.FallDuration);
+                BeginTalulahAutomaticRain(unit,final,unit.TalulahPhaseStartedAt+V2Skill(unit,"threeStarPhase","fallDuration",(float)TalulahTiming.FallDuration));
             }
             ResolveTalulahAutomaticRain(unit);
             if(Clock+1e-6<unit.TalulahAutomaticRainEndsAt)return true;
@@ -111,10 +113,10 @@ namespace YesterdayConvoy
             if(unit.TalulahPhase==TalulahPhase.FirstRain)
             {
                 unit.TalulahPhase=TalulahPhase.Second;unit.TalulahPhaseStartedAt=ended;
-                unit.MaxHealth=unit.Health=unit.TalulahFirstPhaseMaxHealth*1.5f;
-                unit.TalulahInvulnerableUntil=ended+TalulahTiming.ProtectionDuration;
+                unit.MaxHealth=unit.Health=V2Skill(unit,"threeStarPhase","secondFormHp",unit.TalulahFirstPhaseMaxHealth*1.5f);
+                unit.TalulahInvulnerableUntil=ended+V2Skill(unit,"threeStarPhase","protectionDuration",(float)TalulahTiming.ProtectionDuration);
                 unit.DeathTime=double.PositiveInfinity;unit.LastAttackTime=double.NegativeInfinity;
-                unit.NextAttackTime=ended+TalulahTiming.ReappearanceDuration;
+                unit.NextAttackTime=ended+V2Skill(unit,"threeStarPhase","returnAnimation",(float)TalulahTiming.ReappearanceDuration);
                 return true;
             }
             unit.TalulahPhase=TalulahPhase.Dead;unit.TalulahPhaseStartedAt=ended;

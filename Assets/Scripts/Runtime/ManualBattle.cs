@@ -262,7 +262,7 @@ namespace YesterdayConvoy
             if(GuaranteedSupply){CompleteSupply();return;}
             ResetWaves();
             Phase = BattlePhase.Running;
-            Orders+=GuerrillaRules.ForTier(GuerrillaTier).InitialOrders;
+            Orders+=CurrentGuerrillaRule.InitialOrders;
             EvaluateEnd();
         }
 
@@ -336,6 +336,7 @@ namespace YesterdayConvoy
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
             // Commit together only after all preconditions and entity initialization succeed.
+            ApplyCampaignV2Deployment(unit);
             units.Add(unit); sequence++;
             var card=FindCard(requestedCard);
             if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}

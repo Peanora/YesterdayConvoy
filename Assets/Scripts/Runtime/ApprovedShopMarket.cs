@@ -35,7 +35,8 @@ namespace YesterdayConvoy
                 GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;
                 if(LoopButton(new Rect(840,offset+4,111,22),"买经验 4金币"))
                 {
-                    var result=shop.Upgrade();if(result.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(result.Message);
+                    if(JourneyActive)UpgradeJourneyShop();
+                    else {var result=shop.Upgrade();if(result.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(result.Message);}
                 }
                 GUI.enabled=originalEnabled;
                 if(LoopButton(new Rect(980,offset+4,86,22),"收起商店"))SetShopVisible(false);
@@ -43,8 +44,8 @@ namespace YesterdayConvoy
                 Rect refresh=new Rect(956,offset+36,118,32),lockRect=new Rect(956,offset+74,118,32);
                 GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;
                 if(LoopButton(refresh,"刷新 2金币",true))
-                {var result=shop.Refresh();if(result.Success)shopRefreshAt=Time.unscaledTime;ShopNotice(result.Message);}
-                if(LoopButton(lockRect,shop.Locked?"已锁定 · 解锁":"锁定商店"))shop.Locked=!shop.Locked;
+                {if(JourneyActive)RefreshJourneyShop();else {var result=shop.Refresh();if(result.Success)shopRefreshAt=Time.unscaledTime;ShopNotice(result.Message);}}
+                if(LoopButton(lockRect,shop.Locked?"已锁定 · 解锁":"锁定商店")){if(JourneyActive)LockJourneyShop(!shop.Locked);else shop.Locked=!shop.Locked;}
                 GUI.enabled=originalEnabled;
                 for(int i=0;i<5;i++)
                 {
