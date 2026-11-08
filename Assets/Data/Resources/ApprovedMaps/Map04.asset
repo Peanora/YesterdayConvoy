@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0dd7c09e9fcd06965c09510d47a73, type: 3}
+  m_Name: Map04
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ApprovedMapDefinition
+  index: 4
+  width: 14
+  height: 10
+  id: approved-map-04
+  title: "\u5730\u4E0B\u90AE\u8FD0"
+  sceneName: Map04MailTransfer
+  gridRows:
+  - HGHHHHHHHHHHGH
+  - HGHHHHHHHGGGGG
+  - HGGGGGHHHGTGGG
+  - HHHHHGHHHHGGGG
+  - GGGGGGHHHHGGGG
+  - GGGGHGHHHGGGGG
+  - GGGTHGHHHHHGHH
+  - GGGGGGHHHHHGHH
+  - GGGGGGGGGGGGHH
+  - HHHHHHHHHHHHHH
+  platformHeight: 0.72
+  encounter: {fileID: 11400000, guid: 546c9ab75cbe89b4e84a0b5f423649cb, type: 2}
+  preview: {fileID: 2800000, guid: 79973596045dd794db7c72f068e33c53, type: 3}
+  mechanics:
+    portals:
+    - routeId: R1
+      sourcePointIndex: 5
+      destinationPointIndex: 6
+      transitSeconds: 1.5
+    heatPumps: []

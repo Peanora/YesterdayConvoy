@@ -22,6 +22,8 @@ namespace YesterdayConvoy
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
         static Rect CampaignConstructRect=>new Rect(252,155,722,352);
         bool CampaignUiModalOpen=>CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
+        public bool CampaignOverlayVisible=>CampaignUiModalOpen;
+        public void CloseCampaignOverlay(){campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();}
         public Rect CampaignConstructToggleRect=>new Rect(12,SynergyListRect.yMax+6,174,28);
         Rect CampaignQuickActionsRect=>new Rect(12,CampaignConstructToggleRect.yMax+7,174,222);
         bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
@@ -42,17 +44,20 @@ namespace YesterdayConvoy
         public void StartCampaign(bool sandbox,int seed=0,SynergyTrialDefinition trial=null,DefenderTrialDefinition encounterOverride=null)
         {
             if(trial!=null){if(!sandbox)throw new InvalidOperationException("Dedicated trials require sandbox mode.");trial.Validate();}
-            bool forest=encounterOverride!=null;
-            if(forest&&(!sandbox||trial!=null||encounterOverride.mapId!=BlackForestLayout.Id))throw new ArgumentException("A forest encounter requires its independent sandbox.");
-            CancelArtPreparation();EnterShopTrial(0,forest?BlackForestLayout.Id:StrongholdChallengeLayout.Id,encounterOverride??trial?.encounter);activeSynergyTrial=trial;
+            bool independent=encounterOverride!=null;
+            bool forest=independent&&encounterOverride.mapId==BlackForestLayout.Id;
+            activeApprovedMap=independent?ApprovedMapCatalog.Find(encounterOverride.mapId):null;
+            bool approved=activeApprovedMap!=null;
+            if(independent&&(!sandbox||trial!=null||!forest&&!approved))throw new ArgumentException("An authored encounter requires its independent sandbox.");
+            CancelArtPreparation();EnterShopTrial(0,independent?encounterOverride.mapId:StrongholdChallengeLayout.Id,encounterOverride??trial?.encounter);activeSynergyTrial=trial;
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             shopDefinitions.Clear();
             foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             ResetMudrockTransfers();
             shop.EnableCampaign(sandbox);
-            string[] initial=forest?BlackForestChallengePlan.StartingIds:trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
-            shop.Preset(forest?BlackForestChallengePlan.StartingPieces():trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),forest?BlackForestChallengePlan.InitialLevel:trial!=null?trial.initialLevel:sandbox?8:1,0,10);
+            string[] initial=approved?ApprovedMapPlan.StartingIds:forest?BlackForestChallengePlan.StartingIds:trial!=null?trial.initialMembers.Select(m=>m.cardId).ToArray():sandbox?new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"}:new[]{shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ElementAt(new System.Random(seed).Next(shop.Roles.Count(r=>r.Cost==1))).Id};
+            shop.Preset(approved?ApprovedMapPlan.StartingPieces():forest?BlackForestChallengePlan.StartingPieces():trial!=null?trial.StartingPieces():initial.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}).ToArray(),Array.Empty<string>(),approved?ApprovedMapPlan.InitialLevel:forest?BlackForestChallengePlan.InitialLevel:trial!=null?trial.initialLevel:sandbox?8:1,0,10);
             Loop=new BattleShopRun(shop,seed,false,true,sandbox);shopLineup.Clear();shopLineup.AddRange(initial);
             golemBenchmark=false;golemTrainingTab=false;campaignConstructOpen=false;campaignConstructTab=0;campaignSynergyScroll=Vector2.zero;inspectedSynergy=null;commissionTarget=initial[0];contractCard=initial[0];marineForm=MarineAdaptation.Barrier;marineSecond=MarineAdaptation.Hunt;contractTargetIndex=0;reunionRanged=false;infectionForm=InfectionForm.Swarm;infectionSecond=InfectionForm.Shell;
             if(trial!=null)
@@ -70,18 +75,19 @@ namespace YesterdayConvoy
             var deck=shopLineup.Where(shopDefinitions.ContainsKey).ToList();
             if(deck.Count==0)deck.Add("CARD_M08");
             var wavePlan=shopMapCopy.WaveSnapshot();
-            int dp=wavePlan!=null?wavePlan.Waves[0].DP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
+            int dp=wavePlan!=null?wavePlan.Waves[0].DP:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
             int defense=BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
             var profiles=deck.Select(id=>CampaignProfile(id,dp,defense)).ToArray();
             var first=profiles[0];
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot());
             battle.ConfigureCardLoadout(profiles.Skip(1));
-            if(!BlackForestChallengeActive)battle.ConfigureStrongholdMap(false);
+            if(!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
-            if(BlackForestChallengeActive)
+            if(ApprovedMapActive)marineGround.AddRange(ApprovedMap.WalkablePoints());
+            else if(BlackForestChallengeActive)
             {
                 for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
                     if(BlackForestLayout.Walkable(col,row))marineGround.Add(BlackForestLayout.Cell(col,row));
@@ -91,11 +97,12 @@ namespace YesterdayConvoy
                 char tile=expanded?StrongholdChallengeLayout.Tile(col,row):StrongholdMapLayout.Tile(col,row);
                 if(tile!='#'&&tile!='H'&&tile!='h')marineGround.Add(StrongholdMapLayout.Cell(col,row));
             }
-            battle.ConfigureMarineTerrain(marineGround,BlackForestChallengeActive?new Vector2(0,.5f):Vector2.zero);
+            battle.ConfigureMarineTerrain(marineGround,ApprovedMapActive?ApprovedMap.MarineOrigin:BlackForestChallengeActive?new Vector2(0,.5f):Vector2.zero);
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply();
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
             if(wavePlan!=null)battle.ConfigureWaves(wavePlan);
+            if(ApprovedMapActive)battle.ConfigureApprovedMapEffects(ApprovedMap.mechanics);
             return battle;
         }
         public void ClaimCampaignSupply()
@@ -119,7 +126,7 @@ namespace YesterdayConvoy
         public bool RestartCampaignEncounter(){if(!CampaignActive||!Loop.RestartEncounter())return false;ConfigureLoopStage();return true;}
         void RestartCurrentRun()
         {
-            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial,BlackForestChallengeActive?Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource):null);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
+            if(CampaignActive)StartCampaign(Loop.Sandbox,Loop.Seed,activeSynergyTrial,ApprovedMapActive?ApprovedMap.encounter:BlackForestChallengeActive?Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource):null);else StartBattleShopLoop(Loop.Seed,Loop.LateGame);
         }
         bool IsLineupPiece(ShopTrialModel.Piece piece)=>shopLineup.Contains(piece.Id)&&shopSeats.InLineup(piece.Instance);
         Rect CampaignPieceRect(int index)
@@ -138,12 +145,12 @@ namespace YesterdayConvoy
             // Converting Event.mousePosition again here closes the left column at large sizes.
             var e=Event.current;
             if(CampaignUiModalOpen&&e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape)
-            {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
+            {CloseCampaignOverlay();e.Use();}
             if(CampaignUiModalOpen&&e.type==EventType.MouseDown&&e.button==0)
             {
                 Rect panel=campaignConstructOpen?CampaignConstructRect:SynergyDetailRect;
                 if(!panel.Contains(point)&&!SynergyListRect.Contains(point)&&!CampaignConstructToggleRect.Contains(point))
-                {campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();e.Use();}
+                {CloseCampaignOverlay();e.Use();}
             }
             DrawGuerrillaTransferBadges();DrawMudrockTransferBadges();DrawSynergySidebar();
             var toggle=CampaignConstructToggleRect;

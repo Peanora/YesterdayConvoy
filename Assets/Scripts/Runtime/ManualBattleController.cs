@@ -76,6 +76,7 @@ namespace YesterdayConvoy
             string[] args = Environment.GetCommandLineArgs();
             diagnostic = SynergyActivationSmokeDriver.Requested || Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
+            diagnostic |= ApprovedMapSmokeDriver.Requested;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
@@ -104,6 +105,7 @@ namespace YesterdayConvoy
             }
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-talulahFireRainV12Test" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke&&FindAnyObjectByType<TalulahPhaseTrialBootstrap>()==null;
+            TryOpenApprovedLaunchMenu();
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)
             {
@@ -175,6 +177,13 @@ namespace YesterdayConvoy
             var mudrockTrial=FindAnyObjectByType<MudrockTrialBootstrap>();if(mudrockTrial!=null)mudrockTrial.Configure(result);
             if(stronghold)result.ConfigureStrongholdMap(challenge);
             if(challenge)foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
+            var approved=ApprovedMapCatalog.Find(defenderTrial?.mapId);
+            if(approved!=null)
+            {
+                result.ConfigureApprovedMapEffects(approved.mechanics);
+                result.ConfigureMarineTerrain(approved.WalkablePoints(),approved.MarineOrigin);
+                foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
+            }
             return result;
         }
 

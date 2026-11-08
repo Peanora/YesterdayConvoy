@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0dd7c09e9fcd06965c09510d47a73, type: 3}
+  m_Name: Map01
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ApprovedMapDefinition
+  index: 1
+  width: 14
+  height: 10
+  id: approved-map-01
+  title: "\u6B8B\u9633\u8857\u5FC3"
+  sceneName: Map01SunsetSquare
+  gridRows:
+  - HHHHHHHHHHHGHH
+  - HHHHHHHHHHHGHG
+  - HHHHGGGGGGGGHG
+  - GGGGGHHHGGHHHG
+  - HHGGGGGGGGGHHG
+  - HHHGGGGGGGGGGG
+  - GGGGGGGGHGGHGG
+  - GHHHHHHGGGGHGG
+  - GHHHHHHGHHGGGG
+  - HHHHHHHGHHHHHH
+  platformHeight: 0.72
+  encounter: {fileID: 11400000, guid: 741f73dca99155244a1ad89cf9064379, type: 2}
+  preview: {fileID: 2800000, guid: d9852723c1c74854fb3be5df0e474583, type: 3}
+  mechanics:
+    portals: []
+    heatPumps: []

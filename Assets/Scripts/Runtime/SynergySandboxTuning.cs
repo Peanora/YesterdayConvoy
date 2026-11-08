@@ -5,7 +5,7 @@ namespace YesterdayConvoy
         // Test-mode snapshots only. Authored assets, normal campaigns and the IV solo benchmark stay unchanged.
         const float SandboxMonsterHealth=4, SandboxMonsterAttack=2;
         const float SandboxDefenderHealth=12, SandboxDefenderAttack=8;
-        bool BoostSandboxStats=>SynergySandbox&&!BlackForestChallengeActive&&!golemBenchmark;
+        bool BoostSandboxStats=>SynergySandbox&&!BlackForestChallengeActive&&!ApprovedMapActive&&!golemBenchmark;
 
         BasicRosterProfile CampaignProfile(string id,int dp,int defense)
         {

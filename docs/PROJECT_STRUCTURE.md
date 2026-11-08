@@ -1,5 +1,7 @@
 # 工程目录与场景规范
 
+2026-11-08八图V2：新增 `Assets/Scenes/Map01SunsetSquare.unity` 至 `Map08EbbHarbor.unity` 八个独立保存战场，构建清单共24场景。实际场景缩略图、持久Mesh和材质在 `Assets/Art/Environment/ApprovedMaps`；只读地图/路线/守军配置在 `Assets/Data/Resources/ApprovedMaps`。从怪物选择页“战术地图 · 八张新地图”进入；编辑方法、显式重建工具边界和地道/热泵试验规则见[八图说明](APPROVED_MAPS_V2.md)。日常只需打开本工程相应场景，Play不生成整张地图。
+
 2026-11-08波次试玩：`BlackForestCrossing.unity`继续保存全部地形；地图配置新增`attackWaves`，引用`Assets/Data/Resources/Maps/BlackForestWaves.asset`保存三波入口/独立DP/部署时长/末段推进。编辑配置无需修改场景，运行状态由ManualBattle独立持有。默认十三关及旧专项不自动套用波次；树海入口改为“黑流树海 · 波次试玩”。
 
 2026-11-08树海六星防线：`Assets/Scenes/BlackForestCrossing.unity`保持保存地形，`Assets/Data/Resources/Maps/BlackForestCrossing.asset`已配置九名守军（六名六星）。从测试选择进入“树海交错回廊 · 六星防线”，8级自由整备、正常角色数值、50DP/6共享防御。入口和规则见[地图说明](BLACK_FOREST_CROSSING.md)，覆盖下文此前无守军的阶段记录。

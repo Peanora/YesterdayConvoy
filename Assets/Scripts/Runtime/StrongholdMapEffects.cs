@@ -26,7 +26,7 @@ namespace YesterdayConvoy
         public float StrongholdInfectionDamage {get;private set;}
         public bool StrongholdMapEnabled=>strongholdMap;
         public bool StrongholdInfected(string id)=>id!=null&&infectionUntil.TryGetValue(id,out double until)&&Clock<until;
-        public bool StrongholdInTransit(string id)=>id!=null&&portalUntil.ContainsKey(id);
+        public bool StrongholdInTransit(string id)=>id!=null&&(portalUntil.ContainsKey(id)||ApprovedInTransit(id));
         public float StrongholdTransitRemaining(string id)=>id!=null&&portalUntil.TryGetValue(id,out double until)?(float)Math.Max(0,until-Clock):0;
         public void ConfigureStrongholdMap(bool challenge=false)
         {
@@ -38,6 +38,7 @@ namespace YesterdayConvoy
             if(StrongholdChallenge)foreach(var d in defenders)d.HighGround=d.Position.y>.5f;
             brokenExits.Clear();infectionUntil.Clear();infectionTick.Clear();portalUntil.Clear();portalPassed.Clear();
             StrongholdPortalTrips=StrongholdInfectionTouches=0;StrongholdInfectionDamage=0;
+            ResetApprovedMapEffects();
         }
         float InfectionAttack(string id)=>StrongholdInfected(id)?1.2f:1;
         float InfectionRate(string id)=>StrongholdInfected(id)?1.2f:1;

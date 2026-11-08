@@ -78,7 +78,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(r.x+18,r.y+28,150,30),"感染生物",CampaignText(22,weight:600));
             GUI.Label(new Rect(r.x+137,r.y+33,350,24),summary.Count+"种 · "+(tier>=6?"6档 / 主形态＋二档副形态":tier>0?tier+"档 / 仅主形态":"未达2种激活门槛"),CampaignText(12,color:ApprovedUi.Muted));
             GUI.Label(new Rect(r.xMax-275,r.y+25,214,26),editable?"开战时锁定本场选择":"本场选择已锁定",CampaignText(12,TextAnchor.MiddleRight,editable?ApprovedUi.Muted:InfectionOrange));
-            if(LoopButton(InfectionCloseRect,"×")){inspectedSynergy=null;return;}
+            if(LoopButton(InfectionCloseRect,"×")){CloseCampaignOverlay();return;}
             Fill(new Rect(r.x,r.y+65,r.width,1),InfectionRule);
             GUI.Label(new Rect(r.x+18,r.y+76,r.width-36,25),!editable?"当前为本场已锁定形态，战斗中不可更改":tier>=6?
                 "选择一种主形态；再选一种不同的副形态（取2档效果）":"选择一种主形态；副形态在6档解锁",CampaignText(13,weight:600));

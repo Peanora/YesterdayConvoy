@@ -1,0 +1,299 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: Map02Battle
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: 2f541873a376f99408d2cf84996a1089, type: 2}
+  route:
+  - {x: 6.5, y: 0, z: 3.5}
+  - {x: 5.5, y: 0, z: 3.5}
+  - {x: 4.5, y: 0, z: 3.5}
+  - {x: 3.5, y: 0, z: 3.5}
+  - {x: 3.5, y: 0, z: 2.5}
+  - {x: 3.5, y: 0, z: 1.5}
+  - {x: 3.5, y: 0, z: 0.5}
+  - {x: 3.5, y: 0, z: -0.5}
+  - {x: 3.5, y: 0, z: -1.5}
+  - {x: 2.5, y: 0, z: -1.5}
+  - {x: 1.5, y: 0, z: -1.5}
+  - {x: 0.5, y: 0, z: -1.5}
+  - {x: 0.5, y: 0, z: -2.5}
+  - {x: 0.5, y: 0, z: -3.5}
+  - {x: -0.5, y: 0, z: -3.5}
+  - {x: -1.5, y: 0, z: -3.5}
+  - {x: -2.5, y: 0, z: -3.5}
+  - {x: -3.5, y: 0, z: -3.5}
+  - {x: -4.5, y: 0, z: -3.5}
+  - {x: -5.5, y: 0, z: -3.5}
+  - {x: -6.5, y: 0, z: -3.5}
+  defenders:
+  - id: approved-map-02-guard-01
+    displayName: "\u7C73\u683C\u9C81"
+    artId: D01
+    position: {x: 3.5, y: 0, z: 1.5}
+    health: 260
+    attack: 10
+    armor: 12
+    range: 0.85
+    interval: 1.6
+    windup: 0.5
+    actionDuration: 1
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 5
+      initialSP: 0
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 30
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1.5
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: approved-map-02-guard-02
+    displayName: "\u73AB\u5170\u838E"
+    artId: D04
+    position: {x: 0.5, y: 0, z: -2.5}
+    health: 180
+    attack: 24
+    armor: 2
+    range: 0.9
+    interval: 2.5
+    windup: 0.9666667
+    actionDuration: 2
+    blocks: 1
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 7
+      initialSP: 0
+      requiredSP: 40
+      spPerSecond: 1
+      duration: 20
+      attackMultiplier: 1.5
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: approved-map-02-guard-03
+    displayName: "\u514B\u6D1B\u4E1D"
+    artId: D07
+    position: {x: -0.5, y: 0.72, z: 1.5}
+    health: 140
+    attack: 12
+    armor: 2
+    range: 2.6
+    interval: 1.5
+    windup: 0.4333333
+    actionDuration: 0.9333333
+    blocks: 0
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 8
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.4
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0.2
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: approved-map-02-guard-04
+    displayName: "\u53F2\u90FD\u534E\u5FB7"
+    artId: D08
+    position: {x: 1.5, y: 0.72, z: -3.5}
+    health: 140
+    attack: 16
+    armor: 2
+    range: 2.6
+    interval: 1.8
+    windup: 0.5
+    actionDuration: 0.8666667
+    blocks: 0
+    role: 0
+    damageType: 1
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 9
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.9
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces:
+  - {fileID: 2100000, guid: 7c11965ce453503468bc3e7e297f9944, type: 2}
+  - {fileID: 2100000, guid: 8b6a2f8f01205714e9b817d4a7871cbb, type: 2}
+  - {fileID: 2100000, guid: 3b0a43fed9e085342afb0994082b2eb7, type: 2}
+  - {fileID: 2100000, guid: 8894627db7749284996a0e03528903be, type: 2}
+  - {fileID: 2100000, guid: f25f6e083b3fb8f46b64c933318b93a3, type: 2}
+  - {fileID: 2100000, guid: f7db3d1d555c001418e6c9e5c4540734, type: 2}
+  - {fileID: 2100000, guid: 0c45582f153e99448bb88b747b98a05c, type: 2}
+  - {fileID: 2100000, guid: 5b72cc9e4f7be294ba2d297fcf65d1fc, type: 2}
+  - {fileID: 2100000, guid: 33070ea88cbce7341867e7be6e821242, type: 2}
+  - {fileID: 2100000, guid: 6ca21e4ef9a9dd94e86820ac14273871, type: 2}
+  - {fileID: 2100000, guid: dde48cd18003a3747a5bb5c429d746f2, type: 2}
+  - {fileID: 2100000, guid: 93aec8dcf9c2b8a46b004bf0c11c7dd0, type: 2}
+  mapId: approved-map-02
+  mapTitle: "\u6392\u6D2A\u9AD8\u67B6"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: 6.5, y: 0, z: 3.5}
+    - {x: 5.5, y: 0, z: 3.5}
+    - {x: 4.5, y: 0, z: 3.5}
+    - {x: 3.5, y: 0, z: 3.5}
+    - {x: 3.5, y: 0, z: 2.5}
+    - {x: 3.5, y: 0, z: 1.5}
+    - {x: 3.5, y: 0, z: 0.5}
+    - {x: 3.5, y: 0, z: -0.5}
+    - {x: 3.5, y: 0, z: -1.5}
+    - {x: 2.5, y: 0, z: -1.5}
+    - {x: 1.5, y: 0, z: -1.5}
+    - {x: 0.5, y: 0, z: -1.5}
+    - {x: 0.5, y: 0, z: -2.5}
+    - {x: 0.5, y: 0, z: -3.5}
+    - {x: -0.5, y: 0, z: -3.5}
+    - {x: -1.5, y: 0, z: -3.5}
+    - {x: -2.5, y: 0, z: -3.5}
+    - {x: -3.5, y: 0, z: -3.5}
+    - {x: -4.5, y: 0, z: -3.5}
+    - {x: -5.5, y: 0, z: -3.5}
+    - {x: -6.5, y: 0, z: -3.5}
+  - id: R2
+    exitId: B2
+    points:
+    - {x: -6.5, y: 0, z: 2.5}
+    - {x: -5.5, y: 0, z: 2.5}
+    - {x: -4.5, y: 0, z: 2.5}
+    - {x: -3.5, y: 0, z: 2.5}
+    - {x: -3.5, y: 0, z: 1.5}
+    - {x: -3.5, y: 0, z: 0.5}
+    - {x: -3.5, y: 0, z: -0.5}
+    - {x: -3.5, y: 0, z: -1.5}
+    - {x: -3.5, y: 0, z: -2.5}
+    - {x: -2.5, y: 0, z: -2.5}
+    - {x: -1.5, y: 0, z: -2.5}
+    - {x: -0.5, y: 0, z: -2.5}
+    - {x: 0.5, y: 0, z: -2.5}
+    - {x: 1.5, y: 0, z: -2.5}
+    - {x: 2.5, y: 0, z: -2.5}
+    - {x: 3.5, y: 0, z: -2.5}
+    - {x: 4.5, y: 0, z: -2.5}
+    - {x: 5.5, y: 0, z: -2.5}
+    - {x: 5.5, y: 0, z: -3.5}
+    - {x: 5.5, y: 0, z: -4.5}
+  - id: R3
+    exitId: B2
+    points:
+    - {x: 6.5, y: 0, z: -1.5}
+    - {x: 5.5, y: 0, z: -1.5}
+    - {x: 4.5, y: 0, z: -1.5}
+    - {x: 4.5, y: 0, z: -2.5}
+    - {x: 4.5, y: 0, z: -3.5}
+    - {x: 5.5, y: 0, z: -3.5}
+    - {x: 5.5, y: 0, z: -4.5}
+  raised: []
+  floorTexture: {fileID: 0}
+  foliageTexture: {fileID: 0}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 0
+  attackWaves: {fileID: 0}

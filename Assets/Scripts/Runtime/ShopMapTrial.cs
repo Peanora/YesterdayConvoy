@@ -133,6 +133,8 @@ namespace YesterdayConvoy
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
+            var approved=ApprovedMapCatalog.Find(TacticalMapId);
+            if(approved!=null)foreach(var point in approved.FramePoints())yield return point;
             if(TacticalMapId==BlackForestLayout.Id)
                 for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
                 {

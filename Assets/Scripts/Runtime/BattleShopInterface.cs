@@ -235,7 +235,11 @@ namespace YesterdayConvoy
             }
             if(LoopButton(new Rect(x,y,width,30),"关闭菜单"))loopMenuOpen=false;
         }
-        void ReturnToTrialScene(){LeaveShopTrial();UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");}
+        void ReturnToTrialScene()
+        {
+            if(ApprovedMapActive){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
+            LeaveShopTrial();UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");
+        }
         void DrawLoopTestSettlement()
         {
             Fill(LoopTestPanelRect,LoopPanel);ShopBorder(LoopTestPanelRect,ApprovedUi.Rule,1);

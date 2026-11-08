@@ -227,7 +227,7 @@ namespace YesterdayConvoy
         {
             var unit=FindUnit(entityId);
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
-                !unit.IsReviving && !TalulahTransitionLocked(unit) && !WolfActionBusy(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
+                !unit.IsReviving && !StrongholdInTransit(unit.EntityId) && !ApprovedWaitingAtPortal(unit.EntityId) && !TalulahTransitionLocked(unit) && !WolfActionBusy(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
                 (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
         }
 
@@ -238,7 +238,7 @@ namespace YesterdayConvoy
             if(!UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active || unit.IsReviving) return SkillFailure.MissingEntity;
-            if(TalulahTransitionLocked(unit)||WolfActionBusy(unit))return SkillFailure.AlreadyActive;
+            if(StrongholdInTransit(unit.EntityId)||ApprovedWaitingAtPortal(unit.EntityId)||TalulahTransitionLocked(unit)||WolfActionBusy(unit))return SkillFailure.AlreadyActive;
             var c=UnitCombat(unit);
             if (unit.SkillAmmo > 0 || (c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit) || c.FrostSeal && Clock<unit.IceRingStartedAt+3) return SkillFailure.AlreadyActive;
             if(c.MudrockCapture && (Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration || ChooseGramophone(unit)==null))return SkillFailure.NoTarget;
@@ -276,7 +276,7 @@ namespace YesterdayConvoy
             StepGramophones(step);
             StepAdvancedDefenders(step);
             StepDefenderWalls();
-            StepFacilities(step);StepStrongholdMap();
+            StepFacilities(step);StepStrongholdMap();StepApprovedHeatPumps(step);
             ResolveFuelExplosions();ResolvePillarCommands();ResolveCorrosiveBubbles();
             ResolveDeathEffects();ResolveShackles();
             ResolveHealing();
@@ -343,6 +343,7 @@ namespace YesterdayConvoy
             {
                 var c=UnitCombat(unit);
                 if(!unit.Active) { unit.IsBlocked=unit.HasCombatTarget=false; continue; }
+                if(StepApprovedTransit(unit))continue;
                 if(StepTalulahPhase(unit))continue;
                 if(StepStrongholdPortal(unit)){unit.IsMoving=unit.IsBlocked=unit.HasCombatTarget=false;continue;}
                 if(unit.FuelDying)continue;
@@ -360,8 +361,15 @@ namespace YesterdayConvoy
                 HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=(c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit);
                 if(c.HasSkill && unit.SkillAmmo==0 && !casting && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                if(StepApprovedPortalWait(unit))continue;
                 unit.IsBlocked=false; unit.BlockerId=null;
-                if(StepUnitLure(unit,step)||StepUnitFear(unit,step))continue;
+                double beforeControl=unit.Motion.DistanceTravelled;
+                if(StepUnitLure(unit,step)||StepUnitFear(unit,step))
+                {
+                    ClampApprovedRouteMotion(unit,beforeControl);
+                    if(unit.Motion.DistanceTravelled>=beforeControl&&unit.IsMoving)TryBeginApprovedTransit(unit);
+                    continue;
+                }
                 foreach(var d in defenders)
                     if(!d.HighGround && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
@@ -387,7 +395,13 @@ namespace YesterdayConvoy
                     double lockEnd=c.MudrockCapture ? unit.MudrockCaptureStartedAt+1.5 : c.FrostSeal ? unit.FrostSealStartedAt+c.SkillInterval : c.FireRain ? unit.FireRainStartedAt+c.SkillInterval :
                         unit.LastAttackEmpowered ? unit.LastAttackTime+c.SkillInterval : double.NegativeInfinity;
                     float moveStep=(float)Math.Min(step,Math.Max(0,Clock-lockEnd));
-                    if(moveStep>0) unit.Motion.Advance(moveStep*UnitMoveMultiplier(unit));
+                    if(moveStep>0)
+                    {
+                        double beforeMove=unit.Motion.DistanceTravelled;
+                        unit.Motion.Advance(moveStep*UnitMoveMultiplier(unit));
+                        ClampApprovedRouteMotion(unit,beforeMove);
+                        if(TryBeginApprovedTransit(unit))continue;
+                    }
                 }
                 if(unit.Motion.HasArrived)
                 {

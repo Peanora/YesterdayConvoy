@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0dd7c09e9fcd06965c09510d47a73, type: 3}
+  m_Name: Map05
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ApprovedMapDefinition
+  index: 5
+  width: 14
+  height: 10
+  id: approved-map-05
+  title: "\u70ED\u4EA4\u6362\u7AD9"
+  sceneName: Map05HeatExchange
+  gridRows:
+  - HHHHHHHGGGGGGH
+  - HHHHHHHHHHHHGH
+  - HHHHHHHHHHGGGG
+  - HHHHGGGGGGEHGH
+  - HHHHGGGEGGGHGH
+  - HHHHGGHHHHGHGH
+  - HHHHEGHHHHGHGH
+  - GGGGGGGGGGGHGH
+  - HHGGGGGGGGGGGH
+  - HHHHHHHHHHHHHH
+  platformHeight: 0.72
+  encounter: {fileID: 11400000, guid: ca6ef7f795b965f4f981c40356abf65a, type: 2}
+  preview: {fileID: 2800000, guid: eb43001913167c640b0c827da9ec701f, type: 3}
+  mechanics:
+    portals: []
+    heatPumps:
+    - position: {x: 3.5, y: 0, z: 1.5}
+      radius: 0.6
+      period: 10
+      warning: 1.5
+      active: 2
+      dps: 12
+      phase: 0
+    - position: {x: 0.5, y: 0, z: 0.5}
+      radius: 0.6
+      period: 10
+      warning: 1.5
+      active: 2
+      dps: 12
+      phase: 3.3
+    - position: {x: -2.5, y: 0, z: -1.5}
+      radius: 0.6
+      period: 10
+      warning: 1.5
+      active: 2
+      dps: 12
+      phase: 6.6

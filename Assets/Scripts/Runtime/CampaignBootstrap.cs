@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 namespace YesterdayConvoy
 {
@@ -7,10 +8,20 @@ namespace YesterdayConvoy
     {
         public bool sandbox=true;
         public SynergyTrialDefinition trialDefinition;
+        static bool approvedLaunchConsumed;
         IEnumerator Start()
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(ApprovedMapSmokeDriver.Requested)yield break;
+            if(!approvedLaunchConsumed&&Array.IndexOf(args,"-approvedMaps")>=0){approvedLaunchConsumed=true;UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
+            int approved=Array.IndexOf(args,"-approvedMap");
+            if(!approvedLaunchConsumed&&approved>=0&&approved+1<args.Length&&int.TryParse(args[approved+1],out int mapIndex))
+            {
+                var map=ApprovedMapCatalog.All.FirstOrDefault(m=>m.index==mapIndex);
+                if(map==null)throw new InvalidOperationException("Approved map index must be 1..8");
+                approvedLaunchConsumed=true;UnityEngine.SceneManagement.SceneManager.LoadScene(map.sceneName);yield break;
+            }
             if(!sandbox&&(ReunionCoalitionSmokeDriver.Requested||BalanceFirstPassSmokeDriver.Requested))yield break;
             if(Array.Exists(args,a=>a=="-blackForest"||a=="-blackForestSmokeTest"||a=="-waveBattleSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);yield break;}
             if(!sandbox&&Array.IndexOf(args,"-marineTideSmokeTest")>=0)yield break;

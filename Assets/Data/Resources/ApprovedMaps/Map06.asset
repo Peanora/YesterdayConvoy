@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0dd7c09e9fcd06965c09510d47a73, type: 3}
+  m_Name: Map06
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.ApprovedMapDefinition
+  index: 6
+  width: 14
+  height: 10
+  id: approved-map-06
+  title: "\u77FF\u8FD0\u6298\u5ECA"
+  sceneName: Map06QuarryFreight
+  gridRows:
+  - HHHHHHHHHHHHHH
+  - HGGGGGHHHHGGGG
+  - GGGGHGHHHHGHHH
+  - HGHGHGHHHHGHHH
+  - GGHGHGGGGGGHHH
+  - GGGGHHHHHHHHHH
+  - GGGGGGGGGHHHHH
+  - HGGGGGGGGGGGGG
+  - HGHHHHHHGGGGGG
+  - HGHHHHHHHHHGGG
+  platformHeight: 0.72
+  encounter: {fileID: 11400000, guid: a79b4835c07da03468c5b0a421128f55, type: 2}
+  preview: {fileID: 2800000, guid: 6a46773990c57bf4eb011b35be05cee5, type: 3}
+  mechanics:
+    portals: []
+    heatPumps: []

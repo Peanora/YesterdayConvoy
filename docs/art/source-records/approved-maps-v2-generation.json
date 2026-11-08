@@ -1,0 +1,129 @@
+{
+  "approval": "User approved V2 and requested integration on 2026-11-08; pits remain terrain only by explicit follow-up",
+  "sources": {
+    "date": "2026-11-08",
+    "version": "V2",
+    "feedback": "保留风格识别度，但有一定差异，不要一模一样",
+    "purpose": "项目外概念看稿，未导入Unity或提交游戏项目",
+    "tool": "built-in image_gen",
+    "direction": "保留正向斜俯视、方格高低台、克制的城市工业材质；重排每图轮廓、路线、地标和门位。",
+    "references": "V1已生成概念图仅作材质与镜头参考；本版不直接以原作截图作生成输入。原作研究来源保留在V1/sources.json。",
+    "status": "未经人类看稿确认；图像不是可平铺贴图/网格/运行场景；具体路线以独立SVG为提案依据。",
+    "images": [
+      {
+        "id": "01-ruins",
+        "title": "残阳街心",
+        "styleReference": "../arknights-maps-v1/images/01-ruins.png",
+        "output": "images/01-ruins.png",
+        "approval": "pending"
+      },
+      {
+        "id": "02-outskirts",
+        "title": "排洪高架",
+        "styleReference": "../arknights-maps-v1/images/02-outskirts.png",
+        "output": "images/02-outskirts.png",
+        "approval": "pending"
+      },
+      {
+        "id": "03-downtown",
+        "title": "雨夜立交",
+        "styleReference": "../arknights-maps-v1/images/03-downtown.png",
+        "output": "images/03-downtown.png",
+        "approval": "pending"
+      },
+      {
+        "id": "04-tunnel",
+        "title": "地下邮运",
+        "styleReference": "../arknights-maps-v1/images/04-tunnel.png",
+        "output": "images/04-tunnel.png",
+        "approval": "pending"
+      },
+      {
+        "id": "05-broken",
+        "title": "热交换站",
+        "styleReference": "../arknights-maps-v1/images/05-broken.png",
+        "output": "images/05-broken.png",
+        "approval": "pending"
+      },
+      {
+        "id": "06-pyrite",
+        "title": "矿运折廊",
+        "styleReference": "../arknights-maps-v1/images/06-pyrite.png",
+        "output": "images/06-pyrite.png",
+        "approval": "pending"
+      },
+      {
+        "id": "07-prison",
+        "title": "检疫中庭",
+        "styleReference": "../arknights-maps-v1/images/07-prison.png",
+        "output": "images/07-prison.png",
+        "approval": "pending"
+      },
+      {
+        "id": "08-dossoles",
+        "title": "退潮货港",
+        "styleReference": "../arknights-maps-v1/images/08-dossoles.png",
+        "output": "images/08-dossoles.png",
+        "approval": "pending"
+      }
+    ]
+  },
+  "generation": [
+    {
+      "tool": "built-in image_gen",
+      "version": "V2",
+      "mode": "generation with V1 image as style reference only",
+      "commonPrompt": "Use case: stylized-concept. ONE new landscape 16:9 tactical game map concept for Yesterday Convoy V2. Image 1 is ONLY a reference for rendering style, material scale, floor tile size and camera. REDESIGN the entire map composition and all terrain geometry from scratch. Do not trace its floor plan, platform silhouettes, gate placement or repeating rows. Retain the restrained Arknights-like mobile game aesthetic: clean modular square tiles, low gray concrete high ground, readable top and front faces, sparse functional industrial details, subdued colors. Camera: front-facing high-angle 60 degree view, horizontal grid rows, zero isometric yaw/roll, small perspective. Board fills the whole frame with environment extending off the edges. Clear continuous orthogonal walking corridors, no dead-end main route. No units, HUD, typography, logos, route lines, presentation frame or floating miniature diorama. Avoid excessive cinematic clutter and photorealistic noise. New map must be visibly different from the reference at thumbnail size while still belonging to the same tactical game.",
+      "jobs": [
+        {
+          "id": "01-ruins",
+          "detail": "New theme: Sunset Service Square / 残阳街心. An OPEN ASYMMETRICAL urban service courtyard after an outage. Warm gray concrete and dark asphalt with pale dusty orange afternoon lighting. Build one OFFSET square maintenance court in the upper-left with a hollow center, a short stepped rectangular island at center-right, and an open broad crossroads through the lower half. An OUTER C-shaped road wraps around the courtyard, while a SHORT CENTRAL zigzag road cuts through the open square. Three RED entrance cubes dispersed around different edges, exactly TWO CYAN goals at different heights on left/right edges. Landmark: a single broken canopy over a small dark utility cabinet, NOT the original yellow-black EMP cylinder. Short storm drains and a few faded lane patches. Do NOT use the reference's three stacked parallel streets or two long horizontal platforms. Keep the scene spacious, largely open with only these few raised blocks.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-82acdae7-26b7-47a4-817f-8f5ede8eab54.png"
+        },
+        {
+          "id": "02-outskirts",
+          "detail": "New theme: Flood Channel Viaduct / 排洪高架. Cold blue-gray concrete flood-control facility. A LONG NARROW EMPTY CONCRETE DRAINAGE CHANNEL cuts vertically through the center, with a little dark water deep below, clearly engineered walls. Exactly TWO SHORT gray ROAD BRIDGES cross the channel at staggered upper and lower positions, connected by an offset bank-side road and a lower service alley. These produce looping orthogonal routes instead of an open plaza. Small squat concrete service platforms sit on opposite banks. THREE small BLACK SQUARE FALL SHAFTS are placed immediately BESIDE bends of the service alley, never on walking routes, separated visually from the long water drainage channel. Three red entrance cubes dispersed left top, left bottom and far right bottom; exactly two cyan goal cubes right top/right middle. Sparse yellow hazard corners, culvert mouths, concrete walls. Do NOT preserve the reference's many square pits scattered inside a flat rectangular plaza. No wood bridges or floating docks.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-40f28044-6cc8-4a58-84ae-38ff1339ac19.png"
+        },
+        {
+          "id": "03-downtown",
+          "detail": "New theme: Rainy Grade-Separated Junction / 雨夜立交. Cool blue-gray and restrained violet rainy city district. Design a LOWERED PLUS-SHAPED asphalt road intersection near center, wide horizontal road across lower half and a north-south road offset to the right. Four UNEQUAL concrete raised sidewalk/platform islands around it, including a small two-step service plaza upper-left and a narrow platform lower-right; connect roads with two short zigzag bends. A low urban flyover ramp along the BACK EDGE is environmental scenery only and does not cover the playable crossroads. Three red entry cubes dispersed along left/top/right edges and exactly two cyan goals on lower-left and right edge. Fine rain-wet seams and faint cool reflected light, closed shutters and a few traffic bollards at periphery; NO large readable signs. Routes enter from different directions and cross at ground level. Do NOT reproduce the old three straight parallel east-west lanes and symmetric platform strips.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-bf19c53b-e925-44c1-8754-a4b836ffd448.png"
+        },
+        {
+          "id": "04-tunnel",
+          "detail": "New theme: Underground Mail Transfer / 地下邮运. A logistics maintenance complex in warm graphite-gray, muted ochre and industrial off-white. Two OFFSET surface loading courts, upper-right and lower-left, separated by one LONG CENTRAL FREIGHT WAREHOUSE WALL running horizontally with an offset gap at the far right. Small loading platforms and pale square apron tiles. One long SURFACE ROAD bends around the outside end of the warehouse wall to connect the courts. A pair of unmistakable STAIRWELL TUNNEL MOUTHS with matching AMBER trim: one near lower-left court, the other far upper-right court. Both show real descending steel steps and dark interior, not bottomless death holes. No visible underground connecting pipe/line; linkage belongs to separate route diagram. Exactly TWO red entry cubes and TWO cyan goal cubes on outer edges. Small freight conveyor housings on the long wall. Do NOT keep the reference's large left horizontal platform and right L-platform or central vertical EMP column. New composition should emphasize two offset yards and one dividing warehouse wall.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-7178cd0a-ea8e-43cf-9c0a-fe222cb3e1d1.png"
+        }
+      ]
+    },
+    {
+      "tool": "built-in image_gen",
+      "version": "V2",
+      "mode": "generation with V1 image as style reference only",
+      "commonPrompt": "Use case: stylized-concept. ONE new landscape 16:9 tactical game map concept for Yesterday Convoy V2. Image 1 is ONLY a reference for rendering style, material scale, tile size and camera. REDESIGN the whole map composition and terrain from scratch. Do not trace its floor plan, platform silhouettes, gate placements or repeating rows. Keep the restrained Arknights-like mobile game aesthetic: readable modular square tiles, low concrete/metal high ground, top and front faces, functional industrial details, muted palette. Camera: front-facing high-angle 60 degree view, horizontal grid rows, zero isometric yaw/roll, small perspective. Board fills frame with surroundings extending beyond it. Clear continuous orthogonal walking corridors. No characters, HUD, typography, logos, route lines, black border or floating miniature. Avoid cinematic clutter or noisy realism. New map must look different from the reference at thumbnail size while belonging to the same tactical game.",
+      "jobs": [
+        {
+          "id": "05-broken",
+          "detail": "New theme: Heat Exchange Station / 热交换站. A warm-gray industrial heat exchange court with a SINGLE LARGE OFF-CENTER rectangular turbine/equipment island toward the LEFT CENTER, flanked by low pipe cabinets. An outer U-shaped long road starts upper-right, loops down and around the island to a goal near upper-left. A shorter interior dogleg crosses beside the island. Exactly THREE SEPARATE SMALL HEAT VENT TILE PATCHES, one near upper interior bend, one at the lower-right elbow and one near left-center, each one or two square tiles with fine amber cracks/vents and wisps of steam. Large gaps of ordinary gray ground separate the three hot patches. Exactly two red entrance cubes and one cyan goal. No lava river, no continuous hot strips, NO original two long parallel red-cracked roads. Short chunky barriers, black steel service decks and muted mustard warning patches. Make the equipment island and U-road silhouette dominant.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-b15239b6-9f39-4e12-a349-5c0dba6601bc.png"
+        },
+        {
+          "id": "06-pyrite",
+          "detail": "New theme: Quarry Freight Switchbacks / 矿运折廊. Sandy ochre industrial quarry with pale sandstone dust on gray modular concrete. ONE dark enclosed horizontal ORE CONVEYOR spans the distant back edge, ground-level cargo transfer terminal at upper-center, dark raw ore piles kept outside playable area. In the playable board two LARGE OFFSET QUARRY PLATFORM ISLANDS are placed diagonally relative to each other (their tile edges still HORIZONTAL): upper-left square mass and lower-right rectangular mass, with broad dogleg corridors winding between them. Two opposite switchback paths plus one short central entry route make a crossing around the center. Exactly THREE red gate cubes dispersed left-middle/right-top/right-bottom, exactly TWO cyan cubes opposite upper-left/lower-right. Not three identical horizontal bars; not the old two yellow-black stun cylinders. No medieval stone temple or magical ruins. A few short yellow edge stripes, sparse dry grass and exposed rock at perimeter.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-d371bc66-877c-4018-824f-9274102ce97d.png"
+        },
+        {
+          "id": "07-prison",
+          "detail": "New theme: Quarantine Courtyard / 检疫中庭. A dark graphite-gray secure industrial block with restrained desaturated TEAL maintenance panels and iron bar windows at perimeter. Build ONE LARGE L-SHAPED low room block occupying upper-left and center, and ONE SMALL RECTANGULAR room block lower-right. These enclose an OFF-CENTER narrow courtyard toward the RIGHT, strongly asymmetrical. A WIDE OUTER U-shaped corridor loops down the left perimeter and across bottom to a narrow top-center goal, and a short interior dogleg turns twice around the L-shaped block to the same goal. Exactly TWO red entry cubes on opposite lower/side edges, exactly ONE cyan goal cube in a narrow upper-center exit. Landmark: a low square observation/air-filtration kiosk inside the offset courtyard, not the previous central wedge restraint machine. Small teal floor maintenance patches, white strip lights and metal grating. Do NOT reuse the original mirrored long left/right prison platforms or symmetric central monument composition. Keep playable paths visible and unroofed.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-e1ababdc-3997-4ad7-a441-36ea223785c9.png"
+        },
+        {
+          "id": "08-dossoles",
+          "detail": "New theme: Ebb-Tide Freight Harbor / 退潮货港. A mostly DRY modular CONCRETE cargo wharf, pale gray-beige paving and dark slate breakwaters. TURQUOISE tidal water appears only along right perimeter and a narrow L-shaped tidal inlet cutting into lower-left, roughly 25 percent water, not an oceanic wooden boardwalk ring. A single OFFSET RAISED CARGO ISLAND with a few low blue-gray shipping cargo blocks sits right-of-center. Two orthogonal routes wind around different sides of it: a zigzag quay road through upper-left, and a broad lower causeway with two short right-angle bends. Only TWO SHORT wooden connection planks/bridges, minor accents, rest is sturdy dry concrete. Exactly TWO red entrance cubes at left/top and TWO cyan goals at far right/bottom. Landmark a modest dock bollard/crane base at far edge, small tide marks on seawall and loading hatch stripes. No massive white ship bow, no rectangular ring of floating wood. Keep whole board playable, land routes continuous and readable, no units or transit boats.",
+          "generatedSourcePath": "C:\\Users\\31016\\.codex\\generated_images\\01a1bb22-bfd0-7bb1-82bf-c5b0f7e77986\\exec-2b1df790-1183-43b6-81ee-647e8be78c6a.png"
+        }
+      ]
+    }
+  ]
+}
