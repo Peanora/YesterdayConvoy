@@ -91,8 +91,8 @@ namespace YesterdayConvoy
                 for(int i=0;i<waves.Count;i++)
                 {
                     float x=content.x+i*width;
-                    GUI.Label(new Rect(x,11,width-5,21),$"{i+1}波 {waves[i].LaneId} · {waves[i].DP}DP",LoopText(11,TextAnchor.MiddleLeft,null,600));
-                    GUI.Label(new Rect(x,33,width-5,16),$"出兵 {waves[i].DeploymentSeconds:0} 秒",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+                    GUI.Label(new Rect(x,11,width-5,21),$"{i+1}波 {waves[i].LaneId}",LoopText(11,TextAnchor.MiddleLeft,null,600));
+                    GUI.Label(new Rect(x,33,width-5,16),$"{waves[i].DP}DP · {waves[i].DeploymentSeconds:0}秒",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
                 }
                 GUI.Label(new Rect(747,11,253,22),$"全程 {WaveClockText(Battle.WavePlan.TotalDuration)} · 末段推进 {Battle.WavePlan.FinalAdvanceSeconds:0} 秒",LoopText(12,TextAnchor.MiddleLeft,null,600));
                 GUI.Label(new Rect(747,34,253,15),"换波清余量 · 次数/CD/双方状态全关保留",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
