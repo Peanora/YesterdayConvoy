@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-08：右侧伤害排行
+
+- 用户要求右侧招募清单改为伤害排行。基线为本轮fetch核实的main `7862d09`，功能分支`codex/damage-ranking`，关联#104；用户确认原52份Mandragora/Mephisto VFX meta原地保留，未暂存或提交。`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`继续保留。未改场景、Prefab、配置资产、Packages、ProjectSettings或游戏美术。
+- 完整EditMode **732/732**（`artifacts/damage-ranking/edit.xml`）；12个新增用例涵盖实际普攻/过量、同卡多实体/排序、暂停、死亡来源/治疗/重开/只读、维维美范围技能、束缚持续伤害、延迟死亡爆炸、灼燃/神经爆发、保护转移/债务/自损、共享来源、爱国者复起真伤及银狼收剑。首轮编译发现测试直接访问internal `WolfFinished`，改为断言公开的收剑目标和真实伤害后完整通过；未把编译失败记为测试通过。
+- 相关D3D11 PlayMode最终 **20/20**（`artifacts/damage-ranking/play-final.xml`）：ApprovedUiSceneTests、DamageRankingSceneTests、BattleShopLoopSceneTests、ShopMapSceneTests、ShopSeatInteractionTests。首轮相关11项10通过/1失败，原右侧出售夹具落在新排行内；保留生产拒绝出售行为，夹具改用右边缘实际空白出售区`ShopRightSaleDropRect`，并增加排行内松手不出售断言，扩大回归后20项全部通过。自然真实部署/交战、统计和暂停、重开清空、商店收起后阻挡、顶部购买、自由席位与两场商店闭环均通过；守军详情和实际有技能单位的面板/施放按钮几何避让通过。
+- `tools/check_repository.py`检查通过，新增源文件与meta均纳入核查。实际扣血归属与玩法触发来源分开，原攻击/技能/羁绊数值和触发不改。非单卡羁绊/场地伤害显式单列，元素积累本身不计伤害。
+- 最终运行源码 **`8cc7babe75dc13652c095d2569ced407f1fac999`**。复用`DeepPoolBuildTools.BuildWindows`动态保存场景目录，最终日志`artifacts/damage-ranking/build-visible-final.log`：**1063604449 bytes / 0 errors / 退出0**。完整1974文件同步常用`Builds/Windows`，全部源构建文件存在且长度一致，实际运行DLL SHA256 `987D75112010B723E43D69AB26A657D8D2A4F116CFB7E98A842CC87ED33999AC`一致；SOURCE.txt绑定运行源码（`copy-check.json`）。
+- 最终1280×720与1600×900可见D3D11独立Player从工程外TEMP启动，各 **19/19、退出0**（`player-final-1280/result.json`、`player-final-1600/result.json`）。真实指针部署七名角色、自然交战排序/总和、暂停冻结、商店收起后阻挡及自然胜利后记录保留均通过；总伤害22800，含八个单卡/共享来源。不注入假伤害。自动滚动尾部截图使用诊断滚动位置，只用于布局检查；其他交互走生产控制器指针，不冒称OS鼠标。初版可见截图发现默认水平滚动条挤占第五行，最终改为窄纵向滚动并重新构建、重跑两种分辨率，已实际查看完整五行、尾部、真实交战/暂停及终局地图画面。终局截图仍在死亡表现等待期，未将其称为收入结算面板的截图；收入面板几何已留出排行区域。
+- 另从常用最终EXE以普通`-synergySandbox`参数启动（不自动退出），通过computer-use实际OS滚轮从第1–5行滚至第3–7行，再拖纵向滚动条返回第1–5行，实际画面确认恢复。第一次拖动前工具检测到用户输入，重新观察后再操作并成功；不复用旧截图坐标。普通窗口保留供试玩，OS工具截图未另行导出；自动证据PNG保存在上述目录。
+- 原52份既存VFX meta逐文件SHA256与开工一致；本地未跟踪项未提交。开工分支`codex/blackforest-six-star`原样保留，其未合并内容不混入本main基线功能分支。尚未运行全量PlayMode、第二台电脑和长局试玩；无ZIP/Releases或自动合并main。
+
 ## 2026-11-07：牌库与自由席位
 
 - Unity6000.6.5f1。完整EditMode **720/720**，0失败/跳过（`artifacts/pool-roster/edit-delivery.xml/log`）。模型覆盖五档容量、四星27张占库/余3张、售价26/返库27/重复售出、满席链式升星/主实例保留、其他费用拒绝四星、独立10备战；席位覆盖同排/跨排、同名、满席、稳定压紧与预置实例重用。真实ManualBattle对照M07普通400血4甲：三星9击14.90秒→四星7击11.30秒；1200血18甲36击63.50秒→25击43.70秒。10血一击和100甲最低伤害25击边界相同，未通过额外质变强行减少轮次。
@@ -2045,11 +2056,3 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 
 
 最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。
-## 2026-11-08：右侧伤害排行
-
-- 用户要求右侧招募清单改为伤害排行。基线为本轮fetch核实的main `7862d09`，功能分支`codex/damage-ranking`，关联#104；用户确认原52份Mandragora/Mephisto VFX meta原地保留，未暂存或提交。`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`继续保留。未改场景、Prefab、配置资产、Packages、ProjectSettings或游戏美术。
-- 完整EditMode **732/732**（`artifacts/damage-ranking/edit.xml`）；12个新增用例涵盖实际普攻/过量、同卡多实体/排序、暂停、死亡来源/治疗/重开/只读、维维美范围技能、束缚持续伤害、延迟死亡爆炸、灼燃/神经爆发、保护转移/债务/自损、共享来源、爱国者复起真伤及银狼收剑。首轮编译发现测试直接访问internal `WolfFinished`，改为断言公开的收剑目标和真实伤害后完整通过；未把编译失败记为测试通过。
-- 相关D3D11 PlayMode最终 **20/20**（`artifacts/damage-ranking/play-final.xml`）：ApprovedUiSceneTests、DamageRankingSceneTests、BattleShopLoopSceneTests、ShopMapSceneTests、ShopSeatInteractionTests。首轮相关11项10通过/1失败，原右侧出售夹具落在新排行内；保留生产拒绝出售行为，夹具改用右边缘实际空白出售区`ShopRightSaleDropRect`，并增加排行内松手不出售断言，扩大回归后20项全部通过。自然真实部署/交战、统计和暂停、重开清空、商店收起后阻挡、顶部购买、自由席位与两场商店闭环均通过；守军详情和实际有技能单位的面板/施放按钮几何避让通过。
-- `tools/check_repository.py`检查通过，新增源文件与meta均纳入核查。实际扣血归属与玩法触发来源分开，原攻击/技能/羁绊数值和触发不改。非单卡羁绊/场地伤害显式单列，元素积累本身不计伤害。
-- 尚未运行全量PlayMode、第二台电脑和长局试玩；Windows构建与独立Player结果待本轮后续补录。
-
