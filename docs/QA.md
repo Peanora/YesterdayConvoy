@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-08：路线、追击排行与死亡详情反馈修复
+
+- 白线路径本身与移动模型一致，原问题来自GUI分组原点和旋转矩阵叠加。现从实际`lane.Points`生成连续折线、距离脉冲与前向箭头，在根画布投影并数学裁剪；拐角不跨格，旧路降低亮度，模拟暂停冻结流动。新增路线计算/投影测试13项。
+- 关键文件连接：`WaveBattleInterface`通过`RouteGuideGeometry`读取`lane.Points/Clock`绘线；`GuerrillaOrderVolley`经`BattleDamageRanking`实际HP出口记子统计，再由`DamageRankingPanel`显示；`ShopMapTrial`负责安全取景与模态显隐，`ShopDefenderInspector`由控制器Tick和点击/绘制共同校验实体生命周期。
+- 排查未发现原游击军令扣血在总排行中漏账：原先按参与者混入总伤害，缺少可辨认分类。现沿同一实际HP扣减出口记录`TotalGuerrillaDamage`和逐卡`GuerrillaDamage`子集，排行显示“含追击”和逐角色“追击”；不重复加总。九项模型用例涵盖五斩、护甲/法抗、过量、星熊转伤/债务、来源死亡、支援排除、普通攻击隔离、共享回退、跨波保留及整局清空。
+- 相机将可玩区取景至(200,66,797,478)，与右侧排行留14画布像素；树海纳入全部非#地块四角/高台和守军脚/头。感染/羁绊等模态打开时隐藏排行，地图仍由模态拦截。守军详情仅接受当前Battle/RunId的在场存活实体，死亡/撤离/待机立即关闭并失去点击命中；星熊负血债务存活、Mon3tr转位和同位置活人仍正常。
+- Unity6000.6.5f1完整EditMode **809/809**（`artifacts/wave-feedback/edit-final.xml/log`），相关非batch D3D11 PlayMode **44/44**（`play-final.xml/log`）：波次点击、旧地图拖放/商店、排行、游击军令GPU演出、死亡详情、地图安全投影等。首轮Edit796项通过，但路线测试meta的33位GUID被忽略，修正为32位后补全809；首轮Play38项中3项新夹具仍在整备阶段而无法点击，改走真实StartLoopNextBattle后完整44项通过，未绕过生产门禁。
+- 正值追击UI实图`artifacts/wave-feedback/pursuit-ranking.png`来自既有耐久/禁止守军攻击的受控夹具：真实部署、普通接触挣军令、五斩和后续普攻均走生产流程，逐斩核HP与子统计，暂停/重开与普攻不污染通过。该夹具不是自然战斗平衡证据。
+- 最终运行源码 **871826f161a28e2eec0293123432b116ab229f0e**，真实Windows x64 Development构建 **1063731140 bytes / 0 errors / 退出0**（`build-final.log`）。完整 **1973文件**逐文件SHA256同步常用`Builds/Windows`，差异0；`SOURCE.txt`绑定运行源码，运行DLL SHA256 **92590126705692FEE132E0994D1BF75DA77CD9BFE6D2E1E94B229938E7C6529C**（`copy-check-final.json`）。保留目标既有脚本/许可等文件，无删除。
+- 最终常用EXE从工程外TEMP启动，可见D3D11独立Player **1600×900、1280×720各73/73、退出0**（`player-final-1600/result.json`、`player-final-1280/result.json`）。实看三波路线拐角、箭头与排行避让；新增实际移动路径/根画布投影、暂停、模态、真实死亡后点击及子总额守恒检查。两尺寸均真实稀疏对局255秒超时，另生产卡牌16次合法点击自然Won193.4秒，伤害7255.0898、6次穿门/10次守军技能，与原模型不变；未注伤害/强制胜负。
+- 首构建75629cb为1063731116 bytes/0 errors：1600×900先通过73/73；1280×720为72/73，末张重开截图抓到“准备商店待机”加载页而非就绪战场。修正专项验证等待：主动触发同一WarmVisibleShop并等待连续就绪帧，再重建最终包并重跑上述两尺寸，不将首轮加载页记作画面通过。该后续改动仅专项诊断等待，由最终独立Player验证。
+- 原52份VFX meta及.vscode三文件、PackageManagerSettings共 **56文件SHA256保持不变**，不纳入提交；新文件/meta已跟踪，仓库7733文件静态检查通过。不改场景、Prefab、守军/角色数值、Packages或ProjectSettings，无新美术、ZIP或Releases；同一功能分支/PR #106正常提交推送，人工合并。
+- 未执行第二机、新克隆、完整PlayMode和实际OS鼠标复验；生产控制器指针与受控状态夹具各自注明，不冒称人类操作或全部构筑/长局平衡通过。
+
+
 ## 2026-11-08：黑流树海波次机制
 
 - 同一日常工程，Unity6000.6.5f1；实时main7862d09，codex/wave-blackforest，兼容承接树海#103/伤害排行#104（集成026d255），不合并远端main。用户确认原52份VFX meta及本地配置原地保留。
