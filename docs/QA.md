@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-08：游击队独立排行、Mon3tr与星熊血条修复
+
+- 人类要求游击队单列伤害。新增只读`DisplayDamageRanking`：角色/共享来源展示值=原贡献伤害−其中追击，独立“游击队追击”行=实际总追击，统一排序且总和=本场总伤害。原贡献者账本和逐斩真实扣血归属保留，不重复计入；零伤害但编队有游击羁绊时也保留独立0行。UI不再在各角色下显示追击子项。数据经`BattleDamageRanking→DamageRankingPanel`接入，4项新增展示测试覆盖混合、共享、纯追击、暂停/跨波/重开。
+- Mon3tr原逻辑在近敌进入0.95范围时能够造成技能伤害，但会被远处任意怪物触发空开，且技能态CanAttack接口为false、依赖null目标旁路。修复`DefenderSkills/AdvancedDefenderSkills/EngagementCombat/FifthDefenderSkills`：满技力仅在地面重构点范围内有合法目标时发动，技能态通过统一TargetId索敌主动攻击，转位时清旧治疗目标。保持原850生命/16攻击、0.95半径、×3.8、三目标真伤、链疗每次1SP/不时间回复、25秒/致命返回与1秒保护。7项新增测试使用树海D23实际快照，明确受控副本只为就绪用例设满SP，不回写资产。
+- 星熊我执时Health为0而负生命另存Debt，原普通橙条因此0宽。新增纯读`DefenderHealthPresentation`，商店`DrawShopDefenderBars`和样板`DrawDefenderHUD`共用：DebtLife时画红色Debt/(2×当前MaxHealth)，零债务保留红框；正常生命仍橙条，退场/备用不画。只夹显示比例，不改Debt、HP、SP或战斗阈值；5项模型展示测试和实际GPU红像素检查覆盖两入口。
+- Unity6000.6.5f1完整EditMode **825/825**（`artifacts/defender-feedback/edit.xml/log`）。相关非batch D3D11 PlayMode分组 **45+2+1共48项通过**：`play.xml`45/45涵盖独立排行、军令GPU、树海/波次/旧商店、第五批三人技能；`play-hud-vfx.xml`中2项旧VFX通过，新增HUD用例因尚未完成树海bootstrap失败，修夹具后`play-hud-final.xml`1/1通过。更早HUD meta的33位GUID曾使其被忽略，已修正32位并经仓库7743文件检查通过；未把未识别/失败用例记作通过。
+- 实看`pursuit-ranking-separate-row.png`：总291、游击队追击247、原来源普通44（显示四舍五入），排序/总额守恒；实看`hoshiguma-debt-bar.png`、`hoshiguma-zero-debt-red-phase.png`、`hoshiguma-standalone-debt-bar.png`，实际HUD红像素分别109/82/126。图片均在`artifacts/defender-feedback`。上述专项正追击图使用既有耐久/停止守军攻击夹具，红条直接设置受控运行态Health/Debt；这些是展示验证，不宣称自然战斗或平衡证据。
+- 真实ManualBattle重新计算36个固定策略，19个自然胜例，不作玩家胜率。seed20261109同16次合法出兵仍Won193.4秒，真实伤害改为7302.6001、守军技能8次；此前7255.0898/10次是旧空开逻辑结果。记录`model-strategy-search.json`，保存源配置/波次JSON不变；验证参考只依据本次模型更新，并新增Player伤害与模型一致断言，未加强怪物或改守军资产。
+- 最终运行源码 **be0e28134bf37659fc5334e9057f31d66e016860**，Windows x64 Development真实构建 **1063735632 bytes / 0 errors / 退出0**（`build.log`）；1973源构建文件逐文件SHA256同步常用`Builds/Windows`、差异0，SOURCE.txt绑定源码，运行DLL SHA256 **85F9A1BDA555C6EBED77A133EA9EFB08C0674732601054723F3F94DE560D9C21**（`copy-check.json`）。无ZIP/Releases，保留目标既有文件。
+- 最终常用EXE从工程外TEMP启动：可见D3D11 **1280×720与1600×900各75/75、退出0**（`player-1280/result.json`、`player-1600/result.json`）。真实稀疏对局255秒超时，固定策略193.4秒自然突破、伤害7302.6001与新模型一致；自然通关实际追击284.0004单列（角色行5621.6/616/481/300），独立排行分区/总和、旧路线/门禁/暂停/死亡点击/重开保持通过。已查看代表布局与结果PNG。
+- 同一最终EXE额外`-defenderSkillSmokeTest D23`独立Player退出0（`player-d23/player.log`），entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored共11个标志全True；effect要求真实转位及真伤命中，技能画面已实看。实际1次技能、83.6秒玩家突破，不注入HP或强制胜负。
+- 原56份本地文件SHA256保持，不纳入提交；场景、Prefab、角色/守军资产、Packages/ProjectSettings和原素材不改。源码/必要meta正常推送原分支/PR #106，不自动合并。未执行第二机、新克隆、完整PlayMode与实际OS鼠标；脚本均为生产控制器指针，受控夹具另行注明。
+
+
 ## 2026-11-08：路线、追击排行与死亡详情反馈修复
 
 - 白线路径本身与移动模型一致，原问题来自GUI分组原点和旋转矩阵叠加。现从实际`lane.Points`生成连续折线、距离脉冲与前向箭头，在根画布投影并数学裁剪；拐角不跨格，旧路降低亮度，模拟暂停冻结流动。新增路线计算/投影测试13项。
