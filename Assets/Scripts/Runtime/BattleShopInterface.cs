@@ -42,7 +42,7 @@ namespace YesterdayConvoy
             string mode=JourneyActive?"十三关行动 · v2":Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
-            GUI.Label(new Rect(28,11,165,24),shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));
+            GUI.Label(new Rect(28,11,165,24),JourneyActive?$"{Loop.Stage}/13 · {JourneyMap.title}":shopMapCopy!=null?shopMapCopy.mapTitle:"商店试验",LoopText(17,TextAnchor.MiddleLeft,null,700));
             GUI.Label(new Rect(28,36,165,15),mode+"  /  "+phase,LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             Fill(new Rect(578,8,151,46),ApprovedUi.Paper);DrawLoopShield(new Vector2(589,20),new Color(.40f,.56f,.67f));
             GUI.Label(new Rect(613,14,76,21),"守方防御",LoopText(12));

@@ -102,7 +102,7 @@ namespace YesterdayConvoy
     {
         [Serializable]public sealed class Check {public string name,detail;public bool passed;}
         [Serializable]public sealed class RoundResult
-        {public int stage,deployments,remainingDefense,closingGold,closingLevel,closingXP,portalTrips,breaches,golemXP;public string scene,mapId,outcome;public double seconds;public float damage;public bool supply,passed;public ActionResult[] actions;}
+        {public int stage,deployments,remainingDefense,closingGold,closingLevel,closingXP,portalTrips,breaches,golemXP;public string scene,mapId,outcome;public double seconds,settlementPresentationSeconds;public float damage;public bool supply,passed,settlementVisible;public ActionResult[] actions;}
         [Serializable]public sealed class ActionResult
         {public string kind,cardId,routeId,modelEntity,actualEntity;public double modelAt,actualAt;public bool passed;}
         [Serializable]public sealed class Result
@@ -176,6 +176,26 @@ namespace YesterdayConvoy
             result.completedStages=2;
             string replay=Argument("-campaignJourneyReplayFile");
             if(!string.IsNullOrEmpty(replay))yield return Replay(Path.GetFullPath(replay));
+        }
+        IEnumerator WaitForSettlement(string key,RoundResult observed=null)
+        {
+            var battle=controller.Battle;var shop=controller.Shop;var loop=controller.Loop;
+            double clock=battle.Clock,presentation=controller.PresentationClock;string economy=CampaignJourneyEvidenceProbe.State(shop);
+            var phase=battle.Phase;var loopPhase=loop.Phase;var reward=loop.Reward;
+            int dp=battle.DP,defense=battle.Defense,breaches=battle.Breaches,receipts=CampaignJourneySession.Current.CompletedRounds.Count;
+            float damage=battle.TotalPlayerDamage;
+            Require(key+"-has-a-natural-terminal-result",phase==BattlePhase.Won||phase==BattlePhase.Lost);
+            // Battle.Advance does not simulate a terminal result. Tick advances the
+            // production death/skill tail and GUI presentation while gameplay stays fixed.
+            if(controller.SimulationSpeed!=1)controller.ToggleSpeed();
+            for(int frame=0;frame<200&&!controller.SettlementVisible;frame++)
+            {controller.Tick(.05f);yield return null;}
+            yield return null;
+            if(observed!=null){observed.settlementVisible=controller.SettlementVisible;observed.settlementPresentationSeconds=controller.PresentationClock-presentation;}
+            Require(key+"-production-settlement-panel-visible",controller.SettlementVisible&&controller.PresentationClock-presentation<=10.001);
+            Require(key+"-presentation-keeps-clock-economy-and-result",ReferenceEquals(battle,controller.Battle)&&ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&
+                battle.Clock==clock&&CampaignJourneyEvidenceProbe.State(shop)==economy&&battle.Phase==phase&&loop.Phase==loopPhase&&ReferenceEquals(loop.Reward,reward)&&
+                battle.DP==dp&&battle.Defense==defense&&battle.Breaches==breaches&&battle.TotalPlayerDamage==damage&&CampaignJourneySession.Current.CompletedRounds.Count==receipts);
         }
         void SaveProgress()
         {result.checks=checks.ToArray();result.rounds=rounds.ToArray();File.WriteAllText(Path.Combine(directory,"journey-result.json"),JsonUtility.ToJson(result,true));}
@@ -355,13 +375,14 @@ namespace YesterdayConvoy
                 var reward=controller.Loop.Reward;observed.closingGold=shop.Gold;observed.closingLevel=shop.Level;observed.closingXP=shop.XP;observed.golemXP=loop.GolemExperience;
                 Require("stage-"+trace.stage+"-exact-natural-reward-and-stock",reward!=null&&reward.Base==trace.baseReward&&reward.Interest==trace.interest&&reward.Streak==trace.streakReward&&reward.Experience==trace.experienceReward&&
                     shop.Gold==trace.closingGold&&shop.Level==trace.closingLevel&&shop.XP==trace.closingXP&&loop.GolemExperience==trace.golemXP&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                yield return WaitForSettlement("stage-"+trace.stage+"-settlement",observed);
                 observed.passed=true;result.completedStages=trace.stage;SaveProgress();yield return Capture("stage-"+trace.stage.ToString("00")+"-natural-settlement");
                 if(trace.stage<13)Require("stage-"+trace.stage+"-advance-production",controller.OpenLoopShop());
             }
             Require("thirteen-stage-natural-completion",CampaignJourneySession.Current.Ended&&CampaignJourneySession.Current.Won&&loop.Phase==BattleShopPhase.Complete&&
                 CampaignJourneySession.Current.CompletedRounds.Count==13&&CampaignJourneySession.Current.CompletedRounds.Count(r=>!r.supply)==8&&scenes.Count==8);
             Require("source-journey-and-encounters-unchanged",JsonUtility.ToJson(CampaignJourneyCatalog.Current)==source&&encounterSources.All(p=>JsonUtility.ToJson(CampaignJourneyCatalog.Stage(p.Key).encounter)==p.Value));
-            result.naturalJourneyCompleted=true;yield return Capture("04-thirteen-stage-natural-completion");
+            result.naturalJourneyCompleted=true;yield return WaitForSettlement("thirteen-stage-completion");yield return Capture("04-thirteen-stage-natural-completion");
             controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
             Require("completed-run-exit-clears-session",CampaignJourneySession.Current==null&&controller.TestSelectionOpen&&!controller.ShopTrialActive&&Object.FindObjectsByType<ApprovedMapTile>(FindObjectsSortMode.None).Length==0);
             SaveProgress();
