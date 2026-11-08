@@ -27,7 +27,7 @@ namespace YesterdayConvoy
                 defenderSkillCasts, playerSkillCasts;
             public float damage, pursuitDamage, directShotDamage, observedPlayerHealthLoss, referenceDamage, damageDeltaFromModel;
             public bool timedOut, manualSkillUnitObserved, playerHealthLossSampled, requiresVictory, modelOutcomeAndTimeMatch;
-            public string[] deploymentLog, ranking;
+            public string[] deploymentLog, ranking, displayRanking;
         }
         [Serializable] sealed class WaveEvidenceResult
         {
@@ -162,6 +162,7 @@ namespace YesterdayConvoy
             }
             run.deploymentLog=deployments.ToArray();
             run.ranking=Battle.DamageRanking.Select(row=>row.CardId+":"+row.Damage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)+"/pursuit="+row.GuerrillaDamage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+            run.displayRanking=Battle.DisplayDamageRanking.Select(row=>row.CardId+":"+row.Damage.ToString("F3",System.Globalization.CultureInfo.InvariantCulture)).ToArray();
             Debug.Log($"WAVE_BATTLE_NATURAL: policy={run.policy}; outcome={run.outcome}; time={run.seconds:F3}; timedOut={run.timedOut}; deployments={run.deployments}; damage={run.damage}; breaches={run.breaches}; defense={run.defense}; skills={run.playerSkillCasts}/{run.defenderSkillCasts}; requiresVictory={run.requiresVictory}; referenceSeed={run.referenceSeed}; modelTimeDelta={run.secondsDeltaFromModel:F4}; modelDamageDelta={run.damageDeltaFromModel:F4}");
         }
 
@@ -282,7 +283,7 @@ namespace YesterdayConvoy
             check("restart-keeps-exact-saved-terrain",terrain.SetEquals(FindObjectsByType<BlackForestTile>()));
             check("production-start-strategy-attempt",StartLoopNextBattle());yield return WaveEvidenceReady();
             var attempt=new WaveEvidenceRun{policy="Exact legal deployment replay of fixed model seed 20261109 (targeted-0-pairs-and-delays), using the unchanged default lineup and normal production card clicks.",
-                playerHealthLossSampled=true,requiresVictory=true,referenceSeed=20261109,referenceOutcome="Won",referenceSeconds=193.4,referenceDamage=7255.08984375f};
+                playerHealthLossSampled=true,requiresVictory=true,referenceSeed=20261109,referenceOutcome="Won",referenceSeconds=193.4,referenceDamage=7302.60009765625f};
             double[] plannedTimes={0,.25,6.25,6.5,12.5,50,50.25,56.25,56.5,62.5,100,100.25,106.25,106.5,112.5,112.75};
             string[] plannedIds={"M07","M08","M07","M08","M07","M16","M08","M08","M15","M16","M15","M08","M15","M08","M15","M08"};
             var log=new List<string>();int cursor=0;
@@ -332,11 +333,16 @@ namespace YesterdayConvoy
             check("strategy-observes-natural-two-way-damage-and-defender-skills",attempt.damage>0&&attempt.observedPlayerHealthLoss>0&&attempt.defenderSkillCasts>0);
             check("strategy-reaches-actual-terminal-result",Battle.Phase==BattlePhase.Won||Battle.Phase==BattlePhase.Lost);
             check("seed-20261109-reproduces-natural-model-win-and-time",attempt.outcome=="Won"&&attempt.defense==0&&!attempt.timedOut&&attempt.modelOutcomeAndTimeMatch);
+            check("natural-win-damage-matches-corrected-mon3tr-model",Math.Abs(attempt.damageDeltaFromModel)<.1f);
             check("ranking-remains-correct-after-combat",DamageRankingVisible&&Math.Abs(Battle.DamageRanking.Sum(row=>row.Damage)-Battle.TotalPlayerDamage)<.1f&&
                 Battle.DamageRanking.Select(row=>row.Damage).SequenceEqual(Battle.DamageRanking.Select(row=>row.Damage).OrderByDescending(damage=>damage)));
             check("natural-dead-footprint-check-executed",deadClickChecked);
             check("pursuit-subtotal-is-conserved-without-double-counting",Math.Abs(Battle.DamageRanking.Sum(row=>row.GuerrillaDamage)-Battle.TotalGuerrillaDamage)<.1f&&
                 Battle.DamageRanking.All(row=>row.GuerrillaDamage>=0&&row.GuerrillaDamage<=row.Damage+.01f));
+            check("pursuit-is-one-separate-ranked-row",Battle.DisplayDamageRanking.Count(row=>row.CardId==ManualBattle.GuerrillaDamageCardId)==1&&
+                Math.Abs(Battle.DisplayDamageRanking.Single(row=>row.CardId==ManualBattle.GuerrillaDamageCardId).Damage-Battle.TotalGuerrillaDamage)<.1f&&
+                Math.Abs(Battle.DisplayDamageRanking.Sum(row=>row.Damage)-Battle.TotalPlayerDamage)<.1f&&
+                Battle.DamageRanking.All(raw=>Math.Abs(Battle.DisplayDamageRanking.Single(row=>row.CardId==raw.CardId).Damage-(raw.Damage-raw.GuerrillaDamage))<.1f));
             check("finite-stock-conserved-after-wave-combat",BlackForestEvidenceStockConserved());
             yield return WaveEvidenceCapture(directory,"08-natural-strategy-result",check);
             RestartCurrentRun();yield return WaveEvidenceReady();

@@ -16,6 +16,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public const string SharedDamageCardId="__shared_effects";
+        public const string GuerrillaDamageCardId="__guerrilla_pursuit";
         readonly Dictionary<string,float> cardDamage=new Dictionary<string,float>(StringComparer.Ordinal);
         readonly Dictionary<string,float> cardGuerrillaDamage=new Dictionary<string,float>(StringComparer.Ordinal);
         readonly List<BattleDamageEntry> damageRanking=new List<BattleDamageEntry>();
@@ -40,6 +41,20 @@ namespace YesterdayConvoy
                     damageRankingDirty=false;
                 }
                 return visibleDamageRanking??(visibleDamageRanking=damageRanking.AsReadOnly());
+            }
+        }
+        // Presentation categories partition actual damage; the contributor ledger remains intact.
+        public IReadOnlyList<BattleDamageEntry> DisplayDamageRanking
+        {
+            get
+            {
+                var rows=new List<BattleDamageEntry>();
+                foreach(var entry in DamageRanking)
+                    rows.Add(new BattleDamageEntry(entry.CardId,Math.Max(0,entry.Damage-entry.GuerrillaDamage),0));
+                if(GuerrillaTier>0||TotalGuerrillaDamage>0)
+                    rows.Add(new BattleDamageEntry(GuerrillaDamageCardId,TotalGuerrillaDamage,TotalGuerrillaDamage));
+                rows.Sort((a,b)=>{int order=b.Damage.CompareTo(a.Damage);return order!=0?order:string.CompareOrdinal(a.CardId,b.CardId);});
+                return rows.AsReadOnly();
             }
         }
         void ResetDamageRanking()

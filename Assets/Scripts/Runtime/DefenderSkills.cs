@@ -72,8 +72,13 @@ namespace YesterdayConvoy
                 // Match attack scheduling tolerance so float rounding cannot starve a ready skill.
                 if(Clock+1e-6<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);
-                if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)useful=d.SkillSP>=skill.RequiredSP&&units.Exists(u=>CanDefenderTarget(u));
-                if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*.8f;
+                if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)
+                {
+                    // The normal form heals from a high platform. Meltdown attacks from the
+                    // authored relay point, so a distant enemy cannot justify an empty cast.
+                    useful=units.Exists(u=>CanDefenderTarget(u)&&GroundDistance(d.Settings.RelayPosition,u.Motion.Position)<=skill.EffectRadius);
+                }
+                else if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*.8f;
                 else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing)
                 {
                     foreach(var ally in defenders)

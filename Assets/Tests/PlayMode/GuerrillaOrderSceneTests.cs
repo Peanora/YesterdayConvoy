@@ -393,6 +393,11 @@ namespace YesterdayConvoy.Tests
             Assert.That(battle.TotalGuerrillaDamage,Is.GreaterThan(0));
             Assert.That(battle.DamageRanking.Single(entry=>entry.CardId=="CARD_M03").GuerrillaDamage,Is.EqualTo(battle.TotalGuerrillaDamage).Within(.01));
             Assert.That(controller.DamageRankingVisible,Is.True);
+            var displayed=battle.DisplayDamageRanking;
+            Assert.That(displayed.Count(entry=>entry.CardId==ManualBattle.GuerrillaDamageCardId),Is.EqualTo(1));
+            Assert.That(displayed.Single(entry=>entry.CardId==ManualBattle.GuerrillaDamageCardId).Damage,Is.EqualTo(battle.TotalGuerrillaDamage).Within(.01));
+            Assert.That(displayed.Sum(entry=>entry.Damage),Is.EqualTo(battle.TotalPlayerDamage).Within(.01));
+            Assert.That(displayed.Single(entry=>entry.CardId=="CARD_M03").Damage,Is.EqualTo(battle.TotalPlayerDamage-battle.TotalGuerrillaDamage).Within(.01));
             if(!Application.isBatchMode)
             {
                 // Test evidence uses the existing durable fixture, not a natural battle/balance run.
@@ -403,7 +408,7 @@ namespace YesterdayConvoy.Tests
                 try
                 {
                     Assert.That(screen,Is.Not.Null);
-                    string path=Path.GetFullPath("artifacts/wave-feedback/pursuit-ranking.png");
+                    string path=Path.GetFullPath("artifacts/defender-feedback/pursuit-ranking-separate-row.png");
                     Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllBytes(path,screen.EncodeToPNG());
                 }
                 finally{if(screen!=null)Object.Destroy(screen);}

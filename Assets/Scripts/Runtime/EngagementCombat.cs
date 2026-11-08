@@ -453,7 +453,6 @@ namespace YesterdayConvoy
             {
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
                 var spec=d.Settings;
-                if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&DefenderSkillActive(d)){ScheduleFifthAttack(d,null,guardSettings.ProjectileTime);continue;}
                 if(CanDefenderHeal(d))
                 {
                     DefenderState wounded=null;

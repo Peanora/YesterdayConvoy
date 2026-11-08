@@ -24,7 +24,8 @@ namespace YesterdayConvoy
         public float DefenderRange(DefenderState d)=>IsSixth(d)&&DefenderSkillActive(d)?d.Settings.Skill.EffectRadius:IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
         public bool DefenderCanBlock(DefenderState d)=>d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d);
-        public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?DefenderSkillActive(d):d.Settings.CanAttack||(d.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&DefenderSkillActive(d));
+        public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?
+            DefenderSkillActive(d):d.Settings.CanAttack||(d.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&DefenderSkillActive(d));
         float LiberatorAttackMultiplier(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?1+d.LiberatorBonus:1;
         public float DefenderCharge(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?
             Mathf.Clamp01((float)(Clock-d.ChargeStartedAt)/Mathf.Max(.01f,d.Settings.Skill.ChargeSeconds)):0;

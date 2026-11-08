@@ -61,6 +61,10 @@ namespace YesterdayConvoy.Tests
             yield return Engage();var battle=controller.Battle;var rows=battle.DamageRanking.ToArray();
             Assert.That(rows.Select(r=>r.Damage),Is.Ordered.Descending);
             Assert.That(rows.Sum(r=>r.Damage),Is.EqualTo(battle.TotalPlayerDamage).Within(.01f));
+            var displayed=battle.DisplayDamageRanking;
+            Assert.That(displayed.Select(r=>r.Damage),Is.Ordered.Descending);
+            Assert.That(displayed.Sum(r=>r.Damage),Is.EqualTo(battle.TotalPlayerDamage).Within(.01f));
+            Assert.That(displayed.Count(r=>r.CardId==ManualBattle.GuerrillaDamageCardId),Is.LessThanOrEqualTo(1));
             Assert.That(rows.All(r=>r.Damage>0&&!float.IsNaN(r.Damage)&&!float.IsInfinity(r.Damage)),Is.True);
             battle.SetPaused(true);double clock=battle.Clock;float total=battle.TotalPlayerDamage;controller.Tick(5);yield return null;
             Assert.That(battle.Clock,Is.EqualTo(clock));Assert.That(battle.TotalPlayerDamage,Is.EqualTo(total));

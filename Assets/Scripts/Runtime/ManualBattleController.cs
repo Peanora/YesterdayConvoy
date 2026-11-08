@@ -550,8 +550,7 @@ namespace YesterdayConvoy
             Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
             if(!d.Alive) continue;
             float width=TacticalMapActive || definition.Card.CardId==SilverWolfCombat.CardId ? 62 : 96;
-            Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
-            Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
+            DrawDefenderHealthBar(d,new Rect(x-width/2,y,width,7),2);
             if(d.Settings.Skill.Enabled)
             {
                 bool active=Battle.DefenderSkillActive(d);float fill=active?(float)((d.SkillActiveUntil-Battle.Clock)/d.Settings.Skill.Duration):d.SkillSP/d.Settings.Skill.RequiredSP;

@@ -12,7 +12,7 @@ namespace YesterdayConvoy
             if(!IsFifth(d))return false;
             d.FifthActive=true;d.SkillActionUntil=Clock+.7;d.NextAttackTime=d.SkillActionUntil;
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown)
-            {d.Position=d.Settings.RelayPosition;d.HighGround=false;d.MaxHealth=d.Settings.Health+500;d.Health*=d.MaxHealth/d.Settings.Health;d.Transfers++;}
+            {d.Position=d.Settings.RelayPosition;d.HighGround=false;d.TargetId=null;d.MaxHealth=d.Settings.Health+500;d.Health*=d.MaxHealth/d.Settings.Health;d.Transfers++;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery)
             {
                 d.Ammo=50;

@@ -14,7 +14,7 @@ namespace YesterdayConvoy
             public bool passed;
             public string[] checks;
             public float totalDamage;
-            public string[] ranking;
+            public string[] ranking,displayRanking;
             public string phase;
         }
         // Explicit development fixture: actual pointer deployment and normal battle simulation.
@@ -56,6 +56,9 @@ namespace YesterdayConvoy
                 check("multipleNaturalDamageSources",Battle.DamageRanking.Count(r=>r.Damage>0)>=2);
                 check("descendingDamage",Battle.DamageRanking.Select(r=>r.Damage).SequenceEqual(Battle.DamageRanking.Select(r=>r.Damage).OrderByDescending(n=>n)));
                 check("rowsSumToTotal",Math.Abs(Battle.DamageRanking.Sum(r=>r.Damage)-Battle.TotalPlayerDamage)<.1f);
+                check("displayRowsPartitionDamage",Math.Abs(Battle.DisplayDamageRanking.Sum(r=>r.Damage)-Battle.TotalPlayerDamage)<.1f&&
+                    Battle.DisplayDamageRanking.Select(r=>r.Damage).SequenceEqual(Battle.DisplayDamageRanking.Select(r=>r.Damage).OrderByDescending(n=>n))&&
+                    Battle.DisplayDamageRanking.Count(r=>r.CardId==ManualBattle.GuerrillaDamageCardId)<=1);
                 yield return ApprovedUiFrame(folder,"02-natural-combat-ranking");
                 Battle.SetPaused(true);double clock=Battle.Clock;float total=Battle.TotalPlayerDamage;Tick(5);
                 check("pauseKeepsDamageAndClock",Battle.Clock==clock&&Battle.TotalPlayerDamage==total);
@@ -83,7 +86,8 @@ namespace YesterdayConvoy
                 check("terminalResultRetainsDamage",Battle.Phase!=BattlePhase.Running&&Battle.TotalPlayerDamage>=total);
                 yield return ApprovedUiFrame(folder,"04-final-ranking");
                 File.WriteAllText(Path.Combine(folder,"result.json"),JsonUtility.ToJson(new DamageRankingResult
-                {passed=passed,checks=checks.ToArray(),totalDamage=Battle.TotalPlayerDamage,ranking=Battle.DamageRanking.Select(r=>r.CardId+":"+r.Damage.ToString("0.###",System.Globalization.CultureInfo.InvariantCulture)).ToArray(),phase=Battle.Phase.ToString()},true));
+                {passed=passed,checks=checks.ToArray(),totalDamage=Battle.TotalPlayerDamage,ranking=Battle.DamageRanking.Select(r=>r.CardId+":"+r.Damage.ToString("0.###",System.Globalization.CultureInfo.InvariantCulture)).ToArray(),
+                    displayRanking=Battle.DisplayDamageRanking.Select(r=>r.CardId+":"+r.Damage.ToString("0.###",System.Globalization.CultureInfo.InvariantCulture)).ToArray(),phase=Battle.Phase.ToString()},true));
                 Debug.Log("DAMAGE_RANKING_CHECK passed="+passed);
             }
             finally {Time.timeScale=oldScale;diagnostic=false;}
