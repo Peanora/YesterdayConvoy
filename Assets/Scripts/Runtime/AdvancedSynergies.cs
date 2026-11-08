@@ -109,7 +109,7 @@ namespace YesterdayConvoy
                 if(burst.Resolved||Clock<burst.At)continue;burst.Resolved=true;
                 foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,burst.Position)<=burst.Radius).OrderBy(d=>GroundDistance(d.Position,burst.Position)).Take(burst.Radius<=1?2:3).ToArray())
                 {
-                    float before=d.Health;DamageDefender(d,burst.Attack,CombatDamageType.Arts,true);
+                    float before=d.Health;DamageDefenderFrom(d,burst.Attack,CombatDamageType.Arts,FindUnit(burst.SourceId),true);
                     burst.RecordHit(d.EntityId,d.Position,Mathf.Max(0,before-d.Health));
                 }
             }
@@ -195,12 +195,12 @@ namespace YesterdayConvoy
             if(GolemStage>=4)
             {
                 golemPulses.Add(new ShatterEvent{Position=u.Motion.Position,At=Clock,Radius=6});
-                foreach(var d in defenders.Where(d=>d.Alive).ToArray())DamageDefender(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.8f,CombatDamageType.Arts,true);
+                foreach(var d in defenders.Where(d=>d.Alive).ToArray())DamageDefenderFrom(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.8f,CombatDamageType.Arts,u,true);
             }
             else
             {
-                DamageDefender(target,GolemStage==2?80:120,CombatDamageType.Physical,true);
-                if(GolemStage==3)foreach(var d in defenders.Where(d=>d!=target&&d.Alive&&GroundDistance(d.Position,target.Position)<=1).Take(2).ToArray())DamageDefender(d,100,CombatDamageType.Physical,true);
+                DamageDefenderFrom(target,GolemStage==2?80:120,CombatDamageType.Physical,u,true);
+                if(GolemStage==3)foreach(var d in defenders.Where(d=>d!=target&&d.Alive&&GroundDistance(d.Position,target.Position)<=1).Take(2).ToArray())DamageDefenderFrom(d,100,CombatDamageType.Physical,u,true);
             }
         }
     }

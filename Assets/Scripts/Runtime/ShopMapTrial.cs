@@ -34,7 +34,11 @@ namespace YesterdayConvoy
         // ShopSellRect is now the left edge. The former bottom sale target is retired.
         public static Rect ShopSellRect=>ApprovedUi.SellLeft;
         public static Rect ShopSellRightRect=>ApprovedUi.SellRight;
-        public static Rect ShopRecruitListRect=>ApprovedUi.RecruitList;
+        public static Rect ShopRightSaleDropRect=>Rect.MinMaxRect(ShopSellRightRect.x,DamageRankingPanelRect.yMax+4,ShopSellRightRect.xMax,ShopSellRightRect.yMax);
+        public static Rect DamageRankingPanelRect=>ApprovedUi.RecruitList;
+        public bool DamageRankingVisible=>ShopTrialActive;
+        // Retained geometry aliases for existing tooling; these are no longer purchase targets.
+        public static Rect ShopRecruitListRect=>DamageRankingPanelRect;
         public static Rect ShopRecruitRowRect(int i)=>new Rect(ShopRecruitListRect.x+6,ShopRecruitListRect.y+35+i*37,ShopRecruitListRect.width-12,34);
         public static Rect ShopOfferRect(int i)=>ApprovedUi.Offer(i);
         public static Rect ShopBenchRect(int i)=>ApprovedUi.ReserveSlot(i);
@@ -44,13 +48,13 @@ namespace YesterdayConvoy
             var seat=shopSeats.For(shop.Bench[index].Instance);
             return !seat.HasValue?Rect.zero:seat.Value.Lineup?ApprovedUi.LineupSlot(seat.Value.Index):ApprovedUi.ReserveSlot(seat.Value.Index);
         }
-        bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)||ShopSellRightRect.Contains(point);
+        bool ShopSalePoint(Vector2 point)=>!DamageRankingPanelRect.Contains(point)&&(ShopSellRect.Contains(point)||ShopSellRightRect.Contains(point));
         bool ShopUiBlocksPoint(Vector2 point)
         {
             if(new Rect(0,0,1280,60).Contains(point)||CampaignOverlayBlocksPoint(point)||SynergyBlocksMap(point))return true;
             if(loopMenuOpen&&LoopMenuRect.Contains(point)||loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))return true;
-            if((shopVisible||ShopPanelTransitioning)&&(ShopPanelRect.Contains(point)||
-                Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop)&&ShopRecruitListRect.Contains(point)))return true;
+            if(DamageRankingVisible&&DamageRankingPanelRect.Contains(point))return true;
+            if((shopVisible||ShopPanelTransitioning)&&ShopPanelRect.Contains(point))return true;
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
             if(preparing)
                 return new Rect(188,480,942,25).Contains(point)||new Rect(188,516,942,74).Contains(point)||
@@ -224,9 +228,9 @@ namespace YesterdayConvoy
                     for(int i=0;i<shop.Offers.Count;i++)
                     {
                         if(shop.Offers[i]==null)continue;
-                        Rect offer=ShopOfferRect(i),row=ShopRecruitRowRect(i);
-                        if(!offer.Contains(point)&&!row.Contains(point))continue;
-                        shopPurchaseOrigin=row.Contains(point)?row.center:offer.center;
+                        Rect offer=ShopOfferRect(i);
+                        if(!offer.Contains(point))continue;
+                        shopPurchaseOrigin=offer.center;
                         PurchaseShopCard(i);return true;
                     }
                 for(int i=0;i<shop.Bench.Count;i++)if(ShopPieceRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}

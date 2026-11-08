@@ -54,7 +54,6 @@ namespace YesterdayConvoy
                 }
             }
             finally{GUI.enabled=originalEnabled;GUI.EndGroup();}
-            if(Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop))DrawApprovedRecruitList(originalEnabled&&prep&&ShopTradingAvailable,reveal);
         }
         void DrawApprovedShopOffer(int slot,Rect rect,Rect global,bool trading)
         {
@@ -101,40 +100,6 @@ namespace YesterdayConvoy
             Fill(rect,new Color(.94f,.83f,.50f,.97f));
             GUI.Label(new Rect(rect.x+4,rect.y,29,rect.height),"可合成",LoopText(9,TextAnchor.MiddleCenter,new Color(.36f,.28f,.14f),600));
             DrawShopStars(new Rect(rect.x+33,rect.y+2,rect.width-36,rect.height-4),star,new Color(.45f,.32f,.11f));
-        }
-        void DrawApprovedRecruitList(bool trading,float reveal)
-        {
-            Rect panel=ShopRecruitListRect;float offset=-(1-reveal)*panel.height;bool enabled=GUI.enabled;
-            GUI.BeginGroup(panel);
-            try
-            {
-                Fill(new Rect(0,offset,panel.width,panel.height),ApprovedUi.Paper);
-                GUI.Label(new Rect(10,offset+5,112,25),"招募清单",LoopText(14,TextAnchor.MiddleLeft,null,700));
-                GUI.Label(new Rect(124,offset+7,118,21),"与上方五张商品同步",LoopText(8,TextAnchor.MiddleRight,ApprovedUi.Muted));
-                for(int i=0;i<5;i++)
-                {
-                    Rect global=ShopRecruitRowRect(i);global.y+=offset;Rect row=global;row.position-=panel.position;
-                    string id=shop.Offers[i];Fill(row,new Color(.94f,.96f,.97f));ShopBorder(row,new Color(.71f,.78f,.83f),1);
-                    if(id==null){GUI.Label(row,"暂无商品",LoopText(10,TextAnchor.MiddleCenter,ApprovedUi.Muted));continue;}
-                    var role=shop.Definition(id);int copies=ShopHeldCopies(id);var preview=shop.PreviewPurchase(i);
-                    int upgrade=preview.Success&&preview.FinalStar>1?preview.FinalStar:0;
-                    if(copies>0)Fill(row,new Color(.90f,.95f,.98f,.45f));
-                    Fill(new Rect(row.x,row.y,3,row.height),Color.Lerp(ApprovedUi.Tier(role.Cost),Color.white,.25f));
-                    DrawTestPortrait(new Rect(row.x+5,row.y+1,31,32),OriginalTalulahArt.CardPortrait(shopDefinitions[id].Card));
-                    GUI.Label(new Rect(row.x+42,row.y+2,row.width-76,17),role.Name,LoopText(12,TextAnchor.MiddleLeft,null,600));
-                    string tags=(copies>0?"持有 "+copies+"/"+shop.Capacity(id)+" · ":"")+string.Join(" / ",ShopTags(id));
-                    GUI.Label(new Rect(row.x+42,row.y+20,row.width-79,12),tags,LoopText(8,TextAnchor.MiddleLeft,upgrade>0?new Color(.52f,.39f,.16f):ApprovedUi.Muted));
-                    if(shopCoin!=null)GUI.DrawTexture(new Rect(row.xMax-29,row.y+11,11,11),shopCoin,ScaleMode.ScaleToFit,true);
-                    GUI.Label(new Rect(row.xMax-16,row.y+4,13,26),role.Cost.ToString(),LoopText(16,TextAnchor.MiddleCenter,null,600));
-                    if(upgrade>0)ShopBorder(row,new Color(.81f,.66f,.29f,.15f+.85f*ShopRecruitPulse),2);
-                    GUI.enabled=enabled&&trading&&shop.CanAfford(role.Cost);
-                    if(GUI.Button(row,new GUIContent(string.Empty,role.Name+" · "+string.Join(" / ",ShopTags(id))),GUIStyle.none))
-                    {shopPurchaseOrigin=global.center;PurchaseShopCard(i);}
-                    GUI.enabled=enabled;
-                }
-                ShopBorder(new Rect(0,offset,panel.width,panel.height),ApprovedUi.Rule,1);
-            }
-            finally{GUI.enabled=enabled;GUI.EndGroup();}
         }
         void DrawShopSaleTargets(Vector2 point)
         {
@@ -202,6 +167,7 @@ namespace YesterdayConvoy
                     if(LoopButton(new Rect(438,402,195,43),"重新测试",true)){EnterShopTrial(0,TacticalMapId);return;}
                     if(LoopButton(new Rect(647,402,195,43),"返回测试选择")){ReturnToTrialScene();return;}
                 }
+                DrawDamageRanking();
                 if(loopMenuOpen){if(suppressed)e.type=originalEvent;DrawLoopMenu();}
             }
             finally{if(e.type==EventType.Ignore)e.type=originalEvent;GUI.enabled=enabled;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}

@@ -45,7 +45,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator EitherEdgeSellsOneInstanceAndRefundsOnlyOnce()
         {
             yield return Load();var c=Controller;
-            foreach(var edge in new[]{ManualBattleController.ShopSellRect.center,ManualBattleController.ShopSellRightRect.center})
+            foreach(var edge in new[]{ManualBattleController.ShopSellRect.center,ManualBattleController.ShopRightSaleDropRect.center})
             {
                 c.EnterShopTrial();var bought=c.PurchaseShopCard(1);Assert.That(bought.Success,Is.True);
                 int gold=c.Shop.Gold,stock=c.Shop.Available(bought.Id),value=c.Shop.Quote(bought.Instance).Value;
@@ -66,8 +66,8 @@ namespace YesterdayConvoy.Tests
             c.ProcessShopPointer(EventType.MouseDown,origin);c.ProcessShopPointer(EventType.MouseDrag,ManualBattleController.ShopSellRect.center);
             c.ProcessShopPointer(EventType.MouseUp,origin);
             Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.True,"Dragging back cancels sale.");
-            c.ProcessShopPointer(EventType.MouseDown,origin);c.ProcessShopPointer(EventType.MouseDrag,ManualBattleController.ShopSellRightRect.center);
-            c.CancelShopDrag();c.ProcessShopPointer(EventType.MouseUp,ManualBattleController.ShopSellRightRect.center);
+            c.ProcessShopPointer(EventType.MouseDown,origin);c.ProcessShopPointer(EventType.MouseDrag,ManualBattleController.ShopRightSaleDropRect.center);
+            c.CancelShopDrag();c.ProcessShopPointer(EventType.MouseUp,ManualBattleController.ShopRightSaleDropRect.center);
             Drag(c,origin,new Vector2(640,718));
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Available(bought.Id),Is.EqualTo(stock));
             Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));Assert.That(c.Battle.Units,Is.Empty,"The former bottom sale region is not a deployment gate.");
@@ -80,28 +80,38 @@ namespace YesterdayConvoy.Tests
             Drag(c,PiecePoint(c,bought.Instance),Gate(c));
             Assert.That(c.Battle.Units.Count(u=>u.CardId==bought.Id),Is.EqualTo(1),c.Feedback+" / "+c.ShopFeedback);
             Assert.That(c.Battle.DP,Is.LessThan(dp));Assert.That(c.Battle.IsPaused,Is.True);Assert.That(c.Battle.Clock,Is.Zero);
-            Drag(c,PiecePoint(c,bought.Instance),ManualBattleController.ShopSellRightRect.center);
+            Drag(c,PiecePoint(c,bought.Instance),ManualBattleController.ShopRightSaleDropRect.center);
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Available(bought.Id),Is.EqualTo(stock));
             Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.True,"Combat/paused deployment must never become a sale.");
             c.Tick(1);Assert.That(c.Battle.Clock,Is.Zero);c.LeaveShopTrial();yield return null;
         }
-        [UnityTest]public IEnumerator RecruitListBlocksTheMapAndSharesOneAtomicOfferWithTheTopCard()
+        [UnityTest]public IEnumerator DamageRankingIsPassiveAndBlocksTheMapIndependentlyOfTheShop()
         {
             yield return Load();var c=Controller;c.EnterShopTrial();c.SetShopVisible(true);
             Vector2 row=ManualBattleController.ShopRecruitRowRect(1).center;
-            Assert.That(c.ShopMapPointAvailable(row),Is.False);int gold=c.Shop.Gold,count=c.Shop.Bench.Count;
+            Assert.That(c.DamageRankingVisible,Is.True);Assert.That(c.ShopMapPointAvailable(row),Is.False);
+            int gold=c.Shop.Gold,count=c.Shop.Bench.Count;string[] offers=c.Shop.Offers.ToArray();
             c.ProcessShopPointer(EventType.MouseDown,row);c.ProcessShopPointer(EventType.MouseUp,row);
-            Assert.That(c.Shop.Gold,Is.EqualTo(gold),"An opening panel must not purchase through its moving contents.");
+            Assert.That(c.Shop.Gold,Is.EqualTo(gold));
             yield return new WaitForSecondsRealtime(.3f);
             string id=c.Shop.Offers[1];int cost=c.Shop.Definition(id).Cost;
             c.ProcessShopPointer(EventType.MouseDown,row);c.ProcessShopPointer(EventType.MouseUp,row);
-            Assert.That(c.Shop.Offers[1],Is.Null);Assert.That(c.Shop.Gold,Is.EqualTo(gold-cost));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count+1));
+            Assert.That(c.Shop.Offers,Is.EqualTo(offers),"The former recruit rows must no longer purchase offers.");
+            Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));
             Vector2 top=ManualBattleController.ShopOfferRect(1).center;
             c.ProcessShopPointer(EventType.MouseDown,top);c.ProcessShopPointer(EventType.MouseUp,top);
-            Assert.That(c.Shop.Gold,Is.EqualTo(gold-cost),"The list and upper card address the same five-slot inventory.");
+            Assert.That(c.Shop.Offers[1],Is.Null);Assert.That(c.Shop.Gold,Is.EqualTo(gold-cost),"Top offers retain the existing atomic purchase path.");
             Assert.That(c.Shop.Bench.Count,Is.EqualTo(count+1));Assert.That(c.Battle.Units,Is.Empty);c.Shop.Validate();
+            var bought=c.Shop.Bench.Single(p=>p.Id==id);int stock=c.Shop.Available(id);
+            Drag(c,PiecePoint(c,bought.Instance),new Vector2(1242,400));
+            Assert.That(c.Shop.Bench.Any(p=>p.Instance==bought.Instance),Is.True,"Dropping over the ranking's right edge must not fall through to the sale target.");
+            Assert.That(c.Shop.Gold,Is.EqualTo(gold-cost));Assert.That(c.Shop.Available(id),Is.EqualTo(stock));
             c.SetShopVisible(false);Assert.That(c.ShopMapPointAvailable(row),Is.False);yield return new WaitForSecondsRealtime(.22f);
-            Assert.That(c.ShopMapPointAvailable(row),Is.True);c.LeaveShopTrial();yield return null;
+            Assert.That(c.DamageRankingVisible,Is.True);Assert.That(c.ShopMapPointAvailable(row),Is.False,"The ranking remains visible when the shop is folded.");
+            c.Battle.Begin();c.Battle.SetPaused(true);gold=c.Shop.Gold;count=c.Battle.Units.Count;
+            c.ProcessShopPointer(EventType.MouseDown,row);c.ProcessShopPointer(EventType.MouseUp,row);
+            Assert.That(c.ShopMapPointAvailable(row),Is.False);Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Battle.Units.Count,Is.EqualTo(count));
+            c.LeaveShopTrial();yield return null;
         }
         [Test]public void ThreeRealStaticFontsLoadWithChineseDigitsAndNoVariableFontTable()
         {
@@ -148,8 +158,8 @@ namespace YesterdayConvoy.Tests
                 SetPrivate(c,modal,modal=="campaignConstructOpen"?(object)true:"整合运动");
                 Assert.That(c.ShopMapPointAvailable(oldPanelPoint),Is.False);Assert.That(c.ShopMapPointAvailable(Gate(c)),Is.False);
                 Drag(c,c.ShopPieceRect(0).center,Gate(c));
-                c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.ShopRecruitRowRect(0).center);
-                c.ProcessShopPointer(EventType.MouseUp,ManualBattleController.ShopRecruitRowRect(0).center);
+                c.ProcessShopPointer(EventType.MouseDown,ManualBattleController.ShopOfferRect(0).center);
+                c.ProcessShopPointer(EventType.MouseUp,ManualBattleController.ShopOfferRect(0).center);
                 Assert.That(c.Battle.Units,Is.Empty);Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));CollectionAssert.AreEqual(offers,c.Shop.Offers);
                 SetPrivate(c,modal,modal=="campaignConstructOpen"?(object)false:null);
                 Assert.That(c.ShopMapPointAvailable(oldPanelPoint),Is.True);

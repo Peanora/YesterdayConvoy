@@ -86,7 +86,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.FindCard(id).Settings.DeploymentCost,Is.EqualTo(highDP-1));
             Assert.That(c.Battle.ReunionAverageStar,Is.EqualTo(1),"Synergy snapshots read the selected low-star card, not the reserve maximum.");
             int stock=c.Shop.Available(id),count=c.Shop.Bench.Count;
-            Drag(c,low.Instance,ManualBattleController.ShopSellRightRect);
+            Drag(c,low.Instance,ManualBattleController.ShopRightSaleDropRect);
             Assert.That(c.Shop.Bench.Count,Is.EqualTo(count-1));Assert.That(c.Shop.Available(id),Is.EqualTo(stock+1));
             Assert.That(c.Battle.FindCard(id),Is.Null,"Selling a lineup card never pulls the same kind out of reserve.");
             Assert.That(Bounds(c,high.Instance),Is.EqualTo(reserveSeat));

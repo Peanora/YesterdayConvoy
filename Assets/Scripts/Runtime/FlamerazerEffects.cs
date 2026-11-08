@@ -67,7 +67,7 @@ namespace YesterdayConvoy
                     {
                         float hp=target.Health;
                         DamageDefender(target,UnitCombat(u).UnitAttack*.12f,CombatDamageType.Arts,source:u);
-                        ApplyBurn(target,UnitCombat(u).UnitAttack*.06f);
+                        ApplyBurn(target,UnitCombat(u).UnitAttack*.06f,u);
                         s.DamageDealt+=hp-target.Health;s.Ticks++;s.NextTick+=.5;
                     }
                     if(Clock+1e-6>=s.StartedAt+10.6||!target.Alive)EndSpray(u,!target.Alive);

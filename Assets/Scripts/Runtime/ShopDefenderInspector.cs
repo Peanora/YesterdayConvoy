@@ -6,7 +6,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattleController
     {
         string inspectedDefender;
-        public static Rect DefenderInspectorRect=>new Rect(945,110,316,410);
+        public static Rect DefenderInspectorRect=>new Rect(681,110,316,410);
         public bool DefenderInspectorVisible=>ShopTrialActive&&Battle.Defenders.Any(d=>d.EntityId==inspectedDefender);
         public string InspectedDefenderId=>inspectedDefender;
         public void CloseDefenderInspector()=>inspectedDefender=null;

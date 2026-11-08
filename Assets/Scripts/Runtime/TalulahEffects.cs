@@ -83,7 +83,7 @@ namespace YesterdayConvoy
                 unit.TalulahAutomaticWavesFired++;
                 float attack=UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit);
                 foreach(var defender in defenders)
-                    if(defender.Alive)DamageDefender(defender,attack,CombatDamageType.Arts,derived:true);
+                    if(defender.Alive)DamageDefenderFrom(defender,attack,CombatDamageType.Arts,unit,derived:true);
             }
         }
 

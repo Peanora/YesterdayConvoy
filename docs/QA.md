@@ -29,6 +29,16 @@
 - 运行源码 **685cd45784c0d2393c3e0a5c1b4d15f9ae93e252**；复用现有ReunionBuildTools.BuildWindows，Windows x64 Development构建 **1063614574 bytes / 0 errors**，build.log明确退出0；不修改工程构建设置。工程外TEMP启动可见D3D11独立Player：1600×900与1280×720各 **50/50、退出0**（player-visible-1600/result.json、player-visible-1280/result.json及各自exit.json）。新四星弩手实际2124HP/162攻、部署扣5DP；整合总星9→10同档倍率增加，雪怪/深池显示真实总星3及其倍率。三关D07实际220/260/340生命、24/30/48攻击，双方实际命中且首次发射距离约3.17，暂停/重开与正式免费转职禁用通过。
 - 首次隐藏Player逻辑50/50、退出0，但10张截图全黑（player-1600），未计可见画面验收。之后可见窗口各生成10张实际游戏相机截图；已实看1600雪怪详情/第11关及1280深池详情/第8关代表图。详情数字、完整说明和角色对射可见；既有长关卡标题在顶部窄栏换行裁切仍是UI待修项，本轮未改该布局。
 - 完整1972文件同步常用Builds/Windows，存在/长度0差异，Runtime DLL SHA256为407DC39469E0137DC147349F8D82B3256448A51D31D1AE888BD576E78B15C935，SOURCE.txt绑定运行源码（copy-check.json）。原56份既存文件SHA256零变化；只提交本轮源码、测试和文档，无场景/Prefab/Packages/ProjectSettings/新美术改动，不自动合并main、ZIP或Releases。第二机、自然十三关、徽章获取经济、全部阵容和最终长局平衡未测。
+## 2026-11-08：右侧伤害排行
+
+- 用户要求右侧招募清单改为伤害排行。基线为本轮fetch核实的main `7862d09`，功能分支`codex/damage-ranking`，关联#104；用户确认原52份Mandragora/Mephisto VFX meta原地保留，未暂存或提交。`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`继续保留。未改场景、Prefab、配置资产、Packages、ProjectSettings或游戏美术。
+- 完整EditMode **732/732**（`artifacts/damage-ranking/edit.xml`）；12个新增用例涵盖实际普攻/过量、同卡多实体/排序、暂停、死亡来源/治疗/重开/只读、维维美范围技能、束缚持续伤害、延迟死亡爆炸、灼燃/神经爆发、保护转移/债务/自损、共享来源、爱国者复起真伤及银狼收剑。首轮编译发现测试直接访问internal `WolfFinished`，改为断言公开的收剑目标和真实伤害后完整通过；未把编译失败记为测试通过。
+- 相关D3D11 PlayMode最终 **20/20**（`artifacts/damage-ranking/play-final.xml`）：ApprovedUiSceneTests、DamageRankingSceneTests、BattleShopLoopSceneTests、ShopMapSceneTests、ShopSeatInteractionTests。首轮相关11项10通过/1失败，原右侧出售夹具落在新排行内；保留生产拒绝出售行为，夹具改用右边缘实际空白出售区`ShopRightSaleDropRect`，并增加排行内松手不出售断言，扩大回归后20项全部通过。自然真实部署/交战、统计和暂停、重开清空、商店收起后阻挡、顶部购买、自由席位与两场商店闭环均通过；守军详情和实际有技能单位的面板/施放按钮几何避让通过。
+- `tools/check_repository.py`检查通过，新增源文件与meta均纳入核查。实际扣血归属与玩法触发来源分开，原攻击/技能/羁绊数值和触发不改。非单卡羁绊/场地伤害显式单列，元素积累本身不计伤害。
+- 最终运行源码 **`8cc7babe75dc13652c095d2569ced407f1fac999`**。复用`DeepPoolBuildTools.BuildWindows`动态保存场景目录，最终日志`artifacts/damage-ranking/build-visible-final.log`：**1063604449 bytes / 0 errors / 退出0**。完整1974文件同步常用`Builds/Windows`，全部源构建文件存在且长度一致，实际运行DLL SHA256 `987D75112010B723E43D69AB26A657D8D2A4F116CFB7E98A842CC87ED33999AC`一致；SOURCE.txt绑定运行源码（`copy-check.json`）。
+- 最终1280×720与1600×900可见D3D11独立Player从工程外TEMP启动，各 **19/19、退出0**（`player-final-1280/result.json`、`player-final-1600/result.json`）。真实指针部署七名角色、自然交战排序/总和、暂停冻结、商店收起后阻挡及自然胜利后记录保留均通过；总伤害22800，含八个单卡/共享来源。不注入假伤害。自动滚动尾部截图使用诊断滚动位置，只用于布局检查；其他交互走生产控制器指针，不冒称OS鼠标。初版可见截图发现默认水平滚动条挤占第五行，最终改为窄纵向滚动并重新构建、重跑两种分辨率，已实际查看完整五行、尾部、真实交战/暂停及终局地图画面。终局截图仍在死亡表现等待期，未将其称为收入结算面板的截图；收入面板几何已留出排行区域。
+- 另从常用最终EXE以普通`-synergySandbox`参数启动（不自动退出），通过computer-use实际OS滚轮从第1–5行滚至第3–7行，再拖纵向滚动条返回第1–5行，实际画面确认恢复。第一次拖动前工具检测到用户输入，重新观察后再操作并成功；不复用旧截图坐标。普通窗口保留供试玩，OS工具截图未另行导出；自动证据PNG保存在上述目录。
+- 原52份既存VFX meta逐文件SHA256与开工一致；本地未跟踪项未提交。开工分支`codex/blackforest-six-star`原样保留，其未合并内容不混入本main基线功能分支。尚未运行全量PlayMode、第二台电脑和长局试玩；无ZIP/Releases或自动合并main。
 
 ## 2026-11-07：牌库与自由席位
 

@@ -71,13 +71,13 @@ namespace YesterdayConvoy
             }
             return true;
         }
-        void ApplyBurn(DefenderState d,float amount)
+        void ApplyBurn(DefenderState d,float amount,DeployedUnitState source=null)
         {
             if(!d.Alive||amount<=0||d.BurnUntil>Clock)return;
             d.BurnAccumulated+=amount;
             if(d.BurnAccumulated<100)return;
             d.BurnAccumulated=0;d.BurnUntil=Clock+10;BurnBursts++;
-            DamageDefender(d,120,CombatDamageType.Arts);
+            DamageDefenderFrom(d,120,CombatDamageType.Arts,source);
         }
     }
 }

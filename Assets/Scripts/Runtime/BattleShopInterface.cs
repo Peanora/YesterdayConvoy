@@ -124,6 +124,7 @@ namespace YesterdayConvoy
                 if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)
                 {if(suppressed)e.type=originalEvent;DrawLoopSettlement();}
                 if(shopDrag>=0&&shopMoving)DrawShopSaleTargets(point);
+                DrawDamageRanking();
                 if(loopMenuOpen){if(suppressed)e.type=originalEvent;DrawLoopMenu();}
                 if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)
                 {if(suppressed)e.type=originalEvent;DrawLoopTestSettlement();}
@@ -185,7 +186,7 @@ namespace YesterdayConvoy
         void DrawLoopSettlement()
         {
             Fill(new Rect(0,0,1280,720),new Color(.10f,.16f,.21f,.38f));
-            Fill(new Rect(176,152,952,416),ApprovedUi.Paper);ShopBorder(new Rect(176,152,952,416),ApprovedUi.Rule,1);
+            Fill(new Rect(176,152,820,416),ApprovedUi.Paper);ShopBorder(new Rect(176,152,820,416),ApprovedUi.Rule,1);
             var reward=Loop.Reward;bool failed=Loop.Phase==BattleShopPhase.Failed;
             Color accent=failed?new Color(.65f,.31f,.25f):new Color(.28f,.47f,.61f);
             Fill(new Rect(176,152,5,416),accent);
@@ -195,17 +196,17 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(206,350,330,45),SynergySandbox?"保留阵容和培养，返回整备继续下一轮":failed?"本次挑战结束":Loop.Phase==BattleShopPhase.Complete?CampaignActive?"三阶段挑战完成":"两道防线均已突破":"补充阵容后迎战下一道防线",LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted));
             DrawGolemSettlementFeedback();
             string[] names={"基础奖励","利息","连胜奖励"};int[] values={reward.Base,reward.Interest,reward.Streak};
-            GUI.Label(new Rect(590,174,496,28),"本场收入",LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(590,174,376,28),"本场收入",LoopText(13,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             for(int i=0;i<3;i++)
             {
                 float y=217+i*44;GUI.Label(new Rect(590,y,270,32),names[i],LoopText(17));
-                GUI.Label(new Rect(960,y,126,32),"+"+values[i],LoopText(18,TextAnchor.MiddleRight,null,600));
-                Fill(new Rect(590,y+37,496,1),new Color(.69f,.76f,.80f,.6f));
+                GUI.Label(new Rect(840,y,126,32),"+"+values[i],LoopText(18,TextAnchor.MiddleRight,null,600));
+                Fill(new Rect(590,y+37,376,1),new Color(.69f,.76f,.80f,.6f));
             }
             GUI.Label(new Rect(590,368,180,40),"金币合计",LoopText(17));
-            GUI.Label(new Rect(813,364,273,44),shop.UnlimitedGold?"∞":$"{reward.GoldBefore} → {shop.Gold}",LoopText(29,TextAnchor.MiddleRight,new Color(.49f,.36f,.16f),600));
-            GUI.Label(new Rect(590,427,496,28),$"经验 +{reward.Experience}    等级 {shop.Level}    {shop.XP}/{shop.NextLevelXP}",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            if(LoopButton(new Rect(590,488,496,48),Loop.Phase==BattleShopPhase.Settlement?"前往商店":BlackForestChallengeActive?"返回整备再次挑战":SynergySandbox?"返回整备继续验证":"开始新挑战",true))
+            GUI.Label(new Rect(693,364,273,44),shop.UnlimitedGold?"∞":$"{reward.GoldBefore} → {shop.Gold}",LoopText(29,TextAnchor.MiddleRight,new Color(.49f,.36f,.16f),600));
+            GUI.Label(new Rect(590,427,376,28),$"经验 +{reward.Experience}    等级 {shop.Level}    {shop.XP}/{shop.NextLevelXP}",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            if(LoopButton(new Rect(590,488,376,48),Loop.Phase==BattleShopPhase.Settlement?"前往商店":BlackForestChallengeActive?"返回整备再次挑战":SynergySandbox?"返回整备继续验证":"开始新挑战",true))
             {if(Loop.Phase==BattleShopPhase.Settlement)OpenLoopShop();else if(SynergySandbox)ReplaySandbox();else RestartCurrentRun();}
         }
         void DrawLoopMenu()
