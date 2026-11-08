@@ -91,19 +91,29 @@ namespace YesterdayConvoy
             public MapResult[] maps;
             public Check[] checks;
         }
+        [Serializable]public sealed class LaunchResult
+        {
+            public bool passed;
+            public string route,expectedScene,actualScene,error;
+            public string scope="Independent observation of ordinary -approvedMaps or -approvedMap N startup. This driver never opens the menu or loads a scene, and does not bypass CampaignBootstrap. Direct-map preparation may programmatically accept its configured default form through the production close API. Screenshots are actual Player frames; no OS mouse interaction is claimed.";
+            public int requestedIndex,width,height;
+            public double routingSeconds;
+            public Check[] checks;
+        }
         static bool started;
         public static bool Requested=>Array.Exists(Environment.GetCommandLineArgs(),arg=>arg=="-approvedMapsSmokeTest");
+        public static bool LaunchRequested=>Array.Exists(Environment.GetCommandLineArgs(),arg=>arg=="-approvedMapLaunchSmokeTest");
         public static string EvidenceDirectory()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-approvedMapEvidenceDir");
             return at>=0&&at+1<args.Length?Path.GetFullPath(args[at+1]):Path.Combine(Application.persistentDataPath,"ApprovedMapEvidence");
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void Prepare(){if(Requested)Application.runInBackground=true;}
+        static void Prepare(){if(Requested||LaunchRequested)Application.runInBackground=true;}
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Begin()
         {
-            if(started||!Requested||!Debug.isDebugBuild)return;
+            if(started||!Requested&&!LaunchRequested||!Debug.isDebugBuild)return;
             started=true;var host=new GameObject("Approved-map verification");DontDestroyOnLoad(host);host.AddComponent<ApprovedMapSmokeDriver>();
         }
 
@@ -259,6 +269,7 @@ namespace YesterdayConvoy
 
         IEnumerator Start()
         {
+            if(LaunchRequested){yield return LaunchEvidence();yield break;}
             string directory=EvidenceDirectory();Directory.CreateDirectory(directory);
             var result=new Result{width=Screen.width,height=Screen.height};var maps=new List<MapResult>();var checks=new List<Check>();
             float previousScale=Time.timeScale;Time.timeScale=0;
@@ -280,6 +291,86 @@ namespace YesterdayConvoy
             result.passed=string.IsNullOrEmpty(result.error)&&maps.Count==8&&maps.All(map=>map.passed)&&checks.All(check=>check.passed);
             File.WriteAllText(Path.Combine(directory,"result.json"),JsonUtility.ToJson(result,true));
             Debug.Log("APPROVED_MAPS_RESULT: passed="+result.passed+"; maps="+maps.Count+"; checks="+(checks.Count+maps.Sum(map=>map.checks?.Length??0))+"; noInjectedDamage=True; noForcedVictory=True");
+            Application.Quit(result.passed?0:1);
+        }
+
+        IEnumerator LaunchChecks(LaunchResult result,string directory,List<Check> checks)
+        {
+            Action<string,bool> check=(name,ok)=>{checks.Add(new Check{name=name,passed=ok});Debug.Log("APPROVED_MAP_LAUNCH_CHECK "+name+"="+ok);};
+            var args=Environment.GetCommandLineArgs();bool selector=Array.IndexOf(args,"-approvedMaps")>=0;
+            int at=Array.IndexOf(args,"-approvedMap"),index=0;
+            bool direct=at>=0&&at+1<args.Length&&int.TryParse(args[at+1],out index);
+            result.route=selector?"-approvedMaps":direct?"-approvedMap "+index:"missing ordinary launch argument";
+            result.requestedIndex=selector?0:index;
+            var map=selector?null:ApprovedMapCatalog.All.FirstOrDefault(item=>item.index==index);
+            check("ordinary-startup-argument-without-traversal-driver",!Requested&&(selector||direct&&map!=null));
+            if(Requested||!selector&&(!direct||map==null))throw new InvalidOperationException("Launch evidence requires -approvedMaps or -approvedMap N, without -approvedMapsSmokeTest.");
+            result.expectedScene=selector?"MonsterTrial":map.sceneName;
+            double start=Time.realtimeSinceStartupAsDouble,deadline=start+30;
+            ManualBattleController controller=null;bool routed=false;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                controller=Object.FindAnyObjectByType<ManualBattleController>();
+                if(SceneManager.GetActiveScene().name==result.expectedScene&&controller!=null)
+                {
+                    if(selector)routed=controller.TestSelectionOpen&&controller.ApprovedMapMenuOpen&&!controller.ArtLoading;
+                    else
+                    {
+                        var bootstrap=Object.FindAnyObjectByType<ApprovedMapBootstrap>();
+                        routed=bootstrap!=null&&bootstrap.map==map;
+                    }
+                    if(routed)break;
+                }
+                yield return null;
+            }
+            result.routingSeconds=Time.realtimeSinceStartupAsDouble-start;result.actualScene=SceneManager.GetActiveScene().name;
+            check("production-launch-routed-within-thirty-seconds",routed&&result.routingSeconds<=30);
+            if(!routed)throw new InvalidOperationException("Ordinary startup did not reach "+result.expectedScene+"; actual scene="+result.actualScene);
+            var profiles=ApprovedMapCatalog.All;
+            check("eight-available-profiles-and-loaded-previews",profiles.Length==8&&profiles.Select(item=>item.index).SequenceEqual(Enumerable.Range(1,8))&&
+                profiles.All(item=>item.encounter!=null&&item.encounter.mapId==item.id&&item.preview!=null&&item.preview.width>0&&item.preview.height>0));
+            if(selector)
+            {
+                yield return null;yield return null;
+                check("ordinary-menu-open-without-driver-opening-it",SceneManager.GetActiveScene().name=="MonsterTrial"&&controller.TestSelectionOpen&&
+                    controller.ApprovedMapMenuOpen&&!controller.ShopTrialActive&&!controller.ApprovedMapActive&&Object.FindAnyObjectByType<ApprovedMapBootstrap>()==null);
+                yield return Capture(directory,"00-normal-launch-selector",check);
+            }
+            else
+            {
+                // Routing has already happened in production. Ready only waits for asset
+                // preparation and accepts an existing default form; it performs no routing.
+                yield return ApprovedMapEvidenceProbe.Ready(map.id,ready=>controller=ready);
+                check("ordinary-direct-map-profile-and-preparation",SceneManager.GetActiveScene().name==map.sceneName&&controller.ApprovedMap==map&&
+                    controller.ApprovedMapActive&&controller.Loop.CanShop&&controller.Shop.Level==8&&controller.Battle.DP==50&&controller.Battle.Defense==6&&
+                    controller.Battle.Units.Count==0&&ApprovedMapEvidenceProbe.NormalProfiles(controller)&&ApprovedMapEvidenceProbe.StockConserved(controller));
+                check("ordinary-direct-map-saved-terrain",Object.FindObjectsByType<ApprovedMapTile>(FindObjectsSortMode.None).Length==map.width*map.height);
+                yield return Capture(directory,"01-normal-direct-map",check);
+            }
+            result.actualScene=SceneManager.GetActiveScene().name;
+        }
+
+        IEnumerator LaunchEvidence()
+        {
+            string directory=EvidenceDirectory();Directory.CreateDirectory(directory);
+            var result=new LaunchResult{width=Screen.width,height=Screen.height};var checks=new List<Check>();
+            var stack=new Stack<IEnumerator>();stack.Push(LaunchChecks(result,directory,checks));
+            while(stack.Count>0)
+            {
+                bool moved=false;object current=null;Exception failure=null;
+                try{moved=stack.Peek().MoveNext();if(moved)current=stack.Peek().Current;}catch(Exception error){failure=error;}
+                if(failure!=null)
+                {
+                    result.error=failure.ToString();Debug.LogException(failure);
+                    while(stack.Count>0)(stack.Pop() as IDisposable)?.Dispose();break;
+                }
+                if(!moved){(stack.Pop() as IDisposable)?.Dispose();continue;}
+                if(current is IEnumerator child){stack.Push(child);continue;}
+                yield return current;
+            }
+            result.checks=checks.ToArray();result.passed=string.IsNullOrEmpty(result.error)&&checks.Count>0&&checks.All(check=>check.passed);
+            File.WriteAllText(Path.Combine(directory,"launch-result.json"),JsonUtility.ToJson(result,true));
+            Debug.Log("APPROVED_MAP_LAUNCH_RESULT: passed="+result.passed+"; route="+result.route+"; scene="+result.actualScene+"; checks="+checks.Count+"; noForcedOpen=True; noDriverSceneLoad=True");
             Application.Quit(result.passed?0:1);
         }
     }

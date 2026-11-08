@@ -76,7 +76,7 @@ namespace YesterdayConvoy
             string[] args = Environment.GetCommandLineArgs();
             diagnostic = SynergyActivationSmokeDriver.Requested || Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
-            diagnostic |= ApprovedMapSmokeDriver.Requested;
+            diagnostic |= ApprovedMapSmokeDriver.Requested||ApprovedMapSmokeDriver.LaunchRequested;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
