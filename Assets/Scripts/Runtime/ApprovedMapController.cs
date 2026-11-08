@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         static bool approvedLaunchMenuShown;
         void TryOpenApprovedLaunchMenu()
         {
-            if(approvedLaunchMenuShown||FindAnyObjectByType<ApprovedMapBootstrap>()!=null||Array.IndexOf(Environment.GetCommandLineArgs(),"-approvedMaps")<0)return;
+            if(approvedLaunchMenuShown||SceneManager.GetActiveScene().name!="MonsterTrial"||FindAnyObjectByType<ApprovedMapBootstrap>()!=null||Array.IndexOf(Environment.GetCommandLineArgs(),"-approvedMaps")<0)return;
             approvedLaunchMenuShown=true;OpenApprovedMapMenu();
         }
         public ApprovedMapDefinition ApprovedMap=>activeApprovedMap!=null&&TacticalMapId==activeApprovedMap.id?activeApprovedMap:null;

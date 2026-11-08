@@ -260,7 +260,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(25,y+31,650,24),$"援军{Battle.MusterUsed} 碎冰{Battle.Shatters} 军令{Battle.Orders}"+(rule.Tier>0?$"（开战{rule.InitialOrders} / 满{rule.Cost}点自动整令 / 不限次）":"")+" · "+(Battle.MudrockTier>=2?$"巨像{Battle.GolemStage}/{Battle.GolemCapacity}级 XP{Loop.GolemExperience}":"巨像未解锁"),CampaignText(11));
             if(Loop.CanShop)
             {
-                GUI.Label(new Rect(25,y+56,388,22),BlackForestChallengeActive?$"波次独立DP · 总预算 {Battle.WavePlan.Waves.Sum(w=>w.DP)} · {Battle.Settings.InitialDefense}共享防御":SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 分费用库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
+                GUI.Label(new Rect(25,y+56,388,22),ApprovedMapActive?"无限金币 · 正常角色数值 · 50DP / 6共享防御":BlackForestChallengeActive?$"波次独立DP · 总预算 {Battle.WavePlan.Waves.Sum(w=>w.DP)} · {Battle.Settings.InitialDefense}共享防御":SynergySandbox?(golemBenchmark?"IV/V原数值基准 · 全费用委托 · 分费用库存":"无限金币 · 全费用委托 · 怪物血×4伤×2 / 守军血×12伤×8"):"每次整备限一次低费委托，失败不扣费",CampaignText(11));
                 var eligible=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>SynergySandbox||shop.Definition(id).Cost<=3).OrderBy(id=>id).ToArray();
                 if(!eligible.Contains(commissionTarget))commissionTarget=eligible.FirstOrDefault();
                 if(commissionTarget!=null&&LoopButton(new Rect(25,y+84,230,30),"委托："+shop.Definition(commissionTarget).Name))commissionTarget=eligible[(Array.IndexOf(eligible,commissionTarget)+1)%eligible.Length];
