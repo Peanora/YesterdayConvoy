@@ -54,7 +54,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
                 if(d.Alive&&GroundDistance(d.Position,u.Motion.Position)<=1.75f)
                 {
-                    float hp=d.Health;ApplyDefenderLoss(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f);
+                    float hp=d.Health;ApplyRankedDefenderLoss(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.0521f,u,true);
                     u.ImmolationDamage+=hp-d.Health;d.LastHitTime=Clock;if(!d.Alive)d.DeathTime=Clock;
                 }
         }

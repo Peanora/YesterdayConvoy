@@ -44,7 +44,7 @@ namespace YesterdayConvoy
                 var c=UnitCombat(unit);
                 var targets=defenders.Where(d=>d.Alive&&GroundDistance(cast.Position,d.Position)<=c.SkillRange)
                     .OrderBy(d=>GroundDistance(cast.Position,d.Position)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).ToArray();
-                foreach(var d in targets)DamageDefender(d,c.SkillAttack*UnitAttackMultiplier(unit),CombatDamageType.Arts);
+                foreach(var d in targets)DamageDefenderFrom(d,c.SkillAttack*UnitAttackMultiplier(unit),CombatDamageType.Arts,unit);
                 foreach(var d in targets.Where(d=>d.Alive).Take(2))
                 {
                     d.FrozenUntil=Math.Max(d.FrozenUntil,Clock+FrostSealCast.FreezeDuration);

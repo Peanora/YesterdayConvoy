@@ -55,7 +55,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)if(d.Alive&&(highest==null||d.Health>highest.Health))highest=d;
             if(highest==null)return;
             shot.WolfBonusTargetId=highest.EntityId;
-            float before=highest.Health;TrueDamage(highest,shot.DamageDealt*.20f);shot.DamageDealt+=before-highest.Health;
+            float before=highest.Health;SourcedTrueDamage(highest,shot.DamageDealt*.20f,source);shot.DamageDealt+=before-highest.Health;
         }
     }
 }

@@ -68,7 +68,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.ShopArrivalCount,Is.Zero);Assert.That(c.ShopBenchModel(bought.Instance).sprite.name,Does.StartWith("M02/idle/"));
             int boughtSlot=c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance);var bounds=c.ShopPieceRect(boughtSlot);
             var bottom=new Vector2(bounds.center.x,bounds.yMax-2);
-            var sale=ManualBattleController.ShopSellRightRect.center;
+            var sale=ManualBattleController.ShopRightSaleDropRect.center;
             int gold=c.Shop.Gold;
             c.ProcessShopPointer(EventType.MouseDown,bottom);c.ProcessShopPointer(EventType.MouseUp,bottom);Assert.That(c.Shop.Gold,Is.EqualTo(gold),"A tap near the lower edge must not sell.");
             bounds=c.ShopPieceRect(c.Shop.Bench.ToList().FindIndex(p=>p.Instance==bought.Instance));bottom=new Vector2(bounds.center.x,bounds.yMax-2);

@@ -166,7 +166,9 @@ namespace YesterdayConvoy
                 Rect unit=UnitScreenRect(selectedEntityId);
                 float x=unit.xMax+18;
                 if(x+214>1264) x=unit.xMin-232;
-                return new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
+                var panel=new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
+                if(DamageRankingVisible&&panel.Overlaps(DamageRankingPanelRect))panel.x=DamageRankingPanelRect.x-panel.width-12;
+                return panel;
             }
         }
         public Rect SkillCastRect { get { Rect panel=SkillPopupRect; return new Rect(panel.x+14,panel.y+45,66,66); } }

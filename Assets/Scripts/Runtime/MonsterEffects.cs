@@ -231,7 +231,7 @@ namespace YesterdayConvoy
             foreach(var defender in defenders)
             {
                 if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>2) continue;
-                ring.TargetsHit++;DamageDefender(defender,UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts);
+                ring.TargetsHit++;DamageDefenderFrom(defender,UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts,unit);
                 if(!defender.Alive) continue;
                 if(defender.FrostSlowUntil<=Clock) defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)*2;
                 defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+8);
@@ -247,9 +247,15 @@ namespace YesterdayConvoy
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type,bool derived=false,DeployedUnitState source=null,float damageScale=1)
+            =>ApplyDefenderAttack(defender,attack,type,derived,source,damageScale,source);
+        // Statistics attribution is independent of on-hit gameplay procs. Native abilities
+        // which previously had no proc source must retain that behavior.
+        void DamageDefenderFrom(DefenderState defender,float attack,CombatDamageType type,DeployedUnitState creditSource,bool derived=false,float damageScale=1)
+            =>ApplyDefenderAttack(defender,attack,type,derived,null,damageScale,creditSource);
+        void ApplyDefenderAttack(DefenderState defender,float attack,CombatDamageType type,bool derived,DeployedUnitState source,float damageScale,DeployedUnitState creditSource)
         {
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale);
+            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale,creditSource,true);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
             if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);
@@ -292,7 +298,7 @@ namespace YesterdayConvoy
                 foreach(var defender in defenders)
                 {
                     if(!defender.Alive || GroundDistance(blast.Position,defender.Position)>blast.Radius) continue;
-                    blast.TargetsHit++;DamageDefender(defender,effects.BlastAttack,CombatDamageType.Physical);
+                    blast.TargetsHit++;DamageDefenderFrom(defender,effects.BlastAttack,CombatDamageType.Physical,FindUnit(blast.SourceId));
                     if(defender.Alive && effects.ColdDuration>0) TryApplyCold(defender.EntityId,effects.ColdDuration);
                 }
             }

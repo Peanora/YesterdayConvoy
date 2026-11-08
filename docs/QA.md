@@ -2045,3 +2045,11 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 
 
 最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。
+## 2026-11-08：右侧伤害排行
+
+- 用户要求右侧招募清单改为伤害排行。基线为本轮fetch核实的main `7862d09`，功能分支`codex/damage-ranking`，关联#104；用户确认原52份Mandragora/Mephisto VFX meta原地保留，未暂存或提交。`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`继续保留。未改场景、Prefab、配置资产、Packages、ProjectSettings或游戏美术。
+- 完整EditMode **732/732**（`artifacts/damage-ranking/edit.xml`）；12个新增用例涵盖实际普攻/过量、同卡多实体/排序、暂停、死亡来源/治疗/重开/只读、维维美范围技能、束缚持续伤害、延迟死亡爆炸、灼燃/神经爆发、保护转移/债务/自损、共享来源、爱国者复起真伤及银狼收剑。首轮编译发现测试直接访问internal `WolfFinished`，改为断言公开的收剑目标和真实伤害后完整通过；未把编译失败记为测试通过。
+- 相关D3D11 PlayMode最终 **20/20**（`artifacts/damage-ranking/play-final.xml`）：ApprovedUiSceneTests、DamageRankingSceneTests、BattleShopLoopSceneTests、ShopMapSceneTests、ShopSeatInteractionTests。首轮相关11项10通过/1失败，原右侧出售夹具落在新排行内；保留生产拒绝出售行为，夹具改用右边缘实际空白出售区`ShopRightSaleDropRect`，并增加排行内松手不出售断言，扩大回归后20项全部通过。自然真实部署/交战、统计和暂停、重开清空、商店收起后阻挡、顶部购买、自由席位与两场商店闭环均通过；守军详情和实际有技能单位的面板/施放按钮几何避让通过。
+- `tools/check_repository.py`检查通过，新增源文件与meta均纳入核查。实际扣血归属与玩法触发来源分开，原攻击/技能/羁绊数值和触发不改。非单卡羁绊/场地伤害显式单列，元素积累本身不计伤害。
+- 尚未运行全量PlayMode、第二台电脑和长局试玩；Windows构建与独立Player结果待本轮后续补录。
+

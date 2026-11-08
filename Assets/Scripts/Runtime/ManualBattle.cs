@@ -244,7 +244,7 @@ namespace YesterdayConvoy
 
         public void Restart()
         {
-            RunId++;ResetCombatFeedback();
+            RunId++;ResetCombatFeedback();ResetDamageRanking();
             units.Clear(); committed.Clear(); sequence = 0;ResetSynergies();
             DP = Settings.InitialDP; RemainingUses = Settings.DeploymentLimit; Defense = Settings.InitialDefense;
             Clock = nextDeploymentTime = nextShotTime = 0;

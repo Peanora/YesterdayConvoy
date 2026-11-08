@@ -61,6 +61,8 @@ namespace YesterdayConvoy
             }
         }
         void ApplyDefenderLoss(DefenderState d,float loss)
+            =>ApplyRankedDefenderLoss(d,loss,null,false);
+        void ApplyRankedDefenderLoss(DefenderState d,float loss,DeployedUnitState creditSource,bool recordDamage)
         {
             if(!d.Alive)return;
             float feedbackHealth=d.Health;Vector3 feedbackPosition=d.Position;
@@ -68,9 +70,9 @@ namespace YesterdayConvoy
             if(loss>=d.Health&&!d.DebtLife)
                 foreach(var protector in defenders)
                     if(protector!=d&&protector.Alive&&protector.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&protector.ProtectionUntil>Clock&&GroundDistance(protector.Position,d.Position)<=protector.Settings.Skill.EffectRadius)
-                    {float excess=loss-Math.Max(0,d.Health-1);loss-=excess;float paid=Math.Min(protector.Health,excess);float protectorBefore=protector.Health;protector.Health-=paid;RecordDefenderHealthLoss(protector,protectorBefore,protector.Position);protector.Debt+=excess-paid;if(protector.Health<=0)protector.DebtLife=true;protector.ProtectedHits++;break;}
+                    {float excess=loss-Math.Max(0,d.Health-1);loss-=excess;float paid=Math.Min(protector.Health,excess);float protectorBefore=protector.Health;protector.Health-=paid;RecordDefenderHealthLoss(protector,protectorBefore,protector.Position);if(recordDamage)CreditDamage(creditSource,Math.Max(0,protectorBefore-protector.Health));protector.Debt+=excess-paid;if(protector.Health<=0)protector.DebtLife=true;protector.ProtectedHits++;break;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&loss>=d.Health)
-            {if(DefenderSkillActive(d)){EndMon3tr(d,true);RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);return;}if(d.ProtectionUntil>Clock){d.Health=1;RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);return;}}
+            {if(DefenderSkillActive(d)){EndMon3tr(d,true);RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);if(recordDamage)CreditDamage(creditSource,Math.Max(0,feedbackHealth-d.Health));return;}if(d.ProtectionUntil>Clock){d.Health=1;RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);if(recordDamage)CreditDamage(creditSource,Math.Max(0,feedbackHealth-d.Health));return;}}
             if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno)
             {
                 d.LastReceivedDamage=Clock;
@@ -81,6 +83,7 @@ namespace YesterdayConvoy
             }
             else d.Health=Math.Max(0,d.Health-loss);
             RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);
+            if(recordDamage)CreditDamage(creditSource,Math.Max(0,feedbackHealth-d.Health));
         }
         void ScheduleMon3trChain(DefenderState d,DefenderState first,float travel)
         {

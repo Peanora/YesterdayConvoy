@@ -50,7 +50,7 @@ namespace YesterdayConvoy
                 if(u==null||!u.Active||d==null||!d.Alive||u.PillarStunnedUntil>Clock||u.ShackleStunnedUntil>Clock||u.ShackleSilencedUntil>Clock)
                 {if(u!=null)EndShackle(u,true);continue;}
                 while(s.Ticks<20&&Clock+1e-6>=s.StartedAt+s.Ticks+1&&d.Alive)
-                {s.Ticks++;float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.35f,CombatDamageType.Arts);s.DamageDealt+=hp-d.Health;}
+                {s.Ticks++;float hp=d.Health;DamageDefenderFrom(d,UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*.35f,CombatDamageType.Arts,u);s.DamageDealt+=hp-d.Health;}
                 if(!d.Alive)EndShackle(u,true);
                 else if(Clock+1e-6>=s.StartedAt+20)EndShackle(u,false);
             }
