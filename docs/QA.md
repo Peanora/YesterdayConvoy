@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-10：渐进守军、降低生命攻击与正常运营全程重放
+
+- 范围：延续codex/thirteen-stage-campaign-v2，起点fef84fb；fetch核实origin/main仍为7862d09且是当前分支祖先。只改Journey源配置/生成资产、既有仿真工具、配置测试和文档。既存.vscode三文件及PackageManagerSettings的SHA256与开工前相同，不暂存。没有场景、Prefab、Packages、ProjectSettings或新美术修改。
+- 参数：战斗节点2/3/5/6/7/9/10/12守军1/2/3/4/5/8/10/12；保留守军HP相对fef84fb分别乘.45/.45/.35/.30/.30/.22/.22/.20，攻击乘.40/.40/.25/.25/.25/.22/.22/.22。原甲、范围、技能、T档、地图/波次/时长、DP、金币/XP与防御目标保持。终关芙蓉(12,4)距塞雷娅sqrt13，阻断芙蓉3.5范围的回奶，保留塞雷娅4范围的反向支援；合法H格、实体ID/位置唯一由Author/Validate核验。
+- 数据流：journey-authoring.json由CampaignJourneyTools.Author生成Journey和八份StageXXBattle，Runtime按既有Session/Controller只读深复制；本轮不改战斗公式或按阵容强制胜负。提示人数和实际路线已同步，节点6为R1/R3、节点7为R1/R2。
+- 基线与迭代：原参数3种子×7政策、每场至多18出兵策略的21条搜索，20条在节点3止步、1条在5止步，无全程见证。A档仍偏难；B档下诊断出原搜索囤积84–92金却仅6–7人口、只部署两种成员而无法调集援军。既有工具新增真实支出/8人口转型政策、公平用于配对双方的廉价多种先手及快怪后手；没有改单位/战斗公式、注金、注伤害、无限刷新或强制结算。旧/新参数搜索策略不同，不能把全部改善仅归因于守军倍率。
+- 最终模型：final-search.json为3种子×2政策、每场最多42策略的有界全胜搜索；seed73191/formation-funded-transition正常赠卡、买牌、委托、刷新、经验与库存事务后12节点/8战全胜。累计战斗583.70模拟秒、41次部署、奖励184金、净花费168金，5+184−168=21；终关9级、122.30秒/6次部署。一星塔露拉和泥岩、二星盾卫与常用低费主力、三星低费弩手及一星猎犬均由真实有限库存取得，详细逐星名单见行动说明。六条搜索实际1全胜、3条首败9、2条首败7；失败分支不等于实际HP归零。
+- 配对：final-boundaries.json共22夹具、924场、11组配对；同人口、等级、星级、费用与星级联合分布及基础购卡成本逐组检查。第6全两星六人24/42对混编0/42，第7同组42/42对0/42；终关37金塔露拉二星核心7/42对0/42。第9同组混编23/42胜于核心7/42，另八整合样板终关0/42，均保留反例。分母为出兵策略数量，不能称为玩家胜率；夹具Preset库存/星级，不冒充自然获取。完整11组结果见行动说明。
+- Unity6000.6.5f1：完整EditMode989/989、六组D3D11 GPU PlayMode29/29通过（CampaignJourneyScene、ShopSeatInteraction、SynergyActivationScene、GuerrillaOrderScene、SnowstormScene、EngagementScene）。删除16项旧固定HP/核心面板镜像断言，新增源/生成一致与合法资源/面板约束；人数测试验证每战增加1–3人、9前少于8、9首次8及终关12，费用/经济/技能机制仍回归。
+- Windows x64 Development：CampaignJourneyTools.BuildWindows输出1068109871 bytes、0 errors，常用Builds/Windows/YesterdayConvoy.exe已更新。1280×720和1600×900可见独立Player均full-natural-replay、seed73191、completedStages=12、combatScenes=8、naturalJourneyCompleted=true，各12562/12562通过、正常退出0。先检查真实初始赠卡/商店/奖励拖动/暂停/跨关偏好，再逐节点调用生产购买、经验、席位、拖入红门和技能接口；不预置成品阵容，不注血、注伤害或强制胜负。终局生命100/100、8/8突破、9级、41部署、21金。1280图已核对首Boss3守军和最终结算布局。
+- 仓库检查8192跟踪文件通过；git diff --check通过。开工本地文件保留；提交前另核暂存对象与磁盘一致，记录提交/PR和最终EXE来源。未运行完整PlayMode、真实OS鼠标/人类整局、第二机/新克隆；这些不登记为通过。没有启动脚本、ZIP、Releases或自动合并。
+
+证据保存在忽略目录artifacts/campaign-2026-11-10-soften：baseline-search、candidate-A/B、final-search、final-boundaries、edit-final.xml、play.xml、build.log及player-1280/player-1600。复现使用现有Unity批处理入口CampaignJourneySimulationTools.AuthorAndEvaluate，参数为`-journeySearchSeeds 73191,44,31016 -journeyEconomyPolicies formation-funded-pairs,formation-funded-transition -journeySearchAllSeeds true -journeySearchLimit 6 -journeyDeploymentVariants 42 -journeyBoundaryStages 3,6,7,9,12 -journeyBoundaryMatchedOnly true -journeyBoundaryVariants 42`，配合显式Search/Boundary输出路径。独立Player用`-campaignJourneySmokeTest -campaignJourneyReplayFile <final-search.json> -campaignJourneyEvidenceDir <output>`，选择1280×720或1600×900、D3D11；不生成启动脚本。
+
 ## 2026-11-10：整合运动本体强化、塔露拉与运营参考
 
 - 用户明确确认2/4/6/8整合成员最大生命/攻击＋10/20/30/40%，包含五费，保留援军；随后要求接入游戏并提供前中后期阵容和D牌等级。继续现有试玩反馈分支，fetch核实main为7862d09且是当前分支祖先；未自动合并。既存.vscode/和PackageManagerSettings按本地规则保留，不暂存。无场景、Prefab、Packages、ProjectSettings或新美术修改。

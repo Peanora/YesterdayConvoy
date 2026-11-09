@@ -1,6 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
+using YesterdayConvoy.Editor;
 
 namespace YesterdayConvoy.Tests
 {
@@ -18,34 +20,58 @@ namespace YesterdayConvoy.Tests
             Assert.That(journey.stages.All(s => s.naturalXP == 2), Is.True);
         }
 
-        [TestCase(2, 780)] [TestCase(3, 1420)] [TestCase(5, 8700)] [TestCase(6, 9732)]
-        [TestCase(7, 12234)] [TestCase(9, 20440)] [TestCase(10, 28112)] [TestCase(12, 48300)]
-        public void StageHpTotalsUseRoundedScopedStrengthening(int stage, int expected)
+        [Test] public void SavedJourneyMatchesCurrentAuthoringWithoutRewritingSandboxAssets()
         {
-            var entry = CampaignJourneyCatalog.Stage(stage);
-            Assert.That(entry.encounter.defenders.Sum(d => d.health), Is.EqualTo(expected));
-            Assert.That(entry.encounter, Is.Not.SameAs(entry.map.encounter));
-            Assert.That(entry.encounter.attackWaves, Is.Not.Null);
-            Assert.That(entry.dp, Is.EqualTo(entry.encounter.WaveSnapshot().Waves.Sum(w => w.DP)));
-            Assert.That(entry.encounter.defenders.Length, Is.EqualTo(entry.guardTiers.Length));
+            Assert.DoesNotThrow(CampaignJourneyTools.Validate);
+        }
+
+        [Test] public void BattlesKeepIndependentResourcesAndFinitePositiveCombatPanels()
+        {
+            var battles = CampaignJourneyCatalog.Current.stages.Where(s => !s.IsSupply).ToArray();
+            var assets = battles.SelectMany(s => new Object[] { s.encounter, s.encounter.attackWaves }).ToArray();
+            Assert.That(assets.All(AssetDatabase.Contains), Is.True);
+            var paths = assets.Select(AssetDatabase.GetAssetPath).ToArray();
+            Assert.That(paths.Distinct().Count(), Is.EqualTo(paths.Length));
+            var guids = paths.Select(path => AssetDatabase.AssetPathToGUID(path)).ToArray();
+            Assert.That(guids.All(guid => !string.IsNullOrEmpty(guid)), Is.True);
+            Assert.That(guids.Distinct().Count(), Is.EqualTo(guids.Length));
+            foreach (var entry in battles)
+            {
+                Assert.That(entry.encounter, Is.Not.SameAs(entry.map.encounter));
+                Assert.That(entry.encounter.attackWaves, Is.Not.Null);
+                Assert.That(entry.dp, Is.EqualTo(entry.encounter.WaveSnapshot().Waves.Sum(w => w.DP)));
+                Assert.That(entry.encounter.defenders.Length, Is.EqualTo(entry.guardTiers.Length));
+                foreach (var guard in entry.encounter.defenders)
+                {
+                    Assert.That(guard.health > 0 && !float.IsNaN(guard.health) && !float.IsInfinity(guard.health), Is.True, guard.id);
+                    Assert.That(guard.attack >= 0 && !float.IsNaN(guard.attack) && !float.IsInfinity(guard.attack), Is.True, guard.id);
+                    Assert.That(guard.armor >= 0 && !float.IsNaN(guard.armor) && !float.IsInfinity(guard.armor), Is.True, guard.id);
+                }
+            }
         }
 
         [Test] public void FirstBossUsesIntermittentSelfRecoveryAndFinalSariaKeepsHerHealingMechanic()
         {
             var first = CampaignJourneyCatalog.Stage(5); var cardigan = first.encounter.defenders.First();
             Assert.That(cardigan.id, Is.EqualTo("D02"));
-            Assert.That(cardigan.health, Is.EqualTo(2175)); Assert.That(cardigan.attack, Is.EqualTo(150)); Assert.That(cardigan.armor, Is.EqualTo(15));
+            Assert.That(cardigan.armor, Is.EqualTo(15));
             Assert.That(cardigan.skill.kind, Is.EqualTo(DefenderSkillKind.CardiganRecovery));
             Assert.That(first.GuardValue("D02", "healFraction", -1), Is.EqualTo(.3f));
             Assert.That(first.GuardValue("D02", "requiredSP", -1), Is.EqualTo(24));
             Assert.That(CampaignJourneyCatalog.Stage(12).encounter.defenders.Any(d => d.id == "D29" && d.skill.kind == DefenderSkillKind.SariaCalcification), Is.True);
         }
 
-        [Test] public void ProgressionUsesSixtyGuardsAndRestoredFiniteIndependentWaveBudgets()
+        [Test] public void DefenderCountGrowsGraduallyAndFirstReachesEightAtTheSecondBoss()
         {
-            var battles = CampaignJourneyCatalog.Current.stages.Where(s => !s.IsSupply).ToArray();
-            Assert.That(battles.Sum(s => s.encounter.defenders.Length), Is.EqualTo(60));
-            Assert.That(battles.Select(s => s.encounter.defenders.Length), Is.EqualTo(new[] { 1, 2, 8, 8, 9, 10, 10, 12 }));
+            var battles = CampaignJourneyCatalog.Current.stages.Where(s => !s.IsSupply).OrderBy(s => s.stage).ToArray();
+            Assert.That(battles.First().encounter.defenders.Length, Is.EqualTo(1));
+            Assert.That(battles.Where(s => s.stage < 9).All(s => s.encounter.defenders.Length < 8), Is.True);
+            Assert.That(battles.First(s => s.encounter.defenders.Length >= 8).stage, Is.EqualTo(9));
+            Assert.That(battles.Single(s => s.stage == 9).encounter.defenders.Length, Is.EqualTo(8));
+            Assert.That(battles.Last().encounter.defenders.Length, Is.EqualTo(12));
+            for (int i = 1; i < battles.Length; i++)
+                Assert.That(battles[i].encounter.defenders.Length - battles[i - 1].encounter.defenders.Length, Is.InRange(1, 3),
+                    "A later encounter adds a bounded number of defenders: stage " + battles[i].stage);
             Assert.That(battles.Select(s => s.dp), Is.EqualTo(new[] { 10, 12, 14, 16, 18, 20, 22, 24 }));
             Assert.That(battles.Select(s => s.encounter.attackWaves.waves.Length), Is.EqualTo(new[] { 1, 1, 2, 2, 2, 3, 3, 3 }));
             Assert.That(battles.Select(s => s.encounter.attackWaves).Distinct().Count(), Is.EqualTo(8));
@@ -97,20 +123,5 @@ namespace YesterdayConvoy.Tests
             }
         }
 
-        [TestCase(2, "D01", 780, 80, 10)]
-        [TestCase(3, "D05", 1140, 100, 8)]
-        [TestCase(5, "D02", 2175, 150, 15)]
-        [TestCase(6, "D03", 2160, 180, 16)]
-        [TestCase(7, "D02", 2784, 180, 13)]
-        [TestCase(9, "D25", 5040, 224, 24)]
-        [TestCase(10, "D01", 6120, 400, 26)]
-        [TestCase(12, "D25", 9100, 380, 28)]
-        public void OriginalEncounterCoresReceiveScopedHealthAndAttackGrowthWithoutMultiplyingArmor(int stage, string id, float hp, float attack, float armor)
-        {
-            var guard = CampaignJourneyCatalog.Stage(stage).encounter.defenders.Single(d => d.id == id);
-            Assert.That(guard.health, Is.EqualTo(hp));
-            Assert.That(guard.attack, Is.EqualTo(attack).Within(.001f));
-            Assert.That(guard.armor, Is.EqualTo(armor));
-        }
     }
 }

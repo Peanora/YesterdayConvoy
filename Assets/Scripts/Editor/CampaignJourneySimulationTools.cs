@@ -46,13 +46,24 @@ namespace YesterdayConvoy.Editor
         [Serializable] public sealed class BoundaryCase
         {
             public string name; public int stage,baseCopyCost,wins,formationLevel,firstDeploymentDP;
+            public string matchGroup,lineupRole;public int[] starProfile,recruitmentCostProfile;public string[] tagCounts,activeSynergies;
             public bool expectedWeak,zeroSynergies;public Piece[] lineup;public Fight[] fights;
+        }
+        sealed class BoundaryFixture
+        {
+            internal string Name,MatchGroup,Role="reference";internal bool Weak;
+            internal string[] Ids;internal int[] Stars,Stages;internal int Level=8;
+        }
+        [Serializable] public sealed class MatchedBoundaryComparison
+        {
+            public string group,normal,mixed;public int stage,members,baseCopyCost,normalWins,mixedWins,policies;
+            public bool matchedPopulationStarsAndCost,normalHasWin,mixedHasWin;
         }
         [Serializable] public sealed class BoundaryReport
         {
-            public string version="campaign-v2-wave-boundary-1",createdUtc;
-            public string evidenceBoundary="Finite-stock battle fixtures, not seeded acquisitions or full-run witnesses. Strong references list base-copy prices only, without promising shop hits. Every fight uses real ManualBattle, current-wave entry, actual DP/uses/CD/skills/deadline. No stat injection or forced outcome. A bounded policy failure is not a proof of impossibility.";
-            public bool allWeakCasesFailed,finalBossWeakCasesFailed;public BoundaryCase[] cases;
+            public string version="campaign-v2-wave-boundary-matched-2",createdUtc;
+            public string evidenceBoundary="Finite-stock battle fixtures, not seeded acquisitions or full-run witnesses. Matched groups fix population, level, star and recruitment-cost profiles, and base-copy price. Unit identities and native panels differ: this compares practical constructions, not an isolated causal synergy effect. Every fight uses real ManualBattle, current-wave entry, actual DP/uses/CD/skills/deadline. No stat injection or forced outcome. A bounded policy failure is not a proof of impossibility.";
+            public bool allWeakCasesFailed,finalBossWeakCasesFailed;public BoundaryCase[] cases;public MatchedBoundaryComparison[] matchedComparisons;
         }
         [Serializable] public sealed class TimingReceipt
         {
@@ -74,12 +85,12 @@ namespace YesterdayConvoy.Editor
             public string[] skippedGroups;public TimingCase[] cases;
         }
         sealed class EconomyPolicy
-        {internal string Name;internal int[] Levels,Cards,Refresh;internal int MaximumCost=5;internal bool CommissionGift,ReunionFocus,HighCostTransition;}
+        {internal string Name;internal int[] Levels,Cards,Refresh;internal int MaximumCost=5;internal bool CommissionGift,ReunionFocus,HighCostTransition,FundedPreparation;}
         sealed class Context
         {
             internal int Seed;internal ShopTrialModel Shop;internal BattleShopRun Run;
             internal Dictionary<string,ManualBattleDefinition> Definitions;internal List<string> Lineup=new List<string>();
-            internal string Contract,Gift;internal int MaximumCost=5,Stage;internal bool ReunionFocus,HighCostTransition;
+            internal string Contract,Gift;internal int MaximumCost=5,Stage;internal bool ReunionFocus,HighCostTransition,FundedPreparation;
             internal InfectionForm Form=InfectionForm.Swarm,Second=InfectionForm.Shell;
             internal string[] FocusPriority=Array.Empty<string>();
         }
@@ -92,7 +103,9 @@ namespace YesterdayConvoy.Editor
             // These are legal spending targets, not injected levels or promised shop hits.
             // Full-cap cash forecasts keep room for the actual 116-gold XP cost to ten.
             new EconomyPolicy{Name="late-ten-high-cost",HighCostTransition=true,Levels=new[]{1,3,4,4,5,5,6,6,7,8,8,10},Cards=new[]{1,2,3,0,5,5,6,0,10,10,0,18},Refresh=new[]{0,0,0,0,2,2,2,0,4,4,0,8}},
-            new EconomyPolicy{Name="level-ten-pair-transition",HighCostTransition=true,Levels=new[]{1,3,4,4,5,6,6,7,8,8,9,10},Cards=new[]{1,2,3,0,4,4,6,0,8,8,0,15},Refresh=new[]{0,0,0,0,2,2,2,0,4,4,0,8}}
+            new EconomyPolicy{Name="level-ten-pair-transition",HighCostTransition=true,Levels=new[]{1,3,4,4,5,6,6,7,8,8,9,10},Cards=new[]{1,2,3,0,4,4,6,0,8,8,0,15},Refresh=new[]{0,0,0,0,2,2,2,0,4,4,0,8}},
+            new EconomyPolicy{Name="formation-funded-pairs",FundedPreparation=true,ReunionFocus=true,MaximumCost=4,Levels=new[]{1,3,4,4,5,6,6,7,8,8,8,8},Cards=new[]{2,5,6,2,7,6,8,2,10,10,2,16},Refresh=new[]{0,0,2,0,2,2,2,0,4,4,0,8}},
+            new EconomyPolicy{Name="formation-funded-transition",FundedPreparation=true,ReunionFocus=true,HighCostTransition=true,Levels=new[]{1,3,4,4,5,6,6,7,8,8,9,9},Cards=new[]{2,5,6,2,8,8,10,2,14,14,2,22},Refresh=new[]{0,0,2,0,2,2,4,0,4,4,0,10}}
         };
 
         [MenuItem("Yesterday Convoy/Campaign Journey/Search Natural V2 Runs")]
@@ -104,7 +117,7 @@ namespace YesterdayConvoy.Editor
             int variants=int.Parse(Argument("-journeyDeploymentVariants","42"),CultureInfo.InvariantCulture);
             float observation=float.Parse(Argument("-journeyObservationSeconds","300"),CultureInfo.InvariantCulture);
             bool allSeeds=bool.Parse(Argument("-journeySearchAllSeeds","false"));
-            var policyNames=Argument("-journeyEconomyPolicies",string.Join(",",Policies.OrderByDescending(p=>p.HighCostTransition).Select(p=>p.Name))).Split(',');
+            var policyNames=Argument("-journeyEconomyPolicies",string.Join(",",Policies.OrderByDescending(p=>p.FundedPreparation).ThenByDescending(p=>p.HighCostTransition).Select(p=>p.Name))).Split(',');
             var policies=policyNames.Select(name=>Policies.SingleOrDefault(p=>p.Name==name)).Where(p=>p!=null).ToArray();
             if(policies.Length==0)throw new ArgumentException("No known Journey economy policies selected.");
             string output=Argument("-journeySearchOutput","artifacts/campaign-v2/model-search.json");
@@ -134,53 +147,108 @@ namespace YesterdayConvoy.Editor
         {
             CampaignJourneyCatalog.Current.Validate();var definitions=Definitions();
             int variants=Math.Max(1,Math.Min(42,int.Parse(Argument("-journeyBoundaryVariants","42"),CultureInfo.InvariantCulture)));
-            int[] stages=Argument("-journeyBoundaryStages","5,12").Split(',').Select(int.Parse).ToArray();
+            int[] stages=Argument("-journeyBoundaryStages","3,6,7,9,12").Split(',').Select(int.Parse).ToArray();
             var fixtures=new[]{
-                new {Name="two-one-star-one-cost-no-synergy",Weak=true,Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M07"},Stars=new[]{1,1}},
-                new {Name="three-one-star-one-two-cost-no-synergy",Weak=true,Ids=new[]{"CARD_M07","CARD_M04","CARD_M29"},Stars=new[]{1,1,1}},
-                new {Name="three-one-star-two-cost-no-synergy",Weak=true,Ids=new[]{"CARD_M05","CARD_M26","CARD_M29"},Stars=new[]{1,1,1}},
-                new {Name="grown-six-mixed-reference",Weak=false,Ids=new[]{"CARD_M31","CARD_M18","CARD_M07","CARD_M08","CARD_M37","CARD_M12"},Stars=new[]{2,1,3,2,2,1}},
-                new {Name="grown-seven-low-cost-synergy-reference",Weak=false,Ids=new[]{"CARD_M07","CARD_M08","CARD_M09","CARD_M15","CARD_M10","CARD_M05","CARD_M03"},Stars=new[]{3,2,2,2,2,2,2}},
-                new {Name="talulah-one-star-eight-member-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{1,1,1,1,1,1,1,1}},
-                new {Name="talulah-two-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}},
-                new {Name="talulah-two-star-reunion-guerrilla-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M03","CARD_M17","CARD_M18","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2}},
-                new {Name="talulah-two-star-reunion-snow-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M17","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
-                new {Name="talulah-three-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{3,2,1,1,1,1,1,1}},
-                new {Name="patriot-two-star-guerrilla-reference",Weak=false,Ids=new[]{"CARD_M20","CARD_M18","CARD_M17","CARD_M16","CARD_M19","CARD_M03","CARD_M11","CARD_M12"},Stars=new[]{2,2,2,2,2,2,2,2}},
-                new {Name="frostnova-two-star-snow-reference",Weak=false,Ids=new[]{"CARD_M14","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M18","CARD_M17","CARD_M07"},Stars=new[]{2,2,3,2,2,2,2,3}},
-                new {Name="mephisto-two-star-host-reference",Weak=false,Ids=new[]{"CARD_M25","CARD_M21","CARD_M22","CARD_M23","CARD_M18","CARD_M17","CARD_M12","CARD_M11"},Stars=new[]{2,3,2,2,2,2,2,3}},
-                new {Name="mudrock-two-star-crew-reference",Weak=false,Ids=new[]{"CARD_M28","CARD_M27","CARD_M26","CARD_M42","CARD_M43","CARD_M19","CARD_M37","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
-                new {Name="level-ten-ten-kind-high-star-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M20","CARD_M14","CARD_M25","CARD_M28","CARD_M18","CARD_M17","CARD_M12","CARD_M11","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2,3,2}}
+                new BoundaryFixture{Name="two-one-star-one-cost-no-synergy",Weak=true,Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M07"},Stars=new[]{1,1}},
+                new BoundaryFixture{Name="three-one-star-one-two-cost-no-synergy",Weak=true,Ids=new[]{"CARD_M07","CARD_M04","CARD_M29"},Stars=new[]{1,1,1}},
+                new BoundaryFixture{Name="three-one-star-two-cost-no-synergy",Weak=true,Ids=new[]{"CARD_M05","CARD_M26","CARD_M29"},Stars=new[]{1,1,1}},
+                new BoundaryFixture{Name="grown-six-mixed-reference",Weak=false,Ids=new[]{"CARD_M31","CARD_M18","CARD_M07","CARD_M08","CARD_M37","CARD_M12"},Stars=new[]{2,1,3,2,2,1}},
+                new BoundaryFixture{Name="grown-seven-low-cost-synergy-reference",Weak=false,Ids=new[]{"CARD_M07","CARD_M08","CARD_M09","CARD_M15","CARD_M10","CARD_M05","CARD_M03"},Stars=new[]{3,2,2,2,2,2,2}},
+                new BoundaryFixture{Name="talulah-one-star-eight-member-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{1,1,1,1,1,1,1,1}},
+                new BoundaryFixture{Name="talulah-two-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}},
+                new BoundaryFixture{Name="talulah-two-star-reunion-guerrilla-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M03","CARD_M17","CARD_M18","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new BoundaryFixture{Name="talulah-two-star-reunion-snow-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M17","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new BoundaryFixture{Name="talulah-three-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{3,2,1,1,1,1,1,1}},
+                new BoundaryFixture{Name="patriot-two-star-guerrilla-reference",Weak=false,Ids=new[]{"CARD_M20","CARD_M18","CARD_M17","CARD_M16","CARD_M19","CARD_M03","CARD_M11","CARD_M12"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new BoundaryFixture{Name="frostnova-two-star-snow-reference",Weak=false,Ids=new[]{"CARD_M14","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M18","CARD_M17","CARD_M07"},Stars=new[]{2,2,3,2,2,2,2,3}},
+                new BoundaryFixture{Name="mephisto-two-star-host-reference",Weak=false,Ids=new[]{"CARD_M25","CARD_M21","CARD_M22","CARD_M23","CARD_M18","CARD_M17","CARD_M12","CARD_M11"},Stars=new[]{2,3,2,2,2,2,2,3}},
+                new BoundaryFixture{Name="mudrock-two-star-crew-reference",Weak=false,Ids=new[]{"CARD_M28","CARD_M27","CARD_M26","CARD_M42","CARD_M43","CARD_M19","CARD_M37","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new BoundaryFixture{Name="level-ten-ten-kind-high-star-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M20","CARD_M14","CARD_M25","CARD_M28","CARD_M18","CARD_M17","CARD_M12","CARD_M11","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2,3,2}}
+                ,new BoundaryFixture{Name="paired-early-four-normal",MatchGroup="early-four-one-star",Role="normal",Level=4,Stages=new[]{3},Ids=new[]{"CARD_M07","CARD_M11","CARD_M12","CARD_M10"},Stars=new[]{1,1,1,1}}
+                ,new BoundaryFixture{Name="paired-early-four-mixed",MatchGroup="early-four-one-star",Role="mixed",Level=4,Stages=new[]{3},Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M26","CARD_M29"},Stars=new[]{1,1,1,1}}
+                ,new BoundaryFixture{Name="paired-middle-six-one-normal",MatchGroup="middle-six-one-star",Role="normal",Level=6,Stages=new[]{6,7},Ids=new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M10","CARD_M17"},Stars=new[]{1,1,1,1,1,1}}
+                ,new BoundaryFixture{Name="paired-middle-six-one-mixed",MatchGroup="middle-six-one-star",Role="mixed",Level=6,Stages=new[]{6,7},Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M11","CARD_M26","CARD_M29","CARD_M35"},Stars=new[]{1,1,1,1,1,1}}
+                ,new BoundaryFixture{Name="paired-middle-six-two-normal",MatchGroup="middle-six-two-star",Role="normal",Level=6,Stages=new[]{6,7},Ids=new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M10","CARD_M17"},Stars=new[]{2,2,2,2,2,2}}
+                ,new BoundaryFixture{Name="paired-middle-six-two-mixed",MatchGroup="middle-six-two-star",Role="mixed",Level=6,Stages=new[]{6,7},Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M11","CARD_M26","CARD_M29","CARD_M35"},Stars=new[]{2,2,2,2,2,2}}
+                ,new BoundaryFixture{Name="paired-late-eight-normal",MatchGroup="late-eight-two-star",Role="normal",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_M07","CARD_M03","CARD_M11","CARD_M12","CARD_M06","CARD_M17","CARD_M18","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2}}
+                ,new BoundaryFixture{Name="paired-late-eight-mixed",MatchGroup="late-eight-two-star",Role="mixed",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M11","CARD_M26","CARD_M29","CARD_M35","CARD_M38","CARD_M31"},Stars=new[]{2,2,2,2,2,2,2,2}}
+                ,new BoundaryFixture{Name="paired-late-eight-mixed-star-normal",MatchGroup="late-eight-mixed-stars",Role="normal",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_M07","CARD_M03","CARD_M11","CARD_M12","CARD_M06","CARD_M17","CARD_M18","CARD_M19"},Stars=new[]{1,1,1,2,2,2,2,1}}
+                ,new BoundaryFixture{Name="paired-late-eight-mixed-star-mixed",MatchGroup="late-eight-mixed-stars",Role="mixed",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M11","CARD_M26","CARD_M29","CARD_M35","CARD_M38","CARD_M31"},Stars=new[]{1,1,1,2,2,1,2,2}}
+                ,new BoundaryFixture{Name="paired-talulah-two-core-normal",MatchGroup="late-eight-talulah-two-core",Role="normal",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}}
+                ,new BoundaryFixture{Name="paired-talulah-two-core-mixed",MatchGroup="late-eight-talulah-two-core",Role="mixed",Level=8,Stages=new[]{9,12},Ids=new[]{"CARD_M32","CARD_M36","CARD_M38","CARD_ORIGINIUM_SLUG","CARD_M21","CARD_M26","CARD_M29","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}}
             };
+            ValidateMatchedBoundaries(fixtures,definitions);
             var results=new List<BoundaryCase>();
             var requested=Argument("-journeyBoundaryNames","").Split(new[]{','},StringSplitOptions.RemoveEmptyEntries);
-            foreach(int number in stages)foreach(var fixture in fixtures.Where(f=>requested.Length==0||requested.Contains(f.Name)))
+            var unknown=requested.Where(name=>fixtures.All(f=>f.Name!=name)).ToArray();
+            if(unknown.Length>0)throw new ArgumentException("Unknown Journey boundary names: "+string.Join(",",unknown));
+            bool matchedOnly=bool.Parse(Argument("-journeyBoundaryMatchedOnly",requested.Length==0?"true":"false"));
+            foreach(int number in stages)foreach(var fixture in fixtures.Where(f=>(requested.Length==0||requested.Contains(f.Name))&&
+                (!matchedOnly||!string.IsNullOrEmpty(f.MatchGroup))&&(f.Stages==null||f.Stages.Contains(number))))
             {
                 var stage=CampaignJourneyCatalog.Stage(number);if(stage.IsSupply)throw new ArgumentException("Build boundaries require combat stages.");
                 var shop=new ShopTrialModel(definitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),73191);
                 shop.EnableJourneyEconomy();
-                int level=Math.Max(8,fixture.Ids.Length);
+                int level=Math.Max(fixture.Level,fixture.Ids.Length);
                 shop.Preset(fixture.Ids.Select((id,i)=>new ShopTrialModel.Piece{Id=id,Star=fixture.Stars[i]}),Array.Empty<string>(),level,0,0);
                 if(!shop.SetLineup(fixture.Ids,shop.Bench.Select(p=>p.Instance)))throw new InvalidOperationException("Invalid finite-stock fixture.");
                 bool zero=fixture.Ids.SelectMany(CampaignBalance.Tags).GroupBy(t=>t).All(g=>g.Count()<2);
                 if(fixture.Weak&&!zero)throw new InvalidOperationException("A no-synergy weak fixture acquired a synergy: "+fixture.Name);
                 var context=new Context{Seed=73191,Shop=shop,Run=new BattleShopRun(shop,73191,campaign:true,journeyV2:true),Definitions=definitions,Lineup=fixture.Ids.ToList()};
                 context.Contract=shop.Bench.Where(p=>CampaignBalance.Tags(p.Id).Contains("萨卡兹")).OrderByDescending(p=>p.Star).FirstOrDefault()?.Id;
+                var snapshot=CreateBattle(context,stage);
                 var fights=new List<Fight>();
                 for(int variant=0;variant<variants;variant++)fights.Add(FightBattle(context,CreateBattle(context,stage),variant,300));
                 var result=new BoundaryCase{name=fixture.Name,stage=number,expectedWeak=fixture.Weak,zeroSynergies=zero,
+                    matchGroup=fixture.MatchGroup,lineupRole=fixture.Role,
+                    starProfile=fixture.Stars.OrderBy(v=>v).ToArray(),recruitmentCostProfile=fixture.Ids.Select(id=>definitions[id].Card.RecruitCost).OrderBy(v=>v).ToArray(),
+                    tagCounts=fixture.Ids.SelectMany(CampaignBalance.Tags).GroupBy(t=>t).OrderBy(g=>g.Key,StringComparer.Ordinal).Select(g=>g.Key+":"+g.Count()).ToArray(),
+                    activeSynergies=BoundarySynergies(snapshot),
                     baseCopyCost=shop.Bench.Sum(p=>ShopTrialModel.Copies(p.Star)*shop.Definition(p.Id).Cost),formationLevel=level,
                     firstDeploymentDP=shop.Bench.Sum(p=>CampaignV2Balance.Build(definitions[p.Id],p.Star,50,stage.defense,waveMode:true).Unit.DeploymentCost),
                     lineup=shop.Bench.Select(p=>new Piece{id=p.Id,instance=p.Instance,star=p.Star}).ToArray(),wins=fights.Count(f=>f.won),fights=fights.ToArray()};
                 results.Add(result);shop.Validate();
                 Debug.Log("JOURNEY_BUILD_BOUNDARY: stage="+number+" fixture="+fixture.Name+" wins="+result.wins+"/"+variants+" bestDefense="+fights.Min(f=>f.remainingDefense));
             }
-            var finalWeak=results.Where(r=>r.expectedWeak&&r.stage==CampaignJourneyDefinition.StageCount).ToArray();
-            var report=new BoundaryReport{createdUtc=DateTime.UtcNow.ToString("O"),cases=results.ToArray(),allWeakCasesFailed=results.Where(r=>r.expectedWeak).All(r=>r.wins==0),
+            if(results.Count==0)throw new InvalidOperationException("No Journey boundary fixtures matched the requested names, stages and matched-only filter.");
+            var weak=results.Where(r=>r.expectedWeak).ToArray();
+            var finalWeak=weak.Where(r=>r.stage==CampaignJourneyDefinition.StageCount).ToArray();
+            var comparisons=new List<MatchedBoundaryComparison>();
+            foreach(var pair in results.Where(r=>!string.IsNullOrEmpty(r.matchGroup)).GroupBy(r=>r.stage+"/"+r.matchGroup))
+            {
+                var normal=pair.SingleOrDefault(r=>r.lineupRole=="normal");var mixed=pair.SingleOrDefault(r=>r.lineupRole=="mixed");
+                if(normal==null||mixed==null)continue;
+                comparisons.Add(new MatchedBoundaryComparison{group=normal.matchGroup,stage=normal.stage,normal=normal.name,mixed=mixed.name,
+                    members=normal.lineup.Length,baseCopyCost=normal.baseCopyCost,normalWins=normal.wins,mixedWins=mixed.wins,policies=normal.fights.Length,
+                    matchedPopulationStarsAndCost=normal.formationLevel==mixed.formationLevel&&normal.lineup.Length==mixed.lineup.Length&&normal.baseCopyCost==mixed.baseCopyCost&&
+                        normal.starProfile.SequenceEqual(mixed.starProfile)&&normal.recruitmentCostProfile.SequenceEqual(mixed.recruitmentCostProfile),
+                    normalHasWin=normal.wins>0,mixedHasWin=mixed.wins>0});
+            }
+            var report=new BoundaryReport{createdUtc=DateTime.UtcNow.ToString("O"),cases=results.ToArray(),matchedComparisons=comparisons.ToArray(),allWeakCasesFailed=weak.Length>0&&weak.All(r=>r.wins==0),
                 finalBossWeakCasesFailed=finalWeak.Length>0&&finalWeak.All(r=>r.wins==0)};
             string path=Path.GetFullPath(Argument("-journeyBoundaryOutput","artifacts/campaign-retune/build-boundaries.json"));
             Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllText(path,JsonUtility.ToJson(report,true));
             Debug.Log("JOURNEY_BUILD_BOUNDARIES_COMPLETE: allWeakCasesFailed="+report.allWeakCasesFailed+" finalBossWeakCasesFailed="+report.finalBossWeakCasesFailed+"; "+path);
+        }
+        static void ValidateMatchedBoundaries(IEnumerable<BoundaryFixture> fixtures,Dictionary<string,ManualBattleDefinition> definitions)
+        {
+            foreach(var group in fixtures.Where(f=>!string.IsNullOrEmpty(f.MatchGroup)).GroupBy(f=>f.MatchGroup))
+            {
+                var normal=group.Single(f=>f.Role=="normal");var mixed=group.Single(f=>f.Role=="mixed");
+                int[] Costs(BoundaryFixture f)=>f.Ids.Select(id=>definitions[id].Card.RecruitCost).OrderBy(v=>v).ToArray();
+                int Price(BoundaryFixture f)=>f.Ids.Select((id,i)=>definitions[id].Card.RecruitCost*ShopTrialModel.Copies(f.Stars[i])).Sum();
+                if(group.Count()!=2||normal.Level!=mixed.Level||normal.Ids.Length!=mixed.Ids.Length||Price(normal)!=Price(mixed)||
+                    !normal.Stars.OrderBy(v=>v).SequenceEqual(mixed.Stars.OrderBy(v=>v))||!Costs(normal).SequenceEqual(Costs(mixed))||
+                    !normal.Stages.SequenceEqual(mixed.Stages))
+                    throw new InvalidOperationException("Unmatched population, stars, recruitment costs or stage scope: "+group.Key);
+            }
+        }
+        static string[] BoundarySynergies(ManualBattle battle)
+        {
+            return new[]{"整合运动:"+battle.ReunionTier,"雪怪小队:"+battle.SnowTier,"感染生物:"+battle.InfectionTier,
+                "游击队:"+battle.GuerrillaTier,"泥岩小队:"+battle.MudrockTier,"牧群:"+battle.HerdTier,
+                "深池:"+battle.DeepTier,"萨卡兹:"+battle.SarkazTier,"海嗣:"+battle.MarineTier}
+                .Where(value=>!value.EndsWith(":0",StringComparison.Ordinal)).ToArray();
         }
         static string Argument(string key,string fallback)
         {var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:fallback;}
@@ -210,7 +278,7 @@ namespace YesterdayConvoy.Editor
                 shop.EnableJourneyEconomy();var gifts=CampaignJourneyEconomy.StartingCards(shop.Roles,seed);
                 string gift=gifts[0];result.gift=gift;result.gifts=gifts;
                 shop.Preset(gifts.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),1,0,CampaignJourneyEconomy.InitialGold);
-                var context=new Context{Seed=seed,Shop=shop,Run=new BattleShopRun(shop,seed,campaign:true,journeyV2:true),Definitions=definitions,MaximumCost=policy.MaximumCost,Gift=gift,ReunionFocus=policy.ReunionFocus,HighCostTransition=policy.HighCostTransition};context.Lineup.Add(gift);
+                var context=new Context{Seed=seed,Shop=shop,Run=new BattleShopRun(shop,seed,campaign:true,journeyV2:true),Definitions=definitions,MaximumCost=policy.MaximumCost,Gift=gift,ReunionFocus=policy.ReunionFocus,HighCostTransition=policy.HighCostTransition,FundedPreparation=policy.FundedPreparation};context.Lineup.Add(gift);
                 context.Run.BeginJourneyPreparation();
                 for(int number=1;number<=CampaignJourneyDefinition.StageCount;number++)
                 {
@@ -278,6 +346,9 @@ namespace YesterdayConvoy.Editor
             Commission(c,stage,ref cards,commands);
             while(refresh>=2&&shop.Gold>=2)
             {
+                // A funded policy keeps a coin for the next roll and stops
+                // refreshing once its card budget has been exhausted.
+                if(policy.FundedPreparation&&(cards<1||shop.Gold<3))break;
                 int before=shop.Gold;if(!shop.Refresh().Success)break;refresh-=2;commands.Add(Command(shop,"Refresh",before));
                 Buy(c,stage,ref cards,commands);Commission(c,stage,ref cards,commands);
             }
@@ -329,6 +400,7 @@ namespace YesterdayConvoy.Editor
             int desired=cost==1&&stage>=9?4:cost==1&&stage>=5?3:2;
             if(c.ReunionFocus)desired=id=="CARD_M02"||id=="CARD_M03"?1:stage>=5&&(id=="CARD_M07"||id=="CARD_M08")?3:2;
             if(c.HighCostTransition)desired=cost==1?3:2;
+            if(c.FundedPreparation&&FocusedRunner(id))desired=1;
             if(owned.Any(p=>p.Star>=desired))return -1;
             var source=CampaignV2Balance.Build(c.Definitions[id],1,50,6);
             float score=Power(source)/Math.Max(1,cost);
@@ -348,7 +420,8 @@ namespace YesterdayConvoy.Editor
                 else score*=.65f;
             }
             if(cost==5&&stage<8&&!c.HighCostTransition)score*=.4f;
-            if(owned.Length==0&&c.Shop.Bench.Select(p=>p.Id).Distinct().Count()>=c.Shop.Level+3)return -1;
+            int kindBudget=c.Shop.Level+(c.FundedPreparation?5:3);
+            if(owned.Length==0&&c.Shop.Bench.Select(p=>p.Id).Distinct().Count()>=kindBudget)return -1;
             return score;
         }
         static float HighCostRoleBonus(string id)
@@ -368,7 +441,7 @@ namespace YesterdayConvoy.Editor
         {
             string[] owned=c.Shop.Bench.Select(p=>p.Id).Distinct().ToArray();bool fresh=!owned.Contains(id);
             if(!CampaignBalance.Reunion(id))return -45;
-            float score=0;int target=c.Shop.Level>=6?6:4;
+            float score=0;int target=c.FundedPreparation&&c.Shop.Level>=8?8:c.Shop.Level>=6?6:4;
             if(fresh&&owned.Count(CampaignBalance.Reunion)<target)score+=85;
             if(fresh&&ReunionRules.TierFor(owned.Concat(new[]{id}))>ReunionRules.TierFor(owned))score+=40;
             if(!owned.Any(FocusedFront)&&FocusedFront(id))score+=45;
@@ -390,12 +463,29 @@ namespace YesterdayConvoy.Editor
         }
         static void SelectLineup(Context c,List<ShopCommand> commands)
         {
-            var available=c.Shop.Bench.GroupBy(p=>p.Id).Select(g=>g.OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First()).ToList();
+            var available=c.Shop.Bench.GroupBy(p=>p.Id).Select(g=>
+                c.FundedPreparation&&FocusedRunner(g.Key)&&g.Any(p=>p.Star==1)?g.Where(p=>p.Star==1).OrderBy(p=>p.Instance).First():
+                g.OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First()).ToList();
             var chosen=new List<ShopTrialModel.Piece>();
+            var reunion=available.Where(p=>CampaignBalance.Reunion(p.Id)).ToArray();
+            bool eightReunion=c.FundedPreparation&&c.Shop.Level>=8&&reunion.Length>=8&&ReunionRules.FormationCount(reunion.Select(p=>p.Id))>=3;
+            if(eightReunion)
+            {
+                var runner=reunion.Where(p=>p.Star==1&&FocusedRunner(p.Id)).OrderBy(p=>p.Instance).FirstOrDefault();
+                if(runner!=null){chosen.Add(runner);available.Remove(runner);}
+                while(ReunionRules.FormationCount(chosen.Select(p=>p.Id))<3)
+                {
+                    var formations=new HashSet<int>(chosen.Select(p=>ReunionRules.FormationOf(p.Id)));
+                    var next=available.Where(p=>CampaignBalance.Reunion(p.Id)&&!formations.Contains(ReunionRules.FormationOf(p.Id)))
+                        .OrderByDescending(p=>Power(CampaignV2Balance.Build(c.Definitions[p.Id],p.Star,50,6))).ThenBy(p=>p.Instance).First();
+                    chosen.Add(next);available.Remove(next);
+                }
+            }
             while(chosen.Count<c.Shop.Level&&available.Count>0)
             {
                 float current=Traits(chosen.Select(p=>p.Id));
-                var next=available.OrderByDescending(p=>Power(CampaignV2Balance.Build(c.Definitions[p.Id],p.Star,50,6))+Traits(chosen.Select(o=>o.Id).Concat(new[]{p.Id}))-current+
+                var candidates=eightReunion&&chosen.Count<8?available.Where(p=>CampaignBalance.Reunion(p.Id)):available;
+                var next=candidates.OrderByDescending(p=>Power(CampaignV2Balance.Build(c.Definitions[p.Id],p.Star,50,6))+Traits(chosen.Select(o=>o.Id).Concat(new[]{p.Id}))-current+
                     (c.ReunionFocus?FocusedLineupBonus(c,chosen,p.Id):0)+(c.HighCostTransition&&c.Shop.Definition(p.Id).Cost>=4?(p.Star>=2?45:20):0))
                     .ThenBy(p=>p.Instance).First();chosen.Add(next);available.Remove(next);
             }
@@ -408,7 +498,7 @@ namespace YesterdayConvoy.Editor
         static float FocusedLineupBonus(Context c,List<ShopTrialModel.Piece> chosen,string id)
         {
             string[] ids=chosen.Select(p=>p.Id).ToArray();float score=0;
-            if(CampaignBalance.Reunion(id)&&ids.Count(CampaignBalance.Reunion)<(c.Shop.Level>=6?6:4))score+=60;
+            if(CampaignBalance.Reunion(id)&&ids.Count(CampaignBalance.Reunion)<(c.FundedPreparation&&c.Shop.Level>=8?8:c.Shop.Level>=6?6:4))score+=60;
             if(ReunionRules.TierFor(ids.Concat(new[]{id}))>ReunionRules.TierFor(ids))score+=40;
             if(FocusedFront(id)&&!ids.Any(FocusedFront))score+=45;
             if(FocusedRunner(id)&&!ids.Any(FocusedRunner))score+=30;
@@ -453,7 +543,7 @@ namespace YesterdayConvoy.Editor
                 if(!source.roleOrder.SequenceEqual(report.roleOrder))throw new InvalidOperationException("Focused replay role order drift.");
                 var policy=Policies.Single(p=>p.Name==name);
                 var c=ReplayPreparationPrefix(original,target,definitions);
-                c.ReunionFocus=policy.ReunionFocus;c.HighCostTransition=policy.HighCostTransition;c.MaximumCost=policy.MaximumCost;c.Stage=target;
+                c.ReunionFocus=policy.ReunionFocus;c.HighCostTransition=policy.HighCostTransition;c.FundedPreparation=policy.FundedPreparation;c.MaximumCost=policy.MaximumCost;c.Stage=target;
                 rounds.AddRange(original.rounds.Where(r=>r.stage<target));result.completedStages=target-1;
                 var round=JsonUtility.FromJson<Round>(JsonUtility.ToJson(original.rounds.Single(r=>r.stage==target)));rounds.Add(round);
                 var commands=round.shopCommands.ToList();var baseline=Selected(c).Select(p=>p.Copy()).ToArray();
@@ -781,28 +871,49 @@ namespace YesterdayConvoy.Editor
             int style=variant%6,delayMode=variant/6;
             var selected=Selected(c);var profiles=selected.ToDictionary(p=>p.Id,p=>CampaignV2Balance.Build(c.Definitions[p.Id],p.Star,battle.DP,battle.Defense,waveMode:battle.WavesEnabled));
             string[] order=selected.OrderByDescending(p=>style==1?profiles[p.Id].Unit.Speed/Math.Max(1,profiles[p.Id].Unit.DeploymentCost):
-                style==2?Power(profiles[p.Id])/Math.Max(1,profiles[p.Id].Unit.DeploymentCost):style==4?profiles[p.Id].Unit.DeploymentCost:profiles[p.Id].Unit.Health/Math.Max(1,profiles[p.Id].Unit.DeploymentCost))
+                style==2?Power(profiles[p.Id])/Math.Max(1,profiles[p.Id].Unit.DeploymentCost):style==4?-profiles[p.Id].Unit.DeploymentCost:profiles[p.Id].Unit.Health/Math.Max(1,profiles[p.Id].Unit.DeploymentCost))
                 .ThenBy(p=>p.Instance).Select(p=>p.Id).ToArray();
-            string runner=c.ReunionFocus&&style==5?selected.Where(p=>p.Star==1&&(FocusedRunner(p.Id)||p.Id=="CARD_M15"))
-                .OrderByDescending(p=>profiles[p.Id].Unit.Speed).ThenBy(p=>p.Instance).FirstOrDefault()?.Id:null;
-            var runnerWaves=new HashSet<int>();
+            // The same real-unit reserve policy is available to both matched sides.
+            // Native speed/cost choose the runner; no identity, stats or resources change.
+            string runner=style==5?selected.Where(p=>profiles[p.Id].Unit.Speed>=.9f&&profiles[p.Id].Combat.CanAttack)
+                .OrderBy(p=>profiles[p.Id].Unit.DeploymentCost).ThenByDescending(p=>profiles[p.Id].Unit.Speed).ThenBy(p=>p.Instance).FirstOrDefault()?.Id:null;
+            int runnerQuota=delayMode%2==0?1:2;
+            var runnerCounts=new Dictionary<int,int>();
+            var waveKinds=new HashSet<string>(StringComparer.Ordinal);
             long request=0;double nextDeploy=0;int wave=-1;var actions=new List<BattleAction>();battle.Begin();
             while(battle.Phase==BattlePhase.Running&&battle.Clock<observation)
             {
-                if(wave!=battle.CurrentWaveIndex){wave=battle.CurrentWaveIndex;nextDeploy=battle.Clock+WaveOpeningDelay(delayMode,wave,battle);}
+                if(wave!=battle.CurrentWaveIndex){wave=battle.CurrentWaveIndex;waveKinds.Clear();nextDeploy=battle.Clock+WaveOpeningDelay(delayMode,wave,battle);}
                 var lane=battle.Lanes.FirstOrDefault(l=>l.Id==battle.CurrentWaveLaneId);
                 if(lane!=null&&battle.DeploymentWindowOpen&&battle.Clock+1e-8>=nextDeploy)
                 {
-                    var waveOrder=style==5&&wave%2==1?order.Reverse():order.AsEnumerable();
+                    var waveOrder=style==4?order.OrderBy(id=>waveKinds.Contains(id)?1:0).ThenBy(id=>profiles[id].Unit.DeploymentCost):
+                        style==5&&wave%2==1?order.Reverse():order.AsEnumerable();
                     foreach(string id in waveOrder)
                     {
-                        bool reserveRunner=runner!=null&&!runnerWaves.Contains(wave);
+                        if(style==4&&waveKinds.Count<3)
+                        {
+                            // Cheap, different real cards get a legal chance to complete
+                            // a three-kind opener. Apply identically to both matched sides.
+                            var fresh=order.Where(other=>!waveKinds.Contains(other)&&battle.FindCard(other).RemainingUses>0&&
+                                battle.CardCooldown(other)<battle.WaveRemaining).OrderBy(other=>profiles[other].Unit.DeploymentCost).ToArray();
+                            int need=Math.Min(3-waveKinds.Count,fresh.Length);
+                            if(need>0&&battle.DP>=fresh.Take(need).Sum(other=>profiles[other].Unit.DeploymentCost))
+                            {
+                                int remaining=need-(waveKinds.Contains(id)?0:1);
+                                int reserve=fresh.Where(other=>other!=id).Take(Math.Max(0,remaining)).Sum(other=>profiles[other].Unit.DeploymentCost);
+                                if(battle.DP-profiles[id].Unit.DeploymentCost<reserve)continue;
+                            }
+                        }
+                        runnerCounts.TryGetValue(wave,out int runnersSent);
+                        bool reserveRunner=runner!=null&&runnersSent<runnerQuota;
                         if(reserveRunner&&id==runner&&battle.Defenders.Any(d=>d.Alive)&&battle.WaveRemaining>10)continue;
-                        if(reserveRunner&&id!=runner&&battle.DP-profiles[id].Unit.DeploymentCost<profiles[runner].Unit.DeploymentCost)continue;
+                        if(reserveRunner&&id!=runner&&battle.DP-profiles[id].Unit.DeploymentCost<profiles[runner].Unit.DeploymentCost*(runnerQuota-runnersSent))continue;
                         if(battle.CheckCardDeployment(id,lane.Entry)!=DeployFailure.None)continue;
                         long command=++request;var receipt=battle.TryDeployRole(battle.RunId,command,lane.Entry,id);if(!receipt.Success)continue;
                         actions.Add(new BattleAction{kind="Deploy",cardId=id,routeId=lane.Id,entityId=receipt.EntityId,request=command,at=battle.Clock});
-                        if(id==runner)runnerWaves.Add(wave);
+                        waveKinds.Add(id);
+                        if(id==runner)runnerCounts[wave]=runnersSent+1;
                         if(style==3){nextDeploy=battle.Clock+1.2;break;}
                     }
                     if(battle.MudrockTier>=2&&!battle.GolemDeployed&&battle.DP>=battle.GolemCost)
@@ -820,7 +931,7 @@ namespace YesterdayConvoy.Editor
                 battle.Advance(.05f);
             }
             string delays=string.Join(",",Enumerable.Range(0,battle.WaveCount).Select(i=>WaveOpeningDelay(delayMode,i,battle).ToString(CultureInfo.InvariantCulture)));
-            return Describe(battle,"current-wave-lane;style="+style+";delayMode="+delayMode+";waveDelays="+delays+(runner==null?"":";reserveRunner="+runner),actions,battle.Phase==BattlePhase.Running);
+            return Describe(battle,"current-wave-lane;style="+style+";delayMode="+delayMode+";waveDelays="+delays+(style==4?";three-cheap-distinct-opener":"")+(runner==null?"":";reserveRunner="+runner+";runnerQuota="+runnerQuota),actions,battle.Phase==BattlePhase.Running);
         }
         static double WaveOpeningDelay(int mode,int wave,ManualBattle battle)
         {
