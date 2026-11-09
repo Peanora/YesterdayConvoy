@@ -80,10 +80,10 @@ namespace YesterdayConvoy
             if(session.Shop==null)
             {
                 shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),session.Seed);
-                shop.EnableCampaign(false);
+                shop.EnableJourneyEconomy();
                 var starters=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();
                 string id=starters[new System.Random(session.Seed).Next(starters.Length)].Id;
-                shop.Preset(new[]{new ShopTrialModel.Piece{Id=id,Star=1}},Array.Empty<string>(),1,0,10);
+                shop.Preset(new[]{new ShopTrialModel.Piece{Id=id,Star=1}},Array.Empty<string>(),1,0,CampaignJourneyEconomy.InitialGold);
                 Loop=new BattleShopRun(shop,session.Seed,campaign:true,journeyV2:true);
                 session.Shop=shop;session.Loop=Loop;session.Lineup.Add(id);
                 session.Contract=session.Commission=id;
@@ -111,6 +111,7 @@ namespace YesterdayConvoy
             shopMapCopy.defenders=stage.encounter==null?Array.Empty<DefenderPlacement>():JsonUtility.FromJson<JourneyGuards>(JsonUtility.ToJson(new JourneyGuards{items=stage.encounter.defenders})).items;
             shopMapCopy.mapTitle=$"{stage.stage}/13 · {stage.title}";
             shopMapCopy.terrainOnly=stage.IsSupply;
+            shopMapCopy.attackWaves=stage.encounter==null?null:stage.encounter.attackWaves;
         }
         void DrawJourneyBriefing()
         {
@@ -121,13 +122,13 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(x,y+34,674,52),stage.tip,text);
             var next=stage.IsSupply?CampaignJourneyCatalog.Current.stages.FirstOrDefault(s=>s.stage>stage.stage&&!s.IsSupply):stage;
             if(next==null)return;
-            GUI.Label(new Rect(x,y+90,674,24),$"{(stage.IsSupply?"下一场实战":"本场")}：{next.title}    DP {next.dp} / 共享防御 {next.defense}",CampaignText(13,weight:600));
+            GUI.Label(new Rect(x,y+90,674,24),$"{(stage.IsSupply?"下一场实战":"本场")}：{next.title}    总DP {next.dp} / 共享防御 {next.defense}",CampaignText(13,weight:600));
             for(int i=0;i<next.encounter.defenders.Length;i++)
             {
                 var g=next.encounter.defenders[i];
                 GUI.Label(new Rect(x,y+119+i*21,674,22),$"{g.displayName}  · HP {g.health:0}  攻击/治疗 {g.attack:0.#}  护甲 {g.armor:0.#}",CampaignText(12));
             }
-            GUI.Label(new Rect(x,y+230,674,22),"按路线自动索敌；穿门清空防御即胜利，普通关没有倒计时。",CampaignText(11,color:ApprovedUi.Muted));
+            GUI.Label(new Rect(x,y+230,674,22),"按波开放入口，点击卡牌出兵；余DP不结转，次数/CD跨波保留，截止前突破。",CampaignText(11,color:ApprovedUi.Muted));
         }
         [Serializable]sealed class JourneyGuards {public DefenderPlacement[] items;}
     }

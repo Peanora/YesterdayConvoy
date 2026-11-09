@@ -14,7 +14,7 @@ namespace YesterdayConvoy
         static readonly Color LoopMuted=ApprovedUi.Muted;
         Rect ActiveShopPanelRect=>ShopPanelRect;
         Rect CurrentShopBattlefieldRect=>new Rect(0,0,1280,720);
-        Rect LoopRosterRect(int index)=>new Rect(18+index*106,581,100,124);
+        Rect LoopRosterRect(int index)=>new Rect(188+index*92.8f,581,88.8f,124);
         static Rect LoopMenuRect=>ApprovedUi.Menu;
         public Rect ShopPieceRect(int bench)
         {
@@ -48,11 +48,6 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(613,14,76,21),"守方防御",LoopText(12));
             GUI.Label(new Rect(613,34,87,14),"存活干员 "+Battle.Defenders.Count(d=>d.Alive),LoopText(9,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(690,12,32,33),Battle.Defense.ToString(),LoopText(26,TextAnchor.MiddleCenter,null,700));
-            Fill(new Rect(1018,8,100,42),ApprovedUi.Paper);
-            if(shopCoin!=null)GUI.DrawTexture(new Rect(1028,20,15,15),shopCoin,ScaleMode.ScaleToFit,true);
-            GUI.Label(new Rect(1048,17,27,24),"金币",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            string gold=shop.UnlimitedGold?"∞":shop.Gold.ToString();int goldSize=gold.Length>=5?14:gold.Length==4?18:gold.Length==3?22:25;
-            GUI.Label(new Rect(1070,11,42,33),gold,LoopText(goldSize,TextAnchor.MiddleRight,new Color(.44f,.33f,.16f),600));
             if(LoopButton(new Rect(1126,8,42,42),SkillMenuOpen?"慢速":SimulationSpeed+"×"))ToggleSpeed();
             bool enabled=GUI.enabled;GUI.enabled=enabled&&!preparing&&(Loop==null?Battle.Phase==BattlePhase.Running:Loop.CanDeploy);
             if(LoopButton(new Rect(1174,8,42,42),Battle.IsPaused?"继续":"暂停"))Battle.SetPaused(!Battle.IsPaused);
@@ -108,6 +103,7 @@ namespace YesterdayConvoy
                 }
                 DrawLoopHeader();
                 if(Loop.CanShop||ShopPanelTransitioning)DrawLoopShop();else DrawLoopRoster(point);
+                DrawShopResourceHud(Loop.CanShop);
                 DrawShopFlows();
                 DrawSynergyActivationFeedback();
                 if(Loop.CanDeploy&&!shopVisible&&!ShopPanelTransitioning)
@@ -129,6 +125,7 @@ namespace YesterdayConvoy
                 if(loopMenuOpen){if(suppressed)e.type=originalEvent;DrawLoopMenu();}
                 if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&loopTestSettlementOpen)
                 {if(suppressed)e.type=originalEvent;DrawLoopTestSettlement();}
+                if(shopOddsOpen){if(suppressed)e.type=originalEvent;DrawShopOdds(point);}
             }
             finally{if(e.type==EventType.Ignore)e.type=originalEvent;GUI.enabled=true;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }

@@ -214,7 +214,7 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=Battle.WavesEnabled?"点击底部编队卡牌，在本波开放红门部署":$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {

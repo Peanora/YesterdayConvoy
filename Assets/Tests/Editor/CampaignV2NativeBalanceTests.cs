@@ -123,9 +123,9 @@ namespace YesterdayConvoy.Tests
 
         [Test]public void SariaOnlyGrantsSkillPointsForEffectiveHealingInV2()
         {
-            var guards=CampaignJourneyCatalog.Stage(13).CopyDefenders().Where(p=>p.artId=="D29"||p.artId=="D30").ToArray();
+            var guards=CampaignJourneyCatalog.Stage(13).CopyDefenders().Where(p=>p.artId=="D29"||p.artId=="D24").ToArray();
             var battle=DefenderModel(13,guards);var source=battle.Defenders.Single(d=>d.Settings.ArtId=="D29");
-            var target=battle.Defenders.Single(d=>d.Settings.ArtId=="D30");float sp=target.SkillSP;
+            var target=battle.Defenders.Single(d=>d.Settings.ArtId=="D24");float sp=target.SkillSP;
             Call(battle,"HealDefender",source,target,100f);Assert.That(target.SkillSP,Is.EqualTo(sp));
             Call(battle,"ApplyDefenderLoss",target,10f);Call(battle,"HealDefender",source,target,100f);
             Assert.That(target.SkillSP,Is.EqualTo(sp+1));

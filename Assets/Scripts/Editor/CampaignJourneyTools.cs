@@ -19,9 +19,16 @@ namespace YesterdayConvoy.Editor
             public int stage, mapIndex, dp, defense, baseGold, naturalXP;
             public string title, tip, type;
             public GuardSource[] guards;
+            public AttackWaveSettings[] waves = Array.Empty<AttackWaveSettings>();
+            public float finalAdvanceSeconds;
         }
         [Serializable] sealed class Cell { public int x, y; }
-        [Serializable] sealed class GuardSource { public string id; public int tier; public float hpFactor; public Cell cell; }
+        [Serializable] sealed class GuardSource
+        {
+            public string id; public int tier; public float hpFactor;
+            public float attackFactor = 1, armorBonus, rangeFactor = 1;
+            public Cell cell;
+        }
         [Serializable] sealed class DefenderSource { public Unit[] units; }
         [Serializable] sealed class Unit { public string id, name; public Panel[] stages; public Skill[] skills; }
         [Serializable] sealed class Panel
@@ -50,7 +57,7 @@ namespace YesterdayConvoy.Editor
             if (journey == null) { journey = ScriptableObject.CreateInstance<CampaignJourneyDefinition>(); journey.name = "Journey"; AssetDatabase.CreateAsset(journey, JourneyPath); }
             journey.stages = flow.stages.OrderBy(s => s.stage).Select(stage => BuildStage(stage, defenders)).ToArray();
             EditorUtility.SetDirty(journey); AssetDatabase.SaveAssets(); Validate();
-            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 13 stages, 5 noncombat supply receipts, 8 independent encounters, 24 adopted-v2 defenders; existing map scenes and sandbox encounters untouched.");
+            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 13 stages, 5 noncombat supply receipts, 8 independent wave encounters, 15 strengthened v2 defenders; existing map scenes and sandbox encounters untouched.");
         }
 
         static CampaignJourneyStage BuildStage(StageSource source, DefenderSource roster)
@@ -69,7 +76,15 @@ namespace YesterdayConvoy.Editor
             encounter.surfaces = map.encounter.surfaces == null ? Array.Empty<Material>() : (Material[])map.encounter.surfaces.Clone();
             encounter.raised = map.encounter.raised == null ? Array.Empty<Vector2Int>() : (Vector2Int[])map.encounter.raised.Clone();
             encounter.floorTexture = map.encounter.floorTexture; encounter.foliageTexture = map.encounter.foliageTexture;
-            encounter.rosterCards = Array.Empty<ManualBattleDefinition>(); encounter.defenderTestId = null; encounter.terrainOnly = false; encounter.attackWaves = null;
+            encounter.rosterCards = Array.Empty<ManualBattleDefinition>(); encounter.defenderTestId = null; encounter.terrainOnly = false;
+            if (source.waves == null || source.waves.Length == 0 || source.dp != source.waves.Sum(w => w.dp))
+                throw new InvalidOperationException("Formal battle DP must equal its authored wave budgets: " + source.stage);
+            string wavePath = Output + "/Stage" + source.stage.ToString("00") + "Waves.asset";
+            var scenario = AssetDatabase.LoadAssetAtPath<AttackWaveScenario>(wavePath);
+            if (scenario == null) { scenario = ScriptableObject.CreateInstance<AttackWaveScenario>(); scenario.name = "Stage" + source.stage.ToString("00") + "Waves"; AssetDatabase.CreateAsset(scenario, wavePath); }
+            scenario.waves = Array.ConvertAll(source.waves, w => new AttackWaveSettings { laneId = w.laneId, dp = w.dp, deploymentSeconds = w.deploymentSeconds });
+            scenario.finalAdvanceSeconds = source.finalAdvanceSeconds;
+            _ = scenario.Snapshot(); EditorUtility.SetDirty(scenario); encounter.attackWaves = scenario;
             encounter.defenders = source.guards.Select(g => BuildGuard(map, g, roster)).ToArray();
             stage.encounter = encounter; stage.guardTiers = source.guards.Select(g => g.tier).ToArray(); stage.guardHPFactors = source.guards.Select(g => g.hpFactor).ToArray();
             stage.guardTuning = source.guards.Select(g => {
@@ -83,6 +98,10 @@ namespace YesterdayConvoy.Editor
         static DefenderPlacement BuildGuard(ApprovedMapDefinition map, GuardSource source, DefenderSource roster)
         {
             var data = roster.units.Single(u => u.id == source.id); var panel = data.stages.Single(p => p.tier == source.tier);
+            if (!(source.hpFactor > 0) || !(source.attackFactor > 0) || !(source.rangeFactor > 0) ||
+                float.IsInfinity(source.hpFactor) || float.IsInfinity(source.attackFactor) || float.IsInfinity(source.rangeFactor) ||
+                float.IsNaN(source.armorBonus) || float.IsInfinity(source.armorBonus) || panel.armor + source.armorBonus < 0)
+                throw new InvalidOperationException("Invalid scoped formal defender multiplier: " + source.id);
             if (panel.resistance != 0 || Mathf.Abs(panel.blockRadius - .65f) > .000001f)
                 throw new InvalidOperationException("This defender requires a new explicit placement field; do not silently drop resistance/block radius: " + source.id);
             var original = Resources.Load<DefenderTrialDefinition>("DefenderTrials/" + source.id);
@@ -93,8 +112,8 @@ namespace YesterdayConvoy.Editor
             guard.position = map.Cell(source.cell.x, source.cell.y, panel.highGround ? map.platformHeight : 0);
             if (panel.highGround != (map.Tile(source.cell.x, source.cell.y) == 'H') || !panel.highGround && !map.Walkable(source.cell.x, source.cell.y))
                 throw new InvalidOperationException("Formal campaign placement does not match saved terrain: " + map.id + "/" + source.id);
-            guard.health = Mathf.Floor(panel.hp * source.hpFactor + .5f); guard.attack = panel.attack; guard.armor = panel.armor;
-            guard.range = panel.range; guard.interval = panel.interval; guard.blocks = panel.blocks; guard.windup = panel.windup; guard.actionDuration = panel.actionDuration;
+            guard.health = Mathf.Floor(panel.hp * source.hpFactor + .5f); guard.attack = panel.attack * source.attackFactor; guard.armor = panel.armor + source.armorBonus;
+            guard.range = panel.range * source.rangeFactor; guard.interval = panel.interval; guard.blocks = panel.blocks; guard.windup = panel.windup; guard.actionDuration = panel.actionDuration;
             guard.damageType = (CombatDamageType)Enum.Parse(typeof(CombatDamageType), panel.damageType); guard.splashRadius = panel.splashRadius; guard.healingRange = panel.healingRange;
             guard.noOrdinaryAttack = panel.noOrdinaryAttack; guard.rangedAttackMultiplier = panel.rangedAttackMultiplier;
             guard.criticalChance = panel.criticalChance; guard.criticalMultiplier = panel.criticalMultiplier; guard.extraHealChance = panel.extraHealChance; guard.reserve = false;
@@ -129,6 +148,13 @@ namespace YesterdayConvoy.Editor
                 if (!AssetDatabase.Contains(actual.map) || !AssetDatabase.Contains(actual.encounter) || actual.map.index != expected.mapIndex)
                     throw new InvalidOperationException("Journey must reference persistent existing maps and independent encounters.");
                 if (actual.encounter.defenders.Length != expected.guards.Length) throw new InvalidOperationException("Formal defender count drift.");
+                if (actual.encounter.attackWaves == null || !AssetDatabase.Contains(actual.encounter.attackWaves) ||
+                    actual.encounter.attackWaves == actual.map.encounter.attackWaves)
+                    throw new InvalidOperationException("Formal battle requires an independent persistent wave scenario: " + expected.stage);
+                var waves = actual.encounter.attackWaves;
+                if (waves.waves.Length != expected.waves.Length || waves.finalAdvanceSeconds != expected.finalAdvanceSeconds ||
+                    waves.waves.Where((w, i) => w.laneId != expected.waves[i].laneId || w.dp != expected.waves[i].dp || w.deploymentSeconds != expected.waves[i].deploymentSeconds).Any())
+                    throw new InvalidOperationException("Formal wave plan drift: " + expected.stage);
                 for (int i = 0; i < expected.guards.Length; i++)
                 {
                     var source = expected.guards[i]; var guard = actual.encounter.defenders[i]; var target = BuildGuard(actual.map, source, roster);
@@ -145,8 +171,8 @@ namespace YesterdayConvoy.Editor
                     if (a.id != b.id || a.exitId != b.exitId || !a.points.SequenceEqual(b.points)) throw new InvalidOperationException("Journey changed the approved fixed map route.");
                 }
             }
-            if (guardCount != 24) throw new InvalidOperationException("Twenty-four formal defender placements required.");
-            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 13 stages / 8 distinct existing maps / 24 exact v2 defender panels and skill snapshots / preserved sandbox data / no scene writes.");
+            if (guardCount != 15) throw new InvalidOperationException("Fifteen formal defender placements required.");
+            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 13 stages / 8 independent wave plans / 15 strengthened v2 defenders and preserved skill snapshots / preserved sandbox data / no scene writes.");
         }
 
         public static void BuildWindows() { Validate(); BaselineTools.BuildWindows(); }

@@ -45,9 +45,9 @@ MonoBehaviour:
     displayName: "\u7C73\u683C\u9C81"
     artId: D01
     position: {x: 3.5, y: 0, z: -1.5}
-    health: 260
-    attack: 16
-    armor: 8
+    health: 390
+    attack: 40
+    armor: 10
     range: 0.85
     interval: 1.6
     windup: 0.5
@@ -152,4 +152,4 @@ MonoBehaviour:
   rosterCards: []
   defenderTestId: 
   terrainOnly: 0
-  attackWaves: {fileID: 0}
+  attackWaves: {fileID: 11400000, guid: 167dd8b96dbd3e048a01b72485c2bc5d, type: 2}

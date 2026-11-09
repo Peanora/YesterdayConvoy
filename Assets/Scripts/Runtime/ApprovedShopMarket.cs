@@ -27,18 +27,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(0,offset,panel.width,30),ApprovedUi.Paper);
                 GUI.Label(new Rect(9,offset+3,102,24),"招募商店",LoopText(15,TextAnchor.MiddleLeft,null,700));
                 GUI.Label(new Rect(105,offset+4,220,22),"五格商品 / 点击购买",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-                GUI.Label(new Rect(680,offset+4,32,22),"等级",LoopText(11,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-                GUI.Label(new Rect(714,offset+2,25,25),shop.Level.ToString(),LoopText(19,TextAnchor.MiddleCenter,null,600));
-                Fill(new Rect(745,offset+9,82,3),new Color(.68f,.74f,.79f));
-                Fill(new Rect(745,offset+9,82*(shop.Level==10?1:Mathf.Clamp01((float)shop.XP/shop.NextLevelXP)),3),new Color(.35f,.50f,.62f));
-                GUI.Label(new Rect(745,offset+15,85,13),shop.Level==10?"等级上限":$"{shop.XP}/{shop.NextLevelXP}经验",LoopText(8,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-                GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;
-                if(LoopButton(new Rect(840,offset+4,111,22),"买经验 4金币"))
-                {
-                    if(JourneyActive)UpgradeJourneyShop();
-                    else {var result=shop.Upgrade();if(result.Success){shopUpgradeAt=Time.unscaledTime;SyncShopDeck();}ShopNotice(result.Message);}
-                }
-                GUI.enabled=originalEnabled;
+                if(LoopButton(new Rect(680,offset+4,271,22),"查看等级1–10招募概率"))OpenShopProbabilityDetails();
                 if(LoopButton(new Rect(980,offset+4,86,22),"收起商店"))SetShopVisible(false);
 
                 Rect refresh=new Rect(956,offset+36,118,32),lockRect=new Rect(956,offset+74,118,32);
@@ -131,9 +120,9 @@ namespace YesterdayConvoy
         void DrawApprovedStandaloneShop()
         {
             EnsureStyles();var e=Event.current;Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
-            if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape&&loopMenuOpen){loopMenuOpen=false;CancelShopDrag();e.Use();}
-            if(!loopMenuOpen&&ShopPointerEvent(e.type,point,e.button))e.Use();
-            EventType originalEvent=e.type;bool suppressed=loopMenuOpen&&originalEvent!=EventType.Repaint&&originalEvent!=EventType.Layout;
+            if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape&&(loopMenuOpen||shopOddsOpen)){loopMenuOpen=shopOddsOpen=false;CancelShopDrag();e.Use();}
+            if(!loopMenuOpen&&!shopOddsOpen&&ShopPointerEvent(e.type,point,e.button))e.Use();
+            EventType originalEvent=e.type;bool suppressed=(loopMenuOpen||shopOddsOpen)&&originalEvent!=EventType.Repaint&&originalEvent!=EventType.Layout;
             Matrix4x4 previous=GUI.matrix;Color old=GUI.color,background=GUI.backgroundColor;bool enabled=GUI.enabled;
             GUI.matrix=TacticalViewport.Current.Matrix;
             try
@@ -149,6 +138,7 @@ namespace YesterdayConvoy
                 }
                 DrawLoopHeader();bool prep=Battle.Phase==BattlePhase.Ready;DrawShopMarket(prep);
                 if(prep||ShopPanelTransitioning)DrawShopBench(LoopText(12,TextAnchor.MiddleCenter));else DrawLoopRoster(point);
+                DrawShopResourceHud(prep);
                 DrawShopFlows();
                 if(StrongholdChallengeLayout.IsStronghold(TacticalMapId)&&ShopPanelVisibility<.01f)
                 {
@@ -170,6 +160,7 @@ namespace YesterdayConvoy
                 }
                 DrawDamageRanking();
                 if(loopMenuOpen){if(suppressed)e.type=originalEvent;DrawLoopMenu();}
+                if(shopOddsOpen){if(suppressed)e.type=originalEvent;DrawShopOdds(point);}
             }
             finally{if(e.type==EventType.Ignore)e.type=originalEvent;GUI.enabled=enabled;GUI.matrix=previous;GUI.color=old;GUI.backgroundColor=background;}
         }

@@ -34,7 +34,7 @@ namespace YesterdayConvoy
             // rearms the next upward crossing, while buying duplicates or changing forms does not.
             lastInfectionChoiceTier=tier;
             if(tier<2||tier<=previous)return;
-            inspectedSynergy="感染生物";campaignConstructOpen=false;CancelShopDrag();
+            inspectedSynergy="感染生物";infectionChoiceRequested=true;campaignConstructOpen=false;CancelShopDrag();
         }
         InfectionForm VisibleInfectionMain=>InfectionChoiceEditable?infectionForm:Battle.InfectionShape;
         InfectionForm VisibleInfectionSecond=>InfectionChoiceEditable?infectionSecond:Battle.InfectionSecondShape;

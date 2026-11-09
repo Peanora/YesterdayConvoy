@@ -146,12 +146,12 @@ namespace YesterdayConvoy
             _=Row(settings.CardId,star);return star;
         }
 
-        public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int dp,int defense)
+        public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int dp,int defense,bool waveMode=false)
         {
             if(data==null||data.Engagement==null)throw new ArgumentNullException(nameof(data));
             var original=data.Snapshot();var c=data.Engagement.Snapshot();
             // The explicit deferred exception keeps its current battle implementation.
-            if(original.CardId==SilverWolfCombat.CardId)return CampaignBalance.Build(data,star,dp,defense);
+            if(original.CardId==SilverWolfCombat.CardId)return CampaignBalance.Build(data,star,dp,defense,waveMode:waveMode);
             var r=Row(original.CardId,star);string id=original.CardId;var e=c.Effects;
             float Skill(string name,string key)=>SkillValue(id,star,name,key);
             float blast=id=="CARD_M04"?Skill("deathBlast","damage"):id=="CARD_M06"?Skill("coldBlast","damage"):e.BlastAttack;
@@ -187,7 +187,8 @@ namespace YesterdayConvoy
             var combat=new EngagementSettings(r.attack,r.armor,r.range,r.interval,c.DefenderHealth,c.DefenderAttack,c.DefenderArmor,c.DefenderRange,c.DefenderInterval,c.BlockCount,c.BlockRadius,
                 initial,required,recharge,ammo,skillAttack,skillInterval,skillRange,projectile,c.FireRain,c.HasSkill,c.Melee,r.attackDuration,r.effectiveAttackWindup,effects,r.canOrdinaryAttack,
                 c.DefenderDamageType,c.RevealsInvisible,c.DefenderCanHitAir,c.FrostSeal,c.MudrockCapture);
-            var settings=new ManualBattleSettings(id,original.UnitId,dp,defense,r.uses,r.dp,r.nonWaveCooldown,r.hp,r.speed,r.gate,original.TowerRange,original.TowerDamage,original.ShotInterval);
+            var settings=new ManualBattleSettings(id,original.UnitId,dp,defense,r.uses,r.dp,
+                waveMode?WaveDeploymentCadence.ForCard(id,Cost(id)):r.nonWaveCooldown,r.hp,r.speed,r.gate,original.TowerRange,original.TowerDamage,original.ShotInterval);
             return new BasicRosterProfile(settings,combat,true);
         }
     }

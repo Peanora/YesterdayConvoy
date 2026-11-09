@@ -161,7 +161,7 @@ namespace YesterdayConvoy
         Rect SynergyThresholdRect(Rect row)=>new Rect(row.x+56,row.y+20,row.width-62,15);
         Rect SynergySupplementRect(Rect row)=>new Rect(row.x+58,row.y+35,row.width-64,12);
         Rect SynergyProgressRect(Rect row)=>new Rect(row.x+58,row.y+47,row.width-64,1);
-        Rect SynergyDetailRect=>inspectedSynergy=="感染生物"?InfectionFormPanelRect:new Rect(252,90,620,415);
+        Rect SynergyDetailRect=>inspectedSynergy=="感染生物"&&infectionChoiceRequested?InfectionFormPanelRect:UnifiedSynergyPanelRect;
         SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds,PreparedMudrockTransferIds,Battle?.CampaignV2Enabled==true);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
         void DrawSynergySidebar()
@@ -183,8 +183,7 @@ namespace YesterdayConvoy
                     var s=summaries[i];Rect row=SynergyRowAtWidth(i,contentWidth);
                     if(GUI.Button(row,GUIContent.none,GUIStyle.none))
                     {
-                        if(s.Name=="泥岩小队")OpenGolemTrainingPanel();
-                        else {inspectedSynergy=inspectedSynergy==s.Name?null:s.Name;campaignConstructOpen=false;CancelShopDrag();}
+                        if(inspectedSynergy==s.Name)CloseCampaignOverlay();else OpenSynergyDetails(s.Name);
                     }
                     bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
                     Color ink=active?new Color(.95f,.965f,.98f):new Color(.65f,.70f,.77f);
@@ -201,32 +200,8 @@ namespace YesterdayConvoy
             }
             finally {GUI.EndScrollView();}
             var detail=summaries.FirstOrDefault(s=>s.Name==inspectedSynergy);if(detail==null){inspectedSynergy=null;return;}
-            if(detail.Name=="感染生物"){DrawInfectionFormPanel(detail);return;}
-            if(detail.Name=="整合运动"){DrawReunionDetail(detail);return;}
-            Fill(SynergyDetailRect,ApprovedUi.Paper);ApprovedUi.Border(SynergyDetailRect,ApprovedUi.Rule);
-            GUI.Label(new Rect(268,102,510,28),$"{detail.Name} · {detail.Count}种 · "+(detail.Tier>0?detail.Tier+"档已激活":detail.Implemented?"未达门槛":"待实现"),CampaignText(17,weight:700));
-            if(LoopButton(new Rect(803,102,53,28),"关闭")){inspectedSynergy=null;return;}
-            if(detail.Tier>0&&(detail.Name=="雪怪小队"||detail.Name=="深池"))
-            {
-                int stars=detail.Name=="深池"?Battle.DeepTotalStars:Battle.SnowTotalStars;
-                float multiplier=detail.Name=="深池"?Battle.DeepStarMultiplier:Battle.SnowStarMultiplier;
-                GUI.Label(new Rect(268,131,588,17),$"编队总星 {stars} · 伤害×{multiplier:0.###} · 开战锁定",CampaignText(11,color:ApprovedUi.Muted));
-            }
-            var body=CampaignText(14,TextAnchor.UpperLeft);body.wordWrap=true;
-            if(detail.Name=="游击队"||detail.Name=="萨卡兹"||detail.Name=="雪怪小队"||detail.Name=="深池")
-            {
-                var detailViewport=new Rect(268,149,588,269);float content=body.CalcHeight(new GUIContent(detail.Effect),detailViewport.width-18)+8;
-                var scroll=detail.Name=="萨卡兹"?sarkazDetailScroll:detail.Name=="雪怪小队"?snowDetailScroll:detail.Name=="深池"?deepDetailScroll:guerrillaDetailScroll;
-                scroll=GUI.BeginScrollView(detailViewport,scroll,new Rect(0,0,detailViewport.width-18,Mathf.Max(detailViewport.height,content)),false,false);
-                if(detail.Name=="萨卡兹")sarkazDetailScroll=scroll;else if(detail.Name=="雪怪小队")snowDetailScroll=scroll;else if(detail.Name=="深池")deepDetailScroll=scroll;else guerrillaDetailScroll=scroll;
-                try{GUI.Label(new Rect(0,0,detailViewport.width-18,content),detail.Effect,body);}
-                finally{GUI.EndScrollView();}
-            }
-            else GUI.Label(new Rect(268,149,588,269),detail.Effect,body);
-            string members=string.Join("、",detail.Members.Select(id=>shop.Definition(id).Name+((detail.Name=="游击队"&&IsGuerrillaTransfer(id)||detail.Name=="泥岩小队"&&IsMudrockTransfer(id))?"（转职）":"")));
-            Fill(new Rect(268,430,588,1),ApprovedUi.Rule);
-            var memberStyle=CampaignText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);memberStyle.wordWrap=true;
-            GUI.Label(new Rect(268,441,588,54),"编队成员："+members+"\n按战前编队锁定；未部署或死亡不改变档位。",memberStyle);
+            if(detail.Name=="感染生物"&&infectionChoiceRequested){DrawInfectionFormPanel(detail);return;}
+            DrawUnifiedSynergyDetails(detail);
         }
 
         static string ReunionCompositionProgress(SynergySummary summary)

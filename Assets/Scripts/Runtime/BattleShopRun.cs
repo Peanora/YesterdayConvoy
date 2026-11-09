@@ -38,7 +38,8 @@ namespace YesterdayConvoy
             LastGolemGrowth=Campaign&&!RewardStage?GolemGrowth.Award(GolemExperience,golemCapacity,golemGrowth):0;
             GolemExperience+=LastGolemGrowth;
             string receipt=Sandbox?"sandbox-round-"+SandboxRound:"stage-"+Stage;
-            Reward=Economy.SettleRound(receipt,won,JourneyV2?CampaignJourneyCatalog.Stage(Stage).baseGold:Campaign?CampaignPlan.BaseGold[Stage-1]:5,JourneyV2?CampaignJourneyCatalog.Stage(Stage).naturalXP:Campaign?CampaignPlan.NaturalXP[Stage-1]:2);
+            Reward=Economy.SettleRound(receipt,won,JourneyV2?CampaignJourneyCatalog.Stage(Stage).baseGold:Campaign?CampaignPlan.BaseGold[Stage-1]:5,
+                JourneyV2?CampaignJourneyCatalog.Stage(Stage).naturalXP:Campaign?CampaignPlan.NaturalXP[Stage-1]:2,countsForStreak:!JourneyV2||!RewardStage);
             Phase=!won?BattleShopPhase.Failed:Stage==TotalStages?BattleShopPhase.Complete:BattleShopPhase.Settlement;return true;
         }
         public bool OpenShop()

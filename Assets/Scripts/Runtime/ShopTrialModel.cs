@@ -32,13 +32,15 @@ namespace YesterdayConvoy
         readonly Random random;
         int sequence;
         public bool CampaignEconomy {get;private set;}
+        public bool JourneyEconomy {get;private set;}
         public bool UnlimitedGold {get;private set;}
         public bool CommissionUsed {get;private set;}
         readonly HashSet<string> lineup=new HashSet<string>();
         readonly HashSet<int> lineupInstances=new HashSet<int>();
-        public int NextLevelXP=> (CampaignEconomy?CampaignPlan.XP:Experience)[Level];
+        public int NextLevelXP=>JourneyEconomy?CampaignJourneyEconomy.RequiredXP(Level):(CampaignEconomy?CampaignPlan.XP:Experience)[Level];
         public bool CanAfford(int amount)=>UnlimitedGold||Gold>=amount;
-        public void EnableCampaign(bool unlimited=false){CampaignEconomy=true;UnlimitedGold=unlimited;}
+        public void EnableCampaign(bool unlimited=false){CampaignEconomy=true;JourneyEconomy=false;UnlimitedGold=unlimited;}
+        public void EnableJourneyEconomy(){EnableCampaign();JourneyEconomy=true;}
         public bool IsLineupInstance(int instance)=>lineupInstances.Contains(instance);
         public bool SetLineup(IEnumerable<string> ids,IEnumerable<int> preferredInstances=null)
         {
@@ -78,7 +80,7 @@ namespace YesterdayConvoy
         public void Preset(IEnumerable<Piece> pieces,IEnumerable<string> cards,int level=5,int xp=18,int gold=80)
         {
             var b=pieces.Select(p=>p.Copy()).ToArray();var o=cards.ToArray();
-            if(b.Length>10||o.Length>5||level<1||level>10||gold<0||xp<0||level<10&&xp>=(CampaignEconomy?CampaignPlan.XP:Experience)[level])throw new ArgumentException("Invalid trial preset");
+            if(b.Length>10||o.Length>5||level<1||level>10||gold<0||xp<0||level<10&&xp>=(JourneyEconomy?CampaignJourneyEconomy.RequiredXP(level):(CampaignEconomy?CampaignPlan.XP:Experience)[level]))throw new ArgumentException("Invalid trial preset");
             var reserved=roles.Keys.ToDictionary(id=>id,id=>0);
             foreach(var p in b){if(!roles.ContainsKey(p.Id)||p.Star<1||p.Star>MaxStar(p.Id))throw new ArgumentException("Invalid piece");reserved[p.Id]+=Copies(p.Star);}
             foreach(var id in o){if(!roles.ContainsKey(id))throw new ArgumentException("Invalid offer");reserved[id]++;}
@@ -106,13 +108,13 @@ namespace YesterdayConvoy
                 if(group.Length!=3)continue;
                 group[0].Star++;planned.Remove(group[1]);planned.Remove(group[2]);target=group[0].Instance;star=group[0].Star;
             }
-            if(!Fits(planned))return Fail("备战席已满；本次不能合成，不扣源石");
+            if(!Fits(planned))return Fail("备战席已满；本次不能合成，不扣金币");
             return new Result{Success=true,Id=id,Instance=target,FinalStar=star,Value=role.Cost,Message=star>1?$"{role.Name} 晋升 {star}星":"招募成功"};
         }
         public Result Purchase(int index)
         {
             var result=PlanPurchase(index,out var planned);if(!result.Success)return result;
-            if(!CanAfford(result.Value))return Fail("源石不足");
+            if(!CanAfford(result.Value))return Fail("金币不足");
             bench.Clear();bench.AddRange(planned);if(!UnlimitedGold)Gold-=result.Value;offers[index]=null;sequence++;Validate();return result;
         }
         public Result Quote(int instance)
@@ -128,13 +130,13 @@ namespace YesterdayConvoy
         }
         public Result Upgrade()
         {
-            if(Level==10)return Fail("已达到最高等级");if(!CanAfford(4))return Fail("升级需要4源石");
+            if(Level==10)return Fail("已达到最高等级");if(!CanAfford(4))return Fail("升级需要4金币");
             int old=Level;if(!UnlimitedGold)Gold-=4;XP+=4;while(Level<10&&XP>=NextLevelXP){XP-=NextLevelXP;Level++;}if(Level==10)XP=0;
             return new Result{Success=true,Value=Level-old,Message=Level>old?$"等级提升至 {Level} · 编队上限 {Level}":"经验 +4"};
         }
         public Result Refresh(bool free=false)
         {
-            if(Locked)return Fail("已锁定，请先解锁");if(!free&&!CanAfford(2))return Fail("刷新需要2源石");
+            if(Locked)return Fail("已锁定，请先解锁");if(!free&&!CanAfford(2))return Fail("刷新需要2金币");
             var next=new Dictionary<string,int>(pool);foreach(var id in offers)if(id!=null)next[id]++;
             var row=Odds[Level-1];
             string guaranteed=GuaranteedRefreshOffer;
@@ -174,13 +176,14 @@ namespace YesterdayConvoy
         }
         readonly Dictionary<string,RoundReward> rewards=new Dictionary<string,RoundReward>();
         public int WinStreak {get;private set;}
-        public RoundReward SettleRound(string key,bool won,int baseGold=5,int victoryXP=2)
+        public RoundReward SettleRound(string key,bool won,int baseGold=5,int victoryXP=2,bool countsForStreak=true)
         {
             if(baseGold<0||victoryXP<0)throw new ArgumentOutOfRangeException();
             if(string.IsNullOrEmpty(key))throw new ArgumentException("Missing settlement key");
             if(rewards.TryGetValue(key,out var old))return old;
-            WinStreak=won?WinStreak+1:0;
-            var receipt=new RoundReward{Key=key,Won=won,Base=baseGold,GoldBefore=Gold,Interest=Math.Min(5,Gold/10),Streak=won?Math.Min(3,Math.Max(0,WinStreak-1)):0,Experience=won?victoryXP:0};
+            if(countsForStreak)WinStreak=won?WinStreak+1:0;
+            var receipt=new RoundReward{Key=key,Won=won,Base=baseGold,GoldBefore=Gold,Interest=Math.Min(5,Gold/10),
+                Streak=won&&countsForStreak?(JourneyEconomy?CampaignJourneyEconomy.StreakBonus(WinStreak):Math.Min(3,Math.Max(0,WinStreak-1))):0,Experience=won?victoryXP:0};
             if(!UnlimitedGold)Gold+=receipt.Total;XP+=receipt.Experience;
             while(Level<10&&XP>=NextLevelXP){XP-=NextLevelXP;Level++;}if(Level==10)XP=0;
             rewards.Add(key,receipt);Validate();return receipt;

@@ -75,9 +75,12 @@ namespace YesterdayConvoy
                 }
                 if (supplies.Contains(number) || entry.type != (bosses.Contains(number) ? CampaignJourneyStageType.Boss : CampaignJourneyStageType.Battle) ||
                     entry.map == null || entry.map.index != maps[mapIndex++] || entry.encounter == null || entry.encounter == entry.map.encounter ||
-                    entry.encounter.mapId != entry.map.id || entry.dp <= 0 || entry.defense <= 0 || entry.encounter.attackWaves != null)
+                    entry.encounter.mapId != entry.map.id || entry.dp <= 0 || entry.defense <= 0 || entry.encounter.attackWaves == null)
                     throw new InvalidOperationException("Invalid independent campaign encounter: " + number);
                 _ = entry.encounter.Snapshot(); _ = entry.encounter.LaneSnapshot();
+                var plan=entry.encounter.WaveSnapshot();
+                if(plan.Waves.Sum(w=>w.DP)!=entry.dp || plan.Waves.Any(w=>w.DP<=0 || !entry.encounter.lanes.Any(l=>l.id==w.LaneId)))
+                    throw new InvalidOperationException("Campaign wave budget/lane drift: " + number);
                 int count = entry.encounter.defenders.Length;
                 if (entry.guardTiers.Length != count || entry.guardHPFactors.Length != count || entry.guardTuning.Length != count ||
                     entry.guardTiers.Any(t => t < 1 || t > 3)) throw new InvalidOperationException("Missing defender tier provenance: " + number);

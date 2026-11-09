@@ -21,9 +21,9 @@ namespace YesterdayConvoy
         Vector2 campaignQuickActionsScroll;
         Rect CampaignPanelRect=>Loop!=null&&Loop.CanShop?new Rect(258,255,405,252):new Rect(16,325,405,223);
         static Rect CampaignConstructRect=>new Rect(252,155,722,352);
-        bool CampaignUiModalOpen=>CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
+        bool CampaignUiModalOpen=>shopOddsOpen||CampaignActive&&(inspectedSynergy!=null||campaignConstructOpen);
         public bool CampaignOverlayVisible=>CampaignUiModalOpen;
-        public void CloseCampaignOverlay(){campaignConstructOpen=false;inspectedSynergy=null;CancelShopDrag();}
+        public void CloseCampaignOverlay(){campaignConstructOpen=false;inspectedSynergy=null;CloseShopUiOverlays();CancelShopDrag();}
         public Rect CampaignConstructToggleRect=>new Rect(12,SynergyListRect.yMax+6,174,28);
         Rect CampaignQuickActionsRect=>new Rect(12,CampaignConstructToggleRect.yMax+7,174,222);
         bool CampaignOverlayBlocksPoint(Vector2 point)=>CampaignActive&&(CampaignUiModalOpen||SynergyListRect.Contains(point)||CampaignConstructToggleRect.Contains(point)||
@@ -76,7 +76,7 @@ namespace YesterdayConvoy
             var deck=shopLineup.Where(shopDefinitions.ContainsKey).ToList();
             if(deck.Count==0)deck.Add("CARD_M08");
             var wavePlan=shopMapCopy.WaveSnapshot();
-            int dp=JourneyActive?JourneyStage.dp:wavePlan!=null?wavePlan.Waves[0].DP:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
+            int dp=wavePlan!=null?wavePlan.Waves[0].DP:JourneyActive?JourneyStage.dp:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
             int defense=JourneyActive?Math.Max(1,JourneyStage.defense):BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
             var profiles=deck.Select(id=>CampaignProfile(id,dp,defense)).ToArray();
             var first=profiles[0];
@@ -151,10 +151,11 @@ namespace YesterdayConvoy
             {CloseCampaignOverlay();e.Use();}
             if(CampaignUiModalOpen&&e.type==EventType.MouseDown&&e.button==0)
             {
-                Rect panel=campaignConstructOpen?CampaignConstructRect:SynergyDetailRect;
+                Rect panel=shopOddsOpen?ShopOddsPanelRect:campaignConstructOpen?CampaignConstructRect:SynergyDetailRect;
                 if(!panel.Contains(point)&&!SynergyListRect.Contains(point)&&!CampaignConstructToggleRect.Contains(point))
                 {CloseCampaignOverlay();e.Use();}
             }
+            if(shopOddsOpen)return;
             DrawGuerrillaTransferBadges();DrawMudrockTransferBadges();DrawSynergySidebar();
             var toggle=CampaignConstructToggleRect;
             Fill(toggle,new Color(.125f,.195f,.28f));ApprovedUi.Border(toggle,new Color(.52f,.60f,.69f,.38f));
@@ -281,7 +282,7 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(266,y+121,142,30),"切换测试")){ReturnToTrialScene();return;}
                 if(LoopButton(new Rect(25,y+158,383,30),"选择感染形态  ·  主："+FormName(infectionForm)+
                     (Battle.InfectionTier>=6?" / 副："+FormName(infectionSecond):" / 副形态6档解锁")))
-                {inspectedSynergy="感染生物";campaignConstructOpen=false;CancelShopDrag();}
+                {OpenInfectionChoiceDetails();}
                 GUI.Label(new Rect(25,y+192,388,22),"也可直接点击左侧感染生物；开战时锁定",CampaignText(11));
                 if(SynergySandbox)
                     for(int i=0;i<8;i++)if(LoopButton(new Rect(25+(i%4)*96,y+214+(i/4)*20,90,18),new[]{"冰雪样板","感染样板","游击样板","泥岩样板","牧群样板","深池样板","承契样板","海嗣样板"}[i])){campaignConstructOpen=false;PrepareSandboxRoster(i);}

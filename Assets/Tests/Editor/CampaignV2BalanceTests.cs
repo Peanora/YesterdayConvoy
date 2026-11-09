@@ -79,6 +79,19 @@ namespace YesterdayConvoy.Tests
             Assert.That(CampaignV2Balance.Build(Definition("CARD_WISADEL_APRIL"),2,50,6).Combat.SkillAttack,Is.EqualTo(520));
             Assert.That(CampaignV2Balance.Build(Definition("CARD_M28"),2,50,6).Combat.RequiredSP,Is.EqualTo(35));
         }
+        [Test]public void WaveProfilesUseBlackForestCadenceWithoutChangingPlayerStatsOrOrdinaryTrials()
+        {
+            foreach(string id in CampaignV2Balance.PlayerIds)
+            {
+                var definition=Definition(id);var ordinary=CampaignV2Balance.Build(definition,1,10,1);
+                var wave=CampaignV2Balance.Build(definition,1,10,1,waveMode:true);
+                Assert.That(wave.Unit.Cooldown,Is.EqualTo(WaveDeploymentCadence.ForCard(id,definition.Card.RecruitCost)),id);
+                Assert.That(wave.Unit.Health,Is.EqualTo(ordinary.Unit.Health),id);
+                Assert.That(wave.Unit.DeploymentCost,Is.EqualTo(ordinary.Unit.DeploymentCost),id);
+                Assert.That(wave.Unit.DeploymentLimit,Is.EqualTo(ordinary.Unit.DeploymentLimit),id);
+                Assert.That(wave.Combat.UnitAttack,Is.EqualTo(ordinary.Combat.UnitAttack),id);
+            }
+        }
 
         [Test]public void DeploymentAppliesExactBarrierLayerAndHpBudgetsAndRestartKeepsV2Enabled()
         {

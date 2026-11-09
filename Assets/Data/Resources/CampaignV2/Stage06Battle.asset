@@ -36,38 +36,38 @@ MonoBehaviour:
   - {x: -5.5, y: 0, z: -3.5}
   - {x: -6.5, y: 0, z: -3.5}
   defenders:
-  - id: D29
-    displayName: "\u585E\u96F7\u5A05"
-    artId: D29
+  - id: D02
+    displayName: "\u5361\u7F07"
+    artId: D02
     position: {x: 4.5, y: 0, z: -2.5}
-    health: 630
-    attack: 40
-    armor: 18
+    health: 870
+    attack: 60
+    armor: 15
     range: 0.9
     interval: 1.2
     windup: 0.4
-    actionDuration: 1.1666666
+    actionDuration: 1
     blocks: 3
-    role: 1
+    role: 0
     damageType: 0
     splashRadius: 0
-    healingRange: 4
+    healingRange: 0
     skill:
-      kind: 15
-      initialSP: 30
-      requiredSP: 55
+      kind: 1
+      initialSP: 6
+      requiredSP: 24
       spPerSecond: 1
-      duration: 14
+      duration: 0
       attackMultiplier: 1
       attackSpeedMultiplier: 1
-      healFraction: 0.22
+      healFraction: 0.3
       healRangeBonus: 0
       defenseMultiplier: 1
       healingInterval: 0
       healthMultiplier: 1
-      effectRadius: 4
-      damageAmplification: 1.25
-      moveMultiplier: 0.55
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
       elementFraction: 0
       eraseChance: 0
       chargeSeconds: 0
@@ -85,8 +85,8 @@ MonoBehaviour:
     displayName: "\u53F2\u90FD\u534E\u5FB7"
     artId: D08
     position: {x: 1.5, y: 0.72, z: -3.5}
-    health: 252
-    attack: 44
+    health: 420
+    attack: 55
     armor: 4
     range: 3.5
     interval: 1.8
@@ -206,4 +206,4 @@ MonoBehaviour:
   rosterCards: []
   defenderTestId: 
   terrainOnly: 0
-  attackWaves: {fileID: 0}
+  attackWaves: {fileID: 11400000, guid: 0f7c756573147984d9808545be790549, type: 2}

@@ -63,7 +63,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));
             Assert.That(c.StartLoopNextBattle(),Is.True);yield return null;
             Assert.That(c.Battle.FindCard(first.Id),Is.Null,"Manual reserve choice survives the battle rebuild.");
-            Assert.That(Bounds(c,second.Instance).x,Is.EqualTo(18+5*106),"Stable compaction leaves the rightmost selected card last.");
+            Assert.That(c.Shop.Bench.Where(p=>c.Shop.IsLineupInstance(p.Instance)).OrderBy(p=>Bounds(c,p.Instance).x).Last().Instance,
+                Is.EqualTo(second.Instance),"Stable compaction leaves the rightmost selected card last, independently of HUD spacing.");
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));
             c.LeaveShopTrial();yield return null;
         }

@@ -63,10 +63,10 @@ namespace YesterdayConvoy.Tests
         {
             yield return Load("Campaign");ManualBattleController c=null;yield return CampaignJourneyEvidenceProbe.Ready(1,value=>c=value);
             Assert.That(c.Loop.RewardStage);int defense=c.Battle.Defense;c.ClaimCampaignSupply();
-            Assert.That(c.Battle.Defense,Is.EqualTo(defense));Assert.That(c.Shop.Gold,Is.EqualTo(21));c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(21));
+            Assert.That(c.Battle.Defense,Is.EqualTo(defense));Assert.That(c.Shop.Gold,Is.EqualTo(8));c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(8));
             Assert.That(c.OpenLoopShop());yield return CampaignJourneyEvidenceProbe.Ready(2,value=>c=value);
             Assert.That(c.StartLoopNextBattle());Assert.That(c.Loop.RewardStage);
-            c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(36));Assert.That(c.OpenLoopShop());
+            c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(12));Assert.That(c.OpenLoopShop());
             yield return CampaignJourneyEvidenceProbe.Ready(3,value=>c=value);Assert.That(c.Loop.Stage,Is.EqualTo(3));Assert.That(c.Loop.RewardStage,Is.False);
             c.LeaveShopTrial();
         }
