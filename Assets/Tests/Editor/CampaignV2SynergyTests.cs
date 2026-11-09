@@ -92,7 +92,8 @@ namespace YesterdayConvoy.Tests
         [Test]public void HerdReplacementUsesTheNewFractionAndArmorAndKeepsItsFiniteLifetime()
         {
             var b=Make(new[]{"CARD_M21","CARD_M22"});var u=Deploy(b,"CARD_M21");b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Physical);b.Advance(.01f);
-            var spirit=b.Units.Single(x=>x.SynergySupport);Assert.That(spirit.MaxHealth,Is.EqualTo(60).Within(.001));
+            // The spirit inherits 30% of the source's two-Reunion +10% HP once.
+            var spirit=b.Units.Single(x=>x.SynergySupport);Assert.That(spirit.MaxHealth,Is.EqualTo(66).Within(.001));
             Assert.That(b.UnitCombat(spirit).UnitAttack,Is.EqualTo(6).Within(.001));Assert.That(b.UnitCombat(spirit).UnitArmor,Is.EqualTo(2));
             Assert.That(b.HerdRemaining(spirit.EntityId),Is.EqualTo(10).Within(.01));
         }

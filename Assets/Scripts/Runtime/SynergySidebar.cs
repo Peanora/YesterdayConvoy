@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         public string[] Members {get;internal set;}
         static string ReunionEffect()=>
             "按战前编队不同整合卡种锁档；每种卡只属于本队、雪怪、游击、牧群中的一种编制。\n"+
+            "2/4/6/8档整合成员最大生命与攻击＋10/20/30/40%，包含五费，援军不额外叠加；与其他同类队伍加成相加。固定技能基值不重写。\n"+
             "2档：2种，无编制限制；每轮部署2种，追加1名士兵，本场1轮，共1名。\n"+
             "4档：4种，无编制限制；每轮部署3种，追加1名所选士兵或弩手，本场2轮，共2名。\n"+
             "6档：6种且至少2编制；每轮部署3种，追加士兵、弩手各1，本场2轮，共4名。\n"+
@@ -55,10 +56,10 @@ namespace YesterdayConvoy
                     {
                         string melee=$"士兵 {N(V("reunion",t,"meleeHP"))}/{N(V("reunion",t,"meleeAttack"))}/{N(V("reunion",t,"meleeArmor"))}";
                         string ranged=t>=4?$"；弩手 {N(V("reunion",t,"rangedHP"))}/{N(V("reunion",t,"rangedAttack"))}/{N(V("reunion",t,"rangedArmor"))}":"";
-                        lines.Add($"{t}档：每轮{N(V("reunion",t,"distinctKindsPerMuster"))}种，{N(V("reunion",t,"musterLimit"))}轮，每轮{N(V("reunion",t,"supportsPerMuster"))}名。基础生命/攻击/护甲：{melee}{ranged}。");
+                        lines.Add($"{t}档：整合成员最大生命/攻击＋{P(V("reunion",t,"memberStatBonus"))}；每轮{N(V("reunion",t,"distinctKindsPerMuster"))}种，{N(V("reunion",t,"musterLimit"))}轮，每轮{N(V("reunion",t,"supportsPerMuster"))}名。基础生命/攻击/护甲：{melee}{ranged}。");
                     }
                     lines.Add("4档可选士兵或弩手，6/8档一近一远；8档援军首次实际交战获得20%最大生命护盾，持续5模拟秒。生命、攻击乘√(S/K)后四舍五入，护甲不成长；间隔1.8秒、速度0.7，近/远射程0.75/2.7。");
-                    lines.Add("援军沿触发红门固定路线出现，不花DP/次数，穿门不扣防御；不产羁绊资源、不成为承契者。S计全部整合编队成员总星，额外成员也贡献；备战、重复部署不计，暂停冻结行动及护盾。");break;
+                    lines.Add("成员加成包含五费，与其他同类队伍加成相加，固定技能基值不重写；援军、分体、转化体不额外叠加。援军沿触发红门固定路线出现，不花DP/次数，穿门不扣防御；不产羁绊资源、不成为承契者。S计全部整合编队成员总星，额外成员也贡献；备战、重复部署不计，暂停冻结行动及护盾。");break;
                 case "雪怪小队":
                     lines.Add("冻结守军在2.5秒内受两种不同原卡直接命中才碎冰。碎冰及天气伤害乘(S/K)^0.4，S为全部雪怪编队总星，K为当前2/5档。");
                     foreach(int t in new[]{2,5})lines.Add($"{t}档：{N(V("snow",t,"shatterArts"))}法伤，半径{N(V("snow",t,"shatterRadius"))}/至多{N(V("snow",t,"shatterTargets"))}人，目标冷却{N(V("snow",t,"targetShatterCooldownSeconds"))}秒；"+(t==2?"消耗冻结。":"保留冻结。"));

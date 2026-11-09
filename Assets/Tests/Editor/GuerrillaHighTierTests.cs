@@ -84,7 +84,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(source.LastAttackTime,Is.EqualTo(attack));Assert.That(source.LastAttackEmpowered,Is.EqualTo(empowered));Assert.That(source.IsMoving,Is.EqualTo(moving));
             Assert.That((double)typeof(DeployedUnitState).GetField("NextAttackTime",Hidden).GetValue(source),Is.EqualTo(next));Assert.That(source.OrdinaryAttacksFired,Is.EqualTo(ordinary));
             Assert.That(source.SynergyShield,Is.EqualTo(source.MaxHealth*.15f));
-            b.Advance(2.81f,2.81f);Assert.That(b.LatestGuerrillaOrder.Hits.All(h=>Math.Abs(h.Damage-18)<.2f),Is.True);
+            // This high-tier fixture has Reunion six: 10*1.3*1.8=23.4 per guard.
+            b.Advance(2.81f,2.81f);Assert.That(b.LatestGuerrillaOrder.Hits.All(h=>Math.Abs(h.Damage-23.4f)<.2f),Is.True);
         }
 
         [Test]public void NineCanOpenFromOutsideAllAttackRangesWithoutStoppingTheMovingSource()
@@ -96,8 +97,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.LatestGuerrillaOrder,Is.Not.Null);Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(source.IsMoving,Is.True);Assert.That(b.Orders,Is.Zero);
             var volley=b.LatestGuerrillaOrder;b.Advance(.89f,.89f);Assert.That(volley.Hits,Is.Empty);b.Advance(.02f,.02f);
             Assert.That(volley.Hits.Count,Is.EqualTo(2));Assert.That(volley.Resolved,Is.False);Assert.That(volley.CompletedStrikes,Is.EqualTo(1));
-            Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-4.5f)<.2f),Is.True);
-            b.Advance(1.9f,1.9f);Assert.That(volley.Resolved,Is.True);Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-30)<.2f),Is.True);
+            // Reunion six and the ninth-tier order give 10*1.3*3=39; first weight is .15.
+            Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-5.85f)<.2f),Is.True);
+            b.Advance(1.9f,1.9f);Assert.That(volley.Resolved,Is.True);Assert.That(volley.Hits.All(h=>Math.Abs(h.Damage-39)<.2f),Is.True);
         }
 
         [Test]public void HighTierStillRejectsSkillRevivalControlAndSupportOnlySources()
@@ -132,9 +134,10 @@ namespace YesterdayConvoy.Tests
             var order=b.LatestGuerrillaOrder;Assert.That(order,Is.Not.Null);Assert.That(order.Age,Is.Zero,"The commit does not inherit elapsed time from the substep that found its source.");
             Assert.That(b.OrdersUsed,Is.EqualTo(1));Assert.That(b.Orders,Is.Zero);Assert.That(source.OrdinaryAttacksFired,Is.Zero);
             b.Advance(2.79f,2.79f);Assert.That(order.CompletedStrikes,Is.EqualTo(4));Assert.That(order.Resolved,Is.False);
-            foreach(var hit in order.Hits)Assert.That(hit.Damage,Is.EqualTo(18).Within(.2f));
+            // Four 15% strikes total 60% of the 10*1.3*3=39 post-mitigation budget.
+            foreach(var hit in order.Hits)Assert.That(hit.Damage,Is.EqualTo(23.4f).Within(.2f));
             b.Advance(.01f,.01f);Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(order.Resolved,Is.True);
-            foreach(var hit in order.Strikes[4].Hits)Assert.That(hit.Damage,Is.EqualTo(12).Within(.2f));
+            foreach(var hit in order.Strikes[4].Hits)Assert.That(hit.Damage,Is.EqualTo(15.6f).Within(.2f));
             Assert.That(b.GuerrillaOrderBusy,Is.True,"The final real hit cannot permit an overlapping cinematic during its recoil.");
             b.Advance(.74f,.74f);Assert.That(b.GuerrillaOrderBusy,Is.True);b.Advance(.02f,.02f);Assert.That(b.GuerrillaOrderBusy,Is.False);
             Assert.That(b.LatestGuerrillaOrder,Is.SameAs(order));Assert.That(b.Orders,Is.Zero);Assert.That(b.OrdersUsed,Is.EqualTo(1));

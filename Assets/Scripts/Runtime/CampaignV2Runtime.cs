@@ -25,7 +25,7 @@ namespace YesterdayConvoy
             if(!CampaignV2Enabled)return UnitAttackMultiplier(unit);
             // Final independent skill budgets exclude normal-attack phase/ramp
             // growth, but retain team command/contract modifiers exactly once.
-            return (TacticalAttackMultiplier+ContractAttackBonus(unit)-
+            return (TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)-
                 (IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*InfectionAttack(unit.EntityId);
         }
         void ApplyCampaignV2Deployment(DeployedUnitState unit)

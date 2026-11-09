@@ -33,7 +33,7 @@ namespace YesterdayConvoy
         {
             switch(name)
             {
-                case "整合运动":return "成功部署不同整合成员完成集结，援军沿该红门的固定路线出现。每轮触发后清空，可复用同种卡；不要求同时存活。援军不花部署费用/次数，穿门不扣防御，不再产生羁绊资源。生命与攻击乘编队成员平均星级的平方根，四舍五入。";
+                case "整合运动":return "按战前最高达成档强化整合成员最大生命与攻击，包含五费；援军和派生体不再独立叠加。成功部署不同整合成员完成集结，援军沿该红门的固定路线出现。每轮触发后清空，可复用同种卡；不要求同时存活。援军不花部署费用/次数，穿门不扣防御，不再产生羁绊资源。援军生命与攻击乘√(整合编队成员总星/当前档门槛)，四舍五入。";
                 case "雪怪小队":return "冻结目标受到不同原卡的有效直接命中时触发碎冰。天气只由已完成的碎冰或霜星主动冰封开启；天气期间不积累、不叠加、不续时。碎冰与天气伤害乘编队成员平均星级的0.4次方，均过法抗。";
                 case "感染生物":return "战前选择主形态；最高档可以再选另一种低档副形态。集群一次部署只花一次费用/次数，分体不扣蓝门。甲壳支撑接敌，爆裂只在原体最终死亡时触发；原生死亡爆炸预算独立。";
                 case "游击队":return "普通实体首次有效直接攻击/受击产生军令，同种卡有产点上限。足点且有合格单位时自动整令，演出结束才可再触发，不限总次数。全场多段按完整预算过甲抗后分配，不递归产点；技能、复起、控制锁照旧。";
@@ -51,7 +51,7 @@ namespace YesterdayConvoy
             {
                 case "整合运动":
                     string stat(string p)=>$"生命{N(V("reunion",t,p+"HP"))}/攻击{N(V("reunion",t,p+"Attack"))}/甲{N(V("reunion",t,p+"Armor"))}";
-                    return $"需{N(V("reunion",t,"requiredFormations"))}种编制；每轮部署{N(V("reunion",t,"distinctKindsPerMuster"))}种，限{N(V("reunion",t,"musterLimit"))}轮，每轮{N(V("reunion",t,"supportsPerMuster"))}名。士兵{stat("melee")}"+(t>=4?$"；弩手{stat("ranged")}":"")+"。"+(t==4?"可选近/远援军。":t>=6?"每轮一近一远。":"")+(t==8?$"首次实际交战获{P(V("reunion",t,"entryShieldFraction"))}生命盾{N(V("reunion",t,"entryShieldSeconds"))}秒。":"");
+                    return $"整合成员生命/攻击＋{P(V("reunion",t,"memberStatBonus"))}（含五费，援军不额外叠加）。需{N(V("reunion",t,"requiredFormations"))}种编制；每轮部署{N(V("reunion",t,"distinctKindsPerMuster"))}种，限{N(V("reunion",t,"musterLimit"))}轮，每轮{N(V("reunion",t,"supportsPerMuster"))}名。士兵{stat("melee")}"+(t>=4?$"；弩手{stat("ranged")}":"")+"。"+(t==4?"可选近/远援军。":t>=6?"每轮一近一远。":"")+(t==8?$"首次实际交战获{P(V("reunion",t,"entryShieldFraction"))}生命盾{N(V("reunion",t,"entryShieldSeconds"))}秒。":"");
                 case "雪怪小队":
                     return $"{N(V("snow",t,"requiredDistinctHitKinds"))}种在{N(V("snow",t,"hitWindowSeconds"))}秒内命中：碎冰{N(V("snow",t,"shatterArts"))}法伤，半径{N(V("snow",t,"shatterRadius"))}/至多{N(V("snow",t,"shatterTargets"))}人，目标冷却{N(V("snow",t,"targetShatterCooldownSeconds"))}秒，"+(V("snow",t,"consumeFreeze")>0?"消耗冻结。":"保留冻结。")+(t==5?$"{N(V("snow",t,"weatherCharges"))}次碎冰开启{N(V("snow",t,"weatherDurationSeconds"))}秒天气，{string.Join("/",CampaignV2Balance.SynergyList("snow",t,"weatherPulseAt").Select(N))}秒寒潮：{N(V("snow",t,"weatherFlatArts"))}＋目标最大生命{P(V("snow",t,"weatherTargetMaxHPFraction"))}法伤。":"");
                 case "感染生物":return $"集群{N(V("infection",t,"swarmBodies"))}只，各{P(V("infection",t,"swarmHPFraction"))}生命/{P(V("infection",t,"swarmAttackFraction"))}攻击；甲壳{P(V("infection",t,"shellShieldFraction"))}生命盾{N(V("infection",t,"shellShieldSeconds"))}秒、甲＋{N(V("infection",t,"shellArmorAdd"))}；爆裂{N(V("infection",t,"burstBaseArts"))}法伤，半径{N(V("infection",t,"burstRadius"))}/至多{N(V("infection",t,"burstTargets"))}人。"+(t==6?$"另选{N(V("infection",t,"secondaryTier"))}档副形态。":"");
@@ -78,7 +78,7 @@ namespace YesterdayConvoy
                 if(s.Name=="整合运动")
                 {
                     var melee=ReunionRules.ForSupport(t,false);var ranged=ReunionRules.ForSupport(t,true);
-                    return $"需{ReunionRules.RequiredFormations(t)}种编制；每轮{ReunionRules.KindsPerMuster(t)}种、限{ReunionRules.MusterLimit(t)}轮、每轮{ReunionRules.SupportsPerMuster(t)}名。士兵{N(melee.Health)}/{N(melee.Attack)}/{N(melee.Armor)}（生命/攻击/甲）。"+(t>=4?$"弩手{N(ranged.Health)}/{N(ranged.Attack)}/{N(ranged.Armor)}。":"")+(t==8?R("援军首次实际交战时[^。]+。",0):"");
+                    return $"整合成员生命/攻击＋{P(t*.05f)}（含五费，援军不额外叠加）。需{ReunionRules.RequiredFormations(t)}种编制；每轮{ReunionRules.KindsPerMuster(t)}种、限{ReunionRules.MusterLimit(t)}轮、每轮{ReunionRules.SupportsPerMuster(t)}名。士兵{N(melee.Health)}/{N(melee.Attack)}/{N(melee.Armor)}（生命/攻击/甲）。"+(t>=4?$"弩手{N(ranged.Health)}/{N(ranged.Attack)}/{N(ranged.Armor)}。":"")+(t==8?R("援军首次实际交战时[^。]+。",0):"");
                 }
                 if(s.Name=="游击队")
                 {

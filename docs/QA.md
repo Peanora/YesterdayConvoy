@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-10：整合运动本体强化、塔露拉与运营参考
+
+- 用户明确确认2/4/6/8整合成员最大生命/攻击＋10/20/30/40%，包含五费，保留援军；随后要求接入游戏并提供前中后期阵容和D牌等级。继续现有试玩反馈分支，fetch核实main为7862d09且是当前分支祖先；未自动合并。既存.vscode/和PackageManagerSettings按本地规则保留，不暂存。无场景、Prefab、Packages、ProjectSettings或新美术修改。
+- BattleSynergies锁档读取同源memberStatBonus；普通部署和UnitBaseHealth从基表应用一次，HP与萨卡兹加法合并；UnitAttackMultiplier与独立技能团队入口加一次攻击项。援军/分体/灵体不独立再加，派生生命继承按原比例；v2塔露拉二阶段使用独立HP预算补一次整合倍率，legacy已带首生命倍率不再乘。手动六波c.SkillAttack固定预算保持，三星自动雨原有攻击倍率口径保留。详情UI、两份JSON和GDD同步。
+- Unity6000.6.5f1首轮EditMode982/1003、21失败；新增22项全部通过，旧军令/牧群/萨卡兹断言因新增整合加成变动。按fixture独立计算修正，保留原容差/死亡截断/去重语义；overkill目标5→6以继续验证两来源5.85＋0.15顺序截断。最终完整EditMode **1003/1003**（edit-final.xml/log），相关D3D11 GPU PlayMode **28/28**（play.xml/log；ReunionCoalition、CampaignJourney、GuerrillaOrder、GuerrillaHighTier、TalulahPhase、SynergyActivation六组），测试运行器均正常退出0。
+- 真实战斗模型：沿现有13组阵容×第5/12关×12策略，共312场；弱组全部未胜、三星塔露拉终关10/12。额外加入两套推荐阵容并支持-journeyBoundaryNames定向筛选；全两星8整合/4游击/2雪怪/2感染终关3/42、8整合/5雪怪/2游击14/42自然胜，最短200.70/166.65模拟秒，基础卡购买成本63/75金。使用有限库存Preset，未修改伤害/血量或强制结果；不能据此宣称自然获卡、整局通关或玩家胜率。证据为build-boundaries.json、recommended-builds.json及对应日志，均在artifacts/reunion-member-bonus。
+- 运营计算直接编译当前生产ShopTrialModel与CampaignJourneyEconomy，每等级30000次固定种子刷新（seed=20261110+level），实际7/8/9/10级一店见塔露拉0.740/2.193/6.833/17.130%，库存守恒通过；新牌库精确值0.712/2.126/6.961/16.738%。仅刷新，无购买/合成/战斗，临时.NET项目已清理。9级20金专门刷新＋另留5金买牌约51.4%见一张，不是保底；9级零XP到10级需48金，已有/后续XP另扣；三星九张不作为常规运营目标。具体阵容、编制、委托及经济限制见CAMPAIGN_JOURNEY_V2。
+- 最终Windows x64 Development构建 **1068120111 bytes / 0 errors**（build-final.log），CampaignJourneyTools.Validate通过12节点/8波计划/60守军。首次Player64项检查后，新加验证代码对主卡Profile直接取值触发空引用；真实主卡允许使用Battle.Settings默认配置。只修诊断读取fallback后重新构建，保留首轮player-1600报告与日志，不把失败版本当通过。
+
+- 最终同一EXE从工程外TEMP启动，可见D3D11 **1600×900与1280×720各2831/2831检查通过**，error为空且日志正常完成退出。先运行真实开局交易/换位/暂停/2×跨关/默认静音/重开，再载入显式标记的有限库存三星塔露拉终关夹具，经生产指针与技能操作136.4模拟秒、5次部署自然胜利。新增检查核对8整合40%说明及真实部署塔露拉的强化生命/攻击，模型与场景结果一致，源配置未回写。mode=saved-stage-fixture、completedStages=1、naturalJourneyCompleted=false；截图中1/1战突破也明确为单关。已实看两尺寸羁绊新说明、战斗画面与最终结算，未冒称真实OS鼠标。证据在player-final-1600、player-final-1280及对应日志。
+- 仓库静态检查8192跟踪文件通过；两份羁绊JSON逐字节相同，原本地文件SHA256保持。没有CMD/BAT、ZIP、Releases、新美术或自动合并；常用EXE与SOURCE.txt绑定本轮提交。
+
+未执行完整PlayMode、第二机/新克隆、真实OS鼠标或完整自然运营通关，不将单关预设星级的胜利视作上述验证。
+
 ## 2026-11-10：跨关偏好与低DP强化守军
 
 - 用户范围：跨关仅羁绊实际变化时演出、保留2×、默认关闭音效；恢复原DP、降低高费部署费、扩守军及每关2–5倍生命/攻击、金币收益翻倍。没有改地图地形或新增美术/机制。Session只保存摘要/偏好，未携带视觉对象；旧独立试玩数值保持。

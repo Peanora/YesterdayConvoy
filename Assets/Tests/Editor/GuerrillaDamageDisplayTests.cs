@@ -20,7 +20,13 @@ namespace YesterdayConvoy.Tests
             var guard=new DefenderSettings("guard","guard",null,Vector3.right*10,10000,1,0,.001f,1000,canAttack:false);
             var b=new ManualBattle(Unit(Members[0]),new[]{Vector3.zero,Vector3.forward*1000},guard.Position,Combat(10),roster:new[]{guard});
             b.ConfigureCardLoadout(Members.Skip(1).Select(id=>new BasicRosterProfile(Unit(id),Combat(30),true)));
-            if(guerrilla)b.ConfigureSynergies(Members.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),extraGuerrillaMembers:new[]{"CARD_M07","CARD_M08"});
+            if(guerrilla)
+            {
+                b.ConfigureSynergies(Members.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),extraGuerrillaMembers:new[]{"CARD_M07","CARD_M08"});
+                // Nine Reunion kinds span only two formations: tier six adds 30% attack.
+                // Tier-nine orders multiply that once by three: source budgets are 39 and 117.
+                Assert.That(b.ReunionTier,Is.EqualTo(6));Assert.That(b.GuerrillaTier,Is.EqualTo(9));
+            }
             return b;
         }
         static GuerrillaOrderVolley StartOrder(ManualBattle b,bool second=false)
@@ -45,10 +51,10 @@ namespace YesterdayConvoy.Tests
         {
             var b=Fixture();var order=StartOrder(b,true);b.Advance(2.8f,2.8f);
             Assert.That(order.CompletedStrikes,Is.EqualTo(5));
-            Assert.That(order.Hits.Sum(hit=>hit.Damage),Is.EqualTo(120).Within(.01));
-            Assert.That(b.Defender.MaxHealth-b.Defender.Health,Is.EqualTo(120).Within(.01));
-            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M03").Damage,Is.EqualTo(30).Within(.01));
-            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M07").Damage,Is.EqualTo(90).Within(.01));
+            Assert.That(order.Hits.Sum(hit=>hit.Damage),Is.EqualTo(156).Within(.01));
+            Assert.That(b.Defender.MaxHealth-b.Defender.Health,Is.EqualTo(156).Within(.01));
+            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M03").Damage,Is.EqualTo(39).Within(.01));
+            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M07").Damage,Is.EqualTo(117).Within(.01));
             var shown=b.DisplayDamageRanking;
             Assert.That(shown[0].CardId,Is.EqualTo(ManualBattle.GuerrillaDamageCardId));
             Assert.That(shown.Single(r=>r.CardId=="CARD_M03").Damage,Is.Zero);
@@ -60,24 +66,24 @@ namespace YesterdayConvoy.Tests
         [Test]public void ARealOrdinaryImpactAndSharedLossesAreSeparatedFromFiveStrikePursuitWithoutDoubleCounting()
         {
             var b=Fixture();var order=StartOrder(b);b.Advance(2.8f,2.8f);
-            Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(b.TotalGuerrillaDamage,Is.EqualTo(30).Within(.01));
+            Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(b.TotalGuerrillaDamage,Is.EqualTo(39).Within(.01));
             var source=b.Units.Single();
             // Restore one reachable ordinary attack opportunity; targeting, launch and impact remain production code.
             typeof(DefenderState).GetProperty("Position").SetValue(b.Defender,source.Motion.Position+Vector3.right*.005f);
             b.Advance(.2f,0);
             var ordinary=b.CombatShots.Where(s=>!s.FromDefender&&s.Applied&&s.SourceId==source.EntityId).ToArray();
-            Assert.That(ordinary,Has.Length.EqualTo(1));Assert.That(ordinary.Single().DamageDealt,Is.EqualTo(10).Within(.001));
+            Assert.That(ordinary,Has.Length.EqualTo(1));Assert.That(ordinary.Single().DamageDealt,Is.EqualTo(13).Within(.001));
             // Explicit unidentified sources exercise the existing shared HP-loss sink, including a pursuit portion.
             typeof(ManualBattle).GetMethod("DamageDefenderFrom",Hidden).Invoke(b,
                 new object[]{b.Defender,11f,CombatDamageType.Physical,null,true,1f});
             typeof(ManualBattle).GetMethod("DamageGuerrillaDefenderFrom",Hidden).Invoke(b,
                 new object[]{b.Defender,20f,CombatDamageType.Physical,null,.15f});
-            Assert.That(b.Defender.MaxHealth-b.Defender.Health,Is.EqualTo(54).Within(.01));
-            Assert.That(b.TotalPlayerDamage,Is.EqualTo(54).Within(.01));
+            Assert.That(b.Defender.MaxHealth-b.Defender.Health,Is.EqualTo(66).Within(.01));
+            Assert.That(b.TotalPlayerDamage,Is.EqualTo(66).Within(.01));
             var shown=b.DisplayDamageRanking;
-            Assert.That(shown.Select(r=>r.CardId),Is.EqualTo(new[]{ManualBattle.GuerrillaDamageCardId,ManualBattle.SharedDamageCardId,"CARD_M03"}));
-            Assert.That(shown.Select(r=>r.Damage),Is.EqualTo(new[]{33f,11f,10f}).Within(.01));
-            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M03").Damage,Is.EqualTo(40).Within(.01));
+            Assert.That(shown.Select(r=>r.CardId),Is.EqualTo(new[]{ManualBattle.GuerrillaDamageCardId,"CARD_M03",ManualBattle.SharedDamageCardId}));
+            Assert.That(shown.Select(r=>r.Damage),Is.EqualTo(new[]{42f,13f,11f}).Within(.01));
+            Assert.That(b.DamageRanking.Single(r=>r.CardId=="CARD_M03").Damage,Is.EqualTo(52).Within(.01));
             Assert.That(b.DamageRanking.Single(r=>r.CardId==ManualBattle.SharedDamageCardId).Damage,Is.EqualTo(14).Within(.01));
             AssertDisplay(b);
         }
@@ -106,7 +112,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.DisplayDamageRanking.Select(r=>r.Damage),Is.EqualTo(snapshot.Select(r=>r.Damage)));
             b.SetPaused(false);b.Advance(1.9f,1.9f);
             Assert.That(b.FinalAdvanceActive,Is.True);Assert.That(b.CurrentWaveIndex,Is.EqualTo(1));
-            Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(b.TotalGuerrillaDamage,Is.EqualTo(120).Within(.01));
+            Assert.That(order.CompletedStrikes,Is.EqualTo(5));Assert.That(b.TotalGuerrillaDamage,Is.EqualTo(156).Within(.01));
             Assert.That(snapshot.Single(r=>r.CardId==ManualBattle.GuerrillaDamageCardId).Damage,Is.EqualTo(first));
             AssertDisplay(b);
             b.Restart();Assert.That(b.TotalPlayerDamage,Is.Zero);Assert.That(b.DamageRanking,Is.Empty);

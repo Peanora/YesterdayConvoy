@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         public double ContractNextShieldRemaining=>0;
         public bool CanActivateContract=>false;
         public float SarkazHealthMultiplier(string cardId)=>synergyEnabled&&SarkazTier>0&&Tag(cardId,"萨卡兹")?1+V2Synergy("sarkaz",SarkazTier,"allSarkazHPAdd",SarkazTier==2?.10f:SarkazTier==4?.20f:SarkazTier==6?.30f:SarkazTier==8?.40f:.60f):1;
-        float UnitBaseHealth(DeployedUnitState u)=>(u.Profile?.Unit.Health??Settings.Health)*(u.SynergySupport?1:SarkazHealthMultiplier(u.CardId));
+        float UnitBaseHealth(DeployedUnitState u)=>(u.Profile?.Unit.Health??Settings.Health)*(u.SynergySupport?1:SarkazHealthMultiplier(u.CardId)+ReunionMemberBonus(u));
         bool ContractActionable(DeployedUnitState u)=>u!=null&&u.Active&&!u.SynergySupport&&!u.IsReviving&&!u.FuelDying&&!PatriotReborn(u)&&!TalulahTransitionLocked(u)&&u.MandraPhase!=MandragoraPhase.Reborn&&u.FlamePhase==FlamechaserPhase.Soldier;
         public bool IsContractBeneficiary(DeployedUnitState u)=>synergyEnabled&&SarkazTier>0&&ContractActionable(u)&&Tag(u.CardId,"萨卡兹")&&(u.CardId==ContractCard||SarkazTier>=6);
         float ContractShare(DeployedUnitState u)=>u.CardId==ContractCard?1:V2Synergy("sarkaz",SarkazTier,"otherShareFraction",SarkazTier>=8?1:.5f);

@@ -143,6 +143,8 @@ namespace YesterdayConvoy.Editor
                 new {Name="grown-seven-low-cost-synergy-reference",Weak=false,Ids=new[]{"CARD_M07","CARD_M08","CARD_M09","CARD_M15","CARD_M10","CARD_M05","CARD_M03"},Stars=new[]{3,2,2,2,2,2,2}},
                 new {Name="talulah-one-star-eight-member-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{1,1,1,1,1,1,1,1}},
                 new {Name="talulah-two-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}},
+                new {Name="talulah-two-star-reunion-guerrilla-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M03","CARD_M17","CARD_M18","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new {Name="talulah-two-star-reunion-snow-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M17","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
                 new {Name="talulah-three-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{3,2,1,1,1,1,1,1}},
                 new {Name="patriot-two-star-guerrilla-reference",Weak=false,Ids=new[]{"CARD_M20","CARD_M18","CARD_M17","CARD_M16","CARD_M19","CARD_M03","CARD_M11","CARD_M12"},Stars=new[]{2,2,2,2,2,2,2,2}},
                 new {Name="frostnova-two-star-snow-reference",Weak=false,Ids=new[]{"CARD_M14","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M18","CARD_M17","CARD_M07"},Stars=new[]{2,2,3,2,2,2,2,3}},
@@ -151,7 +153,8 @@ namespace YesterdayConvoy.Editor
                 new {Name="level-ten-ten-kind-high-star-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M20","CARD_M14","CARD_M25","CARD_M28","CARD_M18","CARD_M17","CARD_M12","CARD_M11","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2,3,2}}
             };
             var results=new List<BoundaryCase>();
-            foreach(int number in stages)foreach(var fixture in fixtures)
+            var requested=Argument("-journeyBoundaryNames","").Split(new[]{','},StringSplitOptions.RemoveEmptyEntries);
+            foreach(int number in stages)foreach(var fixture in fixtures.Where(f=>requested.Length==0||requested.Contains(f.Name)))
             {
                 var stage=CampaignJourneyCatalog.Stage(number);if(stage.IsSupply)throw new ArgumentException("Build boundaries require combat stages.");
                 var shop=new ShopTrialModel(definitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),73191);

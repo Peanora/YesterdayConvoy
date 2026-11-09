@@ -323,7 +323,7 @@ namespace YesterdayConvoy
             var lane=FindEntryLane(position);
             var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*SarkazHealthMultiplier(requestedCard), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*(SarkazHealthMultiplier(requestedCard)+ReunionMemberBonus(requestedCard)), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsTalulah(unit))unit.TalulahPhaseStartedAt=Clock;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;

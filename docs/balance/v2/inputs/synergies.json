@@ -73,11 +73,16 @@
         "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/BattleSynergies.cs",
         "E:/珍贵资料/昨日圆车/Assets/Scripts/Runtime/ReunionEntryShield.cs"
       ],
-      "scope": "整合成员部署计调集，免费援军在触发者当前路线生成；援军本身不再次调集。",
+      "scope": "整合编队成员最大生命与攻击按最高达成档强化，含五费；援军和派生体不独立再加。整合成员部署计调集，免费援军在触发者当前路线生成；援军本身不再次调集。",
       "tiers": [
         {
           "count": 2,
           "parameters": [
+            {
+              "key": "memberStatBonus",
+              "value": 0.1,
+              "unit": "fraction"
+            },
             {
               "key": "requiredFormations",
               "value": 1,
@@ -144,6 +149,11 @@
         {
           "count": 4,
           "parameters": [
+            {
+              "key": "memberStatBonus",
+              "value": 0.2,
+              "unit": "fraction"
+            },
             {
               "key": "requiredFormations",
               "value": 1,
@@ -231,6 +241,11 @@
           "count": 6,
           "parameters": [
             {
+              "key": "memberStatBonus",
+              "value": 0.3,
+              "unit": "fraction"
+            },
+            {
               "key": "requiredFormations",
               "value": 2,
               "unit": "specified_in_effect"
@@ -316,6 +331,11 @@
         {
           "count": 8,
           "parameters": [
+            {
+              "key": "memberStatBonus",
+              "value": 0.4,
+              "unit": "fraction"
+            },
             {
               "key": "requiredFormations",
               "value": 3,

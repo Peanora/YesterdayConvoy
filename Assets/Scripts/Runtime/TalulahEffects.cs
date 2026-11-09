@@ -114,6 +114,9 @@ namespace YesterdayConvoy
             {
                 unit.TalulahPhase=TalulahPhase.Second;unit.TalulahPhaseStartedAt=ended;
                 unit.MaxHealth=unit.Health=V2Skill(unit,"threeStarPhase","secondFormHp",unit.TalulahFirstPhaseMaxHealth*1.5f);
+                // The adopted second-form HP is a base budget; legacy derives
+                // from the already-buffed first life, so only v2 needs this here.
+                if(CampaignV2Enabled)unit.MaxHealth=unit.Health=unit.MaxHealth*(1+ReunionMemberBonus(unit));
                 unit.TalulahInvulnerableUntil=ended+V2Skill(unit,"threeStarPhase","protectionDuration",(float)TalulahTiming.ProtectionDuration);
                 unit.DeathTime=double.PositiveInfinity;unit.LastAttackTime=double.NegativeInfinity;
                 unit.NextAttackTime=ended+V2Skill(unit,"threeStarPhase","returnAnimation",(float)TalulahTiming.ReappearanceDuration);

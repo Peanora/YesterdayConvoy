@@ -316,6 +316,8 @@ namespace YesterdayConvoy
                 controller.Battle.Cards.All(c=>c.Settings.DeploymentCost==CampaignV2Balance.StatValue(c.Settings.CardId,shop.Bench.Single(p=>p.Id==c.Settings.CardId).Star,"dp")&&
                     c.Settings.Cooldown==WaveDeploymentCadence.ForCard(c.Settings.CardId,shop.Definition(c.Settings.CardId).Cost)));
             Require("fixture-contains-actual-three-star-talulah",shop.Bench.Any(p=>p.Id=="CARD_TALULAH_TRIAL"&&p.Star==3));
+            var reunion=SynergySummary.From(fixture.lineup.Select(p=>p.id),campaignV2:true).Single(s=>s.Name=="整合运动");
+            Require("fixture-reunion-eight-member-bonus-description",controller.Battle.ReunionTier==8&&reunion.Effect.Contains("最大生命/攻击＋40%"));
             yield return Capture("fixture-stage-"+number+"-prepared");
             var flags=BindingFlags.Instance|BindingFlags.NonPublic;
             typeof(ManualBattleController).GetField("campaignConstructTab",flags).SetValue(controller,4);
@@ -453,6 +455,13 @@ namespace YesterdayConvoy
                     {
                         Require("stage-"+trace.stage+"-deployed-entity-route",battle.FindUnit(entity)?.RouteId==action.routeId&&
                             (action.kind=="Golem"||battle.FindUnit(entity)?.CardId==action.cardId));identities.Add(action.entityId,entity);
+                        if(result.mode=="saved-stage-fixture"&&action.cardId=="CARD_TALULAH_TRIAL")
+                        {
+                            var talulah=battle.FindUnit(entity);
+                            float bonus=CampaignV2Balance.SynergyValue("reunion",battle.ReunionTier,"memberStatBonus");
+                            float baseHealth=talulah.Profile?.Unit.Health??battle.Settings.Health;
+                            Require("fixture-deployed-talulah-receives-reunion-health-and-attack",Math.Abs(talulah.MaxHealth-baseHealth*(1+bonus))<.01f&&battle.UnitAttackMultiplier(talulah)+.0001f>=1+bonus);
+                        }
                     }
                     next++;
                 }

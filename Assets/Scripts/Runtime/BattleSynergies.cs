@@ -46,6 +46,12 @@ namespace YesterdayConvoy
         public void ConfigureSupply(bool zeroDefense=false){if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException();GuaranteedSupply=true;if(zeroDefense)Defense=0;}
         public bool CompleteSupply(){if(!GuaranteedSupply||Phase!=BattlePhase.Ready)return false;Phase=BattlePhase.Won;IsPaused=false;return true;}
         bool synergyEnabled,reunionRanged;
+        // Locked formation tier, applied once to native roster bodies. Supports
+        // already have their own budget and must never receive this a second time.
+        float ReunionMemberBonus(string cardId)=>synergyEnabled&&ReunionTier>0&&
+            synergyStars.ContainsKey(cardId)&&CampaignBalance.Reunion(cardId)?
+            V2Synergy("reunion",ReunionTier,"memberStatBonus",ReunionTier*.05f):0;
+        float ReunionMemberBonus(DeployedUnitState unit)=>unit.SynergySupport?0:ReunionMemberBonus(unit.CardId);
         public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,IEnumerable<string> extraGuerrillaMembers=null,IEnumerable<string> extraMudrockMembers=null)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
