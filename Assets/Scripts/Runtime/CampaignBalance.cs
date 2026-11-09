@@ -61,6 +61,7 @@ namespace YesterdayConvoy
             {"CARD_WISADEL_APRIL",new Stats(5,9,680,78,5,1.7f,3.2f,0.65f,2)},
         };
         public static bool Supports(string id)=>id!=null&&Profiles.ContainsKey(id);
+        public static bool ShopEligible(string id)=>Supports(id)&&id!=SilverWolfCombat.CardId;
         static readonly HashSet<string> ReunionMembers=new HashSet<string>{"CARD_M02","CARD_M03","CARD_M06","CARD_M07","CARD_M08","CARD_M09","CARD_M10","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M21","CARD_M22","CARD_M23","CARD_TALULAH_TRIAL"};
         public static bool Reunion(string id)=>id!=null&&(id=="CARD_M20"||id=="CARD_M25"||ReunionMembers.Contains(id));
         static readonly HashSet<string> SnowMembers=new HashSet<string>{"CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M14"};

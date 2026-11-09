@@ -19,7 +19,7 @@ namespace YesterdayConvoy.Tests
             positions??=new[]{Vector3.right*.4f};
             var guards=positions.Select((p,i)=>new DefenderSettings("g"+i,"fixture",null,p,100000,1,0,.001f,100,blocks,canAttack:false)).ToArray();
             var battle=new ManualBattle(profile.Unit,new[]{Vector3.zero,Vector3.forward*100},positions[0],profile.Combat,roster:guards);
-            if(v2)battle.ConfigureCampaignV2(13);return battle;
+            if(v2)battle.ConfigureCampaignV2(12);return battle;
         }
         static DeployedUnitState Deploy(ManualBattle battle)
         {battle.Begin();var receipt=battle.TryDeploy(battle.RunId,1,battle.Entry);Assert.That(receipt.Success,Is.True);return battle.FindUnit(receipt.EntityId);}
@@ -104,7 +104,7 @@ namespace YesterdayConvoy.Tests
             battle.ConfigureCampaignV2(stage);return battle;
         }
 
-        [TestCase(10,1.45f,1f,14,7)][TestCase(13,1.5f,1.25f,16,8)]
+        [TestCase(9,1.45f,1f,14,7)][TestCase(12,1.5f,1.25f,16,8)]
         public void HoshigumaUsesAuthoredHpDebtAndFiniteFinalProtection(int stage,float hpMultiplier,float debtMultiplier,float closeAfter,float protection)
         {
             var placement=CampaignJourneyCatalog.Stage(stage).CopyDefenders().Single(p=>p.artId=="D25");
@@ -123,8 +123,8 @@ namespace YesterdayConvoy.Tests
 
         [Test]public void SariaOnlyGrantsSkillPointsForEffectiveHealingInV2()
         {
-            var guards=CampaignJourneyCatalog.Stage(13).CopyDefenders().Where(p=>p.artId=="D29"||p.artId=="D24").ToArray();
-            var battle=DefenderModel(13,guards);var source=battle.Defenders.Single(d=>d.Settings.ArtId=="D29");
+            var guards=CampaignJourneyCatalog.Stage(12).CopyDefenders().Where(p=>p.artId=="D29"||p.artId=="D24").ToArray();
+            var battle=DefenderModel(12,guards);var source=battle.Defenders.Single(d=>d.Settings.ArtId=="D29");
             var target=battle.Defenders.Single(d=>d.Settings.ArtId=="D24");float sp=target.SkillSP;
             Call(battle,"HealDefender",source,target,100f);Assert.That(target.SkillSP,Is.EqualTo(sp));
             Call(battle,"ApplyDefenderLoss",target,10f);Call(battle,"HealDefender",source,target,100f);

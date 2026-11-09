@@ -48,21 +48,22 @@ namespace YesterdayConvoy
     [CreateAssetMenu(menuName = "Yesterday Convoy/Campaign Journey V2")]
     public sealed class CampaignJourneyDefinition : ScriptableObject
     {
+        public const int StageCount = 12;
         public CampaignJourneyStage[] stages = Array.Empty<CampaignJourneyStage>();
         public CampaignJourneyStage Stage(int oneBased)
         {
-            if (oneBased < 1 || oneBased > 13) throw new ArgumentOutOfRangeException(nameof(oneBased));
+            if (oneBased < 1 || oneBased > StageCount) throw new ArgumentOutOfRangeException(nameof(oneBased));
             var entry = stages?.FirstOrDefault(s => s.stage == oneBased);
             if (entry == null) throw new InvalidOperationException("Campaign journey stage missing: " + oneBased);
             return entry;
         }
         public void Validate()
         {
-            if (stages == null || stages.Length != 13 || stages.Any(s => s == null) || stages.Select(s => s.stage).Distinct().Count() != 13)
-                throw new InvalidOperationException("Exactly thirteen distinct campaign stages required.");
-            int[] supplies = { 1, 2, 5, 9, 12 }, bosses = { 6, 10, 13 };
+            if (stages == null || stages.Length != StageCount || stages.Any(s => s == null) || stages.Select(s => s.stage).Distinct().Count() != StageCount)
+                throw new InvalidOperationException("Exactly twelve distinct campaign stages required.");
+            int[] supplies = { 1, 4, 8, 11 }, bosses = { 5, 9, 12 };
             int[] maps = { 7, 1, 2, 3, 4, 6, 5, 8 }; int mapIndex = 0;
-            foreach (int number in Enumerable.Range(1, 13))
+            foreach (int number in Enumerable.Range(1, StageCount))
             {
                 var entry = Stage(number);
                 if (string.IsNullOrWhiteSpace(entry.title) || entry.baseGold < 0 || entry.naturalXP < 0)

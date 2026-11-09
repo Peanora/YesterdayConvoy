@@ -222,8 +222,10 @@ namespace YesterdayConvoy
             if(button!=0&&sarkazContractBadgeDragging){CancelSarkazContractBadgeDrag();return true;}
             if(button==0&&ProcessSarkazContractBadgePointer(type,point))return true;
             if(Loop==null&&Battle.Phase!=BattlePhase.Ready&&Battle.Phase!=BattlePhase.Running)return false;
-            if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
-            {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}
+            // Supply preparation uses the same editable seats as an ordinary shop.
+            // Only block a supply card once its preparation has been closed.
+            if(CampaignActive&&Loop.RewardStage&&!ShopSeatsEditable&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
+            {ShopNotice("本关是奖励补给，不部署怪物；整备时可拖动编队，点击领取补给继续");return true;}
             if(HandleGolemPointer(type,point,button))return true;
             if(Loop!=null&&!Loop.CanDeploy&&!Loop.CanShop)return false;
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;

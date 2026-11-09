@@ -24,8 +24,6 @@ namespace YesterdayConvoy
                 shopDefinitions[mephi.Card.CardId]=mephi;
                 var patriot=monsterTests.Single(o=>o.Id=="CARD_M20"&&o.Playable).Definition;
                 shopDefinitions[patriot.Card.CardId]=patriot;
-                var wolf=monsterTests.Single(o=>o.Id==SilverWolfCombat.CardId && o.Playable).Definition;
-                shopDefinitions[wolf.Card.CardId]=wolf;
             }
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             var low=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();

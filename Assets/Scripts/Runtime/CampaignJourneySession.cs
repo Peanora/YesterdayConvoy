@@ -32,7 +32,7 @@ namespace YesterdayConvoy
         {
             get
             {
-                for(int i=Stage;i<=CampaignPlan.Count;i++)
+                for(int i=Stage;i<=CampaignJourneyDefinition.StageCount;i++)
                 {var stage=CampaignJourneyCatalog.Stage(i);if(stage.map!=null)return stage.map;}
                 throw new InvalidOperationException("Journey has no following authored battle map.");
             }

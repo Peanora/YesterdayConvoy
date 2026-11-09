@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
         {
             var b=new ManualBattle(profile.Unit,new[]{Vector3.zero,Vector3.right*100},Vector3.forward*20,profile.Combat,
                 roster:new[]{new DefenderSettings("guard","guard",null,Vector3.forward*20,100000,1,0,.01f,100,canAttack:false)});
-            if(v2)b.ConfigureCampaignV2(13);return b;
+            if(v2)b.ConfigureCampaignV2(CampaignJourneyDefinition.StageCount);return b;
         }
         static DeployedUnitState Deploy(ManualBattle b,long request=1)
         {if(b.Phase==BattlePhase.Ready)b.Begin();var r=b.TryDeploy(b.RunId,request,b.Entry);Assert.That(r.Success,Is.True);return b.FindUnit(r.EntityId);}

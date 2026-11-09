@@ -53,7 +53,7 @@ namespace YesterdayConvoy
             CancelArtPreparation();EnterShopTrial(0,independent?encounterOverride.mapId:StrongholdChallengeLayout.Id,encounterOverride??trial?.encounter);activeSynergyTrial=trial;
             if(seed==0)seed=Guid.NewGuid().GetHashCode();
             shopDefinitions.Clear();
-            foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
+            foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.ShopEligible(option.Id))shopDefinitions[option.Id]=option.Definition;
             shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),seed);
             ResetMudrockTransfers();
             shop.EnableCampaign(sandbox);
@@ -109,7 +109,14 @@ namespace YesterdayConvoy
         }
         public void ClaimCampaignSupply()
         {
-            if(!CampaignActive||!Loop.RewardStage||!Loop.CanDeploy)return;
+            if(!CampaignActive||!Loop.RewardStage)return;
+            if(JourneyActive&&Loop.CanShop)
+            {
+                if(ArtLoading||!Loop.PrepareBattle())return;
+                SetShopVisible(false);
+            }
+            if(!Loop.CanDeploy)return;
+            CancelShopDrag();
             // A guaranteed stop has no combat simulation, no HP cost and exactly one receipt.
             Battle.CompleteSupply();StepBattleShopLoop();
         }
@@ -176,7 +183,7 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(r.x+16,r.y+45,160,28),"运营与测试样板",campaignConstructTab==0))campaignConstructTab=0;
             if(LoopButton(new Rect(r.x+184,r.y+45,160,28),"阵营选择与培养",campaignConstructTab==1))campaignConstructTab=1;
             if(JourneyActive)
-            {if(LoopButton(GuerrillaTransferTabRect,"关卡情报 · 十三关",campaignConstructTab==4))campaignConstructTab=4;}
+            {if(LoopButton(GuerrillaTransferTabRect,"关卡情报 · 十二关",campaignConstructTab==4))campaignConstructTab=4;}
             else
             {
                 if(LoopButton(GuerrillaTransferTabRect,"游击转职 "+GuerrillaTransferIds.Count+"/2",campaignConstructTab==2))campaignConstructTab=2;

@@ -11,13 +11,13 @@ namespace YesterdayConvoy
         {
             switch(stage)
             {
-                case 1:case 2:case 5:case 9:case 12:return 0;
-                case 3:case 4:return 20;
-                case 6:case 8:return 30;
-                case 7:return 25;
-                case 10:return 45;
-                case 11:return 35;
-                case 13:return 60;
+                case 1:case 4:case 8:case 11:return 0;
+                case 2:case 3:return 20;
+                case 5:case 7:return 30;
+                case 6:return 25;
+                case 9:return 45;
+                case 10:return 35;
+                case 12:return 60;
                 default:throw new ArgumentOutOfRangeException(nameof(stage));
             }
         }

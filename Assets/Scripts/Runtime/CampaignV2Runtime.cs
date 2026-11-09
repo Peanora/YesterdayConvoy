@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         public void ConfigureCampaignV2(int stage=0)
         {
             if(Phase!=BattlePhase.Ready||units.Count!=0||!EngagementEnabled)throw new InvalidOperationException("Configure campaign v2 before battle.");
-            if(stage<0||stage>13)throw new ArgumentOutOfRangeException(nameof(stage));
+            if(stage<0||stage>CampaignJourneyDefinition.StageCount)throw new ArgumentOutOfRangeException(nameof(stage));
             _=CampaignV2Balance.PlayerCount;CampaignV2Enabled=true;CampaignV2Stage=stage;
         }
         internal float V2Skill(DeployedUnitState u,string skillId,string key,float legacy)

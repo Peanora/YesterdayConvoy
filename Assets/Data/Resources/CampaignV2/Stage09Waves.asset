@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ae14ddc531148f8a9ab66072bad68ee, type: 3}
-  m_Name: Stage11Waves
+  m_Name: Stage09Waves
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.AttackWaveScenario
   waves:
   - laneId: R1
-    dp: 7
+    dp: 18
     deploymentSeconds: 32
   - laneId: R2
-    dp: 7
-    deploymentSeconds: 36
-  - laneId: R1
-    dp: 8
+    dp: 18
+    deploymentSeconds: 32
+  - laneId: R3
+    dp: 18
     deploymentSeconds: 32
   finalAdvanceSeconds: 75

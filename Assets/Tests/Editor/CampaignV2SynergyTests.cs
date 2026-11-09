@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
         {
             var b=new ManualBattle(Unit(ids[0]),new[]{Vector3.zero,Vector3.right*100},Vector3.right*50,Combat());
             b.ConfigureCardLoadout(ids.Skip(1).Select(id=>new BasicRosterProfile(Unit(id),Combat(),true)));
-            if(v2)b.ConfigureCampaignV2(13);return b;
+            if(v2)b.ConfigureCampaignV2(CampaignJourneyDefinition.StageCount);return b;
         }
         static ManualBattle Make(string[] ids,bool v2=true,InfectionForm form=InfectionForm.Swarm)
         {var b=Ready(ids,v2);b.ConfigureSynergies(ids.Select(Piece),form:form);b.Begin();return b;}

@@ -77,15 +77,16 @@ namespace YesterdayConvoy
             EnterShopTrial(0,map.id,background);
             activeApprovedMap=null;activeSynergyTrial=null;
             shopDefinitions.Clear();
-            foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.Supports(option.Id))shopDefinitions[option.Id]=option.Definition;
+            foreach(var option in monsterTests)if(option.Playable&&CampaignBalance.ShopEligible(option.Id))shopDefinitions[option.Id]=option.Definition;
             if(session.Shop==null)
             {
                 shop=new ShopTrialModel(shopDefinitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),session.Seed);
                 shop.EnableJourneyEconomy();
-                var starters=shop.Roles.Where(r=>r.Cost==1).OrderBy(r=>r.Id).ToArray();
-                string id=starters[new System.Random(session.Seed).Next(starters.Length)].Id;
-                shop.Preset(new[]{new ShopTrialModel.Piece{Id=id,Star=1}},Array.Empty<string>(),1,0,CampaignJourneyEconomy.InitialGold);
+                var starters=CampaignJourneyEconomy.StartingCards(shop.Roles,session.Seed);
+                string id=starters[0];
+                shop.Preset(starters.Select(card=>new ShopTrialModel.Piece{Id=card,Star=1}),Array.Empty<string>(),1,0,CampaignJourneyEconomy.InitialGold);
                 Loop=new BattleShopRun(shop,session.Seed,campaign:true,journeyV2:true);
+                Loop.BeginJourneyPreparation();
                 session.Shop=shop;session.Loop=Loop;session.Lineup.Add(id);
                 session.Contract=session.Commission=id;
             }
@@ -104,13 +105,13 @@ namespace YesterdayConvoy
                 ConfigureLoopStage();TestSelectionOpen=false;approvedMapMenuOpen=false;
                 if(Loop.CanShop)SetShopVisible(true);
                 ShopNotice(stage.tip);CaptureJourney();
-            },"准备十三关 · "+stage.title);
+            },"准备十二关 · "+stage.title);
         }
         void ConfigureJourneyStage()
         {
             var stage=JourneyStage;
             shopMapCopy.defenders=stage.encounter==null?Array.Empty<DefenderPlacement>():JsonUtility.FromJson<JourneyGuards>(JsonUtility.ToJson(new JourneyGuards{items=stage.encounter.defenders})).items;
-            shopMapCopy.mapTitle=$"{stage.stage}/13 · {stage.title}";
+            shopMapCopy.mapTitle=$"{stage.stage}/{CampaignJourneyDefinition.StageCount} · {stage.title}";
             shopMapCopy.terrainOnly=stage.IsSupply;
             shopMapCopy.attackWaves=stage.encounter==null?null:stage.encounter.attackWaves;
         }
@@ -118,7 +119,7 @@ namespace YesterdayConvoy
         {
             var stage=JourneyStage;if(stage==null)return;
             float x=268,y=245;
-            GUI.Label(new Rect(x,y,674,28),stage.stage+" / 13 · "+stage.title+" · "+(stage.IsSupply?"保送补给":stage.type==CampaignJourneyStageType.Boss?"首领战":"突围战"),CampaignText(17,weight:600));
+            GUI.Label(new Rect(x,y,674,28),stage.stage+" / "+CampaignJourneyDefinition.StageCount+" · "+stage.title+" · "+(stage.IsSupply?"保送补给":stage.type==CampaignJourneyStageType.Boss?"首领战":"突围战"),CampaignText(17,weight:600));
             var text=CampaignText(13);text.wordWrap=true;
             GUI.Label(new Rect(x,y+34,674,52),stage.tip,text);
             var next=stage.IsSupply?CampaignJourneyCatalog.Current.stages.FirstOrDefault(s=>s.stage>stage.stage&&!s.IsSupply):stage;

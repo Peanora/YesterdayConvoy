@@ -25,8 +25,8 @@ namespace YesterdayConvoy
         public readonly int Seed;
         public readonly bool LateGame;
         public readonly bool Campaign,Sandbox,JourneyV2;
-        public bool RewardStage=>Campaign&&!Sandbox&&CampaignPlan.Supply(Stage);
-        public int TotalStages=>Campaign?Sandbox?1:CampaignPlan.Count:2;
+        public bool RewardStage=>Campaign&&!Sandbox&&(JourneyV2?CampaignJourneyCatalog.Stage(Stage).IsSupply:CampaignPlan.Supply(Stage));
+        public int TotalStages=>JourneyV2?CampaignJourneyDefinition.StageCount:Campaign?Sandbox?1:CampaignPlan.Count:2;
         public ShopTrialModel.RoundReward Reward {get;private set;}
         public bool CanShop=>Phase==BattleShopPhase.Shop;
         public bool CanDeploy=>Phase==BattleShopPhase.Preparation||Phase==BattleShopPhase.Fighting;
@@ -70,6 +70,11 @@ namespace YesterdayConvoy
             return true;
         }
         public bool RestartEncounter(){if(!Campaign||!CanDeploy)return false;Phase=BattleShopPhase.Preparation;return true;}
+        public void BeginJourneyPreparation()
+        {
+            if(!JourneyV2||Stage!=1||Phase!=BattleShopPhase.Preparation)throw new InvalidOperationException("Only a fresh journey can open its initial preparation.");
+            Phase=BattleShopPhase.Shop;Economy.BeginPreparation();Economy.Refresh(true);
+        }
         internal void SandboxPreparation()
         {
             if(!Sandbox)throw new InvalidOperationException();

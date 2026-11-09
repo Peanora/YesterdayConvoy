@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace YesterdayConvoy
 {
@@ -8,6 +10,15 @@ namespace YesterdayConvoy
     public static class CampaignJourneyEconomy
     {
         public const int InitialGold=5;
+        public static string[] StartingCards(IEnumerable<ShopTrialModel.Role> roles,int seed)
+        {
+            var candidates=roles.Where(r=>r.Cost>=1&&r.Cost<=2)
+                .Select(r=>r.Id).Distinct(StringComparer.Ordinal).OrderBy(id=>id,StringComparer.Ordinal).ToArray();
+            if(candidates.Length<3)throw new InvalidOperationException("Three distinct low-cost starting roles are required.");
+            var random=new Random(seed);
+            for(int i=0;i<3;i++){int next=random.Next(i,candidates.Length);string id=candidates[i];candidates[i]=candidates[next];candidates[next]=id;}
+            return candidates.Take(3).ToArray();
+        }
         static readonly int[] LevelExperience={0,2,4,6,8,10,12,20,28,48,0};
         public static int RequiredXP(int level)
         {

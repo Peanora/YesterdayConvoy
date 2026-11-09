@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Stage06Waves
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.AttackWaveScenario
   waves:
-  - laneId: R2
-    dp: 7
-    deploymentSeconds: 24
-  - laneId: R3
-    dp: 7
+  - laneId: R1
+    dp: 18
     deploymentSeconds: 35
-  finalAdvanceSeconds: 60
+  - laneId: R3
+    dp: 18
+    deploymentSeconds: 35
+  finalAdvanceSeconds: 65

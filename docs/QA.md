@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+## 2026-11-09：十二节点、波次DP与三卡奖励开局
+
+范围：移除原登记节点；奖励1/4/8/11、Boss5/9/12，守军/地图/波时长及生命上限随遭遇保留。开局三种不同1–2费一星卡（同seed稳定、真实占库、1编队2备战）、初始整备免费店；奖励关真实指针拖动与领取锁定；银狼全部正常商店暂时排除。DP按当前GDD与Journey源配置提高。
+
+- Unity6000.6.5f1 Author/Validate实际通过。16份Battle/Waves meta逐字节集合一致，GUID保留；第二次Author与首轮生成后所有正式asset/meta SHA256一致。场景/Prefab/Packages/ProjectSettings未改。原.vscode三文件及PackageManagerSettings共4本地文件SHA256保持。
+- 最终完整EditMode962/962、D3D11 GPU PlayMode17/17通过。首次EditMode943/962，19项因两个旧数值测试helper仍传stage13而失败；改用StageCount后完整重验962/962，未改生产规则绕过断言。GPU六组为CampaignJourneySceneTests、ShopSeatInteractionTests、RemainingSynergySceneTests、SynergyReworkSceneTests、SynergySandboxTuningTests、LateBattleShopSceneTests。奖励覆盖满人口跨排交换/备战换位/未解锁位拒绝/移出与拖回/领取时pending拖动取消/领取后锁定；经济、库存、零部署与零模拟时钟均保持。
+- 同源真实有限运营/战斗模型3种子73191/44/31016×5政策共15条，14条完整12节点全胜；31016低费追星策略在第9关有界部署搜索未过，不是不可通证明。每条从实际三赠卡和免费店开始，42种商店角色排除银狼，报告记录gifts并与Player重放共享协议。模型搜索的反事实分支不是局内失败重试，也不是玩家胜率。
+- 第5/12关7组阵容×42出兵政策共588战边界；塔露拉一星八人组和塔露拉/盾卫二星核心组在两关各42/42自然胜利。终关两种弱一星杂牌组0/42；三种一星两费无羁绊组42/42、两种成长组42/42，保留实际放宽结果，不沿用旧DP下弱组全失败结论。这些是有限牌库战斗夹具，未承诺种子商店一定拿齐阵容。
+- tools/balance/journey_economy.py独立Python/.NET退出0，16项规则/账本检查全True，3种子×3政策共9组真实现金库存审计。无消费上界首补后9金、终战前112、终局127；68基础金。两个花满候选预算会超支，10级终战前至少116金XP大于112上界，均明确为观察/限制，不改运行经济掩盖结果。
+- 证据留本地artifacts/campaign-ease和artifacts/campaign-twelve-stage-economy；未新增临时脚本、CMD/BAT、ZIP或Releases。
+
+Windows构建与实际独立Player待执行；未执行完整PlayMode、第二机/新克隆、真实OS鼠标或总体随机构筑难度评估。后续真实结果将更新本段，旧十三关重放不计本轮。
+
+
 ## 2026-11-09：白线箭头、玩家生命与后期扣血
 
 - 用户明确确认恢复昨日树海白底线/流动亮段/箭头，并确认进攻方按未完成突破比例扣生命；追加“后期多扣”。本轮延续原十三关功能分支/PR #108，fetch核实main仍7862d09，不合并。开工发现的52份VFX meta仅增加WebGL导入项，无GUID或删除行，按本轮用户“提交修改再继续”单独提交d1ad89b；原未跟踪.vscode/与PackageManagerSettings保留，不暂存。

@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: Stage02Battle
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: 2f541873a376f99408d2cf84996a1089, type: 2}
+  route:
+  - {x: -6.5, y: 0, z: 2.5}
+  - {x: -5.5, y: 0, z: 2.5}
+  - {x: -4.5, y: 0, z: 2.5}
+  - {x: -4.5, y: 0, z: 1.5}
+  - {x: -4.5, y: 0, z: 0.5}
+  - {x: -4.5, y: 0, z: -0.5}
+  - {x: -4.5, y: 0, z: -1.5}
+  - {x: -4.5, y: 0, z: -2.5}
+  - {x: -4.5, y: 0, z: -3.5}
+  - {x: -3.5, y: 0, z: -3.5}
+  - {x: -2.5, y: 0, z: -3.5}
+  - {x: -1.5, y: 0, z: -3.5}
+  - {x: -0.5, y: 0, z: -3.5}
+  - {x: 0.5, y: 0, z: -3.5}
+  - {x: 1.5, y: 0, z: -3.5}
+  - {x: 2.5, y: 0, z: -3.5}
+  - {x: 3.5, y: 0, z: -3.5}
+  - {x: 3.5, y: 0, z: -2.5}
+  - {x: 3.5, y: 0, z: -1.5}
+  - {x: 3.5, y: 0, z: -0.5}
+  - {x: 3.5, y: 0, z: 0.5}
+  - {x: 3.5, y: 0, z: 1.5}
+  - {x: 3.5, y: 0, z: 2.5}
+  - {x: 3.5, y: 0, z: 3.5}
+  - {x: 2.5, y: 0, z: 3.5}
+  - {x: 1.5, y: 0, z: 3.5}
+  defenders:
+  - id: D01
+    displayName: "\u7C73\u683C\u9C81"
+    artId: D01
+    position: {x: 3.5, y: 0, z: -1.5}
+    health: 390
+    attack: 40
+    armor: 10
+    range: 0.85
+    interval: 1.6
+    windup: 0.5
+    actionDuration: 1
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 5
+      initialSP: 0
+      requiredSP: 32
+      spPerSecond: 1
+      duration: 16
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1.4
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces:
+  - {fileID: 2100000, guid: 889b54f9171bd7641b57e22211337eba, type: 2}
+  - {fileID: 2100000, guid: ab6091409aa098f4cadf16eb871c93db, type: 2}
+  - {fileID: 2100000, guid: cf7d2a5b1a3eb384f9930428002517e6, type: 2}
+  - {fileID: 2100000, guid: 48af07c72811c1d47959ec86999b182e, type: 2}
+  - {fileID: 2100000, guid: 10cbf35665cfb2d4483a51f1fdc70632, type: 2}
+  - {fileID: 2100000, guid: acb687754238f0e48bd031847dbb3e51, type: 2}
+  - {fileID: 2100000, guid: 39be726dab09ee541901953476bd0435, type: 2}
+  - {fileID: 2100000, guid: 67b2dd39b7eaa604692fd754accfe087, type: 2}
+  - {fileID: 2100000, guid: d0cf946c92f70b64db7948409cbb65a8, type: 2}
+  - {fileID: 2100000, guid: 92c4a1116e8c6be4aafe78f460f75d9f, type: 2}
+  mapId: approved-map-07
+  mapTitle: "\u68C0\u75AB\u53E3\xB7\u7B2C\u4E00\u6B21\u7A81\u7834"
+  autumnRuins: 0
+  lanes:
+  - id: R1
+    exitId: B1
+    points:
+    - {x: -6.5, y: 0, z: 2.5}
+    - {x: -5.5, y: 0, z: 2.5}
+    - {x: -4.5, y: 0, z: 2.5}
+    - {x: -4.5, y: 0, z: 1.5}
+    - {x: -4.5, y: 0, z: 0.5}
+    - {x: -4.5, y: 0, z: -0.5}
+    - {x: -4.5, y: 0, z: -1.5}
+    - {x: -4.5, y: 0, z: -2.5}
+    - {x: -4.5, y: 0, z: -3.5}
+    - {x: -3.5, y: 0, z: -3.5}
+    - {x: -2.5, y: 0, z: -3.5}
+    - {x: -1.5, y: 0, z: -3.5}
+    - {x: -0.5, y: 0, z: -3.5}
+    - {x: 0.5, y: 0, z: -3.5}
+    - {x: 1.5, y: 0, z: -3.5}
+    - {x: 2.5, y: 0, z: -3.5}
+    - {x: 3.5, y: 0, z: -3.5}
+    - {x: 3.5, y: 0, z: -2.5}
+    - {x: 3.5, y: 0, z: -1.5}
+    - {x: 3.5, y: 0, z: -0.5}
+    - {x: 3.5, y: 0, z: 0.5}
+    - {x: 3.5, y: 0, z: 1.5}
+    - {x: 3.5, y: 0, z: 2.5}
+    - {x: 3.5, y: 0, z: 3.5}
+    - {x: 2.5, y: 0, z: 3.5}
+    - {x: 1.5, y: 0, z: 3.5}
+  - id: R2
+    exitId: B1
+    points:
+    - {x: 6.5, y: 0, z: -1.5}
+    - {x: 5.5, y: 0, z: -1.5}
+    - {x: 4.5, y: 0, z: -1.5}
+    - {x: 3.5, y: 0, z: -1.5}
+    - {x: 2.5, y: 0, z: -1.5}
+    - {x: 1.5, y: 0, z: -1.5}
+    - {x: 0.5, y: 0, z: -1.5}
+    - {x: 0.5, y: 0, z: -0.5}
+    - {x: 0.5, y: 0, z: 0.5}
+    - {x: 0.5, y: 0, z: 1.5}
+    - {x: 0.5, y: 0, z: 2.5}
+    - {x: 0.5, y: 0, z: 3.5}
+    - {x: 1.5, y: 0, z: 3.5}
+  raised: []
+  floorTexture: {fileID: 0}
+  foliageTexture: {fileID: 0}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 0
+  attackWaves: {fileID: 11400000, guid: 167dd8b96dbd3e048a01b72485c2bc5d, type: 2}

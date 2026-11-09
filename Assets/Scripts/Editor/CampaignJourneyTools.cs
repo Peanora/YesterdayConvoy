@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -46,6 +47,11 @@ namespace YesterdayConvoy.Editor
             public float tier1, tier2, tier3;
             public float At(int tier) => tier == 1 ? tier1 : tier == 2 ? tier2 : tier3;
         }
+        sealed class AssetRename
+        {
+            public UnityEngine.Object asset;
+            public string temporary, destination;
+        }
 
         [MenuItem("Yesterday Convoy/Campaign V2/Author Formal Journey Data")]
         public static void Author()
@@ -55,9 +61,53 @@ namespace YesterdayConvoy.Editor
             EnsureFolder(Output);
             var journey = AssetDatabase.LoadAssetAtPath<CampaignJourneyDefinition>(JourneyPath);
             if (journey == null) { journey = ScriptableObject.CreateInstance<CampaignJourneyDefinition>(); journey.name = "Journey"; AssetDatabase.CreateAsset(journey, JourneyPath); }
+            PreserveEncounterGuids(journey, flow);
             journey.stages = flow.stages.OrderBy(s => s.stage).Select(stage => BuildStage(stage, defenders)).ToArray();
             EditorUtility.SetDirty(journey); AssetDatabase.SaveAssets(); Validate();
-            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 13 stages, 5 noncombat supply receipts, 8 independent wave encounters, 15 strengthened v2 defenders; existing map scenes and sandbox encounters untouched.");
+            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 12 stages, 4 noncombat supply receipts, 8 independent wave encounters, 15 strengthened v2 defenders; existing map scenes and sandbox encounters untouched.");
+        }
+
+        static void PreserveEncounterGuids(CampaignJourneyDefinition journey, Source flow)
+        {
+            var existing = journey.stages?.Where(s => s != null && !s.IsSupply).ToArray() ?? Array.Empty<CampaignJourneyStage>();
+            if (existing.Length == 0) return;
+            var expected = flow.stages.Where(s => s.type != nameof(CampaignJourneyStageType.Supply)).ToArray();
+            if (existing.Length != expected.Length || existing.Any(s => s.map == null || s.encounter == null || s.encounter.attackWaves == null) ||
+                existing.Select(s => s.map.index).Distinct().Count() != existing.Length || expected.Any(s => existing.All(e => e.map.index != s.mapIndex)))
+                throw new InvalidOperationException("Cannot preserve journey asset GUIDs: existing encounters do not match the authored map set.");
+            var renames = new List<AssetRename>();
+            foreach (var stage in expected)
+            {
+                var previous = existing.Single(s => s.map.index == stage.mapIndex);
+                string destination = Output + "/Stage" + stage.stage.ToString("00");
+                string temporary = Output + "/JourneyReindexMap" + stage.mapIndex.ToString("00");
+                renames.Add(new AssetRename { asset = previous.encounter, temporary = temporary + "Battle.asset", destination = destination + "Battle.asset" });
+                renames.Add(new AssetRename { asset = previous.encounter.attackWaves, temporary = temporary + "Waves.asset", destination = destination + "Waves.asset" });
+            }
+            var sources = new HashSet<string>(renames.Select(r => AssetDatabase.GetAssetPath(r.asset)), StringComparer.Ordinal);
+            if (sources.Count != renames.Count || sources.Any(path => !path.StartsWith(Output + "/", StringComparison.Ordinal)))
+                throw new InvalidOperationException("Cannot preserve journey asset GUIDs: encounters must be distinct assets inside the formal output folder.");
+            if (renames.All(r => AssetDatabase.GetAssetPath(r.asset) == r.destination)) return;
+            foreach (var rename in renames)
+            {
+                var temporary = AssetDatabase.LoadMainAssetAtPath(rename.temporary);
+                var destination = AssetDatabase.LoadMainAssetAtPath(rename.destination);
+                if (temporary != null && temporary != rename.asset || destination != null && !sources.Contains(AssetDatabase.GetAssetPath(destination)))
+                    throw new InvalidOperationException("Cannot reindex journey assets without overwriting an unrelated asset: " + rename.destination);
+            }
+            // All old destinations are vacated first, so neighboring stage numbers
+            // never overwrite each other. Object references and GUIDs survive both moves.
+            foreach (var rename in renames) Move(rename.asset, rename.temporary);
+            foreach (var rename in renames) Move(rename.asset, rename.destination);
+        }
+
+        static void Move(UnityEngine.Object asset, string destination)
+        {
+            string source = AssetDatabase.GetAssetPath(asset);
+            if (source == destination) return;
+            string error = AssetDatabase.MoveAsset(source, destination);
+            if (!string.IsNullOrEmpty(error))
+                throw new InvalidOperationException("Journey asset reindex failed (" + source + " -> " + destination + "): " + error);
         }
 
         static CampaignJourneyStage BuildStage(StageSource source, DefenderSource roster)
@@ -70,6 +120,7 @@ namespace YesterdayConvoy.Editor
             string path = Output + "/Stage" + source.stage.ToString("00") + "Battle.asset";
             var encounter = AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(path);
             if (encounter == null) { encounter = ScriptableObject.CreateInstance<DefenderTrialDefinition>(); encounter.name = "Stage" + source.stage.ToString("00") + "Battle"; AssetDatabase.CreateAsset(encounter, path); }
+            encounter.name = "Stage" + source.stage.ToString("00") + "Battle";
             encounter.battle = map.encounter.battle; encounter.route = (Vector3[])map.encounter.route.Clone();
             encounter.mapId = map.id; encounter.mapTitle = stage.title; encounter.autumnRuins = map.encounter.autumnRuins;
             encounter.lanes = Array.ConvertAll(map.encounter.lanes, l => new TacticalLane { id = l.id, exitId = l.exitId, points = (Vector3[])l.points.Clone() });
@@ -82,6 +133,7 @@ namespace YesterdayConvoy.Editor
             string wavePath = Output + "/Stage" + source.stage.ToString("00") + "Waves.asset";
             var scenario = AssetDatabase.LoadAssetAtPath<AttackWaveScenario>(wavePath);
             if (scenario == null) { scenario = ScriptableObject.CreateInstance<AttackWaveScenario>(); scenario.name = "Stage" + source.stage.ToString("00") + "Waves"; AssetDatabase.CreateAsset(scenario, wavePath); }
+            scenario.name = "Stage" + source.stage.ToString("00") + "Waves";
             scenario.waves = Array.ConvertAll(source.waves, w => new AttackWaveSettings { laneId = w.laneId, dp = w.dp, deploymentSeconds = w.deploymentSeconds });
             scenario.finalAdvanceSeconds = source.finalAdvanceSeconds;
             _ = scenario.Snapshot(); EditorUtility.SetDirty(scenario); encounter.attackWaves = scenario;
@@ -172,7 +224,7 @@ namespace YesterdayConvoy.Editor
                 }
             }
             if (guardCount != 15) throw new InvalidOperationException("Fifteen formal defender placements required.");
-            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 13 stages / 8 independent wave plans / 15 strengthened v2 defenders and preserved skill snapshots / preserved sandbox data / no scene writes.");
+            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 12 stages / 8 independent wave plans / 15 strengthened v2 defenders and preserved skill snapshots / preserved sandbox data / no scene writes.");
         }
 
         public static void BuildWindows() { Validate(); BaselineTools.BuildWindows(); }

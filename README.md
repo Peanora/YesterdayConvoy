@@ -2,11 +2,11 @@
 
 ## 当前运行入口
 
-直接打开 `Builds/Windows/YesterdayConvoy.exe`，默认进入十三关行动。其他地图或专项从右上菜单“返回测试选择”进入；请保留整个 Windows 目录，配套 Data 和 DLL 不能拆开。当前源码版本与真实验证见同目录 `SOURCE.txt`、[工程状态](docs/STATUS.md)和[验证记录](docs/QA.md)。
+直接打开 `Builds/Windows/YesterdayConvoy.exe`，默认进入十二关行动：直接从集结采购奖励关开始，赠送3种不同的一二费角色，初始1种编队、2种备战；奖励整备时可拖动调整，银狼暂不进入商店。其他地图或专项从右上菜单“返回测试选择”进入；请保留整个 Windows 目录，配套 Data 和 DLL 不能拆开。当前源码版本与真实验证见同目录 `SOURCE.txt`、[工程状态](docs/STATUS.md)和[验证记录](docs/QA.md)。
 
 2026-11-09人类要求：试玩/预览启动脚本已清理，以后不再创建或分发 `.cmd`，也不改用 `.bat`。浏览器预览直接打开 HTML；后续交付给出 EXE 路径。构建仅本地交付，不自动 ZIP / Releases。
 
-以下为早期M01 Demo资料，历史场景、功能缺失和验证数字不能代表当前版本；最新目录与玩法以以上文档及[十三关说明](docs/CAMPAIGN_JOURNEY_V2.md)为准。
+以下为早期M01 Demo资料，历史场景、功能缺失和验证数字不能代表当前版本；最新目录与玩法以以上文档及[十二关说明](docs/CAMPAIGN_JOURNEY_V2.md)为准。
 
 2026-11-03目录与地图新规（人类确认）：日常统一打开 `E:/珍贵资料/昨日圆车`。资源直接分类在Assets下，不再使用_Game包裹和分散的试验场景目录。地图必须各自保存为Assets/Scenes内独立场景，编辑模式可查看和修改，禁止Play时重建整张地形；当前保留MonsterTrial与BattleShop，其他旧地图及生成入口退役。角色、技能和商店闭环保留。目录、操作及新增地图规范见[工程结构说明](docs/PROJECT_STRUCTURE.md)。
 
