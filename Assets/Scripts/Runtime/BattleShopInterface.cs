@@ -116,7 +116,7 @@ namespace YesterdayConvoy
                 }
                 if(campaignModal&&suppressed)e.type=originalEvent;
                 DrawCampaignControls(point);
-                DrawSarkazContractBadges();
+                if(!CampaignUiModalOpen)DrawSarkazContractBadges();
                 if(Loop==null)return;
                 if(!Loop.CanDeploy&&!Loop.CanShop&&!DeathPresentationPending)
                 {if(suppressed)e.type=originalEvent;DrawLoopSettlement();}
