@@ -32,7 +32,7 @@ namespace YesterdayConvoy
         void DrawUnifiedSynergyDetails(SynergySummary summary)
         {
             var r=UnifiedSynergyPanelRect;var model=CurrentSynergyDetail;
-            Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+            var paper=ApprovedUi.Paper;paper.a=1;Fill(r,paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+20,r.y+12,430,29),summary.Name,CampaignText(22,weight:700));
             string current=summary.Tier<=0?"尚未激活":summary.Name=="泥岩小队"?$"人数{summary.Tier}档已达":summary.Name=="感染生物"?$"当前{summary.Tier}档可选":$"当前{summary.Tier}档生效";
             GUI.Label(new Rect(r.x+20,r.y+44,425,19),$"{summary.Count}种已编队  ·  "+current+"  ·  "+model.source,CampaignText(11,color:ApprovedUi.Muted));
@@ -80,7 +80,9 @@ namespace YesterdayConvoy
                     Fill(new Rect(card.x,card.y+68,card.width,26),member.selected?new Color(.23f,.36f,.43f):new Color(.64f,.69f,.72f));
                     ApprovedUi.Border(card,member.selected?new Color(.30f,.48f,.58f):new Color(.67f,.72f,.74f),member.selected?1.5f:1);
                     string name=shop.Definition(member.id).Name;
-                    GUI.Label(new Rect(card.x+3,card.y+70,card.width-6,16),name,CampaignText(name.Length>6?9:10,TextAnchor.MiddleCenter,member.selected?Color.white:new Color(.37f,.43f,.47f),member.selected?600:400));
+                    var nameStyle=CampaignText(10,TextAnchor.MiddleCenter,member.selected?Color.white:new Color(.37f,.43f,.47f),member.selected?600:400);nameStyle.wordWrap=false;
+                    while(nameStyle.fontSize>8&&nameStyle.CalcSize(new GUIContent(name)).x>card.width-6)nameStyle.fontSize--;
+                    GUI.Label(new Rect(card.x+3,card.y+70,card.width-6,16),name,nameStyle);
                     GUI.Label(new Rect(card.x+3,card.y+84,card.width-6,10),member.transfer?"转职编队":member.selected?"已编队":"未编队",CampaignText(8,TextAnchor.MiddleCenter,member.selected?new Color(.91f,.95f,.96f):new Color(.43f,.49f,.53f)));
                 }
             }

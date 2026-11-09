@@ -54,7 +54,7 @@ namespace YesterdayConvoy
             var e=Event.current;var r=ShopOddsPanelRect;
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape){shopOddsOpen=false;e.Use();return;}
             if(e.type==EventType.MouseDown&&e.button==0&&!r.Contains(point)){shopOddsOpen=false;e.Use();return;}
-            Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+            var paper=ApprovedUi.Paper;paper.a=1;Fill(r,paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+22,r.y+15,r.width-85,29),"招募概率",LoopText(23,TextAnchor.MiddleLeft,null,700));
             if(LoopButton(new Rect(r.xMax-54,r.y+15,32,28),"×")){shopOddsOpen=false;return;}
             GUI.Label(new Rect(r.x+22,r.y+49,r.width-44,23),"等级决定费用档；同费用内按剩余牌数加权抽取",LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));

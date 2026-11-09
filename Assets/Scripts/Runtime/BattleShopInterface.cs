@@ -142,7 +142,9 @@ namespace YesterdayConvoy
                 Fill(new Rect(r.x+3,r.y+3,31,29),new Color(.13f,.23f,.32f,.88f));
                 GUI.Label(new Rect(r.x+6,r.y+1,26,29),state.Settings.DeploymentCost.ToString(),LoopText(22,TextAnchor.MiddleLeft,Color.white,700));
                 Fill(new Rect(r.x,r.yMax-27,r.width,27),Color.Lerp(ApprovedUi.Tier(card.RecruitCost),Color.black,.34f));
-                GUI.Label(new Rect(r.x+5,r.yMax-27,r.width-10,17),card.DisplayName,LoopText(card.DisplayName.Length>6?10:11,TextAnchor.MiddleLeft,Color.white,600));
+                var nameStyle=LoopText(11,TextAnchor.MiddleLeft,Color.white,600);nameStyle.wordWrap=false;
+                while(nameStyle.fontSize>8&&nameStyle.CalcSize(new GUIContent(card.DisplayName)).x>r.width-10)nameStyle.fontSize--;
+                GUI.Label(new Rect(r.x+5,r.yMax-27,r.width-10,17),card.DisplayName,nameStyle);
                 GUI.Label(new Rect(r.x+5,r.yMax-12,r.width-10,12),state.RemainingUses+"次",LoopText(9,TextAnchor.MiddleLeft,new Color(.88f,.93f,.96f)));
                 int star=ShopLineupPiece(id)?.Star??1;
                 GUI.Label(new Rect(r.x+37,r.y+4,r.width-41,21),new string('★',star),LoopText(12,TextAnchor.MiddleRight,new Color(1,.94f,.73f),600));
