@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.AttackWaveScenario
   waves:
   - laneId: R1
-    dp: 20
+    dp: 9
     deploymentSeconds: 35
   - laneId: R2
-    dp: 20
+    dp: 9
     deploymentSeconds: 40
   finalAdvanceSeconds: 75

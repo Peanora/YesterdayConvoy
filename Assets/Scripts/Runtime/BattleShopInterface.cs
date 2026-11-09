@@ -236,7 +236,7 @@ namespace YesterdayConvoy
             float x=LoopMenuRect.x+12,y=LoopMenuRect.y+44;float width=LoopMenuRect.width-24;
             GUI.Label(new Rect(x,LoopMenuRect.y+9,width-30,27),"系统菜单",LoopText(19,TextAnchor.MiddleLeft,null,700));
             if(LoopButton(new Rect(LoopMenuRect.xMax-36,LoopMenuRect.y+9,24,24),"×"))loopMenuOpen=false;
-            if(LoopButton(new Rect(x,y,width,30),Muted?"开启音效":"关闭音效"))Muted=!Muted;y+=37;
+            if(LoopButton(new Rect(x,y,width,30),Muted?"开启音效":"关闭音效"))ToggleMute();y+=37;
             if(LoopButton(new Rect(x,y,width,30),"重新开始本次挑战"))
             {if(Loop==null)EnterShopTrial(0,TacticalMapId);else RestartCurrentRun();return;}y+=37;
             if(Loop==null)

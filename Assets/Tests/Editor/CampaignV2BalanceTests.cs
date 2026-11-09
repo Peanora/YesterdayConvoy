@@ -93,6 +93,27 @@ namespace YesterdayConvoy.Tests
             }
         }
 
+        [Test]public void HighCostJourneyCardsUseRecruitmentTierDpAndKeepLegacyDeploymentCosts()
+        {
+            foreach(string id in CampaignV2Balance.PlayerIds.Where(CampaignBalance.ShopEligible))
+            {
+                var definition=Definition(id);int cost=definition.Card.RecruitCost;if(cost<4)continue;
+                int legacyBase=CampaignBalance.Profiles[id].BaseDP;
+                for(int star=1;star<=3;star++)
+                {
+                    var current=CampaignV2Balance.Build(definition,star,50,6,waveMode:true);
+                    var legacy=CampaignBalance.Build(definition,star,50,6,waveMode:true);
+                    Assert.That(current.Unit.DeploymentCost,Is.EqualTo(cost+star-1),id+" star "+star);
+                    Assert.That(CampaignV2Balance.StarFor(current.Unit),Is.EqualTo(star),id);
+                    Assert.That(current.Unit.Cooldown,Is.EqualTo(WaveDeploymentCadence.ForCard(id,cost)),id);
+                    Assert.That(current.Unit.DeploymentLimit,Is.EqualTo(cost==4?3:2),id);
+                    Assert.That(legacy.Unit.DeploymentCost,Is.EqualTo(legacyBase+(star-1)*(cost==5?2:1)),id);
+                }
+            }
+            Assert.That(CampaignV2Balance.Build(Definition("CARD_TALULAH_TRIAL"),3,7,6,waveMode:true).Unit.DeploymentCost,Is.EqualTo(7));
+            Assert.That(CampaignV2Balance.Build(Definition("CARD_M18"),3,6,6,waveMode:true).Unit.DeploymentCost,Is.EqualTo(6));
+        }
+
         [Test]public void DeploymentAppliesExactBarrierLayerAndHpBudgetsAndRestartKeepsV2Enabled()
         {
             var profile=CampaignV2Balance.Build(Definition("CARD_M28"),2,50,6);var b=Battle(profile);var u=Deploy(b);

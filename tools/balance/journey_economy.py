@@ -32,6 +32,9 @@ def source_parameters():
     stages = json.loads(read(SOURCES["nodes"]))["stages"]
     code, shop = read(SOURCES["economy"]), read(SOURCES["shop"])
     initial = int(re.search(r"InitialGold\s*=\s*(\d+)", code)[1])
+    variable_multiplier = int(re.search(r"RewardGoldMultiplier\s*=\s*(\d+)", code)[1])
+    assert "int rewardScale=JourneyEconomy?CampaignJourneyEconomy.RewardGoldMultiplier:1;" in shop
+    assert re.search(r"Interest\s*=\s*Math.Min\(5,Gold/10\)\s*\*\s*rewardScale", shop), "Journey interest scaling changed."
     curve = [int(v) for v in re.search(r"LevelExperience\s*=\s*\{([^}]+)\}", code)[1].split(",")]
     streak_text = re.search(r"StreakBonus\(int wins\)\s*=>\s*([^;]+);", code)[1]
     streak = [[int(a), int(b)] for a, b in re.findall(r"wins\s*>=\s*(\d+)\s*\?\s*(\d+)", streak_text)]
@@ -47,7 +50,7 @@ def source_parameters():
     assert stages[0]["type"] == "Supply" and stages[-1]["type"] == "Boss"
     return dict(initial=initial, base=[s["baseGold"] for s in stages], natural=[s["naturalXP"] for s in stages],
                 curve=curve, modern=True, supplies=[s["stage"] for s in stages if s["type"] == "Supply"],
-                streak=streak, interest_cap=int(interest[1]), interest_step=int(interest[2]),
+                streak=streak, interest_cap=int(interest[1]), interest_step=int(interest[2]), variable_gold_multiplier=variable_multiplier,
                 xp_price=int(paid[1]), xp_amount=int(paid[2]))
 
 
@@ -84,6 +87,7 @@ def forecast(name, p, policy=None, interest=True):
             bonus = 0
         else:
             streak += 1; bonus = next((bonus for threshold, bonus in p["streak"] if streak >= threshold), 0)
+        bank *= p["variable_gold_multiplier"]; bonus *= p["variable_gold_multiplier"]
         gold += p["base"][i] + bank + bonus
         level, xp = level_up(level, xp + p["natural"][i], p["curve"])
         rows.append(dict(stage=stage, supply=supply, opening_gold=opening, cards_and_commission=cards,
@@ -143,7 +147,18 @@ public static class Program {
     public static bool IsEligible(string id)=>id!=null&&roles.ContainsKey(id);
     static List<ShopTrialModel.Piece> Select(ShopTrialModel s){var chosen=s.Bench.GroupBy(p=>p.Id).Select(g=>g.OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First()).OrderByDescending(p=>roles[p.Id].power*(1+(p.Star-1)*.8f)).ThenBy(p=>p.Instance).Take(s.Level).ToList();if(!s.SetLineup(chosen.Select(p=>p.Id),chosen.Select(p=>p.Instance)))throw new Exception("Lineup capacity rejected");return chosen;}
     static float Score(ShopTrialModel s,string id){var held=s.Bench.Where(p=>p.Id==id).ToArray();if(held.Any(p=>p.Star>=3))return -1;float score=roles[id].power/roles[id].cost;if(held.Count(p=>p.Star==1)>=2)score+=100;else if(held.Length>0)score+=30;return score;}
-    static int Buy(ShopTrialModel s,int budget){for(int turn=0;turn<5;turn++){Select(s);var slots=Enumerable.Range(0,5).Where(i=>s.Offers[i]!=null&&s.Definition(s.Offers[i]).Cost<=budget&&s.CanAfford(s.Definition(s.Offers[i]).Cost)).OrderByDescending(i=>Score(s,s.Offers[i])).ThenBy(i=>i).ToArray();bool bought=false;foreach(int i in slots){if(Score(s,s.Offers[i])<0)continue;var r=s.Purchase(i);if(!r.Success)continue;budget-=r.Value;Select(s);bought=true;break;}if(!bought)break;}return budget;}
+    static int Buy(ShopTrialModel s,int budget,List<object> commands){
+        for(int turn=0;turn<5;turn++){
+            Select(s);var slots=Enumerable.Range(0,5).Where(i=>s.Offers[i]!=null&&s.Definition(s.Offers[i]).Cost<=budget&&s.CanAfford(s.Definition(s.Offers[i]).Cost)).OrderByDescending(i=>Score(s,s.Offers[i])).ThenBy(i=>i).ToArray();bool bought=false;
+            foreach(int i in slots){
+                if(Score(s,s.Offers[i])<0)continue;int before=s.Gold;var r=s.Purchase(i);if(!r.Success)continue;
+                commands.Add(new{kind="Purchase",slot=i,id=r.Id,instance=r.Instance,cost=before-s.Gold,goldBefore=before,goldAfter=s.Gold,level=s.Level,xp=s.XP});
+                budget-=r.Value;Select(s);bought=true;break;
+            }
+            if(!bought)break;
+        }
+        return budget;
+    }
     public static int Main(string[] args){
         var input=JsonSerializer.Deserialize<Input>(File.ReadAllText(args[0]));roles=input.roles.ToDictionary(r=>r.id);
         if(roles.Count!=42||roles.ContainsKey("CARD_M41"))throw new Exception("Eligible shop pool drift");
@@ -156,25 +171,28 @@ public static class Program {
             if(gifts.Length!=3||gifts.Distinct().Count()!=3||gifts.Any(id=>roles[id].cost<1||roles[id].cost>2)||!gifts.SequenceEqual(CampaignJourneyEconomy.StartingCards(s.Roles,seed)))throw new Exception("Starting gift rule drift");
             s.Preset(gifts.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),1,0,input.initial);
             if(s.Bench.Count!=3||s.Bench.Any(p=>p.Star!=1)||gifts.Any(id=>s.Available(id)!=s.Capacity(id)-1))throw new Exception("Gift stock mismatch");
-            Select(s);var rounds=new List<object>();int cards=0,refresh=0,xp=0,commissions=0,misses=0,income=input.initial;
+            Select(s);var rounds=new List<object>();int cards=0,refresh=0,xp=0,commissions=0,misses=0,income=input.initial,finalPreparationLevel=0;
             for(int i=0;i<stages;i++){
-                int stage=i+1,opening=s.Gold,paid=0;
+                int stage=i+1,opening=s.Gold,paid=0;var commands=new List<object>();
                 // Initial preparation and every later unlocked shop each get exactly one free refresh.
-                s.BeginPreparation();if(!s.Locked)s.Refresh(true);
-                while(s.Level<policy.levels[i]&&s.Gold>=input.xpPrice){int beforeUpgrade=s.Gold;if(!s.Upgrade().Success)break;paid+=beforeUpgrade-s.Gold;xp+=beforeUpgrade-s.Gold;}
+                s.BeginPreparation();if(!s.Locked){if(!s.Refresh(true).Success)throw new Exception("Free preparation refresh rejected");commands.Add(new{kind="FreeRefresh",goldBefore=s.Gold,goldAfter=s.Gold,offers=s.Offers.ToArray()});}
+                while(s.Level<policy.levels[i]&&s.Gold>=input.xpPrice){int beforeUpgrade=s.Gold;if(!s.Upgrade().Success)break;paid+=beforeUpgrade-s.Gold;xp+=beforeUpgrade-s.Gold;commands.Add(new{kind="Upgrade",cost=beforeUpgrade-s.Gold,goldBefore=beforeUpgrade,goldAfter=s.Gold,level=s.Level,xp=s.XP});}
                 if(s.Level<policy.levels[i])misses++;
                 int budget=Math.Min(policy.cards[i],s.Gold),before=budget;
-                if(policy.commissionGift&&s.Bench.Where(p=>p.Id==gift).Max(p=>p.Star)<3&&roles[gift].cost+2<=budget){var r=s.Commission(gift);if(r.Success){budget-=r.Value;commissions++;Select(s);}}
-                budget=Buy(s,budget);
-                if(policy.commission&&!s.CommissionUsed){foreach(string id in s.Bench.Select(p=>p.Id).Distinct().Where(id=>roles[id].cost<=3&&roles[id].cost+2<=budget&&s.Bench.Count(p=>p.Id==id&&p.Star==1)>=2).OrderByDescending(id=>Score(s,id)).ToArray()){var r=s.Commission(id);if(!r.Success)continue;budget-=r.Value;commissions++;Select(s);break;}}
+                if(policy.commissionGift&&s.Bench.Where(p=>p.Id==gift).Max(p=>p.Star)<3&&roles[gift].cost+2<=budget){int beforeCommission=s.Gold;var r=s.Commission(gift);if(r.Success){budget-=r.Value;commissions++;Select(s);commands.Add(new{kind="Commission",id=gift,instance=r.Instance,cost=beforeCommission-s.Gold,goldBefore=beforeCommission,goldAfter=s.Gold,level=s.Level,xp=s.XP});}}
+                budget=Buy(s,budget,commands);
+                if(policy.commission&&!s.CommissionUsed){foreach(string id in s.Bench.Select(p=>p.Id).Distinct().Where(id=>roles[id].cost<=3&&roles[id].cost+2<=budget&&s.Bench.Count(p=>p.Id==id&&p.Star==1)>=2).OrderByDescending(id=>Score(s,id)).ToArray()){int beforeCommission=s.Gold;var r=s.Commission(id);if(!r.Success)continue;budget-=r.Value;commissions++;Select(s);commands.Add(new{kind="Commission",id,instance=r.Instance,cost=beforeCommission-s.Gold,goldBefore=beforeCommission,goldAfter=s.Gold,level=s.Level,xp=s.XP});break;}}
                 cards+=before-budget;int refreshBudget=policy.refresh[i];
-                while(refreshBudget>=2&&s.Gold>=2){if(!s.Refresh().Success)break;refresh+=2;refreshBudget-=2;int beforeBuy=s.Gold;budget=Buy(s,Math.Min(budget,s.Gold));cards+=beforeBuy-s.Gold;}
-                var selected=Select(s);int held=s.Gold,level=s.Level;
+                while(refreshBudget>=2&&s.Gold>=2){int beforeRefresh=s.Gold;if(!s.Refresh().Success)break;commands.Add(new{kind="Refresh",cost=beforeRefresh-s.Gold,goldBefore=beforeRefresh,goldAfter=s.Gold,offers=s.Offers.ToArray()});refresh+=2;refreshBudget-=2;int beforeBuy=s.Gold;budget=Buy(s,Math.Min(budget,s.Gold),commands);cards+=beforeBuy-s.Gold;}
+                var selected=Select(s);int held=s.Gold,level=s.Level;if(i==stages-1)finalPreparationLevel=level;
                 var reward=s.SettleRound("stage-"+stage,true,input.bases[i],input.natural[i],!input.supplies.Contains(stage));income+=reward.Total;s.Validate();
+                int expectedInterest=Math.Min(5,held/10)*CampaignJourneyEconomy.RewardGoldMultiplier;
+                int expectedStreak=input.supplies.Contains(stage)?0:CampaignJourneyEconomy.StreakBonus(s.WinStreak)*CampaignJourneyEconomy.RewardGoldMultiplier;
+                if(reward.Base!=input.bases[i]||reward.Interest!=expectedInterest||reward.Streak!=expectedStreak||reward.Experience!=input.natural[i])throw new Exception("Doubled settlement component mismatch");
                 if(income!=s.Gold+cards+refresh+xp)throw new Exception("Cash conservation mismatch");
-                rounds.Add(new{stage,opening,held,level,closing=s.Gold,closingLevel=s.Level,xp=s.XP,paidXP=paid,reward=new{reward.Base,reward.Interest,reward.Streak},lineup=selected.Select(p=>new{id=p.Id,star=p.Star}),stockConserved=true});
+                rounds.Add(new{stage,opening,held,level,commands,closing=s.Gold,closingLevel=s.Level,xp=s.XP,paidXP=paid,reward=new{reward.Base,reward.Interest,reward.Streak},lineup=selected.Select(p=>new{id=p.Id,star=p.Star}),stockConserved=true});
             }
-            reports.Add(new{seed,policy=policy.name,gift,gifts,startingGiftRulePassed=true,eligibleRoles=roles.Count,level=s.Level,gold=s.Gold,xp=s.XP,totalIncome=income,totalCards=cards,totalRefresh=refresh,totalPaidXP=xp,cashConserved=true,commissions,levelTargetMisses=misses,highestStar=s.Bench.Max(p=>p.Star),threeStars=s.Bench.Count(p=>p.Star>=3),rounds});
+            reports.Add(new{seed,policy=policy.name,gift,gifts,startingGiftRulePassed=true,settlementComponentChecksPassed=true,eligibleRoles=roles.Count,finalPreparationLevel,level=s.Level,gold=s.Gold,xp=s.XP,totalIncome=income,totalCards=cards,totalRefresh=refresh,totalPaidXP=xp,cashConserved=true,commissions,levelTargetMisses=misses,highestStar=s.Bench.Max(p=>p.Star),threeStars=s.Bench.Count(p=>p.Star>=3),rounds});
         }
         Console.WriteLine(JsonSerializer.Serialize(reports,new JsonSerializerOptions{WriteIndented=true}));return 0;
     }
@@ -210,6 +228,7 @@ def main():
     baseline={**current,**config["baseline"]};baseline.pop("note",None)
     cases=[forecast("historical-thirteen-node-no-spending",baseline),forecast("current-no-spending",current)]
     cases += [forecast(p["name"]+"-cash-caps",current,p) for p in config["policies"]]
+    previous=forecast("previous-twelve-stage-single-gold",{**current,"base":[v//2 for v in current["base"]],"variable_gold_multiplier":1})
     # The retired thirteen-node values are checked solely against their explicit historical inputs.
     # Candidate policies remain observations; a forecast failure must not become a current balance claim.
     failed={**config["policies"][-1],"refresh":[0,0,0,0,2,0,2,0,2,0,2,4]}
@@ -225,9 +244,11 @@ def main():
         needed=max(0,sum(current["curve"][1:level])-natural_pre_final);paid=((needed+current["xp_amount"]-1)//current["xp_amount"])*current["xp_price"]
         costs.append(dict(level=level,cumulativeXP=sum(current["curve"][1:level]),naturalPreFinalXP=natural_pre_final,minimumPaidGold=paid))
     checks={"historicalBaseline36":cases[0]["after_opening_supplies"]==36,"historicalBaseline301":cases[0]["pre_final_opening"]==301,"historicalBaseline337":cases[0]["end_gold"]==337,
-            "currentNodeCount12":count==12,"currentOpeningSupply9":cases[1]["after_opening_supplies"]==9,
-            "currentPreFinal112":cases[1]["pre_final_opening"]==112,"currentEnd127":cases[1]["end_gold"]==127,
-            "currentBaseTotal68":sum(current["base"])==68,"currentPreFinalBase61":sum(current["base"][:-1])==61,
+            "previousTwelveStage112And127":previous["pre_final_opening"]==112 and previous["end_gold"]==127,
+            "currentVariableGoldMultiplier2":current["variable_gold_multiplier"]==2,
+            "currentNodeCount12":count==12,"currentOpeningSupply13":cases[1]["after_opening_supplies"]==13,
+            "currentPreFinal239":cases[1]["pre_final_opening"]==239,"currentEnd269":cases[1]["end_gold"]==269,
+            "currentBaseTotal136":sum(current["base"])==136,"currentPreFinalBase122":sum(current["base"][:-1])==122,
             "currentNoSpendingLedger":cases[1]["total_income"]==cases[1]["end_gold"],
             "policyArraysMatchLiveNodes":all(all(len(p[key])==count for key in ("levels","cards","refresh")) for p in config["policies"])}
     audit=[] if args.cash_only else actual_shop_audit(out,current,config)
@@ -237,6 +258,13 @@ def main():
         checks["productionThreeGiftRulePassed"]=all(a["startingGiftRulePassed"] and len(a["gifts"])==len(set(a["gifts"]))==3 for a in audit)
         checks["eligibleShopPool42WithoutSilverWolf"]=all(a["eligibleRoles"]==42 and "CARD_M41" not in a["gifts"] for a in audit)
         checks["seedPoliciesUseLiveNodeCount"]=all(len(a["rounds"])==count for a in audit)
+        checks["seedPoliciesDoubledPayoutComponents"]=all(a["settlementComponentChecksPassed"] for a in audit)
+        witnesses=[a for a in audit if a["policy"]=="late-level10-real-recruitment"]
+        checks["threeSeedLevel10WithRealRecruitmentWitnesses"]=len(witnesses)==len(config["seeds"]) and all(a["finalPreparationLevel"]==10 and a["totalCards"]>0 and a["totalPaidXP"]>0 and a["levelTargetMisses"]==0 for a in witnesses)
+    roster=json.loads(read(SOURCES["players"]))
+    checks["v2RosterMirrorsMatch"]=(ROOT/SOURCES["players"]).read_bytes()==(ROOT/"docs/balance/v2/inputs/player-roster.json").read_bytes()
+    expensive=[u for u in roster["units"] if u["cost"]>=4 and u["id"]!="CARD_M41"]
+    checks["twelveV2HighCostKindsUseRecruitCostPlusStarDp"]=len(expensive)==12 and all(u["base"]["dp"]==u["cost"] and all(r["dp"]==u["cost"]+r["star"]-1 for r in u["stars"]) for u in expensive)
     observations=dict(policyBudgetForecastsAffordable=all(c["passed"] for c in cases[2:]),
                       failedCandidatePolicies=[dict(name=c["name"],failures=c["failures"]) for c in cases[2:] if not c["passed"]],
                       seededPolicyLevelTargetMisses=[dict(seed=a["seed"],policy=a["policy"],misses=a["levelTargetMisses"]) for a in audit if a["levelTargetMisses"]],
@@ -245,7 +273,7 @@ def main():
                       noSpendingPreFinalGold=cases[1]["pre_final_opening"])
     report=dict(modelVersion=config["modelVersion"],sources={k:{"path":v,"sha256":hashlib.sha256((ROOT/v).read_bytes()).hexdigest()} for k,v in SOURCES.items()},
                 assumptions=[f"All {count} current settlements assume victory. This is an economic budget model, never a combat clear claim.","The separately labelled historical case retains thirteen old nodes and is never a live target.","Actual ShopTrialModel, CampaignJourneyEconomy.StartingCards, Random, inventory, merging and transactions compile in a temporary .NET harness; no Unity.","The CampaignBalance adapter accepts only the source-verified 42 eligible IDs; silver wolf remains outside the shop.","No sales, extra free rerolls, economic synergies, equipment or environment income. Each preparation includes its normal free refresh.","Card and refresh ceilings are candidate human policies. Failed forecasts and missed level targets remain observations, not validation passes."],
-                current=current,checks=checks,observations=observations,levelCosts=costs,scenarios=cases,rejectedPlan=rejected,
+                current=current,previousTwelveStage=previous,checks=checks,observations=observations,levelCosts=costs,scenarios=cases,rejectedPlan=rejected,
                 theoreticalLevel10=extreme,retired64Lockout=retired64,
                 seedPolicySummaries=[{k:v for k,v in a.items() if k!="rounds"} for a in audit])
     (out/"economy-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")

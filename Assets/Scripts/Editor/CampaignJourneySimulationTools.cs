@@ -45,7 +45,7 @@ namespace YesterdayConvoy.Editor
         }
         [Serializable] public sealed class BoundaryCase
         {
-            public string name; public int stage,baseCopyCost,wins;
+            public string name; public int stage,baseCopyCost,wins,formationLevel,firstDeploymentDP;
             public bool expectedWeak,zeroSynergies;public Piece[] lineup;public Fight[] fights;
         }
         [Serializable] public sealed class BoundaryReport
@@ -74,12 +74,12 @@ namespace YesterdayConvoy.Editor
             public string[] skippedGroups;public TimingCase[] cases;
         }
         sealed class EconomyPolicy
-        {internal string Name;internal int[] Levels,Cards,Refresh;internal int MaximumCost=5;internal bool CommissionGift,ReunionFocus;}
+        {internal string Name;internal int[] Levels,Cards,Refresh;internal int MaximumCost=5;internal bool CommissionGift,ReunionFocus,HighCostTransition;}
         sealed class Context
         {
             internal int Seed;internal ShopTrialModel Shop;internal BattleShopRun Run;
             internal Dictionary<string,ManualBattleDefinition> Definitions;internal List<string> Lineup=new List<string>();
-            internal string Contract,Gift;internal int MaximumCost=5,Stage;internal bool ReunionFocus;
+            internal string Contract,Gift;internal int MaximumCost=5,Stage;internal bool ReunionFocus,HighCostTransition;
             internal InfectionForm Form=InfectionForm.Swarm,Second=InfectionForm.Shell;
             internal string[] FocusPriority=Array.Empty<string>();
         }
@@ -88,7 +88,11 @@ namespace YesterdayConvoy.Editor
             new EconomyPolicy{Name="low-cost-stars",MaximumCost=3,Levels=new[]{2,3,4,4,5,5,5,5,6,6,7,7},Cards=new[]{1,2,3,3,4,4,4,5,5,5,5,8},Refresh=new[]{0,0,0,0,2,2,2,2,2,2,2,2}},
             new EconomyPolicy{Name="level-transition",Levels=new[]{2,3,4,4,5,5,6,6,7,7,8,8},Cards=new[]{1,2,2,2,2,3,3,3,3,4,4,6},Refresh=new[]{0,0,0,0,0,0,2,0,2,2,2,2}},
             new EconomyPolicy{Name="gift-three-star-level7",CommissionGift=true,Levels=new[]{2,3,4,4,5,5,6,6,7,7,7,7},Cards=new[]{2,3,3,0,4,3,4,0,5,4,0,10},Refresh=new[]{0,0,0,0,2,0,2,0,2,0,0,2}},
-            new EconomyPolicy{Name="formation-reunion",ReunionFocus=true,MaximumCost=4,Levels=new[]{2,3,4,4,5,5,6,6,6,6,7,7},Cards=new[]{2,3,3,0,4,4,4,0,6,5,0,10},Refresh=new[]{0,0,0,0,2,0,2,0,2,0,0,2}}
+            new EconomyPolicy{Name="formation-reunion",ReunionFocus=true,MaximumCost=4,Levels=new[]{2,3,4,4,5,5,6,6,6,6,7,7},Cards=new[]{2,3,3,0,4,4,4,0,6,5,0,10},Refresh=new[]{0,0,0,0,2,0,2,0,2,0,0,2}},
+            // These are legal spending targets, not injected levels or promised shop hits.
+            // Full-cap cash forecasts keep room for the actual 116-gold XP cost to ten.
+            new EconomyPolicy{Name="late-ten-high-cost",HighCostTransition=true,Levels=new[]{1,3,4,4,5,5,6,6,7,8,8,10},Cards=new[]{1,2,3,0,5,5,6,0,10,10,0,18},Refresh=new[]{0,0,0,0,2,2,2,0,4,4,0,8}},
+            new EconomyPolicy{Name="level-ten-pair-transition",HighCostTransition=true,Levels=new[]{1,3,4,4,5,6,6,7,8,8,9,10},Cards=new[]{1,2,3,0,4,4,6,0,8,8,0,15},Refresh=new[]{0,0,0,0,2,2,2,0,4,4,0,8}}
         };
 
         [MenuItem("Yesterday Convoy/Campaign Journey/Search Natural V2 Runs")]
@@ -100,8 +104,8 @@ namespace YesterdayConvoy.Editor
             int variants=int.Parse(Argument("-journeyDeploymentVariants","42"),CultureInfo.InvariantCulture);
             float observation=float.Parse(Argument("-journeyObservationSeconds","300"),CultureInfo.InvariantCulture);
             bool allSeeds=bool.Parse(Argument("-journeySearchAllSeeds","false"));
-            var policyNames=Argument("-journeyEconomyPolicies",string.Join(",",Policies.Select(p=>p.Name))).Split(',');
-            var policies=Policies.Where(p=>policyNames.Contains(p.Name)).ToArray();
+            var policyNames=Argument("-journeyEconomyPolicies",string.Join(",",Policies.OrderByDescending(p=>p.HighCostTransition).Select(p=>p.Name))).Split(',');
+            var policies=policyNames.Select(name=>Policies.SingleOrDefault(p=>p.Name==name)).Where(p=>p!=null).ToArray();
             if(policies.Length==0)throw new ArgumentException("No known Journey economy policies selected.");
             string output=Argument("-journeySearchOutput","artifacts/campaign-v2/model-search.json");
             var definitions=Definitions();var attempts=new List<Attempt>();
@@ -138,7 +142,13 @@ namespace YesterdayConvoy.Editor
                 new {Name="grown-six-mixed-reference",Weak=false,Ids=new[]{"CARD_M31","CARD_M18","CARD_M07","CARD_M08","CARD_M37","CARD_M12"},Stars=new[]{2,1,3,2,2,1}},
                 new {Name="grown-seven-low-cost-synergy-reference",Weak=false,Ids=new[]{"CARD_M07","CARD_M08","CARD_M09","CARD_M15","CARD_M10","CARD_M05","CARD_M03"},Stars=new[]{3,2,2,2,2,2,2}},
                 new {Name="talulah-one-star-eight-member-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{1,1,1,1,1,1,1,1}},
-                new {Name="talulah-two-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}}
+                new {Name="talulah-two-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{2,2,1,1,1,1,1,1}},
+                new {Name="talulah-three-star-core-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M18","CARD_M17","CARD_M03","CARD_M15","CARD_M06","CARD_M12","CARD_M11"},Stars=new[]{3,2,1,1,1,1,1,1}},
+                new {Name="patriot-two-star-guerrilla-reference",Weak=false,Ids=new[]{"CARD_M20","CARD_M18","CARD_M17","CARD_M16","CARD_M19","CARD_M03","CARD_M11","CARD_M12"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new {Name="frostnova-two-star-snow-reference",Weak=false,Ids=new[]{"CARD_M14","CARD_M06","CARD_M11","CARD_M12","CARD_M13","CARD_M18","CARD_M17","CARD_M07"},Stars=new[]{2,2,3,2,2,2,2,3}},
+                new {Name="mephisto-two-star-host-reference",Weak=false,Ids=new[]{"CARD_M25","CARD_M21","CARD_M22","CARD_M23","CARD_M18","CARD_M17","CARD_M12","CARD_M11"},Stars=new[]{2,3,2,2,2,2,2,3}},
+                new {Name="mudrock-two-star-crew-reference",Weak=false,Ids=new[]{"CARD_M28","CARD_M27","CARD_M26","CARD_M42","CARD_M43","CARD_M19","CARD_M37","CARD_M18"},Stars=new[]{2,2,2,2,2,2,2,2}},
+                new {Name="level-ten-ten-kind-high-star-reference",Weak=false,Ids=new[]{"CARD_TALULAH_TRIAL","CARD_M20","CARD_M14","CARD_M25","CARD_M28","CARD_M18","CARD_M17","CARD_M12","CARD_M11","CARD_M19"},Stars=new[]{2,2,2,2,2,2,2,2,3,2}}
             };
             var results=new List<BoundaryCase>();
             foreach(int number in stages)foreach(var fixture in fixtures)
@@ -146,7 +156,8 @@ namespace YesterdayConvoy.Editor
                 var stage=CampaignJourneyCatalog.Stage(number);if(stage.IsSupply)throw new ArgumentException("Build boundaries require combat stages.");
                 var shop=new ShopTrialModel(definitions.Values.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),73191);
                 shop.EnableJourneyEconomy();
-                shop.Preset(fixture.Ids.Select((id,i)=>new ShopTrialModel.Piece{Id=id,Star=fixture.Stars[i]}),Array.Empty<string>(),8,0,0);
+                int level=Math.Max(8,fixture.Ids.Length);
+                shop.Preset(fixture.Ids.Select((id,i)=>new ShopTrialModel.Piece{Id=id,Star=fixture.Stars[i]}),Array.Empty<string>(),level,0,0);
                 if(!shop.SetLineup(fixture.Ids,shop.Bench.Select(p=>p.Instance)))throw new InvalidOperationException("Invalid finite-stock fixture.");
                 bool zero=fixture.Ids.SelectMany(CampaignBalance.Tags).GroupBy(t=>t).All(g=>g.Count()<2);
                 if(fixture.Weak&&!zero)throw new InvalidOperationException("A no-synergy weak fixture acquired a synergy: "+fixture.Name);
@@ -155,7 +166,8 @@ namespace YesterdayConvoy.Editor
                 var fights=new List<Fight>();
                 for(int variant=0;variant<variants;variant++)fights.Add(FightBattle(context,CreateBattle(context,stage),variant,300));
                 var result=new BoundaryCase{name=fixture.Name,stage=number,expectedWeak=fixture.Weak,zeroSynergies=zero,
-                    baseCopyCost=shop.Bench.Sum(p=>ShopTrialModel.Copies(p.Star)*shop.Definition(p.Id).Cost),
+                    baseCopyCost=shop.Bench.Sum(p=>ShopTrialModel.Copies(p.Star)*shop.Definition(p.Id).Cost),formationLevel=level,
+                    firstDeploymentDP=shop.Bench.Sum(p=>CampaignV2Balance.Build(definitions[p.Id],p.Star,50,stage.defense,waveMode:true).Unit.DeploymentCost),
                     lineup=shop.Bench.Select(p=>new Piece{id=p.Id,instance=p.Instance,star=p.Star}).ToArray(),wins=fights.Count(f=>f.won),fights=fights.ToArray()};
                 results.Add(result);shop.Validate();
                 Debug.Log("JOURNEY_BUILD_BOUNDARY: stage="+number+" fixture="+fixture.Name+" wins="+result.wins+"/"+variants+" bestDefense="+fights.Min(f=>f.remainingDefense));
@@ -195,7 +207,7 @@ namespace YesterdayConvoy.Editor
                 shop.EnableJourneyEconomy();var gifts=CampaignJourneyEconomy.StartingCards(shop.Roles,seed);
                 string gift=gifts[0];result.gift=gift;result.gifts=gifts;
                 shop.Preset(gifts.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),1,0,CampaignJourneyEconomy.InitialGold);
-                var context=new Context{Seed=seed,Shop=shop,Run=new BattleShopRun(shop,seed,campaign:true,journeyV2:true),Definitions=definitions,MaximumCost=policy.MaximumCost,Gift=gift,ReunionFocus=policy.ReunionFocus};context.Lineup.Add(gift);
+                var context=new Context{Seed=seed,Shop=shop,Run=new BattleShopRun(shop,seed,campaign:true,journeyV2:true),Definitions=definitions,MaximumCost=policy.MaximumCost,Gift=gift,ReunionFocus=policy.ReunionFocus,HighCostTransition=policy.HighCostTransition};context.Lineup.Add(gift);
                 context.Run.BeginJourneyPreparation();
                 for(int number=1;number<=CampaignJourneyDefinition.StageCount;number++)
                 {
@@ -313,6 +325,7 @@ namespace YesterdayConvoy.Editor
             if(cost>c.MaximumCost)return -1;
             int desired=cost==1&&stage>=9?4:cost==1&&stage>=5?3:2;
             if(c.ReunionFocus)desired=id=="CARD_M02"||id=="CARD_M03"?1:stage>=5&&(id=="CARD_M07"||id=="CARD_M08")?3:2;
+            if(c.HighCostTransition)desired=cost==1?3:2;
             if(owned.Any(p=>p.Star>=desired))return -1;
             var source=CampaignV2Balance.Build(c.Definitions[id],1,50,6);
             float score=Power(source)/Math.Max(1,cost);
@@ -320,9 +333,31 @@ namespace YesterdayConvoy.Editor
             else if(owned.Length>0)score+=25;
             if(c.Lineup.Contains(id))score+=15;
             if(c.ReunionFocus)score+=FocusedPurchaseBonus(c,id);
-            if(cost==5&&stage<8)score*=.4f;
+            if(c.HighCostTransition&&stage>=5)
+            {
+                // Buy real pairs toward two stars; avoid filling reserve with every boss kind.
+                int highKinds=c.Shop.Bench.Where(p=>c.Shop.Definition(p.Id).Cost>=4).Select(p=>p.Id).Distinct().Count();
+                if(cost>=4)
+                {
+                    if(owned.Length==0&&highKinds>=5)return -1;
+                    score+=60+(owned.Length>0?50:0)+HighCostRoleBonus(id);
+                }
+                else score*=.65f;
+            }
+            if(cost==5&&stage<8&&!c.HighCostTransition)score*=.4f;
             if(owned.Length==0&&c.Shop.Bench.Select(p=>p.Id).Distinct().Count()>=c.Shop.Level+3)return -1;
             return score;
+        }
+        static float HighCostRoleBonus(string id)
+        {
+            switch(id)
+            {
+                case "CARD_TALULAH_TRIAL":return 25;
+                case "CARD_M18":return 20;
+                case "CARD_M25":return 18;
+                case "CARD_M20":case "CARD_M14":case "CARD_M28":return 15;
+                default:return 0;
+            }
         }
         static bool FocusedFront(string id)=>id=="CARD_M07"||id=="CARD_M10"||id=="CARD_M18"||id=="CARD_M19";
         static bool FocusedRunner(string id)=>id=="CARD_M02"||id=="CARD_M03";
@@ -358,7 +393,7 @@ namespace YesterdayConvoy.Editor
             {
                 float current=Traits(chosen.Select(p=>p.Id));
                 var next=available.OrderByDescending(p=>Power(CampaignV2Balance.Build(c.Definitions[p.Id],p.Star,50,6))+Traits(chosen.Select(o=>o.Id).Concat(new[]{p.Id}))-current+
-                    (c.ReunionFocus?FocusedLineupBonus(c,chosen,p.Id):0))
+                    (c.ReunionFocus?FocusedLineupBonus(c,chosen,p.Id):0)+(c.HighCostTransition&&c.Shop.Definition(p.Id).Cost>=4?(p.Star>=2?45:20):0))
                     .ThenBy(p=>p.Instance).First();chosen.Add(next);available.Remove(next);
             }
             if(!c.Shop.SetLineup(chosen.Select(p=>p.Id),chosen.Select(p=>p.Instance)))throw new InvalidOperationException("Actual shop rejected selected lineup/reserve capacity.");
@@ -415,7 +450,7 @@ namespace YesterdayConvoy.Editor
                 if(!source.roleOrder.SequenceEqual(report.roleOrder))throw new InvalidOperationException("Focused replay role order drift.");
                 var policy=Policies.Single(p=>p.Name==name);
                 var c=ReplayPreparationPrefix(original,target,definitions);
-                c.ReunionFocus=policy.ReunionFocus;c.MaximumCost=policy.MaximumCost;c.Stage=target;
+                c.ReunionFocus=policy.ReunionFocus;c.HighCostTransition=policy.HighCostTransition;c.MaximumCost=policy.MaximumCost;c.Stage=target;
                 rounds.AddRange(original.rounds.Where(r=>r.stage<target));result.completedStages=target-1;
                 var round=JsonUtility.FromJson<Round>(JsonUtility.ToJson(original.rounds.Single(r=>r.stage==target)));rounds.Add(round);
                 var commands=round.shopCommands.ToList();var baseline=Selected(c).Select(p=>p.Copy()).ToArray();

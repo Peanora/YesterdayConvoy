@@ -45,8 +45,8 @@ MonoBehaviour:
     displayName: "\u7C73\u683C\u9C81"
     artId: D01
     position: {x: 3.5, y: 0, z: -1.5}
-    health: 390
-    attack: 40
+    health: 780
+    attack: 80
     armor: 10
     range: 0.85
     interval: 1.6

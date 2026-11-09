@@ -10,6 +10,9 @@ namespace YesterdayConvoy
     public static class CampaignJourneyEconomy
     {
         public const int InitialGold=5;
+        // Journey base rewards are already doubled in the authored stage data.
+        // Apply this only to settlement interest and combat streak gold.
+        public const int RewardGoldMultiplier=2;
         public static string[] StartingCards(IEnumerable<ShopTrialModel.Role> roles,int seed)
         {
             var candidates=roles.Where(r=>r.Cost>=1&&r.Cost<=2)

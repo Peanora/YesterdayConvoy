@@ -15,34 +15,34 @@ MonoBehaviour:
   stages:
   - stage: 1
     title: "\u96C6\u7ED3\u91C7\u8D2D"
-    tip: "\u5F00\u5C405\u91D1\u5E01\u30011\u7EA7\uFF0C\u968F\u673A\u83B7\u5F973\u79CD1\u20132\u8D39\u4E00\u661F\u89D2\u8272\u3002\u62D6\u52A8\u7F16\u961F\u4E0E\u5907\u6218\u5361\u53EF\u4EE5\u4EA4\u6362\uFF1B\u9886\u53D6\u8865\u7ED9\u83B7\u5F974\u91D1\u5E01\u548C2\u7ECF\u9A8C\u3002\n\u4EBA\u53E3\u4E0A\u9650\u968F\u7B49\u7EA7\u63D0\u5347\u3002\u5148\u8C03\u6574\u9635\u5BB9\uFF0C\u518D\u4ECE\u514D\u8D39\u5546\u5E97\u8865\u9F50\u9700\u8981\u7684\u89D2\u8272\uFF1B\u8865\u7ED9\u4E0D\u8BA1\u8FDE\u80DC\u3002"
+    tip: "\u5F00\u5C405\u91D1\u5E01\u30011\u7EA7\uFF0C\u8D60\u90013\u79CD\u4E0D\u540C\u7684\u4E00\u81F3\u4E8C\u8D39\u4E00\u661F\u89D2\u8272\u3002\n\u62D6\u52A8\u5361\u724C\u53EF\u4EA4\u6362\u7F16\u961F\u548C\u5907\u6218\uFF1B\u9886\u53D6\u8865\u7ED9\u83B7\u5F978\u91D1\u5E01\u548C2\u7ECF\u9A8C\u3002\n\u4EBA\u53E3\u4E0A\u9650\u968F\u7B49\u7EA7\u63D0\u5347\uFF1B\u521D\u59CB\u5546\u5E97\u514D\u8D39\u5237\u65B0\uFF0C\u8865\u7ED9\u4E0D\u8BA1\u8FDE\u80DC\u3002"
     map: {fileID: 0}
     encounter: {fileID: 0}
     type: 0
     dp: 0
     defense: 0
-    baseGold: 4
+    baseGold: 8
     naturalXP: 2
     guardTiers: 
     guardHPFactors: []
     guardTuning: []
   - stage: 2
     title: "\u68C0\u75AB\u53E3\xB7\u7B2C\u4E00\u6B21\u7A81\u7834"
-    tip: "\u7B2C\u4E00\u573A\u6CE2\u6B21\u6218\uFF1A\u53EA\u5F00\u653ER2\uFF0C\u9884\u7B9714DP\u3001\u90E8\u7F7236\u79D2\uFF0C\u968F\u540E45\u79D2\u505C\u6B62\u90E8\u7F72\u63A8\u8FDB\u3002\n\u7C73\u683C\u9C81\u6321\u5728\u5FC5\u7ECF\u8DEF\u7EBF\uFF1B\u70B9\u51FB\u5E95\u90E8\u5361\u724C\u5373\u4ECE\u5F00\u653E\u95E8\u90E8\u7F72\uFF0C\u6682\u505C\u4ECD\u4F1A\u6263\u8D39\u548C\u8BBE\u7F6ECD\u3002"
+    tip: "\u4EC5\u5F00\u653ER2\uFF0C\u9884\u7B9710DP\uFF0C\u90E8\u7F7236\u79D2\uFF0C\u968F\u540E45\u79D2\u63A8\u8FDB\u3002\n\u7C73\u683C\u9C81\u5B88\u4F4F\u5FC5\u7ECF\u8DEF\u7EBF\uFF0C\u5408\u7406\u642D\u914D\u524D\u6392\u548C\u8FDC\u7A0B\u8F93\u51FA\u3002\n\u6682\u505C\u4E2D\u90E8\u7F72\u4ECD\u4F1A\u6263\u8D39\u5E76\u8BBE\u7F6ECD\u3002"
     map: {fileID: 11400000, guid: 1f3b675546cda6b489d422143a821498, type: 2}
     encounter: {fileID: 11400000, guid: 7876cb9473e8419409452f5a1b3c92e1, type: 2}
     type: 1
-    dp: 14
+    dp: 10
     defense: 1
-    baseGold: 5
+    baseGold: 10
     naturalXP: 2
     guardTiers: 01000000i
     guardHPFactors:
-    - 1.5
+    - 3
     guardTuning:
     - id: D01
       tier: 1
-      hpFactor: 1.5
+      hpFactor: 3
       parameters:
       - key: initialSP
         value: 0
@@ -82,21 +82,22 @@ MonoBehaviour:
         value: 1
   - stage: 3
     title: "\u8857\u5FC3\u4EA4\u706B"
-    tip: "R2\u5355\u6CE218DP\uFF1B\u6708\u89C1\u591C\u5728\u9053\u8DEF\u4E2D\u592E\u963B\u6321\u5E76\u8FDC\u7A0B\u653B\u51FB\u3002\n\u5B88\u519B\u53EA\u6709\u4E00\u4EBA\u4F46\u8840\u91CF\u3001\u653B\u51FB\u663E\u8457\u63D0\u9AD8\u3002\u89C2\u5BDF\u524D\u6392\u5B58\u6D3B\u540E\u518D\u7EED\u6295\uFF1B\u672C\u5173\u4E0D\u4F1A\u5F00\u653E\u5176\u4ED6\u7EA2\u95E8\u3002"
+    tip: "\u4EC5\u5F00\u653ER2\uFF0C\u9884\u7B9712DP\uFF0C\u90E8\u7F7240\u79D2\uFF0C\u968F\u540E60\u79D2\u63A8\u8FDB\u3002\n\u6708\u89C1\u591C\u963B\u6321\u4E2D\u592E\uFF0C\u514B\u6D1B\u4E1D\u4ECE\u9AD8\u53F0\u4EA4\u53C9\u5C04\u51FB\u3002\n\u5206\u6279\u6295\u5165\uFF0C\u5E76\u786E\u4FDD\u6709\u8DB3\u591F\u5355\u4F4D\u5B58\u6D3B\u7A7F\u95E8\u3002"
     map: {fileID: 11400000, guid: e150eb3d85637f34490f7c8072ff9504, type: 2}
     encounter: {fileID: 11400000, guid: b528fb919432061418dbab2f06b37208, type: 2}
     type: 1
-    dp: 18
+    dp: 12
     defense: 2
-    baseGold: 5
+    baseGold: 10
     naturalXP: 2
-    guardTiers: 01000000i
+    guardTiers: 0100000001000000i
     guardHPFactors:
-    - 3
+    - 6
+    - 2
     guardTuning:
     - id: D05
       tier: 1
-      hpFactor: 3
+      hpFactor: 6
       parameters:
       - key: initialSP
         value: 10
@@ -140,37 +141,95 @@ MonoBehaviour:
         value: 0
       - key: targets
         value: 1
+    - id: D07
+      tier: 1
+      hpFactor: 2
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
   - stage: 4
     title: "\u6865\u5934\u8865\u7ED9"
-    tip: "\u4FDD\u9001\u8865\u7ED9\uFF1B\u9884\u89C8R2\u2192R3\u540416DP\u3002\n\u9996Boss\u4E3A\u5F3A\u5316\u5361\u7F07\u4E0E\u53F2\u90FD\u534E\u5FB7\uFF1A\u5229\u7528\u5361\u7F07\u4E24\u6B21\u81EA\u7597\u4E4B\u95F4\u7684\u95F4\u6B47\u3002\u51C6\u5907\u627F\u4F24\u548C\u6709\u6548\u8F93\u51FA\uFF0C5\u8D39\u4E0D\u662F\u5FC5\u9700\uFF1B\u585E\u96F7\u5A05\u7684\u6301\u7EED\u533B\u7597\u7559\u5728\u6700\u7EC8\u6218\u3002"
+    tip: "\u4E0B\u4E00\u573A\u4E3A8\u540D\u5B88\u519B\u7684\u9996Boss\uFF0CR2\u3001R3\u4E24\u6CE2\u54047DP\u3002\n\u5148\u786E\u8BA4\u4E3B\u529B\u661F\u7EA7\u548C\u7F81\u7ECA\uFF0C\u518D\u642D\u914D\u8FDC\u7A0B\u8F93\u51FA\u4E0E\u627F\u4F24\u89D2\u8272\u3002\n\u5229\u7528\u8DE8\u6CE2\u96C6\u706B\u548C\u5361\u7F07\u81EA\u7597\u7684\u7A7A\u6863\u3002"
     map: {fileID: 0}
     encounter: {fileID: 0}
     type: 0
     dp: 0
     defense: 0
-    baseGold: 5
+    baseGold: 10
     naturalXP: 2
     guardTiers: 
     guardHPFactors: []
     guardTuning: []
   - stage: 5
     title: "\u6392\u6D2A\u9632\u7EBF\xB7\u9996\u9886\u4E00"
-    tip: "R2\u5148\u5F00\u653E24\u79D2\u3001R3\u518D\u5F00\u653E35\u79D2\uFF0C\u540416DP\uFF1B\u4F59DP\u4E0D\u7ED3\u8F6C\uFF0C\u6700\u540E60\u79D2\u63A8\u8FDB\u3002\n\u5361\u7F07870\u8840\u300160\u653B\u51FB\u300115\u7532\uFF0C\u4EE524\u6280\u529B\u7684\u95F4\u6B47\u81EA\u7597\u7EF4\u6301\u963B\u6321\uFF1B\u53F2\u90FD\u534E\u5FB7\u5728\u9AD8\u53F0\u65BD\u52A0\u6CD5\u672F\u706B\u529B\u3002\u957F\u8DEF\u5148\u884C\u3001\u77ED\u8DEF\u540E\u5165\uFF0C\u4E89\u53D6\u8DE8\u6CE2\u96C6\u706B\u3002\n\u5355\u4F4D\u3001SP\u3001CD\u8DE8\u6CE2\u4FDD\u7559\uFF1B\u5361\u7F07\u53D7\u4F24\u540E\u81EA\u884C\u6062\u590D\uFF0C\u6CE8\u610F\u4E24\u6B21\u6062\u590D\u4E4B\u95F4\u7684\u8F93\u51FA\u7A97\u53E3\u3002\u5751\u6D1E\u4ECD\u4EC5\u5730\u5F62\uFF0C\u65E0\u63A8\u51FB\u6216\u5751\u6740\u3002"
+    tip: "\u9996Boss\u67098\u540D\u5B88\u519B\uFF1BR2\u3001R3\u54047DP\uFF0C\u90E8\u7F7224\u300135\u79D2\u3002\n\u4FDD\u62A4\u8F93\u51FA\uFF0C\u5229\u7528\u8DE8\u6CE2\u96C6\u706B\u548C\u5361\u7F07\u81EA\u7597\u4E4B\u95F4\u7684\u7A97\u53E3\u3002\n\u6700\u540E60\u79D2\u505C\u6B62\u51FA\u5175\uFF0C\u573A\u4E0A\u5355\u4F4D\u7EE7\u7EED\u63A8\u8FDB\uFF0C\u6280\u80FD\u4ECD\u53EF\u4F7F\u7528\u3002"
     map: {fileID: 11400000, guid: 98a3747b545dbe94f8da33bff58b37de, type: 2}
     encounter: {fileID: 11400000, guid: 2a8401edfa4c38d44974471635fa4817, type: 2}
     type: 2
-    dp: 32
+    dp: 14
     defense: 3
-    baseGold: 6
+    baseGold: 12
     naturalXP: 2
-    guardTiers: 0200000002000000i
+    guardTiers: 0200000002000000020000000200000002000000020000000200000002000000i
     guardHPFactors:
-    - 1.5
-    - 1.5
+    - 3.75
+    - 3.75
+    - 2.5
+    - 2.5
+    - 2.5
+    - 2.5
+    - 2.5
+    - 2.5
     guardTuning:
     - id: D02
       tier: 2
-      hpFactor: 1.5
+      hpFactor: 3.75
       parameters:
       - key: initialSP
         value: 6
@@ -212,7 +271,7 @@ MonoBehaviour:
         value: 1
     - id: D08
       tier: 2
-      hpFactor: 1.5
+      hpFactor: 3.75
       parameters:
       - key: initialSP
         value: 0
@@ -256,24 +315,284 @@ MonoBehaviour:
         value: 0
       - key: targets
         value: 1
+    - id: D01
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: defenseMultiplier
+        value: 1.45
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D04
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.2
+      - key: attackSpeedMultiplier
+        value: 1.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D09
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackSpeedMultiplier
+        value: 1.35
+      - key: splashRadius
+        value: 0.65
+      - key: attackMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D10
+      tier: 2
+      hpFactor: 2.5
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 30
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
   - stage: 6
     title: "\u96E8\u591C\u4EA4\u53C9\u53E3"
-    tip: "R1\u2192R3\u540418DP\u3001\u540435\u79D2\uFF1B\u6591\u70B9\u548C\u708E\u7194\u6784\u6210\u5C11\u91CF\u5F3A\u5B88\u519B\u3002\n\u7B2C\u4E00\u6CE2\u4E0D\u5FC5\u4E00\u6B21\u82B1\u7A7A\uFF1B\u7B2C\u4E8C\u6CE2\u53EF\u4EE5\u4E0E\u4ECD\u5B58\u6D3B\u7684\u7B2C\u4E00\u6CE2\u914D\u5408\u3002\u8EB2\u5F00\u708E\u7194\u7FA4\u653B\u7684\u5BC6\u96C6\u7AD9\u4F4D\uFF0C\u5229\u7528\u6591\u70B9\u6CBB\u7597\u65F6\u505C\u6B62\u666E\u653B\u7684\u7A97\u53E3\u3002"
+    tip: "R1\u3001R3\u4E24\u6CE2\u54048DP\u3001\u540435\u79D2\uFF0C\u6700\u540E65\u79D2\u63A8\u8FDB\u3002\n8\u540D\u5B88\u519B\u6784\u6210\u4E24\u7EBF\u706B\u7F51\uFF0C\u907F\u514D\u6324\u5728\u708E\u7194\u7FA4\u653B\u8303\u56F4\u5185\u3002\n\u7B2C\u4E8C\u6CE2\u53EF\u4E0E\u4ECD\u5B58\u6D3B\u7684\u7B2C\u4E00\u6CE2\u914D\u5408\u8FDB\u653B\u3002"
     map: {fileID: 11400000, guid: 2749c8af3c0731041803ad238f564d07, type: 2}
     encounter: {fileID: 11400000, guid: 5fdddad057b0f3d4291fdf3bd0136aea, type: 2}
     type: 1
-    dp: 36
+    dp: 16
     defense: 3
-    baseGold: 5
+    baseGold: 10
     naturalXP: 2
-    guardTiers: 0200000002000000i
+    guardTiers: 0200000002000000020000000200000002000000020000000200000002000000i
     guardHPFactors:
-    - 1.5
-    - 1.6
+    - 4.5
+    - 4.8
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
     guardTuning:
     - id: D03
       tier: 2
-      hpFactor: 1.5
+      hpFactor: 4.5
       parameters:
       - key: initialSP
         value: 10
@@ -315,7 +634,7 @@ MonoBehaviour:
         value: 1
     - id: D09
       tier: 2
-      hpFactor: 1.6
+      hpFactor: 4.8
       parameters:
       - key: initialSP
         value: 5
@@ -355,66 +674,9 @@ MonoBehaviour:
         value: 0
       - key: targets
         value: 1
-  - stage: 7
-    title: "\u5730\u4E0B\u90AE\u8FD0"
-    tip: "R1\u5730\u905320DP/35\u79D2\uFF0CR2\u5730\u976220DP/40\u79D2\uFF0C\u6700\u540E75\u79D2\u63A8\u8FDB\u3002\n\u5361\u7F07\u81EA\u7597\uFF0C\u6708\u89C1\u591C\u4ECE\u5730\u9762\u8FDC\u5C04\u3002\u5148\u51B3\u5B9A\u54EA\u6CE2\u4FDD\u7559\u4E3B\u8F93\u51FA\uFF1B\u6BCF\u5361\u6B21\u6570\u6574\u5173\u5171\u7528\uFF0CCD\u4E0D\u968F\u6362\u6CE2\u91CD\u7F6E\u3002\n\u5730\u9053\u4ECD\u9700\u7B49\u52A8\u4F5C\u548C\u5DF2\u53D1\u5C04\u5F39\u9053\u7ED3\u7B97\uFF0C\u518D\u901A\u884C1.5\u6A21\u62DF\u79D2\u3002"
-    map: {fileID: 11400000, guid: 9c719cc83edc82546a6d4a63a912b0b5, type: 2}
-    encounter: {fileID: 11400000, guid: 3eaec36664e05694da749974542e6c42, type: 2}
-    type: 1
-    dp: 40
-    defense: 4
-    baseGold: 5
-    naturalXP: 2
-    guardTiers: 0200000002000000i
-    guardHPFactors:
-    - 1.6
-    - 1.7
-    guardTuning:
-    - id: D02
-      tier: 2
-      hpFactor: 1.6
-      parameters:
-      - key: initialSP
-        value: 6
-      - key: requiredSP
-        value: 24
-      - key: spPerSecond
-        value: 1
-      - key: duration
-        value: 0
-      - key: healFraction
-        value: 0.3
-      - key: autoUseBelowHealthFraction
-        value: 0.8
-      - key: attackMultiplier
-        value: 1
-      - key: attackSpeedMultiplier
-        value: 1
-      - key: healRangeBonus
-        value: 0
-      - key: defenseMultiplier
-        value: 1
-      - key: healingInterval
-        value: 0
-      - key: healthMultiplier
-        value: 1
-      - key: effectRadius
-        value: 0
-      - key: damageAmplification
-        value: 1
-      - key: moveMultiplier
-        value: 1
-      - key: elementFraction
-        value: 0
-      - key: eraseChance
-        value: 0
-      - key: chargeSeconds
-        value: 0
-      - key: targets
-        value: 1
     - id: D05
       tier: 2
-      hpFactor: 1.7
+      hpFactor: 3
       parameters:
       - key: initialSP
         value: 16
@@ -458,37 +720,677 @@ MonoBehaviour:
         value: 0
       - key: targets
         value: 1
+    - id: D04
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.2
+      - key: attackSpeedMultiplier
+        value: 1.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D08
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.9
+      - key: hits
+        value: 1
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D10
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 30
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+  - stage: 7
+    title: "\u5730\u4E0B\u90AE\u8FD0"
+    tip: "9\u540D\u5B88\u519B\uFF1BR1\u5730\u90539DP\u300135\u79D2\uFF0CR2\u5730\u97629DP\u300140\u79D2\u3002\n\u5730\u9053\u7B49\u5F85\u52A8\u4F5C\u4E0E\u5DF2\u53D1\u5C04\u5F39\u9053\u7ED3\u7B97\u540E\uFF0C\u901A\u884C1.5\u79D2\u3002\n\u6B21\u6570\u548CCD\u8DE8\u6CE2\u5171\u7528\uFF0C\u6700\u540E75\u79D2\u505C\u6B62\u51FA\u5175\u63A8\u8FDB\u3002"
+    map: {fileID: 11400000, guid: 9c719cc83edc82546a6d4a63a912b0b5, type: 2}
+    encounter: {fileID: 11400000, guid: 3eaec36664e05694da749974542e6c42, type: 2}
+    type: 1
+    dp: 18
+    defense: 4
+    baseGold: 10
+    naturalXP: 2
+    guardTiers: 020000000200000002000000020000000200000002000000020000000200000002000000i
+    guardHPFactors:
+    - 4.8
+    - 5.1
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    guardTuning:
+    - id: D02
+      tier: 2
+      hpFactor: 4.8
+      parameters:
+      - key: initialSP
+        value: 6
+      - key: requiredSP
+        value: 24
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 0
+      - key: healFraction
+        value: 0.3
+      - key: autoUseBelowHealthFraction
+        value: 0.8
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D05
+      tier: 2
+      hpFactor: 5.1
+      parameters:
+      - key: initialSP
+        value: 16
+      - key: requiredSP
+        value: 48
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 22
+      - key: attackMultiplier
+        value: 1.3
+      - key: rangedAttackMultiplier
+        value: 0.8
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D01
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: defenseMultiplier
+        value: 1.45
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D04
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.2
+      - key: attackSpeedMultiplier
+        value: 1.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D08
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.9
+      - key: hits
+        value: 1
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D09
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackSpeedMultiplier
+        value: 1.35
+      - key: splashRadius
+        value: 0.65
+      - key: attackMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D11
+      tier: 2
+      hpFactor: 3
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 18
+      - key: attackMultiplier
+        value: 1.3
+      - key: healRangeBonus
+        value: 2
+      - key: extraHealChance
+        value: 0.15
+      - key: extraHealTargets
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
   - stage: 8
     title: "\u8F6C\u8FD0\u6574\u5907"
-    tip: "\u4FDD\u9001\u8865\u7ED9\uFF1B\u4E3A\u4E09\u6CE2\u9996\u9886\u6218\u8865\u5173\u952E\u8D28\u91CF\u3002\n\u5E38\u89C4\u76EE\u6807\u7EA66\u20137\u7EA7\u3001\u82E5\u5E72\u4E8C\u661F\uFF1B\u6210\u578B\u4F4E\u8D39\u7F81\u7ECA\u4F9D\u7136\u6709\u6548\uFF0C\u4E0D\u8981\u6C42\u641C\u5230\u4E94\u8D39\u3002\u6CE8\u610F\u661F\u718A\u4FDD\u62A4\u4E0E\u739B\u6069\u7EB3\u6280\u80FD\u7A97\u53E3\u3002"
+    tip: "\u4E0B\u4E00\u6218\u670910\u540D\u5B88\u519B\uFF0CR1\u3001R2\u3001R3\u4E09\u6CE2\u517120DP\u3002\n\u79EF\u7D2F\u5347\u661F\u4E0E\u5B8C\u6574\u7F81\u7ECA\uFF0C\u5229\u7528\u661F\u718A\u548C\u739B\u6069\u7EB3\u7684\u6280\u80FD\u7A7A\u6863\u3002\n\u6E05\u7A7A\u5171\u4EAB\u9632\u5FA1\u5373\u53EF\u7A81\u7834\uFF0C\u65E0\u987B\u6D88\u706D\u5168\u90E8\u5B88\u519B\u3002"
     map: {fileID: 0}
     encounter: {fileID: 0}
     type: 0
     dp: 0
     defense: 0
-    baseGold: 6
+    baseGold: 12
     naturalXP: 2
     guardTiers: 
     guardHPFactors: []
     guardTuning: []
   - stage: 9
     title: "\u77FF\u8FD0\u5C01\u9501\xB7\u9996\u9886\u4E8C"
-    tip: "R1:18DP\u2192R2:18DP\u2192R3:18DP\uFF0C\u6BCF\u6CE232\u79D2\uFF0C\u6700\u540E75\u79D2\u63A8\u8FDB\u3002\n\u661F\u718A\u4E0E\u739B\u6069\u7EB3\u6BD4\u5148\u524D\u66F4\u5F3A\uFF0C\u79FB\u9664\u4E86\u72EC\u7ACB\u6CBB\u7597\u3002\u5229\u7528\u8DE8\u6CE2\u5B58\u6D3B\u5B9E\u4F53\u548C\u6280\u80FD\u7A7A\u6863\uFF1B\u4E0D\u80FD\u4ECE\u5173\u95ED\u7684\u95E8\u7ED5\u8DEF\u3002\n\u6700\u7EC8\u4FDD\u62A4\u6CBF\u65E2\u6709\u89C4\u5219\uFF0C\u7B49\u5F85\u4E0E\u9519\u5CF0\u6709\u6548\uFF0C\u4E0D\u8981\u6C42\u786C\u6740\u6216\u5168\u6B7C\u3002"
+    tip: "10\u540D\u5B88\u519B\uFF1BR1\u3001R2\u3001R3\u540432\u79D2\uFF0C\u9884\u7B976\u30017\u30017DP\u3002\n\u5229\u7528\u661F\u718A\u4FDD\u62A4\u548C\u739B\u6069\u7EB3\u6280\u80FD\u7A7A\u6863\uFF0C\u5206\u6CE2\u96C6\u706B\u3002\n\u6700\u540E75\u79D2\u505C\u6B62\u51FA\u5175\u63A8\u8FDB\uFF0C\u4E0D\u80FD\u4ECE\u5173\u95ED\u7684\u5165\u53E3\u7ED5\u8DEF\u3002"
     map: {fileID: 11400000, guid: c3a4aa95ca21a7149a5a4192e982077d, type: 2}
     encounter: {fileID: 11400000, guid: 8d9ecd34526eee94589be519048f461e, type: 2}
     type: 2
-    dp: 54
+    dp: 20
     defense: 5
-    baseGold: 7
+    baseGold: 14
     naturalXP: 2
-    guardTiers: 0200000002000000i
+    guardTiers: 02000000020000000200000002000000020000000200000002000000020000000200000002000000i
     guardHPFactors:
-    - 1.4
-    - 1.4
+    - 5.6
+    - 5.6
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
     guardTuning:
     - id: D25
       tier: 2
-      hpFactor: 1.4
+      hpFactor: 5.6
       parameters:
       - key: initialSP
         value: 15
@@ -546,7 +1448,7 @@ MonoBehaviour:
         value: 0
     - id: D30
       tier: 2
-      hpFactor: 1.4
+      hpFactor: 5.6
       parameters:
       - key: initialSP
         value: 12
@@ -594,24 +1496,382 @@ MonoBehaviour:
         value: 0
       - key: eraseChance
         value: 0
+    - id: D01
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: defenseMultiplier
+        value: 1.45
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D05
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 16
+      - key: requiredSP
+        value: 48
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 22
+      - key: attackMultiplier
+        value: 1.3
+      - key: rangedAttackMultiplier
+        value: 0.8
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.2
+      - key: attackSpeedMultiplier
+        value: 1.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D08
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.9
+      - key: hits
+        value: 1
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D09
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackSpeedMultiplier
+        value: 1.35
+      - key: splashRadius
+        value: 0.65
+      - key: attackMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D10
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 4
+      - key: requiredSP
+        value: 30
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.4
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D12
+      tier: 2
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 5
+      - key: requiredSP
+        value: 36
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 16
+      - key: attackMultiplier
+        value: 1.2
+      - key: attackSpeedMultiplier
+        value: 1.2
+      - key: hinderDuration
+        value: 0.8
+      - key: hinderMoveMultiplier
+        value: 0.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
   - stage: 10
     title: "\u70ED\u7AD9\u603B\u68C0"
-    tip: "R1:20DP/32\u79D2\u2192R2:20DP/36\u79D2\u2192R1:20DP/32\u79D2\uFF0C\u6700\u540E75\u79D2\u63A8\u8FDB\u3002\n\u7C73\u683C\u9C81\u4E0E\u708E\u7194\u5F3A\u5316\uFF0C\u77ED\u7EBF\u6709\u70ED\u6CF5\uFF0C\u5916\u7EBF\u66F4\u957F\u4E14\u6709\u8FDC\u7A0B\u8986\u76D6\u3002\n\u70ED\u6CF5\u5BF9\u53CC\u65B9\u6709\u6548\uFF1B\u89C2\u5BDF\u9884\u8B66\u76F8\u4F4D\uFF0C\u5206\u6279\u6295\u5165\uFF0C\u4FDD\u7559\u540E\u7EED\u6CE2\u6B21\u7684\u5361\u724C\u6B21\u6570\u3002"
+    tip: "10\u540D\u5B88\u519B\uFF1BR1\u3001R2\u3001R1\u4E09\u6CE2\u9884\u7B977\u30017\u30018DP\u3002\n\u77ED\u7EBF\u7ECF\u8FC7\u4E09\u5904\u70ED\u6CF5\uFF0C\u957F\u7EBF\u7ED5\u5F00\u55B7\u53E3\u4F46\u4ECD\u6709\u5B88\u519B\u3002\n\u89C2\u5BDF\u9884\u8B66\uFF0C\u5206\u6279\u6295\u5165\uFF0C\u4FDD\u7559\u540E\u7EED\u6CE2\u6B21\u7684\u90E8\u7F72\u6B21\u6570\u3002"
     map: {fileID: 11400000, guid: 2b94e9203ac67a34dabf4d9b306427d7, type: 2}
     encounter: {fileID: 11400000, guid: cedaef2afad396a4fa8cfcb01d357f77, type: 2}
     type: 1
-    dp: 60
+    dp: 22
     defense: 5
-    baseGold: 6
+    baseGold: 12
     naturalXP: 2
-    guardTiers: 0300000003000000i
+    guardTiers: 03000000030000000300000003000000030000000300000003000000030000000300000003000000i
     guardHPFactors:
-    - 1.8
-    - 1.8
+    - 7.2
+    - 7.2
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
     guardTuning:
     - id: D01
       tier: 3
-      hpFactor: 1.8
+      hpFactor: 7.2
       parameters:
       - key: initialSP
         value: 8
@@ -651,7 +1911,7 @@ MonoBehaviour:
         value: 1
     - id: D09
       tier: 3
-      hpFactor: 1.8
+      hpFactor: 7.2
       parameters:
       - key: initialSP
         value: 10
@@ -691,38 +1951,397 @@ MonoBehaviour:
         value: 0
       - key: targets
         value: 1
+    - id: D02
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 24
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 0
+      - key: healFraction
+        value: 0.35
+      - key: autoUseBelowHealthFraction
+        value: 0.8
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D04
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 10
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 36
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.25
+      - key: attackSpeedMultiplier
+        value: 1.25
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D05
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 22
+      - key: requiredSP
+        value: 52
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 26
+      - key: attackMultiplier
+        value: 1.35
+      - key: rangedAttackMultiplier
+        value: 0.8
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D08
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.9
+      - key: hits
+        value: 1
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D10
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D12
+      tier: 3
+      hpFactor: 4
+      parameters:
+      - key: initialSP
+        value: 10
+      - key: requiredSP
+        value: 38
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.25
+      - key: attackSpeedMultiplier
+        value: 1.25
+      - key: hinderDuration
+        value: 0.8
+      - key: hinderMoveMultiplier
+        value: 0.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
   - stage: 11
     title: "\u6E2F\u524D\u6700\u7EC8\u6574\u5907"
-    tip: "\u6700\u7EC8\u8865\u7ED9\u3002\u7EC8\u6218\u4E09\u6CE2\u5408\u8BA166DP\uFF0C\u53EF\u5206\u6CE2\u6295\u5165\u524D\u6392\u3001\u8F93\u51FA\u4E0E\u8F85\u52A9\u3002\n\u5148\u786E\u8BA4\u7F16\u961F\u661F\u7EA7\u548C\u7F81\u7ECA\uFF0C\u518D\u67E5\u770B\u654C\u65B9\u6280\u80FD\uFF1B\u9AD8\u6863\u8F6C\u804C\u548C\u5DE8\u50CFV\u4E0D\u662F\u5FC5\u9700\u3002\u7A7F\u95E8\u6E05\u7A7A\u5171\u4EAB\u9632\u5FA1\u5373\u53EF\u7A81\u7834\uFF0C\u65E0\u987B\u5168\u6B7C\u3002"
+    tip: "\u6700\u7EC8\u8865\u7ED9\uFF1B\u9886\u53D6\u540E\u8FDB\u516512\u4EBA\u9632\u7EBF\uFF0C\u4E09\u6CE2\u517124DP\u3002\n\u5148\u9886\u8865\u7ED9\u518D\u91C7\u8D2D\uFF0C\u5728\u5347\u4EBA\u53E3\u548C\u8FFD\u661F\u4E4B\u95F4\u9009\u62E9\u3002\n\u57FA\u7840\u5956\u52B1\u3001\u5229\u606F\u548C\u8FDE\u80DC\u91D1\u5E01\u5DF2\u7FFB\u500D\uFF0C\u53EF\u4EE5\u8D2D\u4E70\u7ECF\u9A8C\u51B210\u7EA7\u3002"
     map: {fileID: 0}
     encounter: {fileID: 0}
     type: 0
     dp: 0
     defense: 0
-    baseGold: 7
+    baseGold: 14
     naturalXP: 2
     guardTiers: 
     guardHPFactors: []
     guardTuning: []
   - stage: 12
     title: "\u9000\u6F6E\u8D27\u6E2F\xB7\u6700\u7EC8\u9632\u7EBF"
-    tip: "R1:22DP/36\u79D2 \u2192 R2:22DP/40\u79D2 \u2192 R1:22DP/36\u79D2\uFF0C\u6700\u540E90\u79D2\u63A8\u8FDB\u3002\n\u661F\u718A\u4E0E\u585E\u96F7\u5A05\u8986\u76D6R1\uFF0C\u6CE8\u610F\u4FDD\u62A4\u548C\u6CBB\u7597\u7A97\u53E3\uFF1B\u65B0\u7EA6\u80FD\u5929\u4F7F\u4F1A\u524D\u79FB\u8986\u76D6R2\u3002\n\u89C2\u5BDF\u6280\u80FD\u7A97\u53E3\u4E0E\u8DE8\u6CE2\u652F\u63F4\uFF0C\u6309\u672C\u6CE2\u5269\u4F59DP\u5B89\u6392\u90E8\u7F72\uFF1B\u7A7F\u95E8\u6E05\u7A7A\u5171\u4EAB\u9632\u5FA1\u5373\u53EF\u7A81\u7834\u3002"
+    tip: "\u7EC8\u621812\u540D\u5B88\u519B\uFF0CR1\u3001R2\u3001R1\u4E09\u6CE2\uFF0C\u9884\u7B977\u30018\u30019DP\u3002\n\u7559\u610F\u661F\u718A\u4FDD\u62A4\u3001\u585E\u96F7\u5A05\u6CBB\u7597\u548C\u65B0\u7EA6\u80FD\u5929\u4F7F\u5F39\u836F\u3002\n\u6E05\u7A7A6\u70B9\u5171\u4EAB\u9632\u5FA1\u5373\u53EF\u7A81\u7834\uFF0C\u65E0\u987B\u5168\u6B7C\uFF0C\u5584\u7528\u8DE8\u6CE2\u652F\u63F4\u3002"
     map: {fileID: 11400000, guid: 827d28872e64a7e41bd868990c71083b, type: 2}
     encounter: {fileID: 11400000, guid: 1c1b1e0fe8c4b23448029d52e34e1baa, type: 2}
     type: 2
-    dp: 66
+    dp: 24
     defense: 6
-    baseGold: 7
+    baseGold: 14
     naturalXP: 2
-    guardTiers: 030000000300000003000000i
+    guardTiers: 030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000i
     guardHPFactors:
-    - 1.4
-    - 1.2
-    - 1.2
+    - 7
+    - 6
+    - 6
+    - 5
+    - 5
+    - 5
+    - 5
+    - 5
+    - 5
+    - 5
+    - 5
+    - 5
     guardTuning:
     - id: D25
       tier: 3
-      hpFactor: 1.4
+      hpFactor: 7
       parameters:
       - key: initialSP
         value: 22
@@ -780,7 +2399,7 @@ MonoBehaviour:
         value: 0
     - id: D29
       tier: 3
-      hpFactor: 1.2
+      hpFactor: 6
       parameters:
       - key: initialSP
         value: 40
@@ -830,7 +2449,7 @@ MonoBehaviour:
         value: 1
     - id: D24
       tier: 3
-      hpFactor: 1.2
+      hpFactor: 6
       parameters:
       - key: initialSP
         value: 22
@@ -864,6 +2483,396 @@ MonoBehaviour:
         value: 1
       - key: startupSeconds
         value: 0.7
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D01
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 36
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 24
+      - key: defenseMultiplier
+        value: 1.5
+      - key: attackMultiplier
+        value: 1
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D04
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 10
+      - key: requiredSP
+        value: 34
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D05
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 22
+      - key: requiredSP
+        value: 52
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 26
+      - key: attackMultiplier
+        value: 1.35
+      - key: rangedAttackMultiplier
+        value: 0.8
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D06
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 36
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.25
+      - key: attackSpeedMultiplier
+        value: 1.25
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D07
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.4
+      - key: hits
+        value: 2
+      - key: hitSpacing
+        value: 0.1
+      - key: criticalChance
+        value: 0.2
+      - key: criticalMultiplier
+        value: 1.5
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D08
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 0
+      - key: requiredSP
+        value: 4
+      - key: spPerSecond
+        value: 0
+      - key: duration
+        value: 0
+      - key: attackMultiplier
+        value: 1.9
+      - key: hits
+        value: 1
+      - key: spPerOrdinaryAttack
+        value: 1
+      - key: spDuringEmpoweredAttack
+        value: 0
+      - key: attackSpeedMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D09
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 10
+      - key: requiredSP
+        value: 36
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackSpeedMultiplier
+        value: 1.5
+      - key: splashRadius
+        value: 0.65
+      - key: attackMultiplier
+        value: 1
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D12
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 10
+      - key: requiredSP
+        value: 38
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.25
+      - key: attackSpeedMultiplier
+        value: 1.25
+      - key: hinderDuration
+        value: 0.8
+      - key: hinderMoveMultiplier
+        value: 0.2
+      - key: healFraction
+        value: 0
+      - key: healRangeBonus
+        value: 0
+      - key: defenseMultiplier
+        value: 1
+      - key: healingInterval
+        value: 0
+      - key: healthMultiplier
+        value: 1
+      - key: effectRadius
+        value: 0
+      - key: damageAmplification
+        value: 1
+      - key: moveMultiplier
+        value: 1
+      - key: elementFraction
+        value: 0
+      - key: eraseChance
+        value: 0
+      - key: chargeSeconds
+        value: 0
+      - key: targets
+        value: 1
+    - id: D10
+      tier: 3
+      hpFactor: 5
+      parameters:
+      - key: initialSP
+        value: 8
+      - key: requiredSP
+        value: 32
+      - key: spPerSecond
+        value: 1
+      - key: duration
+        value: 20
+      - key: attackMultiplier
+        value: 1.5
       - key: attackSpeedMultiplier
         value: 1
       - key: healFraction

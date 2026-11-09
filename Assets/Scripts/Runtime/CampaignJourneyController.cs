@@ -8,6 +8,7 @@ namespace YesterdayConvoy
 {
     public sealed partial class ManualBattleController
     {
+        Vector2 journeyGuardScroll;
         public bool JourneyActive=>CampaignJourneySession.Current!=null&&ReferenceEquals(Loop,CampaignJourneySession.Current.Loop)&&Loop!=null;
         public CampaignJourneyStage JourneyStage=>JourneyActive?CampaignJourneyCatalog.Stage(Loop.Stage):null;
         public ApprovedMapDefinition JourneyMap=>JourneyActive?CampaignJourneySession.Current.Map:null;
@@ -44,6 +45,7 @@ namespace YesterdayConvoy
             session.InfectionPrimary=infectionForm;session.InfectionSecondary=infectionSecond;
             session.MarinePrimary=marineForm;session.MarineSecondary=marineSecond;
             session.ReunionRanged=reunionRanged;session.InfectionChoiceTier=lastInfectionChoiceTier;
+            session.SimulationSpeed=SimulationSpeed;session.Muted=Muted;
         }
         void RecordJourneyRound()
         {
@@ -91,6 +93,7 @@ namespace YesterdayConvoy
                 session.Contract=session.Commission=id;
             }
             else {shop=session.Shop;Loop=session.Loop;}
+            SimulationSpeed=session.SimulationSpeed;Muted=session.Muted;
             shopLineup.Clear();shopLineup.AddRange(session.Lineup);
             if(session.Seats!=null){shopSeats=session.Seats;seatedShop=shop;}
             contractCard=session.Contract;commissionTarget=session.Commission;
@@ -124,12 +127,15 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(x,y+34,674,52),stage.tip,text);
             var next=stage.IsSupply?CampaignJourneyCatalog.Current.stages.FirstOrDefault(s=>s.stage>stage.stage&&!s.IsSupply):stage;
             if(next==null)return;
-            GUI.Label(new Rect(x,y+90,674,24),$"{(stage.IsSupply?"下一场实战":"本场")}：{next.title}    总DP {next.dp} / 共享防御 {next.defense}",CampaignText(13,weight:600));
+            GUI.Label(new Rect(x,y+90,674,24),$"{(stage.IsSupply?"下一场实战":"本场")}：{next.title}    总DP {next.dp} / 防御 {next.defense} / 干员 {next.encounter.defenders.Length}",CampaignText(13,weight:600));
+            journeyGuardScroll=GUI.BeginScrollView(new Rect(x,y+119,674,100),journeyGuardScroll,
+                new Rect(0,0,650,Mathf.Max(100,next.encounter.defenders.Length*21)));
             for(int i=0;i<next.encounter.defenders.Length;i++)
             {
                 var g=next.encounter.defenders[i];
-                GUI.Label(new Rect(x,y+119+i*21,674,22),$"{g.displayName}  · HP {g.health:0}  攻击/治疗 {g.attack:0.#}  护甲 {g.armor:0.#}",CampaignText(12));
+                GUI.Label(new Rect(0,i*21,650,21),$"{g.displayName}  · HP {g.health:0}  攻击/治疗 {g.attack:0.#}  护甲 {g.armor:0.#}",CampaignText(12));
             }
+            GUI.EndScrollView();
             GUI.Label(new Rect(x,y+230,674,22),$"未突破按剩余防御比例扣生命；{(stage.IsSupply?"下一实战":"本场")}最多扣{CampaignJourneyHealth.DamageLimit(next.stage)}点，后期提高。",CampaignText(11,color:ApprovedUi.Muted));
         }
         [Serializable]sealed class JourneyGuards {public DefenderPlacement[] items;}

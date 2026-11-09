@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object=UnityEngine.Object;
@@ -114,6 +115,9 @@ namespace YesterdayConvoy
             public string verificationScope="Production BeginJourney, authored scenes, true finite Shop transactions, pointer deployment and public skill input. Default form prompts are accepted programmatically through the production close API; no OS mouse input is claimed. No HP/damage injection or forced battle outcome. A short preparation smoke is distinct from a naturally completed twelve-stage replay.";
             public Check[] checks;public RoundResult[] rounds;
         }
+        [Serializable]sealed class SavedFixtureReport {public SavedFixtureCase[] cases;}
+        [Serializable]sealed class SavedFixtureCase
+        {public string name;public int stage,formationLevel;public CampaignJourneyReplayPiece[] lineup;public CampaignJourneyReplayFight[] fights;}
         static bool started;
         public static bool Requested=>Array.Exists(Environment.GetCommandLineArgs(),arg=>arg=="-campaignJourneySmokeTest");
         public static string Argument(string name,string fallback=null)
@@ -124,6 +128,7 @@ namespace YesterdayConvoy
         readonly List<Check> checks=new List<Check>();readonly List<RoundResult> rounds=new List<RoundResult>();
         Result result;string directory;ManualBattleController controller;
         long auxiliaryRequest=1L<<50;
+        bool fixtureBattleCaptured;
         void CheckResult(string name,bool passed,string detail=null)
         {checks.Add(new Check{name=name,passed=passed,detail=detail});Debug.Log("CAMPAIGN_JOURNEY_CHECK "+name+"="+passed+(detail==null?"":"; "+detail));}
         void Require(string name,bool passed,string detail=null)
@@ -147,6 +152,7 @@ namespace YesterdayConvoy
             yield return CampaignJourneyEvidenceProbe.InitialHost(c=>controller=c);controller.BeginJourney(44);
             yield return CampaignJourneyEvidenceProbe.Ready(1,c=>controller=c);
             var shop=controller.Shop;var loop=controller.Loop;
+            Require("fresh-challenge-defaults-to-muted-one-times",controller.Muted&&controller.SimulationSpeed==1&&controller.CombatView.GetComponent<AudioSource>().mute);
             Require("ordinary-three-low-cost-distinct-gifts",CampaignJourneySession.Current.Seed==44&&shop.Level==1&&shop.Gold==CampaignJourneyEconomy.InitialGold&&shop.JourneyEconomy&&!shop.UnlimitedGold&&shop.Bench.Count==3&&shop.Bench.Select(p=>p.Id).Distinct().Count()==3&&shop.Bench.All(p=>p.Star==1&&shop.Definition(p.Id).Cost<=2));
             Require("initial-reward-opens-real-shop-without-silver-wolf",loop.CanShop&&loop.TotalStages==12&&shop.Offers.Any(id=>id!=null)&&shop.Roles.All(r=>r.Id!=SilverWolfCombat.CardId));
             Require("supply-has-no-defenders-or-simulated-clock",controller.Battle.Defenders.Count==0&&controller.Battle.Clock==0&&controller.Battle.CampaignV2Enabled);
@@ -157,17 +163,20 @@ namespace YesterdayConvoy
             controller.ProcessShopPointer(EventType.MouseDown,origin.center);controller.ProcessShopPointer(EventType.MouseDrag,target.center);controller.ProcessShopPointer(EventType.MouseUp,target.center);
             yield return CampaignJourneyEvidenceProbe.Ready(1,c=>controller=c);
             Require("reward-pointer-swap-preserves-stock-and-money",shop.IsLineupInstance(reserve.Instance)&&CampaignJourneyEvidenceProbe.State(shop)==economy&&CampaignJourneyEvidenceProbe.StockConserved(shop)&&controller.Battle.Units.Count==0);
-            yield return Capture("00-reward-lineup-swapped");controller.ClaimCampaignSupply();int gold=shop.Gold,xp=shop.XP;controller.ClaimCampaignSupply();
+            yield return Capture("00-reward-lineup-swapped");controller.ToggleSpeed();controller.ClaimCampaignSupply();int gold=shop.Gold,xp=shop.XP;controller.ClaimCampaignSupply();
             Require("reward-receipt-is-idempotent",controller.Loop.Phase==BattleShopPhase.Settlement&&shop.Gold==gold&&shop.XP==xp&&CampaignJourneySession.Current.CompletedRounds.Count==1);
             Require("advance-reward-to-first-combat",controller.OpenLoopShop());yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
             Require("shop-and-run-survive-real-scene-change",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop));
+            Require("cross-stage-keeps-two-times-and-muted-sound",controller.SimulationSpeed==2&&controller.Muted);
+            controller.ToggleMute();Require("sound-can-be-enabled-manually",!controller.Muted);
+            controller.ToggleMute();Require("verification-restores-quiet-sound-setting",controller.Muted);
             yield return ShopInterfaceProbe("early");
             int slot=Enumerable.Range(0,5).First(i=>shop.Offers[i]!=null);var purchase=controller.PurchaseShopCard(slot);Require("real-shop-purchase",purchase.Success,purchase.Message);
             yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
             var commission=controller.CommissionCampaignCard(purchase.Id);Require("real-finite-commission",commission.Success&&shop.CommissionUsed,commission.Message);
             Require("real-experience-purchase",controller.UpgradeJourneyShop().Success);yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
             Require("production-shop-lock",controller.LockJourneyShop(true)&&shop.Locked);
-            Require("normal-first-combat-v2-values",controller.Battle.WavesEnabled&&controller.Battle.DP==14&&controller.Battle.Defense==1&&controller.Battle.Defenders.Count==1&&controller.Battle.Cards.All(c=>c.Settings.Cooldown==WaveDeploymentCadence.ForCard(c.Settings.CardId,shop.Definition(c.Settings.CardId).Cost)));
+            Require("normal-first-combat-v2-values",controller.Battle.WavesEnabled&&controller.Battle.DP==10&&controller.Battle.Defense==1&&controller.Battle.Defenders.Count==1&&controller.Battle.Cards.All(c=>c.Settings.Cooldown==WaveDeploymentCadence.ForCard(c.Settings.CardId,shop.Definition(c.Settings.CardId).Cost)));
             Require("finite-stock-is-conserved",CampaignJourneyEvidenceProbe.StockConserved(shop));yield return Capture("01-first-combat-preparation");
             Require("prepare-first-combat",controller.StartLoopNextBattle());yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
             string card=controller.Battle.Cards[0].Settings.CardId;Require("production-pointer-deployment",CampaignJourneyEvidenceProbe.Drag(controller,card,controller.Battle.CurrentWaveLaneId,out _));
@@ -175,7 +184,8 @@ namespace YesterdayConvoy
             Require("pause-freezes-combat-clock-and-deployment-cooldown",controller.Battle.Clock==clock&&controller.Battle.CardCooldown(card)==cd);
             yield return RouteGuideProbe();
             string before=CampaignJourneyEvidenceProbe.State(shop);Require("production-current-encounter-restart",controller.RestartCampaignEncounter());yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
-            Require("restart-keeps-shop-and-seed-without-reroll",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&CampaignJourneyEvidenceProbe.State(shop)==before&&controller.Battle.Clock==0&&controller.Battle.Units.Count==0&&controller.Battle.DP==14&&CampaignJourneySession.Current.Seed==44);
+            Require("restart-keeps-shop-and-seed-without-reroll",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&CampaignJourneyEvidenceProbe.State(shop)==before&&controller.Battle.Clock==0&&controller.Battle.Units.Count==0&&controller.Battle.DP==10&&CampaignJourneySession.Current.Seed==44);
+            Require("restart-keeps-two-times-and-chosen-sound",controller.SimulationSpeed==2&&controller.Muted);
             yield return Capture("02-current-encounter-restarted");controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
             Require("exit-clears-session-and-restores-selector",CampaignJourneySession.Current==null&&SceneManager.GetActiveScene().name=="MonsterTrial"&&controller.TestSelectionOpen&&!controller.JourneyActive&&!controller.ShopTrialActive);
             yield return Capture("03-returned-to-selection");
@@ -236,10 +246,12 @@ namespace YesterdayConvoy
         {
             yield return ShortFlow();
             result.completedStages=2;
+            string fixture=Argument("-campaignJourneyFixtureFile");
+            if(!string.IsNullOrEmpty(fixture)){yield return SavedStageFixture(Path.GetFullPath(fixture));yield break;}
             string replay=Argument("-campaignJourneyReplayFile");
             if(!string.IsNullOrEmpty(replay))yield return Replay(Path.GetFullPath(replay));
         }
-        IEnumerator WaitForSettlement(string key,RoundResult observed=null)
+        IEnumerator WaitForSettlement(string key,RoundResult observed=null,float maximumPresentationSeconds=10)
         {
             var battle=controller.Battle;var shop=controller.Shop;var loop=controller.Loop;
             double clock=battle.Clock,presentation=controller.PresentationClock;string economy=CampaignJourneyEvidenceProbe.State(shop);
@@ -250,17 +262,77 @@ namespace YesterdayConvoy
             // Battle.Advance does not simulate a terminal result. Tick advances the
             // production death/skill tail and GUI presentation while gameplay stays fixed.
             if(controller.SimulationSpeed!=1)controller.ToggleSpeed();
-            for(int frame=0;frame<200&&!controller.SettlementVisible;frame++)
+            for(int frame=0;frame<Mathf.CeilToInt(maximumPresentationSeconds*20)&&!controller.SettlementVisible;frame++)
             {controller.Tick(.05f);yield return null;}
             yield return null;
             if(observed!=null){observed.settlementVisible=controller.SettlementVisible;observed.settlementPresentationSeconds=controller.PresentationClock-presentation;}
-            Require(key+"-production-settlement-panel-visible",controller.SettlementVisible&&controller.PresentationClock-presentation<=10.001);
+            Require(key+"-production-settlement-panel-visible",controller.SettlementVisible&&controller.PresentationClock-presentation<=maximumPresentationSeconds+.001);
             Require(key+"-presentation-keeps-clock-economy-and-result",ReferenceEquals(battle,controller.Battle)&&ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&
                 battle.Clock==clock&&CampaignJourneyEvidenceProbe.State(shop)==economy&&battle.Phase==phase&&loop.Phase==loopPhase&&loop.Health==health&&ReferenceEquals(loop.Reward,reward)&&
                 battle.DP==dp&&battle.Defense==defense&&battle.Breaches==breaches&&battle.TotalPlayerDamage==damage&&CampaignJourneySession.Current.CompletedRounds.Count==receipts);
         }
         void SaveProgress()
         {result.checks=checks.ToArray();result.rounds=rounds.ToArray();File.WriteAllText(Path.Combine(directory,"journey-result.json"),JsonUtility.ToJson(result,true));}
+        IEnumerator SavedStageFixture(string file)
+        {
+            Require("fixture-is-development-smoke-only",Debug.isDebugBuild&&Requested);
+            result.mode="saved-stage-fixture";result.naturalJourneyCompleted=false;result.completedStages=result.combatScenes=0;
+            result.replayFile=file;rounds.Clear();fixtureBattleCaptured=false;
+            result.verificationScope="DEBUG saved-stage fixture: finite-stock Preset with zero gold and an explicit high-star lineup, followed by production pointer/skill actions and a natural battle result on the authored scene. This does not demonstrate natural card acquisition or a full twelve-stage clear. No health/damage injection, forced victory, free refresh or source-asset mutation. Existing opening-flow checks run first; no OS mouse input is claimed.";
+            SaveProgress();Require("fixture-file-exists",File.Exists(file));
+            string name=Argument("-campaignJourneyFixtureName","talulah-three-star-core-reference");
+            int number=int.Parse(Argument("-campaignJourneyFixtureStage","12"),System.Globalization.CultureInfo.InvariantCulture);
+            var report=JsonUtility.FromJson<SavedFixtureReport>(File.ReadAllText(file));
+            var fixture=report?.cases?.SingleOrDefault(c=>c.name==name&&c.stage==number);
+            Require("fixture-exact-saved-case-exists",fixture!=null);
+            var fight=fixture.fights?.FirstOrDefault(f=>f.won&&!f.timedObservation&&f.actions!=null);
+            Require("fixture-has-natural-winning-action-trace",fight!=null);
+            Require("fixture-lineup-is-explicit-finite-stock",fixture.lineup!=null&&fixture.lineup.Length>0&&fixture.lineup.Length<=fixture.formationLevel&&
+                fixture.lineup.Select(p=>p.id).Distinct().Count()==fixture.lineup.Length&&fixture.formationLevel>=1&&fixture.formationLevel<=10&&
+                fixture.lineup.Select(p=>p.instance).SequenceEqual(Enumerable.Range(1,fixture.lineup.Length)));
+            var definitions=controller.MonsterTests.Where(o=>o.Playable&&CampaignBalance.ShopEligible(o.Id)).Select(o=>o.Definition).ToArray();
+            var shop=new ShopTrialModel(definitions.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),73191);
+            shop.EnableJourneyEconomy();
+            shop.Preset(fixture.lineup.Select(p=>new ShopTrialModel.Piece{Id=p.id,Star=p.star}),Array.Empty<string>(),fixture.formationLevel,0,0);
+            Require("fixture-real-inventory-reserves-stock",shop.SetLineup(fixture.lineup.Select(p=>p.id),shop.Bench.Select(p=>p.Instance))&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+            var session=CampaignJourneySession.Begin(73191);var loop=new BattleShopRun(shop,73191,campaign:true,journeyV2:true);
+            typeof(BattleShopRun).GetProperty(nameof(BattleShopRun.Stage)).GetSetMethod(true).Invoke(loop,new object[]{number});
+            session.Shop=shop;session.Loop=loop;session.Lineup.AddRange(fixture.lineup.Select(p=>p.id));
+            session.Contract=shop.Bench.Where(p=>CampaignBalance.Tags(p.Id).Contains("萨卡兹")).OrderByDescending(p=>p.Star).FirstOrDefault()?.Id;
+            session.Commission=fixture.lineup[0].id;
+            var stage=CampaignJourneyCatalog.Stage(number);
+            Require("fixture-target-is-authored-combat",!stage.IsSupply&&stage.encounter!=null);
+            string source=JsonUtility.ToJson(CampaignJourneyCatalog.Current),encounter=JsonUtility.ToJson(stage.encounter),waves=JsonUtility.ToJson(stage.encounter.attackWaves);
+            SceneManager.LoadScene(session.Map.sceneName);yield return CampaignJourneyEvidenceProbe.Ready(number,c=>controller=c);
+            result.seed=73191;result.modelPolicy=name+" / "+fight.policy;result.combatScenes=1;
+            var observed=new RoundResult{stage=number,supply=false,scene=SceneManager.GetActiveScene().name,mapId=controller.JourneyMap.id};rounds.Add(observed);SaveProgress();
+            Require("fixture-loads-one-real-scene-without-free-shop",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&!loop.CanShop&&
+                shop.Gold==0&&shop.Offers.All(id=>id==null)&&controller.Battle.Phase==BattlePhase.Ready&&controller.Muted&&controller.SimulationSpeed==1);
+            Require("fixture-preserves-exact-star-and-lineup-order",CampaignJourneyEvidenceProbe.Lineup(controller).SequenceEqual(fixture.lineup.Select(p=>p.instance))&&
+                fixture.lineup.All(p=>shop.Bench.Any(b=>b.Id==p.id&&b.Instance==p.instance&&b.Star==p.star)));
+            Require("fixture-has-twelve-actual-strengthened-defenders",controller.Battle.Defenders.Count==12&&stage.encounter.defenders.Length==12&&
+                stage.encounter.defenders.All(g=>controller.Battle.FindDefender(g.id)?.MaxHealth==g.health&&controller.Battle.FindDefender(g.id)?.Settings.Attack==g.attack&&controller.Battle.FindDefender(g.id)?.Position==g.position));
+            Require("fixture-uses-authored-low-dp-and-production-costs",controller.Battle.WavesEnabled&&controller.Battle.DP==stage.encounter.WaveSnapshot().Waves[0].DP&&
+                controller.Battle.Cards.All(c=>c.Settings.DeploymentCost==CampaignV2Balance.StatValue(c.Settings.CardId,shop.Bench.Single(p=>p.Id==c.Settings.CardId).Star,"dp")&&
+                    c.Settings.Cooldown==WaveDeploymentCadence.ForCard(c.Settings.CardId,shop.Definition(c.Settings.CardId).Cost)));
+            Require("fixture-contains-actual-three-star-talulah",shop.Bench.Any(p=>p.Id=="CARD_TALULAH_TRIAL"&&p.Star==3));
+            yield return Capture("fixture-stage-"+number+"-prepared");
+            var flags=BindingFlags.Instance|BindingFlags.NonPublic;
+            typeof(ManualBattleController).GetField("campaignConstructTab",flags).SetValue(controller,4);
+            typeof(ManualBattleController).GetField("campaignConstructOpen",flags).SetValue(controller,true);
+            yield return Capture("fixture-stage-"+number+"-defender-list-top");
+            typeof(ManualBattleController).GetField("journeyGuardScroll",flags).SetValue(controller,new Vector2(0,10000));
+            yield return Capture("fixture-stage-"+number+"-defender-list-bottom");controller.CloseCampaignOverlay();
+            var trace=new CampaignJourneyReplayRound{stage=number,won=true,lineup=fixture.lineup,fight=fight};
+            yield return Fight(trace,observed);
+            Require("fixture-resolves-through-real-victory-and-reward",controller.Battle.Phase==BattlePhase.Won&&loop.LastBattleWon&&session.CompletedRounds.Count==1&&
+                loop.Reward!=null&&loop.Reward.Base==stage.baseGold&&loop.Reward.Interest==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+            observed.closingGold=shop.Gold;observed.closingLevel=shop.Level;observed.closingXP=shop.XP;observed.health=loop.Health;observed.healthLoss=loop.LastHealthLoss;observed.golemXP=loop.GolemExperience;
+            yield return WaitForSettlement("fixture-stage-"+number,observed,60);
+            Require("fixture-source-configuration-remains-unchanged",JsonUtility.ToJson(CampaignJourneyCatalog.Current)==source&&JsonUtility.ToJson(stage.encounter)==encounter&&JsonUtility.ToJson(stage.encounter.attackWaves)==waves);
+            observed.passed=true;result.completedStages=1;SaveProgress();yield return Capture("fixture-stage-"+number+"-natural-settlement");
+            controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
+        }
         int SeatOf(int instance)
         {
             int bench=controller.Shop.Bench.ToList().FindIndex(p=>p.Instance==instance);if(bench<0)return -1;
@@ -386,7 +458,10 @@ namespace YesterdayConvoy
                 }
                 Require("stage-"+trace.stage+"-production-combat-clock-started",battle.Phase!=BattlePhase.Ready,"The production wave start or an actual deployment must begin combat before replay advances the clock.");
                 if(battle.Phase!=BattlePhase.Running)break;
-                controller.Tick(.05f);step++;if(step%4==0)yield return null;
+                controller.Tick(.05f);step++;
+                if(result.mode=="saved-stage-fixture"&&!fixtureBattleCaptured&&battle.Clock>=15&&battle.Phase==BattlePhase.Running)
+                {fixtureBattleCaptured=true;yield return Capture("fixture-stage-"+trace.stage+"-talulah-fire-rain");}
+                if(step%4==0)yield return null;
             }
             observed.actions=actual.ToArray();observed.outcome=battle.Phase.ToString();observed.seconds=battle.Clock;observed.deployments=battle.Units.Count(u=>!u.SynergySupport);
             observed.remainingDefense=battle.Defense;observed.damage=battle.TotalPlayerDamage;observed.portalTrips=battle.ApprovedPortalTrips;observed.breaches=battle.Breaches;
@@ -449,8 +524,8 @@ namespace YesterdayConvoy
                     Require("stage-"+trace.stage+"-exact-natural-reward-and-stock",reward!=null&&reward.Base==trace.baseReward&&reward.Interest==trace.interest&&reward.Streak==trace.streakReward&&reward.Experience==trace.experienceReward&&
                         shop.Gold==trace.closingGold&&shop.Level==trace.closingLevel&&shop.XP==trace.closingXP&&loop.GolemExperience==trace.golemXP&&CampaignJourneyEvidenceProbe.StockConserved(shop));
                 else
-                    Require("stage-"+trace.stage+"-surviving-setback-base-and-interest-without-streak-or-xp",reward!=null&&!reward.Won&&reward.Base==stage.baseGold&&reward.Interest==Math.Min(5,goldBeforeResult/10)&&reward.Streak==0&&reward.Experience==0&&
-                        shop.Gold==goldBeforeResult+stage.baseGold+Math.Min(5,goldBeforeResult/10)&&shop.Level==levelBeforeResult&&shop.XP==xpBeforeResult&&shop.WinStreak==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                    Require("stage-"+trace.stage+"-surviving-setback-base-and-interest-without-streak-or-xp",reward!=null&&!reward.Won&&reward.Base==stage.baseGold&&reward.Interest==Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&reward.Streak==0&&reward.Experience==0&&
+                        shop.Gold==goldBeforeResult+stage.baseGold+Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&shop.Level==levelBeforeResult&&shop.XP==xpBeforeResult&&shop.WinStreak==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
                 observed.health=loop.Health;observed.healthLoss=loop.LastHealthLoss;
                 int expectedLoss=trace.won?0:CampaignJourneyHealth.CalculateLoss(controller.Battle.Defense,controller.Battle.Settings.InitialDefense,stage.stage);
                 Require("stage-"+trace.stage+"-health-matches-real-gate-progress",loop.LastBattleWon==trace.won&&loop.LastHealthLoss==expectedLoss&&loop.Health==healthBeforeResult-expectedLoss&&

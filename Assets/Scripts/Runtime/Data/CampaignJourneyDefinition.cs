@@ -85,6 +85,10 @@ namespace YesterdayConvoy
                 int count = entry.encounter.defenders.Length;
                 if (entry.guardTiers.Length != count || entry.guardHPFactors.Length != count || entry.guardTuning.Length != count ||
                     entry.guardTiers.Any(t => t < 1 || t > 3)) throw new InvalidOperationException("Missing defender tier provenance: " + number);
+                if (entry.guardTuning.Any(g => g == null) || entry.guardTuning.Select(g => g.id).Distinct(StringComparer.Ordinal).Count() != count ||
+                    entry.encounter.defenders.Any(d => entry.guardTuning.All(g => g.id != d.id)) ||
+                    entry.encounter.defenders.Select(d => d.position).Distinct().Count() != count)
+                    throw new InvalidOperationException("Defender IDs, skill provenance and saved positions must remain distinct: " + number);
             }
             if (mapIndex != 8) throw new InvalidOperationException("Eight campaign battles required.");
         }

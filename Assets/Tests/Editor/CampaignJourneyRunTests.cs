@@ -33,7 +33,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(run.Observe(BattlePhase.Won),Is.False);Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(shop.XP,Is.EqualTo(xp));
                 if(stage<12){Assert.That(run.OpenShop(),Is.True);Assert.That(run.OpenShop(),Is.False);Assert.That(run.PrepareBattle(),Is.True);}
             }
-            Assert.That(run.TotalStages,Is.EqualTo(12));Assert.That(bases,Is.EqualTo(68));Assert.That(shop.Gold,Is.EqualTo(127));
+            Assert.That(run.TotalStages,Is.EqualTo(12));Assert.That(bases,Is.EqualTo(136));Assert.That(shop.Gold,Is.EqualTo(269));
             Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Complete));Assert.That(run.OpenShop(),Is.False);
             Assert.That(shop.Available("CARD_M07")+shop.Offers.Count(id=>id=="CARD_M07")+shop.Bench.Sum(p=>ShopTrialModel.Copies(p.Star)),Is.EqualTo(30));
         }
@@ -88,7 +88,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:1,initialDefense:2),Is.True);
             Assert.That(run.LastBattleWon,Is.False);Assert.That(run.Health,Is.EqualTo(90));Assert.That(run.MaxHealth,Is.EqualTo(100));
             Assert.That(run.LastHealthLoss,Is.EqualTo(10));Assert.That(run.LastRemainingDefense,Is.EqualTo(1));Assert.That(run.LastInitialDefense,Is.EqualTo(2));
-            Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Settlement));Assert.That(run.Reward.Base,Is.EqualTo(5));Assert.That(run.Reward.Experience,Is.Zero);
+            Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Settlement));Assert.That(run.Reward.Base,Is.EqualTo(10));Assert.That(run.Reward.Experience,Is.Zero);
             Assert.That(shop.WinStreak,Is.Zero);Assert.That(run.Reward.Streak,Is.Zero);Assert.That(shop.Gold,Is.EqualTo(before+run.Reward.Base+run.Reward.Interest));
             int settledGold=shop.Gold,settledXP=shop.XP;
             Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:2,initialDefense:2),Is.False);
@@ -243,13 +243,48 @@ namespace YesterdayConvoy.Tests
         [Test]public void OpeningRewardAndLaterSupplyDoNotCreateCombatWinStreak()
         {
             var shop=NewShop();var run=new BattleShopRun(shop,44,campaign:true,journeyV2:true);
-            run.Observe(BattlePhase.Won);Assert.That(shop.Gold,Is.EqualTo(9));Assert.That(shop.WinStreak,Is.Zero);Assert.That(run.Reward.Streak,Is.Zero);
+            run.Observe(BattlePhase.Won);Assert.That(shop.Gold,Is.EqualTo(13));Assert.That(shop.WinStreak,Is.Zero);Assert.That(run.Reward.Streak,Is.Zero);
             for(int stage=2;stage<=4;stage++)
             {
                 run.OpenShop();run.PrepareBattle();run.Observe(BattlePhase.Won);
-                if(stage==3){Assert.That(shop.WinStreak,Is.EqualTo(2));Assert.That(run.Reward.Streak,Is.EqualTo(1));}
+                if(stage==3){Assert.That(shop.WinStreak,Is.EqualTo(2));Assert.That(run.Reward.Streak,Is.EqualTo(2));}
             }
             Assert.That(shop.WinStreak,Is.EqualTo(2));Assert.That(run.Reward.Streak,Is.Zero,"Supply neither advances nor cashes the combat streak.");
+        }
+        [Test]public void JourneyVariableRewardsDoubleWithoutRepeatingAuthoredBaseOrXp()
+        {
+            var shop=NewShop();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),1,0,50);
+            var first=shop.SettleRound("first",true,baseGold:10,victoryXP:2);
+            Assert.That(first.Base,Is.EqualTo(10));Assert.That(first.Interest,Is.EqualTo(10));Assert.That(first.Streak,Is.Zero);
+            Assert.That(first.Experience,Is.EqualTo(2));Assert.That(shop.Gold,Is.EqualTo(70));Assert.That(shop.Level,Is.EqualTo(2));
+            var second=shop.SettleRound("second",true,baseGold:10,victoryXP:2);
+            Assert.That(second.Interest,Is.EqualTo(10));Assert.That(second.Streak,Is.EqualTo(2));Assert.That(second.Total,Is.EqualTo(22));
+            var supply=shop.SettleRound("supply",true,baseGold:8,victoryXP:2,countsForStreak:false);
+            Assert.That(supply.Base,Is.EqualTo(8));Assert.That(supply.Interest,Is.EqualTo(10));Assert.That(supply.Streak,Is.Zero);
+            Assert.That(shop.WinStreak,Is.EqualTo(2));
+            var defeat=shop.SettleRound("defeat",false,baseGold:10,victoryXP:2);
+            Assert.That(defeat.Base,Is.EqualTo(10));Assert.That(defeat.Interest,Is.EqualTo(10));Assert.That(defeat.Streak,Is.Zero);
+            Assert.That(defeat.Experience,Is.Zero);Assert.That(shop.WinStreak,Is.Zero);
+            int gold=shop.Gold;Assert.That(shop.SettleRound("defeat",false,baseGold:10),Is.SameAs(defeat));Assert.That(shop.Gold,Is.EqualTo(gold));
+
+            shop.EnableCampaign();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),1,0,50);
+            var legacy=shop.SettleRound("old-first",true,baseGold:5,victoryXP:2);
+            Assert.That(legacy.Base,Is.EqualTo(5));Assert.That(legacy.Interest,Is.EqualTo(5));Assert.That(legacy.Total,Is.EqualTo(10));
+            Assert.That(shop.SettleRound("old-second",true).Streak,Is.EqualTo(1));
+        }
+        [TestCase(0,0)]
+        [TestCase(9,0)]
+        [TestCase(10,2)]
+        [TestCase(19,2)]
+        [TestCase(49,8)]
+        [TestCase(50,10)]
+        [TestCase(100,10)]
+        public void DoubledJourneyInterestKeepsTenGoldStepsAndFiveStepCap(int opening,int expected)
+        {
+            var shop=NewShop();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),1,0,opening);
+            var reward=shop.SettleRound("interest",false,baseGold:0,victoryXP:0);
+            Assert.That(reward.Interest,Is.EqualTo(expected));Assert.That(reward.Total,Is.EqualTo(expected));
+            Assert.That(shop.Gold,Is.EqualTo(opening+expected));
         }
         [Test]public void ShortJourneyXpCurveDoesNotRetuneLegacyTrialEconomy()
         {

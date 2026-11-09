@@ -25,6 +25,9 @@ namespace YesterdayConvoy
         internal MarineAdaptation MarinePrimary=MarineAdaptation.Barrier,MarineSecondary=MarineAdaptation.Hunt;
         internal bool ReunionRanged;
         internal int InfectionChoiceTier;
+        internal float SimulationSpeed=1;
+        internal bool Muted=true;
+        internal SynergySummary[] ObservedSynergies;
         CampaignJourneySession(int seed){Seed=seed==0?Guid.NewGuid().GetHashCode():seed;}
         public static CampaignJourneySession Begin(int seed=0)=>Current=new CampaignJourneySession(seed);
         public static void Clear()=>Current=null;

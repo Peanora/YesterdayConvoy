@@ -31,8 +31,18 @@ namespace YesterdayConvoy
         public bool Selected { get; private set; }
         public string Feedback { get; private set; } = "拖动底部角色卡至红门部署";
         public int ViewCount => views.Count;
-        public float SimulationSpeed { get; private set; } = 1;
-        public bool Muted { get; private set; }
+        float simulationSpeed=1;
+        bool muted=true;
+        public float SimulationSpeed
+        {
+            get=>simulationSpeed;
+            private set{simulationSpeed=value;if(JourneyActive)CampaignJourneySession.Current.SimulationSpeed=value;}
+        }
+        public bool Muted
+        {
+            get=>muted;
+            private set{muted=value;if(JourneyActive)CampaignJourneySession.Current.Muted=value;}
+        }
         public string SelectedEntityId => selectedEntityId;
         public EngagementView CombatView => combatView;
         private double terminalPresentationElapsed;
@@ -350,6 +360,7 @@ namespace YesterdayConvoy
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
+        public void ToggleMute() => Muted=!Muted;
         private void OnApplicationFocus(bool focus)
         { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); } }
 
@@ -438,7 +449,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(770,20,150,28),$"场上 {Battle.ActiveCount}  ·  穿门 {Battle.Breaches}",smallStyle);
             if(Battle.EngagementEnabled)
             {
-                if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) Muted=!Muted;
+                if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) ToggleMute();
                 if(GUI.Button(new Rect(1002,14,76,38),(SkillMenuOpen ? "0.03x" : SimulationSpeed+"x"),buttonStyle)) ToggleSpeed();
                 DrawDefenderHUD();
             }

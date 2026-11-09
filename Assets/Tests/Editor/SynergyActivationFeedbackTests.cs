@@ -17,6 +17,28 @@ namespace YesterdayConvoy.Tests
         }
         static SynergySummary[] ReunionRows(int count) => Rows(Reunion.Take(count).ToArray()).Where(row => row.Name == "整合运动").ToArray();
 
+        [Test] public void RestoringSceneObservationStaysQuietButKeepsRealUpgradesDowngradesAndReactivation()
+        {
+            var feedback=new SynergyActivationFeedback();
+            feedback.RestoreObserved(ReunionRows(4));
+            Assert.That(feedback.Pending,Is.False,"Scene arrival restores observation, never an old pulse queue.");
+            int revision=feedback.Revision;
+            Assert.That(feedback.Observe(ReunionRows(4)),Is.False);Assert.That(feedback.Revision,Is.EqualTo(revision));
+            Assert.That(feedback.Observe(ReunionRows(2)),Is.True);Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(2));
+            feedback.Advance(10);
+            Assert.That(feedback.Observe(ReunionRows(4)),Is.True);Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(4));
+            Assert.That(feedback.Observe(ReunionRows(1)),Is.True);Assert.That(feedback.Pending,Is.False);
+            Assert.That(feedback.Observe(ReunionRows(2)),Is.True);Assert.That(Pulse(feedback,"整合运动").Tier,Is.EqualTo(2));
+        }
+
+        [Test] public void FreshChallengeClearsRestoredObservationAndAllowsItsFirstRealActivation()
+        {
+            var feedback=new SynergyActivationFeedback();feedback.RestoreObserved(ReunionRows(2));
+            Assert.That(feedback.Observe(ReunionRows(2)),Is.False);
+            feedback.Clear();
+            Assert.That(feedback.Observe(ReunionRows(2)),Is.True);Assert.That(feedback.Pending,Is.True);
+        }
+
         [Test] public void OnlyCrossingAnActualThresholdCreatesAnotherBatch()
         {
             var feedback = new SynergyActivationFeedback();

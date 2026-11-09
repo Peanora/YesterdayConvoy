@@ -30,8 +30,8 @@ MonoBehaviour:
     displayName: "\u5361\u7F07"
     artId: D02
     position: {x: 4.5, y: 0, z: 2.5}
-    health: 928
-    attack: 60
+    health: 2784
+    attack: 180
     armor: 13
     range: 0.9
     interval: 1.2
@@ -75,8 +75,8 @@ MonoBehaviour:
     displayName: "\u6708\u89C1\u591C"
     artId: D05
     position: {x: 4.5, y: 0, z: -0.5}
-    health: 680
-    attack: 84
+    health: 2040
+    attack: 252
     armor: 10
     range: 3
     interval: 1.3
@@ -116,6 +116,321 @@ MonoBehaviour:
     criticalChance: 0.2
     criticalMultiplier: 1.5
     extraHealChance: 0
+  - id: D01
+    displayName: "\u7C73\u683C\u9C81"
+    artId: D01
+    position: {x: -1.5, y: 0, z: 0.5}
+    health: 1560
+    attack: 96
+    armor: 14
+    range: 0.85
+    interval: 1.6
+    windup: 0.5
+    actionDuration: 1
+    blocks: 3
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 5
+      initialSP: 4
+      requiredSP: 34
+      spPerSecond: 1
+      duration: 20
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1.45
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D04
+    displayName: "\u73AB\u5170\u838E"
+    artId: D04
+    position: {x: -3.5, y: 0, z: -2.5}
+    health: 1260
+    attack: 186
+    armor: 4
+    range: 0.9
+    interval: 2.5
+    windup: 0.9666667
+    actionDuration: 2
+    blocks: 1
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 7
+      initialSP: 5
+      requiredSP: 32
+      spPerSecond: 1
+      duration: 16
+      attackMultiplier: 1.4
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D06
+    displayName: "\u7FCE\u7FBD"
+    artId: D06
+    position: {x: 1.5, y: 0, z: -3.5}
+    health: 1140
+    attack: 90
+    armor: 6
+    range: 0.9
+    interval: 1
+    windup: 0.3
+    actionDuration: 0.9
+    blocks: 1
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 3
+      initialSP: 4
+      requiredSP: 34
+      spPerSecond: 1
+      duration: 16
+      attackMultiplier: 1.2
+      attackSpeedMultiplier: 1.2
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D07
+    displayName: "\u514B\u6D1B\u4E1D"
+    artId: D07
+    position: {x: -0.5, y: 0.72, z: 0.5}
+    health: 840
+    attack: 96
+    armor: 4
+    range: 3.5
+    interval: 1.5
+    windup: 0.4333333
+    actionDuration: 0.9333333
+    blocks: 0
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 3.5
+    skill:
+      kind: 8
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.4
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0.2
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D08
+    displayName: "\u53F2\u90FD\u534E\u5FB7"
+    artId: D08
+    position: {x: 2.5, y: 0.72, z: 1.5}
+    health: 840
+    attack: 132
+    armor: 4
+    range: 3.5
+    interval: 1.8
+    windup: 0.5
+    actionDuration: 0.8666667
+    blocks: 0
+    role: 0
+    damageType: 1
+    splashRadius: 0
+    healingRange: 3.5
+    skill:
+      kind: 9
+      initialSP: 0
+      requiredSP: 4
+      spPerSecond: 0
+      duration: 0
+      attackMultiplier: 1.9
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D09
+    displayName: "\u708E\u7194"
+    artId: D09
+    position: {x: -2.5, y: 0.72, z: -0.5}
+    health: 870
+    attack: 150
+    armor: 4
+    range: 3.5
+    interval: 2.8
+    windup: 0.8333333
+    actionDuration: 1.5666667
+    blocks: 0
+    role: 0
+    damageType: 1
+    splashRadius: 0.65
+    healingRange: 3.5
+    skill:
+      kind: 10
+      initialSP: 5
+      requiredSP: 34
+      spPerSecond: 1
+      duration: 16
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1.35
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: D11
+    displayName: "\u5B89\u8D5B\u5C14"
+    artId: D11
+    position: {x: 3.5, y: 0.72, z: -1.5}
+    health: 900
+    attack: 120
+    armor: 4
+    range: 2.5
+    interval: 2.85
+    windup: 0.4
+    actionDuration: 1
+    blocks: 0
+    role: 2
+    damageType: 0
+    splashRadius: 0
+    healingRange: 2.5
+    skill:
+      kind: 4
+      initialSP: 8
+      requiredSP: 32
+      spPerSecond: 1
+      duration: 18
+      attackMultiplier: 1.3
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 2
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0.15
   surfaces:
   - {fileID: 2100000, guid: e84f106253c1677429bf9022656b4824, type: 2}
   - {fileID: 2100000, guid: 014d96dbb63d339418a22cb72bd84ccf, type: 2}

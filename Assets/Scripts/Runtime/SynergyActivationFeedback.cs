@@ -78,6 +78,15 @@ namespace YesterdayConvoy
         public bool HasShown(string name, int tier) => !string.IsNullOrEmpty(name) && tier > 0 &&
             shownTiers.TryGetValue(name, out int shown) && shown == tier;
 
+        // A new authored scene starts with a clean presentation queue while keeping
+        // this challenge's last observed tiers. Its next Observe still detects real changes.
+        public void RestoreObserved(SynergySummary[] previous)
+        {
+            Clear();
+            Observe(previous);
+            Clear(false);
+        }
+
         /// <returns>True when a real tier change replaces the pending schedule, even if no item remains.</returns>
         public bool Observe(SynergySummary[] current)
         {

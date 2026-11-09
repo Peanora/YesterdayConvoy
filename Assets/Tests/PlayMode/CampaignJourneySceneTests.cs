@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,52 @@ namespace YesterdayConvoy.Tests
             controller.BeginJourney(44);yield return CampaignJourneyEvidenceProbe.Ready(1,c=>controller=c);
         }
         IEnumerator Ready(int stage)=>CampaignJourneyEvidenceProbe.Ready(stage,c=>controller=c);
+        SynergyActivationFeedback ActivationFeedback=>(SynergyActivationFeedback)typeof(ManualBattleController)
+            .GetField("synergyActivationFeedback",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
+        void SetMuted(bool value){if(controller.Muted!=value)controller.ToggleMute();}
+        void RebuildPreparation()=>typeof(ManualBattleController).GetMethod("SyncShopDeck",BindingFlags.Instance|BindingFlags.NonPublic)
+            .Invoke(controller,new object[]{false,false});
+
+        [UnityTest]public IEnumerator SceneChangesKeepChosenSpeedAndSoundWithoutReplayingUnchangedSynergies()
+        {
+            yield return Begin();
+            Assert.That(controller.Muted,Is.True,"A fresh challenge starts with sound effects disabled.");
+            Assert.That(controller.SimulationSpeed,Is.EqualTo(1));
+            Assert.That(controller.CombatView.GetComponent<AudioSource>().mute,Is.True);
+            // A minimal inventory fixture isolates the cross-scene presentation state;
+            // seat edits, supply settlement and authored scene loads use production APIs.
+            controller.Shop.Preset(new[]{new ShopTrialModel.Piece{Id="CARD_M07",Star=1},new ShopTrialModel.Piece{Id="CARD_M08",Star=1}},Array.Empty<string>(),2,0,5);
+            RebuildPreparation();
+            Assert.That(controller.MoveShopCard(controller.Shop.Bench[0].Instance,true,0),Is.True);
+            Assert.That(controller.MoveShopCard(controller.Shop.Bench[1].Instance,true,1),Is.True);
+            yield return Ready(1);
+            Assert.That(controller.Battle.ReunionTier,Is.EqualTo(2));Assert.That(ActivationFeedback.Pending,Is.True);
+            for(int i=0;i<80&&ActivationFeedback.Pending;i++)controller.Tick(.1f);
+            Assert.That(ActivationFeedback.Pending,Is.False);
+            controller.ToggleSpeed();SetMuted(false);
+            Assert.That(controller.SimulationSpeed,Is.EqualTo(2));Assert.That(controller.Muted,Is.False);
+            var previous=controller;var session=CampaignJourneySession.Current;
+            controller.ClaimCampaignSupply();Assert.That(controller.OpenLoopShop(),Is.True);yield return Ready(2);
+            Assert.That(controller,Is.Not.SameAs(previous),"Even the same map is loaded through a new scene controller.");
+            Assert.That(CampaignJourneySession.Current,Is.SameAs(session));
+            Assert.That(controller.SimulationSpeed,Is.EqualTo(2));Assert.That(controller.Muted,Is.False);
+            Assert.That(controller.Battle.ReunionTier,Is.EqualTo(2));Assert.That(ActivationFeedback.Pending,Is.False,
+                "Unchanged activation tiers must not replay when the next scene reconstructs the battle.");
+            int revision=ActivationFeedback.Revision;
+            RebuildPreparation();Assert.That(ActivationFeedback.Revision,Is.EqualTo(revision));Assert.That(ActivationFeedback.Pending,Is.False);
+            var second=controller.Shop.Bench.Single(p=>p.Id=="CARD_M08");
+            Assert.That(controller.MoveShopCard(second.Instance,false,3),Is.True);Assert.That(controller.Battle.ReunionTier,Is.Zero);
+            Assert.That(controller.MoveShopCard(second.Instance,true,1),Is.True);Assert.That(controller.Battle.ReunionTier,Is.EqualTo(2));
+            Assert.That(ActivationFeedback.Pending,Is.True,"A real loss and reactivation must still create fresh feedback.");
+            Assert.That(controller.StartLoopNextBattle(),Is.True);controller.Tick(.01f);
+            Assert.That(controller.RestartCampaignEncounter(),Is.True);yield return Ready(2);
+            Assert.That(controller.SimulationSpeed,Is.EqualTo(2));Assert.That(controller.Muted,Is.False);Assert.That(ActivationFeedback.Pending,Is.False);
+            controller.BeginJourney(99);yield return Ready(1);
+            Assert.That(CampaignJourneySession.Current,Is.Not.SameAs(session));Assert.That(controller.Muted,Is.True);
+            Assert.That(controller.SimulationSpeed,Is.EqualTo(1),"A fresh challenge resets the combat speed independently of cross-stage restoration.");
+            controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
+            Assert.That(controller.Muted,Is.True,"Leaving the challenge creates a fresh quiet selector session.");
+        }
 
         IEnumerator NaturalEmptyBattle()
         {
@@ -76,7 +123,7 @@ namespace YesterdayConvoy.Tests
                     Assert.That(loop.LastBattleWon,Is.False);Assert.That(loop.LastInitialDefense,Is.EqualTo(definition.defense));
                     Assert.That(loop.LastRemainingDefense,Is.EqualTo(definition.defense));
                     Assert.That(loop.Reward.Won,Is.False);Assert.That(loop.Reward.Base,Is.EqualTo(definition.baseGold));
-                    Assert.That(loop.Reward.Interest,Is.EqualTo(Math.Min(5,gold/10)));Assert.That(loop.Reward.Streak,Is.Zero);
+                    Assert.That(loop.Reward.Interest,Is.EqualTo(2*Math.Min(5,gold/10)));Assert.That(loop.Reward.Streak,Is.Zero);
                     Assert.That(loop.Reward.Experience,Is.Zero);Assert.That(shop.XP,Is.EqualTo(xp));Assert.That(shop.Level,Is.EqualTo(level));
                     Assert.That(shop.Gold,Is.EqualTo(gold+loop.Reward.Base+loop.Reward.Interest));
                     var summary=session.CompletedRounds.Last();
@@ -123,7 +170,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.LockJourneyShop(true),Is.True);var lockedOffers=shop.Offers.ToArray();
             controller.ClaimCampaignSupply();int gold=shop.Gold,xp=shop.XP;controller.ClaimCampaignSupply();
             Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(shop.XP,Is.EqualTo(xp));Assert.That(CampaignJourneySession.Current.CompletedRounds.Count,Is.EqualTo(1));
-            Assert.That(gold,Is.EqualTo(9));Assert.That(shop.Level,Is.EqualTo(2));Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Settlement));
+            Assert.That(gold,Is.EqualTo(13));Assert.That(shop.Level,Is.EqualTo(2));Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Settlement));
             string earned=CampaignJourneyEvidenceProbe.State(shop,false);
             Assert.That(controller.OpenLoopShop(),Is.True);yield return Ready(2);
             Assert.That(controller.Shop,Is.SameAs(shop));Assert.That(controller.Loop,Is.SameAs(loop));Assert.That(shop.Level,Is.EqualTo(2));
@@ -138,7 +185,7 @@ namespace YesterdayConvoy.Tests
             var offers=shop.Offers.ToArray();string prepared=CampaignJourneyEvidenceProbe.State(shop);
             Assert.That(controller.StartLoopNextBattle(),Is.True);yield return Ready(2);
             CollectionAssert.AreEqual(offers,shop.Offers);Assert.That(CampaignJourneyEvidenceProbe.State(shop),Is.EqualTo(prepared));
-            Assert.That(controller.Battle.DP,Is.EqualTo(14));Assert.That(controller.Battle.Defense,Is.EqualTo(1));Assert.That(controller.Battle.Defender.MaxHealth,Is.GreaterThan(260));
+            Assert.That(controller.Battle.DP,Is.EqualTo(10));Assert.That(controller.Battle.Defense,Is.EqualTo(1));Assert.That(controller.Battle.Defender.MaxHealth,Is.EqualTo(CampaignJourneyCatalog.Stage(2).encounter.defenders[0].health));
             Assert.That(controller.Battle.Defenders.Count,Is.EqualTo(1));Assert.That(controller.Battle.CampaignV2Enabled,Is.True);Assert.That(controller.Battle.CampaignV2Stage,Is.EqualTo(2));
             Assert.That(controller.Battle.WavesEnabled,Is.True);Assert.That(controller.Battle.StrongholdMapEnabled,Is.False);
             Assert.That(controller.Battle.CurrentWaveLaneId,Is.EqualTo("R2"));Assert.That(controller.Battle.CanDeployOnLane("R1"),Is.False);
@@ -170,7 +217,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(unit.Motion.Position,Is.EqualTo(position));Assert.That(unit.Health,Is.EqualTo(hp));Assert.That(unit.SkillSP,Is.EqualTo(sp));
             Assert.That(controller.RestartCampaignEncounter(),Is.True);yield return Ready(2);
             Assert.That(controller.Shop,Is.SameAs(shop));Assert.That(controller.Loop,Is.SameAs(loop));Assert.That(CampaignJourneyEvidenceProbe.State(shop),Is.EqualTo(state));
-            Assert.That(controller.Battle.Units,Is.Empty);Assert.That(controller.Battle.Clock,Is.Zero);Assert.That(controller.Battle.DP,Is.EqualTo(14));Assert.That(controller.Battle.Defense,Is.EqualTo(1));
+            Assert.That(controller.Battle.Units,Is.Empty);Assert.That(controller.Battle.Clock,Is.Zero);Assert.That(controller.Battle.DP,Is.EqualTo(10));Assert.That(controller.Battle.Defense,Is.EqualTo(1));
             Assert.That(controller.Battle.IsPaused,Is.False);Assert.That(controller.Battle.Phase,Is.EqualTo(BattlePhase.Ready));Assert.That(controller.Loop.Stage,Is.EqualTo(2));
             Assert.That(CampaignJourneySession.Current.Seed,Is.EqualTo(44));CollectionAssert.AreEquivalent(tiles,UnityEngine.Object.FindObjectsByType<ApprovedMapTile>(FindObjectsSortMode.None));
             Assert.That(CampaignJourneyEvidenceProbe.StockConserved(shop),Is.True);controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;

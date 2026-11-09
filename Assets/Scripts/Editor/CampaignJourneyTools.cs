@@ -64,7 +64,8 @@ namespace YesterdayConvoy.Editor
             PreserveEncounterGuids(journey, flow);
             journey.stages = flow.stages.OrderBy(s => s.stage).Select(stage => BuildStage(stage, defenders)).ToArray();
             EditorUtility.SetDirty(journey); AssetDatabase.SaveAssets(); Validate();
-            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 12 stages, 4 noncombat supply receipts, 8 independent wave encounters, 15 strengthened v2 defenders; existing map scenes and sandbox encounters untouched.");
+            Debug.Log("CAMPAIGN_JOURNEY_AUTHORED: 12 stages, 4 noncombat supply receipts, 8 independent wave encounters, " +
+                journey.stages.Sum(s => s.encounter == null ? 0 : s.encounter.defenders.Length) + " strengthened v2 defenders; existing map scenes and sandbox encounters untouched.");
         }
 
         static void PreserveEncounterGuids(CampaignJourneyDefinition journey, Source flow)
@@ -117,6 +118,10 @@ namespace YesterdayConvoy.Editor
                 dp = source.dp, defense = source.defense, baseGold = source.baseGold, naturalXP = source.naturalXP };
             if (stage.IsSupply) return stage;
             var map = ApprovedMapCatalog.All.Single(m => m.index == source.mapIndex); map.Validate(); stage.map = map;
+            if (source.guards == null || source.guards.Length == 0 || source.guards.Any(g => g == null || g.cell == null) ||
+                source.guards.Select(g => g.id).Distinct(StringComparer.Ordinal).Count() != source.guards.Length ||
+                source.guards.Select(g => new Vector2Int(g.cell.x, g.cell.y)).Distinct().Count() != source.guards.Length)
+                throw new InvalidOperationException("Formal defenders require distinct stable role IDs and separate saved map cells: " + source.stage);
             string path = Output + "/Stage" + source.stage.ToString("00") + "Battle.asset";
             var encounter = AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(path);
             if (encounter == null) { encounter = ScriptableObject.CreateInstance<DefenderTrialDefinition>(); encounter.name = "Stage" + source.stage.ToString("00") + "Battle"; AssetDatabase.CreateAsset(encounter, path); }
@@ -223,8 +228,9 @@ namespace YesterdayConvoy.Editor
                     if (a.id != b.id || a.exitId != b.exitId || !a.points.SequenceEqual(b.points)) throw new InvalidOperationException("Journey changed the approved fixed map route.");
                 }
             }
-            if (guardCount != 15) throw new InvalidOperationException("Fifteen formal defender placements required.");
-            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 12 stages / 8 independent wave plans / 15 strengthened v2 defenders and preserved skill snapshots / preserved sandbox data / no scene writes.");
+            if (guardCount != flow.stages.Sum(s => s.guards.Length)) throw new InvalidOperationException("Authored formal defender count drift.");
+            Debug.Log("CAMPAIGN_JOURNEY_CONFIGURATION_PASS: 12 stages / 8 independent wave plans / " + guardCount +
+                " strengthened v2 defenders and preserved skill snapshots / preserved sandbox data / no scene writes.");
         }
 
         public static void BuildWindows() { Validate(); BaselineTools.BuildWindows(); }

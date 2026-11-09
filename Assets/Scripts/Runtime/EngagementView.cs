@@ -63,7 +63,7 @@ namespace YesterdayConvoy
             for(int i=0;i<data.ExtraDefenders.Count;i++)
             { var v=new GameObject("Kroos flank "+i,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
               v.transform.SetParent(transform,false); v.sprite=data.KroosSprite; v.sharedMaterial=material; extraVisuals.Add(v); }
-            if(audioSource==null) audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0;
+            if(audioSource==null) audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false; audioSource.spatialBlend = 0; audioSource.mute=owner.Muted;
         }
 
         private void LateUpdate()

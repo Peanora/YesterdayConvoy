@@ -182,8 +182,9 @@ namespace YesterdayConvoy
             if(string.IsNullOrEmpty(key))throw new ArgumentException("Missing settlement key");
             if(rewards.TryGetValue(key,out var old))return old;
             if(countsForStreak)WinStreak=won?WinStreak+1:0;
-            var receipt=new RoundReward{Key=key,Won=won,Base=baseGold,GoldBefore=Gold,Interest=Math.Min(5,Gold/10),
-                Streak=won&&countsForStreak?(JourneyEconomy?CampaignJourneyEconomy.StreakBonus(WinStreak):Math.Min(3,Math.Max(0,WinStreak-1))):0,Experience=won?victoryXP:0};
+            int rewardScale=JourneyEconomy?CampaignJourneyEconomy.RewardGoldMultiplier:1;
+            var receipt=new RoundReward{Key=key,Won=won,Base=baseGold,GoldBefore=Gold,Interest=Math.Min(5,Gold/10)*rewardScale,
+                Streak=won&&countsForStreak?(JourneyEconomy?CampaignJourneyEconomy.StreakBonus(WinStreak):Math.Min(3,Math.Max(0,WinStreak-1)))*rewardScale:0,Experience=won?victoryXP:0};
             if(!UnlimitedGold)Gold+=receipt.Total;XP+=receipt.Experience;
             while(Level<10&&XP>=NextLevelXP){XP-=NextLevelXP;Level++;}if(Level==10)XP=0;
             rewards.Add(key,receipt);Validate();return receipt;
