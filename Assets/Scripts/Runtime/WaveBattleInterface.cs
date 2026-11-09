@@ -129,7 +129,7 @@ namespace YesterdayConvoy
             return Battle.FindEntryLane(world);
         }
 
-        // Both the campaign maps and forest render this same route-distance dash geometry.
+        // Both the campaign maps and forest render the same underlay, moving highlights and arrows.
         public IReadOnlyList<WaveRouteGuideStroke> WaveRouteGuideStrokes()
         {
             var result=new List<WaveRouteGuideStroke>();
@@ -140,6 +140,7 @@ namespace YesterdayConvoy
             if(lane==null)return result;
             bool open=Battle.WavesEnabled&&lane.Id==Battle.CurrentWaveLaneId&&Battle.DeploymentWindowOpen;
             var clip=new Rect(0,62,1280,488);var view=TacticalViewport.Current;var camera=Camera.main;
+            AppendWaveRouteStrokes(result,lane,false,open,RouteGuideGeometry.FullPath(lane.Points),camera,view,clip);
             AppendWaveRouteStrokes(result,lane,true,open,RouteGuideGeometry.Pulses(lane.Points,Battle.Clock),camera,view,clip);
             return result;
         }
@@ -156,9 +157,24 @@ namespace YesterdayConvoy
             if(Event.current.type!=EventType.Repaint)return;
             // No BeginGroup: rotating GUI.matrix inside a group also transforms its clip/origin.
             // All endpoints remain in the same 1280x720 canvas as projected unit feet and HUD.
-            Color color=new Color(.72f,.84f,.88f,RoutePreviewLane()!=null?.52f:.34f);
+            bool preview=RoutePreviewLane()!=null;
             foreach(var stroke in WaveRouteGuideStrokes())
-                DrawWaveRouteStroke(stroke.Projection.From,stroke.Projection.To,color,1.15f);
+            {
+                var p=stroke.Projection;
+                bool highlighted=stroke.Open||preview;
+                if(!stroke.Pulse)
+                {
+                    DrawWaveRouteStroke(p.From,p.To,new Color(1,1,1,highlighted?.18f:.055f),1);
+                    continue;
+                }
+                Color color=new Color(1,1,1,highlighted?.96f:.22f);
+                if(highlighted)DrawWaveRouteStroke(p.From,p.To,new Color(.015f,.025f,.035f,.7f),4);
+                DrawWaveRouteStroke(p.From,p.To,color,2);
+                if(!p.HeadVisible)continue;
+                Vector2 direction=(p.To-p.From).normalized,wing=new Vector2(-direction.y,direction.x)*2.5f;
+                DrawWaveRouteStroke(p.To-direction*4+wing,p.To,color,1.6f);
+                DrawWaveRouteStroke(p.To-direction*4-wing,p.To,color,1.6f);
+            }
         }
         static void DrawWaveRouteStroke(Vector2 from,Vector2 to,Color color,float width)
         {

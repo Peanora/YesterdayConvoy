@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         public bool Ended=>Loop!=null&&(Loop.Phase==BattleShopPhase.Complete||Loop.Phase==BattleShopPhase.Failed);
         public bool Won=>Loop!=null&&Loop.Phase==BattleShopPhase.Complete;
         [Serializable]public sealed class RoundSummary
-        {public int stage,level,deployments;public bool won,supply;public double seconds;public float damage;}
+        {public int stage,level,deployments,healthLoss,remainingHealth;public bool won,supply;public double seconds;public float damage;}
         internal readonly List<RoundSummary> Results=new List<RoundSummary>();
         public IReadOnlyList<RoundSummary> CompletedRounds=>Results.AsReadOnly();
         internal readonly List<string> Lineup=new List<string>();

@@ -33,7 +33,7 @@ namespace YesterdayConvoy
     /// <summary>Route-distance spans and projection into the root tactical canvas; owns no GUI group or clock.</summary>
     public static class RouteGuideGeometry
     {
-        public const double PulseSpacing=2.2,PulseLength=.46,PulseSpeed=.8;
+        public const double PulseSpacing=1.1,PulseLength=.46,PulseSpeed=.8;
 
         public static List<RouteGuideSpan> FullPath(IReadOnlyList<Vector3> points)
         {

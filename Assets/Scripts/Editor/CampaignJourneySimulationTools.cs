@@ -230,7 +230,7 @@ namespace YesterdayConvoy.Editor
                         result.failedStage=number;round.diagnosis="No winning deployment branch within bound; not a proof of impossibility. Remaining guards: "+string.Join(",",best?.survivingDefenders??Array.Empty<string>());
                         round.closingGold=shop.Gold;round.closingLevel=shop.Level;round.closingXP=shop.XP;break;
                     }
-                    if(!context.Run.Observe(winning.Phase,winning.GolemGrowthEarned,golemCapacity:winning.GolemCapacity))throw new InvalidOperationException("Actual run rejected its natural result.");
+                    if(!context.Run.Observe(winning.Phase,winning.GolemGrowthEarned,golemCapacity:winning.GolemCapacity,remainingDefense:winning.Defense,initialDefense:winning.Settings.InitialDefense))throw new InvalidOperationException("Actual run rejected its natural result.");
                     round.baseReward=context.Run.Reward.Base;round.interest=context.Run.Reward.Interest;round.streakReward=context.Run.Reward.Streak;round.experienceReward=context.Run.Reward.Experience;
                     round.closingGold=shop.Gold;round.closingLevel=shop.Level;round.closingXP=shop.XP;round.golemXP=context.Run.GolemExperience;
                     result.completedStages=number;
@@ -633,7 +633,7 @@ namespace YesterdayConvoy.Editor
                 if(c.Run.CanShop&&!c.Run.PrepareBattle())throw new InvalidOperationException("Focused prefix preparation rejected.");
                 var battle=ReplayFight(c,CampaignJourneyCatalog.Stage(round.stage),round.fight);
                 if(battle.Phase!=BattlePhase.Won||!round.won)throw new InvalidOperationException("Focused prefix did not naturally win stage "+round.stage);
-                if(!c.Run.Observe(battle.Phase,battle.GolemGrowthEarned,golemCapacity:battle.GolemCapacity))throw new InvalidOperationException("Focused prefix settlement rejected.");
+                if(!c.Run.Observe(battle.Phase,battle.GolemGrowthEarned,golemCapacity:battle.GolemCapacity,remainingDefense:battle.Defense,initialDefense:battle.Settings.InitialDefense))throw new InvalidOperationException("Focused prefix settlement rejected.");
                 if(shop.Gold!=round.closingGold||shop.Level!=round.closingLevel||shop.XP!=round.closingXP||c.Run.GolemExperience!=round.golemXP)throw new InvalidOperationException("Focused prefix reward or golem XP drift.");
                 if(!c.Run.OpenShop())throw new InvalidOperationException("Focused prefix free shop rejected.");
             }
@@ -692,7 +692,7 @@ namespace YesterdayConvoy.Editor
         }
         static void ObserveRound(Context c,Round round,ManualBattle battle)
         {
-            if(!c.Run.Observe(battle.Phase,battle.GolemGrowthEarned,golemCapacity:battle.GolemCapacity))throw new InvalidOperationException("Natural continuation settlement rejected.");
+            if(!c.Run.Observe(battle.Phase,battle.GolemGrowthEarned,golemCapacity:battle.GolemCapacity,remainingDefense:battle.Defense,initialDefense:battle.Settings.InitialDefense))throw new InvalidOperationException("Natural continuation settlement rejected.");
             round.baseReward=c.Run.Reward.Base;round.interest=c.Run.Reward.Interest;round.streakReward=c.Run.Reward.Streak;round.experienceReward=c.Run.Reward.Experience;
             round.closingGold=c.Shop.Gold;round.closingLevel=c.Shop.Level;round.closingXP=c.Shop.XP;round.golemXP=c.Run.GolemExperience;
         }

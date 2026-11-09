@@ -52,13 +52,14 @@ namespace YesterdayConvoy
             if(session.Results.Any(r=>r.stage==Loop.Stage))return;
             session.Results.Add(new CampaignJourneySession.RoundSummary{stage=Loop.Stage,level=shop.Level,
                 deployments=Battle.Units.Count(u=>!u.SynergySupport),won=Battle.Phase==BattlePhase.Won,
-                supply=JourneyStage.IsSupply,seconds=Battle.Clock,damage=Battle.TotalPlayerDamage});
+                supply=JourneyStage.IsSupply,seconds=Battle.Clock,damage=Battle.TotalPlayerDamage,
+                healthLoss=Loop.LastHealthLoss,remainingHealth=Loop.Health});
             CaptureJourney();
         }
         string JourneyCompletionText()
         {
             var results=CampaignJourneySession.Current.CompletedRounds;
-            return $"{results.Count(r=>!r.supply)}场战斗 · 部署{results.Sum(r=>r.deployments)}次 · {shop.Level}级\n累计伤害 {results.Sum(r=>r.damage):0} · 收藏{shop.Bench.Count}张";
+            return $"{results.Count(r=>!r.supply&&r.won)}/{results.Count(r=>!r.supply)}战突破 · 部署{results.Sum(r=>r.deployments)}次 · {shop.Level}级\n累计伤害 {results.Sum(r=>r.damage):0} · 剩余生命 {Loop.Health}/{Loop.MaxHealth}";
         }
         bool AdvanceJourney()
         {
@@ -128,7 +129,7 @@ namespace YesterdayConvoy
                 var g=next.encounter.defenders[i];
                 GUI.Label(new Rect(x,y+119+i*21,674,22),$"{g.displayName}  · HP {g.health:0}  攻击/治疗 {g.attack:0.#}  护甲 {g.armor:0.#}",CampaignText(12));
             }
-            GUI.Label(new Rect(x,y+230,674,22),"按波开放入口，点击卡牌出兵；余DP不结转，次数/CD跨波保留，截止前突破。",CampaignText(11,color:ApprovedUi.Muted));
+            GUI.Label(new Rect(x,y+230,674,22),$"未突破按剩余防御比例扣生命；{(stage.IsSupply?"下一实战":"本场")}最多扣{CampaignJourneyHealth.DamageLimit(next.stage)}点，后期提高。",CampaignText(11,color:ApprovedUi.Muted));
         }
         [Serializable]sealed class JourneyGuards {public DefenderPlacement[] items;}
     }

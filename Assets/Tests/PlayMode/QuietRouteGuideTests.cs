@@ -65,11 +65,13 @@ namespace YesterdayConvoy.Tests
             var strokes=controller.WaveRouteGuideStrokes().ToArray();
             Assert.That(strokes,Is.Not.Empty);
             Assert.That(strokes.All(stroke=>stroke.LaneId==id),Is.True,"Preview and old-wave routes must replace, rather than stack over, the current guide.");
-            Assert.That(strokes.All(stroke=>stroke.Pulse),Is.True,"The renderer receives only moving dash spans, without a continuous underlay.");
+            Assert.That(strokes.Any(stroke=>!stroke.Pulse),Is.True,"The complete route keeps its white underlay visible between highlights.");
+            Assert.That(strokes.Any(stroke=>stroke.Pulse),Is.True,"The same route also supplies moving highlights.");
+            Assert.That(strokes.Any(stroke=>stroke.Pulse&&stroke.Projection.HeadVisible),Is.True,"Visible highlight heads supply the forward arrows.");
             return strokes;
         }
 
-        [UnityTest]public IEnumerator FormalJourneyUsesTheSameSingleCurrentWaveDashGuideAndGatePreview()
+        [UnityTest]public IEnumerator FormalJourneyUsesTheSameSingleWhiteRouteHighlightsArrowsAndGatePreview()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");
             yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);
@@ -100,8 +102,12 @@ namespace YesterdayConvoy.Tests
             Hover(battle.Lanes.Single(lane=>lane.Id==previous));OnlyRoute(previous);
             ClearHover();var before=OnlyRoute(current);
             controller.Tick(.25f);var moving=OnlyRoute(current);
+            CollectionAssert.AreEqual(before.Where(stroke=>!stroke.Pulse).Select(stroke=>stroke.Projection.From),
+                moving.Where(stroke=>!stroke.Pulse).Select(stroke=>stroke.Projection.From));
+            CollectionAssert.AreEqual(before.Where(stroke=>!stroke.Pulse).Select(stroke=>stroke.Projection.To),
+                moving.Where(stroke=>!stroke.Pulse).Select(stroke=>stroke.Projection.To));
             Assert.That(moving.Select(stroke=>stroke.Projection.To).SequenceEqual(before.Select(stroke=>stroke.Projection.To)),Is.False,
-                "Unpaused simulation must visibly move the dash endpoints along the route.");
+                "Unpaused simulation moves the highlights and arrow heads along the fixed underlay.");
             battle.SetPaused(true);double clock=battle.Clock;var paused=OnlyRoute(current);
             controller.Tick(5);var after=OnlyRoute(current);
             Assert.That(battle.Clock,Is.EqualTo(clock));

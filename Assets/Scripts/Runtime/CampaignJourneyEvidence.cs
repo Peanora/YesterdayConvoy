@@ -107,7 +107,7 @@ namespace YesterdayConvoy
     {
         [Serializable]public sealed class Check {public string name,detail;public bool passed;}
         [Serializable]public sealed class RoundResult
-        {public int stage,deployments,remainingDefense,closingGold,closingLevel,closingXP,portalTrips,breaches,golemXP;public string scene,mapId,outcome;public double seconds,settlementPresentationSeconds;public float damage;public bool supply,passed,settlementVisible;public ActionResult[] actions;}
+        {public int stage,deployments,remainingDefense,closingGold,closingLevel,closingXP,portalTrips,breaches,golemXP,healthLoss,health;public string scene,mapId,outcome;public double seconds,settlementPresentationSeconds;public float damage;public bool supply,passed,settlementVisible;public ActionResult[] actions;}
         [Serializable]public sealed class ActionResult
         {public string kind,cardId,routeId,modelEntity,actualEntity;public double modelAt,actualAt;public bool passed;}
         [Serializable]public sealed class Result
@@ -182,7 +182,7 @@ namespace YesterdayConvoy
             var battle=controller.Battle;
             controller.ProcessShopPointer(EventType.MouseMove,new Vector2(20,700));
             var initial=controller.WaveRouteGuideStrokes();
-            Require("route-default-is-only-current-wave-dashes",initial.Count>0&&initial.All(s=>s.Pulse&&s.Open&&s.LaneId==battle.CurrentWaveLaneId));
+            Require("route-default-is-current-wave-white-line-and-flow",initial.Count>0&&initial.Any(s=>!s.Pulse)&&initial.Any(s=>s.Pulse)&&initial.All(s=>s.Open&&s.LaneId==battle.CurrentWaveLaneId));
             yield return Capture("route-default-paused");
             controller.Tick(3);var frozen=controller.WaveRouteGuideStrokes();
             Require("route-dashes-freeze-with-paused-battle",initial.Count==frozen.Count&&initial.Select((s,i)=>
@@ -190,7 +190,7 @@ namespace YesterdayConvoy
             var other=battle.Lanes.First(l=>l.Id!=battle.CurrentWaveLaneId);
             controller.ProcessShopPointer(EventType.MouseMove,TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(other.Entry)));
             var preview=controller.WaveRouteGuideStrokes();
-            Require("route-hover-replaces-instead-of-stacking",preview.Count>0&&preview.All(s=>s.Pulse&&s.LaneId==other.Id&&!s.Open));
+            Require("route-hover-replaces-instead-of-stacking",preview.Count>0&&preview.Any(s=>!s.Pulse)&&preview.Any(s=>s.Pulse)&&preview.All(s=>s.LaneId==other.Id&&!s.Open));
             yield return Capture("route-other-entry-hover");
             controller.ProcessShopPointer(EventType.MouseMove,new Vector2(20,700));
             Require("route-hover-leave-restores-current-wave",controller.WaveRouteGuideStrokes().All(s=>s.LaneId==battle.CurrentWaveLaneId));
@@ -241,7 +241,7 @@ namespace YesterdayConvoy
             var battle=controller.Battle;var shop=controller.Shop;var loop=controller.Loop;
             double clock=battle.Clock,presentation=controller.PresentationClock;string economy=CampaignJourneyEvidenceProbe.State(shop);
             var phase=battle.Phase;var loopPhase=loop.Phase;var reward=loop.Reward;
-            int dp=battle.DP,defense=battle.Defense,breaches=battle.Breaches,receipts=CampaignJourneySession.Current.CompletedRounds.Count;
+            int dp=battle.DP,defense=battle.Defense,breaches=battle.Breaches,receipts=CampaignJourneySession.Current.CompletedRounds.Count,health=loop.Health;
             float damage=battle.TotalPlayerDamage;
             Require(key+"-has-a-natural-terminal-result",phase==BattlePhase.Won||phase==BattlePhase.Lost);
             // Battle.Advance does not simulate a terminal result. Tick advances the
@@ -253,7 +253,7 @@ namespace YesterdayConvoy
             if(observed!=null){observed.settlementVisible=controller.SettlementVisible;observed.settlementPresentationSeconds=controller.PresentationClock-presentation;}
             Require(key+"-production-settlement-panel-visible",controller.SettlementVisible&&controller.PresentationClock-presentation<=10.001);
             Require(key+"-presentation-keeps-clock-economy-and-result",ReferenceEquals(battle,controller.Battle)&&ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&
-                battle.Clock==clock&&CampaignJourneyEvidenceProbe.State(shop)==economy&&battle.Phase==phase&&loop.Phase==loopPhase&&ReferenceEquals(loop.Reward,reward)&&
+                battle.Clock==clock&&CampaignJourneyEvidenceProbe.State(shop)==economy&&battle.Phase==phase&&loop.Phase==loopPhase&&loop.Health==health&&ReferenceEquals(loop.Reward,reward)&&
                 battle.DP==dp&&battle.Defense==defense&&battle.Breaches==breaches&&battle.TotalPlayerDamage==damage&&CampaignJourneySession.Current.CompletedRounds.Count==receipts);
         }
         void SaveProgress()
@@ -388,7 +388,7 @@ namespace YesterdayConvoy
             observed.actions=actual.ToArray();observed.outcome=battle.Phase.ToString();observed.seconds=battle.Clock;observed.deployments=battle.Units.Count(u=>!u.SynergySupport);
             observed.remainingDefense=battle.Defense;observed.damage=battle.TotalPlayerDamage;observed.portalTrips=battle.ApprovedPortalTrips;observed.breaches=battle.Breaches;
             Require("stage-"+trace.stage+"-all-recorded-actions-replayed",next==actions.Length);
-            Require("stage-"+trace.stage+"-natural-victory",battle.Phase==BattlePhase.Won&&controller.Loop.Phase==(trace.stage==13?BattleShopPhase.Complete:BattleShopPhase.Settlement),
+            Require("stage-"+trace.stage+"-natural-recorded-outcome",battle.Phase==(trace.fight.won?BattlePhase.Won:BattlePhase.Lost)&&controller.Loop.Phase==(trace.stage==13?BattleShopPhase.Complete:BattleShopPhase.Settlement),
                 "actual phase="+battle.Phase+" defense="+battle.Defense+" seconds="+battle.Clock+" damage="+battle.TotalPlayerDamage);
             Require("stage-"+trace.stage+"-matches-model-result",Math.Abs(battle.Clock-trace.fight.seconds)<.11&&battle.Defense==trace.fight.remainingDefense&&battle.DP==trace.fight.dp&&
                 battle.Breaches==trace.fight.breaches&&observed.deployments==trace.fight.deployments&&battle.ApprovedPortalTrips==trace.fight.portalTrips&&Math.Abs(battle.TotalPlayerDamage-trace.fight.damage)<.2f);
@@ -397,9 +397,9 @@ namespace YesterdayConvoy
         {
             result.mode="full-natural-replay";result.replayFile=file;result.completedStages=0;SaveProgress();
             Require("model-trace-file-exists",File.Exists(file));var report=JsonUtility.FromJson<CampaignJourneyReplayReport>(File.ReadAllText(file));
-            var witness=report?.attempts?.FirstOrDefault(a=>a.won&&a.completedStages==13);
+            var witness=report?.attempts?.FirstOrDefault(a=>a.won&&a.completedStages==13||a.failedStage==13&&a.rounds?.Length==13);
             Require("model-trace-has-a-complete-natural-witness",witness!=null);
-            Require("model-trace-has-thirteen-ordered-stages",witness.rounds!=null&&witness.rounds.Select(r=>r.stage).SequenceEqual(Enumerable.Range(1,13))&&witness.rounds.All(r=>r.won&&r.fight!=null&&r.fight.won&&!r.fight.timedObservation));
+            Require("model-trace-has-thirteen-ordered-stages",witness.rounds!=null&&witness.rounds.Select(r=>r.stage).SequenceEqual(Enumerable.Range(1,13))&&witness.rounds.All(r=>r.fight!=null&&!r.fight.timedObservation&&(r.stage==13||r.won&&r.fight.won)));
             result.seed=witness.seed;result.modelPolicy=witness.economyPolicy;controller.BeginJourney(witness.seed);yield return CampaignJourneyEvidenceProbe.Ready(1,c=>controller=c);
             Require("model-role-order-equals-production-pool",report.roleOrder.SequenceEqual(controller.Shop.Roles.Select(r=>r.Id)));
             Require("seed-produces-the-same-random-gift",controller.Shop.Bench.Count==1&&controller.Shop.Bench[0].Id==witness.gift);
@@ -429,6 +429,7 @@ namespace YesterdayConvoy
                 if(trace.stage==13)yield return ShopInterfaceProbe("final");
                 if(controller.Loop.CanShop)Require("stage-"+trace.stage+"-production-prepare",controller.StartLoopNextBattle());
                 yield return CampaignJourneyEvidenceProbe.Ready(trace.stage,c=>controller=c);
+                int goldBeforeResult=shop.Gold,xpBeforeResult=shop.XP,levelBeforeResult=shop.Level,healthBeforeResult=loop.Health;
                 if(stage.IsSupply)
                 {
                     controller.ClaimCampaignSupply();observed.outcome=controller.Battle.Phase.ToString();observed.seconds=controller.Battle.Clock;observed.remainingDefense=controller.Battle.Defense;
@@ -441,8 +442,16 @@ namespace YesterdayConvoy
                     yield return Fight(trace,observed);
                 }
                 var reward=controller.Loop.Reward;observed.closingGold=shop.Gold;observed.closingLevel=shop.Level;observed.closingXP=shop.XP;observed.golemXP=loop.GolemExperience;
-                Require("stage-"+trace.stage+"-exact-natural-reward-and-stock",reward!=null&&reward.Base==trace.baseReward&&reward.Interest==trace.interest&&reward.Streak==trace.streakReward&&reward.Experience==trace.experienceReward&&
-                    shop.Gold==trace.closingGold&&shop.Level==trace.closingLevel&&shop.XP==trace.closingXP&&loop.GolemExperience==trace.golemXP&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                if(trace.won)
+                    Require("stage-"+trace.stage+"-exact-natural-reward-and-stock",reward!=null&&reward.Base==trace.baseReward&&reward.Interest==trace.interest&&reward.Streak==trace.streakReward&&reward.Experience==trace.experienceReward&&
+                        shop.Gold==trace.closingGold&&shop.Level==trace.closingLevel&&shop.XP==trace.closingXP&&loop.GolemExperience==trace.golemXP&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                else
+                    Require("stage-"+trace.stage+"-surviving-setback-base-and-interest-without-streak-or-xp",reward!=null&&!reward.Won&&reward.Base==stage.baseGold&&reward.Interest==Math.Min(5,goldBeforeResult/10)&&reward.Streak==0&&reward.Experience==0&&
+                        shop.Gold==goldBeforeResult+stage.baseGold+Math.Min(5,goldBeforeResult/10)&&shop.Level==levelBeforeResult&&shop.XP==xpBeforeResult&&shop.WinStreak==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                observed.health=loop.Health;observed.healthLoss=loop.LastHealthLoss;
+                int expectedLoss=trace.won?0:CampaignJourneyHealth.CalculateLoss(controller.Battle.Defense,controller.Battle.Settings.InitialDefense,stage.stage);
+                Require("stage-"+trace.stage+"-health-matches-real-gate-progress",loop.LastBattleWon==trace.won&&loop.LastHealthLoss==expectedLoss&&loop.Health==healthBeforeResult-expectedLoss&&
+                    CampaignJourneySession.Current.CompletedRounds.Last().healthLoss==expectedLoss&&CampaignJourneySession.Current.CompletedRounds.Last().remainingHealth==loop.Health);
                 yield return WaitForSettlement("stage-"+trace.stage+"-settlement",observed);
                 observed.passed=true;result.completedStages=trace.stage;SaveProgress();yield return Capture("stage-"+trace.stage.ToString("00")+"-natural-settlement");
                 if(trace.stage<13)Require("stage-"+trace.stage+"-advance-production",controller.OpenLoopShop());

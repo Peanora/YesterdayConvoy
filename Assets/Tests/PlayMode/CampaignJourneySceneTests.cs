@@ -20,6 +20,90 @@ namespace YesterdayConvoy.Tests
         }
         IEnumerator Ready(int stage)=>CampaignJourneyEvidenceProbe.Ready(stage,c=>controller=c);
 
+        IEnumerator NaturalEmptyBattle()
+        {
+            if(controller.Battle.Phase==BattlePhase.Ready)controller.StartBattle();
+            Assert.That(controller.Battle.Phase,Is.EqualTo(BattlePhase.Running));
+            int maximumSteps=(int)Math.Ceiling(controller.Battle.WavePlan.TotalDuration*4)+16;
+            for(int step=0;step<maximumSteps&&controller.Battle.Phase==BattlePhase.Running;step++)
+            {
+                controller.Tick(.25f);
+                if(step%40==0)yield return null;
+            }
+            // With no deployed units the natural loss occurs when the final
+            // deployment window closes; it need not wait for the full deadline.
+            Assert.That(controller.Battle.Phase,Is.EqualTo(BattlePhase.Lost));
+            Assert.That(controller.Battle.FinalAdvanceActive,Is.True);
+            Assert.That(controller.Battle.Units,Is.Empty);
+        }
+
+        [UnityTest]public IEnumerator NaturalEmptyDefeatsConsumeHealthOnceAndContinueAcrossScenesUntilZero()
+        {
+            yield return Begin();yield return CampaignJourneyEvidenceProbe.FirstCombat(c=>controller=c);
+            var session=CampaignJourneySession.Current;var shop=controller.Shop;var loop=controller.Loop;
+            Assert.That(loop.Health,Is.EqualTo(100));Assert.That(loop.MaxHealth,Is.EqualTo(100));
+            int[] damageLimits={20,20,0,30,25,30};
+            int expectedHealth=100;
+            for(int stage=3;stage<=8;stage++)
+            {
+                yield return Ready(stage);
+                Assert.That(controller.Shop,Is.SameAs(shop));Assert.That(controller.Loop,Is.SameAs(loop));
+                Assert.That(CampaignJourneySession.Current,Is.SameAs(session));
+                Assert.That(loop.Health,Is.EqualTo(expectedHealth),"Scene changes must retain challenge health.");
+                Assert.That(controller.StartLoopNextBattle(),Is.True);yield return Ready(stage);
+                if(stage==5)
+                {
+                    controller.ClaimCampaignSupply();controller.ClaimCampaignSupply();
+                    Assert.That(loop.LastHealthLoss,Is.Zero);Assert.That(loop.Health,Is.EqualTo(expectedHealth));
+                    Assert.That(loop.LastBattleWon,Is.True);Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Settlement));
+                }
+                else
+                {
+                    if(stage==4)
+                    {
+                        controller.Battle.SetPaused(true);controller.Tick(30);
+                        Assert.That(loop.Health,Is.EqualTo(80));Assert.That(controller.Battle.Clock,Is.Zero);
+                        Assert.That(controller.RestartCampaignEncounter(),Is.True);yield return Ready(stage);
+                        Assert.That(loop.Health,Is.EqualTo(80),"Restarting combat cannot restore challenge health.");
+                        Assert.That(controller.Battle.Phase,Is.EqualTo(BattlePhase.Ready));
+                    }
+                    int gold=shop.Gold,xp=shop.XP,level=shop.Level;
+                    var definition=CampaignJourneyCatalog.Stage(stage);
+                    yield return NaturalEmptyBattle();
+                    int loss=Math.Min(expectedHealth,damageLimits[stage-3]);
+                    expectedHealth-=loss;
+                    Assert.That(loop.Health,Is.EqualTo(expectedHealth));Assert.That(loop.LastHealthLoss,Is.EqualTo(loss));
+                    Assert.That(loop.LastBattleWon,Is.False);Assert.That(loop.LastInitialDefense,Is.EqualTo(definition.defense));
+                    Assert.That(loop.LastRemainingDefense,Is.EqualTo(definition.defense));
+                    Assert.That(loop.Reward.Won,Is.False);Assert.That(loop.Reward.Base,Is.EqualTo(definition.baseGold));
+                    Assert.That(loop.Reward.Interest,Is.EqualTo(Math.Min(5,gold/10)));Assert.That(loop.Reward.Streak,Is.Zero);
+                    Assert.That(loop.Reward.Experience,Is.Zero);Assert.That(shop.XP,Is.EqualTo(xp));Assert.That(shop.Level,Is.EqualTo(level));
+                    Assert.That(shop.Gold,Is.EqualTo(gold+loop.Reward.Base+loop.Reward.Interest));
+                    var summary=session.CompletedRounds.Last();
+                    Assert.That(summary.stage,Is.EqualTo(stage));Assert.That(summary.won,Is.False);
+                    Assert.That(summary.healthLoss,Is.EqualTo(loss));Assert.That(summary.remainingHealth,Is.EqualTo(expectedHealth));
+                    int settledGold=shop.Gold,receipts=session.CompletedRounds.Count;
+                    controller.Tick(5);controller.Tick(5);
+                    Assert.That(loop.Health,Is.EqualTo(expectedHealth));Assert.That(shop.Gold,Is.EqualTo(settledGold));
+                    Assert.That(session.CompletedRounds.Count,Is.EqualTo(receipts),"Repeated terminal ticks cannot settle twice.");
+                }
+                Assert.That(CampaignJourneyEvidenceProbe.StockConserved(shop),Is.True);
+                if(stage<8)
+                {
+                    Assert.That(expectedHealth,Is.GreaterThan(0));Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Settlement));
+                    Assert.That(session.Ended,Is.False);Assert.That(controller.OpenLoopShop(),Is.True);
+                }
+            }
+            Assert.That(expectedHealth,Is.Zero);Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Failed));
+            Assert.That(session.Ended,Is.True);Assert.That(session.Won,Is.False);
+            Assert.That(controller.OpenLoopShop(),Is.False);Assert.That(controller.RestartCampaignEncounter(),Is.False);
+            controller.BeginJourney(44);yield return Ready(1);
+            Assert.That(CampaignJourneySession.Current,Is.Not.SameAs(session));Assert.That(controller.Loop,Is.Not.SameAs(loop));
+            Assert.That(controller.Loop.Health,Is.EqualTo(100));Assert.That(controller.Loop.LastHealthLoss,Is.Zero);
+            Assert.That(CampaignJourneySession.Current.CompletedRounds,Is.Empty);
+            controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
+        }
+
         [UnityTest]public IEnumerator OrdinarySuppliesKeepRealEconomyFiniteInventoryLockedOffersAndV2FirstCombat()
         {
             yield return Begin();var shop=controller.Shop;var loop=controller.Loop;
