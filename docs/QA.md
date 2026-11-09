@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-09：移除试玩CMD并固定直接EXE交付
+
+- 人类要求项目整洁、试玩CMD删除且以后不要。本轮沿现有交付反馈分支/PR #108继续，fetch核实main仍`7862d09`。删除9个跟踪启动器：根目录2、tools/play下6、商店浏览器预览1；本地Builds/Windows、Windows-WaveBattle与Windows-DeepPool另删除12个旧CMD副本。全部为EXE/HTML快捷启动，无运行依赖，不删除场景、角色、IDE工程文件或缓存。
+- README和现行十三关/八图/树海/羁绊/商店预览说明改为直接EXE或HTML，游戏内菜单名称核对生产代码；Builds/Windows的SOURCE.txt、试玩说明及历史BUILD-INFO指向统一EXE。GDD0.3、CONTRIBUTING、PROJECT_STRUCTURE与仅本地AGENTS登记持续禁用CMD/BAT启动器，旧STATUS/QA条目中的启动器路径仅作为退役历史保留。
+- 仓库检查新增CMD/BAT拦截。完整静态检查 **8188跟踪文件通过**，直接调用检查器验证四种大小写后缀均被拒绝（未创建夹具文件），`git diff --check`与暂存差异核对通过；全量扫描项目自有目录（包括忽略的Builds/artifacts，排除Unity/IDE缓存与.git）无CMD/BAT残留。它们不等于Unity编译或Player试玩。
+- 本轮未运行Unity、EditMode、PlayMode或重新构建/启动Player，因为游戏代码与资源不变。当前EXE SHA256 **B70442F90F50CD91F7AF7BF2272602645FC5D02C4D3156FB221FC27C328D2436**、运行DLL SHA256 **E0FDA0FEA559571CF1752E8F9381F4ACDBA5BE53ECF6F706CDA672D47B2B0F5F**前后相同，仍对应运行源码`a97ec38`，保留上轮实际验证边界。原56份本地文件逐文件SHA256保持，不暂存/提交/stash；AGENTS继续仅本地保留。源码按原PR更新，不自动合并，无ZIP/Releases。
+
 ## 2026-11-09：淡色流动虚线路线指引接入
 
 - 人类确认项目外视觉预览，补充要求虚线与流动感并明确接入。本轮是十三关试玩反馈续改，沿`codex/thirteen-stage-campaign-v2`/PR #108；只读fetch核实main仍`7862d09`，不自动合并。7份运行脚本统一正式Journey/八图/树海的绘制入口，另新增4项GPU交互测试及必要meta。未改保存场景、Prefab、配置数值、Packages或ProjectSettings。

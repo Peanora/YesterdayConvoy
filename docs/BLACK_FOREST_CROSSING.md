@@ -15,7 +15,7 @@
 
 配置入口：`Assets/Data/Resources/Maps/BlackForestCrossing.asset`的`attackWaves`引用`BlackForestWaves.asset`；可以在编辑模式调整每波laneId、DP、deploymentSeconds和finalAdvanceSeconds。运行时读取不可变快照，换波不重置战场。当前预算16/16/18为试玩初值，不是最终平衡。
 
-运行`tools/play_wave_blackforest_trial.cmd`或本地构建目录的“黑流树海波次试玩.cmd”。独立验证使用`-waveBattleSmokeTest -waveEvidenceDir <目录>`；旧`-blackForestSmokeTest`转入同一波次验证，不再执行下文旧任意门拖放诊断。历史六星/普通预置验证不代表本次波次验证；实际结果见QA。
+直接打开`Builds/Windows/YesterdayConvoy.exe`，右上菜单选择“返回测试选择”，再进入“黑流树海 · 波次试玩”。不再提供试玩启动脚本。独立验证使用`-waveBattleSmokeTest -waveEvidenceDir <目录>`；旧`-blackForestSmokeTest`转入同一波次验证，不再执行下文旧任意门拖放诊断。历史六星/普通预置验证不代表本次波次验证；实际结果见QA。
 
 ## 2026-11-08：普通编队与更大取景
 

@@ -10,7 +10,7 @@
 
 ## 先试玩
 
-浏览器：保留整个目录，双击 `open-preview.cmd`，自动使用 Chrome 或 Edge；也可直接打开 `index.html`。默认两星材料，底部可切自由招募、三星、升级、满席两星、满席三星或重置。无需服务器和网络。
+浏览器：保留整个目录，直接用 Chrome 或 Edge 打开 `index.html`。默认两星材料，底部可切自由招募、三星、升级、满席两星、满席三星或重置。无需服务器和网络，不再提供启动脚本。
 
 Unity：本轮新增独立 `Assets/_Game/ShopTrials/ShopMap.unity`，中间使用已有“泵站回廊”地图。Unity 6000.6.5f1 打开后点 Play；Windows 构建、操作和范围见[地图试玩说明](../../SHOP_MAP_TRIAL.md)。原有主场景、地图配置和 Prefab 未改。
 
