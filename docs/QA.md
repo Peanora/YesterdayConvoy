@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-09：白线箭头、玩家生命与后期扣血
+
+- 用户明确确认恢复昨日树海白底线/流动亮段/箭头，并确认进攻方按未完成突破比例扣生命；追加“后期多扣”。本轮延续原十三关功能分支/PR #108，fetch核实main仍7862d09，不合并。开工发现的52份VFX meta仅增加WebGL导入项，无GUID或删除行，按本轮用户“提交修改再继续”单独提交d1ad89b；原未跟踪.vscode/与PackageManagerSettings保留，不暂存。
+- 运行源码ef90658：CampaignJourneyHealth提供100初始生命与3/4/6/7/8/10/11/13关20/20/30/25/30/45/35/60最大损伤；BattleShopLoop将实际Defense/InitialDefense交给BattleShopRun结算，ceil比例、实际损失封底0、重复结算不再扣。生命/单场结果随同一Run跨保存场景，RoundSummary记录扣血/余血；有血败局可下一关，0才Failed，末关生还但未突破显示行动结束/真实突破数。败局基础金币+利息有，XP0、连胜清零；补给/胜利/本关重开不回血或扣血。所有值是本作试玩初值，并非货币战争精确公式。离线搜索工具继续明确只搜索全胜见证，新增真实防御参数不把失败搜索枝当生还通关证据。
+- 完整EditMode **953/953**，无跳过（artifacts/route-health/edit.xml）。相关D3D11 GPU PlayMode两组 **7/7 + 15/15 = 22/22**（play.xml、play-regression.xml）：逐波单路线/悬停替换/地道/固定底线与流动亮段/暂停冻结；自然空场败局跨图从100→80→60→30→5→0，补给保持、结算幂等、基础金利息/失败XP0、重开不回血、新挑战100、0阻进；旧Campaign/商店/树海/波次/安全视口回归。空场败局是最终部署窗关闭后自然判负，未冒称等待总截止。独立算数对1..200初防御、20/25/30/35/45/60上限的121800项边界/单调性检查通过，无临时文件；每战各差1点防御最终17生命只是一组算数情景，不代表通关率。
+- WaveBattleTools.BuildWindows真实Windows x64 Development **1068071567 bytes / 0 errors / 退出0**（build.log），动态完整保存场景目录，不改工程设置。完整同步Builds/Windows并写SOURCE.txt绑定ef90658，实际运行DLL SHA256两目录一致：24AF7B3222BE986A7AFA82DA0B8D8A0CCAFF83BA3B8A9B2FC6EB31E0F1C2F11F。直接打开EXE，默认十三关，无新建/复制CMD或BAT。
+- 同一EXE从工程外TEMP启动，可见D3D11 **1600×900 16231/16231、1280×720 16218/16218，均退出0**（player-visible-1600/、player-visible-1280/与对应日志/exit.txt）。两次完整真实13节点、8地图重放：1600用既有focused-eleventh-burst合法命令，前7战胜、终战自然Lost202秒/剩防御2/6/8部署/伤害8960.5752，按末关上限60扣20，生命80，基础+7/XP0/连胜0，显示7/8战突破和行动结束；1280用focused-thirteenth全胜见证，终战Won200.4秒/剩防御0、生命100，金币10/7级4XP，显示8/8突破。两者不注血、不强制胜负，商品/库存/经济、动作时序、伤害、穿门与模型源记录一致；源Journey/Encounter/Waves不回写。已查看实际路线白线箭头、顶端生命HUD、两尺寸结算图，生命块与巨像反馈不重叠。
+- 首次Hidden窗口1600重放完成，所有功能结果一致，但34项visible-frame检查因黑帧失败、退出1；保留player-1600/原始证据，不将其称为通过或删除掩盖。随后同一源码/EXE在可见窗口重跑，全部画面及功能检查通过。未运行完整PlayMode、第二机/新克隆、真实OS鼠标、全部随机构筑或人类难度统计；本轮不会用固定见证推断后期难度已达标。仓库静态检查8190跟踪文件通过，无场景/Prefab/Packages/ProjectSettings改动，无ZIP/Releases或自动合并。
+
 ## 2026-11-09：移除试玩CMD并固定直接EXE交付
 
 - 人类要求项目整洁、试玩CMD删除且以后不要。本轮沿现有交付反馈分支/PR #108继续，fetch核实main仍`7862d09`。删除9个跟踪启动器：根目录2、tools/play下6、商店浏览器预览1；本地Builds/Windows、Windows-WaveBattle与Windows-DeepPool另删除12个旧CMD副本。全部为EXE/HTML快捷启动，无运行依赖，不删除场景、角色、IDE工程文件或缓存。
