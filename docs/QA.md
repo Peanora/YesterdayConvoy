@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-09：淡色流动虚线路线指引接入
+
+- 人类确认项目外视觉预览，补充要求虚线与流动感并明确接入。本轮是十三关试玩反馈续改，沿`codex/thirteen-stage-campaign-v2`/PR #108；只读fetch核实main仍`7862d09`，不自动合并。7份运行脚本统一正式Journey/八图/树海的绘制入口，另新增4项GPU交互测试及必要meta。未改保存场景、Prefab、配置数值、Packages或ProjectSettings。
+- 旧正式地图入口`DrawApprovedMapRoutes`原来常驻全部路线，树海入口另画当前及存活旧波路线，两处现共用`WaveRouteGuideStrokes → DrawWaveRoutes`。仅生成实际移动折线的流动dash，间距2.2格/长度0.46格/速度0.8格每模拟秒，灰蓝alpha0.34（红门预览0.52）/宽1.15画布像素，无连续底线/描边/箭头。同一时刻只有一条路线，悬停/拖到红门替换默认路线，移出恢复；旧波不常驻、最终推进无默认线、地道跳跃段过滤。GUI重绘同时采集真实指针位置变化，不依赖单独MouseMove事件。
+- Unity6000.6.5f1完整EditMode **918/918**、0失败/跳过（`artifacts/quiet-routes/edit.xml/log`）；相关D3D11 GPU PlayMode **28/28**、0失败/跳过（`play.xml/log`），含新增`QuietRouteGuideTests`4项。真实正式第3关、树海跨波仍存活旧兵、悬停替换/移出、前向流动/暂停、末段活兵但隐藏路线、Map04地道连接段不绘制均通过。复用生产指针与等待接口，无反射注血或强制结果。
+- 最终运行源码 **a97ec38d1ce2f9176849099264fad4ad5a0e9ce5**，真实Windows x64 Development构建 **1068065343 bytes / 0 errors / 退出0**（`build.log`）。常用`Builds/Windows/YesterdayConvoy.exe`已更新；运行DLL SHA256 **E0FDA0FEA559571CF1752E8F9381F4ACDBA5BE53ECF6F706CDA672D47B2B0F5F**。SOURCE.txt记录同一源码与本轮测试，不把旧完整十三关重放登记为本构建的新验证。
+- 从工程外TEMP启动可见D3D11最终EXE：正式流程准备/部署/重开与路线短测 **1600×900 68/68、1280×720 40/40**、均退出0（`player-1600/1280/journey-result.json`）。当前路线只含虚线、另一红门预览替换、移出恢复、模拟前进与暂停冻结均通过；实际查看1600流动中与1280另一红门预览PNG。1600额外保存28张按0.1模拟秒推进的真实完整屏幕帧，编码`artifacts/quiet-routes/route-flow-actual.gif`，仅格式编码、无生成补帧；检查数差28来自额外帧可见性检查。程序走生产事务/指针API，不冒称真实OS鼠标。
+- 同一最终EXE树海 **1280×720 75/75**、退出0（`forest-1280/result.json`）：三波当前路线/实际移动投影/暂停/门禁/次数CD/排行/死亡详情/重开等通过，实际交战PNG已查看。稀疏4部署仍自然255秒TimedOut/Lost；独立合法16部署固定种子策略仍自然 **Won193.400000000013秒、实际伤害7302.60009765625**，与前次不变，无注伤害或强制胜负。
+- 交付前原56份本地文件逐文件SHA256保持，52份VFX meta与.vscode/PackageManagerSettings未暂存或提交；暂存仅本轮明确文件。静态仓库检查 **8197跟踪文件通过**，不代替Unity。规则同步GDD/STATUS，源码推送原PR，保留前序#107/#106依赖；无ZIP、Releases或自动合并。
+- 本轮未重跑最终EXE的完整十三关重放、全PlayMode、第二机/新克隆、真实OS无按键悬停及人类主观亮度/流动手感；原有完整流程证据仅作为上一版本历史保留。未修改战斗数值，不据树海固定策略推广总体通关率。
+
 ## 2026-11-09：十三关试玩反馈修订与最终Windows试玩
 
 - 本轮沿原十三关分支更新，远端main核实仍7862d09；原56个本地文件沿此前确认保留。范围是正式Journey经济/波次/本场守军和商店信息UI，不改保存地形、原独立试验参数、Packages或ProjectSettings。
