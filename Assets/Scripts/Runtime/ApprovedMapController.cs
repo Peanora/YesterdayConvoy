@@ -51,32 +51,15 @@ namespace YesterdayConvoy
         }
         void DrawApprovedMapRoutes(GUIStyle label)
         {
-            DeploymentLane selected=null;
-            if(shopDrag>=0&&shopMoving&&PointerGround(ScreenPosition(shopPointer),out var world))selected=Battle.FindEntryLane(world);
-            foreach(var lane in Battle.Lanes)
+            DrawWaveRoutes();
+            var selected=RoutePreviewLane();
+            if(selected==null)return;
+            foreach(var portal in ApprovedMap.mechanics.portals??Array.Empty<ApprovedPortal>())if(portal.routeId==selected.Id)
             {
-                if(selected!=null&&lane.Id!=selected.Id)continue;
-                Color tint=selected==null?new Color(.8f,.9f,.93f,.32f):new Color(1,.78f,.32f,.9f);
-                foreach(var span in RouteGuideGeometry.FullPath(lane.Points))
-                {
-                    if(Battle.ApprovedPortalSegment(lane.Id,span.EdgeIndex))continue;
-                    var a=GUIPosition(Camera.main.WorldToScreenPoint(span.From+Vector3.up*.04f));
-                    var b=GUIPosition(Camera.main.WorldToScreenPoint(span.To+Vector3.up*.04f));ShopLine(a,b,tint,selected==null?1:2);
-                }
-                foreach(var span in RouteGuideGeometry.Pulses(lane.Points,Battle.Clock))
-                {
-                    if(Battle.ApprovedPortalSegment(lane.Id,span.EdgeIndex))continue;
-                    var a=GUIPosition(Camera.main.WorldToScreenPoint(span.From+Vector3.up*.05f));
-                    var b=GUIPosition(Camera.main.WorldToScreenPoint(span.To+Vector3.up*.05f));ShopLine(a,b,new Color(1,1,1,.8f),2);
-                }
-                if(selected==null)continue;
-                foreach(var portal in ApprovedMap.mechanics.portals??Array.Empty<ApprovedPortal>())if(portal.routeId==lane.Id)
-                {
-                    var p=GUIPosition(Camera.main.WorldToScreenPoint(lane.Points[portal.sourcePointIndex]));
-                    var q=GUIPosition(Camera.main.WorldToScreenPoint(lane.Points[portal.destinationPointIndex]));
-                    GUI.Label(new Rect(p.x-65,p.y-30,130,24),"地道 · "+portal.transitSeconds.ToString("0.#")+"秒",new GUIStyle(label){alignment=TextAnchor.MiddleCenter,fontSize=13});
-                    GUI.Label(new Rect(q.x-40,q.y-30,80,24),"地道出口",new GUIStyle(label){alignment=TextAnchor.MiddleCenter,fontSize=13});
-                }
+                var p=GUIPosition(Camera.main.WorldToScreenPoint(selected.Points[portal.sourcePointIndex]));
+                var q=GUIPosition(Camera.main.WorldToScreenPoint(selected.Points[portal.destinationPointIndex]));
+                GUI.Label(new Rect(p.x-65,p.y-30,130,24),"地道 · "+portal.transitSeconds.ToString("0.#")+"秒",new GUIStyle(label){alignment=TextAnchor.MiddleCenter,fontSize=13});
+                GUI.Label(new Rect(q.x-40,q.y-30,80,24),"地道出口",new GUIStyle(label){alignment=TextAnchor.MiddleCenter,fontSize=13});
             }
         }
     }

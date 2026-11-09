@@ -67,6 +67,7 @@ namespace YesterdayConvoy
         {
             EnsureStyles();var e=Event.current;
             Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
+            TrackRouteHover(point);
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape&&(loopMenuOpen||loopTestSettlementOpen))
             {loopMenuOpen=loopTestSettlementOpen=false;CancelShopDrag();e.Use();}
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Space)e.Use();

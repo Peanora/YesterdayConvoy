@@ -170,11 +170,42 @@ namespace YesterdayConvoy
             string card=controller.Battle.Cards[0].Settings.CardId;Require("production-pointer-deployment",CampaignJourneyEvidenceProbe.Drag(controller,card,controller.Battle.CurrentWaveLaneId,out _));
             controller.Battle.SetPaused(true);double clock=controller.Battle.Clock;double cd=controller.Battle.CardCooldown(card);controller.Tick(5);
             Require("pause-freezes-combat-clock-and-deployment-cooldown",controller.Battle.Clock==clock&&controller.Battle.CardCooldown(card)==cd);
+            yield return RouteGuideProbe();
             string before=CampaignJourneyEvidenceProbe.State(shop);Require("production-current-encounter-restart",controller.RestartCampaignEncounter());yield return CampaignJourneyEvidenceProbe.Ready(3,c=>controller=c);
             Require("restart-keeps-shop-and-seed-without-reroll",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop)&&CampaignJourneyEvidenceProbe.State(shop)==before&&controller.Battle.Clock==0&&controller.Battle.Units.Count==0&&controller.Battle.DP==10&&CampaignJourneySession.Current.Seed==44);
             yield return Capture("02-current-encounter-restarted");controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);yield return null;
             Require("exit-clears-session-and-restores-selector",CampaignJourneySession.Current==null&&SceneManager.GetActiveScene().name=="MonsterTrial"&&controller.TestSelectionOpen&&!controller.JourneyActive&&!controller.ShopTrialActive);
             yield return Capture("03-returned-to-selection");
+        }
+        IEnumerator RouteGuideProbe()
+        {
+            var battle=controller.Battle;
+            controller.ProcessShopPointer(EventType.MouseMove,new Vector2(20,700));
+            var initial=controller.WaveRouteGuideStrokes();
+            Require("route-default-is-only-current-wave-dashes",initial.Count>0&&initial.All(s=>s.Pulse&&s.Open&&s.LaneId==battle.CurrentWaveLaneId));
+            yield return Capture("route-default-paused");
+            controller.Tick(3);var frozen=controller.WaveRouteGuideStrokes();
+            Require("route-dashes-freeze-with-paused-battle",initial.Count==frozen.Count&&initial.Select((s,i)=>
+                s.Projection.From==frozen[i].Projection.From&&s.Projection.To==frozen[i].Projection.To).All(same=>same));
+            var other=battle.Lanes.First(l=>l.Id!=battle.CurrentWaveLaneId);
+            controller.ProcessShopPointer(EventType.MouseMove,TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(other.Entry)));
+            var preview=controller.WaveRouteGuideStrokes();
+            Require("route-hover-replaces-instead-of-stacking",preview.Count>0&&preview.All(s=>s.Pulse&&s.LaneId==other.Id&&!s.Open));
+            yield return Capture("route-other-entry-hover");
+            controller.ProcessShopPointer(EventType.MouseMove,new Vector2(20,700));
+            Require("route-hover-leave-restores-current-wave",controller.WaveRouteGuideStrokes().All(s=>s.LaneId==battle.CurrentWaveLaneId));
+            controller.Battle.SetPaused(false);
+            int frames=Array.IndexOf(Environment.GetCommandLineArgs(),"-routeFlowFrames")>=0?28:1;
+            for(int i=0;i<frames;i++)
+            {
+                if(frames>1)yield return Capture("route-flow-"+i.ToString("D2"));
+                controller.Tick(frames>1?.1f:.25f);
+            }
+            var moved=controller.WaveRouteGuideStrokes();
+            Require("route-dashes-flow-forward-on-production-clock",battle.Clock>0&&moved.Count>0&&
+                (initial.Count!=moved.Count||initial.Select((s,i)=>Vector2.Distance(s.Projection.From,moved[i].Projection.From)>.01f||
+                    Vector2.Distance(s.Projection.To,moved[i].Projection.To)>.01f).Any(different=>different)));
+            battle.SetPaused(true);yield return Capture("route-flow-end-paused");
         }
         IEnumerator ShopInterfaceProbe(string suffix)
         {

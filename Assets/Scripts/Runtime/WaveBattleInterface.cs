@@ -9,6 +9,8 @@ namespace YesterdayConvoy
     {
         int waveClickInstance=-1,waveClickRun,waveClickIndex;
         Vector2 waveClickStart;
+        Vector2 routeLastGuiPointer;
+        bool routeGuiPointerKnown;
         bool WaveClickBattle=>ShopTrialActive&&Battle!=null&&Battle.WavesEnabled&&
             (Loop==null?Battle.Phase==BattlePhase.Running:Loop.CanDeploy&&!Loop.CanShop);
 
@@ -112,28 +114,41 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(747,35,253,15),$"总截止剩余 {WaveClockText(Battle.BattleTimeRemaining)} · 余量不结转",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
         }
 
-        // Visible-Player evidence can inspect these same projected path segments and moving pulse tips.
+        // Repaint also sees pointer motion when the Player sends no MouseMove event.
+        void TrackRouteHover(Vector2 point)
+        {
+            if(!routeGuiPointerKnown||point!=routeLastGuiPointer)shopPointer=point;
+            routeLastGuiPointer=point;routeGuiPointerKnown=true;
+        }
+
+        // A preview replaces the current guide instead of layering another route over it.
+        DeploymentLane RoutePreviewLane()
+        {
+            if(Battle==null||!ShopMapPointAvailable(shopPointer)||
+                !PointerGround(ScreenPosition(shopPointer),out var world))return null;
+            return Battle.FindEntryLane(world);
+        }
+
+        // Both the campaign maps and forest render this same route-distance dash geometry.
         public IReadOnlyList<WaveRouteGuideStroke> WaveRouteGuideStrokes()
         {
             var result=new List<WaveRouteGuideStroke>();
-            if(Battle==null||!Battle.WavesEnabled||Camera.main==null)return result;
-            var occupied=new HashSet<string>(Battle.Units.Where(u=>u.Active).Select(u=>u.RouteId));
-            string current=Battle.CurrentWaveLaneId;
+            if(Battle==null||Camera.main==null||Battle.Phase==BattlePhase.Won||Battle.Phase==BattlePhase.Lost)return result;
+            var lane=RoutePreviewLane();
+            if(lane==null&&Battle.WavesEnabled&&Battle.DeploymentWindowOpen)
+                lane=Battle.Lanes.FirstOrDefault(item=>item.Id==Battle.CurrentWaveLaneId);
+            if(lane==null)return result;
+            bool open=Battle.WavesEnabled&&lane.Id==Battle.CurrentWaveLaneId&&Battle.DeploymentWindowOpen;
             var clip=new Rect(0,62,1280,488);var view=TacticalViewport.Current;var camera=Camera.main;
-            foreach(var lane in Battle.Lanes.OrderBy(l=>l.Id==current?1:0))
-            {
-                bool open=lane.Id==current&&Battle.DeploymentWindowOpen;
-                if(!open&&!occupied.Contains(lane.Id))continue;
-                AppendWaveRouteStrokes(result,lane,false,open,RouteGuideGeometry.FullPath(lane.Points),camera,view,clip);
-                AppendWaveRouteStrokes(result,lane,true,open,RouteGuideGeometry.Pulses(lane.Points,Battle.Clock),camera,view,clip);
-            }
+            AppendWaveRouteStrokes(result,lane,true,open,RouteGuideGeometry.Pulses(lane.Points,Battle.Clock),camera,view,clip);
             return result;
         }
-        static void AppendWaveRouteStrokes(List<WaveRouteGuideStroke> result,DeploymentLane lane,bool pulse,bool open,
+        void AppendWaveRouteStrokes(List<WaveRouteGuideStroke> result,DeploymentLane lane,bool pulse,bool open,
             List<RouteGuideSpan> spans,Camera camera,TacticalViewport view,Rect clip)
         {
             foreach(var span in spans)
-                if(RouteGuideGeometry.TryProject(span,camera.WorldToScreenPoint,view,clip,out var projection))
+                if(!Battle.ApprovedPortalSegment(lane.Id,span.EdgeIndex)&&
+                    RouteGuideGeometry.TryProject(span,camera.WorldToScreenPoint,view,clip,out var projection))
                     result.Add(new WaveRouteGuideStroke(lane.Id,open,pulse,projection));
         }
         void DrawWaveRoutes()
@@ -141,22 +156,9 @@ namespace YesterdayConvoy
             if(Event.current.type!=EventType.Repaint)return;
             // No BeginGroup: rotating GUI.matrix inside a group also transforms its clip/origin.
             // All endpoints remain in the same 1280x720 canvas as projected unit feet and HUD.
+            Color color=new Color(.72f,.84f,.88f,RoutePreviewLane()!=null?.52f:.34f);
             foreach(var stroke in WaveRouteGuideStrokes())
-            {
-                var p=stroke.Projection;
-                if(!stroke.Pulse)
-                {
-                    DrawWaveRouteStroke(p.From,p.To,new Color(1,1,1,stroke.Open?.18f:.055f),1);
-                    continue;
-                }
-                Color color=new Color(1,1,1,stroke.Open?.96f:.22f);
-                if(stroke.Open)DrawWaveRouteStroke(p.From,p.To,new Color(.015f,.025f,.035f,.7f),4);
-                DrawWaveRouteStroke(p.From,p.To,color,2);
-                if(!p.HeadVisible)continue;
-                Vector2 direction=(p.To-p.From).normalized,wing=new Vector2(-direction.y,direction.x)*2.5f;
-                DrawWaveRouteStroke(p.To-direction*4+wing,p.To,color,1.6f);
-                DrawWaveRouteStroke(p.To-direction*4-wing,p.To,color,1.6f);
-            }
+                DrawWaveRouteStroke(stroke.Projection.From,stroke.Projection.To,color,1.15f);
         }
         static void DrawWaveRouteStroke(Vector2 from,Vector2 to,Color color,float width)
         {

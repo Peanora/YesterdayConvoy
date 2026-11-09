@@ -10,16 +10,7 @@ namespace YesterdayConvoy
     {
         void DrawBlackForestRouteLabels(GUIStyle label)
         {
-            if(Battle.WavesEnabled){DrawWaveRoutes();return;}
-            DeploymentLane selected=null;
-            if(shopDrag>=0&&shopMoving&&PointerGround(ScreenPosition(shopPointer),out var world))selected=Battle.FindEntryLane(world);
-            if(selected==null)return;
-            Color color=new Color(1,.77f,.34f);
-            for(int i=1;i<selected.Points.Count;i++){
-                Vector2 a=GUIPosition(Camera.main.WorldToScreenPoint(selected.Points[i-1]+Vector3.up*.04f)),b=GUIPosition(Camera.main.WorldToScreenPoint(selected.Points[i]+Vector3.up*.04f));
-                ShopLine(a,b,color,2);Vector2 mid=Vector2.Lerp(a,b,.55f),direction=(b-a).normalized,wing=new Vector2(-direction.y,direction.x)*4;
-                ShopLine(mid-direction*7+wing,mid,color);ShopLine(mid-direction*7-wing,mid,color);
-            }
+            DrawWaveRoutes();
         }
         public IEnumerator PrepareBlackForest(DefenderTrialDefinition encounter)
         {

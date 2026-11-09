@@ -120,6 +120,7 @@ namespace YesterdayConvoy
         void DrawApprovedStandaloneShop()
         {
             EnsureStyles();var e=Event.current;Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
+            TrackRouteHover(point);
             if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape&&(loopMenuOpen||shopOddsOpen)){loopMenuOpen=shopOddsOpen=false;CancelShopDrag();e.Use();}
             if(!loopMenuOpen&&!shopOddsOpen&&ShopPointerEvent(e.type,point,e.button))e.Use();
             EventType originalEvent=e.type;bool suppressed=(loopMenuOpen||shopOddsOpen)&&originalEvent!=EventType.Repaint&&originalEvent!=EventType.Layout;
