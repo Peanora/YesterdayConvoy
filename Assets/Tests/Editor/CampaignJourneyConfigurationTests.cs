@@ -8,6 +8,31 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class CampaignJourneyConfigurationTests
     {
+        static readonly string[] SixStarIds=Enumerable.Range(21,10).Select(i=>"D"+i).ToArray();
+        [TestCase(9,4)][TestCase(10,5)][TestCase(12,8)]
+        public void LateCampaignUsesDistinctSixStarOperatorsWithTheirOwnSkillTemplates(int number,int count)
+        {
+            var stage=CampaignJourneyCatalog.Stage(number);
+            var elite=stage.encounter.defenders.Where(g=>SixStarIds.Contains(g.artId)).ToArray();
+            Assert.That(elite.Length,Is.EqualTo(count));
+            Assert.That(elite.Select(g=>g.artId).Distinct().Count(),Is.EqualTo(count),"Six-star pressure must come from distinct operators, not repeated copies.");
+            foreach(var guard in elite)
+            {
+                var template=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+guard.id).defenders.Single(g=>g.id==guard.id);
+                Assert.That(guard.artId,Is.EqualTo(template.artId));
+                Assert.That(guard.skill.kind,Is.EqualTo(template.skill.kind),"Replacing a slot must also replace the old occupant's skill: "+guard.id);
+                Assert.That(guard.skill.Snapshot().Enabled,Is.True);
+                var tuning=stage.guardTuning.Single(g=>g.id==guard.id);
+                Assert.That(tuning.parameters.Select(p=>p.key).Distinct().Count(),Is.EqualTo(tuning.parameters.Length));
+                Assert.That(tuning.parameters.All(p=>!float.IsNaN(p.value)&&!float.IsInfinity(p.value)),Is.True);
+                Assert.That(stage.GuardValue(guard.id,"requiredSP",-1),Is.EqualTo(guard.skill.requiredSP));
+                Assert.That(stage.GuardValue(guard.id,"duration",-1),Is.EqualTo(guard.skill.duration));
+            }
+            if(number==12)
+                Assert.That(elite.Select(g=>g.id),Is.EquivalentTo(new[]{"D21","D24","D25","D26","D27","D28","D29","D30"}),
+                    "The final defense has eight approved six-stars; Yu's global regeneration is not part of this change.");
+        }
+
         [Test] public void FormalJourneyStartsAtProcurementAndHasFourSupplyReceiptsAndEightApprovedMapBattles()
         {
             var journey = CampaignJourneyCatalog.Current; Assert.That(journey, Is.Not.Null); Assert.DoesNotThrow(journey.Validate);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -102,6 +103,92 @@ namespace YesterdayConvoy.Tests
             var origin=placements[0].position+Vector3.right*.4f;
             var battle=new ManualBattle(settings,new[]{origin,origin+Vector3.forward*100},Vector3.one*1000,combat,roster:placements.Select(p=>p.Snapshot()).ToArray());
             battle.ConfigureCampaignV2(stage);return battle;
+        }
+
+        static (ManualBattle battle,DefenderState guard,DeployedUnitState unit) StartedGuard(int stage,string id)
+        {
+            var data=CampaignJourneyCatalog.Stage(stage);string original=JsonUtility.ToJson(data.encounter);
+            var placement=data.CopyDefenders().Single(p=>p.id==id);var battle=DefenderModel(stage,new[]{placement});var unit=Deploy(battle);
+            var guard=battle.Defenders[0];
+            for(int i=0;i<2400&&guard.SkillCasts==0;i++)battle.Advance(.05f);
+            Assert.That(guard.SkillCasts,Is.EqualTo(1),"The authored "+id+" skill must activate naturally.");
+            Assert.That(JsonUtility.ToJson(data.encounter),Is.EqualTo(original));
+            return(battle,guard,unit);
+        }
+        static void SetState(object target,string name,object value)
+        {
+            const BindingFlags flags=BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
+            var property=target.GetType().GetProperty(name,flags);
+            if(property!=null)property.SetValue(target,value);else target.GetType().GetField(name,flags).SetValue(target,value);
+        }
+
+        [TestCase(10)][TestCase(12)]public void FormalLapplandUsesAuthoredContactFearRampCapAndAreaDamage(int stage)
+        {
+            var(b,d,u)=StartedGuard(stage,"D21");var data=CampaignJourneyCatalog.Stage(stage);
+            float Value(string key)=>data.GuardValue(d.EntityId,key,float.NaN);
+            for(int i=0;i<800&&d.FearApplications==0;i++)b.Advance(.01f);
+            Assert.That(d.FearApplications,Is.GreaterThan(0));Assert.That(u.FearUntil-b.Clock,Is.EqualTo(Value("droneContactFear")).Within(.02));
+            b.Advance(10);
+            Assert.That(b.DefenderDrones.Count,Is.GreaterThan(0));Assert.That(b.DefenderDrones.Max(v=>v.Ramp),Is.EqualTo(Value("droneRampCap")).Within(.001));
+            SetState(u,"Health",10000f);SetState(u,"NextDroneAreaAt",b.Clock);
+            float health=u.Health;Call(b,"StepDefenderDrones",0f);
+            Assert.That(health-u.Health,Is.EqualTo(b.DefenderSkillAttack(d)*Value("droneAreaAttackFraction")).Within(.02),"Area damage must use its own budget, independently of the direct drone shot.");
+        }
+
+        [TestCase(10)][TestCase(12)]public void FormalSilverAshUsesAuthoredBudgetAndVulnerabilityOnActualHits(int stage)
+        {
+            var(b,d,u)=StartedGuard(stage,"D26");var data=CampaignJourneyCatalog.Stage(stage);
+            float Value(string key)=>data.GuardValue(d.EntityId,key,float.NaN);
+            Assert.That(b.DefenderBudget,Is.EqualTo(Value("independentBudgetInitial")+Value("budgetInstant")).Within(.05));
+            for(int i=0;i<600&&u.VulnerableUntil<=b.Clock;i++)b.Advance(.01f);
+            Assert.That(u.VulnerableUntil,Is.GreaterThan(b.Clock));Assert.That(u.Vulnerability,Is.EqualTo(Value("vulnerability")));
+            Assert.That(u.VulnerableUntil-b.Clock,Is.EqualTo(Value("vulnerabilitySeconds")).Within(.02));
+            float elapsed=(float)(b.Clock-d.SkillStartedAt);
+            Assert.That(b.DefenderBudget,Is.EqualTo(Value("independentBudgetInitial")+Value("budgetInstant")+Value("budgetDuringSkillTotal")*elapsed/d.Settings.Skill.Duration).Within(.05));
+            b.SetPaused(true);float budget=b.DefenderBudget;double clock=b.Clock;b.Advance(20);
+            Assert.That(b.Clock,Is.EqualTo(clock));Assert.That(b.DefenderBudget,Is.EqualTo(budget));
+        }
+
+        [TestCase(9)][TestCase(12)]public void FormalPramanixUsesAuthoredLureSnowDamageAndSlowWithoutRepeatEntryDamage(int stage)
+        {
+            var(b,d,u)=StartedGuard(stage,"D27");var data=CampaignJourneyCatalog.Stage(stage);
+            float Value(string key)=>data.GuardValue(d.EntityId,key,float.NaN);
+            Assert.That(u.LureUntil-b.Clock,Is.EqualTo(Value("lureDuration")).Within(.02));
+            ((IList)typeof(ManualBattle).GetField("snowCells",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(b)).Clear();
+            SetState(d,"NextSnowAt",b.Clock);SetState(u,"Health",10000f);
+            float health=u.Health;int hits=d.SnowHits;Call(b,"StepSixthDefenders",0f);
+            Assert.That(d.SnowHits-hits,Is.GreaterThan(0));
+            Assert.That(health-u.Health,Is.EqualTo((d.SnowHits-hits)*d.Settings.Attack*Value("snowEntryAttackFraction")).Within(.02));
+            Assert.That(d.NextSnowAt-b.Clock,Is.EqualTo(Value("snowIntervalSkill")).Within(.001));
+            Assert.That(u.SnowMove,Is.EqualTo(1-Value("snowSlowPerLayer")).Within(.001));
+            health=u.Health;Call(b,"StepSixthDefenders",0f);Assert.That(u.Health,Is.EqualTo(health),"Remaining on a snow cell must not repeat its entry damage.");
+        }
+
+        [TestCase(9)][TestCase(12)]public void FormalWangUsesAuthoredAmmunitionExtraPiecesAndTrapDamage(int stage)
+        {
+            var(b,d,u)=StartedGuard(stage,"D28");var data=CampaignJourneyCatalog.Stage(stage);
+            float Value(string key)=>data.GuardValue(d.EntityId,key,float.NaN);
+            Assert.That(d.Ammo,Is.InRange((int)(Value("ammo")-Value("extraPiecesPerPlacement")),(int)Value("ammo")));
+            ((IList)typeof(ManualBattle).GetField("chessPieces",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(b)).Clear();
+            SetState(d,"NextSixthAt",b.Clock+100);SetState(u,"Health",10000f);
+            int ammo=d.Ammo;float health=u.Health;int triggered=d.ChessTriggers;
+            Call(b,"AddChess",d,u.Motion.Position,true);
+            Assert.That(ammo-d.Ammo,Is.EqualTo((int)Value("extraPiecesPerPlacement")));
+            Assert.That(b.ChessPieces.Count,Is.EqualTo(1+(int)Value("extraPiecesPerPlacement")));
+            Call(b,"StepSixthDefenders",0f);Assert.That(d.ChessTriggers-triggered,Is.EqualTo(1));
+            Assert.That(health-u.Health,Is.EqualTo(d.Settings.Attack*Value("trapAttackMultiplier")).Within(.02));
+            ((IList)typeof(ManualBattle).GetField("chessPieces",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(b)).Clear();
+            SetState(d,"NextSixthAt",b.Clock);Call(b,"StepSixthDefenders",0f);
+            Assert.That(d.NextSixthAt-b.Clock,Is.EqualTo(Value("placementInterval")).Within(.001));
+        }
+
+        [TestCase(10)][TestCase(12)]public void FormalExusiaiKeepsShootingWhenTheSkillUsesOrdinaryRange(int stage)
+        {
+            var(b,d,u)=StartedGuard(stage,"D24");int ammo=d.Ammo;float health=u.Health;
+            Assert.That(b.DefenderRange(d),Is.GreaterThan(0),"A zero radius means ordinary range, not a disabled gun.");
+            for(int i=0;i<400&&!b.CombatShots.Any(s=>s.FromDefender&&s.Empowered&&s.SourceId==d.EntityId&&s.Applied);i++)b.Advance(.01f);
+            var shots=b.CombatShots.Where(s=>s.FromDefender&&s.Empowered&&s.SourceId==d.EntityId&&s.Applied).ToArray();
+            Assert.That(shots,Is.Not.Empty);Assert.That(u.Health,Is.LessThan(health),"An applied defender shell must damage its actual target.");Assert.That(d.Ammo,Is.LessThan(ammo));
         }
 
         [TestCase(9,1.45f,1f,14,7)][TestCase(12,1.5f,1.25f,16,8)]

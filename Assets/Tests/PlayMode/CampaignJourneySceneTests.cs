@@ -20,6 +20,61 @@ namespace YesterdayConvoy.Tests
             controller.BeginJourney(44);yield return CampaignJourneyEvidenceProbe.Ready(1,c=>controller=c);
         }
         IEnumerator Ready(int stage)=>CampaignJourneyEvidenceProbe.Ready(stage,c=>controller=c);
+        [UnityTest]public IEnumerator LateSavedScenesBindTheirSixStarRosterAndRestartWithoutMutatingSource()
+        {
+            yield return Begin();var shop=controller.Shop;
+            // Explicit saved-stage fixture: checks the production scene/roster binding,
+            // not acquisition or natural progression through the earlier battles.
+            string journeyBefore=JsonUtility.ToJson(CampaignJourneyCatalog.Current);
+            foreach(int number in new[]{9,10,12})
+            {
+                var stage=CampaignJourneyCatalog.Stage(number);string encounterBefore=JsonUtility.ToJson(stage.encounter);
+                string sandboxBefore=JsonUtility.ToJson(stage.map.encounter);
+                var session=CampaignJourneySession.Begin(44);var loop=new BattleShopRun(shop,44,campaign:true,journeyV2:true);
+                typeof(BattleShopRun).GetProperty("Stage").SetValue(loop,number);
+                typeof(CampaignJourneySession).GetProperty("Shop").SetValue(session,shop);
+                typeof(CampaignJourneySession).GetProperty("Loop").SetValue(session,loop);
+                var lineup=(System.Collections.Generic.List<string>)typeof(CampaignJourneySession)
+                    .GetField("Lineup",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(session);
+                lineup.AddRange(shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)).Select(p=>p.Id));
+                yield return SceneManager.LoadSceneAsync(session.Map.sceneName);yield return Ready(number);
+                void CheckRoster()
+                {
+                    var battle=controller.Battle;var view=controller.CombatView.GetComponentInChildren<DefenderRosterView>();
+                    Assert.That(view,Is.Not.Null);Assert.That(battle.Defenders.Count,Is.EqualTo(stage.encounter.defenders.Length));
+                    foreach(var source in stage.encounter.defenders)
+                    {
+                        var actual=battle.FindDefender(source.id);Assert.That(actual,Is.Not.Null);
+                        Assert.That(actual.Settings.ArtId,Is.EqualTo(source.artId));Assert.That(actual.Position,Is.EqualTo(source.position));
+                        Assert.That(actual.MaxHealth,Is.EqualTo(source.health));Assert.That(actual.Settings.Attack,Is.EqualTo(source.attack));
+                        Assert.That(actual.Settings.Skill,Is.EqualTo(source.skill.Snapshot()));
+                        var renderer=view.FindVisual(source.id);Assert.That(renderer,Is.Not.Null);Assert.That(renderer.enabled,Is.True);
+                        Assert.That(renderer.sprite,Is.Not.Null);Assert.That(renderer.sprite.texture.width,Is.GreaterThan(0));
+                        Assert.That(renderer.sharedMaterial.shader.isSupported,Is.True);
+                        Assert.That(renderer.sprite.name.StartsWith(source.artId+"/")||renderer.sprite.name.StartsWith(source.artId+"B/"),Is.True,
+                            "An old low-star occupant's model must not survive the replacement: "+source.id+" / "+renderer.sprite.name);
+                    }
+                }
+                CheckRoster();Assert.That(controller.Loop.CanDeploy,Is.True);
+                float entrance=stage.encounter.defenders.SelectMany(g=>new[]{g.artId,g.artId+"B"})
+                    .Distinct().Select(id=>DefenderArt.Load(id).StartDuration).Max();
+                controller.Tick(entrance+.1f);yield return null;CheckRoster();
+                Assert.That(controller.Battle.Clock,Is.Zero,"Ready presentation may finish native entrances without advancing combat.");
+                string evidence=System.IO.Path.GetFullPath("artifacts/campaign-sixstar-2026-11-10");System.IO.Directory.CreateDirectory(evidence);
+                typeof(ManualBattleController).GetMethod("PatriotCapture",BindingFlags.Static|BindingFlags.NonPublic)
+                    .Invoke(null,new object[]{System.IO.Path.Combine(evidence,"stage-"+number+".png")});
+                controller.StartBattle();controller.Tick(.2f);controller.Battle.SetPaused(true);
+                var clock=controller.Battle.Clock;var sp=controller.Battle.Defenders.Select(d=>d.SkillSP).ToArray();
+                controller.Tick(30);Assert.That(controller.Battle.Clock,Is.EqualTo(clock));
+                Assert.That(controller.Battle.Defenders.Select(d=>d.SkillSP),Is.EqualTo(sp));
+                Assert.That(controller.RestartCampaignEncounter(),Is.True);yield return Ready(number);CheckRoster();
+                Assert.That(controller.Battle.Clock,Is.Zero);Assert.That(controller.Battle.IsPaused,Is.False);
+                Assert.That(JsonUtility.ToJson(stage.encounter),Is.EqualTo(encounterBefore));
+                Assert.That(JsonUtility.ToJson(stage.map.encounter),Is.EqualTo(sandboxBefore));
+            }
+            Assert.That(JsonUtility.ToJson(CampaignJourneyCatalog.Current),Is.EqualTo(journeyBefore));
+            controller.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(c=>controller=c);
+        }
         SynergyActivationFeedback ActivationFeedback=>(SynergyActivationFeedback)typeof(ManualBattleController)
             .GetField("synergyActivationFeedback",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
         void SetMuted(bool value){if(controller.Muted!=value)controller.ToggleMute();}

@@ -205,7 +205,12 @@ namespace YesterdayConvoy
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); frostSeals.Clear(); healingCasts.Clear(); skillRequests.Clear(); ResetGramophones(); SkillCasts = 0;
             defenders.Clear();
             if(!EngagementEnabled) return;
-            if(defenderRoster!=null) { foreach(var spec in defenderRoster) defenders.Add(new DefenderState(spec)); return; }
+            if(defenderRoster!=null)
+            {
+                foreach(var spec in defenderRoster)defenders.Add(new DefenderState(spec));
+                if(CampaignV2Enabled)InitializeV2SixthDefenders();
+                return;
+            }
             var c=CombatSettings;
             for(int i=0;i<defenderPositions.Length;i++)
                 defenders.Add(new DefenderState(new DefenderSettings(i==0 ? "kroos" : "kroos-"+i,Settings.CardId==SilverWolfCombat.CardId?"源石虫":"克洛丝",null,

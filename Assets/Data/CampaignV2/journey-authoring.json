@@ -1,5 +1,5 @@
 {
-  "version": "Journey progressive-DP and fixed-XP playtest 2026-11-10: post-supply combat budgets scale 1.5 to 2x; every settlement grants 4XP including defeats and supplies",
+  "version": "Journey late-defense reinforcement playtest 2026-11-10: stage 7 stronger panels, stages 9/10/12 have 4/5/8 six-star defenders; approved HP/attack proposal, unchanged DP/XP/economy",
   "sources": [
     "campaign.json",
     "defenders.json",
@@ -251,7 +251,7 @@
     {
       "stage": 7,
       "title": "地下邮运",
-      "tip": "本关5名守军，R1、R2两波分别15、16DP。\n两路前排配合高台火力，优先保证主力星级和有效羁绊。\n地道口按白线前进，穿门单位清空共享防御即可突破。",
+      "tip": "本关5名守军，R1、R2两波分别15、16DP。\n前排与高台火力已加强，优先保证主力星级和有效羁绊。\n地道口按白线前进，穿门单位清空共享防御即可突破。",
       "type": "Battle",
       "mapIndex": 4,
       "dp": 31,
@@ -262,8 +262,8 @@
         {
           "id": "D02",
           "tier": 2,
-          "hpFactor": 1.44,
-          "attackFactor": 1.5,
+          "hpFactor": 1.8,
+          "attackFactor": 1.8,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -274,8 +274,8 @@
         {
           "id": "D05",
           "tier": 2,
-          "hpFactor": 1.53,
-          "attackFactor": 1.5,
+          "hpFactor": 1.9125,
+          "attackFactor": 1.8,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -286,8 +286,8 @@
         {
           "id": "D04",
           "tier": 2,
-          "hpFactor": 0.9,
-          "attackFactor": 0.75,
+          "hpFactor": 1.126190476,
+          "attackFactor": 0.9,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -298,8 +298,8 @@
         {
           "id": "D07",
           "tier": 2,
-          "hpFactor": 0.9,
-          "attackFactor": 0.75,
+          "hpFactor": 1.125,
+          "attackFactor": 0.9,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -310,8 +310,8 @@
         {
           "id": "D08",
           "tier": 2,
-          "hpFactor": 0.9,
-          "attackFactor": 0.75,
+          "hpFactor": 1.125,
+          "attackFactor": 0.9,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -351,7 +351,7 @@
     {
       "stage": 9,
       "title": "矿运封锁·首领二",
-      "tip": "首领关有8名守军，三波R1、R2、R3预算11、12、13DP。\n星熊与玛恩纳守住要道，先补齐有效羁绊与主力质量。\n利用跨波存活单位接力，星熊保护结束后才能完成击杀。",
+      "tip": "首领关8名守军含4名六星，三波R1、R2、R3预算11、12、13DP。\n星熊与玛恩纳封锁要道，望和圣聆初雪从高台支援。\n利用跨波存活单位接力，留意星熊保护与高台控制。",
       "type": "Boss",
       "mapIndex": 6,
       "dp": 36,
@@ -362,8 +362,8 @@
         {
           "id": "D25",
           "tier": 2,
-          "hpFactor": 1.232,
-          "attackFactor": 1.76,
+          "hpFactor": 2.0,
+          "attackFactor": 2.571428571,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -374,8 +374,8 @@
         {
           "id": "D30",
           "tier": 2,
-          "hpFactor": 1.232,
-          "attackFactor": 1.584,
+          "hpFactor": 2.0,
+          "attackFactor": 2.333333333,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -386,8 +386,8 @@
         {
           "id": "D01",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.232692308,
+          "attackFactor": 1.1440625,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -398,8 +398,8 @@
         {
           "id": "D06",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.231578947,
+          "attackFactor": 1.144,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -410,8 +410,8 @@
         {
           "id": "D07",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.228571429,
+          "attackFactor": 1.1440625,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -420,10 +420,10 @@
           }
         },
         {
-          "id": "D08",
+          "id": "D28",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.769230769,
+          "attackFactor": 1.785714286,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -434,8 +434,8 @@
         {
           "id": "D09",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.231034483,
+          "attackFactor": 1.144,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -444,10 +444,10 @@
           }
         },
         {
-          "id": "D12",
+          "id": "D27",
           "tier": 2,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.769230769,
+          "attackFactor": 1.846153846,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -478,7 +478,7 @@
     {
       "stage": 10,
       "title": "热站总检",
-      "tip": "10名守军；R1、R2、R1三波预算13、14、15DP。\n短线经过三处热泵，长线绕开喷口但仍有守军。\n观察预警，分批投入，保留后续波次的部署次数。",
+      "tip": "10名守军含5名六星；R1、R2、R1三波预算13、14、15DP。\n星熊、凛御银灰与新约能天使拦截，荒芜拉普兰德和望提供高台火力。\n短线经过热泵，长线绕开喷口；观察预警，分批投入。",
       "type": "Battle",
       "mapIndex": 5,
       "dp": 42,
@@ -487,11 +487,11 @@
       "naturalXP": 4,
       "guards": [
         {
-          "id": "D01",
+          "id": "D25",
           "tier": 3,
-          "hpFactor": 1.584,
-          "attackFactor": 1.76,
-          "armorBonus": 6,
+          "hpFactor": 1.769230769,
+          "attackFactor": 2.5,
+          "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
             "x": 4,
@@ -499,10 +499,10 @@
           }
         },
         {
-          "id": "D09",
+          "id": "D21",
           "tier": 3,
-          "hpFactor": 1.584,
-          "attackFactor": 1.32,
+          "hpFactor": 1.666666667,
+          "attackFactor": 1.444444444,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -513,8 +513,8 @@
         {
           "id": "D02",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.32,
+          "attackFactor": 1.232083333,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -523,10 +523,10 @@
           }
         },
         {
-          "id": "D04",
+          "id": "D26",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.75,
+          "attackFactor": 1.458333333,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -537,8 +537,8 @@
         {
           "id": "D06",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.320967742,
+          "attackFactor": 1.231956522,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -547,10 +547,10 @@
           }
         },
         {
-          "id": "D05",
+          "id": "D24",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.894736842,
+          "attackFactor": 2.214285714,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -561,8 +561,8 @@
         {
           "id": "D07",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.320454545,
+          "attackFactor": 1.232,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -573,8 +573,8 @@
         {
           "id": "D08",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.320454545,
+          "attackFactor": 1.232058824,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -585,8 +585,8 @@
         {
           "id": "D10",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.31875,
+          "attackFactor": 1.231923077,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -595,10 +595,10 @@
           }
         },
         {
-          "id": "D12",
+          "id": "D28",
           "tier": 3,
-          "hpFactor": 0.88,
-          "attackFactor": 0.88,
+          "hpFactor": 1.684210526,
+          "attackFactor": 1.6,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -643,7 +643,7 @@
     {
       "stage": 12,
       "title": "退潮货港·最终防线",
-      "tip": "终战12名守军，R1、R2、R1三波，预算14、16、18DP。\n留意星熊保护、塞雷娅治疗和新约能天使弹药。\n清空6点共享防御即可突破，无须全歼，善用跨波支援。",
+      "tip": "终战12名守军含8名六星，R1、R2、R1三波预算14、16、18DP。\n留意星熊保护、塞雷娅治疗、玛恩纳蓄力和高台控制。\n清空6点共享防御即可突破，无须全歼，善用跨波支援。",
       "type": "Boss",
       "mapIndex": 8,
       "dp": 48,
@@ -654,8 +654,8 @@
         {
           "id": "D25",
           "tier": 3,
-          "hpFactor": 1.4,
-          "attackFactor": 2.2,
+          "hpFactor": 2.307692308,
+          "attackFactor": 3.289473684,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -666,8 +666,8 @@
         {
           "id": "D29",
           "tier": 3,
-          "hpFactor": 1.2,
-          "attackFactor": 1.65,
+          "hpFactor": 1.925925926,
+          "attackFactor": 2.25,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -678,8 +678,8 @@
         {
           "id": "D24",
           "tier": 3,
-          "hpFactor": 1.2,
-          "attackFactor": 2.2,
+          "hpFactor": 2.210526316,
+          "attackFactor": 3.285714286,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -690,8 +690,8 @@
         {
           "id": "D01",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.8,
+          "attackFactor": 1.76,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -700,10 +700,10 @@
           }
         },
         {
-          "id": "D04",
+          "id": "D26",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.916666667,
+          "attackFactor": 1.666666667,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -712,10 +712,10 @@
           }
         },
         {
-          "id": "D05",
+          "id": "D30",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.833333333,
+          "attackFactor": 1.777777778,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -726,8 +726,8 @@
         {
           "id": "D06",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.8,
+          "attackFactor": 1.76,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -736,10 +736,10 @@
           }
         },
         {
-          "id": "D07",
+          "id": "D28",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.894736842,
+          "attackFactor": 1.75,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -748,10 +748,10 @@
           }
         },
         {
-          "id": "D08",
+          "id": "D21",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 2.0,
+          "attackFactor": 1.888888889,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -762,8 +762,8 @@
         {
           "id": "D09",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.8,
+          "attackFactor": 1.76,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -772,10 +772,10 @@
           }
         },
         {
-          "id": "D12",
+          "id": "D27",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.894736842,
+          "attackFactor": 1.789473684,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -786,8 +786,8 @@
         {
           "id": "D10",
           "tier": 3,
-          "hpFactor": 1.0,
-          "attackFactor": 1.1,
+          "hpFactor": 1.8,
+          "attackFactor": 1.76,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
