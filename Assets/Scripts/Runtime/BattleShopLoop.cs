@@ -63,7 +63,7 @@ namespace YesterdayConvoy
             CompleteGolemExperienceFeedback();
             CancelArtPreparation();
             CompactShopLineupSeats();SyncShopDeck(false);if(!Loop.PrepareBattle())return false;SetShopVisible(false);CancelShopDrag();
-            if(Battle.WavesEnabled)Battle.Begin();
+            if(Battle.WavesEnabled||BossArenaActive)Battle.Begin();
             return true;
         }
         void StepBattleShopLoop()

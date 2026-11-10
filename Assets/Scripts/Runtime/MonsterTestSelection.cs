@@ -109,6 +109,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(790,42,428,40),"黑流树海 · 波次试玩",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
             if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
             if(GUI.Button(new Rect(790,232,428,32),"战术地图 · 八张新地图",buttonStyle))OpenApprovedMapMenu();
+            if(GUI.Button(new Rect(790,270,428,32),"军团攻擂 · 维什戴尔",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BossArenaRules.SceneName);
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));

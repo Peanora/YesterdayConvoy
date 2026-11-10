@@ -68,7 +68,7 @@ namespace YesterdayConvoy
                 }
                 var art=v.Back && v.Rear!=null?v.Rear:v.Art;
                 if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&b.DefenderSkillActive(d))art=v.Art;
-                double actionAge=d.Settings.ActionDuration>0&&((v.Back&&v.Rear!=null)||d.Settings.Skill.Enabled) ? age*d.LastActionRate*art.ActionDuration/d.Settings.ActionDuration : age;
+                double actionAge=d.Settings.ActionDuration>0&&((v.Back&&v.Rear!=null)||d.Settings.Skill.Enabled||b.BossArenaEnabled) ? age*d.LastActionRate*art.ActionDuration/d.Settings.ActionDuration : age;
                 r.enabled=d.Alive || clock-d.DeathTime<v.Art["death"].Duration;
                 if(v.Skill!=null&&!d.Alive)v.Skill.enabled=false;
                 if(!r.enabled) continue;
@@ -79,7 +79,7 @@ namespace YesterdayConvoy
                 else if(b.DefenderSkillActive(d)&&d.Settings.Skill.Kind==DefenderSkillKind.BeagleGuard)r.sprite=art.SkillIdleAt(b.Clock-d.SkillStartedAt);
                 else r.sprite=art.StartAt(owner.DefenderIdleClock,v.ActionVariant%4>=2)??art.IdleAt(owner.DefenderIdleClock,System.Math.Max(0,v.ActionVariant));
                 r.transform.position=d.Position; r.transform.rotation=camera.transform.rotation;
-                r.transform.localScale=Vector3.one;
+                r.transform.localScale=Vector3.one*(owner.BossArenaActive&&d.EntityId==BossArenaRules.BossId?owner.ArenaVisualScale:1);
                 r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,d.Position)+30;
                 r.color=b.Clock<d.LastHitTime+.12 ? new Color(1,.65f,.65f) :
                     d.ColdUntil>b.Clock || d.FrozenUntil>b.Clock ? new Color(.5f,.8f,1) : Color.white;

@@ -158,6 +158,7 @@ namespace YesterdayConvoy
         }
         void FrameShopMap()
         {
+            if(BossArenaActive){FrameBossArena();return;}
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
             var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();

@@ -77,4 +77,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TalulahPhaseTrial.unity
     guid: 31bed9b6a50d4e048bed8e6ee86908ac
+  - enabled: 1
+    path: Assets/Scenes/WisadelBossArena.unity
+    guid: b06709200fb245542befe5ae23128c28
   m_configObjects: {}

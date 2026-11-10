@@ -18,7 +18,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<BattleCardState> Cards=>cards.AsReadOnly();
         public bool HasCardLoadout=>cards.Count>0;
         public BattleCardState FindCard(string id)=>cards.Find(c=>c.Settings.CardId==id);
-        public double CardCooldown(string id)=>Math.Max(0,(FindCard(id)?.NextDeploymentTime??nextDeploymentTime)-Clock);
+        public double CardCooldown(string id)=>BossArenaEnabled?ArenaRedeploymentRemaining(id):Math.Max(0,(FindCard(id)?.NextDeploymentTime??nextDeploymentTime)-Clock);
         public void ConfigureCardLoadout(IEnumerable<BasicRosterProfile> profiles)
         {
             var source=profiles?.ToArray()??throw new ArgumentNullException(nameof(profiles));
