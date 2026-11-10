@@ -273,7 +273,11 @@ namespace YesterdayConvoy
         }
         void DrawShopMarket(bool prep)=>DrawApprovedShopMarket(prep);
         static Color ShopTier(int cost)=>cost==5?new Color(.58f,.43f,.17f):cost==4?new Color(.53f,.28f,.64f):cost==3?new Color(.12f,.34f,.61f):cost==2?new Color(.16f,.44f,.26f):new Color(.48f,.52f,.54f);
-        static string[] ShopTags(string id)=>CampaignBalance.Tags(id);
+        static string[] ShopTags(string id)
+        {
+            var style=CombatStyleRules.Find(CombatStyleRules.For(id));
+            return style==null?CampaignBalance.Tags(id):CampaignBalance.Tags(id).Concat(new[]{style.Name}).ToArray();
+        }
         static void ShopLine(Vector2 a,Vector2 b,Color color,float width=2)
         {
             Matrix4x4 previous=GUI.matrix;GUI.matrix=previous*Matrix4x4.TRS(new Vector3(a.x,a.y,0),Quaternion.Euler(0,0,Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg),Vector3.one);Fill(new Rect(0,-width/2,Vector2.Distance(a,b),width),color);GUI.matrix=previous;

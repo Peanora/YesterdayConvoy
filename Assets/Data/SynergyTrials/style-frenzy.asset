@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3b04467e9104812b2d39cb917490272, type: 3}
+  m_Name: style-frenzy
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.SynergyTrialDefinition
+  trialId: style-frenzy
+  displayTitle: "\u72C2\u88AD \xB7 \u4E13\u9879\u9A8C\u8BC1"
+  initialLevel: 8
+  initialMembers:
+  - cardId: CARD_M02
+    star: 1
+  - cardId: CARD_M03
+    star: 1
+  - cardId: CARD_M15
+    star: 1
+  - cardId: CARD_M22
+    star: 1
+  - cardId: CARD_M23
+    star: 1
+  - cardId: CARD_M34
+    star: 1
+  - cardId: CARD_M10
+    star: 1
+  - cardId: CARD_M18
+    star: 1
+  encounter: {fileID: 11400000, guid: 14738c569db6ed84cb29d885d2e4d252, type: 2}
+  infectionPrimary: 0
+  infectionSecondary: 1
+  marinePrimary: 0
+  marineSecondary: 1
+  contractCardId: 

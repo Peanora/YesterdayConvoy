@@ -6,8 +6,8 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum CombatFeedbackTarget { Monster, Defender }
-    public enum CombatFeedbackKind { HealthLost, HealthRestored, ShieldAbsorbed, StatusApplied }
-    public enum CombatFeedbackStatus { None, Cold, Frozen, Hindered, Fear, Stunned, Silenced, Burning, Neural, Vulnerable, Shackled, Lured, Shielded }
+    public enum CombatFeedbackKind { HealthLost, HealthRestored, ShieldAbsorbed, StatusApplied, SkillPointsRestored }
+    public enum CombatFeedbackStatus { None, Cold, Frozen, Hindered, Fear, Stunned, Silenced, Burning, Neural, Vulnerable, Shackled, Lured, Shielded, Ruptured, Exposed, Frenzy, ArcanePulse, Bulwark, Coordination }
 
     /// <summary>An immutable applied result, never a proposed attack or a frame-to-frame HP estimate.</summary>
     public readonly struct CombatFeedbackEvent
@@ -136,6 +136,7 @@ namespace YesterdayConvoy
                     AddFeedbackStatus(CombatFeedbackTarget.Defender,d.EntityId,p,CombatFeedbackStatus.Shackled,until);
                 }
             }
+            RefreshStyleStatuses();
             feedbackStatusRemoved.Clear();
             foreach(var pair in feedbackStatusUntil)if(!feedbackStatusSeen.Contains(pair.Key))feedbackStatusRemoved.Add(pair.Key);
             foreach(string key in feedbackStatusRemoved)feedbackStatusUntil.Remove(key);

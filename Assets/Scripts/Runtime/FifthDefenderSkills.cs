@@ -99,7 +99,7 @@ namespace YesterdayConvoy
             }
         }
         bool ApplyFifthTrueDamage(DeployedUnitState u,float amount)
-        {if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount);return true;}
+        {if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount);OnStyleDefenderHit(u);return true;}
         bool ScheduleFifthAttack(DefenderState d,DeployedUnitState primary,float travel)
         {
             if(!IsFifth(d)||!IsFifthActive(d))return false;

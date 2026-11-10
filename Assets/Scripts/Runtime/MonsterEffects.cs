@@ -91,6 +91,7 @@ namespace YesterdayConvoy
             if(resistance>0)resistance=Mathf.Max(0,resistance-ignoreResistance);
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
             damage=AbsorbContractShield(unit,damage);if(damage<=0)return true;
+            damage=AbsorbStyleWard(unit,damage);if(damage<=0)return true;
             if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
             if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=V2Skill(unit,"stoneShield","incomingDamageMultiplier",.4f);
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
@@ -145,6 +146,7 @@ namespace YesterdayConvoy
                 }
                 cast.AppliedTargetIds=applied.AsReadOnly();
                 source.HealingDone+=cast.HealthRestored;
+                if(cast.HealthRestored>0)ContributeStyleCoordination(source);
             }
         }
         private bool StepHealer(DeployedUnitState source)
@@ -172,7 +174,7 @@ namespace YesterdayConvoy
         }
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
-        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?V2Skill(unit,"march","marchMultiplier",1.5f):1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min((int)V2Skill(unit,"ramp","maximumStacks",6),unit.OrdinaryAttacksFired)*V2Skill(unit,"ramp","attackBonusPerStack",.6f) :
+        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)+StyleAttackBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?V2Skill(unit,"march","marchMultiplier",1.5f):1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min((int)V2Skill(unit,"ramp","maximumStacks",6),unit.OrdinaryAttacksFired)*V2Skill(unit,"ramp","attackBonusPerStack",.6f) :
             UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? V2Skill(unit,"revive","secondLifeBasicAttackMultiplier",1.5f) : 1)*InfectionAttack(unit.EntityId)*(TalulahSecondForm(unit)?V2Skill(unit,"threeStarPhase","secondFormAttackMultiplier",1.5f):1);
         public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?V2Skill(unit,"rebirth","destructionActionDuration",1.3666667f):unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
         public float UnitAttackRate(DeployedUnitState unit) => (unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
@@ -264,7 +266,8 @@ namespace YesterdayConvoy
         void ApplyDefenderAttack(DefenderState defender,float attack,CombatDamageType type,bool derived,DeployedUnitState source,float damageScale,DeployedUnitState creditSource)
         {
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale,creditSource,true);
+            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,StyleArmor(defender,DefenderArmor(defender),type,derived,creditSource),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*StyleRangedMultiplier(defender,derived,creditSource),creditSource,true);
+            if(!derived&&(defender.Health<healthBefore||defender.Debt>debtBefore))OnStyleDirectHit(creditSource,defender);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
             if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);

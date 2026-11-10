@@ -116,6 +116,7 @@ namespace YesterdayConvoy
             }
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-talulahFireRainV12Test" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke&&FindAnyObjectByType<TalulahPhaseTrialBootstrap>()==null;
+            if(Array.IndexOf(args,"-combatStylesSmokeTest")>=0){diagnostic=true;Application.runInBackground=true;}
             TryOpenApprovedLaunchMenu();
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)

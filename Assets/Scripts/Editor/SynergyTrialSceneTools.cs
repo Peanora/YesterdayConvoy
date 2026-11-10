@@ -24,7 +24,7 @@ namespace YesterdayConvoy.Editor
             try
             {
                 EnsureFolder("Assets/Scenes/SynergyTrials");EnsureFolder("Assets/Data/SynergyTrials/Encounters");
-                foreach(var entry in SynergyTrialCatalog.Entries)
+                foreach(var entry in SynergyTrialCatalog.AllEntries)
                 {
                     var encounter=AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(entry.EncounterPath);
                     if(encounter==null)
@@ -55,7 +55,7 @@ namespace YesterdayConvoy.Editor
                         throw new InvalidOperationException("Copied scene reused the source GUID: "+entry.ScenePath);
                 }
                 AssetDatabase.SaveAssets();GameSceneCatalog.UpdateBuildSettings();ValidateExistingScenes();
-                Debug.Log("DEDICATED_SYNERGY_SCENES_PREPARED: nine independently saved scenes; no runtime terrain generation.");
+            Debug.Log("DEDICATED_SYNERGY_SCENES_PREPARED: nine faction and six combat-style independently saved scenes; no runtime terrain generation.");
             }
             finally {if(setup.Any(s=>s.isLoaded&&s.isActive&&!string.IsNullOrEmpty(s.path)))EditorSceneManager.RestoreSceneManagerSetup(setup);}
         }
@@ -68,7 +68,7 @@ namespace YesterdayConvoy.Editor
             try
             {
                 var seen=new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
-                foreach(var entry in SynergyTrialCatalog.Entries)
+                foreach(var entry in SynergyTrialCatalog.AllEntries)
                 {
                     if(!File.Exists(entry.ScenePath))throw new InvalidOperationException("Missing authored trial: "+entry.ScenePath);
                     string guid=AssetDatabase.AssetPathToGUID(entry.ScenePath);
@@ -109,13 +109,20 @@ namespace YesterdayConvoy.Editor
             if(trial=="deep-pool"){hp=100;attack=10;interval=2;}
             if(trial=="marine"){hp=100;attack=10;armor=8;}
             if(trial=="sarkaz"){hp=350;attack=16;interval=1.5f;}
+            if(SynergyTrialCatalog.IsCombatStyle(trial)){hp=300;attack=10;armor=8;interval=1.8f;}
+            if(trial=="style-assault"){armor=40;attack=8;}
+            if(trial=="style-frenzy"){hp=180;attack=18;interval=1.2f;}
             var result=new System.Collections.Generic.List<DefenderPlacement>{
                 Guard(trial+"-north-a","D01","米格鲁 · 北线",new Vector3(0,.04f,2.4f),hp,attack,armor,interval),
                 Guard(trial+"-north-b","D04","玫兰莎 · 北线",new Vector3(.8f,.04f,2.1f),hp,attack,armor,interval),
                 Guard(trial+"-south-a","D01","米格鲁 · 南线",new Vector3(2,.04f,-1),hp,attack,armor,interval),
                 Guard(trial+"-south-b","D04","玫兰莎 · 南线",new Vector3(2,.04f,0),hp,attack,armor,interval),
             };
-            if(trial=="snow"||trial=="deep-pool")
+            // Direct melee attacks normally stop outside the block radius. The
+            // assault trial intentionally presents actual entry interception.
+            if(trial=="style-assault")
+            {result[0].position=new Vector3(0,.04f,3.5f);result[2].position=new Vector3(0,.04f,-3.5f);}
+            if(trial=="snow"||trial=="deep-pool"||trial=="style-mystic")
             {
                 result.Add(Guard(trial+"-north-c","D04","玫兰莎 · 群体目标",new Vector3(-.6f,.04f,2.1f),hp,attack,armor,interval));
                 result.Add(Guard(trial+"-south-c","D04","玫兰莎 · 群体目标",new Vector3(2.8f,.04f,-.5f),hp,attack,armor,interval));

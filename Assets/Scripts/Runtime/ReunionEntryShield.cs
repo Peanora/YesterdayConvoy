@@ -13,7 +13,9 @@ namespace YesterdayConvoy
                 type!=CombatDamageType.Physical&&type!=CombatDamageType.Arts)throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||unit==null||!unit.Active||unit.IsReviving||StrongholdInTransit(unit.EntityId)||UnitInvulnerable(unit))return false;
             TryActivateReunionEntryShield(unit);
-            return TryDamageUnit(unit.EntityId,attack,type,ignoreResistance,ranged);
+            bool applied=TryDamageUnit(unit.EntityId,attack,type,ignoreResistance,ranged);
+            if(applied)OnStyleDefenderHit(unit);
+            return applied;
         }
 
         // True damage retains every other synergy shield's existing bypass rule.

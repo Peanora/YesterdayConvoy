@@ -74,7 +74,7 @@ namespace YesterdayConvoy
                     return tier >= 4 ? SynergyVisualGrade.Silver :
                         tier >= 2 ? SynergyVisualGrade.Bronze : SynergyVisualGrade.Inactive;
                 default:
-                    return SynergyVisualGrade.Inactive;
+                    return CombatStyleRules.Find(name)!=null?(tier>=6?SynergyVisualGrade.Gold:tier>=4?SynergyVisualGrade.Silver:tier>=2?SynergyVisualGrade.Bronze:SynergyVisualGrade.Inactive):SynergyVisualGrade.Inactive;
             }
         }
 
@@ -160,6 +160,10 @@ namespace YesterdayConvoy
                     // Identity glyphs stay white; grade is represented only by the backplate.
                     GUI.color = new Color(1, 1, 1, previous.a * (grade == SynergyVisualGrade.Inactive ? .48f : 1f));
                     GUI.DrawTexture(Centered(center, 28f * scale), icon, ScaleMode.StretchToFill, true);
+                }
+                else if(CombatStyleRules.Find(name)!=null)
+                {
+                    GUI.Label(Centered(center,28f*scale),name.Substring(0,1),ApprovedUi.Text(fallbackFont,Mathf.Max(1,Mathf.RoundToInt(21*scale)),TextAnchor.MiddleCenter,grade==SynergyVisualGrade.Inactive?InactiveColor:Color.white,700));
                 }
 
                 GUI.color = new Color(1, 1, 1, previous.a);

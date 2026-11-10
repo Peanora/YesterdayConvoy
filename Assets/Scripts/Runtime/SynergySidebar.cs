@@ -102,7 +102,7 @@ namespace YesterdayConvoy
             }
             return v2EffectCache[name]="正式战役 v2\n"+string.Join("\n",lines);
         }
-        public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null,IEnumerable<string> extraMudrockMembers=null,bool campaignV2=false)
+        public static SynergySummary[] From(IEnumerable<string> lineup,IEnumerable<string> extraMembers=null,IEnumerable<string> extraMudrockMembers=null,bool campaignV2=false,bool includeCombatStyles=false)
         {
             var ids=lineup.Distinct().ToArray();
             var transfers=new HashSet<string>((extraMembers??Array.Empty<string>()).Where(id=>ids.Contains(id)&&CampaignBalance.Supports(id)&&!CampaignBalance.Guerrilla(id)));
@@ -121,6 +121,7 @@ namespace YesterdayConvoy
                 "众魂之契：战前把侧栏旁的萨卡兹徽章拖到萨卡兹编队卡，指定该卡为承契者；该卡所有正常部署实体统一受益，开战后锁定。羁绊外角色不能成为承契者。\n各档部署时自动触发，持续本场，无需手动释放、低血或阵亡充能，不消耗DP/技力。\n2/4/6/8/9档，全体萨卡兹最大生命+10/20/30/40/60%。\n2档：承契者攻击+35%、一次20%生命护盾。\n4档：攻击+60%、一次30%护盾。\n6档：攻击+90%、一次40%护盾；其他萨卡兹获一半攻击加成与入场盾。\n8档：攻击+120%、一次50%护盾；其他萨卡兹共享完整效果。\n9档「众魂归乡」：全体萨卡兹攻击永久+150%，部署时获得一次自身最大生命60%护盾。\n护盾按各自最终最大生命计算，同名取高、不累计；没有时限，但消耗后不定时补发。复起不重新触发；巨像、援军、转化体与分体不参与。"};
             return names.Select((name,i)=>new SynergySummary{Name=name,Members=ids.Where(id=>CampaignBalance.Tags(id).Contains(name)||name=="游击队"&&transfers.Contains(id)||name=="泥岩小队"&&mudrockTransfers.Contains(id)).ToArray(),Thresholds=levels[i],Effect=campaignV2?V2Effect(name):effects[i]})
                 .Select(s=>{s.Count=s.Members.Length;s.Tier=s.Name=="整合运动"?ReunionRules.TierFor(s.Members):s.Name=="游击队"?GuerrillaRules.TierForCount(s.Count):s.Thresholds.Where(n=>s.Count>=n).DefaultIfEmpty(0).Max();return s;})
+                .Concat(includeCombatStyles?CombatStyleRules.Summaries(ids):Enumerable.Empty<SynergySummary>())
                 .Where(s=>s.Count>0).OrderByDescending(s=>s.Tier>0).ThenByDescending(s=>s.Count).ToArray();
         }
     }
@@ -163,7 +164,7 @@ namespace YesterdayConvoy
         Rect SynergySupplementRect(Rect row)=>new Rect(row.x+58,row.y+35,row.width-64,12);
         Rect SynergyProgressRect(Rect row)=>new Rect(row.x+58,row.y+47,row.width-64,1);
         Rect SynergyDetailRect=>inspectedSynergy=="感染生物"&&infectionChoiceRequested?InfectionFormPanelRect:UnifiedSynergyPanelRect;
-        SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds,PreparedMudrockTransferIds,Battle?.CampaignV2Enabled==true);
+        SynergySummary[] CurrentSynergies=>SynergySummary.From(shopLineup,PreparedGuerrillaTransferIds,PreparedMudrockTransferIds,Battle?.CampaignV2Enabled==true,Battle?.CombatStylesEnabled==true);
         bool SynergyBlocksMap(Vector2 point)=>CampaignActive&&(SynergyListRect.Contains(point)||inspectedSynergy!=null);
         void DrawSynergySidebar()
         {
@@ -197,6 +198,7 @@ namespace YesterdayConvoy
                     else if(s.Name=="海嗣"&&s.Tier>0)DrawMarineRow(row);
                     else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
+                    else if(CombatStyleRules.Find(s.Name)!=null)GUI.Label(SynergySupplementRect(row),StyleSidebarProgress(s.Name),CampaignText(9,color:new Color(.77f,.81f,.93f)));
                 }
             }
             finally {GUI.EndScrollView();}

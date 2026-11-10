@@ -1,0 +1,265 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: style-marksman-defenders
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: e325476174ba79c4994fdc893c2429e4, type: 2}
+  route:
+  - {x: 0, y: 0.04, z: 4}
+  - {x: 0, y: 0.04, z: 3}
+  - {x: 0, y: 0.04, z: 1}
+  - {x: -2, y: 0.04, z: 1}
+  - {x: -6, y: 0.04, z: 1}
+  - {x: -6, y: 0.04, z: -1}
+  - {x: -7, y: 0.04, z: -1}
+  - {x: -7, y: 0.04, z: -2}
+  - {x: 0, y: 0.04, z: 2}
+  - {x: 0, y: 0.04, z: 0}
+  - {x: 2, y: 0.04, z: 0}
+  - {x: 6, y: 0.04, z: 0}
+  - {x: 6, y: 0.04, z: -4}
+  defenders:
+  - id: style-marksman-north-a
+    displayName: "\u7C73\u683C\u9C81 \xB7 \u5317\u7EBF"
+    artId: D01
+    position: {x: 0, y: 0.04, z: 2.4}
+    health: 300
+    attack: 10
+    armor: 8
+    range: 1.05
+    interval: 1.8
+    windup: 0.3
+    actionDuration: 1.2
+    blocks: 2
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: style-marksman-north-b
+    displayName: "\u73AB\u5170\u838E \xB7 \u5317\u7EBF"
+    artId: D04
+    position: {x: 0.8, y: 0.04, z: 2.1}
+    health: 300
+    attack: 10
+    armor: 8
+    range: 1.05
+    interval: 1.8
+    windup: 0.3
+    actionDuration: 1.2
+    blocks: 2
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: style-marksman-south-a
+    displayName: "\u7C73\u683C\u9C81 \xB7 \u5357\u7EBF"
+    artId: D01
+    position: {x: 2, y: 0.04, z: -1}
+    health: 300
+    attack: 10
+    armor: 8
+    range: 1.05
+    interval: 1.8
+    windup: 0.3
+    actionDuration: 1.2
+    blocks: 2
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  - id: style-marksman-south-b
+    displayName: "\u73AB\u5170\u838E \xB7 \u5357\u7EBF"
+    artId: D04
+    position: {x: 2, y: 0.04, z: 0}
+    health: 300
+    attack: 10
+    armor: 8
+    range: 1.05
+    interval: 1.8
+    windup: 0.3
+    actionDuration: 1.2
+    blocks: 2
+    role: 0
+    damageType: 0
+    splashRadius: 0
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces:
+  - {fileID: 2100000, guid: c4645c5f488adee49b0a39bfcd1edc36, type: 2}
+  - {fileID: 2100000, guid: 1d10db389e6caa042be5a6fe156f61c9, type: 2}
+  - {fileID: 2100000, guid: 8eda912b43adccc49bb92a15b8b12360, type: 2}
+  - {fileID: 2100000, guid: 5239252ab3622294cbf7468fbdb5682a, type: 2}
+  - {fileID: 2100000, guid: 6deff37f879bc2a4ea334929b97aedd6, type: 2}
+  - {fileID: 2100000, guid: 0f27c354fe70e5d4dbe79030914c0567, type: 2}
+  - {fileID: 2100000, guid: 179a6f4dfda7a2a4cb8b5fbdaceb3e21, type: 2}
+  mapId: stronghold04-challenge
+  mapTitle: "\u5C04\u624B \xB7 \u4E13\u9879\u9A8C\u8BC1"
+  autumnRuins: 0
+  lanes:
+  - id: "\u5317\u95E8 \xB7 \u5DE6\u7FFC\u7A81\u7834"
+    exitId: "\u4E1C\u5357\u76EE\u6807"
+    points:
+    - {x: 0, y: 0.04, z: 4}
+    - {x: 0, y: 0.04, z: 3}
+    - {x: 0, y: 0.04, z: 1}
+    - {x: -2, y: 0.04, z: 1}
+    - {x: -6, y: 0.04, z: 1}
+    - {x: -6, y: 0.04, z: -1}
+    - {x: -7, y: 0.04, z: -1}
+    - {x: -7, y: 0.04, z: -2}
+    - {x: 0, y: 0.04, z: 2}
+    - {x: 0, y: 0.04, z: 0}
+    - {x: 2, y: 0.04, z: 0}
+    - {x: 6, y: 0.04, z: 0}
+    - {x: 6, y: 0.04, z: -4}
+  - id: "\u5357\u95E8 \xB7 \u53F3\u7FFC\u7A81\u7834"
+    exitId: "\u897F\u5317\u76EE\u6807"
+    points:
+    - {x: 0, y: 0.04, z: -4}
+    - {x: 0, y: 0.04, z: -3}
+    - {x: 2, y: 0.04, z: -3}
+    - {x: 2, y: 0.04, z: -1}
+    - {x: 2, y: 0.04, z: 1}
+    - {x: 6, y: 0.04, z: 1}
+    - {x: 6, y: 0.04, z: -1}
+    - {x: 7, y: 0.04, z: -1}
+    - {x: 7, y: 0.04, z: -2}
+    - {x: 0, y: 0.04, z: 2}
+    - {x: 0, y: 0.04, z: 3}
+    - {x: -2, y: 0.04, z: 3}
+    - {x: -2, y: 0.04, z: 4}
+    - {x: -6, y: 0.04, z: 4}
+  raised: []
+  floorTexture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
+  foliageTexture: {fileID: 2800000, guid: cb7097b3454279841bb76e4c90c70afe, type: 3}
+  rosterCards:
+  - {fileID: 11400000, guid: 2061f5dd314af2a47ab9edcd03779138, type: 2}
+  - {fileID: 11400000, guid: b03f25a352b8ec14f828fae5413df0e7, type: 2}
+  - {fileID: 11400000, guid: 5b407ae037dc7174c9468ba335b65ce7, type: 2}
+  defenderTestId: 
+  terrainOnly: 0
+  attackWaves: {fileID: 0}
