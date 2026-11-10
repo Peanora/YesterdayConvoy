@@ -411,8 +411,12 @@ namespace YesterdayConvoy
                 }
                 if(unit.Motion.HasArrived)
                 {
-                    unit.Resolution=UnitResolution.Breached; unit.IsMoving=unit.HasCombatTarget=unit.IsBlocked=false;
-                    RegisterStrongholdBreach(unit); continue;
+                    if(BossArenaEnabled)unit.IsMoving=false;
+                    else
+                    {
+                        unit.Resolution=UnitResolution.Breached; unit.IsMoving=unit.HasCombatTarget=unit.IsBlocked=false;
+                        RegisterStrongholdBreach(unit); continue;
+                    }
                 }
                 if(c.FireRain && unit.SkillAmmo>0)
                 {
@@ -472,6 +476,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)
             {
                 if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
+                if(StepArenaBossAttack(d))continue;
                 var spec=d.Settings;
                 if(CanDefenderHeal(d))
                 {

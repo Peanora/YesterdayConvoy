@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "task": "D31B",
+  "ppu": 160,
+  "referenceSpeed": 0.75,
+  "height": 1.35,
+  "rearVariant": true,
+  "attackContact": 0.5333333611488342,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Skill_3_Idle",
+      "count": 240,
+      "duration": 8,
+      "fps": 30,
+      "loop": true,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.4673332214355469,
+      "pivotY": 0.23085299332936604,
+      "sourceBounds": [
+        -411.51837158203125,
+        -81.36897277832031,
+        474.23858642578125,
+        598.1312255859375
+      ],
+      "scale": 0.5,
+      "events": [],
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-07.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-08.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-09.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-10.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-11.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-12.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-13.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "idle-14.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Skill_3_Loop",
+      "count": 151,
+      "duration": 5,
+      "fps": 30,
+      "loop": false,
+      "cell": 480,
+      "columns": 4,
+      "pivotX": 0.4673332214355469,
+      "pivotY": 0.23085299332936604,
+      "sourceBounds": [
+        -411.51837158203125,
+        -81.36897277832031,
+        474.23858642578125,
+        598.1312255859375
+      ],
+      "scale": 0.5,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.5,
+          "name": "OnAttackFinished",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 4.733333110809326,
+          "name": "skill_storage_w",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-01.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-02.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-03.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-04.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-05.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-06.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-07.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-08.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "attack-09.png",
+          "count": 7,
+          "width": 1920,
+          "height": 960
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "idle-00.png",
+      "sha256": "f9262489ec1dfa8d4889c6c083638eaac7b3613df87e9fbff20d1e7b1ed4e144"
+    },
+    {
+      "file": "idle-01.png",
+      "sha256": "192b1a0004be791c2319c650b3be4615060d8d4c4417231c517518a551029ba2"
+    },
+    {
+      "file": "idle-02.png",
+      "sha256": "08ea0538d1a0170087b4d2a9fb13b94786532ea748a41abc8603f3d8eedf8f22"
+    },
+    {
+      "file": "idle-03.png",
+      "sha256": "73bfefbf033962f84120452b8dc2c7040b30bc8ada95c9c82188a01d0b78999f"
+    },
+    {
+      "file": "idle-04.png",
+      "sha256": "11111fa8e7049653dfe532e7adf892d5ba0e0c2c6cdf4c9822411ee4f59486d4"
+    },
+    {
+      "file": "idle-05.png",
+      "sha256": "10eb7ff050f29f3eccfb2fec5c09254f5ec6a1ce986778ca1556e9590d1df7f2"
+    },
+    {
+      "file": "idle-06.png",
+      "sha256": "c78a92f0143427fda219e8f33a93ab3d84336ab78e88b011dd7f1564a7a5b2d8"
+    },
+    {
+      "file": "idle-07.png",
+      "sha256": "7ed56a095723907a85bdb29047322194a104546436bf7b1a2005832a01de1437"
+    },
+    {
+      "file": "idle-08.png",
+      "sha256": "f43fc236ba17565de159732311648bb201d5a5342ecd31dd1aeb0e2e076426c4"
+    },
+    {
+      "file": "idle-09.png",
+      "sha256": "61dc8d28cd34ab92f4c50e9650f58c6c3d34034601c8bb235cad6518c18d3df4"
+    },
+    {
+      "file": "idle-10.png",
+      "sha256": "146903b37eec3927af6aaa64aa1ef86e3d29b9e33c056fdf283cac972aaa0aeb"
+    },
+    {
+      "file": "idle-11.png",
+      "sha256": "c5a4afb4d5d2ef0a50ed2ec9cde05704d148f79e9b50d6ff37fa14b42627f36d"
+    },
+    {
+      "file": "idle-12.png",
+      "sha256": "3872856076cb791d78adefdac23339910fec4339a12e29b87e23d897f280e42c"
+    },
+    {
+      "file": "idle-13.png",
+      "sha256": "878c22891128962a3fe398b30e7c8f4d46b063deac0d22044aa8a28f93ac28e2"
+    },
+    {
+      "file": "idle-14.png",
+      "sha256": "c0f5898593675b9bba14da3df9a9b8f2640c256acd292db1b7434215edf834fc"
+    },
+    {
+      "file": "attack-00.png",
+      "sha256": "752e778c41f9fafa01503854b35f091423128d8764a3d3f77ad37fbb6b31e411"
+    },
+    {
+      "file": "attack-01.png",
+      "sha256": "68771f33483785fd6fe099554c8c61a134413eaeaa9d9dac976ace966c8651cb"
+    },
+    {
+      "file": "attack-02.png",
+      "sha256": "df4b7b4aa53d008f41dfcfe74a12889042e658712695fde802b7061eff5c47f9"
+    },
+    {
+      "file": "attack-03.png",
+      "sha256": "6cfe2bcefaa18325ff68bfbb241a7661883077eb9ea53988ca80c3d488d95053"
+    },
+    {
+      "file": "attack-04.png",
+      "sha256": "380d154bbdcfa533b97b060f3168bb0a932b1798a816c8dd119c922856c7b026"
+    },
+    {
+      "file": "attack-05.png",
+      "sha256": "5c6cf6940bfd22c8c6151987ee93d6817a04ad885a336a12ef9ba043e1ea4c5d"
+    },
+    {
+      "file": "attack-06.png",
+      "sha256": "5330371fd3b7b48498bca433e0d8ca631cbb16f227518a1b62ab0740ac2ac1ac"
+    },
+    {
+      "file": "attack-07.png",
+      "sha256": "63d2b7c1f26a66d3d57c0c21926b0a280da2240841f3c7396dca63b3c982948d"
+    },
+    {
+      "file": "attack-08.png",
+      "sha256": "bdb67e66425fd4ae04506e973745180067f42f9c81027a7f8e5510ba278985f9"
+    },
+    {
+      "file": "attack-09.png",
+      "sha256": "83fdd9bc0bc1e4f8493d42c6a35f357128aa738c68be9024d80c3c0e8c4e646d"
+    }
+  ],
+  "provenance": "Wiš’adel Supernova original proprietary Hypergryph character animation, acquired from torappu.prts.wiki. User requested direct integration and source upload; open redistribution license unconfirmed. Offline Spine 3.8.99 rasterization, no new Spine runtime installed."
+}

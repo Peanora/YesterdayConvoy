@@ -47,7 +47,8 @@ namespace YesterdayConvoy
                 u.IsMoving=!u.IsBlocked;
                 if(u.IsMoving&&PillarObstructs(u,step))u.IsMoving=false;
                 if(u.IsMoving)u.Motion.Advance(step);
-                if(u.Motion.HasArrived)
+                if(u.Motion.HasArrived&&BossArenaEnabled)u.IsMoving=false;
+                if(u.Motion.HasArrived&&!BossArenaEnabled)
                 {u.Resolution=UnitResolution.Breached;u.IsMoving=u.IsBlocked=false;Breaches++;Defense=Math.Max(0,Defense-Settings.GateDamage);}
                 return true;
             }

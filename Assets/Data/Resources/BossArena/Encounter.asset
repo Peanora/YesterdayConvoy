@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b98d426aaa19a242b009991cf528a39, type: 3}
+  m_Name: Encounter
+  m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.DefenderTrialDefinition
+  battle: {fileID: 11400000, guid: f959311d958c6124db26d59c1e7b83ca, type: 2}
+  route:
+  - {x: -2.8, y: 0.04, z: -1.98}
+  - {x: -0.3, y: 0.04, z: -0.90000004}
+  - {x: 1.4, y: 0.04, z: 0}
+  defenders:
+  - id: arena-wisadel
+    displayName: "\u7EF4\u4EC0\u6234\u5C14 \xB7 \u8D85\u65B0\u661F"
+    artId: D31
+    position: {x: 1.4, y: 0.04, z: 0}
+    health: 120000
+    attack: 140
+    armor: 10
+    range: 7
+    interval: 5
+    windup: 0.5333333
+    actionDuration: 5
+    blocks: 30
+    role: 0
+    damageType: 0
+    splashRadius: 0.85
+    healingRange: 0
+    skill:
+      kind: 0
+      initialSP: 0
+      requiredSP: 0
+      spPerSecond: 1
+      duration: 0
+      attackMultiplier: 1
+      attackSpeedMultiplier: 1
+      healFraction: 0
+      healRangeBonus: 0
+      defenseMultiplier: 1
+      healingInterval: 0
+      healthMultiplier: 1
+      effectRadius: 0
+      damageAmplification: 1
+      moveMultiplier: 1
+      elementFraction: 0
+      eraseChance: 0
+      chargeSeconds: 0
+      targets: 1
+    noOrdinaryAttack: 0
+    kasimierz: 0
+    reserve: 0
+    relayPosition: {x: 0, y: 0, z: 0}
+    reserveCost: 0
+    rangedAttackMultiplier: 1
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    extraHealChance: 0
+  surfaces: []
+  mapId: stronghold04-challenge
+  mapTitle: "\u7EF4\u4EC0\u6234\u5C14 \xB7 \u8D85\u65B0\u661F\u653B\u64C2"
+  autumnRuins: 0
+  lanes:
+  - id: arena-entry-0
+    exitId: arena-center
+    points:
+    - {x: -2.8, y: 0.04, z: -1.98}
+    - {x: -0.3, y: 0.04, z: -0.90000004}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-1
+    exitId: arena-center
+    points:
+    - {x: -2.8, y: 0.04, z: -0.66}
+    - {x: -0.3, y: 0.04, z: -0.3}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-2
+    exitId: arena-center
+    points:
+    - {x: -2.8, y: 0.04, z: 0.66}
+    - {x: -0.3, y: 0.04, z: 0.3}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-3
+    exitId: arena-center
+    points:
+    - {x: -2.8, y: 0.04, z: 1.98}
+    - {x: -0.3, y: 0.04, z: 0.90000004}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-4
+    exitId: arena-center
+    points:
+    - {x: -1.4599999, y: 0.04, z: -1.98}
+    - {x: -0.3, y: 0.04, z: -0.90000004}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-5
+    exitId: arena-center
+    points:
+    - {x: -1.4599999, y: 0.04, z: -0.66}
+    - {x: -0.3, y: 0.04, z: -0.3}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-6
+    exitId: arena-center
+    points:
+    - {x: -1.4599999, y: 0.04, z: 0.66}
+    - {x: -0.3, y: 0.04, z: 0.3}
+    - {x: 1.4, y: 0.04, z: 0}
+  - id: arena-entry-7
+    exitId: arena-center
+    points:
+    - {x: -1.4599999, y: 0.04, z: 1.98}
+    - {x: -0.3, y: 0.04, z: 0.90000004}
+    - {x: 1.4, y: 0.04, z: 0}
+  raised: []
+  floorTexture: {fileID: 0}
+  foliageTexture: {fileID: 0}
+  rosterCards: []
+  defenderTestId: 
+  terrainOnly: 0
+  attackWaves: {fileID: 0}
