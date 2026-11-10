@@ -1,5 +1,20 @@
 # 验证证据与回归
 
+## 2026-11-10：正式地图火雨与混编命中特效回归修复
+
+- 延续 `codex/thirteen-stage-campaign-v2` / PR #108，基线 `87f5085`；fetch确认 `origin/main=7862d09` 是祖先。原 `.vscode` 三文件与 `ProjectSettings/PackageManagerSettings.asset` 哈希保持。修改两份表现脚本、一个专项验证启动分支、两份现有PlayMode测试和文档；没有修改数值、场景、Prefab、素材、包或设置。
+- 八张正式地图的顶面名称均不在 `FireRainView.IsGround` 旧白名单，旧匹配数全部0，使 `GroundProjection` 失败、火雨整段隐藏。现支持实际保存地板、高台、公路桥和整格木桥承载面，仍排除地基、墙面、水面；不改技能时钟、伤害、波次或地图。
+- `EngagementView` 原按整队首卡创建每炮的Face，普通首卡使维维美表情、塔露拉目标命中层缺失。现按实际弹道来源实体取卡，来源死亡后已命中尾段仍读其资源；清理先隐藏再延迟销毁。资源未丢失，不能据这两项故障声称所有角色特效都消失。
+- 修复前 `regressions-red-final.xml` 两项精准失败：正式地图01火雨可见数量0，低费首卡混编中维维美命中表情为null。更早的夹具问题已保留：退出自由地图导致切回MonsterTrial；测试访问internal成员编译失败；均不冒称产品故障复现。
+- 首轮修复后六组D3D11 PlayMode为15/16：混编、维维美朝向、塔露拉普攻/阶段、原生特效层与Journey跨关回归通过；新八图测试错误地将controller下的角色待机预览也纳入暂停帧比较，单项失败。现将GPU开关和暂停比较严格限定为火雨自身五类Renderer，原像素差阈值保持；重新运行 `FireRainV12Tests` 4/4，八图逐一实际GPU差分、暂停冻结、自然结束、重开清理通过。因此本轮16个不同PlayMode用例全部获得通过结果，未把首轮15/16写成全绿。
+- 八图GPU火雨检查使用有限库存三星塔露拉预置；混编检查在正式第12地图中使用低费首卡、维维美、塔露拉和运行时耐久靶，真实技能发射/命中，校验来源纹理、GPU开关差异、暂停、已命中后来源死亡尾段及即时清理。两者都是明确的表现夹具，不代表自然获得角色或通关。已目视查看维维美、塔露拉混编相机图及末图火雨；相机图不含HUD。
+- 当前未调数值的真实 `CampaignJourneySimulationTools.Search` 重新运行seed73191 / formation-funded-pairs / 42种部署策略，找到12节点全胜见证。候选平衡方案仅写入 `CAMPAIGN_JOURNEY_V2.md`：第7加强普通守军，第9/10/12六星2/0/3建议增至4/5/8；基础HP3880/6184/9660建议增至7510/13102/21938。静态面板、槽位、高低台身份和伤害阈值计算已运行；未把候选应用到游戏，未运行候选战斗或宣称其难度通过。玩家怪物当前面板建议保持。
+
+- 相关EditMode（FireRain/ViviCombat/TalulahPhase/CampaignV2NativeBalance）37/37通过；仓库8192文件静态检查通过。最终Windows x64 Development构建1068111123字节、0错误，Unity6000.6.5f1 / D3D11。
+- 第一轮独立Player塔露拉通过；维维美专项未被CampaignBootstrap排除，默认Journey和专项同时加载场景，先于任何验证发生空引用。现在明确由`-viviCombatSmokeTest`专属驱动拥有启动，普通无参启动不变。重建后最终两份独立Player退出码均0：塔露拉`passed=true`、37条峰值火流、GPU差分20.45235、6秒结束及伤害/清理通过；维维美14/14检查通过，含单体普攻、2.2范围技能真实两目标伤害、单发消耗与暂停。已查看最终Player火雨相机图；维维美隐藏窗口的ScreenCapture截图为黑图，不能算Player视觉通过，维维美图像验收仅采用上面的PlayMode相机GPU差分和实看结果。专项使用旧单怪地图/耐久靶；八张正式地图和末关混编的GPU证据来自PlayMode，不混淆范围。
+
+证据目录：`artifacts/campaign-feedback-2026-11-10`（`edit.xml`、`play-green.xml`、`fire-green.xml`、`build-final.log`、`player-fire-final`、`player-vivi-final`）。未做全套Edit/PlayMode、第二机、OS鼠标完整交互或人类自然运营；未生成启动器、ZIP或Releases，未自动合并。
+
 ## 2026-11-10：DP逐关扩容与所有结算固定4XP
 
 - 延续codex/thirteen-stage-campaign-v2，起点7f64d25，fetch确认origin/main为7862d09且是祖先。原未跟踪.vscode三文件与PackageManagerSettings保留；无场景、Prefab、Packages、ProjectSettings、新美术或独立地图修改。任务只调整正式Journey，旧专项XP逻辑保持。

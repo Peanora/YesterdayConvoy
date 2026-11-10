@@ -148,16 +148,10 @@ namespace YesterdayConvoy
                 if (shots.Count <= i)
                 {
                     var view=new ShotView { Trail = CreateLine("Shot trail", 0.06f), Impact = CreateLine("Impact ring", 0.04f), Rays = CreateLine("Impact rays", 0.025f), Ink=CreateLine("Comic impact ink",.12f) };
-                    var faces=owner.Definition.Card.ComicImpactFaces;
-                    if(faces?.Count>0 || owner.Definition.Card.ArticulatedArt!=null)
-                    {
-                        view.Face=new GameObject("Comic expression",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-                        view.Face.transform.SetParent(transform,false); view.Face.sharedMaterial=material;
-                        if(faces?.Count>0) view.Face.sprite=faces[i%faces.Count]; view.Face.enabled=false;
-                    }
                     shots.Add(view);
                     Play(impact, modelShots[i].FromDefender ? 0.23f : modelShots[i].Empowered ? 0.75f : 0.35f);
                 }
+                PrepareImpactFace(shots[i],modelShots[i],b,i);
                 PresentShot(shots[i], modelShots[i], b, cam);
             }
             wolfVfx?.End();
@@ -178,6 +172,24 @@ namespace YesterdayConvoy
             audioSource.mute = owner.Muted;
             audioSource.pitch = owner.SimulationSpeed;
             if (b.IsPaused) audioSource.Pause(); else audioSource.UnPause();
+        }
+
+        private void PrepareImpactFace(ShotView view,CombatShot shot,ManualBattle battle,int index)
+        {
+            // Mixed decks cannot borrow the primary card's effects. Resolve the retained
+            // caster even after death so already-applied impact tails keep their own art.
+            if(view.Face!=null)view.Face.enabled=false;
+            var source=shot.FromDefender?null:battle.FindUnit(shot.SourceId);
+            if(source==null)return;
+            var card=owner.CardForUnit(source);var faces=card.ComicImpactFaces;
+            if((faces==null||faces.Count==0)&&card.ArticulatedArt==null)return;
+            if(view.Face==null)
+            {
+                view.Face=new GameObject("Comic expression",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+                view.Face.transform.SetParent(transform,false);view.Face.sharedMaterial=material;
+            }
+            view.Face.sprite=faces!=null&&faces.Count>0?faces[index%faces.Count]:null;
+            view.Face.enabled=false;
         }
 
         private void PresentShot(ShotView view, CombatShot shot, ManualBattle b, Camera cam)
@@ -371,7 +383,12 @@ namespace YesterdayConvoy
             wolfVfx?.Clear();
             talulahAttackVfx?.Clear();
             commonVfx?.Clear();
-            foreach (var v in shots) { Destroy(v.Trail.gameObject); Destroy(v.Impact.gameObject); Destroy(v.Rays.gameObject); Destroy(v.Ink.gameObject); if(v.Face!=null) Destroy(v.Face.gameObject); }
+            foreach (var v in shots)
+            {
+                v.Trail.enabled=v.Impact.enabled=v.Rays.enabled=v.Ink.enabled=false;
+                if(v.Face!=null){v.Face.enabled=false;Destroy(v.Face.gameObject);}
+                Destroy(v.Trail.gameObject);Destroy(v.Impact.gameObject);Destroy(v.Rays.gameObject);Destroy(v.Ink.gameObject);
+            }
             foreach(var ring in seedViews)Destroy(ring.gameObject);seedViews.Clear();
             shots.Clear(); puffs.Clear(); spawned.Clear(); dead.Clear();
         }

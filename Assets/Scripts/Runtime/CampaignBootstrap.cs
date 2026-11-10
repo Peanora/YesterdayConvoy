@@ -13,7 +13,9 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
-            if(!sandbox&&Array.IndexOf(args,"-campaignJourneySmokeTest")>=0)yield break;
+            // These dedicated drivers own scene startup; do not race them with
+            // the default journey's asynchronous load.
+            if(!sandbox&&Array.Exists(args,a=>a=="-campaignJourneySmokeTest"||a=="-viviCombatSmokeTest"))yield break;
             if(ApprovedMapSmokeDriver.Requested)yield break;
             if(!approvedLaunchConsumed&&Array.IndexOf(args,"-approvedMaps")>=0){approvedLaunchConsumed=true;UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
             int approved=Array.IndexOf(args,"-approvedMap");
