@@ -135,7 +135,16 @@ namespace YesterdayConvoy
         {CheckResult(name,passed,detail);if(!passed)throw new InvalidOperationException(name+(detail==null?"":"; "+detail));}
         IEnumerator Capture(string name)
         {
-            yield return new WaitForEndOfFrame();var frame=ScreenCapture.CaptureScreenshotAsTexture();
+            // Shop idle art can be queued in the Update after an overlay opens.
+            // Keep the overlay intact and wait until two rendered frames are ready.
+            double deadline=Time.realtimeSinceStartupAsDouble+240;int readyFrames=0;
+            while(readyFrames<2)
+            {
+                yield return new WaitForEndOfFrame();
+                readyFrames=controller==null||!controller.ArtLoading&&!controller.ShopPanelTransitioning?readyFrames+1:0;
+                if(Time.realtimeSinceStartupAsDouble>deadline)throw new InvalidOperationException("Visible Player art preparation timed out: "+name);
+            }
+            var frame=ScreenCapture.CaptureScreenshotAsTexture();
             if(frame==null)throw new InvalidOperationException("Visible Player frame unavailable: "+name);
             try
             {
@@ -165,6 +174,7 @@ namespace YesterdayConvoy
             Require("reward-pointer-swap-preserves-stock-and-money",shop.IsLineupInstance(reserve.Instance)&&CampaignJourneyEvidenceProbe.State(shop)==economy&&CampaignJourneyEvidenceProbe.StockConserved(shop)&&controller.Battle.Units.Count==0);
             yield return Capture("00-reward-lineup-swapped");controller.ToggleSpeed();controller.ClaimCampaignSupply();int gold=shop.Gold,xp=shop.XP;controller.ClaimCampaignSupply();
             Require("reward-receipt-is-idempotent",controller.Loop.Phase==BattleShopPhase.Settlement&&shop.Gold==gold&&shop.XP==xp&&CampaignJourneySession.Current.CompletedRounds.Count==1);
+            Require("supply-settlement-grants-fixed-four-experience",loop.Reward.Experience==4&&shop.Level==2&&shop.XP==2);
             Require("advance-reward-to-first-combat",controller.OpenLoopShop());yield return CampaignJourneyEvidenceProbe.Ready(2,c=>controller=c);
             Require("shop-and-run-survive-real-scene-change",ReferenceEquals(shop,controller.Shop)&&ReferenceEquals(loop,controller.Loop));
             Require("cross-stage-keeps-two-times-and-muted-sound",controller.SimulationSpeed==2&&controller.Muted);
@@ -533,8 +543,9 @@ namespace YesterdayConvoy
                     Require("stage-"+trace.stage+"-exact-natural-reward-and-stock",reward!=null&&reward.Base==trace.baseReward&&reward.Interest==trace.interest&&reward.Streak==trace.streakReward&&reward.Experience==trace.experienceReward&&
                         shop.Gold==trace.closingGold&&shop.Level==trace.closingLevel&&shop.XP==trace.closingXP&&loop.GolemExperience==trace.golemXP&&CampaignJourneyEvidenceProbe.StockConserved(shop));
                 else
-                    Require("stage-"+trace.stage+"-surviving-setback-base-and-interest-without-streak-or-xp",reward!=null&&!reward.Won&&reward.Base==stage.baseGold&&reward.Interest==Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&reward.Streak==0&&reward.Experience==0&&
-                        shop.Gold==goldBeforeResult+stage.baseGold+Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&shop.Level==levelBeforeResult&&shop.XP==xpBeforeResult&&shop.WinStreak==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
+                    Require("stage-"+trace.stage+"-surviving-setback-base-interest-and-fixed-four-experience",reward!=null&&!reward.Won&&reward.Base==stage.baseGold&&reward.Interest==Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&reward.Streak==0&&reward.Experience==4&&
+                        shop.Gold==goldBeforeResult+stage.baseGold+Math.Min(5,goldBeforeResult/10)*CampaignJourneyEconomy.RewardGoldMultiplier&&
+                        Enumerable.Range(1,shop.Level-1).Sum(CampaignJourneyEconomy.RequiredXP)+shop.XP==Math.Min(138,Enumerable.Range(1,levelBeforeResult-1).Sum(CampaignJourneyEconomy.RequiredXP)+xpBeforeResult+4)&&shop.WinStreak==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
                 observed.health=loop.Health;observed.healthLoss=loop.LastHealthLoss;
                 int expectedLoss=trace.won?0:CampaignJourneyHealth.CalculateLoss(controller.Battle.Defense,controller.Battle.Settings.InitialDefense,stage.stage);
                 Require("stage-"+trace.stage+"-health-matches-real-gate-progress",loop.LastBattleWon==trace.won&&loop.LastHealthLoss==expectedLoss&&loop.Health==healthBeforeResult-expectedLoss&&

@@ -66,7 +66,7 @@ namespace YesterdayConvoy
             foreach (int number in Enumerable.Range(1, StageCount))
             {
                 var entry = Stage(number);
-                if (string.IsNullOrWhiteSpace(entry.title) || entry.baseGold < 0 || entry.naturalXP < 0)
+                if (string.IsNullOrWhiteSpace(entry.title) || entry.baseGold < 0 || entry.naturalXP != CampaignJourneyEconomy.SettlementExperience)
                     throw new InvalidOperationException("Incomplete journey stage: " + number);
                 if (entry.IsSupply)
                 {

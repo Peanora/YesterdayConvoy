@@ -1,5 +1,5 @@
 {
-  "version": "Journey gradual-defense playtest 2026-11-10: 1/2/3/4/5/8/10/12 defenders, reduced HP and attack; original low wave DP and doubled rewards retained",
+  "version": "Journey progressive-DP and fixed-XP playtest 2026-11-10: post-supply combat budgets scale 1.5 to 2x; every settlement grants 4XP including defeats and supplies",
   "sources": [
     "campaign.json",
     "defenders.json",
@@ -9,13 +9,13 @@
     {
       "stage": 1,
       "title": "集结采购",
-      "tip": "开局5金币、1级，赠送3种不同的一至二费一星角色。\n拖动卡牌可交换编队和备战；领取补给获得8金币和2经验。\n人口上限随等级提升；初始商店免费刷新，补给不计连胜。",
+      "tip": "开局5金币、1级，赠送3种不同的一至二费一星角色。\n拖动卡牌可交换编队和备战；领取补给获得8金币和4经验。\n人口上限随等级提升；初始商店免费刷新，补给不计连胜。",
       "type": "Supply",
       "mapIndex": 0,
       "dp": 0,
       "defense": 0,
       "baseGold": 8,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [],
       "waves": [],
       "finalAdvanceSeconds": 0
@@ -29,7 +29,7 @@
       "dp": 10,
       "defense": 1,
       "baseGold": 10,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D01",
@@ -62,7 +62,7 @@
       "dp": 12,
       "defense": 2,
       "baseGold": 10,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D05",
@@ -101,13 +101,13 @@
     {
       "stage": 4,
       "title": "桥头补给",
-      "tip": "下一场首Boss有3名守军，R2、R3两波各7DP。\n先补主力星级和羁绊，兼顾远程输出与承伤角色。\n卡缇会间歇自疗，可利用两波存活单位合力突破。",
+      "tip": "下一场首Boss有3名守军，R2、R3两波分别10、11DP。\n先补主力星级和羁绊，兼顾远程输出与承伤角色。\n每关结算固定获得4经验，包括败局和奖励关。",
       "type": "Supply",
       "mapIndex": 0,
       "dp": 0,
       "defense": 0,
       "baseGold": 10,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [],
       "waves": [],
       "finalAdvanceSeconds": 0
@@ -115,13 +115,13 @@
     {
       "stage": 5,
       "title": "排洪防线·首领一",
-      "tip": "首Boss有3名守军；R2、R3各7DP，部署24、35秒。\n利用翎羽与高台火力的间隙推进，集中处理卡缇。\n最后60秒停止出兵，场上单位继续推进，技能仍可使用。",
+      "tip": "首Boss有3名守军；R2、R3各10、11DP，部署24、35秒。\n利用翎羽与高台火力的间隙推进，集中处理卡缇。\n最后60秒停止出兵，场上单位继续推进，技能仍可使用。",
       "type": "Boss",
       "mapIndex": 2,
-      "dp": 14,
+      "dp": 21,
       "defense": 3,
       "baseGold": 12,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D02",
@@ -163,12 +163,12 @@
       "waves": [
         {
           "laneId": "R2",
-          "dp": 7,
+          "dp": 10,
           "deploymentSeconds": 24
         },
         {
           "laneId": "R3",
-          "dp": 7,
+          "dp": 11,
           "deploymentSeconds": 35
         }
       ],
@@ -177,13 +177,13 @@
     {
       "stage": 6,
       "title": "雨夜交叉口",
-      "tip": "本关4名守军，R1、R3两波各8DP。\n斑点保护前排，炎熔提供范围火力，注意承伤与远程配合。\n每波剩余DP不结转，留意下一波路线与部署时机。",
+      "tip": "本关4名守军，R1、R3两波各13DP。\n斑点保护前排，炎熔提供范围火力，注意承伤与远程配合。\n每波剩余DP不结转，留意下一波路线与部署时机。",
       "type": "Battle",
       "mapIndex": 3,
-      "dp": 16,
+      "dp": 26,
       "defense": 3,
       "baseGold": 10,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D03",
@@ -237,12 +237,12 @@
       "waves": [
         {
           "laneId": "R1",
-          "dp": 8,
+          "dp": 13,
           "deploymentSeconds": 35
         },
         {
           "laneId": "R3",
-          "dp": 8,
+          "dp": 13,
           "deploymentSeconds": 35
         }
       ],
@@ -251,13 +251,13 @@
     {
       "stage": 7,
       "title": "地下邮运",
-      "tip": "本关5名守军，R1、R2两波各9DP。\n两路前排配合高台火力，优先保证主力星级和有效羁绊。\n地道口按白线前进，穿门单位清空共享防御即可突破。",
+      "tip": "本关5名守军，R1、R2两波分别15、16DP。\n两路前排配合高台火力，优先保证主力星级和有效羁绊。\n地道口按白线前进，穿门单位清空共享防御即可突破。",
       "type": "Battle",
       "mapIndex": 4,
-      "dp": 18,
+      "dp": 31,
       "defense": 4,
       "baseGold": 10,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D02",
@@ -323,12 +323,12 @@
       "waves": [
         {
           "laneId": "R1",
-          "dp": 9,
+          "dp": 15,
           "deploymentSeconds": 35
         },
         {
           "laneId": "R2",
-          "dp": 9,
+          "dp": 16,
           "deploymentSeconds": 40
         }
       ],
@@ -337,13 +337,13 @@
     {
       "stage": 8,
       "title": "转运整备",
-      "tip": "下一场8名守军，R1、R2、R3三波预算6、7、7DP。\n补齐有效羁绊与两星主力，兼顾对重甲输出和生存。\n星熊有债务与短暂保护阶段，保留后续波次接力。",
+      "tip": "下一场8名守军，R1、R2、R3三波预算11、12、13DP。\n补齐有效羁绊与两星主力，兼顾对重甲输出和生存。\n星熊有债务与短暂保护阶段，保留后续波次接力。",
       "type": "Supply",
       "mapIndex": 0,
       "dp": 0,
       "defense": 0,
       "baseGold": 12,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [],
       "waves": [],
       "finalAdvanceSeconds": 0
@@ -351,13 +351,13 @@
     {
       "stage": 9,
       "title": "矿运封锁·首领二",
-      "tip": "首领关有8名守军，三波R1、R2、R3预算6、7、7DP。\n星熊与玛恩纳守住要道，先补齐有效羁绊与主力质量。\n利用跨波存活单位接力，星熊保护结束后才能完成击杀。",
+      "tip": "首领关有8名守军，三波R1、R2、R3预算11、12、13DP。\n星熊与玛恩纳守住要道，先补齐有效羁绊与主力质量。\n利用跨波存活单位接力，星熊保护结束后才能完成击杀。",
       "type": "Boss",
       "mapIndex": 6,
-      "dp": 20,
+      "dp": 36,
       "defense": 5,
       "baseGold": 14,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D25",
@@ -459,17 +459,17 @@
       "waves": [
         {
           "laneId": "R1",
-          "dp": 6,
+          "dp": 11,
           "deploymentSeconds": 32
         },
         {
           "laneId": "R2",
-          "dp": 7,
+          "dp": 12,
           "deploymentSeconds": 32
         },
         {
           "laneId": "R3",
-          "dp": 7,
+          "dp": 13,
           "deploymentSeconds": 32
         }
       ],
@@ -478,13 +478,13 @@
     {
       "stage": 10,
       "title": "热站总检",
-      "tip": "10名守军；R1、R2、R1三波预算7、7、8DP。\n短线经过三处热泵，长线绕开喷口但仍有守军。\n观察预警，分批投入，保留后续波次的部署次数。",
+      "tip": "10名守军；R1、R2、R1三波预算13、14、15DP。\n短线经过三处热泵，长线绕开喷口但仍有守军。\n观察预警，分批投入，保留后续波次的部署次数。",
       "type": "Battle",
       "mapIndex": 5,
-      "dp": 22,
+      "dp": 42,
       "defense": 5,
       "baseGold": 12,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D01",
@@ -610,17 +610,17 @@
       "waves": [
         {
           "laneId": "R1",
-          "dp": 7,
+          "dp": 13,
           "deploymentSeconds": 32
         },
         {
           "laneId": "R2",
-          "dp": 7,
+          "dp": 14,
           "deploymentSeconds": 36
         },
         {
           "laneId": "R1",
-          "dp": 8,
+          "dp": 15,
           "deploymentSeconds": 32
         }
       ],
@@ -629,13 +629,13 @@
     {
       "stage": 11,
       "title": "港前最终整备",
-      "tip": "最终补给；领取后进入12人防线，三波共24DP。\n先领补给再采购，在升人口和追星之间选择。\n基础奖励、利息和连胜金币已翻倍，可以购买经验冲10级。",
+      "tip": "最终补给；领取后进入12人防线，三波共48DP。\n每关结算固定4经验；领取补给后可继续购物与购买经验。\n根据现有星级和羁绊，在升人口和追星之间选择。",
       "type": "Supply",
       "mapIndex": 0,
       "dp": 0,
       "defense": 0,
       "baseGold": 14,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [],
       "waves": [],
       "finalAdvanceSeconds": 0
@@ -643,13 +643,13 @@
     {
       "stage": 12,
       "title": "退潮货港·最终防线",
-      "tip": "终战12名守军，R1、R2、R1三波，预算7、8、9DP。\n留意星熊保护、塞雷娅治疗和新约能天使弹药。\n清空6点共享防御即可突破，无须全歼，善用跨波支援。",
+      "tip": "终战12名守军，R1、R2、R1三波，预算14、16、18DP。\n留意星熊保护、塞雷娅治疗和新约能天使弹药。\n清空6点共享防御即可突破，无须全歼，善用跨波支援。",
       "type": "Boss",
       "mapIndex": 8,
-      "dp": 24,
+      "dp": 48,
       "defense": 6,
       "baseGold": 14,
-      "naturalXP": 2,
+      "naturalXP": 4,
       "guards": [
         {
           "id": "D25",
@@ -799,17 +799,17 @@
       "waves": [
         {
           "laneId": "R1",
-          "dp": 7,
+          "dp": 14,
           "deploymentSeconds": 36
         },
         {
           "laneId": "R2",
-          "dp": 8,
+          "dp": 16,
           "deploymentSeconds": 40
         },
         {
           "laneId": "R1",
-          "dp": 9,
+          "dp": 18,
           "deploymentSeconds": 36
         }
       ],

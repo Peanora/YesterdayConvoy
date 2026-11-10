@@ -1,5 +1,21 @@
 # 验证证据与回归
 
+## 2026-11-10：DP逐关扩容与所有结算固定4XP
+
+- 延续codex/thirteen-stage-campaign-v2，起点7f64d25，fetch确认origin/main为7862d09且是祖先。原未跟踪.vscode三文件与PackageManagerSettings保留；无场景、Prefab、Packages、ProjectSettings、新美术或独立地图修改。任务只调整正式Journey，旧专项XP逻辑保持。
+- DP以第4补给之后为起点：节点5/6/7/9/10/12目标1.5/1.6/1.7/1.8/1.9/2倍。总量先向上取整，按原各波权重最大余数分配，同余数后波优先；八战10/12/21/26/31/36/42/48，分波10；12；10+11；13+13；15+16；11+12+13；13+14+15；14+16+18，总226。节点1/4/8/11仍0DP，不产生补给部署。逐项比较开工source与新source：守军种类/面板/技能/位置、地图、路线、波时长/推进时长、守方防御、基础金币均未变。
+- CampaignJourneyEconomy.SettlementExperience=4，ShopTrialModel仅在JourneyEconomy下忽略旧victoryXP参数并统一发4。BattleShopRun继续走既有一次性SettleRound入口，先有真实胜败/补给回执再推进；不改公共方法签名。Journey源、生成资产和Validate都要求4XP，提示与文档同步。SceneTests以累计经验核对升级/封顶，不再错误断言败局经验不变；Player初始补给明确检查回执4、2级2XP，败局重放分支同样检查固定4XP。
+- 真实经验边界：胜/败/补给、致命败局、重复Observe/SettleRound、传入过期XP参数、自动跨级、升10级与已10级回执均覆盖；满级内部XP归零但回执仍4。旧默认与Campaign失败仍0XP，旧默认胜利2XP、显式7XP语义保持。全部12节点自然48XP、无付费结束7级6XP；终战前44XP，10级缺94XP，按4XP整笔购买最低24次96金，多2XP封顶。
+- 经济工具：`py -3 tools/balance/journey_economy.py --output artifacts/campaign-2026-11-10-dp-xp/economy`实际运行退出0，28/28检查通过。三个种子×四政策×全胜/三败账本共24组，真实商品、合成/委托、经验购买、库存及现金守恒；每组12次回执48XP。73191十级账本花96金经验、34金买牌、10金刷新，全胜终局117金，3/6/10失败账本83金，均10级。仅经济事务，不模拟血量或承诺失利后能到每一节点；基础136、首奖13、终战前239、终局269的不消费全胜现金上界保持。
+- 新参数自然模型：3种子×2政策、每战最多42出兵策略，6条搜索有3条全胜，另外3条首败终关。首个全胜为73191/formation-funded-pairs，真实初始5金/三赠卡与库存约束、12节点/8战全胜，合535.90模拟秒/61部署，终关8级18XP、20金，12次回执全4XP；最终编队没有五费。搜索在首败停止，未突破不等于生命耗尽或总玩家通关率，不复用旧参数动作轨迹。
+- 对照168场（两组各42策略、两侧）：第7六人两星30金组42/42对混编38/42；终关八人37金塔露拉二星核心28/42对混编28/42。同人口/等级、星级×招募费联合分布及基础成本检查全部通过。扩大DP/自然成长确实让混编更容易突破；旧版同组混编0/42不再适用。没有为了保留旧对照结论反向加强守军或按羁绊强制结算，不能声称当前所有杂牌必败。
+- Unity6000.6.5f1：完整EditMode1003/1003、六组D3D11 PlayMode29/29通过；后者含真实场景连续败局、致命败局、补给与重复终态tick。最终EditMode在截图驱动修正后再次1003/1003。CampaignJourneyTools.Author/Validate与BuildWindows实际运行，最终Windows x64 Development总构建1068110487 bytes、0 errors，常用EXE已重建。
+- 首轮Player（player-1280）完整战斗、交易与4XP核对均通过，已自然全程通关，但11750项中两项视觉检查失败，退出1：信息页截图实际为“准备商店待机”加载帧。依据真实PNG缩小复现为ShopInterfaceProbe打开面板后异步WarmVisibleShop触发；Capture原只等待单帧。现只改验证驱动等待ArtLoading/ShopPanelTransitioning结束后的两帧再拍，240秒有界超时，原亮度/对比判据不放宽，生产逻辑与模拟时钟不变。保留失败证据，不登记首轮为全部通过。
+- 最终1280×720与1600×900可见独立Player（player-final-1280/player-final-1600）各11750/11750通过、正常退出0。均为full-natural-replay、seed73191/formation-funded-pairs、naturalJourneyCompleted=true、completedStages=12、combatScenes=8，生命100/100、61部署、末关8级18XP/20金，12次回执全4XP。通过正常开局、真实有限库存购买/委托/经验、席位/指针部署与手动技能接口重放，不预设成队、注血、注伤害或强制胜负。1280 PNG已目视核对首补给经验＋4/2级2XP、终关14/16/18分波与12守军、实际概率页不再为加载界面。没有把程序指针重放登记为真实OS鼠标。
+- 仓库8192跟踪文件检查及差异检查通过；最终提交前复核暂存对象与磁盘/原本地哈希。未运行完整PlayMode、第二机/新克隆、真实OS鼠标或人类整局；没有启动脚本、ZIP、Releases或自动合并。
+
+证据根目录为忽略的artifacts/campaign-2026-11-10-dp-xp：author.log、edit-final.xml、play.xml、build-final.log、model-search.json、boundaries.json、economy及Player目录。模型入口用CampaignJourneySimulationTools.AuthorAndEvaluate，`-journeySearchSeeds 73191,44,31016 -journeyEconomyPolicies formation-funded-pairs,formation-funded-transition -journeySearchAllSeeds true -journeySearchLimit 6 -journeyDeploymentVariants 42 -journeyBoundaryStages 7,12 -journeyBoundaryNames paired-middle-six-two-normal,paired-middle-six-two-mixed,paired-talulah-two-core-normal,paired-talulah-two-core-mixed -journeyBoundaryVariants 42`，配合显式输出路径；Player用`-campaignJourneySmokeTest -campaignJourneyReplayFile <model-search.json> -campaignJourneyEvidenceDir <output>`及D3D11/窗口尺寸，不创建启动器。
+
 ## 2026-11-10：渐进守军、降低生命攻击与正常运营全程重放
 
 - 范围：延续codex/thirteen-stage-campaign-v2，起点fef84fb；fetch核实origin/main仍为7862d09且是当前分支祖先。只改Journey源配置/生成资产、既有仿真工具、配置测试和文档。既存.vscode三文件及PackageManagerSettings的SHA256与开工前相同，不暂存。没有场景、Prefab、Packages、ProjectSettings或新美术修改。

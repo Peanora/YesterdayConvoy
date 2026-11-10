@@ -28,12 +28,14 @@ namespace YesterdayConvoy.Tests
             {
                 Assert.That(run.Stage,Is.EqualTo(stage));Assert.That(run.RewardStage,Is.EqualTo(new[]{1,4,8,11}.Contains(stage)));
                 Assert.That(run.Observe(BattlePhase.Won),Is.True);bases+=run.Reward.Base;
+                Assert.That(run.Reward.Experience,Is.EqualTo(4));
                 Assert.That(run.Health,Is.EqualTo(100));Assert.That(run.LastHealthLoss,Is.Zero);Assert.That(run.LastBattleWon,Is.True);
-                int gold=shop.Gold,xp=shop.XP;
-                Assert.That(run.Observe(BattlePhase.Won),Is.False);Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(shop.XP,Is.EqualTo(xp));
+                int gold=shop.Gold,xp=shop.XP,level=shop.Level;
+                Assert.That(run.Observe(BattlePhase.Won),Is.False);Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(shop.XP,Is.EqualTo(xp));Assert.That(shop.Level,Is.EqualTo(level));
                 if(stage<12){Assert.That(run.OpenShop(),Is.True);Assert.That(run.OpenShop(),Is.False);Assert.That(run.PrepareBattle(),Is.True);}
             }
             Assert.That(run.TotalStages,Is.EqualTo(12));Assert.That(bases,Is.EqualTo(136));Assert.That(shop.Gold,Is.EqualTo(269));
+            Assert.That(shop.Level,Is.EqualTo(7));Assert.That(shop.XP,Is.EqualTo(6),"Twelve settled nodes award exactly 48 XP through the unchanged level curve.");
             Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Complete));Assert.That(run.OpenShop(),Is.False);
             Assert.That(shop.Available("CARD_M07")+shop.Offers.Count(id=>id=="CARD_M07")+shop.Bench.Sum(p=>ShopTrialModel.Copies(p.Star)),Is.EqualTo(30));
         }
@@ -88,7 +90,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:1,initialDefense:2),Is.True);
             Assert.That(run.LastBattleWon,Is.False);Assert.That(run.Health,Is.EqualTo(90));Assert.That(run.MaxHealth,Is.EqualTo(100));
             Assert.That(run.LastHealthLoss,Is.EqualTo(10));Assert.That(run.LastRemainingDefense,Is.EqualTo(1));Assert.That(run.LastInitialDefense,Is.EqualTo(2));
-            Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Settlement));Assert.That(run.Reward.Base,Is.EqualTo(10));Assert.That(run.Reward.Experience,Is.Zero);
+            Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Settlement));Assert.That(run.Reward.Base,Is.EqualTo(10));Assert.That(run.Reward.Experience,Is.EqualTo(4));
+            Assert.That(shop.Level,Is.EqualTo(4));Assert.That(shop.XP,Is.Zero,"A surviving defeat also crosses the actual next-level threshold.");
             Assert.That(shop.WinStreak,Is.Zero);Assert.That(run.Reward.Streak,Is.Zero);Assert.That(shop.Gold,Is.EqualTo(before+run.Reward.Base+run.Reward.Interest));
             int settledGold=shop.Gold,settledXP=shop.XP;
             Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:2,initialDefense:2),Is.False);
@@ -121,8 +124,11 @@ namespace YesterdayConvoy.Tests
                 if(stage<7){Assert.That(run.OpenShop(),Is.True);Assert.That(run.PrepareBattle(),Is.True);}
             }
             Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Failed));Assert.That(run.LastHealthLoss,Is.EqualTo(5),"Actual health removed is clamped at zero.");
+            Assert.That(run.Reward.Experience,Is.EqualTo(4),"Even the defeat that exhausts challenge health settles its node XP.");
+            int settledLevel=run.Economy.Level,settledXP=run.Economy.XP;
             Assert.That(run.OpenShop(),Is.False);Assert.That(run.RestartEncounter(),Is.False);Assert.That(run.Stage,Is.EqualTo(7));
             Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:4,initialDefense:4),Is.False);Assert.That(run.Health,Is.Zero);
+            Assert.That(run.Economy.Level,Is.EqualTo(settledLevel));Assert.That(run.Economy.XP,Is.EqualTo(settledXP));
         }
         [Test]public void SurvivingFinalBossLossCompletesJourneyWithoutClaimingBattleVictory()
         {
@@ -141,12 +147,14 @@ namespace YesterdayConvoy.Tests
                     int defense=CampaignJourneyCatalog.Stage(stage).defense;
                     Assert.That(run.Observe(BattlePhase.Lost,remainingDefense:defense,initialDefense:defense),Is.True);
                     Assert.That(run.Health,Is.EqualTo(expected[bossIndex++]));
+                    Assert.That(run.Reward.Experience,Is.EqualTo(4));
                 }
                 else Assert.That(run.Observe(BattlePhase.Won),Is.True);
                 if(stage<12){Assert.That(run.OpenShop(),Is.True);Assert.That(run.PrepareBattle(),Is.True);}
             }
             Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Failed));Assert.That(run.Health,Is.Zero);Assert.That(run.LastBattleWon,Is.False);
             Assert.That(run.LastHealthLoss,Is.EqualTo(25));Assert.That(run.OpenShop(),Is.False);
+            Assert.That(run.Economy.Level,Is.EqualTo(7));Assert.That(run.Economy.XP,Is.EqualTo(6));
         }
         [Test]public void SupplyAndVictoryPreserveHealthAndFreshChallengeResetsIt()
         {
@@ -161,9 +169,10 @@ namespace YesterdayConvoy.Tests
         }
         [Test]public void LegacyChallengeStillEndsOnItsFirstDefeatWithoutJourneyHealth()
         {
-            var run=new BattleShopRun(NewShop(),44,campaign:true);
+            var shop=NewShop();shop.EnableCampaign();var run=new BattleShopRun(shop,44,campaign:true);
             Assert.That(run.Observe(BattlePhase.Lost),Is.True);Assert.That(run.Phase,Is.EqualTo(BattleShopPhase.Failed));
             Assert.That(run.MaxHealth,Is.Zero);Assert.That(run.Health,Is.Zero);Assert.That(run.OpenShop(),Is.False);
+            Assert.That(run.Reward.Experience,Is.Zero);Assert.That(shop.Level,Is.EqualTo(1));Assert.That(shop.XP,Is.Zero);
         }
         [Test]public void RestartBeforeSettlementPreservesEconomyAndReceiptAvailability()
         {
@@ -256,21 +265,62 @@ namespace YesterdayConvoy.Tests
             var shop=NewShop();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),1,0,50);
             var first=shop.SettleRound("first",true,baseGold:10,victoryXP:2);
             Assert.That(first.Base,Is.EqualTo(10));Assert.That(first.Interest,Is.EqualTo(10));Assert.That(first.Streak,Is.Zero);
-            Assert.That(first.Experience,Is.EqualTo(2));Assert.That(shop.Gold,Is.EqualTo(70));Assert.That(shop.Level,Is.EqualTo(2));
+            Assert.That(first.Experience,Is.EqualTo(4));Assert.That(shop.Gold,Is.EqualTo(70));Assert.That(shop.Level,Is.EqualTo(2));Assert.That(shop.XP,Is.EqualTo(2));
             var second=shop.SettleRound("second",true,baseGold:10,victoryXP:2);
             Assert.That(second.Interest,Is.EqualTo(10));Assert.That(second.Streak,Is.EqualTo(2));Assert.That(second.Total,Is.EqualTo(22));
             var supply=shop.SettleRound("supply",true,baseGold:8,victoryXP:2,countsForStreak:false);
             Assert.That(supply.Base,Is.EqualTo(8));Assert.That(supply.Interest,Is.EqualTo(10));Assert.That(supply.Streak,Is.Zero);
+            Assert.That(supply.Experience,Is.EqualTo(4));
             Assert.That(shop.WinStreak,Is.EqualTo(2));
             var defeat=shop.SettleRound("defeat",false,baseGold:10,victoryXP:2);
             Assert.That(defeat.Base,Is.EqualTo(10));Assert.That(defeat.Interest,Is.EqualTo(10));Assert.That(defeat.Streak,Is.Zero);
-            Assert.That(defeat.Experience,Is.Zero);Assert.That(shop.WinStreak,Is.Zero);
+            Assert.That(defeat.Experience,Is.EqualTo(4));Assert.That(shop.WinStreak,Is.Zero);
             int gold=shop.Gold;Assert.That(shop.SettleRound("defeat",false,baseGold:10),Is.SameAs(defeat));Assert.That(shop.Gold,Is.EqualTo(gold));
 
             shop.EnableCampaign();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),1,0,50);
             var legacy=shop.SettleRound("old-first",true,baseGold:5,victoryXP:2);
             Assert.That(legacy.Base,Is.EqualTo(5));Assert.That(legacy.Interest,Is.EqualTo(5));Assert.That(legacy.Total,Is.EqualTo(10));
+            Assert.That(legacy.Experience,Is.EqualTo(2));
             Assert.That(shop.SettleRound("old-second",true).Streak,Is.EqualTo(1));
+        }
+        [TestCase(true,true,0)]
+        [TestCase(false,true,0)]
+        [TestCase(true,false,2)]
+        [TestCase(false,false,2)]
+        [TestCase(true,true,99)]
+        [TestCase(false,true,99)]
+        [TestCase(false,false,-1)]
+        public void EveryJourneyNodeGrantsFourXpRegardlessOfOutcomeSupplyOrRequestedAmount(bool won,bool countsForStreak,int requestedXP)
+        {
+            var shop=NewShop();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),4,7,5);
+            var receipt=shop.SettleRound("node",won,baseGold:0,victoryXP:requestedXP,countsForStreak:countsForStreak);
+            Assert.That(receipt.Won,Is.EqualTo(won));Assert.That(receipt.Experience,Is.EqualTo(4));
+            Assert.That(shop.Level,Is.EqualTo(5));Assert.That(shop.XP,Is.EqualTo(3));Assert.That(shop.Gold,Is.EqualTo(5));
+            Assert.That(shop.SettleRound("node",!won,baseGold:500,victoryXP:999,countsForStreak:!countsForStreak),Is.SameAs(receipt));
+            Assert.That(shop.Level,Is.EqualTo(5));Assert.That(shop.XP,Is.EqualTo(3));Assert.That(shop.Gold,Is.EqualTo(5));
+        }
+        [TestCase(true,true)]
+        [TestCase(false,true)]
+        [TestCase(true,false)]
+        public void FourXpReceiptIsPreservedWhenJourneyReachesOrAlreadyHasLevelTen(bool won,bool countsForStreak)
+        {
+            var shop=NewShop();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),9,47,0);
+            var finalLevel=shop.SettleRound("reach-cap",won,baseGold:0,victoryXP:0,countsForStreak:countsForStreak);
+            Assert.That(finalLevel.Experience,Is.EqualTo(4));Assert.That(shop.Level,Is.EqualTo(10));Assert.That(shop.XP,Is.Zero);
+            var capped=shop.SettleRound("at-cap",false,baseGold:0,victoryXP:123,countsForStreak:false);
+            Assert.That(capped.Experience,Is.EqualTo(4));Assert.That(shop.Level,Is.EqualTo(10));Assert.That(shop.XP,Is.Zero);
+            Assert.That(shop.SettleRound("at-cap",true,baseGold:500,victoryXP:999),Is.SameAs(capped));
+            Assert.That(shop.Level,Is.EqualTo(10));Assert.That(shop.XP,Is.Zero);Assert.That(shop.Gold,Is.Zero);
+        }
+        [TestCase(true,0,0)]
+        [TestCase(true,7,7)]
+        [TestCase(false,7,0)]
+        public void LegacyPreparationKeepsOutcomeDependentConfiguredXp(bool won,int requestedXP,int expected)
+        {
+            var shop=NewShop();shop.EnableCampaign();shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),4,0,0);
+            var receipt=shop.SettleRound("legacy",won,baseGold:0,victoryXP:requestedXP);
+            Assert.That(receipt.Experience,Is.EqualTo(expected));Assert.That(shop.Level,Is.EqualTo(4));Assert.That(shop.XP,Is.EqualTo(expected));
+            Assert.Throws<ArgumentOutOfRangeException>(()=>shop.SettleRound("legacy-invalid",won,baseGold:0,victoryXP:-1));
         }
         [TestCase(0,0)]
         [TestCase(9,0)]

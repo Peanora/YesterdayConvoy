@@ -124,14 +124,18 @@ namespace YesterdayConvoy.Tests
                     Assert.That(loop.LastRemainingDefense,Is.EqualTo(definition.defense));
                     Assert.That(loop.Reward.Won,Is.False);Assert.That(loop.Reward.Base,Is.EqualTo(definition.baseGold));
                     Assert.That(loop.Reward.Interest,Is.EqualTo(2*Math.Min(5,gold/10)));Assert.That(loop.Reward.Streak,Is.Zero);
-                    Assert.That(loop.Reward.Experience,Is.Zero);Assert.That(shop.XP,Is.EqualTo(xp));Assert.That(shop.Level,Is.EqualTo(level));
+                    Assert.That(loop.Reward.Experience,Is.EqualTo(4));
+                    int beforeXP=Enumerable.Range(1,level-1).Sum(CampaignJourneyEconomy.RequiredXP)+xp;
+                    int afterXP=Enumerable.Range(1,shop.Level-1).Sum(CampaignJourneyEconomy.RequiredXP)+shop.XP;
+                    Assert.That(afterXP,Is.EqualTo(Math.Min(138,beforeXP+4)),"Defeats, including the fatal one, grant four experience.");
                     Assert.That(shop.Gold,Is.EqualTo(gold+loop.Reward.Base+loop.Reward.Interest));
                     var summary=session.CompletedRounds.Last();
                     Assert.That(summary.stage,Is.EqualTo(stage));Assert.That(summary.won,Is.False);
                     Assert.That(summary.healthLoss,Is.EqualTo(loss));Assert.That(summary.remainingHealth,Is.EqualTo(expectedHealth));
-                    int settledGold=shop.Gold,receipts=session.CompletedRounds.Count;
+                    int settledGold=shop.Gold,settledXP=shop.XP,settledLevel=shop.Level,receipts=session.CompletedRounds.Count;
                     controller.Tick(5);controller.Tick(5);
                     Assert.That(loop.Health,Is.EqualTo(expectedHealth));Assert.That(shop.Gold,Is.EqualTo(settledGold));
+                    Assert.That(shop.XP,Is.EqualTo(settledXP));Assert.That(shop.Level,Is.EqualTo(settledLevel));
                     Assert.That(session.CompletedRounds.Count,Is.EqualTo(receipts),"Repeated terminal ticks cannot settle twice.");
                 }
                 Assert.That(CampaignJourneyEvidenceProbe.StockConserved(shop),Is.True);

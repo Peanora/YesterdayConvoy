@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(journey.stages.Where(s => !s.IsSupply).Select(s => s.map.index), Is.EqualTo(new[] { 7, 1, 2, 3, 4, 6, 5, 8 }));
             Assert.That(journey.stages.Where(s => s.IsSupply).All(s => s.dp == 0 && s.defense == 0 && s.encounter == null), Is.True);
             Assert.That(journey.stages.Select(s => s.baseGold), Is.EqualTo(new[] { 8, 10, 10, 10, 12, 10, 10, 12, 14, 12, 14, 14 }));
-            Assert.That(journey.stages.All(s => s.naturalXP == 2), Is.True);
+            Assert.That(journey.stages.All(s => s.naturalXP == 4), Is.True);
         }
 
         [Test] public void SavedJourneyMatchesCurrentAuthoringWithoutRewritingSandboxAssets()
@@ -72,7 +72,6 @@ namespace YesterdayConvoy.Tests
             for (int i = 1; i < battles.Length; i++)
                 Assert.That(battles[i].encounter.defenders.Length - battles[i - 1].encounter.defenders.Length, Is.InRange(1, 3),
                     "A later encounter adds a bounded number of defenders: stage " + battles[i].stage);
-            Assert.That(battles.Select(s => s.dp), Is.EqualTo(new[] { 10, 12, 14, 16, 18, 20, 22, 24 }));
             Assert.That(battles.Select(s => s.encounter.attackWaves.waves.Length), Is.EqualTo(new[] { 1, 1, 2, 2, 2, 3, 3, 3 }));
             Assert.That(battles.Select(s => s.encounter.attackWaves).Distinct().Count(), Is.EqualTo(8));
             foreach (var stage in battles)
@@ -110,7 +109,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(stage.map.encounter.defenders[0].health, Is.EqualTo(sandbox));
         }
 
-        [Test] public void RestoredMidAndLateWavesCanDeployTwoStarTalulahAndOfferThreeStarWindows()
+        [Test] public void ExpandedMidAndLateWavesCanDeployTwoStarTalulahAndOfferThreeStarWindows()
         {
             int coreCost = Mathf.RoundToInt(CampaignV2Balance.StatValue("CARD_TALULAH_TRIAL", 2, "dp"));
             int threeStarCost = Mathf.RoundToInt(CampaignV2Balance.StatValue("CARD_TALULAH_TRIAL", 3, "dp"));
@@ -121,6 +120,24 @@ namespace YesterdayConvoy.Tests
                         "A two-star five-cost core must fit after the deployment-cost reduction: stage " + stage.stage);
                 Assert.That(stage.encounter.WaveSnapshot().Waves.Max(w => w.DP), Is.GreaterThanOrEqualTo(threeStarCost));
             }
+        }
+
+        [Test] public void LaterBudgetsGrowFromOneAndAHalfToDoubleWhileTutorialBudgetsStayFixed()
+        {
+            Assert.That(CampaignJourneyCatalog.Stage(2).dp, Is.EqualTo(10));
+            Assert.That(CampaignJourneyCatalog.Stage(3).dp, Is.EqualTo(12));
+            Assert.That(CampaignJourneyCatalog.Stage(4).dp, Is.Zero, "The fourth node is a supply receipt.");
+            int[] stages = { 5, 6, 7, 9, 10, 12 }, originalBudgets = { 14, 16, 18, 20, 22, 24 };
+            float previous = 0;
+            for (int i = 0; i < stages.Length; i++)
+            {
+                float ratio = (float)CampaignJourneyCatalog.Stage(stages[i]).dp / originalBudgets[i];
+                Assert.That(ratio, Is.InRange(1.5f, 2f), "stage " + stages[i]);
+                Assert.That(ratio, Is.GreaterThan(previous), "Each later encounter has a larger proportional increase.");
+                previous = ratio;
+            }
+            Assert.That(CampaignJourneyCatalog.Stage(5).dp, Is.EqualTo(21));
+            Assert.That(CampaignJourneyCatalog.Stage(12).dp, Is.EqualTo(48));
         }
 
     }

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.AttackWaveScenario
   waves:
   - laneId: R1
-    dp: 7
+    dp: 13
     deploymentSeconds: 32
   - laneId: R2
-    dp: 7
+    dp: 14
     deploymentSeconds: 36
   - laneId: R1
-    dp: 8
+    dp: 15
     deploymentSeconds: 32
   finalAdvanceSeconds: 75

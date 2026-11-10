@@ -10,6 +10,7 @@ namespace YesterdayConvoy
     public static class CampaignJourneyEconomy
     {
         public const int InitialGold=5;
+        public const int SettlementExperience=4;
         // Journey base rewards are already doubled in the authored stage data.
         // Apply this only to settlement interest and combat streak gold.
         public const int RewardGoldMultiplier=2;
