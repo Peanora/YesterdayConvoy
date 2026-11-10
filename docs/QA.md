@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-10起：维什戴尔超新星攻擂独立样板
+
+- 范围按用户本轮直接要求：小保存地图、皮肤放大、方舟式Boss总血条、半血爆裂黎明加速、整队同时登场／免DP、阵亡后60—120秒再部署。试验取90秒及2倍加速。开工只有已明确保留的`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`未跟踪，未暂存／提交这些本地项。从实时远端main `0b17920`创建`codex/wisadel-boss-arena`，没有改写原`codex/combat-style-synergies`分支或带入其待合并提交。主导唯一写入工程场景与运行代码，资源Agent只写项目外加工目录，随后主导统一导入、测试和构建。
+- 使用level-design、autobattler-design、game-balance-analysis及port-original-vfx流程。皮肤从PRTS资产源meta定位“超新星”`char_1035_wisdel_sale_14`，正背原Spine3.8.99真实曲线离线导出；5段813帧、52页图集＋1卡面、63311099字节PNG、单PNG最大1527109字节。统一480帧格／PPU160／30fps／共同根点，全部帧非空、尺寸／哈希／透明边缘通过，已实际查看代表帧和连续动作。运行来源及权利状态在D31／D31B的SOURCE.json，原作开放再分发许可未确认；用户本轮接入与源码上传授权不记为权利人许可。角色技能动作是原作，独立弹道／命中FX仍为项目适配。
+- `BossArenaTools.Author`实际保存独立`WisadelBossArena.unity`与3份配置、4份材质，目录共25场景。第二次Author未覆盖已存地形／参数；显式RefineTaskLayout仅调整本轮新样板，形成八个互不重叠集结位并删除继承留声机。静态地图不在Play重建。正常行动默认入口保持，新增系统菜单与角色测试入口，不创建CMD／BAT。
+- 首轮模型编译发现新分部类错用了函数局部名`guardSettings`，改为公开CombatSettings；第一组测试使用了模型不接受的虚构卡ID，改用真实M07／M08。随后5项模型通过。首轮完整EditMode1024/1025，定位构建清单未登记新场景，补登记。中断尚未具备场景入口的首轮Play启动后，测试框架留下本任务创建的`InitTestScenea9ea8b4f-6661-43be-9ba8-a43020a7d624.unity`，曾使全量EditMode1025/1026；核实确在工作区且为中断测试新建文件后，仅清除此临时场景及meta。最终完整EditMode **1026/1026**，0失败／跳过，证据`artifacts/boss-arena/edit-final.xml/log`。
+- 只读审查发现攻擂单位仍可能在终点走旧穿门扣防御、使Boss停火，以及海嗣仍用旧地图地面。已修正：攻擂终点保持Active且不扣防御／不进入阵亡CD，余火特殊移动也沿此边界；海嗣使用新棋盘内35个整数覆盖格。新增真实炮击边界测试证明非攻击单位抵达终点后Boss仍继续出手、卡仍在场。没有用增加Boss数值遮掩模型问题。
+- 首轮相关GPU PlayMode5/6；唯一失败为旧CampaignSceneTests仍假定开局没有5金币、前两节点均补给。按当前已实施的“初始5金、首补给8金、第二节点为首战”修正原测试，保留重复领取幂等及不在战斗发补给检查，未改战役规则。最终非batch D3D11 PlayMode **6/6**：两项新攻擂场景＋四项原CampaignScene回归，证据`play-delivery.xml/log`。新场景通过真实整备、整队启动、8主卡在场、免费／防重复、90秒冻结、复原编队、自然死亡、真实半血和自然击杀；截图位于`artifacts/boss-arena/play`，为GameView，不是OS鼠标记录。其后仅把镜头观察点y由0.8改1.9以减少头部被HUD遮挡，并添加构建包装入口；运行规则未改，最终镜头由下述独立Player和实际Windows窗口核验。
+- 数值采用真实ManualBattle／CampaignV2Balance、同八人编队与当前八条路线，自动施放就绪实体技能、冷却后立即补员。最终模型（`balance.json`）全一星：720秒、41部署、12次技能，Boss余9637.46；全二星：265.5秒、14部署、7次技能获胜，124.85秒进入半血；全三星：148.15秒、9部署、4次技能获胜，70.7秒进入半血。720秒是一星模型观察上限，不是游戏超时判负。都是固定持有阵容，无自然商店获取或人口成本推断，不推广为玩家通关率。
+- 运行源码 **43a25fbd83536eedea3c3480536a8137fc932652**。`BossArenaTools.BuildWindows`调用真实评估及现有BaselineTools.BuildWindows；Windows x64 Development **1068351569 bytes／0 errors／退出0**（`build.log`），完整产物直接位于常用`Builds/Windows`，SOURCE.txt绑定该源码。两次独立D3D11 Player，1280×720、1600×900均 **18/18、退出0**（`player-1280`／`player-1600`的result.json及对应exit文件）。生产接口完成整队自动登场、无DP与次数扣除、防重复、真实原作Sprite放大、死亡CD暂停、半血、14次部署自然击杀、整备保留编队并重置下一战。两次均265.5模拟秒，无直接扣血、强制胜负或测试加成。Player驱动未请求截图，不以逻辑检查冒称Player像素验收。
+- 最后使用computer-use技能实际操作常用EXE的普通`-bossArena`窗口：OS鼠标点击“整队出击”后12实体出现（8主卡＋支援），自然交战后在1:49点击暂停；两次窗口观察均显示Boss95529／120000、79.6%、阵亡卡73秒及66秒不变。随后OS鼠标点“整备”，实际返回无限金币整备、八张二星编队保留、伤害统计归零、可以再次整队出击；窗口留供人类试玩。该项不是人类完整攻擂胜例。无Player异常日志。
+- 素材、源码与必要meta共167项运行提交；新图集均已实际纳入Git，没有依赖本地额外忽略遗漏。暂存后仓库检查8344文件通过，git diff空白检查通过。文档收尾提交再记后续Git状态。未运行完整PlayMode、第二机／新克隆、正常运营获取、无技能等多种人类策略或超长战斗性能；不宣称完成最终平衡。无自动合并main、ZIP或Releases。
+
 ## 2026-11-10：再次提高中期守军强度
 
 - 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。
