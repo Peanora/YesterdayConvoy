@@ -66,6 +66,7 @@ namespace YesterdayConvoy
             if(u.Health<=0)DefeatUnit(u);
             else
             {
+                OnStyleHealthLoss(u);
                 if(UnitCombat(u).Effects.NervousCreeper)StepCreeperDamage(u);
                 if(UnitCombat(u).Effects.Harvester)TryWakeHarvester(u);
             }

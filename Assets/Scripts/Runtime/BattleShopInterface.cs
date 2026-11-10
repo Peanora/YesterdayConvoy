@@ -101,6 +101,8 @@ namespace YesterdayConvoy
                     if(unit.SynergyShield>0&&unit.SynergyShieldUntil>Battle.Clock)Fill(new Rect(p.x-25,p.y-3,50*Mathf.Clamp01(unit.SynergyShield/unit.MaxHealth),2),new Color(.35f,.8f,1));
                     float soulShield=Battle.ContractShieldRemaining(unit);
                     if(soulShield>0)Fill(new Rect(p.x-25,p.y-6,50*Mathf.Clamp01(soulShield/unit.MaxHealth),2),new Color(.81f,.65f,1));
+                    float styleWard=Battle.StyleWardRemaining(unit);
+                    if(styleWard>0)Fill(new Rect(p.x-25,p.y-9,50*Mathf.Clamp01(styleWard/unit.MaxHealth),2),new Color(.45f,.92f,.90f));
                     if(spirit!=null)GUI.Label(new Rect(p.x-40,p.y+7,80,20),unit.IsReviving?$"凝聚 {Math.Max(0,spirit.ReadyAt-Battle.Clock):0.0}s":$"灵体 {Battle.HerdRemaining(unit.EntityId):0.0}s",LoopText(11,TextAnchor.MiddleCenter,new Color(.55f,.88f,1)));
                     if(Battle.SarkazTier>0&&Battle.IsContractBeneficiary(unit))
                     {

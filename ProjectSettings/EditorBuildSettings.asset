@@ -48,8 +48,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Map08EbbHarbor.unity
     guid: ae8740e6c82120143aa681db9156ac53
   - enabled: 1
+    path: Assets/Scenes/SynergyTrials/AssaultStyleTrial.unity
+    guid: c45503f8cec6fef41b832a80c2633ae8
+  - enabled: 1
+    path: Assets/Scenes/SynergyTrials/BulwarkStyleTrial.unity
+    guid: 6cd511a4bb83dac45bf3d974f1a6bf04
+  - enabled: 1
+    path: Assets/Scenes/SynergyTrials/CoordinationStyleTrial.unity
+    guid: 6a9acbec24095014691e26a6e1edd659
+  - enabled: 1
     path: Assets/Scenes/SynergyTrials/DeepPoolTrial.unity
     guid: b1a260aaf40de8c4398cf2ab657a41ad
+  - enabled: 1
+    path: Assets/Scenes/SynergyTrials/FrenzyStyleTrial.unity
+    guid: e38fc144721b5594585311bfc42ca982
   - enabled: 1
     path: Assets/Scenes/SynergyTrials/GuerrillaTrial.unity
     guid: 4dae9861252b07d4cad88fc29a785901
@@ -63,8 +75,14 @@ EditorBuildSettings:
     path: Assets/Scenes/SynergyTrials/MarineTrial.unity
     guid: 2b62cd0d608c0b1458032610afc053d2
   - enabled: 1
+    path: Assets/Scenes/SynergyTrials/MarksmanStyleTrial.unity
+    guid: 5651014d9ac148c429ba9384fa650140
+  - enabled: 1
     path: Assets/Scenes/SynergyTrials/MudrockCrewTrial.unity
     guid: 9d6ddb88b542c624caec5578e1817d51
+  - enabled: 1
+    path: Assets/Scenes/SynergyTrials/MysticStyleTrial.unity
+    guid: c51b4e977323126428a37095491979ef
   - enabled: 1
     path: Assets/Scenes/SynergyTrials/ReunionTrial.unity
     guid: d6f924179bd08c54a9033e0620c3d350

@@ -85,7 +85,8 @@ namespace YesterdayConvoy
             if(JourneyActive)battle.ConfigureCampaignV2(Loop.Stage);
             if(!JourneyActive&&!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
-                extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
+                extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds,
+                combatStyles:JourneyActive||activeSynergyTrial==null||SynergyTrialCatalog.IsCombatStyle(activeSynergyTrial.trialId));
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
             if(ApprovedMapActive||JourneyActive)marineGround.AddRange(ApprovedMap.WalkablePoints());

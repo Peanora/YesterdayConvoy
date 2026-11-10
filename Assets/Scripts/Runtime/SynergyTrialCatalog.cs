@@ -30,6 +30,17 @@ namespace YesterdayConvoy
             new Entry("sarkaz","萨卡兹","SarkazTrial","萨卡兹",9,"CARD_M19","CARD_M24","CARD_M26","CARD_M27","CARD_M37","CARD_M38"),
         };
         public static IReadOnlyList<Entry> Entries=>Array.AsReadOnly(entries);
-        public static Entry Find(string id)=>entries.FirstOrDefault(e=>string.Equals(e.Id,id,StringComparison.Ordinal));
+        static readonly Entry[] styleEntries={
+            new Entry("style-assault","强攻","AssaultStyleTrial","强攻",6,"CARD_ORIGINIUM_SLUG","CARD_M04","CARD_M06","CARD_M13","CARD_M19","CARD_M37","CARD_M10","CARD_M18"),
+            new Entry("style-marksman","射手","MarksmanStyleTrial","射手",6,"CARD_M08","CARD_M11","CARD_M16","CARD_M26","CARD_M36","CARD_WISADEL_APRIL","CARD_M10","CARD_M18"),
+            new Entry("style-mystic","秘术","MysticStyleTrial","秘术",6,"CARD_M09","CARD_M12","CARD_M42","CARD_M38","CARD_M14","CARD_TALULAH_TRIAL","CARD_M10","CARD_M18"),
+            new Entry("style-bulwark","壁垒","BulwarkStyleTrial","壁垒",6,"CARD_M07","CARD_M10","CARD_M18","CARD_M27","CARD_M43","CARD_M29","CARD_WISADEL_APRIL","CARD_M08"),
+            new Entry("style-frenzy","狂袭","FrenzyStyleTrial","狂袭",6,"CARD_M02","CARD_M03","CARD_M15","CARD_M22","CARD_M23","CARD_M34","CARD_M10","CARD_M18"),
+            new Entry("style-coordination","协同","CoordinationStyleTrial","协同",4,"CARD_M05","CARD_M17","CARD_M21","CARD_M25","CARD_WISADEL_APRIL","CARD_M14","CARD_M07","CARD_M18"),
+        };
+        public static IReadOnlyList<Entry> StyleEntries=>Array.AsReadOnly(styleEntries);
+        public static IEnumerable<Entry> AllEntries=>entries.Concat(styleEntries);
+        public static bool IsCombatStyle(string id)=>styleEntries.Any(e=>e.Id==id);
+        public static Entry Find(string id)=>AllEntries.FirstOrDefault(e=>string.Equals(e.Id,id,StringComparison.Ordinal));
     }
 }

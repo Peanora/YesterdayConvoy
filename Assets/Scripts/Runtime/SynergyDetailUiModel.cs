@@ -21,6 +21,10 @@ namespace YesterdayConvoy
         public static SynergyDetailUiModel Build(SynergySummary summary,bool v2,System.Collections.Generic.IEnumerable<string> roleIds)
         {
             var chosen=summary.Members.ToHashSet(StringComparer.Ordinal);
+            var combatStyle=CombatStyleRules.Find(summary.Name);
+            if(combatStyle!=null)return new SynergyDetailUiModel{source="打法羁绊 · 试玩初值",common=CombatStyleRules.Common,
+                members=combatStyle.Members.Select(id=>new SynergyMemberUi{id=id,selected=chosen.Contains(id),transfer=false}).OrderByDescending(m=>m.selected).ThenBy(m=>m.id,StringComparer.Ordinal).ToArray(),
+                tiers=combatStyle.Thresholds.Select(t=>new SynergyTierUi{tier=t,active=t==summary.Tier,text=CombatStyleRules.Effect(combatStyle.Style,t)}).ToArray()};
             var all=roleIds.Where(id=>CampaignBalance.Tags(id).Contains(summary.Name)).Concat(chosen).Distinct(StringComparer.Ordinal);
             var model=new SynergyDetailUiModel{source=v2?"正式行动 v2":"当前试验规则",
                 common=Common(summary.Name),members=all.Select(id=>new SynergyMemberUi{id=id,selected=chosen.Contains(id),transfer=!CampaignBalance.Tags(id).Contains(summary.Name)})

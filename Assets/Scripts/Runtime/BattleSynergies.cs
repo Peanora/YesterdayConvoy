@@ -52,7 +52,7 @@ namespace YesterdayConvoy
             synergyStars.ContainsKey(cardId)&&CampaignBalance.Reunion(cardId)?
             V2Synergy("reunion",ReunionTier,"memberStatBonus",ReunionTier*.05f):0;
         float ReunionMemberBonus(DeployedUnitState unit)=>unit.SynergySupport?0:ReunionMemberBonus(unit.CardId);
-        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,IEnumerable<string> extraGuerrillaMembers=null,IEnumerable<string> extraMudrockMembers=null)
+        public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,IEnumerable<string> extraGuerrillaMembers=null,IEnumerable<string> extraMudrockMembers=null,bool combatStyles=false)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
             // Validate and materialize external enumerables before mutating any existing snapshot.
@@ -93,9 +93,10 @@ namespace YesterdayConvoy
             ReunionTier=ReunionRules.TierForCount(ReunionCount,ReunionFormationCount);
             int snow=synergyStars.Keys.Count(CampaignBalance.Snow);SnowTier=snow>=5?5:snow>=2?2:0;
             SnowTotalStars=synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Sum(p=>p.Value);
+            ConfigureCombatStyles(pieces.Select(p=>p.Id),combatStyles);
             reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience);ConfigureRemainingSynergies(contract,adaptation,secondAdaptation,marineExperience);ResetSynergies();
         }
-        void ResetSynergies(){ResetSnowstorms();ResetRemainingSynergies();ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
+        void ResetSynergies(){ResetCombatStyles();ResetSnowstorms();ResetRemainingSynergies();ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
         void OnMusterDeployment(DeployedUnitState trigger)
         {
             if(!synergyEnabled||trigger.SynergySupport||ReunionTier==0||!CampaignBalance.Reunion(trigger.CardId)||!synergyStars.ContainsKey(trigger.CardId))return;

@@ -182,7 +182,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(790,538,426,26),"十二关行动 · v2完整挑战",buttonStyle))BeginJourney();
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
-            if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;
+            if(GUI.Button(new Rect(790,631,426,22),"阵营 / 打法羁绊试玩 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;
             GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
         }
         private static void DrawTestPortrait(Rect bounds,Sprite sprite)

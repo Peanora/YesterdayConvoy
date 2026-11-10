@@ -70,6 +70,12 @@ namespace YesterdayConvoy
                 case CombatFeedbackStatus.Shackled:return "束缚";
                 case CombatFeedbackStatus.Lured:return "诱导";
                 case CombatFeedbackStatus.Shielded:return "护盾";
+                case CombatFeedbackStatus.Ruptured:return "破阵";
+                case CombatFeedbackStatus.Exposed:return "暴露";
+                case CombatFeedbackStatus.Frenzy:return "狂热";
+                case CombatFeedbackStatus.ArcanePulse:return "秘术脉冲";
+                case CombatFeedbackStatus.Bulwark:return "壁垒掩护";
+                case CombatFeedbackStatus.Coordination:return "协同接续";
                 default:return string.Empty;
             }
         }
@@ -79,11 +85,15 @@ namespace YesterdayConvoy
             float value=bubble.Amount;
             // Keep tiny real periodic heals visible without rounding +0 or pretending they healed +1.
             string number=value<.1f?"<0.1":value<10?value.ToString("0.#"):Math.Round(value,MidpointRounding.AwayFromZero).ToString("0");
+            if(bubble.Kind==CombatFeedbackKind.SkillPointsRestored)return "+"+number+" SP";
             return bubble.Kind==CombatFeedbackKind.HealthRestored?"+"+number:
                 bubble.Kind==CombatFeedbackKind.ShieldAbsorbed?"护盾 "+number:"−"+number;
         }
         public static Color ColorFor(CombatFeedbackKind kind,CombatFeedbackStatus status=CombatFeedbackStatus.None)
         {
+            if(kind==CombatFeedbackKind.SkillPointsRestored||status==CombatFeedbackStatus.Coordination)return new Color(.72f,.65f,1);
+            if(status==CombatFeedbackStatus.Frenzy||status==CombatFeedbackStatus.Ruptured)return new Color(1,.58f,.30f);
+            if(status==CombatFeedbackStatus.ArcanePulse)return new Color(.79f,.64f,1);
             if(kind==CombatFeedbackKind.HealthLost)return new Color(1,.47f,.29f);
             if(kind==CombatFeedbackKind.HealthRestored)return new Color(.48f,1,.58f);
             if(kind==CombatFeedbackKind.ShieldAbsorbed||status==CombatFeedbackStatus.Shielded)return new Color(.35f,.92f,1);

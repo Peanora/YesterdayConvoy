@@ -155,6 +155,8 @@ namespace YesterdayConvoy
         public float IgnoreResistance {get;internal set;}
         public bool TrueDamage {get;internal set;}
         public bool SynergyOrder {get;internal set;}
+        internal int StyleOrdinaryAction;
+        internal string StylePrimaryTarget;
         public bool Healing { get; }
         public CombatDamageType DamageType { get; }
         public float SplashRadius { get; }
@@ -328,9 +330,10 @@ namespace YesterdayConvoy
                     var source=UnitCombat(unit);
                     shot.FrozenBonusApplied=defender.FrozenUntil>Clock && source.Effects.FrozenAttackMultiplier>1;
                     float attack=shot.Attack*(shot.FrozenBonusApplied ? source.Effects.FrozenAttackMultiplier : 1);
-                    float health=defender.Health;
+                    float health=defender.Health,styleDebtBefore=defender.Debt;
                     ApplyDefenderAttack(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType,shot.SynergyOrder||unit.SynergySupport,shot.SynergyOrder||unit.SynergySupport?null:unit,1,unit);
                     shot.DamageDealt=health-defender.Health;
+                    OnStyleOrdinaryHit(unit,defender,shot,shot.DamageDealt,shot.DamageDealt>0||defender.Debt>styleDebtBefore);
                     if(!shot.SynergyOrder)
                     {
                         RecordSynergyContact(unit);OnGolemHit(unit,defender);
@@ -441,6 +444,7 @@ namespace YesterdayConvoy
                     unit.LastAttackRate=empowered ? 1 : UnitAttackRate(unit);
                     unit.NextAttackTime=Clock+(empowered ? c.SkillInterval : UnitAttackInterval(unit))/unit.LastAttackRate;
                     if(empowered && SilverWolfCombat.IsWolf(unit)){StartWolfShot(unit,target,c);continue;}
+                    int styleFirstShot=combatShots.Count;
                     combatShots.Add(new CombatShot(unit.EntityId,target.EntityId,false,empowered,
                         unit.Motion.Position,target.Position,Clock+UnitAttackWindup(unit)/unit.LastAttackRate,
                         c.Effects.Patriot?(unit.PatriotPhase==PatriotPhase.March?0:PatriotTiming.DestructionFlight/unit.LastAttackRate):c.ProjectileTime,
@@ -465,6 +469,8 @@ namespace YesterdayConvoy
                             count++;
                         }
                     }
+                    if(!empowered)for(int i=styleFirstShot;i<combatShots.Count;i++)
+                    {combatShots[i].StyleOrdinaryAction=unit.OrdinaryAttacksFired;combatShots[i].StylePrimaryTarget=target.EntityId;}
                 }
             }
             if(Defense==0) return;
