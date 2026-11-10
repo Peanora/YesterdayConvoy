@@ -39,8 +39,8 @@ MonoBehaviour:
     displayName: "\u65A9\u4E1A\u661F\u718A"
     artId: D25
     position: {x: 1.5, y: 0, z: -2.5}
-    health: 2070
-    attack: 79.2
+    health: 2174
+    attack: 81.58
     armor: 24
     range: 0.9
     interval: 1.6
@@ -84,8 +84,8 @@ MonoBehaviour:
     displayName: "\u739B\u6069\u7EB3"
     artId: D30
     position: {x: -1.5, y: 0, z: 0.5}
-    health: 1840
-    attack: 30.8
+    health: 1932
+    attack: 31.720001
     armor: 12
     range: 0.9
     interval: 1.2
@@ -129,8 +129,8 @@ MonoBehaviour:
     displayName: "\u7C73\u683C\u9C81"
     artId: D01
     position: {x: -3.5, y: 0, z: 0.5}
-    health: 737
-    attack: 40.27
+    health: 774
+    attack: 41.48
     armor: 14
     range: 0.85
     interval: 1.6
@@ -174,8 +174,8 @@ MonoBehaviour:
     displayName: "\u7FCE\u7FBD"
     artId: D06
     position: {x: 3.5, y: 0, z: 2.5}
-    health: 538
-    attack: 37.75
+    health: 565
+    attack: 38.88
     armor: 6
     range: 0.9
     interval: 1
@@ -219,8 +219,8 @@ MonoBehaviour:
     displayName: "\u514B\u6D1B\u4E1D"
     artId: D07
     position: {x: -2.5, y: 0.72, z: 1.5}
-    health: 396
-    attack: 40.27
+    health: 416
+    attack: 41.48
     armor: 4
     range: 3.5
     interval: 1.5
@@ -264,8 +264,8 @@ MonoBehaviour:
     displayName: "\u671B"
     artId: D28
     position: {x: 0.5, y: 0.72, z: -0.5}
-    health: 1323
-    attack: 55
+    health: 1389
+    attack: 56.65
     armor: 8
     range: 3.5
     interval: 2.2
@@ -309,8 +309,8 @@ MonoBehaviour:
     displayName: "\u708E\u7194"
     artId: D09
     position: {x: 2.5, y: 0.72, z: -1.5}
-    health: 411
-    attack: 62.92
+    health: 432
+    attack: 64.810005
     armor: 4
     range: 3.5
     interval: 2.8
@@ -354,8 +354,8 @@ MonoBehaviour:
     displayName: "\u5723\u8046\u521D\u96EA"
     artId: D27
     position: {x: -4.5, y: 0.72, z: 0.5}
-    health: 1323
-    attack: 52.800003
+    health: 1389
+    attack: 54.379997
     armor: 10
     range: 3.5
     interval: 2

@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-10：再次提高中期守军强度
+
+- 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。
+- 本次只改第5/6/7/9的20名守军血攻：HP逐人+15%/+20%/+20%/+5%，ATK+5%/+8%/+8%/+3%，HP四舍五入、ATK目标保留两位小数。源JSON恰version1处＋40个倍率字段变化；实际Unity Author/Validate生成Journey、Stage05/06/07/09。45名生成守军均与float32公式一致，HP精确、ATK最大误差约0.00000367；四份变动Battle除health/attack外相同，第2/3/10/12整份资产同基线。Journey只变HP溯源字段。人数、六星4/5/8、技能、T档、地图格位、路线、波窗口、DP/XP/金币及玩家数值保持。
+- 八战基础HP为386/767/2437/3322/5591/9071/12447/14479；变动四关HP/DP为116.05/127.77/180.35/251.97。第7卡缇30%自疗每次501→601.2，因此此比率不代表含治疗后的真实压力。临时计算脚本检查float32取整、反求倍率和未授权字段不变，执行后已清理；已接受输入、面板和模型结果保留在`artifacts/campaign-middle-2026-11-10`。
+- 复用真实Shop/ManualBattle持久工具，固定库存预置、0金币、真实波次/DP/技能，基线`EvaluateBuildBoundaries`跑5/6/7/9/10/12共48组×42＝2016场；候选`AuthorAndEvaluate`对5/6/7/9跑28组×42＝1176场。候选传`-journeySearchLimit 0`，明确未运行新的自然获取整局搜索，不能把空search报告记作搜索通过。输入为baseline/candidate-journey.json，输出baseline/candidate-boundaries.json，逐组前后对照comparison.json；不是简化DPS模型或强制胜利。
+- 第5四一星成型/混编42/2→42/0；第6六一星成型/混编42/24→42/4；第7六一星成型42→23、六二星成型42→42。第7六一星参考的模拟结束时间中位83.95→107.10秒、六二星79.575→85.40秒，包含失败样本，不称仅胜局用时。第9二星塔露拉核心及双二星塔露拉＋维维美均23→23；双核心第10/12基线25/18，候选这些关资产与所有玩家参数完全不变，未为同值重复跑新一轮末关。有限策略胜例不代表玩家胜率；一星杂牌更难，不承诺所有阵容获胜。
+- Unity6000.6.5f1完整EditMode **1020/1020**通过、退出0；非batch D3D11 `CampaignJourneySceneTests` **5/5**通过、退出0，包含真实后期三地图面板/原生技能绑定、暂停、重开源隔离、跨关设置、开局有限经济与生命耗尽结算。未改测试或生产脚本，未写场景/Prefab/Packages/ProjectSettings；测试临时场景由Runner自行清理。仓库检查 **8192文件通过**，`git diff --check`通过。
+- `CampaignJourneyTools.BuildWindows`实际重建常用`Builds/Windows/YesterdayConvoy.exe`：Windows x64 Development **1068133570 bytes、0 errors、退出0**，仍为默认十二节点行动。数据已通过正式构建入口校验，源码绑定在同目录SOURCE.txt；未把构建成功当作Player操作或整局平衡验收。
+- 本轮未运行自然运营整局、新独立Player操作/截图脚本、OS鼠标或第二机；主观强度留待用户继续试玩。不把上一版Player终关胜例或截图结果算成本轮重验。未创建启动脚本、ZIP、Releases或自动合并。
+
 ## 2026-11-10：平滑难度梯度、提高维维美生命与缺金币商品置灰
 
 - 用户确认主要卡第12关，二星塔露拉和维维美混编难以突破，同时前9关偏易；商店买不起商品需要灰色。延续`codex/thirteen-stage-campaign-v2`，基线26310eb，fetch确认origin/main仍7862d09且为祖先。保留原.vscode三文件与PackageManagerSettings，不修改场景/Prefab/Packages/ProjectSettings。
