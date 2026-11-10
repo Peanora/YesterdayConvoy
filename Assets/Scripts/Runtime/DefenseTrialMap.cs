@@ -12,11 +12,11 @@ namespace YesterdayConvoy
             red=scene.RedGate.position;blue=scene.BlueGate.position;
             redActive=scene.RedGate.gameObject.activeSelf;blueActive=scene.BlueGate.gameObject.activeSelf;
             borrowedCamera=Camera.main;cameraPosition=borrowedCamera.transform.position;
-            if(data.Tactical&&(StrongholdChallengeLayout.IsStronghold(data.mapId)||data.mapId==BlackForestLayout.Id))
+            if(data.Tactical&&(StrongholdChallengeLayout.IsStronghold(data.mapId)||data.mapId==BlackForestLayout.Id||ApprovedMapCatalog.IsMap(data.mapId)))
             {
                 battlefield=FindAnyObjectByType<AuthoredBattlefield>(FindObjectsInactive.Include);
                 if(battlefield==null){
-                    if(data.mapId==BlackForestLayout.Id)throw new System.InvalidOperationException("Open the independently authored BlackForestCrossing scene; terrain is never generated on Play.");
+                    if(data.mapId==BlackForestLayout.Id||ApprovedMapCatalog.IsMap(data.mapId))throw new System.InvalidOperationException("Open the independently authored map scene; terrain is never generated on Play.");
                     battlefield=Instantiate(Resources.Load<GameObject>("Maps/BattleShopEnvironment")).GetComponent<AuthoredBattlefield>();owned=true;
                 }
                 battlefield.gameObject.SetActive(true);

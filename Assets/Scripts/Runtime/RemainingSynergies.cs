@@ -15,6 +15,8 @@ namespace YesterdayConvoy
     {
         public int HerdTier {get;private set;}
         public int DeepTier {get;private set;}
+        public int DeepTotalStars {get;private set;}
+        public float DeepStarMultiplier=>SynergyStarScaling.Deep(DeepTotalStars,DeepTier);
         public int SarkazTier {get;private set;}
         public int MarineTier {get;private set;}
         public int HerdUsed {get;private set;}
@@ -46,6 +48,7 @@ namespace YesterdayConvoy
         {
             if(experience<0||!Enum.IsDefined(typeof(MarineAdaptation),adaptation)||!Enum.IsDefined(typeof(MarineAdaptation),second))throw new ArgumentException();
             HerdTier=MemberTier("牧群",4);DeepTier=MemberTier("深池",4);int sarkaz=synergyStars.Keys.Count(id=>Tag(id,"萨卡兹"));
+            DeepTotalStars=synergyStars.Where(p=>Tag(p.Key,"深池")).Sum(p=>p.Value);
             SarkazTier=sarkaz>=9?9:sarkaz>=8?8:sarkaz>=6?6:sarkaz>=4?4:sarkaz>=2?2:0;MarineTier=MemberTier("海嗣",4);
             ContractCard=contract!=null&&synergyStars.ContainsKey(contract)&&Tag(contract,"萨卡兹")?contract:synergyStars.Keys.FirstOrDefault(id=>Tag(id,"萨卡兹"));
             Adaptation=adaptation;SecondAdaptation=second==adaptation?(MarineAdaptation)(((int)adaptation+1)%3):second;
@@ -58,7 +61,7 @@ namespace YesterdayConvoy
         }
         void OnRemainingDeath(DeployedUnitState u)
         {
-            if(!synergyEnabled||HerdTier==0||u.SynergySupport||HerdUsed>=(HerdTier==4?5:3)||!CampaignBalance.Profiles.TryGetValue(u.CardId,out var p)||p.Cost==5||!herdDeaths.Add(u.EntityId))return;
+            if(!synergyEnabled||HerdTier==0||u.SynergySupport||HerdUsed>=V2Synergy("herd",HerdTier,"conversionsPerBattle",HerdTier==4?5:3)||!CampaignBalance.Profiles.TryGetValue(u.CardId,out var p)||p.Cost==5||!herdDeaths.Add(u.EntityId))return;
             HerdUsed++;herdQueue.Enqueue(u);
         }
         void FlushHerd()
@@ -66,21 +69,22 @@ namespace YesterdayConvoy
             while(herdQueue.Count>0)
             {
                 var original=herdQueue.Dequeue();var source=UnitCombat(original);var lane=lanes.First(l=>l.Id==original.RouteId);
-                float ratio=HerdTier==4?.45f:.35f;bool ranged=HerdTier==4&&!source.Melee;
-                var motion=new RouteMotion(lane.Points,.65f);motion.Advance((float)(original.Motion.DistanceTravelled/.65));
+                float ratio=V2Synergy("herd",HerdTier,"spiritHPFraction",HerdTier==4?.45f:.35f);bool ranged=V2Synergy("herd",HerdTier,"rangedInherited",HerdTier==4?1:0)>0&&!source.Melee;
+                float speed=V2Synergy("herd",HerdTier,"speed",.65f);
+                var motion=new RouteMotion(lane.Points,speed);motion.Advance((float)(original.Motion.DistanceTravelled/speed));
                 var u=new DeployedUnitState($"run-{RunId}/host-{++sequence}",original.UnitId,motion,original.MaxHealth*ratio,Clock)
                     {CardId=original.CardId,RouteId=original.RouteId,ExitId=original.ExitId,SynergySupport=true};
                 var spirit=new HerdSpiritState(original.EntityId,u.EntityId,original.DeathTime);
                 // The replacement already counts as pending force, but cannot fight or move until it rises.
                 // Reuse the same simulation-clock gate as existing rebirth instead of adding a visual-only lock.
                 u.IsReviving=true;u.ReviveAt=spirit.ReadyAt;u.IsMoving=false;u.DeathTime=spirit.StartedAt;
-                float attack=source.UnitAttack*ratio*(ranged?.85f:1);
-                var c=new EngagementSettings(unitAttack:attack,unitArmor:HerdTier==4?6:4,unitRange:ranged?2.5f:.75f,unitInterval:Mathf.Max(2,source.AttackDuration),
+                float attack=source.UnitAttack*V2Synergy("herd",HerdTier,"spiritAttackFraction",ratio)*(ranged?V2Synergy("herd",HerdTier,"rangedAttackMultiplier",.85f):1);
+                var c=new EngagementSettings(unitAttack:attack,unitArmor:V2Synergy("herd",HerdTier,"spiritArmor",HerdTier==4?6:4),unitRange:ranged?V2Synergy("herd",HerdTier,"spiritRange",2.5f):.75f,unitInterval:Mathf.Max(V2Synergy("herd",HerdTier,"spiritMinimumIntervalSeconds",2),source.AttackDuration),
                     initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,melee:!ranged,
                     attackDuration:source.AttackDuration,attackWindup:source.AttackWindup,canAttack:source.CanAttack);
                 var basis=original.Profile?.Unit??Settings;
-                var s=new ManualBattleSettings(u.CardId,u.UnitId,Settings.InitialDP,Settings.InitialDefense,1,1,1,u.MaxHealth,.65f,1,basis.TowerRange,basis.TowerDamage,basis.ShotInterval);
-                u.Profile=new BasicRosterProfile(s,c,true);units.Add(u);herdLifetimes[u.EntityId]=spirit.ReadyAt+(HerdTier==4?12:10);
+                var s=new ManualBattleSettings(u.CardId,u.UnitId,Settings.InitialDP,Settings.InitialDefense,1,1,1,u.MaxHealth,speed,1,basis.TowerRange,basis.TowerDamage,basis.ShotInterval);
+                u.Profile=new BasicRosterProfile(s,c,true);units.Add(u);herdLifetimes[u.EntityId]=spirit.ReadyAt+V2Synergy("herd",HerdTier,"effectiveLifetimeSeconds",HerdTier==4?12:10);
                 herdSpirits.Add(u.EntityId,spirit);herdSources.Add(original.EntityId,spirit);
             }
         }
@@ -116,31 +120,32 @@ namespace YesterdayConvoy
         public float DeepBurnPower(string defenderId)=>DeepBurnRemaining(defenderId)>0?deepBurns[defenderId].Power:0;
         bool HasPendingDeepBurn=>deepBurns.Any(p=>p.Value.Until>Clock&&FindDefender(p.Key)?.Alive==true);
         bool DeepBurning(DefenderState d)=>d.BurnUntil>Clock||deepBurns.TryGetValue(d.EntityId,out var burn)&&burn.Until>Clock;
-        float DeepScale=>1+.25f*((float)synergyStars.Where(p=>Tag(p.Key,"深池")).Select(p=>p.Value).DefaultIfEmpty(1).Average()-1);
+        float DeepScale=>DeepStarMultiplier;
         bool IsDeepHit(DeployedUnitState source)=>synergyEnabled&&DeepTier>0&&source!=null&&!source.SynergySupport&&Tag(source.CardId,"深池");
         void ApplyDeepBurn(DefenderState d)
         {
             if(!d.Alive)return;
-            float power=(DeepTier==4?25:15)*DeepScale;
+            float power=V2Synergy("deep-pool",DeepTier,"burnArtsPerSecond",DeepTier==4?25:15)*DeepScale;
             if(!deepBurns.TryGetValue(d.EntityId,out var burn))deepBurns[d.EntityId]=burn=new FireBurn{LastTick=Clock};
-            burn.Power=Mathf.Max(burn.Power,power);burn.Until=Clock+4;
+            burn.Power=Mathf.Max(burn.Power,power);burn.Until=Clock+V2Synergy("deep-pool",DeepTier,"burnDurationSeconds",4);
         }
         void OnDeepKill(DefenderState d,bool burning)
         {
-            if(!synergyEnabled||DeepTier==0||!burning||deepSeeds.Count>=(DeepTier==4?6:4)||!deepDeaths.Add(d.EntityId))return;
+            if(!synergyEnabled||DeepTier==0||!burning||deepSeeds.Count>=V2Synergy("deep-pool",DeepTier,"seedCumulativeLimit",DeepTier==4?6:4)||!deepDeaths.Add(d.EntityId))return;
             deepSeeds.Add(new DeepSeed{Position=d.Position,At=Clock});
-            foreach(var other in defenders.Where(o=>o.Alive&&GroundDistance(o.Position,d.Position)<=(DeepTier==4?2.2f:1.8f)).OrderBy(o=>GroundDistance(o.Position,d.Position)).Take(DeepTier==4?3:2))ApplyDeepBurn(other);
+            foreach(var other in defenders.Where(o=>o.Alive&&GroundDistance(o.Position,d.Position)<=V2Synergy("deep-pool",DeepTier,"spreadRadius",DeepTier==4?2.2f:1.8f)).OrderBy(o=>GroundDistance(o.Position,d.Position)).Take((int)V2Synergy("deep-pool",DeepTier,"spreadTargets",DeepTier==4?3:2)))ApplyDeepBurn(other);
         }
         public bool TryDetonateDeep(int runId,long request)
         {
             if(runId!=RunId||Phase!=BattlePhase.Running||IsPaused||DeepTier<4)return false;
             if(deepRequests.Contains(request))return true;
-            if(DeepDetonations>=2)return false;
-            var seed=deepSeeds.FirstOrDefault(s=>!s.Spent&&defenders.Any(d=>d.Alive&&GroundDistance(s.Position,d.Position)<=1.8f));
+            if(DeepDetonations>=V2Synergy("deep-pool",DeepTier,"detonationCasts",2))return false;
+            float radius=V2Synergy("deep-pool",DeepTier,"detonationRadius",1.8f);
+            var seed=deepSeeds.FirstOrDefault(s=>!s.Spent&&defenders.Any(d=>d.Alive&&GroundDistance(s.Position,d.Position)<=radius));
             if(seed==null)return false;
-            var targets=defenders.Where(d=>d.Alive&&GroundDistance(seed.Position,d.Position)<=1.8f).OrderBy(d=>GroundDistance(seed.Position,d.Position)).Take(4).ToArray();
+            var targets=defenders.Where(d=>d.Alive&&GroundDistance(seed.Position,d.Position)<=radius).OrderBy(d=>GroundDistance(seed.Position,d.Position)).Take((int)V2Synergy("deep-pool",DeepTier,"detonationTargets",4)).ToArray();
             deepRequests.Add(request);seed.Spent=true;DeepDetonations++;
-            foreach(var d in targets)DamageDefender(d,180*DeepScale,CombatDamageType.Arts,true);return true;
+            foreach(var d in targets)DamageDefender(d,V2Synergy("deep-pool",DeepTier,"detonationArts",180)*DeepScale,CombatDamageType.Arts,true);return true;
         }
     }
 }

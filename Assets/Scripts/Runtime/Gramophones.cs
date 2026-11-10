@@ -36,7 +36,8 @@ namespace YesterdayConvoy
         public string TargetId {get;internal set;}
         public Vector3 Position {get;internal set;}
         public double StartedAt {get;internal set;}
-        public double ImpactAt=>StartedAt+.8666667;
+        public float ImpactDelay {get;internal set;}=.8666667f;
+        public double ImpactAt=>StartedAt+ImpactDelay;
         public bool Resolved {get;internal set;}
         public bool Cancelled {get;internal set;}
     }
@@ -78,8 +79,8 @@ namespace YesterdayConvoy
         void StartMudrockCapture(DeployedUnitState unit)
         {
             var target=ChooseGramophone(unit);
-            unit.MudrockCaptureStartedAt=Clock;unit.IsMoving=unit.HasCombatTarget=false;unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+1.5);
-            mudrockCaptures.Add(new MudrockCaptureCast{SourceId=unit.EntityId,TargetId=target.Settings.Id,Position=unit.Motion.Position,StartedAt=Clock});
+            unit.MudrockCaptureStartedAt=Clock;unit.IsMoving=unit.HasCombatTarget=false;unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+V2Skill(unit,"capture","actionDuration",1.5f));
+            mudrockCaptures.Add(new MudrockCaptureCast{SourceId=unit.EntityId,TargetId=target.Settings.Id,Position=unit.Motion.Position,StartedAt=Clock,ImpactDelay=V2Skill(unit,"capture","impactAt",.8666667f)});
         }
         void ChangeGramophone(GramophoneState g,GramophoneOwner owner)
         {

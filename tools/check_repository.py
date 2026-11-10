@@ -22,6 +22,8 @@ def inspect(root, paths):
                 'library', 'temp', 'obj', 'logs', 'usersettings', 'build', 'builds', 'artifacts'}:
             errors.append(f'Local-only file is tracked: {name}')
         path = root / name
+        if path.suffix.lower() in {'.cmd', '.bat'}:
+            errors.append(f'Launcher scripts are not allowed; open the EXE or HTML directly: {name}')
         if not path.is_file():
             errors.append(f'Tracked file is missing: {name}')
             continue

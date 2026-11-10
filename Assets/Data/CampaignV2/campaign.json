@@ -1,0 +1,632 @@
+{
+  "schema": "yesterday-convoy-balance-v2.0-draft",
+  "date": "2026-11-08",
+  "status": "项目外数值提案，尚未接入或实机验证",
+  "scope": "13次结算：8场战斗、5次保送补给；兼顾黑流树海三波",
+  "damageFormula": "物理每段max(1,攻击-目标护甲)；法术每段max(1,攻击*(1-目标法抗/100))；真实伤害不扣甲抗",
+  "fixedRules": [
+    "1/2/5/9/12为保送补给，伤害门槛为0",
+    "无自然DP回复，13关不增设倒计时判负",
+    "费用不足不立即判负，仍等待场上实体及合法未来事件",
+    "不同种类战前编队快照决定羁绊",
+    "玩家1费可4星，其他最高3星；守军T1/T2/T3不是合成星级",
+    "普通挑战不依赖未开放的免费转职测试入口",
+    "开局10金币、1级、随机一费赠卡并占库"
+  ],
+  "economy": {
+    "initialGold": 10,
+    "initialLevel": 1,
+    "refreshCost": 2,
+    "shopSlots": 5,
+    "benchSlots": 10,
+    "xpBuyGold": 4,
+    "xpBuyAmount": 4,
+    "xpToNext": [
+      0,
+      2,
+      4,
+      6,
+      10,
+      14,
+      20,
+      28,
+      36,
+      48,
+      0
+    ],
+    "baseGold": [
+      10,
+      12,
+      12,
+      14,
+      18,
+      22,
+      16,
+      18,
+      20,
+      24,
+      20,
+      24,
+      28
+    ],
+    "currentBaseGold": [
+      10,
+      10,
+      12,
+      14,
+      16,
+      22,
+      16,
+      18,
+      18,
+      24,
+      20,
+      22,
+      28
+    ],
+    "naturalXP": [
+      2,
+      2,
+      2,
+      3,
+      3,
+      4,
+      3,
+      4,
+      4,
+      5,
+      5,
+      6,
+      0
+    ],
+    "interestStep": 10,
+    "interestCap": 5,
+    "streakRule": "连续胜利第二次起+1，第三次+2，第四次起+3；补给计胜利，失败清零且结束挑战",
+    "commission": "每次整备最多成功1次，已持有/已解锁且未满星的1-3费，价格c+2；消耗真实库存",
+    "sell": "一星c，其余c*基础牌等价数-1；返库1/3/9/27",
+    "stock": [
+      30,
+      25,
+      18,
+      10,
+      9
+    ],
+    "odds": [
+      [
+        100,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        100,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        100,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        65,
+        25,
+        10,
+        0,
+        0
+      ],
+      [
+        45,
+        33,
+        20,
+        2,
+        0
+      ],
+      [
+        30,
+        40,
+        25,
+        5,
+        0
+      ],
+      [
+        19,
+        30,
+        40,
+        10,
+        1
+      ],
+      [
+        18,
+        25,
+        32,
+        22,
+        3
+      ],
+      [
+        15,
+        20,
+        25,
+        30,
+        10
+      ],
+      [
+        5,
+        10,
+        20,
+        40,
+        25
+      ]
+    ],
+    "changes": "基础金币仅补给2/5/9/12各+2；其余经济数值沿现行规则。终战奖励不可用于终战前构筑。"
+  },
+  "measurement": {
+    "effectiveDamageDefinition": "已扣护甲/法抗/减伤后的目标HP损失；打空、过量、追错目标与无效治疗不算",
+    "baseMargin": 1.15,
+    "uptimeOrdinary": 0.65,
+    "nominalDamageConversion": 0.8,
+    "uptimeNovice": 0.45,
+    "uptimeOptimized": 0.8,
+    "baselinePlayerArmor": 12,
+    "baselinePlayerResistance": 15,
+    "focusWindowSeconds": 12,
+    "note": "每关统计窗口只用于计算目标DPS，不是新增失败倒计时。总HP+治疗/盾/债务预算为快速击倒路线的保守伤害量，不是穿门获胜的数学必要条件。裸DPS参考假设80%伤害转化与65%有效出手率；实际依每段攻击、目标甲抗、站位与技能变化。"
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "type": "补给",
+      "dp": 0,
+      "defense": 0,
+      "window": 0,
+      "guardSpecs": [],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "保送领取，不战斗；首次整备培养赠卡"
+    },
+    {
+      "stage": 2,
+      "type": "补给",
+      "dp": 0,
+      "defense": 0,
+      "window": 0,
+      "guardSpecs": [],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "保送领取；允许正常商店运营，不设强制花费"
+    },
+    {
+      "stage": 3,
+      "type": "普通",
+      "dp": 16,
+      "defense": 1,
+      "window": 30,
+      "guardSpecs": [
+        [
+          "D01",
+          1,
+          1.0
+        ]
+      ],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "首次突破，建议1费二星带一张功能牌；不能要求特定角色"
+    },
+    {
+      "stage": 4,
+      "type": "普通",
+      "dp": 20,
+      "defense": 2,
+      "window": 35,
+      "guardSpecs": [
+        [
+          "D01",
+          1,
+          1.0
+        ],
+        [
+          "D07",
+          1,
+          1.0
+        ]
+      ],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "近战阻挡加高台输出，验证前排先接敌"
+    },
+    {
+      "stage": 5,
+      "type": "补给",
+      "dp": 0,
+      "defense": 0,
+      "window": 0,
+      "guardSpecs": [],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "第一阶段Boss前补给"
+    },
+    {
+      "stage": 6,
+      "type": "Boss",
+      "dp": 24,
+      "defense": 3,
+      "window": 50,
+      "guardSpecs": [
+        [
+          "D29",
+          2,
+          0.7
+        ],
+        [
+          "D08",
+          2,
+          0.9
+        ]
+      ],
+      "healBudget": 400,
+      "shieldBudget": 0,
+      "note": "塞雷娅与法术火力；先集火治疗者，二费二星/三费一星为主；拖延治疗会超出此预算"
+    },
+    {
+      "stage": 7,
+      "type": "普通",
+      "dp": 28,
+      "defense": 3,
+      "window": 50,
+      "guardSpecs": [
+        [
+          "D03",
+          2,
+          1.0
+        ],
+        [
+          "D09",
+          2,
+          1.0
+        ],
+        [
+          "D07",
+          2,
+          1.0
+        ]
+      ],
+      "healBudget": 200,
+      "shieldBudget": 0,
+      "note": "群伤惩罚单门紧密堆叠；补位和分批投入"
+    },
+    {
+      "stage": 8,
+      "type": "普通",
+      "dp": 32,
+      "defense": 4,
+      "window": 55,
+      "guardSpecs": [
+        [
+          "D02",
+          2,
+          1.0
+        ],
+        [
+          "D04",
+          2,
+          1.0
+        ],
+        [
+          "D10",
+          2,
+          1.0
+        ],
+        [
+          "D12",
+          2,
+          1.0
+        ]
+      ],
+      "healBudget": 450,
+      "shieldBudget": 0,
+      "note": "优先击杀治疗/减速，三费二星或顺牌低费三星承担输出"
+    },
+    {
+      "stage": 9,
+      "type": "补给",
+      "dp": 0,
+      "defense": 0,
+      "window": 0,
+      "guardSpecs": [],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "第二阶段Boss前补给，可选择追星或升级8级"
+    },
+    {
+      "stage": 10,
+      "type": "Boss",
+      "dp": 38,
+      "defense": 5,
+      "window": 65,
+      "guardSpecs": [
+        [
+          "D25",
+          2,
+          1.0
+        ],
+        [
+          "D30",
+          2,
+          0.8
+        ],
+        [
+          "D11",
+          2,
+          1.0
+        ]
+      ],
+      "healBudget": 450,
+      "shieldBudget": 0,
+      "mechanicBudget": 1710,
+      "protectionWait": 7,
+      "note": "重甲与蓄力爆发；星熊额外1710为满血开技增血及债务上界；最终保护期间不能提前击倒，可等保护结束退场减少伤害需求"
+    },
+    {
+      "stage": 11,
+      "type": "普通",
+      "dp": 42,
+      "defense": 5,
+      "window": 65,
+      "guardSpecs": [
+        [
+          "D01",
+          3,
+          1.0
+        ],
+        [
+          "D07",
+          3,
+          1.0
+        ],
+        [
+          "D09",
+          3,
+          1.0
+        ],
+        [
+          "D12",
+          3,
+          1.0
+        ],
+        [
+          "D10",
+          3,
+          1.0
+        ]
+      ],
+      "healBudget": 650,
+      "shieldBudget": 0,
+      "note": "后期常规混合线，不要求五费；四费二星或三费三星配成熟羁绊"
+    },
+    {
+      "stage": 12,
+      "type": "补给",
+      "dp": 0,
+      "defense": 0,
+      "window": 0,
+      "guardSpecs": [],
+      "healBudget": 0,
+      "shieldBudget": 0,
+      "note": "终战前最后整备；最终战奖励不能预支"
+    },
+    {
+      "stage": 13,
+      "type": "Boss",
+      "dp": 50,
+      "defense": 6,
+      "window": 75,
+      "guardSpecs": [
+        [
+          "D25",
+          3,
+          0.9
+        ],
+        [
+          "D30",
+          3,
+          0.9
+        ],
+        [
+          "D24",
+          3,
+          0.8
+        ],
+        [
+          "D29",
+          3,
+          0.85
+        ]
+      ],
+      "healBudget": 900,
+      "shieldBudget": 0,
+      "mechanicBudget": 2779,
+      "protectionWait": 8,
+      "note": "四费二星阵容毕业防线；2779为星熊增血/债务上界，保护期间不能提前击倒；优先处理塞雷娅，五费二星提高容错，不以五费三星或9游击/巨像V为门槛"
+    }
+  ],
+  "policies": [
+    {
+      "name": "均衡运营",
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        7,
+        8,
+        8,
+        8,
+        9,
+        9
+      ],
+      "cardBudgets": [
+        0,
+        2,
+        3,
+        5,
+        6,
+        8,
+        8,
+        10,
+        10,
+        12,
+        14,
+        16,
+        20
+      ],
+      "refreshBudgets": [
+        0,
+        0,
+        2,
+        2,
+        2,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        6,
+        6
+      ]
+    },
+    {
+      "name": "低费追星",
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        6,
+        6,
+        7,
+        7,
+        8,
+        8,
+        8
+      ],
+      "cardBudgets": [
+        0,
+        3,
+        4,
+        6,
+        8,
+        10,
+        10,
+        12,
+        12,
+        12,
+        14,
+        14,
+        16
+      ],
+      "refreshBudgets": [
+        0,
+        2,
+        4,
+        4,
+        6,
+        8,
+        8,
+        8,
+        6,
+        6,
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "name": "升级转型",
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        8,
+        9,
+        9,
+        9,
+        10
+      ],
+      "cardBudgets": [
+        0,
+        2,
+        3,
+        4,
+        4,
+        6,
+        6,
+        8,
+        8,
+        10,
+        10,
+        12,
+        16
+      ],
+      "refreshBudgets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        2,
+        4,
+        4,
+        4,
+        4
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "name": "本机只读配置与规则",
+      "path": "CampaignBalance.cs / CampaignPlan.cs / ShopTrialModel.cs / GDD.md，读取于2026-11-08",
+      "role": "现有机制与候选范围；提案数值不等同于现行配置"
+    },
+    {
+      "name": "Riot费用定位复盘2024",
+      "url": "https://teamfighttactics.leagueoflegends.com/en-us/news/dev/dev-tft-inkborn-fables-learnings/",
+      "role": "四费常规核心、五费阵容上限、追星成型难度"
+    },
+    {
+      "name": "Riot升星攻击成长历史调整",
+      "url": "https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-12-14-notes/",
+      "role": "分开生命/普攻/技能成长，不照搬当前版本"
+    },
+    {
+      "name": "Valve刀塔霸业历史公告",
+      "url": "https://store.steampowered.com/oldnews/?appgroupname=Dota+Underlords&appids=1046930&feed=steam_community_announcements",
+      "role": "低费高星强化自身特色的设计参考"
+    }
+  ],
+  "documentationAdoption": {
+    "date": "2026-11-08",
+    "status": "人类已同意写入核心文档，作为v2后续实现与试玩基线",
+    "implementation": "本次只更新文档；未修改或验证Unity运行数值",
+    "frozenBalance": false,
+    "approvalScope": "完整角色、各星、守军、羁绊、十三关与经济数值；银狼暂缓与未开放正式获取入口仍保留"
+  }
+}

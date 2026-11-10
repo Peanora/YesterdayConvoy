@@ -1,5 +1,300 @@
 # 验证证据与回归
 
+## 2026-11-10：平滑难度梯度、提高维维美生命与缺金币商品置灰
+
+- 用户确认主要卡第12关，二星塔露拉和维维美混编难以突破，同时前9关偏易；商店买不起商品需要灰色。延续`codex/thirteen-stage-campaign-v2`，基线26310eb，fetch确认origin/main仍7862d09且为祖先。保留原.vscode三文件与PackageManagerSettings，不修改场景/Prefab/Packages/ProjectSettings。
+- 唯一写入源journey-authoring由root修改并通过实际Unity Author生成8份StageBattle与Journey。与基线相比仅version、逐人health/attack倍率变化；人数、六星4/5/8、T档、技能、路线、格位、波次、DP/XP/金币保持。float32目标HP逐人精确、ATK误差小于0.0001。最终总HP386/767/2120/2768/4659/8638/12447/14479，终关相对基线生命×0.66、攻击×0.68。
+- 维维美仅正式v2 base.hp与三行stars.hp改1500/3000/7500（＋42.9%），原1:2:5成长、攻击119/214.2/357与全部技能/经济字段保持。规范JSON与Resources镜像相同，currentOneStar680历史快照不改，旧Campaign/单怪Demo保持。实际夹具生命包含萨卡兹8%为3240，不误加整合。
+- 现有真实Shop/ManualBattle持久工具新增双二星Boss、单核维维美、单核塔露拉、非五费四组8人口58基础购卡金夹具，并扩展前中期配对。实际Preset/SetLineup/Validate检查有限库存、人口与投入；对照星级/费用分布不同，不作为单一羁绊因果检验，58金也不含升级与刷新成本。每fight保留实体部署、死亡秒数、技能次数、结算强化炮与实际生命；模型对所有可用技能实体执行真实技能接口，无维维美技能遗漏。炮弹Applied统计表示落点实际结算，目标可能已离开或死亡，不等于正伤害命中次数。
+- 重跑基线54组×42＝2268场：双核9/10/12为24/25/0。终关42策略里21种不部署维维美、14种部署后无法撑到技能、7种两核心都开技；维维美28/28实体死亡，中位11.675秒，14次技能，强化炮结算中位0.5。最佳双核各两次部署且维维美两轮完整六发仍未突破，残留玛恩纳560.5HP。这是实际受击与防线持续耐久问题，不能把失败全归咎操作或技能未触发。
+- 第一候选：2/3/5/6/7/9逐人生命×1.10/1.20/1.45/1.55/1.60/1.15、攻击×1/1.10/1.25/1.30/1.30/1.10；10生命/攻击均×.95；12生命×.72/攻击×.78，维维美按上值。54组×42＝2268场完成，终关双核11/42，58金塔露拉单核1/42、维维美单核0/42。该候选改善但末关压力仍较集中，未作为最终值。
+- 第二候选仅进一步调第12至生命×.66/攻击×.68，6组×42＝252场。双核18/42、58金塔露拉单核11/42、维维美单核0/42、非五费参考0/42；37金整合8塔露拉二星22/42、同投入混编0/42。18个双核胜例均有两核心实际部署并使用技能，含style0/2/3不延迟出兵；维维美53实体中16死亡，强化炮结算中位6发。采用此候选，但不宣称任意单核/混编必胜，也不把策略胜例比率当玩家胜率。
+- 第2–10沿用第一候选已测值。双核当前9/10/12为23/25/18；第5四一星混编42→2、第6六一星混编39→24、第7六二星混编21→0（均42策略），对应第5–7低费羁绊成型队仍42/42。前期的阵容决策开始产生更大差异，教学与成型优势保留，不宣称所有阵容都变难。三种子73191/44/31016×两自然运营政策，首次失败第7一条、第9四条、第10一条，尚无当前全胜见证；搜索在首败停止不等于100生命耗尽。第二候选只变第12，这六条均未到达该节点。
+- 商店`ApprovedShopMarket`每帧按实际CanAfford给整卡/头像置灰并显示“金币不足”，缺钱时不显示可合成高亮；卖卡回款与无限金币实时恢复，不改变购买、库存、合成或点击失败提示。新增GPU测试从零金币预置出发，实际失败购买、拖售回款、购买花光、无限金币交易，并测整卡及头像色差/亮度。
+- 完整EditMode1020/1020通过，含新增有限库存场景契约与三档维维美生命/旧680HP隔离。首轮非batch D3D11 PlayMode19项18通过，只有新UI头像亮度比较失败；已实际查看图像：置灰生效，但拖售会收起商店，第二截图采在过渡途中、头像ROI错位。修复方向为交易后明确展开并等待过渡/加载完成，原GPU阈值与事务断言不降低。旧正式场景、火雨与混编回归均通过。
+- 已完成夹具修正并重跑新UI单项1/1通过：每次真实交易后展开商店，等待可见、过渡结束、资源就绪并连续两帧，明确断言布局稳定。已目视查看最终无钱/卖卡后图，商品与头像灰暗/恢复正确；买卡花光与无限金币分支也通过。19个不同PlayMode用例均取得通过结果，不把首轮18/19写成一次全绿；生产UI没有为修正夹具再改。仓库8192跟踪文件检查通过。
+- 最终Windows x64 Development实际构建1068133570字节、0错误，Unity6000.6.5f1；默认EXE已更新。独立D3D11 Player重放当前双二星fixture首条胜例，实际10次部署、4次技能、108.35模拟秒自然获胜并结算；两核心各真实部署并开技、星级/生命/羁绊、源数据不变等2276项逻辑检查通过。固定高星有限库存夹具不证明自然抽到或人类操作通关，也没有HP/伤害注入或强制胜利。
+- 独立Player仍有15项隐藏窗口ScreenCapture黑图失败，整体passed=false、实测进程退出1；失败仅为可见帧，未降低阈值，不能写为Player全绿。商店视觉验收来自上面已通过且目视查看的非batch Editor GameView完整OnGUI截图；正式战斗/火雨/混编视觉来自PlayMode。源文件保留校验通过，无地图/Prefab/meta/Packages/ProjectSettings改动，不生成启动器、ZIP或Releases，不自动合并。
+
+持久模型输入/结果在`artifacts/campaign-gradient-2026-11-10`：baseline-journey/players、baseline-boundaries、candidate-a-*、candidate-b-*。基线调用`CampaignJourneySimulationTools.EvaluateBuildBoundaries -journeyBoundaryStages 2,3,5,6,7,9,10,12 -journeyBoundaryMatchedOnly true -journeyBoundaryVariants 42`；第一候选`AuthorAndEvaluate`另传三种子、formation-funded-pairs/formation-funded-transition、SearchAllSeeds true、SearchLimit 6，第二候选SearchLimit 0仅跑上述六个终关fixture。全部通过真实生产模型；无HP/伤害注入、无强制胜利，无临时脚本文件。自然获取完整运营、人类手感与第二机仍待验。
+
+## 2026-11-10：加入4/5/8名后期六星并应用试验血攻
+
+- 用户在上述候选提出后明确要求“加一下”。延续 `codex/thirteen-stage-campaign-v2`，基线d5986aa，fetch确认origin/main=7862d09且为祖先；原本地.vscode三文件、PackageManagerSettings及CampaignV2全部meta哈希保持。由唯一写入者修改journey-authoring，root使用真实Unity Author生成Journey及Stage07/09/10/12Battle；没有修改场景/Prefab、地图格位、前四战、补给、波次、DP/XP/金币、玩家怪物或原专项配置。
+- 第7节点原五名守军生命×1.25、攻击×1.2。第9/10/12六星由2/0/3增为4/5/8，总人数8/10/12不变；第7/9/10/12基础HP总量2912/7510/13102/21938。终关八名为斩业星熊、塞雷娅、新约能天使、凛御银灰、玛恩纳、荒芜拉普兰德、圣聆初雪、望；全部血攻与换入表见CAMPAIGN_JOURNEY_V2。原格位由新角色自身模板及T档重新生成；旧米格鲁额外6护甲不转给换入星熊，避免携带旧角色额外面板。
+- 审查发现D21/26/27/28部分原生技能此前仍使用旧专项硬常量。现仅正式v2读取已有GuardValue字段：浮游初始/上限/每击成长、恐惧与范围伤害，银灰预算/易伤，初雪诱导/雪地，望库存/弹药/连棋/陷阱伤害/间隔；开始和重开初始化相同，HUD弹药上限同步本档。玛恩纳已有卡西米尔真伤字段亦接回本档。D24正式技能effectRadius=0原来开技会失去射程，现在沿用普通射程、能够实际发射和消耗弹药。未新增技能机制，非v2仍走legacy参数。
+- Author/Validate真实通过12节点、8个独立波计划、45名守军。静态检查全部新槽位高低台匹配、角色ID唯一、完整技能参数/素材已有且受原预热链路覆盖；新高台守军至少能覆盖一条路线，塞雷娅/芙蓉仍是单向治疗，未加入余的全体回血。凛御银灰单个原生武器拖尾仍是既存已登记缺口，不冒称整套原作特效完全还原。
+- 完整EditMode首跑1014/1016，只有新增能天使两例错误读取未累计守军伤害的CombatShot.DamageDealt而失败。改为实际目标HP减少，保留真实已命中弹道和弹药消耗断言；生产代码没有为测试失败再改。对应CampaignV2NativeBalanceTests重跑26/26通过，1016个不同用例全部取得通过结果。新增真实行为覆盖各正式档浮游伤害/恐惧、银灰预算/易伤、初雪诱导/雪伤/减速/不重复命中、望弹药/棋数/陷阱伤害/间隔及能天使技能射击。
+- 六组D3D11 PlayMode14/14通过：正式9/10/12场景角色资源/面板/技能、暂停重开且源不变；旧高级/第五/第六批专项保持；火雨八图与维维美混编回归保持。场景首帧截图曾停在入场动画透明帧，截图夹具追加准备阶段表现时间至原入场片长结束，明确战斗时钟仍0；不通过延长或改变战斗绕过问题。
+- 真实生产Shop与ManualBattle模型：三种子73191/44/31016×两经济政策共6条自然搜索，3条首次未突破第9、3条首次未突破第10。搜索在首败即停，不代表挑战生命已耗尽，也不证明真实玩家必败；本轮未获得完整自然运营通关见证，旧版全胜记录不再适用。
+- 18组固定有限库存阵容×42种合法部署策略=756场边界模拟。第7同投入二星正常组42/42、混编21/42；第9塔露拉二星核心24/42、同投入混编28/42，说明不能宣称每个羁绊队都强于混编。终关二星塔露拉整合雪怪成型队6/42，三星塔露拉核心28/42；37金二星核心与同投入混编均0/42，十人口高费二星参考0/42。这些是预置库存单关策略分布，不是抽卡概率或玩家胜率；只证明有可行战斗操作与更高压力，不登记最终平衡通过。
+- 最终场景截图夹具重跑1/1通过，战斗时钟仍0并已目视查看终关十二名守军。仓库8192文件检查通过。Windows x64 Development实际构建1068117283字节、0错误，默认EXE已更新；无场景、Prefab、Packages或ProjectSettings跟踪修改。
+- 独立D3D11 Player使用本轮模型的有限库存三星塔露拉核心终关轨迹，真实生产部署/技能接口、八次部署、两次技能，62.4模拟秒自然获胜并正常结算；12名守军、当前面板/技能、源数据保持及1336项逻辑检查通过。没有HP/伤害注入或强制胜利，不代表自然获得三星或整局通关。15项ScreenCapture可见帧检查均因隐藏窗口黑图失败，已查看终关黑图，整体`passed=false`；没有降低截图阈值或将其写成Player全绿。视觉证据采用上述PlayMode实际相机/GPU验证，独立Player截图视觉验收仍未通过。
+
+本轮证据在 `artifacts/campaign-sixstar-2026-11-10`。人类完整运营、第二机与最终难度手感待验；不生成启动器/ZIP/Releases，不自动合并。
+
+## 2026-11-10：正式地图火雨与混编命中特效回归修复
+
+- 延续 `codex/thirteen-stage-campaign-v2` / PR #108，基线 `87f5085`；fetch确认 `origin/main=7862d09` 是祖先。原 `.vscode` 三文件与 `ProjectSettings/PackageManagerSettings.asset` 哈希保持。修改两份表现脚本、一个专项验证启动分支、两份现有PlayMode测试和文档；没有修改数值、场景、Prefab、素材、包或设置。
+- 八张正式地图的顶面名称均不在 `FireRainView.IsGround` 旧白名单，旧匹配数全部0，使 `GroundProjection` 失败、火雨整段隐藏。现支持实际保存地板、高台、公路桥和整格木桥承载面，仍排除地基、墙面、水面；不改技能时钟、伤害、波次或地图。
+- `EngagementView` 原按整队首卡创建每炮的Face，普通首卡使维维美表情、塔露拉目标命中层缺失。现按实际弹道来源实体取卡，来源死亡后已命中尾段仍读其资源；清理先隐藏再延迟销毁。资源未丢失，不能据这两项故障声称所有角色特效都消失。
+- 修复前 `regressions-red-final.xml` 两项精准失败：正式地图01火雨可见数量0，低费首卡混编中维维美命中表情为null。更早的夹具问题已保留：退出自由地图导致切回MonsterTrial；测试访问internal成员编译失败；均不冒称产品故障复现。
+- 首轮修复后六组D3D11 PlayMode为15/16：混编、维维美朝向、塔露拉普攻/阶段、原生特效层与Journey跨关回归通过；新八图测试错误地将controller下的角色待机预览也纳入暂停帧比较，单项失败。现将GPU开关和暂停比较严格限定为火雨自身五类Renderer，原像素差阈值保持；重新运行 `FireRainV12Tests` 4/4，八图逐一实际GPU差分、暂停冻结、自然结束、重开清理通过。因此本轮16个不同PlayMode用例全部获得通过结果，未把首轮15/16写成全绿。
+- 八图GPU火雨检查使用有限库存三星塔露拉预置；混编检查在正式第12地图中使用低费首卡、维维美、塔露拉和运行时耐久靶，真实技能发射/命中，校验来源纹理、GPU开关差异、暂停、已命中后来源死亡尾段及即时清理。两者都是明确的表现夹具，不代表自然获得角色或通关。已目视查看维维美、塔露拉混编相机图及末图火雨；相机图不含HUD。
+- 当前未调数值的真实 `CampaignJourneySimulationTools.Search` 重新运行seed73191 / formation-funded-pairs / 42种部署策略，找到12节点全胜见证。候选平衡方案仅写入 `CAMPAIGN_JOURNEY_V2.md`：第7加强普通守军，第9/10/12六星2/0/3建议增至4/5/8；基础HP3880/6184/9660建议增至7510/13102/21938。静态面板、槽位、高低台身份和伤害阈值计算已运行；未把候选应用到游戏，未运行候选战斗或宣称其难度通过。玩家怪物当前面板建议保持。
+
+- 相关EditMode（FireRain/ViviCombat/TalulahPhase/CampaignV2NativeBalance）37/37通过；仓库8192文件静态检查通过。最终Windows x64 Development构建1068111123字节、0错误，Unity6000.6.5f1 / D3D11。
+- 第一轮独立Player塔露拉通过；维维美专项未被CampaignBootstrap排除，默认Journey和专项同时加载场景，先于任何验证发生空引用。现在明确由`-viviCombatSmokeTest`专属驱动拥有启动，普通无参启动不变。重建后最终两份独立Player退出码均0：塔露拉`passed=true`、37条峰值火流、GPU差分20.45235、6秒结束及伤害/清理通过；维维美14/14检查通过，含单体普攻、2.2范围技能真实两目标伤害、单发消耗与暂停。已查看最终Player火雨相机图；维维美隐藏窗口的ScreenCapture截图为黑图，不能算Player视觉通过，维维美图像验收仅采用上面的PlayMode相机GPU差分和实看结果。专项使用旧单怪地图/耐久靶；八张正式地图和末关混编的GPU证据来自PlayMode，不混淆范围。
+
+证据目录：`artifacts/campaign-feedback-2026-11-10`（`edit.xml`、`play-green.xml`、`fire-green.xml`、`build-final.log`、`player-fire-final`、`player-vivi-final`）。未做全套Edit/PlayMode、第二机、OS鼠标完整交互或人类自然运营；未生成启动器、ZIP或Releases，未自动合并。
+
+## 2026-11-10：DP逐关扩容与所有结算固定4XP
+
+- 延续codex/thirteen-stage-campaign-v2，起点7f64d25，fetch确认origin/main为7862d09且是祖先。原未跟踪.vscode三文件与PackageManagerSettings保留；无场景、Prefab、Packages、ProjectSettings、新美术或独立地图修改。任务只调整正式Journey，旧专项XP逻辑保持。
+- DP以第4补给之后为起点：节点5/6/7/9/10/12目标1.5/1.6/1.7/1.8/1.9/2倍。总量先向上取整，按原各波权重最大余数分配，同余数后波优先；八战10/12/21/26/31/36/42/48，分波10；12；10+11；13+13；15+16；11+12+13；13+14+15；14+16+18，总226。节点1/4/8/11仍0DP，不产生补给部署。逐项比较开工source与新source：守军种类/面板/技能/位置、地图、路线、波时长/推进时长、守方防御、基础金币均未变。
+- CampaignJourneyEconomy.SettlementExperience=4，ShopTrialModel仅在JourneyEconomy下忽略旧victoryXP参数并统一发4。BattleShopRun继续走既有一次性SettleRound入口，先有真实胜败/补给回执再推进；不改公共方法签名。Journey源、生成资产和Validate都要求4XP，提示与文档同步。SceneTests以累计经验核对升级/封顶，不再错误断言败局经验不变；Player初始补给明确检查回执4、2级2XP，败局重放分支同样检查固定4XP。
+- 真实经验边界：胜/败/补给、致命败局、重复Observe/SettleRound、传入过期XP参数、自动跨级、升10级与已10级回执均覆盖；满级内部XP归零但回执仍4。旧默认与Campaign失败仍0XP，旧默认胜利2XP、显式7XP语义保持。全部12节点自然48XP、无付费结束7级6XP；终战前44XP，10级缺94XP，按4XP整笔购买最低24次96金，多2XP封顶。
+- 经济工具：`py -3 tools/balance/journey_economy.py --output artifacts/campaign-2026-11-10-dp-xp/economy`实际运行退出0，28/28检查通过。三个种子×四政策×全胜/三败账本共24组，真实商品、合成/委托、经验购买、库存及现金守恒；每组12次回执48XP。73191十级账本花96金经验、34金买牌、10金刷新，全胜终局117金，3/6/10失败账本83金，均10级。仅经济事务，不模拟血量或承诺失利后能到每一节点；基础136、首奖13、终战前239、终局269的不消费全胜现金上界保持。
+- 新参数自然模型：3种子×2政策、每战最多42出兵策略，6条搜索有3条全胜，另外3条首败终关。首个全胜为73191/formation-funded-pairs，真实初始5金/三赠卡与库存约束、12节点/8战全胜，合535.90模拟秒/61部署，终关8级18XP、20金，12次回执全4XP；最终编队没有五费。搜索在首败停止，未突破不等于生命耗尽或总玩家通关率，不复用旧参数动作轨迹。
+- 对照168场（两组各42策略、两侧）：第7六人两星30金组42/42对混编38/42；终关八人37金塔露拉二星核心28/42对混编28/42。同人口/等级、星级×招募费联合分布及基础成本检查全部通过。扩大DP/自然成长确实让混编更容易突破；旧版同组混编0/42不再适用。没有为了保留旧对照结论反向加强守军或按羁绊强制结算，不能声称当前所有杂牌必败。
+- Unity6000.6.5f1：完整EditMode1003/1003、六组D3D11 PlayMode29/29通过；后者含真实场景连续败局、致命败局、补给与重复终态tick。最终EditMode在截图驱动修正后再次1003/1003。CampaignJourneyTools.Author/Validate与BuildWindows实际运行，最终Windows x64 Development总构建1068110487 bytes、0 errors，常用EXE已重建。
+- 首轮Player（player-1280）完整战斗、交易与4XP核对均通过，已自然全程通关，但11750项中两项视觉检查失败，退出1：信息页截图实际为“准备商店待机”加载帧。依据真实PNG缩小复现为ShopInterfaceProbe打开面板后异步WarmVisibleShop触发；Capture原只等待单帧。现只改验证驱动等待ArtLoading/ShopPanelTransitioning结束后的两帧再拍，240秒有界超时，原亮度/对比判据不放宽，生产逻辑与模拟时钟不变。保留失败证据，不登记首轮为全部通过。
+- 最终1280×720与1600×900可见独立Player（player-final-1280/player-final-1600）各11750/11750通过、正常退出0。均为full-natural-replay、seed73191/formation-funded-pairs、naturalJourneyCompleted=true、completedStages=12、combatScenes=8，生命100/100、61部署、末关8级18XP/20金，12次回执全4XP。通过正常开局、真实有限库存购买/委托/经验、席位/指针部署与手动技能接口重放，不预设成队、注血、注伤害或强制胜负。1280 PNG已目视核对首补给经验＋4/2级2XP、终关14/16/18分波与12守军、实际概率页不再为加载界面。没有把程序指针重放登记为真实OS鼠标。
+- 仓库8192跟踪文件检查及差异检查通过；最终提交前复核暂存对象与磁盘/原本地哈希。未运行完整PlayMode、第二机/新克隆、真实OS鼠标或人类整局；没有启动脚本、ZIP、Releases或自动合并。
+
+证据根目录为忽略的artifacts/campaign-2026-11-10-dp-xp：author.log、edit-final.xml、play.xml、build-final.log、model-search.json、boundaries.json、economy及Player目录。模型入口用CampaignJourneySimulationTools.AuthorAndEvaluate，`-journeySearchSeeds 73191,44,31016 -journeyEconomyPolicies formation-funded-pairs,formation-funded-transition -journeySearchAllSeeds true -journeySearchLimit 6 -journeyDeploymentVariants 42 -journeyBoundaryStages 7,12 -journeyBoundaryNames paired-middle-six-two-normal,paired-middle-six-two-mixed,paired-talulah-two-core-normal,paired-talulah-two-core-mixed -journeyBoundaryVariants 42`，配合显式输出路径；Player用`-campaignJourneySmokeTest -campaignJourneyReplayFile <model-search.json> -campaignJourneyEvidenceDir <output>`及D3D11/窗口尺寸，不创建启动器。
+
+## 2026-11-10：渐进守军、降低生命攻击与正常运营全程重放
+
+- 范围：延续codex/thirteen-stage-campaign-v2，起点fef84fb；fetch核实origin/main仍为7862d09且是当前分支祖先。只改Journey源配置/生成资产、既有仿真工具、配置测试和文档。既存.vscode三文件及PackageManagerSettings的SHA256与开工前相同，不暂存。没有场景、Prefab、Packages、ProjectSettings或新美术修改。
+- 参数：战斗节点2/3/5/6/7/9/10/12守军1/2/3/4/5/8/10/12；保留守军HP相对fef84fb分别乘.45/.45/.35/.30/.30/.22/.22/.20，攻击乘.40/.40/.25/.25/.25/.22/.22/.22。原甲、范围、技能、T档、地图/波次/时长、DP、金币/XP与防御目标保持。终关芙蓉(12,4)距塞雷娅sqrt13，阻断芙蓉3.5范围的回奶，保留塞雷娅4范围的反向支援；合法H格、实体ID/位置唯一由Author/Validate核验。
+- 数据流：journey-authoring.json由CampaignJourneyTools.Author生成Journey和八份StageXXBattle，Runtime按既有Session/Controller只读深复制；本轮不改战斗公式或按阵容强制胜负。提示人数和实际路线已同步，节点6为R1/R3、节点7为R1/R2。
+- 基线与迭代：原参数3种子×7政策、每场至多18出兵策略的21条搜索，20条在节点3止步、1条在5止步，无全程见证。A档仍偏难；B档下诊断出原搜索囤积84–92金却仅6–7人口、只部署两种成员而无法调集援军。既有工具新增真实支出/8人口转型政策、公平用于配对双方的廉价多种先手及快怪后手；没有改单位/战斗公式、注金、注伤害、无限刷新或强制结算。旧/新参数搜索策略不同，不能把全部改善仅归因于守军倍率。
+- 最终模型：final-search.json为3种子×2政策、每场最多42策略的有界全胜搜索；seed73191/formation-funded-transition正常赠卡、买牌、委托、刷新、经验与库存事务后12节点/8战全胜。累计战斗583.70模拟秒、41次部署、奖励184金、净花费168金，5+184−168=21；终关9级、122.30秒/6次部署。一星塔露拉和泥岩、二星盾卫与常用低费主力、三星低费弩手及一星猎犬均由真实有限库存取得，详细逐星名单见行动说明。六条搜索实际1全胜、3条首败9、2条首败7；失败分支不等于实际HP归零。
+- 配对：final-boundaries.json共22夹具、924场、11组配对；同人口、等级、星级、费用与星级联合分布及基础购卡成本逐组检查。第6全两星六人24/42对混编0/42，第7同组42/42对0/42；终关37金塔露拉二星核心7/42对0/42。第9同组混编23/42胜于核心7/42，另八整合样板终关0/42，均保留反例。分母为出兵策略数量，不能称为玩家胜率；夹具Preset库存/星级，不冒充自然获取。完整11组结果见行动说明。
+- Unity6000.6.5f1：完整EditMode989/989、六组D3D11 GPU PlayMode29/29通过（CampaignJourneyScene、ShopSeatInteraction、SynergyActivationScene、GuerrillaOrderScene、SnowstormScene、EngagementScene）。删除16项旧固定HP/核心面板镜像断言，新增源/生成一致与合法资源/面板约束；人数测试验证每战增加1–3人、9前少于8、9首次8及终关12，费用/经济/技能机制仍回归。
+- Windows x64 Development：CampaignJourneyTools.BuildWindows输出1068109871 bytes、0 errors，常用Builds/Windows/YesterdayConvoy.exe已更新。1280×720和1600×900可见独立Player均full-natural-replay、seed73191、completedStages=12、combatScenes=8、naturalJourneyCompleted=true，各12562/12562通过、正常退出0。先检查真实初始赠卡/商店/奖励拖动/暂停/跨关偏好，再逐节点调用生产购买、经验、席位、拖入红门和技能接口；不预置成品阵容，不注血、注伤害或强制胜负。终局生命100/100、8/8突破、9级、41部署、21金。1280图已核对首Boss3守军和最终结算布局。
+- 仓库检查8192跟踪文件通过；git diff --check通过。开工本地文件保留；提交前另核暂存对象与磁盘一致，记录提交/PR和最终EXE来源。未运行完整PlayMode、真实OS鼠标/人类整局、第二机/新克隆；这些不登记为通过。没有启动脚本、ZIP、Releases或自动合并。
+
+证据保存在忽略目录artifacts/campaign-2026-11-10-soften：baseline-search、candidate-A/B、final-search、final-boundaries、edit-final.xml、play.xml、build.log及player-1280/player-1600。复现使用现有Unity批处理入口CampaignJourneySimulationTools.AuthorAndEvaluate，参数为`-journeySearchSeeds 73191,44,31016 -journeyEconomyPolicies formation-funded-pairs,formation-funded-transition -journeySearchAllSeeds true -journeySearchLimit 6 -journeyDeploymentVariants 42 -journeyBoundaryStages 3,6,7,9,12 -journeyBoundaryMatchedOnly true -journeyBoundaryVariants 42`，配合显式Search/Boundary输出路径。独立Player用`-campaignJourneySmokeTest -campaignJourneyReplayFile <final-search.json> -campaignJourneyEvidenceDir <output>`，选择1280×720或1600×900、D3D11；不生成启动脚本。
+
+## 2026-11-10：整合运动本体强化、塔露拉与运营参考
+
+- 用户明确确认2/4/6/8整合成员最大生命/攻击＋10/20/30/40%，包含五费，保留援军；随后要求接入游戏并提供前中后期阵容和D牌等级。继续现有试玩反馈分支，fetch核实main为7862d09且是当前分支祖先；未自动合并。既存.vscode/和PackageManagerSettings按本地规则保留，不暂存。无场景、Prefab、Packages、ProjectSettings或新美术修改。
+- BattleSynergies锁档读取同源memberStatBonus；普通部署和UnitBaseHealth从基表应用一次，HP与萨卡兹加法合并；UnitAttackMultiplier与独立技能团队入口加一次攻击项。援军/分体/灵体不独立再加，派生生命继承按原比例；v2塔露拉二阶段使用独立HP预算补一次整合倍率，legacy已带首生命倍率不再乘。手动六波c.SkillAttack固定预算保持，三星自动雨原有攻击倍率口径保留。详情UI、两份JSON和GDD同步。
+- Unity6000.6.5f1首轮EditMode982/1003、21失败；新增22项全部通过，旧军令/牧群/萨卡兹断言因新增整合加成变动。按fixture独立计算修正，保留原容差/死亡截断/去重语义；overkill目标5→6以继续验证两来源5.85＋0.15顺序截断。最终完整EditMode **1003/1003**（edit-final.xml/log），相关D3D11 GPU PlayMode **28/28**（play.xml/log；ReunionCoalition、CampaignJourney、GuerrillaOrder、GuerrillaHighTier、TalulahPhase、SynergyActivation六组），测试运行器均正常退出0。
+- 真实战斗模型：沿现有13组阵容×第5/12关×12策略，共312场；弱组全部未胜、三星塔露拉终关10/12。额外加入两套推荐阵容并支持-journeyBoundaryNames定向筛选；全两星8整合/4游击/2雪怪/2感染终关3/42、8整合/5雪怪/2游击14/42自然胜，最短200.70/166.65模拟秒，基础卡购买成本63/75金。使用有限库存Preset，未修改伤害/血量或强制结果；不能据此宣称自然获卡、整局通关或玩家胜率。证据为build-boundaries.json、recommended-builds.json及对应日志，均在artifacts/reunion-member-bonus。
+- 运营计算直接编译当前生产ShopTrialModel与CampaignJourneyEconomy，每等级30000次固定种子刷新（seed=20261110+level），实际7/8/9/10级一店见塔露拉0.740/2.193/6.833/17.130%，库存守恒通过；新牌库精确值0.712/2.126/6.961/16.738%。仅刷新，无购买/合成/战斗，临时.NET项目已清理。9级20金专门刷新＋另留5金买牌约51.4%见一张，不是保底；9级零XP到10级需48金，已有/后续XP另扣；三星九张不作为常规运营目标。具体阵容、编制、委托及经济限制见CAMPAIGN_JOURNEY_V2。
+- 最终Windows x64 Development构建 **1068120111 bytes / 0 errors**（build-final.log），CampaignJourneyTools.Validate通过12节点/8波计划/60守军。首次Player64项检查后，新加验证代码对主卡Profile直接取值触发空引用；真实主卡允许使用Battle.Settings默认配置。只修诊断读取fallback后重新构建，保留首轮player-1600报告与日志，不把失败版本当通过。
+
+- 最终同一EXE从工程外TEMP启动，可见D3D11 **1600×900与1280×720各2831/2831检查通过**，error为空且日志正常完成退出。先运行真实开局交易/换位/暂停/2×跨关/默认静音/重开，再载入显式标记的有限库存三星塔露拉终关夹具，经生产指针与技能操作136.4模拟秒、5次部署自然胜利。新增检查核对8整合40%说明及真实部署塔露拉的强化生命/攻击，模型与场景结果一致，源配置未回写。mode=saved-stage-fixture、completedStages=1、naturalJourneyCompleted=false；截图中1/1战突破也明确为单关。已实看两尺寸羁绊新说明、战斗画面与最终结算，未冒称真实OS鼠标。证据在player-final-1600、player-final-1280及对应日志。
+- 仓库静态检查8192跟踪文件通过；两份羁绊JSON逐字节相同，原本地文件SHA256保持。没有CMD/BAT、ZIP、Releases、新美术或自动合并；常用EXE与SOURCE.txt绑定本轮提交。
+
+未执行完整PlayMode、第二机/新克隆、真实OS鼠标或完整自然运营通关，不将单关预设星级的胜利视作上述验证。
+
+## 2026-11-10：跨关偏好与低DP强化守军
+
+- 用户范围：跨关仅羁绊实际变化时演出、保留2×、默认关闭音效；恢复原DP、降低高费部署费、扩守军及每关2–5倍生命/攻击、金币收益翻倍。没有改地图地形或新增美术/机制。Session只保存摘要/偏好，未携带视觉对象；旧独立试玩数值保持。
+- Author/Validate通过12节点/8波计划/60名守军；守军数1/2/8/8/9/10/10/12，原15核心HP与攻击按当关2/2/2.5/3/3/4/4/5倍，护甲/技能参数/原位置与波时长保持。新增45名均来自已接入D01–D12，各图kind/id/位置唯一、格位高低台匹配、覆盖开放路线且避开红蓝端点。16份原meta字节保持，后续提交额外核对Git对象与磁盘而非仅看stat缓存。
+- 完整EditMode981/981；D3D11 GPU PlayMode29/29。GPU六组为CampaignJourneySceneTests、ShopSeatInteractionTests、SynergyActivationSceneTests、GuerrillaOrderSceneTests、SnowstormSceneTests、EngagementSceneTests，覆盖跨场景同档不重复、真实移出再编入重新提示、2×和开启音效选择跨关/重开保留、新挑战1×静音；普通交战/羁绊/游击/天气音源及原暂停/技能/拖动交互回归。其后增加名单滚动、压缩提示和Debug单关夹具，由最终实际Player验证。
+- 两份player-roster JSON逐字节同步，仅12种正常四/五费卡的base.dp和36行stars.dp变更；银狼暂缓且排店，currentOneStar历史输入与旧试玩保持。四费4/5/6、五费5/6/7；推星、次数/CD与旧费用保持测试通过。正常基础金136，Journey利息/连胜×2，招募/买经验4金4XP/刷新/出售退款不变。
+- 生产Shop/Python/.NET22检查全部True、3种子×4政策12组现金/库存守恒。十级合法运营见证73191：29次Upgrade=116金，28次Purchase=34金，5次付费Refresh=10金，第12战前10级余61金；44/31016也到10级。全胜且无消费账本首奖励13金、终战前239、结束269。均明确假设此前胜利、不是战斗通关；完整命令在artifacts/campaign-2026-11-10-economy。
+- 真实自然运营搜索21条（3种子×7政策，含两种高费/10级目标）未找到整局全胜，初始在第2/3节点失败。诊断发现早期政策买牌/刷新差异很小；部分可清空1420HP但穿门不足。一次定向请求在该政策剩余商品中无卡，被正常事务拒绝；随后对73191 balanced冻结的真实商店合法买1金币M15、正常换编，已自然过第3，见证到第4后第5首Boss失败。保留该限制，不降伤/注血/强制胜负，也不把有界搜索失败当作不可通证明。
+- 13组阵容×第5/12关×12种出兵策略，共312场真实模型夹具。终关弱组及常规两星参考0/12；三星塔露拉组10/12。首Boss二星塔露拉4/12、三星塔露拉10/12、泥岩二星2/12、十级十人4/12。夹具遵守库存/原低DP/次数/CD，但高星及人口直接Preset，不能冒称正常种子取得或整体平衡已通过。
+- 最终Windows x64 Development1068117723字节、0错误、退出0，直接生成常用Builds/Windows；最终两尺寸1280×720与1600×900可见D3D11 Player各2965/2965、正常退出0。先跑生产开局（3赠卡、奖励拖动、真实购买/委托/XP/锁店、2×跨关、静音开关、暂停、重开），再Debug反射选择第12节点、0金/空商品的有限库存高星Preset，真实场景/12守军/费用与波次/生产指针和技能动作重放，143.25模拟秒、5次主部署自然胜利，源Journey/Encounter/Waves不回写。
+- 最终报告mode=saved-stage-fixture、completedStages=1、combatScenes=1、naturalJourneyCompleted=false；没有HP/伤害修改、免费刷新或强制胜负。已实看12人准备、情报名单顶部/底部滚动、火雨与自然结算，三行提示完整。此项是独立单关高星夹具，不是连续12关正常运营。证据在artifacts/campaign-2026-11-10/final-player-1280与final-player-1600。
+
+未完成：自然运营整局通关、新手难度/策略多样性验证、第二机/新克隆、真实OS鼠标和完整PlayMode。本轮按用户要求显著加难，自动策略尚卡首Boss，保留真实状态交人类继续试玩，不沿用2026-11-09宽DP下完整通关证据。
+
+
+## 2026-11-09：十二节点、波次DP与三卡奖励开局
+
+范围：移除原登记节点；奖励1/4/8/11、Boss5/9/12，守军/地图/波时长及生命上限随遭遇保留。开局三种不同1–2费一星卡（同seed稳定、真实占库、1编队2备战）、初始整备免费店；奖励关真实指针拖动与领取锁定；银狼全部正常商店暂时排除。DP按当前GDD与Journey源配置提高。
+
+- Unity6000.6.5f1 Author/Validate实际通过。16份Battle/Waves meta逐字节集合一致，GUID保留；第二次Author与首轮生成后所有正式asset/meta SHA256一致。场景/Prefab/Packages/ProjectSettings未改。原.vscode三文件及PackageManagerSettings共4本地文件SHA256保持。
+- 最终完整EditMode962/962、D3D11 GPU PlayMode17/17通过。首次EditMode943/962，19项因两个旧数值测试helper仍传stage13而失败；改用StageCount后完整重验962/962，未改生产规则绕过断言。GPU六组为CampaignJourneySceneTests、ShopSeatInteractionTests、RemainingSynergySceneTests、SynergyReworkSceneTests、SynergySandboxTuningTests、LateBattleShopSceneTests。奖励覆盖满人口跨排交换/备战换位/未解锁位拒绝/移出与拖回/领取时pending拖动取消/领取后锁定；经济、库存、零部署与零模拟时钟均保持。
+- 同源真实有限运营/战斗模型3种子73191/44/31016×5政策共15条，14条完整12节点全胜；31016低费追星策略在第9关有界部署搜索未过，不是不可通证明。每条从实际三赠卡和免费店开始，42种商店角色排除银狼，报告记录gifts并与Player重放共享协议。模型搜索的反事实分支不是局内失败重试，也不是玩家胜率。
+- 第5/12关7组阵容×42出兵政策共588战边界；塔露拉一星八人组和塔露拉/盾卫二星核心组在两关各42/42自然胜利。终关两种弱一星杂牌组0/42；三种一星两费无羁绊组42/42、两种成长组42/42，保留实际放宽结果，不沿用旧DP下弱组全失败结论。这些是有限牌库战斗夹具，未承诺种子商店一定拿齐阵容。
+- tools/balance/journey_economy.py独立Python/.NET退出0，16项规则/账本检查全True，3种子×3政策共9组真实现金库存审计。无消费上界首补后9金、终战前112、终局127；68基础金。两个花满候选预算会超支，10级终战前至少116金XP大于112上界，均明确为观察/限制，不改运行经济掩盖结果。
+- 证据留本地artifacts/campaign-ease（delivery-retry-player-1280及delivery-player-1600为最终正常退出记录）和artifacts/campaign-twelve-stage-economy；未新增临时脚本、CMD/BAT、ZIP或Releases。
+
+- 最终运行源码`1e764fad51533e99deff3a3a9a3f044481fde0b8`，Windows x64 Development构建1068073043字节、0错误、进程退出0，直接构建至常用Builds/Windows，SOURCE.txt指向该源码。首轮实机发现奖励开局仍显示旧单赠卡提示、标题取背景地图名；仅修标题与3处提示后重新Author/Build，以下均为最终构建的重验。
+- 最终可见D3D11 Player1280×720及1600×900各9638/9638检查通过、退出0，均完整12节点/8独立场景自然重放，8战全胜、100生命、终局8级2XP/11金，终战104.65模拟秒。真实指针交换奖励关编队、库存及金币、初始免费店、42种可招募角色、暂停/重开/结算/每波DP与源配置不回写均验证；不是OS鼠标或总体玩家胜率。顶部奖励取节点名、战斗取短地图名以适配标题区域；已实看最终开局/换位/结算画面，初始三卡、1编队2备战及“集结采购”标题正确。
+
+最终1280首轮9638项功能/画面检查全部通过，但Unity退出清理停在Input System shutdown，验证自建进程由Agent结束，不计正常退出；同一EXE随后独立重验1280完整9638/9638并正常退出0，1600完整9638/9638正常退出0，保留首轮日志，不宣称已定位这个偶发引擎退出停滞的根因。
+
+PR远端检查另发现Git stat缓存漏识别7份移动meta（普通H标记、无skip-worktree/assume-unchanged）：工作区16份GUID正确，提交对象中7份仍为旧内容，远端出现5组重复GUID。本轮按明确7路径git add --renormalize强制重新读取，逐份核对暂存blob与已测试磁盘字节完全一致且16GUID无重复；没有生成新GUID或修改构建输入，因此既有EXE无需重建。交付SOURCE.txt指向补齐资源的提交，运行代码仍为1e764fa。后续资源迁移须核对Git对象内容，不能仅依赖status与工作区检查。
+
+仓库8190跟踪文件静态检查通过。未执行完整PlayMode、第二机/新克隆、真实OS鼠标或总体随机构筑难度评估；最终DP作为人类继续试玩初值，已保留弱两费组可通关与10级不可达的限制。旧十三关重放不计本轮。
+
+
+## 2026-11-09：白线箭头、玩家生命与后期扣血
+
+- 用户明确确认恢复昨日树海白底线/流动亮段/箭头，并确认进攻方按未完成突破比例扣生命；追加“后期多扣”。本轮延续原十三关功能分支/PR #108，fetch核实main仍7862d09，不合并。开工发现的52份VFX meta仅增加WebGL导入项，无GUID或删除行，按本轮用户“提交修改再继续”单独提交d1ad89b；原未跟踪.vscode/与PackageManagerSettings保留，不暂存。
+- 运行源码ef90658：CampaignJourneyHealth提供100初始生命与3/4/6/7/8/10/11/13关20/20/30/25/30/45/35/60最大损伤；BattleShopLoop将实际Defense/InitialDefense交给BattleShopRun结算，ceil比例、实际损失封底0、重复结算不再扣。生命/单场结果随同一Run跨保存场景，RoundSummary记录扣血/余血；有血败局可下一关，0才Failed，末关生还但未突破显示行动结束/真实突破数。败局基础金币+利息有，XP0、连胜清零；补给/胜利/本关重开不回血或扣血。所有值是本作试玩初值，并非货币战争精确公式。离线搜索工具继续明确只搜索全胜见证，新增真实防御参数不把失败搜索枝当生还通关证据。
+- 完整EditMode **953/953**，无跳过（artifacts/route-health/edit.xml）。相关D3D11 GPU PlayMode两组 **7/7 + 15/15 = 22/22**（play.xml、play-regression.xml）：逐波单路线/悬停替换/地道/固定底线与流动亮段/暂停冻结；自然空场败局跨图从100→80→60→30→5→0，补给保持、结算幂等、基础金利息/失败XP0、重开不回血、新挑战100、0阻进；旧Campaign/商店/树海/波次/安全视口回归。空场败局是最终部署窗关闭后自然判负，未冒称等待总截止。独立算数对1..200初防御、20/25/30/35/45/60上限的121800项边界/单调性检查通过，无临时文件；每战各差1点防御最终17生命只是一组算数情景，不代表通关率。
+- WaveBattleTools.BuildWindows真实Windows x64 Development **1068071567 bytes / 0 errors / 退出0**（build.log），动态完整保存场景目录，不改工程设置。完整同步Builds/Windows并写SOURCE.txt绑定ef90658，实际运行DLL SHA256两目录一致：24AF7B3222BE986A7AFA82DA0B8D8A0CCAFF83BA3B8A9B2FC6EB31E0F1C2F11F。直接打开EXE，默认十三关，无新建/复制CMD或BAT。
+- 同一EXE从工程外TEMP启动，可见D3D11 **1600×900 16231/16231、1280×720 16218/16218，均退出0**（player-visible-1600/、player-visible-1280/与对应日志/exit.txt）。两次完整真实13节点、8地图重放：1600用既有focused-eleventh-burst合法命令，前7战胜、终战自然Lost202秒/剩防御2/6/8部署/伤害8960.5752，按末关上限60扣20，生命80，基础+7/XP0/连胜0，显示7/8战突破和行动结束；1280用focused-thirteenth全胜见证，终战Won200.4秒/剩防御0、生命100，金币10/7级4XP，显示8/8突破。两者不注血、不强制胜负，商品/库存/经济、动作时序、伤害、穿门与模型源记录一致；源Journey/Encounter/Waves不回写。已查看实际路线白线箭头、顶端生命HUD、两尺寸结算图，生命块与巨像反馈不重叠。
+- 首次Hidden窗口1600重放完成，所有功能结果一致，但34项visible-frame检查因黑帧失败、退出1；保留player-1600/原始证据，不将其称为通过或删除掩盖。随后同一源码/EXE在可见窗口重跑，全部画面及功能检查通过。未运行完整PlayMode、第二机/新克隆、真实OS鼠标、全部随机构筑或人类难度统计；本轮不会用固定见证推断后期难度已达标。仓库静态检查8190跟踪文件通过，无场景/Prefab/Packages/ProjectSettings改动，无ZIP/Releases或自动合并。
+
+## 2026-11-09：移除试玩CMD并固定直接EXE交付
+
+- 人类要求项目整洁、试玩CMD删除且以后不要。本轮沿现有交付反馈分支/PR #108继续，fetch核实main仍`7862d09`。删除9个跟踪启动器：根目录2、tools/play下6、商店浏览器预览1；本地Builds/Windows、Windows-WaveBattle与Windows-DeepPool另删除12个旧CMD副本。全部为EXE/HTML快捷启动，无运行依赖，不删除场景、角色、IDE工程文件或缓存。
+- README和现行十三关/八图/树海/羁绊/商店预览说明改为直接EXE或HTML，游戏内菜单名称核对生产代码；Builds/Windows的SOURCE.txt、试玩说明及历史BUILD-INFO指向统一EXE。GDD0.3、CONTRIBUTING、PROJECT_STRUCTURE与仅本地AGENTS登记持续禁用CMD/BAT启动器，旧STATUS/QA条目中的启动器路径仅作为退役历史保留。
+- 仓库检查新增CMD/BAT拦截。完整静态检查 **8188跟踪文件通过**，直接调用检查器验证四种大小写后缀均被拒绝（未创建夹具文件），`git diff --check`与暂存差异核对通过；全量扫描项目自有目录（包括忽略的Builds/artifacts，排除Unity/IDE缓存与.git）无CMD/BAT残留。它们不等于Unity编译或Player试玩。
+- 本轮未运行Unity、EditMode、PlayMode或重新构建/启动Player，因为游戏代码与资源不变。当前EXE SHA256 **B70442F90F50CD91F7AF7BF2272602645FC5D02C4D3156FB221FC27C328D2436**、运行DLL SHA256 **E0FDA0FEA559571CF1752E8F9381F4ACDBA5BE53ECF6F706CDA672D47B2B0F5F**前后相同，仍对应运行源码`a97ec38`，保留上轮实际验证边界。原56份本地文件逐文件SHA256保持，不暂存/提交/stash；AGENTS继续仅本地保留。源码按原PR更新，不自动合并，无ZIP/Releases。
+
+## 2026-11-09：淡色流动虚线路线指引接入
+
+- 人类确认项目外视觉预览，补充要求虚线与流动感并明确接入。本轮是十三关试玩反馈续改，沿`codex/thirteen-stage-campaign-v2`/PR #108；只读fetch核实main仍`7862d09`，不自动合并。7份运行脚本统一正式Journey/八图/树海的绘制入口，另新增4项GPU交互测试及必要meta。未改保存场景、Prefab、配置数值、Packages或ProjectSettings。
+- 旧正式地图入口`DrawApprovedMapRoutes`原来常驻全部路线，树海入口另画当前及存活旧波路线，两处现共用`WaveRouteGuideStrokes → DrawWaveRoutes`。仅生成实际移动折线的流动dash，间距2.2格/长度0.46格/速度0.8格每模拟秒，灰蓝alpha0.34（红门预览0.52）/宽1.15画布像素，无连续底线/描边/箭头。同一时刻只有一条路线，悬停/拖到红门替换默认路线，移出恢复；旧波不常驻、最终推进无默认线、地道跳跃段过滤。GUI重绘同时采集真实指针位置变化，不依赖单独MouseMove事件。
+- Unity6000.6.5f1完整EditMode **918/918**、0失败/跳过（`artifacts/quiet-routes/edit.xml/log`）；相关D3D11 GPU PlayMode **28/28**、0失败/跳过（`play.xml/log`），含新增`QuietRouteGuideTests`4项。真实正式第3关、树海跨波仍存活旧兵、悬停替换/移出、前向流动/暂停、末段活兵但隐藏路线、Map04地道连接段不绘制均通过。复用生产指针与等待接口，无反射注血或强制结果。
+- 最终运行源码 **a97ec38d1ce2f9176849099264fad4ad5a0e9ce5**，真实Windows x64 Development构建 **1068065343 bytes / 0 errors / 退出0**（`build.log`）。常用`Builds/Windows/YesterdayConvoy.exe`已更新；运行DLL SHA256 **E0FDA0FEA559571CF1752E8F9381F4ACDBA5BE53ECF6F706CDA672D47B2B0F5F**。SOURCE.txt记录同一源码与本轮测试，不把旧完整十三关重放登记为本构建的新验证。
+- 从工程外TEMP启动可见D3D11最终EXE：正式流程准备/部署/重开与路线短测 **1600×900 68/68、1280×720 40/40**、均退出0（`player-1600/1280/journey-result.json`）。当前路线只含虚线、另一红门预览替换、移出恢复、模拟前进与暂停冻结均通过；实际查看1600流动中与1280另一红门预览PNG。1600额外保存28张按0.1模拟秒推进的真实完整屏幕帧，编码`artifacts/quiet-routes/route-flow-actual.gif`，仅格式编码、无生成补帧；检查数差28来自额外帧可见性检查。程序走生产事务/指针API，不冒称真实OS鼠标。
+- 同一最终EXE树海 **1280×720 75/75**、退出0（`forest-1280/result.json`）：三波当前路线/实际移动投影/暂停/门禁/次数CD/排行/死亡详情/重开等通过，实际交战PNG已查看。稀疏4部署仍自然255秒TimedOut/Lost；独立合法16部署固定种子策略仍自然 **Won193.400000000013秒、实际伤害7302.60009765625**，与前次不变，无注伤害或强制胜负。
+- 交付前原56份本地文件逐文件SHA256保持，52份VFX meta与.vscode/PackageManagerSettings未暂存或提交；暂存仅本轮明确文件。静态仓库检查 **8197跟踪文件通过**，不代替Unity。规则同步GDD/STATUS，源码推送原PR，保留前序#107/#106依赖；无ZIP、Releases或自动合并。
+- 本轮未重跑最终EXE的完整十三关重放、全PlayMode、第二机/新克隆、真实OS无按键悬停及人类主观亮度/流动手感；原有完整流程证据仅作为上一版本历史保留。未修改战斗数值，不据树海固定策略推广总体通关率。
+
+## 2026-11-09：十三关试玩反馈修订与最终Windows试玩
+
+- 本轮沿原十三关分支更新，远端main核实仍7862d09；原56个本地文件沿此前确认保留。范围是正式Journey经济/波次/本场守军和商店信息UI，不改保存地形、原独立试验参数、Packages或ProjectSettings。
+- 初版经济真实账本基线是无消费两补36、终战前301、终局337；未把人类“50+”余额登记为已精确重现。新经济计算器读取实际源码/authoring参数，最终16项现金/库存/经验边界通过，三种子×三预算政策通过，另保留88金币支出缺1的失败回归。9→10经验最初64导致普通收入数学锁死，已恢复48；10级至少116金币，极端119上界仅余3，常规三策略仍7/7/8级。只假设战斗已胜，不冒称自然通关。输出`artifacts/campaign-retune/economy-report.json`等，工具`tools/balance/journey_economy.py`，来源与范围见经济修订说明。
+- 第一轮真实Unity Author退出0，13节点/8波计划/15名本场加强守军校验通过（`author-first.log`）。`search-first.json`三种子×三政策全部卡6；第二轮只调整首Boss波接敌结构，仍全部卡6（`search-second.json`）。实际伤害反复被塞雷娅治疗抵消，例如2787伤/2756治疗，不当作随机无解或模型实现故障。
+- 第二轮独立战斗fixture（有限库存预置，非自然搜卡）共10构筑×18策略：3类一星低费无羁绊在首Boss/终Boss共108次全失败；六人成长混合参考在两关有合法胜例，七人成长低费羁绊首Boss有胜例。某个两费杂牌终关已能清守军但仅穿5/6门，不能把0/18胜例夸大为所有低费策略都不可能赢。具体`boundaries-second.json`。
+- 只读交叉审查指出搜索仅给每波相同开局延迟，未覆盖跨波合流；第三轮扩充42种逐波延迟/出兵顺序，并将首Boss塞雷娅普通治疗每次60回到v2的40，生命990与搭配守军420/55保持。另加入真实委托追赠卡三星的运营策略。该阶段尚未出现完整通关见证，未提前登记为通过。
+- 第三轮12种子/政策组合仍卡6；第四轮把首Boss职业组合改为卡缇T2（870生命/60攻击/15甲、间歇自疗）＋史都华德（420/55），14总DP与当时波计划保持，塞雷娅保留终关。首Boss允许有针对性的两费原生能力过关；最终关三类低费一星无羁绊在42策略下均未获胜，成长混合参考7/42胜。该比例是构筑/出兵枚举结果，不是人口胜率。
+- 第五/六轮不再削守军，改运营/编队职能政策：补四整合、前排/物理/法术远程与一个跑手，避免两个一星跑手挤掉已经持有的二星术师。第六轮seed73191的真实运营走过前9节点，在第10关已清场但穿门不足；其余固定策略分别止于6/8。随后冻结已购库存做聚焦编队/出兵搜索，不重抽商品或加资源。
+- 完整EditMode首轮 **917/918**（`edit-first.xml`），唯一失败为旧有效治疗SP用例查找最终关已移除的D30；按本关实际D24受疗者更新，断言仍要求过量治疗不回SP/有效治疗回1，运行数值未为测试修改。最终重跑结果见下项。
+- 最终完整EditMode **918/918、0失败、退出0**（`edit-final.xml/log`）。相关18类真实D3D11 GPU首轮64/66，旧座位测试仍硬编码左起18/步长106，旧混合沙盒测试把4倍基础面板与额外萨卡兹10%后的实体血量混用；分别改验压紧后的实际次序、基础Profile四倍和既有实体1.1倍，不修改运行数值。最终 **66/66、0失败、退出0**（`play-final.xml/log`），包含新关切场/经济/暂停/重开、概率模态阻断出兵、旧树海/八图/商店/羁绊/感染形态/安全视口回归。
+- 聚焦搜索10严格重放前9关已购库存、商品/RNG/实例/奖励，再只换合法编队与出兵找到第10关165.70秒胜例。首次11关96×72库存扫描在耗时约8分钟后由root核对命令行停止自身进程（退出-1，无完整结果，不当作失败穷举证据）；缩小到24阵容，正常购买当前免费店M24/M33、不刷新，记录SetForms/Burst后，第11关100.75秒自然胜。该战InfectionTier为0，Burst没有产生增益；实际突破来自M24三次部署与跑手，M33买入未部署。
+- 最终 `focused-thirteenth.json`：**seed73191完整13关合法见证、8实战、48次普通部署、0手动技能**，76条真实运营命令（27购买、3委托、12付费刷新、5买经验、23编队、4承契、2形态选择）。包含初始金的总收入97、总支出87、终局 **10金币/7级4XP**；实际8战 **767.90模拟秒、19451.08总伤**，终战200.40秒/8部署/8945.29伤。只有胜利分支得奖；前缀逐关严格比时钟/DP/伤害/防御/穿门/地道及奖励/巨像XP，不注血、不免费重抽、不强制结算。离线枚举编队/出兵是设计搜索，不是游戏中失败后回滚重试。
+- `TimingMargins`实际执行退出0（`timing-margins.json/log`）：10/13关原trace严格基线通过；第10关63.9秒部署组提前0.5/1秒均合法且胜，说明0.1秒仅是搜索网格端点。终关6个提前探针中，2个因原卡CD拒绝1次指令（后续仍胜）、1个全合法但超时剩2防御、其余3个全合法且胜；没有重试、钳位或忽略拒绝标成全通过。属于固定见证灵敏度，不是总体玩家胜率；终关当前可玩初值仍偏紧，需人类反馈。
+- 提交前原56份文件逐文件SHA256全部保持；暂存69个本任务文件，未包含原VFX meta/.vscode/PackageManager，原Scenes/Packages/EditorBuildSettings无差异。`git diff --cached --check`及仓库静态检查 **8195个跟踪文件通过**；该静态检查不代替Unity测试。
+- 首个运行源码 **d98bb908e14d00cb026b84d9b0c0d8966b8c478a** 构建1068063143 bytes/0 errors/退出0（`build-first.log`）；可见D3D11两尺寸各16197/16197、完整13关/8战自然重放且退出0（`player-first-1600/1280`）。实看发现新详情底板透出背后文字、承契标志盖在成员面板上，以及窄部署卡的长名字换行；只改三处显示：详情底板不透明、模态覆盖承契标志、按实际字宽降到最小8号并禁止换行。没有再改数值或战斗。
+- 最终运行源码 **833ba62ef3eb0951def032785584394e01982968**，真实Windows x64 Development构建 **1068063767 bytes/0 errors/退出0**（`build-delivery.log`）；运行DLL SHA256 **AABED233B03EBE800E79986781D57267658FB66B994E2B0E00DCD62378988F06**。最终可见D3D11 **1600×900、1280×720各16197/16197、完整13节点/8战、naturalJourneyCompleted=true、退出0**（`player-delivery-1600/1280/journey-result.json`）。全部真实生产运营/编队/形态/点击部署、波次与CD、暂停/重开、伤害/奖励/库存、源Journey/Battle/Waves只读、终局尾帧不重复发奖及退出清理通过。最终两尺寸UI与结算PNG已实看，模型767.90秒/48部署/7级4XP/10金币均复现；程序走生产API与指针接口，不冒称OS鼠标或人类通关。
+- 常用`Builds/Windows/YesterdayConvoy.exe`、SOURCE.txt与原`十三关行动试玩.cmd`交付对应最终运行源码；后续记录仅文档提交。未执行第二机离线/新克隆、完整PlayMode、真实OS拖放、人口通关率、新手计时和最终主观平衡；终关200.40/202秒仍偏紧，留待人类反馈。无ZIP、Releases或自动合并。
+
+## 2026-11-09：正式十三关行动v2
+
+- 人类批准完整设计并要求接入。新分支`codex/thirteen-stage-campaign-v2`从实时main7862d09建立，快进承接八图已提交93722e5；保留日常单一工程，PR需说明前序#107等依赖。原56个本地文件逐文件SHA256保持，未暂存/提交/stash。无新场景、原角色资产、Packages或ProjectSettings改动；新数据/脚本/meta与源码同交。
+- `CampaignJourneyTools.Author/Validate`真实Unity执行退出0（`artifacts/campaign-v2/author.log`）：13节点、5补给、8份独立正式Battle、24份v2守军面板/全部技能参数、地图顺序/格位/路线/持久引用匹配。地形复用原8保存场景，Play不搭图，构建仍24场景。四份v2原JSON保存真实来源/采纳状态，内存适配不回写，银狼后续数值暂缓未解冻。
+- Unity6000.6.5f1完整EditMode首轮908/908；补正式UI文字隔离用例后最终 **909/909、0失败**（`edit-final.xml/log`）。新增配置11、run/幂等/失败/重开4、玩家快照/技能6、native/正式守军16、羁绊/巨像/文字19，共56项；旧853项仍通过。阶段T2/T3、星熊生命/债务/最终7/8秒、有效治疗回SP、半格十字泡沫和满时觉醒都有受控边界用例，夹具/反射设置不算自然战斗。
+- 真实D3D11 GPU短测首轮2项失败，等待器在同名Map07重载时抓到旧Controller：共享Loop.Stage已增加而旧Battle仍Won。只修诊断等待，要求对象属于活动scene handle且Battle.CampaignV2Stage匹配；重跑 **2/2通过**。相关新旧回归首轮29/30，旧补给用例还期待旧基础奖10和同步同场景控制器；按v2第二补给基础12、无消费到36金及实际切场等待更新后，最终 **30/30通过**（`play-related-final.xml/log`）。不修改实战数值来迁就断言。
+- `CampaignJourneySimulationTools.Search`使用实际ShopTrialModel、CampaignV2Balance、ManualBattle和保存的正式encounter（`search-first.log/model-search.json`），首候选 **seed73191/balanced完整13关自然胜利**，8战均首分支R1/style0，无战斗失败回滚择优。164条运营命令包含36购买、62付费刷新、21次4金币经验、8委托、28次编队、9承契；另12次正常免费店。76次主部署、3次技能遵守DP/次数/CD，无无限金币、注HP或强制结算。
+- 独立.NET加载生产Shop模型重放全部164条命令，每笔商品/实例/合成/金币/等级/XP一致；Python独立核DP/次数/CD/实体时间。正式8战DP为16/20/24/28/32/38/42/50，实际消耗16/20/24/28/30/37/40/48。终战1金币入场、胜后32金币/9级XP7；实际八战265.40模拟秒。首Boss可0玩家伤害绕行穿门，终战存活D30/D24仍合法获胜，9013清场预算非必需伤害，不能据此证明所有路线难度或30–50分钟目标。
+- 初次运行源码80183d7构建1068034119 bytes/0 errors，独立Player短smoke通过，但完整重放在初始空槽比较失败：JsonUtility将五个null字符串序列化为五个空串。只将空槽规范化，继续严格比较长度/顺序/真实ID/金钱/等级。中间运行源码 **6f9191ae0b1b18024a8978d3dae3119ef49b476b** 重建1068034691 bytes/0 errors；可见D3D11 **1600×900、1280×720各6533/6533，退出0**（`player-replay-1600/1280/journey-result.json`），完整13关/8真实场景/全部运营/部署/技能、每关真实伤害/奖励、来源只读与退出清理通过。程序走生产事务/指针接口，不冒称OS鼠标或人类通关。
+- 实看上述代表图后发现正式长标题在左上窄框换行顶出，改为关号＋地图短名；诊断冻结TimeScale导致末击尾帧尚未展示结算面板，改为仅推进终局表现、等待SettlementVisible并断言战斗Clock/Phase/DP/Defense/伤害/经济/库存/奖励receipt/累计回合均不变。中间运行源码66b2d3c两尺寸各6575/6575通过，已展示真实结算面板；随后只将被裁掉的第三行通关统计合并为两行。
+- 最终运行源码 **f639b17d90734a27106f01a1b29997f711e5ea7f**，Windows x64 Development真实构建 **1068037147 bytes/0 errors/退出0**（`artifacts/campaign-v2/build-delivery.log`），常用`Builds/Windows/YesterdayConvoy.exe`与SOURCE.txt已更新，`十三关行动试玩.cmd`直接启动。运行DLL SHA256 **D066058B636976E0BE60FB386DF82E12BFD309D55E1240C1C08E9620BDD17C2E**。最终可见D3D11 **1600×900、1280×720各6575/6575、13节点/8战完整自然重放通过**（`player-delivery-1600/1280/journey-result.json`）；关间真实场景切换、全部运营/合法部署与技能、实际伤害/结算、等待尾帧无重复奖励、源配置不回写和退出清理一致。已实看两尺寸最终胜利面板、完整两行统计与短关名。程序调用生产事务/输入接口，不将此登记为真实OS鼠标或人类通关。
+- 交付前再次核对原56份文件SHA256全部保持，原场景/Packages/EditorBuildSettings无差异；暂存仅本任务文档，`git diff --cached --check`通过。仓库静态检查 **8166个跟踪文件通过**，它不代替Unity验证。后续交付记录为纯文档提交，不改变上述EXE的运行源码。
+- 模型/源码、独立Player、目标平衡分别记录。未执行第二机离线/新克隆、完整PlayMode、真实OS拖放、人类新手计时、全部构筑/自然随机局通关率。只读数据由Journey/session控制器连接现有战斗；既有专项参数默认不开v2，旧八图与树海回归保留。没有ZIP、Releases、自动合并或新增管理权限。
+
+## 2026-11-08：批准V2八张独立战场
+
+- 人类批准V2看稿后要求接入，后续明确第2图只接坑洞地形、暂不新增推击。八个场景均为编辑模式保存的地形，1120个可选格点、20条固定路线，构建清单24场景。旧地图场景、角色与守军源配置未改；格点遵循批准SVG/JSON，不声称概念图逐像素一致。完整操作/编辑入口/数据连接见`APPROVED_MAPS_V2.md`。
+- Unity **6000.6.5f1 (3ff58d469c8a)**。`ApprovedMapsSceneTools.Validate`实跑通过：八图Bootstrap/profile/独立Battle/红蓝门/守军格匹配、持久Mesh/材质引用、坑/水不入正常路线、图4仅一对地道/图5仅三泵、地板未使用概念图。8份真实场景缩略图经GPU渲染并入Git，概念图与来源/完整提示词另留记录；不把来源记录当作原作再分发授权。
+- 完整EditMode **853/853，0失败**，`artifacts/maps-v2/edit-final.xml/log`，含12项新图配置与16项地道/热泵模型测试。覆盖配置深复制/原子拒绝、完整动作与已发射弹道等待、通行中目标排除/暂停/重开、恐惧与诱导不穿墙、热泵模拟时钟与双方伤害/真实牧群生成。首轮852中1项因Vector3约1.19e-7浮点差而失败，只改断言为1e-4距离容差后重跑，未调整地道逻辑去迁就精确浮点。
+- 相关D3D11 GPU PlayMode首轮 **24项旧回归通过、3项新图失败**，`play.xml/log`。新图默认编队正常触发感染形态弹窗，原诊断错误假定没有模态而拖放被拒；保留普通游玩的提示，通过相同生产关闭API接受配置默认值，另加正常提示存在的测试。修正后新图GPU **4/4通过**，`play-approved.xml/log`，包括遍历八个独立场景的正常面板、库存、开始/部署、暂停部署/原CD、重开/返回，以及地道和热泵专项；不把首轮失败藏入通过数。
+- Windows构建前复查修复了两处集成问题：`-approvedMaps`只允许在MonsterTrial消费选图显示状态，避免默认Campaign先消费导致落回普通怪物页；八图整备设置不再显示旧沙盒倍率。正常角色面板无沙盒倍数，50DP/6防御仅为本轮试验预置。
+- 中间运行源码 **f7dcbd72b71d16d243a8f92cbed25f0dac314073**，真实Windows x64 Development构建 **1067428327 bytes / 0 errors / 退出0**（`build-final.log`）。同一EXE可见D3D11 **1600×900与1280×720各289/289，退出0**（`player-visible-1600/result.json`、`player-visible-1280/result.json`）：八图140格、固定路线/守军、正常角色与真实有限库存、生产控制器指针部署、暂停状态/CD/机关、重开保地形清运行态、源资产不回写、返回清理和八图菜单实帧全部通过。它们是程序走生产指针/按钮API，不是OS鼠标或人类操作。
+- 同两尺寸的普通合法八人出兵短观察一致：图4自然 **Won 41.10模拟秒、8次地道通行**，实测通行倒计时暂停冻结；图5实际预警/喷发，热泵对怪物造成 **10.79997** 伤害。其余图仅观察12模拟秒、仍Running，不宣称全图通关。默认守军都在热泵半径外，未观察到其受泵伤；伤害双方的机制证据来自模型用例。未注伤害、未强制胜负，不能据此宣称八图最终平衡已验收。
+- 初次独立Player用了Hidden窗口，运行检查通过但35项实帧检查全是黑图、总结果失败（`player-1600`）；随后仅改为可见窗口重跑上述两尺寸，保留失败记录。实看八卡选择页、渠桥/坑洞、部署/重开、地道与热泵PNG。尝试computer-use检查普通窗口时，目标元数据虽为本游戏，截图却是另一个应用；重新取得窗口后仍不一致，故未点击、不声称OS交互通过。
+- 最终运行源码 **6ee1495bd34bc23ce5b9df8d651f713e92cfbaba**，Windows x64 Development真实构建 **1067436139 bytes / 0 errors / 退出0**（`build-delivery.log`），直接更新常用`Builds/Windows/YesterdayConvoy.exe`；运行DLL SHA256 **7B7C076CBCB80879FF587D6DDF644894ADDF38EFDCFC71FFB283510E9640007B**，SOURCE.txt绑定本次运行源码。最终EXE再次执行可见D3D11 **1600×900与1280×720各289/289、退出0**（`player-final-1600`、`player-final-1280`），自然观察、实际地道/热泵结果同上，已实看最终代表PNG。
+- 同一最终EXE额外执行普通启动诊断：`-approvedMaps -approvedMapLaunchSmokeTest` **5/5**（`launch-selector/launch-result.json`），`-approvedMap 4 -approvedMapLaunchSmokeTest` **6/6**（`launch-map04/launch-result.json`），均退出0。诊断只观察正常路由，不主动打开菜单、不加载场景、不跳过CampaignBootstrap；实帧分别为真实八卡选择页及图4正常整备，确证早消费问题已修复，不以遍历工具主动加载替代启动证据。
+- 原52份VFX meta、.vscode与PackageManagerSettings共56个既存文件SHA256保持，未暂存或提交。新地图材质/网格/缩略图/脚本/配置与meta随源码跟踪，仓库静态检查 **8102个跟踪文件通过**，该检查不等于Unity测试。无ZIP、Releases或自动合并。
+- 未执行：第二台电脑离线/新克隆、完整PlayMode、真实OS拖放、自然十三关成长和全部构筑长局难度。地图独立试玩的自由整备不是正式八关挑战流程；地道/热泵是本作试验参数，坑洞没有新增推击/坑杀逻辑。
+
+## 2026-11-08：数值v2核心文档登记（非运行接入）
+
+- 人类明确要求将完整重设计写入核心文档。本轮仅更新GDD、STATUS、旧方案指向和`docs/balance/v2`设计附件；不修改Unity运行脚本、资产、场景、Prefab、包或工程设置。
+- 前轮已运行的证据按原范围归档：角色字段/动作/CD及逐击检查、守军公式、公共参数与羁绊组合核对，8个获取情景各6000次固定种子抽样，经济预算和24组生命±10%敏感性。保存的报告为数学模型，不能冒充完整Unity战斗或自然运营胜率。
+- 本轮已执行11项文档/快照核对及28项模型已知例断言，全部通过：43卡138星、22守军66阶段、九羁绊29档、24条关卡守军放置、13次结算；四份JSON除新增采纳元信息外与前轮源数据一致；本地链接缺失0，逐角色索引齐全，既存修改文件保持。重新计算全部十三关预算与归档结果一致，终战9013总有效伤、120.17有效DPS、145.67局部集火。参数未变，未重复前轮8×6000随机抽样；不复用旧Player通过数作为新v2证据。
+- 仓库结构检查`python -B tools/check_repository.py`通过（7754个跟踪文件）；`git diff --cached --check`通过。此检查不编译或运行Unity。
+- Unity、EditMode、PlayMode、Windows构建、v2实机和人类试玩：**未运行**。旧构建仍对应原运行源码；不创建ZIP/Releases，不自动合并。既存特效meta与本地配置不纳入本次文档提交。
+
+## 2026-11-08：游击队独立排行、Mon3tr与星熊血条修复
+
+- 人类要求游击队单列伤害。新增只读`DisplayDamageRanking`：角色/共享来源展示值=原贡献伤害−其中追击，独立“游击队追击”行=实际总追击，统一排序且总和=本场总伤害。原贡献者账本和逐斩真实扣血归属保留，不重复计入；零伤害但编队有游击羁绊时也保留独立0行。UI不再在各角色下显示追击子项。数据经`BattleDamageRanking→DamageRankingPanel`接入，4项新增展示测试覆盖混合、共享、纯追击、暂停/跨波/重开。
+- Mon3tr原逻辑在近敌进入0.95范围时能够造成技能伤害，但会被远处任意怪物触发空开，且技能态CanAttack接口为false、依赖null目标旁路。修复`DefenderSkills/AdvancedDefenderSkills/EngagementCombat/FifthDefenderSkills`：满技力仅在地面重构点范围内有合法目标时发动，技能态通过统一TargetId索敌主动攻击，转位时清旧治疗目标。保持原850生命/16攻击、0.95半径、×3.8、三目标真伤、链疗每次1SP/不时间回复、25秒/致命返回与1秒保护。7项新增测试使用树海D23实际快照，明确受控副本只为就绪用例设满SP，不回写资产。
+- 星熊我执时Health为0而负生命另存Debt，原普通橙条因此0宽。新增纯读`DefenderHealthPresentation`，商店`DrawShopDefenderBars`和样板`DrawDefenderHUD`共用：DebtLife时画红色Debt/(2×当前MaxHealth)，零债务保留红框；正常生命仍橙条，退场/备用不画。只夹显示比例，不改Debt、HP、SP或战斗阈值；5项模型展示测试和实际GPU红像素检查覆盖两入口。
+- Unity6000.6.5f1完整EditMode **825/825**（`artifacts/defender-feedback/edit.xml/log`）。相关非batch D3D11 PlayMode分组 **45+2+1共48项通过**：`play.xml`45/45涵盖独立排行、军令GPU、树海/波次/旧商店、第五批三人技能；`play-hud-vfx.xml`中2项旧VFX通过，新增HUD用例因尚未完成树海bootstrap失败，修夹具后`play-hud-final.xml`1/1通过。更早HUD meta的33位GUID曾使其被忽略，已修正32位并经仓库7743文件检查通过；未把未识别/失败用例记作通过。
+- 实看`pursuit-ranking-separate-row.png`：总291、游击队追击247、原来源普通44（显示四舍五入），排序/总额守恒；实看`hoshiguma-debt-bar.png`、`hoshiguma-zero-debt-red-phase.png`、`hoshiguma-standalone-debt-bar.png`，实际HUD红像素分别109/82/126。图片均在`artifacts/defender-feedback`。上述专项正追击图使用既有耐久/停止守军攻击夹具，红条直接设置受控运行态Health/Debt；这些是展示验证，不宣称自然战斗或平衡证据。
+- 真实ManualBattle重新计算36个固定策略，19个自然胜例，不作玩家胜率。seed20261109同16次合法出兵仍Won193.4秒，真实伤害改为7302.6001、守军技能8次；此前7255.0898/10次是旧空开逻辑结果。记录`model-strategy-search.json`，保存源配置/波次JSON不变；验证参考只依据本次模型更新，并新增Player伤害与模型一致断言，未加强怪物或改守军资产。
+- 最终运行源码 **be0e28134bf37659fc5334e9057f31d66e016860**，Windows x64 Development真实构建 **1063735632 bytes / 0 errors / 退出0**（`build.log`）；1973源构建文件逐文件SHA256同步常用`Builds/Windows`、差异0，SOURCE.txt绑定源码，运行DLL SHA256 **85F9A1BDA555C6EBED77A133EA9EFB08C0674732601054723F3F94DE560D9C21**（`copy-check.json`）。无ZIP/Releases，保留目标既有文件。
+- 最终常用EXE从工程外TEMP启动：可见D3D11 **1280×720与1600×900各75/75、退出0**（`player-1280/result.json`、`player-1600/result.json`）。真实稀疏对局255秒超时，固定策略193.4秒自然突破、伤害7302.6001与新模型一致；自然通关实际追击284.0004单列（角色行5621.6/616/481/300），独立排行分区/总和、旧路线/门禁/暂停/死亡点击/重开保持通过。已查看代表布局与结果PNG。
+- 同一最终EXE额外`-defenderSkillSmokeTest D23`独立Player退出0（`player-d23/player.log`），entered/models/preparation/deployed/paused/effect/assault/cast/won/reset/restored共11个标志全True；effect要求真实转位及真伤命中，技能画面已实看。实际1次技能、83.6秒玩家突破，不注入HP或强制胜负。
+- 原56份本地文件SHA256保持，不纳入提交；场景、Prefab、角色/守军资产、Packages/ProjectSettings和原素材不改。源码/必要meta正常推送原分支/PR #106，不自动合并。未执行第二机、新克隆、完整PlayMode与实际OS鼠标；脚本均为生产控制器指针，受控夹具另行注明。
+
+
+## 2026-11-08：路线、追击排行与死亡详情反馈修复
+
+- 白线路径本身与移动模型一致，原问题来自GUI分组原点和旋转矩阵叠加。现从实际`lane.Points`生成连续折线、距离脉冲与前向箭头，在根画布投影并数学裁剪；拐角不跨格，旧路降低亮度，模拟暂停冻结流动。新增路线计算/投影测试13项。
+- 关键文件连接：`WaveBattleInterface`通过`RouteGuideGeometry`读取`lane.Points/Clock`绘线；`GuerrillaOrderVolley`经`BattleDamageRanking`实际HP出口记子统计，再由`DamageRankingPanel`显示；`ShopMapTrial`负责安全取景与模态显隐，`ShopDefenderInspector`由控制器Tick和点击/绘制共同校验实体生命周期。
+- 排查未发现原游击军令扣血在总排行中漏账：原先按参与者混入总伤害，缺少可辨认分类。现沿同一实际HP扣减出口记录`TotalGuerrillaDamage`和逐卡`GuerrillaDamage`子集，排行显示“含追击”和逐角色“追击”；不重复加总。九项模型用例涵盖五斩、护甲/法抗、过量、星熊转伤/债务、来源死亡、支援排除、普通攻击隔离、共享回退、跨波保留及整局清空。
+- 相机将可玩区取景至(200,66,797,478)，与右侧排行留14画布像素；树海纳入全部非#地块四角/高台和守军脚/头。感染/羁绊等模态打开时隐藏排行，地图仍由模态拦截。守军详情仅接受当前Battle/RunId的在场存活实体，死亡/撤离/待机立即关闭并失去点击命中；星熊负血债务存活、Mon3tr转位和同位置活人仍正常。
+- Unity6000.6.5f1完整EditMode **809/809**（`artifacts/wave-feedback/edit-final.xml/log`），相关非batch D3D11 PlayMode **44/44**（`play-final.xml/log`）：波次点击、旧地图拖放/商店、排行、游击军令GPU演出、死亡详情、地图安全投影等。首轮Edit796项通过，但路线测试meta的33位GUID被忽略，修正为32位后补全809；首轮Play38项中3项新夹具仍在整备阶段而无法点击，改走真实StartLoopNextBattle后完整44项通过，未绕过生产门禁。
+- 正值追击UI实图`artifacts/wave-feedback/pursuit-ranking.png`来自既有耐久/禁止守军攻击的受控夹具：真实部署、普通接触挣军令、五斩和后续普攻均走生产流程，逐斩核HP与子统计，暂停/重开与普攻不污染通过。该夹具不是自然战斗平衡证据。
+- 最终运行源码 **871826f161a28e2eec0293123432b116ab229f0e**，真实Windows x64 Development构建 **1063731140 bytes / 0 errors / 退出0**（`build-final.log`）。完整 **1973文件**逐文件SHA256同步常用`Builds/Windows`，差异0；`SOURCE.txt`绑定运行源码，运行DLL SHA256 **92590126705692FEE132E0994D1BF75DA77CD9BFE6D2E1E94B229938E7C6529C**（`copy-check-final.json`）。保留目标既有脚本/许可等文件，无删除。
+- 最终常用EXE从工程外TEMP启动，可见D3D11独立Player **1600×900、1280×720各73/73、退出0**（`player-final-1600/result.json`、`player-final-1280/result.json`）。实看三波路线拐角、箭头与排行避让；新增实际移动路径/根画布投影、暂停、模态、真实死亡后点击及子总额守恒检查。两尺寸均真实稀疏对局255秒超时，另生产卡牌16次合法点击自然Won193.4秒，伤害7255.0898、6次穿门/10次守军技能，与原模型不变；未注伤害/强制胜负。
+- 首构建75629cb为1063731116 bytes/0 errors：1600×900先通过73/73；1280×720为72/73，末张重开截图抓到“准备商店待机”加载页而非就绪战场。修正专项验证等待：主动触发同一WarmVisibleShop并等待连续就绪帧，再重建最终包并重跑上述两尺寸，不将首轮加载页记作画面通过。该后续改动仅专项诊断等待，由最终独立Player验证。
+- 原52份VFX meta及.vscode三文件、PackageManagerSettings共 **56文件SHA256保持不变**，不纳入提交；新文件/meta已跟踪，仓库7733文件静态检查通过。不改场景、Prefab、守军/角色数值、Packages或ProjectSettings，无新美术、ZIP或Releases；同一功能分支/PR #106正常提交推送，人工合并。
+- 未执行第二机、新克隆、完整PlayMode和实际OS鼠标复验；生产控制器指针与受控状态夹具各自注明，不冒称人类操作或全部构筑/长局平衡通过。
+
+
+## 2026-11-08：黑流树海波次机制
+
+- 同一日常工程，Unity6000.6.5f1；实时main7862d09，codex/wave-blackforest，兼容承接树海#103/伤害排行#104（集成026d255），不合并远端main。用户确认原52份VFX meta及本地配置原地保留。
+- 首轮完整EditMode **787/787**，`artifacts/wave-battle/edit-all.xml/log`。涵盖17个波次模型用例及3个波次配置/全43卡CD快照回归；旧非波次profile保持原CD/次数/面板。测试包括预算替换、门禁、跨波状态、暂停、幂等、末刻穿门/爆炸、255硬截止、巨像旁路和重开。
+- `WaveBattleTools.Evaluate`真实ManualBattle三种固定策略，.05秒/1倍：默认轮询192.95秒失败、剩1防御；低费优先193.70秒失败、剩3；各波延后10秒203.40秒失败、剩1。三组均16次普通部署、守军自然清空，配置未回写。记录`artifacts/wave-blackforest/model-strategies.json`及`artifacts/wave-battle/policies.log`；不将清守军当成胜利，不注伤害/强制胜负，不宣称全构筑胜率。
+- 相关非batch D3D11 PlayMode **32/32**，`artifacts/wave-battle/play-related.xml/log`：WaveBattleInteraction6、BlackForest2、Campaign4以及伤害排行/ApprovedUI/自由席位/旧商店闭环与地图回归。新增巨像用例经生产整备入口换阵，验证排行中心/角落/旧交叠区域点击不扣费、不出兵，巨像原卡松开恰好一次部署、重复点击与暂停保持正确。巨像卡移至排行上方，保留旧非波次拖放。
+- 最终配置读取与诊断计划接线后，完整EditMode再次 **787/787**（`edit-final.xml/log`），树海/波次相关D3D11 PlayMode再次 **8/8**（`play-final.xml/log`）。重开本关按现有规则返回整备，只有点击开始作战才启动波次计时。原56份既存文件逐文件SHA256保持。
+- `WaveBattleTools.EvaluateStrategies`以完整默认8人编队、正常面板、原九守军与16/16/18预算执行36组固定优先级/分批策略；18组自然Won，其余自然Lost，不将该比例当作玩家胜率。seed20261109在193.40秒自然胜利，16部署、6穿门、10次守军技能、7255.0898实际伤害；完整部署日志在`artifacts/wave-blackforest/model-strategy-search.json`。源配置保持，未改DP/CD/次数/血量求胜。Player将复现该合法单击计划核对模型与实机。
+- 最终交付源码`2bbe5ed741c8e1ce1b7ac4f6cfd65dc796892060`，`WaveBattleTools.BuildWindows`真实Windows x64 Development构建 **1063718964 bytes / 0 errors / 退出0**（`artifacts/wave-battle/build-delivery.log`），动态完整保存场景目录，不修改Packages/ProjectSettings或保存地形/Prefab。末次仅将整备计划缩为清晰两行；功能与时序保持。
+- 工程外TEMP工作目录启动可见D3D11独立Player：**1600×900、1280×720各63/63，退出0**（`player-1600-delivery`、`player-1280-delivery/result.json`及exit.json/log）。通过生产指针Down/Up单击，覆盖当前门唯一、DP16→16→18、余量清零、同卡CD/整关次数/实体/守军/SP跨波保持、暂停冻结、135秒封部署、重开/源配置/238地块保持。稀疏4次合法部署的真实对局在 **255.0秒TimedOut/Lost**，守方余6；独立重开精确复现seed20261109的16次合法单击，在 **193.400000000013秒自然Won**、6次穿门、10次守军技能，实际伤害7255.08984375，与模型差0。不注血/伤害、不强制胜负；默认普通编队无手动技能，未伪造施放。截图9张/尺寸均非黑，已实际查看两行计划、承契避让、换波通知/流动路线、推进封卡及胜利收入面板。
+- 泥岩旧场景/培养的非波次D3D11 PlayMode额外 **6/6**（`play-mudrock-final.xml/log`），确认巨像卡位置调整不破坏旧入口。首批32与后续11/6为分组及部分复验，不宣称单次全量PlayMode。
+- 完整 **1973个**源构建文件逐文件SHA256同步常用`Builds/Windows`（`copy-check.json`，差异0），SOURCE.txt记录运行提交；保留目标目录既有试玩脚本/许可/说明，不删除用户文件。实际Runtime DLL SHA256 **8E029072E4016AC843419DD854D42FBC1505D9DA5288F8FB4180FB4B3E92EC45**。新增本地“黑流树海波次试玩.cmd”，源码脚本`tools/play_wave_blackforest_trial.cmd`随分支交付。
+- 普通无-smoke的`-blackForest`已从常用EXE启动并实看整备/形态弹窗；computer-use检测到用户输入后停止接管，未完成且未声称真实OS鼠标点击复验。此前自动单击均为生产控制器指针，不冒称OS操作。未执行第二机、新克隆、所有人类策略/构筑和最终长局平衡；源码正常推送功能分支/PR，不自动合并main，不创建ZIP/Releases。
+- 首次源码f352017真实Windows构建1063718316字节/0 errors（`build.log`）；1600×900可见Player63/63、退出0（`player-1600`），真实稀疏对局255秒超时、seed20261109自然Won193.4秒，伤害7255.0898与模型完全相同。实看截图发现承契徽章/说明遮挡波次标题，已给波次文字独立预留区域、保留徽章暗底，换波通知也改读当前入口/预算；相关树海/波次/承契D3D11 PlayMode **11/11**（`play-layout-final.xml/log`），并增加标题与徽章说明不重叠断言。该首构建不作为最终交付，正在重建并检查两尺寸最终画面。
+
+## 2026-11-08：普通开局、放大树海与清理红门文字
+
+- 人类先反馈简单、随后明确可能是预置过好并要求普通阵容；本轮不加强守军。新开局M07/M08/M15二星、M16/M10/M05/M04/M38一星，无三星/五费，14基础牌/等价20招募金币/首轮25DP；四档整合、二档游击/感染，无雪怪。旧8名整合成员实际仅六档（两编制），不误记为八档。
+- `YesterdayConvoy.Editor.BlackForestRosterTools.Evaluate`真实ManualBattle **12组**，.05秒步长/300秒上限，保留完整编队羁绊、原九守军、正常面板、50DP/6防御，源配置JSON未变。旧首发93.9秒胜利精确复现上一版可见Player；普通前三名在R1/R2/R3各一组300秒均无穿门；普通八人首发300秒剩4防御/25DP；尽早消耗预算126秒自然失败；等守军清空后合法补兵248.95秒自然胜利、16次普通部署、余0DP、189.7秒开始补兵。结果见`artifacts/blackforest-feedback/roster-comparison.json`，这是固定策略比较，不给全构筑通关率。
+- 运行源码`a7d001e034b08240045d3dfa5a3c58acc9e22f9f`：完整EditMode **755/755**（`edit-startup-final.xml/log`；主要实现先前`edit-final`亦755/755），相关非batch D3D11 PlayMode **12/12**（`play-final.xml/log`，树海2、Campaign4、感染反馈3、席位3）。覆盖新普通库存/面板、感染选择兼容、三门可见与暂停扣费/CD、重开/返回整备；不是完整PlayMode。
+- Windows x64 Development构建 **1063647451 bytes、0 errors**（`build-final.log`），输出Windows-Reunion；完整1972文件同步常用Windows并逐文件SHA256一致（`copy-check.json`）。SOURCE.txt记录运行提交，既有“树海六星试玩.cmd”直达。
+- 可见D3D11独立Player **1600×900与1280×720各49/49，退出0**（`player-1600-final`、`player-1280-final`）。已实看普通卡栏、放大地形/原门、无门旁白字、三门暂停部署与伤害/治疗。逻辑1280画布路线地砖外缘bbox约708.10×432.69；全部位于HUD/部署栏之外，三个门仍可生产指针拖放；箭头线路保留。普通预置无手动技能，条件化“不要求施放”检查，守军实际施放9次；300秒首轮结果Running、剩4防御/25DP，未强行判负或判胜。
+- 首次独立Player在资源准备时失焦暂停，日志保留`player-1600.log`，不是最终通过。将仅-smoke启动的runInBackground提前至BeforeSceneLoad后重新构建并完成上述两尺寸；普通试玩失焦暂停不变。烟测接受已有默认感染形态并关闭模态页，普通启动仍保留人类形态选择；未冒称OS拖放操作。
+- 本轮源地图守军资产、保存地形、Prefab、Packages/ProjectSettings与新美术无差异，52份既存特效meta SHA256零变化，两本地未跟踪项保留。源码沿codex/blackforest-six-star与PR #103推送，无main自动合并、ZIP/Releases。第二机、其他阵容/真人部署策略、自然十三关与最终长局平衡未测。
+
+## 2026-11-08：树海六星防线V2接入
+
+- 运行源码`f9449c20c5aae50a67e301ee8b07de1e358d421d`，Unity6000.6.5f1；同一日常工程从实时main7862d09创建功能分支并FF承接待审PR #102平衡提交43a72a1。地图资源写入九守军/六六星，源技能/前摇/完整动作复用，地形与路线未改。8级八人正常库存预置，测试仅开放自由整备，战斗保持正常面板/50DP/6防御。
+- 完整EditMode **755/755**（`artifacts/blackforest-six-star/edit-final.xml/log`），涵盖新增树海配置与海嗣半格中心/蔓延/神经查找/重开回归。相关非batch可见Direct3D11 PlayMode **15/15**（`play-related.xml/log`）：AdvancedDefender1、BlackForest2、Campaign4、FifthDefender1、MarineTide3、ShopSeatInteraction3、SixthDefender1；不是全量PlayMode。
+- 首次Editor编译未进入测试：新证据脚本使用的GetInstanceID在当前Unity报CS0619，三处改用保存地块对象集合比较后，上述完整最终测试通过。失败日志`edit-all.log`保留，不称为首次全绿。
+- 构建入口`YesterdayConvoy.Editor.ReunionBuildTools.BuildWindows`，动态完整场景目录、不写EditorBuildSettings；Windows x64 Development构建 **1063644138 bytes、0 errors**，退出0（`build.log`），输出`Builds/Windows-Reunion`。完整1972文件同步常用`Builds/Windows`并逐文件SHA256比较一致（`copy-check.json`）；SOURCE.txt与本地“树海六星试玩.cmd”指向本次运行源码/入口。首次复制比较仅SOURCE.txt因旧构建侧元数据不同，统一为本次来源记录后重新比较通过。
+- 工程外TEMP工作目录启动可见D3D11独立Player，**1600×900、1280×720各47/47**，均退出0（`player-1600`与`player-1280/result.json`及对应log）。检查生产场景/原门/238地块/九守军六六星、真实库存/正常面板/50DP6防御、三门生产ProcessShopPointer拖放、暂停中立即扣费/次数/CD但时钟/生命/SP/位置冻结、CD不绕过、重开与原资产不变；未冒称OS鼠标操作。
+- 默认八张预置各部署一次、自动触发合法玩家技能，两个分辨率均自然 **Won，93.9模拟秒、8名正常实体、4次穿门、6共享防御降0、余9DP、守军全灭、6次守军技能/3次玩家技能、55次治疗**。直接攻击记录2955.93HP、观察到守军生命回升954.77；不把变身加血算治疗，不注入伤害/HP、不FinishForTesting；自然获胜仅记录结果，不是烟测通过条件。8张EndOfFrame截图均非黑，已实看整备、三门暂停、实际交战/治疗/技能与结算/重开。暂停图玛恩纳高空位置已核为原生落地动作首帧冻结，非错枢轴；正常时钟继续播放，未修改其素材。
+- 树海跳过旧盟约地图源石与传送规则，溟痕采用本图所有真实可走格及Z=.5偏移；原整数地图以默认零偏移兼容。52份既存Mandragora/Mephisto VFX meta逐文件SHA256与开工相同，`.vscode/`、PackageManagerSettings.asset原样保留不提交；无场景/Prefab/Packages/ProjectSettings改动，无新原作媒体、ZIP/Releases或自动合并main。
+- 未执行第二机离线、新克隆、所有构筑/三路同资源胜率、自然十三关成型与长局最终平衡。默认自动策略和自由整备不能代替这些验收，试玩数值允许人类反馈后调整。
+
+## 2026-11-08：首轮总星级、角色预算与后期普通关平衡
+
+- Unity6000.6.5f1，无引擎或依赖升级。完整EditMode **749/749**（artifacts/balance-first-pass/edit-all-final.xml/log），相关D3D11非batch PlayMode **30/30**（play-related-final.xml/log）。覆盖新增总星/跨档/四星/真实六波伤害和旧样板独立性，以及10组相关场景夹具：新增BalanceFirstPass2、Campaign4、Dedicated3、DeepPool1、GuerrillaHighTier5、MudrockGrowth4、ReunionCoalition3、ShopSeatInteraction3、Snowstorm2、SynergyRework3。
+- 首轮Edit746/749：新测试宽泛按卡ID查询时取到守军塔露拉副本（60技能预算），真实主场景绑定TalulahTrial→TalulahFireRain48；固定真实入口资源，并保持原样板序列化前后不变检查，未改生产数值迎合断言。旧日志edit-all.xml/log保留。首轮Play batch28/30：旧正式免费转职预期按新测试/正式边界更新，另一例WaitForEndOfFrame不支持batch，改非batch重跑原30例通过，保留play-related.xml/log。
+- 新增显式开发Player入口`-balanceFirstPassSmokeTest -balanceEvidenceDir <目录>`，使用保存ReunionTrial、合法有限库存预置、实际出战实例和生产ProcessShopPointer，随后选择正式第7/8/11关夹具自然交战；不注入战斗伤害、不强制胜负、不伪称OS鼠标或自然十三关成型。
+- 运行源码 **685cd45784c0d2393c3e0a5c1b4d15f9ae93e252**；复用现有ReunionBuildTools.BuildWindows，Windows x64 Development构建 **1063614574 bytes / 0 errors**，build.log明确退出0；不修改工程构建设置。工程外TEMP启动可见D3D11独立Player：1600×900与1280×720各 **50/50、退出0**（player-visible-1600/result.json、player-visible-1280/result.json及各自exit.json）。新四星弩手实际2124HP/162攻、部署扣5DP；整合总星9→10同档倍率增加，雪怪/深池显示真实总星3及其倍率。三关D07实际220/260/340生命、24/30/48攻击，双方实际命中且首次发射距离约3.17，暂停/重开与正式免费转职禁用通过。
+- 首次隐藏Player逻辑50/50、退出0，但10张截图全黑（player-1600），未计可见画面验收。之后可见窗口各生成10张实际游戏相机截图；已实看1600雪怪详情/第11关及1280深池详情/第8关代表图。详情数字、完整说明和角色对射可见；既有长关卡标题在顶部窄栏换行裁切仍是UI待修项，本轮未改该布局。
+- 完整1972文件同步常用Builds/Windows，存在/长度0差异，Runtime DLL SHA256为407DC39469E0137DC147349F8D82B3256448A51D31D1AE888BD576E78B15C935，SOURCE.txt绑定运行源码（copy-check.json）。原56份既存文件SHA256零变化；只提交本轮源码、测试和文档，无场景/Prefab/Packages/ProjectSettings/新美术改动，不自动合并main、ZIP或Releases。第二机、自然十三关、徽章获取经济、全部阵容和最终长局平衡未测。
+## 2026-11-08：右侧伤害排行
+
+- 用户要求右侧招募清单改为伤害排行。基线为本轮fetch核实的main `7862d09`，功能分支`codex/damage-ranking`，关联#104；用户确认原52份Mandragora/Mephisto VFX meta原地保留，未暂存或提交。`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`继续保留。未改场景、Prefab、配置资产、Packages、ProjectSettings或游戏美术。
+- 完整EditMode **732/732**（`artifacts/damage-ranking/edit.xml`）；12个新增用例涵盖实际普攻/过量、同卡多实体/排序、暂停、死亡来源/治疗/重开/只读、维维美范围技能、束缚持续伤害、延迟死亡爆炸、灼燃/神经爆发、保护转移/债务/自损、共享来源、爱国者复起真伤及银狼收剑。首轮编译发现测试直接访问internal `WolfFinished`，改为断言公开的收剑目标和真实伤害后完整通过；未把编译失败记为测试通过。
+- 相关D3D11 PlayMode最终 **20/20**（`artifacts/damage-ranking/play-final.xml`）：ApprovedUiSceneTests、DamageRankingSceneTests、BattleShopLoopSceneTests、ShopMapSceneTests、ShopSeatInteractionTests。首轮相关11项10通过/1失败，原右侧出售夹具落在新排行内；保留生产拒绝出售行为，夹具改用右边缘实际空白出售区`ShopRightSaleDropRect`，并增加排行内松手不出售断言，扩大回归后20项全部通过。自然真实部署/交战、统计和暂停、重开清空、商店收起后阻挡、顶部购买、自由席位与两场商店闭环均通过；守军详情和实际有技能单位的面板/施放按钮几何避让通过。
+- `tools/check_repository.py`检查通过，新增源文件与meta均纳入核查。实际扣血归属与玩法触发来源分开，原攻击/技能/羁绊数值和触发不改。非单卡羁绊/场地伤害显式单列，元素积累本身不计伤害。
+- 最终运行源码 **`8cc7babe75dc13652c095d2569ced407f1fac999`**。复用`DeepPoolBuildTools.BuildWindows`动态保存场景目录，最终日志`artifacts/damage-ranking/build-visible-final.log`：**1063604449 bytes / 0 errors / 退出0**。完整1974文件同步常用`Builds/Windows`，全部源构建文件存在且长度一致，实际运行DLL SHA256 `987D75112010B723E43D69AB26A657D8D2A4F116CFB7E98A842CC87ED33999AC`一致；SOURCE.txt绑定运行源码（`copy-check.json`）。
+- 最终1280×720与1600×900可见D3D11独立Player从工程外TEMP启动，各 **19/19、退出0**（`player-final-1280/result.json`、`player-final-1600/result.json`）。真实指针部署七名角色、自然交战排序/总和、暂停冻结、商店收起后阻挡及自然胜利后记录保留均通过；总伤害22800，含八个单卡/共享来源。不注入假伤害。自动滚动尾部截图使用诊断滚动位置，只用于布局检查；其他交互走生产控制器指针，不冒称OS鼠标。初版可见截图发现默认水平滚动条挤占第五行，最终改为窄纵向滚动并重新构建、重跑两种分辨率，已实际查看完整五行、尾部、真实交战/暂停及终局地图画面。终局截图仍在死亡表现等待期，未将其称为收入结算面板的截图；收入面板几何已留出排行区域。
+- 另从常用最终EXE以普通`-synergySandbox`参数启动（不自动退出），通过computer-use实际OS滚轮从第1–5行滚至第3–7行，再拖纵向滚动条返回第1–5行，实际画面确认恢复。第一次拖动前工具检测到用户输入，重新观察后再操作并成功；不复用旧截图坐标。普通窗口保留供试玩，OS工具截图未另行导出；自动证据PNG保存在上述目录。
+- 原52份既存VFX meta逐文件SHA256与开工一致；本地未跟踪项未提交。开工分支`codex/blackforest-six-star`原样保留，其未合并内容不混入本main基线功能分支。尚未运行全量PlayMode、第二台电脑和长局试玩；无ZIP/Releases或自动合并main。
+
 ## 2026-11-07：牌库与自由席位
 
 - Unity6000.6.5f1。完整EditMode **720/720**，0失败/跳过（`artifacts/pool-roster/edit-delivery.xml/log`）。模型覆盖五档容量、四星27张占库/余3张、售价26/返库27/重复售出、满席链式升星/主实例保留、其他费用拒绝四星、独立10备战；席位覆盖同排/跨排、同名、满席、稳定压紧与预置实例重用。真实ManualBattle对照M07普通400血4甲：三星9击14.90秒→四星7击11.30秒；1200血18甲36击63.50秒→25击43.70秒。10血一击和100甲最低伤害25击边界相同，未通过额外质变强行减少轮次。

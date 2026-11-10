@@ -59,17 +59,17 @@ namespace YesterdayConvoy
                 bool frozen=target.FrozenUntil>Clock&&combat.Effects.FrozenAttackMultiplier>1;
                 shot.FrozenBonusApplied|=frozen;
                 float health=target.Health;
-                DamageDefender(target,shot.Attack*(frozen?combat.Effects.FrozenAttackMultiplier:1),
+                ApplyDefenderAttack(target,shot.Attack*(frozen?combat.Effects.FrozenAttackMultiplier:1),
                     source.AltarEmpowered?CombatDamageType.Arts:combat.Effects.DamageType,
-                    shot.SynergyOrder||source.SynergySupport,shot.SynergyOrder||source.SynergySupport?null:source);
+                    shot.SynergyOrder||source.SynergySupport,shot.SynergyOrder||source.SynergySupport?null:source,1,source);
                 float loss=health-target.Health;shot.DamageDealt+=loss;
                 if(shot.SynergyOrder)continue;
                 RecordSynergyContact(source);OnGolemHit(source,target);
                 HealUnit(source,loss*combat.Effects.LifeSteal);
                 if(target.Alive)target.ArmorReduction+=combat.Effects.ArmorShred;
                 if(target.Alive&&shot.ColdDuration>0)TryApplyCold(target.EntityId,shot.ColdDuration);
-                if(target.Alive&&shot.BurnDamage>0)ApplyBurn(target,shot.BurnDamage);
-                if(target.Alive&&shot.NeuralDamage>0)ApplyNeuralDamage(target,shot.NeuralDamage);
+                if(target.Alive&&shot.BurnDamage>0)ApplyBurn(target,shot.BurnDamage,source);
+                if(target.Alive&&shot.NeuralDamage>0)ApplyNeuralDamageAttributed(target,shot.NeuralDamage,null,source);
                 OnSynergyDirectHit(source,target);
             }
             return true;

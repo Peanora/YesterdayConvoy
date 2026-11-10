@@ -41,11 +41,11 @@ namespace YesterdayConvoy.Editor.Tests
         [Test] public void OneCostFourStarsContinueTheLastOrdinaryIncrement()
         {
             Assert.That(CampaignBalance.HPScale(1,4),Is.EqualTo(4.25f));
-            Assert.That(CampaignBalance.AttackScale(1,4),Is.EqualTo(2.8f));
+            Assert.That(CampaignBalance.AttackScale(1,4),Is.EqualTo(3.0f));
             Assert.That(CampaignBalance.AbilityScale(1,4),Is.EqualTo(3.8f));
             var piece=CampaignBalance.Build(Definition("CARD_M07"),4,50,5);
-            Assert.That(piece.Unit.Health,Is.EqualTo(744));
-            Assert.That(piece.Combat.UnitAttack,Is.EqualTo(67.2f).Within(.001f));
+            Assert.That(piece.Unit.Health,Is.EqualTo(871));
+            Assert.That(piece.Combat.UnitAttack,Is.EqualTo(72f).Within(.001f));
             Assert.That(piece.Combat.UnitArmor,Is.EqualTo(10));
             Assert.That(piece.Unit.DeploymentLimit,Is.EqualTo(8));
             Assert.That(piece.Unit.GateDamage,Is.EqualTo(2));
@@ -111,7 +111,7 @@ namespace YesterdayConvoy.Editor.Tests
             Assert.That(battle.TryDeployRole(battle.RunId,1,battle.Entry,"CARD_M07",true).Success);
             Assert.That(battle.TryDeployRole(battle.RunId,2,battle.Entry,"CARD_M08",true).Success);
             var support=battle.Units.Single(u=>u.SynergySupport);
-            Assert.That(support.MaxHealth,Is.EqualTo(200));Assert.That(battle.UnitCombat(support).UnitAttack,Is.EqualTo(35));
+            Assert.That(support.MaxHealth,Is.EqualTo(160));Assert.That(battle.UnitCombat(support).UnitAttack,Is.EqualTo(28));
             Assert.That(battle.DP,Is.EqualTo(90));battle.Advance(20);
             Assert.That(battle.Clock,Is.Zero);Assert.That(battle.Units.All(u=>u.OrdinaryAttacksFired==0));
             battle.Restart();Assert.That(battle.Units,Is.Empty);Assert.That(battle.ReunionAverageStar,Is.EqualTo(4));Assert.That(battle.MusterUsed,Is.Zero);

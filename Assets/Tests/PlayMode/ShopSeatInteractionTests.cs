@@ -22,6 +22,68 @@ namespace YesterdayConvoy.Tests
         }
         static void Field(ManualBattleController c,string name,object value)
             =>typeof(ManualBattleController).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic).SetValue(c,value);
+        [UnityTest]public IEnumerator JourneySupplyPreparationMovesSwapsAndRejectsLockedSeatsUntilClaim()
+        {
+            float previousScale=Time.timeScale;Time.timeScale=0;CampaignJourneySession.Clear();
+            ManualBattleController c=null;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("MonsterTrial");
+                yield return CampaignJourneyEvidenceProbe.Host(value=>c=value);
+                c.BeginJourney(44);yield return CampaignJourneyEvidenceProbe.Ready(1,value=>c=value);
+                var shop=c.Shop;var loop=c.Loop;
+                Assert.That(loop.CanShop,Is.True,"The first supply opens directly in preparation.");
+                Assert.That(loop.RewardStage,Is.True);Assert.That(c.Battle.GuaranteedSupply,Is.True);
+                Assert.That(shop.Level,Is.EqualTo(1));Assert.That(shop.Bench.Count,Is.EqualTo(3));
+                var selected=shop.Bench.Single(p=>shop.IsLineupInstance(p.Instance));
+                var reserve=shop.Bench.First(p=>!shop.IsLineupInstance(p.Instance));
+                Rect selectedSeat=Bounds(c,selected.Instance),reserveSeat=Bounds(c,reserve.Instance);
+                string economy=CampaignJourneyEvidenceProbe.State(shop);
+
+                // A full one-card formation still allows an atomic exchange with reserve.
+                Drag(c,reserve.Instance,selectedSeat);
+                Assert.That(Bounds(c,reserve.Instance),Is.EqualTo(selectedSeat));
+                Assert.That(Bounds(c,selected.Instance),Is.EqualTo(reserveSeat));
+                Assert.That(shop.IsLineupInstance(reserve.Instance),Is.True);
+                Assert.That(shop.IsLineupInstance(selected.Instance),Is.False);
+
+                Drag(c,selected.Instance,ManualBattleController.ShopBenchRect(8));
+                Assert.That(Bounds(c,selected.Instance),Is.EqualTo(ManualBattleController.ShopBenchRect(8)));
+                Drag(c,selected.Instance,ManualBattleController.ShopLineupRect(1));
+                Assert.That(Bounds(c,selected.Instance),Is.EqualTo(ManualBattleController.ShopBenchRect(8)),
+                    "A drag cannot put a second card into a locked population slot.");
+                Assert.That(shop.Bench.Count(p=>shop.IsLineupInstance(p.Instance)),Is.EqualTo(1));
+
+                Drag(c,reserve.Instance,ManualBattleController.ShopBenchRect(7));
+                Assert.That(Bounds(c,reserve.Instance),Is.EqualTo(ManualBattleController.ShopBenchRect(7)));
+                Assert.That(shop.Bench.Any(p=>shop.IsLineupInstance(p.Instance)),Is.False);
+                Drag(c,reserve.Instance,ManualBattleController.ShopLineupRect(0));
+                Assert.That(Bounds(c,reserve.Instance),Is.EqualTo(ManualBattleController.ShopLineupRect(0)));
+                Assert.That(CampaignJourneyEvidenceProbe.State(shop),Is.EqualTo(economy));
+                Assert.That(CampaignJourneyEvidenceProbe.StockConserved(shop),Is.True);
+                Assert.That(c.Battle.Clock,Is.Zero);Assert.That(c.Battle.Units,Is.Empty);
+
+                // The public supply action closes editing immediately, including a drag in flight.
+                c.ProcessShopPointer(EventType.MouseDown,Bounds(c,reserve.Instance).center);
+                c.ProcessShopPointer(EventType.MouseDrag,ManualBattleController.ShopBenchRect(6).center);
+                c.ClaimCampaignSupply();
+                Assert.That(loop.Phase,Is.EqualTo(BattleShopPhase.Settlement));
+                Assert.That(c.Battle.Phase,Is.EqualTo(BattlePhase.Won));
+                c.ProcessShopPointer(EventType.MouseUp,ManualBattleController.ShopBenchRect(6).center);
+                string claimedEconomy=CampaignJourneyEvidenceProbe.State(shop);
+                var claimedLineup=shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)).Select(p=>p.Instance).ToArray();
+                Drag(c,reserve.Instance,ManualBattleController.ShopBenchRect(5));
+                Assert.That(c.MoveShopCard(reserve.Instance,false,4),Is.False);
+                CollectionAssert.AreEqual(claimedLineup,shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)).Select(p=>p.Instance).ToArray());
+                CollectionAssert.AreEqual(new[]{reserve.Instance},claimedLineup,
+                    "Claiming cannot commit a pending move or replace the prepared formation.");
+                Assert.That(CampaignJourneyEvidenceProbe.State(shop),Is.EqualTo(claimedEconomy));
+                Assert.That(CampaignJourneyEvidenceProbe.StockConserved(shop),Is.True);
+                Assert.That(c.Battle.Clock,Is.Zero);Assert.That(c.Battle.Units,Is.Empty);
+                c.ExitJourney();yield return null;yield return CampaignJourneyEvidenceProbe.Host(value=>c=value);
+            }
+            finally{CampaignJourneySession.Clear();Time.timeScale=previousScale;}
+        }
         [UnityTest]public IEnumerator DragMovesSwapsAndCancelsThenStartCompactsOnlyLineup()
         {
             yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;
@@ -63,7 +125,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));
             Assert.That(c.StartLoopNextBattle(),Is.True);yield return null;
             Assert.That(c.Battle.FindCard(first.Id),Is.Null,"Manual reserve choice survives the battle rebuild.");
-            Assert.That(Bounds(c,second.Instance).x,Is.EqualTo(18+5*106),"Stable compaction leaves the rightmost selected card last.");
+            Assert.That(c.Shop.Bench.Where(p=>c.Shop.IsLineupInstance(p.Instance)).OrderBy(p=>Bounds(c,p.Instance).x).Last().Instance,
+                Is.EqualTo(second.Instance),"Stable compaction leaves the rightmost selected card last, independently of HUD spacing.");
             Assert.That(c.Shop.Gold,Is.EqualTo(gold));Assert.That(c.Shop.Bench.Count,Is.EqualTo(count));
             c.LeaveShopTrial();yield return null;
         }
@@ -86,7 +149,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.Battle.FindCard(id).Settings.DeploymentCost,Is.EqualTo(highDP-1));
             Assert.That(c.Battle.ReunionAverageStar,Is.EqualTo(1),"Synergy snapshots read the selected low-star card, not the reserve maximum.");
             int stock=c.Shop.Available(id),count=c.Shop.Bench.Count;
-            Drag(c,low.Instance,ManualBattleController.ShopSellRightRect);
+            Drag(c,low.Instance,ManualBattleController.ShopRightSaleDropRect);
             Assert.That(c.Shop.Bench.Count,Is.EqualTo(count-1));Assert.That(c.Shop.Available(id),Is.EqualTo(stock+1));
             Assert.That(c.Battle.FindCard(id),Is.Null,"Selling a lineup card never pulls the same kind out of reserve.");
             Assert.That(Bounds(c,high.Instance),Is.EqualTo(reserveSeat));

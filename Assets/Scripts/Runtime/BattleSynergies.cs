@@ -13,11 +13,16 @@ namespace YesterdayConvoy
         public int ReunionTier {get;private set;}
         public int ReunionCount {get;private set;}
         public int ReunionFormationCount {get;private set;}
+        public int ReunionTotalStars {get;private set;}
+        public float ReunionStarMultiplier=>SynergyStarScaling.Reunion(ReunionTotalStars,ReunionTier);
+        // Retained for existing inspectors/diagnostics; no longer drives synergy power.
         public float ReunionAverageStar {get;private set;}=1;
-        public int ReunionMusterLimit=>ReunionRules.MusterLimit(ReunionTier);
-        public int ReunionMusterRequirement=>ReunionRules.KindsPerMuster(ReunionTier);
+        public int ReunionMusterLimit=>(int)V2Synergy("reunion",ReunionTier,"musterLimit",ReunionRules.MusterLimit(ReunionTier));
+        public int ReunionMusterRequirement=>(int)V2Synergy("reunion",ReunionTier,"distinctKindsPerMuster",ReunionRules.KindsPerMuster(ReunionTier));
         public IReadOnlyList<string> MusterMemberIds=>Array.AsReadOnly(musterKinds.OrderBy(id=>id,StringComparer.Ordinal).ToArray());
         public int SnowTier {get;private set;}
+        public int SnowTotalStars {get;private set;}
+        public float SnowStarMultiplier=>SynergyStarScaling.Snow(SnowTotalStars,SnowTier);
         public int MusterUsed {get;private set;}
         public int Shatters {get;private set;}
         public float ShatterDamage {get;private set;}
@@ -38,9 +43,15 @@ namespace YesterdayConvoy
         public bool IsMudrockMember(string id)=>id!=null&&mudrockMembers.Contains(id);
         public int MudrockCrewCount=>mudrockMembers.Count;
         public bool GuaranteedSupply {get;private set;}
-        public void ConfigureSupply(){if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException();GuaranteedSupply=true;}
+        public void ConfigureSupply(bool zeroDefense=false){if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException();GuaranteedSupply=true;if(zeroDefense)Defense=0;}
         public bool CompleteSupply(){if(!GuaranteedSupply||Phase!=BattlePhase.Ready)return false;Phase=BattlePhase.Won;IsPaused=false;return true;}
         bool synergyEnabled,reunionRanged;
+        // Locked formation tier, applied once to native roster bodies. Supports
+        // already have their own budget and must never receive this a second time.
+        float ReunionMemberBonus(string cardId)=>synergyEnabled&&ReunionTier>0&&
+            synergyStars.ContainsKey(cardId)&&CampaignBalance.Reunion(cardId)?
+            V2Synergy("reunion",ReunionTier,"memberStatBonus",ReunionTier*.05f):0;
+        float ReunionMemberBonus(DeployedUnitState unit)=>unit.SynergySupport?0:ReunionMemberBonus(unit.CardId);
         public void ConfigureSynergies(IEnumerable<ShopTrialModel.Piece> lineup,bool ranged=false,InfectionForm form=InfectionForm.Swarm,InfectionForm second=InfectionForm.Shell,int golemExperience=0,string contract=null,MarineAdaptation adaptation=MarineAdaptation.Barrier,MarineAdaptation secondAdaptation=MarineAdaptation.Hunt,int marineExperience=0,IEnumerable<string> extraGuerrillaMembers=null,IEnumerable<string> extraMudrockMembers=null)
         {
             if(Phase!=BattlePhase.Ready||units.Count>0)throw new InvalidOperationException("Snapshot before deployment");
@@ -77,9 +88,11 @@ namespace YesterdayConvoy
             mudrockMemberIds=Array.AsReadOnly(crew);
             var reunion=synergyStars.Keys.Where(CampaignBalance.Reunion).ToArray();
             ReunionCount=reunion.Length;ReunionFormationCount=ReunionRules.FormationCount(reunion);
-            ReunionAverageStar=reunion.Length==0?1:(float)reunion.Average(id=>synergyStars[id]);
+            ReunionTotalStars=reunion.Sum(id=>synergyStars[id]);
+            ReunionAverageStar=reunion.Length==0?1:(float)ReunionTotalStars/reunion.Length;
             ReunionTier=ReunionRules.TierForCount(ReunionCount,ReunionFormationCount);
             int snow=synergyStars.Keys.Count(CampaignBalance.Snow);SnowTier=snow>=5?5:snow>=2?2:0;
+            SnowTotalStars=synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Sum(p=>p.Value);
             reunionRanged=ranged;synergyEnabled=true;ConfigureAdvancedSynergies(form,second,golemExperience);ConfigureRemainingSynergies(contract,adaptation,secondAdaptation,marineExperience);ResetSynergies();
         }
         void ResetSynergies(){ResetSnowstorms();ResetRemainingSynergies();ResetAdvancedSynergies();musterKinds.Clear();frozenHits.Clear();frozenHitEpoch.Clear();shatterCooldown.Clear();shatterEvents.Clear();MusterUsed=Shatters=0;ShatterDamage=0;}
@@ -89,17 +102,26 @@ namespace YesterdayConvoy
             if(MusterUsed>=ReunionMusterLimit)return;
             musterKinds.Add(trigger.CardId);if(musterKinds.Count<ReunionMusterRequirement)return;
             musterKinds.Clear();MusterUsed++;
-            int count=ReunionRules.SupportsPerMuster(ReunionTier);
+            int count=(int)V2Synergy("reunion",ReunionTier,"supportsPerMuster",ReunionRules.SupportsPerMuster(ReunionTier));
             for(int i=0;i<count;i++)
             {
                 var lane=lanes.First(l=>l.Id==trigger.RouteId);
                 bool archer=ReunionTier>=6?i==1:ReunionTier==4&&reunionRanged;
-                var stats=ReunionRules.ForSupport(ReunionTier,archer,ReunionAverageStar);
-                var u=new DeployedUnitState($"run-{RunId}/support-{++sequence}",archer?"M08_ARCHER":"M07_SOLDIER",new RouteMotion(lane.Points,.7f),stats.Health,Clock)
+                var stats=ReunionRules.ForTotalStars(ReunionTier,archer,ReunionTotalStars);
+                if(CampaignV2Enabled)
+                {
+                    string prefix=archer?"ranged":"melee";
+                    stats=new ReunionRules.SupportStats(
+                        Mathf.Floor(V2Synergy("reunion",ReunionTier,prefix+"HP",stats.Health)*ReunionStarMultiplier+.5f),
+                        Mathf.Floor(V2Synergy("reunion",ReunionTier,prefix+"Attack",stats.Attack)*ReunionStarMultiplier+.5f),
+                        V2Synergy("reunion",ReunionTier,prefix+"Armor",stats.Armor),V2Synergy("reunion",ReunionTier,prefix+"Range",stats.Range));
+                }
+                float speed=V2Synergy("reunion",ReunionTier,"speed",.7f);
+                var u=new DeployedUnitState($"run-{RunId}/support-{++sequence}",archer?"M08_ARCHER":"M07_SOLDIER",new RouteMotion(lane.Points,speed),stats.Health,Clock)
                     {CardId=archer?"CARD_M08":"CARD_M07",RouteId=lane.Id,ExitId=lane.ExitId,SynergySupport=true,ReunionEliteSupport=ReunionTier==8,ReunionEntryShieldPending=ReunionTier==8};
-                var combat=new EngagementSettings(unitAttack:stats.Attack,unitArmor:stats.Armor,unitRange:stats.Range,unitInterval:1.8f,
+                var combat=new EngagementSettings(unitAttack:stats.Attack,unitArmor:stats.Armor,unitRange:stats.Range,unitInterval:V2Synergy("reunion",ReunionTier,"intervalSeconds",1.8f),
                     initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,hasSkill:false,melee:!archer);
-                var settings=new ManualBattleSettings(u.CardId,u.UnitId,1,1,1,1,1,u.MaxHealth,.7f,1,1,1,1);
+                var settings=new ManualBattleSettings(u.CardId,u.UnitId,1,1,1,1,1,u.MaxHealth,speed,1,1,1,1);
                 u.Profile=new BasicRosterProfile(settings,combat,true);units.Add(u);
             }
         }
@@ -107,8 +129,8 @@ namespace YesterdayConvoy
         {
             if(!unit.Active||!unit.ReunionEliteSupport||!unit.ReunionEntryShieldPending)return;
             unit.ReunionEntryShieldPending=false;
-            unit.SynergyShield=Mathf.Floor(unit.MaxHealth*.2f+.5f);
-            unit.SynergyShieldUntil=Clock+5;
+            unit.SynergyShield=Mathf.Floor(unit.MaxHealth*V2Synergy("reunion",ReunionTier,"entryShieldFraction",.2f)+.5f);
+            unit.SynergyShieldUntil=Clock+V2Synergy("reunion",ReunionTier,"entryShieldSeconds",5);
         }
         void OnSynergyDirectHit(DeployedUnitState source,DefenderState target)
         {
@@ -116,14 +138,13 @@ namespace YesterdayConvoy
             if(shatterCooldown.TryGetValue(target.EntityId,out var until)&&Clock<until)return;
             if(!frozenHits.TryGetValue(target.EntityId,out var hits))frozenHits[target.EntityId]=hits=new Dictionary<string,double>();
             if(!frozenHitEpoch.TryGetValue(target.EntityId,out var epoch)||epoch!=target.FrozenUntil){hits.Clear();frozenHitEpoch[target.EntityId]=target.FrozenUntil;}
-            foreach(var key in hits.Where(p=>Clock-p.Value>2.5).Select(p=>p.Key).ToArray())hits.Remove(key);
-            hits[source.CardId]=Clock;if(hits.Count<2)return;
-            hits.Clear();shatterCooldown[target.EntityId]=Clock+(SnowTier==5?3:4);
-            if(SnowTier==2)target.FrozenUntil=target.ColdUntil=Clock;
-            float avg=(float)synergyStars.Where(p=>CampaignBalance.Snow(p.Key)).Average(p=>p.Value);
-            float attack=(SnowTier==2?50:120)*(1+.35f*(avg-1)),radius=SnowTier==2?.9f:1.5f;
+            foreach(var key in hits.Where(p=>Clock-p.Value>V2Synergy("snow",SnowTier,"hitWindowSeconds",2.5f)).Select(p=>p.Key).ToArray())hits.Remove(key);
+            hits[source.CardId]=Clock;if(hits.Count<V2Synergy("snow",SnowTier,"requiredDistinctHitKinds",2))return;
+            hits.Clear();shatterCooldown[target.EntityId]=Clock+V2Synergy("snow",SnowTier,"targetShatterCooldownSeconds",SnowTier==5?3:4);
+            if(V2Synergy("snow",SnowTier,"consumeFreeze",SnowTier==2?1:0)>0)target.FrozenUntil=target.ColdUntil=Clock;
+            float attack=V2Synergy("snow",SnowTier,"shatterArts",SnowTier==2?50:120)*SnowStarMultiplier,radius=V2Synergy("snow",SnowTier,"shatterRadius",SnowTier==2?.9f:1.5f);
             var ev=new ShatterEvent{Position=target.Position,At=Clock,Radius=radius};shatterEvents.Add(ev);Shatters++;
-            foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,target.Position)<=radius).OrderBy(d=>GroundDistance(d.Position,target.Position)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).Take(SnowTier==2?2:5).ToArray())
+            foreach(var d in defenders.Where(d=>d.Alive&&GroundDistance(d.Position,target.Position)<=radius).OrderBy(d=>GroundDistance(d.Position,target.Position)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).Take((int)V2Synergy("snow",SnowTier,"shatterTargets",SnowTier==2?2:5)).ToArray())
             {
                 float before=d.Health;DamageDefender(d,attack,CombatDamageType.Arts,true);ShatterDamage+=before-d.Health;ev.Hits++;
             }

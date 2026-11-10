@@ -5,12 +5,13 @@ namespace YesterdayConvoy
         // Test-mode snapshots only. Authored assets, normal campaigns and the IV solo benchmark stay unchanged.
         const float SandboxMonsterHealth=4, SandboxMonsterAttack=2;
         const float SandboxDefenderHealth=12, SandboxDefenderAttack=8;
-        bool BoostSandboxStats=>SynergySandbox&&!golemBenchmark;
+        bool BoostSandboxStats=>SynergySandbox&&!BlackForestChallengeActive&&!ApprovedMapActive&&!golemBenchmark;
 
         BasicRosterProfile CampaignProfile(string id,int dp,int defense)
         {
             int star=ShopLineupPiece(id)?.Star??1;
-            var source=CampaignBalance.Build(shopDefinitions[id],star,dp,defense);
+            if(JourneyActive)return CampaignV2Balance.Build(shopDefinitions[id],star,dp,defense,waveMode:shopMapCopy!=null&&shopMapCopy.attackWaves!=null);
+            var source=CampaignBalance.Build(shopDefinitions[id],star,dp,defense,waveMode:shopMapCopy!=null&&shopMapCopy.attackWaves!=null);
             if(!BoostSandboxStats)return source;
             var u=source.Unit;var c=source.Combat;
             var unit=new ManualBattleSettings(u.CardId,u.UnitId,u.InitialDP,u.InitialDefense,u.DeploymentLimit,u.DeploymentCost,

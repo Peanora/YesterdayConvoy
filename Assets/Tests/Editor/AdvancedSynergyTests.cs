@@ -157,18 +157,19 @@ namespace YesterdayConvoy.Tests
             Assert.That(order.SourceIds.Count,Is.EqualTo(4));Assert.That(b.OrderStrikes,Is.EqualTo(4));Assert.That(order.Hits,Is.Empty);
             b.Advance(.89f,.89f);Assert.That(order.Resolved,Is.False);CollectionAssert.AreEqual(before,b.Defenders.Select(d=>d.Health));
             b.Advance(.01f,.01f);Assert.That(order.Resolved,Is.False);Assert.That(order.CompletedStrikes,Is.EqualTo(1));
-            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(7.5f).Within(.01));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(9.3f).Within(.01));
             b.Advance(1.90f,1.90f);Assert.That(order.Resolved,Is.True);Assert.That(order.Cancelled,Is.False);
             CollectionAssert.AreEquivalent(new[]{"near","other-lane","far"},order.Hits.Select(h=>h.TargetId));
-            // Each defender receives 2*(20*.6-armor) plus 2*(40*.6*.75), independently.
-            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(50).Within(.01));
-            Assert.That(order.Hits.Single(h=>h.TargetId=="other-lane").Damage,Is.EqualTo(40).Within(.01));
-            Assert.That(order.Hits.Single(h=>h.TargetId=="far").Damage,Is.EqualTo(60).Within(.01));
+            // All four sources receive the four-Reunion +20% attack once, before
+            // mitigation: 2*(20*1.2*.6-armor) + 2*(40*1.2*.6*.75) per defender.
+            Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(62).Within(.01));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="other-lane").Damage,Is.EqualTo(52).Within(.01));
+            Assert.That(order.Hits.Single(h=>h.TargetId=="far").Damage,Is.EqualTo(72).Within(.01));
             Assert.That(order.Strikes.Count,Is.EqualTo(5));
             for(int i=0;i<5;i++)
             {
                 var strike=order.Strikes[i];Assert.That(strike.Index,Is.EqualTo(i));Assert.That(strike.At,Is.EqualTo(new[]{.9f,1.2f,1.5f,1.8f,2.8f}[i]));
-                Assert.That(strike.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(i==4?20:7.5f).Within(.01));
+                Assert.That(strike.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(i==4?24.8f:9.3f).Within(.01));
             }
             Assert.That(b.FindDefender("reserve").Health,Is.EqualTo(before[3]));
             foreach(var hit in order.Hits)
@@ -217,7 +218,9 @@ namespace YesterdayConvoy.Tests
             foreach(string id in killAll?order.SourceIds:order.SourceIds.Take(1).ToArray())Assert.That(b.TryDamageUnit(id,100000,CombatDamageType.Arts),Is.True);
             var before=b.Defenders.Select(d=>d.Health).ToArray();b.Advance(2.81f,2.81f);Assert.That(order.Resolved,Is.True);
             if(killAll){Assert.That(order.Cancelled,Is.True);Assert.That(order.Hits,Is.Empty);CollectionAssert.AreEqual(before,b.Defenders.Select(d=>d.Health));}
-            else {Assert.That(order.Cancelled,Is.False);Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(21).Within(.01));}
+            // The remaining three sources keep the locked four-Reunion bonus:
+            // 3*(20*1.2*.6-5) = 28.2; a source dying does not lower the tier.
+            else {Assert.That(order.Cancelled,Is.False);Assert.That(order.Hits.Single(h=>h.TargetId=="near").Damage,Is.EqualTo(28.2f).Within(.01));}
         }
         [Test]public void StrikeBoundariesKeepFinalFortyPercentAndMinimumDamageBudgetWithoutRenderSideEffects()
         {

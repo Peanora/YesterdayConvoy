@@ -73,7 +73,12 @@ namespace YesterdayConvoy
             return name.StartsWith("Cell ",StringComparison.Ordinal)
                 ||name=="Tile surface"||name.StartsWith("Tile surface (",StringComparison.Ordinal)
                 ||name=="High ground inset"||name.StartsWith("High ground inset (",StringComparison.Ordinal)
-                ||name.StartsWith("Platform cap ",StringComparison.Ordinal);
+                ||name.StartsWith("Platform cap ",StringComparison.Ordinal)
+                // The eight saved campaign maps use the authored names below.
+                // The whole bridge deck preserves tile scale beneath narrow timber
+                // planks; foundations, side walls and water remain excluded.
+                ||name=="Textured ground slab"||name=="Beveled platform cap"
+                ||name=="Short public road bridge surface"||name=="Bridge load-bearing deck";
         }
         bool GroundProjection(Camera camera,out Rect area,out float cellWidth)
         {

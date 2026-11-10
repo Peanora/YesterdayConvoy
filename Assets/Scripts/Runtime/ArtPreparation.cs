@@ -130,7 +130,9 @@ namespace YesterdayConvoy
         {
             var cards=shopLineup.Concat(CampaignActive?new[]{"CARD_M07","CARD_M08"}:Array.Empty<string>()).Distinct().Select(id=>shopDefinitions[id].Card)
                 .Concat(CampaignActive&&shopLineup.Count(id=>CampaignBalance.MudrockCrew(id)||PreparedMudrockTransferIds.Contains(id))>=2?new[]{GolemCard}:Array.Empty<CardDefinition>()).ToArray();
-            QueueArt(Plan(shopMapCopy.defenders,cards,true,NeedsTalulahSecondPhase(cards)),()=>StartLoopNextBattle(),"准备下一关");
+            QueueArt(Plan(shopMapCopy.defenders,cards,true,NeedsTalulahSecondPhase(cards)),()=>{
+                if(StartLoopNextBattle()&&JourneyActive&&Loop.RewardStage)ClaimCampaignSupply();
+            },"准备下一关");
         }
         void WarmVisibleShop()
         {

@@ -72,8 +72,13 @@ namespace YesterdayConvoy
                 // Match attack scheduling tolerance so float rounding cannot starve a ready skill.
                 if(Clock+1e-6<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);
-                if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)useful=d.SkillSP>=skill.RequiredSP&&units.Exists(u=>CanDefenderTarget(u));
-                if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*.8f;
+                if(skill.Kind==DefenderSkillKind.Mon3trMeltdown)
+                {
+                    // The normal form heals from a high platform. Meltdown attacks from the
+                    // authored relay point, so a distant enemy cannot justify an empty cast.
+                    useful=units.Exists(u=>CanDefenderTarget(u)&&GroundDistance(d.Settings.RelayPosition,u.Motion.Position)<=skill.EffectRadius);
+                }
+                else if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*V2DefenderSkill(d,"autoUseBelowHealthFraction",.8f);
                 else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing)
                 {
                     foreach(var ally in defenders)
@@ -128,14 +133,14 @@ namespace YesterdayConvoy
             if(empowered){d.SkillSP=0;d.SkillCasts++;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock;}
             d.LastAttackSkill=empowered;d.LastActionTime=Clock;d.LastActionHealing=false;d.LastActionRate=DefenderAnimationRate(d);
             d.NextAttackTime=Clock+spec.Interval/DefenderAttackRate(d);
-            int hits=empowered&&skill.Kind==DefenderSkillKind.KroosDoubleShot?2:1;
+            int hits=empowered&&skill.Kind==DefenderSkillKind.KroosDoubleShot?(int)V2DefenderSkill(d,"hits",2):1;
             ShotsFired++;LastShotTime=Clock;LastShotEntityId=target.EntityId;LastShotPosition=target.Motion.Position;
             for(int i=0;i<hits;i++)
             {
                 var shot=new CombatShot(d.EntityId,target.EntityId,true,empowered,d.Position,target.Motion.Position,
-                    Clock+spec.Windup/d.LastActionRate+i*.1,travel,DefenderOrdinaryDamage(d,target,empowered?skill.AttackMultiplier:1),
+                    Clock+spec.Windup/d.LastActionRate+i*(skill.Kind==DefenderSkillKind.KroosDoubleShot?V2DefenderSkill(d,"hitSpacing",.1f):.1f),travel,DefenderOrdinaryDamage(d,target,empowered?skill.AttackMultiplier:1),
                     damageType:DefenderSkillActive(d)&&skill.Kind==DefenderSkillKind.MidnightEnchant?CombatDamageType.Arts:spec.DamageType,splashRadius:spec.SplashRadius);
-                if(skill.Kind==DefenderSkillKind.OrchidSwiftStrike)shot.HinderDuration=.8f;
+                if(skill.Kind==DefenderSkillKind.OrchidSwiftStrike)shot.HinderDuration=V2DefenderSkill(d,"hinderDuration",.8f);
                 combatShots.Add(shot);
             }
             if(skill.Kind==DefenderSkillKind.LapplandHavoc&&!DefenderSkillActive(d))ScheduleOrdinaryDrone(d,target,travel);

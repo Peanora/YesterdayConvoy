@@ -136,7 +136,7 @@ namespace YesterdayConvoy
                 float attack=contribution.Attack*(target.FrozenUntil>Clock?Mathf.Max(1,combat.Effects.FrozenAttackMultiplier):1);
                 // Split damage after armor/resistance and the original minimum hit. Scaling
                 // Attack instead would charge armor five times and change the total budget.
-                DamageDefender(target,attack,source.AltarEmpowered?CombatDamageType.Arts:combat.Effects.DamageType,true,null,weight);
+                DamageGuerrillaDefenderFrom(target,attack,source.AltarEmpowered?CombatDamageType.Arts:combat.Effects.DamageType,source,weight);
             }
             // Snapshotting all HP before the volley also records real redirected losses.
             order.RecordStrike(targets,health);

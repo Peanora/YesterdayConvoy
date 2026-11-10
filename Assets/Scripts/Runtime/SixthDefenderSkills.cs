@@ -18,6 +18,21 @@ namespace YesterdayConvoy
         public IReadOnlyList<SixthCell> SnowCells=>snowCells.AsReadOnly();
         public IReadOnlyList<SixthCell> ChessPieces=>chessPieces.AsReadOnly();
         public float DefenderBudget {get;private set;}=30;
+        void InitializeV2SixthDefenders()
+        {
+            if(!CampaignV2Enabled)return;
+            DefenderState silver=null;
+            foreach(var d in defenders)
+            {
+                if(d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)d.ChessStock=(int)V2DefenderSkill(d,"stockInitial",7);
+                if(silver==null&&d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign)silver=d;
+            }
+            if(silver==null)return;
+            DefenderBudget=V2DefenderSkill(silver,"independentBudgetInitial",30);
+            DefenderState low=null,high=null;
+            foreach(var d in defenders)if(d.Reserve){if(low==null||d.ReserveCost<low.ReserveCost)low=d;if(high==null||d.ReserveCost>high.ReserveCost)high=d;}
+            if(low!=null&&high!=low){low.ReserveCost=(int)V2DefenderSkill(silver,"reserveLowCost",8);high.ReserveCost=(int)V2DefenderSkill(silver,"reserveHighCost",20);}
+        }
         public bool IsSixth(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.SilverAshReign;
         public float SixthVulnerability(DeployedUnitState u)=>u!=null&&u.VulnerableUntil>Clock?1+u.Vulnerability:1;
         public bool SixthReveals(DeployedUnitState u)
@@ -28,11 +43,11 @@ namespace YesterdayConvoy
         }
         bool BeginSixthSkill(DefenderState d)
         {
-            if(!IsSixth(d))return false;d.SkillActionUntil=Clock+.35;d.NextAttackTime=d.SkillActionUntil;d.NextSixthAt=Clock;
+            if(!IsSixth(d))return false;d.SkillActionUntil=Clock+V2DefenderSkill(d,"startupSeconds",.35f);d.NextAttackTime=d.SkillActionUntil;d.NextSixthAt=Clock;
             switch(d.Settings.Skill.Kind)
             {
                 case DefenderSkillKind.SilverAshReign:
-                    DefenderBudget+=6;
+                    DefenderBudget+=V2DefenderSkill(d,"budgetInstant",6);
                     if(!d.CostsExchanged)
                     {
                         DefenderState low=null,high=null;
@@ -45,12 +60,13 @@ namespace YesterdayConvoy
                     if(d.PartnerId==null)foreach(var a in defenders)if(a!=d&&a.Alive){d.PartnerId=a.EntityId;break;}
                     break;
                 case DefenderSkillKind.PramanixSnow:
-                    d.NextSnowAt=Clock+1.5;
+                    d.NextSnowAt=Clock+V2DefenderSkill(d,"snowIntervalSkill",1.5f);
                     foreach(var u in units)if(CanDefenderTarget(u)&&!UnitControlImmune(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))
-                    {u.LureUntil=Clock+10;u.LureDistance=u.Motion.ProjectDistance(d.Position);d.Lures++;}
+                    {u.LureUntil=Clock+V2DefenderSkill(d,"lureDuration",10);u.LureDistance=u.Motion.ProjectDistance(d.Position);d.Lures++;}
                     break;
                 case DefenderSkillKind.WangGambit:
-                    int overflow=Math.Max(0,d.ChessStock+8-7);d.ChessStock=Math.Min(7,d.ChessStock+8);d.Ammo=20;d.LastActionTime=Clock;
+                    int grant=(int)V2DefenderSkill(d,"stockGrantOnSkill",8),cap=(int)V2DefenderSkill(d,"stockCap",7);
+                    int overflow=Math.Max(0,d.ChessStock+grant-cap);d.ChessStock=Math.Min(cap,d.ChessStock+grant);d.Ammo=(int)V2DefenderSkill(d,"ammo",20);d.LastActionTime=Clock;
                     foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))
                         {if(overflow<=0)break;if(AddChess(d,new Vector3(Mathf.Round(u.Motion.Position.x),.04f,Mathf.Round(u.Motion.Position.z)),false))overflow--;}
                     break;
@@ -75,10 +91,14 @@ namespace YesterdayConvoy
                 if(d.AdvancedSkillWasActive&&!DefenderSkillActive(d))
                 {d.AdvancedSkillWasActive=false;d.SkillEndedAt=d.SkillActiveUntil;}
                 if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&DefenderSkillActive(d))
-                {float total=Math.Min(24,(float)(Clock-d.SkillStartedAt)*.5f);DefenderBudget+=Math.Max(0,total-d.BudgetReceived);d.BudgetReceived=total;}
+                {
+                    float budget=V2DefenderSkill(d,"budgetDuringSkillTotal",24);
+                    float rate=CampaignV2Enabled?budget/d.Settings.Skill.Duration:.5f;
+                    float total=Math.Min(budget,(float)(Clock-d.SkillStartedAt)*rate);DefenderBudget+=Math.Max(0,total-d.BudgetReceived);d.BudgetReceived=total;
+                }
                 if(d.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&Clock>=d.NextSnowAt)
                 {
-                    d.NextSnowAt=Clock+(DefenderSkillActive(d)?1.5:10);
+                    d.NextSnowAt=Clock+(DefenderSkillActive(d)?V2DefenderSkill(d,"snowIntervalSkill",1.5f):V2DefenderSkill(d,"snowIntervalIdle",10));
                     var generated=new HashSet<Vector2Int>();
                     foreach(var lane in Lanes)for(int i=1;i<lane.Points.Count;i++)
                     {
@@ -89,7 +109,7 @@ namespace YesterdayConvoy
                             if(GroundDistance(p,d.Position)>DefenderRange(d)||!generated.Add(new Vector2Int((int)p.x,(int)p.z)))continue;
                             var cell=snowCells.Find(c=>c.SourceId==d.EntityId&&GroundDistance(c.Position,p)<.1f);
                             if(cell==null){cell=new SixthCell{SourceId=d.EntityId,Position=p,Active=true};snowCells.Add(cell);}
-                            cell.Layers=Math.Min(5,cell.Layers+1);
+                            cell.Layers=Math.Min((int)V2DefenderSkill(d,"snowMaxLayers",5),cell.Layers+1);
                         }
                     }
                 }
@@ -98,7 +118,7 @@ namespace YesterdayConvoy
 
                     if(Clock>=d.NextSixthAt)
                     {
-                        d.NextSixthAt=Clock+2;
+                        d.NextSixthAt=Clock+V2DefenderSkill(d,"placementInterval",2);
                         foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))
                         {
                             var p=new Vector3(Mathf.Round(u.Motion.Position.x),.04f,Mathf.Round(u.Motion.Position.z));
@@ -107,7 +127,7 @@ namespace YesterdayConvoy
                             break;
                         }
                     }
-                    if(DefenderSkillActive(d)&&Clock-d.LastActionTime>4){d.ChessStock=Math.Min(7,d.ChessStock+d.Ammo);d.Ammo=0;}
+                    if(DefenderSkillActive(d)&&Clock-d.LastActionTime>V2DefenderSkill(d,"noTargetEndSeconds",4)){d.ChessStock=Math.Min((int)V2DefenderSkill(d,"stockCap",7),d.ChessStock+d.Ammo);d.Ammo=0;}
                     if(DefenderSkillActive(d)&&d.Ammo==0&&d.SkillActiveUntil-Clock>d.Settings.ActionDuration+.05){d.SkillActiveUntil=Clock+d.Settings.ActionDuration;}
                 }
             }
@@ -115,10 +135,10 @@ namespace YesterdayConvoy
             {
                 var d=FindDefender(cell.SourceId);if(d==null||!d.Alive||cell.Layers==0)continue;
                 var now=new HashSet<string>();
-                foreach(var u in units)if(u.Active&&!u.IsReviving&&!UnitAirborne(u)&&GroundDistance(cell.Position,u.Motion.Position)<.7f)
+                foreach(var u in units)if(u.Active&&!u.IsReviving&&!UnitAirborne(u)&&GroundDistance(cell.Position,u.Motion.Position)<V2DefenderSkill(d,"snowCellRadius",.7f))
                 {
-                    now.Add(u.EntityId);u.SnowMove=Math.Min(u.SnowMove,1-cell.Layers*.1f);
-                    if(!cell.Visitors.Contains(u.EntityId)){TryDefenderDamageUnit(u,d.Settings.Attack*.6f,CombatDamageType.Arts);d.SnowHits++;}
+                    now.Add(u.EntityId);u.SnowMove=Math.Min(u.SnowMove,1-cell.Layers*V2DefenderSkill(d,"snowSlowPerLayer",.1f));
+                    if(!cell.Visitors.Contains(u.EntityId)){TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"snowEntryAttackFraction",.6f),CombatDamageType.Arts);d.SnowHits++;}
                 }
                 bool departed=false;foreach(string id in cell.Visitors)if(!now.Contains(id)){departed=true;break;}
                 cell.Visitors.Clear();foreach(string id in now)cell.Visitors.Add(id);
@@ -128,9 +148,9 @@ namespace YesterdayConvoy
             {
                 var d=FindDefender(piece.SourceId);if(d==null||!d.Alive){piece.Active=false;continue;}
                 if(!piece.Active)continue;bool trigger=false;
-                foreach(var u in units)trigger|=CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,piece.Position)<.85f;
+                foreach(var u in units)trigger|=CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,piece.Position)<V2DefenderSkill(d,"triggerRadius",.85f);
                 if(!trigger)continue;piece.Active=false;piece.Time=Clock;d.ChessTriggers++;
-                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=1.5f)TryDefenderDamageUnit(u,d.Settings.Attack*3.2f,CombatDamageType.Arts);
+                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=V2DefenderSkill(d,"explosionRadius",1.5f))TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"trapAttackMultiplier",3.2f),CombatDamageType.Arts);
             }
             chessPieces.RemoveAll(c=>c.Time>0&&Clock-c.Time>.5);
         }
@@ -138,8 +158,8 @@ namespace YesterdayConvoy
         {
             if(chessPieces.Exists(c=>c.SourceId==d.EntityId&&c.Time==0&&GroundDistance(c.Position,p)<.1f))return false;
             var piece=new SixthCell{SourceId=d.EntityId,Position=p};chessPieces.Add(piece);
-            foreach(var other in chessPieces)if(other!=piece&&other.SourceId==piece.SourceId&&other.Time==0&&GroundDistance(p,other.Position)<=1.1f&&(Mathf.Abs(p.x-other.Position.x)<.1f||Mathf.Abs(p.z-other.Position.z)<.1f))other.Active=piece.Active=true;
-            if(consume&&DefenderSkillActive(d)){int extra=Math.Min(3,d.Ammo);d.Ammo-=extra;for(int i=1;i<=extra;i++){var child=new SixthCell{SourceId=d.EntityId,Position=p+Vector3.forward*i,Active=true};chessPieces.Add(child);}piece.Active=true;}
+            foreach(var other in chessPieces)if(other!=piece&&other.SourceId==piece.SourceId&&other.Time==0&&GroundDistance(p,other.Position)<=V2DefenderSkill(d,"linkDistance",1.1f)&&(Mathf.Abs(p.x-other.Position.x)<.1f||Mathf.Abs(p.z-other.Position.z)<.1f))other.Active=piece.Active=true;
+            if(consume&&DefenderSkillActive(d)){int extra=Math.Min((int)V2DefenderSkill(d,"extraPiecesPerPlacement",3),d.Ammo);d.Ammo-=extra;for(int i=1;i<=extra;i++){var child=new SixthCell{SourceId=d.EntityId,Position=p+Vector3.forward*i,Active=true};chessPieces.Add(child);}piece.Active=true;}
             else if(DefenderSkillActive(d))piece.Active=true;
             return true;
         }
@@ -161,8 +181,8 @@ namespace YesterdayConvoy
             {
                 if(!CanDefenderTarget(u)||GroundDistance(origin,u.Motion.Position)>DefenderRange(d))continue;
                 bool silver=d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign;
-                if(silver){var delta=u.Motion.Position-origin;delta.y=0;float along=Vector3.Dot(delta,dir);if(along<0||(delta-dir*along).magnitude>.8f)continue;}
-                combatShots.Add(new CombatShot(d.EntityId,u.EntityId,true,true,origin,u.Motion.Position,Clock+d.Settings.Windup/d.LastActionRate,travel,DefenderSkillAttack(d)*(silver?1:2.1f),damageType:silver?CombatDamageType.Physical:CombatDamageType.Arts){Vulnerability=silver?.25f:0,IgnoreResistance=silver?0:10});d.SixthHits++;
+                if(silver){var delta=u.Motion.Position-origin;delta.y=0;float along=Vector3.Dot(delta,dir);if(along<0||(delta-dir*along).magnitude>V2DefenderSkill(d,"lineHalfWidth",.8f))continue;}
+                combatShots.Add(new CombatShot(d.EntityId,u.EntityId,true,true,origin,u.Motion.Position,Clock+d.Settings.Windup/d.LastActionRate,travel,DefenderSkillAttack(d)*(silver?1:V2DefenderSkill(d,"areaAttackMultiplier",2.1f)),damageType:silver?CombatDamageType.Physical:CombatDamageType.Arts){Vulnerability=silver?V2DefenderSkill(d,"vulnerability",.25f):0,IgnoreResistance=silver?0:V2DefenderSkill(d,"ignoreResistance",10)});d.SixthHits++;
             }
         }
     }

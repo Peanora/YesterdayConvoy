@@ -34,7 +34,7 @@ namespace YesterdayConvoy
             // rearms the next upward crossing, while buying duplicates or changing forms does not.
             lastInfectionChoiceTier=tier;
             if(tier<2||tier<=previous)return;
-            inspectedSynergy="感染生物";campaignConstructOpen=false;CancelShopDrag();
+            inspectedSynergy="感染生物";infectionChoiceRequested=true;campaignConstructOpen=false;CancelShopDrag();
         }
         InfectionForm VisibleInfectionMain=>InfectionChoiceEditable?infectionForm:Battle.InfectionShape;
         InfectionForm VisibleInfectionSecond=>InfectionChoiceEditable?infectionSecond:Battle.InfectionSecondShape;
@@ -50,9 +50,16 @@ namespace YesterdayConvoy
             if(style.CalcSize(new GUIContent(caption)).x>bounds.width)style.fontSize=9;
             GUI.Label(bounds,caption,style);
         }
-        static string InfectionEffect(InfectionForm form,int tier)
+        string InfectionEffect(InfectionForm form,int tier)
         {
             if(tier<2)return "2种感染生物激活后生效";
+            if(Battle?.CampaignV2Enabled==true)
+            {
+                float V(string key)=>CampaignV2Balance.SynergyValue("infection",tier,key);
+                if(form==InfectionForm.Swarm)return $"{V("swarmBodies"):0}只，各{V("swarmHPFraction")*100:0}%生命 / {V("swarmAttackFraction")*100:0}%攻击";
+                if(form==InfectionForm.Shell)return $"{V("shellShieldFraction")*100:0}%生命护盾，护甲＋{V("shellArmorAdd"):0}";
+                return $"{V("burstBaseArts"):0}法伤 · 半径{V("burstRadius"):0.#} · 最多{V("burstTargets"):0}目标";
+            }
             if(form==InfectionForm.Swarm)return tier>=6?"3只，各55%生命 / 攻击":tier>=4?"2只，各70%生命 / 攻击":"2只，各55%生命 / 攻击";
             if(form==InfectionForm.Shell)return tier>=6?"35%生命护盾，护甲＋3":tier>=4?"30%生命护盾，护甲＋2":"18%最大生命护盾";
             return tier>=6?"85法伤 · 半径1.3 · 最多3目标":tier>=4?"65法伤 · 半径1.2 · 最多3目标":"35法伤 · 半径1 · 最多2目标";
@@ -78,7 +85,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(r.x+18,r.y+28,150,30),"感染生物",CampaignText(22,weight:600));
             GUI.Label(new Rect(r.x+137,r.y+33,350,24),summary.Count+"种 · "+(tier>=6?"6档 / 主形态＋二档副形态":tier>0?tier+"档 / 仅主形态":"未达2种激活门槛"),CampaignText(12,color:ApprovedUi.Muted));
             GUI.Label(new Rect(r.xMax-275,r.y+25,214,26),editable?"开战时锁定本场选择":"本场选择已锁定",CampaignText(12,TextAnchor.MiddleRight,editable?ApprovedUi.Muted:InfectionOrange));
-            if(LoopButton(InfectionCloseRect,"×")){inspectedSynergy=null;return;}
+            if(LoopButton(InfectionCloseRect,"×")){CloseCampaignOverlay();return;}
             Fill(new Rect(r.x,r.y+65,r.width,1),InfectionRule);
             GUI.Label(new Rect(r.x+18,r.y+76,r.width-36,25),!editable?"当前为本场已锁定形态，战斗中不可更改":tier>=6?
                 "选择一种主形态；再选一种不同的副形态（取2档效果）":"选择一种主形态；副形态在6档解锁",CampaignText(13,weight:600));

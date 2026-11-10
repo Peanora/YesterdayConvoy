@@ -34,7 +34,8 @@ namespace YesterdayConvoy
                 return bosses;
             }
             var source=BattleShopStages.Defenders(1,false);
-            int count=sandbox?2:Boss(stage)?2:1;
+            bool rangedPressure=!sandbox&&(stage==7||stage==8||stage==11);
+            int count=sandbox||rangedPressure?2:1;
             var result=new DefenderPlacement[count];
             for(int i=0;i<count;i++)
             {
@@ -44,7 +45,18 @@ namespace YesterdayConvoy
                 g.blocks=2;g.range=1.1f;g.interval=2;result[i]=g;
                 if(sandbox)g.position=i==0?new Vector3(0,.04f,2.4f):new Vector3(.8f,.04f,2.1f);
             }
+            if(rangedPressure)result[1]=RangedGuard(stage,source[1].position);
             return result;
+        }
+        static DefenderPlacement RangedGuard(int stage,Vector3 position)
+        {
+            var authored=Array.Find(Resources.Load<DefenderTrialDefinition>("DefenderTrials/D07").defenders,g=>g.artId=="D07");
+            // Reuse the saved shooting action, without importing the standalone trial's skill or critical-hit rules.
+            return new DefenderPlacement{
+                id="campaign-ranged-"+stage,displayName=authored.displayName,artId=authored.artId,position=position,
+                health=stage==7?220:stage==8?260:340,attack=stage==7?24:stage==8?30:48,armor=stage==7?3:stage==8?4:6,
+                range=3.2f,interval=2,windup=authored.windup,actionDuration=authored.actionDuration,blocks=0,
+                role=authored.role,damageType=authored.damageType};
         }
     }
 }

@@ -28,7 +28,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest]public IEnumerator MixedRosterBoostsSurviveRebuildWithoutChangingAuthoredOrNormalStats()
         {
             yield return Load();var c=Object.FindAnyObjectByType<ManualBattleController>();
-            Assert.That(c.SetSandboxRoster(2));Assert.That(c.Shop.Roles.Count,Is.EqualTo(43));
+            Assert.That(c.SetSandboxRoster(2));Assert.That(c.Shop.Roles.Count,Is.EqualTo(42));
             var data=Resources.Load<ManualBattleDefinition>("MonsterTests/M20");
             var baseline=CampaignBalance.Build(data,1,100,6);float authored=data.Snapshot().Health;
             var ordinaryGuard=CampaignPlan.Guards(1,true)[0];
@@ -37,7 +37,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(c.StartLoopNextBattle());c.Battle.Begin();c.Battle.SetPaused(true);
             var receipt=c.Battle.TryDeployRole(c.Battle.RunId,1,c.Battle.Entry,"CARD_M20",true);
             Assert.That(receipt.Success);var unit=c.Battle.FindUnit(receipt.EntityId);var combat=c.Battle.UnitCombat(unit);
-            Assert.That(unit.MaxHealth,Is.EqualTo(baseline.Unit.Health*4));
+            Assert.That(unit.Profile.Unit.Health,Is.EqualTo(baseline.Unit.Health*4),"Check the sandbox snapshot before the existing team health modifier.");
+            Assert.That(c.Battle.CampaignV2Enabled,Is.False);
+            Assert.That(unit.MaxHealth,Is.EqualTo(baseline.Unit.Health*4*1.1f).Within(.001f),"The mixed roster also grants the existing two-member Sarkaz health bonus.");
             Assert.That(combat.UnitAttack,Is.EqualTo(baseline.Combat.UnitAttack*2));
             Assert.That(combat.Effects.Patriot);Assert.That(combat.HasSkill,Is.False);
             Assert.That(c.Battle.DP,Is.EqualTo(100-baseline.Unit.DeploymentCost));c.Tick(1);Assert.That(c.Battle.Clock,Is.Zero);

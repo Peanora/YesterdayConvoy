@@ -85,8 +85,10 @@ namespace YesterdayConvoy
             ApplyUnitHealthDamage(u,AbsorbReunionEliteShield(u,AbsorbContractShield(u,amount)));
         }
         void TrueDamage(DefenderState d,float amount)
+            =>SourcedTrueDamage(d,amount,null);
+        void SourcedTrueDamage(DefenderState d,float amount,DeployedUnitState source)
         {
-            if(!d.Alive)return;ApplyDefenderLoss(d,amount);d.LastHitTime=Clock;
+            if(!d.Alive)return;ApplyRankedDefenderLoss(d,amount,source,true);d.LastHitTime=Clock;
             if(!d.Alive){d.DeathTime=Clock;d.TargetId=null;}
         }
         public bool TryIgniteReeds(Vector3 position,float radius=1.5f)

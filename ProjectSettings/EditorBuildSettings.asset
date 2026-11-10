@@ -24,6 +24,30 @@ EditorBuildSettings:
     path: Assets/Scenes/BlackForestCrossing.unity
     guid: 9a0466a7b255a4e4998071966d8133b0
   - enabled: 1
+    path: Assets/Scenes/Map01SunsetSquare.unity
+    guid: 3192c30b488615b419aef98e79dcd0db
+  - enabled: 1
+    path: Assets/Scenes/Map02DrainageViaduct.unity
+    guid: f08070f9a98421840be06a41e384167c
+  - enabled: 1
+    path: Assets/Scenes/Map03RainyJunction.unity
+    guid: ae22ab2a4b238a340badfd904707c8ea
+  - enabled: 1
+    path: Assets/Scenes/Map04MailTransfer.unity
+    guid: a0c47f229bd9fe64fbd5feec83f0623a
+  - enabled: 1
+    path: Assets/Scenes/Map05HeatExchange.unity
+    guid: 4445cd0516478964b9e8da9c847f181d
+  - enabled: 1
+    path: Assets/Scenes/Map06QuarryFreight.unity
+    guid: a78ac5f715f046744b4f5b650177b560
+  - enabled: 1
+    path: Assets/Scenes/Map07QuarantineCourt.unity
+    guid: 4641319ec725a4141880695f36242a77
+  - enabled: 1
+    path: Assets/Scenes/Map08EbbHarbor.unity
+    guid: ae8740e6c82120143aa681db9156ac53
+  - enabled: 1
     path: Assets/Scenes/SynergyTrials/DeepPoolTrial.unity
     guid: b1a260aaf40de8c4398cf2ab657a41ad
   - enabled: 1

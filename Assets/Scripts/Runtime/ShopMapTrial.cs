@@ -34,7 +34,12 @@ namespace YesterdayConvoy
         // ShopSellRect is now the left edge. The former bottom sale target is retired.
         public static Rect ShopSellRect=>ApprovedUi.SellLeft;
         public static Rect ShopSellRightRect=>ApprovedUi.SellRight;
-        public static Rect ShopRecruitListRect=>ApprovedUi.RecruitList;
+        public static Rect ShopRightSaleDropRect=>Rect.MinMaxRect(ShopSellRightRect.x,DamageRankingPanelRect.yMax+4,ShopSellRightRect.xMax,ShopSellRightRect.yMax);
+        public static Rect DamageRankingPanelRect=>ApprovedUi.RecruitList;
+        public static Rect ShopMapSafeRect=>Rect.MinMaxRect(200,66,DamageRankingPanelRect.x-14,544);
+        public bool DamageRankingVisible=>ShopTrialActive&&!CampaignUiModalOpen;
+        // Retained geometry aliases for existing tooling; these are no longer purchase targets.
+        public static Rect ShopRecruitListRect=>DamageRankingPanelRect;
         public static Rect ShopRecruitRowRect(int i)=>new Rect(ShopRecruitListRect.x+6,ShopRecruitListRect.y+35+i*37,ShopRecruitListRect.width-12,34);
         public static Rect ShopOfferRect(int i)=>ApprovedUi.Offer(i);
         public static Rect ShopBenchRect(int i)=>ApprovedUi.ReserveSlot(i);
@@ -44,13 +49,13 @@ namespace YesterdayConvoy
             var seat=shopSeats.For(shop.Bench[index].Instance);
             return !seat.HasValue?Rect.zero:seat.Value.Lineup?ApprovedUi.LineupSlot(seat.Value.Index):ApprovedUi.ReserveSlot(seat.Value.Index);
         }
-        bool ShopSalePoint(Vector2 point)=>ShopSellRect.Contains(point)||ShopSellRightRect.Contains(point);
+        bool ShopSalePoint(Vector2 point)=>!DamageRankingPanelRect.Contains(point)&&(ShopSellRect.Contains(point)||ShopSellRightRect.Contains(point));
         bool ShopUiBlocksPoint(Vector2 point)
         {
             if(new Rect(0,0,1280,60).Contains(point)||CampaignOverlayBlocksPoint(point)||SynergyBlocksMap(point))return true;
             if(loopMenuOpen&&LoopMenuRect.Contains(point)||loopTestSettlementOpen&&LoopTestPanelRect.Contains(point))return true;
-            if((shopVisible||ShopPanelTransitioning)&&(ShopPanelRect.Contains(point)||
-                Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop)&&ShopRecruitListRect.Contains(point)))return true;
+            if(DamageRankingVisible&&DamageRankingPanelRect.Contains(point))return true;
+            if((shopVisible||ShopPanelTransitioning)&&ShopPanelRect.Contains(point))return true;
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
             if(preparing)
                 return new Rect(188,480,942,25).Contains(point)||new Rect(188,516,942,74).Contains(point)||
@@ -128,7 +133,21 @@ namespace YesterdayConvoy
         }
         IEnumerable<Vector3> ShopMapPlayablePoints()
         {
-            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points){yield return point;yield return point+Camera.main.transform.up*1.65f;}
+            var approved=ApprovedMapCatalog.Find(TacticalMapId);
+            if(approved!=null)foreach(var point in approved.FramePoints())yield return point;
+            if(TacticalMapId==BlackForestLayout.Id)
+                for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
+                {
+                    if(BlackForestLayout.Tile(col,row)=='#')continue;
+                    var cell=BlackForestLayout.Cell(col,row,BlackForestLayout.Tile(col,row)=='H'?.72f:0);
+                    foreach(float x in new[]{-.5f,.5f})foreach(float z in new[]{-.5f,.5f})yield return cell+new Vector3(x,0,z);
+                }
+            foreach(var lane in shopMapCopy.lanes)foreach(var point in lane.points)
+            {
+                yield return point;yield return point+Camera.main.transform.up*1.65f;
+                if(TacticalMapId==BlackForestLayout.Id)
+                    foreach(float x in new[]{-.5f,.5f})foreach(float z in new[]{-.5f,.5f})yield return point+new Vector3(x,0,z);
+            }
             foreach(var defender in shopMapCopy.defenders){yield return defender.position;yield return defender.position+Camera.main.transform.up*1.65f;}
         }
         int shopWindowWidth,shopWindowHeight;
@@ -142,16 +161,19 @@ namespace YesterdayConvoy
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
             var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();
-            // Keep interactive terrain between the trait rail, header and bottom card bar.
+            // Keep interactive terrain between the trait rail, ranking sidebar, header and cards.
             // Decorative geometry still fills the full camera; only the fit budget is inset.
-            var center=new Vector2(.56f,.61f);
+            var fit=TacticalViewport.Current.CameraRect(ShopMapSafeRect);
+            var viewport=camera.rect;
+            var center=new Vector2((fit.center.x-viewport.x)/viewport.width,(fit.center.y-viewport.y)/viewport.height);
+            var halfExtent=new Vector2(fit.width/(2*viewport.width),fit.height/(2*viewport.height));
             for(int pass=0;pass<5;pass++)
             {
                 var projected=points.Select(camera.WorldToViewportPoint).ToArray();
                 float centerX=(projected.Min(p=>p.x)+projected.Max(p=>p.x))*.5f,centerY=(projected.Min(p=>p.y)+projected.Max(p=>p.y))*.5f;
                 float depth=projected.Average(p=>p.z);
                 camera.transform.position+=camera.ViewportToWorldPoint(new Vector3(centerX,centerY,depth))-camera.ViewportToWorldPoint(new Vector3(center.x,center.y,depth));
-                float extent=points.Select(camera.WorldToViewportPoint).Max(p=>Mathf.Max(Mathf.Abs(p.x-center.x)/.39f,Mathf.Abs(p.y-center.y)/.26f));
+                float extent=points.Select(camera.WorldToViewportPoint).Max(p=>Mathf.Max(Mathf.Abs(p.x-center.x)/halfExtent.x,Mathf.Abs(p.y-center.y)/halfExtent.y));
                 float zoom=1/Mathf.Max(.05f,extent);
                 camera.fieldOfView=2*Mathf.Atan(Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad)/zoom)*Mathf.Rad2Deg;
             }
@@ -182,9 +204,10 @@ namespace YesterdayConvoy
             ShopNotice(r.Success?$"出售 {r.Message} · +{r.Value} 金币":r.Message);return r;
         }
         void ShopNotice(string message){shopMessage=message;shopMessageUntil=Time.unscaledTime+3;}
-        public void CancelShopDrag(){CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
+        public void CancelShopDrag(){CancelWaveCardClick();CancelSarkazContractBadgeDrag();golemDragging=false;shopDrag=-1;shopMoving=false;CancelInteraction();}
         public void LeaveShopTrial()
         {
+            if(JourneyActive)CampaignJourneySession.Clear();
             ClearSynergyActivationFeedback();synergyActivationShop=null;
             activeSynergyTrial=null;Loop=null;
             CancelShopDrag();ClearShopBenchModels();shop=null;ResetGuerrillaTransfers();ResetMudrockTransfers();shopLineup.Clear();shopDeck.Clear();Camera.main.rect=shopPreviousViewport;Camera.main.fieldOfView=shopPreviousFieldOfView;
@@ -194,25 +217,28 @@ namespace YesterdayConvoy
         {
             if(shop==null)return false;
             if(type==EventType.KeyDown&&Event.current!=null&&Event.current.keyCode==KeyCode.Escape){CancelShopDrag();return false;}
-            if(button!=0&&(shopDrag>=0||sarkazContractBadgeDragging)){CancelShopDrag();return true;}
+            if(button!=0&&(shopDrag>=0||sarkazContractBadgeDragging||waveClickInstance>=0)){CancelShopDrag();return true;}
             if(CampaignUiModalOpen||loopMenuOpen||loopTestSettlementOpen){CancelShopDrag();return false;}
             if(button!=0&&sarkazContractBadgeDragging){CancelSarkazContractBadgeDrag();return true;}
             if(button==0&&ProcessSarkazContractBadgePointer(type,point))return true;
             if(Loop==null&&Battle.Phase!=BattlePhase.Ready&&Battle.Phase!=BattlePhase.Running)return false;
-            if(CampaignActive&&Loop.RewardStage&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
-            {ShopNotice("本关是保送补给，不部署怪物；点击左侧领取，连续两次补给后进入战斗");return true;}
+            // Supply preparation uses the same editable seats as an ordinary shop.
+            // Only block a supply card once its preparation has been closed.
+            if(CampaignActive&&Loop.RewardStage&&!ShopSeatsEditable&&type==EventType.MouseDown&&button==0&&shop.Bench.Select((p,i)=>ShopPieceRect(i)).Any(r=>r.Contains(point)))
+            {ShopNotice("本关是奖励补给，不部署怪物；整备时可拖动编队，点击领取补给继续");return true;}
             if(HandleGolemPointer(type,point,button))return true;
             if(Loop!=null&&!Loop.CanDeploy&&!Loop.CanShop)return false;
             if(type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseMove||type==EventType.MouseUp)shopPointer=point;
+            if(HandleWaveCardPointer(type,point,button))return true;
             if(type==EventType.MouseDown&&button==0)
             {
                 if(Battle.Phase==BattlePhase.Ready&&(Loop==null||Loop.CanShop)&&shopVisible&&!ShopPanelTransitioning)
                     for(int i=0;i<shop.Offers.Count;i++)
                     {
                         if(shop.Offers[i]==null)continue;
-                        Rect offer=ShopOfferRect(i),row=ShopRecruitRowRect(i);
-                        if(!offer.Contains(point)&&!row.Contains(point))continue;
-                        shopPurchaseOrigin=row.Contains(point)?row.center:offer.center;
+                        Rect offer=ShopOfferRect(i);
+                        if(!offer.Contains(point))continue;
+                        shopPurchaseOrigin=offer.center;
                         PurchaseShopCard(i);return true;
                     }
                 for(int i=0;i<shop.Bench.Count;i++)if(ShopPieceRect(i).Contains(point)){shopDrag=shop.Bench[i].Instance;shopDragStart=point;shopMoving=false;return true;}
@@ -283,7 +309,8 @@ namespace YesterdayConvoy
                 if(!defender.Alive)continue;
                 Vector2 p=GUIPosition(Camera.main.WorldToScreenPoint(defender.Position+Camera.main.transform.up*1.6f));
                 if(!ShopBattlefieldRect.Contains(p))continue;
-                Fill(new Rect(p.x-24,p.y,48,6),new Color(.03f,.05f,.06f));Fill(new Rect(p.x-23,p.y+1,46*defender.Health/defender.MaxHealth,4),new Color(.96f,.66f,.3f));
+                DrawDefenderHealthBar(defender,new Rect(p.x-24,p.y,48,6),1);
+                DrawCompactDefenderDebtLabel(defender,p);
                 if(Battle.StrongholdChallenge)GUI.Label(new Rect(p.x-72,p.y-20,144,20),defender.Settings.Name,new GUIStyle(smallStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=defender.HighGround?new Color(.5f,.9f,1):new Color(1,.8f,.5f)}});
                 if(!defender.Settings.Skill.Enabled)continue;
                 bool active=Battle.DefenderSkillActive(defender);

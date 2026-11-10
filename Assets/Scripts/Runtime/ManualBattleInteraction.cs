@@ -13,7 +13,8 @@ namespace YesterdayConvoy
         private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
-        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f : SimulationSpeed;
+        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f :
+            Battle.WavesEnabled&&Battle.GuerrillaOrderBusy?Mathf.Min(1,SimulationSpeed):SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
         private static Vector2 GUIPosition(Vector2 screen) => TacticalViewport.Current.FromScreen(screen);
@@ -166,7 +167,9 @@ namespace YesterdayConvoy
                 Rect unit=UnitScreenRect(selectedEntityId);
                 float x=unit.xMax+18;
                 if(x+214>1264) x=unit.xMin-232;
-                return new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
+                var panel=new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
+                if(DamageRankingVisible&&panel.Overlaps(DamageRankingPanelRect))panel.x=DamageRankingPanelRect.x-panel.width-12;
+                return panel;
             }
         }
         public Rect SkillCastRect { get { Rect panel=SkillPopupRect; return new Rect(panel.x+14,panel.y+45,66,66); } }

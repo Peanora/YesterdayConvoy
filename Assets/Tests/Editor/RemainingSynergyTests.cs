@@ -33,7 +33,9 @@ namespace YesterdayConvoy.Tests
             var b=Make(Herd);var u=Deploy(b,Herd[0],1);b.Advance(.2f);double distance=u.Motion.DistanceTravelled;
             b.TryDamageUnit(u.EntityId,1000,CombatDamageType.Physical);Assert.That(b.HasPendingDeathBlast);b.Advance(.02f);
             var host=b.Units.Single(o=>b.IsHerdHost(o.EntityId));Assert.That(host.Motion.DistanceTravelled,Is.EqualTo(distance).Within(.02));
-            Assert.That(host.MaxHealth,Is.EqualTo(90));Assert.That(host.SynergySupport);Assert.That(b.UnitCombat(host).HasSkill,Is.False);Assert.That(b.UnitCombat(host).Effects.BlastAttack,Is.Zero);
+            // Three native Reunion members lock tier two; the host inherits
+            // 200*1.1*.45 = 99 HP without receiving another member bonus itself.
+            Assert.That(host.MaxHealth,Is.EqualTo(99));Assert.That(host.SynergySupport);Assert.That(b.UnitCombat(host).HasSkill,Is.False);Assert.That(b.UnitCombat(host).Effects.BlastAttack,Is.Zero);
             b.TryDamageUnit(host.EntityId,1000,CombatDamageType.Physical);b.Advance(.02f);Assert.That(b.HerdUsed,Is.EqualTo(1));Assert.That(b.Units.Count,Is.EqualTo(2));
         }
         [Test]public void NativeFlamerazerFinalExplosionCanConvertOnlyAfterFinalDeath()

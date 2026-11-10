@@ -1,0 +1,819 @@
+{
+  "version": "Journey gradual difficulty playtest 2026-11-10: early/middle pressure increased, final HP/ATK at 66%/68% of six-star baseline; rosters and economy unchanged",
+  "sources": [
+    "campaign.json",
+    "defenders.json",
+    "flow-plan.json"
+  ],
+  "stages": [
+    {
+      "stage": 1,
+      "title": "集结采购",
+      "tip": "开局5金币、1级，赠送3种不同的一至二费一星角色。\n拖动卡牌可交换编队和备战；领取补给获得8金币和4经验。\n人口上限随等级提升；初始商店免费刷新，补给不计连胜。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 8,
+      "naturalXP": 4,
+      "guards": [],
+      "waves": [],
+      "finalAdvanceSeconds": 0
+    },
+    {
+      "stage": 2,
+      "title": "检疫口·第一次突破",
+      "tip": "仅开放R2，预算10DP，部署36秒，随后45秒推进。\n米格鲁守住必经路线，合理搭配前排和远程输出。\n暂停中部署仍会扣费并设置CD。",
+      "type": "Battle",
+      "mapIndex": 7,
+      "dp": 10,
+      "defense": 1,
+      "baseGold": 10,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D01",
+          "tier": 1,
+          "hpFactor": 1.484615385,
+          "attackFactor": 2.0,
+          "armorBonus": 2,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 6
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R2",
+          "dp": 10,
+          "deploymentSeconds": 36
+        }
+      ],
+      "finalAdvanceSeconds": 45
+    },
+    {
+      "stage": 3,
+      "title": "街心交火",
+      "tip": "仅开放R2，预算12DP，部署40秒，随后60秒推进。\n月见夜阻挡中央，克洛丝从高台交叉射击。\n分批投入，并确保有足够单位存活穿门。",
+      "type": "Battle",
+      "mapIndex": 1,
+      "dp": 12,
+      "defense": 2,
+      "baseGold": 10,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D05",
+          "tier": 1,
+          "hpFactor": 3.242105263,
+          "attackFactor": 2.2,
+          "armorBonus": 5,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 4
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 1,
+          "hpFactor": 1.078571429,
+          "attackFactor": 0.88,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 6,
+            "y": 3
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R2",
+          "dp": 12,
+          "deploymentSeconds": 40
+        }
+      ],
+      "finalAdvanceSeconds": 60
+    },
+    {
+      "stage": 4,
+      "title": "桥头补给",
+      "tip": "下一场首Boss有3名守军，R2、R3两波分别10、11DP。\n先补主力星级和羁绊，兼顾远程输出与承伤角色。\n每关结算固定获得4经验，包括败局和奖励关。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 10,
+      "naturalXP": 4,
+      "guards": [],
+      "waves": [],
+      "finalAdvanceSeconds": 0
+    },
+    {
+      "stage": 5,
+      "title": "排洪防线·首领一",
+      "tip": "首Boss有3名守军；R2、R3各10、11DP，部署24、35秒。\n利用翎羽与高台火力的间隙推进，集中处理卡缇。\n最后60秒停止出兵，场上单位继续推进，技能仍可使用。",
+      "type": "Boss",
+      "mapIndex": 2,
+      "dp": 21,
+      "defense": 3,
+      "baseGold": 12,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D02",
+          "tier": 2,
+          "hpFactor": 1.901724138,
+          "attackFactor": 1.562666667,
+          "armorBonus": 6,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 7
+          }
+        },
+        {
+          "id": "D08",
+          "tier": 2,
+          "hpFactor": 1.907142857,
+          "attackFactor": 0.976818182,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 8
+          }
+        },
+        {
+          "id": "D06",
+          "tier": 2,
+          "hpFactor": 1.271052632,
+          "attackFactor": 0.781333333,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 12,
+            "y": 8
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R2",
+          "dp": 10,
+          "deploymentSeconds": 24
+        },
+        {
+          "laneId": "R3",
+          "dp": 11,
+          "deploymentSeconds": 35
+        }
+      ],
+      "finalAdvanceSeconds": 60
+    },
+    {
+      "stage": 6,
+      "title": "雨夜交叉口",
+      "tip": "本关4名守军，R1、R3两波各13DP。\n斑点保护前排，炎熔提供范围火力，注意承伤与远程配合。\n每波剩余DP不结转，留意下一波路线与部署时机。",
+      "type": "Battle",
+      "mapIndex": 3,
+      "dp": 26,
+      "defense": 3,
+      "baseGold": 10,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D03",
+          "tier": 2,
+          "hpFactor": 2.091666667,
+          "attackFactor": 1.95,
+          "armorBonus": 4,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 6
+          }
+        },
+        {
+          "id": "D09",
+          "tier": 2,
+          "hpFactor": 2.234482759,
+          "attackFactor": 1.365,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 4
+          }
+        },
+        {
+          "id": "D04",
+          "tier": 2,
+          "hpFactor": 1.395238095,
+          "attackFactor": 0.975,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 5
+          }
+        },
+        {
+          "id": "D06",
+          "tier": 2,
+          "hpFactor": 1.394736842,
+          "attackFactor": 0.975,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 3
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R1",
+          "dp": 13,
+          "deploymentSeconds": 35
+        },
+        {
+          "laneId": "R3",
+          "dp": 13,
+          "deploymentSeconds": 35
+        }
+      ],
+      "finalAdvanceSeconds": 65
+    },
+    {
+      "stage": 7,
+      "title": "地下邮运",
+      "tip": "本关5名守军，R1、R2两波分别15、16DP。\n前排与高台火力已加强，优先保证主力星级和有效羁绊。\n地道口按白线前进，穿门单位清空共享防御即可突破。",
+      "type": "Battle",
+      "mapIndex": 4,
+      "dp": 31,
+      "defense": 4,
+      "baseGold": 10,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D02",
+          "tier": 2,
+          "hpFactor": 2.879310345,
+          "attackFactor": 2.34,
+          "armorBonus": 4,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 2
+          }
+        },
+        {
+          "id": "D05",
+          "tier": 2,
+          "hpFactor": 3.06,
+          "attackFactor": 2.34,
+          "armorBonus": 4,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 5
+          }
+        },
+        {
+          "id": "D04",
+          "tier": 2,
+          "hpFactor": 1.802380952,
+          "attackFactor": 1.17,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 3,
+            "y": 7
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 2,
+          "hpFactor": 1.8,
+          "attackFactor": 1.17,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 6,
+            "y": 4
+          }
+        },
+        {
+          "id": "D08",
+          "tier": 2,
+          "hpFactor": 1.8,
+          "attackFactor": 1.17,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 3
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R1",
+          "dp": 15,
+          "deploymentSeconds": 35
+        },
+        {
+          "laneId": "R2",
+          "dp": 16,
+          "deploymentSeconds": 40
+        }
+      ],
+      "finalAdvanceSeconds": 75
+    },
+    {
+      "stage": 8,
+      "title": "转运整备",
+      "tip": "下一场8名守军，R1、R2、R3三波预算11、12、13DP。\n补齐有效羁绊与两星主力，兼顾对重甲输出和生存。\n星熊有债务与短暂保护阶段，保留后续波次接力。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 12,
+      "naturalXP": 4,
+      "guards": [],
+      "waves": [],
+      "finalAdvanceSeconds": 0
+    },
+    {
+      "stage": 9,
+      "title": "矿运封锁·首领二",
+      "tip": "首领关8名守军含4名六星，三波R1、R2、R3预算11、12、13DP。\n星熊与玛恩纳封锁要道，望和圣聆初雪从高台支援。\n利用跨波存活单位接力，留意星熊保护与高台控制。",
+      "type": "Boss",
+      "mapIndex": 6,
+      "dp": 36,
+      "defense": 5,
+      "baseGold": 14,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D25",
+          "tier": 2,
+          "hpFactor": 2.3,
+          "attackFactor": 2.828571429,
+          "armorBonus": 4,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 7
+          }
+        },
+        {
+          "id": "D30",
+          "tier": 2,
+          "hpFactor": 2.3,
+          "attackFactor": 2.566666667,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 5,
+            "y": 4
+          }
+        },
+        {
+          "id": "D01",
+          "tier": 2,
+          "hpFactor": 1.417307692,
+          "attackFactor": 1.2584375,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 3,
+            "y": 4
+          }
+        },
+        {
+          "id": "D06",
+          "tier": 2,
+          "hpFactor": 1.415789474,
+          "attackFactor": 1.258333333,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 2
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 2,
+          "hpFactor": 1.414285714,
+          "attackFactor": 1.2584375,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 3
+          }
+        },
+        {
+          "id": "D28",
+          "tier": 2,
+          "hpFactor": 2.035384615,
+          "attackFactor": 1.964285714,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 5
+          }
+        },
+        {
+          "id": "D09",
+          "tier": 2,
+          "hpFactor": 1.417241379,
+          "attackFactor": 1.2584,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 6
+          }
+        },
+        {
+          "id": "D27",
+          "tier": 2,
+          "hpFactor": 2.035384615,
+          "attackFactor": 2.030769231,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 2,
+            "y": 4
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R1",
+          "dp": 11,
+          "deploymentSeconds": 32
+        },
+        {
+          "laneId": "R2",
+          "dp": 12,
+          "deploymentSeconds": 32
+        },
+        {
+          "laneId": "R3",
+          "dp": 13,
+          "deploymentSeconds": 32
+        }
+      ],
+      "finalAdvanceSeconds": 75
+    },
+    {
+      "stage": 10,
+      "title": "热站总检",
+      "tip": "10名守军含5名六星；R1、R2、R1三波预算13、14、15DP。\n星熊、凛御银灰与新约能天使拦截，荒芜拉普兰德和望提供高台火力。\n短线经过热泵，长线绕开喷口；观察预警，分批投入。",
+      "type": "Battle",
+      "mapIndex": 5,
+      "dp": 42,
+      "defense": 5,
+      "baseGold": 12,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D25",
+          "tier": 3,
+          "hpFactor": 1.680769231,
+          "attackFactor": 2.375,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 5
+          }
+        },
+        {
+          "id": "D21",
+          "tier": 3,
+          "hpFactor": 1.583333333,
+          "attackFactor": 1.372222222,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 8,
+            "y": 5
+          }
+        },
+        {
+          "id": "D02",
+          "tier": 3,
+          "hpFactor": 1.254444444,
+          "attackFactor": 1.170416667,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 12,
+            "y": 5
+          }
+        },
+        {
+          "id": "D26",
+          "tier": 3,
+          "hpFactor": 1.6625,
+          "attackFactor": 1.385416667,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 4
+          }
+        },
+        {
+          "id": "D06",
+          "tier": 3,
+          "hpFactor": 1.25483871,
+          "attackFactor": 1.170434783,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 5,
+            "y": 8
+          }
+        },
+        {
+          "id": "D24",
+          "tier": 3,
+          "hpFactor": 1.8,
+          "attackFactor": 2.103571429,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 4,
+            "y": 7
+          }
+        },
+        {
+          "id": "D07",
+          "tier": 3,
+          "hpFactor": 1.254545455,
+          "attackFactor": 1.1704,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 3
+          }
+        },
+        {
+          "id": "D08",
+          "tier": 3,
+          "hpFactor": 1.254545455,
+          "attackFactor": 1.170441176,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 6,
+            "y": 5
+          }
+        },
+        {
+          "id": "D10",
+          "tier": 3,
+          "hpFactor": 1.252083333,
+          "attackFactor": 1.170384615,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 7
+          }
+        },
+        {
+          "id": "D28",
+          "tier": 3,
+          "hpFactor": 1.6,
+          "attackFactor": 1.52,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 6
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R1",
+          "dp": 13,
+          "deploymentSeconds": 32
+        },
+        {
+          "laneId": "R2",
+          "dp": 14,
+          "deploymentSeconds": 36
+        },
+        {
+          "laneId": "R1",
+          "dp": 15,
+          "deploymentSeconds": 32
+        }
+      ],
+      "finalAdvanceSeconds": 75
+    },
+    {
+      "stage": 11,
+      "title": "港前最终整备",
+      "tip": "最终补给；领取后进入12人防线，三波共48DP。\n每关结算固定4经验；领取补给后可继续购物与购买经验。\n根据现有星级和羁绊，在升人口和追星之间选择。",
+      "type": "Supply",
+      "mapIndex": 0,
+      "dp": 0,
+      "defense": 0,
+      "baseGold": 14,
+      "naturalXP": 4,
+      "guards": [],
+      "waves": [],
+      "finalAdvanceSeconds": 0
+    },
+    {
+      "stage": 12,
+      "title": "退潮货港·最终防线",
+      "tip": "终战12名守军含8名六星，R1、R2、R1三波预算14、16、18DP。\n留意星熊保护、塞雷娅治疗、玛恩纳蓄力和高台控制。\n清空6点共享防御即可突破，无须全歼，善用跨波支援。",
+      "type": "Boss",
+      "mapIndex": 8,
+      "dp": 48,
+      "defense": 6,
+      "baseGold": 14,
+      "naturalXP": 4,
+      "guards": [
+        {
+          "id": "D25",
+          "tier": 3,
+          "hpFactor": 1.523076923,
+          "attackFactor": 2.236842105,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 5,
+            "y": 5
+          }
+        },
+        {
+          "id": "D29",
+          "tier": 3,
+          "hpFactor": 1.271111111,
+          "attackFactor": 1.53,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 9,
+            "y": 6
+          }
+        },
+        {
+          "id": "D24",
+          "tier": 3,
+          "hpFactor": 1.458947368,
+          "attackFactor": 2.234285714,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 7
+          }
+        },
+        {
+          "id": "D01",
+          "tier": 3,
+          "hpFactor": 1.188235294,
+          "attackFactor": 1.1968,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 3,
+            "y": 3
+          }
+        },
+        {
+          "id": "D26",
+          "tier": 3,
+          "hpFactor": 1.265,
+          "attackFactor": 1.133333333,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 7,
+            "y": 9
+          }
+        },
+        {
+          "id": "D30",
+          "tier": 3,
+          "hpFactor": 1.21,
+          "attackFactor": 1.208888889,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 2
+          }
+        },
+        {
+          "id": "D06",
+          "tier": 3,
+          "hpFactor": 1.188709677,
+          "attackFactor": 1.19673913,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 9
+          }
+        },
+        {
+          "id": "D28",
+          "tier": 3,
+          "hpFactor": 1.250526316,
+          "attackFactor": 1.19,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 10,
+            "y": 4
+          }
+        },
+        {
+          "id": "D21",
+          "tier": 3,
+          "hpFactor": 1.32,
+          "attackFactor": 1.284444444,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 4
+          }
+        },
+        {
+          "id": "D09",
+          "tier": 3,
+          "hpFactor": 1.186956522,
+          "attackFactor": 1.196842105,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 11,
+            "y": 5
+          }
+        },
+        {
+          "id": "D27",
+          "tier": 3,
+          "hpFactor": 1.250526316,
+          "attackFactor": 1.216842105,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 12,
+            "y": 5
+          }
+        },
+        {
+          "id": "D10",
+          "tier": 3,
+          "hpFactor": 1.1875,
+          "attackFactor": 1.196730769,
+          "armorBonus": 0,
+          "rangeFactor": 1,
+          "cell": {
+            "x": 12,
+            "y": 4
+          }
+        }
+      ],
+      "waves": [
+        {
+          "laneId": "R1",
+          "dp": 14,
+          "deploymentSeconds": 36
+        },
+        {
+          "laneId": "R2",
+          "dp": 16,
+          "deploymentSeconds": 40
+        },
+        {
+          "laneId": "R1",
+          "dp": 18,
+          "deploymentSeconds": 36
+        }
+      ],
+      "finalAdvanceSeconds": 90
+    }
+  ]
+}

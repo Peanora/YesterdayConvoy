@@ -31,8 +31,18 @@ namespace YesterdayConvoy
         public bool Selected { get; private set; }
         public string Feedback { get; private set; } = "拖动底部角色卡至红门部署";
         public int ViewCount => views.Count;
-        public float SimulationSpeed { get; private set; } = 1;
-        public bool Muted { get; private set; }
+        float simulationSpeed=1;
+        bool muted=true;
+        public float SimulationSpeed
+        {
+            get=>simulationSpeed;
+            private set{simulationSpeed=value;if(JourneyActive)CampaignJourneySession.Current.SimulationSpeed=value;}
+        }
+        public bool Muted
+        {
+            get=>muted;
+            private set{muted=value;if(JourneyActive)CampaignJourneySession.Current.Muted=value;}
+        }
         public string SelectedEntityId => selectedEntityId;
         public EngagementView CombatView => combatView;
         private double terminalPresentationElapsed;
@@ -76,6 +86,8 @@ namespace YesterdayConvoy
             string[] args = Environment.GetCommandLineArgs();
             diagnostic = SynergyActivationSmokeDriver.Requested || Array.IndexOf(args,"-sandboxFeaturesSmokeTest")>=0 || Array.IndexOf(args,"-synergyReworkSmokeTest")>=0 || Application.isBatchMode || Array.IndexOf(args,"-combatSmokeTest") >= 0 || Array.IndexOf(args,"-interactionSmokeTest") >= 0;
             wisadelDefinition=definition;
+            diagnostic |= ApprovedMapSmokeDriver.Requested||ApprovedMapSmokeDriver.LaunchRequested;
+            diagnostic |= Array.IndexOf(args,"-campaignJourneySmokeTest")>=0;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
@@ -104,6 +116,7 @@ namespace YesterdayConvoy
             }
             bool smoke=Array.Exists(args,a=>a=="-combatSmokeTest" || a=="-interactionSmokeTest" || a=="-talulahSmokeTest" || a=="-talulahMotionEvidence" || a=="-talulahFireRainV12Test" || a=="-patriotVfxSmokeTest" || a=="-monsterSelectionSmokeTest" || a=="-slugSmokeTest" || a=="-monsterCombatSmokeTest");
             TestSelectionOpen=!smoke&&FindAnyObjectByType<TalulahPhaseTrialBootstrap>()==null;
+            TryOpenApprovedLaunchMenu();
             int defenderSmoke=Array.IndexOf(args,"-defenderSkillSmokeTest");
             if(defenderSmoke>=0&&defenderSmoke+1<args.Length)
             {
@@ -175,6 +188,13 @@ namespace YesterdayConvoy
             var mudrockTrial=FindAnyObjectByType<MudrockTrialBootstrap>();if(mudrockTrial!=null)mudrockTrial.Configure(result);
             if(stronghold)result.ConfigureStrongholdMap(challenge);
             if(challenge)foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
+            var approved=ApprovedMapCatalog.Find(defenderTrial?.mapId);
+            if(approved!=null)
+            {
+                result.ConfigureApprovedMapEffects(approved.mechanics);
+                result.ConfigureMarineTerrain(approved.WalkablePoints(),approved.MarineOrigin);
+                foreach(var d in result.Defenders)result.ConfigureDefenderHighGround(d.EntityId,d.Position.y>.5f);
+            }
             return result;
         }
 
@@ -204,14 +224,15 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=Battle.WavesEnabled?"点击底部编队卡牌，在本波开放红门部署":$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
             if(Loop!=null&&(!Loop.CanDeploy||Loop.RewardStage))return new DeploymentReceipt(DeployFailure.NotStarted);
             if(TestSelectionOpen || !Selected) { Feedback="请先选择怪物，再拖动底部角色卡"; return new DeploymentReceipt(DeployFailure.NotStarted); }
             // A valid first deployment starts the simulation. A wrong click does not start the battle.
-            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point)) { CompactShopLineupSeats(); Battle.Begin(); }
+            if(Battle.Phase==BattlePhase.Ready && Battle.IsEntry(point) &&
+                (!Battle.WavesEnabled||Battle.CanDeployOnLane(Battle.FindEntryLane(point)?.Id))) { CompactShopLineupSeats(); Battle.Begin(); }
             var result=Battle.HasCardLoadout ? Battle.TryDeployRole(Battle.RunId,++requestSequence,point,DeploymentDefinition.Card.CardId,allowWhilePaused) : Battle.TryDeploy(Battle.RunId,++requestSequence,point,allowWhilePaused);
             if(result.Success) Selected=false;
             Feedback=result.Success ? $"部署成功  ·  战斗费用 -{Battle.FindCard(DeploymentDefinition.Card.CardId)?.Settings.DeploymentCost??DeploymentDefinition.Snapshot().DeploymentCost}；再次部署请重新选牌" : Explain(result.Failure);
@@ -259,12 +280,22 @@ namespace YesterdayConvoy
                     Math.Min(Math.Max(Math.Max(DeathTail+.1,CombatFeedbackPresentation.Lifetime+.05),NativeVfxPendingUntil-Battle.Clock+.05),
                         terminalPresentationElapsed+delta*EffectiveSimulationSpeed));
             float orderDelta=delta*GuerrillaPresentationRate;
+            int priorWave=Battle.CurrentWaveIndex;
+            bool priorAdvance=Battle.FinalAdvanceActive;
             Battle.Advance(delta*EffectiveSimulationSpeed,orderDelta);
+            if(Battle.WavesEnabled&&Battle.Phase==BattlePhase.Running&&
+                (priorWave!=Battle.CurrentWaveIndex||priorAdvance!=Battle.FinalAdvanceActive))
+            {
+                CancelWaveCardClick();golemDragging=false;
+                ShopNotice(Battle.FinalAdvanceActive?"出兵结束：场上单位继续推进，仍可使用技能":
+                    $"第 {Battle.CurrentWaveIndex+1} 波：开放 {Battle.CurrentWaveLaneId}，本波 {Battle.CurrentWaveBudget} DP，余量已重置");
+            }
             // Automatic orders can be born partway through a simulation step. Bind once,
             // starting at their actual model age instead of advancing a full extra frame.
             bool newOrder=ObserveGuerrillaOrder();
             guerrillaOrderView?.AdvancePresentation(newOrder?0:orderDelta);
             StepBattleShopLoop();
+            ValidateDefenderInspector();
             TickSynergyActivationFeedback(delta);
             SyncViews();
             UpdatePreview();
@@ -329,6 +360,7 @@ namespace YesterdayConvoy
             return result;
         }
         public void ToggleSpeed() => SimulationSpeed=SimulationSpeed==1 ? 2 : 1;
+        public void ToggleMute() => Muted=!Muted;
         private void OnApplicationFocus(bool focus)
         { if(!focus && !diagnostic && Battle!=null) { Battle.SetPaused(true); if(ShopTrialActive)CancelShopDrag();else CancelInteraction(); } }
 
@@ -417,7 +449,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(770,20,150,28),$"场上 {Battle.ActiveCount}  ·  穿门 {Battle.Breaches}",smallStyle);
             if(Battle.EngagementEnabled)
             {
-                if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) Muted=!Muted;
+                if(GUI.Button(new Rect(930,14,64,38),Muted ? "静音" : "音效",buttonStyle)) ToggleMute();
                 if(GUI.Button(new Rect(1002,14,76,38),(SkillMenuOpen ? "0.03x" : SimulationSpeed+"x"),buttonStyle)) ToggleSpeed();
                 DrawDefenderHUD();
             }
@@ -539,20 +571,20 @@ namespace YesterdayConvoy
             Vector2 position=TacticalViewport.Current.FromScreen(screen);float x=position.x,y=position.y;
             if(!d.Alive) continue;
             float width=TacticalMapActive || definition.Card.CardId==SilverWolfCombat.CardId ? 62 : 96;
-            Fill(new Rect(x-width/2,y,width,7),new Color(0.03f,0.05f,0.06f));
-            Fill(new Rect(x-width/2+2,y+2,(width-4)*d.Health/d.MaxHealth,3),new Color(0.96f,0.66f,0.3f));
+            DrawDefenderHealthBar(d,new Rect(x-width/2,y,width,7),2);
             if(d.Settings.Skill.Enabled)
             {
                 bool active=Battle.DefenderSkillActive(d);float fill=active?(float)((d.SkillActiveUntil-Battle.Clock)/d.Settings.Skill.Duration):d.SkillSP/d.Settings.Skill.RequiredSP;
-                if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)fill=d.Ammo/50f;
-                if(d.Settings.Skill.Kind==DefenderSkillKind.WangGambit&&active)fill=d.Ammo/20f;
+                float ammoCapacity=d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery?Battle.V2DefenderSkill(d,"ammo",50):
+                    d.Settings.Skill.Kind==DefenderSkillKind.WangGambit?Battle.V2DefenderSkill(d,"ammo",20):1;
+                if((d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery||d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)&&active)fill=d.Ammo/ammoCapacity;
                 Fill(new Rect(x-width/2,y+9,width,5),new Color(.03f,.05f,.06f));
                 Fill(new Rect(x-width/2+1,y+10,(width-2)*Mathf.Clamp01(fill),3),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
                 if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)fill=(float)(d.ProtectionUntil-Battle.Clock)/11;
                 string skill=DefenderSkillName(d.Settings.Skill.Kind)+(active?$" {Math.Max(0,d.SkillActiveUntil-Battle.Clock):0.0}s":$" {d.SkillSP:0}/{d.Settings.Skill.RequiredSP:0}");
-                if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)skill="使命必达 · 弹药 "+d.Ammo+"/50";
+                if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)skill="使命必达 · 弹药 "+d.Ammo+"/"+ammoCapacity.ToString("0");
                 if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)skill=$"地狱变相 · 临死保护 {d.ProtectionUntil-Battle.Clock:0.0}s";
-                if(d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)skill=$"天下劫 · 棋子 {d.ChessStock} · 弹药 {d.Ammo}/20";
+                if(d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)skill=$"天下劫 · 棋子 {d.ChessStock} · 弹药 {d.Ammo}/{ammoCapacity:0}";
                 if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign)skill+=$" · 守军费用 {Battle.DefenderBudget:0}";
                 GUI.Label(DefenderSkillTrialActive?new Rect(x+width/2+8,y-3,320,25):new Rect(x-120,y-27,260,25),skill,smallStyle);
                 if(d.DebtLife)GUI.Label(new Rect(x+width/2+8,y+18,260,24),$"我执 · 累积伤害 {d.Debt:0}",smallStyle);
@@ -591,6 +623,8 @@ namespace YesterdayConvoy
             switch(reason)
             {
                 case DeployFailure.WrongEntry: return "无法部署：只有红门是合法入口";
+                case DeployFailure.WaveEntryClosed: return "本波入口未开放，请使用白线路线对应的红门";
+                case DeployFailure.DeploymentWindowEnded: return "部署阶段已结束，等待场上单位完成最后推进";
                 case DeployFailure.NoDP: return "费用不足：等待场上单位继续进攻";
                 case DeployFailure.NoUses: return "本场部署次数已用尽";
                 case DeployFailure.CoolingDown: return "部署冷却中，请稍候";

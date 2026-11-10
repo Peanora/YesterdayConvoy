@@ -83,7 +83,9 @@ namespace YesterdayConvoy.Tests
         {
             var b=Make(count);var core=Deploy(b,"CARD_M37",1);var other=Deploy(b,"CARD_M38",2);var outsider=Deploy(b,"CARD_M07",3);
             Assert.That(b.ContractAttackBonus(other),Is.EqualTo(bonus).Within(.001f));Assert.That(b.ContractShieldRemaining(other),Is.EqualTo(shield).Within(.001f));
-            Assert.That(outsider.MaxHealth,Is.EqualTo(1000));Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);Assert.That(b.ContractAttackBonus(core),Is.GreaterThan(0));
+            // At eight or more Sarkaz this fixture also contains M19 plus M07,
+            // activating +10% Reunion HP for M07, which remains outside Sarkaz.
+            Assert.That(outsider.MaxHealth,Is.EqualTo(count>=8?1100:1000));Assert.That(b.ContractAttackBonus(outsider),Is.Zero);Assert.That(b.ContractShieldRemaining(outsider),Is.Zero);Assert.That(b.ContractAttackBonus(core),Is.GreaterThan(0));
         }
 
         [Test]public void LegacyNonSarkazConfigurationCannotMakeAnOutsiderTheContractOwner()
@@ -152,7 +154,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.ContractAttackBonus(spirit),Is.Zero);Assert.That(b.ContractShieldRemaining(spirit),Is.Zero);
         }
 
-        [TestCase(2,1100,.35f)][TestCase(9,1600,1.5f)]
+        // The default M07 plus Patriot activate +10% Reunion HP in both cases;
+        // the Sarkaz and Reunion HP additions share one additive base budget.
+        [TestCase(2,1200,.35f)][TestCase(9,1700,1.5f)]
         public void NativePatriotRebirthKeepsPermanentAttackButCannotGrantAnotherEntryShield(int count,float hp,float attack)
         {
             string[] members=count==2?new[]{"CARD_M20","CARD_M37"}:null;

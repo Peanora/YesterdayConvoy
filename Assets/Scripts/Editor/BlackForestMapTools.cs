@@ -21,7 +21,10 @@ namespace YesterdayConvoy.Editor
             foreach(var r in root.GetComponentsInChildren<Renderer>(true))if(r.sharedMaterials.Any(m=>m==null||!AssetDatabase.Contains(m)))throw new InvalidOperationException("Transient or missing map material: "+r.name);
             if(root.GetComponentsInChildren<Collider>().Length!=0)throw new InvalidOperationException("Decorations must not introduce collision or line-of-sight rules");
             var data=Object.FindAnyObjectByType<BlackForestBootstrap>().encounter;_=data.Snapshot();
-            if(data.LaneSnapshot().Length!=3||data.lanes.Select(l=>l.exitId).Distinct().Count()!=2||!data.terrainOnly)throw new InvalidOperationException("Wrong gate or encounter configuration");
+            if(data.LaneSnapshot().Length!=3||data.lanes.Select(l=>l.exitId).Distinct().Count()!=2||data.terrainOnly||data.defenders.Length!=9)throw new InvalidOperationException("Wrong gate or encounter configuration");
+            var waves=data.WaveSnapshot();
+            if(waves==null)throw new InvalidOperationException("Missing forest wave scenario");
+            foreach(var wave in waves.Waves)if(!data.lanes.Any(l=>l.id==wave.LaneId))throw new InvalidOperationException("Wave lane does not exist");
             Debug.Log("BLACK_FOREST_SAVED_ASSETS_PASS: terrain, meshes, materials and lane configuration are persistent and editable");
         }
         public static void RenderPreview()

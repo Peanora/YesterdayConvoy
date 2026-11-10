@@ -1,14 +1,22 @@
 # 昨日圆车
 
+## 当前运行入口
+
+直接打开 `Builds/Windows/YesterdayConvoy.exe`，默认进入十二关行动：直接从集结采购奖励关开始，赠送3种不同的一二费角色，初始1种编队、2种备战；奖励整备时可拖动调整，银狼暂不进入商店。其他地图或专项从右上菜单“返回测试选择”进入；请保留整个 Windows 目录，配套 Data 和 DLL 不能拆开。当前源码版本与真实验证见同目录 `SOURCE.txt`、[工程状态](docs/STATUS.md)和[验证记录](docs/QA.md)。
+
+2026-11-09人类要求：试玩/预览启动脚本已清理，以后不再创建或分发 `.cmd`，也不改用 `.bat`。浏览器预览直接打开 HTML；后续交付给出 EXE 路径。构建仅本地交付，不自动 ZIP / Releases。
+
+以下为早期M01 Demo资料，历史场景、功能缺失和验证数字不能代表当前版本；最新目录与玩法以以上文档及[十二关说明](docs/CAMPAIGN_JOURNEY_V2.md)为准。
+
 2026-11-03目录与地图新规（人类确认）：日常统一打开 `E:/珍贵资料/昨日圆车`。资源直接分类在Assets下，不再使用_Game包裹和分散的试验场景目录。地图必须各自保存为Assets/Scenes内独立场景，编辑模式可查看和修改，禁止Play时重建整张地形；当前保留MonsterTrial与BattleShop，其他旧地图及生成入口退役。角色、技能和商店闭环保留。目录、操作及新增地图规范见[工程结构说明](docs/PROJECT_STRUCTURE.md)。
 
 三人一起开发请先看[协作开发指南](docs/COLLABORATION.md)：接受邀请 → GitHub Desktop克隆 → 每人一个功能分支 → PR审查 → 主导者集成并发布试玩包。
 
 Unity工程根目录：`E:/珍贵资料/昨日圆车`。当前可玩M01：从红门部署一只维维美，与高台克洛丝远程停步交战（克洛丝不阻挡），技力满后手动开启爆裂黎明，击杀干员后继续穿门；守方生命1，一次穿门胜利，角色倒下失败，可重新开始。
 
-## 直接下载试玩
+## 早期Demo下载（历史）
 
-无需Unity：[Windows x64试玩包与发布说明](https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20)。下载附件`YesterdayConvoy-Windows-x64-2026-10-20.zip`，完整解压后打开`Game/YesterdayConvoy.exe`；不要只取exe，Data文件夹和DLL必须一起保留。后续已验证的可运行版本将同步到[Releases](https://github.com/Peanora/YesterdayConvoy/releases)。GitHub的“Source code”压缩包是Unity源工程，不是试玩包。
+历史归档：[2026-10-20 Windows Demo与发布说明](https://github.com/Peanora/YesterdayConvoy/releases/tag/demo-2026-10-20)，不代表当前版本。当前本机使用上方 EXE 入口，后续不自动更新 ZIP 或 Releases。GitHub的“Source code”压缩包是Unity源工程，不是试玩包。
 
 维什戴尔已改为用户四GIF的漫画Q版：19帧走路、静态卡面/待机、28帧普攻、100帧爆裂黎明；无方向转身，爆炸加入黑边与表情印章。今后角色/特效按此统一，来源与使用范围见[本轮资源记录](docs/art/WISADEL-COMIC-2026-10-19.md)。全画幅水闸地图/镜头与克洛丝本轮未重绘。[当前漫画角色与技能实机](docs/art/previews/wisadel-comic-skill.png)（实际战场相机，不含HUD）。招募费5与部署费2分别显示；商店、升星、羁绊和多关经济尚未实现。
 

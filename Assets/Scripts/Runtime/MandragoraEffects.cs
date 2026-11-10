@@ -23,7 +23,8 @@ namespace YesterdayConvoy
         public FacilityState Pillar {get;internal set;}
         public Vector3 Direction {get;internal set;}
         public double StartedAt {get;internal set;}
-        public double DetonateAt=>StartedAt+5;
+        internal float Delay=5;
+        public double DetonateAt=>StartedAt+Delay;
         public bool Resolved {get;internal set;}
         public bool Applied {get;internal set;}
     }
@@ -39,8 +40,8 @@ namespace YesterdayConvoy
         {
             var g=u.Gaze;if(g==null||g.Ended)return;
             var d=FindDefender(g.TargetId);g.EndedAt=Clock;g.Interrupted=interrupted;
-            u.NextGazeAt=Clock+15;u.NextAttackTime=Math.Max(u.NextAttackTime,Clock+1.0/3);
-            if(d!=null&&!HasGazeSlow(d))d.NextAttackTime=Clock+Math.Max(0,d.NextAttackTime-Clock)*.3;
+            u.NextGazeAt=Clock+V2Skill(u,"gaze","afterEndCooldown",15);u.NextAttackTime=Math.Max(u.NextAttackTime,Clock+V2Skill(u,"gaze","postActionRecovery",1f/3));
+            if(d!=null&&!HasGazeSlow(d))d.NextAttackTime=Clock+Math.Max(0,d.NextAttackTime-Clock)*V2Skill(u,"gaze","targetAttackRate",.3f);
         }
         void BreakStoneShield(DeployedUnitState u)
         {
@@ -51,7 +52,7 @@ namespace YesterdayConvoy
         void RestoreStoneShield(DeployedUnitState u)
         {
             u.StoneShield=true;u.StoneShieldRestoredAt=Clock;u.StoneShieldRestores++;
-            u.IsBlocked=false;u.BlockerId=null;u.NextStoneAuraAt=Clock+1;
+            u.IsBlocked=false;u.BlockerId=null;u.NextStoneAuraAt=Clock+V2Skill(u,"stoneAura","tickInterval",1);
         }
         void StartMandragoraRebirth(DeployedUnitState u)
         {
@@ -63,36 +64,36 @@ namespace YesterdayConvoy
         {
             if(u.MandraPhase==MandragoraPhase.Reborn)
             {
-                if(Clock+1e-6<u.MandraPhaseStartedAt+5)return true;
+                if(Clock+1e-6<u.MandraPhaseStartedAt+V2Skill(u,"secondPhase","delay",5))return true;
                 u.MandraPhase=MandragoraPhase.Second;u.MandraPhaseStartedAt=Clock;
-                u.Health=u.MaxHealth=UnitBaseHealth(u);u.MandraInvulnerableUntil=Clock+3;
-                u.StoneShield=true;u.NextGazeAt=Clock+10;u.NextMandraPillarAt=Clock+20;u.NextStoneAuraAt=Clock+1;
+                u.Health=u.MaxHealth=V2Skill(u,"secondPhase","restoredHp",UnitBaseHealth(u));u.MandraInvulnerableUntil=Clock+V2Skill(u,"secondPhase","invulnerable",3);
+                u.StoneShield=true;u.NextGazeAt=Clock+V2Skill(u,"secondPhase","gazeFirstDelay",10);u.NextMandraPillarAt=Clock+V2Skill(u,"secondPhase","pillarFirstDelay",20);u.NextStoneAuraAt=Clock+V2Skill(u,"stoneAura","tickInterval",1);
                 u.LastAttackTime=double.NegativeInfinity;u.NextAttackTime=Clock;return true;
             }
             if(!u.StoneShield)
             {
                 u.NextGazeAt+=step;u.NextMandraPillarAt+=step;
-                if(Clock+1e-6>=u.StoneShieldBrokenAt+25||u.HealthAtShieldBreak-u.Health>u.MaxHealth*.4f)RestoreStoneShield(u);
+                if(Clock+1e-6>=u.StoneShieldBrokenAt+V2Skill(u,"stoneShield","restoreDelay",25)||u.HealthAtShieldBreak-u.Health>u.MaxHealth*V2Skill(u,"stoneShield","restoreAfterLostHpFraction",.4f))RestoreStoneShield(u);
             }
             if(u.MandraPhase==MandragoraPhase.Second&&u.StoneShield&&Clock+1e-6>=u.NextStoneAuraAt)
             {
-                u.NextStoneAuraAt=Clock+1;
+                u.NextStoneAuraAt=Clock+V2Skill(u,"stoneAura","tickInterval",1);
                 foreach(var d in defenders)
-                    if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=1.7f)
-                    {DamageDefender(d,UnitCombat(u).UnitAttack*.3f,CombatDamageType.Arts,source:u);u.StoneAuraHits++;}
+                    if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=V2Skill(u,"stoneAura","radius",1.7f))
+                    {DamageDefender(d,NativeSkillDamage(u,"stoneAura","damagePerTick",UnitCombat(u).UnitAttack*.3f),CombatDamageType.Arts,source:u);u.StoneAuraHits++;}
             }
             return false;
         }
         DefenderState GazeTarget(DeployedUnitState u)
         {
             // Defenders currently share one attack setting; stable spawn order breaks equal-attack ties.
-            foreach(var d in defenders)if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=1.5f)return d;
+            foreach(var d in defenders)if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=V2Skill(u,"gaze","range",1.5f))return d;
             return null;
         }
         void LockGaze(PetrifyingGaze g,DefenderState d)
         {
             bool already=HasGazeSlow(d);g.TargetId=d.EntityId;
-            if(!already)d.NextAttackTime=Clock+Math.Max(0,d.NextAttackTime-Clock)/.3;
+            if(!already)d.NextAttackTime=Clock+Math.Max(0,d.NextAttackTime-Clock)/V2Skill(FindUnit(g.SourceId),"gaze","targetAttackRate",.3f);
         }
         bool StepMandragoraAction(DeployedUnitState u)
         {
@@ -108,29 +109,29 @@ namespace YesterdayConvoy
                 }
                 if(!g.Ended)
                 {
-                    if(GroundDistance(u.Motion.Position,d.Position)>1.5f){EndGaze(u,true);return true;}
-                    while(g.NextTick<=g.StartedAt+7.1+1e-6&&Clock+1e-6>=g.NextTick&&d.Alive)
+                    if(GroundDistance(u.Motion.Position,d.Position)>V2Skill(u,"gaze","range",1.5f)){EndGaze(u,true);return true;}
+                    while(g.NextTick<=g.StartedAt+V2Skill(u,"gaze","duration",7.1f)+1e-6&&Clock+1e-6>=g.NextTick&&d.Alive)
                     {
-                        float hp=d.Health;DamageDefender(d,UnitCombat(u).UnitAttack,CombatDamageType.Arts,source:u);
-                        g.Ticks++;g.DamageDealt+=hp-d.Health;g.NextTick+=1;
+                        float hp=d.Health;DamageDefender(d,NativeSkillDamage(u,"gaze","damagePerTick",UnitCombat(u).UnitAttack),CombatDamageType.Arts,source:u);
+                        g.Ticks++;g.DamageDealt+=hp-d.Health;g.NextTick+=V2Skill(u,"gaze","tickInterval",1);
                     }
                     if(!d.Alive)
                     {
                         sealedTiles.Add(Cell(d.Position));var next=GazeTarget(u);
                         if(next!=null)LockGaze(g,next);else EndGaze(u,false);
                     }
-                    if(Clock+1e-6>=g.StartedAt+7.1)EndGaze(u,false);
+                    if(Clock+1e-6>=g.StartedAt+V2Skill(u,"gaze","duration",7.1f))EndGaze(u,false);
                 }
                 u.IsMoving=u.HasCombatTarget=false;return true;
             }
-            if(g!=null&&Clock<g.EndedAt+1.0/3||Clock<u.PillarCommandStartedAt+1.5||Clock<u.StoneShieldRestoredAt+1.5)
+            if(g!=null&&Clock<g.EndedAt+V2Skill(u,"gaze","postActionRecovery",1f/3)||Clock<u.PillarCommandStartedAt+V2Skill(u,"pillar","actionDuration",1.5f)||Clock<u.StoneShieldRestoredAt+V2Skill(u,"stoneShield","restoreActionDuration",1.5f))
             {u.IsMoving=u.HasCombatTarget=false;return true;}
             if(!u.StoneShield||Clock<u.LastAttackTime+UnitCombat(u).AttackDuration/u.LastAttackRate)return false;
             if(u.MandraPhase==MandragoraPhase.Second&&Clock+1e-6>=u.NextMandraPillarAt&&TryCommandPillar(u))
-            {u.NextMandraPillarAt=Clock+15;u.PillarCommandStartedAt=Clock;u.IsMoving=u.HasCombatTarget=false;return true;}
+            {u.NextMandraPillarAt=Clock+V2Skill(u,"pillar","startToStartCooldown",15);u.PillarCommandStartedAt=Clock;u.IsMoving=u.HasCombatTarget=false;return true;}
             if(Clock+1e-6<u.NextGazeAt)return false;
             var target=GazeTarget(u);if(target==null)return false;
-            g=new PetrifyingGaze{SourceId=u.EntityId,StartedAt=Clock,NextTick=Clock+1};
+            g=new PetrifyingGaze{SourceId=u.EntityId,StartedAt=Clock,NextTick=Clock+V2Skill(u,"gaze","tickInterval",1)};
             LockGaze(g,target);gazes.Add(g);u.Gaze=g;u.IsMoving=u.HasCombatTarget=false;return true;
         }
         bool TryCommandPillar(DeployedUnitState u)
@@ -150,7 +151,7 @@ namespace YesterdayConvoy
                 if(best>0&&gap<nearest){selected=f;direction=bestDirection;nearest=gap;}
             }
             if(selected==null)return false;
-            pillarCommands.Add(new PillarCommand{SourceId=u.EntityId,Pillar=selected,Direction=direction,StartedAt=Clock});return true;
+            pillarCommands.Add(new PillarCommand{SourceId=u.EntityId,Pillar=selected,Direction=direction,StartedAt=Clock,Delay=V2Skill(u,"pillar","collapseDelay",5)});return true;
         }
         void ResolvePillarCommands()
         {

@@ -41,6 +41,8 @@ namespace YesterdayConvoy
         public string defenderTestId;
         [Tooltip("Explicit terrain-only authored map preview; no defenders or combat balance are configured.")]
         public bool terrainOnly;
+        public AttackWaveScenario attackWaves;
+        public BattleWavePlan WaveSnapshot()=>attackWaves==null?null:attackWaves.Snapshot();
         public bool Tactical => lanes!=null && lanes.Length>0;
         public DeploymentLane[] LaneSnapshot()
         {

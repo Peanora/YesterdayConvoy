@@ -1,5 +1,15 @@
 # 工程目录与场景规范
 
+2026-11-09项目文件清理：试玩/预览 `.cmd` 启动器已从根目录、tools、文档预览与本地Builds中移除，后续不得再生成或复制，也不改用 `.bat`。标准入口只有 `Builds/Windows/YesterdayConvoy.exe`（默认十三关，其他模式走游戏内菜单），浏览器预览直接打开相应 HTML。保留Unity工程、角色资源、现有构建和必要IDE生成文件；不为清理启动器删除他人未提交修改或工程缓存。
+
+2026-11-09十三关行动v2：复用现有八个保存地图场景，构建清单仍24场景；Resources/CampaignV2新增Journey、八份正式StageXXBattle与v2只读数值JSON，Assets/Data/CampaignV2保存批准流程与authoring输入。静态Journey会话只携带经济/编队数据，进入各场景后恢复，不携带旧场景视觉对象或在Play搭地形。正式入口与编辑覆盖边界见[十三关说明](CAMPAIGN_JOURNEY_V2.md)。
+
+2026-11-08八图V2：新增 `Assets/Scenes/Map01SunsetSquare.unity` 至 `Map08EbbHarbor.unity` 八个独立保存战场，构建清单共24场景。实际场景缩略图、持久Mesh和材质在 `Assets/Art/Environment/ApprovedMaps`；只读地图/路线/守军配置在 `Assets/Data/Resources/ApprovedMaps`。从怪物选择页“战术地图 · 八张新地图”进入；编辑方法、显式重建工具边界和地道/热泵试验规则见[八图说明](APPROVED_MAPS_V2.md)。日常只需打开本工程相应场景，Play不生成整张地图。
+
+2026-11-08波次试玩：`BlackForestCrossing.unity`继续保存全部地形；地图配置新增`attackWaves`，引用`Assets/Data/Resources/Maps/BlackForestWaves.asset`保存三波入口/独立DP/部署时长/末段推进。编辑配置无需修改场景，运行状态由ManualBattle独立持有。默认十三关及旧专项不自动套用波次；树海入口改为“黑流树海 · 波次试玩”。
+
+2026-11-08树海六星防线：`Assets/Scenes/BlackForestCrossing.unity`保持保存地形，`Assets/Data/Resources/Maps/BlackForestCrossing.asset`已配置九名守军（六名六星）。从测试选择进入“树海交错回廊 · 六星防线”，8级自由整备、正常角色数值、50DP/6共享防御。入口和规则见[地图说明](BLACK_FOREST_CROSSING.md)，覆盖下文此前无守军的阶段记录。
+
 2026-11-06树海地图：新增 `Assets/Scenes/BlackForestCrossing.unity`，共16个保存场景，由GameSceneCatalog自动纳入构建。17×14地形、三红两蓝、根系与三种视觉特殊地面直接保存在场景；从怪物测试选择进入“树海交错回廊 · 地形试走”。本轮无守军，不替换既有挑战地图，编辑与操作见[树海地图说明](BLACK_FOREST_CROSSING.md)。
 
 2026-11-06资源分类整理：原StreamingAssets运行原图已迁入下表的Art分类；JSON清单和来源记录移入`Assets/Data/ArtCatalogs`。工程内StreamingAssets只留说明，Windows构建时自动收集运行清单与预处理纹理到Player的StreamingAssets。逻辑包名、原图内容和GUID保留；这不表示同意删除早期美术。

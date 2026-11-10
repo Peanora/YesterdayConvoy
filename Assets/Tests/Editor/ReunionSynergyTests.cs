@@ -90,16 +90,17 @@ namespace YesterdayConvoy.Editor.Tests
             Assert.That(b.Units,Is.Empty);Assert.That(b.DP,Is.EqualTo(100));
         }
 
-        [Test] public void FourTierChoiceAndAverageStarsCreateTheSpecifiedSupportProfiles()
+        [Test] public void FourTierChoiceAndTotalStarsCreateTheSpecifiedSupportProfiles()
         {
             var b=Battle(Full.Take(4).ToArray(),true,2);long request=0;
             foreach(string id in Full.Take(3))Deploy(b,id,ref request);
             var support=b.Units.Single(u=>u.SynergySupport);
-            Assert.That(support.CardId,Is.EqualTo("CARD_M08"));Assert.That(support.MaxHealth,Is.EqualTo(135));
-            Assert.That(support.Profile.Combat.UnitAttack,Is.EqualTo(36));Assert.That(support.Profile.Combat.UnitArmor,Is.Zero);
+            Assert.That(b.ReunionTotalStars,Is.EqualTo(8));
+            Assert.That(support.CardId,Is.EqualTo("CARD_M08"));Assert.That(support.MaxHealth,Is.EqualTo(127));
+            Assert.That(support.Profile.Combat.UnitAttack,Is.EqualTo(34));Assert.That(support.Profile.Combat.UnitArmor,Is.Zero);
             Assert.That(support.ReunionEliteSupport,Is.False);
             var half=ReunionRules.ForSupport(6,true,1.5f);
-            Assert.That(half.Health,Is.EqualTo(138));Assert.That(half.Attack,Is.EqualTo(38),"Positive .5 values round upward.");
+            Assert.That(half.Health,Is.EqualTo(135));Assert.That(half.Attack,Is.EqualTo(37));
             Assert.That(half.Armor,Is.EqualTo(1));
         }
     }

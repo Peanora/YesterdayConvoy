@@ -37,8 +37,12 @@ namespace YesterdayConvoy
             if(!ReferenceEquals(synergyActivationShop,shop))
             {
                 ClearSynergyActivationFeedback();synergyActivationShop=shop;
+                if(JourneyActive&&CampaignJourneySession.Current.ObservedSynergies!=null)
+                    synergyActivationFeedback.RestoreObserved(CampaignJourneySession.Current.ObservedSynergies);
             }
-            synergyActivationFeedback.Observe(CurrentSynergies);
+            var rows=CurrentSynergies;
+            synergyActivationFeedback.Observe(rows);
+            if(JourneyActive)CampaignJourneySession.Current.ObservedSynergies=rows;
             // Rebuilt priorities have fresh identities: stop an obsolete cue immediately.
             // An unchanged tier keeps its identity, including after a modal resumes.
             SynchronizeSynergyActivationSoundSequence();

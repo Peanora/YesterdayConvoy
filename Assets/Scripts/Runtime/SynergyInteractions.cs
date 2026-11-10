@@ -7,7 +7,9 @@ namespace YesterdayConvoy
     {
         bool golemDragging;
         Vector2 golemPointer;
-        static Rect GolemSlot=>new Rect(1115,454,145,88);
+        int golemClickRun,golemClickWave;
+        Vector2 golemClickStart;
+        static Rect GolemSlot=>new Rect(1115,164,145,88);
         public static Rect GolemCardRect=>GolemSlot;
         static string FormName(InfectionForm form)=>form==InfectionForm.Swarm?"集群":form==InfectionForm.Shell?"甲壳":"爆裂";
         public bool SetCampaignForms(InfectionForm form,InfectionForm second)
@@ -24,13 +26,14 @@ namespace YesterdayConvoy
             preset==7?new[]{"CARD_M33","CARD_M34","CARD_M35","CARD_M36","CARD_M26","CARD_M27","CARD_M08","CARD_M10"}:new[]{"CARD_M07","CARD_M08","CARD_M11","CARD_M12","CARD_M13","CARD_M06","CARD_M14"};
         void PrepareSandboxRoster(int preset)
         {
+            if(BlackForestChallengeActive&&preset>=10){ShopNotice("树海试玩保留本关六星防线，可在商店自由调整编队");return;}
             var ids=SandboxRoster(preset);var cards=ids.Select(id=>shopDefinitions[id].Card);
             if(ids.Count(CampaignBalance.MudrockCrew)>=2)cards=cards.Concat(new[]{GolemCard});
             QueueArt(Plan(preset>=10?BattleShopStages.Defenders(2,true):shopMapCopy.defenders,cards,true),()=>SetSandboxRoster(preset),"准备羁绊样板");
         }
         public bool SetSandboxRoster(int preset)
         {
-            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>11)return false;
+            if(!SynergySandbox||!Loop.CanShop||preset<0||preset>11||BlackForestChallengeActive&&preset>=10)return false;
             CompleteGolemExperienceFeedback();
             var ids=SandboxRoster(preset);golemBenchmark=preset>=10;
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=preset>=9&&(CampaignBalance.MudrockCrew(id)||preset==11&&id=="CARD_M08")?2:1}),Array.Empty<string>(),Math.Max(8,shop.Level),0,10);
@@ -52,6 +55,7 @@ namespace YesterdayConvoy
         bool HandleGolemPointer(EventType type,Vector2 point,int button)
         {
             if(!CampaignActive||!Loop.CanDeploy||Loop.RewardStage||Battle.MudrockTier<2)return false;
+            if(Battle.WavesEnabled)return HandleWaveGolemPointer(type,point,button);
             if(type==EventType.MouseDown&&button==0&&GolemSlot.Contains(point))
             {golemDragging=true;golemPointer=point;CloseSkillMenu();return true;}
             if(!golemDragging)return false;golemPointer=point;
@@ -66,13 +70,34 @@ namespace YesterdayConvoy
             }
             return type==EventType.MouseDown||type==EventType.MouseDrag||type==EventType.MouseUp;
         }
+        bool HandleWaveGolemPointer(EventType type,Vector2 point,int button)
+        {
+            if(button!=0){bool wasDragging=golemDragging;golemDragging=false;return wasDragging;}
+            if(type==EventType.MouseDown&&GolemSlot.Contains(point))
+            {
+                golemDragging=true;golemClickRun=Battle.RunId;golemClickWave=Battle.CurrentWaveIndex;
+                golemClickStart=golemPointer=point;CloseSkillMenu();CloseDefenderInspector();return true;
+            }
+            if(!golemDragging)return false;
+            bool valid=Battle.RunId==golemClickRun&&Battle.CurrentWaveIndex==golemClickWave&&
+                Battle.DeploymentWindowOpen&&GolemSlot.Contains(point)&&(point-golemClickStart).sqrMagnitude<=64;
+            if(type==EventType.MouseMove||type==EventType.MouseDrag)
+            {if(!valid)golemDragging=false;return true;}
+            if(type!=EventType.MouseUp)return false;
+            golemDragging=false;
+            if(!valid)return true;
+            var lane=Battle.Lanes.FirstOrDefault(l=>l.Id==Battle.CurrentWaveLaneId);
+            if(lane==null)return true;
+            var result=Battle.TryDeployGolem(Battle.RunId,++requestSequence,lane.Entry,true);
+            ShopNotice(result.Success?"巨像已部署至 "+lane.Id+"，本关限一次":Explain(result.Failure));SyncViews();return true;
+        }
         void DrawGolemCard()
         {
             if(Battle.MudrockTier<2||!Loop.CanDeploy)return;
             Fill(GolemSlot,LoopPanel);DrawTestPortrait(new Rect(GolemSlot.x+4,GolemSlot.y+2,66,82),GolemCard.Portrait);
             GUI.Label(new Rect(GolemSlot.x+70,GolemSlot.y+10,72,26),"巨像 "+Battle.GolemStage,LoopText(13));
-            GUI.Label(new Rect(GolemSlot.x+70,GolemSlot.y+40,72,32),Battle.GolemDeployed?"本场已用":Battle.GolemCost+"DP · 拖动",LoopText(11));
-            if(golemDragging)DrawTestPortrait(new Rect(golemPointer.x-45,golemPointer.y-100,90,100),GolemCard.Portrait);
+            GUI.Label(new Rect(GolemSlot.x+70,GolemSlot.y+40,72,32),Battle.GolemDeployed?"本场已用":Battle.GolemCost+(Battle.WavesEnabled?"DP · 点击":"DP · 拖动"),LoopText(11));
+            if(golemDragging&&!Battle.WavesEnabled)DrawTestPortrait(new Rect(golemPointer.x-45,golemPointer.y-100,90,100),GolemCard.Portrait);
         }
     }
 }

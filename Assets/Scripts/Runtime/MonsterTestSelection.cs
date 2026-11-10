@@ -75,7 +75,7 @@ namespace YesterdayConvoy
         }
         public void ReturnToMonsterTests()
         {
-            if(FindAnyObjectByType<BlackForestBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
+            if(FindAnyObjectByType<BlackForestBootstrap>()!=null||FindAnyObjectByType<ApprovedMapBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             if(FindAnyObjectByType<TalulahPhaseTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             if(FindAnyObjectByType<MudrockTrialBootstrap>()!=null){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");return;}
             CancelArtPreparation();
@@ -95,6 +95,7 @@ namespace YesterdayConvoy
                 menuSmall=new GUIStyle(smallStyle){fontSize=15,wordWrap=true};
                 menuSearch=new GUIStyle(GUI.skin.textField){font=scene.InterfaceFont,fontSize=16,padding=new RectOffset(9,9,6,6)};
             }
+            if(approvedMapMenuOpen){DrawApprovedMapMenu();return;}
             if(dedicatedSynergyMenuOpen){DrawDedicatedSynergyMenu();return;}
             if(defenderMenuOpen){DrawDefenderSelection();return;}
             Fill(new Rect(0,0,1280,720),new Color(.025f,.04f,.055f,.99f));
@@ -105,8 +106,9 @@ namespace YesterdayConvoy
             int count=0; foreach(var option in monsterTests) if(option.Playable) count++;
             if(GUI.Button(new Rect(790,190,428,40),"守军技能测试 · 含六星",buttonStyle))defenderMenuOpen=true;
             if(GUI.Button(new Rect(790,91,428,40),"三星塔露拉 · 完整双阶段",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(TalulahPhaseTrialBootstrap.SceneName);
-            if(GUI.Button(new Rect(790,42,428,40),"树海交错回廊 · 地形试走",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
+            if(GUI.Button(new Rect(790,42,428,40),"黑流树海 · 波次试玩",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene(BlackForestLayout.SceneName);
             if(GUI.Button(new Rect(790,140,428,40),"泥岩 · 留声机争夺试玩",buttonStyle))EnterMudrockTrial();
+            if(GUI.Button(new Rect(790,232,428,32),"战术地图 · 八张新地图",buttonStyle))OpenApprovedMapMenu();
             GUI.Label(new Rect(56,188,650,36),$"可玩样板  /  {count:00}",menuHeading);
             int columns=count<3 ? 2 : 3; float cardWidth=columns==2 ? 316 : 210;
             playableScroll=GUI.BeginScrollView(new Rect(48,236,690,390),playableScroll,new Rect(0,0,664,Mathf.Ceil(count/(float)columns)*364));
@@ -155,13 +157,13 @@ namespace YesterdayConvoy
             var wolfOption=monsterTests.Find(o=>o.Id==SilverWolfCombat.CardId && o.Playable);
             if(count==monsterTests.Count && wolfOption!=null)
             {
-                GUI.Label(new Rect(794,256,410,34),"银狼 LV.999",menuHeading);
+                GUI.Label(new Rect(794,270,410,34),"银狼 LV.999",menuHeading);
                 GUI.Label(new Rect(794,304,410,60),"部署后点银狼释放变身，三次强化攻击各抽一个盲盒。",menuBody);
                 if(GUI.Button(new Rect(794,382,410,44),"进入银狼测试",buttonStyle))PrepareMonsterEntry(wolfOption);
             }
             else
             {
-                GUI.Label(new Rect(794,256,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
+                GUI.Label(new Rect(794,270,410,32),$"候选怪物  /  {monsterTests.Count-count:00} 待制作",menuHeading);
                 GUI.SetNextControlName("MonsterTestSearch");
                 pendingFilter=GUI.TextField(new Rect(794,301,410,32),pendingFilter,40,menuSearch);
                 if(string.IsNullOrEmpty(pendingFilter)) GUI.Label(new Rect(805,305,380,24),"输入名字筛选待制作怪物",menuSmall);
@@ -177,7 +179,7 @@ namespace YesterdayConvoy
                 }
                 GUI.EndScrollView();
             }
-            if(GUI.Button(new Rect(790,538,426,26),"三阶段挑战 · 13关",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
+            if(GUI.Button(new Rect(790,538,426,26),"十二关行动 · v2完整挑战",buttonStyle))BeginJourney();
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
             if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;

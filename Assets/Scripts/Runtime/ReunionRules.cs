@@ -45,7 +45,9 @@ namespace YesterdayConvoy
         public static int KindsPerMuster(int tier) => tier == 2 ? 2 : tier >= 4 ? 3 : 0;
         public static int MusterLimit(int tier) => tier >= 8 ? 3 : tier >= 4 ? 2 : tier == 2 ? 1 : 0;
         public static int SupportsPerMuster(int tier) => tier >= 6 ? 2 : tier >= 2 ? 1 : 0;
-        public static float StarScale(float averageStar) => 1 + .5f * (averageStar - 1);
+        // Compatibility for callers supplying a normalized star ratio. Runtime
+        // snapshots use ForTotalStars so extra members also contribute their stars.
+        public static float StarScale(float averageStar) => Mathf.Sqrt(averageStar);
 
         public readonly struct SupportStats
         {
@@ -58,6 +60,14 @@ namespace YesterdayConvoy
         {
             if (averageStar < 1 || averageStar > 4 || float.IsNaN(averageStar))
                 throw new ArgumentOutOfRangeException(nameof(averageStar));
+            return SupportWithScale(tier,ranged,StarScale(averageStar));
+        }
+
+        public static SupportStats ForTotalStars(int tier,bool ranged,int totalStars)
+            =>SupportWithScale(tier,ranged,SynergyStarScaling.Reunion(totalStars,tier));
+
+        static SupportStats SupportWithScale(int tier,bool ranged,float scale)
+        {
             float health, attack, armor;
             switch (tier)
             {
@@ -67,7 +77,6 @@ namespace YesterdayConvoy
                 case 8: health = ranged ? 140 : 200; attack = ranged ? 38 : 36; armor = ranged ? 2 : 6; break;
                 default: throw new ArgumentOutOfRangeException(nameof(tier));
             }
-            float scale = StarScale(averageStar);
             return new SupportStats(Mathf.Floor(health * scale + .5f), Mathf.Floor(attack * scale + .5f), armor, ranged ? 2.7f : .75f);
         }
     }

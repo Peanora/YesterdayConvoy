@@ -70,6 +70,14 @@ namespace YesterdayConvoy
 
     public sealed partial class ManualBattle
     {
+        // Independent skill growth comes from its own v2 row. Team modifiers apply
+        // once; native ordinary-attack phase/ramp multipliers must not apply again.
+        float NativeSkillDamage(DeployedUnitState unit,string skill,string key,float legacy)
+        {
+            float value=V2Skill(unit,skill,key,legacy);
+            return CampaignV2Enabled&&unit!=null&&!unit.SynergySupport&&unit.CardId!=SilverWolfCombat.CardId?
+                value*V2IndependentAttackMultiplier(unit):value;
+        }
         // One model entry for direct and projectile damage; damage cannot mutate a paused/finished battle.
         public bool TryDamageUnit(string entityId,float attack,CombatDamageType type,float ignoreResistance=0,bool ranged=false)
         {
@@ -84,7 +92,7 @@ namespace YesterdayConvoy
             float damage=CalculateDamage(attack,UnitArmor(unit),resistance,type)*SixthVulnerability(unit)*(type==CombatDamageType.Arts?UnitArtsVulnerability(unit):1);
             damage=AbsorbContractShield(unit,damage);if(damage<=0)return true;
             if(unit.SynergyShieldUntil>Clock){float absorbed=Mathf.Min(damage,unit.SynergyShield);unit.SynergyShield-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);if(damage<=0)return true;}
-            if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=.4f;
+            if(UnitCombat(unit).Effects.Mandragora&&unit.StoneShield)damage*=V2Skill(unit,"stoneShield","incomingDamageMultiplier",.4f);
             if(type==CombatDamageType.Arts && unit.ArtsBarrierRemaining>0)
             {
                 float absorbed=Mathf.Min(unit.ArtsBarrierRemaining,damage);unit.ArtsBarrierRemaining-=absorbed;damage-=absorbed;RecordUnitShieldAbsorption(unit,absorbed);
@@ -110,7 +118,8 @@ namespace YesterdayConvoy
         }
         private readonly List<HealingCast> healingCasts=new List<HealingCast>();
         public IReadOnlyList<HealingCast> HealingCasts => healingCasts.AsReadOnly();
-        public float RegenerationMultiplier => units.Exists(u=>u.Active && !u.IsReviving&&UnitCombat(u).Effects.Healer) ? 2 : 1;
+        public float RegenerationMultiplier
+        {get{var healer=units.Find(u=>u.Active&&!u.IsReviving&&UnitCombat(u).Effects.Healer);return healer==null?1:V2Skill(healer,"hostAura","regenerationMultiplier",2);}}
         private float HealUnit(DeployedUnitState unit,float amount)
         {
             if(!unit.Active || TalulahTransitionLocked(unit) || unit.FuelDying || unit.MandraPhase==MandragoraPhase.Reborn || PatriotReborn(unit) || unit.IsReviving || unit.FlamePhase!=FlamechaserPhase.Soldier || amount<=0) return 0;
@@ -131,7 +140,7 @@ namespace YesterdayConvoy
                 foreach(string id in cast.TargetIds)
                 {
                     var target=FindUnit(id);if(target==null) continue;
-                    float restored=HealUnit(target,UnitCombat(source).UnitAttack);
+                    float restored=HealUnit(target,V2Skill(source,"healing","healPerTarget",UnitCombat(source).UnitAttack));
                     cast.HealthRestored+=restored;if(restored>0)applied.Add(id);
                 }
                 cast.AppliedTargetIds=applied.AsReadOnly();
@@ -149,7 +158,7 @@ namespace YesterdayConvoy
                     GroundDistance(source.Motion.Position,target.Motion.Position)<=UnitCombat(source).UnitRange) targets.Add(target);
             targets.Sort((a,b)=> {int health=(a.Health/a.MaxHealth).CompareTo(b.Health/b.MaxHealth);return health!=0 ? health : string.CompareOrdinal(a.EntityId,b.EntityId);});
             if(targets.Count==0) return false;
-            var ids=new List<string>();for(int i=0;i<Math.Min(3,targets.Count);i++) ids.Add(targets[i].EntityId);
+            var ids=new List<string>();for(int i=0;i<Math.Min((int)V2Skill(source,"healing","maximumTargets",3),targets.Count);i++) ids.Add(targets[i].EntityId);
             source.HealingStartedAt=Clock;source.NextHealAt=Clock+UnitCombat(source).UnitInterval;
             source.IsMoving=source.HasCombatTarget=false;
             healingCasts.Add(new HealingCast {SourceId=source.EntityId,TargetIds=ids.AsReadOnly(),StartedAt=Clock,ImpactAt=Clock+UnitCombat(source).AttackWindup});
@@ -163,25 +172,25 @@ namespace YesterdayConvoy
         }
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
-        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier+ContractAttackBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?.2f:0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?1.5f:1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min(6,unit.OrdinaryAttacksFired)*.6f :
-            UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? 1.5f : 1)*InfectionAttack(unit.EntityId)*(TalulahSecondForm(unit)?1.5f:1);
-        public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?1.3666667f:unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
+        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?V2Skill(unit,"march","marchMultiplier",1.5f):1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min((int)V2Skill(unit,"ramp","maximumStacks",6),unit.OrdinaryAttacksFired)*V2Skill(unit,"ramp","attackBonusPerStack",.6f) :
+            UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? V2Skill(unit,"revive","secondLifeBasicAttackMultiplier",1.5f) : 1)*InfectionAttack(unit.EntityId)*(TalulahSecondForm(unit)?V2Skill(unit,"threeStarPhase","secondFormAttackMultiplier",1.5f):1);
+        public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?V2Skill(unit,"rebirth","destructionActionDuration",1.3666667f):unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
         public float UnitAttackRate(DeployedUnitState unit) => (unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
         public float UnitArmor(DeployedUnitState unit)
         {
-            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?2:0);
+            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","armorBonus",2):0);
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March)armor*=3;
             if(!UnitCombat(unit).Effects.Phalanx || unit==null || !unit.Active) return armor;
             foreach(var other in units)
-                if(other!=unit && other.Active && !other.IsReviving && other.UnitId==unit.UnitId && GroundDistance(other.Motion.Position,unit.Motion.Position)<=1.5f)
-                    armor+=UnitCombat(unit).UnitArmor*(200f/300);
+                if(other!=unit && other.Active && !other.IsReviving && other.UnitId==unit.UnitId && GroundDistance(other.Motion.Position,unit.Motion.Position)<=V2Skill(unit,"phalanx","radius",1.5f))
+                    armor+=UnitCombat(unit).UnitArmor*V2Skill(unit,"phalanx","armorFractionPerAlly",200f/300);
             return armor;
         }
         private bool StepMudrock(DeployedUnitState unit)
         {
             if(Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration)
             {
-                if(!unit.BarrierRefreshApplied&&Clock+1e-6>=unit.BarrierRefreshStartedAt+.7333334)
+                if(!unit.BarrierRefreshApplied&&Clock+1e-6>=unit.BarrierRefreshStartedAt+V2Skill(unit,"refresh","applyAt",.7333334f))
                 {
                     bool broken=unit.ArtsBarrierRemaining<=0;
                     unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.MaxHealth=UnitBaseHealth(unit)*1.5f;
@@ -191,7 +200,7 @@ namespace YesterdayConvoy
                 unit.IsMoving=unit.HasCombatTarget=false;return true;
             }
             if(Clock+1e-6<unit.NextBarrierRefreshAt||IsSkillActionPlaying(unit)||Clock<unit.LastAttackTime+UnitCombat(unit).AttackDuration/unit.LastAttackRate)return false;
-            unit.BarrierRefreshApplied=false;unit.BarrierRefreshStartedAt=Clock;unit.NextBarrierRefreshAt=Clock+MudrockRefreshDuration+17;
+            unit.BarrierRefreshApplied=false;unit.BarrierRefreshStartedAt=Clock;unit.NextBarrierRefreshAt=Clock+MudrockRefreshDuration+V2Skill(unit,"refresh","afterActionCooldown",17);
             unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+MudrockRefreshDuration);
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
@@ -214,27 +223,27 @@ namespace YesterdayConvoy
                 if(!shot.Resolved && (shot.SourceId==unit.EntityId || shot.TargetId==unit.EntityId)) shot.Resolved=true;
             if(UnitCombat(unit).Effects.FrostNova && !unit.ReviveUsed)
             {
-                unit.ReviveUsed=true;unit.IsReviving=true;unit.ReviveAt=Clock+5;
+                unit.ReviveUsed=true;unit.IsReviving=true;unit.ReviveAt=Clock+V2Skill(unit,"revive","delay",5);
                 unit.IceRingStartedAt=unit.FrostSealStartedAt=double.NegativeInfinity;return;
             }
             unit.Resolution=UnitResolution.Dead;ScheduleDeathEffect(unit);OnAdvancedSynergyDeath(unit);OnRemainingDeath(unit);
         }
         private bool StepIceRing(DeployedUnitState unit)
         {
-            if(Clock<unit.IceRingStartedAt+3)
+            if(Clock<unit.IceRingStartedAt+V2Skill(unit,"iceRing","actionDuration",3))
             {unit.IsMoving=unit.HasCombatTarget=false;return true;}
             if(Clock+1e-6<unit.NextIceRingAt) return false;
-            var target=ChooseDefender(unit,2.5f);if(target==null) return false;
-            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+8.5;
-            unit.NextAttackTime=Clock+3;unit.IsMoving=unit.HasCombatTarget=false;
+            var target=ChooseDefender(unit,V2Skill(unit,"iceRing","searchRange",2.5f));if(target==null) return false;
+            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+V2Skill(unit,"iceRing","cooldown",8.5f);
+            unit.NextAttackTime=Clock+V2Skill(unit,"iceRing","actionDuration",3);unit.IsMoving=unit.HasCombatTarget=false;
             var ring=new IceRing {Position=unit.Motion.Position,Time=Clock};iceRings.Add(ring);
             foreach(var defender in defenders)
             {
-                if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>2) continue;
-                ring.TargetsHit++;DamageDefender(defender,UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f,CombatDamageType.Arts);
+                if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>V2Skill(unit,"iceRing","splashRadius",2)) continue;
+                ring.TargetsHit++;DamageDefenderFrom(defender,NativeSkillDamage(unit,"iceRing","damage",UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f),CombatDamageType.Arts,unit);
                 if(!defender.Alive) continue;
                 if(defender.FrostSlowUntil<=Clock) defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)*2;
-                defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+8);
+                defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+V2Skill(unit,"iceRing","slowDuration",8));
             }
             return true;
         }
@@ -247,9 +256,15 @@ namespace YesterdayConvoy
             Mathf.Max(1,type==CombatDamageType.Arts ? attack*(1-resistance/100) : attack-armor);
 
         private void DamageDefender(DefenderState defender,float attack,CombatDamageType type,bool derived=false,DeployedUnitState source=null,float damageScale=1)
+            =>ApplyDefenderAttack(defender,attack,type,derived,source,damageScale,source);
+        // Statistics attribution is independent of on-hit gameplay procs. Native abilities
+        // which previously had no proc source must retain that behavior.
+        void DamageDefenderFrom(DefenderState defender,float attack,CombatDamageType type,DeployedUnitState creditSource,bool derived=false,float damageScale=1)
+            =>ApplyDefenderAttack(defender,attack,type,derived,null,damageScale,creditSource);
+        void ApplyDefenderAttack(DefenderState defender,float attack,CombatDamageType type,bool derived,DeployedUnitState source,float damageScale,DeployedUnitState creditSource)
         {
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale);
+            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale,creditSource,true);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
             if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);
@@ -292,7 +307,7 @@ namespace YesterdayConvoy
                 foreach(var defender in defenders)
                 {
                     if(!defender.Alive || GroundDistance(blast.Position,defender.Position)>blast.Radius) continue;
-                    blast.TargetsHit++;DamageDefender(defender,effects.BlastAttack,CombatDamageType.Physical);
+                    blast.TargetsHit++;DamageDefenderFrom(defender,effects.BlastAttack,CombatDamageType.Physical,FindUnit(blast.SourceId));
                     if(defender.Alive && effects.ColdDuration>0) TryApplyCold(defender.EntityId,effects.ColdDuration);
                 }
             }

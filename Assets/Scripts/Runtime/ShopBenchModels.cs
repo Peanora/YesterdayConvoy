@@ -130,6 +130,7 @@ namespace YesterdayConvoy
         }
         void ClearShopBenchModels()
         {
+            CloseShopUiOverlays();
             if(shopModelStage!=null){shopModelStage.SetActive(false);Destroy(shopModelStage);shopModelStage=null;}
             if(shopModelTarget!=null){shopModelTarget.Release();Destroy(shopModelTarget);shopModelTarget=null;}
             shopModelCamera=null;shopBenchModels.Clear();shopBenchIdleOrigins.Clear();shopArrivals.Clear();ClearShopFlows();

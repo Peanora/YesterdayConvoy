@@ -6,7 +6,7 @@ namespace YesterdayConvoy
 {
     public enum BattlePhase { Ready, Running, Won, Lost }
     public enum UnitResolution { Active, Dead, Breached }
-    public enum DeployFailure { None, NotStarted, Finished, Paused, WrongEntry, NoDP, NoUses, CoolingDown, EntryBusy, StaleRun, MissingCard }
+    public enum DeployFailure { None, NotStarted, Finished, Paused, WrongEntry, NoDP, NoUses, CoolingDown, EntryBusy, StaleRun, MissingCard, WaveEntryClosed, DeploymentWindowEnded }
 
     /// <summary>An immutable snapshot. Changing an authored asset cannot mutate a battle in progress.</summary>
     public readonly struct ManualBattleSettings
@@ -244,7 +244,7 @@ namespace YesterdayConvoy
 
         public void Restart()
         {
-            RunId++;ResetCombatFeedback();
+            RunId++;ResetCombatFeedback();ResetDamageRanking();
             units.Clear(); committed.Clear(); sequence = 0;ResetSynergies();
             DP = Settings.InitialDP; RemainingUses = Settings.DeploymentLimit; Defense = Settings.InitialDefense;
             Clock = nextDeploymentTime = nextShotTime = 0;
@@ -253,14 +253,16 @@ namespace YesterdayConvoy
             LastShotPosition = Entry; IsPaused = false; Phase = BattlePhase.Ready;
             ResetEngagement();
             ResetFacilities();ResetStrongholdMap();
+            ResetWaves();
         }
 
         public void Begin()
         {
             if (Phase != BattlePhase.Ready) return;
             if(GuaranteedSupply){CompleteSupply();return;}
+            ResetWaves();
             Phase = BattlePhase.Running;
-            Orders+=GuerrillaRules.ForTier(GuerrillaTier).InitialOrders;
+            Orders+=CurrentGuerrillaRule.InitialOrders;
             EvaluateEnd();
         }
 
@@ -295,6 +297,8 @@ namespace YesterdayConvoy
             if (IsPaused && !allowWhilePaused) return DeployFailure.Paused;
             var lane=FindEntryLane(position);
             if (lane==null) return DeployFailure.WrongEntry;
+            var waveFailure=CheckWaveDeployment(lane.Id);
+            if(waveFailure!=DeployFailure.None)return waveFailure;
             if ((card?.RemainingUses??RemainingUses) == 0) return DeployFailure.NoUses;
             if (DP < (card?.Settings.DeploymentCost??Settings.DeploymentCost)) return DeployFailure.NoDP;
             if (Clock + 0.000001 < (card?.NextDeploymentTime??nextDeploymentTime)) return DeployFailure.CoolingDown;
@@ -319,7 +323,7 @@ namespace YesterdayConvoy
             var lane=FindEntryLane(position);
             var motion = new RouteMotion(lane.Points, spawn.Speed);
             string id = $"run-{RunId}/unit-{sequence + 1}";
-            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*SarkazHealthMultiplier(requestedCard), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
+            var unit = new DeployedUnitState(id, spawn.UnitId, motion, spawn.Health*(SarkazHealthMultiplier(requestedCard)+ReunionMemberBonus(requestedCard)), Clock){CardId=requestedCard,Profile=profile,RouteId=lane.Id,ExitId=lane.ExitId};
             if (EngagementEnabled) unit.SkillSP = UnitCombat(unit).InitialSP;
             if(EngagementEnabled&&IsTalulah(unit))unit.TalulahPhaseStartedAt=Clock;
             if(EngagementEnabled&&IsPatriot(unit))unit.PatriotPhaseStartedAt=Clock;
@@ -332,6 +336,7 @@ namespace YesterdayConvoy
                 unit.ArtsBarrierRemaining=unit.ArtsBarrierLayerSize*3;unit.NextBarrierRefreshAt=Clock+17;
             }
             // Commit together only after all preconditions and entity initialization succeed.
+            ApplyCampaignV2Deployment(unit);
             units.Add(unit); sequence++;
             var card=FindCard(requestedCard);
             if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}
@@ -354,13 +359,15 @@ namespace YesterdayConvoy
             // Bound combat steps so a long frame cannot skip the tower's range or fire interval.
             while (remaining > 0.00000001 && Phase == BattlePhase.Running && !IsPaused)
             {
-                float step = (float)Math.Min(0.05, remaining);
-                remaining -= step; Clock += step;
+                double stepDuration=WavesEnabled?LimitWaveStep(Math.Min(0.05,remaining)):(float)Math.Min(0.05,remaining);
+                float step=(float)stepDuration;
+                remaining -= stepDuration; Clock += stepDuration;
                 if (EngagementEnabled)
                 {
                     StepEngagement(step);
                     if(Defense>0)AdvanceGuerrillaOrders((float)(step*presentationRatio));
                     RefreshCombatFeedbackStatuses();
+                    AdvanceWaveBoundaries();
                     EvaluateEnd();
                     // Commit after this step's real contacts and terminal checks. A new
                     // batch starts at age zero; it does not inherit the elapsed step.
@@ -401,6 +408,7 @@ namespace YesterdayConvoy
                         if (target.Health == 0) { target.Resolution = UnitResolution.Dead; target.DeathTime=Clock; }
                     }
                 }
+                AdvanceWaveBoundaries();
                 EvaluateEnd();
             }
         }
@@ -409,10 +417,13 @@ namespace YesterdayConvoy
         {
             if (Phase != BattlePhase.Running) return;
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
-            else if (!HasPendingDeathBlast && ActiveCount == 0 && !HasAffordableCard())
+            else if(WaveDeadlineReached)
+            { TimedOut=true; Phase=BattlePhase.Lost; IsPaused=false; }
+            else if (!HasPendingDeathBlast && ActiveCount == 0 &&
+                (WavesEnabled ? FinalAdvanceActive : !HasAffordableCard()))
             { Phase = BattlePhase.Lost; IsPaused = false; }
             if(Phase==BattlePhase.Won||Phase==BattlePhase.Lost)CancelGuerrillaOrders();
-            // Affordable uses remain: wait for cooldown/input. There is no timeout or passive DP recovery.
+            // Legacy battles wait for affordable cards. Wave battles also wait for later deployment windows.
         }
     }
 }

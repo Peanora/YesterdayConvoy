@@ -16,7 +16,7 @@ namespace YesterdayConvoy.Tests
         static readonly Vector3[] Route={Vector3.zero,Vector3.right*100};
         static readonly MethodInfo Damage=typeof(ManualBattle).GetMethod("DamageDefender",BindingFlags.Instance|BindingFlags.NonPublic);
         readonly List<string> balanceRows=new List<string>();
-        static float Q(int star)=>1+.25f*(star-1);
+        static float Q(int star)=>(float)Math.Pow(star,1d/3);
         static ShopTrialModel.Piece Piece(string id,int star=1)=>new ShopTrialModel.Piece{Id=id,Star=star};
         static DefenderSettings Guard(string id,float x,float hp=10000,float armor=0,bool pressure=false)=>
             new DefenderSettings(id,id,null,Vector3.right*x,hp,pressure?20:1,armor,1.2f,2,2,canAttack:pressure);
@@ -104,10 +104,11 @@ namespace YesterdayConvoy.Tests
             a=Deploy(b);Hit(b,b.Defender,10,a);Assert.That(b.DeepTier,Is.Zero);Assert.That(b.DeepBurnRemaining(b.Defender.EntityId),Is.Zero);
         }
 
-        [Test]public void MixedStarsUseTheFormationAverageRatherThanTheAttackingEntityStar()
+        [Test]public void MixedStarsUseAllSelectedTotalStarsRatherThanTheAttackingEntityStar()
         {
             var b=Quiet(4);b.Restart();b.ConfigureSynergies(new[]{Piece(Deep[0],3),Piece(Deep[1]),Piece(Deep[2]),Piece(Deep[3])});b.Begin();
-            Hit(b,b.Defender,1,Deploy(b));Assert.That(b.DeepBurnPower(b.Defender.EntityId),Is.EqualTo(25*1.125f).Within(.001));
+            Assert.That(b.DeepTotalStars,Is.EqualTo(6));
+            Hit(b,b.Defender,1,Deploy(b));Assert.That(b.DeepBurnPower(b.Defender.EntityId),Is.EqualTo(28.617857f).Within(.001));
         }
 
         [TestCase(2,4)][TestCase(4,6)]

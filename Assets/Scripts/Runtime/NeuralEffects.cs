@@ -16,6 +16,8 @@ namespace YesterdayConvoy
         public IReadOnlyList<CreeperPulse> CreeperPulses=>creeperPulses.AsReadOnly();
         public int NeuralBursts {get{int count=0;foreach(var d in defenders)count+=d.NeuralBursts;return count;}}
         float ApplyNeuralDamage(DefenderState d,float amount,DeployedUnitState source=null)
+            =>ApplyNeuralDamageAttributed(d,amount,source,source);
+        float ApplyNeuralDamageAttributed(DefenderState d,float amount,DeployedUnitState source,DeployedUnitState creditSource)
         {
             if(!d.Alive||amount<=0||d.NeuralUntil>Clock)return 0;
             if(source!=null)OnMarineContact(source);
@@ -25,7 +27,7 @@ namespace YesterdayConvoy
             d.NeuralAccumulated+=applied;
             if(d.NeuralAccumulated<100-.00001f)return applied;
             d.NeuralAccumulated=0;d.NeuralUntil=Clock+10;d.LastNeuralBurstAt=Clock;d.NeuralBursts++;
-            d.BlockedCount=0;TrueDamage(d,100);
+            d.BlockedCount=0;SourcedTrueDamage(d,100,creditSource);
             return applied;
         }
         void StepCreeperDamage(DeployedUnitState u)
