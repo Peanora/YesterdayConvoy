@@ -1,5 +1,5 @@
 {
-  "version": "Journey gradual difficulty playtest 2026-11-10: early/middle pressure increased, final HP/ATK at 66%/68% of six-star baseline; rosters and economy unchanged",
+  "version": "Journey midgame playtest 2026-11-10: stage 5 HP/ATK +15%/+5%, stages 6-7 +20%/+8%, stage 9 +5%/+3% versus 7ee8202; other stages unchanged",
   "sources": [
     "campaign.json",
     "defenders.json",
@@ -126,8 +126,8 @@
         {
           "id": "D02",
           "tier": 2,
-          "hpFactor": 1.901724138,
-          "attackFactor": 1.562666667,
+          "hpFactor": 2.1862068965517243,
+          "attackFactor": 1.6406666666666667,
           "armorBonus": 6,
           "rangeFactor": 1,
           "cell": {
@@ -138,8 +138,8 @@
         {
           "id": "D08",
           "tier": 2,
-          "hpFactor": 1.907142857,
-          "attackFactor": 0.976818182,
+          "hpFactor": 2.192857142857143,
+          "attackFactor": 1.0256818181818181,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -150,8 +150,8 @@
         {
           "id": "D06",
           "tier": 2,
-          "hpFactor": 1.271052632,
-          "attackFactor": 0.781333333,
+          "hpFactor": 1.4605263157894737,
+          "attackFactor": 0.8203333333333334,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -188,8 +188,8 @@
         {
           "id": "D03",
           "tier": 2,
-          "hpFactor": 2.091666667,
-          "attackFactor": 1.95,
+          "hpFactor": 2.5104166666666665,
+          "attackFactor": 2.106,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -200,8 +200,8 @@
         {
           "id": "D09",
           "tier": 2,
-          "hpFactor": 2.234482759,
-          "attackFactor": 1.365,
+          "hpFactor": 2.682758620689655,
+          "attackFactor": 1.4742,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -212,8 +212,8 @@
         {
           "id": "D04",
           "tier": 2,
-          "hpFactor": 1.395238095,
-          "attackFactor": 0.975,
+          "hpFactor": 1.6738095238095239,
+          "attackFactor": 1.0530645161290324,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -224,8 +224,8 @@
         {
           "id": "D06",
           "tier": 2,
-          "hpFactor": 1.394736842,
-          "attackFactor": 0.975,
+          "hpFactor": 1.6736842105263159,
+          "attackFactor": 1.053,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -262,8 +262,8 @@
         {
           "id": "D02",
           "tier": 2,
-          "hpFactor": 2.879310345,
-          "attackFactor": 2.34,
+          "hpFactor": 3.4551724137931035,
+          "attackFactor": 2.527333333333333,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -274,8 +274,8 @@
         {
           "id": "D05",
           "tier": 2,
-          "hpFactor": 3.06,
-          "attackFactor": 2.34,
+          "hpFactor": 3.6725,
+          "attackFactor": 2.527142857142857,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -286,8 +286,8 @@
         {
           "id": "D04",
           "tier": 2,
-          "hpFactor": 1.802380952,
-          "attackFactor": 1.17,
+          "hpFactor": 2.1619047619047618,
+          "attackFactor": 1.2635483870967743,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -298,8 +298,8 @@
         {
           "id": "D07",
           "tier": 2,
-          "hpFactor": 1.8,
-          "attackFactor": 1.17,
+          "hpFactor": 2.1607142857142856,
+          "attackFactor": 1.26375,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -310,8 +310,8 @@
         {
           "id": "D08",
           "tier": 2,
-          "hpFactor": 1.8,
-          "attackFactor": 1.17,
+          "hpFactor": 2.1607142857142856,
+          "attackFactor": 1.2636363636363637,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -362,8 +362,8 @@
         {
           "id": "D25",
           "tier": 2,
-          "hpFactor": 2.3,
-          "attackFactor": 2.828571429,
+          "hpFactor": 2.4155555555555557,
+          "attackFactor": 2.9135714285714287,
           "armorBonus": 4,
           "rangeFactor": 1,
           "cell": {
@@ -374,8 +374,8 @@
         {
           "id": "D30",
           "tier": 2,
-          "hpFactor": 2.3,
-          "attackFactor": 2.566666667,
+          "hpFactor": 2.415,
+          "attackFactor": 2.643333333333333,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -386,8 +386,8 @@
         {
           "id": "D01",
           "tier": 2,
-          "hpFactor": 1.417307692,
-          "attackFactor": 1.2584375,
+          "hpFactor": 1.4884615384615385,
+          "attackFactor": 1.29625,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -398,8 +398,8 @@
         {
           "id": "D06",
           "tier": 2,
-          "hpFactor": 1.415789474,
-          "attackFactor": 1.258333333,
+          "hpFactor": 1.486842105263158,
+          "attackFactor": 1.296,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -410,8 +410,8 @@
         {
           "id": "D07",
           "tier": 2,
-          "hpFactor": 1.414285714,
-          "attackFactor": 1.2584375,
+          "hpFactor": 1.4857142857142858,
+          "attackFactor": 1.29625,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -422,8 +422,8 @@
         {
           "id": "D28",
           "tier": 2,
-          "hpFactor": 2.035384615,
-          "attackFactor": 1.964285714,
+          "hpFactor": 2.1369230769230767,
+          "attackFactor": 2.023214285714286,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -434,8 +434,8 @@
         {
           "id": "D09",
           "tier": 2,
-          "hpFactor": 1.417241379,
-          "attackFactor": 1.2584,
+          "hpFactor": 1.4896551724137932,
+          "attackFactor": 1.2962,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
@@ -446,8 +446,8 @@
         {
           "id": "D27",
           "tier": 2,
-          "hpFactor": 2.035384615,
-          "attackFactor": 2.030769231,
+          "hpFactor": 2.1369230769230767,
+          "attackFactor": 2.0915384615384616,
           "armorBonus": 0,
           "rangeFactor": 1,
           "cell": {
