@@ -288,7 +288,7 @@ namespace YesterdayConvoy
             Require("fixture-is-development-smoke-only",Debug.isDebugBuild&&Requested);
             result.mode="saved-stage-fixture";result.naturalJourneyCompleted=false;result.completedStages=result.combatScenes=0;
             result.replayFile=file;rounds.Clear();fixtureBattleCaptured=false;
-            result.verificationScope="DEBUG saved-stage fixture: finite-stock Preset with zero gold and an explicit high-star lineup, followed by production pointer/skill actions and a natural battle result on the authored scene. This does not demonstrate natural card acquisition or a full twelve-stage clear. No health/damage injection, forced victory, free refresh or source-asset mutation. Existing opening-flow checks run first; no OS mouse input is claimed.";
+            result.verificationScope="DEBUG saved-stage fixture: finite-stock Preset with zero gold and the saved lineup and stars, followed by production pointer/skill actions and a natural battle result on the authored scene. This does not demonstrate natural card acquisition or a full twelve-stage clear. No health/damage injection, forced victory, free refresh or source-asset mutation. Existing opening-flow checks run first; no OS mouse input is claimed.";
             SaveProgress();Require("fixture-file-exists",File.Exists(file));
             string name=Argument("-campaignJourneyFixtureName","talulah-three-star-core-reference");
             int number=int.Parse(Argument("-campaignJourneyFixtureStage","12"),System.Globalization.CultureInfo.InvariantCulture);
@@ -300,6 +300,9 @@ namespace YesterdayConvoy
             Require("fixture-lineup-is-explicit-finite-stock",fixture.lineup!=null&&fixture.lineup.Length>0&&fixture.lineup.Length<=fixture.formationLevel&&
                 fixture.lineup.Select(p=>p.id).Distinct().Count()==fixture.lineup.Length&&fixture.formationLevel>=1&&fixture.formationLevel<=10&&
                 fixture.lineup.Select(p=>p.instance).SequenceEqual(Enumerable.Range(1,fixture.lineup.Length)));
+            bool legacyThreeStar=name=="talulah-three-star-core-reference",dualBoss=name=="investment-dual-two-star-bosses";
+            if(legacyThreeStar)Require("fixture-contains-actual-three-star-talulah",fixture.lineup.Any(p=>p.id=="CARD_TALULAH_TRIAL"&&p.star==3));
+            if(dualBoss)Require("fixture-contains-both-actual-two-star-cores",new[]{"CARD_TALULAH_TRIAL","CARD_WISADEL_APRIL"}.All(id=>fixture.lineup.Any(p=>p.id==id&&p.star==2)));
             var definitions=controller.MonsterTests.Where(o=>o.Playable&&CampaignBalance.ShopEligible(o.Id)).Select(o=>o.Definition).ToArray();
             var shop=new ShopTrialModel(definitions.Select(d=>new ShopTrialModel.Role{Id=d.Card.CardId,Name=d.Card.DisplayName,Cost=d.Card.RecruitCost}),73191);
             shop.EnableJourneyEconomy();
@@ -320,14 +323,22 @@ namespace YesterdayConvoy
                 shop.Gold==0&&shop.Offers.All(id=>id==null)&&controller.Battle.Phase==BattlePhase.Ready&&controller.Muted&&controller.SimulationSpeed==1);
             Require("fixture-preserves-exact-star-and-lineup-order",CampaignJourneyEvidenceProbe.Lineup(controller).SequenceEqual(fixture.lineup.Select(p=>p.instance))&&
                 fixture.lineup.All(p=>shop.Bench.Any(b=>b.Id==p.id&&b.Instance==p.instance&&b.Star==p.star)));
-            Require("fixture-has-twelve-actual-strengthened-defenders",controller.Battle.Defenders.Count==12&&stage.encounter.defenders.Length==12&&
+            Require("fixture-has-exact-authored-strengthened-defenders",controller.Battle.Defenders.Count==stage.encounter.defenders.Length&&stage.encounter.defenders.Length>0&&
                 stage.encounter.defenders.All(g=>controller.Battle.FindDefender(g.id)?.MaxHealth==g.health&&controller.Battle.FindDefender(g.id)?.Settings.Attack==g.attack&&controller.Battle.FindDefender(g.id)?.Position==g.position));
+            if(number==CampaignJourneyDefinition.StageCount)Require("fixture-has-twelve-actual-strengthened-defenders",controller.Battle.Defenders.Count==12);
             Require("fixture-uses-authored-low-dp-and-production-costs",controller.Battle.WavesEnabled&&controller.Battle.DP==stage.encounter.WaveSnapshot().Waves[0].DP&&
                 controller.Battle.Cards.All(c=>c.Settings.DeploymentCost==CampaignV2Balance.StatValue(c.Settings.CardId,shop.Bench.Single(p=>p.Id==c.Settings.CardId).Star,"dp")&&
+                    Math.Abs(c.Settings.Health-CampaignV2Balance.StatValue(c.Settings.CardId,shop.Bench.Single(p=>p.Id==c.Settings.CardId).Star,"hp"))<.001f&&
                     c.Settings.Cooldown==WaveDeploymentCadence.ForCard(c.Settings.CardId,shop.Definition(c.Settings.CardId).Cost)));
-            Require("fixture-contains-actual-three-star-talulah",shop.Bench.Any(p=>p.Id=="CARD_TALULAH_TRIAL"&&p.Star==3));
-            var reunion=SynergySummary.From(fixture.lineup.Select(p=>p.id),campaignV2:true).Single(s=>s.Name=="整合运动");
-            Require("fixture-reunion-eight-member-bonus-description",controller.Battle.ReunionTier==8&&reunion.Effect.Contains("最大生命/攻击＋40%"));
+            int expectedReunion=ReunionRules.TierFor(fixture.lineup.Select(p=>p.id));
+            var reunion=SynergySummary.From(fixture.lineup.Select(p=>p.id),campaignV2:true).SingleOrDefault(s=>s.Name=="整合运动");
+            Require("fixture-reunion-tier-matches-saved-lineup",controller.Battle.ReunionTier==expectedReunion&&(reunion?.Tier??0)==expectedReunion);
+            if(expectedReunion>0)
+            {
+                float bonus=CampaignV2Balance.SynergyValue("reunion",expectedReunion,"memberStatBonus");
+                Require("fixture-reunion-actual-tier-bonus-description",reunion.Effect.Contains("最大生命/攻击＋"+(bonus*100).ToString("0.#",System.Globalization.CultureInfo.InvariantCulture)+"%"));
+            }
+            if(legacyThreeStar)Require("fixture-reunion-eight-member-bonus-description",controller.Battle.ReunionTier==8&&reunion.Effect.Contains("最大生命/攻击＋40%"));
             yield return Capture("fixture-stage-"+number+"-prepared");
             var flags=BindingFlags.Instance|BindingFlags.NonPublic;
             typeof(ManualBattleController).GetField("campaignConstructTab",flags).SetValue(controller,4);
@@ -337,6 +348,13 @@ namespace YesterdayConvoy
             yield return Capture("fixture-stage-"+number+"-defender-list-bottom");controller.CloseCampaignOverlay();
             var trace=new CampaignJourneyReplayRound{stage=number,won=true,lineup=fixture.lineup,fight=fight};
             yield return Fight(trace,observed);
+            if(dualBoss)foreach(string id in new[]{"CARD_TALULAH_TRIAL","CARD_WISADEL_APRIL"})
+            {
+                var deployed=observed.actions.Where(a=>a.kind=="Deploy"&&a.cardId==id&&a.passed).Select(a=>a.actualEntity).ToArray();
+                Require("fixture-dual-core-deployed-and-used-skill-"+id,deployed.Length>0&&
+                    observed.actions.Any(a=>a.kind=="Skill"&&a.passed&&deployed.Contains(a.actualEntity))&&
+                    deployed.Any(entity=>controller.Battle.FindUnit(entity)?.SkillsUsed>0));
+            }
             Require("fixture-resolves-through-real-victory-and-reward",controller.Battle.Phase==BattlePhase.Won&&loop.LastBattleWon&&session.CompletedRounds.Count==1&&
                 loop.Reward!=null&&loop.Reward.Base==stage.baseGold&&loop.Reward.Interest==0&&CampaignJourneyEvidenceProbe.StockConserved(shop));
             observed.closingGold=shop.Gold;observed.closingLevel=shop.Level;observed.closingXP=shop.XP;observed.health=loop.Health;observed.healthLoss=loop.LastHealthLoss;observed.golemXP=loop.GolemExperience;
@@ -465,12 +483,15 @@ namespace YesterdayConvoy
                     {
                         Require("stage-"+trace.stage+"-deployed-entity-route",battle.FindUnit(entity)?.RouteId==action.routeId&&
                             (action.kind=="Golem"||battle.FindUnit(entity)?.CardId==action.cardId));identities.Add(action.entityId,entity);
-                        if(result.mode=="saved-stage-fixture"&&action.cardId=="CARD_TALULAH_TRIAL")
+                        if(result.mode=="saved-stage-fixture"&&(action.cardId=="CARD_TALULAH_TRIAL"||action.cardId=="CARD_WISADEL_APRIL"))
                         {
-                            var talulah=battle.FindUnit(entity);
-                            float bonus=CampaignV2Balance.SynergyValue("reunion",battle.ReunionTier,"memberStatBonus");
-                            float baseHealth=talulah.Profile?.Unit.Health??battle.Settings.Health;
-                            Require("fixture-deployed-talulah-receives-reunion-health-and-attack",Math.Abs(talulah.MaxHealth-baseHealth*(1+bonus))<.01f&&battle.UnitAttackMultiplier(talulah)+.0001f>=1+bonus);
+                            var unit=battle.FindUnit(entity);var piece=trace.lineup.Single(p=>p.id==action.cardId);
+                            float bonus=CampaignBalance.Reunion(unit.CardId)&&battle.ReunionTier>0?CampaignV2Balance.SynergyValue("reunion",battle.ReunionTier,"memberStatBonus"):0;
+                            float baseHealth=CampaignV2Balance.StatValue(unit.CardId,piece.star,"hp");
+                            Require("fixture-deployed-core-uses-saved-star-panel-"+unit.CardId,Math.Abs((unit.Profile?.Unit.Health??battle.Settings.Health)-baseHealth)<.001f&&
+                                Math.Abs(battle.UnitCombat(unit).UnitAttack-CampaignV2Balance.StatValue(unit.CardId,piece.star,"attack"))<.001f);
+                            Require("fixture-deployed-core-receives-actual-synergy-health-and-attack-"+unit.CardId,
+                                Math.Abs(unit.MaxHealth-baseHealth*(battle.SarkazHealthMultiplier(unit.CardId)+bonus))<.01f&&battle.UnitAttackMultiplier(unit)+.0001f>=1+bonus);
                         }
                     }
                     next++;
@@ -479,7 +500,7 @@ namespace YesterdayConvoy
                 if(battle.Phase!=BattlePhase.Running)break;
                 controller.Tick(.05f);step++;
                 if(result.mode=="saved-stage-fixture"&&!fixtureBattleCaptured&&battle.Clock>=15&&battle.Phase==BattlePhase.Running)
-                {fixtureBattleCaptured=true;yield return Capture("fixture-stage-"+trace.stage+"-talulah-fire-rain");}
+                {fixtureBattleCaptured=true;yield return Capture("fixture-stage-"+trace.stage+"-battle");}
                 if(step%4==0)yield return null;
             }
             observed.actions=actual.ToArray();observed.outcome=battle.Phase.ToString();observed.seconds=battle.Clock;observed.deployments=battle.Units.Count(u=>!u.SynergySupport);

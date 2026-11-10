@@ -53,7 +53,7 @@ namespace YesterdayConvoy
                 Fill(rect,new Color(.52f,.60f,.65f,.50f));ShopBorder(rect,new Color(.78f,.84f,.88f,.55f),1);
                 GUI.Label(rect,"暂无商品",LoopText(12,TextAnchor.MiddleCenter,new Color(.83f,.89f,.93f)));return;
             }
-            var role=shop.Definition(id);int copies=ShopHeldCopies(id);
+            var role=shop.Definition(id);int copies=ShopHeldCopies(id);bool affordable=shop.CanAfford(role.Cost);
             var preview=shop.PreviewPurchase(slot);int upgrade=preview.Success&&preview.FinalStar>1?preview.FinalStar:0;
             DrawLoopCostBackground(rect,role.Cost);
             DrawTestPortrait(new Rect(rect.x+rect.width*.34f,rect.y+5,rect.width*.64f,108),OriginalTalulahArt.CardPortrait(shopDefinitions[id].Card));
@@ -63,24 +63,35 @@ namespace YesterdayConvoy
                 Fill(new Rect(rect.x+2,rect.y+2,rect.width-4,rect.height-4),new Color(.88f,.95f,1,.055f));
                 ShopBorder(rect,new Color(.87f,.94f,1,.55f),1.5f);
             }
-            if(upgrade>0)
+            if(upgrade>0&&affordable)
             {
                 float pulse=ShopRecruitPulse;
                 Fill(new Rect(rect.x+2,rect.y+2,rect.width-4,rect.height-4),new Color(1,.93f,.64f,.08f*pulse));
                 ShopBorder(rect,new Color(1,.91f,.59f,.94f*pulse),2);
             }
             if(shopCoin!=null)GUI.DrawTexture(new Rect(rect.x+11,rect.y+12,13,13),shopCoin,ScaleMode.ScaleToFit,true);
-            GUI.Label(new Rect(rect.x+29,rect.y+5,36,26),role.Cost.ToString(),LoopText(23,TextAnchor.MiddleLeft,Color.white,700));
-            GUI.Label(new Rect(rect.x+10,rect.y+75,rect.width-20,22),role.Name,LoopText(role.Name.Length>10?12:14,TextAnchor.MiddleLeft,Color.white,600));
-            var tags=LoopText(9,TextAnchor.UpperLeft,new Color(.89f,.93f,.96f));tags.wordWrap=true;
+            if(!affordable)
+            {
+                // The transparent purchase button cannot dim artwork already drawn behind it.
+                Fill(rect,new Color(.16f,.16f,.16f,.76f));ShopBorder(rect,new Color(.40f,.40f,.40f),1);
+            }
+            Color ink=affordable?Color.white:new Color(.76f,.76f,.76f);
+            GUI.Label(new Rect(rect.x+29,rect.y+5,36,26),role.Cost.ToString(),LoopText(23,TextAnchor.MiddleLeft,ink,700));
+            GUI.Label(new Rect(rect.x+10,rect.y+75,rect.width-20,22),role.Name,LoopText(role.Name.Length>10?12:14,TextAnchor.MiddleLeft,ink,600));
+            var tags=LoopText(9,TextAnchor.UpperLeft,affordable?new Color(.89f,.93f,.96f):new Color(.62f,.62f,.62f));tags.wordWrap=true;
             GUI.Label(new Rect(rect.x+10,rect.y+98,rect.width-20,22),string.Join(" / ",ShopTags(id)),tags);
-            if(upgrade>0)DrawApprovedUpgradeCue(new Rect(rect.xMax-65,rect.y+6,59,17),upgrade);
+            if(!affordable)
+            {
+                var reason=new Rect(rect.xMax-65,rect.y+6,59,17);Fill(reason,new Color(.29f,.29f,.29f,.97f));
+                GUI.Label(reason,"金币不足",LoopText(10,TextAnchor.MiddleCenter,new Color(.85f,.85f,.85f),500));
+            }
+            else if(upgrade>0)DrawApprovedUpgradeCue(new Rect(rect.xMax-65,rect.y+6,59,17),upgrade);
             else if(copies>0)
             {
                 var owned=new Rect(rect.xMax-45,rect.y+6,39,17);Fill(owned,new Color(.90f,.95f,.98f,.93f));
                 GUI.Label(owned,"持有 "+copies,LoopText(9,TextAnchor.MiddleCenter,ApprovedUi.Ink,500));
             }
-            bool enabled=GUI.enabled;GUI.enabled=enabled&&trading&&shop.CanAfford(role.Cost);
+            bool enabled=GUI.enabled;GUI.enabled=enabled&&trading&&affordable;
             if(GUI.Button(rect,new GUIContent(string.Empty,role.Name+" · "+role.Cost+"金币 · 持有"+copies+"/"+shop.Capacity(id)),GUIStyle.none))
             {shopPurchaseOrigin=global.center;PurchaseShopCard(slot);}
             GUI.enabled=enabled;
