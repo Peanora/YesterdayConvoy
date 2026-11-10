@@ -9,7 +9,10 @@
 - 初轮专项31项只有1项通过，其余30项都被测试场地红门相互重叠拒绝；仅把测试间距改为合法1.4后29/31通过，剩余两项测试在同一卡CD内重复部署。显式推进真实CD后重跑完整套通过，未放宽生产限制。首轮/次轮失败结果保留在`combat-styles-edit.xml`/`combat-styles-edit2.xml`。
 - 非batch D3D11 PlayMode最终 **7/7**、退出0（`Logs/combat-styles-final-play.xml`）：两项新测试覆盖正式行动启用/九六菜单及六张真实保存场景；另有五项现有`CampaignJourneySceneTests`回归。六场通过生产指针拖放和技能接口自然触发，不注入伤害/死亡/胜利；暂停、当前场重开和配置保持均通过。详细**90/90**项（含18张可见准备/详情/战斗截图）在`Logs/combat-styles-play-evidence/result.json`，另有两张菜单截图。已目视查看六卡菜单、秘术完整成员详情、强攻/射手/狂袭/SP战斗反馈等画面。
 - PlayMode首轮82/90：驱动保存了`StartLoopNextBattle`重建前的旧Battle，实际画面已经有触发、断言仍读旧对象，末场还跑过结算。修正驱动重新获取当前Battle，并等待实际资源准备后，重跑90/90；强攻专项同时设置上述真实阻挡站位。首轮`combat-styles-play.xml`/log保留，未降低自然触发或截图判据。
-- 仓库静态检查 **8241跟踪文件通过**，暂存差异检查通过，新增meta的Git暂存blob与已测试磁盘字节一致，任务文件未被仓库/本机额外忽略。构建、独立Player与最终源码绑定待本轮交付阶段追加。当前未进行新参数的自然运营整局/抽卡成型概率、人类操作、第二机或长期平衡；已有历史通关数据不能当作六打法版本的新验收。
+- 仓库静态检查 **8241跟踪文件通过**，暂存差异检查通过，新增meta的Git暂存blob与已测试磁盘字节一致，任务文件未被仓库/本机额外忽略；原`.vscode`三文件和本地PackageManagerSettings SHA256逐一保持。运行源码提交`0295a5900e4bdd5166da2110d347ab57bb2f85d0`。
+- `CampaignJourneyTools.BuildWindows`实际构建常用`Builds/Windows/YesterdayConvoy.exe`：Windows x64 Development **1071983072 bytes、0 errors、退出0**（`Logs/combat-styles-build.log`）。先通过正式十二节点/八独立波次/45名守军来源校验，再构建包含新增六场景的完整目录；默认仍进入正式行动。Unity原生EXE壳可保持旧文件时间，实际游戏代码/场景/资源位于同步更新的Data目录，不能仅用EXE壳时间判断版本。
+- 独立Windows D3D11 Player（RTX4060、1280×720、隐藏窗口）执行`-combatStylesSmokeTest`，**72/72逻辑检查通过、正常退出0**（`Logs/combat-styles-player/result.json`、`combat-styles-player.log`）。六张实际保存场景全部加载；通过生产指针卡牌拖放/技能接口自然出现破阵、暴露、脉冲、掩护、狂热和协同，暂停与真实当前场重开清空也通过。本轮没有启用Player屏幕截图检查，视觉证据使用前述通过且目视查看的Editor GameView画面；不冒称Player视觉检查或OS鼠标操作通过。只在专属验证旗标下忽略失焦自动暂停，正常入口仍按原规则失焦暂停。
+- SOURCE.txt记录上述运行源码与本次测试。当前未进行新参数的自然运营整局/抽卡成型概率、人类操作、第二机或长期平衡；已有历史通关数据不能当作六打法版本的新验收。未创建启动脚本、ZIP、Releases，没有自动合并main。
 
 ## 2026-11-10：再次提高中期守军强度
 
