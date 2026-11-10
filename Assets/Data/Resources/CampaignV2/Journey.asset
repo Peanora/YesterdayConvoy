@@ -218,13 +218,13 @@ MonoBehaviour:
     naturalXP: 4
     guardTiers: 020000000200000002000000i
     guardHPFactors:
-    - 1.9017241
-    - 1.9071429
-    - 1.2710526
+    - 2.1862068
+    - 2.192857
+    - 1.4605263
     guardTuning:
     - id: D02
       tier: 2
-      hpFactor: 1.9017241
+      hpFactor: 2.1862068
       parameters:
       - key: initialSP
         value: 6
@@ -266,7 +266,7 @@ MonoBehaviour:
         value: 1
     - id: D08
       tier: 2
-      hpFactor: 1.9071429
+      hpFactor: 2.192857
       parameters:
       - key: initialSP
         value: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
         value: 1
     - id: D06
       tier: 2
-      hpFactor: 1.2710526
+      hpFactor: 1.4605263
       parameters:
       - key: initialSP
         value: 4
@@ -362,14 +362,14 @@ MonoBehaviour:
     naturalXP: 4
     guardTiers: 02000000020000000200000002000000i
     guardHPFactors:
-    - 2.0916667
-    - 2.2344828
-    - 1.395238
-    - 1.3947369
+    - 2.5104167
+    - 2.6827586
+    - 1.6738095
+    - 1.6736842
     guardTuning:
     - id: D03
       tier: 2
-      hpFactor: 2.0916667
+      hpFactor: 2.5104167
       parameters:
       - key: initialSP
         value: 10
@@ -411,7 +411,7 @@ MonoBehaviour:
         value: 1
     - id: D09
       tier: 2
-      hpFactor: 2.2344828
+      hpFactor: 2.6827586
       parameters:
       - key: initialSP
         value: 5
@@ -453,7 +453,7 @@ MonoBehaviour:
         value: 1
     - id: D04
       tier: 2
-      hpFactor: 1.395238
+      hpFactor: 1.6738095
       parameters:
       - key: initialSP
         value: 5
@@ -493,7 +493,7 @@ MonoBehaviour:
         value: 1
     - id: D06
       tier: 2
-      hpFactor: 1.3947369
+      hpFactor: 1.6736842
       parameters:
       - key: initialSP
         value: 4
@@ -543,15 +543,15 @@ MonoBehaviour:
     naturalXP: 4
     guardTiers: 0200000002000000020000000200000002000000i
     guardHPFactors:
-    - 2.8793104
-    - 3.06
-    - 1.8023809
-    - 1.8
-    - 1.8
+    - 3.4551723
+    - 3.6725
+    - 2.1619048
+    - 2.1607144
+    - 2.1607144
     guardTuning:
     - id: D02
       tier: 2
-      hpFactor: 2.8793104
+      hpFactor: 3.4551723
       parameters:
       - key: initialSP
         value: 6
@@ -593,7 +593,7 @@ MonoBehaviour:
         value: 1
     - id: D05
       tier: 2
-      hpFactor: 3.06
+      hpFactor: 3.6725
       parameters:
       - key: initialSP
         value: 16
@@ -639,7 +639,7 @@ MonoBehaviour:
         value: 1
     - id: D04
       tier: 2
-      hpFactor: 1.8023809
+      hpFactor: 2.1619048
       parameters:
       - key: initialSP
         value: 5
@@ -679,7 +679,7 @@ MonoBehaviour:
         value: 1
     - id: D07
       tier: 2
-      hpFactor: 1.8
+      hpFactor: 2.1607144
       parameters:
       - key: initialSP
         value: 0
@@ -731,7 +731,7 @@ MonoBehaviour:
         value: 1
     - id: D08
       tier: 2
-      hpFactor: 1.8
+      hpFactor: 2.1607144
       parameters:
       - key: initialSP
         value: 0
@@ -800,18 +800,18 @@ MonoBehaviour:
     naturalXP: 4
     guardTiers: 0200000002000000020000000200000002000000020000000200000002000000i
     guardHPFactors:
-    - 2.3
-    - 2.3
-    - 1.4173077
-    - 1.4157895
-    - 1.4142857
-    - 2.0353847
-    - 1.4172413
-    - 2.0353847
+    - 2.4155555
+    - 2.415
+    - 1.4884615
+    - 1.4868422
+    - 1.4857143
+    - 2.136923
+    - 1.4896551
+    - 2.136923
     guardTuning:
     - id: D25
       tier: 2
-      hpFactor: 2.3
+      hpFactor: 2.4155555
       parameters:
       - key: initialSP
         value: 15
@@ -869,7 +869,7 @@ MonoBehaviour:
         value: 0
     - id: D30
       tier: 2
-      hpFactor: 2.3
+      hpFactor: 2.415
       parameters:
       - key: initialSP
         value: 12
@@ -919,7 +919,7 @@ MonoBehaviour:
         value: 0
     - id: D01
       tier: 2
-      hpFactor: 1.4173077
+      hpFactor: 1.4884615
       parameters:
       - key: initialSP
         value: 4
@@ -959,7 +959,7 @@ MonoBehaviour:
         value: 1
     - id: D06
       tier: 2
-      hpFactor: 1.4157895
+      hpFactor: 1.4868422
       parameters:
       - key: initialSP
         value: 4
@@ -999,7 +999,7 @@ MonoBehaviour:
         value: 1
     - id: D07
       tier: 2
-      hpFactor: 1.4142857
+      hpFactor: 1.4857143
       parameters:
       - key: initialSP
         value: 0
@@ -1051,7 +1051,7 @@ MonoBehaviour:
         value: 1
     - id: D28
       tier: 2
-      hpFactor: 2.0353847
+      hpFactor: 2.136923
       parameters:
       - key: initialSP
         value: 20
@@ -1115,7 +1115,7 @@ MonoBehaviour:
         value: 1
     - id: D09
       tier: 2
-      hpFactor: 1.4172413
+      hpFactor: 1.4896551
       parameters:
       - key: initialSP
         value: 5
@@ -1157,7 +1157,7 @@ MonoBehaviour:
         value: 1
     - id: D27
       tier: 2
-      hpFactor: 2.0353847
+      hpFactor: 2.136923
       parameters:
       - key: initialSP
         value: 20
