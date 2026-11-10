@@ -2,7 +2,7 @@
 
 ## 2026-11-10：再次提高中期守军强度
 
-- 用户要求“中期关卡强度再加强一些”。继续`codex/thirteen-stage-campaign-v2`，基线`7ee8202`；fetch确认远端main为7862d09、仍是当前分支祖先，PR108保持open。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。
+- 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。
 - 本次只改第5/6/7/9的20名守军血攻：HP逐人+15%/+20%/+20%/+5%，ATK+5%/+8%/+8%/+3%，HP四舍五入、ATK目标保留两位小数。源JSON恰version1处＋40个倍率字段变化；实际Unity Author/Validate生成Journey、Stage05/06/07/09。45名生成守军均与float32公式一致，HP精确、ATK最大误差约0.00000367；四份变动Battle除health/attack外相同，第2/3/10/12整份资产同基线。Journey只变HP溯源字段。人数、六星4/5/8、技能、T档、地图格位、路线、波窗口、DP/XP/金币及玩家数值保持。
 - 八战基础HP为386/767/2437/3322/5591/9071/12447/14479；变动四关HP/DP为116.05/127.77/180.35/251.97。第7卡缇30%自疗每次501→601.2，因此此比率不代表含治疗后的真实压力。临时计算脚本检查float32取整、反求倍率和未授权字段不变，执行后已清理；已接受输入、面板和模型结果保留在`artifacts/campaign-middle-2026-11-10`。
 - 复用真实Shop/ManualBattle持久工具，固定库存预置、0金币、真实波次/DP/技能，基线`EvaluateBuildBoundaries`跑5/6/7/9/10/12共48组×42＝2016场；候选`AuthorAndEvaluate`对5/6/7/9跑28组×42＝1176场。候选传`-journeySearchLimit 0`，明确未运行新的自然获取整局搜索，不能把空search报告记作搜索通过。输入为baseline/candidate-journey.json，输出baseline/candidate-boundaries.json，逐组前后对照comparison.json；不是简化DPS模型或强制胜利。
