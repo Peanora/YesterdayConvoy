@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "task": "B10",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_syshop_skill_buff_01",
+      "count": 90,
+      "width": 24,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3736807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_syshop_skill_buff_01/00.png",
+          "count": 90,
+          "width": 288,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_syshop_skill_buff_02",
+      "count": 90,
+      "width": 24,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.29841690063476567,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_syshop_skill_buff_02/00.png",
+          "count": 90,
+          "width": 288,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_syshop_skill_buff_start",
+      "count": 35,
+      "width": 56,
+      "height": 52,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.48214285714285715,
+      "pivotY": 0.3293079963097205,
+      "duration": 1.1666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_syshop_skill_buff_start/00.png",
+          "count": 35,
+          "width": 672,
+          "height": 156
+        }
+      ]
+    },
+    {
+      "key": "enemy_syshop_skill_start",
+      "count": 59,
+      "width": 36,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.5242084503173828,
+      "duration": 1.9666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_syshop_skill_start/00.png",
+          "count": 59,
+          "width": 432,
+          "height": 200
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_syshop_skill_buff_01",
+        "enemy_syshop_skill_buff_02",
+        "enemy_syshop_skill_buff_start",
+        "enemy_syshop_skill_start"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_start",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_buff_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_buff_02",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_syshop_skill_buff_start",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

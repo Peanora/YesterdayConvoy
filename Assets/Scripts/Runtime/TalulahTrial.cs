@@ -86,7 +86,7 @@ namespace YesterdayConvoy
             }
             else if(TalulahActive)
             {
-                GUI.Label(new Rect(24,631,650,28),"焚天火雨 · 满技力后点击角色 → 技能图标",smallStyle);
+                GUI.Label(new Rect(24,631,650,28),"塔露拉 · 技能按原作条件自动触发 · 点击角色查看状态",smallStyle);
                 GUI.Label(new Rect(24,659,650,26),"6秒 / 6波全图打击 · 施法原地不动 · 空格暂停",smallStyle);
             }
         }

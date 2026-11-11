@@ -20,13 +20,13 @@ namespace YesterdayConvoy
         public string DisplayName => displayName;
         public int RecruitCost => recruitCost;
         public UnitDefinition Unit => unit;
-        public Sprite Portrait => OriginalTalulahArt.For(this)?.Portrait ?? LocalMonsterArt.For(cardId)?.Portrait ?? OriginalSlugArt.For(cardId)?.Portrait ?? portrait;
-        public Sprite BattleSprite => LocalMonsterArt.For(cardId)?["idle"].Frames[0] ?? OriginalSlugArt.For(cardId)?["idle"].Frames[0] ?? battleSprite;
+        public Sprite Portrait => BossRosterArt.For(cardId)?.Portrait ?? OriginalTalulahArt.For(this)?.Portrait ?? LocalMonsterArt.For(cardId)?.Portrait ?? OriginalSlugArt.For(cardId)?.Portrait ?? portrait;
+        public Sprite BattleSprite { get { var boss=BossRosterArt.For(cardId); if(boss!=null)return boss["idle"].At(0,true,out _); return LocalMonsterArt.For(cardId)?["idle"].Frames[0] ?? OriginalSlugArt.For(cardId)?["idle"].Frames[0] ?? battleSprite; } }
         public System.Collections.Generic.IReadOnlyList<Sprite> WalkFrames => walkFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> AttackFrames => attackFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> SkillFrames => skillFrames;
         public System.Collections.Generic.IReadOnlyList<Sprite> ComicImpactFaces => comicImpactFaces;
-        public bool HasFrameAnimation => LocalMonsterArt.For(cardId)!=null || OriginalSlugArt.For(cardId)!=null || (walkFrames?.Length>0 && attackFrames?.Length>0);
+        public bool HasFrameAnimation => BossRosterArt.For(cardId)!=null || LocalMonsterArt.For(cardId)!=null || OriginalSlugArt.For(cardId)!=null || (walkFrames?.Length>0 && attackFrames?.Length>0);
         public bool HasVisualDefinition => HasFrameAnimation || (portrait!=null&&battleSprite!=null);
     }
 }

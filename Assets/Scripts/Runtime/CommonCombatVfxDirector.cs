@@ -33,7 +33,7 @@ namespace YesterdayConvoy
         internal IEnumerable<SpriteRenderer> Renderers=>layer.Renderers;
         internal CommonCombatVfxDirector(Transform root){layer=new OriginalCombatVfxLayer(root);}
         internal void Begin(){layer.Begin();casts.Clear();}
-        static bool OriginalMonsterOwns(string id)=>id=="CARD_WISADEL_APRIL"||id=="CARD_TALULAH_TRIAL"||id=="CARD_M20"||id=="CARD_M28"||id=="CARD_M25"||id=="CARD_M32";
+        static bool OriginalMonsterOwns(string id)=>BossRosterEffectView.OwnsCard(id)||id=="CARD_WISADEL_APRIL"||id=="CARD_TALULAH_TRIAL"||id=="CARD_M20"||id=="CARD_M28"||id=="CARD_M25"||id=="CARD_M32";
         static string DefenderArt(DefenderState d)
         {
             if(d==null)return null;

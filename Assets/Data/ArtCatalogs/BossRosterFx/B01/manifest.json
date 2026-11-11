@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "task": "B01",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_cqbw_attack_01_hit",
+      "count": 20,
+      "width": 40,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.55,
+      "pivotY": 0.5742084503173828,
+      "duration": 0.6666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cqbw_attack_01_hit/00.png",
+          "count": 20,
+          "width": 480,
+          "height": 80
+        }
+      ]
+    },
+    {
+      "key": "enemy_cqbw_attack_01_trail",
+      "count": 90,
+      "width": 20,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.45,
+      "pivotY": 0.49802112579345703,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cqbw_attack_01_trail/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "enemy_cqbw_die_01_start",
+      "count": 90,
+      "width": 48,
+      "height": 48,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4791666666666667,
+      "pivotY": 0.4368403752644857,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cqbw_die_01_start/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "enemy_cqbw_skill_01_buff",
+      "count": 90,
+      "width": 32,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.46875,
+      "pivotY": 0.3736807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cqbw_skill_01_buff/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_cqbw_skill_02_hit",
+      "count": 32,
+      "width": 96,
+      "height": 88,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.53125,
+      "pivotY": 0.6036819978193804,
+      "duration": 1.0666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cqbw_skill_02_hit/00.png",
+          "count": 32,
+          "width": 1152,
+          "height": 264
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_cqbw_attack_01_hit",
+        "enemy_cqbw_attack_01_trail",
+        "enemy_cqbw_die_01_start",
+        "enemy_cqbw_skill_01_buff",
+        "enemy_cqbw_skill_02_hit"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_attack_01_trail",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_attack_01_hit",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "c4",
+      "key": "enemy_cqbw_skill_02_hit",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": true
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "c4",
+      "key": "enemy_cqbw_skill_01_buff",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_die_01_start",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

@@ -52,9 +52,9 @@ namespace YesterdayConvoy
         private bool SlugActive => definition.Card.CardId==OriginalSlugArt.CardId;
         private LocalMonsterArt CurrentLocalArt => LocalMonsterArt.For(definition.Card.CardId);
         private double DefaultDeathTail => Math.Max(CurrentLocalArt?.DeathDuration ?? (SlugActive ? .5 : 0),DefenderTrialActive ? System.Math.Max(1,RosterDeathTail) : 0);
-        private double UnitDeathTail(DeployedUnitState unit) => Math.Max(MonsterOriginalVfx.DeathTail(unit),OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
-            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0));
-        private double NativeVfxPendingUntil => Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity);
+        private double UnitDeathTail(DeployedUnitState unit) => Math.Max(BossRosterDeathTail(unit),Math.Max(MonsterOriginalVfx.DeathTail(unit),OriginalTalulahArt.For(CardForUnit(unit))?.DeathDurationFor(unit) ??
+            Math.Max(DefaultDeathTail,Battle.UnitCombat(unit).Effects.Mandragora?2:0)));
+        private double NativeVfxPendingUntil => Math.Max(bossRosterEffects?.PendingUntil??double.NegativeInfinity,Math.Max(MonsterOriginalVfx.PendingUntil(Battle),combatView?.NativeEffectsUntil??double.NegativeInfinity));
         private double DeathTail
         {
             get
@@ -88,6 +88,7 @@ namespace YesterdayConvoy
             wisadelDefinition=definition;
             diagnostic |= ApprovedMapSmokeDriver.Requested||ApprovedMapSmokeDriver.LaunchRequested;
             diagnostic |= Array.IndexOf(args,"-campaignJourneySmokeTest")>=0;
+            diagnostic |= Array.IndexOf(args,"-bossRosterSmokeTest")>=0;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;
@@ -224,7 +225,7 @@ namespace YesterdayConvoy
             Feedback=selected ? "已选中：点击红门部署；右键取消" : "点击底部角色卡，再点击红门部署";
         }
 
-        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); Battle.Begin(); Feedback=Battle.WavesEnabled?"点击底部编队卡牌，在本波开放红门部署":$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
+        public void StartBattle() { if(TestSelectionOpen) return; CompactShopLineupSeats(); ConfigureBossPreparation(); Battle.EnableAutomaticSkills(); Battle.Begin(); Feedback=Battle.WavesEnabled?"点击底部编队卡牌，在本波开放红门部署":$"拖动底部卡牌至红门，部署{definition.Card.DisplayName}"; }
 
         public DeploymentReceipt TryDeployAt(Vector3 point, bool allowWhilePaused = false)
         {
@@ -270,6 +271,7 @@ namespace YesterdayConvoy
 
         public void Tick(float delta)
         {
+            Battle?.EnableAutomaticSkills();
             if(ArtLoading)return;
             if(TestSelectionOpen) return;
             // Preparation has visual life but no combat, SP, movement or cooldown progression.
@@ -287,7 +289,7 @@ namespace YesterdayConvoy
                 (priorWave!=Battle.CurrentWaveIndex||priorAdvance!=Battle.FinalAdvanceActive))
             {
                 CancelWaveCardClick();golemDragging=false;
-                ShopNotice(Battle.FinalAdvanceActive?"出兵结束：场上单位继续推进，仍可使用技能":
+                ShopNotice(Battle.FinalAdvanceActive?"出兵结束：场上单位继续推进，技能继续自动触发":
                     $"第 {Battle.CurrentWaveIndex+1} 波：开放 {Battle.CurrentWaveLaneId}，本波 {Battle.CurrentWaveBudget} DP，余量已重置");
             }
             // Automatic orders can be born partway through a simulation step. Bind once,
@@ -316,6 +318,7 @@ namespace YesterdayConvoy
 
         private void SyncViews()
         {
+            SyncBossRosterEffects();
             if(Battle==null) return;
             removed.Clear();
             foreach(var pair in views)
@@ -352,6 +355,7 @@ namespace YesterdayConvoy
         public void SelectSkillUnit(string id) { if(Battle.FindUnit(id)?.Active==true) selectedEntityId=id; }
         public SkillFailure ActivateSelectedSkill()
         {
+            if(Battle.AutomaticSkillsEnabled){Feedback="技能按触发条件自动施放";return SkillFailure.NoSkill;}
             if(TestSelectionOpen) return SkillFailure.NotRunning;
             SkillFailure result=Battle.TryActivateSkill(Battle.RunId,++requestSequence,selectedEntityId);
             Feedback=result==SkillFailure.None ? (SilverWolfCombat.IsWolf(Battle.FindUnit(selectedEntityId)) ? "无敌玩家启动，接下来三次攻击各随机开启一个盲盒" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).MudrockCapture ? "占据：正在夺取最近的非本方留声机" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FrostSeal ? "冰封：冰环爆发并冻结附近最多两名干员" : Battle.UnitCombat(Battle.FindUnit(selectedEntityId)).FireRain ? "全屏火雨已开启：六波火焰覆盖全部守军" : "爆裂黎明已开启：强化炮击弹药装填完成") :
@@ -503,6 +507,9 @@ namespace YesterdayConvoy
 
         private void DrawSkillResourceBar(float x,float y,DeployedUnitState unit)
         {
+            if(Battle.AutomaticSkillsEnabled){Fill(new Rect(x-31,y,62,7),new Color(.03f,.05f,.06f));Fill(new Rect(x-29,y+2,58*Battle.AutomaticSkillChargeRatio(unit),3),new Color(.20f,.61f,1));return;}
+            var bossSkills=DisplayedBossSkills(unit);
+            if(bossSkills.Count>0){var s=bossSkills[0];Fill(new Rect(x-31,y,62,7),new Color(.03f,.05f,.06f));Fill(new Rect(x-29,y+2,58*Mathf.Clamp01(s.SP/Mathf.Max(1,s.MaxSP)),3),new Color(.20f,.61f,1));return;}
             var combat=Battle.UnitCombat(unit);
             if(SilverWolfCombat.IsWolf(unit) && unit.LastAttackEmpowered && unit.LastWolfBox!=WolfBoxKind.None)
             {

@@ -1,0 +1,842 @@
+{
+  "version": 1,
+  "task": "B22",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "common_invincible_03",
+      "count": 90,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_invincible_03/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_a_attack_01_hit",
+      "count": 42,
+      "width": 44,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.3409090909090909,
+      "pivotY": 0.4157871670193143,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_a_attack_01_hit/00.png",
+          "count": 42,
+          "width": 528,
+          "height": 144
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_a_attack_01_hit_02",
+      "count": 42,
+      "width": 48,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.3125,
+      "pivotY": 0.6552605628967285,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_a_attack_01_hit_02/00.png",
+          "count": 42,
+          "width": 576,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_a_attack_01_start",
+      "count": 60,
+      "width": 64,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.44356494479709196,
+      "duration": 2.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_a_attack_01_start/00.png",
+          "count": 60,
+          "width": 768,
+          "height": 180
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_a_attack_01_start_02",
+      "count": 69,
+      "width": 56,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.32142857142857145,
+      "pivotY": 0.32420845031738277,
+      "duration": 2.3,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_a_attack_01_start_02/00.png",
+          "count": 69,
+          "width": 672,
+          "height": 240
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_a_debuff_01",
+      "count": 90,
+      "width": 20,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4984169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_a_debuff_01/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_attack_01_hit",
+      "count": 39,
+      "width": 56,
+      "height": 56,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.5530060359409877,
+      "duration": 1.3,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_attack_01_hit/00.png",
+          "count": 39,
+          "width": 672,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_attack_01_start",
+      "count": 47,
+      "width": 40,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.25,
+      "pivotY": 0.28458350045340397,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_attack_01_start/00.png",
+          "count": 47,
+          "width": 480,
+          "height": 112
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_buff_01",
+      "count": 90,
+      "width": 44,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.45454545454545453,
+      "pivotY": 0.3629167730158026,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_buff_01/00.png",
+          "count": 90,
+          "width": 528,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_skill_01_hit",
+      "count": 52,
+      "width": 44,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4772727272727273,
+      "pivotY": 0.5901895002885298,
+      "duration": 1.7333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_skill_01_hit/00.png",
+          "count": 52,
+          "width": 528,
+          "height": 220
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_skill_01_start",
+      "count": 90,
+      "width": 128,
+      "height": 108,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.234375,
+      "pivotY": 0.4641112574824581,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_skill_01_start/00.png",
+          "count": 90,
+          "width": 1536,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_skill_01_start_02",
+      "count": 90,
+      "width": 16,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.49736150105794275,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_skill_01_start_02/00.png",
+          "count": 90,
+          "width": 192,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_b_skill_01_trail",
+      "count": 90,
+      "width": 28,
+      "height": 52,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.42857142857142855,
+      "pivotY": 0.7686218848595252,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_b_skill_01_trail/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 416
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_buff_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.6640281677246094,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_buff_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_buff_02_1",
+      "count": 90,
+      "width": 20,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.25,
+      "pivotY": 0.49736150105794275,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_buff_02_1/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_buff_02_2",
+      "count": 90,
+      "width": 20,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.25,
+      "pivotY": 0.49736150105794275,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_buff_02_2/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_buff_02_3",
+      "count": 90,
+      "width": 20,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.25,
+      "pivotY": 0.49736150105794275,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_buff_02_3/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_mirbst_buff_03",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.3333333333333333,
+      "pivotY": 0.5806948343912761,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_mirbst_buff_03/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "common_invincible_03",
+        "enemy_mirbst_a_attack_01_hit",
+        "enemy_mirbst_a_attack_01_hit_02",
+        "enemy_mirbst_a_attack_01_start",
+        "enemy_mirbst_a_attack_01_start_02",
+        "enemy_mirbst_a_debuff_01",
+        "enemy_mirbst_b_attack_01_hit",
+        "enemy_mirbst_b_attack_01_start",
+        "enemy_mirbst_b_buff_01",
+        "enemy_mirbst_b_skill_01_hit",
+        "enemy_mirbst_b_skill_01_start",
+        "enemy_mirbst_b_skill_01_start_02",
+        "enemy_mirbst_b_skill_01_trail",
+        "enemy_mirbst_buff_01",
+        "enemy_mirbst_buff_02_1",
+        "enemy_mirbst_buff_02_2",
+        "enemy_mirbst_buff_02_3",
+        "enemy_mirbst_buff_03"
+      ]
+    },
+    {
+      "phase": 2,
+      "keys": [
+        "enemy_mirbst_b_attack_01_hit",
+        "enemy_mirbst_b_attack_01_start",
+        "enemy_mirbst_b_buff_01",
+        "enemy_mirbst_b_skill_01_hit",
+        "enemy_mirbst_b_skill_01_start",
+        "enemy_mirbst_b_skill_01_start_02",
+        "enemy_mirbst_b_skill_01_trail"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_a_attack_01_start",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_a_attack_01_start_02",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_a_attack_01_hit",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": 0,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_a_attack_01_hit_02",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": 1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_b_attack_01_start",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack_2",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_b_attack_01_hit",
+      "attach": "target",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack_2",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "throwstone",
+      "key": "enemy_mirbst_b_skill_01_start",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "throwstone",
+      "key": "enemy_mirbst_b_skill_01_start_02",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "throwstone",
+      "key": "enemy_mirbst_b_skill_01_trail",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "throwstone",
+      "key": "enemy_mirbst_b_skill_01_hit",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateEnd",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_b_buff_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_1",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_2",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_3",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_03",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateStart",
+      "skill": "flee",
+      "nativeSkill": "",
+      "key": "common_invincible_03",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateStart",
+      "skill": "rage",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_1",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateStart",
+      "skill": "rage",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_2",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateStart",
+      "skill": "rage",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_02_3",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateStart",
+      "skill": "rage",
+      "nativeSkill": "",
+      "key": "enemy_mirbst_buff_03",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

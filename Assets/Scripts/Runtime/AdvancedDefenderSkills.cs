@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         public float DefenderRange(DefenderState d)=>CampaignV2Enabled&&d.Settings.Skill.EffectRadius<=0&&(IsSixth(d)&&DefenderSkillActive(d)||IsFifthActive(d))?d.Settings.Range:
             IsSixth(d)&&DefenderSkillActive(d)?d.Settings.Skill.EffectRadius:IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
-        public bool DefenderCanBlock(DefenderState d)=>d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d);
+        public bool DefenderCanBlock(DefenderState d)=>BossRosterDefenderCanBlock(d)&&(d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d));
         public bool DefenderCanAttack(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?
             DefenderSkillActive(d):d.Settings.CanAttack||(d.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&DefenderSkillActive(d));
         float LiberatorAttackMultiplier(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory?1+d.LiberatorBonus:1;
@@ -180,7 +180,7 @@ namespace YesterdayConvoy
                 }
                 if(strongest==null){u.NextDroneAreaAt=Clock+1;continue;}
                 if(Clock+1e-6<u.NextDroneAreaAt)continue;u.NextDroneAreaAt=Clock+V2DefenderSkill(strongest,"droneAreaInterval",1);
-                if(TryDefenderDamageUnit(u,DefenderSkillAttack(strongest)*V2DefenderSkill(strongest,"droneAreaAttackFraction",1),CombatDamageType.Arts))OnAdvancedDefenderHit(strongest,u,CombatDamageType.Arts,origin,true);
+                if(TryDefenderDamageUnit(u,DefenderSkillAttack(strongest)*V2DefenderSkill(strongest,"droneAreaAttackFraction",1),CombatDamageType.Arts,sourceDefender:strongest))OnAdvancedDefenderHit(strongest,u,CombatDamageType.Arts,origin,true);
             }
             defenderDrones.RemoveAll(v=>!DefenderSkillActive(FindDefender(v.SourceId)));
         }
@@ -207,24 +207,27 @@ namespace YesterdayConvoy
         }
         void OnAdvancedDefenderHit(DefenderState source,DeployedUnitState target,CombatDamageType type,Vector3 origin,bool drone)
         {
+            BossRosterRecordDefenderHit(source,target);
             if(!target.Active||target.IsReviving)return;
             foreach(var wall in defenders)
                 if(source!=wall&&type==CombatDamageType.Arts&&DefenderWallActive(wall)&&CrossesDefenderWall(origin,target.Motion.Position,DefenderWallPoint(wall),wall.WallNormal))
                 {AddScorch(target,DefenderSkillAttack(wall)*wall.Settings.Skill.ElementFraction);wall.BurnApplications++;}
             if(!source.Settings.Kasimierz)return;
             foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&DefenderSkillActive(d)&&GroundDistance(d.Position,target.Motion.Position)<=d.Settings.Skill.EffectRadius)
-                ApplyPureUnitDamage(target,d.Settings.Attack*(1+d.LiberatorBonus)*V2DefenderSkill(d,"kasimierzTrueAttackFraction",.11f));
+                ApplyPureUnitDamage(target,d.Settings.Attack*(1+d.LiberatorBonus)*V2DefenderSkill(d,"kasimierzTrueAttackFraction",.11f),d);
         }
         void OnLiberatorKill(DefenderState d)
         {
             if(d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||!DefenderSkillActive(d))return;
             d.LiberatorBonus=Math.Max(0,d.LiberatorBonus-V2DefenderSkill(d,"attackBonusLossPerOrdinaryKill",.1f));d.LiberatorKills++;
         }
-        void ApplyPureUnitDamage(DeployedUnitState u,float amount)
+        void ApplyPureUnitDamage(DeployedUnitState u,float amount,DefenderState sourceDefender=null)
         {
             if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!u.Active||u.IsReviving||UnitInvulnerable(u)||amount<=0)return;
+            BossRosterBeginIncomingDamage(u,sourceDefender);
             TryActivateReunionEntryShield(u);
             float damage=u.FlamePhase==FlamechaserPhase.Ember?1:amount*SixthVulnerability(u);
+            damage=BossRosterAdjustPureDamage(u,damage);
             // This entry is only for defender-inflicted true damage / elemental bursts, never self-loss.
             // Record effective contact before a fatal hit removes the living source, as normal damage does.
             if(damage>0)OnMarineContact(u);

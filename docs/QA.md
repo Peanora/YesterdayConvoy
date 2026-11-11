@@ -1,5 +1,18 @@
 # 验证证据与回归
 
+## 2026-11-10起：维什戴尔超新星攻擂独立样板
+
+- 范围按用户本轮直接要求：小保存地图、皮肤放大、方舟式Boss总血条、半血爆裂黎明加速、整队同时登场／免DP、阵亡后60—120秒再部署。试验取90秒及2倍加速。开工只有已明确保留的`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`未跟踪，未暂存／提交这些本地项。从实时远端main `0b17920`创建`codex/wisadel-boss-arena`，没有改写原`codex/combat-style-synergies`分支或带入其待合并提交。主导唯一写入工程场景与运行代码，资源Agent只写项目外加工目录，随后主导统一导入、测试和构建。
+- 使用level-design、autobattler-design、game-balance-analysis及port-original-vfx流程。皮肤从PRTS资产源meta定位“超新星”`char_1035_wisdel_sale_14`，正背原Spine3.8.99真实曲线离线导出；5段813帧、52页图集＋1卡面、63311099字节PNG、单PNG最大1527109字节。统一480帧格／PPU160／30fps／共同根点，全部帧非空、尺寸／哈希／透明边缘通过，已实际查看代表帧和连续动作。运行来源及权利状态在D31／D31B的SOURCE.json，原作开放再分发许可未确认；用户本轮接入与源码上传授权不记为权利人许可。角色技能动作是原作，独立弹道／命中FX仍为项目适配。
+- `BossArenaTools.Author`实际保存独立`WisadelBossArena.unity`与3份配置、4份材质，目录共25场景。第二次Author未覆盖已存地形／参数；显式RefineTaskLayout仅调整本轮新样板，形成八个互不重叠集结位并删除继承留声机。静态地图不在Play重建。正常行动默认入口保持，新增系统菜单与角色测试入口，不创建CMD／BAT。
+- 首轮模型编译发现新分部类错用了函数局部名`guardSettings`，改为公开CombatSettings；第一组测试使用了模型不接受的虚构卡ID，改用真实M07／M08。随后5项模型通过。首轮完整EditMode1024/1025，定位构建清单未登记新场景，补登记。中断尚未具备场景入口的首轮Play启动后，测试框架留下本任务创建的`InitTestScenea9ea8b4f-6661-43be-9ba8-a43020a7d624.unity`，曾使全量EditMode1025/1026；核实确在工作区且为中断测试新建文件后，仅清除此临时场景及meta。最终完整EditMode **1026/1026**，0失败／跳过，证据`artifacts/boss-arena/edit-final.xml/log`。
+- 只读审查发现攻擂单位仍可能在终点走旧穿门扣防御、使Boss停火，以及海嗣仍用旧地图地面。已修正：攻擂终点保持Active且不扣防御／不进入阵亡CD，余火特殊移动也沿此边界；海嗣使用新棋盘内35个整数覆盖格。新增真实炮击边界测试证明非攻击单位抵达终点后Boss仍继续出手、卡仍在场。没有用增加Boss数值遮掩模型问题。
+- 首轮相关GPU PlayMode5/6；唯一失败为旧CampaignSceneTests仍假定开局没有5金币、前两节点均补给。按当前已实施的“初始5金、首补给8金、第二节点为首战”修正原测试，保留重复领取幂等及不在战斗发补给检查，未改战役规则。最终非batch D3D11 PlayMode **6/6**：两项新攻擂场景＋四项原CampaignScene回归，证据`play-delivery.xml/log`。新场景通过真实整备、整队启动、8主卡在场、免费／防重复、90秒冻结、复原编队、自然死亡、真实半血和自然击杀；截图位于`artifacts/boss-arena/play`，为GameView，不是OS鼠标记录。其后仅把镜头观察点y由0.8改1.9以减少头部被HUD遮挡，并添加构建包装入口；运行规则未改，最终镜头由下述独立Player和实际Windows窗口核验。
+- 数值采用真实ManualBattle／CampaignV2Balance、同八人编队与当前八条路线，自动施放就绪实体技能、冷却后立即补员。最终模型（`balance.json`）全一星：720秒、41部署、12次技能，Boss余9637.46；全二星：265.5秒、14部署、7次技能获胜，124.85秒进入半血；全三星：148.15秒、9部署、4次技能获胜，70.7秒进入半血。720秒是一星模型观察上限，不是游戏超时判负。都是固定持有阵容，无自然商店获取或人口成本推断，不推广为玩家通关率。
+- 运行源码 **43a25fbd83536eedea3c3480536a8137fc932652**。`BossArenaTools.BuildWindows`调用真实评估及现有BaselineTools.BuildWindows；Windows x64 Development **1068351569 bytes／0 errors／退出0**（`build.log`），完整产物直接位于常用`Builds/Windows`，SOURCE.txt绑定该源码。两次独立D3D11 Player，1280×720、1600×900均 **18/18、退出0**（`player-1280`／`player-1600`的result.json及对应exit文件）。生产接口完成整队自动登场、无DP与次数扣除、防重复、真实原作Sprite放大、死亡CD暂停、半血、14次部署自然击杀、整备保留编队并重置下一战。两次均265.5模拟秒，无直接扣血、强制胜负或测试加成。Player驱动未请求截图，不以逻辑检查冒称Player像素验收。
+- 最后使用computer-use技能实际操作常用EXE的普通`-bossArena`窗口：OS鼠标点击“整队出击”后12实体出现（8主卡＋支援），自然交战后在1:49点击暂停；两次窗口观察均显示Boss95529／120000、79.6%、阵亡卡73秒及66秒不变。随后OS鼠标点“整备”，实际返回无限金币整备、八张二星编队保留、伤害统计归零、可以再次整队出击；窗口留供人类试玩。该项不是人类完整攻擂胜例。无Player异常日志。
+- 素材、源码与必要meta共167项运行提交；53张PNG均实际纳入Git，没有依赖本地额外忽略遗漏。运行提交后仓库检查8344文件通过，文档收尾后8345文件通过；git diff空白检查通过。源码及文档已正常推送功能分支，远端分支与本地一致，创建[PR #111](https://github.com/Peanora/YesterdayConvoy/pull/111)交人工审查。检查工具暂未返回该PR的workflow或status，未宣称远端CI通过。未运行完整PlayMode、第二机／新克隆、正常运营获取、无技能等多种人类策略或超长战斗性能；不宣称完成最终平衡。无自动合并main、ZIP或Releases。
+
 ## 2026-11-10：再次提高中期守军强度
 
 - 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。
@@ -2351,3 +2364,42 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 
 
 最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。
+# 2026-11-11：26 位 Boss 正式接入验证
+
+工作分支 `codex/boss-roster-integration`。开工核实远端 main=`0b17920`，保留既有攻擂工作至 `59a7428`，未丢弃用户修改。`.vscode/` 与 `ProjectSettings/PackageManagerSettings.asset` 是开工既存未跟踪项，未纳入任务提交。未改场景、Prefab、包清单和 ProjectSettings；未新增启动器、ZIP 或 Releases。
+
+- 模型打包：35 视图、433 段正时长动作、58,583 帧、2,722 页，PNG 共 2,621,729,692 字节；原 SHA、时长、事件、pivot 保持。来源登记核对 105 个原文件 SHA。它是源资源证据，不代表逐段自然战斗验收。
+- 原 FX：最终运行清单 21 包、389 段、25,908 帧、390 页，源 SHA/RGBA 检查全过；418 条事件绑定，其他装置按真实对象字段分派。塔露拉实际复用原目录的 19 个补充 key，重复副本已删除，Player 导出仅增加真实绑定依赖。
+- 代表先验：`Library/BossRosterEvidence/representative-fx.log/json`，实际 MonsterTrial 相机；B22 身体开关差异 18,514 像素，原 HDR 特效 7,884 像素，真实 HP、源双段接触与暂停固定通过。
+- 正式安装：`integration-install.log`，Unity 编译通过，`BOSS_ROSTER_INSTALL_PASS cards=19`。
+- 完整 EditMode：`full-editmode.xml/log`，**1088/1088**。初轮 1087 项有 20 个旧衔接／旧断言失败；修正塔露拉复起后被动 CD 与手动 SP、冬痕 20 秒保护期夹具、实际魂灵／灼息额外伤害回执、可选参数反射调用及依赖清单。保留初轮证据；中间两次编译问题修复后才计正式通过。
+- 正式 D3D11 场景 PlayMode：`boss-playmode.xml/log`，**2/2**，遍历 26 位、维维美 S1/S2/S3 共 28 场，所有场次检查通过。真实生产选择／加载、底部卡指针部署、同卡双实体、独立 HP/SP、生产技能弹窗、源图集 GPU 像素贡献、暂停与重开；旧核心验证复起。首次夹具 CD=0 被正数校验拒绝，改 0.01 秒重跑全过，未改生产约束。验证夹具明确提高预算／耐久、注入致命伤触发阶段，不能说成自然通关或 OS 鼠标试玩。
+
+第一轮 Windows：源码 `3ad08e11`，Unity 6000.6.5f1 Windows x64 Development 构建报告 **1,068,686,232 bytes、0 错误、真实 Unity 退出 0**。严格预处理核对 4,141,980,196 字节源 PNG；导出 164 manifest、4,839 个预处理页面、932,492,212 字节运行素材，5004 个依赖文件。构建报告字节数与构建后外置素材字节数分开记录，不能混称总目录体积。
+
+独立 D3D11 Player 从 TEMP 启动，`player/result.json` **28/28 场、452/452 检查、退出 0**，含全部 26 位和维维美三种技能；与场景 PlayMode 相同的真实入口／资源事务，不是自然运营。另一次独立 `payload/result.json` **164 manifest／4,839 页逐页实际上传、PNG 回退 0、退出 0**。这些页面及 manifest 在后续显示比例修正中保持不变。
+
+目视检查真实 Player PNG 后发现 B21 身体超出屏幕上沿，未以像素存在检查通过代替视觉验收。随后增加游戏内 0.42 等比显示，原 PNG／PPU／动作时长不改；七个随体 FX 同步、目标命中与全场波不缩，头顶高度同步。新增相机开关差异的边缘像素检查，避免只要还剩几像素就算通过。最终构建和缩放后独立 Player 结果实际完成后追加。仓库检查 **15,835 文件通过**，无 GUID／meta／目录问题。
+
+未执行第二台电脑、人类整局自然运营、全分辨率或长期平衡。当前源路径与适配见 [接入说明](BOSS_ROSTER_INTEGRATION.md)、[机制说明](BOSS_ROSTER_MECHANICS.md)、[来源登记](art/BOSS-ROSTER-SOURCES.md)。
+
+最终交付：运行源码 **`22b6df5af433e865dd29c403dff0bbb7c46d3c1a`**。缩放与随体 FX 修改后的完整 EditMode **1088/1088**；`windows-build.log` 为 Windows x64 Development **1,068,688,524 bytes、0 错误、真实 Unity 退出 0**，严格源核对与最终导出依赖数量／页面／字节与首轮一致。`player-final/result.json` 从 TEMP、1600×900 D3D11 独立启动，**28/28 场、453/453 检查、进程退出 0**。B21 身体实际相机差异 **46,475 像素、四周边缘差异 0**；主导已目视最终 Sui 图及弑君者、卡德霍、圣徒、瓦列里奥和维维美 S2 过载图。最终 33 张相机 PNG 是真实 RenderTexture，不包含 OnGUI，不冒称 OS 鼠标输入或完整游戏 UI 验收。
+
+`Builds/Windows/SOURCE.txt` 绑定上述运行源码和实际 Managed DLL SHA。后续交付记录提交只改文档，不改二进制。源码及全部运行素材正常分批推送功能分支，前两笔为大体积模型／特效，随后为战斗接入与 Sui 镜头适配；未直接写 main、自动合并或另行发布。
+
+## 2026-11-12：全体怪物技能自动化
+
+用户要求取消玩家手动施放，时机参考原作。本轮延续未合并的 `codex/boss-roster-integration`／PR112；重新fetch核实main仍为`0b17920`，已知两个本地未跟踪项保留。生产控制器开战与逐帧启用模型内自动调度，所有正常模式统一使用；旧低层手动事务fixture可单独隔离技能，不是玩家可切换选项。没有新增美术、场景、Prefab、Packages或ProjectSettings改动。
+
+- 19新卡50条阶段合同，按原初次CD／周期、自然SP／攻击出手SP、原初始SP、目标／阻挡／机关、区域次数限制与阶段分别调度。W9／21、半血重置；维维S3真实40／50、技能和末发停回；S1按出手回复，S2自动保持25秒；冬痕10.5秒冰环、35秒黑冰独立；塔露拉保留点燃／引爆／能量和阶段雨，旧手动重复能力不自动重放。原Sui20／50与停留阻回、圣徒真实致命后地／飞各2次有限返回均实际执行。来源不明的B15二形周期继承明确标为Adapted。
+- UI只读查看状态、1×／2×不因打开面板减速，点击信息行与公开Controller施放入口均不会手动放技。技能就绪时可沿已有路线进入更短技能范围／阻挡范围，避免静止守军使近距技能永久饿死；不新增寻路。
+- `Library/AutomaticSkillsEvidence/w-representative.xml`：代表W **3/3**；初轮等待秒数的测试加法错误已修复，原失败保留。
+- `full-editmode.xml/log`：最终 **1131/1131**，包含实际导入的10例旧核心自动化、28例新调度及5例源合同比对。首轮1118通过后查出一个新测试meta的GUID为33字符、Unity未导入10例；修复为合法新GUID后确实发现并运行，另修一项单精度SP累加断言为0.001容差。没有将类型编译当作测试通过。
+- `boss-playmode.xml/log`：最终D3D11 **2/2**，全26位／维维3配置共28场。无SP赋值或施法命令注入，等待真实自动事件；保留实际选择与底卡指针部署、同卡多实体、点击角色／信息行不施法不减速、原动作GPU／暂停／重开／复起。初轮B03/B11停在普攻边缘导致技能条件不可达，加入就绪后沿原路线靠近并新增2例模型回归后，两组全过。缺少真实机关／高台目标等场次明确按条件等待记录，不能伪称释放。
+- 仓库 **15,849文件检查通过**；源合同生成器 `--check` 通过，50行／19卡。源动作、PNG、Shader和运行依赖没有变化。原关卡外波缺失、未接入的超时机制及B15继承值，明确列于 [自动时机](AUTOMATIC_MONSTER_SKILLS.md)。
+
+Windows最终交付：运行源码 **`10f3fdc43c61a96f556bfd7fe226966f76736eda`**，`windows-build-final.log` 报告 **1,068,722,544 bytes、0错误、Unity真实退出0**。此前`a771b3b7`版本也构建／独立Player通过，最终只清理两条遗留“点击放技”的可见教程文本，未改战斗逻辑。严格源PNG核对及导出仍为4,738源页／101预览／164 manifest、4,839预处理页、5,004依赖文件、932,492,212外置运行素材字节；素材／Shader未改，本轮不重复此前整包逐页GPU上传。
+
+最终`player-final/result.json`：从TEMP、1600×900 D3D11启动，**28/28场、676/676检查、真实进程退出0**。不发送技能施放命令、不赋SP；W首自动9.00秒、弑君者进入阻挡后15.30秒、坎诺特23.05秒、岁30.05秒、维维S3与S2首次10.05秒；其他技能受走入射程、攻击回复与完整动作窗口影响，不把原始CD当成无条件强制开技。梅菲斯特真实治疗另验，爱国者缺高台目标与泥岩缺留声机明确记`conditionOnly`。共33张实际相机PNG，主导目视W自动C4和维维S2过载；相机图不包含OnGUI，不冒称OS鼠标或全UI视觉验收。SOURCE.txt绑定最终Managed DLL SHA与上述源码。
+
+GitHub的`a771b3b7`逻辑提交仓库检查run233实际success；最终文本／记录提交继续走同一PR，不自动合并。未执行第二机、人类完整自然运营或新自动时机下的长期平衡；此前手动策略的通关见证不外推到这版自动战斗。

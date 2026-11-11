@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using UnityEditor;
@@ -16,7 +17,7 @@ namespace YesterdayConvoy.Editor
         public int callbackOrder=>-100;
         static bool verifiedThisSession;
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
-        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx"};
+        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
         static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-B-caster"};
         public void OnPreprocessBuild(BuildReport report)=>Prepare(!verifiedThisSession);
         public void OnPostprocessBuild(BuildReport report)
@@ -78,7 +79,7 @@ namespace YesterdayConvoy.Editor
                     if(data==null||data.version!=1||data.clips==null||data.clips.Length==0)throw new InvalidDataException("Invalid art manifest: "+manifest);
                     plan.Files.Add(manifest,source);plan.Manifests++;
                     var seen=new HashSet<string>(StringComparer.Ordinal);
-                    var phaseKeys=logicalRoot=="TalulahUnboundVfx"?new HashSet<string>(TalulahPhaseKeys,StringComparer.Ordinal):null;
+                    var phaseKeys=logicalRoot=="TalulahUnboundVfx"?new HashSet<string>(TalulahPhaseKeys.Concat(BossRosterSupplementArt.SequencesFor("CARD_TALULAH_TRIAL").Select(s=>s.Key)),StringComparer.Ordinal):null;
                     foreach(var clip in data.clips)
                     {
                         if(clip==null||string.IsNullOrWhiteSpace(clip.key)||!seen.Add(clip.key)||clip.pages==null||clip.pages.Length==0)

@@ -68,7 +68,7 @@ namespace YesterdayConvoy
                 // Recovery resumes only after an active skill has ended, including a straddling frame.
                 float elapsed=(float)Math.Max(0,Clock-Math.Max(Clock-step,d.SkillActiveUntil));
                 d.SkillSP=Math.Min(skill.RequiredSP,d.SkillSP+(skill.AttackRecovery?0:elapsed*skill.SPPerSecond));
-                if(DefenderSkillActive(d)||IsFifthActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
+                if(BossRosterDefenderSkillLocked(d)||DefenderSkillActive(d)||IsFifthActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
                 // Match attack scheduling tolerance so float rounding cannot starve a ready skill.
                 if(Clock+1e-6<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);

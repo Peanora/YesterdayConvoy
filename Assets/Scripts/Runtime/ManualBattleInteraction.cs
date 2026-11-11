@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         private bool settlementPointerDown;
         public bool Dragging { get; private set; }
         public bool SkillMenuOpen { get; private set; }
-        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen ? .03f :
+        public float EffectiveSimulationSpeed => Battle==null || TestSelectionOpen || Battle.IsPaused ? 0 : SkillMenuOpen&&!Battle.AutomaticSkillsEnabled ? .03f :
             Battle.WavesEnabled&&Battle.GuerrillaOrderBusy?Mathf.Min(1,SimulationSpeed):SimulationSpeed;
         public static Rect RosterSlot => new Rect(1126,556,112,144);
 
@@ -72,7 +72,7 @@ namespace YesterdayConvoy
             }
             if(Dragging) return;
             if(SkillMenuOpen && SkillPopupRect.Contains(GUIPosition(screen)))
-            { if(SkillCastRect.Contains(GUIPosition(screen))) CastFocusedSkill(); return; }
+            { if(Battle.AutomaticSkillsEnabled)return;if(TryBossRosterPopupPointer(GUIPosition(screen)))return;if(SkillCastRect.Contains(GUIPosition(screen))) CastFocusedSkill(); return; }
             string hit=IsBattlefield(screen) ? HitUnit(screen) : null;
             if(hit!=null) { OpenSkillMenu(hit); return; }
             if(SkillMenuOpen) { CloseSkillMenu(); Feedback="已取消技能选择"; return; }
@@ -144,6 +144,13 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return;
             var picked=Battle.FindUnit(id);
+            if(Battle.AutomaticSkillsEnabled)
+            {
+                if(picked?.Active!=true||Battle.Phase!=BattlePhase.Running)return;
+                Dragging=false;Selected=false;selectedEntityId=id;SkillMenuOpen=true;
+                Feedback="技能按原作时机自动触发；点空白关闭信息";UpdatePreview();return;
+            }
+            if(BossRosterCatalog.Contains(picked?.CardId)&&Battle.BossRosterSkills(picked).Count==0){selectedEntityId=id;Feedback=CardForUnit(picked).DisplayName+"的天赋会自动触发";return;}
             if(TacticalMapActive && picked?.Active==true && !Battle.UnitCombat(picked).HasSkill)
             {CloseSkillMenu();selectedEntityId=id;Feedback=CardForUnit(picked).DisplayName+"没有主动技能";return;}
             if(!Battle.EngagementEnabled || !Battle.UnitCombat(Battle.FindUnit(id)).HasSkill || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
@@ -153,6 +160,7 @@ namespace YesterdayConvoy
         public void CloseSkillMenu() { SkillMenuOpen=false; }
         public SkillFailure CastFocusedSkill()
         {
+            if(Battle?.AutomaticSkillsEnabled==true){Feedback="技能自动触发；此面板仅显示状态";return SkillFailure.NotReady;}
             if(!SkillMenuOpen) return SkillFailure.MissingEntity;
             var result=ActivateSelectedSkill();
             if(result==SkillFailure.None) CloseSkillMenu();
@@ -165,6 +173,7 @@ namespace YesterdayConvoy
             get
             {
                 Rect unit=UnitScreenRect(selectedEntityId);
+                if(IsBossRosterSelection||Battle.AutomaticSkillsEnabled){int count=DisplayedBossSkills(Battle.FindUnit(selectedEntityId)).Count;float h=count>0?76+(Battle.AutomaticSkillsEnabled?72:57)*count:212;return new Rect(Mathf.Clamp(unit.xMax+12,16,940),Mathf.Clamp(unit.yMin-8,78,Mathf.Max(78,550-h)),300,h);}
                 float x=unit.xMax+18;
                 if(x+214>1264) x=unit.xMin-232;
                 var panel=new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
@@ -174,7 +183,7 @@ namespace YesterdayConvoy
         }
         public Rect SkillCastRect { get { Rect panel=SkillPopupRect; return new Rect(panel.x+14,panel.y+45,66,66); } }
 
-        private bool ReadyMarker(string id) => Battle.IsSkillReady(id);
+        private bool ReadyMarker(string id) => !Battle.AutomaticSkillsEnabled&&Battle.IsSkillReady(id);
         public Rect ReadyMarkerRect(string id)
         {
             var unit=Battle.FindUnit(id); if(unit==null) return Rect.zero;
@@ -196,7 +205,8 @@ namespace YesterdayConvoy
 
         private void DrawInteractionOverlay()
         {
-            if(SkillMenuOpen) Fill(new Rect(0,66,1280,486),new Color(0,0,0,.16f));
+            DrawBossPreparation();
+            if(SkillMenuOpen&&!Battle.AutomaticSkillsEnabled) Fill(new Rect(0,66,1280,486),new Color(0,0,0,.16f));
             foreach(var unit in Battle.Units)
             {
                 if(!unit.Active || !ReadyMarker(unit.EntityId)) continue;
@@ -214,6 +224,8 @@ namespace YesterdayConvoy
                     new Rect(source.x/portrait.texture.width,source.y/portrait.texture.height,source.width/portrait.texture.width,source.height/portrait.texture.height));
             }
             if(!SkillMenuOpen) return;
+            if(IsBossRosterSelection){DrawBossRosterPopup();return;}
+            if(Battle.AutomaticSkillsEnabled){DrawAutomaticUnitInfo();return;}
             var selected=Battle.FindUnit(selectedEntityId);
             if(selected==null || !selected.Active) return;
             Rect bounds=UnitScreenRect(selectedEntityId),panel=SkillPopupRect,button=SkillCastRect;
@@ -238,6 +250,20 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(panel.x+14,panel.y+119,194,25),Battle.IsPaused ? "恢复后可释放技能" : "0.03×  ·  点空白处取消",smallStyle);
         }
 
+        void DrawAutomaticUnitInfo()
+        {
+            var unit=Battle.FindUnit(selectedEntityId);if(unit?.Active!=true)return;
+            var panel=SkillPopupRect;var combat=Battle.UnitCombat(unit);
+            Fill(panel,new Color(.04f,.075f,.10f,.98f));Fill(new Rect(panel.x,panel.y,panel.width,3),ReadyGold);
+            GUI.Label(new Rect(panel.x+12,panel.y+9,panel.width-24,27),CardForUnit(unit).DisplayName+" · 信息",textStyle);
+            GUI.Label(new Rect(panel.x+12,panel.y+41,panel.width-24,24),$"生命 {unit.Health:0}/{unit.MaxHealth:0}",smallStyle);
+            string description=BossRosterMenuDescription(unit.CardId)??(combat.Effects.Healer?"自动治疗受伤友军；不攻击守军":combat.HasSkill?SkillName+" · 满足条件时自动施放":"普通攻击与天赋按战斗条件自动触发");
+            if(bossDescriptionStyle==null)bossDescriptionStyle=new GUIStyle(smallStyle){wordWrap=true};
+            GUI.Label(new Rect(panel.x+12,panel.y+68,panel.width-24,54),Battle.AutomaticSkillStatus(unit),bossDescriptionStyle);
+            GUI.Label(new Rect(panel.x+12,panel.y+128,panel.width-24,48),description,bossDescriptionStyle);
+            GUI.Label(new Rect(panel.x+12,panel.yMax-26,panel.width-24,22),"信息不减速 · 点空白关闭",smallStyle);
+        }
+
         private IEnumerator InteractionFrame(string directory,string name)
         {
             if(directory==null) { yield return null; yield break; }
@@ -249,35 +275,11 @@ namespace YesterdayConvoy
 
         private IEnumerator VerifyInteraction(string directory)
         {
-            Time.timeScale=0; StartBattle(); Battle.SetPaused(true);
-            Vector2 card=ScreenPosition(RosterSlot.center),entry=Camera.main.WorldToScreenPoint(Battle.Entry);
-            ProcessPointerDown(card); ProcessPointerMove(entry);
-            yield return InteractionFrame(directory,"ui-paused-drag");
-            bool placed=ProcessPointerUp(entry).Success && Battle.IsPaused && Battle.DP==10 && Battle.Units.Count==1;
-            ProcessPointerUp(entry); Tick(10);
-            bool once=Battle.Units.Count==1 && Battle.Clock==0 && Battle.Units[0].SkillSP==8 && Battle.CooldownRemaining==2;
-            ProcessPointerDown(card);
-            bool invalid=ProcessPointerUp(Camera.main.WorldToScreenPoint(scene.BlueGate.position)).Failure==DeployFailure.WrongEntry && Battle.DP==10;
-            yield return InteractionFrame(directory,"ui-paused-placed");
-            Battle.SetPaused(false); Tick(4);
-            string id=Battle.Units[0].EntityId;
-            bool ready=Battle.IsSkillReady(id) && Battle.SkillCasts==0;
-            yield return InteractionFrame(directory,"ui-skill-ready");
-            ToggleSpeed(); ProcessPointerDown(ScreenPosition(UnitScreenRect(id).center));
-            double clock=Battle.Clock; Tick(1);
-            bool slow=SkillMenuOpen && System.Math.Abs(Battle.Clock-clock-.03)<.0001 && EffectiveSimulationSpeed==.03f;
-            yield return InteractionFrame(directory,"ui-skill-focus");
-            ProcessPointerDown(ScreenPosition(new Vector2(12,500)));
-            bool cancel=!SkillMenuOpen && EffectiveSimulationSpeed==2 && Battle.SkillCasts==0 && Battle.IsSkillReady(id);
-            ProcessPointerDown(ScreenPosition(UnitScreenRect(id).center));
-            ProcessPointerDown(ScreenPosition(SkillCastRect.center));
-            bool cast=!SkillMenuOpen && Battle.SkillCasts==1 && Battle.Units[0].SkillAmmo==6 && !Battle.IsSkillReady(id) && Battle.DP==10 && EffectiveSimulationSpeed==2;
-            yield return InteractionFrame(directory,"ui-skill-cast");
-            RestartBattle();
-            bool reset=!Dragging && !SkillMenuOpen && Battle.Units.Count==0 && Battle.DP==12 && SimulationSpeed==1;
-            Time.timeScale=1;
-            Debug.Log($"INTERACTION_CHECK: pausedDrop={placed}; onceFrozen={once}; invalid={invalid}; ready={ready}; slow={slow}; cancel={cancel}; cast={cast}; reset={reset}.");
-            Application.Quit(placed && once && invalid && ready && slow && cancel && cast && reset ? 0 : 1);
+            Time.timeScale=0;BossRosterSmokeResult result=null;
+            yield return BossRosterSmokeProbe.Run(this,directory,new[]{wisadelDefinition.Card.CardId},value=>result=value,"s3");
+            Time.timeScale=1;Debug.Log("INTERACTION_AUTOMATIC_CHECK: "+JsonUtility.ToJson(result));
+            Application.Quit(result?.passed==true?0:1);
         }
+
     }
 }

@@ -52,7 +52,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(archer.Active,Is.False);Assert.That(archer.ReviveUsed,Is.False);Assert.That(frost.IsReviving,Is.True);
             b.Advance(1.2f);Assert.That(b.FrostSeals[0].Cancelled,Is.True);Assert.That(b.FrostSeals[0].FrozenTargets,Is.Empty);
             Assert.That(b.IsSkillReady(frost.EntityId),Is.False);b.Advance(4);Assert.That(frost.IsReviving,Is.False);Assert.That(frost.Health,Is.EqualTo(360));
-            b.TryDamageUnit(frost.EntityId,10000,CombatDamageType.Arts);Assert.That(frost.Active,Is.False);
+            Assert.That(b.UnitInvulnerable(frost),Is.True);Assert.That(b.TryDamageUnit(frost.EntityId,10000,CombatDamageType.Arts),Is.False,"Winter Scar now owns twenty seconds of source post-revival protection.");Assert.That(frost.Health,Is.EqualTo(360));
+            b.Advance((float)(b.BossCoreState(frost).ProtectedUntil-b.Clock)+.05f);Assert.That(b.UnitInvulnerable(frost),Is.False);
+            Assert.That(b.TryDamageUnit(frost.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(frost.Active,Is.False);Assert.That(frost.ReviveUsed,Is.True);
         }
         [Test]public void SkillConfigurationRejectsHybridAmmoOrNonFrostNovaCast()
         {
