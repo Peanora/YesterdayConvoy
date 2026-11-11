@@ -2382,3 +2382,7 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 目视检查真实 Player PNG 后发现 B21 身体超出屏幕上沿，未以像素存在检查通过代替视觉验收。随后增加游戏内 0.42 等比显示，原 PNG／PPU／动作时长不改；七个随体 FX 同步、目标命中与全场波不缩，头顶高度同步。新增相机开关差异的边缘像素检查，避免只要还剩几像素就算通过。最终构建和缩放后独立 Player 结果实际完成后追加。仓库检查 **15,835 文件通过**，无 GUID／meta／目录问题。
 
 未执行第二台电脑、人类整局自然运营、全分辨率或长期平衡。当前源路径与适配见 [接入说明](BOSS_ROSTER_INTEGRATION.md)、[机制说明](BOSS_ROSTER_MECHANICS.md)、[来源登记](art/BOSS-ROSTER-SOURCES.md)。
+
+最终交付：运行源码 **`22b6df5af433e865dd29c403dff0bbb7c46d3c1a`**。缩放与随体 FX 修改后的完整 EditMode **1088/1088**；`windows-build.log` 为 Windows x64 Development **1,068,688,524 bytes、0 错误、真实 Unity 退出 0**，严格源核对与最终导出依赖数量／页面／字节与首轮一致。`player-final/result.json` 从 TEMP、1600×900 D3D11 独立启动，**28/28 场、453/453 检查、进程退出 0**。B21 身体实际相机差异 **46,475 像素、四周边缘差异 0**；主导已目视最终 Sui 图及弑君者、卡德霍、圣徒、瓦列里奥和维维美 S2 过载图。最终 33 张相机 PNG 是真实 RenderTexture，不包含 OnGUI，不冒称 OS 鼠标输入或完整游戏 UI 验收。
+
+`Builds/Windows/SOURCE.txt` 绑定上述运行源码和实际 Managed DLL SHA。后续交付记录提交只改文档，不改二进制。源码及全部运行素材正常分批推送功能分支，前两笔为大体积模型／特效，随后为战斗接入与 Sui 镜头适配；未直接写 main、自动合并或另行发布。

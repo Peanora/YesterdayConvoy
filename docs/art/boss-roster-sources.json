@@ -1949,5 +1949,20 @@
     "presentationCodeChanged": [
       "Assets/Scripts/Runtime/BossRosterArt.cs: B21 VisualScale=0.42, other models=1; added VisualHeight."
     ]
+  },
+  "rootFinalVerification": {
+    "runtimeSourceCommit": "22b6df5af433e865dd29c403dff0bbb7c46d3c1a",
+    "unityVersion": "6000.6.5f1",
+    "editModePassed": 1088,
+    "scenePlayModePassed": 2,
+    "standalonePlayerCasesPassed": 28,
+    "standalonePlayerChecksPassed": 453,
+    "playerExitCode": 0,
+    "suiUniformScale": 0.42,
+    "suiCameraPixels": 46475,
+    "suiCameraEdgePixels": 0,
+    "sourcePngOrManifestBytesChangedByScaleFix": false,
+    "report": "docs/QA.md",
+    "humanWholeJourneyOrSecondComputer": "NOT_RUN"
   }
 }
