@@ -30,6 +30,7 @@ namespace YesterdayConvoy
         void ResetBossRoster(){ResetBossCoreExtensions();ResetBossHounds();bossRosterStates.Clear();bossDefenderStates.Clear();bossAllyBuffs.Clear();bossPending.Clear();bossSummonQueue.Clear();bossRosterObjects.Clear();bossRosterEvents.Clear();bossRequests.Clear();bossEventSequence=bossActivationSequence=bossPendingSequence=0;}
         void InitializeBossRosterUnit(DeployedUnitState u)
         {
+            InitializeAutomaticLegacyMonsterSkill(u);
             if(u==null||!BossRosterRules.Supports(u.CardId)||bossRosterStates.ContainsKey(u.EntityId))return;
             var s=new BossRosterState{EntityId=u.EntityId,CardId=u.CardId,SourceVariant=bossSourceVariant,NextAuraAt=Clock+1,NextPassiveAt=Clock+5};
             foreach(var skill in BossRosterRules.Skills(u.CardId))s.SP[skill.Id]=Math.Min(skill.RequiredSP,skill.RequiredSP*.5f);
@@ -78,11 +79,11 @@ namespace YesterdayConvoy
         {
             var s=BossRoster(u);if(s==null)return SkillFailure.NoSkill;var spec=BossRosterRules.Skills(u.CardId).FirstOrDefault(x=>BossManualSkill(u.CardId,x.Id)&&(skillId==null||x.Id==skillId));return spec==null?SkillFailure.NoSkill:CheckBossRosterSkillCore(u,s,spec,true);
         }
-        SkillFailure CheckBossRosterSkillCore(DeployedUnitState u,BossRosterState s,BossRosterRules.Skill spec,bool checkPause)
+        SkillFailure CheckBossRosterSkillCore(DeployedUnitState u,BossRosterState s,BossRosterRules.Skill spec,bool checkPause,bool ignoreSP=false)
         {
             if(!EngagementEnabled||Phase!=BattlePhase.Running)return SkillFailure.NotRunning;if(checkPause&&IsPaused)return SkillFailure.Paused;
             if(!u.Active||s.Final)return SkillFailure.MissingEntity;if(s.Transitioning||Clock<s.LockedUntil||Clock<Timer(s,"palsy"))return SkillFailure.AlreadyActive;
-            if(s.Phase<spec.MinimumPhase)return SkillFailure.NotReady;if(s.SP[spec.Id]+.00001f<spec.RequiredSP)return SkillFailure.NotReady;
+            if(s.Phase<spec.MinimumPhase)return SkillFailure.NotReady;if(!ignoreSP&&s.SP[spec.Id]+.00001f<spec.RequiredSP)return SkillFailure.NotReady;
             if(u.CardId=="CARD_B14"&&s.Phase>=2)return SkillFailure.NoSkill;
             if(!BossSkillHasTarget(u,s,spec.Id))return SkillFailure.NoTarget;
             if(spec.Id=="rock"&&s.Phase<2||spec.Id=="flee"&&(s.Fled||s.Phase!=1))return SkillFailure.NoTarget;
@@ -124,6 +125,7 @@ namespace YesterdayConvoy
             // detonation beat, rather than a second installation delay.
             if(u.CardId=="CARD_B01"&&skill.Id=="c4")hit=.6f;
             s.Activation=++bossActivationSequence;s.LockedUntil=Clock+Math.Max(hit,duration);u.IsMoving=false;u.NextAttackTime=Math.Max(u.NextAttackTime,s.LockedUntil);
+            OnAutomaticMonsterSkillStarted(u,s.LockedUntil);
             if(!string.IsNullOrEmpty(raw))BossSetAnimation(u,raw,false,duration);
             long activation=s.Activation;BossEmit(u,"SkillStart",skill.Id,u.Motion.Position,native:BossNativeKey(u,skill.Id),animation:raw,activation:activation,end:s.LockedUntil);
             BossAfter(u,hit,()=>ExecuteBossRosterSkill(u,skill.Id,activation));BossAfter(u,Math.Max(hit,duration),()=>BossEmit(u,"SkillEnd",skill.Id,u.Motion.Position,native:BossNativeKey(u,skill.Id),activation:activation));
@@ -158,7 +160,7 @@ namespace YesterdayConvoy
         bool StepBossRosterUnit(DeployedUnitState u,float step)
         {
             if(BossSleep(u)){u.IsMoving=false;return true;}if(StepBossCoreUnit(u,step))return true;var s=BossRoster(u);if(s==null)return false;if(s.Transitioning||!s.Present||Clock<Timer(s,"palsy")||Clock<s.LockedUntil||u.CardId=="CARD_B14"&&s.Phase>=2){u.IsMoving=false;return true;}
-            var c=UnitCombat(u);float range=u.CardId=="CARD_B13"&&s.Phase>=2?3.5f:u.CardId=="CARD_B11"&&s.Phase>=2?100:c.UnitRange;var target=u.CardId=="CARD_B10"||u.CardId=="CARD_B21"||u.CardId=="CARD_B25"&&!u.IsBlocked?null:ChooseDefender(u,range);
+            var c=UnitCombat(u);float range=u.CardId=="CARD_B13"&&s.Phase>=2?3.5f:u.CardId=="CARD_B11"&&s.Phase>=2?100:c.UnitRange;range=AutomaticMonsterApproachRange(u,range);var target=u.CardId=="CARD_B10"||u.CardId=="CARD_B21"||u.CardId=="CARD_B25"&&!u.IsBlocked?null:ChooseDefender(u,range);
             u.HasCombatTarget=target!=null;u.CombatTargetId=target?.EntityId;
             u.IsMoving=!u.IsBlocked&&target==null&&!(u.CardId=="CARD_B11"&&s.Phase>=2);
             if(u.IsMoving){double before=u.Motion.DistanceTravelled;u.Motion.Advance(step*BossRosterMovementMultiplier(u)*UnitMoveMultiplier(u));ClampApprovedRouteMotion(u,before);if(!s.AnimationLoop||s.Animation!=BossMove(u,s))BossSetAnimation(u,BossMove(u,s),true);}
@@ -210,6 +212,7 @@ namespace YesterdayConvoy
         bool BossRosterPreventDeath(DeployedUnitState u)
         {
             var s=BossRoster(u);if(s==null)return false;
+            if(AutomaticSaintReturn(u,s))return true;
             if(u.CardId=="CARD_B14"&&s.Phase==1){BossPainPhase(u);return true;}
             if(u.CardId=="CARD_B22"&&s.Phase==1)s.Fled=true;
             if(u.CardId=="CARD_B08"&&s.Phase<3){BossSlowDance(u);return true;}
@@ -268,6 +271,7 @@ namespace YesterdayConvoy
         }
         void BossOrdinaryHit(DeployedUnitState u,DefenderState target,long activation,int hit,bool blocked)
         {
+            OnAutomaticMonsterOrdinaryAttack(u,activation);
             if(target==null)return;var s=BossRoster(u);float attack=UnitCombat(u).UnitAttack*UnitAttackMultiplier(u)*s.AttackMultiplier;
             var projectile=BossRosterProjectiles.For(u.CardId,s.Phase,s.Region,s.Polarity,blocked);
             if(projectile.Ranged)

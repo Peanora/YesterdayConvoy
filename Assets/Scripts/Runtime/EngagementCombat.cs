@@ -201,6 +201,7 @@ namespace YesterdayConvoy
         private void ResetEngagement()
         {
             ResetBossRoster();
+            ResetAutomaticMonsterSkills();
             defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); frostSeals.Clear(); healingCasts.Clear(); skillRequests.Clear(); ResetGramophones(); SkillCasts = 0;
@@ -237,7 +238,7 @@ namespace YesterdayConvoy
             if(UsesBossCoreSkill(unit))return BossCoreSkills(unit)[0].Ready;
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
                 !unit.IsReviving && !StrongholdInTransit(unit.EntityId) && !ApprovedWaitingAtPortal(unit.EntityId) && !TalulahTransitionLocked(unit) && !WolfActionBusy(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
-                (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
+                (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=LegacyAutomaticRequiredSP(unit);
         }
 
         public SkillFailure CheckSkill(string entityId)
@@ -253,7 +254,7 @@ namespace YesterdayConvoy
             var c=UnitCombat(unit);
             if (unit.SkillAmmo > 0 || (c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit) || c.FrostSeal && Clock<unit.IceRingStartedAt+3) return SkillFailure.AlreadyActive;
             if(c.MudrockCapture && (Clock<unit.BarrierRefreshStartedAt+MudrockRefreshDuration || ChooseGramophone(unit)==null))return SkillFailure.NoTarget;
-            return unit.SkillSP + 0.00001f >= c.RequiredSP ? SkillFailure.None : SkillFailure.NotReady;
+            return unit.SkillSP + 0.00001f >= LegacyAutomaticRequiredSP(unit) ? SkillFailure.None : SkillFailure.NotReady;
         }
 
         public SkillFailure TryActivateSkill(int runId, long requestId, string entityId)
@@ -374,11 +375,11 @@ namespace YesterdayConvoy
                 {
                     if(Clock+1e-6<unit.ReviveAt) continue;
                     unit.IsReviving=false;unit.Health=unit.MaxHealth;unit.DeathTime=double.PositiveInfinity;
-                    unit.NextIceRingAt=Clock+V2Skill(unit,"iceRing","cooldown",8.5f);unit.NextAttackTime=Clock;
+                    unit.NextIceRingAt=Clock+AutomaticLegacyIceRingCooldown(unit);unit.NextAttackTime=Clock;
                 }
                 HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=(c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit);
-                if(c.HasSkill && unit.SkillAmmo==0 && (!casting||BossCoreMayRegenerateLegacySP(unit)) && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                if(!StepAutomaticLegacySkillSP(unit,step)&&c.HasSkill && unit.SkillAmmo==0 && (!casting||BossCoreMayRegenerateLegacySP(unit)) && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 if(StepApprovedPortalWait(unit))continue;
                 unit.IsBlocked=false; unit.BlockerId=null;
                 double beforeControl=unit.Motion.DistanceTravelled;
@@ -391,6 +392,7 @@ namespace YesterdayConvoy
                 foreach(var d in defenders)
                     if(!d.HighGround && !BossRosterUnblockable(unit) && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
+                if(TryAutomaticMonsterSkill(unit))casting=(c.FireRain||c.FrostSeal||c.MudrockCapture)&&IsSkillActionPlaying(unit);
                 if(SilverWolfCombat.Transforming(unit,Clock)){unit.IsMoving=false;continue;}
                 if((c.FrostSeal||c.MudrockCapture) && casting){unit.IsMoving=unit.HasCombatTarget=false;continue;}
                 if(c.Effects.Harvester&&HarvesterActionLocked(unit)){unit.IsMoving=unit.HasCombatTarget=false;continue;}

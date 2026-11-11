@@ -13,14 +13,15 @@ namespace YesterdayConvoy
     [Serializable] public sealed class BossRosterSmokeCase
     {
         public string cardId,task,mode="s3",fixture,skillId,sourceSprite,error;
-        public bool passed,completed,cast,phaseFixture;
+        public bool passed,completed,cast,phaseFixture,conditionOnly,spIsolationChecked;
+        public string automaticStatusBefore,automaticStatusAfter;public int automaticCasts,otherAutomaticCasts;public double firstAutomaticAt=-1,otherFirstAutomaticAt=-1;
         public double seconds;public float hpBefore,hpAfter,spBefore,spAfter,otherSpBefore,otherSpAfter;
         public int cameraPixels,cameraEdgePixels,textureWidth,textureHeight,eventsBefore,eventsAfter,objectsAfter;
         public List<BossRosterSmokeCheck> checks=new List<BossRosterSmokeCheck>();
     }
     [Serializable] public sealed class BossRosterSmokeResult
     {
-        public bool passed;public string graphics,scope="Actual saved MonsterTrial controller, production preparation and pointer deployment; labelled runtime fixtures, not natural clears.";
+        public bool passed;public string graphics,scope="Actual saved MonsterTrial controller, production preparation/pointer deployment and automatic skills; no SP/cast injection. Labelled durability/phase fixtures, not natural clears.";
         public List<BossRosterSmokeCase> cases=new List<BossRosterSmokeCase>();public List<string> errors=new List<string>();
     }
     // Shared by the explicit Development Player switch and PlayMode tests.
@@ -77,6 +78,24 @@ namespace YesterdayConvoy
         }
         static DemoSpriteVisual View(string id)=>UnityEngine.Object.FindObjectsByType<DemoSpriteVisual>().FirstOrDefault(v=>v.EntityId==id&&v.gameObject.activeInHierarchy);
         static IReadOnlyList<BossRosterSkillInfo> Skills(ManualBattle b,DeployedUnitState u)=>BossRosterCatalog.Contains(u.CardId)?b.BossRosterSkills(u):b.BossCoreSkills(u);
+        static float ReadSkillSP(ManualBattle b,DeployedUnitState u)
+        {var list=Skills(b,u);return list.Count>0?list[0].SP:u.SkillSP;}
+        static bool HasAutomaticCast(ManualBattle b,DeployedUnitState u)=>b.AutomaticMonsterCasts.Any(e=>e.EntityId==u.EntityId&&e.At>=u.SpawnTime);
+        static bool NativeAutomaticObserved(ManualBattle b,DeployedUnitState u)=>u.Spear!=null||b.Gazes.Any(g=>g.SourceId==u.EntityId);
+        static bool NoPatriotSpearTarget(ManualBattle b)=>!b.Defenders.Any(d=>d.Alive&&d.HighGround&&!b.DefenderCamouflaged(d));
+        static IEnumerator VerifyInformationInput(ManualBattleController c,BossRosterSmokeCase row,DeployedUnitState a,DeployedUnitState other)
+        {
+            var b=c.Battle;int casts=b.AutomaticMonsterCasts.Count,skills=b.SkillCasts;float sp=ReadSkillSP(b,a),otherSp=ReadSkillSP(b,other);
+            c.ProcessPointerDown(ManualBattleController.ScreenPosition(c.UnitScreenRect(a.EntityId).center));
+            Check(row,"actual-unit-click-opens-information-without-casting",c.SkillMenuOpen&&b.AutomaticMonsterCasts.Count==casts&&b.SkillCasts==skills);
+            if(c.SkillMenuOpen)c.ProcessPointerDown(c.BossRosterSmokeSkillPoint(0,true));
+            Check(row,"information-row-click-does-not-cast-or-spend-either-sp",b.AutomaticMonsterCasts.Count==casts&&b.SkillCasts==skills&&ReadSkillSP(b,a)==sp&&ReadSkillSP(b,other)==otherSp);
+            Check(row,"information-keeps-normal-simulation-speed",c.EffectiveSimulationSpeed==1);
+            c.ToggleSpeed();double clock=b.Clock;c.Tick(.05f);yield return null;
+            Check(row,"information-keeps-double-speed-and-real-clock",c.SkillMenuOpen&&c.EffectiveSimulationSpeed==2&&Math.Abs(b.Clock-clock-.1)<.0001);
+            c.ToggleSpeed();c.ProcessPointerDown(ManualBattleController.ScreenPosition(new Vector2(12,500)));
+            Check(row,"blank-click-closes-information",!c.SkillMenuOpen&&c.EffectiveSimulationSpeed==1);
+        }
         static IEnumerator Verify(ManualBattleController c,BossRosterSmokeCase row,string directory)
         {
             yield return c.BossRosterSmokeEnter(row.cardId);
@@ -91,6 +110,7 @@ namespace YesterdayConvoy
             c.Tick(.2f);yield return null;
             var natural=c.Battle.FindUnit(receipt.EntityId);var naturalView=View(natural.EntityId);
             Check(row,"authored-real-entity-view",naturalView!=null&&naturalView.Renderer.sprite!=null);
+            Check(row,"production-automatic-skills-enabled",c.Battle.AutomaticSkillsEnabled);
             // Only source Sui has a legitimate initially invisible wait. Visibility is
             // checked below after its actual presence skill, not by substituting idle.
             if(row.task!="B21"&&naturalView!=null)
@@ -98,9 +118,9 @@ namespace YesterdayConvoy
             c.RestartBattle();yield return null;
 
             // Explicit test fixture: keep the saved camera, map, route and CardDefinition.
-            // Only budgets/durability change; deployment, SP, casts, damage and views remain real.
+            // Only budgets/durability change; deployment, automatic timing, damage and views remain real.
             c.BossRosterSmokeInstallFixture(row.cardId==ViviCombat.CardId?row.mode:"s3",row.cardId==TalulahTiming.CardId);
-            row.fixture="Saved MonsterTrial geometry + actual CardDefinition; runtime-only DP>=200, 3 uses/CD0.01s, monsterHP>=10000, guardHP100000/attack1/interval100. Talulah phase fixture uses real three-star CampaignV2 profile.";
+            row.fixture="Saved MonsterTrial geometry + actual CardDefinition; runtime-only DP>=200, 3 uses/CD0.01s, monsterHP>=10000, guardHP1000000/attack1/interval100; observe up to 240 simulated seconds without SP/cast injection. Talulah phase fixture uses real three-star CampaignV2 profile.";
             c.StartBattle();var one=c.BossRosterSmokeDrag();Check(row,"fixture-first-real-drag",one.Success,one.Failure.ToString());
             if(!one.Success)yield break;
             c.Tick(.35f);yield return null;
@@ -112,7 +132,13 @@ namespace YesterdayConvoy
             float otherHp=other.Health;b.TryDamageUnit(a.EntityId,Math.Max(2,a.MaxHealth*.15f),CombatDamageType.Physical);
             Check(row,"one-entity-damage-does-not-change-other-hp",other.Health==otherHp);
 
-            // Saint's first form has no manual button. Use a genuine lethal input,
+            yield return VerifyInformationInput(c,row,a,other);
+            var rosterA=b.BossRoster(a);var rosterB=b.BossRoster(other);
+            if(rosterA!=null)Check(row,"separate-automatic-skill-state-and-sp-containers",rosterB!=null&&!ReferenceEquals(rosterA,rosterB)&&!ReferenceEquals(rosterA.SP,rosterB.SP));
+            var coreA=b.BossCoreState(a);var coreB=b.BossCoreState(other);
+            if(coreA!=null)Check(row,"separate-core-skill-state-and-sp",coreB!=null&&!ReferenceEquals(coreA,coreB));
+
+            // Saint's first form is passive. Use a genuine lethal input,
             // then wait for the real rebirth state machine instead of assigning Phase.
             if(row.task=="B13")
             {
@@ -121,45 +147,39 @@ namespace YesterdayConvoy
                 {c.Tick(.05f);if(step%10==0)yield return null;}
                 Check(row,"saint-real-rebirth-enters-second-form",a.Active&&b.BossRoster(a).Phase>=2);
             }
-            // Charge through actual simulation time. No SP is assigned by this probe.
-            BossRosterSkillInfo skill=null;int skillIndex=-1;
-            bool legacy=b.UnitCombat(a).HasSkill&&!BossRosterCatalog.Contains(a.CardId)&&b.BossCoreSkills(a).Count==0;
-            for(int step=0;step<1000&&a.Active&&b.Phase==BattlePhase.Running;step++)
-            {
-                var info=Skills(b,a);for(int i=0;i<info.Count;i++)if(info[i].Ready){skill=info[i];skillIndex=i;break;}
-                if(skill!=null||legacy&&b.IsSkillReady(a.EntityId))break;
-                if(legacy&&b.CheckSkill(a.EntityId)==SkillFailure.NoTarget&&step>=50)break;
-                // Purely automatic old cores need no invented active button.
-                if(!legacy&&info.Count==0&&step>=80)break;
-                c.Tick(.1f);if(step%5==0)yield return null;
-            }
+            // These old first forms have no active cast to wait for. Enter their real
+            // native second life before observing the source skill conditions.
+            bool phaseObserved=row.task=="B06"||row.task=="B17";
+            if(phaseObserved)yield return CorePhase(c,row,a,directory);
             row.eventsBefore=b.BossRosterEvents.Count;row.hpBefore=b.Defenders.Sum(d=>d.Health);
-            if(skill!=null)
+            row.spBefore=ReadSkillSP(b,a);row.otherSpBefore=ReadSkillSP(b,other);
+            row.automaticStatusBefore=b.AutomaticSkillStatus(a);
+            double until=b.Clock+240;
+            while(a.Active&&b.Phase==BattlePhase.Running&&b.Clock<until&&!HasAutomaticCast(b,a)&&!NativeAutomaticObserved(b,a))
             {
-                row.skillId=skill.SkillId;row.spBefore=skill.SP;
-                var otherInfo=Skills(b,other).FirstOrDefault(x=>x.SkillId==skill.SkillId);row.otherSpBefore=otherInfo?.SP??-1;
-                int priorCasts=a.SkillsUsed;c.OpenSkillMenu(a.EntityId);
-                bool open=c.SkillMenuOpen;if(open)c.ProcessPointerDown(c.BossRosterSmokeSkillPoint(skillIndex,true));
-                row.cast=a.SkillsUsed>priorCasts||b.BossRosterEvents.Skip(row.eventsBefore).Any(e=>e.EntityId==a.EntityId&&e.Kind=="SkillStart");
-                var after=Skills(b,a).FirstOrDefault(x=>x.SkillId==skill.SkillId);row.spAfter=after?.SP??0;
-                row.otherSpAfter=Skills(b,other).FirstOrDefault(x=>x.SkillId==skill.SkillId)?.SP??-1;
-                Check(row,"ready-skill-via-production-popup",open&&row.cast,skill.Name);
-                Check(row,"caster-sp-consumed-and-other-instance-unchanged",row.spAfter<row.spBefore&&row.otherSpAfter==row.otherSpBefore);
+                if(row.task=="B02"&&b.HealingCasts.Any(h=>h.Resolved&&h.HealthRestored>0))break;
+                if(row.task=="B19"&&b.Clock-a.SpawnTime>=40&&b.Gramophones.Count==0)break;
+                // Source Patriot throws only at high-ground targets; the saved default
+                // field can legitimately have none. Its native phase is still checked.
+                if(row.task=="B17"&&b.Clock-a.SpawnTime>=100&&NoPatriotSpearTarget(b))break;
+                float otherBefore=ReadSkillSP(b,other);int otherCastsBefore=b.AutomaticMonsterCasts.Count(e=>e.EntityId==other.EntityId);
+                c.Tick(.1f);
+                if(HasAutomaticCast(b,a)&&b.AutomaticMonsterCasts.Count(e=>e.EntityId==other.EntityId)==otherCastsBefore)
+                {
+                    row.spIsolationChecked=true;
+                    Check(row,"first-automatic-cast-does-not-spend-other-entity-sp",ReadSkillSP(b,other)+.0001f>=otherBefore);
+                }
+                if(((int)(b.Clock*10))%5==0)yield return null;
             }
-            else if(legacy&&b.IsSkillReady(a.EntityId))
-            {
-                row.skillId="existing-active";row.spBefore=a.SkillSP;row.otherSpBefore=other.SkillSP;
-                c.OpenSkillMenu(a.EntityId);bool open=c.SkillMenuOpen;
-                int prior=a.SkillsUsed;if(open)c.ProcessPointerDown(c.BossRosterSmokeSkillPoint(0,false));
-                row.cast=a.SkillsUsed>prior;row.spAfter=a.SkillSP;row.otherSpAfter=other.SkillSP;
-                Check(row,"existing-active-via-production-popup",open&&row.cast);
-                Check(row,"existing-sp-independent",row.spAfter<row.spBefore&&row.otherSpAfter==row.otherSpBefore);
-            }
-            else
-            {
-                row.skillId="automatic-or-conditional";
-                Check(row,"no-fabricated-active",Skills(b,a).All(x=>!x.Ready),string.Join(",",Skills(b,a).Select(x=>x.SkillId+":"+x.Failure)));
-            }
+            var automatic=b.AutomaticMonsterCasts.Where(e=>e.EntityId==a.EntityId).ToArray();
+            var otherAutomatic=b.AutomaticMonsterCasts.Where(e=>e.EntityId==other.EntityId).ToArray();
+            row.cast=automatic.Length>0||NativeAutomaticObserved(b,a);row.automaticCasts=automatic.Length;row.otherAutomaticCasts=otherAutomatic.Length;
+            row.skillId=automatic.Length>0?automatic[0].SkillId:a.Spear!=null?"native-spear":b.Gazes.Any(g=>g.SourceId==a.EntityId)?"native-gaze":"passive-or-condition-not-met";
+            if(automatic.Length>0)row.firstAutomaticAt=automatic[0].At;else if(a.Spear!=null)row.firstAutomaticAt=a.Spear.StartedAt;else if(b.Gazes.Any(g=>g.SourceId==a.EntityId))row.firstAutomaticAt=b.Gazes.First(g=>g.SourceId==a.EntityId).StartedAt;if(otherAutomatic.Length>0)row.otherFirstAutomaticAt=otherAutomatic[0].At;
+            row.spAfter=ReadSkillSP(b,a);row.otherSpAfter=ReadSkillSP(b,other);row.automaticStatusAfter=b.AutomaticSkillStatus(a);
+            row.conditionOnly=!row.cast&&(row.task=="B02"||row.task=="B19"&&b.Gramophones.Count==0||row.task=="B17"&&NoPatriotSpearTarget(b));
+            Check(row,"real-automatic-cast-or-explicit-source-condition",row.cast||row.conditionOnly,row.automaticStatusAfter);
+            if(automatic.Length>0)Check(row,"automatic-events-belong-to-their-own-deployed-entity",automatic.All(e=>e.CardId==a.CardId&&e.At>=a.SpawnTime)&&otherAutomatic.All(e=>e.CardId==other.CardId&&e.At>=other.SpawnTime));
             c.CloseSkillMenu();c.Tick(.12f);yield return null;
             var va=View(a.EntityId);var vb=View(other.EntityId);
             Check(row,"actual-source-sprite-texture",va!=null&&vb!=null&&va.Renderer.enabled&&va.Renderer.sprite!=null&&va.Renderer.sprite.texture is Texture2D&&va.Renderer.sprite.name.Contains("BossRoster/"+row.task+"/"),va?.FrameState);
@@ -173,8 +193,8 @@ namespace YesterdayConvoy
             if(va!=null&&vb!=null)
             {
                 b.SetPaused(true);double clock=b.Clock;var fa=va.Renderer.sprite;var fb=vb.Renderer.sprite;int ia=va.FrameIndex,ib=vb.FrameIndex;
-                float ha=a.Health,hb=other.Health;Vector3 pa=a.Motion.Position,pb=other.Motion.Position;c.Tick(3);yield return null;yield return null;
-                Check(row,"shared-pause-freezes-both-source-frames-and-state",b.Clock==clock&&a.Health==ha&&other.Health==hb&&a.Motion.Position==pa&&other.Motion.Position==pb&&va.Renderer.sprite==fa&&vb.Renderer.sprite==fb&&va.FrameIndex==ia&&vb.FrameIndex==ib);
+                float ha=a.Health,hb=other.Health,sa=ReadSkillSP(b,a),sb=ReadSkillSP(b,other);int casts=b.AutomaticMonsterCasts.Count;string statusA=b.AutomaticSkillStatus(a),statusB=b.AutomaticSkillStatus(other);Vector3 pa=a.Motion.Position,pb=other.Motion.Position;c.Tick(3);yield return null;yield return null;
+                Check(row,"shared-pause-freezes-both-source-frames-and-state",b.Clock==clock&&a.Health==ha&&other.Health==hb&&a.Motion.Position==pa&&other.Motion.Position==pb&&va.Renderer.sprite==fa&&vb.Renderer.sprite==fb&&va.FrameIndex==ia&&vb.FrameIndex==ib&&ReadSkillSP(b,a)==sa&&ReadSkillSP(b,other)==sb&&b.AutomaticMonsterCasts.Count==casts&&b.AutomaticSkillStatus(a)==statusA&&b.AutomaticSkillStatus(other)==statusB);
                 b.SetPaused(false);
             }
             int observation=row.task=="B20"&&row.mode=="s2"?160:100;
@@ -186,13 +206,13 @@ namespace YesterdayConvoy
                 var overload=View(a.EntityId);if(overload!=null)CameraDifference(Camera.main,overload.Renderer,PathFor(directory,row,"overload"));
             }
             row.hpAfter=b.Defenders.Sum(d=>d.Health);row.eventsAfter=b.BossRosterEvents.Count;row.objectsAfter=b.BossRosterObjects.Count;
-            if(row.cast)Check(row,"cast-produced-real-model-events-or-standard-resource-transaction",a.SkillsUsed>0||row.eventsAfter>row.eventsBefore);
+            if(row.cast)Check(row,"automatic-cast-produced-real-model-events-or-resource-transaction",a.SkillsUsed>0||row.eventsAfter>row.eventsBefore||NativeAutomaticObserved(b,a));
             if(row.task=="B02")Check(row,"automatic-healer-restores-real-health",b.HealingCasts.Any(h=>h.Resolved&&h.HealthRestored>0)&&a.HealthRecovered>0);
-            if(new[]{"B06","B16","B17","B18"}.Contains(row.task)&&a.Active&&b.Phase==BattlePhase.Running)
+            if(!phaseObserved&&new[]{"B06","B16","B17","B18"}.Contains(row.task)&&a.Active&&b.Phase==BattlePhase.Running)
                 yield return CorePhase(c,row,a,directory);
             row.seconds=b.Clock;
             c.RestartBattle();yield return null;yield return null;
-            Check(row,"restart-clears-real-entities-events-and-objects",c.Battle.Units.Count==0&&c.ViewCount==0&&c.Battle.BossRosterEvents.Count==0&&c.Battle.BossRosterObjects.Count==0);
+            Check(row,"restart-clears-real-entities-events-and-objects",c.Battle.Units.Count==0&&c.ViewCount==0&&c.Battle.BossRosterEvents.Count==0&&c.Battle.BossRosterObjects.Count==0&&c.Battle.AutomaticMonsterCasts.Count==0);
             row.completed=true;
         }
         static IEnumerator CorePhase(ManualBattleController c,BossRosterSmokeCase row,DeployedUnitState unit,string directory)
@@ -282,7 +302,7 @@ namespace YesterdayConvoy
             if(talulahThreeStar){var profile=CampaignV2Balance.Build(definition,3,200,99);unit=profile.Unit;combat=profile.Combat;}
             var settings=new ManualBattleSettings(unit.CardId,unit.UnitId,Math.Max(200,unit.DeploymentCost*3),99,3,unit.DeploymentCost,.01f,Math.Max(10000,unit.Health),unit.Speed,unit.GateDamage,unit.TowerRange,unit.TowerDamage,unit.ShotInterval);
             var durable=new EngagementSettings(unitAttack:combat.UnitAttack,unitArmor:combat.UnitArmor,unitRange:combat.UnitRange,unitInterval:combat.UnitInterval,
-                defenderHealth:100000,defenderAttack:1,defenderArmor:combat.DefenderArmor,defenderRange:combat.DefenderRange,defenderInterval:100,blockCount:combat.BlockCount,blockRadius:combat.BlockRadius,
+                defenderHealth:1000000,defenderAttack:1,defenderArmor:combat.DefenderArmor,defenderRange:combat.DefenderRange,defenderInterval:100,blockCount:combat.BlockCount,blockRadius:combat.BlockRadius,
                 initialSP:combat.InitialSP,requiredSP:combat.RequiredSP,spPerSecond:combat.SPPerSecond,skillAmmo:combat.SkillAmmo,skillAttack:combat.SkillAttack,skillInterval:combat.SkillInterval,skillRange:combat.SkillRange,
                 projectileTime:combat.ProjectileTime,fireRain:combat.FireRain,hasSkill:combat.HasSkill,melee:combat.Melee,attackDuration:combat.AttackDuration,attackWindup:combat.AttackWindup,effects:combat.Effects,
                 canAttack:combat.CanAttack,defenderDamageType:combat.DefenderDamageType,revealsInvisible:combat.RevealsInvisible,defenderCanHitAir:combat.DefenderCanHitAir,frostSeal:combat.FrostSeal,mudrockCapture:combat.MudrockCapture);

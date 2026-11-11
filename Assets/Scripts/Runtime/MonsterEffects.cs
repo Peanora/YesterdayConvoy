@@ -238,8 +238,9 @@ namespace YesterdayConvoy
             if(Clock<unit.IceRingStartedAt+V2Skill(unit,"iceRing","actionDuration",3))
             {unit.IsMoving=unit.HasCombatTarget=false;return true;}
             if(Clock+1e-6<unit.NextIceRingAt) return false;
+            if(AutomaticSkillsEnabled&&!AutomaticLegacyBodyAvailable(unit))return false;
             var target=ChooseDefender(unit,V2Skill(unit,"iceRing","searchRange",2.5f));if(target==null) return false;
-            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+V2Skill(unit,"iceRing","cooldown",8.5f);
+            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+AutomaticLegacyIceRingCooldown(unit);
             unit.NextAttackTime=Clock+V2Skill(unit,"iceRing","actionDuration",3);unit.IsMoving=unit.HasCombatTarget=false;
             var ring=new IceRing {Position=unit.Motion.Position,Time=Clock};iceRings.Add(ring);
             BossCoreOnIceRingStarted(unit);

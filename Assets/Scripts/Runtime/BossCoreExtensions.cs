@@ -19,6 +19,7 @@ namespace YesterdayConvoy
         readonly Dictionary<string,DefenderState> coreIncomingSources=new Dictionary<string,DefenderState>();
         readonly List<CorePending> corePending=new List<CorePending>();
         readonly HashSet<CombatShot> coreSeenShots=new HashSet<CombatShot>();
+        readonly HashSet<(string Source,double Release)> coreSPAttacks=new HashSet<(string,double)>();
         readonly Dictionary<string,int> coreMarks=new Dictionary<string,int>();
         readonly Dictionary<long,string> coreRequests=new Dictionary<long,string>();
         readonly Dictionary<string,float> coreAppliedHealthDamage=new Dictionary<string,float>(StringComparer.Ordinal);
@@ -41,7 +42,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<BossRosterSkillInfo> BossCoreSkills(DeployedUnitState u)
         {
             if(!UsesBossCoreSkill(u))return Array.Empty<BossRosterSkillInfo>();var s=BossCoreState(u);float required=coreViviSkill=="s1"?2:25;var failure=CheckBossCoreSkillCore(u,false);
-            return new[]{new BossRosterSkillInfo{SkillId=coreViviSkill,Name=coreViviSkill=="s1"?"定点清算":"饱和复仇",Description=coreViviSkill=="s1"?"攻击回复；强化下一击并追加余震与晕眩":"持续25秒，三目标；后半段过载四连发，可主动关闭",Ready=failure==SkillFailure.None,Failure=IsPaused?SkillFailure.Paused:failure,SP=s.SP,MaxSP=required}};
+            return new[]{new BossRosterSkillInfo{SkillId=coreViviSkill,Name=coreViviSkill=="s1"?"定点清算":"饱和复仇",Description=coreViviSkill=="s1"?"攻击回复；强化下一击并追加余震与晕眩":AutomaticSkillsEnabled?"满技力后自动开启25秒，三目标；后半段过载四连发":"持续25秒，三目标；后半段过载四连发，可主动关闭",Ready=failure==SkillFailure.None,Failure=IsPaused?SkillFailure.Paused:failure,SP=s.SP,MaxSP=required}};
         }
         public SkillFailure CheckBossCoreSkill(DeployedUnitState u)=>CheckBossCoreSkillCore(u,true);
         SkillFailure CheckBossCoreSkillCore(DeployedUnitState u,bool pause)
@@ -61,30 +62,39 @@ namespace YesterdayConvoy
             else {s.ActiveUntil=Clock+25;s.NextShotAt=Clock;CoreAnimate(u,"Skill_2_Begin","s2");CoreEmit(u,"SkillStart","s2","skchr_wisdel_2",u.Motion.Position,animation:"Skill_2_Begin",end:s.ActiveUntil);}
             return SkillFailure.None;
         }
-        void ResetBossCoreExtensions(){bossCoreStates.Clear();coreBreaths.Clear();coreIncomingSources.Clear();corePending.Clear();coreSeenShots.Clear();coreMarks.Clear();coreRequests.Clear();coreAppliedHealthDamage.Clear();}
+        void ResetBossCoreExtensions(){bossCoreStates.Clear();coreBreaths.Clear();coreIncomingSources.Clear();corePending.Clear();coreSeenShots.Clear();coreSPAttacks.Clear();coreMarks.Clear();coreRequests.Clear();coreAppliedHealthDamage.Clear();}
         void CoreAfter(DeployedUnitState u,double delay,Action action,bool survive=false)=>corePending.Add(new CorePending{At=Clock+Math.Max(0,delay),Run=RunId,Owner=u.EntityId,Apply=action,Survive=survive});
         void StepBossCoreExtensions(float step)
         {
+            if(AutomaticSkillsEnabled&&coreViviSkill=="s1")
+                foreach(var shot in combatShots)
+                {
+                    if(shot.FromDefender||shot.Empowered||shot.SynergyOrder||shot.Erased||Clock+1e-6<shot.StartedAt||coreSPAttacks.Contains((shot.SourceId,shot.StartedAt)))continue;
+                    var attacker=FindUnit(shot.SourceId);
+                    if(attacker==null||!attacker.Active||attacker.IsReviving||!ViviCombat.IsVivi(attacker.CardId))continue;
+                    coreSPAttacks.Add((shot.SourceId,shot.StartedAt));var state=BossCoreState(attacker);state.SP=Math.Min(2,state.SP+1);
+                }
             foreach(var due in corePending.Where(x=>x.At<=Clock+1e-6).OrderBy(x=>x.At).ToArray())
             {corePending.Remove(due);var owner=FindUnit(due.Owner);if(due.Run==RunId&&owner!=null&&(due.Survive||owner.Active&&!owner.IsReviving))due.Apply();}
             foreach(var u in units.ToArray())
             {
-                var s=BossCoreState(u);if(s==null||!u.Active)continue;
+                var s=BossCoreState(u);if(s==null||!u.Active)continue;ObserveAutomaticLegacyMonsterSkills(u);
                 if(ViviCombat.IsVivi(u.CardId))
-                {if(coreViviSkill=="s2"&&Clock>=s.ActiveUntil)s.SP=Math.Min(25,s.SP+step);if(s.SkillId=="s2"&&s.ActiveUntil>0&&Clock>=s.ActiveUntil)CoreStopVivi(u,s);if(coreViviSkill=="s3"&&s.SkillId=="s3"&&u.SkillAmmo==0&&!IsSkillActionPlaying(u)){CoreEmit(u,"SkillEnd","s3","skchr_wisdel_3",u.Motion.Position,activation:s.SkillActivation);s.SkillId="";}}
+                {if(coreViviSkill=="s2"&&Clock>=s.ActiveUntil)s.SP=Math.Min(25,s.SP+step);if(s.SkillId=="s2"&&s.ActiveUntil>0&&Clock>=s.ActiveUntil&&(!AutomaticSkillsEnabled||Clock>=s.Until))CoreStopVivi(u,s);if(coreViviSkill=="s3"&&s.SkillId=="s3"&&u.SkillAmmo==0&&!IsSkillActionPlaying(u)){CoreEmit(u,"SkillEnd","s3","skchr_wisdel_3",u.Motion.Position,activation:s.SkillActivation);s.SkillId="";}}
                     if(u.CardId=="CARD_TALULAH_TRIAL"&&!u.IsReviving&&!TalulahTransitionLocked(u))
                 {
                     int phase=TalulahSecondForm(u)?2:1;
                     if(phase!=s.Phase){s.Phase=phase;s.NextIgniteAt=u.TalulahPhaseStartedAt+19;s.NextExplodeAt=u.TalulahPhaseStartedAt+35;s.NextEnergyAt=u.TalulahPhaseStartedAt+75;}
-                    if(Clock>=s.NextIgniteAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)){s.NextIgniteAt=Clock+19;CoreTalulahCast(u,"ignite");}
-                    if(Clock>=s.NextExplodeAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)){s.NextExplodeAt=Clock+35;CoreTalulahCast(u,"detonate");}
-                    if(s.Phase>=2&&Clock>=s.NextEnergyAt&&Clock>=s.Until){s.NextEnergyAt=Clock+50;CoreTalulahCast(u,"energy");}
+                    bool automaticBodyReady=!AutomaticSkillsEnabled||AutomaticLegacyBodyAvailable(u);
+                    if(Clock>=s.NextIgniteAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)&&automaticBodyReady){s.NextIgniteAt=Clock+19;CoreTalulahCast(u,"ignite");}
+                    if(Clock>=s.NextExplodeAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)&&(!AutomaticSkillsEnabled||AutomaticLegacyBodyAvailable(u))){s.NextExplodeAt=Clock+35;CoreTalulahCast(u,"detonate");}
+                    if(s.Phase>=2&&Clock>=s.NextEnergyAt&&Clock>=s.Until&&(!AutomaticSkillsEnabled||AutomaticLegacyBodyAvailable(u))){s.NextEnergyAt=Clock+50;CoreTalulahCast(u,"energy");}
                 }
                 if(u.CardId=="CARD_M14"&&UnitCombat(u).Effects.FrostNova)
                 {
                     if(u.IsReviving&&!s.ReviveSeen){s.ReviveSeen=true;s.RevivalAt=u.ReviveAt;}
                     if(s.ReviveSeen&&!s.ReviveComplete&&Clock+1e-6>=s.RevivalAt){s.ReviveComplete=true;s.Phase=2;s.ProtectedUntil=s.RevivalAt+20;s.NextBlackIceAt=Clock+35;CoreColdWave(u);}
-                    if(!u.IsReviving&&Clock>=s.NextBlackIceAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)){s.NextBlackIceAt=Clock+35;CoreBlackIce(u);}
+                    if(!u.IsReviving&&Clock>=s.NextBlackIceAt&&Clock>=s.Until&&!IsSkillActionPlaying(u)&&(!AutomaticSkillsEnabled||AutomaticLegacyBodyAvailable(u))){s.NextBlackIceAt=Clock+35;CoreBlackIce(u);}
                 }
             }
             foreach(var pair in coreBreaths.ToArray())
@@ -149,7 +159,7 @@ namespace YesterdayConvoy
             if(source.CardId=="CARD_M14"&&!shot.Empowered&&shot.ColdDuration<=0&&target.Alive)TryApplyCold(target.EntityId,5);
             if(!ViviCombat.IsVivi(source.CardId)||!coreSeenShots.Add(shot))return;
             target=FindDefender(shot.TargetId)??target;
-            var s=BossCoreState(source);if(coreViviSkill=="s1")s.SP=Math.Min(2,s.SP+1);
+            var s=BossCoreState(source);if(coreViviSkill=="s1"&&!AutomaticSkillsEnabled)s.SP=Math.Min(2,s.SP+1);
             if(target.Alive)coreMarks[source.EntityId+"/"+target.EntityId]=1;
             Vector3 center=shot.Destination;float attack=UnitCombat(source).UnitAttack*UnitAttackMultiplier(source);
             CoreAfter(source,.3,()=>CoreShock(source,center,1.1f,shot.Empowered?shot.Attack*.5f:attack*.5f,"aftershock","Attack",shot.Empowered),true);
@@ -214,6 +224,7 @@ namespace YesterdayConvoy
         {
             foreach(var p in new[]{CoreScenePoint(0),CoreScenePoint(route.Length/2)}.Distinct())CoreObject(u,"iceCrystal","源石冰晶",p,1,3).NextAt=Clock+15;
             CoreEmit(u,"Summon","coldWave","SummonFrosts",u.Motion.Position);
+            if(AutomaticSkillsEnabled)RecordAutomaticMonsterCast(u,"coldWave");
         }
         BossRosterObject CoreObject(DeployedUnitState u,string kind,string name,Vector3 position,float health,float radius)
         {var s=BossCoreState(u);var o=new BossRosterObject{Id=$"run-{RunId}/core-object-{++bossEventSequence}",OwnerId=u.EntityId,CardId=u.CardId,Kind=kind,Name=name,Position=position,Health=health,MaxHealth=health,Radius=radius,StartedAt=Clock,NextAt=Clock+5,ActivationId=s.Activation,Interaction=BossObjectInteractionFor(kind)};bossRosterObjects.Add(o);CoreEmit(u,"Summon",kind,kind,position,targetId:o.Id);return o;}
@@ -254,7 +265,7 @@ namespace YesterdayConvoy
         void CoreArea(DeployedUnitState u,Vector3 center,float radius,float amount,CombatDamageType type,string skill,string native,long activation=0)
         {foreach(var d in BossLiving().Where(d=>GroundDistance(d.Position,center)<=radius).ToArray())CoreHit(u,d,amount,type,skill,native,activation:activation);}
         void CoreEmit(DeployedUnitState u,string kind,string skill,string native,Vector3 target,string animation="",string targetId=null,bool applied=false,long activation=0,int hit=0,double end=double.PositiveInfinity,Vector3? origin=null)
-        {var s=BossCoreState(u);bossRosterEvents.Add(new BossRosterVisualEvent(++bossEventSequence,activation==0?s.Activation:activation,RunId,u.EntityId,u.CardId,kind,skill,native,animation,s.Phase,hit,Clock,end,origin??u.Motion.Position,target,targetId,applied,false));}
+        {var s=BossCoreState(u);bossRosterEvents.Add(new BossRosterVisualEvent(++bossEventSequence,activation==0?s.Activation:activation,RunId,u.EntityId,u.CardId,kind,skill,native,animation,s.Phase,hit,Clock,end,origin??u.Motion.Position,target,targetId,applied,false));if(AutomaticSkillsEnabled&&kind=="SkillStart"&&skill!="soul")RecordAutomaticMonsterCast(u,skill);}
     }
     internal static partial class BossCoreArt
     {

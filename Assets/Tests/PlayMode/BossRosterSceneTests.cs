@@ -18,7 +18,7 @@ namespace YesterdayConvoy.Tests
             }
             Assert.Fail("Actual MonsterTrial controller did not become ready");
         }
-        [UnityTest,Timeout(900000)]public IEnumerator NewNineteenUseActualPreparationPointerDeploymentSourceFramesAndSkillTransactions()
+        [UnityTest,Timeout(900000)]public IEnumerator NewNineteenAutomaticallyCastWithReadOnlyInformationAndIndependentPausedState()
         {
             float old=Time.timeScale;Time.timeScale=0;
             try
@@ -29,7 +29,7 @@ namespace YesterdayConvoy.Tests
             }
             finally{Time.timeScale=old;}
         }
-        [UnityTest,Timeout(900000)]public IEnumerator ExistingSevenUseApprovedModelsAndRealCoreSkillModesWithoutChangingTheirCardIds()
+        [UnityTest,Timeout(900000)]public IEnumerator ExistingSevenAutomaticallyTriggerSourceSkillsAndKeepTheirNativePhasesAndModels()
         {
             float old=Time.timeScale;Time.timeScale=0;
             try

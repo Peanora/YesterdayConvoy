@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             if(s.Transitioning)return;
             if(u.CardId=="CARD_B11"&&Clock<Timer(s,"edictUntil"))BossRememberEdictStuns(u,s,Count(s,"edictActivation"));
             if(u.CardId=="CARD_B22"&&s.Phase==1&&Clock>=Timer(s,"rage")&&!s.Fled)BossFlee(u);
-            if(u.CardId=="CARD_B21"&&Clock>=s.NextPassiveAt&&!s.Consumed.Contains("firstAppear")){s.Consumed.Add("firstAppear");BossOtherSkill(u,"insomnia",++bossActivationSequence);}
+            if(!AutomaticSkillsEnabled&&u.CardId=="CARD_B21"&&Clock>=s.NextPassiveAt&&!s.Consumed.Contains("firstAppear")){s.Consumed.Add("firstAppear");BossOtherSkill(u,"insomnia",++bossActivationSequence);}
             if(u.CardId=="CARD_B21"&&Timer(s,"depart")<=Clock&&s.Consumed.Contains("firstAppear")&&BossLiving().Any()){s.Present=false;BossSetAnimation(u,"Skill_End_B",false);s.Timers["depart"]=double.PositiveInfinity;}
             if(u.CardId=="CARD_B21"&&!s.Present&&s.Consumed.Contains("firstAppear")&&!BossLiving().Any()){s.Present=true;BossSetAnimation(u,BossIdle(u,s),true);BossEmit(u,"StateEnd","arenaWait",u.Motion.Position,animation:s.Animation);}
             if((u.CardId=="CARD_B15"||u.CardId=="CARD_B24")&&s.Phase>=2&&!s.PartnerDown)
@@ -28,7 +28,7 @@ namespace YesterdayConvoy
             {if(s.PartnerDown)foreach(var d in defenders.Where(d=>d.Reserve))s.Timers["bench/"+d.EntityId]=double.PositiveInfinity;foreach(var d in BossLiving().Where(d=>Timer(s,"bench/"+d.EntityId)>Clock).ToArray())BossMarkedDeployment(u,d);}
             if(Clock+1e-6<s.NextAuraAt)return;s.NextAuraAt=Clock+1;
             if(u.CardId=="CARD_B25"&&s.Phase>=2)foreach(var d in BossLiving().Where(d=>GroundDistance(u.Motion.Position,d.Position)<2.5f).ToArray()){BossHit(u,d,UnitCombat(u).UnitAttack*.2f,CombatDamageType.Arts,"aura");ApplyBurn(d,15,u);}
-            if(u.CardId=="CARD_B10"&&Clock>=s.NextPassiveAt){s.NextPassiveAt=Clock+10;var skill=BossRosterRules.Skills(u.CardId).First();if(Clock>=s.LockedUntil)BossCast(u,skill,true);}
+            if(!AutomaticSkillsEnabled&&u.CardId=="CARD_B10"&&Clock>=s.NextPassiveAt){s.NextPassiveAt=Clock+10;var skill=BossRosterRules.Skills(u.CardId).First();if(Clock>=s.LockedUntil)BossCast(u,skill,true);}
             if(u.CardId=="CARD_B07")foreach(var friend in BossFriends(u).Where(x=>x.FlamePhase==FlamechaserPhase.Ember))HealUnit(friend,friend.MaxHealth*.02f);
             if(u.CardId=="CARD_B25")foreach(var d in defenders.Where(d=>!d.Alive&&GroundDistance(d.Position,u.Motion.Position)<(s.Phase>=2?3.5f:3)&&s.Consumed.Add("penalty/"+d.EntityId)).ToArray())BossPenalty(u,d.Position,++bossActivationSequence);
         }

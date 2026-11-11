@@ -124,12 +124,12 @@ namespace YesterdayConvoy
                 Sprite portrait=OriginalTalulahArt.CardPortrait(option.Definition.Card);
                 DrawTestPortrait(new Rect(x+23,y+20,cardWidth-46,164),portrait);
                 GUI.Label(new Rect(x+20,y+200,cardWidth-40,38),option.Name,menuCardName);
-                string detail=option.Definition==talulahDefinition ? "全图火雨\n技力与手动释放" : option.Definition==wisadelDefinition ? "远程炮击\n六发强化弹药" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n无主动技能" : !option.Definition.Engagement.Snapshot().CanAttack ? "基础动作 / 不普攻\n特殊机制待做" : "基础动作与普攻\n单怪交战样板";
+                string detail=option.Definition==talulahDefinition ? "全图火雨\n按原作条件自动触发" : option.Definition==wisadelDefinition ? "远程炮击\n技能按条件自动触发" : option.Definition.Card.CardId==OriginalSlugArt.CardId ? "贴地蠕动 / 近战\n被动天赋与普攻" : !option.Definition.Engagement.Snapshot().CanAttack ? "不普攻\n天赋与技能自动触发" : "普攻与技能自动触发\n单怪交战样板";
                 float frozenMultiplier=option.Definition.Engagement.Snapshot().Effects.FrozenAttackMultiplier;
                 if(frozenMultiplier>1) detail=$"冻结目标攻击×{frozenMultiplier:0.##}\n物理伤害 / 命中判定";
                 var effects=option.Definition.Engagement.Snapshot().Effects;
-                if(option.Id==SilverWolfCombat.CardId) detail="上勾拳 / 手动变身\n三次攻击各自抽取盲盒";
-                if(effects.FrostNova) detail="手动冰封 / 范围法伤与冻结\n自动冰环 / 首次倒下复起";
+                if(option.Id==SilverWolfCombat.CardId) detail="上勾拳 / 自动变身\n三次攻击各自抽取盲盒";
+                if(effects.FrostNova) detail="自动冰封 / 范围法伤与冻结\n冰环 / 首次倒下复起";
                 if(effects.RegenerationFraction>0) detail=$"自然回血 {effects.RegenerationFraction*100:0.##}% / 秒\n按各实体生命上限恢复";
                 if(effects.LifeSteal>0) detail=$"最多攻击{effects.AttackTargets}个目标\n按实际伤害{effects.LifeSteal*100:0}%恢复生命";
                 if(effects.Healer) detail="最多治疗3名受伤友军\n自动治疗 / 不攻击守军";
@@ -160,7 +160,7 @@ namespace YesterdayConvoy
             if(count==monsterTests.Count && wolfOption!=null)
             {
                 GUI.Label(new Rect(794,270,410,34),"银狼 LV.999",menuHeading);
-                GUI.Label(new Rect(794,304,410,60),"部署后点银狼释放变身，三次强化攻击各抽一个盲盒。",menuBody);
+                GUI.Label(new Rect(794,304,410,60),"部署后满足条件会自动变身，三次强化攻击各抽一个盲盒。",menuBody);
                 if(GUI.Button(new Rect(794,382,410,44),"进入银狼测试",buttonStyle))PrepareMonsterEntry(wolfOption);
             }
             else
@@ -185,7 +185,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(790,569,426,26),"羁绊验证 · 无限金币",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");
             if(GUI.Button(new Rect(790,600,426,26),"战斗与商店",buttonStyle))UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");
             if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;
-            GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
+            GUI.Label(new Rect(56,655,1160,38),"拖动底部卡牌至红门部署；技能按原作时机自动触发。点角色查看状态，不减速。",menuBody);
         }
         private static void DrawTestPortrait(Rect bounds,Sprite sprite)
         {
@@ -199,7 +199,7 @@ namespace YesterdayConvoy
         {
             Time.timeScale=0; ReturnToMonsterTests();
             int playable=0;foreach(var option in MonsterTests) if(option.Playable) playable++;
-            bool initial=TestSelectionOpen && MonsterTests.Count==43 && playable==43;
+            bool initial=TestSelectionOpen && playable==MonsterTests.Count && playable>=43;
             yield return InteractionFrame(directory,"monster-selection");
             // Show the formerly poster-backed cards beside a later transparent portrait.
             int portraitIndex=monsterTests.FindIndex(option=>option.Id=="CARD_M09");
@@ -219,7 +219,7 @@ namespace YesterdayConvoy
             Tick(4.05f); OpenSkillMenu(Battle.Units[0].EntityId); ReturnToMonsterTests(); yield return null;
             bool cleared=TestSelectionOpen && !SkillMenuOpen && !Dragging && Battle.Units.Count==0 && Battle.DP==12 && Battle.Clock==0;
             bool talulah=TryEnterMonsterTest(talulahDefinition.Card.CardId) && Battle.Defenders.Count==3;
-            SelectCard(true); TryDeployAt(Battle.Entry); Tick(4.05f); SelectSkillUnit(Battle.Units[0].EntityId); ActivateSelectedSkill(); Tick(1.25f);
+            SelectCard(true); TryDeployAt(Battle.Entry); Tick(20f);
             yield return InteractionFrame(directory,"selection-talulah");
             ReturnToMonsterTests(); yield return null;
             bool fireCleared=FindAnyObjectByType<FireRainView>().VisibleStreams==0 && Battle.SkillCasts==0;
