@@ -143,7 +143,7 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,552,1280,168),new Color(.12f,.20f,.26f,.35f));
             GUI.Label(new Rect(18,553,160,24),"部署栏",LoopText(14,TextAnchor.MiddleLeft,Color.white,600));
-            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 仍可点击角色使用技能"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
+            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 技能继续自动触发"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
             for(int i=0;i<shopLineup.Count;i++)
             {
                 string id=shopLineup[i];var state=Battle.FindCard(id);if(state==null)continue;
