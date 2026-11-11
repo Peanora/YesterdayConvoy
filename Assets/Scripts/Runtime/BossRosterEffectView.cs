@@ -101,6 +101,25 @@ namespace YesterdayConvoy
                         shot.ImpactAt,shot.ImpactAt,shot.Origin,shot.Destination,shot.TargetId,true,false);
             }
         }
+        static float CasterVisualScale(Playing value)
+        {
+            if(value.Binding.attach!="owner")return 1;
+            // These seven exact native references are Sui's body electricity, casting
+            // and withdrawal layers. The global ThreeStrikes range is also owner-bound,
+            // so attachment alone must never scale its world area or target hit sprites.
+            switch(value.Clip.Key)
+            {
+                case "boss/B21/enemy_dyshhj_lighting":
+                case "boss/B21/enemy_dyshhj_lighting_right":
+                case "boss/B21/enemy_dyshhj_skill_01_hit_01":
+                case "boss/B21/enemy_dyshhj_die":
+                case "boss/B21/enemy_dyshhj_die_02_start_01":
+                case "boss/B21/enemy_dyshhj_die_02_start_02":
+                case "boss/B21/enemy_dyshhj_die_02_hit_01":
+                    return BossRosterArt.For("CARD_B21")?.VisualScale??1;
+                default:return 1;
+            }
+        }
         void LateUpdate()
         {
             var battle=source?.Invoke();Observe(battle);if(battle==null)return;
@@ -124,7 +143,7 @@ namespace YesterdayConvoy
                 position+=new Vector3(value.Binding.offsetX,value.Binding.offsetY,value.Binding.offsetZ);
                 Vector3 direction=value.Target-value.Position;bool projectile=value.Binding.attach=="projectile";
                 bool flip=!projectile&&string.IsNullOrEmpty(value.Binding.direction)&&camera!=null&&Vector3.Dot(direction,camera.transform.right)<0;
-                layer.Show(value.Clip,now-value.At,position,camera,flip,value.Binding.loop,direction,projectile);
+                layer.Show(value.Clip,now-value.At,position,camera,flip,value.Binding.loop,direction,projectile,visualScale:CasterVisualScale(value));
             }
             layer.End();
         }

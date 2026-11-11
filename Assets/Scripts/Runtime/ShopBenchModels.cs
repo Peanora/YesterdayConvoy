@@ -71,8 +71,8 @@ namespace YesterdayConvoy
         }
         static float ShopModelScale(string id)
         {
-            float height=BossRosterArt.For(id)?.Height??LocalMonsterArt.For(id)?.Height??1;
-            return .57f/1.855f*Mathf.Min(1,2.05f/height);
+            var boss=BossRosterArt.For(id);float height=boss?.VisualHeight??LocalMonsterArt.For(id)?.Height??1;
+            return .57f/1.855f*Mathf.Min(1,2.05f/height)*(boss?.VisualScale??1);
         }
         Vector2 ShopModelFoot(int slot){var r=ShopPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);

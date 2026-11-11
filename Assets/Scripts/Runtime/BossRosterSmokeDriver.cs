@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         public string cardId,task,mode="s3",fixture,skillId,sourceSprite,error;
         public bool passed,completed,cast,phaseFixture;
         public double seconds;public float hpBefore,hpAfter,spBefore,spAfter,otherSpBefore,otherSpAfter;
-        public int cameraPixels,textureWidth,textureHeight,eventsBefore,eventsAfter,objectsAfter;
+        public int cameraPixels,cameraEdgePixels,textureWidth,textureHeight,eventsBefore,eventsAfter,objectsAfter;
         public List<BossRosterSmokeCheck> checks=new List<BossRosterSmokeCheck>();
     }
     [Serializable] public sealed class BossRosterSmokeResult
@@ -166,8 +166,9 @@ namespace YesterdayConvoy
             if(va!=null&&va.Renderer.sprite!=null)
             {
                 row.sourceSprite=va.Renderer.sprite.name;row.textureWidth=va.Renderer.sprite.texture.width;row.textureHeight=va.Renderer.sprite.texture.height;
-                row.cameraPixels=CameraDifference(Camera.main,va.Renderer,PathFor(directory,row,"source"));
+                row.cameraPixels=CameraDifference(Camera.main,va.Renderer,PathFor(directory,row,"source"),value=>row.cameraEdgePixels=value);
                 Check(row,"original-body-contributes-real-camera-pixels",row.cameraPixels>5,row.cameraPixels.ToString());
+                if(row.task=="B21")Check(row,"sui-body-fits-camera-without-border-clipping",row.cameraEdgePixels==0,row.cameraEdgePixels.ToString());
             }
             if(va!=null&&vb!=null)
             {
@@ -222,7 +223,7 @@ namespace YesterdayConvoy
             Check(row,"real-second-life-restores-health-and-source-protection",restored&&b.UnitInvulnerable(unit),"elapsed="+(b.Clock-began).ToString("F2"));
         }
         static string PathFor(string directory,BossRosterSmokeCase row,string label)=>directory==null?null:Path.Combine(directory,row.task+"-"+row.mode+"-"+label+".png");
-        static int CameraDifference(Camera camera,SpriteRenderer actor,string file)
+        static int CameraDifference(Camera camera,SpriteRenderer actor,string file,Action<int> edgeCount=null)
         {
             if(camera==null)throw new InvalidOperationException("Actual MonsterTrial camera missing");
             var rt=new RenderTexture(1280,720,24);var image=new Texture2D(1280,720,TextureFormat.RGBA32,false);
@@ -231,7 +232,7 @@ namespace YesterdayConvoy
             {
                 camera.targetTexture=rt;camera.rect=new Rect(0,0,1,1);actor.enabled=false;camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1280,720),0,0);image.Apply();var off=image.GetPixels32();
                 actor.enabled=enabled;camera.Render();image.ReadPixels(new Rect(0,0,1280,720),0,0);image.Apply();var on=image.GetPixels32();if(file!=null)File.WriteAllBytes(file,image.EncodeToPNG());
-                int changed=0;for(int i=0;i<on.Length;i++)if(Math.Abs(on[i].r-off[i].r)+Math.Abs(on[i].g-off[i].g)+Math.Abs(on[i].b-off[i].b)>12)changed++;return changed;
+                int changed=0,edge=0;for(int i=0;i<on.Length;i++)if(Math.Abs(on[i].r-off[i].r)+Math.Abs(on[i].g-off[i].g)+Math.Abs(on[i].b-off[i].b)>12){changed++;int x=i%1280,y=i/1280;if(x<2||x>=1278||y<2||y>=718)edge++;}edgeCount?.Invoke(edge);return changed;
             }
             finally{actor.enabled=enabled;camera.targetTexture=oldTarget;camera.rect=oldRect;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);}
         }

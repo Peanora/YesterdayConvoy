@@ -26,7 +26,7 @@ namespace YesterdayConvoy
         private double tacticalAttack=double.NegativeInfinity;
         private double viviWalkDistance,viviPreviousDistance;
         private static Material tacticalMaterial;
-        Vector3 VisualScale=>Vector3.one;
+        Vector3 VisualScale=>Vector3.one*(bossRoster?.VisualScale??1);
         public string FrameState { get; private set; } = "Idle";
         public int FrameIndex { get; private set; }
         public SpriteRenderer Renderer => sprite;
@@ -55,6 +55,7 @@ namespace YesterdayConvoy
             {
                 if(tacticalMaterial==null)tacticalMaterial=new Material(Resources.Load<Shader>("TacticalActor"));
                 sprite.sharedMaterial=tacticalMaterial;
+                // Grounding consumes local source height; its child shadow inherits VisualScale.
                 ActorGrounding.Attach(sprite,bossRoster?.Height??local?.Height??1.25f);
             }
             tacticalFlip=original!=null||ViviCombat.IsVivi(frames.CardId)?Vector3.Dot(unit.Motion.Direction,Camera.main!=null?Camera.main.transform.right:Vector3.right)<-.08f:unit.Motion.Direction.x<-.08f;

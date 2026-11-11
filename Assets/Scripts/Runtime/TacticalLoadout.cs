@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         }
         float UnitVisualHeight(DeployedUnitState unit)
         {
-            var card=CardForUnit(unit);return BossRosterArt.For(card.CardId)?.Height ?? LocalMonsterArt.For(card.CardId)?.Height ?? (card.CardId==OriginalSlugArt.CardId?1:1.8f);
+            var card=CardForUnit(unit);return BossRosterArt.For(card.CardId)?.VisualHeight ?? LocalMonsterArt.For(card.CardId)?.Height ?? (card.CardId==OriginalSlugArt.CardId?1:1.8f);
         }
         void DrawTacticalRoster()
         {

@@ -17,9 +17,9 @@ namespace YesterdayConvoy
             material=new Material(shader){name="Boss roster native HDR effects"};
         }
         internal void Begin(){if(disposed)throw new ObjectDisposedException(nameof(BossRosterFxLayer));used=0;}
-        internal bool Show(BossRosterFxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,bool loop,Vector3 direction,bool orient,int sortingOffset=24,float sourceForward=0)
+        internal bool Show(BossRosterFxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,bool loop,Vector3 direction,bool orient,int sortingOffset=24,float sourceForward=0,float visualScale=1)
         {
-            if(disposed)throw new ObjectDisposedException(nameof(BossRosterFxLayer));if(camera==null)return false;var sprite=clip.At(age,loop);if(sprite==null)return false;
+            if(disposed)throw new ObjectDisposedException(nameof(BossRosterFxLayer));if(float.IsNaN(visualScale)||float.IsInfinity(visualScale)||visualScale<=0)throw new ArgumentOutOfRangeException(nameof(visualScale));if(camera==null)return false;var sprite=clip.At(age,loop);if(sprite==null)return false;
             if(used==pool.Count)
             {
                 var basis=new GameObject("Boss FX attachment").transform;basis.SetParent(parent,false);
@@ -28,7 +28,7 @@ namespace YesterdayConvoy
             }
             var view=pool[used++];float roll=0;
             if(orient){float x=Vector3.Dot(direction,camera.transform.right),y=Vector3.Dot(direction,camera.transform.up);if(x*x+y*y>1e-8f)roll=Mathf.Atan2(y,x)*Mathf.Rad2Deg-sourceForward;}
-            view.Basis.SetPositionAndRotation(position,camera.transform.rotation*Quaternion.Euler(0,0,roll));view.Basis.localScale=Vector3.one;
+            view.Basis.SetPositionAndRotation(position,camera.transform.rotation*Quaternion.Euler(0,0,roll));view.Basis.localScale=Vector3.one*visualScale;
             var r=view.Renderer;r.name="Boss FX / "+clip.Key;r.enabled=true;r.sprite=sprite;r.flipX=flip;r.color=Color.white;
             r.transform.localPosition=Vector3.zero;r.transform.localRotation=Quaternion.identity;r.transform.localScale=Vector3.one;
             r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,position)+sortingOffset;

@@ -54,6 +54,8 @@
 
 B16 为 `enemy_1515_bsnake`，B24 为 `enemy_1602_blksnk`，两者独立保留。B18 已固定为“冬痕”`enemy_1510_frstar2`，不是旧普通霜星 `enemy_1505_frstar`。B20 使用 `char_1035_wisdel_sale_14` 正背模型；原构筑 CardId 保持 `CARD_WISADEL_APRIL`。
 
+B21 的真实 Player 截图 `Library/BossRosterEvidence/player/B21-default-source.png` 显示原体双翼超出固定战场相机上沿。因此游戏呈现采用 **0.42 倍统一缩放**，由 `BossRosterArt.VisualScale` 提供；其余角色为 1 倍。`Height` 仍是原源高度，`VisualHeight = Height × VisualScale` 用于接地／显示高度。此项为本作固定镜头的显示适配，原 PNG、PPU、pivot、动作时长与像素哈希均保持；不是重绘或重新采样。实际共享视图接线、缩放后画面与重建结果由本轮正式 QA 记录。
+
 ## 8 类必要技能附属模型
 
 | 编号 | 用途／版本 | 原模型 ID | 正时长动作／帧／页 | 来源 |

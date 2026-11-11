@@ -1221,7 +1221,16 @@
           "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
           "packagerUnityTestsSnapshot": "NOT_RUN"
         }
-      ]
+      ],
+      "presentationAdaptation": {
+        "type": "UNIFORM_RUNTIME_VISUAL_SCALE",
+        "factor": 0.42,
+        "reason": "The actual fixed-camera D3D11 Player image showed the original Sui wings beyond the upper screen edge.",
+        "evidence": "Library/BossRosterEvidence/player/B21-default-source.png",
+        "interface": "BossRosterArt.VisualScale; VisualHeight = Height * VisualScale; Height retains original source metadata.",
+        "scope": "Original PNG, source PPU, pivot, clip durations and hashes remain unchanged. Integration lead owns shared view hookup and post-change Unity/Player verification.",
+        "postChangeUnityVerification": "NOT_RUN_BY_THIS_AGENT"
+      }
     },
     {
       "task": "B22",
@@ -1936,6 +1945,9 @@
     "existingSourceRecordsRead": 35,
     "countsCrossCheckedAgainstInstallationAndPackageQa": true,
     "unityLaunched": false,
-    "gameOrPreviewFilesModified": false
+    "sourceResourcesOrPreviewFilesModified": false,
+    "presentationCodeChanged": [
+      "Assets/Scripts/Runtime/BossRosterArt.cs: B21 VisualScale=0.42, other models=1; added VisualHeight."
+    ]
   }
 }

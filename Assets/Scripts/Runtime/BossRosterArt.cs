@@ -41,6 +41,10 @@ namespace YesterdayConvoy
         internal string Model {get;private set;}
         internal string View {get;private set;}
         internal float Height {get;private set;}
+        // Sui's original set-piece body exceeds the fixed battle camera at the common
+        // source scale. Apply this uniformly at presentation; source pixels/PPU stay intact.
+        internal float VisualScale=>Task=="B21"?.42f:1f;
+        internal float VisualHeight=>Height*VisualScale;
         internal float ReferenceSpeed {get;private set;}
         internal bool HasAttack=>HasClip("attack");
         internal float AttackDuration=>HasAttack?this["attack"].Duration:0;
