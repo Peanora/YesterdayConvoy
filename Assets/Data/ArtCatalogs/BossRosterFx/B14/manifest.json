@@ -1,0 +1,757 @@
+{
+  "version": 1,
+  "task": "B14",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_cadejo_01_buff_01",
+      "count": 90,
+      "width": 48,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3629167730158026,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_01_buff_01/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_01_buff_02",
+      "count": 90,
+      "width": 24,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.625,
+      "pivotY": 0.49802112579345703,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_01_buff_02/00.png",
+          "count": 90,
+          "width": 288,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_01_debuff_01",
+      "count": 90,
+      "width": 28,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.29841690063476567,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_01_debuff_01/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_attack_01_hit_01",
+      "count": 47,
+      "width": 52,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.36538461538461536,
+      "pivotY": 0.4157871670193143,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_attack_01_hit_01/00.png",
+          "count": 47,
+          "width": 624,
+          "height": 144
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_attack_01_start_01",
+      "count": 63,
+      "width": 100,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.26,
+      "pivotY": 0.4157871670193143,
+      "duration": 2.1,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_attack_01_start_01/00.png",
+          "count": 63,
+          "width": 1200,
+          "height": 216
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_die_01",
+      "count": 53,
+      "width": 120,
+      "height": 108,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5083333333333333,
+      "pivotY": 0.481188314932364,
+      "duration": 1.7666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_die_01/00.png",
+          "count": 53,
+          "width": 1440,
+          "height": 540
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_revive_01_end",
+      "count": 90,
+      "width": 120,
+      "height": 104,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5083333333333333,
+      "pivotY": 0.4612340193528396,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_revive_01_end/00.png",
+          "count": 90,
+          "width": 1440,
+          "height": 832
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_revive_01_loop",
+      "count": 90,
+      "width": 188,
+      "height": 100,
+      "columns": 10,
+      "ppu": 16.0,
+      "pivotX": 0.48404255319148937,
+      "pivotY": 0.5096833801269531,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_revive_01_loop/00.png",
+          "count": 90,
+          "width": 1880,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_revive_02_end",
+      "count": 37,
+      "width": 80,
+      "height": 80,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.3125,
+      "pivotY": 0.2871042251586914,
+      "duration": 1.2333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_revive_02_end/00.png",
+          "count": 37,
+          "width": 960,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_skill_01_start_01",
+      "count": 56,
+      "width": 304,
+      "height": 236,
+      "columns": 6,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.4144736842105263,
+      "pivotY": 0.4454407449495994,
+      "duration": 1.8666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_skill_01_start_01/00.png",
+          "count": 48,
+          "width": 1824,
+          "height": 1888
+        },
+        {
+          "file": "enemy_cadejo_skill_01_start_01/01.png",
+          "count": 8,
+          "width": 1824,
+          "height": 472
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_skill_01_start_02",
+      "count": 43,
+      "width": 204,
+      "height": 128,
+      "columns": 10,
+      "ppu": 16.0,
+      "pivotX": 0.4950980392156863,
+      "pivotY": 0.5075651407241821,
+      "duration": 1.4333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_skill_01_start_02/00.png",
+          "count": 43,
+          "width": 2040,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadejo_skill_02_start_01",
+      "count": 32,
+      "width": 88,
+      "height": 80,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4371042251586914,
+      "duration": 1.0666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadejo_skill_02_start_01/00.png",
+          "count": 32,
+          "width": 1056,
+          "height": 240
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadesd_start_01",
+      "count": 50,
+      "width": 104,
+      "height": 84,
+      "columns": 12,
+      "ppu": 19.200000762939453,
+      "pivotX": 0.5,
+      "pivotY": 0.4471667607625326,
+      "duration": 1.6666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadesd_start_01/00.png",
+          "count": 50,
+          "width": 1248,
+          "height": 420
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadesd_skill_02_start_01",
+      "count": 180,
+      "width": 104,
+      "height": 92,
+      "columns": 12,
+      "ppu": 19.200000762939453,
+      "pivotX": 0.5,
+      "pivotY": 0.41915225982666016,
+      "duration": 6.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadesd_skill_02_start_01/00.png",
+          "count": 180,
+          "width": 1248,
+          "height": 1380
+        }
+      ]
+    },
+    {
+      "key": "enemy_cadesd_skill_02_start_02",
+      "count": 180,
+      "width": 124,
+      "height": 112,
+      "columns": 12,
+      "ppu": 19.200000762939453,
+      "pivotX": 0.46774193548387094,
+      "pivotY": 0.388946499143328,
+      "duration": 6.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_cadesd_skill_02_start_02/00.png",
+          "count": 180,
+          "width": 1488,
+          "height": 1680
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_attack_hit_01",
+      "count": 18,
+      "width": 80,
+      "height": 76,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.4625,
+      "pivotY": 0.5147896816855984,
+      "duration": 0.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_attack_hit_01/00.png",
+          "count": 18,
+          "width": 960,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_buff_01_hit_01",
+      "count": 120,
+      "width": 32,
+      "height": 28,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5,
+      "pivotY": 0.2901434217180524,
+      "duration": 4.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_buff_01_hit_01/00.png",
+          "count": 120,
+          "width": 384,
+          "height": 280
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_skill_01_hit_01",
+      "count": 38,
+      "width": 116,
+      "height": 64,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5172413793103449,
+      "pivotY": 0.40818774700164795,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_skill_01_hit_01/00.png",
+          "count": 38,
+          "width": 1392,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_skill_01_hit_02",
+      "count": 39,
+      "width": 112,
+      "height": 64,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5267857142857143,
+      "pivotY": 0.548812747001648,
+      "duration": 1.3,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_skill_01_hit_02/00.png",
+          "count": 39,
+          "width": 1344,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_skill_01_hit_03",
+      "count": 38,
+      "width": 116,
+      "height": 72,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.43103448275862066,
+      "pivotY": 0.335055775112576,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_skill_01_hit_03/00.png",
+          "count": 38,
+          "width": 1392,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_skill_01_start",
+      "count": 11,
+      "width": 28,
+      "height": 16,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5,
+      "pivotY": 0.5077509880065918,
+      "duration": 0.36666666666666664,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_skill_01_start/00.png",
+          "count": 11,
+          "width": 336,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "key": "enemy_shsdgo_skill_01_trap_loop_hit",
+      "count": 120,
+      "width": 52,
+      "height": 72,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5192307692307693,
+      "pivotY": 0.8072779973347982,
+      "duration": 4.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shsdgo_skill_01_trap_loop_hit/00.png",
+          "count": 120,
+          "width": 624,
+          "height": 720
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_cadejo_01_buff_01",
+        "enemy_cadejo_01_buff_02",
+        "enemy_cadejo_01_debuff_01",
+        "enemy_cadejo_attack_01_hit_01",
+        "enemy_cadejo_attack_01_start_01",
+        "enemy_cadejo_die_01",
+        "enemy_cadejo_revive_01_end",
+        "enemy_cadejo_revive_01_loop",
+        "enemy_cadejo_revive_02_end",
+        "enemy_cadejo_skill_01_start_01",
+        "enemy_cadejo_skill_01_start_02",
+        "enemy_cadejo_skill_02_start_01",
+        "enemy_cadesd_start_01",
+        "enemy_cadesd_skill_02_start_01",
+        "enemy_cadesd_skill_02_start_02",
+        "enemy_shsdgo_attack_hit_01",
+        "enemy_shsdgo_buff_01_hit_01",
+        "enemy_shsdgo_skill_01_hit_01",
+        "enemy_shsdgo_skill_01_hit_02",
+        "enemy_shsdgo_skill_01_hit_03",
+        "enemy_shsdgo_skill_01_start",
+        "enemy_shsdgo_skill_01_trap_loop_hit"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_attack_01_start_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_attack_01_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "blink",
+      "key": "enemy_cadejo_01_debuff_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "blink",
+      "key": "enemy_cadejo_skill_02_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "multi",
+      "key": "enemy_cadejo_skill_01_start_02",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "multi",
+      "key": "enemy_cadejo_skill_01_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "reviveend",
+      "key": "enemy_cadejo_revive_01_end",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_die_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_01_buff_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_01_buff_02",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_revive_01_loop",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_cadejo_revive_02_end",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

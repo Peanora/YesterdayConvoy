@@ -61,7 +61,9 @@ namespace YesterdayConvoy.Tests
             var shells=b.CombatShots.Where(s=>!s.FromDefender&&s.Empowered).ToArray();Assert.That(shells.Length,Is.EqualTo(6));
             Assert.That(shells.All(s=>s.Applied&&s.SplashRadius==2.2f&&s.Attack==105),Is.True);
             for(int i=1;i<shells.Length;i++)Assert.That(shells[i].StartedAt-shells[i-1].StartedAt,Is.EqualTo(3.2).Within(.051));
-            Assert.That(b.FindDefender("inside").Health,Is.EqualTo(100000-6*85));
+            var unit=Unit(b);float extra=b.BossCoreDamage(unit,"aftershock","inside")+b.BossCoreDamage(unit,"markExplosion","inside")+b.BossCoreDamage(unit,"soul","inside");
+            Assert.That(b.FindDefender("inside").Health,Is.EqualTo(100000-6*85-extra).Within(.02f),"Each original shell still deals 85; independently applied aftershock/mark/soul HP receipts explain only the extra loss.");
+            Assert.That(b.BossCoreDamage(unit,"soul","inside"),Is.GreaterThan(0),"The approved soul is a real additional source, not a second shell settlement.");
             Assert.That(b.CombatShots.Where(s=>!s.FromDefender&&!s.Empowered).All(s=>s.SplashRadius==0),Is.True);
             Assert.That(Unit(b).SkillAmmo,Is.Zero);Assert.That(Unit(b).SkillsUsed,Is.EqualTo(1));
         }

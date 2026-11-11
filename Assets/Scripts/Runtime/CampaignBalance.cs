@@ -60,7 +60,7 @@ namespace YesterdayConvoy
             {"CARD_TALULAH_TRIAL",new Stats(5,10,850,112,8,1.7f,3.2f,0.55f,2)},
             {"CARD_WISADEL_APRIL",new Stats(5,9,680,78,5,1.7f,3.2f,0.65f,2)},
         };
-        public static bool Supports(string id)=>id!=null&&Profiles.ContainsKey(id);
+        public static bool Supports(string id)=>id!=null&&(Profiles.ContainsKey(id)||BossRosterCatalog.Contains(id));
         public static bool ShopEligible(string id)=>Supports(id)&&id!=SilverWolfCombat.CardId;
         static readonly HashSet<string> ReunionMembers=new HashSet<string>{"CARD_M02","CARD_M03","CARD_M06","CARD_M07","CARD_M08","CARD_M09","CARD_M10","CARD_M11","CARD_M12","CARD_M13","CARD_M14","CARD_M15","CARD_M16","CARD_M17","CARD_M18","CARD_M19","CARD_M21","CARD_M22","CARD_M23","CARD_TALULAH_TRIAL"};
         public static bool Reunion(string id)=>id!=null&&(id=="CARD_M20"||id=="CARD_M25"||ReunionMembers.Contains(id));
@@ -124,7 +124,7 @@ namespace YesterdayConvoy
         public static float AbilityScale(int cost,int star)=>star==4&&cost==1?3.8f:star==1?1:cost==5?star==2?1.9f:5:cost==4?star==2?1.75f:3.5f:star==2?1.6f:2.7f;
         public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int initialDP,int defense,bool waveMode=false)
         {
-            var s=data.Snapshot();var c=data.Engagement.Snapshot();var r=Profiles[s.CardId];
+            var s=data.Snapshot();var c=data.Engagement.Snapshot();var r=Profiles.TryGetValue(s.CardId,out var authored)?authored:new Stats(data.Card.RecruitCost,s.DeploymentCost,s.Health,c.UnitAttack,c.UnitArmor,c.UnitInterval,c.UnitRange,s.Speed,s.GateDamage);
             if(star<1||star>ShopTrialModel.MaxStarForCost(r.Cost))throw new ArgumentOutOfRangeException(nameof(star));
             float ability=AbilityScale(r.Cost,star);var e=c.Effects;
             var effects=CopyEffects(e,ability,talulahSecondPhase:s.CardId==TalulahTiming.CardId&&star==3);

@@ -340,7 +340,7 @@ namespace YesterdayConvoy
             }
             // Commit together only after all preconditions and entity initialization succeed.
             ApplyCampaignV2Deployment(unit);
-            units.Add(unit); sequence++;
+            units.Add(unit);InitializeBossRosterUnit(unit); sequence++;
             var card=FindCard(requestedCard);
             if(BossArenaEnabled)CommitArenaDeployment(requestedCard);
             else if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}
@@ -429,7 +429,7 @@ namespace YesterdayConvoy
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
             else if(WaveDeadlineReached)
             { TimedOut=true; Phase=BattlePhase.Lost; IsPaused=false; }
-            else if (!HasPendingDeathBlast && ActiveCount == 0 &&
+            else if (!HasPendingDeathBlast && !HasPendingBossRosterDamage && ActiveCount == 0 &&
                 (WavesEnabled ? FinalAdvanceActive : !HasAffordableCard()))
             { Phase = BattlePhase.Lost; IsPaused = false; }
             if(Phase==BattlePhase.Won||Phase==BattlePhase.Lost)CancelGuerrillaOrders();

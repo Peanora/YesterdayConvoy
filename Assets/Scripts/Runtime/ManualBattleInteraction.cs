@@ -72,7 +72,7 @@ namespace YesterdayConvoy
             }
             if(Dragging) return;
             if(SkillMenuOpen && SkillPopupRect.Contains(GUIPosition(screen)))
-            { if(SkillCastRect.Contains(GUIPosition(screen))) CastFocusedSkill(); return; }
+            { if(TryBossRosterPopupPointer(GUIPosition(screen)))return;if(SkillCastRect.Contains(GUIPosition(screen))) CastFocusedSkill(); return; }
             string hit=IsBattlefield(screen) ? HitUnit(screen) : null;
             if(hit!=null) { OpenSkillMenu(hit); return; }
             if(SkillMenuOpen) { CloseSkillMenu(); Feedback="已取消技能选择"; return; }
@@ -144,6 +144,7 @@ namespace YesterdayConvoy
         {
             if(TestSelectionOpen) return;
             var picked=Battle.FindUnit(id);
+            if(BossRosterCatalog.Contains(picked?.CardId)&&Battle.BossRosterSkills(picked).Count==0){selectedEntityId=id;Feedback=CardForUnit(picked).DisplayName+"的天赋会自动触发";return;}
             if(TacticalMapActive && picked?.Active==true && !Battle.UnitCombat(picked).HasSkill)
             {CloseSkillMenu();selectedEntityId=id;Feedback=CardForUnit(picked).DisplayName+"没有主动技能";return;}
             if(!Battle.EngagementEnabled || !Battle.UnitCombat(Battle.FindUnit(id)).HasSkill || Battle.Phase!=BattlePhase.Running || Battle.FindUnit(id)?.Active!=true) return;
@@ -165,6 +166,7 @@ namespace YesterdayConvoy
             get
             {
                 Rect unit=UnitScreenRect(selectedEntityId);
+                if(IsBossRosterSelection){float h=76+57*DisplayedBossSkills(Battle.FindUnit(selectedEntityId)).Count;return new Rect(Mathf.Clamp(unit.xMax+12,16,940),Mathf.Clamp(unit.yMin-8,78,Mathf.Max(78,550-h)),300,h);}
                 float x=unit.xMax+18;
                 if(x+214>1264) x=unit.xMin-232;
                 var panel=new Rect(Mathf.Clamp(x,16,1050),Mathf.Clamp(unit.yMin-8,78,382),214,154);
@@ -196,6 +198,7 @@ namespace YesterdayConvoy
 
         private void DrawInteractionOverlay()
         {
+            DrawBossPreparation();
             if(SkillMenuOpen) Fill(new Rect(0,66,1280,486),new Color(0,0,0,.16f));
             foreach(var unit in Battle.Units)
             {
@@ -214,6 +217,7 @@ namespace YesterdayConvoy
                     new Rect(source.x/portrait.texture.width,source.y/portrait.texture.height,source.width/portrait.texture.width,source.height/portrait.texture.height));
             }
             if(!SkillMenuOpen) return;
+            if(IsBossRosterSelection){DrawBossRosterPopup();return;}
             var selected=Battle.FindUnit(selectedEntityId);
             if(selected==null || !selected.Active) return;
             Rect bounds=UnitScreenRect(selectedEntityId),panel=SkillPopupRect,button=SkillCastRect;

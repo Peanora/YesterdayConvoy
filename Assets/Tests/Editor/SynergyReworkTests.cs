@@ -139,9 +139,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryActivateSkill(b.RunId,31,u.EntityId),Is.EqualTo(SkillFailure.None));
             Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(u.IsReviving,Is.True);
             b.Advance(5.1f);Assert.That(b.FrostSeals[0].Cancelled,Is.True);Assert.That(u.IsReviving,Is.False);Assert.That(b.SnowstormPulses.Count,Is.EqualTo(3));
-            Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(u.Active,Is.False);Assert.That(b.SnowstormActive,Is.True);
+            Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.False,"Source twenty-second revival protection does not interrupt the existing weather.");Assert.That(u.Active,Is.True);Assert.That(b.SnowstormActive,Is.True);
             Assert.That(b.SnowstormStartedAt,Is.EqualTo(started));Assert.That(b.SnowstormEndsAt,Is.EqualTo(started+8));
             b.Advance(3);Assert.That(b.SnowstormPulses.Select(p=>p.At),Is.EqualTo(new double[]{started,started+2,started+4,started+6}));Assert.That(b.SnowstormRemaining,Is.Zero);
+            b.Advance((float)(b.BossCoreState(u).ProtectedUntil-b.Clock)+.05f);Assert.That(b.UnitInvulnerable(u),Is.False);
+            for(int i=0;i<200&&!b.IsSkillReady(u.EntityId);i++)b.Advance(.05f);
+            Assert.That(b.TryActivateSkill(b.RunId,32,u.EntityId),Is.EqualTo(SkillFailure.None));double finalWeather=b.SnowstormStartedAt;Assert.That(finalWeather,Is.GreaterThan(started+8));
+            Assert.That(b.TryDamageUnit(u.EntityId,10000,CombatDamageType.Arts),Is.True);Assert.That(u.Active,Is.False);Assert.That(b.SnowstormActive,Is.True);
+            b.Advance(8.05f);Assert.That(b.SnowstormPulses.Skip(4).Select(p=>p.At),Is.EqualTo(new[]{finalWeather,finalWeather+2,finalWeather+4,finalWeather+6}));Assert.That(b.SnowstormRemaining,Is.Zero);
         }
         [TestCase(2,false)]
         [TestCase(4,false)]

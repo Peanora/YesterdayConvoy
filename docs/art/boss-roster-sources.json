@@ -1,0 +1,1941 @@
+{
+  "schemaVersion": 1,
+  "recordDate": "2026-11-11",
+  "purpose": "Source and packaging registry, not a declaration that every clip/mechanic has passed Unity or Player testing.",
+  "summary": {
+    "models": 35,
+    "newRecruitableBosses": 19,
+    "skillAuxiliaries": 8,
+    "timedClips": 433,
+    "frames": 58583,
+    "pages": 2722,
+    "zeroDurationMetadataStates": 54,
+    "pngBytes": 2621729692,
+    "cacheSegments": 442
+  },
+  "scope": {
+    "recruitableCharacters": 26,
+    "bodyViews": 27,
+    "bodyTimedClips": 393,
+    "auxiliaryViews": 8,
+    "auxiliaryTimedClips": 40,
+    "spineVersion": "3.8.99",
+    "samplingFps": 60,
+    "sourceBoneWorldScale": 0.0045
+  },
+  "rights": {
+    "owner": "Hypergryph and original rights holders",
+    "redistributionPermission": "NOT_OBTAINED_OR_CONFIRMED",
+    "userUploadInstruction": "User requested integrated runtime assets be uploaded with source. This is not permission from the rights holders.",
+    "prtsMirror": "PRTS is the acquisition/reference mirror; availability there does not establish an open redistribution license.",
+    "spineRuntime": "External preview used Spine 3.8 WebGL; its separate license notice remains in the preview. The body runtime package here consists of rendered PNGs/JSON, not a grant of Spine runtime rights."
+  },
+  "statusInterpretation": {
+    "IMPORTED_NOT_BOUND": "Packaging-time manifest snapshot; current game binding and validation are documented in docs/QA.md.",
+    "NOT_RUN": "Packager did not run Unity; not a claim that the integration lead never tested it.",
+    "sourceIntegrity": "Original source-file hashes and captured PNG hashes/timing/events/pivots were checked. This does not prove skill scheduling, whole battles, visual approval or Player behavior.",
+    "preparedArt": "Library/PreparedArt and build payloads are derived caches and are outside this source-count scope."
+  },
+  "evidence": {
+    "packageQa": {
+      "path": "Assets/Data/ArtCatalogs/BossRoster/PACKAGE-QA.json",
+      "sha256": "952a62779807626b1dbb91d32a4037382708b32043fe03ddf7420d88b594730c",
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN_BY_PACKAGER"
+    },
+    "currentIntegrationReport": "docs/QA.md",
+    "playModeAndPlayerConclusion": "Not asserted by this source registry; consult current integration QA.",
+    "unityEditorSnapshot": {
+      "path": "Library/BossRosterEvidence/full-editmode.xml",
+      "sha256": "72a9ca4ca0829ebc5570428879d66f2ec211e738cbe5a2cfe31f2c91abdee488",
+      "result": "Passed",
+      "total": 1088,
+      "passed": 1088,
+      "failed": 0,
+      "endTime": "2026-11-11 14:07:12Z",
+      "scope": "Entire Editor test run at this snapshot, not a per-clip GPU or Player proof. Local Library evidence is not a committed runtime dependency."
+    },
+    "b22UnityRepresentativeSnapshot": {
+      "path": "Library/BossRosterEvidence/representative.json",
+      "sha256": "2230e71c1a4f4e1b59ad45897631f4fcc9d8e599fff2e9ae26989844100a3e2b",
+      "result": {
+        "task": "B22",
+        "sourceAttackEvents": 2,
+        "actualCameraChangedPixels": 18514,
+        "nativeFxChangedPixels": 7884,
+        "damageObserved": true,
+        "pauseVerified": true,
+        "formalPlayerVerified": false
+      }
+    }
+  },
+  "characters": [
+    {
+      "task": "B01",
+      "cardId": "CARD_B01",
+      "name": "W",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/W%28%E6%95%8C%E6%96%B9%29",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1504_cqbw",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B01/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B01/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "d221b7c5579d5d23fa8871fa26ff97411ec708ec7669d74956995f9da82a43c5",
+          "sourceAtlasManifestSha256": "bb93b3c99abbf6915170be7b0ad2fa113c0437d863bce593b130ae82f990c64d",
+          "sourceFiles": [
+            {
+              "file": "enemy_1504_cqbw.skel",
+              "externalRelativePath": "B01/source/main/enemy_1504_cqbw.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.skel",
+              "bytes": 230832,
+              "sha256": "6153c2c1cb8e921196fb63b616e75a66e8e2947ce12f4889467ab318825a4b8e"
+            },
+            {
+              "file": "enemy_1504_cqbw.atlas",
+              "externalRelativePath": "B01/source/main/enemy_1504_cqbw.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.atlas",
+              "bytes": 13608,
+              "sha256": "f0aee828ada5189a86b85ca029899cfe797cb386f89b48cb74c80b8869e2f609"
+            },
+            {
+              "file": "enemy_1504_cqbw.png",
+              "externalRelativePath": "B01/source/main/enemy_1504_cqbw.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.png",
+              "bytes": 132795,
+              "sha256": "ba0131462811b7e3fe3461f6c415e5adc1d97a226d8104d98b4fb5212531c37a"
+            }
+          ],
+          "timedClips": 6,
+          "frames": 886,
+          "pages": 38,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B02",
+      "cardId": "CARD_M25",
+      "name": "梅菲斯特",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E6%A2%85%E8%8F%B2%E6%96%AF%E7%89%B9",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1507_mephi",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B02/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B02/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "ab3bc485de338106df190d77d50975b9d7dcdbb7ee500aaf9c80eb49601ecd8f",
+          "sourceAtlasManifestSha256": "755ee36f2825f446be18815756400043e5cf9b08d6f34008d08b0c867567c5fc",
+          "sourceFiles": [
+            {
+              "file": "enemy_1507_mephi.skel",
+              "externalRelativePath": "B02/source/main/enemy_1507_mephi.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.skel",
+              "bytes": 138911,
+              "sha256": "39af3ff1b5065657e772841895ffd3117ac4b2b0d14953c15b1daa3a20a12ed9"
+            },
+            {
+              "file": "enemy_1507_mephi.atlas",
+              "externalRelativePath": "B02/source/main/enemy_1507_mephi.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.atlas",
+              "bytes": 6300,
+              "sha256": "c7a935a6aa157427f5f23f004539c1bc948616b8cb213b7a439bb37ad2f2485c"
+            },
+            {
+              "file": "enemy_1507_mephi.png",
+              "externalRelativePath": "B02/source/main/enemy_1507_mephi.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1507_mephi/enemy_1507_mephi.png",
+              "bytes": 56556,
+              "sha256": "5500a9b6937cdfb81f9a5ce14facc9dd804cac72dee496d23505e910ef27c8ea"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 576,
+          "pages": 25,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B03",
+      "cardId": "CARD_B03",
+      "name": "弑君者",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E5%BC%91%E5%90%9B%E8%80%85%28%E6%95%8C%E6%96%B9%29",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1502_crowns",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B03/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B03/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "4cd81f0fc736da1e21c7b1243a8705f4db428ca6aeb0c53d22b6eaafa9c5df1f",
+          "sourceAtlasManifestSha256": "4c25b6cb2992629d6fa57231419062879d7a06dd3b48919680b873944472ca1a",
+          "sourceFiles": [
+            {
+              "file": "enemy_1502_crowns.skel",
+              "externalRelativePath": "B03/source/main/enemy_1502_crowns.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1502_crowns/enemy_1502_crowns.skel",
+              "bytes": 77293,
+              "sha256": "b409ec5baab05344c1c5c3342b6fdb4821db4145918e4c60405f4ea07946d781"
+            },
+            {
+              "file": "enemy_1502_crowns.atlas",
+              "externalRelativePath": "B03/source/main/enemy_1502_crowns.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1502_crowns/enemy_1502_crowns.atlas",
+              "bytes": 4440,
+              "sha256": "7c91f6bd67897b670cf89bf5356bff4c3b0fa8e3e500edcd425d5dc342f08ba7"
+            },
+            {
+              "file": "enemy_1502_crowns.png",
+              "externalRelativePath": "B03/source/main/enemy_1502_crowns.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1502_crowns/enemy_1502_crowns.png",
+              "bytes": 120458,
+              "sha256": "e6beaea1b8a9fe17441bdbf4ba2647ac6172eadca9151836162ded49ecd7d35e"
+            }
+          ],
+          "timedClips": 6,
+          "frames": 306,
+          "pages": 16,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B04",
+      "cardId": "CARD_B04",
+      "name": "锏",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E9%94%8F%28%E6%95%8C%E6%96%B9%29",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1525_blkswb",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B04/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B04/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "6fe024edc1208881eddb341b1bf68322d780ccfd7c4016a728d27106c6486b96",
+          "sourceAtlasManifestSha256": "a14c0a020d257a38b42fca70495b7f1c8e34ef52ced58f6e1ec204638cf87f69",
+          "sourceFiles": [
+            {
+              "file": "enemy_1525_blkswb.skel",
+              "externalRelativePath": "B04/source/main/enemy_1525_blkswb.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1525_blkswb/enemy_1525_blkswb.skel",
+              "bytes": 249339,
+              "sha256": "677718aa43ed04ee5393b1a754446603b32be73cb0fd48b8a01c88429d3b917f"
+            },
+            {
+              "file": "enemy_1525_blkswb.atlas",
+              "externalRelativePath": "B04/source/main/enemy_1525_blkswb.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1525_blkswb/enemy_1525_blkswb.atlas",
+              "bytes": 6354,
+              "sha256": "42ca06f4da7c20fdf6ff016624df113cf6dbc684712c6bc0424b0510d912fa46"
+            },
+            {
+              "file": "enemy_1525_blkswb.png",
+              "externalRelativePath": "B04/source/main/enemy_1525_blkswb.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1525_blkswb/enemy_1525_blkswb.png",
+              "bytes": 163116,
+              "sha256": "b75f7817f0f70f0bd08af8a534efdde611b0f10786b15ca3915a1d80a14840e7"
+            }
+          ],
+          "timedClips": 16,
+          "frames": 1791,
+          "pages": 78,
+          "zeroDurationStates": [
+            "B_Default",
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B05",
+      "cardId": "CARD_B05",
+      "name": "“大总统”汉科",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E5%A4%A7%E6%80%BB%E7%BB%9F%E2%80%9D%E6%B1%89%E7%A7%91",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2139_shdbj2",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B05/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B05/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "b469752865c5a4abf0404aa42217f80d8ec0d62534a31072303f536c2ea65ff5",
+          "sourceAtlasManifestSha256": "d0e489101dff5f19013200045266829eaa99039e67f13bd128740787efc9e773",
+          "sourceFiles": [
+            {
+              "file": "enemy_2139_shdbj2.skel",
+              "externalRelativePath": "B05/source/main/enemy_2139_shdbj2.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2139_shdbj2/enemy_2139_shdbj2.skel",
+              "bytes": 197627,
+              "sha256": "3099725251358385ccb88f82278cecad19ca72d24ad6b428f42866bd1717a1b8"
+            },
+            {
+              "file": "enemy_2139_shdbj2.atlas",
+              "externalRelativePath": "B05/source/main/enemy_2139_shdbj2.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2139_shdbj2/enemy_2139_shdbj2.atlas",
+              "bytes": 5578,
+              "sha256": "5a071a84f0be7154976ab092607f8c9baa094a9c2908ee04662c3235dff1e8bb"
+            },
+            {
+              "file": "enemy_2139_shdbj2.png",
+              "externalRelativePath": "B05/source/main/enemy_2139_shdbj2.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2139_shdbj2/enemy_2139_shdbj2.png",
+              "bytes": 145401,
+              "sha256": "7a7128c293ed7c63ebea354af4edc180cbbdf8b7cbd91a875c443c2ba035c841"
+            }
+          ],
+          "timedClips": 9,
+          "frames": 574,
+          "pages": 28,
+          "zeroDurationStates": [
+            "Default",
+            "Skill_Loop"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B06",
+      "cardId": "CARD_M32",
+      "name": "蔓德拉",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E8%94%93%E5%BE%B7%E6%8B%89",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1523_mandra",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B06/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B06/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "1b8bdc96e4a4fbdabe7f976f25508dae9184c1a71377de645ff4243e4aa755c8",
+          "sourceAtlasManifestSha256": "503963bc662952c268143a0e15b2e35fb99a653d303e6df2fb193c0e2297b6d8",
+          "sourceFiles": [
+            {
+              "file": "enemy_1523_mandra.skel",
+              "externalRelativePath": "B06/source/main/enemy_1523_mandra.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.skel",
+              "bytes": 597714,
+              "sha256": "fc7f0cd524d6e244a6474149a054270148b38f9e88d46d7f804003c0fdae01a7"
+            },
+            {
+              "file": "enemy_1523_mandra.atlas",
+              "externalRelativePath": "B06/source/main/enemy_1523_mandra.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.atlas",
+              "bytes": 7703,
+              "sha256": "3949ea4ab28d7aefff658b0573d8fa79ad098725c19e33fd67fa3d12a8776063"
+            },
+            {
+              "file": "enemy_1523_mandra.png",
+              "externalRelativePath": "B06/source/main/enemy_1523_mandra.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1523_mandra/enemy_1523_mandra.png",
+              "bytes": 82273,
+              "sha256": "a89ca545f8142c137753d92257483c46925ebf5f2bcf779171d563e1d3c33e97"
+            }
+          ],
+          "timedClips": 22,
+          "frames": 2505,
+          "pages": 111,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B07",
+      "cardId": "CARD_B07",
+      "name": "爱布拉娜／“领袖”",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E9%A2%86%E8%A2%96%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1536_ncrmcr",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B07/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B07/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "1e0df82a5a9657bf857ef0eef70bde64191835f678b602744283474a408f6a9d",
+          "sourceAtlasManifestSha256": "87ac5d96a7f304f96933937669b63be964fd7589fbb53cd563d9cf9a5fb73ddc",
+          "sourceFiles": [
+            {
+              "file": "enemy_1536_ncrmcr.skel",
+              "externalRelativePath": "B07/source/main/enemy_1536_ncrmcr.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1536_ncrmcr/enemy_1536_ncrmcr.skel",
+              "bytes": 1270103,
+              "sha256": "b3a75e1be3751b84ff700228c4c33a950c9f93d5dd438d8733e1d3c267be43d7"
+            },
+            {
+              "file": "enemy_1536_ncrmcr.atlas",
+              "externalRelativePath": "B07/source/main/enemy_1536_ncrmcr.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1536_ncrmcr/enemy_1536_ncrmcr.atlas",
+              "bytes": 10295,
+              "sha256": "2b7f8455bf3da4c17852c8b671ff183f1cc0c08241e65fee936944fdc1fcac11"
+            },
+            {
+              "file": "enemy_1536_ncrmcr.png",
+              "externalRelativePath": "B07/source/main/enemy_1536_ncrmcr.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1536_ncrmcr/enemy_1536_ncrmcr.png",
+              "bytes": 102244,
+              "sha256": "42417bbed04580ce7182e9c080d71ebcd7be7455a5731b9ec380dcae23d3e639"
+            }
+          ],
+          "timedClips": 17,
+          "frames": 3123,
+          "pages": 133,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B08",
+      "cardId": "CARD_B08",
+      "name": "“万火归一”",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E4%B8%87%E7%81%AB%E5%BD%92%E4%B8%80%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1563_fthlgj",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B08/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B08/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "c8fe8c3d281e152c2c79f524f29e5ad91a7350f5f813c37197cd48cc6022ab6b",
+          "sourceAtlasManifestSha256": "8fdcec233a08980be71947132bf90aa18433d2b638968b74114ef72631c7813f",
+          "sourceFiles": [
+            {
+              "file": "enemy_1563_fthlgj.skel",
+              "externalRelativePath": "B08/source/main/enemy_1563_fthlgj.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1563_fthlgj/enemy_1563_fthlgj.skel",
+              "bytes": 671498,
+              "sha256": "a67a3ee25943d926a116c3fbd4e3b0de56cabdb38ffc8ef19b8dd7fd007b64c3"
+            },
+            {
+              "file": "enemy_1563_fthlgj.atlas",
+              "externalRelativePath": "B08/source/main/enemy_1563_fthlgj.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1563_fthlgj/enemy_1563_fthlgj.atlas",
+              "bytes": 7976,
+              "sha256": "5b10992b54f4e9aee77376d7fa1cffb5f23e850295d140e3ef63ff9418f5b52a"
+            },
+            {
+              "file": "enemy_1563_fthlgj.png",
+              "externalRelativePath": "B08/source/main/enemy_1563_fthlgj.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1563_fthlgj/enemy_1563_fthlgj.png",
+              "bytes": 469199,
+              "sha256": "81819d4d40da82434c4f555b5e1ef69b59ba5bb6e82667b16179baed798d7b2d"
+            }
+          ],
+          "timedClips": 17,
+          "frames": 2065,
+          "pages": 138,
+          "zeroDurationStates": [
+            "A_Default",
+            "A_Die_Loop",
+            "B_Default"
+          ],
+          "transparentWaitClips": [
+            "B_Skill_3_Loop"
+          ],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B09",
+      "cardId": "CARD_B09",
+      "name": "“酒神”",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E9%85%92%E7%A5%9E%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1568_dirctr",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B09/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B09/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "7f6498cd51d182c8ab571d61bd1fe1317f48d79968de3960d7a9867990836e65",
+          "sourceAtlasManifestSha256": "d464822698182303cf8f346566213698c77e9b03e965103fb7623c8f929a3795",
+          "sourceFiles": [
+            {
+              "file": "enemy_1568_dirctr.skel",
+              "externalRelativePath": "B09/source/main/enemy_1568_dirctr.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1568_dirctr/enemy_1568_dirctr.skel",
+              "bytes": 615771,
+              "sha256": "e6ac89911d8be3062b77e3f507f87298c15db42ef52f463ebc4248f13f6ce872"
+            },
+            {
+              "file": "enemy_1568_dirctr.atlas",
+              "externalRelativePath": "B09/source/main/enemy_1568_dirctr.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1568_dirctr/enemy_1568_dirctr.atlas",
+              "bytes": 8740,
+              "sha256": "786b39eb0d2aa382185823e78f4405d4200c40e0d8280b026357f9ed36f723db"
+            },
+            {
+              "file": "enemy_1568_dirctr.png",
+              "externalRelativePath": "B09/source/main/enemy_1568_dirctr.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1568_dirctr/enemy_1568_dirctr.png",
+              "bytes": 141039,
+              "sha256": "586beccb49de148953705f14343acd8516e617c37f0ff7c32c4adebc72591967"
+            }
+          ],
+          "timedClips": 15,
+          "frames": 2051,
+          "pages": 89,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B10",
+      "cardId": "CARD_B10",
+      "name": "坎诺特",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E5%9D%8E%E8%AF%BA%E7%89%B9",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2036_syshop",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B10/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B10/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "dea61620939fe13a89c3578ca7487826d49b0696644372466ca5a3b14a0d3617",
+          "sourceAtlasManifestSha256": "55849279bb6b40766c704c79fa1611e563a2063942500f1f12e8ef17809d0444",
+          "sourceFiles": [
+            {
+              "file": "enemy_2036_syshop.skel",
+              "externalRelativePath": "B10/source/main/enemy_2036_syshop.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2036_syshop/enemy_2036_syshop.skel",
+              "bytes": 190175,
+              "sha256": "c571cd84e795ab6ef49402e62a96a92c49ba2205733baa7c2b882f8b24b59f54"
+            },
+            {
+              "file": "enemy_2036_syshop.atlas",
+              "externalRelativePath": "B10/source/main/enemy_2036_syshop.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2036_syshop/enemy_2036_syshop.atlas",
+              "bytes": 4828,
+              "sha256": "657ed1f65c359b9b12df85b63cb468862189e5f030cf032142bf5cccce07a3b6"
+            },
+            {
+              "file": "enemy_2036_syshop.png",
+              "externalRelativePath": "B10/source/main/enemy_2036_syshop.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2036_syshop/enemy_2036_syshop.png",
+              "bytes": 76674,
+              "sha256": "a34379f67b90e98394d9ea23a7126768fca9b713474059b835e589786683be29"
+            }
+          ],
+          "timedClips": 3,
+          "frames": 1634,
+          "pages": 67,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B11",
+      "cardId": "CARD_B11",
+      "name": "赫尔昏佐伦／巫王",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E8%B5%AB%E5%B0%94%E6%98%8F%E4%BD%90%E4%BC%A6%EF%BC%8C%E2%80%9C%E5%B7%AB%E7%8E%8B%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1548_ltniak",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B11/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B11/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "53efc1127f8e320b868a9539971ad51928a8daac17b6eec0c74b76697eba14db",
+          "sourceAtlasManifestSha256": "cacf8fb4d8bff66faa37a647b476fa304eb821563a0702fd15e870969a5d8d20",
+          "sourceFiles": [
+            {
+              "file": "enemy_1548_ltniak.skel",
+              "externalRelativePath": "B11/source/main/enemy_1548_ltniak.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1548_ltniak/enemy_1548_ltniak.skel",
+              "bytes": 1084381,
+              "sha256": "d0b5b8701c69f29e6a228f24c9393cdf31faf821fa2886bcd87acf34096f017a"
+            },
+            {
+              "file": "enemy_1548_ltniak.atlas",
+              "externalRelativePath": "B11/source/main/enemy_1548_ltniak.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1548_ltniak/enemy_1548_ltniak.atlas",
+              "bytes": 10570,
+              "sha256": "d7dccd39af5824f35bd3f404ccfc255e5cdf907629f612635393e8566787cd5b"
+            },
+            {
+              "file": "enemy_1548_ltniak.png",
+              "externalRelativePath": "B11/source/main/enemy_1548_ltniak.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1548_ltniak/enemy_1548_ltniak.png",
+              "bytes": 221607,
+              "sha256": "d55185d875b054c9ee46fca2ea7a78bad5a9a482009ceb54f93dedc94c87071e"
+            }
+          ],
+          "timedClips": 18,
+          "frames": 3092,
+          "pages": 131,
+          "zeroDurationStates": [
+            "A_Blink_Loop",
+            "A_Default",
+            "B_Blink_Loop",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B12",
+      "cardId": "CARD_B12",
+      "name": "“阿米娅”，炉芯终曲",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E9%98%BF%E7%B1%B3%E5%A8%85%E2%80%9D%EF%BC%8C%E7%82%89%E8%8A%AF%E7%BB%88%E6%9B%B2",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2092_skzamy",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B12/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B12/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "29ab056d288f04d8538b708621c7773909b3f8fd0ea06f33450872ab85c323be",
+          "sourceAtlasManifestSha256": "45396f2334e7536f44e118cc41b76fa8b831ad416cfc4887c2fdeafe17a3de70",
+          "sourceFiles": [
+            {
+              "file": "enemy_2092_skzamy.skel",
+              "externalRelativePath": "B12/source/main/enemy_2092_skzamy.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2092_skzamy/enemy_2092_skzamy.skel",
+              "bytes": 930480,
+              "sha256": "0f91c9c37b741a67bf5eb1d530f10d4a65c1d959950e9ff67bf9a84929eeff6f"
+            },
+            {
+              "file": "enemy_2092_skzamy.atlas",
+              "externalRelativePath": "B12/source/main/enemy_2092_skzamy.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2092_skzamy/enemy_2092_skzamy.atlas",
+              "bytes": 11345,
+              "sha256": "67ba8a850f81577b98ea68fbb01903ded545a88cdcbd44433e6a69278cd016b9"
+            },
+            {
+              "file": "enemy_2092_skzamy.png",
+              "externalRelativePath": "B12/source/main/enemy_2092_skzamy.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2092_skzamy/enemy_2092_skzamy.png",
+              "bytes": 240262,
+              "sha256": "dc18e308f1d7d884b61c8472fe59edb6c0c1636f66444a94307a911d2ad91767"
+            }
+          ],
+          "timedClips": 22,
+          "frames": 3047,
+          "pages": 134,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B13",
+      "cardId": "CARD_B13",
+      "name": "“圣徒”",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E5%9C%A3%E5%BE%92%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1567_pope",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B13/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B13/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "c1517fd5118b70434765644d1841b774bf75b8eed0714b0d297f3dbb29a753f9",
+          "sourceAtlasManifestSha256": "1de2a84b2957d576979cba56fd09dc7a7647c6e41e12027ddca038a5fe32f411",
+          "sourceFiles": [
+            {
+              "file": "enemy_1567_pope.skel",
+              "externalRelativePath": "B13/source/main/enemy_1567_pope.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1567_pope/enemy_1567_pope.skel",
+              "bytes": 977442,
+              "sha256": "5b6e998b2d140ad0cb8fe5cf272ef70ed6c01177fc8ad1394959ac354a2d0beb"
+            },
+            {
+              "file": "enemy_1567_pope.atlas",
+              "externalRelativePath": "B13/source/main/enemy_1567_pope.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1567_pope/enemy_1567_pope.atlas",
+              "bytes": 17105,
+              "sha256": "031ea7323d8cc84fb797c05b20c8666533fbeea20ceea8a9b65161a32b3657f3"
+            },
+            {
+              "file": "enemy_1567_pope.png",
+              "externalRelativePath": "B13/source/main/enemy_1567_pope.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1567_pope/enemy_1567_pope.png",
+              "bytes": 426803,
+              "sha256": "e26cf09d6dcf2aa621732dd0a8b715719e247c7d7270b1523a87cf8c283da1bb"
+            }
+          ],
+          "timedClips": 28,
+          "frames": 2658,
+          "pages": 180,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default_1",
+            "B_Default_2"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B14",
+      "cardId": "CARD_B14",
+      "name": "卡德霍，黑流之源",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E5%8D%A1%E5%BE%B7%E9%9C%8D%EF%BC%8C%E9%BB%91%E6%B5%81%E4%B9%8B%E6%BA%90",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2145_cadejo",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B14/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B14/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "e6159b3a7cdb3a63441a81be3712261ad76e66404b657c8d6390e5734d0590cb",
+          "sourceAtlasManifestSha256": "0bfa7e842f83f9090a8ae9423a2ffff6f3265fa919993ba19a472e4a8bc35308",
+          "sourceFiles": [
+            {
+              "file": "enemy_2145_cadejo.skel",
+              "externalRelativePath": "B14/source/main/enemy_2145_cadejo.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.skel",
+              "bytes": 249350,
+              "sha256": "679f8db87ee7c1fa37780356d2653c677de99923525dd05e79a24a07c4adda82"
+            },
+            {
+              "file": "enemy_2145_cadejo.atlas",
+              "externalRelativePath": "B14/source/main/enemy_2145_cadejo.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.atlas",
+              "bytes": 4822,
+              "sha256": "ca0f933e58190c7ff7c48efb5f6f5d8a54c7f87cde876cb221c89855b5428777"
+            },
+            {
+              "file": "enemy_2145_cadejo.png",
+              "externalRelativePath": "B14/source/main/enemy_2145_cadejo.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.png",
+              "bytes": 205466,
+              "sha256": "fa86cbb408adfbbdebcf80d5914b89372dfe46cfe72e3ac466d1b9b884bce81a"
+            }
+          ],
+          "timedClips": 9,
+          "frames": 728,
+          "pages": 33,
+          "zeroDurationStates": [
+            "Default",
+            "Skill_2_Loop"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B15",
+      "cardId": "CARD_B15",
+      "name": "最后的圣愚",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E6%9C%80%E5%90%8E%E7%9A%84%E5%9C%A3%E6%84%9A",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1603_hlystp",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B15/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B15/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "620f9d9201c306471f5babbf4b0d823c116375c5cbd19394305c0efc74899c37",
+          "sourceAtlasManifestSha256": "3b20265d28edc36799122623e93ac483c7f2eb551d7283fcf4d8e88d0927e72b",
+          "sourceFiles": [
+            {
+              "file": "enemy_1603_hlystp.skel",
+              "externalRelativePath": "B15/source/main/enemy_1603_hlystp.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1603_hlystp/enemy_1603_hlystp.skel",
+              "bytes": 745129,
+              "sha256": "690bbfb769c4f177d63729a25dfc7d8c449c7d5395a84afe2b66c5adbe9993c9"
+            },
+            {
+              "file": "enemy_1603_hlystp.atlas",
+              "externalRelativePath": "B15/source/main/enemy_1603_hlystp.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1603_hlystp/enemy_1603_hlystp.atlas",
+              "bytes": 12528,
+              "sha256": "c342c9552e91f578f5f4bfd9d3d6e39bdb5896ed6f4fa95813380576b42b013d"
+            },
+            {
+              "file": "enemy_1603_hlystp.png",
+              "externalRelativePath": "B15/source/main/enemy_1603_hlystp.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1603_hlystp/enemy_1603_hlystp.png",
+              "bytes": 169699,
+              "sha256": "1a6d0988758d363067c8545a90d134578a3b53fb56f3fc1ff7acd112faadb705"
+            }
+          ],
+          "timedClips": 12,
+          "frames": 2489,
+          "pages": 105,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B16",
+      "cardId": "CARD_TALULAH_TRIAL",
+      "name": "塔露拉",
+      "selectedVersion": "塔露拉／旧“不死的黑蛇”敌方模型（enemy_1515_bsnake）",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E4%B8%8D%E6%AD%BB%E7%9A%84%E9%BB%91%E8%9B%87%E2%80%9D",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1515_bsnake",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B16/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B16/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "74a4a4aec8568a8fcc3ef10644bebcfcfc38a34547213a498fcb20b8a8ff6895",
+          "sourceAtlasManifestSha256": "25ef02211a00f67bea22dd48aeb244d6f418103a029b40582ec414e9da23f6b2",
+          "sourceFiles": [
+            {
+              "file": "enemy_1515_bsnake.skel",
+              "externalRelativePath": "B16/source/main/enemy_1515_bsnake.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1515_bsnake/enemy_1515_bsnake.skel",
+              "bytes": 2480297,
+              "sha256": "b9ef67cf710d1a78697240fc89aaf29c084f66694a74ef6ce1d73c3e440ccd62"
+            },
+            {
+              "file": "enemy_1515_bsnake.atlas",
+              "externalRelativePath": "B16/source/main/enemy_1515_bsnake.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1515_bsnake/enemy_1515_bsnake.atlas",
+              "bytes": 14074,
+              "sha256": "de4eded6ae4a57e4eceb29aada78575bbcbcb0e6a80213d1367534dad22e4d75"
+            },
+            {
+              "file": "enemy_1515_bsnake.png",
+              "externalRelativePath": "B16/source/main/enemy_1515_bsnake.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1515_bsnake/enemy_1515_bsnake.png",
+              "bytes": 98268,
+              "sha256": "7d8593137bd2cbbbfcd6297e50ac278652a7b97537100d7cecd9c28f5429a467"
+            }
+          ],
+          "timedClips": 16,
+          "frames": 3410,
+          "pages": 143,
+          "zeroDurationStates": [
+            "Default",
+            "Reborn_1_Idle",
+            "Reborn_2_Idle"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B17",
+      "cardId": "CARD_M20",
+      "name": "爱国者",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E7%88%B1%E5%9B%BD%E8%80%85",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1506_patrt",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B17/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B17/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "a672c091dd55c9b2e0ab09433cfc4e9ed4ac6bb5064b48f19a4e53a5970ffa0a",
+          "sourceAtlasManifestSha256": "56a6dd0473d66226545e5dc703518f996f6fcf16cdc8afc94e66953717459cf5",
+          "sourceFiles": [
+            {
+              "file": "enemy_1506_patrt.skel",
+              "externalRelativePath": "B17/source/main/enemy_1506_patrt.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.skel",
+              "bytes": 433473,
+              "sha256": "93940c09827c7f45649b72a27c3dff5f061ae9e110087aaf453d6f046568daf0"
+            },
+            {
+              "file": "enemy_1506_patrt.atlas",
+              "externalRelativePath": "B17/source/main/enemy_1506_patrt.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.atlas",
+              "bytes": 3195,
+              "sha256": "cd23d92b89a8d387d7c1a5b998665973ba0be39427f577319b07f33957163e19"
+            },
+            {
+              "file": "enemy_1506_patrt.png",
+              "externalRelativePath": "B17/source/main/enemy_1506_patrt.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1506_patrt/enemy_1506_patrt.png",
+              "bytes": 97767,
+              "sha256": "ccb07c3c9b6aeb2516ccd3fc1365ed276560989c31cfc218a8639dd0affa53d5"
+            }
+          ],
+          "timedClips": 11,
+          "frames": 1494,
+          "pages": 64,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B18",
+      "cardId": "CARD_M14",
+      "name": "霜星",
+      "selectedVersion": "霜星，“冬痕”（enemy_1510_frstar2）",
+      "referenceUrl": "https://prts.wiki/w/%E9%9C%9C%E6%98%9F%EF%BC%8C%E2%80%9C%E5%86%AC%E7%97%95%E2%80%9D",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1510_frstar2",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B18/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B18/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "0164b04c4e4c42a7c4fbd3b136e43a1bd0f206a0612f66c5cefa97b1acc1d69b",
+          "sourceAtlasManifestSha256": "e99eb94e19e6500ad52890d164d7e23dc6944a37c77cb447efbe0b0ec56a62db",
+          "sourceFiles": [
+            {
+              "file": "enemy_1510_frstar2.skel",
+              "externalRelativePath": "B18/source/main/enemy_1510_frstar2.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1510_frstar2/enemy_1510_frstar2.skel",
+              "bytes": 207109,
+              "sha256": "4e8947287e3b569979ff92514865290ecf43f10df0098357fa61eeda3fe45cc5"
+            },
+            {
+              "file": "enemy_1510_frstar2.atlas",
+              "externalRelativePath": "B18/source/main/enemy_1510_frstar2.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1510_frstar2/enemy_1510_frstar2.atlas",
+              "bytes": 5840,
+              "sha256": "1ac80951bd9f32088198878450087e62b7eca9100be86fa341d7741985ba36d2"
+            },
+            {
+              "file": "enemy_1510_frstar2.png",
+              "externalRelativePath": "B18/source/main/enemy_1510_frstar2.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1510_frstar2/enemy_1510_frstar2.png",
+              "bytes": 88330,
+              "sha256": "8c683cb2e6acdbcff8f17d318592c106c759d54c3b5dc95076765a9bd7203716"
+            }
+          ],
+          "timedClips": 7,
+          "frames": 1595,
+          "pages": 66,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B19",
+      "cardId": "CARD_M28",
+      "name": "泥岩",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E6%B3%A5%E5%B2%A9%28%E6%95%8C%E6%96%B9%29",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1511_mdrock",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B19/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B19/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "ffa671e5ba5d2c8857a1831727bebe48921479bb20649a87fdb6de97e310b935",
+          "sourceAtlasManifestSha256": "e197e532ecfab3f15b8206b1987d2e9822d5e3660235d3a2b608f429c7a18f81",
+          "sourceFiles": [
+            {
+              "file": "enemy_1511_mdrock.skel",
+              "externalRelativePath": "B19/source/main/enemy_1511_mdrock.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.skel",
+              "bytes": 140340,
+              "sha256": "8e81c6eabdd885a0d1daf08c2aa7c78ff83f7d857bafe7671b83b81c01e8ff06"
+            },
+            {
+              "file": "enemy_1511_mdrock.atlas",
+              "externalRelativePath": "B19/source/main/enemy_1511_mdrock.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.atlas",
+              "bytes": 4564,
+              "sha256": "2d06685948ea9db1f008d6b1a9791b2816fb5d7c44edfcd60f7b03ecec5f51d3"
+            },
+            {
+              "file": "enemy_1511_mdrock.png",
+              "externalRelativePath": "B19/source/main/enemy_1511_mdrock.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.png",
+              "bytes": 80806,
+              "sha256": "03d3577221e00fca5bc81add8ef221bcbe4dc00068cc103e04386fe238943164"
+            }
+          ],
+          "timedClips": 7,
+          "frames": 860,
+          "pages": 38,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B20",
+      "cardId": "CARD_WISADEL_APRIL",
+      "name": "维维美",
+      "selectedVersion": "维什戴尔“超新星”（sale_14），正面与背面",
+      "referenceUrl": "https://prts.wiki/w/%E7%BB%B4%E4%BB%80%E6%88%B4%E5%B0%94",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "views": [
+        {
+          "view": "front",
+          "modelId": "char_1035_wisdel_sale_14",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B20/front/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B20/front/SOURCE-RECORD.json",
+          "sourceRecordSha256": "4866b451e1b261e6db93e3fbcc48c8db78195eff9cdb67ededf2742c109be5a8",
+          "sourceAtlasManifestSha256": "cda7714bf8873b23c3c319f2f405f4f4c56cd8df9fa042be45b467cd292ffec9",
+          "sourceFiles": [
+            {
+              "file": "char_1035_wisdel_sale_14.skel",
+              "externalRelativePath": "B20/source/front/char_1035_wisdel_sale_14.skel",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.skel",
+              "bytes": 2229675,
+              "sha256": "a8b1e26f44c7ae00272d36303bbe9e7de3a44b4ce8044407aa606936d37eaab2"
+            },
+            {
+              "file": "char_1035_wisdel_sale_14.atlas",
+              "externalRelativePath": "B20/source/front/char_1035_wisdel_sale_14.atlas",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.atlas",
+              "bytes": 17513,
+              "sha256": "305f398551ff5fc473c69afd9f052e78f001c520ec757a09996b6dc895ba9a67"
+            },
+            {
+              "file": "char_1035_wisdel_sale_14.png",
+              "externalRelativePath": "B20/source/front/char_1035_wisdel_sale_14.png",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.png",
+              "bytes": 223967,
+              "sha256": "251fe844d97c15c36110e287c6c6f64f18b5e0884caa9c8ef70a13cbb252ef54"
+            }
+          ],
+          "timedClips": 25,
+          "frames": 4769,
+          "pages": 210,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        },
+        {
+          "view": "back",
+          "modelId": "char_1035_wisdel_sale_14",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B20/back/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B20/back/SOURCE-RECORD.json",
+          "sourceRecordSha256": "a418dd1b5f6232be6b29d5a9c94c1db4be9272c561defe208e146330c9303991",
+          "sourceAtlasManifestSha256": "4e8a9524c670d1642069ca4d1ac3a7e1f15b5539643c05077184b656c9c6b828",
+          "sourceFiles": [
+            {
+              "file": "char_1035_wisdel_sale_14.skel",
+              "externalRelativePath": "B20/source/back/char_1035_wisdel_sale_14.skel",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.skel",
+              "bytes": 1136897,
+              "sha256": "8c68d8741f6d846ea56e565f804f218792520d82a8664396a726f5500656f116"
+            },
+            {
+              "file": "char_1035_wisdel_sale_14.atlas",
+              "externalRelativePath": "B20/source/back/char_1035_wisdel_sale_14.atlas",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.atlas",
+              "bytes": 12695,
+              "sha256": "4d9055c14897ef2dda8bd19eae7004c2fd011221961f3d4c0871b219adf8c574"
+            },
+            {
+              "file": "char_1035_wisdel_sale_14.png",
+              "externalRelativePath": "B20/source/back/char_1035_wisdel_sale_14.png",
+              "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.png",
+              "bytes": 201112,
+              "sha256": "96ff38f483061ed6f3091e152fc7bebdc0174ce6dbbc2b97880dd400254634e2"
+            }
+          ],
+          "timedClips": 17,
+          "frames": 2491,
+          "pages": 112,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B21",
+      "cardId": "CARD_B21",
+      "name": "“岁”（界园版）",
+      "selectedVersion": "“岁”（界园版，enemy_2119_dyshhj）",
+      "referenceUrl": "https://prts.wiki/w/%E2%80%9C%E5%B2%81%E2%80%9D",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2119_dyshhj",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B21/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B21/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "0f9501db62fc5bdb64d3b18b4c2ba5284948f8f9549d97d06ac4b2a9161b2563",
+          "sourceAtlasManifestSha256": "f1c5cd1fc98c223b64c952b1c675b19fe6ae489a623969d46993af047b9adaed",
+          "sourceFiles": [
+            {
+              "file": "enemy_2119_dyshhj.skel",
+              "externalRelativePath": "B21/source/main/enemy_2119_dyshhj.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2119_dyshhj/enemy_2119_dyshhj.skel",
+              "bytes": 451984,
+              "sha256": "6d84cbf9e713191e9614395ac99946f9605715fb2f7b97ea431117fdc5a41eca"
+            },
+            {
+              "file": "enemy_2119_dyshhj.atlas",
+              "externalRelativePath": "B21/source/main/enemy_2119_dyshhj.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2119_dyshhj/enemy_2119_dyshhj.atlas",
+              "bytes": 3578,
+              "sha256": "8900a42139fc82a71fa0a10538f9c92d3d539357ac94903d95f9f2800baa409a"
+            },
+            {
+              "file": "enemy_2119_dyshhj.png",
+              "externalRelativePath": "B21/source/main/enemy_2119_dyshhj.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2119_dyshhj/enemy_2119_dyshhj.png",
+              "bytes": 793730,
+              "sha256": "f09a72726f3b7d5496627009c8747b214b318487a287d2a0a4ccbd4e9a3c0833"
+            }
+          ],
+          "timedClips": 19,
+          "frames": 2116,
+          "pages": 141,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [
+            "Idle"
+          ],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B22",
+      "cardId": "CARD_B22",
+      "name": "狂躁异质裂兽",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E7%8B%82%E8%BA%81%E5%BC%82%E8%B4%A8%E8%A3%82%E5%85%BD",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1571_mirbst",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B22/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B22/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "9f1d783bade6f89def6b28ab1e2cd8a4c39e291d7d3a1315b37c2bdc89549fe6",
+          "sourceAtlasManifestSha256": "9a3052ece2f0707870e5e2524e132f37075028889a6361594e6ba41df9457a42",
+          "sourceFiles": [
+            {
+              "file": "enemy_1571_mirbst.skel",
+              "externalRelativePath": "B22/source/main/enemy_1571_mirbst.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1571_mirbst/enemy_1571_mirbst.skel",
+              "bytes": 1032181,
+              "sha256": "f8fe9ac73e2f653fa40abe059ecd223db301561a831153cbf12bb5c79bbaee39"
+            },
+            {
+              "file": "enemy_1571_mirbst.atlas",
+              "externalRelativePath": "B22/source/main/enemy_1571_mirbst.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1571_mirbst/enemy_1571_mirbst.atlas",
+              "bytes": 4936,
+              "sha256": "1ff1f010b738ff9dc632e0dc6be10d6b076126f446f8345adb6e2809d4aec1bc"
+            },
+            {
+              "file": "enemy_1571_mirbst.png",
+              "externalRelativePath": "B22/source/main/enemy_1571_mirbst.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1571_mirbst/enemy_1571_mirbst.png",
+              "bytes": 154077,
+              "sha256": "2028274ed55afd59155b91c49e49774f0c47befcf211ee5da111d567bf1af5b4"
+            }
+          ],
+          "timedClips": 9,
+          "frames": 2089,
+          "pages": 89,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B23",
+      "cardId": "CARD_B23",
+      "name": "安纳斯塔西奥，赎罪者",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E5%AE%89%E7%BA%B3%E6%96%AF%E5%A1%94%E8%A5%BF%E5%A5%A5%EF%BC%8C%E8%B5%8E%E7%BD%AA%E8%80%85",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1561_crzjdg",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B23/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B23/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "f34edd454badde1649e5a7a1bb504185d2c4e7650fcf7bddcd89f679c83fbdc7",
+          "sourceAtlasManifestSha256": "51dc8661747450b38180600b474385d9af7c572c66d07e73075a4ca224e876b7",
+          "sourceFiles": [
+            {
+              "file": "enemy_1561_crzjdg.skel",
+              "externalRelativePath": "B23/source/main/enemy_1561_crzjdg.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1561_crzjdg/enemy_1561_crzjdg.skel",
+              "bytes": 591241,
+              "sha256": "cb51d9a076828079457e51e4ecf8f4486a0ca994ab9b585e720cc4de950f2e32"
+            },
+            {
+              "file": "enemy_1561_crzjdg.atlas",
+              "externalRelativePath": "B23/source/main/enemy_1561_crzjdg.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1561_crzjdg/enemy_1561_crzjdg.atlas",
+              "bytes": 7257,
+              "sha256": "376fd2a555ab8aee828d5e15628c31f0ea9aa8efbcc10e3f97ff54486a1231d9"
+            },
+            {
+              "file": "enemy_1561_crzjdg.png",
+              "externalRelativePath": "B23/source/main/enemy_1561_crzjdg.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1561_crzjdg/enemy_1561_crzjdg.png",
+              "bytes": 146917,
+              "sha256": "9b457e828845a5c458a827c16a2334459d60229daf815f3aab68f307f1585a3d"
+            }
+          ],
+          "timedClips": 23,
+          "frames": 2034,
+          "pages": 93,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B24",
+      "cardId": "CARD_B24",
+      "name": "不死的黑蛇（2026版）",
+      "selectedVersion": "不死的黑蛇（2026版，enemy_1602_blksnk）",
+      "referenceUrl": "https://prts.wiki/w/%E4%B8%8D%E6%AD%BB%E7%9A%84%E9%BB%91%E8%9B%87",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1602_blksnk",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B24/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B24/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "57098b7a3200fc01d20a26fd09620ef3f6a9f044d0e6a888838ac9dadf4de1b5",
+          "sourceAtlasManifestSha256": "b4cc4abb25d20ca218002da3da7771c7ab0750a563ed010905a9ed538d1850d3",
+          "sourceFiles": [
+            {
+              "file": "enemy_1602_blksnk.skel",
+              "externalRelativePath": "B24/source/main/enemy_1602_blksnk.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1602_blksnk/enemy_1602_blksnk.skel",
+              "bytes": 493382,
+              "sha256": "c4908270c9e36fd0ec37376b680e5654b6309e4353a3264e166cd2c2e0abfc80"
+            },
+            {
+              "file": "enemy_1602_blksnk.atlas",
+              "externalRelativePath": "B24/source/main/enemy_1602_blksnk.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1602_blksnk/enemy_1602_blksnk.atlas",
+              "bytes": 6768,
+              "sha256": "4b5348215ac43affe3b958cf473c8b7d72f9721ebacee5e70826c4a7a311644d"
+            },
+            {
+              "file": "enemy_1602_blksnk.png",
+              "externalRelativePath": "B24/source/main/enemy_1602_blksnk.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1602_blksnk/enemy_1602_blksnk.png",
+              "bytes": 112193,
+              "sha256": "8c33e410cbca6dcdf1eeb2b65c7f98b2bc10d533a51657e678f0bb40b6464f28"
+            }
+          ],
+          "timedClips": 12,
+          "frames": 2415,
+          "pages": 104,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B25",
+      "cardId": "CARD_B25",
+      "name": "圣徒瓦列里奥",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_1594_presaint",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B25/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B25/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "b7b18b93d80dd886af17c54ce14cd88f8ef1375d0b988311c55b556d1be96b47",
+          "sourceAtlasManifestSha256": "cc55e616663df7456e2a959724829a6116eddb345bc2703ff6d5a483c1cfd535",
+          "sourceFiles": [
+            {
+              "file": "enemy_1594_presaint.skel",
+              "externalRelativePath": "B25/source/main/enemy_1594_presaint.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1594_presaint/enemy_1594_presaint.skel",
+              "bytes": 952325,
+              "sha256": "cddb886dc462546b9ed7f48e7944e8b89199bf450386231cb2114be8e1bec708"
+            },
+            {
+              "file": "enemy_1594_presaint.atlas",
+              "externalRelativePath": "B25/source/main/enemy_1594_presaint.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1594_presaint/enemy_1594_presaint.atlas",
+              "bytes": 6432,
+              "sha256": "5c3a19182cab03cd5c1167879e40db31088864e60c64af3fe4476b3e95a18431"
+            },
+            {
+              "file": "enemy_1594_presaint.png",
+              "externalRelativePath": "B25/source/main/enemy_1594_presaint.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1594_presaint/enemy_1594_presaint.png",
+              "bytes": 164895,
+              "sha256": "a5c3307930fe70954341dc62c9b3750968b2885f62aedef4765e4041d905f8e0"
+            }
+          ],
+          "timedClips": 31,
+          "frames": 2533,
+          "pages": 120,
+          "zeroDurationStates": [
+            "A_Default",
+            "B_Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "B26",
+      "cardId": "CARD_B26",
+      "name": "易",
+      "selectedVersion": "该敌方原模型；Spine skin=default",
+      "referenceUrl": "https://prts.wiki/w/%E6%98%93",
+      "role": "NEW_BOSS_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2118_dylbhm",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/B26/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/B26/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "628989fa3dc6b5baeba1dc9cabf7f2978e4a232983e4143a301b6cc401fb0c0f",
+          "sourceAtlasManifestSha256": "01ac489333d62ba251b1e7341a86e091dc73f08f4faf46d288506f9bde9fa0e6",
+          "sourceFiles": [
+            {
+              "file": "enemy_2118_dylbhm.skel",
+              "externalRelativePath": "B26/source/main/enemy_2118_dylbhm.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2118_dylbhm/enemy_2118_dylbhm.skel",
+              "bytes": 449523,
+              "sha256": "65cd078831caf1978b43f645aa97db2e65c099f5d89282d9478a11226fe32fa6"
+            },
+            {
+              "file": "enemy_2118_dylbhm.atlas",
+              "externalRelativePath": "B26/source/main/enemy_2118_dylbhm.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2118_dylbhm/enemy_2118_dylbhm.atlas",
+              "bytes": 8363,
+              "sha256": "4acb47bba3690d088bca12c36c3a989a97945ab5474c3cfc8ee3144669adf848"
+            },
+            {
+              "file": "enemy_2118_dylbhm.png",
+              "externalRelativePath": "B26/source/main/enemy_2118_dylbhm.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2118_dylbhm/enemy_2118_dylbhm.png",
+              "bytes": 137462,
+              "sha256": "ac0dfd0a7c38916eb3f7e78a3f29d72bcf39f62d60e7bf11305490159be2a764"
+            }
+          ],
+          "timedClips": 12,
+          "frames": 1366,
+          "pages": 60,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    }
+  ],
+  "auxiliaries": [
+    {
+      "task": "P12I",
+      "cardId": "AUX_P12I",
+      "name": "仅剩的创意",
+      "selectedVersion": "B12 仅剩的创意；独立原身体",
+      "referenceUrl": "https://prts.wiki/w/仅剩的创意/spine",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2094_skzamb",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P12I/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P12I/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "747881a793304e9f8c5576b36910aa61c4fcb0af53709cec7a8a714af8d9ce4e",
+          "sourceAtlasManifestSha256": "af00ca66381e3673e64b6dec062a9de8d71c6779f53990089aed52e546b3777f",
+          "sourceFiles": [
+            {
+              "file": "enemy_2094_skzamb.skel",
+              "externalRelativePath": "native-fx/runtime-additions/Idea/source/enemy_2094_skzamb.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2094_skzamb/enemy_2094_skzamb.skel",
+              "bytes": 40017,
+              "sha256": "522a1fc817f015dec9e9773d335856f8295b7e9c9642f0aa6e31fe6e8630a6ba"
+            },
+            {
+              "file": "enemy_2094_skzamb.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/Idea/source/enemy_2094_skzamb.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2094_skzamb/enemy_2094_skzamb.atlas",
+              "bytes": 1190,
+              "sha256": "b693db9ec49e5cf78506e71a84e5ed58ccf2297226cdc85064d383e8fc4c70cd"
+            },
+            {
+              "file": "enemy_2094_skzamb.png",
+              "externalRelativePath": "native-fx/runtime-additions/Idea/source/enemy_2094_skzamb.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2094_skzamb/enemy_2094_skzamb.png",
+              "bytes": 16376,
+              "sha256": "0d58edff206f392fffd364d92aab0c6a85f3f616f287aca3697542c95af4c517"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 491,
+          "pages": 22,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P14",
+      "cardId": "AUX_P14",
+      "name": "卡德霍·痛楚化身",
+      "selectedVersion": "B14 痛楚化身；保留独立原身体",
+      "referenceUrl": "https://prts.wiki/w/%E7%97%9B%E6%A5%9A%E5%8C%96%E8%BA%AB",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2146_cadesd",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P14/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P14/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "e398bc9d3c92f887aee0da86af0e69611caaa55c368bca1a632afd73e1a19820",
+          "sourceAtlasManifestSha256": "a76fada355a025825ecc99a2b9fe5afc56dc94e27ad8a6c8a310c5441a70c7d3",
+          "sourceFiles": [
+            {
+              "file": "enemy_2146_cadesd.skel",
+              "externalRelativePath": "auxiliary/P14/source/main/enemy_2146_cadesd.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2146_cadesd/enemy_2146_cadesd.skel",
+              "bytes": 248333,
+              "sha256": "be2e60eea0593ea3ecc03c073ea685c16fd09b3a4e545915f67999e3ed6cc53f"
+            },
+            {
+              "file": "enemy_2146_cadesd.atlas",
+              "externalRelativePath": "auxiliary/P14/source/main/enemy_2146_cadesd.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2146_cadesd/enemy_2146_cadesd.atlas",
+              "bytes": 4623,
+              "sha256": "ee48e127205fad40f7efd80cdaf951c8b6b847670e71805865c127f1d5c7a859"
+            },
+            {
+              "file": "enemy_2146_cadesd.png",
+              "externalRelativePath": "auxiliary/P14/source/main/enemy_2146_cadesd.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2146_cadesd/enemy_2146_cadesd.png",
+              "bytes": 294652,
+              "sha256": "b69b0a6423d5d762f3fe927d497b13456dc69965337be042d3287db07cb55137"
+            }
+          ],
+          "timedClips": 8,
+          "frames": 828,
+          "pages": 37,
+          "zeroDurationStates": [
+            "Default",
+            "Skill_2_Loop"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P14H",
+      "cardId": "AUX_P14H",
+      "name": "卡德霍·猎犬proto",
+      "selectedVersion": "B14 猎犬proto；Skill_Loop为原透明等待，附着由独立原FX呈现",
+      "referenceUrl": "https://prts.wiki/w/猎犬proto/spine",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2137_shsdgo",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P14H/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P14H/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "665e9f405ef678f69c3bb803dba570938125b54b96bad45f40195d7e2c3599a6",
+          "sourceAtlasManifestSha256": "4fd9719d4252572aa3ef5364023a3e30427047f310a103738509d6b825035d84",
+          "sourceFiles": [
+            {
+              "file": "enemy_2137_shsdgo.skel",
+              "externalRelativePath": "native-fx/runtime-additions/HoundProto/source/enemy_2137_shsdgo.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2137_shsdgo/enemy_2137_shsdgo.skel",
+              "bytes": 74144,
+              "sha256": "315b2fdf20a4219d98d0619500c6c1596fad7f1d17822c722ab9b7e81209d2e1"
+            },
+            {
+              "file": "enemy_2137_shsdgo.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/HoundProto/source/enemy_2137_shsdgo.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2137_shsdgo/enemy_2137_shsdgo.atlas",
+              "bytes": 2917,
+              "sha256": "2c4a53a237fa16ab7255bd0e51aec200c5a2ab2f95e92f63026fceb6830fde8e"
+            },
+            {
+              "file": "enemy_2137_shsdgo.png",
+              "externalRelativePath": "native-fx/runtime-additions/HoundProto/source/enemy_2137_shsdgo.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2137_shsdgo/enemy_2137_shsdgo.png",
+              "bytes": 111011,
+              "sha256": "949708ce9f4ae9c59294f5f979abb0b896505e3f83b4481f583ecd59bba9765a"
+            }
+          ],
+          "timedClips": 7,
+          "frames": 900,
+          "pages": 40,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [
+            "Skill_Loop"
+          ],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P15C",
+      "cardId": "AUX_P15C",
+      "name": "惘核（OB19）",
+      "selectedVersion": "B15 时间啊，向前！OB19版惘核；不是第十六章同名enemy_10128_fearpj",
+      "referenceUrl": "https://prts.wiki/w/“惘核”(OB19)/spine",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_10262_dsjred",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P15C/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P15C/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "9632ffe90ecf4611f8c4e4b40e863e1922455d3b7c13217199dde475f0c627bd",
+          "sourceAtlasManifestSha256": "cc6262c44256382405b7d536455d7f53a0f4497d8897cad28c775e5f84d59094",
+          "sourceFiles": [
+            {
+              "file": "enemy_10262_dsjred.skel",
+              "externalRelativePath": "native-fx/runtime-additions/CoreRed/source/enemy_10262_dsjred.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10262_dsjred/enemy_10262_dsjred.skel",
+              "bytes": 17201,
+              "sha256": "9dfea26e0963a91d90e11a595b76a1346328480827a1d6467f445b2906fba972"
+            },
+            {
+              "file": "enemy_10262_dsjred.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/CoreRed/source/enemy_10262_dsjred.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10262_dsjred/enemy_10262_dsjred.atlas",
+              "bytes": 1523,
+              "sha256": "8dc19edfb6c39a5474592760a9cd5ee63218e2446460945661b6138653d1ee73"
+            },
+            {
+              "file": "enemy_10262_dsjred.png",
+              "externalRelativePath": "native-fx/runtime-additions/CoreRed/source/enemy_10262_dsjred.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10262_dsjred/enemy_10262_dsjred.png",
+              "bytes": 7286,
+              "sha256": "97459c79e37e0af684babdd79fe63e8d9414f8f8350708f36741928a0ab27a36"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 201,
+          "pages": 10,
+          "zeroDurationStates": [
+            "Default",
+            "Die_2"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P20",
+      "cardId": "AUX_P20",
+      "name": "维维美·魂灵之影",
+      "selectedVersion": "B20 超新星对应魂灵sale#14；不是维维美本体复制",
+      "referenceUrl": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/skinpack_token_10035_wisdel_wward.dat",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "token_10035_wisdel_wward_sale#14",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P20/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P20/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "8e0623768ab19aa54396043815c82a60b8e98b293f39d57e44f45aacfcef0b8b",
+          "sourceAtlasManifestSha256": "ecc6b3e53b9211ed4b107cc420cc9a5ae3713739da70b4930b9d9330655c40c6",
+          "sourceFiles": [
+            {
+              "file": "token_10035_wisdel_wward_sale#14.skel",
+              "externalRelativePath": "native-fx/runtime-additions/Wward/source/token_10035_wisdel_wward_sale#14.skel",
+              "url": null,
+              "bytes": 3797,
+              "sha256": "73dd2031b249d95bac18aa810172d05b03d4210f6d98327d6cefb04e2fd75c89"
+            },
+            {
+              "file": "token_10035_wisdel_wward_sale#14.png",
+              "externalRelativePath": "native-fx/runtime-additions/Wward/source/token_10035_wisdel_wward_sale#14.png",
+              "url": null,
+              "bytes": 19146,
+              "sha256": "00e84e9afab406eb496379b68aa1e75587641a4d98933ab83f9d54b9fcf0cf65"
+            },
+            {
+              "file": "token_10035_wisdel_wward_sale#14.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/Wward/source/token_10035_wisdel_wward_sale#14.atlas",
+              "url": null,
+              "bytes": 200,
+              "sha256": "508a7911d16232b54804fb407bfff25a6e597ea92188430e1b09b52ab956209e"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 366,
+          "pages": 16,
+          "zeroDurationStates": [],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN",
+          "captureAlphaSampling": {
+            "sourceMaterial": {
+              "pmaVertexColors": 1,
+              "StraightAlphaInput": 0,
+              "UseBleed": 1,
+              "UseAlphaTex": 0,
+              "slotBlendModes": [
+                0
+              ]
+            },
+            "selected": "GPU_UPLOAD_PREMULTIPLICATION_FOR_DECODED_UNITY_TRANSPARENT_BLEED",
+            "sourcePngUnmodified": true,
+            "oldPmaVsStraight": {
+              "changedPixels": 27576,
+              "totalChannelDifference": 2811195,
+              "maxPixelDifference": 765
+            },
+            "straightVsUploadPremultiplied": {
+              "changedPixels": 13945,
+              "totalChannelDifference": 347483,
+              "maxPixelDifference": 221
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24D",
+      "cardId": "AUX_P24D",
+      "name": "殆因",
+      "selectedVersion": "B24 殆因；独立原身体",
+      "referenceUrl": "https://prts.wiki/w/“殆因”/spine",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_10263_dsjblk",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P24D/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P24D/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "75589b5487e4b8169b5e4ab157e9c62fb8c5c0089bcaf0fac8fc0a6ed9cddfa1",
+          "sourceAtlasManifestSha256": "21b6183ddcd3d8acd7b5cef06272ee54c581f51fc7ed164ae5f99aacf63136d4",
+          "sourceFiles": [
+            {
+              "file": "enemy_10263_dsjblk.skel",
+              "externalRelativePath": "native-fx/runtime-additions/CoreBlack/source/enemy_10263_dsjblk.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.skel",
+              "bytes": 28539,
+              "sha256": "4780b9b8aa05a4b64deecdd48a8f90b8e893a65e8c771ea4ffdd4bbbade8db23"
+            },
+            {
+              "file": "enemy_10263_dsjblk.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/CoreBlack/source/enemy_10263_dsjblk.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.atlas",
+              "bytes": 841,
+              "sha256": "54b34287a7819d107140a2503b7c1097d73dd24d7253052bc02b957e2d7ee7f3"
+            },
+            {
+              "file": "enemy_10263_dsjblk.png",
+              "externalRelativePath": "native-fx/runtime-additions/CoreBlack/source/enemy_10263_dsjblk.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.png",
+              "bytes": 6937,
+              "sha256": "a38d3659981b91e7c3cfe41d5620cd8555c935b403a37855b688b52c1cb41da5"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 201,
+          "pages": 10,
+          "zeroDurationStates": [
+            "Default",
+            "Die_2"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P25M",
+      "cardId": "AUX_P25M",
+      "name": "塑能基质",
+      "selectedVersion": "B25 塑能基质；独立原身体",
+      "referenceUrl": "https://prts.wiki/w/塑能基质/spine",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_10212_klhz",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P25M/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P25M/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "23f80bf310746be5cac4894b8ada80928a2a239dcfc6e82278a73d825f83e33c",
+          "sourceAtlasManifestSha256": "d0d6d583f74622e0e3784e22fe75610163c434ee04f9e3fa96b5d2fa5f7b20d4",
+          "sourceFiles": [
+            {
+              "file": "enemy_10212_klhz.skel",
+              "externalRelativePath": "native-fx/runtime-additions/Matrix/source/enemy_10212_klhz.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10212_klhz/enemy_10212_klhz.skel",
+              "bytes": 19351,
+              "sha256": "0e12156a3233da5264c4a7df1b6bd4e67a4312dedf85a76943e0289810eae6bd"
+            },
+            {
+              "file": "enemy_10212_klhz.atlas",
+              "externalRelativePath": "native-fx/runtime-additions/Matrix/source/enemy_10212_klhz.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10212_klhz/enemy_10212_klhz.atlas",
+              "bytes": 1494,
+              "sha256": "3f106255fd01f153fe64ffbb687707a39b0c6b235bcf4bf3a38202c1d22492ee"
+            },
+            {
+              "file": "enemy_10212_klhz.png",
+              "externalRelativePath": "native-fx/runtime-additions/Matrix/source/enemy_10212_klhz.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10212_klhz/enemy_10212_klhz.png",
+              "bytes": 31566,
+              "sha256": "23e9e58153132928693f6b0711703df08d140da2eba626cff8230bb1c2a4a1b0"
+            }
+          ],
+          "timedClips": 5,
+          "frames": 634,
+          "pages": 28,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "task": "P26",
+      "cardId": "AUX_P26",
+      "name": "易·梁",
+      "selectedVersion": "B26 梁；独立原身体",
+      "referenceUrl": "https://prts.wiki/w/%E6%A2%81",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "views": [
+        {
+          "view": "main",
+          "modelId": "enemy_2122_dybgzd",
+          "spineVersion": "3.8.99",
+          "skin": "default",
+          "manifest": "Assets/Data/ArtCatalogs/BossRoster/P26/main/manifest.json",
+          "sourceRecord": "Assets/Data/ArtCatalogs/BossRoster/P26/main/SOURCE-RECORD.json",
+          "sourceRecordSha256": "a46abc32c8c059b2945149432d9daf7dfc7d4cef4e9b69f8e2d7ecbbb8e00830",
+          "sourceAtlasManifestSha256": "5ac6309dce1817dfe6e6ea394a9a4c37b5f835c8a38ae6e899d5a780f04d20b6",
+          "sourceFiles": [
+            {
+              "file": "enemy_2122_dybgzd.skel",
+              "externalRelativePath": "auxiliary/P26/source/main/enemy_2122_dybgzd.skel",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.skel",
+              "bytes": 46559,
+              "sha256": "f69b95168faea96dd1478dee7aff847da614f441565277609baf0efc30206442"
+            },
+            {
+              "file": "enemy_2122_dybgzd.atlas",
+              "externalRelativePath": "auxiliary/P26/source/main/enemy_2122_dybgzd.atlas",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.atlas",
+              "bytes": 2683,
+              "sha256": "bb3ecf90e1306d21a38e99059ca769c6090f3933a50685f2c8312a2846e4fe99"
+            },
+            {
+              "file": "enemy_2122_dybgzd.png",
+              "externalRelativePath": "auxiliary/P26/source/main/enemy_2122_dybgzd.png",
+              "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.png",
+              "bytes": 60635,
+              "sha256": "6ce2473b4fcbc24bb5fde0357e877e5dbad61396128b47613af9d185545b5dbb"
+            }
+          ],
+          "timedClips": 4,
+          "frames": 265,
+          "pages": 13,
+          "zeroDurationStates": [
+            "Default"
+          ],
+          "transparentWaitClips": [],
+          "manifestStatusSnapshot": "IMPORTED_NOT_BOUND",
+          "packagerUnityTestsSnapshot": "NOT_RUN"
+        }
+      ]
+    }
+  ],
+  "verificationPerformedForThisDocument": {
+    "sourceFilesReadAndSha256Verified": 105,
+    "existingSourceRecordsRead": 35,
+    "countsCrossCheckedAgainstInstallationAndPackageQa": true,
+    "unityLaunched": false,
+    "gameOrPreviewFilesModified": false
+  }
+}

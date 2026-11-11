@@ -200,6 +200,7 @@ namespace YesterdayConvoy
 
         private void ResetEngagement()
         {
+            ResetBossRoster();
             defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); frostSeals.Clear(); healingCasts.Clear(); skillRequests.Clear(); ResetGramophones(); SkillCasts = 0;
@@ -222,7 +223,7 @@ namespace YesterdayConvoy
         { foreach (var unit in units) if (unit.EntityId == id) return unit; return null; }
 
         public bool IsSkillActionPlaying(DeployedUnitState unit) => EngagementEnabled && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
-            (SilverWolfCombat.Transforming(unit,Clock) ? true : UnitCombat(unit).MudrockCapture ? Clock<unit.MudrockCaptureStartedAt+1.5 : UnitCombat(unit).FrostSeal ? !unit.IsReviving && Clock<unit.FrostSealStartedAt+UnitCombat(unit).SkillInterval :
+            (BossRosterMoveLock(unit) ? true : SilverWolfCombat.Transforming(unit,Clock) ? true : UnitCombat(unit).MudrockCapture ? Clock<unit.MudrockCaptureStartedAt+1.5 : UnitCombat(unit).FrostSeal ? !unit.IsReviving && Clock<unit.FrostSealStartedAt+UnitCombat(unit).SkillInterval :
             UnitCombat(unit).FireRain ? Clock<unit.FireRainStartedAt+UnitCombat(unit).SkillInterval :
             unit.LastAttackEmpowered && Clock<unit.LastAttackTime+UnitCombat(unit).SkillInterval);
 
@@ -232,6 +233,8 @@ namespace YesterdayConvoy
         public bool IsSkillReady(string entityId)
         {
             var unit=FindUnit(entityId);
+            if(BossRosterCatalog.Contains(unit?.CardId))return BossRosterReady(unit);
+            if(UsesBossCoreSkill(unit))return BossCoreSkills(unit)[0].Ready;
             return EngagementEnabled && Phase==BattlePhase.Running && unit!=null && unit.Active && UnitCombat(unit).HasSkill &&
                 !unit.IsReviving && !StrongholdInTransit(unit.EntityId) && !ApprovedWaitingAtPortal(unit.EntityId) && !TalulahTransitionLocked(unit) && !WolfActionBusy(unit) && unit.SkillAmmo==0 && (!(UnitCombat(unit).FireRain||UnitCombat(unit).FrostSeal||UnitCombat(unit).MudrockCapture) || !IsSkillActionPlaying(unit)) &&
                 (!UnitCombat(unit).FrostSeal || Clock>=unit.IceRingStartedAt+3) && (!UnitCombat(unit).MudrockCapture||Clock>=unit.BarrierRefreshStartedAt+MudrockRefreshDuration) && unit.SkillSP+0.00001f>=UnitCombat(unit).RequiredSP;
@@ -241,6 +244,8 @@ namespace YesterdayConvoy
         {
             if (!EngagementEnabled || Phase != BattlePhase.Running) return SkillFailure.NotRunning;
             var unit = FindUnit(entityId);
+            if(BossRosterCatalog.Contains(unit?.CardId))return CheckBossRosterSkill(unit);
+            if(UsesBossCoreSkill(unit))return CheckBossCoreSkill(unit);
             if(!UnitCombat(unit).HasSkill)return SkillFailure.NoSkill;
             if (IsPaused) return SkillFailure.Paused;
             if (unit == null || !unit.Active || unit.IsReviving) return SkillFailure.MissingEntity;
@@ -254,6 +259,8 @@ namespace YesterdayConvoy
         public SkillFailure TryActivateSkill(int runId, long requestId, string entityId)
         {
             if (runId != RunId) return SkillFailure.StaleRun;
+            if(BossRosterCatalog.Contains(FindUnit(entityId)?.CardId))return TryActivateBossRosterSkill(runId,requestId,entityId,null);
+            if(UsesBossCoreSkill(FindUnit(entityId)))return TryActivateBossCoreSkill(runId,requestId,entityId);
             if (skillRequests.TryGetValue(requestId, out string previous))
                 return previous == entityId ? SkillFailure.None : SkillFailure.StaleRun;
             SkillFailure failure = CheckSkill(entityId);
@@ -268,6 +275,7 @@ namespace YesterdayConvoy
             if(c.FireRain)
             { unit.FireRainStartedAt=Clock; unit.IsMoving=false; unit.NextAttackTime=Clock+c.SkillInterval; }
             skillRequests.Add(requestId, entityId);
+            BossCoreOnSkillStarted(unit);
             return SkillFailure.None;
         }
 
@@ -276,6 +284,7 @@ namespace YesterdayConvoy
 
         private void StepEngagement(float step)
         {
+            StepBossRoster(step);
             StepRemainingSynergies(step);
             EngagementSettings guardSettings=CombatSettings;
             ResolveFrostSeals();StepSnowstorms();
@@ -305,11 +314,12 @@ namespace YesterdayConvoy
                 if(ResolveViviSkillSplash(shot,unit))continue;
                 if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || defender==null || !defender.Alive) continue;
                 if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
+                if(shot.FromDefender&&!shot.TrueDamage&&!BossRosterDefenderAttackHits(defender,shot.DamageType))continue;
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
                     float preHitHealth=unit.Health;bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack):TryDefenderDamageUnit(unit,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f);
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack,defender):TryDefenderDamageUnit(unit,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f,defender,true);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
                     if(damaged){if(unit.Health<preHitHealth)OnMarineContact(unit);OnAdvancedDefenderHit(defender,unit,shot.DamageType,shot.Origin,shot.Drone);RecordSynergyContact(unit);}
@@ -319,7 +329,7 @@ namespace YesterdayConvoy
                         foreach(var other in units)
                             if(other!=unit && CanDefenderTarget(other) && GroundDistance(other.Motion.Position,unit.Motion.Position)<=shot.SplashRadius)
                             {
-                                if(TryDefenderDamageUnit(other,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
+                                if(TryDefenderDamageUnit(other,shot.Attack,shot.DamageType,ranged:defender.Settings.Range>1.2f,sourceDefender:defender,accuracyChecked:true))OnAdvancedDefenderHit(defender,other,shot.DamageType,shot.Origin,shot.Drone);
                             }
                 }
                 else
@@ -329,8 +339,10 @@ namespace YesterdayConvoy
                     shot.FrozenBonusApplied=defender.FrozenUntil>Clock && source.Effects.FrozenAttackMultiplier>1;
                     float attack=shot.Attack*(shot.FrozenBonusApplied ? source.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
-                    ApplyDefenderAttack(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType,shot.SynergyOrder||unit.SynergySupport,shot.SynergyOrder||unit.SynergySupport?null:unit,1,unit);
+                    if(BossCoreUsesTrueOrdinary(unit,shot))SourcedTrueDamage(defender,attack,unit);
+                    else ApplyDefenderAttack(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType,shot.SynergyOrder||unit.SynergySupport,shot.SynergyOrder||unit.SynergySupport?null:unit,1,unit);
                     shot.DamageDealt=health-defender.Health;
+                    BossCoreOnUnitHit(unit,defender,shot);
                     if(!shot.SynergyOrder)
                     {
                         RecordSynergyContact(unit);OnGolemHit(unit,defender);
@@ -366,7 +378,7 @@ namespace YesterdayConvoy
                 }
                 HealUnit(unit,unit.MaxHealth*c.Effects.RegenerationFraction*step*RegenerationMultiplier);
                 bool casting=(c.FireRain||c.FrostSeal||c.MudrockCapture) && IsSkillActionPlaying(unit);
-                if(c.HasSkill && unit.SkillAmmo==0 && !casting && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
+                if(c.HasSkill && unit.SkillAmmo==0 && (!casting||BossCoreMayRegenerateLegacySP(unit)) && !(SilverWolfCombat.IsWolf(unit)&&IsSkillActionPlaying(unit))) unit.SkillSP=Mathf.Min(c.RequiredSP,unit.SkillSP+step*c.SPPerSecond);
                 if(StepApprovedPortalWait(unit))continue;
                 unit.IsBlocked=false; unit.BlockerId=null;
                 double beforeControl=unit.Motion.DistanceTravelled;
@@ -377,7 +389,7 @@ namespace YesterdayConvoy
                     continue;
                 }
                 foreach(var d in defenders)
-                    if(!d.HighGround && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
+                    if(!d.HighGround && !BossRosterUnblockable(unit) && DefenderCanBlock(d) && !UnitAirborne(unit) && d.NeuralUntil<=Clock && !DefenderShackled(d) && d.Alive && d.BlockedCount<d.Settings.BlockCount && GroundDistance(unit.Motion.Position,d.Position)<=d.Settings.BlockRadius)
                     { unit.IsBlocked=true; unit.BlockerId=d.EntityId; d.BlockedCount++; break; }
                 if(SilverWolfCombat.Transforming(unit,Clock)){unit.IsMoving=false;continue;}
                 if((c.FrostSeal||c.MudrockCapture) && casting){unit.IsMoving=unit.HasCombatTarget=false;continue;}
@@ -389,6 +401,7 @@ namespace YesterdayConvoy
                 if(c.Effects.Mandragora && StepMandragoraAction(unit))continue;
                 if(c.Effects.Flamerazer && StepFlamerazer(unit))continue;
                 if(c.Effects.FrostNova && StepIceRing(unit) || c.Effects.Healer && StepHealer(unit) || c.Effects.Mudrock && StepMudrock(unit)) continue;
+                if(StepBossRosterUnit(unit,step))continue;
                 float range=unit.SkillAmmo>0 && !c.FireRain ? c.SkillRange : c.Effects.Patriot&&unit.PatriotPhase==PatriotPhase.Destruction?V2Skill(unit,"rebirth","destructionRange",.85f):c.UnitRange;
                 bool ordinary=c.CanAttack&&(!c.Effects.Patriot||unit.PatriotPhase==PatriotPhase.Destruction||unit.IsBlocked)&&(!c.Effects.Flamerazer||unit.IsBlocked)&&(!c.Effects.Mandragora||unit.MandraPhase==MandragoraPhase.Second||unit.IsBlocked)&&(!c.Effects.Harvester||unit.HarvesterPhase==HarvesterPhase.Combat&&unit.IsBlocked);
                 DefenderState target=ordinary ? ChooseDefender(unit,range) : null;
@@ -475,7 +488,7 @@ namespace YesterdayConvoy
             StepDefenderSkills(step);
             foreach(var d in defenders)
             {
-                if(!d.Alive || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
+                if(!d.Alive || BossRosterDefenderActionLocked(d) || d.FrozenUntil>Clock || d.NeuralUntil>Clock || DefenderShackled(d)||Clock<d.SkillActionUntil) continue;
                 if(StepArenaBossAttack(d))continue;
                 var spec=d.Settings;
                 if(CanDefenderHeal(d))

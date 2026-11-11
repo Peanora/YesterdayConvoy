@@ -1,0 +1,1677 @@
+{
+  "version": 1,
+  "units": [
+    {
+      "task": "B01",
+      "cardId": "CARD_B01",
+      "name": "W",
+      "view": "main",
+      "model": "enemy_1504_cqbw",
+      "manifest": "BossRoster/B01/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.2999999523162842,
+      "attackContact": 0.30000001192092896,
+      "sourceOnAttackTimes": [
+        0.30000001192092896,
+        0.7666666507720947
+      ],
+      "ppu": 116.61559318377358,
+      "height": 1.7083714463710784,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B02",
+      "cardId": "CARD_M25",
+      "name": "梅菲斯特",
+      "view": "main",
+      "model": "enemy_1507_mephi",
+      "manifest": "BossRoster/B02/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 3.1666667461395264,
+      "attackContact": 1.100000023841858,
+      "sourceOnAttackTimes": [
+        1.100000023841858
+      ],
+      "ppu": 169.01529627472948,
+      "height": 1.8303610525131224,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B03",
+      "cardId": "CARD_B03",
+      "name": "弑君者",
+      "view": "main",
+      "model": "enemy_1502_crowns",
+      "manifest": "BossRoster/B03/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Disappear"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Disappear",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1,
+      "attackContact": 0.46666666865348816,
+      "sourceOnAttackTimes": [
+        0.46666666865348816
+      ],
+      "ppu": 137.84356162650323,
+      "height": 1.662846676468849,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B04",
+      "cardId": "CARD_B04",
+      "name": "锏",
+      "view": "main",
+      "model": "enemy_1525_blkswb",
+      "manifest": "BossRoster/B04/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill2"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill2",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.600000023841858,
+      "attackContact": 0.46666666865348816,
+      "sourceOnAttackTimes": [
+        0.46666666865348816
+      ],
+      "ppu": 84.88195911317054,
+      "height": 1.8802817516326902,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B05",
+      "cardId": "CARD_B05",
+      "name": "“大总统”汉科",
+      "view": "main",
+      "model": "enemy_2139_shdbj2",
+      "manifest": "BossRoster/B05/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.3333333730697632,
+      "attackContact": 0.3333333432674408,
+      "sourceOnAttackTimes": [
+        0.3333333432674408,
+        0.5333333611488342
+      ],
+      "ppu": 91.55447379801231,
+      "height": 2.482342180252075,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B06",
+      "cardId": "CARD_M32",
+      "name": "蔓德拉",
+      "view": "main",
+      "model": "enemy_1523_mandra",
+      "manifest": "BossRoster/B06/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "C1_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "C1_Move"
+        },
+        {
+          "key": "attack",
+          "source": "C1_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "C1_Skill_2"
+        },
+        {
+          "key": "death",
+          "source": "C2_Die_1"
+        }
+      ],
+      "runtimeSources": [
+        "C1_Idle",
+        "C1_Move",
+        "C1_Attack",
+        "C1_Skill_2",
+        "C2_Die_1"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.5,
+      "attackContact": 0.8333333134651184,
+      "sourceOnAttackTimes": [
+        0.8333333134651184
+      ],
+      "ppu": 133.45849771931512,
+      "height": 1.7945808069705962,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B07",
+      "cardId": "CARD_B07",
+      "name": "爱布拉娜／“领袖”",
+      "view": "main",
+      "model": "enemy_1536_ncrmcr",
+      "manifest": "BossRoster/B07/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle_a"
+        },
+        {
+          "key": "walk",
+          "source": "Move_a"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_a"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_a_1"
+        },
+        {
+          "key": "death",
+          "source": "Die_End"
+        }
+      ],
+      "runtimeSources": [
+        "Idle_a",
+        "Move_a",
+        "Attack_a",
+        "Skill_a_1",
+        "Die_End"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.1666666269302368,
+      "attackContact": 0.5,
+      "sourceOnAttackTimes": [
+        0.5
+      ],
+      "ppu": 64.42054343346179,
+      "height": 2.2082138271331786,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B08",
+      "cardId": "CARD_B08",
+      "name": "“万火归一”",
+      "view": "main",
+      "model": "enemy_1563_fthlgj",
+      "manifest": "BossRoster/B08/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.6666666269302368,
+      "attackContact": 0.8999999761581421,
+      "sourceOnAttackTimes": [
+        0.8999999761581421
+      ],
+      "ppu": 20.397146059683134,
+      "height": 3.0302947626113887,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B09",
+      "cardId": "CARD_B09",
+      "name": "“酒神”",
+      "view": "main",
+      "model": "enemy_1568_dirctr",
+      "manifest": "BossRoster/B09/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_2"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_2",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 3,
+      "attackContact": 1.8333333730697632,
+      "sourceOnAttackTimes": [
+        1.8333333730697632
+      ],
+      "ppu": 120.43777534115418,
+      "height": 2.2349354707002638,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B10",
+      "cardId": "CARD_B10",
+      "name": "坎诺特",
+      "view": "main",
+      "model": "enemy_2036_syshop",
+      "manifest": "BossRoster/B10/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Skill"
+      ],
+      "hasAttack": false,
+      "attackDuration": 0,
+      "attackContact": 0,
+      "sourceOnAttackTimes": [],
+      "ppu": 124.77387018475683,
+      "height": 2.2673656253814696,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "NO_SOURCE_DEATH"
+    },
+    {
+      "task": "B11",
+      "cardId": "CARD_B11",
+      "name": "赫尔昏佐伦／巫王",
+      "view": "main",
+      "model": "enemy_1548_ltniak",
+      "manifest": "BossRoster/B11/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2,
+      "attackContact": 1.2333333492279053,
+      "sourceOnAttackTimes": [
+        1.2333333492279053
+      ],
+      "ppu": 82.81736513361531,
+      "height": 3.0501061763763424,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B12",
+      "cardId": "CARD_B12",
+      "name": "“阿米娅”，炉芯终曲",
+      "view": "main",
+      "model": "enemy_2092_skzamy",
+      "manifest": "BossRoster/B12/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_Begin"
+        },
+        {
+          "key": "death",
+          "source": "C_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_Begin",
+        "C_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 3,
+      "attackContact": 1.5,
+      "sourceOnAttackTimes": [
+        1.5
+      ],
+      "ppu": 68.75323270704342,
+      "height": 2.2390877351760863,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B13",
+      "cardId": "CARD_B13",
+      "name": "“圣徒”",
+      "view": "main",
+      "model": "enemy_1567_pope",
+      "manifest": "BossRoster/B13/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "death",
+          "source": "B_Die_1"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "B_Die_1"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.2666666507720947,
+      "attackContact": 1.1333333253860474,
+      "sourceOnAttackTimes": [
+        1.1333333253860474
+      ],
+      "ppu": 54.99986542933579,
+      "height": 3.06185486125946,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B14",
+      "cardId": "CARD_B14",
+      "name": "卡德霍，黑流之源",
+      "view": "main",
+      "model": "enemy_2145_cadejo",
+      "manifest": "BossRoster/B14/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Skill_1",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.600000023841858,
+      "attackContact": 0.800000011920929,
+      "sourceOnAttackTimes": [
+        0.800000011920929
+      ],
+      "ppu": 57.842026564951745,
+      "height": 3.3009649543762203,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B15",
+      "cardId": "CARD_B15",
+      "name": "最后的圣愚",
+      "view": "main",
+      "model": "enemy_1603_hlystp",
+      "manifest": "BossRoster/B15/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.5,
+      "attackContact": 1,
+      "sourceOnAttackTimes": [
+        1
+      ],
+      "ppu": 121.31989471627594,
+      "height": 2.171788008213043,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B16",
+      "cardId": "CARD_TALULAH_TRIAL",
+      "name": "塔露拉",
+      "view": "main",
+      "model": "enemy_1515_bsnake",
+      "manifest": "BossRoster/B16/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle_A"
+        },
+        {
+          "key": "walk",
+          "source": "Move_A"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_A"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1_A"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle_A",
+        "Move_A",
+        "Attack_A",
+        "Skill_1_A",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.3333332538604736,
+      "attackContact": 1.0333333015441895,
+      "sourceOnAttackTimes": [
+        1.0333333015441895
+      ],
+      "ppu": 74.36614102399271,
+      "height": 1.9376838569641113,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B17",
+      "cardId": "CARD_M20",
+      "name": "爱国者",
+      "view": "main",
+      "model": "enemy_1506_patrt",
+      "manifest": "BossRoster/B17/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle_1"
+        },
+        {
+          "key": "walk",
+          "source": "Move_1"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_1"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle_1",
+        "Move_1",
+        "Attack_1",
+        "Skill",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.5,
+      "attackContact": 0.6333333253860474,
+      "sourceOnAttackTimes": [
+        0.6333333253860474,
+        0.7333333492279053,
+        0.8333333134651184,
+        0.9333333373069763
+      ],
+      "ppu": 56.13572372296399,
+      "height": 2.810791025161743,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B18",
+      "cardId": "CARD_M14",
+      "name": "霜星",
+      "view": "main",
+      "model": "enemy_1510_frstar2",
+      "manifest": "BossRoster/B18/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill_1",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.600000023841858,
+      "attackContact": 0.9333333373069763,
+      "sourceOnAttackTimes": [
+        0.9333333373069763
+      ],
+      "ppu": 43.302181175316186,
+      "height": 2.1330098190307614,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B19",
+      "cardId": "CARD_M28",
+      "name": "泥岩",
+      "view": "main",
+      "model": "enemy_1511_mdrock",
+      "manifest": "BossRoster/B19/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_1"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack_1",
+        "Skill_1",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2,
+      "attackContact": 1.1333333253860474,
+      "sourceOnAttackTimes": [
+        1.1333333253860474
+      ],
+      "ppu": 82.30324997024191,
+      "height": 2.182713978052139,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B20",
+      "cardId": "CARD_WISADEL_APRIL",
+      "name": "维维美",
+      "view": "back",
+      "model": "char_1035_wisdel_sale_14",
+      "manifest": "BossRoster/B20/back/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_A"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_3_Begin"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Attack_A",
+        "Skill_3_Begin"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.0999999046325684,
+      "attackContact": 0.6000000238418579,
+      "sourceOnAttackTimes": [
+        0.6000000238418579
+      ],
+      "ppu": 67.6218815591368,
+      "height": 2.318483516693115,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "NO_SOURCE_DEATH"
+    },
+    {
+      "task": "B20",
+      "cardId": "CARD_WISADEL_APRIL",
+      "name": "维维美",
+      "view": "front",
+      "model": "char_1035_wisdel_sale_14",
+      "manifest": "BossRoster/B20/front/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_A"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_3_Begin"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Attack_A",
+        "Skill_3_Begin",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.0999999046325684,
+      "attackContact": 0.6000000238418579,
+      "sourceOnAttackTimes": [
+        0.6000000238418579
+      ],
+      "ppu": 64.89298879873046,
+      "height": 2.01952508354187,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B21",
+      "cardId": "CARD_B21",
+      "name": "“岁”（界园版）",
+      "view": "main",
+      "model": "enemy_2119_dyshhj",
+      "manifest": "BossRoster/B21/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Skill_Idle_A"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_Begin_A"
+        },
+        {
+          "key": "death",
+          "source": "Die_3_End_A"
+        }
+      ],
+      "runtimeSources": [
+        "Skill_Idle_A",
+        "Skill_Begin_A",
+        "Die_3_End_A"
+      ],
+      "hasAttack": false,
+      "attackDuration": 0,
+      "attackContact": 0,
+      "sourceOnAttackTimes": [],
+      "ppu": 24.869692219520378,
+      "height": 11.696982192993163,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "VISIBLE_SOURCE_SKILL_IDLE_ADAPTATION_ORIGINAL_IDLE_REMAINS_TRANSPARENT",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B22",
+      "cardId": "CARD_B22",
+      "name": "狂躁异质裂兽",
+      "view": "main",
+      "model": "enemy_1571_mirbst",
+      "manifest": "BossRoster/B22/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.3333001136779785,
+      "attackContact": 0.6333000063896179,
+      "sourceOnAttackTimes": [
+        0.6333000063896179,
+        0.8666999936103821
+      ],
+      "ppu": 71.08356926503865,
+      "height": 2.619756904363632,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "B23",
+      "cardId": "CARD_B23",
+      "name": "安纳斯塔西奥，赎罪者",
+      "view": "main",
+      "model": "enemy_1561_crzjdg",
+      "manifest": "BossRoster/B23/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack_1"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack_1",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.6666666269302368,
+      "attackContact": 0.5,
+      "sourceOnAttackTimes": [
+        0.5
+      ],
+      "ppu": 41.648073183731775,
+      "height": 2.3929376649856566,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B24",
+      "cardId": "CARD_B24",
+      "name": "不死的黑蛇（2026版）",
+      "view": "main",
+      "model": "enemy_1602_blksnk",
+      "manifest": "BossRoster/B24/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 3,
+      "attackContact": 1.5666667222976685,
+      "sourceOnAttackTimes": [
+        1.5666667222976685
+      ],
+      "ppu": 114.57308076196117,
+      "height": 2.3936562094688414,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B25",
+      "cardId": "CARD_B25",
+      "name": "圣徒瓦列里奥",
+      "view": "main",
+      "model": "enemy_1594_presaint",
+      "manifest": "BossRoster/B25/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "A_Idle"
+        },
+        {
+          "key": "walk",
+          "source": "A_Move"
+        },
+        {
+          "key": "attack",
+          "source": "A_Attack"
+        },
+        {
+          "key": "cast",
+          "source": "A_Skill_1_Begin"
+        },
+        {
+          "key": "death",
+          "source": "B_Die"
+        }
+      ],
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1_Begin",
+        "B_Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.3333333730697632,
+      "attackContact": 0.5666666626930237,
+      "sourceOnAttackTimes": [
+        0.5666666626930237
+      ],
+      "ppu": 73.21029178300427,
+      "height": 2.19379781627655,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE"
+    },
+    {
+      "task": "B26",
+      "cardId": "CARD_B26",
+      "name": "易",
+      "view": "main",
+      "model": "enemy_2118_dylbhm",
+      "manifest": "BossRoster/B26/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack_1"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack_1",
+        "Skill_1",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.5,
+      "attackContact": 0.7666666507720947,
+      "sourceOnAttackTimes": [
+        0.7666666507720947
+      ],
+      "ppu": 66.5320828432252,
+      "height": 2.5420896778106687,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "NEW_BOSS_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P12I",
+      "cardId": "AUX_P12I",
+      "name": "仅剩的创意",
+      "view": "main",
+      "model": "enemy_2094_skzamb",
+      "manifest": "BossRoster/P12I/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        },
+        {
+          "key": "start",
+          "source": "Start"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Die",
+        "Start"
+      ],
+      "hasAttack": false,
+      "attackDuration": 0,
+      "attackContact": 0,
+      "sourceOnAttackTimes": [],
+      "ppu": 266.6177473995994,
+      "height": 0.9331553971767425,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P14",
+      "cardId": "AUX_P14",
+      "name": "卡德霍·痛楚化身",
+      "view": "main",
+      "model": "enemy_2146_cadesd",
+      "manifest": "BossRoster/P14/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_1"
+        },
+        {
+          "key": "death",
+          "source": "Die_1"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Skill_1",
+        "Die_1"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.600000023841858,
+      "attackContact": 0.800000011920929,
+      "sourceOnAttackTimes": [
+        0.800000011920929
+      ],
+      "ppu": 50.41930284789882,
+      "height": 3.3009649543762203,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P14H",
+      "cardId": "AUX_P14H",
+      "name": "卡德霍·猎犬proto",
+      "view": "main",
+      "model": "enemy_2137_shsdgo",
+      "manifest": "BossRoster/P14H/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "cast",
+          "source": "Skill_Begin"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill_Begin",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.399999976158142,
+      "attackContact": 0.6666666865348816,
+      "sourceOnAttackTimes": [
+        0.6666666865348816
+      ],
+      "ppu": 68.15102899707735,
+      "height": 1.7567278232574461,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P15C",
+      "cardId": "AUX_P15C",
+      "name": "惘核（OB19）",
+      "view": "main",
+      "model": "enemy_10262_dsjred",
+      "manifest": "BossRoster/P15C/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 0.36666667461395264,
+      "attackContact": 0.36666667461395264,
+      "sourceOnAttackTimes": [
+        0.36666667461395264
+      ],
+      "ppu": 250.34708576176422,
+      "height": 0.9519937591552734,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P20",
+      "cardId": "AUX_P20",
+      "name": "维维美·魂灵之影",
+      "view": "main",
+      "model": "token_10035_wisdel_wward_sale#14",
+      "manifest": "BossRoster/P20/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        },
+        {
+          "key": "start",
+          "source": "Start"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Die",
+        "Start"
+      ],
+      "hasAttack": true,
+      "attackDuration": 2.0333333015441895,
+      "attackContact": 0.03333333507180214,
+      "sourceOnAttackTimes": [
+        0.03333333507180214
+      ],
+      "ppu": 231.26580613252204,
+      "height": 1.231290001630783,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P24D",
+      "cardId": "AUX_P24D",
+      "name": "殆因",
+      "view": "main",
+      "model": "enemy_10263_dsjblk",
+      "manifest": "BossRoster/P24D/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "hasAttack": true,
+      "attackDuration": 0.36666667461395264,
+      "attackContact": 0.36666667461395264,
+      "sourceOnAttackTimes": [
+        0.36666667461395264
+      ],
+      "ppu": 333.92473473407387,
+      "height": 0.9095084609985351,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P25M",
+      "cardId": "AUX_P25M",
+      "name": "塑能基质",
+      "view": "main",
+      "model": "enemy_10212_klhz",
+      "manifest": "BossRoster/P25M/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "attack",
+          "source": "Attack"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        },
+        {
+          "key": "start",
+          "source": "Start"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die",
+        "Start"
+      ],
+      "hasAttack": true,
+      "attackDuration": 1.7999999523162842,
+      "attackContact": 0.6000000238418579,
+      "sourceOnAttackTimes": [
+        0.6000000238418579
+      ],
+      "ppu": 259.4836671738679,
+      "height": 1.1184833135604857,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    },
+    {
+      "task": "P26",
+      "cardId": "AUX_P26",
+      "name": "易·梁",
+      "view": "main",
+      "model": "enemy_2122_dybgzd",
+      "manifest": "BossRoster/P26/main/manifest.json",
+      "aliases": [
+        {
+          "key": "idle",
+          "source": "Idle"
+        },
+        {
+          "key": "walk",
+          "source": "Move"
+        },
+        {
+          "key": "cast",
+          "source": "Skill"
+        },
+        {
+          "key": "death",
+          "source": "Die"
+        }
+      ],
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Skill",
+        "Die"
+      ],
+      "hasAttack": false,
+      "attackDuration": 0,
+      "attackContact": 0,
+      "sourceOnAttackTimes": [],
+      "ppu": 132.2019015871907,
+      "height": 2.0335205154418943,
+      "status": "IMPORTED_NOT_BOUND",
+      "role": "SKILL_AUXILIARY_NOT_A_CARD",
+      "movementPresentation": "ORIGINAL_MOVE",
+      "idlePresentation": "ORIGINAL_IDLE",
+      "deathPresentation": "ORIGINAL_DEATH"
+    }
+  ],
+  "coreCardBindings": {
+    "B02": "CARD_M25",
+    "B06": "CARD_M32",
+    "B16": "CARD_TALULAH_TRIAL",
+    "B17": "CARD_M20",
+    "B18": "CARD_M14",
+    "B19": "CARD_M28",
+    "B20": "CARD_WISADEL_APRIL"
+  }
+}

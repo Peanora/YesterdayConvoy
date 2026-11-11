@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "task": "B01",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Boss previews plus P14/P26 skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://prts.wiki/w/W%28%E6%95%8C%E6%96%B9%29",
+  "model": "enemy_1504_cqbw",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "B01/source/main/enemy_1504_cqbw.skel",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.skel",
+      "bytes": 230832,
+      "sha256": "6153c2c1cb8e921196fb63b616e75a66e8e2947ce12f4889467ab318825a4b8e"
+    },
+    {
+      "file": "B01/source/main/enemy_1504_cqbw.atlas",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.atlas",
+      "bytes": 13608,
+      "sha256": "f0aee828ada5189a86b85ca029899cfe797cb386f89b48cb74c80b8869e2f609"
+    },
+    {
+      "file": "B01/source/main/enemy_1504_cqbw.png",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1504_cqbw/enemy_1504_cqbw.png",
+      "bytes": 132795,
+      "sha256": "ba0131462811b7e3fe3461f6c415e5adc1d97a226d8104d98b4fb5212531c37a"
+    }
+  ],
+  "atlasManifestSha256": "bb93b3c99abbf6915170be7b0ad2fa113c0437d863bce593b130ae82f990c64d",
+  "atlasFiles": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "aab7106cb5d99623ca613f5da2373eaaae23978d343112d4dbe4e99d28882ab3",
+      "bytes": 1055962
+    },
+    {
+      "file": "Attack-001.png",
+      "sha256": "534e1e6d784f63ae8044fdbe1dad9a83fad407446a8289d4af1a8764f906022b",
+      "bytes": 1074250
+    },
+    {
+      "file": "Attack-002.png",
+      "sha256": "c50d21adb7f72ed6a94d46d142744b6436a5f5be7da67c02d4e7e0da04a8aebf",
+      "bytes": 1030695
+    },
+    {
+      "file": "Attack-003.png",
+      "sha256": "0f022d064096d53c149dc35d7bcef06dc113f19b7f25649913e6f2c97dc18df5",
+      "bytes": 168990
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "b45976445c7902c53ae835fc04b8f98d2f70d32808e1982714d89695d2dee5dc",
+      "bytes": 1028477
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "2fd9973e663f00e223cec56e316cf48023c6734c4a0e8cfc5332515174557fea",
+      "bytes": 924262
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "6b392eaa261953c36becc8540bfb4ee0302ad480bb7924f2d7b355dc0dc1dca4",
+      "bytes": 923812
+    },
+    {
+      "file": "Die-003.png",
+      "sha256": "b725235440dde6783c912e84d0e0f0b3bdb542467288d7dc70cb635f5788fda4",
+      "bytes": 865712
+    },
+    {
+      "file": "Die-004.png",
+      "sha256": "060f4af3912afe9d321bdb8c21cf19dd1464a106869503a98e6b45096004e809",
+      "bytes": 669138
+    },
+    {
+      "file": "Die-005.png",
+      "sha256": "728f1fa1c7592ac17623b53b5d65542883f2233313a13a4e39086231e53a417c",
+      "bytes": 580641
+    },
+    {
+      "file": "Die-006.png",
+      "sha256": "084a52fb6434e0a02afe55c664922e624f41419cced9daa5609bfc7870e96839",
+      "bytes": 986290
+    },
+    {
+      "file": "Die-007.png",
+      "sha256": "7750d75daf1b456742c854766d0cfed4dd9b7c448e576e89f4479d317abccd67",
+      "bytes": 260808
+    },
+    {
+      "file": "Die-008.png",
+      "sha256": "5f25e18dfbadae8f6b459637045a0b5b6bb757b0baf331945af252735c7092dc",
+      "bytes": 15751
+    },
+    {
+      "file": "Die_2-000.png",
+      "sha256": "4d92dd65acdbd5975661d820fefa018486b6d75584bfbb048e54e6b5919bc067",
+      "bytes": 1065144
+    },
+    {
+      "file": "Die_2-001.png",
+      "sha256": "326787bc2c72f2bb2c1bb20d77f946b71d6ac5580fe3b48a274e8a4680a48feb",
+      "bytes": 843078
+    },
+    {
+      "file": "Die_2-002.png",
+      "sha256": "b7247c8a1101145b571a02fff5abc86912bbb9820984670ff3c3f9bfd962b7b8",
+      "bytes": 434814
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "a6748d3246afd92a5716fbb3819a4fd80a138e332555c02bd1f777a6b7ff02eb",
+      "bytes": 1025408
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "328b7e45ca4be5c610b74f2b71007000e815cac9d33894dd1f41bfc9bec72eab",
+      "bytes": 1018433
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "110e51811f96f39f9418d14e03751ff80439752e8178c9f29814c87ab2c5a2d6",
+      "bytes": 1007704
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "22712de810b7d453fd7a1f2a875ab8e1a7079b0c538078bb1b95035125405540",
+      "bytes": 1017302
+    },
+    {
+      "file": "Idle-004.png",
+      "sha256": "af404aaf2563965a5af2cf376c7d3a0888a3f7df08a30061a31c99f7c6affa55",
+      "bytes": 873673
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "3692459f33a68dc43c7d4930396776956f5be3d1c2ef2c0c22ad081a9cb0d8a9",
+      "bytes": 1010078
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "9405f750f0cfab18153b04cf070cf718fd4edfcbd2d9a763b9ce76e6c83d1576",
+      "bytes": 1016770
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "503e291f80c5f35e6965906c2246cfaac3aeac3d765395460cc938f317ef51ba",
+      "bytes": 1017620
+    },
+    {
+      "file": "Move-003.png",
+      "sha256": "9d1b1205b082bb2ae1b9eb4be2b540f5da3bf5fe9f39debd5097a33ec8e93276",
+      "bytes": 1029573
+    },
+    {
+      "file": "Move-004.png",
+      "sha256": "5d6b6384e7eaebdcaea7fc9da16619a20ad8efe68534323600f01f57a52437a1",
+      "bytes": 855369
+    },
+    {
+      "file": "Skill-000.png",
+      "sha256": "c0ffa76f7fb58497c295641396e5bf162b98956215fc6c380c0c6310f40c0978",
+      "bytes": 1031238
+    },
+    {
+      "file": "Skill-001.png",
+      "sha256": "6a95c87cdb3041679f0adc032941cc140726815e2259930018240f30ef6f442a",
+      "bytes": 931347
+    },
+    {
+      "file": "Skill-002.png",
+      "sha256": "bbf0cd77335584cc0585ac9456df9a3434d5443434b7a24c869f460b9a51f973",
+      "bytes": 996041
+    },
+    {
+      "file": "Skill-003.png",
+      "sha256": "ee62c35d6634de8c7ae2d4a412b886684f03fa3d60c01261ddcf059d5c37af1a",
+      "bytes": 882739
+    },
+    {
+      "file": "Skill-004.png",
+      "sha256": "0f59d1ee4f4f5ea35f894be700f2de2b381e3a84044e607753404d045b92c2f2",
+      "bytes": 999674
+    },
+    {
+      "file": "Skill-005.png",
+      "sha256": "5cb45933fc7daa0d6d121016c47077096965f6f5de67734f0c5a7aba3c281feb",
+      "bytes": 874108
+    },
+    {
+      "file": "Skill-006.png",
+      "sha256": "c151e325131f03065a4c6410010b1925ad7a5669c15177e8d28ce285ff916338",
+      "bytes": 1017833
+    },
+    {
+      "file": "Skill-007.png",
+      "sha256": "3d2499545f539d959a17809418105d0cde1e6cc4ded947b8430c1d26314d8cab",
+      "bytes": 913969
+    },
+    {
+      "file": "Skill-008.png",
+      "sha256": "e8723e5324ddaeea8e50fd41292987c640a48f68275e38073219796c68a0d1cc",
+      "bytes": 768037
+    },
+    {
+      "file": "Skill-009.png",
+      "sha256": "83ad9d14a9246785b2ff08a2b084f7dd4033fde02b35efe4bc29248137c81b15",
+      "bytes": 675865
+    },
+    {
+      "file": "Skill-010.png",
+      "sha256": "df18d9cf223d92df33b4039c39e9caf126ebaaad2362a075fa245fa4a33282e2",
+      "bytes": 879638
+    },
+    {
+      "file": "Skill-011.png",
+      "sha256": "4815b5f055db1dee703d49352284d87a608a7b90a8526cf1c7f9162544652232",
+      "bytes": 608411
+    }
+  ],
+  "portraitSha256": "590a4120ea20cedeed9c5208c2b0c34ce032bf77abcc03de6c5f00d6d1168066",
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 116.61559318377358,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}

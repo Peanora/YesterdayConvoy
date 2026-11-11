@@ -90,9 +90,20 @@ namespace YesterdayConvoy
         static Player PlayerFor(string id)
         {Load();if(!players.TryGetValue(id,out var p))throw new ArgumentException("Unknown adopted v2 card: "+id);return p;}
         static Star Row(string id,int star)=>PlayerFor(id).stars.SingleOrDefault(s=>s.star==star)??throw new ArgumentOutOfRangeException(nameof(star));
-        public static int Cost(string id)=>PlayerFor(id).cost;
+        static float BossRosterStat(BossRosterCatalog.Entry b,int star,string key)
+        {
+            if(star<1||star>ShopTrialModel.MaxStarForCost(b.Cost))throw new ArgumentOutOfRangeException(nameof(star));
+            switch(key){case "star":return star;case "dp":return b.DeploymentCost+star-1;case "hp":case "spawnHp":return Mathf.Floor(b.Health*CampaignBalance.HPScale(b.Cost,star)+.5f);
+                case "attack":return b.Attack*CampaignBalance.AttackScale(b.Cost,star);case "armor":return b.Armor+2*(star-1);case "range":return b.Range;case "speed":return b.Speed;
+                case "interval":return b.Interval;case "attackDuration":return b.AttackDuration;case "attackWindup":case "effectiveAttackWindup":return b.Windup;
+                case "uses":return CampaignPlan.Uses(b.Cost);case "gate":return(b.Cost>=4?2:1)+(star>=3?1:0);case "copies":return star==1?1:star==2?3:star==3?9:27;
+                case "resistance":return 0;case "projectileTime":return .1f;case "nonWaveCooldown":return new[]{0,2,3,4,5,8}[b.Cost];case "waveCooldown":return WaveDeploymentCadence.ForCard(b.CardId,b.Cost);
+                case "canOrdinaryAttack":return BossRosterArt.For(b.CardId)?.HasAttack==true?1:0;default:throw new ArgumentException("Unknown Boss trial stat: "+key);}
+        }
+        public static int Cost(string id)=>BossRosterCatalog.TryGet(id,out var boss)?boss.Cost:PlayerFor(id).cost;
         public static float StatValue(string id,int star,string key)
         {
+            if(BossRosterCatalog.TryGet(id,out var boss))return BossRosterStat(boss,star,key);
             var field=typeof(Star).GetField(key,Fields);if(field==null)throw new ArgumentException("Unknown v2 stat: "+key);
             object value=field.GetValue(Row(id,star));return Numeric(value,key);
         }
@@ -105,6 +116,7 @@ namespace YesterdayConvoy
         }
         public static bool TrySkillValue(string id,int star,string skillId,string key,out float value)
         {
+            if(BossRosterCatalog.Contains(id)){value=0;return false;}
             var u=PlayerFor(id);_=Row(id,star);
             var p=u.skills.FirstOrDefault(s=>s.id==skillId)?.parameters.FirstOrDefault(s=>s.key==key);
             value=p==null?0:p.Value(star);return p!=null;
@@ -142,12 +154,14 @@ namespace YesterdayConvoy
         }
         public static int StarFor(ManualBattleSettings settings)
         {
+            if(BossRosterCatalog.TryGet(settings.CardId,out var boss))return Math.Max(1,settings.DeploymentCost-boss.DeploymentCost+1);
             var u=PlayerFor(settings.CardId);int star=settings.DeploymentCost-u.stars[0].dp+1;
             _=Row(settings.CardId,star);return star;
         }
 
         public static BasicRosterProfile Build(ManualBattleDefinition data,int star,int dp,int defense,bool waveMode=false)
         {
+            if(BossRosterCatalog.Contains(data.Card.CardId))return CampaignBalance.Build(data,star,dp,defense,waveMode);
             if(data==null||data.Engagement==null)throw new ArgumentNullException(nameof(data));
             var original=data.Snapshot();var c=data.Engagement.Snapshot();
             // The explicit deferred exception keeps its current battle implementation.

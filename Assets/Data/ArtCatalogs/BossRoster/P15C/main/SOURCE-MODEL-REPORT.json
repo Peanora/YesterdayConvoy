@@ -1,0 +1,108 @@
+{
+  "task": "P15C",
+  "name": "惘核（OB19）",
+  "reference": "https://prts.wiki/w/“惘核”(OB19)/spine",
+  "view": "main",
+  "model": "enemy_10262_dsjred",
+  "nativeModel": "enemy_10262_dsjred",
+  "folder": "native-fx/runtime-additions/CoreRed/source",
+  "version": "3.8.99",
+  "skin": "default",
+  "animations": [
+    {
+      "name": "Attack",
+      "duration": 0.36666667461395264,
+      "bounds": [
+        -89.2203598022461,
+        -49.638633728027344,
+        82.45515441894531,
+        128.63856506347656
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 2064,
+      "events": [
+        {
+          "time": 0.36666667461395264,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -79.55608367919922,
+        -12.75479793548584,
+        69.4127197265625,
+        103.17711639404297
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 40,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die",
+      "duration": 0.5333333611488342,
+      "bounds": [
+        -154.16751098632812,
+        -133.94253540039062,
+        69.4127197265625,
+        165.05755615234375
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 2536,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die_2",
+      "duration": 0,
+      "bounds": null,
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 0,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Idle",
+      "duration": 1.3333333730697632,
+      "bounds": [
+        -101.83501434326172,
+        -105.51747131347656,
+        72.8271484375,
+        106.03669738769531
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 7736,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Move",
+      "duration": 1,
+      "bounds": [
+        -101.57579040527344,
+        -105.16167449951172,
+        78.39877319335938,
+        109.37012481689453
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 5776,
+      "events": [],
+      "loop": true
+    }
+  ],
+  "cell": 384,
+  "captureMargin": 1.14,
+  "bounds": [
+    -154.1675094733054,
+    -133.94253554221308,
+    82.45515447560199,
+    165.05755444015313
+  ]
+}

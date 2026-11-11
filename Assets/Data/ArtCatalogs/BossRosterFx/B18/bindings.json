@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "task": "B18",
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "key": "frstar2_attack_01_start",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "AttackStart",
+      "key": "frstar2_attack_02_start",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "key": "frstar2_attack_01_trail",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "projectile",
+      "loop": true,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "Impact",
+      "key": "frstar2_attack_01_hit",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "target",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "Death",
+      "key": "frstar2_die_01_start",
+      "skill": "",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_02_range",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_range",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_range_02",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_start",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": true,
+      "finishOnEnd": true
+    }
+  ],
+  "note": "Exact winter-scar Actor; iceShield creates original trap004 tile; iceRing consumes actual IceBurst facts."
+}

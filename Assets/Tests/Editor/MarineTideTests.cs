@@ -30,7 +30,8 @@ namespace YesterdayConvoy.Tests
         {if(b.Phase==BattlePhase.Ready)b.Begin();var result=b.TryDeployRole(b.RunId,request,b.Entry,id);Assert.That(result.Success,Is.True);return b.FindUnit(result.EntityId);}
         static void Hurt(ManualBattle b,DeployedUnitState u,float damage=1)=>Assert.That(b.TryDamageUnit(u.EntityId,damage,CombatDamageType.Arts),Is.True);
         static void Set(object target,string property,object value)=>target.GetType().GetProperty(property).SetValue(target,value);
-        static object Call(object target,string method,params object[] args)=>target.GetType().GetMethod(method,BindingFlags.Instance|BindingFlags.NonPublic).Invoke(target,args);
+        static object Call(object target,string method,params object[] args)
+        {var info=target.GetType().GetMethod(method,BindingFlags.Instance|BindingFlags.NonPublic);return info.Invoke(target,args.Concat(info.GetParameters().Skip(args.Length).Select(p=>p.DefaultValue)).ToArray());}
 
         [Test]public void DeploymentWaitingSelfLossAndInvulnerableContactDoNotSeed()
         {

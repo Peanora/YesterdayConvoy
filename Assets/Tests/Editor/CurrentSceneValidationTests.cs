@@ -19,7 +19,8 @@ namespace YesterdayConvoy.Tests
             var c=Object.FindAnyObjectByType<ManualBattleController>();
             Assert.That(source.Monster.gameObject.activeSelf,Is.False);
             var template=source.Monster.GetComponentInChildren<DemoSpriteVisual>(true);
-            Assert.That(template.Renderer.sprite,Is.SameAs(source.Card.BattleSprite));
+            Assert.That(template.Renderer.sprite,Is.Not.Null,"The inactive authored template retains its serialized editor placeholder.");
+            Assert.That(source.Card.BattleSprite.name,Does.StartWith("BossRoster/B20/"),"Runtime card art must resolve the approved original model rather than the inactive old template.");
             Assert.That(c.CombatView,Is.Not.Null);
             var defender=c.CombatView.DefenderVisual;
             Assert.That(defender.enabled,Is.True);

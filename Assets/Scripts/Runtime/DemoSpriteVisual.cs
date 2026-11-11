@@ -15,6 +15,7 @@ namespace YesterdayConvoy
         private HerdSpiritVisual herdVisual;
         private OriginalSlugArt slug;
         private LocalMonsterArt local;
+        private BossRosterArt bossRoster;
         private Func<double> presentationClock;
         private bool slugWasMoving;
         private double slugTransitionTime,slugWalkDistance;
@@ -47,13 +48,14 @@ namespace YesterdayConvoy
             sprite.enabled=true;
             manualBattle=battle; deployedUnit=unit; frameCard=frames;
             this.presentationClock=presentationClock; local=LocalMonsterArt.For(frames.CardId); slug=OriginalSlugArt.For(frames.CardId);
+            bossRoster=BossRosterArt.For(frames.CardId);
             slugWasMoving=false; slugTransitionTime=battle.Clock; slugWalkDistance=unit.Motion.DistanceTravelled;
             original=OriginalTalulahArt.For(frames);
             if(WorldUpright)
             {
                 if(tacticalMaterial==null)tacticalMaterial=new Material(Resources.Load<Shader>("TacticalActor"));
                 sprite.sharedMaterial=tacticalMaterial;
-                ActorGrounding.Attach(sprite,local?.Height??1.25f);
+                ActorGrounding.Attach(sprite,bossRoster?.Height??local?.Height??1.25f);
             }
             tacticalFlip=original!=null||ViviCombat.IsVivi(frames.CardId)?Vector3.Dot(unit.Motion.Direction,Camera.main!=null?Camera.main.transform.right:Vector3.right)<-.08f:unit.Motion.Direction.x<-.08f;
             viviWalkDistance=0;viviPreviousDistance=unit.Motion.DistanceTravelled;
@@ -89,6 +91,7 @@ namespace YesterdayConvoy
                 return;
             }
             sprite.enabled=true; sprite.flipX=false; sprite.color=tint;
+            if(bossRoster!=null&&manualBattle.UnitInvisible(deployedUnit))sprite.color=new Color(tint.r,tint.g,tint.b,Mathf.Min(.6f,tint.a));
             if(ViviCombat.IsVivi(frameCard.CardId))
             {
                 if(deployedUnit.IsMoving&&!manualBattle.IsPaused)
@@ -97,7 +100,7 @@ namespace YesterdayConvoy
                 tacticalFlip=ViviCombat.VisualFlip(manualBattle,deployedUnit,Camera.main,tacticalFlip);
                 sprite.flipX=tacticalFlip;
             }
-            if(WorldUpright && frameCard.CardId!=SilverWolfCombat.CardId && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null))
+            if(WorldUpright && frameCard.CardId!=SilverWolfCombat.CardId && !manualBattle.UnitCombat(deployedUnit).Effects.Healer && (local!=null || slug!=null || bossRoster!=null))
             {
                 if(deployedUnit.Active && !manualBattle.IsPaused && !manualBattle.IsSkillActionPlaying(deployedUnit))
                 {
@@ -158,6 +161,7 @@ namespace YesterdayConvoy
             }
             transform.localPosition=Vector3.zero; transform.localScale=VisualScale;
             if(PresentHerdTransition())return;
+            if(bossRoster!=null) { PresentBossRoster(); return; }
             if(frameCard.CardId==SilverWolfCombat.CardId)
             {
                 PresentSilverWolf();
@@ -198,6 +202,32 @@ namespace YesterdayConvoy
             double duration=skill ? manualBattle.UnitCombat(deployedUnit).SkillInterval : sequence.Count/20.0;
             FrameIndex=Mathf.Clamp((int)(age/duration*sequence.Count),0,sequence.Count-1);
             sprite.sprite=sequence[FrameIndex];
+        }
+
+        private void PresentBossRoster()
+        {
+            double now=presentationClock?.Invoke()??manualBattle.Clock;
+            if(BossCoreArt.TryFrame(manualBattle,deployedUnit,now,out var coreArt,out string coreRaw,out double coreAge,out bool coreLoop))
+            {
+                FrameState="BossRoster/"+coreRaw;
+                if(coreArt.HasZeroDurationState(coreRaw)){sprite.enabled=false;FrameIndex=0;return;}
+                sprite.sprite=coreArt[coreRaw].At(coreAge,coreLoop,out int coreIndex);FrameIndex=coreIndex;
+                if(manualBattle.IsTalulah(deployedUnit)&&deployedUnit.TalulahPhase==TalulahPhase.Dead)
+                {if(terminalTalulahVfx==null)terminalTalulahVfx=new TalulahAttackVfx(transform.parent);terminalTalulahVfx.Begin();terminalTalulahVfx.PresentTerminal(deployedUnit,now,Camera.main,tacticalFlip);terminalTalulahVfx.End();}
+                return;
+            }
+            if(manualBattle.BossRosterFrame(deployedUnit,now,out string raw,out double sourceAge,out bool sourceLoop)&&bossRoster.HasClip(raw))
+            {
+                if(deployedUnit.Resolution==UnitResolution.Dead)sourceAge=now-deployedUnit.DeathTime;
+                sprite.sprite=bossRoster[raw].At(sourceAge,sourceLoop,out int sourceIndex);FrameState="BossRoster/"+raw;FrameIndex=sourceIndex;return;
+            }
+            string key="idle"; double age=now-deployedUnit.SpawnTime; bool loop=true;
+            if(deployedUnit.Resolution==UnitResolution.Dead){key="death";age=now-deployedUnit.DeathTime;loop=false;}
+            else if(now>=deployedUnit.LastAttackTime && now<deployedUnit.LastAttackTime+manualBattle.UnitActionDuration(deployedUnit))
+            {key="attack";age=(now-deployedUnit.LastAttackTime)*deployedUnit.LastAttackRate;loop=false;}
+            else if(deployedUnit.IsMoving){key="walk";age=deployedUnit.Motion.DistanceTravelled/Math.Max(.01,bossRoster.ReferenceSpeed);}
+            if(!bossRoster.HasClip(key)) { if(key=="death"){sprite.enabled=false;return;}key="idle";loop=true; }
+            sprite.sprite=bossRoster[key].At(age,loop,out int index);FrameState="BossRoster/"+key;FrameIndex=index;
         }
 
         private bool PresentHerdTransition()

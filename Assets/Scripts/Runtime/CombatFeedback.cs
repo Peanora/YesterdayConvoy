@@ -78,6 +78,7 @@ namespace YesterdayConvoy
         // Centralizes ONLY actual defender healing; keeps caller-specific SP/statistics untouched.
         float RestoreDefenderHealth(DefenderState d,float amount)
         {
+            if(!BossRosterDefenderCanHeal(d))return 0;
             if(d==null||!d.Alive||d.DebtLife||amount<=0||float.IsNaN(amount)||float.IsInfinity(amount))return 0;
             float gained=Mathf.Min(amount,Mathf.Max(0,d.MaxHealth-d.Health));
             if(gained<=0)return 0;

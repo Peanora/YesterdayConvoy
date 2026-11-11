@@ -36,10 +36,10 @@ namespace YesterdayConvoy.Tests
         static void Set(object value,string property,object next)=>value.GetType().GetProperty(property,State).SetValue(value,next);
         static object Call(ManualBattle b,string name,params object[] args)
         {
-            var method=typeof(ManualBattle).GetMethods(State).SingleOrDefault(m=>m.Name==name&&m.GetParameters().Length==args.Length&&
-                m.GetParameters().Select((p,i)=>p.ParameterType.IsInstanceOfType(args[i])).All(valid=>valid));
+            var method=typeof(ManualBattle).GetMethods(State).SingleOrDefault(m=>m.Name==name&&m.GetParameters().Length>=args.Length&&
+                m.GetParameters().Skip(args.Length).All(p=>p.IsOptional)&&m.GetParameters().Take(args.Length).Select((p,i)=>p.ParameterType.IsInstanceOfType(args[i])).All(valid=>valid));
             Assert.That(method,Is.Not.Null,name);
-            return method.Invoke(b,args);
+            return method.Invoke(b,args.Concat(method.GetParameters().Skip(args.Length).Select(p=>p.DefaultValue)).ToArray());
         }
         static bool Hit(ManualBattle b,DeployedUnitState u,float attack,CombatDamageType type)
             =>(bool)Call(b,"TryDefenderDamageUnit",u,attack,type,0f,false);

@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "task": "B03",
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_start_right",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "right",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_start_left",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "left",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_hit",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "binding": 0,
+      "source": "Default/Modes/Default/Body/Combat/cast"
+    },
+    {
+      "binding": 1,
+      "source": "Default/Modes/Default/Body/Combat/cast"
+    },
+    {
+      "binding": 2,
+      "source": "Default/Modes/Default/Body/Combat/hit"
+    }
+  ],
+  "note": "Only exact original native references. Actual event NativeSkillKey/Phase/Animation/HitIndex select bindings; no damage is caused by this data."
+}

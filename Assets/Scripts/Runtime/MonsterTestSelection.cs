@@ -58,7 +58,7 @@ namespace YesterdayConvoy
             foreach(var option in monsterTests) names.Add(option.Name);
             foreach(string name in candidates) if(names.Add(name)) monsterTests.Add(new MonsterTestOption(name));
         }
-        private static bool HasSkillAnimation(CardDefinition card,EngagementSettings combat) =>
+        private static bool HasSkillAnimation(CardDefinition card,EngagementSettings combat) => BossRosterArt.For(card.CardId)!=null ||
             (card.SkillFrames?.Count??0)>0 || card.CardId==SilverWolfCombat.CardId && LocalMonsterArt.For(card.CardId)?.HasClip("extra_transform")==true || (combat.FrostSeal||combat.MudrockCapture) && LocalMonsterArt.For(card.CardId)?.HasClip("extra_skill_1")==true;
         private bool IsRegisteredTest(ManualBattleDefinition data)
         {
@@ -149,6 +149,7 @@ namespace YesterdayConvoy
                 if(effects.Flamerazer) detail="半秒喷火 / 积累灼燃\n死亡爆炸 / 同类连锁与支柱倒塌";
                 if(effects.Flamechaser) detail="倒下化为5次受击的隐匿余烬\n余烬存活10秒后重生 / 芦苇灼燃";
                 if(effects.ColdAttackEvery>0) detail=$"每{effects.ColdAttackEvery}次普攻附加寒冷\n法术伤害 / 寒冷叠加冻结";
+                string bossDetail=BossRosterMenuDescription(option.Id);if(bossDetail!=null)detail=bossDetail;
                 GUI.Label(new Rect(x+20,y+235,cardWidth-40,54),detail,menuSmall);
                 if(GUI.Button(new Rect(x+18,y+298,cardWidth-36,36),"进入测试",buttonStyle)) PrepareMonsterEntry(option);
                 index++;

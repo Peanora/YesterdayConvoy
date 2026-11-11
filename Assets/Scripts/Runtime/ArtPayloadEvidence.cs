@@ -9,7 +9,7 @@ namespace YesterdayConvoy
     // Explicit standalone verification of the built payload; ordinary startup never installs this driver.
     public sealed class ArtPayloadEvidence:MonoBehaviour
     {
-        static readonly string[] Roots={"DefenderArt","MonsterCombatArt","TalulahOriginal","OriginiumSlugOriginal","OriginalCombatVfx","TalulahUnboundVfx"};
+        static readonly string[] Roots={"DefenderArt","MonsterCombatArt","TalulahOriginal","OriginiumSlugOriginal","OriginalCombatVfx","TalulahUnboundVfx","BossRoster","BossRosterFx"};
         [Serializable] sealed class Manifest {public int version;public Clip[] clips;}
         [Serializable] sealed class Clip {public Page[] pages;}
         [Serializable] sealed class Page {public string file;}

@@ -2364,3 +2364,15 @@ Git 属性沿用对 Unity YAML 空值尾随空格的处理，为新增 `.mat` �
 
 
 最终直达入口：c2e568e源码的artifacts/mudrock-growth-final-build.log为1045846309字节、0错误，真实Unity退出0。已复制tools/play_mudrock_trial.cmd到Builds/Windows/泥岩培养.cmd；使用同一普通参数-mudrockCultivation从TEMP启动1600×900 Direct3D11，实际进入五原生一星加弩手、0经验的独立专项；鼠标直接点击左侧泥岩条目打开培养面板，已观察人数/总星/当前上限/下场预计经验及真实补卡按钮。普通窗口仍正常响应并停留供人类试玩，不会执行自动退出。最终可玩入口为Builds/Windows/YesterdayConvoy.exe或同目录泥岩培养.cmd，保留整个Windows目录。
+# 2026-11-11：26 位 Boss 正式接入验证
+
+工作分支 `codex/boss-roster-integration`。开工核实远端 main=`0b17920`，保留既有攻擂工作至 `59a7428`，未丢弃用户修改。`.vscode/` 与 `ProjectSettings/PackageManagerSettings.asset` 是开工既存未跟踪项，未纳入任务提交。未改场景、Prefab、包清单和 ProjectSettings；未新增启动器、ZIP 或 Releases。
+
+- 模型打包：35 视图、433 段正时长动作、58,583 帧、2,722 页，PNG 共 2,621,729,692 字节；原 SHA、时长、事件、pivot 保持。来源登记核对 105 个原文件 SHA。它是源资源证据，不代表逐段自然战斗验收。
+- 原 FX：最终运行清单 21 包、389 段、25,908 帧、390 页，源 SHA/RGBA 检查全过；418 条事件绑定，其他装置按真实对象字段分派。塔露拉实际复用原目录的 19 个补充 key，重复副本已删除，Player 导出仅增加真实绑定依赖。
+- 代表先验：`Library/BossRosterEvidence/representative-fx.log/json`，实际 MonsterTrial 相机；B22 身体开关差异 18,514 像素，原 HDR 特效 7,884 像素，真实 HP、源双段接触与暂停固定通过。
+- 正式安装：`integration-install.log`，Unity 编译通过，`BOSS_ROSTER_INSTALL_PASS cards=19`。
+- 完整 EditMode：`full-editmode.xml/log`，**1088/1088**。初轮 1087 项有 20 个旧衔接／旧断言失败；修正塔露拉复起后被动 CD 与手动 SP、冬痕 20 秒保护期夹具、实际魂灵／灼息额外伤害回执、可选参数反射调用及依赖清单。保留初轮证据；中间两次编译问题修复后才计正式通过。
+- 正式 D3D11 场景 PlayMode：`boss-playmode.xml/log`，**2/2**，遍历 26 位、维维美 S1/S2/S3 共 28 场，所有场次检查通过。真实生产选择／加载、底部卡指针部署、同卡双实体、独立 HP/SP、生产技能弹窗、源图集 GPU 像素贡献、暂停与重开；旧核心验证复起。首次夹具 CD=0 被正数校验拒绝，改 0.01 秒重跑全过，未改生产约束。验证夹具明确提高预算／耐久、注入致命伤触发阶段，不能说成自然通关或 OS 鼠标试玩。
+
+Windows 构建、独立 Player、仓库依赖核对及最终提交结果将在实际完成后追加。未执行第二台电脑、人类整局自然运营、全分辨率或长期平衡。当前源路径与适配见 [接入说明](BOSS_ROSTER_INTEGRATION.md)、[机制说明](BOSS_ROSTER_MECHANICS.md)、[来源登记](art/BOSS-ROSTER-SOURCES.md)。
