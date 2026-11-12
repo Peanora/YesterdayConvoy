@@ -32,7 +32,7 @@ namespace YesterdayConvoy.Editor
         }
         static DefenderPlacement Make(string id)
         {
-            var d=new DefenderPlacement{id=id,artId=id,health=3600,attack=60,armor=12,range=3.5f,interval=2.2f,windup=.4f,actionDuration=1.6f,blocks=0,position=new Vector3(-4.5f,.76f,2),skill=new DefenderSkillDefinition()};var s=d.skill;
+            var d=new DefenderPlacement{id=id,artId=id,health=3600,attack=60,armor=12,range=3.5f,interval=2.2f,windup=.4f,actionDuration=1.6f,blocks=0,position=new Vector3(-4,.38f,1),skill=new DefenderSkillDefinition()};var s=d.skill;
             s.duration=99999;s.effectRadius=4.5f;
             switch(id)
             {

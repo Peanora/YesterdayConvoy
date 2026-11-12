@@ -30,7 +30,7 @@ MonoBehaviour:
   - id: D35
     displayName: "\u51EF\u5C14\u5E0C\xB7\u601D\u8861\u6258"
     artId: D35
-    position: {x: -4.5, y: 0.76, z: 2}
+    position: {x: -4, y: 0.38, z: 1}
     health: 3600
     attack: 60
     armor: 12

@@ -35,7 +35,7 @@ namespace YesterdayConvoy.Editor
                 position=new Vector3(-5.5f,.04f,3),skill=new DefenderSkillDefinition()};var s=d.skill;
             switch(id)
             {
-                case "D21":d.displayName="荒芜拉普兰德";d.position=new Vector3(-3.5f,.76f,2);d.health=1000;d.range=3.5f;d.armor=5;d.blocks=0;d.damageType=CombatDamageType.Arts;d.interval=1.3f;
+                case "D21":d.displayName="荒芜拉普兰德";d.position=new Vector3(-4,.38f,1);d.health=1000;d.range=3.5f;d.armor=5;d.blocks=0;d.damageType=CombatDamageType.Arts;d.interval=1.3f;
                     s.kind=DefenderSkillKind.LapplandHavoc;s.initialSP=38;s.requiredSP=63;s.duration=40;s.attackMultiplier=1.6f;s.moveMultiplier=.6f;s.targets=3;s.effectRadius=.9f;break;
                 case "D22":d.displayName="余";d.attack=30;d.health=1600;d.armor=14;
                     s.kind=DefenderSkillKind.YuKitchen;s.initialSP=33;s.requiredSP=55;s.duration=42;s.attackMultiplier=s.defenseMultiplier=s.healthMultiplier=1.8f;s.effectRadius=5;s.elementFraction=.07f;s.eraseChance=.15f;break;

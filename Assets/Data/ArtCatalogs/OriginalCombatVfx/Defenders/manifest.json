@@ -551,8 +551,8 @@
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_buff_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
       "adaptation": "Native shader capture; independent anchor; no style repaint.",
-      "groundDepth": true,
-      "belowActors": true,
+      "groundDepth": false,
+      "belowActors": false,
       "loopStart": 0,
       "loopEnd": 0
     },

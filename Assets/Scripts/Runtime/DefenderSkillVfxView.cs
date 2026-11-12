@@ -95,7 +95,9 @@ namespace YesterdayConvoy
                     switch(id)
                     {
                         case "D21":
-                            Show(id,"whitw2_skill_03_buff_start",age,d.Position,cam,ground:true);
+                            // Original local-XY billboard smoke extends below its foot.
+                            // Upright depth lets the real terrain occlude that part.
+                            Show(id,"whitw2_skill_03_buff_start",age,d.Position,cam);
                             break;
                         case "D22":Show(id,"yu_skill3_buff_01",age,d.Position,cam,loop:true,ground:true);break;
                         case "D23":

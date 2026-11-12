@@ -201,15 +201,69 @@
           "sourceRows": "PNG top-to-bottom -> Unity raw bottom-to-top"
         }
       ],
-      "groundDepth": true,
-      "belowActors": true,
-      "attachmentEvidence": "Existing explicitly ground-attached presentation retained; source spawn enum/mount height must still be verified per prefab.",
+      "groundDepth": false,
+      "belowActors": false,
+      "attachmentEvidence": "Original local-aligned upright billboard smoke/star/flare, not a ground decal. Preserve real floor occlusion instead of projecting the complete image onto ground depth.",
       "loopStart": 0,
       "loopEnd": 0,
       "loopReason": "No stable-window override: one-shot, transient projectile, or already bright source start.",
       "firstBrightnessRatio": 0.0,
       "lastBrightnessRatio": 0.0,
-      "tailThirdMinBrightnessRatio": 0.0
+      "tailThirdMinBrightnessRatio": 0.0,
+      "uprightDepthEvidence": {
+        "key": "defender/D21/whitw2_skill_03_buff_start",
+        "status": "SOURCE_UPRIGHT_PARTICLE_DEPTH_CLASSIFICATION_CORRECTED_NO_PIXEL_EDIT",
+        "sourcePrefab": "whitw2_skill_03_buff_start",
+        "sourceBundle": "battle/prefabs/effects/whitw2.ab",
+        "renderGeometry": {
+          "rendererType": "ParticleSystemRenderer",
+          "renderMode": 0,
+          "renderModeName": "Billboard",
+          "renderAlignment": 2,
+          "renderAlignmentName": "Local",
+          "smokeTransformRotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "smokeTransformPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "smokeStartRotation3D": false,
+          "smokeStartRotationX": 0,
+          "smokeStartRotationY": 0,
+          "smokeRotationModuleSeparateAxes": false,
+          "flareAndStarSourceTiltXDegrees": -30
+        },
+        "captureEvidence": {
+          "status": "PASS",
+          "edgePixels": 0,
+          "clippedPixels": 0,
+          "maxTransmissionError": 1.1920928955078125e-07,
+          "frame": 3,
+          "frameTime": 0.1,
+          "frameAlphaBoundingBoxPngTopLeft": [
+            173,
+            227,
+            339,
+            301
+          ],
+          "captureSize": 512,
+          "capturePixelsPerWorldUnit": 64,
+          "footPngY": 265.0045471191406
+        },
+        "reason": "The original upright local-aligned smoke has legitimate pixels below its foot. Forcing the whole baked upright image to a ground depth plane makes those pixels remain on top of the floor as a flat patch. Preserve source RGBA and use upright depth so real floor occlusion can reject below-floor pixels.",
+        "groundDepth": false,
+        "belowActors": false,
+        "limitations": [
+          "No claim of a source crop failure: native report and alpha guard show no capture-edge clipping.",
+          "Source used AlphaBlend and Dissolve AB materials, not a missing Distort input.",
+          "Same real-event Player A/B is required to confirm the observed visual fix."
+        ]
+      }
     },
     {
       "key": "defender/D22/yu_attack_01",

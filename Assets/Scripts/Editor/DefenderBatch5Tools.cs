@@ -33,7 +33,7 @@ namespace YesterdayConvoy.Editor
         static DefenderPlacement Make(string id)
         {
             var d=new DefenderPlacement{id=id,artId=id,health=1400,attack=20,armor=12,range=3.5f,interval=1.6f,windup=.35f,actionDuration=1.333333f,blocks=3,
-                position=new Vector3(-4.5f,.76f,2),relayPosition=new Vector3(-5.5f,.04f,2),skill=new DefenderSkillDefinition()};var s=d.skill;
+                position=new Vector3(-4,.38f,1),relayPosition=new Vector3(-5.5f,.04f,2),skill=new DefenderSkillDefinition()};var s=d.skill;
             switch(id)
             {
                 case "D23":d.displayName="Mon3tr";d.role=DefenderRole.Medic;d.noOrdinaryAttack=true;d.interval=d.actionDuration=2.833333f;d.healingRange=4;

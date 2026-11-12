@@ -30,7 +30,7 @@ MonoBehaviour:
   - id: D21
     displayName: "\u8352\u829C\u62C9\u666E\u5170\u5FB7"
     artId: D21
-    position: {x: -3.5, y: 0.76, z: 2}
+    position: {x: -4, y: 0.38, z: 1}
     health: 1000
     attack: 24
     armor: 5

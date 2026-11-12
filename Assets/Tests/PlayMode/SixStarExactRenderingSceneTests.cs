@@ -107,5 +107,32 @@ namespace YesterdayConvoy.Tests
             }
             finally{layer.Dispose();Object.Destroy(root);Object.Destroy(cameraObject);}
         }
+        [UnityTest]public IEnumerator OriginalLapplandUprightSmokeLetsTheFloorHideItsBelowFootImage()
+        {
+            var clip=OriginalCombatVfxArt.Get("defender/D21/whitw2_skill_03_buff_start");yield return clip.Sequence.Warm();
+            Assert.That(clip.GroundDepth,Is.False);Assert.That(clip.BelowActors,Is.False);
+            var root=new GameObject("Original upright smoke depth");var cameraObject=new GameObject("Original upright smoke camera");var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;
+            camera.orthographic=true;camera.orthographicSize=2.2f;camera.aspect=1;camera.cullingMask=1<<29;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.black;
+            var anchor=new Vector3(0,.04f,0);camera.transform.SetPositionAndRotation(anchor-Quaternion.Euler(60,0,0)*Vector3.forward*10,Quaternion.Euler(60,0,0));
+            var floor=GameObject.CreatePrimitive(PrimitiveType.Plane);floor.layer=29;var material=new Material(Shader.Find("Unlit/Color"));material.color=new Color(.3f,.3f,.3f);floor.GetComponent<Renderer>().sharedMaterial=material;
+            var layer=new OriginalCombatVfxLayer(root.transform);var target=new RenderTexture(256,256,24);var read=new Texture2D(256,256,TextureFormat.RGB24,false);var previous=RenderTexture.active;camera.targetTexture=target;
+            Color32[] Capture(){camera.Render();RenderTexture.active=target;read.ReadPixels(new Rect(0,0,256,256),0,0);read.Apply();return read.GetPixels32();}
+            try
+            {
+                var baseline=Capture();layer.Begin();layer.ShowGround(clip.Key,.1,anchor,camera,false,32);layer.End();foreach(var r in layer.Renderers)r.gameObject.layer=29;
+                var forcedGround=Capture();layer.Begin();layer.Show(clip.Key,.1,anchor,camera,false,32);layer.End();var upright=Capture();
+                int foot=Mathf.RoundToInt(camera.WorldToScreenPoint(anchor).y)-3,oldBelow=0,newBelow=0,newAbove=0;
+                for(int y=0;y<256;y++)for(int x=0;x<256;x++)
+                {
+                    int i=y*256+x;bool Changed(Color32 a)=>Math.Abs(a.r-baseline[i].r)+Math.Abs(a.g-baseline[i].g)+Math.Abs(a.b-baseline[i].b)>9;
+                    if(y<foot){if(Changed(forcedGround[i]))oldBelow++;if(Changed(upright[i]))newBelow++;}else if(Changed(upright[i]))newAbove++;
+                }
+                Debug.Log("D21_SMOKE_DEPTH oldBelow="+oldBelow+" uprightBelow="+newBelow+" uprightAbove="+newAbove);
+                Assert.That(oldBelow,Is.GreaterThan(20),"The fixture must reproduce the original below-foot image on the erroneous ground depth plane.");
+                Assert.That(newBelow,Is.LessThan(oldBelow*.2+2),"Real floor depth must hide the below-ground part without editing source alpha.");
+                Assert.That(newAbove,Is.GreaterThan(20),"The legal above-ground native smoke remains visible.");
+            }
+            finally{layer.Dispose();camera.targetTexture=null;RenderTexture.active=previous;target.Release();Object.Destroy(target);Object.Destroy(read);Object.Destroy(material);Object.Destroy(floor);Object.Destroy(root);Object.Destroy(cameraObject);}
+        }
     }
 }

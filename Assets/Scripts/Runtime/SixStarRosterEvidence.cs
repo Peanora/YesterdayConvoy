@@ -15,7 +15,7 @@ namespace YesterdayConvoy
     {
         [Serializable] internal sealed class SixStarCase
         {
-            public string id,scene;public bool passed;public int casts,deployments,bodyPixels,skillPixels,skillBodyPixels,monsterPixels,hitPixels,shots,damageShots;
+            public string id,scene;public bool passed;public int casts,deployments,bodyPixels,skillPixels,steadyPixels,skillBodyPixels,monsterPixels,hitPixels,shots,damageShots;
             public double clock;public string outcome;public string[] checks,sourceKeys;
         }
         [Serializable] internal sealed class SixStarResult
@@ -77,7 +77,7 @@ namespace YesterdayConvoy
                     bool Deploy(){ProcessPointerDown(ScreenPosition(CardSlot(2).center));ProcessPointerMove(gate);bool accepted=ProcessPointerUp(gate).Success;if(accepted)item.deployments++;return accepted;}
                     Check("paused-pointer-deploy",Deploy());double pausedClock=battle.Clock;float sp=defender.SkillSP;Tick(3);yield return null;
                     Check("paused-clock-and-sp",battle.Clock==pausedClock&&defender.SkillSP==sp);battle.SetPaused(false);
-                    var seen=new HashSet<string>();int extras=0,probes=0,hitProbes=0;bool pausedFx=false,captured=false;double firstCast=double.NaN;
+                    var seen=new HashSet<string>();int extras=0,probes=0,hitProbes=0;bool pausedFx=false,captured=false,steady=false;double firstCast=double.NaN;
                     for(int tick=0;tick<2000&&battle.Phase==BattlePhase.Running;tick++)
                     {
                         Tick(.1f);yield return null;
@@ -85,6 +85,16 @@ namespace YesterdayConvoy
                         if(defender.SkillCasts>0&&double.IsNaN(firstCast))firstCast=battle.Clock;
                         var allFx=SixStarFx(id);foreach(var renderer in allFx)seen.Add(renderer.name);
                         var fx=allFx.Where(r=>SixStarSelected(id,r.name)).ToArray();
+                        if(!steady&&!double.IsNaN(firstCast)&&battle.Clock-firstCast>=3.1&&fx.Length>0)
+                        {
+                            int pixels=SixStarPixels(fx,directory,id+"-skill-steady",true);item.steadyPixels=Math.Max(item.steadyPixels,pixels);
+                            if(pixels>20)
+                            {
+                                steady=true;
+                                if(id=="D22")Check("mature-wall-has-real-active-model-and-original-side-layers",battle.DefenderWallActive(defender)&&fx.Any(r=>r.name.Contains("/yu_skill3_range_01")));
+                                yield return TacticalFrame(directory,id+"-steady-visible-player");
+                            }
+                        }
                         if(Array.IndexOf(DefenderBatch7Ids,id)>=0&&defender.SkillCasts>0&&hitProbes<24)
                         {
                             var hits=allFx.Where(r=>SixStarNewHit(id,r.name)).ToArray();
@@ -116,6 +126,7 @@ namespace YesterdayConvoy
                     item.casts=defender.SkillCasts;item.clock=battle.Clock;item.outcome=battle.Phase.ToString();
                     item.shots=battle.CombatShots.Count(s=>s.SourceId==id);item.damageShots=battle.CombatShots.Count(s=>s.SourceId==id&&s.Applied&&s.DamageDealt>0);
                     Check("natural-auto-skill",item.casts>0);Check("actual-original-skill-gpu",item.skillPixels>20&&pausedFx);
+                    Check("mature-selected-fx-gpu-after-startup",steady&&item.steadyPixels>20);
                     Check("body-and-monsters-remain-visible-during-selected-fx",item.skillBodyPixels>20&&item.monsterPixels>20);
                     if(Array.IndexOf(DefenderBatch7Ids,id)>=0){Check("new-skill-real-interaction",Batch7SkillObserved(id));Check("real-selected-target-hit-gpu",item.hitPixels>0);}
                     RestartBattle();yield return null;yield return null;var reset=Battle.FindDefender(id);
