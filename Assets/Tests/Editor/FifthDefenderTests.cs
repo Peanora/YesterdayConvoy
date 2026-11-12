@@ -13,7 +13,7 @@ namespace YesterdayConvoy.Tests
                 new EngagementSettings(unitAttack:damage,unitInterval:.5f,unitRange:5),roster:new[]{d});b.Begin();b.TryDeploy(b.RunId,1,b.Entry);return b;
         }
         [Test]public void ExusiaiConsumesExactlyFiveAmmoPerFiveSeparatelyResolvedHits()
-        {var b=New(DefenderSkillKind.ExusiaiDelivery);b.Advance(1.3f);var shots=b.CombatShots.Where(x=>x.FromDefender&&x.Empowered).ToArray();Assert.That(shots.Length,Is.EqualTo(5));Assert.That(shots.All(x=>x.Applied),Is.True);Assert.That(b.Defender.Ammo,Is.EqualTo(45));}
+        {var b=New(DefenderSkillKind.ExusiaiDelivery);b.Advance(2.5f);var shots=b.CombatShots.Where(x=>x.FromDefender&&x.Empowered).ToArray();Assert.That(shots.Length,Is.EqualTo(5));Assert.That(shots.All(x=>x.Applied),Is.True);Assert.That(b.Defender.Ammo,Is.EqualTo(45));}
         [Test]public void Mon3trLethalTransformedHitReturnsAliveAndPauseFreezesPosition()
         {var b=New(DefenderSkillKind.Mon3trMeltdown,damage:600,hp:500);b.Advance(.9f);Assert.That(b.Defender.Transfers,Is.GreaterThanOrEqualTo(2));Assert.That(b.Defender.Health,Is.GreaterThan(0));Assert.That(b.Defender.Position,Is.EqualTo(b.Defender.Settings.Position));b.SetPaused(true);var pos=b.Defender.Position;b.Advance(10);Assert.That(b.Defender.Position,Is.EqualTo(pos));}
         [Test]public void Mon3trSkillShotsBypassArmorAndResetClearsTransform()

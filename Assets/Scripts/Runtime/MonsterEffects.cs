@@ -182,7 +182,7 @@ namespace YesterdayConvoy
         public float UnitAttackRate(DeployedUnitState unit) => BossRosterUnitAttackRate(unit)*(unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
         public float UnitArmor(DeployedUnitState unit)
         {
-            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","armorBonus",2):0);
+            float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-SeventhArmorReduction(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","armorBonus",2):0);
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March)armor*=3;
             if(!UnitCombat(unit).Effects.Phalanx || unit==null || !unit.Active) return armor;
             foreach(var other in units)
@@ -273,7 +273,7 @@ namespace YesterdayConvoy
         void ApplyDefenderAttack(DefenderState defender,float attack,CombatDamageType type,bool derived,DeployedUnitState source,float damageScale,DeployedUnitState creditSource)
         {
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
-            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale,creditSource,true);
+            ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*SeventhDamageMultiplier(defender,source),creditSource,true);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);
             if(deepHit&&defender.Alive)ApplyDeepBurn(defender);
             if(alive&&!defender.Alive&&!derived)OnDeepKill(defender,burning||deepHit);

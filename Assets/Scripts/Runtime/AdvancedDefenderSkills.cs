@@ -21,7 +21,7 @@ namespace YesterdayConvoy
         readonly List<DefenderDroneState> defenderDrones=new List<DefenderDroneState>();
         public IReadOnlyList<DefenderDroneState> DefenderDrones=>defenderDrones.AsReadOnly();
         public bool IsAdvancedDefender(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.LapplandHavoc;
-        public float DefenderRange(DefenderState d)=>CampaignV2Enabled&&d.Settings.Skill.EffectRadius<=0&&(IsSixth(d)&&DefenderSkillActive(d)||IsFifthActive(d))?d.Settings.Range:
+        public float DefenderRange(DefenderState d)=>IsSeventh(d)&&DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0?d.Settings.Skill.EffectRadius:CampaignV2Enabled&&d.Settings.Skill.EffectRadius<=0&&(IsSixth(d)&&DefenderSkillActive(d)||IsFifthActive(d))?d.Settings.Range:
             IsSixth(d)&&DefenderSkillActive(d)?d.Settings.Skill.EffectRadius:IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
         public bool DefenderCanBlock(DefenderState d)=>BossRosterDefenderCanBlock(d)&&(d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d));
@@ -67,7 +67,7 @@ namespace YesterdayConvoy
             foreach(var d in defenders)if(d.Alive)alive++;
             foreach(var d in defenders)
             {
-                if(!IsAdvancedDefender(d)||IsFifth(d)||IsSixth(d))continue;
+                if(!IsAdvancedDefender(d)||IsFifth(d)||IsSixth(d)||IsSeventh(d))continue;
                 if(d.AdvancedSkillWasActive&&!DefenderSkillActive(d))
                 {
                     if(d.Settings.Skill.Kind==DefenderSkillKind.YuKitchen)
@@ -97,7 +97,7 @@ namespace YesterdayConvoy
             {
                 if(!ally.Alive||ally.Health>=ally.MaxHealth-.001f||GroundDistance(d.Position,ally.Position)>d.Settings.Skill.EffectRadius)continue;
                 d.TargetId=ally.EntityId;
-                combatShots.Add(new CombatShot(d.EntityId,ally.EntityId,true,true,d.Position,ally.Position,Clock,.05f,DefenderSkillAttack(d)*V2DefenderSkill(d,"healAttackFractionPerSecond",d.Settings.Skill.HealFraction),healing:true));
+                QueueDefenderShot(d,new CombatShot(d.EntityId,ally.EntityId,true,true,d.Position,ally.Position,Clock,.05f,DefenderSkillAttack(d)*V2DefenderSkill(d,"healAttackFractionPerSecond",d.Settings.Skill.HealFraction),healing:true));
             }
             return true;
         }
@@ -105,6 +105,7 @@ namespace YesterdayConvoy
         {
             if(target.DebtLife)return;
             float gain=RestoreDefenderHealth(target,amount);
+            if(source.Settings.Skill.Kind==DefenderSkillKind.KaltsitEsperanta&&DefenderSkillActive(source))source.SkillHealthRestored+=gain;
             if(source.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)
             {
                 source.SkillHealthRestored+=gain;if(DefenderSkillActive(source))source.AuraHeals++;
@@ -140,7 +141,7 @@ namespace YesterdayConvoy
             if(d.DroneTargetId!=target.EntityId){d.DroneTargetId=target.EntityId;d.DroneRamp=V2DefenderSkill(d,"droneInitialRamp",.2f);}
             var shot=new CombatShot(d.EntityId,target.EntityId,true,false,d.Position+Vector3.up*.4f,target.Motion.Position,
                 Clock+d.Settings.Windup,travel,DefenderSkillAttack(d)*d.DroneRamp,damageType:CombatDamageType.Arts){Drone=true};
-            combatShots.Add(shot);d.DroneRamp=Math.Min(V2DefenderSkill(d,"droneRampCap",1.1f),d.DroneRamp+V2DefenderSkill(d,"droneRampPerHit",.15f));d.DroneHits++;
+            QueueDefenderShot(d,shot);d.DroneRamp=Math.Min(V2DefenderSkill(d,"droneRampCap",1.1f),d.DroneRamp+V2DefenderSkill(d,"droneRampPerHit",.15f));d.DroneHits++;
         }
         void StepDefenderDrones(float step)
         {
@@ -167,7 +168,7 @@ namespace YesterdayConvoy
                 }
                 if(Clock+1e-6<v.NextAttackAt)continue;
                 v.NextAttackAt=Clock+d.Settings.Interval;d.DroneHits++;
-                combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,true,v.Position,target.Motion.Position,Clock,.05f,
+                QueueDefenderShot(d,new CombatShot(d.EntityId,target.EntityId,true,true,v.Position,target.Motion.Position,Clock,.05f,
                     DefenderSkillAttack(d)*v.Ramp,damageType:CombatDamageType.Arts){Drone=true});v.Ramp=Math.Min(V2DefenderSkill(d,"droneRampCap",1.1f),v.Ramp+V2DefenderSkill(d,"droneRampPerHit",.15f));
             }
             foreach(var u in units)

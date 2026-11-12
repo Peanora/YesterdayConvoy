@@ -1,0 +1,312 @@
+{
+  "officialModelBundleURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/chararts_char_4179_monstr.dat",
+  "officialModelBundleMD5": "53ad40650e447d2450ead4ce378451e3",
+  "officialModelBundleSHA256": "3fe17adbe81bee7ad03989e08e386bebd2df87372241835dba44a597bc0380f6",
+  "sourceModelVersion": "26-10-29-15-36-11-33649006",
+  "enumEvidence": {
+    "status": "ORIGINAL_IL2CPP_ENUM_CONSTANTS_CONFIRMED_PUBLIC_METADATA_SNAPSHOT",
+    "type": "Torappu.Battle.Entity/MountPointType",
+    "field": "Torappu.Battle.Effects.FollowMountPoint._mountPointType",
+    "fieldType": "Torappu.Battle.Entity/MountPointType",
+    "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+    "repositoryCommit": "5734c30bf54780056ff758505380322c0cf519fe",
+    "sha256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+    "bytes": 18309632,
+    "method": "Read-only Mono.Cecil metadata extraction. Dummy assembly was not executed.",
+    "constants": {
+      "FOOT": 0,
+      "HIT": 1,
+      "MUZZLE": 2,
+      "HEAD": 3,
+      "UI": 4,
+      "SPECIAL_0": 5,
+      "SPECIAL_1": 6,
+      "GROUND": 7,
+      "SPECIAL_2": 8,
+      "SPECIAL_3": 9,
+      "SPECIAL_4": 10,
+      "SPECIAL_5": 11,
+      "SPECIAL_6": 12,
+      "SPECIAL_7": 13,
+      "SPECIAL_8": 14,
+      "SPECIAL_9": 15,
+      "SPECIAL_10": 16,
+      "SPECIAL_11": 17,
+      "SPECIAL_12": 18,
+      "SPECIAL_13": 19,
+      "SPECIAL_14": 20,
+      "SPECIAL_15": 21
+    },
+    "versionLimit": "Public dump snapshot has not been byte-matched to the26-10-29 asset build; local source field types and chararts mount references are consistent. No enum value is inferred from filenames or slot counts."
+  },
+  "bindingScope": [
+    {
+      "effect": "monstr_skill_03_buff_01",
+      "point": "SpecialPoint3",
+      "sourceMountPointType": 9,
+      "keepOriginRotation": false,
+      "followScale": true,
+      "followScaleSign": true,
+      "scaleMultiplier": 1.0,
+      "sourceFollowMountPointPath": "/monstr_skill_03_buff_01"
+    },
+    {
+      "effect": "monstr_skill_03_buff_02",
+      "point": "SpecialPoint4",
+      "sourceMountPointType": 10,
+      "keepOriginRotation": false,
+      "followScale": true,
+      "followScaleSign": true,
+      "scaleMultiplier": 1.0,
+      "sourceFollowMountPointPath": "/monstr_skill_03_buff_02"
+    },
+    {
+      "effect": "monstr_skill_03_buff_03",
+      "point": "SpecialPoint5",
+      "sourceMountPointType": 11,
+      "keepOriginRotation": false,
+      "followScale": true,
+      "followScaleSign": true,
+      "scaleMultiplier": 1.0,
+      "sourceFollowMountPointPath": "/monstr_skill_03_buff_03"
+    },
+    {
+      "effect": "monstr_skill_03_buff_04",
+      "point": "SpecialPoint6",
+      "sourceMountPointType": 12,
+      "keepOriginRotation": false,
+      "followScale": true,
+      "followScaleSign": true,
+      "scaleMultiplier": 1.0,
+      "sourceFollowMountPointPath": "/monstr_skill_03_buff_04"
+    }
+  ],
+  "trackStatus": "SOURCE_TRACK_CANDIDATE_NOT_IMPORTED",
+  "trackSource": "Original cached default Spine 3.8.99 selected source frames sampled at body FPS; existing alpha-foot pivot correction preserved.",
+  "rights": "Original proprietary media; user integration/upload authorization is not an open redistribution license.",
+  "scope": "Only explicitly serialized FollowMountPoint effects, no generic flashes or fabricated missing trail.",
+  "followScaleEvidence": {
+    "status": "SOURCE_FOLLOW_SCALE_AND_BONE_LOCAL_SCALE_CONFIRMED",
+    "captureRoot": [
+      {
+        "effect": "monstr_skill_03_buff_01",
+        "job": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_01\\job.json",
+        "jobSHA256": "53d778e50e33cb352719d137a69dd8028631fa4bf8838a023c0c2caf2cd99f84",
+        "instanceScales": [
+          {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        ]
+      },
+      {
+        "effect": "monstr_skill_03_buff_02",
+        "job": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_02\\job.json",
+        "jobSHA256": "5d0fe8682a642877ef852f7be726429394013135aafae2f57f5468d56170748c",
+        "instanceScales": [
+          {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        ]
+      },
+      {
+        "effect": "monstr_skill_03_buff_03",
+        "job": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_03\\job.json",
+        "jobSHA256": "7b64fbe82144e79f187bf206c2ad33e341af8074550834e66a2e5c55fdf3dfbf",
+        "instanceScales": [
+          {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        ]
+      },
+      {
+        "effect": "monstr_skill_03_buff_04",
+        "job": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_04\\job.json",
+        "jobSHA256": "1a36b66c4221ea9dc222de982aef4b53fcbbde4eecea53371d8d181b0eedb398",
+        "instanceScales": [
+          {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        ]
+      }
+    ],
+    "captureContract": "NativeCompositeJobs.Create instantiates the source prefab without a CharacterAnimator owner or parent. Step overwrites root.localScale with job.scale every sample; no .27 mount scale is baked into these captures.",
+    "sourceEffectPrefabRootScale": "01=(1,1,1); 02/03 approximately (.99999934,.99999988,1); 04 approximately (.99999386,.99999964,1), numerical unity.",
+    "bodyFollowerFields": {
+      "followLocalScale": true,
+      "useAppliedLocalScale": false,
+      "followSkeletonFlip": true,
+      "followBoneRotation": true
+    },
+    "runtimeReference": "https://raw.githubusercontent.com/EsotericSoftware/spine-runtimes/3.8/spine-unity/Assets/Spine/Runtime/spine-unity/Components/Following/BoneFollower.cs",
+    "runtimeReferenceScope": "Official Spine 3.8 BoneFollower follows local bone.scaleX/Y, not world matrix norms. For followLocalScale and negative scaleX, rotation adds 180 degrees. The game component fields independently agree.",
+    "unitDerivation": "k=body clip.pixelScale/actual sprite.pixelsPerUnit. Original raw pixel-to-world=.01*.27. Adapted mount scale=.27*(k/(.01*.27))*boneLocalScale=(k/.01)*boneLocalScale=100*k*boneLocalScale. No extra .27 or .01 factor.",
+    "mirrorContract": "The body flip is applied exactly once via SpriteRenderer.flipX. The bone local scale sign is an independent original animation. With body mirrored, use negative follower angle; do not remove original negative bone scale or mirror the body a second time.",
+    "sampledScaleRanges": [
+      {
+        "clip": "skill_idle",
+        "bone": "F_Weapon_UR_A2",
+        "localScaleX": [
+          0.929,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_idle",
+        "bone": "F_Weapon_UL_A",
+        "localScaleX": [
+          1,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_idle",
+        "bone": "F_Weapon_DR_A2",
+        "localScaleX": [
+          0.803,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_idle",
+        "bone": "F_Weapon_DL_A2",
+        "localScaleX": [
+          0.8,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_attack",
+        "bone": "F_Weapon_UR_A2",
+        "localScaleX": [
+          0.792,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_attack",
+        "bone": "F_Weapon_UL_A",
+        "localScaleX": [
+          -1,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 53
+      },
+      {
+        "clip": "skill_attack",
+        "bone": "F_Weapon_DR_A2",
+        "localScaleX": [
+          0.933,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_attack",
+        "bone": "F_Weapon_DL_A2",
+        "localScaleX": [
+          0.932,
+          1.014
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_restart",
+        "bone": "F_Weapon_UR_A2",
+        "localScaleX": [
+          0.976,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_restart",
+        "bone": "F_Weapon_UL_A",
+        "localScaleX": [
+          1,
+          1
+        ],
+        "localScaleY": [
+          1,
+          1
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_restart",
+        "bone": "F_Weapon_DR_A2",
+        "localScaleX": [
+          0.933,
+          1.245
+        ],
+        "localScaleY": [
+          0.83,
+          1.245
+        ],
+        "negativeXFrames": 0
+      },
+      {
+        "clip": "skill_restart",
+        "bone": "F_Weapon_DL_A2",
+        "localScaleX": [
+          0.932,
+          1.222
+        ],
+        "localScaleY": [
+          0.78,
+          1.222
+        ],
+        "negativeXFrames": 0
+      }
+    ],
+    "limitations": "Original source attachment and unit conversion reconstructed for fixed-camera baked frames. This does not assert full original-client particle-manager equivalence."
+  }
+}

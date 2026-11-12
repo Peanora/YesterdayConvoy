@@ -78,7 +78,7 @@ namespace YesterdayConvoy
                     }
                     d.BudgetReceived=0;
                     foreach(var a in defenders)if(a.Reserve&&DefenderBudget>=a.ReserveCost)
-                    {DefenderBudget-=a.ReserveCost;a.Reserve=false;a.Position=a.Settings.RelayPosition;a.HighGround=false;d.PartnerId=a.EntityId;d.Reinforcements++;break;}
+                    {DefenderBudget-=a.ReserveCost;a.Reserve=false;a.Position=a.Settings.RelayPosition;a.HighGround=false;d.PartnerId=a.EntityId;d.Reinforcements++;d.LastReinforcementAt=Clock;break;}
                     if(d.PartnerId==null)foreach(var a in defenders)if(a!=d&&a.Alive){d.PartnerId=a.EntityId;break;}
                     break;
                 case DefenderSkillKind.PramanixSnow:
@@ -130,7 +130,8 @@ namespace YesterdayConvoy
                             var p=Vector3.Lerp(a,z,count==0?0:k/(float)count);p.x=Mathf.Round(p.x);p.z=Mathf.Round(p.z);
                             if(GroundDistance(p,d.Position)>DefenderRange(d)||!generated.Add(new Vector2Int((int)p.x,(int)p.z)))continue;
                             var cell=snowCells.Find(c=>c.SourceId==d.EntityId&&GroundDistance(c.Position,p)<.1f);
-                            if(cell==null){cell=new SixthCell{SourceId=d.EntityId,Position=p,Active=true};snowCells.Add(cell);}
+                            if(cell==null){cell=new SixthCell{SourceId=d.EntityId,Position=p,Active=true,Time=Clock};snowCells.Add(cell);}
+                            else if(cell.Layers==0)cell.Time=Clock;
                             cell.Layers=Math.Min((int)V2DefenderSkill(d,"snowMaxLayers",5),cell.Layers+1);
                         }
                     }
@@ -210,7 +211,7 @@ namespace YesterdayConvoy
                 if(!CanDefenderTarget(u)||GroundDistance(origin,u.Motion.Position)>DefenderRange(d))continue;
                 bool silver=d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign;
                 if(silver){var delta=u.Motion.Position-origin;delta.y=0;float along=Vector3.Dot(delta,dir);if(along<0||(delta-dir*along).magnitude>V2DefenderSkill(d,"lineHalfWidth",.8f))continue;}
-                combatShots.Add(new CombatShot(d.EntityId,u.EntityId,true,true,origin,u.Motion.Position,Clock+d.Settings.Windup/d.LastActionRate,travel,DefenderSkillAttack(d)*(silver?1:V2DefenderSkill(d,"areaAttackMultiplier",2.1f)),damageType:silver?CombatDamageType.Physical:CombatDamageType.Arts){Vulnerability=silver?V2DefenderSkill(d,"vulnerability",.25f):0,IgnoreResistance=silver?0:V2DefenderSkill(d,"ignoreResistance",10)});d.SixthHits++;
+                QueueDefenderShot(d,new CombatShot(d.EntityId,u.EntityId,true,true,origin,u.Motion.Position,Clock+d.Settings.Windup/d.LastActionRate,travel,DefenderSkillAttack(d)*(silver?1:V2DefenderSkill(d,"areaAttackMultiplier",2.1f)),damageType:silver?CombatDamageType.Physical:CombatDamageType.Arts){Vulnerability=silver?V2DefenderSkill(d,"vulnerability",.25f):0,IgnoreResistance=silver?0:V2DefenderSkill(d,"ignoreResistance",10)});d.SixthHits++;
             }
         }
     }

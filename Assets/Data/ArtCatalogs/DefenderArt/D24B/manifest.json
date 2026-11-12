@@ -232,6 +232,90 @@
           "height": 352
         }
       ]
+    },
+    {
+      "key": "attack_begin",
+      "source": "Attack_Begin",
+      "count": 9,
+      "duration": 0.13333334028720856,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.5690855318307877,
+      "pivotY": 0.22265625,
+      "sourceBounds": [
+        -348.302978515625,
+        -84.79048156738281,
+        255.2193145751953,
+        451.5448303222656
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_attack_begin-00.png",
+          "count": 9,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "events": [],
+      "pixelsPerUnit": 131.2
+    },
+    {
+      "key": "skill_cast",
+      "source": "Skill_3_Skill",
+      "count": 97,
+      "duration": 1.600000023841858,
+      "fps": 60,
+      "loop": false,
+      "cell": 352,
+      "columns": 5,
+      "pivotX": 0.5676107181202281,
+      "pivotY": 0.2767673388394442,
+      "sourceBounds": [
+        -461.8370056152344,
+        -61.66413879394531,
+        336.5792541503906,
+        468.3021545410156
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "extra_skill_3_skill-00.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_skill_3_skill-01.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_skill_3_skill-02.png",
+          "count": 25,
+          "width": 1760,
+          "height": 1760
+        },
+        {
+          "file": "extra_skill_3_skill-03.png",
+          "count": 22,
+          "width": 1760,
+          "height": 1760
+        }
+      ],
+      "events": [
+        {
+          "time": 0.06666667014360428,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pixelsPerUnit": 131.2
     }
   ],
   "files": [
@@ -302,6 +386,26 @@
     {
       "file": "skill_idle-04.png",
       "sha256": "2a1ca74f01ca23f7736e6c8987ed2d4e3474b267b65248ebeca3e417a7c157e7"
+    },
+    {
+      "file": "extra_attack_begin-00.png",
+      "sha256": "b754c3b62234b3dd5f1ca8af84fd8600453e88664e4adf10721e94faa3ac9c57"
+    },
+    {
+      "file": "extra_skill_3_skill-00.png",
+      "sha256": "081519f9751d2e22c8ad0b2522326660214091edc2675851ffc0a78918296784"
+    },
+    {
+      "file": "extra_skill_3_skill-01.png",
+      "sha256": "e6b15bd0ab1addd5adc171de199d5be8fa1241765adbbb451b4beb0ce31d7313"
+    },
+    {
+      "file": "extra_skill_3_skill-02.png",
+      "sha256": "3f72d36297ddc5328f065c75ca8ba3f27898d555850f7c1d276ac9d0f868d6ff"
+    },
+    {
+      "file": "extra_skill_3_skill-03.png",
+      "sha256": "89ce708dc703c699ff8d660ea16b0ee0cd65fd996bcaa84bd8eedee6fc84401e"
     }
   ],
   "provenance": "Approved direct batch-five integration 2026-10-29. Original Arknights media; open redistribution permission unconfirmed. PNG bytes retained; uniform 1.25-unit idle height and foot-center pivot.",

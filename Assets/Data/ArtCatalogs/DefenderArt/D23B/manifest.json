@@ -213,5 +213,98 @@
     }
   ],
   "provenance": "Approved direct batch-five integration 2026-10-29. Original Arknights media; open redistribution permission unconfirmed. PNG bytes retained; uniform 1.25-unit idle height and foot-center pivot.",
-  "rearVariant": true
+  "rearVariant": true,
+  "nativeMounts": {
+    "version": 1,
+    "columns": [
+      "sourceX",
+      "sourceY",
+      "boneFollowerRotationDegrees",
+      "boneLocalScaleX",
+      "boneLocalScaleY"
+    ],
+    "frameContract": "Use actual body sprite clip/frame and PPU. localXY=(sourceXY*pixelScale+originXY)/spritePPU; mirror local X then body transform. originXY retains the existing approved foot-origin correction. FollowScale uses signed local bone scale * (pixelScale/spritePPU)/sourceSkeletonDataScale, replacing the source .27 parent by the normalized body equivalent. BoneFollower followLocalScale rotation includes 180 degrees for negative local scaleX. No independent clock; no capture/PPU edit.",
+    "boneFollowerReference": "https://raw.githubusercontent.com/EsotericSoftware/spine-runtimes/3.8/spine-unity/Assets/Spine/Runtime/spine-unity/Components/Following/BoneFollower.cs",
+    "bindings": [
+      {
+        "effect": "monstr_skill_03_buff_01",
+        "point": "SpecialPoint3",
+        "sourceMountPointType": 9,
+        "keepOriginRotation": false,
+        "followScale": true,
+        "followScaleSign": true,
+        "scaleMultiplier": 1.0,
+        "sourceFollowMountPointPath": "/monstr_skill_03_buff_01"
+      },
+      {
+        "effect": "monstr_skill_03_buff_02",
+        "point": "SpecialPoint4",
+        "sourceMountPointType": 10,
+        "keepOriginRotation": false,
+        "followScale": true,
+        "followScaleSign": true,
+        "scaleMultiplier": 1.0,
+        "sourceFollowMountPointPath": "/monstr_skill_03_buff_02"
+      },
+      {
+        "effect": "monstr_skill_03_buff_03",
+        "point": "SpecialPoint5",
+        "sourceMountPointType": 11,
+        "keepOriginRotation": false,
+        "followScale": true,
+        "followScaleSign": true,
+        "scaleMultiplier": 1.0,
+        "sourceFollowMountPointPath": "/monstr_skill_03_buff_03"
+      },
+      {
+        "effect": "monstr_skill_03_buff_04",
+        "point": "SpecialPoint6",
+        "sourceMountPointType": 12,
+        "keepOriginRotation": false,
+        "followScale": true,
+        "followScaleSign": true,
+        "scaleMultiplier": 1.0,
+        "sourceFollowMountPointPath": "/monstr_skill_03_buff_04"
+      }
+    ],
+    "clips": [],
+    "sourceEnumEvidence": {
+      "status": "ORIGINAL_IL2CPP_ENUM_CONSTANTS_CONFIRMED_PUBLIC_METADATA_SNAPSHOT",
+      "type": "Torappu.Battle.Entity/MountPointType",
+      "field": "Torappu.Battle.Effects.FollowMountPoint._mountPointType",
+      "fieldType": "Torappu.Battle.Entity/MountPointType",
+      "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+      "repositoryCommit": "5734c30bf54780056ff758505380322c0cf519fe",
+      "sha256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+      "bytes": 18309632,
+      "method": "Read-only Mono.Cecil metadata extraction. Dummy assembly was not executed.",
+      "constants": {
+        "FOOT": 0,
+        "HIT": 1,
+        "MUZZLE": 2,
+        "HEAD": 3,
+        "UI": 4,
+        "SPECIAL_0": 5,
+        "SPECIAL_1": 6,
+        "GROUND": 7,
+        "SPECIAL_2": 8,
+        "SPECIAL_3": 9,
+        "SPECIAL_4": 10,
+        "SPECIAL_5": 11,
+        "SPECIAL_6": 12,
+        "SPECIAL_7": 13,
+        "SPECIAL_8": 14,
+        "SPECIAL_9": 15,
+        "SPECIAL_10": 16,
+        "SPECIAL_11": 17,
+        "SPECIAL_12": 18,
+        "SPECIAL_13": 19,
+        "SPECIAL_14": 20,
+        "SPECIAL_15": 21
+      },
+      "versionLimit": "Public dump snapshot has not been byte-matched to the26-10-29 asset build; local source field types and chararts mount references are consistent. No enum value is inferred from filenames or slot counts."
+    },
+    "sourceModelSha256": "3fe17adbe81bee7ad03989e08e386bebd2df87372241835dba44a597bc0380f6",
+    "unavailableReason": "Original back SpecialPoint3..6 BoneFollower boneName fields are empty. No front substitution. Reborn combat uses the existing original front body. A declared but unavailable mount must skip that layer."
+  }
 }

@@ -28,7 +28,7 @@ namespace YesterdayConvoy.Tests
             var data=Read();Assert.That(data.version,Is.EqualTo(1));Assert.That(data.fps,Is.EqualTo(30));
             Assert.That(data.encoding,Is.EqualTo("sqrt-linear-rgb-effective-alpha"));
             var all=data.clips.ToDictionary(c=>c.key);
-            foreach(string key in DefenderVfxArt.RequiredKeysForArtIds(new[]{"D03","D05","D08","D09","D11","D12","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30"}).Where(k=>k.StartsWith("defender/",StringComparison.Ordinal)))
+            foreach(string key in DefenderVfxArt.RequiredKeysForArtIds(new[]{"D03","D05","D08","D09","D11","D12","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30","D32","D33","D34","D35"}).Where(k=>k.StartsWith("defender/",StringComparison.Ordinal)))
             {
                 Assert.That(all.ContainsKey(key),Is.True,"Missing runtime dependency: "+key);var clip=all[key];
                 Assert.That(clip.sourcePrefab,Is.Not.Null.And.Not.Empty);Assert.That(clip.count,Is.InRange(1,600));
@@ -49,12 +49,16 @@ namespace YesterdayConvoy.Tests
         [TestCase("D25","hsgma2_skill_03_hit_02_3")][TestCase("D26","svash2_skill_03_range_01")]
         [TestCase("D28","wang_passive_01_buff_02")][TestCase("D29","demkni_attack_01_hit")]
         [TestCase("D30","mlynar_skill_03_hit_01")]
+        [TestCase("D32","chen2_skill_03_hit_01")][TestCase("D33","aglna2_skill_03_hit_01")]
+        [TestCase("D34","clemnt_skill_03_hit_01")][TestCase("D35","kalts2_skill_02_range_damage_01")]
         public void NormalAndSelectedSkillEventsUseTheirOwnOriginalFamily(string id,string raw)
         {Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{id}),Does.Contain("defender/"+id+"/"+raw));}
         [Test] public void UnimplementedModelsAreNotFalselyClaimedAsCompleteEffects()
         {
             for(int n=1;n<=12;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n.ToString("D2")),Is.True);
             for(int n=21;n<=30;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n),Is.True);
+            for(int n=32;n<=35;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n),Is.True);
+            Assert.That(DefenderVfxArt.SupportsArtId("D31"),Is.False,"The separate Wisadel Boss skin is not a normal recruitable defender.");
             for(int n=13;n<=20;n++)Assert.That(DefenderVfxArt.SupportsArtId("D"+n),Is.False);
             Assert.That(DefenderVfxArt.SupportsArtId(null),Is.False);
             Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"unknown"}),Is.Empty);

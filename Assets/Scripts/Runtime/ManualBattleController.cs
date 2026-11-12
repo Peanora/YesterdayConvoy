@@ -584,17 +584,19 @@ namespace YesterdayConvoy
             {
                 bool active=Battle.DefenderSkillActive(d);float fill=active?(float)((d.SkillActiveUntil-Battle.Clock)/d.Settings.Skill.Duration):d.SkillSP/d.Settings.Skill.RequiredSP;
                 float ammoCapacity=d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery?Battle.V2DefenderSkill(d,"ammo",50):
-                    d.Settings.Skill.Kind==DefenderSkillKind.WangGambit?Battle.V2DefenderSkill(d,"ammo",20):1;
-                if((d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery||d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)&&active)fill=d.Ammo/ammoCapacity;
+                    d.Settings.Skill.Kind==DefenderSkillKind.WangGambit?Battle.V2DefenderSkill(d,"ammo",20):Battle.IsSeventh(d)?Battle.SeventhAmmoCapacity(d):1;
+                if((d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery||d.Settings.Skill.Kind==DefenderSkillKind.WangGambit||Battle.IsSeventh(d))&&active)fill=d.Ammo/ammoCapacity;
                 Fill(new Rect(x-width/2,y+9,width,5),new Color(.03f,.05f,.06f));
                 Fill(new Rect(x-width/2+1,y+10,(width-2)*Mathf.Clamp01(fill),3),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
                 if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)fill=(float)(d.ProtectionUntil-Battle.Clock)/11;
                 string skill=DefenderSkillName(d.Settings.Skill.Kind)+(active?$" {Math.Max(0,d.SkillActiveUntil-Battle.Clock):0.0}s":$" {d.SkillSP:0}/{d.Settings.Skill.RequiredSP:0}");
+                if(Battle.IsSeventh(d)&&active)skill=DefenderSkillName(d.Settings.Skill.Kind)+(d.Ammo>0?$" · 弹药 {d.Ammo}/{ammoCapacity:0}":" · 弹药耗尽，收招中");
                 if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&active)skill="使命必达 · 弹药 "+d.Ammo+"/"+ammoCapacity.ToString("0");
                 if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&d.ProtectionUntil>Battle.Clock)skill=$"地狱变相 · 临死保护 {d.ProtectionUntil-Battle.Clock:0.0}s";
                 if(d.Settings.Skill.Kind==DefenderSkillKind.WangGambit)skill=$"天下劫 · 棋子 {d.ChessStock} · 弹药 {d.Ammo}/{ammoCapacity:0}";
                 if(d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign)skill+=$" · 守军费用 {Battle.DefenderBudget:0}";
                 GUI.Label(DefenderSkillTrialActive?new Rect(x+width/2+8,y-3,320,25):new Rect(x-120,y-27,260,25),skill,smallStyle);
+                if(Battle.SeventhFlying(d))GUI.Label(new Rect(x+width/2+8,y+18,260,24),"飞行 · 阻空 "+Battle.DefenderAirBlockCapacity(d)+" / 阻地 "+Battle.DefenderGroundBlockCapacity(d),smallStyle);
                 if(d.DebtLife)GUI.Label(new Rect(x+width/2+8,y+18,260,24),$"我执 · 累积伤害 {d.Debt:0}",smallStyle);
                 if(d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&!active)GUI.Label(new Rect(x+width/2+8,y+18,260,24),$"蓄力 {Battle.DefenderCharge(d)*100:0}% · 不攻不挡",smallStyle);
             }

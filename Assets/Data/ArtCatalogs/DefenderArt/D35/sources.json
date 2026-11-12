@@ -1,0 +1,48 @@
+{
+  "task": "D35",
+  "unitId": "D35",
+  "name": "凯尔希·思衡托",
+  "variant": "battle-front",
+  "characterId": "char_1052_kalts2",
+  "model": "char_1052_kalts2",
+  "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/front/",
+  "files": [
+    {
+      "file": "char_1052_kalts2.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/front/char_1052_kalts2.skel",
+      "bytes": 1136296,
+      "sha256": "9c2df9ef3079bcf56be6ffe5150904e5c512b63d0a2726be7e3a6fc95117b455"
+    },
+    {
+      "file": "char_1052_kalts2.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/front/char_1052_kalts2.atlas",
+      "bytes": 27427,
+      "sha256": "31f170570b7723413edc2b9444f56fcf73e6c9ce2154895322b4a765f4b2365e"
+    },
+    {
+      "file": "char_1052_kalts2.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/front/char_1052_kalts2.png",
+      "bytes": 271202,
+      "sha256": "6fc677d1c73b3808f2d16e11fd064f366d029e6048a0a5662938c6d3ab572f85"
+    },
+    {
+      "file": "char_1052_kalts22.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/front/char_1052_kalts22.png",
+      "bytes": 104847,
+      "sha256": "5b90f8a944bbbab5cd7480c26e3a265c62e9f2935cccf0c3bb9abc4e359d76f7"
+    }
+  ],
+  "reference": "https://prts.wiki/w/%E5%87%AF%E5%B0%94%E5%B8%8C%C2%B7%E6%80%9D%E8%A1%A1%E6%89%98",
+  "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/meta.json",
+  "rights": "Original proprietary art, rights remain with rightsholders. User authorized direct import/upload, not an open redistribution license.",
+  "authorization": "2026-11-12 user explicitly requested direct integration without preview; recommended selected skill.",
+  "rasterization": {
+    "spineVersion": "3.8.99",
+    "fps": 60,
+    "coreScale": 0.38,
+    "corePixelsPerUnit": 201.6,
+    "idleAlphaHeight": 252,
+    "commonWorldIdleAlphaHeight": 1.25,
+    "notes": "Per-clip PPU compensates source raster scale; source origin pivots retained; technical portrait crop from exact idle frame."
+  }
+}

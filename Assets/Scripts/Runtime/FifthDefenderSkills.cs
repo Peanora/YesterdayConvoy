@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         bool BeginFifthSkill(DefenderState d)
         {
             if(!IsFifth(d))return false;
-            d.FifthActive=true;d.SkillActionUntil=Clock+(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?.7f:V2DefenderSkill(d,"startupSeconds",.7f));d.NextAttackTime=d.SkillActionUntil;
+            d.FifthActive=true;d.SkillActionUntil=Clock+(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?.7f:V2DefenderSkill(d,"startupSeconds",d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery?1.6f:.7f));d.NextAttackTime=d.SkillActionUntil;
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown)
             {d.Position=d.Settings.RelayPosition;d.HighGround=false;d.TargetId=null;d.MaxHealth=d.Settings.Health+500;d.Health*=d.MaxHealth/d.Settings.Health;d.Transfers++;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery)
@@ -20,7 +20,7 @@ namespace YesterdayConvoy
                 foreach(var ally in defenders)if(ally.Reserve){reserve=ally;break;}
                 if(reserve!=null)
                 {
-                    reserve.Reserve=false;reserve.Position=d.Settings.RelayPosition;reserve.HighGround=false;reserve.SkillSP=Math.Min(reserve.Settings.Skill.RequiredSP,reserve.SkillSP+V2DefenderSkill(d,"reinforcementSP",6));d.Reinforcements++;
+                    reserve.Reserve=false;reserve.Position=d.Settings.RelayPosition;reserve.HighGround=false;reserve.SkillSP=Math.Min(reserve.Settings.Skill.RequiredSP,reserve.SkillSP+V2DefenderSkill(d,"reinforcementSP",6));d.Reinforcements++;d.LastReinforcementAt=Clock;
                     foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,reserve.Position)<=V2DefenderSkill(d,"landingRadius",1.3f))TryDefenderDamageUnit(u,DefenderSkillAttack(d)*V2DefenderSkill(d,"landingAttackMultiplier",2.5f),CombatDamageType.Physical,sourceDefender:d);
                 }
             }
@@ -29,6 +29,7 @@ namespace YesterdayConvoy
         }
         void EndMon3tr(DefenderState d,bool lethal)
         {
+            if(lethal){d.LastMon3trRebirthDeathAt=Clock;d.LastMon3trRebirthDeathPosition=d.Position;}
             float ratio=Math.Max(0,d.Health/d.MaxHealth);d.Position=d.Settings.Position;d.HighGround=d.Position.y>.2f;d.MaxHealth=d.Settings.Health;
             d.Health=lethal?1:Math.Max(1,ratio*d.MaxHealth);d.SkillActiveUntil=Clock;d.SkillEndedAt=Clock;d.SkillActionUntil=Clock+.833333;d.NextAttackTime=d.SkillActionUntil;
             d.ProtectionUntil=Clock+1;d.FifthActive=false;d.TargetId=null;d.Transfers++;
@@ -94,7 +95,7 @@ namespace YesterdayConvoy
                 foreach(var ally in defenders)if(ally.Alive&&!ally.DebtLife&&!visited.Contains(ally.EntityId)&&GroundDistance(previous.Position,ally.Position)<=2&&
                     (next==null||ally.Health/ally.MaxHealth<next.Health/next.MaxHealth))next=ally;
                 if(next==null)break;visited.Add(next.EntityId);
-                combatShots.Add(new CombatShot(d.EntityId,next.EntityId,true,false,previous.Position,next.Position,Clock+d.Settings.Windup,travel,DefenderSkillAttack(d)*scale,healing:true));
+                QueueDefenderShot(d,new CombatShot(d.EntityId,next.EntityId,true,false,previous.Position,next.Position,Clock+d.Settings.Windup,travel,DefenderSkillAttack(d)*scale,healing:true));
                 previous=next;scale*=.75f;
             }
         }
@@ -118,9 +119,9 @@ namespace YesterdayConvoy
                 float spacing=kind==DefenderSkillKind.ExusiaiDelivery?V2DefenderSkill(d,"bulletSpacing",1f/30):kind==DefenderSkillKind.HoshigumaInferno?V2DefenderSkill(d,"hitSpacing",.08f):.08f;
                 var shot=new CombatShot(d.EntityId,u.EntityId,true,true,d.Position,u.Motion.Position,Clock+d.Settings.Windup+hit*spacing,travel,
                     DefenderSkillAttack(d)*(kind==DefenderSkillKind.ExusiaiDelivery?V2DefenderSkill(d,"perBulletAttackMultiplier",1.35f):1),damageType:kind==DefenderSkillKind.HoshigumaInferno?CombatDamageType.Arts:CombatDamageType.Physical){TrueDamage=kind==DefenderSkillKind.Mon3trMeltdown};
-                combatShots.Add(shot);if(shot.TrueDamage)d.TrueHits++;
+                QueueDefenderShot(d,shot);if(shot.TrueDamage)d.TrueHits++;
             }
-            if(kind==DefenderSkillKind.Mon3trMeltdown){float gain=RestoreDefenderHealth(d,DefenderSkillAttack(d)*.5f);d.SkillHealthRestored+=gain;}
+            if(kind==DefenderSkillKind.Mon3trMeltdown){float gain=RestoreDefenderHealth(d,DefenderSkillAttack(d)*.5f);d.SkillHealthRestored+=gain;if(gain>0){d.LastSelfSkillHealAt=Clock;d.LastSelfSkillHealPosition=d.Position;}}
             if(kind==DefenderSkillKind.ExusiaiDelivery){d.Ammo-=(int)V2DefenderSkill(d,"bulletsPerAttack",5);if(d.Ammo==0){d.SkillActiveUntil=Clock+d.Settings.ActionDuration;}}
             return true;
         }

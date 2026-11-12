@@ -1,0 +1,5271 @@
+{
+  "date": "2026-11-13",
+  "status": "ORIGINAL_SERIALIZED_EVENT_REFERENCES_VERIFIED_NOT_RUNTIME_ACCEPTANCE",
+  "actors": [
+    {
+      "id": "D21",
+      "characterId": "char_1038_whitw2",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_1038_whitw2.json",
+      "emitters": [
+        {
+          "path": "/char_1038_whitw2/Modes/Default/Body/M0FunnelsNormalAttack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_attack_01_start"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_attack_01_start"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1038_whitw2/Modes/S1/Body/M1FunnelRemoteAttack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_skill_01_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_skill_01_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1038_whitw2/Modes/S2/Body/M2FunnelRemoteAttack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_skill_02_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_skill_02_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1038_whitw2/Modes/S2/Body/M2FunnelRemoteAttack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_skill_02_start_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_skill_02_start_02"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1038_whitw2/Modes/S2/Body/M2FunnelRemoteAttack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_skill_02_start_03"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_skill_02_start_03"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1038_whitw2/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "whitw2_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "whitw2_skill_03_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "duration": 1.2999999523162842,
+          "events": [
+            {
+              "time": 0.4000000059604645,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.46666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.1666666716337204,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 6,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop",
+          "duration": 1.2333333492279053,
+          "events": [
+            {
+              "time": 0.4000000059604645,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D24",
+      "characterId": "char_1041_angel2",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_1041_angel2.json",
+      "emitters": [
+        {
+          "path": "/char_1041_angel2/Modes/Default/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_attack_loop_start_01",
+            "angel2_attack_loop_start_01",
+            "angel2_attack_down_loop_start_01",
+            "angel2_attack_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_attack_loop_start_01",
+              "angel2_attack_loop_start_01",
+              "angel2_attack_down_loop_start_01",
+              "angel2_attack_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S1_Burst_Mode/Body/S1_Burst",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_1_up_close_start_01",
+            "angel2_skill_1_close_start_01",
+            "angel2_skill_1_close_start_01",
+            "angel2_skill_1_close_start_01"
+          ],
+          "fields": {
+            "_directionType": 3,
+            "_effects": [
+              "angel2_skill_1_up_close_start_01",
+              "angel2_skill_1_close_start_01",
+              "angel2_skill_1_close_start_01",
+              "angel2_skill_1_close_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S1/Body/Attack/RangedAttack",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_1_loop_start_01",
+            "angel2_skill_1_loop_start_01",
+            "angel2_skill_1_down_loop_start_01",
+            "angel2_skill_1_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_1_loop_start_01",
+              "angel2_skill_1_loop_start_01",
+              "angel2_skill_1_down_loop_start_01",
+              "angel2_skill_1_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S1/Body/Attack/S1_Burst",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_1_close_start_01",
+            "angel2_skill_1_close_start_01",
+            "angel2_skill_1_close_start_01",
+            "angel2_skill_1_close_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_1_close_start_01",
+              "angel2_skill_1_close_start_01",
+              "angel2_skill_1_close_start_01",
+              "angel2_skill_1_close_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_2_loop_start_01",
+            "angel2_skill_2_loop_start_01",
+            "angel2_skill_2_down_loop_start_01",
+            "angel2_skill_2_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_2_loop_start_01",
+              "angel2_skill_2_loop_start_01",
+              "angel2_skill_2_down_loop_start_01",
+              "angel2_skill_2_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S2_Down/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_2_loop_start_01",
+            "angel2_skill_2_loop_start_01",
+            "angel2_skill_2_down_loop_start_01",
+            "angel2_skill_2_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_2_loop_start_01",
+              "angel2_skill_2_loop_start_01",
+              "angel2_skill_2_down_loop_start_01",
+              "angel2_skill_2_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S3/Body/Attack/S3FireToToken",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_3_begin_start_001"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_3_begin_start_001",
+              "",
+              "",
+              ""
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S3/Body/Attack/Common",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_3_loop_start_01",
+            "angel2_skill_3_loop_start_01",
+            "angel2_skill_3_down_loop_start_01",
+            "angel2_skill_3_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_3_loop_start_01",
+              "angel2_skill_3_loop_start_01",
+              "angel2_skill_3_down_loop_start_01",
+              "angel2_skill_3_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 1,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S3_Down/Body/Attack/S3FireToToken",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_3_begin_start_001"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_3_begin_start_001",
+              "",
+              "",
+              ""
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Modes/S3_Down/Body/Attack/Common",
+          "role": "_castEffects",
+          "effects": [
+            "angel2_skill_3_loop_start_01",
+            "angel2_skill_3_loop_start_01",
+            "angel2_skill_3_down_loop_start_01",
+            "angel2_skill_3_loop_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_skill_3_loop_start_01",
+              "angel2_skill_3_loop_start_01",
+              "angel2_skill_3_down_loop_start_01",
+              "angel2_skill_3_loop_start_01",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 1,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1041_angel2/Others/Direction/CommonAbilities/TalentBomb",
+          "role": "_hitEffects",
+          "effects": [
+            "angel2_buff_01_trail_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "angel2_buff_01_trail_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack_Begin",
+          "duration": 0.13333334028720856,
+          "events": []
+        },
+        {
+          "name": "Attack_Down_Begin",
+          "duration": 0.13333334028720856,
+          "events": []
+        },
+        {
+          "name": "Attack_Down_End",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Attack_Down_Loop",
+          "duration": 1.3333333730697632,
+          "events": [
+            {
+              "time": 0.2666666805744171,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_End",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Attack_Loop",
+          "duration": 1.3333333730697632,
+          "events": [
+            {
+              "time": 0.2666666805744171,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.23333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 1,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 2,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop",
+          "duration": 1.3333333730697632,
+          "events": [
+            {
+              "time": 0.1666666716337204,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.20000000298023224,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.23333333432674408,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.2666666805744171,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.30000001192092896,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Skill",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.06666667014360428,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D25",
+      "characterId": "char_1044_hsgma2",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_1044_hsgma2.json",
+      "emitters": [
+        {
+          "path": "/char_1044_hsgma2/Modes/Default/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_attack_01_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_attack_01_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/Default/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "hsgma2_attack_01_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_attack_01_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/BeforeDead/Body/S3_Attack/Attack_Anim_C",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_06"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_06"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/BeforeDead/Body/S3_Attack/Attack_Anim_B",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_05"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_05"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/BeforeDead/Body/S3_Attack/Attack_Anim_A",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_04"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_04"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S1/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_01_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_01_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S1/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "hsgma2_skill_01_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_01_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_02_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_02_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_02_start_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_02_start_02"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_02_start_03"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_02_start_03"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S3/Body/S3_Attack/Attack_Anim_C",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_03"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_03"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S3/Body/S3_Attack/Attack_Anim_B",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_02"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1044_hsgma2/Modes/S3/Body/S3_Attack/Attack_Anim_A",
+          "role": "_castEffects",
+          "effects": [
+            "hsgma2_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "hsgma2_skill_03_start_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.3333333432674408,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 2.6666667461395264,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop_A",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Loop_B",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Loop_C",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D26",
+      "characterId": "char_1045_svash2",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_1045_svash2.json",
+      "emitters": [
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackA",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_attack_start_A_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_start_A_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackA",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_attack_start_A_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_start_A_02"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackA",
+          "role": "_hitEffects",
+          "effects": [
+            "svash2_attack_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackA",
+          "role": "_castTargetEffects",
+          "effects": [
+            "svash2_attack_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_hit_01"
+            ],
+            "_oneshot": 1,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackB",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_attack_start_B_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_start_B_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackB",
+          "role": "_hitEffects",
+          "effects": [
+            "svash2_attack_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackC",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_attack_start_C_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_start_C_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/Default/Body/Attack/AttackC",
+          "role": "_hitEffects",
+          "effects": [
+            "svash2_attack_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_attack_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_skill_03_combat_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_skill_03_combat_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_skill_03_combat_start_01_2"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_skill_03_combat_start_01_2"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1045_svash2/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "svash2_skill_03_combat_start_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "svash2_skill_03_combat_start_02"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack_A",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_B",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.5666666626930237,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_Begin",
+          "duration": 0.13333334028720856,
+          "events": []
+        },
+        {
+          "name": "Attack_C",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.5333333611488342,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_End",
+          "duration": 1,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.13333334028720856,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Combat",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.23333333432674408,
+              "name": "OnActivateEffect",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.23333333432674408,
+              "name": "OnDeactivateEffect",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            },
+            {
+              "time": 0.5333333611488342,
+              "name": "OnActivateEffect",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Deploy",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.5333333611488342,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 1,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 2,
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "D27",
+      "characterId": "char_1046_sbell2",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_1046_sbell2.json",
+      "emitters": [
+        {
+          "path": "/char_1046_sbell2/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "sbell2_skill_02_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "sbell2_skill_02_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1046_sbell2/Modes/S2/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "sbell2_skill_01_hit"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "sbell2_skill_01_hit"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_1046_sbell2/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "sbell2_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "sbell2_skill_03_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_1046_sbell2/Modes/S3/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "sbell2_skill_03_hit"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "sbell2_skill_03_hit"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Skill_3_Attack_A",
+          "duration": 2,
+          "events": [
+            {
+              "time": 0.6666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Attack_B",
+          "duration": 2,
+          "events": [
+            {
+              "time": 0.6666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Attack_C",
+          "duration": 2,
+          "events": [
+            {
+              "time": 0.6666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.6666666865348816,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 8,
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "D22",
+      "characterId": "char_2026_yu",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_2026_yu.json",
+      "emitters": [
+        {
+          "path": "/char_2026_yu/Modes/Default/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "yu_attack_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_attack_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/Default/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "yu_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S1/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "yu_skill1_attack_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill1_attack_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S1/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "yu_skill1_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill1_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "yu_skill2_attack_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill2_attack_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S2/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "yu_skill2_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill2_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "yu_skill3_attack_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill3_attack_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_2026_yu/Modes/S3/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "yu_skill3_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "yu_skill3_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.4333333373069763,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.1666666716337204,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 3.200000047683716,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop",
+          "duration": 1.600000023841858,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D28",
+      "characterId": "char_2027_wang",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_2027_wang.json",
+      "emitters": [
+        {
+          "path": "/char_2027_wang/Modes/Default/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "wang_attack_01_start"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "wang_attack_01_start"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_2027_wang/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "wang_attack_01_start"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "wang_attack_01_start"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack_1_A",
+          "duration": 0.8333333134651184,
+          "events": [
+            {
+              "time": 0.30000001192092896,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_1_B",
+          "duration": 0.8333333134651184,
+          "events": [
+            {
+              "time": 0.30000001192092896,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_2_A",
+          "duration": 0.8333333134651184,
+          "events": [
+            {
+              "time": 0.30000001192092896,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_2_B",
+          "duration": 0.8333333134651184,
+          "events": [
+            {
+              "time": 0.30000001192092896,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Attack_A",
+          "duration": 2.200000047683716,
+          "events": [
+            {
+              "time": 1.0333333015441895,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Attack_B",
+          "duration": 2.200000047683716,
+          "events": [
+            {
+              "time": 1.0333333015441895,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.1666666716337204,
+          "events": []
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.2666666805744171,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 3.3333332538604736,
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "D29",
+      "characterId": "char_202_demkni",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_202_demkni.json",
+      "emitters": [
+        {
+          "path": "/char_202_demkni/Modes/Default/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "demkni_attack_01_hit"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "demkni_attack_01_hit",
+              "",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_202_demkni/Modes/S3/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "common_heal_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "common_heal_hit_01",
+              "",
+              "",
+              ""
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "duration": 1.1666666269302368,
+          "events": [
+            {
+              "time": 0.5666666626930237,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Attack_2",
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.46666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D30",
+      "characterId": "char_4064_mlynar",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_4064_mlynar.json",
+      "emitters": [
+        {
+          "path": "/char_4064_mlynar/Modes/Default/Body/AnimAttack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_attack_01_buff_04"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_attack_01_buff_04"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S1/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_skill_01_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_01_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S1/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "mlynar_skill_01_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_01_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S2/Body/DoubleAttack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_skill_02_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_02_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S3/Body/BigAttack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_skill_03_buff_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_03_buff_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S3/Body/BigAttack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_skill_03_range_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_03_range_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 4,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S3/Body/BigAttack",
+          "role": "_castEffects",
+          "effects": [
+            "mlynar_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_03_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4064_mlynar/Modes/S3/Body/BigAttack",
+          "role": "_hitEffects",
+          "effects": [
+            "mlynar_skill_03_hit_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "mlynar_skill_03_hit_01"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Skill_3_End",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 1,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop",
+          "duration": 1.2000000476837158,
+          "events": [
+            {
+              "time": 0.5333333611488342,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Start",
+          "duration": 0.3333333432674408,
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "D23",
+      "characterId": "char_4179_monstr",
+      "source": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\actor-bindings\\char_4179_monstr.json",
+      "emitters": [
+        {
+          "path": "/char_4179_monstr/Modes/Default/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_attack_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_attack_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_skill_03_heal"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_03_heal"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3_Restore/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_attack_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_attack_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3_Reborn/Body/Combat",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_03_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3_Reborn/Body/Combat",
+          "role": "_hitEffects",
+          "effects": [
+            "monstr_skill_03_hit"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_03_hit"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3_Reborn/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_skill_03_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_03_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S3_Reborn/Body/Attack",
+          "role": "_hitEffects",
+          "effects": [
+            "monstr_skill_03_hit"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_03_hit"
+            ],
+            "_oneshot": 1,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_useOwnerToTargetDirection": 0,
+            "_playIfNotInputTarget": 0,
+            "_playOnlyIfInputTarget": 0
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_skill_02_start_01"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_02_start_01"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        },
+        {
+          "path": "/char_4179_monstr/Modes/S2/Body/Attack",
+          "role": "_castEffects",
+          "effects": [
+            "monstr_skill_02_start_02"
+          ],
+          "fields": {
+            "_directionType": 0,
+            "_effects": [
+              "monstr_skill_02_start_02"
+            ],
+            "_oneshot": 0,
+            "_startEvent": 2,
+            "_endEvent": 3,
+            "_onlyOnce": 0,
+            "_useFourDirectionalFace": 0,
+            "_delayIfFirstAttack": 0.0,
+            "_hookEffectAfterFirstAttack": ""
+          }
+        }
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "duration": 2.8333332538604736,
+          "events": [
+            {
+              "time": 0.5666666626930237,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Back",
+          "duration": 0.8333333134651184,
+          "events": [
+            {
+              "time": 0.1666666716337204,
+              "name": "OnStart",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_Begin",
+          "duration": 0.6666666865348816,
+          "events": []
+        },
+        {
+          "name": "Skill_3_End",
+          "duration": 0.3333333432674408,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Idle",
+          "duration": 2.4000000953674316,
+          "events": []
+        },
+        {
+          "name": "Skill_3_Loop",
+          "duration": 1.5,
+          "events": [
+            {
+              "time": 0.6666666865348816,
+              "name": "OnAttack",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        },
+        {
+          "name": "Skill_3_ReStart",
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.1666666716337204,
+              "name": "OnStart",
+              "int": 0,
+              "float": 0,
+              "string": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "projectiles": [
+    {
+      "key": "projectile_chr_angel2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2",
+          "fields": {
+            "_mainEffect": "angel2_attack_loop_trail_01",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_angel2",
+          "fields": {
+            "_speed": 30.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2",
+          "fields": {
+            "_effectsWhenHit": [
+              "angel2_attack_loop_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_angel2_s1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2_s1",
+          "fields": {
+            "_mainEffect": "angel2_skill_1_loop_trail_01",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_angel2_s1",
+          "fields": {
+            "_speed": 30.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2_s1",
+          "fields": {
+            "_effectsWhenHit": [
+              "angel2_skill_1_loop_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_angel2_s2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2_s2",
+          "fields": {
+            "_mainEffect": "angel2_skill_2_loop_trail_01",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_angel2_s2",
+          "fields": {
+            "_speed": 30.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2_s2",
+          "fields": {
+            "_effectsWhenHit": [
+              "angel2_skill_2_loop_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_angel2_s3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2_s3",
+          "fields": {
+            "_mainEffect": "angel2_skill_3_loop_trail_01",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_angel2_s3",
+          "fields": {
+            "_speed": 30.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2_s3",
+          "fields": {
+            "_effectsWhenHit": [
+              "angel2_skill_3_loop_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_angel2_s3_start",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2_s3_start",
+          "fields": {
+            "_mainEffect": "angel2_skill_3_begin_trail_01",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_angel2_s3_start",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2_s3_start",
+          "fields": {
+            "_effectsWhenReached": [
+              "angel2_skill_3_begin_range_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_angel2_t1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_angel2_t1",
+          "fields": {
+            "_mainEffect": "",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_angel2_t1",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.30000001192092896
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_angel2_t1",
+          "fields": {
+            "_onlyPlayHitEffectOnTraceTarget": 1
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_monstr",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_monstr",
+          "fields": {
+            "_mainEffect": "monstr_attack_trail",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_monstr",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "ChainLightningEffectBehaviour",
+          "path": "/projectile_chr_monstr",
+          "fields": {
+            "_mainEffect": "monstr_heal_line_01",
+            "_playEffectOnHitPoint": 1
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_monstr",
+          "fields": {
+            "_effectsWhenHit": [
+              "monstr_attack_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_monstr_s2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_monstr_s2",
+          "fields": {
+            "_mainEffect": "monstr_skill_01_trail",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_monstr_s2",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_monstr_s2",
+          "fields": {
+            "_effectsWhenHit": [
+              "monstr_attack_hit_02"
+            ]
+          }
+        },
+        {
+          "type": "ChainLightningEffectBehaviour",
+          "path": "/projectile_chr_monstr_s2",
+          "fields": {
+            "_mainEffect": "monstr_heal_line_02",
+            "_playEffectOnHitPoint": 1
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_monstr_s3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_monstr_s3",
+          "fields": {
+            "_mainEffect": "",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_monstr_s3",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_monstr_s3",
+          "fields": {
+            "_effectsWhenHit": [
+              "monstr_skill_03_heal"
+            ]
+          }
+        },
+        {
+          "type": "ChainLightningEffectBehaviour",
+          "path": "/projectile_chr_monstr_s3",
+          "fields": {
+            "_mainEffect": "monstr_heal_line_02",
+            "_playEffectOnHitPoint": 1
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_svash2_s3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_svash2_s3",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_svash2_s3",
+          "fields": {
+            "_delayTime": 10000.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "Svash2ProjectileEffectBehaviour",
+          "path": "/projectile_chr_svash2_s3",
+          "fields": {
+            "_effectsAlignToTargetDirection": [
+              "svash2_skill_03_range_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_wang",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_wang",
+          "fields": {
+            "_mainEffect": "wang_attack_01_trail",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_wang",
+          "fields": {
+            "_speed": 8.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_wang",
+          "fields": {
+            "_effectsWhenHit": [
+              "wang_attack_01_hit"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_wang_stone1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_wang_stone1",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_wang_stone1",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_wang_stone1",
+          "fields": {
+            "_effectsToTileWhenStart": [
+              "wang_passive_01_buff"
+            ],
+            "_effectOnTrigger": [
+              "token_wang_skill_01_hit"
+            ],
+            "_clearEffectsOnTileOnStop": 1
+          }
+        },
+        {
+          "type": "WangStoneHitBehaviour",
+          "path": "/projectile_chr_wang_stone1",
+          "fields": {
+            "_triggeredEffect": "wang_passive_01_buff_02"
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_wang_stone2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_wang_stone2",
+          "fields": {
+            "_mainEffect": "",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_wang_stone2",
+          "fields": {
+            "_effectsWhenHit": [
+              "token_wang_skill_02_hit_02"
+            ],
+            "_effectsToTileWhenStart": [
+              "wang_passive_01_buff"
+            ],
+            "_clearEffectsOnTileOnStop": 1
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_wang_stone2",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "WangStoneHitBehaviour",
+          "path": "/projectile_chr_wang_stone2",
+          "fields": {
+            "_triggeredEffect": "wang_passive_01_buff_02"
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_wang_stone3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_wang_stone3",
+          "fields": {
+            "_mainEffect": "",
+            "_clearMainEffectWhenReached": 1,
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_wang_stone3",
+          "fields": {
+            "_effectsWhenHit": [
+              "token_wang_skill_03_hit_02"
+            ],
+            "_effectsToTileWhenStart": [
+              "wang_passive_01_buff"
+            ],
+            "_effectOnTrigger": [
+              "token_wang_skill_03_hit"
+            ],
+            "_clearEffectsOnTileOnStop": 1
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_wang_stone3",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "WangStoneHitBehaviour",
+          "path": "/projectile_chr_wang_stone3",
+          "fields": {
+            "_triggeredEffect": "wang_passive_01_buff_02"
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2",
+          "fields": {
+            "_mainEffect": "whitw2_attack_01_trail",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_whitw2",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_1",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_1",
+          "fields": {
+            "_delayTime": 0.5,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_1",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_token_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_2",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_2",
+          "fields": {
+            "_delayTime": 0.5,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_2",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_token_hit_02"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_3",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_3",
+          "fields": {
+            "_delayTime": 0.5,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_3",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_token_hit_03"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s1_1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s1_1",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s1_1",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s1_1",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_01"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s1_2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s1_2",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s1_2",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s1_2",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_02"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s1_3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s1_3",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s1_3",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s1_3",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_03"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_1",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_1",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_1",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_01"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_2",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_2",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_2",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_02"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_3",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_3",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_3",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_03"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_4",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_4",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_4",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_4",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_04"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_5",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_5",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_5",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_5",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_05"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_funnel_s2_6",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_funnel_s2_6",
+          "fields": {
+            "_mainEffect": "",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AttachToTarget",
+          "path": "/projectile_chr_whitw2_funnel_s2_6",
+          "fields": {
+            "_delayTime": 0.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "SequenceEffectBehaviour",
+          "path": "/projectile_chr_whitw2_funnel_s2_6",
+          "fields": {
+            "_clearHitEffectOnStop": 1,
+            "_clearReachedEffectWhenStop": 1,
+            "_effectGroups": [
+              {
+                "effectsWhenHit": [
+                  "whitw2_token_hit_06"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_s1",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_s1",
+          "fields": {
+            "_mainEffect": "whitw2_skill_01_trail_01",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_whitw2_s1",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_s1",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_s2",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_s2",
+          "fields": {
+            "_mainEffect": "whitw2_skill_02_trail_01",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_whitw2_s2",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_s2",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_hit_01"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "projectile_chr_whitw2_s3",
+      "scripts": [
+        {
+          "type": "SimpleProjectile",
+          "path": "/projectile_chr_whitw2_s3",
+          "fields": {
+            "_mainEffect": "whitw2_skill_03_trail_01",
+            "_projectileType": 0
+          }
+        },
+        {
+          "type": "AdvancedMovement",
+          "path": "/projectile_chr_whitw2_s3",
+          "fields": {
+            "_speed": 10.0,
+            "_delayToStart": 0.0
+          }
+        },
+        {
+          "type": "EffectBehaviour",
+          "path": "/projectile_chr_whitw2_s3",
+          "fields": {
+            "_effectsWhenHit": [
+              "whitw2_hit_01"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Raw _startEvent/_endEvent numbers are preserved. Labels assigned by a local tool are not proof of original enum names.",
+    "D26 S3 actor casts start01/start01_2/start02; projectile has no generic target hit, but direction-aligned svash2_skill_03_range_01. Do not fabricate target flashes.",
+    "D24 S3 delivery projectile mainEffect is begin_trail_01, reached effect begin_range_01; begin_start_001 is a source empty control.",
+    "D23 S3 medical mode uses skill03_heal for actor cast and actual projectile hit. Chain uses original monstr_heal_line_02. Reborn melee mode uses skill03_start01/hit. Combat self-health restoration has no additional standalone FX proven by these entries.",
+    "Source weapon/body mounts, complete Torappu manager behaviour and exact runtime speed adaptation require actual implementation/Player validation."
+  ],
+  "additionalMountEvidence": {
+    "D26": {
+      "originalCharartsMounts": [
+        {
+          "path": "/DefaultSkin",
+          "type": "CharacterAnimator",
+          "fields": {
+            "_animations": [
+              {
+                "animKey": "Default",
+                "animName": "Default",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Born",
+                "animName": "Start",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Die",
+                "animName": "Die",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Idle",
+                "animName": "Idle",
+                "loop": 1,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Attack_A",
+                "animName": "Attack_A",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Attack_B",
+                "animName": "Attack_B",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Attack_Begin",
+                "animName": "Attack_Begin",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Attack_C",
+                "animName": "Attack_C",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Attack_End",
+                "animName": "Attack_End",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_1_A",
+                "animName": "Skill_1_A",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_2",
+                "animName": "Skill_2",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_3_Begin",
+                "animName": "Skill_3_Begin",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_3_Combat",
+                "animName": "Skill_3_Combat",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_3_Deploy",
+                "animName": "Skill_3_Deploy",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_3_End",
+                "animName": "Skill_3_End",
+                "loop": 0,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              },
+              {
+                "animKey": "Skill_3_Idle",
+                "animName": "Skill_3_Idle",
+                "loop": 1,
+                "speed": 1.0,
+                "ignoreMissing": 1
+              }
+            ],
+            "_spineSkins": [],
+            "_mixSettings": [
+              {
+                "sourceAnimName": "Attack_A",
+                "targetAnimName": "Idle",
+                "mixAnimName": "Attack_End",
+                "illegalSourceAnimName": "",
+                "illegalTargetAnimName": "",
+                "acceptAllSource": 0
+              },
+              {
+                "sourceAnimName": "Attack_B",
+                "targetAnimName": "Idle",
+                "mixAnimName": "Attack_End",
+                "illegalSourceAnimName": "",
+                "illegalTargetAnimName": "",
+                "acceptAllSource": 0
+              },
+              {
+                "sourceAnimName": "Attack_C",
+                "targetAnimName": "Idle",
+                "mixAnimName": "Attack_End",
+                "illegalSourceAnimName": "",
+                "illegalTargetAnimName": "",
+                "acceptAllSource": 0
+              },
+              {
+                "sourceAnimName": "Skill_3_Idle",
+                "targetAnimName": "Idle",
+                "mixAnimName": "Skill_3_End",
+                "illegalSourceAnimName": "",
+                "illegalTargetAnimName": "",
+                "acceptAllSource": 0
+              },
+              {
+                "sourceAnimName": "Skill_3_Combat",
+                "targetAnimName": "Idle",
+                "mixAnimName": "Skill_3_End",
+                "illegalSourceAnimName": "",
+                "illegalTargetAnimName": "",
+                "acceptAllSource": 0
+              }
+            ],
+            "_spineScale": 1.0,
+            "_enableShowDamageFlash": 1,
+            "_cacheBoundsCenter": 1,
+            "_resetSkinToInitial": 0,
+            "_faceSwitcher": {
+              "m_FileID": 0,
+              "m_PathID": 5130583383837387102
+            },
+            "_front": {
+              "skeleton": {
+                "m_FileID": 0,
+                "m_PathID": 8819678273826269534
+              },
+              "muzzlaTransform": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "hitTransform": {
+                "m_FileID": 0,
+                "m_PathID": 8355554748178966878
+              },
+              "headTransform": {
+                "m_FileID": 0,
+                "m_PathID": 4215462337516939614
+              },
+              "shadowTransform": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint0": {
+                "m_FileID": 0,
+                "m_PathID": -1688697160431163042
+              },
+              "specialPoint1": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint2": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint3": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint4": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint5": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint6": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint7": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint8": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint9": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint10": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint11": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint12": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint13": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint14": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint15": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint16": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint17": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint18": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint19": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint20": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint21": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint22": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint23": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              }
+            },
+            "_back": {
+              "skeleton": {
+                "m_FileID": 0,
+                "m_PathID": -2915687127791752866
+              },
+              "muzzlaTransform": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "hitTransform": {
+                "m_FileID": 0,
+                "m_PathID": 1318649131222903134
+              },
+              "headTransform": {
+                "m_FileID": 0,
+                "m_PathID": 4215462337516939614
+              },
+              "shadowTransform": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint0": {
+                "m_FileID": 0,
+                "m_PathID": 1947751310101915998
+              },
+              "specialPoint1": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint2": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint3": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint4": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint5": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint6": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint7": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint8": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint9": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint10": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint11": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint12": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint13": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint14": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint15": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint16": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint17": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint18": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint19": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint20": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint21": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint22": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              },
+              "specialPoint23": {
+                "m_FileID": 0,
+                "m_PathID": 0
+              }
+            },
+            "_shadowTransform": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            },
+            "_useNewSpineFormat": 0,
+            "_flyHitOffset": {
+              "x": 0.0,
+              "y": 0.3499999940395355,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin",
+          "type": "EffectWhenPlayAnimation",
+          "fields": {
+            "_animationEffectOptions": [
+              {
+                "animationName": "Skill_1_A",
+                "effects": [
+                  "svash2_skill_01_start_A_01"
+                ],
+                "oneShot": 0
+              },
+              {
+                "animationName": "Skill_1_B",
+                "effects": [
+                  "svash2_skill_01_start_B_01"
+                ],
+                "oneShot": 0
+              }
+            ]
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher",
+          "type": "FaceSwitcher",
+          "fields": {
+            "_switchTime": 0.15000000596046448,
+            "_defaultLOrR": 3
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Front",
+          "type": "SkeletonAnimation",
+          "fields": {
+            "skeletonDataAsset": {
+              "m_FileID": 0,
+              "m_PathID": 6573343658126114856
+            },
+            "initialSkinName": "default",
+            "initialFlipX": 0,
+            "initialFlipY": 0,
+            "updateWhenInvisible": 3,
+            "separatorSlotNames": [],
+            "zSpacing": 0.0,
+            "useClipping": 1,
+            "immutableTriangles": 0,
+            "pmaVertexColors": 1,
+            "clearStateOnDisable": 0,
+            "tintBlack": 0,
+            "singleSubmesh": 0,
+            "fixDrawOrder": 0,
+            "addNormals": 0,
+            "calculateTangents": 0,
+            "maskInteraction": 0,
+            "maskMaterials": {
+              "materialsMaskDisabled": [],
+              "materialsInsideMask": [],
+              "materialsOutsideMask": []
+            },
+            "disableRenderingOnOverride": 1,
+            "_animationName": "Default",
+            "loop": 0,
+            "timeScale": 1.0
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Front/SpecialPoint0",
+          "type": "BoneFollower",
+          "fields": {
+            "skeletonRenderer": {
+              "m_FileID": 0,
+              "m_PathID": 8819678273826269534
+            },
+            "boneName": "C_Weapon",
+            "followXYPosition": 1,
+            "followZPosition": 1,
+            "followBoneRotation": 1,
+            "followSkeletonFlip": 1,
+            "followLocalScale": 1,
+            "useAppliedLocalScale": 0,
+            "maintainedAxisOrientation": 1,
+            "initializeOnAwake": 1
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Back",
+          "type": "SkeletonAnimation",
+          "fields": {
+            "skeletonDataAsset": {
+              "m_FileID": 0,
+              "m_PathID": 8437143418125034997
+            },
+            "initialSkinName": "default",
+            "initialFlipX": 0,
+            "initialFlipY": 0,
+            "updateWhenInvisible": 3,
+            "separatorSlotNames": [],
+            "zSpacing": 0.0,
+            "useClipping": 1,
+            "immutableTriangles": 0,
+            "pmaVertexColors": 1,
+            "clearStateOnDisable": 0,
+            "tintBlack": 0,
+            "singleSubmesh": 0,
+            "fixDrawOrder": 0,
+            "addNormals": 0,
+            "calculateTangents": 0,
+            "maskInteraction": 0,
+            "maskMaterials": {
+              "materialsMaskDisabled": [],
+              "materialsInsideMask": [],
+              "materialsOutsideMask": []
+            },
+            "disableRenderingOnOverride": 1,
+            "_animationName": "Default",
+            "loop": 0,
+            "timeScale": 1.0
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Back/SpecialPoint0",
+          "type": "BoneFollower",
+          "fields": {
+            "skeletonRenderer": {
+              "m_FileID": 0,
+              "m_PathID": -2915687127791752866
+            },
+            "boneName": "C_Weapon",
+            "followXYPosition": 1,
+            "followZPosition": 1,
+            "followBoneRotation": 1,
+            "followSkeletonFlip": 1,
+            "followLocalScale": 1,
+            "useAppliedLocalScale": 0,
+            "maintainedAxisOrientation": 1,
+            "initializeOnAwake": 1
+          }
+        }
+      ],
+      "originalSkeletonDataAssets": [
+        {
+          "type": "SkeletonDataAsset",
+          "pathID": -887959712620688898,
+          "tree": {
+            "m_GameObject": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            },
+            "m_Enabled": 1,
+            "m_Script": {
+              "m_FileID": 1,
+              "m_PathID": -6887505452609033796
+            },
+            "m_Name": "build_char_1045_svash2_SkeletonData",
+            "atlasAssets": [
+              {
+                "m_FileID": 0,
+                "m_PathID": 5016201637283395095
+              }
+            ],
+            "scale": 0.009999999776482582,
+            "skeletonJSON": {
+              "m_FileID": 0,
+              "m_PathID": 2881791803208912527
+            },
+            "isUpgradingBlendModeMaterials": 0,
+            "blendModeMaterials": {
+              "requiresBlendModeMaterials": 0,
+              "applyAdditiveMaterial": 0,
+              "additiveMaterials": [],
+              "multiplyMaterials": [],
+              "screenMaterials": []
+            },
+            "skeletonDataModifiers": [],
+            "fromAnimation": [],
+            "toAnimation": [],
+            "duration": [],
+            "defaultMix": 0.0,
+            "controller": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            }
+          }
+        },
+        {
+          "type": "SkeletonDataAsset",
+          "pathID": 6573343658126114856,
+          "tree": {
+            "m_GameObject": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            },
+            "m_Enabled": 1,
+            "m_Script": {
+              "m_FileID": 1,
+              "m_PathID": -6887505452609033796
+            },
+            "m_Name": "char_1045_svash2_SkeletonData",
+            "atlasAssets": [
+              {
+                "m_FileID": 0,
+                "m_PathID": 4148667955735162354
+              }
+            ],
+            "scale": 0.009999999776482582,
+            "skeletonJSON": {
+              "m_FileID": 0,
+              "m_PathID": -7765062879952901066
+            },
+            "isUpgradingBlendModeMaterials": 0,
+            "blendModeMaterials": {
+              "requiresBlendModeMaterials": 0,
+              "applyAdditiveMaterial": 0,
+              "additiveMaterials": [],
+              "multiplyMaterials": [],
+              "screenMaterials": []
+            },
+            "skeletonDataModifiers": [],
+            "fromAnimation": [],
+            "toAnimation": [],
+            "duration": [],
+            "defaultMix": 0.0,
+            "controller": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            }
+          }
+        },
+        {
+          "type": "SkeletonDataAsset",
+          "pathID": 8437143418125034997,
+          "tree": {
+            "m_GameObject": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            },
+            "m_Enabled": 1,
+            "m_Script": {
+              "m_FileID": 1,
+              "m_PathID": -6887505452609033796
+            },
+            "m_Name": "char_1045_svash2_SkeletonData",
+            "atlasAssets": [
+              {
+                "m_FileID": 0,
+                "m_PathID": -5883175133522588289
+              }
+            ],
+            "scale": 0.009999999776482582,
+            "skeletonJSON": {
+              "m_FileID": 0,
+              "m_PathID": -2773280472438557893
+            },
+            "isUpgradingBlendModeMaterials": 0,
+            "blendModeMaterials": {
+              "requiresBlendModeMaterials": 0,
+              "applyAdditiveMaterial": 0,
+              "additiveMaterials": [],
+              "multiplyMaterials": [],
+              "screenMaterials": []
+            },
+            "skeletonDataModifiers": [],
+            "fromAnimation": [],
+            "toAnimation": [],
+            "duration": [],
+            "defaultMix": 0.0,
+            "controller": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            }
+          }
+        }
+      ],
+      "originalBodyTransforms": [
+        {
+          "path": "/DefaultSkin",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 0
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher",
+          "fields": {
+            "m_LocalRotation": {
+              "x": -0.0,
+              "y": -0.0,
+              "z": -3.102349310779573e-08,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": -0.1599999964237213,
+              "z": -0.10000000149011612
+            },
+            "m_LocalScale": {
+              "x": 0.27000001072883606,
+              "y": 0.27000001072883606,
+              "z": 0.27000001072883606
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 6931116018081868126
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Front",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 7957256377533147486
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Front/HitPoint",
+          "fields": {
+            "m_LocalRotation": {
+              "x": -0.0,
+              "y": -0.0,
+              "z": 3.102349310779573e-08,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 1.8000004291534424,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": -7265732408743417506
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Front/SpecialPoint0",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0004363323387224227,
+              "w": 0.9999999403953552
+            },
+            "m_LocalPosition": {
+              "x": 0.9484999775886536,
+              "y": 1.664199948310852,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 0.800000011920929,
+              "y": 0.800000011920929,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": -7265732408743417506
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Back",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 7957256377533147486
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Back/HitPoint",
+          "fields": {
+            "m_LocalRotation": {
+              "x": -0.0,
+              "y": -0.0,
+              "z": 3.102349310779573e-08,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 1.8000004291534424,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 5036291610821536094
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/Back/SpecialPoint0",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0004363323387224227,
+              "w": 0.9999999403953552
+            },
+            "m_LocalPosition": {
+              "x": 0.9484999775886536,
+              "y": 1.664199948310852,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 0.800000011920929,
+              "y": 0.800000011920929,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 5036291610821536094
+            }
+          }
+        },
+        {
+          "path": "/DefaultSkin/FaceSwitcher/HeadPoint",
+          "fields": {
+            "m_LocalRotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "m_LocalPosition": {
+              "x": 0.0,
+              "y": 4.0,
+              "z": 0.0
+            },
+            "m_LocalScale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "m_Father": {
+              "m_FileID": 0,
+              "m_PathID": 7957256377533147486
+            }
+          }
+        }
+      ],
+      "nativeTrajectory": {
+        "model": "char_1045_svash2",
+        "skin": "default",
+        "animation": "Skill_3_Combat",
+        "animationDuration": 1.2000000476837158,
+        "bone": "C_Weapon",
+        "sourceMount": "DefaultSkin/FaceSwitcher/Front/SpecialPoint0 BoneFollower",
+        "mountEnumCaveat": "Type5=SPECIAL_0 is now confirmed from original public IL2CPP enum metadata; local DefaultSkin SpecialPoint0 BoneFollower=C_Weapon is independently serialized evidence. Full original manager/billboard orchestration was not run.",
+        "skeletonDataScale": 0.009999999776482582,
+        "faceSwitcherScale": 0.2700000107,
+        "faceSwitcherPosition": {
+          "x": 0,
+          "y": -0.16,
+          "z": -0.1
+        },
+        "trajectoryFps": 60,
+        "positionSamples": [
+          {
+            "x": -0.2202627609938998,
+            "y": 0.229395853066881,
+            "z": -0.1
+          },
+          {
+            "x": -0.15781681158093608,
+            "y": 0.18934501834219455,
+            "z": -0.1
+          },
+          {
+            "x": -0.0857540457021382,
+            "y": 0.1712501691686696,
+            "z": -0.1
+          },
+          {
+            "x": -0.012236779906529672,
+            "y": 0.17608377648985055,
+            "z": -0.1
+          },
+          {
+            "x": 0.05509703445596508,
+            "y": 0.2013254551368144,
+            "z": -0.1
+          },
+          {
+            "x": 0.11009945500640471,
+            "y": 0.24171162028944607,
+            "z": -0.1
+          },
+          {
+            "x": 0.14814093018656893,
+            "y": 0.2895200147895852,
+            "z": -0.1
+          },
+          {
+            "x": 0.16805637299040235,
+            "y": 0.33295175171618674,
+            "z": -0.1
+          },
+          {
+            "x": 0.17366221873062665,
+            "y": 0.3624751698977312,
+            "z": -0.1
+          },
+          {
+            "x": 0.17627198484804768,
+            "y": 0.3738014403703762,
+            "z": -0.1
+          },
+          {
+            "x": 0.18539667498716528,
+            "y": 0.3992951546979079,
+            "z": -0.1
+          },
+          {
+            "x": 0.1913370624449143,
+            "y": 0.4344841779210997,
+            "z": -0.1
+          },
+          {
+            "x": 0.1887158878155256,
+            "y": 0.4707430021512242,
+            "z": -0.1
+          },
+          {
+            "x": 0.17896327544792495,
+            "y": 0.501705182923346,
+            "z": -0.1
+          },
+          {
+            "x": 0.16512198836279587,
+            "y": 0.5256600097967434,
+            "z": -0.1
+          },
+          {
+            "x": 0.14972781745419236,
+            "y": 0.5436740744399534,
+            "z": -0.1
+          },
+          {
+            "x": 0.13453587486773488,
+            "y": 0.5575411562246035,
+            "z": -0.1
+          },
+          {
+            "x": 0.12177880521122006,
+            "y": 0.5657124905195156,
+            "z": -0.1
+          },
+          {
+            "x": 0.11002599455408851,
+            "y": 0.5723334266451809,
+            "z": -0.1
+          },
+          {
+            "x": 0.1022847681986091,
+            "y": 0.5753126630751496,
+            "z": -0.1
+          },
+          {
+            "x": 0.09540691635414822,
+            "y": 0.5778478304107348,
+            "z": -0.1
+          },
+          {
+            "x": 0.09384313842532593,
+            "y": 0.5783141717387454,
+            "z": -0.1
+          },
+          {
+            "x": 0.09267286888268364,
+            "y": 0.5775219647482911,
+            "z": -0.1
+          },
+          {
+            "x": 0.09114683418687593,
+            "y": 0.5751370991639155,
+            "z": -0.1
+          },
+          {
+            "x": 0.0906476341423486,
+            "y": 0.5700888050028371,
+            "z": -0.1
+          },
+          {
+            "x": 0.08971969948939687,
+            "y": 0.5626611890563081,
+            "z": -0.1
+          },
+          {
+            "x": 0.0887512120116988,
+            "y": 0.5522800914242646,
+            "z": -0.1
+          },
+          {
+            "x": 0.08709860329152097,
+            "y": 0.5374140286239095,
+            "z": -0.1
+          },
+          {
+            "x": 0.08295779823033304,
+            "y": 0.5156206884082521,
+            "z": -0.1
+          },
+          {
+            "x": 0.1112879443676796,
+            "y": 0.4930031601080721,
+            "z": -0.1
+          },
+          {
+            "x": 0.16311767145192782,
+            "y": 0.4291952257660676,
+            "z": -0.1
+          },
+          {
+            "x": 0.24863946657911132,
+            "y": 0.2484605950838931,
+            "z": -0.1
+          },
+          {
+            "x": -0.1565364280800603,
+            "y": 0.24405192663378575,
+            "z": -0.1
+          },
+          {
+            "x": -0.1611274166146284,
+            "y": 0.26131624407752974,
+            "z": -0.1
+          },
+          {
+            "x": -0.1668239085121346,
+            "y": 0.2749541759496107,
+            "z": -0.1
+          },
+          {
+            "x": -0.17187326051979998,
+            "y": 0.28673001390767483,
+            "z": -0.1
+          },
+          {
+            "x": -0.17586465153749717,
+            "y": 0.2974847909717816,
+            "z": -0.1
+          },
+          {
+            "x": -0.1776246588930978,
+            "y": 0.3069769746552823,
+            "z": -0.1
+          },
+          {
+            "x": -0.17903981536301516,
+            "y": 0.3153839695285119,
+            "z": -0.1
+          },
+          {
+            "x": -0.1801811244257444,
+            "y": 0.32309235447707196,
+            "z": -0.1
+          },
+          {
+            "x": -0.1812179992831226,
+            "y": 0.33026537413521573,
+            "z": -0.1
+          },
+          {
+            "x": -0.18196815058101343,
+            "y": 0.33654372669782284,
+            "z": -0.1
+          },
+          {
+            "x": -0.1827063817889668,
+            "y": 0.3424160785362461,
+            "z": -0.1
+          },
+          {
+            "x": -0.183230642049055,
+            "y": 0.34745167242618713,
+            "z": -0.1
+          },
+          {
+            "x": -0.18375157644523904,
+            "y": 0.35192691053894365,
+            "z": -0.1
+          },
+          {
+            "x": -0.18427033912791757,
+            "y": 0.3562433695282339,
+            "z": -0.1
+          },
+          {
+            "x": -0.1844652061199872,
+            "y": 0.35919118771250036,
+            "z": -0.1
+          },
+          {
+            "x": -0.1858855038783983,
+            "y": 0.3626459682454143,
+            "z": -0.1
+          },
+          {
+            "x": -0.18733304945722185,
+            "y": 0.365625159395608,
+            "z": -0.1
+          },
+          {
+            "x": -0.1898947936771732,
+            "y": 0.3682153104600775,
+            "z": -0.1
+          },
+          {
+            "x": -0.19266863625146458,
+            "y": 0.370162246898156,
+            "z": -0.1
+          },
+          {
+            "x": -0.195821845057668,
+            "y": 0.37224712841205976,
+            "z": -0.1
+          },
+          {
+            "x": -0.19948138618905695,
+            "y": 0.37451612305508564,
+            "z": -0.1
+          },
+          {
+            "x": -0.20261113037206951,
+            "y": 0.37416247481934695,
+            "z": -0.1
+          },
+          {
+            "x": -0.2059139035371141,
+            "y": 0.3730699751786991,
+            "z": -0.1
+          },
+          {
+            "x": -0.209395308435695,
+            "y": 0.36871395749422775,
+            "z": -0.1
+          },
+          {
+            "x": -0.21284177235071183,
+            "y": 0.36254645466267454,
+            "z": -0.1
+          },
+          {
+            "x": -0.21630734688479017,
+            "y": 0.3547228456968211,
+            "z": -0.1
+          },
+          {
+            "x": -0.21959321888325242,
+            "y": 0.34556239768487507,
+            "z": -0.1
+          },
+          {
+            "x": -0.2223638215687115,
+            "y": 0.33582092822497933,
+            "z": -0.1
+          },
+          {
+            "x": -0.22477967601749688,
+            "y": 0.32540704438003587,
+            "z": -0.1
+          },
+          {
+            "x": -0.22660945675661917,
+            "y": 0.3148624760321319,
+            "z": -0.1
+          },
+          {
+            "x": -0.22796860042042044,
+            "y": 0.304176636438537,
+            "z": -0.1
+          },
+          {
+            "x": -0.2286262651684929,
+            "y": 0.2936289467354519,
+            "z": -0.1
+          },
+          {
+            "x": -0.22881494922292514,
+            "y": 0.28331873528246154,
+            "z": -0.1
+          },
+          {
+            "x": -0.2285943216134878,
+            "y": 0.27346025765933046,
+            "z": -0.1
+          },
+          {
+            "x": -0.22764160997792338,
+            "y": 0.264100879188349,
+            "z": -0.1
+          },
+          {
+            "x": -0.226639299051823,
+            "y": 0.2554001715315306,
+            "z": -0.1
+          },
+          {
+            "x": -0.2251114462588664,
+            "y": 0.24766280927639786,
+            "z": -0.1
+          },
+          {
+            "x": -0.223511270357195,
+            "y": 0.2407454755456693,
+            "z": -0.1
+          },
+          {
+            "x": -0.22220386542795617,
+            "y": 0.23535318810816222,
+            "z": -0.1
+          },
+          {
+            "x": -0.22081362739924001,
+            "y": 0.23156699201751066,
+            "z": -0.1
+          },
+          {
+            "x": -0.22026276260615424,
+            "y": 0.22939585924464714,
+            "z": -0.1
+          },
+          {
+            "x": -0.2202627609938998,
+            "y": 0.229395853066881,
+            "z": -0.1
+          }
+        ],
+        "rotationSamples": [
+          {
+            "x": 0,
+            "y": 0,
+            "z": 153.06001036241761
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 172.32765294938102
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -168.44563210689554
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -149.59899413780172
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -131.4657567224063
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -114.21695897824364
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -98.67811092055096
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -86.23157424525525
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -77.83610479455979
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -70.83408520347697
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -55.26888404143863
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -35.50644148105101
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -15.909496934810656
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 1.1683457617349153
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 15.162916628538554
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 26.554436890505638
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 36.215983257117244
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 42.21180800948518
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 47.44028948413759
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 49.720869293673005
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 51.696597679470585
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 53.88234616629298
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 55.30545167739368
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 55.96164938125738
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 55.61926690109753
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 54.35152436153384
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 52.083096854868906
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 48.509525381759005
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 43.09000943081094
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 32.78220420224986
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 8.49123820772958
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": -46.957998804248724
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 147.19327241447965
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 141.66331724096096
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 137.6934605404342
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 134.37236345001227
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 131.45338074029917
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 128.80248530726496
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 126.53220919735755
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 124.425032148598
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 122.55207248162607
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 120.90907286385708
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 119.33854278282055
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 118.09336537268705
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 116.95594249077392
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 115.84700351741466
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 115.11260499464443
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 114.38790876432878
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 113.73594452725199
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 113.3285810958481
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 113.09227074223473
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 112.85596038867723
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 112.61965003517578
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 113.05785320901519
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 113.72405042134585
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 115.0740221956988
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 116.7872855070004
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 118.86231430300313
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 121.20099066926285
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 123.70056084118943
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 126.34059107143112
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 129.0600928238207
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 131.83347776438796
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 134.60686271084177
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 137.38024766208363
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 140.07765700493377
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 142.69719037423556
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 145.187134710033
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 147.46930191507678
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 149.52003548671442
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 151.21691924817512
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 152.34335278224023
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 153.06000831204966
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "z": 153.06001036241761
+          }
+        ],
+        "assumptions": [
+          "Uses original saved FaceSwitcher transform; original dynamic global character billboard rotation/mount lifecycle cannot be fully proven without client code.",
+          "No SpecialPoint0 saved transform is added a second time; BoneFollower overwrites it.",
+          "Weapon mesh/material/TrailRenderer remains native. No generic substitute line is authored."
+        ]
+      },
+      "captureReport": {
+        "status": "EMPTY",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "keys": [
+          "svash2_skill_03_combat_start_01"
+        ],
+        "shaders": [
+          "Particles/Standard Unlit supported=True",
+          "Torappu/Particles/Ram/Disturb(CustomData) supported=True"
+        ],
+        "limitations": [
+          "Original native ParticleSystem, enabled Animator/Legacy Animation, mesh, texture and Shader; source UVTween and FxDelay replayed by processing harness.",
+          "Full Torappu game scripts are absent. FollowMountPoint/FollowDirection are supplied by explicit root trajectories; source lifecycle is only partial. Stop uses native StopEmitting, not original _inactiveOnFinish/Animator finish transitions.",
+          "No LOD reduction, intensity change, emission-count change, substitute Shader or stylistic paint. Camera, seed, root trajectories and job timing are processing inputs.",
+          "Source TrailRenderer lifetime is replayed using the explicit 1/60 processing clock because Editor Time.time does not advance during synchronous baking. Original game orchestration is not fully reproduced. EdgePixels>0 requires a wider capture."
+        ],
+        "frames": 66,
+        "visibleFrames": 0,
+        "missingScripts": 3,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "size": 512,
+        "peak": 0.0,
+        "maxTransmissionError": 0.0,
+        "hdrRange": 16.0,
+        "fps": 30.0,
+        "pixelsPerWorldUnit": 64.0,
+        "pivotX": 0.5,
+        "pivotY": 0.48241299390792847,
+        "contentMinX": 2147483647,
+        "contentMinY": 2147483647,
+        "contentMaxX": -1,
+        "contentMaxY": -1
+      },
+      "status": "ORIGINAL_SPECIAL0_C_WEAPON_TRAIL_EMPTY_WITH_EXPLICIT_BONE_TRAJECTORY_NOT_PACKAGED",
+      "notes": [
+        "Original source TrailRenderer and material remain unmodified; supported shader returns zero visible output with explicit C_Weapon trajectory.",
+        "Source material contains MainTex scale(-1,1), offset(-.32,0), dissolve Amount1; values are observed, not altered or proven to be the cause.",
+        "No generic line, altered exposure, static cutout or guessed material input was substituted.",
+        "Original enum metadata confirms FX mountPointType5=SPECIAL_0; original chararts maps SpecialPoint0 to C_Weapon. The capture remains EMPTY and no material/vertex-input cause is established."
+      ]
+    }
+  },
+  "mountPointEnum": {
+    "status": "ORIGINAL_IL2CPP_ENUM_CONSTANTS_CONFIRMED_PUBLIC_METADATA_SNAPSHOT",
+    "type": "Torappu.Battle.Entity/MountPointType",
+    "field": "Torappu.Battle.Effects.FollowMountPoint._mountPointType",
+    "fieldType": "Torappu.Battle.Entity/MountPointType",
+    "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+    "repositoryCommit": "5734c30bf54780056ff758505380322c0cf519fe",
+    "sha256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+    "bytes": 18309632,
+    "method": "Read-only Mono.Cecil metadata extraction. Dummy assembly was not executed.",
+    "constants": {
+      "FOOT": 0,
+      "HIT": 1,
+      "MUZZLE": 2,
+      "HEAD": 3,
+      "UI": 4,
+      "SPECIAL_0": 5,
+      "SPECIAL_1": 6,
+      "GROUND": 7,
+      "SPECIAL_2": 8,
+      "SPECIAL_3": 9,
+      "SPECIAL_4": 10,
+      "SPECIAL_5": 11,
+      "SPECIAL_6": 12,
+      "SPECIAL_7": 13,
+      "SPECIAL_8": 14,
+      "SPECIAL_9": 15,
+      "SPECIAL_10": 16,
+      "SPECIAL_11": 17,
+      "SPECIAL_12": 18,
+      "SPECIAL_13": 19,
+      "SPECIAL_14": 20,
+      "SPECIAL_15": 21
+    },
+    "versionLimit": "Public dump snapshot has not been byte-matched to the26-10-29 asset build; local source field types and chararts mount references are consistent. No enum value is inferred from filenames or slot counts."
+  },
+  "weaponMountDepthCorrections": [
+    {
+      "key": "defender/D23/monstr_skill_03_buff_01",
+      "sourcePrefab": "monstr_skill_03_buff_01",
+      "drivers": [
+        {
+          "path": "monstr_skill_03_buff_01",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 9,
+            "_followScaleSign": 1,
+            "_followScale": 1,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 0
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_02",
+      "sourcePrefab": "monstr_skill_03_buff_02",
+      "drivers": [
+        {
+          "path": "monstr_skill_03_buff_02",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 10,
+            "_followScaleSign": 1,
+            "_followScale": 1,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 0
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_03",
+      "sourcePrefab": "monstr_skill_03_buff_03",
+      "drivers": [
+        {
+          "path": "monstr_skill_03_buff_03",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 11,
+            "_followScaleSign": 1,
+            "_followScale": 1,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 0
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D23/monstr_skill_03_buff_04",
+      "sourcePrefab": "monstr_skill_03_buff_04",
+      "drivers": [
+        {
+          "path": "monstr_skill_03_buff_04",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 12,
+            "_followScaleSign": 1,
+            "_followScale": 1,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 0
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D26/svash2_attack_start_a_02",
+      "sourcePrefab": "svash2_attack_start_a_02",
+      "drivers": [
+        {
+          "path": "svash2_attack_start_a_02",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 5,
+            "_followScaleSign": 0,
+            "_followScale": 0,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 1
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_buff_weapon_01",
+      "sourcePrefab": "svash2_skill_03_buff_weapon_01",
+      "drivers": [
+        {
+          "path": "svash2_skill_03_buff_weapon_01",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 5,
+            "_followScaleSign": 0,
+            "_followScale": 0,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 1
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D30/mlynar_skill_03_buff_01",
+      "sourcePrefab": "mlynar_skill_03_buff_01",
+      "drivers": [
+        {
+          "path": "mlynar_skill_03_buff_01",
+          "type": "FollowMountPoint",
+          "fields": {
+            "_mountPointType": 5,
+            "_followScaleSign": 0,
+            "_followScale": 0,
+            "_scaleMultiplier": 1.0,
+            "_pauseWhenFollowScaleNearlyZero": 0,
+            "_pauseWhenMountPointInvalid": 1,
+            "_onlyPauseWhenMountPointInvalid": 0,
+            "_keepOriginRotation": 0,
+            "_useBehaviourPause": 0
+          }
+        }
+      ],
+      "groundDepth": false,
+      "belowActors": false
+    }
+  ]
+}

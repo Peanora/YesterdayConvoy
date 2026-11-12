@@ -77,7 +77,8 @@ namespace YesterdayConvoy.Tests
                 Vector2 low=ProjectCorner(r,sprite.bounds.min),high=ProjectCorner(r,sprite.bounds.max);
                 Show("ShowGround");Assert.That(r.sprite,Is.SameAs(sprite));CollectionAssert.AreEqual(uv,r.sprite.uv);Assert.That(r.transform.position,Is.EqualTo(anchor));
                 Assert.That(r.sprite.pixelsPerUnit,Is.EqualTo(sequence.GetType().GetField("Ppu",Flags).GetValue(sequence)));
-                Assert.That(Vector3.Dot(r.transform.forward,Vector3.down),Is.GreaterThan(.999f));
+                Assert.That(Vector3.Dot(r.transform.forward,camera.transform.forward),Is.GreaterThan(.999f),"An exact native capture already contains the ground foreshortening; its image plane remains camera-facing.");
+                Assert.That(r.transform.parent.localScale,Is.EqualTo(Vector3.one));
                 Assert.That(camera.orthographic,Is.True);Assert.That(Vector2.Distance(low,ProjectCorner(r,sprite.bounds.min)),Is.LessThan(.01f));
                 Assert.That(Vector2.Distance(high,ProjectCorner(r,sprite.bounds.max)),Is.LessThan(.01f),"The actual XY image-plane corners agree under orthographic projection.");
                 // Match the game's light perspective. Perspective depth naturally changes
@@ -98,6 +99,18 @@ namespace YesterdayConvoy.Tests
                 UnityEngine.Object.Destroy(target);UnityEngine.Object.Destroy(pixels);UnityEngine.Object.Destroy(floorMaterial);UnityEngine.Object.Destroy(floor);UnityEngine.Object.Destroy(blocker);UnityEngine.Object.Destroy(root);UnityEngine.Object.Destroy(cameraObject);
             }
             yield return null;
+        }
+        [UnityTest]public IEnumerator LegacyGroundProjectionStillUsesTheHorizontalPlane()
+        {
+            const string key="common/common_hit_01";var clip=OriginalCombatVfxArt.Get(key);Assert.That(clip.ExactRgba,Is.False);yield return clip.Sequence.Warm();
+            var root=new GameObject("Legacy ground projection regression");var cameraObject=new GameObject("Legacy ground projection camera");var camera=cameraObject.AddComponent<Camera>();
+            camera.transform.SetPositionAndRotation(new Vector3(0,8,-5),Quaternion.Euler(60,0,0));var layer=new OriginalCombatVfxLayer(root.transform);
+            try
+            {
+                layer.Begin();Assert.That(layer.ShowGround(key,.1,Vector3.zero,camera,false,7),Is.True);layer.End();
+                Assert.That(Vector3.Dot(layer.Renderers.Single().transform.forward,Vector3.down),Is.GreaterThan(.999f));
+            }
+            finally{layer.Dispose();UnityEngine.Object.Destroy(root);UnityEngine.Object.Destroy(cameraObject);}
         }
     }
 }

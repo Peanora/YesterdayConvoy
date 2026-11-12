@@ -43,36 +43,61 @@ namespace YesterdayConvoy.Tests
                 var battle=new ManualBattle(profiles[0].Unit,new[]{point+Vector3.left*2,point+Vector3.right*7},point,profiles[0].Combat,
                     roster:new[]{new DefenderSettings("mixed-fx-target","Mixed FX target",guard.Settings.ArtId,point,50000,1,0,.01f,100)});
                 battle.ConfigureCardLoadout(profiles.Skip(1));battle.ConfigureCampaignV2(12);
+                battle.ConfigureBossCoreViviSkill("s3");battle.EnableAutomaticSkills();
+                Assert.That(battle.BossCoreViviSkill,Is.EqualTo("s3"));
                 typeof(ManualBattleController).GetMethod("ClearViews",Private).Invoke(c,null);
                 typeof(ManualBattleController).GetProperty("Battle").SetValue(c,battle);
                 typeof(ManualBattleController).GetMethod("EnableCombatView",Private).Invoke(c,null);
                 battle.Begin();
                 var receipt=battle.TryDeployRole(battle.RunId,1,battle.Entry,ids[1]);Assert.That(receipt.Success,Is.True);
                 var vivi=battle.FindUnit(receipt.EntityId);
-                for(int i=0;i<2400&&!battle.IsSkillReady(vivi.EntityId);i++)c.Tick(.05f);
-                c.SelectSkillUnit(vivi.EntityId);Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));
                 CombatShot shell=null;
-                for(int i=0;i<400;i++){c.Tick(.01f);shell=battle.CombatShots.FirstOrDefault(s=>s.SourceId==vivi.EntityId&&s.Empowered&&s.Applied);if(shell!=null)break;}
-                Assert.That(shell,Is.Not.Null);c.Tick(.08f);yield return null;
-                var face=c.CombatView.GetComponentsInChildren<SpriteRenderer>().SingleOrDefault(r=>r.enabled&&r.name=="Comic expression");
-                Assert.That(face,Is.Not.Null,"A low-cost first card must not remove Vivi's actual impact expression.");
-                Assert.That(c.CardForUnit(vivi).ComicImpactFaces,Does.Contain(face.sprite));
-                var visible=CaptureMixedImpact("vivi-mixed-impact.png");face.enabled=false;
-                var hidden=CaptureMixedImpact(null);face.enabled=true;
-                Assert.That(visible.Zip(hidden,(a,b)=>Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b)).Average(),Is.GreaterThan(.005),"The source-specific stamp must change actual camera pixels.");
-                var sprite=face.sprite;var position=face.transform.position;double clock=battle.Clock;
+                // B20 now owns Vivi's original native S3 art. The old Comic expression
+                // renderer is intentionally suppressed by production ownership.
+                var impactKeys=BossRosterFxArt.Bindings("B20").Where(b=>b.kind=="Impact"&&b.skill=="s3"&&b.attach=="target")
+                    .Select(b=>BossRosterFxArt.Key("B20",b.key)).Distinct().ToArray();
+                Assert.That(impactKeys,Is.Not.Empty);
+                foreach(string key in impactKeys)yield return BossRosterFxArt.Get(key).Sequence.Warm();
+                for(int i=0;i<12000;i++)
+                {
+                    c.Tick(.01f);shell=battle.CombatShots.FirstOrDefault(s=>s.SourceId==vivi.EntityId&&ViviCombat.SkillShell(vivi,s)&&s.Applied);
+                    if(shell!=null)break;
+                }
+                Assert.That(shell,Is.Not.Null,"The mixed fixture must actually fire and land the selected S3 shell.");c.Tick(.08f);yield return null;
+                var native=c.GetComponent<BossRosterEffectView>();Assert.That(native,Is.Not.Null);
+                SpriteRenderer[] ViviImpacts()=>native.GetComponentsInChildren<SpriteRenderer>()
+                    .Where(r=>r.enabled&&r.sprite!=null&&impactKeys.Any(key=>r.sprite.name.StartsWith("BossRosterFx/"+key.Substring(5)+"/",StringComparison.Ordinal))).ToArray();
+                var faces=ViviImpacts();Assert.That(faces,Is.Not.Empty,"A low-cost first card must not remove Vivi's actual native S3 target impacts.");
+                foreach(var face in faces)
+                {
+                    string key=impactKeys.Single(k=>face.sprite.name.StartsWith("BossRosterFx/"+k.Substring(5)+"/",StringComparison.Ordinal));
+                    Assert.That(BossRosterFxArt.Get(key).Sequence.Frames,Does.Contain(face.sprite));
+                }
+                var visible=CaptureMixedImpact("vivi-mixed-impact.png");foreach(var face in faces)face.enabled=false;
+                var hidden=CaptureMixedImpact(null);foreach(var face in faces)face.enabled=true;
+                Assert.That(visible.Zip(hidden,(a,b)=>Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b)).Average(),Is.GreaterThan(.005),"The source-specific S3 target art must change actual camera pixels.");
+                var sprites=faces.Select(f=>f.sprite).ToArray();var positions=faces.Select(f=>f.transform.position).ToArray();double clock=battle.Clock;
                 battle.SetPaused(true);c.Tick(5);yield return null;
-                Assert.That(battle.Clock,Is.EqualTo(clock));Assert.That(face.enabled,Is.True);Assert.That(face.sprite,Is.SameAs(sprite));Assert.That(face.transform.position,Is.EqualTo(position));
-                // The impact has already happened. Caster death must not erase its visible tail.
+                Assert.That(battle.Clock,Is.EqualTo(clock));
+                for(int i=0;i<faces.Length;i++){Assert.That(faces[i].enabled,Is.True);Assert.That(faces[i].sprite,Is.SameAs(sprites[i]));Assert.That(faces[i].transform.position,Is.EqualTo(positions[i]));}
+                // The native Impact bindings finishOnEnd=false: caster death cannot erase an already applied tail.
                 Set(vivi,"Health",0f);Set(vivi,"Resolution",UnitResolution.Dead);Set(vivi,"DeathTime",battle.Clock);
-                yield return null;Assert.That(face.enabled,Is.True);Assert.That(face.sprite,Is.SameAs(sprite));
-                battle.SetPaused(false);c.Tick(.6f);yield return null;Assert.That(face.enabled,Is.False);
+                yield return null;
+                Assert.That(ViviImpacts(),Is.Not.Empty);
+                foreach(var sprite in sprites)Assert.That(ViviImpacts().Select(f=>f.sprite),Does.Contain(sprite));
+                double tailEnd=shell.ImpactAt+impactKeys.Max(key=>BossRosterFxArt.Get(key).Duration);
+                battle.SetPaused(false);c.Tick((float)Math.Max(.01,tailEnd-battle.Clock+.05));yield return null;
+                Assert.That(ViviImpacts(),Is.Empty,"Applied original S3 tails must end at their own source duration, even when pooled renderers are reused.");
                 receipt=battle.TryDeployRole(battle.RunId,2,battle.Entry,ids[2]);Assert.That(receipt.Success,Is.True);
                 var talulah=battle.FindUnit(receipt.EntityId);
-                for(int i=0;i<2400&&!battle.IsSkillReady(talulah.EntityId);i++)c.Tick(.05f);
-                c.SelectSkillUnit(talulah.EntityId);Assert.That(c.ActivateSelectedSkill(),Is.EqualTo(SkillFailure.None));
+                // This is the retained legacy rain-art capability fixture, not an
+                // automatic Talulah AI claim: that production AI owns phase abilities.
+                // Charge naturally and use the model's validated ability entry; the retired manual UI is never called.
+                for(int i=0;i<12000&&!battle.IsSkillReady(talulah.EntityId);i++)c.Tick(.01f);
+                Assert.That(battle.IsSkillReady(talulah.EntityId),Is.True);
+                Assert.That(battle.TryActivateSkill(battle.RunId,3,talulah.EntityId),Is.EqualTo(SkillFailure.None));
                 CombatShot rain=null;
-                for(int i=0;i<300;i++){c.Tick(.01f);rain=battle.CombatShots.FirstOrDefault(s=>s.SourceId==talulah.EntityId&&s.FireRain&&s.Applied);if(rain!=null)break;}
+                for(int i=0;i<12000;i++){c.Tick(.01f);rain=battle.CombatShots.FirstOrDefault(s=>s.SourceId==talulah.EntityId&&s.FireRain&&s.Applied);if(rain!=null)break;}
                 Assert.That(rain,Is.Not.Null);c.Tick(.08f);yield return null;
                 var impactFrames=c.CardForUnit(talulah).ArticulatedArt.ImpactFrames;
                 Assert.That(c.CombatView.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Comic expression"&&impactFrames.Contains(r.sprite)),Is.True,"Talulah's rain impact must use her own art in the same mixed lineup.");

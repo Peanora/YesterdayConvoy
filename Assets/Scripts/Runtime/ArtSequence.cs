@@ -51,11 +51,11 @@ namespace YesterdayConvoy
             }
             finally{if(!committed)ArtMemoryCache.Dispose(value);}
         }
-        // A few approved HDR captures require exact RGB at alpha zero, which block compression
+        // Native HDR captures require exact RGB at alpha zero, which block compression
         // cannot guarantee. Their source RGBA rows are already bottom-to-top for Unity uploads.
         static Texture2D RawTexture(Page page,ArtMemoryCache.Resource owner)
         {
-            if(!page.rawResource.StartsWith("PramanixV5/",StringComparison.Ordinal)||page.rawResource.Contains("..")||page.rawResource.Contains("\\"))
+            if(!(page.rawResource.StartsWith("PramanixV5/",StringComparison.Ordinal)||page.rawResource.StartsWith("SixStarVfx/",StringComparison.Ordinal))||page.rawResource.Contains("..")||page.rawResource.Contains("\\"))
                 throw new InvalidDataException("Invalid exact native page: "+page.rawResource);
             var asset=Resources.Load<TextAsset>(page.rawResource);
             if(asset==null)throw new FileNotFoundException("Missing exact native RGBA resource",page.rawResource);

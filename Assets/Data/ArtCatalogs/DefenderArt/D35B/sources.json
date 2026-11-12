@@ -1,0 +1,48 @@
+{
+  "task": "D35B",
+  "unitId": "D35",
+  "name": "凯尔希·思衡托",
+  "variant": "battle-back",
+  "characterId": "char_1052_kalts2",
+  "model": "char_1052_kalts2",
+  "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/back/",
+  "files": [
+    {
+      "file": "char_1052_kalts2.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/back/char_1052_kalts2.skel",
+      "bytes": 690969,
+      "sha256": "10b6837ab9780f67179d7c856fd474eab30faed218bc6da9a5cedc1bf8ce91fa"
+    },
+    {
+      "file": "char_1052_kalts2.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/back/char_1052_kalts2.atlas",
+      "bytes": 27413,
+      "sha256": "09dc2bbdea0a5c27a381af70c9ccfa0fb8e0fd3a98c609416023cb77c6e8c191"
+    },
+    {
+      "file": "char_1052_kalts2.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/back/char_1052_kalts2.png",
+      "bytes": 269143,
+      "sha256": "c4cd2319a077afb1219fe1a59ea4a81a99c8aff38aec35fbaf371eee69e40faa"
+    },
+    {
+      "file": "char_1052_kalts22.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/defaultskin/back/char_1052_kalts22.png",
+      "bytes": 105498,
+      "sha256": "ab5329b37834c478feb0ea6d75e79a146ddf477fa304ebb75877e33b6555caa8"
+    }
+  ],
+  "reference": "https://prts.wiki/w/%E5%87%AF%E5%B0%94%E5%B8%8C%C2%B7%E6%80%9D%E8%A1%A1%E6%89%98",
+  "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1052_kalts2/meta.json",
+  "rights": "Original proprietary art, rights remain with rightsholders. User authorized direct import/upload, not an open redistribution license.",
+  "authorization": "2026-11-12 user explicitly requested direct integration without preview; recommended selected skill.",
+  "rasterization": {
+    "spineVersion": "3.8.99",
+    "fps": 60,
+    "coreScale": 0.38,
+    "corePixelsPerUnit": 201.6,
+    "idleAlphaHeight": 251,
+    "commonWorldIdleAlphaHeight": 1.25,
+    "notes": "Per-clip PPU compensates source raster scale; source origin pivots retained; technical portrait crop from exact idle frame."
+  }
+}

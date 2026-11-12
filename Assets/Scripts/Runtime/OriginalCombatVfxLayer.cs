@@ -14,7 +14,7 @@ namespace YesterdayConvoy
             internal Transform Basis;internal SpriteRenderer Renderer;
             internal readonly MaterialPropertyBlock Properties=new MaterialPropertyBlock();
         }
-        readonly List<View> views=new List<View>();readonly Transform parent;readonly Material material;Material pramanixMaterial;
+        readonly List<View> views=new List<View>();readonly Transform parent;readonly Material material;Material pramanixMaterial,sixStarMaterial;
         int used;bool disposed;
         internal int VisibleCount=>used;
         internal IEnumerable<SpriteRenderer> Renderers {get{foreach(var view in views)yield return view.Renderer;}}
@@ -25,7 +25,7 @@ namespace YesterdayConvoy
             material=new Material(shader){name="Original combat effects / HDR baked"};
         }
         internal void Begin(){if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));used=0;}
-        View Draw(OriginalCombatVfxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,int order,bool loop,float roll)
+        View Draw(OriginalCombatVfxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,int order,bool loop,float roll,bool groundDepth=false)
         {
             if(camera==null)return null;var sprite=clip.At(age,loop);if(sprite==null)return null;
             // V5's approved visual foot is .025 above the .72 logical platform.
@@ -45,25 +45,52 @@ namespace YesterdayConvoy
                 if(pramanixMaterial==null)pramanixMaterial=new Material(Resources.Load<Shader>("PramanixNative")){name="Original combat effects / HDR baked / exact Pramanix"};
                 r.sharedMaterial=pramanixMaterial;
             }
+            else if(clip.ExactRgba&&clip.Key.StartsWith("defender/",StringComparison.Ordinal))
+            {
+                if(sixStarMaterial==null)
+                {
+                    var shader=Resources.Load<Shader>("SixStarNative");
+                    if(shader==null)throw new InvalidOperationException("Missing exact six-star native shader.");
+                    sixStarMaterial=new Material(shader){name="Original combat effects / HDR baked / exact six-star"};
+                }
+                r.sharedMaterial=sixStarMaterial;
+            }
             else r.sharedMaterial=material;
             view.Basis.SetPositionAndRotation(position,camera.transform.rotation*Quaternion.Euler(0,0,roll));view.Basis.localScale=Vector3.one;
             r.transform.localPosition=Vector3.zero;r.transform.localRotation=Quaternion.identity;r.transform.localScale=Vector3.one;
-            r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,position)+order;
-            view.Properties.SetFloat("_HdrRange",clip.HdrRange);view.Properties.SetVector("_PramanixAnchor",position+Vector3.up*.012f);r.SetPropertyBlock(view.Properties);return view;
+            r.sortingOrder=clip.BelowActors?Mathf.Clamp(order,0,511):DemoSpriteVisual.GetSortingOrder(camera,position)+order;
+            view.Properties.SetFloat("_HdrRange",clip.HdrRange);view.Properties.SetVector("_PramanixAnchor",position+Vector3.up*.012f);
+            view.Properties.SetVector("_PlaneAnchor",position+Vector3.up*.012f);view.Properties.SetFloat("_GroundDepth",clip.GroundDepth||groundDepth?1:0);
+            r.SetPropertyBlock(view.Properties);return view;
         }
         internal bool Show(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,bool loop=false,float rollDegrees=0)
         {if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));return Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,rollDegrees)!=null;}
+        // A producer may explicitly follow an original mount's measured scale.
+        // Keep source PPU and pooled child frame unchanged; scale only this attachment.
+        internal bool ShowScaled(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,float scale,bool loop=false,float rollDegrees=0)
+        {
+            if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<=0)throw new ArgumentOutOfRangeException(nameof(scale));
+            return ShowScaled(key,age,position,camera,flipX,sortingOffset,new Vector2(scale,scale),loop,rollDegrees);
+        }
+        // BoneFollower can copy signed, anisotropic local XY scale. This is
+        // independent from the actor's left/right flip, and can cross zero in source animation.
+        internal bool ShowScaled(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,Vector2 scale,bool loop=false,float rollDegrees=0)
+        {
+            if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
+            if(float.IsNaN(scale.x)||float.IsInfinity(scale.x)||float.IsNaN(scale.y)||float.IsInfinity(scale.y))throw new ArgumentOutOfRangeException(nameof(scale));
+            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,rollDegrees);if(view==null)return false;
+            view.Basis.localScale=new Vector3(scale.x,scale.y,1);return true;
+        }
         // Ground-attached light belongs to the marker band, below every actor band.
         // Keep the native billboard/pixels/depth, rather than painting over a body.
         internal bool ShowBelowActors(string key,double age,Vector3 position,Camera camera,bool flipX,int groundOrder,bool loop=false)
         {
             if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
-            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,0,loop,0);
+            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,0,loop,0,true);
             if(view==null)return false;view.Renderer.sortingOrder=groundOrder;return true;
         }
-        // Explicit horizontal-ground projection, preserving the billboard's screen-space
-        // PPU at this camera pitch. The caller supplies the real ground height; no lift
-        // or depth override hides geometry that should occlude the effect.
+        // Exact native images retain their captured camera projection with a real
+        // ground depth plane. Legacy pages retain the old horizontal projection.
         internal bool ShowGround(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,bool loop=false,float rollDegrees=0)
             =>ShowGroundScaled(key,age,position,camera,flipX,sortingOffset,1,loop,rollDegrees);
         // Explicit producer-requested uniform size adaptation. Existing ground calls keep scale=1;
@@ -72,7 +99,13 @@ namespace YesterdayConvoy
         {
             if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
             if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<=0)throw new ArgumentOutOfRangeException(nameof(scale));
-            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,0);if(view==null)return false;
+            var clip=OriginalCombatVfxArt.Get(key);var view=Draw(clip,age,position,camera,flipX,sortingOffset,loop,0,true);if(view==null)return false;
+            if(clip.ExactRgba)
+            {
+                // Native capture already includes the original camera projection.
+                // Retain that image instead of foreshortening its ground geometry twice.
+                view.Basis.localScale=Vector3.one*scale;view.Renderer.transform.localRotation=Quaternion.Euler(0,0,rollDegrees);return true;
+            }
             Vector3 forward=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
             float projection=Mathf.Abs(Vector3.Dot(camera.transform.up,forward));
             if(projection<.0001f)throw new InvalidOperationException("A ground effect needs a camera with a downward viewing angle.");
@@ -112,6 +145,6 @@ namespace YesterdayConvoy
             foreach(var view in views)if(view.Renderer!=null){view.Renderer.enabled=false;UnityEngine.Object.Destroy(view.Basis.gameObject);}
             views.Clear();used=0;
         }
-        public void Dispose(){if(disposed)return;Clear();UnityEngine.Object.Destroy(material);if(pramanixMaterial!=null)UnityEngine.Object.Destroy(pramanixMaterial);disposed=true;}
+        public void Dispose(){if(disposed)return;Clear();UnityEngine.Object.Destroy(material);if(pramanixMaterial!=null)UnityEngine.Object.Destroy(pramanixMaterial);if(sixStarMaterial!=null)UnityEngine.Object.Destroy(sixStarMaterial);disposed=true;}
     }
 }

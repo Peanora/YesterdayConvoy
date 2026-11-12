@@ -11,7 +11,7 @@ namespace YesterdayConvoy
             if(EngagementEnabled&&u!=null&&UnitCombat(u).Effects.OrderRunner&&HasTacticalCommand)multiplier*=1+.3f/u.Motion.Speed;
             if(IsPatriot(u)&&u.PatriotPhase==PatriotPhase.Destruction)multiplier*=1+V2Skill(u,"rebirth","speedBonus",.1f)/u.Motion.Speed;
             if(u!=null&&!UnitControlImmune(u)&&Clock<u.HinderedUntil)multiplier*=.2f;
-            return multiplier*DefenderAuraMoveMultiplier(u)*(u==null||UnitControlImmune(u)?1:u.SnowMove);
+            return multiplier*SeventhMoveMultiplier(u)*DefenderAuraMoveMultiplier(u)*(u==null||UnitControlImmune(u)?1:u.SnowMove);
         }
         void TryWakeHarvester(DeployedUnitState u)
         {

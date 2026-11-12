@@ -81,7 +81,7 @@ namespace YesterdayConvoy
             d.LastActionTime=Clock;d.LastActionHealing=false;d.LastAttackSkill=true;d.LastActionRate=ArenaAttackSpeed*DefenderAttackRate(d);
             d.NextAttackTime=Clock+d.Settings.Interval/d.LastActionRate;
             ShotsFired++;LastShotTime=Clock;LastShotEntityId=target.EntityId;LastShotPosition=target.Motion.Position;
-            combatShots.Add(new CombatShot(d.EntityId,target.EntityId,true,true,d.Position,target.Motion.Position,
+            QueueDefenderShot(d,new CombatShot(d.EntityId,target.EntityId,true,true,d.Position,target.Motion.Position,
                 Clock+d.Settings.Windup/d.LastActionRate,CombatSettings.ProjectileTime,d.Settings.Attack,
                 damageType:d.Settings.DamageType,splashRadius:d.Settings.SplashRadius));
             return true;
