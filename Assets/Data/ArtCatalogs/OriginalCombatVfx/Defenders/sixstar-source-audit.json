@@ -1,6 +1,8 @@
 {
   "date": "2026-11-13",
-  "status": "EXACT_SOURCE_RESTORED_PENDING_RUNTIME_GPU_AND_PLAYER",
+  "status": "SOURCE_RGBA_VERIFIED_RUNTIME_SCOPE_RECORDED_IN_QA",
+  "runtimeEvidence": "docs/QA.md - 2026-11-13 six-star overhaul",
+  "runtimeScope": "14 production trials / 205 Player checks and 26 distinct related D3D11 fixtures; not a claim that every original conditional prefab or native manager branch is reproduced.",
   "scope": "D21-D30 exact existing pages plus D32-D35 original selected skill native captures; D27 approved raw preserved",
   "encoding": "sqrt-linear-rgb-effective-alpha",
   "rgbaRows": "bottom-to-top",
