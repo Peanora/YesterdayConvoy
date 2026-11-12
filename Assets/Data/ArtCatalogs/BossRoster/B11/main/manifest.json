@@ -1,0 +1,2191 @@
+{
+  "version": 1,
+  "task": "B11",
+  "cardId": "CARD_B11",
+  "name": "赫尔昏佐伦／巫王",
+  "view": "main",
+  "model": "enemy_1548_ltniak",
+  "skin": "default",
+  "ppu": 82.81736513361531,
+  "referenceSpeed": 0.75,
+  "height": 3.0501061763763424,
+  "sourcePixelsPerBone": 0.3726781431012689,
+  "worldUnitsPerSourceBone": 0.0045,
+  "scaleStatus": "TALULAH_BODY_BASELINE_B22_ACTUAL_CAMERA_VERIFIED_OTHER_UNITS_PENDING_CAMERA_REVIEW",
+  "pivotX": 0.5647537170824908,
+  "pivotY": 0.1507111761924701,
+  "captureBounds": [
+    -518.641845703125,
+    -78.71215057373047,
+    385.20001220703125,
+    798.5123901367188
+  ],
+  "aliases": [
+    {
+      "key": "idle",
+      "source": "A_Idle"
+    },
+    {
+      "key": "attack",
+      "source": "A_Attack"
+    },
+    {
+      "key": "cast",
+      "source": "A_Skill_1"
+    },
+    {
+      "key": "death",
+      "source": "B_Die"
+    }
+  ],
+  "runtimeSources": [
+    "A_Idle",
+    "A_Attack",
+    "A_Skill_1",
+    "B_Die"
+  ],
+  "clips": [
+    {
+      "key": "A_Attack",
+      "source": "A_Attack",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 1.2333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "A_Attack-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Attack-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Attack-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Attack-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Attack-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Attack-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Attack-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Attack-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Attack-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Attack-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "A_Blink_Begin",
+      "source": "A_Blink_Begin",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 61,
+          "pages": [
+            {
+              "file": "A_Blink_Begin-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_Begin-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_Begin-002.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Blink_Begin-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_Begin-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_Begin-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "A_Blink_End",
+      "source": "A_Blink_End",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "A_Blink_End-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_End-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_End-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_End-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Blink_End-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Blink_End-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_End-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_End-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_End-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Blink_End-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "A_Idle",
+      "source": "A_Idle",
+      "duration": 5.333333492279053,
+      "count": 322,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 322,
+          "pages": [
+            {
+              "file": "A_Idle-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Idle-012.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Idle-012.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "A_Skill_1",
+      "source": "A_Skill_1",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 0.9333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "A_Skill_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_1-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Skill_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_1-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "A_Skill_2",
+      "source": "A_Skill_2",
+      "duration": 3.9000000953674316,
+      "count": 236,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 2.7333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 236,
+          "pages": [
+            {
+              "file": "A_Skill_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Skill_2-009.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Skill_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Skill_2-009.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "A_Start",
+      "source": "A_Start",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "A_Start-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Start-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Start-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Start-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "A_Start-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "A_Start-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Start-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Start-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Start-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "A_Start-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "B_Attack",
+      "source": "B_Attack",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 1.0333333015441895,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "B_Attack-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Attack-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Attack-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Attack-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Attack-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Attack-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Attack-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Attack-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Attack-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Attack-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "B_Blink_Begin",
+      "source": "B_Blink_Begin",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 61,
+          "pages": [
+            {
+              "file": "B_Blink_Begin-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_Begin-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_Begin-002.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Blink_Begin-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_Begin-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_Begin-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "B_Blink_End",
+      "source": "B_Blink_End",
+      "duration": 1.8333333730697632,
+      "count": 112,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 112,
+          "pages": [
+            {
+              "file": "B_Blink_End-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_End-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_End-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_End-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Blink_End-004.png",
+              "count": 12,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Blink_End-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_End-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_End-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_End-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Blink_End-004.png",
+          "count": 12,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "B_Die",
+      "source": "B_Die",
+      "duration": 2.3333332538604736,
+      "count": 141,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 141,
+          "pages": [
+            {
+              "file": "B_Die-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Die-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Die-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Die-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Die-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Die-005.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Die-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Die-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Die-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Die-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Die-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Die-005.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "B_Idle",
+      "source": "B_Idle",
+      "duration": 5.333333492279053,
+      "count": 322,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 322,
+          "pages": [
+            {
+              "file": "B_Idle-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Idle-012.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Idle-012.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "B_Skill_1",
+      "source": "B_Skill_1",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 0.9333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "B_Skill_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_1-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Skill_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_1-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "B_Skill_2",
+      "source": "B_Skill_2",
+      "duration": 3.9000000953674316,
+      "count": 236,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 2.7333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 236,
+          "pages": [
+            {
+              "file": "B_Skill_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_2-009.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Skill_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_2-009.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "B_Skill_3",
+      "source": "B_Skill_3",
+      "duration": 3,
+      "count": 181,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 1.399999976158142,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 181,
+          "pages": [
+            {
+              "file": "B_Skill_3-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "B_Skill_3-007.png",
+              "count": 6,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "B_Skill_3-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "B_Skill_3-007.png",
+          "count": 6,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Revive_1",
+      "source": "Revive_1",
+      "duration": 1.1666666269302368,
+      "count": 71,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [
+        {
+          "time": 1,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 71,
+          "pages": [
+            {
+              "file": "Revive_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_1-002.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Revive_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_1-002.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "Revive_2",
+      "source": "Revive_2",
+      "duration": 10,
+      "count": 601,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 600,
+          "pages": [
+            {
+              "file": "Revive_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-012.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-013.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-014.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-015.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-016.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-017.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-018.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-019.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-020.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-021.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-022.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_2-023.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        },
+        {
+          "firstFrame": 600,
+          "count": 1,
+          "pages": [
+            {
+              "file": "Revive_2-024.png",
+              "count": 1,
+              "width": 1920,
+              "height": 384
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Revive_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-012.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-013.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-014.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-015.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-016.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-017.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-018.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-019.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-020.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-021.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-022.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-023.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_2-024.png",
+          "count": 1,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "Revive_3",
+      "source": "Revive_3",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5647537170824908,
+      "pivotY": 0.1507111761924701,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.81736513361531,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "Revive_3-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_3-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_3-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Revive_3-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Revive_3-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_3-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_3-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Revive_3-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    }
+  ],
+  "role": "NEW_BOSS_CARD",
+  "movementPresentation": "NO_SOURCE_MOVE_IDLE_TRANSLATION_ONLY_IF_BATTLE_REQUIRES",
+  "idlePresentation": "ORIGINAL_IDLE",
+  "deathPresentation": "ORIGINAL_FINAL_DEATH_SOURCE_PHASE_MUST_BE_SELECTED_BY_BATTLE",
+  "zeroDurationStates": [
+    {
+      "name": "A_Blink_Loop",
+      "duration": 0,
+      "bounds": null,
+      "events": [],
+      "verticesMeasured": 0,
+      "loop": true
+    },
+    {
+      "name": "A_Default",
+      "duration": 0,
+      "bounds": [
+        -305.2360534667969,
+        -36.795997619628906,
+        251.61016845703125,
+        634.8951416015625
+      ],
+      "events": [],
+      "verticesMeasured": 1540,
+      "loop": false
+    },
+    {
+      "name": "B_Blink_Loop",
+      "duration": 0,
+      "bounds": null,
+      "events": [],
+      "verticesMeasured": 0,
+      "loop": true
+    },
+    {
+      "name": "B_Default",
+      "duration": 0,
+      "bounds": [
+        -356.3550109863281,
+        -24.772422790527344,
+        234.08975219726562,
+        634.2177734375
+      ],
+      "events": [],
+      "verticesMeasured": 1640,
+      "loop": false
+    }
+  ],
+  "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
+  "status": "IMPORTED_NOT_BOUND"
+}

@@ -47,6 +47,6 @@ namespace YesterdayConvoy
     }
     public sealed partial class ManualBattle
     {
-        public bool UnitControlImmune(DeployedUnitState u)=>PatriotControlImmune(u)||u!=null&&u.Golem&&GolemStage>=4;
+        public bool UnitControlImmune(DeployedUnitState u)=>BossRosterControlImmune(u)||PatriotControlImmune(u)||u!=null&&u.Golem&&GolemStage>=4;
     }
 }

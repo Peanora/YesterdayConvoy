@@ -1,0 +1,136 @@
+{
+  "task": "P14H",
+  "name": "卡德霍·猎犬proto",
+  "reference": "https://prts.wiki/w/猎犬proto/spine",
+  "view": "main",
+  "model": "enemy_2137_shsdgo",
+  "nativeModel": "enemy_2137_shsdgo",
+  "folder": "native-fx/runtime-additions/HoundProto/source",
+  "version": "3.8.99",
+  "skin": "default",
+  "animations": [
+    {
+      "name": "Attack",
+      "duration": 1.399999976158142,
+      "bounds": [
+        -442.3761291503906,
+        -39.381813049316406,
+        411.48779296875,
+        356.3253479003906
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 49348,
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -387.61865234375,
+        -12.60226058959961,
+        274.7550354003906,
+        334.7416687011719
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 292,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die",
+      "duration": 1,
+      "bounds": [
+        -398.5544128417969,
+        -56.06040954589844,
+        281.97894287109375,
+        361.4898986816406
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 35140,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Idle",
+      "duration": 1,
+      "bounds": [
+        -401.58740234375,
+        -21.343555450439453,
+        275.4105529785156,
+        369.0404052734375
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 35332,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Move",
+      "duration": 0.9333333373069763,
+      "bounds": [
+        -426.08685302734375,
+        -31.578096389770508,
+        392.5353088378906,
+        455.14971923828125
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 33288,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Skill_Begin",
+      "duration": 0.1666666716337204,
+      "bounds": [
+        -568.9760131835938,
+        -36.58500671386719,
+        460.4377746582031,
+        341.4150085449219
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 3824,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Skill_End",
+      "duration": 0.3333333432674408,
+      "bounds": [
+        -413.47515869140625,
+        -35.80514144897461,
+        381.06103515625,
+        424.1380615234375
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 11972,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Skill_Loop",
+      "duration": 10,
+      "bounds": null,
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 0,
+      "events": [],
+      "loop": true
+    }
+  ],
+  "cell": 384,
+  "captureMargin": 1.14,
+  "bounds": [
+    -585.8689068699332,
+    -56.06041118586564,
+    512.4828314846081,
+    455.1497333919944
+  ]
+}

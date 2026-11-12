@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "task": "P24D",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Bosses and their necessary original skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://prts.wiki/w/“殆因”/spine",
+  "model": "enemy_10263_dsjblk",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "enemy_10263_dsjblk.skel",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.skel",
+      "sha256": "4780b9b8aa05a4b64deecdd48a8f90b8e893a65e8c771ea4ffdd4bbbade8db23",
+      "bytes": 28539
+    },
+    {
+      "file": "enemy_10263_dsjblk.atlas",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.atlas",
+      "sha256": "54b34287a7819d107140a2503b7c1097d73dd24d7253052bc02b957e2d7ee7f3",
+      "bytes": 841
+    },
+    {
+      "file": "enemy_10263_dsjblk.png",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_10263_dsjblk/enemy_10263_dsjblk.png",
+      "sha256": "a38d3659981b91e7c3cfe41d5620cd8555c935b403a37855b688b52c1cb41da5",
+      "bytes": 6937
+    }
+  ],
+  "atlasManifestSha256": "21b6183ddcd3d8acd7b5cef06272ee54c581f51fc7ed164ae5f99aacf63136d4",
+  "atlasFiles": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "769401e469b2db6318df02c7552c58272d810717cf8ebe412cf34f9a6ab271d5",
+      "bytes": 754499
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "0ac3cac045704e0f9dcb2a71518d61de4702508f6e6cd1a565839e31b8c7efdf",
+      "bytes": 847294
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "21aa9754453d70578e8987728adedd3c14ecf0d347a61f0362da91a5258a607f",
+      "bytes": 241227
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "92394c1818d5fc97453aac5c3c3713f13a7d13c1bf3bb587cb88d6904702801d",
+      "bytes": 841026
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "f1eb9995c8df517ec5c5b12c6eb8431915017ec484430338836d7351461cc49a",
+      "bytes": 930634
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "2d3a84ba5104d78fb71258035010722a10122dc0e3bc8459b70ac5b22af0950b",
+      "bytes": 784556
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "bb79b590dcb331c391998946db5878547edd6c874db8d6ff092fe5f0ade046dc",
+      "bytes": 260012
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "f19d4b8d7fed06944cbb4f4475361fa48c8327f74d9c279ee70edd5784a08371",
+      "bytes": 805566
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "95864826339c5ea3dd99e7705e4745c465a519fe22a662e28065e8cdbcb452a6",
+      "bytes": 877619
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "fedf3e39dd40ae24c29139c04552c5241c996382a9cf2a3753754838a2a52c0c",
+      "bytes": 406116
+    }
+  ],
+  "portraitSha256": "61f4a235e22c1367454b33c84d2470053adbe7ba126e5fad5b38b3f6a2f0194e",
+  "captureAlphaSampling": null,
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 333.92473473407387,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}

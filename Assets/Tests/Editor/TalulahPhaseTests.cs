@@ -105,7 +105,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryActivateSkill(b.RunId,2,u.EntityId),Is.EqualTo(SkillFailure.None));
             double start=b.Clock;var p=u.Motion.Position;At(b,start+5.99);
             Assert.That(b.IsSkillActionPlaying(u));Assert.That(u.Motion.Position,Is.EqualTo(p));
-            At(b,start+6.01);Assert.That(b.IsSkillActionPlaying(u),Is.False);
+            At(b,start+6.01);Assert.That(u.SkillAmmo,Is.Zero);Assert.That(b.Clock,Is.GreaterThanOrEqualTo(u.FireRainStartedAt+b.UnitCombat(u).SkillInterval));
+            Assert.That(b.CombatShots.Count(s=>s.FireRain&&s.StartedAt>=start&&s.StartedAt<=start+6),Is.EqualTo(6),"The original six manual waves retain their own six-second window.");
+            if(b.IsSkillActionPlaying(u)){Assert.That(b.BossCoreFrame(u,out var raw,out var age,out var loop),Is.True);Assert.That(raw,Is.EqualTo("Skill_1_B").Or.EqualTo("Skill_2_B"),"An immediately following source auto-skill is distinct from the completed manual rain.");}
         }
 
         [Test] public void SecondLethalWaitsForFinalRainThenRunsOneFinalDeathPath()
@@ -115,8 +117,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.FinalFall));Assert.That(u.Active);
             Assert.That(b.DeathBlasts,Is.Empty);
             At(b,began+5.001);Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.FinalRain));
-            float health=b.Defender.Health;At(b,began+7.001);
-            Assert.That(health-b.Defender.Health,Is.EqualTo(90).Within(.01));
+            float health=b.Defender.Health,breath=b.BossCoreDamage(u,"breath");At(b,began+7.001);
+            float extraBreath=b.BossCoreDamage(u,"breath")-breath;Assert.That(extraBreath,Is.GreaterThan(0),"Existing source breath persists independently through the final-rain transition.");
+            Assert.That(health-b.Defender.Health-extraBreath,Is.EqualTo(90).Within(.01),"The automatic wave keeps its original 90; new breath is counted independently from actual HP receipts.");
             At(b,began+32.999);Assert.That(u.Active);Assert.That(b.DeathBlasts,Is.Empty);
             At(b,began+33.001);Assert.That(u.Resolution,Is.EqualTo(UnitResolution.Dead));
             Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.Dead));
@@ -169,7 +172,7 @@ namespace YesterdayConvoy.Tests
             finally{UnityEngine.Object.DestroyImmediate(go);}
         }
 
-        [Test] public void SecondPhasePreparationAddsOnlyTheNineteenUsedClipsWithoutDecodingTextures()
+        [Test] public void SecondPhasePreparationIncludesApprovedBodyAndBoundSourceEffectsWithoutDecodingTextures()
         {
             var data=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/Data/Battles/TalulahTrial.asset");
             var plan=typeof(ManualBattleController).GetMethod("Plan",BindingFlags.Static|BindingFlags.NonPublic);
@@ -180,17 +183,20 @@ namespace YesterdayConvoy.Tests
             }
             int before=ArtMemoryCache.TextureLoads;
             var baseline=Keys(false);var phase=Keys(true);
-            Assert.That(baseline.Count(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.EqualTo(5));
-            Assert.That(phase.Except(baseline).Count(),Is.EqualTo(19),"Shared combat effects must not inflate the second-phase increment.");
-            Assert.That(phase,Does.Contain("TalulahOriginal/ExtraClips/extra_move_b"));
+            foreach(var clip in BossCoreArt.SequencesFor(data.Card.CardId))
+                Assert.That(baseline,Does.Contain(clip.CacheKey),"Every approved original phase must be ready before combat.");
+            Assert.That(phase.Any(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.False,"The replaced body must not load a second obsolete atlas set.");
             Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
-            Assert.That(phase.Any(key=>key.Contains("original-target-burn")||key.Contains("orb-")),Is.False);
+            var supplement=BossRosterSupplementArt.SequencesFor(data.Card.CardId).ToArray();
+            Assert.That(supplement.Length,Is.EqualTo(19));
+            foreach(var clip in supplement)Assert.That(phase,Does.Contain(clip.CacheKey));
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
             var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
                 .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
-            Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
+            Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
+            Assert.That(pages.Any(page=>page.StartsWith("orb-body-idle",StringComparison.Ordinal)),Is.True,"Live energy objects must also exist in Player payloads.");
+            Assert.That(pages.Any(page=>page.StartsWith("orb-birth-model-source-fx",StringComparison.Ordinal)||page.StartsWith("orb-cast-model-source-fx",StringComparison.Ordinal)),Is.False,"Unbound source-only effects must remain out of Player payloads.");
         }
     }
 }

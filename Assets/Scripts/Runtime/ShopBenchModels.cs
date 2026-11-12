@@ -64,14 +64,15 @@ namespace YesterdayConvoy
         }
         Sprite ShopIdleFrame(string id,double time)
         {
+            var boss=BossRosterArt.For(id);if(boss!=null)return boss["idle"].At(time,true,out _);
             if(id==talulahDefinition.Card.CardId)return OriginalTalulahArt.For(talulahDefinition.Card)?["idle"].At(time,true,out _)??talulahDefinition.Card.BattleSprite;
             var local=LocalMonsterArt.For(id);if(local!=null)return local["idle"].At(time,true,out _);
             var slug=OriginalSlugArt.For(id);return slug==null?null:slug["idle"].At(time,true,out _);
         }
         static float ShopModelScale(string id)
         {
-            float height=LocalMonsterArt.For(id)?.Height??1;
-            return .57f/1.855f*Mathf.Min(1,2.05f/height);
+            var boss=BossRosterArt.For(id);float height=boss?.VisualHeight??LocalMonsterArt.For(id)?.Height??1;
+            return .57f/1.855f*Mathf.Min(1,2.05f/height)*(boss?.VisualScale??1);
         }
         Vector2 ShopModelFoot(int slot){var r=ShopPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);

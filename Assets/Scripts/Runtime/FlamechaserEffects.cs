@@ -7,8 +7,8 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool UnitInvulnerable(DeployedUnitState u)=>u!=null&&u.Active&&
-            (TalulahTransitionLocked(u)||IsTalulah(u)&&Clock<u.TalulahInvulnerableUntil||PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
-        public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil&&!SixthReveals(u);
+            (BossRosterInvulnerable(u)||TalulahTransitionLocked(u)||IsTalulah(u)&&Clock<u.TalulahInvulnerableUntil||PatriotReborn(u)||IsPatriot(u)&&Clock<u.PatriotInvulnerableUntil||FirstSpeakerCasting(u)||u.MandraPhase==MandragoraPhase.Reborn||Clock<u.MandraInvulnerableUntil||u.FuelDying||u.FlamePhase==FlamechaserPhase.Transforming||u.FlamePhase==FlamechaserPhase.Reforming);
+        public bool UnitInvisible(DeployedUnitState u)=>u!=null&&u.Active&&(BossRosterInvisible(u)||u.FlamePhase==FlamechaserPhase.Ember&&!u.IsBlocked&&Clock>=u.EmberRevealedUntil&&!SixthReveals(u));
         bool CanDefenderTarget(DeployedUnitState u)=>u!=null&&u.Active&&!u.IsReviving&&!StrongholdInTransit(u.EntityId)&&!UnitInvulnerable(u)&&
             (!UnitInvisible(u)||CombatSettings.RevealsInvisible||SixthReveals(u))&&(!UnitAirborne(u)||CombatSettings.DefenderCanHitAir);
         public bool NearBurningReeds(DeployedUnitState u)=>u!=null&&u.Active&&u.FlamePhase==FlamechaserPhase.Soldier&&
@@ -47,7 +47,8 @@ namespace YesterdayConvoy
                 u.IsMoving=!u.IsBlocked;
                 if(u.IsMoving&&PillarObstructs(u,step))u.IsMoving=false;
                 if(u.IsMoving)u.Motion.Advance(step);
-                if(u.Motion.HasArrived)
+                if(u.Motion.HasArrived&&BossArenaEnabled)u.IsMoving=false;
+                if(u.Motion.HasArrived&&!BossArenaEnabled)
                 {u.Resolution=UnitResolution.Breached;u.IsMoving=u.IsBlocked=false;Breaches++;Defense=Math.Max(0,Defense-Settings.GateDamage);}
                 return true;
             }
@@ -61,8 +62,10 @@ namespace YesterdayConvoy
             if(!u.Active||u.IsReviving||UnitInvulnerable(u)||damage<=0)return false;
             if(u.FlamePhase==FlamechaserPhase.Ember)damage=1;
             float feedbackHealth=u.Health;Vector3 feedbackPosition=u.Motion.Position;
+            damage=BossRosterAbsorbHealthDamage(u,damage);
             u.Health=Mathf.Max(0,u.Health-damage);u.LastHitTime=Clock;
             RecordUnitHealthLoss(u,feedbackHealth,feedbackPosition);
+            BossRosterHealthChanged(u,feedbackHealth);
             if(u.Health<=0)DefeatUnit(u);
             else
             {

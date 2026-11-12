@@ -24,7 +24,7 @@ namespace YesterdayConvoy
                 double now=presentation?.Invoke()??b.Clock;
                 foreach(var u in b.Units)
                 {
-                    if(u.CardId!="CARD_M14")continue;
+                    if(u.CardId!="CARD_M14"||BossRosterEffectView.OwnsCard(u.CardId))continue;
                     double ringAge=now-u.IceRingStartedAt;
                     if(u.Active&&!u.IsReviving&&ringAge>=0&&ringAge<3)
                         Draw("firstar_skill_01_buff",ringAge,u.Motion.Position,cam,18,true);
@@ -37,7 +37,8 @@ namespace YesterdayConvoy
                         Draw("firstar_buff_03_start",nativeAge,u.Motion.Position,cam,26);
                     }
                 }
-                foreach(var e in b.IceRings)Draw("firstar_skill_01_range",now-e.Time,e.Position,cam,24);
+                if(!BossRosterEffectView.OwnsCard("CARD_M14"))foreach(var e in b.IceRings)Draw("firstar_skill_01_range",now-e.Time,e.Position,cam,24);
+                // The five-kind snow synergy is a separate, retained effect source.
                 foreach(var e in b.SnowstormPulses)
                     foreach(var id in e.Targets)
                     {var d=b.FindDefender(id);if(d!=null)Draw("firstar_skill_01_range",now-e.At,d.Position,cam,24);}
@@ -46,7 +47,7 @@ namespace YesterdayConvoy
                     if(e.Cancelled)continue;
                     double castAge=now-e.StartedAt;
                     var caster=b.FindUnit(e.SourceId);
-                    if(caster!=null&&caster.Active&&!caster.IsReviving)
+                    if(caster!=null&&caster.Active&&!caster.IsReviving&&!BossRosterEffectView.OwnsCard(caster.CardId))
                     {
                         Draw("firstar_skill_02_start",castAge,e.Position,cam,20);
                         Draw("firstar_skill_02_trail",castAge,e.Position,cam,21);

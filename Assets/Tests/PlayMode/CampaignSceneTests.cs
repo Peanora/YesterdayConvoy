@@ -59,15 +59,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(Object.FindObjectsByType<DemoSpriteVisual>(FindObjectsSortMode.None).Length,Is.GreaterThanOrEqualTo(5));
             Assert.That(c.RestartCampaignEncounter());Assert.That(c.Battle.Units,Is.Empty);Assert.That(c.Battle.MusterUsed,Is.Zero);c.LeaveShopTrial();
         }
-        [UnityTest]public IEnumerator TwoOpeningSupplyStopsPayExactlyOnceAndKeepDefense()
+        [UnityTest]public IEnumerator OpeningSupplyPaysExactlyOnceAndTransitionsToTheCurrentFirstBattle()
         {
             yield return Load("Campaign");ManualBattleController c=null;yield return CampaignJourneyEvidenceProbe.Ready(1,value=>c=value);
-            Assert.That(c.Loop.RewardStage);int defense=c.Battle.Defense;c.ClaimCampaignSupply();
-            Assert.That(c.Battle.Defense,Is.EqualTo(defense));Assert.That(c.Shop.Gold,Is.EqualTo(8));c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(8));
+            Assert.That(c.Loop.RewardStage);int defense=c.Battle.Defense,initialGold=c.Shop.Gold;c.ClaimCampaignSupply();
+            Assert.That(c.Battle.Defense,Is.EqualTo(defense));Assert.That(c.Shop.Gold,Is.EqualTo(initialGold+8));c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(initialGold+8));
             Assert.That(c.OpenLoopShop());yield return CampaignJourneyEvidenceProbe.Ready(2,value=>c=value);
-            Assert.That(c.StartLoopNextBattle());Assert.That(c.Loop.RewardStage);
-            c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(12));Assert.That(c.OpenLoopShop());
-            yield return CampaignJourneyEvidenceProbe.Ready(3,value=>c=value);Assert.That(c.Loop.Stage,Is.EqualTo(3));Assert.That(c.Loop.RewardStage,Is.False);
+            Assert.That(c.Loop.Stage,Is.EqualTo(2));Assert.That(c.Loop.RewardStage,Is.False);
+            Assert.That(c.StartLoopNextBattle());int battleGold=c.Shop.Gold;c.ClaimCampaignSupply();Assert.That(c.Shop.Gold,Is.EqualTo(battleGold));
             c.LeaveShopTrial();
         }
         [UnityTest]public IEnumerator NaturalFrozenShatterAndMusterCanClearSandboxWithoutForcedVictory()

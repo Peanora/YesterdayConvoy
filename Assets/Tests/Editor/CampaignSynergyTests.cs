@@ -109,7 +109,7 @@ namespace YesterdayConvoy.Tests
         {
             var data=UnityEditor.AssetDatabase.FindAssets("t:ManualBattleDefinition").Select(g=>UnityEditor.AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(UnityEditor.AssetDatabase.GUIDToAssetPath(g)))
                 .Where(d=>d!=null&&CampaignBalance.Supports(d.Card.CardId)).GroupBy(d=>d.Card.CardId).Select(g=>g.First()).ToArray();
-            Assert.That(data.Length,Is.EqualTo(CampaignBalance.Profiles.Count));
+            Assert.That(data.Length,Is.EqualTo(CampaignBalance.Profiles.Count+BossRosterCatalog.Entries.Count));
             foreach(var d in data)for(int star=1;star<=3;star++)
             {
                 var p=CampaignBalance.Build(d,star,50,5);Assert.That(p.Combat.UnitInterval,Is.GreaterThanOrEqualTo(p.Combat.AttackDuration));

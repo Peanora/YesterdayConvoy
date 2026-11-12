@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace YesterdayConvoy
 {
@@ -13,7 +14,7 @@ namespace YesterdayConvoy
             internal Transform Basis;internal SpriteRenderer Renderer;
             internal readonly MaterialPropertyBlock Properties=new MaterialPropertyBlock();
         }
-        readonly List<View> views=new List<View>();readonly Transform parent;readonly Material material;
+        readonly List<View> views=new List<View>();readonly Transform parent;readonly Material material;Material pramanixMaterial;
         int used;bool disposed;
         internal int VisibleCount=>used;
         internal IEnumerable<SpriteRenderer> Renderers {get{foreach(var view in views)yield return view.Renderer;}}
@@ -27,6 +28,11 @@ namespace YesterdayConvoy
         View Draw(OriginalCombatVfxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,int order,bool loop,float roll)
         {
             if(camera==null)return null;var sprite=clip.At(age,loop);if(sprite==null)return null;
+            // V5's approved visual foot is .025 above the .72 logical platform.
+            // Keep caster-attached planes above its .739 cap without moving combat.
+            if(SceneManager.GetActiveScene().name=="Map05HeatExchange"&&
+                (clip.Key=="defender/D27/sbell2_skill_03_start_01"||clip.Key=="defender/D27/sbell2_skill_03_buff_01"||clip.Key=="defender/D27/sbell2_skill_03_range"||clip.Key=="defender/D27/sbell2_skill_03_flow"))
+                position+=Vector3.up*.025f;
             if(used==views.Count)
             {
                 var basis=new GameObject("Original VFX attachment").transform;basis.SetParent(parent,false);
@@ -34,13 +40,27 @@ namespace YesterdayConvoy
                 renderer.sharedMaterial=material;views.Add(new View{Basis=basis,Renderer=renderer});
             }
             var view=views[used++];var r=view.Renderer;r.name="Original VFX / "+clip.Key;r.enabled=true;r.sprite=sprite;r.flipX=flip;r.color=Color.white;
+            if(clip.Key.StartsWith("defender/D27/",StringComparison.Ordinal))
+            {
+                if(pramanixMaterial==null)pramanixMaterial=new Material(Resources.Load<Shader>("PramanixNative")){name="Original combat effects / HDR baked / exact Pramanix"};
+                r.sharedMaterial=pramanixMaterial;
+            }
+            else r.sharedMaterial=material;
             view.Basis.SetPositionAndRotation(position,camera.transform.rotation*Quaternion.Euler(0,0,roll));view.Basis.localScale=Vector3.one;
             r.transform.localPosition=Vector3.zero;r.transform.localRotation=Quaternion.identity;r.transform.localScale=Vector3.one;
             r.sortingOrder=DemoSpriteVisual.GetSortingOrder(camera,position)+order;
-            view.Properties.SetFloat("_HdrRange",clip.HdrRange);r.SetPropertyBlock(view.Properties);return view;
+            view.Properties.SetFloat("_HdrRange",clip.HdrRange);view.Properties.SetVector("_PramanixAnchor",position+Vector3.up*.012f);r.SetPropertyBlock(view.Properties);return view;
         }
         internal bool Show(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,bool loop=false,float rollDegrees=0)
         {if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));return Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,rollDegrees)!=null;}
+        // Ground-attached light belongs to the marker band, below every actor band.
+        // Keep the native billboard/pixels/depth, rather than painting over a body.
+        internal bool ShowBelowActors(string key,double age,Vector3 position,Camera camera,bool flipX,int groundOrder,bool loop=false)
+        {
+            if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
+            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,0,loop,0);
+            if(view==null)return false;view.Renderer.sortingOrder=groundOrder;return true;
+        }
         // Explicit horizontal-ground projection, preserving the billboard's screen-space
         // PPU at this camera pitch. The caller supplies the real ground height; no lift
         // or depth override hides geometry that should occlude the effect.
@@ -92,6 +112,6 @@ namespace YesterdayConvoy
             foreach(var view in views)if(view.Renderer!=null){view.Renderer.enabled=false;UnityEngine.Object.Destroy(view.Basis.gameObject);}
             views.Clear();used=0;
         }
-        public void Dispose(){if(disposed)return;Clear();UnityEngine.Object.Destroy(material);disposed=true;}
+        public void Dispose(){if(disposed)return;Clear();UnityEngine.Object.Destroy(material);if(pramanixMaterial!=null)UnityEngine.Object.Destroy(pramanixMaterial);disposed=true;}
     }
 }

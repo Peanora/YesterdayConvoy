@@ -254,6 +254,7 @@ namespace YesterdayConvoy
             ResetEngagement();
             ResetFacilities();ResetStrongholdMap();
             ResetWaves();
+            ResetBossArena();
         }
 
         public void Begin()
@@ -263,6 +264,7 @@ namespace YesterdayConvoy
             ResetWaves();
             Phase = BattlePhase.Running;
             Orders+=CurrentGuerrillaRule.InitialOrders;
+            if(BossArenaEnabled)DeployReadyArenaSquad();
             EvaluateEnd();
         }
 
@@ -299,6 +301,7 @@ namespace YesterdayConvoy
             if (lane==null) return DeployFailure.WrongEntry;
             var waveFailure=CheckWaveDeployment(lane.Id);
             if(waveFailure!=DeployFailure.None)return waveFailure;
+            if(BossArenaEnabled)return Phase==BattlePhase.Ready?DeployFailure.NotStarted:CheckArenaDeployment(card?.Settings.CardId??Settings.CardId);
             if ((card?.RemainingUses??RemainingUses) == 0) return DeployFailure.NoUses;
             if (DP < (card?.Settings.DeploymentCost??Settings.DeploymentCost)) return DeployFailure.NoDP;
             if (Clock + 0.000001 < (card?.NextDeploymentTime??nextDeploymentTime)) return DeployFailure.CoolingDown;
@@ -337,9 +340,10 @@ namespace YesterdayConvoy
             }
             // Commit together only after all preconditions and entity initialization succeed.
             ApplyCampaignV2Deployment(unit);
-            units.Add(unit); sequence++;
+            units.Add(unit);InitializeBossRosterUnit(unit); sequence++;
             var card=FindCard(requestedCard);
-            if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}
+            if(BossArenaEnabled)CommitArenaDeployment(requestedCard);
+            else if(card!=null){DP-=card.Settings.DeploymentCost;card.RemainingUses--;card.NextDeploymentTime=Clock+card.Settings.Cooldown;RemainingUses=FindCard(Settings.CardId).RemainingUses;}
             else {DP-=Settings.DeploymentCost;RemainingUses--;nextDeploymentTime=Clock+Settings.Cooldown;}
             var receipt = new DeploymentReceipt(DeployFailure.None, id);
             committed.Add(requestId, receipt);
@@ -365,6 +369,7 @@ namespace YesterdayConvoy
                 if (EngagementEnabled)
                 {
                     StepEngagement(step);
+                    StepBossArena();
                     if(Defense>0)AdvanceGuerrillaOrders((float)(step*presentationRatio));
                     RefreshCombatFeedbackStatuses();
                     AdvanceWaveBoundaries();
@@ -416,10 +421,15 @@ namespace YesterdayConvoy
         private void EvaluateEnd()
         {
             if (Phase != BattlePhase.Running) return;
+            if(BossArenaEnabled)
+            {
+                if(!ArenaBoss.Alive){Defense=0;Phase=BattlePhase.Won;IsPaused=false;CancelGuerrillaOrders();}
+                return;
+            }
             if (Defense == 0) { Phase = BattlePhase.Won; IsPaused = false; }
             else if(WaveDeadlineReached)
             { TimedOut=true; Phase=BattlePhase.Lost; IsPaused=false; }
-            else if (!HasPendingDeathBlast && ActiveCount == 0 &&
+            else if (!HasPendingDeathBlast && !HasPendingBossRosterDamage && ActiveCount == 0 &&
                 (WavesEnabled ? FinalAdvanceActive : !HasAffordableCard()))
             { Phase = BattlePhase.Lost; IsPaused = false; }
             if(Phase==BattlePhase.Won||Phase==BattlePhase.Lost)CancelGuerrillaOrders();

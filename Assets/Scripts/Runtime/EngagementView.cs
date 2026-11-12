@@ -181,6 +181,7 @@ namespace YesterdayConvoy
             if(view.Face!=null)view.Face.enabled=false;
             var source=shot.FromDefender?null:battle.FindUnit(shot.SourceId);
             if(source==null)return;
+            if(BossRosterEffectView.OwnsCard(source.CardId))return;
             var card=owner.CardForUnit(source);var faces=card.ComicImpactFaces;
             if((faces==null||faces.Count==0)&&card.ArticulatedArt==null)return;
             if(view.Face==null)
@@ -206,6 +207,8 @@ namespace YesterdayConvoy
                 if(view.Face!=null)view.Face.enabled=false;
                 return;
             }
+            if(!shot.FromDefender&&BossRosterEffectView.OwnsCard(b.FindUnit(shot.SourceId)?.CardId))
+            {view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(commonVfx.PresentShot(shot,b,cam,owner.PresentationClock,owner.CardForUnit(b.FindUnit(shot.SourceId))))
             {view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}
             if(!shot.FromDefender&&(b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mudrock||b.UnitCombat(b.FindUnit(shot.SourceId)).Effects.Mandragora)){view.Trail.enabled=view.Impact.enabled=view.Rays.enabled=view.Ink.enabled=false;if(view.Face!=null)view.Face.enabled=false;return;}

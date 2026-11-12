@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -79,12 +80,14 @@ namespace YesterdayConvoy
                 value*V2IndependentAttackMultiplier(unit):value;
         }
         // One model entry for direct and projectile damage; damage cannot mutate a paused/finished battle.
-        public bool TryDamageUnit(string entityId,float attack,CombatDamageType type,float ignoreResistance=0,bool ranged=false)
+        public bool TryDamageUnit(string entityId,float attack,CombatDamageType type,float ignoreResistance=0,bool ranged=false,DefenderState sourceDefender=null,bool accuracyChecked=false)
         {
             if(float.IsNaN(ignoreResistance)||float.IsInfinity(ignoreResistance)||ignoreResistance<0||float.IsNaN(attack) || float.IsInfinity(attack) || attack<=0 ||
                 type!=CombatDamageType.Physical && type!=CombatDamageType.Arts) throw new ArgumentException("Invalid incoming damage.");
             if(!EngagementEnabled || Phase!=BattlePhase.Running || IsPaused) return false;
             var unit=FindUnit(entityId);if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || UnitInvulnerable(unit)) return false;
+            if(!accuracyChecked&&sourceDefender!=null&&!BossRosterDefenderAttackHits(sourceDefender,type))return false;
+            BossRosterBeginIncomingDamage(unit,sourceDefender);
             if(unit.FlamePhase==FlamechaserPhase.Ember)return ApplyUnitHealthDamage(unit,1);
             // Penetration stops at zero; existing resistance debuffs may remain negative.
             float resistance=UnitResistance(unit);
@@ -102,6 +105,7 @@ namespace YesterdayConvoy
                     unit.NextAttackTime=Clock+Math.Max(0,unit.NextAttackTime-Clock)*1.5;
                 }
             }
+            damage=BossRosterAdjustIncomingDamage(unit,damage,type);
             if(damage<=0){unit.LastHitTime=Clock;return true;}
             OnMarineContact(unit);
             return ApplyUnitHealthDamage(unit,damage);
@@ -172,10 +176,10 @@ namespace YesterdayConvoy
         }
         private readonly List<IceRing> iceRings=new List<IceRing>();
         public IReadOnlyList<IceRing> IceRings => iceRings.AsReadOnly();
-        public float UnitAttackMultiplier(DeployedUnitState unit) => (TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?V2Skill(unit,"march","marchMultiplier",1.5f):1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min((int)V2Skill(unit,"ramp","maximumStacks",6),unit.OrdinaryAttacksFired)*V2Skill(unit,"ramp","attackBonusPerStack",.6f) :
+        public float UnitAttackMultiplier(DeployedUnitState unit) => BossRosterUnitAttackMultiplier(unit)*(TacticalAttackMultiplier+ContractAttackBonus(unit)+ReunionMemberBonus(unit)-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","attackBonus",.2f):0))*(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March?V2Skill(unit,"march","marchMultiplier",1.5f):1)*(UnitCombat(unit).Effects.Mudrock ? 1+Math.Min((int)V2Skill(unit,"ramp","maximumStacks",6),unit.OrdinaryAttacksFired)*V2Skill(unit,"ramp","attackBonusPerStack",.6f) :
             UnitCombat(unit).Effects.FrostNova && unit.ReviveUsed ? V2Skill(unit,"revive","secondLifeBasicAttackMultiplier",1.5f) : 1)*InfectionAttack(unit.EntityId)*(TalulahSecondForm(unit)?V2Skill(unit,"threeStarPhase","secondFormAttackMultiplier",1.5f):1);
         public float UnitActionDuration(DeployedUnitState unit)=>IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.Destruction?V2Skill(unit,"rebirth","destructionActionDuration",1.3666667f):unit.AltarEmpowered&&IsRole(unit,"M19")?1.6333334f:UnitCombat(unit).AttackDuration;
-        public float UnitAttackRate(DeployedUnitState unit) => (unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
+        public float UnitAttackRate(DeployedUnitState unit) => BossRosterUnitAttackRate(unit)*(unit.ArtsBarrierRemaining>0 ? 1.5f : 1)*InfectionRate(unit.EntityId);
         public float UnitArmor(DeployedUnitState unit)
         {
             float armor=UnitCombat(unit).UnitArmor+TacticalArmorBonus-(IsPatriot(unit)&&unit.PatriotPhase!=PatriotPhase.March?V2Skill(unit,"dominion","armorBonus",2):0);
@@ -204,11 +208,12 @@ namespace YesterdayConvoy
             unit.NextAttackTime=Math.Max(unit.NextAttackTime,Clock+MudrockRefreshDuration);
             unit.IsMoving=unit.HasCombatTarget=false;return true;
         }
-        private float DefenderAttackRate(DefenderState defender) =>
+        private float DefenderAttackRate(DefenderState defender) => BossRosterDefenderAttackRate(defender)*
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
-            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1)*InfectionRate(defender.EntityId);
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1)*InfectionRate(defender.EntityId)+BossRosterDefenderAttackSpeedBonus(defender);
         private void DefeatUnit(DeployedUnitState unit)
         {
+            if(BossRosterPreventDeath(unit))return;
             if(TryStartTalulahFall(unit))return;
             if(IsPatriot(unit)&&unit.PatriotPhase==PatriotPhase.March){StartPatriotRebirth(unit);return;}
             if(UnitCombat(unit).Effects.Shackler)EndShackle(unit,true);
@@ -233,14 +238,18 @@ namespace YesterdayConvoy
             if(Clock<unit.IceRingStartedAt+V2Skill(unit,"iceRing","actionDuration",3))
             {unit.IsMoving=unit.HasCombatTarget=false;return true;}
             if(Clock+1e-6<unit.NextIceRingAt) return false;
+            if(AutomaticSkillsEnabled&&!AutomaticLegacyBodyAvailable(unit))return false;
             var target=ChooseDefender(unit,V2Skill(unit,"iceRing","searchRange",2.5f));if(target==null) return false;
-            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+V2Skill(unit,"iceRing","cooldown",8.5f);
+            unit.IceRingStartedAt=Clock;unit.NextIceRingAt=Clock+AutomaticLegacyIceRingCooldown(unit);
             unit.NextAttackTime=Clock+V2Skill(unit,"iceRing","actionDuration",3);unit.IsMoving=unit.HasCombatTarget=false;
             var ring=new IceRing {Position=unit.Motion.Position,Time=Clock};iceRings.Add(ring);
+            BossCoreOnIceRingStarted(unit);
             foreach(var defender in defenders)
             {
-                if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>V2Skill(unit,"iceRing","splashRadius",2)) continue;
-                ring.TargetsHit++;DamageDefenderFrom(defender,NativeSkillDamage(unit,"iceRing","damage",UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f),CombatDamageType.Arts,unit);
+                if(!defender.Alive || defender!=target && GroundDistance(unit.Motion.Position,defender.Position)>BossCoreIceRingRadius(unit,V2Skill(unit,"iceRing","splashRadius",2))) continue;
+                float beforeHealth=defender.Health,beforeDebt=defender.Debt,beforeTotal=defenders.Sum(d=>d.Health);
+                ring.TargetsHit++;DamageDefenderFrom(defender,NativeSkillDamage(unit,"iceRing","damage",UnitCombat(unit).UnitAttack*UnitAttackMultiplier(unit)*1.5f)*BossCoreIceRingMultiplier(unit,defender),CombatDamageType.Arts,unit);
+                BossCoreOnIceRingHit(unit,defender,defender.Health<beforeHealth||defender.Debt>beforeDebt||defenders.Sum(d=>d.Health)<beforeTotal);
                 if(!defender.Alive) continue;
                 if(defender.FrostSlowUntil<=Clock) defender.NextAttackTime=Clock+Math.Max(0,defender.NextAttackTime-Clock)*2;
                 defender.FrostSlowUntil=Math.Max(defender.FrostSlowUntil,Clock+V2Skill(unit,"iceRing","slowDuration",8));

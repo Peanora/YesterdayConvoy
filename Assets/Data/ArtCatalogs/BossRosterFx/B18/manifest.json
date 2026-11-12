@@ -1,0 +1,470 @@
+{
+  "version": 1,
+  "task": "B18",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "common_invincible_01",
+      "count": 90,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_invincible_01/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "frstar2_attack_01_hit",
+      "count": 23,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5345835004534041,
+      "duration": 0.7666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_attack_01_hit/00.png",
+          "count": 23,
+          "width": 336,
+          "height": 56
+        }
+      ]
+    },
+    {
+      "key": "frstar2_attack_01_start",
+      "count": 50,
+      "width": 20,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2,
+      "pivotY": 0.49736150105794275,
+      "duration": 1.6666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_attack_01_start/00.png",
+          "count": 50,
+          "width": 240,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "key": "frstar2_attack_01_trail",
+      "count": 90,
+      "width": 36,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.6111111111111112,
+      "pivotY": 0.4570140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_attack_01_trail/00.png",
+          "count": 90,
+          "width": 432,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "frstar2_attack_02_start",
+      "count": 59,
+      "width": 36,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5277777777777778,
+      "pivotY": 0.24886921473911827,
+      "duration": 1.9666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_attack_02_start/00.png",
+          "count": 59,
+          "width": 432,
+          "height": 140
+        }
+      ]
+    },
+    {
+      "key": "frstar2_buff_01_start",
+      "count": 90,
+      "width": 40,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2,
+      "pivotY": 0.4984169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_buff_01_start/00.png",
+          "count": 90,
+          "width": 480,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "frstar2_buff_02_start",
+      "count": 90,
+      "width": 56,
+      "height": 56,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5178571428571429,
+      "pivotY": 0.39229175022670204,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 6.300000190734863,
+      "pages": [
+        {
+          "file": "frstar2_buff_02_start/00.png",
+          "count": 90,
+          "width": 672,
+          "height": 448
+        }
+      ]
+    },
+    {
+      "key": "frstar2_buff_03_start",
+      "count": 90,
+      "width": 72,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.49928040937943896,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 6.0,
+      "pages": [
+        {
+          "file": "frstar2_buff_03_start/00.png",
+          "count": 90,
+          "width": 864,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "frstar2_buff_04_start",
+      "count": 76,
+      "width": 36,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.8611111111111112,
+      "pivotY": 0.2070140838623047,
+      "duration": 2.533333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 6.300000190734863,
+      "pages": [
+        {
+          "file": "frstar2_buff_04_start/00.png",
+          "count": 76,
+          "width": 432,
+          "height": 168
+        }
+      ]
+    },
+    {
+      "key": "frstar2_buff_05_start",
+      "count": 90,
+      "width": 52,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.6153846153846154,
+      "pivotY": 0.28458350045340397,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 7.0,
+      "pages": [
+        {
+          "file": "frstar2_buff_05_start/00.png",
+          "count": 90,
+          "width": 624,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "frstar2_die_01_start",
+      "count": 90,
+      "width": 20,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2,
+      "pivotY": 0.3320140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_die_01_start/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "frstar2_skill_02_range",
+      "count": 90,
+      "width": 224,
+      "height": 132,
+      "columns": 9,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.53125,
+      "pivotY": 0.5539698167280718,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_skill_02_range/00.png",
+          "count": 90,
+          "width": 2016,
+          "height": 1320
+        }
+      ]
+    },
+    {
+      "key": "frstar2_skill_03_range",
+      "count": 90,
+      "width": 64,
+      "height": 60,
+      "columns": 12,
+      "ppu": 12.800000190734863,
+      "pivotX": 0.453125,
+      "pivotY": 0.6562445322672525,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_skill_03_range/00.png",
+          "count": 90,
+          "width": 768,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "frstar2_skill_03_range_02",
+      "count": 90,
+      "width": 92,
+      "height": 80,
+      "columns": 12,
+      "ppu": 12.800000190734863,
+      "pivotX": 0.5108695652173914,
+      "pivotY": 0.6046833992004395,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_skill_03_range_02/00.png",
+          "count": 90,
+          "width": 1104,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "key": "frstar2_skill_03_start",
+      "count": 90,
+      "width": 120,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4666666666666667,
+      "pivotY": 0.3880093892415365,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "frstar2_skill_03_start/00.png",
+          "count": 90,
+          "width": 1440,
+          "height": 288
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "common_invincible_01",
+        "frstar2_attack_01_hit",
+        "frstar2_attack_01_start",
+        "frstar2_attack_01_trail",
+        "frstar2_attack_02_start",
+        "frstar2_buff_01_start",
+        "frstar2_buff_02_start",
+        "frstar2_buff_03_start",
+        "frstar2_buff_04_start",
+        "frstar2_buff_05_start",
+        "frstar2_die_01_start",
+        "frstar2_skill_02_range",
+        "frstar2_skill_03_range",
+        "frstar2_skill_03_range_02",
+        "frstar2_skill_03_start"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "key": "frstar2_attack_01_start",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "AttackStart",
+      "key": "frstar2_attack_02_start",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "key": "frstar2_attack_01_trail",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "projectile",
+      "loop": true,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "Impact",
+      "key": "frstar2_attack_01_hit",
+      "skill": "attack",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "target",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "Death",
+      "key": "frstar2_die_01_start",
+      "skill": "",
+      "nativeSkill": "",
+      "phase": -1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_02_range",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst",
+      "phase": 1,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": false
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_range",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_range_02",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": false,
+      "finishOnEnd": true
+    },
+    {
+      "kind": "SkillStart",
+      "key": "frstar2_skill_03_start",
+      "skill": "iceRing",
+      "nativeSkill": "IceBurst[Reborn]",
+      "phase": 2,
+      "hitIndex": -1,
+      "region": 0,
+      "attach": "owner",
+      "loop": true,
+      "finishOnEnd": true
+    }
+  ]
+}

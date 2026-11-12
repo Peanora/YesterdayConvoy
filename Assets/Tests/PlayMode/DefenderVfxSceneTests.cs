@@ -82,7 +82,7 @@ namespace YesterdayConvoy.Tests
                     ManualBattle binding=b;root=new GameObject("Original VFX event fixture "+id);
                     root.AddComponent<AdvancedDefenderView>().Bind(()=>binding,()=>b.Clock);
                     b.Begin();Assert.That(b.TryDeploy(b.RunId,1,b.Entry).Success,Is.True);
-                    bool observed=false,quiet=false;
+                    bool observed=false,quiet=false,nativeTail=false;
                     for(int i=0;i<120;i++)
                     {
                         b.Advance(.05f);yield return null;var active=Native(root,id);
@@ -90,7 +90,8 @@ namespace YesterdayConvoy.Tests
                         {
                             Assert.That(active.Count(r=>r.name.EndsWith("sbell2_skill_03_start_01",StringComparison.Ordinal)),Is.LessThanOrEqualTo(1));
                             double since=b.Clock-b.Defender.LastActionTime;
-                            if(observed&&since>1.4&&since<1.8)quiet|=!active.Any(r=>r.name.EndsWith("sbell2_skill_03_start_01",StringComparison.Ordinal));
+                            if(observed&&since>1.3&&since<1.5)nativeTail|=active.Any(r=>r.name.EndsWith("sbell2_skill_03_start_01",StringComparison.Ordinal));
+                            if(observed&&since>1.7&&since<1.95)quiet|=!active.Any(r=>r.name.EndsWith("sbell2_skill_03_start_01",StringComparison.Ordinal));
                         }
                         // A normal native shot can appear before the AI chooses its skill.
                         if(observed||active.Length==0||b.Defender.SkillCasts==0)continue;
@@ -108,7 +109,7 @@ namespace YesterdayConvoy.Tests
                     }
                     Assert.That(observed,Is.True,id+" skill casts="+b.Defender.SkillCasts+" clock="+b.Clock);
                     Assert.That(b.Defender.SkillCasts,Is.GreaterThan(0),id+" must reach a real skill event before this fixture passes.");
-                    if(id=="D27")Assert.That(quiet,Is.True,"Snow attack wind must leave a quiet attack interval.");
+                    if(id=="D27"){Assert.That(nativeTail,Is.True,"Approved original wind must keep its source tail beyond 1.2 seconds.");Assert.That(quiet,Is.True,"Snow attack wind must stop after its original 1.6333-second duration.");}
                     b.Restart();yield return null;
                     Assert.That(Native(root,id),Is.Empty,"A restarted run must not retain old native shots/fields.");
                     binding=null;yield return null;Object.Destroy(root);root=null;yield return null;

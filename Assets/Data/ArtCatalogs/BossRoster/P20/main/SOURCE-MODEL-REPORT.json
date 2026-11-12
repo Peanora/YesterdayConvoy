@@ -1,0 +1,93 @@
+{
+  "task": "P20",
+  "name": "维维美·魂灵之影",
+  "reference": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/skinpack_token_10035_wisdel_wward.dat",
+  "view": "main",
+  "model": "token_10035_wisdel_wward_sale#14",
+  "nativeModel": "token_10035_wisdel_wward_sale#14",
+  "folder": "native-fx/runtime-additions/Wward/source",
+  "version": "3.8.99",
+  "skin": "default",
+  "animations": [
+    {
+      "name": "Attack",
+      "duration": 2.0333333015441895,
+      "bounds": [
+        -149.80999755859375,
+        -4.75000524520874,
+        173.8599853515625,
+        268.8699951171875
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 9800,
+      "events": [
+        {
+          "time": 0.03333333507180214,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Die",
+      "duration": 1,
+      "bounds": [
+        -149.80999755859375,
+        -4.75000524520874,
+        173.8599853515625,
+        268.8699951171875
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 800,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Idle",
+      "duration": 2,
+      "bounds": [
+        -149.80999755859375,
+        -4.75000524520874,
+        173.8599853515625,
+        268.8699951171875
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 9640,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Start",
+      "duration": 1,
+      "bounds": [
+        -149.80999755859375,
+        -4.75000524520874,
+        173.8599853515625,
+        268.8699951171875
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 4800,
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    }
+  ],
+  "cell": 384,
+  "captureMargin": 1.14,
+  "bounds": [
+    -149.81000152225664,
+    -4.750005193766392,
+    173.85998852675755,
+    268.8700051062981
+  ]
+}

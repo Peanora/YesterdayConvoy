@@ -1,0 +1,32 @@
+{
+  "source": {
+    "name": "arts/maps/common/trap/trap_19.ab",
+    "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\source-bundles\\arts\\maps\\common\\trap\\trap_19.ab",
+    "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/arts_maps_common_trap_trap_19.dat",
+    "version": "26-10-29-15-36-11-33649006",
+    "manifestDigest": "4b6e2e00b706e8c9f697a389780bedbb",
+    "md5": "4b6e2e00b706e8c9f697a389780bedbb",
+    "sha256": "c8baca1ebb3be919df47f9d64cf565637d5b8ca3536a63c0fca10528b19cfdfc",
+    "bytes": 892904,
+    "validation": "full MD5",
+    "reused": false,
+    "containers": [
+      "dyn/arts/maps/common/trap/trap_192_archook/trap_192_archook.fbx",
+      "dyn/arts/maps/common/trap/trap_192_archook/tx_trap_192_archook.tga",
+      "dyn/arts/maps/common/trap/trap_193_arctoll/trap_193_arctoll.fbx",
+      "dyn/arts/maps/common/trap/trap_193_arctoll/tx_trap_193_arctoll.tga",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/mt_trap_196_cnnon.mat",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/trap_196_cnnon.fbx",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/tx_trap_196_cnnon_d.tga",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/tx_trap_196_cnnon_e.tga",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/tx_trap_196_cnnon_m.tga",
+      "dyn/arts/maps/common/trap/trap_196_cnnon/tx_trap_196_cnnon_n.tga"
+    ]
+  },
+  "sourceShaderColorVerified": false,
+  "finalClientMaterialVerified": false,
+  "meshVertexCount": 1332,
+  "triangleCount": 1030,
+  "material": "Original source mesh/UV/albedo + explicitly approved Unlit/Texture structure material. No invented recoil or aim animation.",
+  "textureSha256": "559e871694eef8d84b14490821d38e9ea07b41b721983925792ce803278e34e1"
+}

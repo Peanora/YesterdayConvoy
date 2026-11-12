@@ -1,0 +1,209 @@
+{
+  "version": 1,
+  "task": "B14",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Boss previews plus P14/P26 skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://prts.wiki/w/%E5%8D%A1%E5%BE%B7%E9%9C%8D%EF%BC%8C%E9%BB%91%E6%B5%81%E4%B9%8B%E6%BA%90",
+  "model": "enemy_2145_cadejo",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "B14/source/main/enemy_2145_cadejo.skel",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.skel",
+      "bytes": 249350,
+      "sha256": "679f8db87ee7c1fa37780356d2653c677de99923525dd05e79a24a07c4adda82"
+    },
+    {
+      "file": "B14/source/main/enemy_2145_cadejo.atlas",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.atlas",
+      "bytes": 4822,
+      "sha256": "ca0f933e58190c7ff7c48efb5f6f5d8a54c7f87cde876cb221c89855b5428777"
+    },
+    {
+      "file": "B14/source/main/enemy_2145_cadejo.png",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2145_cadejo/enemy_2145_cadejo.png",
+      "bytes": 205466,
+      "sha256": "fa86cbb408adfbbdebcf80d5914b89372dfe46cfe72e3ac466d1b9b884bce81a"
+    }
+  ],
+  "atlasManifestSha256": "0bfa7e842f83f9090a8ae9423a2ffff6f3265fa919993ba19a472e4a8bc35308",
+  "atlasFiles": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "f3e1805888ec239bde2babadb99b67ae43051c6f955bf415011eea196d2fd1b7",
+      "bytes": 1434792
+    },
+    {
+      "file": "Attack-001.png",
+      "sha256": "253d6121640d186e5041f388628ecfcb80fcd2f2de21786403ead24447601666",
+      "bytes": 1452918
+    },
+    {
+      "file": "Attack-002.png",
+      "sha256": "c3bd018763aaa9442e0eff77f4168903f351a02d18abdc4cbd103aba2bf3c921",
+      "bytes": 1491442
+    },
+    {
+      "file": "Attack-003.png",
+      "sha256": "297175c55186ee1d3c0983fca9c3bc0199f73414d5595fa2d8228bf38083f8b7",
+      "bytes": 1380799
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "40053956a8efb3a6857f8b47cf2a1aefa171be5234b9f6d1cd1bdb661cd86b8f",
+      "bytes": 1436238
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "da2705704b71c1d146f8002b6728ed05095bbad5ab6dc69b3c08df8ca08375a6",
+      "bytes": 1405453
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "cc7d4923eb30df83f1eba2833ef7198d1b6a8335ee46f401a5e28af3fa512e0a",
+      "bytes": 598620
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "ef8edda1a2b2f426d2845ae9e962be8434c71e7f9752d1bb375643d205a0c5dc",
+      "bytes": 1433850
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "7695cfc463dc412a14d72ca1a779df05f812dd8b78dd9d97f4a2d98e1f671167",
+      "bytes": 1384375
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "3a62b501630637d2c3bda9a5b979dd997f60446becd8a5ddc984cebd2ccb3c14",
+      "bytes": 1422819
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "6ef6f84686ee3f86808041f6d223f68fa16bfcc2d78398a123c2f17b6f485bc1",
+      "bytes": 365306
+    },
+    {
+      "file": "Revive_1-000.png",
+      "sha256": "b1886ce0fbe3210b02bd4b72015335e9e5f732535ff6b3ea8a088f23518c083e",
+      "bytes": 1435423
+    },
+    {
+      "file": "Revive_1-001.png",
+      "sha256": "8aa32db47e27dec1c07ff08cb764921f9bde88386df921c60ca02610a76ca26f",
+      "bytes": 1288161
+    },
+    {
+      "file": "Revive_1-002.png",
+      "sha256": "05d2862185b65e1df3e197ec1f1efe4175180586304477fd46d950fb62f04e33",
+      "bytes": 1485862
+    },
+    {
+      "file": "Revive_1-003.png",
+      "sha256": "d65b8af48e5185041ad13789b8279304ab802a567006bc46c597ea5f60670216",
+      "bytes": 1109793
+    },
+    {
+      "file": "Revive_2-000.png",
+      "sha256": "fd9599b4e589613cb78046ec593add7807a4e0cf964cf42bc301c1233df93cd1",
+      "bytes": 1222318
+    },
+    {
+      "file": "Revive_2-001.png",
+      "sha256": "6eceacc3a53e38fb8e9a436e78e92e35c7e209f324c78d7996870e4e58b19523",
+      "bytes": 1213956
+    },
+    {
+      "file": "Revive_2-002.png",
+      "sha256": "70c36fbbfa674a7c08e790fbe2567b4d0d38d40e4b65d9942b4f68a676d49ab8",
+      "bytes": 1250437
+    },
+    {
+      "file": "Revive_2-003.png",
+      "sha256": "dd1aa78b25a76b6eddb9590b1e15df8e8382e036ab8e4bcdfb410f6c4900c8b6",
+      "bytes": 321090
+    },
+    {
+      "file": "Revive_3-000.png",
+      "sha256": "4bda1cf7996865172223c875a42de1c4000c6f94e99f4088d99e71c9044a9cf0",
+      "bytes": 1382340
+    },
+    {
+      "file": "Revive_3-001.png",
+      "sha256": "2dd2319972a34d40034ee0a284714407529175a1640d7df2155f9e9ab5c0ddfd",
+      "bytes": 1362085
+    },
+    {
+      "file": "Revive_3-002.png",
+      "sha256": "c8b5767b2ff18d2d88ed80465e96b0999f371555e6c59851e1ca78fcfddfc6d7",
+      "bytes": 1457108
+    },
+    {
+      "file": "Revive_3-003.png",
+      "sha256": "5d9c3bbff6f9b77a39fc3b817e5c53e168bc22c77dcbba29a2ff0e5065db4be3",
+      "bytes": 1357120
+    },
+    {
+      "file": "Revive_3-004.png",
+      "sha256": "288a833fb3bb7e03510bf96d9d17a45014c45410f9b4bae4d016d65f93cebfd9",
+      "bytes": 1401629
+    },
+    {
+      "file": "Revive_3-005.png",
+      "sha256": "b51ef9de449af6bc25d9412a6d2c1e6a6ff88560acd47f7c50ff4ffe449eec45",
+      "bytes": 683278
+    },
+    {
+      "file": "Skill_1-000.png",
+      "sha256": "bcd71e55abcde5ec4493d7108d42bfedfb541ab9296be68704f8397ee37759b5",
+      "bytes": 1445070
+    },
+    {
+      "file": "Skill_1-001.png",
+      "sha256": "9e35d658cc8d545d6412d0c17f9e3a72f40518c1d035a9c42f90730446987d7a",
+      "bytes": 1468230
+    },
+    {
+      "file": "Skill_1-002.png",
+      "sha256": "7a963e073d90e4d36ba4c8270cdda650acd9169efafe3aeaea4c8bbbdb219164",
+      "bytes": 1375361
+    },
+    {
+      "file": "Skill_1-003.png",
+      "sha256": "0f7e635880527ca75e5c87ad0ccd5eb3d45cf7d68035b3d0740e899d01e2f053",
+      "bytes": 1440371
+    },
+    {
+      "file": "Skill_1-004.png",
+      "sha256": "b96a530be5dbd6296b14941308b9b90e2a7281c1ec9ed2944bc7288492d3b2ec",
+      "bytes": 1040107
+    },
+    {
+      "file": "Skill_2_Begin-000.png",
+      "sha256": "3bd161e82faea416e6908c9585709c9627970ccbb6754f69691d004450bb7e49",
+      "bytes": 571192
+    },
+    {
+      "file": "Skill_2_End-000.png",
+      "sha256": "b95c05577b8b3fa26a27e35cee32b924eabb9bc9b6fafdb93fabf26f2ac9c35c",
+      "bytes": 1283844
+    },
+    {
+      "file": "Skill_2_End-001.png",
+      "sha256": "288bb0acad086826e94a5550e986366d1578c1619d26a85ef97238d3cc0c8f59",
+      "bytes": 603424
+    }
+  ],
+  "portraitSha256": "76e391f1694adc9c72780f0a246f78fb53087c116f3f3f916f3410d74d0706ac",
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 57.842026564951745,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}

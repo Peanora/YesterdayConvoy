@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "task": "P15C",
+  "name": "惘核（OB19）",
+  "view": "main",
+  "model": "enemy_10262_dsjred",
+  "skin": "default",
+  "fps": 60,
+  "cell": 384,
+  "columns": 5,
+  "captureBounds": [
+    -154.1675094733054,
+    -133.94253554221308,
+    82.45515447560199,
+    165.05755444015313
+  ],
+  "captureMargin": 1.14,
+  "viewport": 340.86010257989744,
+  "pivotX": 0.6051932368366493,
+  "pivotY": 0.45435808024694424,
+  "scale": 1.126561885927939,
+  "status": "APPROVED_ORIGINAL_SOURCE_CAPTURE_NOT_YET_BOUND",
+  "clips": [
+    {
+      "key": "Attack",
+      "source": "Attack",
+      "duration": 0.36666667461395264,
+      "count": 24,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.6051932368366493,
+      "pivotY": 0.45435808024694424,
+      "events": [
+        {
+          "time": 0.36666667461395264,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Attack-000.png",
+          "count": 24,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "Die",
+      "source": "Die",
+      "duration": 0.5333333611488342,
+      "count": 34,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.6051932368366493,
+      "pivotY": 0.45435808024694424,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Die-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-001.png",
+          "count": 9,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Idle",
+      "source": "Idle",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.6051932368366493,
+      "pivotY": 0.45435808024694424,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Move",
+      "source": "Move",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.6051932368366493,
+      "pivotY": 0.45435808024694424,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Move-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "371ce10a46b7858a3aef36ae030d132d8b658ba6992a15886f4a7cb3482110bc",
+      "bytes": 644202
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "eb68c6233ff2ded328a71b5ba5a00f0a060e841a0b4306d0d0faf2d2bf888c42",
+      "bytes": 702212
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "5eafc4a454c7c3b85d745af383d98d95c8fc9e085ca4f2cc5cd27bbf2c2a088f",
+      "bytes": 239311
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "cdf461c097d432d4224809dae716f5fa998de65d1a7e7a2201c95cb96a403123",
+      "bytes": 683694
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "65d2e41468695aad84b1b30548b0673af6b82ecb1bf2d3683c0ee4ca75401880",
+      "bytes": 716533
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "e56518ee2cb12e246b5d56a26d64f20d5e9b314260f7f0f4976c20b74d760fd5",
+      "bytes": 702207
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "a0ec1dca7ed53dd0f2c6210428e2f2470a22f6ba82aa29f35b5c3e28e30d1b42",
+      "bytes": 179192
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "61a980c34e1d6974700f07c295ab659b5154dab091146caf14b91fe97863d7cf",
+      "bytes": 706361
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "569f53cbea677a64a62ccec3629ffaf5f4b6016b89b33cf930adc7a2940a10e5",
+      "bytes": 728443
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "118e61e02268a0ee14b6ee2ae510024f791910ec7c32ee7c89c6c089f3e7f7ed",
+      "bytes": 322828
+    }
+  ],
+  "zeroDurationStates": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -79.55608367919922,
+        -12.75479793548584,
+        69.4127197265625,
+        103.17711639404297
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 40,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die_2",
+      "duration": 0,
+      "bounds": null,
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 0,
+      "events": [],
+      "loop": false
+    }
+  ]
+}
