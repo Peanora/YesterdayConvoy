@@ -89,6 +89,7 @@ namespace YesterdayConvoy
             diagnostic |= ApprovedMapSmokeDriver.Requested||ApprovedMapSmokeDriver.LaunchRequested;
             diagnostic |= Array.IndexOf(args,"-campaignJourneySmokeTest")>=0;
             diagnostic |= Array.IndexOf(args,"-bossRosterSmokeTest")>=0;
+            diagnostic |= Array.IndexOf(args,"-heatExchangeV5SmokeTest")>=0;
             if(FindAnyObjectByType<MudrockTrialBootstrap>()==null)BuildMonsterTestCatalog();
             ValidateConfiguration();
             scene.enabled = false;

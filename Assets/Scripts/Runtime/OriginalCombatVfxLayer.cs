@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace YesterdayConvoy
 {
@@ -27,6 +28,11 @@ namespace YesterdayConvoy
         View Draw(OriginalCombatVfxArt.Clip clip,double age,Vector3 position,Camera camera,bool flip,int order,bool loop,float roll)
         {
             if(camera==null)return null;var sprite=clip.At(age,loop);if(sprite==null)return null;
+            // V5's approved visual foot is .025 above the .72 logical platform.
+            // Keep caster-attached planes above its .739 cap without moving combat.
+            if(SceneManager.GetActiveScene().name=="Map05HeatExchange"&&
+                (clip.Key=="defender/D27/sbell2_skill_03_start_01"||clip.Key=="defender/D27/sbell2_skill_03_buff_01"||clip.Key=="defender/D27/sbell2_skill_03_range"))
+                position+=Vector3.up*.025f;
             if(used==views.Count)
             {
                 var basis=new GameObject("Original VFX attachment").transform;basis.SetParent(parent,false);

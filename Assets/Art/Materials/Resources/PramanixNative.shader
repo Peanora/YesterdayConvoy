@@ -21,6 +21,13 @@ Shader "YesterdayConvoy/Pramanix Native Ground Depth"
             {
                 result o;float4 c=tex2D(_MainTex,i.uv);
                 o.color=float4(c.rgb*c.rgb*_HdrRange*i.color.rgb*i.color.a,c.a*i.color.a);
+                #if defined(UNITY_COLORSPACE_GAMMA)
+                    // The approved captures contain linear radiance, even though the
+                    // game's target is Gamma. Match the preview's sRGB output transform.
+                    float3 low=o.color.rgb*12.92;
+                    float3 high=1.055*pow(max(o.color.rgb,0.0),1.0/2.4)-0.055;
+                    o.color.rgb=lerp(low,high,step(0.0031308,o.color.rgb));
+                #endif
                 // Keep the approved native camera capture upright and undistorted, but
                 // use its true anchor's ground plane when testing map occlusion.
                 float3 ray=i.world-_WorldSpaceCameraPos;

@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-12：初雪颜色输出与高台深度修正
+
+- 原采样probe工程ActiveColorSpace=1、ARGBFloat/Linear目标，主游戏ActiveColorSpace=0。旧PramanixNative只做sqrt样本平方/HDR解码，无显示输出转换；Three批准稿仍有sRGB OETF。新增真实GPU标定使用RGBA(32,48,64,0)：旧shader红通道0.251，期望0.539，准确0/1失败（artifacts/pramanix-v6/before.xml）。按Gamma宏补显示转换，alpha和alpha零处RGB保留，不改任何原页/倍率。
+- Map05高台实际顶面.739，旧施法者层深度锚点.732。仅该场景的caster/buff01/range视觉抬.025，与批准稿.757锚点对应；逻辑位置、目标hit和积雪层高度不变。新实际高台GPU可见测试与颜色标定、既有两项原生层池/深度/时钟回归 **4/4**、D3D11退出0（after.xml）。
+- 初次独立Player只走到2.25模拟秒、Running但未开技；诊断参数未登记，生产失焦自动暂停会打断自动观察。现仅把-heatExchangeV5SmokeTest加入既有diagnostic条件，普通失焦规则不变。旧ActualLateMapShowsSixEffectsAndKeepsWinningDeploymentPlan在batch D3D11（已有diagnostic=true）按完整六家族/自然胜利/重开原判据 **1/1通过**（late-map-focused.xml），未按未施法家族删断言。
+- 最终Windows x64 Development **1088107563 bytes / 0 errors / Unity退出0**，直接更新Builds/Windows（build-final.log）。最终1600×900独立D3D11 Player **23/23 / 退出0**：正常Map05路由、原8卡有限生产部署、18.75模拟秒自然D27开技及实际命中、原FX10Renderer/GPU18644像素、暂停/热泵/重开/源配置不变。已实看最终相机画面，与b72a5cf6的同刻旧截图比较，确有更亮白青风雪与可见范围。此前1280/完整Edit1135结果属于V5交付，本次未无意义重跑全套或第二尺寸。
+- 项目外原ground03五组Vulkan代表探针退出0：原默认态、显式原态、禁用原已关闭的控制粒子三组像素一致；两个方向试验只改雪纹投影，未采用。原Atlas是平面纹理，PV冰簇归属仍待核，不能用自制立体雪堆冒充修复。
+- 原S3 active buff的switch_mode数值event0创建sbell2_skill_03_flow，原Prefab循环/holdByOwner已核；事件名仍为工具枚举映射、spawnLocation7/准确结束/UVRotation未完全核实。项目外B/C候选仅加此层，原RGBA/PPU不变，尚未导入主工程，等待人类按先看稿规则确认。不能称客户端完全一致。原来源证据保存在外部v6审计，运行接入边界同步美术说明。
+
+
 ## 2026-11-12：热交换站V5与初雪原采样接入
 
 - 用户明确确认项目外V5并要求进入游戏。仅更新Map05保存场景/材质/灯光/缩略图、相应格点源与profile；原两条固定路线、三门坐标和热泵伤害/时钟保持。独立Map05原4守军追加D27源配置，正式Stage10阵容不改。428导出网格、140独立顶面、52,081顶点/31,825三角、14张真实表面纹理；顶面沿用火雨识别名称。源码保留Editor导入源与必要meta，运行不造整图。
