@@ -22,7 +22,11 @@ namespace YesterdayConvoy.Tests
             var sequence=clip.GetType().GetField("Sequence",Instance).GetValue(clip);
             return (IEnumerator)sequence.GetType().GetMethod("Warm",Instance).Invoke(sequence,null);
         }
-        static Sprite At(object clip,double age)=>(Sprite)clip.GetType().GetMethod("At",Instance).Invoke(clip,new object[]{age,true});
+        static Sprite At(object clip,double age)
+        {
+            double sample=age<3?age:1+(age-3)%2;
+            return (Sprite)clip.GetType().GetMethod("At",Instance).Invoke(clip,new object[]{sample,true});
+        }
         static SpriteRenderer[] Flow(GameObject root)=>root.GetComponentsInChildren<SpriteRenderer>().Where(r=>
             r.enabled&&r.sprite!=null&&r.name=="Original VFX / "+Key).ToArray();
         static DefenderSettings Caster(string id,Vector3 position,float initialSP,float duration,float health=100000)

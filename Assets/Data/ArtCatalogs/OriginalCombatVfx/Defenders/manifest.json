@@ -2729,6 +2729,38 @@
       "directional": false
     },
     {
+      "key": "defender/D27/sbell2_buff_01_hit_01",
+      "count": 36,
+      "width": 92,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5217391304347826,
+      "pivotY": 0.4874431610107422,
+      "duration": 1.2,
+      "hdrRange": 16.0,
+      "loop": false,
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-contact-hit\\sbell2_buff_01_hit_01\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 1,
+      "samplingNote": "Original one-shot at 30fps, all nonzero frames 1-34 plus blank frames 0 and 35 retained. The rest of the unchanged 90-frame source page is exactly zero and is not played as a delayed visual tail.",
+      "sourceCaptureCount": 90,
+      "sourceCaptureDuration": 3,
+      "sourcePrefab": "sbell2_buff_01_hit_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "pages": [
+        {
+          "file": "D27/sbell2_buff_01_hit_01-00.png",
+          "count": 36,
+          "width": 736,
+          "height": 960,
+          "rawResource": "PramanixV5/sbell2_buff_01_hit_01-00"
+        }
+      ]
+    },
+    {
       "key": "defender/D28/wang_skill_03_range_start",
       "count": 49,
       "width": 272,

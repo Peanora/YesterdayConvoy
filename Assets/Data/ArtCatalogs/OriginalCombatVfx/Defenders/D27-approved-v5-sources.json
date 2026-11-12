@@ -120,6 +120,17 @@
       "bytes": 351496,
       "rawResource": "PramanixV5/sbell2_skill_03_flow-00",
       "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_flow-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_buff_01_hit_01",
+      "file": "D27/sbell2_buff_01_hit_01-00.png",
+      "pngSha256": "ef909a87c39eea9b89eab2988b5df419e757ea4e90909733f4cb872db417c2f1",
+      "rgbaSha256": "d735c66a9b9c1225e7277bf103a5429001c6d9969e6f4988276886517d56a00e",
+      "width": 736,
+      "height": 960,
+      "bytes": 152278,
+      "rawResource": "PramanixV5/sbell2_buff_01_hit_01-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_初雪常驻圈修正-v7\\contact-hit\\assets\\sbell2_buff_01_hit_01-00.rgba.gz"
     }
   ],
   "flowApproval": {
@@ -128,5 +139,31 @@
     "choice": "接入 C：补回循环风雪",
     "binding": "One living owner per actual active skill; age from SkillStartedAt; repeat approved 3-second sample; hide at skill end, death, restart or scene exit.",
     "adaptations": "Source mount7/exact stop tail and loop seam remain unverified; C uses owner origin, sortingOffset29, Map05 visual lift .025."
+  },
+  "contactApproval": {
+    "date": "2026-11-12",
+    "preview": "2026-11-12_初雪常驻圈修正-v7/contact-review.html",
+    "effect": "sbell2_buff_01_hit_01",
+    "binding": "Only actual successful snow-entry damage, one world-space contact at recorded position/time. Not S3 shot hit or S2 DOT02. No additional damage, displacement, white flash or sound.",
+    "nativeCaptureDuration": 3,
+    "runtimeCount": 36,
+    "runtimeDuration": 1.2,
+    "quietTail": "Source frames35-89 are all zero; frame35 retained as final blank frame. No source pixel changed.",
+    "limits": "Original spawnLocation2 target height remains unverified; preview-approved contact foot placement is used.",
+    "layerRevisionRequest": "用户确认接触稿，并要求怪物不能被特效覆盖、攻击也要有特效；当前改用原地面深度与绝对地面排序。"
+  },
+  "currentBinding": {
+    "date": "2026-11-12",
+    "request": "技能持续期间全程可见；接触稿可以，但怪物不能被特效覆盖，攻击也要有特效。",
+    "persistentFields": [
+      "sbell2_skill_03_buff_01",
+      "sbell2_skill_03_range",
+      "sbell2_skill_03_flow"
+    ],
+    "persistentPlayback": "First actual skill age0-3 seconds once; then repeat original warm source seconds1-3. No repeated all-zero cold start. Source pixels, PPU, pivot, FPS and HDR unchanged.",
+    "groundOrders": "Absolute marker band26-36, below all actor bands whose minimum is1024. The original billboard and ground-depth shader remain unchanged.",
+    "attacks": "Original S3 caster and S3 hit still follow actual CombatShot action and successful impact; both are separately GPU-observed.",
+    "contact": "Original01 only follows successful snow-entry damage resolution, including shield absorption. Actual contact position/time, no following transform. Same-frame same-source same-target visual burst merged; damage/counts unchanged.",
+    "limits": "Warm-window repetition is a capture playback adaptation, not proven exact native loop closure. Original target mount2 height and native source-specific audio remain unverified/not ported."
   }
 }

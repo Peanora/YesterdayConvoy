@@ -53,6 +53,14 @@ namespace YesterdayConvoy
         }
         internal bool Show(string key,double age,Vector3 position,Camera camera,bool flipX,int sortingOffset,bool loop=false,float rollDegrees=0)
         {if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));return Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,sortingOffset,loop,rollDegrees)!=null;}
+        // Ground-attached light belongs to the marker band, below every actor band.
+        // Keep the native billboard/pixels/depth, rather than painting over a body.
+        internal bool ShowBelowActors(string key,double age,Vector3 position,Camera camera,bool flipX,int groundOrder,bool loop=false)
+        {
+            if(disposed)throw new ObjectDisposedException(nameof(OriginalCombatVfxLayer));
+            var view=Draw(OriginalCombatVfxArt.Get(key),age,position,camera,flipX,0,loop,0);
+            if(view==null)return false;view.Renderer.sortingOrder=groundOrder;return true;
+        }
         // Explicit horizontal-ground projection, preserving the billboard's screen-space
         // PPU at this camera pitch. The caller supplies the real ground height; no lift
         // or depth override hides geometry that should occlude the effect.

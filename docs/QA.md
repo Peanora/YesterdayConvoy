@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-12：初雪常驻圈、真实雪地命中与图层
+
+- 用户确认“技能持续期间全程可见”；后确认原雪地接触01看稿，并要求怪物不被覆盖、攻击也有特效。原Prefab审计证明三常驻层没有三秒重启动作，缓存第0帧全空。旧实际GPU基线 **0/1预期失败**：技能age3秒buff01像素613→0（artifacts/pramanix-ring-fix/before-render.xml）。初轮before.xml是夹具在热身yield前移除MainCamera标签导致场景view空引用，先修夹具再得到上述真正亮度失败；未把夹具异常当产品故障。
+- 首播0–3秒后改用1–3秒稳态，原像素/FPS/尺寸/HDR不变。三常驻层在技能age3与5的实际GPU均保持：buff613→583、range10182→10091、flow3072→3043；亮度约98%/98%/99%，不再整体熄灭。原粒子相位差仍可能存在，不称无缝源循环。
+- 用户要求的层级改为D27绝对marker band26–36，演员基础最低1024。使用真实TacticalActor材质的不透明身体校准片做GPU遮挡：mask2166像素、与风雪潜在重叠1560、身体改变0、身体外FX仍9426像素，证明未靠隐藏风雪通过。
+- 原接触sbell2_buff_01_hit_01从原enemy_enter buff核实并用既有Vulkan路径采样，退出0、90帧、edge0/clipped0。全部非零源帧严格为1–34，35–89全RGBA零；原完整PNG/gzip保持，运行播放0–35共36帧/1.2秒，SHA d735c66a9b9c1225e7277bf103a5429001c6d9969e6f4988276886517d56a00e。02要求S2 mark未接入。来源/限制与用户看稿确认在D27来源清单。
+- SixthDefenderSkills仅在原入格TryDefenderDamageUnit成功结算后记内部有界journal（包括护盾吸收），保留实际接触点，同帧同源目标只合并视觉，原伤害和SnowHits保持。相关EditMode **20/20、退出0**（edit-contact.xml），最终D3D11 PlayMode **9/9、退出0**（play-contact-final.xml）。新增接触夹具用自然10秒雪形成/真实伤害，并与无View控制模型逐步对照：保留两格真实伤害、不加假CombatShot、只合并一次视觉、原01独立GPU可见、暂停/重开清理。初轮play-contact.xml为8/9：测试误把历史接触点与Advance结束后的已移动位置比较（差.00225），已改为独立实际伤害日志的WorldPosition；不改产品移动或放宽误差，过程保留。
+- 最终Windows x64 Development **1088620223 bytes、0错误、Unity退出0**（build-final.log）；最终1600×900 D3D11 Player **30/30、进程退出0**（player-final/result.json）。正常Map05入口/8卡有限生产部署，18.85秒自然S3命中后继续7秒至25.85，最终仍Running。整体原FX GPU19755像素，flow3367、S3起手16224、S3目标命中36、真实雪地接触01为33像素差，分别独立开关测量；13条实际接触记录，地面排序低于演员、暂停/热泵/重开均通过。未注入HP/SP/伤害/胜负，程序指针不称OS鼠标。
+- 实际相机连续 **7秒/210帧/960×540/30fps**，跨技能3、5秒边界，MP4全解码通过；无HUD/无音轨。已实看最终技能/接触画面，项目外v7/game-review.html展示该实机录像与未改截图，旧C/D/接触看稿保留并链接最新实机。前一中间构建1088463442与Player26项只覆盖环修复、尚无接触01/新层级，不能混称最终版本。
+- 仓库 **16452跟踪文件检查通过**，新PNG/运行bytes/meta和两新测试meta齐备，原字节SHA核对通过。原.vscode和PackageManagerSettings保留；无新场景/Prefab/Packages/ProjectSettings修改，无CMD/BAT、ZIP或Releases。
+- 未运行完整1135全套、第二尺寸、第二机或人类自然运营整局；未接入原专用音效，原目标挂点高度/停止尾段、最终积雪合成仍有限制，不能将本次修复称完整原客户端复刻。
+
 ## 2026-11-12：初雪已批准 C 循环风雪
 
 - 用户明确确认“接入 C：补回循环风雪”。原PNG、351496字节gzip运行资源、meta和来源随源码；解压12165120字节与批准稿RGBA SHA256逐字节一致，PPU/pivot/HDR/90帧30fps不变。新增DefenderVfxArt预加载与按实际active/SkillStartedAt的单owner循环，未改场景和战斗数值。

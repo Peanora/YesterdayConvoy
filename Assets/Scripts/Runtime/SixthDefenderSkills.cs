@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace YesterdayConvoy
 {
+    internal readonly struct PramanixSnowImpact
+    {
+        internal readonly int RunId;
+        internal readonly long Sequence;
+        internal readonly string SourceId,TargetId;
+        internal readonly double At;
+        internal readonly Vector3 Position;
+        internal PramanixSnowImpact(int run,long sequence,string source,string target,double at,Vector3 position)
+        {RunId=run;Sequence=sequence;SourceId=source;TargetId=target;At=at;Position=position;}
+    }
     public sealed class SixthCell
     {
         public string SourceId {get;internal set;}
@@ -15,6 +25,18 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         readonly List<SixthCell> snowCells=new List<SixthCell>(),chessPieces=new List<SixthCell>();
+        readonly List<PramanixSnowImpact> pramanixSnowImpacts=new List<PramanixSnowImpact>();
+        long pramanixSnowImpactSequence;
+        internal IReadOnlyList<PramanixSnowImpact> PramanixSnowImpacts=>pramanixSnowImpacts;
+        void RecordPramanixSnowImpact(DefenderState source,DeployedUnitState target,Vector3 position)
+        {
+            // Adjacent snow cells retain their individual damage. Their simultaneous
+            // contact with the same owner/target produces one visual burst.
+            for(int i=pramanixSnowImpacts.Count-1;i>=0&&pramanixSnowImpacts[i].At==Clock;i--)
+                if(pramanixSnowImpacts[i].SourceId==source.EntityId&&pramanixSnowImpacts[i].TargetId==target.EntityId)return;
+            if(pramanixSnowImpacts.Count==128)pramanixSnowImpacts.RemoveAt(0);
+            pramanixSnowImpacts.Add(new PramanixSnowImpact(RunId,++pramanixSnowImpactSequence,source.EntityId,target.EntityId,Clock,position));
+        }
         public IReadOnlyList<SixthCell> SnowCells=>snowCells.AsReadOnly();
         public IReadOnlyList<SixthCell> ChessPieces=>chessPieces.AsReadOnly();
         public float DefenderBudget {get;private set;}=30;
@@ -138,7 +160,13 @@ namespace YesterdayConvoy
                 foreach(var u in units)if(u.Active&&!u.IsReviving&&!UnitAirborne(u)&&GroundDistance(cell.Position,u.Motion.Position)<V2DefenderSkill(d,"snowCellRadius",.7f))
                 {
                     now.Add(u.EntityId);u.SnowMove=Math.Min(u.SnowMove,1-cell.Layers*V2DefenderSkill(d,"snowSlowPerLayer",.1f));
-                    if(!cell.Visitors.Contains(u.EntityId)){TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"snowEntryAttackFraction",.6f),CombatDamageType.Arts,sourceDefender:d);d.SnowHits++;}
+                    if(!cell.Visitors.Contains(u.EntityId))
+                    {
+                        var contact=u.Motion.Position;
+                        if(TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"snowEntryAttackFraction",.6f),CombatDamageType.Arts,sourceDefender:d))
+                            RecordPramanixSnowImpact(d,u,contact);
+                        d.SnowHits++;
+                    }
                 }
                 bool departed=false;foreach(string id in cell.Visitors)if(!now.Contains(id)){departed=true;break;}
                 cell.Visitors.Clear();foreach(string id in now)cell.Visitors.Add(id);

@@ -96,7 +96,7 @@ namespace YesterdayConvoy.Tests
 
         [Test] public void PramanixOriginalCasterHitAndFieldResourcesExistAtTheirUncompressedSourceDurations()
         {
-            string[] raw={"sbell2_skill_03_start_01","sbell2_skill_03_hit","sbell2_skill_03_buff_01","sbell2_skill_03_range","sbell2_skill_03_flow","sbell2_ground_01","sbell2_ground_02","sbell2_ground_03"};
+            string[] raw={"sbell2_skill_03_start_01","sbell2_skill_03_hit","sbell2_skill_03_buff_01","sbell2_skill_03_range","sbell2_skill_03_flow","sbell2_buff_01_hit_01","sbell2_ground_01","sbell2_ground_02","sbell2_ground_03"};
             var required=DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27"}).ToArray();
             foreach(string name in raw)
             {

@@ -2,7 +2,19 @@
 
 2026-11-12，用户在完整地图预览后明确要求“按这个做进游戏”。本文件记录本次接入绑定，不表示已与原客户端完全一致；实测结果由本轮QA/Player报告记录。
 
+## 常驻圈、雪地接触与图层修正（2026-11-12）
+
+用户确认要求“技能持续期间全程可见”。查实buff01/range/flow三段都含一次性冷启动淡入，旧三秒整段循环会从接近峰值的第89帧跳回全空第0帧。现在仅初次播放0–3秒，之后重复原1–3秒稳态；caster/hit攻击脉冲时序保持，未改变RGBA、尺寸、HDR或FPS。稳态重复仍有粒子相位差，不称原客户端无缝循环。
+
+用户另确认原雪地接触01看稿，并明确要求怪物不能被特效覆盖、攻击也要有特效。D27地面/常驻/攻击风圈/两种目标命中均使用绝对地面排序26–36，演员基础排序最低1024；原billboard与真实地面深度不变。源像素不重绘，角色身体后画，周边光仍可见。技能攻击起手start_01和技能攻击命中skill_03_hit继续读取实际CombatShot，未被雪地反馈取代。
+
+原sbell2_buff_01_hit_01在原enemy_enter buff中用于入雪地成功法伤结算；02需要S2 mark，不接到当前S3。01经既有Vulkan原shader单实例采样，90帧窗口中仅1–34帧非零，35–89帧全RGBA为零。源码保留完整未改的PNG/无损RGBA页，运行按30fps播放0–35帧/1.2秒，保留全部可见内容及空尾，不把空白延长成3秒命中效果。原PPU64、pivot(.52173913,.48744316)、HDR16保留，SHA见来源清单。
+
+SixthDefenderSkills在原TryDefenderDamageUnit成功结算后记录内部只读PramanixSnowImpact（包含护盾吸收，不仅HP下降）；保存真实来源/目标/时间/接触点，同帧同源目标只合并显示，原各雪格伤害和SnowHits计数保持。DefenderSkillVfxView仅消费journal播放01，不生成假CombatShot、不额外扣血、不跟随移动；暂停/尾段/重开沿用共享时钟和原层池。原目标挂点2精确高度和专用音效仍未完整移植；足点放置与层级按本次看稿和用户反馈适配。
+
 ## 已批准 C：补回循环风雪（2026-11-12）
+
+以下记录初版C批准范围，当前播放和层级以本页上方修正为准。
 
 用户看过B/C动态对比后明确选择“接入 C：补回循环风雪”。现沿用相同90帧/30fps、240×132、PPU39.38461685、pivot(.5,.4731722745)、HDR16原采样；PNG与无损gzip RGBA及meta随源码保存，RGBA SHA256为6d4517dfa50be53283ac5912f97aee0b22b7e425ae382b6daf6cffbfe8d1741d。
 
@@ -25,6 +37,7 @@ DefenderVfxArt将flow纳入关卡预加载；DefenderSkillVfxView仅在真实D27
 | 身体/行走 | V5所用D27原前向、原M03行走与待机PNG；Unity原D27正背面资源不替换 | DefenderRosterView / DemoSpriteVisual，原动作窗口、当前攻速和共享模拟钟 |
 | 施法者 | sbell2_skill_03_start_01，49帧/30fps=1.633333秒 | 真实D27攻击组的action起点，完整源片长，不再压到1.2秒 |
 | 目标命中 | sbell2_skill_03_hit，45帧/30fps=1.5秒 | CombatShot实际Applied与ImpactAt，按真实目标，不造成额外伤害 |
+| 雪地接触 | 原sbell2_buff_01_hit_01，保留非零源帧及空尾共36帧/1.2秒 | 原入雪地成功结算→内部journal→真实接触点一次性播放；不套用S3 hit或S2的02 |
 | 技能范围/脚下 | sbell2_skill_03_buff_01、sbell2_skill_03_range | 真实D27存活与DefenderSkillActive，不采用看稿五次攻击的固定节奏 |
 | 循环风雪 | C确认的sbell2_skill_03_flow，90帧/30fps三秒原采样 | 每个owner读取自身SkillStartedAt和DefenderSkillActive，整段技能持续循环，不按攻击重建 |
 | 积雪 | sbell2_ground_01/02/03 | 实际SnowCells：1层/2–4层/5层；清零、死亡、重开立即消失，不使用看稿三秒换层 |
@@ -32,6 +45,6 @@ DefenderVfxArt将flow纳入关卡预加载；DefenderSkillVfxView仅在真实D27
 
 身体原片段60fps；三种S3攻击各2秒，原OnAttack标记约0.666667秒。游戏S3攻速倍率1.3及现有Windup/真实ImpactAt保持，未为匹配看稿改变伤害、SP、动作窗口或攻速。2秒间隔在实战可缩为1.53846秒，1.63333秒原caster尾段可能与下一真实攻击轻微重叠，按真实攻击组去重而不删原尾段。
 
-原HDR采样的RGBA通过无损gzip `.bytes` 资源保存，运行上传为RGBA32 linear，保留alpha为0时合法的加色RGB。含C共10页、8段，原PNG来源与原RGBA SHA256见 `Assets/Data/ArtCatalogs/OriginalCombatVfx/Defenders/D27-approved-v5-sources.json`。其他角色沿用原prepared纹理合同。Resources资源随Player自动包含，原PNG与必要meta随源码跟踪。
+原HDR采样的RGBA通过无损gzip `.bytes` 资源保存，运行上传为RGBA32 linear，保留alpha为0时合法的加色RGB。含C及原接触01共11页、9段，原PNG来源与原RGBA SHA256见 `Assets/Data/ArtCatalogs/OriginalCombatVfx/Defenders/D27-approved-v5-sources.json`。其他角色沿用原prepared纹理合同。Resources资源随Player自动包含，原PNG与必要meta随源码跟踪。
 
 来源沿用2026-11-12热交换站V1/V5与后续C外部看稿的原Shader采样；原角色/特效权利归原权利人。用户看稿与接入要求不登记为开放再分发许可。buff02原挂点9未核实，继续未绑定；flow按已批准C接入，原精确生命周期/UV驱动限制如上。积雪原采样的最终合成仍与原客户端有差异，不能称完整客户端复刻。

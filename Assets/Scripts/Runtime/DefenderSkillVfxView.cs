@@ -35,11 +35,12 @@ namespace YesterdayConvoy
             id=="D21"||id=="D22"||id=="D23"||id=="D24"||id=="D25"||id=="D26"||id=="D27"||id=="D28"||id=="D29"||id=="D30";
         static float Distance(Vector3 a,Vector3 b){a.y=b.y=0;return Vector3.Distance(a,b);}
         static string Key(string id,string raw)=>raw.StartsWith("common/",StringComparison.Ordinal)?raw:"defender/"+id+"/"+raw;
-        bool Show(string id,string raw,double age,Vector3 p,Camera cam,bool flip=false,int order=32,bool loop=false,bool directional=false,Vector3 direction=default,bool ground=false)
+        bool Show(string id,string raw,double age,Vector3 p,Camera cam,bool flip=false,int order=32,bool loop=false,bool directional=false,Vector3 direction=default,bool ground=false,bool belowActors=false)
         {
             string key=Key(id,raw);
             // Missing/empty native control nodes are tracked as gaps, never replaced with a generic ring.
             if(!OriginalCombatVfxArt.TryGet(key,out var clip))return false;
+            if(belowActors)return native.ShowBelowActors(key,age,p,cam,flip,order,loop&&clip.Loop);
             if(ground)return native.ShowGround(key,age,p,cam,flip,order,loop&&clip.Loop);
             if(directional&&clip.Directional)return native.ShowOriented(key,age,p,cam,direction,order,loop&&clip.Loop);
             if(directional)flip=Vector3.Dot(direction,cam.transform.right)<0;
@@ -64,10 +65,13 @@ namespace YesterdayConvoy
             if(b!=null&&cam!=null)
             {
                 double clock=presentationClock?.Invoke()??b.Clock;
-                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentChess(b,cam,clock);PresentErasure(b,cam,clock);
+                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentSnowContacts(b,cam,clock);PresentChess(b,cam,clock);PresentErasure(b,cam,clock);
             }
             native.End();yuWall.End();
         }
+        // These captures include a one-time cold start. Replaying frame zero every
+        // three seconds extinguishes all three fields; repeat only their warm span.
+        internal static double PramanixFieldSampleAge(double skillAge)=>skillAge<3?skillAge:1+(skillAge-3)%2;
         void PresentFields(ManualBattle b,Camera cam,double clock)
         {
             bool running=b.Phase==BattlePhase.Running||b.Phase==BattlePhase.Ready;
@@ -121,10 +125,11 @@ namespace YesterdayConvoy
                             else Show(id,"svash2_skill_03_range_01",age,d.Position,cam,order:27,loop:true,ground:true);
                             break;
                         case "D27":
-                            Show(id,"sbell2_skill_03_buff_01",age,d.Position,cam,order:28,loop:true);
-                            Show(id,"sbell2_skill_03_range",age,d.Position,cam,order:27,loop:true);
+                            double fieldAge=PramanixFieldSampleAge(age);
+                            Show(id,"sbell2_skill_03_buff_01",fieldAge,d.Position,cam,order:28,loop:true,belowActors:true);
+                            Show(id,"sbell2_skill_03_range",fieldAge,d.Position,cam,order:27,loop:true,belowActors:true);
                             // Approved C: one owner-bound loop, aged from the real skill start.
-                            Show(id,"sbell2_skill_03_flow",age,d.Position,cam,order:29,loop:true);
+                            Show(id,"sbell2_skill_03_flow",fieldAge,d.Position,cam,order:29,loop:true,belowActors:true);
                             break;
                         case "D28":
                             Show(id,"wang_skill_03_range_start",age,d.Position,cam,order:27,ground:true);
@@ -157,7 +162,7 @@ namespace YesterdayConvoy
                 var d=b.FindDefender(cell.SourceId);
                 if(d==null||!d.Alive||d.Settings.ArtId!="D27"||cell.Layers<=0)continue;
                 string raw=cell.Layers==1?"sbell2_ground_01":cell.Layers<5?"sbell2_ground_02":"sbell2_ground_03";
-                Show("D27",raw,clock,cell.Position+Vector3.up*.025f,cam,order:26,loop:true);
+                Show("D27",raw,clock,cell.Position+Vector3.up*.025f,cam,order:26,loop:true,belowActors:true);
             }
             foreach(var drone in b.DefenderDrones)
             {
@@ -242,7 +247,7 @@ namespace YesterdayConvoy
                         double snowAge=clock-actionStart;
                         if(empowered&&castSeen.Add((shot.SourceId,shot.StartedAt,shot.Origin)))
                         {
-                            Show(id,"sbell2_skill_03_start_01",snowAge,shot.Origin,cam,left,29);
+                            Show(id,"sbell2_skill_03_start_01",snowAge,shot.Origin,cam,left,29,belowActors:true);
                             Tail(id,"sbell2_skill_03_start_01",actionStart);
                         }
                         hit="sbell2_skill_03_hit";break;
@@ -263,7 +268,17 @@ namespace YesterdayConvoy
                     PendingUntil=Math.Max(PendingUntil,shot.ImpactAt);
                 }
                 if(hit!=null&&shot.Applied)
-                {Show(id,hit,hitAge,destination,cam,left,35);Tail(id,hit,shot.ImpactAt);}
+                {Show(id,hit,hitAge,destination,cam,left,35,belowActors:id=="D27");Tail(id,hit,shot.ImpactAt);}
+            }
+        }
+        void PresentSnowContacts(ManualBattle b,Camera camera,double clock)
+        {
+            foreach(var impact in b.PramanixSnowImpacts)
+            {
+                var caster=b.FindDefender(impact.SourceId);
+                if(caster==null||caster.Settings.ArtId!="D27")continue;
+                Show("D27","sbell2_buff_01_hit_01",clock-impact.At,impact.Position,camera,order:36,belowActors:true);
+                Tail("D27","sbell2_buff_01_hit_01",impact.At);
             }
         }
         void PresentChess(ManualBattle b,Camera cam,double clock)

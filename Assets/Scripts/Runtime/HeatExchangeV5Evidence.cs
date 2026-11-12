@@ -22,7 +22,9 @@ namespace YesterdayConvoy
             public string error,scene,graphics,naturalOutcome;
             public string scope="Normal -approvedMap 5 startup, saved V5 geometry, production start/pointer deployment using the existing finite starter cards, natural D27 skill and actual original FX GPU difference, pause and encounter restart. Programmatic input is not OS mouse input. No scene load, SP/HP changes, forced target/skill/damage/result, or natural campaign/balance claim.";
             public int width,height,savedTiles,deployments,pramanixCasts,pramanixSnowHits,nativeFxRenderers,gpuChangedPixels,flowGpuChangedPixels;
-            public double simulationSeconds;
+            public int casterGpuChangedPixels,hitGpuChangedPixels,contactGpuChangedPixels,pramanixContactEvents;
+            public double simulationSeconds,continuitySimulationSeconds;
+            public int continuityFrames;
             public Check[] checks;
         }
         const string MapId="approved-map-05",SceneName="Map05HeatExchange";
@@ -80,6 +82,45 @@ namespace YesterdayConvoy
                 camera.targetTexture=previous;RenderTexture.active=active;target.Release();Destroy(target);Destroy(a);Destroy(b);
             }
         }
+        IEnumerator RecordContinuity(ManualBattleController controller,ManualBattle battle,DefenderState caster,Result result,string directory,Action<string,bool> check)
+        {
+            string frames=Path.Combine(directory,"continuous-frames");Directory.CreateDirectory(frames);
+            var camera=Camera.main;var previous=camera.targetTexture;var active=RenderTexture.active;
+            var target=new RenderTexture(960,540,24);var read=new Texture2D(960,540,TextureFormat.RGB24,false);
+            double started=battle.Clock;bool retained=true,crossedFirst=false,crossedSecond=false;
+            try
+            {
+                battle.SetPaused(false);camera.targetTexture=target;
+                for(int frame=0;frame<210&&battle.Phase==BattlePhase.Running;frame++)
+                {
+                    controller.Tick(1f/30);yield return null;
+                    if(battle.DefenderSkillActive(caster))
+                    {
+                        crossedFirst|=battle.Clock-caster.SkillStartedAt>=3;
+                        crossedSecond|=battle.Clock-caster.SkillStartedAt>=5;
+                        var fields=NativeFx();
+                        retained&=new[]{"sbell2_skill_03_buff_01","sbell2_skill_03_range","sbell2_skill_03_flow"}
+                            .All(raw=>fields.Count(r=>r.name.EndsWith("/"+raw,StringComparison.Ordinal))==1);
+                    }
+                    if(result.contactGpuChangedPixels<=20)
+                    {
+                        var contacts=NativeFx().Where(r=>r.name.EndsWith("/sbell2_buff_01_hit_01",StringComparison.Ordinal)).ToArray();
+                        if(contacts.Length>0)result.contactGpuChangedPixels=CompareNativeGpu(contacts,directory,"05-snow-contact");
+                    }
+                    camera.Render();RenderTexture.active=target;read.ReadPixels(new Rect(0,0,960,540),0,0);read.Apply();
+                    File.WriteAllBytes(Path.Combine(frames,frame.ToString("D4")+".png"),read.EncodeToPNG());result.continuityFrames++;
+                }
+                result.continuitySimulationSeconds=battle.Clock-started;
+                check("continuous-real-camera-crosses-two-ring-loop-boundaries",result.continuityFrames==210&&result.continuitySimulationSeconds>6.9&&retained&&crossedFirst&&crossedSecond);
+                result.pramanixContactEvents=battle.PramanixSnowImpacts.Count;
+                check("actual-snow-entry-contact-01-reaches-gpu",result.pramanixContactEvents>0&&result.contactGpuChangedPixels>20);
+            }
+            finally
+            {
+                battle.SetPaused(true);camera.targetTexture=previous;RenderTexture.active=active;
+                target.Release();Destroy(target);Destroy(read);
+            }
+        }
         IEnumerator Observe(Result result,string directory,Action<string,bool> check)
         {
             var args=Environment.GetCommandLineArgs();int arg=Array.IndexOf(args,"-approvedMap");
@@ -129,7 +170,8 @@ namespace YesterdayConvoy
                 result.castObserved|=d.SkillCasts>0;
                 result.shotObserved|=battle.CombatShots.Any(s=>s.FromDefender&&s.SourceId==d.EntityId&&s.Empowered&&s.Applied);
                 var fx=NativeFx();
-                if(!result.castObserved||!result.shotObserved||fx.Length==0)continue;
+                if(!result.castObserved||!result.shotObserved||fx.Length==0||!battle.CombatShots.Any(s=>
+                    s.FromDefender&&s.SourceId==d.EntityId&&s.Empowered&&s.Applied&&battle.Clock-s.ImpactAt>=.1&&battle.Clock-s.ImpactAt<1.2))continue;
                 battle.SetPaused(true);yield return null;fx=NativeFx();
                 if(fx.Length==0){battle.SetPaused(false);continue;}
                 result.nativeFxRenderers=fx.Length;clock=battle.Clock;sp=d.SkillSP;
@@ -144,12 +186,19 @@ namespace YesterdayConvoy
                 result.gpuChangedPixels=CompareNativeGpu(fx,directory);
                 check("actual-original-fx-change-gpu-pixels",result.gpuChangedPixels>20);
                 var flow=fx.Where(r=>r.name.EndsWith("/sbell2_skill_03_flow",StringComparison.Ordinal)).ToArray();
-                check("one-owner-flow-at-real-skill-age",flow.Length==1&&flow[0].sprite==OriginalCombatVfxArt.Get("defender/D27/sbell2_skill_03_flow").At(clock-d.SkillStartedAt,true));
+                check("one-owner-flow-at-real-skill-age",flow.Length==1&&flow[0].sprite==OriginalCombatVfxArt.Get("defender/D27/sbell2_skill_03_flow").At(DefenderSkillVfxView.PramanixFieldSampleAge(clock-d.SkillStartedAt),true));
                 result.flowGpuChangedPixels=CompareNativeGpu(flow,directory,"03-flow");
                 check("approved-looping-flow-reaches-gpu",result.flowGpuChangedPixels>20);
+                result.casterGpuChangedPixels=CompareNativeGpu(fx.Where(r=>r.name.EndsWith("/sbell2_skill_03_start_01",StringComparison.Ordinal)).ToArray(),directory,"03-s3-caster");
+                check("actual-s3-attack-start-reaches-gpu",result.casterGpuChangedPixels>20);
+                result.hitGpuChangedPixels=CompareNativeGpu(fx.Where(r=>r.name.EndsWith("/sbell2_skill_03_hit",StringComparison.Ordinal)).ToArray(),directory,"03-s3-hit");
+                check("actual-s3-target-hit-reaches-gpu",result.hitGpuChangedPixels>20);
+                check("pramanix-ground-light-is-below-actor-bands",fx.All(r=>r.sortingOrder>=0&&r.sortingOrder<1024));
                 check("gpu-observation-does-not-advance-or-damage-battle",battle.Clock==clock&&health.SequenceEqual(battle.Units.Select(u=>u.Health)));
                 yield return Capture(directory,"03-pramanix-original-skill",check);break;
             }
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-pramanixContinuityEvidence")>=0&&result.castObserved&&result.shotObserved)
+                yield return RecordContinuity(c,battle,d,result,directory,check);
             result.simulationSeconds=battle.Clock;result.naturalOutcome=battle.Phase.ToString();
             result.deployments=battle.Units.Count(u=>!u.SynergySupport);result.pramanixCasts=d.SkillCasts;result.pramanixSnowHits=d.SnowHits;
             check("natural-d27-cast-observed-with-native-fx",result.castObserved&&result.shotObserved&&result.nativeFxRenderers>0);
