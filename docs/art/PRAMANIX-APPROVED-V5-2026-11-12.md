@@ -2,6 +2,14 @@
 
 2026-11-12，用户在完整地图预览后明确要求“按这个做进游戏”。本文件记录本次接入绑定，不表示已与原客户端完全一致；实测结果由本轮QA/Player报告记录。
 
+## 已批准 C：补回循环风雪（2026-11-12）
+
+用户看过B/C动态对比后明确选择“接入 C：补回循环风雪”。现沿用相同90帧/30fps、240×132、PPU39.38461685、pivot(.5,.4731722745)、HDR16原采样；PNG与无损gzip RGBA及meta随源码保存，RGBA SHA256为6d4517dfa50be53283ac5912f97aee0b22b7e425ae382b6daf6cffbfe8d1741d。
+
+DefenderVfxArt将flow纳入关卡预加载；DefenderSkillVfxView仅在真实D27存活、对局有效、技能active时显示单个owner层，年龄读取clock−SkillStartedAt，按批准C重复三秒采样，不随攻击重新计时。排序偏移29与Map05显示抬高.025沿用C；暂停共用模拟钟，技能结束/死亡/重开/切场清理。没有新增战斗结算或修改技能数据。验证结果见QA。
+
+本次批准的是C的明确适配：owner原点、三秒缓存循环和技能结束立即隐藏。原客户端挂点7、准确停止发射后的尾段和循环接缝仍未完全核实，不将本次接入登记为100%原客户端还原。
+
 ## 后续视觉差异修正（2026-11-12）
 
 人类指出实机仍明显偏离原版，重新核对发现两项确定的接入错误：源采样工程在线性浮点目标捕获，而游戏是Gamma色空间，原PramanixNative解码后没有执行批准稿的sRGB输出转换；Map05施法者范围/脚下层深度锚点.732低于实际高台顶.739，批准稿则在.757。现按Gamma条件补输出转换，并只给Map05的施法者caster/buff01/range加.025显示偏移，不改变逻辑坐标、目标命中层、雪格高度或战斗数据。
@@ -10,7 +18,7 @@
 
 原地面Atlas已直接查看：ground01/02/03本来就是平面雪纹。Vulkan代表探针中默认Animator/显式原态/关闭原禁用的控制粒子三组逐像素一致；朝向试验不能产生PV冰簇，未采用。原PV冰簇归属尚未核实，不把演示目标/其他实体擅自当成本作雪格。
 
-原S3 active buff引用的switch_mode数值event0有CreateEffect(sbell2_skill_03_flow)，原Prefab_isLoop=1、holdByOwner=1；因此已知有一次创建的原循环风雪。event0/1的名字仍来自工具映射，spawnLocation7、UVRotation与原准确结束回收未完全核实。本轮只做项目外B/C补层候选，未导入/绑定该新层；仍遵守美术先看稿确认再接入。其他原客户端挂点、相机与最终合成限制保留，不将两项显示修正称为完整复刻。
+原S3 active buff引用的switch_mode数值event0有CreateEffect(sbell2_skill_03_flow)，原Prefab_isLoop=1、holdByOwner=1；因此已知有一次创建的原循环风雪。event0/1的名字仍来自工具映射，spawnLocation7、UVRotation与原准确结束回收未完全核实。C确认前仅做项目外B/C补层候选；后按上方用户确认接入。其他原客户端挂点、相机与最终合成限制保留，不将显示修正或补层称为完整复刻。
 
 | 内容 | 批准稿与源资源 | 真实读取/事件 |
 | --- | --- | --- |
@@ -18,11 +26,12 @@
 | 施法者 | sbell2_skill_03_start_01，49帧/30fps=1.633333秒 | 真实D27攻击组的action起点，完整源片长，不再压到1.2秒 |
 | 目标命中 | sbell2_skill_03_hit，45帧/30fps=1.5秒 | CombatShot实际Applied与ImpactAt，按真实目标，不造成额外伤害 |
 | 技能范围/脚下 | sbell2_skill_03_buff_01、sbell2_skill_03_range | 真实D27存活与DefenderSkillActive，不采用看稿五次攻击的固定节奏 |
+| 循环风雪 | C确认的sbell2_skill_03_flow，90帧/30fps三秒原采样 | 每个owner读取自身SkillStartedAt和DefenderSkillActive，整段技能持续循环，不按攻击重建 |
 | 积雪 | sbell2_ground_01/02/03 | 实际SnowCells：1层/2–4层/5层；清零、死亡、重开立即消失，不使用看稿三秒换层 |
 | 接地 | V2人物alpha形状影、环境色和脚底深度 | 仅Map05HeatExchange启用投影影和V2色彩，其他地图保留已有接触影与风格 |
 
 身体原片段60fps；三种S3攻击各2秒，原OnAttack标记约0.666667秒。游戏S3攻速倍率1.3及现有Windup/真实ImpactAt保持，未为匹配看稿改变伤害、SP、动作窗口或攻速。2秒间隔在实战可缩为1.53846秒，1.63333秒原caster尾段可能与下一真实攻击轻微重叠，按真实攻击组去重而不删原尾段。
 
-原HDR采样的RGBA通过无损gzip `.bytes` 资源保存，运行上传为RGBA32 linear，保留alpha为0时合法的加色RGB。9页、7段、原PNG来源与原RGBA SHA256见 `Assets/Data/ArtCatalogs/OriginalCombatVfx/Defenders/D27-approved-v5-sources.json`。其他角色沿用原prepared纹理合同。Resources资源随Player自动包含，原PNG与必要meta随源码跟踪。
+原HDR采样的RGBA通过无损gzip `.bytes` 资源保存，运行上传为RGBA32 linear，保留alpha为0时合法的加色RGB。含C共10页、8段，原PNG来源与原RGBA SHA256见 `Assets/Data/ArtCatalogs/OriginalCombatVfx/Defenders/D27-approved-v5-sources.json`。其他角色沿用原prepared纹理合同。Resources资源随Player自动包含，原PNG与必要meta随源码跟踪。
 
-来源沿用2026-11-12热交换站V1/V5外部看稿的原Shader采样；原角色/特效权利归原权利人。用户看稿与接入要求不登记为开放再分发许可。buff02原挂点9未核实、flow触发/UV驱动不明，两者继续未绑定。积雪原采样的最终合成仍与原客户端有差异，不能称完整客户端复刻。
+来源沿用2026-11-12热交换站V1/V5与后续C外部看稿的原Shader采样；原角色/特效权利归原权利人。用户看稿与接入要求不登记为开放再分发许可。buff02原挂点9未核实，继续未绑定；flow按已批准C接入，原精确生命周期/UV驱动限制如上。积雪原采样的最终合成仍与原客户端有差异，不能称完整客户端复刻。

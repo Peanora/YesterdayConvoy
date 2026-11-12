@@ -29,6 +29,6 @@
 
 地图几何/布景由本轮制作，视觉参考此前实际查看的《明日方舟》切尔诺伯格·破碎大道；不是原地图完整复刻。混凝土来自 [ambientCG Concrete034](https://ambientcg.com/view?id=Concrete034)，金属来自 [Quaternius Modular Sci-Fi MegaKit](https://quaternius.itch.io/modular-sci-fi-megakit)，两者为CC0-1.0。金属使用原Trim01板面裁片，同一裁片用于颜色/法线/ORM；部分物理平铺尺度为看稿假设，未独立证明裁片完美无缝。导出材质还包括本轮程序绘制的文字/窗口纹理。
 
-原D27人物与原FX归原权利人，沿用既有源记录与本轮采样来源；用户接入及上传要求不记为权利人开放再分发许可。原FX经采样重放，buff02挂点、flow归属和原客户端完整UV/积雪最终合成仍未核实，未伪造绑定或声称客户端百分之百一致。当前接入覆盖已确认的caster/hit、buff01/range及三个积雪显示层。
+原D27人物与原FX归原权利人，沿用既有源记录与本轮采样来源；用户接入及上传要求不记为权利人开放再分发许可。原FX经采样重放，buff02挂点、原客户端完整UV/积雪最终合成仍未核实。当前接入覆盖已确认的caster/hit、buff01/range、三个积雪显示层，以及后续用户确认C的flow循环风雪。flow按各自真实技能起点/active控制三秒采样循环，保留原尺寸；精确原挂点、停发尾段和循环接缝仍未核实，不声称客户端百分之百一致。最新实际验证见QA与初雪接入记录。
 
 关键数据：`Assets/Data/ArtCatalogs/HeatExchangeV5/map-v5.json`是Editor源；`Map05.asset.gridRows`与`layouts.json`保持相同格点；`Map05Battle.asset`保存独立试玩守军；`ApprovedMapBootstrap`只加载战斗，`ApprovedHeatMarker`只读热泵模拟状态。`HeatExchangeV5Tools.Apply`只修改这一张图，不调用重建八图的旧批量入口。

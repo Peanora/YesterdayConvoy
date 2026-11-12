@@ -31,7 +31,7 @@ namespace YesterdayConvoy
             // V5's approved visual foot is .025 above the .72 logical platform.
             // Keep caster-attached planes above its .739 cap without moving combat.
             if(SceneManager.GetActiveScene().name=="Map05HeatExchange"&&
-                (clip.Key=="defender/D27/sbell2_skill_03_start_01"||clip.Key=="defender/D27/sbell2_skill_03_buff_01"||clip.Key=="defender/D27/sbell2_skill_03_range"))
+                (clip.Key=="defender/D27/sbell2_skill_03_start_01"||clip.Key=="defender/D27/sbell2_skill_03_buff_01"||clip.Key=="defender/D27/sbell2_skill_03_range"||clip.Key=="defender/D27/sbell2_skill_03_flow"))
                 position+=Vector3.up*.025f;
             if(used==views.Count)
             {

@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-12：初雪已批准 C 循环风雪
+
+- 用户明确确认“接入 C：补回循环风雪”。原PNG、351496字节gzip运行资源、meta和来源随源码；解压12165120字节与批准稿RGBA SHA256逐字节一致，PPU/pivot/HDR/90帧30fps不变。新增DefenderVfxArt预加载与按实际active/SkillStartedAt的单owner循环，未改场景和战斗数值。
+- 相关EditMode **20/20、Unity退出0**（artifacts/pramanix-flow/edit-final.xml）。初轮19/20，唯一失败在独立启动无已加载场景时RestoreSceneManagerSetup的finally清理；原场景/材质断言已执行。仅在无有效旧场景时恢复空场景，保持所有验收断言，修后通过；初轮证据保留edit.xml。
+- D3D11 PlayMode **7/7、Unity退出0**（play.xml）：两项新增真实SP错峰双D27逐帧年龄/跨三秒/多次实际攻击不重启/暂停/自然结束/重开，以及正常单位Applied攻击击杀后、技能到期前清理；既有十家族事件、原生层池/投影、Gamma标定/高台GPU均通过。夹具只配置不可变初值，不伪写运行SP/HP或触发死亡。
+- Windows x64 Development **1088460282 bytes、0错误、退出0**（build.log）；最终1600×900独立D3D11 Player **25/25、进程退出0**（player/result.json）：正常Map05路由与8卡有限生产指针部署，18.75模拟秒自然D27开技/实际命中，11个原FXRenderer总体GPU变化18901像素。新增仅关闭flow的独立GPU对照3525变化像素，且核对单owner层和真实技能年龄帧；原23项暂停/重开/热泵/配置保持，不靠其他FX通过新增层检查。已目视查看03-flow-camera.png，属于实际游戏相机，非看稿合成。
+- 仓库 **16444跟踪文件检查通过**（repository-check.txt），新增运行资源无忽略命中、两个源页/运行meta GUID唯一；不提交外部加工、构建、日志、本地配置。没有CMD/BAT、ZIP或Releases。
+- 未重跑完整1135项EditMode或第二尺寸，未测第二机、人类自然运营整局或长期性能。三秒源采样循环、owner原点/顺序、技能结束立即隐藏为用户确认C的适配；原挂点7/准确停发尾段和循环接缝仍未证实，不称完整原客户端还原。
+
 ## 2026-11-12：初雪颜色输出与高台深度修正
 
 - 原采样probe工程ActiveColorSpace=1、ARGBFloat/Linear目标，主游戏ActiveColorSpace=0。旧PramanixNative只做sqrt样本平方/HDR解码，无显示输出转换；Three批准稿仍有sRGB OETF。新增真实GPU标定使用RGBA(32,48,64,0)：旧shader红通道0.251，期望0.539，准确0/1失败（artifacts/pramanix-v6/before.xml）。按Gamma宏补显示转换，alpha和alpha零处RGB保留，不改任何原页/倍率。

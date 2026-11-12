@@ -2699,6 +2699,36 @@
       "directional": false
     },
     {
+      "key": "defender/D27/sbell2_skill_03_flow",
+      "count": 90,
+      "width": 240,
+      "height": 132,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5,
+      "pivotY": 0.4731722745028409,
+      "duration": 3.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_flow-00.png",
+          "count": 90,
+          "width": 1920,
+          "height": 1584,
+          "rawResource": "PramanixV5/sbell2_skill_03_flow-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_skill_03_flow\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 2,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_skill_03_flow",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false
+    },
+    {
       "key": "defender/D28/wang_skill_03_range_start",
       "count": 49,
       "width": 272,

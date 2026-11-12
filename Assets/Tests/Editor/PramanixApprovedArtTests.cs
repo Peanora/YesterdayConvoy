@@ -20,7 +20,7 @@ namespace YesterdayConvoy.Tests
             var manifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/manifest.json")));
             var source=JsonUtility.FromJson<Provenance>(File.ReadAllText(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/D27-approved-v5-sources.json")));
             var clips=manifest.clips.Where(c=>c.key.StartsWith("defender/D27/",StringComparison.Ordinal)).ToArray();
-            Assert.That(clips.Length,Is.EqualTo(7));Assert.That(clips.Sum(c=>c.pages.Length),Is.EqualTo(9));
+            Assert.That(clips.Length,Is.EqualTo(8));Assert.That(clips.Sum(c=>c.pages.Length),Is.EqualTo(10));
             Assert.That(clips.Single(c=>c.key.EndsWith("/sbell2_skill_03_start_01",StringComparison.Ordinal)).duration,Is.EqualTo(49f/30).Within(.00001));
             Assert.That(clips.Single(c=>c.key.EndsWith("/sbell2_skill_03_hit",StringComparison.Ordinal)).duration,Is.EqualTo(1.5f));
             foreach(var page in clips.SelectMany(c=>c.pages))

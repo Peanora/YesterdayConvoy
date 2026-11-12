@@ -8,7 +8,6 @@
   "rights": "Original proprietary art. User preview and import request is not rights-holder redistribution permission.",
   "unbound": [
     "sbell2_skill_03_buff_02: source mount enum 9 unverified",
-    "sbell2_skill_03_flow: trigger/UV driver unverified",
     "sbell2_idle/sbell2_range not selected in approved V5"
   ],
   "imports": [
@@ -110,6 +109,24 @@
       "bytes": 152264,
       "rawResource": "PramanixV5/sbell2_skill_03_range-01",
       "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_range-01.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_flow",
+      "file": "D27/sbell2_skill_03_flow-00.png",
+      "pngSha256": "8465465f7a13d916bbdbb1fe19dc6b29a7a4191a3dd7aa9ca1d53a425593ebea",
+      "rgbaSha256": "6d4517dfa50be53283ac5912f97aee0b22b7e425ae382b6daf6cffbfe8d1741d",
+      "width": 1920,
+      "height": 1584,
+      "bytes": 351496,
+      "rawResource": "PramanixV5/sbell2_skill_03_flow-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_flow-00.rgba.gz"
     }
-  ]
+  ],
+  "flowApproval": {
+    "date": "2026-11-12",
+    "preview": "2026-11-12_初雪原版差异修正-v6/color-ab/flow-review.html",
+    "choice": "接入 C：补回循环风雪",
+    "binding": "One living owner per actual active skill; age from SkillStartedAt; repeat approved 3-second sample; hide at skill end, death, restart or scene exit.",
+    "adaptations": "Source mount7/exact stop tail and loop seam remain unverified; C uses owner origin, sortingOffset29, Map05 visual lift .025."
+  }
 }

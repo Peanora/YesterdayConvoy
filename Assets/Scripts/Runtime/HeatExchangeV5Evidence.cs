@@ -21,7 +21,7 @@ namespace YesterdayConvoy
             public bool passed,castObserved,shotObserved,heatWarningObserved,heatActiveObserved;
             public string error,scene,graphics,naturalOutcome;
             public string scope="Normal -approvedMap 5 startup, saved V5 geometry, production start/pointer deployment using the existing finite starter cards, natural D27 skill and actual original FX GPU difference, pause and encounter restart. Programmatic input is not OS mouse input. No scene load, SP/HP changes, forced target/skill/damage/result, or natural campaign/balance claim.";
-            public int width,height,savedTiles,deployments,pramanixCasts,pramanixSnowHits,nativeFxRenderers,gpuChangedPixels;
+            public int width,height,savedTiles,deployments,pramanixCasts,pramanixSnowHits,nativeFxRenderers,gpuChangedPixels,flowGpuChangedPixels;
             public double simulationSeconds;
             public Check[] checks;
         }
@@ -60,7 +60,7 @@ namespace YesterdayConvoy
             finally { Destroy(frame); }
             yield return null;
         }
-        static int CompareNativeGpu(SpriteRenderer[] fx,string directory)
+        static int CompareNativeGpu(SpriteRenderer[] fx,string directory,string label="03-native-fx")
         {
             var camera=Camera.main;var previous=camera.targetTexture;var active=RenderTexture.active;
             var target=new RenderTexture(960,540,24);var a=new Texture2D(960,540,TextureFormat.RGB24,false);var b=new Texture2D(960,540,TextureFormat.RGB24,false);
@@ -71,8 +71,8 @@ namespace YesterdayConvoy
                 camera.Render();b.ReadPixels(new Rect(0,0,960,540),0,0);b.Apply();
                 var first=a.GetPixels32();var second=b.GetPixels32();int changed=0;
                 for(int i=0;i<first.Length;i++)if(Math.Abs(first[i].r-second[i].r)+Math.Abs(first[i].g-second[i].g)+Math.Abs(first[i].b-second[i].b)>12)changed++;
-                File.WriteAllBytes(Path.Combine(directory,"03-native-fx-camera.png"),a.EncodeToPNG());
-                File.WriteAllBytes(Path.Combine(directory,"03-without-native-fx-camera.png"),b.EncodeToPNG());return changed;
+                File.WriteAllBytes(Path.Combine(directory,label+"-camera.png"),a.EncodeToPNG());
+                File.WriteAllBytes(Path.Combine(directory,label+"-without-camera.png"),b.EncodeToPNG());return changed;
             }
             finally
             {
@@ -143,6 +143,10 @@ namespace YesterdayConvoy
                     health.SequenceEqual(battle.Units.Select(u=>u.Health))&&heat.SequenceEqual(Enumerable.Range(0,3).Select(battle.ApprovedHeatState)));
                 result.gpuChangedPixels=CompareNativeGpu(fx,directory);
                 check("actual-original-fx-change-gpu-pixels",result.gpuChangedPixels>20);
+                var flow=fx.Where(r=>r.name.EndsWith("/sbell2_skill_03_flow",StringComparison.Ordinal)).ToArray();
+                check("one-owner-flow-at-real-skill-age",flow.Length==1&&flow[0].sprite==OriginalCombatVfxArt.Get("defender/D27/sbell2_skill_03_flow").At(clock-d.SkillStartedAt,true));
+                result.flowGpuChangedPixels=CompareNativeGpu(flow,directory,"03-flow");
+                check("approved-looping-flow-reaches-gpu",result.flowGpuChangedPixels>20);
                 check("gpu-observation-does-not-advance-or-damage-battle",battle.Clock==clock&&health.SequenceEqual(battle.Units.Select(u=>u.Health)));
                 yield return Capture(directory,"03-pramanix-original-skill",check);break;
             }

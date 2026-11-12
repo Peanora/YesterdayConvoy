@@ -123,6 +123,8 @@ namespace YesterdayConvoy
                         case "D27":
                             Show(id,"sbell2_skill_03_buff_01",age,d.Position,cam,order:28,loop:true);
                             Show(id,"sbell2_skill_03_range",age,d.Position,cam,order:27,loop:true);
+                            // Approved C: one owner-bound loop, aged from the real skill start.
+                            Show(id,"sbell2_skill_03_flow",age,d.Position,cam,order:29,loop:true);
                             break;
                         case "D28":
                             Show(id,"wang_skill_03_range_start",age,d.Position,cam,order:27,ground:true);

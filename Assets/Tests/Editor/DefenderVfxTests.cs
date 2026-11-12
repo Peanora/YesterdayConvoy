@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Tests
         {
             Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27","D27"}),Is.EquivalentTo(new[]{
                 "defender/D27/sbell2_skill_03_start_01","defender/D27/sbell2_skill_03_hit",
-                "defender/D27/sbell2_skill_03_buff_01","defender/D27/sbell2_skill_03_range",
+                "defender/D27/sbell2_skill_03_buff_01","defender/D27/sbell2_skill_03_range","defender/D27/sbell2_skill_03_flow",
                 "defender/D27/sbell2_ground_01","defender/D27/sbell2_ground_02","defender/D27/sbell2_ground_03"}));
             var data=Read();
             foreach(var c in data.clips.Where(c=>c.key.StartsWith("defender/D27/sbell2_skill_03_start_01",StringComparison.Ordinal)))
