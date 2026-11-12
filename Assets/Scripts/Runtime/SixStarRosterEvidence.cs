@@ -69,6 +69,7 @@ namespace YesterdayConvoy
                     yield return null;yield return null;Check("production-selection",entered&&DefenderSkillTrialId==id);
                     var battle=Battle;var defender=battle.FindDefender(id);var body=Object.FindAnyObjectByType<DefenderRosterView>()?.FindVisual(id);
                     Check("body-and-native-director",defender!=null&&body!=null&&DefenderVfxArt.SupportsDefender(defender));
+                    if(!entered||defender==null||body==null){item.checks=checks.ToArray();item.passed=false;ReturnToMonsterTests();yield return null;continue;}
                     Tick(4);yield return null;Check("preparation-animation-only",battle.Clock==0&&defender.SkillCasts==0&&defender.SkillSP==defender.Settings.Skill.InitialSP);
                     item.scene=SceneManager.GetActiveScene().name;
                     if(body!=null){item.bodyPixels=SixStarPixels(new[]{body},directory,id+"-body",true);Check("actual-body-gpu",item.bodyPixels>20);}
@@ -142,10 +143,20 @@ namespace YesterdayConvoy
         }
         IEnumerator Start()
         {
-            Application.runInBackground=true;yield return SceneManager.LoadSceneAsync("MonsterTrial");yield return null;yield return null;
+            Application.runInBackground=true;CampaignJourneySession.Clear();
+            if(SceneManager.GetActiveScene().name!="MonsterTrial")yield return SceneManager.LoadSceneAsync("MonsterTrial");
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-demoEvidenceDir"),role=Array.IndexOf(args,"-sixStarOnly");
             string directory=at>=0&&at+1<args.Length?Path.GetFullPath(args[at+1]):Path.Combine(Application.persistentDataPath,"SixStarRosterEvidence");
-            yield return Object.FindAnyObjectByType<ManualBattleController>().VerifySixStarRoster(directory,role>=0&&role+1<args.Length?args[role+1]:null);
+            ManualBattleController controller=null;
+            for(int i=0;i<7200;i++)
+            {
+                controller=Object.FindAnyObjectByType<ManualBattleController>();
+                if(controller!=null&&controller.Battle!=null&&controller.MonsterTests.Count>0&&!controller.ArtLoading)break;
+                yield return null;
+            }
+            if(controller==null||controller.Battle==null||controller.ArtLoading)
+            {Directory.CreateDirectory(directory);File.WriteAllText(Path.Combine(directory,"result.json"),"{\"passed\":false,\"error\":\"Controller/art preparation did not become ready\"}");Application.Quit(1);yield break;}
+            yield return controller.VerifySixStarRoster(directory,role>=0&&role+1<args.Length?args[role+1]:null);
         }
     }
 }
