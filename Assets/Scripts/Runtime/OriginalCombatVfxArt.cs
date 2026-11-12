@@ -72,7 +72,7 @@ namespace YesterdayConvoy
                     string directory=(Path.GetDirectoryName(page.file)??"").Replace('\\','/');
                     if(folder!=null&&folder!=directory)throw new InvalidDataException("A clip's pages need one source folder: "+d.key);
                     folder=directory;
-                    pages.Add(new ArtSequence.Page{file=Path.GetFileName(page.file),count=page.count,width=page.width,height=page.height});
+                    pages.Add(new ArtSequence.Page{file=Path.GetFileName(page.file),rawResource=page.rawResource,count=page.count,width=page.width,height=page.height});
                     total+=page.count;
                 }
                 if(total!=d.count)throw new InvalidDataException("Incomplete original VFX clip: "+d.key);

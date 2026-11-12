@@ -13,10 +13,12 @@ namespace YesterdayConvoy.Tests
         [Serializable] sealed class Data {public string key,sourcePrefab;public int count,width,height;public float duration,ppu;public bool loop;public Page[] pages;}
         [Serializable] sealed class Page {public string file;public int count,width,height;}
         static Manifest Read()=>JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/manifest.json")));
-        [Test] public void InitialSnowOnlyPreloadsItsAttackAndTargetLayers()
+        [Test] public void ApprovedSnowPreloadsAttackFieldsAndRealLayerStates()
         {
             Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27","D27"}),Is.EquivalentTo(new[]{
-                "defender/D27/sbell2_skill_03_start_01","defender/D27/sbell2_skill_03_hit"}));
+                "defender/D27/sbell2_skill_03_start_01","defender/D27/sbell2_skill_03_hit",
+                "defender/D27/sbell2_skill_03_buff_01","defender/D27/sbell2_skill_03_range",
+                "defender/D27/sbell2_ground_01","defender/D27/sbell2_ground_02","defender/D27/sbell2_ground_03"}));
             var data=Read();
             foreach(var c in data.clips.Where(c=>c.key.StartsWith("defender/D27/sbell2_skill_03_start_01",StringComparison.Ordinal)))
                 Assert.That(c.loop,Is.False,"An attack burst cannot turn into an idle snow loop.");

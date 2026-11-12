@@ -120,8 +120,10 @@ namespace YesterdayConvoy
                             }
                             else Show(id,"svash2_skill_03_range_01",age,d.Position,cam,order:27,loop:true,ground:true);
                             break;
-                        // Snow wind belongs to launched attacks. Passive snow remains a rule marker.
-                        case "D27":break;
+                        case "D27":
+                            Show(id,"sbell2_skill_03_buff_01",age,d.Position,cam,order:28,loop:true);
+                            Show(id,"sbell2_skill_03_range",age,d.Position,cam,order:27,loop:true);
+                            break;
                         case "D28":
                             Show(id,"wang_skill_03_range_start",age,d.Position,cam,order:27,ground:true);
                             Show(id,"wang_skill_03_buff_02",age,d.Position,cam,loop:true,ground:true);
@@ -147,6 +149,14 @@ namespace YesterdayConvoy
                 }
             }
             if(!running)return;
+            // Consume the real accumulated layers, not the preview's fixed 1 -> 2 -> 5 staging.
+            foreach(var cell in b.SnowCells)
+            {
+                var d=b.FindDefender(cell.SourceId);
+                if(d==null||!d.Alive||d.Settings.ArtId!="D27"||cell.Layers<=0)continue;
+                string raw=cell.Layers==1?"sbell2_ground_01":cell.Layers<5?"sbell2_ground_02":"sbell2_ground_03";
+                Show("D27",raw,clock,cell.Position+Vector3.up*.025f,cam,order:26,loop:true);
+            }
             foreach(var drone in b.DefenderDrones)
             {
                 var d=b.FindDefender(drone.SourceId);if(!b.DefenderSkillActive(d))continue;
@@ -173,9 +183,9 @@ namespace YesterdayConvoy
         {
             foreach(var shot in b.CombatShots)
             {
-                if(!shot.FromDefender||shot.Erased||clock<shot.StartedAt||clock-shot.ImpactAt>5)continue;
+                if(!shot.FromDefender||shot.Erased||clock-shot.ImpactAt>5)continue;
                 var d=b.FindDefender(shot.SourceId);if(d==null||!Owns(d.Settings.ArtId))continue;
-                string id=d.Settings.ArtId;var view=State(b,shot,d);
+                string id=d.Settings.ArtId;if(clock<shot.StartedAt&&id!="D27")continue;var view=State(b,shot,d);
                 var unit=b.FindUnit(shot.TargetId);var ally=b.FindDefender(shot.TargetId);
                 Vector3 destination=shot.Healing?ally?.Position??shot.Destination:unit?.Motion.Position??shot.Destination;
                 if(shot.Applied&&!view.HasImpact){view.HasImpact=true;view.Impact=destination;}
@@ -226,12 +236,12 @@ namespace YesterdayConvoy
                         }
                         break;
                     case "D27":
-                        if(empowered&&castSeen.Add((shot.SourceId,shot.StartedAt,shot.Origin))&&age<1.2)
+                        double actionStart=shot.StartedAt-d.Settings.Windup/Math.Max(.0001,d.LastActionRate);
+                        double snowAge=clock-actionStart;
+                        if(empowered&&castSeen.Add((shot.SourceId,shot.StartedAt,shot.Origin)))
                         {
-                            // Explicit presentation adaptation: retain the complete native tail inside one 1.2s burst.
-                            double sourceAge=age*OriginalCombatVfxArt.Get(Key(id,"sbell2_skill_03_start_01")).Duration/1.2;
-                            Show(id,"sbell2_skill_03_start_01",sourceAge,shot.Origin,cam,left,29,ground:true);
-                            PendingUntil=Math.Max(PendingUntil,shot.StartedAt+1.2);
+                            Show(id,"sbell2_skill_03_start_01",snowAge,shot.Origin,cam,left,29);
+                            Tail(id,"sbell2_skill_03_start_01",actionStart);
                         }
                         hit="sbell2_skill_03_hit";break;
                     case "D28":cast="wang_attack_01_start";trail="wang_attack_01_trail";hit="wang_attack_01_hit";break;

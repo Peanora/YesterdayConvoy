@@ -50,7 +50,7 @@ namespace YesterdayConvoy
             if(b!=null&&cam!=null)
             {
                 // Snow accumulation is a passive gameplay marker, separate from the short attack burst.
-                foreach(var cell in b.SnowCells)if(cell.Layers>0&&b.FindDefender(cell.SourceId).Alive)
+                foreach(var cell in b.SnowCells)if(cell.Layers>0&&b.FindDefender(cell.SourceId).Alive&&b.FindDefender(cell.SourceId).Settings.ArtId!="D27")
                     Ring(cell.Position,.35f,new Color(.6f,.9f,1,.12f+cell.Layers*.035f),.018f);
                 foreach(var cell in b.ChessPieces)PresentChess(cell,presentationClock?.Invoke()??b.Clock,cam);
 

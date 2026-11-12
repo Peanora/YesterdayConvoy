@@ -87,7 +87,8 @@ namespace YesterdayConvoy.Tests
                 Assert.That(r.transform.position,Is.EqualTo(anchor));Assert.That(r.sprite,Is.SameAs(sprite));CollectionAssert.AreEqual(uv,r.sprite.uv);
                 var ground=Capture();int foot=Mathf.RoundToInt(camera.WorldToScreenPoint(anchor).y);
                 int lower=Changed(ground,baseline,0,foot),upper=Changed(ground,baseline,foot,180),oldLower=Changed(billboard,baseline,0,foot);
-                Assert.That(upper,Is.GreaterThan(20));Assert.That(lower,Is.GreaterThan(Math.Max(20,oldLower*2)),"The real floor must no longer cut away the lower native half.");
+                Assert.That(upper,Is.GreaterThan(20));Assert.That(lower,Is.GreaterThan(20),"The horizontal API must retain the lower native half.");
+                Assert.That(oldLower,Is.GreaterThan(20),"The approved Pramanix billboard now reconstructs ground depth while preserving the source capture shape.");
                 blocker.SetActive(true);r.enabled=false;var occludedBaseline=Capture();r.enabled=true;var occluded=Capture();
                 Assert.That(Changed(occluded,occludedBaseline,0,180),Is.LessThan(4),"Opaque geometry above the ground still occludes the effect; no Always depth bypass.");
             }

@@ -1,0 +1,115 @@
+{
+  "status": "USER_APPROVED_PREVIEW_IMPORT_NOT_CLIENT_PARITY",
+  "date": "2026-11-12",
+  "preview": "2026-11-12_热交换站完整预览-v5",
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "rgbaRows": "bottom-to-top",
+  "runtimeStorage": "RGBA32 linear, lossless gzip TextAsset; RGB at alpha zero preserved",
+  "rights": "Original proprietary art. User preview and import request is not rights-holder redistribution permission.",
+  "unbound": [
+    "sbell2_skill_03_buff_02: source mount enum 9 unverified",
+    "sbell2_skill_03_flow: trigger/UV driver unverified",
+    "sbell2_idle/sbell2_range not selected in approved V5"
+  ],
+  "imports": [
+    {
+      "key": "defender/D27/sbell2_skill_03_start_01",
+      "file": "D27/sbell2_skill_03_start_01-00.png",
+      "pngSha256": "d6a3575fde3c8e30d8011469615dce43558e7220459543d1996a5f0cb7bea25c",
+      "rgbaSha256": "7bdf585ac5d26dd421fe8bbbfa2ade580e94f01fd4c70c689b892e404030d08f",
+      "width": 1664,
+      "height": 1920,
+      "bytes": 2202173,
+      "rawResource": "PramanixV5/sbell2_skill_03_start_01-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\fx\\D27\\sbell2_skill_03_start_01-00.rgba"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_start_01",
+      "file": "D27/sbell2_skill_03_start_01-01.png",
+      "pngSha256": "9f6591cf35905d49c098ba534287a0d19442e9a5e0e60f04135e4db2735ad205",
+      "rgbaSha256": "a687c2e582a785201315aaf3b1bc08d81786f355dfe92f5aff9ebc0a501d5ead",
+      "width": 1664,
+      "height": 1200,
+      "bytes": 191002,
+      "rawResource": "PramanixV5/sbell2_skill_03_start_01-01",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\fx\\D27\\sbell2_skill_03_start_01-01.rgba"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_hit",
+      "file": "D27/sbell2_skill_03_hit-00.png",
+      "pngSha256": "fecff6a3ab7ec23671e5589311255069578cee8b1fc4b477640414fe0bbfe73f",
+      "rgbaSha256": "b1bcaf6f3b2d1b327ae65178c905ce9aba2d53f070e79d714cd5de52ea0864dc",
+      "width": 1024,
+      "height": 432,
+      "bytes": 212777,
+      "rawResource": "PramanixV5/sbell2_skill_03_hit-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\fx\\D27\\sbell2_skill_03_hit-00.rgba"
+    },
+    {
+      "key": "defender/D27/sbell2_ground_01",
+      "file": "D27/sbell2_ground_01-00.png",
+      "pngSha256": "287af6c21c4b7e1b401e9d405fdb3aa27505d86a7b8bb226020f2276609e9dd3",
+      "rgbaSha256": "33e4ea97c9a87d9fb0b878f681444a1e27594ad85b6ffbac7a9a04e138d42d07",
+      "width": 576,
+      "height": 528,
+      "bytes": 63030,
+      "rawResource": "PramanixV5/sbell2_ground_01-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_ground_01-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_ground_02",
+      "file": "D27/sbell2_ground_02-00.png",
+      "pngSha256": "dd9faeb472292fa37794a2c3d13c283cdef38a9872a2016b1eccebe0c47c2b9c",
+      "rgbaSha256": "c4579a176f6b8a535304fca88bcc9cbffcbd616c7dfc5d36caee4af276715692",
+      "width": 640,
+      "height": 720,
+      "bytes": 113687,
+      "rawResource": "PramanixV5/sbell2_ground_02-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_ground_02-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_ground_03",
+      "file": "D27/sbell2_ground_03-00.png",
+      "pngSha256": "d20134537e9f5c5c6023f700bff032a641c6abfeaf9b50179601f2beb388300f",
+      "rgbaSha256": "f360901ae7dc75c87b2f49ba345cc181bb083e76d8e3f5b38b120726e8246459",
+      "width": 640,
+      "height": 720,
+      "bytes": 124663,
+      "rawResource": "PramanixV5/sbell2_ground_03-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_ground_03-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_buff_01",
+      "file": "D27/sbell2_skill_03_buff_01-00.png",
+      "pngSha256": "c852de97c562fa98203eed3ddc288bc511012bafb5492b645a8c1f1f74634d11",
+      "rgbaSha256": "d8a711e80bab6668369b2a2dc5d338c08f4ef5e540d668998bb9b87f29a0d9a0",
+      "width": 832,
+      "height": 1152,
+      "bytes": 378382,
+      "rawResource": "PramanixV5/sbell2_skill_03_buff_01-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_buff_01-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_range",
+      "file": "D27/sbell2_skill_03_range-00.png",
+      "pngSha256": "ed7722b432e9db577d59517ced2595404e792bf5df0f644db210e912fbb5ea26",
+      "rgbaSha256": "e10e4a5c14d38b24650a50a57badab45b0fffa49b009a989a1fa0d682c0355c7",
+      "width": 1920,
+      "height": 2040,
+      "bytes": 960679,
+      "rawResource": "PramanixV5/sbell2_skill_03_range-00",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_range-00.rgba.gz"
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_range",
+      "file": "D27/sbell2_skill_03_range-01.png",
+      "pngSha256": "b41557de552b637e3e25dac5a78969ea89df3350cbe43755073361c03bd88eff",
+      "rgbaSha256": "0d8953bcc10cccd79419b3232f7dd641ddc2a4845de0198f88b3e029e9fbb11c",
+      "width": 1920,
+      "height": 408,
+      "bytes": 152264,
+      "rawResource": "PramanixV5/sbell2_skill_03_range-01",
+      "sourceRaw": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-12_热交换站与圣聆初雪-v1\\actor\\assets\\extra\\sbell2_skill_03_range-01.rgba.gz"
+    }
+  ]
+}
