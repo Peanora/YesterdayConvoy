@@ -33,7 +33,7 @@ namespace YesterdayConvoy.Editor
                 }
                 var data=UnityEngine.Object.Instantiate(template);data.name=id;data.battle=battle;data.rosterCards=cards;data.defenderTestId=id;data.mapId="defender-"+id;
                 var d=Make(id);data.mapTitle=d.displayName+" · 原技能7级适配试玩";
-                var helper=new DefenderPlacement{id="helper",artId="D01",displayName="米格鲁 · 测试搭档",position=new Vector3(-5.5f,.04f,3),health=6000,attack=2,armor=12,range=.9f,interval=2,windup=.4f,actionDuration=1.2f,blocks=3};
+                var helper=new DefenderPlacement{id="helper",artId="D01",displayName="米格鲁 · 测试搭档",position=new Vector3(-5.5f,.04f,id=="D34"?1:3),health=6000,attack=2,armor=12,range=.9f,interval=2,windup=.4f,actionDuration=1.2f,blocks=3};
                 data.defenders=new[]{d,helper};AssetDatabase.CreateAsset(data,Root+id+".asset");
             }
             AssetDatabase.SaveAssets();AssetDatabase.Refresh();Validate();

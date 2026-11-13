@@ -75,7 +75,7 @@ MonoBehaviour:
   - id: helper
     displayName: "\u7C73\u683C\u9C81 \xB7 \u6D4B\u8BD5\u642D\u6863"
     artId: D01
-    position: {x: -5.5, y: 0.04, z: 3}
+    position: {x: -5.5, y: 0.04, z: 1}
     health: 6000
     attack: 2
     armor: 12
