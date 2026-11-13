@@ -13,6 +13,17 @@ namespace YesterdayConvoy
         internal PramanixSnowImpact(int run,long sequence,string source,string target,double at,Vector3 position)
         {RunId=run;Sequence=sequence;SourceId=source;TargetId=target;At=at;Position=position;}
     }
+    internal readonly struct WangChessImpact
+    {
+        internal readonly int RunId;
+        internal readonly long Sequence;
+        internal readonly string SourceId,TargetId;
+        internal readonly double At;
+        internal readonly Vector3 Position;
+        internal readonly bool Empowered;
+        internal WangChessImpact(int run,long sequence,string source,string target,double at,Vector3 position,bool empowered)
+        {RunId=run;Sequence=sequence;SourceId=source;TargetId=target;At=at;Position=position;Empowered=empowered;}
+    }
     public sealed class SixthCell
     {
         public string SourceId {get;internal set;}
@@ -26,7 +37,9 @@ namespace YesterdayConvoy
     {
         readonly List<SixthCell> snowCells=new List<SixthCell>(),chessPieces=new List<SixthCell>();
         readonly List<PramanixSnowImpact> pramanixSnowImpacts=new List<PramanixSnowImpact>();
-        long pramanixSnowImpactSequence;
+        long pramanixSnowImpactSequence,wangChessImpactSequence;
+        readonly List<WangChessImpact> wangChessImpacts=new List<WangChessImpact>();
+        internal IReadOnlyList<WangChessImpact> WangChessImpacts=>wangChessImpacts;
         internal IReadOnlyList<PramanixSnowImpact> PramanixSnowImpacts=>pramanixSnowImpacts;
         void RecordPramanixSnowImpact(DefenderState source,DeployedUnitState target,Vector3 position)
         {
@@ -179,7 +192,13 @@ namespace YesterdayConvoy
                 if(!piece.Active)continue;bool trigger=false;
                 foreach(var u in units)trigger|=CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,piece.Position)<V2DefenderSkill(d,"triggerRadius",.85f);
                 if(!trigger)continue;piece.Active=false;piece.Time=Clock;d.ChessTriggers++;
-                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=V2DefenderSkill(d,"explosionRadius",1.5f))TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"trapAttackMultiplier",3.2f),CombatDamageType.Arts,sourceDefender:d);
+                foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(piece.Position,u.Motion.Position)<=V2DefenderSkill(d,"explosionRadius",1.5f))
+                {
+                    Vector3 at=u.Motion.Position;
+                    if(!TryDefenderDamageUnit(u,d.Settings.Attack*V2DefenderSkill(d,"trapAttackMultiplier",3.2f),CombatDamageType.Arts,sourceDefender:d))continue;
+                    if(wangChessImpacts.Count==128)wangChessImpacts.RemoveAt(0);
+                    wangChessImpacts.Add(new WangChessImpact(RunId,++wangChessImpactSequence,d.EntityId,u.EntityId,Clock,at,DefenderSkillActive(d)));
+                }
             }
             chessPieces.RemoveAll(c=>c.Time>0&&Clock-c.Time>.5);
         }

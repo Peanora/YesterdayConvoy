@@ -227,6 +227,7 @@ namespace YesterdayConvoy
             ResetSeventhDefenders();
             defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             pramanixSnowImpacts.Clear();pramanixSnowImpactSequence=0;
+            wangChessImpacts.Clear();wangChessImpactSequence=0;
             flameSprays.Clear();fuelExplosions.Clear();gazes.Clear();pillarCommands.Clear();creeperPulses.Clear();bubbles.Clear();shackles.Clear();
             combatShots.Clear(); deathBlasts.Clear(); iceRings.Clear(); frostSeals.Clear(); healingCasts.Clear(); skillRequests.Clear(); ResetGramophones(); SkillCasts = 0;
             defenders.Clear();

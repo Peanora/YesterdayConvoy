@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -13,6 +14,9 @@ namespace YesterdayConvoy
         public string ArtLoadingMessage {get;private set;}
         int artGeneration;
         bool artCompleting;
+        // Plans can coexist while entry/loading/pinning are being resolved. Associate
+        // native requests with the actual plan, never a shared "last plan" snapshot.
+        static readonly ConditionalWeakTable<List<ArtSequence>,string[]> nativeArtPlans=new ConditionalWeakTable<List<ArtSequence>,string[]>();
         void CancelArtPreparation(){if(artCompleting)return;artGeneration++;ArtLoading=false;}
         static IEnumerable<ArtSequence> CardSequences(CardDefinition card,bool idleOnly=false)
         {
@@ -46,7 +50,9 @@ namespace YesterdayConvoy
                 if(tactical)clips.AddRange(DefenderArt.Load(defender.artId+"B").Sequences);
                 if(defender.skill?.kind==DefenderSkillKind.WangGambit)clips.AddRange(DefenderArt.Load("D28Chess").Sequences);
             }
-            clips.AddRange(OriginalCombatVfxArt.SequencesFor(DefenderVfxArt.RequiredKeysForArtIds(defenders.Select(d=>d.artId))));
+            var defenderEffects=DefenderVfxArt.RequiredKeysForArtIds(defenders.Select(d=>d.artId)).Distinct().ToArray();
+            var nativeEffects=defenderEffects.Where(OriginalNativeFxCatalog.Supports).ToArray();
+            clips.AddRange(OriginalCombatVfxArt.SequencesFor(defenderEffects.Where(key=>!OriginalNativeFxCatalog.Supports(key))));
             clips.AddRange(CommonCombatVfxDirector.SequencesFor());
             foreach(string id in cards.Where(c=>c!=null).Select(c=>c.CardId).Distinct())
             {
@@ -55,7 +61,9 @@ namespace YesterdayConvoy
             }
             clips.AddRange(BossRosterFxArt.SequencesFor(cards.Where(c=>c!=null).Select(c=>c.CardId)));
             clips.AddRange(OriginalCombatVfxArt.SequencesFor(MonsterOriginalVfx.RequiredKeysForCards(cards.Where(c=>c!=null).Select(c=>c.CardId))));
-            return clips.GroupBy(s=>s.CacheKey).Select(g=>g.First()).ToList();
+            var plan=clips.GroupBy(s=>s.CacheKey).Select(g=>g.First()).ToList();
+            if(nativeEffects.Length>0)nativeArtPlans.Add(plan,nativeEffects);
+            return plan;
         }
         List<ArtSequence> CurrentBattlePlan()
         {
@@ -92,6 +100,8 @@ namespace YesterdayConvoy
             if(ArtLoading)yield break;
             ArtLoading=true;ArtLoadingProgress=0;ArtLoadingMessage=title;
             int generation=++artGeneration;
+            nativeArtPlans.TryGetValue(plan,out var nativeEffects);
+            int stages=plan.Count+(nativeEffects!=null&&nativeEffects.Length>0?1:0);
             var timer=System.Diagnostics.Stopwatch.StartNew();int prepared=ArtMemoryCache.PreparedLoads,raw=ArtMemoryCache.RuntimePngLoads;
             try
             {
@@ -101,8 +111,17 @@ namespace YesterdayConvoy
                 {
                     var clip=plan[i];ArtLoadingMessage=title+"  "+(i+1)+" / "+plan.Count;
                     var warm=clip.Warm();try{while(warm.MoveNext()){yield return warm.Current;if(generation!=artGeneration)yield break;}}finally{(warm as IDisposable)?.Dispose();}
-                    ArtLoadingProgress=(i+1f)/plan.Count;
+                    ArtLoadingProgress=(i+1f)/Math.Max(1,stages);
                 }
+                if(nativeEffects!=null&&nativeEffects.Length>0)
+                {
+                    ArtLoadingMessage=title+" · 准备战斗特效";
+                    var nativeWarm=OriginalNativeFxCatalog.Prepare(nativeEffects);
+                    try{while(nativeWarm.MoveNext()){yield return nativeWarm.Current;if(generation!=artGeneration)yield break;}}
+                    finally{(nativeWarm as IDisposable)?.Dispose();}
+                    if(generation!=artGeneration)yield break;
+                }
+                ArtLoadingProgress=1;
                 artCompleting=true;try{complete?.Invoke();}finally{artCompleting=false;}
                 SnowstormArt.WarmFor(Battle?.SnowTier??0);
                 RefreshArtPins();yield return null;if(generation!=artGeneration)yield break;ArtMemoryCache.Trim();

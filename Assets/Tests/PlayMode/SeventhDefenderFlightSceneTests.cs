@@ -26,7 +26,8 @@ namespace YesterdayConvoy.Tests
                 var combat=new EngagementSettings(unitAttack:0,unitArmor:0,unitRange:1,unitInterval:10,projectileTime:.2f,canAttack:false,hasSkill:false,initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,effects:new MonsterEffectSettings(CombatDamageType.Arts,mandragora:true));
                 var battle=new ManualBattle(new ManualBattleSettings("flight-fixture","flight-target",30,1,12,1,.1f,100000,.05f,1,1,1,1),new[]{Vector3.right*5,Vector3.right*30},Vector3.zero,combat,roster:new[]{guard});
                 typeof(ManualBattleController).GetProperty("Battle",BindingFlags.Public|BindingFlags.Instance).SetValue(c,battle);
-                foreach(string key in DefenderVfxArt.RequiredKeysForArtIds(new[]{"D33"}))yield return OriginalCombatVfxArt.Get(key).Sequence.Warm();
+                foreach(string variant in new[]{"D33","D33B"})foreach(var sequence in DefenderArt.Load(variant).Sequences)yield return sequence.Warm();
+                yield return OriginalNativeFxCatalog.Prepare(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D33"}));
                 battle.Begin();Assert.That(battle.TryDeploy(battle.RunId,1,battle.Entry).Success,Is.True);
                 // Mandragora's established flying second phase supplies a legitimate
                 // aerial/blockable capability to the isolated fixture.
@@ -42,7 +43,8 @@ namespace YesterdayConvoy.Tests
                     if(d.SeventhMoving)
                     {
                         bodyMoved|=(d.Position-origin).magnitude>.1f&&body.transform.position==d.Position&&body.sprite.name.Contains("/skill_move/");
-                        var trails=Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Where(r=>r.enabled&&r.name.EndsWith("/aglna2_skill_03_fly_trail_01",StringComparison.Ordinal)).ToArray();
+                        var native=Object.FindObjectsByType<OriginalNativeFxTag>(FindObjectsSortMode.None).Where(t=>t.Key=="defender/D33/aglna2_skill_03_fly_trail_01"&&!t.Stopped).ToArray();
+                        var trails=native.SelectMany(t=>t.GetComponentsInChildren<Renderer>(true)).Where(r=>r.enabled&&r.gameObject.activeInHierarchy).ToArray();
                         if(trails.Length>0&&pixels<=4)
                         {
                             var shown=Capture();foreach(var r in trails)r.enabled=false;var hidden=Capture();foreach(var r in trails)r.enabled=true;int changed=0;
@@ -51,8 +53,17 @@ namespace YesterdayConvoy.Tests
                         }
                         if(bodyMoved&&trailVisible&&!paused)
                         {
-                            battle.SetPaused(true);var position=d.Position;var sprite=body.sprite;double clock=battle.Clock;battle.Advance(5);yield return null;
-                            Assert.That(battle.Clock,Is.EqualTo(clock));Assert.That(d.Position,Is.EqualTo(position));Assert.That(body.sprite,Is.SameAs(sprite));paused=true;battle.SetPaused(false);
+                            battle.SetPaused(true);var position=d.Position;var sprite=body.sprite;double clock=battle.Clock;
+                            var sampleAges=native.Select(t=>t.SampleAge).ToArray();
+                            var particles=native.SelectMany(t=>t.GetComponentsInChildren<ParticleSystem>(true)).ToArray();
+                            Assert.That(particles,Is.Not.Empty,"The native flight effect must exercise actual particle playback.");
+                            var times=particles.Select(p=>p.time).ToArray();var counts=particles.Select(p=>p.particleCount).ToArray();
+                            battle.Advance(5);yield return null;yield return null;
+                            Assert.That(battle.Clock,Is.EqualTo(clock));Assert.That(d.Position,Is.EqualTo(position));Assert.That(body.sprite,Is.SameAs(sprite));
+                            for(int n=0;n<native.Length;n++){Assert.That(native[n],Is.Not.Null);Assert.That(native[n].SampleAge,Is.EqualTo(sampleAges[n]));}
+                            for(int n=0;n<particles.Length;n++)
+                            {Assert.That(particles[n].time,Is.EqualTo(times[n]).Within(.000001f));Assert.That(particles[n].particleCount,Is.EqualTo(counts[n]));}
+                            paused=true;battle.SetPaused(false);
                         }
                     }
                     if(!d.SeventhMoving&&d.SeventhMoveEndedAt>0&&battle.Clock-d.SeventhMoveEndedAt<1d/3)restart|=body.sprite.name.Contains("/skill_restart/");

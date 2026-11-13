@@ -1,5 +1,19 @@
 # 验证证据与回归
 
+
+## 2026-11-14：十三位六星原几何重接
+
+继续codex/sixstar-vfx-overhaul/PR114；实时fetch后远端main仍0b17920，功能分支未被其他提交推进。保留原`.vscode/`与未跟踪PackageManagerSettings；未改生产场景/Prefab/Packages/ProjectSettings，无启动器、ZIP或Release。
+
+本轮13位使用自包含43个native运行包（315,163,743bytes，最大52,626,176bytes）、19个专用Shader族移植及两个Unity stock引用。原压缩纹理解码为RGBA32，GO→旧Mono引用规范化，保留原对象/纹理与typed脚本审计；不是把所有原管理器称作已执行。26份正背身体增加同源骨/静态挂点，原图、PPU、动作字段与既有绑定保留。D27资源与原循环路径保留。
+
+- 实际完成全14位各240帧/8秒Editor相机片段（`game-first-all`前4位+`game-first-remaining`后10位），均正常有限6次程序指针部署、自然SP/自动技能、真实攻击/棋子交互；不含OS输入或OnGUI，不是生成画面或完整自然挑战。
+- 目视逐帧检查并与原客户端连续图对照。修复D21旧PS重复材质槽兼容后8秒通过；四方向量化、地面轴向、余的棋盘边缘修后3段均通过。银灰逐key同帧隔离确认6份冰场累积，依据原BirdAura/无限AttachToTarget合同改本体/伙伴各一实例；再录240帧/72次交互/真实退出0，人物与薄冰场可分辨。
+- 完整EditMode `artifacts/native-defenders-v2/edit-pass.xml` **1160/1160、实际退出0**。前两轮各1159/1160失败与原始日志保留：先定位未绑定依赖被误列运行必需，再修JsonUtility把null材质数组元素变成空DTO的兼容。定点复验保留stock原材质在关闭camera fading时的Infinity参数（源Shader不读取），未改色彩或把原值清零。
+- 相关D3D11 PlayMode `play.xml` **10/10、实际退出0**，含旧分层/透明路径、既有龙头地形回归及新native安洁莉娜真实空中拦截/动作/拖尾像素/暂停/阻挡。独立Roslyn和离线Shader编译仅作相应范围证据，不代替这些Unity结果。
+
+Windows构建、独立Player全角色/暂停/重开与最终交付视频待本条后续补结果；旧运行源码af41e0f5的EXE在本轮构建前不代表native方案。仍有首次旧包加载警告，未屏蔽；每次实例化的重复missing-script组件引用已移除。当前不能称所有原控制器或逐像素等同，人类本轮观感、第二机、音效与自然整局未验证。
+
 ## 2026-11-13：纠正火陈身份为赤刃明霄陈
 
 用户指出此前错误加入水陈，明确要求今年登场的火陈。延续同一功能分支，重新fetch核实main未变；开工仍只有已知`.vscode/`与`ProjectSettings/PackageManagerSettings.asset`未跟踪，均保留。D32改为`char_1050_chen3`赤刃明霄陈/S3赤霄·天喟，旧水陈序号保留兼容但正常配置/预加载不再使用；地面阻挡1、原格形范围、三目标三连斩及实际移动转向剑气。未修改正式阵容、地图场景、Prefab、包或项目设置。

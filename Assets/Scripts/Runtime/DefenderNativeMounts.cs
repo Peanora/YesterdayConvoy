@@ -21,7 +21,26 @@ namespace YesterdayConvoy
             internal readonly Dictionary<string,MountClip> Clips=new Dictionary<string,MountClip>(StringComparer.Ordinal);
         }
         static readonly Dictionary<string,Data> Cache=new Dictionary<string,Data>(StringComparer.Ordinal);
-        static bool Supported(string id)=>id=="D23"||id=="D26"||id=="D30"||id=="D32"||id=="D33";
+        static bool Supported(string id)=>id=="D21"||id=="D22"||id=="D23"||id=="D24"||id=="D25"||id=="D26"||id=="D28"||id=="D29"||id=="D30"||id=="D32"||id=="D33"||id=="D34"||id=="D35";
+
+        // ParticleEffect.SpawnLocation is a different source enum from
+        // FollowMountPoint.MountPointType. Callers pass an explicitly resolved
+        // canonical point name, never reinterpret the raw numeric value here.
+        internal static bool TryResolvePoint(string artId,string pointName,SpriteRenderer body,out Vector3 position,out float rollDegrees)
+        {
+            position=body!=null?body.transform.position:Vector3.zero;rollDegrees=0;
+            if(body==null||body.sprite==null||string.IsNullOrEmpty(artId)||string.IsNullOrEmpty(pointName)||!Supported(artId.TrimEnd('B')))return false;
+            string[] frameName=body.sprite.name.Split('/');
+            if(frameName.Length!=3||frameName[0].TrimEnd('B')!=artId.TrimEnd('B')||
+                !int.TryParse(frameName[2],NumberStyles.None,CultureInfo.InvariantCulture,out int frame))return false;
+            var data=Load(frameName[0]);
+            if(!data.Clips.TryGetValue(frameName[1],out var clip)||frame<0||frame>=clip.count)return false;
+            Point point=null;foreach(var candidate in clip.points)if(candidate.point==pointName){point=candidate;break;}
+            if(point==null)return false;
+            int stride=point.stride>0?point.stride:3,offset=frame*stride;float sign=body.flipX?-1:1,ppu=body.sprite.pixelsPerUnit;
+            position=body.transform.TransformPoint(new Vector3((point.values[offset]*clip.pixelScale+clip.originX)/ppu*sign,(point.values[offset+1]*clip.pixelScale+clip.originY)/ppu,0));
+            rollDegrees=point.values[offset+2]*sign;return true;
+        }
 
         internal static bool RequiresMount(string artId,string rawEffect)
         {
