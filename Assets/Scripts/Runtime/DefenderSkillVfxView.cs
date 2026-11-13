@@ -16,6 +16,7 @@ namespace YesterdayConvoy
         Func<double> presentationClock;
         OriginalCombatVfxLayer native;
         YuFirewallVfx yuWall;
+        ChenDawnDragonVfx chenDragon;
         ManualBattle observedBattle;
         int observedRun=-1;
         readonly Dictionary<CombatShot,ShotView> shots=new Dictionary<CombatShot,ShotView>();
@@ -25,17 +26,18 @@ namespace YesterdayConvoy
         readonly Dictionary<SixthCell,ChessEvent> chess=new Dictionary<SixthCell,ChessEvent>();
         readonly Dictionary<CombatShot,Erasure> erased=new Dictionary<CombatShot,Erasure>();
         readonly List<SixthCell> staleChess=new List<SixthCell>();
+        readonly Dictionary<string,double> chenReadyAt=new Dictionary<string,double>();
         public double PendingUntil {get;private set;}=double.NegativeInfinity;
         public bool EffectPending=>source?.Invoke() is ManualBattle b&&
             (b.Phase==BattlePhase.Won||b.Phase==BattlePhase.Lost)&&(presentationClock?.Invoke()??b.Clock)<PendingUntil;
-        public int VisibleCount=>(native?.VisibleCount??0)+(yuWall?.VisibleCount??0);
+        public int VisibleCount=>(native?.VisibleCount??0)+(yuWall?.VisibleCount??0)+(chenDragon?.VisibleCount??0);
         public void Bind(Func<ManualBattle> battle)=>Bind(battle,null);
         public void Bind(Func<ManualBattle> battle,Func<double> clock){source=battle;presentationClock=clock;}
         static bool Owns(string id)=>id=="D03"||id=="D05"||id=="D11"||id=="D12"||
             id=="D21"||id=="D22"||id=="D23"||id=="D24"||id=="D25"||id=="D26"||id=="D27"||id=="D28"||id=="D29"||id=="D30"||id=="D32"||id=="D33"||id=="D34"||id=="D35";
         static float Distance(Vector3 a,Vector3 b){a.y=b.y=0;return Vector3.Distance(a,b);}
         static string Key(string id,string raw)=>raw.StartsWith("common/",StringComparison.Ordinal)?raw:"defender/"+id+"/"+raw;
-        bool Show(string id,string raw,double age,Vector3 p,Camera cam,bool flip=false,int order=32,bool loop=false,bool directional=false,Vector3 direction=default,bool ground=false,bool belowActors=false)
+        bool Show(string id,string raw,double age,Vector3 p,Camera cam,bool flip=false,int order=32,bool loop=false,bool directional=false,Vector3 direction=default,bool ground=false,bool belowActors=false,string ownerId=null)
         {
             string key=Key(id,raw);
             // Missing/empty native control nodes are tracked as gaps, never replaced with a generic ring.
@@ -44,7 +46,7 @@ namespace YesterdayConvoy
             bool mounted=DefenderNativeMounts.RequiresMount(id,raw);
             if(mounted)
             {
-                var roster=UnityEngine.Object.FindAnyObjectByType<DefenderRosterView>();var body=roster?.FindVisual(id);
+                var roster=UnityEngine.Object.FindAnyObjectByType<DefenderRosterView>();var body=roster?.FindVisual(ownerId??id);
                 if(body==null||!DefenderNativeMounts.TryResolve(id,raw,body,out var mount,out mountRoll,out mountScale))return false;
                 p=mount;flip=body.flipX;
             }
@@ -66,16 +68,18 @@ namespace YesterdayConvoy
             var b=source?.Invoke();var cam=Camera.main;
             if(native==null)native=new OriginalCombatVfxLayer(transform);
             if(yuWall==null)yuWall=new YuFirewallVfx(transform);
+            if(chenDragon==null)chenDragon=new ChenDawnDragonVfx(transform);
             if(b!=observedBattle||observedRun!=(b?.RunId??-1))
             {
-                native.Clear();yuWall.Clear();shots.Clear();groups.Clear();variants.Clear();chess.Clear();erased.Clear();
+                native.Clear();yuWall.Clear();chenDragon.Clear();shots.Clear();groups.Clear();variants.Clear();chess.Clear();erased.Clear();chenReadyAt.Clear();
                 observedBattle=b;observedRun=b?.RunId??-1;PendingUntil=double.NegativeInfinity;
             }
             native.Begin();yuWall.Begin();castSeen.Clear();
             if(b!=null&&cam!=null)
             {
                 double clock=presentationClock?.Invoke()??b.Clock;
-                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentSeventhEvents(b,cam,clock);PresentSnowContacts(b,cam,clock);PresentChess(b,cam,clock);PresentErasure(b,cam,clock);
+                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentSeventhEvents(b,cam,clock);PresentSnowContacts(b,cam,clock);PresentChess(b,cam,clock);PresentErasure(b,cam,clock);PresentChenDawnWaves(b,cam,clock);
+                chenDragon.Present(b,cam,clock);PendingUntil=Math.Max(PendingUntil,chenDragon.PendingUntil);
             }
             native.End();yuWall.End();
         }
@@ -89,6 +93,7 @@ namespace YesterdayConvoy
             {
                 string id=d.Settings.ArtId;if(!Owns(id))continue;
                 double age=clock-d.SkillStartedAt,endAge=clock-d.SkillEndedAt;
+                if(id=="D32")PresentChenDawnTalent(d,cam,clock,running);
                 if(id=="D22")yuWall.Present(b,d,cam,clock);
                 if(running&&d.Alive&&(b.DefenderSkillActive(d)||b.IsFifthActive(d)))
                 {
@@ -152,8 +157,10 @@ namespace YesterdayConvoy
                                 Show(id,"demkni_skill_03_buff",age,u.Motion.Position,cam,order:31,loop:true,ground:true);
                             break;
                         case "D32":
-                            bool rear=FacingRear(d);string back=rear?"_b":"";
-                            foreach(string raw in new[]{"chen2_skill_03_buff_01","chen2_skill_03_buff_02","chen2_skill_03_buff_03"})Show(id,raw+back,age,d.Position,cam,loop:true);
+                            bool dawnLeft=FacingLeft(b,d,cam);
+                            Show(id,dawnLeft?"chen3_skill_03_buff_l_01":"chen3_skill_03_buff_r_01",age,d.Position,cam,loop:true,ownerId:d.EntityId);
+                            Show(id,"chen3_skill_03_weapon_01",age,d.Position,cam,loop:true,ownerId:d.EntityId);
+                            Show(id,ChenDirection("chen3_skill_03_range_01",b.ChenDawnFacing(d)),age,d.Position,cam,order:27,loop:true,ground:true);
                             break;
                         case "D33":
                             Show(id,"aglna2_skill_03_range_01",age,d.Position,cam,order:27,loop:true,belowActors:true);
@@ -220,6 +227,37 @@ namespace YesterdayConvoy
                 native.ShowBeam(key,age,from,to,cam,1,27,true);
             }
         }
+        static string ChenDirection(string raw,Vector3 direction)=>raw+"_dir_"+
+            (Mathf.Abs(direction.x)>=Mathf.Abs(direction.z)?direction.x<0?"left":"right":direction.z>0?"up":"down");
+        void PresentChenDawnTalent(DefenderState defender,Camera camera,double clock,bool running)
+        {
+            string owner=defender.EntityId;
+            if(!running||!defender.Alive){chenReadyAt.Remove(owner);return;}
+            if(defender.ChenDawnDodgeReady)
+            {
+                if(!chenReadyAt.TryGetValue(owner,out double at)){at=defender.ChenDawnLastTalentAt;chenReadyAt.Add(owner,at);}
+                Show("D32","chen3_shield_buff_01",clock-at,defender.Position,camera,loop:true,ownerId:owner);
+            }
+            else chenReadyAt.Remove(owner);
+            if(double.IsNegativeInfinity(defender.ChenDawnLastTalentAt))return;
+            // Original timer event creates start01 and heal02 together. Consuming
+            // the evade buff only removes shield01; it creates no extra hit flash.
+            double age=clock-defender.ChenDawnLastTalentAt;
+            Show("D32","chen3_buff_start_01",age,defender.Position,camera,ownerId:owner);
+            Show("D32","chen3_shield_buff_02",age,defender.Position,camera,ownerId:owner);
+            Tail("D32","chen3_buff_start_01",defender.ChenDawnLastTalentAt);Tail("D32","chen3_shield_buff_02",defender.ChenDawnLastTalentAt);
+        }
+        void PresentChenDawnWaves(ManualBattle battle,Camera camera,double clock)
+        {
+            foreach(var wave in battle.ChenDawnWaves)
+            {
+                var owner=battle.FindDefender(wave.SourceId);
+                if(!wave.Active||owner==null||!owner.Alive||battle.Phase!=BattlePhase.Running||clock<wave.StartedAt||clock>=wave.EndsAt)continue;
+                // Each cardinal head was captured by rotating the original internal
+                // node before projection. Never rotate or flip its finished picture.
+                Show("D32",ChenDirection("chen3_skill_03_trail_01",wave.Direction),clock-wave.StartedAt,wave.Position,camera,order:33,loop:true);
+            }
+        }
         static double ActionStart(CombatShot shot)=>double.IsNegativeInfinity(shot.DefenderActionStartedAt)?shot.StartedAt:shot.DefenderActionStartedAt;
         static bool FacingRear(DefenderState d)=>UnityEngine.Object.FindAnyObjectByType<DefenderRosterView>()?.FacingBack(d.EntityId)??false;
         static bool FacingLeft(ManualBattle b,DefenderState d,Camera cam)
@@ -241,8 +279,8 @@ namespace YesterdayConvoy
                 Empowered=shot.Empowered||(shot.DefenderSkillWasActive??(shot.StartedAt>=d.SkillStartedAt&&shot.StartedAt<d.SkillActiveUntil))};
             shots.Add(shot,result);return result;
         }
-        void Cast(string id,string raw,double at,float rate,double clock,Vector3 origin,Camera cam,bool flip=false,int order=32,bool ground=false,bool below=false)
-        {Show(id,raw,(clock-at)*rate,origin,cam,flip,order,ground:ground,belowActors:below);Tail(id,raw,at,rate);}
+        void Cast(string id,string raw,double at,float rate,double clock,Vector3 origin,Camera cam,bool flip=false,int order=32,bool ground=false,bool below=false,string ownerId=null)
+        {Show(id,raw,(clock-at)*rate,origin,cam,flip,order,ground:ground,belowActors:below,ownerId:ownerId);Tail(id,raw,at,rate);}
         void PresentShots(ManualBattle b,Camera cam,double clock)
         {
             foreach(var shot in b.CombatShots)
@@ -261,6 +299,8 @@ namespace YesterdayConvoy
                 // Secondary area recipients are real settlement shots, not another caster action or flying projectile.
                 if(shot.SeventhSecondary)
                 {
+                    if(id=="D32"&&shot.ChenDawnWaveSequence>0&&shot.Applied)
+                    {Show(id,"chen3_skill_03_hit_04",hitAge,destination,cam,left,35);Tail(id,"chen3_skill_03_hit_04",shot.ImpactAt);}
                     if(id=="D34"&&!shot.TrueDamage&&shot.Applied){Show(id,"clemnt_skill_03_hit_01",hitAge,destination,cam,left,35);Tail(id,"clemnt_skill_03_hit_01",shot.ImpactAt);}
                     continue;
                 }
@@ -332,18 +372,13 @@ namespace YesterdayConvoy
                         {
                             if(empowered)
                             {
-                                string back=view.Rear?"_b":"";
-                                Cast(id,"chen2_skill_03_start_01"+back,view.Group,view.Rate,clock,shot.Origin,cam,left);
-                                Cast(id,"chen2_skill_03_start_02"+back,view.Group,view.Rate,clock,shot.Origin,cam,left);
-                                Cast(id,"chen2_skill_03_start_03",view.LaunchGroup,view.Rate,clock,shot.Origin,cam,left);
+                                Cast(id,"chen3_skill_03_start_01",view.Group,view.Rate,clock,shot.Origin,cam,left,ownerId:d.EntityId);
+                                Cast(id,ChenDirection("chen3_skill_03_start_02",b.ChenDawnFacing(d)),view.Group,view.Rate,clock,shot.Origin,cam);
                             }
                             else
-                            {
-                                Cast(id,"chen2_attack_start_01",view.Group,view.Rate,clock,shot.Origin,cam,left);
-                                Cast(id,"chen2_attack_start_02",view.LaunchGroup,view.Rate,clock,shot.Origin,cam,left);
-                            }
+                                Cast(id,"chen3_attack_start_01",view.Group,view.Rate,clock,shot.Origin,cam,left,ownerId:d.EntityId);
                         }
-                        hit=empowered?"chen2_skill_03_hit_01":"chen2_attack_hit";break;
+                        hit=empowered?"chen3_skill_03_hit_0"+(Mathf.Clamp(shot.ChenDawnHitIndex,0,2)+1):"chen3_attack_hit_01";break;
                     case "D33":
                         if(first)
                         {
@@ -386,10 +421,8 @@ namespace YesterdayConvoy
                 switch(e.Kind)
                 {
                     case SeventhDefenderEventKind.StickyGround:
-                        if(age<0||clock>=e.EndsAt)break;
-                        Show(id,"chen2_skill_03_range_01",age,e.Position,cam,order:27,loop:true,directional:true,direction:e.Direction,belowActors:true);
-                        foreach(var u in b.Units)if(u.Active&&!b.UnitAirborne(u)&&Distance(u.Motion.Position,e.Position)<=d.Settings.Skill.EffectRadius)
-                            Show(id,"chen2_skill_03_debuff",age,u.Motion.Position,cam,loop:true);
+                        // The misidentified water-Chen trial has been replaced.
+                        // Never reuse its water/slime captures for Dawnstreak.
                         break;
                     case SeventhDefenderEventKind.CorrosionBurst:
                         if(age<0)break;
@@ -482,6 +515,6 @@ namespace YesterdayConvoy
                 Tail("D22","yu_skill3_annex_01",e.At);
             }
         }
-        void OnDestroy(){native?.Dispose();yuWall?.Dispose();}
+        void OnDestroy(){native?.Dispose();yuWall?.Dispose();chenDragon?.Dispose();}
     }
 }

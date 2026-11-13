@@ -28,41 +28,41 @@ MonoBehaviour:
   - {x: 8.5, y: 0.04, z: 0}
   defenders:
   - id: D32
-    displayName: "\u5047\u65E5\u5A01\u9F99\u9648"
+    displayName: "\u8D64\u5203\u660E\u9704\u9648"
     artId: D32
-    position: {x: -4, y: 0.38, z: 1}
+    position: {x: -5.5, y: 0.04, z: 2}
     health: 3600
     attack: 60
     armor: 12
-    range: 3.5
-    interval: 2.3
-    windup: 0.5
-    actionDuration: 2.3
-    blocks: 0
+    range: 1.5
+    interval: 1.25
+    windup: 0.43333334
+    actionDuration: 1.2333333
+    blocks: 1
     role: 0
-    damageType: 0
+    damageType: 1
     splashRadius: 0
     healingRange: 0
     skill:
-      kind: 23
-      initialSP: 25
-      requiredSP: 60
+      kind: 27
+      initialSP: 15
+      requiredSP: 28
       spPerSecond: 1
-      duration: 99999
-      attackMultiplier: 1.7
+      duration: 20
+      attackMultiplier: 1
       attackSpeedMultiplier: 1
       healFraction: 0
       healRangeBonus: 0
       defenseMultiplier: 1
       healingInterval: 0
       healthMultiplier: 1
-      effectRadius: 4.5
+      effectRadius: 3.5
       damageAmplification: 1
       moveMultiplier: 1
       elementFraction: 0
       eraseChance: 0
       chargeSeconds: 0
-      targets: 1
+      targets: 3
     noOrdinaryAttack: 0
     kasimierz: 0
     reserve: 0
@@ -126,7 +126,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0f27c354fe70e5d4dbe79030914c0567, type: 2}
   - {fileID: 2100000, guid: 179a6f4dfda7a2a4cb8b5fbdaceb3e21, type: 2}
   mapId: defender-D32
-  mapTitle: "\u5047\u65E5\u5A01\u9F99\u9648 \xB7 \u539F\u6280\u80FD7\u7EA7\u9002\u914D\u8BD5\u73A9"
+  mapTitle: "\u8D64\u5203\u660E\u9704\u9648 \xB7 \u539F\u6280\u80FD7\u7EA7\u9002\u914D\u8BD5\u73A9"
   autumnRuins: 0
   lanes:
   - id: R1

@@ -73,6 +73,9 @@ namespace YesterdayConvoy
                         v.Initialized=true;
                     }
                 }
+                if(d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak&&d.SkillCasts>0&&
+                    (b.DefenderSkillActive(d)||b.Clock-d.SkillEndedAt<v.Art.SkillEndDuration))
+                    Face(v,d.Position,d.Position+b.ChenDawnFacing(d));
                 if(v.SkillStart!=d.SkillStartedAt){v.SkillStart=d.SkillStartedAt;v.SkillDown=v.Down;}
                 var art=v.Back && v.Rear!=null?v.Rear:v.Art;
                 if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&b.DefenderSkillActive(d))art=v.Art;

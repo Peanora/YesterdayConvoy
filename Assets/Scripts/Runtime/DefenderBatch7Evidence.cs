@@ -11,7 +11,7 @@ namespace YesterdayConvoy
             var d=Battle.FindDefender(id);if(d==null||d.SkillCasts==0)return false;
             switch(id)
             {
-                case "D32":return d.Ammo<32&&Battle.SeventhDefenderEvents.Any(e=>e.SourceId==id&&e.Kind==SeventhDefenderEventKind.StickyGround)&&Battle.CombatShots.Any(s=>s.SourceId==id&&s.Empowered&&s.Applied&&s.DamageDealt>0);
+                case "D32":return d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak&&Battle.ChenDawnWaves.Any(w=>w.SourceId==id&&w.Active)&&Battle.CombatShots.Any(s=>s.SourceId==id&&s.ChenDawnWaveSequence>0&&s.Applied&&s.DamageDealt>0)&&Battle.CombatShots.Any(s=>s.SourceId==id&&s.Empowered&&s.ChenDawnWaveSequence==0&&s.Applied&&s.DamageDealt>0);
                 case "D33":return d.Ammo<31&&Battle.CombatShots.Any(s=>s.SourceId==id&&s.Empowered&&s.Applied&&s.DamageDealt>0);
                 case "D34":return d.SeventhBursts>0&&d.Ammo<10&&Battle.SeventhDefenderEvents.Any(e=>e.SourceId==id&&e.Kind==SeventhDefenderEventKind.CorrosionBurst);
                 case "D35":return d.Ammo<10&&Battle.SeventhDefenderEvents.Any(e=>e.SourceId==id&&e.Kind==SeventhDefenderEventKind.MedicalDetonation)&&Battle.CombatShots.Any(s=>s.SourceId==id&&s.TrueDamage&&s.Applied&&s.DamageDealt>0);

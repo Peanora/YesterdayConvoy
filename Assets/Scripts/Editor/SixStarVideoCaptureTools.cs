@@ -22,7 +22,10 @@ namespace YesterdayConvoy.Editor
     {
         const string Key="YesterdayConvoy.SixStarVideo.";
         const string Encoder="C:/Users/31016/AppData/Local/Microsoft/WinGet/Links/ffmpeg.exe";
-        const int Width=1280,Height=720,Fps=30,Frames=240;
+        const int Width=1280,Height=720,Fps=30;
+        static readonly string[] AllRoles={"D32","D33","D34","D35","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30"};
+        static int Frames=>SessionState.GetInt(Key+"frames",240);
+        static string[] RequestedRoles=>SessionState.GetString(Key+"roles",string.Join(",",AllRoles)).Split(',');
         const BindingFlags Private=BindingFlags.Instance|BindingFlags.NonPublic;
         static bool running;static string fatal;static Manifest report;
         [Serializable] sealed class Role
@@ -35,7 +38,7 @@ namespace YesterdayConvoy.Editor
         [Serializable] sealed class Manifest
         {
             public bool passed;public string error,sourceHEAD,recorderSHA256,graphics;
-            public int width=Width,height=Height,fps=Fps;public float secondsPerRole=8;
+            public int width=Width,height=Height,fps=Fps;public float secondsPerRole;
             public bool audio=false,captureContainsGUI=false;
             public string scope="Production MonsterTrial controller, normal defender selection/preparation, finite legal pointer deployments, natural SP/automatic skills, actual camera.Render at one simulation tick per video frame. Camera-only gameplay, no OnGUI; not OS input or a natural campaign clear.";
             public List<Role> roles=new List<Role>();
@@ -54,6 +57,12 @@ namespace YesterdayConvoy.Editor
             string directory=Path.GetFullPath(args[at+1]);
             if(directory.StartsWith(Path.GetFullPath(Application.dataPath)+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase))throw new ArgumentException("Video output must be outside Assets.");
             if(!File.Exists(Encoder))throw new FileNotFoundException("FFmpeg is unavailable.",Encoder);
+            int onlyAt=Array.IndexOf(args,"-sixStarVideoOnly"),framesAt=Array.IndexOf(args,"-sixStarVideoFrames");
+            string[] selected=onlyAt<0?AllRoles:onlyAt+1<args.Length?args[onlyAt+1].Split(','):Array.Empty<string>();
+            if(selected.Length==0||selected.Any(id=>!AllRoles.Contains(id))||selected.Distinct().Count()!=selected.Length)throw new ArgumentException("Unknown or duplicate requested video role.");
+            int frames=240;
+            if(framesAt>=0&&(framesAt+1>=args.Length||!int.TryParse(args[framesAt+1],out frames)||frames<60||frames>1800))throw new ArgumentException("Video frames must be between 60 and 1800.");
+            SessionState.SetString(Key+"roles",string.Join(",",selected));SessionState.SetInt(Key+"frames",frames);
             Directory.CreateDirectory(directory);SessionState.SetString(Key+"directory",directory);SessionState.SetBool(Key+"requested",true);SessionState.SetBool(Key+"exit",false);
             SessionState.SetString(Key+"source",ReadSourceHead());SessionState.SetString(Key+"phase","waiting");
             EditorSceneManager.OpenScene("Assets/Scenes/MonsterTrial.unity",OpenSceneMode.Single);
@@ -75,7 +84,7 @@ namespace YesterdayConvoy.Editor
                 SessionState.SetString(Key+"phase","recording");
                 // Transient Play Mode instances only. The saved scene is never changed.
                 foreach(var startup in Object.FindObjectsByType<CampaignBootstrap>(FindObjectsSortMode.None)){startup.StopAllCoroutines();startup.enabled=false;}
-                report=new Manifest{sourceHEAD=SessionState.GetString(Key+"source",""),graphics=SystemInfo.graphicsDeviceName};
+                report=new Manifest{sourceHEAD=SessionState.GetString(Key+"source",""),graphics=SystemInfo.graphicsDeviceName,secondsPerRole=Frames/(float)Fps};
                 string source=Path.Combine(Application.dataPath,"Scripts/Editor/SixStarVideoCaptureTools.cs");
                 using(var hash=System.Security.Cryptography.SHA256.Create())report.recorderSHA256=BitConverter.ToString(hash.ComputeHash(File.ReadAllBytes(source))).Replace("-","").ToLowerInvariant();
                 var controller=Object.FindAnyObjectByType<ManualBattleController>();
@@ -119,7 +128,7 @@ namespace YesterdayConvoy.Editor
                 {if(Time.realtimeSinceStartup>until)throw new TimeoutException("Controller preparation timed out.");yield return null;}
                 // Controller.Start initializes this flag, so set it again after readiness.
                 typeof(ManualBattleController).GetField("diagnostic",Private).SetValue(controller,true);
-                foreach(string id in new[]{"D32","D33","D34","D35","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30"})
+                foreach(string id in RequestedRoles)
                 {
                     controller.ReturnToMonsterTests();yield return null;
                     typeof(ManualBattleController).GetMethod("PrepareDefenderEntry",Private).Invoke(controller,new object[]{id});
@@ -164,6 +173,8 @@ namespace YesterdayConvoy.Editor
                 {
                     if(battle.Phase!=BattlePhase.Running)throw new InvalidOperationException("Battle ended before the continuous take completed: "+role.id);
                     controller.Tick(1f/Fps);yield return null;
+                    if(frame==120&&role.id=="D32"&&Environment.GetCommandLineArgs().Contains("-chenDepthProbe"))
+                        CaptureChenDepthProbe(camera,read,role);
                     camera.Render();RenderTexture.active=target;read.ReadPixels(new Rect(0,0,Width,Height),0,0);read.Apply();
                     encoder.Write(read.GetRawTextureData());role.frames++;
                 }
@@ -175,14 +186,32 @@ namespace YesterdayConvoy.Editor
             }
             role.endClock=battle.Clock;role.casts=defender.SkillCasts;role.selectedAppliedAfter=SelectedHits();
             role.interactions=role.selectedAppliedAfter-role.selectedAppliedBefore+Passive()-passiveBefore+(defender.SkillHealthRestored>healedBefore?1:0);
-            role.passed=role.frames==Frames&&Math.Abs(role.endClock-role.firstClock-8)<.002&&role.casts>0&&role.interactions>0;
+            role.passed=role.frames==Frames&&Math.Abs(role.endClock-role.firstClock-Frames/(double)Fps)<.002&&role.casts>0&&role.interactions>0;
             if(!role.passed)throw new InvalidOperationException("Continuous take validation failed: "+JsonUtility.ToJson(role));
+        }
+        static void CaptureChenDepthProbe(Camera camera,Texture2D read,Role role)
+        {
+            string directory=SessionState.GetString(Key+"directory","");
+            var heads=Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Where(r=>r.enabled&&r.name.Contains("/chen3_skill_03_trail_01_dir_")).ToArray();
+            var blocks=heads.Select(r=>{var p=new MaterialPropertyBlock();r.GetPropertyBlock(p);return p;}).ToArray();
+            var terrain=Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Where(r=>r.enabled&&(r.name.StartsWith("Cell ",StringComparison.Ordinal)||r.name.StartsWith("Platform cap ",StringComparison.Ordinal))).ToArray();
+            void Save(string label){camera.Render();RenderTexture.active=camera.targetTexture;read.ReadPixels(new Rect(0,0,Width,Height),0,0);read.Apply();File.WriteAllBytes(Path.Combine(directory,label+".png"),read.EncodeToPNG());}
+            try
+            {
+                Save("probe-normal");
+                for(int i=0;i<heads.Length;i++){var alternate=new MaterialPropertyBlock();heads[i].GetPropertyBlock(alternate);alternate.SetFloat("_GroundDepth",1);heads[i].SetPropertyBlock(alternate);}
+                Save("probe-head-ground-depth");
+                for(int i=0;i<heads.Length;i++)heads[i].SetPropertyBlock(blocks[i]);
+                foreach(var r in terrain)r.enabled=false;Save("probe-without-floor");
+                File.WriteAllLines(Path.Combine(directory,"probe-heads.txt"),heads.Select(r=>r.name+" position="+r.transform.position+" bounds="+r.bounds+" ppu="+r.sprite.pixelsPerUnit+" pivot="+r.sprite.pivot));
+            }
+            finally{for(int i=0;i<heads.Length;i++)heads[i].SetPropertyBlock(blocks[i]);foreach(var r in terrain)r.enabled=true;}
         }
         static void Save(){if(report!=null)File.WriteAllText(Path.Combine(SessionState.GetString(Key+"directory",""),"manifest.json"),JsonUtility.ToJson(report,true));}
         static void Finish(Exception error)
         {
             SessionState.SetBool(Key+"requested",false);SessionState.SetBool(Key+"exit",true);
-            bool passed=error==null&&report!=null&&report.roles.Count==14&&report.roles.All(r=>r.passed);SessionState.SetInt(Key+"code",passed?0:1);
+            bool passed=error==null&&report!=null&&report.roles.Count==RequestedRoles.Length&&report.roles.All(r=>r.passed);SessionState.SetInt(Key+"code",passed?0:1);
             if(report!=null){report.passed=passed;report.error=error?.ToString()??"";Save();}
             if(error!=null)Debug.LogError("SIXSTAR_VIDEO_FAILED "+error);else Debug.Log("SIXSTAR_VIDEO_COMPLETE passed="+passed);
             if(EditorApplication.isPlaying)EditorApplication.isPlaying=false;else EditorApplication.delayCall+=()=>EditorApplication.Exit(passed?0:1);

@@ -15,7 +15,7 @@ namespace YesterdayConvoy
     {
         [Serializable] internal sealed class SixStarCase
         {
-            public string id,scene;public bool passed;public int casts,deployments,bodyPixels,skillPixels,steadyPixels,skillBodyPixels,monsterPixels,hitPixels,shots,damageShots;
+            public string id,scene;public bool passed;public int casts,deployments,bodyPixels,skillPixels,steadyPixels,skillBodyPixels,monsterPixels,hitPixels,shots,damageShots,dawnHeadPixels,dawnTrailPixels,dawnTurns,dawnHits;
             public double clock;public string outcome;public string[] checks,sourceKeys;
         }
         [Serializable] internal sealed class SixStarResult
@@ -27,12 +27,12 @@ namespace YesterdayConvoy
             .Where(r=>r.enabled&&r.gameObject.activeInHierarchy&&r.sprite!=null&&r.sprite.name.StartsWith("OriginalVfx/defender/"+id+"/",StringComparison.Ordinal)).ToArray();
         static bool SixStarSelected(string id,string key)
         {
-            string token=id=="D21"?"whitw2_skill_03_":id=="D22"?"yu_skill3_":id=="D23"?"monstr_skill_03_":id=="D24"?"angel2_skill_3_":id=="D25"?"hsgma2_skill_03_":id=="D26"?"svash2_skill_03_":id=="D27"?"sbell2_skill_03_":id=="D28"?"wang_skill_03_":id=="D29"?"demkni_skill_03_":id=="D30"?"mlynar_skill_03_":id=="D32"?"chen2_skill_03_":id=="D33"?"aglna2_skill_03_":id=="D34"?"clemnt_skill_03_":"kalts2_skill_02_";
+            string token=id=="D21"?"whitw2_skill_03_":id=="D22"?"yu_skill3_":id=="D23"?"monstr_skill_03_":id=="D24"?"angel2_skill_3_":id=="D25"?"hsgma2_skill_03_":id=="D26"?"svash2_skill_03_":id=="D27"?"sbell2_skill_03_":id=="D28"?"wang_skill_03_":id=="D29"?"demkni_skill_03_":id=="D30"?"mlynar_skill_03_":id=="D32"?"chen3_skill_03_":id=="D33"?"aglna2_skill_03_":id=="D34"?"clemnt_skill_03_":"kalts2_skill_02_";
             return key.Contains("/"+token)||id=="D28"&&key.EndsWith("/wang_passive_01_buff_02",StringComparison.Ordinal);
         }
-        static bool SixStarNewHit(string id,string key)=>key.EndsWith(id=="D32"?"/chen2_skill_03_hit_01":id=="D33"?"/aglna2_skill_03_hit_01":id=="D34"?"/clemnt_skill_03_hit_01":"/kalts2_skill_02_range_damage_01",StringComparison.Ordinal);
+        static bool SixStarNewHit(string id,string key)=>id=="D32"?key.Contains("/chen3_skill_03_hit_"):key.EndsWith(id=="D33"?"/aglna2_skill_03_hit_01":id=="D34"?"/clemnt_skill_03_hit_01":"/kalts2_skill_02_range_damage_01",StringComparison.Ordinal);
         static string SixStarFrames(IEnumerable<SpriteRenderer> fx)=>string.Join("|",fx.OrderBy(r=>r.GetEntityId().ToString()).Select(r=>r.GetEntityId()+"/"+r.sprite.GetEntityId()+"/"+r.transform.position+"/"+r.transform.lossyScale));
-        static int SixStarPixels(SpriteRenderer[] renderers,string directory,string label,bool save)
+        static int SixStarPixels(Renderer[] renderers,string directory,string label,bool save)
         {
             var camera=Camera.main;var oldTarget=camera.targetTexture;var oldActive=RenderTexture.active;
             var target=new RenderTexture(640,360,24);var a=new Texture2D(640,360,TextureFormat.RGB24,false);var b=new Texture2D(640,360,TextureFormat.RGB24,false);
@@ -69,6 +69,7 @@ namespace YesterdayConvoy
                     yield return null;yield return null;Check("production-selection",entered&&DefenderSkillTrialId==id);
                     var battle=Battle;var defender=battle.FindDefender(id);var body=Object.FindAnyObjectByType<DefenderRosterView>()?.FindVisual(id);
                     Check("body-and-native-director",defender!=null&&body!=null&&DefenderVfxArt.SupportsDefender(defender));
+                    if(id=="D32")Check("correct-fire-chen-identity-ground-sword-skill",defender!=null&&defender.Settings.Name=="赤刃明霄陈"&&defender.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak&&defender.Settings.BlockCount==1&&defender.Position.y<.1f);
                     if(!entered||defender==null||body==null){item.checks=checks.ToArray();item.passed=false;ReturnToMonsterTests();yield return null;continue;}
                     Tick(4);yield return null;Check("preparation-animation-only",battle.Clock==0&&defender.SkillCasts==0&&defender.SkillSP==defender.Settings.Skill.InitialSP);
                     item.scene=SceneManager.GetActiveScene().name;
@@ -84,6 +85,20 @@ namespace YesterdayConvoy
                         if(extras<5&&tick>20+extras*20){if(Deploy())extras++;}
                         if(defender.SkillCasts>0&&double.IsNaN(firstCast))firstCast=battle.Clock;
                         var allFx=SixStarFx(id);foreach(var renderer in allFx)seen.Add(renderer.name);
+                        if(id=="D32"&&defender.SkillCasts>0)
+                        {
+                            foreach(var wave in battle.ChenDawnWaves){item.dawnTurns=Math.Max(item.dawnTurns,wave.Turns);item.dawnHits=Math.Max(item.dawnHits,wave.Hits);}
+                            if(item.dawnHeadPixels<=4)
+                            {
+                                var heads=allFx.Where(r=>r.name.Contains("/chen3_skill_03_trail_01_dir_")).Cast<Renderer>().ToArray();
+                                if(heads.Length>0)item.dawnHeadPixels=Math.Max(item.dawnHeadPixels,SixStarPixels(heads,directory,id+"-dragon-head",true));
+                            }
+                            if(item.dawnTrailPixels<=4)
+                            {
+                                var tails=Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Where(r=>r.enabled&&r.name.Contains("/chen3_skill_03_tail_ribbon")).Cast<Renderer>().ToArray();
+                                if(tails.Length>0)item.dawnTrailPixels=Math.Max(item.dawnTrailPixels,SixStarPixels(tails,directory,id+"-dragon-real-path-tail",true));
+                            }
+                        }
                         var fx=allFx.Where(r=>SixStarSelected(id,r.name)).ToArray();
                         if(!steady&&!double.IsNaN(firstCast)&&battle.Clock-firstCast>=3.1&&fx.Length>0)
                         {
@@ -129,6 +144,7 @@ namespace YesterdayConvoy
                     Check("mature-selected-fx-gpu-after-startup",steady&&item.steadyPixels>20);
                     Check("body-and-monsters-remain-visible-during-selected-fx",item.skillBodyPixels>20&&item.monsterPixels>20);
                     if(Array.IndexOf(DefenderBatch7Ids,id)>=0){Check("new-skill-real-interaction",Batch7SkillObserved(id));Check("real-selected-target-hit-gpu",item.hitPixels>0);}
+                    if(id=="D32")Check("actual-dragon-head-tail-turn-and-hit",item.dawnHeadPixels>4&&item.dawnTrailPixels>4&&item.dawnTurns>0&&item.dawnHits>0);
                     RestartBattle();yield return null;yield return null;var reset=Battle.FindDefender(id);
                     Check("restart-clears-real-combat-and-native-effects",Battle.Clock==0&&Battle.Units.Count==0&&reset.SkillCasts==0&&reset.Health==reset.MaxHealth&&SixStarFx(id).Length==0);
                     ReturnToMonsterTests();yield return null;yield return null;Check("returns-to-normal-selection",TestSelectionOpen&&!DefenderSkillTrialActive);

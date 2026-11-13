@@ -210,7 +210,7 @@ namespace YesterdayConvoy
         }
         private float DefenderAttackRate(DefenderState defender) => BossRosterDefenderAttackRate(defender)*
             (defender.ColdUntil>Clock ? .7f : 1)*(defender.FrostSlowUntil>Clock ? .5f : 1)*(HasGazeSlow(defender)? .3f:1)*
-            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1)*InfectionRate(defender.EntityId)+BossRosterDefenderAttackSpeedBonus(defender);
+            (DefenderSkillActive(defender)?defender.Settings.Skill.AttackSpeedMultiplier:1)*InfectionRate(defender.EntityId)*(defender.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak?1.13f:1)+BossRosterDefenderAttackSpeedBonus(defender);
         private void DefeatUnit(DeployedUnitState unit)
         {
             if(BossRosterPreventDeath(unit))return;
@@ -272,6 +272,7 @@ namespace YesterdayConvoy
             =>ApplyDefenderAttack(defender,attack,type,derived,null,damageScale,creditSource);
         void ApplyDefenderAttack(DefenderState defender,float attack,CombatDamageType type,bool derived,DeployedUnitState source,float damageScale,DeployedUnitState creditSource)
         {
+            if(TryChenDawnDodge(defender,type))return;
             float healthBefore=defender.Health,debtBefore=defender.Debt;bool alive=defender.Alive,burning=DeepBurning(defender);
             ApplyRankedDefenderLoss(defender,CalculateDamage(attack,DefenderArmor(defender),Mathf.Max(0,CombatSettings.Effects.Resistance+(defender.Settings.Skill.Kind==DefenderSkillKind.PramanixSnow&&!DefenderSkillActive(defender)?20:0)-(defender.BurnUntil>Clock?20:0)),type)*damageScale*SeventhDamageMultiplier(defender,source),creditSource,true);
             bool deepHit=alive&&!derived&&IsDeepHit(source)&&(defender.Health<healthBefore||defender.Debt>debtBefore);

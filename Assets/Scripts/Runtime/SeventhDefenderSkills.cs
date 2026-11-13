@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace YesterdayConvoy
 {
-    internal enum SeventhDefenderEventKind { SkillStart, SkillEnd, StickyGround, FlightIntercept, CorrosionBurst, MedicalDetonation, HealingPulse }
+    internal enum SeventhDefenderEventKind { SkillStart, SkillEnd, StickyGround, FlightIntercept, CorrosionBurst, MedicalDetonation, HealingPulse, DawnWaveLaunched, DawnWaveTurned, DawnWaveEnded }
     internal readonly struct SeventhDefenderEvent
     {
         internal readonly SeventhDefenderEventKind Kind;
@@ -26,8 +26,9 @@ namespace YesterdayConvoy
         readonly Dictionary<string,CorrosionState> seventhCorrosion=new Dictionary<string,CorrosionState>();
         int seventhSequence;
         internal IReadOnlyList<SeventhDefenderEvent> SeventhDefenderEvents=>seventhEvents.AsReadOnly();
-        public bool IsSeventh(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.ChenHolungday&&(int)d.Settings.Skill.Kind<=(int)DefenderSkillKind.KaltsitEsperanta;
-        void ResetSeventhDefenders(){seventhEvents.Clear();seventhFields.Clear();medicalSubmissions.Clear();seventhCorrosion.Clear();seventhSequence=0;}
+        public bool IsSeventh(DefenderState d)=>d!=null&&((int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.ChenHolungday&&(int)d.Settings.Skill.Kind<=(int)DefenderSkillKind.KaltsitEsperanta||d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak);
+        internal bool SeventhUsesAmmo(DefenderState d)=>IsSeventh(d)&&d.Settings.Skill.Kind!=DefenderSkillKind.ChenDawnstreak;
+        void ResetSeventhDefenders(){seventhEvents.Clear();seventhFields.Clear();medicalSubmissions.Clear();seventhCorrosion.Clear();seventhSequence=0;ResetChenDawn();}
         void SeventhEvent(SeventhDefenderEventKind kind,DefenderState d,string target,Vector3 position,double at,double until,Vector3 direction=default)
         {
             // A small presentation journal, never a second damage source. Replays are scoped to RunId.
@@ -44,17 +45,19 @@ namespace YesterdayConvoy
         bool BeginSeventhSkill(DefenderState d)
         {
             if(!IsSeventh(d))return false;
+            if(d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak){BeginChenDawnSkill(d);return true;}
             d.AdvancedSkillWasActive=true;d.SkillActionUntil=Clock+SeventhStartup(d.Settings.Skill.Kind);d.NextAttackTime=Math.Max(d.NextAttackTime,d.SkillActionUntil);
             switch(d.Settings.Skill.Kind){case DefenderSkillKind.ChenHolungday:d.Ammo=32;break;case DefenderSkillKind.AngelinaWishes:d.Ammo=31;break;default:d.Ammo=10;break;}
             SeventhEvent(SeventhDefenderEventKind.SkillStart,d,null,d.Position,Clock,d.SkillActiveUntil);return true;
         }
-        static float SeventhStartup(DefenderSkillKind kind)=>kind==DefenderSkillKind.ChenHolungday?.1f:kind==DefenderSkillKind.AngelinaWishes?1:kind==DefenderSkillKind.ClemensiaCorrosion?.2f:2f/3;
-        static float SeventhEnd(DefenderSkillKind kind)=>kind==DefenderSkillKind.ChenHolungday?.1f:kind==DefenderSkillKind.AngelinaWishes?1:kind==DefenderSkillKind.ClemensiaCorrosion?.2f:2f/3;
+        static float SeventhStartup(DefenderSkillKind kind)=>kind==DefenderSkillKind.ChenDawnstreak?13f/30:kind==DefenderSkillKind.ChenHolungday?.1f:kind==DefenderSkillKind.AngelinaWishes?1:kind==DefenderSkillKind.ClemensiaCorrosion?.2f:2f/3;
+        static float SeventhEnd(DefenderSkillKind kind)=>kind==DefenderSkillKind.ChenDawnstreak?8f/30:kind==DefenderSkillKind.ChenHolungday?.1f:kind==DefenderSkillKind.AngelinaWishes?1:kind==DefenderSkillKind.ClemensiaCorrosion?.2f:2f/3;
         float SeventhAttackWindup(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.ChenHolungday?.5f:d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes?(DefenderSkillActive(d)?.5f:.4f):d.Settings.Skill.Kind==DefenderSkillKind.ClemensiaCorrosion?(DefenderSkillActive(d)?13f/30:11f/30):8f/15;
         void FinishSeventhAmmo(DefenderState d)
         {if(d.Ammo<=0)d.SkillActiveUntil=Math.Min(d.SkillActiveUntil,Math.Max(Clock+.01,d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate));}
         void StepSeventhDefenders(float step)
         {
+            StepChenDawnWaves(step);
             foreach(var d in defenders)
             {
                 if(!IsSeventh(d))continue;
@@ -129,7 +132,7 @@ namespace YesterdayConvoy
         static bool SeventhCrossContains(Vector3 center,Vector3 position)
         {float x=Mathf.Abs(position.x-center.x),z=Mathf.Abs(position.z-center.z);return x<=.5f&&z<=1.5f||z<=.5f&&x<=1.5f;}
         internal bool SeventhFlying(DefenderState d)=>d!=null&&d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes&&DefenderSkillActive(d);
-        internal int SeventhAmmoCapacity(DefenderState d)=>!IsSeventh(d)?0:d.Settings.Skill.Kind==DefenderSkillKind.ChenHolungday?32:d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes?31:10;
+        internal int SeventhAmmoCapacity(DefenderState d)=>!SeventhUsesAmmo(d)?0:d.Settings.Skill.Kind==DefenderSkillKind.ChenHolungday?32:d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes?31:10;
         internal int SeventhBlockCapacity(DefenderState d)=>SeventhFlying(d)?2:d.Settings.BlockCount;
         internal int DefenderGroundBlockCapacity(DefenderState d)=>d.HighGround||!DefenderCanBlock(d)||SeventhFlying(d)?0:SeventhBlockCapacity(d);
         internal int DefenderAirBlockCapacity(DefenderState d)=>SeventhFlying(d)&&DefenderCanBlock(d)?SeventhBlockCapacity(d):0;
@@ -173,6 +176,7 @@ namespace YesterdayConvoy
         }
         bool ScheduleSeventhAttack(DefenderState d,DeployedUnitState primary,float travel)
         {
+            if(d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak)return ScheduleChenDawnAttack(d,primary);
             if(!IsSeventh(d)||d.Settings.Skill.Kind==DefenderSkillKind.KaltsitEsperanta)return false;
             bool active=DefenderSkillActive(d);var kind=d.Settings.Skill.Kind;
             if(active&&d.Ammo<=0)return true;

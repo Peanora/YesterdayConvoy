@@ -22,7 +22,15 @@ namespace YesterdayConvoy.Editor
             foreach(string id in ManualBattleController.DefenderBatch7Ids)
             {
                 // Existing authored tuning is retained on repeated execution.
-                if(AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(Root+id+".asset")!=null)continue;
+                var existing=AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(Root+id+".asset");
+                if(existing!=null)
+                {
+                    // Explicit correction of the misidentified D32; other authored trials
+                    // and subsequent human tuning remain untouched on repeated execution.
+                    if(id=="D32"&&existing.defenders[0].skill.kind==DefenderSkillKind.ChenHolungday)
+                    {existing.defenders[0]=Make(id);existing.mapTitle="赤刃明霄陈 · 赤霄·天喟";EditorUtility.SetDirty(existing);}
+                    continue;
+                }
                 var data=UnityEngine.Object.Instantiate(template);data.name=id;data.battle=battle;data.rosterCards=cards;data.defenderTestId=id;data.mapId="defender-"+id;
                 var d=Make(id);data.mapTitle=d.displayName+" · 原技能7级适配试玩";
                 var helper=new DefenderPlacement{id="helper",artId="D01",displayName="米格鲁 · 测试搭档",position=new Vector3(-5.5f,.04f,3),health=6000,attack=2,armor=12,range=.9f,interval=2,windup=.4f,actionDuration=1.2f,blocks=3};
@@ -36,7 +44,7 @@ namespace YesterdayConvoy.Editor
             s.duration=99999;s.effectRadius=4.5f;
             switch(id)
             {
-                case "D32":d.displayName="假日威龙陈";s.kind=DefenderSkillKind.ChenHolungday;s.initialSP=25;s.requiredSP=60;s.attackMultiplier=1.7f;d.interval=d.actionDuration=2.3f;d.windup=.5f;break;
+                case "D32":d.displayName="赤刃明霄陈";s.kind=DefenderSkillKind.ChenDawnstreak;s.initialSP=15;s.requiredSP=28;s.duration=20;s.attackMultiplier=1;s.effectRadius=3.5f;s.targets=3;d.position=new Vector3(-5.5f,.04f,2);d.blocks=1;d.damageType=CombatDamageType.Arts;d.range=1.5f;d.interval=1.25f;d.actionDuration=37f/30;d.windup=13f/30;break;
                 case "D33":d.displayName="予愿安洁莉娜";s.kind=DefenderSkillKind.AngelinaWishes;s.initialSP=22;s.requiredSP=36;s.attackMultiplier=1.3f;d.position=new Vector3(-5.5f,.04f,2);d.blocks=1;d.interval=d.actionDuration=1.5f;break;
                 case "D34":d.displayName="克莱门莎";s.kind=DefenderSkillKind.ClemensiaCorrosion;s.initialSP=28;s.requiredSP=45;d.attack=80;d.position=new Vector3(-5.5f,.04f,2);d.blocks=2;d.range=2.5f;d.interval=d.actionDuration=1.2f;d.windup=.3666667f;break;
                 case "D35":d.displayName="凯尔希·思衡托";s.kind=DefenderSkillKind.KaltsitEsperanta;s.initialSP=20;s.requiredSP=35;s.attackMultiplier=2.25f;d.role=DefenderRole.Medic;d.noOrdinaryAttack=true;d.healingRange=3.5f;d.interval=d.actionDuration=3;d.windup=.5333333f;break;

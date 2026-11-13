@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum DefenderSkillKind { None, CardiganRecovery, MidnightEnchant, PlumeSwiftStrike, AnselRange,
-        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno,SilverAshReign,PramanixSnow,WangGambit,ChenHolungday,AngelinaWishes,ClemensiaCorrosion,KaltsitEsperanta }
+        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno,SilverAshReign,PramanixSnow,WangGambit,ChenHolungday,AngelinaWishes,ClemensiaCorrosion,KaltsitEsperanta,ChenDawnstreak }
 
     [Serializable]
     public sealed class DefenderSkillDefinition
@@ -52,7 +52,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool DefenderSkillActive(DefenderState d)=>d!=null&&d.Alive&&d.Settings.Skill.Enabled&&Clock<d.SkillActiveUntil;
-        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d)*InfectionAttack(d.EntityId);
+        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d)*InfectionAttack(d.EntityId)*(d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak?1.13f:1);
         public float DefenderHealRange(DefenderState d)=>d.Settings.HealRange+(DefenderSkillActive(d)?d.Settings.Skill.HealRangeBonus:0);
         private float DefenderAnimationRate(DefenderState d)=>DefenderSkillActive(d)?d.Settings.Skill.AttackSpeedMultiplier:1;
         private bool SpotHealing(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode&&DefenderSkillActive(d);

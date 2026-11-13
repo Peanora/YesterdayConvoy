@@ -1270,7 +1270,8 @@
             "_ignoreOwnerFakeDeath": 0
           }
         }
-      ]
+      ],
+      "status": "HISTORICAL_MISIDENTIFIED_REPLACED"
     },
     {
       "task": "D33",
@@ -15162,5 +15163,12 @@
         "_syncEffectScaleViaProjectile": 0
       }
     }
-  ]
+  ],
+  "identityCorrectionD32": {
+    "status": "HISTORICAL_MISIDENTIFIED_REPLACED",
+    "formerCharacter": "char_1013_chen2",
+    "correctCharacter": "char_1050_chen3",
+    "currentEvidence": "chen-dawnstreak-source-audit.json",
+    "scope": "All chen2 records in this document are historical wrong-character acquisition evidence, not current D32 runtime or approved identity."
+  }
 }

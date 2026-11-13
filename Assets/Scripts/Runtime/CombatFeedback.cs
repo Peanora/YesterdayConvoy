@@ -72,7 +72,10 @@ namespace YesterdayConvoy
         void RecordUnitHealthLoss(DeployedUnitState u,float before,Vector3 position)
             =>combatFeedback.Add(Clock,CombatFeedbackTarget.Monster,u.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-u.Health));
         void RecordDefenderHealthLoss(DefenderState d,float before,Vector3 position)
-            =>combatFeedback.Add(Clock,CombatFeedbackTarget.Defender,d.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-d.Health));
+        {
+            if(before>d.Health&&d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak)d.ChenDawnNextTalentAt=Clock+7;
+            combatFeedback.Add(Clock,CombatFeedbackTarget.Defender,d.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-d.Health));
+        }
         void RecordUnitShieldAbsorption(DeployedUnitState u,float amount)
             =>combatFeedback.Add(Clock,CombatFeedbackTarget.Monster,u.EntityId,u.Motion.Position,CombatFeedbackKind.ShieldAbsorbed,amount);
         // Centralizes ONLY actual defender healing; keeps caller-specific SP/statistics untouched.

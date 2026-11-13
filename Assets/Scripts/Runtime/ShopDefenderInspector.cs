@@ -46,6 +46,7 @@ namespace YesterdayConvoy
         {
             switch(kind)
             {
+                case DefenderSkillKind.ChenDawnstreak:return "释放龙形剑气，遇高台、边缘或出入口顺时针转向；每次转向后可再次命中。技能中对最多三名地面敌人三连斩。";
                 case DefenderSkillKind.ChenHolungday:return "32发弹药，每次两发双击。攻击范围内持续粘液，地面减速、减防，不叠加。";
                 case DefenderSkillKind.AngelinaWishes:return "起飞后阻挡2个空中敌人，不阻挡地面；三目标攻击并额外攻击空中目标，减速并移动拦截。";
                 case DefenderSkillKind.ClemensiaCorrosion:return "三目标物理攻击累积侵蚀。敌人真实侵蚀爆发时才消耗弹药，对爆发附近追加范围攻击。";
@@ -81,9 +82,9 @@ namespace YesterdayConvoy
             Fill(new Rect(r.x+16,r.y+171,284,1),new Color(.3f,.42f,.47f));
             var skill=d.Settings.Skill;
             GUI.Label(new Rect(r.x+16,r.y+182,284,28),DefenderSkillName(skill.Kind),new GUIStyle(text){fontSize=17,fontStyle=FontStyle.Bold,normal={textColor=new Color(1,.83f,.45f)}});
-            string status=!d.Alive?"已退场":Battle.DefenderSkillActive(d)&&Battle.IsSeventh(d)?(d.Ammo>0?$"发动中 · 弹药 {d.Ammo}/{Battle.SeventhAmmoCapacity(d)}":"弹药耗尽 · 收招中"):Battle.DefenderSkillActive(d)?$"发动中 · 剩余 {Mathf.Max(0,(float)(d.SkillActiveUntil-Battle.Clock)):0.0}秒":$"技力 {d.SkillSP:0.#} / {skill.RequiredSP:0.#}";
+            string status=!d.Alive?"已退场":Battle.DefenderSkillActive(d)&&Battle.SeventhUsesAmmo(d)?(d.Ammo>0?$"发动中 · 弹药 {d.Ammo}/{Battle.SeventhAmmoCapacity(d)}":"弹药耗尽 · 收招中"):Battle.DefenderSkillActive(d)?$"发动中 · 剩余 {Mathf.Max(0,(float)(d.SkillActiveUntil-Battle.Clock)):0.0}秒":$"技力 {d.SkillSP:0.#} / {skill.RequiredSP:0.#}";
             GUI.Label(new Rect(r.x+16,r.y+216,284,22),status+$"   ·   发动 {d.SkillCasts} 次",text);
-            string detail=Battle.IsSeventh(d)?(skill.Kind==DefenderSkillKind.ClemensiaCorrosion?$"侵蚀追加 {d.SeventhBursts} 次 · 仅爆发消耗弹药":"弹药用尽自动结束 · 技能自动发动"):skill.Kind==DefenderSkillKind.WangGambit?$"弹药 {d.Ammo} · 储棋 {d.ChessStock}":skill.Kind==DefenderSkillKind.MlynarGlory?$"蓄力 {Battle.DefenderCharge(d)*100:0}% · "+(Battle.DefenderCanAttack(d)?"可攻击":"蓄力待机"):"技能自动发动 · 可暂停查看";
+            string detail=Battle.SeventhUsesAmmo(d)?(skill.Kind==DefenderSkillKind.ClemensiaCorrosion?$"侵蚀追加 {d.SeventhBursts} 次 · 仅爆发消耗弹药":"弹药用尽自动结束 · 技能自动发动"):skill.Kind==DefenderSkillKind.WangGambit?$"弹药 {d.Ammo} · 储棋 {d.ChessStock}":skill.Kind==DefenderSkillKind.MlynarGlory?$"蓄力 {Battle.DefenderCharge(d)*100:0}% · "+(Battle.DefenderCanAttack(d)?"可攻击":"蓄力待机"):"技能自动发动 · 可暂停查看";
             GUI.Label(new Rect(r.x+16,r.y+239,284,22),detail,new GUIStyle(text){fontSize=12});
             GUI.Label(new Rect(r.x+16,r.y+260,284,112),SkillSummary(skill.Kind),text);
             GUI.Label(new Rect(r.x+16,r.y+379,284,24),"实时数值 · 点击空地关闭",new GUIStyle(text){fontSize=12,normal={textColor=new Color(.6f,.74f,.8f)}});

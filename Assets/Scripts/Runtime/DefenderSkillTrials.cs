@@ -31,6 +31,7 @@ namespace YesterdayConvoy
             switch(kind)
             {
                 case DefenderSkillKind.ChenHolungday:return "假日风暴";
+                case DefenderSkillKind.ChenDawnstreak:return "赤霄·天喟";
                 case DefenderSkillKind.AngelinaWishes:return "酸橙的心事";
                 case DefenderSkillKind.ClemensiaCorrosion:return "与海为敌";
                 case DefenderSkillKind.KaltsitEsperanta:return "保护性拒止";
@@ -81,7 +82,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(x,y,272,408),new Color(.065f,.10f,.13f));
                 DrawTestPortrait(new Rect(x+16,y+16,240,204),DefenderArt.CardPortrait(selected.artId));
                 GUI.Label(new Rect(x+20,y+238,232,35),selected.displayName,menuCardName);
-                GUI.Label(new Rect(x+20,y+282,232,64),DefenderSkillName(selected.skill.kind)+"\n"+(selected.skill.kind==DefenderSkillKind.ChenHolungday?"32弹药双击 · 全范围粘液":selected.skill.kind==DefenderSkillKind.AngelinaWishes?"起飞拦截 · 三目标与对空追加":selected.skill.kind==DefenderSkillKind.ClemensiaCorrosion?"侵蚀爆发 · 10发追加弹药":selected.skill.kind==DefenderSkillKind.KaltsitEsperanta?"10枚医疗单元 · 范围真伤与治疗":selected.role==DefenderRole.Medic?"高台医疗 · 治疗支援":selected.position.y>.2f?"高台守军 · 远程火力":"地面守军 · 阻挡与技能交战"),menuSmall);
+                GUI.Label(new Rect(x+20,y+282,232,64),DefenderSkillName(selected.skill.kind)+"\n"+(selected.skill.kind==DefenderSkillKind.ChenDawnstreak?"龙形剑气转向 · 三目标三连斩":selected.skill.kind==DefenderSkillKind.ChenHolungday?"32弹药双击 · 全范围粘液":selected.skill.kind==DefenderSkillKind.AngelinaWishes?"起飞拦截 · 三目标与对空追加":selected.skill.kind==DefenderSkillKind.ClemensiaCorrosion?"侵蚀爆发 · 10发追加弹药":selected.skill.kind==DefenderSkillKind.KaltsitEsperanta?"10枚医疗单元 · 范围真伤与治疗":selected.role==DefenderRole.Medic?"高台医疗 · 治疗支援":selected.position.y>.2f?"高台守军 · 远程火力":"地面守军 · 阻挡与技能交战"),menuSmall);
                 if(GUI.Button(new Rect(x+20,y+358,232,40),"进入技能测试",buttonStyle))PrepareDefenderEntry(id);
             }
             GUI.EndScrollView();

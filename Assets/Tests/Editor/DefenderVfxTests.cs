@@ -12,7 +12,27 @@ namespace YesterdayConvoy.Tests
         [Serializable] sealed class Manifest {public int version,fps;public string encoding;public Data[] clips;}
         [Serializable] sealed class Data {public string key,sourcePrefab;public int count,width,height;public float duration,ppu;public bool loop;public Page[] pages;}
         [Serializable] sealed class Page {public string file;public int count,width,height;}
+        [Serializable] sealed class Identity {public string characterId,name;}
         static Manifest Read()=>JsonUtility.FromJson<Manifest>(File.ReadAllText(ArtSourcePaths.Resolve("OriginalCombatVfx/Defenders/manifest.json")));
+        [Test] public void RequestedFireChenIsDawnstreakWithSwordSkillAndHerOwnFrontAndBackSources()
+        {
+            var trial=Resources.Load<DefenderTrialDefinition>("DefenderTrials/D32");
+            Assert.That(trial,Is.Not.Null);
+            var guard=trial.defenders.Single(d=>d.id=="D32");
+            Assert.That(guard.displayName,Is.EqualTo("赤刃明霄陈"));
+            Assert.That(guard.skill.kind,Is.EqualTo(DefenderSkillKind.ChenDawnstreak));
+            Assert.That(guard.blocks,Is.EqualTo(1));
+            foreach(string variant in new[]{"D32","D32B"})
+            {
+                var identity=JsonUtility.FromJson<Identity>(File.ReadAllText(ArtSourcePaths.Resolve("DefenderArt/"+variant+"/sources.json")));
+                Assert.That(identity.characterId,Is.EqualTo("char_1050_chen3"),variant+" cannot silently resolve to the summer Chen model.");
+                Assert.That(identity.name,Is.EqualTo("赤刃明霄陈"));
+                Assert.That(DefenderArt.Load(variant).DurationOf("skill_attack"),Is.GreaterThan(1));
+            }
+            var keys=DefenderVfxArt.RequiredKeysForArtIds(new[]{"D32"}).ToArray();
+            Assert.That(keys,Is.Not.Empty);
+            Assert.That(keys.All(k=>k.StartsWith("defender/D32/chen3_",StringComparison.Ordinal)),Is.True,"D32 must not preload the misidentified chen2 water/slime family.");
+        }
         [Test] public void ApprovedSnowPreloadsAttackFieldsAndRealLayerStates()
         {
             Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D27","D27"}),Is.EquivalentTo(new[]{
@@ -49,7 +69,7 @@ namespace YesterdayConvoy.Tests
         [TestCase("D25","hsgma2_skill_03_hit_02_3")][TestCase("D26","svash2_skill_03_range_01")]
         [TestCase("D28","wang_passive_01_buff_02")][TestCase("D29","demkni_attack_01_hit")]
         [TestCase("D30","mlynar_skill_03_hit_01")]
-        [TestCase("D32","chen2_skill_03_hit_01")][TestCase("D33","aglna2_skill_03_hit_01")]
+        [TestCase("D32","chen3_skill_03_hit_01")][TestCase("D33","aglna2_skill_03_hit_01")]
         [TestCase("D34","clemnt_skill_03_hit_01")][TestCase("D35","kalts2_skill_02_range_damage_01")]
         public void NormalAndSelectedSkillEventsUseTheirOwnOriginalFamily(string id,string raw)
         {Assert.That(DefenderVfxArt.RequiredKeysForArtIds(new[]{id}),Does.Contain("defender/"+id+"/"+raw));}

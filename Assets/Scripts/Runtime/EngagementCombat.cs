@@ -120,6 +120,10 @@ namespace YesterdayConvoy
         public Vector3 LastMon3trRebirthDeathPosition {get;internal set;}
         public int SeventhAttacks {get;internal set;}
         public int SeventhBursts {get;internal set;}
+        public bool ChenDawnDodgeReady {get;internal set;}
+        public double ChenDawnNextTalentAt {get;internal set;}=7;
+        public double ChenDawnLastTalentAt {get;internal set;}=double.NegativeInfinity;
+        public double ChenDawnLastDodgeAt {get;internal set;}=double.NegativeInfinity;
         internal string SeventhInterceptTarget;
         internal bool SeventhMoving;
         internal double SeventhMoveStartedAt=double.NegativeInfinity,SeventhMoveEndedAt=double.NegativeInfinity;
@@ -159,6 +163,9 @@ namespace YesterdayConvoy
         internal bool? DefenderSkillWasActive {get;set;}
         internal bool SeventhSecondary;
         internal bool PersistAfterSourceDeath;
+        internal int ChenDawnWaveSequence;
+        internal int ChenDawnHitIndex;
+        internal float ChenDawnCurrentHealthRatio;
         public bool Empowered { get; }
         public double WolfActionAt {get;internal set;}=double.NegativeInfinity;
         public float WolfActionRate {get;internal set;}=1;
@@ -171,7 +178,7 @@ namespace YesterdayConvoy
         public bool TrueDamage {get;internal set;}
         public bool SynergyOrder {get;internal set;}
         public bool Healing { get; }
-        public CombatDamageType DamageType { get; }
+        public CombatDamageType DamageType { get; internal set; }
         public float SplashRadius { get; }
         public Vector3 Origin { get; }
         public Vector3 Destination { get; }
@@ -332,13 +339,16 @@ namespace YesterdayConvoy
                 if(shot.WolfBox!=WolfBoxKind.None){ResolveWolfBox(shot,unit);continue;}
                 if(ResolveViviSkillSplash(shot,unit))continue;
                 if(unit==null || !unit.Active || unit.IsReviving || StrongholdInTransit(unit.EntityId) || defender==null || !defender.Alive&&!(shot.FromDefender&&shot.PersistAfterSourceDeath)) continue;
-                if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir)continue;
+                if(shot.FromDefender&&UnitAirborne(unit)&&!guardSettings.DefenderCanHitAir&&shot.ChenDawnWaveSequence==0)continue;
+                if(shot.FromDefender&&!shot.TrueDamage&&defender.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak)
+                    shot.DamageType=ChenDawnWeaknessDamageType(unit,shot.ChenDawnCurrentHealthRatio>0?Math.Max(shot.Attack,unit.Health*shot.ChenDawnCurrentHealthRatio):shot.Attack);
                 if(shot.FromDefender&&!shot.TrueDamage&&!BossRosterDefenderAttackHits(defender,shot.DamageType))continue;
                 shot.Applied=true;
                 if(shot.FromDefender)
                 {
                     float preHitHealth=unit.Health;bool wasAlive=unit.Active&&!unit.IsReviving;
-                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,shot.Attack,defender):TryDefenderDamageUnit(unit,shot.Attack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f,defender,true);
+                    float incomingAttack=shot.ChenDawnCurrentHealthRatio>0?Math.Max(shot.Attack,unit.Health*shot.ChenDawnCurrentHealthRatio):shot.Attack;
+                    bool damaged=shot.TrueDamage?ApplyFifthTrueDamage(unit,incomingAttack,defender):TryDefenderDamageUnit(unit,incomingAttack,shot.DamageType,shot.IgnoreResistance,defender.Settings.Range>1.2f,defender,true);
                     bool killedByHit=wasAlive&&(!unit.Active||unit.IsReviving);
                     if(damaged&&shot.Vulnerability>0){unit.VulnerableUntil=Clock+2;unit.Vulnerability=Math.Max(unit.Vulnerability,shot.Vulnerability);}
                     shot.DamageDealt=Math.Max(0,preHitHealth-unit.Health);
@@ -360,8 +370,10 @@ namespace YesterdayConvoy
                     shot.FrozenBonusApplied=defender.FrozenUntil>Clock && source.Effects.FrozenAttackMultiplier>1;
                     float attack=shot.Attack*(shot.FrozenBonusApplied ? source.Effects.FrozenAttackMultiplier : 1);
                     float health=defender.Health;
+                    bool chenDodgeBefore=defender.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak&&defender.ChenDawnDodgeReady;
                     if(BossCoreUsesTrueOrdinary(unit,shot))SourcedTrueDamage(defender,attack,unit);
                     else ApplyDefenderAttack(defender,attack,unit.AltarEmpowered?CombatDamageType.Arts:UnitCombat(unit).Effects.DamageType,shot.SynergyOrder||unit.SynergySupport,shot.SynergyOrder||unit.SynergySupport?null:unit,1,unit);
+                    if(chenDodgeBefore&&!defender.ChenDawnDodgeReady&&defender.ChenDawnLastDodgeAt==Clock){shot.Applied=false;continue;}
                     shot.DamageDealt=health-defender.Health;
                     BossCoreOnUnitHit(unit,defender,shot);
                     if(!shot.SynergyOrder)
