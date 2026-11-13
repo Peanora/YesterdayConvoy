@@ -163,6 +163,7 @@ namespace YesterdayConvoy
         internal bool? DefenderSkillWasActive {get;set;}
         internal bool SeventhSecondary;
         internal bool PersistAfterSourceDeath;
+        internal int SilverAshWaveSequence {get;set;}
         internal int ChenDawnWaveSequence;
         internal int ChenDawnHitIndex;
         internal float ChenDawnCurrentHealthRatio;
@@ -224,7 +225,7 @@ namespace YesterdayConvoy
         {
             ResetBossRoster();
             ResetAutomaticMonsterSkills();
-            ResetSeventhDefenders();
+            ResetSeventhDefenders();defenderRangeFacings.Clear();silverAshWaves.Clear();silverAshWaveSequence=0;
             defenderDrones.Clear();snowCells.Clear();chessPieces.Clear();DefenderBudget=30;
             pramanixSnowImpacts.Clear();pramanixSnowImpactSequence=0;
             wangChessImpacts.Clear();wangChessImpactSequence=0;
@@ -548,14 +549,14 @@ namespace YesterdayConvoy
                 if(!DefenderCanAttack(d)){d.TargetId=null;continue;}
                 var target=FindUnit(d.TargetId);
                 bool blocks=d.BlockedCount>0;
-                if(!CanDefenderTarget(target) || GroundDistance(target.Motion.Position,d.Position)>DefenderRange(d) ||
+                if(!CanDefenderTarget(target) || !DefenderRangeContains(d,target.Motion.Position) ||
                     blocks && target.BlockerId!=d.EntityId || HasHigherTauntTarget(d,target,blocks)||
                     spec.Skill.Kind==DefenderSkillKind.StewardStrike&&Clock+0.000001>=d.NextAttackTime)
                 {
                     target=null;
                     foreach(var unit in units)
                     {
-                        if(!CanDefenderTarget(unit) || GroundDistance(unit.Motion.Position,d.Position)>DefenderRange(d) ||
+                        if(!CanDefenderTarget(unit) || !DefenderRangeContains(d,unit.Motion.Position) ||
                             blocks && unit.BlockerId!=d.EntityId) continue;
                         if(PreferDefenderTarget(d,unit,target))target=unit;
                     }
@@ -570,7 +571,7 @@ namespace YesterdayConvoy
         bool HasHigherTauntTarget(DefenderState defender,DeployedUnitState current,bool blocks)
         {
             foreach(var unit in units)
-                if(CanDefenderTarget(unit) && GroundDistance(unit.Motion.Position,defender.Position)<=DefenderRange(defender) &&
+                if(CanDefenderTarget(unit) && DefenderRangeContains(defender,unit.Motion.Position) &&
                     (!blocks || unit.BlockerId==defender.EntityId) && UnitTaunt(unit)>UnitTaunt(current)) return true;
             return false;
         }

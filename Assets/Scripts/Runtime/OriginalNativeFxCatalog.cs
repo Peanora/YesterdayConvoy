@@ -17,8 +17,8 @@ namespace YesterdayConvoy
     }
     internal readonly struct OriginalNativeFxPathPoint
     {
-        public readonly Vector3 Position;public readonly double At;
-        public OriginalNativeFxPathPoint(Vector3 position,double at){Position=position;At=at;}
+        public readonly Vector3 Position,Direction;public readonly double At;public readonly bool Turn;
+        public OriginalNativeFxPathPoint(Vector3 position,double at,Vector3 direction=default,bool turn=false){Position=position;At=at;Direction=direction;Turn=turn;}
     }
     internal struct OriginalNativeFxPlacement
     {

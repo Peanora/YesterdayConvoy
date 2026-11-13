@@ -18,7 +18,7 @@ namespace YesterdayConvoy
         {
             public string id,scene;public bool passed;public int casts,deployments,bodyPixels,skillPixels,steadyPixels,skillBodyPixels,monsterPixels,hitPixels,shots,damageShots,dawnHeadPixels,dawnTrailPixels,dawnTurns,dawnHits;
             public double clock;public string outcome;public string[] checks,sourceKeys;
-            public int isolatedSkillPixels,isolatedBodyPixels,continuousFrames,particleSystems,particles,meshVertices,clockMaterials,clockPropertyGaps,dawnTrailLayers,silverAshFieldPeak;
+            public int isolatedSkillPixels,isolatedBodyPixels,continuousFrames,particleSystems,particles,meshVertices,clockMaterials,clockPropertyGaps,dawnTrailLayers,silverAshFieldPeak,silverAshWavePixels;
             public bool nativePauseVerified,skillEndCovered,terminalCovered,tailCovered,actionFramesChanged;
             public string captureCoverage;public string[] nativePaths,materialSources,dawnLayerPixels;
             public double captureStart,captureEnd;
@@ -72,7 +72,7 @@ namespace YesterdayConvoy
         static bool SixStarNativeHit(string id,string key)
         {
             if(id=="D29")return key.EndsWith("/common_heal_hit_01",StringComparison.Ordinal);
-            if(id=="D26")return key.Contains("/svash2_skill_03_combat_start_"); // Original S3 presents aligned attacks; it has no separate target-hit prefab.
+            if(id=="D26")return key.EndsWith("/svash2_skill_03_hit_01",StringComparison.Ordinal); // Actual travelling bird collisions own this original hit.
             return SixStarNativeSelected(id,key)&&(key.Contains("hit")||id=="D35"&&(key.Contains("range_damage")||key.Contains("range_heal")));
         }
         static bool SixStarInteraction(ManualBattle battle,DefenderState defender,double since)=>
@@ -361,6 +361,11 @@ namespace YesterdayConvoy
                         var hits=SixStarNativeRenderers(tags.Where(t=>SixStarNativeHit(id,t.Key)));
                         if(hits.Length>0){item.hitPixels=Math.Max(item.hitPixels,SixStarPixels(hits,directory,id+"-target-hit-isolated",item.hitPixels==0,actors.Concat(SixStarAllNativeRenderers().Except(hits)).ToArray()));hitProbes++;}
                     }
+                    if(id=="D26"&&started&&item.silverAshWavePixels<=4)
+                    {
+                        var waves=SixStarNativeRenderers(tags.Where(t=>t.Key.Contains("/svash2_skill_03_trail_")));
+                        if(waves.Length>0)item.silverAshWavePixels=System.Math.Max(item.silverAshWavePixels,SixStarPixels(waves,directory,id+"-emitted-wave-isolated",true,actors.Concat(SixStarAllNativeRenderers().Except(waves)).ToArray()));
+                    }
                     if(id=="D32"&&started)
                     {
                         foreach(var wave in battle.ChenDawnWaves){item.dawnTurns=Math.Max(item.dawnTurns,wave.Turns);item.dawnHits=Math.Max(item.dawnHits,wave.Hits);}
@@ -386,7 +391,8 @@ namespace YesterdayConvoy
             item.shots=battle.CombatShots.Count(s=>s.SourceId==id);item.damageShots=battle.CombatShots.Count(s=>s.SourceId==id&&s.Applied&&s.DamageDealt>0);
             Check("natural-auto-skill",item.casts>0);Check("actual-native-selected-fx-gpu-isolated-from-body",item.skillPixels>20&&item.isolatedSkillPixels>20&&item.nativePauseVerified);
             Check("mature-selected-fx-gpu-after-startup",steady&&item.steadyPixels>20);Check("body-and-monsters-remain-visible-during-selected-fx",item.skillBodyPixels>20&&item.monsterPixels>20&&item.isolatedBodyPixels>20);
-            Check("continuous-real-camera-sequence-with-action-change",item.continuousFrames>20&&item.actionFramesChanged);Check("real-skill-damage-or-healing-interaction",!double.IsNaN(firstCast)&&SixStarInteraction(battle,defender,firstCast));Check(id=="D26"?"original-aligned-attack-gpu-with-real-damage-settlement":"real-target-hit-or-heal-native-gpu",item.hitPixels>0&&(id!="D26"||item.damageShots>0));
+            Check("continuous-real-camera-sequence-with-action-change",item.continuousFrames>20&&item.actionFramesChanged);Check("real-skill-damage-or-healing-interaction",!double.IsNaN(firstCast)&&SixStarInteraction(battle,defender,firstCast));Check("real-target-hit-or-heal-native-gpu",item.hitPixels>0&&(id!="D26"||item.damageShots>0));
+            if(id=="D26")Check("original-emitted-self-or-partner-wave-actual-gpu",item.silverAshWavePixels>4);
             if(Array.IndexOf(DefenderBatch7Ids,id)>=0)Check("new-skill-real-interaction",batch7Observed);
             if(id=="D32")Check("original-six-trail-source-material-path-vertices-and-gpu",item.dawnHeadPixels>4&&item.dawnTrailPixels>4&&item.dawnTrailLayers==6&&dawnLayers.Count==6&&dawnLayers.Values.All(p=>p>0)&&item.dawnTurns>0&&item.dawnHits>0);
             item.dawnLayerPixels=dawnLayers.OrderBy(p=>p.Key,StringComparer.Ordinal).Select(p=>p.Key+"="+p.Value).ToArray();

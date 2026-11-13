@@ -21,7 +21,7 @@ namespace YesterdayConvoy
         readonly List<DefenderDroneState> defenderDrones=new List<DefenderDroneState>();
         public IReadOnlyList<DefenderDroneState> DefenderDrones=>defenderDrones.AsReadOnly();
         public bool IsAdvancedDefender(DefenderState d)=>d!=null&&(int)d.Settings.Skill.Kind>=(int)DefenderSkillKind.LapplandHavoc;
-        public float DefenderRange(DefenderState d)=>IsSeventh(d)&&DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0?d.Settings.Skill.EffectRadius:CampaignV2Enabled&&d.Settings.Skill.EffectRadius<=0&&(IsSixth(d)&&DefenderSkillActive(d)||IsFifthActive(d))?d.Settings.Range:
+        public float DefenderRange(DefenderState d)=>d!=null&&(DefenderSkillActive(d)||IsFifthActive(d))&&DefenderSkillFootprints.TryGet(d.Settings.Skill.Kind,out var footprint)?DefenderSkillFootprints.EnclosingRadius(footprint):IsSeventh(d)&&DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0?d.Settings.Skill.EffectRadius:CampaignV2Enabled&&d.Settings.Skill.EffectRadius<=0&&(IsSixth(d)&&DefenderSkillActive(d)||IsFifthActive(d))?d.Settings.Range:
             IsSixth(d)&&DefenderSkillActive(d)?d.Settings.Skill.EffectRadius:IsFifthActive(d)?d.Settings.Skill.EffectRadius:DefenderSkillActive(d)&&d.Settings.Skill.EffectRadius>0&&
             (d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory||d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification)?d.Settings.Skill.EffectRadius:d.Settings.Range;
         public bool DefenderCanBlock(DefenderState d)=>BossRosterDefenderCanBlock(d)&&(d.Settings.Skill.Kind!=DefenderSkillKind.MlynarGlory||DefenderSkillActive(d));
@@ -33,9 +33,9 @@ namespace YesterdayConvoy
         bool AdvancedSkillUseful(DefenderState d)
         {
             var kind=d.Settings.Skill.Kind;if(!IsAdvancedDefender(d))return false;
-            foreach(var u in units)if(CanDefenderTarget(u)&&(kind==DefenderSkillKind.LapplandHavoc||kind==DefenderSkillKind.YuKitchen||GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius))return true;
+            foreach(var u in units)if(CanDefenderTarget(u)&&(kind==DefenderSkillKind.LapplandHavoc||kind==DefenderSkillKind.YuKitchen||DefenderSkillContains(d,u.Motion.Position)))return true;
             if(kind==DefenderSkillKind.SariaCalcification||kind==DefenderSkillKind.YuKitchen)
-                foreach(var ally in defenders)if(ally.Alive&&ally.Health<ally.MaxHealth-.001f&&GroundDistance(d.Position,ally.Position)<=d.Settings.Skill.EffectRadius)return true;
+                foreach(var ally in defenders)if(ally.Alive&&ally.Health<ally.MaxHealth-.001f&&DefenderSkillContains(d,ally.Position))return true;
             return false;
         }
         void BeginAdvancedDefenderSkill(DefenderState d)
@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             d.NextAttackTime=Clock+V2DefenderSkill(d,"auraHealingInterval",1);d.LastActionTime=Clock;d.LastActionHealing=true;d.LastActionRate=1;
             foreach(var ally in defenders)
             {
-                if(!ally.Alive||ally.Health>=ally.MaxHealth-.001f||GroundDistance(d.Position,ally.Position)>d.Settings.Skill.EffectRadius)continue;
+                if(!ally.Alive||ally.Health>=ally.MaxHealth-.001f||!DefenderSkillContains(d,ally.Position))continue;
                 d.TargetId=ally.EntityId;
                 QueueDefenderShot(d,new CombatShot(d.EntityId,ally.EntityId,true,true,d.Position,ally.Position,Clock,.05f,DefenderSkillAttack(d)*V2DefenderSkill(d,"healAttackFractionPerSecond",d.Settings.Skill.HealFraction),healing:true));
             }
@@ -115,14 +115,14 @@ namespace YesterdayConvoy
         public float UnitArtsVulnerability(DeployedUnitState u)
         {
             float result=1;
-            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
+            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&DefenderSkillContains(d,u.Motion.Position))
                 result=Math.Max(result,d.Settings.Skill.DamageAmplification);
             return result;
         }
         public float DefenderAuraMoveMultiplier(DeployedUnitState u)
         {
             if(u==null||u.Golem&&GolemStage>=4)return 1;float result=1;
-            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius)
+            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.SariaCalcification&&DefenderSkillActive(d)&&DefenderSkillContains(d,u.Motion.Position))
                 result=Math.Min(result,d.Settings.Skill.MoveMultiplier);
             foreach(var drone in defenderDrones)
             {var d=FindDefender(drone.SourceId);if(drone.Locked&&DefenderSkillActive(d)&&GroundDistance(drone.Position,u.Motion.Position)<=V2DefenderSkill(d,"droneAreaRadius",.9f))result=Math.Min(result,V2DefenderSkill(d,"droneSlowMultiplier",d.Settings.Skill.MoveMultiplier));}
@@ -214,7 +214,7 @@ namespace YesterdayConvoy
                 if(source!=wall&&type==CombatDamageType.Arts&&DefenderWallActive(wall)&&CrossesDefenderWall(origin,target.Motion.Position,DefenderWallPoint(wall),wall.WallNormal))
                 {AddScorch(target,DefenderSkillAttack(wall)*wall.Settings.Skill.ElementFraction);wall.BurnApplications++;}
             if(!source.Settings.Kasimierz)return;
-            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&DefenderSkillActive(d)&&GroundDistance(d.Position,target.Motion.Position)<=d.Settings.Skill.EffectRadius)
+            foreach(var d in defenders)if(d.Settings.Skill.Kind==DefenderSkillKind.MlynarGlory&&DefenderSkillActive(d)&&DefenderSkillContains(d,target.Motion.Position))
                 ApplyPureUnitDamage(target,d.Settings.Attack*(1+d.LiberatorBonus)*V2DefenderSkill(d,"kasimierzTrueAttackFraction",.11f),d);
         }
         void OnLiberatorKill(DefenderState d)

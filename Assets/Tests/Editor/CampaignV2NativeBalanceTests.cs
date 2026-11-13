@@ -175,7 +175,8 @@ namespace YesterdayConvoy.Tests
             Call(b,"AddChess",d,u.Motion.Position,true);
             Assert.That(ammo-d.Ammo,Is.EqualTo((int)Value("extraPiecesPerPlacement")));
             Assert.That(b.ChessPieces.Count,Is.EqualTo(1+(int)Value("extraPiecesPerPlacement")));
-            Call(b,"StepSixthDefenders",0f);Assert.That(d.ChessTriggers-triggered,Is.EqualTo(1));
+            Call(b,"StepSixthDefenders",0f);Assert.That(d.ChessTriggers-triggered,Is.Zero,"Original token Born waits for OnStart before it can trigger.");
+            b.Advance(.11f);Assert.That(d.ChessTriggers-triggered,Is.EqualTo(1));
             Assert.That(health-u.Health,Is.EqualTo(d.Settings.Attack*Value("trapAttackMultiplier")).Within(.02));
             ((IList)typeof(ManualBattle).GetField("chessPieces",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(b)).Clear();
             SetState(d,"NextSixthAt",b.Clock);Call(b,"StepSixthDefenders",0f);

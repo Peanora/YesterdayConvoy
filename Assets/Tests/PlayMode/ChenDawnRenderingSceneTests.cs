@@ -10,6 +10,50 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class ChenDawnRenderingSceneTests
     {
+        [UnityTest]public IEnumerator NativeProjectilePreservesSourceChildPoseAndNoseFollowsAllFourMovementDirections()
+        {
+            const string key="defender/D32/chen3_skill_03_trail_01_dir_right";
+            yield return OriginalNativeFxCatalog.Prepare(new[]{key});
+            var parent=new GameObject("Native projectile source direction fixture");var cameraObject=new GameObject("Native projectile fixture camera");var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;
+            var layer=new OriginalNativeFxLayer(parent.transform);
+            try
+            {
+                foreach(var direction in new[]{Vector3.right,Vector3.forward,Vector3.left,Vector3.back})
+                {
+                    layer.Clear();layer.Begin(0,camera);
+                    Assert.That(layer.TryShowPath(key,"source-direction",0,new[]{new OriginalNativeFxPathPoint(Vector3.zero,0,direction)},new OriginalNativeFxPose(Vector3.zero,Quaternion.Euler(90,0,0),direction)),Is.True);layer.End();
+                    var tag=parent.GetComponentInChildren<OriginalNativeFxTag>();var authored=tag.transform.Find("static_offset/rotation_z");
+                    Assert.That(Quaternion.Angle(authored.localRotation,Quaternion.Euler(0,0,90)),Is.LessThan(.001f),"The source rotation_z pose must survive the explicit body-transform direction driver.");
+                    var head=tag.transform.Find("static_offset/rotation_z/long/longtou");
+                    // The actual source chenlong texture's nose lies along the
+                    // mesh local -X axis (verified UV vertex747/source hash).
+                    var nose=head.TransformVector(Vector3.left);nose.y=0;
+                    Assert.That(Vector3.Dot(nose.normalized,direction),Is.GreaterThan(.999f),"The source head geometry must face its real projectile movement, not a guessed named-node axis.");
+                }
+            }
+            finally{layer.Dispose();Object.DestroyImmediate(parent);Object.DestroyImmediate(cameraObject);}
+        }
+        [Test]public void NativeTrailKeepsEmittedWorldVerticesWhenTheHeadTurnsAndEmitterMoves()
+        {
+            var root=new GameObject("Trail history snapshot fixture");root.AddComponent<OriginalNativeFxTag>();
+            var emitter=new GameObject("original emitter");emitter.transform.SetParent(root.transform,false);emitter.transform.localPosition=new Vector3(-.8f,.2f,0);
+            var source=emitter.AddComponent<TrailRenderer>();source.time=10;source.minVertexDistance=.01f;source.widthMultiplier=.2f;source.widthCurve=AnimationCurve.Constant(0,1,1);
+            var cameraObject=new GameObject("Trail history camera");var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.transform.position=new Vector3(0,5,-5);camera.transform.LookAt(Vector3.zero);
+            var trail=new OriginalNativeFxTrail(source,"fixture");
+            try
+            {
+                var straight=new[]{new OriginalNativeFxPathPoint(Vector3.left*2,0,Vector3.right),new OriginalNativeFxPathPoint(Vector3.left,1,Vector3.right),new OriginalNativeFxPathPoint(Vector3.zero,2,Vector3.right)};
+                trail.Present(2,straight,new OriginalNativeFxPose(Vector3.zero,Quaternion.identity,Vector3.right),camera);
+                var filter=root.GetComponentInChildren<MeshFilter>();var before=filter.sharedMesh.vertices.Select(filter.transform.TransformPoint).Take(4).ToArray();Assert.That(before.Length,Is.EqualTo(4));
+                root.transform.SetPositionAndRotation(Vector3.forward*.5f,Quaternion.Euler(0,-90,0));
+                var corner=straight.Concat(new[]{new OriginalNativeFxPathPoint(Vector3.zero,2,Vector3.forward,true),new OriginalNativeFxPathPoint(Vector3.forward*.5f,2.5,Vector3.forward)}).ToArray();
+                trail.Present(2.5,corner,new OriginalNativeFxPose(Vector3.forward*.5f,Quaternion.identity,Vector3.forward),camera);
+                var after=filter.sharedMesh.vertices.Select(filter.transform.TransformPoint).ToArray();
+                for(int i=0;i<before.Length;i++)Assert.That(Vector3.Distance(before[i],after[i]),Is.LessThan(.00001f),"Old trail vertices are world snapshots, independent of the current emitter transform.");
+                Assert.That(Vector3.Distance((after[after.Length-2]+after[after.Length-1])*.5f,source.transform.position),Is.LessThan(.00001f),"The temporary live head follows continuously between durable history samples.");
+            }
+            finally{trail.Dispose();Object.DestroyImmediate(root);Object.DestroyImmediate(cameraObject);}
+        }
         [UnityTest] public IEnumerator OriginalProjectedDragonHeadsKeepTheirBelowPivotImageAboveRealTerrain()
         {
             var cameraObject=new GameObject("Chen projected head depth camera");var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;

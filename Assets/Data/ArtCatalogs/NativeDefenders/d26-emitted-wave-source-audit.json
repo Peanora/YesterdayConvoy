@@ -1,0 +1,2571 @@
+{
+  "date": "2026-11-14",
+  "status": "SOURCE_SCHEMA_AND_EXISTING_PROCESSED_BYTES_CHECKED_NOT_UNITY_GPU_VALIDATED",
+  "scope": "4 D26 native FX records appended, no bundle/shader modifications, all181 existing effect records and43 bundle declarations preserved. Source proprietary rights unchanged.",
+  "sourceBundle": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\original-bundles\\svash2.ab",
+  "sourceBundleSHA256": "0ba1db8c3b6bd1b48d1dbcb0d600db5a5d9f66973a4925149436d54baaa7dba1",
+  "existingProcessedBundle": "E:\\珍贵资料\\昨日圆车\\Assets\\Art\\VFX\\NativeDefenders\\Resources\\NativeDefenders\\Bundles\\b_0ba1db8c3b6bd1b48d1dbcb0.bytes",
+  "existingProcessedBundleSHA256": "2eb6a38ece4f0b16b60260ea088d104b1de36eb56cb53e8ba851c624ff4d9cf8",
+  "oldCatalogSHA256": "6e45414fbbdc23822c6042b8661915f9ee6b23b22e5e0da42ca8dfa1ed73fa81",
+  "newCatalogSHA256": "c3aa410c7da17f74d8af8bb8670a518f4e0aa5502f3390e56afb9e46f2534e9d",
+  "beforeEffectCount": 181,
+  "afterEffectCount": 185,
+  "bundleCount": 43,
+  "shaderFamiliesReused": [
+    "Particles/Standard Unlit",
+    "Torappu/Particles-L2D/Ram/Disturb(CustomData)",
+    "Torappu/Particles/Additive",
+    "Torappu/Particles/AlphaBlend",
+    "Torappu/Particles/Dissolve/Dissolve(CustomData)",
+    "Torappu/Particles/Ram/Disturb(CustomData)"
+  ],
+  "effects": [
+    {
+      "key": "defender/D26/svash2_skill_03_trail_02",
+      "asset": "dyn/battle/prefabs/effects/svash2_skill_03_trail_02.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": -5403571969406065498,
+          "rawSHA256": "c78b626203ac8369e0448b6f5c9765cc83cd60873780f2726b6ebdbc4700c441"
+        },
+        {
+          "indices": [],
+          "type": "Animator",
+          "pathID": 3407149224487298214,
+          "rawSHA256": "d8cd800121e8c8062e2e6c4c7b9365fb5c8df36e210799d4f95863d7e39a0e38"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": -4101890759976082266,
+          "rawSHA256": "390a3c8cbf246052f8d69cdb764d58a187535f8581fae1172f2018707349fa46"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -7605782398477327194,
+          "rawSHA256": "07a81308c17398372e3c0178c29df7ed8d1de76dbef9e069ebe4fd3c7bfd8c97"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 4221526811117364390,
+          "rawSHA256": "7a54ea0e32da8bec5b8612dbfcb1b7bbd2cd7fd5c2075d35098bc350942cc346"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4536162942814444378,
+          "rawSHA256": "970d2d4d25167f823c547433f4539cd7cae55070d2742410cea659fceaa21408"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -2901416111040617306,
+          "rawSHA256": "ea6663bd80c3e1d5d5684f7fdd82831b2c89d0f7b6896c2d84962b5674065793"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 2497818878653244582,
+          "rawSHA256": "ccd5630dfa5cd7a8156cdfbb6dffdeb7de0dbbc790c8cb3a29fbac4a15e54b60"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 1272828599886619814,
+          "rawSHA256": "f79685c44697a8c83edb1044bc2d1dc5b83bf32f84e9984199b7cfe696363c8d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 4358473860955645094,
+          "rawSHA256": "9987f9355700c392c28f7cda04c6345ce454be588732e65bf854b5c1be9874a2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 6485913421342581926,
+          "rawSHA256": "11ce0415d2ffce25f75f86db895caf767ab48bff9cda6ef0808002a86967dda5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4396978342200091814,
+          "rawSHA256": "d3a9681696d49d2ee4e73d1b0d23cb899ffe1f9822ea616ff99659c0e62ab6e8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -5323784459365374810,
+          "rawSHA256": "1176b3cb75c46c982e5712e0638b5faf34bd6ad880756d6f8c50383e1fe7b981"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2732458099462626138,
+          "rawSHA256": "adba04541602487b102721f6d57a060aa0614bef70be6633ce2dffbf05aa58d9"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 6192976914195621030,
+          "rawSHA256": "785e045bdef007bd9c10c2f6ba8379efff8d0298f0c6a647de5e44fc55351db7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -6897647396312243034,
+          "rawSHA256": "b78cbbd1585e082d44fac7cc0c19a54d6eeaca6401d4e9a57f1a29ba5c0d5be9"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": -8960338242582666074,
+          "rawSHA256": "8f5765eb66f575f3f4b7d236e4140a9a3516d8fcab0327a42491105ca34056ad"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4244342597069710502,
+          "rawSHA256": "a39d5db2ce835076e68f9d26161290dc07a359ef8b5f9c3145b5a000bc4560e8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 3793270370726454438,
+          "rawSHA256": "87807a7d9c55f2c98cfcda4a02592384acc39e9817b44c1c9d9274ff7a74d830"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2680154366207384410,
+          "rawSHA256": "1c3a4599a2db6417aa2338550731a317336b66d735f9f07c23ab63ba100a67b2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -238729501125827418,
+          "rawSHA256": "b8b880af53b8f22459d6ba2a25b6641fe6574758c61ba3c4e2cf2cf2ac255cde"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -764355512892447578,
+          "rawSHA256": "946ee9725f36e40dd763afbe4fe67c0091d0c9966a45131520da547ebcd945ea"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2834076409196305242,
+          "rawSHA256": "e95c6116659fea4df031fb9d5e8d8967c2346cea66d5ff41ea847a19ecb138d7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2811428444566313818,
+          "rawSHA256": "ef9efaf64a9c502194fc6eb453b9aa279252e0437a5155300c8f8cbdd922fd6a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "Transform",
+          "pathID": 7735516447580497062,
+          "rawSHA256": "d125fd9050ffa9ae9b6f418b489f68b3f847d8bb7c7ae6773e8dd9690028d2fe"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystem",
+          "pathID": -7862189398036831066,
+          "rawSHA256": "5fa8ff756c3eef41fa2595f1a394b31cbe7215792c015454f43cdfcd55b5b7d8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 2177490642757231782,
+          "rawSHA256": "e24a0323834f773e50763b8967039500eb9790fec0d0f059b9111c24cde0ba37"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "Transform",
+          "pathID": 5208211966984332454,
+          "rawSHA256": "4c81e3ea5f2438ec62f6fe499717fc80837eab03e5f87564d9f6e7ca73affefa"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystem",
+          "pathID": -6355363484693879642,
+          "rawSHA256": "00f0215b0930a4d7eeff28565d07aac3398ab9102cd7d48fe0f93a6a669bdd12"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 7254269911454327974,
+          "rawSHA256": "f60148bc1f67150fbbbde24372079a0397343d62436fcd10a1f03b7a20d48576"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "Transform",
+          "pathID": 1016178043612964006,
+          "rawSHA256": "1a16940babc042114aaebb105fd972e4c9c31925618c737b14e477576fe18c23"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2179041352481037146,
+          "rawSHA256": "ffd69926b829d44bfc0327a10c759a4d6cc3b5be0ee4998921c20a830278c2e7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 6187927967765111974,
+          "rawSHA256": "fb0c8efb26e61122c64e9b2abd72cc74837edc259bda074a9e4b672b9a011b58"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            7
+          ],
+          "type": "Transform",
+          "pathID": -4979891632335543130,
+          "rawSHA256": "f512e3b7ef370204d0b16c0bc40d43358cedaa9e3b391b0139e7c828ad169f3a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            7
+          ],
+          "type": "ParticleSystem",
+          "pathID": 7472607812123174054,
+          "rawSHA256": "91c4822357ee0296524e71a493c47acc76229ecb475c5abba5c7bc65ed9138de"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            7
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -6817155002628954970,
+          "rawSHA256": "d33a443837e1c0dc945e22de6274db214428273195426780079b233605156a2b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            8
+          ],
+          "type": "Transform",
+          "pathID": 6584024051045508262,
+          "rawSHA256": "922fcd7c682447f2e2c0ff7449e4da780e7f3f1e9ea3544e18ea6afc538e640b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            8
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4360192585533283162,
+          "rawSHA256": "6a285e81fb7ec23077207ed6c720a04b65317c15833015141aedf6e91e682300"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            8
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -5203742182260136794,
+          "rawSHA256": "f05fab8a888f9e689b69c73790cc0546a08587562f14274a19aea0c796e8fd57"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            9
+          ],
+          "type": "Transform",
+          "pathID": -3992887972409105242,
+          "rawSHA256": "57684660face2c04e2a37b79ee56f5cbc0ba7cdf471d14e7c68b2736e7c92919"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            9
+          ],
+          "type": "ParticleSystem",
+          "pathID": 8874983754631226534,
+          "rawSHA256": "cdc048a7c38227d880c9e14ff9ec0b8fb2ce38f720893a3ba8eea678f39b92e5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            9
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -506864608803150682,
+          "rawSHA256": "773836618d87543c642a9ffa8e3c6e54cf31c18cb39a7f1ba0754546b03d5661"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          "type": "Transform",
+          "pathID": -5248325230221056858,
+          "rawSHA256": "4a1289d76f6dd06e92677409de07c930ae862587c1ca54f8b99471a43e669447"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          "type": "ParticleSystem",
+          "pathID": 1545745371381048486,
+          "rawSHA256": "24a5a9e1c2cd1b1c44d92bc0dbd6c6a83584112a81f219f055ae7a405ceaddf5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -137595535364315994,
+          "rawSHA256": "2de5a3b5ea67da9d07772ef59e1fd1040ce1314882c0dbdb5024b28030d38cc0"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            11
+          ],
+          "type": "Transform",
+          "pathID": 4404178748198560934,
+          "rawSHA256": "31f14e046a1f18dde1664e23f7ada310b3717612309f35a14fc7e76888e4c9bc"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            11
+          ],
+          "type": "ParticleSystem",
+          "pathID": 5980260787890889894,
+          "rawSHA256": "598d8164f75507e4179e49535a36242c89740d02cfd552e6ef82ffbe3f8c74a5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            11
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 852975776742778022,
+          "rawSHA256": "dba5afb1b86687fdc958810fcdbad616d02657696248ca1a7c7943c2477c7105"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            12
+          ],
+          "type": "Transform",
+          "pathID": -6736613192063900506,
+          "rawSHA256": "3ae844404117818b1c0910ffeb845846a77e325fa353602a5fcd970caf5ce756"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            12
+          ],
+          "type": "ParticleSystem",
+          "pathID": 1908624483554370726,
+          "rawSHA256": "878e5f2a8faa0995eb6226f6bba44d6213b716b785662eaed043bd9227f61f9d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            12
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -8964793241924131674,
+          "rawSHA256": "ada989e239c0ded69844fcdd1dd82a5bc63703a93576f616466e14990d652cfc"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            13
+          ],
+          "type": "Transform",
+          "pathID": 5391122865623475366,
+          "rawSHA256": "d1eb24d44291c0e4a72882e860d6c36958b84dc11fbdcd759234762aa19f16a2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            13
+          ],
+          "type": "ParticleSystem",
+          "pathID": 8529800566019269798,
+          "rawSHA256": "55d66edef0d2db10a9cec686515f15b91c9f1962ebded10c43b0fb0839390492"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            13
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -5143293554395503450,
+          "rawSHA256": "cca32a4e19b1b6e6a3ad74e9af607b29f9e2c135a36c28062bef214e2d583613"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            14
+          ],
+          "type": "Transform",
+          "pathID": -8810279862455163738,
+          "rawSHA256": "90e65833347ddd1f1a24805001599a34a05daae1d7f156bf8b213ce402857475"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            14
+          ],
+          "type": "ParticleSystem",
+          "pathID": -6076259191694089050,
+          "rawSHA256": "e47e08d275b9fc98811623393a7ac76aa380e9a88a4d427fb24d8c78df41b735"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            14
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 7723547429092664486,
+          "rawSHA256": "a006fb51ed56d78a0b3dd42e28909027b45c1033ce8f0d76b87ca8832c5aea75"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          "type": "Transform",
+          "pathID": -2249960773963340634,
+          "rawSHA256": "8e531ffd97ac614c0e1d80129cefd2dc23206d9db153f5e2acee0b4546f7c43e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          "type": "ParticleSystem",
+          "pathID": 7545814928091915430,
+          "rawSHA256": "d3082b0ef3e221aaae5587d5eaa44948c53944a672fb4ff4cedeedfa2eb1a4a4"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -3903419181727013722,
+          "rawSHA256": "14d334716bfd98feb317f703e684f155e059fb42cd5a8ac1916baa32a2dd8780"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -5897122517754567514,
+          "rawSHA256": "1533f68da7653c3205f34a6fed49e18f59fbc48d8c7fa760e163ba6185867fbb"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 2207818406721758374,
+          "rawSHA256": "565d0b4a4bdc6b492c7540c07ffc96d6a416dabadf4814035d91a015f3d27404"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4520192373518687066,
+          "rawSHA256": "7ad2b539efa0809970f5e5f9883e633f571af28c453fd9e9c59c33af93718947"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 2267115702238389414,
+          "rawSHA256": "670ee02de01bf010028922b3b66f914be5f50da31090fa5c8ad16e467de6301c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5740968177872526170,
+          "rawSHA256": "984ac69fbe39abba0c8cfec7f4119c611da1c610da0e04f29ed42ca72e5af051"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4596076899288865626,
+          "rawSHA256": "686e61316bd92f9ba414d530ca769777f218dd6870361dc15156e86dad42758d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -9036849881428777818,
+          "rawSHA256": "8013053617645d9bb896afcc2a9a65a7108f1c245db77a5e6ec12af1c9595719"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4036669707241249626,
+          "rawSHA256": "8dbd4131943fab950361b9f8aa3168d3c4a9e72356d9c45785651b271f4abd3f"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -7436030310535191386,
+          "rawSHA256": "33d2a28f1d8018ae818b1e0daa30517d6f4c4609a970805eec3a8c64b2a98d43"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Bounded by original attack-projectile LIMITED .3s (source delayToFinish=.5 retained separately)"
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_trail_left_01",
+      "asset": "dyn/battle/prefabs/effects/svash2_skill_03_trail_left_01.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": -3095376958597019295,
+          "rawSHA256": "24a4caf3393ea923dae400fdfa133d728fdbf7fedab899dffc7c61586f791c90"
+        },
+        {
+          "indices": [],
+          "type": "Animator",
+          "pathID": 8992957753413290337,
+          "rawSHA256": "0e8cdf7bb6d18faef2437b77f823e9d55697a97c15bbe2e49f7765257ce4f8db"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": 7335333023046191457,
+          "rawSHA256": "f74d26f030bd9458fbcbdadfdbc83e0df06f14b06c16047f60059b68dfbc2bfc"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 778549086145366369,
+          "rawSHA256": "e6cd40855d0a033a6a3fae423bef8310dc8080518fedb714eaa6b033a22f4557"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3847076244785051295,
+          "rawSHA256": "4302f6c391338f063c3d606a302bf41dab4dfdf71452b149049c05c784926c29"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 2440098334152542561,
+          "rawSHA256": "967f4847f2534f6cf8249cefc9e1d04438608b615b06ed9ab7c9f6ad0c7a7848"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -6162742185564092063,
+          "rawSHA256": "b1ab66b4fcedb1e48698564f23594f1978d109fb5ca9a5a2cd858fc3d088f844"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 3405264060836366689,
+          "rawSHA256": "3a75b21e7e9b0b105cca0832ab71cbf92828a493c65999ed80d6bd7e73b44af5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 914905494534834529,
+          "rawSHA256": "13b2197e8396aa39a99f73d07c38a1f947c07aab217c7d2ab333fadb0f6cfa12"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 6569160722642454881,
+          "rawSHA256": "8ac780414606847b5d9fd4ce80cb00a43921873c9b6da9611333188bf44e05d9"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -1050177535084181151,
+          "rawSHA256": "68ac39b27372b1aa1f6b3c80e45f24795d230b4e452ad3f6f605f72634319764"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -7582985956865695,
+          "rawSHA256": "a46d64de2d275e453d49bc6e0ffe43eabdb55b8ee42aec2f25f22ba1124fdab7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -6936745484859717279,
+          "rawSHA256": "1f9c20d7a5406b6285a89e0ed9e661b302392da02af69221146c50e7d15c53ed"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -8657568441698596511,
+          "rawSHA256": "b9edcd99be088813a9377ec391b48a9c34f8ca5dc0fbc7903c0aea7d7f0b1076"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 8912273559218178401,
+          "rawSHA256": "d3fceaa47a5f1b17a3fb55eab445240a16f4a1327256a62cae759b8785fa8bca"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 2331481773794412897,
+          "rawSHA256": "996eb8c1b6fdba95ee323ae17f1846e0ec117411c78b9131dfe24ab47f642d23"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 7503401776546531681,
+          "rawSHA256": "637896bd6f989f7985ba0a6709aa95e63593bda77722c8ddcd0521d6d2df839e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 445281811214518625,
+          "rawSHA256": "46e078b4d47cfa321b68a910c07ad1a9d5ec09bd61c28ab3172b56d7373f73dc"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 8450271917456640353,
+          "rawSHA256": "977b443732c031b8b6fdcc51b65365e28065e4fe3c91e956a582cebbf260e88b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5361616889069483679,
+          "rawSHA256": "0dd11dcc82742587e70d99f0984fa277ceaa44a1f8fd980e377005a995e6ba29"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 1718041587498895713,
+          "rawSHA256": "edf33cc2b0102fca050bed79b86f54c8489ba9389e93f2badc061ae554fea7e0"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 599736097286736225,
+          "rawSHA256": "f6397ea0f67d9249989234391c8cc7b78733524e8207505bebcf0f14d7372a84"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3550985116168730271,
+          "rawSHA256": "2de3a2fed3576e6d35ebd748823ceee2fc3a7d0656b18b30eab9cc9166972474"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 9152721380505176417,
+          "rawSHA256": "93f3614de3110e8ca416eb5aebdc13a7ea42bc332a10a531a5b4bdd461550f17"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -6127427055620765343,
+          "rawSHA256": "000090f7e7c68396f6dbd0d18a45e439b35b9a0476187d4974ecab299f865de6"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -1944065546426562207,
+          "rawSHA256": "edfad98d15982de95a9b1b21a53ddfaa41db8773e291e82806c378efd8d505fe"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -3073630780935550623,
+          "rawSHA256": "6650c3977e8cc2c51af2adc5f0f5b031e9985c42eb60f118bc76e08d2acd1dac"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -4881239787146229407,
+          "rawSHA256": "8c74fb7603448db8c89cbafe3ba898ae8d4c8692dee1b4c6f0506201b305361b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 8393684630216591713,
+          "rawSHA256": "cac15b83716c04abf015a2fc627760d68979e0f2c0376ba8c9d4b7b1e38de819"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -9178281803433752223,
+          "rawSHA256": "3db72f0940f000417286cde6173c96ff4bd1b628cadfcb300be76f08b4d52df7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 4602221810296441185,
+          "rawSHA256": "14970f44be9a2b789aefb70d295d81e3edf8bb44125a456a979927a83d9c99b1"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3971633162417911455,
+          "rawSHA256": "453623060bd64b129ad4ec45f6b85bcdeb33b78f810e4d0043f65e628e32aaef"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 6592010957906594145,
+          "rawSHA256": "00159da1a8a774265c1d1fc07743139dad93f64ff3611ca3539c268b2f0ff199"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -8884579731412924063,
+          "rawSHA256": "89323b567e604d5351960dfccc4608ae80b29a72f4d52e1989ddc203e97254e5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": 4152402620393671009,
+          "rawSHA256": "7162cedcc57de6208222d09261e6df4ede89ded3db8c335bd5448714b049cb1a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -92125994507024031,
+          "rawSHA256": "661c7c0522d7f56ea7055b10cdf7ecd926a15427604c286c28b0f9917844a15e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -8701300824122439327,
+          "rawSHA256": "7d9967a14f0b4d77e0fe11965aaef79dca7112b033bd94973003e9661dce3a69"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -6162260500113176223,
+          "rawSHA256": "96d9924860144aac75fc730f117565d474ae532d9a9521d060ce70e48cc6e752"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 8167116860235270497,
+          "rawSHA256": "67b60c6ef76a2b2cfe76c5c22eeb1fe9caf193d6098d214f898a41e84878b9ba"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -262666683628435103,
+          "rawSHA256": "2dcbe6a36b4196471ec5be7473f386a0461cf9382ec294c63d721e99d745414d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 582902739330287969,
+          "rawSHA256": "1f72586d72e95b85f16cbe7cbe68d6094cdf408e56871b75f8064b2f7e6d2629"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 2096642717201221985,
+          "rawSHA256": "f61092bab30a6e8f308741667ef920c2572de751da2b88d831b89e3b60fa40fa"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "Transform",
+          "pathID": -7069454572145915551,
+          "rawSHA256": "6d4c2e86180b70c8432f8d9f269e4d3559a39ffbd6450f0ac09ee1cdb49eb1fb"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystem",
+          "pathID": -994250870929077919,
+          "rawSHA256": "b2c5922408e56328c7c3ba667339a56ff54ff8abf12020be25af497263f6a266"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -1149157754468284063,
+          "rawSHA256": "7e4c57766852060eb1b41bc9980b072fad047da132b97b5a8f28629828d22bd1"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "Transform",
+          "pathID": 6667640839775471969,
+          "rawSHA256": "0f97cfcc38c71a5bde53ed83c5b0bfae6c230c90c2b12d21ce5bb85ae08f1603"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystem",
+          "pathID": 1624483278565099873,
+          "rawSHA256": "4a4f8d070eaae76c6244f0924d154095d3754988f6d76448c84d8f94ebc404e4"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4930587504533850465,
+          "rawSHA256": "4440b2e25b92b860e69bc91c13d11ecd8b0fc59b9ef932c9b45cb100c66129e9"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "Transform",
+          "pathID": 7070199668378192225,
+          "rawSHA256": "af3c6121adc2dba5ef0b29a5324897aa8efca33ccdca20d5848a0e3be6529f53"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystem",
+          "pathID": 7581670440654686561,
+          "rawSHA256": "97024764becf07a1990be85af9d7b8b9eafa7d0d96609e3bec1e23400954883c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -808140715129747103,
+          "rawSHA256": "2cfc2f84cfeb6163c5a84bcff2e8b5bb2abe9666207f06137d85680c1cc751b1"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -3197266967891392159,
+          "rawSHA256": "be53bb59f97fc4e3ef0a2ad3c3a435b38e899fbd302c49f035f4da689ed45cf3"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 427434400542640481,
+          "rawSHA256": "d0f4c256c89da294173b76a0f6592e0caaaf546d87e282af614cbab3db830c92"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2085238138906654367,
+          "rawSHA256": "81bc0b082c6f926c6a0528952db1dbf5cdbe704a3e1ab58ed80a89898835307d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 531221134508902753,
+          "rawSHA256": "c93b7e8b7f66fd5423e44b392934a9eadf0dbacfc710fab1b12ea065e40ebd79"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5411823931685451423,
+          "rawSHA256": "05879681f122524e6ed223352c3f8702fc4fcd9894a4b2dac07f958def3b198b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4634244967778727583,
+          "rawSHA256": "f2aa6be354faf71a748710a50fb656ea70b3c2589fd4bb92674132f641f1e667"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -2885188201019586207,
+          "rawSHA256": "21312ad39ca9aaf7380ee6450d7c9474a15803bf0c1da00053b63ec31ee5351a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -194041074692175519,
+          "rawSHA256": "abb2df8f7c219e95a30073145b948241bb888f91df1d6c418d39f16bcd9d3f84"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 760329235030624609,
+          "rawSHA256": "17aef351e1b4ad8ed41cb85720b444b92691aa60ba9d0fc47bd70e7d512c6055"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Bounded by original attack-projectile LIMITED .3s (source delayToFinish=.5 retained separately)"
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_trail_right_01",
+      "asset": "dyn/battle/prefabs/effects/svash2_skill_03_trail_right_01.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": 4918887564101447807,
+          "rawSHA256": "145ae9dea19d963b7c81008960ac02550077bc332c0af44154753c5d0c9fe09d"
+        },
+        {
+          "indices": [],
+          "type": "Animator",
+          "pathID": 8046311586316644479,
+          "rawSHA256": "84a483b513029235c83e712a27b0ca1ccd7abe9485e1c38e815aaf4279445b7a"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": -625576768867110785,
+          "rawSHA256": "35a949282d6ef047d3db11ea2798d4792eefcca67024279a533bc40f0d2d5050"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 2396094137538211967,
+          "rawSHA256": "35ded7c52a894b35d710f3ac203d91d81c4467f7d6d419126bcc00d9afc35a80"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4625024961429540737,
+          "rawSHA256": "236d2f58f8eb3b18c62bcd78319c66424bb00c062b7d722cb9da9669dfd6648c"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -5559807029006339969,
+          "rawSHA256": "d1bf95d813ddbe940e9a1d4146e7ab79ffc9341d0ab566987655858925d6bdb2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -8006134886520557441,
+          "rawSHA256": "931bb16a1c38c323ef38c646a903f3838ab9df2e5c1dc56b0a3f9f6e73dd526c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3057410096252686209,
+          "rawSHA256": "0df08b5c6bdc8efe0548f622a33aa81f0871d7991251d7280ab5bf6f11bf5a54"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2133401258349137793,
+          "rawSHA256": "47ef194971331c547f4b3da112d05aca7f36de9b12baefc0719fe12f27c51179"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -6537627958970191745,
+          "rawSHA256": "5ca82cfc9d0e64a3c3019ab8b5c5a3c800c586466e42f8378dba1b76884842fa"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5935006648557408129,
+          "rawSHA256": "c7554362717cc113fc6772a0c6a2d8eff0d04fb33ebda811ce69fda1af59268e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 360910907830464639,
+          "rawSHA256": "3afdae7912c07b4b4a846266cf2406bf616063f0a735f4e708a4b41f078f0885"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 8051899036099899519,
+          "rawSHA256": "0fadc8d342bbd425f19f63b698756bba91b59d5f182967a9fa9f37973ab17e2a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 8798654028538015871,
+          "rawSHA256": "64585ce5723d0250bad02a4e26361596797242dd2ffb2db790ddc4570109a3f3"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4891098673767149695,
+          "rawSHA256": "4d8af666864ac1f6d237777391b295343104968c3b14fde8f91f49be2c49aa9b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -4783630213061185409,
+          "rawSHA256": "7c72b991ac066355e79b2c1f4dfdb1a35d2a5b70c89ca41a426feb41696964bd"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 5351076560117854335,
+          "rawSHA256": "8d896515854dcb68c8f2a75e64f80773b54f873af9d51d8ab36e185a1f32e12d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 8601414144021065855,
+          "rawSHA256": "c2bbb40c4523529e43c96aba2ecb26492905cf52ac7ba0e4da4d60292dd8426b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 1713365754621423743,
+          "rawSHA256": "29b21eb429566242eb5483ba5f82a8f4733de5b46c57bb1ac142cb0dea76ba78"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 8733879520137212031,
+          "rawSHA256": "db201cb34561336e52e5e3ea49d99e275395afb2cc3a2666bc218b88b35cdbd7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 2751106685654429823,
+          "rawSHA256": "14beee694dd92ddf634fbac47ae9251b57c29da3a9ecde2d1d2c0173fbc08b20"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 1628102362054488191,
+          "rawSHA256": "fd4b794628362f3e770ab32097a33ff275b129c9cb7765b286eb9e5af07a378f"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -406908342324793217,
+          "rawSHA256": "8a67bba36ec4de9b0285538d7a33eb5d2f598760acafe2fc20c99338a028a042"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2890419811687763841,
+          "rawSHA256": "01cc664fdf143a5ae00534d5b77eb72373cb37e20b88fdd7966693bc8c86820a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -8987205733838000001,
+          "rawSHA256": "c195e0acb4b5d4d2f2f3426f5aac9295d43faee5a81dff5880df989c293c5ea4"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4099887950058459009,
+          "rawSHA256": "2951f8049ec46becfc98f3286557ea98f46ee66e17733e31264fa5e8461f993c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2988051845721984897,
+          "rawSHA256": "988b5ce2fc366f93a3a1ae1cff6c6d6d001c04c4ca959bf1df796951c6344d50"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 9004094824676552831,
+          "rawSHA256": "138e68bdb75468abd7be277a5856f5e1b0ee64e6d9aff3393931da7666317c28"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2705669299913330561,
+          "rawSHA256": "af6f535847f3db2eb99ca95d3835e913b2dfd3536d2bbf8203913c5f909e0771"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 3088241441028731007,
+          "rawSHA256": "2a069f9c4312a201ed1ea9774b8137c1ff6c383e88c51912345aca0446936165"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": 7594227179566821503,
+          "rawSHA256": "e210d40b2ffede5b3980fe8cf951d62c046a004e8db2e078b97cdd73e81acf31"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -1201927742766616449,
+          "rawSHA256": "d57615e0bfa2b8e6db71947ba401c41c76ad190d5322473524498dc8f8de0ad0"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -1350223929854824321,
+          "rawSHA256": "2f57e453d07eb486664d369e4969b4de4b678d29002c01b7f5745a080e6a9240"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -2629009801680555905,
+          "rawSHA256": "b4fb0c8a3f1078b9c185ee0c427291a97580fe0d76732dd7f587a018adc0004b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4983553644110909313,
+          "rawSHA256": "76f8fa3f44b9b88b10f038589fb460f2c4cacef60c74c192920b527bc1d5ab8d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 7413039677012930687,
+          "rawSHA256": "871bcfe10652ac8129852af840522cda60d581002ea13310d5158ad3f90f1403"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 8096443813775569023,
+          "rawSHA256": "3d6ae3a1dcc6f67a5fc316e7255cfe3dfaf3e071a218f0f59c41151ffe908f7e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -8056410062495190913,
+          "rawSHA256": "0596a1fd11bbd123dd20338f82b126f94e9220fabf41b728c0fb24b42d2f7917"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -7901698460235632513,
+          "rawSHA256": "e13107a68b590bd6dbd328e0d3e5766ec60009f199bd63305187d40438f57f7e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 7067053364238381183,
+          "rawSHA256": "97605009720a2a6f087b7ebe5f71287d8ade58f5c44b73f5c4bd4c26bd2e704b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": 5734545295260414079,
+          "rawSHA256": "2863b5a00257d4baf7c486d101f84e56e2803f645c02016647d31236de958cdf"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 8222095139014340735,
+          "rawSHA256": "d9683df6b3f9ec9f82e1e94ce642d7d8916051ae451504cc9108a26c7ea63385"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "Transform",
+          "pathID": -3103878997688422273,
+          "rawSHA256": "be4fa5b38bb3e9a33da2ab0c9865fda5acd379773741c8991e7b7f9406aaf53d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2045914561368657793,
+          "rawSHA256": "83fa3f50f18e4440726b8df7b7d2bfd09da661d2034db35f35070108528015f6"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4783363220357287809,
+          "rawSHA256": "e2d12353f0c6bd3c1581b2959a751683c3c240b3a698243eaa3a2628d45c5e1d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "Transform",
+          "pathID": 274495833317273727,
+          "rawSHA256": "0da30a7c0bbbc2020c7e71152c4a33a4fc8bd826eafaceacf924505329f7afce"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystem",
+          "pathID": 6665263488131231871,
+          "rawSHA256": "3956af0f4135794a25bb1fc8d82320521c1618a7e711406beb4b0929b5d48dbb"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -440101674104426369,
+          "rawSHA256": "feafcf605e6ff2c02f0c28c17933a2d74a99b3f428a8632bdb579ad1c43acc37"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "Transform",
+          "pathID": -472981522075979649,
+          "rawSHA256": "57e386433a01cc0814211cdb980a8c30fd8eab6ef9fd8b0827e1f6c942ee6a5c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2522090614385053569,
+          "rawSHA256": "7a46f86c669a0ccf53f3090342a9c93ce69978f0703aae389a40be9e90911452"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 6919973294992420991,
+          "rawSHA256": "aa78bcefda8831fd083584eaf766085bc989019288e6c248a74031e57cf5272d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -5180518523023495041,
+          "rawSHA256": "4da859e01afdc53433e6432e56e8152024e5d569b55adc54882faa580097d04b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": -6003876090027347841,
+          "rawSHA256": "0e0430da25827bf73ffcc3aa87c202cca475f1811a85e23fe861142f9a5a32c2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -7937814335271636865,
+          "rawSHA256": "ce973fe66588a2bf5918cf249396356955c404d69c56f7dff7aebaff6a4f9d01"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": -601937890293026689,
+          "rawSHA256": "932bbbd521cdbad4c01ebbdd2bbcec417392ff8da65b726970ad331359d055e0"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3019930698550448001,
+          "rawSHA256": "968b15ec73a4d8d6fd930652a85a291f096d76103a6b1c2eb73f3ecff5897864"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -752110905222598529,
+          "rawSHA256": "2686c311f8a99416ae6220797cd3a955afe4da816d15a2d0ca1af8d173530832"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": 6646575664920162431,
+          "rawSHA256": "795d640a7ba54f5a36c811546d69b246474c8961ef620ac9fa3c2c2b9a7b585f"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": 3475335817548886143,
+          "rawSHA256": "20cf86b56c869cf64c1d0021a2a54c14178daa41fb8ddf6faa28f89282cd6148"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 3176248328504176767,
+          "rawSHA256": "7a062e391eeb80ef52f0a2534108fcbafc19089cc26394a0eb50a8f5e4c7742b"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Bounded by original attack-projectile LIMITED .3s (source delayToFinish=.5 retained separately)"
+    },
+    {
+      "key": "defender/D26/svash2_skill_03_hit_01",
+      "asset": "dyn/battle/prefabs/effects/svash2_skill_03_hit_01.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": 9211929490201952763,
+          "rawSHA256": "60e3d105282d90a42c423c1a8c0a2a5dc87fb83c2de3f5dceaa059910fcfde25"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": 2110829526421520891,
+          "rawSHA256": "5db424a81593047d738bc0ce84311b598b3bfcaf750dcfb654fe9924f393059e"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -620131260553772549,
+          "rawSHA256": "89bd61a5d03b35f40c6a58cca14c54c26db55d73b804e343c94d4bffdfddb447"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": 5190136436854014459,
+          "rawSHA256": "2bcdca2eb26685600dce2c458ae98d100c5ae828486485af372cefe2e8bc171e"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 7280840860958769659,
+          "rawSHA256": "27ec47409d5c21f6f7a194c4d11ea489aa262f748eb72dce27a76800e2dd1123"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -8049585659532492293,
+          "rawSHA256": "9528c7ee6e0e579f97092460e50082f67349da4abf9662222cc374b65cb628d6"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -2820810359604985349,
+          "rawSHA256": "987264e357f79df2728e2f6e26e1b591843e00cbbe8e95a797652afa623f28c2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -3306253196260883973,
+          "rawSHA256": "af8fc74b836244201cb2a5e1ff1e8313588421d0bad6ac4ea81aad1a661950a0"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 1392630782791827963,
+          "rawSHA256": "5fa8d06aed50c89e557a56ce9bab58a9abaa00cacd2ccb251414dfb63c2a326d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -1708024091462876677,
+          "rawSHA256": "38fbf70db87e35a86b4d397ee868537e50b07b1f4be909acee36dd2ca876e157"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -6514663520677805573,
+          "rawSHA256": "b4adfffdcebe326822fd6c191cf599bfd4d2af84ab2101be5980b231a23fc473"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 7873043977222603259,
+          "rawSHA256": "31546566aa7e9abe3ffa1bcfe960464bc37606c10ddac127aa8e77ee69968cc7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystem",
+          "pathID": -545508767070502405,
+          "rawSHA256": "b52aa94f8e0b4f16ab002687e566366975d227ffc31dff3d9fc39f8d55e7688a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4916407738629045765,
+          "rawSHA256": "ade938345f92bc191bcb23d4bd22d0d1fc7bd75b3b2c5410f65bc278ed33e82d"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": -1896915801603522053,
+          "rawSHA256": "fd3b07ae2539da7d9cd8a7625cb07b3ecd9fe96acbe55fd6d93cc2519a8d8a1a"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": 162134560147948027,
+          "rawSHA256": "0d8292800b108208d3cb6e9bdd5ea9d19ba9c3505e16ca4c8a65be38091f02a9"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 7741696979533939195,
+          "rawSHA256": "d9fe11185609f987ab2700b5b3fd91d0543e346d1c33056263c60fa4caf28a79"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": -5729651946409180677,
+          "rawSHA256": "8c4e53408396f2c0138f172a6c48630147116f9c8a31fe10dcdded7a774bf5a5"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": 2288602802542264827,
+          "rawSHA256": "1a7d5d717920eb9566b911a19d2c7bd008141695b761c79846e2707856811171"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -8249858196518682117,
+          "rawSHA256": "36e3a741cb7a4c57643333da9366651e7475a36664d1afad0b2f7dda052fab55"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "Transform",
+          "pathID": -8568432520487124485,
+          "rawSHA256": "7089ac9fccaaf7aa99e3ea15b9dd2662ea04d026cd7498beaf2f5423a184b676"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5068730911563791877,
+          "rawSHA256": "c44a20248906f50e50a2897abced81228a99c9f2d59b7fa520a27e40fbe2f0d2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            4
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 2835812016809951739,
+          "rawSHA256": "8235ef002611219304dcbcb23c28b7bd388fcba0e2383daa04e8e44d9ea4bb5e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "Transform",
+          "pathID": 6531100403507380731,
+          "rawSHA256": "3d3de15367670e9dcaf1df2ef7b0997228b7bc28c38e8518034befba7cc3799b"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystem",
+          "pathID": 1561220458353574395,
+          "rawSHA256": "72efce9816a66f1ba60b228eeeb217a2b09d4c8dbb11015b7df7a59181c90c43"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -2726320991830883845,
+          "rawSHA256": "1b6f32641fdb5a0b30386bfae6d94d16b3a0af5924315b284331930416871825"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 7314666765668172283,
+          "rawSHA256": "1ad49061c56dff13aaeefd0daedf7fd33a08298cf900f23e755b0e6dd319f076"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -9188259988134837765,
+          "rawSHA256": "4210e04a63f2311822a77038db12fc4abbb2bb4a66b83656b4416676cba8d868"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -4001467424651099653,
+          "rawSHA256": "bcacf48fd66fb20d3199a37954a7fba1a1aadec795d8780c908b23c167d3a4d8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "Transform",
+          "pathID": -7770274703047671301,
+          "rawSHA256": "b4598392702bb65c1adb14a545af1120a269cebfa1913fa187174fac6f63929e"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystem",
+          "pathID": -6836585158683147781,
+          "rawSHA256": "dd796512c2bf05965a1f4158354c03740e16e2b43a26c231a472668e58f56472"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            6
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 889746113843544571,
+          "rawSHA256": "96049458cbc112b78a6de1ae0ad532ec739a322cb32cccec07d69ec2c2af82b5"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Default one-shot integration cap3s; original ParticleSystem/Animator and driver fields retained, not a measured original cutscene duration"
+    }
+  ],
+  "projectileContracts": "External reference-old6/d26-emitted-wave-projectiles.json; original [uc]projectiles.ab, LIMITED lifetime .3 and speed10 FIXED_DIRECTION.",
+  "runtimeChecks": "Not run Unity/GPU; root will validate current Player and same-frame appearance."
+}

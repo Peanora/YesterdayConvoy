@@ -112,7 +112,7 @@ namespace YesterdayConvoy
             if(!d.Alive||!DefenderSkillActive(d)||d.Settings.Skill.Kind!=DefenderSkillKind.AngelinaWishes||d.BlockedCount>0||d.NeuralUntil>Clock||d.FrozenUntil>Clock||DefenderShackled(d)||Clock<d.SkillActionUntil||Clock<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)return false;
             // The course game has fixed lanes. Only a legal, unblocked aerial target inside the authored range can be intercepted.
             DeployedUnitState closest=null;
-            foreach(var u in units)if(CanDefenderTarget(u)&&UnitAirborne(u)&&!BossRosterUnblockable(u)&&!u.IsBlocked&&GroundDistance(d.Position,u.Motion.Position)<=d.Settings.Skill.EffectRadius&&
+            foreach(var u in units)if(CanDefenderTarget(u)&&UnitAirborne(u)&&!BossRosterUnblockable(u)&&!u.IsBlocked&&DefenderSkillContains(d,u.Motion.Position)&&
                 (closest==null||GroundDistance(d.Position,u.Motion.Position)<GroundDistance(d.Position,closest.Motion.Position)))closest=u;
             if(closest==null||GroundDistance(d.Position,closest.Motion.Position)<=d.Settings.BlockRadius)return false;
             if(!d.SeventhMoving||d.SeventhInterceptTarget!=closest.EntityId){d.SeventhInterceptTarget=closest.EntityId;SeventhEvent(SeventhDefenderEventKind.FlightIntercept,d,closest.EntityId,closest.Motion.Position,Clock,Clock+1);}
@@ -155,7 +155,7 @@ namespace YesterdayConvoy
                 foreach(var f in seventhFields)if(!f.Medical&&!f.MedicalSub&&!f.Corrosion&&!f.CorrosionCore&&Clock>=f.At&&Clock<f.Until&&GroundDistance(f.Position,u.Motion.Position)<=f.Radius)return .6f;
                 return 1;
             }
-            foreach(var d in defenders)if(d.Alive&&d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes&&DefenderSkillActive(d)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))return .6f;
+            foreach(var d in defenders)if(d.Alive&&d.Settings.Skill.Kind==DefenderSkillKind.AngelinaWishes&&DefenderSkillActive(d)&&DefenderRangeContains(d,u.Motion.Position))return .6f;
             return 1;
         }
         bool StepSeventhDefenderAction(DefenderState d)
@@ -163,9 +163,9 @@ namespace YesterdayConvoy
             if(!IsSeventh(d)||d.Settings.Skill.Kind!=DefenderSkillKind.KaltsitEsperanta||!DefenderSkillActive(d))return false;
             if(d.Ammo<=0||Clock+1e-6<d.NextAttackTime)return true;
             DeployedUnitState enemy=null;
-            foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d)&&PreferDefenderTarget(d,u,enemy))enemy=u;
+            foreach(var u in units)if(CanDefenderTarget(u)&&DefenderRangeContains(d,u.Motion.Position)&&PreferDefenderTarget(d,u,enemy))enemy=u;
             DefenderState ally=null;
-            if(enemy==null)foreach(var a in defenders)if(a.Alive&&!a.DebtLife&&a.Health<a.MaxHealth-.001f&&GroundDistance(d.Position,a.Position)<=DefenderRange(d)&&(ally==null||a.Health/a.MaxHealth<ally.Health/ally.MaxHealth))ally=a;
+            if(enemy==null)foreach(var a in defenders)if(a.Alive&&!a.DebtLife&&a.Health<a.MaxHealth-.001f&&DefenderRangeContains(d,a.Position)&&(ally==null||a.Health/a.MaxHealth<ally.Health/ally.MaxHealth))ally=a;
             if(enemy==null&&ally==null)return true;
             d.TargetId=enemy?.EntityId??ally.EntityId;d.LastActionTime=Clock;d.LastActionRate=1;d.LastActionHealing=enemy==null;d.LastAttackSkill=true;d.NextAttackTime=Clock+d.Settings.Interval/DefenderAttackRate(d);
             var at=Clock+SeventhAttackWindup(d)+CombatSettings.ProjectileTime;
@@ -183,9 +183,9 @@ namespace YesterdayConvoy
             d.LastActionTime=Clock;d.LastActionRate=1;d.LastActionHealing=false;d.LastAttackSkill=active;d.NextAttackTime=Clock+d.Settings.Interval/DefenderAttackRate(d);
             var targets=new List<DeployedUnitState>{primary};
             int maximum=kind==DefenderSkillKind.ChenHolungday?int.MaxValue:active?3:1;
-            foreach(var u in units)if(targets.Count<maximum&&u!=primary&&CanDefenderTarget(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d))targets.Add(u);
+            foreach(var u in units)if(targets.Count<maximum&&u!=primary&&CanDefenderTarget(u)&&DefenderRangeContains(d,u.Motion.Position))targets.Add(u);
             if(active&&kind==DefenderSkillKind.AngelinaWishes)
-                foreach(var u in units)if(!targets.Contains(u)&&CanDefenderTarget(u)&&UnitAirborne(u)&&GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d)){targets.Add(u);break;}
+                foreach(var u in units)if(!targets.Contains(u)&&CanDefenderTarget(u)&&UnitAirborne(u)&&DefenderRangeContains(d,u.Motion.Position)){targets.Add(u);break;}
             int hits=active&&kind==DefenderSkillKind.ChenHolungday?2:1;
             foreach(var u in targets)for(int hit=0;hit<hits;hit++)
             {

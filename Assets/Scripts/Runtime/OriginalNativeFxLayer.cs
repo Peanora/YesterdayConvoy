@@ -17,7 +17,9 @@ namespace YesterdayConvoy
     internal sealed class OriginalNativeFxLayer:IDisposable
     {
         sealed class UvBinding {internal Transform Node;internal OriginalNativeFxCatalog.UV Data;internal Material Material;internal Vector2 Main,Second;internal double Delay;}
-        sealed class RotationBinding {internal Transform Target;internal int Axis;internal bool Directional,LeftDefault,FourDirections;internal float MainAxisAngle;internal Quaternion Initial;}
+        sealed class RotationBinding {internal Transform Target;internal int Axis;internal bool Directional,LeftDefault,FourDirections,Projectile;internal float MainAxisAngle;internal Quaternion Initial;}
+        sealed class ProjectileBinding {internal Transform Target;internal Quaternion Initial;internal float MainAxisAngle;}
+        [Serializable] sealed class ProjectileDirection {public int _resetMainDir,_mainDir;public OriginalNativeFxCatalog.Reference _bodyTransofrm;}
         sealed class SortingBinding {internal Renderer Renderer;internal int Offset;}
         sealed class DelayBinding {internal Transform Target;internal float At;internal bool Active;}
         sealed class FinishBinding {internal Transform Node;internal FinishAnimation Data;}
@@ -37,6 +39,7 @@ namespace YesterdayConvoy
             internal Transform[] Nodes;internal readonly HashSet<ParticleSystem> Started=new HashSet<ParticleSystem>();
             internal readonly List<Material> Materials=new List<Material>();internal readonly List<UvBinding> Uv=new List<UvBinding>();
             internal readonly List<RotationBinding> Rotations=new List<RotationBinding>();
+            internal readonly List<ProjectileBinding> ProjectileDirections=new List<ProjectileBinding>();
             internal readonly List<SortingBinding> Sorting=new List<SortingBinding>();
             internal readonly List<DelayBinding> Delays=new List<DelayBinding>();
             internal readonly List<FinishBinding> FinishAnimations=new List<FinishBinding>();
@@ -174,11 +177,14 @@ namespace YesterdayConvoy
                     foreach(var delay in driver._subFXDelayConfigs??Array.Empty<OriginalNativeFxCatalog.SubDelay>())
                         if(delay.transform!=null&&byId.TryGetValue(delay.transform.m_PathID,out var delayed))instance.Delays.Add(new DelayBinding{Target=delayed,At=delay.delayTime+driver._delayToPlay,Active=delayed.gameObject.activeSelf});
                     if(driver._rotateType==1&&driver._rotationY!=null&&byId.TryGetValue(driver._rotationY.m_PathID,out var y))instance.Rotations.Add(new RotationBinding{Target=y,Axis=1,LeftDefault=driver._leftIsDefault!=0});
-                    if((driver._rotateType==2||script.type=="ProjectileEffect")&&driver._rotationZ!=null&&byId.TryGetValue(driver._rotationZ.m_PathID,out var z))instance.Rotations.Add(new RotationBinding{Target=z,Axis=2,Directional=true,FourDirections=script.type=="ParticleEffect"&&driver._rotateType==2,MainAxisAngle=MainAxisAngle(driver._mainDir),Initial=z.localRotation});
+                    if((driver._rotateType==2||script.type=="ProjectileEffect")&&driver._rotationZ!=null&&byId.TryGetValue(driver._rotationZ.m_PathID,out var z))instance.Rotations.Add(new RotationBinding{Target=z,Axis=2,Directional=true,FourDirections=script.type=="ParticleEffect"&&driver._rotateType==2,Projectile=script.type=="ProjectileEffect",MainAxisAngle=MainAxisAngle(driver._mainDir),Initial=z.localRotation});
                     if(script.type=="ProjectileEffect")
                     {
+                        var sourceDirection=JsonUtility.FromJson<ProjectileDirection>(script.fields);
+                        if(sourceDirection._resetMainDir!=0&&sourceDirection._bodyTransofrm!=null&&byId.TryGetValue(sourceDirection._bodyTransofrm.m_PathID,out var body))
+                            instance.ProjectileDirections.Add(new ProjectileBinding{Target=body,Initial=body.localRotation,MainAxisAngle=MainAxisAngle(sourceDirection._mainDir)});
                         var directional=instance.Nodes.Where(t=>t.name=="rotation_z").OrderBy(t=>Depth(t)).FirstOrDefault();
-                        if(directional!=null&&!instance.Rotations.Any(r=>r.Target==directional))instance.Rotations.Add(new RotationBinding{Target=directional,Axis=2,Directional=true});
+                        if(directional!=null&&!instance.Rotations.Any(r=>r.Target==directional))instance.Rotations.Add(new RotationBinding{Target=directional,Axis=2,Directional=true,Projectile=true,Initial=directional.localRotation});
                     }
                     instance.FinishDelay=Math.Max(instance.FinishDelay,driver._delayToFinish);
                 }
@@ -203,8 +209,10 @@ namespace YesterdayConvoy
         {
             instance.Root.transform.SetPositionAndRotation(pose.Position,pose.BasisRotation);instance.Root.transform.localScale=pose.Scale;
             var local=Quaternion.Inverse(pose.BasisRotation)*pose.Direction;float angle=Mathf.Atan2(local.y,local.x)*Mathf.Rad2Deg;
+            bool sourceProjectile=instance.Path!=null&&instance.ProjectileDirections.Count>0;
             foreach(var rotation in instance.Rotations)
             {
+                if(sourceProjectile&&rotation.Projectile){rotation.Target.localRotation=rotation.Initial;continue;}
                 if(rotation.Axis==1)rotation.Target.localRotation=Quaternion.Euler(0,pose.FlipX!=rotation.LeftDefault?180:0,0);
                 else if(rotation.FourDirections)
                 {
@@ -212,6 +220,12 @@ namespace YesterdayConvoy
                     rotation.Target.localRotation=rotation.Initial*Quaternion.Euler(0,0,delta);
                 }
                 else rotation.Target.localRotation=Quaternion.Euler(0,0,angle);
+            }
+            if(sourceProjectile)foreach(var binding in instance.ProjectileDirections)
+            {
+                var rotation=binding.Initial*Quaternion.Euler(0,0,Mathf.DeltaAngle(binding.MainAxisAngle,angle));
+                if(binding.Target==instance.Root.transform)binding.Target.rotation=pose.BasisRotation*rotation;
+                else binding.Target.localRotation=rotation;
             }
         }
         void Evaluate(Instance instance,double age,float step)

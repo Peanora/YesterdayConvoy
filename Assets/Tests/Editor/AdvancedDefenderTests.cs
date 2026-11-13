@@ -29,7 +29,8 @@ namespace YesterdayConvoy.Tests
         }
         [Test]public void MlynarAttacksAtMostFiveDistinctTargetsAndResetsChargeAtEnd()
         {
-            var b=New(new[]{Guard("m",Vector3.forward,Skill(DefenderSkillKind.MlynarGlory,duration:2,initial:0,required:5),attack:false)},enemyAttack:false,speed:1);Begin(b);
+            // Six targets fit inside the actual forward cells at the first attack.
+            var b=New(new[]{Guard("m",Vector3.forward*2.5f,Skill(DefenderSkillKind.MlynarGlory,duration:2,initial:0,required:5),attack:false)},enemyAttack:false,speed:1);Begin(b);
             for(int i=0;i<5;i++){b.Advance(.6f);Assert.That(b.TryDeploy(b.RunId,i+2,b.Entry).Success,Is.True);}
             b.Advance(3);var group=b.CombatShots.Where(s=>s.FromDefender).GroupBy(s=>s.StartedAt).First();
             Assert.That(group.Count(),Is.EqualTo(5));Assert.That(group.Select(s=>s.TargetId).Distinct().Count(),Is.EqualTo(5));

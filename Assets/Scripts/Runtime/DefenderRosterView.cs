@@ -125,7 +125,11 @@ namespace YesterdayConvoy
             view.FirstAction=double.IsNegativeInfinity(view.Action)||defender.LastActionTime>view.Action+view.ActionDuration+.05||view.SkillAction!=defender.LastAttackSkill;
             view.SkillAction=defender.LastAttackSkill;view.Action=defender.LastActionTime;view.ActionVariant++;
             view.ActionRate=first!=null?Mathf.Max(.0001f,first.DefenderActionRate):Mathf.Max(.0001f,defender.LastActionRate);
-            view.ActionDuration=defender.Settings.ActionDuration/view.ActionRate;
+            // Mon3tr's transformed claw is a different native clip from its
+            // 2.833-second healing gesture. Do not stretch its recovery to that gesture.
+            bool mon3trClaw=defender.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&first!=null&&
+                first.DefenderSkillWasActive==true&&!first.Healing;
+            view.ActionDuration=view.Art.ActionDurationFor(mon3trClaw,defender.Settings.ActionDuration,view.ActionRate);
             view.ContactAt=first!=null?first.StartedAt-view.Action:defender.Settings.Windup/view.ActionRate;
             if(first==null&&defender.Settings.Skill.Kind==DefenderSkillKind.KaltsitEsperanta&&battle.DefenderSkillActive(defender))
                 foreach(var evt in battle.SeventhDefenderEvents)

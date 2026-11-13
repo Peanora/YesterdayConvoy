@@ -76,7 +76,7 @@ namespace YesterdayConvoy
                 {
                     // The normal form heals from a high platform. Meltdown attacks from the
                     // authored relay point, so a distant enemy cannot justify an empty cast.
-                    useful=units.Exists(u=>CanDefenderTarget(u)&&GroundDistance(d.Settings.RelayPosition,u.Motion.Position)<=skill.EffectRadius);
+                    useful=units.Exists(u=>CanDefenderTarget(u)&&DefenderSkillFootprints.Contains(DefenderSkillCells(d),d.Settings.RelayPosition,DefenderSkillFacing(d),u.Motion.Position));
                 }
                 else if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*V2DefenderSkill(d,"autoUseBelowHealthFraction",.8f);
                 else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing||skill.Kind==DefenderSkillKind.KaltsitEsperanta)
@@ -84,10 +84,11 @@ namespace YesterdayConvoy
                     foreach(var ally in defenders)
                         useful|=ally.Alive&&ally.Health<ally.MaxHealth-.001f&&GroundDistance(d.Position,ally.Position)<=d.Settings.HealRange+skill.HealRangeBonus;
                 }
-                else foreach(var u in units)useful|=CanDefenderTarget(u)&&(GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d)||skill.Kind==DefenderSkillKind.LapplandHavoc||u.BlockerId==d.EntityId);
+                else foreach(var u in units)useful|=CanDefenderTarget(u)&&(DefenderSkillContains(d,u.Motion.Position)||skill.Kind==DefenderSkillKind.LapplandHavoc||u.BlockerId==d.EntityId);
                 if(!useful)continue;
                 d.SkillSP=0;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock+skill.Duration;d.SkillCasts++;
                 if(!BeginSeventhSkill(d))BeginAdvancedDefenderSkill(d);
+                CaptureDefenderSkillFacing(d);
                 if(skill.Kind==DefenderSkillKind.BeagleGuard)d.SkillActionUntil=Clock+1;
                 if(skill.Kind==DefenderSkillKind.CardiganRecovery)
                 {
@@ -149,7 +150,7 @@ namespace YesterdayConvoy
                 int count=1;foreach(var other in units)
                 {
                     if(count>=skill.Targets)break;
-                    if(other==target||!CanDefenderTarget(other)||GroundDistance(d.Position,other.Motion.Position)>DefenderRange(d))continue;
+                    if(other==target||!CanDefenderTarget(other)||!DefenderRangeContains(d,other.Motion.Position))continue;
                     QueueDefenderShot(d,new CombatShot(d.EntityId,other.EntityId,true,true,d.Position,other.Motion.Position,Clock+spec.Windup,travel,DefenderOrdinaryDamage(d,other)));count++;
                 }
             }

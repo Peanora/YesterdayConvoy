@@ -13,6 +13,7 @@ namespace YesterdayConvoy
         readonly List<OriginalNativeFxPathPoint> history=new List<OriginalNativeFxPathPoint>();
         readonly List<OriginalNativeFxPathPoint> visible=new List<OriginalNativeFxPathPoint>();
         double lastClock=double.NegativeInfinity;
+        double lastPathAt=double.NegativeInfinity;int lastPathOrdinal;
         internal float Lifetime=>source.time;
         internal OriginalNativeFxTrail(TrailRenderer source,string path)
         {
@@ -28,18 +29,25 @@ namespace YesterdayConvoy
             renderer.sortingOrder=source.sortingOrder;
             if(path!=null&&path.Count>0)
             {
-                history.Clear();Vector3 offset=source.transform.position-pose.Position;
+                // Once emitted, a trail point is a world-space snapshot. Reusing
+                // today's animated/rotated emitter for the entire old path made
+                // the bend pull the already emitted tail around with the head.
+                Vector3 offset=source.transform.position-pose.Position;double groupAt=double.NaN;int ordinal=0;
                 for(int i=0;i<path.Count;i++)
                 {
                     var point=path[i];if(point.At>clock+1e-6)break;
-                    if(i+1<path.Count&&path[i+1].At<cut)continue;
-                    bool corner=i>0&&i+1<path.Count&&Vector3.Angle(point.Position-path[i-1].Position,path[i+1].Position-point.Position)>.01f;
-                    Vector3 direction=i+1<path.Count?path[i+1].Position-point.Position:i>0?point.Position-path[i-1].Position:pose.Direction;
+                    if(groupAt!=point.At){groupAt=point.At;ordinal=0;}ordinal++;
+                    if(point.At<lastPathAt-1e-7||Math.Abs(point.At-lastPathAt)<=1e-7&&ordinal<=lastPathOrdinal)continue;
+                    bool corner=point.Turn||i+1<path.Count&&path[i+1].Turn&&Math.Abs(path[i+1].At-point.At)<1e-7;
+                    Vector3 direction=point.Direction;
+                    if(direction.sqrMagnitude<1e-8f)direction=i>0?point.Position-path[i-1].Position:i+1<path.Count?path[i+1].Position-point.Position:pose.Direction;
+                    if(direction.sqrMagnitude<1e-8f)direction=pose.Direction;
                     Vector3 oldDirection=pose.Direction;oldDirection.y=direction.y=0;
                     var rotation=oldDirection.sqrMagnitude>1e-8f&&direction.sqrMagnitude>1e-8f?Quaternion.AngleAxis(Vector3.SignedAngle(oldDirection,direction,Vector3.up),Vector3.up):Quaternion.identity;
                     Vector3 emitter=point.Position+rotation*offset;
-                    if(history.Count>0&&!corner&&i+1<path.Count&&Vector3.Distance(history[history.Count-1].Position,emitter)<source.minVertexDistance)continue;
-                    history.Add(new OriginalNativeFxPathPoint(emitter,point.At));
+                    if(history.Count==0||corner||Vector3.Distance(history[history.Count-1].Position,emitter)>=source.minVertexDistance)
+                        history.Add(new OriginalNativeFxPathPoint(emitter,point.At,direction,corner));
+                    lastPathAt=point.At;lastPathOrdinal=ordinal;
                 }
             }
             else if(emitting&&clock>lastClock+1e-7)
@@ -62,7 +70,9 @@ namespace YesterdayConvoy
                 }
                 if(point.At<=clock+1e-6)visible.Add(point);
             }
-            if(emitting&&path==null&&visible.Count>0&&visible[visible.Count-1].Position!=source.transform.position)visible.Add(new OriginalNativeFxPathPoint(source.transform.position,clock));
+            // Keep the current head continuous between the source's .03s history
+            // samples, without mutating the previous permanent sample.
+            if(emitting&&visible.Count>0&&visible[visible.Count-1].Position!=source.transform.position)visible.Add(new OriginalNativeFxPathPoint(source.transform.position,clock));
             if(visible.Count<2){renderer.enabled=false;mesh.Clear();return;}
             int count=visible.Count;var vertices=new Vector3[count*2];var colors=new Color[count*2];var uv=new Vector2[count*2];var triangles=new int[(count-1)*6];var lengths=new float[count];
             float length=0;for(int i=1;i<count;i++){length+=Vector3.Distance(visible[i-1].Position,visible[i].Position);lengths[i]=length;}

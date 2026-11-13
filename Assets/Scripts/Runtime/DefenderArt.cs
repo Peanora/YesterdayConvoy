@@ -52,6 +52,8 @@ namespace YesterdayConvoy
             return index==0?"attack":index==1?"attack_b":index==2?(AttackVariants==4?"attack_2_a":"attack_c"):"attack_2_b";
         }
         public float ActionDuration => (Find("attack")?.Duration??0)+(AttackBegin(false)?.Duration??0)+(AttackEnd?.Duration??0);
+        internal double ActionDurationFor(bool nativeSkillAttack,double authoredDuration,float rate)
+            =>(nativeSkillAttack?Find("skill_attack")?.Duration??authoredDuration:authoredDuration)/Math.Max(.0001f,rate);
         internal float DurationOf(string key)=>Find(key)?.Duration??0;
         internal Sprite PhaseAt(string key,double age,bool loop=false)=>age>=0&&Find(key) is Clip clip&&(loop||age<clip.Duration)?clip.At(age,loop):null;
         public Clip this[string key] => clips[key];

@@ -22,11 +22,11 @@ namespace YesterdayConvoy
         struct PlacementSnapshot { internal Vector3 Position; internal Quaternion Basis; internal Vector3 Direction; internal bool Flip; }
         readonly Dictionary<string,PlacementSnapshot> placementSnapshots=new Dictionary<string,PlacementSnapshot>(StringComparer.Ordinal);
         readonly List<OriginalNativeFxPathPoint> wavePath=new List<OriginalNativeFxPathPoint>();
-        ManualBattle frameBattle; double frameClock; string effectContext,effectOwner;
+        ManualBattle frameBattle; double frameClock; string effectContext,effectOwner,effectRangeSource;
         Vector3 effectDirection=Vector3.right; int nextShot;
         static string Stamp(double at)=>at.ToString("R",CultureInfo.InvariantCulture);
-        void Context(string token,string owner=null,Vector3 direction=default)
-        {effectContext=token;effectOwner=owner;effectDirection=direction.sqrMagnitude>1e-8f?direction:Vector3.right;}
+        void Context(string token,string owner=null,Vector3 direction=default,string rangeSource=null)
+        {effectContext=token;effectOwner=owner;effectRangeSource=rangeSource??owner;effectDirection=direction.sqrMagnitude>1e-8f?direction:Vector3.right;}
         readonly Dictionary<string,Vector3> facingDirections=new Dictionary<string,Vector3>(StringComparer.Ordinal);
         Vector3 Direction(ManualBattle b,DefenderState d)
         {
@@ -73,6 +73,8 @@ namespace YesterdayConvoy
                 if(!OriginalNativeFxCatalog.TryGetPlacement(key,out source))return false;
             }
             Vector3 aim=direction.sqrMagnitude>1e-8f?direction:effectDirection;float roll=0;Vector2 localScale=Vector2.one;
+            if(DefenderSkillFootprints.IsMarkedEffect(id,raw)&&frameBattle?.FindDefender(effectRangeSource) is DefenderState rangeSource)
+                aim=frameBattle.DefenderSkillFacing(rangeSource,frameBattle.FindDefender(owner)??rangeSource);
             if(source.HasParticleDriver&&source.HoldByOwner&&source.RotateType==1)
             {var ownerBody=Body(owner);if(ownerBody!=null)flip=ownerBody.flipX;}
             bool mounted=DefenderNativeMounts.RequiresMount(id,raw);
@@ -178,7 +180,7 @@ namespace YesterdayConvoy
             if(b!=null&&cam!=null)
             {
                 double clock=presentationClock?.Invoke()??b.Clock;
-                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentSeventhEvents(b,cam,clock);PresentSnowContacts(b,cam,clock);PresentChess(b,cam,clock);PresentChessImpacts(b,cam,clock);PresentErasure(b,cam,clock);PresentChenDawnWaves(b,cam,clock);
+                PresentFields(b,cam,clock);PresentShots(b,cam,clock);PresentSeventhEvents(b,cam,clock);PresentSnowContacts(b,cam,clock);PresentChess(b,cam,clock);PresentChessImpacts(b,cam,clock);PresentErasure(b,cam,clock);PresentChenDawnWaves(b,cam,clock);PresentSilverAshWaves(b,cam,clock);
 
             }
             native.End();yuWall.End();original.End();PendingUntil=Math.Max(PendingUntil,original.PendingUntil);
@@ -246,7 +248,7 @@ namespace YesterdayConvoy
                             var partner=b.FindDefender(d.PartnerId);
                             if(partner!=null&&partner.Alive)
                             {
-                                Context("bird-aura/"+d.EntityId+"/"+Stamp(d.SkillStartedAt)+"/"+partner.EntityId,partner.EntityId,Direction(b,partner));
+                                Context("bird-aura/"+d.EntityId+"/"+Stamp(d.SkillStartedAt)+"/"+partner.EntityId,partner.EntityId,b.DefenderSkillFacing(d,partner),d.EntityId);
                                 Show(id,"svash2_skill_03_range_01",age,partner.Position,cam,loop:true,ground:true,ownerId:partner.EntityId);
                                 Show(id,"svash2_skill_03_deploy_01",clock-d.LastReinforcementAt,partner.Position,cam,ground:true,ownerId:partner.EntityId);
                                 Show(id,"svash2_eagle_fly_01",age,partner.Position,cam,loop:true,ownerId:partner.EntityId);
@@ -267,7 +269,7 @@ namespace YesterdayConvoy
                         case "D29":
                             Show(id,"demkni_skill_03_self",age,d.Position,cam,order:29,loop:true,ground:true);
                             Show(id,"demkni_skill_03_range",age,d.Position,cam,order:27,loop:true,ground:true);
-                            foreach(var u in b.Units)if(u.Active&&Distance(u.Motion.Position,d.Position)<=b.DefenderRange(d))
+                            foreach(var u in b.Units)if(u.Active&&b.DefenderSkillContains(d,u.Motion.Position))
                                 Show(id,"demkni_skill_03_buff",age,u.Motion.Position,cam,order:31,loop:true,ground:true,recipientId:u.EntityId);
                             break;
                         case "D32":
@@ -337,12 +339,10 @@ namespace YesterdayConvoy
             const string key="defender/D33/aglna2_skill_03_range_line_01";
             if(!OriginalNativeFxCatalog.Supports(key))return;
             // Preserve the original LineRenderer, material, width and UV animation.
-            // This game's existing radial targeting is expressed as whole tactical
-            // cells; importing the client's 19-cell targeting would change combat.
+            // The marked cells and actual selection share the same footprint.
             flightCells.Clear();boundaryEdges.Clear();flightBoundary.Clear();
-            float radius=b.DefenderRange(d);int extent=Mathf.CeilToInt(radius);
-            for(int x=-extent;x<=extent;x++)for(int y=-extent;y<=extent;y++)
-                if(x*x+y*y<=radius*radius+1e-5f)flightCells.Add(new Vector2Int(x,y));
+            foreach(var cell in b.DefenderSkillCells(d))flightCells.Add(cell);
+            Vector3 facing=b.DefenderSkillFacing(d),side=new Vector3(-facing.z,0,facing.x);
             foreach(var cell in flightCells)
             {
                 int x=cell.x*2,y=cell.y*2;
@@ -355,12 +355,12 @@ namespace YesterdayConvoy
             Vector2Int first=boundaryEdges.Keys.OrderBy(p=>p.x).ThenBy(p=>p.y).First(),current=first;
             for(int i=0;i<=boundaryEdges.Count;i++)
             {
-                flightBoundary.Add(d.Position+new Vector3(current.x*.5f,.025f,current.y*.5f));
+                flightBoundary.Add(d.Position+facing*(current.x*.5f)+side*(current.y*.5f)+Vector3.up*.025f);
                 if(!boundaryEdges.TryGetValue(current,out current)||current==first)break;
             }
             flightBoundary.Add(flightBoundary[0]);
             original.TrySetLine(key,"flight-range/"+d.EntityId+"/"+Stamp(d.SkillStartedAt),age,flightBoundary,
-                new OriginalNativeFxPose(d.Position,Quaternion.Euler(90,0,0),Direction(b,d)),true);
+                new OriginalNativeFxPose(d.Position,Quaternion.Euler(90,0,0),facing),true);
         }
         static string ChenDirection(string raw,Vector3 direction)=>raw+"_dir_"+
             (Mathf.Abs(direction.x)>=Mathf.Abs(direction.z)?direction.x<0?"left":"right":direction.z>0?"up":"down");
@@ -394,9 +394,33 @@ namespace YesterdayConvoy
                 if(owner!=null&&!owner.Alive)stopped=Math.Min(stopped,owner.DeathTime);
                 string key=Key("D32","chen3_skill_03_trail_01_dir_right");
                 if(!OriginalNativeFxCatalog.Supports(key))continue;
-                wavePath.Clear();foreach(var point in wave.History)wavePath.Add(new OriginalNativeFxPathPoint(point.Position,point.At));
+                wavePath.Clear();foreach(var point in wave.History)wavePath.Add(new OriginalNativeFxPathPoint(point.Position,point.At,point.Direction,point.Turn));
                 var pose=new OriginalNativeFxPose(wave.Position,Quaternion.Euler(90,0,0),wave.Direction);
                 original.TryShowPath(key,"dawn-wave/"+wave.Sequence,clock-wave.StartedAt,wavePath,pose,true,stopped-wave.StartedAt);
+            }
+        }
+        readonly List<OriginalNativeFxPathPoint> silverPath=new List<OriginalNativeFxPathPoint>();
+        void PresentSilverAshWaves(ManualBattle battle,Camera camera,double clock)
+        {
+            foreach(var wave in battle.SilverAshWaves)
+            {
+                if(wave.Cancelled||clock<wave.ActionAt)continue;
+                var caster=battle.FindDefender(wave.SourceId);if(caster==null||caster.Settings.ArtId!="D26")continue;
+                bool self=wave.OwnerId==wave.SourceId,left=Vector3.Dot(wave.Direction,camera.transform.right)<0;
+                Context("silver-wave/"+battle.RunId+"/"+wave.Sequence,wave.OwnerId,wave.Direction,wave.SourceId);
+                if(self)
+                    foreach(string raw in new[]{"svash2_skill_03_combat_start_01","svash2_skill_03_combat_start_01_2","svash2_skill_03_combat_start_02"})
+                        Cast("D26",raw,wave.ActionAt,wave.ActionRate,clock,wave.Origin,camera,left,ownerId:wave.OwnerId);
+                else Cast("D26","svash2_skill_03_combat_start_02",wave.ActionAt,wave.ActionRate,clock,wave.Origin,camera,left,ownerId:wave.OwnerId);
+                if(!wave.Launched||clock<wave.StartedAt)continue;
+                string key=Key("D26",self?"svash2_skill_03_trail_02":left?"svash2_skill_03_trail_left_01":"svash2_skill_03_trail_right_01");
+                double at=System.Math.Min(clock,wave.EndsAt);
+                var position=wave.Origin+wave.Direction*(float)((at-wave.StartedAt)*10);
+                silverPath.Clear();silverPath.Add(new OriginalNativeFxPathPoint(wave.Origin,wave.StartedAt,wave.Direction));
+                silverPath.Add(new OriginalNativeFxPathPoint(position,at,wave.Direction));
+                original.TryShowPath(key,"silver-wave/"+battle.RunId+"/"+wave.Sequence+"/flight",clock-wave.StartedAt,silverPath,
+                    new OriginalNativeFxPose(position,Quaternion.Euler(90,0,0),wave.Direction),true,.3);
+                if(clock<wave.EndsAt)PendingUntil=System.Math.Max(PendingUntil,wave.EndsAt);
             }
         }
         static double ActionStart(CombatShot shot)=>double.IsNegativeInfinity(shot.DefenderActionStartedAt)?shot.StartedAt:shot.DefenderActionStartedAt;
@@ -499,22 +523,9 @@ namespace YesterdayConvoy
                         int contact=Mathf.Clamp(Mathf.RoundToInt((float)((shot.StartedAt-view.LaunchGroup)/.08)),0,3);
                         hit=!empowered?"hsgma2_attack_01_hit_01":protectedPhase?"hsgma2_skill_03_hit_02"+(contact==0?"":"_"+contact):"hsgma2_skill_03_hit_01"+(contact==0?"":"_1");break;
                     case "D26":
-                        if(empowered&&first)
+                        if(empowered)
                         {
-                            bool ownOrigin=(shot.Origin-d.Position).sqrMagnitude<1e-6f;
-                            if(ownOrigin)
-                            {
-                                foreach(string raw in new[]{"svash2_skill_03_combat_start_01","svash2_skill_03_combat_start_01_2","svash2_skill_03_combat_start_02"})
-                                    Cast(id,raw,view.Group,view.Rate,clock,shot.Origin,cam,left,ownerId:d.EntityId);
-                            }
-                            else
-                            {
-                                // The real partner emits its ground slash at its own origin.
-                                // Its unrelated skeleton cannot acquire SilverAsh's C_Weapon track.
-                                string partner=d.PartnerId??d.EntityId;
-                                Cast(id,"svash2_skill_03_combat_start_02",view.Group,view.Rate,clock,shot.Origin,cam,left,ownerId:partner);
-                            }
-
+                            if(shot.SilverAshWaveSequence>0)hit="svash2_skill_03_hit_01";
                         }
                         else if(!empowered)
                         {
@@ -658,11 +669,18 @@ namespace YesterdayConvoy
             foreach(var cell in b.ChessPieces)
             {
                 if(!chess.TryGetValue(cell,out var e))
-                {e=new ChessEvent{Cell=cell,SourceId=cell.SourceId,Position=cell.Position,Created=clock,Trigger=double.NegativeInfinity};chess.Add(cell,e);}
+                {e=new ChessEvent{Cell=cell,SourceId=cell.SourceId,Position=cell.Position,Created=cell.CreatedAt,Trigger=double.NegativeInfinity};chess.Add(cell,e);}
                 if(cell.Time>0)e.Trigger=cell.Time;
                 Context("chess/"+e.SourceId+"/"+Stamp(e.Created)+"/"+e.Position,e.SourceId);
-                Show("D28","wang_passive_01_start",clock-e.Created,cell.Position,cam,order:27,ground:true);
-                if(cell.Time==0&&cell.Active)Show("D28","wang_passive_01_buff",clock,cell.Position,cam,order:27,loop:true,ground:true);
+                if(cell.Time>0||clock<cell.CreatedAt)continue;
+                if(!cell.VirtualStone)
+                {
+                    // Real token owns its original birth loop throughout its life.
+                    Show("D28","token_wang_birth_01_buff",clock-cell.CreatedAt,cell.Position,cam,order:27,loop:true,ground:true);
+                    if(cell.Active&&clock>=cell.ActivatedAt)Show("D28","token_wang_01_buff",clock-cell.ActivatedAt,cell.Position,cam,order:27,loop:true,ground:true);
+                }
+                else if(clock>=cell.AvailableAt)
+                    Show("D28","wang_passive_01_buff",clock-cell.AvailableAt,cell.Position,cam,order:27,loop:true,ground:true);
             }
             staleChess.Clear();
             foreach(var pair in chess)
@@ -672,8 +690,8 @@ namespace YesterdayConvoy
                 {
                     // Exact original stone projectile's trigger marker. Original chess actor is drawn separately.
                     var caster=b.FindDefender(e.SourceId);bool skill=caster!=null&&e.Trigger>=caster.SkillStartedAt&&e.Trigger<caster.SkillActiveUntil;
-                    string effect=skill?"token_wang_skill_03_hit":"wang_passive_01_buff_02";
-                    Show("D28",effect,clock-e.Trigger,e.Position,cam,order:32,ground:true);
+                    if(skill)Show("D28","token_wang_skill_03_hit",clock-e.Trigger,e.Position,cam,order:32,ground:true);
+                    if(e.Cell.VirtualStone||!skill)Show("D28","wang_passive_01_buff_02",clock-e.Trigger,e.Position,cam,order:32,ground:true);
                     if(clock-e.Trigger>4)staleChess.Add(pair.Key);
                 }
                 else if(!b.ChessPieces.Contains(e.Cell))staleChess.Add(pair.Key);

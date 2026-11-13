@@ -14,7 +14,7 @@ namespace YesterdayConvoy
         public bool EffectPending=>skillEffects!=null&&skillEffects.EffectPending;
         Material material;
         readonly List<LineRenderer> lines=new List<LineRenderer>();
-        sealed class ChessVisual { public SpriteRenderer Renderer; public double Created; }
+        sealed class ChessVisual { public SpriteRenderer Renderer; }
         readonly Dictionary<SixthCell,ChessVisual> chess=new Dictionary<SixthCell,ChessVisual>();
         readonly HashSet<SixthCell> seenChess=new HashSet<SixthCell>();
         readonly List<SixthCell> staleChess=new List<SixthCell>();
@@ -61,6 +61,8 @@ namespace YesterdayConvoy
         }
         void PresentChess(SixthCell cell,double clock,Camera cam)
         {
+            // Automatic stones are source tile projectiles; only the deployed token has a Spine body.
+            if(cell.VirtualStone)return;
             seenChess.Add(cell);
             if(chessArt==null)chessArt=DefenderArt.Load("D28Chess");
             if(!chess.TryGetValue(cell,out var visual))
@@ -68,15 +70,16 @@ namespace YesterdayConvoy
                 if(material==null)material=new Material(Shader.Find("Sprites/Default"));
                 var r=new GameObject("Wang original chess piece",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
                 r.transform.SetParent(transform,false);r.sharedMaterial=material;
-                visual=new ChessVisual { Renderer=r,Created=clock };chess.Add(cell,visual);
+                visual=new ChessVisual { Renderer=r };chess.Add(cell,visual);
             }
-            var renderer=visual.Renderer;double age=clock-visual.Created;
-            renderer.enabled=cell.Time==0||clock-cell.Time<chessArt["attack"].Duration;
-            renderer.sprite=cell.Time>0?chessArt["attack"].At(clock-cell.Time,false):chessArt.StartAt(age)??chessArt.IdleAt(age-chessArt.StartDuration);
+            var renderer=visual.Renderer;double age=clock-cell.CreatedAt;
+            // Source Explode has no body animation and withdraws the token; its native hit effect keeps the tail.
+            renderer.enabled=cell.Time==0;
+            renderer.sprite=chessArt.StartAt(age)??chessArt.IdleAt(age-chessArt.StartDuration);
             renderer.transform.SetPositionAndRotation(cell.Position,cam.transform.rotation);
             renderer.transform.localScale=Vector3.one;
             renderer.sortingOrder=DemoSpriteVisual.GetSortingOrder(cam,cell.Position)+28;
-            renderer.color=cell.Active?Color.white:new Color(.65f,.7f,.78f,.8f);
+            renderer.color=Color.white;
         }
         void OnDestroy(){if(material!=null)Destroy(material);}
     }

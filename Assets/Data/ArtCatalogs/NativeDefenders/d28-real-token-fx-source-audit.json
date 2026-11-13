@@ -1,0 +1,508 @@
+{
+  "date": "2026-11-14",
+  "status": "SOURCE_SCHEMA_AND_EXISTING_PROCESSED_BYTES_CHECKED_NOT_UNITY_GPU_VALIDATED",
+  "scope": "2 D28 real-token native FX records appended, no bundle/shader modifications, all185 existing effect records and43 bundle declarations preserved. Source proprietary rights unchanged.",
+  "sourceBundle": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-13_赤刃明霄陈重做-v1\\native-direct\\native-source-additions\\pkgrps\\btl_pfb_fx_token_3.ab",
+  "sourceBundleSHA256": "09624878a2371bca41ea44d3c1cb7d5eca4e4b8ea392e19e8b1d2007e6f1ab5b",
+  "existingProcessedBundle": "E:\\珍贵资料\\昨日圆车\\Assets\\Art\\VFX\\NativeDefenders\\Resources\\NativeDefenders\\Bundles\\b_09624878a2371bca41ea44d3.bytes",
+  "existingProcessedBundleSHA256": "c90c4e6cee68af15b96f5064e3c61729fbe75fbc3b4bd4f415150dffd55e9403",
+  "oldCatalogSHA256": "c3aa410c7da17f74d8af8bb8670a518f4e0aa5502f3390e56afb9e46f2534e9d",
+  "newCatalogSHA256": "2980777ac900cc06470a12a3b8c8b1400ba139b8569f27c35d4e9fae3904b6e5",
+  "beforeEffectCount": 185,
+  "afterEffectCount": 187,
+  "bundleCount": 43,
+  "shaderFamiliesReused": [
+    "Legacy Shaders/Particles/Alpha Blended Premultiply",
+    "Torappu/Particles/Additive",
+    "Torappu/Particles/Ram/Disturb(CustomData)"
+  ],
+  "effects": [
+    {
+      "key": "defender/D28/token_wang_birth_01_buff",
+      "asset": "dyn/battle/prefabs/effects/token_wang_birth_01_buff.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": 836519575108439998,
+          "rawSHA256": "1ebf3470dd4a8e615138a08d39c3f393c8cf441e0091deaa3c95928c7d3c9d39"
+        },
+        {
+          "indices": [],
+          "type": "Animator",
+          "pathID": 765732558836518846,
+          "rawSHA256": "cf7e8e8af8cd016772e8754c391e8ec1324dd875c2fa1382a0ca851d7285cf8d"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": 4406558546334175166,
+          "rawSHA256": "6328dbb0c45c0bb998a425375bac308071095201c606a471544e5e2ab639fe24"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -8280025469039030338,
+          "rawSHA256": "0b6ba0bbfb1c8988c55eaa3956269821248d5778417dde4a00f57555cbebff48"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -3285650698522800194,
+          "rawSHA256": "c9409ade08dc8f89cb9be9ef788d041751b8c0d60eb43bdcd4588d72af1cb221"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -7027700343569461314,
+          "rawSHA256": "8a2333f016a31a12a444956c0f5522f1fc71cf2f265f202a8304b491db1b11de"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 9064599741215002558,
+          "rawSHA256": "7f45445f7c077f5a02afb00f9873e50b77ed85bd01d8216583121a965fbfe295"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": 44285947638697918,
+          "rawSHA256": "130d7b2270c66444fa8b01c0ec9fa183d0338dc9be9a28022b832bb50fe3b03f"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": -4842119505239617602,
+          "rawSHA256": "506bea4e14a3c29474f8009b119fca69189a8f989c55004d775182930e2acb47"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 791994154771206078,
+          "rawSHA256": "99b68f9a61f0ba0501093f8cf7b7ea2519811263196fe3d0b952e2f6fd43d799"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": -3101470762436997186,
+          "rawSHA256": "86b9ec5428cff3cf95586f973e02b6b39d6db545b29197c3bfbfbf3f5befa510"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": -2474848352202600514,
+          "rawSHA256": "84bb499d84e13600d6c388a45595a4761d0925e01e6e6933d4443a0a85119cb1"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": -1308793358766256194,
+          "rawSHA256": "a030590507c8a5c9e87fb2d28dd28365911382bdebc418144c6787a80826093f"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "MeshFilter",
+          "pathID": 3714130266734186430,
+          "rawSHA256": "1c85540ef3c307e72816688a297a7a4c03a0ecbcebbf87f768a2607660950bc2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "MeshRenderer",
+          "pathID": -3531922412865925186,
+          "rawSHA256": "29d079b1141181cd1fab6925367e07abc18db8f566bdd7e96b28421d66de76be"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 7698531327032872894,
+          "rawSHA256": "063388fd52c6bfba25702326948ab5544b83e1474d431e490ed9b48cf6472582"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": -9101585009201524802,
+          "rawSHA256": "2f19e9303fcbca4713d7193260e4c4d5420761949cc2a983e61c34e52addfd29"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": -6342229140465791042,
+          "rawSHA256": "803b0eee39118a79f7d09b3becda6a4c4c9d72ffcbda60d48c7c1cfb5eff8649"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": -6265769846716575810,
+          "rawSHA256": "f703f61961ea9ce5acd125f940092460128c11cc0181046114453431e1b733e7"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": 7545976925156921278,
+          "rawSHA256": "03bfc2fa3621aafe945bd85cfb55032b98013e2dc81402b48918c25637fc5e34"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4559304172927504318,
+          "rawSHA256": "13daf7842acffad08a87f2b976489410b0b64ae04387caec92f202c549b9e43c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -1512779142603223106,
+          "rawSHA256": "b11a4124e58ff9e44c9d02d1eab9d55a90279b1caa56a5b1f9ff221c60396bee"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5356803303178580034,
+          "rawSHA256": "e0edb4759d335eac7ee429ea4e4334858b56c339a3b3161d84732dd222fd7142"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -6436086191884808258,
+          "rawSHA256": "7a518c50d74355f265bff5d7c5e8e5e23cb193f2eff735b49b3754297c7831a1"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            3
+          ],
+          "type": "Transform",
+          "pathID": 7706400352050532286,
+          "rawSHA256": "668ddaba718129af943ed64b9dc8cdf3d32f13604f3cba0d0621e41dc694d124"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystem",
+          "pathID": -5083987366403584066,
+          "rawSHA256": "632c0245c454b3aa73bcca9f1b87d929a91ce45a19c83a808e4addb2ba08aaae"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            3
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 5671474318083346366,
+          "rawSHA256": "4cea185481ef9b033febaf228cf6c1387202848a4d169380b356a6fde2a49fb2"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Loop=true per original root ParticleEffect; duration3 is descriptor fallback only, lifecycle managed by real Token start/withdraw and TriggeredEffect buff, not a measured animation duration"
+    },
+    {
+      "key": "defender/D28/token_wang_01_buff",
+      "asset": "dyn/battle/prefabs/effects/token_wang_01_buff.prefab",
+      "nonMonoSourceComponents": [
+        {
+          "indices": [],
+          "type": "Transform",
+          "pathID": 1055900083229898813,
+          "rawSHA256": "5476fd7cf7da21fa0d527cb737ecf821b72fd71ed0fa4f91953126f87535e4f8"
+        },
+        {
+          "indices": [],
+          "type": "Animator",
+          "pathID": 662679000043108413,
+          "rawSHA256": "edf6d6c9de9243ae0f4e7f7110ddd9d86bb65a40bf1fbb6700335417b84e029f"
+        },
+        {
+          "indices": [
+            0
+          ],
+          "type": "Transform",
+          "pathID": 5681496959737477181,
+          "rawSHA256": "640e051950c197954c1fec014887a8dd5b763cf3a5d4116c64864853382f6de8"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -1835833491657050051,
+          "rawSHA256": "21943021f48a8896ab6600d6218eda9c8596fdaedced047bf962baf91d1983a2"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystem",
+          "pathID": -4143197885204776899,
+          "rawSHA256": "41d972da9f4683b590b956c5841457a8b9013c29725c64f5cac8ad932b4fb0c0"
+        },
+        {
+          "indices": [
+            0,
+            0
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": -8176787447776135107,
+          "rawSHA256": "aeac899bcb46eebaf24be0c41d3be09d9b74353e7a45b4d6abc09c1796f1d580"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 8024603858522159165,
+          "rawSHA256": "b54738a211c45f828202f74068213fd7cc02299df5cce7ade17b9720407517c4"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": -1143274357691893699,
+          "rawSHA256": "9d231079491a6768ffb0fd273862674f503c44ee357c8b3c1a5bacd7a045cf72"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": -1486051921840949187,
+          "rawSHA256": "c43324248ebcc24408a4e434c817c72646e001d06ec161f3df16288bd772a3df"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "Transform",
+          "pathID": -5148419001661835203,
+          "rawSHA256": "d2ae2713bf22f84277e6ceff7e04bb09b7e807acf03e8c79b2db344ca5636b88"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": -4575248816398452675,
+          "rawSHA256": "42fc8953c03c1e600964ea2d25cea84fdb22db0f5c6d4c7f4b06d7f677052d75"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": -712158354286626755,
+          "rawSHA256": "3e2cc061c65f39b187e2d9692a364b09aca2f74b6e6896f23f843a05611300bd"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "Transform",
+          "pathID": 2826148936236546109,
+          "rawSHA256": "3ca8691023c4b427a52dcd23414c95209eda1926c0bc80e2fe1c2b124536c2f2"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "MeshFilter",
+          "pathID": -6155610926777026499,
+          "rawSHA256": "10c19d4234b7ff9a812528877797ab515a642a7e2d1a3e1138b67d8b624e1b07"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1
+          ],
+          "type": "MeshRenderer",
+          "pathID": -3867147269952161731,
+          "rawSHA256": "538e2114647d2d707085056fc7c55be9544ac1649355cdb285dd922199cc59a8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "Transform",
+          "pathID": 3458902706706135101,
+          "rawSHA256": "cd0f538b35fe827e6784c99af7ef596a45ca3ceac55f7a1eaaf67d57525c1d3c"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "MeshFilter",
+          "pathID": -8578285828624664515,
+          "rawSHA256": "ea23882e6bfe3ce5db2b2e450b65d80e0bfd44af460bae9d122cd1c12200c3d4"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "type": "MeshRenderer",
+          "pathID": 8211109789296965693,
+          "rawSHA256": "4ca61ce00918f9192d894430d5f910d05b7b7de41a8b7a13cc5f5e3a8a167b36"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "Transform",
+          "pathID": -4362329679078082499,
+          "rawSHA256": "fc6d43d05e1457b450e8f6cc8e55f0ace852c72772184ca862d950dc2f424bd8"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystem",
+          "pathID": 3090930042442823741,
+          "rawSHA256": "cd2dc5b41128bfa19b7fbae7d8a157cd675ce96af006a4f8f611b47564d0a014"
+        },
+        {
+          "indices": [
+            0,
+            0,
+            2
+          ],
+          "type": "ParticleSystemRenderer",
+          "pathID": 4349141933924431933,
+          "rawSHA256": "1cb3e17769d7c5bfb2d5ff0a72d004023855304f3be5d82c8e6359d64c8f1e0c"
+        }
+      ],
+      "existingProcessedNonMonoIdentical": true,
+      "durationScope": "Loop=true per original root ParticleEffect; duration3 is descriptor fallback only, lifecycle managed by real Token start/withdraw and TriggeredEffect buff, not a measured animation duration"
+    }
+  ],
+  "projectileContracts": "External reference-old6/d28-chess-source/actors-skills.json; Token._startEffect birth_01_buff and TriggeredEffect overrideEffect token_wang_01_buff. Both original root ParticleEffect isLoop1; owner lifecycle or actual trigger buff controls stop.",
+  "runtimeChecks": "Not run Unity/GPU; root will validate current Player and same-frame appearance."
+}

@@ -52,6 +52,41 @@ namespace YesterdayConvoy.Tests
             Assert.That(wave.History.Any(p=>p.Turn),Is.True);
             Assert.That(b.SeventhDefenderEvents.Count(e=>e.Kind==SeventhDefenderEventKind.DawnWaveTurned),Is.EqualTo(1));
         }
+        [Test]public void CornersKeepEveryQuarterTurnAndBothEmitterHeadingsWithoutDiagonalCuts()
+        {
+            var b=New();b.ConfigureChenDawnTerrain(new[]{new Bounds(new Vector3(0,0,-1),new Vector3(1,10,1))},new Bounds(Vector3.zero,new Vector3(2,10,4)));
+            b.Advance(3);var wave=b.ChenDawnWaves.Single();var turns=b.SeventhDefenderEvents.Where(e=>e.Kind==SeventhDefenderEventKind.DawnWaveTurned).ToArray();
+            Assert.That(turns.Length,Is.GreaterThan(1));Assert.That(wave.Turns,Is.EqualTo(turns.Length));
+            Vector3 direction=wave.History[0].Direction;
+            foreach(var turn in turns)
+            {
+                Assert.That(turn.Direction,Is.EqualTo(new Vector3(direction.z,0,-direction.x)),"A collision emits one clockwise quarter-turn, never a skipped 180/270-degree heading.");
+                direction=turn.Direction;
+            }
+            for(int i=1;i<wave.History.Count;i++)
+            {
+                var previous=wave.History[i-1];var point=wave.History[i];var delta=point.Position-previous.Position;
+                Assert.That(Math.Abs(delta.x)<.00001f||Math.Abs(delta.z)<.00001f,Is.True,"A path segment must not cut diagonally through a corner.");
+                Assert.That(delta.magnitude,Is.LessThanOrEqualTo((float)(point.At-previous.At)*1.5f+.00002f));
+                if(point.Turn){Assert.That(point.At,Is.EqualTo(previous.At).Within(.0000001));Assert.That(point.Position,Is.EqualTo(previous.Position));Assert.That(Vector3.Dot(point.Direction,previous.Direction),Is.EqualTo(0));}
+            }
+        }
+        [Test]public void HighlandContactUsesExactSourceClearanceAcrossDifferentCallerFrameSizes()
+        {
+            foreach(float chunk in new[]{.05f,.017f})
+            {
+                var b=New();b.ConfigureChenDawnTerrain(new[]{new Bounds(new Vector3(0,0,-1),new Vector3(1,10,1))},new Bounds(Vector3.zero,new Vector3(4,10,4)));
+                for(int i=0;i<Mathf.CeilToInt(1.6f/chunk);i++)b.Advance(chunk);
+                var wave=b.ChenDawnWaves.Single();var turn=b.SeventhDefenderEvents.First(e=>e.Kind==SeventhDefenderEventKind.DawnWaveTurned);
+                Assert.That(turn.Position.z,Is.EqualTo(-.25f).Within(.00001));Assert.That(turn.At-wave.StartedAt,Is.EqualTo(1.25/1.5).Within(.00001));
+            }
+        }
+        [Test]public void EnclosedProjectileDoesNotSpinInPlaceOrRepeatedlyResetItsHitSet()
+        {
+            var b=New();b.ConfigureChenDawnTerrain(Array.Empty<Bounds>(),new Bounds(Vector3.forward,new Vector3(.2f,10,.2f)));
+            b.Advance(2);var wave=b.ChenDawnWaves.Single();Assert.That(wave.Position,Is.EqualTo(Vector3.forward));Assert.That(wave.Turns,Is.Zero);Assert.That(wave.Hits,Is.EqualTo(1));
+            Assert.That(b.SeventhDefenderEvents.Any(e=>e.Kind==SeventhDefenderEventKind.DawnWaveTurned),Is.False);
+        }
         [Test]public void DragonSelectsCurrentHealthFractionWithOriginalMinimumThenClearsAtSkillEndAndRestart()
         {
             var b=New(10000,10,2);b.Advance(.7f);var first=b.CombatShots.Single(s=>s.ChenDawnWaveSequence>0);

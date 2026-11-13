@@ -24,7 +24,7 @@ namespace YesterdayConvoy.Tests
                 var skill=new DefenderSkillSettings(DefenderSkillKind.AngelinaWishes,1,1,1,99999,attackMultiplier:1.3f,effectRadius:10);
                 var guard=new DefenderSettings("D33","Aerial interception fixture","D33",Vector3.zero,100000,20,0,10,1.5f,windup:.4f,actionDuration:1.5f,skill:skill);
                 var combat=new EngagementSettings(unitAttack:0,unitArmor:0,unitRange:1,unitInterval:10,projectileTime:.2f,canAttack:false,hasSkill:false,initialSP:0,requiredSP:0,spPerSecond:0,skillAmmo:0,skillAttack:0,skillInterval:0,skillRange:0,effects:new MonsterEffectSettings(CombatDamageType.Arts,mandragora:true));
-                var battle=new ManualBattle(new ManualBattleSettings("flight-fixture","flight-target",30,1,12,1,.1f,100000,.05f,1,1,1,1),new[]{Vector3.right*5,Vector3.right*30},Vector3.zero,combat,roster:new[]{guard});
+                var battle=new ManualBattle(new ManualBattleSettings("flight-fixture","flight-target",30,1,12,1,.1f,100000,.05f,1,1,1,1),new[]{Vector3.right*3,Vector3.right*30},Vector3.zero,combat,roster:new[]{guard});
                 typeof(ManualBattleController).GetProperty("Battle",BindingFlags.Public|BindingFlags.Instance).SetValue(c,battle);
                 foreach(string variant in new[]{"D33","D33B"})foreach(var sequence in DefenderArt.Load(variant).Sequences)yield return sequence.Warm();
                 yield return OriginalNativeFxCatalog.Prepare(DefenderVfxArt.RequiredKeysForArtIds(new[]{"D33"}));

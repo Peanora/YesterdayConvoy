@@ -7,9 +7,10 @@ namespace YesterdayConvoy
     internal readonly struct ChenDawnWavePoint
     {
         internal readonly Vector3 Position;
+        internal readonly Vector3 Direction;
         internal readonly double At;
         internal readonly bool Turn;
-        internal ChenDawnWavePoint(Vector3 position,double at,bool turn=false){Position=position;At=at;Turn=turn;}
+        internal ChenDawnWavePoint(Vector3 position,double at,Vector3 direction,bool turn=false){Position=position;At=at;Direction=direction;Turn=turn;}
     }
 
     // One real projectile, rather than a skill-age sprite at the caster's feet.
@@ -107,7 +108,6 @@ namespace YesterdayConvoy
             ShotsFired++;LastShotTime=Clock;LastShotEntityId=d.TargetId;LastShotPosition=targets[0].Motion.Position;d.SeventhAttacks++;
             return true;
         }
-        static bool ChenContainsXZ(Bounds rectangle,Vector3 point)=>point.x>rectangle.min.x+.00001f&&point.x<rectangle.max.x-.00001f&&point.z>rectangle.min.z+.00001f&&point.z<rectangle.max.z-.00001f;
         CombatDamageType ChenDawnWeaknessDamageType(DeployedUnitState target,float attack)
         {
             float physical=CalculateDamage(attack,UnitArmor(target),UnitResistance(target),CombatDamageType.Physical);
@@ -131,17 +131,32 @@ namespace YesterdayConvoy
                 d.ChenDawnDodgeReady=true;d.ChenDawnLastTalentAt=Clock;d.ChenDawnNextTalentAt=Clock+7;
             }
         }
-        bool ChenObstacleAhead(Vector3 position,Vector3 direction,float distance)
+        float ChenTravelBeforeTurn(Vector3 position,Vector3 direction)
         {
-            if(!chenDawnTerrain)return false;
-            Vector3 probe=position+direction*distance;
-            if(probe.x<chenDawnBoard.min.x||probe.x>chenDawnBoard.max.x||probe.z<chenDawnBoard.min.z||probe.z>chenDawnBoard.max.z)return true;
-            foreach(var obstacle in chenDawnObstacles)if(ChenContainsXZ(obstacle,probe))return true;
-            return false;
+            if(!chenDawnTerrain)return float.PositiveInfinity;
+            const float clearance=.25f,epsilon=.00001f;
+            bool horizontal=direction.x!=0;float coordinate=horizontal?position.x:position.z;
+            float side=horizontal?position.z:position.x,sign=horizontal?direction.x:direction.z;
+            float result=sign>0?(horizontal?chenDawnBoard.max.x:chenDawnBoard.max.z)-coordinate-clearance:
+                coordinate-(horizontal?chenDawnBoard.min.x:chenDawnBoard.min.z)-clearance;
+            foreach(var obstacle in chenDawnObstacles)
+            {
+                float lowSide=horizontal?obstacle.min.z:obstacle.min.x,highSide=horizontal?obstacle.max.z:obstacle.max.x;
+                if(side<=lowSide+epsilon||side>=highSide-epsilon)continue;
+                float low=horizontal?obstacle.min.x:obstacle.min.z,high=horizontal?obstacle.max.x:obstacle.max.z;
+                if(sign>0?coordinate>=high-epsilon:coordinate<=low+epsilon)continue;
+                result=Math.Min(result,sign>0?low-coordinate-clearance:coordinate-high-clearance);
+            }
+            return Math.Max(0,result);
         }
         static void ChenPoint(ChenDawnWaveState wave,double at,bool turn=false)
         {
-            wave.Points.Add(new ChenDawnWavePoint(wave.Position,at,turn));
+            if(wave.Points.Count>0)
+            {
+                var previous=wave.Points[wave.Points.Count-1];
+                if(Math.Abs(previous.At-at)<1e-8&&previous.Position==wave.Position&&previous.Direction==wave.Direction&&!turn)return;
+            }
+            wave.Points.Add(new ChenDawnWavePoint(wave.Position,at,wave.Direction,turn));
             if(wave.Points.Count>2048)wave.Points.RemoveRange(0,wave.Points.Count-2048);
         }
         void ChenSelectAt(ChenDawnWaveState wave,DefenderState source,double at)
@@ -180,20 +195,26 @@ namespace YesterdayConvoy
                 while(wave.AdvancedUntil<until-1e-7)
                 {
                     float dt=(float)Math.Min(.02,Math.Min(until-wave.AdvancedUntil,wave.NextSelectAt-wave.AdvancedUntil));double at=wave.AdvancedUntil+dt;
-                    int turns=0;var nextDirection=wave.Direction;
-                    while(turns<4&&ChenObstacleAhead(wave.Position,nextDirection,.25f))
+                    if(dt<=1e-7f){ChenSelectAt(wave,source,wave.AdvancedUntil);continue;}
+                    float distance=1.5f*dt,clear=ChenTravelBeforeTurn(wave.Position,wave.Direction);
+                    float travelled=Math.Min(distance,clear);wave.Position+=wave.Direction*travelled;
+                    if(clear<distance-1e-7f)
                     {
-                        nextDirection=new Vector3(nextDirection.z,0,-nextDirection.x);turns++;
+                        // Keep every genuine quarter-turn. Searching several
+                        // directions at one point skipped corners and replaced
+                        // the visible 90-degree turn with a 180/270-degree jump.
+                        var right=new Vector3(wave.Direction.z,0,-wave.Direction.x);
+                        var back=-wave.Direction;var left=-right;
+                        bool enclosed=ChenTravelBeforeTurn(wave.Position,right)<=1e-7f&&ChenTravelBeforeTurn(wave.Position,back)<=1e-7f&&ChenTravelBeforeTurn(wave.Position,left)<=1e-7f;
+                        if(!enclosed)
+                        {
+                            double turnAt=wave.AdvancedUntil+travelled/1.5;
+                            ChenPoint(wave,turnAt);wave.Direction=right;wave.Turns++;
+                            wave.LastTurnedAt=turnAt;wave.HitTargets.Clear();ChenPoint(wave,turnAt,true);
+                            SeventhEvent(SeventhDefenderEventKind.DawnWaveTurned,source,null,wave.Position,turnAt,wave.EndsAt,wave.Direction);
+                            wave.Position+=wave.Direction*Math.Min(distance-travelled,ChenTravelBeforeTurn(wave.Position,wave.Direction));
+                        }
                     }
-                    // A fully enclosed point must not manufacture four turns and
-                    // clear the hit set every frame without any projectile travel.
-                    if(turns>0&&turns<4)
-                    {
-                        wave.Direction=nextDirection;wave.Turns+=turns;
-                        wave.LastTurnedAt=at;wave.HitTargets.Clear();ChenPoint(wave,at,true);
-                        SeventhEvent(SeventhDefenderEventKind.DawnWaveTurned,source,null,wave.Position,at,wave.EndsAt,wave.Direction);
-                    }
-                    if(turns<4)wave.Position+=wave.Direction*(1.5f*dt);
                     if(at+1e-7>=wave.NextSelectAt)
                         ChenSelectAt(wave,source,at);
                     wave.AdvancedUntil=at;
