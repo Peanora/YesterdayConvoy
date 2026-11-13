@@ -14,25 +14,32 @@ namespace YesterdayConvoy
         [Serializable] sealed class Data
         {
             public string key;public int count,width,height,columns;
-            public float ppu,pivotX,pivotY,duration,hdrRange,forwardDegrees;
-            public bool loop,directional;public ArtSequence.Page[] pages;
+            public float ppu,pivotX,pivotY,duration,hdrRange,forwardDegrees,loopStart,loopEnd;
+            public bool loop,directional,groundDepth,belowActors;public ArtSequence.Page[] pages;
         }
         internal sealed class Clip
         {
             internal readonly ArtSequence Sequence;
             internal readonly float HdrRange,ForwardDegrees;
             internal readonly bool Loop,Directional;
+            internal readonly bool GroundDepth,BelowActors,ExactRgba;
+            internal readonly float LoopStart,LoopEnd;
             internal string Key=>Sequence.Key;
             internal string CacheKey=>Sequence.CacheKey;
             internal float Duration=>Sequence.Duration;
             internal int Count=>Sequence.Count;
-            internal Clip(ArtSequence sequence,float hdr,bool loop,bool directional,float forward)
-            {Sequence=sequence;HdrRange=hdr;Loop=loop;Directional=directional;ForwardDegrees=forward;}
+            internal Clip(ArtSequence sequence,float hdr,bool loop,bool directional,float forward,float loopStart=0,float loopEnd=0,bool groundDepth=false,bool belowActors=false)
+            {
+                Sequence=sequence;HdrRange=hdr;Loop=loop;Directional=directional;ForwardDegrees=forward;
+                LoopStart=loopStart;LoopEnd=loopEnd>0?loopEnd:sequence.Duration;GroundDepth=groundDepth;BelowActors=belowActors;
+                ExactRgba=Array.TrueForAll(sequence.Pages,p=>!string.IsNullOrEmpty(p.rawResource)&&
+                    (p.rawResource.StartsWith("PramanixV5/",StringComparison.Ordinal)||p.rawResource.StartsWith("SixStarVfx/",StringComparison.Ordinal)));
+            }
             internal Sprite At(double age,bool loop=false)
             {
                 if(loop&&!Loop)throw new InvalidOperationException("A one-shot original effect cannot be looped: "+Key);
                 if(double.IsNaN(age)||double.IsInfinity(age)||age<0||!loop&&age>=Duration)return null;
-                if(loop)age%=Duration;
+                if(loop&&age>=LoopEnd)age=LoopStart+(age-LoopEnd)%(LoopEnd-LoopStart);
                 return Sequence.Frames[Mathf.Clamp((int)(age*Sequence.Fps+1e-5),0,Count-1)];
             }
         }
@@ -57,7 +64,9 @@ namespace YesterdayConvoy
                 if(d==null||RootFor(d.key)!=root||!keys.Add(d.key)||d.count<=0||d.count>600||d.width<=0||d.height<=0||
                     d.width%4!=0||d.height%4!=0||d.columns<=0||(long)d.columns*d.width>2048||!Finite(d.ppu)||d.ppu<=0||
                     !Finite(d.pivotX)||!Finite(d.pivotY)||!Finite(d.duration)||d.duration<=0||!Finite(d.hdrRange)||d.hdrRange<=0||
-                    !Finite(d.forwardDegrees)||d.pages==null||d.pages.Length==0||Mathf.Abs(d.count-d.duration*data.fps)>1.001f)
+                    !Finite(d.forwardDegrees)||!Finite(d.loopStart)||!Finite(d.loopEnd)||d.loopStart<0||d.loopEnd<0||
+                    d.loopStart>=(d.loopEnd>0?d.loopEnd:d.duration)||d.loopEnd>d.duration+.0001f||
+                    (!d.loop&&(d.loopStart>0||d.loopEnd>0))||d.pages==null||d.pages.Length==0||Mathf.Abs(d.count-d.duration*data.fps)>1.001f)
                     throw new InvalidDataException("Invalid original VFX clip: "+d?.key);
                 int total=0;var files=new HashSet<string>(StringComparer.Ordinal);string folder=null;
                 var pages=new List<ArtSequence.Page>();
@@ -72,13 +81,13 @@ namespace YesterdayConvoy
                     string directory=(Path.GetDirectoryName(page.file)??"").Replace('\\','/');
                     if(folder!=null&&folder!=directory)throw new InvalidDataException("A clip's pages need one source folder: "+d.key);
                     folder=directory;
-                    pages.Add(new ArtSequence.Page{file=Path.GetFileName(page.file),count=page.count,width=page.width,height=page.height});
+                    pages.Add(new ArtSequence.Page{file=Path.GetFileName(page.file),rawResource=page.rawResource,count=page.count,width=page.width,height=page.height});
                     total+=page.count;
                 }
                 if(total!=d.count)throw new InvalidDataException("Incomplete original VFX clip: "+d.key);
                 var sequence=new ArtSequence{Root=root+(string.IsNullOrEmpty(folder)?"":"/"+folder),Key=d.key,Name="OriginalVfx/"+d.key,Count=d.count,Width=d.width,Height=d.height,
                     Columns=d.columns,Ppu=d.ppu,PivotX=d.pivotX,PivotY=d.pivotY,Duration=d.duration,Fps=data.fps,Pages=pages.ToArray()};
-                result.Add(new Clip(sequence,d.hdrRange,d.loop,d.directional,d.forwardDegrees));
+                result.Add(new Clip(sequence,d.hdrRange,d.loop,d.directional,d.forwardDegrees,d.loopStart,d.loopEnd,d.groundDepth,d.belowActors));
             }
             return result.ToArray();
         }

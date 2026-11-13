@@ -1,0 +1,960 @@
+{
+  "version": 1,
+  "task": "B12",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "common_invincible_01",
+      "count": 90,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_invincible_01/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_a_blink_begin",
+      "count": 90,
+      "width": 56,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_a_blink_begin/00.png",
+          "count": 90,
+          "width": 672,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_a_blink_end",
+      "count": 52,
+      "width": 48,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.7083333333333334,
+      "pivotY": 0.24868075052897132,
+      "duration": 1.7333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_a_blink_end/00.png",
+          "count": 52,
+          "width": 576,
+          "height": 120
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_a_skill_start_01",
+      "count": 90,
+      "width": 48,
+      "height": 48,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.5625,
+      "pivotY": 0.14841699600219727,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_a_skill_start_01/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_attack_a_hit_01",
+      "count": 17,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.5345835004534041,
+      "duration": 0.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_attack_a_hit_01/00.png",
+          "count": 17,
+          "width": 336,
+          "height": 56
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_attack_a_trail_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5833333333333334,
+      "pivotY": 0.5806948343912761,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_attack_a_trail_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_attack_b_hit_01",
+      "count": 23,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.5345835004534041,
+      "duration": 0.7666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_attack_b_hit_01/00.png",
+          "count": 23,
+          "width": 336,
+          "height": 56
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_attack_b_start_01",
+      "count": 72,
+      "width": 48,
+      "height": 52,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.3840065002441406,
+      "duration": 2.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_attack_b_start_01/00.png",
+          "count": 72,
+          "width": 576,
+          "height": 312
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_attack_b_trail_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5833333333333334,
+      "pivotY": 0.5806948343912761,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_attack_b_trail_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_b_die_01",
+      "count": 90,
+      "width": 56,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.44642857142857145,
+      "pivotY": 0.5220076821067117,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_b_die_01/00.png",
+          "count": 90,
+          "width": 672,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_b_skill_1_start_01",
+      "count": 52,
+      "width": 52,
+      "height": 52,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4423076923076923,
+      "pivotY": 0.4032372694749099,
+      "duration": 1.7333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_b_skill_1_start_01/00.png",
+          "count": 52,
+          "width": 624,
+          "height": 260
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_b_skill_2_start_01",
+      "count": 57,
+      "width": 40,
+      "height": 44,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3856440457430753,
+      "duration": 1.9,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_b_skill_2_start_01/00.png",
+          "count": 57,
+          "width": 480,
+          "height": 220
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_b_skill_start_01",
+      "count": 90,
+      "width": 36,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.21315492902483257,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_b_skill_start_01/00.png",
+          "count": 90,
+          "width": 432,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_buff_01",
+      "count": 90,
+      "width": 28,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3320140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_buff_01/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_c_die_01",
+      "count": 81,
+      "width": 40,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.575,
+      "pivotY": 0.3324538336859809,
+      "duration": 2.7,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_c_die_01/00.png",
+          "count": 81,
+          "width": 480,
+          "height": 252
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_c_start_01",
+      "count": 90,
+      "width": 48,
+      "height": 52,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.36477573101337135,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_c_start_01/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 416
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_c_start_02",
+      "count": 62,
+      "width": 128,
+      "height": 72,
+      "columns": 12,
+      "ppu": 5.333333492279053,
+      "pivotX": 0.4921875,
+      "pivotY": 0.4489274554782443,
+      "duration": 2.066666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 4.800000190734863,
+      "pages": [
+        {
+          "file": "enemy_skzamy_c_start_02/00.png",
+          "count": 62,
+          "width": 1536,
+          "height": 432
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_revive_end",
+      "count": 90,
+      "width": 48,
+      "height": 60,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5208333333333334,
+      "pivotY": 0.4828056335449219,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 6.670000076293945,
+      "pages": [
+        {
+          "file": "enemy_skzamy_revive_end/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_revive_loop_01",
+      "count": 90,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3202977861676898,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_revive_loop_01/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_skzamy_revive_loop_02",
+      "count": 90,
+      "width": 140,
+      "height": 84,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4857142857142857,
+      "pivotY": 0.4639087858654204,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_skzamy_revive_loop_02/00.png",
+          "count": 90,
+          "width": 1680,
+          "height": 672
+        }
+      ]
+    },
+    {
+      "key": "enemy_2095_skzamf_01",
+      "count": 122,
+      "width": 124,
+      "height": 64,
+      "columns": 12,
+      "ppu": 73.14286041259766,
+      "pivotX": 0.6612903225806451,
+      "pivotY": 0.08925628662109375,
+      "duration": 4.066666666666666,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_2095_skzamf_01/00.png",
+          "count": 122,
+          "width": 1488,
+          "height": 704
+        }
+      ]
+    },
+    {
+      "key": "enemy_2096_skzamj_01",
+      "count": 122,
+      "width": 188,
+      "height": 120,
+      "columns": 10,
+      "ppu": 73.14286041259766,
+      "pivotX": 0.7446808510638298,
+      "pivotY": 0.13927001953124996,
+      "duration": 4.066666666666666,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_2096_skzamj_01/00.png",
+          "count": 122,
+          "width": 1880,
+          "height": 1560
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "common_invincible_01",
+        "enemy_skzamy_a_blink_begin",
+        "enemy_skzamy_a_blink_end",
+        "enemy_skzamy_a_skill_start_01",
+        "enemy_skzamy_attack_a_hit_01",
+        "enemy_skzamy_attack_a_trail_01",
+        "enemy_skzamy_attack_b_hit_01",
+        "enemy_skzamy_attack_b_start_01",
+        "enemy_skzamy_attack_b_trail_01",
+        "enemy_skzamy_b_die_01",
+        "enemy_skzamy_b_skill_1_start_01",
+        "enemy_skzamy_b_skill_2_start_01",
+        "enemy_skzamy_b_skill_start_01",
+        "enemy_skzamy_buff_01",
+        "enemy_skzamy_c_die_01",
+        "enemy_skzamy_c_start_01",
+        "enemy_skzamy_c_start_02",
+        "enemy_skzamy_revive_end",
+        "enemy_skzamy_revive_loop_01",
+        "enemy_skzamy_revive_loop_02",
+        "enemy_2095_skzamf_01",
+        "enemy_2096_skzamj_01"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_trail_01",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 1,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 1,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_trail_01",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 2,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 2,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_trail_01",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 3,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_a_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 3,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_b_start_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_b_trail_01",
+      "attach": "projectile",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_attack_b_hit_01",
+      "attach": "target",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "aoeattack",
+      "key": "enemy_skzamy_b_skill_1_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "aoeattack",
+      "key": "enemy_skzamy_attack_b_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "aoeattack",
+      "key": "enemy_skzamy_attack_b_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "aoeattackinit",
+      "key": "enemy_skzamy_b_skill_1_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "aoeattackinit",
+      "key": "enemy_skzamy_attack_b_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "aoeattackinit",
+      "key": "enemy_skzamy_attack_b_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "deepbreaths1",
+      "key": "enemy_skzamy_a_skill_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "deepbreaths2",
+      "key": "enemy_skzamy_a_skill_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "deepbreaths3",
+      "key": "enemy_skzamy_a_skill_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "deepbreaths4",
+      "key": "enemy_skzamy_b_skill_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "summonballs4",
+      "key": "enemy_skzamy_b_skill_2_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_skzamy_c_die_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "eternal",
+      "nativeSkill": "amiydoom",
+      "key": "enemy_skzamy_c_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "eternal",
+      "nativeSkill": "amiydoom",
+      "key": "enemy_skzamy_c_start_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

@@ -158,6 +158,7 @@ namespace YesterdayConvoy
         }
         void FrameShopMap()
         {
+            if(BossArenaActive){FrameBossArena();return;}
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
             var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();
@@ -315,6 +316,7 @@ namespace YesterdayConvoy
                 if(!defender.Settings.Skill.Enabled)continue;
                 bool active=Battle.DefenderSkillActive(defender);
                 float progress=active?(float)((defender.SkillActiveUntil-Battle.Clock)/defender.Settings.Skill.Duration):defender.SkillSP/defender.Settings.Skill.RequiredSP;
+                if(active&&Battle.SeventhUsesAmmo(defender))progress=(float)defender.Ammo/Battle.SeventhAmmoCapacity(defender);
                 Fill(new Rect(p.x-24,p.y+8,48,4),new Color(.03f,.05f,.06f));Fill(new Rect(p.x-23,p.y+9,46*Mathf.Clamp01(progress),2),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
             }
         }

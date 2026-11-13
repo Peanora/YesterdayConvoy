@@ -30,7 +30,7 @@ MonoBehaviour:
   - id: D23
     displayName: Mon3tr
     artId: D23
-    position: {x: -4.5, y: 0.76, z: 2}
+    position: {x: -4, y: 0.38, z: 1}
     health: 1400
     attack: 20
     armor: 12

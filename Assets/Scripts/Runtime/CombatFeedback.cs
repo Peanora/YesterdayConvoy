@@ -72,12 +72,16 @@ namespace YesterdayConvoy
         void RecordUnitHealthLoss(DeployedUnitState u,float before,Vector3 position)
             =>combatFeedback.Add(Clock,CombatFeedbackTarget.Monster,u.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-u.Health));
         void RecordDefenderHealthLoss(DefenderState d,float before,Vector3 position)
-            =>combatFeedback.Add(Clock,CombatFeedbackTarget.Defender,d.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-d.Health));
+        {
+            if(before>d.Health&&d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak)d.ChenDawnNextTalentAt=Clock+7;
+            combatFeedback.Add(Clock,CombatFeedbackTarget.Defender,d.EntityId,position,CombatFeedbackKind.HealthLost,Mathf.Max(0,before-d.Health));
+        }
         void RecordUnitShieldAbsorption(DeployedUnitState u,float amount)
             =>combatFeedback.Add(Clock,CombatFeedbackTarget.Monster,u.EntityId,u.Motion.Position,CombatFeedbackKind.ShieldAbsorbed,amount);
         // Centralizes ONLY actual defender healing; keeps caller-specific SP/statistics untouched.
         float RestoreDefenderHealth(DefenderState d,float amount)
         {
+            if(!BossRosterDefenderCanHeal(d))return 0;
             if(d==null||!d.Alive||d.DebtLife||amount<=0||float.IsNaN(amount)||float.IsInfinity(amount))return 0;
             float gained=Mathf.Min(amount,Mathf.Max(0,d.MaxHealth-d.Health));
             if(gained<=0)return 0;

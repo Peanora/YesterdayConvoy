@@ -1,0 +1,748 @@
+{
+  "models": 35,
+  "newRecruitableBosses": 19,
+  "existingCoreCardsWithApprovedSourceVisuals": {
+    "B02": "CARD_M25",
+    "B06": "CARD_M32",
+    "B16": "CARD_TALULAH_TRIAL",
+    "B17": "CARD_M20",
+    "B18": "CARD_M14",
+    "B19": "CARD_M28",
+    "B20": "CARD_WISADEL_APRIL"
+  },
+  "skillAuxiliaries": 8,
+  "externalCompleteBodyLibrary": {
+    "models": 27,
+    "timedClips": 393,
+    "location": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1"
+  },
+  "timedClips": 433,
+  "frames": 58583,
+  "pages": 2722,
+  "zeroDurationMetadataStates": 54,
+  "pngBytes": 2621729692,
+  "cacheSegments": 442,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "packages": [
+    {
+      "task": "B01",
+      "view": "main",
+      "timedClips": 6,
+      "frames": 886,
+      "pages": 38,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "ppu": 116.61559318377358,
+      "pngBytes": 32673191,
+      "cacheSegments": 6,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B02",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 576,
+      "pages": 25,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "ppu": 169.01529627472948,
+      "pngBytes": 36363332,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B03",
+      "view": "main",
+      "timedClips": 6,
+      "frames": 306,
+      "pages": 16,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Disappear",
+        "Die"
+      ],
+      "ppu": 137.84356162650323,
+      "pngBytes": 16200771,
+      "cacheSegments": 6,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B04",
+      "view": "main",
+      "timedClips": 16,
+      "frames": 1791,
+      "pages": 78,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill2",
+        "B_Die"
+      ],
+      "ppu": 84.88195911317054,
+      "pngBytes": 57832636,
+      "cacheSegments": 16,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B05",
+      "view": "main",
+      "timedClips": 9,
+      "frames": 574,
+      "pages": 28,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "ppu": 91.55447379801231,
+      "pngBytes": 29506233,
+      "cacheSegments": 9,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B06",
+      "view": "main",
+      "timedClips": 22,
+      "frames": 2505,
+      "pages": 111,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "C1_Idle",
+        "C1_Move",
+        "C1_Attack",
+        "C1_Skill_2",
+        "C2_Die_1"
+      ],
+      "ppu": 133.45849771931512,
+      "pngBytes": 135433614,
+      "cacheSegments": 22,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B07",
+      "view": "main",
+      "timedClips": 17,
+      "frames": 3123,
+      "pages": 133,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle_a",
+        "Move_a",
+        "Attack_a",
+        "Skill_a_1",
+        "Die_End"
+      ],
+      "ppu": 64.42054343346179,
+      "pngBytes": 80575264,
+      "cacheSegments": 18,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B08",
+      "view": "main",
+      "timedClips": 17,
+      "frames": 2065,
+      "pages": 138,
+      "zeroDurationMetadataStates": 3,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "ppu": 20.397146059683134,
+      "pngBytes": 31785357,
+      "cacheSegments": 17,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B09",
+      "view": "main",
+      "timedClips": 15,
+      "frames": 2051,
+      "pages": 89,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_2",
+        "B_Die"
+      ],
+      "ppu": 120.43777534115418,
+      "pngBytes": 195702015,
+      "cacheSegments": 15,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B10",
+      "view": "main",
+      "timedClips": 3,
+      "frames": 1634,
+      "pages": 67,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Skill"
+      ],
+      "ppu": 124.77387018475683,
+      "pngBytes": 78406199,
+      "cacheSegments": 5,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B11",
+      "view": "main",
+      "timedClips": 18,
+      "frames": 3092,
+      "pages": 131,
+      "zeroDurationMetadataStates": 4,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "ppu": 82.81736513361531,
+      "pngBytes": 227168240,
+      "cacheSegments": 19,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B12",
+      "view": "main",
+      "timedClips": 22,
+      "frames": 3047,
+      "pages": 134,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_Begin",
+        "C_Die"
+      ],
+      "ppu": 68.75323270704342,
+      "pngBytes": 118631990,
+      "cacheSegments": 22,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B13",
+      "view": "main",
+      "timedClips": 28,
+      "frames": 2658,
+      "pages": 180,
+      "zeroDurationMetadataStates": 3,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "B_Die_1"
+      ],
+      "ppu": 54.99986542933579,
+      "pngBytes": 110886130,
+      "cacheSegments": 28,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B14",
+      "view": "main",
+      "timedClips": 9,
+      "frames": 728,
+      "pages": 33,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Skill_1",
+        "Die"
+      ],
+      "ppu": 57.842026564951745,
+      "pngBytes": 40328447,
+      "cacheSegments": 9,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B15",
+      "view": "main",
+      "timedClips": 12,
+      "frames": 2489,
+      "pages": 105,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "ppu": 121.31989471627594,
+      "pngBytes": 235539535,
+      "cacheSegments": 12,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B16",
+      "view": "main",
+      "timedClips": 16,
+      "frames": 3410,
+      "pages": 143,
+      "zeroDurationMetadataStates": 3,
+      "runtimeSources": [
+        "Idle_A",
+        "Move_A",
+        "Attack_A",
+        "Skill_1_A",
+        "Die"
+      ],
+      "ppu": 74.36614102399271,
+      "pngBytes": 100367186,
+      "cacheSegments": 16,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B17",
+      "view": "main",
+      "timedClips": 11,
+      "frames": 1494,
+      "pages": 64,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle_1",
+        "Move_1",
+        "Attack_1",
+        "Skill",
+        "Die"
+      ],
+      "ppu": 56.13572372296399,
+      "pngBytes": 51015554,
+      "cacheSegments": 11,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B18",
+      "view": "main",
+      "timedClips": 7,
+      "frames": 1595,
+      "pages": 66,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill_1",
+        "Die"
+      ],
+      "ppu": 43.302181175316186,
+      "pngBytes": 24383023,
+      "cacheSegments": 7,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B19",
+      "view": "main",
+      "timedClips": 7,
+      "frames": 860,
+      "pages": 38,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack_1",
+        "Skill_1",
+        "Die"
+      ],
+      "ppu": 82.30324997024191,
+      "pngBytes": 33387623,
+      "cacheSegments": 7,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B20",
+      "view": "front",
+      "timedClips": 25,
+      "frames": 4769,
+      "pages": 210,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Attack_A",
+        "Skill_3_Begin",
+        "Die"
+      ],
+      "ppu": 64.89298879873046,
+      "pngBytes": 163990866,
+      "cacheSegments": 28,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B20",
+      "view": "back",
+      "timedClips": 17,
+      "frames": 2491,
+      "pages": 112,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Attack_A",
+        "Skill_3_Begin"
+      ],
+      "ppu": 67.6218815591368,
+      "pngBytes": 92468848,
+      "cacheSegments": 18,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B21",
+      "view": "main",
+      "timedClips": 19,
+      "frames": 2116,
+      "pages": 141,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Skill_Idle_A",
+        "Skill_Begin_A",
+        "Die_3_End_A"
+      ],
+      "ppu": 24.869692219520378,
+      "pngBytes": 159664045,
+      "cacheSegments": 19,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B22",
+      "view": "main",
+      "timedClips": 9,
+      "frames": 2089,
+      "pages": 89,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill",
+        "Die"
+      ],
+      "ppu": 71.08356926503865,
+      "pngBytes": 91926072,
+      "cacheSegments": 9,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B23",
+      "view": "main",
+      "timedClips": 23,
+      "frames": 2034,
+      "pages": 93,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack_1",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "ppu": 41.648073183731775,
+      "pngBytes": 37183507,
+      "cacheSegments": 23,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B24",
+      "view": "main",
+      "timedClips": 12,
+      "frames": 2415,
+      "pages": 104,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1",
+        "B_Die"
+      ],
+      "ppu": 114.57308076196117,
+      "pngBytes": 145757637,
+      "cacheSegments": 12,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B25",
+      "view": "main",
+      "timedClips": 31,
+      "frames": 2533,
+      "pages": 120,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "A_Idle",
+        "A_Move",
+        "A_Attack",
+        "A_Skill_1_Begin",
+        "B_Die"
+      ],
+      "ppu": 73.21029178300427,
+      "pngBytes": 101728324,
+      "cacheSegments": 31,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "B26",
+      "view": "main",
+      "timedClips": 12,
+      "frames": 1366,
+      "pages": 60,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack_1",
+        "Skill_1",
+        "Die"
+      ],
+      "ppu": 66.5320828432252,
+      "pngBytes": 47305785,
+      "cacheSegments": 12,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P14",
+      "view": "main",
+      "timedClips": 8,
+      "frames": 828,
+      "pages": 37,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Skill_1",
+        "Die_1"
+      ],
+      "ppu": 50.41930284789882,
+      "pngBytes": 38303627,
+      "cacheSegments": 8,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P12I",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 491,
+      "pages": 22,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Die",
+        "Start"
+      ],
+      "ppu": 266.6177473995994,
+      "pngBytes": 22424440,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P15C",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 201,
+      "pages": 10,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "ppu": 250.34708576176422,
+      "pngBytes": 5654096,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P14H",
+      "view": "main",
+      "timedClips": 7,
+      "frames": 900,
+      "pages": 40,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Skill_Begin",
+        "Die"
+      ],
+      "ppu": 68.15102899707735,
+      "pngBytes": 10996211,
+      "cacheSegments": 8,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P20",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 366,
+      "pages": 16,
+      "zeroDurationMetadataStates": 0,
+      "runtimeSources": [
+        "Idle",
+        "Attack",
+        "Die",
+        "Start"
+      ],
+      "ppu": 231.26580613252204,
+      "pngBytes": 10242510,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P24D",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 201,
+      "pages": 10,
+      "zeroDurationMetadataStates": 2,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die"
+      ],
+      "ppu": 333.92473473407387,
+      "pngBytes": 6791460,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P25M",
+      "view": "main",
+      "timedClips": 5,
+      "frames": 634,
+      "pages": 28,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Attack",
+        "Die",
+        "Start"
+      ],
+      "ppu": 259.4836671738679,
+      "pngBytes": 36921618,
+      "cacheSegments": 5,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    },
+    {
+      "task": "P26",
+      "view": "main",
+      "timedClips": 4,
+      "frames": 265,
+      "pages": 13,
+      "zeroDurationMetadataStates": 1,
+      "runtimeSources": [
+        "Idle",
+        "Move",
+        "Skill",
+        "Die"
+      ],
+      "ppu": 132.2019015871907,
+      "pngBytes": 14184306,
+      "cacheSegments": 4,
+      "originalBytesAndHashesPreserved": true,
+      "originalTimingEventsAndPivotPreserved": true,
+      "unityTests": "NOT_RUN"
+    }
+  ],
+  "unityTests": "NOT_RUN_BY_PACKAGER"
+}

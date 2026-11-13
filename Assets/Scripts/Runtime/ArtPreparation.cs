@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -13,10 +14,16 @@ namespace YesterdayConvoy
         public string ArtLoadingMessage {get;private set;}
         int artGeneration;
         bool artCompleting;
+        // Plans can coexist while entry/loading/pinning are being resolved. Associate
+        // native requests with the actual plan, never a shared "last plan" snapshot.
+        static readonly ConditionalWeakTable<List<ArtSequence>,string[]> nativeArtPlans=new ConditionalWeakTable<List<ArtSequence>,string[]>();
         void CancelArtPreparation(){if(artCompleting)return;artGeneration++;ArtLoading=false;}
         static IEnumerable<ArtSequence> CardSequences(CardDefinition card,bool idleOnly=false)
         {
             if(card==null)yield break;
+            var boss=BossRosterArt.For(card.CardId);
+            if(boss!=null&&BossRosterArt.IsCoreCard(card.CardId)&&!idleOnly){foreach(var clip in BossCoreArt.SequencesFor(card.CardId))yield return clip;yield break;}
+            if(boss!=null){foreach(var clip in idleOnly?boss.SequencesFor(new[]{"idle"}):boss.AllSequences)yield return clip;yield break;}
             var local=LocalMonsterArt.For(card.CardId);
             var sequence=local?.Sequences??OriginalSlugArt.For(card.CardId)?.Sequences??OriginalTalulahArt.For(card)?.Sequences;
             if(sequence==null)yield break;
@@ -32,7 +39,8 @@ namespace YesterdayConvoy
                 {
                     var original=OriginalTalulahArt.For(card);
                     if(original==null)throw new InvalidOperationException("Talulah original art is required for the second phase.");
-                    clips.AddRange(original.SecondPhaseSequences);clips.AddRange(TalulahAttackVfx.SecondPhaseSequences);
+                    if(BossRosterArt.For(card.CardId)==null)clips.AddRange(original.SecondPhaseSequences);
+                    clips.AddRange(TalulahAttackVfx.SecondPhaseSequences);
                 }
             }
             foreach(var defender in defenders)
@@ -42,10 +50,20 @@ namespace YesterdayConvoy
                 if(tactical)clips.AddRange(DefenderArt.Load(defender.artId+"B").Sequences);
                 if(defender.skill?.kind==DefenderSkillKind.WangGambit)clips.AddRange(DefenderArt.Load("D28Chess").Sequences);
             }
-            clips.AddRange(OriginalCombatVfxArt.SequencesFor(DefenderVfxArt.RequiredKeysForArtIds(defenders.Select(d=>d.artId))));
+            var defenderEffects=DefenderVfxArt.RequiredKeysForArtIds(defenders.Select(d=>d.artId)).Distinct().ToArray();
+            var nativeEffects=defenderEffects.Where(OriginalNativeFxCatalog.Supports).ToArray();
+            clips.AddRange(OriginalCombatVfxArt.SequencesFor(defenderEffects.Where(key=>!OriginalNativeFxCatalog.Supports(key))));
             clips.AddRange(CommonCombatVfxDirector.SequencesFor());
+            foreach(string id in cards.Where(c=>c!=null).Select(c=>c.CardId).Distinct())
+            {
+                string[] auxiliary=id=="CARD_B12"?new[]{"AUX_P12I"}:id=="CARD_B14"?new[]{"AUX_P14","AUX_P14H"}:id=="CARD_B15"?new[]{"AUX_P15C"}:id=="CARD_B24"?new[]{"AUX_P24D"}:id=="CARD_B25"?new[]{"AUX_P25M"}:id=="CARD_B26"?new[]{"AUX_P26"}:ViviCombat.IsVivi(id)?new[]{"AUX_P20"}:Array.Empty<string>();
+                foreach(string name in auxiliary)clips.AddRange((BossRosterArt.For(name)??throw new InvalidOperationException("Required original auxiliary model missing: "+name)).AllSequences);
+            }
+            clips.AddRange(BossRosterFxArt.SequencesFor(cards.Where(c=>c!=null).Select(c=>c.CardId)));
             clips.AddRange(OriginalCombatVfxArt.SequencesFor(MonsterOriginalVfx.RequiredKeysForCards(cards.Where(c=>c!=null).Select(c=>c.CardId))));
-            return clips.GroupBy(s=>s.CacheKey).Select(g=>g.First()).ToList();
+            var plan=clips.GroupBy(s=>s.CacheKey).Select(g=>g.First()).ToList();
+            if(nativeEffects.Length>0)nativeArtPlans.Add(plan,nativeEffects);
+            return plan;
         }
         List<ArtSequence> CurrentBattlePlan()
         {
@@ -82,6 +100,8 @@ namespace YesterdayConvoy
             if(ArtLoading)yield break;
             ArtLoading=true;ArtLoadingProgress=0;ArtLoadingMessage=title;
             int generation=++artGeneration;
+            nativeArtPlans.TryGetValue(plan,out var nativeEffects);
+            int stages=plan.Count+(nativeEffects!=null&&nativeEffects.Length>0?1:0);
             var timer=System.Diagnostics.Stopwatch.StartNew();int prepared=ArtMemoryCache.PreparedLoads,raw=ArtMemoryCache.RuntimePngLoads;
             try
             {
@@ -91,8 +111,17 @@ namespace YesterdayConvoy
                 {
                     var clip=plan[i];ArtLoadingMessage=title+"  "+(i+1)+" / "+plan.Count;
                     var warm=clip.Warm();try{while(warm.MoveNext()){yield return warm.Current;if(generation!=artGeneration)yield break;}}finally{(warm as IDisposable)?.Dispose();}
-                    ArtLoadingProgress=(i+1f)/plan.Count;
+                    ArtLoadingProgress=(i+1f)/Math.Max(1,stages);
                 }
+                if(nativeEffects!=null&&nativeEffects.Length>0)
+                {
+                    ArtLoadingMessage=title+" · 准备战斗特效";
+                    var nativeWarm=OriginalNativeFxCatalog.Prepare(nativeEffects);
+                    try{while(nativeWarm.MoveNext()){yield return nativeWarm.Current;if(generation!=artGeneration)yield break;}}
+                    finally{(nativeWarm as IDisposable)?.Dispose();}
+                    if(generation!=artGeneration)yield break;
+                }
+                ArtLoadingProgress=1;
                 artCompleting=true;try{complete?.Invoke();}finally{artCompleting=false;}
                 SnowstormArt.WarmFor(Battle?.SnowTier??0);
                 RefreshArtPins();yield return null;if(generation!=artGeneration)yield break;ArtMemoryCache.Trim();

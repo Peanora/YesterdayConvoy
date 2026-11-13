@@ -6,6 +6,7 @@ Shader "YesterdayConvoy/Tactical Actor"
         _Color ("Tint", Color) = (1,1,1,1)
         _EnvironmentTint ("Local ambient tint", Color) = (1,1,1,1)
         _BodyHeight ("Body height", Float) = 1.25
+        _MapReviewGrounding ("Map05 approved grounding",Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
         [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
@@ -27,6 +28,7 @@ Shader "YesterdayConvoy/Tactical Actor"
             #include "UnitySprites.cginc"
             fixed4 _EnvironmentTint;
             float _BodyHeight;
+            float _MapReviewGrounding;
             struct actor_v2f
             {
                 float4 vertex : SV_POSITION;
@@ -54,7 +56,15 @@ Shader "YesterdayConvoy/Tactical Actor"
             actor_output frag(actor_v2f i)
             {
                 actor_output o;
-                o.color=SampleSpriteTexture(i.uv)*i.color;o.color.rgb*=lerp(_EnvironmentTint.rgb,fixed3(1,1,1),i.bodyHeight);o.color.rgb*=o.color.a;
+                o.color=SampleSpriteTexture(i.uv)*i.color;
+                if(_MapReviewGrounding>.5)
+                {
+                    float upper=smoothstep(.02,.95,i.bodyHeight);
+                    float luminance=dot(o.color.rgb,float3(.2126,.7152,.0722));
+                    o.color.rgb=lerp(luminance.xxx,o.color.rgb,.94)*lerp(float3(.70,.76,.81),float3(.92,.96,.98),upper);
+                }
+                else o.color.rgb*=lerp(_EnvironmentTint.rgb,fixed3(1,1,1),i.bodyHeight);
+                o.color.rgb*=o.color.a;
                 // Draw an undistorted billboard, but test depth on the vertical plane at its feet.
                 // This prevents a high tile slicing through the middle of a camera-facing card.
                 float3 ray=i.world-_WorldSpaceCameraPos;

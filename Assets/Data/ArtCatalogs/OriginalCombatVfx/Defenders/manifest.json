@@ -319,13 +319,18 @@
           "file": "D21/whitw2_attack_01_start-00.png",
           "count": 65,
           "width": 800,
-          "height": 1080
+          "height": 1080,
+          "rawResource": "SixStarVfx/D21/whitw2_attack_01_start-00"
         }
       ],
       "sourcePrefab": "whitw2_attack_01_start",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_attack_01_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_attack_01_trail",
@@ -346,13 +351,18 @@
           "file": "D21/whitw2_attack_01_trail-00.png",
           "count": 72,
           "width": 1952,
-          "height": 288
+          "height": 288,
+          "rawResource": "SixStarVfx/D21/whitw2_attack_01_trail-00"
         }
       ],
       "sourcePrefab": "whitw2_attack_01_trail",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_attack_01_trail\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_hit_01",
@@ -373,13 +383,18 @@
           "file": "D21/whitw2_hit_01-00.png",
           "count": 45,
           "width": 1024,
-          "height": 480
+          "height": 480,
+          "rawResource": "SixStarVfx/D21/whitw2_hit_01-00"
         }
       ],
       "sourcePrefab": "whitw2_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_token_01",
@@ -400,13 +415,18 @@
           "file": "D21/whitw2_token_01-00.png",
           "count": 72,
           "width": 352,
-          "height": 396
+          "height": 396,
+          "rawResource": "SixStarVfx/D21/whitw2_token_01-00"
         }
       ],
       "sourcePrefab": "whitw2_token_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_token_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_token_hit_01",
@@ -427,13 +447,18 @@
           "file": "D21/whitw2_token_hit_01-00.png",
           "count": 26,
           "width": 1408,
-          "height": 304
+          "height": 304,
+          "rawResource": "SixStarVfx/D21/whitw2_token_hit_01-00"
         }
       ],
       "sourcePrefab": "whitw2_token_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_token_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_skill_03_start_01",
@@ -454,13 +479,18 @@
           "file": "D21/whitw2_skill_03_start_01-00.png",
           "count": 27,
           "width": 480,
-          "height": 192
+          "height": 192,
+          "rawResource": "SixStarVfx/D21/whitw2_skill_03_start_01-00"
         }
       ],
       "sourcePrefab": "whitw2_skill_03_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_skill_03_token_hit_01",
@@ -481,13 +511,18 @@
           "file": "D21/whitw2_skill_03_token_hit_01-00.png",
           "count": 42,
           "width": 1280,
-          "height": 936
+          "height": 936,
+          "rawResource": "SixStarVfx/D21/whitw2_skill_03_token_hit_01-00"
         }
       ],
       "sourcePrefab": "whitw2_skill_03_token_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_token_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_skill_03_buff_start",
@@ -508,13 +543,18 @@
           "file": "D21/whitw2_skill_03_buff_start-00.png",
           "count": 65,
           "width": 1888,
-          "height": 1296
+          "height": 1296,
+          "rawResource": "SixStarVfx/D21/whitw2_skill_03_buff_start-00"
         }
       ],
       "sourcePrefab": "whitw2_skill_03_buff_start",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_buff_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_attack_01",
@@ -535,13 +575,18 @@
           "file": "D22/yu_attack_01-00.png",
           "count": 50,
           "width": 1216,
-          "height": 308
+          "height": 308,
+          "rawResource": "SixStarVfx/D22/yu_attack_01-00"
         }
       ],
       "sourcePrefab": "yu_attack_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_attack_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_hit_01",
@@ -562,13 +607,18 @@
           "file": "D22/yu_hit_01-00.png",
           "count": 23,
           "width": 928,
-          "height": 276
+          "height": 276,
+          "rawResource": "SixStarVfx/D22/yu_hit_01-00"
         }
       ],
       "sourcePrefab": "yu_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_skill3_attack_01",
@@ -589,13 +639,18 @@
           "file": "D22/yu_skill3_attack_01-00.png",
           "count": 34,
           "width": 640,
-          "height": 260
+          "height": 260,
+          "rawResource": "SixStarVfx/D22/yu_skill3_attack_01-00"
         }
       ],
       "sourcePrefab": "yu_skill3_attack_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_attack_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_skill3_hit_01",
@@ -616,13 +671,18 @@
           "file": "D22/yu_skill3_hit_01-00.png",
           "count": 39,
           "width": 1184,
-          "height": 480
+          "height": 480,
+          "rawResource": "SixStarVfx/D22/yu_skill3_hit_01-00"
         }
       ],
       "sourcePrefab": "yu_skill3_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_skill3_buff_01",
@@ -643,13 +703,18 @@
           "file": "D22/yu_skill3_buff_01-00.png",
           "count": 72,
           "width": 1024,
-          "height": 900
+          "height": 900,
+          "rawResource": "SixStarVfx/D22/yu_skill3_buff_01-00"
         }
       ],
       "sourcePrefab": "yu_skill3_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5666666666666667,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_annex_01",
@@ -670,13 +735,18 @@
           "file": "D22/yu_skill3_annex_01-00.png",
           "count": 28,
           "width": 736,
-          "height": 336
+          "height": 336,
+          "rawResource": "SixStarVfx/D22/yu_skill3_annex_01-00"
         }
       ],
       "sourcePrefab": "yu_skill3_annex_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_annex_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D22/yu_skill3_range_01",
@@ -697,13 +767,18 @@
           "file": "D22/yu_skill3_range_01-00.png",
           "count": 72,
           "width": 480,
-          "height": 504
+          "height": 504,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_l",
@@ -724,13 +799,18 @@
           "file": "D22/yu_skill3_range_01_l-00.png",
           "count": 72,
           "width": 352,
-          "height": 612
+          "height": 612,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_l-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_l",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_r",
@@ -751,13 +831,18 @@
           "file": "D22/yu_skill3_range_01_r-00.png",
           "count": 72,
           "width": 352,
-          "height": 612
+          "height": 612,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_r-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_r",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_l_end",
@@ -778,13 +863,18 @@
           "file": "D22/yu_skill3_range_01_l_end-00.png",
           "count": 72,
           "width": 480,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_l_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_l_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_r_end",
@@ -805,13 +895,18 @@
           "file": "D22/yu_skill3_range_01_r_end-00.png",
           "count": 72,
           "width": 480,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_r_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_r_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_l_u_end",
@@ -832,13 +927,18 @@
           "file": "D22/yu_skill3_range_01_l_u_end-00.png",
           "count": 72,
           "width": 352,
-          "height": 432
+          "height": 432,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_l_u_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_l_u_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_u_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_l_d_end",
@@ -859,13 +959,18 @@
           "file": "D22/yu_skill3_range_01_l_d_end-00.png",
           "count": 72,
           "width": 384,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_l_d_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_l_d_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_l_d_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_r_u_end",
@@ -886,13 +991,18 @@
           "file": "D22/yu_skill3_range_01_r_u_end-00.png",
           "count": 72,
           "width": 352,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_r_u_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_r_u_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_u_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D22/yu_skill3_range_01_r_d_end",
@@ -913,13 +1023,18 @@
           "file": "D22/yu_skill3_range_01_r_d_end-00.png",
           "count": 72,
           "width": 352,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D22/yu_skill3_range_01_r_d_end-00"
         }
       ],
       "sourcePrefab": "yu_skill3_range_01_r_d_end",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\yu_skill3_range_01_r_d_end\\report.json",
       "sourceBundle": "battle/prefabs/effects/yu.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D23/monstr_attack_start_01",
@@ -940,13 +1055,18 @@
           "file": "D23/monstr_attack_start_01-00.png",
           "count": 49,
           "width": 384,
-          "height": 336
+          "height": 336,
+          "rawResource": "SixStarVfx/D23/monstr_attack_start_01-00"
         }
       ],
       "sourcePrefab": "monstr_attack_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_attack_trail",
@@ -967,13 +1087,18 @@
           "file": "D23/monstr_attack_trail-00.png",
           "count": 72,
           "width": 1960,
-          "height": 528
+          "height": 528,
+          "rawResource": "SixStarVfx/D23/monstr_attack_trail-00"
         }
       ],
       "sourcePrefab": "monstr_attack_trail",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_trail\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_attack_hit_01",
@@ -994,13 +1119,18 @@
           "file": "D23/monstr_attack_hit_01-00.png",
           "count": 41,
           "width": 704,
-          "height": 528
+          "height": 528,
+          "rawResource": "SixStarVfx/D23/monstr_attack_hit_01-00"
         }
       ],
       "sourcePrefab": "monstr_attack_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_attack_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_heal",
@@ -1021,13 +1151,18 @@
           "file": "D23/monstr_skill_03_heal-00.png",
           "count": 44,
           "width": 384,
-          "height": 288
+          "height": 288,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_heal-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_heal",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_heal\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_start_01",
@@ -1048,13 +1183,18 @@
           "file": "D23/monstr_skill_03_start_01-00.png",
           "count": 36,
           "width": 1216,
-          "height": 440
+          "height": 440,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_start_01-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_hit",
@@ -1075,13 +1215,18 @@
           "file": "D23/monstr_skill_03_hit-00.png",
           "count": 16,
           "width": 832,
-          "height": 208
+          "height": 208,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_hit-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_hit",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_hit\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_begin_01",
@@ -1102,13 +1247,18 @@
           "file": "D23/monstr_skill_03_begin_01-00.png",
           "count": 60,
           "width": 1056,
-          "height": 800
+          "height": 800,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_begin_01-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_begin_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_begin_02",
@@ -1129,13 +1279,18 @@
           "file": "D23/monstr_skill_03_begin_02-00.png",
           "count": 63,
           "width": 1440,
-          "height": 1472
+          "height": 1472,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_begin_02-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_begin_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_begin_03",
@@ -1156,13 +1311,18 @@
           "file": "D23/monstr_skill_03_begin_03-00.png",
           "count": 105,
           "width": 960,
-          "height": 1008
+          "height": 1008,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_begin_03-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_begin_03",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_begin_03\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5666666666666667,
+      "loopEnd": 3.5
     },
     {
       "key": "defender/D23/monstr_skill_03_end_01",
@@ -1183,13 +1343,18 @@
           "file": "D23/monstr_skill_03_end_01-00.png",
           "count": 9,
           "width": 544,
-          "height": 160
+          "height": 160,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_end_01-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_end_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_end_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_end_02",
@@ -1210,13 +1375,18 @@
           "file": "D23/monstr_skill_03_end_02-00.png",
           "count": 31,
           "width": 960,
-          "height": 320
+          "height": 320,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_end_02-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_end_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_end_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D23/monstr_skill_03_buff_01",
@@ -1237,13 +1407,18 @@
           "file": "D23/monstr_skill_03_buff_01-00.png",
           "count": 72,
           "width": 736,
-          "height": 252
+          "height": 252,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_buff_01-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.8,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D23/monstr_skill_03_buff_02",
@@ -1264,13 +1439,18 @@
           "file": "D23/monstr_skill_03_buff_02-00.png",
           "count": 72,
           "width": 288,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_buff_02-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_buff_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.8,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D23/monstr_skill_03_buff_03",
@@ -1291,13 +1471,18 @@
           "file": "D23/monstr_skill_03_buff_03-00.png",
           "count": 72,
           "width": 320,
-          "height": 144
+          "height": 144,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_buff_03-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_buff_03",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_03\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.8666666666666667,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D23/monstr_skill_03_buff_04",
@@ -1318,13 +1503,18 @@
           "file": "D23/monstr_skill_03_buff_04-00.png",
           "count": 72,
           "width": 512,
-          "height": 180
+          "height": 180,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_buff_04-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_buff_04",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_04\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.8333333333333334,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D23/monstr_skill_03_buff_05",
@@ -1345,13 +1535,18 @@
           "file": "D23/monstr_skill_03_buff_05-00.png",
           "count": 72,
           "width": 832,
-          "height": 576
+          "height": 576,
+          "rawResource": "SixStarVfx/D23/monstr_skill_03_buff_05-00"
         }
       ],
       "sourcePrefab": "monstr_skill_03_buff_05",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\monstr_skill_03_buff_05\\report.json",
       "sourceBundle": "battle/prefabs/effects/monstr.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.7666666666666667,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D24/angel2_attack_loop_start_01",
@@ -1372,13 +1567,18 @@
           "file": "D24/angel2_attack_loop_start_01-00.png",
           "count": 18,
           "width": 1312,
-          "height": 168
+          "height": 168,
+          "rawResource": "SixStarVfx/D24/angel2_attack_loop_start_01-00"
         }
       ],
       "sourcePrefab": "angel2_attack_loop_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_attack_loop_trail_01",
@@ -1399,13 +1599,18 @@
           "file": "D24/angel2_attack_loop_trail_01-00.png",
           "count": 72,
           "width": 160,
-          "height": 108
+          "height": 108,
+          "rawResource": "SixStarVfx/D24/angel2_attack_loop_trail_01-00"
         }
       ],
       "sourcePrefab": "angel2_attack_loop_trail_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_attack_loop_hit_01",
@@ -1426,13 +1631,18 @@
           "file": "D24/angel2_attack_loop_hit_01-00.png",
           "count": 17,
           "width": 1280,
-          "height": 204
+          "height": 204,
+          "rawResource": "SixStarVfx/D24/angel2_attack_loop_hit_01-00"
         }
       ],
       "sourcePrefab": "angel2_attack_loop_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_attack_loop_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_begin_trail_01",
@@ -1453,13 +1663,18 @@
           "file": "D24/angel2_skill_3_begin_trail_01-00.png",
           "count": 72,
           "width": 1408,
-          "height": 288
+          "height": 288,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_begin_trail_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_begin_trail_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_begin_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_begin_range_01",
@@ -1480,13 +1695,18 @@
           "file": "D24/angel2_skill_3_begin_range_01-00.png",
           "count": 42,
           "width": 1568,
-          "height": 912
+          "height": 912,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_begin_range_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_begin_range_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_begin_range_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_loop_start_01",
@@ -1507,13 +1727,18 @@
           "file": "D24/angel2_skill_3_loop_start_01-00.png",
           "count": 25,
           "width": 2016,
-          "height": 496
+          "height": 496,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_loop_start_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_loop_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_loop_trail_01",
@@ -1534,13 +1759,18 @@
           "file": "D24/angel2_skill_3_loop_trail_01-00.png",
           "count": 72,
           "width": 160,
-          "height": 108
+          "height": 108,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_loop_trail_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_loop_trail_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_loop_hit_01",
@@ -1561,13 +1791,18 @@
           "file": "D24/angel2_skill_3_loop_hit_01-00.png",
           "count": 10,
           "width": 1344,
-          "height": 144
+          "height": 144,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_loop_hit_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_loop_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_loop_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_buff_01",
@@ -1588,13 +1823,18 @@
           "file": "D24/angel2_skill_3_buff_01-00.png",
           "count": 72,
           "width": 1120,
-          "height": 720
+          "height": 720,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_buff_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D24/angel2_skill_3_ground_01",
@@ -1615,13 +1855,18 @@
           "file": "D24/angel2_skill_3_ground_01-00.png",
           "count": 105,
           "width": 832,
-          "height": 896
+          "height": 896,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_ground_01-00"
         }
       ],
       "sourcePrefab": "angel2_skill_3_ground_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\angel2_skill_3_ground_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/angel2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_attack_01_start_01",
@@ -1642,13 +1887,18 @@
           "file": "D25/hsgma2_attack_01_start_01-00.png",
           "count": 24,
           "width": 864,
-          "height": 192
+          "height": 192,
+          "rawResource": "SixStarVfx/D25/hsgma2_attack_01_start_01-00"
         }
       ],
       "sourcePrefab": "hsgma2_attack_01_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_attack_01_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_attack_01_hit_01",
@@ -1669,13 +1919,18 @@
           "file": "D25/hsgma2_attack_01_hit_01-00.png",
           "count": 40,
           "width": 736,
-          "height": 380
+          "height": 380,
+          "rawResource": "SixStarVfx/D25/hsgma2_attack_01_hit_01-00"
         }
       ],
       "sourcePrefab": "hsgma2_attack_01_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_attack_01_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_01",
@@ -1696,13 +1951,18 @@
           "file": "D25/hsgma2_skill_03_start_01-00.png",
           "count": 62,
           "width": 672,
-          "height": 608
+          "height": 608,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_01-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_02",
@@ -1723,13 +1983,18 @@
           "file": "D25/hsgma2_skill_03_start_02-00.png",
           "count": 63,
           "width": 832,
-          "height": 864
+          "height": 864,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_02-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_03",
@@ -1750,13 +2015,18 @@
           "file": "D25/hsgma2_skill_03_start_03-00.png",
           "count": 66,
           "width": 896,
-          "height": 900
+          "height": 900,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_03-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_03",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_03\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_04",
@@ -1777,13 +2047,18 @@
           "file": "D25/hsgma2_skill_03_start_04-00.png",
           "count": 62,
           "width": 672,
-          "height": 608
+          "height": 608,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_04-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_04",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_04\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_05",
@@ -1804,13 +2079,18 @@
           "file": "D25/hsgma2_skill_03_start_05-00.png",
           "count": 63,
           "width": 864,
-          "height": 864
+          "height": 864,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_05-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_05",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_05\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_start_06",
@@ -1831,13 +2111,18 @@
           "file": "D25/hsgma2_skill_03_start_06-00.png",
           "count": 66,
           "width": 896,
-          "height": 900
+          "height": 900,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_start_06-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_start_06",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_start_06\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_01",
@@ -1858,13 +2143,18 @@
           "file": "D25/hsgma2_skill_03_hit_01-00.png",
           "count": 41,
           "width": 1312,
-          "height": 984
+          "height": 984,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_01-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_01_1",
@@ -1885,13 +2175,18 @@
           "file": "D25/hsgma2_skill_03_hit_01_1-00.png",
           "count": 43,
           "width": 1696,
-          "height": 696
+          "height": 696,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_01_1-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_01_1",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_01_1\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_02",
@@ -1912,13 +2207,18 @@
           "file": "D25/hsgma2_skill_03_hit_02-00.png",
           "count": 49,
           "width": 1120,
-          "height": 1092
+          "height": 1092,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_02-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_02_1",
@@ -1939,13 +2239,18 @@
           "file": "D25/hsgma2_skill_03_hit_02_1-00.png",
           "count": 46,
           "width": 1568,
-          "height": 648
+          "height": 648,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_02_1-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_02_1",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_1\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_02_2",
@@ -1966,13 +2271,18 @@
           "file": "D25/hsgma2_skill_03_hit_02_2-00.png",
           "count": 46,
           "width": 1888,
-          "height": 600
+          "height": 600,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_02_2-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_02_2",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_2\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_hit_02_3",
@@ -1993,13 +2303,18 @@
           "file": "D25/hsgma2_skill_03_hit_02_3-00.png",
           "count": 49,
           "width": 992,
-          "height": 1064
+          "height": 1064,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_hit_02_3-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_hit_02_3",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_hit_02_3\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_buff_01",
@@ -2020,13 +2335,18 @@
           "file": "D25/hsgma2_skill_03_buff_01-00.png",
           "count": 72,
           "width": 864,
-          "height": 540
+          "height": 540,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_buff_01-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_buff_02",
@@ -2047,13 +2367,18 @@
           "file": "D25/hsgma2_skill_03_buff_02-00.png",
           "count": 72,
           "width": 992,
-          "height": 720
+          "height": 720,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_buff_02-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_buff_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_buff_03",
@@ -2074,13 +2399,18 @@
           "file": "D25/hsgma2_skill_03_buff_03-00.png",
           "count": 72,
           "width": 640,
-          "height": 468
+          "height": 468,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_buff_03-00"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_buff_03",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_buff_03\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_range_01",
@@ -2101,19 +2431,25 @@
           "file": "D25/hsgma2_skill_03_range_01-00.png",
           "count": 104,
           "width": 1760,
-          "height": 1924
+          "height": 1924,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_range_01-00"
         },
         {
           "file": "D25/hsgma2_skill_03_range_01-01.png",
           "count": 1,
           "width": 1760,
-          "height": 148
+          "height": 148,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_range_01-01"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_range_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_range_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D25/hsgma2_skill_03_range_02",
@@ -2134,19 +2470,25 @@
           "file": "D25/hsgma2_skill_03_range_02-00.png",
           "count": 104,
           "width": 1760,
-          "height": 2028
+          "height": 2028,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_range_02-00"
         },
         {
           "file": "D25/hsgma2_skill_03_range_02-01.png",
           "count": 1,
           "width": 1760,
-          "height": 156
+          "height": 156,
+          "rawResource": "SixStarVfx/D25/hsgma2_skill_03_range_02-01"
         }
       ],
       "sourcePrefab": "hsgma2_skill_03_range_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\hsgma2_skill_03_range_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/hsgma2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_attack_start_a_01",
@@ -2167,13 +2509,18 @@
           "file": "D26/svash2_attack_start_a_01-00.png",
           "count": 34,
           "width": 1696,
-          "height": 340
+          "height": 340,
+          "rawResource": "SixStarVfx/D26/svash2_attack_start_a_01-00"
         }
       ],
       "sourcePrefab": "svash2_attack_start_a_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_a_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_attack_start_a_02",
@@ -2194,13 +2541,18 @@
           "file": "D26/svash2_attack_start_a_02-00.png",
           "count": 33,
           "width": 192,
-          "height": 180
+          "height": 180,
+          "rawResource": "SixStarVfx/D26/svash2_attack_start_a_02-00"
         }
       ],
       "sourcePrefab": "svash2_attack_start_a_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_a_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_attack_start_b_01",
@@ -2221,13 +2573,18 @@
           "file": "D26/svash2_attack_start_b_01-00.png",
           "count": 32,
           "width": 1408,
-          "height": 656
+          "height": 656,
+          "rawResource": "SixStarVfx/D26/svash2_attack_start_b_01-00"
         }
       ],
       "sourcePrefab": "svash2_attack_start_b_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_b_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_attack_start_c_01",
@@ -2248,13 +2605,18 @@
           "file": "D26/svash2_attack_start_c_01-00.png",
           "count": 32,
           "width": 1568,
-          "height": 528
+          "height": 528,
+          "rawResource": "SixStarVfx/D26/svash2_attack_start_c_01-00"
         }
       ],
       "sourcePrefab": "svash2_attack_start_c_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_start_c_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_attack_hit_01",
@@ -2275,13 +2637,18 @@
           "file": "D26/svash2_attack_hit_01-00.png",
           "count": 20,
           "width": 1280,
-          "height": 264
+          "height": 264,
+          "rawResource": "SixStarVfx/D26/svash2_attack_hit_01-00"
         }
       ],
       "sourcePrefab": "svash2_attack_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_attack_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_skill_03_combat_start_01_2",
@@ -2302,13 +2669,18 @@
           "file": "D26/svash2_skill_03_combat_start_01_2-00.png",
           "count": 28,
           "width": 672,
-          "height": 240
+          "height": 240,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_combat_start_01_2-00"
         }
       ],
       "sourcePrefab": "svash2_skill_03_combat_start_01_2",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_combat_start_01_2\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_skill_03_combat_start_02",
@@ -2329,13 +2701,18 @@
           "file": "D26/svash2_skill_03_combat_start_02-00.png",
           "count": 31,
           "width": 960,
-          "height": 336
+          "height": 336,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_combat_start_02-00"
         }
       ],
       "sourcePrefab": "svash2_skill_03_combat_start_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_combat_start_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_skill_03_buff_01",
@@ -2356,13 +2733,18 @@
           "file": "D26/svash2_skill_03_buff_01-00.png",
           "count": 72,
           "width": 1056,
-          "height": 792
+          "height": 792,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_buff_01-00"
         }
       ],
       "sourcePrefab": "svash2_skill_03_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_skill_03_buff_weapon_01",
@@ -2383,13 +2765,18 @@
           "file": "D26/svash2_skill_03_buff_weapon_01-00.png",
           "count": 72,
           "width": 256,
-          "height": 252
+          "height": 252,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_buff_weapon_01-00"
         }
       ],
       "sourcePrefab": "svash2_skill_03_buff_weapon_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_buff_weapon_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 1.0666666666666667,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D26/svash2_skill_03_deploy_01",
@@ -2410,13 +2797,18 @@
           "file": "D26/svash2_skill_03_deploy_01-00.png",
           "count": 35,
           "width": 864,
-          "height": 260
+          "height": 260,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_deploy_01-00"
         }
       ],
       "sourcePrefab": "svash2_skill_03_deploy_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_deploy_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D26/svash2_skill_03_range_01",
@@ -2430,26 +2822,32 @@
       "duration": 3.5,
       "hdrRange": 16.0,
       "loop": true,
-      "directional": false,
+      "directional": true,
       "forwardDegrees": 0,
       "pages": [
         {
           "file": "D26/svash2_skill_03_range_01-00.png",
           "count": 88,
           "width": 1888,
-          "height": 1936
+          "height": 1936,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_range_01-00"
         },
         {
           "file": "D26/svash2_skill_03_range_01-01.png",
           "count": 17,
           "width": 1888,
-          "height": 528
+          "height": 528,
+          "rawResource": "SixStarVfx/D26/svash2_skill_03_range_01-01"
         }
       ],
       "sourcePrefab": "svash2_skill_03_range_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_skill_03_range_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.7666666666666667,
+      "loopEnd": 3.5
     },
     {
       "key": "defender/D26/svash2_eagle_fly_01",
@@ -2470,13 +2868,18 @@
           "file": "D26/svash2_eagle_fly_01-00.png",
           "count": 72,
           "width": 416,
-          "height": 396
+          "height": 396,
+          "rawResource": "SixStarVfx/D26/svash2_eagle_fly_01-00"
         }
       ],
       "sourcePrefab": "svash2_eagle_fly_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\svash2_eagle_fly_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/svash2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D27/sbell2_skill_03_start_01",
@@ -2484,11 +2887,11 @@
       "width": 416,
       "height": 240,
       "columns": 4,
-      "ppu": 64.0,
+      "ppu": 64,
       "pivotX": 0.4423076923076923,
       "pivotY": 0.5583143870035807,
       "duration": 1.6333333333333333,
-      "hdrRange": 16.0,
+      "hdrRange": 16,
       "loop": false,
       "directional": false,
       "forwardDegrees": 0,
@@ -2497,19 +2900,25 @@
           "file": "D27/sbell2_skill_03_start_01-00.png",
           "count": 32,
           "width": 1664,
-          "height": 1920
+          "height": 1920,
+          "rawResource": "PramanixV5/sbell2_skill_03_start_01-00"
         },
         {
           "file": "D27/sbell2_skill_03_start_01-01.png",
           "count": 17,
           "width": 1664,
-          "height": 1200
+          "height": 1200,
+          "rawResource": "PramanixV5/sbell2_skill_03_start_01-01"
         }
       ],
       "sourcePrefab": "sbell2_skill_03_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\sbell2_skill_03_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/sbell2.ab",
-      "adaptation": "Original attack-only emission/tail complete sequence compressed from 1.633 seconds into 1.2 presentation seconds; quiet attack interval, no combat rate change."
+      "adaptation": "Original attack-only emission/tail complete sequence compressed from 1.633 seconds into 1.2 presentation seconds; quiet attack interval, no combat rate change.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D27/sbell2_skill_03_hit",
@@ -2517,11 +2926,11 @@
       "width": 128,
       "height": 72,
       "columns": 8,
-      "ppu": 64.0,
+      "ppu": 64,
       "pivotX": 0.4609375,
       "pivotY": 0.48604795667860246,
       "duration": 1.5,
-      "hdrRange": 16.0,
+      "hdrRange": 16,
       "loop": false,
       "directional": false,
       "forwardDegrees": 0,
@@ -2530,13 +2939,265 @@
           "file": "D27/sbell2_skill_03_hit-00.png",
           "count": 45,
           "width": 1024,
-          "height": 432
+          "height": 432,
+          "rawResource": "PramanixV5/sbell2_skill_03_hit-00"
         }
       ],
       "sourcePrefab": "sbell2_skill_03_hit",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\sbell2_skill_03_hit\\report.json",
       "sourceBundle": "battle/prefabs/effects/sbell2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
+    },
+    {
+      "key": "defender/D27/sbell2_ground_01",
+      "count": 90,
+      "width": 72,
+      "height": 44,
+      "columns": 8,
+      "ppu": 64,
+      "pivotX": 0.5,
+      "pivotY": 0.5226239291104403,
+      "duration": 3,
+      "hdrRange": 16,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_01-00.png",
+          "count": 90,
+          "width": 576,
+          "height": 528,
+          "rawResource": "PramanixV5/sbell2_ground_01-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_ground_01\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 2,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_ground_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5,
+      "loopEnd": 3.0
+    },
+    {
+      "key": "defender/D27/sbell2_ground_02",
+      "count": 90,
+      "width": 80,
+      "height": 60,
+      "columns": 8,
+      "ppu": 64,
+      "pivotX": 0.5,
+      "pivotY": 0.583257548014323,
+      "duration": 3,
+      "hdrRange": 16,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_02-00.png",
+          "count": 90,
+          "width": 640,
+          "height": 720,
+          "rawResource": "PramanixV5/sbell2_ground_02-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_ground_02\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 2,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_ground_02",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
+    },
+    {
+      "key": "defender/D27/sbell2_ground_03",
+      "count": 90,
+      "width": 80,
+      "height": 60,
+      "columns": 8,
+      "ppu": 64,
+      "pivotX": 0.5,
+      "pivotY": 0.583257548014323,
+      "duration": 3,
+      "hdrRange": 16,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_03-00.png",
+          "count": 90,
+          "width": 640,
+          "height": 720,
+          "rawResource": "PramanixV5/sbell2_ground_03-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_ground_03\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 2,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_ground_03",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_buff_01",
+      "count": 90,
+      "width": 104,
+      "height": 96,
+      "columns": 8,
+      "ppu": 64,
+      "pivotX": 0.5,
+      "pivotY": 0.32286930084228516,
+      "duration": 3,
+      "hdrRange": 16,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_buff_01-00.png",
+          "count": 90,
+          "width": 832,
+          "height": 1152,
+          "rawResource": "PramanixV5/sbell2_skill_03_buff_01-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_skill_03_buff_01\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 5,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_skill_03_buff_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 1.0,
+      "loopEnd": 3.0
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_range",
+      "count": 90,
+      "width": 240,
+      "height": 204,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.48333333333333334,
+      "pivotY": 0.6787193148743873,
+      "duration": 3,
+      "hdrRange": 16,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_range-00.png",
+          "count": 80,
+          "width": 1920,
+          "height": 2040,
+          "rawResource": "PramanixV5/sbell2_skill_03_range-00"
+        },
+        {
+          "file": "D27/sbell2_skill_03_range-01.png",
+          "count": 10,
+          "width": 1920,
+          "height": 408,
+          "rawResource": "PramanixV5/sbell2_skill_03_range-01"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_skill_03_range\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 13,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_skill_03_range",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 1.0,
+      "loopEnd": 3.0
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_flow",
+      "count": 90,
+      "width": 240,
+      "height": 132,
+      "columns": 8,
+      "ppu": 39.38461685180664,
+      "pivotX": 0.5,
+      "pivotY": 0.4731722745028409,
+      "duration": 3.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_flow-00.png",
+          "count": 90,
+          "width": 1920,
+          "height": 1584,
+          "rawResource": "PramanixV5/sbell2_skill_03_flow-00"
+        }
+      ],
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-production\\sbell2_skill_03_flow\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 2,
+      "samplingNote": "3-second continuous native source capture; repeating this segment is a presentation adaptation, not proof of exact original loop closure.",
+      "sourcePrefab": "sbell2_skill_03_flow",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 1.0,
+      "loopEnd": 3.0
+    },
+    {
+      "key": "defender/D27/sbell2_buff_01_hit_01",
+      "count": 36,
+      "width": 92,
+      "height": 80,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.5217391304347826,
+      "pivotY": 0.4874431610107422,
+      "duration": 1.2,
+      "hdrRange": 16.0,
+      "loop": false,
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\d27-20261112-contact-hit\\sbell2_buff_01_hit_01\\report.json",
+      "nativeStatus": "PASS",
+      "sourceMissingScripts": 1,
+      "samplingNote": "Original one-shot at 30fps, all nonzero frames 1-34 plus blank frames 0 and 35 retained. The rest of the unchanged 90-frame source page is exactly zero and is not played as a delayed visual tail.",
+      "sourceCaptureCount": 90,
+      "sourceCaptureDuration": 3,
+      "sourcePrefab": "sbell2_buff_01_hit_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "forwardDegrees": 0,
+      "directional": false,
+      "pages": [
+        {
+          "file": "D27/sbell2_buff_01_hit_01-00.png",
+          "count": 36,
+          "width": 736,
+          "height": 960,
+          "rawResource": "PramanixV5/sbell2_buff_01_hit_01-00"
+        }
+      ],
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_skill_03_range_start",
@@ -2557,13 +3218,18 @@
           "file": "D28/wang_skill_03_range_start-00.png",
           "count": 49,
           "width": 1904,
-          "height": 1092
+          "height": 1092,
+          "rawResource": "SixStarVfx/D28/wang_skill_03_range_start-00"
         }
       ],
       "sourcePrefab": "wang_skill_03_range_start",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_range_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_skill_03_buff_02",
@@ -2584,13 +3250,18 @@
           "file": "D28/wang_skill_03_buff_02-00.png",
           "count": 72,
           "width": 800,
-          "height": 432
+          "height": 432,
+          "rawResource": "SixStarVfx/D28/wang_skill_03_buff_02-00"
         }
       ],
       "sourcePrefab": "wang_skill_03_buff_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_buff_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_skill_03_range",
@@ -2611,13 +3282,18 @@
           "file": "D28/wang_skill_03_range-00.png",
           "count": 72,
           "width": 1760,
-          "height": 1368
+          "height": 1368,
+          "rawResource": "SixStarVfx/D28/wang_skill_03_range-00"
         }
       ],
       "sourcePrefab": "wang_skill_03_range",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_skill_03_range\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0.5333333333333333,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D28/wang_attack_01_start",
@@ -2638,13 +3314,18 @@
           "file": "D28/wang_attack_01_start-00.png",
           "count": 37,
           "width": 832,
-          "height": 360
+          "height": 360,
+          "rawResource": "SixStarVfx/D28/wang_attack_01_start-00"
         }
       ],
       "sourcePrefab": "wang_attack_01_start",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_attack_01_trail",
@@ -2665,13 +3346,18 @@
           "file": "D28/wang_attack_01_trail-00.png",
           "count": 72,
           "width": 1820,
-          "height": 352
+          "height": 352,
+          "rawResource": "SixStarVfx/D28/wang_attack_01_trail-00"
         }
       ],
       "sourcePrefab": "wang_attack_01_trail",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_trail\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_attack_01_hit",
@@ -2692,13 +3378,18 @@
           "file": "D28/wang_attack_01_hit-00.png",
           "count": 35,
           "width": 928,
-          "height": 520
+          "height": 520,
+          "rawResource": "SixStarVfx/D28/wang_attack_01_hit-00"
         }
       ],
       "sourcePrefab": "wang_attack_01_hit",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_attack_01_hit\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_passive_01_start",
@@ -2719,13 +3410,18 @@
           "file": "D28/wang_passive_01_start-00.png",
           "count": 38,
           "width": 320,
-          "height": 380
+          "height": 380,
+          "rawResource": "SixStarVfx/D28/wang_passive_01_start-00"
         }
       ],
       "sourcePrefab": "wang_passive_01_start",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_start\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_passive_01_buff",
@@ -2746,13 +3442,18 @@
           "file": "D28/wang_passive_01_buff-00.png",
           "count": 72,
           "width": 832,
-          "height": 1152
+          "height": 1152,
+          "rawResource": "SixStarVfx/D28/wang_passive_01_buff-00"
         }
       ],
       "sourcePrefab": "wang_passive_01_buff",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_buff\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D28/wang_passive_01_buff_02",
@@ -2773,13 +3474,18 @@
           "file": "D28/wang_passive_01_buff_02-00.png",
           "count": 72,
           "width": 576,
-          "height": 648
+          "height": 648,
+          "rawResource": "SixStarVfx/D28/wang_passive_01_buff_02-00"
         }
       ],
       "sourcePrefab": "wang_passive_01_buff_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\wang_passive_01_buff_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/wang.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D29/demkni_attack_01_hit",
@@ -2800,13 +3506,18 @@
           "file": "D29/demkni_attack_01_hit-00.png",
           "count": 9,
           "width": 832,
-          "height": 184
+          "height": 184,
+          "rawResource": "SixStarVfx/D29/demkni_attack_01_hit-00"
         }
       ],
       "sourcePrefab": "demkni_attack_01_hit",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_attack_01_hit\\report.json",
       "sourceBundle": "battle/prefabs/effects/demkni.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D29/demkni_skill_03_range",
@@ -2827,19 +3538,25 @@
           "file": "D29/demkni_skill_03_range-00.png",
           "count": 63,
           "width": 1988,
-          "height": 1908
+          "height": 1908,
+          "rawResource": "SixStarVfx/D29/demkni_skill_03_range-00"
         },
         {
           "file": "D29/demkni_skill_03_range-01.png",
           "count": 9,
           "width": 1988,
-          "height": 424
+          "height": 424,
+          "rawResource": "SixStarVfx/D29/demkni_skill_03_range-01"
         }
       ],
       "sourcePrefab": "demkni_skill_03_range",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_range\\report.json",
       "sourceBundle": "battle/prefabs/effects/demkni.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D29/demkni_skill_03_self",
@@ -2860,13 +3577,18 @@
           "file": "D29/demkni_skill_03_self-00.png",
           "count": 72,
           "width": 768,
-          "height": 828
+          "height": 828,
+          "rawResource": "SixStarVfx/D29/demkni_skill_03_self-00"
         }
       ],
       "sourcePrefab": "demkni_skill_03_self",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_self\\report.json",
       "sourceBundle": "battle/prefabs/effects/demkni.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D29/demkni_skill_03_buff",
@@ -2887,13 +3609,18 @@
           "file": "D29/demkni_skill_03_buff-00.png",
           "count": 72,
           "width": 384,
-          "height": 540
+          "height": 540,
+          "rawResource": "SixStarVfx/D29/demkni_skill_03_buff-00"
         }
       ],
       "sourcePrefab": "demkni_skill_03_buff",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\demkni_skill_03_buff\\report.json",
       "sourceBundle": "battle/prefabs/effects/demkni.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_buff_01",
@@ -2914,13 +3641,18 @@
           "file": "D30/mlynar_skill_03_buff_01-00.png",
           "count": 33,
           "width": 960,
-          "height": 180
+          "height": 180,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_buff_01-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_buff_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_range_01",
@@ -2941,13 +3673,18 @@
           "file": "D30/mlynar_skill_03_range_01-00.png",
           "count": 28,
           "width": 1568,
-          "height": 592
+          "height": 592,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_range_01-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_range_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_range_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_start_01",
@@ -2968,13 +3705,18 @@
           "file": "D30/mlynar_skill_03_start_01-00.png",
           "count": 23,
           "width": 704,
-          "height": 168
+          "height": 168,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_start_01-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_start_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_start_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_hit_01",
@@ -2995,13 +3737,18 @@
           "file": "D30/mlynar_skill_03_hit_01-00.png",
           "count": 32,
           "width": 864,
-          "height": 368
+          "height": 368,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_hit_01-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_hit_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_hit_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_buff_02",
@@ -3022,13 +3769,18 @@
           "file": "D30/mlynar_skill_03_buff_02-00.png",
           "count": 72,
           "width": 992,
-          "height": 900
+          "height": 900,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_buff_02-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_buff_02",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_02\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D30/mlynar_skill_03_buff_03",
@@ -3049,13 +3801,18 @@
           "file": "D30/mlynar_skill_03_buff_03-00.png",
           "count": 72,
           "width": 1504,
-          "height": 1440
+          "height": 1440,
+          "rawResource": "SixStarVfx/D30/mlynar_skill_03_buff_03-00"
         }
       ],
       "sourcePrefab": "mlynar_skill_03_buff_03",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\mlynar_skill_03_buff_03\\report.json",
       "sourceBundle": "battle/prefabs/effects/mlynar.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": true,
+      "belowActors": true,
+      "loopStart": 0,
+      "loopEnd": 0
     },
     {
       "key": "defender/D21/whitw2_skill_03_token_trail_01",
@@ -3076,13 +3833,18 @@
           "file": "D21/whitw2_skill_03_token_trail_01-00.png",
           "count": 72,
           "width": 1600,
-          "height": 504
+          "height": 504,
+          "rawResource": "SixStarVfx/D21/whitw2_skill_03_token_trail_01-00"
         }
       ],
       "sourcePrefab": "whitw2_skill_03_token_trail_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_token_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Original follow-direction wolf effect; flip horizontally rather than rotate the creature. Native moving capture PPU32 after edge repair."
+      "adaptation": "Original follow-direction wolf effect; flip horizontally rather than rotate the creature. Native moving capture PPU32 after edge repair.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0.5,
+      "loopEnd": 2.4
     },
     {
       "key": "defender/D21/whitw2_skill_03_trail_01",
@@ -3103,13 +3865,2391 @@
           "file": "D21/whitw2_skill_03_trail_01-00.png",
           "count": 72,
           "width": 1152,
-          "height": 216
+          "height": 216,
+          "rawResource": "SixStarVfx/D21/whitw2_skill_03_trail_01-00"
         }
       ],
       "sourcePrefab": "whitw2_skill_03_trail_01",
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
-      "adaptation": "Native shader capture; independent anchor; no style repaint."
+      "adaptation": "Native shader capture; independent anchor; no style repaint.",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
+    },
+    {
+      "key": "defender/D29/common_heal_hit_01",
+      "count": 42,
+      "width": 72,
+      "height": 64,
+      "columns": 12,
+      "ppu": 48.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5297658443450928,
+      "duration": 1.4,
+      "hdrRange": 64.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D29/00.png",
+          "count": 42,
+          "width": 864,
+          "height": 256,
+          "rawResource": "SixStarVfx/D29/00"
+        }
+      ],
+      "sourceAlias": "common/common_heal_hit_01",
+      "sourcePrefab": "common_heal_hit_01",
+      "groundDepth": false,
+      "belowActors": false,
+      "loopStart": 0,
+      "loopEnd": 0
+    },
+    {
+      "key": "defender/D33/aglna2_attack_hit_01",
+      "count": 19,
+      "width": 72,
+      "height": 52,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.48071083655724156,
+      "duration": 0.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_attack_hit_01-00.png",
+          "count": 19,
+          "width": 576,
+          "height": 156,
+          "rawResource": "SixStarVfx/D33/aglna2_attack_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_attack_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_attack_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_attack_start_01",
+      "count": 29,
+      "width": 56,
+      "height": 56,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.32142857142857145,
+      "pivotY": 0.6428029196602958,
+      "duration": 0.9666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_attack_start_01-00.png",
+          "count": 29,
+          "width": 448,
+          "height": 224,
+          "rawResource": "SixStarVfx/D33/aglna2_attack_start_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_attack_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_attack_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_attack_trail_01",
+      "count": 120,
+      "width": 116,
+      "height": 24,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.896551724137931,
+      "pivotY": 0.49987347920735675,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_attack_trail_01-00.png",
+          "count": 120,
+          "width": 928,
+          "height": 360,
+          "rawResource": "SixStarVfx/D33/aglna2_attack_trail_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_attack_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_attack_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original projectile rendered on explicit straight 3 world-units/s trajectory with following camera; game orchestration not reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_buff_left_01",
+      "count": 120,
+      "width": 96,
+      "height": 128,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.3202887773513794,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_buff_left_01-00.png",
+          "count": 120,
+          "width": 768,
+          "height": 1920,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_buff_left_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_buff_left_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_buff_left_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_buff_right_01",
+      "count": 120,
+      "width": 96,
+      "height": 128,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5208333333333334,
+      "pivotY": 0.3202887773513794,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_buff_right_01-00.png",
+          "count": 120,
+          "width": 768,
+          "height": 1920,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_buff_right_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_buff_right_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_buff_right_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_buff_weapon_01",
+      "count": 120,
+      "width": 60,
+      "height": 32,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5666666666666667,
+      "pivotY": 0.5624051094055176,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_buff_weapon_01-00.png",
+          "count": 120,
+          "width": 480,
+          "height": 480,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_buff_weapon_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_buff_weapon_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_buff_weapon_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_combat_start_01",
+      "count": 39,
+      "width": 128,
+      "height": 92,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.3984375,
+      "pivotY": 0.16301047283670175,
+      "duration": 1.3,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_combat_start_01-00.png",
+          "count": 39,
+          "width": 1024,
+          "height": 460,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_combat_start_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_combat_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_combat_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_fly_trail_01",
+      "count": 120,
+      "width": 256,
+      "height": 68,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.90234375,
+      "pivotY": 0.48524946324965534,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_fly_trail_01-00.png",
+          "count": 120,
+          "width": 2048,
+          "height": 1020,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_fly_trail_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_fly_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_fly_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native TrailRenderer material/points with explicit straight owner-motion3 world-units/s and following capture camera. Original flight path/mount orchestration is not reproduced; no synthetic replacement line.",
+      "loopStart": 1.0,
+      "loopEnd": 4.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_hit_01",
+      "count": 19,
+      "width": 76,
+      "height": 52,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5394736842105263,
+      "pivotY": 0.48071083655724156,
+      "duration": 0.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_hit_01-00.png",
+          "count": 19,
+          "width": 608,
+          "height": 156,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_range_01",
+      "count": 120,
+      "width": 240,
+      "height": 196,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4875,
+      "pivotY": 0.39284165051518655,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_range_01-00.png",
+          "count": 80,
+          "width": 1920,
+          "height": 1960,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_range_01-00"
+        },
+        {
+          "file": "D33/aglna2_skill_03_range_01-01.png",
+          "count": 40,
+          "width": 1920,
+          "height": 980,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_range_01-01"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_range_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_range_line_01",
+      "count": 60,
+      "width": 128,
+      "height": 16,
+      "columns": 8,
+      "ppu": 128.0,
+      "pivotX": 0.0,
+      "pivotY": 0.4994316101074219,
+      "duration": 2.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_range_line_01-00.png",
+          "count": 60,
+          "width": 1024,
+          "height": 128,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_range_line_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_range_line_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_range_line_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native LineRenderer material/width(.1)/gradient/UV captured with explicit manager input endpoints0->1 along+X, not the saved13-point editor polygon. Runtime adapts original grid-range geometry to the existing radial game range as discrete polygon edges, referenceLength1. Full original RangeLineEffectEmitter manager is absent.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_start_01",
+      "count": 10,
+      "width": 72,
+      "height": 44,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4027777777777778,
+      "pivotY": 0.06811280684037642,
+      "duration": 0.3333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_start_01-00.png",
+          "count": 10,
+          "width": 576,
+          "height": 88,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_start_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_start_02",
+      "count": 35,
+      "width": 96,
+      "height": 52,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.3854166666666667,
+      "pivotY": 0.01917237501878005,
+      "duration": 1.1666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_start_02-00.png",
+          "count": 35,
+          "width": 768,
+          "height": 260,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_start_02-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_start_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D33/aglna2_skill_03_trail_01",
+      "count": 120,
+      "width": 256,
+      "height": 32,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.921875,
+      "pivotY": 0.4374051094055176,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D33/aglna2_skill_03_trail_01-00.png",
+          "count": 120,
+          "width": 2048,
+          "height": 480,
+          "rawResource": "SixStarVfx/D33/aglna2_skill_03_trail_01-00"
+        }
+      ],
+      "sourcePrefab": "aglna2_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\aglna2_skill_03_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/aglna2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original projectile rendered on explicit straight 3 world-units/s trajectory with following camera; game orchestration not reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_attack_01_hit_01",
+      "count": 34,
+      "width": 80,
+      "height": 52,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.475,
+      "pivotY": 0.4422492980957031,
+      "duration": 1.1333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_attack_01_hit_01-00.png",
+          "count": 34,
+          "width": 640,
+          "height": 260,
+          "rawResource": "SixStarVfx/D34/clemnt_attack_01_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_attack_01_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_attack_01_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_attack_01_start_01",
+      "count": 54,
+      "width": 132,
+      "height": 84,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5151515151515151,
+      "pivotY": 0.48805908929734004,
+      "duration": 1.8,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_attack_01_start_01-00.png",
+          "count": 54,
+          "width": 1056,
+          "height": 588,
+          "rawResource": "SixStarVfx/D34/clemnt_attack_01_start_01-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_attack_01_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_attack_01_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_attack_01_start_01_down",
+      "count": 52,
+      "width": 132,
+      "height": 84,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.48484848484848486,
+      "pivotY": 0.48805908929734004,
+      "duration": 1.7333333333333334,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_attack_01_start_01_down-00.png",
+          "count": 52,
+          "width": 1056,
+          "height": 588,
+          "rawResource": "SixStarVfx/D34/clemnt_attack_01_start_01_down-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_attack_01_start_01_down",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_attack_01_start_01_down\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_buff_01_l",
+      "count": 120,
+      "width": 92,
+      "height": 100,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4782608695652174,
+      "pivotY": 0.4499696350097656,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_buff_01_l-00.png",
+          "count": 120,
+          "width": 736,
+          "height": 1500,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_buff_01_l-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_buff_01_l",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_buff_01_l\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0.5,
+      "loopEnd": 4.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_buff_01_r",
+      "count": 120,
+      "width": 92,
+      "height": 100,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5108695652173914,
+      "pivotY": 0.4499696350097656,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_buff_01_r-00.png",
+          "count": 120,
+          "width": 736,
+          "height": 1500,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_buff_01_r-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_buff_01_r",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_buff_01_r\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0.5,
+      "loopEnd": 4.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_buff_02",
+      "count": 120,
+      "width": 64,
+      "height": 20,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.171875,
+      "pivotY": 0.39984817504882814,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_buff_02-00.png",
+          "count": 120,
+          "width": 512,
+          "height": 300,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_buff_02-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_hit_01",
+      "count": 38,
+      "width": 76,
+      "height": 76,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5,
+      "pivotY": 0.6315389934339022,
+      "duration": 1.2666666666666666,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_hit_01-00.png",
+          "count": 38,
+          "width": 608,
+          "height": 380,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_mark_all_01",
+      "count": 120,
+      "width": 212,
+      "height": 132,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.49056603773584906,
+      "pivotY": 0.6136133598558831,
+      "duration": 4.0,
+      "hdrRange": 64.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_mark_all_01-00.png",
+          "count": 120,
+          "width": 1696,
+          "height": 1980,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_mark_all_01-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_mark_all_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_mark_all_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_range",
+      "count": 120,
+      "width": 180,
+      "height": 32,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.1388888888888889,
+      "pivotY": 0.5311551094055176,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_range-00.png",
+          "count": 120,
+          "width": 1440,
+          "height": 480,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_range-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_range",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_range\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0.5,
+      "loopEnd": 4.0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_range_end",
+      "count": 11,
+      "width": 180,
+      "height": 32,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.1388888888888889,
+      "pivotY": 0.5311551094055176,
+      "duration": 0.36666666666666664,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_range_end-00.png",
+          "count": 11,
+          "width": 1440,
+          "height": 64,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_range_end-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_range_end",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_range_end\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_start_01",
+      "count": 52,
+      "width": 152,
+      "height": 88,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5131578947368421,
+      "pivotY": 0.3749654943292791,
+      "duration": 1.7333333333333334,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_start_01-00.png",
+          "count": 52,
+          "width": 1216,
+          "height": 616,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_start_01-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_start_01_down",
+      "count": 54,
+      "width": 144,
+      "height": 96,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5416666666666666,
+      "pivotY": 0.38538503646850586,
+      "duration": 1.8,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_start_01_down-00.png",
+          "count": 54,
+          "width": 1152,
+          "height": 672,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_start_01_down-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_start_01_down",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_start_01_down\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D34/clemnt_skill_03_start_01_up",
+      "count": 53,
+      "width": 152,
+      "height": 88,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.506578947368421,
+      "pivotY": 0.3749654943292791,
+      "duration": 1.7666666666666666,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D34/clemnt_skill_03_start_01_up-00.png",
+          "count": 53,
+          "width": 1216,
+          "height": 616,
+          "rawResource": "SixStarVfx/D34/clemnt_skill_03_start_01_up-00"
+        }
+      ],
+      "sourcePrefab": "clemnt_skill_03_start_01_up",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\clemnt_skill_03_start_01_up\\report.json",
+      "sourceBundle": "battle/prefabs/effects/clemnt.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_01_start_01",
+      "count": 28,
+      "width": 48,
+      "height": 24,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": -0.2916666666666667,
+      "pivotY": -0.45845985412597656,
+      "duration": 0.9333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_01_start_01-00.png",
+          "count": 28,
+          "width": 384,
+          "height": 96,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_01_start_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_01_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_01_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_buff_01",
+      "count": 120,
+      "width": 68,
+      "height": 40,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.6617647058823529,
+      "pivotY": 0.09992408752441406,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_buff_01-00.png",
+          "count": 120,
+          "width": 544,
+          "height": 600,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_buff_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 1.5,
+      "loopEnd": 4.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_indicator_damage_01",
+      "count": 18,
+      "width": 36,
+      "height": 12,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.6664136250813802,
+      "duration": 0.6,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_indicator_damage_01-00.png",
+          "count": 18,
+          "width": 288,
+          "height": 36,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_indicator_damage_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_indicator_damage_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_indicator_damage_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_indicator_heal_01",
+      "count": 18,
+      "width": 36,
+      "height": 12,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.6664136250813802,
+      "duration": 0.6,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_indicator_heal_01-00.png",
+          "count": 18,
+          "width": 288,
+          "height": 36,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_indicator_heal_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_indicator_heal_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_indicator_heal_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_range_damage_01",
+      "count": 29,
+      "width": 188,
+      "height": 120,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4946808510638298,
+      "pivotY": 0.541641362508138,
+      "duration": 0.9666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_range_damage_01-00.png",
+          "count": 29,
+          "width": 1504,
+          "height": 480,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_range_damage_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_range_damage_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_range_damage_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_range_damage_01_delay",
+      "count": 41,
+      "width": 204,
+      "height": 124,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.49019607843137253,
+      "pivotY": 0.5322335766207787,
+      "duration": 1.3666666666666667,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_range_damage_01_delay-00.png",
+          "count": 41,
+          "width": 1632,
+          "height": 744,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_range_damage_01_delay-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_range_damage_01_delay",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_range_damage_01_delay\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_range_heal_01",
+      "count": 25,
+      "width": 188,
+      "height": 132,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.48936170212765956,
+      "pivotY": 0.5681588144013376,
+      "duration": 0.8333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_range_heal_01-00.png",
+          "count": 25,
+          "width": 1504,
+          "height": 528,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_range_heal_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_range_heal_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_range_heal_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_range_heal_01_delay",
+      "count": 37,
+      "width": 188,
+      "height": 128,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.48936170212765956,
+      "pivotY": 0.5781012773513794,
+      "duration": 1.2333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_range_heal_01_delay-00.png",
+          "count": 37,
+          "width": 1504,
+          "height": 640,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_range_heal_01_delay-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_range_heal_01_delay",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_range_heal_01_delay\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_start_damage_01",
+      "count": 24,
+      "width": 48,
+      "height": 24,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": -0.2708333333333333,
+      "pivotY": -0.5001265207926432,
+      "duration": 0.8,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_start_damage_01-00.png",
+          "count": 24,
+          "width": 384,
+          "height": 72,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_start_damage_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_start_damage_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_start_damage_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_start_heal_01",
+      "count": 25,
+      "width": 48,
+      "height": 24,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": -0.2916666666666667,
+      "pivotY": -0.5834598541259766,
+      "duration": 0.8333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_start_heal_01-00.png",
+          "count": 25,
+          "width": 384,
+          "height": 96,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_start_heal_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_start_heal_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_start_heal_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_trail_damage_01",
+      "count": 120,
+      "width": 100,
+      "height": 40,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.58,
+      "pivotY": 0.47492408752441406,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_trail_damage_01-00.png",
+          "count": 120,
+          "width": 800,
+          "height": 600,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_trail_damage_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_trail_damage_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_trail_damage_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original projectile rendered on explicit straight 3 world-units/s trajectory with following camera; game orchestration not reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_02_trail_heal_01",
+      "count": 120,
+      "width": 80,
+      "height": 40,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4875,
+      "pivotY": 0.47492408752441406,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_02_trail_heal_01-00.png",
+          "count": 120,
+          "width": 640,
+          "height": 600,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_02_trail_heal_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_02_trail_heal_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_02_trail_heal_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original projectile rendered on explicit straight 3 world-units/s trajectory with following camera; game orchestration not reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/folnic_skill_02_start",
+      "count": 33,
+      "width": 88,
+      "height": 76,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.14772727272727273,
+      "pivotY": 0.3289074144865337,
+      "duration": 1.1,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/folnic_skill_02_start-00.png",
+          "count": 33,
+          "width": 704,
+          "height": 380,
+          "rawResource": "SixStarVfx/D35/folnic_skill_02_start-00"
+        }
+      ],
+      "sourcePrefab": "folnic_skill_02_start",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\folnic_skill_02_start\\report.json",
+      "sourceBundle": "battle/prefabs/effects/folnic.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D24/angel2_attack_down_loop_start_01",
+      "count": 15,
+      "width": 112,
+      "height": 56,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.24107142857142858,
+      "pivotY": 0.6249457768031529,
+      "duration": 0.5,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_attack_down_loop_start_01-00.png",
+          "count": 15,
+          "width": 896,
+          "height": 112,
+          "rawResource": "SixStarVfx/D24/angel2_attack_down_loop_start_01-00"
+        }
+      ],
+      "sourcePrefab": "angel2_attack_down_loop_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\angel2_attack_down_loop_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D24/angel2_skill_3_down_loop_start_01",
+      "count": 25,
+      "width": 168,
+      "height": 112,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.25595238095238093,
+      "pivotY": 0.5892586026872907,
+      "duration": 0.8333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_skill_3_down_loop_start_01-00.png",
+          "count": 25,
+          "width": 1344,
+          "height": 448,
+          "rawResource": "SixStarVfx/D24/angel2_skill_3_down_loop_start_01-00"
+        }
+      ],
+      "sourcePrefab": "angel2_skill_3_down_loop_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\angel2_skill_3_down_loop_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D24/angel2_buff_01_trail_01",
+      "count": 42,
+      "width": 152,
+      "height": 88,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.4934210526315789,
+      "pivotY": 0.4772382216020064,
+      "duration": 1.4,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D24/angel2_buff_01_trail_01-00.png",
+          "count": 42,
+          "width": 1216,
+          "height": 528,
+          "rawResource": "SixStarVfx/D24/angel2_buff_01_trail_01-00"
+        }
+      ],
+      "sourcePrefab": "angel2_buff_01_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\angel2_buff_01_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/angel2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D30/mlynar_attack_01_buff_04",
+      "count": 31,
+      "width": 64,
+      "height": 72,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.390625,
+      "pivotY": 0.3055133819580078,
+      "duration": 1.0333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D30/mlynar_attack_01_buff_04-00.png",
+          "count": 31,
+          "width": 512,
+          "height": 288,
+          "rawResource": "SixStarVfx/D30/mlynar_attack_01_buff_04-00"
+        }
+      ],
+      "sourcePrefab": "mlynar_attack_01_buff_04",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\mlynar_attack_01_buff_04\\report.json",
+      "sourceBundle": "battle/prefabs/effects/mlynar.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D23/monstr_heal_line_02",
+      "count": 19,
+      "width": 132,
+      "height": 40,
+      "columns": 8,
+      "ppu": 128.0,
+      "pivotX": 0.007575757575757576,
+      "pivotY": 0.47477264404296876,
+      "duration": 0.6333333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D23/monstr_heal_line_02-00.png",
+          "count": 19,
+          "width": 1056,
+          "height": 120,
+          "rawResource": "SixStarVfx/D23/monstr_heal_line_02-00"
+        }
+      ],
+      "sourcePrefab": "monstr_heal_line_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\monstr_heal_line_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/monstr.ab",
+      "adaptation": "Original five two-point LineRenderers, materials, widths, gradients and UV animation. Missing chain manager endpoint input is explicitly0->1 world-unit along native+X; use actual source/target and referenceLength1 in runtime. No generic replacement line; full original chain manager is absent.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_01_trail_01",
+      "count": 120,
+      "width": 52,
+      "height": 24,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.6538461538461539,
+      "pivotY": 0.4582068125406901,
+      "duration": 4.0,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": true,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_01_trail_01-00.png",
+          "count": 120,
+          "width": 416,
+          "height": 360,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_01_trail_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_01_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_01_trail_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original projectile rendered on explicit straight 3 world-units/s trajectory with following camera; game orchestration not reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D35/kalts2_skill_01_hit_01",
+      "count": 25,
+      "width": 80,
+      "height": 48,
+      "columns": 8,
+      "ppu": 42.66666793823242,
+      "pivotX": 0.5125,
+      "pivotY": 0.4999367396036784,
+      "duration": 0.8333333333333334,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D35/kalts2_skill_01_hit_01-00.png",
+          "count": 25,
+          "width": 640,
+          "height": 192,
+          "rawResource": "SixStarVfx/D35/kalts2_skill_01_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "kalts2_skill_01_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\sixstar-20261112-new\\kalts2_skill_01_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/kalts2.ab",
+      "adaptation": "Original native Vulkan Shader capture; independent anchor and exact source RGBA; no resampling/repaint. Original game mount/controller scripts are not all reproduced.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_attack_start_01",
+      "count": 30,
+      "width": 152,
+      "height": 104,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5394736842105263,
+      "pivotY": 0.2672726557804988,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_attack_start_01-00.png",
+          "count": 30,
+          "width": 1216,
+          "height": 416,
+          "rawResource": "SixStarVfx/D32/chen3_attack_start_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_attack_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_attack_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_attack_hit_01",
+      "count": 30,
+      "width": 96,
+      "height": 76,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.3333333333333333,
+      "pivotY": 0.48416258159436676,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_attack_hit_01-00.png",
+          "count": 30,
+          "width": 768,
+          "height": 304,
+          "rawResource": "SixStarVfx/D32/chen3_attack_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_attack_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_attack_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_buff_start_01",
+      "count": 25,
+      "width": 224,
+      "height": 180,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4955357142857143,
+      "pivotY": 0.4933130900065104,
+      "duration": 0.8333333333333334,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_buff_start_01-00.png",
+          "count": 25,
+          "width": 1792,
+          "height": 720,
+          "rawResource": "SixStarVfx/D32/chen3_buff_start_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_buff_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_buff_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_shield_buff_01",
+      "count": 75,
+      "width": 148,
+      "height": 88,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4797297297297297,
+      "pivotY": 0.31586768410422583,
+      "duration": 2.5,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_shield_buff_01-00.png",
+          "count": 75,
+          "width": 1184,
+          "height": 880,
+          "rawResource": "SixStarVfx/D32/chen3_shield_buff_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_shield_buff_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_shield_buff_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 1,
+      "loopEnd": 2.5,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_shield_buff_02",
+      "count": 61,
+      "width": 52,
+      "height": 56,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4807692307692308,
+      "pivotY": 0.04993493216378348,
+      "duration": 2.033333333333333,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_shield_buff_02-00.png",
+          "count": 61,
+          "width": 416,
+          "height": 448,
+          "rawResource": "SixStarVfx/D32/chen3_shield_buff_02-00"
+        }
+      ],
+      "sourcePrefab": "chen3_shield_buff_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_shield_buff_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_start_01",
+      "count": 30,
+      "width": 156,
+      "height": 100,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5897435897435898,
+      "pivotY": 0.41796356201171875,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_start_01-00.png",
+          "count": 30,
+          "width": 1248,
+          "height": 400,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_start_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_start_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_start_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_hit_01",
+      "count": 31,
+      "width": 140,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4928571428571429,
+      "pivotY": 0.4795958907515914,
+      "duration": 1.0333333333333334,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_hit_01-00.png",
+          "count": 31,
+          "width": 1120,
+          "height": 432,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_hit_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_hit_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_hit_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_hit_02",
+      "count": 31,
+      "width": 140,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4928571428571429,
+      "pivotY": 0.4795958907515914,
+      "duration": 1.0333333333333334,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_hit_02-00.png",
+          "count": 31,
+          "width": 1120,
+          "height": 432,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_hit_02-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_hit_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_hit_02\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_hit_03",
+      "count": 31,
+      "width": 140,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4928571428571429,
+      "pivotY": 0.4795958907515914,
+      "duration": 1.0333333333333334,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_hit_03-00.png",
+          "count": 31,
+          "width": 1120,
+          "height": 432,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_hit_03-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_hit_03",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_hit_03\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_hit_04",
+      "count": 38,
+      "width": 80,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.525,
+      "pivotY": 0.6277440388997396,
+      "duration": 1.2666666666666666,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_hit_04-00.png",
+          "count": 38,
+          "width": 640,
+          "height": 540,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_hit_04-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_hit_04",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_hit_04\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_buff_l_01",
+      "count": 90,
+      "width": 116,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.46551724137931033,
+      "pivotY": 0.40552181667751735,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_buff_l_01-00.png",
+          "count": 90,
+          "width": 928,
+          "height": 1296,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_buff_l_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_buff_l_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_buff_l_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 1.0666666666666667,
+      "loopEnd": 3.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_buff_r_01",
+      "count": 90,
+      "width": 112,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.48214285714285715,
+      "pivotY": 0.3684847796404803,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_buff_r_01-00.png",
+          "count": 90,
+          "width": 896,
+          "height": 1296,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_buff_r_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_buff_r_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_buff_r_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.7666666666666667,
+      "loopEnd": 3.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_weapon_01",
+      "count": 90,
+      "width": 56,
+      "height": 32,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.125,
+      "pivotY": 0.4623861312866211,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_weapon_01-00.png",
+          "count": 90,
+          "width": 448,
+          "height": 384,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_weapon_01-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_weapon_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_weapon_01\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.5,
+      "loopEnd": 3.0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_start_02_dir_right",
+      "count": 30,
+      "width": 296,
+      "height": 108,
+      "columns": 6,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.23310810810810811,
+      "pivotY": 0.5999662611219618,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_start_02_dir_right-00.png",
+          "count": 30,
+          "width": 1776,
+          "height": 540,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_start_02_dir_right-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_start_02_dir_right\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_range_01_dir_right",
+      "count": 90,
+      "width": 224,
+      "height": 124,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.15625,
+      "pivotY": 0.5709383564610635,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_range_01_dir_right-00.png",
+          "count": 90,
+          "width": 1792,
+          "height": 1488,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_range_01_dir_right-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_range_01_dir_right\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.7,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_trail_01_dir_right",
+      "count": 90,
+      "width": 128,
+      "height": 124,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.59375,
+      "pivotY": 0.7160996467836441,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_trail_01_dir_right-00.png",
+          "count": 90,
+          "width": 1024,
+          "height": 1488,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_trail_01_dir_right-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_trail_01_dir_right\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation. Actual same-frame game GPU comparison confirmed upright foot depth clips the native projected head; use owner-ground depth, preserving pixels, pivot, PPU and original direction capture.",
+      "loopStart": 1,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_start_02_dir_up",
+      "count": 30,
+      "width": 152,
+      "height": 172,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5,
+      "pivotY": 0.3476532337277435,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_start_02_dir_up-00.png",
+          "count": 30,
+          "width": 1216,
+          "height": 688,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_start_02_dir_up-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_start_02_dir_up\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_range_01_dir_up",
+      "count": 90,
+      "width": 188,
+      "height": 156,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5319148936170213,
+      "pivotY": 0.3063868987254607,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_range_01_dir_up-00.png",
+          "count": 90,
+          "width": 1504,
+          "height": 1872,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_range_01_dir_up-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_range_01_dir_up\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.7,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_trail_01_dir_up",
+      "count": 90,
+      "width": 88,
+      "height": 152,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5,
+      "pivotY": 0.7355023434287623,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_trail_01_dir_up-00.png",
+          "count": 90,
+          "width": 704,
+          "height": 1824,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_trail_01_dir_up-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_trail_01_dir_up\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation. Actual same-frame game GPU comparison confirmed upright foot depth clips the native projected head; use owner-ground depth, preserving pixels, pivot, PPU and original direction capture.",
+      "loopStart": 1,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_start_02_dir_left",
+      "count": 30,
+      "width": 296,
+      "height": 100,
+      "columns": 6,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.7668918918918919,
+      "pivotY": 0.6379635620117188,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_start_02_dir_left-00.png",
+          "count": 30,
+          "width": 1776,
+          "height": 500,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_start_02_dir_left-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_start_02_dir_left\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_range_01_dir_left",
+      "count": 90,
+      "width": 224,
+      "height": 132,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.8348214285714286,
+      "pivotY": 0.5893663348573627,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_range_01_dir_left-00.png",
+          "count": 90,
+          "width": 1792,
+          "height": 1584,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_range_01_dir_left-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_range_01_dir_left\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.7,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_trail_01_dir_left",
+      "count": 90,
+      "width": 128,
+      "height": 124,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.390625,
+      "pivotY": 0.7160996467836441,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_trail_01_dir_left-00.png",
+          "count": 90,
+          "width": 1024,
+          "height": 1488,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_trail_01_dir_left-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_trail_01_dir_left\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation. Actual same-frame game GPU comparison confirmed upright foot depth clips the native projected head; use owner-ground depth, preserving pixels, pivot, PPU and original direction capture.",
+      "loopStart": 1,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_start_02_dir_down",
+      "count": 30,
+      "width": 152,
+      "height": 156,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5,
+      "pivotY": 0.857668950007512,
+      "duration": 1.0,
+      "hdrRange": 32.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_start_02_dir_down-00.png",
+          "count": 30,
+          "width": 1216,
+          "height": 624,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_start_02_dir_down-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_start_02",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_start_02_dir_down\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0,
+      "loopEnd": 0,
+      "groundDepth": false,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_range_01_dir_down",
+      "count": 90,
+      "width": 188,
+      "height": 144,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.4627659574468085,
+      "pivotY": 0.8180302513970269,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_range_01_dir_down-00.png",
+          "count": 90,
+          "width": 1504,
+          "height": 1728,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_range_01_dir_down-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_range_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_range_01_dir_down\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation.",
+      "loopStart": 0.7,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": true
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_trail_01_dir_down",
+      "count": 90,
+      "width": 88,
+      "height": 108,
+      "columns": 8,
+      "ppu": 51.20000076293945,
+      "pivotX": 0.5,
+      "pivotY": 0.6462625574182581,
+      "duration": 3.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_trail_01_dir_down-00.png",
+          "count": 90,
+          "width": 704,
+          "height": 1296,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_trail_01_dir_down-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_trail_01_dir_down\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original chen3 Vulkan material/mesh/particle rendering, exact sqrt-HDR RGBA; explicit source internal rotation_z input for cardinal variants. Missing full original manager lifecycle remains a limitation. Actual same-frame game GPU comparison confirmed upright foot depth clips the native projected head; use owner-ground depth, preserving pixels, pivot, PPU and original direction capture.",
+      "loopStart": 1,
+      "loopEnd": 3.0,
+      "groundDepth": true,
+      "belowActors": false
+    },
+    {
+      "key": "defender/D32/chen3_skill_03_tail_ribbon",
+      "count": 120,
+      "width": 220,
+      "height": 52,
+      "columns": 8,
+      "ppu": 64.0,
+      "pivotX": 0.8909090909090909,
+      "pivotY": 0.4807692307692308,
+      "duration": 4.0,
+      "hdrRange": 32.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D32/chen3_skill_03_tail_ribbon-00.png",
+          "count": 120,
+          "width": 1760,
+          "height": 780,
+          "rawResource": "SixStarVfx/D32/chen3_skill_03_tail_ribbon-00"
+        }
+      ],
+      "sourcePrefab": "chen3_skill_03_trail_01",
+      "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\chen3-20261113-final\\chen3_skill_03_tail_ribbon\\report.json",
+      "sourceBundle": "battle/prefabs/effects/chen3.ab",
+      "adaptation": "Original six native TrailRenderer materials rendered using explicit original widthCurve/colorGradient and timed history; startup 0-2s then 2-4s steady texture. Runtime bends this composite along the real projectile history; not an unmodified native TrailRenderer controller.",
+      "loopStart": 2,
+      "loopEnd": 4,
+      "groundDepth": false,
+      "belowActors": false
     }
   ]
 }

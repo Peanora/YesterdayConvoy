@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     public enum DefenderSkillKind { None, CardiganRecovery, MidnightEnchant, PlumeSwiftStrike, AnselRange,
-        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno,SilverAshReign,PramanixSnow,WangGambit }
+        BeagleGuard,SpotHealingMode,MelanthaStrength,KroosDoubleShot,StewardStrike,LavaChant,HibiscusHealing,OrchidSwiftStrike,LapplandHavoc,YuKitchen,SariaCalcification,MlynarGlory,Mon3trMeltdown,ExusiaiDelivery,HoshigumaInferno,SilverAshReign,PramanixSnow,WangGambit,ChenHolungday,AngelinaWishes,ClemensiaCorrosion,KaltsitEsperanta,ChenDawnstreak }
 
     [Serializable]
     public sealed class DefenderSkillDefinition
@@ -52,7 +52,7 @@ namespace YesterdayConvoy
     public sealed partial class ManualBattle
     {
         public bool DefenderSkillActive(DefenderState d)=>d!=null&&d.Alive&&d.Settings.Skill.Enabled&&Clock<d.SkillActiveUntil;
-        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d)*InfectionAttack(d.EntityId);
+        public float DefenderSkillAttack(DefenderState d)=>d.Settings.Attack*(DefenderSkillActive(d)||IsFifthActive(d)?d.Settings.Skill.AttackMultiplier:1)*LiberatorAttackMultiplier(d)*InfectionAttack(d.EntityId)*(d.Settings.Skill.Kind==DefenderSkillKind.ChenDawnstreak?1.13f:1);
         public float DefenderHealRange(DefenderState d)=>d.Settings.HealRange+(DefenderSkillActive(d)?d.Settings.Skill.HealRangeBonus:0);
         private float DefenderAnimationRate(DefenderState d)=>DefenderSkillActive(d)?d.Settings.Skill.AttackSpeedMultiplier:1;
         private bool SpotHealing(DefenderState d)=>d.Settings.Skill.Kind==DefenderSkillKind.SpotHealingMode&&DefenderSkillActive(d);
@@ -68,7 +68,7 @@ namespace YesterdayConvoy
                 // Recovery resumes only after an active skill has ended, including a straddling frame.
                 float elapsed=(float)Math.Max(0,Clock-Math.Max(Clock-step,d.SkillActiveUntil));
                 d.SkillSP=Math.Min(skill.RequiredSP,d.SkillSP+(skill.AttackRecovery?0:elapsed*skill.SPPerSecond));
-                if(DefenderSkillActive(d)||IsFifthActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
+                if(BossRosterDefenderSkillLocked(d)||DefenderSkillActive(d)||IsFifthActive(d)||d.SkillSP+1e-5<skill.RequiredSP||d.FrozenUntil>Clock||d.NeuralUntil>Clock||DefenderShackled(d))continue;
                 // Match attack scheduling tolerance so float rounding cannot starve a ready skill.
                 if(Clock+1e-6<d.LastActionTime+d.Settings.ActionDuration/d.LastActionRate)continue;
                 bool useful=AdvancedSkillUseful(d);
@@ -76,18 +76,19 @@ namespace YesterdayConvoy
                 {
                     // The normal form heals from a high platform. Meltdown attacks from the
                     // authored relay point, so a distant enemy cannot justify an empty cast.
-                    useful=units.Exists(u=>CanDefenderTarget(u)&&GroundDistance(d.Settings.RelayPosition,u.Motion.Position)<=skill.EffectRadius);
+                    useful=units.Exists(u=>CanDefenderTarget(u)&&DefenderSkillFootprints.Contains(DefenderSkillCells(d),d.Settings.RelayPosition,DefenderSkillFacing(d),u.Motion.Position));
                 }
                 else if(skill.Kind==DefenderSkillKind.CardiganRecovery)useful=d.Health<=d.MaxHealth*V2DefenderSkill(d,"autoUseBelowHealthFraction",.8f);
-                else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing)
+                else if(skill.Kind==DefenderSkillKind.AnselRange||skill.Kind==DefenderSkillKind.SpotHealingMode||skill.Kind==DefenderSkillKind.HibiscusHealing||skill.Kind==DefenderSkillKind.KaltsitEsperanta)
                 {
                     foreach(var ally in defenders)
                         useful|=ally.Alive&&ally.Health<ally.MaxHealth-.001f&&GroundDistance(d.Position,ally.Position)<=d.Settings.HealRange+skill.HealRangeBonus;
                 }
-                else foreach(var u in units)useful|=CanDefenderTarget(u)&&(GroundDistance(d.Position,u.Motion.Position)<=DefenderRange(d)||skill.Kind==DefenderSkillKind.LapplandHavoc||u.BlockerId==d.EntityId);
+                else foreach(var u in units)useful|=CanDefenderTarget(u)&&(DefenderSkillContains(d,u.Motion.Position)||skill.Kind==DefenderSkillKind.LapplandHavoc||u.BlockerId==d.EntityId);
                 if(!useful)continue;
                 d.SkillSP=0;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock+skill.Duration;d.SkillCasts++;
-                BeginAdvancedDefenderSkill(d);
+                if(!BeginSeventhSkill(d))BeginAdvancedDefenderSkill(d);
+                CaptureDefenderSkillFacing(d);
                 if(skill.Kind==DefenderSkillKind.BeagleGuard)d.SkillActionUntil=Clock+1;
                 if(skill.Kind==DefenderSkillKind.CardiganRecovery)
                 {
@@ -111,7 +112,7 @@ namespace YesterdayConvoy
             var spec=d.Settings;float rate=DefenderAttackRate(d);
             d.LastActionTime=Clock;d.LastActionHealing=true;d.LastActionRate=DefenderAnimationRate(d);
             d.NextAttackTime=Clock+(SpotHealing(d)&&spec.Skill.HealingInterval>0?spec.Skill.HealingInterval:spec.Interval)/rate;
-            combatShots.Add(new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
+            QueueDefenderShot(d,new CombatShot(d.EntityId,wounded.EntityId,true,false,d.Position,wounded.Position,
                 Clock+spec.Windup/d.LastActionRate,travel,DefenderSkillAttack(d),healing:true));
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown){ScheduleMon3trChain(d,wounded,travel);d.SkillSP=Math.Min(spec.Skill.RequiredSP,d.SkillSP+1);}
             if(spec.ExtraHealChance<=0||d.Roll()>=spec.ExtraHealChance)return;
@@ -121,13 +122,13 @@ namespace YesterdayConvoy
                     (second==null||ally.Health/ally.MaxHealth<second.Health/second.MaxHealth))second=ally;
             if(second==null)return;
             d.ExtraHeals++;
-            combatShots.Add(new CombatShot(d.EntityId,second.EntityId,true,false,d.Position,second.Position,
+            QueueDefenderShot(d,new CombatShot(d.EntityId,second.EntityId,true,false,d.Position,second.Position,
                 Clock+spec.Windup/d.LastActionRate,travel,DefenderSkillAttack(d),healing:true));
         }
 
         private void ScheduleDefenderAttack(DefenderState d,DeployedUnitState target,float travel)
         {
-            if(ScheduleSixthAttack(d,target,travel)||ScheduleFifthAttack(d,target,travel))return;
+            if(ScheduleSeventhAttack(d,target,travel)||ScheduleSixthAttack(d,target,travel)||ScheduleFifthAttack(d,target,travel))return;
             var spec=d.Settings;var skill=spec.Skill;
             bool empowered=skill.AttackRecovery&&d.SkillSP+1e-5>=skill.RequiredSP;
             if(empowered){d.SkillSP=0;d.SkillCasts++;d.SkillStartedAt=Clock;d.SkillActiveUntil=Clock;}
@@ -141,7 +142,7 @@ namespace YesterdayConvoy
                     Clock+spec.Windup/d.LastActionRate+i*(skill.Kind==DefenderSkillKind.KroosDoubleShot?V2DefenderSkill(d,"hitSpacing",.1f):.1f),travel,DefenderOrdinaryDamage(d,target,empowered?skill.AttackMultiplier:1),
                     damageType:DefenderSkillActive(d)&&skill.Kind==DefenderSkillKind.MidnightEnchant?CombatDamageType.Arts:spec.DamageType,splashRadius:spec.SplashRadius);
                 if(skill.Kind==DefenderSkillKind.OrchidSwiftStrike)shot.HinderDuration=V2DefenderSkill(d,"hinderDuration",.8f);
-                combatShots.Add(shot);
+                QueueDefenderShot(d,shot);
             }
             if(skill.Kind==DefenderSkillKind.LapplandHavoc&&!DefenderSkillActive(d))ScheduleOrdinaryDrone(d,target,travel);
             if(skill.Kind==DefenderSkillKind.MlynarGlory&&DefenderSkillActive(d))
@@ -149,8 +150,8 @@ namespace YesterdayConvoy
                 int count=1;foreach(var other in units)
                 {
                     if(count>=skill.Targets)break;
-                    if(other==target||!CanDefenderTarget(other)||GroundDistance(d.Position,other.Motion.Position)>DefenderRange(d))continue;
-                    combatShots.Add(new CombatShot(d.EntityId,other.EntityId,true,true,d.Position,other.Motion.Position,Clock+spec.Windup,travel,DefenderOrdinaryDamage(d,other)));count++;
+                    if(other==target||!CanDefenderTarget(other)||!DefenderRangeContains(d,other.Motion.Position))continue;
+                    QueueDefenderShot(d,new CombatShot(d.EntityId,other.EntityId,true,true,d.Position,other.Motion.Position,Clock+spec.Windup,travel,DefenderOrdinaryDamage(d,other)));count++;
                 }
             }
             // An attack is one SP event, regardless of hit count; the consuming skill attack is locked out.

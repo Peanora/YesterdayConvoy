@@ -76,19 +76,21 @@ namespace YesterdayConvoy
             var deck=shopLineup.Where(shopDefinitions.ContainsKey).ToList();
             if(deck.Count==0)deck.Add("CARD_M08");
             var wavePlan=shopMapCopy.WaveSnapshot();
-            int dp=wavePlan!=null?wavePlan.Waves[0].DP:JourneyActive?JourneyStage.dp:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
+            int dp=BossArenaActive?0:wavePlan!=null?wavePlan.Waves[0].DP:JourneyActive?JourneyStage.dp:ApprovedMapActive?ApprovedMapPlan.InitialDP:BlackForestChallengeActive?BlackForestChallengePlan.InitialDP:SynergySandbox?100:CampaignPlan.BattleDP[Loop.Stage-1];
             int defense=JourneyActive?Math.Max(1,JourneyStage.defense):BlackForestChallengeActive?BlackForestChallengePlan.Defense:SynergySandbox?6:Mathf.Clamp(1+(Loop.Stage-2)/2,1,7);
             var profiles=deck.Select(id=>CampaignProfile(id,dp,defense)).ToArray();
             var first=profiles[0];
             var battle=new ManualBattle(first.Unit,defenderTrial.route,definition.Engagement.DefenderPosition,first.Combat,null,defenderTrial.Snapshot(),defenderTrial.LaneSnapshot(),allowEmptyRoster:JourneyActive&&JourneyStage.IsSupply);
             battle.ConfigureCardLoadout(profiles.Skip(1));
             if(JourneyActive)battle.ConfigureCampaignV2(Loop.Stage);
-            if(!JourneyActive&&!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
+            if(!JourneyActive&&!BossArenaActive&&!BlackForestChallengeActive&&!ApprovedMapActive)battle.ConfigureStrongholdMap(false);
             battle.ConfigureSynergies(shopLineup.Select(ShopLineupPiece),reunionRanged,infectionForm,infectionSecond,Loop.GolemExperience,contractCard,marineForm,marineSecond,Loop.MarineExperience,
                 extraGuerrillaMembers:PreparedGuerrillaTransferIds,extraMudrockMembers:PreparedMudrockTransferIds);
             var marineGround=new List<Vector3>();
             bool expanded=shopMapCopy.mapId==StrongholdChallengeLayout.Id;
-            if(ApprovedMapActive||JourneyActive)marineGround.AddRange(ApprovedMap.WalkablePoints());
+            if(BossArenaActive)
+            {for(int z=-2;z<=2;z++)for(int x=-3;x<=3;x++)marineGround.Add(new Vector3(x,.04f,z));}
+            else if(ApprovedMapActive||JourneyActive)marineGround.AddRange(ApprovedMap.WalkablePoints());
             else if(BlackForestChallengeActive)
             {
                 for(int row=1;row<=BlackForestLayout.Height;row++)for(int col=1;col<=BlackForestLayout.Width;col++)
@@ -103,6 +105,7 @@ namespace YesterdayConvoy
             battle.ConfigureGramophones(FindObjectsByType<GramophoneAnchor>(FindObjectsSortMode.None).Select(a=>a.Snapshot()));
             if(Loop.RewardStage)battle.ConfigureSupply(JourneyActive);
             foreach(var defender in battle.Defenders)battle.ConfigureDefenderHighGround(defender.EntityId,defender.Position.y>.5f);
+            if(BossArenaActive){battle.ConfigureCampaignV2();battle.ConfigureBossArena(new BossArenaRules(bossArena.redeploymentSeconds,bossArena.enragedAttackSpeed));}
             if(wavePlan!=null)battle.ConfigureWaves(wavePlan);
             if(ApprovedMapActive||JourneyActive)battle.ConfigureApprovedMapEffects(ApprovedMap.mechanics);
             return battle;

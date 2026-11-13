@@ -1,0 +1,56 @@
+{
+  "task": "P26",
+  "boundsSampleFps": 120,
+  "clips": [
+    {
+      "source": "Die",
+      "count": 61,
+      "visibleFrames": 60,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Idle",
+      "count": 82,
+      "visibleFrames": 82,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Move",
+      "count": 61,
+      "visibleFrames": 61,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Skill",
+      "count": 61,
+      "visibleFrames": 60,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    }
+  ],
+  "frames": 265,
+  "visibleFrames": 263,
+  "emptyFrames": 2,
+  "edgeFrames": 0,
+  "errors": [],
+  "emptySourceStates": [
+    {
+      "source": "Die",
+      "frame": 60,
+      "time": 1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Skill",
+      "frame": 60,
+      "time": 1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    }
+  ],
+  "passed": true
+}

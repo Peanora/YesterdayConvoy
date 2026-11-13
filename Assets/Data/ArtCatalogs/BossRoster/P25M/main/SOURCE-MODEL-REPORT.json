@@ -1,0 +1,121 @@
+{
+  "task": "P25M",
+  "name": "塑能基质",
+  "reference": "https://prts.wiki/w/塑能基质/spine",
+  "view": "main",
+  "model": "enemy_10212_klhz",
+  "nativeModel": "enemy_10212_klhz",
+  "folder": "native-fx/runtime-additions/Matrix/source",
+  "version": "3.8.99",
+  "skin": "default",
+  "animations": [
+    {
+      "name": "Attack",
+      "duration": 1.7999999523162842,
+      "bounds": [
+        -115.34825897216797,
+        -35.972084045410156,
+        116.14774322509766,
+        243.16590881347656
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 16384,
+      "events": [
+        {
+          "time": 0.6000000238418579,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -96.565185546875,
+        11.494230270385742,
+        89.06401824951172,
+        236.18313598632812
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 72,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die",
+      "duration": 1,
+      "bounds": [
+        -99.00797271728516,
+        -21.44784927368164,
+        89.06401824951172,
+        244.93348693847656
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 5947,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Idle",
+      "duration": 2.6666667461395264,
+      "bounds": [
+        -99.8792953491211,
+        -5.162137985229492,
+        89.42147064208984,
+        243.38970947265625
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 24656,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Move",
+      "duration": 4,
+      "bounds": [
+        -94.08325958251953,
+        -21.897062301635742,
+        104.01191711425781,
+        242.54171752929688
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 36784,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Start",
+      "duration": 1,
+      "bounds": [
+        -100.7930679321289,
+        -16.715587615966797,
+        93.18944549560547,
+        252.50003051757812
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 7164,
+      "events": [
+        {
+          "time": 0.3333333432674408,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "loop": false
+    }
+  ],
+  "cell": 384,
+  "captureMargin": 1.14,
+  "bounds": [
+    -115.34826029290248,
+    -35.97208579164107,
+    116.14774207983999,
+    252.50002493829794
+  ]
+}

@@ -34,7 +34,7 @@ namespace YesterdayConvoy.Editor
         }
         static DefenderPlacement Make(string id)
         {
-            var d=new DefenderPlacement{id=id,artId=id,health=1800,attack=20,armor=12,range=3.5f,interval=2.2f,windup=.4f,actionDuration=2.2f,blocks=0,position=new Vector3(-4.5f,.76f,2),skill=new DefenderSkillDefinition()};var s=d.skill;
+            var d=new DefenderPlacement{id=id,artId=id,health=1800,attack=20,armor=12,range=3.5f,interval=2.2f,windup=.4f,actionDuration=2.2f,blocks=0,position=new Vector3(-4,.38f,1),skill=new DefenderSkillDefinition()};var s=d.skill;
             switch(id){
                 case "D26":d.displayName="凛御银灰";d.health=6000;d.position=new Vector3(-4.5f,.04f,3);d.blocks=2;d.interval=d.actionDuration=1.2f;d.windup=.3f;
                     s.kind=DefenderSkillKind.SilverAshReign;s.initialSP=42;s.requiredSP=55;s.duration=48;s.attackMultiplier=1.7f;s.effectRadius=5.5f;break;

@@ -31,7 +31,7 @@ namespace YesterdayConvoy
 
         public void Validate()
         {
-            if(SynergyTrialCatalog.Find(trialId)==null)throw new InvalidOperationException("Unknown dedicated trial ID: "+trialId);
+            if(SynergyTrialCatalog.Find(trialId)==null&&trialId!=BossArenaRules.Id)throw new InvalidOperationException("Unknown dedicated trial ID: "+trialId);
             if(string.IsNullOrWhiteSpace(displayTitle)||initialLevel<1||initialLevel>10||encounter==null)
                 throw new InvalidOperationException("Trial title, level or encounter is invalid: "+name);
             if(initialMembers==null||initialMembers.Length<1||initialMembers.Length>initialLevel)

@@ -1,0 +1,43 @@
+{
+  "character": "Wiš’adel",
+  "skin": "Supernova / 超新星",
+  "source": {
+    "task": "D31F",
+    "name": "维什戴尔 · 超新星",
+    "variant": "正面",
+    "model": "char_1035_wisdel_sale_14",
+    "files": [
+      {
+        "file": "char_1035_wisdel_sale_14.skel",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.skel",
+        "bytes": 2229675,
+        "sha256": "a8b1e26f44c7ae00272d36303bbe9e7de3a44b4ce8044407aa606936d37eaab2"
+      },
+      {
+        "file": "char_1035_wisdel_sale_14.atlas",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.atlas",
+        "bytes": 17513,
+        "sha256": "305f398551ff5fc473c69afd9f052e78f001c520ec757a09996b6dc895ba9a67"
+      },
+      {
+        "file": "char_1035_wisdel_sale_14.png",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/front/char_1035_wisdel_sale_14.png",
+        "bytes": 223967,
+        "sha256": "251fe844d97c15c36110e287c6c6f64f18b5e0884caa9c8ef70a13cbb252ef54"
+      }
+    ],
+    "rights": "Original proprietary Hypergryph game art. Open redistribution license unconfirmed. User requested integration and source upload; this is not rights-holder permission."
+  },
+  "processing": {
+    "cell": 480,
+    "sourceScale": 0.5,
+    "ppu": 160,
+    "sourceUnitsPerWorldUnit": 320,
+    "pivotX": 0.4673332214355469,
+    "pivotY": 0.23085299332936604,
+    "fps": 30
+  },
+  "use": "User explicitly requested direct integration as a giant boss. No additional original-game external projectile or impact FX were acquired in this export. Game projectile/impact adaptations remain separate.",
+  "rights": "Original proprietary Hypergryph character, texture and animation; not CC0. Open redistribution permission unconfirmed. User instruction to upload is not rights-holder authorization.",
+  "rearDeath": "No rear Die animation exists in this source; actual front Die is retained and used by the shared death presentation."
+}

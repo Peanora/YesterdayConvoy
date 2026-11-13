@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "scope": "Original static Hit transforms verified against the exact current body source. Missing cards do not use guessed source mounts.",
+  "sources": [
+    {
+      "name": "battle/enm_pfb_base_0.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_enm_pfb_base_0.dat",
+      "md5": "a7f33272ca8e41d37a018675aa767043",
+      "sha256": "4bb053011ad8543f1399c4990e9a2203b941c2997d890d3a76ec3ccf738dd37c"
+    },
+    {
+      "name": "refs/arts/enm_art_base_0.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/refs_arts_enm_art_base_0.dat",
+      "md5": "589c25c936bfa44931ec36f8267ff8ea",
+      "sha256": "dcbec9e712129116f396b9960ce7cbec114fa29b8ce8a74f2f181641a43ef974"
+    }
+  ],
+  "points": [
+    {
+      "cardId": "CARD_M02",
+      "bodyPixelsPerUnit": 80,
+      "bodyLocalPoint": {
+        "x": 0.0,
+        "y": 0.6400000238418585,
+        "z": 0.0
+      },
+      "sourceEnemyId": "enemy_1000_gopro",
+      "sourceTransformPath": "/enemy_1000_gopro/Graphic/FaceSwitcher/Spine/HitPoint",
+      "sourceSkeletonSHA256": "6255bff9f5fe9cd893a7d700c8580cb30ffaf52b378ef9b8d22977188ef8eca5",
+      "bodySourceSkeletonSHA256": "6255bff9f5fe9cd893a7d700c8580cb30ffaf52b378ef9b8d22977188ef8eca5",
+      "sourceKind": "StaticTransform",
+      "frameContract": "Constant original static HitPoint under SkeletonAnimation; valid across all current body frames. Apply relative to the current actual body SpriteRenderer transform, including actual facing/camera basis; this is not global-world-up or bounds.center."
+    },
+    {
+      "cardId": "CARD_ORIGINIUM_SLUG",
+      "bodyPixelsPerUnit": 88.8888889,
+      "bodyLocalPoint": {
+        "x": 0.0,
+        "y": 0.45000001000203416,
+        "z": 0.0
+      },
+      "sourceEnemyId": "enemy_1007_slime",
+      "sourceTransformPath": "/enemy_1007_slime/Graphic/FaceSwitcher/Spine/HitPoint",
+      "sourceSkeletonSHA256": "c32483e6bd3bdb0ed36eccadf4e6d99f8d78dac424d797bc4202a88e67dcee92",
+      "bodySourceSkeletonSHA256": "c32483e6bd3bdb0ed36eccadf4e6d99f8d78dac424d797bc4202a88e67dcee92",
+      "sourceKind": "StaticTransform",
+      "frameContract": "Constant original static HitPoint under SkeletonAnimation; valid across all current body frames. Apply relative to the current actual body SpriteRenderer transform, including actual facing/camera basis; this is not global-world-up or bounds.center."
+    }
+  ]
+}

@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Tests
             int loads=ArtMemoryCache.TextureLoads;
             string[] files=PreparedArtTools.RuntimeOutputFiles();
             string catalogs=Path.Combine(Application.dataPath,"Data/ArtCatalogs");
-            string[] runtimeRoots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx"};
+            string[] runtimeRoots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
             string[] expected=runtimeRoots.SelectMany(root=>Directory.GetFiles(Path.Combine(catalogs,root),"manifest.json",SearchOption.AllDirectories))
                 .Select(path=>path.Substring(catalogs.Length+1).Replace('\\','/')).OrderBy(path=>path,StringComparer.Ordinal).ToArray();
             CollectionAssert.AreEqual(expected,files.Where(path=>path.EndsWith("/manifest.json",StringComparison.Ordinal)).ToArray());
@@ -34,7 +34,8 @@ namespace YesterdayConvoy.Tests
                 string[] files=PreparedArtTools.RuntimeOutputFiles();
                 Assert.That(files.Any(path=>path.StartsWith("TalulahOriginal/ExtraClips/",StringComparison.Ordinal)&&path.EndsWith(".ycart",StringComparison.Ordinal)));
                 Assert.That(files,Does.Contain("TalulahUnboundVfx/ambient-B-wing-00.png.ycart"));
-                Assert.That(files.Any(path=>path.StartsWith("TalulahUnboundVfx/orb-",StringComparison.Ordinal)),Is.False);
+                Assert.That(files,Does.Contain("TalulahUnboundVfx/orb-body-idle-00.png.ycart"));
+                Assert.That(files.Any(path=>path.StartsWith("TalulahUnboundVfx/orb-birth-model-source-fx",StringComparison.Ordinal)),Is.False);
                 Assert.That(files.Any(path=>path.Contains(Path.GetFileName(marker))),Is.False);
             }
             finally{File.Delete(marker);}

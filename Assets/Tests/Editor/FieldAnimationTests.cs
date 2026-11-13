@@ -64,6 +64,21 @@ namespace YesterdayConvoy.Tests
             Assert.That(piece["idle"].Frames[0].bounds.size.x,Is.InRange(.3f,1f));
         }
 
+        [TestCase(1f)][TestCase(2f)][TestCase(.7f)]
+        public void Mon3trClawKeepsItsNativeRecoveryInsteadOfTheNormalHealingWindow(float rate)
+        {
+            var art=DefenderArt.Load("D23");
+            double duration=art.ActionDurationFor(true,2.833333,rate),contact=(2.0/3)/rate;
+            Assert.That(duration,Is.EqualTo(1.5/rate).Within(.000001));
+            Assert.That(art.ActionDurationFor(false,2.833333,rate),Is.EqualTo(2.833333/rate).Within(.000001));
+            // Check the recovery pose well after the claw connects. With the old
+            // ordinary-action window this source phase was only about 0.92 sec.
+            double age=1.117/rate;
+            var pose=art.AdvancedPose(5,10,-1,true,age,duration,0,false,contact);
+            Assert.That(pose,Is.SameAs(art["skill_attack"].At(1.117,false)));
+            Assert.That(duration,Is.LessThan(art.ActionDurationFor(false,2.833333,rate)));
+        }
+
         [Test] public void ReloadAfterUnityDestroysCachedSpritesReturnsUsableResources()
         {
             var previous=DefenderArt.Load("D28Chess");

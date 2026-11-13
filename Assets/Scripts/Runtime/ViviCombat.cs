@@ -63,6 +63,7 @@ namespace YesterdayConvoy
                     source.AltarEmpowered?CombatDamageType.Arts:combat.Effects.DamageType,
                     shot.SynergyOrder||source.SynergySupport,shot.SynergyOrder||source.SynergySupport?null:source,1,source);
                 float loss=health-target.Health;shot.DamageDealt+=loss;
+                BossCoreOnUnitHit(source,target,shot);
                 if(shot.SynergyOrder)continue;
                 RecordSynergyContact(source);OnGolemHit(source,target);
                 HealUnit(source,loss*combat.Effects.LifeSteal);

@@ -1161,13 +1161,13 @@
       "width": 14,
       "height": 10,
       "rows": [
-        "HHHHHHHGGGGGGH",
-        "HHHHHHHHHHHHGH",
-        "HHHHHHHHHHGGGG",
-        "HHHHGGGGGGEHGH",
-        "HHHHGGGEGGGHGH",
-        "HHHHGGHHHHGHGH",
-        "HHHHEGHHHHGHGH",
+        "GGGGHHHGGGGGGH",
+        "GGGGHHHHHHHHGH",
+        "GGHHHHHHHHGGGG",
+        "GGHHGGGGGGEHGH",
+        "GGGGGGGEGGGHGH",
+        "GHGGGGHHHHGHGH",
+        "GHGGEGHHHHGHGH",
         "GGGGGGGGGGGHGH",
         "HHGGGGGGGGGGGH",
         "HHHHHHHHHHHHHH"
@@ -1396,6 +1396,13 @@
           "cell": {
             "x": 5,
             "y": 2
+          },
+          "high": true
+        },
+        {
+          "cell": {
+            "x": 2,
+            "y": 3
           },
           "high": true
         }

@@ -46,6 +46,11 @@ namespace YesterdayConvoy
         {
             switch(kind)
             {
+                case DefenderSkillKind.ChenDawnstreak:return "释放龙形剑气，遇高台、边缘或出入口顺时针转向；每次转向后可再次命中。技能中对最多三名地面敌人三连斩。";
+                case DefenderSkillKind.ChenHolungday:return "32发弹药，每次两发双击。攻击范围内持续粘液，地面减速、减防，不叠加。";
+                case DefenderSkillKind.AngelinaWishes:return "起飞后阻挡2个空中敌人，不阻挡地面；三目标攻击并额外攻击空中目标，减速并移动拦截。";
+                case DefenderSkillKind.ClemensiaCorrosion:return "三目标物理攻击累积侵蚀。敌人真实侵蚀爆发时才消耗弹药，对爆发附近追加范围攻击。";
+                case DefenderSkillKind.KaltsitEsperanta:return "10枚医疗单元，优先敌人。命中范围真伤与治疗；对敌发射额外停顿5秒。";
                 case DefenderSkillKind.LapplandHavoc:return "三架浮游单元全场追击；恐惧与减速。普通攻击逐渐强化单元伤害。";
                 case DefenderSkillKind.YuKitchen:return "提高攻击、防御和生命上限；布置火墙并回复生命。存活守军达到四名时提供全体回复。";
                 case DefenderSkillKind.SariaCalcification:return "停止普通治疗，持续群体治疗；范围内敌人减速，并承受更多法术伤害。";
@@ -55,12 +60,34 @@ namespace YesterdayConvoy
                 default:return "技能按现有角色配置自动触发。";
             }
         }
+        bool DrawDefenderMarkedRange(DefenderState source,Color tint)
+        {
+            if(!Battle.DefenderSkillActive(source)&&!Battle.IsFifthActive(source))return false;
+            var cells=Battle.DefenderSkillCells(source);if(cells==null)return false;
+            void DrawOwner(DefenderState owner)
+            {
+                Vector3 facing=Battle.DefenderSkillFacing(source,owner),side=new Vector3(-facing.z,0,facing.x);
+                Vector3 Point(float x,float y)=>owner.Position+facing*x+side*y+Vector3.up*.08f;
+                void Edge(float x,float y,float z,float w)=>ShopLine(GUIPosition(Camera.main.WorldToScreenPoint(Point(x,y))),GUIPosition(Camera.main.WorldToScreenPoint(Point(z,w))),new Color(tint.r,tint.g,tint.b,.65f),1);
+                foreach(var c in cells)
+                {
+                    if(!cells.Contains(c+Vector2Int.down))Edge(c.x-.5f,c.y-.5f,c.x+.5f,c.y-.5f);
+                    if(!cells.Contains(c+Vector2Int.right))Edge(c.x+.5f,c.y-.5f,c.x+.5f,c.y+.5f);
+                    if(!cells.Contains(c+Vector2Int.up))Edge(c.x+.5f,c.y+.5f,c.x-.5f,c.y+.5f);
+                    if(!cells.Contains(c+Vector2Int.left))Edge(c.x-.5f,c.y+.5f,c.x-.5f,c.y-.5f);
+                }
+            }
+            DrawOwner(source);var partner=Battle.FindDefender(source.PartnerId);
+            if(source.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&partner!=null&&partner.Alive)DrawOwner(partner);
+            return true;
+        }
         void DrawDefenderInspector(GUIStyle label,GUIStyle button)
         {
             var d=ResolveDefenderInspectorTarget();if(d==null)return;var r=DefenderInspectorRect;
             var tint=d.HighGround?new Color(.35f,.85f,1):new Color(1,.73f,.36f);
             var center=GUIPosition(Camera.main.WorldToScreenPoint(d.Position));
-            for(int i=0;i<40;i++)
+            bool markedRange=DrawDefenderMarkedRange(d,tint);
+            if(!markedRange)for(int i=0;i<40;i++)
             {
                 float a=i*Mathf.PI*2/40,b=(i+1)*Mathf.PI*2/40;float radius=Battle.DefenderRange(d);
                 var p=d.Position+new Vector3(Mathf.Cos(a)*radius,.08f,Mathf.Sin(a)*radius);
@@ -72,14 +99,15 @@ namespace YesterdayConvoy
             var text=new GUIStyle(label){fontSize=14,wordWrap=true,alignment=TextAnchor.UpperLeft};
             GUI.Label(new Rect(r.x+16,r.y+14,255,30),d.Settings.Name+"  ★★★★★★",new GUIStyle(text){fontSize=17,fontStyle=FontStyle.Bold,normal={textColor=tint}});
             if(GUI.Button(new Rect(r.xMax-37,r.y+10,27,27),"×",button)){CloseDefenderInspector();return;}
-            GUI.Label(new Rect(r.x+16,r.y+50,284,40),d.HighGround?"高台 · 不阻挡\n地面近战无法攻击，远程可攻击":"地面 · 阻挡 "+(Battle.DefenderCanBlock(d)?d.Settings.BlockCount:0),text);
-            GUI.Label(new Rect(r.x+16,r.y+98,284,66),$"生命  {d.Health:0} / {d.MaxHealth:0}\n攻击  {Battle.DefenderSkillAttack(d):0.#}    防御  {Battle.DefenderArmor(d):0.#}\n范围  {Battle.DefenderRange(d):0.#}    攻击间隔  {Battle.DefenderEffectiveInterval(d):0.##}秒",text);
+            GUI.Label(new Rect(r.x+16,r.y+50,284,40),Battle.SeventhFlying(d)?"飞行 · 阻空 "+Battle.DefenderAirBlockCapacity(d)+" / 阻地 "+Battle.DefenderGroundBlockCapacity(d)+"\n不被地面敌人直接索敌":d.HighGround?"高台 · 不阻挡\n地面近战无法攻击，远程可攻击":"地面 · 阻挡 "+Battle.DefenderGroundBlockCapacity(d),text);
+            string rangeText=markedRange?Battle.DefenderSkillCells(d).Count+"格":Battle.DefenderRange(d).ToString("0.#");
+            GUI.Label(new Rect(r.x+16,r.y+98,284,66),$"生命  {d.Health:0} / {d.MaxHealth:0}\n攻击  {Battle.DefenderSkillAttack(d):0.#}    防御  {Battle.DefenderArmor(d):0.#}\n范围  {rangeText}    攻击间隔  {Battle.DefenderEffectiveInterval(d):0.##}秒",text);
             Fill(new Rect(r.x+16,r.y+171,284,1),new Color(.3f,.42f,.47f));
             var skill=d.Settings.Skill;
             GUI.Label(new Rect(r.x+16,r.y+182,284,28),DefenderSkillName(skill.Kind),new GUIStyle(text){fontSize=17,fontStyle=FontStyle.Bold,normal={textColor=new Color(1,.83f,.45f)}});
-            string status=!d.Alive?"已退场":Battle.DefenderSkillActive(d)?$"发动中 · 剩余 {Mathf.Max(0,(float)(d.SkillActiveUntil-Battle.Clock)):0.0}秒":$"技力 {d.SkillSP:0.#} / {skill.RequiredSP:0.#}";
+            string status=!d.Alive?"已退场":Battle.DefenderSkillActive(d)&&Battle.SeventhUsesAmmo(d)?(d.Ammo>0?$"发动中 · 弹药 {d.Ammo}/{Battle.SeventhAmmoCapacity(d)}":"弹药耗尽 · 收招中"):Battle.DefenderSkillActive(d)?$"发动中 · 剩余 {Mathf.Max(0,(float)(d.SkillActiveUntil-Battle.Clock)):0.0}秒":$"技力 {d.SkillSP:0.#} / {skill.RequiredSP:0.#}";
             GUI.Label(new Rect(r.x+16,r.y+216,284,22),status+$"   ·   发动 {d.SkillCasts} 次",text);
-            string detail=skill.Kind==DefenderSkillKind.WangGambit?$"弹药 {d.Ammo} · 储棋 {d.ChessStock}":skill.Kind==DefenderSkillKind.MlynarGlory?$"蓄力 {Battle.DefenderCharge(d)*100:0}% · "+(Battle.DefenderCanAttack(d)?"可攻击":"蓄力待机"):"技能自动发动 · 可暂停查看";
+            string detail=Battle.SeventhUsesAmmo(d)?(skill.Kind==DefenderSkillKind.ClemensiaCorrosion?$"侵蚀追加 {d.SeventhBursts} 次 · 仅爆发消耗弹药":"弹药用尽自动结束 · 技能自动发动"):skill.Kind==DefenderSkillKind.WangGambit?$"弹药 {d.Ammo} · 储棋 {d.ChessStock}":skill.Kind==DefenderSkillKind.MlynarGlory?$"蓄力 {Battle.DefenderCharge(d)*100:0}% · "+(Battle.DefenderCanAttack(d)?"可攻击":"蓄力待机"):"技能自动发动 · 可暂停查看";
             GUI.Label(new Rect(r.x+16,r.y+239,284,22),detail,new GUIStyle(text){fontSize=12});
             GUI.Label(new Rect(r.x+16,r.y+260,284,112),SkillSummary(skill.Kind),text);
             GUI.Label(new Rect(r.x+16,r.y+379,284,24),"实时数值 · 点击空地关闭",new GUIStyle(text){fontSize=12,normal={textColor=new Color(.6f,.74f,.8f)}});

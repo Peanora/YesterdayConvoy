@@ -22,7 +22,16 @@ namespace YesterdayConvoy.Tests
         [Test]public void PramanixLureActuallyChangesRouteProgressAndSnowLayersStayBounded()
         {var b=New(DefenderSkillKind.PramanixSnow);b.Begin();b.Advance(5);b.TryDeploy(b.RunId,1,b.Entry);b.Advance(.5f);var u=b.Units[0];Assert.That(u.LureUntil,Is.GreaterThan(b.Clock));Assert.That(u.Motion.DistanceTravelled,Is.LessThan(.06));b.Advance(8);Assert.That(b.SnowCells.Any(c=>c.Layers>0),Is.True);Assert.That(b.SnowCells.All(c=>c.Layers<=5),Is.True);b.Restart();Assert.That(b.SnowCells,Is.Empty);}
         [Test]public void WangConsumesAmmoTriggersRealChessDamageAndResetsStock()
-        {var b=New(DefenderSkillKind.WangGambit);Begin(b);b.Advance(12);Assert.That(b.Defender.ChessTriggers,Is.GreaterThan(0));Assert.That(b.Defender.Ammo,Is.LessThan(20));Assert.That(b.Units[0].Health,Is.LessThan(b.Units[0].MaxHealth));Assert.That(b.Defender.ChessStock,Is.InRange(0,7));b.Restart();Assert.That(b.ChessPieces,Is.Empty);Assert.That(b.Defender.ChessStock,Is.EqualTo(7));}
+        {
+            var b=New(DefenderSkillKind.WangGambit);Begin(b);b.Advance(12);
+            Assert.That(b.Defender.ChessTriggers,Is.GreaterThan(0));Assert.That(b.Defender.Ammo,Is.LessThan(20));
+            Assert.That(b.Units[0].Health,Is.LessThan(b.Units[0].MaxHealth));Assert.That(b.Defender.ChessStock,Is.InRange(0,7));
+            Assert.That(b.WangChessImpacts,Is.Not.Empty,"Real trap settlements must supply their target presentation events.");
+            Assert.That(b.WangChessImpacts.All(e=>e.RunId==b.RunId&&e.SourceId==b.Defender.EntityId&&e.TargetId==b.Units[0].EntityId&&e.At<=b.Clock),Is.True);
+            Assert.That(b.WangChessImpacts.Select(e=>e.Sequence).Distinct().Count(),Is.EqualTo(b.WangChessImpacts.Count));
+            int impacts=b.WangChessImpacts.Count;b.SetPaused(true);b.Advance(5);Assert.That(b.WangChessImpacts.Count,Is.EqualTo(impacts));
+            b.Restart();Assert.That(b.ChessPieces,Is.Empty);Assert.That(b.WangChessImpacts,Is.Empty);Assert.That(b.Defender.ChessStock,Is.EqualTo(7));
+        }
         [Test]public void ProjectionAndApproachRespectCornersAndNeverTeleportAcrossWalls()
         {var m=new RouteMotion(new[]{Vector3.zero,Vector3.right*2,Vector3.right*2+Vector3.forward*3},1);double target=m.ProjectDistance(Vector3.right*3+Vector3.forward*2);Assert.That(target,Is.EqualTo(4).Within(.000001));m.ApproachDistance(target,1);Assert.That(m.Position,Is.EqualTo(Vector3.right));m.ApproachDistance(target,2);Assert.That(m.Position,Is.EqualTo(Vector3.right*2+Vector3.forward));m.ApproachDistance(0,1);Assert.That(m.Position,Is.EqualTo(Vector3.right*2));}
         [Test]public void ContinuousAttacksCannotStarveReadySkillAtFloatTimeBoundary()

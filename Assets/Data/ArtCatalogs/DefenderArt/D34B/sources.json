@@ -1,0 +1,42 @@
+{
+  "task": "D34B",
+  "unitId": "D34",
+  "name": "克莱门莎",
+  "variant": "battle-back",
+  "characterId": "char_4231_clemnt",
+  "model": "char_4231_clemnt",
+  "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4231_clemnt/defaultskin/back/",
+  "files": [
+    {
+      "file": "char_4231_clemnt.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4231_clemnt/defaultskin/back/char_4231_clemnt.skel",
+      "bytes": 510522,
+      "sha256": "5ce8042593c4ed7882a47e5d1d94b204f8dfd6c59a447f8b5899de827194f89b"
+    },
+    {
+      "file": "char_4231_clemnt.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4231_clemnt/defaultskin/back/char_4231_clemnt.atlas",
+      "bytes": 7371,
+      "sha256": "0ec0cbd46b02dd7e6e093acaa9b48d03a64a6d48f67b52f2c872e9fe9bd6d144"
+    },
+    {
+      "file": "char_4231_clemnt.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4231_clemnt/defaultskin/back/char_4231_clemnt.png",
+      "bytes": 99804,
+      "sha256": "2990aa11c7325509c3bd45e2f3336ee8a2a633a778269e84b095b0ea05011582"
+    }
+  ],
+  "reference": "https://prts.wiki/w/%E5%85%8B%E8%8E%B1%E9%97%A8%E8%8E%8E",
+  "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4231_clemnt/meta.json",
+  "rights": "Original proprietary art, rights remain with rightsholders. User authorized direct import/upload, not an open redistribution license.",
+  "authorization": "2026-11-12 user explicitly requested direct integration without preview; recommended selected skill.",
+  "rasterization": {
+    "spineVersion": "3.8.99",
+    "fps": 60,
+    "coreScale": 0.38,
+    "corePixelsPerUnit": 140.8,
+    "idleAlphaHeight": 176,
+    "commonWorldIdleAlphaHeight": 1.25,
+    "notes": "Per-clip PPU compensates source raster scale; source origin pivots retained; technical portrait crop from exact idle frame."
+  }
+}

@@ -10,7 +10,7 @@ namespace YesterdayConvoy
         bool BeginFifthSkill(DefenderState d)
         {
             if(!IsFifth(d))return false;
-            d.FifthActive=true;d.SkillActionUntil=Clock+(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?.7f:V2DefenderSkill(d,"startupSeconds",.7f));d.NextAttackTime=d.SkillActionUntil;
+            d.FifthActive=true;d.SkillActionUntil=Clock+(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown?.7f:V2DefenderSkill(d,"startupSeconds",d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery?1.6f:.7f));d.NextAttackTime=d.SkillActionUntil;
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown)
             {d.Position=d.Settings.RelayPosition;d.HighGround=false;d.TargetId=null;d.MaxHealth=d.Settings.Health+500;d.Health*=d.MaxHealth/d.Settings.Health;d.Transfers++;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery)
@@ -20,8 +20,8 @@ namespace YesterdayConvoy
                 foreach(var ally in defenders)if(ally.Reserve){reserve=ally;break;}
                 if(reserve!=null)
                 {
-                    reserve.Reserve=false;reserve.Position=d.Settings.RelayPosition;reserve.HighGround=false;reserve.SkillSP=Math.Min(reserve.Settings.Skill.RequiredSP,reserve.SkillSP+V2DefenderSkill(d,"reinforcementSP",6));d.Reinforcements++;
-                    foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,reserve.Position)<=V2DefenderSkill(d,"landingRadius",1.3f))TryDefenderDamageUnit(u,DefenderSkillAttack(d)*V2DefenderSkill(d,"landingAttackMultiplier",2.5f),CombatDamageType.Physical);
+                    reserve.Reserve=false;reserve.Position=d.Settings.RelayPosition;reserve.HighGround=false;reserve.SkillSP=Math.Min(reserve.Settings.Skill.RequiredSP,reserve.SkillSP+V2DefenderSkill(d,"reinforcementSP",6));d.Reinforcements++;d.LastReinforcementAt=Clock;
+                    foreach(var u in units)if(CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,reserve.Position)<=V2DefenderSkill(d,"landingRadius",1.3f))TryDefenderDamageUnit(u,DefenderSkillAttack(d)*V2DefenderSkill(d,"landingAttackMultiplier",2.5f),CombatDamageType.Physical,sourceDefender:d);
                 }
             }
             if(d.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno){float multiplier=V2DefenderSkill(d,"healthMultiplier",1.7f);d.MaxHealth=d.Settings.Health*multiplier;d.Health*=multiplier;}
@@ -29,6 +29,7 @@ namespace YesterdayConvoy
         }
         void EndMon3tr(DefenderState d,bool lethal)
         {
+            if(lethal){d.LastMon3trRebirthDeathAt=Clock;d.LastMon3trRebirthDeathPosition=d.Position;}
             float ratio=Math.Max(0,d.Health/d.MaxHealth);d.Position=d.Settings.Position;d.HighGround=d.Position.y>.2f;d.MaxHealth=d.Settings.Health;
             d.Health=lethal?1:Math.Max(1,ratio*d.MaxHealth);d.SkillActiveUntil=Clock;d.SkillEndedAt=Clock;d.SkillActionUntil=Clock+.833333;d.NextAttackTime=d.SkillActionUntil;
             d.ProtectionUntil=Clock+1;d.FifthActive=false;d.TargetId=null;d.Transfers++;
@@ -47,7 +48,7 @@ namespace YesterdayConvoy
                     {float recovery=d.MaxHealth*V2DefenderSkill(d,"debtRecoveryMaxHealthFractionPerSecond",.05f)*dt;d.Debt=Math.Max(0,d.Debt-recovery);if(d.Debt==0){d.DebtLife=false;d.Health=Math.Max(1,recovery);}}
                     // AI closes while threatened in the second half, or to protect a wounded ally.
                     bool threatened=false;
-                    foreach(var u in units)threatened|=CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,d.Position)<=DefenderRange(d);
+                    foreach(var u in units)threatened|=CanDefenderTarget(u)&&DefenderRangeContains(d,u.Motion.Position);
                     if(DefenderSkillActive(d)&&threatened&&Clock-d.SkillStartedAt>=V2DefenderSkill(d,"autoCloseAfterSeconds",16)&&d.ProtectionUntil<d.SkillStartedAt)
                     {d.SkillActiveUntil=Clock;d.ProtectionUntil=Clock+V2DefenderSkill(d,"finalProtectionSeconds",11);d.ProtectedHits++;}
                     if(d.ProtectionUntil>double.NegativeInfinity&&Clock>=d.ProtectionUntil)
@@ -69,7 +70,7 @@ namespace YesterdayConvoy
             // Lethal interception is bounded by the original incoming excess, without recursion.
             if(loss>=d.Health&&!d.DebtLife)
                 foreach(var protector in defenders)
-                    if(protector!=d&&protector.Alive&&protector.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&protector.ProtectionUntil>Clock&&GroundDistance(protector.Position,d.Position)<=protector.Settings.Skill.EffectRadius)
+                    if(protector!=d&&protector.Alive&&protector.Settings.Skill.Kind==DefenderSkillKind.HoshigumaInferno&&protector.ProtectionUntil>Clock&&DefenderSkillContains(protector,d.Position))
                     {float excess=loss-Math.Max(0,d.Health-1);loss-=excess;float paid=Math.Min(protector.Health,excess);float protectorBefore=protector.Health;protector.Health-=paid;RecordDefenderHealthLoss(protector,protectorBefore,protector.Position);if(recordDamage)CreditDamage(creditSource,Math.Max(0,protectorBefore-protector.Health));protector.Debt+=excess-paid;if(protector.Health<=0)protector.DebtLife=true;protector.ProtectedHits++;break;}
             if(d.Settings.Skill.Kind==DefenderSkillKind.Mon3trMeltdown&&loss>=d.Health)
             {if(DefenderSkillActive(d)){EndMon3tr(d,true);RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);if(recordDamage)CreditDamage(creditSource,Math.Max(0,feedbackHealth-d.Health));return;}if(d.ProtectionUntil>Clock){d.Health=1;RecordDefenderHealthLoss(d,feedbackHealth,feedbackPosition);if(recordDamage)CreditDamage(creditSource,Math.Max(0,feedbackHealth-d.Health));return;}}
@@ -94,33 +95,44 @@ namespace YesterdayConvoy
                 foreach(var ally in defenders)if(ally.Alive&&!ally.DebtLife&&!visited.Contains(ally.EntityId)&&GroundDistance(previous.Position,ally.Position)<=2&&
                     (next==null||ally.Health/ally.MaxHealth<next.Health/next.MaxHealth))next=ally;
                 if(next==null)break;visited.Add(next.EntityId);
-                combatShots.Add(new CombatShot(d.EntityId,next.EntityId,true,false,previous.Position,next.Position,Clock+d.Settings.Windup,travel,DefenderSkillAttack(d)*scale,healing:true));
+                QueueDefenderShot(d,new CombatShot(d.EntityId,next.EntityId,true,false,previous.Position,next.Position,Clock+d.Settings.Windup,travel,DefenderSkillAttack(d)*scale,healing:true));
                 previous=next;scale*=.75f;
             }
         }
-        bool ApplyFifthTrueDamage(DeployedUnitState u,float amount)
-        {if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount);return true;}
+        bool ApplyFifthTrueDamage(DeployedUnitState u,float amount,DefenderState sourceDefender=null)
+        {if(!EngagementEnabled||Phase!=BattlePhase.Running||IsPaused||!CanDefenderTarget(u)||UnitInvulnerable(u))return false;ApplyPureUnitDamage(u,amount,sourceDefender);return true;}
         bool ScheduleFifthAttack(DefenderState d,DeployedUnitState primary,float travel)
         {
             if(!IsFifth(d)||!IsFifthActive(d))return false;
-            if(Clock<d.NextAttackTime||Clock<d.SkillActionUntil)return true;
+            // Match the outer attack scheduler: a float interval must not miss
+            // an otherwise due double-clock tick and wait another full .05 sec.
+            if(Clock+1e-6<d.NextAttackTime||Clock<d.SkillActionUntil)return true;
             if(d.Settings.Skill.Kind==DefenderSkillKind.ExusiaiDelivery&&d.Ammo<=0)return true;
             var kind=d.Settings.Skill.Kind;
             var targets=new List<DeployedUnitState>();
             if(primary!=null&&CanDefenderTarget(primary))targets.Add(primary);
             int max=kind==DefenderSkillKind.Mon3trMeltdown?3:kind==DefenderSkillKind.HoshigumaInferno?2:1;
-            foreach(var u in units)if(targets.Count<max&&u!=primary&&CanDefenderTarget(u)&&GroundDistance(u.Motion.Position,d.Position)<=DefenderRange(d))targets.Add(u);
+            foreach(var u in units)if(targets.Count<max&&u!=primary&&CanDefenderTarget(u)&&DefenderRangeContains(d,u.Motion.Position))targets.Add(u);
             if(targets.Count==0)return true;
             int hits=kind==DefenderSkillKind.ExusiaiDelivery?(int)V2DefenderSkill(d,"bulletsPerAttack",5):kind==DefenderSkillKind.HoshigumaInferno?(int)V2DefenderSkill(d,d.ProtectionUntil>Clock?"finalSkillHits":"normalSkillHits",d.ProtectionUntil>Clock?4:2):1;
-            d.LastActionTime=Clock;d.LastActionHealing=false;d.LastActionRate=1;d.NextAttackTime=Clock+(kind==DefenderSkillKind.Mon3trMeltdown?1.333333:d.Settings.Interval)/DefenderAttackRate(d);
+            // Source Mon3tr S3: baseAttackTime 2.85 plus base_attack_time -1.5.
+            // The 1.5-second Spine clip is not the attack interval. Keep authored
+            // campaign overrides, and use one actual rate for cadence, event and pose.
+            bool mon3tr=kind==DefenderSkillKind.Mon3trMeltdown;
+            float attackRate=mon3tr?Math.Max(.0001f,DefenderAttackRate(d)):DefenderAttackRate(d);
+            d.LastActionTime=Clock;d.LastActionHealing=false;d.LastActionRate=mon3tr?attackRate:1;
+            d.NextAttackTime=Clock+(mon3tr?V2DefenderSkill(d,"skillAttackInterval",1.35f):d.Settings.Interval)/attackRate;
             foreach(var u in targets)for(int hit=0;hit<hits;hit++)
             {
                 float spacing=kind==DefenderSkillKind.ExusiaiDelivery?V2DefenderSkill(d,"bulletSpacing",1f/30):kind==DefenderSkillKind.HoshigumaInferno?V2DefenderSkill(d,"hitSpacing",.08f):.08f;
-                var shot=new CombatShot(d.EntityId,u.EntityId,true,true,d.Position,u.Motion.Position,Clock+d.Settings.Windup+hit*spacing,travel,
+                // Its original MeleeAttack deals damage on OnAttack (20/30),
+                // without the normal healing projectile's travel time.
+                double contact=mon3tr?(2.0/3)/attackRate:d.Settings.Windup;
+                var shot=new CombatShot(d.EntityId,u.EntityId,true,true,d.Position,u.Motion.Position,Clock+contact+hit*spacing,mon3tr?0:travel,
                     DefenderSkillAttack(d)*(kind==DefenderSkillKind.ExusiaiDelivery?V2DefenderSkill(d,"perBulletAttackMultiplier",1.35f):1),damageType:kind==DefenderSkillKind.HoshigumaInferno?CombatDamageType.Arts:CombatDamageType.Physical){TrueDamage=kind==DefenderSkillKind.Mon3trMeltdown};
-                combatShots.Add(shot);if(shot.TrueDamage)d.TrueHits++;
+                QueueDefenderShot(d,shot);if(shot.TrueDamage)d.TrueHits++;
             }
-            if(kind==DefenderSkillKind.Mon3trMeltdown){float gain=RestoreDefenderHealth(d,DefenderSkillAttack(d)*.5f);d.SkillHealthRestored+=gain;}
+            if(kind==DefenderSkillKind.Mon3trMeltdown){float gain=RestoreDefenderHealth(d,DefenderSkillAttack(d)*.5f);d.SkillHealthRestored+=gain;if(gain>0){d.LastSelfSkillHealAt=Clock;d.LastSelfSkillHealPosition=d.Position;}}
             if(kind==DefenderSkillKind.ExusiaiDelivery){d.Ammo-=(int)V2DefenderSkill(d,"bulletsPerAttack",5);if(d.Ammo==0){d.SkillActiveUntil=Clock+d.Settings.ActionDuration;}}
             return true;
         }

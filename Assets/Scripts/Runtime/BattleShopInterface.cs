@@ -38,6 +38,7 @@ namespace YesterdayConvoy
         }
         void DrawLoopHeader()
         {
+            if(BossArenaActive){DrawArenaHeader();return;}
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
             string mode=JourneyActive?"十二关行动 · v2":Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
@@ -72,6 +73,7 @@ namespace YesterdayConvoy
         }
         void DrawLoopInterface()
         {
+            if(BossArenaActive&&!Loop.CanShop){DrawArenaFight();return;}
             EnsureStyles();var e=Event.current;
             Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
             TrackRouteHover(point);
@@ -141,7 +143,7 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,552,1280,168),new Color(.12f,.20f,.26f,.35f));
             GUI.Label(new Rect(18,553,160,24),"部署栏",LoopText(14,TextAnchor.MiddleLeft,Color.white,600));
-            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 仍可点击角色使用技能"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
+            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 技能继续自动触发"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
             for(int i=0;i<shopLineup.Count;i++)
             {
                 string id=shopLineup[i];var state=Battle.FindCard(id);if(state==null)continue;
@@ -188,7 +190,7 @@ namespace YesterdayConvoy
             DrawShopBench(LoopText(12,TextAnchor.MiddleCenter));
             GUI.Label(new Rect(1142,624,120,18),"开战后锁定本场编队",LoopText(10,TextAnchor.MiddleCenter,Color.white));
             GUI.enabled=Loop.CanShop&&!ShopPanelTransitioning;
-            if(LoopButton(new Rect(1142,643,120,50),JourneyActive&&Loop.RewardStage?"领取补给  ▶":JourneyActive||BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
+            if(LoopButton(new Rect(1142,643,120,50),BossArenaActive?"整队出击  ▶":JourneyActive&&Loop.RewardStage?"领取补给  ▶":JourneyActive||BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
             {if(JourneyActive&&Loop.RewardStage)ClaimCampaignSupply();else if(shopLineup.Count==0)ShopNotice("请至少编队一张卡");else PrepareNextLoopBattle();}
             GUI.enabled=true;
         }
@@ -245,6 +247,8 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(x,y,width,30),"满席三星样板")){EnterShopTrial(2,TacticalMapId);loopMenuOpen=false;return;}y+=37;
             }
             if(LoopButton(new Rect(x,y,width,30),"返回测试选择")){ReturnToTrialScene();return;}y+=37;
+            if(!BossArenaActive)
+            {if(LoopButton(new Rect(x,y,width,30),"军团攻擂 · 维什戴尔")){UnityEngine.SceneManagement.SceneManager.LoadScene(BossArenaRules.SceneName);return;}y+=37;}
             if(CampaignActive&&Loop.CanDeploy)
             {if(LoopButton(new Rect(x,y,width,30),"重开本关（保留运营）")){RestartCampaignEncounter();return;}y+=37;}
             if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&!JourneyActive)

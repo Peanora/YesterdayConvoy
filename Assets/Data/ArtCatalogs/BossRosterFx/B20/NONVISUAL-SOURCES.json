@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {
+      "key": "token_wisdel_skill_03_buff_sale#14",
+      "status": "ORIGINAL_EMPTY_CONTAINER",
+      "evidence": "Original prefab has only three Transforms + ParticleEffect holder; no Renderer or ParticleSystem. Original S3 entity buff still comes from actual gameplay state."
+    },
+    {
+      "key": "wisdel_skill_01_start_02_sale#14",
+      "status": "ORIGINAL_NON_EMITTING",
+      "evidence": "Original selected skin prefab has disabled emission and zero bursts; no invented frame."
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "task": "P20",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Boss previews plus P14/P26 skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/skinpack_token_10035_wisdel_wward.dat",
+  "model": "token_10035_wisdel_wward_sale#14",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\runtime-additions\\Wward\\source\\token_10035_wisdel_wward_sale#14.skel",
+      "bytes": 3797,
+      "sha256": "73dd2031b249d95bac18aa810172d05b03d4210f6d98327d6cefb04e2fd75c89"
+    },
+    {
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\runtime-additions\\Wward\\source\\token_10035_wisdel_wward_sale#14.png",
+      "bytes": 19146,
+      "sha256": "00e84e9afab406eb496379b68aa1e75587641a4d98933ab83f9d54b9fcf0cf65"
+    },
+    {
+      "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\runtime-additions\\Wward\\source\\token_10035_wisdel_wward_sale#14.atlas",
+      "bytes": 200,
+      "sha256": "508a7911d16232b54804fb407bfff25a6e597ea92188430e1b09b52ab956209e"
+    }
+  ],
+  "atlasManifestSha256": "ecc6b3e53b9211ed4b107cc420cc9a5ae3713739da70b4930b9d9330655c40c6",
+  "atlasFiles": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "9b6821a25af8550de4a6a530341f50fef32ee932c22d3161f8833fea2440686a",
+      "bytes": 760019
+    },
+    {
+      "file": "Attack-001.png",
+      "sha256": "0a613568ee4c90b181f1f6139de26f7ac8e5e890e8cf57bdd2ec454b1764edc6",
+      "bytes": 763361
+    },
+    {
+      "file": "Attack-002.png",
+      "sha256": "6eda2ba82588c4117fcb07d6584423c025ecf179633b775672f0a7dc6a775453",
+      "bytes": 746405
+    },
+    {
+      "file": "Attack-003.png",
+      "sha256": "d86ac9a77ff79737e2e81a5b9d54e61c871d064da185b4cfa62c04598d77c94b",
+      "bytes": 768137
+    },
+    {
+      "file": "Attack-004.png",
+      "sha256": "36e7acda6ada76dd093ce6a31f099bfdd0dce74bad8756bc54f2e15a83af5f11",
+      "bytes": 742513
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "ee89a5fb1d46a70252e644fae7dbcf03e6a171dd8d3ea87e419080862be278fa",
+      "bytes": 683191
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "61fddd01ec8ecd828d56f4af8c6d5f1821969a4a1581b6f9843bc5096ac92e94",
+      "bytes": 78319
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "78cc4a9baa84ece84b53e9fa9c7c8885f87d39a73086a4e14f2b70d366c179ea",
+      "bytes": 47057
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "5dc28e3ec3587670067656b738b53b85a41c33fb9d3e4720ae691ae798556879",
+      "bytes": 748135
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "e90872181b7ead0e35187d7c813725bf703892d58ceebca72cb0cb64af11bd3f",
+      "bytes": 745303
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "b87db8e4815e24af74f6778aee10a1374b7a9923819be6d2cc2384ff2cd64ac9",
+      "bytes": 765286
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "df90629559bf43fe2fbf34e0e64c282ef200f230c9e9164c43b086eb7bcefe97",
+      "bytes": 765296
+    },
+    {
+      "file": "Idle-004.png",
+      "sha256": "c47ede8a8fff8fd5273fdd1e452c456a9b4f5baad52a58ffbb5e9494c211ce1b",
+      "bytes": 708426
+    },
+    {
+      "file": "Start-000.png",
+      "sha256": "089f792c013e06942b9580a8b2c80283cc585f96d1f3c7df2b958d38b11871ae",
+      "bytes": 915954
+    },
+    {
+      "file": "Start-001.png",
+      "sha256": "de0dcd3315dd94f95ff0f93a85443c4bf648bdbd16d17a26bda03b8d9b19b738",
+      "bytes": 587339
+    },
+    {
+      "file": "Start-002.png",
+      "sha256": "f5b26743a1abcf826db9ec78bf9bf15c86f89b84bf58d871e1ff503dba652190",
+      "bytes": 335145
+    }
+  ],
+  "portraitSha256": "cc19cb17a831f47762cd9a0989ae54091c17be444c9b3b51f272d6371170ed1f",
+  "captureAlphaSampling": {
+    "sourceMaterial": {
+      "pmaVertexColors": 1,
+      "StraightAlphaInput": 0,
+      "UseBleed": 1,
+      "UseAlphaTex": 0,
+      "slotBlendModes": [
+        0
+      ]
+    },
+    "selected": "GPU_UPLOAD_PREMULTIPLICATION_FOR_DECODED_UNITY_TRANSPARENT_BLEED",
+    "sourcePngUnmodified": true,
+    "oldPmaVsStraight": {
+      "changedPixels": 27576,
+      "totalChannelDifference": 2811195,
+      "maxPixelDifference": 765
+    },
+    "straightVsUploadPremultiplied": {
+      "changedPixels": 13945,
+      "totalChannelDifference": 347483,
+      "maxPixelDifference": 221
+    }
+  },
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 231.26580613252204,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}
