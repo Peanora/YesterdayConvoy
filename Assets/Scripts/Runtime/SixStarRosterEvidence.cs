@@ -72,7 +72,7 @@ namespace YesterdayConvoy
         static bool SixStarNativeHit(string id,string key)
         {
             if(id=="D29")return key.EndsWith("/common_heal_hit_01",StringComparison.Ordinal);
-            if(id=="D26")return key.EndsWith("/svash2_attack_hit_01",StringComparison.Ordinal);
+            if(id=="D26")return key.Contains("/svash2_skill_03_combat_start_"); // Original S3 presents aligned attacks; it has no separate target-hit prefab.
             return SixStarNativeSelected(id,key)&&(key.Contains("hit")||id=="D35"&&(key.Contains("range_damage")||key.Contains("range_heal")));
         }
         static bool SixStarInteraction(ManualBattle battle,DefenderState defender,double since)=>
@@ -386,12 +386,19 @@ namespace YesterdayConvoy
             item.shots=battle.CombatShots.Count(s=>s.SourceId==id);item.damageShots=battle.CombatShots.Count(s=>s.SourceId==id&&s.Applied&&s.DamageDealt>0);
             Check("natural-auto-skill",item.casts>0);Check("actual-native-selected-fx-gpu-isolated-from-body",item.skillPixels>20&&item.isolatedSkillPixels>20&&item.nativePauseVerified);
             Check("mature-selected-fx-gpu-after-startup",steady&&item.steadyPixels>20);Check("body-and-monsters-remain-visible-during-selected-fx",item.skillBodyPixels>20&&item.monsterPixels>20&&item.isolatedBodyPixels>20);
-            Check("continuous-real-camera-sequence-with-action-change",item.continuousFrames>20&&item.actionFramesChanged);Check("real-skill-damage-or-healing-interaction",!double.IsNaN(firstCast)&&SixStarInteraction(battle,defender,firstCast));Check("real-target-hit-or-heal-native-gpu",item.hitPixels>0);
+            Check("continuous-real-camera-sequence-with-action-change",item.continuousFrames>20&&item.actionFramesChanged);Check("real-skill-damage-or-healing-interaction",!double.IsNaN(firstCast)&&SixStarInteraction(battle,defender,firstCast));Check(id=="D26"?"original-aligned-attack-gpu-with-real-damage-settlement":"real-target-hit-or-heal-native-gpu",item.hitPixels>0&&(id!="D26"||item.damageShots>0));
             if(Array.IndexOf(DefenderBatch7Ids,id)>=0)Check("new-skill-real-interaction",batch7Observed);
             if(id=="D32")Check("original-six-trail-source-material-path-vertices-and-gpu",item.dawnHeadPixels>4&&item.dawnTrailPixels>4&&item.dawnTrailLayers==6&&dawnLayers.Count==6&&dawnLayers.Values.All(p=>p>0)&&item.dawnTurns>0&&item.dawnHits>0);
             item.dawnLayerPixels=dawnLayers.OrderBy(p=>p.Key,StringComparer.Ordinal).Select(p=>p.Key+"="+p.Value).ToArray();
+            var priorNativeIds=new HashSet<UnityEngine.EntityId>(SixStarNativeTags(id,true).Select(t=>t.GetEntityId()));
             RestartBattle();yield return null;yield return null;var reset=Battle.FindDefender(id);
-            Check("restart-clears-real-combat-and-all-native-instances",Battle.Clock==0&&Battle.Units.Count==0&&reset.SkillCasts==0&&reset.Health==reset.MaxHealth&&SixStarNativeTags(id,true).Length==0&&SixStarFx(id).Length==0);
+            var resetTags=SixStarNativeTags(id,true);
+            // Lappland has an original ordinary-mode owner token at preparation.
+            // Require a fresh frame-zero idle instance; prior skill/hit instances
+            // must all disappear, without deleting that legitimate source idle art.
+            bool cleanNative=resetTags.Length==0||id=="D21"&&resetTags.Length==1&&resetTags.All(t=>
+                t.Key=="defender/D21/whitw2_token_01"&&!t.Stopped&&t.SampleAge==0&&!priorNativeIds.Contains(t.GetEntityId()));
+            Check("restart-clears-prior-native-instances-and-restores-source-idle",Battle.Clock==0&&Battle.Units.Count==0&&reset.SkillCasts==0&&reset.Health==reset.MaxHealth&&cleanNative&&SixStarFx(id).Length==0);
             ReturnToMonsterTests();yield return null;yield return null;Check("returns-to-normal-selection",TestSelectionOpen&&!DefenderSkillTrialActive);
             if(id=="D26")Check("original-bird-aura-at-most-two-held-fields-not-per-attack",item.silverAshFieldPeak>0&&item.silverAshFieldPeak<=2);
             item.sourceKeys=seen.OrderBy(s=>s,StringComparer.Ordinal).ToArray();item.nativePaths=paths.OrderBy(s=>s,StringComparer.Ordinal).ToArray();item.materialSources=materialSources.OrderBy(s=>s,StringComparer.Ordinal).ToArray();item.checks=checks.ToArray();item.passed=pass;Debug.Log("SIXSTAR_CASE "+JsonUtility.ToJson(item));
