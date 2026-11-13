@@ -91,6 +91,7 @@ namespace YesterdayConvoy
         {
             if(d==null)return false;
             if(!DefenderSkillActive(d)&&!IsFifthActive(d))return GroundDistance(d.Position,position)<=d.Settings.Range;
+            if(!DefenderSkillFootprints.TryGet(d.Settings.Skill.Kind,out _))return GroundDistance(d.Position,position)<=DefenderRange(d);
             if(DefenderSkillContains(d,position))return true;
             var partner=FindDefender(d.PartnerId);
             return d.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&partner!=null&&partner.Alive&&DefenderSkillContainsFrom(d,partner,position);

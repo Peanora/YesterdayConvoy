@@ -60,12 +60,34 @@ namespace YesterdayConvoy
                 default:return "技能按现有角色配置自动触发。";
             }
         }
+        bool DrawDefenderMarkedRange(DefenderState source,Color tint)
+        {
+            if(!Battle.DefenderSkillActive(source)&&!Battle.IsFifthActive(source))return false;
+            var cells=Battle.DefenderSkillCells(source);if(cells==null)return false;
+            void DrawOwner(DefenderState owner)
+            {
+                Vector3 facing=Battle.DefenderSkillFacing(source,owner),side=new Vector3(-facing.z,0,facing.x);
+                Vector3 Point(float x,float y)=>owner.Position+facing*x+side*y+Vector3.up*.08f;
+                void Edge(float x,float y,float z,float w)=>ShopLine(GUIPosition(Camera.main.WorldToScreenPoint(Point(x,y))),GUIPosition(Camera.main.WorldToScreenPoint(Point(z,w))),new Color(tint.r,tint.g,tint.b,.65f),1);
+                foreach(var c in cells)
+                {
+                    if(!cells.Contains(c+Vector2Int.down))Edge(c.x-.5f,c.y-.5f,c.x+.5f,c.y-.5f);
+                    if(!cells.Contains(c+Vector2Int.right))Edge(c.x+.5f,c.y-.5f,c.x+.5f,c.y+.5f);
+                    if(!cells.Contains(c+Vector2Int.up))Edge(c.x+.5f,c.y+.5f,c.x-.5f,c.y+.5f);
+                    if(!cells.Contains(c+Vector2Int.left))Edge(c.x-.5f,c.y+.5f,c.x-.5f,c.y-.5f);
+                }
+            }
+            DrawOwner(source);var partner=Battle.FindDefender(source.PartnerId);
+            if(source.Settings.Skill.Kind==DefenderSkillKind.SilverAshReign&&partner!=null&&partner.Alive)DrawOwner(partner);
+            return true;
+        }
         void DrawDefenderInspector(GUIStyle label,GUIStyle button)
         {
             var d=ResolveDefenderInspectorTarget();if(d==null)return;var r=DefenderInspectorRect;
             var tint=d.HighGround?new Color(.35f,.85f,1):new Color(1,.73f,.36f);
             var center=GUIPosition(Camera.main.WorldToScreenPoint(d.Position));
-            for(int i=0;i<40;i++)
+            bool markedRange=DrawDefenderMarkedRange(d,tint);
+            if(!markedRange)for(int i=0;i<40;i++)
             {
                 float a=i*Mathf.PI*2/40,b=(i+1)*Mathf.PI*2/40;float radius=Battle.DefenderRange(d);
                 var p=d.Position+new Vector3(Mathf.Cos(a)*radius,.08f,Mathf.Sin(a)*radius);
@@ -78,7 +100,8 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(r.x+16,r.y+14,255,30),d.Settings.Name+"  ★★★★★★",new GUIStyle(text){fontSize=17,fontStyle=FontStyle.Bold,normal={textColor=tint}});
             if(GUI.Button(new Rect(r.xMax-37,r.y+10,27,27),"×",button)){CloseDefenderInspector();return;}
             GUI.Label(new Rect(r.x+16,r.y+50,284,40),Battle.SeventhFlying(d)?"飞行 · 阻空 "+Battle.DefenderAirBlockCapacity(d)+" / 阻地 "+Battle.DefenderGroundBlockCapacity(d)+"\n不被地面敌人直接索敌":d.HighGround?"高台 · 不阻挡\n地面近战无法攻击，远程可攻击":"地面 · 阻挡 "+Battle.DefenderGroundBlockCapacity(d),text);
-            GUI.Label(new Rect(r.x+16,r.y+98,284,66),$"生命  {d.Health:0} / {d.MaxHealth:0}\n攻击  {Battle.DefenderSkillAttack(d):0.#}    防御  {Battle.DefenderArmor(d):0.#}\n范围  {Battle.DefenderRange(d):0.#}    攻击间隔  {Battle.DefenderEffectiveInterval(d):0.##}秒",text);
+            string rangeText=markedRange?Battle.DefenderSkillCells(d).Count+"格":Battle.DefenderRange(d).ToString("0.#");
+            GUI.Label(new Rect(r.x+16,r.y+98,284,66),$"生命  {d.Health:0} / {d.MaxHealth:0}\n攻击  {Battle.DefenderSkillAttack(d):0.#}    防御  {Battle.DefenderArmor(d):0.#}\n范围  {rangeText}    攻击间隔  {Battle.DefenderEffectiveInterval(d):0.##}秒",text);
             Fill(new Rect(r.x+16,r.y+171,284,1),new Color(.3f,.42f,.47f));
             var skill=d.Settings.Skill;
             GUI.Label(new Rect(r.x+16,r.y+182,284,28),DefenderSkillName(skill.Kind),new GUIStyle(text){fontSize=17,fontStyle=FontStyle.Bold,normal={textColor=new Color(1,.83f,.45f)}});

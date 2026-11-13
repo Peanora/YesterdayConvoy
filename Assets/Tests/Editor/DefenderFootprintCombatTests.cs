@@ -49,5 +49,12 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.DefenderSkillFacing(b.Defender),Is.EqualTo(direction));
             b.Restart();Assert.That(b.Defender.SkillCasts,Is.Zero);Assert.That(b.DefenderRangeContains(b.Defender,Vector3.right*3),Is.False);
         }
+        [Test]public void KitchenHealFieldDoesNotExpandItsUnchangedMeleeAttackReach()
+        {
+            var b=Battle(DefenderSkillKind.YuKitchen,Vector3.right*3,10);b.Advance(4);
+            Assert.That(b.DefenderSkillActive(b.Defender),Is.True,"The actual firewall may activate with a distant target.");
+            Assert.That(b.DefenderRangeContains(b.Defender,b.Units[0].Motion.Position),Is.False);
+            Assert.That(b.CombatShots.Any(s=>s.FromDefender&&s.Applied&&s.DamageDealt>0),Is.False);
+        }
     }
 }

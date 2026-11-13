@@ -399,7 +399,13 @@ namespace YesterdayConvoy
                 original.TryShowPath(key,"dawn-wave/"+wave.Sequence,clock-wave.StartedAt,wavePath,pose,true,stopped-wave.StartedAt);
             }
         }
-        readonly List<OriginalNativeFxPathPoint> silverPath=new List<OriginalNativeFxPathPoint>();
+        internal static Quaternion SilverAshWaveRotation(Vector3 direction)
+        {
+            direction.y=0;if(direction.sqrMagnitude<1e-8f)direction=Vector3.forward;
+            // Calibrated source nose is +Y after its authored child transforms.
+            // Preserve that complete hierarchy and align the root ground frame.
+            return Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.forward,direction,Vector3.up),Vector3.up)*Quaternion.Euler(90,0,0);
+        }
         void PresentSilverAshWaves(ManualBattle battle,Camera camera,double clock)
         {
             foreach(var wave in battle.SilverAshWaves)
@@ -414,12 +420,11 @@ namespace YesterdayConvoy
                 else Cast("D26","svash2_skill_03_combat_start_02",wave.ActionAt,wave.ActionRate,clock,wave.Origin,camera,left,ownerId:wave.OwnerId);
                 if(!wave.Launched||clock<wave.StartedAt)continue;
                 string key=Key("D26",self?"svash2_skill_03_trail_02":left?"svash2_skill_03_trail_left_01":"svash2_skill_03_trail_right_01");
-                double at=System.Math.Min(clock,wave.EndsAt);
-                var position=wave.Origin+wave.Direction*(float)((at-wave.StartedAt)*10);
-                silverPath.Clear();silverPath.Add(new OriginalNativeFxPathPoint(wave.Origin,wave.StartedAt,wave.Direction));
-                silverPath.Add(new OriginalNativeFxPathPoint(position,at,wave.Direction));
-                original.TryShowPath(key,"silver-wave/"+battle.RunId+"/"+wave.Sequence+"/flight",clock-wave.StartedAt,silverPath,
-                    new OriginalNativeFxPose(position,Quaternion.Euler(90,0,0),wave.Direction),true,.3);
+                // The source Controller already animates its tip forward by
+                // approximately three cells. Translating that visual root by
+                // the collision projectile as well would double its travel.
+                original.TryShow(key,"silver-wave/"+battle.RunId+"/"+wave.Sequence+"/flight",clock-wave.StartedAt,
+                    new OriginalNativeFxPose(wave.Origin,SilverAshWaveRotation(wave.Direction),wave.Direction),true,.3);
                 if(clock<wave.EndsAt)PendingUntil=System.Math.Max(PendingUntil,wave.EndsAt);
             }
         }

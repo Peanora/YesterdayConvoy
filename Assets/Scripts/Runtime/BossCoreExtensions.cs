@@ -250,7 +250,7 @@ namespace YesterdayConvoy
                       o.NextAt=Clock+(o.Kind=="soul"?5-(int)(CoreRandom(state)*3):3);}
                     }
                 }
-                if(!BossObjectDamageable(o))continue;foreach(var d in BossLiving().Where(d=>d.Settings.CanAttack&&DefenderCanAttack(d)&&d.NextAttackTime<=Clock&&!BossRosterDefenderActionLocked(d)&&GroundDistance(d.Position,o.Position)<=DefenderRange(d)).ToArray())
+                if(!BossObjectDamageable(o))continue;foreach(var d in BossLiving().Where(d=>d.Settings.CanAttack&&DefenderCanAttack(d)&&d.NextAttackTime<=Clock&&!BossRosterDefenderActionLocked(d)&&DefenderRangeContains(d,o.Position)).ToArray())
                 {d.NextAttackTime=Clock+DefenderEffectiveInterval(d);d.LastActionTime=Clock;if(!BossRosterDefenderAttackHits(d,d.Settings.DamageType))continue;float damage=CalculateDamage(DefenderSkillAttack(d),0,0,d.Settings.DamageType);o.Health=Math.Max(0,o.Health-damage);if(!o.Alive){o.DestroyedAt=Clock;CoreEmit(owner,"Despawn",o.Kind,o.Kind,o.Position,targetId:o.Id);break;}}
             }
         }

@@ -2567,5 +2567,24 @@
     }
   ],
   "projectileContracts": "External reference-old6/d26-emitted-wave-projectiles.json; original [uc]projectiles.ab, LIMITED lifetime .3 and speed10 FIXED_DIRECTION.",
-  "runtimeChecks": "Not run Unity/GPU; root will validate current Player and same-frame appearance."
+  "runtimeChecks": "Not run Unity/GPU; root will validate current Player and same-frame appearance.",
+  "runtimePlacementCalibration": {
+    "sourceNoseAxisAfterAuthoredHierarchy": [
+      0,
+      1,
+      0
+    ],
+    "proof": "Bird +X texture nose and self crescent convex edge are transformed through the original PS rotation and static Z90. BakeMesh UV checks and actual D3D11 snapshots cover all three prefabs in four directions.",
+    "sourceAnimatorClipSeconds": 0.8,
+    "sourceTipLocalXAt015": 2.2785868644714355,
+    "sourceTipLocalXAt029": 3.1953718662261963,
+    "sourceTipParentScaleApprox": 0.8805,
+    "runtimeRoot": "Immutable actual launch origin; calibrated ground rotation maps source-root +Y to the actual fixed projectile direction. Retain the original tip animation instead of adding collision-projectile translation a second time.",
+    "physics": "Original speed10 / lifetime0.3 / colliderRadius0.8; no physics or damage change in this placement correction.",
+    "originalManagerAttachmentImplementationRecovered": false,
+    "classification": "Source-axis and single-displacement adaptation. Dummy original manager methods do not prove its internal follow-list selection.",
+    "graphicsTest": "YesterdayConvoy.Tests.SilverAshWaveRenderingSceneTests.ThreeOriginalWavesKeepSourceAnimationAndFaceFourGroundDirections",
+    "graphicsSamples": 24,
+    "scope": "Real original PS/Animator/texture/child TRS, independent four-direction rendering; not certification of the complete original manager."
+  }
 }

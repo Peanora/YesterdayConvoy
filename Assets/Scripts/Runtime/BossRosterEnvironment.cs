@@ -112,7 +112,7 @@ namespace YesterdayConvoy
                 }
                 // Objects consume a real defender attack, never a free extra shot or a UI-injected HP change.
                 if(BossObjectDamageable(o))
-                foreach(var d in BossLiving().Where(d=>d.Settings.CanAttack&&DefenderCanAttack(d)&&!BossRosterDefenderActionLocked(d)&&d.NextAttackTime<=Clock&&GroundDistance(d.Position,o.Position)<=DefenderRange(d)).ToArray())
+                foreach(var d in BossLiving().Where(d=>d.Settings.CanAttack&&DefenderCanAttack(d)&&!BossRosterDefenderActionLocked(d)&&d.NextAttackTime<=Clock&&DefenderRangeContains(d,o.Position)).ToArray())
                 {d.LastActionTime=Clock;d.LastActionHealing=false;d.NextAttackTime=Clock+DefenderEffectiveInterval(d);if(BossRosterDefenderAttackHits(d,d.Settings.DamageType))BossObjectDamage(o,DefenderSkillAttack(d),d);if(!o.Alive||!BossObjectDamageable(o))break;}
                 if(o.Kind=="fireball"&&GroundDistance(o.Position,owner.Motion.Position)>12){foreach(var d in BossLiving().ToArray())BossHit(owner,d,UnitCombat(owner).UnitAttack*1.5f,CombatDamageType.Arts,"fireball",o.ActivationId);o.Removed=true;o.DestroyedAt=Clock;}
             }
