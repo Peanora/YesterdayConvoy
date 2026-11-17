@@ -62,6 +62,6 @@
 
 ## 验证状态
 
-本页记录已批准范围、当前代码连接与素材来源，不预先宣布本轮 Unity 编译、Apply／Validate、PlayMode、Windows 构建或 Player 画面通过。导出静态数据校验与运行验证分别记录，后者以 [STATUS](../STATUS.md)／[QA](../QA.md) 的实际结果为准。
+本轮 `FormationBoardMaterialTools.EnsureImported()` 创建独立Surface／Gate材质与持久反射Cubemap；`FormationNativeMapTools.Apply()` 将其写入112格棋盘和44格外围高台，运行时控制器继续只创建动态角色／界面。来源接口见[棋盘材质说明](../../Assets/Art/Environment/FormationBoard/README.md)。实际Unity编译、保存场景校验、PlayMode6/6、EditMode1040/1040、Windows构建及两尺寸Player各53项均已通过，详情见[STATUS](../STATUS.md)／[QA](../QA.md)。
 
-需核对：112 格与 1×1 格距、相邻格色差与格线、col6／13 全高透明门逐格紧贴、角色脚底与格点点击、外围白高台不占部署格、建筑遮挡与原 A 安全区；新材质、实时阴影和反射在编辑器／Player 的显示一致性；商店展开／收起、真实 idle 平台模型及购买／合成 Flow；暂停、原位复活、清场后实际进门和整关计时。本轮正在接入，编译、场景校验、Windows 构建及 Player 真实结果待补；用户最终实机观感仍待反馈。
+已通过相关自动检查并目视112格棋盘、门、外围、原A商店和战斗画面；普通EXE默认入口已实点进入。后续OS鼠标链路遇其他窗口遮挡而停止，不将程序重放冒称本轮完整鼠标操作通过。原门图标版本与部分兼容光照差异继续保留，用户最终实机观感、完整自然运营和第二机仍待反馈。
