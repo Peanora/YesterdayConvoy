@@ -48,6 +48,8 @@
 
 Unity 菜单 `Yesterday Convoy → Formation Battle → Create Missing Scene` 仅在场景缺失时创建基础地图，不重写已存在场景中的人工编辑。本轮作者入口为 `FormationReferenceMapTools.Apply()`／`Validate()`，菜单 `Apply Approved Concrete Battlefield`／`Validate Concrete Battlefield`；它在原资源导入基础上保存混凝土棋盘、地形和工业装饰。单独执行旧 `FormationNativeMapTools.Apply()` 只会得到较早的原资源重排底图，不是本轮完整接入。编辑范围见下方地图说明；各版本实际校验、测试与 Windows 构建结果由 STATUS／QA 记录。
 
+角色部署使用 `FormationDeploymentTools.Configure()`／`Validate()`，菜单 `Configure Full Roster Deployment`／`Validate Full Roster Deployment`，保存43张原CardDefinition引用并核对完整目录；重建地图后应再运行Configure。该工具还将六处会挡住左下部署格的前景构件向外围移动1.8单位，保存到命名分组，重复执行不继续累加位移。112底格、四处右侧地形、门、材质与地图风格沿用当前版。
+
 首轮棋盘和流程参数如下，属于待试玩初值，最终以实际实现与 QA 记录为准：
 
 | 项目 | Demo 初值 |

@@ -1,6 +1,20 @@
 # 验证证据与回归
 
-## 2026-11-17 最新：暖灰工业棋盘、高台与掩体
+## 2026-11-17 最新：动态多格部署、全角色目录与左右镜头
+
+- 用户授权当前风格暂用，完善拖动地块落点提示、动态站场、所有现有角色的尺寸与大体型多格，以及左侧整备／右侧侦察／开战转右。岁界园版 B21定位到项目外设计稿但无Assets资源，用户明确“没有就先不做了”，本轮跳过。继续 `codex/formation-battle-demo`／PR115，fetch核实 `origin/main=0b17920d7a3a2be2275d95987893512451647151` 已在本分支祖先中；两项预存本地未跟踪设置保持。
+- 运行连接：`FormationUnitCatalog`覆盖43个真实卡ID／动作源／显示高度／占地，42种沿 `ShopEligible` 进入原有限商店，银狼未解锁；巨像仅支援metadata。`FormationDeployment`对完整矩形建立无副作用计划，`Session.PreviewDeploy/TryDeploy`共用它并原子提交席位与军阵，`Model`保存锚点、按 `SpawnCenter`显示／复活。`FormationUnitArt`适配40个Monster包、源石虫、塔露拉和维维美原Sprite数组，角色按需预热及缓存就绪检查；不全量warm43套、不制造缺失动作。`FormationDeploymentPresentation`绘制完整格与动态ghost；`FormationBattleCamera`关注左右半区并维持相同反投影输入，原A独立RT舞台不移动。
+- `FormationDeploymentTools.Configure/Validate`保存43张现有CardDefinition引用，原独立场景、112底格、四地形及完整门和材质保留。实际大单位截图发现前景遮挡后将六个高构件沿外侧移动1.8单位，保存到命名分组；重复Configure不累计位移。最终作者日志 `artifacts/formation-deployment/author-clearance.log` 退出0、两层Validate通过，628个保存Mesh不变。场景唯一writer为root，其他代理各自认领Catalog／Art、Model／Session／部署测试、Camera／场景测试及文档；无包、引擎、旧地图或共享原A UI改动。
+- 完整 **EditMode1078/1078／10.820秒／退出0**（`editmode-final.xml`）。其中新增18个部署病例：边界、不同锚点面积冲突、不同角色同模板、异形双向交换失败回退、第三方冲突、2×2中心复活、备战非法落地零提交、过期预览重验、碎片空间拒绝、跨关重绑、未来3×3纯几何夹具及全部43定义导入；6个Catalog病例核对真实卡名／成本／资源映射、ShopEligible、大小与缺失动作、不提前解码动画。纯3×3夹具不是已接入岁影的证据。初次测试编译的容器断言API错误已修正，作者配置与最终测试均退出0。
+- 最终非batch D3D11 **PlayMode8/8／13.898秒／退出0**（`playmode-clearance.xml`）：6个原场景case更新为分别核对左右半区、真实购买及库存／人口、准备锁定、暂停、跨关、native门／材质与保存地形；新增Camera case验证平滑左右、无模拟／金币／站位变化、原A RT相机不动、实际指针投影、开战自动右及暂停中完成镜头、重试回左；新增Large case使用明确的合法库存Preset夹具（M07/M20/M28、level6）上阵两大单位，验证2×2中心、Clock0动态原生idle、真实body拖动的ghost和Cells、松手前不提交、松手后Cells一致、col5越界整笔不变、切侦察取消及迟到MouseUp不提交。夹具不是自然获得五费卡或平衡证据。
+- 大单位GPU截图：`playmode-large-idle-a/b.png`、`playmode-large-drag-valid.png`、`playmode-large-preparation.png`、`playmode-large-drag-invalid.png`、`playmode-large-scouting.png`，已实际目视。前景移动后四格绿色底纹与角色脚底不再被旧建筑盖住。点击空格也改为MouseUp才提交，场景case实际核对按下时不改站位、松开后才变更；多格半格中心用一致边界选择，避免银行家舍入在相邻列间改变抓取偏移。
+- 构建内容源码 **a76930987bf0b9dcf982b406a0e605eded0b59d2**。`BaselineTools.BuildWindows`真实Windows x64 Development **1097295472 bytes、0错误、退出0**（`build.log`）；Runtime DLL SHA256 **67FAD767AD4C13AB8321F02522BCA606C38EA397A9E1BAE3EEA12C51D833D350**。本机EXE与SOURCE.txt更新，之后仅补文档，不改构建内容。
+- 可见独立D3D11 Player **1600×900与1280×720各63/63、0异常、退出0**（`player-1600`／`player-1280`和各 `formation-smoke.json`）。真实商店商品／金币／库存／RT动态舞台与指针处理加速重放，覆盖动态落点预览与无提前提交、实际交换、左右侦察不改状态、开战自动右、下一关回左、买经验后上阵、完整占地无重叠、交易锁定、暂停、技能、自然复活、限时失败和全清后实际进门。初始三人17.8模拟秒胜，单士兵10.575秒阵亡／18.575秒复活，无HP、伤害、技力、守军位置或结果注入。新增 `player-deployment-preview.png` 与 `player-defender-scouting.png`，已目视最终Player落点／侦察／战斗等帧。
+- 另以正常交互模式启动当前EXE（`interactive.log`记录准备完成，未开启smoke参数）。实际Windows窗口核对被其他前台应用覆盖，目标窗口置前失败后停止点按，**未执行任何跨应用误点击，不将本轮OS鼠标链路写为通过**。上面的证据来自生产指针处理、模型加速重放与真实渲染；这与人类试玩不同。
+- 实际Python3.13执行仓库检查 **9045 tracked files／REPOSITORY_CHECK_PASS**，暂存差异检查通过；新增22个脚本／meta文件随源码，全部角色运行媒体沿用既有跟踪资源。本轮无新外部图片、占位素材、启动脚本、ZIP／Releases或自动合并，预存.vscode和PackageManagerSettings保持未跟踪。
+- 限制：2×2占地当前用于战前布阵，战斗仍为原中心点移动／碰撞间距／射程；四个大体型尺寸为试玩配置。新角色采用既有面板的本模式试验变换及六类自动技，未完成原作复杂技能／天赋／召唤／羁绊。全卡池自然五关经济、长期平衡、全部43个体逐一人类试玩、原生鼠标链路、第二机与长期性能未验。地图风格是用户“暂用”，不记录成最终美术冻结。
+
+## 2026-11-17 历史：暖灰工业棋盘、高台与掩体
 
 - 用户在查看新参考图及生成地图预览后明确“按这个做做看”，授权本轮接入。沿用 `codex/formation-battle-demo`／PR115；fetch核实并验证本分支已包含 `origin/main=0b17920d7a3a2be2275d95987893512451647151`。原有未跟踪 `.vscode/` 与 `ProjectSettings/PackageManagerSettings.asset` 保留。root唯一写场景与新作者工具，代理按专用材质、运行地形／新测试、已有场景测试／烟测、说明文档分工；无包／引擎／全局画质修改或项目副本。
 - 新 `FormationReferenceMapTools.Apply` 先复用源环境导入，再保存专用混凝土、两个2×2高台（11,1／11,5，高.48）、两个2×1掩体（8,1／9,4，高.36）及工业服务地台／侧墙／栏杆。112底格顶面仍y=.12，44外围部件、95原工业部件、原BG与16个完整透明门保留；本场共有 **628个保存MeshFilter**。地形另组且无运行时整图搭建。scene、持久Mesh／mat／meta与来源记录随源码；既有city-concrete纹理是此前AI生成运行素材，不称原作或CC0。
