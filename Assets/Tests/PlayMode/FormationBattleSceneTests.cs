@@ -63,14 +63,19 @@ namespace YesterdayConvoy.Tests
         }
         IEnumerator BenchArtReady(int instance,string artId)
         {
-            double deadline=Time.realtimeSinceStartupAsDouble+600;
+            double deadline=Time.realtimeSinceStartupAsDouble+15;
             while(Time.realtimeSinceStartupAsDouble<deadline)
             {
                 var body=controller.ShopBenchModel(instance);
-                if(body!=null&&body.sprite!=null&&body.sprite.name.StartsWith(artId+"/idle/",StringComparison.Ordinal))yield break;
+                if(body!=null&&FormationArtAssertions.IsActualIdleFrame(artId,body.sprite))yield break;
                 yield return null;
             }
-            Assert.Fail("The purchased reserve must reach its platform with its actual idle frames.");
+            var actual=controller.ShopBenchModel(instance);var sprite=actual!=null?actual.sprite:null;
+            string card=controller.Shop.Bench.FirstOrDefault(piece=>piece.Instance==instance)?.Id??"<missing piece>";
+            Assert.Fail("The purchased reserve did not expose its actual idle within 15 seconds: card="+card+
+                "; art="+artId+"; instance="+instance+"; sprite="+(sprite!=null?sprite.name:"<null>")+
+                "; texture="+(sprite!=null&&sprite.texture!=null?sprite.texture.name:"<null>")+
+                "; source.Root="+(FormationUnitArt.For(artId)?.Root??"<null>"));
         }
         void AssertActorsVisible(System.Collections.Generic.IEnumerable<FormationActor> actors)
         {
@@ -335,7 +340,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
             Assert.That(controller.Model.Terrain,Is.Not.Null);
             var regions=controller.terrain.regions;
-            CollectionAssert.AreEquivalent(new[]{new RectInt(17,1,2,2),new RectInt(17,5,2,2),new RectInt(14,1,2,1),new RectInt(15,4,2,1)},regions.Select(r=>r.cells));
+            CollectionAssert.AreEquivalent(new[]{new RectInt(21,1,2,2),new RectInt(22,5,2,2),new RectInt(16,1,2,1),new RectInt(19,4,2,1)},regions.Select(r=>r.cells));
             var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)
@@ -394,7 +399,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.ShopModelTarget,Is.Not.Null);Assert.That(controller.ShopModelTarget.width,Is.EqualTo(1920));Assert.That(controller.ShopModelTarget.height,Is.EqualTo(1080));
             Assert.That(controller.ShopModelCamera.targetTexture,Is.SameAs(controller.ShopModelTarget));
             var standing=controller.ShopBenchModel(result.Instance);Assert.That(standing,Is.Not.Null);Assert.That(standing.sprite,Is.Not.Null);
-            Assert.That(standing.gameObject.layer,Is.EqualTo(31));Assert.That(standing.sprite.name,Does.StartWith(FormationUnitCatalog.Find(id).ArtId+"/idle/"));
+            Assert.That(standing.gameObject.layer,Is.EqualTo(31));Assert.That(FormationArtAssertions.IsActualIdleFrame(FormationUnitCatalog.Find(id).ArtId,standing.sprite),Is.True,"Actual source idle name and texture must match the purchased role.");
             var seat=controller.FormationPieceRect(result.Instance);
             Assert.That(Vector2.Distance(StagePoint(controller,standing.transform.position),new Vector2(seat.center.x,seat.y+55)),Is.LessThan(2),"A real actor must stand on the original platform foot position.");
             var initialFrame=standing.sprite;bool animated=false;double idleDeadline=Time.realtimeSinceStartupAsDouble+1.5;

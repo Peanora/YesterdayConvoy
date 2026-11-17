@@ -1,0 +1,21 @@
+{
+  "task": "P14H",
+  "view": "main",
+  "timedClips": 7,
+  "frames": 900,
+  "pages": 40,
+  "zeroDurationMetadataStates": 1,
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Attack",
+    "Skill_Begin",
+    "Die"
+  ],
+  "ppu": 68.15102899707735,
+  "pngBytes": 10996211,
+  "cacheSegments": 8,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

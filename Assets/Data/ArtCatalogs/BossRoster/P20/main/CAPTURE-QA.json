@@ -1,0 +1,429 @@
+{
+  "task": "P20",
+  "boundsSampleFps": 120,
+  "alphaSampling": {
+    "sourceMaterial": {
+      "pmaVertexColors": 1,
+      "StraightAlphaInput": 0,
+      "UseBleed": 1,
+      "UseAlphaTex": 0,
+      "slotBlendModes": [
+        0
+      ]
+    },
+    "selected": "GPU_UPLOAD_PREMULTIPLICATION_FOR_DECODED_UNITY_TRANSPARENT_BLEED",
+    "sourcePngUnmodified": true,
+    "oldPmaVsStraight": {
+      "changedPixels": 27576,
+      "totalChannelDifference": 2811195,
+      "maxPixelDifference": 765
+    },
+    "straightVsUploadPremultiplied": {
+      "changedPixels": 13945,
+      "totalChannelDifference": 347483,
+      "maxPixelDifference": 221
+    }
+  },
+  "clips": [
+    {
+      "source": "Attack",
+      "count": 123,
+      "visibleFrames": 123,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Die",
+      "count": 61,
+      "visibleFrames": 10,
+      "emptyFrames": 51,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Idle",
+      "count": 121,
+      "visibleFrames": 121,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Start",
+      "count": 61,
+      "visibleFrames": 60,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    }
+  ],
+  "frames": 366,
+  "visibleFrames": 314,
+  "emptyFrames": 52,
+  "edgeFrames": 0,
+  "errors": [],
+  "emptySourceStates": [
+    {
+      "source": "Die",
+      "frame": 10,
+      "time": 0.16666666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 11,
+      "time": 0.18333333333333332,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 12,
+      "time": 0.2,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 13,
+      "time": 0.21666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 14,
+      "time": 0.23333333333333334,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 15,
+      "time": 0.25,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 16,
+      "time": 0.26666666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 17,
+      "time": 0.2833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 18,
+      "time": 0.3,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 19,
+      "time": 0.31666666666666665,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 20,
+      "time": 0.3333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 21,
+      "time": 0.35,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 22,
+      "time": 0.36666666666666664,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 23,
+      "time": 0.38333333333333336,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 24,
+      "time": 0.4,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 25,
+      "time": 0.4166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 26,
+      "time": 0.43333333333333335,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 27,
+      "time": 0.45,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 28,
+      "time": 0.4666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 29,
+      "time": 0.48333333333333334,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 30,
+      "time": 0.5,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 31,
+      "time": 0.5166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 32,
+      "time": 0.5333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 33,
+      "time": 0.55,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 34,
+      "time": 0.5666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 35,
+      "time": 0.5833333333333334,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 36,
+      "time": 0.6,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 37,
+      "time": 0.6166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 38,
+      "time": 0.6333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 39,
+      "time": 0.65,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 40,
+      "time": 0.6666666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 41,
+      "time": 0.6833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 42,
+      "time": 0.7,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 43,
+      "time": 0.7166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 44,
+      "time": 0.7333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 45,
+      "time": 0.75,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 46,
+      "time": 0.7666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 47,
+      "time": 0.7833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 48,
+      "time": 0.8,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 49,
+      "time": 0.8166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 50,
+      "time": 0.8333333333333334,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 51,
+      "time": 0.85,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 52,
+      "time": 0.8666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 53,
+      "time": 0.8833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 54,
+      "time": 0.9,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 55,
+      "time": 0.9166666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 56,
+      "time": 0.9333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 57,
+      "time": 0.95,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 58,
+      "time": 0.9666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 59,
+      "time": 0.9833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 60,
+      "time": 1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 0,
+      "time": 0,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    }
+  ],
+  "passed": true
+}

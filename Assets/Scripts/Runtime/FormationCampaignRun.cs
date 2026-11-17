@@ -1,0 +1,484 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace YesterdayConvoy
+{
+    /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
+    public sealed class FormationCampaignRun
+    {
+        public sealed class ChoiceOption
+        {
+            public string Id, Name, Description;
+            internal Action Apply;
+        }
+        sealed class Selection
+        {
+            public string Title;
+            public List<ChoiceOption> Options;
+            public Func<List<ChoiceOption>> Reroll;
+            public bool Rerolled;
+            public int Picks=1;
+        }
+        public sealed class ItemInstance
+        {
+            public int Instance, Stacks, Owner;
+            public string Key;
+            public string Name=>ItemName(Key);
+        }
+        sealed class Delivery { public string Id; public int Star=1, Remaining=1; public bool AtLeast; public ShopTrialModel.RewardReservation Reservation; }
+        readonly ShopTrialModel shop;
+        readonly Random random;
+        readonly Queue<Selection> selections=new Queue<Selection>();
+        readonly List<ItemInstance> items=new List<ItemInstance>();
+        readonly List<Delivery> waiting=new List<Delivery>();
+        readonly List<string> augments=new List<string>();
+        readonly List<string> openedBalls=new List<string>();
+        readonly HashSet<string> settled=new HashSet<string>();
+        readonly HashSet<int> hopeClaims=new HashSet<int>();
+        readonly HashSet<int> suppliedPlanes=new HashSet<int>();
+        readonly HashSet<int> marchPlanes=new HashSet<int>();
+        readonly HashSet<int> preplanSeen=new HashSet<int>();
+        readonly HashSet<string> commanderIncomeNodes=new HashSet<string>();
+        readonly Dictionary<string,int> veteranStacks=new Dictionary<string,int>();
+        readonly Dictionary<string,int> modulus=new Dictionary<string,int>();
+        readonly Dictionary<string,int> badgeCounts=new Dictionary<string,int>();
+        int sequence, equipmentGranted, manualRefreshes, prepaidSupply, trainingStart=-1, trainingPays;
+        int savings, lossCompensation, growthFund, plannedPurchases, doubleSupplies, inspectSupplies, debt;
+        int longChipPlane, contractPays, procurementStart=-1;
+        string contractId, veteranId;
+        bool graduationPaid, talulahFinalReward, deferredAutoRefresh, deferredSupply;
+        int lockedReunionCount;
+        public int NodeIndex {get;private set;}
+        public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
+        public int SquadHP {get;private set;}=100;
+        public int Hope {get;private set;}
+        public bool Finished {get;private set;}
+        public bool Won {get;private set;}
+        public bool NodeSettled=>settled.Contains(CurrentNode.Id);
+        public int CurrentEncounterTier {get;set;}=1;
+        public string PreplanId {get;private set;}
+        public IReadOnlyList<string> AugmentIds=>augments;
+        public IReadOnlyList<string> OpenedBalls=>openedBalls;
+        public int ExtraPopulation=>shop.ExtraPopulation;
+        public int TalulahCost=>shop.TalulahId==null?3:shop.Definition(shop.TalulahId).Cost;
+        public bool TalulahEnhanced=>shop.TalulahEnhanced;
+        public int MainCarryInstance {get;set;}
+        public int SecondCarryInstance {get;set;}
+        public int ResonanceLeaderInstance {get;set;}
+        public int ResonancePartnerInstance {get;set;}
+        public int PromptPairA {get;set;}
+        public int PromptPairB {get;set;}
+        public int RelayReceiverInstance {get;set;}
+        public int TheatreLeadInstance {get;set;}
+        public int TheaterLeadInstance {get=>TheatreLeadInstance;set=>TheatreLeadInstance=value;}
+        public int WisadelSkill {get;set;}=3;
+        public int SarkazPact {get;set;}
+        public int MudrockXP {get;private set;}
+        public bool SarkazBloodPact {get;set;}=true;
+        public readonly Dictionary<int,int> RidePairs=new Dictionary<int,int>();
+        public readonly List<int> SeaCellIds=new List<int>();
+        public string LastSummary {get;private set;}="请选择开局装备与战略预案";
+        public int FreeRefreshes=>shop.FreeRefreshes;
+        public int PendingDeliveries=>waiting.Sum(x=>x.Remaining);
+        public bool HasBlockingChoice=>shop.PendingTalulahChoice>0||selections.Count>0;
+        public string ChoiceTitle=>shop.PendingTalulahChoice>0?$"塔露拉 {shop.PendingTalulahChoice}费二星 · 立即抉择":selections.Count==0?null:selections.Peek().Title;
+        public IReadOnlyList<ChoiceOption> Choices=>shop.PendingTalulahChoice>0?new[]
+        {
+            new ChoiceOption{Id="tal-up",Name=$"升为{shop.PendingTalulahChoice+1}费一星",Description="无需金币或希望；商店同名商品原位升费，库存实时重算。"},
+            new ChoiceOption{Id="tal-enhance",Name="强化自身并保留二星",Description=shop.PendingTalulahChoice==3?"攻击+20%，技能伤害+25%，所需SP降至18；本局锁定3费。":"主技改为4段，每次施法获得20%生命护盾8秒；本局锁定4费。"}
+        }:selections.Count==0?Array.Empty<ChoiceOption>():selections.Peek().Options;
+        public bool CanRerollChoice=>shop.PendingTalulahChoice==0&&selections.Count>0&&selections.Peek().Reroll!=null&&!selections.Peek().Rerolled;
+        public IReadOnlyList<ItemInstance> Inventory=>items.Where(x=>x.Owner==0).ToArray();
+        public IReadOnlyList<ItemInstance> AllEquipment=>items;
+        public IReadOnlyList<ItemInstance> Equipment(int pieceInstance)=>items.Where(x=>x.Owner==pieceInstance).ToArray();
+        public bool HasAugment(string id)=>augments.Contains(id);
+        public int VeteranStacks(string unitId)=>veteranStacks.TryGetValue(UnitId(unitId),out var value)?value:0;
+        public ShopTrialModel Shop=>shop;
+
+        public FormationCampaignRun(ShopTrialModel shop,int seed)
+        {
+            this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
+            RequestComponents("开局基础装备 · 三选一",3);
+            RequestPreplan();
+        }
+        public ShopTrialModel.Result Choose(int index)
+        {
+            if(index<0||index>=Choices.Count)return Fail("无效选项");
+            if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success)OnShopChanged();return result;}
+            if(selections.Count==0)return Fail("没有待选奖励");
+            var selection=selections.Peek();var option=selection.Options[index];
+            if(--selection.Picks<=0)selections.Dequeue();else selection.Options.RemoveAt(index);
+            option.Apply?.Invoke();OnShopChanged();return Ok("已选择："+option.Name);
+        }
+        public bool RerollChoice()
+        {if(!CanRerollChoice)return false;var s=selections.Peek();s.Options=s.Reroll();s.Rerolled=true;return true;}
+        void Request(string title,IEnumerable<ChoiceOption> choices,Func<List<ChoiceOption>> reroll=null,int picks=1)
+        {var options=choices.ToList();if(options.Count==0)return;selections.Enqueue(new Selection{Title=title,Options=options,Reroll=reroll,Picks=Math.Min(picks,options.Count)});}
+        ChoiceOption Option(string id,string name,string description,Action apply)=>new ChoiceOption{Id=id,Name=name,Description=description,Apply=apply};
+        List<T> Shuffle<T>(IEnumerable<T> source)=>source.OrderBy(_=>random.Next()).ToList();
+        string CardId(string id)=>FormationCampaignRules.Find(id)?.CardId??id;
+        string UnitId(string id)=>FormationCampaignRules.Find(id)?.Id??id;
+        void RequestPreplan()
+        {
+            List<ChoiceOption> Draw()
+            {
+                var choices=Shuffle(Enumerable.Range(0,FormationCampaignRules.AllPreplans.Length).Where(i=>!preplanSeen.Contains(i))).Take(3).ToArray();
+                foreach(int i in choices)preplanSeen.Add(i);
+                return choices.Select(i=>{var plan=FormationCampaignRules.AllPreplans[i];return Option(plan.Id,plan.Name,plan.Effect,()=>ApplyPreplan(plan.Id));}).ToList();
+            }
+            Request("开局投资环境 · 战略预案三选一",Draw(),Draw);
+        }
+        void ApplyPreplan(string id)
+        {
+            PreplanId=id;
+            switch(id)
+            {
+                case "P01":shop.AddGold(6);break;
+                case "P04":shop.AddGold(18);break;
+                case "P06":shop.FreeRefreshes+=3;break;
+                case "P07":RequestAdvanced("军械预付",3);prepaidSupply=2;break;
+                case "P11":
+                    var roles=FormationCampaignRules.AllUnits.Where(x=>x.Cost==4).ToArray();
+                    var selected=new List<FormationCampaignRules.UnitDefinition>();
+                    selected.Add(Shuffle(roles.Where(x=>x.Role=="辅助")).First());selected.Add(Shuffle(roles.Where(x=>x.Role!="辅助")).First());
+                    selected.Add(Shuffle(roles.Except(selected)).First());
+                    Request("精英先遣 · 选择一名4费",selected.Select(x=>Option(x.Id,x.Name,x.Role+" · "+x.Effect,()=>Give(x.Id))));break;
+                case "P12":var veteran=Shuffle(FormationCampaignRules.AllUnits.Where(x=>x.Cost==1&&x.Role!="辅助")).First();veteranId=veteran.Id;Give(veteran.Id,2);break;
+                case "P13":RequestBadge();break;
+                case "P15":Give("M17");Give("M25");break;
+                case "P16":Give("M03");Give("M16");break;
+            }
+            shop.RecruitmentWeight=unit=>id=="P15"&&HasNativeTrait(unit,"整合")||id=="P16"&&HasNativeTrait(unit,"迅攻")?1.35:1;
+        }
+        public void OnManualRefresh()
+        {manualRefreshes++;if(PreplanId=="P02"&&manualRefreshes==16){shop.AddGold(18);AddItem("复制器");}OnShopChanged();}
+        public void OnPurchase(string id)
+        {if(plannedPurchases>0&&NodeIndex>procurementStart&&shop.Definition(id).Cost>=3&&modulus.GetValueOrDefault("purchase-node",-1)!=NodeIndex){modulus["purchase-node"]=NodeIndex;shop.FreeRefreshes++;}OnShopChanged();}
+        public void OnShopChanged()
+        {
+            foreach(var item in items.Where(x=>x.Owner!=0&&!shop.Bench.Any(p=>p.Instance==x.Owner)))item.Owner=0;
+            if(PreplanId=="P03"&&shop.Level>=8&&trainingStart<0)trainingStart=NodeIndex;
+            if(HasAugment("ES5")&&!graduationPaid&&shop.Level>=8){graduationPaid=true;shop.AddGold(18);}
+            var cannott=shop.Bench.FirstOrDefault(p=>p.Star>=3&&FormationCampaignRules.Find(p.Id)?.Name=="坎诺特");
+            if(cannott!=null)NotifyCannottThreeStar(cannott.Instance);
+            DrainDeliveries();
+            if(deferredAutoRefresh&&!shop.TransactionBlocked)
+            {deferredAutoRefresh=false;if(!shop.Locked)shop.Refresh(true);DrainDeliveries();}
+            if(deferredSupply&&!shop.TransactionBlocked){deferredSupply=false;RequestSupply();}
+            if(!talulahFinalReward&&TalulahCost==5&&shop.Bench.Any(x=>x.Id==shop.TalulahId&&x.Star>=3))
+            {
+                talulahFinalReward=true;
+                foreach(var unit in FormationCampaignRules.AllUnits.Where(x=>x.Factions.Contains("整合")&&x.Id!="TAL"))Give(unit.Id,3,true);
+                LastSummary="塔露拉终局奖励：全部整合成员补至三星，缺货奖励进入待领";
+            }
+        }
+        public void Give(string id,int star=1,bool atLeast=false)
+        {
+            id=CardId(id);if(!shop.Roles.Any(x=>x.Id==id))return;
+            if(atLeast&&shop.Bench.Any(x=>x.Id==id&&x.Star>=star))return;
+            var result=atLeast?shop.GrantAtLeast(id,star):shop.Grant(id,star);
+            if(!result.Success)waiting.Add(new Delivery{Id=id,Star=star,Remaining=1,AtLeast=atLeast});
+        }
+        void GiveReserved(ShopTrialModel.RewardReservation ticket)
+        {
+            if(!shop.GrantReserved(ticket).Success)waiting.Add(new Delivery{Id=ticket.Id,Reservation=ticket});
+        }
+        void DrainDeliveries()
+        {
+            if(shop.TransactionBlocked)return;
+            foreach(var gift in waiting.ToArray())
+            {
+                if(gift.Reservation!=null)
+                {
+                    if(!shop.IsReservationActive(gift.Reservation)||shop.GrantReserved(gift.Reservation).Success)waiting.Remove(gift);
+                    if(shop.TransactionBlocked)break;
+                    continue;
+                }
+                if(shop.Bench.Any(x=>x.Id==gift.Id&&x.Star>=shop.MaxStar(gift.Id))){waiting.Remove(gift);continue;}
+                var result=gift.AtLeast?shop.GrantAtLeast(gift.Id,gift.Star):shop.Grant(gift.Id,gift.Star);
+                if(result.Success&&--gift.Remaining==0)waiting.Remove(gift);
+                if(shop.TransactionBlocked)break;
+            }
+        }
+        public void LockBattleLineup()
+        {lockedReunionCount=TraitCount("整合");}
+        public int TraitCount(string trait)=>shop.Bench.Where(x=>shop.IsLineupInstance(x.Instance)&&HasTrait(x,trait)).Select(x=>x.Id).Distinct().Count();
+        public bool HasTrait(ShopTrialModel.Piece piece,string trait)=>HasNativeTrait(piece.Id,trait)||Equipment(piece.Instance).Any(x=>BadgeTrait(x.Key)==trait);
+        public static bool HasNativeTrait(string id,string trait)
+        {var unit=FormationCampaignRules.Find(id);return unit!=null&&(unit.Factions.Contains(trait)||unit.Styles.Contains(trait));}
+        public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
+        {
+            string key=CurrentNode.Id;if(Finished||CurrentNode.Kind=="补给")return null;
+            if(!settled.Add(key))return null;
+            bool reward=CurrentNode.Kind=="奖励";
+            int payment=5;if(debt>0){int paid=Math.Min(3,debt);payment-=paid;debt-=paid;}
+            var receipt=shop.SettleRound("formation-v07-"+key,won,payment,2,!reward);
+            int loss=won||reward?0:Math.Min(18,(CurrentNode.Plane==1?3:CurrentNode.Plane==2?5:7)+(int)Math.Ceiling(6d*remainingCount/Math.Max(1,initialCount))+(bossAlive?3:0));
+            if(!won&&!reward&&PreplanId=="P14"&&CurrentNode.Kind=="遭遇")loss=Math.Min(21,loss+3);
+            SquadHP=Math.Max(0,SquadHP-loss);
+            if(savings>0){shop.AddGold(2);savings--;}
+            if(!won&&!reward&&lossCompensation>0){shop.AddGold(4);lossCompensation--;}
+            if(PreplanId=="P05"&&won&&(CurrentNode.Kind=="战斗"||CurrentNode.Kind=="战斗战备")&&marchPlanes.Add(CurrentNode.Plane)){shop.AddGold(4);shop.AddExperience(4);}
+            if(lockedReunionCount>=3){int earned=lockedReunionCount>=9?30:lockedReunionCount>=7?14:lockedReunionCount>=5?7:3;AddHope(earned+(won&&!reward?2:0));}
+            if(reward)RewardNode(key);
+            if(CurrentNode.Kind=="遭遇"&&progress>.25f)
+            {foreach(string ball in EncounterBalls(CurrentEncounterTier))OpenBall(ball);if(PreplanId=="P14")OpenBall("蓝");}
+            foreach(var piece in shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)))
+            {
+                if(UnitId(piece.Id)==veteranId)veteranStacks[veteranId]=Math.Min(10,VeteranStacks(veteranId)+1);
+                foreach(var item in Equipment(piece.Instance).Where(x=>x.Key=="EE"))item.Stacks=Math.Min(10,item.Stacks+1);
+            }
+            int mudrockCount=TraitCount("泥岩");
+            if(mudrockCount>=2)
+            {
+                int stars=shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)&&HasNativeTrait(p.Id,"泥岩")).Sum(p=>p.Star);
+                int cap=mudrockCount>=4?99:mudrockCount==3?79:23;
+                MudrockXP=Math.Min(cap,MudrockXP+(mudrockCount+stars)/2);
+            }
+            // Cannott's legacy ID may differ; metadata name is the stable fallback for the economy payout.
+            foreach(var piece in shop.Bench.Where(p=>p.Star>=3&&shop.IsLineupInstance(p.Instance)&&FormationCampaignRules.Find(p.Id)?.Name=="坎诺特"))
+                if(commanderIncomeNodes.Add(key))shop.AddGold(30);
+            LastSummary=$"{key} {(won?"胜利":"结算")} · {receipt.Total}金币 +2XP"+(loss>0?$" · 队伍生命−{loss}":"");
+            OnShopChanged();
+            if(SquadHP==0){Finished=true;Won=false;}
+            else if(NodeIndex==FormationCampaignRules.Nodes.Length-1){Finished=true;Won=won;}
+            return receipt;
+        }
+        public bool AdvanceNode()
+        {
+            if(Finished||!NodeSettled||HasBlockingChoice||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
+            int oldPlane=CurrentNode.Plane;NodeIndex++;CurrentEncounterTier=1;openedBalls.Clear();
+            if(growthFund>0){shop.AddGold(3);growthFund--;}
+            if(contractPays>0){Give(contractId);contractPays--;}
+            if(plannedPurchases>0)plannedPurchases--;
+            if(trainingStart>=0&&NodeIndex>trainingStart&&trainingPays<3){shop.AddExperience(12);trainingPays++;}
+            if(CurrentNode.Plane!=oldPlane)
+            {
+                if(PreplanId=="P01")shop.AddGold(CurrentNode.Plane==2?10:14);
+                if(PreplanId=="P06")shop.FreeRefreshes+=CurrentNode.Plane==2?4:5;
+                if(longChipPlane!=0&&CurrentNode.Plane>longChipPlane){shop.AddGold(16);longChipPlane=0;}
+            }
+            shop.BeginPreparation();if(!shop.Locked){if(shop.TransactionBlocked)deferredAutoRefresh=true;else shop.Refresh(true);}
+            EnterNode();OnShopChanged();return true;
+        }
+        void EnterNode()
+        {
+            if(CurrentNode.Kind=="补给"){if(shop.TransactionBlocked)deferredSupply=true;else RequestSupply();}
+            else if(CurrentNode.Kind=="战斗战备")RequestAugment();
+        }
+        void RequestSupply()
+        {
+            int plane=CurrentNode.Plane;
+            var candidateList=new List<FormationCampaignRules.UnitDefinition>();
+            var tickets=new Dictionary<string,ShopTrialModel.RewardReservation>();
+            for(int i=0;i<5;i++)
+            {
+                int cost=random.Next(100)<(plane==1?70:60)?plane+1:plane+2;
+                var pool=FormationCampaignRules.AllUnits.Where(x=>shop.Definition(x.CardId).Cost==cost&&shop.Available(x.CardId)>0&&!candidateList.Contains(x)).ToArray();
+                if(pool.Length==0)pool=FormationCampaignRules.AllUnits.Where(x=>shop.Definition(x.CardId).Cost>=plane+1&&shop.Definition(x.CardId).Cost<=plane+2&&shop.Available(x.CardId)>0&&!candidateList.Contains(x)).ToArray();
+                if(pool.Length>0)
+                {
+                    var unit=pool[random.Next(pool.Length)];var ticket=shop.ReserveRewardCandidate(unit.CardId);
+                    if(ticket!=null){candidateList.Add(unit);tickets.Add(unit.Id,ticket);}
+                }
+            }
+            var candidates=candidateList.ToArray();var picked=new HashSet<string>();
+            int picks=doubleSupplies>0?2:1;if(doubleSupplies>0)doubleSupplies--;
+            int componentForfeit=prepaidSupply>0?1:0;if(prepaidSupply>0)prepaidSupply--;
+            int initialPicked=0;
+            if(candidates.Length==0)
+            {shop.AddGold(plane*4);if(componentForfeit==0)AddItem(RandomComponent());settled.Add(CurrentNode.Id);return;}
+            bool inspect=inspectSupplies>0;if(inspect)inspectSupplies--;
+            void FinishSupply()
+            {
+                foreach(var candidate in candidates.Where(unit=>!picked.Contains(unit.Id)))shop.ReleaseReservation(tickets[candidate.Id]);
+                settled.Add(CurrentNode.Id);LastSummary="补给已领取";
+            }
+            void FinishMainChoices()
+            {
+                var remaining=candidates.Where(unit=>!picked.Contains(unit.Id)).ToArray();
+                if(!inspect||remaining.Length==0){FinishSupply();return;}
+                Request("入库抽检 · 额外选择一名角色",remaining.Select(unit=>Option(unit.Id,unit.Name,"只领取角色，不领取装备；与主补给共用已预占的候选。",()=>
+                {picked.Add(unit.Id);GiveReserved(tickets[unit.Id]);FinishSupply();})));
+            }
+            var options=candidates.Select(unit=>
+            {
+                string component=RandomComponent();return Option(unit.Id,unit.Name+" + "+ItemName(component),$"{shop.Definition(unit.CardId).Cost}费一星 · {unit.Role}",()=>
+                {picked.Add(unit.Id);GiveReserved(tickets[unit.Id]);if(initialPicked++>0||componentForfeit==0)AddItem(component);if(initialPicked>=Math.Min(picks,candidates.Length))FinishMainChoices();});
+            }).ToArray();
+            Request("补给 · 五选"+(picks==2?"二":"一"),options,picks:picks);
+        }
+        void RequestAugment()
+        {
+            int plane=CurrentNode.Plane,roll=random.Next(100);string tier=plane==1?(roll<70?"银":roll<98?"金":"彩"):plane==2?(roll<25?"银":roll<90?"金":"彩"):(roll<10?"银":roll<70?"金":"彩");
+            if(PreplanId=="P09"&&plane==1&&tier=="银")tier="金";if(PreplanId=="P10"&&plane==3)tier="彩";
+            List<ChoiceOption> Draw()
+            {
+                bool badgeTaken=augments.Any(IsBadgeAugment);
+                var candidates=FormationCampaignRules.AllAugments.Where(a=>a.Tier==tier&&a.Planes.Contains(plane)&&!augments.Contains(a.Id)&&(!badgeTaken||!IsBadgeAugment(a.Id))&&!(a.Id=="EG2"&&HasAugment("EP4"))&&!(a.Id=="EP4"&&HasAugment("EG2"))&&
+                    (a.Id!="EG3"||shop.Bench.Any(p=>shop.Definition(p.Id).Cost<=3))&&(a.Id!="EP3"||shop.Bench.Any(p=>shop.Definition(p.Id).Cost>=4))).ToArray();
+                var picks=new List<FormationCampaignRules.DataRecord>();
+                foreach(string kind in new[]{"经济","战力"})
+                {
+                    var pool=candidates.Where(a=>a.Kind==kind).ToArray();var ordinary=Shuffle(pool.Where(a=>!IsBadgeAugment(a.Id))).ToArray();var badge=Shuffle(pool.Where(a=>IsBadgeAugment(a.Id))).ToArray();
+                    var choice=badge.Length>0&&random.NextDouble()<.08?badge[0]:ordinary.FirstOrDefault();if(choice!=null)picks.Add(choice);
+                }
+                string thirdKind=random.Next(2)==0?"经济":"战力";
+                var thirdPool=candidates.Except(picks).Where(a=>a.Kind==thirdKind).ToArray();
+                var third=(random.NextDouble()<.08?Shuffle(thirdPool.Where(a=>IsBadgeAugment(a.Id))).FirstOrDefault():null)??Shuffle(thirdPool.Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault()??Shuffle(candidates.Except(picks).Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault();if(third!=null)picks.Add(third);
+                return picks.Select(a=>Option(a.Id,a.Name,a.Effect,()=>ApplyAugment(a.Id))).ToList();
+            }
+            Request("战略战备 · "+tier+"档三选一",Draw(),Draw);
+        }
+        public static bool IsBadgeAugment(string id)=>new[]{"CG1","CG2","CP3","CP4","CP5"}.Contains(id);
+        void ApplyAugment(string id)
+        {
+            augments.Add(id);
+            switch(id)
+            {
+                case "ES1":shop.AddGold(10);break;
+                case "ES2":shop.AddGold(4);savings=4;break;
+                case "ES3":shop.AddGold(4);lossCompensation=4;break;
+                case "ES4":shop.FreeRefreshes+=8;break;
+                case "ES5":shop.AddExperience(4);break;
+                case "ES6":shop.AddGold(2);inspectSupplies=2;break;
+                case "EG1":shop.AddGold(6);growthFund=6;break;
+                case "EG2":shop.AddGold(10);shop.InterestCap=8;break;
+                case "EG3":RequestContract(1,3);break;
+                case "EG4":shop.AddExperience(8);shop.PurchasedXP=6;break;
+                case "EG5":shop.FreeRefreshes+=8;longChipPlane=CurrentNode.Plane;break;
+                case "EG6":shop.AddGold(10);plannedPurchases=7;procurementStart=NodeIndex;break;
+                case "EP1":shop.AddGold(40);AddItem("复制器");AddItem("复制器");break;
+                case "EP2":shop.AddGold(75);debt=36;break;
+                case "EP3":RequestContract(4,5);break;
+                case "EP4":shop.AddGold(20);shop.InterestDivisor=8;shop.InterestCap=10;break;
+                case "EP5":shop.AddGold(8);doubleSupplies=2;break;
+                case "EP6":shop.AddGold(12);shop.RefreshPrice=1;break;
+                case "CG1":AddItem("徽章:同频");Give("M25");break;
+                case "CG2":AddItem("徽章:整合");Give("M25");AddHope(10);break;
+                case "CP1":shop.ExtraPopulation=1;break;
+                case "CP3":AddItem("徽章:同频");break;
+                case "CP4":AddItem("徽章:便车");break;
+                case "CP5":AddItem("徽章:接棒");break;
+                case "CP6":Request("满载军械 · 第一件",Shuffle(FormationCampaignRules.AllItems).Take(3).Select(x=>Option(x.Id,x.Name,x.Effect,()=>{AddItem(x.Id);Request("满载军械 · 第二件",Shuffle(FormationCampaignRules.AllItems.Where(y=>y.Id!=x.Id)).Take(3).Select(y=>Option(y.Id,y.Name,y.Effect,()=>AddItem(y.Id))));})));break;
+            }
+        }
+        void RequestContract(int min,int max)
+        {
+            var owned=shop.Bench.Select(p=>p.Id).Distinct().Where(id=>shop.Definition(id).Cost>=min&&shop.Definition(id).Cost<=max).ToArray();
+            Request("供货合同 · 选择已拥有角色",owned.Select(id=>Option(id,shop.Definition(id).Name,"立即与随后三个新节点各领取一张，实际占库，缺货待领。",()=>{contractId=id;contractPays=3;Give(id);} )));
+        }
+        public void AddHope(int amount)
+        {
+            Hope+=amount;
+            foreach(int threshold in new[]{10,25,45,75,110,160,220,300})if(Hope>=threshold&&hopeClaims.Add(threshold))
+            {
+                switch(threshold)
+                {
+                    case 10:shop.AddGold(6);shop.FreeRefreshes+=2;break;
+                    case 25:Give("TAL");break;
+                    case 45:OpenBall("蓝");shop.AddGold(8);break;
+                    case 75:RequestComponents("75希望 · 基础装备自选",6);Give("TAL");break;
+                    case 110:OpenBall("金");AddItem("徽章:整合");break;
+                    case 160:Give("TAL");AddItem("复制器");break;
+                    case 220:OpenBall("金");OpenBall("金");shop.AddGold(18);break;
+                    case 300:AddItem("复制器");AddItem("复制器");shop.AddGold(40);OpenBall("彩");break;
+                }
+            }
+        }
+        void RewardNode(string id)
+        {
+            int[] counts={4,5,7,9,12};string[] ids={"1-1","1-2","1-8","2-6","3-6"};int[][] odds={new[]{70,28,2,0},new[]{55,40,5,0},new[]{40,48,11,1},new[]{30,50,18,2},new[]{22,48,27,3}};
+            int index=Array.IndexOf(ids,id);if(index<0)return;
+            for(int i=0;i<counts[index];i++){int roll=random.Next(100),sum=0;for(int k=0;k<4;k++){sum+=odds[index][k];if(roll<sum){OpenBall(new[]{"白","蓝","金","彩"}[k]);break;}}}
+            if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id))AddItem(RandomComponent());
+            int guarantee=id=="1-1"?2:id=="1-2"?5:0;while(equipmentGranted<guarantee)AddItem(RandomComponent());
+        }
+        public void OpenBall(string color)
+        {
+            openedBalls.Add(color);
+            int roll=random.Next(100);
+            if(color=="白")
+            {if(roll<45)shop.AddGold(3);else if(roll<70){shop.AddGold(2);shop.FreeRefreshes++;}else if(roll<90)GiveRandom(1);else AddItem(RandomComponent());}
+            else if(color=="蓝")
+            {if(roll<50)AddItem(RandomComponent());else if(roll<70)shop.AddGold(6);else if(roll<85)GiveRandom(random.Next(2)+2);else{AddItem(RandomComponent());shop.AddGold(2);}}
+            else if(color=="金")
+            {if(roll<35){AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<65)AddItem(RandomAdvanced());else if(roll<85){shop.AddGold(12);shop.FreeRefreshes+=2;}else if(roll<93){RequestComponents("金球 · 基础装备自选",6);shop.AddGold(6);}else if(roll<98)AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");else{RequestBadge();shop.AddGold(6);}}
+            else if(color=="彩")
+            {if(roll<35){RequestAdvanced("彩球 · 进阶装备自选",21);AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<60){AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");shop.AddGold(10);}else if(roll<70){AddItem("复制器");shop.AddGold(15);}else if(roll<90){AddItem(RandomAdvanced());AddItem(RandomAdvanced());}else{RequestBadge();shop.AddGold(10);}}
+        }
+        void GiveRandom(int cost){var units=FormationCampaignRules.AllUnits.Where(x=>shop.Definition(x.CardId).Cost==cost).ToArray();if(units.Length>0)Give(units[random.Next(units.Length)].Id);}
+        static IEnumerable<string> EncounterBalls(int tier)=>tier switch{2=>new[]{"蓝","蓝"},3=>new[]{"金","蓝"},4=>new[]{"金","金","彩"},_=>new[]{"蓝"}};
+        string RandomComponent()=>"ABCDEF"[random.Next(6)].ToString();
+        string RandomAdvanced()=>FormationCampaignRules.AllItems[random.Next(FormationCampaignRules.AllItems.Length)].Id;
+        void RequestComponents(string title,int count)
+        {Request(title,Shuffle("ABCDEF".Select(c=>c.ToString())).Take(count).Select(key=>Option(key,ItemName(key),FormationCampaignRules.FindRecord(key)?.Effect??"基础装备",()=>AddItem(key))));}
+        void RequestAdvanced(string title,int count,bool different=false)
+        {Request(title,Shuffle(FormationCampaignRules.AllItems).Take(count).Select(x=>Option(x.Id,x.Name,x.Effect,()=>{if(different&&modulus.TryGetValue("CP6-item",out var first)&&FormationCampaignRules.AllItems[first].Id==x.Id){RequestAdvanced(title,count,true);return;}AddItem(x.Id);if(!different&&title.StartsWith("满载军械"))modulus["CP6-item"]=Array.FindIndex(FormationCampaignRules.AllItems.ToArray(),v=>v.Id==x.Id);})));}
+        void RequestBadge()
+        {Request("徽章匣 · 三选一",Shuffle(BadgeTraits).Where(t=>items.Count(x=>BadgeTrait(x.Key)==t)<2).Take(3).Select(t=>Option("徽章:"+t,t+"徽章","添加羁绊标签，占一格装备；无额外基础属性。",()=>AddItem("徽章:"+t))));}
+        public static readonly string[] BadgeTraits={"整合","雪怪","泥岩","深池","萨卡兹","海嗣","连击","迅攻","复苏","爆破","提词","便车","剧场","接棒","同频"};
+        public ItemInstance AddItem(string key,bool countBudget=true)
+        {
+            string badge=BadgeTrait(key);
+            if(badge!=null)
+            {
+                int count=badgeCounts.GetValueOrDefault(badge);
+                if(count>=2)
+                {var parts=key.Split(':');if(parts.Length>=3)return AddItem(parts[2],countBudget);RequestComponents("重复徽章拆解 · 基础装备自选",6);return null;}
+                badgeCounts[badge]=count+1;
+            }
+            var item=new ItemInstance{Instance=++sequence,Key=key};items.Add(item);if(countBudget){if(key.Length==1&&"ABCDEF".Contains(key))equipmentGranted++;else if(FormationCampaignRules.AllItems.Any(x=>x.Id==key))equipmentGranted+=2;}return item;
+        }
+        public static string BadgeTrait(string key)=>key!=null&&key.StartsWith("徽章:")?key.Split(':')[1]:null;
+        public static string ItemName(string key)=>key.StartsWith("徽章:")?key.Split(':')[1]+"徽章":key=="复制器"?"完美复制器":FormationCampaignRules.FindRecord(key)?.Name??key;
+        public ShopTrialModel.Result Equip(int itemInstance,int pieceInstance)
+        {
+            if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);var piece=shop.Bench.FirstOrDefault(x=>x.Instance==pieceInstance);
+            if(item==null||piece==null)return Fail("角色或装备不存在");
+            if(item.Key.EndsWith("宝石")||item.Key=="复制器")return Fail("此道具不能装备");
+            if(item.Owner==pieceInstance)return Ok("装备保持原位");var equipped=Equipment(pieceInstance);
+            if(equipped.Count>=3)return Fail("每名角色最多三件装备");
+            string badge=BadgeTrait(item.Key);
+            if(badge!=null&&(HasNativeTrait(piece.Id,badge)||equipped.Any(x=>BadgeTrait(x.Key)!=null)))return Fail("已有该标签或已装备徽章");
+            if(equipped.Any(x=>x.Key==item.Key)&&item.Key.Length>1)return Fail("同名进阶装备不可重复装备");
+            item.Owner=pieceInstance;return Ok("装备已交给"+shop.Definition(piece.Id).Name);
+        }
+        public ShopTrialModel.Result Unequip(int itemInstance)
+        {if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);if(item==null)return Fail("装备不存在");item.Owner=0;return Ok("已免费卸装");}
+        public ShopTrialModel.Result Combine(int a,int b)
+        {
+            if(HasBlockingChoice)return Fail("请先完成待选事项");var x=items.Find(i=>i.Instance==a);var y=items.Find(i=>i.Instance==b);if(x==null||y==null||x==y)return Fail("选择两个不同物品");
+            string key=null;
+            bool Base(string s)=>s.Length==1&&"ABCDEF".Contains(s);
+            if(Base(x.Key)&&Base(y.Key))key=string.Concat(new[]{x.Key[0],y.Key[0]}.OrderBy(c=>c));
+            else
+            {
+                var gem=x.Key.EndsWith("宝石")?x:y.Key.EndsWith("宝石")?y:null;var component=gem==x?y:x;
+                if(gem!=null&&Base(component.Key))
+                {string[] traits=gem.Key=="赤宝石"?new[]{"整合","雪怪","泥岩","深池","萨卡兹","海嗣"}:new[]{"连击","迅攻","复苏","接棒","同频","提词"};string trait=traits["ABCDEF".IndexOf(component.Key,StringComparison.Ordinal)];if(badgeCounts.GetValueOrDefault(trait)>=2)return Fail("同类徽章整局最多两枚");key="徽章:"+trait+":"+component.Key;}
+            }
+            if(key==null)return Fail("这两件物品没有合成配方");int owner=x.Owner==y.Owner?x.Owner:0;
+            items.Remove(x);items.Remove(y);var next=AddItem(key,false);
+            var piece=shop.Bench.FirstOrDefault(p=>p.Instance==owner);
+            if(owner!=0&&piece!=null&&Equipment(owner).Count<3&&!Equipment(owner).Any(i=>i.Key==key)&&
+                (BadgeTrait(key)==null||!HasNativeTrait(piece.Id,BadgeTrait(key))&&!Equipment(owner).Any(i=>BadgeTrait(i.Key)!=null)))next.Owner=owner;
+            return Ok("合成："+next.Name);
+        }
+        public ShopTrialModel.Result UseCopier(int itemInstance,int pieceInstance)
+        {
+            if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance&&x.Key=="复制器");var piece=shop.Bench.FirstOrDefault(p=>p.Instance==pieceInstance);
+            if(item==null||piece==null)return Fail("复制器或目标不存在");var result=shop.Grant(piece.Id);if(!result.Success)return result;items.Remove(item);OnShopChanged();return result;
+        }
+        public void NotifySkillCast(int pieceInstance)
+        {
+            var piece=shop.Bench.FirstOrDefault(p=>p.Instance==pieceInstance);if(piece==null||FormationCampaignRules.Find(piece.Id)?.Name!="坎诺特")return;
+            string key="cannott-"+CurrentNode.Id;if(modulus.GetValueOrDefault(key)>0)return;modulus[key]=1;shop.AddGold(piece.Star==1?2:piece.Star==2?4:10);
+        }
+        public void NotifyCannottThreeStar(int pieceInstance)
+        {if(modulus.GetValueOrDefault("cannott-3star")!=0)return;modulus["cannott-3star"]=1;shop.AddGold(120);}
+        static ShopTrialModel.Result Ok(string message)=>new ShopTrialModel.Result{Success=true,Message=message};
+        static ShopTrialModel.Result Fail(string message)=>new ShopTrialModel.Result{Message=message};
+    }
+}

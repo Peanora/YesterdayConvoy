@@ -43,9 +43,11 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             FormationUnitArt.RegisterCards(formationCards);
-            Session=FormationShopSession.Current??FormationShopSession.StartNew(seed);seed=Session.Seed;
+            bool fullCampaign=!FormationBattleSmokeDriver.Requested&&Array.IndexOf(Environment.GetCommandLineArgs(),"-formationLegacyDemo")<0;
+            Session=FormationShopSession.Current??FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);seed=Session.Seed;
             Model=new FormationBattleModel(seed,terrain!=null?terrain.BuildLayout():null);Session.ApplyTo(Model);
-            Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;
+            if(Session.Run!=null)Model.BindCampaign(Session.Run);
+            else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
             if(battleCamera==null)battleCamera=Camera.main;
             actorRoot=new GameObject("Dynamic formation actors").transform;
             actorRoot.SetParent(transform,false);
@@ -60,7 +62,7 @@ namespace YesterdayConvoy
             hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
-            Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, unlimited test gold and instance-based lineup");
+            Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
         }
         static AudioClip Tone(string name,float hz,float duration)
         {
@@ -73,13 +75,14 @@ namespace YesterdayConvoy
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             Model.Advance(Time.unscaledDeltaTime);
+            TickCampaignSettlement();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
             if(Input.GetKeyDown(KeyCode.Tab))SetMarketVisible(!MarketVisible);
             if(Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(soundEnabled&&Model.Clock-lastSoundAt>.09)
             {
@@ -106,7 +109,8 @@ namespace YesterdayConvoy
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
+            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
+            if(ProcessCampaignSeaPointer(type,point))return;
             formationShopPointer=point;
             if(type==EventType.MouseDown)
             {
@@ -156,17 +160,19 @@ namespace YesterdayConvoy
         }
         public void StartBattle()
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
+            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
             if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
+            if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
-            SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            campaignSeaPainting=false;SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
             SetFormationView(true);
         }
         public void Retry()
-        {if(!Ready)return;Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
+        {if(!Ready)return;if(Session.Run!=null){notice="完整挑战的战斗结果已结算，请继续下一节点。";return;}Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
         public void NextRound()
         {
+            if(Session?.Run!=null){ContinueCampaign();return;}
             if(!Ready||Model.Phase!=FormationPhase.Won)return;
             Session.SavePositions(Model);var reward=Session.SettleWin(Model.Round);
             if(Model.Round<5)Session.AdvanceRound();
@@ -176,9 +182,12 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
-            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
-            Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;
-            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice="新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
+            bool fullCampaign=Session?.Run!=null;
+            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);Model.Reset(seed);Session.ApplyTo(Model);
+            if(fullCampaign)Model.BindCampaign(Session.Run);else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}lastSoundAt=-10;
+            campaignResultSettled=false;campaignInventoryOpen=false;campaignFormationOpen=false;
+            CloseCampaignPanels();campaignSeaPainting=false;
+            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice=fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
             SetFormationView(false);
         }
         internal void SyncActors()
@@ -187,6 +196,8 @@ namespace YesterdayConvoy
             var current=new HashSet<int>();
             foreach(var unit in Model.Units){if(!unit.Enabled)continue;current.Add(unit.Id);Present(unit,false);}
             foreach(var defender in Model.Defenders){current.Add(defender.Id);Present(defender,true);}
+            foreach(var summon in Model.Summons){current.Add(summon.Id);Present(summon,false);}
+            PresentFormationNativeEffects();
             foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);}
         }
         void Present(FormationActor actor,bool defender)=>PresentFormationActor(actor,defender);
@@ -194,6 +205,7 @@ namespace YesterdayConvoy
         {
             if(!Ready||Camera.current!=battleCamera)return;
             DrawDeploymentGrid();
+            DrawCampaignSeaCells();
             lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.LINES);
             foreach(var h in Model.Hits)
             {
@@ -206,6 +218,7 @@ namespace YesterdayConvoy
         }
         void OnDestroy()
         {
+            DisposeFormationNativeEffects();
             approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
             ArtMemoryCache.Pin(Array.Empty<string>());
             if(actorMaterial!=null)Destroy(actorMaterial);if(lineMaterial!=null)Destroy(lineMaterial);

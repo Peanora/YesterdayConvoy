@@ -1,0 +1,91 @@
+{
+  "task": "P12I",
+  "name": "仅剩的创意",
+  "reference": "https://prts.wiki/w/仅剩的创意/spine",
+  "view": "main",
+  "model": "enemy_2094_skzamb",
+  "nativeModel": "enemy_2094_skzamb",
+  "folder": "native-fx/runtime-additions/Idea/source",
+  "version": "3.8.99",
+  "skin": "default",
+  "animations": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -84.35059356689453,
+        6.3807759284973145,
+        105.34646606445312,
+        204.291259765625
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 150,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Die",
+      "duration": 1,
+      "bounds": [
+        -119.07717895507812,
+        -33.30537033081055,
+        106.27865600585938,
+        238.4232940673828
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 6803,
+      "events": [],
+      "loop": false
+    },
+    {
+      "name": "Idle",
+      "duration": 5.333333492279053,
+      "bounds": [
+        -98.1346435546875,
+        6.3807759284973145,
+        110.76288604736328,
+        213.74864196777344
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 96036,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Move",
+      "duration": 1.3333333730697632,
+      "bounds": [
+        -84.91459655761719,
+        18.818117141723633,
+        102.84075164794922,
+        211.4645538330078
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 23814,
+      "events": [],
+      "loop": true
+    },
+    {
+      "name": "Start",
+      "duration": 0.4000000059604645,
+      "bounds": [
+        -84.35059356689453,
+        6.3807759284973145,
+        105.34646606445312,
+        210.5367431640625
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 7310,
+      "events": [],
+      "loop": false
+    }
+  ],
+  "cell": 384,
+  "captureMargin": 1.14,
+  "bounds": [
+    -123.1839845776755,
+    -38.97903763760442,
+    112.36235208464392,
+    241.7742201618541
+  ]
+}

@@ -134,7 +134,7 @@ namespace YesterdayConvoy.Tests
         {
             Assert.That(model.StartBattle(), Is.True);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
-            model.Units.First(u => u.Enabled).Position = new Vector2(19, 0);
+            model.Units.First(u => u.Enabled).Position = new Vector2(FormationBattleModel.Width - 1, 0);
             model.Advance(.025f);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
         }

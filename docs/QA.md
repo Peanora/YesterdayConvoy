@@ -1,5 +1,16 @@
 # 验证证据与回归
 
+## 2026-11-18 最新：v0.7 棋盘完整挑战集成
+
+- 用户确认v0.7作为后续依据、棋盘完整挑战设默认入口、扩大右侧并直接补原作角色。设计原件/43章Markdown/参数快照与本地AGENTS已更新。继续`codex/formation-battle-demo`，开工fetch核实`origin/main=0b17920d`为当前棋盘分支祖先；没有整体合并Boss旧模式分支。既有`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留、不暂存。本轮无推送/PR。
+- Unity6000.6.5f1实际执行`FormationRosterTools.Install()`和`FormationCampaignTools.Author()`，退出0，`artifacts/formation-full/roster-install.log`、`author.log`。46正式角色有真实动作元数据，62兼容卡保存引用；26×8/208底格、68外围格、8+8原门、四组新右侧地形均持久保存。已目视编辑地图与实际左侧GPU准备图，未以截图替代地形。
+- 完整EditMode **1180/1180、11.71145秒、退出0**，`artifacts/formation-full/editmode-complete.xml/.log`。覆盖Shop/Run/Model的库存与补给预占/待领、塔露拉抉择/改价/容量、结算幂等、全部角色技能入口、连击/同频/接棒、阶段、溟痕、装备、七守军与三首领SP/动作对照。早期失败XML保留，不计入通过数。
+- D3D11非batch相关PlayMode **15/15、29.7970205秒、退出0**，`playmode-complete.xml/.log`。含原A购买舞台、有限开局选择、源石虫真实别名、原生B10未上阵购买与12秒长待机冷分段、2×2拖放/取消、固定视图、保存地形/门、暂停和交易锁。旧帧名前缀测试改为严格核验实际来源名与纹理页，未重命名原资源迎合旧断言。
+- 实测发现并修复：守军跨关状态残留、正式一费四星误用旧费用、合同塔露拉抉择后自动刷新遗漏、补给未真预占、三张点燃页漏打包、备战原生idle冷窗口未暖，以及旧固定地图/来源前缀。未把真实失败改为期望结果。
+- 预设组对生产守军、未改其HP/ATK：1-3二星三低费 **32.375秒胜**；2-4六人二星 **71.25秒胜**；3-7九人8连击/5同频、14装备含3徽章 **145.075秒胜**，总HP1215000、8次模式阵亡、100%削减且本体实际进门。前置节点明确跳过、人口和卡牌预置，日志列`PRESET_RULES`，不证明自然运营可达率。`RIPPER_RUNTIME`记录45秒后32次施法、成熟间隔 **0.925–0.950秒**，保留真实动作时间。
+- 原作源核验：35身体包/433动作/58583帧/2722图集的源哈希、事件、pivot通过；21 FX包/389段/25908帧/390页与原HDR逐帧像素对照通过，证据`Library/FormationCampaignEvidence`。来源、真实缺失walk与接入范围见`docs/art/FORMATION_ROSTER_V07.md`。素材/meta纳入本轮本地任务，运行不依赖项目外加工区。
+- 实际`tools/check_repository.py`：**16442 tracked files / REPOSITORY_CHECK_PASS**，仅代表仓库/meta检查。此条写入时新Windows构建与独立Player走查尚在进行，完成后另补真实结果。自然长局通关分布、全部组合、长期性能、人类手感及第二机未验证。
+
 ## 2026-11-17 最新：悬空拖动、固定分区与无限测试金币
 
 - 用户要求恢复抓起悬空感、去落点文字／突兀蓝框、固定镜头、扩大我方区且仅看当前侧、备战无伤害排行、无限测试金币，并撤销默认推送／PR授权。继续原功能分支；fetch核实origin/main仍为0b17920d，已是祖先。预存.vscode／PackageManagerSettings不改、不暂存；本地AGENTS顶部写入新最高优先级规则，覆盖历史自动推送授权。该文件仍忽略、不提交。

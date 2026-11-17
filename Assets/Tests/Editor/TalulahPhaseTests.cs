@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -11,6 +12,9 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class TalulahPhaseTests
     {
+        [Serializable] sealed class PhaseManifest {public PhaseClip[] clips;}
+        [Serializable] sealed class PhaseClip {public string key;public PhasePage[] pages;}
+        [Serializable] sealed class PhasePage {public string file;}
         const string Card="CARD_TALULAH_TRIAL";
         static ManualBattle Battle(bool second=true,bool blast=false)
         {
@@ -189,7 +193,24 @@ namespace YesterdayConvoy.Tests
             var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
                 .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
+            // The legacy battle still plans exactly its original 19 extra clips above.
+            // The shared EXE payload additionally needs the new formation mode's three
+            // newly bound ignite pages; it must not export the rest of the source library.
+            string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
+                "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
+                "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
+                "ignite-B-caster","ignite-B-target"};
+            var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
+            CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
+            var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
+                .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
+            Assert.That(pages.Length,Is.EqualTo(44));
+            CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
+            foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
+                CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);
+            foreach(string page in new[]{"ignite-A-caster-00.png","ignite-A-target-00.png","ignite-B-target-00.png"})
+                Assert.That(pages,Does.Contain(page),"New formation mode's actual point-of-hit/caster dependency.");
+            Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
             Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
         }
     }

@@ -143,7 +143,10 @@ namespace YesterdayConvoy.Tests
                     new FormationBattleTerrainRegion(new RectInt(14, 1, 2, 1), .36f, false),
                     new FormationBattleTerrainRegion(new RectInt(15, 4, 2, 1), .36f, false)
                 });
-            var model = new FormationBattleModel(20261117, terrain);
+            // The wider map changes the deterministic RNG consumption for seat selection.
+            // Select an ordinary generated board containing the ranged profile this boundary case needs.
+            var model = Enumerable.Range(20261117,32).Select(seed=>new FormationBattleModel(seed,terrain))
+                .First(candidate=>candidate.Defenders.Any(defender=>defender.Kind>=6&&!defender.Healer));
             Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry
             {
                 Instance = 1, ArtId = "M08", Star = 1,

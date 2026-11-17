@@ -1,0 +1,20 @@
+{
+  "task": "P15C",
+  "view": "main",
+  "timedClips": 4,
+  "frames": 201,
+  "pages": 10,
+  "zeroDurationMetadataStates": 2,
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Attack",
+    "Die"
+  ],
+  "ppu": 250.34708576176422,
+  "pngBytes": 5654096,
+  "cacheSegments": 4,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

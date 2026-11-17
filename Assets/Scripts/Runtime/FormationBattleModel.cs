@@ -6,7 +6,8 @@ namespace YesterdayConvoy
 {
     public enum FormationPhase { Preparation, Fighting, Exiting, Won, Lost }
 
-    // This isolated prototype intentionally uses simplified skills, not the original character kits.
+    // Shared actor state. A bound v0.7 campaign uses the dedicated event-driven kits;
+    // the unbound historical demo retains its six prototype templates.
     public class FormationActor
     {
         public int Id, Kind;
@@ -14,6 +15,11 @@ namespace YesterdayConvoy
         public Vector2 Position, Facing;
         public float Health, MaxHealth, Attack, Armor, Range, Interval, MoveSpeed;
         public float SkillCharge, SkillRequired, DamageDone, HealingDone;
+        public float MagicResistance, Shield;
+        public int PhaseStage;
+        public string SkillAnimation;
+        public string PresentationAction;
+        public double PresentationStartedAt, PresentationDuration;
         public double LastActionAt = -100, LastSkillAt = -100, LastHitAt = -100, LastDeathAt = -100;
         public bool Alive, IsMoving;
         public int TargetId = -1;
@@ -29,6 +35,8 @@ namespace YesterdayConvoy
         public Vector2 SpawnCenter => FormationDeployment.Center(Spawn, Footprint);
         public RectInt DeploymentCells => FormationDeployment.Cells(Spawn, Footprint);
         public float RespawnRemaining;
+        public int NativePhase;
+        public double NativePhaseChangedAt, NativePhaseReturningUntil;
         internal double RebornAt;
     }
 
@@ -54,12 +62,12 @@ namespace YesterdayConvoy
     }
 
     /// <summary>
-    /// Pure combat state for the formation experiment. No scene, asset, input, or wall-clock access.
+    /// Pure formation combat state. No scene, asset, input, or wall-clock access.
     /// Cells are centred on integer coordinates. Only preparation accepts roster mutations.
     /// </summary>
-    public sealed class FormationBattleModel
+    public sealed partial class FormationBattleModel
     {
-        public const int Width = 20, Height = 8, DeploymentColumns = 12;
+        public const int Width = 26, Height = 8, DeploymentColumns = 12;
         public const float BattleAreaStart = DeploymentColumns + .5f;
         const double StepSeconds = .025;
         const float PersonalSpace = .48f;
@@ -100,6 +108,7 @@ namespace YesterdayConvoy
         {
             if (Phase != FormationPhase.Preparation || !TryBuildRoster(entries, capacity, out var planned)) return false;
             Units.Clear(); Units.AddRange(planned); Capacity = capacity;
+            if (Campaign != null) ConfigureCampaignTeam();
             return true;
         }
 
@@ -109,7 +118,7 @@ namespace YesterdayConvoy
         static bool TryBuildRoster(IEnumerable<FormationRosterEntry> entries, int capacity, out List<FormationFighter> planned)
         {
             planned = new List<FormationFighter>();
-            if (entries == null || capacity < 1 || capacity > 10) return false;
+            if (entries == null || capacity < 1 || capacity > 11) return false;
             var instances = new HashSet<int>();
             var kinds = new HashSet<string>(StringComparer.Ordinal);
             var occupied = new List<RectInt>();
@@ -117,9 +126,9 @@ namespace YesterdayConvoy
             {
                 if (entry == null) return false;
                 var definition = FormationUnitCatalog.Find(entry.ArtId);
-                if (definition == null || definition.Stats == null || definition.TemplateKind < 0 || definition.TemplateKind > 5 ||
+                if (definition == null || (definition.Stats == null && FormationCampaignRules.Find(entry.ArtId) == null) || definition.TemplateKind < 0 || definition.TemplateKind > 5 ||
                     entry.Instance < 1 || !instances.Add(entry.Instance) || !kinds.Add(definition.ArtId) ||
-                    entry.Star < 1 || entry.Star > ShopTrialModel.MaxStarForCost(definition.Cost) ||
+                    entry.Star < 1 || entry.Star > ShopTrialModel.MaxStarForCost((FormationCampaignRules.Find(entry.ArtId) ?? FormationCampaignRules.Find("CARD_"+entry.ArtId))?.Cost ?? definition.Cost) ||
                     !FormationDeployment.TryCells(entry.Spawn, definition.Footprint, out var cells) ||
                     !FormationDeployment.IsFree(cells, occupied)) return false;
                 occupied.Add(cells);
@@ -137,7 +146,7 @@ namespace YesterdayConvoy
 
         internal bool PrepareShopRound(int round)
         {
-            if (Phase != FormationPhase.Preparation || round < 1 || round > RoundCounts.Length) return false;
+            if (Phase != FormationPhase.Preparation || round < 1 || round > (Campaign == null ? RoundCounts.Length : FormationCampaignRules.Nodes.Length)) return false;
             if (Round == round) return true;
             Round = round; PrepareRound(); return true;
         }
@@ -218,10 +227,12 @@ namespace YesterdayConvoy
 
         public bool StartBattle()
         {
-            if (Phase != FormationPhase.Preparation || EnabledCount == 0) return false;
+            if (Phase != FormationPhase.Preparation || EnabledCount == 0 || Campaign != null && (Campaign.HasBlockingChoice || Campaign.Finished || Campaign.NodeSettled)) return false;
+            if(Campaign!=null&&(Campaign.CurrentNode.Kind=="补给"||!ValidateSeaPlacement(out _)))return false;
             Clock = 0; accumulator = 0; Hits.Clear(); Paused = false;
             foreach (var unit in Units) ResetFighter(unit);
             foreach (var defender in Defenders) ResetActor(defender, true, Vector2.left);
+            if (Campaign != null) { Campaign.LockBattleLineup(); BeginCampaignBattle(); }
             Phase = FormationPhase.Fighting;
             return true;
         }
@@ -262,7 +273,8 @@ namespace YesterdayConvoy
         {
             Clock = 0; accumulator = 0; Hits.Clear(); Paused = false;
             foreach (var unit in Units) { ConfigureFighter(unit); ResetFighter(unit); }
-            BuildDefenders(); Phase = FormationPhase.Preparation;
+            if (Campaign == null) BuildDefenders(); else { ConfigureCampaignTeam(); BuildCampaignDefenders(); }
+            Phase = FormationPhase.Preparation;
         }
 
         static void ConfigureFighter(FormationFighter unit)
@@ -282,6 +294,10 @@ namespace YesterdayConvoy
                 // Existing authored profiles scaled for this simplified automatic-skill prototype.
                 // These are trial values, not a migration of the original character's complete kit.
                 var stats = FormationUnitCatalog.Find(unit.ArtId).Stats;
+                if (stats == null) { var spec = FormationCampaignRules.Find(unit.ArtId);
+                    unit.MaxHealth = spec.Health * healthMultiplier; unit.Attack = spec.Attack * attackMultiplier;
+                    unit.Armor=spec.Armor; unit.MagicResistance=spec.MagicResistance; unit.Range=spec.Range;
+                    unit.Interval=spec.Interval; unit.MoveSpeed=spec.MoveSpeed;unit.SkillRequired=spec.RequiredSP;return; }
                 unit.MaxHealth = Mathf.Max(1, stats.HP * 3) * healthMultiplier;
                 unit.Attack = stats.Attack * 2.5f * attackMultiplier;
                 unit.Armor = stats.Armor + (unit.Star - 1) * 4;
@@ -354,6 +370,7 @@ namespace YesterdayConvoy
 
         void Tick(float dt)
         {
+            if (Campaign != null) { TickCampaign(dt); return; }
             Hits.RemoveAll(hit => hit.At < Clock - 3);
             foreach (var unit in Units)
             {

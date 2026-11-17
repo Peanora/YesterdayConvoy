@@ -56,10 +56,10 @@ namespace YesterdayConvoy.Editor
             var authoring = terrainObject.AddComponent<FormationBattleTerrainAuthoring>();
             authoring.regions = new[]
             {
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+5,1,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+5,5,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+2,1,2,1), height=.36f, allowDefender=false },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+3,4,2,1), height=.36f, allowDefender=false }
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-5,1,2,2), height=.48f, allowDefender=true },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-4,5,2,2), height=.48f, allowDefender=true },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+4,1,2,1), height=.36f, allowDefender=false },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+7,4,2,1), height=.36f, allowDefender=false }
             };
             controller.terrain = authoring;
             foreach (var region in authoring.regions)

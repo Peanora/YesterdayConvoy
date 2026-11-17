@@ -1,0 +1,19 @@
+{
+  "task": "B10",
+  "view": "main",
+  "timedClips": 3,
+  "frames": 1634,
+  "pages": 67,
+  "zeroDurationMetadataStates": 1,
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Skill"
+  ],
+  "ppu": 124.77387018475683,
+  "pngBytes": 78406199,
+  "cacheSegments": 5,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

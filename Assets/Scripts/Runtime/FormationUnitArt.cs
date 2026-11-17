@@ -13,15 +13,23 @@ namespace YesterdayConvoy
     {
         static readonly Dictionary<string,FormationUnitArt> cache = new Dictionary<string,FormationUnitArt>(StringComparer.Ordinal);
         static readonly Dictionary<string,CardDefinition> cards = new Dictionary<string,CardDefinition>(StringComparer.Ordinal);
-        static readonly string[] warmKeys = {"idle","walk","attack_start","attack","attack_end","cast","skill","death"};
+        static readonly string[] warmKeys = {"idle","walk","attack_start","attack","attack_end","cast","skill","death",
+            "extra_die_2","extra_idle_2","extra_move_2","extra_revive",
+            "extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end"};
         const float SerializedFrameRate = 20f; // Existing Wisadel comic player uses twenty frames per second.
 
         readonly ArtCatalog catalog;
+        readonly BossRosterArt native;
         readonly CardDefinition card;
         readonly float height;
-        public string Root => catalog?.Root;
+        public string Root => native!=null ? "BossRoster/"+native.Task+"/"+native.View : catalog?.Root;
         public float Height => height;
-        public Sprite Portrait => catalog != null ? catalog.Portrait : card != null ? card.Portrait : null;
+        public Sprite Portrait => native!=null ? native.Portrait : catalog != null ? catalog.Portrait : card != null ? card.Portrait : null;
+        internal string NativeTask => native?.Task;
+        internal IEnumerable<string> NativeActions => native?.SourceNames ?? Array.Empty<string>();
+
+        FormationUnitArt(BossRosterArt source)
+        { native=source; height=source.Height; }
 
         FormationUnitArt(ArtCatalog source)
         {
@@ -60,7 +68,10 @@ namespace YesterdayConvoy
             if(definition==null)return null;
             if(cache.TryGetValue(definition.CardId,out var prior))return prior;
             FormationUnitArt art;
-            if(definition.ArtRoot==null)
+            var original = BossRosterArt.For(definition.CardId);
+            if(original!=null)
+                art=new FormationUnitArt(original);
+            else if(definition.ArtRoot==null)
             {
                 // Wisadel's approved comic frames are authored Sprite references, not Resources
                 // or a MonsterCombatArt manifest. The scene supplies the existing card asset.
@@ -71,6 +82,8 @@ namespace YesterdayConvoy
             {
                 var source=ArtCatalog.Read(definition.ArtRoot);
                 if(definition.CardId=="CARD_TALULAH_TRIAL")source.Extras(new[]{"death"});
+                if(definition.CardId=="CARD_M30")source.Extras(new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"});
+                if(definition.CardId=="CARD_M31")source.Extras(new[]{"extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end"});
                 art=new FormationUnitArt(source);
             }
             cache.Add(definition.CardId,art);
@@ -80,6 +93,7 @@ namespace YesterdayConvoy
         public bool HasAction(string action)
         {
             if(string.IsNullOrEmpty(action))return false;
+            if(native!=null)return native.HasClip(action);
             if(catalog!=null)return catalog.Clips.ContainsKey(action);
             if(action=="idle")return card!=null && card.BattleSprite!=null;
             var frames=SerializedFrames(action);
@@ -90,6 +104,7 @@ namespace YesterdayConvoy
         public float Duration(string action)
         {
             if(!HasAction(action))return 0;
+            if(native!=null)return native[action].Duration;
             if(catalog!=null)
             {
                 float duration=catalog.Clips[action].Duration;
@@ -108,6 +123,12 @@ namespace YesterdayConvoy
         {
             get
             {
+                if(native!=null)
+                {
+                    foreach(string key in warmKeys)
+                        if(native.HasClip(key)&&!native[key].ReadyFor(0,.6,true))return false;
+                    return true;
+                }
                 if(catalog==null)return HasAction("idle");
                 foreach(string key in warmKeys)
                     if(catalog.Clips.TryGetValue(key,out var clip) && !clip.Ready)return false;
@@ -118,6 +139,13 @@ namespace YesterdayConvoy
         /// <summary>Only this role's standard presentation clips; no roster-wide or extra-skill warm.</summary>
         public IEnumerator Warm()
         {
+            if(native!=null)
+            {
+                foreach(string key in warmKeys)
+                    if(native.HasClip(key))foreach(var sequence in native.SequencesFor(key,0,.6,true))
+                        if(!sequence.Ready)yield return sequence.Warm();
+                yield break;
+            }
             if(catalog==null)yield break; // Serialized comic frames are already Unity Sprite assets.
             foreach(string key in warmKeys)
                 if(catalog.Clips.TryGetValue(key,out var clip) && !clip.Ready)
@@ -131,6 +159,8 @@ namespace YesterdayConvoy
             double duration=Duration(action);
             time=double.IsNaN(time) || time<0 ? 0 : double.IsPositiveInfinity(time) ? duration : time;
             time=loop ? time%duration : Math.Min(time,duration);
+            if(native!=null)
+                return native[action].ReadyFor(time,0,loop) ? native[action].At(time,loop,out _) : null;
             if(catalog==null)
             {
                 if(action=="idle")return card.BattleSprite;
@@ -146,6 +176,24 @@ namespace YesterdayConvoy
             if(action=="attack" && catalog.Clips.TryGetValue("attack_end",out var end) && time>=main.Duration)
                 return Sample(end,time-main.Duration);
             return Sample(main,time);
+        }
+
+        internal bool WindowReady(string action,double time,bool loop)
+            =>native==null || !HasAction(action) || native[action].ReadyFor(time,.6,loop);
+        internal IEnumerator WarmWindow(string action,double time,bool loop)
+        {
+            if(native==null||!HasAction(action))yield break;
+            foreach(var sequence in native.SequencesFor(action,time,.6,loop))
+                if(!sequence.Ready)yield return sequence.Warm();
+        }
+        internal IEnumerable<string> WindowOwners(string action,double time,bool loop)
+        {
+            if(!HasAction(action))yield break;
+            if(native!=null)
+            {
+                foreach(var sequence in native.SequencesFor(action,time,.6,loop))yield return sequence.CacheKey;
+            }
+            else if(catalog!=null)yield return catalog.Clips[action].CacheKey;
         }
 
         IReadOnlyList<Sprite> SerializedFrames(string action)

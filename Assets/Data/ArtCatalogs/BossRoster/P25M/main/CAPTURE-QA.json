@@ -1,0 +1,239 @@
+{
+  "task": "P25M",
+  "boundsSampleFps": 120,
+  "alphaSampling": null,
+  "clips": [
+    {
+      "source": "Attack",
+      "count": 109,
+      "visibleFrames": 109,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Die",
+      "count": 61,
+      "visibleFrames": 45,
+      "emptyFrames": 16,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Idle",
+      "count": 162,
+      "visibleFrames": 162,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Move",
+      "count": 241,
+      "visibleFrames": 241,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Start",
+      "count": 61,
+      "visibleFrames": 50,
+      "emptyFrames": 11,
+      "edgeFrames": 0
+    }
+  ],
+  "frames": 634,
+  "visibleFrames": 607,
+  "emptyFrames": 27,
+  "edgeFrames": 0,
+  "errors": [],
+  "emptySourceStates": [
+    {
+      "source": "Die",
+      "frame": 45,
+      "time": 0.75,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 46,
+      "time": 0.7666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 47,
+      "time": 0.7833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 48,
+      "time": 0.8,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 49,
+      "time": 0.8166666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 50,
+      "time": 0.8333333333333334,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 51,
+      "time": 0.85,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 52,
+      "time": 0.8666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 53,
+      "time": 0.8833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 54,
+      "time": 0.9,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 55,
+      "time": 0.9166666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 56,
+      "time": 0.9333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 57,
+      "time": 0.95,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 58,
+      "time": 0.9666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 59,
+      "time": 0.9833333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Die",
+      "frame": 60,
+      "time": 1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 0,
+      "time": 0,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 1,
+      "time": 0.016666666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 2,
+      "time": 0.03333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 3,
+      "time": 0.05,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 4,
+      "time": 0.06666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 5,
+      "time": 0.08333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 6,
+      "time": 0.1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 7,
+      "time": 0.11666666666666667,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 8,
+      "time": 0.13333333333333333,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 9,
+      "time": 0.15,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 10,
+      "time": 0.16666666666666666,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,42 @@
+{
+  "task": "P24D",
+  "boundsSampleFps": 120,
+  "alphaSampling": null,
+  "clips": [
+    {
+      "source": "Attack",
+      "count": 24,
+      "visibleFrames": 24,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Die",
+      "count": 34,
+      "visibleFrames": 34,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Idle",
+      "count": 82,
+      "visibleFrames": 82,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Move",
+      "count": 61,
+      "visibleFrames": 61,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    }
+  ],
+  "frames": 201,
+  "visibleFrames": 201,
+  "emptyFrames": 0,
+  "edgeFrames": 0,
+  "errors": [],
+  "emptySourceStates": [],
+  "passed": true
+}

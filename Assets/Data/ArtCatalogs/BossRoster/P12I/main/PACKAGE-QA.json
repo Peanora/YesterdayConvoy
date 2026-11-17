@@ -1,0 +1,20 @@
+{
+  "task": "P12I",
+  "view": "main",
+  "timedClips": 4,
+  "frames": 491,
+  "pages": 22,
+  "zeroDurationMetadataStates": 1,
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Die",
+    "Start"
+  ],
+  "ppu": 266.6177473995994,
+  "pngBytes": 22424440,
+  "cacheSegments": 4,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

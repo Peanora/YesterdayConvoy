@@ -1,0 +1,447 @@
+{
+  "version": 1,
+  "task": "P25M",
+  "name": "塑能基质",
+  "view": "main",
+  "model": "enemy_10212_klhz",
+  "skin": "default",
+  "fps": 60,
+  "cell": 384,
+  "columns": 5,
+  "captureBounds": [
+    -115.34826029290248,
+    -35.97208579164107,
+    116.14774207983999,
+    252.50002493829794
+  ],
+  "captureMargin": 1.14,
+  "viewport": 328.85820623213044,
+  "pivotX": 0.49878445820753947,
+  "pivotY": 0.1707882986599143,
+  "scale": 1.1676765022824054,
+  "status": "APPROVED_ORIGINAL_SOURCE_CAPTURE_NOT_YET_BOUND",
+  "clips": [
+    {
+      "key": "Attack",
+      "source": "Attack",
+      "duration": 1.7999999523162842,
+      "count": 109,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.49878445820753947,
+      "pivotY": 0.1707882986599143,
+      "events": [
+        {
+          "time": 0.6000000238418579,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Attack-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack-004.png",
+          "count": 9,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Die",
+      "source": "Die",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.49878445820753947,
+      "pivotY": 0.1707882986599143,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Die-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "Idle",
+      "source": "Idle",
+      "duration": 2.6666667461395264,
+      "count": 162,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.49878445820753947,
+      "pivotY": 0.1707882986599143,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-006.png",
+          "count": 12,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "Move",
+      "source": "Move",
+      "duration": 4,
+      "count": 241,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.49878445820753947,
+      "pivotY": 0.1707882986599143,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Move-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-009.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "Start",
+      "source": "Start",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.49878445820753947,
+      "pivotY": 0.1707882986599143,
+      "events": [
+        {
+          "time": 0.3333333432674408,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Start-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Start-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Start-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "Attack-000.png",
+      "sha256": "468679689310f6abf0a5a791fc8a506c880f412a97bdf0ba0588afbc6035680d",
+      "bytes": 1543269
+    },
+    {
+      "file": "Attack-001.png",
+      "sha256": "5f16bd2aeecfb5e1e99f127ed6d48716ff565a23f705d16073ced56bd0108746",
+      "bytes": 1554250
+    },
+    {
+      "file": "Attack-002.png",
+      "sha256": "7c42ea49fe460c6f278cd9ad37e137709b2f1acf2ace619987e737c30bb9fcd5",
+      "bytes": 1563602
+    },
+    {
+      "file": "Attack-003.png",
+      "sha256": "4569e5182bf643df4ac816a2ec171296012deaa65768c71a2246ca02722174cd",
+      "bytes": 1540961
+    },
+    {
+      "file": "Attack-004.png",
+      "sha256": "303ca642fa1c3a47f5eb476a7d0632d5a6cf81d86b1fe7e3481983e5cc88b089",
+      "bytes": 523187
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "9b746b154c59194b1bb91ebe137a60f117dca8f99154a3ecab1dcd51f4869483",
+      "bytes": 1538440
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "4fd5ebeb258a5688bab9a45c94bbfc0cae685313135560e976a042275689a1c8",
+      "bytes": 861198
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "78cc4a9baa84ece84b53e9fa9c7c8885f87d39a73086a4e14f2b70d366c179ea",
+      "bytes": 47057
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "99f848371f9ab6deb33d5de8f9885523c6459fe61b666d330991b12adddde771",
+      "bytes": 1534726
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "269235b55574e97aadafbff9ff6f30f189f41e7ea245a9a36233a16ac4f0aee9",
+      "bytes": 1536967
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "9b6d939f41d9a8011e8c5b8a46fa9794d61b057f28911380b7cacde272e9dfea",
+      "bytes": 1544512
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "9a712ef7d9522fab555360262dcf225f07784d36955efc32dbf2d266fa8d6938",
+      "bytes": 1497820
+    },
+    {
+      "file": "Idle-004.png",
+      "sha256": "24ed5893bcb64ad32a4b49d7ee14ec289621ebbe05f2e61a0592e79d38602ad3",
+      "bytes": 1493517
+    },
+    {
+      "file": "Idle-005.png",
+      "sha256": "7909df16e5bdd894535565eca0fdb61a53f9a2427ac5a186a3ffab85966ed06c",
+      "bytes": 1531107
+    },
+    {
+      "file": "Idle-006.png",
+      "sha256": "e7a58d93e2d1d6e1261873ede08bf03a4a4e4438ee354bcf4aa272cbd50cbe4f",
+      "bytes": 708435
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "e75e91c06edf53931ab1423c70e497b63fbb8f2946c920b373e1c9ae128cedb4",
+      "bytes": 1602251
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "fcfe2cb65c97edf0aa19ab27bb06fec3cf8d842ebb7126479be747baa523642c",
+      "bytes": 1547379
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "c37ff0df493b3979a5b26875db8784bd2d4d7810b251544969a9913e1934147d",
+      "bytes": 1527045
+    },
+    {
+      "file": "Move-003.png",
+      "sha256": "14ef1c442ea31bdb6e2c66f45bd5de920159bdfe69aa8eb88372255c272b8905",
+      "bytes": 1605647
+    },
+    {
+      "file": "Move-004.png",
+      "sha256": "5123cc1fba4a119d68dcad3737706704cc6f7c21e884f2b90f7c886f312b5ca3",
+      "bytes": 1585993
+    },
+    {
+      "file": "Move-005.png",
+      "sha256": "ef9fd3f3e042a3b2908d8a125aca44b9368a55d275fd06837927a670e08ec3a7",
+      "bytes": 1539761
+    },
+    {
+      "file": "Move-006.png",
+      "sha256": "29faa4e8ccce24ecfc3cccb61b4d8f4b5a97bba464a37af3477a83a7345226b9",
+      "bytes": 1573794
+    },
+    {
+      "file": "Move-007.png",
+      "sha256": "9acdfa6cba3668cbc530507079bd5d44fbae35ed7b5d53c77e4d73b23df6a15d",
+      "bytes": 1569086
+    },
+    {
+      "file": "Move-008.png",
+      "sha256": "fdff9d0791e7711b3348c360eebc65cec10bfa1dc7a335d3bce0489973865db8",
+      "bytes": 1535390
+    },
+    {
+      "file": "Move-009.png",
+      "sha256": "6f3f1919dde68772b072350e288ed65a1b4bcbc55d185ccd717f44efc2508878",
+      "bytes": 1021870
+    },
+    {
+      "file": "Start-000.png",
+      "sha256": "0092a671bf4181dc3b1c56178c100151e4f4b237576ac56f5c2b9b5cc0eb7add",
+      "bytes": 481239
+    },
+    {
+      "file": "Start-001.png",
+      "sha256": "5e6da73a8dcd70f7ff2bfe63667262b8e7dba905f9bb6f4acf178fd8d6bc7aee",
+      "bytes": 1573059
+    },
+    {
+      "file": "Start-002.png",
+      "sha256": "f9164c051f74c3e6f2ea83efce4d35f8304cfeac3d533f3b3395c81f845066f9",
+      "bytes": 674376
+    }
+  ],
+  "zeroDurationStates": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -96.565185546875,
+        11.494230270385742,
+        89.06401824951172,
+        236.18313598632812
+      ],
+      "boundsSampleFPS": 120,
+      "verticesMeasured": 72,
+      "events": [],
+      "loop": false
+    }
+  ]
+}

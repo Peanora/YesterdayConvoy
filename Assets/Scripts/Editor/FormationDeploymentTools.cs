@@ -24,7 +24,7 @@ namespace YesterdayConvoy.Editor
             ClearForegroundOcclusion();
             EditorUtility.SetDirty(controller);EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
             Validate();
-            Debug.Log("FORMATION_DEPLOYMENT_AUTHOR_PASS: 43 saved card references, 42 eligible shop roles, expanded saved terrain and source camera retained; independent fixed views are runtime presentation only");
+            Debug.Log("FORMATION_DEPLOYMENT_AUTHOR_PASS: "+FormationUnitCatalog.All.Count+" saved card references, v0.7 formal roster selected by campaign rules, expanded saved terrain and source camera retained");
         }
         [MenuItem("Yesterday Convoy/Formation Battle/Rebuild Expanded Preparation Board")]
         public static void RebuildExpandedBoard()
@@ -51,8 +51,8 @@ namespace YesterdayConvoy.Editor
             FormationReferenceMapTools.Validate();
             var controller=Object.FindAnyObjectByType<FormationBattleController>();
             if(controller.formationCards==null||controller.formationCards.Length!=FormationUnitCatalog.All.Count||
-                controller.formationCards.Any(c=>c==null)||controller.formationCards.Select(c=>c.CardId).Distinct().Count()!=43)
-                throw new InvalidOperationException("Saved formation card references must cover all 43 existing authored identities.");
+                controller.formationCards.Any(c=>c==null)||controller.formationCards.Select(c=>c.CardId).Distinct().Count()!=FormationUnitCatalog.All.Count)
+                throw new InvalidOperationException("Saved formation card references must cover the full authored catalog.");
             foreach(var definition in FormationUnitCatalog.All)
                 if(!controller.formationCards.Any(c=>c.CardId==definition.CardId)||definition.Footprint.x<1||definition.Footprint.y<1||definition.VisualHeight<=0)
                     throw new InvalidOperationException("Invalid deployment presentation: "+definition.CardId);

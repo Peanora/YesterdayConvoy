@@ -26,7 +26,8 @@ namespace YesterdayConvoy
         internal static Rect ShopPanel=>new Rect(188,69,1074,169);
         internal static Rect Offer(int index)=>new Rect(188+index*190.5f,105,182.5f,120);
         internal static Rect RecruitList=>new Rect(1011,262,252,224);
-        internal static Rect LineupSlot(int index)=>new Rect(188+index*94.2f,516,94,68);
+        internal static Rect LineupSlot(int index,int count=10)
+        {float step=942f/Mathf.Max(10,count);return new Rect(188+index*step,516,step-.2f,68);}
         internal static Rect ReserveSlot(int index)=>new Rect(188+index*94.2f,627,94,68);
         internal static Rect SellLeft=>new Rect(0,65,100,643);
         internal static Rect SellRight=>new Rect(1180,65,100,643);

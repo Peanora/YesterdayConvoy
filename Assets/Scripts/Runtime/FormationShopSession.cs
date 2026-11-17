@@ -16,24 +16,35 @@ namespace YesterdayConvoy
         public ShopSeatLayout Seats { get; private set; }
         public int Seed { get; private set; }
         public int Round { get; private set; } = 1;
+        public FormationCampaignRun Run {get;private set;}
         public ShopTrialModel.RoundReward LastReward { get; private set; }
-        public bool CanShop => model == null || model.Phase == FormationPhase.Preparation;
+        public bool CanShop => (model == null || model.Phase == FormationPhase.Preparation)&&(Run==null||!Run.Finished&&!Run.HasBlockingChoice&&!Run.NodeSettled);
 
         readonly List<string> lineup = new List<string>();
         readonly Dictionary<int, Vector2> instancePositions = new Dictionary<int, Vector2>();
         readonly Dictionary<string, Vector2> kindPositions = new Dictionary<string, Vector2>(StringComparer.Ordinal);
         FormationBattleModel model;
 
-        public static FormationShopSession StartNew(int seed)
+        public static FormationShopSession StartNew(int seed,bool fullCampaign=false)
         {
-            Current = new FormationShopSession(seed); return Current;
+            Current = new FormationShopSession(seed,fullCampaign); return Current;
         }
 
-        public FormationShopSession(int seed)
+        public FormationShopSession(int seed,bool fullCampaign=false)
         {
             Seed = seed;
-            Shop = new ShopTrialModel(FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
-                new ShopTrialModel.Role { Id = role.CardId, Name = role.Name, Cost = role.Cost }), seed);
+            Shop = new ShopTrialModel((fullCampaign?FormationCampaignRules.AllUnits.Select(role=>new ShopTrialModel.Role{Id=role.CardId,Name=role.Name,Cost=role.Cost}):FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
+                new ShopTrialModel.Role { Id = role.CardId, Name = role.Name, Cost = role.Cost })), seed);
+            if(fullCampaign)
+            {
+                Shop.EnableFormationEconomy();
+                var random=new System.Random(seed^0x317a9);
+                var starting=FormationCampaignRules.AllUnits.Where(role=>role.Cost==1).OrderBy(_=>random.Next()).Take(3).Select(role=>new ShopTrialModel.Piece{Id=role.CardId,Star=1});
+                Shop.Preset(starting,Array.Empty<string>(),level:3,xp:0,gold:8);
+                Run=new FormationCampaignRun(Shop,seed);
+            }
+            else
+            {
             // Character-testing demo only. Other Journey callers keep the default finite economy.
             Shop.EnableJourneyEconomy(unlimited: true);
             Shop.Preset(new[]
@@ -42,6 +53,7 @@ namespace YesterdayConvoy
                 new ShopTrialModel.Piece { Id = "CARD_M10", Star = 1 },
                 new ShopTrialModel.Piece { Id = "CARD_M08", Star = 1 }
             }, Array.Empty<string>(), level: 3, xp: 0, gold: 12);
+            }
             Seats = new ShopSeatLayout();
             lineup.AddRange(Shop.Bench.Select(piece => piece.Id));
             Synchronize(); Shop.BeginPreparation(); Shop.Refresh(true);
@@ -52,11 +64,12 @@ namespace YesterdayConvoy
             if (target == null) throw new ArgumentNullException(nameof(target));
             if (target.Seed != Seed || target.Phase != FormationPhase.Preparation)
                 throw new InvalidOperationException("Formation shop can only bind the matching challenge in preparation.");
+            if(Run!=null)target.BindCampaign(Run);
             if (!target.PrepareShopRound(Round)) throw new InvalidOperationException("Invalid formation round.");
             model = target; Synchronize();
             if (!TryProject(Seats.Lineup(Shop.Bench).ToArray(), out var entries, out var failure))
                 throw new InvalidOperationException(failure);
-            if (!target.ApplyRoster(entries, Shop.Level)) throw new InvalidOperationException("Shop lineup cannot be projected into this formation battle.");
+            if (!target.ApplyRoster(entries, Shop.PopulationCap)) throw new InvalidOperationException("Shop lineup cannot be projected into this formation battle.");
             SavePositions(target);
         }
 
@@ -77,21 +90,21 @@ namespace YesterdayConvoy
             if (!CanShop) return Unavailable();
             SavePositions(model);
             var result = Shop.Purchase(index);
-            if (result.Success) Synchronize();
+            if (result.Success) {Run?.OnPurchase(result.Id);Synchronize();}
             return result;
         }
 
         public ShopTrialModel.Result Refresh()
         {
             if (!CanShop) return Unavailable();
-            return Shop.Refresh();
+            var result=Shop.Refresh();if(result.Success)Run?.OnManualRefresh();return result;
         }
 
         public ShopTrialModel.Result BuyExperience()
         {
             if (!CanShop) return Unavailable();
             var result = Shop.Upgrade();
-            if (result.Success) Synchronize();
+            if (result.Success) {Run?.OnShopChanged();Synchronize();}
             return result;
         }
 
@@ -100,7 +113,7 @@ namespace YesterdayConvoy
             if (!CanShop) return Unavailable();
             SavePositions(model);
             var result = Shop.Sell(instance);
-            if (result.Success) Synchronize();
+            if (result.Success) {Run?.OnShopChanged();Synchronize();}
             return result;
         }
 
@@ -111,12 +124,12 @@ namespace YesterdayConvoy
                 !TryProject(selected, out var entries, out failure))
                 return new ShopTrialModel.Result { Message = failure };
             var origin = Seats.For(instance).Value;
-            if (!Seats.TryMove(Shop.Bench, Shop.Level, instance, toLineup, seat, out failure))
+            if (!Seats.TryMove(Shop.Bench, Shop.PopulationCap, instance, toLineup, seat, out failure))
                 return new ShopTrialModel.Result { Message = failure };
             SavePositions(model);
-            if (model != null && !model.ApplyRoster(entries, Shop.Level))
+            if (model != null && !model.ApplyRoster(entries, Shop.PopulationCap))
             {
-                Seats.TryMove(Shop.Bench, Shop.Level, instance, origin.Lineup, origin.Index, out _);
+                Seats.TryMove(Shop.Bench, Shop.PopulationCap, instance, origin.Lineup, origin.Index, out _);
                 return new ShopTrialModel.Result { Message = "编队状态已变化，请重新选择落点" };
             }
             lineup.Clear(); lineup.AddRange(Seats.Lineup(Shop.Bench).Select(piece => piece.Id));
@@ -132,12 +145,12 @@ namespace YesterdayConvoy
             var preview = PlanDeploy(instance, anchor, out var entries, out int enterSeat);
             if (!preview.Valid) return new ShopTrialModel.Result { Message = preview.Failure };
             var origin = Seats.For(instance).Value;
-            if (enterSeat >= 0 && !Seats.TryMove(Shop.Bench, Shop.Level, instance, true, enterSeat, out var failure))
+            if (enterSeat >= 0 && !Seats.TryMove(Shop.Bench, Shop.PopulationCap, instance, true, enterSeat, out var failure))
                 return new ShopTrialModel.Result { Message = failure };
             SavePositions(model);
-            if (!model.ApplyRoster(entries, Shop.Level))
+            if (!model.ApplyRoster(entries, Shop.PopulationCap))
             {
-                if (enterSeat >= 0) Seats.TryMove(Shop.Bench, Shop.Level, instance, origin.Lineup, origin.Index, out _);
+                if (enterSeat >= 0) Seats.TryMove(Shop.Bench, Shop.PopulationCap, instance, origin.Lineup, origin.Index, out _);
                 return new ShopTrialModel.Result { Message = "编队状态已变化，请重新选择落点" };
             }
             lineup.Clear(); lineup.AddRange(Seats.Lineup(Shop.Bench).Select(piece => piece.Id));
@@ -157,7 +170,7 @@ namespace YesterdayConvoy
             var selected = Seats.Lineup(Shop.Bench).ToArray();
             if (!Seats.InLineup(instance))
             {
-                enterSeat = Seats.FirstEmpty(true, Shop.Level);
+                enterSeat = Seats.FirstEmpty(true, Shop.PopulationCap);
                 if (enterSeat < 0) return FormationDeploymentPreview.Invalid("上阵席位已满，请先换下角色或升级", cells);
                 if (!TryPlanSeatMove(instance, true, enterSeat, out selected, out var seatFailure))
                     return FormationDeploymentPreview.Invalid(seatFailure, cells);
@@ -170,7 +183,7 @@ namespace YesterdayConvoy
             entries[moving].Spawn = new Vector2(anchor.x, anchor.y);
             if (preview.SwapIndex >= 0)
                 entries[preview.SwapIndex].Spawn = new Vector2(preview.SwapCells.x, preview.SwapCells.y);
-            if (!FormationBattleModel.CanBuildRoster(entries, Shop.Level))
+            if (!FormationBattleModel.CanBuildRoster(entries, Shop.PopulationCap))
                 return FormationDeploymentPreview.Invalid("完整编队无法放入左侧部署区，已保留原位置", cells);
             return preview;
         }
@@ -179,7 +192,7 @@ namespace YesterdayConvoy
         {
             selected = null; failure = null;
             var origin = Seats.For(instance);
-            if (!origin.HasValue || seat < 0 || seat >= (toLineup ? Shop.Level : 10))
+            if (!origin.HasValue || seat < 0 || seat >= (toLineup ? Shop.PopulationCap : 10))
             { failure = "该席位尚未解锁"; return false; }
             int swapped = Seats.At(toLineup, seat);
             selected = Shop.Bench.Where(piece => piece.Instance == instance ? toLineup :
@@ -188,7 +201,7 @@ namespace YesterdayConvoy
                     piece.Instance == swapped ? origin.Value.Index : Seats.For(piece.Instance).Value.Index).ToArray();
             if (selected.Select(piece => piece.Id).Distinct(StringComparer.Ordinal).Count() != selected.Length)
             { failure = "同名角色只能有一张出战；可与其直接交换"; return false; }
-            if (selected.Length > Shop.Level || Shop.Bench.Count - selected.Length > 10)
+            if (selected.Length > Shop.PopulationCap || Shop.Bench.Count - selected.Length > 10)
             { failure = "备战席或上阵席位已满"; return false; }
             return true;
         }
@@ -238,7 +251,7 @@ namespace YesterdayConvoy
                 Instance = piece.Instance, ArtId = FormationUnitCatalog.Find(piece.Id).ArtId,
                 Star = piece.Star, Spawn = positions[piece.Instance]
             }).ToList();
-            if (!FormationBattleModel.CanBuildRoster(entries, Shop.Level))
+            if (!FormationBattleModel.CanBuildRoster(entries, Shop.PopulationCap))
             { failure = "编队包含重复、越界或不可用角色"; return false; }
             return true;
         }
@@ -260,6 +273,7 @@ namespace YesterdayConvoy
 
         public ShopTrialModel.RoundReward SettleWin(int round)
         {
+            if(Run!=null)return SettleBattle(true,model?.EncounterProgress??0,model?.InitialDefenderCount??0,model?.RemainingDefenders??0,model?.BossAlive??false);
             if (model == null || model.Phase != FormationPhase.Won || round != Round || model.Round != Round) return null;
             // Stable key survives a same-round retry. Neither replay nor repeated GUI frames can farm it.
             LastReward = Shop.SettleRound("formation-win-" + round, true);
@@ -268,6 +282,7 @@ namespace YesterdayConvoy
 
         public bool AdvanceRound()
         {
+            if(Run!=null)return AdvanceNode();
             if (model == null || model.Round != Round || model.Phase != FormationPhase.Won || Round >= 5) return false;
             SavePositions(model); SettleWin(Round);
             if (!model.NextRound()) return false;
@@ -279,15 +294,38 @@ namespace YesterdayConvoy
 
         public bool Retry()
         {
+            if(Run!=null)return false;
             if (model == null || model.Round != Round) return false;
             SavePositions(model); model.Retry(); ApplyTo(model);
             // No BeginPreparation, free refresh, reward, gold reset or RNG reset on a retry.
             return true;
         }
 
+        public ShopTrialModel.Result Choose(int index)
+        {
+            if(Run==null||model!=null&&model.Phase!=FormationPhase.Preparation&&model.Phase!=FormationPhase.Won&&model.Phase!=FormationPhase.Lost)return Unavailable();
+            var result=Run.Choose(index);if(result.Success){Synchronize();if(model!=null&&model.Phase==FormationPhase.Preparation)ApplyTo(model);}return result;
+        }
+        public bool RerollChoice()=>Run!=null&&Run.RerollChoice();
+        public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
+        {
+            if(Run==null)return won?SettleWin(Round):null;
+            bool already=Run.NodeSettled;
+            if(model!=null&&model.Phase!=FormationPhase.Won&&model.Phase!=FormationPhase.Lost)return null;
+            LastReward=Run.SettleBattle(won,progress,initialCount,remainingCount,bossAlive);
+            if(!already&&model!=null)Shop.AddGold(model.BattleGold);
+            Synchronize();return LastReward;
+        }
+        public bool AdvanceNode()
+        {
+            if(Run==null||model==null)return false;
+            SavePositions(model);if(!Run.AdvanceNode())return false;
+            Round=Run.NodeIndex+1;LastReward=null;model.Retry();ApplyTo(model);return true;
+        }
+
         void Synchronize()
         {
-            Seats.Synchronize(Shop.Bench, lineup, Shop.Level);
+            Seats.Synchronize(Shop.Bench, lineup, Shop.PopulationCap);
             var selected = Seats.Lineup(Shop.Bench).ToArray();
             lineup.Clear(); lineup.AddRange(selected.Select(piece => piece.Id));
             if (!Shop.SetLineup(lineup, selected.Select(piece => piece.Instance)))

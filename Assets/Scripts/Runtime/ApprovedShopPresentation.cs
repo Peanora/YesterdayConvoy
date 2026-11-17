@@ -16,6 +16,7 @@ namespace YesterdayConvoy
             public Func<Font> Font;
             public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive;
             public Func<int> DragInstance;
+            public Func<int> LineupSeatCount;
             public Func<Vector2> Pointer;
             public Func<int,Rect> PieceRect;
             public Func<int,bool> InLineup;
@@ -188,12 +189,12 @@ namespace YesterdayConvoy
         public void DrawShopBench(GUIStyle center)
         {
             // A continuous raised platform per row; occupied pads retain the full recruitment-cost colour.
-            DrawShopWalkway(ApprovedUi.LineupSlot(0),shop.Level,true);
+            DrawShopWalkway(ApprovedUi.LineupSlot(0,host.LineupSeatCount?.Invoke()??10),shop.PopulationCap,true);
             DrawShopWalkway(ApprovedUi.ReserveSlot(0),10,false);
             int reserve=shop.Bench.Count(p=>!host.InLineup(p.Instance));
             var title=ApprovedUi.Text(host.Font(),13,TextAnchor.MiddleLeft,Color.white,600);
             var hint=ApprovedUi.Text(host.Font(),10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
-            Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.Level}",title);
+            Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",title);
             Fill(new Rect(188,594,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,594,145,21),$"备战席  {reserve}/10",title);
             GUI.Label(new Rect(650,493,478,21),host.LineupHint??"自由拖放位置 · 重叠交换 · 开战自动向左收拢空位",hint);
             GUI.Label(new Rect(650,604,478,21),"可跨排拖放交换 · 同名限编队一张 · 两侧出售",hint);
@@ -222,9 +223,10 @@ namespace YesterdayConvoy
             Fill(new Rect(deck.x,deck.y,deck.width,3),new Color(.69f,.77f,.81f));
             Fill(new Rect(deck.x,deck.yMax,deck.width,5),new Color(.25f,.35f,.43f));
             Fill(new Rect(deck.x,deck.yMax+5,deck.width,2),new Color(.13f,.23f,.30f));
-            for(int i=0;i<10;i++)
+            int count=lineup?host.LineupSeatCount?.Invoke()??10:10;
+            for(int i=0;i<count;i++)
             {
-                var r=lineup?ApprovedUi.LineupSlot(i):ApprovedUi.ReserveSlot(i);
+                var r=lineup?ApprovedUi.LineupSlot(i,count):ApprovedUi.ReserveSlot(i);
                 Fill(r,new Color(.29f,.39f,.46f,lineup&&i>=unlocked?.55f:.2f));
                 Fill(new Rect(r.xMax-1,r.y,1,r.height),new Color(.75f,.83f,.87f,.25f));
                 if(lineup&&i>=unlocked)GUI.Label(r,"·",ApprovedUi.Text(host.Font(),22,TextAnchor.MiddleCenter,new Color(.77f,.84f,.88f,.5f)));
@@ -538,7 +540,7 @@ namespace YesterdayConvoy
 
                 Rect refresh=new Rect(956,offset+36,118,32),lockRect=new Rect(956,offset+74,118,32);
                 GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;
-                if(LoopButton(refresh,"刷新 2金币",true))
+                if(LoopButton(refresh,shop.FreeRefreshes>0?"免费刷新 "+shop.FreeRefreshes:"刷新 "+shop.RefreshPrice+"金币",true))
                 {host.Refresh();}
                 if(LoopButton(lockRect,shop.Locked?"已锁定 · 解锁":"锁定商店")){host.ToggleLock();}
                 GUI.enabled=originalEnabled;
@@ -622,7 +624,7 @@ namespace YesterdayConvoy
             Fill(new Rect(r.x+12,r.y+76,r.width-24,4),new Color(.65f,.72f,.77f));
             Fill(new Rect(r.x+12,r.y+76,(r.width-24)*(shop.Level==10?1:Mathf.Clamp01((float)shop.XP/shop.NextLevelXP)),4),new Color(.29f,.48f,.63f));
             bool enabled=GUI.enabled;GUI.enabled=enabled&&preparing&&!ShopPanelTransitioning;
-            if(LoopButton(new Rect(r.x+12,r.y+89,r.width-24,25),"买经验 +4 · 4金币"))
+            if(LoopButton(new Rect(r.x+12,r.y+89,r.width-24,25),"买经验 +"+shop.PurchasedXP+" · 4金币"))
             {host.BuyXP();}
             GUI.enabled=enabled;
         }

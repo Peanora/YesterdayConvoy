@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "task": "B19",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Boss previews plus P14/P26 skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://prts.wiki/w/%E6%B3%A5%E5%B2%A9%28%E6%95%8C%E6%96%B9%29",
+  "model": "enemy_1511_mdrock",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "B19/source/main/enemy_1511_mdrock.skel",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.skel",
+      "bytes": 140340,
+      "sha256": "8e81c6eabdd885a0d1daf08c2aa7c78ff83f7d857bafe7671b83b81c01e8ff06"
+    },
+    {
+      "file": "B19/source/main/enemy_1511_mdrock.atlas",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.atlas",
+      "bytes": 4564,
+      "sha256": "2d06685948ea9db1f008d6b1a9791b2816fb5d7c44edfcd60f7b03ecec5f51d3"
+    },
+    {
+      "file": "B19/source/main/enemy_1511_mdrock.png",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_1511_mdrock/enemy_1511_mdrock.png",
+      "bytes": 80806,
+      "sha256": "03d3577221e00fca5bc81add8ef221bcbe4dc00068cc103e04386fe238943164"
+    }
+  ],
+  "atlasManifestSha256": "e197e532ecfab3f15b8206b1987d2e9822d5e3660235d3a2b608f429c7a18f81",
+  "atlasFiles": [
+    {
+      "file": "Attack_1-000.png",
+      "sha256": "0fbafdf0c408b40c1effeb5c1bf4e349a11391920ddda2371af5c3bf408344b2",
+      "bytes": 1015662
+    },
+    {
+      "file": "Attack_1-001.png",
+      "sha256": "3c836ab7d9d10695aa77d444bd0a7994e78de33b9a93ed935c6197aa5dcc0f38",
+      "bytes": 1048110
+    },
+    {
+      "file": "Attack_1-002.png",
+      "sha256": "102a32583b8d79c1f19855e031fbf83b18269e046ac2469469955b1ba3433843",
+      "bytes": 1026067
+    },
+    {
+      "file": "Attack_1-003.png",
+      "sha256": "1755a9e552d2d03be4c0d8c2781d6419ae0e188bb93049686f50ae3fa54ae4a3",
+      "bytes": 993321
+    },
+    {
+      "file": "Attack_1-004.png",
+      "sha256": "cc3dd66f7f6fa52a0e8659c98f814f3129e9d99520a48bb3b681846884efce25",
+      "bytes": 895341
+    },
+    {
+      "file": "Attack_2-000.png",
+      "sha256": "3cfa1a8e0bf67d5c6cc3626926f556bd7911fc871333f8874fc16e8913fd544a",
+      "bytes": 1016102
+    },
+    {
+      "file": "Attack_2-001.png",
+      "sha256": "63aac77fbcb64e031a571d8001f88a88632c21aff5ea835f9f7456d5c581b346",
+      "bytes": 1061350
+    },
+    {
+      "file": "Attack_2-002.png",
+      "sha256": "4ba163a2e8b0470cef6f2f6be496a167eb0b8ba513fa434265ebdac146cbf744",
+      "bytes": 1052643
+    },
+    {
+      "file": "Attack_2-003.png",
+      "sha256": "4d3d78db7e916092184b99816a6ab855cad5756cb9a8ceacf63f522c6a744871",
+      "bytes": 960415
+    },
+    {
+      "file": "Attack_2-004.png",
+      "sha256": "cddb743e53647800b677ab41b8129381b89f93cece33be52213463d96c4a2a39",
+      "bytes": 866965
+    },
+    {
+      "file": "Die-000.png",
+      "sha256": "2dbb27f9872dcffe5d22e2489b7b9f998abd46c042c7fee369d1e145e7b94d99",
+      "bytes": 1026908
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "77e5c2ed9188d6cb7b3fad6289b388efd6eeef28fa2f74e4890d67589b797f09",
+      "bytes": 1001203
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "76f058f7ebfe43f9365972372e1a6083bbc9f1abc7a5a0fb616f45aa3ad1352b",
+      "bytes": 1000101
+    },
+    {
+      "file": "Die-003.png",
+      "sha256": "c7355d961c2c57ba8a1302281965e8d9a97f72124e9c0c88f81c83717b957e2a",
+      "bytes": 1029285
+    },
+    {
+      "file": "Die-004.png",
+      "sha256": "d1d6dc56343b7e4afec0c88b09047901be25f7c2439e76f36a5d96a5a8c6271b",
+      "bytes": 1022996
+    },
+    {
+      "file": "Die-005.png",
+      "sha256": "9452bd1810b09050fbf1e630cffc3f85e96f2cb0c10dc557264a46ef9aed62ab",
+      "bytes": 828847
+    },
+    {
+      "file": "Die-006.png",
+      "sha256": "008526c0451167695c48f76717e5894d02b2352f5ba82108dfdec69fd90e5655",
+      "bytes": 644538
+    },
+    {
+      "file": "Die-007.png",
+      "sha256": "b1e125f1c7e9f130614f353965d1f010cf5c9fb9413753928e9bb3d1ae3d694d",
+      "bytes": 556226
+    },
+    {
+      "file": "Die-008.png",
+      "sha256": "5f25e18dfbadae8f6b459637045a0b5b6bb757b0baf331945af252735c7092dc",
+      "bytes": 15751
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "d58d1082b66202b781f59b277388f30ca69c9491c2711f300f22ad43765d1f0b",
+      "bytes": 946941
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "67ff7080f599685e6b8de2117a09fef10181ddc0d171ade32ea7b939727c71b6",
+      "bytes": 933011
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "10d54ba67dc9e7a7a501e301f097467456ad9549cead81eac82409fdaefb8bb0",
+      "bytes": 963325
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "85088d8eeff286c833560984b9e137b030495534651ab759cb4e3950970fd7b7",
+      "bytes": 945900
+    },
+    {
+      "file": "Idle-004.png",
+      "sha256": "18ce17fe73eabd2c5c403c336a89c9528e0115270a2745e4a59783ff94b1e45c",
+      "bytes": 941526
+    },
+    {
+      "file": "Idle-005.png",
+      "sha256": "de76aff0bf92c7fb93ca82c4abcdcb5688d076255b04f1f80be0734f367acca4",
+      "bytes": 954634
+    },
+    {
+      "file": "Idle-006.png",
+      "sha256": "b50325d394176d4bf29aec45fcf7a88adceb87377b9b2bd9e3129baefe8289e5",
+      "bytes": 448173
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "6d0fba7828fa3b33c66a578dff7c224b7bd2060aaaf08914c6c92e6f357a5b53",
+      "bytes": 997549
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "1062e4efaf8cfc1f6dba78cc311fa5c1615e71516c20839eeab983e5254baa8f",
+      "bytes": 963826
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "ad81d68909d75947c6f7ec778587fbebe8637381b272fc594e93f74ee9e66e4a",
+      "bytes": 981003
+    },
+    {
+      "file": "Move-003.png",
+      "sha256": "173a89beee1e4e639e9ca7c2f13fca717b58b39fc8923a39bd10eca7043acf10",
+      "bytes": 260520
+    },
+    {
+      "file": "Skill_1-000.png",
+      "sha256": "07305d937a5c7e5b6e7f55ce0e83b6eb2a27a2c403383e155d542c1665b1bca1",
+      "bytes": 984869
+    },
+    {
+      "file": "Skill_1-001.png",
+      "sha256": "feef171c12276da96bc4efcebebb4530965576135edd4211e1a5cb0afd876bfa",
+      "bytes": 965110
+    },
+    {
+      "file": "Skill_1-002.png",
+      "sha256": "23771c2c5033e52219c11d07bbfb1c73d74b7afb75b1745a699938701eed22e2",
+      "bytes": 826405
+    },
+    {
+      "file": "Skill_1-003.png",
+      "sha256": "0c08f9d7fc14f4329eeb8f3956d7712d510fbe9741b7bf2d595d2319f2b17c8e",
+      "bytes": 638053
+    },
+    {
+      "file": "Skill_2-000.png",
+      "sha256": "384357fa8cdb33af2d264606c76035b3439c5112461e3260e0c7abba4fde800a",
+      "bytes": 975823
+    },
+    {
+      "file": "Skill_2-001.png",
+      "sha256": "d2dfae2aae5e4107992f928f455ab69ac9b8fd4077251c7cf0066994cc3ab3fe",
+      "bytes": 1018324
+    },
+    {
+      "file": "Skill_2-002.png",
+      "sha256": "53c5a9fd305f1a826c5b288c1856b400ed5196dfb0edd3c238561b6066ab43da",
+      "bytes": 986237
+    },
+    {
+      "file": "Skill_2-003.png",
+      "sha256": "8c02dd5f31b8ab83e5b0f52631bef0769ded7cb610a2fcdc740990649f132f7b",
+      "bytes": 264134
+    }
+  ],
+  "portraitSha256": "cd9e04f112febad12b6dbc4cf1ceb18077025dbde7c10d6bee591218ce99d276",
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 82.30324997024191,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}

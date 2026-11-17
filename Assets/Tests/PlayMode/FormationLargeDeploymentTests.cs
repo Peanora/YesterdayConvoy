@@ -24,7 +24,7 @@ namespace YesterdayConvoy.Tests
         FormationFighter Fighter(string artId) => controller.Model.Units.Single(unit => unit.ArtId == artId);
         SpriteRenderer Body(FormationFighter actor) => controller.GetComponentsInChildren<SpriteRenderer>()
             .Single(renderer => renderer.enabled && renderer.gameObject.layer != 31 && renderer.name == actor.Name &&
-                renderer.sprite != null && renderer.sprite.name.StartsWith(actor.ArtId + "/idle/", StringComparison.Ordinal));
+                FormationArtAssertions.IsActualIdleFrame(actor.ArtId,renderer.sprite));
 
         IEnumerator WaitForPresentation()
         {
@@ -37,6 +37,53 @@ namespace YesterdayConvoy.Tests
             while (controller.CameraTransitioning && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert.That(controller.CanEditFormationView, Is.True);
             yield return null;
+        }
+
+        [UnityTest] public IEnumerator UndeployedNativePurchaseWarmsRealIdleAndLaterLongClipSegment()
+        {
+            // Explicit legal-stock presentation fixture, not natural recruitment odds.
+            // B10 has a 23-second idle split across three independent cache segments.
+            ArtMemoryCache.Clear();
+            var session=FormationShopSession.StartNew(20261117);
+            session.Shop.Preset(new[]{new ShopTrialModel.Piece{Id="CARD_M07",Star=1},
+                new ShopTrialModel.Piece{Id="CARD_M10",Star=1},new ShopTrialModel.Piece{Id="CARD_M08",Star=1}},
+                new[]{"CARD_B10"},level:10,xp:0,gold:80);
+            yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
+            double deadline=Time.realtimeSinceStartupAsDouble+30;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {controller=Object.FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
+            Assert.That(controller,Is.Not.Null);Assert.That(controller.Ready,Is.True);
+            var source=FormationUnitArt.For("B10");
+            Assert.That(source.Root,Is.EqualTo("BossRoster/B10/main"));
+            Assert.That(source.Frame("idle",0,true),Is.Null,"A shop offer must not decode the entire native body library.");
+            var purchase=controller.BuyOffer(0);Assert.That(purchase.Success,Is.True);
+            Assert.That(session.Seats.InLineup(purchase.Instance),Is.False);
+            Assert.That(controller.Model.Units.Any(u=>u.ArtId=="B10"),Is.False,"The tested new card remains undeployed.");
+            deadline=Time.realtimeSinceStartupAsDouble+20;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                var body=controller.ShopBenchModel(purchase.Instance);
+                if(body!=null&&FormationArtAssertions.IsActualIdleFrame("B10",body.sprite))break;
+                yield return null;
+            }
+            var reserve=controller.ShopBenchModel(purchase.Instance);
+            Assert.That(reserve,Is.Not.Null);
+            Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",reserve.sprite),Is.True,"The reserve must receive the actual source idle sprite and texture.");
+            var first=controller.FormationShopIdleFrame("CARD_B10",0);
+            Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",first),Is.True);
+            Assert.That(source.Frame("idle",12,true),Is.Null,"The later long-idle segment must still be cold before its own window is requested.");
+            int before=ArtMemoryCache.PreparedLoads;
+            var pending=controller.FormationShopIdleFrame("CARD_B10",12);
+            Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",pending),Is.True,"Retain a valid last source frame during the asynchronous next-window upload.");
+            deadline=Time.realtimeSinceStartupAsDouble+20;
+            while(source.Frame("idle",12,true)==null&&Time.realtimeSinceStartupAsDouble<deadline)
+            {controller.FormationShopIdleFrame("CARD_B10",12);yield return null;}
+            var later=controller.FormationShopIdleFrame("CARD_B10",12);
+            Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",later),Is.True);
+            Assert.That(later,Is.SameAs(source.Frame("idle",12,true)));
+            Assert.That(later.texture.name,Is.Not.EqualTo(first.texture.name),"The second native segment must use its own real atlas page.");
+            Assert.That(ArtMemoryCache.PreparedLoads,Is.GreaterThan(before));
+            Assert.That(session.Seats.InLineup(purchase.Instance),Is.False);controller.Shop.Validate();
         }
 
         Vector2 Project(Vector3 point) => TacticalViewport.Current.FromScreen(controller.battleCamera.WorldToScreenPoint(point));
@@ -178,7 +225,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(expectedCells.size, Is.EqualTo(new Vector2Int(2, 2)));
             Assert.That(Fighter("M20").DeploymentCells, Is.EqualTo(originalCells), "A visible drag preview must leave the real deployment untouched.");
             var ghost = controller.DeploymentGhost;
-            Assert.That(ghost.sprite.name, Does.StartWith("M20/idle/"));
+            Assert.That(FormationArtAssertions.IsActualIdleFrame("M20",ghost.sprite),Is.True,"The ghost must use the actual Patriot source idle and matching atlas texture.");
             Assert.That(ghost.color.a, Is.InRange(.01f, .99f));
             yield return Capture("playmode-large-drag-valid");
             controller.ProcessPointer(EventType.MouseUp, dragPoint);

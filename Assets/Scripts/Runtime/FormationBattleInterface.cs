@@ -29,8 +29,9 @@ namespace YesterdayConvoy
             try
             {
                 if(!Ready){Fill(new Rect(0,0,1280,720),Dark);Label(new Rect(150,250,980,80),loading,23,Cyan,TextAnchor.MiddleCenter);return;}
-                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&shopInputBlockedFrame!=Time.frameCount;
+                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
                 DrawWorldLabels();DrawFormationHeader();DrawFormationSidebars();
+                DrawCampaignToolbar();
                 bool preparing=Model.Phase==FormationPhase.Preparation;
                 if(preparing||ShopPanelTransitioning)DrawFormationPreparation();else DrawFormationCombatRoster();
                 DrawFormationResources(preparing);
@@ -47,6 +48,7 @@ namespace YesterdayConvoy
                 GUI.enabled=enabled;
                 if(formationMenuOpen)DrawFormationMenu();
                 if(shopOddsVisible)DrawFormationOdds();
+                DrawCampaignOverlays();
             }
             finally{GUI.enabled=enabled;GUI.matrix=previous;TacticalViewport.Current.DrawBars();}
         }
@@ -55,7 +57,7 @@ namespace YesterdayConvoy
             bool prep=Model.Phase==FormationPhase.Preparation;
             string phase=prep?"整备阶段":Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting?"战斗进行中":Model.Phase==FormationPhase.Exiting?"前往蓝门":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
-            GUI.Label(new Rect(28,11,165,24),$"{Model.Round}/5 · 矩形攻坚",approvedShop.LoopText(17,TextAnchor.MiddleLeft,null,700));
+            GUI.Label(new Rect(28,11,165,24),Campaign==null?$"{Model.Round}/5 · 矩形攻坚":$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}",approvedShop.LoopText(17,TextAnchor.MiddleLeft,null,700));
             GUI.Label(new Rect(28,36,165,15),"军阵行动 / "+phase,approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             Fill(new Rect(578,8,151,46),ApprovedUi.Paper);ApprovedShopPresentation.DrawLoopShield(new Vector2(589,20),new Color(.40f,.56f,.67f));
             GUI.Label(new Rect(613,14,76,21),"守军防线",approvedShop.LoopText(12));
@@ -63,7 +65,7 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(690,12,32,33),Model.RemainingDefenders.ToString(),approvedShop.LoopText(26,TextAnchor.MiddleCenter,null,700));
             Fill(new Rect(1008,8,110,46),ApprovedUi.Paper);
             GUI.Label(new Rect(1016,10,94,17),"剩余时间",approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
-            GUI.Label(new Rect(1016,27,94,23),Model.TimeRemaining.ToString("0.0")+" 秒",approvedShop.LoopText(20,TextAnchor.MiddleLeft,null,700));
+            GUI.Label(new Rect(1016,27,94,23),double.IsInfinity(Model.TimeRemaining)?"不限时":Model.TimeRemaining.ToString("0.0")+" 秒",approvedShop.LoopText(20,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(1126,8,42,42),Model.Speed+"×"))Model.Speed=Model.Speed>1?1:2;
             if(Button(new Rect(1174,8,42,42),Model.Paused?"继续":"暂停",Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=!Model.Paused;
             if(Button(new Rect(1222,8,42,42),"菜单")){formationMenuOpen=!formationMenuOpen;CancelFormationDrag();}
@@ -71,6 +73,7 @@ namespace YesterdayConvoy
         }
         void DrawFormationSidebars()
         {
+            if(Campaign!=null){DrawCampaignSynergies();DrawFormationRanking();return;}
             var ids=Session.Seats.Lineup(Shop.Bench).Select(piece=>piece.Id).ToArray();var summaries=SynergySummary.From(ids);
             ApprovedShopWidgets.DrawSynergies(summaries,Model.Phase==FormationPhase.Preparation,ApprovedUi.Font(null),ref formationSynergyScroll,
                 s=>{formationInspectedTag=formationInspectedTag==s.Name?null:s.Name;CancelFormationDrag();},
@@ -83,6 +86,10 @@ namespace YesterdayConvoy
                 var style=approvedShop.LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);style.wordWrap=true;
                 GUI.Label(new Rect(rect.x+14,rect.y+46,350,58),"现有角色已适配布阵与占地；战斗采用简化自动技能，原羁绊效果尚未接入。这里只显示真实编队的种类标签。",style);
             }
+            DrawFormationRanking();
+        }
+        void DrawFormationRanking()
+        {
             if(Model.Phase==FormationPhase.Preparation)return;
             var rows=Model.Units.OrderByDescending(u=>u.DamageDone).ThenBy(u=>u.ArtId,StringComparer.Ordinal).Select(u=>new ApprovedShopWidgets.RankingRow
             {CardId="CARD_"+u.ArtId,Name=u.Name,Damage=u.DamageDone,Portrait=FormationUnitArt.For(u.ArtId)?.Portrait}).ToArray();
@@ -93,7 +100,8 @@ namespace YesterdayConvoy
         {
             for(int i=0;i<Model.Units.Count;i++)
             {
-                var u=Model.Units[i];var r=new Rect(188+i*92.8f,581,88.8f,124);
+                float step=928f/Mathf.Max(10,Model.Units.Count);
+                var u=Model.Units[i];var r=new Rect(188+i*step,581,step-4,124);
                 approvedShop.DrawLoopCostBackground(r,Shop.Definition("CARD_"+u.ArtId).Cost);
                 DrawFormationPortrait(new Rect(r.x+2,r.y+2,r.width-4,96),"CARD_"+u.ArtId);
                 approvedShop.DrawShopStars(new Rect(r.xMax-8-u.Star*12,r.y+2,u.Star*12,12),u.Star,new Color(1,.94f,.72f));
@@ -105,7 +113,7 @@ namespace YesterdayConvoy
             Fill(new Rect(1128,581,135,124),ApprovedUi.Paper);
             GUI.Label(new Rect(1138,590,113,23),"剩余时间",approvedShop.LoopText(12,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(1136,612,113,54),Model.TimeRemaining.ToString("0.0"),approvedShop.LoopText(34,TextAnchor.MiddleLeft,null,700));
-            if(Button(new Rect(1138,673,113,25),"返回整备"))Retry();
+            if(Campaign==null&&Button(new Rect(1138,673,113,25),"返回整备"))Retry();
         }
         void DrawFormationMenu()
         {
@@ -114,12 +122,12 @@ namespace YesterdayConvoy
             if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))formationMenuOpen=false;
             if(Button(new Rect(r.x+12,r.y+44,r.width-24,30),soundEnabled?"关闭音效":"开启音效"))soundEnabled=!soundEnabled;
             if(Button(new Rect(r.x+12,r.y+81,r.width-24,30),"重新开始本次挑战")){formationMenuOpen=false;ResetDemo();}
-            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"返回原玩法"))SceneManager.LoadScene("Campaign");
+            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"返回原玩法"))CampaignBootstrap.OpenLegacyEntrance();
             if(Button(new Rect(r.x+12,r.y+155,r.width-24,30),"关闭菜单"))formationMenuOpen=false;
         }
         void DrawWorldLabels()
         {
-            foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders))
+            foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+battleCamera.transform.up*(ActorPresentationHeight(actor)+.12f)));
@@ -147,6 +155,7 @@ namespace YesterdayConvoy
         }
         void DrawSettlement()
         {
+            if(Campaign!=null){if(!Campaign.Finished)DrawCampaignResult();return;}
             bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
             Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);
             Label(new Rect(410,245,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未及时进门",16,White,TextAnchor.MiddleCenter);

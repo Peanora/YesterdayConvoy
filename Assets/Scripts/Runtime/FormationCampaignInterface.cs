@@ -1,0 +1,341 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace YesterdayConvoy
+{
+    public sealed partial class FormationBattleController
+    {
+        bool campaignInventoryOpen,campaignFormationOpen,campaignRouteOpen,campaignScoutingOpen,campaignResultSettled,campaignSeaPainting;
+        int campaignSelectedItem,campaignCombineItem,campaignSelectedPiece;
+        Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll,campaignDetailScroll;
+        public FormationCampaignRun Campaign=>Session?.Run;
+        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished||campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen);
+
+        GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
+        {
+            var style=new GUIStyle(approvedShop.LoopText(size,align,null,bold?650:400));
+            style.wordWrap=true;style.clipping=TextClipping.Clip;return style;
+        }
+        void CampaignLabel(Rect rect,string value,int size=13,bool bold=false)=>GUI.Label(rect,value??"",CampaignText(size,bold));
+        void TickCampaignSettlement()
+        {
+            if(Campaign==null||campaignResultSettled||Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost)return;
+            campaignResultSettled=true;
+            Session.SettleBattle(Model.Phase==FormationPhase.Won,Model.EncounterProgress,Model.InitialDefenderCount,Model.RemainingDefenders,Model.BossAlive);
+            notice=Campaign.LastSummary;
+        }
+        public ShopTrialModel.Result ChooseCampaignOption(int index)
+        {
+            if(Campaign==null)return new ShopTrialModel.Result{Message="当前为旧试玩模式"};
+            var result=Session.Choose(index);notice=result.Message;
+            if(result.Success)RefreshCampaignPreparation();
+            return result;
+        }
+        public bool ContinueCampaign()
+        {
+            if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished)return false;
+            Session.SavePositions(Model);
+            if(!Session.AdvanceNode())return false;
+            campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
+            RefreshCampaignPreparation();SetMarketVisible(true);SetFormationView(false);
+            notice=Campaign.CurrentNode.Kind=="补给"?"选择一组补给，之后继续下一节点。":"新防线已经公开。先侦察，再调整装备、搭档与站位。";
+            return true;
+        }
+        void RefreshCampaignPreparation()
+        {
+            if(Model.Phase==FormationPhase.Preparation)
+            {
+                Session.ApplyTo(Model);Model.BindCampaign(Campaign);
+                SelectFirstLineup();SyncActors();approvedShop?.SyncShopBenchModels();
+            }
+        }
+        void CampaignAction(ShopTrialModel.Result result)
+        {notice=result.Message;if(result.Success)RefreshCampaignPreparation();}
+        void CloseCampaignPanels()
+        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=false;CancelFormationDrag();}
+
+        void DrawCampaignToolbar()
+        {
+            if(Campaign==null)return;
+            bool prep=Model.Phase==FormationPhase.Preparation;
+            Fill(new Rect(209,8,108,46),ApprovedUi.Paper);
+            CampaignLabel(new Rect(218,12,92,19),"队伍生命 "+Campaign.SquadHP,13,true);
+            CampaignLabel(new Rect(218,32,92,17),"希望 "+Campaign.Hope+" · 刷新券 "+Campaign.FreeRefreshes,9);
+            if(Button(new Rect(325,8,76,42),"装备 "+Campaign.Inventory.Count,prep))
+            {bool open=!campaignInventoryOpen;CloseCampaignPanels();campaignInventoryOpen=open;}
+            if(Button(new Rect(407,8,76,42),"军阵搭档",prep))
+            {bool open=!campaignFormationOpen;CloseCampaignPanels();campaignFormationOpen=open;}
+            if(Button(new Rect(489,8,76,42),"行动记录"))
+            {bool open=!campaignRouteOpen;CloseCampaignPanels();campaignRouteOpen=open;}
+            if(prep&&Button(new Rect(737,8,45,42),"防线"))
+            {bool open=!campaignScoutingOpen;CloseCampaignPanels();campaignScoutingOpen=open;}
+            if(prep&&Campaign.TraitCount("海嗣")>=2)
+            {
+                if(Button(new Rect(790,57,208,27),campaignSeaPainting?"完成溟痕布置":"布置溟痕 / 自动推荐"))
+                {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
+                if(campaignSeaPainting&&Button(new Rect(580,57,200,27),"清除手动区域 · 恢复推荐"))
+                {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
+            }
+            if(Campaign.PendingDeliveries>0)CampaignLabel(new Rect(1009,59,252,26),"库存待领 "+Campaign.PendingDeliveries+" 份 · 释放库存后自动领取",10);
+            CampaignLabel(new Rect(190,704,1058,15),notice,10);
+        }
+        void DrawCampaignOverlays()
+        {
+            if(Campaign==null)return;
+            if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
+            if(Campaign.Finished){DrawCampaignFinished();return;}
+            if(campaignInventoryOpen)DrawCampaignInventory();
+            else if(campaignFormationOpen)DrawCampaignFormation();
+            else if(campaignRouteOpen)DrawCampaignRoute();
+            else if(campaignScoutingOpen)DrawCampaignScouting();
+        }
+        Rect CampaignWindow(string title,string subtitle,bool close=true)
+        {
+            Fill(new Rect(0,64,1280,650),new Color(.04f,.07f,.10f,.65f));
+            var r=new Rect(172,82,936,525);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,1);
+            CampaignLabel(new Rect(r.x+22,r.y+18,r.width-90,30),title,23,true);
+            CampaignLabel(new Rect(r.x+22,r.y+52,r.width-48,37),subtitle,12);
+            if(close&&Button(new Rect(r.xMax-57,r.y+15,38,30),"×"))CloseCampaignPanels();
+            return r;
+        }
+        void DrawCampaignChoices()
+        {
+            var run=Campaign;
+            var r=CampaignWindow(run.ChoiceTitle,"选择会保留本局。初始角色、库存和已选奖励不会因重抽而重置。",false);
+            var choices=run.Choices.ToArray();int columns=choices.Length==2?2:3;
+            float width=(r.width-62-(columns-1)*12)/columns;
+            var viewport=new Rect(r.x+22,r.y+96,r.width-44,345);
+            float contentHeight=Mathf.Ceil(choices.Length/(float)columns)*185;
+            campaignChoiceScroll=GUI.BeginScrollView(viewport,campaignChoiceScroll,new Rect(0,0,viewport.width-18,Mathf.Max(viewport.height,contentHeight)));
+            for(int i=0;i<choices.Length;i++)
+            {
+                var option=choices[i];var card=new Rect(i%columns*(width+12),i/columns*185,width,173);
+                Fill(card,new Color(.90f,.91f,.90f));ApprovedUi.Border(card,ApprovedUi.Rule);
+                CampaignLabel(new Rect(card.x+12,card.y+11,card.width-24,28),option.Name,16,true);
+                CampaignLabel(new Rect(card.x+12,card.y+44,card.width-24,84),option.Description,12);
+                if(Button(new Rect(card.x+12,card.yMax-35,card.width-24,27),"选择")){ChooseCampaignOption(i);GUI.EndScrollView();return;}
+            }
+            GUI.EndScrollView();
+            if(Button(new Rect(r.x+22,r.yMax-61,190,35),"免费重抽本组一次",run.CanRerollChoice))run.RerollChoice();
+            CampaignLabel(new Rect(r.x+231,r.yMax-57,660,36),run.CanRerollChoice?(run.ChoiceTitle?.Contains("战略预案")==true?"换成未展示的预案，原组选项不会返回。":"重抽本组战略战备，不改变已经选定的战备。 "):"完成本次选择后继续。",12);
+        }
+        void DrawCampaignFinished()
+        {
+            var r=CampaignWindow(Campaign.Won?"三个位面突破 · 挑战完成":"挑战结束",Campaign.Won?"你的军阵已突破最终防线。":Campaign.SquadHP<=0?"队伍生命已耗尽，本局构筑到此结束。":"未能突破最终防线，本局挑战结束。",false);
+            CampaignLabel(new Rect(r.x+25,r.y+120,r.width-50,90),$"抵达 {Campaign.CurrentNode.Id}  ·  等级 {Shop.Level}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n战略预案：{FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"未选择"}",18,true);
+            CampaignLabel(new Rect(r.x+25,r.y+220,r.width-50,110),"本局战略战备：\n"+string.Join("、",Campaign.AugmentIds.Select(id=>FormationCampaignRules.FindRecord(id)?.Name??id)),15);
+            if(Button(new Rect(r.x+25,r.yMax-80,275,45),"重新开始完整挑战",true,true))ResetDemo();
+            if(Button(new Rect(r.x+325,r.yMax-80,275,45),"查看旧玩法"))CampaignBootstrap.OpenLegacyEntrance();
+        }
+        void DrawCampaignResult()
+        {
+            bool won=Model.Phase==FormationPhase.Won;
+            var r=new Rect(350,164,580,350);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
+            CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,35),won?"蓝门突破 · 本关胜利":"本关失利 · 调整后继续",25,true);
+            CampaignLabel(new Rect(r.x+25,r.y+68,r.width-50,85),Campaign.LastSummary,15);
+            CampaignLabel(new Rect(r.x+25,r.y+159,r.width-50,70),$"队伍生命 {Campaign.SquadHP}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n遭遇削减进度 {Model.EncounterProgress:P1}  ·  本关只结算一次",14);
+            var colors=new[]{new Color(.42f,.46f,.50f),new Color(.17f,.46f,.68f),new Color(.65f,.47f,.12f),new Color(.57f,.29f,.66f)};
+            var names=new[]{"白","蓝","金","彩"};
+            for(int i=0;i<4;i++)
+            {
+                var style=CampaignText(13,true);style.normal.textColor=colors[i];
+                GUI.Label(new Rect(r.x+25+i*133,r.y+229,128,29),"● "+names[i]+"球 ×"+Campaign.OpenedBalls.Count(c=>c==names[i]),style);
+            }
+            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点",!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
+        }
+        void DrawCampaignInventory()
+        {
+            var r=CampaignWindow("装备与合成","选一件物品，再选角色装备；选两件基础件／宝石可合成固定成品。整备可免费拆下，物品栏不限数量。");
+            var view=new Rect(r.x+20,r.y+97,425,330);var inventory=Campaign.Inventory.ToArray();
+            campaignItemScroll=GUI.BeginScrollView(view,campaignItemScroll,new Rect(0,0,403,Mathf.Max(330,inventory.Length*48)));
+            for(int i=0;i<inventory.Length;i++)
+            {
+                var item=inventory[i];var row=new Rect(0,i*48,396,43);
+                Fill(row,campaignSelectedItem==item.Instance||campaignCombineItem==item.Instance?new Color(.81f,.87f,.87f):new Color(.91f,.92f,.91f));
+                CampaignLabel(new Rect(8,row.y+5,270,32),item.Name+"  ["+item.Key+"]",13,true);
+                if(Button(new Rect(280,row.y+6,107,30),campaignSelectedItem==item.Instance?"已选第一件":"选择"))
+                {if(campaignSelectedItem==0||campaignSelectedItem==item.Instance){campaignSelectedItem=item.Instance;campaignCombineItem=0;}else campaignCombineItem=item.Instance;}
+            }
+            GUI.EndScrollView();
+            var units=Shop.Bench.OrderByDescending(p=>Session.Seats.InLineup(p.Instance)).ThenBy(p=>p.Instance).ToArray();
+            var targetView=new Rect(r.x+465,r.y+97,448,330);
+            campaignUnitScroll=GUI.BeginScrollView(targetView,campaignUnitScroll,new Rect(0,0,428,Mathf.Max(330,units.Length*77)));
+            for(int i=0;i<units.Length;i++)
+            {
+                var piece=units[i];var equipment=Campaign.Equipment(piece.Instance).ToArray();var row=new Rect(0,i*77,421,71);
+                Fill(row,campaignSelectedPiece==piece.Instance?new Color(.81f,.87f,.87f):new Color(.91f,.92f,.91f));
+                CampaignLabel(new Rect(8,row.y+5,225,24),Shop.Definition(piece.Id).Name+" "+new string('★',piece.Star)+(Session.Seats.InLineup(piece.Instance)?" · 上阵":" · 备战"),12,true);
+                if(Button(new Rect(292,row.y+5,119,26),"装备所选物品",campaignSelectedItem>0))
+                {campaignSelectedPiece=piece.Instance;var item=inventory.FirstOrDefault(x=>x.Instance==campaignSelectedItem);CampaignAction(item?.Key=="复制器"?Campaign.UseCopier(item.Instance,piece.Instance):Campaign.Equip(campaignSelectedItem,piece.Instance));campaignSelectedItem=campaignCombineItem=0;}
+                for(int j=0;j<equipment.Length;j++)
+                    if(Button(new Rect(8+j*134,row.y+35,129,28),equipment[j].Name+" ×"))CampaignAction(Campaign.Unequip(equipment[j].Instance));
+            }
+            GUI.EndScrollView();
+            var first=Campaign.AllEquipment.FirstOrDefault(x=>x.Instance==campaignSelectedItem);
+            var second=Campaign.AllEquipment.FirstOrDefault(x=>x.Instance==campaignCombineItem);
+            CampaignLabel(new Rect(r.x+22,r.yMax-84,670,62),first==null?"基础件：A 钢刃 / B 弹簧 / C 晶片 / D 护甲板 / E 生命核心 / F 战术终端":first.Name+"："+CampaignItemDescription(first.Key)+(second==null?"":"\n第二件："+second.Name),12);
+            if(Button(new Rect(r.xMax-218,r.yMax-78,190,34),"合成所选两件",first!=null&&second!=null))
+            {CampaignAction(Campaign.Combine(first.Instance,second.Instance));campaignSelectedItem=campaignCombineItem=0;}
+            if(Button(new Rect(r.xMax-218,r.yMax-39,190,25),"清空选择"))campaignSelectedItem=campaignCombineItem=0;
+        }
+        int CycleCampaignPiece(int current,IEnumerable<ShopTrialModel.Piece> candidates)
+        {
+            var ids=new[]{0}.Concat(candidates.Select(p=>p.Instance)).Distinct().ToArray();int pos=Array.IndexOf(ids,current);
+            return ids[(pos+1+ids.Length)%ids.Length];
+        }
+        string CampaignItemDescription(string key)
+        {
+            var data=FormationCampaignRules.FindRecord(key);
+            if(data==null)
+            {
+                var badge=FormationCampaignRun.BadgeTrait(key);
+                return badge!=null?"增加"+badge+"标签，占一格装备；"+(key.Split(':').Length>2?FormationCampaignRules.FindRecord(key.Split(':')[2])?.Effect:"无额外基础属性。"):
+                    "宝石用于合成徽章；复制器取得一张目标当前形态的一星牌并占用库存。";
+            }
+            var names=new Dictionary<string,string>{{"attack_pct","攻击"},{"attack_speed","攻速"},{"hp_pct","最大生命"},{"power","能力强度"},{"armor","护甲"},{"mr","法抗"},{"sp_per_second","自然技力/秒"}};
+            string stats=string.Join(" / ",data.Stats.Select(p=>(names.TryGetValue(p.Key,out var name)?name:p.Key)+"+"+(p.Key=="attack_pct"||p.Key=="attack_speed"||p.Key=="hp_pct"||p.Key=="power"?(p.Value*100).ToString("0.#")+"%":p.Value.ToString("0.##"))));
+            return stats+"；"+data.Effect;
+        }
+        string CampaignPieceName(int instance)
+        {var p=Shop.Bench.FirstOrDefault(x=>x.Instance==instance);return p==null?"自动推荐":Shop.Definition(p.Id).Name;}
+        void CampaignPairLine(float y,string label,int value,Action<int> set,IEnumerable<ShopTrialModel.Piece> candidates)
+        {
+            CampaignLabel(new Rect(205,y,285,28),label,14,true);
+            if(Button(new Rect(502,y-2,550,31),CampaignPieceName(value)+"  ›"))set(CycleCampaignPiece(value,candidates));
+        }
+        void DrawCampaignFormation()
+        {
+            var r=CampaignWindow("军阵搭档与技能","点击右侧轮换角色；自动推荐会优先选择合法成员。配对与主C优先级只在开战时锁定，本场死亡不改变羁绊档位。");
+            var run=Campaign;var lineup=Session.Seats.Lineup(Shop.Bench).ToArray();
+            IEnumerable<ShopTrialModel.Piece> Trait(string tag)=>lineup.Where(p=>run.HasTrait(p,tag));
+            float y=r.y+104;
+            CampaignPairLine(y,"主C优先级 1",run.MainCarryInstance,v=>run.MainCarryInstance=v,lineup);y+=37;
+            CampaignPairLine(y,"主C优先级 2",run.SecondCarryInstance,v=>run.SecondCarryInstance=v,lineup);y+=37;
+            CampaignPairLine(y,"同频异响 · 领奏者",run.ResonanceLeaderInstance,v=>run.ResonanceLeaderInstance=v,Trait("同频"));y+=37;
+            CampaignPairLine(y,"同频异响 · 伴奏者",run.ResonancePartnerInstance,v=>run.ResonancePartnerInstance=v,Trait("同频"));y+=37;
+            CampaignPairLine(y,"提词接力 · 搭档 A",run.PromptPairA,v=>run.PromptPairA=v,Trait("提词"));y+=37;
+            CampaignPairLine(y,"提词接力 · 搭档 B",run.PromptPairB,v=>run.PromptPairB=v,Trait("提词"));y+=37;
+            CampaignPairLine(y,"接棒时刻 · 接棒者",run.RelayReceiverInstance,v=>run.RelayReceiverInstance=v,Trait("接棒"));y+=37;
+            CampaignPairLine(y,"无间剧场 · 主角",run.TheaterLeadInstance,v=>run.TheaterLeadInstance=v,Trait("剧场"));y+=43;
+            if(Button(new Rect(205,y,265,33),"维维美整备技能：S"+run.WisadelSkill))run.WisadelSkill=run.WisadelSkill%3+1;
+            string pact=run.SarkazPact==0?"血契":run.SarkazPact==1?"重契":"双契（6人）";
+            if(Button(new Rect(485,y,265,33),"萨卡兹："+pact)){run.SarkazPact=(run.SarkazPact+1)%3;run.SarkazBloodPact=run.SarkazPact!=1;}
+            if(Button(new Rect(765,y,287,33),"保存搭档并返回")){RefreshCampaignPreparation();CloseCampaignPanels();}
+            CampaignLabel(new Rect(205,y+43,847,30),"便车将按体型和距离推荐合法乘客／载具；重契降低攻频，血契降低生命，双契需达6萨卡兹。",11);
+        }
+        void DrawCampaignRoute()
+        {
+            var r=CampaignWindow("行动记录与发展路线","本次挑战的环境、战略战备和三个位面节点。战斗结束统一结算，补给不发基础收入。");
+            var viewport=new Rect(r.x+22,r.y+96,r.width-44,400);
+            campaignRouteScroll=GUI.BeginScrollView(viewport,campaignRouteScroll,new Rect(0,0,viewport.width-18,860));
+            CampaignLabel(new Rect(0,0,850,45),"战略预案："+(FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"待选择")+"\n"+FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Effect,13,true);
+            float y=58;
+            foreach(string id in Campaign.AugmentIds)
+            {var a=FormationCampaignRules.FindRecord(id);CampaignLabel(new Rect(0,y,850,53),$"{a?.Tier}档 · {a?.Name}　{a?.Effect}",12);y+=58;}
+            y+=10;
+            for(int i=0;i<FormationCampaignRules.Nodes.Length;i++)
+            {var n=FormationCampaignRules.Nodes[i];CampaignLabel(new Rect(0,y,850,23),$"{(i<Campaign.NodeIndex?"✓":i==Campaign.NodeIndex?"▶":"·")}  {n.Id}　{n.Kind}　{(n.Kind=="补给"?"补给包五选一":n.DefenderCount+"守军 · 生命×"+n.HealthScale+" · 攻击×"+n.AttackScale)}",12,i==Campaign.NodeIndex);y+=25;}
+            GUI.EndScrollView();
+        }
+        void DrawCampaignScouting()
+        {
+            var r=CampaignWindow("本关守军情报",$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}。开战前已经固定本关守军，不随购买、刷新和战中状态重抽。");
+            if(Campaign.CurrentNode.Kind=="遭遇")
+            {
+                for(int i=1;i<=4;i++)
+                    if(Button(new Rect(r.x+22+(i-1)*219,r.y+95,207,36),$"{i}档 · HP×{new[]{1f,2.2f,5f,12f}[i-1]}",true,Campaign.CurrentEncounterTier==i))
+                    {Campaign.CurrentEncounterTier=i;RefreshCampaignPreparation();}
+                int tier=Campaign.CurrentEncounterTier;
+                string reward=new[]{"蓝球","2个蓝球","金球＋蓝球","2个金球＋彩球"}[tier-1];
+                CampaignLabel(new Rect(r.x+22,r.y+137,r.width-44,32),$"当前档攻击×{new[]{1f,1.1f,1.25f,1.45f}[tier-1]}，额外奖励：{reward}。削减进度严格＞25%才领取；失败照常扣队伍生命并清连胜。",12);
+            }
+            float top=Campaign.CurrentNode.Kind=="遭遇"?174:99;
+            var view=new Rect(r.x+22,r.y+top,r.width-44,r.height-top-20);
+            campaignScoutScroll=GUI.BeginScrollView(view,campaignScoutScroll,new Rect(0,0,view.width-18,Mathf.Max(view.height,Model.Defenders.Count*110)));
+            int row=0;
+            foreach(var d in Model.Defenders)
+            {
+                CampaignLabel(new Rect(0,row*110,850,24),d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
+                CampaignLabel(new Rect(0,row*110+28,850,25),"技力 "+d.SkillCharge.ToString("0")+" / "+d.SkillRequired.ToString("0")+"　攻击间隔 "+d.Interval.ToString("0.00")+"秒　部署格 "+d.Position,12);
+                string effect=FormationCampaignRules.Bosses.FirstOrDefault(b=>b.Name==d.Name)?.Effect??FormationCampaignRules.Defenders.FirstOrDefault(p=>p.Name==d.Name)?.Effect;
+                CampaignLabel(new Rect(0,row*110+57,850,42),effect,12);row++;
+            }
+            GUI.EndScrollView();
+        }
+        void DrawCampaignSynergies()
+        {
+            var run=Campaign;var records=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).Where(t=>run.TraitCount(t.Id)>0).OrderByDescending(t=>t.Levels.Any(l=>l<=run.TraitCount(t.Id))).ThenByDescending(t=>run.TraitCount(t.Id)).ToArray();
+            var panel=new Rect(16,66,165,410);Fill(panel,ApprovedUi.Paper);
+            campaignTraitScroll=GUI.BeginScrollView(new Rect(20,72,157,398),campaignTraitScroll,new Rect(0,0,139,Mathf.Max(398,records.Length*43)));
+            for(int i=0;i<records.Length;i++)
+            {
+                var t=records[i];int count=run.TraitCount(t.Id);int level=t.Levels.Where(l=>l<=count).DefaultIfEmpty(0).Max();
+                if(Button(new Rect(0,i*43,137,38),$"{count}  {t.Name}  "+(level>0?"●":"○"),true,level>0))formationInspectedTag=formationInspectedTag==t.Id?null:t.Id;
+            }
+            GUI.EndScrollView();
+            DrawCampaignUnitDetails();
+            if(formationInspectedTag!=null)
+            {
+                var t=records.FirstOrDefault(x=>x.Id==formationInspectedTag);
+                if(t!=null)
+                {
+                    var r=new Rect(194,113,505,245);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+                    CampaignLabel(new Rect(r.x+16,r.y+13,r.width-52,27),t.Name+"　"+string.Join(" / ",t.Levels),19,true);
+                    if(Button(new Rect(r.xMax-34,r.y+10,24,24),"×"))formationInspectedTag=null;
+                    CampaignLabel(new Rect(r.x+16,r.y+47,r.width-32,111),t.Effect,12);
+                    CampaignLabel(new Rect(r.x+16,r.y+165,r.width-32,69),"天然成员："+string.Join("、",FormationCampaignRules.AllUnits.Where(u=>u.Factions.Contains(t.Id)||u.Styles.Contains(t.Id)).Select(u=>u.Name)),11);
+                }
+            }
+        }
+        void DrawCampaignUnitDetails()
+        {
+            var piece=Shop.Bench.FirstOrDefault(p=>p.Instance==selectedPiece);
+            var spec=FormationCampaignRules.Find(piece?.Id);
+            if(spec==null)return;
+            var r=ApprovedUi.RecruitList;Fill(r,ApprovedUi.Paper);
+            CampaignLabel(new Rect(r.x+10,r.y+10,r.width-20,25),spec.Name+"　"+Shop.Definition(piece.Id).Cost+"费 "+new string('★',piece.Star),16,true);
+            CampaignLabel(new Rect(r.x+10,r.y+38,r.width-20,30),spec.Role+" · "+string.Join(" / ",spec.Factions.Concat(spec.Styles)),10);
+            float mult=Mathf.Pow(1.8f,piece.Star-1);
+            var actor=Model.Units.FirstOrDefault(u=>u.Instance==piece.Instance);
+            CampaignLabel(new Rect(r.x+10,r.y+69,r.width-20,35),$"生命 {actor?.MaxHealth??spec.Health*mult:0}　攻击 {actor?.Attack??spec.Attack*mult:0}\n技力 {actor?.SkillCharge??spec.InitialSP:0.#}/{actor?.SkillRequired??spec.RequiredSP:0.#} {spec.Recovery}回复",11);
+            var view=new Rect(r.x+10,r.y+108,r.width-20,r.height-120);
+            campaignDetailScroll=GUI.BeginScrollView(view,campaignDetailScroll,new Rect(0,0,view.width-18,210));
+            string effect=spec.Id=="TAL"&&Campaign.TalulahCost==4?"焚城：半径2.5内至多6人，3段各280%攻击力法伤；6秒灼烧，每秒35%。强化后4段并获得20%最大生命护盾8秒。":
+                spec.Id=="TAL"&&Campaign.TalulahCost==5?"火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。":spec.Effect;
+            CampaignLabel(new Rect(0,0,view.width-20,205),effect+"\n装备："+string.Join("、",Campaign.Equipment(piece.Instance).Select(x=>x.Name)),11);
+            GUI.EndScrollView();
+        }
+        bool ProcessCampaignSeaPointer(EventType type,Vector2 point)
+        {
+            if(!campaignSeaPainting||Campaign==null)return false;
+            if(type!=EventType.MouseUp||!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point))return true;
+            var ray=battleCamera.ScreenPointToRay(TacticalViewport.Current.ToScreen(point));
+            var plane=new Plane(Vector3.up,new Vector3(0,.12f,0));
+            if(!plane.Raycast(ray,out float distance))return true;
+            var world=ray.GetPoint(distance);
+            int x=Mathf.FloorToInt(world.x+FormationBattleModel.Width*.5f+.0001f),y=Mathf.FloorToInt(world.z+FormationBattleModel.Height*.5f+.0001f);
+            if(x<FormationBattleModel.DeploymentColumns+1||x>=FormationBattleModel.Width-1||y<0||y>=FormationBattleModel.Height)
+            {notice="溟痕请布置在右侧战场内。";return true;}
+            int id=x+y*FormationBattleModel.Width,cap=Campaign.TraitCount("海嗣")>=5?10:Campaign.TraitCount("海嗣")>=4?7:4;
+            if(!Campaign.SeaCellIds.Remove(id))
+            {if(Campaign.SeaCellIds.Count>=cap){notice="当前羁绊最多布置 "+cap+" 格溟痕。";return true;}Campaign.SeaCellIds.Add(id);}
+            Model.RefreshSeaPreview();notice=Model.ValidateSeaPlacement(out string reason)?$"溟痕 {Campaign.SeaCellIds.Count}/{cap} 格；保持上下左右连通。":reason;
+            return true;
+        }
+        void DrawCampaignSeaCells()
+        {
+            if(Campaign==null||Model.SeaCells.Count==0)return;
+            lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.QUADS);
+            foreach(var cell in Model.SeaCells)
+            {
+                if(!FormationPointVisibleInView(cell))continue;
+                Vector3 p=ActorWorldPoint(cell)+Vector3.up*.026f;
+                GL.Color(new Color(.12f,.60f,.65f,.32f));
+                GL.Vertex(p+new Vector3(-.43f,0,-.43f));GL.Vertex(p+new Vector3(-.43f,0,.43f));GL.Vertex(p+new Vector3(.43f,0,.43f));GL.Vertex(p+new Vector3(.43f,0,-.43f));
+            }
+            GL.End();GL.PopMatrix();
+        }
+    }
+}

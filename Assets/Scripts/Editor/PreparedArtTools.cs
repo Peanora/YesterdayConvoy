@@ -16,8 +16,8 @@ namespace YesterdayConvoy.Editor
         public int callbackOrder=>-100;
         static bool verifiedThisSession;
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
-        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx"};
-        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-B-caster"};
+        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
+        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target"};
         public void OnPreprocessBuild(BuildReport report)=>Prepare(!verifiedThisSession);
         public void OnPostprocessBuild(BuildReport report)
         {

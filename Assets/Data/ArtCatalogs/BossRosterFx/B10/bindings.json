@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "task": "B10",
+  "bindings": [
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_start",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_buff_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "spray",
+      "key": "enemy_syshop_skill_buff_02",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_syshop_skill_buff_start",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "binding": 0,
+      "source": "UberEffectEmitter._castEffects"
+    },
+    {
+      "binding": 1,
+      "source": "AnimatedActionToTargetAbility._activeBuffs"
+    },
+    {
+      "binding": 2,
+      "source": "AnimatedActionToTargetAbility._activeBuffs"
+    },
+    {
+      "binding": 3,
+      "source": "Native passive CommonAbilities/invincible"
+    }
+  ],
+  "note": "Only exact original native references. Actual event NativeSkillKey/Phase/Animation/HitIndex select bindings; no damage is caused by this data."
+}

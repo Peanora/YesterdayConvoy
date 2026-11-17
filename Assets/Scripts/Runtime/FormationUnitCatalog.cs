@@ -26,10 +26,10 @@ namespace YesterdayConvoy
             public bool ShopEligible { get; }
 
             internal Definition(string cardId, string name, string artRoot, int templateKind,
-                float visualHeight, Vector2Int footprint, bool supportOnly = false)
+                float visualHeight, Vector2Int footprint, bool supportOnly = false, string artIdOverride = null)
             {
                 CardId = cardId;
-                ArtId = supportOnly ? "GOLEM" : cardId.Substring(5);
+                ArtId = artIdOverride ?? (supportOnly ? "GOLEM" : cardId.Substring(5));
                 ArtRoot = artRoot;
                 Name = name;
                 TemplateKind = templateKind;
@@ -37,11 +37,15 @@ namespace YesterdayConvoy
                 Footprint = footprint;
                 if (!supportOnly)
                 {
-                    if (!CampaignBalance.Profiles.TryGetValue(cardId, out var stats))
-                        throw new InvalidOperationException("Missing authored formation profile: " + cardId);
+                    CampaignBalance.Profiles.TryGetValue(cardId, out var stats);
+                    var rules = FormationCampaignRules.Find(cardId);
+                    if (stats == null && rules != null)
+                        stats = new CampaignBalance.Stats(rules.Cost, rules.Cost + 1, rules.Health,
+                            rules.Attack, rules.Armor, rules.Interval, rules.Range, rules.MoveSpeed, 1);
+                    if (stats == null) throw new InvalidOperationException("Missing authored formation profile: " + cardId);
                     Stats = stats;
                     Cost = stats.Cost;
-                    ShopEligible = CampaignBalance.ShopEligible(cardId);
+                    ShopEligible = rules != null || CampaignBalance.ShopEligible(cardId);
                 }
                 // GOLEM is only presentation metadata for an existing synergy support, not a card
                 // role. Its stage-based stats remain owned by the existing summon rules (Stats=null).
@@ -99,9 +103,23 @@ namespace YesterdayConvoy
             AddSpecial(list,"CARD_TALULAH_TRIAL","塔露拉","TalulahOriginal",4,1.85f);
             // The approved Wisadel package is serialized Sprite frames, not an ArtCatalog root.
             AddSpecial(list,"CARD_WISADEL_APRIL","维维美",null,3,1.40f);
+            foreach (var role in BossRosterCatalog.Entries)
+            {
+                var rules = FormationCampaignRules.Find(role.CardId);
+                if (rules == null) continue;
+                bool support = rules.Role.Contains("辅助");
+                int kind = support ? 5 : rules.DamageType == "法" || rules.DamageType == "真" ? 4 : rules.Range > 2 ? 3 : 2;
+                float height = rules.Size == "小" ? 1.1f : rules.Size == "重" ? 1.95f : 1.5f;
+                if (role.Task == "B21") height = 2.6f;
+                var definition = new Definition(role.CardId, rules.Name, "BossRoster/" + role.Task + "/main", kind,
+                    height, rules.Size == "重" ? new Vector2Int(2,2) : Vector2Int.one);
+                list.Add(definition); Register(definition);
+            }
             all = list.AsReadOnly();
-            if (all.Count != 43) throw new InvalidOperationException("Existing formation roster must cover 43 authored cards.");
+            if (all.Count != 62) throw new InvalidOperationException("Formation catalog must retain 43 legacy cards and 19 approved Boss cards.");
             Register(new Definition(CampaignBalance.GolemCardId,"泥岩巨像","MonsterCombatArt/GOLEM",0,2.0f,new Vector2Int(2,2),true));
+            Register(new Definition("AUX_P14H","卡德霍猎犬","BossRoster/P14H/main",1,.90f,Vector2Int.one,true,"P14H"));
+            Register(new Definition("AUX_P26","易的梁","BossRoster/P26/main",4,1.15f,Vector2Int.one,true,"P26"));
         }
 
         static void Add(List<Definition> list, string artId, string name, int templateKind, float visualHeight, int size = 1)

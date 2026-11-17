@@ -1,0 +1,540 @@
+{
+  "version": 1,
+  "task": "B26",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_dylbhm_attack_1_hit_01",
+      "count": 25,
+      "width": 32,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5625,
+      "pivotY": 0.5345835004534041,
+      "duration": 0.8333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_1_hit_01/00.png",
+          "count": 25,
+          "width": 384,
+          "height": 84
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_attack_1_start_01",
+      "count": 49,
+      "width": 28,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5357142857142857,
+      "pivotY": 0.5820140838623047,
+      "duration": 1.6333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_1_start_01/00.png",
+          "count": 49,
+          "width": 336,
+          "height": 120
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_attack_1_trail_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.5806948343912761,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_1_trail_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_attack_2_hit_01",
+      "count": 29,
+      "width": 28,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.6071428571428571,
+      "pivotY": 0.540347417195638,
+      "duration": 0.9666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_2_hit_01/00.png",
+          "count": 29,
+          "width": 336,
+          "height": 72
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_attack_2_start_01",
+      "count": 48,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4642857142857143,
+      "pivotY": 0.5345835004534041,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_2_start_01/00.png",
+          "count": 48,
+          "width": 336,
+          "height": 112
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_attack_2_trail_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4166666666666667,
+      "pivotY": 0.5806948343912761,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_attack_2_trail_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_buff_01",
+      "count": 90,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5357142857142857,
+      "pivotY": 0.3202977861676898,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_buff_01/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_buff_02",
+      "count": 90,
+      "width": 40,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.475,
+      "pivotY": 0.3320140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_buff_02/00.png",
+          "count": 90,
+          "width": 480,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_die_01",
+      "count": 90,
+      "width": 44,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.6590909090909091,
+      "pivotY": 0.24901056289672852,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_die_01/00.png",
+          "count": 90,
+          "width": 528,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_die_loop_01",
+      "count": 90,
+      "width": 116,
+      "height": 64,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.46551724137931033,
+      "pivotY": 0.5151302814483643,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_die_loop_01/00.png",
+          "count": 90,
+          "width": 1392,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_skill_1_start_01",
+      "count": 90,
+      "width": 96,
+      "height": 24,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.3958333333333333,
+      "pivotY": 0.5051673253377278,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_skill_1_start_01/00.png",
+          "count": 90,
+          "width": 1152,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dylbhm_skill_2_start_01",
+      "count": 90,
+      "width": 32,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.34375,
+      "pivotY": 0.4986807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dylbhm_skill_2_start_01/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 192
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_dylbhm_attack_1_hit_01",
+        "enemy_dylbhm_attack_1_start_01",
+        "enemy_dylbhm_attack_1_trail_01",
+        "enemy_dylbhm_attack_2_hit_01",
+        "enemy_dylbhm_attack_2_start_01",
+        "enemy_dylbhm_attack_2_trail_01",
+        "enemy_dylbhm_buff_01",
+        "enemy_dylbhm_buff_02",
+        "enemy_dylbhm_die_01",
+        "enemy_dylbhm_die_loop_01",
+        "enemy_dylbhm_skill_1_start_01",
+        "enemy_dylbhm_skill_2_start_01"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_1_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack_1",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_1_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack_1",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_1_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_2_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack_2",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_2_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack_2",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_attack_2_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "changeyinyang",
+      "key": "enemy_dylbhm_buff_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "changeyinyang",
+      "key": "enemy_dylbhm_skill_1_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "summonenemy",
+      "key": "enemy_dylbhm_skill_2_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_die_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_buff_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_buff_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_dylbhm_die_loop_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

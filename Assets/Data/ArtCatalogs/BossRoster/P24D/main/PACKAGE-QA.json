@@ -1,0 +1,20 @@
+{
+  "task": "P24D",
+  "view": "main",
+  "timedClips": 4,
+  "frames": 201,
+  "pages": 10,
+  "zeroDurationMetadataStates": 2,
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Attack",
+    "Die"
+  ],
+  "ppu": 333.92473473407387,
+  "pngBytes": 6791460,
+  "cacheSegments": 4,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

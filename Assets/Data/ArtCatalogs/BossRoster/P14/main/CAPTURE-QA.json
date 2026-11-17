@@ -1,0 +1,98 @@
+{
+  "task": "P14",
+  "boundsSampleFps": 120,
+  "clips": [
+    {
+      "source": "Attack",
+      "count": 98,
+      "visibleFrames": 98,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Die_1",
+      "count": 61,
+      "visibleFrames": 61,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Die_2",
+      "count": 61,
+      "visibleFrames": 60,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Idle",
+      "count": 82,
+      "visibleFrames": 82,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Skill_1",
+      "count": 117,
+      "visibleFrames": 117,
+      "emptyFrames": 0,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Skill_2_Begin",
+      "count": 313,
+      "visibleFrames": 312,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Skill_2_End",
+      "count": 35,
+      "visibleFrames": 34,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    },
+    {
+      "source": "Start",
+      "count": 61,
+      "visibleFrames": 60,
+      "emptyFrames": 1,
+      "edgeFrames": 0
+    }
+  ],
+  "frames": 828,
+  "visibleFrames": 824,
+  "emptyFrames": 4,
+  "edgeFrames": 0,
+  "errors": [],
+  "emptySourceStates": [
+    {
+      "source": "Die_2",
+      "frame": 60,
+      "time": 1,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Skill_2_Begin",
+      "frame": 312,
+      "time": 5.199999809265137,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Skill_2_End",
+      "frame": 0,
+      "time": 0,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    },
+    {
+      "source": "Start",
+      "frame": 0,
+      "time": 0,
+      "skeletonAlpha": 1,
+      "opaqueAttachments": []
+    }
+  ],
+  "passed": true
+}
