@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         public bool Ready {get;private set;}
         public int SelectedSlot {get;private set;}=0;
         public static Rect BattleRect=>new Rect(0,0,1280,720);
-        public static Rect BoardInputRect=>new Rect(188,242,816,262);
+        public static Rect BoardInputRect=>new Rect(188,64,816,514);
         public Camera battleCamera;
         public FormationBattleTerrainAuthoring terrain;
         public Material actorTemplate,lineTemplate;
@@ -78,10 +78,11 @@ namespace YesterdayConvoy
             TickCampaignSettlement();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
+            if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();
             if(Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(soundEnabled&&Model.Clock-lastSoundAt>.09)
             {
@@ -111,7 +112,7 @@ namespace YesterdayConvoy
             if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
             // Detail cards also overlap part of the lineup rail. They get first refusal
             // before either terrain painting or seat dragging can capture the pointer.
-            if(FormationTraitBlocksPoint(point)){CancelFormationDrag();return;}
+            if(FormationTraitDetailsOpen&&FormationTraitDetailsRect.Contains(point)){CancelFormationDrag();return;}
             if(ProcessCampaignSeaPointer(type,point))return;
             formationShopPointer=point;
             if(type==EventType.MouseDown)
@@ -171,14 +172,14 @@ namespace YesterdayConvoy
             SetFormationView(true);
         }
         public void Retry()
-        {if(!Ready)return;if(Session.Run!=null){notice="完整挑战的战斗结果已结算，请继续下一节点。";return;}Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
+        {if(!Ready)return;if(Session.Run!=null){notice="完整挑战的战斗结果已结算，请继续下一节点。";return;}Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(false);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
         public void NextRound()
         {
             if(Session?.Run!=null){ContinueCampaign();return;}
             if(!Ready||Model.Phase!=FormationPhase.Won)return;
             Session.SavePositions(Model);var reward=Session.SettleWin(Model.Round);
             if(Model.Round<5)Session.AdvanceRound();
-            lastSoundAt=-10;SetMarketVisible(Model.Phase==FormationPhase.Preparation);SelectFirstLineup();
+            lastSoundAt=-10;SetMarketVisible(false);SelectFirstLineup();
             notice=reward!=null?$"通关奖励 +{reward.Total}金币、+{reward.Experience}经验；军团与站位已保留。":"本关奖励已领取，军团与站位保留。";SyncActors();
             SetFormationView(false);
         }
@@ -189,7 +190,7 @@ namespace YesterdayConvoy
             if(fullCampaign)Model.BindCampaign(Session.Run);else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}lastSoundAt=-10;
             campaignResultSettled=false;campaignInventoryOpen=false;campaignFormationOpen=false;
             CloseCampaignPanels();campaignSeaPainting=false;
-            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice=fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
+            SetMarketVisible(false);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice=fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
             SetFormationView(false);
         }
         internal void SyncActors()

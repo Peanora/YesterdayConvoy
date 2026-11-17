@@ -12,7 +12,7 @@ namespace YesterdayConvoy
         static readonly Vector3 FormationCameraUp = FormationCameraRotation * Vector3.up;
         static readonly Vector3 FormationCameraRight = FormationCameraRotation * Vector3.right;
         static readonly Quaternion FormationCameraInverse = Quaternion.Inverse(FormationCameraRotation);
-        public static Rect FormationCameraSafeRect => new Rect(204, 250, 790, 244);
+        public static Rect FormationCameraSafeRect => new Rect(204, 78, 790, 490);
         public bool ViewingDefenders { get; private set; }
         public bool CameraTransitioning => false;
         public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation && !ViewingDefenders;
@@ -78,10 +78,16 @@ namespace YesterdayConvoy
                 foreach (float row in new[] { -.5f, FormationBattleModel.Height - .5f })
                 {
                     var foot = WorldPoint(new Vector2(col, row));
-                    formationCameraPoints.Add(foot - FormationCameraUp * .65f);
-                    formationCameraPoints.Add(foot);
-                    // Reserve all existing large bodies and raised defender platforms once.
-                    formationCameraPoints.Add(foot + FormationCameraUp * 2.65f);
+                    // Native atlas cells include authored action margin beyond the visible body.
+                    // M20 idle is a 480/80-unit cell scaled by 1.9/2.55, with a .265 foot pivot:
+                    // its full Sprite extends 1.19 below and 3.29 above the foot. Reserve it once.
+                    foreach(float side in new[]{-1.4f,1.4f})
+                    {
+                        var edge=foot+FormationCameraRight*side;
+                        formationCameraPoints.Add(edge - FormationCameraUp * 1.3f);
+                        formationCameraPoints.Add(edge);
+                        formationCameraPoints.Add(edge + FormationCameraUp * 3.5f);
+                    }
                 }
             return FitFormationCamera(WorldPoint(new Vector2((first + last) * .5f, (FormationBattleModel.Height - 1) * .5f)), 0);
         }

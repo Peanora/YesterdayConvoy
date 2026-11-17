@@ -95,7 +95,7 @@ namespace YesterdayConvoy.Tests
             double deadline=Time.realtimeSinceStartupAsDouble+3;
             while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
             Assert.That(controller.ShopPanelTransitioning,Is.False,"The original shop stage must settle before testing map input.");
-            Assert.That(controller.MarketVisible,Is.EqualTo(controller.Model.Phase==FormationPhase.Preparation),"The shop stays pinned during preparation and hides during combat.");
+            Assert.That(controller.MarketVisible,Is.EqualTo(visible&&controller.Model.Phase==FormationPhase.Preparation),"The preparation drawer follows the requested state and stays hidden in combat.");
             yield return null;
         }
         static Vector2 StagePoint(FormationBattleController c,Vector3 world)
@@ -341,7 +341,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
             Assert.That(controller.Model.Terrain,Is.Not.Null);
             var regions=controller.terrain.regions;
-            CollectionAssert.AreEquivalent(new[]{new RectInt(17,1,2,2),new RectInt(18,4,2,2),new RectInt(13,1,2,1),new RectInt(16,4,2,1)},regions.Select(r=>r.cells));
+            CollectionAssert.AreEquivalent(new[]{new RectInt(21,1,2,2),new RectInt(22,5,2,2),new RectInt(16,1,2,1),new RectInt(19,4,2,1)},regions.Select(r=>r.cells));
             var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)
@@ -372,7 +372,7 @@ namespace YesterdayConvoy.Tests
             }
             finally{guard.Position=savedPosition;}
             yield return View(false);
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: Compact concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at current logical columns.");
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: Normal concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at current logical columns.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {
@@ -382,7 +382,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.ShopPresentation,Is.Not.Null);
             foreach(int seatIndex in new[]{0,3,9})
             {
-                Assert.That(FormationBattleController.FormationLineupRect(seatIndex),Is.EqualTo(ManualBattleController.ShopLineupRect(seatIndex)));
+                Assert.That(FormationBattleController.FormationLineupRect(seatIndex),Is.EqualTo(Rect.zero),"There is no duplicate screen lineup rail; the board owns deployed fighters.");
                 Assert.That(FormationBattleController.FormationReserveRect(seatIndex),Is.EqualTo(ManualBattleController.ShopBenchRect(seatIndex)));
             }
             yield return Market(true);
@@ -423,7 +423,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.SellPiece(result.Instance).Success,Is.False);
             Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(session.CanShop,Is.False);
         }
-        [UnityTest] public IEnumerator PurchasedReservePointerDropIntoUnlockedSeatAddsTheActualFighter()
+        [UnityTest] public IEnumerator PurchasedReservePointerDropOntoBoardAddsTheActualFighter()
         {
             yield return Ready();var shop=controller.Shop;
             yield return ChooseRecruit(8);int offer=recruitOffer;
@@ -432,7 +432,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(shop.Level,Is.EqualTo(4));Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
             var seat=controller.Session.Seats.For(receipt.Instance).Value;
             Vector2 from=FormationBattleController.FormationReserveRect(seat.Index).center;
-            Vector2 to=FormationBattleController.FormationLineupRect(3).center;
+            yield return Market(false);
+            var destination=new Vector2Int(6,3);
+            Assert.That(controller.Session.PreviewDeploy(receipt.Instance,destination).Valid,Is.True);
+            Vector2 to=FormationBattleController.CellScreen(destination);
             controller.ProcessPointer(EventType.MouseDown,from);controller.ProcessPointer(EventType.MouseDrag,to);controller.ProcessPointer(EventType.MouseUp,to);
             Assert.That(controller.Session.Seats.InLineup(receipt.Instance),Is.True);
             Assert.That(controller.Model.Units.Count,Is.EqualTo(4));

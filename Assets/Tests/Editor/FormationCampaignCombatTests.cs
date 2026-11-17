@@ -15,7 +15,7 @@ namespace YesterdayConvoy.Tests
             run=new FormationCampaignRun(shop,71);int safety=0;while(run.HasBlockingChoice){Assert.That(++safety,Is.LessThan(100));Assert.That(run.Choose(0).Success,Is.True);}
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=FormationCampaignRules.Find(id).CardId,Star=1}),Array.Empty<string>(),10,0,80);
             var model=new FormationBattleModel(71);model.BindCampaign(run);
-            Assert.That(model.ApplyRoster(shop.Bench.Select((p,i)=>new FormationRosterEntry{Instance=p.Instance,Star=p.Star,ArtId=p.Id,Spawn=new Vector2((i%5)*2,(i/5)*3)}),10),Is.True);
+            Assert.That(model.ApplyRoster(shop.Bench.Select((p,i)=>new FormationRosterEntry{Instance=p.Instance,Star=p.Star,ArtId=p.Id,Spawn=new Vector2((i%4)*3,(i/4)*3)}),10),Is.True);
             return model;
         }
         static FormationDefender Target(FormationBattleModel model)

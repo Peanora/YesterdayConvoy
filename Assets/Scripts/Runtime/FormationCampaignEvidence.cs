@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
         }
         static bool started;
-        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, authored compact board, fixed preparation shop and trait details with actual GPU screenshots. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
+        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, restored normal board, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
         FormationBattleController controller;string directory;bool done;
         static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
@@ -63,6 +63,22 @@ namespace YesterdayConvoy
             while(!controller.RosterArtReady&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
             Assert(controller.RosterArtReady,"Every current actor has its actual original animation package");
         }
+        IEnumerator Market(bool visible)
+        {
+            controller.SetMarketVisible(visible);double deadline=Time.realtimeSinceStartupAsDouble+3;
+            while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            Assert(controller.MarketVisible==visible&&!controller.ShopPanelTransitioning,"Preparation recruitment drawer settles "+(visible?"open":"closed"));
+            yield return null;
+        }
+        bool EmptyCell(int instance,out Vector2Int cell)
+        {
+            for(int column=0;column<FormationBattleModel.DeploymentColumns;column++)for(int row=0;row<FormationBattleModel.Height;row++)
+            {
+                var candidate=new Vector2Int(column,row);var preview=controller.Session.PreviewDeploy(instance,candidate);
+                if(preview.Valid&&preview.SwapInstance==0){cell=candidate;return true;}
+            }
+            cell=default;return false;
+        }
         IEnumerator ResolveChoices()
         {
             int safety=0;
@@ -88,7 +104,7 @@ namespace YesterdayConvoy
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3,"Three distinct random low-cost starter cards");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
-            Assert(FormationBattleModel.Width==22&&FormationBattleModel.Height==7&&FormationBattleModel.DeploymentColumns==10,"Compact authored board dimensions");
+            Assert(FormationBattleModel.Width==26&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==12,"Restored normal authored board dimensions");
             yield return Frame("01-opening-choice");
             Assert(controller.ChooseCampaignOption(0).Success,"Choose starter component");yield return null;
             var original=controller.Campaign.Choices.Select(c=>c.Id).ToArray();
@@ -97,11 +113,16 @@ namespace YesterdayConvoy
             Assert(!controller.Campaign.Choices.Any(c=>original.Contains(c.Id)),"Preplan reroll excludes all original options");
             Assert(!controller.Campaign.CanRerollChoice,"Preplan cannot be rerolled twice");
             yield return Frame("02-investment-environment");yield return ResolveChoices();
-            controller.SetMarketVisible(false);controller.SetFormationView(false);yield return ReadyArt();
-            Assert(controller.MarketVisible&&controller.ShopPanelVisibility==1,"Preparation shop cannot be collapsed");
-            Assert(FormationBattleController.FormationCameraSafeRect.yMin>FormationBattleController.FormationMarketRect.yMax,"Entire fixed board frame starts below the shop");
+            Assert(!controller.MarketVisible,"Opening choices leave recruitment drawer collapsed");
+            yield return Market(false);controller.SetFormationView(false);yield return ReadyArt();
+            Assert(FormationBattleController.FormationCameraSafeRect.height>=450,"Normal board regains a large fixed frame");
+            Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
+            Assert(controller.FormationDisplayedInterest==Math.Min(controller.Shop.InterestCap,controller.Shop.Gold/controller.Shop.InterestDivisor),"Coin HUD shows the production interest forecast");
             yield return Frame("03-left-preparation");
-            controller.SetFormationView(true);yield return null;yield return Frame("04-compact-guard-area");controller.SetFormationView(false);
+            var cameraPose=controller.battleCamera.transform.position;controller.ToggleFormationMarket();yield return Market(true);
+            Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
+            yield return Frame("03-recruitment-drawer-open");yield return Market(false);
+            controller.SetFormationView(true);yield return null;yield return Frame("04-normal-guard-area");controller.SetFormationView(false);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
             Assert(controller.InspectFormationTrait(trait)&&controller.FormationTraitDetailsOpen&&controller.SelectedFormationTraitId==trait,"Open real lineup trait details");
             var spawns=controller.Model.Units.Select(u=>u.Spawn).ToArray();var detailPoint=FormationBattleController.FormationTraitDetailsRect.center;
@@ -114,6 +135,7 @@ namespace YesterdayConvoy
                 if(controller.Campaign.CurrentNode.Kind=="补给")
                 {yield return ResolveChoices();Assert(controller.ContinueCampaign(),"Leave supply through normal node transition");continue;}
                 yield return ResolveChoices();
+                yield return Market(true);
                 // Buy affordable duplicates or a first useful new kind; no free-card or money injection.
                 for(int slot=0;slot<5;slot++)
                 {
@@ -123,9 +145,14 @@ namespace YesterdayConvoy
                     yield return ResolveChoices();
                 }
                 if(controller.Shop.Gold>=14&&controller.Shop.Level<5)controller.BuyExperience();
+                yield return Market(false);
                 foreach(var p in controller.Shop.Bench.ToArray())
-                    if(!controller.Session.Seats.InLineup(p.Instance)&&controller.Model.EnabledCount<controller.Shop.PopulationCap&&!controller.Model.Units.Any(u=>u.ArtId==FormationUnitCatalog.Find(p.Id).ArtId))
-                        controller.MovePiece(p.Instance,true,Enumerable.Range(0,controller.Shop.PopulationCap).First(i=>controller.Session.Seats.At(true,i)<=0));
+                    if(!controller.Session.Seats.InLineup(p.Instance)&&controller.Model.EnabledCount<controller.Shop.PopulationCap&&!controller.Model.Units.Any(u=>u.ArtId==FormationUnitCatalog.Find(p.Id).ArtId)&&EmptyCell(p.Instance,out var cell))
+                    {
+                        var origin=controller.FormationPieceRect(p.Instance).center;var destination=FormationBattleController.CellScreen(cell);
+                        controller.ProcessPointer(EventType.MouseDown,origin);controller.ProcessPointer(EventType.MouseDrag,destination);controller.ProcessPointer(EventType.MouseUp,destination);
+                        Assert(controller.Session.Seats.InLineup(p.Instance),"Purchased reserve deploys directly onto an actual board cell");
+                    }
                 var core=controller.Session.Seats.Lineup(controller.Shop.Bench).FirstOrDefault();
                 foreach(var item in controller.Campaign.Inventory.ToArray())if(core!=null&&item.Key.Length<=2)controller.Campaign.Equip(item.Instance,core.Instance);
                 yield return ReadyArt();controller.SetMarketVisible(false);

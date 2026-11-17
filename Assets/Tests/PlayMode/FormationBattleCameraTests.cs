@@ -41,7 +41,7 @@ namespace YesterdayConvoy.Tests
             float first = defenders ? FormationBattleModel.DeploymentColumns + .5f : -.5f, last = defenders ? FormationBattleModel.Width - .5f : FormationBattleModel.DeploymentColumns + .5f;
             foreach (float column in new[] { first, last })
                 foreach (float row in new[] { -.5f, FormationBattleModel.Height - .5f })
-                    AssertInFocusedFrame(FormationBattleController.WorldPoint(new Vector2(column, row)), "Every row of the focused half must remain visible beneath the pinned shop.");
+                    AssertInFocusedFrame(FormationBattleController.WorldPoint(new Vector2(column, row)), "Every row of the normal focused board must fit when the recruitment drawer is collapsed.");
             var actors = defenders ? controller.Model.Defenders.Cast<FormationActor>() :
                 controller.Model.Units.Where(u => u.Enabled).Cast<FormationActor>();
             foreach (var actor in actors)
@@ -68,8 +68,8 @@ namespace YesterdayConvoy.Tests
             deadline = Time.realtimeSinceStartupAsDouble + 3;
             while (controller.ShopPanelTransitioning && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert.That(controller.ShopPanelTransitioning, Is.False);
-            Assert.That(controller.MarketVisible, Is.True, "Preparation keeps the recruitment shop pinned even after an attempted close.");
-            Assert.That(controller.ShopPanelVisibility, Is.EqualTo(1).Within(.001f));
+            Assert.That(controller.MarketVisible, Is.False, "The collapsed drawer leaves the normal sized preparation board unobstructed.");
+            Assert.That(controller.ShopPanelVisibility, Is.EqualTo(0).Within(.001f));
             yield return WaitForCamera();
             var model = controller.Model;
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Preparation));

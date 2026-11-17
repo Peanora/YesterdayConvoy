@@ -6,7 +6,7 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleController
     {
-        bool marketVisible=true,shopOddsVisible,finalRewardClaimed,formationMenuOpen;
+        bool marketVisible,shopOddsVisible,finalRewardClaimed,formationMenuOpen;
         int shopDragInstance,selectedPiece,shopInputBlockedFrame=-1;
         Vector2 formationShopPointer;
         Texture2D formationCoin,formationStar;
@@ -20,10 +20,17 @@ namespace YesterdayConvoy
         public Camera ShopModelCamera=>approvedShop?.ModelCamera;
         public SpriteRenderer ShopBenchModel(int instance)=>approvedShop?.ShopBenchModel(instance);
         public SpriteRenderer ShopEntranceModel(int instance)=>approvedShop?.ShopEntranceModel(instance);
-        public static Rect FormationLineupRect(int index)=>ApprovedUi.LineupSlot(index,Mathf.Max(10,FormationShopSession.Current?.Shop.PopulationCap??10));
+        // Internal population seats remain in the model; deployed units have no second screen row.
+        public static Rect FormationLineupRect(int index)=>Rect.zero;
         public static Rect FormationReserveRect(int index)=>ApprovedUi.ReserveSlot(index);
-        public static Rect FormationMarketRect=>ApprovedUi.ShopPanel;
-        public static Rect FormationOfferRect(int index)=>ApprovedUi.Offer(index);
+        public static Rect FormationMarketRect=>new Rect(188,424,1074,169);
+        public static Rect FormationOfferRect(int index)=>new Rect(188+index*190.5f,460,182.5f,120);
+        public static Rect FormationExperienceRect=>new Rect(16,581,164,124);
+        public static Rect FormationCoinRect=>new Rect(1144,622,118,76);
+        public static Rect FormationInterestRect=>new Rect(1144,597,118,20);
+        public static Rect FormationStartRect=>new Rect(1011,532,252,38);
+        public int FormationDisplayedInterest=>Shop==null||Campaign?.CurrentNode.Kind=="补给"?0:
+            Math.Min(Shop.FormationEconomy?Shop.InterestCap:5,Shop.Gold/(Shop.FormationEconomy?Shop.InterestDivisor:10));
         static Rect FormationOddsRect=>ApprovedShopPresentation.OddsPanelRect;
         static Rect FormationSellLeft=>ApprovedUi.SellLeft;
         static Rect FormationSellRight=>ApprovedUi.SellRight;
@@ -31,10 +38,32 @@ namespace YesterdayConvoy
         public Rect FormationPieceRect(int instance)
         {
             var seat=Session?.Seats.For(instance);
-            return !seat.HasValue?Rect.zero:seat.Value.Lineup?FormationLineupRect(seat.Value.Index):FormationReserveRect(seat.Value.Index);
+            if(!seat.HasValue)return Rect.zero;
+            if(!seat.Value.Lineup)return FormationReserveRect(seat.Value.Index);
+            var unit=Model?.Units.FirstOrDefault(u=>u.Instance==instance);
+            return unit==null||!FormationActorVisibleInView(unit)?Rect.zero:FormationActorScreenRect(unit);
         }
-        public Rect ShopPieceRect(int index)=>Shop==null||index<0||index>=Shop.Bench.Count?Rect.zero:
-            Model.Phase==FormationPhase.Preparation?FormationPieceRect(Shop.Bench[index].Instance):Rect.zero;
+        public Rect ShopPieceRect(int index)
+        {
+            if(Shop==null||index<0||index>=Shop.Bench.Count)return Rect.zero;
+            var seat=Session.Seats.For(Shop.Bench[index].Instance);
+            return seat.HasValue&&!seat.Value.Lineup?FormationReserveRect(seat.Value.Index):Rect.zero;
+        }
+        Rect FormationFlowPieceRect(int index)
+        {
+            if(Shop==null||index<0||index>=Shop.Bench.Count)return Rect.zero;
+            return FormationRecruitmentTargetRect(Shop.Bench[index].Instance);
+        }
+        public Rect FormationRecruitmentTargetRect(int instance)
+        {
+            var seat=Session?.Seats.For(instance);
+            if(!seat.HasValue)return Rect.zero;
+            if(!seat.Value.Lineup)return FormationReserveRect(seat.Value.Index);
+            var unit=Model?.Units.FirstOrDefault(u=>u.Instance==instance);
+            if(unit==null||!FormationActorVisibleInView(unit))return Rect.zero;
+            var foot=CellScreen(unit.SpawnCenter);
+            return new Rect(foot.x-46,foot.y-55,92,68);
+        }
         void EnsureOriginalShop()
         {
             if(approvedShop!=null)return;
@@ -44,7 +73,8 @@ namespace YesterdayConvoy
             approvedShop=new ApprovedShopPresentation(new ApprovedShopPresentation.Host
             {
                 Parent=transform,Shop=()=>Shop,Font=()=>ApprovedUi.Font(null),Preparing=()=>CanTrade,
-                Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,CanCollapse=()=>false,
+                Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,CanCollapse=()=>true,ReserveOnly=()=>true,
+                MarketRect=()=>FormationMarketRect,OfferRect=FormationOfferRect,FlowPieceRect=FormationFlowPieceRect,
                 OddsVisible=()=>shopOddsVisible,StoreOdds=v=>shopOddsVisible=v,
                 Dragging=()=>pointerHeld&&Vector2.Distance(formationShopPointer,pointerStart)>6&&!DragPreviewVisible,
                 DragInstance=()=>shopDragInstance,LineupSeatCount=()=>Mathf.Max(10,Shop.PopulationCap),Pointer=()=>formationShopPointer,PieceRect=ShopPieceRect,
@@ -60,11 +90,12 @@ namespace YesterdayConvoy
         }
         public void SetMarketVisible(bool visible)
         {
-            // Recruitment is a fixed preparation rail. Battle is the only state that hides it.
-            visible=Model!=null&&Model.Phase==FormationPhase.Preparation;
+            visible=visible&&Model!=null&&Model.Phase==FormationPhase.Preparation;
+            if(visible)CloseFormationTraitDetails();
             if(approvedShop==null)marketVisible=visible;else approvedShop.AnimateShopVisibility(visible);
             shopOddsVisible=false;CancelFormationDrag();
         }
+        public void ToggleFormationMarket()=>SetMarketVisible(!MarketVisible);
         ShopTrialModel.Result ShopAction(Func<ShopTrialModel.Result> action,bool arrival=false,Vector2 origin=default)
         {
             if(!CanTrade)return new ShopTrialModel.Result{Message="仅战前整备时可以交易。"};
@@ -100,10 +131,9 @@ namespace YesterdayConvoy
         void SelectShopPiece(int instance){selectedPiece=instance;SelectedSlot=Model.Units.FindIndex(u=>u.Instance==instance);}
         bool FindFormationSeat(Vector2 point,out bool lineup,out int seat)
         {
-            for(int i=0;i<Mathf.Max(10,Shop.PopulationCap);i++)
+            for(int i=0;i<10;i++)
             {
-                if(FormationLineupRect(i).Contains(point)){lineup=true;seat=i;return true;}
-                if(i<10&&FormationReserveRect(i).Contains(point)){lineup=false;seat=i;return true;}
+                if(FormationReserveRect(i).Contains(point)){lineup=false;seat=i;return true;}
             }
             lineup=false;seat=-1;return false;
         }
@@ -130,15 +160,15 @@ namespace YesterdayConvoy
         }
         void DrawFormationPortrait(Rect rect,string id)=>ApprovedShopPresentation.DrawTestPortrait(rect,FormationUnitArt.For(id)?.Portrait);
         void DrawFormationMarket()=>approvedShop.DrawApprovedShopMarket(CanTrade);
-        void DrawFormationResources(bool preparing)=>approvedShop.DrawShopResourceHud(preparing);
+        void DrawFormationResources(bool preparing)=>DrawFormationEconomyHud(preparing);
         void DrawFormationOdds()=>approvedShop.DrawShopOdds(formationShopPointer);
         void DrawFormationPreparation()
         {
             approvedShop.DrawShopBench(approvedShop.LoopText(12,TextAnchor.MiddleCenter));
-            GUI.Label(new Rect(1142,624,120,18),"开战后锁定本场编队",approvedShop.LoopText(10,TextAnchor.MiddleCenter,Color.white));
+            if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
             bool supply=Campaign?.CurrentNode.Kind=="补给";
             bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked;
-            if(approvedShop.LoopButton(new Rect(1142,643,120,51),supply?"继续行军 ▶":RosterArtReady?"开始进攻 ▶":"准备动作…",true)){if(supply)ContinueCampaign();else StartBattle();}
+            if(approvedShop.LoopButton(FormationStartRect,supply?"继续行军 ▶":RosterArtReady?"开始进攻 ▶":"准备动作…",true)){if(supply)ContinueCampaign();else StartBattle();}
             GUI.enabled=enabled;
         }
         void DrawFormationDropTarget()

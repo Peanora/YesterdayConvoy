@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-18 最新：正常棋盘、货币式运营入口与直接上阵
+
+- 用户明确撤销紧凑常驻布局，要求恢复正常地图、左经验/右金币/上方小字利息、点击展开商店，底部只留备战席。沿用`codex/formation-battle-demo`；只读fetch确认`origin/main`仍在当前分支祖先中，无遗漏主线提交。原`.vscode/`及`ProjectSettings/PackageManagerSettings.asset`保留不暂存。本轮不推送或操作PR；AGENTS仅本地保存。
+- 实际执行`FormationCampaignTools.Author()`，`artifacts/formation-currency-layout/author.log`退出0：保存26×8/208格、68外围格、8+8原门，四地形恢复21,1/22,5/16,1/19,4。保留此前作者的越界旧格清理和幂等逻辑，没有回滚整份场景或运行时重建地形。
+- 运行连接：FormationShopMarket将正式店作为底部抽屉，右金币/利息切换；FormationPreparationHud读真实Shop的Gold、XP、NextLevelXP、InterestDivisor/Cap。ApprovedShopPresentation通过可选ReserveOnly/MarketRect/OfferRect/FlowPieceRect复用原购买与动画，旧Manual默认仍保留原布局；内部Seats仍约束人口，上阵只显示棋盘本体。合成目的地为本体实际脚点，右侧侦察时上阵目标/入场模型禁用。商店与羁绊互斥，展开时隐藏下层冲突按钮/滚动详情，遮盖区域不响应布阵。
+- 完整EditMode **1185/1185、13.3158113秒、退出0**，`editmode.xml/.log`。恢复26×8和原通用战斗夹具后，3-7仍用相同卡/星、14件装备及150秒，真实1215000初始HP、145.075秒胜、8次阵亡；上轮因缩图改变敌阵而失败的见证已恢复，未更改伤害、敌阵或时限。其后只有固定镜头边距与UI/场景夹具变更，不冒称完整纯模型套件再次执行。
+- 初轮相关PlayMode22项21过：大地图的宽原生Sprite完整外框在边缘越出旧安全约束。先缩小到单个大单位用例，并核实M20源Idle为480px/80ppu、height2.55、脚pivotY约0.265，以1.9/2.55缩放后源Sprite含动作留白，脚下延伸1.19/脚上3.29单位。固定构图一次预留源框边距后，单用例 **1/1、2.304秒、退出0**，`large-focused.xml/.log`；没有改剪影尺寸、动作、测试阈值或按角色动态缩放镜头。
+- 最终非batch D3D11 PlayMode相关场景及旧商店 **23/23、41.1309873秒、退出0**，`playmode-release.xml/.log`。覆盖正常26×8全格与本体安全区、抽屉开关不重构镜头、覆盖区域零布阵、只有备战席/无重复stage本体；真实8金买新卡→付4金4XP→腾人口→reserve拖入棋盘→本体拖回→真实首战结算到4级→下一节点直接填第四人口。羁绊计数/徽章状态和详情遮挡继续通过。
+- 新增场上合成夹具（明确非自然获取）：左/右视图均用合法两张一星及第三张在售，真实BuyOffer合成二星；原实例、锚点和人口继承，常驻stage复制禁用。左视图实际入场轨迹接近本体脚点，右侦察target为zero且整个arrival生命周期renderer禁用。对应两张GPU截图与新准备/抽屉/四人口/羁绊图在本证据目录，已目视大棋盘、单备战栏及运营HUD。
+- 布局参考：[货币战争入门界面与金币入口说明](https://www.miyoushe.com/zzz/article/70549693)与[准备界面截图](https://www.miyoushe.com/planet/article/70431005)。只参考布局，游戏中仍使用本项目字体、原角色与工业地图资源，无新增外部美术/依赖。
+- 此处写入时Windows构建和独立Player复验待执行，未用此前EXE冒称本版。自然整局通关分布、全部构筑、人类最终观感、长期性能与第二机仍未验证。
+
 ## 2026-11-18 最新：固定招募、紧凑棋盘与羁绊详情
 
 - 用户要求战前商店不收拢、完全避让棋盘，适当缩图，并参照金铲铲/货币战争完善羁绊成员与激活档位。延续`codex/formation-battle-demo`，只读fetch确认`origin/main`已在当前分支祖先中、无待接主线提交；两项既有未跟踪本地配置保持。本轮不推送或操作PR。运行与后续规则已同步GDD/FORMATION_FULL_GAME及本地AGENTS。

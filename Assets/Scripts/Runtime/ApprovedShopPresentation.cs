@@ -14,11 +14,12 @@ namespace YesterdayConvoy
             public Transform Parent;
             public Func<ShopTrialModel> Shop;
             public Func<Font> Font;
-            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive,CanCollapse;
+            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive,CanCollapse,ReserveOnly;
             public Func<int> DragInstance;
             public Func<int> LineupSeatCount;
             public Func<Vector2> Pointer;
-            public Func<int,Rect> PieceRect;
+            public Func<int,Rect> PieceRect,FlowPieceRect,OfferRect;
+            public Func<Rect> MarketRect;
             public Func<int,bool> InLineup;
             public Func<string,Sprite> Portrait;
             public Func<string,double,Sprite> IdleFrame;
@@ -49,12 +50,13 @@ namespace YesterdayConvoy
         public Camera ModelCamera=>shopModelCamera;
         public RenderTexture ModelTarget=>shopModelTarget;
         public GameObject ModelStage=>shopModelStage;
-        static Rect ShopPanelRect=>ApprovedUi.ShopPanel;
+        Rect ShopPanelRect=>host.MarketRect?.Invoke()??ApprovedUi.ShopPanel;
         public static Rect OddsPanelRect=>new Rect(306,105,670,498);
         static Rect ShopOddsPanelRect=>OddsPanelRect;
-        static Rect ShopOfferRect(int slot)=>ApprovedUi.Offer(slot);
+        Rect ShopOfferRect(int slot)=>host.OfferRect?.Invoke(slot)??ApprovedUi.Offer(slot);
         static Rect ShopResourceHudRect=>new Rect(12,581,164,124);
         Rect ShopPieceRect(int slot)=>host.PieceRect(slot);
+        Rect ShopFlowPieceRect(int slot)=>host.FlowPieceRect?.Invoke(slot)??ShopPieceRect(slot);
         string[] ShopTags(string id)=>host.Tags(id);
         int ShopHeldCopies(string id)=>shop.Bench.Where(p=>p.Id==id).Sum(p=>ShopTrialModel.Copies(p.Star));
         float ShopRecruitPulse=>.15f+.85f*(.5f-.5f*Mathf.Cos(Time.unscaledTime*Mathf.PI*2/1.5f));
@@ -124,7 +126,7 @@ namespace YesterdayConvoy
             float height=LocalMonsterArt.For(id)?.Height??1;
             return .57f/1.855f*Mathf.Min(1,2.05f/height);
         }
-        Vector2 ShopModelFoot(int slot){var r=ShopPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
+        Vector2 ShopModelFoot(int slot){var r=ShopFlowPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
         static Vector3 ShopModelPosition(Vector2 gui)=>new Vector3(gui.x*.01f,(720-gui.y)*.01f,0);
         public void SyncShopBenchModels()
         {
@@ -171,6 +173,9 @@ namespace YesterdayConvoy
             foreach(var arrival in shopArrivals)
             {
                 int slot=shop.Bench.ToList().FindIndex(p=>p.Instance==arrival.Instance);float t=Mathf.Clamp01((Time.unscaledTime-arrival.At)/ShopArrivalDuration);
+                var target=slot<0?Rect.zero:ShopFlowPieceRect(slot);
+                arrival.Model.enabled=target.width>0&&target.height>0;
+                if(!arrival.Model.enabled)continue;
                 arrival.Model.sprite=ShopIdleFrame(arrival.Id,Time.unscaledTime-shopBenchIdleOrigins[arrival.Instance]);arrival.Model.sortingOrder=100;
                 var destination=ShopModelFoot(slot);
                 arrival.Model.transform.localPosition=ShopModelPosition(arrival.BoundToFlow?ShopFlowPoint(arrival.Origin,destination,ShopFlowEase(Mathf.Clamp01((Time.unscaledTime-arrival.At-.055f)/.56f))):ShopEntranceFoot(destination,t));
@@ -188,16 +193,31 @@ namespace YesterdayConvoy
         }
         public void DrawShopBench(GUIStyle center)
         {
-            // A continuous raised platform per row; occupied pads retain the full recruitment-cost colour.
-            DrawShopWalkway(ApprovedUi.LineupSlot(0,host.LineupSeatCount?.Invoke()??10),shop.PopulationCap,true);
-            DrawShopWalkway(ApprovedUi.ReserveSlot(0),10,false);
             int reserve=shop.Bench.Count(p=>!host.InLineup(p.Instance));
             var title=ApprovedUi.Text(host.Font(),13,TextAnchor.MiddleLeft,Color.white,600);
             var hint=ApprovedUi.Text(host.Font(),10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
-            Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",title);
-            Fill(new Rect(188,594,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,594,145,21),$"备战席  {reserve}/10",title);
-            GUI.Label(new Rect(650,493,478,21),host.LineupHint??"自由拖放位置 · 重叠交换 · 开战自动向左收拢空位",hint);
-            GUI.Label(new Rect(650,604,478,21),"可跨排拖放交换 · 同名限编队一张 · 两侧出售",hint);
+            if(host.ReserveOnly?.Invoke()??false)
+            {
+                var deck=new Rect(184,627,950,73);
+                Fill(deck,new Color(.085f,.13f,.17f,.96f));ShopBorder(deck,new Color(.33f,.41f,.46f),1);
+                for(int slot=0;slot<10;slot++)
+                {
+                    var pad=ApprovedUi.ReserveSlot(slot);Fill(pad,new Color(.22f,.29f,.34f,.45f));
+                    Fill(new Rect(pad.xMax-1,pad.y,1,pad.height),new Color(.38f,.46f,.50f,.5f));
+                }
+                GUI.Label(new Rect(188,599,410,23),$"备战席  {reserve}/10   ·   已上阵 {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",title);
+                GUI.Label(new Rect(652,602,478,21),"拖入棋盘上阵 · 拖回备战下阵",hint);
+            }
+            else
+            {
+                // Preserve the original two-row presentation for legacy callers.
+                DrawShopWalkway(ApprovedUi.LineupSlot(0,host.LineupSeatCount?.Invoke()??10),shop.PopulationCap,true);
+                DrawShopWalkway(ApprovedUi.ReserveSlot(0),10,false);
+                Fill(new Rect(188,483,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,483,145,21),$"出战编队  {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",title);
+                Fill(new Rect(188,594,152,21),new Color(.22f,.32f,.40f,.85f));GUI.Label(new Rect(193,594,145,21),$"备战席  {reserve}/10",title);
+                GUI.Label(new Rect(650,493,478,21),host.LineupHint??"自由拖放位置 · 重叠交换 · 开战自动向左收拢空位",hint);
+                GUI.Label(new Rect(650,604,478,21),"可跨排拖放交换 · 同名限编队一张 · 两侧出售",hint);
+            }
             for(int i=0;i<shop.Bench.Count;i++)
             {
                 var p=shop.Bench[i];var r=ShopPieceRect(i);if(r.width<=0||r.height<=0)continue;
@@ -306,7 +326,7 @@ namespace YesterdayConvoy
             for(int i=0;i<shop.Bench.Count;i++)
             {
                 var piece=shop.Bench[i];snapshot.Pieces.Add(piece.Copy());
-                snapshot.Bounds[piece.Instance]=ShopPieceRect(i);
+                snapshot.Bounds[piece.Instance]=ShopFlowPieceRect(i);
             }
             return snapshot;
         }
@@ -388,7 +408,7 @@ namespace YesterdayConvoy
             foreach(var flow in shopFlows)
             {
                 int slot=shop.Bench.ToList().FindIndex(p=>p.Instance==flow.Instance);if(slot<0)continue;
-                var bounds=ShopPieceRect(slot);if(bounds.width<=0||bounds.height<=0)continue;
+                var bounds=ShopFlowPieceRect(slot);if(bounds.width<=0||bounds.height<=0)continue;
                 Vector2 end=ShopFlowFoot(bounds);float elapsed=now-flow.At;
                 if(!flow.Merge)
                 {
@@ -522,6 +542,7 @@ namespace YesterdayConvoy
             if(shop==null)return;
             if(!shopVisible&&!ShopPanelTransitioning)
             {
+                if(host.ReserveOnly?.Invoke()??false)return; // Formation uses the persistent coin entry only.
                 bool enabled=GUI.enabled;GUI.enabled=enabled&&host.Preparing();
                 if(LoopButton(new Rect(1144,69,118,30),"打开商店 Tab"))host.SetVisible(true);
                 GUI.enabled=enabled;return;

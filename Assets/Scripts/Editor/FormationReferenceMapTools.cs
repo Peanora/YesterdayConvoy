@@ -58,8 +58,8 @@ namespace YesterdayConvoy.Editor
             {
                 new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-5,1,2,2), height=.48f, allowDefender=true },
                 new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-4,FormationBattleModel.Height-3,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+3,1,2,1), height=.36f, allowDefender=false },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+6,4,2,1), height=.36f, allowDefender=false }
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+4,1,2,1), height=.36f, allowDefender=false },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+7,4,2,1), height=.36f, allowDefender=false }
             };
             controller.terrain = authoring;
             foreach (var region in authoring.regions)

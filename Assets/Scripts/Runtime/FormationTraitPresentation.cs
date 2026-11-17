@@ -26,7 +26,7 @@ namespace YesterdayConvoy
         {
             if (Campaign == null || Model.Phase == FormationPhase.Won || Model.Phase == FormationPhase.Lost || CampaignInteractionBlocked || formationMenuOpen || shopOddsVisible || FormationTraitView.For(Campaign, Shop, id) == null) return false;
             if (formationInspectedTag != id) formationTraitDetailScroll = Vector2.zero;
-            formationInspectedTag = id; CancelFormationDrag(); return true;
+            SetMarketVisible(false); formationInspectedTag = id; CancelFormationDrag(); return true;
         }
         public bool CloseFormationTraitDetails()
         {

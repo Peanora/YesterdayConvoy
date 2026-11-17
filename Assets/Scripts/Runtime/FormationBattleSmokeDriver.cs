@@ -136,7 +136,7 @@ namespace YesterdayConvoy
             var root=SceneManager.GetActiveScene().GetRootGameObjects().SingleOrDefault(go=>go.name=="Defender terrain");
             if(root==null||controller.terrain==null||!controller.terrain.transform.IsChildOf(root.transform)||controller.Model.Terrain==null)return false;
             var regions=controller.terrain.regions;
-            var footprints=new[]{new RectInt(17,1,2,2),new RectInt(17,5,2,2),new RectInt(14,1,2,1),new RectInt(15,4,2,1)};
+            var footprints=new[]{new RectInt(21,1,2,2),new RectInt(22,5,2,2),new RectInt(16,1,2,1),new RectInt(19,4,2,1)};
             if(regions==null||regions.Length!=footprints.Length||!footprints.All(cells=>regions.Count(r=>r.cells==cells)==1))return false;
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true);
             foreach(var region in regions)
@@ -274,7 +274,7 @@ namespace YesterdayConvoy
             CheckThat("left-preparation-shows-complete-owned-army",!controller.ViewingDefenders&&controller.CanEditFormationView&&ActorFeetMatchTerrain());
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("test-shop-starts-with-unlimited-gold-and-three-owned-lineup-pieces",controller.Shop.UnlimitedGold&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
-            CheckThat("shared-original-A-presentation-and-platform-geometry",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==ManualBattleController.ShopLineupRect(i)&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
+            CheckThat("shared-original-reserve-stage-without-second-lineup-rail",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
             yield return Market(true);yield return Capture("player-market");
             var beforeCovered=m.Units.ToDictionary(u=>u.Instance,u=>u.Spawn);int coveredGold=controller.Shop.Gold;
             var covered=FormationBattleController.FormationOfferRect(0).center;
@@ -358,9 +358,14 @@ namespace YesterdayConvoy
             CheckThat("next-round-returns-camera-to-left-preparation",!controller.ViewingDefenders&&controller.CanEditFormationView);
             CheckThat("won-round-advances-with-unlimited-test-gold",controller.Shop.UnlimitedGold&&controller.Shop.Gold==beforeReward);
             CheckThat("real-experience-purchase-unlocks-fourth-population",controller.BuyExperience().Success&&controller.Shop.Level>=4);
-            var reserve=controller.FormationPieceRect(receipt.Instance).center;var lineup=FormationBattleController.FormationLineupRect(3).center;
-            controller.ProcessPointer(EventType.MouseDown,reserve);controller.ProcessPointer(EventType.MouseDrag,lineup);controller.ProcessPointer(EventType.MouseUp,lineup);
-            CheckThat("actual-purchased-reserve-drops-on-original-platform-and-enters-lineup",controller.Session.Seats.InLineup(receipt.Instance)&&m.Units.Any(u=>u.Instance==receipt.Instance&&u.ArtId==FormationUnitCatalog.Find(receipt.Id).ArtId)&&m.EnabledCount==4);
+            var reserve=controller.FormationPieceRect(receipt.Instance).center;
+            Vector2Int deployCell=default;bool deployFound=false;
+            for(int x=0;x<FormationBattleModel.DeploymentColumns&&!deployFound;x++)for(int y=0;y<FormationBattleModel.Height;y++)
+            {var candidate=new Vector2Int(x,y);var preview=controller.Session.PreviewDeploy(receipt.Instance,candidate);if(preview.Valid&&preview.SwapInstance==0){deployCell=candidate;deployFound=true;break;}}
+            CheckThat("actual-purchased-reserve-has-a-legal-board-destination",deployFound);
+            var boardDestination=FormationBattleController.CellScreen(deployCell);
+            controller.ProcessPointer(EventType.MouseDown,reserve);controller.ProcessPointer(EventType.MouseDrag,boardDestination);controller.ProcessPointer(EventType.MouseUp,boardDestination);
+            CheckThat("actual-purchased-reserve-drops-directly-onto-board-and-enters-lineup",controller.Session.Seats.InLineup(receipt.Instance)&&m.Units.Any(u=>u.Instance==receipt.Instance&&u.ArtId==FormationUnitCatalog.Find(receipt.Id).ArtId)&&m.EnabledCount==4);
             var deploymentCells=m.Units.Where(u=>u.Enabled).Select(u=>u.DeploymentCells).ToArray();
             CheckThat("recruited-lineup-keeps-complete-footprints-in-bounds-without-overlap",deploymentCells.All(cells=>cells.xMin>=0&&cells.xMax<=FormationBattleModel.DeploymentColumns&&cells.yMin>=0&&cells.yMax<=FormationBattleModel.Height)&&!deploymentCells.SelectMany((cells,i)=>deploymentCells.Skip(i+1).Select(other=>cells.Overlaps(other))).Any(overlap=>overlap));
             formation=Formation(m);controller.Shop.Validate();

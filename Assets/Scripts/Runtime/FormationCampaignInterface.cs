@@ -39,7 +39,7 @@ namespace YesterdayConvoy
             Session.SavePositions(Model);
             if(!Session.AdvanceNode())return false;
             campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
-            RefreshCampaignPreparation();SetMarketVisible(true);SetFormationView(false);
+            RefreshCampaignPreparation();SetMarketVisible(false);SetFormationView(false);
             notice=Campaign.CurrentNode.Kind=="补给"?"选择一组补给，之后继续下一节点。":"新防线已经公开。先侦察，再调整装备、搭档与站位。";
             return true;
         }
@@ -71,7 +71,7 @@ namespace YesterdayConvoy
             {bool open=!campaignRouteOpen;CloseCampaignPanels();campaignRouteOpen=open;}
             if(prep&&Button(new Rect(737,8,45,42),"防线"))
             {bool open=!campaignScoutingOpen;CloseCampaignPanels();campaignScoutingOpen=open;}
-            if(prep&&Campaign.TraitCount("海嗣")>=2)
+            if(prep&&!MarketVisible&&!ShopPanelTransitioning&&Campaign.TraitCount("海嗣")>=2)
             {
                 if(Button(new Rect(1011,489,162,23),campaignSeaPainting?"完成溟痕布置":"布置溟痕 / 自动推荐"))
                 {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
@@ -271,6 +271,7 @@ namespace YesterdayConvoy
         }
         void DrawCampaignUnitDetails()
         {
+            if(MarketVisible||ShopPanelTransitioning)return;
             var piece=Shop.Bench.FirstOrDefault(p=>p.Instance==selectedPiece);
             var spec=FormationCampaignRules.Find(piece?.Id);
             if(spec==null)return;

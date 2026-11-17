@@ -42,8 +42,8 @@ namespace YesterdayConvoy.Tests
                 session.Seats.For(piece.Instance)?.Lineup + ":" + session.Seats.For(piece.Instance)?.Index)) + "#" +
             string.Join("|", session.Shop.Offers) + "#" + string.Join("|", session.Shop.Roles.Select(role => role.Id + ":" + session.Shop.Available(role.Id)));
 
-        [TestCase(9, 5)]
-        [TestCase(4, 6)]
+        [TestCase(11, 6)]
+        [TestCase(4, 7)]
         [TestCase(-1, 0)]
         [TestCase(0, -1)]
         public void CompleteFootprintMustFitBeforeEitherPreviewOrPlacementAccepts(int col, int row)
@@ -197,7 +197,7 @@ namespace YesterdayConvoy.Tests
             { Instance = unit.Instance, ArtId = unit.ArtId, Star = unit.Star, Spawn = anchors[unit.ArtId] }).ToArray(), 7), Is.True);
             session.SavePositions(model);
             Assert.That(session.Move(Instance(session, "CARD_M36"), true, 6).Success, Is.True,
-                "The compact 10x7 deployment area still has space beyond the formerly crowded six columns.");
+                "The restored 12x8 deployment area has space beyond the formerly crowded six columns.");
             session.ApplyTo(model);
             var added = model.Units.Single(unit => unit.ArtId == "M36");
             Assert.That(added.Spawn.x, Is.GreaterThanOrEqualTo(6));
@@ -236,7 +236,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void CompactDeploymentStillFitsElevenDistinctBodiesIncludingFiveLargeRoles()
+        public void RestoredDeploymentFitsElevenDistinctBodiesIncludingFiveLargeRoles()
         {
             string[] roles = { "M20", "M28", "M34", "M36", "B21", "B08", "B10", "B11", "B13", "B23", "B22" };
             var model = new FormationBattleModel(71);

@@ -33,7 +33,7 @@ namespace YesterdayConvoy
                 DrawWorldLabels();DrawFormationHeader();DrawFormationSidebars();
                 DrawCampaignToolbar();
                 bool preparing=Model.Phase==FormationPhase.Preparation;
-                if(preparing||ShopPanelTransitioning)DrawFormationPreparation();else DrawFormationCombatRoster();
+                DrawFormationPreparation();
                 DrawFormationResources(preparing);
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();

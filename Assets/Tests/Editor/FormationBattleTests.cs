@@ -138,10 +138,10 @@ namespace YesterdayConvoy.Tests
             FormationBattleTerrainLayout terrain = terrainCase == 0 ? null : new FormationBattleTerrainLayout(
                 terrainCase == 1 ? Array.Empty<FormationBattleTerrainRegion>() : new[]
                 {
-                    new FormationBattleTerrainRegion(new RectInt(17, 1, 2, 2), .48f, true),
-                    new FormationBattleTerrainRegion(new RectInt(18, 4, 2, 2), .48f, true),
-                    new FormationBattleTerrainRegion(new RectInt(13, 1, 2, 1), .36f, false),
-                    new FormationBattleTerrainRegion(new RectInt(16, 4, 2, 1), .36f, false)
+                    new FormationBattleTerrainRegion(new RectInt(21, 1, 2, 2), .48f, true),
+                    new FormationBattleTerrainRegion(new RectInt(22, 5, 2, 2), .48f, true),
+                    new FormationBattleTerrainRegion(new RectInt(16, 1, 2, 1), .36f, false),
+                    new FormationBattleTerrainRegion(new RectInt(19, 4, 2, 1), .36f, false)
                 });
             // The wider map changes the deterministic RNG consumption for seat selection.
             // Select an ordinary generated board containing the ranged profile this boundary case needs.
