@@ -174,5 +174,21 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.RefreshMarket().Success,Is.False);Assert.That(controller.BuyExperience().Success,Is.False);
             Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(session.CanShop,Is.False);
         }
+        [UnityTest] public IEnumerator PurchasedReservePointerDropIntoUnlockedSeatAddsTheActualFighter()
+        {
+            yield return Ready();var shop=controller.Shop;
+            int offer=Enumerable.Range(0,5).First(i=>shop.Offers[i]=="CARD_M09"||shop.Offers[i]=="CARD_M02");
+            var receipt=controller.BuyOffer(offer);Assert.That(receipt.Success,Is.True);
+            Assert.That(controller.BuyExperience().Success,Is.True);Assert.That(controller.BuyExperience().Success,Is.True);
+            Assert.That(shop.Level,Is.EqualTo(4));Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
+            var seat=controller.Session.Seats.For(receipt.Instance).Value;
+            Vector2 from=FormationBattleController.FormationReserveRect(seat.Index).center;
+            Vector2 to=FormationBattleController.FormationLineupRect(3).center;
+            controller.ProcessPointer(EventType.MouseDown,from);controller.ProcessPointer(EventType.MouseDrag,to);controller.ProcessPointer(EventType.MouseUp,to);
+            Assert.That(controller.Session.Seats.InLineup(receipt.Instance),Is.True);
+            Assert.That(controller.Model.Units.Count,Is.EqualTo(4));
+            Assert.That(controller.Model.Units.Single(u=>u.Instance==receipt.Instance).ArtId,Is.EqualTo(receipt.Id.Substring(5)));
+            controller.Shop.Validate();
+        }
     }
 }

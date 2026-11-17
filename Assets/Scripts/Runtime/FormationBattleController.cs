@@ -84,10 +84,6 @@ namespace YesterdayConvoy
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
             {if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
-            var point=TacticalViewport.Current.FromScreen(Input.mousePosition);
-            if(Input.GetMouseButtonDown(0))ProcessPointer(EventType.MouseDown,point);
-            if(Input.GetMouseButton(0)&&pointerHeld)ProcessPointer(EventType.MouseDrag,point);
-            if(Input.GetMouseButtonUp(0))ProcessPointer(EventType.MouseUp,point);
             SyncActors();
             if(soundEnabled&&Model.Clock-lastSoundAt>.09)
             {

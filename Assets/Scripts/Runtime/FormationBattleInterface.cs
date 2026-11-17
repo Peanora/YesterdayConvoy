@@ -24,6 +24,12 @@ namespace YesterdayConvoy
         public static Rect RosterRect(int slot)=>FormationLineupRect(slot);
         void OnGUI()
         {
+            // Preserve the queued down/up positions even when a fast OS drag completes in one Update.
+            // Convert before applying GUI.matrix, and leave the event available to ordinary GUI buttons.
+            var input=Event.current;
+            if(Ready&&input!=null&&input.button==0&&
+                (input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
+                ProcessPointer(input.type,TacticalViewport.Current.FromTopLeft(input.mousePosition));
             var old=GUI.matrix;bool oldEnabled=GUI.enabled;GUI.matrix=TacticalViewport.Current.Matrix;
             try
             {
