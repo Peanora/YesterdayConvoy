@@ -46,6 +46,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Units.Select(unit => unit.Id).Intersect(model.Defenders.Select(defender => defender.Id)), Is.Empty);
             Assert.That(session.Shop.Roles.Single(role => role.Id == "CARD_M10").Cost, Is.EqualTo(2));
             Assert.That(session.Shop.Roles.Single(role => role.Id == "CARD_M17").Cost, Is.EqualTo(3));
+            Assert.That(session.Shop.Roles.Select(role => role.Id), Is.EquivalentTo(
+                FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role => role.CardId)));
+            Assert.That(session.Shop.Roles.Any(role => role.Id == SilverWolfCombat.CardId), Is.False);
             AssertStock(session.Shop);
         }
 

@@ -25,6 +25,9 @@ namespace YesterdayConvoy
         public int Slot, Instance, Star = 1, Deaths;
         public bool Enabled;
         public Vector2 Spawn;
+        public Vector2Int Footprint => FormationUnitCatalog.Find(ArtId)?.Footprint ?? Vector2Int.one;
+        public Vector2 SpawnCenter => FormationDeployment.Center(Spawn, Footprint);
+        public RectInt DeploymentCells => FormationDeployment.Cells(Spawn, Footprint);
         public float RespawnRemaining;
         internal double RebornAt;
     }
@@ -94,28 +97,40 @@ namespace YesterdayConvoy
         /// <summary>Imports owned lineup cards. The session remains the authority for money and stock.</summary>
         public bool ApplyRoster(IEnumerable<FormationRosterEntry> entries, int capacity)
         {
-            if (Phase != FormationPhase.Preparation || entries == null || capacity < 1 || capacity > 10) return false;
-            var planned = new List<FormationFighter>();
+            if (Phase != FormationPhase.Preparation || !TryBuildRoster(entries, capacity, out var planned)) return false;
+            Units.Clear(); Units.AddRange(planned); Capacity = capacity;
+            return true;
+        }
+
+        internal static bool CanBuildRoster(IEnumerable<FormationRosterEntry> entries, int capacity) =>
+            TryBuildRoster(entries, capacity, out _);
+
+        static bool TryBuildRoster(IEnumerable<FormationRosterEntry> entries, int capacity, out List<FormationFighter> planned)
+        {
+            planned = new List<FormationFighter>();
+            if (entries == null || capacity < 1 || capacity > 10) return false;
             var instances = new HashSet<int>();
-            var kinds = new HashSet<int>();
-            var cells = new HashSet<Vector2>();
+            var kinds = new HashSet<string>(StringComparer.Ordinal);
+            var occupied = new List<RectInt>();
             foreach (var entry in entries)
             {
                 if (entry == null) return false;
-                int kind = Array.IndexOf(FighterArt, entry.ArtId);
-                int maximumStar = kind == 0 || kind == 5 ? 3 : 4;
-                if (kind < 0 || entry.Instance < 1 || !instances.Add(entry.Instance) || !kinds.Add(kind) ||
-                    entry.Star < 1 || entry.Star > maximumStar || !DeploymentCell(entry.Spawn) || !cells.Add(entry.Spawn)) return false;
+                var definition = FormationUnitCatalog.Find(entry.ArtId);
+                if (definition == null || definition.Stats == null || definition.TemplateKind < 0 || definition.TemplateKind > 5 ||
+                    entry.Instance < 1 || !instances.Add(entry.Instance) || !kinds.Add(definition.ArtId) ||
+                    entry.Star < 1 || entry.Star > ShopTrialModel.MaxStarForCost(definition.Cost) ||
+                    !FormationDeployment.TryCells(entry.Spawn, definition.Footprint, out var cells) ||
+                    !FormationDeployment.IsFree(cells, occupied)) return false;
+                occupied.Add(cells);
                 planned.Add(new FormationFighter
                 {
                     // Shop sequences can exceed 100 after many purchases. Keep friendly IDs disjoint from guards.
-                    Id = -entry.Instance - 1, Slot = planned.Count, Instance = entry.Instance, Kind = kind,
-                    Name = FighterNames[kind], ArtId = entry.ArtId, Star = entry.Star, Enabled = true, Spawn = entry.Spawn
+                    Id = -entry.Instance - 1, Slot = planned.Count, Instance = entry.Instance, Kind = definition.TemplateKind,
+                    Name = definition.Name, ArtId = definition.ArtId, Star = entry.Star, Enabled = true, Spawn = entry.Spawn
                 });
                 if (planned.Count > capacity) return false;
             }
             foreach (var unit in planned) { ConfigureFighter(unit); ResetFighter(unit); }
-            Units.Clear(); Units.AddRange(planned); Capacity = capacity;
             return true;
         }
 
@@ -125,10 +140,6 @@ namespace YesterdayConvoy
             if (Round == round) return true;
             Round = round; PrepareRound(); return true;
         }
-
-        static bool DeploymentCell(Vector2 cell) => !float.IsNaN(cell.x) && !float.IsNaN(cell.y) &&
-            !float.IsInfinity(cell.x) && !float.IsInfinity(cell.y) && cell.x >= 0 && cell.x < DeploymentColumns && cell.y >= 0 && cell.y < Height &&
-            Mathf.Abs(cell.x - (int)cell.x) < .0001f && Mathf.Abs(cell.y - (int)cell.y) < .0001f;
 
         public void Reset(int seed)
         {
@@ -142,16 +153,28 @@ namespace YesterdayConvoy
 
         public bool TryPlace(int slot, int col, int row)
         {
-            if (Phase != FormationPhase.Preparation || col < 0 || col >= DeploymentColumns || row < 0 || row >= Height) return false;
+            var preview = PlanPlace(slot, col, row, out var active);
+            if (!preview.Valid) return false;
             var unit = FindSlot(slot);
-            if (unit == null || !unit.Enabled) return false;
-            var destination = new Vector2(col, row);
-            FormationFighter occupant = null;
-            foreach (var other in Units)
-                if (other != unit && other.Enabled && other.Spawn == destination) { occupant = other; break; }
-            if (occupant != null) { occupant.Spawn = unit.Spawn; occupant.Position = occupant.Spawn; }
-            unit.Spawn = destination; unit.Position = destination;
+            if (preview.SwapIndex >= 0)
+            {
+                var occupant = active[preview.SwapIndex];
+                occupant.Spawn = new Vector2(preview.SwapCells.x, preview.SwapCells.y); occupant.Position = occupant.SpawnCenter;
+            }
+            unit.Spawn = new Vector2(col, row); unit.Position = unit.SpawnCenter;
             return true;
+        }
+
+        public FormationDeploymentPreview PreviewPlace(int slot, int col, int row) => PlanPlace(slot, col, row, out _);
+
+        FormationDeploymentPreview PlanPlace(int slot, int col, int row, out List<FormationFighter> active)
+        {
+            active = Units.FindAll(unit => unit.Enabled);
+            if (Phase != FormationPhase.Preparation) return FormationDeploymentPreview.Invalid("只能在战前调整站位");
+            var cells = new List<RectInt>(); var instances = new List<int>(); int moving = -1;
+            for (int i = 0; i < active.Count; i++)
+            { cells.Add(active[i].DeploymentCells); instances.Add(active[i].Instance); if (active[i].Slot == slot) moving = i; }
+            return FormationDeployment.Preview(cells, moving, new Vector2Int(col, row), instances);
         }
 
         public bool ToggleSlot(int slot)
@@ -162,12 +185,12 @@ namespace YesterdayConvoy
             if (!unit.Enabled)
             {
                 Vector2 position = unit.Spawn;
-                if (CellOccupied(position, slot))
+                if (!CanUseAnchor(position, unit.Footprint, slot))
                 {
                     bool found = false;
-                    for (int x = DeploymentColumns - 1; x >= 0 && !found; x--)
-                        for (int y = 0; y < Height; y++)
-                            if (!CellOccupied(new Vector2(x, y), slot)) { position = new Vector2(x, y); found = true; break; }
+                    for (int x = DeploymentColumns - unit.Footprint.x; x >= 0 && !found; x--)
+                        for (int y = 0; y <= Height - unit.Footprint.y; y++)
+                            if (CanUseAnchor(new Vector2(x, y), unit.Footprint, slot)) { position = new Vector2(x, y); found = true; break; }
                     if (!found) return false;
                 }
                 unit.Spawn = position;
@@ -241,7 +264,7 @@ namespace YesterdayConvoy
             BuildDefenders(); Phase = FormationPhase.Preparation;
         }
 
-        void ConfigureFighter(FormationFighter unit)
+        static void ConfigureFighter(FormationFighter unit)
         {
             float[] hp = { 1100, 360, 680, 420, 380, 560 };
             float[] attack = { 58, 72, 88, 66, 80, 36 };
@@ -253,6 +276,20 @@ namespace YesterdayConvoy
             float multiplier = unit.Star == 3 ? 2.6f : unit.Star == 2 ? 1.65f : 1;
             float healthMultiplier = unit.Star == 4 ? 4.25f : multiplier;
             float attackMultiplier = unit.Star == 4 ? 3 : multiplier;
+            if (Array.IndexOf(FighterArt, unit.ArtId) < 0)
+            {
+                // Existing authored profiles scaled for this simplified automatic-skill prototype.
+                // These are trial values, not a migration of the original character's complete kit.
+                var stats = FormationUnitCatalog.Find(unit.ArtId).Stats;
+                unit.MaxHealth = Mathf.Max(1, stats.HP * 3) * healthMultiplier;
+                unit.Attack = stats.Attack * 2.5f * attackMultiplier;
+                unit.Armor = stats.Armor + (unit.Star - 1) * 4;
+                unit.Range = Mathf.Max(.8f, stats.Range);
+                unit.Interval = Mathf.Max(.45f, stats.Interval * .6f);
+                unit.MoveSpeed = Mathf.Clamp(stats.Speed * 1.7f, .5f, 2.1f);
+                unit.SkillRequired = skill[unit.Kind];
+                return;
+            }
             int k = unit.Kind;
             unit.MaxHealth = hp[k] * healthMultiplier; unit.Attack = attack[k] * attackMultiplier;
             unit.Armor = armor[k] + (unit.Star - 1) * 4; unit.Range = range[k];
@@ -310,7 +347,7 @@ namespace YesterdayConvoy
 
         static void ResetFighter(FormationFighter unit)
         {
-            unit.Position = unit.Spawn; unit.Deaths = 0; unit.RespawnRemaining = 0; unit.RebornAt = 0;
+            unit.Position = unit.SpawnCenter; unit.Deaths = 0; unit.RespawnRemaining = 0; unit.RebornAt = 0;
             ResetActor(unit, unit.Enabled, Vector2.right);
         }
 
@@ -326,7 +363,7 @@ namespace YesterdayConvoy
                     unit.RespawnRemaining = (float)Math.Max(0, unit.RebornAt - Clock);
                     if (Clock + 1e-8 >= unit.RebornAt)
                     {
-                        unit.Alive = true; unit.Health = unit.MaxHealth; unit.Position = unit.Spawn;
+                        unit.Alive = true; unit.Health = unit.MaxHealth; unit.Position = unit.SpawnCenter;
                         unit.ActionUntil = Clock + .2; unit.NextAttackAt = Math.Max(unit.NextAttackAt, Clock + .2);
                         unit.TargetId = -1; unit.Facing = Vector2.right;
                         // Charge is preserved on death and does not grow during the respawn wait.
@@ -588,10 +625,12 @@ namespace YesterdayConvoy
             return null;
         }
 
-        bool CellOccupied(Vector2 cell, int exceptSlot)
+        bool CanUseAnchor(Vector2 anchor, Vector2Int footprint, int exceptSlot)
         {
-            foreach (var unit in Units) if (unit.Slot != exceptSlot && unit.Enabled && unit.Spawn == cell) return true;
-            return false;
+            if (!FormationDeployment.TryCells(anchor, footprint, out var cells)) return false;
+            foreach (var unit in Units)
+                if (unit.Slot != exceptSlot && unit.Enabled && cells.Overlaps(unit.DeploymentCells)) return false;
+            return true;
         }
 
         // Explicit PRNG avoids framework-specific System.Random sequence changes in recorded seeds.

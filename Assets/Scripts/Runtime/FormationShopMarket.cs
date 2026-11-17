@@ -46,10 +46,10 @@ namespace YesterdayConvoy
                 Parent=transform,Shop=()=>Shop,Font=()=>ApprovedUi.Font(null),Preparing=()=>CanTrade,
                 Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,
                 OddsVisible=()=>shopOddsVisible,StoreOdds=v=>shopOddsVisible=v,
-                Dragging=()=>pointerHeld&&Vector2.Distance(formationShopPointer,pointerStart)>6,
+                Dragging=()=>pointerHeld&&Vector2.Distance(formationShopPointer,pointerStart)>6&&!DragPreviewVisible,
                 DragInstance=()=>shopDragInstance,Pointer=()=>formationShopPointer,PieceRect=ShopPieceRect,
-                InLineup=instance=>Session.Seats.InLineup(instance),Portrait=id=>LocalMonsterArt.For(id)?.Portrait,
-                IdleFrame=(id,time)=>LocalMonsterArt.For(id)?["idle"].At(time,true,out _),Tags=CampaignBalance.Tags,
+                InLineup=instance=>Session.Seats.InLineup(instance),Portrait=id=>FormationUnitArt.For(id)?.Portrait,
+                IdleFrame=(id,time)=>FormationUnitArt.For(id)?.Frame("idle",time,true),Tags=CampaignBalance.Tags,
                 Coin=()=>formationCoin,Star=()=>formationStar,Purchase=(index,origin)=>BuyOfferAt(index,origin),
                 Refresh=()=>RefreshMarket(),BuyXP=()=>BuyExperience(),ToggleLock=()=>Session.SetLocked(!Shop.Locked),
                 OpenOdds=()=>{CancelFormationDrag();shopOddsVisible=true;},
@@ -88,7 +88,7 @@ namespace YesterdayConvoy
         bool FormationShopBlocksPoint(Vector2 point)=>shopOddsVisible||formationMenuOpen||point.y<65||point.y>=480||
             point.x<188||ApprovedUi.RecruitList.Contains(point)||(marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)||
             formationInspectedTag!=null&&new Rect(200,244,380,112).Contains(point);
-        void CancelFormationDrag(){pointerHeld=false;dragSlot=-1;shopDragInstance=0;}
+        void CancelFormationDrag(){pointerHeld=false;pendingClickDeployment=false;dragSlot=-1;shopDragInstance=0;ClearDeploymentPreview();}
         void SelectFirstLineup()
         {
             if(Model==null)return;
@@ -113,7 +113,7 @@ namespace YesterdayConvoy
             if((marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)){CancelFormationDrag();return true;}
             if(!FindFormationSeat(point,out bool lineup,out int seat))return false;
             int instance=Session.Seats.At(lineup,seat);
-            if(instance>0){SelectShopPiece(instance);shopDragInstance=instance;}else CancelFormationDrag();
+            if(instance>0){SelectShopPiece(instance);shopDragInstance=instance;PrepareDeploymentGrab(instance);}else CancelFormationDrag();
             return true;
         }
         bool FormationShopPointerUp(Vector2 point)
@@ -125,19 +125,9 @@ namespace YesterdayConvoy
         }
         void PlaceReserve(int instance,Vector2Int cell)
         {
-            if(cell.x<0||cell.x>=FormationBattleModel.DeploymentColumns||cell.y<0||cell.y>=FormationBattleModel.Height)
-            {notice="只能在左侧部署区布阵，卡牌与金币保持原样。";return;}
-            var existing=Model.Units.FirstOrDefault(u=>u.Instance==instance);
-            if(existing==null)
-            {
-                int seat=Session.Seats.FirstEmpty(true,Shop.Level);
-                if(seat<0){notice="上阵席位已满；可拖到已有上阵卡交换，或购买经验升级。";return;}
-                var result=MovePiece(instance,true,seat);if(!result.Success)return;
-                existing=Model.Units.FirstOrDefault(u=>u.Instance==instance);
-            }
-            if(existing!=null){SelectShopPiece(instance);Place(existing.Slot,cell);}
+            ShopAction(()=>Session.TryDeploy(instance,cell));
         }
-        void DrawFormationPortrait(Rect rect,string id)=>ApprovedShopPresentation.DrawTestPortrait(rect,LocalMonsterArt.For(id)?.Portrait);
+        void DrawFormationPortrait(Rect rect,string id)=>ApprovedShopPresentation.DrawTestPortrait(rect,FormationUnitArt.For(id)?.Portrait);
         void DrawFormationMarket()=>approvedShop.DrawApprovedShopMarket(CanTrade);
         void DrawFormationResources(bool preparing)=>approvedShop.DrawShopResourceHud(preparing);
         void DrawFormationOdds()=>approvedShop.DrawShopOdds(formationShopPointer);
@@ -145,7 +135,9 @@ namespace YesterdayConvoy
         {
             approvedShop.DrawShopBench(approvedShop.LoopText(12,TextAnchor.MiddleCenter));
             GUI.Label(new Rect(1142,624,120,18),"开战后锁定本场编队",approvedShop.LoopText(10,TextAnchor.MiddleCenter,Color.white));
-            if(approvedShop.LoopButton(new Rect(1142,643,120,51),"开始进攻 ▶",true))StartBattle();
+            bool enabled=GUI.enabled;GUI.enabled=enabled&&RosterArtReady;
+            if(approvedShop.LoopButton(new Rect(1142,643,120,51),RosterArtReady?"开始进攻 ▶":"准备动作…",true))StartBattle();
+            GUI.enabled=enabled;
         }
         void DrawFormationDropTarget()
         {

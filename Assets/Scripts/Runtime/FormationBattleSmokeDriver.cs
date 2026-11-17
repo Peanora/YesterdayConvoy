@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved warm grey matte concrete board, transparent native gates, raised perimeter, guard platforms and low cover, pointer handlers and terrain-aware formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter and its actual movement is checked against the saved obstacles; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge, guard position or result is injected. This does not establish human interaction, full campaign economy, all character kits, exact original-game appearance or final visual acceptance.";
+            public string scope="Accelerated replay through production finite-stock shop transactions, shared original A shop presentation and standing-model stage, saved warm grey concrete board, transparent native gates, guard platforms and cover, left preparation and right scouting/battle cameras, real drag preview and terrain-aware formation combat with actual Player screenshots. An affordable new kind is selected from the actual offers, using paid refresh only if needed. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. Current roster animation packages are awaited before combat. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge, guard position or result is injected. This does not establish human interaction, full campaign economy, all catalogue character kits, exact original-game appearance or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -38,6 +38,7 @@ namespace YesterdayConvoy
         readonly List<string> exceptions=new List<string>();
         readonly Result result=new Result();
         FormationBattleController controller;
+        int recruitOffer;
         string directory;
         bool finished;
 
@@ -151,12 +152,14 @@ namespace YesterdayConvoy
         bool ActorFeetMatchTerrain()
         {
             var bodies=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31).ToArray();
-            return controller.Model.Units.Where(u=>u.Enabled&&u.Alive).Cast<FormationActor>().Concat(controller.Model.Defenders.Where(d=>d.Alive)).All(actor=>
+            var actors=controller.ViewingDefenders?controller.Model.Defenders.Where(d=>d.Alive).Cast<FormationActor>():controller.Model.Units.Where(u=>u.Enabled&&u.Alive).Cast<FormationActor>();
+            var safe=FormationBattleController.FormationCameraSafeRect;
+            return actors.All(actor=>
             {
                 var foot=controller.ActorWorldPoint(actor);
-                var projected=controller.battleCamera.WorldToScreenPoint(foot);var point=TacticalViewport.Current.FromScreen(projected);
-                return bodies.Any(r=>r.name==actor.Name&&Vector3.Distance(r.transform.position,foot)<.001f)&&
-                    Mathf.Abs(foot.y-(.12f+controller.Model.Terrain.HeightAt(actor.Position)))<.001f&&projected.z>0&&point.x>=180&&point.x<=1012&&point.y>=65&&point.y<=490;
+                return bodies.Any(r=>r.name==actor.Name&&Vector3.Distance(r.transform.position,foot)<.001f)&&Mathf.Abs(foot.y-(.12f+controller.Model.Terrain.HeightAt(actor.Position)))<.001f&&
+                    new[]{foot,foot+controller.battleCamera.transform.up*controller.ActorPresentationHeight(actor)}.All(world=>
+                    {var projected=controller.battleCamera.WorldToScreenPoint(world);var point=TacticalViewport.Current.FromScreen(projected);return projected.z>0&&point.x>=safe.xMin-1&&point.x<=safe.xMax+1&&point.y>=safe.yMin-1&&point.y<=safe.yMax+1;});
             });
         }
         static string Formation(FormationBattleModel model)=>string.Join(";",model.Units.OrderBy(u=>u.Instance).Select(u=>$"{u.Instance}:{u.ArtId}:{u.Spawn.x},{u.Spawn.y}:{u.Star}:{u.Enabled}"));
@@ -167,6 +170,30 @@ namespace YesterdayConvoy
             while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
             if(controller.ShopPanelTransitioning)throw new InvalidOperationException("The shared original shop visibility transition did not finish.");
             yield return null;
+        }
+        IEnumerator RosterReady()
+        {
+            double deadline=Time.realtimeSinceStartupAsDouble+600;
+            while(!controller.RosterArtReady&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            if(!controller.RosterArtReady)throw new InvalidOperationException("The actual current roster animation packages did not finish preparing.");
+        }
+        IEnumerator View(bool defenders)
+        {
+            controller.SetFormationView(defenders);double deadline=Time.realtimeSinceStartupAsDouble+3;
+            while(controller.CameraTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            if(controller.CameraTransitioning||controller.ViewingDefenders!=defenders)throw new InvalidOperationException("The focused camera did not reach the requested half.");
+            yield return null;
+        }
+        IEnumerator ChooseRecruit()
+        {
+            for(int attempt=0;attempt<3;attempt++)
+            {
+                var owned=controller.Session.Seats.Lineup(controller.Shop.Bench).Select(p=>p.Id).ToArray();
+                recruitOffer=Enumerable.Range(0,5).Where(i=>controller.Shop.Offers[i]!=null&&!owned.Contains(controller.Shop.Offers[i])&&controller.Shop.Definition(controller.Shop.Offers[i]).Cost<=controller.Shop.Gold).DefaultIfEmpty(-1).First();
+                if(recruitOffer>=0)yield break;
+                CheckThat("paid-refresh-to-find-new-kind-"+attempt,controller.Shop.Gold>=3&&controller.RefreshMarket().Success);yield return null;
+            }
+            throw new InvalidOperationException("The actual finite shop did not offer an affordable new kind within the paid refresh budget.");
         }
         Vector2 StagePoint(Vector3 world)
         {
@@ -228,7 +255,7 @@ namespace YesterdayConvoy
                 yield return null;
             }
             CheckThat("ordinary-startup-reaches-ready-scene",controller!=null&&controller.Ready&&controller.Model!=null&&SceneManager.GetActiveScene().name==FormationBattleController.SceneName);
-            yield return null;yield return null;
+            yield return RosterReady();yield return View(false);yield return null;
             result.scene=SceneManager.GetActiveScene().name;result.width=Screen.width;result.height=Screen.height;
             var m=controller.Model;var terrain=Terrain();var terrainSet=new HashSet<MeshFilter>(terrain);result.savedMeshes=terrain.Length;
             CheckThat("authored-rectangle-has-saved-meshes",terrain.Length>20&&SceneManager.GetActiveScene().path=="Assets/Scenes/FormationBattle.unity");
@@ -244,7 +271,7 @@ namespace YesterdayConvoy
             CheckThat("saved-raised-perimeter-leaves-fighting-board-clear",perimeter!=null&&perimeter.GetComponentsInChildren<MeshRenderer>(true).Length==44&&perimeter.GetComponentsInChildren<MeshRenderer>(true).All(r=>OutsideBoard(r.bounds))&&!perimeter.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled));
             CheckThat("saved-guard-platforms-and-cover-match-combat-layout",SavedDefenderTerrain());
             CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
-            CheckThat("actual-actor-feet-follow-terrain-and-stay-readable",ActorFeetMatchTerrain());
+            CheckThat("left-preparation-shows-complete-owned-army",!controller.ViewingDefenders&&controller.CanEditFormationView&&ActorFeetMatchTerrain());
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("real-shop-starts-with-finite-gold-and-three-owned-lineup-pieces",controller.Shop.Gold==12&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
             CheckThat("shared-original-A-presentation-and-platform-geometry",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==ManualBattleController.ShopLineupRect(i)&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
@@ -253,24 +280,41 @@ namespace YesterdayConvoy
             var covered=FormationBattleController.FormationOfferRect(0).center;
             controller.ProcessPointer(EventType.MouseDown,covered);controller.ProcessPointer(EventType.MouseUp,covered);
             CheckThat("original-A-market-blocks-map-pointer-through",m.Units.All(u=>beforeCovered[u.Instance]==u.Spawn)&&controller.Shop.Gold==coveredGold);
-            int offer=Enumerable.Range(0,5).First(i=>controller.Shop.Offers[i]=="CARD_M02"||controller.Shop.Offers[i]=="CARD_M09");
+            yield return ChooseRecruit();int offer=recruitOffer;
             string purchased=controller.Shop.Offers[offer];int price=controller.Shop.Definition(purchased).Cost;
+            int beforePurchase=controller.Shop.Gold;
             var receipt=controller.BuyOffer(offer);
-            CheckThat("actual-offer-purchase-consumes-gold-stock-and-offer",receipt.Success&&controller.Shop.Gold==12-price&&controller.Shop.Offers[offer]==null&&controller.Shop.Bench.Any(p=>p.Instance==receipt.Instance));
+            CheckThat("actual-offer-purchase-consumes-gold-stock-and-offer",receipt.Success&&controller.Shop.Gold==beforePurchase-price&&controller.Shop.Offers[offer]==null&&controller.Shop.Bench.Any(p=>p.Instance==receipt.Instance));
             var entering=controller.ShopEntranceModel(receipt.Instance);
             CheckThat("original-recruitment-standing-model-enters-from-offer",controller.ShopArrivalCount>0&&entering!=null&&controller.ShopModelCamera!=null&&Vector2.Distance(StagePoint(entering.transform.position),FormationBattleController.FormationOfferRect(offer).center)<8);
             controller.Shop.Validate();yield return new WaitForSecondsRealtime(1.1f);
-            var standing=controller.ShopBenchModel(receipt.Instance);var standingRect=controller.FormationPieceRect(receipt.Instance);
-            CheckThat("original-standing-model-stage-and-platform-foot",controller.ShopModelTarget!=null&&controller.ShopModelTarget.width==1920&&controller.ShopModelTarget.height==1080&&controller.ShopModelCamera.targetTexture==controller.ShopModelTarget&&standing!=null&&standing.sprite!=null&&standing.gameObject.layer==31&&standing.sprite.name.StartsWith(purchased.Substring(5)+"/idle/",StringComparison.Ordinal)&&Vector2.Distance(StagePoint(standing.transform.position),new Vector2(standingRect.center.x,standingRect.y+55))<2);
+            var standing=controller.ShopBenchModel(receipt.Instance);string purchasedArt=FormationUnitCatalog.Find(purchased).ArtId;
+            double standingDeadline=Time.realtimeSinceStartupAsDouble+600;
+            while((standing==null||standing.sprite==null||!standing.sprite.name.StartsWith(purchasedArt+"/idle/",StringComparison.Ordinal))&&Time.realtimeSinceStartupAsDouble<standingDeadline)
+            {yield return null;standing=controller.ShopBenchModel(receipt.Instance);}
+            var standingRect=controller.FormationPieceRect(receipt.Instance);
+            CheckThat("original-standing-model-stage-and-platform-foot",controller.ShopModelTarget!=null&&controller.ShopModelTarget.width==1920&&controller.ShopModelTarget.height==1080&&controller.ShopModelCamera.targetTexture==controller.ShopModelTarget&&standing!=null&&standing.sprite!=null&&standing.gameObject.layer==31&&standing.sprite.name.StartsWith(purchasedArt+"/idle/",StringComparison.Ordinal)&&Vector2.Distance(StagePoint(standing.transform.position),new Vector2(standingRect.center.x,standingRect.y+55))<2);
             var idle=standing.sprite;bool idleChanged=false;double idleDeadline=Time.realtimeSinceStartupAsDouble+1.5;float oldScale=Time.timeScale;Time.timeScale=0;
             while(!idleChanged&&Time.realtimeSinceStartupAsDouble<idleDeadline){yield return null;idleChanged=standing.sprite!=idle;}
             Time.timeScale=oldScale;CheckThat("standing-stage-plays-real-idle-during-simulation-pause",idleChanged);
-            yield return Capture("player-purchased");yield return Market(false);
+            yield return Capture("player-purchased");yield return Market(false);yield return View(false);
             yield return Capture("player-preparation");
 
-            var first=m.Units.First(u=>u.Enabled);var second=m.Units.First(u=>u.Enabled&&u.Slot!=first.Slot);
+            var preparationSpawns=m.Units.Select(u=>u.Spawn).ToArray();double scoutClock=m.Clock;
+            var shopCameraPose=controller.ShopModelCamera.transform.position;
+            yield return View(true);
+            CheckThat("right-scouting-shows-guards-without-changing-preparation",controller.ViewingDefenders&&!controller.CanEditFormationView&&ActorFeetMatchTerrain()&&m.Clock==scoutClock&&m.Units.Select(u=>u.Spawn).SequenceEqual(preparationSpawns)&&controller.ShopModelCamera.transform.position==shopCameraPose);
+            yield return Capture("player-defender-scouting");yield return View(false);
+
+            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M07");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M08");
+            int firstInstance=first.Instance,secondInstance=second.Instance;
             Vector2 firstSpawn=first.Spawn,secondSpawn=second.Spawn;
-            Drag(firstSpawn,secondSpawn);
+            controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(firstSpawn));
+            controller.ProcessPointer(EventType.MouseDrag,FormationBattleController.CellScreen(secondSpawn));yield return null;
+            CheckThat("pointer-preview-shows-real-idle-ghost-and-swap-footprint",controller.DragPreviewVisible&&controller.DeploymentPreview.Valid&&controller.DeploymentPreview.SwapInstance==secondInstance&&controller.DeploymentPreview.Cells==new RectInt(Vector2Int.RoundToInt(secondSpawn),first.Footprint)&&controller.DeploymentGhost!=null&&controller.DeploymentGhost.sprite!=null&&controller.DeploymentGhost.sprite.name.StartsWith(first.ArtId+"/idle/",StringComparison.Ordinal)&&controller.DeploymentGhost.color.a>0&&controller.DeploymentGhost.color.a<1&&m.Units.Single(u=>u.Instance==firstInstance).Spawn==firstSpawn);
+            yield return Capture("player-deployment-preview");
+            controller.ProcessPointer(EventType.MouseUp,FormationBattleController.CellScreen(secondSpawn));
+            first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
             CheckThat("pointer-drag-swaps-occupied-cells",first.Spawn==secondSpawn&&second.Spawn==firstSpawn);
             string placed=Formation(m);Drag(first.Spawn,new Vector2(10,4));
             CheckThat("pointer-enemy-half-drop-is-atomic",Formation(m)==placed&&m.Clock==0&&m.Phase==FormationPhase.Preparation);
@@ -278,11 +322,13 @@ namespace YesterdayConvoy
             controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,610));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,610));
             CheckThat("pointer-hud-drop-keeps-placement",Formation(m)==placed);
             Drag(first.Spawn,second.Spawn);
+            first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
             CheckThat("pointer-swap-can-be-reversed",first.Spawn==firstSpawn&&second.Spawn==secondSpawn);
             yield return Capture("player-arrangement");
 
-            string formation=Formation(m);controller.StartBattle();
+            yield return RosterReady();string formation=Formation(m);controller.StartBattle();
             CheckThat("production-start-enters-fighting",m.Phase==FormationPhase.Fighting&&m.Units.Count(u=>u.Enabled&&u.Alive)>0);
+            CheckThat("production-battle-selects-right-camera",controller.ViewingDefenders&&!controller.CanEditFormationView);
             int battleGold=controller.Shop.Gold;
             CheckThat("battle-rejects-shop-purchase-refresh-and-xp",!controller.BuyOffer(1).Success&&!controller.RefreshMarket().Success&&!controller.BuyExperience().Success&&controller.Shop.Gold==battleGold);
             Drag(first.Spawn,second.Spawn);CheckThat("battle-pointer-cannot-rearrange",Formation(m)==formation);
@@ -290,7 +336,7 @@ namespace YesterdayConvoy
             var positions=m.Units.Select(u=>u.Position).ToArray();var hp=m.Units.Select(u=>u.Health).ToArray();var sp=m.Units.Select(u=>u.SkillCharge).ToArray();
             m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
             CheckThat("pause-freezes-clock-countdown-positions-hp-and-sp",m.Clock==clock&&m.TimeRemaining==remaining&&m.Units.Select(u=>u.Position).SequenceEqual(positions)&&m.Units.Select(u=>u.Health).SequenceEqual(hp)&&m.Units.Select(u=>u.SkillCharge).SequenceEqual(sp));
-            yield return Capture("player-paused");m.Paused=false;
+            yield return View(true);yield return Capture("player-paused");m.Paused=false;
             bool battleFrame=false,skillFrame=false,clearOfTerrain=true;int steps=0;
             while((m.Phase==FormationPhase.Fighting||m.Phase==FormationPhase.Exiting)&&steps++<12000)
             {
@@ -307,29 +353,32 @@ namespace YesterdayConvoy
             CheckThat("production-fighters-go-around-saved-platforms-and-cover",clearOfTerrain);
             yield return Capture("player-victory");
 
-            int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();yield return Market(false);
+            int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();yield return Market(false);yield return RosterReady();yield return View(false);
             CheckThat("next-round-keeps-formation",m.Round==round+1&&m.Phase==FormationPhase.Preparation&&Formation(m)==formation);
+            CheckThat("next-round-returns-camera-to-left-preparation",!controller.ViewingDefenders&&controller.CanEditFormationView);
             CheckThat("won-round-grants-real-shop-reward-once",controller.Shop.Gold>beforeReward);
             CheckThat("real-experience-purchase-unlocks-fourth-population",controller.BuyExperience().Success&&controller.Shop.Level>=4);
             var reserve=controller.FormationPieceRect(receipt.Instance).center;var lineup=FormationBattleController.FormationLineupRect(3).center;
             controller.ProcessPointer(EventType.MouseDown,reserve);controller.ProcessPointer(EventType.MouseDrag,lineup);controller.ProcessPointer(EventType.MouseUp,lineup);
-            CheckThat("actual-purchased-reserve-drops-on-original-platform-and-enters-lineup",controller.Session.Seats.InLineup(receipt.Instance)&&m.Units.Any(u=>u.Instance==receipt.Instance&&u.ArtId==receipt.Id.Substring(5))&&m.EnabledCount==4);
+            CheckThat("actual-purchased-reserve-drops-on-original-platform-and-enters-lineup",controller.Session.Seats.InLineup(receipt.Instance)&&m.Units.Any(u=>u.Instance==receipt.Instance&&u.ArtId==FormationUnitCatalog.Find(receipt.Id).ArtId)&&m.EnabledCount==4);
+            var deploymentCells=m.Units.Where(u=>u.Enabled).Select(u=>u.DeploymentCells).ToArray();
+            CheckThat("recruited-lineup-keeps-complete-footprints-in-bounds-without-overlap",deploymentCells.All(cells=>cells.xMin>=0&&cells.xMax<=FormationBattleModel.DeploymentColumns&&cells.yMin>=0&&cells.yMax<=FormationBattleModel.Height)&&!deploymentCells.SelectMany((cells,i)=>deploymentCells.Skip(i+1).Select(other=>cells.Overlaps(other))).Any(overlap=>overlap));
             formation=Formation(m);controller.Shop.Validate();
-            string guards=GuardLayout(m);controller.StartBattle();m.Advance(1);controller.Retry();
+            yield return RosterReady();string guards=GuardLayout(m);controller.StartBattle();m.Advance(1);controller.Retry();yield return View(false);
             CheckThat("same-round-retry-keeps-defender-layout-and-formation",m.Phase==FormationPhase.Preparation&&m.Clock==0&&GuardLayout(m)==guards&&Formation(m)==formation);
             CheckThat("retry-preserves-authored-terrain-instances",terrainSet.SetEquals(Terrain()));
             yield return Capture("player-next-preparation");
 
             // Explicitly shorter authored configuration exercises the real deadline, not a forced result.
-            m.LimitSeconds=.1;controller.StartBattle();m.Advance(.2f);
+            yield return RosterReady();m.LimitSeconds=.1;controller.StartBattle();m.Advance(.2f);
             CheckThat("configured-short-deadline-produces-real-loss",m.Phase==FormationPhase.Lost&&m.TimeRemaining<=.001);
             yield return Capture("player-timeout-configured");
 
-            controller.ResetDemo();m=controller.Model;yield return Market(false);
+            controller.ResetDemo();m=controller.Model;yield return Market(false);yield return View(false);yield return RosterReady();
             int soldierInstance=m.Units.Single(u=>u.ArtId=="M07").Instance;
             foreach(var unit in m.Units.Where(u=>u.Instance!=soldierInstance).ToArray())
                 CheckThat("legal-bench-move-"+unit.ArtId,controller.MovePiece(unit.Instance,false,controller.Session.Seats.FirstEmpty(false,10)).Success);
-            controller.StartBattle();var soldier=m.Units.Single(u=>u.Instance==soldierInstance);steps=0;
+            yield return RosterReady();controller.StartBattle();var soldier=m.Units.Single(u=>u.Instance==soldierInstance);steps=0;
             while(soldier.Deaths==0&&m.Phase==FormationPhase.Fighting&&steps++<12000)
             {m.Paused=false;m.Advance(.025f);if(steps%60==0)yield return null;}
             CheckThat("legal-single-soldier-lineup-naturally-dies",soldier.Deaths>0&&!soldier.Alive&&soldier.RespawnRemaining>0);

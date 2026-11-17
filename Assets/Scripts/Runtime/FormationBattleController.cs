@@ -21,6 +21,7 @@ namespace YesterdayConvoy
         public Camera battleCamera;
         public FormationBattleTerrainAuthoring terrain;
         public Material actorTemplate,lineTemplate;
+        public CardDefinition[] formationCards=Array.Empty<CardDefinition>();
         public int seed=20261117;
         public float roundSeconds=90,reviveSeconds=8;
         readonly Dictionary<string,ArtCatalog> art=new Dictionary<string,ArtCatalog>();
@@ -35,12 +36,13 @@ namespace YesterdayConvoy
         bool soundEnabled=true;
         int dragSlot=-1;
         bool pointerHeld;
+        bool pendingClickDeployment;
         Vector2 pointerStart;
         string notice="拖动场上角色换位，或选中下方角色后点击左侧格子。";
-        static readonly string[] MonsterIds={"M10","M02","M07","M08","M09","M17"};
 
         IEnumerator Start()
         {
+            FormationUnitArt.RegisterCards(formationCards);
             Session=FormationShopSession.Current??FormationShopSession.StartNew(seed);seed=Session.Seed;
             Model=new FormationBattleModel(seed,terrain!=null?terrain.BuildLayout():null);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;
@@ -52,23 +54,12 @@ namespace YesterdayConvoy
             lineMaterial.SetInt("_SrcBlend",(int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMaterial.SetInt("_DstBlend",(int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             lineMaterial.SetInt("_Cull",0);lineMaterial.SetInt("_ZWrite",0);
-            // Only existing approved character packages are reused; no new character artwork.
-            var roots=MonsterIds.Select(id=>"MonsterCombatArt/"+id)
-                .Concat(Enumerable.Range(1,12).Select(i=>"DefenderArt/D"+i.ToString("00"))).ToArray();
-            foreach(string root in roots)
-            {
-                loading="准备原有动作  "+root.Split('/').Last();
-                var catalog=ArtCatalog.Read(root);art[root.Split('/').Last()]=catalog;pinned.Add(root);
-                ArtMemoryCache.Pin(pinned);
-                if(root.StartsWith("MonsterCombatArt/",StringComparison.Ordinal))_ = catalog.Portrait;
-                foreach(var clip in catalog.Clips.Values)
-                    if(clip.Key=="idle"||clip.Key=="walk"||clip.Key.StartsWith("attack",StringComparison.Ordinal)||clip.Key=="death"||clip.Key=="heal")
-                        yield return clip.Warm();
-                yield return null;
-            }
+            // Metadata covers the roster; only current actors warm their actual action pages.
+            foreach(string id in RequiredFormationArtIds().ToArray())yield return WarmFormationArt(id);
             sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.15f;
             hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
+            InitializeFormationCamera();
             Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, finite shop and instance-based lineup");
         }
         static AudioClip Tone(string name,float hz,float duration)
@@ -82,12 +73,14 @@ namespace YesterdayConvoy
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             Model.Advance(Time.unscaledDeltaTime);
+            TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
             if(Input.GetKeyDown(KeyCode.Tab))SetMarketVisible(!MarketVisible);
+            if(Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
             {if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
-            SyncActors();
+            EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(soundEnabled&&Model.Clock-lastSoundAt>.09)
             {
                 var hit=Model.Hits.LastOrDefault();
@@ -102,11 +95,13 @@ namespace YesterdayConvoy
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
         bool TryCell(Vector2 point,out Vector2Int cell)
         {
-            if(!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point)){cell=default;return false;}
+            if(!CanEditFormationView||!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point)){cell=default;return false;}
             var screen=TacticalViewport.Current.ToScreen(point);
             var ray=battleCamera.ScreenPointToRay(screen);var plane=new Plane(Vector3.up,new Vector3(0,.12f,0));
             if(!plane.Raycast(ray,out float distance)){cell=default;return false;}
-            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.RoundToInt(p.x+6.5f),Mathf.RoundToInt(p.z+3.5f));
+            // A 2x2 body's centre lies on a grid seam. Choose one side consistently rather
+            // than alternating at .5 ties with banker's rounding as the body crosses columns.
+            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.FloorToInt(p.x+7f+.0001f),Mathf.FloorToInt(p.z+4f+.0001f));
             return cell.x>=0&&cell.x<14&&cell.y>=0&&cell.y<8;
         }
         public void ProcessPointer(EventType type,Vector2 point)
@@ -117,6 +112,7 @@ namespace YesterdayConvoy
             {
                 CancelFormationDrag();pointerHeld=true;pointerStart=point;
                 if(FormationShopPointerDown(point))return;
+                if(!CanEditFormationView){CancelFormationDrag();return;}
                 if(FormationShopBlocksPoint(point)||!BoardInputRect.Contains(point)){CancelFormationDrag();return;}
                 // Pick the visible character above its feet before projecting onto the ground grid.
                 // A click on a sprite's head must select it, not move it into the tile behind it.
@@ -124,46 +120,51 @@ namespace YesterdayConvoy
                 if(BoardInputRect.Contains(point))
                     foreach(var unit in Model.Units.Where(u=>u.Enabled))
                     {
-                        var foot=CellScreen(unit.Spawn);
-                        if(!new Rect(foot.x-27,foot.y-72,54,79).Contains(point))continue;
+                        var foot=CellScreen(unit.SpawnCenter);
+                        if(!FormationActorScreenRect(unit).Contains(point))continue;
                         float distance=Mathf.Abs(point.x-foot.x)+Mathf.Abs(point.y-(foot.y-28))*.15f;
                         if(distance<nearest){nearest=distance;picked=unit;}
                     }
-                if(picked!=null){SelectedSlot=picked.Slot;selectedPiece=picked.Instance;dragSlot=picked.Slot;shopDragInstance=picked.Instance;}
+                if(picked!=null){SelectedSlot=picked.Slot;selectedPiece=picked.Instance;dragSlot=picked.Slot;shopDragInstance=picked.Instance;PrepareFieldDeploymentGrab(picked,point);}
                 else if(TryCell(point,out var cell))
                 {
-                    var on=Model.Units.FirstOrDefault(u=>u.Enabled&&Vector2.Distance(u.Spawn,cell)<.1f);
-                    if(on!=null){SelectedSlot=on.Slot;selectedPiece=on.Instance;dragSlot=on.Slot;shopDragInstance=on.Instance;}
-                    else if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)Place(SelectedSlot,cell);
-                    else if(selectedPiece>0)PlaceReserve(selectedPiece,cell);
+                    var on=Model.Units.FirstOrDefault(u=>u.Enabled&&u.DeploymentCells.Contains(cell));
+                    if(on!=null){SelectedSlot=on.Slot;selectedPiece=on.Instance;dragSlot=on.Slot;shopDragInstance=on.Instance;PrepareFieldDeploymentGrab(on,point);}
+                    else if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)
+                    {var selected=Model.Units[SelectedSlot];shopDragInstance=selected.Instance;dragSlot=selected.Slot;deploymentGrabOffset=Vector2Int.zero;pendingClickDeployment=true;}
+                    else if(selectedPiece>0)
+                    {shopDragInstance=selectedPiece;deploymentGrabOffset=Vector2Int.zero;pendingClickDeployment=true;}
                 }
             }
+            if(type==EventType.MouseDrag)UpdateDeploymentPreview();
             if(type==EventType.MouseUp)
             {
                 if(pointerHeld&&Vector2.Distance(point,pointerStart)>6)
                 {
                     if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
-                    {if(dragSlot>=0)Place(dragSlot,cell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,cell);}
+                    {var anchor=DeploymentAnchor(cell);if(dragSlot>=0)Place(dragSlot,anchor);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,anchor);}
                 }
+                else if(pointerHeld&&pendingClickDeployment&&TryCell(point,out var clickCell))
+                {if(dragSlot>=0)Place(dragSlot,clickCell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,clickCell);}
                 CancelFormationDrag();SyncActors();
             }
         }
         void Place(int slot,Vector2Int cell)
         {
-            bool ok=Model.TryPlace(slot,cell.x,cell.y);
-            notice=ok?"站位已保存：下关和复活均沿用此位置。":"只能放在左侧部署区；非法落点保留原位置。";
-            if(ok)Session.SavePositions(Model);
-            SyncActors();
+            var unit=Model.Units.FirstOrDefault(u=>u.Slot==slot);
+            if(unit!=null)ShopAction(()=>Session.TryDeploy(unit.Instance,cell));
         }
         public void StartBattle()
         {
             if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
+            if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
             SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            SetFormationView(true);
         }
         public void Retry()
-        {if(!Ready)return;Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();}
+        {if(!Ready)return;Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
         public void NextRound()
         {
             if(!Ready||Model.Phase!=FormationPhase.Won)return;
@@ -171,12 +172,14 @@ namespace YesterdayConvoy
             if(Model.Round<5)Session.AdvanceRound();
             lastSoundAt=-10;SetMarketVisible(Model.Phase==FormationPhase.Preparation);SelectFirstLineup();
             notice=reward!=null?$"通关奖励 +{reward.Total}金币、+{reward.Experience}经验；军团与站位已保留。":"本关奖励已领取，军团与站位保留。";SyncActors();
+            SetFormationView(false);
         }
         public void ResetDemo()
         {
             seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;
             SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice="新挑战：从真实金币、有限牌库与三人军团开始。";SyncActors();
+            SetFormationView(false);
         }
         internal void SyncActors()
         {
@@ -186,46 +189,11 @@ namespace YesterdayConvoy
             foreach(var defender in Model.Defenders){current.Add(defender.Id);Present(defender,true);}
             foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);}
         }
-        void Present(FormationActor actor,bool defender)
-        {
-            if(!bodies.TryGetValue(actor.Id,out var body))
-            {
-                body=new GameObject(actor.Name,typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-                body.transform.SetParent(actorRoot,false);body.sharedMaterial=actorMaterial;bodies[actor.Id]=body;
-                ActorGrounding.Attach(body,1.1f);
-            }
-            double now=Model.Clock,deathAge=now-actor.LastDeathAt;
-            body.enabled=actor.Alive||deathAge>=0&&deathAge<.65;
-            if(!body.enabled)return;
-            var catalog=art[actor.ArtId];
-            bool acting=actor.Alive&&now<actor.ActionUntil&&actor.LastActionAt>=0;
-            string key=!actor.Alive?"death":actor.IsMoving?"walk":acting?"attack":"idle";
-            if(!catalog.Clips.TryGetValue(key,out var clip))clip=catalog.Clips["idle"];
-            double age=key=="death"?deathAge:key=="attack"?now-actor.LastActionAt:now;
-            if(key=="attack")
-            {
-                // Fit the complete existing action into the same model action window that locks movement.
-                double progress=Math.Max(0,Math.Min(.999999,age/Math.Max(.001,actor.ActionUntil-actor.LastActionAt)));
-                catalog.Clips.TryGetValue("attack_start",out var begin);catalog.Clips.TryGetValue("attack_end",out var end);
-                double total=clip.Duration+(begin?.Duration??0)+(end?.Duration??0),at=progress*total;
-                if(begin!=null&&at<begin.Duration){clip=begin;age=at;}
-                else if(at<(begin?.Duration??0)+clip.Duration)age=at-(begin?.Duration??0);
-                else {age=at-(begin?.Duration??0)-clip.Duration;clip=end??clip;}
-            }
-            int frame=(int)(Math.Max(0,age)*(clip.Count/clip.Duration));
-            frame=key=="death"||key=="attack"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
-            body.sprite=clip.Frames[frame];body.flipX=actor.Facing.x<-.01f;
-            body.transform.position=ActorWorldPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
-            // Preserve each original frame's proportions and foot pivot.
-            float scale=1.12f/Mathf.Max(.5f,catalog.Height>0?catalog.Height:1.4f);
-            body.transform.localScale=Vector3.one*scale;
-            body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50);
-            bool skill=now-actor.LastSkillAt<.45;
-            body.color=now-actor.LastHitAt<.13?new Color(1,.5f,.42f):skill?new Color(1,.89f,.58f):Color.white;
-        }
+        void Present(FormationActor actor,bool defender)=>PresentFormationActor(actor,defender);
         void OnRenderObject()
         {
             if(!Ready||Camera.current!=battleCamera)return;
+            DrawDeploymentGrid();
             lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.LINES);
             foreach(var h in Model.Hits)
             {

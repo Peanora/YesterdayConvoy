@@ -16,6 +16,7 @@ namespace YesterdayConvoy.Tests
     public sealed class FormationBattleSceneTests
     {
         FormationBattleController controller;
+        int recruitOffer;
         float previousScale;
         [SetUp] public void SaveClock()=>previousScale=Time.timeScale;
         [TearDown] public void RestoreClock(){if(controller!=null&&controller.Model!=null)controller.Model.Paused=true;Time.timeScale=previousScale;}
@@ -31,7 +32,57 @@ namespace YesterdayConvoy.Tests
                 yield return null;
             }
             Assert.That(controller,Is.Not.Null);Assert.That(controller.Ready,Is.True,"Existing animation packages must finish preparing.");
-            Assert.That(controller.Model,Is.Not.Null);yield return Market(false);
+            Assert.That(controller.Model,Is.Not.Null);yield return Market(false);yield return View(false);yield return RosterReady();
+        }
+        IEnumerator RosterReady()
+        {
+            double deadline=Time.realtimeSinceStartupAsDouble+600;
+            while(!controller.RosterArtReady&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            Assert.That(controller.RosterArtReady,Is.True,"Every current fighter and guard must have its production animation packages before starting.");
+        }
+        IEnumerator View(bool defenders)
+        {
+            controller.SetFormationView(defenders);
+            double deadline=Time.realtimeSinceStartupAsDouble+3;
+            while(controller.CameraTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            Assert.That(controller.CameraTransitioning,Is.False);
+            Assert.That(controller.ViewingDefenders,Is.EqualTo(defenders));
+            yield return null;
+        }
+        IEnumerator ChooseRecruit(int reserveGold=0)
+        {
+            for(int attempt=0;attempt<3;attempt++)
+            {
+                var owned=controller.Session.Seats.Lineup(controller.Shop.Bench).Select(p=>p.Id).ToArray();
+                recruitOffer=Enumerable.Range(0,5).Where(i=>controller.Shop.Offers[i]!=null&&!owned.Contains(controller.Shop.Offers[i])&&controller.Shop.Definition(controller.Shop.Offers[i]).Cost<=controller.Shop.Gold-reserveGold).DefaultIfEmpty(-1).First();
+                if(recruitOffer>=0)yield break;
+                Assert.That(controller.Shop.Gold,Is.GreaterThanOrEqualTo(reserveGold+3),"Real recruitment must preserve the requested XP budget.");
+                Assert.That(controller.RefreshMarket().Success,Is.True);yield return null;
+            }
+            Assert.Fail("The real finite shop did not offer an affordable new lineup kind within the refresh budget.");
+        }
+        IEnumerator BenchArtReady(int instance,string artId)
+        {
+            double deadline=Time.realtimeSinceStartupAsDouble+600;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                var body=controller.ShopBenchModel(instance);
+                if(body!=null&&body.sprite!=null&&body.sprite.name.StartsWith(artId+"/idle/",StringComparison.Ordinal))yield break;
+                yield return null;
+            }
+            Assert.Fail("The purchased reserve must reach its platform with its actual idle frames.");
+        }
+        void AssertActorsVisible(System.Collections.Generic.IEnumerable<FormationActor> actors)
+        {
+            var safe=FormationBattleController.FormationCameraSafeRect;
+            foreach(var actor in actors)
+                foreach(var world in new[]{controller.ActorWorldPoint(actor),controller.ActorWorldPoint(actor)+controller.battleCamera.transform.up*controller.ActorPresentationHeight(actor)})
+                {
+                    var projected=controller.battleCamera.WorldToScreenPoint(world);var point=TacticalViewport.Current.FromScreen(projected);
+                    Assert.That(projected.z,Is.GreaterThan(0),actor.Name+" is behind the focused camera.");
+                    Assert.That(point.x,Is.InRange(safe.xMin-1,safe.xMax+1),actor.Name+" must fit the current half, clear of the right controls.");
+                    Assert.That(point.y,Is.InRange(safe.yMin-1,safe.yMax+1),actor.Name+" complete body must fit above the original lineup.");
+                }
         }
         IEnumerator Market(bool visible)
         {
@@ -84,14 +135,9 @@ namespace YesterdayConvoy.Tests
             var sprites=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31).ToArray();
             Assert.That(sprites.Length,Is.GreaterThanOrEqualTo(controller.Model.Units.Count(u=>u.Enabled)+controller.Model.Defenders.Count));
             Assert.That(sprites.All(s=>s.sprite.texture!=null),Is.True);
-            foreach(var actor in controller.Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(controller.Model.Defenders))
-            {
-                var projected=cam.WorldToScreenPoint(controller.ActorWorldPoint(actor));
-                var point=TacticalViewport.Current.FromScreen(projected);
-                Assert.That(projected.z,Is.GreaterThan(0),actor.Name+" is behind the camera.");
-                Assert.That(point.x,Is.InRange(180,1012),actor.Name+" must stay inside the native battlefield, clear of the right controls.");
-                Assert.That(point.y,Is.InRange(65,490),actor.Name+" feet must stay above the original lineup platform.");
-            }
+            Assert.That(controller.ViewingDefenders,Is.False);
+            AssertActorsVisible(controller.Model.Units.Where(u=>u.Enabled));
+            yield return View(true);AssertActorsVisible(controller.Model.Defenders);yield return View(false);
             yield return new WaitForEndOfFrame();
             var screenshot=ScreenCapture.CaptureScreenshotAsTexture();Assert.That(screenshot,Is.Not.Null);
             try
@@ -105,7 +151,7 @@ namespace YesterdayConvoy.Tests
                 File.WriteAllBytes(Path.Combine(directory,"playmode-preparation.png"),screenshot.EncodeToPNG());
             }
             finally{Object.Destroy(screenshot);}
-            controller.StartBattle();controller.Model.Advance(.5f);yield return null;controller.Retry();yield return null;
+            yield return RosterReady();controller.StartBattle();controller.Model.Advance(.5f);yield return null;controller.Retry();yield return View(false);
             Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation));Assert.That(controller.Model.Clock,Is.Zero);
             CollectionAssert.AreEquivalent(meshes,Terrain());
             Assert.That(Terrain().All(m=>m.transform.position==positions[m]),Is.True,"Retry must preserve saved terrain objects and edits.");
@@ -114,20 +160,42 @@ namespace YesterdayConvoy.Tests
         [UnityTest] public IEnumerator PreparationPointerSwapsOccupiedCellsRejectsEnemyHalfAndLocksAtStart()
         {
             yield return Ready();var m=controller.Model;
-            var first=m.Units.First(u=>u.Enabled);var second=m.Units.First(u=>u.Enabled&&u.Slot!=first.Slot);
+            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M07");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M08");
+            int firstInstance=first.Instance,secondInstance=second.Instance;
             Vector2 a=first.Spawn,b=second.Spawn;int enabled=m.Units.Count(u=>u.Enabled);
             Vector2 head=FormationBattleController.CellScreen(first.Spawn)+new Vector2(0,-35);
             controller.ProcessPointer(EventType.MouseDown,head);controller.ProcessPointer(EventType.MouseUp,head);
             Assert.That(first.Spawn,Is.EqualTo(a),"Clicking the visible character head must select without relocating its ground cell.");
             Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
-            Drag(a,b);Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
+            controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(a));
+            controller.ProcessPointer(EventType.MouseDrag,FormationBattleController.CellScreen(b));
+            double previewDeadline=Time.realtimeSinceStartupAsDouble+3;
+            while((!controller.DragPreviewVisible||controller.DeploymentGhost==null||controller.DeploymentGhost.sprite==null)&&Time.realtimeSinceStartupAsDouble<previewDeadline)yield return null;
+            Assert.That(controller.DragPreviewVisible,Is.True);
+            Assert.That(controller.DeploymentPreview.Valid,Is.True);Assert.That(controller.DeploymentPreview.SwapInstance,Is.EqualTo(secondInstance));
+            Assert.That(controller.DeploymentPreview.Cells,Is.EqualTo(new RectInt(Vector2Int.RoundToInt(b),first.Footprint)));
+            Assert.That(controller.DeploymentGhost,Is.Not.Null);Assert.That(controller.DeploymentGhost.sprite,Is.Not.Null);
+            Assert.That(controller.DeploymentGhost.sprite.name,Does.StartWith(first.ArtId+"/idle/"));
+            Assert.That(controller.DeploymentGhost.color.a,Is.InRange(.01f,.99f),"The map drag must preview the real actor as a transparent ghost.");
+            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(a),"Preview must not commit the real deployment before release.");
+            controller.ProcessPointer(EventType.MouseUp,FormationBattleController.CellScreen(b));
+            first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
+            Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
+            Assert.That(controller.DragPreviewVisible,Is.False);
             Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
+            var clickedCell=new Vector2(1,1);
+            controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(clickedCell));
+            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(b),"Pressing an empty tile must wait for release before changing deployment.");
+            controller.ProcessPointer(EventType.MouseUp,FormationBattleController.CellScreen(clickedCell));
+            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(clickedCell));
+            Drag(clickedCell,b);
+            first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
             Drag(first.Spawn,new Vector2(10,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
             controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,610));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,610));
             Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(m.Units.Count(u=>u.Enabled),Is.EqualTo(enabled));
             Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));Assert.That(m.Clock,Is.Zero);
-            controller.StartBattle();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Fighting));
+            yield return RosterReady();controller.StartBattle();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Fighting));
             first=m.Units.Single(u=>u.Instance==first.Instance);second=m.Units.Single(u=>u.Instance==second.Instance);
             Drag(first.Spawn,second.Spawn);Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.Retry();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));
@@ -136,7 +204,7 @@ namespace YesterdayConvoy.Tests
         }
         [UnityTest] public IEnumerator PauseFreezesSharedCombatClockAndConfiguredDeadlineUsesRealLossPath()
         {
-            yield return Ready();var m=controller.Model;controller.StartBattle();m.Advance(.25f);m.Paused=true;
+            yield return Ready();var m=controller.Model;yield return RosterReady();controller.StartBattle();m.Advance(.25f);m.Paused=true;
             double clock=m.Clock,remaining=m.TimeRemaining;
             var positions=m.Units.Select(u=>u.Position).ToArray();var hp=m.Units.Select(u=>u.Health).ToArray();
             var charge=m.Units.Select(u=>u.SkillCharge).ToArray();var revive=m.Units.Select(u=>u.RespawnRemaining).ToArray();
@@ -144,7 +212,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(m.Clock,Is.EqualTo(clock));Assert.That(m.TimeRemaining,Is.EqualTo(remaining));
             CollectionAssert.AreEqual(positions,m.Units.Select(u=>u.Position));CollectionAssert.AreEqual(hp,m.Units.Select(u=>u.Health));
             CollectionAssert.AreEqual(charge,m.Units.Select(u=>u.SkillCharge));CollectionAssert.AreEqual(revive,m.Units.Select(u=>u.RespawnRemaining));
-            controller.Retry();m.LimitSeconds=.1;controller.StartBattle();m.Advance(.2f);
+            controller.Retry();yield return RosterReady();m.LimitSeconds=.1;controller.StartBattle();m.Advance(.2f);
             Assert.That(m.Phase,Is.EqualTo(FormationPhase.Lost),"A deliberately shortened configured limit must use the ordinary timeout transition.");
             Assert.That(m.TimeRemaining,Is.LessThanOrEqualTo(.001));
             controller.Retry();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));Assert.That(m.Clock,Is.Zero);
@@ -286,6 +354,7 @@ namespace YesterdayConvoy.Tests
             // A preparation-only visual fixture checks the real sprite presenter at a raised cell.
             // Restore the guard immediately; no battle health, skill or result is manufactured.
             var guard=controller.Model.Defenders.First();var savedPosition=guard.Position;
+            yield return View(true);
             var high=regions.First(r=>r.allowDefender);guard.Position=new Vector2(high.cells.xMin,high.cells.yMin);
             try
             {
@@ -293,11 +362,10 @@ namespace YesterdayConvoy.Tests
                 var foot=controller.ActorWorldPoint(guard);
                 Assert.That(foot.y,Is.EqualTo(.12f+high.height).Within(.001f));
                 Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.name==guard.Name&&Vector3.Distance(r.transform.position,foot)<.001f),Is.True,"The actual guard sprite pivot must stand on the platform, not inside the flat floor.");
-                var projected=controller.battleCamera.WorldToScreenPoint(foot);var point=TacticalViewport.Current.FromScreen(projected);
-                Assert.That(projected.z,Is.GreaterThan(0));Assert.That(point.x,Is.InRange(180,1012));Assert.That(point.y,Is.InRange(65,490),"Raised guard feet must remain clear of the shop and status UI.");
+                AssertActorsVisible(new[]{guard});
             }
             finally{guard.Position=savedPosition;}
-            yield return null;
+            yield return View(false);
             Debug.Log("FORMATION_GATE_SCENE_CHECK: 112 matte concrete base cells, 44 outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at columns 6/13.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
@@ -312,20 +380,21 @@ namespace YesterdayConvoy.Tests
                 Assert.That(FormationBattleController.FormationReserveRect(seatIndex),Is.EqualTo(ManualBattleController.ShopBenchRect(seatIndex)));
             }
             yield return Market(true);
-            int offer=Enumerable.Range(0,5).First(i=>shop.Offers[i]=="CARD_M09"||shop.Offers[i]=="CARD_M02");
+            yield return ChooseRecruit();int offer=recruitOffer;
             string id=shop.Offers[offer];int cost=shop.Definition(id).Cost;
+            int goldBeforePurchase=shop.Gold;
             var result=controller.BuyOffer(offer);
-            Assert.That(result.Success,Is.True);Assert.That(shop.Gold,Is.EqualTo(12-cost));
+            Assert.That(result.Success,Is.True);Assert.That(shop.Gold,Is.EqualTo(goldBeforePurchase-cost));
             Assert.That(shop.Offers[offer],Is.Null);shop.Validate();
             Assert.That(shop.Bench.Any(p=>p.Instance==result.Instance),Is.True);
             Assert.That(controller.ShopArrivalCount,Is.GreaterThan(0),"The shared original recruitment flow must accompany a real purchase.");
             var entering=controller.ShopEntranceModel(result.Instance);Assert.That(entering,Is.Not.Null);
             Assert.That(Vector2.Distance(StagePoint(controller,entering.transform.position),FormationBattleController.FormationOfferRect(offer).center),Is.LessThan(8),"The original standing model must enter from its purchased offer.");
-            yield return Market(true);yield return new WaitForSecondsRealtime(1.1f);
+            yield return Market(true);yield return new WaitForSecondsRealtime(1.1f);yield return BenchArtReady(result.Instance,FormationUnitCatalog.Find(id).ArtId);
             Assert.That(controller.ShopModelTarget,Is.Not.Null);Assert.That(controller.ShopModelTarget.width,Is.EqualTo(1920));Assert.That(controller.ShopModelTarget.height,Is.EqualTo(1080));
             Assert.That(controller.ShopModelCamera.targetTexture,Is.SameAs(controller.ShopModelTarget));
             var standing=controller.ShopBenchModel(result.Instance);Assert.That(standing,Is.Not.Null);Assert.That(standing.sprite,Is.Not.Null);
-            Assert.That(standing.gameObject.layer,Is.EqualTo(31));Assert.That(standing.sprite.name,Does.StartWith(id.Substring(5)+"/idle/"));
+            Assert.That(standing.gameObject.layer,Is.EqualTo(31));Assert.That(standing.sprite.name,Does.StartWith(FormationUnitCatalog.Find(id).ArtId+"/idle/"));
             var seat=controller.FormationPieceRect(result.Instance);
             Assert.That(Vector2.Distance(StagePoint(controller,standing.transform.position),new Vector2(seat.center.x,seat.y+55)),Is.LessThan(2),"A real actor must stand on the original platform foot position.");
             var initialFrame=standing.sprite;bool animated=false;double idleDeadline=Time.realtimeSinceStartupAsDouble+1.5;
@@ -342,7 +411,7 @@ namespace YesterdayConvoy.Tests
             string dir=Path.GetFullPath(Path.Combine(Application.dataPath,"../artifacts/formation-shop"));Directory.CreateDirectory(dir);
             var frame=ScreenCapture.CaptureScreenshotAsTexture();
             try{File.WriteAllBytes(Path.Combine(dir,"playmode-market.png"),frame.EncodeToPNG());}finally{Object.Destroy(frame);}
-            yield return Market(false);controller.StartBattle();int gold=shop.Gold;
+            yield return Market(false);yield return RosterReady();controller.StartBattle();int gold=shop.Gold;
             Assert.That(controller.RefreshMarket().Success,Is.False);Assert.That(controller.BuyExperience().Success,Is.False);
             Assert.That(controller.BuyOffer(Enumerable.Range(0,5).First(i=>shop.Offers[i]!=null)).Success,Is.False);
             Assert.That(controller.SellPiece(result.Instance).Success,Is.False);
@@ -351,7 +420,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest] public IEnumerator PurchasedReservePointerDropIntoUnlockedSeatAddsTheActualFighter()
         {
             yield return Ready();var shop=controller.Shop;
-            int offer=Enumerable.Range(0,5).First(i=>shop.Offers[i]=="CARD_M09"||shop.Offers[i]=="CARD_M02");
+            yield return ChooseRecruit(8);int offer=recruitOffer;
             var receipt=controller.BuyOffer(offer);Assert.That(receipt.Success,Is.True);
             Assert.That(controller.BuyExperience().Success,Is.True);Assert.That(controller.BuyExperience().Success,Is.True);
             Assert.That(shop.Level,Is.EqualTo(4));Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
@@ -361,7 +430,12 @@ namespace YesterdayConvoy.Tests
             controller.ProcessPointer(EventType.MouseDown,from);controller.ProcessPointer(EventType.MouseDrag,to);controller.ProcessPointer(EventType.MouseUp,to);
             Assert.That(controller.Session.Seats.InLineup(receipt.Instance),Is.True);
             Assert.That(controller.Model.Units.Count,Is.EqualTo(4));
-            Assert.That(controller.Model.Units.Single(u=>u.Instance==receipt.Instance).ArtId,Is.EqualTo(receipt.Id.Substring(5)));
+            var fighter=controller.Model.Units.Single(u=>u.Instance==receipt.Instance);
+            Assert.That(fighter.ArtId,Is.EqualTo(FormationUnitCatalog.Find(receipt.Id).ArtId));
+            Assert.That(fighter.Footprint,Is.EqualTo(FormationUnitCatalog.Find(receipt.Id).Footprint));
+            var occupied=controller.Model.Units.Where(u=>u.Enabled).Select(u=>u.DeploymentCells).ToArray();
+            Assert.That(occupied.All(cells=>cells.xMin>=0&&cells.xMax<=FormationBattleModel.DeploymentColumns&&cells.yMin>=0&&cells.yMax<=FormationBattleModel.Height),Is.True);
+            Assert.That(occupied.SelectMany((cells,i)=>occupied.Skip(i+1).Select(other=>cells.Overlaps(other))).Any(overlap=>overlap),Is.False,"A real population increase must fit every complete footprint without overlap.");
             controller.Shop.Validate();
         }
     }

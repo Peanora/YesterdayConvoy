@@ -6,7 +6,7 @@ using UnityEngine;
 namespace YesterdayConvoy
 {
     /// <summary>
-    /// Real finite-stock preparation for the six formation prototypes. The battle never owns money,
+    /// Real finite-stock preparation for the existing recruitable catalog. The battle never owns money,
     /// card copies or XP. This short-flow starting grant and income are tuning, not acquisition proof.
     /// </summary>
     public sealed class FormationShopSession
@@ -32,15 +32,8 @@ namespace YesterdayConvoy
         public FormationShopSession(int seed)
         {
             Seed = seed;
-            Shop = new ShopTrialModel(new[]
-            {
-                new ShopTrialModel.Role { Id = "CARD_M10", Name = "重装防御者", Cost = 2 },
-                new ShopTrialModel.Role { Id = "CARD_M02", Name = "猎狗", Cost = 1 },
-                new ShopTrialModel.Role { Id = "CARD_M07", Name = "士兵", Cost = 1 },
-                new ShopTrialModel.Role { Id = "CARD_M08", Name = "弩手", Cost = 1 },
-                new ShopTrialModel.Role { Id = "CARD_M09", Name = "术师", Cost = 1 },
-                new ShopTrialModel.Role { Id = "CARD_M17", Name = "游击队传令兵", Cost = 3 }
-            }, seed);
+            Shop = new ShopTrialModel(FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
+                new ShopTrialModel.Role { Id = role.CardId, Name = role.Name, Cost = role.Cost }), seed);
             Shop.EnableJourneyEconomy();
             Shop.Preset(new[]
             {
@@ -60,38 +53,8 @@ namespace YesterdayConvoy
                 throw new InvalidOperationException("Formation shop can only bind the matching challenge in preparation.");
             if (!target.PrepareShopRound(Round)) throw new InvalidOperationException("Invalid formation round.");
             model = target; Synchronize();
-            var pieces = Seats.Lineup(Shop.Bench).ToArray();
-            var positions = new Dictionary<int, Vector2>();
-            var occupied = new HashSet<Vector2>();
-            // Reserve all surviving saved positions before assigning a newly recruited character.
-            foreach (var piece in pieces)
-            {
-                Vector2 cell;
-                bool saved = instancePositions.TryGetValue(piece.Instance, out cell) || kindPositions.TryGetValue(piece.Id, out cell);
-                if (saved && occupied.Add(cell)) positions.Add(piece.Instance, cell);
-            }
-            foreach (var piece in pieces)
-            {
-                if (positions.ContainsKey(piece.Instance)) continue;
-                Vector2 cell = DefaultPosition(piece.Id);
-                if (!occupied.Add(cell))
-                {
-                    bool found = false;
-                    for (int x = FormationBattleModel.DeploymentColumns - 1; x >= 0 && !found; x--)
-                        for (int y = 0; y < FormationBattleModel.Height; y++)
-                        {
-                            var candidate = new Vector2(x, y);
-                            if (!occupied.Add(candidate)) continue;
-                            cell = candidate; found = true; break;
-                        }
-                    if (!found) throw new InvalidOperationException("No formation deployment cell is available.");
-                }
-                positions.Add(piece.Instance, cell);
-            }
-            var entries = pieces.Select(piece => new FormationRosterEntry
-            {
-                Instance = piece.Instance, ArtId = piece.Id.Substring(5), Star = piece.Star, Spawn = positions[piece.Instance]
-            }).ToArray();
+            if (!TryProject(Seats.Lineup(Shop.Bench).ToArray(), out var entries, out var failure))
+                throw new InvalidOperationException(failure);
             if (!target.ApplyRoster(entries, Shop.Level)) throw new InvalidOperationException("Shop lineup cannot be projected into this formation battle.");
             SavePositions(target);
         }
@@ -101,7 +64,8 @@ namespace YesterdayConvoy
             if (source == null || source.Seed != Seed) return;
             foreach (var unit in source.Units)
             {
-                var piece = Shop.Bench.FirstOrDefault(card => card.Instance == unit.Instance && card.Id == "CARD_" + unit.ArtId);
+                var definition = FormationUnitCatalog.Find(unit.ArtId);
+                var piece = Shop.Bench.FirstOrDefault(card => card.Instance == unit.Instance && card.Id == definition?.CardId);
                 if (piece == null) continue;
                 instancePositions[unit.Instance] = unit.Spawn; kindPositions[piece.Id] = unit.Spawn;
             }
@@ -142,12 +106,149 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result Move(int instance, bool toLineup, int seat)
         {
             if (!CanShop) return Unavailable();
-            SavePositions(model);
-            if (!Seats.TryMove(Shop.Bench, Shop.Level, instance, toLineup, seat, out var failure))
+            if (!TryPlanSeatMove(instance, toLineup, seat, out var selected, out var failure) ||
+                !TryProject(selected, out var entries, out failure))
                 return new ShopTrialModel.Result { Message = failure };
+            var origin = Seats.For(instance).Value;
+            if (!Seats.TryMove(Shop.Bench, Shop.Level, instance, toLineup, seat, out failure))
+                return new ShopTrialModel.Result { Message = failure };
+            SavePositions(model);
+            if (model != null && !model.ApplyRoster(entries, Shop.Level))
+            {
+                Seats.TryMove(Shop.Bench, Shop.Level, instance, origin.Lineup, origin.Index, out _);
+                return new ShopTrialModel.Result { Message = "编队状态已变化，请重新选择落点" };
+            }
             lineup.Clear(); lineup.AddRange(Seats.Lineup(Shop.Bench).Select(piece => piece.Id));
-            Synchronize();
+            Synchronize(); Remember(entries);
             return new ShopTrialModel.Result { Success = true, Instance = instance, Message = toLineup ? "已加入军阵，原站位保留" : "已移至备战" };
+        }
+
+        public FormationDeploymentPreview PreviewDeploy(int instance, Vector2Int anchor) =>
+            PlanDeploy(instance, anchor, out _, out _);
+
+        public ShopTrialModel.Result TryDeploy(int instance, Vector2Int anchor)
+        {
+            var preview = PlanDeploy(instance, anchor, out var entries, out int enterSeat);
+            if (!preview.Valid) return new ShopTrialModel.Result { Message = preview.Failure };
+            var origin = Seats.For(instance).Value;
+            if (enterSeat >= 0 && !Seats.TryMove(Shop.Bench, Shop.Level, instance, true, enterSeat, out var failure))
+                return new ShopTrialModel.Result { Message = failure };
+            SavePositions(model);
+            if (!model.ApplyRoster(entries, Shop.Level))
+            {
+                if (enterSeat >= 0) Seats.TryMove(Shop.Bench, Shop.Level, instance, origin.Lineup, origin.Index, out _);
+                return new ShopTrialModel.Result { Message = "编队状态已变化，请重新选择落点" };
+            }
+            lineup.Clear(); lineup.AddRange(Seats.Lineup(Shop.Bench).Select(piece => piece.Id));
+            Synchronize(); Remember(entries);
+            return new ShopTrialModel.Result { Success = true, Instance = instance, Message = "站位已保存，下关与复活沿用此位置" };
+        }
+
+        FormationDeploymentPreview PlanDeploy(int instance, Vector2Int anchor, out List<FormationRosterEntry> entries, out int enterSeat)
+        {
+            entries = null; enterSeat = -1;
+            var piece = Shop.Bench.FirstOrDefault(card => card.Instance == instance);
+            var definition = piece == null ? null : FormationUnitCatalog.Find(piece.Id);
+            var cells = definition == null ? default : new RectInt(anchor.x, anchor.y, definition.Footprint.x, definition.Footprint.y);
+            if (!CanShop || model == null) return FormationDeploymentPreview.Invalid("只能在战前部署角色", cells);
+            if (definition == null || !Seats.For(instance).HasValue) return FormationDeploymentPreview.Invalid("角色不在当前收藏中", cells);
+            if (!FormationDeployment.Fits(cells)) return FormationDeploymentPreview.Invalid("完整占地必须位于左侧部署区", cells);
+            var selected = Seats.Lineup(Shop.Bench).ToArray();
+            if (!Seats.InLineup(instance))
+            {
+                enterSeat = Seats.FirstEmpty(true, Shop.Level);
+                if (enterSeat < 0) return FormationDeploymentPreview.Invalid("上阵席位已满，请先换下角色或升级", cells);
+                if (!TryPlanSeatMove(instance, true, enterSeat, out selected, out var seatFailure))
+                    return FormationDeploymentPreview.Invalid(seatFailure, cells);
+            }
+            if (!TryProject(selected, out entries, out var failure)) return FormationDeploymentPreview.Invalid(failure, cells);
+            int moving = entries.FindIndex(entry => entry.Instance == instance);
+            var preview = FormationDeployment.Preview(entries.Select(entry => FormationDeployment.Cells(entry.Spawn,
+                FormationUnitCatalog.Find(entry.ArtId).Footprint)).ToArray(), moving, anchor, entries.Select(entry => entry.Instance).ToArray());
+            if (!preview.Valid) return preview;
+            entries[moving].Spawn = new Vector2(anchor.x, anchor.y);
+            if (preview.SwapIndex >= 0)
+                entries[preview.SwapIndex].Spawn = new Vector2(preview.SwapCells.x, preview.SwapCells.y);
+            if (!FormationBattleModel.CanBuildRoster(entries, Shop.Level))
+                return FormationDeploymentPreview.Invalid("完整编队无法放入左侧部署区，已保留原位置", cells);
+            return preview;
+        }
+
+        bool TryPlanSeatMove(int instance, bool toLineup, int seat, out ShopTrialModel.Piece[] selected, out string failure)
+        {
+            selected = null; failure = null;
+            var origin = Seats.For(instance);
+            if (!origin.HasValue || seat < 0 || seat >= (toLineup ? Shop.Level : 10))
+            { failure = "该席位尚未解锁"; return false; }
+            int swapped = Seats.At(toLineup, seat);
+            selected = Shop.Bench.Where(piece => piece.Instance == instance ? toLineup :
+                piece.Instance == swapped ? origin.Value.Lineup : Seats.InLineup(piece.Instance))
+                .OrderBy(piece => piece.Instance == instance ? seat :
+                    piece.Instance == swapped ? origin.Value.Index : Seats.For(piece.Instance).Value.Index).ToArray();
+            if (selected.Select(piece => piece.Id).Distinct(StringComparer.Ordinal).Count() != selected.Length)
+            { failure = "同名角色只能有一张出战；可与其直接交换"; return false; }
+            if (selected.Length > Shop.Level || Shop.Bench.Count - selected.Length > 10)
+            { failure = "备战席或上阵席位已满"; return false; }
+            return true;
+        }
+
+        bool TryProject(IReadOnlyList<ShopTrialModel.Piece> selected, out List<FormationRosterEntry> entries, out string failure)
+        {
+            entries = null; failure = null;
+            var positions = new Dictionary<int, Vector2>(); var occupied = new List<RectInt>();
+            // Preserve complete saved footprints before searching space for new cards.
+            foreach (var piece in selected)
+            {
+                var definition = FormationUnitCatalog.Find(piece.Id);
+                if (definition == null) { failure = "角色缺少可用战斗定义"; return false; }
+                var current = model?.Units.FirstOrDefault(unit => unit.Instance == piece.Instance && unit.ArtId == definition.ArtId);
+                Vector2 anchor;
+                bool saved = current != null;
+                if (saved) anchor = current.Spawn;
+                else if (instancePositions.TryGetValue(piece.Instance, out anchor)) saved = true;
+                else
+                {
+                    var sameKind = model?.Units.FirstOrDefault(unit => unit.Instance > 0 && unit.ArtId == definition.ArtId);
+                    if (sameKind != null) { anchor = sameKind.Spawn; saved = true; }
+                    else saved = kindPositions.TryGetValue(piece.Id, out anchor);
+                }
+                if (saved && FormationDeployment.TryCells(anchor, definition.Footprint, out var cells) && FormationDeployment.IsFree(cells, occupied))
+                { positions.Add(piece.Instance, anchor); occupied.Add(cells); }
+            }
+            foreach (var piece in selected.OrderByDescending(piece =>
+                FormationUnitCatalog.Find(piece.Id).Footprint.x * FormationUnitCatalog.Find(piece.Id).Footprint.y))
+            {
+                if (positions.ContainsKey(piece.Instance)) continue;
+                var definition = FormationUnitCatalog.Find(piece.Id); Vector2 anchor = DefaultPosition(piece.Id);
+                bool found = FormationDeployment.TryCells(anchor, definition.Footprint, out var cells) && FormationDeployment.IsFree(cells, occupied);
+                if (!found)
+                    for (int x = FormationBattleModel.DeploymentColumns - definition.Footprint.x; x >= 0 && !found; x--)
+                        for (int y = 0; y <= FormationBattleModel.Height - definition.Footprint.y; y++)
+                        {
+                            var candidate = new RectInt(x, y, definition.Footprint.x, definition.Footprint.y);
+                            if (!FormationDeployment.IsFree(candidate, occupied)) continue;
+                            anchor = new Vector2(x, y); cells = candidate; found = true; break;
+                        }
+                if (!found) { failure = "左侧没有能容纳完整占地的空位，已保留原编队"; return false; }
+                positions.Add(piece.Instance, anchor); occupied.Add(cells);
+            }
+            entries = selected.Select(piece => new FormationRosterEntry
+            {
+                Instance = piece.Instance, ArtId = FormationUnitCatalog.Find(piece.Id).ArtId,
+                Star = piece.Star, Spawn = positions[piece.Instance]
+            }).ToList();
+            if (!FormationBattleModel.CanBuildRoster(entries, Shop.Level))
+            { failure = "编队包含重复、越界或不可用角色"; return false; }
+            return true;
+        }
+
+        void Remember(IEnumerable<FormationRosterEntry> entries)
+        {
+            foreach (var entry in entries)
+            {
+                instancePositions[entry.Instance] = entry.Spawn;
+                kindPositions[FormationUnitCatalog.Find(entry.ArtId).CardId] = entry.Spawn;
+            }
         }
 
         public bool SetLocked(bool locked)
@@ -205,7 +306,11 @@ namespace YesterdayConvoy
                 case "CARD_M08": return new Vector2(2, 3);
                 case "CARD_M09": return new Vector2(2, 5);
                 case "CARD_M17": return new Vector2(1, 2);
-                default: throw new ArgumentException("Unsupported formation card: " + id);
+                default:
+                    var definition = FormationUnitCatalog.Find(id);
+                    if (definition == null) throw new ArgumentException("Unsupported formation card: " + id);
+                    return new Vector2(FormationBattleModel.DeploymentColumns - definition.Footprint.x,
+                        (FormationBattleModel.Height - definition.Footprint.y) / 2);
             }
         }
     }

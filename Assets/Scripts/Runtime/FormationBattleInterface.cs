@@ -36,6 +36,12 @@ namespace YesterdayConvoy
                 DrawFormationResources(preparing);
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();
+                if(preparing)DrawDeploymentHint();
+                if(preparing&&DeploymentPreview==null)
+                {
+                    Fill(new Rect(204,477,790,25),new Color(.035f,.065f,.085f,.78f));
+                    Label(new Rect(212,480,774,19),ViewingDefenders?"守军侦察 · 按 V 返回我方布阵；查看不会推进战斗。":notice,11,White);
+                }
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
                 if(Model.Paused&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))
                 {
@@ -67,6 +73,7 @@ namespace YesterdayConvoy
             if(Button(new Rect(1126,8,42,42),Model.Speed+"×"))Model.Speed=Model.Speed>1?1:2;
             if(Button(new Rect(1174,8,42,42),Model.Paused?"继续":"暂停",Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=!Model.Paused;
             if(Button(new Rect(1222,8,42,42),"菜单")){formationMenuOpen=!formationMenuOpen;CancelFormationDrag();}
+            if(prep&&Button(new Rect(790,8,208,42),ViewingDefenders?"返回我方布阵  [V]":"查看守军部署  [V]"))ToggleFormationView();
         }
         void DrawFormationSidebars()
         {
@@ -80,10 +87,10 @@ namespace YesterdayConvoy
                 var rect=new Rect(200,244,380,112);Fill(rect,ApprovedUi.Paper);ApprovedUi.Border(rect,ApprovedUi.Rule);
                 GUI.Label(new Rect(rect.x+14,rect.y+10,350,26),formationInspectedTag+" · 编队标签",approvedShop.LoopText(17,TextAnchor.MiddleLeft,null,600));
                 var style=approvedShop.LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);style.wordWrap=true;
-                GUI.Label(new Rect(rect.x+14,rect.y+46,350,58),"本模式只迁移六种角色与自动技能；原羁绊效果尚未接入。这里只显示真实编队的种类标签。",style);
+                GUI.Label(new Rect(rect.x+14,rect.y+46,350,58),"现有角色已适配布阵与占地；战斗采用简化自动技能，原羁绊效果尚未接入。这里只显示真实编队的种类标签。",style);
             }
             var rows=Model.Units.OrderByDescending(u=>u.DamageDone).ThenBy(u=>u.ArtId,StringComparer.Ordinal).Select(u=>new ApprovedShopWidgets.RankingRow
-            {CardId="CARD_"+u.ArtId,Name=u.Name,Damage=u.DamageDone,Portrait=LocalMonsterArt.For("CARD_"+u.ArtId)?.Portrait}).ToArray();
+            {CardId="CARD_"+u.ArtId,Name=u.Name,Damage=u.DamageDone,Portrait=FormationUnitArt.For(u.ArtId)?.Portrait}).ToArray();
             string state=Model.Phase==FormationPhase.Preparation?"待开战":Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting?"实时统计":"本场结算";
             ApprovedShopWidgets.DrawRanking(rows,Model.Units.Sum(u=>u.DamageDone),state,ApprovedUi.Font(null),ref formationRankingScroll,ref formationRankingScrollbar);
         }
@@ -120,7 +127,7 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders))
             {
                 if(!actor.Alive)continue;
-                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+Vector3.up*1.22f));
+                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+battleCamera.transform.up*(ActorPresentationHeight(actor)+.12f)));
                 if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
                 bool ally=actor is FormationFighter;
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
@@ -130,7 +137,8 @@ namespace YesterdayConvoy
             if(Model.Phase==FormationPhase.Preparation)
                 foreach(var u in Model.Units.Where(u=>u.Enabled))
                 {
-                    var p=CellScreen(u.Spawn);Label(new Rect(p.x-24,p.y-6,48,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
+                    var p=CellScreen(u.SpawnCenter);string footprint=u.Footprint==Vector2Int.one?"":$" · {u.Footprint.x}×{u.Footprint.y}";
+                    Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star)+footprint,11,Gold,TextAnchor.MiddleCenter);
                     if(u.Slot==SelectedSlot)ApprovedUi.Border(new Rect(p.x-27,p.y-14,54,30),Cyan,2);
                 }
             foreach(var h in Model.Hits)
