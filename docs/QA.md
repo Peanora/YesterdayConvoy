@@ -9,7 +9,12 @@
 - 实测发现并修复：守军跨关状态残留、正式一费四星误用旧费用、合同塔露拉抉择后自动刷新遗漏、补给未真预占、三张点燃页漏打包、备战原生idle冷窗口未暖，以及旧固定地图/来源前缀。未把真实失败改为期望结果。
 - 预设组对生产守军、未改其HP/ATK：1-3二星三低费 **32.375秒胜**；2-4六人二星 **71.25秒胜**；3-7九人8连击/5同频、14装备含3徽章 **145.075秒胜**，总HP1215000、8次模式阵亡、100%削减且本体实际进门。前置节点明确跳过、人口和卡牌预置，日志列`PRESET_RULES`，不证明自然运营可达率。`RIPPER_RUNTIME`记录45秒后32次施法、成熟间隔 **0.925–0.950秒**，保留真实动作时间。
 - 原作源核验：35身体包/433动作/58583帧/2722图集的源哈希、事件、pivot通过；21 FX包/389段/25908帧/390页与原HDR逐帧像素对照通过，证据`Library/FormationCampaignEvidence`。来源、真实缺失walk与接入范围见`docs/art/FORMATION_ROSTER_V07.md`。素材/meta纳入本轮本地任务，运行不依赖项目外加工区。
-- 实际`tools/check_repository.py`：**16442 tracked files / REPOSITORY_CHECK_PASS**，仅代表仓库/meta检查。此条写入时新Windows构建与独立Player走查尚在进行，完成后另补真实结果。自然长局通关分布、全部组合、长期性能、人类手感及第二机未验证。
+- 实际`tools/check_repository.py`：**16442 tracked files / REPOSITORY_CHECK_PASS**，仅代表仓库/meta检查。新增运行素材与必要meta已纳入本地功能提交，没有被忽略的运行依赖；原两项本地配置不提交。
+- 最终构建内容源码 **b7d609f05902a18aa52438e69e830f97fcbcbacb**。Unity6000.6.5f1实际执行`BaselineTools.BuildWindows`，Windows x64 Development **1097768905 bytes、0错误、退出0**，`artifacts/formation-full/build.log`有`BASELINE_BUILD_PASS`。Runtime DLL SHA256 **F82DE397C5BF6B12A5500AFA820D005E3BB90F1BFC3AF65EFEEC20F544249477**；`Builds/Windows/YesterdayConvoy.exe`与SOURCE.txt已更新。其后仅补验证文档，不改变构建内容；没有推送、PR、启动脚本、ZIP或Releases。
+- 独立Player打包检查 **passed=true、162清单、4768 prepared页、0 PNG回退、errors为空**，`artifacts/formation-full/payload/result.json`。其中Boss身体35清单/2792运行页、BossFX22清单/391运行页；这是构建运行清单口径，和上方原始源包/源图集核验口径不同，不能相互替代。
+- 最终可见D3D11独立Player **1600×900、1280×720各31/31、0异常、退出0**，证据`artifacts/formation-full/visible-1600`与`visible-1280`中的`campaign-smoke.json`、Player日志和实际截图。每次都通过正式有限经济开局、独立随机三名一费、基础装备/预案/首个战备选择、真实购卡/买经验/装备及前三场战斗与结算；1-3后HP100、40金币、4级，继续进入1-4准备。全程沿生产接口加速正常模拟，未注入角色、面板、胜负或库存。已目视两尺寸开局选项、投资环境、扩展右侧、1-3结算与跨关画面；这是前三场的确定种子路径，不是整局自然运营或人类胜率。早先`player-1600`与`player-1280`隐藏窗口虽然断言通过，GPU截图为黑色，明确不计作视觉证据，已用上述可见窗口重验。
+- Agent真实OS点击核验：无专项参数普通启动EXE，实际默认进入1-1完整挑战，依次点击首个基础装备和首个投资环境；准备界面显示8金币、3级、随机三人。点击“装备”后看到钢刃1件与实际三人装备槽，关闭后按V切到扩大的守军区，蓝门/高台/掩体和守军可见。再点击系统菜单→返回旧玩法，等待实际载入旧十二关采购界面。`artifacts/formation-full/interactive.log`有`FORMATION_CAMPAIGN_READY`及旧入口资源准备，未检出异常/错误；关闭本次测试窗口后日志正常清理。此项验证普通入口和按钮链路，没有把程序战斗重放计作OS手动战斗。
+- 未验证：完整自然长局的通关分布与经济平衡、全部战备/徽章组合、长期性能、人类最终观感与第二台电脑离线运行。
 
 ## 2026-11-17 最新：悬空拖动、固定分区与无限测试金币
 
