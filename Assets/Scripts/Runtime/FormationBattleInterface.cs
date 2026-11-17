@@ -49,6 +49,7 @@ namespace YesterdayConvoy
                 if(formationMenuOpen)DrawFormationMenu();
                 if(shopOddsVisible)DrawFormationOdds();
                 DrawCampaignOverlays();
+                if(!CampaignInteractionBlocked&&!formationMenuOpen&&!shopOddsVisible)DrawCampaignTraitOverlay();
             }
             finally{GUI.enabled=enabled;GUI.matrix=previous;TacticalViewport.Current.DrawBars();}
         }

@@ -57,9 +57,9 @@ namespace YesterdayConvoy.Editor
             authoring.regions = new[]
             {
                 new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-5,1,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-4,5,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+4,1,2,1), height=.36f, allowDefender=false },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+7,4,2,1), height=.36f, allowDefender=false }
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-4,FormationBattleModel.Height-3,2,2), height=.48f, allowDefender=true },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+3,1,2,1), height=.36f, allowDefender=false },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+6,4,2,1), height=.36f, allowDefender=false }
             };
             controller.terrain = authoring;
             foreach (var region in authoring.regions)
@@ -129,6 +129,7 @@ namespace YesterdayConvoy.Editor
         static void Dress(Transform root)
         {
             float extra=FormationBattleModel.Width-14,halfExtra=extra*.5f;
+            float halfDepth=FormationBattleModel.Height*.5f;
             float seam=FormationBattleController.WorldPoint(new Vector2(FormationBattleModel.BattleAreaStart,0)).x;
             // Save the two board structures as separate renderers. A single broad slab would
             // remain shared by both fixed views and reveal the hidden half as an empty platform.
@@ -162,20 +163,20 @@ namespace YesterdayConvoy.Editor
                 else Rail(root,origin,length,alongZ);
             }
             Box(root,"Lower industrial service yard",new Vector3(0,-2.05f,0),new Vector3(70,.15f,50),trim);
-            ViewBox("Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f+extra,.76f,9.85f),recess);
-            ViewBox("Rear service gantry deck",new Vector3(0,.06f,5.98f),new Vector3(21+extra,.12f,2.1f),trim);
+            ViewBox("Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f+extra,.76f,FormationBattleModel.Height+1.85f),recess);
+            ViewBox("Rear service gantry deck",new Vector3(0,.06f,halfDepth+1.98f),new Vector3(21+extra,.12f,2.1f),trim);
             foreach(int side in new[]{-1,1})
             {
-                ViewBox("Perimeter metal edge",new Vector3(0,.10f,side*4.98f),new Vector3(16.05f+extra,.13f,.11f),trim);
-                ViewRail(new Vector3(0,.14f,side*5.02f),15.85f+extra,false);
-                ViewRail(new Vector3(side*(8.04f+halfExtra),.14f,0),9.95f,true);
+                ViewBox("Perimeter metal edge",new Vector3(0,.10f,side*(halfDepth+.98f)),new Vector3(16.05f+extra,.13f,.11f),trim);
+                ViewRail(new Vector3(0,.14f,side*(halfDepth+1.02f)),15.85f+extra,false);
+                ViewRail(new Vector3(side*(8.04f+halfExtra),.14f,0),FormationBattleModel.Height+1.95f,true);
                 for(int x=-7-(int)halfExtra;x<=7+(int)halfExtra;x+=2)
                 {
-                    ViewBox("Small recessed perimeter light",new Vector3(x,.18f,side*4.965f),new Vector3(.32f,.024f,.045f),lamp);
-                    ViewBox("Under-deck steel post",new Vector3(x,-.96f,side*4.78f),new Vector3(.12f,1.1f,.13f),trim);
-                    ViewBeam("Under-deck diagonal brace",new Vector3(x-.8f,-1.46f,side*4.78f),new Vector3(x+.8f,-.45f,side*4.78f),.075f,trim);
+                    ViewBox("Small recessed perimeter light",new Vector3(x,.18f,side*(halfDepth+.965f)),new Vector3(.32f,.024f,.045f),lamp);
+                    ViewBox("Under-deck steel post",new Vector3(x,-.96f,side*(halfDepth+.78f)),new Vector3(.12f,1.1f,.13f),trim);
+                    ViewBeam("Under-deck diagonal brace",new Vector3(x-.8f,-1.46f,side*(halfDepth+.78f)),new Vector3(x+.8f,-.45f,side*(halfDepth+.78f)),.075f,trim);
                 }
-                ViewBox("Long side service ledge",new Vector3(side*(9.05f+halfExtra),-.08f,0),new Vector3(1.5f,.3f,13.8f),trim);
+                ViewBox("Long side service ledge",new Vector3(side*(9.05f+halfExtra),-.08f,0),new Vector3(1.5f,.3f,FormationBattleModel.Height+5.8f),trim);
                 for(int bay=0;bay<5;bay++)
                 {
                     float z=-5.5f+bay*2.8f;
@@ -191,21 +192,21 @@ namespace YesterdayConvoy.Editor
             for(int i=-3-Mathf.CeilToInt(halfExtra/3.25f);i<=3+Mathf.CeilToInt(halfExtra/3.25f);i++)
             {
                 float x=i*3.25f;
-                ViewBox("Factory rear wall module",new Vector3(x,1.75f,7.15f),new Vector3(3.2f,4.8f,.24f),trim);
-                ViewBox("Recessed factory wall panel",new Vector3(x,1.65f,6.995f),new Vector3(2.75f,3.65f,.08f),recess);
-                ViewBox("Factory upright girder",new Vector3(x-1.53f,1.75f,6.92f),new Vector3(.14f,4.85f,.21f),trim);
-                ViewBox("Raised service window band",new Vector3(x,3.08f,6.90f),new Vector3(2.5f,.58f,.06f),trim);
+                ViewBox("Factory rear wall module",new Vector3(x,1.75f,halfDepth+3.15f),new Vector3(3.2f,4.8f,.24f),trim);
+                ViewBox("Recessed factory wall panel",new Vector3(x,1.65f,halfDepth+2.995f),new Vector3(2.75f,3.65f,.08f),recess);
+                ViewBox("Factory upright girder",new Vector3(x-1.53f,1.75f,halfDepth+2.92f),new Vector3(.14f,4.85f,.21f),trim);
+                ViewBox("Raised service window band",new Vector3(x,3.08f,halfDepth+2.90f),new Vector3(2.5f,.58f,.06f),trim);
                 for(int slit=0;slit<5;slit++)
-                    ViewBox("Ventilation slit",new Vector3(x-.9f+slit*.45f,3.08f,6.855f),new Vector3(.025f,.51f,.018f),recess);
-                ViewBox("Warm wall lamp",new Vector3(x,.73f,6.82f),new Vector3(.52f,.045f,.055f),lamp);
-                ViewBeam("Factory panel diagonal",new Vector3(x-1.3f,-.1f,6.89f),new Vector3(x+1.3f,2.7f,6.89f),.065f,trim);
+                    ViewBox("Ventilation slit",new Vector3(x-.9f+slit*.45f,3.08f,halfDepth+2.855f),new Vector3(.025f,.51f,.018f),recess);
+                ViewBox("Warm wall lamp",new Vector3(x,.73f,halfDepth+2.82f),new Vector3(.52f,.045f,.055f),lamp);
+                ViewBeam("Factory panel diagonal",new Vector3(x-1.3f,-.1f,halfDepth+2.89f),new Vector3(x+1.3f,2.7f,halfDepth+2.89f),.065f,trim);
             }
             for(int pipe=0;pipe<2;pipe++)
             {
                 float y=.32f+pipe*.29f;
-                ViewBox("Long factory service duct",new Vector3(0,y,6.74f),new Vector3(23+extra,.09f,.12f),pipe==0?amber:trim);
+                ViewBox("Long factory service duct",new Vector3(0,y,halfDepth+2.74f),new Vector3(23+extra,.09f,.12f),pipe==0?amber:trim);
                 for(int x=-10-(int)halfExtra;x<=10+(int)halfExtra;x+=2)
-                    ViewBox("Duct collar",new Vector3(x,y,6.74f),new Vector3(.055f,.13f,.16f),trim);
+                    ViewBox("Duct collar",new Vector3(x,y,halfDepth+2.74f),new Vector3(.055f,.13f,.16f),trim);
             }
         }
 

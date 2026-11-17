@@ -94,7 +94,8 @@ namespace YesterdayConvoy.Tests
             controller.SetMarketVisible(visible);
             double deadline=Time.realtimeSinceStartupAsDouble+3;
             while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
-            Assert.That(controller.ShopPanelTransitioning,Is.False,"The original shop slide must finish before testing uncovered map input.");
+            Assert.That(controller.ShopPanelTransitioning,Is.False,"The original shop stage must settle before testing map input.");
+            Assert.That(controller.MarketVisible,Is.EqualTo(controller.Model.Phase==FormationPhase.Preparation),"The shop stays pinned during preparation and hides during combat.");
             yield return null;
         }
         static Vector2 StagePoint(FormationBattleController c,Vector3 world)
@@ -120,7 +121,7 @@ namespace YesterdayConvoy.Tests
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
         static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-FormationBattleModel.Width*.5f+.01f||bounds.min.x>=FormationBattleModel.Width*.5f-.01f||
-            bounds.max.z<=-4+.01f||bounds.min.z>=4-.01f;
+            bounds.max.z<=-FormationBattleModel.Height*.5f+.01f||bounds.min.z>=FormationBattleModel.Height*.5f-.01f;
         void Drag(Vector2 from,Vector2 to)
         {
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(from));
@@ -237,9 +238,9 @@ namespace YesterdayConvoy.Tests
             var transforms=roots.SelectMany(r=>r.GetComponentsInChildren<Transform>(true)).ToArray();
             var red=transforms.Where(t=>t.name.StartsWith("Red gate row ",StringComparison.Ordinal)).ToArray();
             var blue=transforms.Where(t=>t.name.StartsWith("Blue gate row ",StringComparison.Ordinal)).ToArray();
-            CollectionAssert.AreEquivalent(Enumerable.Range(0,8).Select(row=>"Red gate row "+row).ToArray(),red.Select(t=>t.name).ToArray());
-            CollectionAssert.AreEquivalent(Enumerable.Range(0,8).Select(row=>"Blue gate row "+row).ToArray(),blue.Select(t=>t.name).ToArray());
-            for(int row=0;row<8;row++)
+            CollectionAssert.AreEquivalent(Enumerable.Range(0,FormationBattleModel.Height).Select(row=>"Red gate row "+row).ToArray(),red.Select(t=>t.name).ToArray());
+            CollectionAssert.AreEquivalent(Enumerable.Range(0,FormationBattleModel.Height).Select(row=>"Blue gate row "+row).ToArray(),blue.Select(t=>t.name).ToArray());
+            for(int row=0;row<FormationBattleModel.Height;row++)
             {
                 foreach(bool isRed in new[]{true,false})
                 {
@@ -340,7 +341,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
             Assert.That(controller.Model.Terrain,Is.Not.Null);
             var regions=controller.terrain.regions;
-            CollectionAssert.AreEquivalent(new[]{new RectInt(21,1,2,2),new RectInt(22,5,2,2),new RectInt(16,1,2,1),new RectInt(19,4,2,1)},regions.Select(r=>r.cells));
+            CollectionAssert.AreEquivalent(new[]{new RectInt(17,1,2,2),new RectInt(18,4,2,2),new RectInt(13,1,2,1),new RectInt(16,4,2,1)},regions.Select(r=>r.cells));
             var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)
@@ -371,7 +372,7 @@ namespace YesterdayConvoy.Tests
             }
             finally{guard.Position=savedPosition;}
             yield return View(false);
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: Expanded concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at columns 12/19.");
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: Compact concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at current logical columns.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {

@@ -15,7 +15,7 @@ namespace YesterdayConvoy.Tests
             run=new FormationCampaignRun(shop,71);int safety=0;while(run.HasBlockingChoice){Assert.That(++safety,Is.LessThan(100));Assert.That(run.Choose(0).Success,Is.True);}
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=FormationCampaignRules.Find(id).CardId,Star=1}),Array.Empty<string>(),10,0,80);
             var model=new FormationBattleModel(71);model.BindCampaign(run);
-            Assert.That(model.ApplyRoster(shop.Bench.Select((p,i)=>new FormationRosterEntry{Instance=p.Instance,Star=p.Star,ArtId=p.Id,Spawn=new Vector2((i%4)*3,(i/4)*3)}),10),Is.True);
+            Assert.That(model.ApplyRoster(shop.Bench.Select((p,i)=>new FormationRosterEntry{Instance=p.Instance,Star=p.Star,ArtId=p.Id,Spawn=new Vector2((i%5)*2,(i/5)*3)}),10),Is.True);
             return model;
         }
         static FormationDefender Target(FormationBattleModel model)
@@ -170,6 +170,7 @@ namespace YesterdayConvoy.Tests
             Advance(model,float.IsPositiveInfinity((float)model.LimitSeconds)?180:(float)model.LimitSeconds+1);
             TestContext.WriteLine($"PRESET_RULES preplan={run.PreplanId}; augments={string.Join(",",run.AugmentIds)}; equipped={run.AllEquipment.Count(e=>e.Owner!=0)}");
             TestContext.WriteLine($"PRESET_NODE {nodeId}: phase={model.Phase}; clock={model.Clock:0.000}; initialHP={health:0}; progress={model.EncounterProgress:P2}; remaining={model.RemainingDefenders}; deaths={model.Units.Sum(u=>u.Deaths)}; damage={model.Units.Sum(u=>u.DamageDone):0}");
+            TestContext.WriteLine("PRESET_REMAINING "+string.Join(";",model.Defenders.Where(d=>d.Alive).Select(d=>$"{d.Name}:{d.Health:0}/{d.MaxHealth:0}@{d.Position}")));
             Assert.That(model.EncounterProgress,Is.GreaterThan(.25f),"An assembled board must at least earn encounter progress against the real node curve.");
             Assert.That(model.Units.Sum(u=>u.DamageDone),Is.GreaterThan(100));
             Assert.That(model.Clock,Is.GreaterThan(0));
@@ -194,7 +195,7 @@ namespace YesterdayConvoy.Tests
             var model=Fixture(out var run,id);
             run.Shop.Preset(new[]{new ShopTrialModel.Piece{Id=FormationCampaignRules.Find(id).CardId,Star=4}},Array.Empty<string>(),10,0,80);
             var card=run.Shop.Bench.Single();
-            Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,ArtId=card.Id,Star=4,Spawn=new Vector2(11,3)}},10),Is.True);
+            Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,ArtId=card.Id,Star=4,Spawn=new Vector2(FormationBattleModel.DeploymentColumns-1,3)}},10),Is.True);
             Assert.That(model.Units.Single().MaxHealth,Is.EqualTo(FormationCampaignRules.Find(id).Health*5.832f).Within(.01f));
         }
 
@@ -244,7 +245,7 @@ namespace YesterdayConvoy.Tests
             }
             Assert.That(guard,Is.Not.Null,"The ordinary node generator must expose the authored template.");
             var card=run.Shop.Bench.First(p=>p.Id==FormationCampaignRules.Find("M11").CardId);
-            Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,Star=card.Star,ArtId=card.Id,Spawn=new Vector2(11,3)}},10),Is.True);
+            Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,Star=card.Star,ArtId=card.Id,Spawn=new Vector2(FormationBattleModel.DeploymentColumns-1,3)}},10),Is.True);
             Assert.That(guard.SkillCharge,Is.EqualTo(initial));Assert.That(guard.SkillRequired,Is.EqualTo(required));
             model.Defenders.RemoveAll(d=>d!=guard);guard.Position=new Vector2(15,3);
             Assert.That(model.StartBattle(),Is.True);Assert.That(guard.SkillCharge,Is.EqualTo(initial));Assert.That(guard.SkillRequired,Is.EqualTo(required));

@@ -14,7 +14,7 @@ namespace YesterdayConvoy
             public Transform Parent;
             public Func<ShopTrialModel> Shop;
             public Func<Font> Font;
-            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive;
+            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive,CanCollapse;
             public Func<int> DragInstance;
             public Func<int> LineupSeatCount;
             public Func<Vector2> Pointer;
@@ -536,7 +536,11 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(9,offset+3,102,24),"招募商店",LoopText(15,TextAnchor.MiddleLeft,null,700));
                 GUI.Label(new Rect(105,offset+4,220,22),"五格商品 / 点击购买",LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
                 if(LoopButton(new Rect(680,offset+4,271,22),"查看等级1–10招募概率"))host.OpenOdds();
-                if(LoopButton(new Rect(980,offset+4,86,22),"收起商店"))host.SetVisible(false);
+                if(host.CanCollapse?.Invoke()??true)
+                {
+                    if(LoopButton(new Rect(980,offset+4,86,22),"收起商店"))host.SetVisible(false);
+                }
+                else GUI.Label(new Rect(968,offset+4,98,22),"整备期间常驻",LoopText(10,TextAnchor.MiddleCenter,ApprovedUi.Muted));
 
                 Rect refresh=new Rect(956,offset+36,118,32),lockRect=new Rect(956,offset+74,118,32);
                 GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;

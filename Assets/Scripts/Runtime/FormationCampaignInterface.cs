@@ -73,12 +73,12 @@ namespace YesterdayConvoy
             {bool open=!campaignScoutingOpen;CloseCampaignPanels();campaignScoutingOpen=open;}
             if(prep&&Campaign.TraitCount("海嗣")>=2)
             {
-                if(Button(new Rect(790,57,208,27),campaignSeaPainting?"完成溟痕布置":"布置溟痕 / 自动推荐"))
+                if(Button(new Rect(1011,489,162,23),campaignSeaPainting?"完成溟痕布置":"布置溟痕 / 自动推荐"))
                 {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
-                if(campaignSeaPainting&&Button(new Rect(580,57,200,27),"清除手动区域 · 恢复推荐"))
+                if(campaignSeaPainting&&Button(new Rect(1177,489,86,23),"恢复推荐"))
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
-            if(Campaign.PendingDeliveries>0)CampaignLabel(new Rect(1009,59,252,26),"库存待领 "+Campaign.PendingDeliveries+" 份 · 释放库存后自动领取",10);
+            if(Campaign.PendingDeliveries>0)CampaignLabel(new Rect(1145,187,115,39),"库存待领 "+Campaign.PendingDeliveries+" 份\n释放库存后自动领取",10);
             CampaignLabel(new Rect(190,704,1058,15),notice,10);
         }
         void DrawCampaignOverlays()
@@ -266,28 +266,8 @@ namespace YesterdayConvoy
         }
         void DrawCampaignSynergies()
         {
-            var run=Campaign;var records=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).Where(t=>run.TraitCount(t.Id)>0).OrderByDescending(t=>t.Levels.Any(l=>l<=run.TraitCount(t.Id))).ThenByDescending(t=>run.TraitCount(t.Id)).ToArray();
-            var panel=new Rect(16,66,165,410);Fill(panel,ApprovedUi.Paper);
-            campaignTraitScroll=GUI.BeginScrollView(new Rect(20,72,157,398),campaignTraitScroll,new Rect(0,0,139,Mathf.Max(398,records.Length*43)));
-            for(int i=0;i<records.Length;i++)
-            {
-                var t=records[i];int count=run.TraitCount(t.Id);int level=t.Levels.Where(l=>l<=count).DefaultIfEmpty(0).Max();
-                if(Button(new Rect(0,i*43,137,38),$"{count}  {t.Name}  "+(level>0?"●":"○"),true,level>0))formationInspectedTag=formationInspectedTag==t.Id?null:t.Id;
-            }
-            GUI.EndScrollView();
+            DrawFormationTraitSidebar();
             DrawCampaignUnitDetails();
-            if(formationInspectedTag!=null)
-            {
-                var t=records.FirstOrDefault(x=>x.Id==formationInspectedTag);
-                if(t!=null)
-                {
-                    var r=new Rect(194,113,505,245);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
-                    CampaignLabel(new Rect(r.x+16,r.y+13,r.width-52,27),t.Name+"　"+string.Join(" / ",t.Levels),19,true);
-                    if(Button(new Rect(r.xMax-34,r.y+10,24,24),"×"))formationInspectedTag=null;
-                    CampaignLabel(new Rect(r.x+16,r.y+47,r.width-32,111),t.Effect,12);
-                    CampaignLabel(new Rect(r.x+16,r.y+165,r.width-32,69),"天然成员："+string.Join("、",FormationCampaignRules.AllUnits.Where(u=>u.Factions.Contains(t.Id)||u.Styles.Contains(t.Id)).Select(u=>u.Name)),11);
-                }
-            }
         }
         void DrawCampaignUnitDetails()
         {

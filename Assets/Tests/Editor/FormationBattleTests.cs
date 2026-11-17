@@ -139,9 +139,9 @@ namespace YesterdayConvoy.Tests
                 terrainCase == 1 ? Array.Empty<FormationBattleTerrainRegion>() : new[]
                 {
                     new FormationBattleTerrainRegion(new RectInt(17, 1, 2, 2), .48f, true),
-                    new FormationBattleTerrainRegion(new RectInt(17, 5, 2, 2), .48f, true),
-                    new FormationBattleTerrainRegion(new RectInt(14, 1, 2, 1), .36f, false),
-                    new FormationBattleTerrainRegion(new RectInt(15, 4, 2, 1), .36f, false)
+                    new FormationBattleTerrainRegion(new RectInt(18, 4, 2, 2), .48f, true),
+                    new FormationBattleTerrainRegion(new RectInt(13, 1, 2, 1), .36f, false),
+                    new FormationBattleTerrainRegion(new RectInt(16, 4, 2, 1), .36f, false)
                 });
             // The wider map changes the deterministic RNG consumption for seat selection.
             // Select an ordinary generated board containing the ranged profile this boundary case needs.
@@ -262,7 +262,7 @@ namespace YesterdayConvoy.Tests
         public void RetryReplaysSameEnemyBoardAndNextRoundKeepsRosterChanges()
         {
             var model = new FormationBattleModel(7341);
-            model.Upgrade(2); model.Expand(); model.ToggleSlot(5); model.TryPlace(2, 1, 7);
+            model.Upgrade(2); model.Expand(); model.ToggleSlot(5); model.TryPlace(2, 1, FormationBattleModel.Height - 1);
             string enemies = BoardSnapshot(model);
             model.StartBattle(); model.Advance(3); model.Retry();
             Assert.That(BoardSnapshot(model), Is.EqualTo(enemies));
@@ -270,7 +270,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Clock, Is.Zero); Assert.That(model.Hits.Count, Is.Zero);
             Assert.That(model.Units.All(u => u.Deaths == 0 && u.SkillCharge == 0), Is.True);
             Assert.That(model.Units[2].Star, Is.EqualTo(2));
-            Assert.That(model.Units[2].Spawn, Is.EqualTo(new Vector2(1, 7)));
+            Assert.That(model.Units[2].Spawn, Is.EqualTo(new Vector2(1, FormationBattleModel.Height - 1)));
             Assert.That(model.NextRound(), Is.False);
             int[] counts = { 4, 6, 9, 12, 16 };
             for (int round = 1; round <= 5; round++)

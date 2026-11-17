@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
         }
         static bool started;
-        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, authored enlarged board and actual GPU screenshots. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
+        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, authored compact board, fixed preparation shop and trait details with actual GPU screenshots. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
         FormationBattleController controller;string directory;bool done;
         static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
@@ -88,7 +88,7 @@ namespace YesterdayConvoy
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3,"Three distinct random low-cost starter cards");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
-            Assert(FormationBattleModel.Width==26&&FormationBattleModel.DeploymentColumns==12,"Enlarged authored board dimensions");
+            Assert(FormationBattleModel.Width==22&&FormationBattleModel.Height==7&&FormationBattleModel.DeploymentColumns==10,"Compact authored board dimensions");
             yield return Frame("01-opening-choice");
             Assert(controller.ChooseCampaignOption(0).Success,"Choose starter component");yield return null;
             var original=controller.Campaign.Choices.Select(c=>c.Id).ToArray();
@@ -98,8 +98,17 @@ namespace YesterdayConvoy
             Assert(!controller.Campaign.CanRerollChoice,"Preplan cannot be rerolled twice");
             yield return Frame("02-investment-environment");yield return ResolveChoices();
             controller.SetMarketVisible(false);controller.SetFormationView(false);yield return ReadyArt();
+            Assert(controller.MarketVisible&&controller.ShopPanelVisibility==1,"Preparation shop cannot be collapsed");
+            Assert(FormationBattleController.FormationCameraSafeRect.yMin>FormationBattleController.FormationMarketRect.yMax,"Entire fixed board frame starts below the shop");
             yield return Frame("03-left-preparation");
-            controller.SetFormationView(true);yield return null;yield return Frame("04-expanded-guard-area");controller.SetFormationView(false);
+            controller.SetFormationView(true);yield return null;yield return Frame("04-compact-guard-area");controller.SetFormationView(false);
+            string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
+            Assert(controller.InspectFormationTrait(trait)&&controller.FormationTraitDetailsOpen&&controller.SelectedFormationTraitId==trait,"Open real lineup trait details");
+            var spawns=controller.Model.Units.Select(u=>u.Spawn).ToArray();var detailPoint=FormationBattleController.FormationTraitDetailsRect.center;
+            controller.ProcessPointer(EventType.MouseDown,detailPoint);controller.ProcessPointer(EventType.MouseDrag,detailPoint+Vector2.right*12);controller.ProcessPointer(EventType.MouseUp,detailPoint+Vector2.right*12);
+            Assert(controller.Model.Units.Select(u=>u.Spawn).SequenceEqual(spawns),"Trait detail clicks cannot move the underlying army");
+            yield return Frame("04-trait-members-and-tiers");
+            Assert(controller.CloseFormationTraitDetails()&&!controller.FormationTraitDetailsOpen,"Close trait details through its production action");
             for(int battle=0;battle<3;)
             {
                 if(controller.Campaign.CurrentNode.Kind=="补给")

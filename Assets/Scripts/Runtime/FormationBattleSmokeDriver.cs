@@ -122,7 +122,7 @@ namespace YesterdayConvoy
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
         static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-FormationBattleModel.Width*.5f+.01f||bounds.min.x>=FormationBattleModel.Width*.5f-.01f||
-            bounds.max.z<=-4+.01f||bounds.min.z>=4-.01f;
+            bounds.max.z<=-FormationBattleModel.Height*.5f+.01f||bounds.min.z>=FormationBattleModel.Height*.5f-.01f;
         static bool FlatBoardCell(Transform tile)
         {
             var coordinates=tile.name.Substring(5).Split(',');
@@ -264,7 +264,7 @@ namespace YesterdayConvoy
             var nativeRoot=SceneManager.GetActiveScene().GetRootGameObjects().SingleOrDefault(go=>go.name=="LS5 native formation courtyard");
             CheckThat("saved-native-ls5-root-and-expanded-unit-spaced-tiles",nativeRoot!=null&&nativeRoot.GetComponentsInChildren<MeshFilter>(true).Any(filter=>filter.sharedMesh!=null&&filter.sharedMesh.name.Contains(" / source "))&&SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Count(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal))==FormationBattleModel.Width*FormationBattleModel.Height&&Vector3.Distance(FormationBattleController.WorldPoint(Vector2.up)-FormationBattleController.WorldPoint(Vector2.zero),Vector3.forward)<.0001f);
             var nativeTransforms=nativeRoot.GetComponentsInChildren<Transform>(true);
-            CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,8).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(FormationBattleModel.DeploymentColumns,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(FormationBattleModel.Width-1,row))));
+            CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,FormationBattleModel.Height).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(FormationBattleModel.DeploymentColumns,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(FormationBattleModel.Width-1,row))));
             var boardCells=SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Where(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
             CheckThat("saved-base-board-uses-matte-concrete-and-persistent-texture",boardCells.Length==FormationBattleModel.Width*FormationBattleModel.Height&&boardCells.All(FlatBoardCell));
             var perimeter=nativeTransforms.SingleOrDefault(t=>t.name=="Original LS-5 raised perimeter");

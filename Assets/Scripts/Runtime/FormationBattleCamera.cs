@@ -12,7 +12,7 @@ namespace YesterdayConvoy
         static readonly Vector3 FormationCameraUp = FormationCameraRotation * Vector3.up;
         static readonly Vector3 FormationCameraRight = FormationCameraRotation * Vector3.right;
         static readonly Quaternion FormationCameraInverse = Quaternion.Inverse(FormationCameraRotation);
-        public static Rect FormationCameraSafeRect => new Rect(204, 72, 790, 400);
+        public static Rect FormationCameraSafeRect => new Rect(204, 250, 790, 244);
         public bool ViewingDefenders { get; private set; }
         public bool CameraTransitioning => false;
         public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation && !ViewingDefenders;

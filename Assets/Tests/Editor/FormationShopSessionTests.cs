@@ -158,7 +158,7 @@ namespace YesterdayConvoy.Tests
                 new ShopTrialModel.Piece { Id = "CARD_M08", Star = 1 }, new ShopTrialModel.Piece { Id = "CARD_M08", Star = 1 }
             }, new[] { "CARD_M08" }, level: 3, xp: 0, gold: 12);
             var model = Bind(session); var original = model.Units.Single();
-            Assert.That(model.TryPlace(original.Slot, 1, 7), Is.True); session.SavePositions(model);
+            Assert.That(model.TryPlace(original.Slot, 1, FormationBattleModel.Height - 1), Is.True); session.SavePositions(model);
             int instance = original.Instance; float beforeHealth = original.MaxHealth, beforeAttack = original.Attack;
             var purchase = session.Purchase(0);
             Assert.That(purchase.Success, Is.True); Assert.That(purchase.FinalStar, Is.EqualTo(4));
@@ -166,7 +166,7 @@ namespace YesterdayConvoy.Tests
             session.ApplyTo(model);
             Assert.That(model.Units.Single().Instance, Is.EqualTo(instance));
             Assert.That(model.Units.Single().Star, Is.EqualTo(4));
-            Assert.That(model.Units.Single().Spawn, Is.EqualTo(new Vector2(1, 7)));
+            Assert.That(model.Units.Single().Spawn, Is.EqualTo(new Vector2(1, FormationBattleModel.Height - 1)));
             Assert.That(model.Units.Single().MaxHealth, Is.GreaterThan(beforeHealth));
             Assert.That(model.Units.Single().Attack, Is.GreaterThan(beforeAttack));
             Assert.That(session.Shop.Available("CARD_M08"), Is.EqualTo(3));

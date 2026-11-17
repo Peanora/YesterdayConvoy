@@ -67,7 +67,7 @@ namespace YesterdayConvoy
     /// </summary>
     public sealed partial class FormationBattleModel
     {
-        public const int Width = 26, Height = 8, DeploymentColumns = 12;
+        public const int Width = 22, Height = 7, DeploymentColumns = 10;
         public const float BattleAreaStart = DeploymentColumns + .5f;
         const double StepSeconds = .025;
         const float PersonalSpace = .48f;

@@ -1,5 +1,17 @@
 # 验证证据与回归
 
+## 2026-11-18 最新：固定招募、紧凑棋盘与羁绊详情
+
+- 用户要求战前商店不收拢、完全避让棋盘，适当缩图，并参照金铲铲/货币战争完善羁绊成员与激活档位。延续`codex/formation-battle-demo`，只读fetch确认`origin/main`已在当前分支祖先中、无待接主线提交；两项既有未跟踪本地配置保持。本轮不推送或操作PR。运行与后续规则已同步GDD/FORMATION_FULL_GAME及本地AGENTS。
+- Unity6000.6.5f1执行`FormationCampaignTools.Author()`，最终`artifacts/formation-layout/author-final.log`退出0。场景实际保存22×7/154底格、58外围格、7+7透明门，四地形为高台(17,1)/(18,4)、掩体(13,1)/(16,4)。缩图作者仅移除超出新尺寸的旧格再补齐；中路row3仍开放，角色/守军面板与时限未改。
+- 运行连接：FormationShopMarket在Preparation强制显示，ApprovedShopPresentation新增可选CanCollapse，旧调用默认仍可收店；FormationBattleCamera使用商店下方固定安全区。FormationTraitView直接读取真实Run/Shop/装备，按角色种类去重；FormationTraitPresentation在末层绘制头像、档位和效果，指针入口优先拦截详情所盖的棋盘与席位，开战关闭且结算不允许覆盖领奖。
+- 新Editor成员测试曾因33位GUID未被Unity导入，已修正为32位并确认3项被发现；未将被忽略脚本算作通过。新增规则还检查10×7容纳11名不同本体（含5名2×2）、全部23节点守军数量与合法唯一落点。
+- 完整EditMode的已知未通过项为`FormationCampaignCombatTests.PresetBudgetedLineupsFightUnmodifiedNodeDefenders("3-7")`。该夹具不带地形；缩图改变格子洗牌次数后，后续随机敌阵由1215000初始HP变为1200000。原预算/站位首跑150秒、87.45%进度、剩3人、7次阵亡、1049397伤害；同预算集中站位重放仍未通关，已恢复原合法站位并保留胜利断言及剩血诊断。没有修改敌阵、卡/装备预算、伤害或时限来追通过。它是明确的终局平衡限制，不属于本次新增UI场景断言通过的证据。
+- 首轮PlayMode17项中16过，中路测试发现第二掩体放row3挡住原中路，已恢复row4并同步实际场景与坐标断言。只读review补出详情盖住上阵席位时的指针优先级及结算层级漏洞，修正后最终D3D11非batch相关场景加旧商店回归 **22/22、39.4357149秒、退出0**，`artifacts/formation-layout/playmode-release.xml/.log`。两项新场景用例实际验证买卡扣金→腾人口→备战指针入图、双方每格四角/本体上缘都在商店下方；真实徽章装备/卸下与上下阵改变成员状态/档位；详情底部覆盖席位时按下不选、拖出不产生预览、备战拖入被盖席位零提交；正常战斗开始关闭详情，沿生产时钟到真实终态后禁止重开。徽章为明确夹具，不作为自然获取概率证据。源截图`playmode-compact-pinned-preparation.png`和`playmode-trait-members-badge-and-reserve.png`已实际目视。
+- 最终完整EditMode **1184/1185、12.7284219秒、退出2**，`artifacts/formation-layout/editmode-release.xml/.log`；只有上方3-7预置通关断言失败，最终恢复原站位后复现87.45%、剩3人。新增5项（3项成员视图、2项紧凑地图）均被识别并通过。不能把这一结果简写成完整规则全绿。实际仓库检查 **16450 tracked files / REPOSITORY_CHECK_PASS**，新增4份C#与必要meta随源码纳入本地任务，忽略的AGENTS/缓存/日志/构建及原两项配置不纳入。
+- 布局检索参考：[货币战争羁绊教程原界面](https://hsr.gachabase.net/tutorials/currency-wars/100028/bond/release?lang=chs)及[玩法界面截图](https://www.hoyolab.com/article/42168333)，仅参考信息层次，不导入其图片。样式复用本项目字体、角色头像和费用色，无新外部美术或依赖。
+- 本段写入时最终补回归与Windows构建仍在执行，未据此前EXE冒称完成。完整自然长局、全部构筑、人类手感、长期性能与第二机仍未验证。
+
 ## 2026-11-18 最新：v0.7 棋盘完整挑战集成
 
 - 用户确认v0.7作为后续依据、棋盘完整挑战设默认入口、扩大右侧并直接补原作角色。设计原件/43章Markdown/参数快照与本地AGENTS已更新。继续`codex/formation-battle-demo`，开工fetch核实`origin/main=0b17920d`为当前棋盘分支祖先；没有整体合并Boss旧模式分支。既有`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留、不暂存。本轮无推送/PR。

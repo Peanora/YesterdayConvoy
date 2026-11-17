@@ -42,15 +42,15 @@ namespace YesterdayConvoy.Tests
                 session.Seats.For(piece.Instance)?.Lineup + ":" + session.Seats.For(piece.Instance)?.Index)) + "#" +
             string.Join("|", session.Shop.Offers) + "#" + string.Join("|", session.Shop.Roles.Select(role => role.Id + ":" + session.Shop.Available(role.Id)));
 
-        [TestCase(11, 6)]
-        [TestCase(4, 7)]
+        [TestCase(9, 5)]
+        [TestCase(4, 6)]
         [TestCase(-1, 0)]
         [TestCase(0, -1)]
         public void CompleteFootprintMustFitBeforeEitherPreviewOrPlacementAccepts(int col, int row)
         {
-            var model = Roster(Entry(1, "M28", 4, 6)); var unit = model.Units.Single();
+            var model = Roster(Entry(1, "M28", 4, FormationBattleModel.Height - 2)); var unit = model.Units.Single();
             Assert.That(unit.Footprint, Is.EqualTo(new Vector2Int(2, 2)));
-            Assert.That(unit.Position, Is.EqualTo(new Vector2(4.5f, 6.5f)));
+            Assert.That(unit.Position, Is.EqualTo(new Vector2(4.5f, FormationBattleModel.Height - 1.5f)));
             string before = Board(model);
             var preview = model.PreviewPlace(unit.Slot, col, row);
             Assert.That(preview.Cells, Is.EqualTo(new RectInt(col, row, 2, 2)));
@@ -114,9 +114,10 @@ namespace YesterdayConvoy.Tests
         [TestCase(false)]
         public void SwapRejectsEitherSideCrossingTheBoundaryAndKeepsBothOriginalPositions(bool moveLarge)
         {
-            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M07", 5, 7));
+            int edge = FormationBattleModel.Height - 1;
+            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M07", 5, edge));
             string before = Board(model);
-            Assert.That(model.TryPlace(moveLarge ? 0 : 1, moveLarge ? 5 : 2, moveLarge ? 7 : 2), Is.False);
+            Assert.That(model.TryPlace(moveLarge ? 0 : 1, moveLarge ? 5 : 2, moveLarge ? edge : 2), Is.False);
             Assert.That(Board(model), Is.EqualTo(before));
         }
 
@@ -169,7 +170,7 @@ namespace YesterdayConvoy.Tests
         {
             var session = Session(3, "CARD_M07", "CARD_M28"); var model = Bind(session);
             int small = Instance(session, "CARD_M07"), large = Instance(session, "CARD_M28");
-            Assert.That(session.TryDeploy(small, new Vector2Int(5, 7)).Success, Is.True);
+            Assert.That(session.TryDeploy(small, new Vector2Int(5, FormationBattleModel.Height - 1)).Success, Is.True);
             Assert.That(session.TryDeploy(large, Vector2Int.zero).Success, Is.True);
             Assert.That(session.PreviewDeploy(small, new Vector2Int(2, 4)).Valid, Is.True);
             Assert.That(session.TryDeploy(large, new Vector2Int(2, 4)).Success, Is.True);
@@ -196,7 +197,7 @@ namespace YesterdayConvoy.Tests
             { Instance = unit.Instance, ArtId = unit.ArtId, Star = unit.Star, Spawn = anchors[unit.ArtId] }).ToArray(), 7), Is.True);
             session.SavePositions(model);
             Assert.That(session.Move(Instance(session, "CARD_M36"), true, 6).Success, Is.True,
-                "The expanded 12x8 deployment area has space beyond the formerly crowded 6x8 half.");
+                "The compact 10x7 deployment area still has space beyond the formerly crowded six columns.");
             session.ApplyTo(model);
             var added = model.Units.Single(unit => unit.ArtId == "M36");
             Assert.That(added.Spawn.x, Is.GreaterThanOrEqualTo(6));
@@ -224,13 +225,28 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void GenericThreeByThreePlanningSupportsFutureLargeRolesWithoutInventingACatalogCard()
         {
-            var occupied = new[] { new RectInt(0, 0, 3, 3), new RectInt(4, 5, 1, 1) };
-            var preview = FormationDeployment.Preview(occupied, 0, new Vector2Int(3, 5), new[] { 1, 2 });
-            Assert.That(preview.Valid, Is.True); Assert.That(preview.Cells, Is.EqualTo(new RectInt(3, 5, 3, 3)));
+            int lastAnchor = FormationBattleModel.Height - 3;
+            var occupied = new[] { new RectInt(0, 0, 3, 3), new RectInt(4, lastAnchor, 1, 1) };
+            var preview = FormationDeployment.Preview(occupied, 0, new Vector2Int(3, lastAnchor), new[] { 1, 2 });
+            Assert.That(preview.Valid, Is.True); Assert.That(preview.Cells, Is.EqualTo(new RectInt(3, lastAnchor, 3, 3)));
             Assert.That(preview.SwapCells, Is.EqualTo(new RectInt(0, 0, 1, 1)));
-            Assert.That(FormationDeployment.Center(new Vector2(3, 5), new Vector2Int(3, 3)), Is.EqualTo(new Vector2(4, 6)));
-            Assert.That(FormationDeployment.Preview(occupied, 0, new Vector2Int(FormationBattleModel.DeploymentColumns - 2, 5)).Valid, Is.False);
+            Assert.That(FormationDeployment.Center(new Vector2(3, lastAnchor), new Vector2Int(3, 3)), Is.EqualTo(new Vector2(4, lastAnchor + 1)));
+            Assert.That(FormationDeployment.Preview(occupied, 0, new Vector2Int(FormationBattleModel.DeploymentColumns - 2, lastAnchor)).Valid, Is.False);
             Assert.That(occupied[0], Is.EqualTo(new RectInt(0, 0, 3, 3)), "Planning never modifies the original occupied areas.");
+        }
+
+        [Test]
+        public void CompactDeploymentStillFitsElevenDistinctBodiesIncludingFiveLargeRoles()
+        {
+            string[] roles = { "M20", "M28", "M34", "M36", "B21", "B08", "B10", "B11", "B13", "B23", "B22" };
+            var model = new FormationBattleModel(71);
+            var lineup = roles.Select((id, i) => Entry(i + 1, id, (i % 5) * 2, (i / 5) * 2)).ToArray();
+            Assert.That(model.ApplyRoster(lineup, 11), Is.True);
+            Assert.That(model.EnabledCount, Is.EqualTo(11));
+            Assert.That(model.Units.Count(u => u.Footprint == new Vector2Int(2, 2)), Is.GreaterThanOrEqualTo(5));
+            Assert.That(model.Units.All(u => FormationDeployment.Fits(u.DeploymentCells)), Is.True);
+            Assert.That(model.Units.SelectMany((u, i) => model.Units.Skip(i + 1).Select(v =>
+                u.DeploymentCells.Overlaps(v.DeploymentCells))).Any(overlap => overlap), Is.False);
         }
     }
 }

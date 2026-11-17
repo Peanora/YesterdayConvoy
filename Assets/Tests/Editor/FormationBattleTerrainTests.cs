@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -9,9 +10,9 @@ namespace YesterdayConvoy.Tests
         static FormationBattleTerrainRegion[] Regions() => new[]
         {
             new FormationBattleTerrainRegion(new RectInt(17, 1, 2, 2), .48f, true),
-            new FormationBattleTerrainRegion(new RectInt(17, 5, 2, 2), .48f, true),
-            new FormationBattleTerrainRegion(new RectInt(14, 1, 2, 1), .36f, false),
-            new FormationBattleTerrainRegion(new RectInt(15, 4, 2, 1), .36f, false)
+            new FormationBattleTerrainRegion(new RectInt(18, 4, 2, 2), .48f, true),
+            new FormationBattleTerrainRegion(new RectInt(13, 1, 2, 1), .36f, false),
+            new FormationBattleTerrainRegion(new RectInt(16, 4, 2, 1), .36f, false)
         };
 
         static FormationBattleModel SoloDog()
@@ -40,10 +41,10 @@ namespace YesterdayConvoy.Tests
         [TestCase(18, 1)]
         [TestCase(17, 2)]
         [TestCase(18, 2)]
-        [TestCase(17, 5)]
+        [TestCase(18, 4)]
+        [TestCase(19, 4)]
         [TestCase(18, 5)]
-        [TestCase(17, 6)]
-        [TestCase(18, 6)]
+        [TestCase(19, 5)]
         public void ShortRangeMeleeReachesEveryPlatformSeatAndKillsWithoutClimbing(int col, int row)
         {
             var model = SoloDog();
@@ -88,7 +89,7 @@ namespace YesterdayConvoy.Tests
         {
             var model = SoloDog(); var dog = model.Units[1];
             Assert.That(model.StartBattle(), Is.True);
-            dog.Position = new Vector2(13, 1);
+            dog.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 1);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
             bool sawDetour = false;
             for (int step = 0; step < 1000 && model.Phase != FormationPhase.Won; step++)
@@ -148,6 +149,36 @@ namespace YesterdayConvoy.Tests
             Assert.That(layout.CanPlaceDefender(new Vector2(17, 1)), Is.True);
             Assert.That(layout.CanPlaceDefender(new Vector2(14, 1)), Is.False);
             Assert.That(layout.HeightAt(new Vector2(5, 2)), Is.Zero);
+        }
+
+        [Test]
+        public void CompactTerrainKeepsEveryCampaignNodeGuardSeatLegalAndUnique()
+        {
+            var shop = new ShopTrialModel(FormationCampaignRules.AllUnits.Select(unit =>
+                new ShopTrialModel.Role { Id = unit.CardId, Name = unit.Name, Cost = unit.Cost }), 71);
+            shop.EnableFormationEconomy();
+            shop.Preset(Array.Empty<ShopTrialModel.Piece>(), Array.Empty<string>(), 10, 0, 80);
+            var run = new FormationCampaignRun(shop, 71);
+            var model = new FormationBattleModel(71, new FormationBattleTerrainLayout(Regions()));
+            int choices = 0;
+            foreach (var node in FormationCampaignRules.Nodes)
+            {
+                while (run.HasBlockingChoice)
+                {
+                    Assert.That(++choices, Is.LessThan(100));
+                    Assert.That(run.Choose(0).Success, Is.True);
+                }
+                Assert.That(run.CurrentNode.Id, Is.EqualTo(node.Id));
+                model.BindCampaign(run);
+                Assert.That(model.Defenders.Count, Is.EqualTo(node.DefenderCount), node.Id);
+                Assert.That(model.Defenders.Select(d => d.Position).Distinct().Count(), Is.EqualTo(model.Defenders.Count), node.Id);
+                Assert.That(model.Defenders.All(d => d.Position.x >= FormationBattleModel.DeploymentColumns + 2 &&
+                    d.Position.x < FormationBattleModel.Width - 1 && d.Position.y >= 0 &&
+                    d.Position.y < FormationBattleModel.Height && model.Terrain.CanPlaceDefender(d.Position)), Is.True, node.Id);
+                if (node == FormationCampaignRules.Nodes.Last()) break;
+                if (!run.NodeSettled) run.SettleBattle(true, 1, 1, 0, false);
+                Assert.That(run.AdvanceNode(), Is.True);
+            }
         }
     }
 }

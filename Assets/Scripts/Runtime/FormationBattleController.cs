@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         public bool Ready {get;private set;}
         public int SelectedSlot {get;private set;}=0;
         public static Rect BattleRect=>new Rect(0,0,1280,720);
-        public static Rect BoardInputRect=>new Rect(188,65,816,418);
+        public static Rect BoardInputRect=>new Rect(188,242,816,262);
         public Camera battleCamera;
         public FormationBattleTerrainAuthoring terrain;
         public Material actorTemplate,lineTemplate;
@@ -78,11 +78,10 @@ namespace YesterdayConvoy
             TickCampaignSettlement();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
-            if(Input.GetKeyDown(KeyCode.Tab))SetMarketVisible(!MarketVisible);
             if(Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(soundEnabled&&Model.Clock-lastSoundAt>.09)
             {
@@ -110,6 +109,9 @@ namespace YesterdayConvoy
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
+            // Detail cards also overlap part of the lineup rail. They get first refusal
+            // before either terrain painting or seat dragging can capture the pointer.
+            if(FormationTraitBlocksPoint(point)){CancelFormationDrag();return;}
             if(ProcessCampaignSeaPointer(type,point))return;
             formationShopPointer=point;
             if(type==EventType.MouseDown)
@@ -165,7 +167,7 @@ namespace YesterdayConvoy
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
-            campaignSeaPainting=false;SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            campaignSeaPainting=false;CloseFormationTraitDetails();SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
             SetFormationView(true);
         }
         public void Retry()

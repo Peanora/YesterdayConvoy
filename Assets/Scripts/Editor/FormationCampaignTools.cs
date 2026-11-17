@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Editor
             FormationDeploymentTools.RebuildExpandedBoard();
             GameSceneCatalog.UpdateBuildSettings();
             Validate();
-            Debug.Log("FORMATION_FULL_AUTHOR_PASS: approved v0.7 rules, complete card references and authored 26x8 board");
+            Debug.Log("FORMATION_FULL_AUTHOR_PASS: approved v0.7 rules, complete card references and authored 22x7 board");
         }
         [MenuItem("Yesterday Convoy/Formation Battle/Validate Complete v0.7 Challenge")]
         public static void Validate()
@@ -31,11 +31,11 @@ namespace YesterdayConvoy.Editor
                 if(catalog==null||!c.formationCards.Any(card=>card.CardId==unit.CardId))
                     throw new InvalidOperationException("Missing full-challenge unit: "+unit.Name);
             }
-            if(FormationBattleModel.Width!=26||FormationBattleModel.DeploymentColumns!=12)
+            if(FormationBattleModel.Width!=22||FormationBattleModel.Height!=7||FormationBattleModel.DeploymentColumns!=10)
                 throw new InvalidOperationException("Both fixed views need comparable usable board area.");
             if(FormationCampaignRules.ExperienceToNext[8]!=80||FormationCampaignRules.ExperienceToNext[9]!=100)
                 throw new InvalidOperationException("Approved high-level experience curve has regressed.");
-            Debug.Log("FORMATION_FULL_VALIDATE_PASS: 46 units, 16 preplans, 36 augments, 21 advanced recipes, 23 nodes and enlarged authored board");
+            Debug.Log("FORMATION_FULL_VALIDATE_PASS: 46 units, 16 preplans, 36 augments, 21 advanced recipes, 23 nodes and compact authored board");
         }
     }
 }

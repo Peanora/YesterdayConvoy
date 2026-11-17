@@ -44,7 +44,7 @@ namespace YesterdayConvoy
             approvedShop=new ApprovedShopPresentation(new ApprovedShopPresentation.Host
             {
                 Parent=transform,Shop=()=>Shop,Font=()=>ApprovedUi.Font(null),Preparing=()=>CanTrade,
-                Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,
+                Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,CanCollapse=()=>false,
                 OddsVisible=()=>shopOddsVisible,StoreOdds=v=>shopOddsVisible=v,
                 Dragging=()=>pointerHeld&&Vector2.Distance(formationShopPointer,pointerStart)>6&&!DragPreviewVisible,
                 DragInstance=()=>shopDragInstance,LineupSeatCount=()=>Mathf.Max(10,Shop.PopulationCap),Pointer=()=>formationShopPointer,PieceRect=ShopPieceRect,
@@ -60,7 +60,8 @@ namespace YesterdayConvoy
         }
         public void SetMarketVisible(bool visible)
         {
-            visible=visible&&Model!=null&&Model.Phase==FormationPhase.Preparation;
+            // Recruitment is a fixed preparation rail. Battle is the only state that hides it.
+            visible=Model!=null&&Model.Phase==FormationPhase.Preparation;
             if(approvedShop==null)marketVisible=visible;else approvedShop.AnimateShopVisibility(visible);
             shopOddsVisible=false;CancelFormationDrag();
         }
@@ -85,9 +86,9 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result BuyExperience()=>ShopAction(()=>Session.BuyExperience());
         public ShopTrialModel.Result SellPiece(int instance)=>ShopAction(()=>Session.Sell(instance));
         public ShopTrialModel.Result MovePiece(int instance,bool lineup,int seat)=>ShopAction(()=>Session.Move(instance,lineup,seat));
-        bool FormationShopBlocksPoint(Vector2 point)=>CampaignInteractionBlocked||shopOddsVisible||formationMenuOpen||point.y<65||point.y>=480||
+        bool FormationShopBlocksPoint(Vector2 point)=>CampaignInteractionBlocked||shopOddsVisible||formationMenuOpen||FormationTraitBlocksPoint(point)||point.y<BoardInputRect.yMin||point.y>=BoardInputRect.yMax||
             point.x<188||ApprovedUi.RecruitList.Contains(point)||(marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)||
-            formationInspectedTag!=null&&new Rect(200,244,380,112).Contains(point);
+            Campaign==null&&formationInspectedTag!=null&&new Rect(200,244,380,112).Contains(point);
         void CancelFormationDrag(){pointerHeld=false;pendingClickDeployment=false;dragSlot=-1;shopDragInstance=0;ClearDeploymentPreview();}
         void SelectFirstLineup()
         {
