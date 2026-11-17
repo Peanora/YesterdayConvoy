@@ -113,5 +113,40 @@ namespace YesterdayConvoy.Tests
             Assert.That(m.TimeRemaining,Is.LessThanOrEqualTo(.001));
             controller.Retry();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));Assert.That(m.Clock,Is.Zero);
         }
+        [UnityTest] public IEnumerator SavedIndustrialCourtyardHasEightAlignedOpenRedAndBlueGates()
+        {
+            yield return Ready();
+            var scene=SceneManager.GetActiveScene();
+            Assert.That(scene.path,Is.EqualTo("Assets/Scenes/FormationBattle.unity"));
+            var roots=scene.GetRootGameObjects();
+            var courtyard=roots.FirstOrDefault(r=>r.name.StartsWith("Industrial courtyard",StringComparison.Ordinal));
+            Assert.That(courtyard,Is.Not.Null,"The industrial courtyard must be part of the saved independent scene.");
+            Assert.That(courtyard.GetComponentsInChildren<MeshRenderer>(true).Length,Is.GreaterThan(0));
+            var transforms=roots.SelectMany(r=>r.GetComponentsInChildren<Transform>(true)).ToArray();
+            var red=transforms.Where(t=>t.name.StartsWith("Red gate row ",StringComparison.Ordinal)).ToArray();
+            var blue=transforms.Where(t=>t.name.StartsWith("Blue gate row ",StringComparison.Ordinal)).ToArray();
+            CollectionAssert.AreEquivalent(Enumerable.Range(0,8).Select(row=>"Red gate row "+row).ToArray(),red.Select(t=>t.name).ToArray());
+            CollectionAssert.AreEquivalent(Enumerable.Range(0,8).Select(row=>"Blue gate row "+row).ToArray(),blue.Select(t=>t.name).ToArray());
+            for(int row=0;row<8;row++)
+            {
+                foreach(bool isRed in new[]{true,false})
+                {
+                    string name=(isRed?"Red":"Blue")+" gate row "+row;
+                    var gate=(isRed?red:blue).Single(t=>t.name==name);
+                    var expected=FormationBattleController.WorldPoint(new Vector2(isRed?5.5f:13,row));expected.y=.02f;
+                    Assert.That(Vector3.Distance(gate.position,expected),Is.LessThan(.0001f),name+" must align with its existing logical row.");
+                    Assert.That(gate.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True,name+" must leave passage open without enabled collision barriers.");
+                    var renderers=gate.GetComponentsInChildren<MeshRenderer>(true);
+                    Assert.That(renderers.Length,Is.GreaterThanOrEqualTo(6),name+" must use saved three-dimensional open-frame geometry.");
+                    Assert.That(renderers.Any(r=>
+                    {
+                        if(r.sharedMaterial==null)return false;
+                        Color color=r.sharedMaterial.color;
+                        return isRed?color.r>color.b*1.5f:color.b>color.r*1.5f;
+                    }),Is.True,name+" must include a visible material in its own gate colour.");
+                }
+            }
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: saved industrial courtyard; eight aligned open red gates and eight aligned open blue gates; no enabled gate colliders.");
+        }
     }
 }

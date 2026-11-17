@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-17：工业庭院地图与红蓝门
+
+- 用户批准上一轮AI概念并明确“虚线处一排红门，右侧蓝门”，授权接入游戏。开工延续`codex/formation-battle-demo`及已有PR115；实时fetch核实main仍为`0b17920d`，预存`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留，不提交。root独占场景、工业工具与材质，代理仅分别编辑场景测试和来源文档。
+- `FormationIndustrialTools.Apply`在Unity6000.6.5f1真实执行，将工业几何和材质保存于FormationBattle场景，保持112格坐标。`FORMATION_INDUSTRIAL_VALIDATE_PASS`确认8红门/8蓝门位置与无碰撞，全部静态材质可持久引用；首次与最终Apply均退出0。没有运行时搭图、图片背景板、外部新包或角色改绘。
+- 首轮非batch D3D11 PlayMode4/4；目视发现门框偏细/战场偏小，调整门宽、镜头、地面色调与沥青重复尺度后，最终相关 **4/4**、退出0，`artifacts/formation-industrial/playmode-final.xml`。覆盖保存几何重试不重建、实际原动作/镜头安全区、头部单击/拖动、暂停超时、两排各8个开放3D门位与颜色。已实际查看最终整备截图，112格和左右边界清楚。纯战斗模型和运行脚本未改，本轮不把之前1031项记录写成重新执行。
+- 新版Windows构建、Player与真实鼠标结果待本次构建完成后补记。未测：用户最终美术观感、第二机、长期性能与完整自然运营。素材来源与AI概念身份见`docs/art/FORMATION_INDUSTRIAL_MAP.md`，不把概念看稿批准等同最终实机验收。
+
 ## 2026-11-17：固定战场布阵 Demo
 
 - 基于实时fetch的`origin/main=0b17920d`新建`codex/formation-battle-demo`，原六星特效分支及其未合PR114保持独立；不把其验证外推到本分支。预存`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`原样保留，不纳入提交。root唯一写入新场景/材质/入口，代理分别负责纯模型、文档和场景验证。
