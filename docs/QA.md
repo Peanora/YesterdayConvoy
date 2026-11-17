@@ -10,7 +10,10 @@
 - 首轮PlayMode17项中16过，中路测试发现第二掩体放row3挡住原中路，已恢复row4并同步实际场景与坐标断言。只读review补出详情盖住上阵席位时的指针优先级及结算层级漏洞，修正后最终D3D11非batch相关场景加旧商店回归 **22/22、39.4357149秒、退出0**，`artifacts/formation-layout/playmode-release.xml/.log`。两项新场景用例实际验证买卡扣金→腾人口→备战指针入图、双方每格四角/本体上缘都在商店下方；真实徽章装备/卸下与上下阵改变成员状态/档位；详情底部覆盖席位时按下不选、拖出不产生预览、备战拖入被盖席位零提交；正常战斗开始关闭详情，沿生产时钟到真实终态后禁止重开。徽章为明确夹具，不作为自然获取概率证据。源截图`playmode-compact-pinned-preparation.png`和`playmode-trait-members-badge-and-reserve.png`已实际目视。
 - 最终完整EditMode **1184/1185、12.7284219秒、退出2**，`artifacts/formation-layout/editmode-release.xml/.log`；只有上方3-7预置通关断言失败，最终恢复原站位后复现87.45%、剩3人。新增5项（3项成员视图、2项紧凑地图）均被识别并通过。不能把这一结果简写成完整规则全绿。实际仓库检查 **16450 tracked files / REPOSITORY_CHECK_PASS**，新增4份C#与必要meta随源码纳入本地任务，忽略的AGENTS/缓存/日志/构建及原两项配置不纳入。
 - 布局检索参考：[货币战争羁绊教程原界面](https://hsr.gachabase.net/tutorials/currency-wars/100028/bond/release?lang=chs)及[玩法界面截图](https://www.hoyolab.com/article/42168333)，仅参考信息层次，不导入其图片。样式复用本项目字体、角色头像和费用色，无新外部美术或依赖。
-- 本段写入时最终补回归与Windows构建仍在执行，未据此前EXE冒称完成。完整自然长局、全部构筑、人类手感、长期性能与第二机仍未验证。
+- 最终Windows x64 Development内容源码 **e6902c4a7fc98a90d941df31020fcf457fd144ec**。Unity实际执行`BaselineTools.BuildWindows`，`artifacts/formation-layout/build.log`记录 **BASELINE_BUILD_PASS: 1097740389 bytes、0错误、退出0**。Runtime DLL SHA256 **26BD048ECF6452C6CBCD511B599C4152D66EF839BDC651EA3DA142A5311E366A**，常用EXE和SOURCE.txt已更新。之后只补验证文档，不改变构建内容；本轮没有推送、PR、启动脚本、ZIP或Releases。
+- 可见D3D11独立Player **1600×900与1280×720各36/36、0异常、退出0**，`artifacts/formation-layout/player-1600`与`player-1280`、对应日志和`campaign-smoke.json`。通过有限开局、真实选择/交易/装备、战前尝试隐藏商店仍固定、真实羁绊打开/关闭及地图点击不穿透、前三场战斗和结算，继续进入1-4准备。沿生产时钟加速，没有注入角色、库存、面板或胜负；不等于自然整局通关。已目视两尺寸准备与成员图、1600守军图，完整棋盘在店下方，激活/未激活档位和未拥有成员均可读，图片并非隐藏窗口黑帧。
+- 普通EXE真实OS核验：看到开局投资环境后选择首个预案，进入8金币/3级/三人准备；分别按Tab、Escape，商店均保持完整展开。点左侧迅攻，看到2人档已激活/下一档4人、两名上阵与其余未拥有成员；在详情内真实滚轮下滚后看到后段完整效果，再按Escape只关详情、商店仍在。最初窗口被其他应用遮挡，通过目标窗口已公开的Raise置前后完成操作，未操作其他应用。`artifacts/formation-layout/interactive.log`无异常/错误，测试窗口正常关闭。本项是按键/点击/滚动短路径，不冒称OS手动完整战斗。
+- 未验证：上方已知终局预置通关失败尚未平衡解决；完整自然长局、全部构筑、人类最终观感、长期性能与第二机。场景/界面通过、可执行构建成功和整体平衡是三种不同证据。
 
 ## 2026-11-18 最新：v0.7 棋盘完整挑战集成
 
