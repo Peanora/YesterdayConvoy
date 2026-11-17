@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-17：固定战场布阵 Demo
+
+- 基于实时fetch的`origin/main=0b17920d`新建`codex/formation-battle-demo`，原六星特效分支及其未合PR114保持独立；不把其验证外推到本分支。预存`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`原样保留，不纳入提交。root唯一写入新场景/材质/入口，代理分别负责纯模型、文档和场景验证。
+- `FormationBattleTools.Author`真实运行Unity6000.6.5f1，编译成功，`FORMATION_SCENE_VALIDATE_PASS`确认112个已保存可编辑地块及持久材质，日志退出0。构建配置只增加本场景，不改包清单/锁文件/其他项目设置。
+- 完整EditMode **1031/1031**，退出0，`artifacts/formation-demo/editmode.xml`。新增11例覆盖交换/越界/上下阵、星级/容量、暂停/倍速、原位复活和技能进度、动作窗口、真实伤害/治疗、清场后进门、时限精确边界、重试与跨关继承、确定种子及预置通关。固定预置不是自然运营见证。
+- 首次新增烟测编译因Unity6000.6已移除`GetInstanceID`失败，改为直接比较地形对象引用后通过。首次batch PlayMode为2/3，失败原因为`WaitForEndOfFrame`在batch不执行；改用实际D3D11非batch模式后相关 **3/3**，退出0，`playmode-graphics.xml`。覆盖保存地形重试不重建、真实原动作Sprite/镜头投影、指针交换和非法落点、战中锁阵及暂停/超时；`playmode-preparation.png`已实际查看。随后界面修整清除视口外残帧、按钮灰底，并按统一动作窗口完整采样已有动作，最终Player还需验证。
+- Windows构建、独立Player重放和真实鼠标操作待下方补记。未测：人类试玩观感、完整商店/羁绊/原作复杂技能迁移、自然运营通关、第二机与长期平衡；免费升星/扩编只用于基础体验。
+
 ## 2026-11-10：再次提高中期守军强度
 
 - 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。

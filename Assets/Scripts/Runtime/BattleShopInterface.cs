@@ -252,7 +252,7 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(x,y,width,30),"验证工具 · 直接结算"))
                 {loopTestSettlementOpen=true;loopMenuOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}y+=37;
             }
-            if(LoopButton(new Rect(x,y,width,30),"关闭菜单"))loopMenuOpen=false;
+            if(LoopButton(new Rect(x,y,width,30),"矩形攻坚 · 新玩法 Demo"))UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);
         }
         void ReturnToTrialScene()
         {

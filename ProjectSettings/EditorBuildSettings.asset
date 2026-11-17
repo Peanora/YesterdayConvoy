@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/BlackForestCrossing.unity
     guid: 9a0466a7b255a4e4998071966d8133b0
   - enabled: 1
+    path: Assets/Scenes/FormationBattle.unity
+    guid: 94e52aa5bf4b5ab49a66cea5b2b1639e
+  - enabled: 1
     path: Assets/Scenes/Map01SunsetSquare.unity
     guid: 3192c30b488615b419aef98e79dcd0db
   - enabled: 1

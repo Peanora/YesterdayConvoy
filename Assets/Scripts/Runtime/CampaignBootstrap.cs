@@ -13,6 +13,8 @@ namespace YesterdayConvoy
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(!sandbox&&Array.Exists(args,a=>a=="-formationDemo"||a=="-formationSmokeTest"))
+            {UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);yield break;}
             // These dedicated drivers own scene startup; do not race them with
             // the default journey's asynchronous load.
             if(!sandbox&&Array.Exists(args,a=>a=="-campaignJourneySmokeTest"||a=="-viviCombatSmokeTest"))yield break;

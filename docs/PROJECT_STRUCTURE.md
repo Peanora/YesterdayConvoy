@@ -1,5 +1,7 @@
 # 工程目录与场景规范
 
+2026-11-17 固定战场布阵 Demo：新增 `Assets/Scenes/FormationBattle.unity`，14×8 的112格地形、左右分区和右端蓝门均保存于场景；材质在 `Assets/Art/Environment/FormationBattle`。正常 EXE 右上菜单进入“矩形攻坚 · 新玩法 Demo”。`FormationBattleTools.Author` 仅创建缺失场景，不覆盖人工地图；运行时只生成角色和反馈。后续常规战斗规则以 [固定战场布阵](FORMATION_BATTLE.md) 和 GDD 顶部为准，旧行动与专项保留其现状。
+
 2026-11-09项目文件清理：试玩/预览 `.cmd` 启动器已从根目录、tools、文档预览与本地Builds中移除，后续不得再生成或复制，也不改用 `.bat`。标准入口只有 `Builds/Windows/YesterdayConvoy.exe`（默认十三关，其他模式走游戏内菜单），浏览器预览直接打开相应 HTML。保留Unity工程、角色资源、现有构建和必要IDE生成文件；不为清理启动器删除他人未提交修改或工程缓存。
 
 2026-11-09十三关行动v2：复用现有八个保存地图场景，构建清单仍24场景；Resources/CampaignV2新增Journey、八份正式StageXXBattle与v2只读数值JSON，Assets/Data/CampaignV2保存批准流程与authoring输入。静态Journey会话只携带经济/编队数据，进入各场景后恢复，不携带旧场景视觉对象或在Play搭地形。正式入口与编辑覆盖边界见[十三关说明](CAMPAIGN_JOURNEY_V2.md)。
