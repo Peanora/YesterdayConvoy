@@ -18,6 +18,7 @@ namespace YesterdayConvoy.Tests
         [TearDown] public void RestoreClock(){if(controller!=null&&controller.Model!=null)controller.Model.Paused=true;Time.timeScale=previousScale;}
         IEnumerator Ready()
         {
+            FormationShopSession.StartNew(20261117);
             yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
             double deadline=Time.realtimeSinceStartupAsDouble+600;
             while(Time.realtimeSinceStartupAsDouble<deadline)
@@ -27,7 +28,7 @@ namespace YesterdayConvoy.Tests
                 yield return null;
             }
             Assert.That(controller,Is.Not.Null);Assert.That(controller.Ready,Is.True,"Existing animation packages must finish preparing.");
-            Assert.That(controller.Model,Is.Not.Null);yield return null;
+            Assert.That(controller.Model,Is.Not.Null);controller.SetMarketVisible(false);yield return null;
         }
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
@@ -44,7 +45,8 @@ namespace YesterdayConvoy.Tests
             var meshes=Terrain();Assert.That(meshes.Length,Is.GreaterThan(20),"The saved independent scene must contain terrain before combat.");
             var positions=meshes.ToDictionary(m=>m,m=>m.transform.position);
             var cam=controller.battleCamera;Assert.That(cam,Is.Not.Null);
-            Assert.That(Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.x,60)),Is.LessThan(.1f));
+            Assert.That(cam.orthographic,Is.False,"The painted courtyard and editable floor share a calibrated perspective camera.");
+            Assert.That(cam.transform.eulerAngles.x,Is.InRange(30,65));
             Assert.That(Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0)),Is.LessThan(.1f));
             Assert.That(Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0)),Is.LessThan(.1f));
             var sprites=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null).ToArray();
@@ -56,7 +58,7 @@ namespace YesterdayConvoy.Tests
                 var point=TacticalViewport.Current.FromScreen(projected);
                 Assert.That(projected.z,Is.GreaterThan(0),actor.Name+" is behind the camera.");
                 Assert.That(point.x,Is.InRange(12,1268),actor.Name+" horizontal projection");
-                Assert.That(point.y,Is.InRange(114,531),actor.Name+" feet must avoid top/bottom controls.");
+                Assert.That(point.y,Is.InRange(110,560),actor.Name+" feet must avoid top/bottom controls.");
             }
             yield return new WaitForEndOfFrame();
             var screenshot=ScreenCapture.CaptureScreenshotAsTexture();Assert.That(screenshot,Is.Not.Null);
@@ -90,13 +92,15 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
             Drag(first.Spawn,new Vector2(10,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
-            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,550));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,550));
+            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,650));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,650));
             Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(m.Units.Count(u=>u.Enabled),Is.EqualTo(enabled));
             Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));Assert.That(m.Clock,Is.Zero);
             controller.StartBattle();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Fighting));
+            first=m.Units.Single(u=>u.Instance==first.Instance);second=m.Units.Single(u=>u.Instance==second.Instance);
             Drag(first.Spawn,second.Spawn);Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.Retry();Assert.That(m.Phase,Is.EqualTo(FormationPhase.Preparation));
-            Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
+            Assert.That(m.Units.Single(u=>u.Instance==first.Instance).Spawn,Is.EqualTo(b));
+            Assert.That(m.Units.Single(u=>u.Instance==second.Instance).Spawn,Is.EqualTo(a));
         }
         [UnityTest] public IEnumerator PauseFreezesSharedCombatClockAndConfiguredDeadlineUsesRealLossPath()
         {
@@ -119,7 +123,7 @@ namespace YesterdayConvoy.Tests
             var scene=SceneManager.GetActiveScene();
             Assert.That(scene.path,Is.EqualTo("Assets/Scenes/FormationBattle.unity"));
             var roots=scene.GetRootGameObjects();
-            var courtyard=roots.FirstOrDefault(r=>r.name.StartsWith("Industrial courtyard",StringComparison.Ordinal));
+            var courtyard=roots.FirstOrDefault(r=>r.name.StartsWith("Painted courtyard",StringComparison.Ordinal));
             Assert.That(courtyard,Is.Not.Null,"The industrial courtyard must be part of the saved independent scene.");
             Assert.That(courtyard.GetComponentsInChildren<MeshRenderer>(true).Length,Is.GreaterThan(0));
             var transforms=roots.SelectMany(r=>r.GetComponentsInChildren<Transform>(true)).ToArray();
@@ -133,11 +137,14 @@ namespace YesterdayConvoy.Tests
                 {
                     string name=(isRed?"Red":"Blue")+" gate row "+row;
                     var gate=(isRed?red:blue).Single(t=>t.name==name);
-                    var expected=FormationBattleController.WorldPoint(new Vector2(isRed?5.5f:13,row));expected.y=.02f;
+                    var expected=FormationBattleController.WorldPoint(new Vector2(isRed?5.5f:13,row));
                     Assert.That(Vector3.Distance(gate.position,expected),Is.LessThan(.0001f),name+" must align with its existing logical row.");
                     Assert.That(gate.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True,name+" must leave passage open without enabled collision barriers.");
                     var renderers=gate.GetComponentsInChildren<MeshRenderer>(true);
-                    Assert.That(renderers.Length,Is.GreaterThanOrEqualTo(6),name+" must use saved three-dimensional open-frame geometry.");
+                    Assert.That(renderers.Length,Is.GreaterThanOrEqualTo(4),name+" must use saved separate low gate markers.");
+                    var bounds=renderers[0].bounds;foreach(var renderer in renderers.Skip(1))bounds.Encapsulate(renderer.bounds);
+                    Assert.That(bounds.size.y,Is.LessThan(.30f),name+" must stay below character bodies.");
+                    Assert.That(bounds.size.z,Is.LessThan(.65f),name+" must leave a visible gap before the next row.");
                     Assert.That(renderers.Any(r=>
                     {
                         if(r.sharedMaterial==null)return false;
@@ -147,6 +154,25 @@ namespace YesterdayConvoy.Tests
                 }
             }
             Debug.Log("FORMATION_GATE_SCENE_CHECK: saved industrial courtyard; eight aligned open red gates and eight aligned open blue gates; no enabled gate colliders.");
+        }
+        [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
+        {
+            yield return Ready();var shop=controller.Shop;var session=controller.Session;
+            Assert.That(shop.Level,Is.EqualTo(3));Assert.That(shop.Gold,Is.EqualTo(12));
+            Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
+            int offer=Enumerable.Range(0,5).First(i=>shop.Offers[i]!=null);
+            string id=shop.Offers[offer];int cost=shop.Definition(id).Cost;
+            var result=controller.BuyOffer(offer);
+            Assert.That(result.Success,Is.True);Assert.That(shop.Gold,Is.EqualTo(12-cost));
+            Assert.That(shop.Offers[offer],Is.Null);shop.Validate();
+            Assert.That(shop.Bench.Any(p=>p.Instance==result.Instance),Is.True);
+            controller.SetMarketVisible(true);yield return new WaitForEndOfFrame();
+            string dir=Path.GetFullPath(Path.Combine(Application.dataPath,"../artifacts/formation-shop"));Directory.CreateDirectory(dir);
+            var frame=ScreenCapture.CaptureScreenshotAsTexture();
+            try{File.WriteAllBytes(Path.Combine(dir,"playmode-market.png"),frame.EncodeToPNG());}finally{Object.Destroy(frame);}
+            controller.SetMarketVisible(false);controller.StartBattle();int gold=shop.Gold;
+            Assert.That(controller.RefreshMarket().Success,Is.False);Assert.That(controller.BuyExperience().Success,Is.False);
+            Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(session.CanShop,Is.False);
         }
     }
 }

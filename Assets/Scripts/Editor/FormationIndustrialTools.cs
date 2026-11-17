@@ -10,7 +10,7 @@ using Object=UnityEngine.Object;
 
 namespace YesterdayConvoy.Editor
 {
-    /// <summary>Explicit edit-time dressing of the approved formation scene; never invoked by Play.</summary>
+    /// <summary>Retired geometric courtyard authoring, kept only as implementation history.</summary>
     public static class FormationIndustrialTools
     {
         const string RootName="Industrial courtyard · saved geometry";
@@ -19,8 +19,13 @@ namespace YesterdayConvoy.Editor
         static Material floor,floorAlt,floorWet,wall,steel,edge,dark,amber,white,red,blue;
         static Mesh cube,quad,cylinder;
 
-        [MenuItem("Yesterday Convoy/Formation Battle/Apply Approved Industrial Courtyard")]
         public static void Apply()
+        {
+            throw new InvalidOperationException("The geometric industrial courtyard authoring entry is retired and cannot overwrite the approved painted scene. Use Yesterday Convoy > Formation Battle > Apply Approved Painted Courtyard (FormationPaintedMapTools.Apply).");
+        }
+
+        // No menu or public entry reaches this rejected visual version.
+        static void ApplyRetiredReference()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play first.");
             for(int i=0;i<SceneManager.sceneCount;i++)if(SceneManager.GetSceneAt(i).isDirty)throw new InvalidOperationException("Save existing dirty scenes first.");
@@ -252,7 +257,6 @@ namespace YesterdayConvoy.Editor
             Beam(g,"Gate symbol triangle",new Vector3(.13f,h+.025f,-.25f),new Vector3(0,h+.025f,.20f),.014f,mat);
             Beam(g,"Gate symbol triangle",new Vector3(0,h+.025f,.20f),new Vector3(-.13f,h+.025f,-.25f),.014f,mat);
         }
-        [MenuItem("Yesterday Convoy/Formation Battle/Validate Industrial Courtyard")]
         public static void Validate()
         {
             FormationBattleTools.Validate();

@@ -17,115 +17,95 @@ namespace YesterdayConvoy
             bool old=GUI.enabled;GUI.enabled=old&&active;
             Fill(rect,active?(accent?new Color(.15f,.43f,.46f):new Color(.14f,.22f,.28f)):new Color(.09f,.12f,.15f));
             ApprovedUi.Border(rect,accent?Cyan:new Color(.28f,.39f,.44f));
-            bool clicked=GUI.Button(rect,text,new GUIStyle(GUIStyle.none){font=ApprovedUi.Font(null,500),fontSize=15,alignment=TextAnchor.MiddleCenter,normal={textColor=active?White:Muted},hover={textColor=Cyan},active={textColor=Gold}});
+            bool clicked=GUI.Button(rect,text,new GUIStyle(GUIStyle.none){font=ApprovedUi.Font(null,500),fontSize=14,alignment=TextAnchor.MiddleCenter,
+                normal={textColor=active?White:Muted},hover={textColor=Cyan},active={textColor=Gold}});
             GUI.enabled=old;return clicked;
         }
-        public static Rect RosterRect(int slot)=>new Rect(25+slot*158,565,148,132);
+        public static Rect RosterRect(int slot)=>FormationLineupRect(slot);
         void OnGUI()
         {
-            var old=GUI.matrix;GUI.matrix=TacticalViewport.Current.Matrix;
-            Fill(new Rect(0,0,1280,100),Dark);
-            // Clear every area outside the inset camera, including pixels from its first full-screen frame.
-            Fill(new Rect(0,100,1280,21),Dark);Fill(new Rect(0,121,24,411),Dark);Fill(new Rect(1256,121,24,411),Dark);
-            Label(new Rect(25,12,700,34),"昨日圆车  /  矩形攻坚",27);
-            Label(new Rect(27,49,780,25),"固定战场 · 站位继承 · 自动进攻 · 原位复活",15,Muted);
-            if(!Ready)
+            var old=GUI.matrix;bool oldEnabled=GUI.enabled;GUI.matrix=TacticalViewport.Current.Matrix;
+            try
             {
-                Fill(new Rect(0,100,1280,620),Dark);Label(new Rect(150,250,980,80),loading,24,Cyan,TextAnchor.MiddleCenter);
-                GUI.matrix=old;return;
+                GUI.enabled=oldEnabled&&!shopOddsVisible&&shopInputBlockedFrame!=Time.frameCount;
+                Fill(new Rect(0,0,1280,65),Dark);Label(new Rect(20,7,365,29),"昨日圆车  /  矩形攻坚",24);
+                if(!Ready){Fill(new Rect(0,65,1280,655),Dark);Label(new Rect(150,250,980,80),loading,23,Cyan,TextAnchor.MiddleCenter);return;}
+                bool preparing=Model.Phase==FormationPhase.Preparation;
+                string phase=preparing?"战前整备":Model.Phase==FormationPhase.Fighting?"自动交战":Model.Phase==FormationPhase.Exiting?"守军肃清 · 前往蓝门":Model.Phase==FormationPhase.Won?"突破成功":"时间耗尽";
+                Label(new Rect(405,9,520,26),$"第 {Model.Round} / 5 关  ·  {phase}",18,Cyan);
+                Label(new Rect(22,40,855,19),notice,12,Muted);
+                Label(new Rect(890,43,370,18),$"守军 {Model.Defenders.Count(d=>d.Alive)} / {Model.Defenders.Count}    剩余 {Model.TimeRemaining:0.0} 秒",13,Gold,TextAnchor.MiddleRight);
+                if(Button(new Rect(944,9,137,29),MarketVisible?"收起商店 Tab":"打开商店 Tab",preparing))SetMarketVisible(!MarketVisible);
+                if(Button(new Rect(1091,9,80,29),soundEnabled?"音效：开":"音效：关"))soundEnabled=!soundEnabled;
+                if(Button(new Rect(1181,9,87,29),"原玩法"))SceneManager.LoadScene("Campaign");
+                DrawWorldLabels();
+                if(preparing)DrawFormationPreparation();else DrawFormationCombatRoster();
+                if(preparing&&MarketVisible)DrawFormationMarket();
+                if(shopDragInstance>0&&pointerHeld&&Vector2.Distance(TacticalViewport.Current.FromScreen(Input.mousePosition),pointerStart)>6)DrawFormationSaleTargets();
+                if(Model.Paused&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))
+                {Fill(new Rect(480,72,320,35),Dark);Label(new Rect(480,72,320,35),"已暂停  ·  空格或继续按钮恢复",15,Gold,TextAnchor.MiddleCenter);}
+                if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
+                GUI.enabled=oldEnabled;if(shopOddsVisible)DrawFormationOdds();
             }
-            bool preparing=Model.Phase==FormationPhase.Preparation;
-            string phase=preparing?"战前整备":Model.Phase==FormationPhase.Fighting?"自动交战":Model.Phase==FormationPhase.Exiting?"清场完成 · 前往蓝门":Model.Phase==FormationPhase.Won?"突破成功":"时间耗尽";
-            Label(new Rect(880,12,365,32),$"第 {Model.Round} / 5 关    {phase}",22,Cyan,TextAnchor.MiddleRight);
-            Label(new Rect(876,48,368,29),$"守军 {Model.Defenders.Count(d=>d.Alive)} / {Model.Defenders.Count}    剩余 {Model.TimeRemaining:0.0} 秒",18,Gold,TextAnchor.MiddleRight);
-            Label(new Rect(35,99,560,26),"我方布阵区  /  仅战前可调整",14,Cyan);
-            Label(new Rect(785,99,450,26),"本关守军已公开  /  清空后开启蓝门",14,new Color(1,.6f,.5f),TextAnchor.MiddleRight);
-            DrawWorldLabels();
-            Fill(new Rect(0,531,1280,189),Dark);
-            Label(new Rect(25,533,1090,27),notice,14,Muted);
-            for(int i=0;i<Model.Units.Count;i++)DrawRoster(i,preparing);
-            Fill(new Rect(980,565,275,132),Panel);
-            int enabled=Model.Units.Count(u=>u.Enabled);
-            Label(new Rect(992,571,250,24),$"上阵 {enabled} / {Model.Capacity}    免费体验整备",15,Cyan);
-            if(preparing)
-            {
-                if(Button(new Rect(991,604,252,40),"开始进攻",enabled>0,true))StartBattle();
-                if(Button(new Rect(991,652,122,32),"扩编 +1",Model.Capacity<6)){Model.Expand();notice="人口上限已增加，可让备战角色上阵。";}
-                if(Button(new Rect(1121,652,122,32),"新挑战"))ResetDemo();
-            }
-            else
-            {
-                if(Button(new Rect(991,604,122,36),Model.Paused?"继续":"暂停"))Model.Paused=!Model.Paused;
-                if(Button(new Rect(1121,604,122,36),Model.Speed>1?"速度 2×":"速度 1×"))Model.Speed=Model.Speed>1?1:2;
-                if(Button(new Rect(991,652,252,32),"返回整备 · 同关重试"))Retry();
-            }
-            if(Button(new Rect(25,76,100,24),soundEnabled?"音效：开":"音效：关"))soundEnabled=!soundEnabled;
-            if(Button(new Rect(139,76,130,24),"返回原玩法"))SceneManager.LoadScene("Campaign");
-            if(Model.Paused&&Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost)
-            {Fill(new Rect(480,107,320,38),Dark);Label(new Rect(480,107,320,38),"已暂停  ·  空格或继续按钮恢复",16,Gold,TextAnchor.MiddleCenter);}
-            if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
-            GUI.matrix=old;TacticalViewport.Current.DrawBars();
+            finally{GUI.enabled=oldEnabled;GUI.matrix=old;TacticalViewport.Current.DrawBars();}
         }
-        void DrawRoster(int index,bool preparing)
+        void DrawFormationCombatRoster()
         {
-            var u=Model.Units[index];Rect r=RosterRect(index);
-            Fill(r,index==SelectedSlot?new Color(.12f,.27f,.31f):Panel);ApprovedUi.Border(r,index==SelectedSlot?Cyan:new Color(.22f,.32f,.37f));
-            if(GUI.Button(new Rect(r.x+3,r.y+3,r.width-6,30),"",GUIStyle.none))SelectedSlot=index;
-            Label(new Rect(r.x+9,r.y+4,132,24),u.Name,15,u.Enabled?White:Muted);
-            Label(new Rect(r.x+9,r.y+29,130,21),new string('★',u.Star)+(u.Enabled?"  上阵":"  备战"),14,Gold);
-            if(preparing)
+            Fill(new Rect(0,565,1280,155),Dark);DrawFormationResources(false);
+            for(int i=0;i<Model.Units.Count;i++)
             {
-                if(Button(new Rect(r.x+8,r.y+58,132,29),"升星（体验）",u.Star<3)){Model.Upgrade(index);notice="角色已升星，站位保留；免费按钮仅用于比较成长。";SyncActors();}
-                if(Button(new Rect(r.x+8,r.y+94,132,29),u.Enabled?"移至备战":"加入军阵",u.Enabled||Model.Units.Count(v=>v.Enabled)<Model.Capacity)){Model.ToggleSlot(index);SelectedSlot=index;SyncActors();}
+                var u=Model.Units[i];var r=new Rect(188+i*125,580,119,125);Fill(r,Panel);ApprovedUi.Border(r,new Color(.22f,.33f,.39f));
+                DrawFormationPortrait(new Rect(r.x+4,r.y+5,48,61),"CARD_"+u.ArtId);
+                Label(new Rect(r.x+53,r.y+7,62,18),u.Name,u.Name.Length>5?9:11);
+                Label(new Rect(r.x+54,r.y+29,60,18),new string('★',u.Star),11,Gold);
+                Label(new Rect(r.x+7,r.y+71,110,18),u.Alive?$"生命 {u.Health:0}/{u.MaxHealth:0}":$"复活 {u.RespawnRemaining:0.0}秒",11,u.Alive?Cyan:Gold);
+                Label(new Rect(r.x+7,r.y+91,110,16),$"伤害 {u.DamageDone:0}  阵亡 {u.Deaths}",10,Muted);
+                Label(new Rect(r.x+7,r.y+109,110,15),$"技能 {u.SkillCharge:0}/{u.SkillRequired:0}",10,Muted);
             }
-            else
-            {
-                string state=u.Enabled?(u.Alive?$"生命 {u.Health:0}/{u.MaxHealth:0}":$"复活 {u.RespawnRemaining:0.0} 秒"):"未上阵";
-                Label(new Rect(r.x+9,r.y+55,132,22),state,13,u.Alive?Cyan:Gold);
-                Label(new Rect(r.x+9,r.y+79,132,20),$"伤害 {u.DamageDone:0}  阵亡 {u.Deaths}",12,Muted);
-                Label(new Rect(r.x+9,r.y+103,132,20),$"技能 {u.SkillCharge:0}/{u.SkillRequired:0}",12,Muted);
-            }
+            if(Button(new Rect(1142,579,126,34),Model.Paused?"继续":"暂停"))Model.Paused=!Model.Paused;
+            if(Button(new Rect(1142,621,126,34),Model.Speed>1?"速度 2×":"速度 1×"))Model.Speed=Model.Speed>1?1:2;
+            if(Button(new Rect(1142,666,126,34),"返回整备"))Retry();
         }
         void DrawWorldLabels()
         {
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders))
             {
                 if(!actor.Alive)continue;
-                var world=WorldPoint(actor.Position);var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(world+Vector3.up*1.22f));
-                if(p.y<121||p.y>522)continue;
+                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(WorldPoint(actor.Position)+Vector3.up*1.22f));
+                if(p.y<BattleRect.yMin+5||p.y>BattleRect.yMax-8)continue;
                 bool ally=actor is FormationFighter;
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
                 Fill(new Rect(p.x-22,p.y+1,44*Mathf.Clamp01(actor.Health/actor.MaxHealth),3),ally?Cyan:new Color(1,.42f,.32f));
                 Label(new Rect(p.x-65,p.y-18,130,18),actor.Name,11,White,TextAnchor.MiddleCenter);
             }
             if(Model.Phase==FormationPhase.Preparation)
-            {
                 foreach(var u in Model.Units.Where(u=>u.Enabled))
                 {
                     var p=CellScreen(u.Spawn);Label(new Rect(p.x-24,p.y-6,48,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
                     if(u.Slot==SelectedSlot)ApprovedUi.Border(new Rect(p.x-27,p.y-14,54,30),Cyan,2);
                 }
-            }
             foreach(var h in Model.Hits)
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(WorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
-                if(p.y<115||p.y>527)continue;
+                if(p.y<BattleRect.yMin+5||p.y>BattleRect.yMax-8)continue;
                 Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);
             }
         }
         void DrawSettlement()
         {
-            bool won=Model.Phase==FormationPhase.Won;
-            Fill(new Rect(380,184,520,310),Dark);ApprovedUi.Border(new Rect(380,184,520,310),won?Cyan:Gold,2);
-            Label(new Rect(405,203,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",30,won?Cyan:Gold,TextAnchor.MiddleCenter);
-            Label(new Rect(410,257,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒 · 至少一名角色已进入蓝门":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未能及时进门",16,White,TextAnchor.MiddleCenter);
-            var top=Model.Units.OrderByDescending(u=>u.DamageDone).First();
-            Label(new Rect(410,302,460,25),$"本关输出：{top.Name}  {top.DamageDone:0}    全队阵亡 {Model.Units.Sum(u=>u.Deaths)} 次",16,Muted,TextAnchor.MiddleCenter);
-            Label(new Rect(412,339,456,40),"回到整备调整站位、升星或扩编，再比较同一防线。",14,Muted,TextAnchor.MiddleCenter);
-            if(Button(new Rect(412,399,218,48),"同关整备重试"))Retry();
-            if(Button(new Rect(650,399,218,48),Model.Round<5?"下一关 · 保留军阵":"完成体验 · 新挑战",won,true))
-            {if(Model.Round<5)NextRound();else ResetDemo();}
+            bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
+            Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);
+            Label(new Rect(410,245,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未及时进门",16,White,TextAnchor.MiddleCenter);
+            var top=Model.Units.OrderByDescending(u=>u.DamageDone).FirstOrDefault();
+            if(top!=null)Label(new Rect(410,287,460,25),$"本关输出：{top.Name} {top.DamageDone:0}  ·  全队阵亡 {Model.Units.Sum(u=>u.Deaths)} 次",15,Muted,TextAnchor.MiddleCenter);
+            Label(new Rect(410,327,460,43),won?"领取通关金币与经验，带着已有军阵继续整备。":"返回同关调整军阵；重试保留购买成果，不重复发奖。",14,Muted,TextAnchor.MiddleCenter);
+            if(Button(new Rect(410,400,220,47),"同关整备重试"))Retry();
+            if(Button(new Rect(650,400,220,47),Model.Round<5?"领取奖励 · 下一关":finalRewardClaimed?"开始新挑战":"领取奖励 · 完成挑战",won,true))
+            {
+                if(Model.Round<5)NextRound();else if(finalRewardClaimed)ResetDemo();
+                else {var reward=Session.SettleWin(Model.Round);finalRewardClaimed=reward!=null;notice=reward!=null?$"最终奖励 +{reward.Total}金币、+{reward.Experience}经验；新挑战前保留购买记录。":"奖励尚未结算。";}
+            }
         }
     }
 }

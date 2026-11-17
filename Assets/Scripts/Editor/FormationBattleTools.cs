@@ -78,7 +78,7 @@ namespace YesterdayConvoy.Editor
             if(!File.Exists(ScenePath))throw new InvalidOperationException("Formation scene is not authored.");
             var scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
             var c=Object.FindAnyObjectByType<FormationBattleController>();
-            if(c==null||c.battleCamera==null||!c.battleCamera.orthographic)throw new InvalidOperationException("Formation scene bindings missing.");
+            if(c==null||c.battleCamera==null)throw new InvalidOperationException("Formation scene bindings missing.");
             int tiles=scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<Transform>()).Count(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal));
             if(tiles!=112)throw new InvalidOperationException("Saved terrain tile count: "+tiles);
             foreach(var r in scene.GetRootGameObjects().SelectMany(o=>o.GetComponentsInChildren<MeshRenderer>()))

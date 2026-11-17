@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated programmatic replay through the production formation model and controller pointer handlers, with actual Player screenshots. The default first encounter observes its ordinary outcome. A separate timeout uses an explicitly shortened configured limit, and a legal single-hound lineup exercises death/revival. No HP, damage, skill charge or result is injected. This does not establish human mouse interaction, natural shop acquisition, full campaign balance or final visual acceptance.";
+            public string scope="Accelerated replay through the production shop transactions, saved map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter. A configured short deadline and legal single-archer lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -143,9 +143,16 @@ namespace YesterdayConvoy
             var m=controller.Model;var terrain=Terrain();var terrainSet=new HashSet<MeshFilter>(terrain);result.savedMeshes=terrain.Length;
             CheckThat("authored-rectangle-has-saved-meshes",terrain.Length>20&&SceneManager.GetActiveScene().path=="Assets/Scenes/FormationBattle.unity");
             var cam=controller.battleCamera;
-            CheckThat("forward-sixty-degree-camera",cam!=null&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.x,60))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);
+            CheckThat("calibrated-forward-perspective-camera",cam!=null&&!cam.orthographic&&cam.transform.eulerAngles.x>30&&cam.transform.eulerAngles.x<65&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);
             CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
+            CheckThat("real-shop-starts-with-finite-gold-and-three-owned-lineup-pieces",controller.Shop.Gold==12&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
+            controller.SetMarketVisible(true);yield return Capture("player-market");
+            int offer=Enumerable.Range(0,5).First(i=>controller.Shop.Offers[i]!=null);
+            string purchased=controller.Shop.Offers[offer];int price=controller.Shop.Definition(purchased).Cost;
+            var receipt=controller.BuyOffer(offer);
+            CheckThat("actual-offer-purchase-consumes-gold-stock-and-offer",receipt.Success&&controller.Shop.Gold==12-price&&controller.Shop.Offers[offer]==null&&controller.Shop.Bench.Any(p=>p.Instance==receipt.Instance));
+            controller.Shop.Validate();yield return Capture("player-purchased");controller.SetMarketVisible(false);yield return null;
             yield return Capture("player-preparation");
 
             var first=m.Units.First(u=>u.Enabled);var second=m.Units.First(u=>u.Enabled&&u.Slot!=first.Slot);
@@ -155,7 +162,7 @@ namespace YesterdayConvoy
             string placed=Formation(m);Drag(first.Spawn,new Vector2(10,4));
             CheckThat("pointer-enemy-half-drop-is-atomic",Formation(m)==placed&&m.Clock==0&&m.Phase==FormationPhase.Preparation);
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
-            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,550));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,550));
+            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,650));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,650));
             CheckThat("pointer-hud-drop-keeps-placement",Formation(m)==placed);
             Drag(first.Spawn,second.Spawn);
             CheckThat("pointer-swap-can-be-reversed",first.Spawn==firstSpawn&&second.Spawn==secondSpawn);
@@ -163,6 +170,8 @@ namespace YesterdayConvoy
 
             string formation=Formation(m);controller.StartBattle();
             CheckThat("production-start-enters-fighting",m.Phase==FormationPhase.Fighting&&m.Units.Count(u=>u.Enabled&&u.Alive)>0);
+            int battleGold=controller.Shop.Gold;
+            CheckThat("battle-rejects-shop-purchase-refresh-and-xp",!controller.BuyOffer(1).Success&&!controller.RefreshMarket().Success&&!controller.BuyExperience().Success&&controller.Shop.Gold==battleGold);
             Drag(first.Spawn,second.Spawn);CheckThat("battle-pointer-cannot-rearrange",Formation(m)==formation);
             m.Advance(.1f);m.Paused=true;double clock=m.Clock,remaining=m.TimeRemaining;
             var positions=m.Units.Select(u=>u.Position).ToArray();var hp=m.Units.Select(u=>u.Health).ToArray();var sp=m.Units.Select(u=>u.SkillCharge).ToArray();
@@ -182,8 +191,9 @@ namespace YesterdayConvoy
             CheckThat("automatic-production-combat-causes-real-damage",m.Units.Sum(u=>u.DamageDone)>0&&m.Defenders.All(d=>!d.Alive));
             yield return Capture("player-victory");
 
-            int round=m.Round;controller.NextRound();
+            int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();controller.SetMarketVisible(false);
             CheckThat("next-round-keeps-formation",m.Round==round+1&&m.Phase==FormationPhase.Preparation&&Formation(m)==formation);
+            CheckThat("won-round-grants-real-shop-reward-once",controller.Shop.Gold>beforeReward);
             string guards=GuardLayout(m);controller.StartBattle();m.Advance(1);controller.Retry();
             CheckThat("same-round-retry-keeps-defender-layout-and-formation",m.Phase==FormationPhase.Preparation&&m.Clock==0&&GuardLayout(m)==guards&&Formation(m)==formation);
             CheckThat("retry-preserves-authored-terrain-instances",terrainSet.SetEquals(Terrain()));
@@ -194,13 +204,15 @@ namespace YesterdayConvoy
             CheckThat("configured-short-deadline-produces-real-loss",m.Phase==FormationPhase.Lost&&m.TimeRemaining<=.001);
             yield return Capture("player-timeout-configured");
 
-            controller.ResetDemo();m=controller.Model;
-            var hound=m.Units.First(u=>u.ArtId=="M02");
-            foreach(var unit in m.Units.ToArray())if(unit.Enabled!=(unit.Slot==hound.Slot))CheckThat("legal-single-hound-lineup-slot-"+unit.Slot,m.ToggleSlot(unit.Slot));
-            controller.StartBattle();steps=0;
+            controller.ResetDemo();m=controller.Model;controller.SetMarketVisible(false);
+            int archerInstance=m.Units.Single(u=>u.ArtId=="M08").Instance;
+            foreach(var unit in m.Units.Where(u=>u.Instance!=archerInstance).ToArray())
+                CheckThat("legal-bench-move-"+unit.ArtId,controller.MovePiece(unit.Instance,false,controller.Session.Seats.FirstEmpty(false,10)).Success);
+            var hound=m.Units.Single();
+            controller.StartBattle();hound=m.Units.Single(u=>u.Instance==archerInstance);steps=0;
             while(hound.Deaths==0&&m.Phase==FormationPhase.Fighting&&steps++<12000)
             {m.Paused=false;m.Advance(.05f);if(steps%60==0)yield return null;}
-            CheckThat("legal-single-hound-lineup-naturally-dies",hound.Deaths>0&&!hound.Alive&&hound.RespawnRemaining>0);
+            CheckThat("legal-single-archer-lineup-naturally-dies",hound.Deaths>0&&!hound.Alive&&hound.RespawnRemaining>0);
             m.Paused=true;clock=m.Clock;remaining=m.TimeRemaining;float revive=hound.RespawnRemaining;
             m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
             CheckThat("pause-freezes-real-revival-countdown",m.Clock==clock&&m.TimeRemaining==remaining&&hound.RespawnRemaining==revive&&!hound.Alive);

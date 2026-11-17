@@ -12,8 +12,11 @@ namespace YesterdayConvoy
     {
         public const string SceneName="FormationBattle";
         public FormationBattleModel Model {get;private set;}
+        public FormationShopSession Session {get;private set;}
+        public ShopTrialModel Shop=>Session?.Shop;
         public bool Ready {get;private set;}
         public int SelectedSlot {get;private set;}=0;
+        public static Rect BattleRect=>new Rect(0,65,1280,500);
         public Camera battleCamera;
         public Material actorTemplate,lineTemplate;
         public int seed=20261117;
@@ -36,7 +39,8 @@ namespace YesterdayConvoy
 
         IEnumerator Start()
         {
-            Model=new FormationBattleModel(seed);
+            Session=FormationShopSession.Current??FormationShopSession.StartNew(seed);seed=Session.Seed;
+            Model=new FormationBattleModel(seed);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;
             if(battleCamera==null)battleCamera=Camera.main;
             actorRoot=new GameObject("Dynamic formation actors").transform;
@@ -54,6 +58,7 @@ namespace YesterdayConvoy
                 loading="准备原有动作  "+root.Split('/').Last();
                 var catalog=ArtCatalog.Read(root);art[root.Split('/').Last()]=catalog;pinned.Add(root);
                 ArtMemoryCache.Pin(pinned);
+                if(root.StartsWith("MonsterCombatArt/",StringComparison.Ordinal))_ = catalog.Portrait;
                 foreach(var clip in catalog.Clips.Values)
                     if(clip.Key=="idle"||clip.Key=="walk"||clip.Key.StartsWith("attack",StringComparison.Ordinal)||clip.Key=="death"||clip.Key=="heal")
                         yield return clip.Warm();
@@ -61,8 +66,8 @@ namespace YesterdayConvoy
             }
             sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.15f;
             hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
-            Ready=true;SyncActors();
-            Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, six roles");
+            Ready=true;SelectFirstLineup();SyncActors();
+            Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, finite shop and instance-based lineup");
         }
         static AudioClip Tone(string name,float hz,float duration)
         {
@@ -73,10 +78,12 @@ namespace YesterdayConvoy
         void Update()
         {
             if(!Ready)return;
-            battleCamera.rect=TacticalViewport.Current.CameraRect(new Rect(24,121,1232,410));
+            battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             Model.Advance(Time.unscaledDeltaTime);
-            if(Input.GetKeyDown(KeyCode.Space))Model.Paused=!Model.Paused;
-            if(Input.GetKeyDown(KeyCode.Escape))Model.Paused=true;
+            if(Input.GetKeyDown(KeyCode.Tab))SetMarketVisible(!MarketVisible);
+            if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {if(shopOddsVisible)shopOddsVisible=false;else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             var point=TacticalViewport.Current.FromScreen(Input.mousePosition);
             if(Input.GetMouseButtonDown(0))ProcessPointer(EventType.MouseDown,point);
             if(Input.GetMouseButton(0)&&pointerHeld)ProcessPointer(EventType.MouseDrag,point);
@@ -88,27 +95,31 @@ namespace YesterdayConvoy
                 if(hit!=null&&hit.At>lastSoundAt){sounds.PlayOneShot(hit.Skill?skillSound:hitSound,hit.Heal?.45f:1);lastSoundAt=Model.Clock;}
             }
         }
-        void OnApplicationFocus(bool focus){if(!focus&&Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}
+        void OnApplicationFocus(bool focus)
+        {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
         public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,(cell.y-3.5f)*.8f);
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
         bool TryCell(Vector2 point,out Vector2Int cell)
         {
+            if(!BattleRect.Contains(point)||FormationShopBlocksPoint(point)){cell=default;return false;}
             var screen=TacticalViewport.Current.ToScreen(point);
             var ray=battleCamera.ScreenPointToRay(screen);var plane=new Plane(Vector3.up,new Vector3(0,.12f,0));
             if(!plane.Raycast(ray,out float distance)){cell=default;return false;}
             var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.RoundToInt(p.x+6.5f),Mathf.RoundToInt(p.z/.8f+3.5f));
-            return point.y>=114&&point.y<535&&cell.x>=0&&cell.x<14&&cell.y>=0&&cell.y<8;
+            return cell.x>=0&&cell.x<14&&cell.y>=0&&cell.y<8;
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
             if(type==EventType.MouseDown)
             {
-                pointerHeld=true;dragSlot=-1;pointerStart=point;
+                CancelFormationDrag();pointerHeld=true;pointerStart=point;
+                if(FormationShopPointerDown(point))return;
+                if(FormationShopBlocksPoint(point)||!BattleRect.Contains(point)){CancelFormationDrag();return;}
                 // Pick the visible character above its feet before projecting onto the ground grid.
                 // A click on a sprite's head must select it, not move it into the tile behind it.
                 FormationFighter picked=null;float nearest=float.MaxValue;
-                if(point.y>=121&&point.y<531)
+                if(BattleRect.Contains(point))
                     foreach(var unit in Model.Units.Where(u=>u.Enabled))
                     {
                         var foot=CellScreen(unit.Spawn);
@@ -116,30 +127,55 @@ namespace YesterdayConvoy
                         float distance=Mathf.Abs(point.x-foot.x)+Mathf.Abs(point.y-(foot.y-28))*.15f;
                         if(distance<nearest){nearest=distance;picked=unit;}
                     }
-                if(picked!=null){SelectedSlot=picked.Slot;dragSlot=picked.Slot;}
+                if(picked!=null){SelectedSlot=picked.Slot;selectedPiece=picked.Instance;dragSlot=picked.Slot;shopDragInstance=picked.Instance;}
                 else if(TryCell(point,out var cell))
                 {
                     var on=Model.Units.FirstOrDefault(u=>u.Enabled&&Vector2.Distance(u.Spawn,cell)<.1f);
-                    if(on!=null){SelectedSlot=on.Slot;dragSlot=on.Slot;}
-                    else if(SelectedSlot>=0&&Model.Units[SelectedSlot].Enabled)Place(SelectedSlot,cell);
+                    if(on!=null){SelectedSlot=on.Slot;selectedPiece=on.Instance;dragSlot=on.Slot;shopDragInstance=on.Instance;}
+                    else if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)Place(SelectedSlot,cell);
+                    else if(selectedPiece>0)PlaceReserve(selectedPiece,cell);
                 }
             }
             if(type==EventType.MouseUp)
             {
-                if(dragSlot>=0&&Vector2.Distance(point,pointerStart)>6&&TryCell(point,out var cell))Place(dragSlot,cell);
-                pointerHeld=false;dragSlot=-1;SyncActors();
+                if(pointerHeld&&Vector2.Distance(point,pointerStart)>6)
+                {
+                    if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
+                    {if(dragSlot>=0)Place(dragSlot,cell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,cell);}
+                }
+                CancelFormationDrag();SyncActors();
             }
         }
         void Place(int slot,Vector2Int cell)
         {
             bool ok=Model.TryPlace(slot,cell.x,cell.y);
             notice=ok?"站位已保存：下关和复活均沿用此位置。":"只能放在左侧部署区；非法落点保留原位置。";
+            if(ok)Session.SavePositions(Model);
             SyncActors();
         }
-        public void StartBattle(){if(!Ready)return;Model.StartBattle();notice="自动攻击与技能已开启；清空守军后才会进入蓝门。";SyncActors();}
-        public void Retry(){Model.Retry();lastSoundAt=-10;notice="同一守军阵容已恢复，保留你的站位与星级。";SyncActors();}
-        public void NextRound(){Model.NextRound();lastSoundAt=-10;notice="守军已公开，上一关的军团与站位已保留。";SyncActors();}
-        public void ResetDemo(){seed=unchecked(seed+1);Model.Reset(seed);Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;notice="新挑战已更换守军组合；免费升星与扩编不代表正式运营。";SyncActors();}
+        public void StartBattle()
+        {
+            if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
+            Session.SavePositions(Model);Session.ApplyTo(Model);
+            if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
+            SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+        }
+        public void Retry()
+        {if(!Ready)return;Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(true);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();}
+        public void NextRound()
+        {
+            if(!Ready||Model.Phase!=FormationPhase.Won)return;
+            Session.SavePositions(Model);var reward=Session.SettleWin(Model.Round);
+            if(Model.Round<5)Session.AdvanceRound();
+            lastSoundAt=-10;SetMarketVisible(Model.Phase==FormationPhase.Preparation);SelectFirstLineup();
+            notice=reward!=null?$"通关奖励 +{reward.Total}金币、+{reward.Experience}经验；军团与站位已保留。":"本关奖励已领取，军团与站位保留。";SyncActors();
+        }
+        public void ResetDemo()
+        {
+            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
+            Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;
+            SetMarketVisible(true);SelectFirstLineup();notice="新挑战：从真实金币、有限牌库与三人军团开始。";SyncActors();
+        }
         internal void SyncActors()
         {
             if(!Ready)return;

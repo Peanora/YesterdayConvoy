@@ -22,7 +22,7 @@ namespace YesterdayConvoy
 
     public sealed class FormationFighter : FormationActor
     {
-        public int Slot, Star = 1, Deaths;
+        public int Slot, Instance, Star = 1, Deaths;
         public bool Enabled;
         public Vector2 Spawn;
         public float RespawnRemaining;
@@ -41,6 +41,13 @@ namespace YesterdayConvoy
         public int FromId, ToId;
         public float Amount;
         public bool Heal, Skill, Killed;
+    }
+
+    public sealed class FormationRosterEntry
+    {
+        public int Instance, Star = 1;
+        public string ArtId;
+        public Vector2 Spawn;
     }
 
     /// <summary>
@@ -81,6 +88,45 @@ namespace YesterdayConvoy
         double accumulator;
 
         public FormationBattleModel(int seed = 20261117) { Reset(seed); }
+
+        /// <summary>Imports owned lineup cards. The session remains the authority for money and stock.</summary>
+        public bool ApplyRoster(IEnumerable<FormationRosterEntry> entries, int capacity)
+        {
+            if (Phase != FormationPhase.Preparation || entries == null || capacity < 1 || capacity > 10) return false;
+            var planned = new List<FormationFighter>();
+            var instances = new HashSet<int>();
+            var kinds = new HashSet<int>();
+            var cells = new HashSet<Vector2>();
+            foreach (var entry in entries)
+            {
+                if (entry == null) return false;
+                int kind = Array.IndexOf(FighterArt, entry.ArtId);
+                int maximumStar = kind == 0 || kind == 5 ? 3 : 4;
+                if (kind < 0 || entry.Instance < 1 || !instances.Add(entry.Instance) || !kinds.Add(kind) ||
+                    entry.Star < 1 || entry.Star > maximumStar || !DeploymentCell(entry.Spawn) || !cells.Add(entry.Spawn)) return false;
+                planned.Add(new FormationFighter
+                {
+                    // Shop sequences can exceed 100 after many purchases. Keep friendly IDs disjoint from guards.
+                    Id = -entry.Instance - 1, Slot = planned.Count, Instance = entry.Instance, Kind = kind,
+                    Name = FighterNames[kind], ArtId = entry.ArtId, Star = entry.Star, Enabled = true, Spawn = entry.Spawn
+                });
+                if (planned.Count > capacity) return false;
+            }
+            foreach (var unit in planned) { ConfigureFighter(unit); ResetFighter(unit); }
+            Units.Clear(); Units.AddRange(planned); Capacity = capacity;
+            return true;
+        }
+
+        internal bool PrepareShopRound(int round)
+        {
+            if (Phase != FormationPhase.Preparation || round < 1 || round > RoundCounts.Length) return false;
+            if (Round == round) return true;
+            Round = round; PrepareRound(); return true;
+        }
+
+        static bool DeploymentCell(Vector2 cell) => !float.IsNaN(cell.x) && !float.IsNaN(cell.y) &&
+            !float.IsInfinity(cell.x) && !float.IsInfinity(cell.y) && cell.x >= 0 && cell.x < DeploymentColumns && cell.y >= 0 && cell.y < Height &&
+            Mathf.Abs(cell.x - (int)cell.x) < .0001f && Mathf.Abs(cell.y - (int)cell.y) < .0001f;
 
         public void Reset(int seed)
         {
@@ -203,8 +249,10 @@ namespace YesterdayConvoy
             float[] move = { 1.1f, 1.8f, 1.25f, 1.2f, 1.05f, 1.0f };
             float[] skill = { 8, 6, 8, 8, 10, 8 };
             float multiplier = unit.Star == 3 ? 2.6f : unit.Star == 2 ? 1.65f : 1;
+            float healthMultiplier = unit.Star == 4 ? 4.25f : multiplier;
+            float attackMultiplier = unit.Star == 4 ? 3 : multiplier;
             int k = unit.Kind;
-            unit.MaxHealth = hp[k] * multiplier; unit.Attack = attack[k] * multiplier;
+            unit.MaxHealth = hp[k] * healthMultiplier; unit.Attack = attack[k] * attackMultiplier;
             unit.Armor = armor[k] + (unit.Star - 1) * 4; unit.Range = range[k];
             unit.Interval = interval[k]; unit.MoveSpeed = move[k]; unit.SkillRequired = skill[k];
         }
