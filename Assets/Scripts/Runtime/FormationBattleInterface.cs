@@ -120,7 +120,7 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders))
             {
                 if(!actor.Alive)continue;
-                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(WorldPoint(actor.Position)+Vector3.up*1.22f));
+                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+Vector3.up*1.22f));
                 if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
                 bool ally=actor is FormationFighter;
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
@@ -136,7 +136,7 @@ namespace YesterdayConvoy
             foreach(var h in Model.Hits)
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
-                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(WorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
+                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
                 if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
                 Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);
             }

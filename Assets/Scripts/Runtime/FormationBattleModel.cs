@@ -67,6 +67,7 @@ namespace YesterdayConvoy
         public readonly List<FormationFighter> Units = new List<FormationFighter>();
         public readonly List<FormationDefender> Defenders = new List<FormationDefender>();
         public readonly List<FormationHit> Hits = new List<FormationHit>();
+        public FormationBattleTerrainLayout Terrain { get; }
         public FormationPhase Phase { get; private set; }
         public int Round { get; private set; }
         public int Seed { get; private set; }
@@ -87,7 +88,8 @@ namespace YesterdayConvoy
 
         double accumulator;
 
-        public FormationBattleModel(int seed = 20261117) { Reset(seed); }
+        public FormationBattleModel(int seed = 20261117, FormationBattleTerrainLayout terrain = null)
+        { Terrain = terrain; Reset(seed); }
 
         /// <summary>Imports owned lineup cards. The session remains the authority for money and stock.</summary>
         public bool ApplyRoster(IEnumerable<FormationRosterEntry> entries, int capacity)
@@ -262,7 +264,12 @@ namespace YesterdayConvoy
             Defenders.Clear();
             var rng = new FormationRandom(unchecked((uint)Seed ^ ((uint)Round * 0x9e3779b9u)));
             var cells = new List<Vector2>();
-            for (int x = 8; x <= 12; x++) for (int y = 0; y < Height; y++) cells.Add(new Vector2(x, y));
+            for (int x = 8; x <= 12; x++) for (int y = 0; y < Height; y++)
+            {
+                var cell = new Vector2(x, y);
+                if (Terrain == null || Terrain.CanPlaceDefender(cell)) cells.Add(cell);
+            }
+            if (cells.Count < RoundCounts[Round - 1]) throw new InvalidOperationException("Terrain leaves too few legal guard cells.");
             for (int i = cells.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); var temp = cells[i]; cells[i] = cells[j]; cells[j] = temp; }
             float healthScale = 1 + (Round - 1) * .26f, attackScale = 1 + (Round - 1) * .14f;
             for (int i = 0; i < RoundCounts[Round - 1]; i++)
@@ -271,6 +278,15 @@ namespace YesterdayConvoy
                 int kind = i == 5 || i == 12 ? 9 + rng.Next(2) : new[] { 0, 1, 3, 4, 5, 6, 7, 8, 11 }[rng.Next(9)];
                 bool healer = kind == 9 || kind == 10;
                 bool ranged = kind >= 6;
+                int cellIndex = i;
+                if (Terrain != null)
+                {
+                    // Ranged guards take platform seats first; melee guards stay on the floor.
+                    // The shuffled order remains the tie breaker, so retry and seed replay agree.
+                    for (int j = i; j < cells.Count; j++)
+                        if ((Terrain.HeightAt(cells[j]) > 0) == ranged) { cellIndex = j; break; }
+                    var swap = cells[i]; cells[i] = cells[cellIndex]; cells[cellIndex] = swap;
+                }
                 bool elite = Round >= 3 && i % 6 == 4;
                 float hp = (kind <= 1 ? 620 : ranged ? 350 : 430) * healthScale * (elite ? 1.3f : 1);
                 Defenders.Add(new FormationDefender
@@ -363,6 +379,8 @@ namespace YesterdayConvoy
             {
                 if (!defender.Alive) continue;
                 float d = (defender.Position - unit.Position).sqrMagnitude;
+                if (Terrain != null && d > unit.Range * unit.Range &&
+                    !Terrain.TryApproach(unit.Position, defender.Position, unit.Range, out _, out _)) continue;
                 if (d < best - 1e-5f || Mathf.Abs(d - best) < 1e-5f && (nearest == null || defender.Id < nearest.Id)) { nearest = defender; best = d; }
             }
             return nearest;
@@ -498,8 +516,17 @@ namespace YesterdayConvoy
 
         void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid)
         {
+            if (Terrain != null)
+            {
+                Vector2 waypoint;
+                bool reachable = avoid ? Terrain.TryApproach(unit.Position, goal, unit.Range, out waypoint, out _) :
+                    Terrain.TryExit(unit.Position, out waypoint);
+                if (!reachable) return;
+                goal = waypoint;
+            }
             Vector2 delta = goal - unit.Position;
-            if (delta.sqrMagnitude < .000001f) return;
+            // Static corner turns must finish even the last sub-millimetre segment before turning.
+            if (delta.sqrMagnitude < (Terrain == null ? .000001f : 1e-10f)) return;
             Vector2 direction = delta.normalized;
             if (avoid)
             {
@@ -531,6 +558,13 @@ namespace YesterdayConvoy
                 }
             }
             next.x = Mathf.Clamp(next.x, 0, Width - 1); next.y = Mathf.Clamp(next.y, 0, Height - 1);
+            if (Terrain != null && !Terrain.CanTravel(before, next))
+            {
+                // Local separation may point into a wall. Follow the already-clear static segment
+                // for this tick instead; never let a crowd push a body through the saved terrain.
+                next = before + delta.normalized * travel;
+                if (!Terrain.CanTravel(before, next)) next = before;
+            }
             unit.Position = next; unit.IsMoving = (next - before).sqrMagnitude > .0000001f;
             if (unit.IsMoving) unit.Facing = (next - before).normalized;
         }

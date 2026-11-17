@@ -15,6 +15,7 @@ namespace YesterdayConvoy.Editor
         public const string SurfaceShaderName = "YesterdayConvoy/FormationNativeSurface";
         public const string GateShaderName = "YesterdayConvoy/FormationNativeGate";
         public const string ReflectionPath = ArtPath + "/OriginalLS5Reflection.cubemap";
+        public const string ConcreteTexturePath = "Assets/Art/Environment/TacticalV2/city-concrete.png";
         static bool ready;
 
         [MenuItem("Yesterday Convoy/Formation Battle/Import Board Materials")]
@@ -64,10 +65,24 @@ namespace YesterdayConvoy.Editor
             target.SetTextureScale("_MainTex", source.GetTextureScale("_MainTex"));
             target.SetTextureOffset("_MainTex", source.GetTextureOffset("_MainTex"));
             target.SetFloat("_DstBlend", source.GetFloat("_DstBlend"));
-            target.SetColor("_TintColor", red ? new Color(.45f,.11f,.13f,.75f) : new Color(.22f,.42f,.65f,.65f));
+            target.SetColor("_TintColor", red ? new Color(.45f,.11f,.13f,.60f) : new Color(.22f,.42f,.65f,.35f));
             target.renderQueue = source.renderQueue;
             EditorUtility.SetDirty(target);
             return target;
+        }
+
+        public static Material GetConcreteMaterial(bool raised = false)
+        {
+            EnsureImported();
+            return ImportConcreteMaterial(raised ? "ConcreteRaised" : "ConcreteFloor",
+                raised ? new Color(.81f,.79f,.75f,1) : new Color(.91f,.88f,.84f,1), Color.white, raised ? .022f : .028f);
+        }
+
+        public static Material GetTrimMaterial()
+        {
+            EnsureImported();
+            // Same fine roughness family at a dark, low-light value; no polished metal response.
+            return ImportConcreteMaterial("ConcreteIndustrialTrim", new Color(.30f,.31f,.32f,1), Color.white, .012f);
         }
 
         static string MaterialPath(string sourceName, int checker)
@@ -102,13 +117,58 @@ namespace YesterdayConvoy.Editor
                 target.SetFloat("_AmbientGain", 5);
                 target.SetFloat("_ReflectionGain", .93f);
                 target.SetFloat("_ReflectionDecode", 5);
+                target.SetFloat("_ConcreteMode", 0);
                 target.SetTexture("_NativeAmbient", ambient);
                 target.SetTexture("_NativeReflection", reflection);
-                float tint = checker == 1 ? .93f : checker == 2 ? 1.10f : 1;
+                float tint = 1;
                 target.SetColor("_CheckerTint", new Color(tint,tint,tint,1));
                 target.SetOverrideTag("RenderType", alphaClip ? "TransparentCutout" : "Opaque");
                 target.renderQueue = alphaClip ? (int)RenderQueue.AlphaTest : (int)RenderQueue.Geometry;
+                if (checker > 0)
+                    ConfigureConcrete(target, new Color(.91f,.88f,.84f,1), checker == 1 ? .99f : 1.01f, .028f);
             }
+            EditorUtility.SetDirty(target);
+        }
+
+        static Material ImportConcreteMaterial(string name, Color color, Color variation, float wear)
+        {
+            string path = ArtPath + "/Materials/" + name + ".mat";
+            var target = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (target == null)
+            {
+                target = new Material(Shader.Find(SurfaceShaderName));
+                AssetDatabase.CreateAsset(target,path);
+            }
+            target.shader = Shader.Find(SurfaceShaderName);
+            target.name = name;
+            ConfigureConcrete(target, color, variation.r, wear);
+            return target;
+        }
+
+        static void ConfigureConcrete(Material target, Color color, float variation, float wear)
+        {
+            var concrete = AssetDatabase.LoadAssetAtPath<Texture2D>(ConcreteTexturePath);
+            if (concrete == null) throw new InvalidOperationException("Existing fine concrete texture missing: " + ConcreteTexturePath);
+            target.shaderKeywords = Array.Empty<string>();
+            target.SetTexture("_MainTex",concrete);
+            target.SetTextureScale("_MainTex",Vector2.one);
+            target.SetTextureOffset("_MainTex",Vector2.zero);
+            target.SetColor("_Color",color);
+            target.SetColor("_CheckerTint",new Color(variation,variation,variation,1));
+            target.SetFloat("_ConcreteMode",1);
+            target.SetFloat("_ConcreteTextureScale",1.05f);
+            target.SetFloat("_ConcreteAmbient",.70f);
+            target.SetFloat("_ConcreteDirect",.32f);
+            target.SetFloat("_ConcreteEdgeWear",wear);
+            target.SetFloat("_AlphaClip",0);
+            target.SetFloat("_EmissionEnabled",0);
+            target.SetFloat("_BumpScale",0);
+            target.SetFloat("_GlossMapScale",0);
+            target.SetFloat("_ReflectionGain",0);
+            target.SetTexture("_NativeAmbient",null);
+            target.SetTexture("_NativeReflection",null);
+            target.SetOverrideTag("RenderType","Opaque");
+            target.renderQueue = (int)RenderQueue.Geometry;
             EditorUtility.SetDirty(target);
         }
 

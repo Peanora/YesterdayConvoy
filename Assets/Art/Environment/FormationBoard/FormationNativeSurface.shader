@@ -19,6 +19,11 @@ Shader "YesterdayConvoy/FormationNativeSurface"
         _AmbientGain ("Ambient RGBM scale", Float) = 5
         _ReflectionGain ("Reflection probe strength", Float) = 0.93
         _ReflectionDecode ("Reflection RGBM scale", Float) = 5
+        _ConcreteMode ("Matte concrete surface", Float) = 0
+        _ConcreteTextureScale ("Concrete world tiling", Float) = 0.60
+        _ConcreteAmbient ("Concrete neutral ambient", Float) = 0.70
+        _ConcreteDirect ("Concrete neutral direct light", Float) = 0.32
+        _ConcreteEdgeWear ("Concrete edge wear", Float) = 0.028
     }
     SubShader
     {
@@ -44,6 +49,7 @@ Shader "YesterdayConvoy/FormationNativeSurface"
             float4 _Color, _CheckerTint, _EmissionColor;
             float _BumpScale, _GlossMapScale, _EmissionEnabled, _Cutoff, _AlphaClip;
             float _AmbientGain, _ReflectionGain, _ReflectionDecode;
+            float _ConcreteMode, _ConcreteTextureScale, _ConcreteAmbient, _ConcreteDirect, _ConcreteEdgeWear;
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -81,6 +87,38 @@ Shader "YesterdayConvoy/FormationNativeSurface"
             }
             float4 frag(v2f i) : SV_Target
             {
+                if (_ConcreteMode > 0.5)
+                {
+                    float3 n = normalize(i.worldNormal);
+                    // Independent world-space sampling avoids the source atlas's painted lane marks.
+                    // Vertical risers use the matching vertical projection instead of stretching XZ.
+                    float2 concreteUv = i.worldPos.xz;
+                    if (abs(n.y) < 0.6)
+                        concreteUv = abs(n.x) > abs(n.z) ? i.worldPos.zy : i.worldPos.xy;
+                    float3 grain = tex2D(_MainTex, concreteUv * _ConcreteTextureScale).rgb;
+                    float3 concrete = grain * _Color.rgb * _CheckerTint.rgb;
+                    if (n.y > 0.6)
+                    {
+                        // Grid boundaries fall on whole world coordinates in this board. Physical
+                        // native bevels remain; only a narrow, irregular wear strip is added here.
+                        float2 cell = frac(i.worldPos.xz);
+                        float edgeDistance = min(min(cell.x, 1.0-cell.x), min(cell.y, 1.0-cell.y));
+                        float seam = 1.0-smoothstep(0.012, 0.023, edgeDistance);
+                        float wear = 1.0-smoothstep(0.023, 0.045, edgeDistance);
+                        concrete *= 1.0-seam*0.16;
+                        concrete += wear*_ConcreteEdgeWear*(0.45+0.55*grain.g);
+                    }
+                    UNITY_LIGHT_ATTENUATION(concreteAttenuation, i, i.worldPos);
+                    float3 lightDirection = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                    // Keep the directional shadow but neutralise its colour cast for rough concrete.
+                    // This branch intentionally has no old ambient atlas, cube, specular or emission.
+                    float keyLuminance = dot(_LightColor0.rgb, float3(0.2126,0.7152,0.0722));
+                    float diffuseLight = _ConcreteAmbient + keyLuminance * _ConcreteDirect *
+                        saturate(dot(n,lightDirection)) * concreteAttenuation;
+                    float4 concreteColor = float4(saturate(concrete*diffuseLight),1.0);
+                    UNITY_APPLY_FOG(i.fogCoord, concreteColor);
+                    return concreteColor;
+                }
                 float4 texel = tex2D(_MainTex, i.uv);
                 if (_AlphaClip > 0.5) clip(texel.a - _Cutoff);
                 float3 albedo = texel.rgb * _Color.rgb;

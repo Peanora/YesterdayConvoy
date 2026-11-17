@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved native checker board with preview surface/gate materials and raised perimeter, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits, exact original-game appearance or final visual acceptance.";
+            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved warm grey matte concrete board, transparent native gates, raised perimeter, guard platforms and low cover, pointer handlers and terrain-aware formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter and its actual movement is checked against the saved obstacles; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge, guard position or result is injected. This does not establish human interaction, full campaign economy, all character kits, exact original-game appearance or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -128,7 +128,36 @@ namespace YesterdayConvoy
             if(coordinates.Length!=2||!int.TryParse(coordinates[0],out int column)||!int.TryParse(coordinates[1],out int row))return false;
             var expected=FormationBattleController.WorldPoint(new Vector2(column,row));var renderer=tile.GetComponent<MeshRenderer>();
             if(renderer==null||Vector2.Distance(new Vector2(renderer.bounds.center.x,renderer.bounds.center.z),new Vector2(expected.x,expected.z))>.001f||Mathf.Abs(renderer.bounds.max.y-.12f)>.001f||tile.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled))return false;
-            return renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(material=>material!=null&&material.shader.name=="YesterdayConvoy/FormationNativeSurface"&&material.shader.isSupported&&material.HasProperty("_CheckerTint")&&material.GetTexture("_NativeAmbient")!=null&&material.GetTexture("_NativeReflection") is Cubemap);
+            return renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(material=>material!=null&&material.shader.name=="YesterdayConvoy/FormationNativeSurface"&&material.shader.isSupported&&material.HasProperty("_ConcreteMode")&&material.GetFloat("_ConcreteMode")>.5f&&material.mainTexture!=null&&material.mainTexture.name=="city-concrete");
+        }
+        bool SavedDefenderTerrain()
+        {
+            var root=SceneManager.GetActiveScene().GetRootGameObjects().SingleOrDefault(go=>go.name=="Defender terrain");
+            if(root==null||controller.terrain==null||!controller.terrain.transform.IsChildOf(root.transform)||controller.Model.Terrain==null)return false;
+            var regions=controller.terrain.regions;
+            var footprints=new[]{new RectInt(11,1,2,2),new RectInt(11,5,2,2),new RectInt(8,1,2,1),new RectInt(9,4,2,1)};
+            if(regions==null||regions.Length!=footprints.Length||!footprints.All(cells=>regions.Count(r=>r.cells==cells)==1))return false;
+            var renderers=root.GetComponentsInChildren<MeshRenderer>(true);
+            foreach(var region in regions)
+            {
+                bool platform=region.cells.height==2;
+                if(region.allowDefender!=platform||Mathf.Abs(region.height-(platform ? .48f : .36f))>.001f)return false;
+                var cell=new Vector2(region.cells.xMin,region.cells.yMin);var foot=controller.ActorWorldPoint(cell);
+                if(Mathf.Abs(controller.Model.Terrain.HeightAt(cell)-region.height)>.001f||controller.Model.Terrain.CanPlaceDefender(cell)!=region.allowDefender||
+                    !renderers.Any(r=>foot.x>=r.bounds.min.x-.01f&&foot.x<=r.bounds.max.x+.01f&&foot.z>=r.bounds.min.z-.01f&&foot.z<=r.bounds.max.z+.01f&&Mathf.Abs(r.bounds.max.y-foot.y)<.02f))return false;
+            }
+            return controller.Model.Terrain.CanTravel(new Vector2(6,3),new Vector2(13,3))&&controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position));
+        }
+        bool ActorFeetMatchTerrain()
+        {
+            var bodies=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31).ToArray();
+            return controller.Model.Units.Where(u=>u.Enabled&&u.Alive).Cast<FormationActor>().Concat(controller.Model.Defenders.Where(d=>d.Alive)).All(actor=>
+            {
+                var foot=controller.ActorWorldPoint(actor);
+                var projected=controller.battleCamera.WorldToScreenPoint(foot);var point=TacticalViewport.Current.FromScreen(projected);
+                return bodies.Any(r=>r.name==actor.Name&&Vector3.Distance(r.transform.position,foot)<.001f)&&
+                    Mathf.Abs(foot.y-(.12f+controller.Model.Terrain.HeightAt(actor.Position)))<.001f&&projected.z>0&&point.x>=180&&point.x<=1012&&point.y>=65&&point.y<=490;
+            });
         }
         static string Formation(FormationBattleModel model)=>string.Join(";",model.Units.OrderBy(u=>u.Instance).Select(u=>$"{u.Instance}:{u.ArtId}:{u.Spawn.x},{u.Spawn.y}:{u.Star}:{u.Enabled}"));
         static string GuardLayout(FormationBattleModel model)=>string.Join(";",model.Defenders.Select(d=>$"{d.ArtId}:{d.Position.x},{d.Position.y}"));
@@ -177,7 +206,7 @@ namespace YesterdayConvoy
                 {
                     if(material==null||material.shader.name!="YesterdayConvoy/FormationNativeGate"||!material.shader.isSupported||material.renderQueue<3000||material.mainTexture==null||
                         !material.mainTexture.name.StartsWith("Gate-",StringComparison.Ordinal)||material.GetFloat("_DstBlend")!=1&&material.GetFloat("_DstBlend")!=10||!material.HasProperty("_TintColor"))return false;
-                    var tint=cell.x==6?new Color(.45f,.11f,.13f,.75f):new Color(.22f,.42f,.65f,.65f);
+                    var tint=cell.x==6?new Color(.45f,.11f,.13f,.60f):new Color(.22f,.42f,.65f,.35f);
                     if(Vector4.Distance(material.GetColor("_TintColor"),tint)>.0001f)return false;
                 }
             }
@@ -210,10 +239,12 @@ namespace YesterdayConvoy
             var nativeTransforms=nativeRoot.GetComponentsInChildren<Transform>(true);
             CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,8).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(6,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(13,row))));
             var boardCells=SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Where(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
-            CheckThat("saved-checker-board-is-flat-and-carries-preview-surface-dependencies",boardCells.Length==112&&boardCells.All(FlatBoardCell)&&boardCells.Select(t=>t.GetComponent<MeshRenderer>().sharedMaterial.GetColor("_CheckerTint")).Distinct().Count()>=2);
+            CheckThat("saved-base-board-uses-matte-concrete-and-persistent-texture",boardCells.Length==112&&boardCells.All(FlatBoardCell));
             var perimeter=nativeTransforms.SingleOrDefault(t=>t.name=="Original LS-5 raised perimeter");
             CheckThat("saved-raised-perimeter-leaves-fighting-board-clear",perimeter!=null&&perimeter.GetComponentsInChildren<MeshRenderer>(true).Length==44&&perimeter.GetComponentsInChildren<MeshRenderer>(true).All(r=>OutsideBoard(r.bounds))&&!perimeter.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled));
+            CheckThat("saved-guard-platforms-and-cover-match-combat-layout",SavedDefenderTerrain());
             CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
+            CheckThat("actual-actor-feet-follow-terrain-and-stay-readable",ActorFeetMatchTerrain());
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("real-shop-starts-with-finite-gold-and-three-owned-lineup-pieces",controller.Shop.Gold==12&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
             CheckThat("shared-original-A-presentation-and-platform-geometry",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==ManualBattleController.ShopLineupRect(i)&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
@@ -260,10 +291,12 @@ namespace YesterdayConvoy
             m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
             CheckThat("pause-freezes-clock-countdown-positions-hp-and-sp",m.Clock==clock&&m.TimeRemaining==remaining&&m.Units.Select(u=>u.Position).SequenceEqual(positions)&&m.Units.Select(u=>u.Health).SequenceEqual(hp)&&m.Units.Select(u=>u.SkillCharge).SequenceEqual(sp));
             yield return Capture("player-paused");m.Paused=false;
-            bool battleFrame=false,skillFrame=false;int steps=0;
+            bool battleFrame=false,skillFrame=false,clearOfTerrain=true;int steps=0;
             while((m.Phase==FormationPhase.Fighting||m.Phase==FormationPhase.Exiting)&&steps++<12000)
             {
-                m.Paused=false;m.Advance(.05f);
+                var beforeStep=m.Units.Where(u=>u.Enabled&&u.Alive).ToDictionary(u=>u.Id,u=>u.Position);
+                m.Paused=false;m.Advance(.025f);
+                clearOfTerrain&=m.Units.Where(u=>u.Enabled&&u.Alive).All(u=>m.Terrain.IsWalkable(u.Position)&&(!beforeStep.TryGetValue(u.Id,out var before)||m.Terrain.CanTravel(before,u.Position)));
                 if(!battleFrame&&m.Clock>=3){battleFrame=true;yield return Capture("player-battle");}
                 if(!skillFrame&&m.Hits.Any(h=>h.Skill&&!h.Heal)){skillFrame=true;yield return Capture("player-skill");}
                 if(steps%60==0)yield return null;
@@ -271,6 +304,7 @@ namespace YesterdayConvoy
             CheckThat("default-first-encounter-finishes-without-injected-result",m.Phase==FormationPhase.Won||m.Phase==FormationPhase.Lost);
             CheckThat("default-first-encounter-wins",m.Phase==FormationPhase.Won);
             CheckThat("automatic-production-combat-causes-real-damage",m.Units.Sum(u=>u.DamageDone)>0&&m.Defenders.All(d=>!d.Alive));
+            CheckThat("production-fighters-go-around-saved-platforms-and-cover",clearOfTerrain);
             yield return Capture("player-victory");
 
             int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();yield return Market(false);

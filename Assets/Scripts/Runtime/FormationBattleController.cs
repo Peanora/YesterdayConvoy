@@ -19,6 +19,7 @@ namespace YesterdayConvoy
         public static Rect BattleRect=>new Rect(0,0,1280,720);
         public static Rect BoardInputRect=>new Rect(188,65,816,418);
         public Camera battleCamera;
+        public FormationBattleTerrainAuthoring terrain;
         public Material actorTemplate,lineTemplate;
         public int seed=20261117;
         public float roundSeconds=90,reviveSeconds=8;
@@ -41,7 +42,7 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             Session=FormationShopSession.Current??FormationShopSession.StartNew(seed);seed=Session.Seed;
-            Model=new FormationBattleModel(seed);Session.ApplyTo(Model);
+            Model=new FormationBattleModel(seed,terrain!=null?terrain.BuildLayout():null);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;
             if(battleCamera==null)battleCamera=Camera.main;
             actorRoot=new GameObject("Dynamic formation actors").transform;
@@ -96,6 +97,8 @@ namespace YesterdayConvoy
         void OnApplicationFocus(bool focus)
         {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
         public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,cell.y-3.5f);
+        public Vector3 ActorWorldPoint(Vector2 cell)=>WorldPoint(cell)+Vector3.up*(Model?.Terrain?.HeightAt(cell)??0);
+        public Vector3 ActorWorldPoint(FormationActor actor)=>ActorWorldPoint(actor.Position);
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
         bool TryCell(Vector2 point,out Vector2Int cell)
         {
@@ -212,7 +215,7 @@ namespace YesterdayConvoy
             int frame=(int)(Math.Max(0,age)*(clip.Count/clip.Duration));
             frame=key=="death"||key=="attack"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
             body.sprite=clip.Frames[frame];body.flipX=actor.Facing.x<-.01f;
-            body.transform.position=WorldPoint(actor.Position);body.transform.rotation=battleCamera.transform.rotation;
+            body.transform.position=ActorWorldPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
             // Preserve each original frame's proportions and foot pivot.
             float scale=1.12f/Mathf.Max(.5f,catalog.Height>0?catalog.Height:1.4f);
             body.transform.localScale=Vector3.one*scale;
@@ -229,7 +232,7 @@ namespace YesterdayConvoy
                 float age=(float)(Model.Clock-h.At);if(age<0||age>.24f)continue;
                 var c=h.Heal?new Color(.35f,1,.65f):h.Skill?new Color(1,.66f,.2f):new Color(1,.88f,.6f);
                 c.a=1-age/.24f;GL.Color(c);
-                GL.Vertex(WorldPoint(h.From)+Vector3.up*.5f);GL.Vertex(WorldPoint(h.To)+Vector3.up*.5f);
+                GL.Vertex(ActorWorldPoint(h.From)+Vector3.up*.5f);GL.Vertex(ActorWorldPoint(h.To)+Vector3.up*.5f);
             }
             GL.End();GL.PopMatrix();
         }

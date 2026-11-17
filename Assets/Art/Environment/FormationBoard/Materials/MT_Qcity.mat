@@ -53,13 +53,18 @@ Material:
     - _AlphaClip: 0
     - _AmbientGain: 5
     - _BumpScale: 1
+    - _ConcreteAmbient: 0.7
+    - _ConcreteDirect: 0.32
+    - _ConcreteEdgeWear: 0.028
+    - _ConcreteMode: 0
+    - _ConcreteTextureScale: 0.6
     - _Cutoff: 0.5
     - _EmissionEnabled: 0
     - _GlossMapScale: 1
     - _ReflectionDecode: 5
-    - _ReflectionGain: 0.93
+    - _ReflectionGain: 0.38
     m_Colors:
-    - _CheckerTint: {r: 1, g: 1, b: 1, a: 1}
+    - _CheckerTint: {r: 0.78, g: 0.78, b: 0.78, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.43749994, g: 0.45603448, b: 0.5, a: 1}
   m_BuildTextureStacks: []

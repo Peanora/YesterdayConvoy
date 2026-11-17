@@ -86,7 +86,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(sprites.All(s=>s.sprite.texture!=null),Is.True);
             foreach(var actor in controller.Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(controller.Model.Defenders))
             {
-                var projected=cam.WorldToScreenPoint(FormationBattleController.WorldPoint(actor.Position));
+                var projected=cam.WorldToScreenPoint(controller.ActorWorldPoint(actor));
                 var point=TacticalViewport.Current.FromScreen(projected);
                 Assert.That(projected.z,Is.GreaterThan(0),actor.Name+" is behind the camera.");
                 Assert.That(point.x,Is.InRange(180,1012),actor.Name+" must stay inside the native battlefield, clear of the right controls.");
@@ -198,7 +198,7 @@ namespace YesterdayConvoy.Tests
                             Assert.That(material.renderQueue,Is.GreaterThanOrEqualTo(3000));Assert.That(material.mainTexture,Is.Not.Null);
                             Assert.That(material.GetFloat("_DstBlend"),Is.EqualTo(1).Or.EqualTo(10));
                             Assert.That(material.HasProperty("_TintColor"),Is.True,"The board gate must preserve the preview's explicit colour treatment.");
-                            var tint=isRed?new Color(.45f,.11f,.13f,.75f):new Color(.22f,.42f,.65f,.65f);
+                            var tint=isRed?new Color(.45f,.11f,.13f,.60f):new Color(.22f,.42f,.65f,.35f);
                             Assert.That(Vector4.Distance(material.GetColor("_TintColor"),tint),Is.LessThan(.0001f));
 #if UNITY_EDITOR
                             Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationBoard/"),"The formation appearance must be a persistent local material rather than altering the original map's shared material.");
@@ -242,27 +242,63 @@ namespace YesterdayConvoy.Tests
                 var expected=FormationBattleController.WorldPoint(new Vector2(int.Parse(coordinates[0]),int.Parse(coordinates[1])));
                 var renderer=tile.GetComponent<MeshRenderer>();Assert.That(renderer,Is.Not.Null);
                 Assert.That(Vector2.Distance(new Vector2(renderer.bounds.center.x,renderer.bounds.center.z),new Vector2(expected.x,expected.z)),Is.LessThan(.001f));
-                Assert.That(renderer.bounds.max.y,Is.EqualTo(.12f).Within(.001f),"The saved playable board must remain flat at the logical actor feet, even with raised decorative platforms nearby.");
+                Assert.That(renderer.bounds.max.y,Is.EqualTo(.12f).Within(.001f),"The saved base board must remain flat beneath the separately authored guard terrain.");
                 Assert.That(tile.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
                 foreach(var material in renderer.sharedMaterials)
                 {
                     Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/FormationNativeSurface"));
                     Assert.That(material.shader.isSupported,Is.True);
-                    Assert.That(material.GetTexture("_NativeAmbient"),Is.Not.Null,"The saved material must carry its source RGBM ambient texture into the Player.");
-                    Assert.That(material.GetTexture("_NativeReflection"),Is.InstanceOf<Cubemap>(),"The preview reflection must be a saved runtime dependency.");
+                    Assert.That(material.HasProperty("_ConcreteMode")&&material.GetFloat("_ConcreteMode")>.5f,Is.True,"The board must use the approved matte concrete branch rather than the old reflective atlas surface.");
+                    Assert.That(material.mainTexture,Is.Not.Null);
+                    Assert.That(material.mainTexture.name,Is.EqualTo("city-concrete"),"The concrete grain must be a saved Player dependency.");
 #if UNITY_EDITOR
                     Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationBoard/"));
-                    Assert.That(AssetDatabase.GetAssetPath(material.GetTexture("_NativeAmbient")),Does.StartWith("Assets/Art/Environment/FormationNative/"));
-                    Assert.That(AssetDatabase.GetAssetPath(material.GetTexture("_NativeReflection")),Does.StartWith("Assets/Art/Environment/FormationBoard/"));
+                    Assert.That(AssetDatabase.GetAssetPath(material.mainTexture),Is.EqualTo("Assets/Art/Environment/TacticalV2/city-concrete.png"));
 #endif
                 }
             }
-            Assert.That(tiles.Select(t=>t.GetComponent<MeshRenderer>().sharedMaterial.GetColor("_CheckerTint")).Distinct().Count(),Is.GreaterThanOrEqualTo(2),"The saved board must retain its two visible checker tones.");
             var perimeter=courtyard.transform.Find("Original LS-5 raised perimeter");Assert.That(perimeter,Is.Not.Null);
             var raised=perimeter.GetComponentsInChildren<MeshRenderer>(true);Assert.That(raised.Length,Is.EqualTo(44));
             Assert.That(raised.All(r=>OutsideBoard(r.bounds)),Is.True,"Raised decoration must not occupy the flat fighting board or deployment cells.");
             Assert.That(perimeter.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: 112 flat checker cells, 44 raised perimeter parts, source gate geometry with independent preview materials at columns 6/13.");
+            var guardTerrain=roots.SingleOrDefault(r=>r.name=="Defender terrain");
+            Assert.That(guardTerrain,Is.Not.Null,"Guard platforms and cover must be saved scene geometry, not a runtime-built replacement.");
+            Assert.That(controller.terrain,Is.Not.Null);
+            Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
+            Assert.That(controller.Model.Terrain,Is.Not.Null);
+            var regions=controller.terrain.regions;
+            CollectionAssert.AreEquivalent(new[]{new RectInt(11,1,2,2),new RectInt(11,5,2,2),new RectInt(8,1,2,1),new RectInt(9,4,2,1)},regions.Select(r=>r.cells));
+            var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
+            Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
+            foreach(var region in regions)
+            {
+                bool platform=region.cells.height==2;
+                Assert.That(region.allowDefender,Is.EqualTo(platform),"Only the high platforms may receive guards; low cover stays empty.");
+                Assert.That(region.height,Is.EqualTo(platform ? .48f : .36f).Within(.001f));
+                var cell=new Vector2(region.cells.xMin,region.cells.yMin);
+                var foot=controller.ActorWorldPoint(cell);
+                Assert.That(controller.Model.Terrain.HeightAt(cell),Is.EqualTo(region.height).Within(.001f));
+                Assert.That(controller.Model.Terrain.CanPlaceDefender(cell),Is.EqualTo(region.allowDefender));
+                Assert.That(terrainRenderers.Any(r=>foot.x>=r.bounds.min.x-.01f&&foot.x<=r.bounds.max.x+.01f&&foot.z>=r.bounds.min.z-.01f&&foot.z<=r.bounds.max.z+.01f&&Mathf.Abs(r.bounds.max.y-foot.y)<.02f),Is.True,"Saved visible terrain tops must agree with the model and actor feet at "+cell+".");
+            }
+            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(6,3),new Vector2(13,3)),Is.True,"The middle row must remain an open route to the blue gates.");
+            Assert.That(controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position)),Is.True,"Random guards must not appear inside low cover.");
+            // A preparation-only visual fixture checks the real sprite presenter at a raised cell.
+            // Restore the guard immediately; no battle health, skill or result is manufactured.
+            var guard=controller.Model.Defenders.First();var savedPosition=guard.Position;
+            var high=regions.First(r=>r.allowDefender);guard.Position=new Vector2(high.cells.xMin,high.cells.yMin);
+            try
+            {
+                yield return null;
+                var foot=controller.ActorWorldPoint(guard);
+                Assert.That(foot.y,Is.EqualTo(.12f+high.height).Within(.001f));
+                Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.name==guard.Name&&Vector3.Distance(r.transform.position,foot)<.001f),Is.True,"The actual guard sprite pivot must stand on the platform, not inside the flat floor.");
+                var projected=controller.battleCamera.WorldToScreenPoint(foot);var point=TacticalViewport.Current.FromScreen(projected);
+                Assert.That(projected.z,Is.GreaterThan(0));Assert.That(point.x,Is.InRange(180,1012));Assert.That(point.y,Is.InRange(65,490),"Raised guard feet must remain clear of the shop and status UI.");
+            }
+            finally{guard.Position=savedPosition;}
+            yield return null;
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: 112 matte concrete base cells, 44 outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at columns 6/13.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {

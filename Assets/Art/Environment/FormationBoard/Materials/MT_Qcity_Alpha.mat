@@ -53,6 +53,11 @@ Material:
     - _AlphaClip: 1
     - _AmbientGain: 5
     - _BumpScale: 1
+    - _ConcreteAmbient: 0.7
+    - _ConcreteDirect: 0.32
+    - _ConcreteEdgeWear: 0.028
+    - _ConcreteMode: 0
+    - _ConcreteTextureScale: 0.6
     - _Cutoff: 0.5
     - _EmissionEnabled: 1
     - _GlossMapScale: 1

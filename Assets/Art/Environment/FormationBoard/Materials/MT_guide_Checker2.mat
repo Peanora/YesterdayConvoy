@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c5dec6fa096c2ff42a3669c7d8c3eee1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 44ac3eac751ec2f4ba243b57a209a9ae, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -41,26 +41,31 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NativeAmbient:
-        m_Texture: {fileID: 2800000, guid: 5515c3058c1e4274c994865b6289012b, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NativeReflection:
-        m_Texture: {fileID: 8900000, guid: 571f8d72457fe1e44848d7fd1367ea9f, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
     - _AmbientGain: 5
-    - _BumpScale: 1
+    - _BumpScale: 0
+    - _ConcreteAmbient: 0.7
+    - _ConcreteDirect: 0.32
+    - _ConcreteEdgeWear: 0.028
+    - _ConcreteMode: 1
+    - _ConcreteTextureScale: 1.05
     - _Cutoff: 0.5
-    - _EmissionEnabled: 1
-    - _GlossMapScale: 1
+    - _EmissionEnabled: 0
+    - _GlossMapScale: 0
     - _ReflectionDecode: 5
-    - _ReflectionGain: 0.93
+    - _ReflectionGain: 0
     m_Colors:
-    - _CheckerTint: {r: 1.1, g: 1.1, b: 1.1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CheckerTint: {r: 1.01, g: 1.01, b: 1.01, a: 1}
+    - _Color: {r: 0.91, g: 0.88, b: 0.84, a: 1}
     - _EmissionColor: {r: 0.49999994, g: 0.5889655, b: 0.8, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
