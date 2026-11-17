@@ -82,6 +82,10 @@ namespace YesterdayConvoy.Tests
             yield return Ready();var m=controller.Model;
             var first=m.Units.First(u=>u.Enabled);var second=m.Units.First(u=>u.Enabled&&u.Slot!=first.Slot);
             Vector2 a=first.Spawn,b=second.Spawn;int enabled=m.Units.Count(u=>u.Enabled);
+            Vector2 head=FormationBattleController.CellScreen(first.Spawn)+new Vector2(0,-35);
+            controller.ProcessPointer(EventType.MouseDown,head);controller.ProcessPointer(EventType.MouseUp,head);
+            Assert.That(first.Spawn,Is.EqualTo(a),"Clicking the visible character head must select without relocating its ground cell.");
+            Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
             Drag(a,b);Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
             Drag(first.Spawn,new Vector2(10,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));

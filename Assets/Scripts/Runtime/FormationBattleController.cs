@@ -30,6 +30,7 @@ namespace YesterdayConvoy
         bool soundEnabled=true;
         int dragSlot=-1;
         bool pointerHeld;
+        Vector2 pointerStart;
         string notice="拖动场上角色换位，或选中下方角色后点击左侧格子。";
         static readonly string[] MonsterIds={"M10","M02","M07","M08","M09","M17"};
 
@@ -87,7 +88,7 @@ namespace YesterdayConvoy
                 if(hit!=null&&hit.At>lastSoundAt){sounds.PlayOneShot(hit.Skill?skillSound:hitSound,hit.Heal?.45f:1);lastSoundAt=Model.Clock;}
             }
         }
-        void OnApplicationFocus(bool focus){if(!focus&&Ready)Model.Paused=true;}
+        void OnApplicationFocus(bool focus){if(!focus&&Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}
         public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,(cell.y-3.5f)*.8f);
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
         bool TryCell(Vector2 point,out Vector2Int cell)
@@ -103,8 +104,20 @@ namespace YesterdayConvoy
             if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
             if(type==EventType.MouseDown)
             {
-                pointerHeld=true;dragSlot=-1;
-                if(TryCell(point,out var cell))
+                pointerHeld=true;dragSlot=-1;pointerStart=point;
+                // Pick the visible character above its feet before projecting onto the ground grid.
+                // A click on a sprite's head must select it, not move it into the tile behind it.
+                FormationFighter picked=null;float nearest=float.MaxValue;
+                if(point.y>=121&&point.y<531)
+                    foreach(var unit in Model.Units.Where(u=>u.Enabled))
+                    {
+                        var foot=CellScreen(unit.Spawn);
+                        if(!new Rect(foot.x-27,foot.y-72,54,79).Contains(point))continue;
+                        float distance=Mathf.Abs(point.x-foot.x)+Mathf.Abs(point.y-(foot.y-28))*.15f;
+                        if(distance<nearest){nearest=distance;picked=unit;}
+                    }
+                if(picked!=null){SelectedSlot=picked.Slot;dragSlot=picked.Slot;}
+                else if(TryCell(point,out var cell))
                 {
                     var on=Model.Units.FirstOrDefault(u=>u.Enabled&&Vector2.Distance(u.Spawn,cell)<.1f);
                     if(on!=null){SelectedSlot=on.Slot;dragSlot=on.Slot;}
@@ -113,7 +126,7 @@ namespace YesterdayConvoy
             }
             if(type==EventType.MouseUp)
             {
-                if(dragSlot>=0&&TryCell(point,out var cell))Place(dragSlot,cell);
+                if(dragSlot>=0&&Vector2.Distance(point,pointerStart)>6&&TryCell(point,out var cell))Place(dragSlot,cell);
                 pointerHeld=false;dragSlot=-1;SyncActors();
             }
         }
@@ -127,7 +140,7 @@ namespace YesterdayConvoy
         public void Retry(){Model.Retry();lastSoundAt=-10;notice="同一守军阵容已恢复，保留你的站位与星级。";SyncActors();}
         public void NextRound(){Model.NextRound();lastSoundAt=-10;notice="守军已公开，上一关的军团与站位已保留。";SyncActors();}
         public void ResetDemo(){seed=unchecked(seed+1);Model.Reset(seed);Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;notice="新挑战已更换守军组合；免费升星与扩编不代表正式运营。";SyncActors();}
-        void SyncActors()
+        internal void SyncActors()
         {
             if(!Ready)return;
             var current=new HashSet<int>();

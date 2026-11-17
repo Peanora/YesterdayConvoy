@@ -41,7 +41,7 @@ namespace YesterdayConvoy
             Label(new Rect(35,99,560,26),"我方布阵区  /  仅战前可调整",14,Cyan);
             Label(new Rect(785,99,450,26),"本关守军已公开  /  清空后开启蓝门",14,new Color(1,.6f,.5f),TextAnchor.MiddleRight);
             DrawWorldLabels();
-            Fill(new Rect(0,532,1280,188),Dark);
+            Fill(new Rect(0,531,1280,189),Dark);
             Label(new Rect(25,533,1090,27),notice,14,Muted);
             for(int i=0;i<Model.Units.Count;i++)DrawRoster(i,preparing);
             Fill(new Rect(980,565,275,132),Panel);

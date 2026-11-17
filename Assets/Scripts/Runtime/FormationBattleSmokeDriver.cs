@@ -100,6 +100,7 @@ namespace YesterdayConvoy
         }
         IEnumerator Capture(string name)
         {
+            controller.SyncActors();
             yield return new WaitForEndOfFrame();
             var frame=ScreenCapture.CaptureScreenshotAsTexture();
             if(frame==null)throw new InvalidOperationException("Visible graphics capture unavailable: "+name);
