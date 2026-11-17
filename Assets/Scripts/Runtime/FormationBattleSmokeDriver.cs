@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through the production shop transactions, saved map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter. A configured short deadline and legal single-archer lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
+            public string scope="Accelerated replay through the production shop transactions, saved map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -205,21 +205,20 @@ namespace YesterdayConvoy
             yield return Capture("player-timeout-configured");
 
             controller.ResetDemo();m=controller.Model;controller.SetMarketVisible(false);
-            int archerInstance=m.Units.Single(u=>u.ArtId=="M08").Instance;
-            foreach(var unit in m.Units.Where(u=>u.Instance!=archerInstance).ToArray())
+            int soldierInstance=m.Units.Single(u=>u.ArtId=="M07").Instance;
+            foreach(var unit in m.Units.Where(u=>u.Instance!=soldierInstance).ToArray())
                 CheckThat("legal-bench-move-"+unit.ArtId,controller.MovePiece(unit.Instance,false,controller.Session.Seats.FirstEmpty(false,10)).Success);
-            var hound=m.Units.Single();
-            controller.StartBattle();hound=m.Units.Single(u=>u.Instance==archerInstance);steps=0;
-            while(hound.Deaths==0&&m.Phase==FormationPhase.Fighting&&steps++<12000)
-            {m.Paused=false;m.Advance(.05f);if(steps%60==0)yield return null;}
-            CheckThat("legal-single-archer-lineup-naturally-dies",hound.Deaths>0&&!hound.Alive&&hound.RespawnRemaining>0);
-            m.Paused=true;clock=m.Clock;remaining=m.TimeRemaining;float revive=hound.RespawnRemaining;
-            m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
-            CheckThat("pause-freezes-real-revival-countdown",m.Clock==clock&&m.TimeRemaining==remaining&&hound.RespawnRemaining==revive&&!hound.Alive);
-            yield return Capture("player-revival-paused");m.Paused=false;steps=0;
-            while(!hound.Alive&&m.Phase==FormationPhase.Fighting&&steps++<2000)
+            controller.StartBattle();var soldier=m.Units.Single(u=>u.Instance==soldierInstance);steps=0;
+            while(soldier.Deaths==0&&m.Phase==FormationPhase.Fighting&&steps++<12000)
             {m.Paused=false;m.Advance(.025f);if(steps%60==0)yield return null;}
-            CheckThat("natural-revival-returns-near-saved-deployment-point",hound.Alive&&hound.Deaths>0&&Vector2.Distance(hound.Position,hound.Spawn)<.25f&&hound.Health>0);
+            CheckThat("legal-single-soldier-lineup-naturally-dies",soldier.Deaths>0&&!soldier.Alive&&soldier.RespawnRemaining>0);
+            m.Paused=true;clock=m.Clock;remaining=m.TimeRemaining;float revive=soldier.RespawnRemaining;
+            m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
+            CheckThat("pause-freezes-real-revival-countdown",m.Clock==clock&&m.TimeRemaining==remaining&&soldier.RespawnRemaining==revive&&!soldier.Alive);
+            yield return Capture("player-revival-paused");m.Paused=false;steps=0;
+            while(!soldier.Alive&&m.Phase==FormationPhase.Fighting&&steps++<2000)
+            {m.Paused=false;m.Advance(.025f);if(steps%60==0)yield return null;}
+            CheckThat("natural-revival-returns-near-saved-deployment-point",soldier.Alive&&soldier.Deaths>0&&Vector2.Distance(soldier.Position,soldier.Spawn)<.25f&&soldier.Health>0);
             yield return Capture("player-revived");
             CheckThat("no-unexpected-runtime-errors",exceptions.Count==0);
             controller.ResetDemo();CheckThat("new-challenge-resets-round-clock-and-deaths",controller.Model.Round==1&&controller.Model.Phase==FormationPhase.Preparation&&controller.Model.Clock==0&&controller.Model.Units.All(u=>u.Deaths==0));
