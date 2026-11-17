@@ -1,68 +1,59 @@
-# 矩形攻坚：工业庭院地图接入
+# 矩形攻坚：LS-5 原作环境接入
 
-2026-11-17。本轮针对 `Assets/Scenes/FormationBattle.unity` 的静态环境外观修正，延续[固定战场布阵战斗](../FORMATION_BATTLE.md)。用户此前批准工业庭院 PNG 的画风，并指定中线一排红门、最右一排蓝门；之后明确否定方块式三维接入，要求沿已批准画面修正。本轮采用 **2.5D 绘制环境背景＋投影到真实水平地面格的画面＋实时战斗角色**，不宣称全三维还原。用户本轮修正接入要求适用于这个范围；先前预览批准不等于本轮实机画面已验收。
+2026-11-17。用户最终确认的是[《明日方舟》LS-5 原关卡图](https://torappu.prts.wiki/assets/map_preview/wk_kc_5.png)，随后明确回复“可以”接入。先前工业庭院 AI 图、方块式重建和将 AI 图投影到地面的方案均已被这次修订覆盖，不能继续登记为本轮的最终美术依据。接入范围为**原作地砖、台面、工业外围网格与贴图，按本作 14×8 开放棋盘重排，并复用原作完整红蓝门**；原图确认不等于本轮实机已经验收。
 
-## 已批准范围与坐标
+## 地图、门与战斗坐标
 
-| 项目 | 本轮范围 |
+| 项目 | 当前接入范围 |
 | --- | --- |
-| 棋盘 | 沿用 14×8、112 格矩形战场；不改变格点坐标与地面逻辑 |
-| 红门 | 沿已有部署区分界虚线 x=5.5，在 row=0–7 各设置低矮红色门标；逐格断开，保留穿行间隙 |
-| 蓝门 | 最右 x=13，在 row=0–7 各设置低矮蓝色门标；不再用高立方门框遮挡角色 |
-| 环境 | 沿用批准 PNG 中低饱和工业庭院的厂房、卷闸门、设备、栏杆与管线表现，中央为实际战斗区 |
-| 地面 | 112 个真实、水平、可在编辑模式选取和保存的地面格，保留原格点与投影画面；不是直接以概念图格线代替逻辑坐标 |
-| 表现范围 | 绘制背景与地表画面承载环境观感，角色仍实时移动、攻击、阵亡和复活；不把画中厂房登记为完整可绕行的三维建筑模型 |
+| 棋盘 | 14×8、112 个保存的可编辑格对象；每格引用原 LS-5 持久 Mesh 与材质，中央保持开放 |
+| 格距 | `FormationBattleController.WorldPoint(cell)=(cell.x-6.5, .12, cell.y-3.5)`，x/z 均为 1 个世界单位；地砖顶面对齐 y=.12 |
+| 部署／守军 | 左侧 col=0–5 战前布阵，右侧 col=8–12 守军站位；不复制原 LS-5 的狭窄通道、阻挡或旧路线 |
+| 红门 | col=6，即左侧六列部署区紧右的第七整列，row=0–7；门以格中心定位，不再吊在 x=5.5 的格缝上 |
+| 蓝门 | 最右 col=13，row=0–7，每格一个完整原作门 |
+| 门的形态 | 原 `tile_start`／`tile_end` 四层 MeshRenderer、贴图与透明／加色材质；宽、深、高各约 1 格，缩放保持 1，相邻格边缘紧贴；保留顶面三角／叹号及斜角刻线 |
+| 外围 | 原 LS-5 服务带、台面、建筑、栏杆脚手架等实际部件移到开放棋盘四周；原 `BG_Qcity` 网格与背景贴图提供远景 |
 
-红门位于部署区右边界，不是把全部角色挤到同一点生成的新出兵口。蓝门保留原有清场后进门目标的可见标识。两排门标不新增可点击部署、阻挡、费用、额外门血量或复活规则。
+红门是本模式的阵地区界标识，蓝门是清场后的实际终点；门没有碰撞体，不增加阻挡、门血量、费用、手动部署或复活入口。不得再次把完整门缩成低矮四角标、细长地贴、窄门带或实心墙，也不把八个门沿高度叠成塔。每一格保留一个完整门，相邻门沿地面纵深逐格紧贴。
 
-下列战斗逻辑保持：左侧战前格点布阵、跨关继承、从原部署位置出生／复活、自动攻击和技能、先消灭全部守军才开始进门、至少一名存活我方本体实际进门才获胜，以及覆盖复活和进门过程的整关模拟时限。本轮不调整随机守军、角色数值、技能或时间参数。
+战斗仍采用左侧战前布阵、跨关继承、原部署位置出生与复活、自动攻击和技能、先清空守军才进门、至少一名存活本体实际进门才胜利，以及覆盖复活和进门过程的整关模拟时限。本次原作环境接入不自行改动这些规则或角色数值。
 
-## 保存场景与编辑边界
+## 已保存场景与编辑工具
 
-上一版 `FormationIndustrialTools.Apply` 的方块式三维组合不是本轮画风修正的验收目标，不应据其旧结果宣布本轮绘制场景完成。
+场景为 `Assets/Scenes/FormationBattle.unity`，静态环境根名为 `LS5 native formation courtyard`。112 个 `Tile col,row` 对象在编辑模式中可查看、选择和保存，引用原 LS-5 持久 Mesh；地砖局部顶面约 y=-.0200154，保存对象以相应高度补偿对齐逻辑地面。外围、远景与 16 个原门同样保存于场景，Play 仅创建动态角色、界面与战斗反馈，不在运行时重建整图。
 
-本轮显式 Editor 入口为 `FormationPaintedMapTools.Apply()`，菜单为 `Yesterday Convoy → Formation Battle → Apply Approved Painted Courtyard`；`FormationPaintedMapTools.Validate()` 对应 `Validate Approved Painted Courtyard`。工具只处理 `FormationBattle.unity` 的绘制环境、该场景相机、112 个原地面格及持久投影资源，移除已被否定的 `Industrial courtyard · saved geometry` 根节点；不修改角色素材或其他地图。
+- `FormationNativeAssetTools.EnsureImported()`：从 `Assets/Art/Environment/FormationNative/ls5-native.json` 导入原部件持久 Mesh、材质与贴图，不修改场景；`FindPartName`／`FindParts` 查询部件，`CreatePart` 创建引用这些资源的对象。
+- `FormationNativeMapTools.Apply()`：显式菜单 `Yesterday Convoy → Formation Battle → Apply Original LS-5 Environment`，将原资源重排并保存到本模式场景，移除先前绘制庭院／方块庭院根节点；不改其他地图。
+- `FormationNativeMapTools.Validate()`：菜单 `Validate Original LS-5 Environment`，检查 112 格持久原网格、16 个完整原门、格中心与相机投影范围。执行结果须由 STATUS／QA 记录，不据入口存在就宣布通过。
+- `FormationBattleTools.Author()`（菜单 `Create Missing Scene`）仍仅用于缺失场景的基础创建；本轮环境以 Native 工具接入，旧 Industrial／Painted 工具不是当前地图的编辑依据。
 
-- 背景使用与相机对齐的远平面，完整展示同一 PNG 中的绘制环境；这些画中建筑不是本轮新建的完整三维建筑。
-- 原 112 个 `Tile col,row` 对象保留，每格保存独立水平网格，地面中心仍读取 `FormationBattleController.WorldPoint`，高度为 y=0.12。地面使用保存的 `ProjectedFloor.shader` 与材质投影参数采样同一 PNG；使用不受光表现，避免已有绘制光影再被实时灯光重复处理。
-- 新静态根节点为 `Painted courtyard · approved 2.5D environment`；门标仍名为 `Red gate row N`／`Blue gate row N`，位于原 x=5.5／13、row=0–7。四角低标与短侧柱逐格断开，没有碰撞体，不额外阻挡实时角色。
-- 相机按源图地面四角适配本模式的 1280×500 战斗区域，俯角约 38.86°、FOV 约 4.95°，偏航与翻滚仍为 0。这是本轮绘制方案的场景适配参数，覆盖本场景此前镜头，不能擅自套回旧 60°，也不覆盖其他旧模式的相机。
+重新应用是显式的环境重排动作，不能当作普通运行或保存按钮。人工调整应在唯一场景写入者协调下保存，避免后续重新应用覆盖希望保留的改动。物理格距、相机取景和格点点击需一起验证，不能只改变画面而让逻辑继续使用旧 z 方向间距。
 
-完整 1672×941 原图映入 1280×500 区域时，相对原图比例存在纵向压缩；目前不能宣称与批准图观感完全一致。投影校验检查已定义矩形的格中心和外角，不代替对 AI 绘制格线笔触、角色脚底及前景遮挡的目视核对。相机、背景与保存的投影材质必须一并校准，单独改动镜头可能造成背景／地面漂移。
+## 镜头、光照与原 A 界面
 
-绘制背景、水平地面格与低矮门标以场景内容保存，材质与必要网格以资产保存；进入 Play 读取已保存场景，不重新搭建整张地图。日常调整通过编辑场景后保存完成，不把显式重新应用工具当作普通运行或保存按钮。重新应用前应核对将改动的环境范围，避免覆盖希望保留的人工环境编辑。
+相机保留 LS-5 的 **60° 俯角、FOV40、偏航／翻滚为 0 的轻透视方向**，使用完整相机视口，再按本作 14×8 棋盘和原 A 界面留出的中部战场区域调整距离／偏移。当前工具的目标框为虚拟 1280×720 坐标中的 `(200,108,792,365)`；它是本次 UI 适配框，不宣称等于原 LS-5 的地图尺寸或相机距离。先前绘制方案的约 38.86°／FOV4.95 与 1280×500 压缩背景不再适用。
 
-中央棋盘保持开放可读，外围装饰不添加影响原移动／索敌的玩法障碍。布局、站位与蓝门判定继续由原战斗模型负责，静态美术不另维护一套战斗坐标或触发规则。
+环境材质使用原漫反射、法线、金属度等贴图与原材质参数，在本作兼容 Shader 上显示。源相机、4 盏灯、环境设置与两张光照图保留在 `ls5-scene-settings.json`／贴图目录；当前场景保留原主光方向，环境 SH 按坐标系旋转后应用。原作混合／烘焙光照和专用 Shader 未整体迁入，单用源暖光会造成偏黄，因此本场景采用中性主光 `(0.92,0.94,1)`／强度 1.35、阴影强度 0.45 的显示适配，不改全局画质或其他地图。移除原狭窄走廊专用的三份 ShadowsOnly 遮光体，避免重排后出现没有对应建筑的巨型阴影。静态合批 UV2 已处于原光照图集坐标，不能再次乘旧 Renderer ST；默认不直接套用旧布局的烘焙阴影。
 
-## 批准 PNG 的身份与本轮用途
+整备界面直接共用 `ApprovedShopPresentation` 和 `ApprovedUi` 的原 A 实现，包括 Market 商品面板、真实 idle 模型的 RenderTexture 平台、商品入场／合成 Flow 与资源显示。底部上阵槽 y=516、备战槽 y=627，沿用原槽几何和实际角色待机动作，不用重新绘制的相似卡槽或静态头像代替平台模型。界面不持有另一套金币、库存、合成或战斗状态；交易与编排仍由 `FormationShopSession`、`ShopTrialModel`、`ShopSeatLayout` 负责。
 
-- 本轮 AI 概念生成日期为 2026-11-17，参考工程既有 Approved Maps 03“雨夜立交”和 06“矿运折廊”的工业体块、材质与气氛。参考关系不把这两张旧图的路线、机关和门位带入新战场。
-- 原始输出来自项目外 Codex `generated_images`，文件名 `exec-e85ac373-84c5-42d3-bfe8-ecd6a96da4af.png`。本轮已将同一 PNG 放入运行资源路径 `Assets/Art/Environment/FormationBattle/Painted/industrial-courtyard.png`，其 SHA256 为 `256A2F91033A69D8F33D8E45D74AA1814C53FBA41064F9CAAFF0778F36A888DE`；本次按实际文件重新核对该哈希。
-- 上一版将它仅作为三维接入参考；本轮用户否定方块外观后，明确要求沿已批准画面修正，因此将它改作运行中的绘制环境背景与水平地面格投影来源。**这是有真实格点与动态角色的 2.5D 场景，不是全三维建筑还原，也不是在预览图上播放静态战斗分镜。**
-- 该 PNG 是既有 AI 生成预览，不登记为外包资源或 CC0。用户要求接入与上传运行素材，不等于取得参考作品的开放再分发许可，也不扩大既有角色媒体的权利范围。
-- 图中的绘制格线、透视与装饰不能代替 14×8 的真实坐标。四角、中心、行列边缘、角色脚底、门标与画面投影需在实际相机下核对；本记录不承诺原预览与实机逐像素一致。
+本轮显眼入口为默认行动准备阶段的“战前布阵 · 新玩法试玩 ▶”；旧右上菜单“矩形攻坚 · 新玩法 Demo”别名与 `-formationDemo` 直接进入参数继续保留。EXE 默认仍进入原挑战，不新增启动脚本。入口实际显示、跳转及新战场中的 UI 复用须经本轮 Player 验证。
 
-既有八图的参考与生成关系见[八图说明](../APPROVED_MAPS_V2.md)及 [V2 生成记录](source-records/approved-maps-v2-generation.json)。它们是参考来源，不是本轮工业庭院完成验证的证据。
+## 来源与还原边界
 
-## 运行素材来源与许可
+原资源版本为 `26-10-29-15-36-11-33649006`：
 
-本轮绘制环境的源图为上节记录的批准 PNG；其运行副本、持久材质、投影网格与必要 `.meta` 应随本轮源码按项目素材交付规则提交，来源状态仍为 AI 生成预览。地面网格、门标和场景配置属于本项目接入制作，角色媒体继续沿用各自原有来源记录；不能把所有内容统称为 CC0。
+- 场景：`scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5.ab`。
+- 依赖：`arts/maps/map_chernobog_a/res.ab`、`arts/maps/map_chernobog_a/background_mesh/bg_qcity.ab` 与本关 `lightingdata.ab`。
+- 导出：143 个原 Renderer 部件、12 张贴图、5 份原材质数据；保存位置／法线／UV0／UV2、submesh 材质对应、原 transform、bounds 和对象引用。源场景没有顶点色的部件保持空数组，不虚构颜色数据。
+- 门：复用已接入 `Assets/Art/Environment/BlackForestNative/NativeForest.prefab` 中原 `tile_start`／`tile_end` 网格、UV、贴图与透明／加色兼容材质，来源见既有 BlackForest 记录。
 
-上一版方块环境曾复用下列素材。这些历史来源记录保留，用于区分既有资产许可与本轮 AI 图身份，**不作为本轮绘制场景的当前用料清单或画面验收证据**。既有原包记录见项目 [ASSET_SOURCES](ASSET_SOURCES.md)、[ASSET_MANIFEST](ASSET_MANIFEST.csv) 与 Quaternius 本地许可文本。
+详细官方包 URL、MD5／SHA256、工具版本、导出哈希与权利状态见[LS-5 原素材记录](source-records/formation-ls5-native.json)和[资源接口说明](../../Assets/Art/Environment/FormationNative/README.md)。本轮上传源码、导出的运行资源与必要 `.meta`；原 AB、加工缓存、原 Shader 二进制与本地验证产物不纳入运行素材提交。
 
-| 旧版资源 | 工程路径 | 已有来源与权利记录 |
-| --- | --- | --- |
-| 混凝土颜色图 | `Assets/Art/Environment/Industrial/Textures/concrete-color.jpg` | ambientCG [Concrete034](https://ambientcg.com/view?id=Concrete034)，项目清单登记 CC0-1.0；原始 Color 图，沿用材质调色 |
-| 沥青颜色图 | `Assets/Art/Environment/Industrial/Textures/asphalt-color.jpg` | ambientCG [Asphalt012](https://ambientcg.com/view?id=Asphalt012)，项目清单登记 CC0-1.0；原始 Color 图，沿用材质调色 |
-| trim-01／trim-02 颜色与法线 | `Assets/Art/Environment/Industrial/Textures/trim-01-color.png`、`trim-01-normal.png`、`trim-02-color.png`、`trim-02-normal.png` | Quaternius Modular Sci-Fi MegaKit Standard，项目清单登记 CC0-1.0 |
-| 箱体模型 | `Assets/Art/Environment/Industrial/Models/Prop_Crate3.fbx` | 同一 Quaternius Standard 包，清单 ID `MAP-Q-PROP_CRATE3`，CC0-1.0 |
-| 通风设备模型 | `Assets/Art/Environment/Industrial/Models/Prop_Vent_Big.fbx` | 同一 Quaternius Standard 包，清单 ID `MAP-Q-PROP_VENT_BIG`，CC0-1.0 |
-| 上一版厂房／门架等组合几何与材质配置 | `FormationBattle.unity` 的旧环境及对应材质资产 | 历史项目场景制作；复用纹理和模型的部分继续受各自来源记录约束，不把其许可扩大到本轮批准 PNG |
+原作媒体权利属于相应权利人，未核实开放再分发或商业使用许可；用户确认接入和上传不登记为权利人许可，解析工具许可也不赋予媒体许可。兼容 Shader、重排后的地图、适配镜头与本作灯光**不等于原作 Shader、烘焙光照、动画粒子及后处理的逐像素复刻**。先前 AI PNG 与旧 CC0 方块环境的来源记录只保留历史追溯，不作为当前场景素材依据。
 
-Quaternius 的原发布页为 [Modular Sci-Fi MegaKit](https://quaternius.com/packs/modularscifimegakit.html)／[官方 itch 页](https://quaternius.itch.io/modular-sci-fi-megakit)，工程保留的 Standard 包许可见 [quaternius-modular-scifi-standard.txt](licenses/quaternius-modular-scifi-standard.txt)。ambientCG 许可参考为[官方许可页](https://docs.ambientcg.com/license/)。本轮记录沿用既有原包与许可核查，未把付费 PRO／SOURCE 档内容当作免费 Standard 包使用。
+## 验证状态
 
-## 验证状态与待核对项
+本页记录已批准范围、当前代码连接与素材来源，不预先宣布本轮 Unity 编译、Apply／Validate、PlayMode、Windows 构建或 Player 画面通过。导出静态数据校验与运行验证分别记录，后者以 [STATUS](../STATUS.md)／[QA](../QA.md) 的实际结果为准。
 
-本页只记录批准范围、接入约定和素材来源，不预先宣布本轮编译、场景校验、PlayMode、Windows 构建或 Player 画面通过。实际执行结果由 [STATUS](../STATUS.md)／[QA](../QA.md) 记录。
-
-接入后需要实际核对：112 格原坐标与合法布阵区域不变，四角与中心的背景／地面格投影不漂移；两排各八个低矮断开门标位置正确；地面、网格、纹理及材质引用可在编辑模式保存；两种分辨率与整备商店展开／收起时角色脚底、血条、前景遮挡和点击格一致；暂停、原位复活、清场到蓝门及整关计时继续读取原模型。图片细节与本轮实机观感仍待用户反馈，技术验证不能替代这一项。
+需核对：112 格与 1×1 格距、col6／13 全高透明门逐格紧贴、角色脚底与格点点击、外围遮挡与原 A 安全区；商店展开／收起、真实 idle 平台模型及购买／合成 Flow；暂停、原位复活、清场后实际进门和整关计时。用户最终实机观感仍待反馈，技术检查不能代替美术验收。

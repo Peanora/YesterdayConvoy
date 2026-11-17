@@ -31,8 +31,11 @@ namespace YesterdayConvoy.Editor
 
         public static float CalibratedPitch=>SolveCamera().Pitch;
 
-        [MenuItem("Yesterday Convoy/Formation Battle/Apply Approved Painted Courtyard")]
         public static void Apply()
+        {
+            throw new InvalidOperationException("The painted formation map has been superseded by the confirmed original LS-5 environment. Use FormationNativeMapTools.Apply.");
+        }
+        static void ApplyRetiredReference()
         {
             CheckEditor();
             if(!File.Exists(ImagePath))throw new InvalidOperationException("Approved courtyard image is missing: "+ImagePath);
@@ -244,7 +247,6 @@ namespace YesterdayConvoy.Editor
 
         static T[] All<T>(Scene scene) where T:Component=>scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<T>(true)).ToArray();
 
-        [MenuItem("Yesterday Convoy/Formation Battle/Validate Approved Painted Courtyard")]
         public static void Validate()
         {
             FormationBattleTools.Validate();

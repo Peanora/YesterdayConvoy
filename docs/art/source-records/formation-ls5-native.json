@@ -1,0 +1,290 @@
+{
+  "sourceGame": "Arknights",
+  "stage": "LS-5 / level_weekly_killcost_5",
+  "referencePage": "https://prts.wiki/w/LS-5_%E6%AD%BC%E7%81%AD%E6%88%98%E6%BC%94%E4%B9%A0",
+  "referenceImage": "https://torappu.prts.wiki/assets/map_preview/wk_kc_5.png",
+  "resourceVersion": "26-10-29-15-36-11-33649006",
+  "sourceFiles": [
+    {
+      "name": "scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/scenes_obt_weekly_level_weekly_killcost_5_level_weekly_killcost_5.dat",
+      "md5": "71c418a1d0d867b42a32567579d4c12c",
+      "sha256": "02250b02d2b63d76b2e40cd1a32ff8acd15eac327d8890099e27e67632eb3d38",
+      "bytes": 529075,
+      "metadata": {
+        "name": "scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5.ab",
+        "hash": "78f8369e044dd83e1a5a21c307c0f683",
+        "md5": "71c418a1d0d867b42a32567579d4c12c",
+        "totalSize": 387308,
+        "abSize": 529075,
+        "pid": "lpack_scene5",
+        "cid": 11712
+      }
+    },
+    {
+      "name": "arts/maps/map_chernobog_a/res.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/arts_maps_map_chernobog_a_res.dat",
+      "md5": "f1f1dcf4f4754b44a1d4db6121655c41",
+      "sha256": "49013fe5d6db122f1a50d2b4228e92ff8a3485a8f946a147e98ee1152a48a11a",
+      "bytes": 2225424,
+      "metadata": {
+        "name": "arts/maps/map_chernobog_a/res.ab",
+        "hash": "867ecc527f6d6ad6a1fb3f51218b8ec8",
+        "md5": "f1f1dcf4f4754b44a1d4db6121655c41",
+        "totalSize": 1829601,
+        "abSize": 2225424,
+        "pid": "lpack_init6",
+        "cid": 11948
+      }
+    },
+    {
+      "name": "arts/maps/map_chernobog_a/background_mesh/bg_qcity.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/arts_maps_map_chernobog_a_background_mesh_bg_qcity.dat",
+      "md5": "bd59ffcd8eaf6426c3085044662563ee",
+      "sha256": "28af36f546407e82ed03a85b32c3ac9300fa9c3c7e41b1b34d7c6f95fe1acd75",
+      "bytes": 7831,
+      "metadata": {
+        "name": "arts/maps/map_chernobog_a/background_mesh/bg_qcity.ab",
+        "hash": "0d7b79f8c3144c6f94b8a64b3b177d79",
+        "md5": "bd59ffcd8eaf6426c3085044662563ee",
+        "totalSize": 5961,
+        "abSize": 7831,
+        "pid": "lpack_init4",
+        "cid": 6249
+      }
+    },
+    {
+      "name": "scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5/lightingdata.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/scenes_obt_weekly_level_weekly_killcost_5_level_weekly_killcost_5_lightingdata.dat",
+      "md5": "d2e31a6e2be402b9edc86ec6ee613527",
+      "sha256": "1fb3313c0f84455a86b67e155142727f79c15f17a1914b5c43aa973ba05e6436",
+      "bytes": 904885,
+      "metadata": {
+        "name": "scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5/lightingdata.ab",
+        "hash": "9041235b280584ea3412444964dc4541",
+        "md5": "d2e31a6e2be402b9edc86ec6ee613527",
+        "totalSize": 773762,
+        "abSize": 904885,
+        "pid": "lpack_scene10",
+        "cid": 14627
+      }
+    }
+  ],
+  "tool": "Existing UnityPy 1.25.4 cp313 + aklz4 adapter; exporter tools/art/export_formation_native.py; Unity importer FormationNativeAssetTools",
+  "rights": "Original proprietary Arknights media; no open redistribution license established. User approved using the shown LS-5 map reference and project integration. User approval is not a rights-holder redistribution license.",
+  "adaptations": [
+    "Split 142 static-batch/scene parts plus one native backdrop from the original LS-5 renderers; retain vertex positions/normals/UV0/UV2 and submesh/material correspondence.",
+    "Rotate source x,y,z to project x,-z,y and recenter each part in horizontal x/z only. Static-batch data is already source world space; original object transforms are retained as provenance and not applied twice.",
+    "Source materials port to built-in Standard and Unlit/Texture; preserve original textures, scalar/color values and shader keywords where supported. Native source shader binaries are not copied.",
+    "Original decoded RGB normal textures have uniform opaque alpha; export original RGB and import as normal map.",
+    "Preserve original encoded lightmap PNGs, global-atlas UV2, original renderer scale/offset, source camera/light/render settings. Reordered new terrain does not apply the old layout baked shadow automatically.",
+    "14x8 open formation layout and surrounding part placements authored separately; original routes, map logic, obstructions, gates and blue gate pits are not copied.",
+    "Red/blue marker geometry and transparency reuse previously imported original tile_start/tile_end in BlackForestNative; no replacement AI gates."
+  ],
+  "geometry": {
+    "parts": 143,
+    "vertices": 14919,
+    "triangles": 9711,
+    "uv0Parts": 143,
+    "uv2Parts": 142,
+    "vertexColorParts": 0,
+    "materials": 5,
+    "textures": 12
+  },
+  "dataHashes": {
+    "ls5-native.json": "5b6b7cb58c47a33835bef15b021fa3b063890eda455d75c5a9bdc6f6f42ece29",
+    "ls5-scene-settings.json": "74869455eb224b34de82b79b711fd99b71b7db432327556fb621aeb8fa6fc65d"
+  },
+  "textureExports": [
+    {
+      "name": "TX_Qcity_BG",
+      "file": "Textures/TX_Qcity_BG.png",
+      "width": 1024,
+      "height": 512,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "-8695139021991495131"
+      },
+      "sha256": "1f07726f4ecd8a915828e47de144c398391d6816e658b6ef7b289a86e86b0f11",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_Common_N",
+      "file": "Textures/TX_Qcity_Common_N.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": true,
+      "linear": true,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "-8435447695264356541"
+      },
+      "sha256": "bb6ed2f41d261d40facab94759722d1edd095b482ac8286e3f6149849412312d",
+      "sourceFormat": 50,
+      "normalAdaptation": "Original decoded tangent RGB; opaque alpha omitted"
+    },
+    {
+      "name": "TX_Qcity_Common_M",
+      "file": "Textures/TX_Qcity_Common_M.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": true,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "-5993789650846865671"
+      },
+      "sha256": "3e5d68fb7efd40f476d3ff3295fc313d967723eaa0a4af42873349e0a7469d15",
+      "sourceFormat": 47,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_E",
+      "file": "Textures/TX_Qcity_E.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "-3981140015020775486"
+      },
+      "sha256": "28b99565f26a4a89a7a5e08a304b2bf64a030b4221013edf83ce035ea23f725d",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_A",
+      "file": "Textures/TX_Qcity_A.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "-439017261268187268"
+      },
+      "sha256": "17a6e1e1543c89acfefe401918090bbc44cc0d63b566151bfd65c5c29e994c12",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_Common_E",
+      "file": "Textures/TX_Qcity_Common_E.png",
+      "width": 512,
+      "height": 512,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "1305341685072391761"
+      },
+      "sha256": "906a273e1627ab3f399ad87138f889df9a6514389360b20b9cee93bfdd4704d0",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_Common_A",
+      "file": "Textures/TX_Qcity_Common_A.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "1429862288799386908"
+      },
+      "sha256": "2d6e79ebd2e51cc81dd4be80a4aec274721d730d722fd1872d708d1f8c53934d",
+      "sourceFormat": 47,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_A_2",
+      "file": "Textures/TX_Qcity_A_2.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": false,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "5714145811406253468"
+      },
+      "sha256": "7c409c182ebb3adff32655f4d8d168b7f006bb2501c6f965f7f00a02f5c32cd2",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_M",
+      "file": "Textures/TX_Qcity_M.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": true,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "6016338709704228648"
+      },
+      "sha256": "ada16378bab4e184fa5e657722b1c14a3ab1b4305473603f35d367ab44eae57e",
+      "sourceFormat": 47,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "TX_Qcity_N",
+      "file": "Textures/TX_Qcity_N.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": true,
+      "linear": true,
+      "source": {
+        "file": "CAB-d5464bd702b7c50c2240422d852b5a4e",
+        "pathId": "8173409752252469992"
+      },
+      "sha256": "53e567e2095001d2e7273602dbc5f11bcec96681e5732bac10adf6d87bdc4fb4",
+      "sourceFormat": 50,
+      "normalAdaptation": "Original decoded tangent RGB; opaque alpha omitted"
+    },
+    {
+      "name": "Lightmap-0_comp_light",
+      "file": "Textures/Lightmap-0_comp_light.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": true,
+      "source": {
+        "file": "CAB-cd5594dc08d91e7f11959cd50e6f59fb",
+        "pathId": "-9083236939139964921"
+      },
+      "sha256": "ebc9ff8a415302c35a7dddd12839ee0ac9ec94507c488995d0c8aee9a1dc8a74",
+      "sourceFormat": 47,
+      "normalAdaptation": ""
+    },
+    {
+      "name": "Lightmap-0_comp_shadowmask",
+      "file": "Textures/Lightmap-0_comp_shadowmask.png",
+      "width": 1024,
+      "height": 1024,
+      "normalMap": false,
+      "linear": true,
+      "source": {
+        "file": "CAB-cd5594dc08d91e7f11959cd50e6f59fb",
+        "pathId": "-3154550792623425402"
+      },
+      "sha256": "b94efcbd485f4c5bb99e13a4fbae17943e86984441efda5841c3eb4bdefa347b",
+      "sourceFormat": 34,
+      "normalAdaptation": ""
+    }
+  ],
+  "validation": {
+    "sourceBundleManifestMD5": "passed four of four",
+    "sourceBundleSHA256": "recorded",
+    "trianglesInRange": "passed all parts",
+    "normalsUV0Lengths": "passed all parts",
+    "finiteAttributes": "passed",
+    "textureSHA256": "passed twelve of twelve",
+    "UnityImport": "not run by extraction agent; root owns integrated validation",
+    "sceneBuildAndPlayer": "not run by extraction agent"
+  }
+}

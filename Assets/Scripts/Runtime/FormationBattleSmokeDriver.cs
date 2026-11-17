@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through the production shop transactions, saved map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
+            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved native LS-5 map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -120,8 +120,55 @@ namespace YesterdayConvoy
         }
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
-        static string Formation(FormationBattleModel model)=>string.Join(";",model.Units.Select(u=>$"{u.Slot}:{u.Spawn.x},{u.Spawn.y}:{u.Star}:{u.Enabled}"));
+        static string Formation(FormationBattleModel model)=>string.Join(";",model.Units.OrderBy(u=>u.Instance).Select(u=>$"{u.Instance}:{u.ArtId}:{u.Spawn.x},{u.Spawn.y}:{u.Star}:{u.Enabled}"));
         static string GuardLayout(FormationBattleModel model)=>string.Join(";",model.Defenders.Select(d=>$"{d.ArtId}:{d.Position.x},{d.Position.y}"));
+        IEnumerator Market(bool visible)
+        {
+            controller.SetMarketVisible(visible);double deadline=Time.realtimeSinceStartupAsDouble+3;
+            while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            if(controller.ShopPanelTransitioning)throw new InvalidOperationException("The shared original shop visibility transition did not finish.");
+            yield return null;
+        }
+        Vector2 StagePoint(Vector3 world)
+        {
+            var point=controller.ShopModelCamera.WorldToViewportPoint(world);
+            return new Vector2(point.x*1280,(1-point.y)*720);
+        }
+        static Bounds IndexedGateBounds(Transform root,MeshRenderer[] layers)
+        {
+            bool found=false;var bounds=new Bounds();
+            foreach(var layer in layers)
+            {
+                var mesh=layer.GetComponent<MeshFilter>().sharedMesh;var vertices=mesh.vertices;
+                foreach(int index in mesh.triangles)
+                {
+                    var point=root.InverseTransformPoint(layer.transform.TransformPoint(vertices[index]));
+                    if(!found){bounds=new Bounds(point,Vector3.zero);found=true;}else bounds.Encapsulate(point);
+                }
+            }
+            if(!found)throw new InvalidOperationException("The native gate has no rendered triangles.");
+            return bounds;
+        }
+        static bool NativeGate(Transform gate,Vector2 cell)
+        {
+            if(gate==null||Vector3.Distance(gate.position,FormationBattleController.WorldPoint(cell))>.0001f||gate.localScale!=Vector3.one||gate.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled))return false;
+            var layers=gate.GetComponentsInChildren<MeshRenderer>(true);if(layers.Length!=4)return false;
+            var frames=layers.Where(r=>r.name.EndsWith("_01_add_01",StringComparison.Ordinal)||r.name.EndsWith("_01_ab_01",StringComparison.Ordinal)).ToArray();
+            if(frames.Length!=2)return false;
+            // The fourth original transparent back layer extends beyond the cell. Check the actual
+            // indexed frame geometry, not the combined FX bounds, without rescaling either.
+            var frameBounds=IndexedGateBounds(gate,frames);
+            if(Vector3.Distance(frameBounds.size,Vector3.one)>.0001f||Mathf.Abs(frameBounds.center.x)+Mathf.Abs(frameBounds.center.z)>.0001f)return false;
+            foreach(var layer in layers)
+            {
+                var mesh=layer.GetComponent<MeshFilter>()?.sharedMesh;
+                if(mesh==null||!mesh.name.StartsWith("Gate-",StringComparison.Ordinal)||!mesh.isReadable||mesh.uv.Length!=mesh.vertexCount||mesh.colors32.Length!=0&&mesh.colors32.Length!=mesh.vertexCount)return false;
+                foreach(var material in layer.sharedMaterials)
+                    if(material==null||material.shader.name!="YesterdayConvoy/NativeGate"||material.renderQueue<3000||material.mainTexture==null||
+                        !material.mainTexture.name.StartsWith("Gate-",StringComparison.Ordinal)||material.GetFloat("_DstBlend")!=1&&material.GetFloat("_DstBlend")!=10)return false;
+            }
+            return true;
+        }
         void Drag(Vector2 from,Vector2 to)
         {
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(from));
@@ -143,16 +190,33 @@ namespace YesterdayConvoy
             var m=controller.Model;var terrain=Terrain();var terrainSet=new HashSet<MeshFilter>(terrain);result.savedMeshes=terrain.Length;
             CheckThat("authored-rectangle-has-saved-meshes",terrain.Length>20&&SceneManager.GetActiveScene().path=="Assets/Scenes/FormationBattle.unity");
             var cam=controller.battleCamera;
-            CheckThat("calibrated-forward-perspective-camera",cam!=null&&!cam.orthographic&&cam.transform.eulerAngles.x>30&&cam.transform.eulerAngles.x<65&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);
-            CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
+            CheckThat("native-map-keeps-full-virtual-camera-and-forward-view",cam!=null&&cam.rect==TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720))&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);
+            var nativeRoot=SceneManager.GetActiveScene().GetRootGameObjects().SingleOrDefault(go=>go.name=="LS5 native formation courtyard");
+            CheckThat("saved-native-ls5-root-and-112-unit-spaced-tiles",nativeRoot!=null&&nativeRoot.GetComponentsInChildren<MeshFilter>(true).Any(filter=>filter.sharedMesh!=null&&filter.sharedMesh.name.Contains(" / source "))&&SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Count(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal))==112&&Vector3.Distance(FormationBattleController.WorldPoint(Vector2.up)-FormationBattleController.WorldPoint(Vector2.zero),Vector3.forward)<.0001f);
+            var nativeTransforms=nativeRoot.GetComponentsInChildren<Transform>(true);
+            CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,8).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(6,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(13,row))));
+            CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("real-shop-starts-with-finite-gold-and-three-owned-lineup-pieces",controller.Shop.Gold==12&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
-            controller.SetMarketVisible(true);yield return Capture("player-market");
-            int offer=Enumerable.Range(0,5).First(i=>controller.Shop.Offers[i]!=null);
+            CheckThat("shared-original-A-presentation-and-platform-geometry",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==ManualBattleController.ShopLineupRect(i)&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
+            yield return Market(true);yield return Capture("player-market");
+            var beforeCovered=m.Units.ToDictionary(u=>u.Instance,u=>u.Spawn);int coveredGold=controller.Shop.Gold;
+            var covered=FormationBattleController.FormationOfferRect(0).center;
+            controller.ProcessPointer(EventType.MouseDown,covered);controller.ProcessPointer(EventType.MouseUp,covered);
+            CheckThat("original-A-market-blocks-map-pointer-through",m.Units.All(u=>beforeCovered[u.Instance]==u.Spawn)&&controller.Shop.Gold==coveredGold);
+            int offer=Enumerable.Range(0,5).First(i=>controller.Shop.Offers[i]=="CARD_M02"||controller.Shop.Offers[i]=="CARD_M09");
             string purchased=controller.Shop.Offers[offer];int price=controller.Shop.Definition(purchased).Cost;
             var receipt=controller.BuyOffer(offer);
             CheckThat("actual-offer-purchase-consumes-gold-stock-and-offer",receipt.Success&&controller.Shop.Gold==12-price&&controller.Shop.Offers[offer]==null&&controller.Shop.Bench.Any(p=>p.Instance==receipt.Instance));
-            controller.Shop.Validate();yield return Capture("player-purchased");controller.SetMarketVisible(false);yield return null;
+            var entering=controller.ShopEntranceModel(receipt.Instance);
+            CheckThat("original-recruitment-standing-model-enters-from-offer",controller.ShopArrivalCount>0&&entering!=null&&controller.ShopModelCamera!=null&&Vector2.Distance(StagePoint(entering.transform.position),FormationBattleController.FormationOfferRect(offer).center)<8);
+            controller.Shop.Validate();yield return new WaitForSecondsRealtime(1.1f);
+            var standing=controller.ShopBenchModel(receipt.Instance);var standingRect=controller.FormationPieceRect(receipt.Instance);
+            CheckThat("original-standing-model-stage-and-platform-foot",controller.ShopModelTarget!=null&&controller.ShopModelTarget.width==1920&&controller.ShopModelTarget.height==1080&&controller.ShopModelCamera.targetTexture==controller.ShopModelTarget&&standing!=null&&standing.sprite!=null&&standing.gameObject.layer==31&&standing.sprite.name.StartsWith(purchased.Substring(5)+"/idle/",StringComparison.Ordinal)&&Vector2.Distance(StagePoint(standing.transform.position),new Vector2(standingRect.center.x,standingRect.y+55))<2);
+            var idle=standing.sprite;bool idleChanged=false;double idleDeadline=Time.realtimeSinceStartupAsDouble+1.5;float oldScale=Time.timeScale;Time.timeScale=0;
+            while(!idleChanged&&Time.realtimeSinceStartupAsDouble<idleDeadline){yield return null;idleChanged=standing.sprite!=idle;}
+            Time.timeScale=oldScale;CheckThat("standing-stage-plays-real-idle-during-simulation-pause",idleChanged);
+            yield return Capture("player-purchased");yield return Market(false);
             yield return Capture("player-preparation");
 
             var first=m.Units.First(u=>u.Enabled);var second=m.Units.First(u=>u.Enabled&&u.Slot!=first.Slot);
@@ -162,7 +226,7 @@ namespace YesterdayConvoy
             string placed=Formation(m);Drag(first.Spawn,new Vector2(10,4));
             CheckThat("pointer-enemy-half-drop-is-atomic",Formation(m)==placed&&m.Clock==0&&m.Phase==FormationPhase.Preparation);
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
-            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,650));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,650));
+            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,610));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,610));
             CheckThat("pointer-hud-drop-keeps-placement",Formation(m)==placed);
             Drag(first.Spawn,second.Spawn);
             CheckThat("pointer-swap-can-be-reversed",first.Spawn==firstSpawn&&second.Spawn==secondSpawn);
@@ -191,9 +255,14 @@ namespace YesterdayConvoy
             CheckThat("automatic-production-combat-causes-real-damage",m.Units.Sum(u=>u.DamageDone)>0&&m.Defenders.All(d=>!d.Alive));
             yield return Capture("player-victory");
 
-            int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();controller.SetMarketVisible(false);
+            int round=m.Round;int beforeReward=controller.Shop.Gold;controller.NextRound();yield return Market(false);
             CheckThat("next-round-keeps-formation",m.Round==round+1&&m.Phase==FormationPhase.Preparation&&Formation(m)==formation);
             CheckThat("won-round-grants-real-shop-reward-once",controller.Shop.Gold>beforeReward);
+            CheckThat("real-experience-purchase-unlocks-fourth-population",controller.BuyExperience().Success&&controller.Shop.Level>=4);
+            var reserve=controller.FormationPieceRect(receipt.Instance).center;var lineup=FormationBattleController.FormationLineupRect(3).center;
+            controller.ProcessPointer(EventType.MouseDown,reserve);controller.ProcessPointer(EventType.MouseDrag,lineup);controller.ProcessPointer(EventType.MouseUp,lineup);
+            CheckThat("actual-purchased-reserve-drops-on-original-platform-and-enters-lineup",controller.Session.Seats.InLineup(receipt.Instance)&&m.Units.Any(u=>u.Instance==receipt.Instance&&u.ArtId==receipt.Id.Substring(5))&&m.EnabledCount==4);
+            formation=Formation(m);controller.Shop.Validate();
             string guards=GuardLayout(m);controller.StartBattle();m.Advance(1);controller.Retry();
             CheckThat("same-round-retry-keeps-defender-layout-and-formation",m.Phase==FormationPhase.Preparation&&m.Clock==0&&GuardLayout(m)==guards&&Formation(m)==formation);
             CheckThat("retry-preserves-authored-terrain-instances",terrainSet.SetEquals(Terrain()));
@@ -204,7 +273,7 @@ namespace YesterdayConvoy
             CheckThat("configured-short-deadline-produces-real-loss",m.Phase==FormationPhase.Lost&&m.TimeRemaining<=.001);
             yield return Capture("player-timeout-configured");
 
-            controller.ResetDemo();m=controller.Model;controller.SetMarketVisible(false);
+            controller.ResetDemo();m=controller.Model;yield return Market(false);
             int soldierInstance=m.Units.Single(u=>u.ArtId=="M07").Instance;
             foreach(var unit in m.Units.Where(u=>u.Instance!=soldierInstance).ToArray())
                 CheckThat("legal-bench-move-"+unit.ArtId,controller.MovePiece(unit.Instance,false,controller.Session.Seats.FirstEmpty(false,10)).Success);

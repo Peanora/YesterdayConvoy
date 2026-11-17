@@ -16,7 +16,8 @@ namespace YesterdayConvoy
         public ShopTrialModel Shop=>Session?.Shop;
         public bool Ready {get;private set;}
         public int SelectedSlot {get;private set;}=0;
-        public static Rect BattleRect=>new Rect(0,65,1280,500);
+        public static Rect BattleRect=>new Rect(0,0,1280,720);
+        public static Rect BoardInputRect=>new Rect(188,65,816,418);
         public Camera battleCamera;
         public Material actorTemplate,lineTemplate;
         public int seed=20261117;
@@ -66,7 +67,7 @@ namespace YesterdayConvoy
             }
             sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.15f;
             hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
-            Ready=true;SelectFirstLineup();SyncActors();
+            Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, finite shop and instance-based lineup");
         }
         static AudioClip Tone(string name,float hz,float duration)
@@ -80,6 +81,7 @@ namespace YesterdayConvoy
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             Model.Advance(Time.unscaledDeltaTime);
+            approvedShop?.Tick();
             if(Input.GetKeyDown(KeyCode.Tab))SetMarketVisible(!MarketVisible);
             if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
@@ -93,29 +95,30 @@ namespace YesterdayConvoy
         }
         void OnApplicationFocus(bool focus)
         {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
-        public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,(cell.y-3.5f)*.8f);
+        public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,cell.y-3.5f);
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
         bool TryCell(Vector2 point,out Vector2Int cell)
         {
-            if(!BattleRect.Contains(point)||FormationShopBlocksPoint(point)){cell=default;return false;}
+            if(!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point)){cell=default;return false;}
             var screen=TacticalViewport.Current.ToScreen(point);
             var ray=battleCamera.ScreenPointToRay(screen);var plane=new Plane(Vector3.up,new Vector3(0,.12f,0));
             if(!plane.Raycast(ray,out float distance)){cell=default;return false;}
-            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.RoundToInt(p.x+6.5f),Mathf.RoundToInt(p.z/.8f+3.5f));
+            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.RoundToInt(p.x+6.5f),Mathf.RoundToInt(p.z+3.5f));
             return cell.x>=0&&cell.x<14&&cell.y>=0&&cell.y<8;
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||Model.Phase!=FormationPhase.Preparation)return;
+            formationShopPointer=point;
             if(type==EventType.MouseDown)
             {
                 CancelFormationDrag();pointerHeld=true;pointerStart=point;
                 if(FormationShopPointerDown(point))return;
-                if(FormationShopBlocksPoint(point)||!BattleRect.Contains(point)){CancelFormationDrag();return;}
+                if(FormationShopBlocksPoint(point)||!BoardInputRect.Contains(point)){CancelFormationDrag();return;}
                 // Pick the visible character above its feet before projecting onto the ground grid.
                 // A click on a sprite's head must select it, not move it into the tile behind it.
                 FormationFighter picked=null;float nearest=float.MaxValue;
-                if(BattleRect.Contains(point))
+                if(BoardInputRect.Contains(point))
                     foreach(var unit in Model.Units.Where(u=>u.Enabled))
                     {
                         var foot=CellScreen(unit.Spawn);
@@ -168,9 +171,9 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
-            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
+            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;
-            SetMarketVisible(true);SelectFirstLineup();notice="新挑战：从真实金币、有限牌库与三人军团开始。";SyncActors();
+            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice="新挑战：从真实金币、有限牌库与三人军团开始。";SyncActors();
         }
         internal void SyncActors()
         {
@@ -232,6 +235,7 @@ namespace YesterdayConvoy
         }
         void OnDestroy()
         {
+            approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
             ArtMemoryCache.Pin(Array.Empty<string>());
             if(actorMaterial!=null)Destroy(actorMaterial);if(lineMaterial!=null)Destroy(lineMaterial);
             if(hitSound!=null)Destroy(hitSound);if(skillSound!=null)Destroy(skillSound);
