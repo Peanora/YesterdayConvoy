@@ -16,7 +16,8 @@ namespace YesterdayConvoy.Editor
         public const string RootName="LS5 native formation courtyard";
         const string GatePrefab="Assets/Art/Environment/BlackForestNative/NativeForest.prefab";
         static readonly Rect FloorFrame=new Rect(200,108,792,365);
-        static readonly string[] FloorNames={"0242","0275","0106","0267","0272","0110","0107","0273","0263","0234","0264","0114","0274","0270","0116","0233"};
+        static readonly string[] FloorNames={"0242","0275","0114","0233"};
+        static readonly string[] WhitePlatformNames={"S_export_cube199","S_export_cube200","S_export_cube179","S_export_cube201","S_export_cube94","S_export_cube177","S_export_cube203"};
 
         [MenuItem("Yesterday Convoy/Formation Battle/Apply Original LS-5 Environment")]
         public static void Apply()
@@ -24,6 +25,7 @@ namespace YesterdayConvoy.Editor
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play before authoring.");
             for(int i=0;i<SceneManager.sceneCount;i++)if(SceneManager.GetSceneAt(i).isDirty)throw new InvalidOperationException("Save dirty scenes first.");
             var catalog=FormationNativeAssetTools.EnsureImported();
+            FormationBoardMaterialTools.EnsureImported();
             var scene=EditorSceneManager.OpenScene(FormationBattleTools.ScenePath,OpenSceneMode.Single);
             var controller=Object.FindAnyObjectByType<FormationBattleController>();
             if(controller==null||controller.battleCamera==null)throw new InvalidOperationException("Formation scene bindings missing.");
@@ -40,7 +42,7 @@ namespace YesterdayConvoy.Editor
                 tile.rotation=Quaternion.identity;tile.localScale=Vector3.one;
                 var filter=tile.GetComponent<MeshFilter>()??tile.gameObject.AddComponent<MeshFilter>();filter.sharedMesh=FormationNativeAssetTools.GetMesh(source);
                 var renderer=tile.GetComponent<MeshRenderer>()??tile.gameObject.AddComponent<MeshRenderer>();
-                renderer.enabled=true;renderer.sharedMaterials=source.submeshes.Select(s=>FormationNativeAssetTools.GetMaterial(s.material)).ToArray();
+                renderer.enabled=true;renderer.sharedMaterials=source.submeshes.Select(s=>FormationBoardMaterialTools.GetMaterial(s.material,1+(col+row)%2)).ToArray();
                 renderer.shadowCastingMode=ShadowCastingMode.On;renderer.receiveShadows=true;renderer.lightmapIndex=-1;
                 foreach(var collider in tile.GetComponents<Collider>())Object.DestroyImmediate(collider);
             }
@@ -51,8 +53,8 @@ namespace YesterdayConvoy.Editor
             {
                 if(source.name=="BG_Qcity")
                 {
-                    var sky=new GameObject("Original LS-5 surrounding city").transform;sky.SetParent(root,false);sky.localScale=new Vector3(1.5f,1,1.8f);
-                    FormationNativeAssetTools.CreatePart(source,sky,true);continue;
+                    var sky=new GameObject("Original LS-5 surrounding city").transform;sky.SetParent(root,false);
+                    var background=FormationNativeAssetTools.CreatePart(source,sky,true);SetBoardMaterials(background,source);continue;
                 }
                 // Source-only occluders describe the original narrow corridor. They have no
                 // corresponding building after widening and would cast floating giant shadows.
@@ -62,6 +64,8 @@ namespace YesterdayConvoy.Editor
                 // widened. Keep them in the source catalogue rather than leave floating fragments.
                 if(source.SourceBoundsMin.y>2.5f&&sourceSize.x<.8f&&sourceSize.y<.8f&&sourceSize.z<.8f)continue;
                 var p=source.SourcePosition;
+                // The two old nine-cell corridor ledges are replaced by complete saved board rims.
+                if(source.name.StartsWith("S_export_cube",StringComparison.Ordinal)&&source.SourceBoundsMax.y<.3f&&Mathf.Abs(Mathf.Abs(p.z)-1.5f)<.01f)continue;
                 // The native stage has a narrow central corridor. Move its complete service bands out
                 // around our fixed open rectangle, retaining each band's original relative prop positions.
                 if(p.z>=1.45f)p.z+=3.05f;
@@ -75,13 +79,36 @@ namespace YesterdayConvoy.Editor
                 {
                     if(p.z>=0)p.z=4.12f-localMin.z;else p.z=-4.12f-localMax.z;
                 }
-                var go=FormationNativeAssetTools.CreatePart(source,surroundings);go.transform.localPosition=p+Vector3.up*.14f;dressed++;
+                var go=FormationNativeAssetTools.CreatePart(source,surroundings);go.transform.localPosition=p+Vector3.up*.14f;SetBoardMaterials(go,source);dressed++;
             }
+            CreateRaisedPerimeter(root);
             CreateGates(root);
             SetupLighting(scene);
             FrameCamera(controller.battleCamera);
             EditorSceneManager.MarkSceneDirty(scene);AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene);
-            Validate();CapturePreview();Debug.Log("FORMATION_LS5_AUTHOR_PASS: 112 original floor cells, "+dressed+" source perimeter parts, original background mesh, 16 full-cell native gates");
+            Validate();CapturePreview();Debug.Log("FORMATION_BOARD_AUTHOR_PASS: 112 checkerboard floor cells, 44 source raised rim cells, "+dressed+" source perimeter parts, source background, 16 full-cell transparent gates");
+        }
+
+        static void SetBoardMaterials(GameObject go,FormationNativeAssetTools.NativePart source)
+        {
+            go.GetComponent<MeshRenderer>().sharedMaterials=source.submeshes.Select(s=>FormationBoardMaterialTools.GetMaterial(s.material)).ToArray();
+        }
+
+        static void CreateRaisedPerimeter(Transform root)
+        {
+            var rim=new GameObject("Original LS-5 raised perimeter").transform;rim.SetParent(root,false);
+            foreach(int side in new[]{-1,1})for(int col=0;col<14;col++)
+            {
+                var source=FormationNativeAssetTools.FindPartName(WhitePlatformNames[col%WhitePlatformNames.Length]);
+                var go=FormationNativeAssetTools.CreatePart(source,rim);go.name="White platform "+side+" / "+col;
+                go.transform.localPosition=new Vector3(col-6.5f,.14f,side*4.5f);SetBoardMaterials(go,source);
+            }
+            var grey=FormationNativeAssetTools.FindPartName("S_export_cube232");
+            foreach(int side in new[]{-1,1})for(int row=0;row<8;row++)
+            {
+                var go=FormationNativeAssetTools.CreatePart(grey,rim);go.name="Side platform "+side+" / "+row;
+                go.transform.localPosition=new Vector3(side*7.5f,.14f,row-3.5f);SetBoardMaterials(go,grey);
+            }
         }
 
         static void CreateGates(Transform root)
@@ -97,7 +124,11 @@ namespace YesterdayConvoy.Editor
                     go.transform.localPosition=FormationBattleController.WorldPoint(new Vector2(red?6:13,row));
                     go.transform.localRotation=Quaternion.identity;go.transform.localScale=Vector3.one;
                     foreach(var collider in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
-                    foreach(var renderer in go.GetComponentsInChildren<MeshRenderer>(true)){renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;}
+                    foreach(var renderer in go.GetComponentsInChildren<MeshRenderer>(true))
+                    {
+                        renderer.sharedMaterials=renderer.sharedMaterials.Select(m=>FormationBoardMaterialTools.GetGateMaterial(m,red)).ToArray();
+                        renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;
+                    }
                 }
             }
         }
@@ -112,11 +143,10 @@ namespace YesterdayConvoy.Editor
             var source=records.settings.Single(s=>s.type=="Light"&&s.name=="MainLight");var m=source.worldMatrix;
             var forward=new Vector3(m[2],-m[10],m[6]);var up=new Vector3(m[1],-m[9],m[5]);
             var sun=new GameObject("Original LS-5 sun",typeof(Light)).GetComponent<Light>();sun.type=LightType.Directional;
-            // The source mixed/baked lighting and game shaders are not available here. Copying
-            // its warm direct term alone makes Standard surfaces ochre, without the original
-            // baked balance. Keep the source direction and probe, with a scene-local neutral key.
-            sun.transform.rotation=Quaternion.LookRotation(forward,up);sun.color=new Color(.92f,.94f,1f);sun.intensity=1.35f;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.45f;sun.shadowBias=.035f;sun.shadowNormalBias=.2f;
+            // Use the same display conversion as the accepted native-model preview. The new
+            // formation-only surfaces read original ambient UV2 and receive this layout's shadows.
+            sun.transform.rotation=Quaternion.LookRotation(forward,up);sun.color=source.data.m_Color.gamma;sun.intensity=source.data.m_Intensity;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=1;sun.shadowBias=.05f;sun.shadowNormalBias=.2f;
             RenderSettings.fog=false;RenderSettings.skybox=null;
             FormationNativeLightingTools.ApplySourceAmbientProbe();
         }
@@ -163,6 +193,16 @@ namespace YesterdayConvoy.Editor
             {
                 var mesh=tile.GetComponent<MeshFilter>()?.sharedMesh;
                 if(mesh==null||!AssetDatabase.GetAssetPath(mesh).StartsWith(FormationNativeAssetTools.ArtPath+"/",StringComparison.Ordinal))throw new InvalidOperationException("Non-native floor mesh: "+tile.name);
+                var renderer=tile.GetComponent<MeshRenderer>();
+                if(Mathf.Abs(renderer.bounds.max.y-.12f)>.002f||tile.GetComponents<Collider>().Length>0||renderer.sharedMaterials.Any(m=>m.shader.name!=FormationBoardMaterialTools.SurfaceShaderName))throw new InvalidOperationException("Board cells must keep a clear level deployment surface and their independent materials.");
+            }
+            var perimeter=root.GetComponentsInChildren<Transform>().Single(t=>t.name=="Original LS-5 raised perimeter");
+            var raised=perimeter.GetComponentsInChildren<MeshRenderer>();
+            if(raised.Length!=44)throw new InvalidOperationException("Expected 28 white platform cells and 16 grey side cells.");
+            foreach(var renderer in raised)
+            {
+                var b=renderer.bounds;
+                if(b.max.x> -6.99f&&b.min.x<6.99f&&b.max.z> -3.99f&&b.min.z<3.99f)throw new InvalidOperationException("Raised platform intrudes into the deployable board: "+renderer.name);
             }
             foreach(string color in new[]{"Red","Blue"})for(int row=0;row<8;row++)
             {
@@ -175,7 +215,7 @@ namespace YesterdayConvoy.Editor
             if(projected.xMin<180||projected.xMax>1012||projected.yMin<65||projected.yMax>485)throw new InvalidOperationException("Saved native map projects outside original A safe frame: "+projected);
             foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())
                 if(renderer.sharedMaterials.Any(m=>m==null||string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m))))throw new InvalidOperationException("Unsaved native material.");
-            Debug.Log("FORMATION_LS5_VALIDATE_PASS: native source meshes, 112 square cells, 8+8 full native transparent gates, source 60deg/40FOV camera, floorFrame="+projected);
+            Debug.Log("FORMATION_BOARD_VALIDATE_PASS: 112 level checker cells, 44 raised perimeter cells, independent source-lit surfaces, 8+8 full transparent gates, 60deg/40FOV camera, floorFrame="+projected);
         }
 
         [MenuItem("Yesterday Convoy/Formation Battle/Capture Original LS-5 Scene")]

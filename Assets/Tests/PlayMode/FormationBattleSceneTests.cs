@@ -63,6 +63,8 @@ namespace YesterdayConvoy.Tests
         }
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
+        static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-7+.01f||bounds.min.x>=7-.01f||
+            bounds.max.z<=-4+.01f||bounds.min.z>=4-.01f;
         void Drag(Vector2 from,Vector2 to)
         {
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(from));
@@ -191,9 +193,16 @@ namespace YesterdayConvoy.Tests
                         Assert.That(mesh.colors32.Length,Is.EqualTo(0).Or.EqualTo(mesh.vertexCount),"Keep the source colour stream when present; the imported native gate meshes currently have no colour channel.");
                         foreach(var material in renderer.sharedMaterials)
                         {
-                            Assert.That(material,Is.Not.Null);Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/NativeGate"));
+                            Assert.That(material,Is.Not.Null);Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/FormationNativeGate"));
+                            Assert.That(material.shader.isSupported,Is.True);
                             Assert.That(material.renderQueue,Is.GreaterThanOrEqualTo(3000));Assert.That(material.mainTexture,Is.Not.Null);
                             Assert.That(material.GetFloat("_DstBlend"),Is.EqualTo(1).Or.EqualTo(10));
+                            Assert.That(material.HasProperty("_TintColor"),Is.True,"The board gate must preserve the preview's explicit colour treatment.");
+                            var tint=isRed?new Color(.45f,.11f,.13f,.75f):new Color(.22f,.42f,.65f,.65f);
+                            Assert.That(Vector4.Distance(material.GetColor("_TintColor"),tint),Is.LessThan(.0001f));
+#if UNITY_EDITOR
+                            Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationBoard/"),"The formation appearance must be a persistent local material rather than altering the original map's shared material.");
+#endif
                         }
                     }
 #if UNITY_EDITOR
@@ -202,7 +211,22 @@ namespace YesterdayConvoy.Tests
                     var sourceGate=source.GetComponentsInChildren<Transform>(true).Single(t=>t.name==(isRed?"R1 / Native tile_start":"B1 / Native tile_end"));
                     var sourceLayers=sourceGate.GetComponentsInChildren<MeshRenderer>(true);
                     CollectionAssert.AreEquivalent(sourceLayers.Select(r=>r.GetComponent<MeshFilter>().sharedMesh),renderers.Select(r=>r.GetComponent<MeshFilter>().sharedMesh),"Reuse actual source meshes with original UVs and colour-channel presence; do not invent alpha data for the test.");
-                    CollectionAssert.AreEquivalent(sourceLayers.SelectMany(r=>r.sharedMaterials),renderers.SelectMany(r=>r.sharedMaterials),"Reuse actual source transparent materials and textures.");
+                    foreach(var actualLayer in renderers)
+                    {
+                        var sourceLayer=sourceLayers.Single(r=>r.name==actualLayer.name);
+                        Assert.That(actualLayer.GetComponent<MeshFilter>().sharedMesh,Is.SameAs(sourceLayer.GetComponent<MeshFilter>().sharedMesh));
+                        Assert.That(actualLayer.sharedMaterials.Length,Is.EqualTo(sourceLayer.sharedMaterials.Length));
+                        for(int index=0;index<sourceLayer.sharedMaterials.Length;index++)
+                        {
+                            var original=sourceLayer.sharedMaterials[index];var adapted=actualLayer.sharedMaterials[index];
+                            Assert.That(adapted,Is.Not.SameAs(original),"Appearance changes must not mutate another map's material.");
+                            Assert.That(original.shader.name,Is.EqualTo("YesterdayConvoy/NativeGate"));
+                            Assert.That(adapted.mainTexture,Is.SameAs(original.mainTexture),"Keep the original gate texture instead of replacing the source geometry with a drawn substitute.");
+                            Assert.That(adapted.GetTextureScale("_MainTex"),Is.EqualTo(original.GetTextureScale("_MainTex")));
+                            Assert.That(adapted.GetTextureOffset("_MainTex"),Is.EqualTo(original.GetTextureOffset("_MainTex")));
+                            Assert.That(adapted.GetFloat("_DstBlend"),Is.EqualTo(original.GetFloat("_DstBlend")));
+                        }
+                    }
                     var sourceBounds=IndexedGateBounds(sourceGate,sourceLayers);var actualBounds=IndexedGateBounds(gate,renderers);
                     Assert.That(Vector3.Distance(actualBounds.size,sourceBounds.size),Is.LessThan(.0001f),"Retain the original back-effect extent rather than shrinking the complete gate to one cell.");
                     Assert.That(Vector3.Distance(actualBounds.center,sourceBounds.center),Is.LessThan(.0001f),"Preserve the source placement of all four rendered layers.");
@@ -212,7 +236,33 @@ namespace YesterdayConvoy.Tests
             var tiles=transforms.Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)&&t.gameObject.activeInHierarchy).ToArray();
             Assert.That(tiles.Length,Is.EqualTo(112));
             Assert.That(Vector3.Distance(FormationBattleController.WorldPoint(Vector2.up)-FormationBattleController.WorldPoint(Vector2.zero),Vector3.forward),Is.LessThan(.0001f),"Native cells use unit row spacing, without the previous 0.8 compression.");
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: original LS-5, 112 unit-spaced tiles, original four-layer full-cell transparent gates at columns 6/13.");
+            foreach(var tile in tiles)
+            {
+                var coordinates=tile.name.Substring(5).Split(',');
+                var expected=FormationBattleController.WorldPoint(new Vector2(int.Parse(coordinates[0]),int.Parse(coordinates[1])));
+                var renderer=tile.GetComponent<MeshRenderer>();Assert.That(renderer,Is.Not.Null);
+                Assert.That(Vector2.Distance(new Vector2(renderer.bounds.center.x,renderer.bounds.center.z),new Vector2(expected.x,expected.z)),Is.LessThan(.001f));
+                Assert.That(renderer.bounds.max.y,Is.EqualTo(.12f).Within(.001f),"The saved playable board must remain flat at the logical actor feet, even with raised decorative platforms nearby.");
+                Assert.That(tile.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
+                foreach(var material in renderer.sharedMaterials)
+                {
+                    Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/FormationNativeSurface"));
+                    Assert.That(material.shader.isSupported,Is.True);
+                    Assert.That(material.GetTexture("_NativeAmbient"),Is.Not.Null,"The saved material must carry its source RGBM ambient texture into the Player.");
+                    Assert.That(material.GetTexture("_NativeReflection"),Is.InstanceOf<Cubemap>(),"The preview reflection must be a saved runtime dependency.");
+#if UNITY_EDITOR
+                    Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationBoard/"));
+                    Assert.That(AssetDatabase.GetAssetPath(material.GetTexture("_NativeAmbient")),Does.StartWith("Assets/Art/Environment/FormationNative/"));
+                    Assert.That(AssetDatabase.GetAssetPath(material.GetTexture("_NativeReflection")),Does.StartWith("Assets/Art/Environment/FormationBoard/"));
+#endif
+                }
+            }
+            Assert.That(tiles.Select(t=>t.GetComponent<MeshRenderer>().sharedMaterial.GetColor("_CheckerTint")).Distinct().Count(),Is.GreaterThanOrEqualTo(2),"The saved board must retain its two visible checker tones.");
+            var perimeter=courtyard.transform.Find("Original LS-5 raised perimeter");Assert.That(perimeter,Is.Not.Null);
+            var raised=perimeter.GetComponentsInChildren<MeshRenderer>(true);Assert.That(raised.Length,Is.EqualTo(44));
+            Assert.That(raised.All(r=>OutsideBoard(r.bounds)),Is.True,"Raised decoration must not occupy the flat fighting board or deployment cells.");
+            Assert.That(perimeter.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: 112 flat checker cells, 44 raised perimeter parts, source gate geometry with independent preview materials at columns 6/13.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {

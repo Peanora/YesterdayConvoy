@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved native LS-5 map, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits or final visual acceptance.";
+            public string scope="Accelerated replay through the production shop transactions, shared original A shop presentation and standing-model stage, saved native checker board with preview surface/gate materials and raised perimeter, pointer handlers and formation combat with actual Player screenshots. One real offer is bought with starting gold. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge or result is injected. This does not establish human interaction, full campaign economy, all character kits, exact original-game appearance or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -120,6 +120,16 @@ namespace YesterdayConvoy
         }
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
+        static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-7+.01f||bounds.min.x>=7-.01f||
+            bounds.max.z<=-4+.01f||bounds.min.z>=4-.01f;
+        static bool FlatBoardCell(Transform tile)
+        {
+            var coordinates=tile.name.Substring(5).Split(',');
+            if(coordinates.Length!=2||!int.TryParse(coordinates[0],out int column)||!int.TryParse(coordinates[1],out int row))return false;
+            var expected=FormationBattleController.WorldPoint(new Vector2(column,row));var renderer=tile.GetComponent<MeshRenderer>();
+            if(renderer==null||Vector2.Distance(new Vector2(renderer.bounds.center.x,renderer.bounds.center.z),new Vector2(expected.x,expected.z))>.001f||Mathf.Abs(renderer.bounds.max.y-.12f)>.001f||tile.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled))return false;
+            return renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(material=>material!=null&&material.shader.name=="YesterdayConvoy/FormationNativeSurface"&&material.shader.isSupported&&material.HasProperty("_CheckerTint")&&material.GetTexture("_NativeAmbient")!=null&&material.GetTexture("_NativeReflection") is Cubemap);
+        }
         static string Formation(FormationBattleModel model)=>string.Join(";",model.Units.OrderBy(u=>u.Instance).Select(u=>$"{u.Instance}:{u.ArtId}:{u.Spawn.x},{u.Spawn.y}:{u.Star}:{u.Enabled}"));
         static string GuardLayout(FormationBattleModel model)=>string.Join(";",model.Defenders.Select(d=>$"{d.ArtId}:{d.Position.x},{d.Position.y}"));
         IEnumerator Market(bool visible)
@@ -164,8 +174,12 @@ namespace YesterdayConvoy
                 var mesh=layer.GetComponent<MeshFilter>()?.sharedMesh;
                 if(mesh==null||!mesh.name.StartsWith("Gate-",StringComparison.Ordinal)||!mesh.isReadable||mesh.uv.Length!=mesh.vertexCount||mesh.colors32.Length!=0&&mesh.colors32.Length!=mesh.vertexCount)return false;
                 foreach(var material in layer.sharedMaterials)
-                    if(material==null||material.shader.name!="YesterdayConvoy/NativeGate"||material.renderQueue<3000||material.mainTexture==null||
-                        !material.mainTexture.name.StartsWith("Gate-",StringComparison.Ordinal)||material.GetFloat("_DstBlend")!=1&&material.GetFloat("_DstBlend")!=10)return false;
+                {
+                    if(material==null||material.shader.name!="YesterdayConvoy/FormationNativeGate"||!material.shader.isSupported||material.renderQueue<3000||material.mainTexture==null||
+                        !material.mainTexture.name.StartsWith("Gate-",StringComparison.Ordinal)||material.GetFloat("_DstBlend")!=1&&material.GetFloat("_DstBlend")!=10||!material.HasProperty("_TintColor"))return false;
+                    var tint=cell.x==6?new Color(.45f,.11f,.13f,.75f):new Color(.22f,.42f,.65f,.65f);
+                    if(Vector4.Distance(material.GetColor("_TintColor"),tint)>.0001f)return false;
+                }
             }
             return true;
         }
@@ -195,6 +209,10 @@ namespace YesterdayConvoy
             CheckThat("saved-native-ls5-root-and-112-unit-spaced-tiles",nativeRoot!=null&&nativeRoot.GetComponentsInChildren<MeshFilter>(true).Any(filter=>filter.sharedMesh!=null&&filter.sharedMesh.name.Contains(" / source "))&&SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Count(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal))==112&&Vector3.Distance(FormationBattleController.WorldPoint(Vector2.up)-FormationBattleController.WorldPoint(Vector2.zero),Vector3.forward)<.0001f);
             var nativeTransforms=nativeRoot.GetComponentsInChildren<Transform>(true);
             CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,8).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(6,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(13,row))));
+            var boardCells=SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Where(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
+            CheckThat("saved-checker-board-is-flat-and-carries-preview-surface-dependencies",boardCells.Length==112&&boardCells.All(FlatBoardCell)&&boardCells.Select(t=>t.GetComponent<MeshRenderer>().sharedMaterial.GetColor("_CheckerTint")).Distinct().Count()>=2);
+            var perimeter=nativeTransforms.SingleOrDefault(t=>t.name=="Original LS-5 raised perimeter");
+            CheckThat("saved-raised-perimeter-leaves-fighting-board-clear",perimeter!=null&&perimeter.GetComponentsInChildren<MeshRenderer>(true).Length==44&&perimeter.GetComponentsInChildren<MeshRenderer>(true).All(r=>OutsideBoard(r.bounds))&&!perimeter.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled));
             CheckThat("original-character-sprites-visible",Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Count(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31&&r.transform.IsChildOf(controller.transform))>=m.Units.Count(u=>u.Enabled)+m.Defenders.Count);
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("real-shop-starts-with-finite-gold-and-three-owned-lineup-pieces",controller.Shop.Gold==12&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
