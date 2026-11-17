@@ -42,7 +42,7 @@ namespace YesterdayConvoy.Tests
                 session.Seats.For(piece.Instance)?.Lineup + ":" + session.Seats.For(piece.Instance)?.Index)) + "#" +
             string.Join("|", session.Shop.Offers) + "#" + string.Join("|", session.Shop.Roles.Select(role => role.Id + ":" + session.Shop.Available(role.Id)));
 
-        [TestCase(5, 6)]
+        [TestCase(11, 6)]
         [TestCase(4, 7)]
         [TestCase(-1, 0)]
         [TestCase(0, -1)]
@@ -135,9 +135,11 @@ namespace YesterdayConvoy.Tests
         {
             var model = Roster(Entry(1, "M28", 1, 2)); var unit = model.Units.Single();
             model.Defenders.RemoveRange(1, model.Defenders.Count - 1); var guard = model.Defenders[0];
-            guard.Position = unit.SpawnCenter; guard.MaxHealth = guard.Health = 1000000;
+            guard.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 2.5f); guard.MaxHealth = guard.Health = 1000000;
             guard.Attack = 1000000; guard.Range = 20; guard.Interval = 1; guard.Healer = false;
-            Assert.That(model.StartBattle(), Is.True); model.Advance(.025f);
+            Assert.That(model.StartBattle(), Is.True);
+            unit.Position = new Vector2(FormationBattleModel.DeploymentColumns + 1, 2.5f);
+            model.Advance(.025f);
             Assert.That(unit.Alive, Is.False); Assert.That(unit.Deaths, Is.EqualTo(1));
             guard.Alive = false; guard.Health = 0;
             model.Advance((float)model.ReviveSeconds);
@@ -178,7 +180,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void SlotMoveFailsWithoutChangingSeatsWhenNoCompleteLargeFootprintFits()
+        public void ExpandedPreparationAreaFitsAnotherLargeBodyPastTheFormerCrowdedHalf()
         {
             var session = Session(7, "CARD_M07", "CARD_M08", "CARD_M10", "CARD_M20", "CARD_M28", "CARD_M34", "CARD_M36");
             var model = Bind(session);
@@ -192,10 +194,14 @@ namespace YesterdayConvoy.Tests
             };
             Assert.That(model.ApplyRoster(model.Units.Select(unit => new FormationRosterEntry
             { Instance = unit.Instance, ArtId = unit.ArtId, Star = unit.Star, Spawn = anchors[unit.ArtId] }).ToArray(), 7), Is.True);
-            session.SavePositions(model); string before = Snapshot(session, model);
-            Assert.That(session.Move(Instance(session, "CARD_M36"), true, 6).Success, Is.False,
-                "These six bodies leave empty cells but intersect every possible 2x2 placement.");
-            Assert.That(Snapshot(session, model), Is.EqualTo(before));
+            session.SavePositions(model);
+            Assert.That(session.Move(Instance(session, "CARD_M36"), true, 6).Success, Is.True,
+                "The expanded 12x8 deployment area has space beyond the formerly crowded 6x8 half.");
+            session.ApplyTo(model);
+            var added = model.Units.Single(unit => unit.ArtId == "M36");
+            Assert.That(added.Spawn.x, Is.GreaterThanOrEqualTo(6));
+            Assert.That(FormationDeployment.Fits(added.DeploymentCells), Is.True);
+            Assert.That(model.Units.Where(unit => unit != added).All(unit => !unit.DeploymentCells.Overlaps(added.DeploymentCells)), Is.True);
         }
 
         [Test]
@@ -206,7 +212,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(session.TryDeploy(instance, new Vector2Int(0, 4)).Success, Is.True);
             Assert.That(model.StartBattle(), Is.True);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
-            model.Units.Single(unit => unit.Instance == instance).Position = new Vector2(13, 0);
+            model.Units.Single(unit => unit.Instance == instance).Position = new Vector2(FormationBattleModel.Width - 1, 0);
             model.Advance(.025f); Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
             Assert.That(session.AdvanceRound(), Is.True); model = Bind(session);
             var large = model.Units.Single(unit => unit.Instance == instance);
@@ -223,7 +229,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(preview.Valid, Is.True); Assert.That(preview.Cells, Is.EqualTo(new RectInt(3, 5, 3, 3)));
             Assert.That(preview.SwapCells, Is.EqualTo(new RectInt(0, 0, 1, 1)));
             Assert.That(FormationDeployment.Center(new Vector2(3, 5), new Vector2Int(3, 3)), Is.EqualTo(new Vector2(4, 6)));
-            Assert.That(FormationDeployment.Preview(occupied, 0, new Vector2Int(4, 5)).Valid, Is.False);
+            Assert.That(FormationDeployment.Preview(occupied, 0, new Vector2Int(FormationBattleModel.DeploymentColumns - 2, 5)).Valid, Is.False);
             Assert.That(occupied[0], Is.EqualTo(new RectInt(0, 0, 3, 3)), "Planning never modifies the original occupied areas.");
         }
     }

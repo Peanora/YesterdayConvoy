@@ -5,53 +5,53 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleController
     {
-        const float FormationCameraTravelSeconds = .42f;
+        // Layer 31 belongs to the original recruitment RenderTexture stage.
+        const int FormationLeftLayer = 29, FormationRightLayer = 30;
         static readonly Quaternion FormationCameraRotation = Quaternion.Euler(60, 0, 0);
         static readonly Vector3 FormationCameraForward = FormationCameraRotation * Vector3.forward;
         static readonly Vector3 FormationCameraUp = FormationCameraRotation * Vector3.up;
         static readonly Vector3 FormationCameraRight = FormationCameraRotation * Vector3.right;
         static readonly Quaternion FormationCameraInverse = Quaternion.Inverse(FormationCameraRotation);
-
-        // This stays inside the existing map pointer area, above the original A lineup and
-        // left of its recruitment list. The camera continues to render the full virtual canvas.
         public static Rect FormationCameraSafeRect => new Rect(204, 72, 790, 400);
         public bool ViewingDefenders { get; private set; }
-        public bool CameraTransitioning => formationCameraInitialized && formationCameraBlend < 1;
-        public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation &&
-            !ViewingDefenders && !CameraTransitioning;
-
+        public bool CameraTransitioning => false;
+        public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation && !ViewingDefenders;
         bool formationCameraInitialized, formationCameraWasPreparing;
-        int formationCameraRound, formationCameraSignature;
-        float formationCameraBlend = 1, formationCameraRefitTime;
-        Vector3 formationCameraFrom, formationCameraTarget;
+        int formationCameraRound, formationOriginalCameraMask;
+        Vector3 formationLeftPose, formationRightPose;
         readonly List<Vector3> formationCameraPoints = new List<Vector3>();
+
+        public bool FormationPointVisibleInView(Vector2 point) => ViewingDefenders == (point.x >= FormationBattleModel.DeploymentColumns + .5f);
+        public bool FormationActorVisibleInView(FormationActor actor) => actor != null && FormationPointVisibleInView(actor.Position);
 
         internal void InitializeFormationCamera()
         {
             if (battleCamera == null || Model == null) return;
             formationCameraInitialized = true;
+            formationOriginalCameraMask = battleCamera.cullingMask;
             formationCameraWasPreparing = Model.Phase == FormationPhase.Preparation;
             formationCameraRound = Model.Round;
             ViewingDefenders = !formationCameraWasPreparing;
-            ReframeFormationCamera(true);
+            // Both poses depend only on authored map dimensions and maximum presentation size.
+            // Moving, buying, animating or losing a unit never reframes either view.
+            formationLeftPose = FixedFormationPose(false);
+            formationRightPose = FixedFormationPose(true);
+            ClassifyFormationEnvironment();
+            ApplyFixedFormationView();
         }
-
         public void ToggleFormationView()
         {
-            if (Model != null && Model.Phase == FormationPhase.Preparation)
-                SetFormationView(!ViewingDefenders);
+            if (Model != null && Model.Phase == FormationPhase.Preparation) SetFormationView(!ViewingDefenders);
         }
-
         public void SetFormationView(bool defenders, bool immediate = false)
         {
             if (battleCamera == null || Model == null) return;
             if (!formationCameraInitialized) InitializeFormationCamera();
-            // Scouting is a preparation choice; an active battle always shows the guard side.
             ViewingDefenders = Model.Phase == FormationPhase.Preparation ? defenders : true;
             CancelFormationDrag();
-            ReframeFormationCamera(immediate);
+            ApplyFixedFormationView();
+            if (Ready) SyncActors();
         }
-
         internal void TickFormationCamera(float unscaledDt)
         {
             if (battleCamera == null || Model == null) return;
@@ -61,102 +61,46 @@ namespace YesterdayConvoy
                 SetFormationView(!preparing);
             formationCameraWasPreparing = preparing;
             formationCameraRound = Model.Round;
-
-            formationCameraRefitTime += Mathf.Max(0, unscaledDt);
-            if (!pointerHeld && formationCameraRefitTime >= .15f)
-            {
-                formationCameraRefitTime = 0;
-                int signature = FormationCameraRosterSignature();
-                // Moving a prepared large unit may change its required headroom. During battle,
-                // expand only when a visible body needs room, so idle frames do not pump the zoom.
-                if (preparing && signature != formationCameraSignature)
-                    ReframeFormationCamera(false);
-                else if (!preparing && FormationCameraNeedsHeadroom())
-                    ReframeFormationCamera(false, true);
-            }
-            formationCameraBlend = Mathf.Min(1, formationCameraBlend + Mathf.Max(0, unscaledDt) / FormationCameraTravelSeconds);
-            float eased = Mathf.SmoothStep(0, 1, formationCameraBlend);
-            ApplyFormationCamera(Vector3.Lerp(formationCameraFrom, formationCameraTarget, eased));
+            ApplyFixedFormationView();
         }
-
-        int FormationCameraRosterSignature()
+        void ApplyFixedFormationView()
         {
-            unchecked
-            {
-                int hash = ViewingDefenders ? 17 : 31;
-                foreach (var actor in Model.Units)
-                    if (actor.Enabled && (!ViewingDefenders || actor.Position.x >= 6.5f))
-                        hash = ((hash * 397 ^ actor.Id) * 397 ^ actor.Position.GetHashCode()) * 397 ^ Mathf.RoundToInt(ActorPresentationHeight(actor) * 100);
-                if (ViewingDefenders)
-                    foreach (var actor in Model.Defenders)
-                        hash = ((hash * 397 ^ actor.Id) * 397 ^ actor.Position.GetHashCode()) * 397 ^ Mathf.RoundToInt(ActorPresentationHeight(actor) * 100);
-                return hash;
-            }
+            int hiddenLayer = ViewingDefenders ? FormationLeftLayer : FormationRightLayer;
+            battleCamera.cullingMask = formationOriginalCameraMask & ~(1 << hiddenLayer);
+            ApplyFormationCamera(ViewingDefenders ? formationRightPose : formationLeftPose);
         }
-
-        void ReframeFormationCamera(bool immediate, bool expandOnly = false)
-        {
-            CollectFormationCameraPoints();
-            Vector3 focus = new Vector3(ViewingDefenders ? 3.5f : -3.5f, .12f, 0);
-            float minimumDistance = expandOnly ? Vector3.Dot(focus - formationCameraTarget, FormationCameraForward) : 0;
-            Vector3 target = FitFormationCamera(focus, minimumDistance);
-            formationCameraSignature = FormationCameraRosterSignature();
-            if (immediate)
-            {
-                formationCameraFrom = formationCameraTarget = target;
-                formationCameraBlend = 1;
-                ApplyFormationCamera(target);
-            }
-            else if (Vector3.Distance(target, formationCameraTarget) > .025f)
-            {
-                formationCameraFrom = battleCamera.transform.position;
-                formationCameraTarget = target;
-                formationCameraBlend = 0;
-            }
-        }
-
-        void CollectFormationCameraPoints()
+        Vector3 FixedFormationPose(bool defenders)
         {
             formationCameraPoints.Clear();
-            float first = ViewingDefenders ? 6.5f : -.5f;
-            float last = ViewingDefenders ? 13.5f : 6.5f;
-            formationCameraPoints.Add(WorldPoint(new Vector2(first, -.5f)));
-            formationCameraPoints.Add(WorldPoint(new Vector2(first, 7.5f)));
-            formationCameraPoints.Add(WorldPoint(new Vector2(last, -.5f)));
-            formationCameraPoints.Add(WorldPoint(new Vector2(last, 7.5f)));
-            foreach (var actor in Model.Units)
-                if (actor.Enabled && (!ViewingDefenders || actor.Alive && actor.Position.x >= 6.5f)) AddFormationActorToCamera(actor);
-            if (ViewingDefenders)
-                foreach (var actor in Model.Defenders) AddFormationActorToCamera(actor);
+            float first = defenders ? FormationBattleModel.DeploymentColumns + .5f : -.5f;
+            float last = defenders ? FormationBattleModel.Width - .5f : FormationBattleModel.DeploymentColumns + .5f;
+            foreach (float col in new[] { first, last })
+                foreach (float row in new[] { -.5f, FormationBattleModel.Height - .5f })
+                {
+                    var foot = WorldPoint(new Vector2(col, row));
+                    formationCameraPoints.Add(foot - FormationCameraUp * .65f);
+                    formationCameraPoints.Add(foot);
+                    // Reserve all existing large bodies and raised defender platforms once.
+                    formationCameraPoints.Add(foot + FormationCameraUp * 2.65f);
+                }
+            return FitFormationCamera(WorldPoint(new Vector2((first + last) * .5f, (FormationBattleModel.Height - 1) * .5f)), 0);
         }
-
-        void AddFormationActorToCamera(FormationActor actor)
+        void ClassifyFormationEnvironment()
         {
-            Vector3 foot = ActorWorldPoint(actor);
-            float height = Mathf.Max(.25f, ActorPresentationHeight(actor));
-            Vector3 head = foot + FormationCameraUp * (height + .18f);
-            formationCameraPoints.Add(foot);
-            formationCameraPoints.Add(head);
-            if (bodies.TryGetValue(actor.Id, out var body) && body != null && body.sprite != null)
+            float seam = WorldPoint(new Vector2(FormationBattleModel.DeploymentColumns + .5f, 0)).x;
+            foreach (var root in gameObject.scene.GetRootGameObjects())
             {
-                var bounds = body.sprite.bounds;
-                // Use the displayed sprite's actual pivot, width and scale. Re-anchor it at the
-                // latest model foot, since camera hooks may run immediately before SyncActors.
-                foreach (float x in new[] { bounds.min.x, bounds.max.x })
-                    foreach (float y in new[] { bounds.min.y, bounds.max.y })
-                        formationCameraPoints.Add(foot + FormationCameraRotation * Vector3.Scale(new Vector3(body.flipX ? -x : x, body.flipY ? -y : y, 0), body.transform.lossyScale));
-            }
-            else
-            {
-                // First startup can precede presentation; still reserve a complete large body.
-                float halfWidth = height * .6f;
-                formationCameraPoints.Add(foot - FormationCameraRight * halfWidth);
-                formationCameraPoints.Add(foot + FormationCameraRight * halfWidth);
-                formationCameraPoints.Add(head - FormationCameraRight * halfWidth);
-                formationCameraPoints.Add(head + FormationCameraRight * halfWidth);
+                if (root == gameObject || root.transform.IsChildOf(transform)) continue;
+                foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    var bounds = renderer.bounds;
+                    // Shared long scenery can remain in both views; complete tiles, gates,
+                    // terrain and local scenery belong to exactly one side.
+                    if (bounds.min.x < seam - .05f && bounds.max.x > seam + .05f && bounds.size.x > 2) continue;
+                    renderer.gameObject.layer = bounds.center.x < seam ? FormationLeftLayer : FormationRightLayer;
+                }
             }
         }
-
         Vector3 FitFormationCamera(Vector3 focus, float minimumDistance)
         {
             float low = 8, high = 16;
@@ -190,22 +134,6 @@ namespace YesterdayConvoy
             }
             offset = new Vector2((minX + maxX) * .5f, (minY + maxY) * .5f);
             return minX <= maxX && minY <= maxY;
-        }
-
-        bool FormationCameraNeedsHeadroom()
-        {
-            if (CameraTransitioning) return false;
-            CollectFormationCameraPoints();
-            var rect = FormationCameraSafeRect;
-            foreach (var point in formationCameraPoints)
-            {
-                Vector3 local = FormationCameraInverse * (point - formationCameraTarget);
-                if (local.z <= .1f) return true;
-                float focal = 360 / Mathf.Tan(20 * Mathf.Deg2Rad);
-                var projected = new Vector2(640 + focal * local.x / local.z, 360 - focal * local.y / local.z);
-                if (projected.x < rect.xMin - 4 || projected.x > rect.xMax + 4 || projected.y < rect.yMin - 4 || projected.y > rect.yMax + 4) return true;
-            }
-            return false;
         }
 
         void ApplyFormationCamera(Vector3 position)

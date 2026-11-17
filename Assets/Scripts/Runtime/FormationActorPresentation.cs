@@ -89,7 +89,7 @@ namespace YesterdayConvoy
                 ActorGrounding.Attach(body,ActorPresentationHeight(actor));
             }
             double now=Model.Clock,deathAge=now-actor.LastDeathAt;
-            body.enabled=FormationArtAvailable(actor.ArtId)&&(actor.Alive||deathAge>=0&&deathAge<.65);
+            body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(actor.ArtId)&&(actor.Alive||deathAge>=0&&deathAge<.65);
             if(!body.enabled)return;
             bool acting=actor.Alive&&now<actor.ActionUntil&&actor.LastActionAt>=0;
             string key=!actor.Alive?"death":actor.IsMoving?"walk":acting?"attack":"idle";

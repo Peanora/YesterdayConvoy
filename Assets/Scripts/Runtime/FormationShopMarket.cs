@@ -145,10 +145,7 @@ namespace YesterdayConvoy
                 !FindFormationSeat(formationShopPointer,out bool lineup,out int seat))return;
             bool unlocked=!lineup||seat<Shop.Level;
             var r=lineup?FormationLineupRect(seat):FormationReserveRect(seat);
-            ApprovedUi.Border(r,unlocked?new Color(.78f,.96f,.91f,.95f):new Color(.95f,.45f,.37f,.95f),2);
-            int target=Session.Seats.At(lineup,seat);
-            string text=!unlocked?"未解锁":target==0?"松开放置":target==shopDragInstance?"原位置":"松开交换";
-            GUI.Label(new Rect(r.x,r.y-19,r.width,18),text,approvedShop.LoopText(10,TextAnchor.MiddleCenter,Color.white));
+            ApprovedUi.Border(r,unlocked?new Color(.86f,.83f,.72f,.8f):new Color(.86f,.43f,.36f,.85f),1);
         }
         void DrawFormationSaleTargets()
         {

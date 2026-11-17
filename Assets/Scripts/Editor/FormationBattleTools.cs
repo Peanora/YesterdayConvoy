@@ -28,20 +28,20 @@ namespace YesterdayConvoy.Editor
                 var trim=Material("Trim",new Color(.11f,.16f,.19f));
                 var cyan=Material("BlueGate",new Color(.14f,.66f,.80f));
                 var marker=Material("Marker",new Color(.68f,.76f,.74f));
-                var root=new GameObject("Authored rectangle · 14 x 8 · edit and save terrain here");
-                for(int row=0;row<8;row++)for(int col=0;col<14;col++)
+                var root=new GameObject("Authored rectangle · "+FormationBattleModel.Width+" x "+FormationBattleModel.Height+" · edit and save terrain here");
+                for(int row=0;row<FormationBattleModel.Height;row++)for(int col=0;col<FormationBattleModel.Width;col++)
                 {
                     Vector3 p=FormationBattleController.WorldPoint(new Vector2(col,row));p.y=-.08f;
-                    Box(root.transform,$"Tile {col:00},{row:00}",p,new Vector3(.975f,.16f,.775f),col<6?ally:col>=8&&col<13?enemy:col==13?cyan:ground);
-                    if(col==6)Box(root.transform,"Centre seam",p+new Vector3(-.5f,.1f,0),new Vector3(.035f,.012f,.40f),marker);
+                    Box(root.transform,$"Tile {col:00},{row:00}",p,new Vector3(.975f,.16f,.975f),col<FormationBattleModel.DeploymentColumns?ally:col>=FormationBattleModel.DeploymentColumns+2&&col<FormationBattleModel.Width-1?enemy:col==FormationBattleModel.Width-1?cyan:ground);
+                    if(col==FormationBattleModel.DeploymentColumns)Box(root.transform,"Centre seam",p+new Vector3(-.5f,.1f,0),new Vector3(.035f,.012f,.40f),marker);
                 }
-                Box(root.transform,"Saved solid platform",new Vector3(0,-.24f,0),new Vector3(14.5f,.30f,6.85f),trim);
+                Box(root.transform,"Saved solid platform",new Vector3(0,-.24f,0),new Vector3(FormationBattleModel.Width+.5f,.30f,FormationBattleModel.Height+.5f),trim);
                 for(int side=-1;side<=1;side+=2)
                 {
-                    Box(root.transform,"Industrial edge rail",new Vector3(0,.04f,side*3.38f),new Vector3(14.6f,.18f,.12f),trim);
-                    for(int x=-6;x<=6;x+=3)Box(root.transform,"Edge marker",new Vector3(x,.14f,side*3.38f),new Vector3(.34f,.03f,.14f),marker);
+                    Box(root.transform,"Industrial edge rail",new Vector3(0,.04f,side*(FormationBattleModel.Height*.5f+.38f)),new Vector3(FormationBattleModel.Width+.6f,.18f,.12f),trim);
+                    for(int x=-FormationBattleModel.Width/2+1;x<FormationBattleModel.Width/2;x+=3)Box(root.transform,"Edge marker",new Vector3(x,.14f,side*(FormationBattleModel.Height*.5f+.38f)),new Vector3(.34f,.03f,.14f),marker);
                 }
-                for(int row=0;row<8;row++)Box(root.transform,"Blue threshold",new Vector3(7.02f,.12f,(row-3.5f)*.8f),new Vector3(.12f,.32f,.76f),cyan);
+                for(int row=0;row<FormationBattleModel.Height;row++)Box(root.transform,"Blue threshold",FormationBattleController.WorldPoint(new Vector2(FormationBattleModel.Width-.48f,row)),new Vector3(.12f,.32f,.96f),cyan);
                 var camera=new GameObject("Main Camera",typeof(Camera),typeof(AudioListener)).GetComponent<Camera>();
                 camera.tag="MainCamera";camera.orthographic=true;camera.orthographicSize=3.40f;
                 camera.transform.rotation=Quaternion.Euler(60,0,0);camera.transform.position=new Vector3(0,17.32f,-10)+camera.transform.up*.45f;
@@ -80,10 +80,10 @@ namespace YesterdayConvoy.Editor
             var c=Object.FindAnyObjectByType<FormationBattleController>();
             if(c==null||c.battleCamera==null)throw new InvalidOperationException("Formation scene bindings missing.");
             int tiles=scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<Transform>()).Count(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal));
-            if(tiles!=112)throw new InvalidOperationException("Saved terrain tile count: "+tiles);
+            if(tiles!=FormationBattleModel.Width*FormationBattleModel.Height)throw new InvalidOperationException("Saved terrain tile count: "+tiles);
             foreach(var r in scene.GetRootGameObjects().SelectMany(o=>o.GetComponentsInChildren<MeshRenderer>()))
                 if(r.sharedMaterial==null||string.IsNullOrEmpty(AssetDatabase.GetAssetPath(r.sharedMaterial)))throw new InvalidOperationException("Unsaved terrain material.");
-            Debug.Log("FORMATION_SCENE_VALIDATE_PASS: 112 saved editable tiles, persistent materials, independent scene");
+            Debug.Log("FORMATION_SCENE_VALIDATE_PASS: "+tiles+" saved editable tiles, persistent materials, independent scene");
         }
     }
 }

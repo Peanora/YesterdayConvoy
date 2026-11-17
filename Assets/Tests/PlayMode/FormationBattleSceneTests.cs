@@ -114,7 +114,7 @@ namespace YesterdayConvoy.Tests
         }
         static MeshFilter[] Terrain()=>Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)
             .Where(m=>m.gameObject.scene==SceneManager.GetActiveScene()&&m.sharedMesh!=null).ToArray();
-        static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-7+.01f||bounds.min.x>=7-.01f||
+        static bool OutsideBoard(Bounds bounds)=>bounds.max.x<=-FormationBattleModel.Width*.5f+.01f||bounds.min.x>=FormationBattleModel.Width*.5f-.01f||
             bounds.max.z<=-4+.01f||bounds.min.z>=4-.01f;
         void Drag(Vector2 from,Vector2 to)
         {
@@ -133,7 +133,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0)),Is.LessThan(.1f));
             Assert.That(Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0)),Is.LessThan(.1f));
             var sprites=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31).ToArray();
-            Assert.That(sprites.Length,Is.GreaterThanOrEqualTo(controller.Model.Units.Count(u=>u.Enabled)+controller.Model.Defenders.Count));
+            Assert.That(sprites.Length,Is.GreaterThanOrEqualTo(controller.Model.Units.Count(u=>u.Enabled)));
             Assert.That(sprites.All(s=>s.sprite.texture!=null),Is.True);
             Assert.That(controller.ViewingDefenders,Is.False);
             AssertActorsVisible(controller.Model.Units.Where(u=>u.Enabled));
@@ -190,7 +190,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(clickedCell));
             Drag(clickedCell,b);
             first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
-            Drag(first.Spawn,new Vector2(10,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
+            Drag(first.Spawn,new Vector2(FormationBattleModel.DeploymentColumns,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
             controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,610));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,610));
             Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(m.Units.Count(u=>u.Enabled),Is.EqualTo(enabled));
@@ -240,7 +240,7 @@ namespace YesterdayConvoy.Tests
                 {
                     string name=(isRed?"Red":"Blue")+" gate row "+row;
                     var gate=(isRed?red:blue).Single(t=>t.name==name);
-                    var expected=FormationBattleController.WorldPoint(new Vector2(isRed?6:13,row));
+                    var expected=FormationBattleController.WorldPoint(new Vector2(isRed?FormationBattleModel.DeploymentColumns:FormationBattleModel.Width-1,row));
                     Assert.That(Vector3.Distance(gate.position,expected),Is.LessThan(.0001f),name+" must align with its existing logical row.");
                     Assert.That(gate.localScale,Is.EqualTo(Vector3.one),name+" must keep the source gate's one-cell scale.");
                     Assert.That(gate.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True,name+" must leave passage open without enabled collision barriers.");
@@ -302,7 +302,7 @@ namespace YesterdayConvoy.Tests
                 }
             }
             var tiles=transforms.Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)&&t.gameObject.activeInHierarchy).ToArray();
-            Assert.That(tiles.Length,Is.EqualTo(112));
+            Assert.That(tiles.Length,Is.EqualTo(FormationBattleModel.Width*FormationBattleModel.Height));
             Assert.That(Vector3.Distance(FormationBattleController.WorldPoint(Vector2.up)-FormationBattleController.WorldPoint(Vector2.zero),Vector3.forward),Is.LessThan(.0001f),"Native cells use unit row spacing, without the previous 0.8 compression.");
             foreach(var tile in tiles)
             {
@@ -326,7 +326,7 @@ namespace YesterdayConvoy.Tests
                 }
             }
             var perimeter=courtyard.transform.Find("Original LS-5 raised perimeter");Assert.That(perimeter,Is.Not.Null);
-            var raised=perimeter.GetComponentsInChildren<MeshRenderer>(true);Assert.That(raised.Length,Is.EqualTo(44));
+            var raised=perimeter.GetComponentsInChildren<MeshRenderer>(true);Assert.That(raised.Length,Is.EqualTo(2*FormationBattleModel.Width+2*FormationBattleModel.Height));
             Assert.That(raised.All(r=>OutsideBoard(r.bounds)),Is.True,"Raised decoration must not occupy the flat fighting board or deployment cells.");
             Assert.That(perimeter.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
             var guardTerrain=roots.SingleOrDefault(r=>r.name=="Defender terrain");
@@ -335,7 +335,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
             Assert.That(controller.Model.Terrain,Is.Not.Null);
             var regions=controller.terrain.regions;
-            CollectionAssert.AreEquivalent(new[]{new RectInt(11,1,2,2),new RectInt(11,5,2,2),new RectInt(8,1,2,1),new RectInt(9,4,2,1)},regions.Select(r=>r.cells));
+            CollectionAssert.AreEquivalent(new[]{new RectInt(17,1,2,2),new RectInt(17,5,2,2),new RectInt(14,1,2,1),new RectInt(15,4,2,1)},regions.Select(r=>r.cells));
             var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)
@@ -349,7 +349,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(controller.Model.Terrain.CanPlaceDefender(cell),Is.EqualTo(region.allowDefender));
                 Assert.That(terrainRenderers.Any(r=>foot.x>=r.bounds.min.x-.01f&&foot.x<=r.bounds.max.x+.01f&&foot.z>=r.bounds.min.z-.01f&&foot.z<=r.bounds.max.z+.01f&&Mathf.Abs(r.bounds.max.y-foot.y)<.02f),Is.True,"Saved visible terrain tops must agree with the model and actor feet at "+cell+".");
             }
-            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(6,3),new Vector2(13,3)),Is.True,"The middle row must remain an open route to the blue gates.");
+            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(FormationBattleModel.DeploymentColumns,3),new Vector2(FormationBattleModel.Width-1,3)),Is.True,"The middle row must remain an open route to the blue gates.");
             Assert.That(controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position)),Is.True,"Random guards must not appear inside low cover.");
             // A preparation-only visual fixture checks the real sprite presenter at a raised cell.
             // Restore the guard immediately; no battle health, skill or result is manufactured.
@@ -366,12 +366,12 @@ namespace YesterdayConvoy.Tests
             }
             finally{guard.Position=savedPosition;}
             yield return View(false);
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: 112 matte concrete base cells, 44 outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at columns 6/13.");
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: Expanded concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at columns 12/19.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {
             yield return Ready();var shop=controller.Shop;var session=controller.Session;
-            Assert.That(shop.Level,Is.EqualTo(3));Assert.That(shop.Gold,Is.EqualTo(12));
+            Assert.That(shop.Level,Is.EqualTo(3));Assert.That(shop.UnlimitedGold,Is.True);
             Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
             Assert.That(controller.ShopPresentation,Is.Not.Null);
             foreach(int seatIndex in new[]{0,3,9})
@@ -384,7 +384,7 @@ namespace YesterdayConvoy.Tests
             string id=shop.Offers[offer];int cost=shop.Definition(id).Cost;
             int goldBeforePurchase=shop.Gold;
             var result=controller.BuyOffer(offer);
-            Assert.That(result.Success,Is.True);Assert.That(shop.Gold,Is.EqualTo(goldBeforePurchase-cost));
+            Assert.That(result.Success,Is.True);Assert.That(shop.Gold,Is.EqualTo(goldBeforePurchase));
             Assert.That(shop.Offers[offer],Is.Null);shop.Validate();
             Assert.That(shop.Bench.Any(p=>p.Instance==result.Instance),Is.True);
             Assert.That(controller.ShopArrivalCount,Is.GreaterThan(0),"The shared original recruitment flow must accompany a real purchase.");

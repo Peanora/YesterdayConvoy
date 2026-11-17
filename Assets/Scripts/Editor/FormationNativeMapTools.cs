@@ -32,8 +32,15 @@ namespace YesterdayConvoy.Editor
             foreach(var old in scene.GetRootGameObjects().Where(g=>g.name==RootName||g.name.StartsWith("Painted courtyard",StringComparison.Ordinal)||g.name.StartsWith("Industrial courtyard",StringComparison.Ordinal)).ToArray())Object.DestroyImmediate(old);
             var terrain=scene.GetRootGameObjects().Single(g=>g.name.StartsWith("Authored rectangle",StringComparison.Ordinal));
             foreach(var child in terrain.transform.Cast<Transform>().Where(t=>!t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray())Object.DestroyImmediate(child.gameObject);
+            terrain.name="Authored rectangle · "+FormationBattleModel.Width+" x "+FormationBattleModel.Height+" · edit and save terrain here";
+            var existingTiles=terrain.transform.Cast<Transform>().Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToDictionary(t=>t.name,StringComparer.Ordinal);
+            for(int row=0;row<FormationBattleModel.Height;row++)for(int col=0;col<FormationBattleModel.Width;col++)
+            {
+                string tileName=$"Tile {col:00},{row:00}";
+                if(!existingTiles.ContainsKey(tileName))new GameObject(tileName,typeof(MeshFilter),typeof(MeshRenderer)).transform.SetParent(terrain.transform,false);
+            }
             var tiles=terrain.transform.Cast<Transform>().Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
-            if(tiles.Length!=112)throw new InvalidOperationException("Expected the original 112 saved tile objects.");
+            if(tiles.Length!=FormationBattleModel.Width*FormationBattleModel.Height)throw new InvalidOperationException("Saved floor dimensions do not match the current board.");
             foreach(var tile in tiles)
             {
                 var parts=tile.name.Substring(5).Split(',');int col=int.Parse(parts[0]),row=int.Parse(parts[1]);
@@ -70,12 +77,12 @@ namespace YesterdayConvoy.Editor
                 // around our fixed open rectangle, retaining each band's original relative prop positions.
                 if(p.z>=1.45f)p.z+=3.05f;
                 else if(p.z<=-1.45f)p.z-=3.05f;
-                else if(p.x<=-4.45f)p.x-=3.05f;
-                else if(p.x>=4.45f)p.x+=3.05f;
+                else if(p.x<=-4.45f)p.x-=3.05f+(FormationBattleModel.Width-14)*.5f;
+                else if(p.x>=4.45f)p.x+=3.05f+(FormationBattleModel.Width-14)*.5f;
                 else continue;
                 var localMin=source.SourceBoundsMin-source.SourcePosition;
                 var localMax=source.SourceBoundsMax-source.SourcePosition;
-                if(p.x+localMax.x> -7.05f&&p.x+localMin.x<7.05f&&p.z+localMax.z> -4.05f&&p.z+localMin.z<4.05f)
+                if(p.x+localMax.x> -FormationBattleModel.Width*.5f-.05f&&p.x+localMin.x<FormationBattleModel.Width*.5f+.05f&&p.z+localMax.z> -4.05f&&p.z+localMin.z<4.05f)
                 {
                     if(p.z>=0)p.z=4.12f-localMin.z;else p.z=-4.12f-localMax.z;
                 }
@@ -86,7 +93,7 @@ namespace YesterdayConvoy.Editor
             SetupLighting(scene);
             FrameCamera(controller.battleCamera);
             EditorSceneManager.MarkSceneDirty(scene);AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene);
-            Validate();CapturePreview();Debug.Log("FORMATION_BOARD_AUTHOR_PASS: 112 checkerboard floor cells, 44 source raised rim cells, "+dressed+" source perimeter parts, source background, 16 full-cell transparent gates");
+            Validate();CapturePreview();Debug.Log("FORMATION_BOARD_AUTHOR_PASS: "+(FormationBattleModel.Width*FormationBattleModel.Height)+" checkerboard floor cells, "+(2*FormationBattleModel.Width+2*FormationBattleModel.Height)+" source raised rim cells, "+dressed+" source perimeter parts, source background, 16 full-cell transparent gates");
         }
 
         static void SetBoardMaterials(GameObject go,FormationNativeAssetTools.NativePart source)
@@ -97,17 +104,17 @@ namespace YesterdayConvoy.Editor
         static void CreateRaisedPerimeter(Transform root)
         {
             var rim=new GameObject("Original LS-5 raised perimeter").transform;rim.SetParent(root,false);
-            foreach(int side in new[]{-1,1})for(int col=0;col<14;col++)
+            foreach(int side in new[]{-1,1})for(int col=0;col<FormationBattleModel.Width;col++)
             {
                 var source=FormationNativeAssetTools.FindPartName(WhitePlatformNames[col%WhitePlatformNames.Length]);
                 var go=FormationNativeAssetTools.CreatePart(source,rim);go.name="White platform "+side+" / "+col;
-                go.transform.localPosition=new Vector3(col-6.5f,.14f,side*4.5f);SetBoardMaterials(go,source);
+                go.transform.localPosition=new Vector3(col-(FormationBattleModel.Width-1)*.5f,.14f,side*(FormationBattleModel.Height+1)*.5f);SetBoardMaterials(go,source);
             }
             var grey=FormationNativeAssetTools.FindPartName("S_export_cube232");
-            foreach(int side in new[]{-1,1})for(int row=0;row<8;row++)
+            foreach(int side in new[]{-1,1})for(int row=0;row<FormationBattleModel.Height;row++)
             {
                 var go=FormationNativeAssetTools.CreatePart(grey,rim);go.name="Side platform "+side+" / "+row;
-                go.transform.localPosition=new Vector3(side*7.5f,.14f,row-3.5f);SetBoardMaterials(go,grey);
+                go.transform.localPosition=new Vector3(side*(FormationBattleModel.Width+1)*.5f,.14f,row-(FormationBattleModel.Height-1)*.5f);SetBoardMaterials(go,grey);
             }
         }
 
@@ -118,10 +125,10 @@ namespace YesterdayConvoy.Editor
             foreach(bool red in new[]{true,false})
             {
                 var source=prefab.GetComponentsInChildren<Transform>(true).First(t=>t.name==(red?"R1 / Native tile_start":"B1 / Native tile_end"));
-                for(int row=0;row<8;row++)
+                for(int row=0;row<FormationBattleModel.Height;row++)
                 {
                     var go=Object.Instantiate(source.gameObject,root);go.name=(red?"Red":"Blue")+" gate row "+row;
-                    go.transform.localPosition=FormationBattleController.WorldPoint(new Vector2(red?6:13,row));
+                    go.transform.localPosition=FormationBattleController.WorldPoint(new Vector2(red?FormationBattleModel.DeploymentColumns:FormationBattleModel.Width-1,row));
                     go.transform.localRotation=Quaternion.identity;go.transform.localScale=Vector3.one;
                     foreach(var collider in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
                     foreach(var renderer in go.GetComponentsInChildren<MeshRenderer>(true))
@@ -151,7 +158,7 @@ namespace YesterdayConvoy.Editor
             FormationNativeLightingTools.ApplySourceAmbientProbe();
         }
 
-        static Vector3[] Corners()=>new[]{new Vector2(-.5f,-.5f),new Vector2(13.5f,-.5f),new Vector2(13.5f,7.5f),new Vector2(-.5f,7.5f)}.Select(FormationBattleController.WorldPoint).ToArray();
+        static Vector3[] Corners()=>new[]{new Vector2(-.5f,-.5f),new Vector2(FormationBattleModel.Width-.5f,-.5f),new Vector2(FormationBattleModel.Width-.5f,FormationBattleModel.Height-.5f),new Vector2(-.5f,FormationBattleModel.Height-.5f)}.Select(FormationBattleController.WorldPoint).ToArray();
         static Rect ProjectionBounds(Camera camera)
         {
             var points=Corners().Select(p=>VirtualPoint(camera,p)).ToArray();
@@ -188,7 +195,7 @@ namespace YesterdayConvoy.Editor
             // actual virtual 16:9 presentation, independent of the batch editor's Game View size.
             camera.aspect=1280f/720;
             var tiles=scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Transform>(true)).Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
-            if(tiles.Length!=112)throw new InvalidOperationException("Native floor must keep 112 saved cells.");
+            if(tiles.Length!=FormationBattleModel.Width*FormationBattleModel.Height)throw new InvalidOperationException("Native floor must match current saved board dimensions.");
             foreach(var tile in tiles)
             {
                 var mesh=tile.GetComponent<MeshFilter>()?.sharedMesh;
@@ -198,24 +205,24 @@ namespace YesterdayConvoy.Editor
             }
             var perimeter=root.GetComponentsInChildren<Transform>().Single(t=>t.name=="Original LS-5 raised perimeter");
             var raised=perimeter.GetComponentsInChildren<MeshRenderer>();
-            if(raised.Length!=44)throw new InvalidOperationException("Expected 28 white platform cells and 16 grey side cells.");
+            if(raised.Length!=2*FormationBattleModel.Width+2*FormationBattleModel.Height)throw new InvalidOperationException("Saved raised perimeter must surround every side of the expanded board.");
             foreach(var renderer in raised)
             {
                 var b=renderer.bounds;
-                if(b.max.x> -6.99f&&b.min.x<6.99f&&b.max.z> -3.99f&&b.min.z<3.99f)throw new InvalidOperationException("Raised platform intrudes into the deployable board: "+renderer.name);
+                if(b.max.x> -FormationBattleModel.Width*.5f+.01f&&b.min.x<FormationBattleModel.Width*.5f-.01f&&b.max.z> -3.99f&&b.min.z<3.99f)throw new InvalidOperationException("Raised platform intrudes into the deployable board: "+renderer.name);
             }
-            foreach(string color in new[]{"Red","Blue"})for(int row=0;row<8;row++)
+            foreach(string color in new[]{"Red","Blue"})for(int row=0;row<FormationBattleModel.Height;row++)
             {
                 var gate=root.GetComponentsInChildren<Transform>().Single(t=>t.name==color+" gate row "+row);
                 if(gate.localScale!=Vector3.one||gate.GetComponentsInChildren<MeshRenderer>().Length!=4||gate.GetComponentsInChildren<Collider>().Length>0)throw new InvalidOperationException("Gate must keep all original full-size transparent layers.");
-                var expected=FormationBattleController.WorldPoint(new Vector2(color=="Red"?6:13,row));
+                var expected=FormationBattleController.WorldPoint(new Vector2(color=="Red"?FormationBattleModel.DeploymentColumns:FormationBattleModel.Width-1,row));
                 if(Vector3.Distance(gate.position,expected)>.0001f)throw new InvalidOperationException("Gate is not centred on its full cell.");
             }
             var projected=ProjectionBounds(camera);
             if(projected.xMin<180||projected.xMax>1012||projected.yMin<65||projected.yMax>485)throw new InvalidOperationException("Saved native map projects outside original A safe frame: "+projected);
             foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())
                 if(renderer.sharedMaterials.Any(m=>m==null||string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m))))throw new InvalidOperationException("Unsaved native material.");
-            Debug.Log("FORMATION_BOARD_VALIDATE_PASS: 112 level checker cells, 44 raised perimeter cells, independent source-lit surfaces, 8+8 full transparent gates, 60deg/40FOV camera, floorFrame="+projected);
+            Debug.Log("FORMATION_BOARD_VALIDATE_PASS: "+(FormationBattleModel.Width*FormationBattleModel.Height)+" level checker cells, "+raised.Length+" raised perimeter cells, independent source-lit surfaces, 8+8 full transparent gates, 60deg/40FOV camera, floorFrame="+projected);
         }
 
         [MenuItem("Yesterday Convoy/Formation Battle/Capture Original LS-5 Scene")]

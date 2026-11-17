@@ -38,7 +38,7 @@ namespace YesterdayConvoy.Tests
 
         void AssertHalfAndActorHeads(bool defenders)
         {
-            float first = defenders ? 6.5f : -.5f, last = defenders ? 13.5f : 6.5f;
+            float first = defenders ? FormationBattleModel.DeploymentColumns + .5f : -.5f, last = defenders ? FormationBattleModel.Width - .5f : FormationBattleModel.DeploymentColumns + .5f;
             foreach (float column in new[] { first, last })
                 foreach (float row in new[] { -.5f, 7.5f })
                     AssertInFocusedFrame(FormationBattleController.WorldPoint(new Vector2(column, row)), "All eight rows of the focused half must remain visible.");
@@ -87,10 +87,10 @@ namespace YesterdayConvoy.Tests
             controller.SetFormationView(true);
             Assert.That(controller.ViewingDefenders, Is.True);
             Assert.That(controller.CanEditFormationView, Is.False);
-            Assert.That(controller.CameraTransitioning, Is.True, "Scouting should pan instead of jumping or shrinking the full board.");
+            Assert.That(controller.CameraTransitioning, Is.False, "Scouting cuts directly between two fixed views without panning.");
             yield return WaitForCamera();
             AssertHalfAndActorHeads(true);
-            Assert.That(controller.battleCamera.transform.position.x - leftPose.x, Is.GreaterThan(4), "The view must actually travel to the other half.");
+            Assert.That(controller.battleCamera.transform.position.x - leftPose.x, Is.GreaterThan(4), "The fixed defender view must be distinct from the fixed deployment view.");
             Assert.That(model.Clock, Is.EqualTo(clock)); Assert.That(model.TimeRemaining, Is.EqualTo(remaining));
             CollectionAssert.AreEqual(positions, model.Units.Select(u => u.Position));
             CollectionAssert.AreEqual(spawns, model.Units.Select(u => u.Spawn));
@@ -103,8 +103,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.battleCamera.fieldOfView, Is.EqualTo(40));
             Assert.That(Quaternion.Angle(controller.battleCamera.transform.rotation, Quaternion.Euler(60, 0, 0)), Is.LessThan(.01f));
 
+            var rightPose = controller.battleCamera.transform.position;
+            yield return new WaitForSecondsRealtime(.25f);
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "The defender camera must never drift.");
+            Assert.That(model.Units.All(u => !controller.FormationActorVisibleInView(u)), Is.True);
             controller.ToggleFormationView();
             yield return WaitForCamera();
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Returning restores the same fixed pose.");
+            Assert.That(model.Defenders.All(d => !controller.FormationActorVisibleInView(d)), Is.True);
             Assert.That(controller.ViewingDefenders, Is.False); Assert.That(controller.CanEditFormationView, Is.True);
             var first = model.Units.Single(u => u.Enabled && u.ArtId == "M07");
             var second = model.Units.Single(u => u.Enabled && u.ArtId == "M08");
@@ -115,6 +121,12 @@ namespace YesterdayConvoy.Tests
             first = model.Units.Single(u => u.ArtId == "M07"); second = model.Units.Single(u => u.ArtId == "M08");
             Assert.That(first.Spawn, Is.EqualTo(b)); Assert.That(second.Spawn, Is.EqualTo(a), "The focused camera must retain accurate drag-to-cell projection.");
 
+            yield return new WaitForSecondsRealtime(.25f);
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Dragging and swapping must not reframe the camera.");
+            var redTile = SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Transform>()).Single(t => t.name == "Tile " + FormationBattleModel.DeploymentColumns.ToString("00") + ",00");
+            var enemyTile = SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Transform>()).Single(t => t.name == "Tile " + (FormationBattleModel.DeploymentColumns + 1).ToString("00") + ",00");
+            Assert.That((controller.battleCamera.cullingMask & (1 << redTile.gameObject.layer)) != 0, Is.True);
+            Assert.That((controller.battleCamera.cullingMask & (1 << enemyTile.gameObject.layer)) == 0, Is.True, "The left view excludes the defender tiles.");
             deadline = Time.realtimeSinceStartupAsDouble + 600;
             while (!controller.RosterArtReady && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert.That(controller.RosterArtReady, Is.True);
@@ -123,7 +135,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.ViewingDefenders, Is.True, "The real battle transition must select the guard half automatically.");
             clock = model.Clock;
             yield return WaitForCamera();
-            Assert.That(model.Clock, Is.EqualTo(clock), "Camera motion must not consume paused simulation time.");
+            Assert.That(model.Clock, Is.EqualTo(clock), "View changes must not consume paused simulation time.");
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "Starting combat uses the same fixed defender pose.");
             controller.ToggleFormationView();
             Assert.That(controller.ViewingDefenders, Is.True, "Preparation scouting must not pull an active battle back to the left.");
             controller.Retry();

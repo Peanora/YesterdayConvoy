@@ -59,7 +59,8 @@ namespace YesterdayConvoy
     /// </summary>
     public sealed class FormationBattleModel
     {
-        public const int Width = 14, Height = 8, DeploymentColumns = 6;
+        public const int Width = 20, Height = 8, DeploymentColumns = 12;
+        public const float BattleAreaStart = DeploymentColumns + .5f;
         const double StepSeconds = .025;
         const float PersonalSpace = .48f;
         static readonly string[] FighterNames = { "重装防御者", "猎狗", "士兵", "弩手", "术师", "游击队传令兵" };
@@ -145,7 +146,7 @@ namespace YesterdayConvoy
         {
             Seed = seed; Round = 1; Capacity = 4; Speed = 1; Paused = false;
             Units.Clear();
-            Vector2[] positions = { new Vector2(5, 2), new Vector2(4, 5), new Vector2(4, 3), new Vector2(2, 3), new Vector2(2, 5), new Vector2(1, 2) };
+            Vector2[] positions = { new Vector2(DeploymentColumns - 1, 2), new Vector2(DeploymentColumns - 2, 5), new Vector2(DeploymentColumns - 2, 3), new Vector2(DeploymentColumns - 4, 3), new Vector2(DeploymentColumns - 4, 5), new Vector2(DeploymentColumns - 5, 2) };
             for (int i = 0; i < 6; i++)
                 Units.Add(new FormationFighter { Id = i, Slot = i, Kind = i, Name = FighterNames[i], ArtId = FighterArt[i], Enabled = i < 4, Spawn = positions[i] });
             PrepareRound();
@@ -301,7 +302,7 @@ namespace YesterdayConvoy
             Defenders.Clear();
             var rng = new FormationRandom(unchecked((uint)Seed ^ ((uint)Round * 0x9e3779b9u)));
             var cells = new List<Vector2>();
-            for (int x = 8; x <= 12; x++) for (int y = 0; y < Height; y++)
+            for (int x = DeploymentColumns + 2; x < Width - 1; x++) for (int y = 0; y < Height; y++)
             {
                 var cell = new Vector2(x, y);
                 if (Terrain == null || Terrain.CanPlaceDefender(cell)) cells.Add(cell);
@@ -390,8 +391,20 @@ namespace YesterdayConvoy
             }
         }
 
+        static bool HasEnteredBattleArea(FormationFighter unit) => unit.Position.x >= BattleAreaStart;
+
         void TickFighter(FormationFighter unit, float dt)
         {
+            // Preparation and combat are independent visible areas. Every body must finish its
+            // timed approach into the guard view before acquiring a target or using an attack.
+            // The same check applies after revival, preserving the saved deployment anchor.
+            if (!HasEnteredBattleArea(unit))
+            {
+                unit.TargetId = -1;
+                if (Clock >= unit.ActionUntil)
+                    Move(unit, new Vector2(DeploymentColumns + 1, unit.Position.y), dt, true);
+                return;
+            }
             var target = FighterTarget(unit);
             unit.TargetId = target != null ? target.Id : -1;
             if (target == null || Clock < unit.ActionUntil) return;
@@ -504,19 +517,19 @@ namespace YesterdayConvoy
             {
                 Vector2 centre = target.Position;
                 foreach (var unit in Units)
-                    if (unit.Enabled && unit.Alive && (unit.Position - centre).sqrMagnitude <= 1.2f * 1.2f)
+                    if (unit.Enabled && unit.Alive && HasEnteredBattleArea(unit) && (unit.Position - centre).sqrMagnitude <= 1.2f * 1.2f)
                         Damage(defender, unit, defender.Attack * (empowered ? 1.6f : 1), true, empowered);
             }
             else Damage(defender, target, defender.Attack * (empowered ? 1.6f : 1), arts, empowered);
         }
 
-        static bool LegalTarget(FormationDefender source, FormationFighter target) => target.Enabled && target.Alive && (source.Position - target.Position).sqrMagnitude <= source.Range * source.Range;
+        static bool LegalTarget(FormationDefender source, FormationFighter target) => target.Enabled && target.Alive && HasEnteredBattleArea(target) && (source.Position - target.Position).sqrMagnitude <= source.Range * source.Range;
 
         FormationFighter MostWoundedFighter(Vector2 centre, float range)
         {
             FormationFighter result = null; float proportion = 1;
             foreach (var unit in Units)
-                if (unit.Enabled && unit.Alive && Vector2.Distance(centre, unit.Position) <= range && unit.Health / unit.MaxHealth < proportion)
+                if (unit.Enabled && unit.Alive && HasEnteredBattleArea(unit) && Vector2.Distance(centre, unit.Position) <= range && unit.Health / unit.MaxHealth < proportion)
                 { result = unit; proportion = unit.Health / unit.MaxHealth; }
             return result;
         }
@@ -556,7 +569,8 @@ namespace YesterdayConvoy
             if (Terrain != null)
             {
                 Vector2 waypoint;
-                bool reachable = avoid ? Terrain.TryApproach(unit.Position, goal, unit.Range, out waypoint, out _) :
+                bool reachable = avoid && !HasEnteredBattleArea(unit) ? Terrain.TryEnterBattleArea(unit.Position, out waypoint) :
+                    avoid ? Terrain.TryApproach(unit.Position, goal, unit.Range, out waypoint, out _) :
                     Terrain.TryExit(unit.Position, out waypoint);
                 if (!reachable) return;
                 goal = waypoint;

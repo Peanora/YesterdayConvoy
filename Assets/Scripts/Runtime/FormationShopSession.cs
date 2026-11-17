@@ -7,7 +7,7 @@ namespace YesterdayConvoy
 {
     /// <summary>
     /// Real finite-stock preparation for the existing recruitable catalog. The battle never owns money,
-    /// card copies or XP. This short-flow starting grant and income are tuning, not acquisition proof.
+    /// card copies or XP. Unlimited test gold bypasses payment, while stock, XP and population remain real.
     /// </summary>
     public sealed class FormationShopSession
     {
@@ -34,7 +34,8 @@ namespace YesterdayConvoy
             Seed = seed;
             Shop = new ShopTrialModel(FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
                 new ShopTrialModel.Role { Id = role.CardId, Name = role.Name, Cost = role.Cost }), seed);
-            Shop.EnableJourneyEconomy();
+            // Character-testing demo only. Other Journey callers keep the default finite economy.
+            Shop.EnableJourneyEconomy(unlimited: true);
             Shop.Preset(new[]
             {
                 new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 },
@@ -300,12 +301,12 @@ namespace YesterdayConvoy
         {
             switch (id)
             {
-                case "CARD_M10": return new Vector2(5, 2);
-                case "CARD_M02": return new Vector2(4, 5);
-                case "CARD_M07": return new Vector2(4, 3);
-                case "CARD_M08": return new Vector2(2, 3);
-                case "CARD_M09": return new Vector2(2, 5);
-                case "CARD_M17": return new Vector2(1, 2);
+                case "CARD_M10": return new Vector2(FormationBattleModel.DeploymentColumns - 1, 2);
+                case "CARD_M02": return new Vector2(FormationBattleModel.DeploymentColumns - 2, 5);
+                case "CARD_M07": return new Vector2(FormationBattleModel.DeploymentColumns - 2, 3);
+                case "CARD_M08": return new Vector2(FormationBattleModel.DeploymentColumns - 4, 3);
+                case "CARD_M09": return new Vector2(FormationBattleModel.DeploymentColumns - 4, 5);
+                case "CARD_M17": return new Vector2(FormationBattleModel.DeploymentColumns - 5, 2);
                 default:
                     var definition = FormationUnitCatalog.Find(id);
                     if (definition == null) throw new ArgumentException("Unsupported formation card: " + id);

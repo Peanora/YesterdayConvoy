@@ -24,8 +24,15 @@ namespace YesterdayConvoy.Editor
             ClearForegroundOcclusion();
             EditorUtility.SetDirty(controller);EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
             Validate();
-            Debug.Log("FORMATION_DEPLOYMENT_AUTHOR_PASS: 43 saved card references, 42 eligible shop roles, existing terrain and source camera retained; split view is runtime presentation only");
+            Debug.Log("FORMATION_DEPLOYMENT_AUTHOR_PASS: 43 saved card references, 42 eligible shop roles, expanded saved terrain and source camera retained; independent fixed views are runtime presentation only");
         }
+        [MenuItem("Yesterday Convoy/Formation Battle/Rebuild Expanded Preparation Board")]
+        public static void RebuildExpandedBoard()
+        {
+            FormationReferenceMapTools.Apply();
+            Configure();
+        }
+
         static void ClearForegroundOcclusion()
         {
             var native=UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects().Single(g=>g.name==FormationNativeMapTools.RootName).transform;

@@ -28,7 +28,7 @@ namespace YesterdayConvoy.Tests
         {
             Assert.That(model.StartBattle(), Is.True);
             foreach (var defender in model.Defenders) { defender.Health = 0; defender.Alive = false; }
-            model.Units.First().Position = new Vector2(13, 2);
+            model.Units.First().Position = new Vector2(FormationBattleModel.Width - 1, 2);
             model.Advance(.025f);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
         }
@@ -38,6 +38,7 @@ namespace YesterdayConvoy.Tests
         {
             var session = new FormationShopSession(20261117);
             var model = Bind(session);
+            Assert.That(session.Shop.UnlimitedGold, Is.True);
             Assert.That(session.Shop.Gold, Is.EqualTo(12)); Assert.That(session.Shop.Level, Is.EqualTo(3));
             Assert.That(session.Shop.Bench.Count, Is.EqualTo(3)); Assert.That(model.Units.Count, Is.EqualTo(3));
             Assert.That(session.Seats.Lineup(session.Shop.Bench).Select(piece => piece.Id), Is.EquivalentTo(new[] { "CARD_M07", "CARD_M10", "CARD_M08" }));
@@ -53,12 +54,63 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void PurchasePaysGoldAndReservesStayOutOfCombatUntilMovedIntoALevelSeat()
+        public void ZeroBalanceCanRecruitRefreshAndReachMaxLevelWithoutCreatingStockOrFreeBodies()
+        {
+            var session = new FormationShopSession(20261117);
+            session.Shop.Preset(new[]
+            {
+                new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 },
+                new ShopTrialModel.Piece { Id = "CARD_M10", Star = 1 },
+                new ShopTrialModel.Piece { Id = "CARD_M08", Star = 1 }
+            }, new[] { "CARD_M15" }, level: 3, xp: 0, gold: 0);
+            var model = Bind(session);
+            int copies = session.Shop.Available("CARD_M15");
+            var purchase = session.Purchase(0);
+            Assert.That(purchase.Success, Is.True);
+            Assert.That(session.Shop.Gold, Is.Zero);
+            Assert.That(session.Shop.Offers[0], Is.Null);
+            Assert.That(session.Shop.Available("CARD_M15"), Is.EqualTo(copies));
+            Assert.That(session.Shop.Bench.Any(piece => piece.Instance == purchase.Instance && piece.Id == "CARD_M15"), Is.True);
+            Assert.That(model.Units.Count, Is.EqualTo(3), "A purchase remains in reserve until explicitly deployed.");
+            for (int i = 0; i < 8; i++) Assert.That(session.Refresh().Success, Is.True);
+            for (int i = 0; session.Shop.Level < 10 && i < 100; i++) Assert.That(session.BuyExperience().Success, Is.True);
+            session.ApplyTo(model);
+            Assert.That(session.Shop.Level, Is.EqualTo(10));
+            Assert.That(model.Capacity, Is.EqualTo(10));
+            Assert.That(session.Shop.Gold, Is.Zero);
+            Assert.That(session.BuyExperience().Success, Is.False, "Unlimited gold does not bypass the level cap.");
+            int beforeSale = session.Shop.Available("CARD_M15");
+            Assert.That(session.Sell(purchase.Instance).Success, Is.True);
+            Assert.That(session.Shop.Gold, Is.Zero);
+            Assert.That(session.Shop.Available("CARD_M15"), Is.EqualTo(beforeSale + 1));
+            AssertStock(session.Shop);
+        }
+
+        [Test]
+        public void UnlimitedFormationGoldDoesNotChangeDefaultJourneyPaymentRules()
+        {
+            var session = new FormationShopSession(32);
+            var journey = new ShopTrialModel(session.Shop.Roles, 32);
+            journey.EnableJourneyEconomy();
+            journey.Preset(Array.Empty<ShopTrialModel.Piece>(), new[] { "CARD_M07" }, level: 3, xp: 0, gold: 0);
+            Assert.That(session.Shop.UnlimitedGold, Is.True);
+            Assert.That(journey.UnlimitedGold, Is.False);
+            Assert.That(journey.JourneyEconomy, Is.True);
+            string before = ShopSnapshot(journey);
+            Assert.That(journey.Purchase(0).Success, Is.False);
+            Assert.That(journey.Refresh().Success, Is.False);
+            Assert.That(journey.Upgrade().Success, Is.False);
+            Assert.That(ShopSnapshot(journey), Is.EqualTo(before));
+            AssertStock(journey);
+        }
+
+        [Test]
+        public void PurchaseKeepsUnlimitedTestGoldAndReservesStayOutOfCombatUntilMovedIntoALevelSeat()
         {
             var session = new FormationShopSession(20261117); var model = Bind(session);
             string offer = session.Shop.Offers[0]; int gold = session.Shop.Gold;
             var purchase = session.Purchase(0);
-            Assert.That(purchase.Success, Is.True); Assert.That(session.Shop.Gold, Is.EqualTo(gold - session.Shop.Definition(offer).Cost));
+            Assert.That(purchase.Success, Is.True); Assert.That(session.Shop.Gold, Is.EqualTo(gold));
             Assert.That(session.Shop.Offers[0], Is.Null);
             session.ApplyTo(model);
             Assert.That(model.Units.Count, Is.EqualTo(3));
@@ -110,7 +162,7 @@ namespace YesterdayConvoy.Tests
             int instance = original.Instance; float beforeHealth = original.MaxHealth, beforeAttack = original.Attack;
             var purchase = session.Purchase(0);
             Assert.That(purchase.Success, Is.True); Assert.That(purchase.FinalStar, Is.EqualTo(4));
-            Assert.That(purchase.Instance, Is.EqualTo(instance)); Assert.That(session.Shop.Gold, Is.EqualTo(11));
+            Assert.That(purchase.Instance, Is.EqualTo(instance)); Assert.That(session.Shop.Gold, Is.EqualTo(12));
             session.ApplyTo(model);
             Assert.That(model.Units.Single().Instance, Is.EqualTo(instance));
             Assert.That(model.Units.Single().Star, Is.EqualTo(4));
@@ -140,7 +192,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(replacement.Instance, Is.Not.EqualTo(oldInstance));
             Assert.That(replacement.Spawn, Is.EqualTo(new Vector2(0, 6)));
             Assert.That(session.Shop.Available("CARD_M07"), Is.EqualTo(available + 1));
-            Assert.That(session.Shop.Gold, Is.EqualTo(13));
+            Assert.That(session.Shop.Gold, Is.EqualTo(12));
             AssertStock(session.Shop);
         }
 
@@ -169,7 +221,7 @@ namespace YesterdayConvoy.Tests
             FinishFixture(model);
             int goldBefore = session.Shop.Gold;
             var reward = session.SettleWin(1);
-            Assert.That(reward, Is.Not.Null); Assert.That(session.Shop.Gold, Is.EqualTo(goldBefore + reward.Total));
+            Assert.That(reward, Is.Not.Null); Assert.That(session.Shop.Gold, Is.EqualTo(goldBefore));
             int paidGold = session.Shop.Gold, paidXP = session.Shop.XP;
             Assert.That(session.SettleWin(1), Is.SameAs(reward));
             Assert.That(session.Shop.Gold, Is.EqualTo(paidGold)); Assert.That(session.Shop.XP, Is.EqualTo(paidXP));
@@ -194,7 +246,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Units.Single().Star, Is.EqualTo(4));
             var imported = model.Units.Single();
             Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry { Instance = 202, ArtId = "M10", Star = 4, Spawn = new Vector2(2, 3) } }, 10), Is.False);
-            Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry { Instance = 202, ArtId = "M10", Star = 1, Spawn = new Vector2(6, 3) } }, 10), Is.False);
+            Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry { Instance = 202, ArtId = "M10", Star = 1, Spawn = new Vector2(FormationBattleModel.DeploymentColumns, 3) } }, 10), Is.False);
             Assert.That(model.Units.Single(), Is.SameAs(imported));
             model.StartBattle();
             Assert.That(model.ApplyRoster(Array.Empty<FormationRosterEntry>(), 3), Is.False);

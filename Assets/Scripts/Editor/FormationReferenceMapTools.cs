@@ -56,10 +56,10 @@ namespace YesterdayConvoy.Editor
             var authoring = terrainObject.AddComponent<FormationBattleTerrainAuthoring>();
             authoring.regions = new[]
             {
-                new FormationBattleTerrainRegion { cells = new RectInt(11,1,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(11,5,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(8,1,2,1), height=.36f, allowDefender=false },
-                new FormationBattleTerrainRegion { cells = new RectInt(9,4,2,1), height=.36f, allowDefender=false }
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+5,1,2,2), height=.48f, allowDefender=true },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+5,5,2,2), height=.48f, allowDefender=true },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+2,1,2,1), height=.36f, allowDefender=false },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+3,4,2,1), height=.36f, allowDefender=false }
             };
             controller.terrain = authoring;
             foreach (var region in authoring.regions)
@@ -128,51 +128,84 @@ namespace YesterdayConvoy.Editor
 
         static void Dress(Transform root)
         {
+            float extra=FormationBattleModel.Width-14,halfExtra=extra*.5f;
+            float seam=FormationBattleController.WorldPoint(new Vector2(FormationBattleModel.BattleAreaStart,0)).x;
+            // Save the two board structures as separate renderers. A single broad slab would
+            // remain shared by both fixed views and reveal the hidden half as an empty platform.
+            void ViewBox(string name,Vector3 position,Vector3 size,Material material)
+            {
+                float left=position.x-size.x*.5f,right=position.x+size.x*.5f;
+                if(left>=seam||right<=seam){Box(root,name,position,size,material);return;}
+                var leftSize=new Vector3(seam-left,size.y,size.z);
+                var rightSize=new Vector3(right-seam,size.y,size.z);
+                Box(root,name+" / left view",new Vector3((left+seam)*.5f,position.y,position.z),leftSize,material);
+                Box(root,name+" / right view",new Vector3((seam+right)*.5f,position.y,position.z),rightSize,material);
+            }
+            void ViewBeam(string name,Vector3 from,Vector3 to,float width,Material material)
+            {
+                if((from.x<seam&&to.x>seam)||(to.x<seam&&from.x>seam))
+                {
+                    var cut=Vector3.Lerp(from,to,(seam-from.x)/(to.x-from.x));
+                    Beam(root,name+" / first view",from,cut,width,material);
+                    Beam(root,name+" / second view",cut,to,width,material);
+                }
+                else Beam(root,name,from,to,width,material);
+            }
+            void ViewRail(Vector3 origin,float length,bool alongZ)
+            {
+                float left=origin.x-length*.5f,right=origin.x+length*.5f;
+                if(!alongZ&&left<seam&&right>seam)
+                {
+                    Rail(root,new Vector3((left+seam)*.5f,origin.y,origin.z),seam-left,false);
+                    Rail(root,new Vector3((seam+right)*.5f,origin.y,origin.z),right-seam,false);
+                }
+                else Rail(root,origin,length,alongZ);
+            }
             Box(root,"Lower industrial service yard",new Vector3(0,-2.05f,0),new Vector3(70,.15f,50),trim);
-            Box(root,"Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f,.76f,9.85f),recess);
-            Box(root,"Rear service gantry deck",new Vector3(0,.06f,5.98f),new Vector3(21,.12f,2.1f),trim);
+            ViewBox("Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f+extra,.76f,9.85f),recess);
+            ViewBox("Rear service gantry deck",new Vector3(0,.06f,5.98f),new Vector3(21+extra,.12f,2.1f),trim);
             foreach(int side in new[]{-1,1})
             {
-                Box(root,"Perimeter metal edge",new Vector3(0,.10f,side*4.98f),new Vector3(16.05f,.13f,.11f),trim);
-                Rail(root,new Vector3(0,.14f,side*5.02f),15.85f,false);
-                Rail(root,new Vector3(side*8.04f,.14f,0),9.95f,true);
-                for(int x=-7;x<=7;x+=2)
+                ViewBox("Perimeter metal edge",new Vector3(0,.10f,side*4.98f),new Vector3(16.05f+extra,.13f,.11f),trim);
+                ViewRail(new Vector3(0,.14f,side*5.02f),15.85f+extra,false);
+                ViewRail(new Vector3(side*(8.04f+halfExtra),.14f,0),9.95f,true);
+                for(int x=-7-(int)halfExtra;x<=7+(int)halfExtra;x+=2)
                 {
-                    Box(root,"Small recessed perimeter light",new Vector3(x,.18f,side*4.965f),new Vector3(.32f,.024f,.045f),lamp);
-                    Box(root,"Under-deck steel post",new Vector3(x,-.96f,side*4.78f),new Vector3(.12f,1.1f,.13f),trim);
-                    Beam(root,"Under-deck diagonal brace",new Vector3(x-.8f,-1.46f,side*4.78f),new Vector3(x+.8f,-.45f,side*4.78f),.075f,trim);
+                    ViewBox("Small recessed perimeter light",new Vector3(x,.18f,side*4.965f),new Vector3(.32f,.024f,.045f),lamp);
+                    ViewBox("Under-deck steel post",new Vector3(x,-.96f,side*4.78f),new Vector3(.12f,1.1f,.13f),trim);
+                    ViewBeam("Under-deck diagonal brace",new Vector3(x-.8f,-1.46f,side*4.78f),new Vector3(x+.8f,-.45f,side*4.78f),.075f,trim);
                 }
-                Box(root,"Long side service ledge",new Vector3(side*9.05f,-.08f,0),new Vector3(1.5f,.3f,13.8f),trim);
+                ViewBox("Long side service ledge",new Vector3(side*(9.05f+halfExtra),-.08f,0),new Vector3(1.5f,.3f,13.8f),trim);
                 for(int bay=0;bay<5;bay++)
                 {
                     float z=-5.5f+bay*2.8f;
-                    Box(root,"Side factory panel",new Vector3(side*10.45f,.65f,z),new Vector3(.22f,4.1f,2.76f),trim);
-                    Box(root,"Side factory recessed panel",new Vector3(side*10.30f,.6f,z),new Vector3(.08f,3.5f,2.3f),recess);
-                    Box(root,"Side factory girder",new Vector3(side*10.18f,.65f,z-1.27f),new Vector3(.18f,4.15f,.11f),trim);
-                    Beam(root,"Side factory cross brace",new Vector3(side*10.15f,-1.1f,z-1.1f),new Vector3(side*10.15f,2.32f,z+1.1f),.075f,trim);
-                    Box(root,"Side service lamp",new Vector3(side*10.05f,.14f,z),new Vector3(.045f,.04f,.42f),lamp);
+                    ViewBox("Side factory panel",new Vector3(side*(10.45f+halfExtra),.65f,z),new Vector3(.22f,4.1f,2.76f),trim);
+                    ViewBox("Side factory recessed panel",new Vector3(side*(10.30f+halfExtra),.6f,z),new Vector3(.08f,3.5f,2.3f),recess);
+                    ViewBox("Side factory girder",new Vector3(side*(10.18f+halfExtra),.65f,z-1.27f),new Vector3(.18f,4.15f,.11f),trim);
+                    ViewBeam("Side factory cross brace",new Vector3(side*(10.15f+halfExtra),-1.1f,z-1.1f),new Vector3(side*(10.15f+halfExtra),2.32f,z+1.1f),.075f,trim);
+                    ViewBox("Side service lamp",new Vector3(side*(10.05f+halfExtra),.14f,z),new Vector3(.045f,.04f,.42f),lamp);
                 }
             }
             // Layered wall panels and service lines keep a detailed industrial background behind
             // the native buildings instead of exposing a stretched blurry city texture.
-            for(int i=-3;i<=3;i++)
+            for(int i=-3-Mathf.CeilToInt(halfExtra/3.25f);i<=3+Mathf.CeilToInt(halfExtra/3.25f);i++)
             {
                 float x=i*3.25f;
-                Box(root,"Factory rear wall module",new Vector3(x,1.75f,7.15f),new Vector3(3.2f,4.8f,.24f),trim);
-                Box(root,"Recessed factory wall panel",new Vector3(x,1.65f,6.995f),new Vector3(2.75f,3.65f,.08f),recess);
-                Box(root,"Factory upright girder",new Vector3(x-1.53f,1.75f,6.92f),new Vector3(.14f,4.85f,.21f),trim);
-                Box(root,"Raised service window band",new Vector3(x,3.08f,6.90f),new Vector3(2.5f,.58f,.06f),trim);
+                ViewBox("Factory rear wall module",new Vector3(x,1.75f,7.15f),new Vector3(3.2f,4.8f,.24f),trim);
+                ViewBox("Recessed factory wall panel",new Vector3(x,1.65f,6.995f),new Vector3(2.75f,3.65f,.08f),recess);
+                ViewBox("Factory upright girder",new Vector3(x-1.53f,1.75f,6.92f),new Vector3(.14f,4.85f,.21f),trim);
+                ViewBox("Raised service window band",new Vector3(x,3.08f,6.90f),new Vector3(2.5f,.58f,.06f),trim);
                 for(int slit=0;slit<5;slit++)
-                    Box(root,"Ventilation slit",new Vector3(x-.9f+slit*.45f,3.08f,6.855f),new Vector3(.025f,.51f,.018f),recess);
-                Box(root,"Warm wall lamp",new Vector3(x,.73f,6.82f),new Vector3(.52f,.045f,.055f),lamp);
-                Beam(root,"Factory panel diagonal",new Vector3(x-1.3f,-.1f,6.89f),new Vector3(x+1.3f,2.7f,6.89f),.065f,trim);
+                    ViewBox("Ventilation slit",new Vector3(x-.9f+slit*.45f,3.08f,6.855f),new Vector3(.025f,.51f,.018f),recess);
+                ViewBox("Warm wall lamp",new Vector3(x,.73f,6.82f),new Vector3(.52f,.045f,.055f),lamp);
+                ViewBeam("Factory panel diagonal",new Vector3(x-1.3f,-.1f,6.89f),new Vector3(x+1.3f,2.7f,6.89f),.065f,trim);
             }
             for(int pipe=0;pipe<2;pipe++)
             {
                 float y=.32f+pipe*.29f;
-                Box(root,"Long factory service duct",new Vector3(0,y,6.74f),new Vector3(23,.09f,.12f),pipe==0?amber:trim);
-                for(int x=-10;x<=10;x+=2)
-                    Box(root,"Duct collar",new Vector3(x,y,6.74f),new Vector3(.055f,.13f,.16f),trim);
+                ViewBox("Long factory service duct",new Vector3(0,y,6.74f),new Vector3(23+extra,.09f,.12f),pipe==0?amber:trim);
+                for(int x=-10-(int)halfExtra;x<=10+(int)halfExtra;x+=2)
+                    ViewBox("Duct collar",new Vector3(x,y,6.74f),new Vector3(.055f,.13f,.16f),trim);
             }
         }
 
@@ -243,7 +276,7 @@ namespace YesterdayConvoy.Editor
             if(c.terrain==null||c.terrain.regions.Length!=4)throw new InvalidOperationException("Expected four saved defender terrain regions.");
             if(c.terrain.regions.Count(r=>r.allowDefender)!=2)throw new InvalidOperationException("Expected two firing platforms.");
             foreach(var region in c.terrain.regions)
-                if(region.cells.xMin<8||region.cells.xMax>13||region.cells.yMin<0||region.cells.yMax>8)throw new InvalidOperationException("Defender terrain must leave formation and blue-gate columns clear.");
+                if(region.cells.xMin<FormationBattleModel.DeploymentColumns+2||region.cells.xMax>FormationBattleModel.Width-1||region.cells.yMin<0||region.cells.yMax>FormationBattleModel.Height)throw new InvalidOperationException("Defender terrain must leave formation and blue-gate columns clear.");
             if(c.terrain.GetComponentsInChildren<Renderer>().Length<12)throw new InvalidOperationException("Saved terrain geometry missing.");
             Debug.Log("FORMATION_REFERENCE_VALIDATE_PASS: persistent concrete floor, four saved terrain regions, clear left formation and blue gates");
         }

@@ -36,12 +36,6 @@ namespace YesterdayConvoy
                 DrawFormationResources(preparing);
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();
-                if(preparing)DrawDeploymentHint();
-                if(preparing&&DeploymentPreview==null)
-                {
-                    Fill(new Rect(204,477,790,25),new Color(.035f,.065f,.085f,.78f));
-                    Label(new Rect(212,480,774,19),ViewingDefenders?"守军侦察 · 按 V 返回我方布阵；查看不会推进战斗。":notice,11,White);
-                }
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
                 if(Model.Paused&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))
                 {
@@ -89,9 +83,10 @@ namespace YesterdayConvoy
                 var style=approvedShop.LoopText(12,TextAnchor.UpperLeft,ApprovedUi.Muted);style.wordWrap=true;
                 GUI.Label(new Rect(rect.x+14,rect.y+46,350,58),"现有角色已适配布阵与占地；战斗采用简化自动技能，原羁绊效果尚未接入。这里只显示真实编队的种类标签。",style);
             }
+            if(Model.Phase==FormationPhase.Preparation)return;
             var rows=Model.Units.OrderByDescending(u=>u.DamageDone).ThenBy(u=>u.ArtId,StringComparer.Ordinal).Select(u=>new ApprovedShopWidgets.RankingRow
             {CardId="CARD_"+u.ArtId,Name=u.Name,Damage=u.DamageDone,Portrait=FormationUnitArt.For(u.ArtId)?.Portrait}).ToArray();
-            string state=Model.Phase==FormationPhase.Preparation?"待开战":Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting?"实时统计":"本场结算";
+            string state=Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting?"实时统计":"本场结算";
             ApprovedShopWidgets.DrawRanking(rows,Model.Units.Sum(u=>u.DamageDone),state,ApprovedUi.Font(null),ref formationRankingScroll,ref formationRankingScrollbar);
         }
         void DrawFormationCombatRoster()
@@ -126,7 +121,7 @@ namespace YesterdayConvoy
         {
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders))
             {
-                if(!actor.Alive)continue;
+                if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+battleCamera.transform.up*(ActorPresentationHeight(actor)+.12f)));
                 if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
                 bool ally=actor is FormationFighter;
@@ -137,13 +132,14 @@ namespace YesterdayConvoy
             if(Model.Phase==FormationPhase.Preparation)
                 foreach(var u in Model.Units.Where(u=>u.Enabled))
                 {
-                    var p=CellScreen(u.SpawnCenter);string footprint=u.Footprint==Vector2Int.one?"":$" · {u.Footprint.x}×{u.Footprint.y}";
-                    Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star)+footprint,11,Gold,TextAnchor.MiddleCenter);
-                    if(u.Slot==SelectedSlot)ApprovedUi.Border(new Rect(p.x-27,p.y-14,54,30),Cyan,2);
+                    if(!FormationActorVisibleInView(u))continue;
+                    var p=CellScreen(u.SpawnCenter);
+                    Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
                 }
             foreach(var h in Model.Hits)
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
+                if(ViewingDefenders!=(h.To.x>=FormationBattleModel.DeploymentColumns+.5f))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
                 if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
                 Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);

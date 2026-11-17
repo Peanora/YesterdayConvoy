@@ -40,7 +40,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.TryPlace(0, (int)second.x, (int)second.y), Is.True);
             Assert.That(model.Units[0].Spawn, Is.EqualTo(second));
             Assert.That(model.Units[1].Spawn, Is.EqualTo(first));
-            Assert.That(model.TryPlace(0, 6, 2), Is.False);
+            Assert.That(model.TryPlace(0, FormationBattleModel.DeploymentColumns, 2), Is.False);
             Assert.That(model.TryPlace(0, -1, 2), Is.False);
             Assert.That(model.TryPlace(0, 3, 8), Is.False);
             Assert.That(model.TryPlace(8, 2, 2), Is.False);
@@ -106,7 +106,7 @@ namespace YesterdayConvoy.Tests
         public void DeathWaitsForRevivalAtOriginalCellWithoutRefreshingSkillOrEnemyHealth()
         {
             var model = Solo(); model.StartBattle();
-            var unit = model.Units[0];
+            var unit = model.Units[0]; unit.Position = new Vector2(FormationBattleModel.DeploymentColumns + 1, 2);
             var guard = SingleGuard(model, unit.Position + Vector2.right * .5f);
             guard.Attack = 100000; guard.Range = 10; guard.Interval = 100;
             unit.SkillCharge = 3;
@@ -130,12 +130,64 @@ namespace YesterdayConvoy.Tests
             Assert.That(unit.Deaths, Is.EqualTo(1));
         }
 
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void RangedBodyMarchesIntoVisibleBattleAreaBeforeEitherSideCanDealDamage(int terrainCase)
+        {
+            FormationBattleTerrainLayout terrain = terrainCase == 0 ? null : new FormationBattleTerrainLayout(
+                terrainCase == 1 ? Array.Empty<FormationBattleTerrainRegion>() : new[]
+                {
+                    new FormationBattleTerrainRegion(new RectInt(17, 1, 2, 2), .48f, true),
+                    new FormationBattleTerrainRegion(new RectInt(17, 5, 2, 2), .48f, true),
+                    new FormationBattleTerrainRegion(new RectInt(14, 1, 2, 1), .36f, false),
+                    new FormationBattleTerrainRegion(new RectInt(15, 4, 2, 1), .36f, false)
+                });
+            var model = new FormationBattleModel(20261117, terrain);
+            Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry
+            {
+                Instance = 1, ArtId = "M08", Star = 1,
+                Spawn = new Vector2(FormationBattleModel.DeploymentColumns - 1, 2)
+            } }, 1), Is.True);
+            // Use the generated ranged guard and its ordinary combat profile; only isolate
+            // the encounter and put the guard in the front legal guard cell.
+            var guard = model.Defenders.First(defender => defender.Kind >= 6 && !defender.Healer);
+            model.Defenders.RemoveAll(defender => defender != guard);
+            guard.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 2);
+            var bow = model.Units.Single(); var anchor = bow.Spawn;
+            Assert.That(Vector2.Distance(bow.Position, guard.Position), Is.LessThan(bow.Range));
+            Assert.That(Vector2.Distance(bow.Position, guard.Position), Is.LessThan(guard.Range));
+            Assert.That(model.StartBattle(), Is.True);
+            int approachTicks = 0;
+            while (bow.Position.x < FormationBattleModel.BattleAreaStart && approachTicks++ < 200)
+            {
+                model.Advance(.025f);
+                if (bow.Position.x >= FormationBattleModel.BattleAreaStart) break;
+                Assert.That(bow.IsMoving, Is.True);
+                Assert.That(bow.TargetId, Is.EqualTo(-1));
+                Assert.That(bow.DamageDone, Is.Zero); Assert.That(guard.DamageDone, Is.Zero);
+                Assert.That(bow.Health, Is.EqualTo(bow.MaxHealth));
+                Assert.That(guard.Health, Is.EqualTo(guard.MaxHealth));
+                Assert.That(bow.LastActionAt, Is.LessThan(0));
+                Assert.That(bow.LastSkillAt, Is.LessThan(0));
+            }
+            Assert.That(approachTicks, Is.GreaterThan(1));
+            Assert.That(bow.Position.x, Is.GreaterThanOrEqualTo(FormationBattleModel.BattleAreaStart));
+            for (int step = 0; step < 100 && (bow.DamageDone == 0 || guard.DamageDone == 0); step++) model.Advance(.025f);
+            Assert.That(bow.DamageDone, Is.GreaterThan(0));
+            Assert.That(guard.DamageDone, Is.GreaterThan(0));
+            Assert.That(model.Hits.All(hit => hit.Heal ||
+                (hit.FromId == bow.Id ? hit.From.x : hit.To.x) >= FormationBattleModel.BattleAreaStart), Is.True);
+            Assert.That(bow.Spawn, Is.EqualTo(anchor));
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Fighting));
+        }
+
         [Test]
         public void AutomaticSkillEmitsOnlyRealDamageAndLocksMovementThroughItsAction()
         {
             var model = Solo(3); model.StartBattle();
-            var unit = model.Units[3]; unit.Position = new Vector2(8, 4); unit.Attack = 100;
-            var guard = SingleGuard(model, new Vector2(9, 4)); guard.MaxHealth = guard.Health = 1000;
+            var unit = model.Units[3]; unit.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 4); unit.Attack = 100;
+            var guard = SingleGuard(model, new Vector2(FormationBattleModel.DeploymentColumns + 3, 4)); guard.MaxHealth = guard.Health = 1000;
             unit.SkillCharge = unit.SkillRequired;
             model.Advance(.025f);
             Assert.That(unit.LastSkillAt, Is.EqualTo(model.Clock));
@@ -158,9 +210,9 @@ namespace YesterdayConvoy.Tests
             var model = new FormationBattleModel();
             model.ToggleSlot(1); model.ToggleSlot(5); model.StartBattle();
             var herald = model.Units[5]; var tank = model.Units[0];
-            herald.Position = new Vector2(8, 3); tank.Position = new Vector2(8, 2);
+            herald.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 3); tank.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 2);
             tank.Health = 300; herald.SkillCharge = herald.SkillRequired;
-            var guard = SingleGuard(model, new Vector2(9, 3)); guard.MaxHealth = guard.Health = 100000;
+            var guard = SingleGuard(model, new Vector2(FormationBattleModel.DeploymentColumns + 3, 3)); guard.MaxHealth = guard.Health = 100000;
             float before = tank.Health;
             model.Advance(.025f);
             Assert.That(tank.Health, Is.GreaterThan(before));
@@ -174,15 +226,15 @@ namespace YesterdayConvoy.Tests
         {
             var model = Solo(); model.StartBattle();
             var unit = model.Units[0];
-            unit.Position = new Vector2(13, 2); SingleGuard(model, new Vector2(8, 2));
+            unit.Position = new Vector2(FormationBattleModel.Width - 1, 2); SingleGuard(model, new Vector2(FormationBattleModel.DeploymentColumns + 2, 2));
             model.Advance(.025f);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Fighting));
             model.Retry(); model.StartBattle();
-            unit.Position = new Vector2(12, 2); unit.Attack = 100000;
-            var guard = SingleGuard(model, new Vector2(12.5f, 2)); guard.Health = 1;
+            unit.Position = new Vector2(FormationBattleModel.Width - 2, 2); unit.Attack = 100000;
+            var guard = SingleGuard(model, new Vector2(FormationBattleModel.Width - 1.5f, 2)); guard.Health = 1;
             model.Advance(.025f);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Exiting));
-            Assert.That(unit.Position.x, Is.LessThan(13));
+            Assert.That(unit.Position.x, Is.LessThan(FormationBattleModel.Width - 1));
             Assert.That(model.Hits.Any(hit => hit.Killed), Is.True);
             model.Advance(2);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
@@ -197,7 +249,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(lost.Clock, Is.EqualTo(.1).Within(1e-6));
             Assert.That(lost.TimeRemaining, Is.Zero);
             var won = Solo(); won.LimitSeconds = .025; won.StartBattle(); won.Defenders.Clear();
-            var unit = won.Units[0]; unit.Position = new Vector2(13 - unit.MoveSpeed * .025f, 2);
+            var unit = won.Units[0]; unit.Position = new Vector2(FormationBattleModel.Width - 1 - unit.MoveSpeed * .025f, 2);
             won.Advance(.025f);
             Assert.That(won.Phase, Is.EqualTo(FormationPhase.Won));
             Assert.That(won.Clock, Is.EqualTo(.025).Within(1e-6));

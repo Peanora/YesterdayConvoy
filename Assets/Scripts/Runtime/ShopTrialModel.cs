@@ -40,7 +40,7 @@ namespace YesterdayConvoy
         public int NextLevelXP=>JourneyEconomy?CampaignJourneyEconomy.RequiredXP(Level):(CampaignEconomy?CampaignPlan.XP:Experience)[Level];
         public bool CanAfford(int amount)=>UnlimitedGold||Gold>=amount;
         public void EnableCampaign(bool unlimited=false){CampaignEconomy=true;JourneyEconomy=false;UnlimitedGold=unlimited;}
-        public void EnableJourneyEconomy(){EnableCampaign();JourneyEconomy=true;}
+        public void EnableJourneyEconomy(bool unlimited=false){EnableCampaign(unlimited);JourneyEconomy=true;}
         public bool IsLineupInstance(int instance)=>lineupInstances.Contains(instance);
         public bool SetLineup(IEnumerable<string> ids,IEnumerable<int> preferredInstances=null)
         {

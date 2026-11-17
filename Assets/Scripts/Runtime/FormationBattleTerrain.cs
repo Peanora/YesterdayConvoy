@@ -41,7 +41,7 @@ namespace YesterdayConvoy
             for (int i = 0; i < regions.Length; i++)
             {
                 var r = regions[i];
-                if (r.cells.width <= 0 || r.cells.height <= 0 || r.cells.xMin < 8 ||
+                if (r.cells.width <= 0 || r.cells.height <= 0 || r.cells.xMin < FormationBattleModel.DeploymentColumns + 2 ||
                     r.cells.xMax > FormationBattleModel.Width - 1 || r.cells.yMin < 0 ||
                     r.cells.yMax > FormationBattleModel.Height || float.IsNaN(r.height) ||
                     float.IsInfinity(r.height) || r.height <= 0)
@@ -165,6 +165,11 @@ namespace YesterdayConvoy
             if (TryRoute(from, goal, out var candidate, out float length) && length < distance - Epsilon)
             { waypoint = candidate; distance = length; }
         }
+
+        // Entry is a location to reach, not an attack approach. Keep its path independent
+        // from the body's attack range, including future changes to ranged targeting.
+        public bool TryEnterBattleArea(Vector2 from, out Vector2 waypoint) =>
+            TryRoute(from, new Vector2(FormationBattleModel.DeploymentColumns + 1, from.y), out waypoint, out _);
 
         public bool TryExit(Vector2 from, out Vector2 waypoint)
         {

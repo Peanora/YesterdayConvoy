@@ -60,7 +60,7 @@ namespace YesterdayConvoy
             hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
-            Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, finite shop and instance-based lineup");
+            Debug.Log("FORMATION_DEMO_READY: saved rectangle, existing flipbooks, unlimited test gold and instance-based lineup");
         }
         static AudioClip Tone(string name,float hz,float duration)
         {
@@ -89,7 +89,7 @@ namespace YesterdayConvoy
         }
         void OnApplicationFocus(bool focus)
         {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
-        public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-6.5f,.12f,cell.y-3.5f);
+        public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-(FormationBattleModel.Width-1)*.5f,.12f,cell.y-(FormationBattleModel.Height-1)*.5f);
         public Vector3 ActorWorldPoint(Vector2 cell)=>WorldPoint(cell)+Vector3.up*(Model?.Terrain?.HeightAt(cell)??0);
         public Vector3 ActorWorldPoint(FormationActor actor)=>ActorWorldPoint(actor.Position);
         public static Vector2 CellScreen(Vector2 cell)=>TacticalViewport.Current.FromScreen(Camera.main.WorldToScreenPoint(WorldPoint(cell)));
@@ -101,8 +101,8 @@ namespace YesterdayConvoy
             if(!plane.Raycast(ray,out float distance)){cell=default;return false;}
             // A 2x2 body's centre lies on a grid seam. Choose one side consistently rather
             // than alternating at .5 ties with banker's rounding as the body crosses columns.
-            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.FloorToInt(p.x+7f+.0001f),Mathf.FloorToInt(p.z+4f+.0001f));
-            return cell.x>=0&&cell.x<14&&cell.y>=0&&cell.y<8;
+            var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.FloorToInt(p.x+FormationBattleModel.Width*.5f+.0001f),Mathf.FloorToInt(p.z+FormationBattleModel.Height*.5f+.0001f));
+            return cell.x>=0&&cell.x<FormationBattleModel.Width&&cell.y>=0&&cell.y<FormationBattleModel.Height;
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
@@ -131,9 +131,9 @@ namespace YesterdayConvoy
                     var on=Model.Units.FirstOrDefault(u=>u.Enabled&&u.DeploymentCells.Contains(cell));
                     if(on!=null){SelectedSlot=on.Slot;selectedPiece=on.Instance;dragSlot=on.Slot;shopDragInstance=on.Instance;PrepareFieldDeploymentGrab(on,point);}
                     else if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)
-                    {var selected=Model.Units[SelectedSlot];shopDragInstance=selected.Instance;dragSlot=selected.Slot;deploymentGrabOffset=Vector2Int.zero;pendingClickDeployment=true;}
+                    {var selected=Model.Units[SelectedSlot];shopDragInstance=selected.Instance;dragSlot=selected.Slot;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
                     else if(selectedPiece>0)
-                    {shopDragInstance=selectedPiece;deploymentGrabOffset=Vector2Int.zero;pendingClickDeployment=true;}
+                    {shopDragInstance=selectedPiece;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
                 }
             }
             if(type==EventType.MouseDrag)UpdateDeploymentPreview();
@@ -178,7 +178,7 @@ namespace YesterdayConvoy
         {
             seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed);Model.Reset(seed);Session.ApplyTo(Model);
             Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;lastSoundAt=-10;
-            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice="新挑战：从真实金币、有限牌库与三人军团开始。";SyncActors();
+            SetMarketVisible(true);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice="新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
             SetFormationView(false);
         }
         internal void SyncActors()
@@ -197,7 +197,7 @@ namespace YesterdayConvoy
             lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.LINES);
             foreach(var h in Model.Hits)
             {
-                float age=(float)(Model.Clock-h.At);if(age<0||age>.24f)continue;
+                float age=(float)(Model.Clock-h.At);if(age<0||age>.24f||!FormationPointVisibleInView(h.To))continue;
                 var c=h.Heal?new Color(.35f,1,.65f):h.Skill?new Color(1,.66f,.2f):new Color(1,.88f,.6f);
                 c.a=1-age/.24f;GL.Color(c);
                 GL.Vertex(ActorWorldPoint(h.From)+Vector3.up*.5f);GL.Vertex(ActorWorldPoint(h.To)+Vector3.up*.5f);

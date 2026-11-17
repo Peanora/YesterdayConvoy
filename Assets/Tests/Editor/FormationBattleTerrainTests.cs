@@ -8,17 +8,17 @@ namespace YesterdayConvoy.Tests
     {
         static FormationBattleTerrainRegion[] Regions() => new[]
         {
-            new FormationBattleTerrainRegion(new RectInt(11, 1, 2, 2), .48f, true),
-            new FormationBattleTerrainRegion(new RectInt(11, 5, 2, 2), .48f, true),
-            new FormationBattleTerrainRegion(new RectInt(8, 1, 2, 1), .36f, false),
-            new FormationBattleTerrainRegion(new RectInt(9, 4, 2, 1), .36f, false)
+            new FormationBattleTerrainRegion(new RectInt(17, 1, 2, 2), .48f, true),
+            new FormationBattleTerrainRegion(new RectInt(17, 5, 2, 2), .48f, true),
+            new FormationBattleTerrainRegion(new RectInt(14, 1, 2, 1), .36f, false),
+            new FormationBattleTerrainRegion(new RectInt(15, 4, 2, 1), .36f, false)
         };
 
         static FormationBattleModel SoloDog()
         {
             var model = new FormationBattleModel(20261117, new FormationBattleTerrainLayout(Regions()));
             for (int i = 0; i < 4; i++) if (i != 1) Assert.That(model.ToggleSlot(i), Is.True);
-            Assert.That(model.TryPlace(1, 5, 2), Is.True);
+            Assert.That(model.TryPlace(1, FormationBattleModel.DeploymentColumns - 1, 2), Is.True);
             model.LimitSeconds = 45;
             return model;
         }
@@ -36,14 +36,14 @@ namespace YesterdayConvoy.Tests
         static string Snapshot(FormationBattleModel model) => string.Join("|", model.Defenders.Select(d =>
             d.ArtId + ":" + d.Position.x + "," + d.Position.y + ":" + d.MaxHealth + ":" + d.Attack));
 
-        [TestCase(11, 1)]
-        [TestCase(12, 1)]
-        [TestCase(11, 2)]
-        [TestCase(12, 2)]
-        [TestCase(11, 5)]
-        [TestCase(12, 5)]
-        [TestCase(11, 6)]
-        [TestCase(12, 6)]
+        [TestCase(17, 1)]
+        [TestCase(18, 1)]
+        [TestCase(17, 2)]
+        [TestCase(18, 2)]
+        [TestCase(17, 5)]
+        [TestCase(18, 5)]
+        [TestCase(17, 6)]
+        [TestCase(18, 6)]
         public void ShortRangeMeleeReachesEveryPlatformSeatAndKillsWithoutClimbing(int col, int row)
         {
             var model = SoloDog();
@@ -68,7 +68,7 @@ namespace YesterdayConvoy.Tests
         public void CrowdedApproachCannotPushBodiesThroughCoverOrPlatform()
         {
             var model = new FormationBattleModel(17, new FormationBattleTerrainLayout(Regions()));
-            SingleHarmlessGuard(model, new Vector2(12, 4), 1000000);
+            SingleHarmlessGuard(model, new Vector2(18, 4), 1000000);
             Assert.That(model.StartBattle(), Is.True);
             var fighters = model.Units.Where(u => u.Enabled).ToArray();
             for (int step = 0; step < 1000; step++)
@@ -88,7 +88,7 @@ namespace YesterdayConvoy.Tests
         {
             var model = SoloDog(); var dog = model.Units[1];
             Assert.That(model.StartBattle(), Is.True);
-            dog.Position = new Vector2(7, 1);
+            dog.Position = new Vector2(13, 1);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
             bool sawDetour = false;
             for (int step = 0; step < 1000 && model.Phase != FormationPhase.Won; step++)
@@ -134,7 +134,7 @@ namespace YesterdayConvoy.Tests
         {
             Assert.That(model.StartBattle(), Is.True);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
-            model.Units.First(u => u.Enabled).Position = new Vector2(13, 0);
+            model.Units.First(u => u.Enabled).Position = new Vector2(19, 0);
             model.Advance(.025f);
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
         }
@@ -143,10 +143,10 @@ namespace YesterdayConvoy.Tests
         public void LayoutSnapshotsSavedRegionsWithoutAllowingAuthoringChangesToAlterCombat()
         {
             var source = Regions(); var layout = new FormationBattleTerrainLayout(source);
-            source[0] = new FormationBattleTerrainRegion(new RectInt(8, 0, 1, 1), 1, false);
-            Assert.That(layout.HeightAt(new Vector2(11, 1)), Is.EqualTo(.48f));
-            Assert.That(layout.CanPlaceDefender(new Vector2(11, 1)), Is.True);
-            Assert.That(layout.CanPlaceDefender(new Vector2(8, 1)), Is.False);
+            source[0] = new FormationBattleTerrainRegion(new RectInt(14, 0, 1, 1), 1, false);
+            Assert.That(layout.HeightAt(new Vector2(17, 1)), Is.EqualTo(.48f));
+            Assert.That(layout.CanPlaceDefender(new Vector2(17, 1)), Is.True);
+            Assert.That(layout.CanPlaceDefender(new Vector2(14, 1)), Is.False);
             Assert.That(layout.HeightAt(new Vector2(5, 2)), Is.Zero);
         }
     }

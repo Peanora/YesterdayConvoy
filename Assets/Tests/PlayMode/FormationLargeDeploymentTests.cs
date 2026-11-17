@@ -107,7 +107,7 @@ namespace YesterdayConvoy.Tests
                 for (int i = 0; i < pixels.Length; i += Math.Max(1, pixels.Length / 4096))
                 { byte value = Math.Max(pixels[i].r, Math.Max(pixels[i].g, pixels[i].b)); low = Math.Min(low, value); high = Math.Max(high, value); }
                 Assert.That(high - low, Is.GreaterThan(16), "The captured game frame must contain visible scene/UI content.");
-                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-deployment"));
+                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-refinement"));
                 Directory.CreateDirectory(directory); File.WriteAllBytes(Path.Combine(directory, name + ".png"), frame.EncodeToPNG());
             }
             finally { Object.Destroy(frame); }
@@ -190,11 +190,11 @@ namespace YesterdayConvoy.Tests
             var beforeInvalid = model.Units.ToDictionary(unit => unit.Instance, unit => unit.DeploymentCells);
             var seat = session.Seats.For(movingInstance).Value;
             GrabBody(Fighter("M20"));
-            yield return DragUntil(preview => !preview.Valid && preview.Cells.xMin == 5 && preview.Cells.size == new Vector2Int(2, 2));
+            yield return DragUntil(preview => !preview.Valid && preview.Cells.xMin == FormationBattleModel.DeploymentColumns-1 && preview.Cells.size == new Vector2Int(2, 2));
             Assert.That(controller.DeploymentPreview.Failure, Is.Not.Empty);
             yield return Capture("playmode-large-drag-invalid");
             controller.ProcessPointer(EventType.MouseUp, dragPoint);
-            Assert.That(model.Units.All(unit => beforeInvalid[unit.Instance] == unit.DeploymentCells), Is.True, "A col-5 two-cell footprint must fail without moving any actor.");
+            Assert.That(model.Units.All(unit => beforeInvalid[unit.Instance] == unit.DeploymentCells), Is.True, "A right-edge two-cell footprint must fail without moving any actor.");
             Assert.That(session.Seats.For(movingInstance).Value.Lineup, Is.EqualTo(seat.Lineup));
             Assert.That(session.Seats.For(movingInstance).Value.Index, Is.EqualTo(seat.Index));
 
