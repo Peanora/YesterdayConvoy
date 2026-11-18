@@ -302,9 +302,13 @@ namespace YesterdayConvoy
             }
             if(!action.Cancelled&&trail!=null&&Model.Clock>=action.LaunchedAt&&action.ContactAt>action.LaunchedAt&&Model.Clock<action.ContactAt)
             {
+                var arrowTarget = id == "M11" ? Model.Defenders.FirstOrDefault(d => d.Id == action.TargetId) : null;
                 if(!legacyFlightOrigins.TryGetValue(action.Sequence,out var start))
-                    legacyFlightOrigins[action.Sequence]=start=origin+battleCamera.transform.up*.75f*scale;
-                var end=ActorWorldPoint(action.To)+battleCamera.transform.up*.8f;
+                {
+                    start = id == "M11" ? FormationFeedbackContactPoint(actor, action.From, .55f) : origin + battleCamera.transform.up * .75f * scale;
+                    legacyFlightOrigins[action.Sequence] = start;
+                }
+                var end = id == "M11" ? FormationFeedbackContactPoint(arrowTarget, action.To, .52f) : ActorWorldPoint(action.To) + battleCamera.transform.up * .8f;
                 float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
                 var cell=Vector2.Lerp(action.From,action.To,progress);
                 bool loop=OriginalCombatVfxArt.TryGet(trail.Contains("/")?trail:"monster/"+trail,out var projectile)&&projectile.Loop;
@@ -359,8 +363,9 @@ namespace YesterdayConvoy
             if(key!=null)
             {
                 bool ground=id=="M14"&&hit.Skill||id=="M36"&&hit.Skill||id=="M31"&&Math.Abs(hit.At-actor.LastDeathAt)<.05;
-                LegacyOriginal(key,age,hit.To,35,flat:ground,scale:scale,
-                    explicitPosition:ground?(Vector3?)null:ActorWorldPoint(hit.To)+battleCamera.transform.up*.8f*scale);
+                Vector3? point = ground ? (Vector3?)null : ActorWorldPoint(hit.To) + battleCamera.transform.up * .8f * scale;
+                if (id == "M11") point = FormationFeedbackContactPoint(Model.Defenders.FirstOrDefault(d => d.Id == hit.ToId), hit.To, .52f);
+                LegacyOriginal(key,age,hit.To,35,flat:ground,scale:scale,explicitPosition:point);
             }
         }
 
@@ -490,12 +495,18 @@ namespace YesterdayConvoy
                 if(at>=0)LegacyOriginal("common/common_nerve_injury_01_hit",(Model.Clock-at)*LegacyVisualRate,defender.Position,38);
             }
             // Fire/snow domains are real v0.7 state, not guessed from damage counters.
+            formationTalulahRain?.BeginFrame();
             foreach(var zone in Model.LegacyZones())
             {
                 var source=Model.Units.FirstOrDefault(u=>u.Id==zone.SourceId);if(source==null)continue;
                 double age=(Model.Clock-zone.At)*LegacyVisualRate;
                 if(source.ArtId=="TALULAH_TRIAL"&&zone.Kind=="burn")
                 {
+                    if (Campaign.TalulahCost == 5)
+                    {
+                        PresentFormationTalulahRain(zone);
+                        continue;
+                    }
                     LegacyTalulah("target-burn-loop",age,zone.Center,source,-2,true);
                     if(Campaign.TalulahCost>=4)
                     {
@@ -503,15 +514,21 @@ namespace YesterdayConvoy
                         // the actual burn zone, oriented to the actor's facing.
                         var stream=BossRosterSupplementArt.Talulah("original-energy-stream");
                         double streamAge=age%stream.Duration;
-                        for(int row=-2;row<=2;row++)
+                        int rows=Mathf.FloorToInt(zone.Radius);
+                        for(int row=-rows;row<=rows;row++)
                         {
-                            var cell=new Vector2(Mathf.Lerp(FormationBattleModel.DeploymentColumns+1,FormationBattleModel.Width-1,(float)(streamAge/stream.Duration)),Mathf.Clamp(zone.Center.y+row,0,FormationBattleModel.Height-1));
+                            float y=zone.Center.y+row;
+                            if(y<0||y>FormationBattleModel.Height-1)continue;
+                            float span=Mathf.Sqrt(Mathf.Max(0,zone.Radius*zone.Radius-row*row));
+                            var cell=new Vector2(Mathf.Lerp(zone.Center.x-span,zone.Center.x+span,(float)(streamAge/stream.Duration)),y);
+                            if(cell.x>FormationBattleModel.Width-.5f)continue;
                             LegacyTalulah("original-energy-stream",streamAge,cell,source,20);
                         }
                     }
                 }
                 else if(source.ArtId=="M14"&&zone.Kind=="snow")LegacyOriginal("firstar_skill_01_range",age,zone.Center,24,flat:true,scale:LegacyScale(source));
             }
+            formationTalulahRain?.EndFrame();
             PresentFormationSynergyEffects();
             for(int i=legacyFxUsed;i<legacyFxViews.Count;i++)legacyFxViews[i].Renderer.enabled=false;
             for(int i=legacyComicUsed;i<legacyComicBursts.Count;i++)legacyComicBursts[i].Ink.enabled=legacyComicBursts[i].Light.enabled=false;
@@ -563,6 +580,8 @@ namespace YesterdayConvoy
         }
         internal void DisposeFormationLegacyEffects()
         {
+            formationTalulahRain?.Dispose();
+            formationTalulahRain = null;
             ResetFormationSynergyEffects();
             foreach(var view in legacyFxViews)if(view.Renderer!=null){view.Renderer.enabled=false;Destroy(view.Renderer.gameObject);}legacyFxViews.Clear();
             foreach(var page in legacyPatriotPages.Values){Destroy(page.Sprite);Resources.UnloadAsset(page.Texture);}legacyPatriotPages.Clear();
@@ -581,9 +600,9 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
-        internal sealed class LegacyZoneSnapshot {internal int SourceId;internal string Kind;internal Vector2 Center;internal double At,Until;}
+        internal sealed class LegacyZoneSnapshot {internal int SourceId;internal string Kind;internal Vector2 Center;internal double At,Until;internal float Radius;}
         internal IEnumerable<LegacyZoneSnapshot> LegacyZones()
-        {foreach(var zone in zones)if(zone.Until>Clock)yield return new LegacyZoneSnapshot{SourceId=zone.Source.Id,Kind=zone.Kind,Center=zone.Center,At=zone.StartedAt,Until=zone.Until};}
+        {foreach(var zone in zones)if(zone.Until>Clock)yield return new LegacyZoneSnapshot{SourceId=zone.Source.Id,Kind=zone.Kind,Center=zone.Center,At=zone.StartedAt,Until=zone.Until,Radius=zone.Radius};}
         internal double LegacyReflectAt(FormationActor actor)=>combat.TryGetValue(actor.Id,out var state)?state.LastReflect:double.NegativeInfinity;
         internal bool LegacyAwake(FormationActor actor)=>combat.TryGetValue(actor.Id,out var state)&&state.Stacks.TryGetValue("awake",out var value)&&value>0;
         internal double LegacyBuffUntil(FormationActor actor,string key)=>combat.TryGetValue(actor.Id,out var state)&&state.Buffs.TryGetValue(key,out var buff)?buff.Until:double.NegativeInfinity;

@@ -34,7 +34,6 @@ namespace YesterdayConvoy
         string loading="正在准备战斗动作…";
         double lastSoundAt=-10;
         AudioSource sounds;
-        AudioClip hitSound,skillSound;
         bool soundEnabled=true;
         int dragSlot=-1;
         bool pointerHeld;
@@ -65,17 +64,10 @@ namespace YesterdayConvoy
             lineMaterial.SetInt("_Cull",0);lineMaterial.SetInt("_ZWrite",0);
             // Metadata covers the roster; only current actors warm their actual action pages.
             foreach(string id in RequiredFormationArtIds().ToArray())yield return WarmFormationArt(id);
-            sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.15f;
-            hitSound=Tone("Formation hit",180,.055f);skillSound=Tone("Formation skill",420,.16f);
+            sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.36f;
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
             Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
-        }
-        static AudioClip Tone(string name,float hz,float duration)
-        {
-            int count=(int)(22050*duration);var data=new float[count];
-            for(int i=0;i<count;i++){float t=i/22050f;data[i]=Mathf.Sin(t*hz*2*Mathf.PI)*(1-i/(float)count)*.35f;}
-            var clip=AudioClip.Create(name,count,1,22050,false);clip.SetData(data,0);return clip;
         }
         void Update()
         {
@@ -93,11 +85,7 @@ namespace YesterdayConvoy
             if(Input.GetKeyDown(KeyCode.Escape))
             {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
-            if(soundEnabled&&Model.Clock-lastSoundAt>.09)
-            {
-                var hit=Model.Hits.LastOrDefault();
-                if(hit!=null&&hit.At>lastSoundAt){sounds.PlayOneShot(hit.Skill?skillSound:hitSound,hit.Heal?.45f:1);lastSoundAt=Model.Clock;}
-            }
+            if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
         void OnApplicationFocus(bool focus)
         {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
@@ -218,6 +206,7 @@ namespace YesterdayConvoy
             if(!Ready||Camera.current!=battleCamera)return;
             DrawDeploymentGrid();
             DrawCampaignSeaCells();
+            DrawFormationContactFeedback();
         }
         void OnDestroy()
         {
@@ -225,7 +214,7 @@ namespace YesterdayConvoy
             approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
             ArtMemoryCache.Pin(Array.Empty<string>());
             if(actorMaterial!=null)Destroy(actorMaterial);if(lineMaterial!=null)Destroy(lineMaterial);
-            if(hitSound!=null)Destroy(hitSound);if(skillSound!=null)Destroy(skillSound);
+            foreach(var clip in impactSounds.Values)Destroy(clip);
         }
     }
 }

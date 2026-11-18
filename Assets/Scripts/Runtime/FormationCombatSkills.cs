@@ -26,6 +26,7 @@ namespace YesterdayConvoy
             if(HasItem(u,"CF")&&!AttackRecovery(u))AddStack(u,"manual",1,5);
             if(HasItem(u,"CC")&&!AttackRecovery(u))AddStack(u,"reactor",1,10);
             if(Tagged(u,"伊比利亚")&&Level("伊比利亚")>=2&&Stack(u,"evidence")>=12){s.Stacks["evidence"]-=12;s.Stacks["cast_multiplier"]+=.35f;}
+            var firstSuiStrike = k=="B21" ? PrepareSuiClawStrike(u,presentation,0,target?.Position??u.Position,presentation.ContactAt) : null;
             QueueSkillAction(u,presentation,()=>
             {
             switch(k)
@@ -164,10 +165,16 @@ namespace YesterdayConvoy
                 case "B13":
                     foreach(var f in u.Star>=3?Units.Where(f=>f.Enabled&&f.Alive):main==null?Array.Empty<FormationFighter>():new[]{main}){GiveBuff(f,"saint_damage",u.Attack*(u.Star>=3?2:u.Star==2?1:.6f),10);}break;
                 case "B21":
-                    float chess=Stack(u,"chess");s.Stacks["chess"]=0;SkillArea(u,target,18*(1+chess*.3f),0,3,100);
+                    float chess=Stack(u,"chess");s.Stacks["chess"]=0;
+                    if(target!=null)
+                    {
+                        var openingTargets=Nearby(target.Position,AreaRadius(u,3),100,target);
+                        SettleSuiClawStrike(firstSuiStrike,target.Position,openingTargets.Length>0);
+                        NativeSegment(u,openingTargets,u.Attack*(18*(1+chess*.3f)),0,true,0,true);
+                    }
                     int seconds=u.Star>=3?24:12;s.BusyUntil=presentation.At+seconds;u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action);
                     presentation.EndAt=Math.Max(presentation.EndAt,s.BusyUntil);
-                    for(int i=4;i<=seconds;i+=4)ScheduleOwned(u,Clock+i,()=>{if(u.Alive)NativeSegment(u,Defenders.Where(d=>d.Alive).ToArray(),u.Attack*6,0,true,0,true);});
+                    for(int i=4;i<=seconds;i+=4)ScheduleSuiClawWave(u,presentation,firstSuiStrike.Center,i/4,Clock+i);
                     ScheduleOwned(u,Clock+seconds,()=>{var yi=Named("B26");if(yi!=null&&Level("岁影")>=2)GiveBuff(yi,"yi_duration",4,999);});break;
             }
             if(Tagged(u,"雪怪")&&Level("雪怪")>=4&&target!=null)Cold(target);

@@ -54,6 +54,11 @@ namespace YesterdayConvoy
         public int FromId, ToId;
         public float Amount;
         public bool Heal, Skill, Killed;
+        public FormationPresentationAction Action { get; internal set; }
+        public int ImpactIndex { get; internal set; }
+        public string SourceArtId { get; internal set; }
+        public bool Absorbed { get; internal set; }
+        public bool Secondary { get; internal set; }
     }
 
     public sealed class FormationRosterEntry
@@ -231,7 +236,7 @@ namespace YesterdayConvoy
         {
             if (Phase != FormationPhase.Preparation || EnabledCount == 0 || Campaign != null && (Campaign.HasBlockingChoice || Campaign.Finished || Campaign.NodeSettled)) return false;
             if(Campaign!=null&&(Campaign.CurrentNode.Kind=="补给"||!ValidateSeaPlacement(out _)))return false;
-            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); Paused = false;
+            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); ResetCadejoBlinks(); Paused = false;
             foreach (var unit in Units) ResetFighter(unit);
             foreach (var defender in Defenders) ResetActor(defender, true, Vector2.left);
             if (Campaign != null) { Campaign.LockBattleLineup(); BeginCampaignBattle(); }
@@ -257,7 +262,13 @@ namespace YesterdayConvoy
             while (Running)
             {
                 double remaining = LimitSeconds - Clock;
-                if (remaining <= 1e-8) { FinishIfAtGate(); if (Running) Phase = FormationPhase.Lost; break; }
+                if (remaining <= 1e-8)
+                {
+                    FinishIfAtGate();
+                    if (Running) Phase = FormationPhase.Lost;
+                    CancelPendingCadejoBlinks();
+                    break;
+                }
                 double step = Math.Min(StepSeconds, remaining);
                 // Inputs arrive as floats; decimal frame batches such as 7.95f can miss a tick by <1us.
                 if (accumulator + 1e-6 < step) break;
@@ -266,6 +277,7 @@ namespace YesterdayConvoy
                 Tick((float)step);
                 FinishIfAtGate();
                 if (Running && Clock + 1e-8 >= LimitSeconds) Phase = FormationPhase.Lost;
+                if (!Running) CancelPendingCadejoBlinks();
             }
         }
 
@@ -273,7 +285,7 @@ namespace YesterdayConvoy
 
         void PrepareRound()
         {
-            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); Paused = false;
+            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); ResetCadejoBlinks(); Paused = false;
             foreach (var unit in Units) { ConfigureFighter(unit); ResetFighter(unit); }
             if (Campaign == null) BuildDefenders(); else { ConfigureCampaignTeam(); BuildCampaignDefenders(); }
             Phase = FormationPhase.Preparation;
@@ -372,7 +384,12 @@ namespace YesterdayConvoy
 
         void Tick(float dt)
         {
-            if (Campaign != null) { TickCampaign(dt); return; }
+            if (Campaign != null)
+            {
+                TickCampaign(dt);
+                FinishCadejoBlinkTick();
+                return;
+            }
             Hits.RemoveAll(hit => hit.At < Clock - 3);
             foreach (var unit in Units)
             {
@@ -585,6 +602,7 @@ namespace YesterdayConvoy
 
         void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid)
         {
+            var requestedGoal = goal;
             if (Terrain != null)
             {
                 Vector2 waypoint;
@@ -593,6 +611,11 @@ namespace YesterdayConvoy
                     Terrain.TryExit(unit.Position, out waypoint);
                 if (!reachable) return;
                 goal = waypoint;
+            }
+            if (Campaign != null && unit.ArtId == "B14")
+            {
+                AdvanceCadejoBlink(unit, requestedGoal, goal, dt, avoid);
+                return;
             }
             Vector2 delta = goal - unit.Position;
             // Static corner turns must finish even the last sub-millimetre segment before turning.

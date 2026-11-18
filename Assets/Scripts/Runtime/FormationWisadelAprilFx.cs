@@ -20,7 +20,9 @@ namespace YesterdayConvoy
         internal static IEnumerable<ArtSequence> Sequences(int skill)
         {
             if(!Available)yield break;
-            foreach(string key in Ordinary.Concat(skill==1?S1:skill==2?S2:S3))yield return Get(key).Sequence;
+            var selected=skill==1?S1:skill==2?S2:S3;
+            foreach(string key in Ordinary.Concat(selected).Concat(S1).Concat(S2).Concat(S3).Distinct())
+                yield return Get(key).Sequence;
         }
     }
 
@@ -52,9 +54,9 @@ namespace YesterdayConvoy
         }
         void PresentOriginalWisadelAction(FormationPresentationAction action,FormationFighter actor)
         {
-            if(!WisadelAprilFxArt.Available)return;
+            if(!WisadelAprilFxArt.Available||action.Cancelled)return;
             double age=(Model.Clock-action.At)*action.Rate;if(age<0)return;
-            int skill=Campaign?.WisadelSkill??3;bool flip=actor.Facing.x<0;
+            int skill=action.Skill?WisadelSkillForAction(action):(Campaign?.WisadelSkill??3);bool flip=actor.Facing.x<0;
             bool empoweredAuto=!action.Skill&&skill==2&&WisadelEmpoweredAt(actor,action.LaunchedAt);
             string cast=action.Skill?(skill==1?"skill_01_start":null):
                 empoweredAuto?"skill_02_start":"attack_c_start";
@@ -83,31 +85,37 @@ namespace YesterdayConvoy
             if(empoweredAuto)return; // Original S2 has no moving main projectile.
             string trail=action.Skill?(skill==3?"skill_03_trail_game#9":"skill_01_trail"):"attack_01_trail";
             if(!legacyFlightOrigins.TryGetValue(action.Sequence,out var start))legacyFlightOrigins[action.Sequence]=start=LegacyWisadelMuzzle(actor,action);
-            var end=ActorWorldPoint(action.To)+battleCamera.transform.up*.45f;
+            var end=FormationFeedbackContactPoint(FormationFeedbackActor(action.TargetId),action.To,.55f);
             float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
             var cell=Vector2.Lerp(action.From,action.To,progress);
             LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:Vector3.Lerp(start,end,progress),direction:end-start);
         }
         void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
         {
-            int skill=Campaign?.WisadelSkill??3;
+            int skill=hit.Skill&&hit.Action!=null?WisadelSkillForAction(hit.Action):(Campaign?.WisadelSkill??3);
             bool empoweredAuto=!hit.Skill&&skill==2&&WisadelEmpoweredAt(actor,hit.At);
             string hitKey=hit.Skill?(skill==1?"skill_01_hit":skill==3?"skill_03_hit_game#9":null):
                 empoweredAuto?"skill_02_hit":"attack_01_hit";
             if(hitKey==null)return;
-            LegacyWisadel(hitKey,age,hit.To,36,point:ActorWorldPoint(hit.To)+battleCamera.transform.up*.45f);
+            LegacyWisadel(hitKey,age,hit.To,36,point:FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.55f));
             // Source _effectsWhenStop is a ground explosion, while OnHit is the
             // separate target layer. v0.7 has no additional bomb/token damage.
             // AoE hits share one true projectile stop. Do not multiply its ground
             // explosion by the number of victims hit in the same impact.
-            var first=Model.Hits.FirstOrDefault(h=>h.FromId==hit.FromId&&h.Skill==hit.Skill&&!h.Heal&&Math.Abs(h.At-hit.At)<1e-5);
+            var first=Model.Hits.FirstOrDefault(h=>h.FromId==hit.FromId&&h.Skill==hit.Skill&&!h.Heal&&
+                (hit.Action!=null?ReferenceEquals(h.Action,hit.Action):Math.Abs(h.At-hit.At)<1e-5));
             if(!ReferenceEquals(first,hit))return;
-            var projectile=Model.PresentationActions.LastOrDefault(a=>a.ActorId==actor.Id&&a.Skill==hit.Skill&&!a.Cancelled&&
-                (!a.Skill||a.ProjectileOnly)&&Math.Abs(a.ContactAt-hit.At)<.03);
+            var projectile=hit.Action;
             Vector2 center=projectile?.To??hit.To;
             string stop=hit.Skill?(skill==1?"skill_01_hit_02":"skill_03_hit_02_game#9"):
                 empoweredAuto?"skill_02_hit_02":"attack_01_hit_02";
             LegacyWisadel(stop,age,center,30);
+        }
+        static int WisadelSkillForAction(FormationPresentationAction action)
+        {
+            if(action.Animation?.StartsWith("Skill_1",StringComparison.Ordinal)==true)return 1;
+            if(action.Animation?.StartsWith("Skill_2",StringComparison.Ordinal)==true)return 2;
+            return 3;
         }
         bool WisadelEmpoweredAt(FormationActor actor,double at)
         {

@@ -28,8 +28,12 @@ namespace YesterdayConvoy
         internal string NativeTask => native?.Task;
         internal IEnumerable<string> NativeActions => native?.SourceNames ?? Array.Empty<string>();
 
-        FormationUnitArt(BossRosterArt source)
-        { native=source; height=source.Height; }
+        FormationUnitArt(BossRosterArt source, CardDefinition movementCard)
+        {
+            native = source;
+            card = movementCard;
+            height = source.Height;
+        }
 
         FormationUnitArt(ArtCatalog source)
         {
@@ -70,7 +74,10 @@ namespace YesterdayConvoy
             FormationUnitArt art;
             var original = BossRosterArt.For(definition.CardId);
             if(original!=null)
-                art=new FormationUnitArt(original);
+            {
+                cards.TryGetValue(definition.CardId, out var movementCard);
+                art=new FormationUnitArt(original,original.Task==WisadelAprilFxArt.Task?movementCard:null);
+            }
             else if(definition.ArtRoot==null)
             {
                 // Preserve the approved user GIF Sprite fallback if the independently
@@ -93,7 +100,7 @@ namespace YesterdayConvoy
         public bool HasAction(string action)
         {
             if(string.IsNullOrEmpty(action))return false;
-            if(native!=null)return native.HasClip(action);
+            if(native!=null)return native.HasClip(action)||UsesApprovedWalk(action);
             if(catalog!=null)return catalog.Clips.ContainsKey(action);
             if(action=="idle")return card!=null && card.BattleSprite!=null;
             var frames=SerializedFrames(action);
@@ -104,7 +111,7 @@ namespace YesterdayConvoy
         public float Duration(string action)
         {
             if(!HasAction(action))return 0;
-            if(native!=null)return native[action].Duration;
+            if(native!=null&&!UsesApprovedWalk(action))return native[action].Duration;
             if(catalog!=null)
             {
                 float duration=catalog.Clips[action].Duration;
@@ -123,7 +130,7 @@ namespace YesterdayConvoy
         internal IReadOnlyList<float> ContactTimes(string action)
         {
             if(!HasAction(action))return Array.Empty<float>();
-            if(native!=null)return native[action].OnAttackTimes;
+            if(native!=null&&!UsesApprovedWalk(action))return native[action].OnAttackTimes;
             if(action=="attack"&&catalog!=null&&catalog.Contact>0)return new[]{catalog.Contact};
             return Array.Empty<float>();
         }
@@ -132,12 +139,21 @@ namespace YesterdayConvoy
         {var times=ContactTimes(action);return times.Count>0?times[0]:float.NaN;}
         internal bool HasOrdinaryAttack=>HasAction("attack");
         internal string SourceAction(string action)
-            =>HasAction(action)?native!=null?native[action].Source:action:null;
+            =>HasAction(action)?native!=null&&!UsesApprovedWalk(action)?native[action].Source:action:null;
+
+        internal bool UsesApprovedWalk(string action) => action=="walk"&&native!=null&&
+            !native.HasClip(action)&&card!=null&&card.WalkFrames!=null&&card.WalkFrames.Count>0;
+
+        internal float DisplayScaleFor(string action)
+        {
+            if(!UsesApprovedWalk(action)||card.BattleSprite==null)return 1;
+            return Height/Mathf.Max(.01f,card.BattleSprite.bounds.max.y);
+        }
 
         /// <summary>Painted per-motion top above the captured foot root, before body scale.</summary>
         public float PresentationTop(string action)
         {
-            if(native!=null&&HasAction(action)&&native[action].PresentationTop>0)
+            if(native!=null&&native.HasClip(action)&&native[action].PresentationTop>0)
                 return native[action].PresentationTop;
             return Height;
         }
@@ -183,7 +199,7 @@ namespace YesterdayConvoy
             double duration=Duration(action);
             time=double.IsNaN(time) || time<0 ? 0 : double.IsPositiveInfinity(time) ? duration : time;
             time=loop ? time%duration : Math.Min(time,duration);
-            if(native!=null)
+            if(native!=null&&!UsesApprovedWalk(action))
                 return native[action].ReadyFor(time,0,loop) ? native[action].At(time,loop,out _) : null;
             if(catalog==null)
             {
@@ -203,17 +219,17 @@ namespace YesterdayConvoy
         }
 
         internal bool WindowReady(string action,double time,bool loop)
-            =>native==null || !HasAction(action) || native[action].ReadyFor(time,.6,loop);
+            =>native==null || !native.HasClip(action) || native[action].ReadyFor(time,.6,loop);
         internal IEnumerator WarmWindow(string action,double time,bool loop)
         {
-            if(native==null||!HasAction(action))yield break;
+            if(native==null||!native.HasClip(action))yield break;
             foreach(var sequence in native.SequencesFor(action,time,.6,loop))
                 if(!sequence.Ready)yield return sequence.Warm();
         }
         internal IEnumerable<string> WindowOwners(string action,double time,bool loop)
         {
             if(!HasAction(action))yield break;
-            if(native!=null)
+            if(native!=null&&native.HasClip(action))
             {
                 foreach(var sequence in native.SequencesFor(action,time,.6,loop))yield return sequence.CacheKey;
             }

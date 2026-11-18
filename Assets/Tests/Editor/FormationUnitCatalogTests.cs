@@ -109,7 +109,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(FormationUnitArt.For("M33").HasAction("attack"),Is.False,"The source crawler has no attack clip.");
             Assert.That(FormationUnitArt.For("TALULAH_TRIAL").HasAction("death"),Is.True,"Talulah's actual extra death clip is registered.");
             var vivi=FormationUnitArt.For("WISADEL_APRIL");
-            Assert.That(vivi.HasAction("walk"),Is.False,"The original April game#9 source has no walking clip; retain a real idle while moving.");
+            Assert.That(vivi.HasAction("walk"),Is.True,"Restore the separate user-approved walk frames with the April outfit.");
+            Assert.That(vivi.Duration("walk"),Is.EqualTo(.95f).Within(.00001));
             Assert.That(vivi.HasAction("attack"),Is.True);
             Assert.That(vivi.HasAction("death"),Is.True,"The new mode reads the original April game#9 death motion.");
             Assert.That(vivi.Duration("death"),Is.GreaterThan(0));

@@ -121,7 +121,14 @@ namespace YesterdayConvoy
                 if(HasItem(fighter,"BE")&&!t.EmergencyUsedThisLife&&fighter.Health<fighter.MaxHealth*.3f&&Stack(fighter,"emergency")<2&&fighter.Health>0){t.EmergencyUsedThisLife=true;AddStack(fighter,"emergency",1,2);Shield(fighter,fighter,fighter.MaxHealth*.2f,6,"emergency");GiveBuff(fighter,"move",.4f,4);}
             }
             bool killed=target.Health<=0;
-            Hits.Add(new FormationHit{At=Clock,From=source.Position,To=target.Position,FromId=source.Id,ToId=target.Id,Amount=healthLoss,Skill=skill,Killed=killed});
+            var presentation = HitPresentation(source);
+            Hits.Add(new FormationHit
+            {
+                At=Clock, From=source.Position, To=target.Position, FromId=source.Id, ToId=target.Id,
+                Amount=healthLoss, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
+                Action=presentation, ImpactIndex=presentation?.ProjectileOnly==true?presentation.ProjectileIndex:Math.Max(0,s.ActionHits-1),
+                Absorbed=amount<originalAmount-.001f, Secondary=!native&&source is FormationFighter&&presentation==null
+            });
             if(killed)
             {
                 if(target is FormationFighter f)KillCampaignFighter(f);
@@ -165,7 +172,8 @@ namespace YesterdayConvoy
             float amount=raw*(1+receive)*(native&&skill&&source is FormationFighter resonanceHealer&&Campaign.HasAugment("CG1")&&IsResonanceMember(resonanceHealer)?1.1f:1),actual=Mathf.Min(amount,target.MaxHealth-target.Health),over=Mathf.Max(0,amount-actual);
             target.Health+=actual;source.HealingDone+=actual;
             if(native&&skill){var owner=State(source);owner.SkillHealing[target.Id]=(owner.SkillHealing.TryGetValue(target.Id,out var prev)?prev:0)+amount;}
-            if(actual>0)Hits.Add(new FormationHit{At=Clock,From=source.Position,To=target.Position,FromId=source.Id,ToId=target.Id,Amount=actual,Heal=true,Skill=skill});
+            if(actual>0)Hits.Add(new FormationHit{At=Clock,From=source.Position,To=target.Position,FromId=source.Id,ToId=target.Id,Amount=actual,
+                Heal=true,Skill=skill,SourceArtId=source.ArtId,Action=HitPresentation(source)});
             if(renewal>=2&&over>0)
             {
                 float shield=Mathf.Min(target.MaxHealth*.15f,over*(renewal>=6?.5f:renewal>=4?.35f:.2f));

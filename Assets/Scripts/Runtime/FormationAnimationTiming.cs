@@ -144,6 +144,7 @@ namespace YesterdayConvoy
             internal bool CapturesCast;
             internal int CastOrdinal;
             internal SkillActionCompletion SkillCompletion;
+            internal FormationPresentationAction Presentation;
             internal Dictionary<string, float> ActionStacks;
             internal int[] SkillTargets;
             internal Dictionary<int, float> SkillDamage, SkillHealing, SkillShields;
@@ -170,6 +171,7 @@ namespace YesterdayConvoy
         void QueueOrdinaryAction(FormationFighter actor, FormationActor target, FormationPresentationAction presentation, Action resolve)
         {
             var state = State(actor); int life = state.LifeVersion; var context = CaptureActionContext(state);
+            context.Presentation = presentation;
             Action contact = () =>
             {
                 if (!actor.Alive || State(actor).LifeVersion != life || target == null || !target.Alive)
@@ -230,6 +232,7 @@ namespace YesterdayConvoy
         void QueueSkillAction(FormationFighter actor, FormationPresentationAction presentation, Action resolve)
         {
             var context = CaptureActionContext(State(actor)); context.CapturesCast = true; context.CastOrdinal = State(actor).Casts;
+            context.Presentation = presentation;
             var completion = new SkillActionCompletion
             {
                 Actor = actor, Presentation = presentation, Context = context,
@@ -280,12 +283,22 @@ namespace YesterdayConvoy
                     if(!actor.Alive||State(actor).LifeVersion!=life||requiresLiveTarget&&!target.Alive)
                     {projectile.Cancelled=true;return;}
                     projectile.To=target.Position;
-                    if(context==null)impact();else RunInPresentationContext(actor,context,impact);
+                    if(context==null)impact();
+                    else
+                    {
+                        var previous = context.Presentation;
+                        context.Presentation = projectile;
+                        try { RunInPresentationContext(actor,context,impact); }
+                        finally { context.Presentation = previous; }
+                    }
                 }
                 finally{if(completion!=null)completion.PendingOwned--;}
             };
             if(projectile.ContactAt<=Clock+1e-8)land();else Schedule(projectile.ContactAt,land);
         }
+
+        FormationPresentationAction HitPresentation(FormationActor actor) =>
+            activePresentationOwner == actor ? activePresentationContext?.Presentation : null;
 
         // ScheduleOwned called by a skill's real switch/segments inherits that action.
         // No other owner or later cast can borrow its per-action caps or replay totals.

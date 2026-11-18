@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         [Serializable] public sealed class Stage {public string label;public float start,duration;}
         [Serializable] public sealed class Clip
         {
-            public string id,kind,name,file,notes,error;
+            public string id,kind,name,file,notes,error,audioFile;
             public string[] units,activeSynergies;
             public List<Stage> stages=new List<Stage>();
             public int frames,skillCasts,hits;
@@ -46,6 +46,12 @@ namespace YesterdayConvoy
         Clip clip;
         bool writing,done;
         const float Step=1f/24;
+        const int ReviewAudioRate=22050;
+        readonly List<(int sample,FormationBattleController.ImpactStyle style,float gain)> reviewSounds =
+            new List<(int,FormationBattleController.ImpactStyle,float)>();
+        readonly Dictionary<int,double> reviewLastVoice = new Dictionary<int,double>();
+        double reviewAudioThrough;
+        bool RecordAudio=>Array.IndexOf(Environment.GetCommandLineArgs(),"-showcaseSound")>=0;
         public static bool Drives(FormationBattleController target)=>current!=null&&current.controller==target&&!current.done;
         static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationShowcase")>=0;
         static string Argument(string key,string fallback)
@@ -113,6 +119,7 @@ namespace YesterdayConvoy
                 if(existing!=null)manifest.clips.Remove(existing);
                 clip=new Clip{id=plan.Id,kind=plan.Kind,name=plan.Name,units=plan.Units,file="clips/"+order.ToString("D2")+"-"+SafeId(plan.Id)+".mp4"};
                 manifest.clips.Add(clip);writing=false;phase="准备素材";Save();
+                reviewSounds.Clear();reviewLastVoice.Clear();
                 Debug.Log("FORMATION_SHOWCASE_START: "+order+"/"+plans.Length+" "+plan.Id);
                 yield return controller.PrepareShowcaseFixture(plan.Units,plan.Cost,plan.Skill);
                 controller.BeginShowcaseFixture();controller.Model.Paused=false;
@@ -165,6 +172,7 @@ namespace YesterdayConvoy
                     }
                 }
                 EndEncoder();
+                if(RecordAudio)WriteReviewSound();
                 clip.duration=clip.frames/(float)manifest.fps;clip.skillCasts=controller.Model.SkillCasts.Count;clip.hits=controller.Model.Hits.Count;
                 Save();Debug.Log("FORMATION_SHOWCASE_CLIP_PASS: "+clip.id+";frames="+clip.frames+";casts="+clip.skillCasts+";hits="+clip.hits);
                 yield return null;
@@ -206,6 +214,7 @@ namespace YesterdayConvoy
         IEnumerator Segment(string label,float seconds,float stopPressureAt=-1,bool walkPreview=false)
         {
             phase=label;var stage=new Stage{label=label,start=clip.frames/(float)manifest.fps,duration=seconds};clip.stages.Add(stage);
+            reviewAudioThrough=controller.Model.Clock;
             int count=Mathf.RoundToInt(seconds*manifest.fps);
             for(int frame=0;frame<count;frame++)
             {
@@ -216,6 +225,7 @@ namespace YesterdayConvoy
                 while(!controller.RosterArtReady)
                 {if(Time.realtimeSinceStartupAsDouble>deadline)throw new TimeoutException("Animation window stalled for "+clip.id);yield return null;}
                 controller.SyncActors();writing=true;yield return new WaitForEndOfFrame();
+                if(RecordAudio&&!walkPreview)CaptureReviewSound();
                 var frameTexture=ScreenCapture.CaptureScreenshotAsTexture();
                 if(frameTexture==null)throw new InvalidOperationException("GPU screenshot unavailable.");
                 try
@@ -234,6 +244,47 @@ namespace YesterdayConvoy
                 else Advance(Step);
             }
             writing=false;
+        }
+        void CaptureReviewSound()
+        {
+            double at=controller.Model.Clock;
+            int voices=0;
+            foreach(var hit in controller.Model.Hits)
+            {
+                if(hit.At<=reviewAudioThrough||!controller.IsAudibleFormationHit(hit))continue;
+                if(reviewLastVoice.TryGetValue(hit.FromId,out var previous)&&hit.At-previous<.09)continue;
+                int sample=Mathf.RoundToInt(clip.frames*ReviewAudioRate/(float)manifest.fps);
+                float gain=.36f*(hit.Heal?.46f:hit.Skill?.85f:.67f);
+                reviewSounds.Add((sample,controller.FormationHitStyle(hit),gain));
+                reviewLastVoice[hit.FromId]=hit.At;
+                if(++voices==3)break;
+            }
+            reviewAudioThrough=at;
+        }
+
+        void WriteReviewSound()
+        {
+            int count=Mathf.RoundToInt(clip.frames*ReviewAudioRate/(float)manifest.fps);
+            var mixed=new float[count];
+            var clips=new Dictionary<FormationBattleController.ImpactStyle,float[]>();
+            foreach(var sound in reviewSounds)
+            {
+                if(!clips.TryGetValue(sound.style,out var samples))
+                {samples=FormationBattleController.FormationImpactSamples(sound.style);clips.Add(sound.style,samples);}
+                for(int i=0;i<samples.Length&&i+sound.sample<count;i++)mixed[i+sound.sample]+=samples[i]*sound.gain;
+            }
+            clip.audioFile="audio/"+Path.GetFileNameWithoutExtension(clip.file)+".wav";
+            string path=Path.Combine(directory,clip.audioFile);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            using(var file=new BinaryWriter(File.Create(path)))
+            {
+                file.Write(new[]{(byte)'R',(byte)'I',(byte)'F',(byte)'F'});file.Write(36+count*2);
+                file.Write(new[]{(byte)'W',(byte)'A',(byte)'V',(byte)'E',(byte)'f',(byte)'m',(byte)'t',(byte)' '});
+                file.Write(16);file.Write((short)1);file.Write((short)1);file.Write(ReviewAudioRate);file.Write(ReviewAudioRate*2);
+                file.Write((short)2);file.Write((short)16);
+                file.Write(new[]{(byte)'d',(byte)'a',(byte)'t',(byte)'a'});file.Write(count*2);
+                foreach(float value in mixed)file.Write((short)Mathf.RoundToInt(Mathf.Clamp(value,-1,1)*32767));
+            }
         }
         void StartEncoder(string pixel)
         {
@@ -255,7 +306,8 @@ namespace YesterdayConvoy
         static string Notes(Plan plan)
         {
             string result="原作身体/特效修复版：基础动画2×，攻速正常影响攻击动作；战斗规则仍1×。真实源接触/已核实弹道驱动结算。无音轨。";
-            if(plan.Units.Length==1&&new[]{"B11","B14","WIS","B21"}.Contains(plan.Units[0]))result+=" 源包没有走路片，当前以待机滑行。";
+            if(plan.Units.Length==1&&plan.Units[0]=="WIS")result+=" 移动使用已认可的19帧走路；施放使用愚人节皮肤。";
+            if(plan.Units.Length==1&&plan.Units[0]=="B14")result+=" 正式战斗以真实瞬移接敌；步态独立栏目不作为本体接敌凭证。";
             if(plan.Kind=="synergy")result+=" 羁绊展示真实数值/行为；同频、接棒、提词、迅攻、复苏复用原作公共反馈，并非原作专属羁绊特效。";
             if(plan.Id=="tag-整合")result+=" 希望属于战后经济，本片无希望奖励结算。";
             if(plan.Id=="tag-海嗣")result+=" 溟痕使用原有动态原生材质，准备期选格与战斗地面层分开。";

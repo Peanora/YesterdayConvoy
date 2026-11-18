@@ -123,7 +123,7 @@ namespace YesterdayConvoy.Tests
             yield return Fixture(new[] { "WIS" }, wisadelSkill: 3);
             var source = FormationUnitArt.For("WISADEL_APRIL");
             Assert.That(source.Root, Is.EqualTo("BossRoster/WIS_APRIL_G9/main"));
-            Assert.That(source.HasAction("walk"), Is.False, "The actual game#9 source has no Move, so no walk may be invented.");
+            Assert.That(source.HasAction("walk"), Is.True, "The previous user-approved walk is layered onto the April outfit.");
             Assert.That(Contact(source, "attack"), Is.EqualTo(.600000024f).Within(.00001f));
             Assert.That(Contact(source, "Skill_1"), Is.EqualTo(.600000024f).Within(.00001f));
             Assert.That(Contact(source, "Skill_2_Loop"), Is.EqualTo(.266666681f).Within(.00001f));
@@ -153,8 +153,9 @@ namespace YesterdayConvoy.Tests
             var source = FormationUnitArt.For(actor.ArtId);
             Step(.025f);
             Assert.That(actor.IsMoving, Is.True);
-            Assert.That(Selected(source, actor, "walk").key, Is.EqualTo("idle"));
-            Assert.That(FormationArtAssertions.IsActualIdleFrame(actor.ArtId, Body(actor).sprite), Is.True);
+            Assert.That(Selected(source, actor, "walk").key, Is.EqualTo("walk"));
+            Assert.That(Body(actor).sprite, Is.SameAs(source.Frame("walk",controller.Model.Clock*2,true)));
+            Assert.That(source.Frame("walk",0), Is.Not.SameAs(source.Frame("walk",.3)));
             yield return Until(() => controller.Model.PresentationActions.Any(a => a.ActorId == actor.Id && !a.Skill));
             var action = controller.Model.PresentationActions.First(a => a.ActorId == actor.Id && !a.Skill);
             Assert.That(action.Rate, Is.EqualTo(2).Within(.00001));
@@ -172,7 +173,53 @@ namespace YesterdayConvoy.Tests
             yield return Until(() => controller.Model.Hits.Any(h => h.FromId == actor.Id), 3);
             var hit = controller.Model.Hits.First(h => h.FromId == actor.Id);
             Assert.That(hit.At, Is.GreaterThanOrEqualTo(action.ContactAt - .0001));
+            Assert.That(hit.Action, Is.SameAs(action), "The applied hit keeps its own release even when another action starts.");
             Assert.That(hit.Amount, Is.GreaterThan(0));
+        }
+
+        [UnityTest] public IEnumerator AllThreeAprilSkillsDrawTheirOwnLayersDuringRealCombat()
+        {
+            RequireGpu();
+            for (int skill=1;skill<=3;skill++)
+            {
+                yield return Fixture(new[]{"WIS"},wisadelSkill:skill);
+                Begin();
+                string mark="wisdel_skill_0"+skill;
+                bool owner=false,impact=false,linked=false;
+                yield return Until(()=>
+                {
+                    var layers=LegacyLayers().Where(r=>r.sprite.name.Contains(mark)).ToArray();
+                    owner|=layers.Any(r=>(r.sprite.name.Contains("start")||r.sprite.name.Contains("buff"))&&HasPaint(r.sprite));
+                    impact|=layers.Any(r=>r.sprite.name.Contains("hit")&&HasPaint(r.sprite));
+                    linked|=controller.Model.Hits.Any(h=>!h.Heal&&h.SourceArtId=="WISADEL_APRIL"&&
+                        (skill==2?h.Action!=null&&!h.Skill&&h.At>h.Action.At:h.Action?.ProjectileOnly==true));
+                    return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked;
+                },60);
+            }
+        }
+
+        [UnityTest] public IEnumerator FiveCostRainDrawsAboveEmptyCellsAcrossTheArenaAndFreezesWithCombat()
+        {
+            RequireGpu();
+            yield return Fixture(new[]{"TAL"},talulahCost:5);
+            Begin();
+            SpriteRenderer[] drops=Array.Empty<SpriteRenderer>();
+            yield return Until(()=>
+            {
+                drops=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.name=="Falling fire").ToArray();
+                return drops.Length>=12&&drops.Max(r=>r.transform.position.x)-drops.Min(r=>r.transform.position.x)>7&&
+                    drops.Max(r=>r.transform.position.z)-drops.Min(r=>r.transform.position.z)>5;
+            },45);
+            Assert.That(controller.Model.SkillCasts.Count,Is.EqualTo(1));
+            Assert.That(drops.Any(r=>HasPaint(r.sprite)),Is.True,"The active waves contain actual flame pixels.");
+            Vector3 point=drops[0].transform.position;
+            var sprite=drops[0].sprite;
+            controller.Model.Paused=true;
+            Step(.4f);
+            Assert.That(drops[0].transform.position,Is.EqualTo(point));
+            Assert.That(drops[0].sprite,Is.SameAs(sprite));
+            yield return Fixture(new[]{"TAL"},talulahCost:4);
+            Assert.That(drops.All(r=>r==null||!r.enabled),Is.True);
         }
 
         [UnityTest] public IEnumerator ProductionEquipmentSpeedsAprilFramesWithoutChangingBattleClockSpeed()
@@ -215,31 +262,56 @@ namespace YesterdayConvoy.Tests
                 "The twelve-shell body channel needs the six additional real loop intervals after an in-place star change.");
         }
 
-        [UnityTest] public IEnumerator NaturalSuiChannelPaintsItsRealEndingAfterTheGameplayBusyWindow()
+        [UnityTest] public IEnumerator SuiKeepsItsDeploymentClawAndLandsOneWaveOnTheRealDefenderHits()
         {
             RequireGpu();
             yield return Fixture(new[] { "B21" });
-            Begin();
             var actor = controller.Model.Units.Single();
             var source = FormationUnitArt.For(actor.ArtId);
-            // Use the fixture's existing thick targets and ordinary natural SP. No
-            // injected cast, charge, hit or gameplay lock is needed to reach the end.
-            yield return Until(() => controller.Model.PresentationActions.Any(a => a.ActorId == actor.Id && a.Skill), 40);
-            var action = controller.Model.PresentationActions.First(a => a.ActorId == actor.Id && a.Skill);
-            yield return Until(() => (double)Invoke(controller.Model, "PresentationBusyUntil", actor) > action.At, 3);
-            double busyUntil = (double)Invoke(controller.Model, "PresentationBusyUntil", actor);
-            yield return Until(() => controller.Model.Clock >= busyUntil + .075, 20);
-            string ending = actor.Facing.x < 0 ? "Skill_End_B" : "Skill_End_A";
-            Assert.That(controller.Model.Clock, Is.LessThan(busyUntil + source.Duration(ending) / action.Rate));
-            controller.Model.Paused=true;
-            var selected = Selected(source, actor, "cast");
-            Assert.That(selected.key, Is.EqualTo(ending));
-            yield return WarmFrame(source, ending, selected.age);
-            Invoke(controller, "SyncActors");
-            Assert.That(Body(actor).sprite, Is.SameAs(source.Frame(ending, selected.age, false)),
-                "The actual renderer must retain the source ending instead of falling through to idle/walk at BusyUntil.");
-            Assert.That((double)typeof(FormationActor).GetField("ActionUntil",Members).GetValue(actor), Is.LessThanOrEqualTo(busyUntil), "A visual ending must not extend the gameplay action lock.");
-            Assert.That(controller.Model.SkillCasts.Count(c => c.UnitId == "B21"), Is.EqualTo(1));
+            Assert.That(Body(actor).enabled, Is.True, "Preparation still shows the board's deployable claw.");
+            AssertPainted(Body(actor).sprite);
+            yield return WarmFrame(source, "Skill_Loop_A", .73333335);
+            Begin();
+            var model=controller.Model;
+            var effects=Field<Dictionary<string,SpriteRenderer>>(controller,"formationAuxBodies");
+            object ActiveCue() => Invoke(model,"ActiveSuiClawStrike",actor);
+            Assert.That(Body(actor).enabled, Is.False, "Combat must not drag the giant deployment sprite along the board.");
+
+            object pulse=null;
+            yield return Until(() =>
+            {
+                pulse=ActiveCue();
+                return pulse!=null && Field<int>(pulse,"Wave")==1 &&
+                    Field<double>(pulse,"ImpactAt")-model.Clock<=.15;
+            },45);
+            var drop=effects[actor.Id+"/sui/descent"];
+            var shadow=effects[actor.Id+"/sui/impact"];
+            double impact=Field<double>(pulse,"ImpactAt");
+            var landing=controller.ActorWorldPoint(Field<Vector2>(pulse,"Center"));
+            var sourcePosition=actor.Position;
+            var before=drop.transform.position;
+            var living=model.Defenders.Where(defender=>defender.Alive).Select(defender=>defender.Id).ToArray();
+            double busyUntil=(double)Invoke(model,"PresentationBusyUntil",actor);
+            Assert.That(drop.enabled && shadow.enabled, Is.True);
+            AssertPainted(drop.sprite);
+            Assert.That(before.y - landing.y, Is.GreaterThan(1));
+            model.Paused=true;
+            Step(.2f);
+            Assert.That(drop.transform.position, Is.EqualTo(before));
+            Assert.That(Field<bool>(pulse,"Resolved"), Is.False);
+            model.Paused=false;
+
+            yield return Until(() => Field<bool>(pulse,"Resolved"),1);
+            Assert.That(Field<bool>(pulse,"Landed"), Is.True);
+            double resolved=Field<double>(pulse,"ImpactAt");
+            Assert.That(resolved,Is.EqualTo(impact).Within(.026));
+            Assert.That(drop.transform.position.y-landing.y, Is.InRange(0,.1f));
+            CollectionAssert.AreEquivalent(living,model.Hits.Where(hit=>hit.FromId==actor.Id && hit.Skill &&
+                Math.Abs(hit.At-resolved)<.0001).Select(hit=>hit.ToId).ToArray(),"A single periodic slam still reaches every living defender once.");
+            Assert.That(actor.Position,Is.EqualTo(sourcePosition),"The claw's impact position must not move the real unit to the guard.");
+            yield return Until(() => !drop.enabled,1);
+            Assert.That(model.SkillCasts.Count(c=>c.UnitId=="B21"),Is.EqualTo(1));
+            Assert.That((double)Invoke(model,"PresentationBusyUntil",actor),Is.EqualTo(busyUntil));
         }
 
         [UnityTest] public IEnumerator NaturalAprilSecondSkillKeepsItsEightSecondBuffAndPaintsTheSourceEnding()
