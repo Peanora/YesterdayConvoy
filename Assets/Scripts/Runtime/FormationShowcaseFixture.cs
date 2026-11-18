@@ -84,7 +84,8 @@ namespace YesterdayConvoy
             selectedPiece = 0;
             formationInspectedTag = null;
             lastSoundAt = -10;
-            formationCameraInitialized = false;
+            // Keep the initialized original culling mask and fixed camera poses. A
+            // re-initialization from an already filtered scouting mask hides both halves.
             RefreshFormationOperatingVisibility();
             EnsureFormationArt();
             double artDeadline = Time.realtimeSinceStartupAsDouble + 600;

@@ -261,7 +261,7 @@ namespace YesterdayConvoy
             var matrix=GUI.matrix;int depth=GUI.depth;GUI.matrix=TacticalViewport.Current.Matrix;GUI.depth=-1000;
             try
             {
-                ApprovedUi.Fill(new Rect(0,0,1280,65),new Color(.035f,.055f,.07f,.97f));
+                ApprovedUi.Fill(new Rect(0,0,1280,65),new Color(.035f,.055f,.07f,1));
                 GUI.Label(new Rect(18,6,590,28),clip.name+"   "+(clip.kind=="synergy"?"羁绊联动":"角色动作"),ApprovedUi.Text(null,22,TextAnchor.MiddleLeft,Color.white,650));
                 GUI.Label(new Rect(20,37,760,22),phase,ApprovedUi.Text(null,13,TextAnchor.MiddleLeft,new Color(.5f,.85f,.88f)));
                 var actor=controller.Model.Units.FirstOrDefault();
