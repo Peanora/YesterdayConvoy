@@ -138,6 +138,14 @@ namespace YesterdayConvoy
                         if(controller.Model.Clock>=limit)clip.notes+=" 此夹具中主动技能未能等到就绪，未伪造触发。";
                     }
                     yield return Segment(active==null?"被动 / 联动持续展示":"技能与命中 · 自然技力触发",8,plan.Id=="M33"?2.1f:-1);
+                    if(plan.Id=="tag-接棒"||plan.Id=="tag-剧场")
+                    {
+                        controller.SetShowcaseTargetPressure(controller.Model.Units.Max(u=>u.MaxHealth)*3+controller.Model.Units.Max(u=>u.Armor),.8f);
+                        clip.notes+=" 羁绊条件夹具：首靶短暂高攻击，实际死亡/低血后观察接棒或剧场，不修改我方生命。";
+                        yield return Segment("羁绊条件夹具 · 真实低血 / 阵亡触发",3,1.8f);
+                        controller.SetShowcaseTargetPressure(0);
+                        yield return Segment("羁绊返场 / 联动后续",9);
+                    }
                 }
                 EndEncoder();
                 clip.duration=clip.frames/(float)manifest.fps;clip.skillCasts=controller.Model.SkillCasts.Count;clip.hits=controller.Model.Hits.Count;

@@ -9,7 +9,7 @@ namespace YesterdayConvoy
     {
         float showcaseTargetPressure;
         internal string ShowcaseFixtureNote => "展示夹具：一星原数值、无装备；预置10级编队与右侧起点，3名高生命展示靶。" +
-            (showcaseTargetPressure > 0 ? "仅首靶按标注攻击力反击以触发治疗/受击效果。" : "展示靶不反击。") +
+            "靶默认不反击；治疗、受击及阶段片段按字幕启用首靶压力。" +
             "技能依正常技力和动作规则触发；不是自然对局或平衡演示。";
 
         // Called only by the explicitly requested showcase recorder. Normal play never
