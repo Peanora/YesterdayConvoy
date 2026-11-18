@@ -532,6 +532,21 @@ namespace YesterdayConvoy.Tests
             yield return Until(()=>Tiles().Length==0,11);
         }
 
+        [UnityTest] public IEnumerator CrawlerPlaysItsOwnPulseOnActualRetaliation()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "M33" });
+            Begin();
+            var actor=controller.Model.Units.Single();
+            var guard=controller.Model.Defenders.First();
+            // Place the actors in striking distance in this presentation fixture.
+            // Actual damage and retaliation thresholds run through combat.
+            actor.Position=guard.Position+Vector2.left;
+            Invoke(controller,"SetShowcaseTargetPressure",actor.Armor+actor.MaxHealth*.26f,1.5f);
+            yield return Until(() => controller.Model.Hits.Any(hit=>hit.FromId==actor.Id&&hit.ToId==guard.Id) &&
+                LegacyLayers().Any(layer=>layer.sprite.name.Contains("enemy_dsurch_01_start")&&HasPaint(layer.sprite)),4);
+        }
+
         [UnityTest] public IEnumerator TalulahRealActionsShowRestoredLayersPauseAndClearThroughProductionReset()
         {
             RequireGpu();
