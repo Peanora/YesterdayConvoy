@@ -180,4 +180,24 @@ namespace YesterdayConvoy
                 });
         }
     }
+
+    public sealed partial class FormationBattleModel
+    {
+        // Source-animation review only: no combat simulation or skill/SP alteration.
+        // This is deliberately labelled separately from the natural AI combat clips.
+        internal void AdvanceShowcaseWalk(float seconds)
+        {
+            Clock += seconds;
+            foreach(var unit in Units)
+            {
+                float travel=(float)Clock*unit.MoveSpeed;
+                float leg=travel%4;
+                unit.Position=new Vector2(15+(leg<=2?leg:4-leg),3);
+                unit.Facing=leg<=2?Vector2.right:Vector2.left;
+                unit.IsMoving=true;
+                unit.ActionUntil=0;
+                unit.PresentationAction=null;
+            }
+        }
+    }
 }

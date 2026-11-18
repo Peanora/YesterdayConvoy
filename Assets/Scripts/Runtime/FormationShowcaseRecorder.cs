@@ -36,7 +36,7 @@ namespace YesterdayConvoy
             internal string Id,Kind,Name;
             internal string[] Units;
             internal int Cost=3,Skill=3;
-            internal bool Phase;
+            internal bool Phase,WalkOnly;
         }
         static FormationShowcaseRecorder current;
         FormationBattleController controller;
@@ -90,6 +90,8 @@ namespace YesterdayConvoy
                 string[] units=FormationCampaignRules.AllUnits.Where(u=>u.Factions.Contains(tag.Id)||u.Styles.Contains(tag.Id)).OrderBy(u=>u.Cost).Take(10).Select(u=>u.Id).ToArray();
                 if(units.Length>0)yield return new Plan{Id="tag-"+tag.Id,Kind="synergy",Name=tag.Name,Units=units};
             }
+            foreach(var unit in FormationCampaignRules.AllUnits)
+                yield return new Plan{Id=unit.Id+"-walk",Kind="variant",Name=unit.Name+" · 步态素材",Units=new[]{unit.Id},WalkOnly=true};
         }
         IEnumerator Record()
         {
@@ -116,7 +118,13 @@ namespace YesterdayConvoy
                 controller.BeginShowcaseFixture();controller.Model.Paused=false;
                 clip.activeSynergies=controller.Model.ActiveSynergies.Where(p=>p.Value>0).Select(p=>p.Key+" "+p.Value).ToArray();
                 clip.notes=Notes(plan)+" "+controller.ShowcaseFixtureNote;
-                if(plan.Phase)yield return RecordPhase(plan);
+                if(plan.WalkOnly)
+                {
+                    clip.notes+=" 步态素材单独演示：程序按角色速度往返位移，生产Renderer读取原走路动画；不是自然AI接敌。无walk源片的角色仍显示待机。";
+                    controller.Model.AdvanceShowcaseWalk(0);
+                    yield return Segment("步态素材演示 · 程序往返位移，非自然AI",6,-1,true);
+                }
+                else if(plan.Phase)yield return RecordPhase(plan);
                 else
                 {
                     yield return Segment("走路与接敌 · 当前棋盘原比例",5);
@@ -195,7 +203,7 @@ namespace YesterdayConvoy
             if(clip!=null)foreach(var u in model.Units)if(positions.TryGetValue(u.Id,out var before))clip.movedDistance+=Vector2.Distance(before,u.Position);
             controller.SyncActors();
         }
-        IEnumerator Segment(string label,float seconds,float stopPressureAt=-1)
+        IEnumerator Segment(string label,float seconds,float stopPressureAt=-1,bool walkPreview=false)
         {
             phase=label;var stage=new Stage{label=label,start=clip.frames/(float)manifest.fps,duration=seconds};clip.stages.Add(stage);
             int count=Mathf.RoundToInt(seconds*manifest.fps);
@@ -222,7 +230,8 @@ namespace YesterdayConvoy
                     clip.frames++;
                 }
                 finally{Object.Destroy(frameTexture);}
-                Advance(Step);
+                if(walkPreview){controller.Model.AdvanceShowcaseWalk(Step);controller.SyncActors();}
+                else Advance(Step);
             }
             writing=false;
         }
