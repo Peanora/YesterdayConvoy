@@ -5,7 +5,10 @@
 - 用户澄清目标是棋盘更大而非降低角度。场景作者保存24×8（左10×8、右12×8、红10/蓝23），192底格/64外围格、8+8门和四处地形；`artifacts/formation-combat-view/author.log`记录作者/场景/完整模式验证通过、退出0。保持60°/40FOV，准备左右与战斗三套固定构图；开商店和拖角色不重构镜头。
 - `editmode.xml`完整 **1185/1185、18.2508663秒、退出0**，包含3-7成型预算见证，未更改角色/守军数值、时限或胜利断言。右侧格子数量、守军候选顺序与抽取过程保持，原地形相对位置左移两列。
 - D3D11可见Editor运行`Formation;ShopSeatInteractionTests;ShopMapSafeViewportTests`，`playmode.xml` **23/23、48.0321201秒、退出0**。覆盖真实购卡/经验/拖放、模型合成、成员详情、源动画和大体型真实alpha边界、两侧固定视图、战斗格宽至少较预览放大8%、战斗与暂停隐藏备战模型及运营入口、真实终局与下关恢复、旧商店回归。源图集透明动作边距不当作可见身体，GPU只读alpha扫描不修改美术资源。
-- 已目视`playmode/playmode-large-preparation.png`、`playmode/playmode-battle-only-paused.png`：大体型准备画面完整，近全屏战斗隐藏两侧/底部运营内容，只留目标、守军、时间和控制按钮。准备M20/M28像素边界已检查；B21至蓝门最外沿未作专项实测。独立Player与构建随后补记。
+- 已目视`playmode/playmode-large-preparation.png`、`playmode/playmode-battle-only-paused.png`：大体型准备画面完整，近全屏战斗隐藏两侧/底部运营内容，只留目标、守军、时间和控制按钮。准备M20/M28像素边界已检查；B21至蓝门最外沿未作专项实测。
+- 仓库 **16456 tracked files / REPOSITORY_CHECK_PASS**；暂存仅本轮文件及必要meta，无原两项配置。Windows x64 Development内容源码 **e7da0874044ead586bdcefe71bf884afd43a2543**，`build.log`记录 **BASELINE_BUILD_PASS: 1097785425 bytes、0错误、退出0**；Runtime DLL SHA256 **0EA279AA027DE364A2635DE45834BA2B2E1ACECBF357EF1C9012CC3B5101FD44**。常用EXE及SOURCE.txt已更新，其后仅补验证文档；没有推送、PR、启动脚本、ZIP或Releases。
+- 可见D3D11独立Player在1600×900及1280×720各 **71/71、0异常、退出0**（`player-1600/campaign-smoke.json`及`player-1280/campaign-smoke.json`）。生产路径选择/有限购物/直接布阵、真实前三战及结算均通过；每战检查暂停专用布局、全部备战/入场渲染隐藏、商店/羁绊入口锁定、近全屏镜头放大，以及自然结算与下关恢复。已目视1600准备/战斗和1280暂停图；未注入胜负/角色数值，不是自然整局胜率证明。
+- 普通EXE真实OS鼠标/键盘通过开局装备/预案选择→首战全屏构图→自然胜利/运营恢复→下一关准备→开战/空格暂停→Tab/Escape不显示运营窗口。`player-os.log`无异常/错误，测试窗口已正常关闭。首次点击暂停前已自然胜利，不把该次点击记为暂停成功；第二关通过空格实际暂停并检查。完整长局、所有搭配、长期性能及第二机仍未验证。
 
 ## 2026-11-18 最新：正常棋盘、货币式运营入口与直接上阵
 
