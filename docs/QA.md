@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-19 难度试玩
+
+- Unity 6000.6.5f1，运行内容源码 `79eb586f9e2def751711b5e69c0f0bcc039b2ea6`。仓库检查 13998 个跟踪文件通过，Edit Mode **1162/1162**，D3D11 Play Mode **43/43**。新增棋盘回归逐个向控制器发送 20 个战斗节点的选择命令，核对节点、守军与时限，确认三次补给被拒绝、招募/刷新/购买经验免金币、切关保留阵容与装备、3-7 战斗结束后能用同一防线重试，返回正式入口恢复 1-1 的 8 金。
+- 本机 Windows x64 试玩构建 **909559607 bytes、0 错误、退出 0**。常用路径的旧 Player 仍在运行，新版在 `Builds/Windows-Difficulty-Practice/YesterdayConvoy.exe`。独立 Player 启动到正式开局装备选择，日志无异常。桌面上的防火墙提示覆盖了游戏窗口，选关及重试的验证来自 Play Mode；鼠标操作未验收。日志和测试结果在 `artifacts/formation-difficulty-practice`。
+
 ## 2026-11-19 棋盘羁绊、装备与奖励球
 
 - Unity 6000.6.5f1。构建内容源码 `36d347d5d56d281626b56244c9730ef951616535`，Windows x64 Development 971835537 bytes，零错误、退出 0。运行库 SHA256 `5685F8457A06B3630991EB8FCD2DB86D6997EA42583C3D21D7500230CC6165EC`。同源码 EditMode **1162/1162**、8.0299088 秒，D3D11 PlayMode **42/42**、34.3891888 秒。仓库元数据检查 13998 个跟踪文件通过，独立结果在 `artifacts/formation-supplies-ui`。

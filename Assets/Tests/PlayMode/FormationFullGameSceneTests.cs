@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,81 @@ namespace YesterdayConvoy.Tests
     {
         FormationBattleController controller;
         [TearDown] public void Freeze(){if(controller?.Model!=null)controller.Model.Paused=true;}
+
+        [UnityTest]
+        public IEnumerator DifficultyPracticeSwitchesRealDefensesAndKeepsItsOwnArmy()
+        {
+            FormationShopSession.StartNew(20261117,fullCampaign:true);
+            yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
+            double deadline=Time.realtimeSinceStartupAsDouble+600;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                controller=UnityEngine.Object.FindAnyObjectByType<FormationBattleController>();
+                if(controller!=null&&controller.Ready)break;
+                yield return null;
+            }
+            Assert.That(controller?.Ready,Is.True);
+            const BindingFlags commands=BindingFlags.Instance|BindingFlags.NonPublic;
+            var select=typeof(FormationBattleController).GetMethod("SelectPracticeBattle",commands);
+            var nodes=FormationCampaignRules.Nodes;
+            select.Invoke(controller,new object[]{0});
+            Assert.That(controller.Campaign.IsPractice,Is.True);
+            Assert.That(controller.Shop.UnlimitedGold,Is.True);
+            var session=controller.Session;
+            for(int i=0;controller.Campaign.HasBlockingChoice;i++)
+            {
+                Assert.That(i,Is.LessThan(15));
+                Assert.That(controller.ChooseCampaignOption(0).Success,Is.True);
+            }
+
+            int gold=controller.Shop.Gold;
+            for(int i=0;i<3;i++)Assert.That(controller.BuyExperience().Success,Is.True);
+            Assert.That(controller.RefreshMarket().Success,Is.True);
+            int offer=Array.FindIndex(controller.Shop.Offers.ToArray(),id=>id!=null);
+            Assert.That(offer,Is.GreaterThanOrEqualTo(0));
+            Assert.That(controller.BuyOffer(offer).Success,Is.True);
+            Assert.That(controller.Shop.Gold,Is.EqualTo(gold));
+            var deployed=controller.Model.Units.Select(u=>(u.Instance,u.Spawn)).ToArray();
+            var collection=controller.Shop.Bench.Select(p=>(p.Instance,p.Id,p.Star)).ToArray();
+            var starter=controller.Campaign.Inventory.First();
+            Assert.That(controller.Campaign.Equip(starter.Instance,deployed[0].Instance).Success,Is.True);
+
+            foreach(int index in Enumerable.Range(0,nodes.Length))
+            {
+                int previous=controller.Campaign.NodeIndex;
+                select.Invoke(controller,new object[]{index});
+                if(nodes[index].DefenderCount==0)
+                {
+                    Assert.That(controller.Campaign.NodeIndex,Is.EqualTo(previous));
+                    continue;
+                }
+                Assert.That(controller.Campaign.CurrentNode.Id,Is.EqualTo(nodes[index].Id));
+                Assert.That(controller.Model.Round,Is.EqualTo(index+1));
+                Assert.That(controller.Model.Defenders.Count,Is.EqualTo(nodes[index].DefenderCount));
+                Assert.That(controller.Model.LimitSeconds,Is.EqualTo(nodes[index].TimeLimit));
+            }
+            Assert.That(controller.Session,Is.SameAs(session));
+            Assert.That(controller.Campaign.CurrentNode.Id,Is.EqualTo("3-7"));
+            Assert.That(controller.Model.BossAlive,Is.True);
+            Assert.That(controller.Model.Units.Select(u=>(u.Instance,u.Spawn)),Is.EqualTo(deployed));
+            Assert.That(controller.Shop.Bench.Select(p=>(p.Instance,p.Id,p.Star)),Is.EqualTo(collection));
+            Assert.That(controller.Campaign.Equipment(deployed[0].Instance).Select(x=>x.Instance),Does.Contain(starter.Instance));
+            var defense=controller.Model.Defenders.Select(d=>(d.ArtId,d.Position,d.MaxHealth)).ToArray();
+            Assert.That(controller.Model.StartBattle(),Is.True);
+            controller.Model.Advance(151);
+            Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Lost).Or.EqualTo(FormationPhase.Won));
+            yield return null;
+            Assert.That(controller.Campaign.NodeSettled,Is.False);
+            controller.ResetDemo();
+            Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation));
+            Assert.That(controller.Model.Clock,Is.Zero);
+            Assert.That(controller.Model.Defenders.Select(d=>(d.ArtId,d.Position,d.MaxHealth)),Is.EqualTo(defense));
+
+            typeof(FormationBattleController).GetMethod("StartNewFormationChallenge",commands).Invoke(controller,new object[]{true});
+            Assert.That(controller.Campaign.CurrentNode.Id,Is.EqualTo("1-1"));
+            Assert.That(controller.Shop.UnlimitedGold,Is.False);
+            Assert.That(controller.Shop.Gold,Is.EqualTo(8));
+        }
 
         [UnityTest]
         public IEnumerator ApprovedFiniteChallengeUsesRealChoicesEquipmentAndCurrentBoard()
