@@ -1,0 +1,382 @@
+{
+  "date": "2026-11-18",
+  "scope": "User approved preview integration for v0.7 preparation HUD.",
+  "style_reference": "https://ol.3dmgame.com/gl/322682.html",
+  "activation_reference": "https://www.bilibili.com/video/BV1kc1uBkE4s/?t=260.2",
+  "rights": "New equipment and orbs were generated for this project. Iberia and Sui use existing Arknights faction icon imagery; open redistribution rights not established. The other ten added trait emblems are project-authored. Existing older plates, faction art and activation audio keep their previous provenance.",
+  "assets": [
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/iberia.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/iberia.png",
+      "source_sha256": "6a02f2f02a3ff848f303f0f2a907cb500a2931581eaf955437bf4ae812d2cc24",
+      "asset_sha256": "6a02f2f02a3ff848f303f0f2a907cb500a2931581eaf955437bf4ae812d2cc24",
+      "name": "伊比利亚",
+      "source": "原作阵营标志借用；不是官方为本作羁绊绘制的徽记",
+      "reference_url": "https://media.prts.wiki/b/b6/Logo_%E4%BC%8A%E6%AF%94%E5%88%A9%E4%BA%9A.png"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/sui-shadow.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/sui-shadow.png",
+      "source_sha256": "75427a815727c5ded85b8796871d51b5a877c9df25a0dc599bc42c505819d6f6",
+      "asset_sha256": "75427a815727c5ded85b8796871d51b5a877c9df25a0dc599bc42c505819d6f6",
+      "name": "岁影",
+      "source": "原作炎-岁标志借用；不是官方为本作羁绊绘制的徽记",
+      "reference_url": "https://media.prts.wiki/a/af/Logo_%E7%82%8E-%E5%B2%81.png"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/dominion.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/dominion.png",
+      "source_sha256": "d5fcaa0b9480c03676a426a2a7d79986d5f1bb770c8b90c12d2eaf7d9d1e72cf",
+      "asset_sha256": "d5fcaa0b9480c03676a426a2a7d79986d5f1bb770c8b90c12d2eaf7d9d1e72cf",
+      "name": "国度",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/combo.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/combo.png",
+      "source_sha256": "bc32eb4782f5bc289ea61c64300cf71828e1a032ceb8d0d108081c074622e0b7",
+      "asset_sha256": "bc32eb4782f5bc289ea61c64300cf71828e1a032ceb8d0d108081c074622e0b7",
+      "name": "连击",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/swift.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/swift.png",
+      "source_sha256": "080c23de5c8c95ca992fc428a01244db715ad467764c01f1b033f222f9d15e52",
+      "asset_sha256": "080c23de5c8c95ca992fc428a01244db715ad467764c01f1b033f222f9d15e52",
+      "name": "迅攻",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/revival.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/revival.png",
+      "source_sha256": "2f198865a3164412006d8dd5d672fa7bdb8c6042cf1d03c2ed286d9a15e96434",
+      "asset_sha256": "2f198865a3164412006d8dd5d672fa7bdb8c6042cf1d03c2ed286d9a15e96434",
+      "name": "复苏",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/blast.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/blast.png",
+      "source_sha256": "08fa5428cda80be74322b707165e09e0c670eca6a9b1b54504b481df875ec6b8",
+      "asset_sha256": "08fa5428cda80be74322b707165e09e0c670eca6a9b1b54504b481df875ec6b8",
+      "name": "爆破",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/prompt-relay.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/prompt-relay.png",
+      "source_sha256": "7d24a9f82c3eb550b69b7d449e8635fb38efbded52e8449ee8e03d17a51c334b",
+      "asset_sha256": "7d24a9f82c3eb550b69b7d449e8635fb38efbded52e8449ee8e03d17a51c334b",
+      "name": "提词接力",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/hitchhike.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/hitchhike.png",
+      "source_sha256": "c65bc621fb5c3b8b716929f4b6681d953e86ad73155f690191f1abdc8e549d2e",
+      "asset_sha256": "c65bc621fb5c3b8b716929f4b6681d953e86ad73155f690191f1abdc8e549d2e",
+      "name": "搭个便车",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/theatre.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/theatre.png",
+      "source_sha256": "e81a52eea37a6da44b6f9b063a66084e7597de36e6f2c056da94961df3fef431",
+      "asset_sha256": "e81a52eea37a6da44b6f9b063a66084e7597de36e6f2c056da94961df3fef431",
+      "name": "无间剧场",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/handoff.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/handoff.png",
+      "source_sha256": "83c0b1b5020e1a7d9d071dd48f820701bd39992aaf0930d5a046f96629c61ae1",
+      "asset_sha256": "83c0b1b5020e1a7d9d071dd48f820701bd39992aaf0930d5a046f96629c61ae1",
+      "name": "接棒时刻",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/resonance.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/synergies/png/256/resonance.png",
+      "source_sha256": "126f25d460009081bf8654ed1753c043b3880dddbcf161fc52df1434029feced",
+      "asset_sha256": "126f25d460009081bf8654ed1753c043b3880dddbcf161fc52df1434029feced",
+      "name": "同频异响",
+      "source": "本作 SVG 原创适配徽记，非明日方舟官方原徽"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/A.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/A.png",
+      "source_sha256": "2c8c4b76c16b90f1da4b5459012f6a573bde076a383a2f9d39e08326779946dd",
+      "asset_sha256": "2c8c4b76c16b90f1da4b5459012f6a573bde076a383a2f9d39e08326779946dd",
+      "name": "钢刃",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/B.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/B.png",
+      "source_sha256": "659bbcda594ba9fd0509029d2b52502b89c30e11ac1926cb0cad908e828bd530",
+      "asset_sha256": "659bbcda594ba9fd0509029d2b52502b89c30e11ac1926cb0cad908e828bd530",
+      "name": "快装弹簧",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/C.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/C.png",
+      "source_sha256": "518221b709fdd332e97f5780f15ef2c033b880b2ecda6d444e3441646428a17c",
+      "asset_sha256": "518221b709fdd332e97f5780f15ef2c033b880b2ecda6d444e3441646428a17c",
+      "name": "源能晶片",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/D.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/D.png",
+      "source_sha256": "9254d8ccc259b1d637f5701dc3c6a40831460f7cfb8a9825b58a587aa2cb7f07",
+      "asset_sha256": "9254d8ccc259b1d637f5701dc3c6a40831460f7cfb8a9825b58a587aa2cb7f07",
+      "name": "护甲板",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/E.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/E.png",
+      "source_sha256": "4fdd1971abbec470310c2b34325e9b95dcf93694376b6458e6169a32a21688df",
+      "asset_sha256": "4fdd1971abbec470310c2b34325e9b95dcf93694376b6458e6169a32a21688df",
+      "name": "生命核心",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/F.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/F.png",
+      "source_sha256": "f24c6b799f92edc36040e8eb14963408fdc43b198c11a0a86fffc4909acc6efe",
+      "asset_sha256": "f24c6b799f92edc36040e8eb14963408fdc43b198c11a0a86fffc4909acc6efe",
+      "name": "战术终端",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "透明"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AA.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AA.png",
+      "source_sha256": "b16bf21ab8c9c2a5f184f379659e6bc4d41be377d8499cdb22345e2c4b4b14e9",
+      "asset_sha256": "b16bf21ab8c9c2a5f184f379659e6bc4d41be377d8499cdb22345e2c4b4b14e9",
+      "name": "破城锯",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "绯红"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AB.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AB.png",
+      "source_sha256": "408df016e9e28a4242c6b316454173d1784da3916f7c35fbafabbeb143577333",
+      "asset_sha256": "408df016e9e28a4242c6b316454173d1784da3916f7c35fbafabbeb143577333",
+      "name": "惯性飞轮",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "琥珀"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AC.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AC.png",
+      "source_sha256": "de22ae713fc9f140545be25f858d292c06156cd9aa9ab713f9bfd791e84b7d0e",
+      "asset_sha256": "de22ae713fc9f140545be25f858d292c06156cd9aa9ab713f9bfd791e84b7d0e",
+      "name": "复诵磁带",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "紫罗兰"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AD.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AD.png",
+      "source_sha256": "77dc4de49b5244a26d0c13633aff3fae2bdd239828a61d00d4eb1af31af97e25",
+      "asset_sha256": "77dc4de49b5244a26d0c13633aff3fae2bdd239828a61d00d4eb1af31af97e25",
+      "name": "破阵弹",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "绯红"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AE.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AE.png",
+      "source_sha256": "0884ceaec378502c70fc4a74d3af79446b26ff92239b0a4a078e1bc0609b9459",
+      "asset_sha256": "0884ceaec378502c70fc4a74d3af79446b26ff92239b0a4a078e1bc0609b9459",
+      "name": "血债凭证",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "绯红"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/AF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/AF.png",
+      "source_sha256": "4f2a56bb924c2220d6fc5cab38ea8a07eb09887d3760ca0defe9eb89d47279fb",
+      "asset_sha256": "4f2a56bb924c2220d6fc5cab38ea8a07eb09887d3760ca0defe9eb89d47279fb",
+      "name": "测距刻度",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "琥珀"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/BB.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/BB.png",
+      "source_sha256": "fb0f5f3f1691689ee3b4c40741808b80e76999a1346e00adb690aa73e41b60aa",
+      "asset_sha256": "fb0f5f3f1691689ee3b4c40741808b80e76999a1346e00adb690aa73e41b60aa",
+      "name": "连发机匣",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "琥珀"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/BC.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/BC.png",
+      "source_sha256": "8a89963ec2e8bd4aa2e8802239ec0b4abd561da1847d14612b53c66f43e72c6f",
+      "asset_sha256": "8a89963ec2e8bd4aa2e8802239ec0b4abd561da1847d14612b53c66f43e72c6f",
+      "name": "压榨发条",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "琥珀"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/BD.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/BD.png",
+      "source_sha256": "bbcb7a43ae12ad5178dec17bd84f43f02da296deb338112d3003b3b679edd7cb",
+      "asset_sha256": "bbcb7a43ae12ad5178dec17bd84f43f02da296deb338112d3003b3b679edd7cb",
+      "name": "反应装甲",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "钢蓝"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/BE.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/BE.png",
+      "source_sha256": "f4702ce5c86a8ee6d231bb90d1494c5db338ff5f2b0fcb307c59864121d6ca6b",
+      "asset_sha256": "f4702ce5c86a8ee6d231bb90d1494c5db338ff5f2b0fcb307c59864121d6ca6b",
+      "name": "紧急转场",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "青绿"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/BF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/BF.png",
+      "source_sha256": "1f6dcb80d68833a084b2a6eecd0a8007e470d695ddd17f6f2471dccf1d29a856",
+      "asset_sha256": "1f6dcb80d68833a084b2a6eecd0a8007e470d695ddd17f6f2471dccf1d29a856",
+      "name": "升温线圈",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "琥珀"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/CC.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/CC.png",
+      "source_sha256": "e01392505ad9b9c07ad2cde76f2477935b0cd70daa4ba9f0208b88937ba27e8a",
+      "asset_sha256": "e01392505ad9b9c07ad2cde76f2477935b0cd70daa4ba9f0208b88937ba27e8a",
+      "name": "永动反应堆",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "紫罗兰"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/CD.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/CD.png",
+      "source_sha256": "7157a813136cebac09b00ff23a5dbdcdf41692cae95f5b16bb6759068dd7530d",
+      "asset_sha256": "7157a813136cebac09b00ff23a5dbdcdf41692cae95f5b16bb6759068dd7530d",
+      "name": "能量护幕",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "钢蓝"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/CE.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/CE.png",
+      "source_sha256": "28c64a08feaf1041d02d07a12f41863457ad12acbc98243b5a97d2a34d99cdb3",
+      "asset_sha256": "28c64a08feaf1041d02d07a12f41863457ad12acbc98243b5a97d2a34d99cdb3",
+      "name": "医疗蓄能罐",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "青绿"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/CF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/CF.png",
+      "source_sha256": "a298c3c4f001535ae80f67061c87d20530a6a05f961bd74b105f6f88befa2225",
+      "asset_sha256": "a298c3c4f001535ae80f67061c87d20530a6a05f961bd74b105f6f88befa2225",
+      "name": "读秒手册",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "紫罗兰"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/DD.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/DD.png",
+      "source_sha256": "d66b484a40d6ed93dd12f8f90dbdc082d0bc6e545d2167156dd103cde028b7ca",
+      "asset_sha256": "d66b484a40d6ed93dd12f8f90dbdc082d0bc6e545d2167156dd103cde028b7ca",
+      "name": "折叠堡垒",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "钢蓝"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/DE.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/DE.png",
+      "source_sha256": "9f632fb521bcc9922005b798fbc12d37368617e8ff99eb72a9312e4bee5974c8",
+      "asset_sha256": "9f632fb521bcc9922005b798fbc12d37368617e8ff99eb72a9312e4bee5974c8",
+      "name": "连带救护",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "青绿"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/DF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/DF.png",
+      "source_sha256": "160b8ec563b5ecef053f9727df31ced9e0980ce3d689a945db0449739d8009c2",
+      "asset_sha256": "160b8ec563b5ecef053f9727df31ced9e0980ce3d689a945db0449739d8009c2",
+      "name": "棱镜盾",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "钢蓝"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/EE.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/EE.png",
+      "source_sha256": "a5d42c65bcc3f50820dc1d4a8a1b44ee4504aa5364d0f6a0e95d5a2d99232358",
+      "asset_sha256": "a5d42c65bcc3f50820dc1d4a8a1b44ee4504aa5364d0f6a0e95d5a2d99232358",
+      "name": "远征行囊",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "青绿"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/EF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/EF.png",
+      "source_sha256": "3bcd9eff353de57d9be6dcc9c3097ab29fdfdeaf094d568cb92831524d82327a",
+      "asset_sha256": "3bcd9eff353de57d9be6dcc9c3097ab29fdfdeaf094d568cb92831524d82327a",
+      "name": "苦痛熔炉",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "绯红"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Items/FF.png",
+      "preview_file": "2026-11-18_装备多色底-v3/icons/256/FF.png",
+      "source_sha256": "1072b97460ea649caf63ba1d11b0092b0000e4be6dec09e3372fd7f546b3ae22",
+      "asset_sha256": "1072b97460ea649caf63ba1d11b0092b0000e4be6dec09e3372fd7f546b3ae22",
+      "name": "储能镜",
+      "source": "ImageGen V2 subject; user reviewed V3 color previews",
+      "base_color": "紫罗兰"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Orbs/white.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/orbs/white.png",
+      "source_sha256": "1346fbc90af83fce80acd8aa82958be79df26bd0480338ccab7c5af8ace13018",
+      "asset_sha256": "a683f2f315410596bc33d201f7408e95c27d8b9a702cb09d5ec121d1faf73ad3",
+      "name": "白球",
+      "source": "ImageGen V1 orb preview, Lanczos resize to 256x256"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Orbs/blue.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/orbs/blue.png",
+      "source_sha256": "11e292ef2297c67e00682c847267f27bae6decc7130f3d010276437b1eddc265",
+      "asset_sha256": "718e76d613fbfd09cc4225e94ead7232aefb8be1378f7c90996ef1bdfac587a8",
+      "name": "蓝球",
+      "source": "ImageGen V1 orb preview, Lanczos resize to 256x256"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Orbs/gold.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/orbs/gold.png",
+      "source_sha256": "c24a72d8e9374f9a796ca9019d1dc3567b0d76b4ddc3a72beca4584f0edf0c5c",
+      "asset_sha256": "4c6a62ce908be4c8134ac158d1e89f5a311ee02952d03a829987b7c010bf3e6c",
+      "name": "金球",
+      "source": "ImageGen V1 orb preview, Lanczos resize to 256x256"
+    },
+    {
+      "asset": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies/Orbs/prismatic.png",
+      "preview_file": "2026-11-18_装备羁绊与奖励球-v1/orbs/prismatic.png",
+      "source_sha256": "8754e4c5e9fc98b7aac66b6f1470535283d64c85caf9fcbca595c6ced6093725",
+      "asset_sha256": "06f6116e622417153208dc474c72a4b55ec130f8acd7457f67a2d1e80d535c35",
+      "name": "彩球",
+      "source": "ImageGen V1 orb preview, Lanczos resize to 256x256"
+    }
+  ]
+}

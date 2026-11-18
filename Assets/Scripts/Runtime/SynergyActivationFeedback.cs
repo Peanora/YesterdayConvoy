@@ -66,7 +66,16 @@ namespace YesterdayConvoy
         readonly HashSet<string> observedMembers = new HashSet<string>(StringComparer.Ordinal);
         readonly List<Batch> queued = new List<Batch>();
         static readonly Dictionary<string, int> builtinOrder = CreateBuiltinOrder();
+        readonly Func<string, int, SynergyVisualGrade> gradeFor;
+        readonly IReadOnlyDictionary<string, int> presentationOrder;
         float gapRemaining;
+
+        public SynergyActivationFeedback(Func<string, int, SynergyVisualGrade> gradeFor = null,
+            IReadOnlyDictionary<string, int> presentationOrder = null)
+        {
+            this.gradeFor = gradeFor ?? SynergyBadgePresentation.GradeFor;
+            this.presentationOrder = presentationOrder ?? builtinOrder;
+        }
         public Batch Active { get; private set; }
         public int Revision { get; private set; }
         public int QueuedCount => queued.Count;
@@ -191,12 +200,12 @@ namespace YesterdayConvoy
             return result;
         }
 
-        static int ComparePulses(Pulse a, Pulse b)
+        int ComparePulses(Pulse a, Pulse b)
         {
-            int grade = SynergyBadgePresentation.GradeFor(b.Name, b.Tier).CompareTo(SynergyBadgePresentation.GradeFor(a.Name, a.Tier));
+            int grade = gradeFor(b.Name, b.Tier).CompareTo(gradeFor(a.Name, a.Tier));
             if (grade != 0) return grade;
-            int orderA = builtinOrder.TryGetValue(a.Name, out int first) ? first : int.MaxValue;
-            int orderB = builtinOrder.TryGetValue(b.Name, out int second) ? second : int.MaxValue;
+            int orderA = presentationOrder.TryGetValue(a.Name, out int first) ? first : int.MaxValue;
+            int orderB = presentationOrder.TryGetValue(b.Name, out int second) ? second : int.MaxValue;
             int order = orderA.CompareTo(orderB);
             return order != 0 ? order : StringComparer.Ordinal.Compare(a.Name, b.Name);
         }

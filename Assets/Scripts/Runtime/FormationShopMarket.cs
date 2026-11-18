@@ -93,7 +93,7 @@ namespace YesterdayConvoy
         public void SetMarketVisible(bool visible)
         {
             visible=visible&&Model!=null&&Model.Phase==FormationPhase.Preparation;
-            if(visible)CloseFormationTraitDetails();
+            if(visible){CloseFormationTraitDetails();rewardHistoryOpen=false;}
             if(approvedShop==null)marketVisible=visible;else approvedShop.AnimateShopVisibility(visible);
             shopOddsVisible=false;CancelFormationDrag();
         }
@@ -119,7 +119,7 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result BuyExperience()=>ShopAction(()=>Session.BuyExperience());
         public ShopTrialModel.Result SellPiece(int instance)=>ShopAction(()=>Session.Sell(instance));
         public ShopTrialModel.Result MovePiece(int instance,bool lineup,int seat)=>ShopAction(()=>Session.Move(instance,lineup,seat));
-        bool FormationShopBlocksPoint(Vector2 point)=>CampaignInteractionBlocked||shopOddsVisible||formationMenuOpen||FormationTraitBlocksPoint(point)||point.y<BoardInputRect.yMin||point.y>=BoardInputRect.yMax||
+        bool FormationShopBlocksPoint(Vector2 point)=>CampaignInteractionBlocked||shopOddsVisible||formationMenuOpen||FormationTraitBlocksPoint(point)||FormationSupplyBlocksPoint(point)||point.y<BoardInputRect.yMin||point.y>=BoardInputRect.yMax||
             point.x<188||ApprovedUi.RecruitList.Contains(point)||(marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)||
             Campaign==null&&formationInspectedTag!=null&&new Rect(200,244,380,112).Contains(point);
         void CancelFormationDrag(){pointerHeld=false;pendingClickDeployment=false;dragSlot=-1;shopDragInstance=0;ClearDeploymentPreview();}

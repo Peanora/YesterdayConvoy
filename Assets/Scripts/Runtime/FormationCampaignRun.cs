@@ -26,6 +26,22 @@ namespace YesterdayConvoy
             public string Key;
             public string Name=>ItemName(Key);
         }
+        public sealed class BallReward
+        {
+            public string Node { get; }
+            public string Color { get; }
+            public int Gold { get; }
+            public int Refreshes { get; }
+            public string Recruit { get; }
+            public string Choice { get; }
+            public IReadOnlyList<string> Items { get; }
+
+            internal BallReward(string node, string color, int gold, int refreshes, string recruit, string choice, string[] items)
+            {
+                Node = node; Color = color; Gold = gold; Refreshes = refreshes;
+                Recruit = recruit; Choice = choice; Items = Array.AsReadOnly(items);
+            }
+        }
         sealed class Delivery { public string Id; public int Star=1, Remaining=1; public bool AtLeast; public ShopTrialModel.RewardReservation Reservation; }
         readonly ShopTrialModel shop;
         readonly Random random;
@@ -34,6 +50,7 @@ namespace YesterdayConvoy
         readonly List<Delivery> waiting=new List<Delivery>();
         readonly List<string> augments=new List<string>();
         readonly List<string> openedBalls=new List<string>();
+        readonly List<BallReward> ballRewards = new List<BallReward>();
         readonly HashSet<string> settled=new HashSet<string>();
         readonly HashSet<int> hopeClaims=new HashSet<int>();
         readonly HashSet<int> suppliedPlanes=new HashSet<int>();
@@ -60,6 +77,7 @@ namespace YesterdayConvoy
         public string PreplanId {get;private set;}
         public IReadOnlyList<string> AugmentIds=>augments;
         public IReadOnlyList<string> OpenedBalls=>openedBalls;
+        public IReadOnlyList<BallReward> BallRewards => ballRewards;
         public int ExtraPopulation=>shop.ExtraPopulation;
         public int TalulahCost=>shop.TalulahId==null?3:shop.Definition(shop.TalulahId).Cost;
         public bool TalulahEnhanced=>shop.TalulahEnhanced;
@@ -397,18 +415,32 @@ namespace YesterdayConvoy
         }
         public void OpenBall(string color)
         {
+            if (color != "白" && color != "蓝" && color != "金" && color != "彩") return;
+            int gold = shop.Gold, refreshes = shop.FreeRefreshes, itemStart = items.Count, choiceCount = selections.Count;
+            string recruit = null;
             openedBalls.Add(color);
             int roll=random.Next(100);
             if(color=="白")
-            {if(roll<45)shop.AddGold(3);else if(roll<70){shop.AddGold(2);shop.FreeRefreshes++;}else if(roll<90)GiveRandom(1);else AddItem(RandomComponent());}
+            {if(roll<45)shop.AddGold(3);else if(roll<70){shop.AddGold(2);shop.FreeRefreshes++;}else if(roll<90)recruit=GiveRandom(1);else AddItem(RandomComponent());}
             else if(color=="蓝")
-            {if(roll<50)AddItem(RandomComponent());else if(roll<70)shop.AddGold(6);else if(roll<85)GiveRandom(random.Next(2)+2);else{AddItem(RandomComponent());shop.AddGold(2);}}
+            {if(roll<50)AddItem(RandomComponent());else if(roll<70)shop.AddGold(6);else if(roll<85)recruit=GiveRandom(random.Next(2)+2);else{AddItem(RandomComponent());shop.AddGold(2);}}
             else if(color=="金")
             {if(roll<35){AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<65)AddItem(RandomAdvanced());else if(roll<85){shop.AddGold(12);shop.FreeRefreshes+=2;}else if(roll<93){RequestComponents("金球 · 基础装备自选",6);shop.AddGold(6);}else if(roll<98)AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");else{RequestBadge();shop.AddGold(6);}}
             else if(color=="彩")
             {if(roll<35){RequestAdvanced("彩球 · 进阶装备自选",21);AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<60){AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");shop.AddGold(10);}else if(roll<70){AddItem("复制器");shop.AddGold(15);}else if(roll<90){AddItem(RandomAdvanced());AddItem(RandomAdvanced());}else{RequestBadge();shop.AddGold(10);}}
+            ballRewards.Add(new BallReward(CurrentNode.Id, color, shop.Gold - gold, shop.FreeRefreshes - refreshes,
+                recruit, selections.Count > choiceCount ? selections.Last().Title : null,
+                items.Skip(itemStart).Select(item => item.Key).ToArray()));
         }
-        void GiveRandom(int cost){var units=FormationCampaignRules.AllUnits.Where(x=>shop.Definition(x.CardId).Cost==cost).ToArray();if(units.Length>0)Give(units[random.Next(units.Length)].Id);}
+        string GiveRandom(int cost)
+        {
+            var units = FormationCampaignRules.AllUnits.Where(x => shop.Definition(x.CardId).Cost == cost).ToArray();
+            if (units.Length == 0) return null;
+            var unit = units[random.Next(units.Length)];
+            int waitingCount = waiting.Count;
+            Give(unit.Id);
+            return unit.Name + (waiting.Count > waitingCount ? "（库存待领）" : "");
+        }
         static IEnumerable<string> EncounterBalls(int tier)=>tier switch{2=>new[]{"蓝","蓝"},3=>new[]{"金","蓝"},4=>new[]{"金","金","彩"},_=>new[]{"蓝"}};
         string RandomComponent()=>"ABCDEF"[random.Next(6)].ToString();
         string RandomAdvanced()=>FormationCampaignRules.AllItems[random.Next(FormationCampaignRules.AllItems.Length)].Id;

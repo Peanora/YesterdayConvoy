@@ -39,9 +39,17 @@ namespace YesterdayConvoy
         public int NextLevel { get; }
         public int MissingForNext => Math.Max(0, NextLevel - Count);
         public bool Active => ActiveLevel > 0;
+        public SynergyVisualGrade Grade => GradeFor(Rule, ActiveLevel);
         public bool IsFaction { get; }
         public IReadOnlyList<FormationTraitMemberView> Members { get; }
         public IReadOnlyList<FormationTraitMemberView> BadgeMembers { get; }
+
+        public static SynergyVisualGrade GradeFor(FormationCampaignRules.DataRecord rule, int level)
+        {
+            if (rule == null || level <= 0) return SynergyVisualGrade.Inactive;
+            int index = Array.IndexOf(rule.Levels, level);
+            return index < 0 ? SynergyVisualGrade.Inactive : (SynergyVisualGrade)Math.Min(4, index + 1);
+        }
 
         FormationTraitView(FormationCampaignRules.DataRecord rule, FormationCampaignRun run, ShopTrialModel shop)
         {

@@ -57,6 +57,37 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void FormationColorsUseV07TierOrderInsteadOfLegacyMemberThresholds()
+        {
+            var reunion = FormationCampaignRules.FindRecord("整合");
+            Assert.That(reunion.Levels.Select(level => FormationTraitView.GradeFor(reunion, level)),
+                Is.EqualTo(new[] { SynergyVisualGrade.Bronze, SynergyVisualGrade.Silver, SynergyVisualGrade.Gold, SynergyVisualGrade.Prismatic }));
+            var mudrock = FormationCampaignRules.FindRecord("泥岩");
+            Assert.That(FormationTraitView.GradeFor(mudrock, 3), Is.EqualTo(SynergyVisualGrade.Silver));
+            Assert.That(FormationTraitView.GradeFor(mudrock, 2), Is.EqualTo(SynergyVisualGrade.Bronze));
+            Assert.That(FormationTraitView.GradeFor(mudrock, 0), Is.EqualTo(SynergyVisualGrade.Inactive));
+        }
+
+        [Test]
+        public void RewardPresentationRecordsActualPayoutWithoutReplayingSettlement()
+        {
+            var (shop, run) = Create("M21");
+            int gold = shop.Gold, refreshes = shop.FreeRefreshes, items = run.AllEquipment.Count;
+            run.OpenBall("彩");
+            var reward = run.BallRewards.Single();
+            Assert.That(reward.Color, Is.EqualTo("彩"));
+            Assert.That(reward.Gold, Is.EqualTo(shop.Gold - gold));
+            Assert.That(reward.Refreshes, Is.EqualTo(shop.FreeRefreshes - refreshes));
+            Assert.That(reward.Items, Is.EqualTo(run.AllEquipment.Skip(items).Select(item => item.Key)));
+            Assert.That(reward.Choice, Is.EqualTo(run.ChoiceTitle));
+            while (run.HasBlockingChoice) Assert.That(run.Choose(0).Success, Is.True);
+            Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Not.Null);
+            Assert.That(run.BallRewards.Count, Is.EqualTo(5));
+            Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Null);
+            Assert.That(run.BallRewards.Count, Is.EqualTo(5));
+        }
+
+        [Test]
         public void FullCatalogKeepsLockedTraitsAndCurrentTalulahCostWithoutMutatingRun()
         {
             var (shop, run) = Create("TAL", "M21"); Lineup(shop, 0, 1);

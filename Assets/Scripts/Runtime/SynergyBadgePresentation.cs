@@ -91,6 +91,18 @@ namespace YesterdayConvoy
                 case "深池": return "deep-pool";
                 case "海嗣": return "marine";
                 case "萨卡兹": return "sarkaz";
+                case "伊比利亚": return "iberia";
+                case "岁影": return "sui-shadow";
+                case "国度": return "dominion";
+                case "连击": return "combo";
+                case "迅攻": return "swift";
+                case "复苏": return "revival";
+                case "爆破": return "blast";
+                case "提词接力": return "prompt-relay";
+                case "搭个便车": return "hitchhike";
+                case "无间剧场": return "theatre";
+                case "接棒时刻": return "handoff";
+                case "同频异响": return "resonance";
                 default: return null;
             }
         }
@@ -140,11 +152,13 @@ namespace YesterdayConvoy
             => new Rect(center.x - size * .5f, center.y - size * .5f, size, size);
 
         public static void DrawBadge(Rect diamondBounds, string name, int tier, int count, Font fallbackFont)
+            => DrawBadge(diamondBounds, name, GradeFor(name, tier), count, fallbackFont);
+
+        public static void DrawBadge(Rect diamondBounds, string name, SynergyVisualGrade grade, int count, Font fallbackFont)
         {
             if (diamondBounds.width <= 0 || diamondBounds.height <= 0) return;
             float scale = Mathf.Min(diamondBounds.width, diamondBounds.height) / 44f;
             Vector2 center = diamondBounds.center;
-            var grade = GradeFor(name, tier);
             Color previous = GUI.color;
             try
             {

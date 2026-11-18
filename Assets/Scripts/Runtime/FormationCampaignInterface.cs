@@ -54,7 +54,7 @@ namespace YesterdayConvoy
         void CampaignAction(ShopTrialModel.Result result)
         {notice=result.Message;if(result.Success)RefreshCampaignPreparation();}
         void CloseCampaignPanels()
-        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=false;CancelFormationDrag();}
+        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=false;rewardHistoryOpen=false;CancelFormationDrag();}
 
         void DrawCampaignToolbar()
         {
@@ -63,11 +63,9 @@ namespace YesterdayConvoy
             Fill(new Rect(209,8,108,46),ApprovedUi.Paper);
             CampaignLabel(new Rect(218,12,92,19),"队伍生命 "+Campaign.SquadHP,13,true);
             CampaignLabel(new Rect(218,32,92,17),"希望 "+Campaign.Hope+" · 刷新券 "+Campaign.FreeRefreshes,9);
-            if(Button(new Rect(325,8,76,42),"装备 "+Campaign.Inventory.Count,prep))
-            {bool open=!campaignInventoryOpen;CloseCampaignPanels();campaignInventoryOpen=open;}
-            if(Button(new Rect(407,8,76,42),"军阵搭档",prep))
+            if(Button(new Rect(325,8,103,42),"军阵搭档",prep))
             {bool open=!campaignFormationOpen;CloseCampaignPanels();campaignFormationOpen=open;}
-            if(Button(new Rect(489,8,76,42),"行动记录"))
+            if(Button(new Rect(436,8,105,42),"行动记录"))
             {bool open=!campaignRouteOpen;CloseCampaignPanels();campaignRouteOpen=open;}
             if(prep&&Button(new Rect(737,8,45,42),"防线"))
             {bool open=!campaignScoutingOpen;CloseCampaignPanels();campaignScoutingOpen=open;}
@@ -78,8 +76,7 @@ namespace YesterdayConvoy
                 if(campaignSeaPainting&&Button(new Rect(1177,489,86,23),"恢复推荐"))
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
-            if(Campaign.PendingDeliveries>0)CampaignLabel(new Rect(1145,187,115,39),"库存待领 "+Campaign.PendingDeliveries+" 份\n释放库存后自动领取",10);
-            CampaignLabel(new Rect(190,704,1058,15),notice,10);
+            CampaignLabel(new Rect(190,704,1058,15),notice+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),10);
         }
         void DrawCampaignOverlays()
         {
@@ -113,7 +110,10 @@ namespace YesterdayConvoy
             {
                 var option=choices[i];var card=new Rect(i%columns*(width+12),i/columns*185,width,173);
                 Fill(card,new Color(.90f,.91f,.90f));ApprovedUi.Border(card,ApprovedUi.Rule);
-                CampaignLabel(new Rect(card.x+12,card.y+11,card.width-24,28),option.Name,16,true);
+                var art = SupplyItemArt(option.Id);
+                if (art != null) DrawSupplyItem(new Rect(card.x+11,card.y+7,32,32),option.Id);
+                float textInset = art != null ? 51 : 12;
+                CampaignLabel(new Rect(card.x+textInset,card.y+11,card.width-textInset-10,28),option.Name,16,true);
                 CampaignLabel(new Rect(card.x+12,card.y+44,card.width-24,84),option.Description,12);
                 if(Button(new Rect(card.x+12,card.yMax-35,card.width-24,27),"选择")){ChooseCampaignOption(i);GUI.EndScrollView();return;}
             }
@@ -135,12 +135,13 @@ namespace YesterdayConvoy
             CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,35),won?"蓝门突破 · 本关胜利":"本关失利 · 调整后继续",25,true);
             CampaignLabel(new Rect(r.x+25,r.y+68,r.width-50,85),Campaign.LastSummary,15);
             CampaignLabel(new Rect(r.x+25,r.y+159,r.width-50,70),$"队伍生命 {Campaign.SquadHP}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n遭遇削减进度 {Model.EncounterProgress:P1}  ·  本关只结算一次",14);
-            var colors=new[]{new Color(.42f,.46f,.50f),new Color(.17f,.46f,.68f),new Color(.65f,.47f,.12f),new Color(.57f,.29f,.66f)};
             var names=new[]{"白","蓝","金","彩"};
             for(int i=0;i<4;i++)
             {
-                var style=CampaignText(13,true);style.normal.textColor=colors[i];
-                GUI.Label(new Rect(r.x+25+i*133,r.y+229,128,29),"● "+names[i]+"球 ×"+Campaign.OpenedBalls.Count(c=>c==names[i]),style);
+                float x=r.x+25+i*133;
+                var art=SupplyOrbArt(names[i]);
+                if(art!=null)GUI.DrawTexture(new Rect(x,r.y+221,32,32),art,ScaleMode.ScaleToFit,true);
+                CampaignLabel(new Rect(x+35,r.y+228,95,23),names[i]+"球 ×"+Campaign.OpenedBalls.Count(c=>c==names[i]),13,true);
             }
             if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点",!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
         }
@@ -153,7 +154,8 @@ namespace YesterdayConvoy
             {
                 var item=inventory[i];var row=new Rect(0,i*48,396,43);
                 Fill(row,campaignSelectedItem==item.Instance||campaignCombineItem==item.Instance?new Color(.81f,.87f,.87f):new Color(.91f,.92f,.91f));
-                CampaignLabel(new Rect(8,row.y+5,270,32),item.Name+"  ["+item.Key+"]",13,true);
+                DrawSupplyItem(new Rect(6,row.y+3,36,36),item.Key);
+                CampaignLabel(new Rect(51,row.y+10,223,29),item.Name,13,true);
                 if(Button(new Rect(280,row.y+6,107,30),campaignSelectedItem==item.Instance?"已选第一件":"选择"))
                 {if(campaignSelectedItem==0||campaignSelectedItem==item.Instance){campaignSelectedItem=item.Instance;campaignCombineItem=0;}else campaignCombineItem=item.Instance;}
             }
@@ -169,7 +171,12 @@ namespace YesterdayConvoy
                 if(Button(new Rect(292,row.y+5,119,26),"装备所选物品",campaignSelectedItem>0))
                 {campaignSelectedPiece=piece.Instance;var item=inventory.FirstOrDefault(x=>x.Instance==campaignSelectedItem);CampaignAction(item?.Key=="复制器"?Campaign.UseCopier(item.Instance,piece.Instance):Campaign.Equip(campaignSelectedItem,piece.Instance));campaignSelectedItem=campaignCombineItem=0;}
                 for(int j=0;j<equipment.Length;j++)
-                    if(Button(new Rect(8+j*134,row.y+35,129,28),equipment[j].Name+" ×"))CampaignAction(Campaign.Unequip(equipment[j].Instance));
+                {
+                    var slot=new Rect(8+j*134,row.y+35,129,28);
+                    Fill(slot,TraitCard);DrawSupplyItem(new Rect(slot.x+2,slot.y+2,24,24),equipment[j].Key);
+                    TraitLabel(new Rect(slot.x+30,slot.y,95,28),equipment[j].Name+" ×",11,TraitInk);
+                    if(TraitHit(slot,"卸下 "+equipment[j].Name))CampaignAction(Campaign.Unequip(equipment[j].Instance));
+                }
             }
             GUI.EndScrollView();
             var first=Campaign.AllEquipment.FirstOrDefault(x=>x.Instance==campaignSelectedItem);
@@ -280,7 +287,14 @@ namespace YesterdayConvoy
             float mult=Mathf.Pow(1.8f,piece.Star-1);
             var actor=Model.Units.FirstOrDefault(u=>u.Instance==piece.Instance);
             CampaignLabel(new Rect(r.x+10,r.y+69,r.width-20,35),$"生命 {actor?.MaxHealth??spec.Health*mult:0}　攻击 {actor?.Attack??spec.Attack*mult:0}\n技力 {actor?.SkillCharge??spec.InitialSP:0.#}/{actor?.SkillRequired??spec.RequiredSP:0.#} {spec.Recovery}回复",11);
-            var view=new Rect(r.x+10,r.y+108,r.width-20,r.height-120);
+            var equipped=Campaign.Equipment(piece.Instance);
+            for(int i=0;i<3;i++)
+            {
+                var slot=new Rect(r.x+10+i*35,r.y+104,30,29);
+                Fill(slot,TraitCard);
+                if(i<equipped.Count)DrawSupplyItem(new Rect(slot.x+2,slot.y+1,26,26),equipped[i].Key);
+            }
+            var view=new Rect(r.x+10,r.y+142,r.width-20,r.height-151);
             campaignDetailScroll=GUI.BeginScrollView(view,campaignDetailScroll,new Rect(0,0,view.width-18,210));
             string effect=spec.Id=="TAL"&&Campaign.TalulahCost==4?"焚城：半径2.5内至多6人，3段各280%攻击力法伤；6秒灼烧，每秒35%。强化后4段并获得20%最大生命护盾8秒。":
                 spec.Id=="TAL"&&Campaign.TalulahCost==5?"火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。火雨结束后恢复普攻。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。":spec.Effect;

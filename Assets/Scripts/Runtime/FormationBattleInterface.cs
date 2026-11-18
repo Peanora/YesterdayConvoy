@@ -39,8 +39,9 @@ namespace YesterdayConvoy
                     return;
                 }
                 GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
-                DrawWorldLabels();DrawFormationHeader();DrawFormationSidebars();
+                DrawWorldLabels();DrawFormationTraitActivation();DrawFormationHeader();DrawFormationSidebars();
                 DrawCampaignToolbar();
+                DrawFormationSupplies();
                 bool preparing=Model.Phase==FormationPhase.Preparation;
                 DrawFormationPreparation();
                 DrawFormationResources(preparing);

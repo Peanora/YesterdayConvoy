@@ -57,6 +57,20 @@ namespace YesterdayConvoy
         {result.checks.Add(new Check{name=name,passed=value});if(!value)throw new InvalidOperationException(name);}
         IEnumerator Frame(string name)
         {yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,name+".png"));yield return null;}
+        IEnumerator CaptureInterfaceClip(string name, int frames)
+        {
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationUiClips") < 0) yield break;
+            string target = Path.Combine(directory, name);
+            Directory.CreateDirectory(target);
+            double start = Time.realtimeSinceStartupAsDouble;
+            for (int i = 0; i < frames; i++)
+            {
+                while (Time.realtimeSinceStartupAsDouble < start + i / 24d) yield return null;
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(target, i.ToString("D3") + ".png"));
+            }
+            yield return null;
+        }
         IEnumerator ReadyArt()
         {
             double deadline=Time.realtimeSinceStartupAsDouble+600;
@@ -124,6 +138,12 @@ namespace YesterdayConvoy
             Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"Preparation displays the operating layer");
             Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
             Assert(controller.FormationDisplayedInterest==Math.Min(controller.Shop.InterestCap,controller.Shop.Gold/controller.Shop.InterestDivisor),"Coin HUD shows the production interest forecast");
+            Assert(FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles)
+                .All(rule => SynergyBadgePresentation.IconFor(rule.Name)!=null), "All 18 production trait emblem textures load in Player");
+            Assert(FormationCampaignRules.AllComponents.Concat(FormationCampaignRules.AllItems)
+                .All(item => FormationBattleController.SupplyItemArt(item.Id)!=null), "All 27 approved equipment textures load in Player");
+            Assert(new[]{"白","蓝","金","彩"}.All(color=>FormationBattleController.SupplyOrbArt(color)!=null),
+                "All four reward orb textures load in Player");
             yield return Frame("03-left-preparation");
             var cameraPose=controller.battleCamera.transform.position;controller.ToggleFormationMarket();yield return Market(true);
             Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
@@ -136,6 +156,7 @@ namespace YesterdayConvoy
             Assert(controller.Model.Units.Select(u=>u.Spawn).SequenceEqual(spawns),"Trait detail clicks cannot move the underlying army");
             yield return Frame("04-trait-members-and-tiers");
             Assert(controller.CloseFormationTraitDetails()&&!controller.FormationTraitDetailsOpen,"Close trait details through its production action");
+            yield return VerifyStarterTraitActivation();
             for(int battle=0;battle<3;)
             {
                 if(controller.Campaign.CurrentNode.Kind=="补给")
@@ -188,6 +209,18 @@ namespace YesterdayConvoy
                 result.battles=++battle;result.node=controller.Campaign.CurrentNode.Id;
                 yield return Frame("06-result-"+battle);
                 yield return ResolveChoices();
+                if (battle == 1)
+                {
+                    var balls = controller.Campaign.BallRewards;
+                    Assert(balls.Count == 4 && balls.All(ball => ball.Node == "1-1"), "First real reward settlement records exactly four 1-1 balls");
+                    Assert(balls.All(ball => ball.Gold > 0 || ball.Refreshes > 0 || ball.Items.Count > 0 ||
+                        ball.Recruit != null || ball.Choice != null), "Each reward animation has a real resolved payout");
+                    yield return CaptureInterfaceClip("reward-opening", 72);
+                    double revealDeadline = Time.realtimeSinceStartupAsDouble + 8;
+                    while (controller.RevealedRewardCount < balls.Count && Time.realtimeSinceStartupAsDouble < revealDeadline) yield return null;
+                    Assert(controller.RevealedRewardCount == balls.Count, "Reward rail reveals each settled ball once");
+                    yield return Frame("06-rewards-revealed");
+                }
                 if(controller.Campaign.Finished)break;
                 Assert(controller.ContinueCampaign(),"Continue after production receipt");
                 yield return null;
@@ -196,6 +229,33 @@ namespace YesterdayConvoy
             Assert(result.battles==3,"First three real battles completed and settled");
             Assert(controller.Campaign.AugmentIds.Count==1,"First strategic readiness was selected before 1-3 combat");
             yield return Frame("07-post-three-battles");
+        }
+        IEnumerator VerifyStarterTraitActivation()
+        {
+            var view = controller.FormationTraitRows.FirstOrDefault(row => row.Active);
+            Assert(view != null, "Fixed seed has a naturally active starter trait");
+            var actors = controller.Model.Units.Where(unit => unit.Enabled).ToArray();
+            var member = actors.First(unit => controller.Shop.Bench.Any(piece => piece.Instance == unit.Instance &&
+                controller.Campaign.HasTrait(piece, view.Id)));
+            int reserve = Enumerable.Range(0, 10).First(index => controller.Session.Seats.At(false, index) == 0);
+            Assert(controller.MovePiece(member.Instance, false, reserve).Success, "Move a real trait member onto the reserve bench");
+            yield return null;
+            Assert(controller.Campaign.TraitCount(view.Id) < view.ActiveLevel, "Reserve member drops the actual trait tier");
+            var from = controller.FormationPieceRect(member.Instance).center;
+            var to = FormationBattleController.CellScreen(member.Spawn);
+            controller.ProcessPointer(EventType.MouseDown, from);
+            controller.ProcessPointer(EventType.MouseDrag, to);
+            controller.ProcessPointer(EventType.MouseUp, to);
+            yield return null;
+            var pulse = controller.ActiveFormationTraitPulse?.Activations.FirstOrDefault();
+            Assert(pulse != null && pulse.Name == view.Name && pulse.Tier == view.ActiveLevel &&
+                pulse.Members.Count == controller.Campaign.TraitCount(view.Id) &&
+                pulse.Members.All(id => controller.Session.Seats.Lineup(controller.Shop.Bench)
+                    .Any(piece => piece.Id == id && controller.Campaign.HasTrait(piece, view.Id))),
+                "Dragging the member back activates the previous tier and only highlights its true deployed members");
+            yield return CaptureInterfaceClip("trait-activation", 46);
+            yield return new WaitForSecondsRealtime(.42f);
+            yield return Frame("04-trait-activation-on-board");
         }
         void Finish(Exception error)
         {

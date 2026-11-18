@@ -57,26 +57,17 @@ namespace YesterdayConvoy
             if (TraitHit(toggle, "查看全部阵营与流派")) { formationAllTraits = !formationAllTraits; campaignTraitScroll = Vector2.zero; CancelFormationDrag(); }
             TraitLabel(new Rect(28, 103, 140, 16), rows.Count(t => t.Active) + "项激活 · 点击查看成员", 10, TraitMuted);
             Fill(new Rect(27, 121, 143, 1), TraitLine);
-            campaignTraitScroll = GUI.BeginScrollView(FormationTraitListRect, campaignTraitScroll, new Rect(0, 0, 133, Mathf.Max(421, rows.Length * 57)));
+            campaignTraitScroll = GUI.BeginScrollView(FormationTraitListRect, campaignTraitScroll, new Rect(0, 0, 134, Mathf.Max(421, rows.Length * 53)));
             for (int i = 0; i < rows.Length; i++)
             {
-                var row = rows[i]; var r = new Rect(0, i * 57, 132, 52);
+                var row = rows[i]; var r = new Rect(0, i * 53, 134, 50);
                 bool selected = formationInspectedTag == row.Id;
+                Color accent = SynergyBadgePresentation.ColorFor(row.Grade);
                 Fill(r, selected ? new Color(.23f, .31f, .34f, 1) : row.Active ? TraitCard : TraitPanel);
-                if (selected) ApprovedUi.Border(r, TraitActive);
-                var count = new Rect(r.x + 4, r.y + 7, 29, 33);
-                Fill(count, row.Active ? TraitActive : new Color(.22f, .28f, .31f, 1));
-                TraitLabel(count, row.Count.ToString(), 20, row.Active ? TraitPanel : TraitMuted, true, TextAnchor.MiddleCenter);
-                TraitLabel(new Rect(r.x + 40, r.y + 4, 89, 22), row.Name, row.Name.Length > 5 ? 12 : 13, row.Active ? TraitInk : TraitMuted, true);
-                float x = r.x + 40;
-                foreach (int level in row.Rule.Levels)
-                {
-                    bool reached = row.Count >= level;
-                    var chip = new Rect(x, r.y + 30, 18, 15);
-                    Fill(chip, reached ? row.ActiveLevel == level ? TraitActive : new Color(.37f, .42f, .39f, 1) : new Color(.15f, .20f, .23f, 1));
-                    TraitLabel(chip, level.ToString(), 10, reached ? row.ActiveLevel == level ? TraitPanel : TraitInk : TraitMuted, reached, TextAnchor.MiddleCenter);
-                    x += 21;
-                }
+                if (selected) ApprovedUi.Border(r, accent);
+                SynergyBadgePresentation.DrawBadge(new Rect(r.x + 5, r.y + 5, 38, 38), row.Name, row.Grade, row.Count, null);
+                TraitLabel(new Rect(r.x + 51, r.y + 4, 81, 22), row.Name, row.Name.Length > 5 ? 11 : 13, row.Active ? TraitInk : TraitMuted, true);
+                SynergyBadgePresentation.DrawThresholds(new Rect(r.x + 51, r.y + 27, 80, 16), row.Rule.Levels, row.ActiveLevel, null);
                 if (TraitHit(r, row.Active ? row.ActiveLevel + "人档已激活" : "还差" + row.MissingForNext + "名上阵成员"))
                 { if (selected) CloseFormationTraitDetails(); else InspectFormationTrait(row.Id); }
             }
@@ -92,11 +83,13 @@ namespace YesterdayConvoy
             var r = FormationTraitDetailsRect;
             Fill(new Rect(r.x + 5, r.y + 5, r.width, r.height), new Color(0, 0, 0, .4f));
             Fill(r, TraitPanel); ApprovedUi.Border(r, TraitLine);
-            Fill(new Rect(r.x, r.y, 4, r.height), view.Active ? TraitActive : TraitLine);
-            TraitLabel(new Rect(r.x + 18, r.y + 12, 260, 27), view.Name, 21, null, true);
-            TraitLabel(new Rect(r.x + 18, r.y + 42, 285, 19), (view.IsFaction ? "阵营羁绊" : "流派羁绊") + " · 仅上阵的不同角色计数", 11, TraitMuted);
+            Color accent = SynergyBadgePresentation.ColorFor(view.Grade);
+            Fill(new Rect(r.x, r.y, 4, r.height), view.Active ? accent : TraitLine);
+            SynergyBadgePresentation.DrawBadge(new Rect(r.x + 18, r.y + 11, 42, 42), view.Name, view.Grade, view.Count, null);
+            TraitLabel(new Rect(r.x + 72, r.y + 12, 260, 27), view.Name, 21, null, true);
+            TraitLabel(new Rect(r.x + 72, r.y + 42, 285, 19), (view.IsFaction ? "阵营羁绊" : "流派羁绊") + " · 仅上阵的不同角色计数", 11, TraitMuted);
             var status = new Rect(r.xMax - 226, r.y + 14, 176, 25);
-            Fill(status, view.Active ? TraitActive : TraitCard);
+            Fill(status, view.Active ? accent : TraitCard);
             TraitLabel(status, view.Active ? view.ActiveLevel + "人档已激活" : "尚未激活", 12, view.Active ? TraitPanel : TraitMuted, true, TextAnchor.MiddleCenter);
             var close = new Rect(r.xMax - 37, r.y + 12, 24, 24);
             TraitLabel(close, "×", 23, TraitMuted, false, TextAnchor.MiddleCenter);
@@ -106,7 +99,7 @@ namespace YesterdayConvoy
             foreach (int level in view.Rule.Levels)
             {
                 var tier = new Rect(tierX, r.y + 71, 83, 24); bool reached = view.Count >= level;
-                Fill(tier, reached ? view.ActiveLevel == level ? TraitActive : new Color(.32f, .39f, .38f, 1) : TraitCard);
+                Fill(tier, reached ? view.ActiveLevel == level ? accent : new Color(.32f, .39f, .38f, 1) : TraitCard);
                 TraitLabel(tier, level + "人" + (view.ActiveLevel == level ? " · 当前" : reached ? " · 达成" : " · 未达"), 10,
                     view.ActiveLevel == level ? TraitPanel : reached ? TraitInk : TraitMuted, reached, TextAnchor.MiddleCenter);
                 tierX += 89;
