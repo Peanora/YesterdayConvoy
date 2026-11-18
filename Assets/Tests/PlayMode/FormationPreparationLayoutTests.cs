@@ -99,7 +99,11 @@ namespace YesterdayConvoy.Tests
         public IEnumerator CoinDrawerAndReserveOnlyLayoutSupportRealPurchaseUpgradeAndDirectDeployment()
         {
             yield return OpenFinitePreparation();
-            Assert.That(FormationBattleModel.Width * FormationBattleModel.Height, Is.EqualTo(208));
+            Assert.That(FormationBattleModel.Width * FormationBattleModel.Height, Is.EqualTo(192));
+            Assert.That(FormationBattleModel.DeploymentColumns, Is.EqualTo(10), "Only the left deployment area shrinks; the guard half keeps its twelve columns.");
+            Assert.That(FormationBattleModel.Width - FormationBattleModel.DeploymentColumns - 2, Is.EqualTo(12));
+            Assert.That(controller.FormationPreparationUiVisible, Is.True);
+            Assert.That(controller.CombatViewActive, Is.False);
             Assert.That(controller.MarketVisible, Is.False, "Ordinary preparation starts with the coin drawer collapsed.");
             yield return Market(false);
             AssertNormalBoardUncovered(false);
@@ -182,8 +186,18 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.RefreshMarket().Success, Is.False);
             Assert.That(controller.BuyOffer(0).Success, Is.False);
             yield return new WaitForSecondsRealtime(.3f);
+            Assert.That(controller.CombatViewActive, Is.True, "Pause must retain the battle-only layout.");
+            Assert.That(controller.FormationPreparationUiVisible, Is.False, "Traits, reserve slots, gold, XP and operating controls share the hidden preparation layer.");
+            Assert.That(controller.InspectFormationTrait(inspected), Is.False);
+            controller.ToggleFormationMarket(); controller.SetMarketVisible(true);
             Assert.That(controller.MarketVisible, Is.False, "Combat still removes the preparation-only shop.");
             Assert.That(controller.ShopPanelVisibility, Is.EqualTo(0).Within(.001f));
+            Assert.That(controller.FormationTraitDetailsOpen, Is.False);
+            Assert.That(controller.Shop.Bench.All(piece =>
+                (controller.ShopBenchModel(piece.Instance) == null || !controller.ShopBenchModel(piece.Instance).enabled) &&
+                (controller.ShopEntranceModel(piece.Instance) == null || !controller.ShopEntranceModel(piece.Instance).enabled)), Is.True,
+                "Hidden reserve cards must not leave standing models or recruitment arrivals in the battle render.");
+            yield return Capture("playmode-battle-only-paused");
 
             // Advance ordinary production simulation to its actual result. The reward node
             // remains unlimited; no actor statistics, phase, damage or outcome are injected.
@@ -197,6 +211,8 @@ namespace YesterdayConvoy.Tests
             }
             Assert.That(controller.Model.Phase, Is.EqualTo(FormationPhase.Won).Or.EqualTo(FormationPhase.Lost));
             yield return null;
+            Assert.That(controller.CombatViewActive, Is.False);
+            Assert.That(controller.FormationPreparationUiVisible, Is.True, "The terminal result restores the preparation layer without allowing trait details over its receipt.");
             Assert.That(controller.Campaign.NodeSettled, Is.True);
             int rewards = 0;
             while (controller.Campaign.HasBlockingChoice)
@@ -210,6 +226,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Shop.Level, Is.EqualTo(4), "The paid four XP and ordinary battle's two XP unlock the fourth population through production settlement.");
             Assert.That(controller.ContinueCampaign(), Is.True);
             yield return null; yield return Market(false);
+            Assert.That(controller.FormationPreparationUiVisible, Is.True);
+            Assert.That(controller.CombatViewActive, Is.False);
+            Assert.That(controller.ShopBenchModel(replaced.Instance), Is.Not.Null);
+            Assert.That(controller.ShopBenchModel(replaced.Instance).enabled, Is.True, "The actual reserve model returns in the next preparation phase.");
             Assert.That(controller.Campaign.HasBlockingChoice, Is.False);
             var fourthCell = FreeCell(replaced.Instance);
             var fourthPoint = FormationBattleController.CellScreen(fourthCell);
@@ -348,7 +368,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(frame, Is.Not.Null);
             try
             {
-                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-currency-layout"));
+                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-combat-view/playmode"));
                 Directory.CreateDirectory(directory); File.WriteAllBytes(Path.Combine(directory, name + ".png"), frame.EncodeToPNG());
             }
             finally { Object.Destroy(frame); }

@@ -45,7 +45,7 @@ namespace YesterdayConvoy
         }
         public Rect ShopPieceRect(int index)
         {
-            if(Shop==null||index<0||index>=Shop.Bench.Count)return Rect.zero;
+            if(CombatViewActive||Shop==null||index<0||index>=Shop.Bench.Count)return Rect.zero;
             var seat=Session.Seats.For(Shop.Bench[index].Instance);
             return seat.HasValue&&!seat.Value.Lineup?FormationReserveRect(seat.Value.Index):Rect.zero;
         }
@@ -56,6 +56,7 @@ namespace YesterdayConvoy
         }
         public Rect FormationRecruitmentTargetRect(int instance)
         {
+            if(CombatViewActive)return Rect.zero;
             var seat=Session?.Seats.For(instance);
             if(!seat.HasValue)return Rect.zero;
             if(!seat.Value.Lineup)return FormationReserveRect(seat.Value.Index);

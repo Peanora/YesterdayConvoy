@@ -52,7 +52,7 @@ namespace YesterdayConvoy.Tests
                 for(int column=0;column<FormationBattleModel.DeploymentColumns;column++)
                 {
                     var candidate=FormationBattleController.CellScreen(new Vector2(column+.12f,row+.12f));
-                    if(!FormationBattleController.FormationCameraSafeRect.Contains(candidate))continue;
+                    if(!controller.CurrentFormationCameraSafeRect.Contains(candidate))continue;
                     controller.ProcessPointer(EventType.MouseDrag,candidate);
                     if(controller.DeploymentPreview==null||!controller.DeploymentPreview.Valid||
                         controller.DeploymentPreview.SwapInstance!=0||controller.DeploymentPreview.Cells==original||!controller.DragPreviewVisible)continue;

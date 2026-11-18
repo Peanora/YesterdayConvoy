@@ -15,6 +15,8 @@ namespace YesterdayConvoy
         public FormationShopSession Session {get;private set;}
         public ShopTrialModel Shop=>Session?.Shop;
         public bool Ready {get;private set;}
+        public bool CombatViewActive=>Ready&&Model!=null&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting);
+        public bool FormationPreparationUiVisible=>Ready&&!CombatViewActive;
         public int SelectedSlot {get;private set;}=0;
         public static Rect BattleRect=>new Rect(0,0,1280,720);
         public static Rect BoardInputRect=>new Rect(188,64,816,514);
@@ -76,6 +78,7 @@ namespace YesterdayConvoy
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             Model.Advance(Time.unscaledDeltaTime);
             TickCampaignSettlement();
+            RefreshFormationOperatingVisibility();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
             if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();
@@ -168,7 +171,7 @@ namespace YesterdayConvoy
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
-            campaignSeaPainting=false;CloseFormationTraitDetails();SetMarketVisible(false);CancelFormationDrag();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            campaignSeaPainting=false;CloseFormationTraitDetails();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
             SetFormationView(true);
         }
         public void Retry()

@@ -30,7 +30,7 @@ namespace YesterdayConvoy.Tests
         {
             var projected = controller.battleCamera.WorldToScreenPoint(world);
             var point = TacticalViewport.Current.FromScreen(projected);
-            var safe = FormationBattleController.FormationCameraSafeRect;
+            var safe = controller.CurrentFormationCameraSafeRect;
             Assert.That(projected.z, Is.GreaterThan(0), message);
             Assert.That(point.x, Is.InRange(safe.xMin - 1, safe.xMax + 1), message);
             Assert.That(point.y, Is.InRange(safe.yMin - 1, safe.yMax + 1), message);
@@ -47,7 +47,7 @@ namespace YesterdayConvoy.Tests
             foreach (var actor in actors)
             {
                 AssertInFocusedFrame(controller.ActorWorldPoint(actor), actor.Name + " feet must remain visible.");
-                AssertInFocusedFrame(controller.ActorWorldPoint(actor) + controller.battleCamera.transform.up * controller.ActorPresentationHeight(actor), actor.Name + " complete presented height must fit above the original A lineup.");
+                AssertInFocusedFrame(controller.ActorWorldPoint(actor) + controller.battleCamera.transform.up * controller.ActorPresentationHeight(actor), actor.Name + " visible body height must remain in the current view.");
             }
         }
 
@@ -106,6 +106,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(Quaternion.Angle(controller.battleCamera.transform.rotation, Quaternion.Euler(60, 0, 0)), Is.LessThan(.01f));
 
             var rightPose = controller.battleCamera.transform.position;
+            var sampleCell = new Vector2(FormationBattleModel.DeploymentColumns + 3, FormationBattleModel.Height * .5f);
+            float preparationCellWidth = Vector2.Distance(FormationBattleController.CellScreen(sampleCell), FormationBattleController.CellScreen(sampleCell + Vector2.right));
             yield return new WaitForSecondsRealtime(.25f);
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "The defender camera must never drift.");
             Assert.That(model.Units.All(u => !controller.FormationActorVisibleInView(u)), Is.True);
@@ -138,7 +140,15 @@ namespace YesterdayConvoy.Tests
             clock = model.Clock;
             yield return WaitForCamera();
             Assert.That(model.Clock, Is.EqualTo(clock), "View changes must not consume paused simulation time.");
-            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "Starting combat uses the same fixed defender pose.");
+            Assert.That(controller.CurrentFormationCameraSafeRect, Is.EqualTo(FormationBattleController.BattleCameraSafeRect));
+            Assert.That(controller.CombatViewActive, Is.True);
+            Assert.That(controller.FormationPreparationUiVisible, Is.False);
+            Assert.That(controller.battleCamera.transform.position, Is.Not.EqualTo(rightPose), "Combat uses its own fixed enlarged view after hiding the preparation panels.");
+            float battleCellWidth = Vector2.Distance(FormationBattleController.CellScreen(sampleCell), FormationBattleController.CellScreen(sampleCell + Vector2.right));
+            Assert.That(battleCellWidth, Is.GreaterThan(preparationCellWidth * 1.08f), "The same guard tile must appear visibly larger in battle, rather than merely exposing more empty screen.");
+            var combatPose = controller.battleCamera.transform.position;
+            yield return new WaitForSecondsRealtime(.2f);
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(combatPose), "Paused combat keeps its dedicated fixed camera pose.");
             controller.ToggleFormationView();
             Assert.That(controller.ViewingDefenders, Is.True, "Preparation scouting must not pull an active battle back to the left.");
             controller.Retry();
@@ -146,6 +156,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Preparation));
             Assert.That(model.Clock, Is.Zero); Assert.That(controller.ViewingDefenders, Is.False);
             Assert.That(controller.CanEditFormationView, Is.True);
+            Assert.That(controller.CurrentFormationCameraSafeRect, Is.EqualTo(FormationBattleController.PreparationCameraSafeRect));
+            Assert.That(controller.FormationPreparationUiVisible, Is.True);
+            Assert.That(controller.CombatViewActive, Is.False);
             AssertHalfAndActorHeads(false);
         }
     }

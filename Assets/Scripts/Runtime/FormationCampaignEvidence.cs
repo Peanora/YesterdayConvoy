@@ -19,7 +19,7 @@ namespace YesterdayConvoy
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
         }
         static bool started;
-        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, restored normal board, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
+        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, smaller left deployment area, close fixed preparation views and enlarged battle-only view, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Battle and paused battle hide preparation UI and standing reserve models. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
         FormationBattleController controller;string directory;bool done;
         static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
@@ -35,7 +35,7 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:"artifacts/formation-full/player");Directory.CreateDirectory(directory);
+            directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:"artifacts/formation-combat-view/player");Directory.CreateDirectory(directory);
             return Guard(Verify());
         }
         IEnumerator Guard(IEnumerator work)
@@ -79,6 +79,11 @@ namespace YesterdayConvoy
             }
             cell=default;return false;
         }
+        float GuardTileScreenWidth()
+        {
+            var cell=new Vector2(FormationBattleModel.DeploymentColumns+3,FormationBattleModel.Height*.5f);
+            return Vector2.Distance(FormationBattleController.CellScreen(cell),FormationBattleController.CellScreen(cell+Vector2.right));
+        }
         IEnumerator ResolveChoices()
         {
             int safety=0;
@@ -104,7 +109,7 @@ namespace YesterdayConvoy
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3,"Three distinct random low-cost starter cards");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
-            Assert(FormationBattleModel.Width==26&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==12,"Restored normal authored board dimensions");
+            Assert(FormationBattleModel.Width==24&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10,"Smaller 10 by 8 left deployment area retains the 12 by 8 guard half");
             yield return Frame("01-opening-choice");
             Assert(controller.ChooseCampaignOption(0).Success,"Choose starter component");yield return null;
             var original=controller.Campaign.Choices.Select(c=>c.Id).ToArray();
@@ -115,14 +120,15 @@ namespace YesterdayConvoy
             yield return Frame("02-investment-environment");yield return ResolveChoices();
             Assert(!controller.MarketVisible,"Opening choices leave recruitment drawer collapsed");
             yield return Market(false);controller.SetFormationView(false);yield return ReadyArt();
-            Assert(FormationBattleController.FormationCameraSafeRect.height>=450,"Normal board regains a large fixed frame");
+            Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.PreparationCameraSafeRect,"Preparation uses its close fixed camera frame");
+            Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"Preparation displays the operating layer");
             Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
             Assert(controller.FormationDisplayedInterest==Math.Min(controller.Shop.InterestCap,controller.Shop.Gold/controller.Shop.InterestDivisor),"Coin HUD shows the production interest forecast");
             yield return Frame("03-left-preparation");
             var cameraPose=controller.battleCamera.transform.position;controller.ToggleFormationMarket();yield return Market(true);
             Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
             yield return Frame("03-recruitment-drawer-open");yield return Market(false);
-            controller.SetFormationView(true);yield return null;yield return Frame("04-normal-guard-area");controller.SetFormationView(false);
+            controller.SetFormationView(true);yield return null;float scoutingTileWidth=GuardTileScreenWidth();yield return Frame("04-close-guard-area");controller.SetFormationView(false);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
             Assert(controller.InspectFormationTrait(trait)&&controller.FormationTraitDetailsOpen&&controller.SelectedFormationTraitId==trait,"Open real lineup trait details");
             var spawns=controller.Model.Units.Select(u=>u.Spawn).ToArray();var detailPoint=FormationBattleController.FormationTraitDetailsRect.center;
@@ -157,6 +163,16 @@ namespace YesterdayConvoy
                 foreach(var item in controller.Campaign.Inventory.ToArray())if(core!=null&&item.Key.Length<=2)controller.Campaign.Equip(item.Instance,core.Instance);
                 yield return ReadyArt();controller.SetMarketVisible(false);
                 controller.StartBattle();Assert(controller.Model.Phase==FormationPhase.Fighting,"Start real auto battle "+controller.Campaign.CurrentNode.Id);
+                controller.Model.Paused=true;yield return null;
+                Assert(controller.CombatViewActive&&!controller.FormationPreparationUiVisible,"Actual and paused battle hide traits, reserve, gold, XP and operating toolbar "+battle);
+                Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.BattleCameraSafeRect&&GuardTileScreenWidth()>scoutingTileWidth*1.08f,"Battle fills the released screen with visibly larger guard tiles "+battle);
+                Assert(controller.Shop.Bench.All(piece=>(controller.ShopBenchModel(piece.Instance)==null||!controller.ShopBenchModel(piece.Instance).enabled)&&(controller.ShopEntranceModel(piece.Instance)==null||!controller.ShopEntranceModel(piece.Instance).enabled)),"Battle hides every real reserve and arrival renderer "+battle);
+                controller.ToggleFormationMarket();controller.SetMarketVisible(true);
+                Assert(!controller.MarketVisible&&!controller.InspectFormationTrait(trait)&&!controller.FormationTraitDetailsOpen,"Battle actions cannot reopen preparation windows "+battle);
+                double pausedClock=controller.Model.Clock;controller.Model.Advance(2);yield return null;
+                Assert(controller.Model.Clock==pausedClock&&controller.CombatViewActive&&!controller.FormationPreparationUiVisible,"Pause preserves battle clock and battle-only layout "+battle);
+                if(battle==0)yield return Frame("05-combat-paused-no-operating-ui");
+                controller.Model.Paused=false;
                 int guard=0;
                 while(controller.Model.Phase==FormationPhase.Fighting||controller.Model.Phase==FormationPhase.Exiting)
                 {
@@ -168,11 +184,14 @@ namespace YesterdayConvoy
                 yield return null; // Production Update settles this actual outcome.
                 Assert(controller.Campaign.NodeSettled,"Battle receipt uses actual result");
                 Assert(controller.Model.Phase==FormationPhase.Won||controller.Model.Phase==FormationPhase.Lost,"Battle has a legal terminal phase");
+                Assert(!controller.CombatViewActive&&controller.FormationPreparationUiVisible,"Natural settlement restores the operating layout "+battle);
                 result.battles=++battle;result.node=controller.Campaign.CurrentNode.Id;
                 yield return Frame("06-result-"+battle);
                 yield return ResolveChoices();
                 if(controller.Campaign.Finished)break;
                 Assert(controller.ContinueCampaign(),"Continue after production receipt");
+                yield return null;
+                Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"The next node restores preparation UI after actual settlement "+battle);
             }
             Assert(result.battles==3,"First three real battles completed and settled");
             Assert(controller.Campaign.AugmentIds.Count==1,"First strategic readiness was selected before 1-3 combat");

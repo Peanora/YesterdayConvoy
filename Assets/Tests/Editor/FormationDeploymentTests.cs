@@ -42,7 +42,7 @@ namespace YesterdayConvoy.Tests
                 session.Seats.For(piece.Instance)?.Lineup + ":" + session.Seats.For(piece.Instance)?.Index)) + "#" +
             string.Join("|", session.Shop.Offers) + "#" + string.Join("|", session.Shop.Roles.Select(role => role.Id + ":" + session.Shop.Available(role.Id)));
 
-        [TestCase(11, 6)]
+        [TestCase(FormationBattleModel.DeploymentColumns - 1, 6)]
         [TestCase(4, 7)]
         [TestCase(-1, 0)]
         [TestCase(0, -1)]
@@ -197,7 +197,7 @@ namespace YesterdayConvoy.Tests
             { Instance = unit.Instance, ArtId = unit.ArtId, Star = unit.Star, Spawn = anchors[unit.ArtId] }).ToArray(), 7), Is.True);
             session.SavePositions(model);
             Assert.That(session.Move(Instance(session, "CARD_M36"), true, 6).Success, Is.True,
-                "The restored 12x8 deployment area has space beyond the formerly crowded six columns.");
+                "The 10x8 deployment area retains room for large bodies beyond the formerly crowded six columns.");
             session.ApplyTo(model);
             var added = model.Units.Single(unit => unit.ArtId == "M36");
             Assert.That(added.Spawn.x, Is.GreaterThanOrEqualTo(6));

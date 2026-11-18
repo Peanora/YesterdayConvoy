@@ -89,10 +89,10 @@ namespace YesterdayConvoy.Tests
         Vector2 Project(Vector3 point) => TacticalViewport.Current.FromScreen(controller.battleCamera.WorldToScreenPoint(point));
         Rect BodyScreenRect(SpriteRenderer body)
         {
-            var bounds = body.sprite.bounds;
+            var bounds = FormationArtAssertions.VisibleLocalBounds(body.sprite);
             var points = new[] { new Vector2(bounds.min.x, bounds.min.y), new Vector2(bounds.min.x, bounds.max.y),
                 new Vector2(bounds.max.x, bounds.min.y), new Vector2(bounds.max.x, bounds.max.y) }
-                .Select(point => Project(body.transform.TransformPoint(new Vector3(body.flipX ? -point.x : point.x, point.y, 0)))).ToArray();
+                .Select(point => Project(body.transform.TransformPoint(new Vector3(body.flipX ? -point.x : point.x, body.flipY ? -point.y : point.y, 0)))).ToArray();
             return Rect.MinMaxRect(points.Min(point => point.x), points.Min(point => point.y), points.Max(point => point.x), points.Max(point => point.y));
         }
 
@@ -102,7 +102,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(body.sprite.texture, Is.Not.Null);
             Assert.That(Vector3.Distance(body.transform.position, controller.ActorWorldPoint(actor.SpawnCenter)), Is.LessThan(.001f), "The displayed actor must stand at the complete footprint centre.");
             Assert.That(actor.Position, Is.EqualTo(actor.SpawnCenter));
-            var visible = BodyScreenRect(body); var safe = FormationBattleController.FormationCameraSafeRect;
+            var visible = BodyScreenRect(body); var safe = controller.CurrentFormationCameraSafeRect;
             Assert.That(visible.xMin, Is.GreaterThanOrEqualTo(safe.xMin - 2));
             Assert.That(visible.xMax, Is.LessThanOrEqualTo(safe.xMax + 2));
             Assert.That(visible.yMin, Is.GreaterThanOrEqualTo(safe.yMin - 2));
@@ -111,7 +111,7 @@ namespace YesterdayConvoy.Tests
 
         void GrabBody(FormationFighter actor)
         {
-            var body = Body(actor); var bounds = body.sprite.bounds;
+            var body = Body(actor); var bounds = FormationArtAssertions.VisibleLocalBounds(body.sprite);
             // Grab the displayed torso. Its ground ray can land away from the anchor; the
             // production controller owns that offset, and this test never reconstructs it.
             Vector2 point = Project(body.transform.TransformPoint(new Vector3(bounds.center.x,
@@ -128,7 +128,7 @@ namespace YesterdayConvoy.Tests
                 for (int column = 0; column < FormationBattleModel.Width; column++)
                 {
                     Vector2 point = FormationBattleController.CellScreen(new Vector2(column + .08f, row + .08f));
-                    if (!FormationBattleController.FormationCameraSafeRect.Contains(point)) continue;
+                    if (!controller.CurrentFormationCameraSafeRect.Contains(point)) continue;
                     controller.ProcessPointer(EventType.MouseDrag, point);
                     var preview = controller.DeploymentPreview;
                     if (preview == null || !accept(preview)) continue;
@@ -154,7 +154,7 @@ namespace YesterdayConvoy.Tests
                 for (int i = 0; i < pixels.Length; i += Math.Max(1, pixels.Length / 4096))
                 { byte value = Math.Max(pixels[i].r, Math.Max(pixels[i].g, pixels[i].b)); low = Math.Min(low, value); high = Math.Max(high, value); }
                 Assert.That(high - low, Is.GreaterThan(16), "The captured game frame must contain visible scene/UI content.");
-                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-refinement"));
+                string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../artifacts/formation-combat-view/playmode"));
                 Directory.CreateDirectory(directory); File.WriteAllBytes(Path.Combine(directory, name + ".png"), frame.EncodeToPNG());
             }
             finally { Object.Destroy(frame); }

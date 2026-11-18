@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-18 当前：近景棋盘与战斗专用界面
+
+- 用户澄清目标是棋盘更大而非降低角度。场景作者保存24×8（左10×8、右12×8、红10/蓝23），192底格/64外围格、8+8门和四处地形；`artifacts/formation-combat-view/author.log`记录作者/场景/完整模式验证通过、退出0。保持60°/40FOV，准备左右与战斗三套固定构图；开商店和拖角色不重构镜头。
+- `editmode.xml`完整 **1185/1185、18.2508663秒、退出0**，包含3-7成型预算见证，未更改角色/守军数值、时限或胜利断言。右侧格子数量、守军候选顺序与抽取过程保持，原地形相对位置左移两列。
+- D3D11可见Editor运行`Formation;ShopSeatInteractionTests;ShopMapSafeViewportTests`，`playmode.xml` **23/23、48.0321201秒、退出0**。覆盖真实购卡/经验/拖放、模型合成、成员详情、源动画和大体型真实alpha边界、两侧固定视图、战斗格宽至少较预览放大8%、战斗与暂停隐藏备战模型及运营入口、真实终局与下关恢复、旧商店回归。源图集透明动作边距不当作可见身体，GPU只读alpha扫描不修改美术资源。
+- 已目视`playmode/playmode-large-preparation.png`、`playmode/playmode-battle-only-paused.png`：大体型准备画面完整，近全屏战斗隐藏两侧/底部运营内容，只留目标、守军、时间和控制按钮。准备M20/M28像素边界已检查；B21至蓝门最外沿未作专项实测。独立Player与构建随后补记。
+
 ## 2026-11-18 最新：正常棋盘、货币式运营入口与直接上阵
 
 - 用户明确撤销紧凑常驻布局，要求恢复正常地图、左经验/右金币/上方小字利息、点击展开商店，底部只留备战席。沿用`codex/formation-battle-demo`；只读fetch确认`origin/main`仍在当前分支祖先中，无遗漏主线提交。原`.vscode/`及`ProjectSettings/PackageManagerSettings.asset`保留不暂存。本轮不推送或操作PR；AGENTS仅本地保存。

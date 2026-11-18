@@ -24,7 +24,7 @@ namespace YesterdayConvoy
         {
             public bool passed;
             public string error,scene;
-            public string scope="Accelerated replay through production finite-stock shop transactions with unlimited test gold, shared original A shop presentation and standing-model stage, saved warm grey concrete board, transparent native gates, guard platforms and cover, fixed isolated left preparation and right scouting/battle views, continuous airborne drag preview and terrain-aware formation combat with actual Player screenshots. An affordable new kind is selected from the actual offers, using refresh only if needed. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. Current roster animation packages are awaited before combat. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge, guard position or result is injected. This does not establish human interaction, full campaign economy, all catalogue character kits, exact original-game appearance or final visual acceptance.";
+            public string scope="Accelerated replay through production finite-stock shop transactions with unlimited test gold, shared original A shop presentation and reserve stage during preparation, saved warm grey concrete board with a smaller left deployment area, transparent native gates, guard platforms and cover, close fixed left preparation and right scouting views, enlarged battle-only view with reserve models and operating UI hidden even during pause, continuous airborne drag preview and terrain-aware formation combat with actual Player screenshots. An affordable new kind is selected from the actual offers, using refresh only if needed. The initial three-person lineup observes its ordinary first encounter; the purchased reserve later joins through a real population upgrade and pointer drop. Current roster animation packages are awaited before combat. A configured short deadline and legal single-soldier lineup exercise timeout and revival. No HP, damage, skill charge, guard position or result is injected. This does not establish human interaction, full campaign economy, all catalogue character kits, exact original-game appearance or final visual acceptance.";
             public bool acceleratedReplay=true;
             public int width,height,assertions,exceptionCount,savedMeshes;
             public string[] exceptions;
@@ -46,7 +46,7 @@ namespace YesterdayConvoy
         public static string EvidenceDirectory()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            return at>=0&&at+1<args.Length?Path.GetFullPath(args[at+1]):Path.GetFullPath(Path.Combine("artifacts","formation-demo"));
+            return at>=0&&at+1<args.Length?Path.GetFullPath(args[at+1]):Path.GetFullPath(Path.Combine("artifacts","formation-combat-view","legacy-player"));
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void ResetLaunch()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] static void Prepare(){if(Requested)Application.runInBackground=true;}
@@ -153,7 +153,7 @@ namespace YesterdayConvoy
         {
             var bodies=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.sprite!=null&&r.gameObject.layer!=31).ToArray();
             var actors=controller.ViewingDefenders?controller.Model.Defenders.Where(d=>d.Alive).Cast<FormationActor>():controller.Model.Units.Where(u=>u.Enabled&&u.Alive).Cast<FormationActor>();
-            var safe=FormationBattleController.FormationCameraSafeRect;
+            var safe=controller.CurrentFormationCameraSafeRect;
             return actors.All(actor=>
             {
                 var foot=controller.ActorWorldPoint(actor);
@@ -258,6 +258,7 @@ namespace YesterdayConvoy
             yield return RosterReady();yield return View(false);yield return null;
             result.scene=SceneManager.GetActiveScene().name;result.width=Screen.width;result.height=Screen.height;
             var m=controller.Model;var terrain=Terrain();var terrainSet=new HashSet<MeshFilter>(terrain);result.savedMeshes=terrain.Length;
+            CheckThat("smaller-left-board-preserves-the-twelve-column-guard-half",FormationBattleModel.Width==24&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10&&FormationBattleModel.Width-FormationBattleModel.DeploymentColumns-2==12);
             CheckThat("authored-rectangle-has-saved-meshes",terrain.Length>20&&SceneManager.GetActiveScene().path=="Assets/Scenes/FormationBattle.unity");
             var cam=controller.battleCamera;
             CheckThat("native-map-keeps-full-virtual-camera-and-forward-view",cam!=null&&cam.rect==TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720))&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);
@@ -304,6 +305,8 @@ namespace YesterdayConvoy
             var shopCameraPose=controller.ShopModelCamera.transform.position;
             yield return View(true);
             CheckThat("right-scouting-shows-guards-without-changing-preparation",controller.ViewingDefenders&&!controller.CanEditFormationView&&ActorFeetMatchTerrain()&&m.Clock==scoutClock&&m.Units.Select(u=>u.Spawn).SequenceEqual(preparationSpawns)&&controller.ShopModelCamera.transform.position==shopCameraPose);
+            var sampleCell=new Vector2(FormationBattleModel.DeploymentColumns+3,FormationBattleModel.Height*.5f);
+            float scoutingCellWidth=Vector2.Distance(FormationBattleController.CellScreen(sampleCell),FormationBattleController.CellScreen(sampleCell+Vector2.right));
             yield return Capture("player-defender-scouting");yield return View(false);
 
             var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M07");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M08");
@@ -336,6 +339,11 @@ namespace YesterdayConvoy
             var positions=m.Units.Select(u=>u.Position).ToArray();var hp=m.Units.Select(u=>u.Health).ToArray();var sp=m.Units.Select(u=>u.SkillCharge).ToArray();
             m.Advance(2);yield return new WaitForSecondsRealtime(.12f);
             CheckThat("pause-freezes-clock-countdown-positions-hp-and-sp",m.Clock==clock&&m.TimeRemaining==remaining&&m.Units.Select(u=>u.Position).SequenceEqual(positions)&&m.Units.Select(u=>u.Health).SequenceEqual(hp)&&m.Units.Select(u=>u.SkillCharge).SequenceEqual(sp));
+            CheckThat("paused-battle-hides-preparation-hud-and-real-stage-models",controller.CombatViewActive&&!controller.FormationPreparationUiVisible&&controller.Shop.Bench.All(piece=>(controller.ShopBenchModel(piece.Instance)==null||!controller.ShopBenchModel(piece.Instance).enabled)&&(controller.ShopEntranceModel(piece.Instance)==null||!controller.ShopEntranceModel(piece.Instance).enabled)));
+            controller.ToggleFormationMarket();controller.SetMarketVisible(true);
+            CheckThat("battle-cannot-reopen-the-operating-shop",!controller.MarketVisible&&controller.ShopPanelVisibility<.001f);
+            float battleCellWidth=Vector2.Distance(FormationBattleController.CellScreen(sampleCell),FormationBattleController.CellScreen(sampleCell+Vector2.right));
+            CheckThat("battle-enlarges-the-same-guard-cells-in-its-full-screen-frame",controller.CurrentFormationCameraSafeRect==FormationBattleController.BattleCameraSafeRect&&battleCellWidth>scoutingCellWidth*1.08f);
             yield return View(true);yield return Capture("player-paused");m.Paused=false;
             bool battleFrame=false,skillFrame=false,clearOfTerrain=true;int steps=0;
             while((m.Phase==FormationPhase.Fighting||m.Phase==FormationPhase.Exiting)&&steps++<12000)
@@ -348,6 +356,8 @@ namespace YesterdayConvoy
                 if(steps%60==0)yield return null;
             }
             CheckThat("default-first-encounter-finishes-without-injected-result",m.Phase==FormationPhase.Won||m.Phase==FormationPhase.Lost);
+            yield return null;
+            CheckThat("natural-terminal-state-restores-the-operating-layer",!controller.CombatViewActive&&controller.FormationPreparationUiVisible);
             CheckThat("default-first-encounter-wins",m.Phase==FormationPhase.Won);
             CheckThat("automatic-production-combat-causes-real-damage",m.Units.Sum(u=>u.DamageDone)>0&&m.Defenders.All(d=>!d.Alive));
             CheckThat("production-fighters-go-around-saved-platforms-and-cover",clearOfTerrain);

@@ -29,6 +29,15 @@ namespace YesterdayConvoy
             try
             {
                 if(!Ready){Fill(new Rect(0,0,1280,720),Dark);Label(new Rect(150,250,980,80),loading,23,Cyan,TextAnchor.MiddleCenter);return;}
+                if(CombatViewActive)
+                {
+                    DrawWorldLabels();
+                    GUI.enabled=enabled&&!formationMenuOpen;
+                    DrawFormationCombatHud();DrawFormationPauseOverlay();
+                    GUI.enabled=enabled;
+                    if(formationMenuOpen)DrawFormationMenu();
+                    return;
+                }
                 GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
                 DrawWorldLabels();DrawFormationHeader();DrawFormationSidebars();
                 DrawCampaignToolbar();
@@ -38,12 +47,6 @@ namespace YesterdayConvoy
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
-                if(Model.Paused&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))
-                {
-                    Fill(new Rect(508,278,264,61),new Color(.90f,.93f,.95f,.94f));
-                    GUI.Label(new Rect(522,283,236,29),"暂停中",approvedShop.LoopText(24,TextAnchor.MiddleCenter,null,600));
-                    GUI.Label(new Rect(522,312,236,18),"空格或右上继续按钮恢复",approvedShop.LoopText(11,TextAnchor.MiddleCenter,ApprovedUi.Muted));
-                }
                 if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
                 GUI.enabled=enabled;
                 if(formationMenuOpen)DrawFormationMenu();
@@ -128,11 +131,12 @@ namespace YesterdayConvoy
         }
         void DrawWorldLabels()
         {
+            var labelFrame=CombatViewActive?new Rect(0,64,1280,656):BoardInputRect;
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+battleCamera.transform.up*(ActorPresentationHeight(actor)+.12f)));
-                if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
+                if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
                 bool ally=actor is FormationFighter;
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
                 Fill(new Rect(p.x-22,p.y+1,44*Mathf.Clamp01(actor.Health/actor.MaxHealth),3),ally?Cyan:new Color(1,.42f,.32f));
@@ -150,7 +154,7 @@ namespace YesterdayConvoy
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
                 if(ViewingDefenders!=(h.To.x>=FormationBattleModel.DeploymentColumns+.5f))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
-                if(p.y<BoardInputRect.yMin+5||p.y>BoardInputRect.yMax-3)continue;
+                if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
                 Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);
             }
         }
