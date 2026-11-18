@@ -252,7 +252,12 @@ namespace YesterdayConvoy.Tests
             },45);
             var cast=controller.Model.PresentationActions.Single(a=>a.ActorId==actor.Id&&a.Skill);
             var firstFrame=jet.sprite;
-            yield return Until(()=>jet.enabled&&jet.name=="Formation Flamerazer / fire jet"&&jet.sprite!=firstFrame,.6);
+            yield return Until(()=>
+            {
+                var flames=controller.GetComponentsInChildren<SpriteRenderer>();
+                return flames.Any(r=>r.enabled&&r.name=="Formation Flamerazer / fire jet"&&r.sprite!=firstFrame)&&
+                    flames.Any(r=>r.enabled&&r.name=="Formation Flamerazer / outer flame"&&HasPaint(r.sprite));
+            },.6);
             Assert.That(controller.Model.Clock,Is.LessThan(cast.EndAt));
             yield return Until(()=>controller.Model.Clock>=cast.EndAt,4);
             Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Formation Flamerazer / fire jet"),Is.False);

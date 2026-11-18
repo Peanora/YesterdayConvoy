@@ -40,7 +40,7 @@ namespace YesterdayConvoy
         LegacyPatriotCatalog legacyPatriotCatalog;
         LegacyTalulahManifest legacyTalulahManifest;
         Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial,formationFlameSprayMaterial;
-        IReadOnlyList<Sprite> formationFlameSprayFrames;
+        Sprite[] formationFlameSprayFrames;
         Mesh legacySeaMesh;
         FormationBattleModel legacyObservedModel;
         double legacyLastClock=-1;
@@ -149,10 +149,10 @@ namespace YesterdayConvoy
             if(elapsed<0||Model.Clock>=sprayUntil)return;
 
             var camera=battleCamera.transform;
-            Vector3 from=FormationFeedbackContactPoint(actor,actor.Position,.59f);
+            Vector3 from=FormationFeedbackContactPoint(actor,actor.Position,.48f);
             Vector3 to=FormationFeedbackContactPoint(FormationFeedbackActor(action.TargetId),action.To,.52f);
             float toward=Vector3.Dot(to-from,camera.right);
-            float muzzleOffset=Mathf.Min(ActorPresentationHeight(actor)*.65f,Mathf.Abs(toward)*.68f);
+            float muzzleOffset=Mathf.Min(ActorPresentationHeight(actor)*.43f,Mathf.Abs(toward)*.68f);
             from+=camera.right*(Mathf.Sign(toward)*muzzleOffset);
             Vector3 delta=to-from;
             var screenDelta=new Vector2(Vector3.Dot(delta,camera.right),Vector3.Dot(delta,camera.up));
@@ -167,27 +167,51 @@ namespace YesterdayConvoy
             if(formationFlameSprayMaterial==null)
             {
                 var card=Array.Find(formationCards,candidate=>candidate!=null&&candidate.CardId=="CARD_TALULAH_TRIAL");
-                formationFlameSprayFrames=card?.ArticulatedArt?.FireFrames;
-                var shader=Resources.Load<Shader>("TalulahAttackAdditive");
-                if(shader==null||formationFlameSprayFrames==null||formationFlameSprayFrames.Count==0)return;
+                var sourceFrames=card?.ArticulatedArt?.FireFrames;
+                var shader=Shader.Find("Sprites/Default");
+                if(shader==null||sourceFrames==null||sourceFrames.Count==0)return;
                 formationFlameSprayMaterial=new Material(shader){name="Formation / Flamerazer fire jet"};
+                formationFlameSprayFrames=new Sprite[sourceFrames.Count];
+                for(int i=0;i<sourceFrames.Count;i++)
+                {
+                    var source=sourceFrames[i];
+                    if(source==null)continue;
+                    // The lower half carries the opaque flame; the upper half of the
+                    // sheet is largely faint smoke and cannot cover the spray length.
+                    Rect painted=source.rect;
+                    painted.height=Mathf.Ceil(painted.height*.53f);
+                    var cropped=Sprite.Create(source.texture,painted,new Vector2(.5f,.018f),source.pixelsPerUnit,0,SpriteMeshType.FullRect);
+                    cropped.name="Flamerazer painted flame / "+i;
+                    cropped.hideFlags=HideFlags.DontSave;
+                    formationFlameSprayFrames[i]=cropped;
+                }
             }
 
             float reach=Mathf.SmoothStep(.2f,1,(float)(elapsed/.10));
             float opacity=Mathf.Clamp01((float)((sprayUntil-Model.Clock)/.13));
             float heading=Mathf.Atan2(screenDelta.y,screenDelta.x)*Mathf.Rad2Deg;
             float ripple=Mathf.Sin((float)age*18f);
-            var frame=formationFlameSprayFrames[(int)(age*28)%formationFlameSprayFrames.Count];
-            Vector3 center=Vector3.Lerp(from,to,reach*.49f)+camera.up*(ripple*.035f);
-            var cell=Vector2.Lerp(actor.Position,action.To,reach*.49f);
-            var jet=LegacyDraw(frame,formationFlameSprayMaterial,center,cell,1,26,roll:heading-90);
-            if(jet==null)return;
+            int frameIndex=(int)(age*28),count=formationFlameSprayFrames.Length;
+            Vector3 depthBias=-camera.forward*.16f;
+            var contactCell=Vector2.Lerp(actor.Position,action.To,.45f);
+            if(reach>.43f)
+            {
+                Vector3 tailStart=from+delta*.40f+depthBias+camera.up*(ripple*.055f);
+                DrawFormationFlameTongue(formationFlameSprayFrames[(frameIndex+11)%count],tailStart,contactCell,heading,
+                    span*(reach-.36f),1.05f,opacity*.80f,"Formation Flamerazer / outer flame");
+            }
+            DrawFormationFlameTongue(formationFlameSprayFrames[frameIndex%count],from+depthBias,contactCell,heading,
+                span*Mathf.Min(reach,.84f),.88f+ripple*.08f,opacity*.96f,"Formation Flamerazer / fire jet");
+        }
 
-            jet.name="Formation Flamerazer / fire jet";
-            jet.color=new Color(1f,.93f,.78f,opacity*.9f);
+        void DrawFormationFlameTongue(Sprite frame,Vector3 start,Vector2 cell,float heading,float length,float width,float opacity,string name)
+        {
+            var jet=LegacyDraw(frame,formationFlameSprayMaterial,start,cell,1,26,roll:heading-90);
+            if(jet==null)return;
+            jet.name=name;
+            jet.color=new Color(1f,.96f,.89f,opacity);
             Vector2 size=frame.bounds.size;
-            jet.transform.localScale=new Vector3((.82f+ripple*.06f)/Mathf.Max(.01f,size.x),
-                span*reach*1.24f/Mathf.Max(.01f,size.y),1);
+            jet.transform.localScale=new Vector3(width/Mathf.Max(.01f,size.x),length/Mathf.Max(.01f,size.y),1);
         }
         void LegacyPremult(Sprite sprite,Vector2 cell,float scale,int order=24,bool flip=false,Vector3? point=null)
         {
@@ -630,6 +654,8 @@ namespace YesterdayConvoy
         internal void DisposeFormationLegacyEffects()
         {
             if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
+            if(formationFlameSprayFrames!=null)
+                foreach(var frame in formationFlameSprayFrames)if(frame!=null)Destroy(frame);
             formationFlameSprayMaterial=null;formationFlameSprayFrames=null;
             ResetFormationSynergyEffects();
             foreach(var view in legacyFxViews)if(view.Renderer!=null){view.Renderer.enabled=false;Destroy(view.Renderer.gameObject);}legacyFxViews.Clear();
