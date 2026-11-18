@@ -84,7 +84,7 @@ namespace YesterdayConvoy
             formationRightPreparationPose=FixedFormationPose(true,false);
             formationRightBattlePose=FixedFormationPose(true,true);
         }
-        bool HasFormationSetPiece()=>Model.Units.Any(u=>u.Enabled&&(u.ArtId=="B21"||u.ArtId=="B08"&&u.NativePhase>0));
+        bool HasFormationSetPiece()=>Model.Units.Any(u=>u.Enabled&&u.ArtId=="B08"&&u.NativePhase>0);
         Vector3 FixedFormationPose(bool defenders, bool combat)
         {
             formationCameraPoints.Clear();
@@ -96,9 +96,8 @@ namespace YesterdayConvoy
                 foreach (float row in new[] { -.5f, FormationBattleModel.Height - .5f })
                 {
                     var foot = WorldPoint(new Vector2(col, row));
-                    // Ignore transparent atlas-cell padding. In preparation a 2x2 body is
-                    // inset one cell from the grid edge; B21's visible body needs 1 extra
-                    // horizontal unit there. Combat movement can bring its foot closer.
+                    // Fit playable tiles and the usual visible bodies, ignoring the
+                    // transparent padding of their atlas cells.
                     foreach (float side in new[] { -horizontalMargin, horizontalMargin })
                     {
                         var edge = foot + FormationCameraRight * side;

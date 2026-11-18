@@ -307,7 +307,8 @@ namespace YesterdayConvoy
             var view=new Rect(r.x+10,r.y+142,r.width-20,r.height-151);
             campaignDetailScroll=GUI.BeginScrollView(view,campaignDetailScroll,new Rect(0,0,view.width-18,210));
             string effect=spec.Id=="TAL"&&Campaign.TalulahCost==4?"焚城：半径2.5内至多6人，3段各280%攻击力法伤；6秒灼烧，每秒35%。强化后4段并获得20%最大生命护盾8秒。":
-                spec.Id=="TAL"&&Campaign.TalulahCost==5?"火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。火雨结束后恢复普攻。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。":spec.Effect;
+                spec.Id=="TAL"&&Campaign.TalulahCost==5?"火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。火雨结束后恢复普攻。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。":
+                spec.Id=="B21"?SuiClawDescription:spec.Effect;
             CampaignLabel(new Rect(0,0,view.width-20,205),effect+"\n装备："+string.Join("、",Campaign.Equipment(piece.Instance).Select(x=>x.Name)),11);
             GUI.EndScrollView();
         }

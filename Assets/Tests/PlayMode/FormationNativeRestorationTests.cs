@@ -363,73 +363,107 @@ namespace YesterdayConvoy.Tests
                 "The twelve-shell body channel needs the six additional real loop intervals after an in-place star change.");
         }
 
-        [UnityTest] public IEnumerator SuiKeepsItsDeploymentClawAndLandsOneWaveOnTheRealDefenderHits()
+        [UnityTest] public IEnumerator SuiUsesFixedCameraAndGroundsRealDamageAtItsOriginalStompContacts()
         {
             RequireGpu();
+            yield return Fixture(new[] { "M03" });
+            var camera = Field<Camera>(controller,"battleCamera");
+            var normalPreparation = camera.transform.position;
+            controller.SetFormationView(true);
+            var normalScouting = camera.transform.position;
+            Begin();
+            var normalBattle = camera.transform.position;
+
             yield return Fixture(new[] { "B21" });
             var actor = controller.Model.Units.Single();
             var source = FormationUnitArt.For(actor.ArtId);
+            Invoke(controller,"TickFormationCamera",0f);
+            Assert.That(camera.transform.position,Is.EqualTo(normalPreparation));
             Assert.That(Body(actor).enabled, Is.True, "Preparation still shows the board's deployable claw.");
             AssertPainted(Body(actor).sprite);
+            controller.SetFormationView(true);
+            Assert.That(camera.transform.position,Is.EqualTo(normalScouting));
             yield return WarmFrame(source, "Skill_Begin_A", .13333333);
             Begin();
+            Assert.That(camera.transform.position,Is.EqualTo(normalBattle));
             var model=controller.Model;
+            actor=model.Units.Single();
             var effects=Field<Dictionary<string,SpriteRenderer>>(controller,"formationAuxBodies");
             object ActiveCue() => Invoke(model,"ActiveSuiClawStrike",actor);
-            Assert.That(Body(actor).enabled, Is.False, "Combat must not drag the giant deployment sprite along the board.");
+            Assert.That(Body(actor).enabled, Is.False);
+            Invoke(controller,"SetShowcaseTargetPressureInRange",150f,.85f,.85f);
 
-            yield return Until(() => ActiveCue()!=null);
+            yield return Until(() => ActiveCue()!=null && Field<double>(ActiveCue(),"ImpactAt")-model.Clock<=.15);
             var opening=ActiveCue();
             Assert.That(Field<int>(opening,"Wave"),Is.Zero);
             double firstImpact=Field<double>(opening,"ImpactAt");
             Assert.That(firstImpact-Field<double>(opening,"WarningAt"),Is.GreaterThanOrEqualTo(.35));
-
-            object pulse=null;
-            yield return Until(() =>
-            {
-                pulse=ActiveCue();
-                return pulse!=null && Field<int>(pulse,"Wave")==1 &&
-                    Field<double>(pulse,"ImpactAt")-model.Clock<=.15;
-            },45);
             var drop=effects[actor.Id+"/sui/descent"];
             var shadow=effects[actor.Id+"/sui/impact"];
-            double impact=Field<double>(pulse,"ImpactAt");
-            Assert.That(impact-firstImpact,Is.EqualTo(4).Within(.026));
-            var landing=controller.ActorWorldPoint(Field<Vector2>(pulse,"Center"));
+            var center=Field<Vector2>(opening,"Center");
+            var landing=controller.ActorWorldPoint(center);
             var sourcePosition=actor.Position;
             var before=drop.transform.position;
-            var living=model.Defenders.Where(defender=>defender.Alive).Select(defender=>defender.Id).ToArray();
-            double busyUntil=(double)Invoke(model,"PresentationBusyUntil",actor);
+            var guard=model.Defenders.Single(defender=>defender.Position==center);
+            Assert.That(Vector2.Distance(sourcePosition,center),Is.GreaterThan(guard.Range));
             Assert.That(drop.enabled && shadow.enabled, Is.True);
             AssertPainted(drop.sprite);
             Assert.That(before.y - landing.y, Is.GreaterThan(1));
             model.Paused=true;
             Step(.2f);
             Assert.That(drop.transform.position, Is.EqualTo(before));
-            Assert.That(Field<bool>(pulse,"Resolved"), Is.False);
+            Assert.That(Field<bool>(opening,"Resolved"), Is.False);
+            Assert.That(camera.transform.position,Is.EqualTo(normalBattle));
             model.Paused=false;
 
-            yield return Until(() => Field<bool>(pulse,"Resolved"),1);
-            Assert.That(Field<bool>(pulse,"Landed"), Is.True);
-            double resolved=Field<double>(pulse,"ImpactAt");
-            Assert.That(resolved,Is.EqualTo(impact).Within(.026));
+            yield return Until(() => Field<bool>(opening,"Resolved"),1);
+            Assert.That(Field<bool>(opening,"Landed"), Is.True);
+            double resolved=Field<double>(opening,"ImpactAt");
+            Assert.That(resolved,Is.EqualTo(firstImpact).Within(.026));
             Assert.That(drop.transform.position.y-landing.y, Is.InRange(0,.32f));
             var ground=controller.GetComponentsInChildren<SpriteRenderer>().Single(r=>r.enabled&&
                 r.name=="Boss FX / boss/B21/enemy_dyshhj_skill_01_hit_01");
             Assert.That(ground.transform.position.y-landing.y,Is.InRange(.025f,.075f));
             Assert.That(HasPaint(ground.sprite),Is.True);
-            CollectionAssert.AreEquivalent(living,model.Hits.Where(hit=>hit.FromId==actor.Id && hit.Skill &&
-                Math.Abs(hit.At-resolved)<.0001).Select(hit=>hit.ToId).ToArray(),"A single periodic slam still reaches every living defender once.");
-            Assert.That(actor.Position,Is.EqualTo(sourcePosition),"The claw's impact position must not move the real unit to the guard.");
-            var planted=drop.transform.position;
-            Step(.90f);
-            Assert.That(drop.enabled,Is.True,"The claw holds its planted pose before retreating.");
-            Assert.That(drop.transform.position,Is.EqualTo(planted));
+            Assert.That(actor.Position,Is.EqualTo(center));
+            yield return Until(()=>model.Hits.Any(hit=>hit.FromId==guard.Id&&hit.ToId==actor.Id&&hit.Amount>0),1);
+            Assert.That(model.Hits.Last(hit=>hit.FromId==guard.Id&&hit.ToId==actor.Id).To,Is.EqualTo(center));
+            Assert.That(actor.Health,Is.LessThan(actor.MaxHealth));
+            yield return Until(()=>model.Clock>=resolved+1,2);
             Assert.That(drop.sprite.texture.name,Does.Contain("Skill_Idle_A"));
-            yield return Until(()=>drop.enabled&&drop.sprite.texture.name.Contains("Skill_End_A"),1);
+
+            var contacts=(IReadOnlyList<float>)Invoke(source,"ContactTimes","Skill_Loop_A");
+            yield return Until(()=>model.Hits.Count(hit=>hit.FromId==actor.Id&&hit.ToId==guard.Id&&hit.At>=resolved+3.9)==3,5);
+            var stomps=model.Hits.Where(hit=>hit.FromId==actor.Id&&hit.ToId==guard.Id&&hit.At>=resolved+3.9).ToArray();
+            Assert.That(drop.sprite.texture.name,Does.Contain("Skill_Loop_A"));
+            Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Count(r=>r.enabled&&
+                r.name=="Boss FX / boss/B21/enemy_dyshhj_skill_02_hit_01"),Is.GreaterThanOrEqualTo(3));
+            Assert.That(stomps[0].At-resolved,Is.EqualTo(4).Within(.026));
+            for(int i=0;i<contacts.Count;i++)
+            {
+                Assert.That(stomps[i].At-stomps[0].At,Is.EqualTo((contacts[i]-contacts[0])/2).Within(.026));
+                Assert.That(stomps[i].Amount,Is.EqualTo(actor.Attack*2).Within(.01));
+            }
+            Assert.That(model.Hits.Where(hit=>hit.FromId==actor.Id&&hit.At>=resolved+3.9).Count(),Is.EqualTo(3*model.Defenders.Count));
+            double lift=Field<double>(opening,"LiftAt");
+            Assert.That(lift-resolved,Is.EqualTo(6).Within(.026));
+            yield return Until(()=>model.Clock>=lift-.05,2);
+            Assert.That(drop.enabled,Is.True);
+            Assert.That(actor.Position,Is.EqualTo(center));
+            yield return Until(()=>drop.enabled&&drop.sprite.texture.name.Contains("Skill_End_A"),.5);
+            Assert.That(Vector2.Distance(actor.Position,sourcePosition),Is.LessThan(.05f));
             yield return Until(() => !drop.enabled,1);
+            yield return Until(() => ActiveCue()!=null&&Field<int>(ActiveCue(),"Wave")==2&&Field<bool>(ActiveCue(),"Landed"),3);
+            Assert.That(Field<double>(ActiveCue(),"ImpactAt")-resolved,Is.EqualTo(8).Within(.026));
             Assert.That(model.SkillCasts.Count(c=>c.UnitId=="B21"),Is.EqualTo(1));
-            Assert.That((double)Invoke(model,"PresentationBusyUntil",actor),Is.EqualTo(busyUntil));
+            Assert.That(camera.transform.position,Is.EqualTo(normalBattle));
+            Invoke(controller,"SetShowcaseTargetPressureInRange",actor.MaxHealth*2,.85f,.85f);
+            yield return Until(()=>!actor.Alive,1);
+            Assert.That(ActiveCue(),Is.Null);
+            Assert.That(drop.enabled,Is.False);
+            Step(4.7f);
+            Assert.That(model.Hits.Any(hit=>hit.FromId==actor.Id&&hit.At>=resolved+11.9),Is.False,
+                "A guard that kills the planted claw interrupts the remaining stomps.");
         }
 
         [UnityTest] public IEnumerator NaturalAprilSecondSkillKeepsItsEightSecondBuffAndPaintsTheSourceEnding()

@@ -289,6 +289,7 @@ namespace YesterdayConvoy
             {
                 yield return SuiClawBegin;
                 yield return SuiClawIdle;
+                yield return SuiClawMotion;
                 yield return SuiClawEnd;
                 yield break;
             }

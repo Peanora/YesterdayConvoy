@@ -124,7 +124,10 @@ namespace YesterdayConvoy
             SyncActors();
         }
 
-        internal void SetShowcaseTargetPressure(float attack, float interval = 1.5f)
+        internal void SetShowcaseTargetPressure(float attack, float interval = 1.5f) =>
+            SetShowcaseTargetPressureInRange(attack,interval,100);
+
+        internal void SetShowcaseTargetPressureInRange(float attack, float interval, float range)
         {
             if (Model == null || attack < 0 || float.IsNaN(attack) || float.IsInfinity(attack) ||
                 interval <= 0 || float.IsNaN(interval) || float.IsInfinity(interval))
@@ -134,7 +137,7 @@ namespace YesterdayConvoy
             {
                 var target = Model.Defenders[index];
                 target.Attack = index == 0 ? attack : 0;
-                target.Range = index == 0 && attack > 0 ? 100 : 0;
+                target.Range = index == 0 && attack > 0 ? range : 0;
                 target.Interval = interval;
                 // RequiredSP=0 means 'skill ready' in the actual defender model.
                 // A very large requirement keeps this fixture on ordinary attacks.

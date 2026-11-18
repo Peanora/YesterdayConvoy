@@ -266,7 +266,7 @@ namespace YesterdayConvoy
             {
                 foreach(var u in Units.Where(u=>u.Enabled&&u.Alive).ToArray())TickCampaignFighter(u,dt,false);
                 foreach(var d in Defenders.Where(d=>d.Alive).ToArray())TickCampaignDefender(d);
-                if(RemainingDefenders==0){Phase=FormationPhase.Exiting;foreach(var u in Units)u.TargetId=-1;}
+                if(RemainingDefenders==0){ReleaseSuiClawsOnClear();Phase=FormationPhase.Exiting;foreach(var u in Units)u.TargetId=-1;}
             }
             if(Phase==FormationPhase.Exiting)foreach(var u in Units.Where(u=>u.Enabled&&u.Alive))if(Clock>=u.ActionUntil)Move(u,new Vector2(Width-1,u.Position.y),dt,false);
             UpdateRiders();
@@ -276,7 +276,7 @@ namespace YesterdayConvoy
         {
             var s=State(u);
             if(s.NativePending||Buff(u,"stun")>0||Buff(u,"freeze")>0)return;
-            if(s.RidingCarrier!=0){var carrier=Units.FirstOrDefault(v=>v.Id==s.RidingCarrier&&v.Alive);if(carrier!=null)u.Position=carrier.Position;}
+            if(s.RidingCarrier!=0){var carrier=Units.FirstOrDefault(v=>v.Id==s.RidingCarrier&&v.Alive);if(carrier!=null)u.Position=CampaignRiderPosition(carrier);}
             bool cadejo=u.ArtId=="B14";
             bool entered=HasEnteredBattleArea(u);
             if(!entered&&!cadejo) { if(Clock>=u.ActionUntil&&s.RidingCarrier==0)Move(u,new Vector2(DeploymentColumns+1,u.Position.y),dt,true);return; }

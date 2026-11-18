@@ -163,6 +163,12 @@ namespace YesterdayConvoy
                     }
                     if(plan.Id=="TAL5")
                         yield return Segment("火雨 · 起手、持续、结束与恢复普攻",14);
+                    else if(plan.Id=="B21")
+                    {
+                        controller.SetShowcaseTargetPressureInRange(actor.Armor+actor.MaxHealth*.025f,.85f,.85f);
+                        clip.notes+=" 首靶使用 .85 格普通攻击，检验落爪后对岁本体的实际伤害。";
+                        yield return Segment("落爪、撼山河与守军反击 · 自然技力触发",16.5f);
+                    }
                     else
                         yield return Segment(active==null?"被动 / 联动持续展示":"技能与命中 · 自然技力触发",8,plan.Id=="M33"?2.1f:-1);
                     if(plan.Id=="tag-接棒"||plan.Id=="tag-剧场")

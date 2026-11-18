@@ -87,6 +87,7 @@ namespace YesterdayConvoy
         {
             // Keep the sequence monotonic when a persistent view observes a retry/new round.
             presentationActions.Clear();
+            suiClawStrikes.Clear();
             skillActionCompletions.Clear(); activePresentationOwner = null; activePresentationContext = null;
             foreach (var actor in Units.Cast<FormationActor>().Concat(Defenders))
             {

@@ -178,17 +178,7 @@ namespace YesterdayConvoy
                 case "B13":
                     foreach(var f in u.Star>=3?Units.Where(f=>f.Enabled&&f.Alive):main==null?Array.Empty<FormationFighter>():new[]{main}){GiveBuff(f,"saint_damage",u.Attack*(u.Star>=3?2:u.Star==2?1:.6f),10);}break;
                 case "B21":
-                    float chess=Stack(u,"chess");s.Stacks["chess"]=0;
-                    if(target!=null)
-                    {
-                        var openingTargets=Nearby(target.Position,AreaRadius(u,3),100,target);
-                        SettleSuiClawStrike(firstSuiStrike,openingTargets.FirstOrDefault()?.Position??target.Position,openingTargets.Length>0);
-                        NativeSegment(u,openingTargets,u.Attack*(18*(1+chess*.3f)),0,true,0,true);
-                    }
-                    int seconds=u.Star>=3?24:12;s.BusyUntil=presentation.At+seconds;u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action);
-                    presentation.EndAt=Math.Max(presentation.EndAt,s.BusyUntil);
-                    for(int i=4;i<=seconds;i+=4)ScheduleSuiClawWave(u,presentation,firstSuiStrike.Center,i/4,Clock+i);
-                    ScheduleOwned(u,Clock+seconds,()=>{var yi=Named("B26");if(yi!=null&&Level("岁影")>=2)GiveBuff(yi,"yi_duration",4,999);});break;
+                    StartSuiClawSkill(u,target,firstSuiStrike);break;
             }
             if(Tagged(u,"雪怪")&&Level("雪怪")>=4&&target!=null)Cold(target);
             });
