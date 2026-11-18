@@ -1,0 +1,182 @@
+using System;
+using System.Collections;
+using System.Linq;
+using UnityEngine;
+
+namespace YesterdayConvoy
+{
+    public sealed partial class FormationBattleController
+    {
+        float showcaseTargetPressure;
+        internal string ShowcaseFixtureNote => "展示夹具：一星原数值、无装备；预置10级编队与右侧起点，3名高生命展示靶。" +
+            (showcaseTargetPressure > 0 ? "仅首靶按标注攻击力反击以触发治疗/受击效果。" : "展示靶不反击。") +
+            "技能依正常技力和动作规则触发；不是自然对局或平衡演示。";
+
+        // Called only by the explicitly requested showcase recorder. Normal play never
+        // invokes this fixture or changes its lineup, targets, camera or combat clock.
+        internal IEnumerator PrepareShowcaseFixture(string[] unitIds, int talulahCost = 3, int wisadelSkill = 3)
+        {
+            if (!Ready) throw new InvalidOperationException("The saved formation scene is not ready.");
+            if (unitIds == null || unitIds.Length < 1 || unitIds.Length > 10)
+                throw new ArgumentException("A showcase needs one to ten distinct formal characters.", nameof(unitIds));
+            if (talulahCost < 3 || talulahCost > 5 || wisadelSkill < 1 || wisadelSkill > 3)
+                throw new ArgumentOutOfRangeException("Invalid showcase skill variant.");
+            var definitions = unitIds.Select(FormationCampaignRules.Find).ToArray();
+            if (definitions.Any(spec => spec == null) || definitions.Select(spec => spec.CardId).Distinct().Count() != definitions.Length)
+                throw new ArgumentException("Showcase characters must be distinct entries from the formal v0.7 roster.", nameof(unitIds));
+
+            CancelFormationDrag();
+            CloseCampaignPanels();
+            CloseFormationTraitDetails();
+            SetMarketVisible(false);
+            DisposeFormationNativeEffects();
+            foreach (var body in bodies.Values)
+                if (body != null) { body.gameObject.SetActive(false); Destroy(body.gameObject); }
+            bodies.Clear();
+            pinned.Clear();
+            ArtMemoryCache.Pin(Array.Empty<string>());
+            approvedShop?.ResetShopPresentation();
+
+            Session = FormationShopSession.StartNew(seed, fullCampaign: true);
+            for (int choice = 0; Session.Run.HasBlockingChoice; choice++)
+            {
+                if (choice >= 32 || !Session.Choose(0).Success)
+                    throw new InvalidOperationException("Could not resolve the production opening choices for the showcase.");
+            }
+            Session.Run.WisadelSkill = wisadelSkill;
+            string talulah = FormationCampaignRules.Find("TAL").CardId;
+            if (definitions.Any(spec => spec.Id == "TAL"))
+                for (int cost = 3; cost < talulahCost; cost++)
+                {
+                    var promoted = Shop.GrantAtLeast(talulah, 2);
+                    if (!promoted.Success || !Shop.ResolveTalulah(true).Success)
+                        throw new InvalidOperationException("Could not prepare the requested Talulah cost through her production promotion.");
+                }
+            Shop.Preset(definitions.Select(spec => new ShopTrialModel.Piece { Id = spec.CardId, Star = 1 }),
+                Array.Empty<string>(), level: 10, xp: 0, gold: 0);
+            Model = new FormationBattleModel(seed, terrain != null ? terrain.BuildLayout() : null);
+            Session.ApplyTo(Model);
+            // Clear any default placement selected by shared opening card identities,
+            // then use the real reserve-to-board transaction for every showcase member.
+            foreach (var piece in Shop.Bench.ToArray())
+                if (Session.Seats.InLineup(piece.Instance))
+                {
+                    int reserve = Session.Seats.FirstEmpty(false, 10);
+                    if (reserve < 0 || !Session.Move(piece.Instance, false, reserve).Success)
+                        throw new InvalidOperationException("Could not clear a default showcase seat.");
+                }
+            for (int index = 0; index < definitions.Length; index++)
+            {
+                var piece = Shop.Bench.Single(card => card.Id == definitions[index].CardId);
+                var anchor = new Vector2Int(8 - index % 5 * 2, 2 + index / 5 * 3);
+                var result = Session.TryDeploy(piece.Instance, anchor);
+                if (!result.Success) throw new InvalidOperationException("Invalid showcase deployment: " + result.Message);
+            }
+            Session.SavePositions(Model);
+            Model.LimitSeconds = double.PositiveInfinity;
+            Model.Speed = 1;
+            showcaseTargetPressure = 0;
+            PrepareShowcaseTargets();
+            campaignResultSettled = false;
+            campaignInventoryOpen = campaignFormationOpen = campaignRouteOpen = campaignScoutingOpen = false;
+            campaignSeaPainting = false;
+            formationMenuOpen = shopOddsVisible = false;
+            selectedPiece = 0;
+            formationInspectedTag = null;
+            lastSoundAt = -10;
+            formationCameraInitialized = false;
+            RefreshFormationOperatingVisibility();
+            EnsureFormationArt();
+            double artDeadline = Time.realtimeSinceStartupAsDouble + 600;
+            while (!RosterArtReady)
+            {
+                if (Time.realtimeSinceStartupAsDouble > artDeadline)
+                    throw new TimeoutException("Showcase source animation pages did not warm completely.");
+                EnsureFormationArt();
+                yield return null;
+            }
+            SelectFirstLineup();
+            SyncActors();
+            approvedShop?.SyncShopBenchModels();
+            SetFormationView(false, true);
+            yield return null;
+        }
+
+        internal void BeginShowcaseFixture()
+        {
+            StartBattle();
+            if (Model.Phase != FormationPhase.Fighting)
+                throw new InvalidOperationException("The production formation model did not start the showcase battle.");
+            // Deployment remains legal and saved on the left. Only this opt-in visual
+            // fixture starts the actual actors just inside the visible right battlefield.
+            float[] rows = { 3f, 1.8f, 4.2f, .6f, 5.4f, 6.6f, 2.4f, 3.6f, 1.2f, 4.8f };
+            for (int index = 0; index < Model.Units.Count; index++)
+            {
+                var unit = Model.Units[index];
+                unit.Position = new Vector2(11.25f + (index / 7) * .9f, rows[index]);
+                unit.Facing = Vector2.right;
+            }
+            PrepareShowcaseTargets();
+            Model.Paused = false;
+            RefreshFormationOperatingVisibility();
+            SetFormationView(true, true);
+            SyncActors();
+        }
+
+        internal void SetShowcaseTargetPressure(float attack, float interval = 1.5f)
+        {
+            if (Model == null || attack < 0 || float.IsNaN(attack) || float.IsInfinity(attack) ||
+                interval <= 0 || float.IsNaN(interval) || float.IsInfinity(interval))
+                throw new ArgumentOutOfRangeException("Invalid showcase target pressure.");
+            showcaseTargetPressure = attack;
+            for (int index = 0; index < Model.Defenders.Count; index++)
+            {
+                var target = Model.Defenders[index];
+                target.Attack = index == 0 ? attack : 0;
+                target.Range = index == 0 && attack > 0 ? 100 : 0;
+                target.Interval = interval;
+                // RequiredSP=0 means 'skill ready' in the actual defender model.
+                // A very large requirement keeps this fixture on ordinary attacks.
+                target.SkillRequired = float.MaxValue;
+                target.SkillCharge = 0;
+                target.NextAttackAt = index == 0 && attack > 0 ? Model.Clock + .2 : double.PositiveInfinity;
+            }
+        }
+
+        internal void RestoreShowcaseTargetHealth()
+        {
+            if (Model == null) return;
+            foreach (var target in Model.Defenders)
+            {
+                target.Health = target.MaxHealth;
+                target.Alive = true;
+            }
+        }
+
+        void PrepareShowcaseTargets()
+        {
+            Model.Defenders.Clear();
+            Vector2[] points = { new Vector2(20.5f, 3.2f), new Vector2(21.7f, 2.8f), new Vector2(21.7f, 3.9f) };
+            for (int index = 0; index < points.Length; index++)
+                Model.Defenders.Add(new FormationDefender
+                {
+                    Id = 900000 + index,
+                    ArtId = "D01",
+                    Name = "展示靶（不反击）",
+                    Position = points[index],
+                    Facing = Vector2.left,
+                    Alive = true,
+                    MaxHealth = 10000000,
+                    Health = 10000000,
+                    Attack = 0,
+                    Armor = 0,
+                    MagicResistance = 0,
+                    Range = 0,
+                    Interval = float.MaxValue,
+                    MoveSpeed = 0,
+                    SkillRequired = float.MaxValue,
+                    NextAttackAt = double.PositiveInfinity
+                });
+        }
+    }
+}

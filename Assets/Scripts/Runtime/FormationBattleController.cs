@@ -76,8 +76,8 @@ namespace YesterdayConvoy
         {
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
-            Model.Advance(Time.unscaledDeltaTime);
-            TickCampaignSettlement();
+            if(!FormationShowcaseRecorder.Drives(this))
+            {Model.Advance(Time.unscaledDeltaTime);TickCampaignSettlement();}
             RefreshFormationOperatingVisibility();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
