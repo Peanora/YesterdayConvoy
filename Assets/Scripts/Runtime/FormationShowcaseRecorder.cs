@@ -107,7 +107,7 @@ namespace YesterdayConvoy
             {
                 order++;if(selected.Count>0&&!selected.Contains(plan.Id))continue;
                 var existing=manifest.clips.FirstOrDefault(c=>c.id==plan.Id);
-                if(existing!=null&&existing.error==null&&existing.frames>0&&File.Exists(Path.Combine(directory,existing.file)))continue;
+                if(existing!=null&&string.IsNullOrEmpty(existing.error)&&existing.frames>0&&File.Exists(Path.Combine(directory,existing.file)))continue;
                 if(existing!=null)manifest.clips.Remove(existing);
                 clip=new Clip{id=plan.Id,kind=plan.Kind,name=plan.Name,units=plan.Units,file="clips/"+order.ToString("D2")+"-"+SafeId(plan.Id)+".mp4"};
                 manifest.clips.Add(clip);writing=false;phase="准备素材";Save();
@@ -124,7 +124,16 @@ namespace YesterdayConvoy
                     var actor=controller.Model.Units.First();
                     bool healer=plan.Units.Any(id=>FormationCampaignRules.Find(id).Effect.Contains("治疗")||FormationCampaignRules.Find(id).Effect.Contains("回复生命"));
                     if(healer)controller.SetShowcaseTargetPressure(actor.Armor+actor.MaxHealth*.025f,1.5f);
-                    if(plan.Id=="M33")controller.SetShowcaseTargetPressure(actor.Armor+actor.MaxHealth*.2f,1.5f);
+                    if(plan.Id=="M33")
+                    {
+                        // The crawler is slow and has no active skill. Wait until its
+                        // real movement puts a target inside the retaliation radius.
+                        phase="跳过慢速接敌等待，随后真实受击反击";
+                        double approachLimit=controller.Model.Clock+150;
+                        while(controller.Model.Defenders.Min(d=>Vector2.Distance(d.Position,actor.Position))>1.8f&&controller.Model.Clock<approachLimit)
+                        {for(int i=0;i<12;i++)Advance(Step);yield return null;}
+                        controller.SetShowcaseTargetPressure(actor.Armor+actor.MaxHealth*.2f,1.5f);
+                    }
                     var active=controller.Model.Units.Where(u=>u.SkillRequired>0).OrderByDescending(u=>u.Attack).FirstOrDefault();
                     if(active!=null)
                     {
