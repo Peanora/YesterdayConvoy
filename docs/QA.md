@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-18 最终交付：原作表现修复
+
+- 最终内容源码 **db3ab1f1b7f9f8d6a130e40722ac4b8fb23f389d**。Unity6000.6.5f1实际`BaselineTools.BuildWindows`，Windows x64 Development **1097919645 bytes、0错误、退出0**（`artifacts/formation-native-restoration/build-delivery.log`）。Runtime DLL SHA256 **DE0779840A04B09BF547995F6D0E7192D6EB8468D60082B779FD4B9225BB0EC3**；正式路径EXE及SOURCE.txt更新。运行源导出5398文件/5233 prepared/164清单，1067346717美术字节，包含TAL新增4页与正确WG9，不拿旧播放器冒充更新。
+- 最终独立1280×720 D3D11 Player **71/71、0异常、退出0**（`player-final/campaign-smoke.json`）：实际随机有限开局、选择、招募/装备、前三场战斗与结算，无HP/胜负注入；真实GPU截图保存并目视。调用生产接口，不冒称OS鼠标、人类通关或完整长局平衡。
+- 最后完整EditMode **1209/1209、24.9291183秒、退出0**（`editmode-delivery.xml`）。D3D11 Formation/旧商店/原有720与1440深度像素检查共33项，`playmode-delivery.xml`首轮32通过；仅复用夹具未重禁自动Update造成source sprite比较前移，修复夹具并保留严格断言后，9项呈现 **9/9、9.684277秒、退出0**（`playmode-fixture-verified.xml`）。33个不同用例均有通过证据，不写成一次33/33。真实前景仍遮挡，没有关闭全局深度。
+- 最终同一db3 Player导出 **122片/37344帧**，46角色、12变体、18羁绊与46步态，44主动均真实SkillCasts>0（另SLUG/M33被动）。`artifacts/formation-showcase-final/package-report.json`为 **122/122、3合集PASS**；16:08/5:12/4:36，1280×720/24fps/H264/yuv420p/无音轨，三合集逐帧解码均退出0。manifest按已有文件编号排序，未改画面/计时。hits字段为结尾3秒滚动数，不作为整片总命中；M33须实际看蓝色原反击层。
+- 原始演示夹具仍明确：一星10级预置阵容、右侧起点与高生命靶、真实受击触发条件、不注我方HP/SP/假施法；段间省略回转等待，步态为单列程序位移。不把该录像当自然运营、完整原客户端或最终艺术认可。新离线页未作浏览器交互测试，先前本地file策略拒绝后没有规避；视频/文件校验及实际提帧审片均完成。
+- 已实看最终B22墙不切腰、B08二形态头翼尾与标签、B09/B25/B26无初始复生底片、B21云冠与标签（`final-review/REVIEW-db3.md`）；最后TAL三/五费9–10.375秒连续局部帧及M14单范围层亦复验通过（`formation-showcase-final/fx-review/FINAL-3-CLIP-REVIEW.md`），c610旧整套及最终关键复验都保留，旧片不作最终证明。代码/素材/meta和额外报告在本地功能分支提交，仓库 **17767文件检查通过**。后续仅补文档，不改变本次运行输入；无推送/PR、ZIP/Releases、CMD/BAT或工程副本。
+- 已知界限：原无Move的4人仍Idle移动；B21明示保比例限高6；B08原贴图局部软细节、动作包络标签余量及拥挤遮挡未冒称完美。原客户端管理脚本/未设计机制、原世界或像素精确标尺、已发射源死后继续命中、长局平衡和第二机未测。原媒体来源/权利不因接入变化。
+
 ## 2026-11-18 最新：46人原作表现恢复
 
 末轮更正与实际复验：
