@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         Vector2 formationSynergyScroll,formationRankingScroll;
         GUIStyle formationRankingScrollbar;
         string formationInspectedTag;
+        bool formationPracticePickerOpen;
         GUIStyle Text(int size,Color color,TextAnchor align=TextAnchor.MiddleLeft)=>ApprovedUi.Text(null,size,align,color,size>=22?650:400);
         static void Fill(Rect rect,Color color)=>ApprovedUi.Fill(rect,color);
         void Label(Rect rect,string text,int size=16,Color? color=null,TextAnchor align=TextAnchor.MiddleLeft)=>GUI.Label(rect,text,Text(size,color??White,align));
@@ -35,7 +36,7 @@ namespace YesterdayConvoy
                     GUI.enabled=enabled&&!formationMenuOpen;
                     DrawFormationCombatHud();DrawFormationPauseOverlay();
                     GUI.enabled=enabled;
-                    if(formationMenuOpen)DrawFormationMenu();
+                    DrawFormationMenuControls();
                     return;
                 }
                 GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
@@ -49,11 +50,12 @@ namespace YesterdayConvoy
                 if(preparing)DrawFormationMarket();
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
                 if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
-                GUI.enabled=enabled;
-                if(formationMenuOpen)DrawFormationMenu();
+                GUI.enabled=enabled&&!formationMenuOpen;
                 if(shopOddsVisible)DrawFormationOdds();
                 DrawCampaignOverlays();
                 if(!CampaignInteractionBlocked&&!formationMenuOpen&&!shopOddsVisible)DrawCampaignTraitOverlay();
+                GUI.enabled=enabled;
+                DrawFormationMenuControls();
             }
             finally{GUI.enabled=enabled;GUI.matrix=previous;TacticalViewport.Current.DrawBars();}
         }
@@ -63,7 +65,7 @@ namespace YesterdayConvoy
             string phase=prep?"整备阶段":Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting?"战斗进行中":Model.Phase==FormationPhase.Exiting?"前往蓝门":"本关结束";
             Fill(new Rect(16,8,185,46),ApprovedUi.Paper);Fill(new Rect(16,8,3,46),new Color(.29f,.44f,.55f));
             GUI.Label(new Rect(28,11,165,24),Campaign==null?$"{Model.Round}/5 · 矩形攻坚":$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}",approvedShop.LoopText(17,TextAnchor.MiddleLeft,null,700));
-            GUI.Label(new Rect(28,36,165,15),"军阵行动 / "+phase,approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+            GUI.Label(new Rect(28,36,165,15),(Campaign?.IsPractice==true?"难度试玩 / ":"军阵行动 / ")+phase,approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             Fill(new Rect(578,8,151,46),ApprovedUi.Paper);ApprovedShopPresentation.DrawLoopShield(new Vector2(589,20),new Color(.40f,.56f,.67f));
             GUI.Label(new Rect(613,14,76,21),"守军防线",approvedShop.LoopText(12));
             GUI.Label(new Rect(613,34,87,14),"存活干员",approvedShop.LoopText(9,TextAnchor.MiddleLeft,ApprovedUi.Muted));
@@ -72,7 +74,6 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(1016,10,94,17),"剩余时间",approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(1016,27,94,23),double.IsInfinity(Model.TimeRemaining)?"不限时":Model.TimeRemaining.ToString("0.0")+" 秒",approvedShop.LoopText(20,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(1174,8,42,42),Model.Paused?"继续":"暂停",Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=!Model.Paused;
-            if(Button(new Rect(1222,8,42,42),"菜单")){formationMenuOpen=!formationMenuOpen;CancelFormationDrag();}
             if(prep&&Button(new Rect(790,8,208,42),ViewingDefenders?"返回我方布阵  [V]":"查看守军部署  [V]"))ToggleFormationView();
         }
         void DrawFormationSidebars()
@@ -119,14 +120,51 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(1136,612,113,54),Model.TimeRemaining.ToString("0.0"),approvedShop.LoopText(34,TextAnchor.MiddleLeft,null,700));
             if(Campaign==null&&Button(new Rect(1138,673,113,25),"返回整备"))Retry();
         }
-        void DrawFormationMenu()
+        void CloseFormationMenu(){formationMenuOpen=false;formationPracticePickerOpen=false;}
+
+        void DrawFormationMenuControls()
         {
-            var r=ApprovedUi.Menu;r.height=160;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+            var toggle=new Rect(1222,CombatViewActive?12:8,42,CombatViewActive?36:42);
+            if(Button(toggle,"菜单"))
+            {
+                if(formationMenuOpen)CloseFormationMenu();
+                else {formationMenuOpen=true;CancelFormationDrag();}
+            }
+            if(!formationMenuOpen)return;
+            if(formationPracticePickerOpen){DrawPracticePicker();return;}
+            bool practice=Campaign?.IsPractice==true;
+            var r=ApprovedUi.Menu;r.height=practice?198:160;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+12,r.y+9,r.width-60,27),"系统菜单",approvedShop.LoopText(19,TextAnchor.MiddleLeft,null,700));
-            if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))formationMenuOpen=false;
+            if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))CloseFormationMenu();
             if(Button(new Rect(r.x+12,r.y+44,r.width-24,30),soundEnabled?"关闭音效":"开启音效"))soundEnabled=!soundEnabled;
-            if(Button(new Rect(r.x+12,r.y+81,r.width-24,30),"重新开始本次挑战")){formationMenuOpen=false;ResetDemo();}
-            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"关闭菜单"))formationMenuOpen=false;
+            if(Button(new Rect(r.x+12,r.y+81,r.width-24,30),practice?"重试当前关卡":"重新开始本次挑战")){ResetDemo();return;}
+            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),practice?"选择试玩关卡":"难度试玩 · 无限金币"))formationPracticePickerOpen=true;
+            if(practice&&Button(new Rect(r.x+12,r.y+155,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
+        }
+
+        void DrawPracticePicker()
+        {
+            bool practice=Campaign?.IsPractice==true;
+            var r=CampaignWindow("难度试玩 · 无限金币",practice
+                ?"换关和重试保留阵容、装备及站位。"
+                :"选择战斗关卡后会新开一局试玩。当前挑战将结束。",false);
+            if(Button(new Rect(r.xMax-57,r.y+15,38,30),"×")){CloseFormationMenu();return;}
+            for(int plane=1;plane<=3;plane++)
+            {
+                float x=r.x+22+(plane-1)*300,y=r.y+88;
+                CampaignLabel(new Rect(x,y,280,24),$"位面 {plane}",16,true);
+                y+=27;
+                for(int i=0;i<FormationCampaignRules.Nodes.Length;i++)
+                {
+                    var node=FormationCampaignRules.Nodes[i];
+                    if(node.Plane!=plane||node.DefenderCount==0)continue;
+                    bool current=practice&&i==Campaign.NodeIndex;
+                    string time=float.IsPositiveInfinity(node.TimeLimit)?"不限时":$"{node.TimeLimit:0} 秒";
+                    if(Button(new Rect(x,y,284,39),$"{node.Id}  {node.Kind}   ·   {node.DefenderCount} 守军   ·   {time}",true,current))
+                    {SelectPracticeBattle(i);return;}
+                    y+=47;
+                }
+            }
         }
         void DrawWorldLabels()
         {
@@ -160,6 +198,7 @@ namespace YesterdayConvoy
         }
         void DrawSettlement()
         {
+            if(Campaign?.IsPractice==true){DrawPracticeResult();return;}
             if(Campaign!=null){if(!Campaign.Finished)DrawCampaignResult();return;}
             bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
             Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);

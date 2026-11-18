@@ -141,7 +141,6 @@ namespace YesterdayConvoy
         }
         bool FormationShopPointerDown(Vector2 point)
         {
-            if(formationMenuOpen){shopInputBlockedFrame=Time.frameCount;if(!ApprovedUi.Menu.Contains(point))formationMenuOpen=false;CancelFormationDrag();return true;}
             if(shopOddsVisible){shopInputBlockedFrame=Time.frameCount;if(!FormationOddsRect.Contains(point))shopOddsVisible=false;CancelFormationDrag();return true;}
             if((marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)){CancelFormationDrag();return true;}
             if(!FindFormationSeat(point,out bool lineup,out int seat))return false;

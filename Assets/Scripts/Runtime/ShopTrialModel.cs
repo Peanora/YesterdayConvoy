@@ -57,8 +57,9 @@ namespace YesterdayConvoy
         public string TalulahId {get;private set;}
         public Func<string,double> RecruitmentWeight {get;set;}
         public bool TransactionBlocked=>FormationEconomy&&PendingTalulahChoice!=0;
-        public void EnableFormationEconomy(string talulahId="CARD_TALULAH_TRIAL")
-        {FormationEconomy=true;JourneyEconomy=false;CampaignEconomy=false;UnlimitedGold=false;TalulahId=roles.ContainsKey(talulahId)?talulahId:null;}
+        public void EnableFormationEconomy(string talulahId="CARD_TALULAH_TRIAL")=>EnableFormationEconomy(false,talulahId);
+        internal void EnableFormationEconomy(bool unlimited,string talulahId="CARD_TALULAH_TRIAL")
+        {FormationEconomy=true;JourneyEconomy=false;CampaignEconomy=false;UnlimitedGold=unlimited;TalulahId=roles.ContainsKey(talulahId)?talulahId:null;}
         readonly HashSet<string> lineup=new HashSet<string>();
         readonly HashSet<int> lineupInstances=new HashSet<int>();
         public int NextLevelXP=>FormationEconomy?FormationExperience[Level]:JourneyEconomy?CampaignJourneyEconomy.RequiredXP(Level):(CampaignEconomy?CampaignPlan.XP:Experience)[Level];
@@ -169,7 +170,7 @@ namespace YesterdayConvoy
         public Result Refresh(bool free=false)
         {
             if(TransactionBlocked)return Fail("先完成塔露拉抉择");
-            bool coupon=!free&&FormationEconomy&&FreeRefreshes>0;int price=FormationEconomy?RefreshPrice:2;
+            bool coupon=!free&&!UnlimitedGold&&FormationEconomy&&FreeRefreshes>0;int price=FormationEconomy?RefreshPrice:2;
             if(Locked)return Fail("已锁定，请先解锁");if(!free&&!coupon&&!CanAfford(price))return Fail($"刷新需要{price}金币");
             var next=new Dictionary<string,int>(pool);foreach(var id in offers)if(id!=null)next[id]++;
             var row=Odds[Level-1];

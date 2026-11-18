@@ -68,6 +68,7 @@ namespace YesterdayConvoy
         int lockedReunionCount;
         public int NodeIndex {get;private set;}
         public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
+        public bool IsPractice {get;}
         public int SquadHP {get;private set;}=100;
         public int Hope {get;private set;}
         public bool Finished {get;private set;}
@@ -114,11 +115,23 @@ namespace YesterdayConvoy
         public int VeteranStacks(string unitId)=>veteranStacks.TryGetValue(UnitId(unitId),out var value)?value:0;
         public ShopTrialModel Shop=>shop;
 
-        public FormationCampaignRun(ShopTrialModel shop,int seed)
+        public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
+
+        internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
+            IsPractice=practiceNode.HasValue;
+            if(IsPractice&&!SelectPracticeNode(practiceNode.Value))throw new ArgumentOutOfRangeException(nameof(practiceNode));
             RequestComponents("开局基础装备 · 三选一",3);
             RequestPreplan();
+        }
+
+        internal bool SelectPracticeNode(int node)
+        {
+            if(!IsPractice||node<0||node>=FormationCampaignRules.Nodes.Length||FormationCampaignRules.Nodes[node].DefenderCount==0)return false;
+            if(NodeIndex!=node)CurrentEncounterTier=1;
+            NodeIndex=node;
+            return true;
         }
         public ShopTrialModel.Result Choose(int index)
         {
@@ -227,7 +240,7 @@ namespace YesterdayConvoy
         {var unit=FormationCampaignRules.Find(id);return unit!=null&&(unit.Factions.Contains(trait)||unit.Styles.Contains(trait));}
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
         {
-            string key=CurrentNode.Id;if(Finished||CurrentNode.Kind=="补给")return null;
+            string key=CurrentNode.Id;if(IsPractice||Finished||CurrentNode.Kind=="补给")return null;
             if(!settled.Add(key))return null;
             bool reward=CurrentNode.Kind=="奖励";
             int payment=5;if(debt>0){int paid=Math.Min(3,debt);payment-=paid;debt-=paid;}

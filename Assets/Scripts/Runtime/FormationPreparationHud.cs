@@ -22,7 +22,8 @@ namespace YesterdayConvoy
             float progress=Shop.Level==10?1:Mathf.Clamp01((float)Shop.XP/Shop.NextLevelXP);
             Fill(new Rect(track.x,track.y,track.width*progress,track.height),new Color(.59f,.73f,.78f));
             bool old=GUI.enabled;GUI.enabled=old&&preparing&&CanTrade&&Shop.Level<10&&Shop.CanAfford(4);
-            if(approvedShop.LoopButton(new Rect(r.x+12,r.y+86,r.width-24,27),$"经验 +{Shop.PurchasedXP}   4金币"))BuyExperience();
+            string experiencePrice=Campaign?.IsPractice==true?"免费":"4金币";
+            if(approvedShop.LoopButton(new Rect(r.x+12,r.y+86,r.width-24,27),$"经验 +{Shop.PurchasedXP}   {experiencePrice}"))BuyExperience();
             GUI.enabled=old;
 
             var coin=FormationCoinRect;
@@ -31,10 +32,11 @@ namespace YesterdayConvoy
             if(formationCoin!=null)GUI.DrawTexture(new Rect(coin.x+13,coin.y+30,18,18),formationCoin,ScaleMode.ScaleToFit,true);
             EconomyLabel(new Rect(coin.x+38,coin.y+23,coin.width-51,33),Shop.UnlimitedGold?"∞":Shop.Gold.ToString(),29,EconomyGold,true,TextAnchor.MiddleRight);
             EconomyLabel(new Rect(coin.x+8,coin.yMax-19,coin.width-16,14),marketVisible?"点击收起":"点击展开",9,EconomyMuted,false,TextAnchor.MiddleCenter);
-            EconomyLabel(FormationInterestRect,$"预计利息 +{FormationDisplayedInterest}",10,EconomyGold,false,TextAnchor.MiddleCenter);
+            bool practice=Campaign?.IsPractice==true;
+            EconomyLabel(FormationInterestRect,practice?"无限金币":$"预计利息 +{FormationDisplayedInterest}",10,EconomyGold,false,TextAnchor.MiddleCenter);
             GUI.enabled=old&&preparing;
             bool coinClicked=GUI.Button(coin,new GUIContent(string.Empty,"招募商店 · 点击或Tab展开"),GUIStyle.none);
-            bool interestClicked=GUI.Button(FormationInterestRect,new GUIContent(string.Empty,"按当前金币计算的本场利息；点击展开商店"),GUIStyle.none);
+            bool interestClicked=GUI.Button(FormationInterestRect,new GUIContent(string.Empty,practice?"免费招募 · 点击展开商店":"按当前金币计算的本场利息；点击展开商店"),GUIStyle.none);
             if(coinClicked||interestClicked)ToggleFormationMarket();
             GUI.enabled=old;
         }

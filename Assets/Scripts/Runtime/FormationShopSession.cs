@@ -30,18 +30,26 @@ namespace YesterdayConvoy
             Current = new FormationShopSession(seed,fullCampaign); return Current;
         }
 
-        public FormationShopSession(int seed,bool fullCampaign=false)
+        internal static FormationShopSession StartPractice(int seed,int node)
+        {
+            Current = new FormationShopSession(seed,true,node); return Current;
+        }
+
+        public FormationShopSession(int seed,bool fullCampaign=false) : this(seed,fullCampaign,null) {}
+
+        FormationShopSession(int seed,bool fullCampaign,int? practiceNode)
         {
             Seed = seed;
             Shop = new ShopTrialModel((fullCampaign?FormationCampaignRules.AllUnits.Select(role=>new ShopTrialModel.Role{Id=role.CardId,Name=role.Name,Cost=role.Cost}):FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
                 new ShopTrialModel.Role { Id = role.CardId, Name = role.Name, Cost = role.Cost })), seed);
             if(fullCampaign)
             {
-                Shop.EnableFormationEconomy();
+                Shop.EnableFormationEconomy(unlimited:practiceNode.HasValue);
                 var random=new System.Random(seed^0x317a9);
                 var starting=FormationCampaignRules.AllUnits.Where(role=>role.Cost==1).OrderBy(_=>random.Next()).Take(3).Select(role=>new ShopTrialModel.Piece{Id=role.CardId,Star=1});
                 Shop.Preset(starting,Array.Empty<string>(),level:3,xp:0,gold:8);
-                Run=new FormationCampaignRun(Shop,seed);
+                Run=new FormationCampaignRun(Shop,seed,practiceNode);
+                Round=Run.NodeIndex+1;
             }
             else
             {
@@ -310,11 +318,22 @@ namespace YesterdayConvoy
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
         {
             if(Run==null)return won?SettleWin(Round):null;
+            if(Run.IsPractice)return null;
             bool already=Run.NodeSettled;
             if(model!=null&&model.Phase!=FormationPhase.Won&&model.Phase!=FormationPhase.Lost)return null;
             LastReward=Run.SettleBattle(won,progress,initialCount,remainingCount,bossAlive);
             if(!already&&model!=null)Shop.AddGold(model.BattleGold);
             Synchronize();return LastReward;
+        }
+
+        internal FormationBattleModel PreparePracticeBattle(int node)
+        {
+            if(model==null||Run?.SelectPracticeNode(node)!=true)return null;
+            SavePositions(model);
+            Round=Run.NodeIndex+1;
+            var next=new FormationBattleModel(Seed,model.Terrain);
+            ApplyTo(next);
+            return next;
         }
         public bool AdvanceNode()
         {

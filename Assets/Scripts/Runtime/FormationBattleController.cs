@@ -82,10 +82,10 @@ namespace YesterdayConvoy
             TickFormationRewards(Time.unscaledDeltaTime);
             TickFormationTraitFeedback(Time.unscaledDeltaTime);
             if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();
-            if(Input.GetKeyDown(KeyCode.V))ToggleFormationView();
-            if(Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
+            if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.V))ToggleFormationView();
+            if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(rewardHistoryOpen)rewardHistoryOpen=false;else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+            {if(formationMenuOpen)CloseFormationMenu();else if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(rewardHistoryOpen)rewardHistoryOpen=false;else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
@@ -108,7 +108,7 @@ namespace YesterdayConvoy
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
+            if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
             if(FormationSupplyBlocksPoint(point) &&
                 !(type!=EventType.MouseDown && pointerHeld && shopDragInstance>0 && FormationSellRight.Contains(point)))
             {CancelFormationDrag();return;}
@@ -187,12 +187,44 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
-            bool fullCampaign=Session?.Run!=null;
-            seed=unchecked(seed+1);finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;formationMenuOpen=false;Session=FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);Model.Reset(seed);Session.ApplyTo(Model);
-            if(fullCampaign)Model.BindCampaign(Session.Run);else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}lastSoundAt=-10;
-            campaignResultSettled=false;campaignInventoryOpen=false;campaignFormationOpen=false;
-            CloseCampaignPanels();campaignSeaPainting=false;
-            SetMarketVisible(false);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();SelectFirstLineup();notice=fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。";SyncActors();
+            if(Campaign?.IsPractice==true){SelectPracticeBattle(Campaign.NodeIndex);return;}
+            StartNewFormationChallenge(Campaign!=null);
+        }
+
+        void StartNewFormationChallenge(bool fullCampaign)
+        {
+            seed=unchecked(seed+1);
+            Session=FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);
+            Model=new FormationBattleModel(seed,Model.Terrain);
+            Session.ApplyTo(Model);
+            if(!fullCampaign){Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
+            ResetFormationPreparation(fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。");
+        }
+
+        void SelectPracticeBattle(int node)
+        {
+            if(Campaign?.IsPractice==true)
+            {
+                var next=Session.PreparePracticeBattle(node);
+                if(next==null)return;
+                Model=next;
+            }
+            else
+            {
+                Session=FormationShopSession.StartPractice(seed,node);
+                Model=new FormationBattleModel(seed,Model.Terrain);
+                Session.ApplyTo(Model);
+            }
+            ResetFormationPreparation("难度试玩 · 招募、刷新和经验免费");
+        }
+
+        void ResetFormationPreparation(string message)
+        {
+            CloseFormationMenu();CloseCampaignPanels();CloseFormationTraitDetails();
+            finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;lastSoundAt=-10;
+            campaignResultSettled=false;campaignSeaPainting=false;
+            SetMarketVisible(false);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();
+            SelectFirstLineup();notice=message;SyncActors();
             SetFormationView(false);
         }
         internal void SyncActors()

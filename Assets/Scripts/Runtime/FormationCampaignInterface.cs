@@ -21,7 +21,7 @@ namespace YesterdayConvoy
         void CampaignLabel(Rect rect,string value,int size=13,bool bold=false)=>GUI.Label(rect,value??"",CampaignText(size,bold));
         void TickCampaignSettlement()
         {
-            if(Campaign==null||campaignResultSettled||Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost)return;
+            if(Campaign==null||Campaign.IsPractice||campaignResultSettled||Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost)return;
             campaignResultSettled=true;
             Session.SettleBattle(Model.Phase==FormationPhase.Won,Model.EncounterProgress,Model.InitialDefenderCount,Model.RemainingDefenders,Model.BossAlive);
             notice=Campaign.LastSummary;
@@ -144,6 +144,16 @@ namespace YesterdayConvoy
                 CampaignLabel(new Rect(x+35,r.y+228,95,23),names[i]+"球 ×"+Campaign.OpenedBalls.Count(c=>c==names[i]),13,true);
             }
             if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点",!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
+        }
+        void DrawPracticeResult()
+        {
+            var r=new Rect(350,198,580,234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
+            string outcome=Model.Phase==FormationPhase.Won?"蓝门突破":"本关失利";
+            CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{Campaign.CurrentNode.Id}  ·  {outcome}",25,true);
+            CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,60),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
+            if(Button(new Rect(r.x+25,r.yMax-72,254,46),"重试本关",true,true)){SelectPracticeBattle(Campaign.NodeIndex);return;}
+            if(Button(new Rect(r.x+296,r.yMax-72,259,46),"选择其他关卡"))
+            {formationMenuOpen=true;formationPracticePickerOpen=true;CancelFormationDrag();}
         }
         void DrawCampaignInventory()
         {

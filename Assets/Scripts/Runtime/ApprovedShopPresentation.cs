@@ -566,7 +566,7 @@ namespace YesterdayConvoy
 
                 Rect refresh=new Rect(956,offset+36,118,32),lockRect=new Rect(956,offset+74,118,32);
                 GUI.enabled=originalEnabled&&prep&&ShopTradingAvailable;
-                if(LoopButton(refresh,shop.FreeRefreshes>0?"免费刷新 "+shop.FreeRefreshes:"刷新 "+shop.RefreshPrice+"金币",true))
+                if(LoopButton(refresh,shop.UnlimitedGold?"免费刷新":shop.FreeRefreshes>0?"免费刷新 "+shop.FreeRefreshes:"刷新 "+shop.RefreshPrice+"金币",true))
                 {host.Refresh();}
                 if(LoopButton(lockRect,shop.Locked?"已锁定 · 解锁":"锁定商店")){host.ToggleLock();}
                 GUI.enabled=originalEnabled;
