@@ -343,7 +343,7 @@ namespace YesterdayConvoy
             for (int i = 0; i < RoundCounts[Round - 1]; i++)
             {
                 // Most are ordinary melee/marksman guards. At most two medics prevents unbounded sustain.
-                int kind = i == 5 || i == 12 ? 9 + rng.Next(2) : new[] { 0, 1, 3, 4, 5, 6, 7, 8, 11 }[rng.Next(9)];
+                int kind = i == 5 || i == 12 ? 9 : new[] { 0, 3, 5, 6, 7, 11 }[rng.Next(6)];
                 bool healer = kind == 9 || kind == 10;
                 bool ranged = kind >= 6;
                 int cellIndex = i;

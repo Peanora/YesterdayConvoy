@@ -12,7 +12,6 @@ namespace YesterdayConvoy.Editor
     public static class BlackForestNativeTools
     {
         const string Art="Assets/Art/Environment/BlackForestNative";
-        [MenuItem("Yesterday Convoy/Black Forest/Apply Approved Native Environment")]
         public static void Apply()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play before changing saved map art.");
@@ -43,7 +42,6 @@ namespace YesterdayConvoy.Editor
             Validate();BlackForestMapTools.RenderPreview();
             Debug.Log("BLACK_FOREST_NATIVE_APPLIED: saved original meshes/textures and tile_start/tile_end gates, 238 editable cells, no gameplay changes");
         }
-        [MenuItem("Yesterday Convoy/Black Forest/Validate Native Environment")]
         public static void Validate()
         {
             BlackForestMapTools.Validate();var field=Object.FindAnyObjectByType<AuthoredBattlefield>();

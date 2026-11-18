@@ -118,7 +118,7 @@ namespace YesterdayConvoy
             Add(list,"M42","泥岩小队掷能者组长",4,1.42f);
             Add(list,"M43","泥岩小队践行者组长",0,1.28f);
             AddSpecial(list,"CARD_ORIGINIUM_SLUG","源石虫","OriginiumSlugOriginal",1,1.0f);
-            AddSpecial(list,"CARD_TALULAH_TRIAL","塔露拉","TalulahOriginal",4,1.85f);
+            AddSpecial(list,"CARD_TALULAH_TRIAL","塔露拉",null,4,1.85f);
             // Prefer original game#9 metadata through BossRosterArt; the approved user GIF
             // Sprite references remain the fallback if that original package is absent.
             AddSpecial(list,"CARD_WISADEL_APRIL","维维美",null,3,292f/173.333333f);
@@ -132,8 +132,12 @@ namespace YesterdayConvoy
                     1.5f, rules.Size == "重" ? new Vector2Int(2,2) : Vector2Int.one);
                 list.Add(definition); Register(definition);
             }
+            // Historical metadata remains available to simulations. Only the
+            // official challenge roster owns authored card and art references.
+            list.RemoveAll(definition=>FormationCampaignRules.Find(definition.CardId)==null);
             all = list.AsReadOnly();
-            if (all.Count != 62) throw new InvalidOperationException("Formation catalog must retain 43 legacy cards and 19 approved Boss cards.");
+            if (all.Count != FormationCampaignRules.AllUnits.Length)
+                throw new InvalidOperationException("Formation art must cover the current challenge roster.");
             Register(new Definition(CampaignBalance.GolemCardId,"泥岩巨像","MonsterCombatArt/GOLEM",0,2.0f,new Vector2Int(2,2),true));
             Register(new Definition("AUX_P14H","卡德霍猎犬","BossRoster/P14H/main",1,.90f,Vector2Int.one,true,"P14H"));
             Register(new Definition("AUX_P26","易的梁","BossRoster/P26/main",4,1.15f,Vector2Int.one,true,"P26"));

@@ -3,18 +3,17 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using YesterdayConvoy.Editor;
 
 namespace YesterdayConvoy.Tests
 {
     public sealed class DedicatedSynergyDefinitionTests
     {
-        [Test]public void GeneratedDefaultsHaveNineDistinctScenesAndIndependentEncounters()
+        [Test]public void GeneratedDefaultsPreserveNineIndependentEncounters()
         {
             Assert.That(SynergyTrialCatalog.Entries.Count,Is.EqualTo(9));
             Assert.That(SynergyTrialCatalog.Entries.Select(e=>e.Id).Distinct().Count(),Is.EqualTo(9));
             var definitions=SynergyTrialCatalog.Entries.Select(e=>AssetDatabase.LoadAssetAtPath<SynergyTrialDefinition>(e.DefinitionPath)).ToArray();
-            Assert.That(definitions.All(d=>d!=null),Is.True,"Run CreateMissingScenes before these generated-asset tests.");
+            Assert.That(definitions.All(d=>d!=null),Is.True);
             Assert.That(definitions.Select(d=>d.encounter).Distinct().Count(),Is.EqualTo(9));
             foreach(var entry in SynergyTrialCatalog.Entries)
             {
@@ -28,7 +27,6 @@ namespace YesterdayConvoy.Tests
                     Assert.That(entry.MaximumTier,Is.EqualTo(6));Assert.That(data.initialMembers.All(m=>m.star==1),Is.True);
                     Assert.That(SynergySummary.From(data.initialMembers.Select(m=>m.cardId),extraMudrockMembers:new[]{"CARD_M08"}).Single(s=>s.Name==entry.Tag).Tier,Is.EqualTo(6));
                 }
-                Assert.That(AssetDatabase.LoadAssetAtPath<SceneAsset>(entry.ScenePath),Is.Not.Null);
                 var snapshot=data.CopyDefenders();float original=data.encounter.defenders[0].health;snapshot[0].health=1;
                 Assert.That(data.encounter.defenders[0].health,Is.EqualTo(original),"Runtime multiplier/mutation must not reach the baseline asset.");
             }
@@ -67,13 +65,6 @@ namespace YesterdayConvoy.Tests
             }
             finally {UnityEngine.Object.DestroyImmediate(copy);}
             Assert.That(source.initialLevel,Is.EqualTo(8));source.Validate();
-        }
-        [Test]public void BuildCatalogIncludesEveryAuthoredSceneAndAllNineTrials()
-        {
-            var paths=GameSceneCatalog.BuildPaths();Assert.That(paths[0],Is.EqualTo(CampaignTools.CampaignScene));
-            foreach(var scene in AssetDatabase.FindAssets("t:Scene",new[]{"Assets/Scenes"}).Select(AssetDatabase.GUIDToAssetPath))Assert.That(paths,Does.Contain(scene));
-            foreach(var entry in SynergyTrialCatalog.Entries)Assert.That(paths,Does.Contain(entry.ScenePath));
-            Assert.That(paths.Distinct().Count(),Is.EqualTo(paths.Length));
         }
     }
 }

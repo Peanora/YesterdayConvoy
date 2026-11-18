@@ -45,8 +45,8 @@ namespace YesterdayConvoy.Tests
             // B10 has a 23-second idle split across three independent cache segments.
             ArtMemoryCache.Clear();
             var session=FormationShopSession.StartNew(20261117);
-            session.Shop.Preset(new[]{new ShopTrialModel.Piece{Id="CARD_M07",Star=1},
-                new ShopTrialModel.Piece{Id="CARD_M10",Star=1},new ShopTrialModel.Piece{Id="CARD_M08",Star=1}},
+            session.Shop.Preset(new[]{new ShopTrialModel.Piece{Id="CARD_M21",Star=1},
+                new ShopTrialModel.Piece{Id="CARD_M18",Star=1},new ShopTrialModel.Piece{Id="CARD_M11",Star=1}},
                 new[]{"CARD_B10"},level:10,xp:0,gold:80);
             yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
             double deadline=Time.realtimeSinceStartupAsDouble+30;
@@ -167,7 +167,7 @@ namespace YesterdayConvoy.Tests
             // Explicit presentation fixture: legal finite stock, not natural recruitment,
             // campaign economy, balance or original boss-skill evidence.
             var session = FormationShopSession.StartNew(20261117);
-            session.Shop.Preset(new[] { new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 },
+            session.Shop.Preset(new[] { new ShopTrialModel.Piece { Id = "CARD_M21", Star = 1 },
                 new ShopTrialModel.Piece { Id = "CARD_M20", Star = 1 }, new ShopTrialModel.Piece { Id = "CARD_M28", Star = 1 } },
                 Array.Empty<string>(), level: 6, xp: 0, gold: 80);
             yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
@@ -189,7 +189,7 @@ namespace YesterdayConvoy.Tests
             yield return WaitForPresentation();
             Assert.That(session.TryDeploy(Fighter("M20").Instance, new Vector2Int(0, 1)).Success, Is.True);
             Assert.That(session.TryDeploy(Fighter("M28").Instance, new Vector2Int(3, 4)).Success, Is.True);
-            Assert.That(session.TryDeploy(Fighter("M07").Instance, new Vector2Int(5, 0)).Success, Is.True);
+            Assert.That(session.TryDeploy(Fighter("M21").Instance, new Vector2Int(5, 0)).Success, Is.True);
             controller.SetMarketVisible(false);
             deadline = Time.realtimeSinceStartupAsDouble + 3;
             while (controller.ShopPanelTransitioning && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
@@ -201,7 +201,7 @@ namespace YesterdayConvoy.Tests
             {
                 var actor = Fighter(id); Assert.That(actor.Footprint, Is.EqualTo(new Vector2Int(2, 2)));
                 AssertRenderedAtFootprintCenter(actor);
-                Assert.That(BodyScreenRect(Body(actor)).height, Is.GreaterThan(BodyScreenRect(Body(Fighter("M07"))).height * 1.1f), "Native large actors must have visibly different size from the ordinary soldier.");
+                Assert.That(BodyScreenRect(Body(actor)).height, Is.GreaterThan(BodyScreenRect(Body(Fighter("M21"))).height * 1.1f), "Native large actors must have visibly different size from the ordinary soldier.");
             }
             int gold = controller.Shop.Gold; double clock = model.Clock;
             Assert.That(clock, Is.Zero); Assert.That(model.Phase, Is.EqualTo(FormationPhase.Preparation));

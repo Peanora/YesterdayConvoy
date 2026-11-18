@@ -88,7 +88,6 @@ namespace YesterdayConvoy
             else
             {
                 var source=ArtCatalog.Read(definition.ArtRoot);
-                if(definition.CardId=="CARD_TALULAH_TRIAL")source.Extras(new[]{"death"});
                 if(definition.CardId=="CARD_M30")source.Extras(new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"});
                 if(definition.CardId=="CARD_M31")source.Extras(new[]{"extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end"});
                 art=new FormationUnitArt(source);

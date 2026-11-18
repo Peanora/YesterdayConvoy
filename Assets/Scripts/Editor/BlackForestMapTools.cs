@@ -10,9 +10,7 @@ namespace YesterdayConvoy.Editor
     public static class BlackForestMapTools
     {
         public const string ScenePath="Assets/Scenes/BlackForestCrossing.unity";
-        [MenuItem("Yesterday Convoy/Scenes/Open Black Forest Crossing")]
         public static void Open()=>EditorSceneManager.OpenScene(ScenePath);
-        [MenuItem("Yesterday Convoy/Black Forest/Validate Saved Map")]
         public static void Validate()
         {
             BlackForestLayout.Validate();EditorSceneManager.OpenScene(ScenePath);var root=Object.FindAnyObjectByType<AuthoredBattlefield>();

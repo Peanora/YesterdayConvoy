@@ -34,7 +34,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }
 
-        [Test]public void ExtraActionsAndBoundPhasesExportWhileUnboundAndRetiredCacheFilesStayOut()
+        [Test]public void CurrentTalulahBodyAndBoundPhasesExportWithoutStaleCacheFiles()
         {
             string cache=Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
             string marker=Path.Combine(cache,"MonsterCombatArt","retired-layout-test-"+Guid.NewGuid().ToString("N")+".png.ycart");
@@ -42,7 +42,9 @@ namespace YesterdayConvoy.Tests
             try
             {
                 string[] files=PreparedArtTools.RuntimeOutputFiles();
-                Assert.That(files.Any(path=>path.StartsWith("TalulahOriginal/ExtraClips/",StringComparison.Ordinal)&&path.EndsWith(".ycart",StringComparison.Ordinal)));
+                Assert.That(files,Does.Contain("BossRoster/B16/main/manifest.json"));
+                Assert.That(files.Any(path=>path.StartsWith("BossRoster/B16/main/",StringComparison.Ordinal)&&path.EndsWith(".ycart",StringComparison.Ordinal)));
+                Assert.That(files.Any(path=>path.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.False);
                 Assert.That(files,Does.Contain("TalulahUnboundVfx/ambient-B-wing-00.png.ycart"));
                 foreach(string phase in new[]{"ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target"})
                     Assert.That(files,Does.Contain("TalulahUnboundVfx/"+phase+"-00.png.ycart"),"Actually bound formation Talulah HDR page");

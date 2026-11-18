@@ -14,7 +14,6 @@ namespace YesterdayConvoy.Editor
     public static class FormationNativeMapTools
     {
         public const string RootName="LS5 native formation courtyard";
-        const string GatePrefab="Assets/Art/Environment/BlackForestNative/NativeForest.prefab";
         static readonly Rect FloorFrame=new Rect(200,108,792,365);
         static readonly string[] FloorNames={"0242","0275","0114","0233"};
         static readonly string[] WhitePlatformNames={"S_export_cube199","S_export_cube200","S_export_cube179","S_export_cube201","S_export_cube94","S_export_cube177","S_export_cube203"};
@@ -29,7 +28,11 @@ namespace YesterdayConvoy.Editor
             var scene=EditorSceneManager.OpenScene(FormationBattleTools.ScenePath,OpenSceneMode.Single);
             var controller=Object.FindAnyObjectByType<FormationBattleController>();
             if(controller==null||controller.battleCamera==null)throw new InvalidOperationException("Formation scene bindings missing.");
-            foreach(var old in scene.GetRootGameObjects().Where(g=>g.name==RootName||g.name.StartsWith("Painted courtyard",StringComparison.Ordinal)||g.name.StartsWith("Industrial courtyard",StringComparison.Ordinal)).ToArray())Object.DestroyImmediate(old);
+            var priorDressing=scene.GetRootGameObjects().Where(g=>g.name==RootName||g.name.StartsWith("Painted courtyard",StringComparison.Ordinal)||g.name.StartsWith("Industrial courtyard",StringComparison.Ordinal)).ToArray();
+            var savedGates=priorDressing.SelectMany(g=>g.GetComponentsInChildren<Transform>(true)).ToArray();
+            var redGate=savedGates.SingleOrDefault(t=>t.name=="Red gate row 0");
+            var blueGate=savedGates.SingleOrDefault(t=>t.name=="Blue gate row 0");
+            if(redGate==null||blueGate==null)throw new InvalidOperationException("The saved formation board must contain its red and blue gate templates.");
             var terrain=scene.GetRootGameObjects().Single(g=>g.name.StartsWith("Authored rectangle",StringComparison.Ordinal));
             foreach(var child in terrain.transform.Cast<Transform>().Where(t=>!t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray())Object.DestroyImmediate(child.gameObject);
             terrain.name="Authored rectangle · "+FormationBattleModel.Width+" x "+FormationBattleModel.Height+" · edit and save terrain here";
@@ -99,7 +102,8 @@ namespace YesterdayConvoy.Editor
                 var go=FormationNativeAssetTools.CreatePart(source,surroundings);go.transform.localPosition=p+Vector3.up*.14f;SetBoardMaterials(go,source);dressed++;
             }
             CreateRaisedPerimeter(root);
-            CreateGates(root);
+            CreateGates(root,redGate,blueGate);
+            foreach(var old in priorDressing)Object.DestroyImmediate(old);
             SetupLighting(scene);
             FrameCamera(controller.battleCamera);
             EditorSceneManager.MarkSceneDirty(scene);AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene);
@@ -128,13 +132,11 @@ namespace YesterdayConvoy.Editor
             }
         }
 
-        static void CreateGates(Transform root)
+        static void CreateGates(Transform root,Transform redGate,Transform blueGate)
         {
-            var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(GatePrefab);
-            if(prefab==null)throw new InvalidOperationException("Existing original gate resources missing.");
             foreach(bool red in new[]{true,false})
             {
-                var source=prefab.GetComponentsInChildren<Transform>(true).First(t=>t.name==(red?"R1 / Native tile_start":"B1 / Native tile_end"));
+                var source=red?redGate:blueGate;
                 for(int row=0;row<FormationBattleModel.Height;row++)
                 {
                     var go=Object.Instantiate(source.gameObject,root);go.name=(red?"Red":"Blue")+" gate row "+row;
@@ -143,7 +145,6 @@ namespace YesterdayConvoy.Editor
                     foreach(var collider in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
                     foreach(var renderer in go.GetComponentsInChildren<MeshRenderer>(true))
                     {
-                        renderer.sharedMaterials=renderer.sharedMaterials.Select(m=>FormationBoardMaterialTools.GetGateMaterial(m,red)).ToArray();
                         renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;
                     }
                 }

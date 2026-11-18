@@ -116,13 +116,13 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Returning restores the same fixed pose.");
             Assert.That(model.Defenders.All(d => !controller.FormationActorVisibleInView(d)), Is.True);
             Assert.That(controller.ViewingDefenders, Is.False); Assert.That(controller.CanEditFormationView, Is.True);
-            var first = model.Units.Single(u => u.Enabled && u.ArtId == "M07");
-            var second = model.Units.Single(u => u.Enabled && u.ArtId == "M08");
+            var first = model.Units.Single(u => u.Enabled && u.ArtId == "M21");
+            var second = model.Units.Single(u => u.Enabled && u.ArtId == "M11");
             var a = first.Spawn; var b = second.Spawn;
             controller.ProcessPointer(EventType.MouseDown, FormationBattleController.CellScreen(a));
             controller.ProcessPointer(EventType.MouseDrag, FormationBattleController.CellScreen(b));
             controller.ProcessPointer(EventType.MouseUp, FormationBattleController.CellScreen(b));
-            first = model.Units.Single(u => u.ArtId == "M07"); second = model.Units.Single(u => u.ArtId == "M08");
+            first = model.Units.Single(u => u.ArtId == "M21"); second = model.Units.Single(u => u.ArtId == "M11");
             Assert.That(first.Spawn, Is.EqualTo(b)); Assert.That(second.Spawn, Is.EqualTo(a), "The focused camera must retain accurate drag-to-cell projection.");
 
             yield return new WaitForSecondsRealtime(.25f);

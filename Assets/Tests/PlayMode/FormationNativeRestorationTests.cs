@@ -196,18 +196,42 @@ namespace YesterdayConvoy.Tests
                 yield return Fixture(new[]{"WIS"},wisadelSkill:skill);
                 Begin();
                 string mark="wisdel_skill_0"+skill;
-                bool owner=false,impact=false,linked=false,headInFlight=skill!=3;
+                bool owner=false,impact=false,linked=false,headAtTarget=skill!=3;
+                Sprite flyingFace=null;
+                FormationPresentationAction shell=null;
                 yield return Until(()=>
                 {
                     var layers=LegacyLayers().Where(r=>r.sprite.name.Contains(mark)).ToArray();
                     owner|=layers.Any(r=>(r.sprite.name.Contains("start")||r.sprite.name.Contains("buff"))&&HasPaint(r.sprite));
                     impact|=layers.Any(r=>r.sprite.name.Contains("hit")&&HasPaint(r.sprite));
-                    if(!headInFlight&&controller.Model.PresentationActions.Any(a=>a.ProjectileOnly&&
-                        controller.Model.Clock>=a.LaunchedAt&&controller.Model.Clock<a.ContactAt))
-                        headInFlight=LegacyLayers().Any(r=>r.sprite.name.StartsWith("face-",StringComparison.Ordinal)&&HasPaint(r.sprite));
+                    if(skill==3&&!headAtTarget)
+                    {
+                        if(flyingFace==null)
+                        {
+                            shell=controller.Model.PresentationActions.FirstOrDefault(a=>a.ProjectileOnly&&
+                                controller.Model.Clock>=a.LaunchedAt&&controller.Model.Clock<a.ContactAt);
+                            if(shell!=null)flyingFace=LegacyLayers().FirstOrDefault(r=>
+                                r.sprite.name.StartsWith("face-",StringComparison.Ordinal)&&HasPaint(r.sprite))?.sprite;
+                        }
+                        else
+                        {
+                            var face=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&
+                                r.name=="Formation Wisadel / S3 impact face").ToArray();
+                            if(face.Length>0)
+                            {
+                                var hit=controller.Model.Hits.First(h=>h.Action==shell&&!h.Secondary);
+                                var target=controller.Model.Defenders.First(d=>d.Id==hit.ToId);
+                                Vector3 point=(Vector3)Invoke(controller,"FormationFeedbackContactPoint",target,hit.To,.55f);
+                                Assert.That(face.Length,Is.EqualTo(1),"One shell shows one target face, even when it hits several defenders.");
+                                Assert.That(face[0].sprite,Is.SameAs(flyingFace));
+                                Assert.That(Vector3.Distance(face[0].transform.position,point),Is.LessThan(.01f));
+                                headAtTarget=true;
+                            }
+                        }
+                    }
                     linked|=controller.Model.Hits.Any(h=>!h.Heal&&h.SourceArtId=="WISADEL_APRIL"&&
                         (skill==2?h.Action!=null&&!h.Skill&&h.At>h.Action.At:h.Action?.ProjectileOnly==true));
-                    return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked&&headInFlight;
+                    return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked&&headAtTarget;
                 },60);
             }
         }
@@ -230,7 +254,7 @@ namespace YesterdayConvoy.Tests
                     r.name=="Formation Talulah / rain impact"&&HasPaint(r.sprite))&&model.Hits.Any(h=>h.FromId==caster.Id&&h.Skill);
                 fire=LegacyLayers().Where(r=>r.sprite.name.Contains("original-energy-stream")).ToArray();
                 if(fire.Length>0)waveStart=Math.Min(waveStart,model.Clock);
-                if(fire.Length!=FormationBattleModel.Height)return false;
+                if(fire.Length!=2*FormationBattleModel.Height)return false;
                 first=Mathf.Min(first,fire.Min(r=>r.transform.position.x));
                 last=Mathf.Max(last,fire.Max(r=>r.transform.position.x));
                 return last-first>8&&fire.Any(r=>HasPaint(r.sprite));
@@ -238,6 +262,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
             Assert.That(sawContact,Is.True,"A committed hit should show the dedicated ground impact.");
             Assert.That(model.Clock-waveStart,Is.GreaterThan(2.3),"The fire front crosses the board over a slower, readable sweep.");
+            Assert.That(model.Clock-waveStart,Is.LessThan(3.5),"The next wave starts before the first has finished.");
+            Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahGroundFlame"),Is.True);
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
             foreach(var stream in fire)
             {
@@ -253,6 +279,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(fire[0].transform.position,Is.EqualTo(point));
             Assert.That(fire[0].sprite,Is.SameAs(sprite));
             model.Paused=false;
+            var sustainedBody=Body(caster).sprite;
+            yield return Until(()=>Body(caster).sprite!=sustainedBody,.6);
             var cast=model.PresentationActions.Single(a=>a.ActorId==caster.Id&&a.Skill);
             double rainEnd=(double)Invoke(model,"TalulahRainEnd",caster);
             Assert.That(rainEnd-cast.ContactAt,Is.EqualTo(8).Within(.026));

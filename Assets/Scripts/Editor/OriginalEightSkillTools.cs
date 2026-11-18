@@ -9,7 +9,6 @@ namespace YesterdayConvoy.Editor
     public static class OriginalEightSkillTools
     {
         const string Root="Assets/Data/Resources/DefenderTrials/";
-        [MenuItem("Yesterday Convoy/Defenders/Apply Original Eight Skills")]
         public static void Apply()
         {
             var eight=AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>("Assets/Data/Resources/DefenderTrial.asset");

@@ -8,12 +8,14 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class FormationUnitCatalogTests
     {
-        [Test] public void EveryAuthoredCardHasMatchingFormationIdentityAndCost()
+        [Test] public void EveryChallengeCardHasMatchingFormationIdentityAndCost()
         {
+            var approved=FormationCampaignRules.AllUnits.Select(unit=>unit.CardId).ToArray();
             var cards=AssetDatabase.FindAssets("t:CardDefinition",new[]{"Assets/Data/Cards"})
-                .Select(g=>AssetDatabase.LoadAssetAtPath<CardDefinition>(AssetDatabase.GUIDToAssetPath(g))).ToArray();
-            Assert.That(cards.Length,Is.EqualTo(62));
-            Assert.That(FormationUnitCatalog.All.Count,Is.EqualTo(cards.Length));
+                .Select(g=>AssetDatabase.LoadAssetAtPath<CardDefinition>(AssetDatabase.GUIDToAssetPath(g)))
+                .Where(card=>approved.Contains(card.CardId)).ToArray();
+            CollectionAssert.AreEquivalent(approved,cards.Select(card=>card.CardId));
+            CollectionAssert.AreEquivalent(approved,FormationUnitCatalog.All.Select(definition=>definition.CardId));
             foreach(var card in cards)
             {
                 var definition=FormationUnitCatalog.Find(card.CardId);
@@ -39,12 +41,12 @@ namespace YesterdayConvoy.Tests
 
         [Test] public void LargeOriginalBodiesHaveMultipleCellsAndVariedVisualHeights()
         {
-            Assert.That(FormationUnitCatalog.Find("M10").Footprint,Is.EqualTo(Vector2Int.one),"The existing starter must still fit one cell.");
+            Assert.That(FormationUnitCatalog.Find("M21").Footprint,Is.EqualTo(Vector2Int.one),"The existing starter must still fit one cell.");
             foreach(string id in new[]{"M20","M28","M34","M36"})
             {
                 var large=FormationUnitCatalog.Find(id);
                 Assert.That(large.Footprint,Is.EqualTo(new Vector2Int(2,2)),id);
-                Assert.That(large.VisualHeight,Is.GreaterThan(FormationUnitCatalog.Find("M07").VisualHeight),id);
+                Assert.That(large.VisualHeight,Is.GreaterThan(FormationUnitCatalog.Find("M21").VisualHeight),id);
             }
             foreach(var definition in FormationUnitCatalog.All)
             {
@@ -53,12 +55,13 @@ namespace YesterdayConvoy.Tests
                 Assert.That(definition.VisualHeight,Is.GreaterThan(0),definition.CardId);
                 Assert.That(definition.TemplateKind,Is.InRange(0,5),definition.CardId);
             }
-            Assert.That(FormationUnitCatalog.Find("M02").VisualHeight,Is.LessThan(FormationUnitCatalog.Find("M07").VisualHeight));
+            Assert.That(FormationUnitCatalog.Find("M03").VisualHeight,Is.LessThan(FormationUnitCatalog.Find("M21").VisualHeight));
         }
 
         [Test] public void AllExistingRolesPreserveShopEligibilityAndSupportDoesNotBecomeAPurchasableCard()
         {
-            Assert.That(FormationUnitCatalog.All.Count(d=>d.ShopEligible),Is.EqualTo(CampaignBalance.Profiles.Keys.Count(CampaignBalance.ShopEligible)+19));
+            CollectionAssert.AreEquivalent(FormationCampaignRules.AllUnits.Select(unit=>unit.CardId),
+                FormationUnitCatalog.All.Where(definition=>definition.ShopEligible).Select(definition=>definition.CardId));
             Assert.That(FormationUnitCatalog.Find("M41").ShopEligible,Is.False,"Roster support must not silently unpause the silver-wolf shop role.");
             var golem=FormationUnitCatalog.Find(CampaignBalance.GolemCardId);
             Assert.That(golem,Is.Not.Null);
@@ -81,10 +84,11 @@ namespace YesterdayConvoy.Tests
             foreach(var definition in FormationUnitCatalog.All)
             {
                 Assert.That(FormationUnitCatalog.Find(definition.CardId),Is.SameAs(definition));
-                if(definition.ArtRoot!=null)
-                    Assert.That(System.IO.File.Exists(ArtSourcePaths.Resolve(definition.ArtRoot+"/manifest.json")),Is.True,definition.CardId);
+                string root=FormationUnitArt.For(definition.ArtId).Root;
+                Assert.That(root,Is.Not.Null,definition.CardId);
+                Assert.That(System.IO.File.Exists(ArtSourcePaths.Resolve(root+"/manifest.json")),Is.True,definition.CardId);
             }
-            Assert.That(FormationUnitCatalog.Find("WISADEL_APRIL").ArtRoot,Is.Null,"The original native outfit takes precedence; preserve the approved serialized Sprite fallback.");
+            Assert.That(FormationUnitArt.For("WISADEL_APRIL").Root,Is.EqualTo("BossRoster/WIS_APRIL_G9/main"));
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }
 
@@ -125,7 +129,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(FormationUnitCatalog.Find(unit.CardId),Is.Not.Null,unit.CardId);
             foreach(string removed in new[]{"CARD_M04","CARD_M05","CARD_M06","CARD_M41"})
                 Assert.That(FormationCampaignRules.Find(removed),Is.Null,removed);
-            // Removed formal roles remain addressable by the historical demos.
+            // Legacy simulations can still read their metadata. These rows do not re-enter the board roster.
             Assert.That(FormationUnitCatalog.Find("M04"),Is.Not.Null);
             Assert.That(FormationUnitCatalog.Find("M41"),Is.Not.Null);
         }

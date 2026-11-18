@@ -118,7 +118,6 @@ namespace YesterdayConvoy.Editor
             };
         }
 
-        [MenuItem("Yesterday Convoy/Black Forest/Compare Starting Rosters")]
         public static void Evaluate()
         {
             var encounter=Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource);

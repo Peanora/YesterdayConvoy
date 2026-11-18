@@ -6,7 +6,9 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const float TalulahSweepTime = 3.5f;
-        const float TalulahSweepInterval = 4f;
+        const float TalulahSweepInterval = 2.1f;
+        const float TalulahLaneStagger = .022f;
+        Material talulahSweepMaterial;
 
         bool IsFormationTalulahRainContact(FormationHit hit)
         {
@@ -28,13 +30,25 @@ namespace YesterdayConvoy
 
             float rate = actor.PresentationRate > 0 ? actor.PresentationRate : LegacyVisualRate;
             float sourceDuration = art.Duration(motion);
-            // The prior approved rain held the existing raised-hand pose. The
-            // actual source frames at either end still advance at their usual rate.
-            double hold = Math.Min(marker + 4f / 30, sourceDuration);
-            double recoveryAt = rainEnd - (sourceDuration - hold) / rate;
-            age = now < recoveryAt
-                ? Math.Min(Math.Max(0, now - actor.LastSkillAt) * rate, hold)
-                : hold + (now - recoveryAt) * rate;
+            double raisedStart = Math.Min(marker + .05f, sourceDuration);
+            double raisedEnd = Math.Min(marker + .50f, sourceDuration);
+            double sustainedAt = actor.LastSkillAt + raisedStart / rate;
+            double recoveryAt = rainEnd - (sourceDuration - raisedEnd) / rate;
+            if (now < sustainedAt)
+                age = Math.Max(0, now - actor.LastSkillAt) * rate;
+            else if (now >= recoveryAt)
+                age = raisedEnd + (now - recoveryAt) * rate;
+            else
+            {
+                // The original raised-hand segment keeps the sword at rest while
+                // the cape, hair and arm move. Ease through those existing frames
+                // and finish on the same frame the original recovery begins from.
+                double duration = recoveryAt - sustainedAt;
+                double preferredPeriod = Math.PI * (raisedEnd - raisedStart) / rate;
+                int cycles = Math.Max(0, (int)Math.Round(duration / preferredPeriod - .5));
+                double wave = Math.PI * (2 * cycles + 1) * (now - sustainedAt) / duration;
+                age = raisedStart + (raisedEnd - raisedStart) * .5 * (1 - Math.Cos(wave));
+            }
             key = motion;
             loop = false;
             return true;
@@ -45,27 +59,33 @@ namespace YesterdayConvoy
             if (!ViewingDefenders || !UseFormationBattleCamera || Model.Clock < zone.At || Model.Clock >= zone.Until) return;
             var stream = BossRosterSupplementArt.Talulah("original-energy-stream");
             if (!stream.Sequence.Ready) return;
+            if (talulahSweepMaterial == null)
+            {
+                var shader = Resources.Load<Shader>("TalulahGroundFlame");
+                if (shader != null) talulahSweepMaterial = new Material(shader) { name = "Formation / Talulah ground flame detail" };
+            }
 
             const float firstColumn = FormationBattleModel.BattleAreaStart + .10f;
             const float lastColumn = FormationBattleModel.Width - 1f;
-            const float staggerPerRow = .022f;
             float zoneAge = (float)(Model.Clock - zone.At);
+            float zoneLength = (float)(zone.Until - zone.At);
             float scale = LegacyScale(source);
             LegacyTalulah("target-burn-loop", zoneAge * LegacyVisualRate, zone.Center, source, -2, true);
-            for (int row = 0; row < FormationBattleModel.Height; row++)
+            float finalStart = zoneLength - TalulahSweepTime - (FormationBattleModel.Height - 1) * TalulahLaneStagger;
+            for (float startsAt = 0; startsAt <= finalStart && startsAt <= zoneAge; startsAt += TalulahSweepInterval)
             {
-                float rowAge = zoneAge - row * staggerPerRow;
-                if (rowAge < 0) continue;
-                float sweepAge = Mathf.Repeat(rowAge, TalulahSweepInterval);
-                if (sweepAge >= TalulahSweepTime) continue;
-                float progress = sweepAge / TalulahSweepTime;
-                float frameAge = Mathf.Repeat(sweepAge * LegacyVisualRate, stream.Duration);
-                var cell = new Vector2(Mathf.Lerp(firstColumn, lastColumn, progress), row);
-                // Keep the approved horizontal fire model at the current tile's top
-                // surface as it crosses the full board, including empty lanes.
-                Vector3 point = ActorWorldPoint(cell) + battleCamera.transform.up * .12f;
-                var wave = LegacyDraw(stream.At(frameAge), legacyHdrMaterial, point, cell, scale * 1.15f, -5, hdr: stream.HdrRange);
-                if (wave != null) wave.color = new Color(1, 1, 1, Mathf.Clamp01((TalulahSweepTime - sweepAge) / .15f));
+                for (int row = 0; row < FormationBattleModel.Height; row++)
+                {
+                    float sweepAge = zoneAge - startsAt - row * TalulahLaneStagger;
+                    if (sweepAge < 0 || sweepAge >= TalulahSweepTime) continue;
+                    float progress = sweepAge / TalulahSweepTime;
+                    float frameAge = Mathf.Repeat(sweepAge * LegacyVisualRate, stream.Duration);
+                    var cell = new Vector2(Mathf.Lerp(firstColumn, lastColumn, progress), row);
+                    Vector3 point = ActorWorldPoint(cell) + battleCamera.transform.up * .12f;
+                    var wave = LegacyDraw(stream.At(frameAge), talulahSweepMaterial ?? legacyHdrMaterial, point, cell,
+                        scale * 1.15f, -5, hdr: stream.HdrRange);
+                    if (wave != null) wave.color = new Color(1, 1, 1, Mathf.Clamp01((TalulahSweepTime - sweepAge) / .15f));
+                }
             }
         }
 

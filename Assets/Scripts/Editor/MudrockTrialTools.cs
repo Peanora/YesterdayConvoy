@@ -9,7 +9,6 @@ namespace YesterdayConvoy.Editor
     {
         public const string ScenePath="Assets/Scenes/MudrockTrial.unity";
         static void Set(UnityEngine.Object o,string key,Action<SerializedProperty> edit){var s=new SerializedObject(o);edit(s.FindProperty(key));s.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(o);}
-        [MenuItem("Yesterday Convoy/Scenes/Open Mudrock Gramophones")]
         public static void Open()=>EditorSceneManager.OpenScene(ScenePath);
         public static void Create()
         {

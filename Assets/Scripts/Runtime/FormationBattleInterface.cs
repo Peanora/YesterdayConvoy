@@ -120,13 +120,12 @@ namespace YesterdayConvoy
         }
         void DrawFormationMenu()
         {
-            var r=ApprovedUi.Menu;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
+            var r=ApprovedUi.Menu;r.height=160;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+12,r.y+9,r.width-60,27),"系统菜单",approvedShop.LoopText(19,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))formationMenuOpen=false;
             if(Button(new Rect(r.x+12,r.y+44,r.width-24,30),soundEnabled?"关闭音效":"开启音效"))soundEnabled=!soundEnabled;
             if(Button(new Rect(r.x+12,r.y+81,r.width-24,30),"重新开始本次挑战")){formationMenuOpen=false;ResetDemo();}
-            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"返回原玩法"))CampaignBootstrap.OpenLegacyEntrance();
-            if(Button(new Rect(r.x+12,r.y+155,r.width-24,30),"关闭菜单"))formationMenuOpen=false;
+            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"关闭菜单"))formationMenuOpen=false;
         }
         void DrawWorldLabels()
         {

@@ -38,7 +38,7 @@ namespace YesterdayConvoy.Tests
             while(controller.ShopPanelTransitioning&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
             yield return null;
 
-            var actor=controller.Model.Units.Single(unit=>unit.Enabled&&unit.ArtId=="M07");
+            var actor=controller.Model.Units.Single(unit=>unit.Enabled&&unit.ArtId=="M21");
             var body=controller.GetComponentsInChildren<SpriteRenderer>().Single(renderer=>renderer.name==actor.Name&&
                 renderer.gameObject.layer!=31&&renderer.sprite!=null);
             var bounds=body.sprite.bounds;
@@ -61,7 +61,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(found,Is.True,"A visible legal destination must be reachable through production pointer input.");
             var landing=controller.DeploymentPreview.Cells;var ghost=controller.DeploymentGhost;
             var shadow=ghost.GetComponent<ActorGrounding>().Shadow;
-            Assert.That(ghost.sprite.name,Does.StartWith("M07/idle/"));
+            Assert.That(FormationArtAssertions.IsActualIdleFrame(actor.ArtId,ghost.sprite),Is.True);
             Assert.That(shadow.enabled,Is.True);
             Assert.That(shadow.transform.position.y,Is.EqualTo(FormationBattleController.WorldPoint(Vector2.zero).y+.016f).Within(.001f));
             Assert.That(ghost.transform.position.y-shadow.transform.position.y,Is.GreaterThan(.5f),"The held body must visibly leave its ground shadow.");

@@ -49,9 +49,9 @@ namespace YesterdayConvoy
             Shop.EnableJourneyEconomy(unlimited: true);
             Shop.Preset(new[]
             {
-                new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 },
-                new ShopTrialModel.Piece { Id = "CARD_M10", Star = 1 },
-                new ShopTrialModel.Piece { Id = "CARD_M08", Star = 1 }
+                new ShopTrialModel.Piece { Id = "CARD_M21", Star = 1 },
+                new ShopTrialModel.Piece { Id = "CARD_M18", Star = 1 },
+                new ShopTrialModel.Piece { Id = "CARD_M11", Star = 1 }
             }, Array.Empty<string>(), level: 3, xp: 0, gold: 12);
             }
             Seats = new ShopSeatLayout();

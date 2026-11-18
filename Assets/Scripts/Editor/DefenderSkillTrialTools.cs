@@ -8,7 +8,6 @@ namespace YesterdayConvoy.Editor
     public static class DefenderSkillTrialTools
     {
         const string Root="Assets/Data/Resources/DefenderTrials/";
-        [MenuItem("Yesterday Convoy/Defenders/Create Batch 1 Skill Trials")]
         public static void CreateBatch1()
         {
             Directory.CreateDirectory(Root);AssetDatabase.Refresh();

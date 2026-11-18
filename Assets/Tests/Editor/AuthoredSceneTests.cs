@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -9,19 +10,65 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class AuthoredSceneTests
     {
-        [Test]public void BothMapsExistAsSceneAssetsAndShopTerrainHasPersistentMaterialsAndMeshes()
+        [Test]public void TheSingleBuildSceneRetainsItsEditableTerrainAndPersistentReferences()
         {
-            var saved=Directory.GetFiles("Assets","*.unity",SearchOption.AllDirectories).Select(p=>p.Replace('\\','/')).ToArray();
-            var catalog=GameSceneCatalog.BuildPaths();CollectionAssert.AreEquivalent(saved,catalog,"Every authored map belongs to the game scene catalog.");
-            var guids=catalog.Select(AssetDatabase.AssetPathToGUID).ToArray();
-            Assert.That(guids.All(g=>!string.IsNullOrEmpty(g)),Is.True);Assert.That(guids.Distinct().Count(),Is.EqualTo(catalog.Length),"Copied scenes require independent GUIDs.");
-            foreach(string path in catalog)Assert.That(AssetDatabase.LoadAssetAtPath<SceneAsset>(path),Is.Not.Null,path);
-            EditorSceneManager.OpenScene(ShopMapTools.ScenePath);
-            var root=Object.FindAnyObjectByType<AuthoredBattlefield>();Assert.That(root,Is.Not.Null);
-            var renderers=root.GetComponentsInChildren<Renderer>();Assert.That(renderers.Length,Is.GreaterThan(500));
-            foreach(var renderer in renderers)foreach(var material in renderer.sharedMaterials){Assert.That(material,Is.Not.Null);Assert.That(AssetDatabase.Contains(material),Is.True,renderer.name);}
-            foreach(var filter in root.GetComponentsInChildren<MeshFilter>()){Assert.That(filter.sharedMesh,Is.Not.Null);Assert.That(AssetDatabase.Contains(filter.sharedMesh),Is.True,filter.name);}
-            SceneOrganizationTools.Validate();
+            var expected=new[]{FormationBattleTools.ScenePath};
+            var saved=Directory.GetFiles("Assets/Scenes","*.unity",SearchOption.AllDirectories)
+                .Select(path=>path.Replace('\\','/'));
+            CollectionAssert.AreEqual(expected,saved);
+            CollectionAssert.AreEqual(expected,GameSceneCatalog.BuildPaths());
+            CollectionAssert.AreEqual(expected,EditorBuildSettings.scenes.Select(scene=>scene.path));
+            Assert.That(EditorBuildSettings.scenes.Single().enabled,Is.True);
+
+            var scene=EditorSceneManager.OpenScene(FormationBattleTools.ScenePath);
+            var roots=scene.GetRootGameObjects();
+            var controller=roots.SelectMany(root=>root.GetComponentsInChildren<FormationBattleController>(true)).Single();
+            Assert.That(controller.battleCamera,Is.Not.Null);
+            Assert.That(controller.terrain,Is.Not.Null);
+            Assert.That(roots.SelectMany(root=>root.GetComponentsInChildren<ManualBattleController>(true)),Is.Empty);
+            var transforms=roots.SelectMany(root=>root.GetComponentsInChildren<Transform>(true)).ToArray();
+            Assert.That(transforms.Count(tile=>tile.name.StartsWith("Tile ",StringComparison.Ordinal)),
+                Is.EqualTo(FormationBattleModel.Width*FormationBattleModel.Height));
+            foreach(var transform in transforms)
+                Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject),Is.Zero,transform.name);
+            foreach(var filter in roots.SelectMany(root=>root.GetComponentsInChildren<MeshFilter>(true)))
+            {
+                Assert.That(filter.sharedMesh,Is.Not.Null,filter.name);
+                Assert.That(AssetDatabase.GetAssetPath(filter.sharedMesh),Is.Not.Empty,filter.name);
+            }
+            foreach(var renderer in roots.SelectMany(root=>root.GetComponentsInChildren<MeshRenderer>(true)))
+                foreach(var material in renderer.sharedMaterials)
+                {
+                    Assert.That(material,Is.Not.Null,renderer.name);
+                    Assert.That(AssetDatabase.Contains(material),Is.True,renderer.name);
+                }
+        }
+
+        [Test]public void EditedBoardTilePositionSurvivesSavingAndReopeningACopy()
+        {
+            string copy=AssetDatabase.GenerateUniqueAssetPath("Assets/Tests/FormationEditRoundtrip.unity");
+            Assert.That(AssetDatabase.CopyAsset(FormationBattleTools.ScenePath,copy),Is.True);
+            try
+            {
+                const string tileName="Tile 05,06";
+                var scene=EditorSceneManager.OpenScene(copy);
+                var tile=GameObject.Find(tileName);
+                Assert.That(tile,Is.Not.Null);
+                Vector3 position=tile.transform.position+Vector3.up*.15f;
+                tile.transform.position=position;
+                EditorSceneManager.MarkSceneDirty(scene);
+                Assert.That(EditorSceneManager.SaveScene(scene),Is.True);
+
+                EditorSceneManager.OpenScene(FormationBattleTools.ScenePath);
+                Assert.That(GameObject.Find(tileName).transform.position,Is.Not.EqualTo(position));
+                EditorSceneManager.OpenScene(copy);
+                Assert.That(GameObject.Find(tileName).transform.position,Is.EqualTo(position));
+            }
+            finally
+            {
+                EditorSceneManager.OpenScene(FormationBattleTools.ScenePath);
+                AssetDatabase.DeleteAsset(copy);
+            }
         }
     }
 }

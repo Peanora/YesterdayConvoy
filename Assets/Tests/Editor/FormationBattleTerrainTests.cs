@@ -175,6 +175,9 @@ namespace YesterdayConvoy.Tests
                 Assert.That(model.Defenders.All(d => d.Position.x >= FormationBattleModel.DeploymentColumns + 2 &&
                     d.Position.x < FormationBattleModel.Width - 1 && d.Position.y >= 0 &&
                     d.Position.y < FormationBattleModel.Height && model.Terrain.CanPlaceDefender(d.Position)), Is.True, node.Id);
+                foreach(var defender in model.Defenders)
+                    Assert.That(System.IO.File.Exists(ArtSourcePaths.Resolve("DefenderArt/"+defender.ArtId+"/manifest.json")),
+                        Is.True,node.Id+" · "+defender.Name+" · "+defender.ArtId);
                 if (node == FormationCampaignRules.Nodes.Last()) break;
                 if (!run.NodeSettled) run.SettleBattle(true, 1, 1, 0, false);
                 Assert.That(run.AdvanceNode(), Is.True);

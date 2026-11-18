@@ -216,7 +216,7 @@ namespace YesterdayConvoy
                 float hm=node.HealthScale,am=node.AttackScale;if(node.Kind=="遭遇"){hm*=tierHP;am*=tierATK;}
                 var d=new FormationDefender{Id=100+i,Kind=new[]{5,3,0,6,7,9,11}[k],ArtId=new[]{"D06","D04","D01","D07","D08","D10","D12"}[k],Name=p.Name,Healer=k==5,Position=cells[i],MaxHealth=p.Health*hm,Attack=p.Attack*am,Armor=p.Armor,MagicResistance=p.MagicResistance,Range=p.Range,Interval=p.Interval,SkillRequired=p.RequiredSP};
                 bool isBoss=boss!=null&&i==node.DefenderCount-1;
-                if(isBoss){d.Name=boss.Name;d.MaxHealth=boss.Health;d.Attack=boss.Attack;d.Armor=boss.Armor;d.MagicResistance=boss.MagicResistance;d.Range=boss.Range;d.Interval=boss.Interval;d.SkillRequired=boss.RequiredSP;d.Healer=false;d.ArtId=node.Plane==1?"D13":node.Plane==2?"D14":"D15";}
+                if(isBoss){d.Name=boss.Name;d.MaxHealth=boss.Health;d.Attack=boss.Attack;d.Armor=boss.Armor;d.MagicResistance=boss.MagicResistance;d.Range=boss.Range;d.Interval=boss.Interval;d.SkillRequired=boss.RequiredSP;d.Healer=false;d.ArtId=node.Plane==1?"D25":node.Plane==2?"D29":"D30";}
                 ResetActor(d,true,Vector2.left);var s=State(d);s.Template=k;s.Boss=isBoss;s.InitialGuard=true;s.LowestHealth=d.MaxHealth;s.BaseAttack=d.Attack;s.BaseArmor=d.Armor;s.BaseMR=d.MagicResistance;s.BaseInterval=d.Interval;s.BaseRange=d.Range;s.GuardInitialSP=isBoss?boss.InitialSP:p.InitialSP;s.GuardActionSeconds=isBoss?boss.ActionSeconds:p.ActionSeconds;d.SkillCharge=s.GuardInitialSP;
                 Defenders.Add(d);
             }

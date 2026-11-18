@@ -142,16 +142,30 @@ namespace YesterdayConvoy
             LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:point,direction:end-start);
             if(action.Skill&&skill==3)
             {
-                wisadelShellFaces??=formationCards.FirstOrDefault(c=>c!=null&&c.CardId==ViviCombat.CardId)?.ComicImpactFaces;
-                if(wisadelShellFaces==null||wisadelShellFaces.Count==0)return;
-                var face=wisadelShellFaces[action.ProjectileIndex%wisadelShellFaces.Count];
-                if(face==null)return;
-                if(legacyComicMaterial==null)
-                    legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
                 Vector3 arc=Vector3.up*(.4f*4*progress*(1-progress));
-                float height=1.15f/Mathf.Max(.01f,face.bounds.size.y);
-                LegacyDraw(face,legacyComicMaterial,point+arc,cell,height,42);
+                DrawWisadelShellFace(action,point+arc,cell,42);
             }
+        }
+        SpriteRenderer DrawWisadelShellFace(FormationPresentationAction shell,Vector3 point,Vector2 cell,int order)
+        {
+            wisadelShellFaces??=formationCards.FirstOrDefault(c=>c!=null&&c.CardId==ViviCombat.CardId)?.ComicImpactFaces;
+            if(wisadelShellFaces==null||wisadelShellFaces.Count==0)return null;
+            var face=wisadelShellFaces[shell.ProjectileIndex%wisadelShellFaces.Count];
+            if(face==null)return null;
+            if(legacyComicMaterial==null)
+                legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
+            float scale=1.15f/Mathf.Max(.01f,face.bounds.size.y);
+            return LegacyDraw(face,legacyComicMaterial,point,cell,scale,order);
+        }
+        void PresentWisadelShellImpactFace(FormationHit hit,FormationPresentationAction shell,Vector3 point)
+        {
+            if(hit.Secondary||shell==null||!shell.ProjectileOnly||shell.Cancelled||shell.Animation!="Skill_3_Loop")return;
+            float age=(float)(Model.Clock-hit.At);
+            if(age<0||age>=.55f)return;
+            var face=DrawWisadelShellFace(shell,point,hit.To,58);
+            if(face==null)return;
+            face.name="Formation Wisadel / S3 impact face";
+            face.color=new Color(1,1,1,1-Mathf.InverseLerp(.35f,.55f,age));
         }
         void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
         {
@@ -159,7 +173,8 @@ namespace YesterdayConvoy
             string hitKey=hit.Skill?(skill==1?"skill_01_hit":skill==3?"skill_03_hit_game#9":null):
                 "skill_02_hit";
             if(hitKey==null)return;
-            LegacyWisadel(hitKey,age,hit.To,36,point:FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.55f));
+            var contact=FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.55f);
+            LegacyWisadel(hitKey,age,hit.To,36,point:contact);
             // Source _effectsWhenStop is a ground explosion, while OnHit is the
             // separate target layer. v0.7 has no additional bomb/token damage.
             // AoE hits share one true projectile stop. Do not multiply its ground
@@ -172,6 +187,9 @@ namespace YesterdayConvoy
             string stop=hit.Skill?(skill==1?"skill_01_hit_02":"skill_03_hit_02_game#9"):
                 "skill_02_hit_02";
             LegacyWisadel(stop,age,center,30);
+            // The first applied hit is the primary victim of this shell. The
+            // same expression stays here through the opening of the explosion.
+            if(hit.Skill&&skill==3)PresentWisadelShellImpactFace(hit,projectile,contact);
         }
         static int WisadelSkillForAction(FormationPresentationAction action)
         {

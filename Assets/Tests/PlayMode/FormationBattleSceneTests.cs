@@ -166,7 +166,7 @@ namespace YesterdayConvoy.Tests
         [UnityTest] public IEnumerator PreparationPointerSwapsOccupiedCellsRejectsEnemyHalfAndLocksAtStart()
         {
             yield return Ready();var m=controller.Model;
-            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M07");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M08");
+            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M21");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M11");
             int firstInstance=first.Instance,secondInstance=second.Instance;
             Vector2 a=first.Spawn,b=second.Spawn;int enabled=m.Units.Count(u=>u.Enabled);
             Vector2 head=FormationBattleController.CellScreen(first.Spawn)+new Vector2(0,-35);

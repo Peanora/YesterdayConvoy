@@ -62,8 +62,8 @@ namespace YesterdayConvoy.Tests
         public void ImportRejectsOverlappingAreasWithDifferentAnchorsWithoutReplacingExistingBodies()
         {
             var model = Roster(Entry(1, "M28", 0, 0)); var original = model.Units.Single();
-            Assert.That(model.ApplyRoster(new[] { Entry(2, "M28", 2, 2), Entry(3, "M07", 3, 3) }, 10), Is.False);
-            var invalid = Entry(4, "M07", 1, 1); invalid.Spawn = new Vector2(float.NaN, 1);
+            Assert.That(model.ApplyRoster(new[] { Entry(2, "M28", 2, 2), Entry(3, "M21", 3, 3) }, 10), Is.False);
+            var invalid = Entry(4, "M21", 1, 1); invalid.Spawn = new Vector2(float.NaN, 1);
             Assert.That(model.ApplyRoster(new[] { invalid }, 10), Is.False);
             Assert.That(model.Units.Single(), Is.SameAs(original));
             Assert.That(original.Spawn, Is.EqualTo(Vector2.zero));
@@ -96,7 +96,7 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void UnequalFootprintsSwapBothWaysAsOneValidatedMove()
         {
-            var model = Roster(Entry(1, "M28", 0, 0), Entry(2, "M07", 4, 4));
+            var model = Roster(Entry(1, "M28", 0, 0), Entry(2, "M21", 4, 4));
             var large = model.Units[0]; var small = model.Units[1];
             var preview = model.PreviewPlace(large.Slot, 4, 4);
             Assert.That(preview.Valid, Is.True); Assert.That(preview.SwapInstance, Is.EqualTo(small.Instance));
@@ -115,7 +115,7 @@ namespace YesterdayConvoy.Tests
         public void SwapRejectsEitherSideCrossingTheBoundaryAndKeepsBothOriginalPositions(bool moveLarge)
         {
             int edge = FormationBattleModel.Height - 1;
-            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M07", 5, edge));
+            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M21", 5, edge));
             string before = Board(model);
             Assert.That(model.TryPlace(moveLarge ? 0 : 1, moveLarge ? 5 : 2, moveLarge ? edge : 2), Is.False);
             Assert.That(Board(model), Is.EqualTo(before));
@@ -125,7 +125,7 @@ namespace YesterdayConvoy.Tests
         [TestCase(false)]
         public void SwapRejectsAThirdCharacterUnderEitherResultingArea(bool moveLarge)
         {
-            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M07", 0, 0), Entry(3, "M08", 1, 0));
+            var model = Roster(Entry(1, "M28", 2, 2), Entry(2, "M21", 0, 0), Entry(3, "M11", 1, 0));
             string before = Board(model);
             Assert.That(model.TryPlace(moveLarge ? 0 : 1, moveLarge ? 0 : 2, moveLarge ? 0 : 2), Is.False);
             Assert.That(Board(model), Is.EqualTo(before));
@@ -151,7 +151,7 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void InvalidReserveDropDoesNotJoinLineupOrChangeAnyShopTransaction()
         {
-            var session = Session(3, "CARD_M07", "CARD_M28"); var model = Bind(session);
+            var session = Session(3, "CARD_M21", "CARD_M28"); var model = Bind(session);
             int instance = Instance(session, "CARD_M28"); string before = Snapshot(session, model);
             var preview = session.PreviewDeploy(instance, new Vector2Int(5, 7));
             Assert.That(preview.Valid, Is.False); Assert.That(preview.Cells, Is.EqualTo(new RectInt(5, 7, 2, 2)));
@@ -168,8 +168,8 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void CommitRechecksTheCurrentBoardWhenAFormerlyValidPreviewBecomesBlocked()
         {
-            var session = Session(3, "CARD_M07", "CARD_M28"); var model = Bind(session);
-            int small = Instance(session, "CARD_M07"), large = Instance(session, "CARD_M28");
+            var session = Session(3, "CARD_M21", "CARD_M28"); var model = Bind(session);
+            int small = Instance(session, "CARD_M21"), large = Instance(session, "CARD_M28");
             Assert.That(session.TryDeploy(small, new Vector2Int(5, FormationBattleModel.Height - 1)).Success, Is.True);
             Assert.That(session.TryDeploy(large, Vector2Int.zero).Success, Is.True);
             Assert.That(session.PreviewDeploy(small, new Vector2Int(2, 4)).Valid, Is.True);
@@ -183,7 +183,7 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void ExpandedPreparationAreaFitsAnotherLargeBodyPastTheFormerCrowdedHalf()
         {
-            var session = Session(7, "CARD_M07", "CARD_M08", "CARD_M10", "CARD_M20", "CARD_M28", "CARD_M34", "CARD_M36");
+            var session = Session(7, "CARD_M21", "CARD_M11", "CARD_M18", "CARD_M20", "CARD_M28", "CARD_M34", "CARD_M36");
             var model = Bind(session);
             Assert.That(session.Move(Instance(session, "CARD_M20"), true, 3).Success, Is.True);
             Assert.That(session.Move(Instance(session, "CARD_M28"), true, 4).Success, Is.True);
@@ -191,7 +191,7 @@ namespace YesterdayConvoy.Tests
             var anchors = new Dictionary<string, Vector2>
             {
                 { "M20", new Vector2(1, 1) }, { "M28", new Vector2(3, 5) }, { "M34", new Vector2(3, 2) },
-                { "M07", new Vector2(4, 1) }, { "M08", new Vector2(1, 4) }, { "M10", new Vector2(1, 6) }
+                { "M21", new Vector2(4, 1) }, { "M11", new Vector2(1, 4) }, { "M18", new Vector2(1, 6) }
             };
             Assert.That(model.ApplyRoster(model.Units.Select(unit => new FormationRosterEntry
             { Instance = unit.Instance, ArtId = unit.ArtId, Star = unit.Star, Spawn = anchors[unit.ArtId] }).ToArray(), 7), Is.True);
@@ -208,7 +208,7 @@ namespace YesterdayConvoy.Tests
         [Test]
         public void LargeFootprintAnchorAndCentrePersistAcrossTheNextRoundAndRebinding()
         {
-            var session = Session(3, "CARD_M07", "CARD_M28"); var model = Bind(session);
+            var session = Session(3, "CARD_M21", "CARD_M28"); var model = Bind(session);
             int instance = Instance(session, "CARD_M28");
             Assert.That(session.TryDeploy(instance, new Vector2Int(0, 4)).Success, Is.True);
             Assert.That(model.StartBattle(), Is.True);

@@ -10,7 +10,6 @@ namespace YesterdayConvoy.Editor
         public const string DefinitionPath = "Assets/Data/Battles/WisadelVsKroos.asset";
         public const string KroosPath = "Assets/Art/Characters/Defenders/kroos-comic.png";
 
-        [MenuItem("Yesterday Convoy/Initial Demo/Enable Wisadel vs Kroos")]
         public static void Initialize()
         {
             ManualDeploymentTools.Initialize();
@@ -37,7 +36,6 @@ namespace YesterdayConvoy.Editor
             Validate(definition);
         }
 
-        [MenuItem("Yesterday Convoy/Initial Demo/Apply Kroos Comic Art")]
         public static void ApplyKroosComic()
         {
             AssetDatabase.Refresh();

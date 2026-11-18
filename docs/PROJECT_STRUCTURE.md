@@ -1,5 +1,9 @@
 # 工程目录与场景规范
 
+当前正式版本的唯一地图和构建入口是 `Assets/Scenes/FormationBattle.unity`。三个位面共用这张实体棋盘。旧场景从当前工程和菜单退役，其旧模型由 Git 历史留存。现役角色与守军模型位于 `Assets/Art/Characters`，动态加载清单位于 `Assets/Data/ArtCatalogs`，实际被棋盘复用的门、地面材质与角色特效继续保留。使用 Unity 的 `Yesterday Convoy → Baseline → Validate` 或 `Build Windows` 校验和构建。
+
+下方按时间保留原目录迁移和旧场景实现的历史记录。
+
 2026-11-17工业庭院接入：`FormationBattle.unity`保留112格原坐标，新增保存的外围厂房／卷闸门／设备／货架及中线8红门、最右8蓝门。材质在`Assets/Art/Environment/FormationBattle/Industrial`；显式`FormationIndustrialTools.Apply`仅替换本Demo外围装饰和材质，不在Play执行，日常编辑直接保存场景。见[工业地图来源与边界](art/FORMATION_INDUSTRIAL_MAP.md)。
 
 2026-11-17 固定战场布阵 Demo：新增 `Assets/Scenes/FormationBattle.unity`，14×8 的112格地形、左右分区和右端蓝门均保存于场景；材质在 `Assets/Art/Environment/FormationBattle`。正常 EXE 右上菜单进入“矩形攻坚 · 新玩法 Demo”。`FormationBattleTools.Author` 仅创建缺失场景，不覆盖人工地图；运行时只生成角色和反馈。后续常规战斗规则以 [固定战场布阵](FORMATION_BATTLE.md) 和 GDD 顶部为准，旧行动与专项保留其现状。

@@ -126,8 +126,7 @@ namespace YesterdayConvoy
             var r=CampaignWindow(Campaign.Won?"三个位面突破 · 挑战完成":"挑战结束",Campaign.Won?"你的军阵已突破最终防线。":Campaign.SquadHP<=0?"队伍生命已耗尽，本局构筑到此结束。":"未能突破最终防线，本局挑战结束。",false);
             CampaignLabel(new Rect(r.x+25,r.y+120,r.width-50,90),$"抵达 {Campaign.CurrentNode.Id}  ·  等级 {Shop.Level}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n战略预案：{FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"未选择"}",18,true);
             CampaignLabel(new Rect(r.x+25,r.y+220,r.width-50,110),"本局战略战备：\n"+string.Join("、",Campaign.AugmentIds.Select(id=>FormationCampaignRules.FindRecord(id)?.Name??id)),15);
-            if(Button(new Rect(r.x+25,r.yMax-80,275,45),"重新开始完整挑战",true,true))ResetDemo();
-            if(Button(new Rect(r.x+325,r.yMax-80,275,45),"查看旧玩法"))CampaignBootstrap.OpenLegacyEntrance();
+            if(Button(new Rect(r.center.x-137.5f,r.yMax-80,275,45),"重新开始完整挑战",true,true))ResetDemo();
         }
         void DrawCampaignResult()
         {

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -173,29 +171,13 @@ namespace YesterdayConvoy.Tests
             finally{UnityEngine.Object.DestroyImmediate(go);}
         }
 
-        [Test] public void SecondPhasePreparationAddsOnlyTheNineteenUsedClipsWithoutDecodingTextures()
+        [Test] public void BoardExportsOnlyBoundTalulahPhasePagesWithoutDecodingTextures()
         {
-            var data=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/Data/Battles/TalulahTrial.asset");
-            var plan=typeof(ManualBattleController).GetMethod("Plan",BindingFlags.Static|BindingFlags.NonPublic);
-            string[] Keys(bool second)
-            {
-                var result=(IEnumerable)plan.Invoke(null,new object[]{Array.Empty<DefenderPlacement>(),new[]{data.Card},false,second});
-                return result.Cast<object>().Select(clip=>(string)clip.GetType().GetProperty("CacheKey").GetValue(clip)).ToArray();
-            }
             int before=ArtMemoryCache.TextureLoads;
-            var baseline=Keys(false);var phase=Keys(true);
-            Assert.That(baseline.Count(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.EqualTo(5));
-            Assert.That(phase.Except(baseline).Count(),Is.EqualTo(19),"Shared combat effects must not inflate the second-phase increment.");
-            Assert.That(phase,Does.Contain("TalulahOriginal/ExtraClips/extra_move_b"));
-            Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
-            Assert.That(phase.Any(key=>key.Contains("original-target-burn")||key.Contains("orb-")),Is.False);
-            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
             var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
                 .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
-            // The legacy battle still plans exactly its original 19 extra clips above.
-            // The shared EXE payload additionally needs the new formation mode's three
-            // newly bound formation layers; it must not export the rest of the source library.
+            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before));
             string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
                 "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
                 "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",

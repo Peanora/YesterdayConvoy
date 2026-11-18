@@ -29,9 +29,9 @@ namespace YesterdayConvoy.Tests
                 // Explicit legal-stock presentation fixture: two one-star copies and the
                 // third in the real shop. It does not establish natural acquisition odds.
                 var session = FormationShopSession.StartNew(20261117);
-                session.Shop.Preset(new[] { new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 },
-                    new ShopTrialModel.Piece { Id = "CARD_M07", Star = 1 } },
-                    new[] { "CARD_M07" }, level: 4, xp: 0, gold: 12);
+                session.Shop.Preset(new[] { new ShopTrialModel.Piece { Id = "CARD_M21", Star = 1 },
+                    new ShopTrialModel.Piece { Id = "CARD_M21", Star = 1 } },
+                    new[] { "CARD_M21" }, level: 4, xp: 0, gold: 12);
                 yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
                 double deadline = Time.realtimeSinceStartupAsDouble + 600;
                 while (Time.realtimeSinceStartupAsDouble < deadline)

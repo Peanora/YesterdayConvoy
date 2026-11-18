@@ -309,7 +309,7 @@ namespace YesterdayConvoy
             float scoutingCellWidth=Vector2.Distance(FormationBattleController.CellScreen(sampleCell),FormationBattleController.CellScreen(sampleCell+Vector2.right));
             yield return Capture("player-defender-scouting");yield return View(false);
 
-            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M07");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M08");
+            var first=m.Units.Single(u=>u.Enabled&&u.ArtId=="M21");var second=m.Units.Single(u=>u.Enabled&&u.ArtId=="M11");
             int firstInstance=first.Instance,secondInstance=second.Instance;
             Vector2 firstSpawn=first.Spawn,secondSpawn=second.Spawn;
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(firstSpawn));
@@ -390,7 +390,7 @@ namespace YesterdayConvoy
             yield return Capture("player-timeout-configured");
 
             controller.ResetDemo();m=controller.Model;yield return Market(false);yield return View(false);yield return RosterReady();
-            int soldierInstance=m.Units.Single(u=>u.ArtId=="M07").Instance;
+            int soldierInstance=m.Units.Single(u=>u.ArtId=="M21").Instance;
             foreach(var unit in m.Units.Where(u=>u.Instance!=soldierInstance).ToArray())
                 CheckThat("legal-bench-move-"+unit.ArtId,controller.MovePiece(unit.Instance,false,controller.Session.Seats.FirstEmpty(false,10)).Success);
             yield return RosterReady();controller.StartBattle();var soldier=m.Units.Single(u=>u.Instance==soldierInstance);steps=0;

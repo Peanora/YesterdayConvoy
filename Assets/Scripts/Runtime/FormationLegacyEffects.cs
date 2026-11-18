@@ -670,6 +670,8 @@ namespace YesterdayConvoy
         }
         internal void DisposeFormationLegacyEffects()
         {
+            if(talulahSweepMaterial!=null)Destroy(talulahSweepMaterial);
+            talulahSweepMaterial=null;
             if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
             if(formationFlameCoreMaterial!=null)Destroy(formationFlameCoreMaterial);
             if(formationFlameSprayFrames!=null)
