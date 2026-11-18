@@ -165,14 +165,14 @@ namespace YesterdayConvoy
         }
         void SelfLoss(FormationFighter f,float amount)
         {if(f.Health<=1)return;float loss=Mathf.Min(amount,f.Health-1);f.Health-=loss;RecordTaken(f,loss*.5f,2,0);}
-        void CombatHeal(FormationActor source,FormationFighter target,float raw,bool skill,bool native)
+        void CombatHeal(FormationActor source,FormationFighter target,float raw,bool skill,bool native,bool showFeedback=true)
         {
             if(target==null||!target.Alive||raw<=0)return;int renewal=Tagged(target,"复苏")?Level("复苏"):0;
             float receive=(renewal>=6?.4f:renewal>=4?.25f:renewal>=2?.15f:0)+Buff(target,"heal_received")-Buff(target,"heal_down");
             float amount=raw*(1+receive)*(native&&skill&&source is FormationFighter resonanceHealer&&Campaign.HasAugment("CG1")&&IsResonanceMember(resonanceHealer)?1.1f:1),actual=Mathf.Min(amount,target.MaxHealth-target.Health),over=Mathf.Max(0,amount-actual);
             target.Health+=actual;source.HealingDone+=actual;
             if(native&&skill){var owner=State(source);owner.SkillHealing[target.Id]=(owner.SkillHealing.TryGetValue(target.Id,out var prev)?prev:0)+amount;}
-            if(actual>0)Hits.Add(new FormationHit{At=Clock,From=source.Position,To=target.Position,FromId=source.Id,ToId=target.Id,Amount=actual,
+            if(actual>0&&showFeedback)Hits.Add(new FormationHit{At=Clock,From=source.Position,To=target.Position,FromId=source.Id,ToId=target.Id,Amount=actual,
                 Heal=true,Skill=skill,SourceArtId=source.ArtId,Action=HitPresentation(source)});
             if(renewal>=2&&over>0)
             {

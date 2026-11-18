@@ -54,6 +54,31 @@ namespace YesterdayConvoy.Tests
             if(u.SkillRequired>0)Assert.That(u.LastSkillAt,Is.GreaterThanOrEqualTo(0),id);
             else Assert.That(FormationCampaignRules.Find(id).Recovery,Is.EqualTo("被动"));
         }
+
+        [Test]
+        public void HostSoldierRegeneratesSilentlyAndReportsTheActiveHealOnce()
+        {
+            var model=Fixture(out _,"M21");
+            Target(model);
+            Assert.That(model.StartBattle(),Is.True);
+            var soldier=model.Units.Single();
+            soldier.Health=soldier.MaxHealth*.5f;
+            float initialHealth=soldier.Health;
+            Advance(model,1);
+            float expectedRegeneration=soldier.MaxHealth*.02f;
+            Assert.That(soldier.Health-initialHealth,Is.EqualTo(expectedRegeneration).Within(.01f));
+            Assert.That(soldier.HealingDone,Is.EqualTo(expectedRegeneration).Within(.01f));
+            Assert.That(model.Hits.Any(hit=>hit.Heal&&hit.FromId==soldier.Id),Is.False);
+
+            Enter(model);
+            soldier.Health=initialHealth;
+            soldier.SkillCharge=soldier.SkillRequired;
+            Advance(model,1.5f);
+            var activeHeal=model.Hits.Single(hit=>hit.Heal&&hit.FromId==soldier.Id);
+            Assert.That(activeHeal.Skill,Is.True);
+            var skillHit=model.Hits.Single(hit=>hit.Skill&&!hit.Heal&&hit.FromId==soldier.Id);
+            Assert.That(activeHeal.Amount,Is.EqualTo(skillHit.Amount*.25f).Within(.01f));
+        }
         [Test]
         public void RipperSkillDealsFourIndependentNativeSegmentsAndNeverRecursesOnDerivedDamage()
         {

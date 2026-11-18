@@ -245,7 +245,7 @@ namespace YesterdayConvoy
                         if(a==Carry&&HasLive("B11"))rate+=1;if(Key(a)=="B21"&&s.BusyUntil<=Clock)rate=4;
                         a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+Mathf.Min(5,rate)*dt);
                     }
-                    if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*.02f*dt,false,false);
+                    if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*.02f*dt,false,false,showFeedback:false);
                     if(Key(a)=="M34"&&(Clock>=5||a.LastHitAt>=0||a.Health<a.MaxHealth)) { if(Stack(a,"awake")==0)AddStack(a,"awake",1,1);SelfLoss((FormationFighter)a,a.MaxHealth*.02f*dt); }
                 }
                 else if(a is FormationDefender)a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+dt);
