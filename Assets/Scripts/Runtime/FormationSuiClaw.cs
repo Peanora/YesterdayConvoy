@@ -8,7 +8,7 @@ namespace YesterdayConvoy
     internal sealed class FormationSuiClawStrike
     {
         internal FormationPresentationAction Cast;
-        internal int Wave, LifeVersion;
+        internal int Wave, LifeVersion, AnchorId;
         internal Vector2 Center;
         internal double WarningAt, ImpactAt;
         internal bool Resolved, Landed, Flip;
@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         readonly List<FormationSuiClawStrike> suiClawStrikes = new List<FormationSuiClawStrike>();
 
         FormationSuiClawStrike PrepareSuiClawStrike(FormationFighter owner, FormationPresentationAction cast,
-            int wave, Vector2 center, double impactAt)
+            int wave, FormationDefender anchor, double impactAt)
         {
             // Casts are cleared by the existing round reset. Physical damage still
             // goes through the original skill transaction and its ordered queue.
@@ -31,7 +31,8 @@ namespace YesterdayConvoy
             var cue = new FormationSuiClawStrike
             {
                 Cast=cast, Wave=wave, LifeVersion=State(owner).LifeVersion,
-                Center=center, WarningAt=Clock, ImpactAt=impactAt, Flip=owner.Facing.x<0
+                AnchorId=anchor?.Id??-1, Center=anchor?.Position??owner.Position,
+                WarningAt=Clock, ImpactAt=impactAt, Flip=owner.Facing.x<0
             };
             suiClawStrikes.Add(cue);
             return cue;
@@ -58,16 +59,21 @@ namespace YesterdayConvoy
                     .OrderBy(defender => (defender.Position-openingCenter).sqrMagnitude)
                     .ThenBy(defender => defender.Id).FirstOrDefault();
                 if(anchor!=null)
-                    cue=PrepareSuiClawStrike(owner,cast,wave,anchor.Position,impactAt);
+                    cue=PrepareSuiClawStrike(owner,cast,wave,anchor,impactAt);
             });
             ScheduleOwned(owner, impactAt, () =>
             {
                 var victims = Defenders.Where(defender => defender.Alive).ToArray();
                 if(victims.Length>0)
                 {
+                    // Keep the warned guard when it actually takes the hit. If
+                    // it died during descent, use the nearest actual victim.
+                    var center=cue?.Center??openingCenter;
+                    var anchor=victims.FirstOrDefault(defender=>defender.Id==cue?.AnchorId)??
+                        victims.OrderBy(defender=>(defender.Position-center).sqrMagnitude).ThenBy(defender=>defender.Id).First();
                     if(cue==null)
-                        cue=PrepareSuiClawStrike(owner,cast,wave,victims[0].Position,impactAt);
-                    SettleSuiClawStrike(cue,cue.Center,true);
+                        cue=PrepareSuiClawStrike(owner,cast,wave,anchor,impactAt);
+                    SettleSuiClawStrike(cue,anchor.Position,true);
                 }
                 else if(cue!=null)
                     SettleSuiClawStrike(cue,cue.Center,false);

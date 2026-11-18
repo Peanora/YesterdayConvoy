@@ -196,8 +196,7 @@ namespace YesterdayConvoy.Tests
                 yield return Fixture(new[]{"WIS"},wisadelSkill:skill);
                 Begin();
                 string mark="wisdel_skill_0"+skill;
-                bool owner=false,impact=false,linked=false,headAtTarget=skill!=3;
-                Sprite flyingFace=null;
+                bool owner=false,impact=false,linked=false,headAtTarget=skill!=3,redTrail=false;
                 FormationPresentationAction shell=null;
                 yield return Until(()=>
                 {
@@ -206,14 +205,14 @@ namespace YesterdayConvoy.Tests
                     impact|=layers.Any(r=>r.sprite.name.Contains("hit")&&HasPaint(r.sprite));
                     if(skill==3&&!headAtTarget)
                     {
-                        if(flyingFace==null)
+                        shell??=controller.Model.PresentationActions.FirstOrDefault(a=>a.ProjectileOnly);
+                        if(shell!=null&&controller.Model.Clock>=shell.LaunchedAt&&controller.Model.Clock<shell.ContactAt)
                         {
-                            shell=controller.Model.PresentationActions.FirstOrDefault(a=>a.ProjectileOnly&&
-                                controller.Model.Clock>=a.LaunchedAt&&controller.Model.Clock<a.ContactAt);
-                            if(shell!=null)flyingFace=LegacyLayers().FirstOrDefault(r=>
-                                r.sprite.name.StartsWith("face-",StringComparison.Ordinal)&&HasPaint(r.sprite))?.sprite;
+                            redTrail|=layers.Any(r=>r.sprite.name.Contains("trail_game#9")&&HasPaint(r.sprite));
+                            Assert.That(LegacyLayers().Any(r=>r.sprite.name.StartsWith("face-",StringComparison.Ordinal)),Is.False,
+                                "The expression first appears at impact; only the projectile trail travels from the muzzle.");
                         }
-                        else
+                        if(shell!=null&&controller.Model.Clock>=shell.ContactAt)
                         {
                             var face=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&
                                 r.name=="Formation Wisadel / S3 impact face").ToArray();
@@ -223,8 +222,11 @@ namespace YesterdayConvoy.Tests
                                 var target=controller.Model.Defenders.First(d=>d.Id==hit.ToId);
                                 Vector3 point=(Vector3)Invoke(controller,"FormationFeedbackContactPoint",target,hit.To,.55f);
                                 Assert.That(face.Length,Is.EqualTo(1),"One shell shows one target face, even when it hits several defenders.");
-                                Assert.That(face[0].sprite,Is.SameAs(flyingFace));
+                                Assert.That(face[0].sprite.name,Does.StartWith("face-"));
+                                Assert.That(face[0].sprite.bounds.size.y*face[0].transform.localScale.y,Is.GreaterThanOrEqualTo(1.6f));
+                                Assert.That(controller.Model.Clock-hit.At,Is.InRange(.079,.451));
                                 Assert.That(Vector3.Distance(face[0].transform.position,point),Is.LessThan(.01f));
+                                Assert.That(redTrail,Is.True,"The current shell visibly travels before its actual damage and cut-in.");
                                 headAtTarget=true;
                             }
                         }
@@ -479,6 +481,55 @@ namespace YesterdayConvoy.Tests
             var bounds = FormationArtAssertions.VisibleLocalBounds(frame);
             Assert.That(bounds.size.y, Is.GreaterThan(2), "The source idle body is about2.387 high;3.030 is the full motion envelope.");
             Assert.That(source.Height, Is.GreaterThan(3));
+        }
+
+        [UnityTest] public IEnumerator AllFireSecondaryBurnShowsTheExistingFireAtItsAppliedContact()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B08" });
+            Begin();
+            var actor = controller.Model.Units.Single();
+            yield return Until(() =>
+            {
+                var model = controller.Model;
+                var burn = model.Hits.LastOrDefault(hit => hit.FromId == actor.Id && hit.Skill && hit.Secondary && !hit.Heal);
+                if (burn == null || model.Clock - burn.At >= .35) return false;
+                var point = controller.ActorWorldPoint(burn.To);
+                return controller.GetComponentsInChildren<SpriteRenderer>().Any(renderer => renderer.enabled &&
+                    renderer.name == "Boss FX / boss/B08/enemy_fthlgj_phase_1_skill_1_hit" &&
+                    Vector3.Distance(renderer.transform.position, point) < .25f && HasPaint(renderer.sprite));
+            }, 45);
+        }
+
+        [UnityTest] public IEnumerator PocketKingdomShowsEachActualCellAndClearsOnExpiry()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B15" });
+            Begin();
+            IReadOnlyList<Vector2Int> cells=null;
+            SpriteRenderer[] Tiles()=>LegacyLayers().Where(renderer=>renderer.sprite.name.Contains("enemy_hlystp_skill01_range")).ToArray();
+            yield return Until(()=>
+            {
+                var active=((IEnumerable)Invoke(controller.Model,"LegacyZones")).Cast<object>();
+                var zone=active.FirstOrDefault(value=>Field<string>(value,"Kind")=="kingdom");
+                if(zone==null)return false;
+                cells=Field<IReadOnlyList<Vector2Int>>(zone,"Cells");
+                return Tiles().Any(tile=>HasPaint(tile.sprite));
+            },45);
+            Assert.That(cells.Count,Is.EqualTo(7));
+            var tiles=Tiles();
+            Assert.That(tiles.Length,Is.EqualTo(cells.Count));
+            foreach(var cell in cells)
+            {
+                var point=controller.ActorWorldPoint((Vector2)cell);
+                Assert.That(tiles.Count(tile=>Vector3.Distance(tile.transform.position,point)<.04f),Is.EqualTo(1));
+            }
+            var frames=tiles.Select(tile=>tile.sprite).ToArray();
+            controller.Model.Paused=true;
+            Step(1);
+            CollectionAssert.AreEqual(frames,Tiles().Select(tile=>tile.sprite));
+            controller.Model.Paused=false;
+            yield return Until(()=>Tiles().Length==0,11);
         }
 
         [UnityTest] public IEnumerator TalulahRealActionsShowRestoredLayersPauseAndClearThroughProductionReset()

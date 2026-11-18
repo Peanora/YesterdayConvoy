@@ -15,7 +15,8 @@ namespace YesterdayConvoy
         static readonly Dictionary<string,CardDefinition> cards = new Dictionary<string,CardDefinition>(StringComparer.Ordinal);
         static readonly string[] warmKeys = {"idle","walk","attack_start","attack","attack_end","cast","skill","death",
             "extra_die_2","extra_idle_2","extra_move_2","extra_revive",
-            "extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end"};
+            "extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end",
+            "extra_skill_begin","extra_skill_loop","extra_skill_end","extra_skill_idle","extra_skill_move"};
         const float SerializedFrameRate = 20f; // Existing Wisadel comic player uses twenty frames per second.
 
         readonly ArtCatalog catalog;
@@ -90,6 +91,8 @@ namespace YesterdayConvoy
                 var source=ArtCatalog.Read(definition.ArtRoot);
                 if(definition.CardId=="CARD_M30")source.Extras(new[]{"extra_die_2","extra_idle_2","extra_move_2","extra_revive"});
                 if(definition.CardId=="CARD_M31")source.Extras(new[]{"extra_skill_front_start","extra_skill_front_loop","extra_skill_front_end"});
+                if(definition.CardId=="CARD_M34")source.Extras(new[]{"extra_skill_begin","extra_skill_idle","extra_skill_move"});
+                if(definition.CardId=="CARD_M36"||definition.CardId=="CARD_M38")source.Extras(new[]{"extra_skill_begin","extra_skill_loop","extra_skill_end"});
                 art=new FormationUnitArt(source);
             }
             cache.Add(definition.CardId,art);

@@ -47,12 +47,14 @@ namespace YesterdayConvoy
         double legacyLastClock=-1;
         int legacyFxUsed,legacyComicUsed,legacyComicFaceSequence;
         const float LegacyVisualRate=2;
+        const string KingdomRangeArt="boss/B15/enemy_hlystp_skill01_range";
 
         // Only source sequences used by the actual owned role enter the bounded
         // streaming preload. Existing Resources packages remain Resources-owned.
         internal IEnumerable<ArtSequence> FormationLegacySequences(string artId)
         {
             foreach(var sequence in FormationSynergyEffectSequences())yield return sequence;
+            if(artId=="B15")yield return BossRosterFxArt.Get(KingdomRangeArt).Sequence;
             if(artId=="WISADEL_APRIL")
                 foreach(var sequence in WisadelAprilFxArt.Sequences(Campaign?.WisadelSkill??3))yield return sequence;
             string card=FormationUnitCatalog.Find(artId)?.CardId??("CARD_"+artId);
@@ -361,6 +363,17 @@ namespace YesterdayConvoy
                 case "M34":if(action.Skill)key="enemy_dslntc_skill_begin_buff";break;
             }
             if(key!=null)LegacyOriginal(key,age,action.From,12,flat:true,scale:scale);
+            if(id=="M36"&&action.Skill&&!action.Cancelled&&actor.Alive&&
+                Math.Abs(actor.LastSkillAt-action.At)<.0001&&Math.Abs(actor.LastActionAt-action.At)<.0001&&Model.Clock<actor.ActionUntil)
+            {
+                // The original two caster layers and target layer already exist.
+                // Read the current skill window; do not restore the retired bubble
+                // ability's five-second invulnerability or damage scheduling.
+                LegacyOriginal("enemy_dsmant_skill_01_buff",age,actor.Position,26,true,true,scale);
+                LegacyOriginal("enemy_dsmant_skill_01_buff_02",age,actor.Position,27,true,true,scale);
+                if(Model.Clock>=action.ContactAt)
+                    LegacyOriginal("enemy_dsmant_skill_01_buff_03",(Model.Clock-action.ContactAt)*action.Rate,action.To,28,true,true,scale);
+            }
             if(action.Skill&&id=="M31")PresentFormationFlameSpray(action,actor);
             var firstApplied=action.Skill&&id=="M38"?Model.Hits.Where(h=>h.FromId==actor.Id&&h.Skill&&h.At>=action.At).OrderBy(h=>h.At).FirstOrDefault():null;
             if(action.Skill&&id=="M38"&&firstApplied!=null&&Model.Clock<firstApplied.At+3)
@@ -539,7 +552,18 @@ namespace YesterdayConvoy
                 LegacyPremult(MandragoraVfxArt.Load("reborn_end_02").At(phaseAge-4.5),actor.Position,.95f*scale,13);
             }
             if(id=="M30"&&returning)
-            {LegacyOriginal("enemy_duskls_revive_2",phaseAge,actor.Position,22,flat:true,scale:scale);LegacyOriginal("enemy_duskls_idle_2",phaseAge,actor.Position,20,true,true,scale);LegacyOriginal("enemy_duskls_revive_3",phaseAge,actor.Position,23,flat:true,scale:scale);LegacyOriginal("enemy_duskls_revive_4",phaseAge,actor.Position,24,flat:true,scale:scale);}
+            {
+                double reformAge=FormationUnitArt.For(id).Duration("extra_revive")-(actor.NativePhaseReturningUntil-now)*LegacyVisualRate;
+                LegacyOriginal("enemy_duskls_revive_2",phaseAge,actor.Position,22,flat:true,scale:scale);
+                if(reformAge<0)LegacyOriginal("enemy_duskls_idle_2",phaseAge,actor.Position,20,true,true,scale);
+                else
+                {
+                    LegacyOriginal("enemy_duskls_revive_3",reformAge,actor.Position,23,flat:true,scale:scale);
+                    LegacyOriginal("enemy_duskls_revive_4",reformAge,actor.Position,24,flat:true,scale:scale);
+                }
+            }
+            if(id=="M30"&&actor.Alive&&!returning&&Model.PresentationStack(actor,"fireautos")>0)
+                LegacyOriginal("enemy_duskls_weapon_buff",(now-actor.LastSkillAt)*LegacyVisualRate,actor.Position,18,true,true,scale);
             if(id=="M31"&&!actor.Alive&&!returning)LegacyOriginal("enemy_duspfr_2_die_01",(now-actor.LastDeathAt)*LegacyVisualRate,actor.Position,30,flat:true,scale:scale);
             if(id=="M33")
             {
@@ -616,6 +640,7 @@ namespace YesterdayConvoy
                         }
                     }
                 }
+                else if(source.ArtId=="B15"&&zone.Kind=="kingdom")PresentFormationKingdomTiles(zone.Cells,age);
                 else if(source.ArtId=="M14"&&zone.Kind=="snow")LegacyOriginal("firstar_skill_01_range",age,zone.Center,24,flat:true,scale:LegacyScale(source));
             }
             PresentFormationSynergyEffects();
@@ -629,6 +654,18 @@ namespace YesterdayConvoy
                 var page=legacyPatriotPages[key];foreach(var view in legacyFxViews)if(view.Renderer.sprite==page.Sprite)view.Renderer.sprite=null;
                 Destroy(page.Sprite);Resources.UnloadAsset(page.Texture);legacyPatriotPages.Remove(key);
             }
+        }
+
+        void PresentFormationKingdomTiles(IReadOnlyList<Vector2Int> cells,double age)
+        {
+            if(cells==null)return;
+            var clip=BossRosterFxArt.Get(KingdomRangeArt);
+            if(!clip.Sequence.Ready)return;
+            var frame=clip.At(age,true);
+            // The captured source range is a single tile. Fit its transparent
+            // canvas within one board cell and draw it on the actual zone tiles.
+            foreach(var cell in cells)
+                LegacyDraw(frame,legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.02f,cell,.60f,-5,hdr:clip.HdrRange,flat:true);
         }
 
         void PresentLegacySea()
@@ -697,9 +734,23 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
-        internal sealed class LegacyZoneSnapshot {internal int SourceId;internal string Kind;internal Vector2 Center;internal double At,Until;internal float Radius;}
+        internal sealed class LegacyZoneSnapshot
+        {
+            internal int SourceId;
+            internal string Kind;
+            internal Vector2 Center;
+            internal double At,Until;
+            internal float Radius;
+            internal IReadOnlyList<Vector2Int> Cells;
+        }
         internal IEnumerable<LegacyZoneSnapshot> LegacyZones()
-        {foreach(var zone in zones)if(zone.Until>Clock)yield return new LegacyZoneSnapshot{SourceId=zone.Source.Id,Kind=zone.Kind,Center=zone.Center,At=zone.StartedAt,Until=zone.Until,Radius=zone.Radius};}
+        {
+            foreach(var zone in zones)if(zone.Until>Clock)yield return new LegacyZoneSnapshot
+            {
+                SourceId=zone.Source.Id,Kind=zone.Kind,Center=zone.Center,At=zone.StartedAt,
+                Until=zone.Until,Radius=zone.Radius,Cells=zone.Cells
+            };
+        }
         internal double LegacyReflectAt(FormationActor actor)=>combat.TryGetValue(actor.Id,out var state)?state.LastReflect:double.NegativeInfinity;
         internal bool LegacyAwake(FormationActor actor)=>combat.TryGetValue(actor.Id,out var state)&&state.Stacks.TryGetValue("awake",out var value)&&value>0;
         internal double LegacyBuffUntil(FormationActor actor,string key)=>combat.TryGetValue(actor.Id,out var state)&&state.Buffs.TryGetValue(key,out var buff)?buff.Until:double.NegativeInfinity;

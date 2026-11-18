@@ -39,7 +39,7 @@ namespace YesterdayConvoy
             if(HasItem(u,"CF")&&!AttackRecovery(u))AddStack(u,"manual",1,5);
             if(HasItem(u,"CC")&&!AttackRecovery(u))AddStack(u,"reactor",1,10);
             if(Tagged(u,"伊比利亚")&&Level("伊比利亚")>=2&&Stack(u,"evidence")>=12){s.Stacks["evidence"]-=12;s.Stacks["cast_multiplier"]+=.35f;}
-            var firstSuiStrike = k=="B21" ? PrepareSuiClawStrike(u,presentation,0,target?.Position??u.Position,presentation.ContactAt) : null;
+            var firstSuiStrike = k=="B21" ? PrepareSuiClawStrike(u,presentation,0,target,presentation.ContactAt) : null;
             QueueSkillAction(u,presentation,()=>
             {
             switch(k)
@@ -182,7 +182,7 @@ namespace YesterdayConvoy
                     if(target!=null)
                     {
                         var openingTargets=Nearby(target.Position,AreaRadius(u,3),100,target);
-                        SettleSuiClawStrike(firstSuiStrike,target.Position,openingTargets.Length>0);
+                        SettleSuiClawStrike(firstSuiStrike,openingTargets.FirstOrDefault()?.Position??target.Position,openingTargets.Length>0);
                         NativeSegment(u,openingTargets,u.Attack*(18*(1+chess*.3f)),0,true,0,true);
                     }
                     int seconds=u.Star>=3?24:12;s.BusyUntil=presentation.At+seconds;u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action);

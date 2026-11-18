@@ -73,11 +73,11 @@ namespace YesterdayConvoy
         bool UsesApprovedWisadelOrdinaryImpact(FormationHit hit) =>
             !hit.Skill&&!hit.Heal&&(Campaign?.WisadelSkill!=2||!WisadelEmpoweredAt(hit.FromId,hit.At));
 
-        void LegacyWisadel(string suffix,double age,Vector2 cell,int order=24,bool loop=false,
+        SpriteRenderer LegacyWisadel(string suffix,double age,Vector2 cell,int order=24,bool loop=false,
             bool flip=false,Vector3? point=null,Vector3? direction=null)
         {
-            if(age<0||!WisadelAprilFxArt.Available)return;
-            var clip=WisadelAprilFxArt.Get(suffix);if(!clip.Sequence.Ready||loop&&!clip.Loop)return;
+            if(age<0||!WisadelAprilFxArt.Available)return null;
+            var clip=WisadelAprilFxArt.Get(suffix);if(!clip.Sequence.Ready||loop&&!clip.Loop)return null;
             float roll=0;
             if(direction.HasValue)
             {
@@ -85,7 +85,7 @@ namespace YesterdayConvoy
                 if(x*x+y*y>1e-8)roll=Mathf.Atan2(y,x)*Mathf.Rad2Deg;
             }
             // Native-to-game scale .0045/.0027 is already in the atlas PPU.
-            LegacyDraw(clip.At(age,loop),legacyHdrMaterial,point??ActorWorldPoint(cell),cell,1,order,flip,clip.HdrRange,roll:roll);
+            return LegacyDraw(clip.At(age,loop),legacyHdrMaterial,point??ActorWorldPoint(cell),cell,1,order,flip,clip.HdrRange,roll:roll);
         }
         Vector3 LegacyWisadelMuzzle(FormationActor actor,FormationPresentationAction action)
         {
@@ -122,9 +122,6 @@ namespace YesterdayConvoy
                 if(age<0)return;
             }
             if(cast!=null)LegacyWisadel(cast,age,action.From,12,flip:flip,point:LegacyOwnerPoint(actor,action.From));
-            if(action.ProjectileOnly&&skill==3&&!action.Cancelled&&Model.Clock>=action.At)
-                LegacyWisadel("skill_03_hit_03_game#9",age,action.To,32,
-                    point:ActorWorldPoint(action.To)+battleCamera.transform.up*.45f);
             if(action.Skill&&skill==1&&!action.ProjectileOnly)
                 LegacyWisadel("skill_01_start_02",age,action.From,14,flip:flip,point:LegacyOwnerPoint(actor,action.From));
             // A cancelled/unlaunched cue cannot leave a fake projectile behind.
@@ -139,33 +136,39 @@ namespace YesterdayConvoy
             float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
             var cell=Vector2.Lerp(action.From,action.To,progress);
             var point=Vector3.Lerp(start,end,progress);
-            LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:point,direction:end-start);
-            if(action.Skill&&skill==3)
+            var beam=LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:point,direction:end-start);
+            if(beam!=null&&skill==3)
             {
-                Vector3 arc=Vector3.up*(.4f*4*progress*(1-progress));
-                DrawWisadelShellFace(action,point+arc,cell,42);
+                // The source trail was sampled for a much longer flight. Keep its
+                // painted width, but cap the rear extent at the actual launch point.
+                Vector3 travelled=Vector3.ProjectOnPlane(point-start,battleCamera.transform.forward);
+                float originalRear=beam.sprite.pivot.x/beam.sprite.pixelsPerUnit;
+                beam.transform.localScale=new Vector3(Mathf.Clamp(travelled.magnitude/originalRear,.06f,1f),1,1);
             }
-        }
-        SpriteRenderer DrawWisadelShellFace(FormationPresentationAction shell,Vector3 point,Vector2 cell,int order)
-        {
-            wisadelShellFaces??=formationCards.FirstOrDefault(c=>c!=null&&c.CardId==ViviCombat.CardId)?.ComicImpactFaces;
-            if(wisadelShellFaces==null||wisadelShellFaces.Count==0)return null;
-            var face=wisadelShellFaces[shell.ProjectileIndex%wisadelShellFaces.Count];
-            if(face==null)return null;
-            if(legacyComicMaterial==null)
-                legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
-            float scale=1.15f/Mathf.Max(.01f,face.bounds.size.y);
-            return LegacyDraw(face,legacyComicMaterial,point,cell,scale,order);
         }
         void PresentWisadelShellImpactFace(FormationHit hit,FormationPresentationAction shell,Vector3 point)
         {
             if(hit.Secondary||shell==null||!shell.ProjectileOnly||shell.Cancelled||shell.Animation!="Skill_3_Loop")return;
             float age=(float)(Model.Clock-hit.At);
-            if(age<0||age>=.55f)return;
-            var face=DrawWisadelShellFace(shell,point,hit.To,58);
+            // The hit flash leads the cut-in. The large expression opens at the
+            // stop point, peaks quickly, then leaves the existing star field visible.
+            const float enter=.08f, fade=.34f, end=.45f;
+            if(age<enter||age>=end)return;
+            wisadelShellFaces??=formationCards.FirstOrDefault(c=>c!=null&&c.CardId==ViviCombat.CardId)?.ComicImpactFaces;
+            if(wisadelShellFaces==null||wisadelShellFaces.Count==0)return;
+            var sprite=wisadelShellFaces[shell.ProjectileIndex%wisadelShellFaces.Count];
+            if(sprite==null)return;
+            if(legacyComicMaterial==null)
+                legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
+            float opening=Mathf.InverseLerp(enter,enter+.10f,age);
+            float height=Mathf.Lerp(1.65f,2.65f,1-Mathf.Pow(1-opening,3));
+            height-=.18f*Mathf.InverseLerp(enter+.13f,end,age);
+            float side=Vector3.Dot(ActorWorldPoint(shell.To)-ActorWorldPoint(shell.From),battleCamera.transform.right)<0?-1:1;
+            float roll=side*Mathf.Lerp(14f,-5f,Mathf.InverseLerp(enter,fade,age));
+            var face=LegacyDraw(sprite,legacyComicMaterial,point,hit.To,height/sprite.bounds.size.y,58,roll:roll);
             if(face==null)return;
             face.name="Formation Wisadel / S3 impact face";
-            face.color=new Color(1,1,1,1-Mathf.InverseLerp(.35f,.55f,age));
+            face.color=new Color(1,1,1,1-Mathf.InverseLerp(fade,end,age));
         }
         void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
         {
@@ -228,8 +231,14 @@ namespace YesterdayConvoy
                     // Before the first child cue is created, the already real
                     // parent mode-start identifies its first Loop start exactly.
                     if(!Model.PresentationActions.Any(a=>a.ParentSequence==cast.Sequence&&a.ProjectileOnly))
-                        LegacyWisadel("skill_03_start_game#9",(now-cast.At)*cast.Rate-.833333313,
-                            actor.Position,12,flip:actor.Facing.x<0,point:FormationDisplayPoint(actor));
+                    {
+                        double loopAge=(now-cast.At)*cast.Rate-.833333313;
+                        LegacyWisadel("skill_03_start_game#9",loopAge,actor.Position,12,flip:actor.Facing.x<0,point:FormationDisplayPoint(actor));
+                        var aimed=FormationFeedbackActor(cast.TargetId);
+                        if(aimed!=null&&aimed.Alive)
+                            LegacyWisadel("skill_03_hit_03_game#9",loopAge,aimed.Position,32,
+                                point:FormationFeedbackContactPoint(aimed,aimed.Position,.55f));
+                    }
                 }
             }
         }

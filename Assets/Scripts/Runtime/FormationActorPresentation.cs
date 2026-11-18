@@ -16,6 +16,8 @@ namespace YesterdayConvoy
         sealed class ShopIdleUse {internal FormationUnitArt Source;internal double AnimationTime,UsedAt;}
         readonly Dictionary<string,ShopIdleUse> formationShopIdleUses=new Dictionary<string,ShopIdleUse>();
         readonly Dictionary<string,Sprite> formationShopLastIdle=new Dictionary<string,Sprite>();
+        readonly Dictionary<int,double> formationHarvesterAwakeAt=new Dictionary<int,double>();
+        FormationBattleModel formationRegularMotionModel;
         public bool RosterArtReady=>Model!=null&&RequiredFormationArtIds().All(FormationArtAvailable);
 
         bool FormationArtAvailable(string id)
@@ -176,6 +178,7 @@ namespace YesterdayConvoy
                 else
                 {
                 bool sourceTimed=false;
+                bool regularSkill=SelectFormationRegularSkillMotion(source,actor,now,ref key,ref age,ref loop);
                 if(actor is FormationFighter phaseFighter&&actor.ArtId=="M30")
                 {
                     if(returning)
@@ -185,8 +188,8 @@ namespace YesterdayConvoy
                         age=tail<source.Duration("extra_revive")/FormationVisualRate?source.Duration("extra_revive")-tail*FormationVisualRate:(now-phaseFighter.NativePhaseChangedAt)*FormationVisualRate;
                         sourceTimed=true;
                     }
-                    else if(phaseFighter.NativePhase>0)
-                        key=key=="idle"?"extra_idle_2":key=="walk"?"extra_move_2":key=="death"?"extra_die_2":key;
+                    // NativePhase records that the one-time return was used. The
+                    // returning soldier is no longer the original ember body.
                 }
                 if(casting&&actor.ArtId=="M31"&&source.HasAction("extra_skill_front_start"))
                 {
@@ -195,12 +198,13 @@ namespace YesterdayConvoy
                     key=elapsed<begin?"extra_skill_front_start":remaining<end?"extra_skill_front_end":"extra_skill_front_loop";
                     age=elapsed<begin?elapsed:remaining<end?end-remaining:elapsed-begin;sourceTimed=true;
                 }
+                bool harvesterMotion=SelectFormationHarvesterMotion(source,actor,now,ref key,ref age,ref loop);
                 if(!source.HasAction(key))
                 {
                     if(key=="death"){body.enabled=false;return;}
                     key=casting&&source.HasAction("skill")?"skill":source.HasOrdinaryAttack?"attack":"idle";
                 }
-                body.sprite=source.Frame(key,age,key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
+                body.sprite=source.Frame(key,age,regularSkill||harvesterMotion?loop:key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
                 }
                 labelTop=source.PresentationTop(key);
             }
@@ -229,6 +233,48 @@ namespace YesterdayConvoy
             Color color=Color.white;
             if(actor is FormationFighter fighter&&fighter.Instance==shopDragInstance&&DragPreviewVisible)color.a=.25f;
             body.color=color;
+        }
+
+        // These existing source actions are presentation only. In particular, loading
+        // them must not alter the animation profile used by combat contact scheduling.
+        internal static bool SelectFormationRegularSkillMotion(FormationUnitArt source,FormationActor actor,double now,
+            ref string key,ref double age,ref bool loop)
+        {
+            if((actor.ArtId!="M36"&&actor.ArtId!="M38")||!actor.Alive||actor.IsMoving||actor.LastSkillAt<0||
+                Math.Abs(actor.LastSkillAt-actor.LastActionAt)>.0001)return false;
+            const string begin="extra_skill_begin",cycle="extra_skill_loop",end="extra_skill_end";
+            if(!source.HasAction(begin)||!source.HasAction(cycle)||!source.HasAction(end))return false;
+            double rate=actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate;
+            double elapsed=(now-actor.LastSkillAt)*rate;
+            double beginDuration=source.Duration(begin),endDuration=source.Duration(end);
+            double window=Math.Max((actor.ActionUntil-actor.LastSkillAt)*rate,
+                beginDuration+source.Duration(cycle)+endDuration);
+            if(elapsed<0||elapsed>=window)return false;
+            if(elapsed<beginDuration){key=begin;age=elapsed;loop=false;}
+            else if(elapsed>=window-endDuration){key=end;age=elapsed-(window-endDuration);loop=false;}
+            else{key=cycle;age=elapsed-beginDuration;loop=true;}
+            return true;
+        }
+
+        bool SelectFormationHarvesterMotion(FormationUnitArt source,FormationActor actor,double now,
+            ref string key,ref double age,ref bool loop)
+        {
+            if(actor.ArtId!="M34")return false;
+            if(formationRegularMotionModel!=Model)
+            {formationRegularMotionModel=Model;formationHarvesterAwakeAt.Clear();}
+            if(!actor.Alive||!Model.LegacyAwake(actor))
+            {formationHarvesterAwakeAt.Remove(actor.Id);return false;}
+            if(!formationHarvesterAwakeAt.TryGetValue(actor.Id,out double began)||began>now)
+                formationHarvesterAwakeAt[actor.Id]=began=now;
+            // The v0.7 wake event creates no new action lock. Actual attacks and
+            // casts keep priority over this observed transition and state body.
+            if(key!="idle"&&key!="walk")return false;
+            double elapsed=(now-began)*FormationVisualRate;
+            if(source.HasAction("extra_skill_begin")&&elapsed<source.Duration("extra_skill_begin"))
+            {key="extra_skill_begin";age=elapsed;loop=false;return true;}
+            string state=key=="walk"?"extra_skill_move":"extra_skill_idle";
+            if(!source.HasAction(state))return false;
+            key=state;age=elapsed;loop=true;return true;
         }
 
         IEnumerator WarmFormationWindow(FormationUnitArt source,string key,double age,bool loop,string request)

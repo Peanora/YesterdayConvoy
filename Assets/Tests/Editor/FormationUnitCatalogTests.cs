@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -118,6 +119,57 @@ namespace YesterdayConvoy.Tests
             Assert.That(vivi.HasAction("attack"),Is.True);
             Assert.That(vivi.HasAction("death"),Is.True,"The new mode reads the original April game#9 death motion.");
             Assert.That(vivi.Duration("death"),Is.GreaterThan(0));
+            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
+        }
+
+        [TestCase("M36")]
+        [TestCase("M38")]
+        public void RegularCasterUsesItsOwnThreeSourceActionsWithoutChangingCombatWindow(string id)
+        {
+            int loads=ArtMemoryCache.TextureLoads;
+            var source=FormationUnitArt.For(id);
+            Assert.That(source.Root,Is.EqualTo("MonsterCombatArt/"+id));
+            foreach(string part in new[]{"extra_skill_begin","extra_skill_loop","extra_skill_end"})
+                Assert.That(source.HasAction(part),Is.True,id+" / "+part);
+            Assert.That(source.HasAction("cast"),Is.False,"Presentation extras must not replace the combat profile's existing fallback.");
+            var actor=new FormationFighter{ArtId=id,Alive=true,LastSkillAt=10,LastActionAt=10,PresentationRate=2};
+            var actionUntil=typeof(FormationActor).GetField("ActionUntil",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);
+            actionUntil.SetValue(actor,12d);
+            string key="idle";double age=0;bool loop=true;
+            Assert.That(SelectRegularMotion(source,actor,10.1,ref key,ref age,ref loop),Is.True);
+            Assert.That(key,Is.EqualTo("extra_skill_begin"));Assert.That(age,Is.EqualTo(.2).Within(.0001));Assert.That(loop,Is.False);
+            Assert.That(SelectRegularMotion(source,actor,10.6,ref key,ref age,ref loop),Is.True);
+            Assert.That(key,Is.EqualTo("extra_skill_loop"));Assert.That(loop,Is.True);
+            Assert.That(SelectRegularMotion(source,actor,11.9,ref key,ref age,ref loop),Is.True);
+            Assert.That(key,Is.EqualTo("extra_skill_end"));Assert.That(loop,Is.False);
+            Assert.That(SelectRegularMotion(source,actor,12.1,ref key,ref age,ref loop),Is.False);
+            actor.LastActionAt=11;
+            Assert.That(SelectRegularMotion(source,actor,11.1,ref key,ref age,ref loop),Is.False,"A newer real attack must immediately take priority.");
+            actor.LastActionAt=10;actor.Alive=false;
+            Assert.That(SelectRegularMotion(source,actor,10.1,ref key,ref age,ref loop),Is.False,"Death cannot keep a source channel alive.");
+            actor.Alive=true;actor.IsMoving=true;
+            Assert.That(SelectRegularMotion(source,actor,10.1,ref key,ref age,ref loop),Is.False,"Presentation cannot conceal actual movement or add a lock.");
+            Assert.That(actionUntil.GetValue(actor),Is.EqualTo(12));
+            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
+        }
+
+        static bool SelectRegularMotion(FormationUnitArt source,FormationActor actor,double now,ref string key,ref double age,ref bool loop)
+        {
+            object[] arguments={source,actor,now,key,age,loop};
+            var method=typeof(FormationBattleController).GetMethod("SelectFormationRegularSkillMotion",BindingFlags.Static|BindingFlags.NonPublic);
+            bool selected=(bool)method.Invoke(null,arguments);
+            key=(string)arguments[3];age=(double)arguments[4];loop=(bool)arguments[5];return selected;
+        }
+
+        [Test] public void HarvesterAwakeBodyVariantsComeFromExistingExtraClipsWithoutDecoding()
+        {
+            int loads=ArtMemoryCache.TextureLoads;
+            var source=FormationUnitArt.For("M34");
+            Assert.That(source.Root,Is.EqualTo("MonsterCombatArt/M34"));
+            foreach(string key in new[]{"extra_skill_begin","extra_skill_idle","extra_skill_move"})
+                Assert.That(source.HasAction(key),Is.True,key);
+            Assert.That(source.HasAction("cast"),Is.False);
+            Assert.That(source.HasAction("attack"),Is.True);
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }
 
