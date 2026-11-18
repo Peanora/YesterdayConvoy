@@ -8,6 +8,14 @@ namespace YesterdayConvoy
     {
         internal const float WisadelShellInterval = 1.1f;
         internal const float WisadelShellMinimumFlight = .5f;
+        const int TalulahRainDuration = 8;
+
+        internal double TalulahRainEnd(FormationActor fighter)
+        {
+            if(fighter.ArtId!="TALULAH_TRIAL"||Campaign?.TalulahCost!=5)return double.NegativeInfinity;
+            return zones.FindLast(zone=>zone.Source==fighter&&zone.Kind=="burn")?.Until??double.NegativeInfinity;
+        }
+
         bool CastCampaignSkill(FormationFighter u,FormationDefender target,bool free=false)
         {
             var s=State(u);string k=Key(u);var main=Carry;
@@ -21,6 +29,9 @@ namespace YesterdayConvoy
             if(k=="TAL")action=Campaign.TalulahCost==5?2:Campaign.TalulahCost==4?1.5f:1.2f;
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
             var presentation=BeginAction(u,action,true);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
+            if(k=="TAL"&&Campaign.TalulahCost==5)
+                foreach(var pending in presentationActions)
+                    if(pending.ActorId==u.Id&&!pending.Skill&&pending.ContactAt>Clock+1e-8)pending.Cancelled=true;
             float skillBonus=1+Buff(u,"skill_bonus")+Buff(u,"king_damage")+Buff(u,"revival_skill")+Buff(u,"ember");
             if(Campaign.HasAugment("CG1")&&IsResonanceMember(u))skillBonus+=.1f;
             if(Campaign.TalulahEnhanced&&k=="TAL"&&Campaign.TalulahCost==3)skillBonus+=.25f;
@@ -92,8 +103,8 @@ namespace YesterdayConvoy
                     {
                         int n=cost==5?6:Campaign.TalulahEnhanced?4:3;
                         SkillSequence(u,target,n,cost==5?2.6f:2.8f,1,action,cost==5?100:2.5f,cost==5?8:6);
-                        AddZone(u,target.Position,cost==5?100:AreaRadius(u,2.5f),cost==5?.5f:.35f,cost==5?8:6,cost==5?8:6,"burn");
-                        if(cost==5&&u.Star>=3)for(int sec=2;sec<=8;sec+=2)ScheduleOwned(u,Clock+sec,()=>{if(u.Alive)foreach(var d in Defenders.Where(d=>d.Alive).Take(8).ToArray())CombatDamage(u,d,u.Attack*.5f*Power(u),2,true,false);});
+                        AddZone(u,target.Position,cost==5?100:AreaRadius(u,2.5f),cost==5?.5f:.35f,cost==5?TalulahRainDuration:6,cost==5?8:6,"burn");
+                        if(cost==5&&u.Star>=3)for(int sec=2;sec<=TalulahRainDuration;sec+=2)ScheduleOwned(u,Clock+sec,()=>{if(u.Alive)foreach(var d in Defenders.Where(d=>d.Alive).Take(8).ToArray())CombatDamage(u,d,u.Attack*.5f*Power(u),2,true,false);});
                         if(cost==4&&Campaign.TalulahEnhanced)Shield(u,u,u.MaxHealth*.2f,8,"talulah");
                     }break;
                 case "B09":

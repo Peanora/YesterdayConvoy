@@ -135,7 +135,7 @@ namespace YesterdayConvoy
                 else
                 {
                     yield return Segment("走路与接敌 · 当前棋盘原比例",5);
-                    yield return Segment("普攻 / 常驻被动",3);
+                    yield return Segment("普攻 / 常驻被动",plan.Id=="WIS"?6:3);
                     var actor=controller.Model.Units.First();
                     bool healer=plan.Units.Any(id=>FormationCampaignRules.Find(id).Effect.Contains("治疗")||FormationCampaignRules.Find(id).Effect.Contains("回复生命"));
                     if(healer)controller.SetShowcaseTargetPressure(actor.Armor+actor.MaxHealth*.025f,1.5f);
@@ -161,7 +161,10 @@ namespace YesterdayConvoy
                         }
                         if(controller.Model.Clock>=limit)clip.notes+=" 此夹具中主动技能未能等到就绪，未伪造触发。";
                     }
-                    yield return Segment(active==null?"被动 / 联动持续展示":"技能与命中 · 自然技力触发",8,plan.Id=="M33"?2.1f:-1);
+                    if(plan.Id=="TAL5")
+                        yield return Segment("火雨 · 起手、持续、结束与恢复普攻",14);
+                    else
+                        yield return Segment(active==null?"被动 / 联动持续展示":"技能与命中 · 自然技力触发",8,plan.Id=="M33"?2.1f:-1);
                     if(plan.Id=="tag-接棒"||plan.Id=="tag-剧场")
                     {
                         controller.SetShowcaseTargetPressure(controller.Model.Units.Max(u=>u.MaxHealth)*3+controller.Model.Units.Max(u=>u.Armor),.8f);

@@ -172,11 +172,20 @@ namespace YesterdayConvoy.Tests
             Assert.That(Body(actor).sprite, Is.SameAs(source.Frame(motion.key, motion.age, motion.loop)));
             AssertPainted(Body(actor).sprite);
             Assert.That(controller.Model.Hits.Any(h => h.FromId == actor.Id), Is.False, "No damage exists before the real launch/impact.");
+            bool VisibleLine(string name) => controller.GetComponentsInChildren<LineRenderer>().Any(line=>line.enabled&&line.name==name);
+            yield return Until(()=>VisibleLine("April comic / approved ordinary shot"),1);
+            Assert.That(controller.Model.Clock,Is.InRange(action.LaunchedAt,action.ContactAt));
+            Assert.That(VisibleLine("April comic / approved black ink"),Is.False);
+            Assert.That(controller.Model.Hits.Any(h=>h.FromId==actor.Id),Is.False);
             yield return Until(() => controller.Model.Hits.Any(h => h.FromId == actor.Id), 3);
             var hit = controller.Model.Hits.First(h => h.FromId == actor.Id);
             Assert.That(hit.At, Is.GreaterThanOrEqualTo(action.ContactAt - .0001));
             Assert.That(hit.Action, Is.SameAs(action), "The applied hit keeps its own release even when another action starts.");
             Assert.That(hit.Amount, Is.GreaterThan(0));
+            Assert.That(VisibleLine("April comic / approved ordinary shot"),Is.False);
+            Assert.That(VisibleLine("April comic / approved black ink"),Is.True);
+            Assert.That(VisibleLine("April comic / approved yellow burst"),Is.True);
+            Assert.That(LegacyLayers().Any(r=>r.sprite.name.Contains("wisdel_attack_")),Is.False);
         }
 
         [UnityTest] public IEnumerator AllThreeAprilSkillsDrawTheirOwnLayersDuringRealCombat()
@@ -208,18 +217,27 @@ namespace YesterdayConvoy.Tests
             RequireGpu();
             yield return Fixture(new[]{"TAL"},talulahCost:5);
             Begin();
+            var model=controller.Model;
+            var caster=model.Units.Single();
             SpriteRenderer[] fire=Array.Empty<SpriteRenderer>();
             float first=float.PositiveInfinity,last=float.NegativeInfinity;
+            double waveStart=double.PositiveInfinity;
+            bool sawContact=false;
             var camera=Camera.main;
             yield return Until(()=>
             {
+                sawContact|=controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&
+                    r.name=="Formation Talulah / rain impact"&&HasPaint(r.sprite))&&model.Hits.Any(h=>h.FromId==caster.Id&&h.Skill);
                 fire=LegacyLayers().Where(r=>r.sprite.name.Contains("original-energy-stream")).ToArray();
+                if(fire.Length>0)waveStart=Math.Min(waveStart,model.Clock);
                 if(fire.Length!=FormationBattleModel.Height)return false;
                 first=Mathf.Min(first,fire.Min(r=>r.transform.position.x));
                 last=Mathf.Max(last,fire.Max(r=>r.transform.position.x));
                 return last-first>8&&fire.Any(r=>HasPaint(r.sprite));
             },45);
-            Assert.That(controller.Model.SkillCasts.Count,Is.EqualTo(1));
+            Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
+            Assert.That(sawContact,Is.True,"A committed hit should show the dedicated ground impact.");
+            Assert.That(model.Clock-waveStart,Is.GreaterThan(2.3),"The fire front crosses the board over a slower, readable sweep.");
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
             foreach(var stream in fire)
             {
@@ -230,10 +248,22 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Falling fire"),Is.False);
             Vector3 point=fire[0].transform.position;
             var sprite=fire[0].sprite;
-            controller.Model.Paused=true;
+            model.Paused=true;
             Step(.4f);
             Assert.That(fire[0].transform.position,Is.EqualTo(point));
             Assert.That(fire[0].sprite,Is.SameAs(sprite));
+            model.Paused=false;
+            var cast=model.PresentationActions.Single(a=>a.ActorId==caster.Id&&a.Skill);
+            double rainEnd=(double)Invoke(model,"TalulahRainEnd",caster);
+            Assert.That(rainEnd-cast.ContactAt,Is.EqualTo(8).Within(.026));
+            bool OrdinaryDuringRain() => model.PresentationActions.Any(a=>a.ActorId==caster.Id&&!a.Skill&&
+                a.At>=cast.At&&a.At<rainEnd-1e-5);
+            yield return Until(()=>
+            {
+                Assert.That(OrdinaryDuringRain(),Is.False);
+                return model.Clock>=rainEnd;
+            },10);
+            yield return Until(()=>model.PresentationActions.Any(a=>a.ActorId==caster.Id&&!a.Skill&&a.At>=rainEnd),5);
             yield return Fixture(new[]{"TAL"},talulahCost:4);
             Assert.That(fire.All(r=>r==null||!r.enabled),Is.True);
         }
@@ -311,7 +341,7 @@ namespace YesterdayConvoy.Tests
             var source = FormationUnitArt.For(actor.ArtId);
             Assert.That(Body(actor).enabled, Is.True, "Preparation still shows the board's deployable claw.");
             AssertPainted(Body(actor).sprite);
-            yield return WarmFrame(source, "Skill_Loop_A", .73333335);
+            yield return WarmFrame(source, "Skill_Begin_A", .13333333);
             Begin();
             var model=controller.Model;
             var effects=Field<Dictionary<string,SpriteRenderer>>(controller,"formationAuxBodies");
@@ -355,15 +385,18 @@ namespace YesterdayConvoy.Tests
             Assert.That(resolved,Is.EqualTo(impact).Within(.026));
             Assert.That(drop.transform.position.y-landing.y, Is.InRange(0,.32f));
             var ground=controller.GetComponentsInChildren<SpriteRenderer>().Single(r=>r.enabled&&
-                r.name=="Boss FX / boss/B21/enemy_dyshhj_skill_02_range_01");
+                r.name=="Boss FX / boss/B21/enemy_dyshhj_skill_01_hit_01");
             Assert.That(ground.transform.position.y-landing.y,Is.InRange(.025f,.075f));
             Assert.That(HasPaint(ground.sprite),Is.True);
             CollectionAssert.AreEquivalent(living,model.Hits.Where(hit=>hit.FromId==actor.Id && hit.Skill &&
                 Math.Abs(hit.At-resolved)<.0001).Select(hit=>hit.ToId).ToArray(),"A single periodic slam still reaches every living defender once.");
             Assert.That(actor.Position,Is.EqualTo(sourcePosition),"The claw's impact position must not move the real unit to the guard.");
-            Step(.12f);
+            var planted=drop.transform.position;
+            Step(.90f);
             Assert.That(drop.enabled,Is.True,"The claw holds its planted pose before retreating.");
-            Assert.That(drop.transform.position.y-landing.y,Is.InRange(0,.32f));
+            Assert.That(drop.transform.position,Is.EqualTo(planted));
+            Assert.That(drop.sprite.texture.name,Does.Contain("Skill_Idle_A"));
+            yield return Until(()=>drop.enabled&&drop.sprite.texture.name.Contains("Skill_End_A"),1);
             yield return Until(() => !drop.enabled,1);
             Assert.That(model.SkillCasts.Count(c=>c.UnitId=="B21"),Is.EqualTo(1));
             Assert.That((double)Invoke(model,"PresentationBusyUntil",actor),Is.EqualTo(busyUntil));

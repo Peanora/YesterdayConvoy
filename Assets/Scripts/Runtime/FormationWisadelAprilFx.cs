@@ -10,18 +10,17 @@ namespace YesterdayConvoy
     internal static class WisadelAprilFxArt
     {
         internal const string Task="WIS_APRIL_G9";
-        static readonly string[] Ordinary={"attack_c_start","attack_01_trail","attack_01_hit","attack_01_hit_02"};
         static readonly string[] S1={"skill_01_start","skill_01_start_02","skill_01_trail","skill_01_hit","skill_01_hit_02"};
         static readonly string[] S2={"skill_02_buff","skill_02_start","skill_02_hit","skill_02_hit_02"};
         static readonly string[] S3={"skill_03_buff_f","skill_03_start_game#9","skill_03_trail_game#9",
             "skill_03_hit_game#9","skill_03_hit_02_game#9","skill_03_hit_03_game#9"};
         internal static BossRosterFxArt.Clip Get(string suffix)=>BossRosterFxArt.Get("boss/"+Task+"/wisdel_"+suffix);
-        internal static bool Available=>BossRosterFxArt.TryGet("boss/"+Task+"/wisdel_attack_c_start",out _);
+        internal static bool Available=>BossRosterFxArt.TryGet("boss/"+Task+"/wisdel_skill_01_start",out _);
         internal static IEnumerable<ArtSequence> Sequences(int skill)
         {
             if(!Available)yield break;
             var selected=skill==1?S1:skill==2?S2:S3;
-            foreach(string key in Ordinary.Concat(selected).Concat(S1).Concat(S2).Concat(S3).Distinct())
+            foreach(string key in selected.Concat(S1).Concat(S2).Concat(S3).Distinct())
                 yield return Get(key).Sequence;
         }
     }
@@ -29,6 +28,50 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         IReadOnlyList<Sprite> wisadelShellFaces;
+        readonly List<LineRenderer> wisadelOrdinaryTrails=new List<LineRenderer>();
+        int wisadelOrdinaryTrailsUsed;
+
+        // The approved M01 shot in EngagementView starts at the comic launch
+        // anchor and uses a narrow amber-to-white trail with a shallow arc.
+        // Drive the same geometry from this board's actual projectile interval.
+        void PresentApprovedWisadelOrdinaryTrail(FormationPresentationAction action,FormationFighter actor)
+        {
+            double now=Model.Clock;
+            if(now<action.LaunchedAt||now>=action.ContactAt)return;
+            float progress=(float)((now-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt));
+            if(!FormationPointVisibleInView(Vector2.Lerp(action.From,action.To,progress)))return;
+
+            var start=LegacyOwnerPoint(actor,action.From)+battleCamera.transform.up*.75f;
+            var end=ApprovedWisadelComicImpactPoint(action.To);
+            float side=Vector3.Dot(end-start,battleCamera.transform.right)<0?-1:1;
+            start+=battleCamera.transform.right*(side*.45f);
+            var head=Vector3.Lerp(start,end,progress)+battleCamera.transform.up*(Mathf.Sin(progress*Mathf.PI)*.12f);
+
+            if(wisadelOrdinaryTrailsUsed==wisadelOrdinaryTrails.Count)
+            {
+                if(legacyComicMaterial==null)
+                    legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
+                var trail=new GameObject("April comic / approved ordinary shot",typeof(LineRenderer)).GetComponent<LineRenderer>();
+                trail.transform.SetParent(actorRoot,false);
+                trail.sharedMaterial=legacyComicMaterial;
+                trail.useWorldSpace=true;
+                trail.positionCount=2;
+                trail.widthMultiplier=.035f;
+                trail.startColor=new Color(.95f,.68f,.3f);
+                trail.endColor=Color.white;
+                wisadelOrdinaryTrails.Add(trail);
+            }
+            var view=wisadelOrdinaryTrails[wisadelOrdinaryTrailsUsed++];
+            view.SetPosition(0,Vector3.Lerp(start,head,.65f));
+            view.SetPosition(1,head);
+            view.sortingOrder=LegacyOrder(action.To,50);
+            view.enabled=true;
+        }
+
+        Vector3 ApprovedWisadelComicImpactPoint(Vector2 cell)=>ActorWorldPoint(cell)+battleCamera.transform.up*.8f;
+
+        bool UsesApprovedWisadelOrdinaryImpact(FormationHit hit) =>
+            !hit.Skill&&!hit.Heal&&(Campaign?.WisadelSkill!=2||!WisadelEmpoweredAt(hit.FromId,hit.At));
 
         void LegacyWisadel(string suffix,double age,Vector2 cell,int order=24,bool loop=false,
             bool flip=false,Vector3? point=null,Vector3? direction=null)
@@ -56,12 +99,17 @@ namespace YesterdayConvoy
         }
         void PresentOriginalWisadelAction(FormationPresentationAction action,FormationFighter actor)
         {
-            if(!WisadelAprilFxArt.Available||action.Cancelled)return;
+            if(action.Cancelled||action.Heal)return;
             double age=(Model.Clock-action.At)*action.Rate;if(age<0)return;
             int skill=action.Skill?WisadelSkillForAction(action):(Campaign?.WisadelSkill??3);bool flip=actor.Facing.x<0;
-            bool empoweredAuto=!action.Skill&&skill==2&&WisadelEmpoweredAt(actor,action.LaunchedAt);
-            string cast=action.Skill?(skill==1?"skill_01_start":null):
-                empoweredAuto?"skill_02_start":"attack_c_start";
+            bool empoweredAuto=!action.Skill&&skill==2&&WisadelEmpoweredAt(actor.Id,action.LaunchedAt);
+            if(!action.Skill&&!empoweredAuto)
+            {
+                PresentApprovedWisadelOrdinaryTrail(action,actor);
+                return;
+            }
+            if(!WisadelAprilFxArt.Available)return;
+            string cast=action.Skill?(skill==1?"skill_01_start":null):"skill_02_start";
             // Each true S3 shell has a source loop action. S1 is one source cast
             // with multiple applied segments, so its projectile cues do not
             // restart the Skill_1 caster effect.
@@ -85,7 +133,7 @@ namespace YesterdayConvoy
             // shell. Its real child cues exclusively own S1/S3 flight.
             if(action.Skill&&!action.ProjectileOnly)return;
             if(empoweredAuto)return; // Original S2 has no moving main projectile.
-            string trail=action.Skill?(skill==3?"skill_03_trail_game#9":"skill_01_trail"):"attack_01_trail";
+            string trail=skill==3?"skill_03_trail_game#9":"skill_01_trail";
             if(!legacyFlightOrigins.TryGetValue(action.Sequence,out var start))legacyFlightOrigins[action.Sequence]=start=LegacyWisadelMuzzle(actor,action);
             var end=FormationFeedbackContactPoint(FormationFeedbackActor(action.TargetId),action.To,.55f);
             float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
@@ -108,9 +156,8 @@ namespace YesterdayConvoy
         void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
         {
             int skill=hit.Skill&&hit.Action!=null?WisadelSkillForAction(hit.Action):(Campaign?.WisadelSkill??3);
-            bool empoweredAuto=!hit.Skill&&skill==2&&WisadelEmpoweredAt(actor,hit.At);
             string hitKey=hit.Skill?(skill==1?"skill_01_hit":skill==3?"skill_03_hit_game#9":null):
-                empoweredAuto?"skill_02_hit":"attack_01_hit";
+                "skill_02_hit";
             if(hitKey==null)return;
             LegacyWisadel(hitKey,age,hit.To,36,point:FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.55f));
             // Source _effectsWhenStop is a ground explosion, while OnHit is the
@@ -123,7 +170,7 @@ namespace YesterdayConvoy
             var projectile=hit.Action;
             Vector2 center=projectile?.To??hit.To;
             string stop=hit.Skill?(skill==1?"skill_01_hit_02":"skill_03_hit_02_game#9"):
-                empoweredAuto?"skill_02_hit_02":"attack_01_hit_02";
+                "skill_02_hit_02";
             LegacyWisadel(stop,age,center,30);
         }
         static int WisadelSkillForAction(FormationPresentationAction action)
@@ -132,11 +179,11 @@ namespace YesterdayConvoy
             if(action.Animation?.StartsWith("Skill_2",StringComparison.Ordinal)==true)return 2;
             return 3;
         }
-        bool WisadelEmpoweredAt(FormationActor actor,double at)
+        bool WisadelEmpoweredAt(int actorId,double at)
         {
             // Preserve the real S2 grant interval for already applied hits even
             // after its buff expires. S2's v0.7 grant is exactly 8 simulation sec.
-            return Model.PresentationActions.Any(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly&&!a.Cancelled&&
+            return Model.PresentationActions.Any(a=>a.ActorId==actorId&&a.Skill&&!a.ProjectileOnly&&!a.Cancelled&&
                 a.ContactAt<=at+1e-6&&at<a.ContactAt+8);
         }
         void PresentOriginalWisadelOwner(FormationFighter actor)

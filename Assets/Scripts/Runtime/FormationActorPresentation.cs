@@ -239,6 +239,13 @@ namespace YesterdayConvoy
             if(source.NativeTask==null)yield break;
             var actor=Model.Units.FirstOrDefault(u=>u.ArtId==id);
             if(actor==null)yield break;
+            if(source.NativeTask=="B21")
+            {
+                yield return SuiClawBegin;
+                yield return SuiClawIdle;
+                yield return SuiClawEnd;
+                yield break;
+            }
             yield return FormationSourceAction(source,actor,true);
             if(FormationAttackChannel(source,actor,out var attackBegin,out var attackCycle,out var attackEnd))
             {yield return attackBegin;yield return attackCycle;yield return attackEnd;}
@@ -291,6 +298,7 @@ namespace YesterdayConvoy
                 age=Math.Max(0,now-returningUnit.NativePhaseChangedAt)*FormationVisualRate;loop=false;return;
             }
             bool action=key=="attack"||key=="cast";
+            if(task=="B16"&&key!="walk"&&key!="death"&&PresentFormationTalulahRainPose(source,actor,phase,now,ref key,ref age,ref loop))return;
             if(key=="attack"&&PresentFormationChannel(source,actor,now,ref key,ref age,ref loop,false))return;
             if(task=="B20"&&actor.SkillAnimation=="Skill_2_Begin"&&now-actor.LastSkillAt<8)
             {

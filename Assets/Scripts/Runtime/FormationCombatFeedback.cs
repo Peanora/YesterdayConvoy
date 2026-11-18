@@ -9,7 +9,7 @@ namespace YesterdayConvoy
     // battle presenters keep their own art and sound paths.
     public sealed partial class FormationBattleController
     {
-        internal enum ImpactStyle { Slash, Bite, Bolt, Fire, Shield, Blast, Magic, Heal }
+        internal enum ImpactStyle { Slash, Bite, Bolt, Fire, Shield, Blast, Magic, Heal, FireRain }
         readonly Dictionary<ImpactStyle, AudioClip> impactSounds = new Dictionary<ImpactStyle, AudioClip>();
         readonly HashSet<FormationHit> formationImpactOwners = new HashSet<FormationHit>();
         readonly Dictionary<int, double> formationLastImpactSound = new Dictionary<int, double>();
@@ -42,7 +42,9 @@ namespace YesterdayConvoy
                     return hit.Skill && id == "B14" ? ImpactStyle.Blast : ImpactStyle.Bite;
                 case "M08": case "M11": case "M16": case "D07": case "GOLEM":
                     return ImpactStyle.Bolt;
-                case "M30": case "M31": case "TALULAH_TRIAL": case "B08": case "B24":
+                case "TALULAH_TRIAL":
+                    return IsFormationTalulahRainContact(hit) ? ImpactStyle.FireRain : ImpactStyle.Fire;
+                case "M30": case "M31": case "B08": case "B24":
                     return ImpactStyle.Fire;
                 case "M10": case "M18": case "M20": case "M27": case "M28": case "M29": case "M33":
                     return ImpactStyle.Shield;
@@ -97,7 +99,8 @@ namespace YesterdayConvoy
         // tones. The recorder uses these same samples when exporting shot audio.
         internal static float[] FormationImpactSamples(ImpactStyle style)
         {
-            float length = style == ImpactStyle.Fire || style == ImpactStyle.Blast || style == ImpactStyle.Heal ? .26f : .16f;
+            float length = style == ImpactStyle.FireRain ? .30f :
+                style == ImpactStyle.Fire || style == ImpactStyle.Blast || style == ImpactStyle.Heal ? .26f : .16f;
             var result = new float[Mathf.RoundToInt(length * ImpactSampleRate)];
             var noise = new System.Random(7863 + (int)style * 71);
             float low = 0;
@@ -118,6 +121,10 @@ namespace YesterdayConvoy
                         break;
                     case ImpactStyle.Fire:
                         sample = (low*.9f+Tone(t,92,-120)*.34f)*Decay(t,12)+treble*.27f*Decay(t,39);
+                        break;
+                    case ImpactStyle.FireRain:
+                        sample = (low*.75f+Tone(t,103,-185)*.66f)*Decay(t,17)+
+                            Tone(t,57,-48)*.27f*Decay(t,10)+treble*.37f*Decay(t,46);
                         break;
                     case ImpactStyle.Shield:
                         sample = (Tone(t,243,-310)*.46f+Tone(t,1113,-1000)*.23f+Tone(t,1711,-2500)*.12f)*Decay(t,29)+raw*.34f*Decay(t,112);
@@ -156,7 +163,8 @@ namespace YesterdayConvoy
                 // The riftbeast's actual contact gets a brief directional cut in
                 // addition to its existing source effects. Other authored impact
                 // layers own their attacks without getting a duplicate flash.
-                if (formationImpactOwners.Contains(hit) && artId != "B22" && artId != "WISADEL_APRIL") continue;
+                if (formationImpactOwners.Contains(hit) && artId != "B22" &&
+                    (artId != "WISADEL_APRIL" || UsesApprovedWisadelOrdinaryImpact(hit))) continue;
                 if (hit.Secondary && !hit.Killed && !hit.Absorbed) continue;
                 float age = (float)(now - hit.At);
                 var style = FormationHitStyle(hit);
@@ -206,6 +214,7 @@ namespace YesterdayConvoy
                     ContactSpark(center,along,across,.36f,.07f,new Color(.88f,.96f,1,alpha*.48f),age);
                     break;
                 case ImpactStyle.Fire:
+                case ImpactStyle.FireRain:
                     ContactSpark(center,up,along,.58f*power,.16f,new Color(1,.32f,.10f,alpha*.65f),age);
                     ContactSpark(center+right*.14f,up,along,.41f*power,.13f,new Color(1,.76f,.23f,alpha*.60f),age);
                     break;

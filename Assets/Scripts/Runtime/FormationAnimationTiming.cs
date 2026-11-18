@@ -175,7 +175,7 @@ namespace YesterdayConvoy
             context.Presentation = presentation;
             Action contact = () =>
             {
-                if (!actor.Alive || State(actor).LifeVersion != life || target == null || !target.Alive)
+                if (presentation.Cancelled || !actor.Alive || State(actor).LifeVersion != life || target == null || !target.Alive)
                 { presentation.Cancelled = true; return; }
                 presentation.To = target.Position;
                 RunInPresentationContext(actor, context, resolve);

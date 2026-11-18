@@ -306,6 +306,7 @@ namespace YesterdayConvoy
         void PresentLegacyAction(FormationPresentationAction action)
         {
             var actor=Model.Units.FirstOrDefault(u=>u.Id==action.ActorId);if(actor==null||!actor.Enabled)return;
+            if(actor.ArtId=="TALULAH_TRIAL"&&action.Cancelled)return;
             double age=(Model.Clock-action.At)*action.Rate;if(age<0)return;
             string id=actor.ArtId;float scale=LegacyScale(actor);bool flip=actor.Facing.x<0;
             var origin=LegacyOwnerPoint(actor,action.From);string key=null;
@@ -411,9 +412,18 @@ namespace YesterdayConvoy
             var actor=Model.Units.FirstOrDefault(u=>u.Id==hit.FromId);if(actor==null||!FormationHasLegacyImpact(actor.ArtId,hit.Skill))return;
             double age=(Model.Clock-hit.At)*LegacyVisualRate;if(age<0)return;string id=actor.ArtId;float scale=LegacyScale(actor);
             if(id=="WISADEL_APRIL"&&!hit.Heal)
-            {if(WisadelAprilFxArt.Available)PresentOriginalWisadelHit(hit,actor,age);else PresentLegacyWisadelHit(hit,actor,age);return;}
+            {
+                if(UsesApprovedWisadelOrdinaryImpact(hit))
+                {
+                    if(!hit.Secondary)PresentLegacyWisadelHit(hit,actor,Model.Clock-hit.At);
+                }
+                else if(WisadelAprilFxArt.Available)PresentOriginalWisadelHit(hit,actor,age);
+                else PresentLegacyWisadelHit(hit,actor,age);
+                return;
+            }
             if(id=="TALULAH_TRIAL")
             {
+                if(hit.Skill&&Campaign.TalulahCost==5){PresentFormationTalulahRainHit(hit,actor);return;}
                 bool directIgnition=hit.Skill&&Campaign.TalulahCost<=3&&Model.PresentationActions.Any(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly&&Math.Abs(a.ContactAt-hit.At)<.03);
                 string effect=directIgnition?actor.NativePhase>0?"ignite-B-target":"ignite-A-target":hit.Skill?"original-fire-impact":actor.NativePhase>0?"attack-B-hit":"attack-A-hit";
                 LegacyTalulah(effect,age,hit.To,actor,35,position:ActorWorldPoint(hit.To)+battleCamera.transform.up*.65f*scale);return;
@@ -462,7 +472,7 @@ namespace YesterdayConvoy
             float scale=LegacyScale(actor),progress=(float)(age/duration),alpha=1-progress;
             float radius=(float)((hit.Skill?.28:.05)+age*(hit.Skill?1.3:.8))*scale;
             if(hit.Skill&&Campaign!=null&&Campaign.WisadelSkill==3)radius=ViviCombat.SkillSplashRadius*Mathf.Lerp(.55f,1,progress)*scale;
-            var center=ActorWorldPoint(hit.To)+battleCamera.transform.up*.8f;
+            var center=ApprovedWisadelComicImpactPoint(hit.To);
             if(legacyComicUsed==legacyComicBursts.Count)
             {
                 var burst=new LegacyComicBurst();
@@ -566,7 +576,7 @@ namespace YesterdayConvoy
             if(legacyObservedModel!=Model||Model.Clock<legacyLastClock)
             {legacyObservedModel=Model;legacyPreviousShield.Clear();legacyShieldBroken.Clear();legacyShieldRefreshed.Clear();legacyFlightOrigins.Clear();legacyComicFaceIds.Clear();legacyComicFaceSequence=0;legacySeaBorn.Clear();ResetFormationSynergyEffects();}
             legacyLastClock=Model.Clock;
-            EnsureLegacyMaterials();legacyFxUsed=0;legacyComicUsed=0;
+            EnsureLegacyMaterials();legacyFxUsed=0;legacyComicUsed=0;wisadelOrdinaryTrailsUsed=0;
             foreach(var action in Model.PresentationActions)PresentLegacyAction(action);
             foreach(var actor in Model.Units.Where(u=>u.Enabled))PresentLegacyOwner(actor);
             foreach(var hit in Model.Hits)PresentLegacyHit(hit);
@@ -611,6 +621,7 @@ namespace YesterdayConvoy
             PresentFormationSynergyEffects();
             for(int i=legacyFxUsed;i<legacyFxViews.Count;i++)legacyFxViews[i].Renderer.enabled=false;
             for(int i=legacyComicUsed;i<legacyComicBursts.Count;i++)legacyComicBursts[i].Ink.enabled=legacyComicBursts[i].Light.enabled=false;
+            for(int i=wisadelOrdinaryTrailsUsed;i<wisadelOrdinaryTrails.Count;i++)wisadelOrdinaryTrails[i].enabled=false;
             foreach(var old in legacyComicFaceIds.Keys.Where(h=>Model.Clock-h.At>.55/LegacyVisualRate+.1).ToArray())legacyComicFaceIds.Remove(old);
             PresentLegacySea();
             foreach(string key in legacyPatriotPages.Where(p=>Time.frameCount-p.Value.LastUse>8).Select(p=>p.Key).ToArray())
@@ -672,6 +683,8 @@ namespace YesterdayConvoy
             foreach(var burst in legacyComicBursts)
             {if(burst.Ink!=null){burst.Ink.enabled=false;Destroy(burst.Ink.gameObject);}if(burst.Light!=null){burst.Light.enabled=false;Destroy(burst.Light.gameObject);}}
             legacyComicBursts.Clear();legacyComicFaceIds.Clear();legacyComicFaceSequence=0;legacyComicUsed=0;
+            foreach(var trail in wisadelOrdinaryTrails){trail.enabled=false;Destroy(trail.gameObject);}
+            wisadelOrdinaryTrails.Clear();wisadelOrdinaryTrailsUsed=0;
             if(legacyHdrMaterial!=null)Destroy(legacyHdrMaterial);if(legacyPremultMaterial!=null)Destroy(legacyPremultMaterial);if(legacyPatriotMaterial!=null)Destroy(legacyPatriotMaterial);
             if(legacySeaMaterial!=null)Destroy(legacySeaMaterial);if(legacySeaMesh!=null)Destroy(legacySeaMesh);
             if(legacyComicMaterial!=null)Destroy(legacyComicMaterial);legacyComicMaterial=null;

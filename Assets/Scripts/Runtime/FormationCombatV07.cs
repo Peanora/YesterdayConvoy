@@ -293,6 +293,7 @@ namespace YesterdayConvoy
             bool healer=s.Spec?.DamageType=="治疗";
             if(Vector2.Distance(u.Position,target.Position)>u.Range&&!healer)
             {if(s.RidingCarrier==0)Move(u,target.Position,dt,true);return;}
+            if(TalulahRainEnd(u)+1e-8>=Clock)return;
             Face(u,target.Position);
             if(!summon&&u.SkillRequired>0&&u.SkillCharge+1e-5>=u.SkillRequired&&Buff(u,"silence")==0)
             {if(CastCampaignSkill(u,target))return;}
