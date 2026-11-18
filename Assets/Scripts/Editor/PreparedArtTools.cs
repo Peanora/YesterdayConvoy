@@ -63,6 +63,15 @@ namespace YesterdayConvoy.Editor
         static Plan CreatePlan()
         {
             var plan=new Plan();
+            // Keep the defender library available independently of the current encounter lineup.
+            for(int defender=1;defender<=30;defender++)
+            {
+                string id=$"D{defender:00}";
+                if(!DefenderVfxArt.SupportsArtId(id))continue;
+                RequireSource($"DefenderArt/{id}/manifest.json");
+                RequireSource($"DefenderArt/{id}B/manifest.json");
+            }
+            RequireSource("DefenderArt/D28Chess/manifest.json");
             foreach(string logicalRoot in Roots)
             {
                 string sourceRoot=ArtSourcePaths.ManifestDirectory(logicalRoot);

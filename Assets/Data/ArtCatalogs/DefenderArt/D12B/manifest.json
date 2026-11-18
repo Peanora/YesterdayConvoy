@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "task": "D12B",
+  "ppu": 118.4,
+  "referenceSpeed": 0.75,
+  "height": 2,
+  "clips": [
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 60,
+      "duration": 1,
+      "fps": 60,
+      "loop": true,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.40471326529979706,
+      "pivotY": 0.12355186141977374,
+      "sourceBounds": [
+        -207.1157989501953,
+        -32.751163482666016,
+        335.50213623046875,
+        545.1707153320312
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 60,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    },
+    {
+      "key": "attack",
+      "source": "Attack",
+      "count": 61,
+      "duration": 1,
+      "fps": 60,
+      "loop": false,
+      "cell": 256,
+      "columns": 8,
+      "pivotX": 0.40471326529979706,
+      "pivotY": 0.12355186141977374,
+      "sourceBounds": [
+        -207.1157989501953,
+        -32.751163482666016,
+        335.50213623046875,
+        545.1707153320312
+      ],
+      "scale": 0.38,
+      "pages": [
+        {
+          "file": "attack-00.png",
+          "count": 61,
+          "width": 2048,
+          "height": 2048
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "attack-00.png",
+      "sha256": "d1a943abddadcbcd1d372a86c418e5acb83b9b34a6c7507a6bfcd0ebb63f692c"
+    },
+    {
+      "file": "idle-00.png",
+      "sha256": "b2fb906a039cb14507f62bbf57906b8dc76019799124ec2ff005198bda1841bf"
+    }
+  ],
+  "provenance": "UNAPPROVED art preview. Original model char_278_orchid; open redistribution license unconfirmed. No gameplay integration.",
+  "rearVariant": true
+}

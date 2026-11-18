@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D09F",
+      "unitId": "D09",
+      "name": "炎熔",
+      "variant": "战斗正面",
+      "characterId": "char_121_lava",
+      "reference": "https://prts.wiki/w/%E7%82%8E%E7%86%94",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/meta.json",
+      "model": "char_121_lava",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_121_lava.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/front/char_121_lava.skel",
+          "bytes": 57869,
+          "sha256": "271d8b92fec2450280d96504e12a33e0daeb3213a5ba6117ca0c49cdadcf29f7"
+        },
+        {
+          "file": "char_121_lava.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/front/char_121_lava.atlas",
+          "bytes": 4141,
+          "sha256": "cde239e1ac9e52f1e874e06864361746c7bc1dceaac3caa1ae6bed58b53fee18"
+        },
+        {
+          "file": "char_121_lava.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/front/char_121_lava.png",
+          "bytes": 49286,
+          "sha256": "4ce8844ebd603dcd814d90b0165bab102f7aa11cbfc117ad55b8159120297ec3"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D09B",
+      "unitId": "D09",
+      "name": "炎熔",
+      "variant": "战斗背面",
+      "characterId": "char_121_lava",
+      "reference": "https://prts.wiki/w/%E7%82%8E%E7%86%94",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/meta.json",
+      "model": "char_121_lava",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_121_lava.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/back/char_121_lava.skel",
+          "bytes": 33280,
+          "sha256": "fa0ecfe238404d7f6aeb00d0be7168f3483363648e84133763dd55c55a15a05a"
+        },
+        {
+          "file": "char_121_lava.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/back/char_121_lava.atlas",
+          "bytes": 2768,
+          "sha256": "58bf6207fa6fa5a77d1015eb1c1b58947ede6decb3aabbd7f3fe136335f8b17b"
+        },
+        {
+          "file": "char_121_lava.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/back/char_121_lava.png",
+          "bytes": 40438,
+          "sha256": "eb7658c68a0a8d7422a9219eae418f89518960a29e22a3590f37139b214de1f8"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D09H",
+      "unitId": "D09",
+      "name": "炎熔",
+      "variant": "基建动作",
+      "characterId": "char_121_lava",
+      "reference": "https://prts.wiki/w/%E7%82%8E%E7%86%94",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/meta.json",
+      "model": "build_char_121_lava",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_121_lava.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/build/build_char_121_lava.skel",
+          "bytes": 77557,
+          "sha256": "1bf1bbbed20b78cb0abc8524f5ff50e8a99737b522ddbd373585d36d1a460893"
+        },
+        {
+          "file": "build_char_121_lava.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/build/build_char_121_lava.atlas",
+          "bytes": 4273,
+          "sha256": "192c4a50ba68fbaa78322a2508f38fe0aefcdf08966f41bbab3804e040b6b500"
+        },
+        {
+          "file": "build_char_121_lava.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_121_lava/defaultskin/build/build_char_121_lava.png",
+          "bytes": 97380,
+          "sha256": "d945fe35a058b62f9c6769c338044655dcc23e99509127adad16d17ffad860be"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

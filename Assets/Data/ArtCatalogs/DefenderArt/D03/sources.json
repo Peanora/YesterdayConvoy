@@ -1,0 +1,112 @@
+{
+  "sources": [
+    {
+      "task": "D03F",
+      "unitId": "D03",
+      "name": "斑点",
+      "variant": "战斗正面",
+      "characterId": "char_284_spot",
+      "reference": "https://prts.wiki/w/%E6%96%91%E7%82%B9",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/meta.json",
+      "model": "char_284_spot",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/front/",
+      "files": [
+        {
+          "file": "char_284_spot.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/front/char_284_spot.skel",
+          "bytes": 74103,
+          "sha256": "3350a6d49027617b7893afd8482d8f642c198110dbd805fbc964e537a28b75e3"
+        },
+        {
+          "file": "char_284_spot.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/front/char_284_spot.atlas",
+          "bytes": 7504,
+          "sha256": "4d6657dd654df3c4fcb5f6e6f03aa26440e433656f8ad102954235f039e47566"
+        },
+        {
+          "file": "char_284_spot.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/front/char_284_spot.png",
+          "bytes": 78544,
+          "sha256": "20f24eb7ad1af9c6d18a78529c17fe19184f13604246038e425f0988d0223c40"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D03B",
+      "unitId": "D03",
+      "name": "斑点",
+      "variant": "战斗背面",
+      "characterId": "char_284_spot",
+      "reference": "https://prts.wiki/w/%E6%96%91%E7%82%B9",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/meta.json",
+      "model": "char_284_spot",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/back/",
+      "files": [
+        {
+          "file": "char_284_spot.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/back/char_284_spot.skel",
+          "bytes": 60468,
+          "sha256": "c5bd6f6251920c526ea4b8e0fb942ec730f6289a40ccae3baa9cde7d931f8328"
+        },
+        {
+          "file": "char_284_spot.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/back/char_284_spot.atlas",
+          "bytes": 4439,
+          "sha256": "aa311403169110c46c5db5bb588ca1ab1145a122ec8a42b817837311a7e1ab01"
+        },
+        {
+          "file": "char_284_spot.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/back/char_284_spot.png",
+          "bytes": 55682,
+          "sha256": "890ce6735c26bba3af3b90c1fb89126ba7dab3d3b12f4ba0b0a2191a10c5a40e"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    },
+    {
+      "task": "D03H",
+      "unitId": "D03",
+      "name": "斑点",
+      "variant": "基建动作",
+      "characterId": "char_284_spot",
+      "reference": "https://prts.wiki/w/%E6%96%91%E7%82%B9",
+      "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/meta.json",
+      "model": "build_char_284_spot",
+      "prefix": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/build/",
+      "files": [
+        {
+          "file": "build_char_284_spot.skel",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/build/build_char_284_spot.skel",
+          "bytes": 66769,
+          "sha256": "46d84043fd91f545f00001539f8fa8319f4b26a3b14255deee1106adb384d63d"
+        },
+        {
+          "file": "build_char_284_spot.atlas",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/build/build_char_284_spot.atlas",
+          "bytes": 7746,
+          "sha256": "f32982bdcc632b6312c21908e2e1a82722e7fb6cac6d5fd5e4e3dfee7da4460d"
+        },
+        {
+          "file": "build_char_284_spot.png",
+          "url": "https://torappu.prts.wiki/assets/char_spine/char_284_spot/defaultskin/build/build_char_284_spot.png",
+          "bytes": 141328,
+          "sha256": "fe915932b60cd7bdf34121b0e0a1aa6d42b0764cd47becad648245335acf56cc"
+        }
+      ],
+      "author": "明日方舟原权利人；具体原画/动画师未确认",
+      "rights": "Original proprietary character/texture/animation; not CC0; redistribution license unconfirmed. External preview pending human approval.",
+      "unityImported": false,
+      "humanApproved": false
+    }
+  ],
+  "rights": "Original Arknights proprietary media; not CC0. Public redistribution license unconfirmed. User requested source inclusion; this is not rightsholder permission.",
+  "use": "Approved default front battle idle/attack/death, Melantha attack phases, Spot original Skill posture for basic healing; stationary defenders. Base Move and back variants not imported.",
+  "processing": "Original skeletal preview raster export 60fps; alpha-preserving copies. No Spine runtime or raw skeleton files shipped."
+}

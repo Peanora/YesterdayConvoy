@@ -1,6 +1,6 @@
 # 工程目录与场景规范
 
-当前正式版本的唯一地图和构建入口是 `Assets/Scenes/FormationBattle.unity`。三个位面共用这张实体棋盘。旧场景从当前工程和菜单退役，其旧模型由 Git 历史留存。现役角色与守军模型位于 `Assets/Art/Characters`，动态加载清单位于 `Assets/Data/ArtCatalogs`，实际被棋盘复用的门、地面材质与角色特效继续保留。使用 Unity 的 `Yesterday Convoy → Baseline → Validate` 或 `Build Windows` 校验和构建。
+当前正式版本的唯一地图和构建入口是 `Assets/Scenes/FormationBattle.unity`。三个位面共用这张实体棋盘。旧场景从当前工程和菜单退役，旧地图与已淘汰的进攻方模型由 Git 历史留存。现役角色与完整守军资源库位于 `Assets/Art/Characters`，动态加载清单位于 `Assets/Data/ArtCatalogs`，棋盘复用的门、地面材质与角色特效继续保留。使用 Unity 的 `Yesterday Convoy → Baseline → Validate` 或 `Build Windows` 校验和构建。
 
 下方按时间保留原目录迁移和旧场景实现的历史记录。
 
