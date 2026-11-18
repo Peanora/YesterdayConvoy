@@ -3,7 +3,7 @@
   "view": "main",
   "timedClips": 17,
   "frames": 2065,
-  "pages": 138,
+  "pages": 352,
   "zeroDurationMetadataStates": 3,
   "runtimeSources": [
     "A_Idle",
@@ -13,9 +13,12 @@
     "B_Die"
   ],
   "ppu": 20.397146059683134,
-  "pngBytes": 31785357,
+  "pngBytes": 182201076,
   "cacheSegments": 17,
-  "originalBytesAndHashesPreserved": true,
+  "originalBytesAndHashesPreserved": false,
+  "originalInputHashesPreserved": true,
+  "sourceRecapturedAtHigherDensity": true,
   "originalTimingEventsAndPivotPreserved": true,
+  "pivotPolicy": "World root preserved via matching per-motion pixel pivots and PPU; normalized image pivots intentionally differ.",
   "unityTests": "NOT_RUN"
 }

@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace YesterdayConvoy
+{
+    // This identity is the original April skin. B20 remains the distinct sale#14
+    // roster identity; its clips must never be used as this card's fallback.
+    internal static class WisadelAprilFxArt
+    {
+        internal const string Task="WIS_APRIL_G9";
+        static readonly string[] Ordinary={"attack_c_start","attack_01_trail","attack_01_hit","attack_01_hit_02"};
+        static readonly string[] S1={"skill_01_start","skill_01_start_02","skill_01_trail","skill_01_hit","skill_01_hit_02"};
+        static readonly string[] S2={"skill_02_buff","skill_02_start","skill_02_hit","skill_02_hit_02"};
+        static readonly string[] S3={"skill_03_buff_f","skill_03_start_game#9","skill_03_trail_game#9",
+            "skill_03_hit_game#9","skill_03_hit_02_game#9","skill_03_hit_03_game#9"};
+        internal static BossRosterFxArt.Clip Get(string suffix)=>BossRosterFxArt.Get("boss/"+Task+"/wisdel_"+suffix);
+        internal static bool Available=>BossRosterFxArt.TryGet("boss/"+Task+"/wisdel_attack_c_start",out _);
+        internal static IEnumerable<ArtSequence> Sequences(int skill)
+        {
+            if(!Available)yield break;
+            foreach(string key in Ordinary.Concat(skill==1?S1:skill==2?S2:S3))yield return Get(key).Sequence;
+        }
+    }
+
+    public sealed partial class FormationBattleController
+    {
+        void LegacyWisadel(string suffix,double age,Vector2 cell,int order=24,bool loop=false,
+            bool flip=false,Vector3? point=null,Vector3? direction=null)
+        {
+            if(age<0||!WisadelAprilFxArt.Available)return;
+            var clip=WisadelAprilFxArt.Get(suffix);if(!clip.Sequence.Ready||loop&&!clip.Loop)return;
+            float roll=0;
+            if(direction.HasValue)
+            {
+                var delta=direction.Value;float x=Vector3.Dot(delta,battleCamera.transform.right),y=Vector3.Dot(delta,battleCamera.transform.up);
+                if(x*x+y*y>1e-8)roll=Mathf.Atan2(y,x)*Mathf.Rad2Deg;
+            }
+            // Native-to-game scale .0045/.0027 is already in the atlas PPU.
+            LegacyDraw(clip.At(age,loop),legacyHdrMaterial,point??ActorWorldPoint(cell),cell,1,order,flip,clip.HdrRange,roll:roll);
+        }
+        Vector3 LegacyWisadelMuzzle(FormationActor actor,FormationPresentationAction action)
+        {
+            // Original front F_Muzzle bone at the exact OnAttack marker, not
+            // BoneFollower's uninitialised (1,1) prefab placeholder. Body sampling
+            // does not contain the FaceSwitcher position, so do not add it again.
+            bool down=action.Animation!=null&&action.Animation.IndexOf("Down",StringComparison.Ordinal)>=0;
+            Vector2 muzzle=down?new Vector2(.3375f,.1125f):new Vector2(.45f,.45f);
+            if(actor.Facing.x<0)muzzle.x=-muzzle.x;
+            return LegacyOwnerPoint(actor,action.From)+battleCamera.transform.right*muzzle.x+battleCamera.transform.up*muzzle.y;
+        }
+        void PresentOriginalWisadelAction(FormationPresentationAction action,FormationFighter actor)
+        {
+            if(!WisadelAprilFxArt.Available)return;
+            double age=(Model.Clock-action.At)*action.Rate;if(age<0)return;
+            int skill=Campaign?.WisadelSkill??3;bool flip=actor.Facing.x<0;
+            bool empoweredAuto=!action.Skill&&skill==2&&WisadelEmpoweredAt(actor,action.LaunchedAt);
+            string cast=action.Skill?(skill==1?"skill_01_start":null):
+                empoweredAuto?"skill_02_start":"attack_c_start";
+            // Each true S3 shell has a source loop action. S1 is one source cast
+            // with multiple applied segments, so its projectile cues do not
+            // restart the Skill_1 caster effect.
+            if(action.ProjectileOnly)
+            {
+                cast=skill==3?"skill_03_start_game#9":null;
+                // Child.At is the true Loop start, not the parent mode-start.
+                // Native FxDelay=.5 remains inside the sampled start clip.
+                age=(Model.Clock-action.At)*action.Rate;
+                if(age<0)return;
+            }
+            if(cast!=null)LegacyWisadel(cast,age,action.From,12,flip:flip,point:LegacyOwnerPoint(actor,action.From));
+            if(action.ProjectileOnly&&skill==3&&!action.Cancelled&&Model.Clock>=action.At)
+                LegacyWisadel("skill_03_hit_03_game#9",age,action.To,32,
+                    point:ActorWorldPoint(action.To)+battleCamera.transform.up*.45f);
+            if(action.Skill&&skill==1&&!action.ProjectileOnly)
+                LegacyWisadel("skill_01_start_02",age,action.From,14,flip:flip,point:LegacyOwnerPoint(actor,action.From));
+            // A cancelled/unlaunched cue cannot leave a fake projectile behind.
+            if(action.Cancelled||Model.Clock<action.LaunchedAt||Model.Clock>=action.ContactAt||action.ContactAt<=action.LaunchedAt)return;
+            // The parent skill action is the mode-start, not an extra seventh
+            // shell. Its real child cues exclusively own S1/S3 flight.
+            if(action.Skill&&!action.ProjectileOnly)return;
+            if(empoweredAuto)return; // Original S2 has no moving main projectile.
+            string trail=action.Skill?(skill==3?"skill_03_trail_game#9":"skill_01_trail"):"attack_01_trail";
+            if(!legacyFlightOrigins.TryGetValue(action.Sequence,out var start))legacyFlightOrigins[action.Sequence]=start=LegacyWisadelMuzzle(actor,action);
+            var end=ActorWorldPoint(action.To)+battleCamera.transform.up*.45f;
+            float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
+            var cell=Vector2.Lerp(action.From,action.To,progress);
+            LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:Vector3.Lerp(start,end,progress),direction:end-start);
+        }
+        void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
+        {
+            int skill=Campaign?.WisadelSkill??3;
+            bool empoweredAuto=!hit.Skill&&skill==2&&WisadelEmpoweredAt(actor,hit.At);
+            string hitKey=hit.Skill?(skill==1?"skill_01_hit":skill==3?"skill_03_hit_game#9":null):
+                empoweredAuto?"skill_02_hit":"attack_01_hit";
+            if(hitKey==null)return;
+            LegacyWisadel(hitKey,age,hit.To,36,point:ActorWorldPoint(hit.To)+battleCamera.transform.up*.45f);
+            // Source _effectsWhenStop is a ground explosion, while OnHit is the
+            // separate target layer. v0.7 has no additional bomb/token damage.
+            // AoE hits share one true projectile stop. Do not multiply its ground
+            // explosion by the number of victims hit in the same impact.
+            var first=Model.Hits.FirstOrDefault(h=>h.FromId==hit.FromId&&h.Skill==hit.Skill&&!h.Heal&&Math.Abs(h.At-hit.At)<1e-5);
+            if(!ReferenceEquals(first,hit))return;
+            var projectile=Model.PresentationActions.LastOrDefault(a=>a.ActorId==actor.Id&&a.Skill==hit.Skill&&!a.Cancelled&&
+                (!a.Skill||a.ProjectileOnly)&&Math.Abs(a.ContactAt-hit.At)<.03);
+            Vector2 center=projectile?.To??hit.To;
+            string stop=hit.Skill?(skill==1?"skill_01_hit_02":"skill_03_hit_02_game#9"):
+                empoweredAuto?"skill_02_hit_02":"attack_01_hit_02";
+            LegacyWisadel(stop,age,center,30);
+        }
+        bool WisadelEmpoweredAt(FormationActor actor,double at)
+        {
+            // Preserve the real S2 grant interval for already applied hits even
+            // after its buff expires. S2's v0.7 grant is exactly 8 simulation sec.
+            return Model.PresentationActions.Any(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly&&!a.Cancelled&&
+                a.ContactAt<=at+1e-6&&at<a.ContactAt+8);
+        }
+        void PresentOriginalWisadelOwner(FormationFighter actor)
+        {
+            if(!actor.Alive||!WisadelAprilFxArt.Available)return;
+            int skill=Campaign?.WisadelSkill??3;double now=Model.Clock;
+            if(skill==2)
+            {
+                double until=Model.LegacyBuffUntil(actor,"wisadel");
+                if(until>now)LegacyWisadel("skill_02_buff",(now-(until-8))*LegacyVisualRate,actor.Position,10,true,
+                    actor.Facing.x<0,FormationDisplayPoint(actor));
+            }
+            else if(skill==3)
+            {
+                var cast=Model.PresentationActions.LastOrDefault(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly);
+                // The true parent already exists during Begin/first windup,
+                // before its first contact callback assigns BusyUntil.
+                bool channel=cast!=null&&!cast.Cancelled&&now>=cast.At&&
+                    (now<cast.ContactAt||Model.LegacyWisadelChannelUntil(actor)>now);
+                if(channel)
+                {
+                    LegacyWisadel("skill_03_buff_f",(now-cast.At)*LegacyVisualRate,actor.Position,10,true,
+                        actor.Facing.x<0,FormationDisplayPoint(actor));
+                    // Before the first child cue is created, the already real
+                    // parent mode-start identifies its first Loop start exactly.
+                    if(!Model.PresentationActions.Any(a=>a.ParentSequence==cast.Sequence&&a.ProjectileOnly))
+                        LegacyWisadel("skill_03_start_game#9",(now-cast.At)*cast.Rate-.833333313,
+                            actor.Position,12,flip:actor.Facing.x<0,point:FormationDisplayPoint(actor));
+                }
+            }
+        }
+    }
+    public sealed partial class FormationBattleModel
+    {
+        internal double LegacyWisadelChannelUntil(FormationActor actor)=>combat.TryGetValue(actor.Id,out var state)?state.BusyUntil:double.NegativeInfinity;
+    }
+}

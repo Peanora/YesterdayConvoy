@@ -76,6 +76,7 @@ namespace YesterdayConvoy
         {
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
+            RefreshFormationAnimationProfiles();
             if(!FormationShowcaseRecorder.Drives(this))
             {Model.Advance(Time.unscaledDeltaTime);TickCampaignSettlement();}
             RefreshFormationOperatingVisibility();
@@ -212,15 +213,6 @@ namespace YesterdayConvoy
             if(!Ready||Camera.current!=battleCamera)return;
             DrawDeploymentGrid();
             DrawCampaignSeaCells();
-            lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.LINES);
-            foreach(var h in Model.Hits)
-            {
-                float age=(float)(Model.Clock-h.At);if(age<0||age>.24f||!FormationPointVisibleInView(h.To))continue;
-                var c=h.Heal?new Color(.35f,1,.65f):h.Skill?new Color(1,.66f,.2f):new Color(1,.88f,.6f);
-                c.a=1-age/.24f;GL.Color(c);
-                GL.Vertex(ActorWorldPoint(h.From)+Vector3.up*.5f);GL.Vertex(ActorWorldPoint(h.To)+Vector3.up*.5f);
-            }
-            GL.End();GL.PopMatrix();
         }
         void OnDestroy()
         {

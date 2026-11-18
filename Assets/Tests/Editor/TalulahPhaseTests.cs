@@ -199,12 +199,12 @@ namespace YesterdayConvoy.Tests
             string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
                 "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
                 "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
-                "ignite-B-caster","ignite-B-target"};
+                "ignite-B-caster","ignite-B-target","target-burn-loop","original-energy-stream","original-fire-impact"};
             var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
             CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
             var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
                 .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(44));
+            Assert.That(pages.Length,Is.EqualTo(47));
             CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
             foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
                 CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);

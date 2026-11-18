@@ -307,7 +307,7 @@ namespace YesterdayConvoy
         }
         void DrawCampaignSeaCells()
         {
-            if(Campaign==null||Model.SeaCells.Count==0)return;
+            if(Campaign==null||Model.SeaCells.Count==0||Model.Phase!=FormationPhase.Preparation)return;
             lineMaterial.SetPass(0);GL.PushMatrix();GL.MultMatrix(Matrix4x4.identity);GL.Begin(GL.QUADS);
             foreach(var cell in Model.SeaCells)
             {

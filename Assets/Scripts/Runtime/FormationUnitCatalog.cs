@@ -7,7 +7,7 @@ namespace YesterdayConvoy
 {
     /// <summary>
     /// Shared deployment/presentation metadata for the existing authored roster. This is not a
-    /// migration of original skills. Looking up metadata never opens or warms animation packages.
+    /// migration of original skills. Source-size queries read metadata only, never pixel pages.
     /// </summary>
     public static class FormationUnitCatalog
     {
@@ -19,7 +19,25 @@ namespace YesterdayConvoy
             public string Name { get; }
             public int Cost { get; }
             public Vector2Int Footprint { get; }
-            public float VisualHeight { get; }
+            readonly float fallbackVisualHeight;
+            public float VisualHeight
+            {
+                get
+                {
+                    var original=BossRosterArt.For(CardId);
+                    if(original!=null)
+                        // Sui is a stage-sized set piece: preserve its proportions at an
+                        // explicit six-unit formation cap rather than normalizing by rarity.
+                        return original.Task=="B21"?Mathf.Min(6,original.Height):original.Height;
+                    if(ArtRoot!=null)
+                    {
+                        var source=ArtCatalog.Read(ArtRoot);
+                        if(source.Height>0)return source.Height;
+                        if(source.Clips.TryGetValue("idle",out var idle))return idle.Height/idle.Ppu;
+                    }
+                    return fallbackVisualHeight;
+                }
+            }
             // Existing formation prototypes: 0 tank, 1 dog, 2 fighter, 3 bow, 4 caster, 5 support.
             public int TemplateKind { get; }
             public CampaignBalance.Stats Stats { get; }
@@ -33,7 +51,7 @@ namespace YesterdayConvoy
                 ArtRoot = artRoot;
                 Name = name;
                 TemplateKind = templateKind;
-                VisualHeight = visualHeight;
+                fallbackVisualHeight = visualHeight;
                 Footprint = footprint;
                 if (!supportOnly)
                 {
@@ -101,18 +119,17 @@ namespace YesterdayConvoy
             Add(list,"M43","泥岩小队践行者组长",0,1.28f);
             AddSpecial(list,"CARD_ORIGINIUM_SLUG","源石虫","OriginiumSlugOriginal",1,1.0f);
             AddSpecial(list,"CARD_TALULAH_TRIAL","塔露拉","TalulahOriginal",4,1.85f);
-            // The approved Wisadel package is serialized Sprite frames, not an ArtCatalog root.
-            AddSpecial(list,"CARD_WISADEL_APRIL","维维美",null,3,1.40f);
+            // Prefer original game#9 metadata through BossRosterArt; the approved user GIF
+            // Sprite references remain the fallback if that original package is absent.
+            AddSpecial(list,"CARD_WISADEL_APRIL","维维美",null,3,292f/173.333333f);
             foreach (var role in BossRosterCatalog.Entries)
             {
                 var rules = FormationCampaignRules.Find(role.CardId);
                 if (rules == null) continue;
                 bool support = rules.Role.Contains("辅助");
                 int kind = support ? 5 : rules.DamageType == "法" || rules.DamageType == "真" ? 4 : rules.Range > 2 ? 3 : 2;
-                float height = rules.Size == "小" ? 1.1f : rules.Size == "重" ? 1.95f : 1.5f;
-                if (role.Task == "B21") height = 2.6f;
                 var definition = new Definition(role.CardId, rules.Name, "BossRoster/" + role.Task + "/main", kind,
-                    height, rules.Size == "重" ? new Vector2Int(2,2) : Vector2Int.one);
+                    1.5f, rules.Size == "重" ? new Vector2Int(2,2) : Vector2Int.one);
                 list.Add(definition); Register(definition);
             }
             all = list.AsReadOnly();

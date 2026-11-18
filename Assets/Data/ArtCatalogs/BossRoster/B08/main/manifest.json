@@ -59,8 +59,8 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6459311872159309,
+      "pivotY": 0.3019958869354753,
       "events": [
         {
           "time": 0.8999999761581421,
@@ -71,50 +71,50 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 86.46847038386943,
       "segments": [
         {
           "firstFrame": 0,
           "count": 101,
           "pages": [
             {
-              "file": "A_Attack-000.png",
+              "file": "hq-A_Attack-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-001.png",
+              "file": "hq-A_Attack-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-002.png",
+              "file": "hq-A_Attack-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-003.png",
+              "file": "hq-A_Attack-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-004.png",
+              "file": "hq-A_Attack-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-005.png",
+              "file": "hq-A_Attack-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Attack-006.png",
+              "file": "hq-A_Attack-006.png",
               "count": 5,
               "width": 2048,
               "height": 1024
@@ -124,48 +124,55 @@
       ],
       "pages": [
         {
-          "file": "A_Attack-000.png",
+          "file": "hq-A_Attack-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-001.png",
+          "file": "hq-A_Attack-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-002.png",
+          "file": "hq-A_Attack-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-003.png",
+          "file": "hq-A_Attack-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-004.png",
+          "file": "hq-A_Attack-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-005.png",
+          "file": "hq-A_Attack-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Attack-006.png",
+          "file": "hq-A_Attack-006.png",
           "count": 5,
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -769.1388549804688,
+        -126.05252838134766,
+        385.0976867675781,
+        647.1318969726562
+      ],
+      "captureSourcePixelsPerBone": 0.3891081167274124
     },
     {
       "key": "A_Die_End",
@@ -176,42 +183,42 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6359621572572418,
+      "pivotY": 0.33657657749657666,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 95.2208392280855,
       "segments": [
         {
           "firstFrame": 0,
           "count": 71,
           "pages": [
             {
-              "file": "A_Die_End-000.png",
+              "file": "hq-A_Die_End-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End-001.png",
+              "file": "hq-A_Die_End-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End-002.png",
+              "file": "hq-A_Die_End-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End-003.png",
+              "file": "hq-A_Die_End-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End-004.png",
+              "file": "hq-A_Die_End-004.png",
               "count": 7,
               "width": 2048,
               "height": 1024
@@ -221,36 +228,43 @@
       ],
       "pages": [
         {
-          "file": "A_Die_End-000.png",
+          "file": "hq-A_Die_End-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End-001.png",
+          "file": "hq-A_Die_End-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End-002.png",
+          "file": "hq-A_Die_End-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End-003.png",
+          "file": "hq-A_Die_End-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End-004.png",
+          "file": "hq-A_Die_End-004.png",
           "count": 7,
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -686.5304565429688,
+        -167.16543579101562,
+        361.6126708984375,
+        557.709228515625
+      ],
+      "captureSourcePixelsPerBone": 0.4284937765263847
     },
     {
       "key": "A_Die_End_2",
@@ -261,60 +275,60 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.5699049968801673,
+      "pivotY": 0.26622663249977185,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 60.893668442493016,
       "segments": [
         {
           "firstFrame": 0,
           "count": 121,
           "pages": [
             {
-              "file": "A_Die_End_2-000.png",
+              "file": "hq-A_Die_End_2-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-001.png",
+              "file": "hq-A_Die_End_2-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-002.png",
+              "file": "hq-A_Die_End_2-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-003.png",
+              "file": "hq-A_Die_End_2-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-004.png",
+              "file": "hq-A_Die_End_2-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-005.png",
+              "file": "hq-A_Die_End_2-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-006.png",
+              "file": "hq-A_Die_End_2-006.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_End_2-007.png",
+              "file": "hq-A_Die_End_2-007.png",
               "count": 9,
               "width": 2048,
               "height": 1536
@@ -324,54 +338,61 @@
       ],
       "pages": [
         {
-          "file": "A_Die_End_2-000.png",
+          "file": "hq-A_Die_End_2-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-001.png",
+          "file": "hq-A_Die_End_2-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-002.png",
+          "file": "hq-A_Die_End_2-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-003.png",
+          "file": "hq-A_Die_End_2-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-004.png",
+          "file": "hq-A_Die_End_2-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-005.png",
+          "file": "hq-A_Die_End_2-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-006.png",
+          "file": "hq-A_Die_End_2-006.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_End_2-007.png",
+          "file": "hq-A_Die_End_2-007.png",
           "count": 9,
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "captureBounds": [
+        -876.1854858398438,
+        -382.70513916015625,
+        614.9552001953125,
+        1256.300537109375
+      ],
+      "captureSourcePixelsPerBone": 0.27402150799121855
     },
     {
       "key": "A_Die_Start",
@@ -382,36 +403,36 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6272848300638169,
+      "pivotY": 0.30420472540951904,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 93.13043697849521,
       "segments": [
         {
           "firstFrame": 0,
           "count": 61,
           "pages": [
             {
-              "file": "A_Die_Start-000.png",
+              "file": "hq-A_Die_Start-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_Start-001.png",
+              "file": "hq-A_Die_Start-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_Start-002.png",
+              "file": "hq-A_Die_Start-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Die_Start-003.png",
+              "file": "hq-A_Die_Start-003.png",
               "count": 13,
               "width": 2048,
               "height": 2048
@@ -421,30 +442,37 @@
       ],
       "pages": [
         {
-          "file": "A_Die_Start-000.png",
+          "file": "hq-A_Die_Start-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_Start-001.png",
+          "file": "hq-A_Die_Start-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_Start-002.png",
+          "file": "hq-A_Die_Start-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Die_Start-003.png",
+          "file": "hq-A_Die_Start-003.png",
           "count": 13,
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "captureBounds": [
+        -691.3391723632812,
+        -162.46014404296875,
+        380.3305358886719,
+        640.86767578125
+      ],
+      "captureSourcePixelsPerBone": 0.4190869664032284
     },
     {
       "key": "A_Idle",
@@ -455,78 +483,78 @@
       "loop": true,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6457824696832164,
+      "pivotY": 0.22960118219377185,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 99.29881638696054,
       "segments": [
         {
           "firstFrame": 0,
           "count": 162,
           "pages": [
             {
-              "file": "A_Idle-000.png",
+              "file": "hq-A_Idle-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-001.png",
+              "file": "hq-A_Idle-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-002.png",
+              "file": "hq-A_Idle-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-003.png",
+              "file": "hq-A_Idle-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-004.png",
+              "file": "hq-A_Idle-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-005.png",
+              "file": "hq-A_Idle-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-006.png",
+              "file": "hq-A_Idle-006.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-007.png",
+              "file": "hq-A_Idle-007.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-008.png",
+              "file": "hq-A_Idle-008.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-009.png",
+              "file": "hq-A_Idle-009.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Idle-010.png",
+              "file": "hq-A_Idle-010.png",
               "count": 2,
               "width": 2048,
               "height": 512
@@ -536,72 +564,79 @@
       ],
       "pages": [
         {
-          "file": "A_Idle-000.png",
+          "file": "hq-A_Idle-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-001.png",
+          "file": "hq-A_Idle-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-002.png",
+          "file": "hq-A_Idle-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-003.png",
+          "file": "hq-A_Idle-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-004.png",
+          "file": "hq-A_Idle-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-005.png",
+          "file": "hq-A_Idle-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-006.png",
+          "file": "hq-A_Idle-006.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-007.png",
+          "file": "hq-A_Idle-007.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-008.png",
+          "file": "hq-A_Idle-008.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-009.png",
+          "file": "hq-A_Idle-009.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Idle-010.png",
+          "file": "hq-A_Idle-010.png",
           "count": 2,
           "width": 2048,
           "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -669.5884399414062,
+        -26.873201370239258,
+        335.50982666015625,
+        646.525634765625
+      ],
+      "captureSourcePixelsPerBone": 0.4468446737413224
     },
     {
       "key": "A_Move",
@@ -612,60 +647,60 @@
       "loop": true,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6513554696080011,
+      "pivotY": 0.23328536583329562,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 100.09828827295756,
       "segments": [
         {
           "firstFrame": 0,
           "count": 121,
           "pages": [
             {
-              "file": "A_Move-000.png",
+              "file": "hq-A_Move-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-001.png",
+              "file": "hq-A_Move-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-002.png",
+              "file": "hq-A_Move-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-003.png",
+              "file": "hq-A_Move-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-004.png",
+              "file": "hq-A_Move-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-005.png",
+              "file": "hq-A_Move-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-006.png",
+              "file": "hq-A_Move-006.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Move-007.png",
+              "file": "hq-A_Move-007.png",
               "count": 9,
               "width": 2048,
               "height": 1536
@@ -675,54 +710,61 @@
       ],
       "pages": [
         {
-          "file": "A_Move-000.png",
+          "file": "hq-A_Move-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-001.png",
+          "file": "hq-A_Move-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-002.png",
+          "file": "hq-A_Move-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-003.png",
+          "file": "hq-A_Move-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-004.png",
+          "file": "hq-A_Move-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-005.png",
+          "file": "hq-A_Move-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-006.png",
+          "file": "hq-A_Move-006.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Move-007.png",
+          "file": "hq-A_Move-007.png",
           "count": 9,
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "captureBounds": [
+        -670.5751342773438,
+        -41.21128845214844,
+        326.49554443359375,
+        647.539306640625
+      ],
+      "captureSourcePixelsPerBone": 0.450442297228309
     },
     {
       "key": "A_Skill_1",
@@ -733,8 +775,8 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6192821517676308,
+      "pivotY": 0.2880980535268931,
       "events": [
         {
           "time": 0.9666666388511658,
@@ -745,56 +787,56 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 83.84693510249235,
       "segments": [
         {
           "firstFrame": 0,
           "count": 121,
           "pages": [
             {
-              "file": "A_Skill_1-000.png",
+              "file": "hq-A_Skill_1-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-001.png",
+              "file": "hq-A_Skill_1-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-002.png",
+              "file": "hq-A_Skill_1-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-003.png",
+              "file": "hq-A_Skill_1-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-004.png",
+              "file": "hq-A_Skill_1-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-005.png",
+              "file": "hq-A_Skill_1-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-006.png",
+              "file": "hq-A_Skill_1-006.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_1-007.png",
+              "file": "hq-A_Skill_1-007.png",
               "count": 9,
               "width": 2048,
               "height": 1536
@@ -804,54 +846,61 @@
       ],
       "pages": [
         {
-          "file": "A_Skill_1-000.png",
+          "file": "hq-A_Skill_1-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-001.png",
+          "file": "hq-A_Skill_1-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-002.png",
+          "file": "hq-A_Skill_1-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-003.png",
+          "file": "hq-A_Skill_1-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-004.png",
+          "file": "hq-A_Skill_1-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-005.png",
+          "file": "hq-A_Skill_1-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-006.png",
+          "file": "hq-A_Skill_1-006.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_1-007.png",
+          "file": "hq-A_Skill_1-007.png",
           "count": 9,
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "captureBounds": [
+        -757.0245971679688,
+        -114.23302459716797,
+        433.29998779296875,
+        689.3222045898438
+      ],
+      "captureSourcePixelsPerBone": 0.3773112079612156
     },
     {
       "key": "A_Skill_2",
@@ -862,8 +911,8 @@
       "loop": false,
       "cell": 512,
       "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotX": 0.6668397922415772,
+      "pivotY": 0.2840985598992226,
       "events": [
         {
           "time": 0.8999999761581421,
@@ -874,74 +923,74 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 87.04925718774555,
       "segments": [
         {
           "firstFrame": 0,
           "count": 171,
           "pages": [
             {
-              "file": "A_Skill_2-000.png",
+              "file": "hq-A_Skill_2-000.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-001.png",
+              "file": "hq-A_Skill_2-001.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-002.png",
+              "file": "hq-A_Skill_2-002.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-003.png",
+              "file": "hq-A_Skill_2-003.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-004.png",
+              "file": "hq-A_Skill_2-004.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-005.png",
+              "file": "hq-A_Skill_2-005.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-006.png",
+              "file": "hq-A_Skill_2-006.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-007.png",
+              "file": "hq-A_Skill_2-007.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-008.png",
+              "file": "hq-A_Skill_2-008.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-009.png",
+              "file": "hq-A_Skill_2-009.png",
               "count": 16,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "A_Skill_2-010.png",
+              "file": "hq-A_Skill_2-010.png",
               "count": 11,
               "width": 2048,
               "height": 1536
@@ -951,72 +1000,79 @@
       ],
       "pages": [
         {
-          "file": "A_Skill_2-000.png",
+          "file": "hq-A_Skill_2-000.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-001.png",
+          "file": "hq-A_Skill_2-001.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-002.png",
+          "file": "hq-A_Skill_2-002.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-003.png",
+          "file": "hq-A_Skill_2-003.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-004.png",
+          "file": "hq-A_Skill_2-004.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-005.png",
+          "file": "hq-A_Skill_2-005.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-006.png",
+          "file": "hq-A_Skill_2-006.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-007.png",
+          "file": "hq-A_Skill_2-007.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-008.png",
+          "file": "hq-A_Skill_2-008.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-009.png",
+          "file": "hq-A_Skill_2-009.png",
           "count": 16,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "A_Skill_2-010.png",
+          "file": "hq-A_Skill_2-010.png",
           "count": 11,
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "captureBounds": [
+        -791.3358154296875,
+        -165.6400146484375,
+        355.1997375488281,
+        730.0281982421875
+      ],
+      "captureSourcePixelsPerBone": 0.391721657344855
     },
     {
       "key": "B_Attack",
@@ -1025,10 +1081,10 @@
       "count": 101,
       "fps": 60,
       "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.22534483491991825,
+      "pivotY": 0.31167635370668256,
       "events": [
         {
           "time": 0.8666666746139526,
@@ -1039,51 +1095,165 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 40.917706124329406,
       "segments": [
         {
           "firstFrame": 0,
           "count": 101,
           "pages": [
             {
-              "file": "B_Attack-000.png",
-              "count": 16,
+              "file": "hq-B_Attack-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-001.png",
-              "count": 16,
+              "file": "hq-B_Attack-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-002.png",
-              "count": 16,
+              "file": "hq-B_Attack-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-003.png",
-              "count": 16,
+              "file": "hq-B_Attack-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-004.png",
-              "count": 16,
+              "file": "hq-B_Attack-004.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-005.png",
-              "count": 16,
+              "file": "hq-B_Attack-005.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Attack-006.png",
-              "count": 5,
+              "file": "hq-B_Attack-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-020.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-021.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-022.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-023.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-024.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Attack-025.png",
+              "count": 1,
               "width": 2048,
               "height": 1024
             }
@@ -1092,48 +1262,169 @@
       ],
       "pages": [
         {
-          "file": "B_Attack-000.png",
-          "count": 16,
+          "file": "hq-B_Attack-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-001.png",
-          "count": 16,
+          "file": "hq-B_Attack-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-002.png",
-          "count": 16,
+          "file": "hq-B_Attack-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-003.png",
-          "count": 16,
+          "file": "hq-B_Attack-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-004.png",
-          "count": 16,
+          "file": "hq-B_Attack-004.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-005.png",
-          "count": 16,
+          "file": "hq-B_Attack-005.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Attack-006.png",
-          "count": 5,
+          "file": "hq-B_Attack-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-020.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-021.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-022.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-023.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-024.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack-025.png",
+          "count": 1,
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -911.7265625,
+        -43.93689727783203,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.1841296775594823
     },
     {
       "key": "B_Die",
@@ -1142,572 +1433,111 @@
       "count": 61,
       "fps": 60,
       "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.6125892751104305,
+      "pivotY": 0.32544115466318563,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 135.5729400542028,
       "segments": [
         {
           "firstFrame": 0,
           "count": 61,
           "pages": [
             {
-              "file": "B_Die-000.png",
-              "count": 16,
+              "file": "hq-B_Die-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Die-001.png",
-              "count": 16,
+              "file": "hq-B_Die-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Die-002.png",
-              "count": 16,
+              "file": "hq-B_Die-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Die-003.png",
-              "count": 13,
-              "width": 2048,
-              "height": 2048
-            }
-          ]
-        }
-      ],
-      "pages": [
-        {
-          "file": "B_Die-000.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Die-001.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Die-002.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Die-003.png",
-          "count": 13,
-          "width": 2048,
-          "height": 2048
-        }
-      ]
-    },
-    {
-      "key": "B_Idle",
-      "source": "B_Idle",
-      "duration": 4,
-      "count": 241,
-      "fps": 60,
-      "loop": true,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
-      "events": [],
-      "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
-      "segments": [
-        {
-          "firstFrame": 0,
-          "count": 241,
-          "pages": [
-            {
-              "file": "B_Idle-000.png",
-              "count": 16,
+              "file": "hq-B_Die-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-001.png",
-              "count": 16,
+              "file": "hq-B_Die-004.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-002.png",
-              "count": 16,
+              "file": "hq-B_Die-005.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-003.png",
-              "count": 16,
+              "file": "hq-B_Die-006.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-004.png",
-              "count": 16,
+              "file": "hq-B_Die-007.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-005.png",
-              "count": 16,
+              "file": "hq-B_Die-008.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-006.png",
-              "count": 16,
+              "file": "hq-B_Die-009.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-007.png",
-              "count": 16,
+              "file": "hq-B_Die-010.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-008.png",
-              "count": 16,
+              "file": "hq-B_Die-011.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-009.png",
-              "count": 16,
+              "file": "hq-B_Die-012.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-010.png",
-              "count": 16,
+              "file": "hq-B_Die-013.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-011.png",
-              "count": 16,
+              "file": "hq-B_Die-014.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Idle-012.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Idle-013.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Idle-014.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Idle-015.png",
+              "file": "hq-B_Die-015.png",
               "count": 1,
-              "width": 2048,
-              "height": 512
-            }
-          ]
-        }
-      ],
-      "pages": [
-        {
-          "file": "B_Idle-000.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-001.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-002.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-003.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-004.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-005.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-006.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-007.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-008.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-009.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-010.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-011.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-012.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-013.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-014.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Idle-015.png",
-          "count": 1,
-          "width": 2048,
-          "height": 512
-        }
-      ]
-    },
-    {
-      "key": "B_Move",
-      "source": "B_Move",
-      "duration": 4,
-      "count": 241,
-      "fps": 60,
-      "loop": true,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
-      "events": [],
-      "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
-      "segments": [
-        {
-          "firstFrame": 0,
-          "count": 241,
-          "pages": [
-            {
-              "file": "B_Move-000.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-001.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-002.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-003.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-004.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-005.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-006.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-007.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-008.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-009.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-010.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-011.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-012.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-013.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-014.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Move-015.png",
-              "count": 1,
-              "width": 2048,
-              "height": 512
-            }
-          ]
-        }
-      ],
-      "pages": [
-        {
-          "file": "B_Move-000.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-001.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-002.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-003.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-004.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-005.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-006.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-007.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-008.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-009.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-010.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-011.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-012.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-013.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-014.png",
-          "count": 16,
-          "width": 2048,
-          "height": 2048
-        },
-        {
-          "file": "B_Move-015.png",
-          "count": 1,
-          "width": 2048,
-          "height": 512
-        }
-      ]
-    },
-    {
-      "key": "B_Skill_1",
-      "source": "B_Skill_1",
-      "duration": 1.6666666269302368,
-      "count": 101,
-      "fps": 60,
-      "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
-      "events": [
-        {
-          "time": 0.800000011920929,
-          "name": "OnAttack",
-          "int": 0,
-          "float": 0,
-          "string": ""
-        }
-      ],
-      "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
-      "segments": [
-        {
-          "firstFrame": 0,
-          "count": 101,
-          "pages": [
-            {
-              "file": "B_Skill_1-000.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-001.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-002.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-003.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-004.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-005.png",
-              "count": 16,
-              "width": 2048,
-              "height": 2048
-            },
-            {
-              "file": "B_Skill_1-006.png",
-              "count": 5,
               "width": 2048,
               "height": 1024
             }
@@ -1716,60 +1546,1649 @@
       ],
       "pages": [
         {
-          "file": "B_Skill_1-000.png",
-          "count": 16,
+          "file": "hq-B_Die-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-001.png",
-          "count": 16,
+          "file": "hq-B_Die-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-002.png",
-          "count": 16,
+          "file": "hq-B_Die-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-003.png",
-          "count": 16,
+          "file": "hq-B_Die-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-004.png",
-          "count": 16,
+          "file": "hq-B_Die-004.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-005.png",
-          "count": 16,
+          "file": "hq-B_Die-005.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_1-006.png",
-          "count": 5,
+          "file": "hq-B_Die-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-015.png",
+          "count": 1,
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -925.1505737304688,
+        -327.9360046386719,
+        547.1943969726562,
+        913.9207153320312
+      ],
+      "captureSourcePixelsPerBone": 0.6100782302439126
     },
     {
-      "key": "B_Skill_2",
-      "source": "B_Skill_2",
-      "duration": 2.8333332538604736,
-      "count": 171,
+      "key": "B_Idle",
+      "source": "B_Idle",
+      "duration": 4,
+      "count": 241,
+      "fps": 60,
+      "loop": true,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.2274961100472217,
+      "pivotY": 0.34399579186780294,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 40.79429211936627,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 241,
+          "pages": [
+            {
+              "file": "hq-B_Idle-000.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-001.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-002.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-003.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-004.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-020.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-021.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-022.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-023.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-024.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-025.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-026.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-027.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-028.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-029.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-030.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-031.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-032.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-033.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-034.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-035.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-036.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-037.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-038.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-039.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-040.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-041.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-042.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-043.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-044.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-045.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-046.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-047.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-048.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-049.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-050.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-051.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-052.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-053.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-054.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-055.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-056.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-057.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-058.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-059.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Idle-060.png",
+              "count": 1,
+              "width": 2048,
+              "height": 1024
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "hq-B_Idle-000.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-001.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-002.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-003.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-004.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-020.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-021.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-022.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-023.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-024.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-025.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-026.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-027.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-028.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-029.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-030.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-031.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-032.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-033.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-034.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-035.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-036.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-037.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-038.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-039.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-040.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-041.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-042.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-043.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-044.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-045.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-046.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-047.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-048.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-049.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-050.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-051.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-052.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-053.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-054.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-055.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-056.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-057.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-058.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-059.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-060.png",
+          "count": 1,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "captureBounds": [
+        -926.48486328125,
+        -398.16357421875,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.1835743145371482
+    },
+    {
+      "key": "B_Move",
+      "source": "B_Move",
+      "duration": 4,
+      "count": 241,
+      "fps": 60,
+      "loop": true,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.22683886849304707,
+      "pivotY": 0.3431459225942278,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 40.831996646973835,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 241,
+          "pages": [
+            {
+              "file": "hq-B_Move-000.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-001.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-002.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-003.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-004.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-020.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-021.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-022.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-023.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-024.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-025.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-026.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-027.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-028.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-029.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-030.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-031.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-032.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-033.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-034.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-035.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-036.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-037.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-038.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-039.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-040.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-041.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-042.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-043.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-044.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-045.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-046.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-047.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-048.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-049.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-050.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-051.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-052.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-053.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-054.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-055.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-056.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-057.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-058.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-059.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Move-060.png",
+              "count": 1,
+              "width": 2048,
+              "height": 1024
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "hq-B_Move-000.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-001.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-002.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-003.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-004.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-020.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-021.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-022.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-023.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-024.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-025.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-026.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-027.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-028.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-029.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-030.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-031.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-032.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-033.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-034.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-035.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-036.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-037.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-038.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-039.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-040.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-041.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-042.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-043.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-044.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-045.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-046.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-047.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-048.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-049.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-050.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-051.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-052.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-053.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-054.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-055.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-056.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-057.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-058.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-059.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-060.png",
+          "count": 1,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "captureBounds": [
+        -921.966552734375,
+        -390.298095703125,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.18374398491138225
+    },
+    {
+      "key": "B_Skill_1",
+      "source": "B_Skill_1",
+      "duration": 1.6666666269302368,
+      "count": 101,
       "fps": 60,
       "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.22669270905836736,
+      "pivotY": 0.33597470859533407,
       "events": [
         {
           "time": 0.800000011920929,
@@ -1780,149 +3199,892 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 40.840381497878326,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 171,
+          "count": 101,
           "pages": [
             {
-              "file": "B_Skill_2-000.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-001.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-002.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-003.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-004.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-004.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-005.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-005.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-006.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-006.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-007.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-007.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-008.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-008.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-009.png",
-              "count": 16,
+              "file": "hq-B_Skill_1-009.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_2-010.png",
-              "count": 11,
+              "file": "hq-B_Skill_1-010.png",
+              "count": 4,
               "width": 2048,
-              "height": 1536
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-020.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-021.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-022.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-023.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-024.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_1-025.png",
+              "count": 1,
+              "width": 2048,
+              "height": 1024
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "B_Skill_2-000.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-001.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-002.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-003.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-004.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-004.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-005.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-005.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-006.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-006.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-007.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-007.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-008.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-008.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-009.png",
-          "count": 16,
+          "file": "hq-B_Skill_1-009.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_2-010.png",
-          "count": 11,
+          "file": "hq-B_Skill_1-010.png",
+          "count": 4,
           "width": 2048,
-          "height": 1536
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-020.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-021.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-022.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-023.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-024.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1-025.png",
+          "count": 1,
+          "width": 2048,
+          "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -920.962890625,
+        -310.7434997558594,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.18378171674045246
+    },
+    {
+      "key": "B_Skill_2",
+      "source": "B_Skill_2",
+      "duration": 2.8333332538604736,
+      "count": 171,
+      "fps": 60,
+      "loop": false,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.22675034805365413,
+      "pivotY": 0.3406369824057619,
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 40.83707487328154,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 171,
+          "pages": [
+            {
+              "file": "hq-B_Skill_2-000.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-001.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-002.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-003.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-004.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-020.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-021.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-022.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-023.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-024.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-025.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-026.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-027.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-028.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-029.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-030.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-031.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-032.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-033.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-034.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-035.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-036.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-037.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-038.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-039.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-040.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-041.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_2-042.png",
+              "count": 3,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "hq-B_Skill_2-000.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-001.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-002.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-003.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-004.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-020.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-021.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-022.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-023.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-024.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-025.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-026.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-027.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-028.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-029.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-030.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-031.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-032.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-033.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-034.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-035.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-036.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-037.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-038.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-039.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-040.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-041.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2-042.png",
+          "count": 3,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "captureBounds": [
+        -921.358642578125,
+        -362.5544738769531,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.18376683692976692
     },
     {
       "key": "B_Skill_3_End",
@@ -1931,71 +4093,222 @@
       "count": 61,
       "fps": 60,
       "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.22702095937721395,
+      "pivotY": 0.35330982546398493,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 40.821550486463224,
       "segments": [
         {
           "firstFrame": 0,
           "count": 61,
           "pages": [
             {
-              "file": "B_Skill_3_End-000.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_End-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_End-001.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_End-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_End-002.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_End-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_End-003.png",
-              "count": 13,
+              "file": "hq-B_Skill_3_End-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-004.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_End-015.png",
+              "count": 1,
+              "width": 2048,
+              "height": 1024
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "B_Skill_3_End-000.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_End-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_End-001.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_End-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_End-002.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_End-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_End-003.png",
-          "count": 13,
+          "file": "hq-B_Skill_3_End-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-004.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_End-015.png",
+          "count": 1,
+          "width": 2048,
+          "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -923.217529296875,
+        -503.1659851074219,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.18369697718908448
     },
     {
       "key": "B_Skill_3_Loop",
@@ -2004,10 +4317,10 @@
       "count": 82,
       "fps": 60,
       "loop": true,
-      "cell": 512,
-      "columns": 4,
+      "cell": 1024,
+      "columns": 2,
       "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "pivotY": 0.34399579186780294,
       "events": [
         {
           "time": 0,
@@ -2018,89 +4331,276 @@
         }
       ],
       "transparentWait": true,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 40.79429211936627,
       "segments": [
         {
           "firstFrame": 0,
           "count": 82,
           "pages": [
             {
-              "file": "B_Skill_3_Loop-000.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Loop-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Loop-001.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Loop-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Loop-002.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Loop-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Loop-003.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Loop-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Loop-004.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Loop-004.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Loop-005.png",
+              "file": "hq-B_Skill_3_Loop-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-019.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Loop-020.png",
               "count": 2,
               "width": 2048,
-              "height": 512
+              "height": 1024
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "B_Skill_3_Loop-000.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Loop-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Loop-001.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Loop-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Loop-002.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Loop-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Loop-003.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Loop-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Loop-004.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Loop-004.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Loop-005.png",
+          "file": "hq-B_Skill_3_Loop-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-019.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Loop-020.png",
           "count": 2,
           "width": 2048,
-          "height": 512
+          "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -926.48486328125,
+        -398.16357421875,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "captureSourcePixelsPerBone": 0.1835743145371482
     },
     {
       "key": "B_Skill_3_Start",
@@ -2109,83 +4609,270 @@
       "count": 77,
       "fps": 60,
       "loop": false,
-      "cell": 512,
-      "columns": 4,
-      "pivotX": 0.2274961100472217,
-      "pivotY": 0.35340777702582826,
+      "cell": 1024,
+      "columns": 2,
+      "pivotX": 0.501311326411191,
+      "pivotY": 0.24899680288348497,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 20.397146059683134,
+      "pixelsPerUnit": 86.16080029003096,
       "segments": [
         {
           "firstFrame": 0,
           "count": 77,
           "pages": [
             {
-              "file": "B_Skill_3_Start-000.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Start-000.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Start-001.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Start-001.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Start-002.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Start-002.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Start-003.png",
-              "count": 16,
+              "file": "hq-B_Skill_3_Start-003.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
             },
             {
-              "file": "B_Skill_3_Start-004.png",
-              "count": 13,
+              "file": "hq-B_Skill_3_Start-004.png",
+              "count": 4,
               "width": 2048,
               "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-005.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-006.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-007.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-008.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-009.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-010.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-011.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-012.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-013.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-014.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-015.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-016.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-017.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-018.png",
+              "count": 4,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-B_Skill_3_Start-019.png",
+              "count": 1,
+              "width": 2048,
+              "height": 1024
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "B_Skill_3_Start-000.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Start-000.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Start-001.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Start-001.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Start-002.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Start-002.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Start-003.png",
-          "count": 16,
+          "file": "hq-B_Skill_3_Start-003.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
         },
         {
-          "file": "B_Skill_3_Start-004.png",
-          "count": 13,
+          "file": "hq-B_Skill_3_Start-004.png",
+          "count": 4,
           "width": 2048,
           "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-005.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-006.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-007.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-008.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-009.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-010.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-011.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-012.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-013.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-014.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-015.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-016.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-017.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-018.png",
+          "count": 4,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_3_Start-019.png",
+          "count": 1,
+          "width": 2048,
+          "height": 1024
         }
-      ]
+      ],
+      "captureBounds": [
+        -879.17041015625,
+        -495.44451904296875,
+        872.2438354492188,
+        1821.2718505859375
+      ],
+      "captureSourcePixelsPerBone": 0.38772360130513933
     }
   ],
   "role": "NEW_BOSS_CARD",
@@ -2234,5 +4921,7 @@
     }
   ],
   "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
-  "status": "IMPORTED_NOT_BOUND"
+  "status": "IMPORTED_NOT_BOUND",
+  "capturePolicy": "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_A_1024_B_FIXED_WORLD_ORIGIN",
+  "pixelsPerUnitPolicy": "Per clip; global ppu retained only for the unchanged portrait. Source world scale .0045 is unchanged."
 }

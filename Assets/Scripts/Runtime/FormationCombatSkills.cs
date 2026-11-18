@@ -18,7 +18,7 @@ namespace YesterdayConvoy
             action=Mathf.Max(.35f,action);
             if(k=="TAL")action=Campaign.TalulahCost==5?2:Campaign.TalulahCost==4?1.5f:1.2f;
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
-            BeginAction(u,action,true);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
+            var presentation=BeginAction(u,action,true);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
             float skillBonus=1+Buff(u,"skill_bonus")+Buff(u,"king_damage")+Buff(u,"revival_skill")+Buff(u,"ember");
             if(Campaign.HasAugment("CG1")&&IsResonanceMember(u))skillBonus+=.1f;
             if(Campaign.TalulahEnhanced&&k=="TAL"&&Campaign.TalulahCost==3)skillBonus+=.25f;
@@ -26,6 +26,8 @@ namespace YesterdayConvoy
             if(HasItem(u,"CF")&&!AttackRecovery(u))AddStack(u,"manual",1,5);
             if(HasItem(u,"CC")&&!AttackRecovery(u))AddStack(u,"reactor",1,10);
             if(Tagged(u,"伊比利亚")&&Level("伊比利亚")>=2&&Stack(u,"evidence")>=12){s.Stacks["evidence"]-=12;s.Stacks["cast_multiplier"]+=.35f;}
+            QueueSkillAction(u,presentation,()=>
+            {
             switch(k)
             {
                 case "M03": SkillSingle(u,target,target.Health<target.MaxHealth*.5f?3.4f:2.6f,0);break;
@@ -45,11 +47,12 @@ namespace YesterdayConvoy
                     AddStack(u,"ramp",1,10);
                     if(s.Casts>=5)
                     {
-                        u.ActionUntil=Clock+action+.35;
-                        ScheduleOwned(u,Clock+action,()=>
+                        u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action+.35);
+                        ScheduleOwned(u,presentation.At+action,()=>
                         {
                             if(!u.Alive)return;var t=FighterTarget(u);if(t==null)return;
-                            BeginAction(u,.35,false);s.Autos++;NativeSegment(u,new[]{t},u.Attack*.6f,0,false,0,false);CompleteAuto(u,true);
+                            var follow=BeginAction(u,.35,false);
+                            QueueOrdinaryAction(u,t,follow,()=>{s.Autos++;NativeSegment(u,new[]{t},u.Attack*.6f,0,false,0,false);CompleteAuto(u,true);});
                         });
                     }
                     break;
@@ -130,11 +133,20 @@ namespace YesterdayConvoy
                     if(main!=null){GiveBuff(main,"patriot_dr",.3f,8);GiveBuff(main,"patriot_attack",.2f,8);}break;
                 case "WIS":
                     if(Campaign.WisadelSkill==1)SkillSequence(u,target,u.Star>=3?6:4,2.4f,0,1);
-                    else if(Campaign.WisadelSkill==2)GiveBuff(u,"wisadel",1,8);
+                    else if(Campaign.WisadelSkill==2){GiveBuff(u,"wisadel",1,8);presentation.EndAt=Math.Max(presentation.EndAt,Clock+8);}
                     else
                     {
-                        int shells=u.Star>=3?12:6;s.BusyUntil=Clock+shells*.7;u.ActionUntil=Math.Max(u.ActionUntil,s.BusyUntil);
-                        for(int i=0;i<shells;i++)ScheduleOwned(u,Clock+i*.7,()=>{if(u.Alive){var t=FighterTarget(u);if(t!=null)SkillArea(u,t,4.5f,0,2.2f,6);}});
+                        int shells=u.Star>=3?12:6;s.BusyUntil=presentation.At+shells*.7;u.ActionUntil=Math.Max(u.ActionUntil,s.BusyUntil);
+                        presentation.EndAt=Math.Max(presentation.EndAt,s.BusyUntil);
+                        for(int i=0;i<shells;i++)
+                        {
+                            int shell=i;double launch=presentation.LaunchedAt+i*.7;
+                            ScheduleOwned(u,launch,()=>
+                            {
+                                if(!u.Alive)return;var t=FighterTarget(u);if(t==null)return;
+                                QueueSkillProjectile(u,presentation,t,shell,"Skill_3_Loop",launch,()=>SkillArea(u,t,4.5f,0,2.2f,6),false);
+                            });
+                        }
                     }break;
                 case "B08":SkillArea(u,target,12,1,3,7);AddZone(u,target.Position,AreaRadius(u,3),.8f,8,7,"burn");break;
                 case "B10":
@@ -153,12 +165,14 @@ namespace YesterdayConvoy
                     foreach(var f in u.Star>=3?Units.Where(f=>f.Enabled&&f.Alive):main==null?Array.Empty<FormationFighter>():new[]{main}){GiveBuff(f,"saint_damage",u.Attack*(u.Star>=3?2:u.Star==2?1:.6f),10);}break;
                 case "B21":
                     float chess=Stack(u,"chess");s.Stacks["chess"]=0;SkillArea(u,target,18*(1+chess*.3f),0,3,100);
-                    int seconds=u.Star>=3?24:12;s.BusyUntil=Clock+seconds;u.ActionUntil=Clock+action;
+                    int seconds=u.Star>=3?24:12;s.BusyUntil=presentation.At+seconds;u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action);
+                    presentation.EndAt=Math.Max(presentation.EndAt,s.BusyUntil);
                     for(int i=4;i<=seconds;i+=4)ScheduleOwned(u,Clock+i,()=>{if(u.Alive)NativeSegment(u,Defenders.Where(d=>d.Alive).ToArray(),u.Attack*6,0,true,0,true);});
                     ScheduleOwned(u,Clock+seconds,()=>{var yi=Named("B26");if(yi!=null&&Level("岁影")>=2)GiveBuff(yi,"yi_duration",4,999);});break;
             }
             if(Tagged(u,"雪怪")&&Level("雪怪")>=4&&target!=null)Cold(target);
-            ScheduleOwned(u,Clock+Math.Max(k=="B22"?action-.001f:action,s.BusyUntil-Clock),()=>SkillFinished(u));
+            });
+            ScheduleSkillCompletion(u,presentation,presentation.At+Math.Max(k=="B22"?action-.001f:action,s.BusyUntil-presentation.At),()=>SkillFinished(u));
             return true;
         }
         float SkillSingle(FormationFighter u,FormationDefender target,float mult,int type)
@@ -172,12 +186,16 @@ namespace YesterdayConvoy
             var center=target.Position;
             for(int i=0;i<segments;i++)
             {
+                int segment=i;
                 double at=Clock+(segments==1?0:i*(double)Math.Max(.01f,action-.05f)/segments);
                 ScheduleOwned(u,at,()=>
                 {
                     if(!u.Alive)return;var t=target.Alive?target:FighterTarget(u);if(t==null)return;
                     var victims=Nearby(radius>0?center:t.Position,radius>0?AreaRadius(u,radius):0,cap,t);
-                    NativeSegment(u,victims,u.Attack*mult,type,true,element,radius>0,fire);
+                    var parent=activePresentationContext?.SkillCompletion?.Presentation;
+                    if(Key(u)=="WIS"&&Campaign.WisadelSkill==1&&parent!=null)
+                        QueueSkillProjectile(u,parent,t,segment,"Skill_1",at,()=>NativeSegment(u,victims,u.Attack*mult,type,true,element,radius>0,fire),true);
+                    else NativeSegment(u,victims,u.Attack*mult,type,true,element,radius>0,fire);
                 });
             }
         }

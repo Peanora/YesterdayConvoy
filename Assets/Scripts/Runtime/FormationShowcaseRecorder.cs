@@ -254,11 +254,11 @@ namespace YesterdayConvoy
         static string SafeId(string id)=>string.Concat(id.Select(c=>char.IsLetterOrDigit(c)||c=='-'?c:'_'));
         static string Notes(Plan plan)
         {
-            string result="本作当前实机原速，未修正已知表现；普攻按本作短动作窗口播放。无音轨。";
+            string result="原作身体/特效修复版：基础动画2×，攻速正常影响攻击动作；战斗规则仍1×。真实源接触/已核实弹道驱动结算。无音轨。";
             if(plan.Units.Length==1&&new[]{"B11","B14","WIS","B21"}.Contains(plan.Units[0]))result+=" 源包没有走路片，当前以待机滑行。";
-            if(plan.Kind=="synergy")result+=" 多数羁绊目前只有数值/行为联动，没有独立战场特效；请看实际触发与重叠。";
+            if(plan.Kind=="synergy")result+=" 羁绊展示真实数值/行为；同频、接棒、提词、迅攻、复苏复用原作公共反馈，并非原作专属羁绊特效。";
             if(plan.Id=="tag-整合")result+=" 希望属于战后经济，本片无希望奖励结算。";
-            if(plan.Id=="tag-海嗣")result+=" 溟痕当前为静态青色格。";
+            if(plan.Id=="tag-海嗣")result+=" 溟痕使用原有动态原生材质，准备期选格与战斗地面层分开。";
             if(plan.Id=="M33")result+=" 该角色没有普攻；后段用真实受击触发反击。";
             if(plan.Id=="B10")result+=" 坎诺特普攻为治疗，经济技能不能以单场自然对局证明。";
             return result;

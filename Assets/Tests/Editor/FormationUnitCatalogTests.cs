@@ -84,7 +84,7 @@ namespace YesterdayConvoy.Tests
                 if(definition.ArtRoot!=null)
                     Assert.That(System.IO.File.Exists(ArtSourcePaths.Resolve(definition.ArtRoot+"/manifest.json")),Is.True,definition.CardId);
             }
-            Assert.That(FormationUnitCatalog.Find("WISADEL_APRIL").ArtRoot,Is.Null,"Wisadel uses existing authored Sprite arrays.");
+            Assert.That(FormationUnitCatalog.Find("WISADEL_APRIL").ArtRoot,Is.Null,"The original native outfit takes precedence; preserve the approved serialized Sprite fallback.");
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }
 
@@ -109,9 +109,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(FormationUnitArt.For("M33").HasAction("attack"),Is.False,"The source crawler has no attack clip.");
             Assert.That(FormationUnitArt.For("TALULAH_TRIAL").HasAction("death"),Is.True,"Talulah's actual extra death clip is registered.");
             var vivi=FormationUnitArt.For("WISADEL_APRIL");
-            Assert.That(vivi.HasAction("walk"),Is.False,"The approved Supernova source has no walking clip; retain a real idle while moving.");
+            Assert.That(vivi.HasAction("walk"),Is.False,"The original April game#9 source has no walking clip; retain a real idle while moving.");
             Assert.That(vivi.HasAction("attack"),Is.True);
-            Assert.That(vivi.HasAction("death"),Is.True,"The new mode reads the approved original Supernova death motion.");
+            Assert.That(vivi.HasAction("death"),Is.True,"The new mode reads the original April game#9 death motion.");
             Assert.That(vivi.Duration("death"),Is.GreaterThan(0));
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }

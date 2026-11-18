@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "sourceSnapshot": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-visual-repair\\original-ranged-projectiles.json",
+  "sourceSnapshotSha256": "e71da3e8c23250b9eccff33ec272272243d3b93cdb173bb4c88af1ba1280f5a1",
+  "snapshotPreservedByteForByte": true,
+  "originalBundle": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\monsters\\source-bundles\\battle\\prefabs\\[uc]projectiles.ab",
+  "originalBundleSha256": "d7015e88d8839086c14b11c766367716834000c7556e09ccda79b8f5e35a887c",
+  "routes": [
+    {
+      "artId": "M11",
+      "projectileKey": "projectile_crossbow",
+      "node": "projectile_crossbow",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M12",
+      "projectileKey": "projectile_enemy_snow_magic_ball",
+      "node": "projectile_enemy_snow_magic_ball",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M16",
+      "projectileKey": "projectile_sotisp",
+      "node": "projectile_sotisp",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M26",
+      "projectileKey": "projectile_enemy_mdsnpr",
+      "node": "projectile_enemy_mdsnpr",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M42",
+      "projectileKey": "projectile_enemy_mdsnpr",
+      "node": "projectile_enemy_mdsnpr",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M36",
+      "projectileKey": "projectile_enemy_dsmant",
+      "node": "projectile_enemy_dsmant",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M38",
+      "projectileKey": "projectile_enemy_magic_ball",
+      "node": "projectile_enemy_magic_ball",
+      "speed": 10.0,
+      "delayToStart": 0.0,
+      "movementClass": "AdvancedMovement"
+    }
+  ],
+  "meaning": "Previously retained original ordinary ranged-projectile prefab fields; M26/M42 share the same verified projectile. Not the old approved fixed .25-second adaptation.",
+  "unityTests": "NOT_RUN_BY_GENERATOR"
+}

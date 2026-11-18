@@ -37,7 +37,6 @@ namespace YesterdayConvoy
             Label(new Rect(499,17,104,31),"守军  "+Model.RemainingDefenders,19,Cyan);
             Fill(new Rect(612,22,1,25),rule);
             Label(new Rect(628,17,152,31),double.IsPositiveInfinity(Model.TimeRemaining)?"不限时":Model.TimeRemaining.ToString("0.0")+" 秒",22,White,TextAnchor.MiddleRight);
-            if(Button(new Rect(1126,12,42,36),Model.Speed+"×"))Model.Speed=Model.Speed>1?1:2;
             if(Button(new Rect(1174,12,42,36),Model.Paused?"继续":"暂停"))Model.Paused=!Model.Paused;
             if(Button(new Rect(1222,12,42,36),"菜单")){formationMenuOpen=!formationMenuOpen;CancelFormationDrag();}
         }

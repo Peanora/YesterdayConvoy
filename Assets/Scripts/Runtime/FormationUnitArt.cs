@@ -73,8 +73,8 @@ namespace YesterdayConvoy
                 art=new FormationUnitArt(original);
             else if(definition.ArtRoot==null)
             {
-                // Wisadel's approved comic frames are authored Sprite references, not Resources
-                // or a MonsterCombatArt manifest. The scene supplies the existing card asset.
+                // Preserve the approved user GIF Sprite fallback if the independently
+                // identified original April outfit package is unavailable.
                 if(!cards.TryGetValue(definition.CardId,out var source) || source==null)return null;
                 art=new FormationUnitArt(source);
             }
@@ -118,6 +118,22 @@ namespace YesterdayConvoy
             return action=="idle" ? 1f : SerializedFrames(action).Count/SerializedFrameRate;
         }
 
+        // Native source event times stay in original seconds. The presenter/timing
+        // bridge applies the requested visual 2x once; this accessor does no retiming.
+        internal IReadOnlyList<float> ContactTimes(string action)
+        {
+            if(!HasAction(action))return Array.Empty<float>();
+            if(native!=null)return native[action].OnAttackTimes;
+            if(action=="attack"&&catalog!=null&&catalog.Contact>0)return new[]{catalog.Contact};
+            return Array.Empty<float>();
+        }
+        // NaN explicitly means no precise source marker is retained for this action.
+        internal float ContactTime(string action)
+        {var times=ContactTimes(action);return times.Count>0?times[0]:float.NaN;}
+        internal bool HasOrdinaryAttack=>HasAction("attack");
+        internal string SourceAction(string action)
+            =>HasAction(action)?native!=null?native[action].Source:action:null;
+
         /// <summary>Readiness is live: the shared memory cache may evict a previously warmed clip.</summary>
         public bool IsReady
         {
@@ -152,7 +168,7 @@ namespace YesterdayConvoy
                     yield return clip.Warm();
         }
 
-        /// <summary>Missing actions return null, including Wisadel's unauthored death animation.</summary>
+        /// <summary>Missing actions return null; they are never synthesized from unrelated art.</summary>
         public Sprite Frame(string action, double time, bool loop=true)
         {
             if(!HasAction(action))return null;

@@ -1,0 +1,711 @@
+{
+  "bundle": "skinpack/char_1035_wisdel.ab",
+  "bundleSha256": "943a0b9fd845c6215767055d55b0b3065a7adbdac54aec8f830904be5d31a047",
+  "container": "dyn/battle/prefabs/skins/character/char_1035_wisdel/char_1035_wisdel_game#9.prefab",
+  "nodes": [
+    {
+      "path": "/char_1035_wisdel_game#9",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -8850010899082294945
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [
+          {
+            "m_FileID": 0,
+            "m_PathID": -5245500385356592801
+          }
+        ],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9",
+      "class": "CharacterSkinHooker",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -8850010899082294945
+        },
+        "m_Enabled": 1,
+        "m_Script": {
+          "m_FileID": 1,
+          "m_PathID": -6084201217455656041
+        },
+        "m_Name": "",
+        "_replaceEffectPairs": [
+          {
+            "fromEffect": "wisdel_skill_03_buff_02_F",
+            "toEffect": "wisdel_skill_03_buff_02_F_game#9"
+          },
+          {
+            "fromEffect": "wisdel_skill_03_hit",
+            "toEffect": "wisdel_skill_03_hit_game#9"
+          },
+          {
+            "fromEffect": "wisdel_skill_03_hit_02",
+            "toEffect": "wisdel_skill_03_hit_02_game#9"
+          },
+          {
+            "fromEffect": "wisdel_skill_03_hit_03",
+            "toEffect": "wisdel_skill_03_hit_03_game#9"
+          },
+          {
+            "fromEffect": "wisdel_skill_03_start",
+            "toEffect": "wisdel_skill_03_start_game#9"
+          },
+          {
+            "fromEffect": "wisdel_skill_03_trail",
+            "toEffect": "wisdel_skill_03_trail_game#9"
+          },
+          {
+            "fromEffect": "wisdel_attack_a_start",
+            "toEffect": "wisdel_attack_c_start"
+          },
+          {
+            "fromEffect": "wisdel_attack_b_start",
+            "toEffect": "wisdel_attack_c_start"
+          }
+        ],
+        "_useFakeProjectile": 1,
+        "_fakeProjectileConfigs": [
+          {
+            "originProjectileKey": "projectile_chr_wisdel_default",
+            "graphicProjectileKey": "projectile_chr_wisdel_default_graphic",
+            "logicProjecitleKey": "projectile_chr_wisdel_default_logic",
+            "_fakeMuzzlePoint": 6
+          },
+          {
+            "originProjectileKey": "projectile_chr_wisdel_s1",
+            "graphicProjectileKey": "projectile_chr_wisdel_s1_graphic",
+            "logicProjecitleKey": "projectile_chr_wisdel_s1_logic",
+            "_fakeMuzzlePoint": 6
+          },
+          {
+            "originProjectileKey": "projectile_chr_wisdel_s3",
+            "graphicProjectileKey": "projectile_chr_wisdel_s3_graphic",
+            "logicProjecitleKey": "projectile_chr_wisdel_s3_logic",
+            "_fakeMuzzlePoint": 6
+          }
+        ]
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 6078928522344352095
+        },
+        "m_LocalRotation": {
+          "x": -0.0,
+          "y": -0.0,
+          "z": -3.102349310779573e-08,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": -0.1599999964237213,
+          "z": -0.10000000149011612
+        },
+        "m_LocalScale": {
+          "x": 0.27000001072883606,
+          "y": 0.27000001072883606,
+          "z": 0.27000001072883606
+        },
+        "m_Children": [
+          {
+            "m_FileID": 0,
+            "m_PathID": 3034564711201458527
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": -4063484152905578145
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": -2502793695847888545
+          }
+        ],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 950890039357819231
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 2423903707268335967
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [
+          {
+            "m_FileID": 0,
+            "m_PathID": -7969190751589807777
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": 7000825390304479583
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": -7997324402081445537
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": 6327217270296693087
+          }
+        ],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -5245500385356592801
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front",
+      "class": "SkeletonAnimation",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 2423903707268335967
+        },
+        "m_Enabled": 1,
+        "m_Script": {
+          "m_FileID": 1,
+          "m_PathID": 175525945580115722
+        },
+        "m_Name": "",
+        "skeletonDataAsset": {
+          "m_FileID": 0,
+          "m_PathID": 6581512718681364382
+        },
+        "initialSkinName": "default",
+        "initialFlipX": 0,
+        "initialFlipY": 0,
+        "updateWhenInvisible": 3,
+        "separatorSlotNames": [],
+        "zSpacing": 0.0,
+        "useClipping": 1,
+        "immutableTriangles": 0,
+        "pmaVertexColors": 1,
+        "clearStateOnDisable": 0,
+        "tintBlack": 0,
+        "singleSubmesh": 0,
+        "fixDrawOrder": 0,
+        "addNormals": 0,
+        "calculateTangents": 0,
+        "maskInteraction": 0,
+        "maskMaterials": {
+          "materialsMaskDisabled": [],
+          "materialsInsideMask": [],
+          "materialsOutsideMask": []
+        },
+        "disableRenderingOnOverride": 1,
+        "_animationName": "Default",
+        "loop": 0,
+        "timeScale": 1.0
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front/skeletonDataAsset",
+      "class": "SkeletonDataAsset",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "m_Enabled": 1,
+        "m_Script": {
+          "m_FileID": 1,
+          "m_PathID": -6887505452609033796
+        },
+        "m_Name": "char_1035_wisdel_game#9_SkeletonData",
+        "atlasAssets": [
+          {
+            "m_FileID": 0,
+            "m_PathID": -1166534944485871674
+          }
+        ],
+        "scale": 0.009999999776482582,
+        "skeletonJSON": {
+          "m_FileID": 0,
+          "m_PathID": 9170847677655954632
+        },
+        "isUpgradingBlendModeMaterials": 0,
+        "blendModeMaterials": {
+          "requiresBlendModeMaterials": 0,
+          "applyAdditiveMaterial": 0,
+          "additiveMaterials": [],
+          "multiplyMaterials": [],
+          "screenMaterials": []
+        },
+        "skeletonDataModifiers": [],
+        "fromAnimation": [],
+        "toAnimation": [],
+        "duration": [],
+        "defaultMix": 0.10000000149011612,
+        "controller": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front/HitPoint",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -1786497924017534625
+        },
+        "m_LocalRotation": {
+          "x": -0.0,
+          "y": -0.0,
+          "z": 3.102349310779573e-08,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 1.8000004291534424,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 3034564711201458527
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front/Muzzle",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 1501201559037757791
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 3034564711201458527
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front/SpecialPoint0",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -5003164816964564641
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.7152659893035889,
+          "w": 0.6988524198532104
+        },
+        "m_LocalPosition": {
+          "x": 0.031108763068914413,
+          "y": 0.32310909032821655,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 3034564711201458527
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Front/OriginMuzzle",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 8332549996450564447
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": 3034564711201458527
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 211183084814223711
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [
+          {
+            "m_FileID": 0,
+            "m_PathID": -7453434437626803873
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": -4559111218685523617
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": 2942568922737297759
+          },
+          {
+            "m_FileID": 0,
+            "m_PathID": -3059042263763564193
+          }
+        ],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -5245500385356592801
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back",
+      "class": "SkeletonAnimation",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 211183084814223711
+        },
+        "m_Enabled": 1,
+        "m_Script": {
+          "m_FileID": 1,
+          "m_PathID": 175525945580115722
+        },
+        "m_Name": "",
+        "skeletonDataAsset": {
+          "m_FileID": 0,
+          "m_PathID": -3447695207274637722
+        },
+        "initialSkinName": "default",
+        "initialFlipX": 0,
+        "initialFlipY": 0,
+        "updateWhenInvisible": 3,
+        "separatorSlotNames": [],
+        "zSpacing": 0.0,
+        "useClipping": 1,
+        "immutableTriangles": 0,
+        "pmaVertexColors": 1,
+        "clearStateOnDisable": 0,
+        "tintBlack": 0,
+        "singleSubmesh": 0,
+        "fixDrawOrder": 0,
+        "addNormals": 0,
+        "calculateTangents": 0,
+        "maskInteraction": 0,
+        "maskMaterials": {
+          "materialsMaskDisabled": [],
+          "materialsInsideMask": [],
+          "materialsOutsideMask": []
+        },
+        "disableRenderingOnOverride": 1,
+        "_animationName": "Default",
+        "loop": 0,
+        "timeScale": 1.0
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back/skeletonDataAsset",
+      "class": "SkeletonDataAsset",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "m_Enabled": 1,
+        "m_Script": {
+          "m_FileID": 1,
+          "m_PathID": -6887505452609033796
+        },
+        "m_Name": "char_1035_wisdel_game#9_SkeletonData",
+        "atlasAssets": [
+          {
+            "m_FileID": 0,
+            "m_PathID": -4723117444924071485
+          }
+        ],
+        "scale": 0.009999999776482582,
+        "skeletonJSON": {
+          "m_FileID": 0,
+          "m_PathID": -9187406645378579491
+        },
+        "isUpgradingBlendModeMaterials": 0,
+        "blendModeMaterials": {
+          "requiresBlendModeMaterials": 0,
+          "applyAdditiveMaterial": 0,
+          "additiveMaterials": [],
+          "multiplyMaterials": [],
+          "screenMaterials": []
+        },
+        "skeletonDataModifiers": [],
+        "fromAnimation": [],
+        "toAnimation": [],
+        "duration": [],
+        "defaultMix": 0.10000000149011612,
+        "controller": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back/HitPoint",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -3927940851900462753
+        },
+        "m_LocalRotation": {
+          "x": -0.0,
+          "y": -0.0,
+          "z": 3.102349310779573e-08,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 1.8000004291534424,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -4063484152905578145
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back/Muzzle",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -7074571366557267617
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -4063484152905578145
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back/SpecialPoint0",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -3653699529700259489
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.7152659893035889,
+          "w": 0.6988524198532104
+        },
+        "m_LocalPosition": {
+          "x": 0.031108763068914413,
+          "y": 0.32310909032821655,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -4063484152905578145
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/Back/OriginMuzzle",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -7885961618960397985
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -4063484152905578145
+        }
+      }
+    },
+    {
+      "path": "/char_1035_wisdel_game#9/FaceSwitcher/HeadPoint",
+      "class": "Transform",
+      "fields": {
+        "m_GameObject": {
+          "m_FileID": 0,
+          "m_PathID": -6730344168663201441
+        },
+        "m_LocalRotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "m_LocalPosition": {
+          "x": 0.0,
+          "y": 4.0,
+          "z": 0.0
+        },
+        "m_LocalScale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "m_Children": [],
+        "m_Father": {
+          "m_FileID": 0,
+          "m_PathID": -5245500385356592801
+        }
+      }
+    }
+  ]
+}

@@ -70,7 +70,6 @@ namespace YesterdayConvoy
             Fill(new Rect(1008,8,110,46),ApprovedUi.Paper);
             GUI.Label(new Rect(1016,10,94,17),"剩余时间",approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(1016,27,94,23),double.IsInfinity(Model.TimeRemaining)?"不限时":Model.TimeRemaining.ToString("0.0")+" 秒",approvedShop.LoopText(20,TextAnchor.MiddleLeft,null,700));
-            if(Button(new Rect(1126,8,42,42),Model.Speed+"×"))Model.Speed=Model.Speed>1?1:2;
             if(Button(new Rect(1174,8,42,42),Model.Paused?"继续":"暂停",Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=!Model.Paused;
             if(Button(new Rect(1222,8,42,42),"菜单")){formationMenuOpen=!formationMenuOpen;CancelFormationDrag();}
             if(prep&&Button(new Rect(790,8,208,42),ViewingDefenders?"返回我方布阵  [V]":"查看守军部署  [V]"))ToggleFormationView();

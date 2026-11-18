@@ -20,6 +20,8 @@ namespace YesterdayConvoy
         public string SkillAnimation;
         public string PresentationAction;
         public double PresentationStartedAt, PresentationDuration;
+        public float PresentationRate = 1;
+        public double PresentationMoveLockUntil;
         public double LastActionAt = -100, LastSkillAt = -100, LastHitAt = -100, LastDeathAt = -100;
         public bool Alive, IsMoving;
         public int TargetId = -1;
@@ -229,7 +231,7 @@ namespace YesterdayConvoy
         {
             if (Phase != FormationPhase.Preparation || EnabledCount == 0 || Campaign != null && (Campaign.HasBlockingChoice || Campaign.Finished || Campaign.NodeSettled)) return false;
             if(Campaign!=null&&(Campaign.CurrentNode.Kind=="补给"||!ValidateSeaPlacement(out _)))return false;
-            Clock = 0; accumulator = 0; Hits.Clear(); Paused = false;
+            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); Paused = false;
             foreach (var unit in Units) ResetFighter(unit);
             foreach (var defender in Defenders) ResetActor(defender, true, Vector2.left);
             if (Campaign != null) { Campaign.LockBattleLineup(); BeginCampaignBattle(); }
@@ -271,7 +273,7 @@ namespace YesterdayConvoy
 
         void PrepareRound()
         {
-            Clock = 0; accumulator = 0; Hits.Clear(); Paused = false;
+            Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); Paused = false;
             foreach (var unit in Units) { ConfigureFighter(unit); ResetFighter(unit); }
             if (Campaign == null) BuildDefenders(); else { ConfigureCampaignTeam(); BuildCampaignDefenders(); }
             Phase = FormationPhase.Preparation;

@@ -20,7 +20,7 @@ namespace YesterdayConvoy
         bool FormationArtAvailable(string id)
         {
             if(!warmedFormationArt.Contains(id))return false;
-            if(!id.StartsWith("D",StringComparison.Ordinal))return formationMonsterArt.TryGetValue(id,out var source)&&source.IsReady&&FormationEffectSequences(source).All(c=>c.Ready);
+            if(!id.StartsWith("D",StringComparison.Ordinal))return formationMonsterArt.TryGetValue(id,out var source)&&source.IsReady&&FormationInitialMotionKeys(source,id).All(key=>source.WindowReady(key,0,false))&&FormationEffectSequences(source).All(c=>c.Ready);
             return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(c=>c.Key=="idle"||c.Key=="walk"||c.Key.StartsWith("attack",StringComparison.Ordinal)||c.Key=="death"||c.Key=="heal").All(c=>c.Ready);
         }
 
@@ -75,6 +75,7 @@ namespace YesterdayConvoy
                 if(!string.IsNullOrEmpty(source.Root)&&!pinned.Contains(source.Root))pinned.Add(source.Root);
                 PinFormationEffects(source);
                 ArtMemoryCache.Pin(pinned);yield return source.Warm();
+                foreach(string key in FormationInitialMotionKeys(source,id))yield return source.WarmWindow(key,0,false);
                 foreach(var clip in FormationEffectSequences(source))if(!clip.Ready)yield return clip.Warm();
             }
             warmedFormationArt.Add(id);warmingFormationArt.Remove(id);
@@ -89,6 +90,7 @@ namespace YesterdayConvoy
         {
             var source=FormationUnitArt.For(id);if(source==null||!source.HasAction("idle"))return null;
             if(double.IsNaN(time)||double.IsInfinity(time)||time<0)time=0;
+            time*=FormationVisualRate;
             double normalized=time/source.Duration("idle");normalized=(normalized-Math.Floor(normalized))*source.Duration("idle");
             string useKey=id+"/"+Math.Floor(normalized*2);
             formationShopIdleUses[useKey]=new ShopIdleUse{Source=source,AnimationTime=time,UsedAt=Time.unscaledTimeAsDouble};
@@ -102,8 +104,11 @@ namespace YesterdayConvoy
             if(formationShopLastIdle.TryGetValue(id,out var previous)&&previous!=null&&previous.texture!=null)return previous;
             formationShopLastIdle.Remove(id);return null;
         }
-        public float ActorPresentationHeight(FormationActor actor)=>actor is FormationFighter?
-            FormationUnitCatalog.Find(actor.ArtId)?.VisualHeight??1.12f:1.12f;
+        public float ActorPresentationHeight(FormationActor actor)
+        {
+            if(actor is FormationFighter)return FormationUnitCatalog.Find(actor.ArtId)?.VisualHeight??1.12f;
+            return art.TryGetValue(actor.ArtId,out var source)&&source.Height>0?source.Height:1.12f;
+        }
 
         Rect FormationActorScreenRect(FormationFighter actor)
         {
@@ -130,14 +135,23 @@ namespace YesterdayConvoy
             }
             double now=Model.Clock,deathAge=now-actor.LastDeathAt;
             bool returning=actor is FormationFighter returningFighter&&returningFighter.NativePhaseReturningUntil>now;
-            float deathDuration=defender?.65f:formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f;
+            float deathDuration=(defender?art.TryGetValue(actor.ArtId,out var da)&&da.Clips.TryGetValue("death",out var dd)?dd.Duration:.65f:formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
             body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(actor.ArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
-            bool acting=actor.Alive&&now<actor.ActionUntil&&actor.LastActionAt>=0;
+            double visualStarted=actor.PresentationDuration>0?actor.PresentationStartedAt:actor.LastActionAt;
+            double visualDuration=actor.PresentationDuration>0?actor.PresentationDuration:Math.Max(0,actor.ActionUntil-actor.LastActionAt);
+            bool acting=actor.Alive&&now<visualStarted+visualDuration&&actor.LastActionAt>=0;
+            if(actor.Alive&&actor.ArtId=="B21"&&formationMonsterArt.TryGetValue(actor.ArtId,out var channelSource)&&
+                FormationChannel(channelSource,actor,out _,out _,out var channelEnd))
+            {
+                double busy=Model.PresentationBusyUntil(actor);
+                if(busy>0&&now<busy+channelSource.Duration(channelEnd)/(actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate))acting=true;
+            }
             bool casting=acting&&actor.LastSkillAt>=actor.LastActionAt-.0001;
-            string key=!actor.Alive?"death":actor.IsMoving?"walk":casting?"cast":acting?"attack":"idle";
-            double age=key=="death"?deathAge:key=="attack"||key=="cast"?now-actor.LastActionAt:
-                Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now;
+            string key=!actor.Alive?"death":casting&&actor.ArtId=="B21"?"cast":actor.IsMoving?"walk":casting?"cast":acting?"attack":"idle";
+            float actionRate=actor.PresentationDuration>0&&actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate;
+            double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
+                (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now)*FormationVisualRate;
             float sourceHeight;
             if(!defender)
             {
@@ -162,8 +176,8 @@ namespace YesterdayConvoy
                     if(returning)
                     {
                         double tail=phaseFighter.NativePhaseReturningUntil-now;
-                        key=tail<source.Duration("extra_revive")?"extra_revive":"extra_idle_2";
-                        age=tail<source.Duration("extra_revive")?source.Duration("extra_revive")-tail:now-phaseFighter.NativePhaseChangedAt;
+                        key=tail<source.Duration("extra_revive")/FormationVisualRate?"extra_revive":"extra_idle_2";
+                        age=tail<source.Duration("extra_revive")/FormationVisualRate?source.Duration("extra_revive")-tail*FormationVisualRate:(now-phaseFighter.NativePhaseChangedAt)*FormationVisualRate;
                         sourceTimed=true;
                     }
                     else if(phaseFighter.NativePhase>0)
@@ -171,7 +185,7 @@ namespace YesterdayConvoy
                 }
                 if(casting&&actor.ArtId=="M31"&&source.HasAction("extra_skill_front_start"))
                 {
-                    double elapsed=now-actor.LastSkillAt,remaining=actor.ActionUntil-now;
+                    double elapsed=(now-visualStarted)*actionRate,remaining=(visualStarted+visualDuration-now)*actionRate;
                     double begin=source.Duration("extra_skill_front_start"),end=source.Duration("extra_skill_front_end");
                     key=elapsed<begin?"extra_skill_front_start":remaining<end?"extra_skill_front_end":"extra_skill_front_loop";
                     age=elapsed<begin?elapsed:remaining<end?end-remaining:elapsed-begin;sourceTimed=true;
@@ -179,38 +193,33 @@ namespace YesterdayConvoy
                 if(!source.HasAction(key))
                 {
                     if(key=="death"){body.enabled=false;return;}
-                    key=casting&&source.HasAction("skill")?"skill":casting&&source.HasAction("attack")?"attack":"idle";
+                    key=casting&&source.HasAction("skill")?"skill":source.HasOrdinaryAttack?"attack":"idle";
                 }
-                if(!sourceTimed&&(key=="attack"||key=="cast"||key=="skill"))age=Math.Min(.999999,Math.Max(0,age/Math.Max(.001,actor.ActionUntil-actor.LastActionAt)))*source.Duration(key);
                 body.sprite=source.Frame(key,age,key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
                 }
             }
             else
             {
                 var source=art[actor.ArtId];sourceHeight=source.Height;
+                if(key=="cast")key=source.Clips.ContainsKey("skill")?"skill":source.Clips.ContainsKey("attack")?"attack":"idle";
                 if(!source.Clips.TryGetValue(key,out var clip))clip=source.Clips["idle"];
                 if(key=="attack")
                 {
-                    double progress=Math.Min(.999999,Math.Max(0,age/Math.Max(.001,actor.ActionUntil-actor.LastActionAt)));
                     source.Clips.TryGetValue("attack_start",out var begin);source.Clips.TryGetValue("attack_end",out var end);
-                    double at=progress*(clip.Duration+(begin?.Duration??0)+(end?.Duration??0));
+                    double at=age;
                     if(begin!=null&&at<begin.Duration){clip=begin;age=at;}
                     else if(at<(begin?.Duration??0)+clip.Duration)age=at-(begin?.Duration??0);
                     else {age=at-(begin?.Duration??0)-clip.Duration;clip=end??clip;}
                 }
-                int frame=(int)(Math.Max(0,age)*(clip.Count/clip.Duration));
-                frame=key=="death"||key=="attack"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;body.sprite=clip.Frames[frame];
+                int frame=(int)(Math.Max(0,age)*clip.Fps);
+                frame=key=="death"||key=="attack"||key=="skill"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;body.sprite=clip.Frames[frame];
             }
             body.enabled=body.sprite!=null;if(!body.enabled)return;
-            body.flipX=actor.Facing.x<-.01f;body.transform.position=ActorWorldPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
+            body.flipX=actor.Facing.x<-.01f;body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
             float scale=ActorPresentationHeight(actor)/Mathf.Max(.5f,sourceHeight>0?sourceHeight:1.4f);
-            // This approved comic package has a single standing pose. A small presentation-only
-            // breath keeps preparation live without inventing a missing frame animation.
-            float breath=!defender&&actor.ArtId=="WISADEL_APRIL"&&Model.Phase==FormationPhase.Preparation?1+Mathf.Sin(Time.unscaledTime*2.6f)*.007f:1;
-            body.transform.localScale=new Vector3(scale,scale*breath,scale);
-            body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50);
-            bool skill=now-actor.LastSkillAt<.45;
-            Color color=now-actor.LastHitAt<.13?new Color(1,.5f,.42f):skill?new Color(1,.89f,.58f):Color.white;
+            body.transform.localScale=Vector3.one*scale;
+            body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50)+(actor is FormationFighter rider&&Model.PresentationCarrier(rider)!=null?8:0);
+            Color color=Color.white;
             if(actor is FormationFighter fighter&&fighter.Instance==shopDragInstance&&DragPreviewVisible)color.a=.25f;
             body.color=color;
         }
@@ -218,7 +227,24 @@ namespace YesterdayConvoy
         IEnumerator WarmFormationWindow(FormationUnitArt source,string key,double age,bool loop,string request)
         {yield return source.WarmWindow(key,age,loop);warmingFormationWindows.Remove(request);}
 
-        static void SelectNativeFormationMotion(FormationUnitArt source,FormationActor actor,double now,bool returning,
+        IEnumerable<string> FormationInitialMotionKeys(FormationUnitArt source,string id)
+        {
+            if(source.NativeTask==null)yield break;
+            var actor=Model.Units.FirstOrDefault(u=>u.ArtId==id);
+            if(actor==null)yield break;
+            yield return FormationSourceAction(source,actor,true);
+            if(FormationAttackChannel(source,actor,out var attackBegin,out var attackCycle,out var attackEnd))
+            {yield return attackBegin;yield return attackCycle;yield return attackEnd;}
+            if(FormationChannel(source,actor,out var begin,out var cycle,out var end))
+            {yield return begin;yield return cycle;yield return end;}
+            if(source.NativeTask=="WIS_APRIL_G9")
+            {
+                yield return "Attack_B";yield return "Attack_C";
+                if(Campaign?.WisadelSkill==2){yield return "Skill_2_Loop";yield return "Skill_2_Idle";yield return "Skill_2_End";}
+            }
+        }
+
+        void SelectNativeFormationMotion(FormationUnitArt source,FormationActor actor,double now,bool returning,
             ref string key,ref double age,ref bool loop)
         {
             string task=source.NativeTask;
@@ -230,7 +256,7 @@ namespace YesterdayConvoy
                 {
                     string[] parts=task=="B17"?new[]{"revive_1","revive_2","revive_3"}:new[]{"A_Revive_1","A_Revive_2","A_Revive_3"};
                     double total=parts.Sum(p=>(double)source.Duration(p));
-                    double at=Math.Max(0,now-returningUnit.NativePhaseChangedAt)/Math.Max(.001,returningUnit.NativePhaseReturningUntil-returningUnit.NativePhaseChangedAt)*total;
+                    double at=Math.Max(0,now-returningUnit.NativePhaseChangedAt)*FormationVisualRate;
                     foreach(string part in parts)
                     {
                         key=part;age=Math.Min(at,source.Duration(part));
@@ -242,14 +268,32 @@ namespace YesterdayConvoy
                     task=="B17"?new[]{"revive_1","revive_3"}:task=="B08"?new[]{"A_Die_Start"}:
                     task=="B24"?new[]{"A_Skill_2"}:new[]{"Revive1","Revive_1","A_Revive_1","cast","death"});
                 double duration=Math.Max(.001,returningUnit.NativePhaseReturningUntil-returningUnit.NativePhaseChangedAt);
-                age=Math.Max(0,now-returningUnit.NativePhaseChangedAt)/duration*source.Duration(key);loop=false;return;
+                age=Math.Max(0,now-returningUnit.NativePhaseChangedAt)*FormationVisualRate;loop=false;return;
             }
             bool action=key=="attack"||key=="cast";
+            if(key=="attack"&&PresentFormationChannel(source,actor,now,ref key,ref age,ref loop,false))return;
             if(task=="B20"&&actor.SkillAnimation=="Skill_2_Begin"&&now-actor.LastSkillAt<8)
             {
                 if(key=="attack")key="Skill_2_Loop";
                 else if(key=="idle")key="Skill_2_Idle";
             }
+            if(task=="WIS_APRIL_G9")
+            {
+                if((key=="idle"||key=="walk"||key=="attack")&&Campaign?.WisadelSkill==2)
+                {
+                    var mode=Model.PresentationActions.LastOrDefault(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly&&!a.Cancelled&&a.Animation=="Skill_2_Begin");
+                    double ended=(mode?.ContactAt??double.NegativeInfinity)+8;
+                    if(now>=ended&&now<ended+source.Duration("Skill_2_End")/FormationVisualRate&&actor.LastActionAt<ended)
+                    {key="Skill_2_End";age=(now-ended)*FormationVisualRate;loop=false;return;}
+                }
+                if(Model.PresentationBuff(actor,"wisadel")>0)
+                {
+                    if(key=="attack")key="Skill_2_Loop";
+                    else if(key=="idle")key="Skill_2_Idle";
+                }
+                else if(key=="attack")key=new[]{"Attack_A","Attack_B","Attack_C"}[(Model.PresentationActions.LastOrDefault(a=>a.ActorId==actor.Id&&!a.Skill)?.Sequence??0)%3];
+            }
+            if(key=="attack"&&!source.HasOrdinaryAttack&&FormationCampaignRules.Find(actor.ArtId)?.DamageType=="治疗")key="cast";
             if(task=="B20"&&key=="cast"&&actor.SkillAnimation=="Skill_3_Begin")
             {
                 double elapsed=now-actor.LastSkillAt,remaining=actor.ActionUntil-now;
@@ -261,13 +305,19 @@ namespace YesterdayConvoy
             }
             if(key=="cast")
             {
+                if(PresentFormationChannel(source,actor,now,ref key,ref age,ref loop))return;
                 string supplied=actor.PresentationAction;
                 if(!string.IsNullOrEmpty(supplied)&&source.HasAction(supplied))key=supplied;
                 else if(task=="B02")key="attack";
+                else if(task=="B04")key=phase>0?"B_Skill2":"A_Skill2";
                 else if(task=="B06")key=phase>0?"C2_Skill_2":"C1_Skill_2";
+                else if(task=="B07")key=phase>0?"Skill_b_1":"Skill_a_1";
                 else if(task=="B08")key=phase>0?"B_Skill_1":"A_Skill_1";
+                else if(task=="B09")key=phase>0?"B_Skill_2":"A_Skill_2";
+                else if(task=="B11")key=phase>0?"B_Skill_1":"A_Skill_1";
                 else if(task=="B13")key=phase>0?"B_Skill_Begin_1":"A_Attack";
-                else if(task=="B16")key=phase>0?"Skill_1_B":"Skill_1_A";
+                else if(task=="B15"||task=="B24")key=phase>0?"B_Skill_1":"A_Skill_1";
+                else if(task=="B16")key=Campaign!=null&&Campaign.TalulahCost<=3?(phase>0?"Skill_2_B":"Skill_2_A"):(phase>0?"Skill_1_B":"Skill_1_A");
                 else if(task=="B18")key="Skill_1";
                 else if(task=="B19")key="Skill_1";
                 else if(task=="B20")key="Skill_3_Begin";
@@ -275,12 +325,14 @@ namespace YesterdayConvoy
             }
             else if(phase>0)
             {
-                if(task=="B06")key=key=="death"?"C2_Die_1":"C2_"+Title(key)+"_1";
-                else if(task=="B13")key=key=="death"?"B_Die_1":key=="walk"?"B_Move_1":key=="attack"?"B_Attack_Loop_1":"B_Idle_1";
-                else if(task=="B16")key=key=="death"?"Die":Title(key)+"_B";
-                else if(task=="B17")key=key=="death"?"Die":Title(key)+"_2";
+                if(task=="B06")key=key=="death"?"C2_Die_1":"C2_"+(key=="walk"?"Move":Title(key))+"_1";
+                else if(task=="B07")key=key=="death"?"Die_2":(key=="walk"?"Move":Title(key))+"_b";
+                else if(task=="B13")key=(key=="death"?"B_Die_":key=="walk"?"B_Move_":"B_Idle_")+(phase>1?"2":"1");
+                else if(task=="B23")key="B_"+(key=="walk"?"Move":key=="attack"?"Attack_1":Title(key));
+                else if(task=="B16")key=key=="death"?"Die":(key=="walk"?"Move":Title(key))+"_B";
+                else if(task=="B17")key=key=="death"?"Die":(key=="walk"?"Move":Title(key))+"_2";
                 else if(task=="B08"||task=="B04"||task=="B09"||task=="B11"||task=="B12"||task=="B15"||task=="B23"||task=="B24"||task=="B25")
-                    key="B_"+Title(key);
+                    key="B_"+(key=="walk"?"Move":Title(key));
             }
             if(!source.HasAction(key))key=FirstNativeAction(source,action?new[]{"cast","attack","idle"}:new[]{key,"idle"});
             if(action)
@@ -288,7 +340,7 @@ namespace YesterdayConvoy
                 double started=actor.LastActionAt,duration=Math.Max(.001,actor.ActionUntil-started);
                 if(actor.PresentationDuration>0&&actor.PresentationStartedAt>=actor.LastActionAt-.0001)
                 {started=actor.PresentationStartedAt;duration=actor.PresentationDuration;}
-                age=Math.Min(.999999,Math.Max(0,(now-started)/duration))*source.Duration(key);loop=false;
+                age=Math.Max(0,now-started)*(actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate);loop=false;
             }
         }
         static string Title(string text)=>string.IsNullOrEmpty(text)?text:char.ToUpperInvariant(text[0])+text.Substring(1);
@@ -319,14 +371,16 @@ namespace YesterdayConvoy
         {
             if(string.IsNullOrEmpty(task)||!task.StartsWith("B",StringComparison.Ordinal))return Array.Empty<BossRosterFxArt.Binding>();
             if(formationEffectBindings.TryGetValue(task,out var prior))return prior;
-            string nativeSkill=FormationNativeSkill(task);
-            prior=BossRosterFxArt.Bindings(task).Where(b=>b.skill=="attack"||b.skill==nativeSkill||b.nativeSkill==nativeSkill||task=="B20"&&(b.skill=="s1"||b.skill=="s2"||b.skill=="s3")||
-                b.kind=="Death"||b.skill=="reborn"||b.nativeSkill=="reborn").ToArray();
+            prior=BossRosterFxArt.Bindings(task).ToArray();
             formationEffectBindings[task]=prior;return prior;
         }
         IEnumerable<ArtSequence> FormationEffectSequences(FormationUnitArt source)
         {
             var seen=new HashSet<string>();
+            foreach(var actor in Model?.Units??Enumerable.Empty<FormationFighter>())
+                if(formationMonsterArt.TryGetValue(actor.ArtId,out var same)&&same==source)
+                    foreach(var sequence in FormationLegacySequences(actor.ArtId))
+                        if(seen.Add(sequence.CacheKey))yield return sequence;
             foreach(string key in FormationCommonEffects)
             {var sequence=OriginalCombatVfxArt.Get(key).Sequence;if(seen.Add(sequence.CacheKey))yield return sequence;}
             foreach(var binding in FormationBindings(source.NativeTask))
@@ -338,73 +392,7 @@ namespace YesterdayConvoy
                 foreach(string key in new[]{"ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target"})
                 {var sequence=BossRosterSupplementArt.Talulah(key).Sequence;if(seen.Add(sequence.CacheKey))yield return sequence;}
         }
-        internal void PresentFormationNativeEffects()
-        {
-            if(Model==null||actorRoot==null||battleCamera==null)return;
-            if(formationEffects==null)formationEffects=new BossRosterFxLayer(actorRoot);
-            foreach(var view in formationAuxBodies.Values)if(view!=null)view.enabled=false;
-            formationEffects.Begin();double now=Model.Clock;
-            foreach(var actor in Model.Units.Where(u=>u.Enabled))
-            {
-                if(!FormationActorVisibleInView(actor)||!formationMonsterArt.TryGetValue(actor.ArtId,out var source))continue;
-                float scale=ActorPresentationHeight(actor)/Math.Max(.5f,source.Height);
-                var bindings=FormationBindings(source.NativeTask);
-                int phase=source.NativeTask=="B08"&&actor.NativePhase>0?3:actor.NativePhase+1;
-                if(actor.Alive)
-                {
-                    bool casting=actor.LastSkillAt>=actor.LastActionAt-.0001;
-                    double age=now-actor.LastActionAt;
-                    if(age>=0&&age<2.5)
-                    {
-                        var starts=bindings.Where(b=>(b.kind=="AttackStart"||b.kind=="SkillStart")&&b.attach=="owner"&&
-                            (b.phase<0||b.phase==phase)&&MatchesFormationEffectSkill(b,source.NativeTask,casting,actor.SkillAnimation));
-                        foreach(var binding in starts.Take(3))ShowFormationEffect(binding,source.NativeTask,age,actor.Position,actor,scale);
-                    }
-                    if(source.NativeTask=="B16"&&now-actor.LastSkillAt>=0&&now-actor.LastSkillAt<2)
-                    {
-                        var clip=BossRosterSupplementArt.Talulah(actor.NativePhase>0?"ignite-B-caster":"ignite-A-caster");
-                        ShowFormationClip(clip,now-actor.LastSkillAt,actor.Position,actor,scale,false);
-                    }
-                }
-                else
-                {
-                    double age=now-actor.LastDeathAt;
-                    bool returning=actor.NativePhaseReturningUntil>now;
-                    foreach(var binding in bindings.Where(b=>returning?b.skill=="reborn"||b.nativeSkill=="reborn":b.kind=="Death").Take(2))
-                        ShowFormationEffect(binding,source.NativeTask,age,actor.Position,actor,scale);
-                }
-            }
-            // Every impact is driven by an applied gameplay hit. One ranged line or an
-            // animation preview cannot create an extra hit, heal, or synergy event.
-            foreach(var hit in Model.Hits)
-            {
-                double age=now-hit.At;if(age<0||age>1.6||!FormationPointVisibleInView(hit.To))continue;
-                var actor=Model.Units.FirstOrDefault(u=>u.Id==hit.FromId);
-                FormationUnitArt source=null;
-                if(actor!=null)formationMonsterArt.TryGetValue(actor.ArtId,out source);
-                if(actor?.ArtId=="B26"&&hit.Skill&&age<.65)
-                    PresentFormationBeams(actor,hit.To,age);
-                bool displayed=false;
-                if(actor!=null&&source!=null&&!hit.Heal)
-                {
-                    float scale=ActorPresentationHeight(actor)/Math.Max(.5f,source.Height);
-                    foreach(var binding in FormationBindings(source.NativeTask).Where(b=>b.kind=="Impact"&&
-                        (b.phase<0||b.phase==(source.NativeTask=="B08"&&actor.NativePhase>0?3:actor.NativePhase+1))&&MatchesFormationEffectSkill(b,source.NativeTask,hit.Skill,actor.SkillAnimation)).Take(2))
-                        displayed|=ShowFormationEffect(binding,source.NativeTask,age,hit.To,actor,scale);
-                    if(source.NativeTask=="B16"&&hit.Skill)
-                        displayed|=ShowFormationClip(BossRosterSupplementArt.Talulah(actor.NativePhase>0?"ignite-B-target":"ignite-A-target"),age,hit.To,actor,scale,false);
-                }
-                if(!displayed)
-                {
-                    string key=hit.Heal?"common/common_heal_hit_01":actor!=null&&FormationCampaignRules.Find(actor.ArtId)?.DamageType=="法"?
-                        "common/common_magic_hit_01":"common/common_cuting_hit_01";
-                    var original=OriginalCombatVfxArt.Get(key);
-                    if(original.Sequence.Ready)
-                        ShowFormationClip(new BossRosterFxArt.Clip(original.Sequence,original.HdrRange,0,original.Loop),age,hit.To,actor,1,false);
-                }
-            }
-            formationEffects.End();
-        }
+
         static bool MatchesFormationEffectSkill(BossRosterFxArt.Binding binding,string task,bool skill,string action=null)
         {
             if(!skill)return binding.skill=="attack";
@@ -419,16 +407,17 @@ namespace YesterdayConvoy
         bool ShowFormationClip(BossRosterFxArt.Clip clip,double age,Vector2 point,FormationActor actor,float scale,bool loop)
         {
             if(clip==null||!clip.Sequence.Ready||!FormationPointVisibleInView(point))return false;
-            Vector3 position=ActorWorldPoint(point)+Vector3.up*.12f;
+            Vector3 position=ActorWorldPoint(point)+Vector3.up*.025f;
             bool result=formationEffects.Show(clip,age,position,battleCamera,actor!=null&&actor.Facing.x<0,loop,
-                actor!=null?new Vector3(actor.Facing.x,0,actor.Facing.y):Vector3.right,false,24,0,scale);
+                actor!=null?new Vector3(actor.Facing.x,0,actor.Facing.y):Vector3.right,false,6,0,scale,5000-Mathf.RoundToInt(point.y*50));
             return result;
         }
         void PresentFormationBeams(FormationFighter owner,Vector2 collision,double age)
         {
             if(!FormationArtAvailable("P26")||!formationMonsterArt.TryGetValue("P26",out var source))return;
             string action=source.HasAction("cast")?"cast":"idle";
-            double sourceAge=age/.65*source.Duration(action);
+            double sourceAge=age*FormationVisualRate;
+            if(sourceAge>=source.Duration(action))return;
             if(!source.WindowReady(action,sourceAge,false))
             {
                 string request="P26/beam";
@@ -446,13 +435,14 @@ namespace YesterdayConvoy
                 var point=collision+new Vector2(side*1.8f*(1-Mathf.Clamp01((float)age/.25f)),0);
                 view.enabled=FormationPointVisibleInView(point);view.sprite=frame;view.flipX=side>0;
                 view.transform.SetPositionAndRotation(ActorWorldPoint(point),battleCamera.transform.rotation);
-                view.transform.localScale=Vector3.one*(1.15f/Math.Max(.5f,source.Height));
-                view.color=new Color(1,1,1,Mathf.Clamp01((float)(.65-age)/.2f));
+                view.transform.localScale=Vector3.one;
+                view.color=Color.white;
                 view.sortingOrder=5005-Mathf.RoundToInt(point.y*50);
             }
         }
         internal void DisposeFormationNativeEffects()
         {
+            DisposeFormationLegacyEffects();
             formationEffects?.Dispose();formationEffects=null;
             foreach(var view in formationAuxBodies.Values)if(view!=null)Destroy(view.gameObject);
             formationAuxBodies.Clear();

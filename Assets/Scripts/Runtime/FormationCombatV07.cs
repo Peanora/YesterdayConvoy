@@ -56,7 +56,7 @@ namespace YesterdayConvoy
         sealed class CombatBuff { public float Value; public double Until; }
         sealed class CombatShield { public string Key; public float Amount; public double Until; public FormationActor Source; public bool Renewal; }
         sealed class CombatEvent { public double At; public int Order; public Action Fire; }
-        sealed class CombatZone { public FormationActor Source; public Vector2 Center; public float Radius, Multiplier; public int Type, Cap; public double Until, Next; public string Kind; public Vector2Int[] Cells; }
+        sealed class CombatZone { public FormationActor Source; public Vector2 Center; public float Radius, Multiplier; public int Type, Cap; public double StartedAt, Until, Next; public string Kind; public Vector2Int[] Cells; }
         CombatState State(FormationActor a)
         {
             if (!combat.TryGetValue(a.Id,out var s)) combat[a.Id] = s = new CombatState();
@@ -72,7 +72,7 @@ namespace YesterdayConvoy
         float Buff(FormationActor a,string k) => State(a).Buffs.TryGetValue(k,out var b) && b.Until > Clock ? b.Value : 0;
         void GiveBuff(FormationActor a,string k,float value,double duration) { if(a!=null)State(a).Buffs[k]=new CombatBuff{Value=value,Until=Clock+duration}; }
         void Schedule(double at,Action fire) => events.Add(new CombatEvent{At=at,Order=++actionSequence,Fire=fire});
-        void ScheduleOwned(FormationActor owner,double at,Action fire) { int version=State(owner).LifeVersion;Schedule(at,()=>{if(owner.Alive&&State(owner).LifeVersion==version)fire();}); }
+        void ScheduleOwned(FormationActor owner,double at,Action fire) => ScheduleOwnedPresentation(owner,at,fire);
         FormationFighter Carry => Units.FirstOrDefault(u => u.Enabled && u.Instance == Campaign.MainCarryInstance && u.Alive) ?? Units.FirstOrDefault(u=>u.Enabled&&u.Instance==Campaign.SecondCarryInstance&&u.Alive) ?? Units.Where(u => u.Enabled&&u.Alive).OrderByDescending(u=>u.Attack).FirstOrDefault();
         FormationFighter PairMember(int instance) => Units.FirstOrDefault(u => u.Enabled&&u.Instance==instance);
         FormationFighter Named(string id) => Units.FirstOrDefault(u => u.Enabled && Key(u)==id);
@@ -225,6 +225,7 @@ namespace YesterdayConvoy
         void TickCampaign(float dt)
         {
             Hits.RemoveAll(h=>h.At<Clock-3);
+            presentationActions.RemoveAll(action=>Math.Max(action.EndAt,action.ContactAt)<Clock-6);
             foreach(var a in Units.Cast<FormationActor>().Concat(Defenders).Concat(Summons).ToArray())
             {
                 var s=State(a);a.IsMoving=false;
@@ -290,11 +291,19 @@ namespace YesterdayConvoy
             if(u.Interval<=0||Clock+1e-8<u.NextAttackAt)return;
             if(healer)
             {
-                var wounded=Units.Where(v=>v.Enabled&&v.Alive&&Vector2.Distance(u.Position,v.Position)<=u.Range).OrderBy(v=>v.Health/v.MaxHealth).FirstOrDefault();
+                var wounded=Units.Where(v=>v.Enabled&&v.Alive&&Vector2.Distance(u.Position,v.Position)<=u.Range&&
+                    (v.Health<v.MaxHealth-.0001f||Level("复苏")>=2&&Tagged(v,"复苏"))).OrderBy(v=>v.Health/v.MaxHealth).FirstOrDefault();
                 if(wounded==null)return;
-                BeginAction(u,.35,false);CombatHeal(u,wounded,u.Attack*(Key(u)=="B10"?1.4f:1.1f),false,true);CompleteAuto(u,false);return;
+                var heal=BeginAction(u,.35,false,wounded,true);
+                QueueOrdinaryAction(u,wounded,heal,()=>{CombatHeal(u,wounded,u.Attack*(Key(u)=="B10"?1.4f:1.1f),false,true);CompleteAuto(u,false);});return;
             }
-            BeginAction(u,Math.Min(.36,u.Interval*.45),false);s.Autos++;
+            if(!AllowsOrdinaryAttack(u))return;
+            var attack=BeginAction(u,Math.Min(.36,u.Interval*.45),false,target);
+            QueueOrdinaryAction(u,target,attack,()=>ResolveOrdinaryAttack(u,target));
+        }
+        void ResolveOrdinaryAttack(FormationFighter u,FormationDefender target)
+        {
+            var s=State(u);s.Autos++;
             if(s.LastTarget!=target.Id){s.Stacks["rush"]=Mathf.Floor(Stack(u,"rush")/2);s.LastTarget=target.Id;}else if(Tagged(u,"迅攻")&&Level("迅攻")>=4)AddStack(u,"rush",1,10);
             string key=Key(u);float mult=key=="M16"?.75f:key=="M20"?.4f:key=="WIS"&&Campaign.WisadelSkill==2&&Buff(u,"wisadel")>0?2:1;
             if(key=="M30"&&Stack(u,"fireautos")>0){mult=2.2f;s.Stacks["fireautos"]--;}
@@ -315,13 +324,21 @@ namespace YesterdayConvoy
             if(key=="B14"&&s.Autos%3==0)SpawnDog(u);
             CompleteAuto(u,true);
         }
-        void BeginAction(FormationActor a,double duration,bool skill)
+        FormationPresentationAction BeginAction(FormationActor a,double duration,bool skill,FormationActor target=null,bool heal=false)
         {
+            PreserveActivePresentationContext(a);
             var s=State(a);s.Action=++actionSequence;s.ActionHits=0;s.ComboPerAction=0;s.SkillTargets.Clear();s.SkillSPReturned=0;s.PromptReturned=0;s.SkillBeats=0;
             a.LastActionAt=Clock;a.ActionUntil=Clock+duration;a.NextAttackAt=Math.Max(a.NextAttackAt,Clock+(skill?duration:a.Interval));
             if(skill){a.LastSkillAt=Clock;a.SkillAnimation=Key(a)=="B22"?"Attack_2":Key(a)=="WIS"?(Campaign.WisadelSkill==1?"Skill_1":Campaign.WisadelSkill==2?"Skill_2_Begin":"Skill_3_Begin"):"skill";}
             a.PresentationAction=skill?a.SkillAnimation:"attack";a.PresentationStartedAt=Clock;a.PresentationDuration=duration;
             s.Stacks["tape_auto"]=0;s.Stacks["last_skill_raw"]=0;s.SkillDamage.Clear();s.SkillHealing.Clear();s.SkillShields.Clear();
+            if(target==null&&a is FormationFighter fighter)
+            {
+                heal=State(a).Spec?.DamageType=="治疗";
+                target=heal?Units.Where(u=>u.Enabled&&u.Alive).OrderBy(u=>u.Health/u.MaxHealth).FirstOrDefault():FighterTarget(fighter);
+            }
+            if(heal&&target!=null)Face(a,target.Position);
+            return BeginPresentation(a,target,skill,heal,duration);
         }
         void CompleteAuto(FormationFighter u,bool attack)
         {

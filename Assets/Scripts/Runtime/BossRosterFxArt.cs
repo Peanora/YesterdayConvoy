@@ -42,9 +42,9 @@ namespace YesterdayConvoy
         sealed class Loaded {internal Dictionary<string,Clip> Clips;internal Binding[] Bindings;internal Preload[] Preloads;}
         static readonly Dictionary<string,Loaded> packages=new Dictionary<string,Loaded>(StringComparer.Ordinal);
         static bool Finite(float n)=>!float.IsNaN(n)&&!float.IsInfinity(n);
-        static bool TaskValid(string task)=>task!=null&&task.Length==3&&task[0]=='B'&&char.IsDigit(task[1])&&char.IsDigit(task[2]);
+        static bool TaskValid(string task)=>task=="WIS_APRIL_G9"||task!=null&&task.Length==3&&task[0]=='B'&&char.IsDigit(task[1])&&char.IsDigit(task[2]);
         internal static string TaskForCard(string card)
-        {if(card=="CARD_WISADEL_APRIL")return "B20";if(card=="CARD_M14")return "B18";
+        {if(card=="CARD_WISADEL_APRIL")return "WIS_APRIL_G9";if(card=="CARD_M14")return "B18";
             var task=card!=null&&card.StartsWith("CARD_",StringComparison.Ordinal)?card.Substring(5):null;return TaskValid(task)?task:null;}
         internal static string Key(string task,string raw)=>"boss/"+task+"/"+raw;
         internal static bool OwnsCard(string card)=>card=="CARD_WISADEL_APRIL"||card=="CARD_M14"||BossRosterCatalog.Contains(card);

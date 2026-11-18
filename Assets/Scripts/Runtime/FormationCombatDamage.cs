@@ -224,7 +224,7 @@ namespace YesterdayConvoy
         }
         void AddZone(FormationActor source,Vector2 center,float radius,float multiplier,double duration,int cap,string kind)
         {
-            var z=new CombatZone{Source=source,Center=center,Radius=radius,Multiplier=multiplier,Until=Clock+duration,Next=Clock+1,Cap=cap,Kind=kind};
+            var z=new CombatZone{Source=source,Center=center,Radius=radius,Multiplier=multiplier,StartedAt=Clock,Until=Clock+duration,Next=Clock+1,Cap=cap,Kind=kind};
             if(kind=="kingdom")z.Cells=Enumerable.Range(DeploymentColumns+1,Width-DeploymentColumns-2).SelectMany(x=>Enumerable.Range(0,Height).Select(y=>new Vector2Int(x,y))).OrderBy(c=>((Vector2)c-center).sqrMagnitude).ThenBy(c=>c.x).ThenBy(c=>c.y).Take(7).ToArray();
             zones.Add(z);
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -20,6 +21,7 @@ namespace YesterdayConvoy
         public bool CameraTransitioning => false;
         public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation && !ViewingDefenders;
         bool formationCameraInitialized, formationCameraWasPreparing;
+        bool formationCameraHasSetPiece;
         int formationCameraRound, formationOriginalCameraMask;
         Vector3 formationLeftPreparationPose, formationRightPreparationPose, formationRightBattlePose;
         readonly List<Vector3> formationCameraPoints = new List<Vector3>();
@@ -38,9 +40,7 @@ namespace YesterdayConvoy
             ViewingDefenders = !formationCameraWasPreparing;
             // These poses depend only on map dimensions and fixed visible-body envelopes.
             // Buying, moving or opening the shop never reframes a preparation view.
-            formationLeftPreparationPose = FixedFormationPose(false, false);
-            formationRightPreparationPose = FixedFormationPose(true, false);
-            formationRightBattlePose = FixedFormationPose(true, true);
+            RebuildFormationCameraPoses();
             ClassifyFormationEnvironment();
             ApplyFixedFormationView();
         }
@@ -61,6 +61,8 @@ namespace YesterdayConvoy
         {
             if (battleCamera == null || Model == null) return;
             if (!formationCameraInitialized) InitializeFormationCamera();
+            bool setPiece=Model.Units.Any(u=>u.Enabled&&u.ArtId=="B21");
+            if(setPiece!=formationCameraHasSetPiece)RebuildFormationCameraPoses();
             bool preparing = Model.Phase == FormationPhase.Preparation;
             if (preparing != formationCameraWasPreparing || preparing && Model.Round != formationCameraRound)
                 SetFormationView(!preparing);
@@ -75,13 +77,20 @@ namespace YesterdayConvoy
             ApplyFormationCamera(UseFormationBattleCamera ? formationRightBattlePose :
                 ViewingDefenders ? formationRightPreparationPose : formationLeftPreparationPose);
         }
+        void RebuildFormationCameraPoses()
+        {
+            formationCameraHasSetPiece=Model.Units.Any(u=>u.Enabled&&u.ArtId=="B21");
+            formationLeftPreparationPose=FixedFormationPose(false,false);
+            formationRightPreparationPose=FixedFormationPose(true,false);
+            formationRightBattlePose=FixedFormationPose(true,true);
+        }
         Vector3 FixedFormationPose(bool defenders, bool combat)
         {
             formationCameraPoints.Clear();
             float first = defenders ? FormationBattleModel.DeploymentColumns + .5f : -.5f;
             float last = defenders ? FormationBattleModel.Width - .5f : FormationBattleModel.DeploymentColumns + .5f;
-            float horizontalMargin = combat ? 1.5f : defenders ? .45f : 1f;
-            float topMargin = combat ? 2.35f : defenders ? 1.45f : 2.15f;
+            float horizontalMargin = formationCameraHasSetPiece ? 5.1f : combat ? 2.1f : defenders ? .9f : 1.5f;
+            float topMargin = formationCameraHasSetPiece ? 6.2f : defenders&&!combat ? 1.9f : 3.4f;
             foreach (float col in new[] { first, last })
                 foreach (float row in new[] { -.5f, FormationBattleModel.Height - .5f })
                 {
