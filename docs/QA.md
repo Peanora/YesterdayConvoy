@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-18 棋盘战斗打击反馈与四个角色专项修复
+
+- 运行内容源码 `0ed405c0444344229582d142ea143672f7a0dd87`。Unity 6000.6.5f1 Windows x64 Development 构建 1097953717 bytes、0 错误，运行库 SHA256 `FB26898497B05BC8610C2C42ED5EC10B8F5E20AAC623717B19CFDD8B55933BDC`。本地 `Builds/Windows/YesterdayConvoy.exe` 和 `SOURCE.txt` 已更新。
+- 同源码完整 EditMode **1211/1211**，12.4111895 秒。D3D11 棋盘、旧商店交互、地图安全视口与现有呈现 PlayMode **35/35**，52.2531381 秒。两套均退出 0，记录在 `artifacts/formation-impact-upgrade/*mode-final.xml`。
+- 独立 1280×720 D3D11 Player **71/71、0 异常**，实际走过正式挑战的随机开局、招募与装备、前三场战斗和结算。证据见 `artifacts/formation-impact-upgrade/player/campaign-smoke.json`。
+- 画面回归涵盖维维美三个技能的实际施放与命中、卡德霍瞬移的落点与取消、岁的部署形态与落爪命中、五费塔露拉在空格上的火雨和暂停。运行时沿用项目内已有专属资源。缺少素材的位置使用本轮新增的类型反馈和合成音效。
+- 使用本次独立 Player 录制 46 名角色、18 组羁绊、13 段变体，共 **77/77、30864 帧**，1280×720、24fps。索引和三份章节合集在 `artifacts/formation-impact-upgrade/replay/`，文件校验通过，三份合集完整解码退出 0。逐帧复看四个专项及裂兽、弩箭、喷火。录像使用高生命靶并略过部分回转等待，其他角色逐片审美验收、完整自然长局与第二台机器未验证。
+- 同目录上一级的 `打击反馈前后对照.mp4`（19.25 秒）和 `关键角色实机演示.mp4`（28.25 秒）均有声音且完整解码通过。音轨使用真实战斗事件与游戏内相同的声音合成，旧画面对照与原始合集保留静音。岁的首击下落较快，重点短片选了预兆和下落更可见的第二次落击。
+- 仓库检查 **17777** 个跟踪文件通过。仅本地运行构建和提交，记录提交未修改运行输入。
+
 ## 2026-11-18 最终交付：原作表现修复
 
 - 最终内容源码 **db3ab1f1b7f9f8d6a130e40722ac4b8fb23f389d**。Unity6000.6.5f1实际`BaselineTools.BuildWindows`，Windows x64 Development **1097919645 bytes、0错误、退出0**（`artifacts/formation-native-restoration/build-delivery.log`）。Runtime DLL SHA256 **DE0779840A04B09BF547995F6D0E7192D6EB8468D60082B779FD4B9225BB0EC3**；正式路径EXE及SOURCE.txt更新。运行源导出5398文件/5233 prepared/164清单，1067346717美术字节，包含TAL新增4页与正确WG9，不拿旧播放器冒充更新。
