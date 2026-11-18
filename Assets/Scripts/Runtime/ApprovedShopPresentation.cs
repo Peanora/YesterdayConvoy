@@ -23,6 +23,7 @@ namespace YesterdayConvoy
             public Func<int,bool> InLineup;
             public Func<string,Sprite> Portrait;
             public Func<string,double,Sprite> IdleFrame;
+            public Func<string,float> ModelHeight;
             public Func<string,string[]> Tags;
             public Func<Texture2D> Coin,Star;
             public Action<bool> StoreVisible,SetVisible,StoreOdds;
@@ -121,9 +122,9 @@ namespace YesterdayConvoy
             return go.GetComponent<SpriteRenderer>();
         }
         Sprite ShopIdleFrame(string id,double time)=>host.IdleFrame(id,time);
-        static float ShopModelScale(string id)
+        float ShopModelScale(string id)
         {
-            float height=LocalMonsterArt.For(id)?.Height??1;
+            float height=host.ModelHeight?.Invoke(id)??LocalMonsterArt.For(id)?.Height??1;
             return .57f/1.855f*Mathf.Min(1,2.05f/height);
         }
         Vector2 ShopModelFoot(int slot){var r=ShopFlowPieceRect(slot);return new Vector2(r.center.x,r.y+55);}
