@@ -355,6 +355,10 @@ namespace YesterdayConvoy
                     key="B_"+(key=="walk"?"Move":Title(key));
             }
             if(!source.HasAction(key))key=FirstNativeAction(source,action?new[]{"cast","attack","idle"}:new[]{key,"idle"});
+            // This approved 50 ms GIF walk cycles from actual movement distance,
+            // matching the earlier 0.75-unit/s reference stride.
+            if(source.UsesApprovedWalk(key)&&actor is FormationFighter walking)
+                age=walking.GroundDistanceTravelled/.75;
             if(action)
             {
                 double started=actor.LastActionAt,duration=Math.Max(.001,actor.ActionUntil-started);

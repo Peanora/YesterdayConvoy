@@ -34,21 +34,22 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void CadejoWaitsThenMovesOnlyWhenTheBlinkLandsAndPauseFreezesWindup()
+        public void CadejoBlinksFromDeploymentIntoEnemyReachOnceAndPauseFreezesWindup()
         {
             var model = StartSingleCadejo();
             var unit = model.Units.Single();
             var spawn = unit.Position;
-            for (int i = 0; model.CadejoBlinks.Count == 0 && i < 120; i++)
-            {
-                model.Advance(.025f);
-                Assert.That(unit.Position, Is.EqualTo(spawn));
-                Assert.That(unit.IsMoving, Is.False);
-            }
+            var target = model.Defenders.First();
+            target.Position = new Vector2(20, 3);
+            foreach (var guard in model.Defenders.Skip(1)) guard.Alive = false;
+            model.Advance(.025f);
 
             var blink = model.CadejoBlinks.Single();
             Assert.That(blink.ActorId, Is.EqualTo(unit.Id));
             Assert.That(blink.From, Is.EqualTo(spawn));
+            Assert.That(unit.Position, Is.EqualTo(spawn));
+            Assert.That(blink.To.x, Is.GreaterThanOrEqualTo(FormationBattleModel.BattleAreaStart));
+            Assert.That(Vector2.Distance(blink.To, target.Position), Is.InRange(.35f, unit.Range));
             Assert.That(double.IsPositiveInfinity(blink.ArrivedAt), Is.True);
             model.Paused = true;
             model.Advance(1);
@@ -61,9 +62,50 @@ namespace YesterdayConvoy.Tests
             Assert.That(blink.Cancelled, Is.False);
             Assert.That(blink.ArrivedAt - blink.StartedAt, Is.GreaterThanOrEqualTo(.0999));
             Assert.That(unit.Position, Is.EqualTo(blink.To));
+            Assert.That(model.CadejoBlinks.Count, Is.EqualTo(1));
+            Assert.That(unit.TargetId, Is.EqualTo(target.Id));
             Assert.That(unit.IsMoving, Is.False);
             Assert.That(model.SkillCasts, Is.Empty);
-            Assert.That(model.Hits, Is.Empty);
+            Assert.That(model.Hits.Any(hit=>hit.FromId==unit.Id),Is.False,"Landing must not create an extra attack. The guard may react immediately.");
+        }
+
+        [Test]
+        public void CadejoAimsForWalkableGroundBelowHighGuardAndRetargetsIfThatGuardDies()
+        {
+            var terrain = new FormationBattleTerrainLayout(new[]
+            {
+                new FormationBattleTerrainRegion { cells = new RectInt(18, 3, 2, 2), height = 1, allowDefender = true }
+            });
+            var model = StartSingleCadejo(terrain);
+            var unit = model.Units.Single();
+            var elevated = model.Defenders[0];
+            elevated.Position = new Vector2(18, 3);
+            var next = model.Defenders[1];
+            next.Position = new Vector2(22, 6);
+            foreach (var guard in model.Defenders.Skip(2)) guard.Alive = false;
+
+            model.Advance(.025f);
+            var first = model.CadejoBlinks.Single();
+            Assert.That(unit.TargetId, Is.EqualTo(elevated.Id));
+            Assert.That(terrain.HeightAt(elevated.Position), Is.GreaterThan(0));
+            Assert.That(terrain.IsWalkable(first.To), Is.True);
+            Assert.That(terrain.HeightAt(first.To), Is.Zero);
+            Assert.That(Vector2.Distance(first.To, elevated.Position), Is.InRange(.35f, unit.Range));
+
+            elevated.Alive = false;
+            model.Advance(.025f);
+            var second = model.CadejoBlinks.Last();
+            Assert.That(first.Cancelled, Is.True);
+            Assert.That(double.IsPositiveInfinity(first.ArrivedAt), Is.True);
+            Assert.That(second.Sequence, Is.GreaterThan(first.Sequence));
+            Assert.That(second.From, Is.EqualTo(first.From));
+            Assert.That(unit.TargetId, Is.EqualTo(next.Id));
+            Assert.That(Vector2.Distance(second.To, next.Position), Is.InRange(.35f, unit.Range));
+
+            for (int i = 0; double.IsPositiveInfinity(second.ArrivedAt) && i < 16; i++) model.Advance(.025f);
+            Assert.That(unit.Position, Is.EqualTo(second.To));
+            Assert.That(model.CadejoBlinks.Count(cue => !double.IsPositiveInfinity(cue.ArrivedAt)), Is.EqualTo(1));
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Fighting));
         }
 
         [Test]

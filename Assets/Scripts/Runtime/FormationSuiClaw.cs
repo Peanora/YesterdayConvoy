@@ -16,8 +16,8 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
-        const double SuiClawWarningSeconds = .42;
-        internal const double SuiClawTailSeconds = .36;
+        const double SuiClawWarningSeconds = .72;
+        internal const double SuiClawTailSeconds = .60;
         readonly List<FormationSuiClawStrike> suiClawStrikes = new List<FormationSuiClawStrike>();
 
         FormationSuiClawStrike PrepareSuiClawStrike(FormationFighter owner, FormationPresentationAction cast,
@@ -97,7 +97,12 @@ namespace YesterdayConvoy
     {
         const string SuiClawMotion = "Skill_Loop_A";
         const string SuiClawImpactArt = "enemy_dyshhj_skill_02_hit_01";
-        const double SuiClawDescentSeconds = .22;
+        const string SuiClawGroundArt = "enemy_dyshhj_skill_02_range_01";
+        // The source ground clip contains three pulses. Use the final pulse's
+        // first bright frame and its decay for this one gameplay impact.
+        const double SuiClawGroundContact = 60d / 30;
+        const double SuiClawDescentSeconds = .44;
+        const double SuiClawPlantedSeconds = .20;
         const float SuiClawCombatHeight = 3.8f;
 
         bool PresentFormationSuiBody(FormationActor actor, SpriteRenderer body)
@@ -116,18 +121,17 @@ namespace YesterdayConvoy
         {
             if(!actor.Alive || !formationMonsterArt.TryGetValue(actor.ArtId,out var source))
                 return;
-            double now=Model.Clock;
-            double age=now-cue.ImpactAt;
+            double age=Model.Clock-cue.ImpactAt;
             double fallTime=Math.Min(SuiClawDescentSeconds,Math.Max(.001,cue.ImpactAt-cue.WarningAt));
             if(age < -fallTime)
                 return;
-            // Reuse the first actual claw stroke in the already installed pose
-            // sequence, sampled at established source speed. The vertical motion
-            // is a world-space presentation offset, separate from the unit position.
             var contact=source.ContactTime(SuiClawMotion);
             if(float.IsNaN(contact))
                 return;
-            var sourceAge=contact+age*FormationVisualRate;
+            // Follow the authored first stroke at source speed. Keep its planted
+            // pose for the recoil rather than sampling the clip's next strike.
+            var strokeAge=age*cue.Cast.Rate;
+            var sourceAge=contact+Math.Min(strokeAge,.15);
             if(!source.WindowReady(SuiClawMotion,sourceAge,false) && warmingFormationWindows.Add("B21/claw"))
                 StartCoroutine(WarmFormationWindow(source,SuiClawMotion,sourceAge,false,"B21/claw"));
             var frame=source.Frame(SuiClawMotion,sourceAge,false);
@@ -135,15 +139,17 @@ namespace YesterdayConvoy
                 return;
 
             float fall=Mathf.Clamp01((float)(1+age/fallTime));
-            float retreat=Mathf.Clamp01((float)((age-.09)/(FormationBattleModel.SuiClawTailSeconds-.09)));
-            float lift=3.55f*(1-fall*fall)+2.7f*retreat*retreat;
+            float retreat=Mathf.Clamp01((float)((age-SuiClawPlantedSeconds)/(FormationBattleModel.SuiClawTailSeconds-SuiClawPlantedSeconds)));
+            float lift=4.65f*(1-fall*fall)+3.6f*retreat*retreat;
             float scale=Mathf.Min(ActorPresentationHeight(actor),SuiClawCombatHeight)/source.Height;
             bool flip=actor.Facing.x<0;
-            // The middle talon in Skill_Loop_A at its first strike sits 42
-            // source pixels left of the pivot. Align it with the strike cell.
-            float toeOffset=42f/frame.pixelsPerUnit*scale;
-            var root=ActorWorldPoint(cue.Center)+Vector3.up*(lift+.06f)+
-                battleCamera.transform.right*(flip ? -toeOffset : toeOffset);
+            // During the four authored frames following contact, the middle talon
+            // extends from (-50,-13) to (-28,-38) around the source pivot.
+            float toeExtension=Mathf.Clamp01((float)(strokeAge/(4d/60)));
+            float toeX=Mathf.Lerp(50,28,toeExtension)*scale/frame.pixelsPerUnit;
+            float toeY=Mathf.Lerp(13,38,toeExtension)*scale/frame.pixelsPerUnit;
+            var root=ActorWorldPoint(cue.Center)+Vector3.up*(lift+.04f)+
+                battleCamera.transform.right*(flip ? -toeX : toeX)+battleCamera.transform.up*toeY;
             var body=SuiClawRenderer(actor.Id+"/sui/descent","Sui falling claw");
             body.sharedMaterial=actorMaterial;
             body.enabled=true;
@@ -152,7 +158,7 @@ namespace YesterdayConvoy
             body.transform.SetPositionAndRotation(root,battleCamera.transform.rotation);
             body.transform.localScale=Vector3.one*scale;
             body.sortingOrder=5022-Mathf.RoundToInt(cue.Center.y*50);
-            body.color=new Color(1,1,1,Mathf.Min(1,fall*3)*(1-retreat));
+            body.color=new Color(1,1,1,Mathf.SmoothStep(.22f,1,fall*5)*(1-retreat*retreat));
         }
 
         void PresentFormationSuiClawEffects()
@@ -173,22 +179,32 @@ namespace YesterdayConvoy
                     continue;
                 DrawSuiClawDescent(actor,cue);
                 double age=Model.Clock-cue.ImpactAt;
-                if(shadow!=null && age<.13)
+                if(shadow!=null && age<.20)
                 {
                     float anticipation=Mathf.InverseLerp((float)cue.WarningAt,(float)cue.ImpactAt,(float)Model.Clock);
-                    float fade=1-Mathf.Clamp01((float)(age/.13));
-                    DrawSuiClawShadow(actor.Id+"/sui/impact",shadow,cue.Center,1.75f+anticipation*.6f,
-                        new Color(.27f,.17f,.10f,(.4f+.4f*anticipation)*fade));
+                    float fade=1-Mathf.Clamp01((float)(age/.20));
+                    DrawSuiClawShadow(actor.Id+"/sui/impact",shadow,cue.Center,2.15f+anticipation*1.10f,
+                        new Color(.12f,.10f,.08f,(.48f+.47f*anticipation)*fade));
                 }
                 if(cue.Resolved && cue.Landed)
-                {
-                    var clip=BossRosterFxArt.Get(BossRosterFxArt.Key("B21",SuiClawImpactArt));
-                    var position=ActorWorldPoint(cue.Center)+battleCamera.transform.up*.16f+Vector3.up*.03f;
-                    if(clip.Sequence.Ready)
-                        formationEffects.Show(clip,age*FormationVisualRate,position,battleCamera,actor.Facing.x<0,
-                            false,Vector3.right,false,4,0,1.2f,5000-Mathf.RoundToInt(cue.Center.y*50));
-                }
+                    DrawSuiClawLanding(actor,cue.Center,age);
             }
+        }
+
+        void DrawSuiClawLanding(FormationActor actor,Vector2 center,double age)
+        {
+            var ground=BossRosterFxArt.Get(BossRosterFxArt.Key("B21",SuiClawGroundArt));
+            var hit=BossRosterFxArt.Get(BossRosterFxArt.Key("B21",SuiClawImpactArt));
+            var foot=ActorWorldPoint(center)+Vector3.up*.04f;
+            int order=5000-Mathf.RoundToInt(center.y*50);
+            double sourceAge=age*FormationVisualRate;
+            bool flip=actor.Facing.x<0;
+            if(ground.Sequence.Ready)
+                formationEffects.Show(ground,SuiClawGroundContact+sourceAge,foot,battleCamera,flip,false,Vector3.right,
+                    false,-5,0,.38f,order,ground:true);
+            if(hit.Sequence.Ready)
+                formationEffects.Show(hit,sourceAge,foot+battleCamera.transform.up*.16f,battleCamera,flip,false,
+                    Vector3.right,false,4,0,1.2f,order);
         }
 
         void DrawSuiClawShadow(string key, Sprite sprite, Vector2 cell, float width, Color color)

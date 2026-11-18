@@ -92,6 +92,7 @@ namespace YesterdayConvoy
             {
                 actor.PresentationAction = null; actor.PresentationStartedAt = actor.PresentationDuration = actor.PresentationMoveLockUntil = 0;
                 actor.PresentationRate = 1;
+                if (actor is FormationFighter fighter) fighter.GroundDistanceTravelled = 0;
             }
         }
 
@@ -262,6 +263,7 @@ namespace YesterdayConvoy
             double release = launchedAt + (profile?.SkillProjectileDelay ?? 0) / rate;
             double flight = profile != null && profile.SkillProjectileSpeed > 0 ?
                 Vector2.Distance(actor.Position, target.Position) / profile.SkillProjectileSpeed / rate : 0;
+            if (Key(actor) == "WIS" && animation == "Skill_3_Loop") flight = Math.Max(WisadelShellMinimumFlight, flight);
             var projectile = new FormationPresentationAction
             {
                 Sequence=++presentationSequence, ActorId=actor.Id, TargetId=target.Id,

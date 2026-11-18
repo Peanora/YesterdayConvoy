@@ -281,9 +281,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(projectile.At-cast.At,Is.EqualTo(.83333331/2).Within(.00001));
             Assert.That(projectile.Animation,Is.EqualTo("Skill_3_Loop"));Assert.That(projectile.ProjectileMovement,Is.EqualTo("AdvancedMovement"));
             Assert.That(projectile.LaunchedAt,Is.EqualTo(cast.LaunchedAt).Within(.00001));
-            Assert.That(projectile.ContactAt-projectile.LaunchedAt,Is.EqualTo(.025).Within(.00001));
+            Assert.That(projectile.ContactAt-projectile.LaunchedAt,Is.EqualTo(.5).Within(.00001));
             Assert.That(actor.DamageDone,Is.Zero,"Actual area damage must wait for the real flight.");
-            Advance(model,.025f);Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*4.5f).Within(.01));
+            Advance(model,(float)(projectile.ContactAt-model.Clock+.025));
+            Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*4.5f).Within(.01));
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
         }
 
@@ -294,7 +295,7 @@ namespace YesterdayConvoy.Tests
             var model=Fixture(out _,"WIS");var actor=model.Units.Single();actor.Star=star;
             model.SetAnimationProfile("WIS",WisadelProjectileProfile());Enter(model);actor.SkillCharge=actor.SkillRequired;
             var projectiles=new Dictionary<int,FormationPresentationAction>();
-            for(int frame=0;frame<Mathf.CeilToInt((shells*.7f+.9f)/.025f);frame++)
+            for(int frame=0;frame<Mathf.CeilToInt((shells*1.1f+1.2f)/.025f);frame++)
             {
                 model.Advance(.025f);
                 foreach(var projectile in model.PresentationActions.Where(action=>action.ActorId==actor.Id&&action.ProjectileOnly))projectiles[projectile.Sequence]=projectile;
@@ -303,7 +304,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(ordered.Length,Is.EqualTo(shells));
             CollectionAssert.AreEqual(Enumerable.Range(0,shells),ordered.Select(action=>action.ProjectileIndex));
             Assert.That(ordered.Select(action=>action.ParentSequence).Distinct().Count(),Is.EqualTo(1));
-            foreach(var gap in ordered.Skip(1).Zip(ordered,(later,earlier)=>later.LaunchedAt-earlier.LaunchedAt))Assert.That(gap,Is.EqualTo(.7).Within(.00001));
+            foreach(var gap in ordered.Skip(1).Zip(ordered,(later,earlier)=>later.LaunchedAt-earlier.LaunchedAt))Assert.That(gap,Is.EqualTo(1.1).Within(.00001));
             Assert.That(ordered.All(action=>!action.Cancelled&&action.Skill),Is.True);
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1),"Projectile metadata must never create additional casts or consume more SP.");
             Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*4.5f*shells).Within(.1));
@@ -320,7 +321,7 @@ namespace YesterdayConvoy.Tests
             model.Paused=true;Advance(model,2);
             Assert.That(model.Clock,Is.EqualTo(clock));Assert.That(actor.DamageDone,Is.Zero);
             Assert.That(model.PresentationActions.Count(action=>action.ProjectileOnly),Is.EqualTo(1));
-            model.Paused=false;Advance(model,.025f);
+            model.Paused=false;Advance(model,(float)(projectile.ContactAt-model.Clock+.025));
             Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*4.5f).Within(.01));
             Assert.That(model.PresentationActions.Single(action=>action.ProjectileOnly),Is.SameAs(projectile));
         }

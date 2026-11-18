@@ -151,10 +151,12 @@ namespace YesterdayConvoy.Tests
             Begin();
             var actor = controller.Model.Units.Single();
             var source = FormationUnitArt.For(actor.ArtId);
-            Step(.025f);
+            Step(.35f);
             Assert.That(actor.IsMoving, Is.True);
             Assert.That(Selected(source, actor, "walk").key, Is.EqualTo("walk"));
-            Assert.That(Body(actor).sprite, Is.SameAs(source.Frame("walk",controller.Model.Clock*2,true)));
+            double walkAge=Field<double>(actor,"GroundDistanceTravelled")/.75;
+            Assert.That(walkAge,Is.LessThan(controller.Model.Clock*2));
+            Assert.That(Body(actor).sprite, Is.SameAs(source.Frame("walk",walkAge,true)));
             Assert.That(source.Frame("walk",0), Is.Not.SameAs(source.Frame("walk",.3)));
             yield return Until(() => controller.Model.PresentationActions.Any(a => a.ActorId == actor.Id && !a.Skill));
             var action = controller.Model.PresentationActions.First(a => a.ActorId == actor.Id && !a.Skill);
@@ -185,41 +187,75 @@ namespace YesterdayConvoy.Tests
                 yield return Fixture(new[]{"WIS"},wisadelSkill:skill);
                 Begin();
                 string mark="wisdel_skill_0"+skill;
-                bool owner=false,impact=false,linked=false;
+                bool owner=false,impact=false,linked=false,headInFlight=skill!=3;
                 yield return Until(()=>
                 {
                     var layers=LegacyLayers().Where(r=>r.sprite.name.Contains(mark)).ToArray();
                     owner|=layers.Any(r=>(r.sprite.name.Contains("start")||r.sprite.name.Contains("buff"))&&HasPaint(r.sprite));
                     impact|=layers.Any(r=>r.sprite.name.Contains("hit")&&HasPaint(r.sprite));
+                    if(!headInFlight&&controller.Model.PresentationActions.Any(a=>a.ProjectileOnly&&
+                        controller.Model.Clock>=a.LaunchedAt&&controller.Model.Clock<a.ContactAt))
+                        headInFlight=LegacyLayers().Any(r=>r.sprite.name.StartsWith("face-",StringComparison.Ordinal)&&HasPaint(r.sprite));
                     linked|=controller.Model.Hits.Any(h=>!h.Heal&&h.SourceArtId=="WISADEL_APRIL"&&
                         (skill==2?h.Action!=null&&!h.Skill&&h.At>h.Action.At:h.Action?.ProjectileOnly==true));
-                    return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked;
+                    return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked&&headInFlight;
                 },60);
             }
         }
 
-        [UnityTest] public IEnumerator FiveCostRainDrawsAboveEmptyCellsAcrossTheArenaAndFreezesWithCombat()
+        [UnityTest] public IEnumerator FiveCostRainUsesGroundStreamsAcrossAllLanesAndFreezesWithCombat()
         {
             RequireGpu();
             yield return Fixture(new[]{"TAL"},talulahCost:5);
             Begin();
-            SpriteRenderer[] drops=Array.Empty<SpriteRenderer>();
+            SpriteRenderer[] fire=Array.Empty<SpriteRenderer>();
+            float first=float.PositiveInfinity,last=float.NegativeInfinity;
+            var camera=Camera.main;
             yield return Until(()=>
             {
-                drops=controller.GetComponentsInChildren<SpriteRenderer>().Where(r=>r.enabled&&r.name=="Falling fire").ToArray();
-                return drops.Length>=12&&drops.Max(r=>r.transform.position.x)-drops.Min(r=>r.transform.position.x)>7&&
-                    drops.Max(r=>r.transform.position.z)-drops.Min(r=>r.transform.position.z)>5;
+                fire=LegacyLayers().Where(r=>r.sprite.name.Contains("original-energy-stream")).ToArray();
+                if(fire.Length!=FormationBattleModel.Height)return false;
+                first=Mathf.Min(first,fire.Min(r=>r.transform.position.x));
+                last=Mathf.Max(last,fire.Max(r=>r.transform.position.x));
+                return last-first>8&&fire.Any(r=>HasPaint(r.sprite));
             },45);
             Assert.That(controller.Model.SkillCasts.Count,Is.EqualTo(1));
-            Assert.That(drops.Any(r=>HasPaint(r.sprite)),Is.True,"The active waves contain actual flame pixels.");
-            Vector3 point=drops[0].transform.position;
-            var sprite=drops[0].sprite;
+            Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
+            foreach(var stream in fire)
+            {
+                var ground=stream.transform.position-camera.transform.up*.12f;
+                var cell=new Vector2(ground.x+(FormationBattleModel.Width-1)*.5f,ground.z+(FormationBattleModel.Height-1)*.5f);
+                Assert.That(ground.y,Is.EqualTo(controller.ActorWorldPoint(cell).y).Within(.01));
+            }
+            Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Falling fire"),Is.False);
+            Vector3 point=fire[0].transform.position;
+            var sprite=fire[0].sprite;
             controller.Model.Paused=true;
             Step(.4f);
-            Assert.That(drops[0].transform.position,Is.EqualTo(point));
-            Assert.That(drops[0].sprite,Is.SameAs(sprite));
+            Assert.That(fire[0].transform.position,Is.EqualTo(point));
+            Assert.That(fire[0].sprite,Is.SameAs(sprite));
             yield return Fixture(new[]{"TAL"},talulahCost:4);
-            Assert.That(drops.All(r=>r==null||!r.enabled),Is.True);
+            Assert.That(fire.All(r=>r==null||!r.enabled),Is.True);
+        }
+
+        [UnityTest] public IEnumerator FlamerazerPaintsAContinuousJetDuringTheActualSkill()
+        {
+            RequireGpu();
+            yield return Fixture(new[]{"M31"});
+            Begin();
+            var actor=controller.Model.Units.Single();
+            SpriteRenderer jet=null;
+            yield return Until(()=>
+            {
+                jet=controller.GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(r=>r.enabled&&r.name=="Formation Flamerazer / fire jet");
+                return jet!=null&&controller.Model.Hits.Any(hit=>hit.FromId==actor.Id&&hit.Skill)&&HasPaint(jet.sprite);
+            },45);
+            var cast=controller.Model.PresentationActions.Single(a=>a.ActorId==actor.Id&&a.Skill);
+            var firstFrame=jet.sprite;
+            yield return Until(()=>jet.enabled&&jet.name=="Formation Flamerazer / fire jet"&&jet.sprite!=firstFrame,.6);
+            Assert.That(controller.Model.Clock,Is.LessThan(cast.EndAt));
+            yield return Until(()=>controller.Model.Clock>=cast.EndAt,4);
+            Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Formation Flamerazer / fire jet"),Is.False);
         }
 
         [UnityTest] public IEnumerator ProductionEquipmentSpeedsAprilFramesWithoutChangingBattleClockSpeed()
@@ -258,7 +294,7 @@ namespace YesterdayConvoy.Tests
             Invoke(controller, "RefreshFormationAnimationProfiles");
             Assert.That(controller.Model, Is.SameAs(model));
             Assert.That(Profile(actor.ArtId).SkillDuration - sixShellDuration,
-                Is.EqualTo(6 * .7f * 2).Within(.0001f),
+                Is.EqualTo(6 * 1.1f * 2).Within(.0001f),
                 "The twelve-shell body channel needs the six additional real loop intervals after an in-place star change.");
         }
 
@@ -277,6 +313,12 @@ namespace YesterdayConvoy.Tests
             object ActiveCue() => Invoke(model,"ActiveSuiClawStrike",actor);
             Assert.That(Body(actor).enabled, Is.False, "Combat must not drag the giant deployment sprite along the board.");
 
+            yield return Until(() => ActiveCue()!=null);
+            var opening=ActiveCue();
+            Assert.That(Field<int>(opening,"Wave"),Is.Zero);
+            double firstImpact=Field<double>(opening,"ImpactAt");
+            Assert.That(firstImpact-Field<double>(opening,"WarningAt"),Is.GreaterThanOrEqualTo(.35));
+
             object pulse=null;
             yield return Until(() =>
             {
@@ -287,6 +329,7 @@ namespace YesterdayConvoy.Tests
             var drop=effects[actor.Id+"/sui/descent"];
             var shadow=effects[actor.Id+"/sui/impact"];
             double impact=Field<double>(pulse,"ImpactAt");
+            Assert.That(impact-firstImpact,Is.EqualTo(4).Within(.026));
             var landing=controller.ActorWorldPoint(Field<Vector2>(pulse,"Center"));
             var sourcePosition=actor.Position;
             var before=drop.transform.position;
@@ -305,10 +348,17 @@ namespace YesterdayConvoy.Tests
             Assert.That(Field<bool>(pulse,"Landed"), Is.True);
             double resolved=Field<double>(pulse,"ImpactAt");
             Assert.That(resolved,Is.EqualTo(impact).Within(.026));
-            Assert.That(drop.transform.position.y-landing.y, Is.InRange(0,.1f));
+            Assert.That(drop.transform.position.y-landing.y, Is.InRange(0,.32f));
+            var ground=controller.GetComponentsInChildren<SpriteRenderer>().Single(r=>r.enabled&&
+                r.name=="Boss FX / boss/B21/enemy_dyshhj_skill_02_range_01");
+            Assert.That(ground.transform.position.y-landing.y,Is.InRange(.025f,.075f));
+            Assert.That(HasPaint(ground.sprite),Is.True);
             CollectionAssert.AreEquivalent(living,model.Hits.Where(hit=>hit.FromId==actor.Id && hit.Skill &&
                 Math.Abs(hit.At-resolved)<.0001).Select(hit=>hit.ToId).ToArray(),"A single periodic slam still reaches every living defender once.");
             Assert.That(actor.Position,Is.EqualTo(sourcePosition),"The claw's impact position must not move the real unit to the guard.");
+            Step(.12f);
+            Assert.That(drop.enabled,Is.True,"The claw holds its planted pose before retreating.");
+            Assert.That(drop.transform.position.y-landing.y,Is.InRange(0,.32f));
             yield return Until(() => !drop.enabled,1);
             Assert.That(model.SkillCasts.Count(c=>c.UnitId=="B21"),Is.EqualTo(1));
             Assert.That((double)Invoke(model,"PresentationBusyUntil",actor),Is.EqualTo(busyUntil));

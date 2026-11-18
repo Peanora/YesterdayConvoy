@@ -43,13 +43,15 @@ namespace YesterdayConvoy
             if(skill&&FormationChannel(source,actor,out var begin,out var cycle,out var end))
             {
                 if(source.NativeTask=="WIS_APRIL_G9")
-                    return source.Duration(begin)+((actor as FormationFighter)?.Star>=3?11:5)*.7f*FormationVisualRate+1.5f+source.Duration(end);
+                    return source.Duration(begin)+((actor as FormationFighter)?.Star>=3?11:5)*FormationBattleModel.WisadelShellInterval*FormationVisualRate+
+                        source.ContactTime(cycle)+FormationBattleModel.WisadelShellMinimumFlight*FormationVisualRate+source.Duration(end);
                 return Mathf.Max(source.Duration(begin)+source.Duration(cycle)+source.Duration(end),(FormationCampaignRules.Find(actor.ArtId)?.ActionSeconds??0)*FormationVisualRate);
             }
             return source.Duration(key);
         }
         float FormationSourceContact(FormationUnitArt source,FormationActor actor,bool skill,string key)
         {
+            if(actor.ArtId=="B21"&&skill)return source.ContactTime(SuiClawMotion);
             string begin,cycle,end;
             bool channel=skill?FormationChannel(source,actor,out begin,out cycle,out end):FormationAttackChannel(source,actor,out begin,out cycle,out end);
             if(!channel)return source.ContactTime(key);
@@ -77,12 +79,11 @@ namespace YesterdayConvoy
             else
             {
                 key=cycle;age=elapsed-beginDuration;loop=true;
-                // A real shell is released every .7 simulation seconds. Only the source
-                // backswing is interrupted by the next attack, as in the source client.
+                // Restart from the same source windup for each actual shell.
                 if(source.NativeTask=="WIS_APRIL_G9")
                 {
                     int intervals=(actor as FormationFighter)?.Star>=3?11:5;
-                    double cadence=.7*rate;
+                    double cadence=FormationBattleModel.WisadelShellInterval*rate;
                     age-=Math.Min(intervals,Math.Floor(age/cadence))*cadence;loop=false;
                 }
             }

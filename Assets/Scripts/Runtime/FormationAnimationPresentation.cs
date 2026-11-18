@@ -44,7 +44,12 @@ namespace YesterdayConvoy
                     if(FormationProjectileProfiles.TryFor(actor.ArtId,unit?.NativePhase??0,out var projectile))
                     {profile.ProjectileSpeed=projectile.Speed;profile.ProjectileRaiseHeight=projectile.RaiseHeight;profile.ProjectileDelay=projectile.Delay;profile.ProjectileMovement=projectile.MovementClass;profile.ProjectileNoRaiseThreshold=projectile.NoRaiseHeightThreshold;}
                     if(source.NativeTask=="WIS_APRIL_G9"&&(Campaign?.WisadelSkill==1||Campaign?.WisadelSkill==3))
-                    {profile.SkillProjectileSpeed=10;profile.SkillProjectileMovement="AdvancedMovement";profile.SkillProjectileWindup=Campaign.WisadelSkill==3?.533333361f:0;}
+                    {
+                        bool third=Campaign.WisadelSkill==3;
+                        profile.SkillProjectileSpeed=third?4.25f:10;
+                        profile.SkillProjectileMovement="AdvancedMovement";
+                        profile.SkillProjectileWindup=third?source.ContactTime("Skill_3_Loop"):0;
+                    }
                     if(source.NativeTask=="WIS_APRIL_G9"&&Model.PresentationBuff(actor,"wisadel")>0)
                     {profile.ProjectileSpeed=0;profile.ProjectileMovement=null;profile.AttackFlightSeconds=0;}
                 }
@@ -53,6 +58,7 @@ namespace YesterdayConvoy
         }
         string FormationSourceAction(FormationUnitArt source,FormationActor actor,bool skill)
         {
+            if(actor.ArtId=="B21"&&skill)return SuiClawMotion;
             if(source.NativeTask=="WIS_APRIL_G9")
                 return skill?(Campaign?.WisadelSkill==1?"Skill_1":Campaign?.WisadelSkill==2?"Skill_2_Begin":"Skill_3_Begin"):
                     Model.PresentationBuff(actor,"wisadel")>0?"Skill_2_Loop":"Attack_A";

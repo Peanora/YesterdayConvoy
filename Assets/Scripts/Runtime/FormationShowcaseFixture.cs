@@ -191,6 +191,7 @@ namespace YesterdayConvoy
             foreach(var unit in Units)
             {
                 float travel=(float)Clock*unit.MoveSpeed;
+                unit.GroundDistanceTravelled=travel;
                 float leg=travel%4;
                 unit.Position=new Vector2(15+(leg<=2?leg:4-leg),3);
                 unit.Facing=leg<=2?Vector2.right:Vector2.left;

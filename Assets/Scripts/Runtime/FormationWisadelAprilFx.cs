@@ -28,6 +28,8 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleController
     {
+        IReadOnlyList<Sprite> wisadelShellFaces;
+
         void LegacyWisadel(string suffix,double age,Vector2 cell,int order=24,bool loop=false,
             bool flip=false,Vector3? point=null,Vector3? direction=null)
         {
@@ -88,7 +90,20 @@ namespace YesterdayConvoy
             var end=FormationFeedbackContactPoint(FormationFeedbackActor(action.TargetId),action.To,.55f);
             float progress=Mathf.Clamp01((float)((Model.Clock-action.LaunchedAt)/(action.ContactAt-action.LaunchedAt)));
             var cell=Vector2.Lerp(action.From,action.To,progress);
-            LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:Vector3.Lerp(start,end,progress),direction:end-start);
+            var point=Vector3.Lerp(start,end,progress);
+            LegacyWisadel(trail,(Model.Clock-action.LaunchedAt)*action.Rate,cell,26,point:point,direction:end-start);
+            if(action.Skill&&skill==3)
+            {
+                wisadelShellFaces??=formationCards.FirstOrDefault(c=>c!=null&&c.CardId==ViviCombat.CardId)?.ComicImpactFaces;
+                if(wisadelShellFaces==null||wisadelShellFaces.Count==0)return;
+                var face=wisadelShellFaces[action.ProjectileIndex%wisadelShellFaces.Count];
+                if(face==null)return;
+                if(legacyComicMaterial==null)
+                    legacyComicMaterial=new Material(Shader.Find("Sprites/Default")){name="Formation / approved April comic burst"};
+                Vector3 arc=Vector3.up*(.4f*4*progress*(1-progress));
+                float height=1.15f/Mathf.Max(.01f,face.bounds.size.y);
+                LegacyDraw(face,legacyComicMaterial,point+arc,cell,height,42);
+            }
         }
         void PresentOriginalWisadelHit(FormationHit hit,FormationFighter actor,double age)
         {

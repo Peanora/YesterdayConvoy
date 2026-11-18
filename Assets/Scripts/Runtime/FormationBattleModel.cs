@@ -39,7 +39,7 @@ namespace YesterdayConvoy
         public float RespawnRemaining;
         public int NativePhase;
         public double NativePhaseChangedAt, NativePhaseReturningUntil;
-        internal double RebornAt;
+        internal double RebornAt, GroundDistanceTravelled;
     }
 
     public sealed class FormationDefender : FormationActor
@@ -602,7 +602,6 @@ namespace YesterdayConvoy
 
         void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid)
         {
-            var requestedGoal = goal;
             if (Terrain != null)
             {
                 Vector2 waypoint;
@@ -612,9 +611,9 @@ namespace YesterdayConvoy
                 if (!reachable) return;
                 goal = waypoint;
             }
-            if (Campaign != null && unit.ArtId == "B14")
+            if (!avoid && Campaign != null && unit.ArtId == "B14")
             {
-                AdvanceCadejoBlink(unit, requestedGoal, goal, dt, avoid);
+                AdvanceCadejoExit(unit, goal, dt);
                 return;
             }
             Vector2 delta = goal - unit.Position;
@@ -659,7 +658,11 @@ namespace YesterdayConvoy
                 if (!Terrain.CanTravel(before, next)) next = before;
             }
             unit.Position = next; unit.IsMoving = (next - before).sqrMagnitude > .0000001f;
-            if (unit.IsMoving) unit.Facing = (next - before).normalized;
+            if (unit.IsMoving)
+            {
+                unit.GroundDistanceTravelled += Vector2.Distance(before, next);
+                unit.Facing = (next - before).normalized;
+            }
         }
 
         static void Face(FormationActor actor, Vector2 target)

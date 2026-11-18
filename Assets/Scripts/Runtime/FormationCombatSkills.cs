@@ -6,6 +6,8 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleModel
     {
+        internal const float WisadelShellInterval = 1.1f;
+        internal const float WisadelShellMinimumFlight = .5f;
         bool CastCampaignSkill(FormationFighter u,FormationDefender target,bool free=false)
         {
             var s=State(u);string k=Key(u);var main=Carry;
@@ -137,11 +139,11 @@ namespace YesterdayConvoy
                     else if(Campaign.WisadelSkill==2){GiveBuff(u,"wisadel",1,8);presentation.EndAt=Math.Max(presentation.EndAt,Clock+8);}
                     else
                     {
-                        int shells=u.Star>=3?12:6;s.BusyUntil=presentation.At+shells*.7;u.ActionUntil=Math.Max(u.ActionUntil,s.BusyUntil);
+                        int shells=u.Star>=3?12:6;s.BusyUntil=presentation.At+shells*WisadelShellInterval;u.ActionUntil=Math.Max(u.ActionUntil,s.BusyUntil);
                         presentation.EndAt=Math.Max(presentation.EndAt,s.BusyUntil);
                         for(int i=0;i<shells;i++)
                         {
-                            int shell=i;double launch=presentation.LaunchedAt+i*.7;
+                            int shell=i;double launch=presentation.LaunchedAt+i*(double)WisadelShellInterval;
                             ScheduleOwned(u,launch,()=>
                             {
                                 if(!u.Alive)return;var t=FighterTarget(u);if(t==null)return;

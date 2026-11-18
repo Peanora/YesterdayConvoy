@@ -39,7 +39,8 @@ namespace YesterdayConvoy
         readonly Dictionary<FormationHit,int> legacyComicFaceIds=new Dictionary<FormationHit,int>();
         LegacyPatriotCatalog legacyPatriotCatalog;
         LegacyTalulahManifest legacyTalulahManifest;
-        Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial;
+        Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial,formationFlameSprayMaterial;
+        IReadOnlyList<Sprite> formationFlameSprayFrames;
         Mesh legacySeaMesh;
         FormationBattleModel legacyObservedModel;
         double legacyLastClock=-1;
@@ -92,9 +93,9 @@ namespace YesterdayConvoy
                 legacyHdrMaterial=new Material(shader){name="Formation / restored native HDR effects"};
             }
         }
-        void LegacyDraw(Sprite sprite,Material material,Vector3 position,Vector2 ground,float scale,int order,bool flip=false,float hdr=1,float frame=-1,bool flat=false,float roll=0)
+        SpriteRenderer LegacyDraw(Sprite sprite,Material material,Vector3 position,Vector2 ground,float scale,int order,bool flip=false,float hdr=1,float frame=-1,bool flat=false,float roll=0)
         {
-            if(sprite==null||battleCamera==null||!FormationPointVisibleInView(ground))return;
+            if(sprite==null||battleCamera==null||!FormationPointVisibleInView(ground))return null;
             if(legacyFxUsed==legacyFxViews.Count)
             {
                 var renderer=new GameObject("Restored original formation effect",typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
@@ -111,6 +112,7 @@ namespace YesterdayConvoy
             }
             r.transform.SetPositionAndRotation(position,rotation);r.transform.localScale=stretch;r.sortingOrder=LegacyOrder(ground,order);
             view.Properties.Clear();view.Properties.SetFloat("_HdrRange",hdr);if(frame>=0)view.Properties.SetFloat("_Frame",frame);r.SetPropertyBlock(view.Properties);
+            return r;
         }
         void LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null)
         {
@@ -126,15 +128,66 @@ namespace YesterdayConvoy
             }
             LegacyDraw(clip.At(age,loop),legacyHdrMaterial,explicitPosition??(ActorWorldPoint(cell)+Vector3.up*.025f),cell,scale,order,hdr:clip.HdrRange,flat:flat,roll:roll);
         }
-        void LegacyOriginalBeam(string key,double age,Vector2 from,Vector2 to,float lift=1.05f,bool loop=true,Vector3? explicitStart=null)
+        void LegacyOriginalBeam(string key,double age,Vector2 from,Vector2 to,float lift=1.05f,bool loop=true,Vector3? explicitStart=null,Vector3? explicitEnd=null)
         {
             if(age<0||!FormationPointVisibleInView(from)||!OriginalCombatVfxArt.TryGet("monster/"+key,out var clip)||!clip.Sequence.Ready||loop&&!clip.Loop)return;
-            var start=explicitStart??(ActorWorldPoint(from)+battleCamera.transform.up*lift);var end=ActorWorldPoint(to)+battleCamera.transform.up*.8f;
+            var start=explicitStart??(ActorWorldPoint(from)+battleCamera.transform.up*lift);var end=explicitEnd??(ActorWorldPoint(to)+battleCamera.transform.up*.8f);
             Vector3 delta=end-start;float x=Vector3.Dot(delta,battleCamera.transform.right),y=Vector3.Dot(delta,battleCamera.transform.up);
             var sprite=clip.At(age,loop);if(sprite==null)return;
             float angle=Mathf.Atan2(y,x)*Mathf.Rad2Deg-clip.ForwardDegrees;
-            LegacyDraw(sprite,legacyHdrMaterial,start,from,1,28,hdr:clip.HdrRange,roll:angle);
-            if(legacyFxUsed>0)legacyFxViews[legacyFxUsed-1].Renderer.transform.localScale=new Vector3(new Vector2(x,y).magnitude/3.005432f,1,1);
+            var renderer=LegacyDraw(sprite,legacyHdrMaterial,start,from,1,28,hdr:clip.HdrRange,roll:angle);
+            if(renderer!=null)renderer.transform.localScale=new Vector3(new Vector2(x,y).magnitude/3.005432f,1,1);
+        }
+
+        void PresentFormationFlameSpray(FormationPresentationAction action,FormationActor actor)
+        {
+            if(action.Cancelled||!actor.Alive||Model.Clock<action.ContactAt||Model.Clock>=action.EndAt||!FormationPointVisibleInView(actor.Position))return;
+            var art=FormationUnitArt.For(actor.ArtId);
+            double sprayAt=Math.Max(action.ContactAt,action.At+(art?.Duration("extra_skill_front_start")??0)/action.Rate);
+            double sprayUntil=action.EndAt-(art?.Duration("extra_skill_front_end")??0)/action.Rate;
+            double elapsed=Model.Clock-sprayAt;
+            if(elapsed<0||Model.Clock>=sprayUntil)return;
+
+            var camera=battleCamera.transform;
+            Vector3 from=FormationFeedbackContactPoint(actor,actor.Position,.59f);
+            Vector3 to=FormationFeedbackContactPoint(FormationFeedbackActor(action.TargetId),action.To,.52f);
+            float toward=Vector3.Dot(to-from,camera.right);
+            float muzzleOffset=Mathf.Min(ActorPresentationHeight(actor)*.65f,Mathf.Abs(toward)*.68f);
+            from+=camera.right*(Mathf.Sign(toward)*muzzleOffset);
+            Vector3 delta=to-from;
+            var screenDelta=new Vector2(Vector3.Dot(delta,camera.right),Vector3.Dot(delta,camera.up));
+            float span=screenDelta.magnitude;
+            if(span<.05f)return;
+
+            double age=elapsed*action.Rate;
+            LegacyOriginalBeam("enemy_duspfr_2_attack_01_front_start2",age,actor.Position,action.To,explicitStart:from,explicitEnd:to);
+
+            // The packed native sequence has a short muzzle bloom. The existing CC0
+            // flame frames extend it into a readable, continuous jet along the cast aim.
+            if(formationFlameSprayMaterial==null)
+            {
+                var card=Array.Find(formationCards,candidate=>candidate!=null&&candidate.CardId=="CARD_TALULAH_TRIAL");
+                formationFlameSprayFrames=card?.ArticulatedArt?.FireFrames;
+                var shader=Resources.Load<Shader>("TalulahAttackAdditive");
+                if(shader==null||formationFlameSprayFrames==null||formationFlameSprayFrames.Count==0)return;
+                formationFlameSprayMaterial=new Material(shader){name="Formation / Flamerazer fire jet"};
+            }
+
+            float reach=Mathf.SmoothStep(.2f,1,(float)(elapsed/.10));
+            float opacity=Mathf.Clamp01((float)((sprayUntil-Model.Clock)/.13));
+            float heading=Mathf.Atan2(screenDelta.y,screenDelta.x)*Mathf.Rad2Deg;
+            float ripple=Mathf.Sin((float)age*18f);
+            var frame=formationFlameSprayFrames[(int)(age*28)%formationFlameSprayFrames.Count];
+            Vector3 center=Vector3.Lerp(from,to,reach*.49f)+camera.up*(ripple*.035f);
+            var cell=Vector2.Lerp(actor.Position,action.To,reach*.49f);
+            var jet=LegacyDraw(frame,formationFlameSprayMaterial,center,cell,1,26,roll:heading-90);
+            if(jet==null)return;
+
+            jet.name="Formation Flamerazer / fire jet";
+            jet.color=new Color(1f,.93f,.78f,opacity*.9f);
+            Vector2 size=frame.bounds.size;
+            jet.transform.localScale=new Vector3((.82f+ripple*.06f)/Mathf.Max(.01f,size.x),
+                span*reach*1.24f/Mathf.Max(.01f,size.y),1);
         }
         void LegacyPremult(Sprite sprite,Vector2 cell,float scale,int order=24,bool flip=false,Vector3? point=null)
         {
@@ -277,10 +330,8 @@ namespace YesterdayConvoy
                 case "M34":if(action.Skill)key="enemy_dslntc_skill_begin_buff";break;
             }
             if(key!=null)LegacyOriginal(key,age,action.From,12,flat:true,scale:scale);
-            var firstApplied=action.Skill&&(id=="M31"||id=="M38")?Model.Hits.Where(h=>h.FromId==actor.Id&&h.Skill&&h.At>=action.At).OrderBy(h=>h.At).FirstOrDefault():null;
-            if(action.Skill&&id=="M31"&&firstApplied!=null&&Model.Clock<action.EndAt)
-                LegacyOriginalBeam("enemy_duspfr_2_attack_01_front_start2",(Model.Clock-firstApplied.At)*LegacyVisualRate,actor.Position,firstApplied.To,.95f*scale,
-                    explicitStart:FormationDisplayPoint(actor)+battleCamera.transform.up*.95f*scale);
+            if(action.Skill&&id=="M31")PresentFormationFlameSpray(action,actor);
+            var firstApplied=action.Skill&&id=="M38"?Model.Hits.Where(h=>h.FromId==actor.Id&&h.Skill&&h.At>=action.At).OrderBy(h=>h.At).FirstOrDefault():null;
             if(action.Skill&&id=="M38"&&firstApplied!=null&&Model.Clock<firstApplied.At+3)
             {
                 double appliedAge=(Model.Clock-firstApplied.At)*LegacyVisualRate;
@@ -495,7 +546,6 @@ namespace YesterdayConvoy
                 if(at>=0)LegacyOriginal("common/common_nerve_injury_01_hit",(Model.Clock-at)*LegacyVisualRate,defender.Position,38);
             }
             // Fire/snow domains are real v0.7 state, not guessed from damage counters.
-            formationTalulahRain?.BeginFrame();
             foreach(var zone in Model.LegacyZones())
             {
                 var source=Model.Units.FirstOrDefault(u=>u.Id==zone.SourceId);if(source==null)continue;
@@ -504,7 +554,7 @@ namespace YesterdayConvoy
                 {
                     if (Campaign.TalulahCost == 5)
                     {
-                        PresentFormationTalulahRain(zone);
+                        PresentFormationTalulahRain(zone,source);
                         continue;
                     }
                     LegacyTalulah("target-burn-loop",age,zone.Center,source,-2,true);
@@ -528,7 +578,6 @@ namespace YesterdayConvoy
                 }
                 else if(source.ArtId=="M14"&&zone.Kind=="snow")LegacyOriginal("firstar_skill_01_range",age,zone.Center,24,flat:true,scale:LegacyScale(source));
             }
-            formationTalulahRain?.EndFrame();
             PresentFormationSynergyEffects();
             for(int i=legacyFxUsed;i<legacyFxViews.Count;i++)legacyFxViews[i].Renderer.enabled=false;
             for(int i=legacyComicUsed;i<legacyComicBursts.Count;i++)legacyComicBursts[i].Ink.enabled=legacyComicBursts[i].Light.enabled=false;
@@ -580,8 +629,8 @@ namespace YesterdayConvoy
         }
         internal void DisposeFormationLegacyEffects()
         {
-            formationTalulahRain?.Dispose();
-            formationTalulahRain = null;
+            if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
+            formationFlameSprayMaterial=null;formationFlameSprayFrames=null;
             ResetFormationSynergyEffects();
             foreach(var view in legacyFxViews)if(view.Renderer!=null){view.Renderer.enabled=false;Destroy(view.Renderer.gameObject);}legacyFxViews.Clear();
             foreach(var page in legacyPatriotPages.Values){Destroy(page.Sprite);Resources.UnloadAsset(page.Texture);}legacyPatriotPages.Clear();

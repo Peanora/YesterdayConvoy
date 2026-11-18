@@ -277,10 +277,18 @@ namespace YesterdayConvoy
             var s=State(u);
             if(s.NativePending||Buff(u,"stun")>0||Buff(u,"freeze")>0)return;
             if(s.RidingCarrier!=0){var carrier=Units.FirstOrDefault(v=>v.Id==s.RidingCarrier&&v.Alive);if(carrier!=null)u.Position=carrier.Position;}
-            if(!HasEnteredBattleArea(u)) { if(Clock>=u.ActionUntil&&s.RidingCarrier==0)Move(u,new Vector2(DeploymentColumns+1,u.Position.y),dt,true);return; }
+            bool cadejo=u.ArtId=="B14";
+            bool entered=HasEnteredBattleArea(u);
+            if(!entered&&!cadejo) { if(Clock>=u.ActionUntil&&s.RidingCarrier==0)Move(u,new Vector2(DeploymentColumns+1,u.Position.y),dt,true);return; }
             if(Key(u)=="M34"&&Stack(u,"awake")==0)return;
             var target=FighterTarget(u);u.TargetId=target?.Id??-1;
-            if(target==null||Clock<u.ActionUntil||s.BusyUntil>Clock)return;
+            if(Clock<u.ActionUntil||s.BusyUntil>Clock)return;
+            if(cadejo&&(!entered||target==null||Vector2.Distance(u.Position,target.Position)>u.Range))
+            {
+                AdvanceCadejoEngagement(u,target);
+                return;
+            }
+            if(target==null)return;
             if(Key(u)=="M03"&&Stack(u,"contact")==0){AddStack(u,"contact",1,1);GainSP(u,2,true);}
             bool healer=s.Spec?.DamageType=="治疗";
             if(Vector2.Distance(u.Position,target.Position)>u.Range&&!healer)
