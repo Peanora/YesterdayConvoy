@@ -24,3 +24,18 @@ M11两条共用资源原本就已存在于正式 `OriginalCombatVfx/Monsters` �
 源能力证明原资源具有近战攻击路径，不证明原客户端每个关卡配置都会启用该路径；当前未读取对应敌人关卡数据库配置，不能声称其原作完全不能攻击。原 `Talents/Strength` 为 `GlobalAuraAbility`，引用 `sotidp_buff_01_range`；不能把踢腿动作改称号令技能，也不能将本作range3导致的远程踢空气说成原作弹道。
 
 证据为 `artifacts/formation-visual-repair/M17-original-actor.json` 与 `M17-original-attack-contact.png`。本核对只读源与现有帧，不修改v0.7数值、M17能力或模型。
+
+## 塔露拉主技身体与施法者层
+
+末轮直接重读本地原 `battle/enm_pfb_18.ab`，而非据当前画面或旧加工命名推断：
+
+| 原Actor字段路径 | 原能力、动画 | 已有原采样caster |
+|---|---|---|
+| `enemy_1515_bsnake/Modes/Default/Skills/Ignite` | `AnimatedActionToTargetAbility._animKey=Skill_1` → `Skill_1_A` | `ignite-A-caster`（skill_01_start／start_02／start_03） |
+| `enemy_1515_bsnake/Modes/Reborn/Skills/Ignite` | 同上 → `Skill_1_B` | `ignite-B-caster`（原reborn变体，含start_04） |
+| `enemy_1515_bsnake/Modes/Default/Skills/DragonFireExplode` | `EmptyAnimatedAbility._animKey=Skill_2` → `Skill_2_A` | `explode-A-caster`（skill_02_start_02／start_03／range） |
+| `enemy_1515_bsnake/Modes/Reborn/Skills/DragonFireExplode` | 同上 → `Skill_2_B` | `explode-B-caster`（原reborn变体，另含start_04） |
+
+三费本作点燃复用Skill_1_A/B及ignite施法者层；四/五费本作范围火焰复用Skill_2_A/B及explode施法者层。此前body两行反配，且`firecast-A-hand`加工名掩盖了它实际只是原`enemy_bsnake_skill_01_start_02`／Skill_1_A手部层；现已以原Actor字段对齐，不能再凭“看得见火焰”判定配对正确。
+
+四/五费的实际命中、雨与烧区仍是v0.7真实Hit／Zone驱动的适配。原DragonFireExplode、ScreenAttack与本作技能规则不是同一机制；没有因此新增全屏爆炸、原客户端火雨调度、伤害范围或额外结算。原字段摘录为 `artifacts/formation-visual-repair/TAL-raw-actor-skills.json`，原采样来源对应为 `TAL-original-skill-map.json`。c610583影片为修正之前的对照，不作本配对修正后的GPU验证。

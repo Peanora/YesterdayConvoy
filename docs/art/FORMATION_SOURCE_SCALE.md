@@ -62,3 +62,7 @@ Boss原包采用既有塔露拉校准基线：每个原骨骼单位0.0045世界�
 旧M11/M12/M16/M38/M24/M42/M31/M36的0.25秒和旧愚人节维维美0.22秒只作为`APPROVED-LEGACY-FLIGHT.json`单列的既有改编固定飞行时间；已取得原speed的角色运行时优先原speed，该历史文件不被TryFor使用。近战旧配置0.02秒也不能当作弹道。源字段不证明完整原客户端运动管理、追踪目标或伤害调度已经复现，新的Launch→Impact绑定由Root/Timing集成验证。
 
 已运行纯本地原Spine重采样、源哈希/元数据/新图集验证、旧接触点同步一致性检查及静态差异检查，并目视旧/新A_Idle图集。未运行主工程Unity、EditMode、PlayMode或Windows构建；相机边缘、地面脚点、全部阶段、正常交易和真对局由Root集成后验证。原作媒体权利状态沿原来源记录，不因重新采样变成自有或CC0。
+
+## 血条与巨物实机补充
+
+B08/B21逐动作presentationTop来自原页全部帧alpha>8可见像素的并集，保留固定pivot/PPU后换算世界源顶；原几何captureBounds含大量空白，不能直接当头顶。原report、逐页SHA和差异保留在各包ORIGINAL-MOTION-BOUNDS/PRESENTATION-TOPS-SOURCE，工具为sync_formation_presentation_tops.py。HUD乘身体实际uniform scale，并使用显示足点（含便车抬高）；无元数据者保持源Height。B08第二形态才切到既有巨物固定包络，保护真实高翼身体；普通站位和商店开关不重构镜头。c610583视频是修正前对照，最终GPU/Player见QA。

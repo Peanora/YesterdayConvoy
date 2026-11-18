@@ -54,6 +54,11 @@ namespace YesterdayConvoy
             actorRoot=new GameObject("Dynamic formation actors").transform;
             actorRoot.SetParent(transform,false);
             actorMaterial=actorTemplate!=null?new Material(actorTemplate):new Material(Shader.Find("Sprites/Default"));
+            // The existing grounded shader keeps depth on the upright plane at
+            // the feet. A raw billboard lets a rear low wall slice a tall torso.
+            var groundedActor=Resources.Load<Shader>("TacticalActor");
+            if(groundedActor==null)throw new InvalidOperationException("Missing grounded formation actor shader.");
+            actorMaterial.shader=groundedActor;
             lineMaterial=lineTemplate!=null?new Material(lineTemplate):new Material(Shader.Find("Hidden/Internal-Colored"));
             lineMaterial.SetInt("_SrcBlend",(int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMaterial.SetInt("_DstBlend",(int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
@@ -205,7 +210,7 @@ namespace YesterdayConvoy
             foreach(var defender in Model.Defenders){current.Add(defender.Id);Present(defender,true);}
             foreach(var summon in Model.Summons){current.Add(summon.Id);Present(summon,false);}
             PresentFormationNativeEffects();
-            foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);}
+            foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);formationLabelHeights.Remove(id);}
         }
         void Present(FormationActor actor,bool defender)=>PresentFormationActor(actor,defender);
         void OnRenderObject()

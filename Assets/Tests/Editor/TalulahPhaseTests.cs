@@ -195,16 +195,16 @@ namespace YesterdayConvoy.Tests
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
             // The legacy battle still plans exactly its original 19 extra clips above.
             // The shared EXE payload additionally needs the new formation mode's three
-            // newly bound ignite pages; it must not export the rest of the source library.
+            // newly bound formation layers; it must not export the rest of the source library.
             string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
                 "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
                 "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
-                "ignite-B-caster","ignite-B-target","target-burn-loop","original-energy-stream","original-fire-impact"};
+                "ignite-B-caster","ignite-B-target","target-burn-loop","original-energy-stream","original-fire-impact","explode-A-caster","explode-B-caster"};
             var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
             CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
             var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
                 .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(47));
+            Assert.That(pages.Length,Is.EqualTo(51));
             CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
             foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
                 CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);

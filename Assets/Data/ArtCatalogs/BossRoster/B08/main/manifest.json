@@ -172,7 +172,8 @@
         385.0976867675781,
         647.1318969726562
       ],
-      "captureSourcePixelsPerBone": 0.3891081167274124
+      "captureSourcePixelsPerBone": 0.3891081167274124,
+      "presentationTop": 2.8956000352209808
     },
     {
       "key": "A_Die_End",
@@ -264,7 +265,8 @@
         361.6126708984375,
         557.709228515625
       ],
-      "captureSourcePixelsPerBone": 0.4284937765263847
+      "captureSourcePixelsPerBone": 0.4284937765263847,
+      "presentationTop": 2.5065184707105157
     },
     {
       "key": "A_Die_End_2",
@@ -392,7 +394,8 @@
         614.9552001953125,
         1256.300537109375
       ],
-      "captureSourcePixelsPerBone": 0.27402150799121855
+      "captureSourcePixelsPerBone": 0.27402150799121855,
+      "presentationTop": 5.611288872878551
     },
     {
       "key": "A_Die_Start",
@@ -472,7 +475,8 @@
         380.3305358886719,
         640.86767578125
       ],
-      "captureSourcePixelsPerBone": 0.4190869664032284
+      "captureSourcePixelsPerBone": 0.4190869664032284,
+      "presentationTop": 2.8910761006361243
     },
     {
       "key": "A_Idle",
@@ -636,7 +640,8 @@
         335.50982666015625,
         646.525634765625
       ],
-      "captureSourcePixelsPerBone": 0.4468446737413224
+      "captureSourcePixelsPerBone": 0.4468446737413224,
+      "presentationTop": 2.8947393853783607
     },
     {
       "key": "A_Move",
@@ -764,7 +769,8 @@
         326.49554443359375,
         647.539306640625
       ],
-      "captureSourcePixelsPerBone": 0.450442297228309
+      "captureSourcePixelsPerBone": 0.450442297228309,
+      "presentationTop": 2.8927357069659227
     },
     {
       "key": "A_Skill_1",
@@ -900,7 +906,8 @@
         433.29998779296875,
         689.3222045898438
       ],
-      "captureSourcePixelsPerBone": 0.3773112079612156
+      "captureSourcePixelsPerBone": 0.3773112079612156,
+      "presentationTop": 3.094851305859089
     },
     {
       "key": "A_Skill_2",
@@ -1072,7 +1079,8 @@
         355.1997375488281,
         730.0281982421875
       ],
-      "captureSourcePixelsPerBone": 0.391721657344855
+      "captureSourcePixelsPerBone": 0.391721657344855,
+      "presentationTop": 3.2917172022914882
     },
     {
       "key": "B_Attack",
@@ -1424,7 +1432,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.1841296775594823
+      "captureSourcePixelsPerBone": 0.1841296775594823,
+      "presentationTop": 9.625256425852776
     },
     {
       "key": "B_Die",
@@ -1648,7 +1657,8 @@
         547.1943969726562,
         913.9207153320312
       ],
-      "captureSourcePixelsPerBone": 0.6100782302439126
+      "captureSourcePixelsPerBone": 0.6100782302439126,
+      "presentationTop": 4.069752101004123
     },
     {
       "key": "B_Idle",
@@ -2412,7 +2422,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.1835743145371482
+      "captureSourcePixelsPerBone": 0.1835743145371482,
+      "presentationTop": 5.043556302566528
     },
     {
       "key": "B_Move",
@@ -3176,7 +3187,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.18374398491138225
+      "captureSourcePixelsPerBone": 0.18374398491138225,
+      "presentationTop": 5.256137169070243
     },
     {
       "key": "B_Skill_1",
@@ -3528,7 +3540,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.18378171674045246
+      "captureSourcePixelsPerBone": 0.18378171674045246,
+      "presentationTop": 9.621895878195762
     },
     {
       "key": "B_Skill_2",
@@ -4084,7 +4097,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.18376683692976692
+      "captureSourcePixelsPerBone": 0.18376683692976692,
+      "presentationTop": 9.628205037617683
     },
     {
       "key": "B_Skill_3_End",
@@ -4308,7 +4322,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.18369697718908448
+      "captureSourcePixelsPerBone": 0.18369697718908448,
+      "presentationTop": 9.60793340897083
     },
     {
       "key": "B_Skill_3_Loop",
@@ -4600,7 +4615,8 @@
         3966.60498046875,
         2138.584716796875
       ],
-      "captureSourcePixelsPerBone": 0.1835743145371482
+      "captureSourcePixelsPerBone": 0.1835743145371482,
+      "presentationTop": 0
     },
     {
       "key": "B_Skill_3_Start",
@@ -4872,7 +4888,8 @@
         872.2438354492188,
         1821.2718505859375
       ],
-      "captureSourcePixelsPerBone": 0.38772360130513933
+      "captureSourcePixelsPerBone": 0.38772360130513933,
+      "presentationTop": 8.681758657409548
     }
   ],
   "role": "NEW_BOSS_CARD",
@@ -4923,5 +4940,6 @@
   "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
   "status": "IMPORTED_NOT_BOUND",
   "capturePolicy": "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_A_1024_B_FIXED_WORLD_ORIGIN",
-  "pixelsPerUnitPolicy": "Per clip; global ppu retained only for the unchanged portrait. Source world scale .0045 is unchanged."
+  "pixelsPerUnitPolicy": "Per clip; global ppu retained only for the unchanged portrait. Source world scale .0045 is unchanged.",
+  "presentationTopPolicy": "Per-motion union of original capture alpha>8 pixels, transformed by fixed source pivot/PPU. Transparent canvas and transparent source attachment space excluded."
 }

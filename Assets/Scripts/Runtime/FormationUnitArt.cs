@@ -134,6 +134,14 @@ namespace YesterdayConvoy
         internal string SourceAction(string action)
             =>HasAction(action)?native!=null?native[action].Source:action:null;
 
+        /// <summary>Painted per-motion top above the captured foot root, before body scale.</summary>
+        public float PresentationTop(string action)
+        {
+            if(native!=null&&HasAction(action)&&native[action].PresentationTop>0)
+                return native[action].PresentationTop;
+            return Height;
+        }
+
         /// <summary>Readiness is live: the shared memory cache may evict a previously warmed clip.</summary>
         public bool IsReady
         {

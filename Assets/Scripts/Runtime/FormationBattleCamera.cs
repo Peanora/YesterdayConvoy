@@ -61,7 +61,7 @@ namespace YesterdayConvoy
         {
             if (battleCamera == null || Model == null) return;
             if (!formationCameraInitialized) InitializeFormationCamera();
-            bool setPiece=Model.Units.Any(u=>u.Enabled&&u.ArtId=="B21");
+            bool setPiece=HasFormationSetPiece();
             if(setPiece!=formationCameraHasSetPiece)RebuildFormationCameraPoses();
             bool preparing = Model.Phase == FormationPhase.Preparation;
             if (preparing != formationCameraWasPreparing || preparing && Model.Round != formationCameraRound)
@@ -79,11 +79,12 @@ namespace YesterdayConvoy
         }
         void RebuildFormationCameraPoses()
         {
-            formationCameraHasSetPiece=Model.Units.Any(u=>u.Enabled&&u.ArtId=="B21");
+            formationCameraHasSetPiece=HasFormationSetPiece();
             formationLeftPreparationPose=FixedFormationPose(false,false);
             formationRightPreparationPose=FixedFormationPose(true,false);
             formationRightBattlePose=FixedFormationPose(true,true);
         }
+        bool HasFormationSetPiece()=>Model.Units.Any(u=>u.Enabled&&(u.ArtId=="B21"||u.ArtId=="B08"&&u.NativePhase>0));
         Vector3 FixedFormationPose(bool defenders, bool combat)
         {
             formationCameraPoints.Clear();

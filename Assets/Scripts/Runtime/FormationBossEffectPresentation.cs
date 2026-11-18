@@ -56,7 +56,9 @@ namespace YesterdayConvoy
                     }
                     foreach(var binding in bindings.Where(b=>(b.phase<0||b.phase==phase)&&FormationBindingDirection(b,actor)))
                     {
-                        if(binding.kind=="PhaseStart"&&actor.NativePhaseChangedAt>=0)
+                        // StartBattle initializes this timestamp to zero. That is
+                        // not a rebirth event and must not play invulnerability FX.
+                        if(binding.kind=="PhaseStart"&&actor.NativePhaseChangedAt>0)
                             ShowFormationBoundEffect(binding,source.NativeTask,(now-actor.NativePhaseChangedAt)*FormationVisualRate,actor.Position,actor,scale,actor.Facing);
                         else if(binding.kind=="Death"&&!actor.Alive)
                             ShowFormationBoundEffect(binding,source.NativeTask,(now-actor.LastDeathAt)*FormationVisualRate,actor.Position,actor,scale,actor.Facing);

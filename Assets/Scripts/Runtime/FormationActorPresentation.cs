@@ -9,6 +9,7 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         readonly Dictionary<string,FormationUnitArt> formationMonsterArt=new Dictionary<string,FormationUnitArt>();
+        readonly Dictionary<int,float> formationLabelHeights=new Dictionary<int,float>();
         readonly HashSet<string> warmedFormationArt=new HashSet<string>();
         readonly HashSet<string> warmingFormationArt=new HashSet<string>();
         readonly HashSet<string> warmingFormationWindows=new HashSet<string>();
@@ -152,7 +153,7 @@ namespace YesterdayConvoy
             float actionRate=actor.PresentationDuration>0&&actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate;
             double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
                 (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now)*FormationVisualRate;
-            float sourceHeight;
+            float sourceHeight,labelTop=0;
             if(!defender)
             {
                 var source=formationMonsterArt[actor.ArtId];sourceHeight=source.Height;
@@ -197,10 +198,11 @@ namespace YesterdayConvoy
                 }
                 body.sprite=source.Frame(key,age,key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
                 }
+                labelTop=source.PresentationTop(key);
             }
             else
             {
-                var source=art[actor.ArtId];sourceHeight=source.Height;
+                var source=art[actor.ArtId];sourceHeight=source.Height;labelTop=source.Height;
                 if(key=="cast")key=source.Clips.ContainsKey("skill")?"skill":source.Clips.ContainsKey("attack")?"attack":"idle";
                 if(!source.Clips.TryGetValue(key,out var clip))clip=source.Clips["idle"];
                 if(key=="attack")
@@ -218,6 +220,7 @@ namespace YesterdayConvoy
             body.flipX=actor.Facing.x<-.01f;body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
             float scale=ActorPresentationHeight(actor)/Mathf.Max(.5f,sourceHeight>0?sourceHeight:1.4f);
             body.transform.localScale=Vector3.one*scale;
+            formationLabelHeights[actor.Id]=(labelTop>0?labelTop:sourceHeight)*scale;
             body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50)+(actor is FormationFighter rider&&Model.PresentationCarrier(rider)!=null?8:0);
             Color color=Color.white;
             if(actor is FormationFighter fighter&&fighter.Instance==shopDragInstance&&DragPreviewVisible)color.a=.25f;
@@ -317,7 +320,7 @@ namespace YesterdayConvoy
                 else if(task=="B11")key=phase>0?"B_Skill_1":"A_Skill_1";
                 else if(task=="B13")key=phase>0?"B_Skill_Begin_1":"A_Attack";
                 else if(task=="B15"||task=="B24")key=phase>0?"B_Skill_1":"A_Skill_1";
-                else if(task=="B16")key=Campaign!=null&&Campaign.TalulahCost<=3?(phase>0?"Skill_2_B":"Skill_2_A"):(phase>0?"Skill_1_B":"Skill_1_A");
+                else if(task=="B16")key=Campaign!=null&&Campaign.TalulahCost<=3?(phase>0?"Skill_1_B":"Skill_1_A"):(phase>0?"Skill_2_B":"Skill_2_A");
                 else if(task=="B18")key="Skill_1";
                 else if(task=="B19")key="Skill_1";
                 else if(task=="B20")key="Skill_3_Begin";

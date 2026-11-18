@@ -20,8 +20,9 @@ namespace YesterdayConvoy.Tests
         FormationBattleController controller;
         float previousScale;
         bool previousEnabled;
+        bool capturedDriver;
 
-        [SetUp] public void SaveClock() => previousScale = Time.timeScale;
+        [SetUp] public void SaveClock() { previousScale = Time.timeScale;capturedDriver=false; }
         [TearDown] public void Freeze()
         {
             if (controller != null)
@@ -75,11 +76,11 @@ namespace YesterdayConvoy.Tests
                 }
                 Assert.That(controller, Is.Not.Null);
                 Assert.That(controller.Ready, Is.True);
-                previousEnabled = controller.enabled;
-                // Update uses unscaled time. Disable only the automatic driver; all
-                // production coroutines and the explicit model/presenter calls still run.
-                controller.enabled = false;
             }
+            if(!capturedDriver){previousEnabled=controller.enabled;capturedDriver=true;}
+            // NUnit can reuse this test instance and scene. Re-disable the automatic
+            // unscaled driver on every fixture, including after TearDown restored it.
+            controller.enabled=false;
             yield return (IEnumerator)Invoke(controller, "PrepareShowcaseFixture", ids, talulahCost, wisadelSkill);
             Invoke(controller, "RefreshFormationAnimationProfiles");
         }

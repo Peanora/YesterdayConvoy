@@ -134,7 +134,8 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
-                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(actor)+battleCamera.transform.up*(ActorPresentationHeight(actor)+.12f)));
+                float top=formationLabelHeights.TryGetValue(actor.Id,out var labelTop)?labelTop:ActorPresentationHeight(actor);
+                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(FormationDisplayPoint(actor)+battleCamera.transform.up*(top+.12f)));
                 if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
                 bool ally=actor is FormationFighter;
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));

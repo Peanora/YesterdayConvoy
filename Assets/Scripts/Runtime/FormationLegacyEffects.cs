@@ -65,7 +65,7 @@ namespace YesterdayConvoy
             if(artId=="TALULAH_TRIAL")
                 foreach(string key in new[]{"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing",
                     "first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
-                    "ignite-B-caster","ignite-B-target","target-burn-loop","original-energy-stream","original-fire-impact"})
+                    "ignite-B-caster","ignite-B-target","explode-A-caster","explode-B-caster","target-burn-loop","original-energy-stream","original-fire-impact"})
                     yield return BossRosterSupplementArt.Talulah(key).Sequence;
         }
         internal bool FormationHasLegacyImpact(string artId,bool skill)
@@ -232,9 +232,9 @@ namespace YesterdayConvoy
             {
                 if(action.Skill)
                 {
-                    if(Campaign.TalulahCost<=3)LegacyTalulah(actor.NativePhase>0?"ignite-B-caster":"ignite-A-caster",age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
-                    else if(actor.NativePhase>0)LegacyTalulah("ignite-B-caster",age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
-                    else LegacyTalulah("firecast-A-hand",age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
+                    string caster=Campaign.TalulahCost<=3?actor.NativePhase>0?"ignite-B-caster":"ignite-A-caster":
+                        actor.NativePhase>0?"explode-B-caster":"explode-A-caster";
+                    LegacyTalulah(caster,age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
                 }
                 else LegacyTalulah(actor.NativePhase>0?"attack-B-caster":"attack-A-caster",age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
                 return;
@@ -346,7 +346,10 @@ namespace YesterdayConvoy
             switch(id)
             {
                 case "M11":key="common/common_hit_01";break;
-                case "M12":key="snmage_attack_01_hit";break;case "M14":key=hit.Skill?"firstar_skill_01_range":"firstar_attack_01_hit";break;
+                case "M12":key="snmage_attack_01_hit";break;
+                // The real snow zone exclusively owns its area layer. A single
+                // AoE must not spawn another full range sprite on every victim.
+                case "M14":if(!hit.Skill)key="firstar_attack_01_hit";break;
                 case "M16":key="sotisp_attack_01_hit";break;case "M26":case "M42":key="enemy_mdsnpr_attack_01_hit";break;
                 case "M30":key="enemy_duskls_attack_hit";break;case "M31":key=Math.Abs(hit.At-actor.LastDeathAt)<.05?"enemy_duspfr_2_die_01_hit":"enemy_duspfr_2_attack_01_hit";break;
                 case "M34":key="enemy_dslntc_attack_01_hit";break;case "M36":key=hit.Skill?"enemy_dsmant_skill_01_hit":"enemy_dsmant_attack_01_hit";break;

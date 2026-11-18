@@ -159,7 +159,8 @@
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "presentationTop": 10.93241385470867
     },
     {
       "key": "Die_1_B",
@@ -280,7 +281,8 @@
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "presentationTop": 10.892204269838333
     },
     {
       "key": "Die_2_A",
@@ -457,7 +459,8 @@
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "presentationTop": 13.425408116669654
     },
     {
       "key": "Die_2_B",
@@ -634,7 +637,8 @@
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "presentationTop": 13.425408116669654
     },
     {
       "key": "Die_3_Begin_A",
@@ -695,7 +699,8 @@
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "presentationTop": 10.329270081653595
     },
     {
       "key": "Die_3_Begin_B",
@@ -756,7 +761,8 @@
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "presentationTop": 10.329270081653595
     },
     {
       "key": "Die_3_End_A",
@@ -805,7 +811,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 11.656186382374763
     },
     {
       "key": "Die_3_End_B",
@@ -854,7 +861,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 11.656186382374763
     },
     {
       "key": "Die_3_Loop_A",
@@ -951,7 +959,8 @@
           "width": 2048,
           "height": 512
         }
-      ]
+      ],
+      "presentationTop": 10.329270081653595
     },
     {
       "key": "Die_3_Loop_B",
@@ -1048,7 +1057,8 @@
           "width": 2048,
           "height": 512
         }
-      ]
+      ],
+      "presentationTop": 10.329270081653595
     },
     {
       "key": "Idle",
@@ -1085,7 +1095,8 @@
           "width": 2048,
           "height": 1536
         }
-      ]
+      ],
+      "presentationTop": 0
     },
     {
       "key": "Skill_Begin_A",
@@ -1166,7 +1177,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 12.25933015542984
     },
     {
       "key": "Skill_Begin_B",
@@ -1247,7 +1259,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 12.25933015542984
     },
     {
       "key": "Skill_End_A",
@@ -1296,7 +1309,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 12.299539740300178
     },
     {
       "key": "Skill_End_B",
@@ -1345,7 +1359,8 @@
           "width": 2048,
           "height": 2048
         }
-      ]
+      ],
+      "presentationTop": 12.299539740300178
     },
     {
       "key": "Skill_Idle_A",
@@ -1622,7 +1637,8 @@
           "width": 2048,
           "height": 512
         }
-      ]
+      ],
+      "presentationTop": 10.088012572431563
     },
     {
       "key": "Skill_Idle_B",
@@ -1899,7 +1915,8 @@
           "width": 2048,
           "height": 512
         }
-      ]
+      ],
+      "presentationTop": 10.088012572431563
     },
     {
       "key": "Skill_Loop_A",
@@ -2090,7 +2107,8 @@
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "presentationTop": 10.088012572431563
     },
     {
       "key": "Skill_Loop_B",
@@ -2281,7 +2299,8 @@
           "width": 2048,
           "height": 1024
         }
-      ]
+      ],
+      "presentationTop": 10.088012572431563
     }
   ],
   "role": "NEW_BOSS_CARD",
@@ -2299,5 +2318,6 @@
     }
   ],
   "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
-  "status": "IMPORTED_NOT_BOUND"
+  "status": "IMPORTED_NOT_BOUND",
+  "presentationTopPolicy": "Per-motion union of original capture alpha>8 pixels, transformed by fixed source pivot/PPU. Transparent canvas and transparent source attachment space excluded."
 }
