@@ -39,7 +39,8 @@ namespace YesterdayConvoy
         readonly Dictionary<FormationHit,int> legacyComicFaceIds=new Dictionary<FormationHit,int>();
         LegacyPatriotCatalog legacyPatriotCatalog;
         LegacyTalulahManifest legacyTalulahManifest;
-        Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial,formationFlameSprayMaterial;
+        Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial;
+        Material formationFlameSprayMaterial,formationFlameCoreMaterial;
         Sprite[] formationFlameSprayFrames;
         Mesh legacySeaMesh;
         FormationBattleModel legacyObservedModel;
@@ -169,17 +170,19 @@ namespace YesterdayConvoy
                 var card=Array.Find(formationCards,candidate=>candidate!=null&&candidate.CardId=="CARD_TALULAH_TRIAL");
                 var sourceFrames=card?.ArticulatedArt?.FireFrames;
                 var shader=Shader.Find("Sprites/Default");
-                if(shader==null||sourceFrames==null||sourceFrames.Count==0)return;
+                var coreShader=Resources.Load<Shader>("TalulahAttackAdditive");
+                if(shader==null||coreShader==null||sourceFrames==null||sourceFrames.Count==0)return;
                 formationFlameSprayMaterial=new Material(shader){name="Formation / Flamerazer fire jet"};
+                formationFlameCoreMaterial=new Material(coreShader){name="Formation / Flamerazer luminous core"};
                 formationFlameSprayFrames=new Sprite[sourceFrames.Count];
                 for(int i=0;i<sourceFrames.Count;i++)
                 {
                     var source=sourceFrames[i];
                     if(source==null)continue;
-                    // The lower half carries the opaque flame; the upper half of the
-                    // sheet is largely faint smoke and cannot cover the spray length.
+                    // The lower third holds the bright kernel. The longer crop read
+                    // as dark smoke in the actual battle camera.
                     Rect painted=source.rect;
-                    painted.height=Mathf.Ceil(painted.height*.53f);
+                    painted.height=Mathf.Ceil(painted.height*.32f);
                     var cropped=Sprite.Create(source.texture,painted,new Vector2(.5f,.018f),source.pixelsPerUnit,0,SpriteMeshType.FullRect);
                     cropped.name="Flamerazer painted flame / "+i;
                     cropped.hideFlags=HideFlags.DontSave;
@@ -196,17 +199,20 @@ namespace YesterdayConvoy
             var contactCell=Vector2.Lerp(actor.Position,action.To,.45f);
             if(reach>.43f)
             {
-                Vector3 tailStart=from+delta*.40f+depthBias+camera.up*(ripple*.055f);
+                Vector3 tailStart=from+delta*.34f+depthBias+camera.up*(ripple*.055f);
                 DrawFormationFlameTongue(formationFlameSprayFrames[(frameIndex+11)%count],tailStart,contactCell,heading,
-                    span*(reach-.36f),1.05f,opacity*.80f,"Formation Flamerazer / outer flame");
+                    span*(reach-.30f),1.25f,opacity*.87f,"Formation Flamerazer / outer flame");
             }
             DrawFormationFlameTongue(formationFlameSprayFrames[frameIndex%count],from+depthBias,contactCell,heading,
-                span*Mathf.Min(reach,.84f),.88f+ripple*.08f,opacity*.96f,"Formation Flamerazer / fire jet");
+                span*Mathf.Min(reach,.89f),1.04f+ripple*.08f,opacity*.96f,"Formation Flamerazer / fire jet");
+            DrawFormationFlameTongue(formationFlameSprayFrames[(frameIndex+6)%count],from+delta*.14f+depthBias,contactCell,heading,
+                span*(reach-.13f),.72f,opacity,"Formation Flamerazer / luminous core",formationFlameCoreMaterial,28);
         }
 
-        void DrawFormationFlameTongue(Sprite frame,Vector3 start,Vector2 cell,float heading,float length,float width,float opacity,string name)
+        void DrawFormationFlameTongue(Sprite frame,Vector3 start,Vector2 cell,float heading,float length,float width,float opacity,string name,
+            Material material=null,int order=26)
         {
-            var jet=LegacyDraw(frame,formationFlameSprayMaterial,start,cell,1,26,roll:heading-90);
+            var jet=LegacyDraw(frame,material??formationFlameSprayMaterial,start,cell,1,order,roll:heading-90);
             if(jet==null)return;
             jet.name=name;
             jet.color=new Color(1f,.96f,.89f,opacity);
@@ -654,9 +660,10 @@ namespace YesterdayConvoy
         internal void DisposeFormationLegacyEffects()
         {
             if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
+            if(formationFlameCoreMaterial!=null)Destroy(formationFlameCoreMaterial);
             if(formationFlameSprayFrames!=null)
                 foreach(var frame in formationFlameSprayFrames)if(frame!=null)Destroy(frame);
-            formationFlameSprayMaterial=null;formationFlameSprayFrames=null;
+            formationFlameSprayMaterial=formationFlameCoreMaterial=null;formationFlameSprayFrames=null;
             ResetFormationSynergyEffects();
             foreach(var view in legacyFxViews)if(view.Renderer!=null){view.Renderer.enabled=false;Destroy(view.Renderer.gameObject);}legacyFxViews.Clear();
             foreach(var page in legacyPatriotPages.Values){Destroy(page.Sprite);Resources.UnloadAsset(page.Texture);}legacyPatriotPages.Clear();
