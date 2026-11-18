@@ -109,7 +109,6 @@ namespace YesterdayConvoy
                 batch == null || Event.current.type != EventType.Repaint) return;
             var pulse = batch.Activations[0];
             var grade = FormationTraitGrade(pulse.Name, pulse.Tier);
-            GUI.BeginGroup(BoardInputRect);
             foreach (var actor in Model.Units)
             {
                 if (!actor.Enabled || !actor.Alive || !FormationActorVisibleInView(actor)) continue;
@@ -121,10 +120,14 @@ namespace YesterdayConvoy
                 var foot = TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(FormationDisplayPoint(actor)));
                 float width = Mathf.Clamp(body.width, 60, 112);
                 float height = Mathf.Clamp(body.height, 68, 120);
-                var bounds = new Rect(foot.x - width * .5f - BoardInputRect.x, foot.y - height + 6 - BoardInputRect.y, width, height);
+                // The original glow composes rotation matrices in canvas coordinates.
+                // Keep that coordinate space so rotated segments remain around the body.
+                var bounds = new Rect(
+                    Mathf.Clamp(foot.x - width * .5f, BoardInputRect.xMin, BoardInputRect.xMax - width),
+                    Mathf.Clamp(foot.y - height + 6, BoardInputRect.yMin + 36, BoardInputRect.yMax - height),
+                    width, height);
                 SynergyActivationPresentation.DrawCard(bounds, piece.Id, batch, grade);
             }
-            GUI.EndGroup();
         }
     }
 }

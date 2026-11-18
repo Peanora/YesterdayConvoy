@@ -273,7 +273,7 @@ namespace YesterdayConvoy
         void DrawCampaignSynergies()
         {
             DrawFormationTraitSidebar();
-            DrawCampaignUnitDetails();
+            if (Model.Phase == FormationPhase.Preparation) DrawCampaignUnitDetails();
         }
         void DrawCampaignUnitDetails()
         {

@@ -254,8 +254,6 @@ namespace YesterdayConvoy
                     .Any(piece => piece.Id == id && controller.Campaign.HasTrait(piece, view.Id))),
                 "Dragging the member back activates the previous tier and only highlights its true deployed members");
             yield return CaptureInterfaceClip("trait-activation", 46);
-            yield return new WaitForSecondsRealtime(.42f);
-            yield return Frame("04-trait-activation-on-board");
         }
         void Finish(Exception error)
         {
