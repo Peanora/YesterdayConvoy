@@ -2,7 +2,7 @@
 
 ## 2026-11-19 岁的落爪、三连踏与守军反击
 
-- Windows x64 Development 运行源码 `d363d9ef2a6af0aef0caf76dad1de9d8dec481b9`。Unity 6000.6.5f1 的棋盘、46 人资源和构建检查通过，构建 971847070 bytes、0 错误。Runtime DLL SHA256 `6ED743D230C6FDEFA680E4167C955829B2F1E523D75B72ADC74F17F66D8996A9`。旧试玩窗口仍打开，本轮新版置于 `Builds/SuiClaw`。
+- Windows x64 Development 运行源码 `d363d9ef2a6af0aef0caf76dad1de9d8dec481b9`。Unity 6000.6.5f1 的棋盘、46 人资源和构建检查通过，构建 971847070 bytes、0 错误。Runtime DLL SHA256 `6ED743D230C6FDEFA680E4167C955829B2F1E523D75B72ADC74F17F66D8996A9`。新版先在 `Builds/SuiClaw` 验收，用户确认后同步到 `Builds/Windows/YesterdayConvoy.exe`。常用目录中 4712 个新版文件的 SHA256 与验收版逐一一致，旧试玩说明和许可文件保留。常用 EXE 的可见窗口以默认 D3D12 启动至正式棋盘就绪，证据为 `canonical-copy-check.json` 与 `canonical-player-visible.log`。
 - EditMode **1162/1162**，D3D11 PlayMode **15/15**。验证有岁和无岁时准备、侦察及战斗镜头位置一致，暂停冻结下落，首次接触时对齐动作和脚点，正常射程守军从落点真实扣除岁的生命。三次伤害间隔匹配源标记的 2× 播放，六秒后收爪，第二次落地可被守军击杀并打断剩余踩地。日志与结果在 `artifacts/formation-sui-grounded/`。
 - 独立 Player 经正式保存棋盘入口录制 1280×720、24fps、24.5 秒的 [岁落爪实机](../artifacts/formation-sui-grounded/verified-player/岁落爪实机.mp4)。一星岁使用正常技能结算，展示靶预置生命与反击射程。回看约 9.96 和 17.96 秒两次落爪、13.96 至 14.62 秒三次接触和每段 1240 的伤害字、守军造成的 85 点伤害、约 16 与 24 秒的收爪。蓝门可遮住部分爪身，镜头持续固定。音轨以游戏实际伤害事件和游戏音效合成。合成后完整解码通过。三星最后一次 9.25 秒尚无对应 Player 录像，未跑完整自然对局。
 
