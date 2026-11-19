@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -20,11 +20,13 @@ namespace YesterdayConvoy
             new Color32(139, 98, 48, 255), new Color32(60, 92, 115, 255),
             new Color32(125, 77, 30, 255), new Color32(89, 81, 142, 255)
         };
-        static readonly Regex StrategyNumbers = new Regex(
-            @"\d-\d|[+＋×−]?\d+(?:\.\d+)?(?:%|XP|SP|金币|金|秒|级|件|格|次|名|张)?");
+        const string StrategyNumber = @"\d-\d|[+＋×−]?\d+(?:\.\d+)?(?:%|XP|SP|金币|金|秒|级|件|格|次|名|张)?";
+        static readonly Regex StrategyNumbers = new Regex(StrategyNumber);
+        static readonly Regex StrategyTextGroups = new Regex(
+            "(?:" + StrategyNumber + @"|[A-Za-z]+|[（【《“]*.)[，。；、！？：）】》”]*");
         static Texture2D strategyPlates, strategyProps, strategyVeil;
         IReadOnlyList<FormationCampaignRun.ChoiceOption> displayedStrategyOptions;
-        string[] strategyDescriptions;
+        (GUIContent Content, GUIStyle Style)[] strategyDescriptions;
         int selectedStrategyCard = -1;
 
         bool DrawStrategyChoice()
@@ -34,14 +36,8 @@ namespace YesterdayConvoy
             if (options == null || options.Count == 0 || options[0].Strategy == null)
             {
                 displayedStrategyOptions = null;
+                strategyDescriptions = null;
                 return false;
-            }
-
-            if (!ReferenceEquals(options, displayedStrategyOptions))
-            {
-                displayedStrategyOptions = options;
-                selectedStrategyCard = -1;
-                strategyDescriptions = options.Select(option => StrategyNumbers.Replace(option.Description, "<b>$&</b>")).ToArray();
             }
 
             if (strategyPlates == null) strategyPlates = Resources.Load<Texture2D>("UI/Strategy/plates");
@@ -50,6 +46,14 @@ namespace YesterdayConvoy
 
             string tier = options[0].Strategy.Tier;
             int column = tier switch { "银" => 1, "金" => 2, "彩" => 3, _ => 0 };
+            if (!ReferenceEquals(options, displayedStrategyOptions))
+            {
+                displayedStrategyOptions = options;
+                selectedStrategyCard = -1;
+                strategyDescriptions = new (GUIContent, GUIStyle)[options.Count];
+                for (int i = 0; i < options.Count; i++)
+                    strategyDescriptions[i] = FitStrategyDescription(options[i].Description, StrategyInk[column]);
+            }
             bool preplan = column == 0;
             string title = preplan ? "选择战略预案" : "选择战略战备";
             string node = preplan ? (run.IsPractice ? "开局" : "1-1 开局") : run.CurrentNode.Id + " 战前";
@@ -114,7 +118,8 @@ namespace YesterdayConvoy
                 14, StrategyMuted, 400, TextAnchor.MiddleCenter, true);
         }
 
-        void DrawStrategyCard(Rect rect, FormationCampaignRun.ChoiceOption option, string description, int column, int index, bool selected)
+        void DrawStrategyCard(Rect rect, FormationCampaignRun.ChoiceOption option,
+            (GUIContent Content, GUIStyle Style) description, int column, int index, bool selected)
         {
             if (strategyPlates != null)
             {
@@ -139,15 +144,40 @@ namespace YesterdayConvoy
             StrategyLabel(new Rect(rect.x + 16, rect.y + 12, 140, 22), "◆ " + kind, 12, StrategyStamps[column], 650);
             StrategyLabel(new Rect(rect.x + 20, rect.y + 214, 300, 41), option.Name, 29, ink, 700);
 
-            var effect = new Rect(rect.x + 20, rect.y + 263, 300, 73);
-            var style = ApprovedUi.Text(null, 15, TextAnchor.UpperLeft, ink);
-            style.wordWrap = true;
-            style.richText = true;
-            var content = new GUIContent(description);
-            while (style.fontSize > 12 && style.CalcHeight(content, effect.width) > effect.height) style.fontSize--;
-            GUI.Label(effect, content, style);
+            GUI.Label(new Rect(rect.x + 20, rect.y + 263, 300, 73), description.Content, description.Style);
             StrategyLabel(new Rect(rect.x + 20, rect.yMax - 26, 28, 21), (index + 1).ToString(), 11, StrategyStamps[column]);
             if (selected) StrategyLabel(new Rect(rect.xMax - 34, rect.yMax - 30, 24, 21), "✓", 15, StrategyLight, 700, TextAnchor.MiddleCenter);
+        }
+
+        static (GUIContent, GUIStyle) FitStrategyDescription(string text, Color ink)
+        {
+            var style = ApprovedUi.Text(null, 15, TextAnchor.UpperLeft, ink);
+            style.richText = true;
+            style.wordWrap = false;
+            style.clipping = TextClipping.Clip;
+            var groups = StrategyTextGroups.Matches(text);
+            var content = new GUIContent();
+            // Keep closing punctuation and numeric values together when forming Chinese lines.
+            for (int size = 15; size >= 12; size--)
+            {
+                style.fontSize = size;
+                var lines = new StringBuilder();
+                string line = "";
+                foreach (Match group in groups)
+                {
+                    string word = StrategyNumbers.Replace(group.Value, "<b>$&</b>");
+                    content.text = line + word;
+                    if (line.Length > 0 && style.CalcSize(content).x > 300)
+                    {
+                        lines.AppendLine(line);
+                        line = word.TrimStart();
+                    }
+                    else line = content.text;
+                }
+                content.text = lines.Append(line).ToString();
+                if (style.CalcSize(content).y <= 73) break;
+            }
+            return (content, style);
         }
 
         static Rect StrategyTile(int x, int y, int columns, int rows) =>
@@ -157,7 +187,7 @@ namespace YesterdayConvoy
         {
             "P07" or "P08" or "ES6" or "EG3" or "EP3" or "EP5" or "CP6" => 1,
             "P03" or "P05" or "ES5" or "EG4" => 2,
-            "P12" or "CS1" or "CS2" or "CS4" or "CS6" or "CG3" or "CG5" => 3,
+            "P12" or "CS1" or "CS2" or "CS6" or "CG3" or "CG5" => 3,
             "P02" or "P06" or "P14" or "ES4" or "EG6" or "EP6" or "CS5" or "CG4" => 4,
             _ => kind == "经济" ? 0 : 5
         };
