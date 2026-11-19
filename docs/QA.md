@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-19 红门侧地面奖励球
+
+- 运行源码 `772ecac113c1a2a89fb95c6e3fbf0dc3939bd2e8`。Unity 6000.6.5f1 EditMode **1163/1163**，相关 D3D11 PlayMode **1/1**。覆盖未领不能跳关、点击不提前发奖、只结算一次、装备保底和旧奖池路径。Windows x64 Development 正式路径构建 **971875678 bytes、0 错误、退出 0**。
+- 独立 Player 从正式入口按正常流程通过前三战。1280×720 和 1600×900 各 **142/142、零异常**；首关从真实结算掉落 3 白 1 蓝，经同一棋盘点击处理与飞行结算领取。之后以明示验证夹具投放 6 颗球检查四种颜色与稀有动效，球内容仍走真实奖池；不是自然掉出金和彩，也未跑整局或物理鼠标全流程。
+- 已回看[地面奖励球实机](../artifacts/formation-ground-rewards/地面奖励球实机.mp4)：24fps、129 帧、5.375 秒无声，完整解码通过。首段可见地面白球开启及金币飞入余额；金球段可见金环和金色爆裂；彩球段可见虹彩环、金币和赤宝石分别飞向右下余额、右上空格，抵达帧增加 10 金币并亮起对应格。首轮据画面右移球区、按蓝球标准放大球体并移开结算面板；最终均已重跑。证据在 `artifacts/formation-ground-rewards/`，原作对照及限制见[素材记录](art/source-records/formation-ground-rewards.md)。未推送或操作 PR。
+
 ## 2026-11-19 岁的落爪、三连踏与守军反击
 
 - Windows x64 Development 运行源码 `d363d9ef2a6af0aef0caf76dad1de9d8dec481b9`。Unity 6000.6.5f1 的棋盘、46 人资源和构建检查通过，构建 971847070 bytes、0 错误。Runtime DLL SHA256 `6ED743D230C6FDEFA680E4167C955829B2F1E523D75B72ADC74F17F66D8996A9`。新版先在 `Builds/SuiClaw` 验收，用户确认后同步到 `Builds/Windows/YesterdayConvoy.exe`。常用目录中 4712 个新版文件的 SHA256 与验收版逐一一致，旧试玩说明和许可文件保留。常用 EXE 的可见窗口以默认 D3D12 启动至正式棋盘就绪，证据为 `canonical-copy-check.json` 与 `canonical-player-visible.log`。
