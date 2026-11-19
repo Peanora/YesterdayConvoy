@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-19 整备暖灰配色
+
+- 按用户同日确认的浏览器配色稿接入。资料分段参考《明日方舟》[官方模组陈列室](https://ak.hypergryph.com/news/3078)第九节；配色和棋盘侧栏位置按本作确认稿适配，不是原作界面复刻。复用[现有徽记与档位底牌](art/SYNERGY-BADGES.md)、节点图标和角色头像，不新增素材，不改角色形态或技能时序。
+- 运行源码 `2be2aadbc615a46624d1d16a7fe62183bdc61d19`，Unity 6000.6.5f1，Windows x64 Development 构建 989405734 bytes、0 错误、退出 0；默认入口仍为正式棋盘。[构建日志](../artifacts/formation-warm-palette/build-final.log)
+- D3D11 整备 PlayMode **2/2**；1280×720 独立 Player 走正式入口和前三场战斗，**134/134、零异常**。核对了暗底整备、按原速滑入的详情帧、已激活／未激活档位和暂停时隐藏运营层。开关、防穿透和商店互斥走正式界面方法及指针逻辑，未完成系统鼠标验证，也未跑完整长局。[空态](../artifacts/formation-warm-palette/final/03-left-preparation.png) · [迅攻](../artifacts/formation-warm-palette/final/04-trait-active-tier.png) · [连击](../artifacts/formation-warm-palette/final/04-trait-members-and-tiers.png) · [展开短片](../artifacts/formation-warm-palette/trait-detail-reveal.mp4) · [检查报告](../artifacts/formation-warm-palette/final/campaign-smoke.json)
+- 另跑的旧 Demo 棋盘检查在 `saved-guard-platforms-and-cover-match-combat-layout` 未通过；用上一版相同参数复测也在同一断言失败。本次不改旧 Demo 或地形，正式棋盘构建校验通过。
+
 ## 2026-11-19 左侧羁绊与详情共用徽记
 
 - 以用户指明的详情标题旁徽记为原样。左右两处直接调用同一绘制方法，读取原档位底牌、徽记和人数圆点。切换左侧点选状态时，在底牌后面叠加外沿高亮。实机同屏的连击徽记与人数圆点各抽查不透明中心，选取的 249 和 25 个像素在两处完全相同。铜档迅攻同时显示为原铜色底牌。 [同屏截图](../artifacts/formation-shared-trait-badge/player/04-trait-members-and-tiers.png) · [素材来源](art/SYNERGY-BADGES.md)
