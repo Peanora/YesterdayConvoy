@@ -1,5 +1,23 @@
 # 验证证据与回归
 
+## 2026-11-19 守军难度与紧凑阵
+
+- 开工时在旧版重跑三组既有战斗夹具，1-3、2-4、3-7 分别 21.050、71.050、135.775 秒胜利。新版同一夹具分别为 30.800、44.850、113.925 秒。此结果比较既有阵容预算，不能代表自然买卡或全随机通关。[旧版](../artifacts/formation-defense-curve/baseline.xml) · [新版专项](../artifacts/formation-defense-curve/guards-final.xml)
+- 读取正式场景保存地形，两个种子分别生成全部 20 场防线，覆盖南北 40 套阵型、22 名守军、前后地形、预留格、档位与同阵重试。第一位面另运行下表战斗，时长含存活本体实际进门。两组原样三名一星均失利。1-6 的附加四人预算为二星泥岩小队践行者、二星 W、一星萨卡兹术师和一星泥岩小队掷能者组长，共三件成装，35.025 秒胜利而且没有阵亡。
+
+| 节点 | 守军总生命 | 正常运营预设进门时间 | 两个原样开局 |
+| --- | ---: | --- | --- |
+| 1-3 | 4,464 | 44.775／77.600 秒 | 90 秒失利，其中一组已清场，未及时进门 |
+| 1-4 | 6,666 | 48.150／65.100 秒 | 超时，守军剩 3／4 |
+| 1-6 | 12,715 | 43.175／49.350 秒 | 超时，守军剩 5／6 |
+| 1-9 | 31,470 | 50.125／87.075 秒 | 超时，守军均剩 6 |
+
+- 1-9 初稿一组正常阵容击杀星熊后卡芙蓉。把芙蓉放在首个后排格后，两组正常阵容均完成，全程零阵亡。2-4 两组正常阵容 48.500／52.050 秒。3-5 同一八人二星维维美核心队，一档 31.100 秒、四档 74.250 秒，正常入口战斗结算分别给蓝球及金、金、彩，重复结算无额外球。3-7 八人高费核心队在正式地形下 84.550 秒胜利；八人六连击五同频裂兽队只削减 34.74%，核心五次阵亡。另有九人极限裂兽预算在旧通用夹具通过 113.925 秒，两个测试有不同阵容与地图条件。三星五费裸卡单刷属于独立设计验收。
+- Unity 6000.6.5f1 全量 EditMode **1187/1187**，火墙扩展为首次 3.2 格接敌后复跑正式棋盘战斗 EditMode **96/96**；D3D11 PlayMode **2/2**。检查了 3-5 相同阵容的档位对照、一次性遇战发奖、玛恩纳三秒等待、望的棋子只触发一次与第一位面余不能重开火墙。[全量](../artifacts/formation-defense-curve/editmode-final.xml) · [末次专项](../artifacts/formation-defense-curve/guards-final.xml) · [D3D11](../artifacts/formation-defense-curve/playmode.xml)
+- Windows x64 Development 源码 `34c44137e443fbeabe6eca22f83da597cd6ef75f`，构建 989458533 bytes、0 错误、退出 0。Runtime DLL SHA-256 `E82B358ACA30A9A3CCD0F1E5E52AB7AD188A8517C45221E0A143F59FD08AD2B3`。[构建日志](../artifacts/formation-defense-curve/build-delivery.log)
+- 该版 1280×720 D3D11 独立 Player 正式挑战前三战 **134/134、零异常**，难度试玩 **10 场、125/125、零异常**。确认两侧紧凑阵与已有高低台、余的四格火墙持续段、斩业星熊开盾、塞雷娅有效治疗、荒芜拉普兰德追猎、新约能天使连射及玛恩纳预警后的真实命中。[正式报告](../artifacts/formation-defense-curve/delivery-campaign/campaign-smoke.json) · [难度试玩](../artifacts/formation-defense-curve/delivery-defense/defense-smoke.json) · [1-6 正常速度火墙](../artifacts/formation-defense-curve/delivery-defense/1-6-yu-firewall.webp) · [3-7 预警至斩击](../artifacts/formation-defense-curve/delivery-defense/3-7-mlynar-slash.webp)
+- 同版四项技能诊断 **40/40、零异常**。从正常难度试玩入口进入正式场景，将可存活的测试目标放在合法技能范围，实测 Mon3tr 六次有效治疗后的转形与命中、圣聆初雪真实雪区与周期伤害、凛御银灰直线命中、望的棋子接触触发。记录了正常速度片段和关键帧。该诊断设置了目标位置和生命，仅用于技能观察。余的墙由原起手片段 1.6 源秒按 2× 放映，覆盖按本作四格生效线适配。现役图集没有单独的六星接触标记，命中按棋盘约定时点结算，新约能天使的连续飞行层未单独核验。[诊断报告](../artifacts/formation-defense-curve/skill-probe/defense-skill-probe.json) · [Mon3tr 转形命中](../artifacts/formation-defense-curve/skill-probe/probe-2-4-D23-contact.png) · [圣聆初雪雪区](../artifacts/formation-defense-curve/skill-probe/probe-2-5-D27-normal-speed/015.png) · [望的棋子触发](../artifacts/formation-defense-curve/skill-probe/probe-3-4-D28-normal-speed/002.png) · [原作资源记录](art/source-records/original-defender-vfx-2026-11-06.json)
+
 ## 2026-11-19 整备羁绊点选反馈
 
 - 版式对照用户给定截图与《货币战争》[官方演示 04:04](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=244)。按压、回弹和选中标记采用用户确认的交互预览。迅攻、复苏、搭个便车和连击复用本作徽记，底牌与人数圆点复用既有资源，来源和权利记录见[流派徽记](art/source-records/formation-supplies-ui.json)及[档位底牌](art/SYNERGY-BADGES.md)。本作棋盘内使用原侧栏的行距和徽记尺寸。
