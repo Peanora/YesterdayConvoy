@@ -94,6 +94,7 @@ namespace YesterdayConvoy
             }
 
             var list = FormationTraitListRect;
+            bool pointerInList = list.Contains(Event.current.mousePosition);
             float height = rows.Length * TraitRowHeight;
             float width = list.width - (height > list.height ? 16 : 0);
             campaignTraitScroll = GUI.BeginScrollView(list, campaignTraitScroll, new Rect(0, 0, width, Mathf.Max(list.height, height)));
@@ -102,17 +103,15 @@ namespace YesterdayConvoy
                 var row = rows[i];
                 var bounds = new Rect(0, i * TraitRowHeight, width, TraitRowHeight - 3);
                 bool selected = formationInspectedTag == row.Id;
-                bool hovered = GUI.enabled && bounds.Contains(Event.current.mousePosition);
-                if (selected || hovered)
-                {
-                    Fill(bounds, selected ? new Color(.30f, .49f, .70f, .41f) : new Color(.29f, .43f, .60f, .27f));
-                    Fill(new Rect(bounds.x, bounds.y, 2, bounds.height), selected ? EconomyIce : EconomyLine);
-                }
+                bool hovered = GUI.enabled && pointerInList && bounds.Contains(Event.current.mousePosition);
+                int control = GUIUtility.GetControlID(FocusType.Passive, bounds);
+                bool clicked = HandleTraitRowClick(control, hovered);
+                bool pressed = hovered && GUIUtility.hotControl == control;
 
-                DrawFloatingTraitEmblem(new Vector2(23, bounds.y + 20), row, selected);
+                DrawFloatingTraitEmblem(new Vector2(23, bounds.y + 20), row, selected, hovered, pressed);
                 DrawFloatingTraitLabel(new Rect(49, bounds.y + 3, bounds.width - 53, 19), row.Name, 13, TraitInk, true);
                 DrawFloatingTraitThresholds(new Rect(49, bounds.y + 23, bounds.width - 53, 15), row);
-                if (TraitHit(bounds, row.Active ? row.ActiveLevel + " 人档已激活" : "还差 " + row.MissingForNext + " 名上阵成员"))
+                if (clicked)
                 {
                     if (selected) CloseFormationTraitDetails();
                     else InspectFormationTrait(row.Id);
@@ -123,16 +122,42 @@ namespace YesterdayConvoy
             GUI.EndScrollView();
         }
 
-        static void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected)
+        static bool HandleTraitRowClick(int control, bool hovered)
+        {
+            var input = Event.current;
+            switch (input.GetTypeForControl(control))
+            {
+                case EventType.MouseDown when hovered && input.button == 0 && GUIUtility.hotControl == 0:
+                    GUIUtility.hotControl = control;
+                    input.Use();
+                    break;
+                case EventType.MouseUp when input.button == 0 && GUIUtility.hotControl == control:
+                    GUIUtility.hotControl = 0;
+                    input.Use();
+                    return hovered;
+            }
+            return false;
+        }
+
+        static void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected, bool hovered, bool pressed)
         {
             var plate = new Rect(center.x - 11, center.y - 11, 22, 22);
+            Color tierColor = SynergyBadgePresentation.ColorFor(row.Grade, .20f);
+            Color plateColor = Color.Lerp(new Color32(23, 30, 40, 255), tierColor, row.Active ? .58f : .42f);
+            float stroke = pressed ? 3f : selected ? 2.5f : hovered ? 1.7f : 0;
+            float brighten = pressed ? .27f : selected ? .16f : .06f;
             var matrix = GUI.matrix;
             GUIUtility.RotateAroundPivot(45, center);
             try
             {
-                Color edge = selected ? EconomyIce : row.Active ? TraitActive : new Color32(154, 170, 204, 255);
-                Fill(plate, row.Active ? new Color(.37f, .27f, .15f, .88f) : new Color(.08f, .11f, .20f, .72f));
-                ApprovedUi.Border(plate, edge);
+                Fill(plate, plateColor);
+                // Keep one flat tier color inside the diamond and reserve emphasis for its edge.
+                ApprovedUi.Border(plate, new Color32(15, 20, 28, 255), 1f);
+                if (stroke > 0)
+                {
+                    var rim = new Rect(plate.x + 1, plate.y + 1, plate.width - 2, plate.height - 2);
+                    ApprovedUi.Border(rim, Color.Lerp(tierColor, Color.white, brighten), stroke);
+                }
             }
             finally { GUI.matrix = matrix; }
 
@@ -140,9 +165,9 @@ namespace YesterdayConvoy
             if (icon != null)
                 GUI.DrawTexture(new Rect(center.x - 9, center.y - 9, 18, 18), icon, ScaleMode.ScaleToFit, true);
 
-            var counter = new Rect(center.x + 8, center.y + 6, 14, 14);
+            var counter = new Rect(center.x + 9, center.y + 7, 14, 14);
             Fill(counter, new Color32(24, 28, 43, 255));
-            TraitLabel(counter, row.Count.ToString(), 10, row.Active ? EconomyGold : TraitInk, true, TextAnchor.MiddleCenter);
+            TraitLabel(counter, row.Count.ToString(), 10, row.Active ? tierColor : TraitInk, true, TextAnchor.MiddleCenter);
         }
 
         static void DrawFloatingTraitThresholds(Rect rect, FormationTraitView row)
@@ -153,7 +178,7 @@ namespace YesterdayConvoy
             {
                 int level = levels[i];
                 bool active = level == row.ActiveLevel;
-                Color ink = active ? EconomyGold : level < row.ActiveLevel ? EconomyIce : EconomyMuted;
+                Color ink = active ? SynergyBadgePresentation.ColorFor(row.Grade) : level < row.ActiveLevel ? EconomyIce : EconomyMuted;
                 DrawFloatingTraitLabel(new Rect(rect.x + i * step, rect.y, step - 2, rect.height),
                     level.ToString(), 10, ink, active);
                 if (i < levels.Length - 1)
