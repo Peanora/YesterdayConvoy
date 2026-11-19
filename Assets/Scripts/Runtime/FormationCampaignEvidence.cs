@@ -160,6 +160,8 @@ namespace YesterdayConvoy
             var spawns=controller.Model.Units.Select(u=>u.Spawn).ToArray();var detailPoint=FormationBattleController.FormationTraitDetailsRect.center;
             controller.ProcessPointer(EventType.MouseDown,detailPoint);controller.ProcessPointer(EventType.MouseDrag,detailPoint+Vector2.right*12);controller.ProcessPointer(EventType.MouseUp,detailPoint+Vector2.right*12);
             Assert(controller.Model.Units.Select(u=>u.Spawn).SequenceEqual(spawns),"Trait detail clicks cannot move the underlying army");
+            yield return CaptureInterfaceClip("trait-detail-reveal", 8);
+            yield return new WaitForSecondsRealtime(FormationBattleController.TraitRevealSeconds);
             yield return Frame("04-trait-members-and-tiers");
             Assert(controller.CloseFormationTraitDetails()&&!controller.FormationTraitDetailsOpen,"Close trait details through its production action");
             yield return VerifyStarterTraitActivation();
