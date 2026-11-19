@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-19 整备待机 1×
+
+- 以[宿主士兵原素材记录](art/source-records/m21-m38-approved.json)中的 `enemy_1043_zomsabr` 为样本，项目留存的 [Idle 帧清单](../Assets/Data/ArtCatalogs/MonsterCombatArt/M21/manifest.json)是一秒 60 帧循环。D3D11 Play Mode **2/2**。棋盘、备战席和拖动预览命中当前 1× 源帧，样本选在 1× 和 2× 帧不同的时点。维维美战斗普攻仍取 2× 源帧，出手和命中时点分别验证。[测试结果](../artifacts/formation-preparation-idle/playmode.xml) · [拖动预览画面](../artifacts/formation-preparation-idle/playmode-airborne-drag.png)
+- 运行源码 `50f1e7cb18cf442590eb1d0980ed7e5571b1fed8`。Unity 6000.6.5f1 Windows x64 Development 构建 **983064882 bytes、0 错误、退出 0**，仓库结构及元数据检查覆盖 14016 个跟踪文件。打开新版 EXE 的正式 1-1，在整备实际将宿主士兵从棋盘拖回备战席，再放入空格，抽看落位后的待机帧，随后开战并暂停。倍率以 Unity 实景中的源帧断言为准，独立窗口核验范围为首关整备和开战切换。[构建日志](../artifacts/formation-preparation-idle/build.log)
+
 ## 2026-11-19 战略预案与战备卡面
 
 - 运行源码 `8acddd424b0d8fa3f41995aea8b4d1f0974e73fd`，Unity 6000.6.5f1 构建 Windows x64 Development 成功，983064886 bytes、0 错误、退出 0。Runtime DLL SHA-256 为 `5EFD526C7CE304DD7EF998903FE22EC4485701082AE125BAFB0B7ED6EDF4BE1B`。Edit Mode **1167/1167**，仓库结构及元数据检查 **14016** 个跟踪文件通过。
