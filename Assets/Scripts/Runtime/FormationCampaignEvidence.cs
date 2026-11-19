@@ -120,6 +120,12 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationStrategyEvidence") >= 0)
+            {
+                result.scope = "Production strategy panels on the authored board, with three seeded runs through two actual auto battles each. Choice confirmation is driven through the campaign API.";
+                yield return VerifyStrategyVariants();
+                yield break;
+            }
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3,"Three distinct random low-cost starter cards");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
@@ -255,6 +261,68 @@ namespace YesterdayConvoy
                 Assert(controller.OpenGroundRewardChoices(),"Open the optional choice on demand");
                 yield return Frame("09-deferred-reward-choice");
                 Assert(controller.ChooseGroundRewardOption(0).Success,"Claim one queued option on demand");
+            }
+        }
+        IEnumerator VerifyStrategyVariants()
+        {
+            Assert(Resources.Load<Texture2D>("UI/Strategy/plates") != null &&
+                Resources.Load<Texture2D>("UI/Strategy/props") != null &&
+                Resources.Load<Texture2D>("UI/Strategy/veil") != null, "All strategy art loads in Player");
+            var seeds = new Dictionary<string, int>();
+            for (int seed = controller.seed; seed < controller.seed + 300 && seeds.Count < 3; seed++)
+            {
+                var run = new FormationShopSession(seed, fullCampaign: true).Run;
+                while (run.HasBlockingChoice) run.Choose(0);
+                for (int i = 0; i < 2; i++)
+                {
+                    int defenders = run.CurrentNode.DefenderCount;
+                    run.SettleBattle(false, 0, defenders, defenders, false);
+                    if (!run.AdvanceNode()) break;
+                }
+                string tier = run.Choices.FirstOrDefault()?.Strategy?.Tier;
+                if (!string.IsNullOrEmpty(tier) && !seeds.ContainsKey(tier)) seeds.Add(tier, seed);
+            }
+            Assert(seeds.Count == 3, "Found seeds for all three strategy tiers using the production draw");
+
+            foreach (string tier in new[] { "银", "金", "彩" })
+            {
+                controller.seed = seeds[tier] - 1;
+                controller.ResetDemo();
+                yield return null;
+                Assert(controller.ChooseCampaignOption(0).Success, "Choose starter equipment for " + tier);
+                Assert(controller.Campaign.Choices.Count == 3 &&
+                    controller.Campaign.Choices.All(option => option.Strategy?.Tier == ""), "Opening choices are ungraded for " + tier);
+                if (tier == "银") yield return Frame("strategy-opening");
+                while (controller.Campaign.HasBlockingChoice)
+                    Assert(controller.ChooseCampaignOption(0).Success, "Resolve opening choice for " + tier);
+
+                for (int i = 0; i < 2; i++)
+                {
+                    yield return ReadyArt();
+                    controller.StartBattle();
+                    Assert(controller.Model.Phase == FormationPhase.Fighting, "Start actual battle " + controller.Campaign.CurrentNode.Id + " for " + tier);
+                    int ticks = 0;
+                    while (controller.Model.Phase == FormationPhase.Fighting || controller.Model.Phase == FormationPhase.Exiting)
+                    {
+                        if (++ticks > 1600) throw new InvalidOperationException("Strategy verification battle timed out.");
+                        for (int tick = 0; tick < 12; tick++) controller.Model.Advance(.25f);
+                        yield return null;
+                    }
+                    result.battles++;
+                    yield return null;
+                    Assert(controller.ContinueCampaign(), "Advance after an actual battle for " + tier);
+                    yield return null;
+                }
+                result.node = controller.Campaign.CurrentNode.Id;
+                var choices = controller.Campaign.Choices;
+                Assert(result.node == "1-3" && choices.Count == 3 && choices.All(option => option.Strategy?.Tier == tier),
+                    "Production 1-3 opens three " + tier + " choices");
+                yield return Frame("strategy-" + tier);
+                Assert(controller.Campaign.RerollChoice() && !controller.Campaign.CanRerollChoice &&
+                    controller.Campaign.Choices.All(option => option.Strategy?.Tier == tier), "One reroll preserves the round's tier " + tier);
+                string chosen = controller.Campaign.Choices[0].Id;
+                Assert(controller.ChooseCampaignOption(0).Success && controller.Campaign.HasAugment(chosen),
+                    "Confirmation applies the real choice " + chosen);
             }
         }
         IEnumerator ClaimGroundRewards(bool capture, string clipPrefix = "reward-opening")

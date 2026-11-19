@@ -34,6 +34,13 @@ namespace YesterdayConvoy
             try
             {
                 if(!Ready){Fill(new Rect(0,0,1280,720),Dark);Label(new Rect(150,250,980,80),loading,23,Cyan,TextAnchor.MiddleCenter);return;}
+                GUI.enabled=enabled&&!formationMenuOpen;
+                if (DrawStrategyChoice())
+                {
+                    GUI.enabled=enabled;
+                    DrawFormationMenuControls();
+                    return;
+                }
                 if(CombatViewActive)
                 {
                     DrawWorldLabels();

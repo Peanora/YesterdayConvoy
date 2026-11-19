@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         {
             public string Id, Name, Description;
             internal Action Apply;
+            internal FormationCampaignRules.DataRecord Strategy;
         }
         sealed class Selection
         {
@@ -190,6 +191,8 @@ namespace YesterdayConvoy
         void Request(string title,IEnumerable<ChoiceOption> choices,Func<List<ChoiceOption>> reroll=null,int picks=1)
         {var options=choices.ToList();if(options.Count==0)return;selections.Enqueue(new Selection{Title=title,Options=options,Reroll=reroll,Picks=Math.Min(picks,options.Count)});}
         ChoiceOption Option(string id,string name,string description,Action apply)=>new ChoiceOption{Id=id,Name=name,Description=description,Apply=apply};
+        ChoiceOption StrategyOption(FormationCampaignRules.DataRecord record, Action apply) =>
+            new ChoiceOption{Id=record.Id,Name=record.Name,Description=record.Effect,Apply=apply,Strategy=record};
         List<T> Shuffle<T>(IEnumerable<T> source)=>source.OrderBy(_=>random.Next()).ToList();
         string CardId(string id)=>FormationCampaignRules.Find(id)?.CardId??id;
         string UnitId(string id)=>FormationCampaignRules.Find(id)?.Id??id;
@@ -199,7 +202,7 @@ namespace YesterdayConvoy
             {
                 var choices=Shuffle(Enumerable.Range(0,FormationCampaignRules.AllPreplans.Length).Where(i=>!preplanSeen.Contains(i))).Take(3).ToArray();
                 foreach(int i in choices)preplanSeen.Add(i);
-                return choices.Select(i=>{var plan=FormationCampaignRules.AllPreplans[i];return Option(plan.Id,plan.Name,plan.Effect,()=>ApplyPreplan(plan.Id));}).ToList();
+                return choices.Select(i=>{var plan=FormationCampaignRules.AllPreplans[i];return StrategyOption(plan,()=>ApplyPreplan(plan.Id));}).ToList();
             }
             Request("开局投资环境 · 战略预案三选一",Draw(),Draw);
         }
@@ -401,7 +404,7 @@ namespace YesterdayConvoy
                 string thirdKind=random.Next(2)==0?"经济":"战力";
                 var thirdPool=candidates.Except(picks).Where(a=>a.Kind==thirdKind).ToArray();
                 var third=(random.NextDouble()<.08?Shuffle(thirdPool.Where(a=>IsBadgeAugment(a.Id))).FirstOrDefault():null)??Shuffle(thirdPool.Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault()??Shuffle(candidates.Except(picks).Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault();if(third!=null)picks.Add(third);
-                return picks.Select(a=>Option(a.Id,a.Name,a.Effect,()=>ApplyAugment(a.Id))).ToList();
+                return picks.Select(a=>StrategyOption(a,()=>ApplyAugment(a.Id))).ToList();
             }
             Request("战略战备 · "+tier+"档三选一",Draw(),Draw);
         }
