@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-19 整备羁绊实心菱形
+
+- 对照本作确认的 45° 羁绊布局及已确认档位色。采用每档一种实色填满菱形，统一实色也用于最高档的青绿。复用确认过的徽记和档位映射。选中、悬停和按下的亮线独立于填色。素材来源见[徽记和底牌记录](art/SYNERGY-BADGES.md)。
+- Windows x64 运行源码 `fae3b628619762513badac10f835e951ed21beed`，Unity 6000.6.5f1 棋盘及角色名册校验、正式单场景构建均通过，退出 0。Runtime DLL SHA-256 `EDF6B093D73FB8294163BDC0C3D8781BEC8420C3955B778541408ED2394ACBE9`。羁绊档位和数据的 EditMode **5/5**，独立 Player 1280×720 D3D11 前三场战斗检查 **132/132、零异常**。原常用 EXE 正在运行，新版构建在 `Builds/Windows-TraitOutline/YesterdayConvoy.exe`。 [构建日志](../artifacts/formation-trait-outline/build-final.log) · [EditMode](../artifacts/formation-trait-outline/editmode-final.xml) · [Player](../artifacts/formation-trait-outline/player-final/campaign-smoke.json)
+- 常规启动新版，实际点迅攻文字打开详情，再点同一菱形收起。比较鼠标移出该行后的常态和选中截图，铜底保持原色，边线高亮，文字与门槛区域 846 像素中无一处通道变化超过 10。实机画面核对了铜档和灰色未达档。银、金、青绿的档位映射由 EditMode 覆盖，未在独立窗口逐档截图。全量 PlayMode 的初次后台运行停在需要渲染帧的拍照路径，未取得结果。 [未选中](../artifacts/formation-trait-outline/solid-idle.jpg) · [选中](../artifacts/formation-trait-outline/solid-selected.jpg) · [1280×720 整备](../artifacts/formation-trait-outline/player-final/03-left-preparation.png)
+
 ## 2026-11-19 正式棋盘整备界面与连续领取
 
 - 运行源码 `c2f17434a98b04b511007407c1e1a692a8fe21c5`。Unity 6000.6.5f1 Windows x64 Development 构建通过，989403577 bytes、0 错误、退出 0。Runtime DLL SHA-256 `B1DB0281E0C81D0B0D690D2F1FCBC3EA8FB0BD393294ECF1011C0C332E81FFF2`。EditMode **1167/1167**，D3D11 PlayMode **43/43**。把原 B10 长待机回归的采样时点调整到此前确认的整备 1×，保留对后段源动画帧的检查。 [构建日志](../artifacts/formation-operations-ui/build-release.log) · [EditMode](../artifacts/formation-operations-ui/editmode-release.xml) · [PlayMode](../artifacts/formation-operations-ui/playmode-release.xml)
