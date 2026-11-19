@@ -10,15 +10,27 @@ namespace YesterdayConvoy
         static readonly Color TraitCard = new Color(.145f, .205f, .24f, 1);
         static readonly Color TraitInk = new Color(.91f, .94f, .95f, 1);
         static readonly Color TraitMuted = new Color(.60f, .68f, .72f, 1);
+        static readonly Color TraitSelectionEdge = new Color(1f, .95f, .86f);
         const float TraitRowHeight = 45;
         const float TraitBadgeSize = 34;
+        const float TraitBadgePressSeconds = .065f;
+        const float TraitBadgePulseSeconds = .23f;
+        const float TraitBadgePressedScale = .89f;
+        const float TraitBadgePressedOffset = 2f;
         internal const float TraitRevealSeconds = .18f;
         const int TraitMemberColumns = 4;
         const float TraitMemberRowHeight = 92;
 
+        static readonly AnimationCurve TraitBadgeReboundScale = new AnimationCurve(
+            new Keyframe(0f, TraitBadgePressedScale, 0f, 4.5f), new Keyframe(.086f, 1.08f),
+            new Keyframe(.156f, .99f), new Keyframe(.22f, 1f));
+        static readonly AnimationCurve TraitBadgeReboundOffset = new AnimationCurve(
+            new Keyframe(0f, TraitBadgePressedOffset, 0f, -65f), new Keyframe(.086f, -1f), new Keyframe(.22f, 0f));
+
         bool formationAllTraits;
         Vector2 formationTraitDetailScroll;
-        double formationTraitOpenedAt;
+        double formationTraitOpenedAt, formationTraitPressedAt, formationTraitPulsedAt;
+        string formationTraitPulsedId;
 
         public static Rect FormationTraitSidebarRect => new Rect(16, 85, 151, 482);
         public static Rect FormationTraitDetailsRect => new Rect(174, 85, 380, 527);
@@ -103,31 +115,34 @@ namespace YesterdayConvoy
                 var bounds = new Rect(0, i * TraitRowHeight, width, TraitRowHeight - 3);
                 bool selected = formationInspectedTag == row.Id;
                 bool hovered = GUI.enabled && pointerInList && bounds.Contains(Event.current.mousePosition);
-                int control = GUIUtility.GetControlID(FocusType.Passive, bounds);
+                int control = GUIUtility.GetControlID(row.Id.GetHashCode(), FocusType.Passive, bounds);
                 bool clicked = HandleTraitRowClick(control, hovered);
-                bool pressed = hovered && GUIUtility.hotControl == control;
+                if (clicked && (selected ? CloseFormationTraitDetails() : InspectFormationTrait(row.Id)))
+                {
+                    formationTraitPulsedId = row.Id;
+                    formationTraitPulsedAt = Time.unscaledTimeAsDouble;
+                    selected = !selected;
+                }
 
+                bool pressed = hovered && GUIUtility.hotControl == control;
                 DrawFloatingTraitEmblem(new Vector2(23, bounds.y + 20), row, selected, hovered, pressed);
                 DrawFloatingTraitLabel(new Rect(49, bounds.y + 3, bounds.width - 53, 19), row.Name, 13, TraitInk, true);
                 DrawFloatingTraitThresholds(new Rect(49, bounds.y + 23, bounds.width - 53, 15), row);
-                if (clicked)
-                {
-                    if (selected) CloseFormationTraitDetails();
-                    else InspectFormationTrait(row.Id);
-                }
             }
             if (rows.Length == 0)
                 TraitLabel(new Rect(8, 2, width - 16, 40), "上阵角色后显示羁绊", 11, PreparationPalette.Muted);
             GUI.EndScrollView();
         }
 
-        static bool HandleTraitRowClick(int control, bool hovered)
+        bool HandleTraitRowClick(int control, bool hovered)
         {
             var input = Event.current;
             switch (input.GetTypeForControl(control))
             {
                 case EventType.MouseDown when hovered && input.button == 0 && GUIUtility.hotControl == 0:
                     GUIUtility.hotControl = control;
+                    formationTraitPressedAt = Time.unscaledTimeAsDouble;
+                    formationTraitPulsedId = null;
                     input.Use();
                     break;
                 case EventType.MouseUp when input.button == 0 && GUIUtility.hotControl == control:
@@ -138,24 +153,60 @@ namespace YesterdayConvoy
             return false;
         }
 
-        static void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected, bool hovered, bool pressed)
+        void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected, bool hovered, bool pressed)
         {
-            float stroke = pressed ? 2.2f : selected ? 1.7f : hovered ? 1.15f : 0;
-            if (stroke > 0)
+            float scale = 1f, offset = 0f, counterOffset = 0f;
+            float pulseElapsed = formationTraitPulsedId == row.Id
+                ? (float)(Time.unscaledTimeAsDouble - formationTraitPulsedAt) : TraitBadgePulseSeconds;
+            if (pressed)
             {
-                // Draw the interaction rim behind the authored plate and its count dot.
-                float half = TraitBadgeSize / (2 * Mathf.Sqrt(2)) + stroke - .25f;
-                var rim = new Rect(center.x - half, center.y - half, 2 * half, 2 * half);
-                var tint = Color.Lerp(SynergyBadgePresentation.ColorFor(row.Grade), Color.white, .45f);
-                tint.a = pressed ? .98f : selected ? .87f : .68f;
-                var matrix = GUI.matrix;
-                GUIUtility.RotateAroundPivot(45, center);
-                try { ApprovedUi.Border(rim, tint, stroke); }
-                finally { GUI.matrix = matrix; }
+                float remaining = 1f - Mathf.Clamp01((float)(Time.unscaledTimeAsDouble - formationTraitPressedAt) / TraitBadgePressSeconds);
+                float amount = 1f - remaining * remaining * remaining;
+                scale = Mathf.Lerp(1f, TraitBadgePressedScale, amount);
+                offset = TraitBadgePressedOffset * amount;
+                counterOffset = amount;
+            }
+            else if (pulseElapsed < TraitBadgePulseSeconds)
+            {
+                scale = TraitBadgeReboundScale.Evaluate(pulseElapsed);
+                offset = TraitBadgeReboundOffset.Evaluate(pulseElapsed);
             }
 
+            Vector2 faceCenter = center + Vector2.up * offset;
+            if (selected || hovered)
+            {
+                var edge = TraitSelectionEdge;
+                edge.a = pressed ? 1f : selected ? .94f : .65f;
+                float stroke = pressed ? 1.6f : selected ? 1.25f : 1f;
+                DrawTraitDiamond(faceCenter, TraitBadgeSize * scale + 3f, edge, stroke);
+            }
+            if (pulseElapsed < TraitBadgePulseSeconds)
+            {
+                float progress = pulseElapsed / TraitBadgePulseSeconds;
+                var flash = TraitSelectionEdge;
+                flash.a = .95f * Mathf.Pow(1f - progress, 1.6f);
+                float diameter = Mathf.Lerp(33f, 40f, 1f - (1f - progress) * (1f - progress));
+                DrawTraitDiamond(faceCenter, diameter, flash, 1.4f);
+            }
+            if (selected)
+                DrawTraitDiamond(center - Vector2.right * 20.5f, 3.4f, TraitSelectionEdge, 0f);
+
             var badge = new Rect(center.x - TraitBadgeSize * .5f, center.y - TraitBadgeSize * .5f, TraitBadgeSize, TraitBadgeSize);
-            SynergyBadgePresentation.DrawBadge(badge, row.Name, row.Grade, row.Count, null);
+            SynergyBadgePresentation.DrawBadge(badge, row.Name, row.Grade, row.Count, null, scale, offset, counterOffset);
+        }
+
+        static void DrawTraitDiamond(Vector2 center, float diameter, Color tint, float stroke)
+        {
+            float half = diameter / (2f * Mathf.Sqrt(2f));
+            var shape = new Rect(center.x - half, center.y - half, 2f * half, 2f * half);
+            var matrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(45f, center);
+            try
+            {
+                if (stroke > 0f) ApprovedUi.Border(shape, tint, stroke);
+                else Fill(shape, tint);
+            }
+            finally { GUI.matrix = matrix; }
         }
 
         static void DrawFloatingTraitThresholds(Rect rect, FormationTraitView row)

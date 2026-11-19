@@ -169,6 +169,9 @@ namespace YesterdayConvoy
                     if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
                     {var anchor=DeploymentAnchor(cell);if(dragSlot>=0)Place(dragSlot,anchor);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,anchor);}
                 }
+                else if(pointerHeld&&FormationTraitDetailsOpen&&
+                        (pendingClickDeployment||shopDragInstance==0&&BoardInputRect.Contains(point)))
+                    CloseFormationTraitDetails();
                 else if(pointerHeld&&pendingClickDeployment&&TryCell(point,out var clickCell))
                 {if(dragSlot>=0)Place(dragSlot,clickCell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,clickCell);}
                 else if(pointerHeld&&shopDragInstance>0)

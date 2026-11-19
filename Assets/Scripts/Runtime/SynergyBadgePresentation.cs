@@ -155,10 +155,16 @@ namespace YesterdayConvoy
             => DrawBadge(diamondBounds, name, GradeFor(name, tier), count, fallbackFont);
 
         public static void DrawBadge(Rect diamondBounds, string name, SynergyVisualGrade grade, int count, Font fallbackFont)
+            => DrawBadge(diamondBounds, name, grade, count, fallbackFont, 1f, 0f, 0f);
+
+        internal static void DrawBadge(Rect diamondBounds, string name, SynergyVisualGrade grade, int count, Font fallbackFont,
+            float faceScale, float faceOffsetY, float counterOffsetY)
         {
             if (diamondBounds.width <= 0 || diamondBounds.height <= 0) return;
             float scale = Mathf.Min(diamondBounds.width, diamondBounds.height) / 44f;
+            float movingScale = scale * faceScale;
             Vector2 center = diamondBounds.center;
+            Vector2 faceCenter = center + Vector2.up * faceOffsetY;
             Color previous = GUI.color;
             try
             {
@@ -166,18 +172,18 @@ namespace YesterdayConvoy
                 // 52 units preserves its four-unit transparent/shadow margin around the 44-unit plate.
                 GUI.color = new Color(1, 1, 1, previous.a);
                 var frame = FrameFor(grade);
-                if (frame != null) GUI.DrawTexture(Centered(center, 52f * scale), frame, ScaleMode.StretchToFill, true);
+                if (frame != null) GUI.DrawTexture(Centered(faceCenter, 52f * movingScale), frame, ScaleMode.StretchToFill, true);
 
                 var icon = IconFor(name);
                 if (icon != null)
                 {
                     // Identity glyphs stay white; grade is represented only by the backplate.
                     GUI.color = new Color(1, 1, 1, previous.a * (grade == SynergyVisualGrade.Inactive ? .48f : 1f));
-                    GUI.DrawTexture(Centered(center, 28f * scale), icon, ScaleMode.StretchToFill, true);
+                    GUI.DrawTexture(Centered(faceCenter, 28f * movingScale), icon, ScaleMode.StretchToFill, true);
                 }
 
                 GUI.color = new Color(1, 1, 1, previous.a);
-                Vector2 counterCenter = center + new Vector2(15.84f, 15.84f) * scale;
+                Vector2 counterCenter = center + new Vector2(15.84f, 15.84f) * scale + Vector2.up * counterOffsetY;
                 var dot = CounterFor();
                 if (dot != null) GUI.DrawTexture(Centered(counterCenter, 24.8f * scale), dot, ScaleMode.StretchToFill, true);
                 GUI.Label(Centered(counterCenter, 16.8f * scale), count.ToString(CultureInfo.InvariantCulture),

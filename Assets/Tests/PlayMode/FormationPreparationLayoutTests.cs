@@ -329,10 +329,11 @@ namespace YesterdayConvoy.Tests
                     var candidate = FormationBattleController.CellScreen(cell);
                     var preview = controller.Session.PreviewDeploy(obscured.Instance, cell);
                     if (!FormationBattleController.BoardInputRect.Contains(candidate) || !preview.Valid ||
+                        detailsRect.Contains(candidate) || controller.Model.Units.Any(unit => controller.FormationPieceRect(unit.Instance).Contains(candidate)) ||
                         preview.SwapInstance != 0 || preview.Cells == obscured.DeploymentCells) continue;
                     legalGroundTarget = candidate; foundTarget = true; break;
                 }
-            Assert.That(foundTarget, Is.True, "The covered-actor regression needs an actual legal destination underneath the trait panel.");
+            Assert.That(foundTarget, Is.True, "The covered-actor regression needs an empty legal destination outside the trait panel.");
             controller.ProcessPointer(EventType.MouseDown, coveredOrigin);
             Assert.That(controller.SelectedSlot, Is.EqualTo(selectedBefore), "Clicking a board body through the trait panel must not select its hidden character.");
             controller.ProcessPointer(EventType.MouseDrag, outsideDetails);
@@ -342,6 +343,13 @@ namespace YesterdayConvoy.Tests
             controller.ProcessPointer(EventType.MouseUp, legalGroundTarget);
             Assert.That(controller.Model.Units.All(unit => unit.Spawn == positions[unit.Instance]), Is.True);
             Assert.That(controller.SelectedSlot, Is.EqualTo(selectedBefore));
+
+            controller.ProcessPointer(EventType.MouseDown, legalGroundTarget);
+            controller.ProcessPointer(EventType.MouseUp, legalGroundTarget);
+            Assert.That(controller.FormationTraitDetailsOpen, Is.False, "Clicking empty board space dismisses the trait panel.");
+            Assert.That(controller.Model.Units.All(unit => unit.Spawn == positions[unit.Instance]), Is.True,
+                "Dismissing the panel must not move the selected piece to the clicked tile.");
+            Assert.That(controller.InspectFormationTrait("迅攻"), Is.True);
 
             Assert.That(controller.MovePiece(hound.Instance, false, controller.Session.Seats.FirstEmpty(false, 10)).Success, Is.True);
             yield return null;
