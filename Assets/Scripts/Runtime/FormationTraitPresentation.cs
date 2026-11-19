@@ -13,6 +13,7 @@ namespace YesterdayConvoy
         static readonly Color TraitActive = new Color(.89f, .76f, .46f, 1);
         static readonly Color TraitDetailBackground = new Color(.080f, .100f, .114f, .94f);
         const float TraitRowHeight = 45;
+        const float TraitBadgeSize = 34;
         internal const float TraitRevealSeconds = .18f;
         const int TraitMemberColumns = 4;
         const float TraitMemberRowHeight = 92;
@@ -141,33 +142,22 @@ namespace YesterdayConvoy
 
         static void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected, bool hovered, bool pressed)
         {
-            var plate = new Rect(center.x - 11, center.y - 11, 22, 22);
-            Color tierColor = SynergyBadgePresentation.ColorFor(row.Grade, .20f);
-            Color plateColor = Color.Lerp(new Color32(23, 30, 40, 255), tierColor, row.Active ? .58f : .42f);
-            float stroke = pressed ? 3f : selected ? 2.5f : hovered ? 1.7f : 0;
-            float brighten = pressed ? .27f : selected ? .16f : .06f;
-            var matrix = GUI.matrix;
-            GUIUtility.RotateAroundPivot(45, center);
-            try
+            float stroke = pressed ? 2.2f : selected ? 1.7f : hovered ? 1.15f : 0;
+            if (stroke > 0)
             {
-                Fill(plate, plateColor);
-                // Keep one flat tier color inside the diamond and reserve emphasis for its edge.
-                ApprovedUi.Border(plate, new Color32(15, 20, 28, 255), 1f);
-                if (stroke > 0)
-                {
-                    var rim = new Rect(plate.x + 1, plate.y + 1, plate.width - 2, plate.height - 2);
-                    ApprovedUi.Border(rim, Color.Lerp(tierColor, Color.white, brighten), stroke);
-                }
+                // Draw the interaction rim behind the authored plate and its count dot.
+                float half = TraitBadgeSize / (2 * Mathf.Sqrt(2)) + stroke - .25f;
+                var rim = new Rect(center.x - half, center.y - half, 2 * half, 2 * half);
+                var tint = Color.Lerp(SynergyBadgePresentation.ColorFor(row.Grade), Color.white, .45f);
+                tint.a = pressed ? .98f : selected ? .87f : .68f;
+                var matrix = GUI.matrix;
+                GUIUtility.RotateAroundPivot(45, center);
+                try { ApprovedUi.Border(rim, tint, stroke); }
+                finally { GUI.matrix = matrix; }
             }
-            finally { GUI.matrix = matrix; }
 
-            var icon = SynergyBadgePresentation.IconFor(row.Name);
-            if (icon != null)
-                GUI.DrawTexture(new Rect(center.x - 9, center.y - 9, 18, 18), icon, ScaleMode.ScaleToFit, true);
-
-            var counter = new Rect(center.x + 9, center.y + 7, 14, 14);
-            Fill(counter, new Color32(24, 28, 43, 255));
-            TraitLabel(counter, row.Count.ToString(), 10, row.Active ? tierColor : TraitInk, true, TextAnchor.MiddleCenter);
+            var badge = new Rect(center.x - TraitBadgeSize * .5f, center.y - TraitBadgeSize * .5f, TraitBadgeSize, TraitBadgeSize);
+            SynergyBadgePresentation.DrawBadge(badge, row.Name, row.Grade, row.Count, null);
         }
 
         static void DrawFloatingTraitThresholds(Rect rect, FormationTraitView row)
@@ -225,7 +215,7 @@ namespace YesterdayConvoy
             Fill(panel, TraitTint(TraitDetailBackground));
             ApprovedUi.Border(panel, TraitTint(TraitLine));
             Fill(new Rect(panel.x + 1, panel.y + 1, 3, 61), TraitTint(accent));
-            SynergyBadgePresentation.DrawBadge(new Rect(panel.x + 15, panel.y + 13, 34, 34), view.Name, view.Grade, view.Count, null);
+            SynergyBadgePresentation.DrawBadge(new Rect(panel.x + 15, panel.y + 13, TraitBadgeSize, TraitBadgeSize), view.Name, view.Grade, view.Count, null);
             TraitLabel(new Rect(panel.x + 62, panel.y + 8, 180, 25), view.Name, 20, null, true);
             TraitLabel(new Rect(panel.x + 62, panel.y + 34, 272, 20),
                 (view.IsFaction ? "阵营" : "流派") + " · 已上阵 " + view.Count + " 人" +
