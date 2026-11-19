@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-19 整备羁绊点选反馈
+
+- 版式对照用户给定截图与《货币战争》[官方演示 04:04](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=244)。按压、回弹和选中标记采用用户确认的交互预览。迅攻、复苏、搭个便车和连击复用本作徽记，底牌与人数圆点复用既有资源，来源和权利记录见[流派徽记](art/source-records/formation-supplies-ui.json)及[档位底牌](art/SYNERGY-BADGES.md)。本作棋盘内使用原侧栏的行距和徽记尺寸。
+- Windows x64 Development 源码 `ab37e7eaa816d4bba5f2cf78cc65fee4e36be53d`，Unity 6000.6.5f1，989407630 bytes、0 构建错误、退出 0。羁绊数据、图标和档位 EditMode **12/12**。D3D11 整备 PlayMode **2/2**，覆盖面板防穿透和点空白收起时保留角色站位。首轮后台编辑器写出通过结果后退出异常，可见窗口复跑正常退出 0。[构建日志](../artifacts/formation-trait-click-feedback/build.log) · [EditMode](../artifacts/formation-trait-click-feedback/editmode.xml) · [PlayMode](../artifacts/formation-trait-click-feedback/playmode-visible.xml)
+- 1280×720 D3D11 独立 Player 从正式入口跑前三场，**134/134、零异常**。铜色迅攻与灰蓝连击均显示独立的选中亮边，正常速度的详情滑入由同版本 Player 录制。此轮回归覆盖前三场。[Player 报告](../artifacts/formation-trait-click-feedback/player-visible/campaign-smoke.json) · [详情滑入](../artifacts/formation-trait-click-feedback/detail-panel-player.mp4)
+- 同版本常规启动后，使用系统鼠标实点迅攻及未激活羁绊。实机片段约 0.18–0.35 秒可见按压、松手后回弹闪边和详情滑出，随后保持选中亮边。对照了铜色 2 人和灰蓝 1 人；点空白、再点当前徽记及 Esc 均能收起。桌面录制偏亮，底牌颜色以窗口截图为准。[正常速度鼠标实录](../artifacts/formation-trait-click-feedback/mouse/badge-click-player.mp4) · [连续关键帧](../artifacts/formation-trait-click-feedback/mouse/dda-copper-contact.png) · [铜色实机](../artifacts/formation-trait-click-feedback/mouse/03-copper-selected.jpeg) · [灰蓝实机](../artifacts/formation-trait-click-feedback/mouse/05-gray-selected.jpeg)
+
 ## 2026-11-19 透明羁绊与顶部大招募卡
 
 - 左栏对照 `e71af6b1` 的共享徽记与无背板样式；卡面对照 `ce3fc012` 的原 A 商店，复用现有立绘、费用底色和金币图，适配到当前顶部抽屉并保留独立购买键。棋盘和角色素材不变；原资源沿用[卡面规格](art/ART_STYLE_GUIDE.md)和[羁绊徽记来源](art/SYNERGY-BADGES.md)。
