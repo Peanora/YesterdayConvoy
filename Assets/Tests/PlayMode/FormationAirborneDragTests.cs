@@ -41,6 +41,21 @@ namespace YesterdayConvoy.Tests
             var actor=controller.Model.Units.Single(unit=>unit.Enabled&&unit.ArtId=="M21");
             var body=controller.GetComponentsInChildren<SpriteRenderer>().Single(renderer=>renderer.name==actor.Name&&
                 renderer.gameObject.layer!=31&&renderer.sprite!=null);
+            var source=FormationUnitArt.For(actor.ArtId);
+            deadline=Time.realtimeSinceStartupAsDouble+3;
+            double idleTime;
+            do
+            {
+                yield return new WaitForEndOfFrame();
+                idleTime=Time.unscaledTimeAsDouble;
+            } while(source.Frame("idle",idleTime)==source.Frame("idle",idleTime*2)&&Time.realtimeSinceStartupAsDouble<deadline);
+            var expectedIdle=source.Frame("idle",idleTime);
+            Assert.That(expectedIdle,Is.Not.Null);
+            Assert.That(expectedIdle,Is.Not.SameAs(source.Frame("idle",idleTime*2)));
+            Assert.That(body.sprite,Is.SameAs(expectedIdle),"The deployed actor must sample idle at 1× before combat.");
+            Assert.That(source.Frame("idle",.25),Is.Not.SameAs(source.Frame("idle",.5)));
+            Assert.That(controller.FormationShopIdleFrame(actor.ArtId,.25),Is.SameAs(source.Frame("idle",.25)),
+                "The reserve stage must sample idle at 1× as well.");
             var bounds=body.sprite.bounds;
             var grab=Project(body.transform.TransformPoint(new Vector3(bounds.center.x,Mathf.Lerp(bounds.min.y,bounds.max.y,.35f),0)));
             var original=actor.DeploymentCells;int instance=actor.Instance;
@@ -62,6 +77,8 @@ namespace YesterdayConvoy.Tests
             var landing=controller.DeploymentPreview.Cells;var ghost=controller.DeploymentGhost;
             var shadow=ghost.GetComponent<ActorGrounding>().Shadow;
             Assert.That(FormationArtAssertions.IsActualIdleFrame(actor.ArtId,ghost.sprite),Is.True);
+            Assert.That(ghost.sprite,Is.SameAs(source.Frame("idle",Time.unscaledTimeAsDouble)),
+                "The held preview must match the deployed actor's idle clock.");
             Assert.That(shadow.enabled,Is.True);
             Assert.That(shadow.transform.position.y,Is.EqualTo(FormationBattleController.WorldPoint(Vector2.zero).y+.016f).Within(.001f));
             Assert.That(ghost.transform.position.y-shadow.transform.position.y,Is.GreaterThan(.5f),"The held body must visibly leave its ground shadow.");

@@ -93,7 +93,6 @@ namespace YesterdayConvoy
         {
             var source=FormationUnitArt.For(id);if(source==null||!source.HasAction("idle"))return null;
             if(double.IsNaN(time)||double.IsInfinity(time)||time<0)time=0;
-            time*=FormationVisualRate;
             double normalized=time/source.Duration("idle");normalized=(normalized-Math.Floor(normalized))*source.Duration("idle");
             string useKey=id+"/"+Math.Floor(normalized*2);
             formationShopIdleUses[useKey]=new ShopIdleUse{Source=source,AnimationTime=time,UsedAt=Time.unscaledTimeAsDouble};
@@ -155,7 +154,7 @@ namespace YesterdayConvoy
             string key=!actor.Alive?"death":casting&&actor.ArtId=="B21"?"cast":actor.IsMoving?"walk":casting?"cast":acting?"attack":"idle";
             float actionRate=actor.PresentationDuration>0&&actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate;
             double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
-                (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now)*FormationVisualRate;
+                (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now*FormationVisualRate);
             float sourceHeight,labelTop=0,actionScale=1;
             if(!defender)
             {
