@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-19 战略预案与战备卡面
+
+- 运行源码 `8acddd424b0d8fa3f41995aea8b4d1f0974e73fd`，Unity 6000.6.5f1 构建 Windows x64 Development 成功，983064886 bytes、0 错误、退出 0。Runtime DLL SHA-256 为 `5EFD526C7CE304DD7EF998903FE22EC4485701082AE125BAFB0B7ED6EDF4BE1B`。Edit Mode **1167/1167**，仓库结构及元数据检查 **14016** 个跟踪文件通过。
+- 可见 Player 1280×720 **41/41，0 异常，退出 0**。在正式棋盘用三个种子完成各自前两场自动战斗，到达 1-3 后实际抽出银、金和彩三组战备，核对本轮同档、整组重抽及确认发放。回看了[开局白卡](../artifacts/formation-strategy-choices/final-1280/strategy-opening.png)、[银档](../artifacts/formation-strategy-choices/final-1280/strategy-银.png)、[金档](../artifacts/formation-strategy-choices/final-1280/strategy-金.png)、[彩档](../artifacts/formation-strategy-choices/final-1280/strategy-彩.png)的底色、插画、断行和按钮位置。该组战备确认走正式接口。
+- 可见 Player 1600×900 正式入口回归 **125/125，0 异常，退出 0**，覆盖开局装备、预案一次重抽、真实买卡与布阵、前三场战斗、战备确认和奖励跨关保留。独立窗口从普通启动点击装备、点卡高亮、[整组重抽](../artifacts/formation-strategy-choices/interactive/02-rerolled.jpg)，用数字 3 选中[分期军费](../artifacts/formation-strategy-choices/interactive/03-selected.jpg)，再鼠标确认返回棋盘，[金币由 8 变为 14](../artifacts/formation-strategy-choices/interactive/04-confirmed.jpg)。未跑完整自然长局。
+
 ## 2026-11-19 奖励跨关保留与白蓝招募包
 
 - 内容源码 `e7705ffc73a7811d764422c0c1232970d7a05793`。Unity 6000.6.5f1 EditMode **1167/1167**，相关 D3D11 PlayMode **1/1**；核验同包不同名、二星扣三份、缺货保留并补发、两次保底不重复补、跨关原掉落与只发一次。v0.7 参数中的白蓝前段／常规权重各自合计 100%。Windows x64 Development **971887350 bytes、0 错误、退出 0**。
