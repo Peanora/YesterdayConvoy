@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-19 正式棋盘整备界面与连续领取
+
+- 运行源码 `c2f17434a98b04b511007407c1e1a692a8fe21c5`。Unity 6000.6.5f1 Windows x64 Development 构建通过，989403577 bytes、0 错误、退出 0。Runtime DLL SHA-256 `B1DB0281E0C81D0B0D690D2F1FCBC3EA8FB0BD393294ECF1011C0C332E81FFF2`。EditMode **1167/1167**，D3D11 PlayMode **43/43**。把原 B10 长待机回归的采样时点调整到此前确认的整备 1×，保留对后段源动画帧的检查。 [构建日志](../artifacts/formation-operations-ui/build-release.log) · [EditMode](../artifacts/formation-operations-ui/editmode-release.xml) · [PlayMode](../artifacts/formation-operations-ui/playmode-release.xml)
+- 可见独立 Player 以 1280×720、D3D11 从正式入口完成前三场自动战斗，**163/163 项检查通过，零异常，退出 0**。确认两颗球在同一时段飞行，抵达前未发放，抵达后各发一次，未领取球跨关保留。四种球色包含为核验投放的样本。实际拖放钢刃和快装弹簧，能预览惯性飞轮，取消后仍持有两件散件，确认后只得到一个成品。战斗和暂停都拦截商店与羁绊操作。 [Player 结果](../artifacts/formation-operations-ui/player-release/campaign-smoke.json) · [两球同时飞行](../artifacts/formation-operations-ui/06-concurrent-reward-flights.mp4) · [装备预览](../artifacts/formation-operations-ui/player-release/08-equipment-drag-preview.png)
+- 另用常用 EXE 正常启动，以鼠标打开商店，查看一张卡后金币保持 8，点击独立购买按钮后降为 7、角色进入备战席。关店后点棋盘上的宿主士兵打开同类详情，再点 1-7 打开遭遇说明，最后用退出确认结束测试局。尚未验证完整 23 节点自然长局。 [上方商店](../artifacts/formation-operations-ui/player-release/03-recruitment-drawer-open.png) · [角色详情](../artifacts/formation-operations-ui/player-release/03-board-role-detail.png) · [遭遇节点](../artifacts/formation-operations-ui/player-release/03-node-encounter-detail.png)
+- 以《货币战争》约 4:04 的收拢进度、2:10 的节点详情及 8:26 的装备信息为层级参考，节点图标和工业配色依照本作确认稿。背景与《明日方舟》式正向斜俯视棋盘核对，使用自制工业平台底图并保留现役角色资源。回看了整备、守军侧及暂停截图。背景按画面投影，用于固定视角。 [界面参考](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=244) · [背景来源](art/source-records/formation-industrial-service-deck.md) · [整备](../artifacts/formation-operations-ui/player-release/03-left-preparation.png) · [守军侧](../artifacts/formation-operations-ui/player-release/04-close-guard-area.png) · [战斗暂停](../artifacts/formation-operations-ui/player-release/05-combat-paused-no-operating-ui.png)
+
 ## 2026-11-19 整备羁绊列表与详情
 
 - 逐帧参考用户视频 `bfd9d59805069defbdff46f6a95a62a5.mp4` 约 3.1–7.8 秒的贴边列表、侧边详情和短暂过渡。复用本作羁绊徽记、现役角色头像和 v0.7 效果文本。左列移除整块背板，行底为半透明。详情保留滚动、真实档位和四列成员。初次实机发现长名挤到状态文字，修订后复核了「安纳斯塔西奥赎罪者」的两行名字与独立状态行。[展开中](../artifacts/formation-trait-flyout/final-player/trait-detail-reveal/001.png) · [展开后](../artifacts/formation-trait-flyout/final-player/04-trait-members-and-tiers.png) · [同版本短片](../artifacts/formation-trait-flyout/羁绊详情展开实机.mp4)
