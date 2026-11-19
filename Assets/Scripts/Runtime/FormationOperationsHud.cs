@@ -6,13 +6,13 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleController
     {
-        static readonly Color OperationsSurface = new Color32(23, 29, 43, 250);
-        static readonly Color OperationsRail = new Color32(32, 40, 58, 255);
-        static readonly Color OperationsEdge = new Color32(112, 128, 151, 170);
-        static readonly Color OperationsInk = new Color32(238, 242, 250, 255);
-        static readonly Color OperationsMuted = new Color32(186, 199, 220, 255);
-        static readonly Color OperationsBlue = new Color32(183, 227, 247, 255);
-        static readonly Color OperationsGold = new Color32(246, 212, 154, 255);
+        static readonly Color OperationsSurface = FormationPreparationPalette.Surface;
+        static readonly Color OperationsRail = FormationPreparationPalette.Raised;
+        static readonly Color OperationsEdge = FormationPreparationPalette.Line;
+        static readonly Color OperationsInk = FormationPreparationPalette.Text;
+        static readonly Color OperationsMuted = FormationPreparationPalette.Muted;
+        static readonly Color OperationsFocus = new Color32(211, 207, 193, 255);
+        static readonly Color OperationsGold = FormationPreparationPalette.Amber;
         static readonly Rect OperationsRouteRect = new Rect(210, 9, 787, 58);
         static readonly Rect OperationsExitRect = new Rect(14, 20, 58, 36);
         static readonly Rect OperationsScoutRect = new Rect(83, 20, 113, 36);
@@ -65,7 +65,7 @@ namespace YesterdayConvoy
         {
             bool hover = GUI.enabled && rect.Contains(Event.current.mousePosition);
             if (hover || active)
-                Fill(rect, active ? new Color32(55, 70, 97, 255) : OperationsRail);
+                Fill(rect, active ? FormationPreparationPalette.Selected : FormationPreparationPalette.Hover);
             OperationsLabel(rect, text, 13, GUI.enabled ? OperationsInk : OperationsMuted, false, TextAnchor.MiddleCenter);
             return GUI.Button(rect, GUIContent.none, GUIStyle.none);
         }
@@ -73,7 +73,7 @@ namespace YesterdayConvoy
         void DrawFormationOperationsHeader()
         {
             Fill(new Rect(0, 0, 1280, 77), OperationsSurface);
-            Fill(new Rect(0, 76, 1280, 1), OperationsEdge);
+            Fill(new Rect(0, 75, 1280, 2), FormationPreparationPalette.Edge);
             if (OperationsButton(OperationsExitRect, "‹ 退出"))
             {
                 CloseCampaignPanels();
@@ -90,7 +90,7 @@ namespace YesterdayConvoy
             OperationsLabel(new Rect(scout.x + 10, scout.y + 19, 82, 16),
                 ViewingDefenders ? "返回我方 [V]" : "查看防线 [V]", 9, OperationsMuted);
             OperationsLabel(new Rect(scout.xMax - 26, scout.y, 23, 36),
-                Model.RemainingDefenders.ToString(), 19, OperationsBlue, true, TextAnchor.MiddleRight);
+                Model.RemainingDefenders.ToString(), 19, OperationsFocus, true, TextAnchor.MiddleRight);
             if (GUI.Button(scout, GUIContent.none, GUIStyle.none))
             {
                 OpenFormationOperationsPanel();
@@ -102,7 +102,7 @@ namespace YesterdayConvoy
             DrawFormationNodeRail();
             var life = new Rect(1006, 20, 86, 36);
             Fill(new Rect(life.x, life.y + 2, 1, 32), OperationsEdge);
-            OperationsLabel(new Rect(life.x + 8, life.y, 19, 35), "♥", 15, new Color32(241, 169, 172, 255));
+            OperationsLabel(new Rect(life.x + 8, life.y, 19, 35), "♥", 15, new Color32(226, 163, 150, 255));
             OperationsLabel(new Rect(life.x + 28, life.y, 61, 15), "队伍生命", 10, OperationsMuted);
             OperationsLabel(new Rect(life.x + 28, life.y + 13, 58, 24), Campaign.SquadHP.ToString(), 23, OperationsInk, true);
             bool preparing = Model.Phase == FormationPhase.Preparation;
@@ -127,7 +127,7 @@ namespace YesterdayConvoy
         void DrawFormationNodeRail()
         {
             var panel = OperationsRouteRect;
-            Fill(panel, OperationsRail);
+            Fill(panel, OperationsSurface);
             Fill(new Rect(panel.x, panel.yMax - 1, panel.width, 1), OperationsEdge);
             OperationsLabel(new Rect(panel.x + 12, panel.y + 11, 66, 19), $"位面 {Campaign.CurrentNode.Plane}", 13, OperationsInk, true);
             OperationsLabel(new Rect(panel.x + 12, panel.y + 30, 66, 15),
@@ -146,9 +146,9 @@ namespace YesterdayConvoy
                 var badge = new Rect(r.center.x - 15, 14, 30, 23);
                 bool current = Campaign.NodeIndex == index, selected = formationInspectedNode == index;
                 var tint = current ? OperationsSurface : NodeColor(node.Kind);
-                Fill(badge, current ? OperationsGold : new Color32(43, 54, 73, 255));
+                Fill(badge, current ? OperationsGold : OperationsSurface);
                 ApprovedUi.Border(badge, selected || GUI.enabled && r.Contains(Event.current.mousePosition)
-                    ? OperationsBlue : current ? OperationsGold : OperationsEdge);
+                    ? OperationsFocus : current ? OperationsGold : FormationPreparationPalette.Edge);
                 DrawNodeMark(badge.center, node.Kind, tint);
                 string label = node.Kind == "战斗战备" ? "战备" : node.Kind;
                 OperationsLabel(new Rect(r.x, 38, r.width, 15), label, 12,
@@ -242,7 +242,7 @@ namespace YesterdayConvoy
             var node = FormationCampaignRules.Nodes[formationInspectedNode];
             Fill(r, OperationsSurface);
             ApprovedUi.Border(r, OperationsEdge);
-            Fill(new Rect(r.x, r.y, 2, r.height), OperationsBlue);
+            Fill(new Rect(r.x, r.y, 2, r.height), OperationsFocus);
             OperationsLabel(new Rect(r.x + 12, r.y + 5, 210, 17), formationInspectedNode == Campaign.NodeIndex
                 ? "当前节点" : formationInspectedNode < Campaign.NodeIndex ? "已完成" : "未到达", 10, OperationsMuted);
             OperationsLabel(new Rect(r.x + 12, r.y + 21, 235, 24), $"{node.Id} · {node.Kind}", 16, OperationsInk, true);
@@ -250,7 +250,7 @@ namespace YesterdayConvoy
             Fill(new Rect(r.x + 12, r.y + 48, r.width - 24, 1), OperationsEdge);
             string time = float.IsPositiveInfinity(node.TimeLimit) ? "无时限" : $"{node.TimeLimit:0} 秒";
             string facts = node.Kind == "补给" ? "补给五选一" : $"{node.DefenderCount} 名守军 · {time}";
-            OperationsLabel(new Rect(r.x + 12, r.y + 53, r.width - 24, 20), facts, 12, OperationsBlue, true);
+            OperationsLabel(new Rect(r.x + 12, r.y + 53, r.width - 24, 20), facts, 12, OperationsFocus, true);
             string description = node.Kind switch
             {
                 "遭遇" => "开战前可选 4 档难度。",

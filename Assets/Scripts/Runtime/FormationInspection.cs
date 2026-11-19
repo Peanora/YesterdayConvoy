@@ -110,10 +110,10 @@ namespace YesterdayConvoy
             var r = FormationInspectionRect;
             float mult = Mathf.Pow(1.8f, (piece?.Star ?? 1) - 1);
 
-            ApprovedUi.Border(anchor, OperationsBlue, 2);
+            ApprovedUi.Border(anchor, OperationsFocus, 2);
             Fill(r, OperationsSurface);
             ApprovedUi.Border(r, OperationsEdge);
-            Fill(new Rect(r.x, r.y, 2, r.height), OperationsBlue);
+            Fill(new Rect(r.x, r.y, 2, r.height), OperationsFocus);
             string location = formationInspectedOffer >= 0 ? "招募商店" : actor == null ? "备战席" : "已上阵";
             int cost = Shop.Definition(card).Cost;
             OperationsLabel(new Rect(r.x + 11, r.y + 6, 244, 17), $"{location} · {cost}费 · {spec.Role}", 11, OperationsMuted);
@@ -123,7 +123,7 @@ namespace YesterdayConvoy
             if (OperationsButton(new Rect(r.xMax - 31, r.y + 7, 23, 23), "×"))
             { CloseFormationInspection(); return; }
             OperationsLabel(new Rect(r.x + 11, r.y + 49, 275, 17),
-                string.Join(" / ", spec.Factions.Concat(spec.Styles)), 11, OperationsBlue);
+                string.Join(" / ", spec.Factions.Concat(spec.Styles)), 11, OperationsFocus);
             Fill(new Rect(r.x + 11, r.y + 69, r.width - 22, 1), OperationsEdge);
 
             var portrait = new Rect(r.x + 11, r.y + 76, 62, 55);

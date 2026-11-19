@@ -205,16 +205,16 @@ namespace YesterdayConvoy
             if(singleReserve)
             {
                 var deck=host.ReserveDeck?.Invoke()??new Rect(184,627,950,73);
-                Fill(deck,Color.black);ShopBorder(deck,new Color32(82,91,108,255));
+                Fill(deck,FormationPreparationPalette.Recess);ShopBorder(deck,FormationPreparationPalette.Edge);
                 for(int slot=0;slot<10;slot++)
                 {
                     var pad=host.ReserveSlot?.Invoke(slot)??ApprovedUi.ReserveSlot(slot);
-                    Fill(pad,Color.black);
-                    ShopBorder(pad,new Color32(47,49,62,255));
+                    Fill(pad,FormationPreparationPalette.Surface);
+                    ShopBorder(pad,FormationPreparationPalette.Line);
                 }
-                GUI.Label(new Rect(deck.x+7,deck.y+1,95,15),$"备战席 {reserve}/10",LoopText(10,TextAnchor.MiddleLeft,Color.white,600));
+                GUI.Label(new Rect(deck.x+7,deck.y+1,95,15),$"备战席 {reserve}/10",LoopText(10,TextAnchor.MiddleLeft,FormationPreparationPalette.Text,600));
                 GUI.Label(new Rect(deck.xMax-139,deck.y+1,132,15),$"已上阵 {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",
-                    LoopText(10,TextAnchor.MiddleRight,new Color32(167,217,255,255),600));
+                    LoopText(10,TextAnchor.MiddleRight,FormationPreparationPalette.Muted,600));
             }
             else
             {
@@ -233,8 +233,8 @@ namespace YesterdayConvoy
                 if(singleReserve)
                 {
                     Color tier=host.ReserveFee?.Invoke(cost)??ApprovedUi.Tier(cost);
-                    Fill(r,Color.Lerp(new Color32(23,26,41,255),tier,.27f));
-                    ShopBorder(r,Color.Lerp(new Color32(58,63,76,255),tier,.25f));
+                    Fill(r,Color.Lerp(FormationPreparationPalette.Surface,tier,.20f));
+                    ShopBorder(r,Color.Lerp(FormationPreparationPalette.Line,tier,.25f));
                 }
                 else DrawLoopCostBackground(r,cost);
                 Fill(new Rect(r.x+15,r.y+51,r.width-30,5),new Color(.04f,.09f,.13f,.31f));

@@ -189,6 +189,13 @@ namespace YesterdayConvoy
             yield return new WaitForSecondsRealtime(FormationBattleController.TraitRevealSeconds);
             yield return Frame("04-trait-members-and-tiers");
             Assert(controller.CloseFormationTraitDetails()&&!controller.FormationTraitDetailsOpen,"Close trait details through its production action");
+            var activeTrait = controller.FormationTraitRows.First(row => row.Active);
+            Assert(controller.InspectFormationTrait(activeTrait.Id) &&
+                controller.SelectedFormationTrait.ActiveLevel == activeTrait.ActiveLevel,
+                "The warm-gray details show the naturally attained starter tier");
+            yield return new WaitForSecondsRealtime(FormationBattleController.TraitRevealSeconds);
+            yield return Frame("04-trait-active-tier");
+            Assert(controller.CloseFormationTraitDetails(), "Close the active trait panel before operating the bench");
             yield return VerifyStarterTraitActivation();
             for(int battle=0;battle<3;)
             {

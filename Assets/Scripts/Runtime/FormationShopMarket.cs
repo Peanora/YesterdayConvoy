@@ -327,12 +327,12 @@ namespace YesterdayConvoy
             var start = FormationStartRect;
             GUI.enabled = GUI.enabled && openingGroundBall == null;
             if (EconomyButton(start, supply ? "继续行军  ›" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
-                supply ? "补给结束后前往下一节点" : "锁定本场阵容并发起进攻", new Color32(157, 72, 58, 255), EconomyInk, 15))
+                supply ? "补给结束后前往下一节点" : "锁定本场阵容并发起进攻", FormationPreparationPalette.Rust, FormationPreparationPalette.Text, 15))
             {
                 if (supply) ContinueCampaign();
                 else StartBattle();
             }
-            Fill(new Rect(start.x, start.y, 3, start.height), GUI.enabled ? (Color)new Color32(238, 170, 123, 255) : EconomyLine);
+            Fill(new Rect(start.x, start.y, 3, start.height), GUI.enabled ? FormationPreparationPalette.RustEdge : FormationPreparationPalette.Line);
             GUI.enabled=enabled;
         }
         void DrawFormationDropTarget()
