@@ -45,6 +45,7 @@ namespace YesterdayConvoy
     public sealed class FormationDefender : FormationActor
     {
         public bool Healer;
+        public Vector2Int? SkillCell { get; internal set; }
     }
 
     public sealed class FormationHit

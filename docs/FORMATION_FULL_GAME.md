@@ -19,7 +19,7 @@
 
 ## 数据与职责
 
-`docs/design/parameters.v0.7.json` 是采纳版本的参数快照。`tools/generate_formation_rules.py` 从它生成 `FormationCampaignRules.cs` 的角色面板、羁绊说明、装备、预案、战备和节点表；节点时限按同版 Word/Markdown 的流程表补充。生成器不把技能效果文字自动编译成机制，修改技能倍率或触发规则时还必须同步战斗实现和相关回归，不能只改显示文字。
+`docs/design/parameters.v0.7.json` 是采纳版本的参数快照。`tools/generate_formation_rules.py` 从它生成 `FormationCampaignRules.cs` 的角色面板、羁绊、装备、预案与战备等数值。当前节点守军、阵型、难度与首领面板来自 `FormationDefensePlan.cs`，详见[棋盘守军难度与阵型](design/FORMATION_DEFENSE_CURVE.md)。调整技能倍率或触发规则时同步战斗实现和相关回归。
 
 | 运行层 | 职责 |
 | --- | --- |

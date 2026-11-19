@@ -320,11 +320,11 @@ namespace YesterdayConvoy
             if(encounter)
             {
                 for(int i=1;i<=4;i++)
-                    if(Button(new Rect(r.x+22+(i-1)*219,r.y+123,207,34),$"{i}档 · HP×{new[]{1f,2.2f,5f,12f}[i-1]}",true,Campaign.CurrentEncounterTier==i))
+                    if(Button(new Rect(r.x+22+(i-1)*219,r.y+123,207,34),$"{i}档 · HP×{FormationCampaignRules.EncounterHealthScale(i):0.##}",true,Campaign.CurrentEncounterTier==i))
                     {Campaign.CurrentEncounterTier=i;RefreshCampaignPreparation();}
                 int tier=Campaign.CurrentEncounterTier;
                 string reward=new[]{"蓝球","2个蓝球","金球＋蓝球","2个金球＋彩球"}[tier-1];
-                CampaignLabel(new Rect(r.x+22,r.y+163,r.width-44,32),$"当前档攻击×{new[]{1f,1.1f,1.25f,1.45f}[tier-1]}，额外奖励：{reward}。削减进度严格＞25%才领取；失败照常扣队伍生命并清连胜。",12);
+                CampaignLabel(new Rect(r.x+22,r.y+163,r.width-44,32),$"当前档攻击×{FormationCampaignRules.EncounterAttackScale(tier):0.##}，额外奖励：{reward}。削减进度严格＞25%才领取；失败照常扣队伍生命并清连胜。",12);
             }
             float top=encounter?199:128;
             var view=new Rect(r.x+22,r.y+top,r.width-44,r.height-top-20);
@@ -332,9 +332,11 @@ namespace YesterdayConvoy
             int row=0;
             foreach(var d in Model.Defenders)
             {
-                CampaignLabel(new Rect(0,row*110,850,24),d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
+                var guard=FormationCampaignRules.DefenderByArtId(d.ArtId);
+                string line=guard==null?"":(guard.Role<=2?"前排":"后排")+(guard.Rarity==6?" · 六星　":"　");
+                CampaignLabel(new Rect(0,row*110,850,24),line+d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
                 CampaignLabel(new Rect(0,row*110+28,850,25),"技力 "+d.SkillCharge.ToString("0")+" / "+d.SkillRequired.ToString("0")+"　攻击间隔 "+d.Interval.ToString("0.00")+"秒　部署格 "+d.Position,12);
-                string effect=FormationCampaignRules.Bosses.FirstOrDefault(b=>b.Name==d.Name)?.Effect??FormationCampaignRules.Defenders.FirstOrDefault(p=>p.Name==d.Name)?.Effect;
+                string effect=FormationCampaignRules.DefenderSkillDescription(Campaign.CurrentNode.Id,d.ArtId);
                 CampaignLabel(new Rect(0,row*110+57,850,42),effect,12);row++;
             }
             GUI.EndScrollView();

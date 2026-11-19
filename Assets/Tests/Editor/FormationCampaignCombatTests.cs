@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using YesterdayConvoy.Editor;
 
 namespace YesterdayConvoy.Tests
 {
@@ -28,6 +31,308 @@ namespace YesterdayConvoy.Tests
         {foreach(var u in model.Units){u.Position=new Vector2(14.5f,3);u.Health=u.MaxHealth;}}
         static void Advance(FormationBattleModel model,float seconds)
         {for(int i=0;i<Mathf.CeilToInt(seconds/.025f);i++)model.Advance(.025f);}
+
+        static FormationBattleTerrainLayout SavedTerrain()
+        {
+            var scene = EditorSceneManager.OpenPreviewScene(FormationBattleTools.ScenePath);
+            try
+            {
+                var controller = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<FormationBattleController>(true)).Single();
+                Assert.That(controller.terrain, Is.Not.Null);
+                return controller.terrain.BuildLayout();
+            }
+            finally
+            {
+                EditorSceneManager.ClosePreviewScene(scene);
+            }
+        }
+
+        [TestCase(71)]
+        [TestCase(20261119)]
+        public void AuthoredCampaignUsesAllNamedDefendersOnCompactLegalFormations(int seed)
+        {
+            var terrain = SavedTerrain();
+            var run = NewDifficultyRun(seed);
+            var expectedNames = new Dictionary<string, string>
+            {
+                ["D01"] = "米格鲁", ["D02"] = "卡缇", ["D03"] = "斑点", ["D04"] = "玫兰莎",
+                ["D05"] = "月见夜", ["D06"] = "翎羽", ["D07"] = "克洛丝", ["D08"] = "史都华德",
+                ["D09"] = "炎熔", ["D10"] = "芙蓉", ["D11"] = "安赛尔", ["D12"] = "梓兰",
+                ["D21"] = "荒芜拉普兰德", ["D22"] = "余", ["D23"] = "Mon3tr", ["D24"] = "新约能天使",
+                ["D25"] = "斩业星熊", ["D26"] = "凛御银灰", ["D27"] = "圣聆初雪", ["D28"] = "望",
+                ["D29"] = "塞雷娅", ["D30"] = "玛恩纳"
+            };
+            var north = new RectInt(17, 0, 5, 4);
+            var south = new RectInt(17, 4, 5, 4);
+            var seenNames = new HashSet<string>();
+            var seenSides = new HashSet<bool>();
+
+            foreach (var node in FormationCampaignRules.Nodes)
+            {
+                ReachNode(run, node.Id);
+                var model = new FormationBattleModel(seed, terrain);
+                model.BindCampaign(run);
+                Assert.That(model.Defenders.Count, Is.EqualTo(node.DefenderCount), node.Id);
+                Assert.That(model.LimitSeconds, Is.EqualTo(node.TimeLimit), node.Id);
+                if (node.DefenderCount == 0) continue;
+
+                var actorCells = model.Defenders.Select(defender => Vector2Int.RoundToInt(defender.Position)).ToArray();
+                Assert.That(actorCells.Distinct().Count(), Is.EqualTo(actorCells.Length), node.Id);
+                Assert.That(model.Defenders.Select(defender => defender.ArtId).Distinct().Count(), Is.EqualTo(actorCells.Length), node.Id);
+                Assert.That(model.Defenders.All(defender => terrain.CanPlaceDefender(defender.Position)), Is.True, node.Id);
+                bool inNorth = actorCells.All(north.Contains);
+                Assert.That(inNorth || actorCells.All(south.Contains), Is.True, node.Id);
+                seenSides.Add(inNorth);
+
+                var reservedCells = model.Defenders.Where(defender => defender.SkillCell.HasValue)
+                    .Select(defender => defender.SkillCell.Value).ToArray();
+                int expectedReserved = model.Defenders.Count(defender => defender.ArtId == "D23" || defender.ArtId == "D28");
+                Assert.That(reservedCells.Length, Is.EqualTo(expectedReserved), node.Id);
+                Assert.That(reservedCells.Concat(actorCells).Distinct().Count(), Is.EqualTo(reservedCells.Length + actorCells.Length), node.Id);
+                Assert.That(reservedCells.All(cell => (inNorth ? north : south).Contains(cell) && terrain.IsWalkable(cell)), Is.True, node.Id);
+                foreach (var defender in model.Defenders)
+                {
+                    Assert.That(expectedNames.ContainsKey(defender.ArtId), Is.True, $"{node.Id}: {defender.ArtId}");
+                    Assert.That(defender.Name, Is.EqualTo(expectedNames[defender.ArtId]), node.Id);
+                    seenNames.Add(defender.ArtId);
+                }
+
+                var original = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
+                    defender.MaxHealth, defender.Attack)).ToArray();
+                Assert.That(model.Retry(), Is.True, node.Id);
+                Assert.That(model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
+                    defender.MaxHealth, defender.Attack)).ToArray(), Is.EqualTo(original), node.Id);
+                Assert.That(model.Phase, Is.EqualTo(FormationPhase.Preparation), node.Id);
+                Assert.That(model.Clock, Is.Zero, node.Id);
+            }
+
+            CollectionAssert.AreEquivalent(expectedNames.Keys, seenNames);
+            CollectionAssert.AreEquivalent(new[] { false, true }, seenSides);
+        }
+
+        [TestCase("1-7")]
+        [TestCase("2-5")]
+        [TestCase("3-5")]
+        public void EncounterTiersKeepTheirAuthoredFormationAndScaleHealthAndAttack(string nodeId)
+        {
+            const int seed = 71;
+            var run = NewDifficultyRun(seed);
+            ReachNode(run, nodeId);
+            var model = new FormationBattleModel(seed, SavedTerrain());
+            model.BindCampaign(run);
+            var original = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
+                defender.MaxHealth, defender.Attack)).ToArray();
+            (float Health, float Attack)[] scales = { (1f, 1f), (1.7f, 1.08f), (3f, 1.18f), (5.5f, 1.3f) };
+            for (int tier = 2; tier <= scales.Length; tier++)
+            {
+                run.CurrentEncounterTier = tier;
+                model.BindCampaign(run);
+                Assert.That(model.LimitSeconds, Is.EqualTo(90));
+                Assert.That(model.Defenders.Count, Is.EqualTo(original.Length));
+                for (int index = 0; index < original.Length; index++)
+                {
+                    var expected = original[index];
+                    var actual = model.Defenders[index];
+                    Assert.That((actual.ArtId, actual.Position, actual.SkillCell), Is.EqualTo((expected.ArtId, expected.Position, expected.SkillCell)));
+                    Assert.That(actual.MaxHealth, Is.EqualTo(expected.MaxHealth * scales[tier - 1].Health).Within(1));
+                    Assert.That(actual.Attack, Is.EqualTo(expected.Attack * scales[tier - 1].Attack).Within(1));
+                }
+
+                var defense = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
+                    defender.MaxHealth, defender.Attack)).ToArray();
+                Assert.That(model.Retry(), Is.True);
+                Assert.That(model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
+                    defender.MaxHealth, defender.Attack)).ToArray(), Is.EqualTo(defense));
+            }
+        }
+
+        [Test]
+        public void SceneTerrainEncounterTierFourPressuresTheSameTeamAndSettlesActualProgress()
+        {
+            const string nodeId = "3-5";
+            const int seed = 71;
+            var terrain = SavedTerrain();
+            var first = ReportHighCostLineup(nodeId, seed, terrain, 1);
+            var fourth = ReportHighCostLineup(nodeId, seed, terrain, 4);
+            Assert.That(first.Phase, Is.EqualTo(FormationPhase.Won));
+            Assert.That(fourth.Phase == FormationPhase.Lost || fourth.Clock > first.Clock, Is.True);
+
+            foreach (var model in new[] { first, fourth })
+            {
+                var run = model.Campaign;
+                int tier = run.CurrentEncounterTier;
+                Assert.That(run.SettleBattle(model.Phase == FormationPhase.Won, model.EncounterProgress,
+                    model.InitialDefenderCount, model.RemainingDefenders, model.BossAlive), Is.Not.Null);
+                var colors = run.PendingBalls.Where(drop => drop.Node == nodeId && drop.Component == null)
+                    .Select(drop => drop.Color).ToArray();
+                string[] expectedColors = model.EncounterProgress <= .25f ? Array.Empty<string>()
+                    : tier == 4 ? new[] { "金", "金", "彩" } : new[] { "蓝" };
+                if (expectedColors.Length > 0 && run.PreplanId == "P14") expectedColors = expectedColors.Append("蓝").ToArray();
+                CollectionAssert.AreEquivalent(expectedColors, colors);
+                TestContext.WriteLine($"ENCOUNTER tier={tier} progress={model.EncounterProgress:P2} reward={string.Join(",", colors)}");
+                Assert.That(run.SettleBattle(model.Phase == FormationPhase.Won, model.EncounterProgress,
+                    model.InitialDefenderCount, model.RemainingDefenders, model.BossAlive), Is.Null);
+            }
+        }
+
+        [TestCase("1-3", 71)]
+        [TestCase("1-3", 20261119)]
+        [TestCase("1-4", 71)]
+        [TestCase("1-4", 20261119)]
+        [TestCase("1-6", 71)]
+        [TestCase("1-6", 20261119)]
+        [TestCase("1-9", 71)]
+        [TestCase("1-9", 20261119)]
+        [TestCase("2-4", 71)]
+        [TestCase("2-4", 20261119)]
+        [TestCase("3-7", 71)]
+        [TestCase("3-7", 20261119)]
+        public void SceneTerrainDifficultyLineupsReportBattleOutcomes(string nodeId, int seed)
+        {
+            // Earlier nodes advance only to select the real defense. These are combat budgets, not shop rollouts.
+            var terrain = SavedTerrain();
+            bool alternate = seed != 71;
+            if (nodeId.StartsWith("1-", StringComparison.Ordinal))
+            {
+                var frozen = alternate ? new[] { "M21", "M11", "M17" } : new[] { "B22", "B01", "M03" };
+                ReportDifficultyOutcome(nodeId, seed, terrain, "frozen", frozen, new[] { 1, 1, 1 });
+            }
+
+            switch (nodeId)
+            {
+                case "1-3":
+                    ReportDifficultyOutcome(nodeId, seed, terrain, "normal",
+                        alternate ? new[] { "M21", "M11", "M17", "B01" } : new[] { "B22", "B01", "M03" },
+                        alternate ? new[] { 1, 2, 1, 1 } : new[] { 1, 1, 1 }, (0, "DD"), (1, "AF"));
+                    break;
+                case "1-4":
+                    ReportDifficultyOutcome(nodeId, seed, terrain, "normal",
+                        alternate ? new[] { "M27", "M11", "M17", "B01" } : new[] { "B22", "B01", "M03", "M21" },
+                        new[] { 1, 2, 1, 1 }, (0, "DD"), (1, "AF"));
+                    break;
+                case "1-6":
+                    ReportDifficultyOutcome(nodeId, seed, terrain, "normal",
+                        alternate ? new[] { "M29", "M11", "M17", "B01", "M12" } : new[] { "M27", "B01", "M21", "M38", "M42" },
+                        new[] { 2, 2, 1, 1, 1 }, (0, "DD"), (1, "AF"), (4, "CF"));
+                    if(!alternate)
+                        ReportDifficultyOutcome(nodeId, seed, terrain, "quality-four",
+                            new[] { "M27", "B01", "M38", "M42" }, new[] { 2, 2, 1, 1 }, (0, "DD"), (1, "AF"), (3, "CF"));
+                    break;
+                case "1-9":
+                    ReportDifficultyOutcome(nodeId, seed, terrain, "normal",
+                        alternate ? new[] { "M27", "M12", "M11", "M13", "M25" } : new[] { "M27", "M42", "B01", "M38", "M25" },
+                        new[] { 2, 2, 2, 1, 1 }, (0, "DD"), (1, "AF"), (1, "CF"));
+                    break;
+                case "2-4":
+                    ReportDifficultyOutcome(nodeId, seed, terrain, "normal",
+                        alternate ? new[] { "M18", "B23", "M12", "M13", "M25", "M14" } : new[] { "M27", "M42", "B01", "M38", "M25", "M24" },
+                        new[] { 2, 2, 2, 2, 2, 1 }, (0, "DD"), (1, "AF"), (1, "CF"), (2, "AC"));
+                    break;
+                case "3-7":
+                    if (alternate)
+                    {
+                        ReportDifficultyOutcome(nodeId, seed, terrain, "low-cost-carry",
+                            new[] { "M20", "B22", "B23", "B25", "B13", "M25", "M32", "B11" },
+                            new[] { 2, 3, 2, 2, 2, 2, 2, 2 }, (0, "DD"), (0, "DE"), (1, "徽章:同频"),
+                            (1, "AC"), (1, "CF"), (2, "AA"), (2, "AF"), (4, "CC"), (5, "CE"), (7, "CC"));
+                        ReportDifficultyOutcome(nodeId, seed, terrain, "low-cost-mature",
+                            new[] { "M20", "B22", "B23", "B25", "B13", "M25", "M32", "B11" },
+                            new[] { 2, 3, 2, 2, 2, 2, 2, 2 }, (0, "DD"), (0, "DE"), (1, "徽章:同频"),
+                            (1, "AC"), (1, "CF"), (2, "AA"), (2, "AF"), (4, "CC"), (5, "徽章:连击"), (5, "CE"), (7, "CC"));
+                    }
+                    else
+                    {
+                        ReportHighCostLineup(nodeId, seed, terrain, 1);
+                    }
+                    break;
+            }
+        }
+
+        static FormationBattleModel ReportHighCostLineup(string nodeId, int seed, FormationBattleTerrainLayout terrain, int tier) =>
+            ReportDifficultyOutcome(nodeId, seed, terrain, "high-cost-carry",
+                new[] { "M20", "WIS", "M28", "B08", "B13", "B11", "M25", "M32" },
+                new[] { 2, 2, 2, 2, 2, 2, 2, 2 }, tier, (0, "DD"), (0, "DE"), (1, "AA"),
+                (1, "AF"), (1, "CF"), (2, "CD"), (3, "AF"), (3, "CF"), (4, "CC"), (5, "CC"), (6, "CE"));
+
+        static FormationBattleModel ReportDifficultyOutcome(string nodeId, int seed, FormationBattleTerrainLayout terrain, string lineup,
+            string[] ids, int[] stars, params (int Owner, string Item)[] equipment) =>
+            ReportDifficultyOutcome(nodeId, seed, terrain, lineup, ids, stars, 1, equipment);
+
+        static FormationBattleModel ReportDifficultyOutcome(string nodeId, int seed, FormationBattleTerrainLayout terrain, string lineup,
+            string[] ids, int[] stars, int encounterTier, params (int Owner, string Item)[] equipment)
+        {
+            var run = NewDifficultyRun(seed);
+            ReachNode(run, nodeId);
+            run.CurrentEncounterTier = encounterTier;
+            var shop = run.Shop;
+            shop.Preset(ids.Select((id, index) => new ShopTrialModel.Piece
+            {
+                Id = FormationCampaignRules.Find(id).CardId, Star = stars[index]
+            }), Array.Empty<string>(), ids.Length, 0, 0);
+            var pieces = shop.Bench.ToArray();
+            Assert.That(shop.SetLineup(pieces.Select(piece => piece.Id), pieces.Select(piece => piece.Instance)), Is.True);
+            run.MainCarryInstance = pieces[1].Instance;
+            if (lineup == "low-cost-carry" || lineup == "low-cost-mature")
+            {
+                run.ResonanceLeaderInstance = pieces[1].Instance;
+                run.ResonancePartnerInstance = pieces[4].Instance;
+            }
+            foreach (var (owner, item) in equipment)
+                Assert.That(run.Equip(run.AddItem(item).Instance, pieces[owner].Instance).Success, Is.True, item);
+
+            var model = new FormationBattleModel(seed, terrain);
+            int firstColumn = FormationBattleModel.DeploymentColumns;
+            var anchors = new[]
+            {
+                new Vector2Int(firstColumn - 2, 2), new Vector2Int(firstColumn - 4, 2),
+                new Vector2Int(firstColumn - 2, 4), new Vector2Int(firstColumn - 4, 4),
+                new Vector2Int(firstColumn - 6, 2), new Vector2Int(firstColumn - 6, 4),
+                new Vector2Int(firstColumn - 5, 6), new Vector2Int(firstColumn - 3, 6)
+            };
+            Assert.That(model.ApplyRoster(pieces.Select((piece, index) => new FormationRosterEntry
+            {
+                Instance = piece.Instance, ArtId = piece.Id, Star = piece.Star, Spawn = anchors[index]
+            }), ids.Length), Is.True);
+            model.BindCampaign(run);
+            if (lineup == "low-cost-carry" || lineup == "low-cost-mature")
+            {
+                Assert.That(model.SynergyCounts["连击"], Is.EqualTo(lineup == "low-cost-mature" ? 6 : 5));
+                Assert.That(model.ActiveSynergies["连击"], Is.EqualTo(lineup == "low-cost-mature" ? 6 : 4));
+                Assert.That(model.ActiveSynergies["同频"], Is.EqualTo(5));
+            }
+            float initialHealth = model.Defenders.Sum(defender => defender.MaxHealth);
+            Assert.That(model.StartBattle(), Is.True);
+            double? clearAt = null;
+            const float step = .025f;
+            int maxSteps = Mathf.CeilToInt((float)(model.LimitSeconds + 1) / step);
+            for (int tick = 0; tick < maxSteps && (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting); tick++)
+            {
+                model.Advance(step);
+                if (clearAt == null && model.RemainingDefenders == 0) clearAt = model.Clock;
+            }
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won).Or.EqualTo(FormationPhase.Lost));
+            TestContext.WriteLine($"DIFFICULTY node={nodeId} seed={seed} lineup={lineup} phase={model.Phase} tier={encounterTier} " +
+                $"end={model.Clock:0.000} clear={clearAt?.ToString("0.000") ?? "-"} initialHP={initialHealth:0} " +
+                $"remaining={model.RemainingDefenders} progress={model.EncounterProgress:P2} deaths={model.Units.Sum(unit => unit.Deaths)}");
+            TestContext.WriteLine(string.Join("; ", model.Units.Select(unit =>
+                $"{unit.Name} {unit.Star}★ damage={unit.DamageDone:0} deaths={unit.Deaths}")));
+            TestContext.WriteLine("REMAINING " + string.Join("; ", model.Defenders.Where(defender => defender.Alive)
+                .Select(defender => $"{defender.Name}:{defender.Health:0}/{defender.MaxHealth:0}@{defender.Position}")));
+            if (lineup == "frozen") Assert.That(model.Phase, Is.EqualTo(FormationPhase.Lost), nodeId);
+            if (lineup == "normal") Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won), nodeId);
+            return model;
+        }
+
+        static FormationCampaignRun NewDifficultyRun(int seed)
+        {
+            var shop = new ShopTrialModel(FormationCampaignRules.AllUnits.Select(unit =>
+                new ShopTrialModel.Role { Id = unit.CardId, Name = unit.Name, Cost = unit.Cost }), seed);
+            shop.EnableFormationEconomy();
+            var run = new FormationCampaignRun(shop, seed);
+            while (run.HasBlockingChoice) Assert.That(run.Choose(0).Success, Is.True);
+            return run;
+        }
 
         [Test]
         public void CampaignUsesApprovedPanelAndNaturalRecoveryInsteadOfSixTemplates()
@@ -254,25 +559,17 @@ namespace YesterdayConvoy.Tests
                 while(run.HasBlockingChoice)Assert.That(run.Choose(0).Success,Is.True);
             }
         }
-        [TestCase("先锋",8,20,1)]
-        [TestCase("近卫",8,22,1.4f)]
-        [TestCase("重装",10,24,1)]
-        [TestCase("狙击",8,24,1.5f)]
-        [TestCase("术师",6,22,1.4f)]
-        [TestCase("医疗",10,24,1.2f)]
-        [TestCase("辅助",10,24,1.4f)]
-        public void AuthoredDefenderTemplatesPreserveInitialChargeThresholdAndRealSkillAction(string name,float initial,float required,float seconds)
+        [TestCase("1-3","D06",8,20,1)]
+        [TestCase("1-3","D04",8,22,1.4f)]
+        [TestCase("1-3","D02",10,24,1)]
+        [TestCase("1-3","D07",8,24,1.5f)]
+        [TestCase("1-3","D08",6,22,1.4f)]
+        [TestCase("1-4","D10",10,24,1.2f)]
+        [TestCase("1-6","D12",10,24,1.4f)]
+        public void AuthoredDefendersPreserveInitialChargeThresholdAndRealSkillAction(string nodeId,string artId,float initial,float required,float seconds)
         {
-            Fixture(out var run,"M11");ReachNode(run,"1-3");FormationBattleModel model=null;FormationDefender guard=null;
-            for(int seed=1;seed<=100&&guard==null;seed++)
-            {
-                var candidate=new FormationBattleModel(seed);candidate.BindCampaign(run);
-                var match=candidate.Defenders.FirstOrDefault(d=>d.Name==name);
-                if(match==null)continue;model=candidate;guard=match;
-            }
-            Assert.That(guard,Is.Not.Null,"The ordinary node generator must expose the authored template.");
-            var card=run.Shop.Bench.First(p=>p.Id==FormationCampaignRules.Find("M11").CardId);
-            Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,Star=card.Star,ArtId=card.Id,Spawn=new Vector2(FormationBattleModel.DeploymentColumns-1,3)}},10),Is.True);
+            var model=Fixture(out var run,"M11");ReachNode(run,nodeId);model.BindCampaign(run);
+            var guard=model.Defenders.Single(defender=>defender.ArtId==artId);
             Assert.That(guard.SkillCharge,Is.EqualTo(initial));Assert.That(guard.SkillRequired,Is.EqualTo(required));
             model.Defenders.RemoveAll(d=>d!=guard);guard.Position=new Vector2(15,3);
             Assert.That(model.StartBattle(),Is.True);Assert.That(guard.SkillCharge,Is.EqualTo(initial));Assert.That(guard.SkillRequired,Is.EqualTo(required));
@@ -284,7 +581,6 @@ namespace YesterdayConvoy.Tests
 
         [TestCase("1-9",12,24,1)]
         [TestCase("2-7",10,24,1)]
-        [TestCase("3-7",12,26,3)]
         public void BossesUseTheirOwnAuthoredInitialChargeAndActionInsteadOfAUniversalTwelve(string nodeId,float initial,float required,float seconds)
         {
             var model=Fixture(out var run,"M11");ReachNode(run,nodeId);model.BindCampaign(run);
@@ -296,6 +592,73 @@ namespace YesterdayConvoy.Tests
             model.Advance(.025f);
             Assert.That(boss.LastSkillAt,Is.GreaterThanOrEqualTo(0));Assert.That(boss.PresentationDuration,Is.EqualTo(seconds).Within(.0001));
             Assert.That(boss.MaxHealth,Is.EqualTo(spec.Health));Assert.That(boss.Attack,Is.EqualTo(spec.Attack));
+        }
+
+        [Test]
+        public void MlynarWaitsForChargeThenDealsDamageOnlyAfterTheThreeSecondWarning()
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "3-7");
+            model.BindCampaign(run);
+            var guard = model.Defenders.Single(defender => defender.ArtId == "D30");
+            model.Defenders.RemoveAll(defender => defender != guard);
+            var fighter = model.Units.Single();
+            Assert.That(model.StartBattle(), Is.True);
+            Assert.That(guard.SkillCharge, Is.EqualTo(12));
+            Assert.That(guard.SkillRequired, Is.EqualTo(26));
+            fighter.Position = guard.Position + Vector2.left;
+            fighter.MaxHealth = fighter.Health = 100000;
+            Advance(model, 2);
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id), Is.False);
+
+            guard.SkillCharge = guard.SkillRequired;
+            Advance(model, .025f);
+            double warnedAt = model.Clock;
+            Advance(model, 2.95f);
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id), Is.False);
+            Advance(model, .075f);
+            var hits = model.Hits.Where(hit => hit.FromId == guard.Id).ToArray();
+            Assert.That(hits.Length, Is.EqualTo(3));
+            Assert.That(hits.All(hit => Math.Abs(hit.At - (warnedAt + 3)) < .026), Is.True);
+        }
+
+        [Test]
+        public void YuOnlyCastsOneWallInTheFirstPlaneBattle()
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "1-6");
+            model.BindCampaign(run);
+            var guard = model.Defenders.Single(defender => defender.ArtId == "D22");
+            model.Defenders.RemoveAll(defender => defender != guard);
+            guard.MaxHealth = 100000;
+            Assert.That(model.StartBattle(), Is.True);
+            var fighter = model.Units.Single();
+            fighter.Position = guard.Position + Vector2.left * .5f;
+            fighter.MaxHealth = fighter.Health = 100000;
+            Advance(model, .025f);
+            double firstCastAt = guard.LastSkillAt;
+            Assert.That(firstCastAt, Is.EqualTo(model.Clock));
+            Advance(model, 24);
+            Assert.That(guard.LastSkillAt, Is.EqualTo(firstCastAt));
+        }
+
+        [Test]
+        public void WangsReservedChessCellTriggersSkillDamageOnContact()
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "3-4");
+            model.BindCampaign(run);
+            var guard = model.Defenders.Single(defender => defender.ArtId == "D28");
+            Assert.That(guard.SkillCell.HasValue, Is.True);
+            model.Defenders.RemoveAll(defender => defender != guard);
+            Assert.That(model.StartBattle(), Is.True);
+            var fighter = model.Units.Single();
+            fighter.Position = guard.SkillCell.Value;
+            fighter.MaxHealth = fighter.Health = 100000;
+            Advance(model, .025f);
+            Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));
+            Advance(model, 2);
+            Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));
         }
     }
 }

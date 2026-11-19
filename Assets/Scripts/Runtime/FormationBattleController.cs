@@ -223,7 +223,7 @@ namespace YesterdayConvoy
             ResetFormationPreparation(fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。");
         }
 
-        void SelectPracticeBattle(int node)
+        internal void SelectPracticeBattle(int node)
         {
             if(Campaign?.IsPractice==true)
             {

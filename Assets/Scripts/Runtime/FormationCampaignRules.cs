@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace YesterdayConvoy
 {
-    public static class FormationCampaignRules
+    public static partial class FormationCampaignRules
     {
         public const string Version = "0.7.0";
         public sealed class UnitDefinition
@@ -21,19 +21,9 @@ namespace YesterdayConvoy
             public int[] Planes = Array.Empty<int>(), Levels = Array.Empty<int>();
             public Dictionary<string,float> Stats = new Dictionary<string,float>();
         }
-        public sealed class NodeDefinition
-        {
-            public string Id, Kind; public int Plane, BaseGold, XP, DefenderCount;
-            public float HealthScale, AttackScale, TimeLimit;
-        }
         public sealed class DefenderDefinition
         {
             public string Name, DamageType, Effect;
-            public float Health, Attack, Armor, MagicResistance, Interval, Range, InitialSP, RequiredSP, ActionSeconds;
-        }
-        public sealed class BossDefinition
-        {
-            public string NodeId, Name, Effect;
             public float Health, Attack, Armor, MagicResistance, Interval, Range, InitialSP, RequiredSP, ActionSeconds;
         }
         public static readonly UnitDefinition[] AllUnits = {
@@ -193,31 +183,6 @@ namespace YesterdayConvoy
             new DataRecord{Id="剧场",Name="无间剧场",Effect="成员战前选一名主角，其余为幕后。主角低于40%生命时，最近存活幕后替其承担接下来4秒的25/40/60%所受伤害，随后主角伤害+15/25/40%持续8秒。每名幕后本场最多替身一次，主角每8秒最多触发一次。",Extra="天然5人：弑君者、汉科、酒神、圣愚、圣徒。6人需徽章；承伤是真实转移，不能免掉双方应付的伤害。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,4,6},Stats=new Dictionary<string,float>{}},
             new DataRecord{Id="同频",Name="同频异响",Effect="战前从成员中选一名领奏者和一名伴奏者。双方原生普通行动（攻击或普通治疗）完成各计1拍，双方连击补击各计0.5拍；共享累计4拍触发一次异响，领奏者获1/2/3/5自然SP，其下一次主技动作×0.85/0.75/0.65/0.55，单份不可叠。",Extra="天然5人：梅菲斯特、酒神、蔓德拉、巫王、圣徒。只开放一对；所选伴奏者身份再提供一种额外效果，见专页。异响溢出的SP可存为余响，上限4/6/8/12SP，下次扣技能SP后补入；普通SP不进余响。搭档倒下时暂停售拍和身份效果，模式返场恢复。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,3,4,5},Stats=new Dictionary<string,float>{}},
         };
-        public static readonly NodeDefinition[] Nodes = {
-            new NodeDefinition{Id="1-1",Kind="奖励",Plane=1,BaseGold=5,XP=2,DefenderCount=3,HealthScale=0.35f,AttackScale=0.65f,TimeLimit=float.PositiveInfinity},
-            new NodeDefinition{Id="1-2",Kind="奖励",Plane=1,BaseGold=5,XP=2,DefenderCount=4,HealthScale=0.45f,AttackScale=0.7f,TimeLimit=float.PositiveInfinity},
-            new NodeDefinition{Id="1-3",Kind="战斗战备",Plane=1,BaseGold=5,XP=2,DefenderCount=4,HealthScale=0.8f,AttackScale=0.8f,TimeLimit=90f},
-            new NodeDefinition{Id="1-4",Kind="战斗",Plane=1,BaseGold=5,XP=2,DefenderCount=5,HealthScale=1.2f,AttackScale=0.95f,TimeLimit=90f},
-            new NodeDefinition{Id="1-5",Kind="补给",Plane=1,BaseGold=0,XP=0,DefenderCount=0,HealthScale=1f,AttackScale=1f,TimeLimit=90f},
-            new NodeDefinition{Id="1-6",Kind="战斗",Plane=1,BaseGold=5,XP=2,DefenderCount=5,HealthScale=1.8f,AttackScale=1.1f,TimeLimit=90f},
-            new NodeDefinition{Id="1-7",Kind="遭遇",Plane=1,BaseGold=5,XP=2,DefenderCount=5,HealthScale=2.5f,AttackScale=1.2f,TimeLimit=90f},
-            new NodeDefinition{Id="1-8",Kind="奖励",Plane=1,BaseGold=5,XP=2,DefenderCount=5,HealthScale=1.3f,AttackScale=0.8f,TimeLimit=float.PositiveInfinity},
-            new NodeDefinition{Id="1-9",Kind="首领",Plane=1,BaseGold=5,XP=2,DefenderCount=5,HealthScale=3f,AttackScale=1.4f,TimeLimit=120f},
-            new NodeDefinition{Id="2-1",Kind="战斗",Plane=2,BaseGold=5,XP=2,DefenderCount=6,HealthScale=5f,AttackScale=1.6f,TimeLimit=90f},
-            new NodeDefinition{Id="2-2",Kind="战斗战备",Plane=2,BaseGold=5,XP=2,DefenderCount=6,HealthScale=7f,AttackScale=1.8f,TimeLimit=90f},
-            new NodeDefinition{Id="2-3",Kind="补给",Plane=2,BaseGold=0,XP=0,DefenderCount=0,HealthScale=1f,AttackScale=1f,TimeLimit=90f},
-            new NodeDefinition{Id="2-4",Kind="战斗",Plane=2,BaseGold=5,XP=2,DefenderCount=7,HealthScale=10f,AttackScale=2f,TimeLimit=90f},
-            new NodeDefinition{Id="2-5",Kind="遭遇",Plane=2,BaseGold=5,XP=2,DefenderCount=7,HealthScale=13f,AttackScale=2.1f,TimeLimit=90f},
-            new NodeDefinition{Id="2-6",Kind="奖励",Plane=2,BaseGold=5,XP=2,DefenderCount=6,HealthScale=5f,AttackScale=1.2f,TimeLimit=float.PositiveInfinity},
-            new NodeDefinition{Id="2-7",Kind="首领",Plane=2,BaseGold=5,XP=2,DefenderCount=7,HealthScale=17f,AttackScale=2.4f,TimeLimit=120f},
-            new NodeDefinition{Id="3-1",Kind="战斗",Plane=3,BaseGold=5,XP=2,DefenderCount=8,HealthScale=25f,AttackScale=2.8f,TimeLimit=90f},
-            new NodeDefinition{Id="3-2",Kind="战斗战备",Plane=3,BaseGold=5,XP=2,DefenderCount=8,HealthScale=34f,AttackScale=3f,TimeLimit=90f},
-            new NodeDefinition{Id="3-3",Kind="补给",Plane=3,BaseGold=0,XP=0,DefenderCount=0,HealthScale=1f,AttackScale=1f,TimeLimit=90f},
-            new NodeDefinition{Id="3-4",Kind="战斗",Plane=3,BaseGold=5,XP=2,DefenderCount=9,HealthScale=46f,AttackScale=3.3f,TimeLimit=90f},
-            new NodeDefinition{Id="3-5",Kind="遭遇",Plane=3,BaseGold=5,XP=2,DefenderCount=9,HealthScale=60f,AttackScale=3.5f,TimeLimit=90f},
-            new NodeDefinition{Id="3-6",Kind="奖励",Plane=3,BaseGold=5,XP=2,DefenderCount=8,HealthScale=16f,AttackScale=1.8f,TimeLimit=float.PositiveInfinity},
-            new NodeDefinition{Id="3-7",Kind="首领",Plane=3,BaseGold=5,XP=2,DefenderCount=9,HealthScale=75f,AttackScale=4f,TimeLimit=150f},
-        };
         public static readonly DefenderDefinition[] Defenders = {
             new DefenderDefinition{Name="先锋",Health=650f,Attack=64f,Armor=8f,MagicResistance=5f,Interval=1.4f,Range=1f,DamageType="物",Effect="8/20SP，单体160%攻击力物伤，动作1秒",InitialSP=8f,RequiredSP=20f,ActionSeconds=1f},
             new DefenderDefinition{Name="近卫",Health=900f,Attack=90f,Armor=12f,MagicResistance=10f,Interval=1.8f,Range=1.2f,DamageType="物",Effect="8/22SP，近处最多3人各150%攻击力物伤，动作1.4秒",InitialSP=8f,RequiredSP=22f,ActionSeconds=1.4f},
@@ -226,11 +191,6 @@ namespace YesterdayConvoy
             new DefenderDefinition{Name="术师",Health=650f,Attack=100f,Armor=5f,MagicResistance=30f,Interval=2.8f,Range=3.5f,DamageType="法",Effect="6/22SP，半径1.8内180%攻击力法伤，动作1.4秒",InitialSP=6f,RequiredSP=22f,ActionSeconds=1.4f},
             new DefenderDefinition{Name="医疗",Health=700f,Attack=60f,Armor=5f,MagicResistance=20f,Interval=3f,Range=4f,DamageType="治疗",Effect="普通治疗100%攻击力+目标最大生命2%；10/24SP治疗最低血2人，各160%攻击力+目标最大生命4%，动作1.2秒",InitialSP=10f,RequiredSP=24f,ActionSeconds=1.2f},
             new DefenderDefinition{Name="辅助",Health=750f,Attack=70f,Armor=8f,MagicResistance=25f,Interval=2.6f,Range=3.2f,DamageType="法",Effect="10/24SP，半径2内100%攻击力法伤、减速40%持续6秒，动作1.4秒",InitialSP=10f,RequiredSP=24f,ActionSeconds=1.4f},
-        };
-        public static readonly BossDefinition[] Bosses = {
-            new BossDefinition{NodeId="1-9",Name="重装指挥官 星熊",Health=22000f,Attack=180f,Armor=35f,MagicResistance=20f,Interval=2.6f,Range=1.5f,Effect="12/24SP，获得总生命10%的护盾6秒，反伤受到的实际伤害15%，每秒反伤上限100%自身攻击。50%生命转段，攻速+20%。",InitialSP=12f,RequiredSP=24f,ActionSeconds=1f},
-            new BossDefinition{NodeId="2-7",Name="战地医务长 塞雷娅",Health=160000f,Attack=320f,Armor=40f,MagicResistance=40f,Interval=2.8f,Range=2.5f,Effect="10/24SP，治疗最低血2名守军各4%最大生命，自身护盾5%最大生命8秒。50%生命转段，治疗同时使我方受到治疗−20%持续8秒。",InitialSP=10f,RequiredSP=24f,ActionSeconds=1f},
-            new BossDefinition{NodeId="3-7",Name="终局守望者 玛恩纳",Health=720000f,Attack=650f,Armor=45f,MagicResistance=35f,Interval=2.8f,Range=3.5f,Effect="12/26SP，蓄力3秒后斩击3段各160%攻击力物伤，直线宽2格，至多5人。70%/35%生命转段，第二段攻速+15%，第三段改5连斩。",InitialSP=12f,RequiredSP=26f,ActionSeconds=3f},
         };
         public static readonly int[] ExperienceToNext = {0,2,4,6,10,20,36,56,80,100,0};
         public static readonly int[][] ShopOdds = {

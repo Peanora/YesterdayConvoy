@@ -158,7 +158,9 @@ namespace YesterdayConvoy
             if(Tagged(a,"海嗣")&&Level("海嗣")>=5&&seaBursts.Count>=4)aspeed+=.35f;
             a.Interval=s.BaseInterval<=0?0:s.BaseInterval/Mathf.Clamp(1+aspeed-(Buff(a,"cold")>0?.2f:0)-Buff(a,"nerve_slow"),0.1f,3);
             a.Attack=s.BaseAttack*(1+s.AttackPct+Buff(a,"attack")+Buff(a,"can_attack")+Buff(a,"patriot_attack")+Stack(a,"stone")*.05f+Stack(a,"blooddebt")*.03f);
-            a.Armor=s.BaseArmor+Stack(a,"fold");a.MagicResistance=s.BaseMR+Stack(a,"fold");a.Range=s.BaseRange;a.MoveSpeed=s.BaseSpeed*(1+Buff(a,"move"));
+            a.Armor=s.BaseArmor+Stack(a,"fold");a.MagicResistance=s.BaseMR+Stack(a,"fold");a.Range=s.BaseRange;
+            float guardSlow = a is FormationFighter fighter ? GuardMovementSlow(fighter) : 0;
+            a.MoveSpeed=s.BaseSpeed*(1+Buff(a,"move"))*(1-guardSlow);
             if(a is FormationFighter f)
             {
                 float baseRequired=s.BaseSP;
@@ -179,7 +181,7 @@ namespace YesterdayConvoy
         {
             ConfigureCampaignTeam();events.Clear();zones.Clear();Summons.Clear();relaySources.Clear();finalDeaths.Clear();seaCells.Clear();seaBursts.Clear();seaExtra=0;
             BattleGold=0;killedGuards=0;actionSequence=0;resonanceBeats=0;nextSeaDecay=1;BattleEvents.Clear();SkillCasts.Clear();
-            foreach(var d in Defenders){var s=State(d);s.LowestHealth=d.MaxHealth;d.Health=d.MaxHealth;d.Alive=true;d.SkillCharge=s.GuardInitialSP;}
+            foreach(var d in Defenders){var s=State(d);s.LowestHealth=d.MaxHealth;d.Health=d.MaxHealth;d.Alive=true;d.SkillCharge=s.GuardInitialSP;ResetGuardKit(d);}
             InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth);
             foreach(var u in Units.Where(u=>u.Enabled))
             {
@@ -197,29 +199,95 @@ namespace YesterdayConvoy
 
         void BuildCampaignDefenders()
         {
-            foreach(var key in combat.Keys.Where(k=>k>=100).ToArray())combat.Remove(key);
-            Defenders.Clear();var node=Campaign.CurrentNode;LimitSeconds=node.TimeLimit;
-            if(node.Kind=="补给")return;
-            var rng=new FormationRandom(unchecked((uint)Seed^((uint)(Campaign.NodeIndex+1)*0x9e3779b9u)));
-            var cells=new List<Vector2>();for(int x=DeploymentColumns+2;x<Width-1;x++)for(int y=0;y<Height;y++)if(Terrain==null||Terrain.CanPlaceDefender(new Vector2(x,y)))cells.Add(new Vector2(x,y));
-            for(int i=cells.Count-1;i>0;i--){int j=rng.Next(i+1);var v=cells[i];cells[i]=cells[j];cells[j]=v;}
-            float tierHP=new[]{1f,2.2f,5f,12f}[Mathf.Clamp(Campaign.CurrentEncounterTier-1,0,3)],tierATK=new[]{1f,1.1f,1.25f,1.45f}[Mathf.Clamp(Campaign.CurrentEncounterTier-1,0,3)];
-            int medics=0,tanks=0;
-            var boss=FormationCampaignRules.Bosses.FirstOrDefault(b=>b.NodeId==node.Id);
-            for(int i=0;i<node.DefenderCount;i++)
+            foreach (var key in combat.Keys.Where(k => k >= 100).ToArray()) combat.Remove(key);
+            Defenders.Clear();
+            var node = Campaign.CurrentNode;
+            LimitSeconds = node.TimeLimit;
+            if (node.DefenderCount == 0) return;
+
+            var rng = new FormationRandom(unchecked((uint)Seed ^ ((uint)(Campaign.NodeIndex + 1) * 0x9e3779b9u)));
+            var north = FormationCampaignRules.NorthGuardFormation;
+            var south = FormationCampaignRules.SouthGuardFormation;
+            bool preferNorth = rng.Next(2) == 0;
+            var formation = preferNorth ? north : south;
+            if (!CanPlaceGuardFormation(node, formation))
             {
-                int roll=rng.Next(100),k=i==0?1:i==1?3:roll<15?0:roll<35?1:roll<50?2:roll<70?3:roll<85?4:roll<93?5:6;
-                if(node.Kind=="奖励"&&(k==2||k==5||k==6))k=0;if(k==5&&medics++>=1)k=3;if(k==2&&tanks++>=2)k=1;
-                var p=FormationCampaignRules.Defenders[k];bool ranged=k>=3;int chosen=i;
-                if(Terrain!=null)for(int j=i;j<cells.Count;j++)if((Terrain.HeightAt(cells[j])>0)==ranged){chosen=j;break;}
-                var temp=cells[i];cells[i]=cells[chosen];cells[chosen]=temp;
-                float hm=node.HealthScale,am=node.AttackScale;if(node.Kind=="遭遇"){hm*=tierHP;am*=tierATK;}
-                var d=new FormationDefender{Id=100+i,Kind=new[]{5,3,0,6,7,9,11}[k],ArtId=new[]{"D06","D04","D01","D07","D08","D10","D12"}[k],Name=p.Name,Healer=k==5,Position=cells[i],MaxHealth=p.Health*hm,Attack=p.Attack*am,Armor=p.Armor,MagicResistance=p.MagicResistance,Range=p.Range,Interval=p.Interval,SkillRequired=p.RequiredSP};
-                bool isBoss=boss!=null&&i==node.DefenderCount-1;
-                if(isBoss){d.Name=boss.Name;d.MaxHealth=boss.Health;d.Attack=boss.Attack;d.Armor=boss.Armor;d.MagicResistance=boss.MagicResistance;d.Range=boss.Range;d.Interval=boss.Interval;d.SkillRequired=boss.RequiredSP;d.Healer=false;d.ArtId=node.Plane==1?"D25":node.Plane==2?"D29":"D30";}
-                ResetActor(d,true,Vector2.left);var s=State(d);s.Template=k;s.Boss=isBoss;s.InitialGuard=true;s.LowestHealth=d.MaxHealth;s.BaseAttack=d.Attack;s.BaseArmor=d.Armor;s.BaseMR=d.MagicResistance;s.BaseInterval=d.Interval;s.BaseRange=d.Range;s.GuardInitialSP=isBoss?boss.InitialSP:p.InitialSP;s.GuardActionSeconds=isBoss?boss.ActionSeconds:p.ActionSeconds;d.SkillCharge=s.GuardInitialSP;
-                Defenders.Add(d);
+                formation = preferNorth ? south : north;
+                if (!CanPlaceGuardFormation(node, formation))
+                    throw new InvalidOperationException($"No legal guard formation for campaign node {node.Id}.");
             }
+
+            int tier = node.Kind == "遭遇" ? Campaign.CurrentEncounterTier : 1;
+            var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
+            for (int i = 0; i < node.Front.Length; i++)
+                AddCampaignDefender(node, formation, node.Front[i], formation.Front[i], tier, boss);
+            for (int i = 0; i < node.Rear.Length; i++)
+                AddCampaignDefender(node, formation, node.Rear[i], formation.Rear[i], tier, boss);
+        }
+
+        bool CanPlaceGuardFormation(FormationCampaignRules.NodeDefinition node, FormationCampaignRules.GuardFormation formation)
+        {
+            if (Terrain == null) return true;
+            for (int i = 0; i < node.Front.Length; i++)
+            {
+                Vector2 cell = formation.Front[i];
+                if (!Terrain.CanPlaceDefender(cell) || Terrain.HeightAt(cell) > 0) return false;
+            }
+            for (int i = 0; i < node.Rear.Length; i++)
+            {
+                Vector2 cell = formation.Rear[i];
+                if (!Terrain.CanPlaceDefender(cell)) return false;
+            }
+            foreach (var id in node.Front.Concat(node.Rear))
+            {
+                var cell = formation.SkillCell(id);
+                if (cell.HasValue && !Terrain.IsWalkable(cell.Value)) return false;
+            }
+            return true;
+        }
+
+        void AddCampaignDefender(FormationCampaignRules.NodeDefinition node, FormationCampaignRules.GuardFormation formation,
+            string artId, Vector2Int cell, int tier, FormationCampaignRules.BossDefinition boss)
+        {
+            var guard = FormationCampaignRules.DefenderByArtId(artId);
+            var role = FormationCampaignRules.Defenders[guard.Role];
+            bool isBoss = boss?.ArtId == artId;
+            bool elite = guard.Rarity == 6;
+            float health = FormationCampaignRules.RoundedGuardStat(role.Health, node.HealthScale, elite ? 1.35m : 1m);
+            float attack = FormationCampaignRules.RoundedGuardStat(role.Attack, node.AttackScale, elite ? 1.10m : 1m);
+            var d = new FormationDefender
+            {
+                Id = 100 + Defenders.Count,
+                Kind = int.Parse(artId.Substring(1)) - 1,
+                ArtId = artId,
+                Name = guard.Name,
+                Healer = guard.Role == 5,
+                Position = cell,
+                SkillCell = formation.SkillCell(artId),
+                MaxHealth = isBoss ? boss.Health : FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
+                Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
+                Armor = isBoss ? boss.Armor : role.Armor,
+                MagicResistance = isBoss ? boss.MagicResistance : role.MagicResistance,
+                Range = isBoss ? boss.Range : role.Range,
+                Interval = isBoss ? boss.Interval : role.Interval,
+                SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
+            };
+            ResetActor(d, true, Vector2.left);
+            var state = State(d);
+            state.Template = guard.Role;
+            state.Boss = isBoss;
+            state.Elite = elite;
+            state.InitialGuard = true;
+            state.LowestHealth = d.MaxHealth;
+            state.BaseAttack = d.Attack;
+            state.BaseArmor = d.Armor;
+            state.BaseMR = d.MagicResistance;
+            state.BaseInterval = d.Interval;
+            state.BaseRange = d.Range;
+            state.GuardInitialSP = isBoss ? boss.InitialSP : guard.InitialSP ?? role.InitialSP;
+            state.GuardActionSeconds = isBoss ? boss.ActionSeconds : role.ActionSeconds;
+            d.SkillCharge = state.GuardInitialSP;
+            Defenders.Add(d);
         }
 
         void TickCampaign(float dt)
@@ -248,7 +316,7 @@ namespace YesterdayConvoy
                     if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*.02f*dt,false,false,showFeedback:false);
                     if(Key(a)=="M34"&&(Clock>=5||a.LastHitAt>=0||a.Health<a.MaxHealth)) { if(Stack(a,"awake")==0)AddStack(a,"awake",1,1);SelfLoss((FormationFighter)a,a.MaxHealth*.02f*dt); }
                 }
-                else if(a is FormationDefender)a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+dt);
+                else if(a is FormationDefender defender && UsesGuardTimeCharge(defender))a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+dt);
                 if(s.RecordUntil>0&&Clock>=s.RecordUntil){s.RecordUntil=0;var target=(s.RecordOwner as FormationFighter)!=null?FighterTarget((FormationFighter)s.RecordOwner):null;if(target!=null)CombatDamage(a,target,s.RecordDamage,0,true,false);s.RecordDamage=0;}
             }
             // A fixed ordered queue prevents action haste, multihit, or deaths from recursing.

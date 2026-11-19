@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace YesterdayConvoy
 {
-    /// <summary>Opt-in production-path Player verification. No actor HP, damage, stock or outcomes are injected.</summary>
+    /// <summary>Opt-in production-path Player verification.</summary>
     public sealed class FormationCampaignEvidence : MonoBehaviour
     {
         [Serializable] sealed class Check {public string name;public bool passed;}
@@ -17,11 +17,22 @@ namespace YesterdayConvoy
             public bool passed;public string error,scope;
             public int assertions,exceptionCount,battles;public string node;
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
+            public List<DefenseStage> defenseStages = new List<DefenseStage>();
+        }
+        [Serializable] sealed class DefenseStage
+        {
+            public string id, side, outcome;
+            public int initialHealth, remaining, alliedDeaths;
+            public double battleSeconds;
+            public List<string> filmedCasts = new List<string>();
+            public List<string> observedSkillHits = new List<string>();
         }
         static bool started;
         readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, smaller left deployment area, close fixed preparation views and enlarged battle-only view, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Battle and paused battle hide preparation UI and standing reserve models. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
         FormationBattleController controller;string directory;bool done;
-        static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0;
+        static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested;
+        static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
+        static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -35,7 +46,8 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:"artifacts/formation-combat-view/player");Directory.CreateDirectory(directory);
+            var fallback = DefenseRequested ? "artifacts/formation-defense/player" : "artifacts/formation-combat-view/player";
+            directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:fallback);Directory.CreateDirectory(directory);
             return Guard(Verify());
         }
         IEnumerator Guard(IEnumerator work)
@@ -57,9 +69,9 @@ namespace YesterdayConvoy
         {result.checks.Add(new Check{name=name,passed=value});if(!value)throw new InvalidOperationException(name);}
         IEnumerator Frame(string name)
         {yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,name+".png"));yield return null;}
-        IEnumerator CaptureInterfaceClip(string name, int frames)
+        IEnumerator CaptureInterfaceClip(string name, int frames, string flag = "-formationUiClips")
         {
-            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationUiClips") < 0) yield break;
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), flag) < 0) yield break;
             string target = Path.Combine(directory, name);
             Directory.CreateDirectory(target);
             double start = Time.realtimeSinceStartupAsDouble;
@@ -120,6 +132,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (DefenseRequested)
+            {
+                yield return VerifyDefenses();
+                yield break;
+            }
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationStrategyEvidence") >= 0)
             {
                 result.scope = "Production strategy panels on the authored board, with three seeded runs through two actual auto battles each. Choice confirmation is driven through the campaign API.";
@@ -478,11 +495,161 @@ namespace YesterdayConvoy
                 "Dragging the member back activates the previous tier and only highlights its true deployed members");
             yield return CaptureInterfaceClip("trait-activation", 46);
         }
+
+        IEnumerator VerifyDefenses()
+        {
+            bool probe = DefenseSkillProbe;
+            result.scope = probe
+                ? "Targeted live skill diagnostics in the actual practice nodes. One real healer is placed on staged walkable cells and given diagnostic health to survive. Mon3tr is pre-wounded for real healing actions. All casts, contacts, damage and timing run in the battle model. Samples terminate on observed skills, not victory."
+                : "Normal FormationBattle Windows Player, production practice-node selection and legal preset attacker cards, ordinary simulation and battle outcomes, scout and skill frames. Presets are test fixtures, not natural shop progression.";
+            var args = Environment.GetCommandLineArgs();
+            int nodeFlag = Array.IndexOf(args, "-formationDefenseNodes");
+            string nodeList = probe ? "2-4,2-5,3-2,3-4" : nodeFlag >= 0 && nodeFlag + 1 < args.Length ? args[nodeFlag + 1] : "1-6,2-4,2-5,3-4,3-7";
+            foreach (string id in nodeList.Split(',').Select(part => part.Trim()).Distinct())
+            {
+                int index = Array.FindIndex(FormationCampaignRules.Nodes, node => node.Id == id && node.DefenderCount > 0);
+                Assert(index >= 0, "Practice target is a real battle node: " + id);
+                controller.SelectPracticeBattle(index);
+                Assert(controller.Campaign.IsPractice && controller.Campaign.CurrentNode.Id == id,
+                    "Normal practice command selected " + id);
+                yield return ResolveChoices();
+                StageDefenseEvidenceRoster(controller.Campaign.CurrentNode.Plane, probe);
+                yield return ReadyArt();
+
+                var model = controller.Model;
+                var defenders = model.Defenders.ToArray();
+                var entry = new DefenseStage
+                {
+                    id = id,
+                    side = defenders.Min(d => d.Position.y) < 4 ? "north" : "south",
+                    initialHealth = Mathf.RoundToInt(defenders.Sum(d => d.MaxHealth)),
+                };
+                result.defenseStages.Add(entry);
+                result.node = id;
+                Assert(defenders.Length == controller.Campaign.CurrentNode.DefenderCount &&
+                    defenders.Select(d => d.ArtId).Distinct().Count() == defenders.Length &&
+                    defenders.Select(d => d.Position).Distinct().Count() == defenders.Length &&
+                    defenders.Max(d => d.Position.x) - defenders.Min(d => d.Position.x) < 5 &&
+                    defenders.Max(d => d.Position.y) - defenders.Min(d => d.Position.y) < 4,
+                    id + " scouted a single compact legal roster");
+                Assert(defenders.Where(d => d.SkillCell.HasValue).All(d =>
+                    model.Terrain.IsWalkable(d.SkillCell.Value) && defenders.All(guard => guard.Position != (Vector2)d.SkillCell.Value)),
+                    id + " reserved skill cells remain clear");
+                controller.SetFormationView(true);
+                yield return null;
+                yield return Frame(id + "-scout-" + entry.side);
+                controller.SetFormationView(false);
+                controller.StartBattle();
+                Assert(model.Phase == FormationPhase.Fighting, id + " starts on the normal battle command");
+                var probeGuard = probe ? StageDefenseSkillProbe(model, id) : null;
+                string capture = probe ? "probe-" + id : id;
+                yield return null;
+
+                var tracked = probe ? new[] { probeGuard } : model.Defenders.Where(d => FormationCampaignRules.DefenderByArtId(d.ArtId)?.Rarity == 6).ToArray();
+                var skillHits = new HashSet<string>();
+                var recorded = new HashSet<string>();
+                while ((model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting) &&
+                    (!probe || recorded.Count == 0 || skillHits.Count == 0))
+                {
+                    if (model.Clock >= (probe ? 40 : 240)) throw new InvalidOperationException(id + " exceeded the fixture simulation budget");
+                    model.Paused = false;
+                    for (int step = 0; step < 24 && (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting); step++)
+                    {
+                        model.Advance(.025f);
+                        foreach (var guard in tracked)
+                        {
+                            bool castObserved = guard.ArtId switch
+                            {
+                                "D22" => model.GuardEffect(guard)?.Kind == "firewall",
+                                "D23" => model.GuardTransformed(guard),
+                                "D28" => model.GuardEffect(guard)?.Kind == "chess_hit",
+                                _ => guard.LastSkillAt >= 0 || model.GuardEffect(guard) != null,
+                            };
+                            bool firstHit = model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill) && skillHits.Add(guard.ArtId);
+                            if (castObserved && recorded.Add(guard.ArtId))
+                            {
+                                entry.filmedCasts.Add(guard.ArtId + "@" + model.Clock.ToString("0.000"));
+                                yield return Frame(capture + "-" + guard.ArtId + "-skill");
+                                if (id == "1-6" && guard.ArtId == "D22")
+                                    yield return CaptureInterfaceClip(id + "-D22-normal-speed", 48, "-formationDefenseClips");
+                                else if (!probe && id == "3-7" && guard.ArtId == "D30")
+                                    yield return CaptureInterfaceClip(id + "-D30-normal-speed", 84, "-formationDefenseClips");
+                                else if (probe)
+                                    yield return CaptureInterfaceClip(capture + "-" + guard.ArtId + "-normal-speed", 36, "-formationDefenseClips");
+                            }
+                            if (firstHit) yield return Frame(capture + "-" + guard.ArtId + "-contact");
+                        }
+                    }
+                    yield return null;
+                }
+                if (probe)
+                    Assert(recorded.Contains(probeGuard.ArtId) && skillHits.Contains(probeGuard.ArtId), id + " witnessed real " + probeGuard.ArtId + " cast and contact");
+                else
+                    Assert(model.Phase == FormationPhase.Won || model.Phase == FormationPhase.Lost, id + " has a normal battle result");
+                if (id == "1-6") Assert(recorded.Contains("D22"), "1-6 Yu actually deployed the fire wall");
+                entry.observedSkillHits.AddRange(skillHits.OrderBy(guard => guard));
+                entry.outcome = probe ? "Diagnostic skill observed" : model.Phase.ToString();
+                entry.remaining = model.RemainingDefenders;
+                entry.alliedDeaths = model.Units.Sum(unit => unit.Deaths);
+                entry.battleSeconds = model.Clock;
+                result.battles++;
+                if (!probe) yield return Frame(id + "-result");
+            }
+        }
+
+        FormationDefender StageDefenseSkillProbe(FormationBattleModel model, string node)
+        {
+            string artId = node switch { "2-4" => "D23", "2-5" => "D27", "3-2" => "D26", _ => "D28" };
+            var guard = model.Defenders.Single(d => d.ArtId == artId);
+            var target = model.Units.Single(unit => unit.Enabled);
+            Vector2 cell;
+            if (artId == "D23")
+            {
+                guard.Health *= .25f;
+                Vector2 landing = guard.SkillCell.Value;
+                cell = landing + (landing.y < 4 ? Vector2.down : Vector2.up);
+            }
+            else if (artId == "D28") cell = (Vector2)guard.SkillCell.Value + Vector2.left * .5f;
+            else cell = guard.Position + Vector2.left;
+            Assert(model.Terrain.IsWalkable(cell) && model.Defenders.All(other =>
+                (other.Position - cell).sqrMagnitude >= .23f), node + " diagnostic target is in an open position");
+            target.Position = cell;
+            target.MaxHealth = target.Health = 1000000;
+            return guard;
+        }
+
+        void StageDefenseEvidenceRoster(int plane, bool probe)
+        {
+            var pieces = probe ? new[] { ("B10", 1) } : plane == 1
+                ? new[] { ("M27", 2), ("M11", 2), ("M21", 2), ("M12", 2), ("M25", 1) }
+                : new[] { ("M20", 2), ("M28", 3), ("B10", 2), ("M11", 3), ("WIS", 1) };
+            controller.Shop.Preset(pieces.Select(p => new ShopTrialModel.Piece
+                { Id = FormationCampaignRules.Find(p.Item1).CardId, Star = p.Item2 }), Array.Empty<string>(), pieces.Length, 0, 0);
+            controller.Session.ApplyTo(controller.Model);
+            var allies = controller.Shop.Bench.ToArray();
+            float targetRow = controller.Model.Defenders.Average(guard => guard.Position.y);
+            foreach (var piece in allies)
+            {
+                var anchors = from x in Enumerable.Range(0, FormationBattleModel.DeploymentColumns).Reverse()
+                              from y in Enumerable.Range(0, FormationBattleModel.Height).OrderBy(row => Mathf.Abs(row - targetRow))
+                              select new Vector2Int(x, y);
+                var anchor = anchors.First(cell =>
+                {
+                    var preview = controller.Session.PreviewDeploy(piece.Instance, cell);
+                    return preview.Valid && preview.SwapInstance == 0;
+                });
+                Assert(controller.Session.TryDeploy(piece.Instance, anchor).Success, "Place real preset card " + piece.Id + " on " + anchor);
+            }
+        }
+
         void Finish(Exception error)
         {
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
-            result.passed=error==null&&result.exceptionCount==0;File.WriteAllText(Path.Combine(directory,"campaign-smoke.json"),JsonUtility.ToJson(result,true));
-            Debug.Log(result.passed?"FORMATION_CAMPAIGN_SMOKE_PASS":"FORMATION_CAMPAIGN_SMOKE_FAIL: "+result.error);
+            result.passed=error==null&&result.exceptionCount==0;
+            string report = DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" : "campaign-smoke.json";
+            File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
+            string marker = DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
+            Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));
             Application.Quit(result.passed?0:1);
         }
     }

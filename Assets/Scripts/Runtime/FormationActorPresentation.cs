@@ -24,13 +24,18 @@ namespace YesterdayConvoy
         {
             if(!warmedFormationArt.Contains(id))return false;
             if(!id.StartsWith("D",StringComparison.Ordinal))return formationMonsterArt.TryGetValue(id,out var source)&&source.IsReady&&FormationInitialMotionKeys(source,id).All(key=>source.WindowReady(key,0,false))&&FormationEffectSequences(source).All(c=>c.Ready);
-            return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(c=>c.Key=="idle"||c.Key=="walk"||c.Key.StartsWith("attack",StringComparison.Ordinal)||c.Key=="death"||c.Key=="heal").All(c=>c.Ready);
+            return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(FormationGuardClip).All(c=>c.Ready)
+                &&FormationGuardEffects(id).All(c=>c.Ready);
         }
+
+        static bool FormationGuardClip(ArtSequence clip) => clip.Key=="idle"||clip.Key=="walk"||clip.Key=="death"||clip.Key=="heal"||
+            clip.Key=="start"||clip.Key.StartsWith("attack",StringComparison.Ordinal)||clip.Key.StartsWith("skill",StringComparison.Ordinal);
 
         IEnumerable<string> RequiredFormationArtIds()
         {
             if(Model==null)yield break;
             foreach(var id in Model.Units.Where(u=>u.Enabled).Select(u=>u.ArtId).Concat(Model.Defenders.Select(d=>d.ArtId)).Distinct())yield return id;
+            if(Campaign!=null&&Model.Defenders.Any(d=>d.ArtId=="D28"))yield return "D28Chess";
             foreach(var id in Model.Summons.Select(u=>u.ArtId).Distinct())yield return id;
             var team=Model.Units.Where(u=>u.Enabled).Select(u=>FormationCampaignRules.Find(u.ArtId)).Where(s=>s!=null).ToArray();
             if(team.Any(s=>s.Id=="B14"))yield return "P14H";
@@ -47,7 +52,9 @@ namespace YesterdayConvoy
             {
                 string root=id.StartsWith("D",StringComparison.Ordinal)?"DefenderArt/"+id:FormationUnitArt.For(id)?.Root;
                 if(!string.IsNullOrEmpty(root))pinned.Add(root);
-                if(!id.StartsWith("D",StringComparison.Ordinal))PinFormationEffects(FormationUnitArt.For(id));
+                if(id.StartsWith("D",StringComparison.Ordinal))
+                {foreach(var sequence in FormationGuardEffects(id))pinned.Add(sequence.CacheKey);}
+                else PinFormationEffects(FormationUnitArt.For(id));
             }
             foreach(var request in formationShopIdleUses.ToArray())
             {
@@ -66,9 +73,12 @@ namespace YesterdayConvoy
             if(id.StartsWith("D",StringComparison.Ordinal))
             {
                 string root="DefenderArt/"+id;var source=ArtCatalog.Read(root);art[id]=source;
-                if(!pinned.Contains(root))pinned.Add(root);ArtMemoryCache.Pin(pinned);
-                foreach(var clip in source.Clips.Values)
-                    if(clip.Key=="idle"||clip.Key=="walk"||clip.Key.StartsWith("attack",StringComparison.Ordinal)||clip.Key=="death"||clip.Key=="heal")yield return clip.Warm();
+                pinned.Add(root);
+                var effects=FormationGuardEffects(id).ToArray();
+                foreach(var sequence in effects)pinned.Add(sequence.CacheKey);
+                ArtMemoryCache.Pin(pinned);
+                foreach(var clip in source.Clips.Values.Where(FormationGuardClip))yield return clip.Warm();
+                foreach(var clip in effects)if(!clip.Ready)yield return clip.Warm();
             }
             else
             {
@@ -210,7 +220,17 @@ namespace YesterdayConvoy
             else
             {
                 var source=art[actor.ArtId];sourceHeight=source.Height;labelTop=source.Height;
-                if(key=="cast")key=source.Clips.ContainsKey("skill")?"skill":source.Clips.ContainsKey("attack")?"attack":"idle";
+                bool singleFrameSequence=false;
+                if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
+                {
+                    double sourceAge=(now-actor.LastActionAt)*FormationVisualRate;
+                    if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
+                       source.Clips.TryGetValue(actor.PresentationAction,out var nativeSkill)&&sourceAge<nativeSkill.Duration)
+                    {key=actor.PresentationAction;age=sourceAge;singleFrameSequence=true;}
+                    else if(!acting&&Model.GuardSkillActive(guard)&&source.Clips.ContainsKey("skill_idle"))
+                    {key="skill_idle";age=Math.Max(0,now-actor.LastSkillAt)*FormationVisualRate;}
+                }
+                if(key=="cast")key=source.Clips.ContainsKey("skill")?"skill":source.Clips.ContainsKey("skill_begin")?"skill_begin":source.Clips.ContainsKey("attack")?"attack":"idle";
                 if(!source.Clips.TryGetValue(key,out var clip))clip=source.Clips["idle"];
                 if(key=="attack")
                 {
@@ -221,7 +241,7 @@ namespace YesterdayConvoy
                     else {age=at-(begin?.Duration??0)-clip.Duration;clip=end??clip;}
                 }
                 int frame=(int)(Math.Max(0,age)*clip.Fps);
-                frame=key=="death"||key=="attack"||key=="skill"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;body.sprite=clip.Frames[frame];
+                frame=singleFrameSequence||key=="death"||key=="attack"||key=="skill"||key=="skill_begin"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;body.sprite=clip.Frames[frame];
             }
             body.enabled=body.sprite!=null;if(!body.enabled)return;
             body.flipX=actor.Facing.x<-.01f;body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;

@@ -24,7 +24,8 @@ namespace YesterdayConvoy
             {
                 var t=victims[i];
                 if(blast>=6&&skill&&s.ActionHits==1){GiveBuff(t,"blast_armor",-15,6);GiveBuff(t,"blast_mr",-15,6);}
-                float actual=CombatDamage(source,t,raw*(Key(source)=="M42"&&skill&&t.Shield>0?1.25f:1)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1),type,skill,true);total+=actual;
+                float projectileMultiplier=GuardProjectileMultiplier(source,t,area);
+                float actual=CombatDamage(source,t,raw*(Key(source)=="M42"&&skill&&t.Shield>0?1.25f:1)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1)*projectileMultiplier,type,skill,true);total+=actual;
                 if(skill){s.SkillTargets.Add(t.Id);AddStack(source,"last_skill_raw",actual);s.SkillDamage[t.Id]=(s.SkillDamage.TryGetValue(t.Id,out var prev)?prev:0)+actual;}
                 if(element>0)Element(source,t,element,fire);
                 if(Tagged(source,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(source.Position-c).sqrMagnitude<=.6f*.6f))Element(source,t,Level("海嗣")>=5?15:Level("海嗣")>=4?10:6,false);

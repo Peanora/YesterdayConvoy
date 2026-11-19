@@ -37,17 +37,185 @@ namespace YesterdayConvoy
         readonly List<MeshRenderer> legacySeaTiles=new List<MeshRenderer>();
         readonly List<LegacyComicBurst> legacyComicBursts=new List<LegacyComicBurst>();
         readonly Dictionary<FormationHit,int> legacyComicFaceIds=new Dictionary<FormationHit,int>();
+        readonly HashSet<(string ArtId,int TargetId,double At,string Clip)> guardHitSprites=new HashSet<(string,int,double,string)>();
         LegacyPatriotCatalog legacyPatriotCatalog;
         LegacyTalulahManifest legacyTalulahManifest;
         Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial;
         Material formationFlameSprayMaterial,formationFlameCoreMaterial;
         Sprite[] formationFlameSprayFrames;
         Mesh legacySeaMesh;
+        Sprite guardWarningTile;
         FormationBattleModel legacyObservedModel;
         double legacyLastClock=-1;
         int legacyFxUsed,legacyComicUsed,legacyComicFaceSequence;
         const float LegacyVisualRate=2;
         const string KingdomRangeArt="boss/B15/enemy_hlystp_skill01_range";
+
+        static readonly Dictionary<string,string[]> FormationGuardEffectKeys=new Dictionary<string,string[]>
+        {
+            ["D21"]=new[]{"whitw2_skill_03_buff_start","whitw2_skill_03_token_trail_01","whitw2_skill_03_token_hit_01","whitw2_hit_01"},
+            ["D22"]=new[]{"yu_skill3_range_01","yu_skill3_range_01_l","yu_skill3_range_01_r","yu_skill3_buff_01","yu_hit_01"},
+            ["D23"]=new[]{"monstr_skill_03_buff_01","monstr_skill_03_heal","monstr_skill_03_hit"},
+            ["D24"]=new[]{"angel2_skill_3_loop_start_01","angel2_skill_3_loop_hit_01","angel2_attack_loop_hit_01"},
+            ["D25"]=new[]{"hsgma2_skill_03_buff_01","hsgma2_attack_01_hit_01"},
+            ["D26"]=new[]{"svash2_skill_03_combat_start_01_2","svash2_attack_hit_01"},
+            ["D27"]=new[]{"sbell2_skill_03_start_01","sbell2_skill_03_hit"},
+            ["D28"]=new[]{"wang_passive_01_start","wang_passive_01_buff","wang_attack_01_hit"},
+            ["D29"]=new[]{"demkni_skill_03_self","demkni_attack_01_hit"},
+            ["D30"]=new[]{"mlynar_skill_03_buff_03","mlynar_skill_03_start_01","mlynar_skill_03_hit_01"},
+        };
+
+        static IEnumerable<ArtSequence> FormationGuardEffects(string id)
+        {
+            if(!FormationGuardEffectKeys.TryGetValue(id,out var keys))yield break;
+            foreach(string key in keys)
+                if(OriginalCombatVfxArt.TryGet("defender/"+id+"/"+key,out var clip))yield return clip.Sequence;
+        }
+
+        void PresentFormationGuardEffects()
+        {
+            if(Campaign==null||!ViewingDefenders)return;
+            double now=Model.Clock;
+            foreach(var guard in Model.Defenders)
+            {
+                if(!guard.Alive)continue;
+                string id=guard.ArtId;
+                var effect=Model.GuardEffect(guard);
+                if(effect!=null&&now>=effect.StartedAt&&now<=effect.EndsAt)
+                {
+                    double age=(now-effect.StartedAt)*FormationVisualRate;
+                    Vector2 origin=effect.Origin;
+                    switch(effect.Kind)
+                    {
+                        case "firewall":
+                            var axis=new Vector2(-effect.Direction.y,effect.Direction.x);
+                            string wall=Mathf.Abs(axis.x)>Mathf.Abs(axis.y)?"yu_skill3_range_01":effect.Direction.x>=0?"yu_skill3_range_01_r":"yu_skill3_range_01_l";
+                            int children=Mathf.Max(1,Mathf.CeilToInt(effect.Length));
+                            for(int i=0;i<children;i++)
+                            {
+                                var cell=origin+axis*(((i+.5f)/children-.5f)*effect.Length);
+                                if(cell.x>=FormationBattleModel.BattleAreaStart&&cell.x<FormationBattleModel.Width&&cell.y>=0&&cell.y<FormationBattleModel.Height)
+                                    LegacyOriginal("defender/D22/"+wall,age,cell,11,true,true);
+                            }
+                            LegacyOriginal("defender/D22/yu_skill3_buff_01",age,guard.Position,18,true,true);
+                            break;
+                        case "hunt":
+                            LegacyOriginal("defender/D21/whitw2_skill_03_buff_start",age,guard.Position,12,true,true);
+                            LegacyOriginal("defender/D21/whitw2_skill_03_token_trail_01",age,origin,23,true,explicitPosition:ActorWorldPoint(origin)+Vector3.up*.7f);
+                            break;
+                        case "snow":
+                            LegacyOriginal("defender/D27/sbell2_skill_03_start_01",age,origin,24,flat:true);
+                            PresentGuardSnowField(effect);
+                            break;
+                        case "chess":
+                        case "chess_hit":
+                            PresentFormationGuardChess(origin,age,effect.Kind=="chess_hit");
+                            break;
+                        case "slash":
+                            if(id=="D30")
+                            {
+                                LegacyOriginal("defender/D30/mlynar_skill_03_buff_03",age,guard.Position,12,true,true);
+                                if(now<effect.ImpactAt)PresentGuardSlashWarning(effect,now);
+                            }
+                            break;
+                    }
+                }
+                if(Model.GuardTransformed(guard))
+                    LegacyOriginal("defender/D23/monstr_skill_03_buff_01",now*FormationVisualRate,guard.Position,12,true,true);
+                if(guard.Shield>0&&id=="D25")
+                    LegacyOriginal("defender/D25/hsgma2_skill_03_buff_01",now*FormationVisualRate,guard.Position,12,true,true);
+                if(guard.Shield>0&&id=="D29")
+                    LegacyOriginal("defender/D29/demkni_skill_03_self",now*FormationVisualRate,guard.Position,12,true,true);
+            }
+            foreach(var action in Model.PresentationActions)
+            {
+                if(action.ActorId<100||action.Animation!="skill_attack")continue;
+                var guard=Model.Defenders.FirstOrDefault(d=>d.Id==action.ActorId);
+                if(guard==null)continue;
+                string cast=guard.ArtId switch
+                {
+                    "D24"=>"angel2_skill_3_loop_start_01",
+                    "D26"=>"svash2_skill_03_combat_start_01_2",
+                    "D30"=>"mlynar_skill_03_start_01",
+                    _=>null
+                };
+                if(cast!=null)
+                    LegacyOriginal("defender/"+guard.ArtId+"/"+cast,(now-action.At)*FormationVisualRate,action.From,23);
+            }
+            guardHitSprites.Clear();
+            foreach(var hit in Model.Hits)
+            {
+                string clip=hit.SourceArtId switch
+                {
+                    "D21"=>hit.Skill?"whitw2_skill_03_token_hit_01":"whitw2_hit_01",
+                    "D22"=>"yu_hit_01",
+                    "D23"=>hit.Heal?"monstr_skill_03_heal":"monstr_skill_03_hit",
+                    "D24"=>hit.Skill?"angel2_skill_3_loop_hit_01":"angel2_attack_loop_hit_01",
+                    "D25"=>"hsgma2_attack_01_hit_01",
+                    "D26"=>"svash2_attack_hit_01",
+                    "D27"=>"sbell2_skill_03_hit",
+                    "D28"=>"wang_attack_01_hit",
+                    "D29"=>hit.Heal?null:"demkni_attack_01_hit",
+                    "D30"=>"mlynar_skill_03_hit_01",
+                    _=>null
+                };
+                if(clip!=null&&guardHitSprites.Add((hit.SourceArtId,hit.ToId,hit.At,clip)))
+                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,(now-hit.At)*FormationVisualRate,hit.To,35);
+            }
+        }
+
+        void DrawGuardGroundCell(Vector2 cell,Color color)
+        {
+            if(guardWarningTile==null)
+            {
+                var texture=Texture2D.whiteTexture;
+                guardWarningTile=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),new Vector2(.5f,.5f),texture.width);
+                guardWarningTile.name="Formation defense range tile";
+            }
+            var marker=LegacyDraw(guardWarningTile,legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.035f,cell,.92f,-8,flat:true);
+            if(marker!=null)marker.color=color;
+        }
+
+        void PresentGuardSlashWarning(FormationBattleModel.FormationGuardEffect slash,double now)
+        {
+            var tint=new Color(1f,.26f,.10f,Mathf.Lerp(.17f,.36f,Mathf.Clamp01(1-(float)(slash.ImpactAt-now)/3f)));
+            for(int x=Mathf.CeilToInt(FormationBattleModel.BattleAreaStart);x<FormationBattleModel.Width;x++)
+            for(int y=0;y<FormationBattleModel.Height;y++)
+            {
+                var cell=new Vector2(x,y);
+                var offset=cell-slash.Origin;
+                float along=Vector2.Dot(offset,slash.Direction);
+                if(along<0||along>slash.Length||(offset-slash.Direction*along).sqrMagnitude>slash.Radius*slash.Radius)continue;
+                DrawGuardGroundCell(cell,tint);
+            }
+        }
+
+        void PresentGuardSnowField(FormationBattleModel.FormationGuardEffect snow)
+        {
+            int firstX=Mathf.Max(Mathf.CeilToInt(FormationBattleModel.BattleAreaStart),Mathf.CeilToInt(snow.Origin.x-snow.Radius));
+            int lastX=Mathf.Min(FormationBattleModel.Width-1,Mathf.FloorToInt(snow.Origin.x+snow.Radius));
+            int firstY=Mathf.Max(0,Mathf.CeilToInt(snow.Origin.y-snow.Radius));
+            int lastY=Mathf.Min(FormationBattleModel.Height-1,Mathf.FloorToInt(snow.Origin.y+snow.Radius));
+            for(int x=firstX;x<=lastX;x++)
+            for(int y=firstY;y<=lastY;y++)
+            {
+                var cell=new Vector2(x,y);
+                if((cell-snow.Origin).sqrMagnitude<=snow.Radius*snow.Radius)
+                    DrawGuardGroundCell(cell,new Color(.58f,.80f,1f,.24f));
+            }
+        }
+
+        void PresentFormationGuardChess(Vector2 cell,double age,bool hitting)
+        {
+            if(!art.TryGetValue("D28Chess",out var chess)||!FormationArtAvailable("D28Chess"))return;
+            var clip=chess.Clips[hitting?"attack":"idle"];
+            int frame=(int)(age*clip.Fps);
+            var position=ActorWorldPoint(cell);
+            LegacyDraw(clip.Frames[hitting?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count],
+                actorMaterial,position,cell,1,6);
+            string fx=hitting?"wang_passive_01_start":"wang_passive_01_buff";
+            LegacyOriginal("defender/D28/"+fx,age,cell,12,!hitting,true);
+        }
 
         // Only source sequences used by the actual owned role enter the bounded
         // streaming preload. Existing Resources packages remain Resources-owned.
@@ -604,6 +772,7 @@ namespace YesterdayConvoy
             foreach(var action in Model.PresentationActions)PresentLegacyAction(action);
             foreach(var actor in Model.Units.Where(u=>u.Enabled))PresentLegacyOwner(actor);
             foreach(var hit in Model.Hits)PresentLegacyHit(hit);
+            PresentFormationGuardEffects();
             foreach(var defender in Model.Defenders)
             {
                 double at=Model.LegacyNerveBurstAt(defender);
@@ -727,6 +896,7 @@ namespace YesterdayConvoy
             if(legacyHdrMaterial!=null)Destroy(legacyHdrMaterial);if(legacyPremultMaterial!=null)Destroy(legacyPremultMaterial);if(legacyPatriotMaterial!=null)Destroy(legacyPatriotMaterial);
             if(legacySeaMaterial!=null)Destroy(legacySeaMaterial);if(legacySeaMesh!=null)Destroy(legacySeaMesh);
             if(legacyComicMaterial!=null)Destroy(legacyComicMaterial);legacyComicMaterial=null;
+            if(guardWarningTile!=null)Destroy(guardWarningTile);guardWarningTile=null;
             legacyHdrMaterial=legacyPremultMaterial=legacyPatriotMaterial=legacySeaMaterial=null;legacySeaMesh=null;
             legacyPreviousShield.Clear();legacyShieldBroken.Clear();legacyShieldRefreshed.Clear();legacyFlightOrigins.Clear();legacySeaBorn.Clear();legacyObservedModel=null;legacyLastClock=-1;
         }
