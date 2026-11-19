@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-19 整备羁绊列表与详情
+
+- 逐帧参考用户视频 `bfd9d59805069defbdff46f6a95a62a5.mp4` 约 3.1–7.8 秒的贴边列表、侧边详情和短暂过渡。复用本作羁绊徽记、现役角色头像和 v0.7 效果文本。左列移除整块背板，行底为半透明。详情保留滚动、真实档位和四列成员。初次实机发现长名挤到状态文字，修订后复核了「安纳斯塔西奥赎罪者」的两行名字与独立状态行。[展开中](../artifacts/formation-trait-flyout/final-player/trait-detail-reveal/001.png) · [展开后](../artifacts/formation-trait-flyout/final-player/04-trait-members-and-tiers.png) · [同版本短片](../artifacts/formation-trait-flyout/羁绊详情展开实机.mp4)
+- 正式 EXE 运行源码 `ce3fc012d01db5a99d9b96ee49eb63d1df221860`，Unity 6000.6.5f1 Windows x64 Development **983065494 bytes、0 错误、退出 0**。Runtime DLL SHA-256 `CAA8B1647F3E9888FDFB17C9036F4B59C1C52B09B9F2B075893D869536754B06`。仓库结构检查覆盖 14016 个跟踪文件。[构建日志](../artifacts/formation-trait-flyout/build-final.log)
+- D3D11 PlayMode **2/2**，验证商店与详情互斥、真实档位与徽章成员，以及覆盖棋盘时拦截选中、拖放。1280×720 独立 Player 走正式入口，通过开局至前三战的 **125/125** 项检查，零异常。实机图片和短片通过正式界面动作采集，短片以正常速度播放展开帧并延长前后静止画面。未单独执行实体鼠标操作或完整长局。[PlayMode](../artifacts/formation-trait-flyout/playmode-final.xml) · [独立 Player](../artifacts/formation-trait-flyout/final-player/campaign-smoke.json)
+
 ## 2026-11-19 整备待机 1×
 
 - 以[宿主士兵原素材记录](art/source-records/m21-m38-approved.json)中的 `enemy_1043_zomsabr` 为样本，项目留存的 [Idle 帧清单](../Assets/Data/ArtCatalogs/MonsterCombatArt/M21/manifest.json)是一秒 60 帧循环。D3D11 Play Mode **2/2**。棋盘、备战席和拖动预览命中当前 1× 源帧，样本选在 1× 和 2× 帧不同的时点。维维美战斗普攻仍取 2× 源帧，出手和命中时点分别验证。[测试结果](../artifacts/formation-preparation-idle/playmode.xml) · [拖动预览画面](../artifacts/formation-preparation-idle/playmode-airborne-drag.png)
