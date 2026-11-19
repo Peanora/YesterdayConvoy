@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-19 透明羁绊与顶部大招募卡
+
+- 左栏对照 `e71af6b1` 的共享徽记与无背板样式；卡面对照 `ce3fc012` 的原 A 商店，复用现有立绘、费用底色和金币图，适配到当前顶部抽屉并保留独立购买键。棋盘和角色素材不变；原资源沿用[卡面规格](art/ART_STYLE_GUIDE.md)和[羁绊徽记来源](art/SYNERGY-BADGES.md)。
+- Windows x64 Development 构建源码 `9e8ebdc61016a6434554680b2e78c4814437f97a`，Unity 6000.6.5f1，989405705 bytes、0 错误、退出 0。D3D11 整备 PlayMode **2/2**，独立 Player 1280×720 正式入口前三战 **134/134、零异常**。检查了顶部商店开关、卡面查看与购买不重叠、商店与羁绊互斥、布阵防穿透和战斗隐藏。与上一版同状态截图逐像素核对，十格备战席和暖灰羁绊详情一致。未执行系统鼠标或完整长局。[开店实机](../artifacts/formation-top-large-cards/player/03-recruitment-drawer-open.png) · [卡面详情](../artifacts/formation-top-large-cards/player/03-shop-offer-detail.png) · [羁绊详情](../artifacts/formation-top-large-cards/player/04-trait-active-tier.png) · [Player 报告](../artifacts/formation-top-large-cards/player/campaign-smoke.json)
+
 ## 2026-11-19 整备暖灰配色
 
 - 按用户同日确认的浏览器配色稿接入。资料分段参考《明日方舟》[官方模组陈列室](https://ak.hypergryph.com/news/3078)第九节；配色和棋盘侧栏位置按本作确认稿适配，不是原作界面复刻。复用[现有徽记与档位底牌](art/SYNERGY-BADGES.md)、节点图标和角色头像，不新增素材，不改角色形态或技能时序。
