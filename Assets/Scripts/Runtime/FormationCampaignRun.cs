@@ -42,6 +42,21 @@ namespace YesterdayConvoy
                 Recruit = recruit; Choice = choice; Items = Array.AsReadOnly(items);
             }
         }
+        public sealed class RewardDrop
+        {
+            public int Id { get; }
+            public string Color { get; }
+            internal RewardDrop(int id, string color) { Id = id; Color = color; }
+        }
+        public sealed class BallPayout
+        {
+            public int Gold { get; internal set; }
+            public int Refreshes { get; internal set; }
+            public string Recruit { get; internal set; }
+            public IReadOnlyList<string> Items => items;
+            internal readonly List<string> items = new List<string>();
+            internal string Unit, Choice;
+        }
         sealed class Delivery { public string Id; public int Star=1, Remaining=1; public bool AtLeast; public ShopTrialModel.RewardReservation Reservation; }
         readonly ShopTrialModel shop;
         readonly Random random;
@@ -51,6 +66,10 @@ namespace YesterdayConvoy
         readonly List<string> augments=new List<string>();
         readonly List<string> openedBalls=new List<string>();
         readonly List<BallReward> ballRewards = new List<BallReward>();
+        readonly List<RewardDrop> pendingBalls = new List<RewardDrop>();
+        RewardDrop openingBall;
+        BallPayout openingPayout;
+        int ballSequence, ballEquipmentGuarantee;
         readonly HashSet<string> settled=new HashSet<string>();
         readonly HashSet<int> hopeClaims=new HashSet<int>();
         readonly HashSet<int> suppliedPlanes=new HashSet<int>();
@@ -79,6 +98,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<string> AugmentIds=>augments;
         public IReadOnlyList<string> OpenedBalls=>openedBalls;
         public IReadOnlyList<BallReward> BallRewards => ballRewards;
+        public IReadOnlyList<RewardDrop> PendingBalls => pendingBalls;
         public int ExtraPopulation=>shop.ExtraPopulation;
         public int TalulahCost=>shop.TalulahId==null?3:shop.Definition(shop.TalulahId).Cost;
         public bool TalulahEnhanced=>shop.TalulahEnhanced;
@@ -136,11 +156,11 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result Choose(int index)
         {
             if(index<0||index>=Choices.Count)return Fail("无效选项");
-            if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success)OnShopChanged();return result;}
+            if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success){FinishBallEquipmentGuarantee();OnShopChanged();}return result;}
             if(selections.Count==0)return Fail("没有待选奖励");
             var selection=selections.Peek();var option=selection.Options[index];
             if(--selection.Picks<=0)selections.Dequeue();else selection.Options.RemoveAt(index);
-            option.Apply?.Invoke();OnShopChanged();return Ok("已选择："+option.Name);
+            option.Apply?.Invoke();FinishBallEquipmentGuarantee();OnShopChanged();return Ok("已选择："+option.Name);
         }
         public bool RerollChoice()
         {if(!CanRerollChoice)return false;var s=selections.Peek();s.Options=s.Reroll();s.Rerolled=true;return true;}
@@ -278,7 +298,7 @@ namespace YesterdayConvoy
         }
         public bool AdvanceNode()
         {
-            if(Finished||!NodeSettled||HasBlockingChoice||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
+            if(Finished||!NodeSettled||HasBlockingChoice||pendingBalls.Count>0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
             int oldPlane=CurrentNode.Plane;NodeIndex++;CurrentEncounterTier=1;openedBalls.Clear();
             if(growthFund>0){shop.AddGold(3);growthFund--;}
             if(contractPays>0){Give(contractId);contractPays--;}
@@ -424,35 +444,70 @@ namespace YesterdayConvoy
             int index=Array.IndexOf(ids,id);if(index<0)return;
             for(int i=0;i<counts[index];i++){int roll=random.Next(100),sum=0;for(int k=0;k<4;k++){sum+=odds[index][k];if(roll<sum){OpenBall(new[]{"白","蓝","金","彩"}[k]);break;}}}
             if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id))AddItem(RandomComponent());
-            int guarantee=id=="1-1"?2:id=="1-2"?5:0;while(equipmentGranted<guarantee)AddItem(RandomComponent());
+            ballEquipmentGuarantee=id=="1-1"?2:id=="1-2"?5:0;
         }
         public void OpenBall(string color)
         {
             if (color != "白" && color != "蓝" && color != "金" && color != "彩") return;
-            int gold = shop.Gold, refreshes = shop.FreeRefreshes, itemStart = items.Count, choiceCount = selections.Count;
-            string recruit = null;
-            openedBalls.Add(color);
+            if (!IsPractice) pendingBalls.Add(new RewardDrop(++ballSequence, color));
+        }
+
+        public BallPayout BeginBall(int id)
+        {
+            if (openingBall != null || HasBlockingChoice) return null;
+            var drop = pendingBalls.Find(ball => ball.Id == id);
+            if (drop == null) return null;
+            openingBall = drop;
+            string color = drop.Color;
+            var payout = openingPayout = new BallPayout();
             int roll=random.Next(100);
             if(color=="白")
-            {if(roll<45)shop.AddGold(3);else if(roll<70){shop.AddGold(2);shop.FreeRefreshes++;}else if(roll<90)recruit=GiveRandom(1);else AddItem(RandomComponent());}
+            {if(roll<45)payout.Gold=3;else if(roll<70){payout.Gold=2;payout.Refreshes=1;}else if(roll<90)RollBallRecruit(payout,1);else payout.items.Add(RandomComponent());}
             else if(color=="蓝")
-            {if(roll<50)AddItem(RandomComponent());else if(roll<70)shop.AddGold(6);else if(roll<85)recruit=GiveRandom(random.Next(2)+2);else{AddItem(RandomComponent());shop.AddGold(2);}}
+            {if(roll<50)payout.items.Add(RandomComponent());else if(roll<70)payout.Gold=6;else if(roll<85)RollBallRecruit(payout,random.Next(2)+2);else{payout.items.Add(RandomComponent());payout.Gold=2;}}
             else if(color=="金")
-            {if(roll<35){AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<65)AddItem(RandomAdvanced());else if(roll<85){shop.AddGold(12);shop.FreeRefreshes+=2;}else if(roll<93){RequestComponents("金球 · 基础装备自选",6);shop.AddGold(6);}else if(roll<98)AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");else{RequestBadge();shop.AddGold(6);}}
+            {if(roll<35){payout.items.Add(RandomComponent());payout.items.Add(RandomComponent());}else if(roll<65)payout.items.Add(RandomAdvanced());else if(roll<85){payout.Gold=12;payout.Refreshes=2;}else if(roll<93){payout.Choice="component";payout.Gold=6;}else if(roll<98)payout.items.Add(random.Next(2)==0?"赤宝石":"蓝宝石");else{payout.Choice="badge";payout.Gold=6;}}
             else if(color=="彩")
-            {if(roll<35){RequestAdvanced("彩球 · 进阶装备自选",21);AddItem(RandomComponent());AddItem(RandomComponent());}else if(roll<60){AddItem(random.Next(2)==0?"赤宝石":"蓝宝石");shop.AddGold(10);}else if(roll<70){AddItem("复制器");shop.AddGold(15);}else if(roll<90){AddItem(RandomAdvanced());AddItem(RandomAdvanced());}else{RequestBadge();shop.AddGold(10);}}
-            ballRewards.Add(new BallReward(CurrentNode.Id, color, shop.Gold - gold, shop.FreeRefreshes - refreshes,
-                recruit, selections.Count > choiceCount ? selections.Last().Title : null,
-                items.Skip(itemStart).Select(item => item.Key).ToArray()));
+            {if(roll<35){payout.Choice="advanced";payout.items.Add(RandomComponent());payout.items.Add(RandomComponent());}else if(roll<60){payout.items.Add(random.Next(2)==0?"赤宝石":"蓝宝石");payout.Gold=10;}else if(roll<70){payout.items.Add("复制器");payout.Gold=15;}else if(roll<90){payout.items.Add(RandomAdvanced());payout.items.Add(RandomAdvanced());}else{payout.Choice="badge";payout.Gold=10;}}
+            return payout;
         }
-        string GiveRandom(int cost)
+
+        public BallReward CompleteBall(int id)
+        {
+            if (openingBall?.Id != id) return null;
+            var drop = openingBall; var payout = openingPayout;
+            openingBall = null; openingPayout = null; pendingBalls.Remove(drop);
+            int choiceCount = selections.Count, waitingCount = waiting.Count;
+            shop.AddGold(payout.Gold); shop.FreeRefreshes += payout.Refreshes;
+            if (payout.Unit != null) Give(payout.Unit);
+            foreach (string key in payout.Items) AddItem(key);
+            switch (payout.Choice)
+            {
+                case "component": RequestComponents("金球 · 基础装备自选", 6); break;
+                case "advanced": RequestAdvanced("彩球 · 进阶装备自选", 21); break;
+                case "badge": RequestBadge(); break;
+            }
+            var reward = new BallReward(CurrentNode.Id, drop.Color, payout.Gold, payout.Refreshes,
+                payout.Recruit == null ? null : payout.Recruit + (waiting.Count > waitingCount ? "（库存待领）" : ""),
+                selections.Count > choiceCount ? selections.Last().Title : null, payout.Items.ToArray());
+            openedBalls.Add(drop.Color); ballRewards.Add(reward);
+            FinishBallEquipmentGuarantee(); OnShopChanged();
+            return reward;
+        }
+
+        void FinishBallEquipmentGuarantee()
+        {
+            if (pendingBalls.Count != 0 || HasBlockingChoice) return;
+            while (equipmentGranted < ballEquipmentGuarantee) AddItem(RandomComponent());
+            ballEquipmentGuarantee = 0;
+        }
+
+        void RollBallRecruit(BallPayout payout, int cost)
         {
             var units = FormationCampaignRules.AllUnits.Where(x => shop.Definition(x.CardId).Cost == cost).ToArray();
-            if (units.Length == 0) return null;
+            if (units.Length == 0) return;
             var unit = units[random.Next(units.Length)];
-            int waitingCount = waiting.Count;
-            Give(unit.Id);
-            return unit.Name + (waiting.Count > waitingCount ? "（库存待领）" : "");
+            payout.Unit = unit.Id; payout.Recruit = unit.Name;
         }
         static IEnumerable<string> EncounterBalls(int tier)=>tier switch{2=>new[]{"蓝","蓝"},3=>new[]{"金","蓝"},4=>new[]{"金","金","彩"},_=>new[]{"蓝"}};
         string RandomComponent()=>"ABCDEF"[random.Next(6)].ToString();

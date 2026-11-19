@@ -211,14 +211,17 @@ namespace YesterdayConvoy
                 yield return ResolveChoices();
                 if (battle == 1)
                 {
+                    Assert(controller.Campaign.PendingBalls.Count == 4 && controller.Campaign.BallRewards.Count == 0,
+                        "First real reward settlement drops four unopened balls without payouts");
+                    Assert(!controller.ContinueCampaign(), "Cannot skip unclaimed ground rewards");
+                }
+                yield return ClaimGroundRewards(battle == 1);
+                if (battle == 1)
+                {
                     var balls = controller.Campaign.BallRewards;
-                    Assert(balls.Count == 4 && balls.All(ball => ball.Node == "1-1"), "First real reward settlement records exactly four 1-1 balls");
+                    Assert(balls.Count == 4 && balls.All(ball => ball.Node == "1-1"), "First real reward settlement claims exactly four 1-1 balls");
                     Assert(balls.All(ball => ball.Gold > 0 || ball.Refreshes > 0 || ball.Items.Count > 0 ||
                         ball.Recruit != null || ball.Choice != null), "Each reward animation has a real resolved payout");
-                    yield return CaptureInterfaceClip("reward-opening", 72);
-                    double revealDeadline = Time.realtimeSinceStartupAsDouble + 8;
-                    while (controller.RevealedRewardCount < balls.Count && Time.realtimeSinceStartupAsDouble < revealDeadline) yield return null;
-                    Assert(controller.RevealedRewardCount == balls.Count, "Reward rail reveals each settled ball once");
                     yield return Frame("06-rewards-revealed");
                 }
                 if(controller.Campaign.Finished)break;
@@ -229,7 +232,47 @@ namespace YesterdayConvoy
             Assert(result.battles==3,"First three real battles completed and settled");
             Assert(controller.Campaign.AugmentIds.Count==1,"First strategic readiness was selected before 1-3 combat");
             yield return Frame("07-post-three-battles");
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationRewardRarityEvidence") >= 0)
+            {
+                foreach (string color in new[] {"白","蓝","蓝","金","白","彩"}) controller.Campaign.OpenBall(color);
+                yield return new WaitForSecondsRealtime(.9f);
+                yield return Frame("08-four-rarities-ground");
+                yield return ClaimGroundRewards(true, "rarity");
+            }
         }
+        IEnumerator ClaimGroundRewards(bool capture, string clipPrefix = "reward-opening")
+        {
+            bool captured = false;
+            int remaining = controller.Campaign.PendingBalls.Count;
+            while (remaining > 0)
+            {
+                var drop = controller.Campaign.PendingBalls.First();
+                double deadline = Time.realtimeSinceStartupAsDouble + 6;
+                Vector2 position = default;
+                while (!controller.TryGroundRewardPoint(drop.Id,out position) && Time.realtimeSinceStartupAsDouble < deadline)
+                    yield return null;
+                yield return new WaitForSecondsRealtime(.68f);
+                bool projected = controller.TryGroundRewardPoint(drop.Id,out position);
+                Assert(projected && position.x > 890 && position.x < 1011 && position.y > 125 && position.y < 578,
+                    "Clickable 3D " + drop.Color + " ball sits in the visible red-gate reward bay");
+                int gold = controller.Shop.Gold, equipment = controller.Campaign.Inventory.Count;
+                Assert(controller.ProcessFormationRewardPointer(EventType.MouseDown,position) &&
+                    controller.ProcessFormationRewardPointer(EventType.MouseUp,position),"Pointer opens one real ground reward");
+                Assert(controller.Shop.Gold == gold && controller.Campaign.Inventory.Count == equipment,
+                    "Click does not grant gold or equipment before flight");
+                if (capture && (clipPrefix == "rarity" ? drop.Color == "金" || drop.Color == "彩" : !captured))
+                {
+                    captured = true;
+                    yield return CaptureInterfaceClip(clipPrefix == "rarity" ? clipPrefix + (drop.Color == "金" ? "-gold" : "-prism") : clipPrefix, 32);
+                }
+                deadline = Time.realtimeSinceStartupAsDouble + 6;
+                while (controller.Campaign.PendingBalls.Any(ball => ball.Id == drop.Id) && Time.realtimeSinceStartupAsDouble < deadline)
+                    yield return null;
+                Assert(controller.Campaign.PendingBalls.Count == --remaining,"Arrival claims exactly one ball");
+                yield return ResolveChoices();
+            }
+        }
+
         IEnumerator VerifyStarterTraitActivation()
         {
             var view = controller.FormationTraitRows.FirstOrDefault(row => row.Active);

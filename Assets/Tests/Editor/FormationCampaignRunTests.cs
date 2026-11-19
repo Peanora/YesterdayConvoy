@@ -13,6 +13,45 @@ namespace YesterdayConvoy.Tests
         }
         static void ResolveChoices(FormationCampaignRun run)
         {int safety=0;while(run.HasBlockingChoice){Assert.That(++safety,Is.LessThan(100));Assert.That(run.Choose(0).Success,Is.True);}}
+        internal static void CollectDrops(FormationCampaignRun run)
+        {
+            ResolveChoices(run);
+            foreach (var drop in run.PendingBalls.ToArray())
+            {
+                Assert.That(run.BeginBall(drop.Id), Is.Not.Null);
+                Assert.That(run.CompleteBall(drop.Id), Is.Not.Null);
+                ResolveChoices(run);
+            }
+        }
+        [Test]
+        public void GroundDropsRequireAnOpeningAndPayExactlyOnceOnArrival()
+        {
+            var shop = Shop(39); var run = new FormationCampaignRun(shop,39);
+            ResolveChoices(run);
+            Assert.That(run.SettleBattle(true,1,3,0,false),Is.Not.Null);
+            Assert.That(run.PendingBalls.Count,Is.EqualTo(4));
+            Assert.That(run.OpenedBalls,Is.Empty);
+            Assert.That(run.AdvanceNode(),Is.False);
+            var drop = run.PendingBalls.Last();
+            int gold = shop.Gold, gear = run.Inventory.Count, count = shop.Bench.Count;
+            Assert.That(run.CompleteBall(drop.Id),Is.Null);
+            var payout = run.BeginBall(drop.Id);
+            Assert.That(payout,Is.Not.Null);
+            Assert.That(run.BeginBall(drop.Id),Is.Null);
+            Assert.That(run.BeginBall(run.PendingBalls[0].Id),Is.Null);
+            Assert.That(shop.Gold,Is.EqualTo(gold));
+            Assert.That(run.Inventory.Count,Is.EqualTo(gear));
+            Assert.That(shop.Bench.Count,Is.EqualTo(count));
+            Assert.That(run.CompleteBall(drop.Id).Color,Is.EqualTo(drop.Color));
+            Assert.That(shop.Gold,Is.EqualTo(gold+payout.Gold));
+            Assert.That(run.Inventory.Count,Is.EqualTo(gear+payout.Items.Count));
+            Assert.That(run.CompleteBall(drop.Id),Is.Null);
+            Assert.That(run.BeginBall(drop.Id),Is.Null);
+            CollectDrops(run);
+            Assert.That(run.BallRewards.Count,Is.EqualTo(4));
+            Assert.That(run.Inventory.Sum(item=>item.Key.Length==1?1:item.Key.Length==2?2:0),Is.GreaterThanOrEqualTo(2));
+            Assert.That(run.AdvanceNode(),Is.True);
+        }
         [Test]
         public void FormationEconomyKeepsLegacySeparateAndUsesFullExperienceCurve()
         {
@@ -74,7 +113,7 @@ namespace YesterdayConvoy.Tests
                 else
                 {
                     battles++;run.LockBattleLineup();var receipt=run.SettleBattle(true,1,5,0,false);Assert.That(receipt.Experience,Is.EqualTo(2));
-                    int gold=shop.Gold;Assert.That(run.SettleBattle(true,1,5,0,false),Is.Null);Assert.That(shop.Gold,Is.EqualTo(gold));ResolveChoices(run);
+                    int gold=shop.Gold;Assert.That(run.SettleBattle(true,1,5,0,false),Is.Null);Assert.That(shop.Gold,Is.EqualTo(gold));CollectDrops(run);
                 }
                 shop.Validate();if(!run.Finished)Assert.That(run.AdvanceNode(),Is.True);
             }
@@ -108,11 +147,13 @@ namespace YesterdayConvoy.Tests
             {
                 var shop=Shop(82);var run=new FormationCampaignRun(shop,82);
                 while(run.CurrentNode.Id!="1-7")
-                {ResolveChoices(run);if(run.CurrentNode.Kind!="补给")run.SettleBattle(true,1,5,0,false);ResolveChoices(run);Assert.That(run.AdvanceNode(),Is.True);}
+                {ResolveChoices(run);if(run.CurrentNode.Kind!="补给")run.SettleBattle(true,1,5,0,false);CollectDrops(run);Assert.That(run.AdvanceNode(),Is.True);}
                 ResolveChoices(run);return run;
             }
             var exact=Prepare();var above=Prepare();
             exact.SettleBattle(false,.25f,5,5,false);above.SettleBattle(false,.25001f,5,5,false);
+            Assert.That(exact.PendingBalls,Is.Empty);Assert.That(above.PendingBalls,Is.Not.Empty);
+            CollectDrops(above);
             string Snapshot(FormationCampaignRun run)=>run.Shop.Gold+"/"+string.Join(",",run.AllEquipment.Select(x=>x.Key))+"/"+string.Join(",",run.Shop.Bench.Select(x=>x.Id+":"+x.Star))+"/"+run.PendingDeliveries;
             Assert.That(Snapshot(exact),Is.Not.EqualTo(Snapshot(above)));Assert.That(exact.SquadHP,Is.EqualTo(above.SquadHP));
         }
@@ -138,7 +179,7 @@ namespace YesterdayConvoy.Tests
             shop.SetLineup(shop.Bench.Select(p=>p.Id),shop.Bench.Select(p=>p.Instance));
             var badge=run.AddItem("徽章:泥岩");var fourth=shop.Bench.Single(p=>FormationCampaignRules.Find(p.Id).Id=="B01");Assert.That(run.Equip(badge.Instance,fourth.Instance).Success,Is.True);
             while(!run.Finished)
-            {ResolveChoices(run);if(run.CurrentNode.Kind!="补给")run.SettleBattle(true,1,5,0,false);ResolveChoices(run);if(!run.Finished)Assert.That(run.AdvanceNode(),Is.True);}
+            {ResolveChoices(run);if(run.CurrentNode.Kind!="补给")run.SettleBattle(true,1,5,0,false);CollectDrops(run);if(!run.Finished)Assert.That(run.AdvanceNode(),Is.True);}
             Assert.That(run.MudrockXP,Is.EqualTo(99));
         }
         static void FixtureNode(FormationCampaignRun run,int index)=>typeof(FormationCampaignRun).GetProperty("NodeIndex").GetSetMethod(true).Invoke(run,new object[]{index});

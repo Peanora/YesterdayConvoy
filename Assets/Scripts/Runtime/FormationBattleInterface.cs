@@ -25,7 +25,11 @@ namespace YesterdayConvoy
         {
             var input=Event.current;
             if(Ready&&input!=null&&input.button==0&&(input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
-                ProcessPointer(input.type,TacticalViewport.Current.FromTopLeft(input.mousePosition));
+            {
+                var point=TacticalViewport.Current.FromTopLeft(input.mousePosition);
+                if (!ProcessFormationRewardPointer(input.type, point)) ProcessPointer(input.type,point);
+                else input.Use();
+            }
             var previous=GUI.matrix;bool enabled=GUI.enabled;GUI.matrix=TacticalViewport.Current.Matrix;
             try
             {
@@ -39,7 +43,7 @@ namespace YesterdayConvoy
                     DrawFormationMenuControls();
                     return;
                 }
-                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
+                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&openingGroundBall==null&&shopInputBlockedFrame!=Time.frameCount;
                 DrawWorldLabels();DrawFormationTraitActivation();DrawFormationHeader();DrawFormationSidebars();
                 DrawCampaignToolbar();
                 DrawFormationSupplies();
@@ -54,6 +58,7 @@ namespace YesterdayConvoy
                 if(shopOddsVisible)DrawFormationOdds();
                 DrawCampaignOverlays();
                 if(!CampaignInteractionBlocked&&!formationMenuOpen&&!shopOddsVisible)DrawCampaignTraitOverlay();
+                DrawFormationRewardFlights();
                 GUI.enabled=enabled;
                 DrawFormationMenuControls();
             }
@@ -199,7 +204,7 @@ namespace YesterdayConvoy
         void DrawSettlement()
         {
             if(Campaign?.IsPractice==true){DrawPracticeResult();return;}
-            if(Campaign!=null){if(!Campaign.Finished)DrawCampaignResult();return;}
+            if(Campaign!=null){if(!Campaign.Finished||Campaign.PendingBalls.Count>0)DrawCampaignResult();return;}
             bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
             Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);
             Label(new Rect(410,245,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未及时进门",16,White,TextAnchor.MiddleCenter);

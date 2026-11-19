@@ -11,7 +11,7 @@ namespace YesterdayConvoy
         int campaignSelectedItem,campaignCombineItem,campaignSelectedPiece;
         Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll,campaignDetailScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
-        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished||campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen);
+        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!HasGroundRewards||campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -82,7 +82,7 @@ namespace YesterdayConvoy
         {
             if(Campaign==null)return;
             if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
-            if(Campaign.Finished){DrawCampaignFinished();return;}
+            if(Campaign.Finished&&!HasGroundRewards){DrawCampaignFinished();return;}
             if(campaignInventoryOpen)DrawCampaignInventory();
             else if(campaignFormationOpen)DrawCampaignFormation();
             else if(campaignRouteOpen)DrawCampaignRoute();
@@ -131,19 +131,20 @@ namespace YesterdayConvoy
         void DrawCampaignResult()
         {
             bool won=Model.Phase==FormationPhase.Won;
-            var r=new Rect(350,164,580,350);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
+            var r=new Rect(246,164,554,350);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
             CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,35),won?"蓝门突破 · 本关胜利":"本关失利 · 调整后继续",25,true);
             CampaignLabel(new Rect(r.x+25,r.y+68,r.width-50,85),Campaign.LastSummary,15);
             CampaignLabel(new Rect(r.x+25,r.y+159,r.width-50,70),$"队伍生命 {Campaign.SquadHP}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n遭遇削减进度 {Model.EncounterProgress:P1}  ·  本关只结算一次",14);
             var names=new[]{"白","蓝","金","彩"};
             for(int i=0;i<4;i++)
             {
-                float x=r.x+25+i*133;
+                float x=r.x+25+i*125;
                 var art=SupplyOrbArt(names[i]);
                 if(art!=null)GUI.DrawTexture(new Rect(x,r.y+221,32,32),art,ScaleMode.ScaleToFit,true);
-                CampaignLabel(new Rect(x+35,r.y+228,95,23),names[i]+"球 ×"+Campaign.OpenedBalls.Count(c=>c==names[i]),13,true);
+                CampaignLabel(new Rect(x+35,r.y+228,88,23),names[i]+"球 ×"+Campaign.PendingBalls.Count(ball=>ball.Color==names[i]),13,true);
             }
-            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点",!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
+            string next=HasGroundRewards?"点击红门右侧的奖励球 · 剩余 "+Campaign.PendingBalls.Count+" 颗":Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点";
+            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),next,!HasGroundRewards&&!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
         }
         void DrawPracticeResult()
         {

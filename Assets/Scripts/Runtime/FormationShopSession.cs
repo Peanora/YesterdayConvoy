@@ -315,6 +315,12 @@ namespace YesterdayConvoy
             var result=Run.Choose(index);if(result.Success){Synchronize();if(model!=null&&model.Phase==FormationPhase.Preparation)ApplyTo(model);}return result;
         }
         public bool RerollChoice()=>Run!=null&&Run.RerollChoice();
+        internal FormationCampaignRun.BallReward CompleteBall(int id)
+        {
+            var reward = Run?.CompleteBall(id);
+            if (reward != null) Synchronize();
+            return reward;
+        }
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
         {
             if(Run==null)return won?SettleWin(Round):null;

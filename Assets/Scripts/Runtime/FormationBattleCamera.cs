@@ -46,13 +46,13 @@ namespace YesterdayConvoy
         }
         public void ToggleFormationView()
         {
-            if (Model != null && Model.Phase == FormationPhase.Preparation) SetFormationView(!ViewingDefenders);
+            if (Model != null && Model.Phase == FormationPhase.Preparation && openingGroundBall == null) SetFormationView(!ViewingDefenders);
         }
         public void SetFormationView(bool defenders, bool immediate = false)
         {
             if (battleCamera == null || Model == null) return;
             if (!formationCameraInitialized) InitializeFormationCamera();
-            ViewingDefenders = Model.Phase == FormationPhase.Preparation ? defenders : true;
+            ViewingDefenders = Model.Phase == FormationPhase.Preparation ? defenders : !HasGroundRewards;
             CancelFormationDrag();
             ApplyFixedFormationView();
             if (Ready) SyncActors();
@@ -66,6 +66,8 @@ namespace YesterdayConvoy
             bool preparing = Model.Phase == FormationPhase.Preparation;
             if (preparing != formationCameraWasPreparing || preparing && Model.Round != formationCameraRound)
                 SetFormationView(!preparing);
+            if (!preparing && !UseFormationBattleCamera && HasGroundRewards && ViewingDefenders)
+                SetFormationView(false);
             formationCameraWasPreparing = preparing;
             formationCameraRound = Model.Round;
             ApplyFixedFormationView();

@@ -180,6 +180,7 @@ namespace YesterdayConvoy.Tests
                         Is.True,node.Id+" · "+defender.Name+" · "+defender.ArtId);
                 if (node == FormationCampaignRules.Nodes.Last()) break;
                 if (!run.NodeSettled) run.SettleBattle(true, 1, 1, 0, false);
+                FormationCampaignRunTests.CollectDrops(run);
                 Assert.That(run.AdvanceNode(), Is.True);
             }
         }

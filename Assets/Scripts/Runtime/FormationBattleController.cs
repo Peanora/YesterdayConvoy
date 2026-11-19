@@ -81,7 +81,7 @@ namespace YesterdayConvoy
             approvedShop?.Tick();
             TickFormationRewards(Time.unscaledDeltaTime);
             TickFormationTraitFeedback(Time.unscaledDeltaTime);
-            if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();
+            if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen&&openingGroundBall==null)ToggleFormationMarket();
             if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
@@ -90,7 +90,7 @@ namespace YesterdayConvoy
             if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
         void OnApplicationFocus(bool focus)
-        {if(!focus){CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
+        {if(!focus){pressedGroundBall=null;CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
         public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-(FormationBattleModel.Width-1)*.5f,.12f,cell.y-(FormationBattleModel.Height-1)*.5f);
         public Vector3 ActorWorldPoint(Vector2 cell)=>WorldPoint(cell)+Vector3.up*(Model?.Terrain?.HeightAt(cell)??0);
         public Vector3 ActorWorldPoint(FormationActor actor)=>ActorWorldPoint(actor.Position);
@@ -108,7 +108,7 @@ namespace YesterdayConvoy
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
-            if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
+            if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null)return;
             if(FormationSupplyBlocksPoint(point) &&
                 !(type!=EventType.MouseDown && pointerHeld && shopDragInstance>0 && FormationSellRight.Contains(point)))
             {CancelFormationDrag();return;}
@@ -165,7 +165,7 @@ namespace YesterdayConvoy
         }
         public void StartBattle()
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
+            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||Campaign!=null&&(HasGroundRewards||!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
             if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
@@ -247,6 +247,7 @@ namespace YesterdayConvoy
         }
         void OnDestroy()
         {
+            DisposeGroundRewards();
             DisposeFormationNativeEffects();
             approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
             ArtMemoryCache.Pin(Array.Empty<string>());

@@ -14,16 +14,10 @@ namespace YesterdayConvoy
         };
         static readonly Rect RewardRail = new Rect(1011, 66, 252, 62);
         static readonly Rect EquipmentRail = new Rect(1011, 134, 252, 121);
-        static readonly Rect RewardSlot = new Rect(1019, 74, 46, 46);
-        const float BallRevealSeconds = 1.04f;
         Vector2 equipmentRailScroll;
         FormationCampaignRun rewardPresentationRun;
-        int rewardCursor, rewardHistorySelected = -1;
-        float rewardAge;
+        int rewardHistorySelected = -1;
         bool rewardHistoryOpen;
-        internal int RevealedRewardCount => rewardCursor;
-        internal FormationCampaignRun.BallReward PresentingReward =>
-            Campaign != null && rewardCursor < Campaign.BallRewards.Count ? Campaign.BallRewards[rewardCursor] : null;
 
         internal static Texture2D SupplyItemArt(string key)
         {
@@ -51,19 +45,13 @@ namespace YesterdayConvoy
             if (!ReferenceEquals(rewardPresentationRun, Campaign))
             {
                 rewardPresentationRun = Campaign;
-                rewardCursor = 0;
-                rewardAge = 0;
+                ClearGroundRewards();
                 rewardHistoryOpen = false;
                 rewardHistorySelected = -1;
                 equipmentRailScroll = Vector2.zero;
                 campaignSelectedItem = campaignCombineItem = campaignSelectedPiece = 0;
             }
-            if (Campaign == null || CombatViewActive || CampaignInteractionBlocked ||
-                formationMenuOpen || shopOddsVisible || rewardHistoryOpen || PresentingReward == null) return;
-            rewardAge += Mathf.Min(delta, .1f);
-            if (rewardAge < BallRevealSeconds) return;
-            rewardCursor++;
-            rewardAge = 0;
+            TickGroundRewards(delta);
         }
 
         bool FormationSupplyBlocksPoint(Vector2 point) => Campaign != null &&
@@ -130,7 +118,9 @@ namespace YesterdayConvoy
 
             var grid = new Rect(1019, 163, 237, 84);
             int rows = Mathf.Max(2, Mathf.CeilToInt(inventory.Count / 5f));
-            equipmentRailScroll = GUI.BeginScrollView(grid, equipmentRailScroll, new Rect(0, 0, 220, rows * 42));
+            if (openingGroundBall != null) rows = Mathf.Max(rows, Mathf.CeilToInt((inventory.Count + groundPayout.Items.Count) / 5f));
+            var scroll = GUI.BeginScrollView(grid, equipmentRailScroll, new Rect(0, 0, 220, rows * 42));
+            if (openingGroundBall == null) equipmentRailScroll = scroll;
             for (int i = 0; i < rows * 5; i++)
             {
                 var slot = new Rect(i % 5 * 44, i / 5 * 42 + 1, 40, 39);
@@ -149,27 +139,11 @@ namespace YesterdayConvoy
         {
             Fill(RewardRail, TraitPanel);
             ApprovedUi.Border(RewardRail, TraitLine);
-            Fill(RewardSlot, TraitCard);
-            ApprovedUi.Border(RewardSlot, TraitLine);
-
             var balls = Campaign.BallRewards;
-            var ball = PresentingReward;
-            var latest = balls.Count > 0 ? balls[Mathf.Min(rewardCursor, balls.Count - 1)] : null;
-            var accent = BallAccent(latest?.Color);
-            string title = latest == null ? "奖励球" : latest.Color + "球 · " + latest.Node;
-            TraitLabel(new Rect(1074, 72, 178, 18), title, 13, latest == null ? TraitMuted : accent, true);
-            string text = ball != null && rewardAge >= .37f ? BallRewardText(ball) :
-                ball != null ? "开启中  " + (rewardCursor + 1) + " / " + balls.Count :
-                latest == null ? "结算时自动开启" : "已开 " + balls.Count + " 个 · 查看记录";
-            TraitLabel(new Rect(1074, 91, 180, 31), text, 11, TraitInk);
-            if (ball == null)
-            {
-                var orb = SupplyOrbArt(latest?.Color);
-                if (orb != null) GUI.DrawTexture(RewardSlot, orb, ScaleMode.ScaleToFit, true);
-                else TraitLabel(RewardSlot, "◇", 22, TraitMuted, false, TextAnchor.MiddleCenter);
-            }
-            else DrawBallReveal(ball, accent);
-
+            TraitLabel(new Rect(1020, 73, 225, 20), "地图战利品", 14, TraitInk, true);
+            string text = HasGroundRewards ? "红门右侧 · " + Campaign.PendingBalls.Count + " 颗待领取" :
+                balls.Count > 0 ? "已开 " + balls.Count + " 个 · 查看记录" : "奖励球掉落后可在红门右侧领取";
+            TraitLabel(new Rect(1020, 95, 230, 24), text, 11, TraitMuted);
             if (balls.Count > 0 && TraitHit(RewardRail, "查看本局奖励球记录"))
             {
                 rewardHistoryOpen = !rewardHistoryOpen;
@@ -177,47 +151,6 @@ namespace YesterdayConvoy
                 CancelFormationDrag();
             }
             if (rewardHistoryOpen) DrawRewardHistory();
-        }
-
-        void DrawBallReveal(FormationCampaignRun.BallReward ball, Color accent)
-        {
-            float entry = Mathf.SmoothStep(0, 1, Mathf.Clamp01(rewardAge / .29f));
-            float burst = Mathf.Clamp01((rewardAge - .31f) / .29f);
-            float pulse = Mathf.Sin(burst * Mathf.PI) * .9f;
-            var center = RewardSlot.center;
-            Color oldColor = GUI.color;
-            if (rewardAge < .55f)
-            {
-                float size = Mathf.Lerp(18, 53, entry) * (1 + .22f * pulse);
-                var position = center + new Vector2(22 * (1 - entry), -18 * (1 - entry));
-                var orb = SupplyOrbArt(ball.Color);
-                if (orb != null)
-                {
-                    GUI.color = new Color(1, 1, 1, Mathf.Lerp(.2f, 1, entry) * (1 - Mathf.Clamp01((rewardAge - .40f) / .15f)));
-                    GUI.DrawTexture(new Rect(position.x - size / 2, position.y - size / 2, size, size), orb, ScaleMode.ScaleToFit, true);
-                    GUI.color = oldColor;
-                }
-            }
-            if (pulse > 0)
-            {
-                Color ray = new Color(accent.r, accent.g, accent.b, pulse);
-                ApprovedUi.Border(RewardSlot, ray, 2);
-                for (int i = 0; i < 8; i++)
-                {
-                    float angle = i * Mathf.PI / 4;
-                    Vector2 point = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Mathf.Lerp(12, 31, burst);
-                    Fill(new Rect(point.x - 2, point.y - 2, 4, 4), ray);
-                }
-            }
-            if (rewardAge < .40f) return;
-            float appear = Mathf.SmoothStep(0, 1, Mathf.Clamp01((rewardAge - .40f) / .2f));
-            var prize = new Rect(RewardSlot.x + 5, RewardSlot.y + 5 + 8 * (1 - appear), 36, 36);
-            GUI.color = new Color(1, 1, 1, appear);
-            if (ball.Items.Count > 0) DrawSupplyItem(prize, ball.Items[0]);
-            else if (ball.Recruit != null) TraitLabel(prize, "＋", 21, accent, true, TextAnchor.MiddleCenter);
-            else if (ball.Choice != null) TraitLabel(prize, "◇", 22, accent, true, TextAnchor.MiddleCenter);
-            else if (formationCoin != null) GUI.DrawTexture(prize, formationCoin, ScaleMode.ScaleToFit, true);
-            GUI.color = oldColor;
         }
 
         static Rect RewardHistoryRect => new Rect(760, 67, 244, 178);

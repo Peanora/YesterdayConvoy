@@ -74,6 +74,7 @@ namespace YesterdayConvoy.Tests
             var (shop, run) = Create("M21");
             int gold = shop.Gold, refreshes = shop.FreeRefreshes, items = run.AllEquipment.Count;
             run.OpenBall("彩");
+            FormationCampaignRunTests.CollectDrops(run);
             var reward = run.BallRewards.Single();
             Assert.That(reward.Color, Is.EqualTo("彩"));
             Assert.That(reward.Gold, Is.EqualTo(shop.Gold - gold));
@@ -82,8 +83,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(reward.Choice, Is.EqualTo(run.ChoiceTitle));
             while (run.HasBlockingChoice) Assert.That(run.Choose(0).Success, Is.True);
             Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Not.Null);
-            Assert.That(run.BallRewards.Count, Is.EqualTo(5));
+            Assert.That(run.PendingBalls.Count, Is.EqualTo(4));
             Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Null);
+            FormationCampaignRunTests.CollectDrops(run);
             Assert.That(run.BallRewards.Count, Is.EqualTo(5));
         }
 
