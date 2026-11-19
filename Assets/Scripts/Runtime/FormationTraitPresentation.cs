@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         const float TraitRowHeight = 45;
         internal const float TraitRevealSeconds = .18f;
         const int TraitMemberColumns = 4;
-        const float TraitMemberRowHeight = 80;
+        const float TraitMemberRowHeight = 92;
 
         bool formationAllTraits;
         Vector2 formationTraitDetailScroll;
@@ -135,7 +135,7 @@ namespace YesterdayConvoy
             float reveal = 1 - (1 - progress) * (1 - progress) * (1 - progress);
             var previous = GUI.color;
             GUI.BeginGroup(panel);
-            GUI.color = new Color(previous.r, previous.g, previous.b, previous.a * reveal);
+            GUI.color = new Color(previous.r, previous.g, previous.b, previous.a * Mathf.Lerp(.20f, 1, progress));
             try
             {
                 DrawFormationTraitDetails(view, new Rect(Mathf.Lerp(-13, 0, reveal), 0, panel.width, panel.height));
@@ -226,9 +226,9 @@ namespace YesterdayConvoy
                     FormationUnitArt.For(member.CardId)?.Portrait);
                 GUI.color = previous;
                 TraitLabel(new Rect(tile.x + 5, tile.y + 2, 16, 16), member.Cost.ToString(), 10, TraitMuted, true);
-                TraitLabel(new Rect(tile.x + 3, tile.y + 47, tile.width - 6, 16), member.Name,
-                    member.Name.Length > 7 ? 9 : 11, owned ? TraitInk : TraitMuted, false, TextAnchor.MiddleCenter);
-                TraitLabel(new Rect(tile.x + 2, tile.y + 61, tile.width - 4, 14), member.StateText,
+                TraitLabel(new Rect(tile.x + 3, tile.y + 47, tile.width - 6, 26), member.Name,
+                    11, owned ? TraitInk : TraitMuted, false, TextAnchor.MiddleCenter);
+                TraitLabel(new Rect(tile.x + 2, tile.y + 73, tile.width - 4, 14), member.StateText,
                     10, lineup ? TraitActive : TraitMuted, lineup, TextAnchor.MiddleCenter);
             }
         }
