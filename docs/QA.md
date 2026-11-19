@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-19 左侧羁绊与详情共用徽记
+
+- 以用户指明的详情标题旁徽记为原样。左右两处直接调用同一绘制方法，读取原档位底牌、徽记和人数圆点。切换左侧点选状态时，在底牌后面叠加外沿高亮。实机同屏的连击徽记与人数圆点各抽查不透明中心，选取的 249 和 25 个像素在两处完全相同。铜档迅攻同时显示为原铜色底牌。 [同屏截图](../artifacts/formation-shared-trait-badge/player/04-trait-members-and-tiers.png) · [素材来源](art/SYNERGY-BADGES.md)
+- Windows x64 源码 `e71af6b17045fe63fd30adbaf3d379790555420e`，Unity 6000.6.5f1 构建通过，退出 0。Runtime DLL SHA-256 `20FF8C9789CFEDAB25981152B6CB76FD071BD8B49DCBF317CDFBB86F857F70B4`。可见独立 Player 1280×720 D3D11 前三战 **132/132、零异常**，覆盖详情打开、关闭及棋盘防穿透。该轮经实机检查入口打开详情，未重新做实体鼠标和高档样本。常用 EXE 当时正在运行，更新版位于 `Builds/Windows-TraitOutline/YesterdayConvoy.exe`。 [构建日志](../artifacts/formation-shared-trait-badge/build.log) · [Player 结果](../artifacts/formation-shared-trait-badge/player/campaign-smoke.json)
+
 ## 2026-11-19 整备羁绊实心菱形
 
 - 对照本作确认的 45° 羁绊布局及已确认档位色。采用每档一种实色填满菱形，统一实色也用于最高档的青绿。复用确认过的徽记和档位映射。选中、悬停和按下的亮线独立于填色。素材来源见[徽记和底牌记录](art/SYNERGY-BADGES.md)。
