@@ -8,10 +8,13 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         bool campaignInventoryOpen,campaignFormationOpen,campaignRouteOpen,campaignScoutingOpen,campaignResultSettled,campaignSeaPainting;
+        bool campaignRewardChoiceOpen,campaignResultSummaryOpen;
         int campaignSelectedItem,campaignCombineItem,campaignSelectedPiece;
         Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll,campaignDetailScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
-        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!HasGroundRewards||campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen);
+        bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
+        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
+            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -35,7 +38,7 @@ namespace YesterdayConvoy
         }
         public bool ContinueCampaign()
         {
-            if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished)return false;
+            if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished||openingGroundBall!=null)return false;
             Session.SavePositions(Model);
             if(!Session.AdvanceNode())return false;
             campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
@@ -53,8 +56,26 @@ namespace YesterdayConvoy
         }
         void CampaignAction(ShopTrialModel.Result result)
         {notice=result.Message;if(result.Success)RefreshCampaignPreparation();}
+        internal bool OpenGroundRewardChoices()
+        {
+            if(Campaign?.PendingRewardChoices>0&&!CombatViewActive&&!CampaignInteractionBlocked&&openingGroundBall==null)
+            {
+                CloseCampaignPanels(); SetMarketVisible(false); CloseFormationTraitDetails();
+                campaignChoiceScroll=Vector2.zero; campaignRewardChoiceOpen=true;
+                return true;
+            }
+            return false;
+        }
+        internal ShopTrialModel.Result ChooseGroundRewardOption(int index)
+        {
+            var result=Campaign.ChooseReward(index);
+            CampaignAction(result);
+            if(Campaign.PendingRewardChoices==0)campaignRewardChoiceOpen=false;
+            campaignChoiceScroll=Vector2.zero;
+            return result;
+        }
         void CloseCampaignPanels()
-        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=false;rewardHistoryOpen=false;CancelFormationDrag();}
+        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;rewardHistoryOpen=false;CancelFormationDrag();}
 
         void DrawCampaignToolbar()
         {
@@ -82,7 +103,8 @@ namespace YesterdayConvoy
         {
             if(Campaign==null)return;
             if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
-            if(Campaign.Finished&&!HasGroundRewards){DrawCampaignFinished();return;}
+            if(campaignRewardChoiceOpen&&Campaign.PendingRewardChoices>0){DrawCampaignChoices(true);return;}
+            if(Campaign.Finished&&(!AwaitingOptionalRewards||campaignResultSummaryOpen)){DrawCampaignFinished();return;}
             if(campaignInventoryOpen)DrawCampaignInventory();
             else if(campaignFormationOpen)DrawCampaignFormation();
             else if(campaignRouteOpen)DrawCampaignRoute();
@@ -97,11 +119,11 @@ namespace YesterdayConvoy
             if(close&&Button(new Rect(r.xMax-57,r.y+15,38,30),"×"))CloseCampaignPanels();
             return r;
         }
-        void DrawCampaignChoices()
+        void DrawCampaignChoices(bool optional = false)
         {
             var run=Campaign;
-            var r=CampaignWindow(run.ChoiceTitle,"选择会保留本局。初始角色、库存和已选奖励不会因重抽而重置。",false);
-            var choices=run.Choices.ToArray();int columns=choices.Length==2?2:3;
+            var r=CampaignWindow(optional?run.RewardChoiceTitle:run.ChoiceTitle,optional?"可关闭面板，稍后再选。":"选择会保留本局。初始角色、库存和已选奖励不会因重抽而重置。",optional);
+            var choices=(optional?run.RewardChoices:run.Choices).ToArray();int columns=choices.Length==2?2:3;
             float width=(r.width-62-(columns-1)*12)/columns;
             var viewport=new Rect(r.x+22,r.y+96,r.width-44,345);
             float contentHeight=Mathf.Ceil(choices.Length/(float)columns)*185;
@@ -115,15 +137,24 @@ namespace YesterdayConvoy
                 float textInset = art != null ? 51 : 12;
                 CampaignLabel(new Rect(card.x+textInset,card.y+11,card.width-textInset-10,28),option.Name,16,true);
                 CampaignLabel(new Rect(card.x+12,card.y+44,card.width-24,84),option.Description,12);
-                if(Button(new Rect(card.x+12,card.yMax-35,card.width-24,27),"选择")){ChooseCampaignOption(i);GUI.EndScrollView();return;}
+                if(Button(new Rect(card.x+12,card.yMax-35,card.width-24,27),"选择"))
+                {
+                    if(optional)
+                    {
+                        ChooseGroundRewardOption(i);
+                    }
+                    else ChooseCampaignOption(i);
+                    GUI.EndScrollView();return;
+                }
             }
             GUI.EndScrollView();
+            if(optional)return;
             if(Button(new Rect(r.x+22,r.yMax-61,190,35),"免费重抽本组一次",run.CanRerollChoice))run.RerollChoice();
             CampaignLabel(new Rect(r.x+231,r.yMax-57,660,36),run.CanRerollChoice?(run.ChoiceTitle?.Contains("战略预案")==true?"换成未展示的预案，原组选项不会返回。":"重抽本组战略战备，不改变已经选定的战备。 "):"完成本次选择后继续。",12);
         }
         void DrawCampaignFinished()
         {
-            var r=CampaignWindow(Campaign.Won?"三个位面突破 · 挑战完成":"挑战结束",Campaign.Won?"你的军阵已突破最终防线。":Campaign.SquadHP<=0?"队伍生命已耗尽，本局构筑到此结束。":"未能突破最终防线，本局挑战结束。",false);
+            var r=CampaignWindow(Campaign.Won?"三个位面突破 · 挑战完成":"挑战结束",Campaign.Won?"你的军阵已突破最终防线。":Campaign.SquadHP<=0?"队伍生命已耗尽，本局构筑到此结束。":"未能突破最终防线，本局挑战结束。",AwaitingOptionalRewards);
             CampaignLabel(new Rect(r.x+25,r.y+120,r.width-50,90),$"抵达 {Campaign.CurrentNode.Id}  ·  等级 {Shop.Level}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n战略预案：{FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"未选择"}",18,true);
             CampaignLabel(new Rect(r.x+25,r.y+220,r.width-50,110),"本局战略战备：\n"+string.Join("、",Campaign.AugmentIds.Select(id=>FormationCampaignRules.FindRecord(id)?.Name??id)),15);
             if(Button(new Rect(r.center.x-137.5f,r.yMax-80,275,45),"重新开始完整挑战",true,true))ResetDemo();
@@ -141,10 +172,15 @@ namespace YesterdayConvoy
                 float x=r.x+25+i*125;
                 var art=SupplyOrbArt(names[i]);
                 if(art!=null)GUI.DrawTexture(new Rect(x,r.y+221,32,32),art,ScaleMode.ScaleToFit,true);
-                CampaignLabel(new Rect(x+35,r.y+228,88,23),names[i]+"球 ×"+Campaign.PendingBalls.Count(ball=>ball.Color==names[i]),13,true);
+                CampaignLabel(new Rect(x+35,r.y+228,88,23),names[i]+"球 ×"+Campaign.PendingBalls.Count(ball=>ball.Node==Campaign.CurrentNode.Id&&ball.Color==names[i]),13,true);
             }
-            string next=HasGroundRewards?"点击红门右侧的奖励球 · 剩余 "+Campaign.PendingBalls.Count+" 颗":Campaign.HasBlockingChoice?"先完成奖励选择":"继续下一节点";
-            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),next,!HasGroundRewards&&!Campaign.HasBlockingChoice&&!Campaign.Finished,true))ContinueCampaign();
+            if(HasGroundRewards) CampaignLabel(new Rect(r.x+25,r.y+258,r.width-50,20),"红门右侧的战利品可以留到下次整备领取。",11);
+            string next=Campaign.HasBlockingChoice?"先完成必要选择":Campaign.Finished?"查看最终结算":"继续下一节点";
+            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),next,!Campaign.HasBlockingChoice&&openingGroundBall==null,true))
+            {
+                if (Campaign.Finished) campaignResultSummaryOpen=true;
+                else ContinueCampaign();
+            }
         }
         void DrawPracticeResult()
         {

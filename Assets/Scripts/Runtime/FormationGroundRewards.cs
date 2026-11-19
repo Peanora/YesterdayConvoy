@@ -31,6 +31,7 @@ namespace YesterdayConvoy
         }
         readonly List<GroundBall> groundBalls = new List<GroundBall>();
         readonly List<Mesh> rewardMeshes = new List<Mesh>();
+        readonly Dictionary<string,Sprite> componentDropSprites = new Dictionary<string,Sprite>();
         readonly Dictionary<string, Mesh> rewardShells = new Dictionary<string, Mesh>();
         readonly Dictionary<(int Grade,int Layer),Mesh> rewardRings = new Dictionary<(int,int),Mesh>();
         GameObject groundRewardRoot, groundRewardFrame;
@@ -42,7 +43,12 @@ namespace YesterdayConvoy
         Vector2 rewardPointerStart, rewardFlightOrigin;
         float rewardFlightAge, rewardArrivalAge = 1;
         int rewardFirstItem, rewardArrivalItems, rewardArrivalGold;
+        int groundRewardPage;
+        readonly List<Vector2> rewardRecruitTargets = new List<Vector2>();
+        int GroundRewardPages => Mathf.Max(1,Mathf.CeilToInt((Campaign?.PendingBalls.Count??0)/(float)LootScatter.Length));
         bool HasGroundRewards => Campaign?.PendingBalls.Count > 0;
+        internal bool ActiveGroundRewardHasRecruits => groundPayout?.Recruits.Count>0;
+        internal bool ActiveGroundRewardHasTwoStar => groundPayout?.Recruits.Any(recruit=>recruit.Star==2)==true;
         bool GroundRewardsVisible => HasGroundRewards && !CombatViewActive && !ViewingDefenders;
         bool CanPickGroundRewards => GroundRewardsVisible && !CampaignInteractionBlocked && !formationMenuOpen &&
             !shopOddsVisible && !rewardHistoryOpen && !MarketVisible && !ShopPanelTransitioning;
@@ -114,6 +120,10 @@ namespace YesterdayConvoy
             rewardFlightAge = 0;
             rewardFlightOrigin = RewardProjection(ball.Body.position + Vector3.up * .12f);
             rewardFirstItem = Campaign.Inventory.Count;
+            rewardRecruitTargets.Clear();
+            var vacant = Enumerable.Range(0,10).Where(slot=>Session.Seats.At(false,slot)==0).ToArray();
+            for (int index=0;index<payout.Recruits.Count;index++)
+                rewardRecruitTargets.Add(FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(index,vacant.Length-1)]).center);
             if (payout.Items.Count > 0)
             {
                 int lastRow = (rewardFirstItem + payout.Items.Count - 1) / 5;
@@ -139,7 +149,17 @@ namespace YesterdayConvoy
             }
             EnsureGroundRewards();
             groundRewardRoot.SetActive(true);
-            foreach (var drop in Campaign.PendingBalls)
+            groundRewardPage = Mathf.Clamp(groundRewardPage,0,GroundRewardPages-1);
+            var visibleDrops = Campaign.PendingBalls.Skip(groundRewardPage*LootScatter.Length).Take(LootScatter.Length).ToArray();
+            for (int index=groundBalls.Count-1;index>=0;index--)
+            {
+                var ball = groundBalls[index];
+                if (visibleDrops.Contains(ball.Drop)) continue;
+                ball.Root.gameObject.SetActive(false);
+                Destroy(ball.Root.gameObject);
+                groundBalls.RemoveAt(index);
+            }
+            foreach (var drop in visibleDrops)
             {
                 if (groundBalls.Count >= LootScatter.Length) break;
                 if (groundBalls.Any(ball => ball.Drop.Id == drop.Id)) continue;
@@ -164,7 +184,7 @@ namespace YesterdayConvoy
                         rewardArrivalAge = 0;
                         rewardArrivalGold = payout.Gold;
                         rewardArrivalItems = payout.Items.Count;
-                        notice = ball.Drop.Color + "球 · " + BallRewardText(reward);
+                        notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
                         RefreshCampaignPreparation();
                         approvedShop?.SyncShopBenchModels();
                     }
@@ -173,6 +193,7 @@ namespace YesterdayConvoy
                         ClearGroundRewards();
                         return;
                     }
+                    if (groundRewardPage >= GroundRewardPages) ClearGroundRewards();
                 }
             }
 
@@ -194,11 +215,12 @@ namespace YesterdayConvoy
                 ball.Shadow.gameObject.SetActive(ball.Body.gameObject.activeSelf);
                 ball.Body.localPosition = Vector3.up * (ball.Radius + fall + (hover ? .035f : 0) + .19f * pop * pop);
                 ball.Body.localScale = Vector3.one * (ball.Radius * (1 - .19f * Mathf.Sin(pop * 2.6f)));
-                ball.Body.localRotation = Quaternion.Euler(24 + fall * 150, clock * 34 + ball.Drop.Id * 43 + pop * 52, -16);
+                ball.Body.rotation = ball.Drop.Component != null ? battleCamera.transform.rotation :
+                    Quaternion.Euler(24 + fall * 150, clock * 34 + ball.Drop.Id * 43 + pop * 52, -16);
                 if (ball.Orbit != null)
                     ball.Orbit.localRotation = Quaternion.Euler(0, clock * (ball.Grade == 2 ? 58 : 42), 0);
                 rewardTint.SetFloat("_Boost", .95f + (hover ? .22f : 0) + pop * .85f);
-                ball.Shell.SetPropertyBlock(rewardTint);
+                if (ball.Shell != null) ball.Shell.SetPropertyBlock(rewardTint);
             }
         }
 
@@ -243,6 +265,7 @@ namespace YesterdayConvoy
         {
             if (groundRewardRoot != null) Destroy(groundRewardRoot);
             foreach (var mesh in rewardMeshes) Destroy(mesh);
+            foreach (var sprite in componentDropSprites.Values) Destroy(sprite);
             if (rewardMaterial != null) Destroy(rewardMaterial);
             if (rewardDecal != null) Destroy(rewardDecal);
         }
@@ -257,7 +280,7 @@ namespace YesterdayConvoy
         void AddGroundBall(FormationCampaignRun.RewardDrop drop,int index)
         {
             var offset = LootScatter[index % LootScatter.Length];
-            var root = new GameObject(drop.Color + "球").transform;
+            var root = new GameObject(drop.Component != null ? "装备补足 · "+drop.Component : drop.Color+"球").transform;
             root.SetParent(groundRewardRoot.transform, false);
             root.position = GroundRewardPoint(Mathf.Lerp(RewardLeft, RewardRight, offset.x),
                 Mathf.Lerp(RewardFar, RewardNear, offset.y), RewardFloor + .012f);
@@ -266,7 +289,21 @@ namespace YesterdayConvoy
             float radius = .228f * RewardSizeRatio(drop.Color);
             body.localPosition = Vector3.up * (radius + .96f);
             body.localScale = Vector3.one * radius;
-            var shell = RewardMeshChild("Faceted shell",body,RewardShell(drop.Color),rewardMaterial);
+            MeshRenderer shell = null;
+            if (drop.Component == null) shell = RewardMeshChild("Faceted shell",body,RewardShell(drop.Color),rewardMaterial);
+            else
+            {
+                var art = SupplyItemArt(drop.Component);
+                if (art != null)
+                {
+                    var display = new GameObject("拾取装备") {layer=FormationLeftLayer};
+                    display.transform.SetParent(body,false);
+                    var renderer = display.AddComponent<SpriteRenderer>();
+                    if (!componentDropSprites.TryGetValue(drop.Component,out var sprite))
+                        componentDropSprites[drop.Component] = sprite = Sprite.Create(art,new Rect(0,0,art.width,art.height),new Vector2(.5f,.5f),art.width*.47f);
+                    renderer.sprite = sprite;
+                }
+            }
             int grade = drop.Color == "彩" ? 2 : drop.Color == "金" ? 1 : 0;
             Transform orbit = null;
             if (grade != 0)
@@ -429,12 +466,12 @@ namespace YesterdayConvoy
                 DrawRewardFlight(RewardCoinTarget,null,true,.035f * index, .72f, index - (coins-1)*.5f);
             for (int index = 0; index < groundPayout.Items.Count; index++)
                 DrawRewardFlight(RewardItemTarget(rewardFirstItem + index),groundPayout.Items[index],false,.065f * index,.75f,index);
-            if (groundPayout.Recruit != null)
-                DrawRewardFlight(FormationReserveRect(0).center,"招募",false,0,.76f,0);
+            for (int index=0;index<groundPayout.Recruits.Count;index++)
+                DrawRewardFlight(rewardRecruitTargets[index],null,false,index*.055f,.74f,index-1,groundPayout.Recruits[index]);
             if (groundPayout.Refreshes > 0)
                 DrawRewardFlight(new Vector2(286,42),"刷新",false,.075f,.73f,0);
             if (groundPayout.Choice != null)
-                DrawRewardFlight(EquipmentRail.center,"自选",false,.035f,.78f,0);
+                DrawRewardFlight(RewardChoiceRect.center,"自选",false,.035f,.78f,0);
         }
 
         void DrawGroundRewardBurst(GroundBall ball,float age)
@@ -469,7 +506,7 @@ namespace YesterdayConvoy
                 }
         }
 
-        void DrawRewardFlight(Vector2 target,string key,bool coin,float delay,float duration,float fan)
+        void DrawRewardFlight(Vector2 target,string key,bool coin,float delay,float duration,float fan,FormationCampaignRun.RewardRecruit recruit = null)
         {
             float flightDuration = Mathf.Max(duration, RewardFlightEnd - RewardPop - delay);
             float time = (rewardFlightAge - RewardPop - delay) / flightDuration;
@@ -496,8 +533,16 @@ namespace YesterdayConvoy
             var point = Spot(time);
             float size = coin ? Mathf.Lerp(20,12,time) : Mathf.Lerp(36,29,time);
             var rect = new Rect(point.x-size/2,point.y-size/2,size,size);
-            if (coin && formationCoin != null) GUI.DrawTexture(rect,formationCoin,ScaleMode.ScaleToFit,true);
-            else if (key == "招募" || key == "刷新" || key == "自选")
+            if (recruit != null)
+            {
+                Fill(rect,TraitPanel);ApprovedUi.Border(rect,BallAccent(recruit.Star==2?"金":"蓝"),2);
+                var face = FormationUnitArt.For(recruit.CardId)?.Portrait;
+                if (face != null) ApprovedShopPresentation.DrawTestPortrait(new Rect(rect.x+2,rect.y+2,rect.width-4,rect.height-4),face);
+                else TraitLabel(rect,recruit.Name,9,TraitInk,false,TextAnchor.MiddleCenter);
+                TraitLabel(new Rect(rect.x,rect.y,rect.width,13),recruit.Star+"★",10,BallAccent("金"),true);
+            }
+            else if (coin && formationCoin != null) GUI.DrawTexture(rect,formationCoin,ScaleMode.ScaleToFit,true);
+            else if (key == "刷新" || key == "自选")
                 TraitLabel(new Rect(point.x-24,point.y-13,48,26),key,13,BallAccent("金"),true,TextAnchor.MiddleCenter);
             else DrawSupplyItem(rect,key);
         }

@@ -204,7 +204,7 @@ namespace YesterdayConvoy
         void DrawSettlement()
         {
             if(Campaign?.IsPractice==true){DrawPracticeResult();return;}
-            if(Campaign!=null){if(!Campaign.Finished||Campaign.PendingBalls.Count>0)DrawCampaignResult();return;}
+            if(Campaign!=null){if(!Campaign.Finished||AwaitingOptionalRewards&&!campaignResultSummaryOpen)DrawCampaignResult();return;}
             bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
             Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);
             Label(new Rect(410,245,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未及时进门",16,White,TextAnchor.MiddleCenter);

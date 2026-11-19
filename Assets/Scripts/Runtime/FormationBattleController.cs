@@ -85,7 +85,7 @@ namespace YesterdayConvoy
             if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.V))ToggleFormationView();
             if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(formationMenuOpen)CloseFormationMenu();else if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen)CloseCampaignPanels();else if(rewardHistoryOpen)rewardHistoryOpen=false;else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+            {if(formationMenuOpen)CloseFormationMenu();else if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen)CloseCampaignPanels();else if(rewardHistoryOpen)rewardHistoryOpen=false;else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
@@ -165,7 +165,7 @@ namespace YesterdayConvoy
         }
         public void StartBattle()
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||Campaign!=null&&(HasGroundRewards||!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
+            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
             if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);

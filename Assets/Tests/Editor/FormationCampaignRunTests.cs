@@ -29,9 +29,11 @@ namespace YesterdayConvoy.Tests
             var shop = Shop(39); var run = new FormationCampaignRun(shop,39);
             ResolveChoices(run);
             Assert.That(run.SettleBattle(true,1,3,0,false),Is.Not.Null);
-            Assert.That(run.PendingBalls.Count,Is.EqualTo(4));
+            Assert.That(run.PendingBalls.Count(ball=>ball.Component==null),Is.EqualTo(4));
             Assert.That(run.OpenedBalls,Is.Empty);
-            Assert.That(run.AdvanceNode(),Is.False);
+            var drops = run.PendingBalls.Select(ball=>ball.Id).ToArray();
+            Assert.That(run.AdvanceNode(),Is.True);
+            Assert.That(run.PendingBalls.Select(ball=>ball.Id),Is.EqualTo(drops));
             var drop = run.PendingBalls.Last();
             int gold = shop.Gold, gear = run.Inventory.Count, count = shop.Bench.Count;
             Assert.That(run.CompleteBall(drop.Id),Is.Null);
@@ -42,15 +44,136 @@ namespace YesterdayConvoy.Tests
             Assert.That(shop.Gold,Is.EqualTo(gold));
             Assert.That(run.Inventory.Count,Is.EqualTo(gear));
             Assert.That(shop.Bench.Count,Is.EqualTo(count));
-            Assert.That(run.CompleteBall(drop.Id).Color,Is.EqualTo(drop.Color));
+            var receipt = run.CompleteBall(drop.Id);
+            Assert.That(receipt.Color,Is.EqualTo(drop.Color));
+            Assert.That(receipt.Node,Is.EqualTo("1-1"));
             Assert.That(shop.Gold,Is.EqualTo(gold+payout.Gold));
             Assert.That(run.Inventory.Count,Is.EqualTo(gear+payout.Items.Count));
             Assert.That(run.CompleteBall(drop.Id),Is.Null);
             Assert.That(run.BeginBall(drop.Id),Is.Null);
             CollectDrops(run);
-            Assert.That(run.BallRewards.Count,Is.EqualTo(4));
+            Assert.That(run.BallRewards.Count,Is.EqualTo(drops.Length));
+            Assert.That(run.BallRewards.Count(reward=>reward.Color.Length>0),Is.EqualTo(4));
+            while(run.PendingRewardChoices>0) Assert.That(run.ChooseReward(0).Success,Is.True);
             Assert.That(run.Inventory.Sum(item=>item.Key.Length==1?1:item.Key.Length==2?2:0),Is.GreaterThanOrEqualTo(2));
+        }
+        [Test]
+        public void RewardPacksGrantSeveralDistinctCardsAndTwoStarUsesThreeCopies()
+        {
+            foreach (string color in new[]{"白","蓝"})
+            {
+                bool multi=false, twoStar=false;
+                for(int seed=1;seed<=120&&(!multi||!twoStar);seed++)
+                {
+                    var shop=Shop(seed);var run=new FormationCampaignRun(shop,seed);ResolveChoices(run);
+                    shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),3,0,8);
+                    run.OpenBall(color);
+                    var drop=run.PendingBalls.Single();
+                    var payout=run.BeginBall(drop.Id);
+                    if(payout.Recruits.Count==0)continue;
+                    Assert.That(payout.Recruits.Select(recruit=>recruit.CardId).Distinct().Count(),Is.EqualTo(payout.Recruits.Count));
+                    var before=payout.Recruits.ToDictionary(recruit=>recruit.CardId,recruit=>shop.Available(recruit.CardId));
+                    Assert.That(run.CompleteBall(drop.Id),Is.Not.Null);
+                    Assert.That(shop.Bench.Count,Is.EqualTo(payout.Recruits.Count));
+                    foreach(var recruit in payout.Recruits)
+                    {
+                        Assert.That(shop.Bench.Single(piece=>piece.Id==recruit.CardId).Star,Is.EqualTo(recruit.Star));
+                        Assert.That(shop.Available(recruit.CardId),Is.EqualTo(before[recruit.CardId]-ShopTrialModel.Copies(recruit.Star)));
+                    }
+                    shop.Validate();
+                    multi|=payout.Recruits.Count>=3;twoStar|=payout.Recruits.Any(recruit=>recruit.Star==2);
+                }
+                Assert.That(multi&&twoStar,Is.True,color);
+            }
+        }
+        [Test]
+        public void DeferredBallChoiceDoesNotBlockProgressAndCanBeClaimedOnLaterNode()
+        {
+            var shop=Shop(7);var run=new FormationCampaignRun(shop,7);ResolveChoices(run);
+            for(int attempt=0;attempt<80&&run.PendingRewardChoices==0;attempt++)
+            {
+                run.OpenBall("彩");
+                var drop=run.PendingBalls.Single();
+                run.BeginBall(drop.Id);run.CompleteBall(drop.Id);
+            }
+            Assert.That(run.PendingRewardChoices,Is.EqualTo(1));
+            Assert.That(run.HasBlockingChoice,Is.False);
+            var options=run.RewardChoices.Select(option=>option.Id).ToArray();
+            run.SettleBattle(true,1,3,0,false);
             Assert.That(run.AdvanceNode(),Is.True);
+            Assert.That(run.RewardChoices.Select(option=>option.Id),Is.EqualTo(options));
+            Assert.That(run.ChooseReward(0).Success,Is.True);
+            Assert.That(run.ChooseReward(0).Success,Is.False);
+        }
+        [Test]
+        public void TwoStarRewardWaitsForEnoughStockAndDeliversAtTheOriginalStar()
+        {
+            var shop=Shop(29);var run=new FormationCampaignRun(shop,29);ResolveChoices(run);
+            shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),3,0,8);
+            FormationCampaignRun.RewardRecruit twoStar=null;
+            for(int index=0;index<100&&twoStar==null;index++)
+            {
+                run.OpenBall("白");
+                var drop=run.PendingBalls.Single();
+                twoStar=run.BeginBall(drop.Id).Recruits.FirstOrDefault(recruit=>recruit.Star==2);
+                if(twoStar==null)
+                {
+                    run.CompleteBall(drop.Id);
+                    foreach(var piece in shop.Bench.ToArray()) Assert.That(shop.Sell(piece.Instance).Success,Is.True);
+                    continue;
+                }
+                var reservations=Enumerable.Range(0,shop.Available(twoStar.CardId)-2)
+                    .Select(_=>shop.ReserveRewardCandidate(twoStar.CardId)).ToArray();
+                Assert.That(reservations,Is.All.Not.Null);
+                var reward=run.CompleteBall(drop.Id);
+                Assert.That(reward.Recruit,Does.Contain("待领"));
+                Assert.That(run.PendingDeliveries,Is.EqualTo(1));
+                Assert.That(shop.Bench,Is.Empty);
+                Assert.That(shop.Available(twoStar.CardId),Is.EqualTo(2));
+                Assert.That(shop.ReleaseReservation(reservations[0]),Is.True);
+                run.OnShopChanged();
+                Assert.That(run.PendingDeliveries,Is.Zero);
+                Assert.That(shop.Bench.Single().Star,Is.EqualTo(2));
+                Assert.That(shop.Available(twoStar.CardId),Is.Zero);
+                shop.Validate();
+            }
+            Assert.That(twoStar,Is.Not.Null);
+        }
+        [Test]
+        public void GroundEquipmentFloorCountsUnopenedDropsAcrossBothSettlements()
+        {
+            bool foundSeparateDrop=false;
+            for(int seed=1;seed<=40;seed++)
+            {
+                var shop=Shop(seed);var run=new FormationCampaignRun(shop,seed);ResolveChoices(run);
+                int Value(string key)=>key.Length==1&&"ABCDEF".Contains(key)?1:FormationCampaignRules.AllItems.Any(item=>item.Id==key)?2:0;
+                int initialCount=run.AllEquipment.Count, initial=run.AllEquipment.Sum(item=>Value(item.Key));
+                run.SettleBattle(true,1,3,0,false);
+                foundSeparateDrop|=run.PendingBalls.Any(drop=>drop.Component!=null);
+                var original=run.PendingBalls.Select(drop=>drop.Id).ToArray();
+                Assert.That(run.AdvanceNode(),Is.True);
+                run.SettleBattle(true,1,3,0,false);
+                Assert.That(run.AllEquipment.Count,Is.EqualTo(initialCount));
+                Assert.That(run.PendingBalls.Take(original.Length).Select(drop=>drop.Id),Is.EqualTo(original));
+                var drops=run.PendingBalls.ToArray();
+                CollectDrops(run);
+                while(run.PendingRewardChoices>0)
+                {
+                    Assert.That(run.ChooseReward(0).Success,Is.True);
+                }
+                int BallValue(FormationCampaignRun.BallReward reward)=>reward.Items.Sum(Value)+
+                    (reward.Choice?.Contains("进阶装备")==true?2:reward.Choice?.Contains("基础装备")==true?1:0);
+                int originalLoot=run.BallRewards.Where(reward=>reward.Color.Length>0).Sum(BallValue);
+                int firstLoot=run.BallRewards.Where(reward=>reward.Color.Length>0&&reward.Node=="1-1").Sum(BallValue);
+                int preplanDrop=run.PreplanId=="P08"?1:0;
+                int firstFloor=preplanDrop+Math.Max(0,2-initial-firstLoot-preplanDrop);
+                string trace = "seed "+seed+" plan "+run.PreplanId+" initial "+initial+" firstLoot "+firstLoot+
+                    " first: "+string.Join(" | ",run.BallRewards.Where(reward=>reward.Node=="1-1").Select(reward=>reward.Color+"/"+string.Join(",",reward.Items)+"/"+reward.Choice));
+                Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-1"),Is.EqualTo(firstFloor),trace);
+                Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-2"),
+                    Is.EqualTo(Math.Max(0,5-initial-originalLoot-firstFloor)));
+            }
+            Assert.That(foundSeparateDrop,Is.True);
         }
         [Test]
         public void FormationEconomyKeepsLegacySeparateAndUsesFullExperienceCurve()

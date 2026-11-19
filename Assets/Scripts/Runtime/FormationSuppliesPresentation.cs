@@ -13,6 +13,7 @@ namespace YesterdayConvoy
             {"白", "white"}, {"蓝", "blue"}, {"金", "gold"}, {"彩", "prismatic"}
         };
         static readonly Rect RewardRail = new Rect(1011, 66, 252, 62);
+        static readonly Rect RewardChoiceRect = new Rect(1167, 70, 88, 21);
         static readonly Rect EquipmentRail = new Rect(1011, 134, 252, 121);
         Vector2 equipmentRailScroll;
         FormationCampaignRun rewardPresentationRun;
@@ -46,6 +47,7 @@ namespace YesterdayConvoy
             {
                 rewardPresentationRun = Campaign;
                 ClearGroundRewards();
+                groundRewardPage = 0;
                 rewardHistoryOpen = false;
                 rewardHistorySelected = -1;
                 equipmentRailScroll = Vector2.zero;
@@ -140,11 +142,19 @@ namespace YesterdayConvoy
             Fill(RewardRail, TraitPanel);
             ApprovedUi.Border(RewardRail, TraitLine);
             var balls = Campaign.BallRewards;
-            TraitLabel(new Rect(1020, 73, 225, 20), "地图战利品", 14, TraitInk, true);
-            string text = HasGroundRewards ? "红门右侧 · " + Campaign.PendingBalls.Count + " 颗待领取" :
+            var history = new Rect(1020,72,135,22);
+            TraitLabel(history, "地图战利品", 14, TraitInk, true);
+            if (Campaign.PendingRewardChoices>0 && Button(RewardChoiceRect,"待选 "+Campaign.PendingRewardChoices)) OpenGroundRewardChoices();
+            string text = HasGroundRewards ? "红门右侧 · " + Campaign.PendingBalls.Count + " 份待领取" :
                 balls.Count > 0 ? "已开 " + balls.Count + " 个 · 查看记录" : "奖励球掉落后可在红门右侧领取";
-            TraitLabel(new Rect(1020, 95, 230, 24), text, 11, TraitMuted);
-            if (balls.Count > 0 && TraitHit(RewardRail, "查看本局奖励球记录"))
+            TraitLabel(new Rect(1020, 95, 154, 24), text, 11, TraitMuted);
+            if (GroundRewardPages>1)
+            {
+                if (Button(new Rect(1173,97,23,22),"‹",groundRewardPage>0)) groundRewardPage--;
+                TraitLabel(new Rect(1197,97,34,22),(groundRewardPage+1)+"/"+GroundRewardPages,10,TraitInk,false,TextAnchor.MiddleCenter);
+                if (Button(new Rect(1231,97,23,22),"›",groundRewardPage+1<GroundRewardPages)) groundRewardPage++;
+            }
+            if (balls.Count > 0 && TraitHit(history, "查看本局奖励领取记录"))
             {
                 rewardHistoryOpen = !rewardHistoryOpen;
                 if (rewardHistoryOpen) rewardHistorySelected = balls.Count - 1;
@@ -168,7 +178,7 @@ namespace YesterdayConvoy
             if (TraitHit(close)) rewardHistoryOpen = false;
             var icon = SupplyOrbArt(ball.Color);
             if (icon != null) GUI.DrawTexture(new Rect(bounds.x + 12, bounds.y + 37, 40, 40), icon, ScaleMode.ScaleToFit, true);
-            TraitLabel(new Rect(bounds.x + 59, bounds.y + 37, 172, 28), ball.Node + " · " + ball.Color + "球", 13, BallAccent(ball.Color), true);
+            TraitLabel(new Rect(bounds.x + 59, bounds.y + 37, 172, 28), ball.Node + " · " + (ball.Color.Length==0?"装备补足":ball.Color+"球"), 13, BallAccent(ball.Color), true);
             TraitLabel(new Rect(bounds.x + 14, bounds.y + 76, 216, 63), BallRewardText(ball), 12, TraitInk);
             if (Button(new Rect(bounds.x + 14, bounds.yMax - 32, 38, 23), "‹", index > 0)) rewardHistorySelected--;
             if (Button(new Rect(bounds.xMax - 52, bounds.yMax - 32, 38, 23), "›", index < balls.Count - 1)) rewardHistorySelected++;

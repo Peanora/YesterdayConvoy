@@ -80,13 +80,13 @@ namespace YesterdayConvoy.Tests
             Assert.That(reward.Gold, Is.EqualTo(shop.Gold - gold));
             Assert.That(reward.Refreshes, Is.EqualTo(shop.FreeRefreshes - refreshes));
             Assert.That(reward.Items, Is.EqualTo(run.AllEquipment.Skip(items).Select(item => item.Key)));
-            Assert.That(reward.Choice, Is.EqualTo(run.ChoiceTitle));
+            Assert.That(reward.Choice, Is.EqualTo(run.RewardChoiceTitle));
             while (run.HasBlockingChoice) Assert.That(run.Choose(0).Success, Is.True);
             Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Not.Null);
-            Assert.That(run.PendingBalls.Count, Is.EqualTo(4));
+            Assert.That(run.PendingBalls.Count(ball=>ball.Component==null), Is.EqualTo(4));
             Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Null);
             FormationCampaignRunTests.CollectDrops(run);
-            Assert.That(run.BallRewards.Count, Is.EqualTo(5));
+            Assert.That(run.BallRewards.Count(ball=>ball.Color.Length>0), Is.EqualTo(5));
         }
 
         [Test]

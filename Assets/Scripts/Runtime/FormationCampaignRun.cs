@@ -45,22 +45,37 @@ namespace YesterdayConvoy
         public sealed class RewardDrop
         {
             public int Id { get; }
+            public string Node { get; }
             public string Color { get; }
-            internal RewardDrop(int id, string color) { Id = id; Color = color; }
+            public string Component { get; }
+            internal BallPayout Payout { get; }
+            internal RewardDrop(int id,string node,string color,BallPayout payout,string component = null)
+            { Id = id; Node = node; Color = color; Payout = payout; Component = component; }
+        }
+        public sealed class RewardRecruit
+        {
+            public string CardId { get; }
+            public string Name { get; }
+            public int Star { get; }
+            internal RewardRecruit(string cardId,string name,int star) { CardId = cardId; Name = name; Star = star; }
         }
         public sealed class BallPayout
         {
             public int Gold { get; internal set; }
             public int Refreshes { get; internal set; }
-            public string Recruit { get; internal set; }
+            public IReadOnlyList<RewardRecruit> Recruits => recruits;
             public IReadOnlyList<string> Items => items;
             internal readonly List<string> items = new List<string>();
-            internal string Unit, Choice;
+            internal readonly List<RewardRecruit> recruits = new List<RewardRecruit>();
+            internal string Choice;
+            internal string[] BadgeOptions;
+            internal int EquipmentValue => items.Sum(EquipmentWeight) + (Choice == "advanced" ? 2 : Choice == "component" ? 1 : 0);
         }
-        sealed class Delivery { public string Id; public int Star=1, Remaining=1; public bool AtLeast; public ShopTrialModel.RewardReservation Reservation; }
+        sealed class Delivery { public string Id; public int Star=1, Remaining=1; public bool AtLeast, KeepWhenMax; public ShopTrialModel.RewardReservation Reservation; }
         readonly ShopTrialModel shop;
         readonly Random random;
         readonly Queue<Selection> selections=new Queue<Selection>();
+        readonly Queue<Selection> rewardSelections=new Queue<Selection>();
         readonly List<ItemInstance> items=new List<ItemInstance>();
         readonly List<Delivery> waiting=new List<Delivery>();
         readonly List<string> augments=new List<string>();
@@ -68,8 +83,7 @@ namespace YesterdayConvoy
         readonly List<BallReward> ballRewards = new List<BallReward>();
         readonly List<RewardDrop> pendingBalls = new List<RewardDrop>();
         RewardDrop openingBall;
-        BallPayout openingPayout;
-        int ballSequence, ballEquipmentGuarantee;
+        int ballSequence;
         readonly HashSet<string> settled=new HashSet<string>();
         readonly HashSet<int> hopeClaims=new HashSet<int>();
         readonly HashSet<int> suppliedPlanes=new HashSet<int>();
@@ -99,6 +113,9 @@ namespace YesterdayConvoy
         public IReadOnlyList<string> OpenedBalls=>openedBalls;
         public IReadOnlyList<BallReward> BallRewards => ballRewards;
         public IReadOnlyList<RewardDrop> PendingBalls => pendingBalls;
+        public int PendingRewardChoices => rewardSelections.Count;
+        public string RewardChoiceTitle => rewardSelections.Count == 0 ? null : rewardSelections.Peek().Title;
+        public IReadOnlyList<ChoiceOption> RewardChoices => rewardSelections.Count == 0 ? Array.Empty<ChoiceOption>() : rewardSelections.Peek().Options;
         public int ExtraPopulation=>shop.ExtraPopulation;
         public int TalulahCost=>shop.TalulahId==null?3:shop.Definition(shop.TalulahId).Cost;
         public bool TalulahEnhanced=>shop.TalulahEnhanced;
@@ -156,11 +173,17 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result Choose(int index)
         {
             if(index<0||index>=Choices.Count)return Fail("无效选项");
-            if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success){FinishBallEquipmentGuarantee();OnShopChanged();}return result;}
+            if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success)OnShopChanged();return result;}
             if(selections.Count==0)return Fail("没有待选奖励");
             var selection=selections.Peek();var option=selection.Options[index];
             if(--selection.Picks<=0)selections.Dequeue();else selection.Options.RemoveAt(index);
-            option.Apply?.Invoke();FinishBallEquipmentGuarantee();OnShopChanged();return Ok("已选择："+option.Name);
+            option.Apply?.Invoke();OnShopChanged();return Ok("已选择："+option.Name);
+        }
+        public ShopTrialModel.Result ChooseReward(int index)
+        {
+            if (HasBlockingChoice || openingBall != null || index < 0 || index >= RewardChoices.Count) return Fail("没有可领取的选项");
+            var option = rewardSelections.Dequeue().Options[index];
+            option.Apply?.Invoke(); OnShopChanged(); return Ok("已选择："+option.Name);
         }
         public bool RerollChoice()
         {if(!CanRerollChoice)return false;var s=selections.Peek();s.Options=s.Reroll();s.Rerolled=true;return true;}
@@ -246,7 +269,7 @@ namespace YesterdayConvoy
                     if(shop.TransactionBlocked)break;
                     continue;
                 }
-                if(shop.Bench.Any(x=>x.Id==gift.Id&&x.Star>=shop.MaxStar(gift.Id))){waiting.Remove(gift);continue;}
+                if(shop.Bench.Any(x=>x.Id==gift.Id&&x.Star>=shop.MaxStar(gift.Id))){if(!gift.KeepWhenMax)waiting.Remove(gift);continue;}
                 var result=gift.AtLeast?shop.GrantAtLeast(gift.Id,gift.Star):shop.Grant(gift.Id,gift.Star);
                 if(result.Success&&--gift.Remaining==0)waiting.Remove(gift);
                 if(shop.TransactionBlocked)break;
@@ -298,7 +321,7 @@ namespace YesterdayConvoy
         }
         public bool AdvanceNode()
         {
-            if(Finished||!NodeSettled||HasBlockingChoice||pendingBalls.Count>0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
+            if(Finished||!NodeSettled||HasBlockingChoice||openingBall!=null||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
             int oldPlane=CurrentNode.Plane;NodeIndex++;CurrentEncounterTier=1;openedBalls.Clear();
             if(growthFund>0){shop.AddGold(3);growthFund--;}
             if(contractPays>0){Give(contractId);contractPays--;}
@@ -443,13 +466,27 @@ namespace YesterdayConvoy
             int[] counts={4,5,7,9,12};string[] ids={"1-1","1-2","1-8","2-6","3-6"};int[][] odds={new[]{70,28,2,0},new[]{55,40,5,0},new[]{40,48,11,1},new[]{30,50,18,2},new[]{22,48,27,3}};
             int index=Array.IndexOf(ids,id);if(index<0)return;
             for(int i=0;i<counts[index];i++){int roll=random.Next(100),sum=0;for(int k=0;k<4;k++){sum+=odds[index][k];if(roll<sum){OpenBall(new[]{"白","蓝","金","彩"}[k]);break;}}}
-            if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id))AddItem(RandomComponent());
-            ballEquipmentGuarantee=id=="1-1"?2:id=="1-2"?5:0;
+            if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id)) DropRewardComponent(id);
+            int floor = id == "1-1" ? 2 : id == "1-2" ? 5 : 0;
+            int committed = equipmentGranted + pendingBalls.Sum(drop=>drop.Payout.EquipmentValue) +
+                rewardSelections.Sum(selection=>selection.Options.Min(option=>EquipmentWeight(option.Id)));
+            for (int missing = floor-committed; missing>0; missing--) DropRewardComponent(id);
         }
+        void DropRewardComponent(string node)
+        {
+            string component = RandomComponent();
+            var payout = new BallPayout();
+            payout.items.Add(component);
+            pendingBalls.Add(new RewardDrop(++ballSequence,node,"",payout,component));
+        }
+        static int EquipmentWeight(string key) => key.Length == 1 && "ABCDEF".Contains(key) ? 1 :
+            FormationCampaignRules.AllItems.Any(item=>item.Id==key) ? 2 : 0;
+
         public void OpenBall(string color)
         {
-            if (color != "白" && color != "蓝" && color != "金" && color != "彩") return;
-            if (!IsPractice) pendingBalls.Add(new RewardDrop(++ballSequence, color));
+            if (IsPractice || color != "白" && color != "蓝" && color != "金" && color != "彩") return;
+            string node = CurrentNode.Id;
+            pendingBalls.Add(new RewardDrop(++ballSequence,node,color,RollBall(color,node=="1-1"||node=="1-2")));
         }
 
         public BallPayout BeginBall(int id)
@@ -458,56 +495,101 @@ namespace YesterdayConvoy
             var drop = pendingBalls.Find(ball => ball.Id == id);
             if (drop == null) return null;
             openingBall = drop;
-            string color = drop.Color;
-            var payout = openingPayout = new BallPayout();
-            int roll=random.Next(100);
+            return drop.Payout;
+        }
+
+        BallPayout RollBall(string color,bool early)
+        {
+            var payout = new BallPayout();
+            int roll = random.Next(100);
             if(color=="白")
-            {if(roll<45)payout.Gold=3;else if(roll<70){payout.Gold=2;payout.Refreshes=1;}else if(roll<90)RollBallRecruit(payout,1);else payout.items.Add(RandomComponent());}
+            {
+                if (roll < (early ? 40 : 50)) payout.Gold = 3;
+                else if (roll < (early ? 60 : 75)) { payout.Gold = 2; payout.Refreshes = 1; }
+                else if (roll < (early ? 80 : 87))
+                {
+                    payout.Gold = 1;
+                    for(int pick=0;pick<3;pick++) RollBallRecruit(payout,1,1);
+                }
+                else if (roll < 90) { payout.Gold = 1; RollBallRecruit(payout,1,2); }
+                else payout.items.Add(RandomComponent());
+            }
             else if(color=="蓝")
-            {if(roll<50)payout.items.Add(RandomComponent());else if(roll<70)payout.Gold=6;else if(roll<85)RollBallRecruit(payout,random.Next(2)+2);else{payout.items.Add(RandomComponent());payout.Gold=2;}}
+            {
+                if (roll < (early ? 45 : 53)) payout.items.Add(RandomComponent());
+                else if (roll < (early ? 60 : 68)) { payout.items.Add(RandomComponent()); payout.Gold = 2; }
+                else if (roll < (early ? 75 : 88)) payout.Gold = 6;
+                else if (roll < (early ? 90 : 96))
+                {
+                    RollBallRecruit(payout,2,1); RollBallRecruit(payout,2,1); RollBallRecruit(payout,3,1);
+                }
+                else { RollBallRecruit(payout,2,2); RollBallRecruit(payout,2,1); }
+            }
             else if(color=="金")
             {if(roll<35){payout.items.Add(RandomComponent());payout.items.Add(RandomComponent());}else if(roll<65)payout.items.Add(RandomAdvanced());else if(roll<85){payout.Gold=12;payout.Refreshes=2;}else if(roll<93){payout.Choice="component";payout.Gold=6;}else if(roll<98)payout.items.Add(random.Next(2)==0?"赤宝石":"蓝宝石");else{payout.Choice="badge";payout.Gold=6;}}
             else if(color=="彩")
             {if(roll<35){payout.Choice="advanced";payout.items.Add(RandomComponent());payout.items.Add(RandomComponent());}else if(roll<60){payout.items.Add(random.Next(2)==0?"赤宝石":"蓝宝石");payout.Gold=10;}else if(roll<70){payout.items.Add("复制器");payout.Gold=15;}else if(roll<90){payout.items.Add(RandomAdvanced());payout.items.Add(RandomAdvanced());}else{payout.Choice="badge";payout.Gold=10;}}
+            if (payout.Choice == "badge")
+            {
+                payout.BadgeOptions = Shuffle(BadgeTraits).Where(trait=>badgeCounts.GetValueOrDefault(trait)<2).Take(3).ToArray();
+                if (payout.BadgeOptions.Length==0) payout.Choice="component";
+            }
             return payout;
         }
 
         public BallReward CompleteBall(int id)
         {
             if (openingBall?.Id != id) return null;
-            var drop = openingBall; var payout = openingPayout;
-            openingBall = null; openingPayout = null; pendingBalls.Remove(drop);
-            int choiceCount = selections.Count, waitingCount = waiting.Count;
+            var drop = openingBall; var payout = drop.Payout;
+            openingBall = null; pendingBalls.Remove(drop);
+            int choiceCount = rewardSelections.Count;
             shop.AddGold(payout.Gold); shop.FreeRefreshes += payout.Refreshes;
-            if (payout.Unit != null) Give(payout.Unit);
+            var recruits = new List<string>();
+            foreach (var recruit in payout.Recruits)
+            {
+                bool granted = shop.Grant(recruit.CardId,recruit.Star).Success;
+                if (!granted) waiting.Add(new Delivery{Id=recruit.CardId,Star=recruit.Star,KeepWhenMax=true});
+                recruits.Add(recruit.Star+"★ "+recruit.Name+(granted?"":"（待领）"));
+            }
             foreach (string key in payout.Items) AddItem(key);
             switch (payout.Choice)
             {
-                case "component": RequestComponents("金球 · 基础装备自选", 6); break;
-                case "advanced": RequestAdvanced("彩球 · 进阶装备自选", 21); break;
-                case "badge": RequestBadge(); break;
+                case "component": DeferRewardChoice("金球 · 基础装备自选",ComponentRewardOptions()); break;
+                case "advanced": DeferRewardChoice("彩球 · 进阶装备自选",FormationCampaignRules.AllItems.Select(item=>
+                    Option(item.Id,item.Name,item.Effect,()=>AddItem(item.Id)))); break;
+                case "badge":
+                    if (payout.BadgeOptions.Length > 0)
+                        DeferRewardChoice("徽章匣 · 自选",payout.BadgeOptions.Select(trait=>Option("徽章:"+trait,trait+"徽章",
+                            "添加羁绊标签；若已达同名上限，改为基础装备自选。",()=>
+                            {
+                                if (badgeCounts.GetValueOrDefault(trait)>=2) DeferRewardChoice("重复徽章拆解 · 基础装备自选",ComponentRewardOptions());
+                                else AddItem("徽章:"+trait);
+                            })));
+                    else DeferRewardChoice("重复徽章拆解 · 基础装备自选",ComponentRewardOptions());
+                    break;
             }
-            var reward = new BallReward(CurrentNode.Id, drop.Color, payout.Gold, payout.Refreshes,
-                payout.Recruit == null ? null : payout.Recruit + (waiting.Count > waitingCount ? "（库存待领）" : ""),
-                selections.Count > choiceCount ? selections.Last().Title : null, payout.Items.ToArray());
-            openedBalls.Add(drop.Color); ballRewards.Add(reward);
-            FinishBallEquipmentGuarantee(); OnShopChanged();
+            var reward = new BallReward(drop.Node, drop.Color, payout.Gold, payout.Refreshes,
+                recruits.Count == 0 ? null : string.Join("、",recruits),
+                rewardSelections.Count > choiceCount ? rewardSelections.Last().Title : null, payout.Items.ToArray());
+            if (drop.Component == null && drop.Node == CurrentNode.Id) openedBalls.Add(drop.Color);
+            ballRewards.Add(reward);
+            OnShopChanged();
             return reward;
         }
 
-        void FinishBallEquipmentGuarantee()
-        {
-            if (pendingBalls.Count != 0 || HasBlockingChoice) return;
-            while (equipmentGranted < ballEquipmentGuarantee) AddItem(RandomComponent());
-            ballEquipmentGuarantee = 0;
-        }
+        IEnumerable<ChoiceOption> ComponentRewardOptions() => "ABCDEF".Select(letter=>letter.ToString()).Select(key=>
+            Option(key,ItemName(key),FormationCampaignRules.FindRecord(key)?.Effect??"基础装备",()=>AddItem(key)));
 
-        void RollBallRecruit(BallPayout payout, int cost)
+        void DeferRewardChoice(string title,IEnumerable<ChoiceOption> options) =>
+            rewardSelections.Enqueue(new Selection {Title=title,Options=options.ToList()});
+
+        void RollBallRecruit(BallPayout payout,int cost,int star)
         {
-            var units = FormationCampaignRules.AllUnits.Where(x => shop.Definition(x.CardId).Cost == cost).ToArray();
-            if (units.Length == 0) return;
+            var units = FormationCampaignRules.AllUnits.Where(unit=>shop.Definition(unit.CardId).Cost==cost &&
+                payout.Recruits.All(recruit=>recruit.CardId!=unit.CardId)).ToArray();
+            if (units.Length == 0) throw new InvalidOperationException("Reward pack has no distinct character at cost "+cost);
             var unit = units[random.Next(units.Length)];
-            payout.Unit = unit.Id; payout.Recruit = unit.Name;
+            payout.recruits.Add(new RewardRecruit(unit.CardId,unit.Name,star));
         }
         static IEnumerable<string> EncounterBalls(int tier)=>tier switch{2=>new[]{"蓝","蓝"},3=>new[]{"金","蓝"},4=>new[]{"金","金","彩"},_=>new[]{"蓝"}};
         string RandomComponent()=>"ABCDEF"[random.Next(6)].ToString();

@@ -169,7 +169,7 @@ namespace YesterdayConvoy
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
             bool supply=Campaign?.CurrentNode.Kind=="补给";
             bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked;
-            if(Button(FormationStartRect,HasGroundRewards?"先领取地图上的奖励球":supply?"继续行军 ▶":RosterArtReady?"开始进攻 ▶":"准备动作…",!HasGroundRewards,true)){if(supply)ContinueCampaign();else StartBattle();}
+            if(Button(FormationStartRect,supply?"继续行军 ▶":RosterArtReady?"开始进攻 ▶":"准备动作…",openingGroundBall==null,true)){if(supply)ContinueCampaign();else StartBattle();}
             GUI.enabled=enabled;
         }
         void DrawFormationDropTarget()
