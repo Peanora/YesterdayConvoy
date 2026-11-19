@@ -109,6 +109,14 @@ namespace YesterdayConvoy.Tests
             AssertNormalBoardUncovered(false);
             Assert.That(Enumerable.Range(0, 11).All(i => FormationBattleController.FormationLineupRect(i) == Rect.zero), Is.True);
             Assert.That(controller.Model.Units.All(u => controller.ShopBenchModel(u.Instance) == null || !controller.ShopBenchModel(u.Instance).enabled), Is.True, "Deployed actors must not have a duplicate lineup model in the bottom reserve stage.");
+            var dock = FormationBattleController.FormationBenchRect;
+            Assert.That(dock.height, Is.EqualTo(86));
+            Assert.That(dock.yMin, Is.EqualTo(FormationBattleController.FormationExperienceRect.yMin));
+            Assert.That(dock.yMin, Is.EqualTo(FormationBattleController.FormationInterestRect.yMin));
+            Assert.That(dock.yMax, Is.LessThanOrEqualTo(720));
+            var slots = Enumerable.Range(0, 10).Select(FormationBattleController.FormationReserveRect).ToArray();
+            Assert.That(slots.All(slot => dock.Contains(slot.min) && dock.Contains(slot.max - Vector2.one)), Is.True);
+            Assert.That(slots.Zip(slots.Skip(1), (left, right) => left.xMax < right.xMin).All(separated => separated), Is.True);
             Assert.That(FormationBattleController.FormationExperienceRect.xMax, Is.LessThan(FormationBattleController.FormationReserveRect(0).xMin));
             Assert.That(FormationBattleController.FormationCoinRect.xMin, Is.GreaterThan(FormationBattleController.FormationReserveRect(9).xMax));
             Assert.That(FormationBattleController.FormationInterestRect.yMax, Is.LessThanOrEqualTo(FormationBattleController.FormationCoinRect.yMin));
@@ -119,9 +127,22 @@ namespace YesterdayConvoy.Tests
             var cameraPose = controller.battleCamera.transform.position;
             controller.ToggleFormationMarket();
             yield return Market(true);
-            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(cameraPose), "Opening recruitment overlays the lower board without shrinking or reframing it.");
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(cameraPose), "Opening recruitment leaves the fixed camera pose unchanged.");
+            var market = FormationBattleController.FormationMarketRect;
+            Assert.That(market.yMin, Is.EqualTo(77));
+            Assert.That(market.yMax, Is.LessThan(FormationBattleController.BoardInputRect.center.y));
+            for (int index = 0; index < controller.Shop.Offers.Count; index++)
+            {
+                var card = FormationBattleController.FormationOfferRect(index);
+                var inspect = FormationBattleController.FormationOfferInspectionRect(index);
+                var buy = FormationBattleController.FormationBuyRect(index);
+                Assert.That(market.Contains(card.min) && market.Contains(card.max - Vector2.one), Is.True);
+                Assert.That(inspect.Contains(card.center) && !inspect.Overlaps(buy), Is.True,
+                    "A card click and the separate purchase button must not claim the same pointer.");
+                Assert.That(card.Contains(buy.min) && card.Contains(buy.max - Vector2.one), Is.True);
+            }
             var coveredPositions = controller.Model.Units.ToDictionary(unit => unit.Instance, unit => unit.Spawn);
-            var coveredPoint = FormationBattleController.FormationMarketRect.center;
+            var coveredPoint = FormationBattleController.FormationOfferInspectionRect(0).center;
             controller.ProcessPointer(EventType.MouseDown, coveredPoint);
             controller.ProcessPointer(EventType.MouseDrag, coveredPoint + Vector2.right * 18);
             controller.ProcessPointer(EventType.MouseUp, coveredPoint + Vector2.right * 18);
@@ -165,8 +186,17 @@ namespace YesterdayConvoy.Tests
             var body = controller.FormationPieceRect(deployed.Instance).center;
             var reserveTarget = FormationBattleController.FormationReserveRect(returnSeat).center;
             controller.ProcessPointer(EventType.MouseDown, body);
+            controller.ProcessPointer(EventType.MouseUp, body);
+            Assert.That(controller.FormationInspectedCardId, Is.EqualTo(bought.Id),
+                "A click on a real deployed body inspects that card without moving it.");
+            Assert.That(controller.Model.Units.Single(unit => unit.Instance == bought.Instance).Spawn, Is.EqualTo((Vector2)destination));
+            controller.ProcessPointer(EventType.MouseDown, body);
+            controller.ProcessPointer(EventType.MouseUp, body);
+            Assert.That(controller.FormationInspectedCardId, Is.Null, "Clicking the same body again closes its detail.");
+            controller.ProcessPointer(EventType.MouseDown, body);
             controller.ProcessPointer(EventType.MouseDrag, reserveTarget);
             controller.ProcessPointer(EventType.MouseUp, reserveTarget);
+            Assert.That(controller.FormationInspectedCardId, Is.Null, "Dragging a body to the bench must not open its detail.");
             Assert.That(controller.Session.Seats.InLineup(bought.Instance), Is.False, "The actual board body can return directly to a reserve slot.");
             Assert.That(controller.Model.EnabledCount, Is.EqualTo(2));
             controller.ProcessPointer(EventType.MouseDown, controller.FormationPieceRect(bought.Instance).center);

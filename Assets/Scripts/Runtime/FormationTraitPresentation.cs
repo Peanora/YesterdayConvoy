@@ -21,9 +21,9 @@ namespace YesterdayConvoy
         Vector2 formationTraitDetailScroll;
         double formationTraitOpenedAt;
 
-        public static Rect FormationTraitSidebarRect => new Rect(16, 66, 144, 482);
-        public static Rect FormationTraitDetailsRect => new Rect(167, 66, 380, 482);
-        static Rect FormationTraitListRect => new Rect(16, 99, 144, 449);
+        public static Rect FormationTraitSidebarRect => new Rect(16, 85, 151, 482);
+        public static Rect FormationTraitDetailsRect => new Rect(174, 85, 380, 482);
+        static Rect FormationTraitListRect => new Rect(16, 109, 151, 458);
         public string SelectedFormationTraitId => formationInspectedTag;
         public bool FormationTraitDetailsOpen => Campaign != null && SelectedFormationTrait != null;
         public FormationTraitView SelectedFormationTrait => FormationTraitView.For(Campaign, Shop, formationInspectedTag);
@@ -41,6 +41,8 @@ namespace YesterdayConvoy
                 formationTraitOpenedAt = Time.unscaledTimeAsDouble;
             }
             SetMarketVisible(false);
+            CloseFormationInspection();
+            CloseFormationRouteDetails();
             formationInspectedTag = id;
             return true;
         }
@@ -80,9 +82,8 @@ namespace YesterdayConvoy
         {
             var rows = FormationTraitRows;
             var panel = FormationTraitSidebarRect;
-            var heading = new Rect(panel.x, panel.y + 3, panel.width, 24);
-            Fill(heading, new Color(.06f, .085f, .10f, .52f));
-            TraitLabel(new Rect(heading.x + 8, heading.y, 82, heading.height), "军阵羁绊", 14, null, true);
+            var heading = new Rect(panel.x, panel.y, panel.width, 22);
+            DrawFloatingTraitLabel(new Rect(heading.x + 7, heading.y, 82, heading.height), "军阵羁绊", 12, TraitInk, true);
             var toggle = new Rect(heading.xMax - 43, heading.y, 40, heading.height);
             TraitLabel(toggle, formationAllTraits ? "本局" : "全部", 11, formationAllTraits ? TraitActive : TraitMuted, true, TextAnchor.MiddleCenter);
             if (TraitHit(toggle, "切换全部羁绊与本局羁绊"))
@@ -101,17 +102,16 @@ namespace YesterdayConvoy
                 var row = rows[i];
                 var bounds = new Rect(0, i * TraitRowHeight, width, TraitRowHeight - 3);
                 bool selected = formationInspectedTag == row.Id;
-                bool hovered = bounds.Contains(Event.current.mousePosition);
-                Color accent = SynergyBadgePresentation.ColorFor(row.Grade);
-                Fill(new Rect(18, bounds.y + 2, bounds.width - 18, bounds.height - 4),
-                    selected ? new Color(.22f, .29f, .31f, .70f) :
-                    new Color(.045f, .065f, .08f, hovered ? .56f : .33f));
-                if (selected) Fill(new Rect(bounds.xMax - 2, bounds.y + 2, 2, bounds.height - 4), accent);
+                bool hovered = GUI.enabled && bounds.Contains(Event.current.mousePosition);
+                if (selected || hovered)
+                {
+                    Fill(bounds, selected ? new Color(.30f, .49f, .70f, .41f) : new Color(.29f, .43f, .60f, .27f));
+                    Fill(new Rect(bounds.x, bounds.y, 2, bounds.height), selected ? EconomyIce : EconomyLine);
+                }
 
-                SynergyBadgePresentation.DrawBadge(new Rect(5, bounds.y + 4, 31, 31), row.Name, row.Grade, row.Count, null);
-                TraitLabel(new Rect(45, bounds.y + 2, bounds.width - 51, 20), row.Name, 13, TraitInk, true);
-                SynergyBadgePresentation.DrawThresholds(new Rect(45, bounds.y + 22, bounds.width - 51, 15),
-                    row.Rule.Levels, row.ActiveLevel, null);
+                DrawFloatingTraitEmblem(new Vector2(23, bounds.y + 20), row, selected);
+                DrawFloatingTraitLabel(new Rect(49, bounds.y + 3, bounds.width - 53, 19), row.Name, 13, TraitInk, true);
+                DrawFloatingTraitThresholds(new Rect(49, bounds.y + 23, bounds.width - 53, 15), row);
                 if (TraitHit(bounds, row.Active ? row.ActiveLevel + " 人档已激活" : "还差 " + row.MissingForNext + " 名上阵成员"))
                 {
                     if (selected) CloseFormationTraitDetails();
@@ -121,6 +121,53 @@ namespace YesterdayConvoy
             if (rows.Length == 0)
                 TraitLabel(new Rect(8, 2, width - 16, 40), "上阵角色后显示羁绊", 11, TraitMuted);
             GUI.EndScrollView();
+        }
+
+        static void DrawFloatingTraitEmblem(Vector2 center, FormationTraitView row, bool selected)
+        {
+            var plate = new Rect(center.x - 11, center.y - 11, 22, 22);
+            var matrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(45, center);
+            try
+            {
+                Color edge = selected ? EconomyIce : row.Active ? TraitActive : new Color32(154, 170, 204, 255);
+                Fill(plate, row.Active ? new Color(.37f, .27f, .15f, .88f) : new Color(.08f, .11f, .20f, .72f));
+                ApprovedUi.Border(plate, edge);
+            }
+            finally { GUI.matrix = matrix; }
+
+            var icon = SynergyBadgePresentation.IconFor(row.Name);
+            if (icon != null)
+                GUI.DrawTexture(new Rect(center.x - 9, center.y - 9, 18, 18), icon, ScaleMode.ScaleToFit, true);
+
+            var counter = new Rect(center.x + 8, center.y + 6, 14, 14);
+            Fill(counter, new Color32(24, 28, 43, 255));
+            TraitLabel(counter, row.Count.ToString(), 10, row.Active ? EconomyGold : TraitInk, true, TextAnchor.MiddleCenter);
+        }
+
+        static void DrawFloatingTraitThresholds(Rect rect, FormationTraitView row)
+        {
+            var levels = row.Rule.Levels;
+            float step = Mathf.Min(18, rect.width / levels.Length);
+            for (int i = 0; i < levels.Length; i++)
+            {
+                int level = levels[i];
+                bool active = level == row.ActiveLevel;
+                Color ink = active ? EconomyGold : level < row.ActiveLevel ? EconomyIce : EconomyMuted;
+                DrawFloatingTraitLabel(new Rect(rect.x + i * step, rect.y, step - 2, rect.height),
+                    level.ToString(), 10, ink, active);
+                if (i < levels.Length - 1)
+                    DrawFloatingTraitLabel(new Rect(rect.x + (i + 1) * step - 5, rect.y, 5, rect.height),
+                        "/", 9, EconomyMuted, false);
+            }
+        }
+
+        static void DrawFloatingTraitLabel(Rect rect, string text, int size, Color ink, bool bold)
+        {
+            var shadow = rect;
+            shadow.y += 1;
+            TraitLabel(shadow, text, size, new Color(.02f, .035f, .065f, .9f), bold);
+            TraitLabel(rect, text, size, ink, bold);
         }
 
         void DrawCampaignTraitOverlay()

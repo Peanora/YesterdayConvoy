@@ -12,10 +12,15 @@ namespace YesterdayConvoy
         {
             {"白", "white"}, {"蓝", "blue"}, {"金", "gold"}, {"彩", "prismatic"}
         };
-        static readonly Rect RewardRail = new Rect(1011, 66, 252, 62);
-        static readonly Rect RewardChoiceRect = new Rect(1167, 70, 88, 21);
-        static readonly Rect EquipmentRail = new Rect(1011, 134, 252, 121);
+        static readonly Rect RewardChoiceRect = new Rect(1104, 88, 94, 22);
+        static readonly Rect RewardPageRect = new Rect(1104, 116, 94, 22);
+        static readonly Rect EquipmentTilesViewport = new Rect(1206, 103, 65, 440);
+        static readonly Rect EquipmentCombinationRect = new Rect(854, 223, 330, 197);
+        const float EquipmentTileWidth = 47, EquipmentTileHeight = 44, EquipmentTilePitch = 50;
         Vector2 equipmentRailScroll;
+        Vector2 equipmentPointerStart, equipmentPointer;
+        int equipmentPressedItem, equipmentCombinationFirst, equipmentCombinationSecond;
+        bool equipmentDragging;
         FormationCampaignRun rewardPresentationRun;
         int rewardHistorySelected = -1;
         bool rewardHistoryOpen;
@@ -51,25 +56,166 @@ namespace YesterdayConvoy
                 rewardHistoryOpen = false;
                 rewardHistorySelected = -1;
                 equipmentRailScroll = Vector2.zero;
+                CancelFormationEquipmentInteraction();
                 campaignSelectedItem = campaignCombineItem = campaignSelectedPiece = 0;
             }
+            if (!CanUseEquipmentTiles) CancelFormationEquipmentInteraction();
             TickGroundRewards(delta);
         }
 
         bool FormationSupplyBlocksPoint(Vector2 point) => Campaign != null &&
-            (RewardRail.Contains(point) || EquipmentRail.Contains(point) ||
+            (Campaign.PendingRewardChoices>0 && RewardChoiceRect.Contains(point) ||
+             GroundRewardPages>1 && RewardPageRect.Contains(point) ||
+             EquipmentTileAt(point)!=null || EquipmentCombinationPending && EquipmentCombinationRect.Contains(point) ||
              rewardHistoryOpen && RewardHistoryRect.Contains(point));
+
+        bool CanUseEquipmentTiles => Campaign != null && Model.Phase == FormationPhase.Preparation &&
+            !CampaignInteractionBlocked && !formationMenuOpen && !shopOddsVisible && !rewardHistoryOpen;
+
+        internal bool EquipmentCombinationPending => equipmentCombinationFirst > 0;
+
+        internal bool CancelFormationEquipmentInteraction()
+        {
+            bool handled = equipmentPressedItem > 0 || EquipmentCombinationPending;
+            equipmentPressedItem = equipmentCombinationFirst = equipmentCombinationSecond = 0;
+            equipmentDragging = false;
+            return handled;
+        }
+
+        internal bool ProcessFormationEquipmentPointer(EventType type, Vector2 point)
+        {
+            if (!CanUseEquipmentTiles) return false;
+            if (type == EventType.MouseDown)
+            {
+                if (EquipmentCombinationPending && EquipmentCombinationRect.Contains(point)) return false;
+                CancelFormationEquipmentInteraction();
+                if (FormationTraitBlocksPoint(point) || FormationInspectionBlocksPoint(point) || OperationsBlocksPoint(point)) return false;
+                var pressed = EquipmentTileAt(point);
+                if (pressed == null) return false;
+                CloseFormationInspection();
+                CloseFormationRouteDetails();
+                equipmentPressedItem = pressed.Instance;
+                equipmentPointerStart = equipmentPointer = point;
+                CancelFormationDrag();
+                return true;
+            }
+            if (equipmentPressedItem == 0) return false;
+            equipmentPointer = point;
+            equipmentDragging |= Vector2.Distance(point, equipmentPointerStart) > 6;
+            if (type == EventType.MouseUp)
+            {
+                int source = equipmentPressedItem;
+                bool dragged = equipmentDragging;
+                equipmentPressedItem = 0;
+                equipmentDragging = false;
+                var target = EquipmentTileAt(point);
+                if (!dragged && target?.Instance == source)
+                    OpenFormationInventory(source);
+                else if (dragged && target != null && PreviewEquipmentPair(source,target.Instance,out _))
+                {
+                    CloseFormationTraitDetails();
+                    equipmentCombinationFirst = source;
+                    equipmentCombinationSecond = target.Instance;
+                }
+            }
+            return true;
+        }
+
+        bool PreviewEquipmentPair(int first,int second,out string key)
+        {
+            key = null;
+            if (first == second || first <= 0 || second <= 0) return false;
+            var inventory = Campaign.Inventory;
+            return inventory.Any(item=>item.Instance==first) && inventory.Any(item=>item.Instance==second) &&
+                Campaign.PreviewCombination(first,second,out key).Success;
+        }
+
+        internal bool ConfirmFormationEquipmentCombination()
+        {
+            if (!CanUseEquipmentTiles || !EquipmentCombinationPending ||
+                !PreviewEquipmentPair(equipmentCombinationFirst,equipmentCombinationSecond,out _))
+            {
+                CancelFormationEquipmentInteraction();
+                return false;
+            }
+            var result = Campaign.Combine(equipmentCombinationFirst,equipmentCombinationSecond);
+            CancelFormationEquipmentInteraction();
+            CampaignAction(result);
+            return result.Success;
+        }
+
+        static Rect EquipmentTile(int index) => new Rect(0, index * EquipmentTilePitch, EquipmentTileWidth, EquipmentTileHeight);
+
+        Rect EquipmentTileOnScreen(int index)
+        {
+            var slot = EquipmentTile(index);
+            slot.position += EquipmentTilesViewport.position - equipmentRailScroll;
+            return slot;
+        }
+
+        Vector2 EquipmentFlightTarget(int index)
+        {
+            Vector2 target = EquipmentTileOnScreen(index).center;
+            target.y = Mathf.Clamp(target.y,EquipmentTilesViewport.yMin+EquipmentTileHeight/2,
+                EquipmentTilesViewport.yMax-EquipmentTileHeight/2);
+            return target;
+        }
+
+        FormationCampaignRun.ItemInstance EquipmentTileAt(Vector2 point)
+        {
+            if (!EquipmentTilesViewport.Contains(point)) return null;
+            int index = Mathf.FloorToInt((point.y - EquipmentTilesViewport.y + equipmentRailScroll.y) / EquipmentTilePitch);
+            var inventory = Campaign.Inventory;
+            return index >= 0 && index < inventory.Count && EquipmentTileOnScreen(index).Contains(point) ? inventory[index] : null;
+        }
+
+        internal bool TryEquipmentTilePoint(int itemInstance,out Vector2 point)
+        {
+            point = default;
+            var inventory = Campaign?.Inventory;
+            if (inventory == null) return false;
+            for (int index = 0; index < inventory.Count; index++)
+            {
+                if (inventory[index].Instance != itemInstance) continue;
+                point = EquipmentTileOnScreen(index).center;
+                return EquipmentTilesViewport.Contains(point);
+            }
+            return false;
+        }
+
+        void RevealEquipmentSlot(int index)
+        {
+            equipmentRailScroll.y = Mathf.Max(equipmentRailScroll.y,EquipmentTile(index).yMax-EquipmentTilesViewport.height);
+        }
 
         void OpenFormationInventory(int item = 0)
         {
             if (Model.Phase != FormationPhase.Preparation) return;
+            CancelFormationEquipmentInteraction();
             SetMarketVisible(false);
             CloseFormationTraitDetails();
+            CloseFormationInspection();
+            CloseFormationRouteDetails();
             CloseCampaignPanels();
             campaignInventoryOpen = true;
             campaignItemScroll = Vector2.zero;
             campaignSelectedItem = item;
             campaignCombineItem = 0;
+        }
+
+        bool OpenFormationRewardHistory()
+        {
+            if (Campaign == null || CombatViewActive || Campaign.HasBlockingChoice || Campaign.BallRewards.Count == 0)
+                return false;
+            CancelFormationEquipmentInteraction();
+            CloseCampaignPanels();
+            CloseFormationTraitDetails();
+            CloseFormationInspection();
+            CloseFormationRouteDetails();
+            SetMarketVisible(false);
+            rewardHistoryOpen = true;
+            rewardHistorySelected = Campaign.BallRewards.Count - 1;
+            return true;
         }
 
         void DrawSupplyItem(Rect rect, string key)
@@ -109,69 +255,96 @@ namespace YesterdayConvoy
         void DrawFormationSupplies()
         {
             if (Campaign == null) return;
-            DrawRewardRail();
+            DrawRewardControls();
             var inventory = Campaign.Inventory;
-            Fill(EquipmentRail, TraitPanel);
-            ApprovedUi.Border(EquipmentRail, TraitLine);
-            TraitLabel(new Rect(1020, 138, 150, 20), "装备  " + inventory.Count, 14, TraitInk, true);
-            var manage = new Rect(1188, 139, 66, 18);
-            TraitLabel(manage, "装备与合成 ›", 10, TraitMuted, false, TextAnchor.MiddleRight);
-            if (Model.Phase == FormationPhase.Preparation && TraitHit(manage, "打开装备与合成")) OpenFormationInventory();
-
-            var grid = new Rect(1019, 163, 237, 84);
-            int rows = Mathf.Max(2, Mathf.CeilToInt(inventory.Count / 5f));
-            if (openingGroundBall != null) rows = Mathf.Max(rows, Mathf.CeilToInt((inventory.Count + groundPayout.Items.Count) / 5f));
-            var scroll = GUI.BeginScrollView(grid, equipmentRailScroll, new Rect(0, 0, 220, rows * 42));
-            if (openingGroundBall == null) equipmentRailScroll = scroll;
-            for (int i = 0; i < rows * 5; i++)
+            int countIncludingFlights = inventory.Count + PendingGroundRewardItems;
+            if (countIncludingFlights == 0) { equipmentRailScroll = Vector2.zero; return; }
+            float contentHeight = Mathf.Max(EquipmentTilesViewport.height,countIncludingFlights * EquipmentTilePitch);
+            equipmentRailScroll = GUI.BeginScrollView(EquipmentTilesViewport,equipmentRailScroll,
+                new Rect(0,0,EquipmentTileWidth,contentHeight));
+            int first = Mathf.Max(0,Mathf.FloorToInt(equipmentRailScroll.y/EquipmentTilePitch));
+            for (int i = first; i < inventory.Count && EquipmentTile(i).y < equipmentRailScroll.y + EquipmentTilesViewport.height; i++)
             {
-                var slot = new Rect(i % 5 * 44, i / 5 * 42 + 1, 40, 39);
-                Fill(slot, TraitCard);
-                ApprovedUi.Border(slot, TraitLine);
-                if (i >= inventory.Count) continue;
+                var slot = EquipmentTile(i);
                 var item = inventory[i];
-                DrawSupplyItem(new Rect(slot.x + 3, slot.y + 2, 34, 34), item.Key);
-                if (Model.Phase == FormationPhase.Preparation && TraitHit(slot, item.Name))
-                    OpenFormationInventory(item.Instance);
+                bool highlight = item.Instance == equipmentPressedItem || item.Instance == equipmentCombinationFirst ||
+                    item.Instance == equipmentCombinationSecond ||
+                    equipmentDragging && EquipmentTileOnScreen(i).Contains(equipmentPointer) &&
+                    PreviewEquipmentPair(equipmentPressedItem,item.Instance,out _);
+                Fill(slot,OperationsRail);
+                ApprovedUi.Border(slot,highlight?OperationsGold:OperationsEdge,highlight?2:1);
+                DrawSupplyItem(new Rect(slot.x+4,slot.y+3,39,38),item.Key);
+                GUI.Label(slot,new GUIContent(string.Empty,item.Name),GUIStyle.none);
             }
             GUI.EndScrollView();
         }
 
-        void DrawRewardRail()
+        void DrawFormationEquipmentOverlay()
         {
-            Fill(RewardRail, TraitPanel);
-            ApprovedUi.Border(RewardRail, TraitLine);
-            var balls = Campaign.BallRewards;
-            var history = new Rect(1020,72,135,22);
-            TraitLabel(history, "地图战利品", 14, TraitInk, true);
-            if (Campaign.PendingRewardChoices>0 && Button(RewardChoiceRect,"待选 "+Campaign.PendingRewardChoices)) OpenGroundRewardChoices();
-            string text = HasGroundRewards ? "红门右侧 · " + Campaign.PendingBalls.Count + " 份待领取" :
-                balls.Count > 0 ? "已开 " + balls.Count + " 个 · 查看记录" : "奖励球掉落后可在红门右侧领取";
-            TraitLabel(new Rect(1020, 95, 154, 24), text, 11, TraitMuted);
+            if (!CanUseEquipmentTiles) return;
+            if (EquipmentCombinationPending)
+            {
+                if (PreviewEquipmentPair(equipmentCombinationFirst,equipmentCombinationSecond,out string key))
+                    DrawEquipmentCombination(key,equipmentCombinationFirst,equipmentCombinationSecond,true);
+                else CancelFormationEquipmentInteraction();
+                return;
+            }
+            if (!equipmentDragging) return;
+            var source = Campaign.Inventory.FirstOrDefault(item=>item.Instance==equipmentPressedItem);
+            if (source == null) return;
+            var target = EquipmentTileAt(equipmentPointer);
+            if (target != null && PreviewEquipmentPair(source.Instance,target.Instance,out string combined))
+                DrawEquipmentCombination(combined,source.Instance,target.Instance,false);
+            DrawSupplyItem(new Rect(equipmentPointer.x-21,equipmentPointer.y-23,42,42),source.Key);
+        }
+
+        void DrawEquipmentCombination(string key,int first,int second,bool confirm)
+        {
+            var r = EquipmentCombinationRect;
+            var inventory = Campaign.Inventory;
+            var source = inventory.First(item=>item.Instance==first);
+            var target = inventory.First(item=>item.Instance==second);
+            Fill(r,OperationsSurface);
+            ApprovedUi.Border(r,OperationsEdge);
+            DrawSupplyItem(new Rect(r.x+14,r.y+12,40,40),key);
+            TraitLabel(new Rect(r.x+64,r.y+11,r.width-77,22),FormationCampaignRun.ItemName(key),17,OperationsInk,true);
+            TraitLabel(new Rect(r.x+64,r.y+34,r.width-77,18),source.Name+" + "+target.Name,11,OperationsMuted);
+            Fill(new Rect(r.x+14,r.y+60,r.width-28,1),OperationsEdge);
+            var text = TraitText(13,OperationsInk,false,TextAnchor.UpperLeft);
+            text.wordWrap = true;
+            GUI.Label(new Rect(r.x+14,r.y+69,r.width-28,83),CampaignItemDescription(key),text);
+            if (!confirm) return;
+            if (OperationsButton(new Rect(r.x+95,r.yMax-36,94,26),"取消"))
+                CancelFormationEquipmentInteraction();
+            if (EconomyButton(new Rect(r.x+198,r.yMax-36,117,26),"确认合成","消耗这两件装备",
+                OperationsGold,OperationsSurface,13))
+                ConfirmFormationEquipmentCombination();
+        }
+
+        void DrawRewardControls()
+        {
+            if (Campaign.PendingRewardChoices>0 && Button(RewardChoiceRect,"待选 "+Campaign.PendingRewardChoices,openingGroundBall==null))
+                OpenGroundRewardChoices();
             if (GroundRewardPages>1)
             {
-                if (Button(new Rect(1173,97,23,22),"‹",groundRewardPage>0)) groundRewardPage--;
-                TraitLabel(new Rect(1197,97,34,22),(groundRewardPage+1)+"/"+GroundRewardPages,10,TraitInk,false,TextAnchor.MiddleCenter);
-                if (Button(new Rect(1231,97,23,22),"›",groundRewardPage+1<GroundRewardPages)) groundRewardPage++;
-            }
-            if (balls.Count > 0 && TraitHit(history, "查看本局奖励领取记录"))
-            {
-                rewardHistoryOpen = !rewardHistoryOpen;
-                if (rewardHistoryOpen) rewardHistorySelected = balls.Count - 1;
-                CancelFormationDrag();
+                var page = RewardPageRect;
+                if (Button(new Rect(page.x,page.y,24,page.height),"‹",groundRewardPage>0)) groundRewardPage--;
+                TraitLabel(new Rect(page.x+26,page.y,42,page.height),(groundRewardPage+1)+"/"+GroundRewardPages,11,
+                    OperationsInk,false,TextAnchor.MiddleCenter);
+                if (Button(new Rect(page.xMax-24,page.y,24,page.height),"›",groundRewardPage+1<GroundRewardPages)) groundRewardPage++;
             }
             if (rewardHistoryOpen) DrawRewardHistory();
         }
 
-        static Rect RewardHistoryRect => new Rect(760, 67, 244, 178);
+        static Rect RewardHistoryRect => new Rect(953, 222, 244, 178);
         void DrawRewardHistory()
         {
             var bounds = RewardHistoryRect;
             var balls = Campaign.BallRewards;
             int index = Mathf.Clamp(rewardHistorySelected, 0, balls.Count - 1);
             var ball = balls[index];
-            Fill(bounds, TraitPanel);
-            ApprovedUi.Border(bounds, TraitLine);
+            Fill(bounds, OperationsSurface);
+            ApprovedUi.Border(bounds, OperationsEdge);
             TraitLabel(new Rect(bounds.x + 12, bounds.y + 8, 180, 24), "奖励球记录", 15, TraitInk, true);
             var close = new Rect(bounds.xMax - 32, bounds.y + 8, 22, 22);
             TraitLabel(close, "×", 17, TraitMuted, false, TextAnchor.MiddleCenter);

@@ -275,10 +275,16 @@ namespace YesterdayConvoy
             CheckThat("left-preparation-shows-complete-owned-army",!controller.ViewingDefenders&&controller.CanEditFormationView&&ActorFeetMatchTerrain());
             CheckThat("preparation-clock-is-frozen",m.Phase==FormationPhase.Preparation&&m.Clock==0);
             CheckThat("test-shop-starts-with-unlimited-gold-and-three-owned-lineup-pieces",controller.Shop.UnlimitedGold&&controller.Shop.Level==3&&controller.Shop.Bench.Count==3&&m.EnabledCount==3);
-            CheckThat("shared-original-reserve-stage-without-second-lineup-rail",controller.ShopPresentation!=null&&new[]{0,3,9}.All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero&&FormationBattleController.FormationReserveRect(i)==ManualBattleController.ShopBenchRect(i)));
+            var dock=FormationBattleController.FormationBenchRect;
+            CheckThat("shared-original-stage-uses-ten-slots-in-the-formation-dock",controller.ShopPresentation!=null&&dock.height==86&&
+                Enumerable.Range(0,10).All(i=>
+                {
+                    var slot=FormationBattleController.FormationReserveRect(i);
+                    return FormationBattleController.FormationLineupRect(i)==Rect.zero&&dock.Contains(slot.min)&&dock.Contains(slot.max-Vector2.one);
+                }));
             yield return Market(true);yield return Capture("player-market");
             var beforeCovered=m.Units.ToDictionary(u=>u.Instance,u=>u.Spawn);int coveredGold=controller.Shop.Gold;
-            var covered=FormationBattleController.FormationOfferRect(0).center;
+            var covered=FormationBattleController.FormationOfferInspectionRect(0).center;
             controller.ProcessPointer(EventType.MouseDown,covered);controller.ProcessPointer(EventType.MouseUp,covered);
             CheckThat("original-A-market-blocks-map-pointer-through",m.Units.All(u=>beforeCovered[u.Instance]==u.Spawn)&&controller.Shop.Gold==coveredGold);
             yield return ChooseRecruit();int offer=recruitOffer;
@@ -322,7 +328,8 @@ namespace YesterdayConvoy
             string placed=Formation(m);Drag(first.Spawn,new Vector2(FormationBattleModel.DeploymentColumns,4));
             CheckThat("pointer-enemy-half-drop-is-atomic",Formation(m)==placed&&m.Clock==0&&m.Phase==FormationPhase.Preparation);
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
-            controller.ProcessPointer(EventType.MouseDrag,new Vector2(640,610));controller.ProcessPointer(EventType.MouseUp,new Vector2(640,610));
+            var dockHeading=new Vector2(dock.center.x,dock.y+8);
+            controller.ProcessPointer(EventType.MouseDrag,dockHeading);controller.ProcessPointer(EventType.MouseUp,dockHeading);
             CheckThat("pointer-hud-drop-keeps-placement",Formation(m)==placed);
             Drag(first.Spawn,second.Spawn);
             first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);

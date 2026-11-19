@@ -151,9 +151,34 @@ namespace YesterdayConvoy
             Assert(new[]{"白","蓝","金","彩"}.All(color=>FormationBattleController.SupplyOrbArt(color)!=null),
                 "All four reward orb textures load in Player");
             yield return Frame("03-left-preparation");
+            Assert(controller.FormationRouteNodeRect(0).width>0&&controller.FormationRouteNodeRect(6).width>0,
+                "Progress rail presents current and encounter nodes from the real first plane");
+            controller.ToggleFormationRouteNode(6);
+            yield return Frame("03-node-encounter-detail");
+            controller.ToggleFormationRouteNode(6);
+            var inspecting=controller.Model.Units.First(unit=>unit.Enabled);
+            var actorPoint=controller.FormationPieceRect(inspecting.Instance).center;
+            var expected=controller.Shop.Bench.First(piece=>piece.Instance==inspecting.Instance).Id;
+            var beforeInspect=inspecting.Spawn;
+            controller.ProcessPointer(EventType.MouseDown,actorPoint);
+            controller.ProcessPointer(EventType.MouseUp,actorPoint);
+            Assert(controller.FormationInspectedCardId==expected&&inspecting.Spawn==beforeInspect,
+                "Clicking a real deployed body opens its inspection without moving the unit");
+            yield return Frame("03-board-role-detail");
+            controller.ProcessPointer(EventType.MouseDown,actorPoint);
+            controller.ProcessPointer(EventType.MouseUp,actorPoint);
+            Assert(controller.FormationInspectedCardId==null,"Clicking the same body dismisses its information");
             var cameraPose=controller.battleCamera.transform.position;controller.ToggleFormationMarket();yield return Market(true);
             Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
-            yield return Frame("03-recruitment-drawer-open");yield return Market(false);
+            yield return Frame("03-recruitment-drawer-open");
+            int offer=Enumerable.Range(0,controller.Shop.Offers.Count).First(index=>controller.Shop.Offers[index]!=null);
+            string offerId=controller.Shop.Offers[offer];int goldBeforeInspect=controller.Shop.Gold;
+            controller.ToggleFormationOfferInspection(offer,offerId,controller.Shop.Definition(offerId).Cost,
+                FormationBattleController.FormationOfferRect(offer));
+            Assert(controller.FormationInspectedCardId==offerId&&controller.Shop.Gold==goldBeforeInspect,
+                "Inspecting a live shop offer neither purchases it nor changes the price");
+            yield return Frame("03-shop-offer-detail");
+            yield return Market(false);
             controller.SetFormationView(true);yield return null;float scoutingTileWidth=GuardTileScreenWidth();yield return Frame("04-close-guard-area");controller.SetFormationView(false);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
             Assert(controller.InspectFormationTrait(trait)&&controller.FormationTraitDetailsOpen&&controller.SelectedFormationTraitId==trait,"Open real lineup trait details");
@@ -170,6 +195,7 @@ namespace YesterdayConvoy
                 if(controller.Campaign.CurrentNode.Kind=="补给")
                 {yield return ResolveChoices();Assert(controller.ContinueCampaign(),"Leave supply through normal node transition");continue;}
                 yield return ResolveChoices();
+                if(battle==2)yield return VerifyEquipmentDragCombination();
                 yield return Market(true);
                 // Buy affordable duplicates or a first useful new kind; no free-card or money injection.
                 for(int slot=0;slot<5;slot++)
@@ -229,6 +255,7 @@ namespace YesterdayConvoy
                     yield return Frame("06-carried-drops-1-2");
                     continue;
                 }
+                if(battle==2)yield return VerifyConcurrentGroundRewards();
                 yield return ClaimGroundRewards(battle == 2);
                 if (battle == 2)
                 {
@@ -340,7 +367,7 @@ namespace YesterdayConvoy
                     yield return null;
                 yield return new WaitForSecondsRealtime(.68f);
                 bool projected = controller.TryGroundRewardPoint(drop.Id,out position);
-                Assert(projected && position.x > 890 && position.x < 1011 && position.y > 125 && position.y < 578,
+                Assert(projected && position.x > 860 && position.x < 1115 && position.y > 120 && position.y < 610,
                     "Clickable 3D " + drop.Color + " ball sits in the visible red-gate reward bay");
                 int gold = controller.Shop.Gold, equipment = controller.Campaign.Inventory.Count;
                 Assert(controller.ProcessFormationRewardPointer(EventType.MouseDown,position) &&
@@ -362,6 +389,61 @@ namespace YesterdayConvoy
                 Assert(controller.Campaign.PendingBalls.Count == --remaining,"Arrival claims exactly one ball");
                 yield return ResolveChoices();
             }
+        }
+
+        IEnumerator VerifyConcurrentGroundRewards()
+        {
+            yield return new WaitForSecondsRealtime(.45f);
+            var drops=controller.Campaign.PendingBalls.Take(2).ToArray();
+            Assert(drops.Length==2,"Two real carried rewards are available for independent opening");
+            int count=controller.Campaign.PendingBalls.Count, gold=controller.Shop.Gold, items=controller.Campaign.Inventory.Count;
+            foreach(var drop in drops)
+            {
+                Assert(controller.TryGroundRewardPoint(drop.Id,out var point)&&
+                    controller.ProcessFormationRewardPointer(EventType.MouseDown,point)&&
+                    controller.ProcessFormationRewardPointer(EventType.MouseUp,point)&&
+                    !controller.TryGroundRewardPoint(drop.Id,out _),"Distinct reward starts without waiting for the other animation");
+            }
+            Assert(controller.Campaign.PendingBalls.Count==count&&controller.Shop.Gold==gold&&controller.Campaign.Inventory.Count==items,
+                "Both reward flights start without an early payout");
+            yield return CaptureInterfaceClip("06-concurrent-reward-flights",26);
+            double until=Time.realtimeSinceStartupAsDouble+5;
+            while(controller.Campaign.PendingBalls.Any(ball=>drops.Any(drop=>drop.Id==ball.Id))&&
+                Time.realtimeSinceStartupAsDouble<until)yield return null;
+            Assert(controller.Campaign.PendingBalls.Count==count-2,"Exactly two independently started drops have been delivered");
+        }
+
+        IEnumerator VerifyEquipmentDragCombination()
+        {
+            var items=controller.Campaign.Inventory;
+            var pair=(from left in items from right in items
+                where left.Instance<right.Instance&&controller.Campaign.PreviewCombination(left.Instance,right.Instance,out _).Success
+                select (left,right)).FirstOrDefault();
+            Assert(pair.left!=null&&pair.right!=null,"Real combat rewards supplied a compatible equipment pair");
+            int first=pair.left.Instance, second=pair.right.Instance;
+            Assert(controller.Campaign.PreviewCombination(first,second,out string resultKey).Success&&
+                controller.TryEquipmentTilePoint(first,out _)&&controller.TryEquipmentTilePoint(second,out _),
+                "Both owned components expose a reachable inventory rail tile");
+            controller.TryEquipmentTilePoint(first,out var source);
+            controller.TryEquipmentTilePoint(second,out var target);
+            Assert(controller.ProcessFormationEquipmentPointer(EventType.MouseDown,source)&&
+                controller.ProcessFormationEquipmentPointer(EventType.MouseDrag,target)&&
+                !controller.EquipmentCombinationPending&&controller.Campaign.Inventory.Count==items.Count,
+                "Hovering a valid recipe previews it without consuming any materials");
+            yield return Frame("08-equipment-drag-preview");
+            Assert(controller.ProcessFormationEquipmentPointer(EventType.MouseUp,target)&&
+                controller.EquipmentCombinationPending,"Dropping a recipe waits for explicit confirmation");
+            yield return Frame("08-equipment-confirmation");
+            Assert(controller.CancelFormationEquipmentInteraction()&&
+                controller.Campaign.Inventory.Any(item=>item.Instance==first)&&controller.Campaign.Inventory.Any(item=>item.Instance==second),
+                "Cancel preserves both materials");
+            controller.ProcessFormationEquipmentPointer(EventType.MouseDown,source);
+            controller.ProcessFormationEquipmentPointer(EventType.MouseDrag,target);
+            controller.ProcessFormationEquipmentPointer(EventType.MouseUp,target);
+            Assert(controller.ConfirmFormationEquipmentCombination()&&
+                controller.Campaign.Inventory.Count==items.Count-1&&controller.Campaign.Inventory.Any(item=>item.Key==resultKey),
+                "Confirm makes the exact recipe and consumes just the two selected materials");
+            yield return Frame("08-equipment-result");
         }
 
         IEnumerator VerifyStarterTraitActivation()

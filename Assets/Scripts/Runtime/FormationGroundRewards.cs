@@ -6,8 +6,8 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleController
     {
-        const float RewardPop = .205f, RewardFlightEnd = 1.09f;
-        const float RewardLeft = 11.38f, RewardRight = 12.39f, RewardNear = .57f, RewardFar = 5.85f, RewardFloor = .12f;
+        const float RewardPop = .205f, RewardFlightEnd = 1.09f, RewardArrivalTime = .46f;
+        const float RewardLeft = 11.28f, RewardRight = 14.37f, RewardNear = .38f, RewardFar = 2.88f, RewardFloor = .12f;
         static readonly Color[] PrismLight =
         {
             new Color(.40f,.94f,.98f), new Color(.54f,.65f,1), new Color(.82f,.57f,1),
@@ -15,10 +15,10 @@ namespace YesterdayConvoy
         };
         static readonly Vector2[] LootScatter =
         {
-            new Vector2(.594f,.16f), new Vector2(.26f,.30f), new Vector2(.73f,.46f),
-            new Vector2(.31f,.61f), new Vector2(.73f,.72f), new Vector2(.40f,.87f),
-            new Vector2(.27f,.09f), new Vector2(.73f,.22f), new Vector2(.31f,.41f),
-            new Vector2(.75f,.56f), new Vector2(.25f,.76f), new Vector2(.73f,.93f)
+            new Vector2(.38f,.50f), new Vector2(.62f,.50f), new Vector2(.14f,.17f),
+            new Vector2(.86f,.17f), new Vector2(.14f,.83f), new Vector2(.86f,.83f),
+            new Vector2(.38f,.17f), new Vector2(.62f,.17f), new Vector2(.14f,.50f),
+            new Vector2(.86f,.50f), new Vector2(.38f,.83f), new Vector2(.62f,.83f)
         };
         sealed class GroundBall
         {
@@ -28,8 +28,20 @@ namespace YesterdayConvoy
             public Transform Shadow;
             public float Radius, Age;
             public int Grade, Slot;
+            public GroundRewardFlight Flight;
+        }
+        sealed class GroundRewardFlight
+        {
+            public GroundBall Ball;
+            public FormationCampaignRun.BallPayout Payout;
+            public Vector2 Origin;
+            public Vector2[] RecruitTargets;
+            public float Age;
+            public bool Arrived;
+            public int ArrivalFirstItem, ArrivalItems, ArrivalGold;
         }
         readonly List<GroundBall> groundBalls = new List<GroundBall>();
+        readonly List<GroundRewardFlight> rewardFlights = new List<GroundRewardFlight>();
         readonly List<Mesh> rewardMeshes = new List<Mesh>();
         readonly Dictionary<string,Sprite> componentDropSprites = new Dictionary<string,Sprite>();
         readonly Dictionary<string, Mesh> rewardShells = new Dictionary<string, Mesh>();
@@ -38,20 +50,18 @@ namespace YesterdayConvoy
         Material rewardMaterial, rewardDecal;
         Mesh rewardShadowMesh;
         MaterialPropertyBlock rewardTint;
-        GroundBall openingGroundBall, pressedGroundBall;
-        FormationCampaignRun.BallPayout groundPayout;
-        Vector2 rewardPointerStart, rewardFlightOrigin;
-        float rewardFlightAge, rewardArrivalAge = 1;
-        int rewardFirstItem, rewardArrivalItems, rewardArrivalGold;
+        GroundBall pressedGroundBall;
+        GroundBall openingGroundBall => rewardFlights.Find(flight=>!flight.Arrived)?.Ball;
+        Vector2 rewardPointerStart;
         int groundRewardPage;
-        readonly List<Vector2> rewardRecruitTargets = new List<Vector2>();
         int GroundRewardPages => Mathf.Max(1,Mathf.CeilToInt((Campaign?.PendingBalls.Count??0)/(float)LootScatter.Length));
         bool HasGroundRewards => Campaign?.PendingBalls.Count > 0;
-        internal bool ActiveGroundRewardHasRecruits => groundPayout?.Recruits.Count>0;
-        internal bool ActiveGroundRewardHasTwoStar => groundPayout?.Recruits.Any(recruit=>recruit.Star==2)==true;
-        bool GroundRewardsVisible => HasGroundRewards && !CombatViewActive && !ViewingDefenders;
+        int PendingGroundRewardItems => rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Items.Count);
+        internal bool ActiveGroundRewardHasRecruits => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Count>0);
+        internal bool ActiveGroundRewardHasTwoStar => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Any(recruit=>recruit.Star==2));
+        bool GroundRewardsVisible => Campaign != null && !Campaign.IsPractice && !CombatViewActive && !ViewingDefenders;
         bool CanPickGroundRewards => GroundRewardsVisible && !CampaignInteractionBlocked && !formationMenuOpen &&
-            !shopOddsVisible && !rewardHistoryOpen && !MarketVisible && !ShopPanelTransitioning;
+            !shopOddsVisible && !rewardHistoryOpen;
 
         internal static float RewardSizeRatio(string color) => color switch
         {
@@ -64,17 +74,20 @@ namespace YesterdayConvoy
         internal bool TryGroundRewardPoint(int id, out Vector2 point)
         {
             var ball = groundBalls.Find(candidate => candidate.Drop.Id == id);
-            point = ball == null ? default : RewardProjection(ball.Body.position);
-            return ball != null && GroundRewardsVisible && groundRewardRoot != null && groundRewardRoot.activeSelf;
+            bool visible = ball != null && ball.Flight == null && GroundRewardsVisible && ball.Root.gameObject.activeInHierarchy;
+            point = visible ? RewardProjection(ball.Body.position) : default;
+            return visible;
         }
 
         internal bool ProcessFormationRewardPointer(EventType type, Vector2 point)
         {
             if (type == EventType.MouseDown) pressedGroundBall = null;
-            if (!CanPickGroundRewards || FormationSupplyBlocksPoint(point) ||
-                FormationTraitDetailsOpen && FormationTraitDetailsRect.Contains(point)) return false;
+            bool canPick = CanPickGroundRewards && !FormationSupplyBlocksPoint(point) &&
+                !FormationTraitBlocksPoint(point) && !FormationInspectionBlocksPoint(point) && !OperationsBlocksPoint(point) &&
+                (!(MarketVisible || ShopPanelTransitioning) || !FormationMarketRect.Contains(point));
             if (type == EventType.MouseDown)
             {
+                if (!canPick) return false;
                 pressedGroundBall = GroundBallAt(point);
                 if (pressedGroundBall == null) return false;
                 CancelFormationDrag();
@@ -86,7 +99,7 @@ namespace YesterdayConvoy
             {
                 var selected = pressedGroundBall;
                 pressedGroundBall = null;
-                if (Vector2.Distance(point, rewardPointerStart) < 8 && GroundBallAt(point) == selected)
+                if (canPick && Vector2.Distance(point, rewardPointerStart) < 8 && GroundBallAt(point) == selected)
                     TryBeginGroundReward(selected.Drop.Id);
             }
             return true;
@@ -98,7 +111,7 @@ namespace YesterdayConvoy
             float best = float.MaxValue;
             foreach (var ball in groundBalls)
             {
-                if (ball == openingGroundBall || !ball.Root.gameObject.activeSelf) continue;
+                if (ball.Flight != null || !ball.Root.gameObject.activeSelf) continue;
                 var center = RewardProjection(ball.Body.position);
                 float radius = Vector2.Distance(center, RewardProjection(ball.Body.position + battleCamera.transform.right * ball.Radius));
                 float distance = (point - center).sqrMagnitude;
@@ -110,38 +123,33 @@ namespace YesterdayConvoy
 
         bool TryBeginGroundReward(int id)
         {
-            if (!CanPickGroundRewards || openingGroundBall != null) return false;
+            if (!CanPickGroundRewards) return false;
             var ball = groundBalls.Find(candidate => candidate.Drop.Id == id);
-            if (ball == null) return false;
+            if (ball == null || ball.Flight != null) return false;
             var payout = Campaign.BeginBall(id);
             if (payout == null) return false;
-            openingGroundBall = ball;
-            groundPayout = payout;
-            rewardFlightAge = 0;
-            rewardFlightOrigin = RewardProjection(ball.Body.position + Vector3.up * .12f);
-            rewardFirstItem = Campaign.Inventory.Count;
-            rewardRecruitTargets.Clear();
+            int earlierRecruits = rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Recruits.Count);
             var vacant = Enumerable.Range(0,10).Where(slot=>Session.Seats.At(false,slot)==0).ToArray();
+            var targets = new Vector2[payout.Recruits.Count];
             for (int index=0;index<payout.Recruits.Count;index++)
-                rewardRecruitTargets.Add(FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(index,vacant.Length-1)]).center);
-            if (payout.Items.Count > 0)
+                targets[index] = FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(earlierRecruits+index,vacant.Length-1)]).center;
+            ball.Flight = new GroundRewardFlight
             {
-                int lastRow = (rewardFirstItem + payout.Items.Count - 1) / 5;
-                equipmentRailScroll.y = Mathf.Max(0, lastRow - 1) * 42;
-            }
+                Ball = ball,
+                Payout = payout,
+                Origin = RewardProjection(ball.Body.position + Vector3.up * .12f),
+                RecruitTargets = targets
+            };
+            rewardFlights.Add(ball.Flight);
+            if (payout.Items.Count > 0)
+                RevealEquipmentSlot(Campaign.Inventory.Count + PendingGroundRewardItems - 1);
             CloseFormationTraitDetails();
-            rewardArrivalAge = 1;
             return true;
         }
 
         void TickGroundRewards(float delta)
         {
-            rewardArrivalAge += delta;
-            if (!HasGroundRewards)
-            {
-                if (groundRewardRoot != null) groundRewardRoot.SetActive(false);
-                return;
-            }
+            TickGroundRewardFlights(delta);
             if (!GroundRewardsVisible)
             {
                 if (groundRewardRoot != null) groundRewardRoot.SetActive(false);
@@ -155,48 +163,16 @@ namespace YesterdayConvoy
             {
                 var ball = groundBalls[index];
                 if (visibleDrops.Contains(ball.Drop)) continue;
-                ball.Root.gameObject.SetActive(false);
-                Destroy(ball.Root.gameObject);
-                groundBalls.RemoveAt(index);
+                RemoveGroundBall(ball);
             }
             foreach (var drop in visibleDrops)
             {
                 if (groundBalls.Count >= LootScatter.Length) break;
                 if (groundBalls.Any(ball => ball.Drop.Id == drop.Id)) continue;
+                if (rewardFlights.Any(flight=>!flight.Arrived&&flight.Ball.Drop.Id==drop.Id)) continue;
                 for (int slot = 0; slot < LootScatter.Length; slot++)
                     if (!groundBalls.Any(ball => ball.Slot == slot)) { AddGroundBall(drop, slot); break; }
             }
-            if (openingGroundBall != null && !formationMenuOpen)
-            {
-                rewardFlightAge += delta;
-                if (rewardFlightAge >= RewardFlightEnd)
-                {
-                    var ball = openingGroundBall;
-                    var payout = groundPayout;
-                    openingGroundBall = null;
-                    groundPayout = null;
-                    ball.Root.gameObject.SetActive(false);
-                    Destroy(ball.Root.gameObject);
-                    groundBalls.Remove(ball);
-                    var reward = Session.CompleteBall(ball.Drop.Id);
-                    if (reward != null)
-                    {
-                        rewardArrivalAge = 0;
-                        rewardArrivalGold = payout.Gold;
-                        rewardArrivalItems = payout.Items.Count;
-                        notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
-                        RefreshCampaignPreparation();
-                        approvedShop?.SyncShopBenchModels();
-                    }
-                    if (!HasGroundRewards)
-                    {
-                        ClearGroundRewards();
-                        return;
-                    }
-                    if (groundRewardPage >= GroundRewardPages) ClearGroundRewards();
-                }
-            }
-
             var mouse = TacticalViewport.Current.FromScreen(Input.mousePosition);
             var hovered = CanPickGroundRewards ? GroundBallAt(mouse) : null;
             float clock = Time.unscaledTime;
@@ -204,14 +180,15 @@ namespace YesterdayConvoy
             {
                 if (!ball.Root.gameObject.activeSelf) continue;
                 ball.Age += delta;
-                bool opening = ball == openingGroundBall;
+                bool opening = ball.Flight != null;
+                float flightAge = ball.Flight?.Age ?? 0;
                 bool hover = ball == hovered;
-                float pop = opening ? Mathf.Clamp01(rewardFlightAge / RewardPop) : 0;
+                float pop = Mathf.Clamp01(flightAge / RewardPop);
                 float age = Mathf.Max(0, ball.Age);
                 float fall = age < .30f ? .97f * (1 - Mathf.Pow(age / .30f, 2)) :
                     .22f * Mathf.Abs(Mathf.Sin(Mathf.Clamp01((age - .30f) / .34f) * 6.283f)) *
                     (1 - Mathf.Clamp01((age - .30f) / .34f));
-                ball.Body.gameObject.SetActive(!opening || rewardFlightAge < RewardPop);
+                ball.Body.gameObject.SetActive(!opening || flightAge < RewardPop);
                 ball.Shadow.gameObject.SetActive(ball.Body.gameObject.activeSelf);
                 ball.Body.localPosition = Vector3.up * (ball.Radius + fall + (hover ? .035f : 0) + .19f * pop * pop);
                 ball.Body.localScale = Vector3.one * (ball.Radius * (1 - .19f * Mathf.Sin(pop * 2.6f)));
@@ -222,6 +199,45 @@ namespace YesterdayConvoy
                 rewardTint.SetFloat("_Boost", .95f + (hover ? .22f : 0) + pop * .85f);
                 if (ball.Shell != null) ball.Shell.SetPropertyBlock(rewardTint);
             }
+        }
+
+        void TickGroundRewardFlights(float delta)
+        {
+            if (formationMenuOpen || rewardFlights.Count == 0) return;
+            bool changed = false;
+            foreach (var flight in rewardFlights)
+            {
+                flight.Age += delta;
+                if (flight.Arrived || flight.Age < RewardFlightEnd) continue;
+                flight.Arrived = true;
+                flight.Age = RewardFlightEnd;
+                var ball = flight.Ball;
+                RemoveGroundBall(ball);
+                int firstItem = Campaign.Inventory.Count;
+                var reward = Session.CompleteBall(ball.Drop.Id);
+                if (reward == null) continue;
+                flight.ArrivalGold = reward.Gold;
+                flight.ArrivalFirstItem = firstItem;
+                flight.ArrivalItems = Campaign.Inventory.Count - firstItem;
+                if (flight.ArrivalItems > 0)
+                    RevealEquipmentSlot(firstItem + flight.ArrivalItems - 1);
+                notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
+                changed = true;
+            }
+            if (changed)
+            {
+                RefreshCampaignPreparation();
+                approvedShop?.SyncShopBenchModels();
+            }
+            rewardFlights.RemoveAll(flight=>flight.Arrived&&flight.Age>=RewardFlightEnd+RewardArrivalTime);
+        }
+
+        void RemoveGroundBall(GroundBall ball)
+        {
+            if (!groundBalls.Remove(ball)) return;
+            if (pressedGroundBall == ball) pressedGroundBall = null;
+            ball.Root.gameObject.SetActive(false);
+            Destroy(ball.Root.gameObject);
         }
 
         void EnsureGroundRewards()
@@ -250,8 +266,8 @@ namespace YesterdayConvoy
 
         void ClearGroundRewards()
         {
-            openingGroundBall = pressedGroundBall = null;
-            groundPayout = null;
+            pressedGroundBall = null;
+            rewardFlights.Clear();
             foreach (var ball in groundBalls)
             {
                 ball.Root.gameObject.SetActive(false);
@@ -440,47 +456,69 @@ namespace YesterdayConvoy
             return StoreRewardMesh(points,colors,indices,true);
         }
 
-        static Vector2 RewardCoinTarget => new Vector2(1240,664);
-
-        Vector2 RewardItemTarget(int index) => new Vector2(1039 + index % 5 * 44,184 + index / 5 * 42 - equipmentRailScroll.y);
-
         void DrawFormationRewardFlights()
         {
-            if (CombatViewActive || formationMenuOpen || Event.current.type != EventType.Repaint) return;
-            if (rewardArrivalAge < .46f)
+            if (CombatViewActive || ViewingDefenders || formationMenuOpen || Event.current.type != EventType.Repaint) return;
+            if (rewardFlights.Count == 0) return;
+            int nextItem = Campaign.Inventory.Count;
+            foreach (var flight in rewardFlights)
             {
-                Color arrival = new Color(1,.84f,.46f,.92f * (1 - rewardArrivalAge / .46f));
-                if (rewardArrivalGold > 0) ApprovedUi.Border(FormationCoinRect,arrival,2);
-                if (rewardArrivalGold > 0)
-                    TraitLabel(new Rect(1202,630-rewardArrivalAge*28,52,22), "+"+rewardArrivalGold, 15, arrival, true, TextAnchor.MiddleRight);
-                for (int index = 0; index < rewardArrivalItems; index++)
+                if (flight.Arrived)
                 {
-                    Vector2 target = RewardItemTarget(rewardFirstItem + index);
-                    ApprovedUi.Border(new Rect(target.x-20,target.y-20,40,39),arrival,2);
+                    DrawRewardArrival(flight);
+                    continue;
                 }
+                if (flight.Age >= .155f) DrawGroundRewardFlight(flight,nextItem);
+                nextItem += flight.Payout.Items.Count;
             }
-            if (openingGroundBall == null || groundPayout == null || rewardFlightAge < .155f) return;
-            DrawGroundRewardBurst(openingGroundBall,rewardFlightAge - .155f);
-            int coins = Mathf.Min(5,groundPayout.Gold);
-            for (int index = 0; index < coins; index++)
-                DrawRewardFlight(RewardCoinTarget,null,true,.035f * index, .72f, index - (coins-1)*.5f);
-            for (int index = 0; index < groundPayout.Items.Count; index++)
-                DrawRewardFlight(RewardItemTarget(rewardFirstItem + index),groundPayout.Items[index],false,.065f * index,.75f,index);
-            for (int index=0;index<groundPayout.Recruits.Count;index++)
-                DrawRewardFlight(rewardRecruitTargets[index],null,false,index*.055f,.74f,index-1,groundPayout.Recruits[index]);
-            if (groundPayout.Refreshes > 0)
-                DrawRewardFlight(new Vector2(286,42),"刷新",false,.075f,.73f,0);
-            if (groundPayout.Choice != null)
-                DrawRewardFlight(RewardChoiceRect.center,"自选",false,.035f,.78f,0);
         }
 
-        void DrawGroundRewardBurst(GroundBall ball,float age)
+        void DrawRewardArrival(GroundRewardFlight flight)
         {
+            float age = flight.Age - RewardFlightEnd;
+            Color arrival = new Color(1,.84f,.46f,.92f * (1 - age / RewardArrivalTime));
+            var wallet = FormationCoinRect;
+            if (flight.ArrivalGold > 0)
+            {
+                ApprovedUi.Border(wallet,arrival,2);
+                TraitLabel(new Rect(wallet.x+8,wallet.y-22-age*26,wallet.width-16,22),
+                    "+"+flight.ArrivalGold,15,arrival,true,TextAnchor.MiddleRight);
+            }
+            for (int index = 0; index < flight.ArrivalItems; index++)
+            {
+                var slot = EquipmentTileOnScreen(flight.ArrivalFirstItem + index);
+                if (EquipmentTilesViewport.Overlaps(slot)) ApprovedUi.Border(slot,arrival,2);
+            }
+        }
+
+        void DrawGroundRewardFlight(GroundRewardFlight flight,int firstItem)
+        {
+            DrawGroundRewardBurst(flight,flight.Age - .155f);
+            var payout = flight.Payout;
+            int coins = Mathf.Min(5,payout.Gold);
+            for (int index = 0; index < coins; index++)
+                DrawRewardFlight(flight,FormationCoinRect.center,null,true,.035f * index,index-(coins-1)*.5f);
+            for (int index = 0; index < payout.Items.Count; index++)
+                DrawRewardFlight(flight,EquipmentFlightTarget(firstItem+index),payout.Items[index],false,.065f*index,index);
+            for (int index = 0; index < payout.Recruits.Count; index++)
+                DrawRewardFlight(flight,flight.RecruitTargets[index],null,false,index*.055f,index-1,payout.Recruits[index]);
+            if (payout.Refreshes > 0)
+            {
+                var refresh = MarketVisible ? new Vector2(FormationMarketRect.xMax-48,FormationMarketRect.y+44) : FormationCoinRect.center;
+                DrawRewardFlight(flight,refresh,"刷新",false,.075f,0);
+            }
+            if (payout.Choice != null)
+                DrawRewardFlight(flight,RewardChoiceRect.center,"自选",false,.035f,0);
+        }
+
+        void DrawGroundRewardBurst(GroundRewardFlight flight,float age)
+        {
+            var ball = flight.Ball;
             float duration = .41f + ball.Grade * .09f;
             float time = Mathf.Clamp01(age / duration);
             if (time >= 1) return;
             float ease = 1 - Mathf.Pow(1-time,3);
-            var center = rewardFlightOrigin;
+            var center = flight.Origin;
             var hue = BallAccent(ball.Drop.Color);
             int count = 16 + ball.Grade * 7;
             for (int index = 0; index < count; index++)
@@ -506,13 +544,13 @@ namespace YesterdayConvoy
                 }
         }
 
-        void DrawRewardFlight(Vector2 target,string key,bool coin,float delay,float duration,float fan,FormationCampaignRun.RewardRecruit recruit = null)
+        void DrawRewardFlight(GroundRewardFlight flight,Vector2 target,string key,bool coin,float delay,float fan,FormationCampaignRun.RewardRecruit recruit = null)
         {
-            float flightDuration = Mathf.Max(duration, RewardFlightEnd - RewardPop - delay);
-            float time = (rewardFlightAge - RewardPop - delay) / flightDuration;
+            float flightDuration = RewardFlightEnd - RewardPop - delay;
+            float time = (flight.Age - RewardPop - delay) / flightDuration;
             if (time < 0) return;
             time = Mathf.Clamp01(time);
-            var origin = rewardFlightOrigin;
+            var origin = flight.Origin;
             var first = origin + new Vector2((coin ? 37 : -35)+12*fan,-79-12*fan);
             var last = target + (coin ? new Vector2(-56+8*fan,-95) : new Vector2(-100-9*fan,65));
             Vector2 Spot(float progress)

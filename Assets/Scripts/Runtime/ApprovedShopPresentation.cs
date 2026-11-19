@@ -20,6 +20,10 @@ namespace YesterdayConvoy
             public Func<Vector2> Pointer;
             public Func<int,Rect> PieceRect,FlowPieceRect,OfferRect;
             public Func<Rect> MarketRect;
+            public Func<Rect> ReserveDeck;
+            public Func<int,Rect> ReserveSlot;
+            public Func<int,bool> ReserveSelection;
+            public Func<int,Color> ReserveFee;
             public Func<int,bool> InLineup;
             public Func<string,Sprite> Portrait;
             public Func<string,double,Sprite> IdleFrame;
@@ -197,17 +201,20 @@ namespace YesterdayConvoy
             int reserve=shop.Bench.Count(p=>!host.InLineup(p.Instance));
             var title=ApprovedUi.Text(host.Font(),13,TextAnchor.MiddleLeft,Color.white,600);
             var hint=ApprovedUi.Text(host.Font(),10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
-            if(host.ReserveOnly?.Invoke()??false)
+            bool singleReserve=host.ReserveOnly?.Invoke()??false;
+            if(singleReserve)
             {
-                var deck=new Rect(184,627,950,73);
-                Fill(deck,new Color(.085f,.13f,.17f,.96f));ShopBorder(deck,new Color(.33f,.41f,.46f),1);
+                var deck=host.ReserveDeck?.Invoke()??new Rect(184,627,950,73);
+                Fill(deck,Color.black);ShopBorder(deck,new Color32(82,91,108,255));
                 for(int slot=0;slot<10;slot++)
                 {
-                    var pad=ApprovedUi.ReserveSlot(slot);Fill(pad,new Color(.22f,.29f,.34f,.45f));
-                    Fill(new Rect(pad.xMax-1,pad.y,1,pad.height),new Color(.38f,.46f,.50f,.5f));
+                    var pad=host.ReserveSlot?.Invoke(slot)??ApprovedUi.ReserveSlot(slot);
+                    Fill(pad,Color.black);
+                    ShopBorder(pad,new Color32(47,49,62,255));
                 }
-                GUI.Label(new Rect(188,599,410,23),$"备战席  {reserve}/10   ·   已上阵 {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",title);
-                GUI.Label(new Rect(652,602,478,21),"拖入棋盘上阵 · 拖回备战下阵",hint);
+                GUI.Label(new Rect(deck.x+7,deck.y+1,95,15),$"备战席 {reserve}/10",LoopText(10,TextAnchor.MiddleLeft,Color.white,600));
+                GUI.Label(new Rect(deck.xMax-139,deck.y+1,132,15),$"已上阵 {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",
+                    LoopText(10,TextAnchor.MiddleRight,new Color32(167,217,255,255),600));
             }
             else
             {
@@ -222,7 +229,14 @@ namespace YesterdayConvoy
             for(int i=0;i<shop.Bench.Count;i++)
             {
                 var p=shop.Bench[i];var r=ShopPieceRect(i);if(r.width<=0||r.height<=0)continue;
-                DrawLoopCostBackground(r,shop.Definition(p.Id).Cost);
+                int cost=shop.Definition(p.Id).Cost;
+                if(singleReserve)
+                {
+                    Color tier=host.ReserveFee?.Invoke(cost)??ApprovedUi.Tier(cost);
+                    Fill(r,Color.Lerp(new Color32(23,26,41,255),tier,.27f));
+                    ShopBorder(r,Color.Lerp(new Color32(58,63,76,255),tier,.25f));
+                }
+                else DrawLoopCostBackground(r,cost);
                 Fill(new Rect(r.x+15,r.y+51,r.width-30,5),new Color(.04f,.09f,.13f,.31f));
             }
             if(Event.current.type==EventType.Repaint&&shopModelCamera!=null)shopModelCamera.Render();
@@ -233,8 +247,13 @@ namespace YesterdayConvoy
                 int cost=shop.Definition(p.Id).Cost;Fill(new Rect(r.x+3,r.y+2,15,15),new Color(.12f,.23f,.32f,.9f));
                 GUI.Label(new Rect(r.x+3,r.y+1,15,16),cost.ToString(),ApprovedUi.Text(host.Font(),12,TextAnchor.MiddleCenter,Color.white,700));
                 int star=ShopDisplayedStar(p);DrawShopStars(new Rect(r.xMax-8-star*12,r.y+2,star*12,12),star,new Color(1,.94f,.72f));
-                Fill(new Rect(r.x,r.y+55,r.width,16),Color.Lerp(ApprovedUi.Tier(cost),Color.black,.3f));
-                GUI.Label(new Rect(r.x+1,r.y+55,r.width-2,16),shop.Definition(p.Id).Name,ApprovedUi.Text(host.Font(),11,TextAnchor.MiddleCenter,Color.white,600));
+                var footer=new Rect(r.x,r.y+55,r.width,singleReserve?14:16);
+                Color fee=singleReserve?(host.ReserveFee?.Invoke(cost)??ApprovedUi.Tier(cost)):ApprovedUi.Tier(cost);
+                Fill(footer,Color.Lerp(fee,Color.black,singleReserve?.50f:.30f));
+                footer.x+=1;footer.width-=2;
+                string name=shop.Definition(p.Id).Name;
+                GUI.Label(footer,name,ApprovedUi.Text(host.Font(),name.Length>8&&singleReserve?10:11,TextAnchor.MiddleCenter,Color.white,600));
+                if(singleReserve&&host.ReserveSelection?.Invoke(p.Instance)==true)ShopBorder(r,new Color32(167,217,255,255),1.5f);
             }
             host.DrawDropTarget?.Invoke();
         }

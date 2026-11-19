@@ -83,7 +83,7 @@ namespace YesterdayConvoy
         readonly List<string> openedBalls=new List<string>();
         readonly List<BallReward> ballRewards = new List<BallReward>();
         readonly List<RewardDrop> pendingBalls = new List<RewardDrop>();
-        RewardDrop openingBall;
+        readonly Dictionary<int,RewardDrop> openingBalls = new Dictionary<int,RewardDrop>();
         int ballSequence;
         readonly HashSet<string> settled=new HashSet<string>();
         readonly HashSet<int> hopeClaims=new HashSet<int>();
@@ -182,7 +182,7 @@ namespace YesterdayConvoy
         }
         public ShopTrialModel.Result ChooseReward(int index)
         {
-            if (HasBlockingChoice || openingBall != null || index < 0 || index >= RewardChoices.Count) return Fail("没有可领取的选项");
+            if (HasBlockingChoice || openingBalls.Count != 0 || index < 0 || index >= RewardChoices.Count) return Fail("没有可领取的选项");
             var option = rewardSelections.Dequeue().Options[index];
             option.Apply?.Invoke(); OnShopChanged(); return Ok("已选择："+option.Name);
         }
@@ -324,7 +324,7 @@ namespace YesterdayConvoy
         }
         public bool AdvanceNode()
         {
-            if(Finished||!NodeSettled||HasBlockingChoice||openingBall!=null||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
+            if(Finished||!NodeSettled||HasBlockingChoice||openingBalls.Count!=0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
             int oldPlane=CurrentNode.Plane;NodeIndex++;CurrentEncounterTier=1;openedBalls.Clear();
             if(growthFund>0){shop.AddGold(3);growthFund--;}
             if(contractPays>0){Give(contractId);contractPays--;}
@@ -494,10 +494,10 @@ namespace YesterdayConvoy
 
         public BallPayout BeginBall(int id)
         {
-            if (openingBall != null || HasBlockingChoice) return null;
+            if (HasBlockingChoice || openingBalls.ContainsKey(id)) return null;
             var drop = pendingBalls.Find(ball => ball.Id == id);
             if (drop == null) return null;
-            openingBall = drop;
+            openingBalls.Add(id, drop);
             return drop.Payout;
         }
 
@@ -542,9 +542,10 @@ namespace YesterdayConvoy
 
         public BallReward CompleteBall(int id)
         {
-            if (openingBall?.Id != id) return null;
-            var drop = openingBall; var payout = drop.Payout;
-            openingBall = null; pendingBalls.Remove(drop);
+            if (!openingBalls.TryGetValue(id, out var drop)) return null;
+            var payout = drop.Payout;
+            openingBalls.Remove(id);
+            pendingBalls.Remove(drop);
             int choiceCount = rewardSelections.Count;
             shop.AddGold(payout.Gold); shop.FreeRefreshes += payout.Refreshes;
             var recruits = new List<string>();
@@ -632,10 +633,29 @@ namespace YesterdayConvoy
         }
         public ShopTrialModel.Result Unequip(int itemInstance)
         {if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);if(item==null)return Fail("装备不存在");item.Owner=0;return Ok("已免费卸装");}
+
+        internal ShopTrialModel.Result PreviewCombination(int a,int b,out string key)
+            => ValidateCombination(items.Find(i=>i.Instance==a),items.Find(i=>i.Instance==b),out key);
+
         public ShopTrialModel.Result Combine(int a,int b)
         {
-            if(HasBlockingChoice)return Fail("请先完成待选事项");var x=items.Find(i=>i.Instance==a);var y=items.Find(i=>i.Instance==b);if(x==null||y==null||x==y)return Fail("选择两个不同物品");
-            string key=null;
+            var x=items.Find(i=>i.Instance==a);
+            var y=items.Find(i=>i.Instance==b);
+            var validation=ValidateCombination(x,y,out string key);
+            if(!validation.Success)return validation;
+            int owner=x.Owner==y.Owner?x.Owner:0;
+            items.Remove(x);items.Remove(y);var next=AddItem(key,false);
+            var piece=shop.Bench.FirstOrDefault(p=>p.Instance==owner);
+            if(owner!=0&&piece!=null&&Equipment(owner).Count<3&&!Equipment(owner).Any(i=>i.Key==key)&&
+                (BadgeTrait(key)==null||!HasNativeTrait(piece.Id,BadgeTrait(key))&&!Equipment(owner).Any(i=>BadgeTrait(i.Key)!=null)))next.Owner=owner;
+            return Ok("合成："+next.Name);
+        }
+
+        ShopTrialModel.Result ValidateCombination(ItemInstance x,ItemInstance y,out string key)
+        {
+            key=null;
+            if(HasBlockingChoice)return Fail("请先完成待选事项");
+            if(x==null||y==null||x==y)return Fail("选择两个不同物品");
             bool Base(string s)=>s.Length==1&&"ABCDEF".Contains(s);
             if(Base(x.Key)&&Base(y.Key))key=string.Concat(new[]{x.Key[0],y.Key[0]}.OrderBy(c=>c));
             else
@@ -644,12 +664,7 @@ namespace YesterdayConvoy
                 if(gem!=null&&Base(component.Key))
                 {string[] traits=gem.Key=="赤宝石"?new[]{"整合","雪怪","泥岩","深池","萨卡兹","海嗣"}:new[]{"连击","迅攻","复苏","接棒","同频","提词"};string trait=traits["ABCDEF".IndexOf(component.Key,StringComparison.Ordinal)];if(badgeCounts.GetValueOrDefault(trait)>=2)return Fail("同类徽章整局最多两枚");key="徽章:"+trait+":"+component.Key;}
             }
-            if(key==null)return Fail("这两件物品没有合成配方");int owner=x.Owner==y.Owner?x.Owner:0;
-            items.Remove(x);items.Remove(y);var next=AddItem(key,false);
-            var piece=shop.Bench.FirstOrDefault(p=>p.Instance==owner);
-            if(owner!=0&&piece!=null&&Equipment(owner).Count<3&&!Equipment(owner).Any(i=>i.Key==key)&&
-                (BadgeTrait(key)==null||!HasNativeTrait(piece.Id,BadgeTrait(key))&&!Equipment(owner).Any(i=>BadgeTrait(i.Key)!=null)))next.Owner=owner;
-            return Ok("合成："+next.Name);
+            return key==null?Fail("这两件物品没有合成配方"):Ok(ItemName(key));
         }
         public ShopTrialModel.Result UseCopier(int itemInstance,int pieceInstance)
         {

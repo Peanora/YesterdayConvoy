@@ -360,10 +360,12 @@ namespace YesterdayConvoy.Tests
             Assert.That(shop.Level,Is.EqualTo(3));Assert.That(shop.UnlimitedGold,Is.True);
             Assert.That(controller.Model.EnabledCount,Is.EqualTo(3));
             Assert.That(controller.ShopPresentation,Is.Not.Null);
-            foreach(int seatIndex in new[]{0,3,9})
+            var dock=FormationBattleController.FormationBenchRect;
+            foreach(int seatIndex in Enumerable.Range(0,10))
             {
                 Assert.That(FormationBattleController.FormationLineupRect(seatIndex),Is.EqualTo(Rect.zero),"There is no duplicate screen lineup rail; the board owns deployed fighters.");
-                Assert.That(FormationBattleController.FormationReserveRect(seatIndex),Is.EqualTo(ManualBattleController.ShopBenchRect(seatIndex)));
+                var slot=FormationBattleController.FormationReserveRect(seatIndex);
+                Assert.That(dock.Contains(slot.min)&&dock.Contains(slot.max-Vector2.one),Is.True,"The original shared stage draws each reserve slot inside the formation dock.");
             }
             yield return Market(true);
             yield return ChooseRecruit();int offer=recruitOffer;

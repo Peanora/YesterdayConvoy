@@ -73,13 +73,13 @@ namespace YesterdayConvoy.Tests
             Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",first),Is.True);
             Assert.That(source.Frame("idle",12,true),Is.Null,"The later long-idle segment must still be cold before its own window is requested.");
             int before=ArtMemoryCache.PreparedLoads;
-            // Six real seconds selects source second twelve at the requested base 2x.
-            var pending=controller.FormationShopIdleFrame("CARD_B10",6);
+            // Preparation idle runs at source speed, including the reserve model.
+            var pending=controller.FormationShopIdleFrame("CARD_B10",12);
             Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",pending),Is.True,"Retain a valid last source frame during the asynchronous next-window upload.");
             deadline=Time.realtimeSinceStartupAsDouble+20;
             while(source.Frame("idle",12,true)==null&&Time.realtimeSinceStartupAsDouble<deadline)
-            {controller.FormationShopIdleFrame("CARD_B10",6);yield return null;}
-            var later=controller.FormationShopIdleFrame("CARD_B10",6);
+            {controller.FormationShopIdleFrame("CARD_B10",12);yield return null;}
+            var later=controller.FormationShopIdleFrame("CARD_B10",12);
             Assert.That(FormationArtAssertions.IsActualIdleFrame("B10",later),Is.True);
             Assert.That(later,Is.SameAs(source.Frame("idle",12,true)));
             Assert.That(later.texture.name,Is.Not.EqualTo(first.texture.name),"The second native segment must use its own real atlas page.");

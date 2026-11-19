@@ -10,11 +10,11 @@ namespace YesterdayConvoy
         bool campaignInventoryOpen,campaignFormationOpen,campaignRouteOpen,campaignScoutingOpen,campaignResultSettled,campaignSeaPainting;
         bool campaignRewardChoiceOpen,campaignResultSummaryOpen;
         int campaignSelectedItem,campaignCombineItem,campaignSelectedPiece;
-        Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll,campaignDetailScroll;
+        Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
         bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
         bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
-            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen);
+            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen||formationExitOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -58,7 +58,7 @@ namespace YesterdayConvoy
         {notice=result.Message;if(result.Success)RefreshCampaignPreparation();}
         internal bool OpenGroundRewardChoices()
         {
-            if(Campaign?.PendingRewardChoices>0&&!CombatViewActive&&!CampaignInteractionBlocked&&openingGroundBall==null)
+            if(Campaign?.PendingRewardChoices>0&&!CombatViewActive&&!CampaignInteractionBlocked)
             {
                 CloseCampaignPanels(); SetMarketVisible(false); CloseFormationTraitDetails();
                 campaignChoiceScroll=Vector2.zero; campaignRewardChoiceOpen=true;
@@ -75,29 +75,27 @@ namespace YesterdayConvoy
             return result;
         }
         void CloseCampaignPanels()
-        {campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;rewardHistoryOpen=false;CancelFormationDrag();}
+        {
+            campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;
+            rewardHistoryOpen=false;formationExitOpen=false;
+            CloseFormationInspection();CloseFormationRouteDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
+        }
 
         void DrawCampaignToolbar()
         {
             if(Campaign==null)return;
             bool prep=Model.Phase==FormationPhase.Preparation;
-            Fill(new Rect(209,8,108,46),ApprovedUi.Paper);
-            CampaignLabel(new Rect(218,12,92,19),"队伍生命 "+Campaign.SquadHP,13,true);
-            CampaignLabel(new Rect(218,32,92,17),"希望 "+Campaign.Hope+" · 刷新券 "+Campaign.FreeRefreshes,9);
-            if(Button(new Rect(325,8,103,42),"军阵搭档",prep))
-            {bool open=!campaignFormationOpen;CloseCampaignPanels();campaignFormationOpen=open;}
-            if(Button(new Rect(436,8,105,42),"行动记录"))
-            {bool open=!campaignRouteOpen;CloseCampaignPanels();campaignRouteOpen=open;}
-            if(prep&&Button(new Rect(737,8,45,42),"防线"))
-            {bool open=!campaignScoutingOpen;CloseCampaignPanels();campaignScoutingOpen=open;}
             if(prep&&!MarketVisible&&!ShopPanelTransitioning&&Campaign.TraitCount("海嗣")>=2)
             {
-                if(Button(new Rect(1011,489,162,23),campaignSeaPainting?"完成溟痕布置":"布置溟痕 / 自动推荐"))
+                if(OperationsButton(new Rect(16,575,145,21),campaignSeaPainting?"完成溟痕布置":"布置溟痕",campaignSeaPainting))
                 {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
-                if(campaignSeaPainting&&Button(new Rect(1177,489,86,23),"恢复推荐"))
+                if(campaignSeaPainting&&OperationsButton(new Rect(16,600,145,21),"恢复推荐"))
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
-            CampaignLabel(new Rect(190,704,1058,15),notice+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),10);
+            string resources=$"希望 {Campaign.Hope} · 刷新券 {Campaign.FreeRefreshes}";
+            OperationsLabel(new Rect(117,FormationExperienceRect.yMin-20,1014,17),
+                resources+"  ·  "+notice+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),
+                10,OperationsMuted);
         }
         void DrawCampaignOverlays()
         {
@@ -294,17 +292,41 @@ namespace YesterdayConvoy
         }
         void DrawCampaignScouting()
         {
-            var r=CampaignWindow("本关守军情报",$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}。开战前已经固定本关守军，不随购买、刷新和战中状态重抽。");
-            if(Campaign.CurrentNode.Kind=="遭遇")
+            var r=CampaignWindow("怪物信息",$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind} · {(float.IsPositiveInfinity(Campaign.CurrentNode.TimeLimit)?"不限时":$"{Campaign.CurrentNode.TimeLimit:0} 秒")}");
+            if(Button(new Rect(r.x+22,r.y+86,112,29),"本关守军",true,!campaignScoutOwn))
+            {campaignScoutOwn=false;campaignScoutScroll=Vector2.zero;}
+            if(Button(new Rect(r.x+140,r.y+86,112,29),"我方阵容",true,campaignScoutOwn))
+            {campaignScoutOwn=true;campaignScoutScroll=Vector2.zero;}
+            if(Model.Phase==FormationPhase.Preparation&&Button(new Rect(r.xMax-194,r.y+86,170,29),
+                ViewingDefenders?"返回我方布阵":"查看守军部署 [V]"))
+            {CloseCampaignPanels();ToggleFormationView();return;}
+            if(campaignScoutOwn)
+            {
+                var lineup=Model.Units.Where(unit=>unit.Enabled).ToArray();
+                var area=new Rect(r.x+22,r.y+128,r.width-44,r.height-149);
+                campaignScoutScroll=GUI.BeginScrollView(area,campaignScoutScroll,
+                    new Rect(0,0,area.width-18,Mathf.Max(area.height,lineup.Length*72)));
+                for(int i=0;i<lineup.Length;i++)
+                {
+                    var unit=lineup[i];float y=i*72;
+                    DrawFormationPortrait(new Rect(0,y,57,62),"CARD_"+unit.ArtId);
+                    CampaignLabel(new Rect(69,y+3,area.width-101,25),unit.Name+"  "+new string('★',unit.Star),15,true);
+                    CampaignLabel(new Rect(69,y+32,area.width-101,22),
+                        $"生命 {unit.MaxHealth:0}　攻击 {unit.Attack:0}　护甲 {unit.Armor:0}　法抗 {unit.MagicResistance:0}",12);
+                }
+                GUI.EndScrollView();return;
+            }
+            bool encounter=Campaign.CurrentNode.Kind=="遭遇"&&Model.Phase==FormationPhase.Preparation;
+            if(encounter)
             {
                 for(int i=1;i<=4;i++)
-                    if(Button(new Rect(r.x+22+(i-1)*219,r.y+95,207,36),$"{i}档 · HP×{new[]{1f,2.2f,5f,12f}[i-1]}",true,Campaign.CurrentEncounterTier==i))
+                    if(Button(new Rect(r.x+22+(i-1)*219,r.y+123,207,34),$"{i}档 · HP×{new[]{1f,2.2f,5f,12f}[i-1]}",true,Campaign.CurrentEncounterTier==i))
                     {Campaign.CurrentEncounterTier=i;RefreshCampaignPreparation();}
                 int tier=Campaign.CurrentEncounterTier;
                 string reward=new[]{"蓝球","2个蓝球","金球＋蓝球","2个金球＋彩球"}[tier-1];
-                CampaignLabel(new Rect(r.x+22,r.y+137,r.width-44,32),$"当前档攻击×{new[]{1f,1.1f,1.25f,1.45f}[tier-1]}，额外奖励：{reward}。削减进度严格＞25%才领取；失败照常扣队伍生命并清连胜。",12);
+                CampaignLabel(new Rect(r.x+22,r.y+163,r.width-44,32),$"当前档攻击×{new[]{1f,1.1f,1.25f,1.45f}[tier-1]}，额外奖励：{reward}。削减进度严格＞25%才领取；失败照常扣队伍生命并清连胜。",12);
             }
-            float top=Campaign.CurrentNode.Kind=="遭遇"?174:99;
+            float top=encounter?199:128;
             var view=new Rect(r.x+22,r.y+top,r.width-44,r.height-top-20);
             campaignScoutScroll=GUI.BeginScrollView(view,campaignScoutScroll,new Rect(0,0,view.width-18,Mathf.Max(view.height,Model.Defenders.Count*110)));
             int row=0;
@@ -317,38 +339,7 @@ namespace YesterdayConvoy
             }
             GUI.EndScrollView();
         }
-        void DrawCampaignSynergies()
-        {
-            DrawFormationTraitSidebar();
-            if (Model.Phase == FormationPhase.Preparation) DrawCampaignUnitDetails();
-        }
-        void DrawCampaignUnitDetails()
-        {
-            if(MarketVisible||ShopPanelTransitioning)return;
-            var piece=Shop.Bench.FirstOrDefault(p=>p.Instance==selectedPiece);
-            var spec=FormationCampaignRules.Find(piece?.Id);
-            if(spec==null)return;
-            var r=ApprovedUi.RecruitList;Fill(r,ApprovedUi.Paper);
-            CampaignLabel(new Rect(r.x+10,r.y+10,r.width-20,25),spec.Name+"　"+Shop.Definition(piece.Id).Cost+"费 "+new string('★',piece.Star),16,true);
-            CampaignLabel(new Rect(r.x+10,r.y+38,r.width-20,30),spec.Role+" · "+string.Join(" / ",spec.Factions.Concat(spec.Styles)),10);
-            float mult=Mathf.Pow(1.8f,piece.Star-1);
-            var actor=Model.Units.FirstOrDefault(u=>u.Instance==piece.Instance);
-            CampaignLabel(new Rect(r.x+10,r.y+69,r.width-20,35),$"生命 {actor?.MaxHealth??spec.Health*mult:0}　攻击 {actor?.Attack??spec.Attack*mult:0}\n技力 {actor?.SkillCharge??spec.InitialSP:0.#}/{actor?.SkillRequired??spec.RequiredSP:0.#} {spec.Recovery}回复",11);
-            var equipped=Campaign.Equipment(piece.Instance);
-            for(int i=0;i<3;i++)
-            {
-                var slot=new Rect(r.x+10+i*35,r.y+104,30,29);
-                Fill(slot,TraitCard);
-                if(i<equipped.Count)DrawSupplyItem(new Rect(slot.x+2,slot.y+1,26,26),equipped[i].Key);
-            }
-            var view=new Rect(r.x+10,r.y+142,r.width-20,r.height-151);
-            campaignDetailScroll=GUI.BeginScrollView(view,campaignDetailScroll,new Rect(0,0,view.width-18,210));
-            string effect=spec.Id=="TAL"&&Campaign.TalulahCost==4?"焚城：半径2.5内至多6人，3段各280%攻击力法伤；6秒灼烧，每秒35%。强化后4段并获得20%最大生命护盾8秒。":
-                spec.Id=="TAL"&&Campaign.TalulahCost==5?"火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。火雨结束后恢复普攻。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。":
-                spec.Id=="B21"?SuiClawDescription:spec.Effect;
-            CampaignLabel(new Rect(0,0,view.width-20,205),effect+"\n装备："+string.Join("、",Campaign.Equipment(piece.Instance).Select(x=>x.Name)),11);
-            GUI.EndScrollView();
-        }
+        void DrawCampaignSynergies() => DrawFormationTraitSidebar();
         bool ProcessCampaignSeaPointer(EventType type,Vector2 point)
         {
             if(!campaignSeaPainting||Campaign==null)return false;

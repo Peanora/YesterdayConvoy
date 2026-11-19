@@ -52,6 +52,7 @@ namespace YesterdayConvoy
         {
             if (battleCamera == null || Model == null) return;
             if (!formationCameraInitialized) InitializeFormationCamera();
+            if (ViewingDefenders != defenders) CloseFormationInspection();
             ViewingDefenders = Model.Phase == FormationPhase.Preparation ? defenders : !HasGroundRewards;
             CancelFormationDrag();
             ApplyFixedFormationView();

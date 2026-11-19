@@ -81,16 +81,31 @@ namespace YesterdayConvoy
             approvedShop?.Tick();
             TickFormationRewards(Time.unscaledDeltaTime);
             TickFormationTraitFeedback(Time.unscaledDeltaTime);
-            if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen&&openingGroundBall==null)ToggleFormationMarket();
-            if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.V))ToggleFormationView();
-            if(!formationMenuOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
+            if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();
+            if(!formationMenuOpen&&!CampaignInteractionBlocked&&Input.GetKeyDown(KeyCode.V))ToggleFormationView();
+            if(!formationMenuOpen&&!formationExitOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
-            {if(formationMenuOpen)CloseFormationMenu();else if(campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen)CloseCampaignPanels();else if(rewardHistoryOpen)rewardHistoryOpen=false;else if(shopOddsVisible)shopOddsVisible=false;else if(CloseFormationTraitDetails()){}else if(MarketVisible)SetMarketVisible(false);else if(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting)Model.Paused=true;CancelFormationDrag();}
+                DismissFormationInteraction();
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
             if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
         void OnApplicationFocus(bool focus)
-        {if(!focus){pressedGroundBall=null;CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
+        {if(!focus){pressedGroundBall=null;CancelFormationEquipmentInteraction();CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
+
+        void DismissFormationInteraction()
+        {
+            CancelFormationDrag();
+            if (formationMenuOpen) { CloseFormationMenu(); return; }
+            if (formationExitOpen || campaignInventoryOpen || campaignFormationOpen || campaignRouteOpen ||
+                campaignScoutingOpen || campaignRewardChoiceOpen || campaignResultSummaryOpen)
+            { CloseCampaignPanels(); return; }
+            if (rewardHistoryOpen) { rewardHistoryOpen = false; return; }
+            if (shopOddsVisible) { shopOddsVisible = false; return; }
+            if (CancelFormationEquipmentInteraction() || CloseFormationRouteDetails() ||
+                CloseFormationInspection() || CloseFormationTraitDetails()) return;
+            if (MarketVisible) SetMarketVisible(false);
+            else if (CombatViewActive) Model.Paused = true;
+        }
         public static Vector3 WorldPoint(Vector2 cell)=>new Vector3(cell.x-(FormationBattleModel.Width-1)*.5f,.12f,cell.y-(FormationBattleModel.Height-1)*.5f);
         public Vector3 ActorWorldPoint(Vector2 cell)=>WorldPoint(cell)+Vector3.up*(Model?.Terrain?.HeightAt(cell)??0);
         public Vector3 ActorWorldPoint(FormationActor actor)=>ActorWorldPoint(actor.Position);
@@ -108,13 +123,14 @@ namespace YesterdayConvoy
         }
         public void ProcessPointer(EventType type,Vector2 point)
         {
-            if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null)return;
+            if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
             if(FormationSupplyBlocksPoint(point) &&
                 !(type!=EventType.MouseDown && pointerHeld && shopDragInstance>0 && FormationSellRight.Contains(point)))
             {CancelFormationDrag();return;}
             // Detail cards also overlap part of the lineup rail. They get first refusal
             // before either terrain painting or seat dragging can capture the pointer.
             if(FormationTraitDetailsOpen&&FormationTraitDetailsRect.Contains(point)){CancelFormationDrag();return;}
+            if(FormationInspectionBlocksPoint(point)||OperationsBlocksPoint(point)){CancelFormationDrag();return;}
             if(ProcessCampaignSeaPointer(type,point))return;
             formationShopPointer=point;
             if(type==EventType.MouseDown)
@@ -155,6 +171,8 @@ namespace YesterdayConvoy
                 }
                 else if(pointerHeld&&pendingClickDeployment&&TryCell(point,out var clickCell))
                 {if(dragSlot>=0)Place(dragSlot,clickCell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,clickCell);}
+                else if(pointerHeld&&shopDragInstance>0)
+                    ToggleFormationPieceInspection(shopDragInstance);
                 CancelFormationDrag();SyncActors();
             }
         }
@@ -170,7 +188,8 @@ namespace YesterdayConvoy
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
-            campaignSeaPainting=false;rewardHistoryOpen=false;CloseFormationTraitDetails();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            campaignSeaPainting=false;rewardHistoryOpen=false;CloseFormationTraitDetails();CloseFormationInspection();CloseFormationRouteDetails();
+            CancelFormationEquipmentInteraction();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
             SetFormationView(true);
         }
         public void Retry()
