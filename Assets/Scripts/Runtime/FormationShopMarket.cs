@@ -24,17 +24,30 @@ namespace YesterdayConvoy
         public static Rect FormationLineupRect(int index)=>Rect.zero;
         public static Rect FormationBenchRect => new Rect(115, 627, 1050, 86);
         public static Rect FormationReserveRect(int index) => new Rect(120 + 104.3f * index, 643, 102, 69);
-        public static Rect FormationMarketRect => new Rect(188, 77, 905, 120);
-        public static Rect FormationOfferRect(int index) => new Rect(198 + 151 * index, 98, 142, 91);
+        const float MarketHeaderHeight = 32, MarketCardHeight = 120, MarketInset = 10;
+        public static Rect FormationMarketRect => new Rect(188, 77, 1012, MarketHeaderHeight + MarketCardHeight + MarketInset);
+        public static Rect FormationOfferRect(int index)
+        {
+            var market = FormationMarketRect;
+            return new Rect(market.x + MarketInset + 174 * index, market.y + MarketHeaderHeight, 166, MarketCardHeight);
+        }
+        static Rect FormationRefreshRect
+        {
+            get
+            {
+                var market = FormationMarketRect;
+                return new Rect(market.xMax - 132, market.y + MarketHeaderHeight, 122, 29);
+            }
+        }
         public static Rect FormationOfferInspectionRect(int index)
         {
             var offer = FormationOfferRect(index);
-            return new Rect(offer.x, offer.y, offer.width, 68);
+            return new Rect(offer.x, offer.y, offer.width, FormationBuyRect(index).yMin - offer.yMin);
         }
         public static Rect FormationBuyRect(int index)
         {
             var offer = FormationOfferRect(index);
-            return new Rect(offer.xMax - 59, offer.yMax - 22, 55, 18);
+            return new Rect(offer.xMax - 64, offer.yMax - 24, 58, 19);
         }
         public static Rect FormationExperienceRect => new Rect(8, 627, 104, 86);
         public static Rect FormationCoinRect => new Rect(1168, 646, 104, 67);
@@ -210,12 +223,12 @@ namespace YesterdayConvoy
             GUI.BeginGroup(panel);
             try
             {
-                Fill(new Rect(0, offset, panel.width, panel.height), EconomyPanel);
-                Fill(new Rect(0, offset, panel.width, 2), EconomyLine);
-                EconomyLabel(new Rect(10, offset + 3, 64, 17), "招募商店", 12, EconomyInk, true);
-                EconomyLabel(new Rect(81, offset + 4, 225, 16), "点击卡面查看详情", 10, EconomyMuted);
-                if (EconomyButton(new Rect(panel.width - 83, offset + 3, 73, 17),
-                    "收起  Esc", "关闭招募商店", EconomyPanel, EconomyMuted, 10))
+                Fill(new Rect(0, offset, panel.width, panel.height), new Color(.10f, .15f, .19f, .94f));
+                Fill(new Rect(0, offset, panel.width, MarketHeaderHeight - 4), ApprovedUi.Paper);
+                EconomyLabel(new Rect(10, offset, 80, MarketHeaderHeight - 4), "招募商店", 14, ApprovedUi.Ink, true);
+                EconomyLabel(new Rect(99, offset, 225, MarketHeaderHeight - 4), "点击卡面查看详情", 11, ApprovedUi.Muted);
+                if (EconomyButton(new Rect(panel.width - 96, offset + 4, 86, 20),
+                    "收起  Esc", "关闭招募商店", ApprovedUi.Paper, ApprovedUi.Ink, 11))
                     SetMarketVisible(false);
 
                 for (int slot = 0; slot < 5; slot++)
@@ -230,25 +243,24 @@ namespace YesterdayConvoy
                     DrawFormationOffer(slot, card, buy, anchor);
                 }
 
-                float controlsX = panel.width - 132;
-                var control = new Rect(controlsX, offset + 21, 122, 24);
+                var control = FormationRefreshRect;
+                control.position += new Vector2(-panel.x, offset - panel.y);
                 string refresh = Shop.UnlimitedGold ? "免费刷新" : Shop.FreeRefreshes > 0
                     ? $"免费刷新  {Shop.FreeRefreshes}" : $"刷新  {Shop.RefreshPrice}金";
                 bool trayEnabled = GUI.enabled;
                 GUI.enabled = trayEnabled && CanTrade && !Shop.Locked &&
                     (Shop.UnlimitedGold || Shop.FreeRefreshes > 0 || Shop.CanAfford(Shop.RefreshPrice));
-                if (EconomyButton(control, refresh, "返还未购买商品，再按当前牌库刷新", EconomyPaper, ApprovedUi.Ink, 11))
+                if (EconomyButton(control, refresh, "返还未购买商品，再按当前牌库刷新", ApprovedUi.Gold, ApprovedUi.Ink, 12))
                     RefreshMarket();
-                control.y += 29;
+                control.y += 35;
                 GUI.enabled = trayEnabled && CanTrade;
-                Color locked = Shop.Locked ? EconomyGold : EconomyMuted;
                 if (EconomyButton(control, Shop.Locked ? "已锁定 / 解锁" : "锁定商店", "锁定后过节点不自动刷新商店",
-                    new Color32(46, 54, 82, 255), locked, 11))
+                    Shop.Locked ? ApprovedUi.Gold : ApprovedUi.Paper, ApprovedUi.Ink, 12))
                     Session.SetLocked(!Shop.Locked);
-                control.y += 29;
+                control.y += 35;
                 GUI.enabled = trayEnabled;
                 if (EconomyButton(control, "招募概率", "查看各等级招募概率及当前库存影响",
-                    new Color32(46, 54, 82, 255), EconomyInk, 11))
+                    ApprovedUi.Paper, ApprovedUi.Ink, 12))
                     OpenFormationOdds();
             }
             finally
@@ -263,7 +275,8 @@ namespace YesterdayConvoy
             string id = Shop.Offers[slot];
             if (id == null)
             {
-                Fill(card, new Color32(36, 42, 65, 255));
+                Fill(card, new Color(.52f, .60f, .65f, .50f));
+                ApprovedUi.Border(card, new Color(.78f, .84f, .88f, .55f));
                 EconomyLabel(card, "空缺", 12, EconomyMuted, false, TextAnchor.MiddleCenter);
                 return;
             }
@@ -273,46 +286,45 @@ namespace YesterdayConvoy
             bool affordable = Shop.CanAfford(role.Cost);
             bool hovered = GUI.enabled && card.Contains(Event.current.mousePosition);
             bool selected = formationInspectedOffer == slot && FormationInspectionAvailable;
-            Color fee = FormationFeeColor(role.Cost);
-            Fill(card, hovered || selected ? new Color32(67, 84, 118, 255) : new Color32(42, 48, 74, 255));
-            var art = new Rect(card.x + 1, card.y + 1, card.width - 2, 49);
-            Fill(art, Color.Lerp(new Color32(217, 222, 238, 255), fee, .14f));
-            DrawFormationPortrait(new Rect(art.x + 20, art.y, art.width - 40, art.height), id);
-            Fill(new Rect(card.x, card.yMax - 2, card.width, 2), fee);
+            approvedShop.DrawLoopCostBackground(card, role.Cost);
+            DrawFormationPortrait(new Rect(card.x + card.width * .34f, card.y + 5, card.width * .64f, 108), id);
+            Fill(new Rect(card.x, card.y + 73, card.width, card.height - 73), new Color(.09f, .15f, .20f, .91f));
+            if (!affordable)
+                Fill(card, new Color(.16f, .16f, .16f, .60f));
             if (hovered || selected) ApprovedUi.Border(card, EconomyIce, selected ? 2 : 1);
+            DrawFormationCoin(new Rect(card.x + 11, card.y + 12, 13, 13));
+            EconomyLabel(new Rect(card.x + 29, card.y + 5, 36, 26), role.Cost.ToString(), 23, EconomyInk, true);
 
             int held = Shop.Bench.Where(p => p.Id == id).Sum(p => ShopTrialModel.Copies(p.Star));
-            if (preview.Success && preview.FinalStar > 1)
-                approvedShop.DrawApprovedUpgradeCue(new Rect(art.x + 3, art.y + 3, 59, 16), preview.FinalStar);
-            else if (held > 0)
-            {
-                var count = new Rect(art.x + 3, art.y + 3, 44, 16);
-                Fill(count, EconomyPanel);
-                EconomyLabel(count, "持有 " + held, 10, EconomyInk, true, TextAnchor.MiddleCenter);
-            }
+            var status = new Rect(card.xMax - 65, card.y + 6, 59, 17);
             if (!affordable || !preview.Success)
             {
-                var blocked = new Rect(art.xMax - 51, art.y + 3, 48, 16);
-                Fill(blocked, EconomyPanel);
-                EconomyLabel(blocked, !affordable ? "金币不足" : "备战已满", 10, EconomyMuted, true, TextAnchor.MiddleCenter);
+                Fill(status, EconomyPanel);
+                EconomyLabel(status, !affordable ? "金币不足" : "备战已满", 10, EconomyMuted, true, TextAnchor.MiddleCenter);
+            }
+            else if (preview.FinalStar > 1)
+                approvedShop.DrawApprovedUpgradeCue(status, preview.FinalStar);
+            else if (held > 0)
+            {
+                Fill(status, ApprovedUi.Paper);
+                EconomyLabel(status, "持有 " + held, 10, ApprovedUi.Ink, true, TextAnchor.MiddleCenter);
             }
 
             var inspect = FormationOfferInspectionRect(slot);
             inspect.position += card.position - anchor.position;
-            EconomyLabel(new Rect(card.x + 6, card.y + 50, card.width - 12, 16), role.Name,
-                role.Name.Length > 9 ? 11 : 13, EconomyInk, true);
+            EconomyLabel(new Rect(card.x + 10, card.y + 74, card.width - 20, 22), role.Name,
+                role.Name.Length > 9 ? 12 : 14, EconomyInk, true);
             if (GUI.Button(inspect, new GUIContent(string.Empty, "查看 " + role.Name), GUIStyle.none))
                 ToggleFormationOfferInspection(slot, id, role.Cost, anchor);
 
             var definition = FormationCampaignRules.Find(id);
             string tags = definition == null ? "" : string.Join(" / ", definition.Factions.Concat(definition.Styles).Take(2));
-            EconomyLabel(new Rect(card.x + 6, buy.y, card.width - buy.width - 15, buy.height), tags,
-                tags.Length > 9 ? 8 : 10, EconomyMuted);
+            EconomyLabel(new Rect(card.x + 10, buy.y, buy.x - card.x - 15, buy.height), tags,
+                tags.Length > 9 ? 9 : 10, EconomyMuted);
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && CanTrade && affordable && preview.Success;
             string reason = !affordable ? "金币不足" : !preview.Success ? preview.Message : $"购买 {role.Name} · {role.Cost}金币";
-            if (EconomyButton(buy, affordable && preview.Success ? $"购买 {role.Cost}" : $"{role.Cost}金",
-                reason, EconomyPaper, ApprovedUi.Ink, 10))
+            if (EconomyButton(buy, "购买", reason, ApprovedUi.Paper, ApprovedUi.Ink, 11))
                 BuyOfferAt(slot, anchor.center);
             GUI.enabled = enabled;
         }

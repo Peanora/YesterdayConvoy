@@ -82,13 +82,9 @@ namespace YesterdayConvoy
             var rows = FormationTraitRows;
             var panel = FormationTraitSidebarRect;
             var list = FormationTraitListRect;
-            float height = Mathf.Max(43, rows.Length * TraitRowHeight);
-            var plate = new Rect(panel.x, panel.y, panel.width, list.y - panel.y + Mathf.Min(list.height, height));
-            Fill(plate, PreparationPalette.Surface);
-            ApprovedUi.Border(plate, PreparationPalette.Line);
-            Fill(new Rect(plate.x, plate.y, plate.width, 2), PreparationPalette.Edge);
+            float height = rows.Length * TraitRowHeight;
             var heading = new Rect(panel.x, panel.y, panel.width, 22);
-            TraitLabel(new Rect(heading.x + 7, heading.y, 82, heading.height), "军阵羁绊", 12, PreparationPalette.Text, true);
+            DrawFloatingTraitLabel(new Rect(heading.x + 7, heading.y, 82, heading.height), "军阵羁绊", 12, TraitInk, true);
             var toggle = new Rect(heading.xMax - 43, heading.y, 40, heading.height);
             TraitLabel(toggle, formationAllTraits ? "本局" : "全部", 11, PreparationPalette.Muted, true, TextAnchor.MiddleCenter);
             if (TraitHit(toggle, "切换全部羁绊与本局羁绊"))
@@ -111,14 +107,8 @@ namespace YesterdayConvoy
                 bool clicked = HandleTraitRowClick(control, hovered);
                 bool pressed = hovered && GUIUtility.hotControl == control;
 
-                if (selected || hovered)
-                    Fill(new Rect(4, bounds.y + 2, width - 8, bounds.height - 2),
-                        selected ? PreparationPalette.Selected : PreparationPalette.Hover);
-                Fill(new Rect(6, bounds.y, width - 12, 1), PreparationPalette.Line);
-                if (selected)
-                    Fill(new Rect(5, bounds.y + 6, 2, bounds.height - 10), PreparationPalette.Amber);
                 DrawFloatingTraitEmblem(new Vector2(23, bounds.y + 20), row, selected, hovered, pressed);
-                TraitLabel(new Rect(49, bounds.y + 3, bounds.width - 53, 19), row.Name, 13, PreparationPalette.Text, true);
+                DrawFloatingTraitLabel(new Rect(49, bounds.y + 3, bounds.width - 53, 19), row.Name, 13, TraitInk, true);
                 DrawFloatingTraitThresholds(new Rect(49, bounds.y + 23, bounds.width - 53, 15), row);
                 if (clicked)
                 {
@@ -176,13 +166,21 @@ namespace YesterdayConvoy
             {
                 int level = levels[i];
                 bool active = level == row.ActiveLevel;
-                Color ink = level <= row.ActiveLevel ? PreparationPalette.Amber : PreparationPalette.Muted;
-                TraitLabel(new Rect(rect.x + i * step, rect.y, step - 2, rect.height),
+                Color ink = active ? SynergyBadgePresentation.ColorFor(row.Grade) : level < row.ActiveLevel ? EconomyIce : EconomyMuted;
+                DrawFloatingTraitLabel(new Rect(rect.x + i * step, rect.y, step - 2, rect.height),
                     level.ToString(), 10, ink, active);
                 if (i < levels.Length - 1)
-                    TraitLabel(new Rect(rect.x + (i + 1) * step - 5, rect.y, 5, rect.height),
-                        "/", 9, PreparationPalette.Muted);
+                    DrawFloatingTraitLabel(new Rect(rect.x + (i + 1) * step - 5, rect.y, 5, rect.height),
+                        "/", 9, EconomyMuted, false);
             }
+        }
+
+        static void DrawFloatingTraitLabel(Rect rect, string text, int size, Color ink, bool bold)
+        {
+            var shadow = rect;
+            shadow.y += 1;
+            TraitLabel(shadow, text, size, new Color(.02f, .035f, .065f, .9f), bold);
+            TraitLabel(rect, text, size, ink, bold);
         }
 
         void DrawCampaignTraitOverlay()

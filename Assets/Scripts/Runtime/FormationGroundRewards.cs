@@ -504,7 +504,7 @@ namespace YesterdayConvoy
                 DrawRewardFlight(flight,flight.RecruitTargets[index],null,false,index*.055f,index-1,payout.Recruits[index]);
             if (payout.Refreshes > 0)
             {
-                var refresh = MarketVisible ? new Vector2(FormationMarketRect.xMax-48,FormationMarketRect.y+44) : FormationCoinRect.center;
+                var refresh = MarketVisible ? FormationRefreshRect.center : FormationCoinRect.center;
                 DrawRewardFlight(flight,refresh,"刷新",false,.075f,0);
             }
             if (payout.Choice != null)

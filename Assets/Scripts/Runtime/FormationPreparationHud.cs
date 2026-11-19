@@ -29,12 +29,9 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         static readonly Color EconomyPanel = new Color32(23, 27, 48, 255);
-        static readonly Color EconomyLine = new Color32(94, 104, 138, 255);
         static readonly Color EconomyInk = new Color32(242, 246, 255, 255);
         static readonly Color EconomyMuted = new Color32(199, 208, 232, 255);
-        static readonly Color EconomyGold = new Color32(238, 200, 135, 255);
         static readonly Color EconomyIce = new Color32(167, 217, 255, 255);
-        static readonly Color EconomyPaper = new Color32(230, 234, 250, 255);
 
         internal static Color FormationFeeColor(int cost) => cost switch
         {

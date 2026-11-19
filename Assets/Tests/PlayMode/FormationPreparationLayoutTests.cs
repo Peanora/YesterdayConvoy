@@ -136,7 +136,9 @@ namespace YesterdayConvoy.Tests
                 var card = FormationBattleController.FormationOfferRect(index);
                 var inspect = FormationBattleController.FormationOfferInspectionRect(index);
                 var buy = FormationBattleController.FormationBuyRect(index);
+                Assert.That(card.height, Is.EqualTo(120), "The top drawer uses the tall recruitment card format.");
                 Assert.That(market.Contains(card.min) && market.Contains(card.max - Vector2.one), Is.True);
+                Assert.That(card.Overlaps(dock), Is.False);
                 Assert.That(inspect.Contains(card.center) && !inspect.Overlaps(buy), Is.True,
                     "A card click and the separate purchase button must not claim the same pointer.");
                 Assert.That(card.Contains(buy.min) && card.Contains(buy.max - Vector2.one), Is.True);
