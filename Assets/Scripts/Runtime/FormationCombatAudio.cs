@@ -73,7 +73,11 @@ namespace YesterdayConvoy
             if (formationOriginalCues.TryGetValue(artId, out var rows))
                 foreach (var cue in rows)
                     if (!formationOriginalClips.ContainsKey(cue.resource))
-                        formationOriginalClips.Add(cue.resource, Resources.Load<AudioClip>(cue.resource));
+                    {
+                        var clip = Resources.Load<AudioClip>(cue.resource);
+                        if (clip != null && clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
+                        formationOriginalClips.Add(cue.resource, clip);
+                    }
         }
 
         FormationOriginalCue FindFormationOriginalCue(string artId, string trigger, string animation, int hitIndex, int nativePhase = 0)

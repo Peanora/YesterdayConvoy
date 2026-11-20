@@ -52,7 +52,14 @@ namespace YesterdayConvoy
         readonly List<(int sample,FormationBattleController.FormationAudioCue cue)> reviewSounds =
             new List<(int,FormationBattleController.FormationAudioCue)>();
         readonly List<FormationBattleController.FormationAudioCue> audioBuffer = new List<FormationBattleController.FormationAudioCue>();
-        readonly Dictionary<AudioClip,float[]> audioSamples = new Dictionary<AudioClip,float[]>();
+        sealed class ReviewSamples
+        {
+            internal readonly float[] Data;
+            internal readonly int Rate;
+            internal ReviewSamples(float[] data,int rate) { Data=data;Rate=rate; }
+        }
+        readonly Dictionary<AudioClip,ReviewSamples> audioSamples = new();
+        string reviewPcmRoot;
         readonly HashSet<int> reviewActionIds = new HashSet<int>();
         readonly HashSet<FormationHit> reviewHits = new HashSet<FormationHit>();
         double reviewAudioThrough;
@@ -121,6 +128,12 @@ namespace YesterdayConvoy
         {
             directory=Path.GetFullPath(Argument("-showcaseDir","artifacts/formation-showcase"));Directory.CreateDirectory(Path.Combine(directory,"clips"));
             ffmpeg=Argument("-showcaseFFmpeg","ffmpeg");
+            string pcmRoot=Argument("-showcasePcmRoot","");
+            if(!string.IsNullOrEmpty(pcmRoot))
+            {
+                reviewPcmRoot=Path.GetFullPath(pcmRoot);
+                if(!Directory.Exists(reviewPcmRoot))throw new DirectoryNotFoundException(reviewPcmRoot);
+            }
             string manifestPath=Path.Combine(directory,"manifest.json");
             string source=Argument("-showcaseSource","unspecified");
             if(Argument("-showcaseResume","0")=="1"&&File.Exists(manifestPath))
@@ -218,7 +231,7 @@ namespace YesterdayConvoy
             string action=id=="D23"?"六次真实治疗后转形进攻":id=="D28"?"棋子触发后续 · 区域受击":
                 id=="D22"?"火墙后的普攻与收势":guard.Healer?"技能治疗及反馈":"技能、持续层与接触";
             yield return Segment(action,id=="D23"?12:id=="D21"||id=="D24"||id=="D27"?10:6);
-            if(guard.LastSkillAt<0)clip.notes+=" 预置对局未观察到技能触发。";
+            if(guard.LastSkillAt<0&&id!="D28")clip.notes+=" 预置对局未观察到技能触发。";
         }
 
         IEnumerator RecordSummon(Plan plan)
@@ -383,6 +396,8 @@ namespace YesterdayConvoy
                 try
                 {
                     if(frameTexture.width!=manifest.width||frameTexture.height!=manifest.height)throw new InvalidOperationException("Video needs a 1280x720 Player; actual="+frameTexture.width+"x"+frameTexture.height);
+                    if(frame==0&&!HasVisibleCapture(frameTexture))
+                        throw new InvalidOperationException("The Player frame is black. Use a visible game window for review capture.");
                     string pixel=frameTexture.format==TextureFormat.RGB24?"rgb24":frameTexture.format==TextureFormat.RGBA32?"rgba":null;
                     if(pixel==null)throw new InvalidOperationException("Unsupported capture format "+frameTexture.format);
                     if(encoder==null)StartEncoder(pixel);
@@ -396,6 +411,16 @@ namespace YesterdayConvoy
                 else if(!freezeSimulation)Advance(Step);
             }
             writing=false;
+        }
+        static bool HasVisibleCapture(Texture2D frame)
+        {
+            for(int row=1;row<8;row++)
+                for(int column=1;column<8;column++)
+                {
+                    var color=frame.GetPixel(frame.width*column/8,frame.height*row/8);
+                    if(Mathf.Max(color.r,Mathf.Max(color.g,color.b))>.06f)return true;
+                }
+            return false;
         }
         void CaptureReviewSound()
         {
@@ -433,21 +458,11 @@ namespace YesterdayConvoy
                 if(cue.Clip==null||cue.Pitch<=0)continue;
                 if(!audioSamples.TryGetValue(cue.Clip,out var samples))
                 {
-                    samples=null;
-                    if(cue.Clip.loadState==AudioDataLoadState.Loaded&&cue.Clip.loadType==AudioClipLoadType.DecompressOnLoad)
-                    {
-                        var channels=new float[cue.Clip.samples*cue.Clip.channels];
-                        if(cue.Clip.GetData(channels,0))
-                        {
-                            samples=new float[cue.Clip.samples];
-                            for(int sample=0;sample<samples.Length;sample++)
-                                for(int channel=0;channel<cue.Clip.channels;channel++)samples[sample]+=channels[sample*cue.Clip.channels+channel]/cue.Clip.channels;
-                        }
-                    }
+                    samples=ReadReviewSamples(cue.Clip);
                     audioSamples.Add(cue.Clip,samples);
                 }
                 if(samples==null){clip.unreadableSounds++;continue;}
-                double stride=cue.Clip.frequency*cue.Pitch/ReviewAudioRate;
+                double stride=samples.Rate*cue.Pitch/(double)ReviewAudioRate;
                 int end=count;
                 if(cue.ReplacesEarlier)
                     for(int next=eventIndex+1;next<reviewSounds.Count;next++)
@@ -456,8 +471,8 @@ namespace YesterdayConvoy
                 {
                     double position=i*stride;
                     int index=(int)position;
-                    if(index>=samples.Length)break;
-                    mixed[i+sound.sample]+=Mathf.Lerp(samples[index],samples[Math.Min(index+1,samples.Length-1)],(float)(position-index))*cue.Gain;
+                    if(index>=samples.Data.Length)break;
+                    mixed[i+sound.sample]+=Mathf.Lerp(samples.Data[index],samples.Data[Math.Min(index+1,samples.Data.Length-1)],(float)(position-index))*cue.Gain;
                 }
                 clip.soundCues++;
             }
@@ -475,6 +490,67 @@ namespace YesterdayConvoy
             }
             if(clip.unreadableSounds>0)clip.notes+=" 部分音频资源无法读出，未补造替代声。";
         }
+        ReviewSamples ReadReviewSamples(AudioClip source)
+        {
+            const string fallbackPrefix="Formation ";
+            if(source.name.StartsWith(fallbackPrefix,StringComparison.Ordinal)&&
+                Enum.TryParse<FormationBattleController.ImpactStyle>(source.name.Substring(fallbackPrefix.Length),out var style))
+                return new ReviewSamples(FormationBattleController.FormationImpactSamples(style),22050);
+
+            // Use the same retained PCM used by the build if its platform import
+            // cannot expose sample data at the moment of recording.
+            if(source.loadState==AudioDataLoadState.Unloaded)source.LoadAudioData();
+            if(source.loadState==AudioDataLoadState.Loaded&&source.loadType==AudioClipLoadType.DecompressOnLoad)
+            {
+                var channels=new float[source.samples*source.channels];
+                if(source.GetData(channels,0))
+                {
+                    var mono=new float[source.samples];
+                    for(int sample=0;sample<mono.Length;sample++)
+                        for(int channel=0;channel<source.channels;channel++)mono[sample]+=channels[sample*source.channels+channel]/source.channels;
+                    return new ReviewSamples(mono,source.frequency);
+                }
+            }
+            if(reviewPcmRoot==null||Path.GetFileName(source.name)!=source.name)return null;
+            string path=Path.Combine(reviewPcmRoot,"FormationOriginal",source.name+".wav");
+            if(!File.Exists(path))path=Path.Combine(reviewPcmRoot,"SnowBoss",source.name+".wav");
+            return File.Exists(path)?ReadReviewWave(path):null;
+        }
+
+        static ReviewSamples ReadReviewWave(string path)
+        {
+            using var file=new BinaryReader(File.OpenRead(path));
+            if(file.ReadUInt32()!=0x46464952)return null;
+            file.ReadUInt32();
+            if(file.ReadUInt32()!=0x45564157)return null;
+            int channels=0, rate=0, bits=0, format=0;
+            while(file.BaseStream.Length-file.BaseStream.Position>=8)
+            {
+                uint chunk=file.ReadUInt32();
+                int length=file.ReadInt32();
+                long end=file.BaseStream.Position+length;
+                if(length<0||end>file.BaseStream.Length)return null;
+                if(chunk==0x20746d66&&length>=16)
+                {
+                    format=file.ReadUInt16();
+                    channels=file.ReadUInt16();
+                    rate=file.ReadInt32();
+                    file.ReadInt32();
+                    file.ReadUInt16();
+                    bits=file.ReadUInt16();
+                }
+                else if(chunk==0x61746164&&format==1&&bits==16&&channels>0&&rate>0)
+                {
+                    var mono=new float[length/(channels*2)];
+                    for(int frame=0;frame<mono.Length;frame++)
+                        for(int channel=0;channel<channels;channel++)mono[frame]+=file.ReadInt16()/(32768f*channels);
+                    return new ReviewSamples(mono,rate);
+                }
+                file.BaseStream.Position=end+(length&1);
+            }
+            return null;
+        }
+
         void StartEncoder(string pixel)
         {
             encoderError="";
