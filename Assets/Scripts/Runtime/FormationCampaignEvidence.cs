@@ -244,12 +244,17 @@ namespace YesterdayConvoy
                     int price=controller.Shop.Definition(id).Cost;
                     if(controller.Shop.CanAfford(price)&&(owned||controller.Shop.Bench.Count<5))
                     {
+                        bool canFit=controller.Shop.PreviewPurchase(slot).Success;
                         int beforeGold=controller.Shop.Gold;
                         var card=FormationBattleController.FormationOfferRect(slot).center;
                         controller.ProcessPointer(EventType.MouseDown,card);
                         controller.ProcessPointer(EventType.MouseUp,card);
-                        Assert(controller.Shop.Gold==beforeGold-price&&controller.Shop.Offers[slot]==null&&
-                            controller.FormationInspectedCardId==null,"Click the shop card to recruit one copy without opening details");
+                        if(canFit)
+                            Assert(controller.Shop.Gold==beforeGold-price&&controller.Shop.Offers[slot]==null&&
+                                controller.FormationInspectedCardId==null,"Click the shop card to recruit one copy without opening details");
+                        else
+                            Assert(controller.Shop.Gold==beforeGold&&controller.Shop.Offers[slot]==id&&
+                                controller.FormationInspectedCardId==null,"A card that cannot fit stays on sale without charging or opening details");
                     }
                     yield return ResolveChoices();
                 }

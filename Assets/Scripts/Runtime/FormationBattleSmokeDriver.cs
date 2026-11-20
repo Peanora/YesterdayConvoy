@@ -284,11 +284,13 @@ namespace YesterdayConvoy
                 }));
             yield return Market(true);yield return Capture("player-market");
             var beforeCovered=m.Units.ToDictionary(u=>u.Instance,u=>u.Spawn);int coveredGold=controller.Shop.Gold;
+            var coveredOffer=controller.Shop.Offers[0];
             var covered=FormationBattleController.FormationOfferRect(0).center;
             controller.ProcessPointer(EventType.MouseDown,covered);
             controller.ProcessPointer(EventType.MouseDrag,covered+Vector2.right*18);
             controller.ProcessPointer(EventType.MouseUp,covered+Vector2.right*18);
-            CheckThat("original-A-market-blocks-map-pointer-through",m.Units.All(u=>beforeCovered[u.Instance]==u.Spawn)&&controller.Shop.Gold==coveredGold);
+            CheckThat("original-A-market-blocks-map-pointer-through",m.Units.All(u=>beforeCovered[u.Instance]==u.Spawn)&&
+                controller.Shop.Gold==coveredGold&&controller.Shop.Offers[0]==coveredOffer);
             yield return ChooseRecruit();int offer=recruitOffer;
             string purchased=controller.Shop.Offers[offer];int price=controller.Shop.Definition(purchased).Cost;
             int beforePurchase=controller.Shop.Gold;
