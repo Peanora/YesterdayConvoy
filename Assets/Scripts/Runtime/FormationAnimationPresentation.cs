@@ -51,7 +51,12 @@ namespace YesterdayConvoy
                         profile.SkillProjectileWindup=third?source.ContactTime("Skill_3_Loop"):0;
                     }
                     if(source.NativeTask=="WIS_APRIL_G9"&&Model.PresentationBuff(actor,"wisadel")>0)
-                    {profile.ProjectileSpeed=0;profile.ProjectileMovement=null;profile.AttackFlightSeconds=0;}
+                    {
+                        // The source S2 object attaches to its target after .1 source seconds.
+                        profile.ProjectileSpeed=0;
+                        profile.ProjectileMovement=null;
+                        profile.AttackFlightSeconds=.1f;
+                    }
                 }
                 Model.SetAnimationProfile(actor.ArtId,profile);formationAnimationProfileKeys[actor.ArtId]=signature;
             }

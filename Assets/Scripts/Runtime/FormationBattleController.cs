@@ -314,7 +314,7 @@ namespace YesterdayConvoy
             if(!Ready||Camera.current!=battleCamera)return;
             DrawDeploymentGrid();
             DrawCampaignSeaCells();
-            DrawFormationContactFeedback();
+            if (Campaign == null) DrawFormationContactFeedback();
         }
         void OnDestroy()
         {

@@ -801,6 +801,47 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void ExusiaiRoundsReleaseOnSourceMarkersAndHitOnlyAfterFlight()
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "2-1", collectDrops: false);
+            model.BindCampaign(run);
+            var guard = model.Defenders.Single(d => d.ArtId == "D24");
+            model.Defenders.RemoveAll(d => d != guard);
+            guard.MaxHealth = 100000;
+            model.SetAnimationProfile("D24", new FormationAnimationProfile { AttackDuration = 4 / 3f, SkillDuration = 4 / 3f });
+            Assert.That(model.StartBattle(), Is.True);
+            var fighter = model.Units.Single();
+            fighter.Position = guard.Position + Vector2.left * 2;
+            fighter.MaxHealth = fighter.Health = 100000;
+            Advance(model, .025f);
+
+            var ordinary = model.PresentationActions.Single(a => a.ActorId == guard.Id);
+            Assert.That(ordinary.LaunchedAt - ordinary.At, Is.EqualTo(16d / 120).Within(.00001));
+            Assert.That(ordinary.ContactAt - ordinary.LaunchedAt, Is.EqualTo(2d / 60).Within(.00001));
+            Assert.That(model.Hits.Any(h => ReferenceEquals(h.Action, ordinary)), Is.False);
+            Advance(model, .20f);
+            Assert.That(model.Hits.Single(h => ReferenceEquals(h.Action, ordinary)).At, Is.GreaterThanOrEqualTo(ordinary.ContactAt - .00001));
+
+            Advance(model, 12);
+            var volley = model.PresentationActions.First(a => a.ActorId == guard.Id && a.Animation == "skill_attack" && !a.ProjectileOnly);
+            var shots = model.PresentationActions.Where(a => a.ParentSequence == volley.Sequence).OrderBy(a => a.ProjectileIndex).ToArray();
+            Assert.That(shots.Length, Is.EqualTo(5));
+            Advance(model, (float)Math.Max(0, shots[shots.Length - 1].ContactAt - model.Clock) + .025f);
+            for (int i = 0; i < shots.Length; i++)
+            {
+                var shot = shots[i];
+                Assert.That(shot.ProjectileOnly && shot.Skill, Is.True);
+                Assert.That(shot.LaunchedAt - volley.At, Is.EqualTo((10 + 2 * i) / 120d).Within(.00001));
+                Assert.That(shot.ContactAt - shot.LaunchedAt, Is.EqualTo(Vector2.Distance(shot.From, shot.To) / 60).Within(.02501));
+                var hits = model.Hits.Where(h => ReferenceEquals(h.Action, shot)).ToArray();
+                Assert.That(hits.Length, Is.EqualTo(1), $"Projectile {i + 1} at {shot.ContactAt:0.000}s");
+                Assert.That(hits[0].At, Is.GreaterThanOrEqualTo(shot.ContactAt - .00001));
+            }
+            Assert.That(model.Hits.Any(h => ReferenceEquals(h.Action, volley)), Is.False);
+        }
+
+        [Test]
         public void WangsReservedChessCellTriggersSkillDamageOnContact()
         {
             var model = Fixture(out var run, "M11");

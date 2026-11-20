@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Editor
         static bool verifiedThisSession;
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
         static readonly string[] Roots={"MonsterCombatArt","DefenderArt","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
-        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","target-burn-loop","original-energy-stream","original-fire-impact","explode-A-caster","explode-B-caster"};
+        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
         public void OnPreprocessBuild(BuildReport report)=>Prepare(!verifiedThisSession);
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -141,9 +141,8 @@ namespace YesterdayConvoy.Editor
             foreach(string relative in plan.Images)
             {
                 string file=ArtSourcePaths.Resolve(relative),target=Path.Combine(Cache,relative+".ycart");
-                // Compression bands in these low-alpha HDR gradients break up
-                // the outline when the fire front crosses the near half-board.
-                bool keepFirePixels=relative.StartsWith("TalulahUnboundVfx/original-energy-stream-",StringComparison.Ordinal);
+                // Keep the source HDR gradient and additive RGB in the fire front and contact.
+                bool keepFirePixels=relative.StartsWith("TalulahUnboundVfx/original-fire-",StringComparison.Ordinal);
                 string format=keepFirePixels?"|rgba32":"";
                 var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks+format;
                 string record=File.Exists(target+".hash")?File.ReadAllText(target+".hash"):"";

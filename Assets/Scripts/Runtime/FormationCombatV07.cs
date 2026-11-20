@@ -424,7 +424,8 @@ namespace YesterdayConvoy
             var s=State(a);s.Action=++actionSequence;s.ActionHits=0;s.ComboPerAction=0;s.SkillTargets.Clear();s.SkillSPReturned=0;s.PromptReturned=0;s.SkillBeats=0;
             a.LastActionAt=Clock;a.ActionUntil=Clock+duration;a.NextAttackAt=Math.Max(a.NextAttackAt,Clock+(skill?duration:a.Interval));
             if(skill){a.LastSkillAt=Clock;a.SkillAnimation=Key(a)=="B22"?"Attack_2":Key(a)=="WIS"?(Campaign.WisadelSkill==1?"Skill_1":Campaign.WisadelSkill==2?"Skill_2_Begin":"Skill_3_Begin"):"skill";}
-            a.PresentationAction=skill?a.SkillAnimation:"attack";a.PresentationStartedAt=Clock;a.PresentationDuration=duration;
+            bool wisadelSkillTwoAttack=!skill&&Key(a)=="WIS"&&Campaign.WisadelSkill==2&&Buff(a,"wisadel")>0;
+            a.PresentationAction=skill?a.SkillAnimation:wisadelSkillTwoAttack?"Skill_2_Loop":"attack";a.PresentationStartedAt=Clock;a.PresentationDuration=duration;
             s.Stacks["tape_auto"]=0;s.Stacks["last_skill_raw"]=0;s.SkillDamage.Clear();s.SkillHealing.Clear();s.SkillShields.Clear();
             if(target==null&&a is FormationFighter fighter)
             {

@@ -7,6 +7,12 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleModel
     {
+        // Source units per second, multiplied by the same rate as the source action.
+        internal const float GuardRangedProjectileSpeed = 10;
+        internal const float ExusiaiProjectileSpeed = 30;
+        internal const double ExusiaiAttackRelease = 16d / 60;
+        static readonly double[] ExusiaiVolleyReleases = { 10d / 60, 12d / 60, 14d / 60, 16d / 60, 18d / 60 };
+
         internal sealed class FormationGuardEffect
         {
             internal string Kind;
@@ -151,10 +157,43 @@ namespace YesterdayConvoy
         {
             var action = BeginAction(guard, duration, skill, target, heal);
             if (motion != null) action.Animation = guard.PresentationAction = motion;
+            if (target == null) return action;
+
+            // Basic role skills with no separate body clip replay the retained normal action.
+            // Their actual spell or projectile still leaves on that pose's source marker.
+            if (skill && motion == null && (guard.ArtId is "D05" or "D07" or "D08" or "D09" or "D10" or "D11" or "D12") &&
+                animationProfiles.TryGetValue(guard.ArtId, out var profile))
+                action.ContactAt = action.LaunchedAt = action.At + profile.AttackContact / action.Rate;
+
+            switch (guard.ArtId)
+            {
+                case "D05": case "D07": case "D08": case "D12":
+                    SetGuardProjectileFlight(action, GuardRangedProjectileSpeed);
+                    break;
+                case "D21" when motion != "skill_begin":
+                    action.LaunchedAt = action.At + .4 / action.Rate;
+                    SetGuardProjectileFlight(action, GuardRangedProjectileSpeed);
+                    break;
+                case "D23" when heal:
+                    action.LaunchedAt = action.At + 34d / 60 / action.Rate;
+                    SetGuardProjectileFlight(action, GuardRangedProjectileSpeed);
+                    break;
+                case "D24" when !skill:
+                    action.LaunchedAt = action.At + ExusiaiAttackRelease / action.Rate;
+                    SetGuardProjectileFlight(action, ExusiaiProjectileSpeed);
+                    break;
+            }
             return action;
         }
 
-        void GuardContact(FormationDefender guard, FormationPresentationAction action, Action resolve, double fallback = 0)
+        static void SetGuardProjectileFlight(FormationPresentationAction action, float sourceSpeed)
+        {
+            action.ProjectileMovement = "AdvancedMovement";
+            action.ContactAt = action.LaunchedAt + Vector2.Distance(action.From, action.To) / sourceSpeed / action.Rate;
+        }
+
+        void GuardContact(FormationDefender guard, FormationPresentationAction action, Action resolve, double fallback = 0,
+            FormationActor trackedTarget = null)
         {
             if (action.ContactAt <= action.At && fallback > 0)
                 action.ContactAt = action.LaunchedAt = action.At + fallback;
@@ -163,6 +202,8 @@ namespace YesterdayConvoy
             void Contact()
             {
                 if (!guard.Alive || action.Cancelled) { action.Cancelled = true; return; }
+                if (trackedTarget?.Alive == true) action.To = trackedTarget.Position;
+                else if (action.ProjectileOnly) { action.Cancelled = true; return; }
                 RunInPresentationContext(guard, context, resolve);
             }
             if (action.ContactAt <= Clock + 1e-8) Contact();
@@ -261,7 +302,7 @@ namespace YesterdayConvoy
                 float multiplier = ready ? (state.Template == 3 ? .8f : state.Template == 1 ? 1.5f : state.Template == 4 ? 1.8f : 1.6f) : 1;
                 for (int i = 0; i < hits; i++)
                     foreach (var unit in targets) CombatDamage(guard, unit, guard.Attack * multiplier, type, ready, false);
-            });
+            }, trackedTarget: basic.ProjectileMovement != null || guard.ArtId == "D09" ? target : null);
         }
 
         FormationDefender[] WoundedGuards(Vector2 origin, float radius, int cap, FormationDefender source) =>
@@ -502,15 +543,28 @@ namespace YesterdayConvoy
 
         void FireGuardVolley(FormationDefender guard, GuardKit kit, FormationFighter target)
         {
-            var action = BeginGuardAction(guard, true, 2d / 3, target, motion: "skill_attack");
+            var volley = BeginGuardAction(guard, true, 2d / 3, target, motion: "skill_attack");
             guard.NextAttackAt = Clock + guard.Interval;
             kit.VolleyRounds--;
             if (kit.VolleyRounds == 0) kit.ActiveUntil = Clock + 2d / 3;
-            GuardContact(guard, action, () =>
+            volley.LaunchedAt = volley.At + ExusiaiVolleyReleases[0] / volley.Rate;
+            for (int i = 0; i < ExusiaiVolleyReleases.Length; i++)
             {
-                for (int i = 0; i < 5 && target.Alive; i++)
-                    CombatDamage(guard, target, guard.Attack * .55f, 0, true, false);
-            }, 1d / 3);
+                double release = volley.At + ExusiaiVolleyReleases[i] / volley.Rate;
+                var shot = new FormationPresentationAction
+                {
+                    Sequence = ++presentationSequence, ActorId = guard.Id, TargetId = target.Id,
+                    At = volley.At, LaunchedAt = release, From = volley.From, To = volley.To,
+                    Skill = true, Rate = volley.Rate, Animation = volley.Animation,
+                    ProjectileOnly = true, ParentSequence = volley.Sequence, ProjectileIndex = i
+                };
+                SetGuardProjectileFlight(shot, ExusiaiProjectileSpeed);
+                shot.EndAt = shot.ContactAt;
+                volley.ContactAt = shot.ContactAt;
+                presentationActions.Add(shot);
+                GuardContact(guard, shot, () => CombatDamage(guard, target, guard.Attack * .55f, 0, true, false),
+                    trackedTarget: target);
+            }
         }
 
         void StartGuardLineAttack(FormationDefender guard, GuardKit kit, FormationFighter target)

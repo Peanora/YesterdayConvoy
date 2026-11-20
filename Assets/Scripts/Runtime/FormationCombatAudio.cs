@@ -13,10 +13,12 @@ namespace YesterdayConvoy
             internal readonly AudioClip Clip;
             internal readonly float Gain, Pitch;
             internal readonly int Priority;
-            // Original cue table: maxSoundAllowed=1, popOldest=true.
-            internal bool ReplacesEarlier => Clip != null && Clip.name == "e_skill_ftrtalatk";
+            internal readonly string SourceEvent;
+            internal readonly int MaxSoundAllowed, ActionSequence;
+            internal readonly bool PopOldest;
 
-            internal FormationAudioCue(double at, int actorId, AudioClip clip, float gain, float pitch, int priority)
+            internal FormationAudioCue(double at, int actorId, AudioClip clip, float gain, float pitch, int priority,
+                string sourceEvent = null, int maxSoundAllowed = 0, bool popOldest = false, int actionSequence = 0)
             {
                 At = at;
                 ActorId = actorId;
@@ -24,14 +26,19 @@ namespace YesterdayConvoy
                 Gain = gain;
                 Pitch = pitch;
                 Priority = priority;
+                SourceEvent = sourceEvent;
+                MaxSoundAllowed = maxSoundAllowed;
+                PopOldest = popOldest;
+                ActionSequence = actionSequence;
             }
         }
 
         [Serializable]
         sealed class FormationOriginalCue
         {
-            public string artId, trigger, resource, animation;
-            public int abilityIndex = -1, hitIndex = -1, nativePhase = -1, talulahCost;
+            public string artId, trigger, resource, animation, sourceEvent;
+            public int abilityIndex = -1, hitIndex = -1, nativePhase = -1, talulahCost, maxSoundAllowed;
+            public bool oncePerAction, popOldest;
             public float delay, minPitch = 1, maxPitch = 1, minVolume = 1, maxVolume = 1;
         }
 
@@ -49,6 +56,7 @@ namespace YesterdayConvoy
         readonly Dictionary<string, AudioClip> formationOriginalClips = new();
         readonly AudioSource[] formationCombatVoices = new AudioSource[FormationVoiceLimit];
         readonly int[] formationCombatVoicePriorities = new int[FormationVoiceLimit];
+        readonly double[] formationCombatVoiceStartedAt = new double[FormationVoiceLimit];
         bool formationCueBankLoaded, formationAudioPaused;
         FormationBattleModel formationAudioModel;
         float formationMaxCueDelay;
@@ -63,7 +71,8 @@ namespace YesterdayConvoy
                 if (bank?.version == 1 && bank.cues != null)
                     foreach (var cue in bank.cues)
                     {
-                        if (string.IsNullOrEmpty(cue.artId) || string.IsNullOrEmpty(cue.resource)) continue;
+                        if (string.IsNullOrEmpty(cue.artId) || string.IsNullOrEmpty(cue.resource) ||
+                            string.IsNullOrEmpty(cue.sourceEvent)) continue;
                         if (!formationOriginalCues.TryGetValue(cue.artId, out var entries))
                             formationOriginalCues.Add(cue.artId, entries = new List<FormationOriginalCue>());
                         entries.Add(cue);
@@ -94,7 +103,8 @@ namespace YesterdayConvoy
                 bool preciseHit = cue.hitIndex >= 0, preciseVariant = cue.talulahCost > 0;
                 if (preciseMotion && !string.Equals(cue.animation, animation, StringComparison.OrdinalIgnoreCase) ||
                     cue.abilityIndex >= 0 && !preciseMotion || cue.nativePhase >= 0 && cue.nativePhase != nativePhase ||
-                    preciseHit && cue.hitIndex != hitIndex || preciseVariant && Campaign?.TalulahCost != cue.talulahCost) continue;
+                    preciseHit && cue.hitIndex != hitIndex || cue.oncePerAction && hitIndex != 0 ||
+                    preciseVariant && Campaign?.TalulahCost != cue.talulahCost) continue;
                 int score = (preciseMotion ? 4 : 0) + (preciseHit ? 2 : 0) + (preciseVariant ? 1 : 0) + (cue.nativePhase >= 0 ? 8 : 0);
                 if (score <= specificity) continue;
                 best = cue;
@@ -111,7 +121,7 @@ namespace YesterdayConvoy
             for (int i = 0; i < destination.Count; i++)
             {
                 var previous = destination[i];
-                if (previous.ActorId != cue.ActorId || previous.Clip != cue.Clip || Math.Abs(previous.At - cue.At) > .0001) continue;
+                if (previous.ActorId != cue.ActorId || previous.Clip != cue.Clip || previous.ActionSequence != cue.ActionSequence || Math.Abs(previous.At - cue.At) > .0001) continue;
                 // One original contact sound per simultaneous area hit, independent of target count.
                 if (cue.Priority > previous.Priority) destination[i] = cue;
                 return;
@@ -120,7 +130,7 @@ namespace YesterdayConvoy
         }
 
         void AddFormationOriginalAudio(List<FormationAudioCue> destination, FormationOriginalCue cue,
-            double at, double after, double through, int actorId, int sequence, float gain, int priority)
+            double at, double after, double through, int actorId, int sequence, int priority)
         {
             if (cue == null) return;
             at += Math.Max(0, cue.delay);
@@ -130,7 +140,8 @@ namespace YesterdayConvoy
             float pitch = Mathf.Lerp(cue.minPitch, cue.maxPitch, (salt & 65535) / 65535f);
             float volume = Mathf.Lerp(cue.minVolume, cue.maxVolume, (salt >> 16) / 65535f);
             AddFormationAudio(destination, new FormationAudioCue(at, actorId, formationOriginalClips[cue.resource],
-                Mathf.Clamp01(gain * volume), Mathf.Clamp(pitch, .2f, 3f), priority));
+                Mathf.Clamp01(FormationAudioVolume * volume), Mathf.Clamp(pitch, .2f, 3f), priority, cue.sourceEvent,
+                cue.maxSoundAllowed, cue.popOldest, sequence));
         }
 
         AudioClip FormationFallbackContactClip(ImpactStyle style)
@@ -148,6 +159,7 @@ namespace YesterdayConvoy
         internal void CollectFormationAudio(double after, double through, List<FormationAudioCue> destination, bool includeSnowBoss = false)
         {
             if (Model == null || Model.Phase == FormationPhase.Preparation || after >= through) return;
+            WarmFormationCombatAudio(string.Empty);
             if (includeSnowBoss) CollectShowcaseSnowBossAudio(after, through, destination);
             double earliestAnchor = after - formationMaxCueDelay;
             foreach (var action in Model.PresentationActions)
@@ -158,12 +170,11 @@ namespace YesterdayConvoy
                 if (!action.ProjectileOnly)
                     AddFormationOriginalAudio(destination, FindFormationOriginalCue(actor.ArtId,
                         action.Skill ? "skillStart" : "attackStart", action.Animation, -1, action.NativePhase),
-                        action.At, after, through, actor.Id, action.Sequence, .29f, action.Skill ? 3 : 1);
-                if (action.Cancelled || action.Skill && !action.ProjectileOnly && action.LaunchedAt == action.At)
-                    continue;
+                        action.At, after, through, actor.Id, action.Sequence, action.Skill ? 3 : 1);
+                if (action.Cancelled) continue;
                 AddFormationOriginalAudio(destination, FindFormationOriginalCue(actor.ArtId,
                     action.Skill ? "skillRelease" : "attackRelease", action.Animation, action.ProjectileOnly ? action.ProjectileIndex : -1, action.NativePhase),
-                    action.LaunchedAt, after, through, actor.Id, action.Sequence, .29f, action.Skill ? 3 : 2);
+                    action.LaunchedAt, after, through, actor.Id, action.Sequence, action.Skill ? 3 : 2);
             }
 
             foreach (var hit in Model.Hits)
@@ -173,21 +184,21 @@ namespace YesterdayConvoy
                 if (actor is FormationDefender { IsSnowBoss: true } &&
                     (includeSnowBoss ? SnowBossContactCue(hit) is string key && snowBossEffectClips.ContainsKey(key) : HasSnowBossImpactAudio(hit))) continue;
                 string artId = hit.SourceArtId ?? actor?.ArtId;
-                var cue = hit.Amount > 0 && !hit.Secondary
+                var cue = (hit.Amount > 0 || hit.Absorbed) && !hit.Secondary && hit.Action != null
                     ? FindFormationOriginalCue(artId, hit.Skill ? "skillHit" : "attackHit", hit.Action?.Animation, hit.ImpactIndex, hit.Action?.NativePhase ?? 0)
                     : null;
                 int priority = hit.Absorbed || hit.Killed || hit.ShowDamageNumber ? 4 : hit.Skill ? 3 : 2;
                 if (cue != null)
                     AddFormationOriginalAudio(destination, cue, hit.At, after, through, hit.FromId,
-                        hit.Action?.Sequence ?? (int)(hit.At * 40), FormationAudioVolume * (hit.Heal ? .58f : .91f), priority);
-                else if (FormationAudioInWindow(hit.At, after, through))
+                        hit.Action.Sequence, priority);
+                else if (Campaign == null && FormationAudioInWindow(hit.At, after, through))
                     AddFormationAudio(destination, new FormationAudioCue(hit.At, hit.FromId, FormationFallbackContactClip(FormationHitStyle(hit)),
                         FormationAudioVolume * (hit.Heal ? .46f : hit.Skill ? .78f : .61f), 1, priority));
                 if (hit.Killed)
                 {
                     var victim = FormationFeedbackActor(hit.ToId);
                     AddFormationOriginalAudio(destination, FindFormationOriginalCue(victim?.ArtId, "death", null, -1),
-                        hit.At, after, through, hit.ToId, hit.Action?.Sequence ?? (int)(hit.At * 40), .28f, 3);
+                        hit.At, after, through, hit.ToId, hit.Action?.Sequence ?? (int)(hit.At * 40), 3);
                 }
             }
             destination.Sort((first, second) =>
@@ -232,8 +243,23 @@ namespace YesterdayConvoy
 
         void PlayFormationAudioCue(FormationAudioCue cue)
         {
-            int chosen = cue.ReplacesEarlier ? Array.FindIndex(formationCombatVoices,
-                voice => voice != null && voice.isPlaying && voice.clip == cue.Clip) : -1;
+            int chosen = -1;
+            if (cue.MaxSoundAllowed > 0)
+            {
+                int count = 0, oldest = -1;
+                for (int i = 0; i < formationCombatVoices.Length; i++)
+                {
+                    var voice = formationCombatVoices[i];
+                    if (voice == null || !voice.isPlaying || voice.clip != cue.Clip) continue;
+                    count++;
+                    if (oldest < 0 || formationCombatVoiceStartedAt[i] < formationCombatVoiceStartedAt[oldest]) oldest = i;
+                }
+                if (count >= cue.MaxSoundAllowed)
+                {
+                    if (!cue.PopOldest) return;
+                    chosen = oldest;
+                }
+            }
             int lowest = -1;
             for (int i = 0; chosen < 0 && i < formationCombatVoices.Length; i++)
             {
@@ -261,6 +287,7 @@ namespace YesterdayConvoy
             source.pitch = cue.Pitch;
             source.mute = !soundEnabled;
             formationCombatVoicePriorities[chosen] = cue.Priority;
+            formationCombatVoiceStartedAt[chosen] = cue.At;
             source.Play();
         }
     }

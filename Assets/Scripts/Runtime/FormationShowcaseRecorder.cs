@@ -15,11 +15,18 @@ namespace YesterdayConvoy
     public sealed class FormationShowcaseRecorder : MonoBehaviour
     {
         [Serializable] public sealed class Stage {public string label;public float start,duration;}
+        [Serializable] public sealed class ReviewCue
+        {
+            public string clip,eventKey;
+            public double battleTime;
+            public float videoTime,gain,pitch;
+        }
         [Serializable] public sealed class Clip
         {
             public string id,kind,name,file,notes,error,audioFile;
             public string[] units,activeSynergies;
             public List<Stage> stages=new List<Stage>();
+            public List<ReviewCue> cueLog=new List<ReviewCue>();
             public int frames,skillCasts,hits,soundCues,unreadableSounds;
             public float duration,movedDistance;
         }
@@ -47,7 +54,7 @@ namespace YesterdayConvoy
         string directory,ffmpeg,phase="准备素材",encoderError="",runtimeError;
         Clip clip;
         bool writing,done;
-        const float Step=1f/24;
+        float Step=>1f/manifest.fps;
         const int ReviewAudioRate=44100;
         readonly List<(int sample,FormationBattleController.FormationAudioCue cue)> reviewSounds =
             new List<(int,FormationBattleController.FormationAudioCue)>();
@@ -136,15 +143,17 @@ namespace YesterdayConvoy
             }
             string manifestPath=Path.Combine(directory,"manifest.json");
             string source=Argument("-showcaseSource","unspecified");
+            if(!int.TryParse(Argument("-showcaseFps","24"),out int fps)||(fps!=24&&fps!=60))
+                throw new ArgumentException("Review frame rate must be 24 or 60.");
             if(Argument("-showcaseResume","0")=="1"&&File.Exists(manifestPath))
             {
                 manifest=JsonUtility.FromJson<Manifest>(File.ReadAllText(manifestPath));
-                if(manifest.sourceCommit!=source||manifest.audio!=RecordAudio||manifest.onePerRole!=RoleVideos)
+                if(manifest.sourceCommit!=source||manifest.audio!=RecordAudio||manifest.onePerRole!=RoleVideos||manifest.fps!=fps)
                     throw new InvalidOperationException("Existing review belongs to different content, audio or playlist settings.");
             }
-            manifest.sourceCommit=source;manifest.completed=false;manifest.error=null;
+            manifest.sourceCommit=source;manifest.completed=false;manifest.error=null;manifest.fps=fps;
             manifest.audio=RecordAudio;manifest.onePerRole=RoleVideos;
-            if(RoleVideos)manifest.scope="同版 Windows Player 正式棋盘的逐角色 GPU 实录。使用对照靶与合法预置阵容，段间可跳过等待。守军在本作固守，缺少的动作会标明。音轨来自战斗音效事件与实际采用的音频资源。";
+            if(RoleVideos)manifest.scope="同版 Windows Player 正式棋盘的逐角色 GPU 实录。使用对照靶与合法预置阵容，段间可跳过等待。守军在本作固守，缺少的动作会标明。音轨只收录主角的战斗事件与音效，逐条附来源事件。";
             double deadline=Time.realtimeSinceStartupAsDouble+600;
             while((controller=Object.FindAnyObjectByType<FormationBattleController>())==null||!controller.Ready)
             {if(Time.realtimeSinceStartupAsDouble>deadline)throw new TimeoutException("Saved formation scene did not become ready.");yield return null;}
@@ -251,6 +260,8 @@ namespace YesterdayConvoy
 
         IEnumerable<Plan> ReviewParts(Plan plan)
         {
+            if(RoleVideos&&(plan.Id is "M25" or "B10"))
+                yield return new Plan{Id=plan.Id+"-walk",Kind="variant",Name=plan.Name,Units=plan.Units,WalkOnly=true};
             yield return plan;
             if(!RoleVideos)yield break;
             if(plan.Id=="TAL")
@@ -427,20 +438,28 @@ namespace YesterdayConvoy
             double at=controller.Model.Clock;
             audioBuffer.Clear();
             controller.CollectFormationAudio(reviewAudioThrough,at,audioBuffer,includeSnowBoss:true);
+            var subjectIds=RoleVideos?ReviewSubjectIds():null;
             foreach(var cue in audioBuffer)
             {
+                if(subjectIds!=null&&!subjectIds.Contains(cue.ActorId))continue;
                 int sample=(int)Math.Round((clip.frames/(double)manifest.fps+cue.At-at)*ReviewAudioRate);
                 reviewSounds.Add((Math.Max(0,sample),cue));
             }
             reviewAudioThrough=at;
         }
 
+        int[] ReviewSubjectIds()
+        {
+            var model=controller.Model;
+            return clip.kind=="defender"?new[]{model.Defenders[0].Id}:clip.kind=="summon"?
+                model.Summons.Where(actor=>actor.ArtId==clip.id).Select(actor=>actor.Id).ToArray():
+                model.Units.Where(actor=>actor.Enabled).Select(actor=>actor.Id).ToArray();
+        }
+
         void ObserveCapturedActions()
         {
             var model=controller.Model;
-            int[] ids=clip.kind=="defender"?new[]{model.Defenders[0].Id}:clip.kind=="summon"?
-                model.Summons.Where(actor=>actor.ArtId==clip.id).Select(actor=>actor.Id).ToArray():
-                model.Units.Where(actor=>actor.Enabled).Select(actor=>actor.Id).ToArray();
+            var ids=ReviewSubjectIds();
             foreach(var action in model.PresentationActions)
                 if(action.Skill&&!action.ProjectileOnly&&ids.Contains(action.ActorId)&&reviewActionIds.Add(action.Sequence))clip.skillCasts++;
             foreach(var hit in model.Hits)
@@ -451,6 +470,7 @@ namespace YesterdayConvoy
         {
             int count=Mathf.RoundToInt(clip.frames*ReviewAudioRate/(float)manifest.fps);
             var mixed=new float[count];
+            var pending=new List<(int start,int end,FormationBattleController.FormationAudioCue cue,ReviewSamples samples)>();
             for(int eventIndex=0;eventIndex<reviewSounds.Count;eventIndex++)
             {
                 var sound=reviewSounds[eventIndex];
@@ -462,18 +482,40 @@ namespace YesterdayConvoy
                     audioSamples.Add(cue.Clip,samples);
                 }
                 if(samples==null){clip.unreadableSounds++;continue;}
+                if(cue.MaxSoundAllowed>0)
+                {
+                    int active=0,oldest=-1;
+                    for(int i=0;i<pending.Count;i++)
+                    {
+                        var previous=pending[i];
+                        if(previous.cue.Clip!=cue.Clip||previous.end<=sound.sample)continue;
+                        active++;
+                        if(oldest<0)oldest=i;
+                    }
+                    if(active>=cue.MaxSoundAllowed)
+                    {
+                        if(!cue.PopOldest)continue;
+                        var previous=pending[oldest];
+                        pending[oldest]=(previous.start,sound.sample,previous.cue,previous.samples);
+                    }
+                }
+                int length=Mathf.CeilToInt(samples.Data.Length*(ReviewAudioRate/(float)samples.Rate)/cue.Pitch);
+                pending.Add((sound.sample,Math.Min(count,sound.sample+length),cue,samples));
+            }
+            foreach(var sound in pending)
+            {
+                var cue=sound.cue;
+                var samples=sound.samples;
                 double stride=samples.Rate*cue.Pitch/(double)ReviewAudioRate;
-                int end=count;
-                if(cue.ReplacesEarlier)
-                    for(int next=eventIndex+1;next<reviewSounds.Count;next++)
-                        if(reviewSounds[next].cue.Clip==cue.Clip){end=Math.Min(end,reviewSounds[next].sample);break;}
-                for(int i=0;i+sound.sample<end;i++)
+                for(int i=0;i+sound.start<sound.end;i++)
                 {
                     double position=i*stride;
                     int index=(int)position;
                     if(index>=samples.Data.Length)break;
-                    mixed[i+sound.sample]+=Mathf.Lerp(samples.Data[index],samples.Data[Math.Min(index+1,samples.Data.Length-1)],(float)(position-index))*cue.Gain;
+                    mixed[i+sound.start]+=Mathf.Lerp(samples.Data[index],samples.Data[Math.Min(index+1,samples.Data.Length-1)],(float)(position-index))*cue.Gain;
                 }
+                clip.cueLog.Add(new ReviewCue{clip=cue.Clip.name,eventKey=cue.SourceEvent,battleTime=cue.At,
+                    videoTime=sound.start/(float)ReviewAudioRate,gain=cue.Gain,pitch=cue.Pitch});
                 clip.soundCues++;
             }
             clip.audioFile="audio/"+Path.GetFileNameWithoutExtension(clip.file)+".wav";
@@ -555,7 +597,7 @@ namespace YesterdayConvoy
         {
             encoderError="";
             var info=new ProcessStartInfo{FileName=ffmpeg,UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardError=true};
-            info.Arguments="-hide_banner -loglevel error -y -f rawvideo -pixel_format "+pixel+" -video_size 1280x720 -framerate 24 -i pipe:0 -vf vflip -an -c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p -movflags +faststart \""+Path.Combine(directory,clip.file)+"\"";
+            info.Arguments="-hide_banner -loglevel error -y -f rawvideo -pixel_format "+pixel+" -video_size 1280x720 -framerate "+manifest.fps+" -i pipe:0 -vf vflip -an -c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p -movflags +faststart \""+Path.Combine(directory,clip.file)+"\"";
             encoder=new Process{StartInfo=info};encoder.ErrorDataReceived+=(sender,args)=>{if(args.Data!=null)encoderError+=args.Data+"\n";};
             if(!encoder.Start())throw new InvalidOperationException("Could not start FFmpeg.");encoder.BeginErrorReadLine();
         }

@@ -39,3 +39,18 @@ M11两条共用资源原本就已存在于正式 `OriginalCombatVfx/Monsters` �
 三费本作点燃复用Skill_1_A/B及ignite施法者层；四/五费本作范围火焰复用Skill_2_A/B及explode施法者层。此前body两行反配，且`firecast-A-hand`加工名掩盖了它实际只是原`enemy_bsnake_skill_01_start_02`／Skill_1_A手部层；现已以原Actor字段对齐，不能再凭“看得见火焰”判定配对正确。
 
 四/五费的实际命中、雨与烧区仍是v0.7真实Hit／Zone驱动的适配。原DragonFireExplode、ScreenAttack与本作技能规则不是同一机制；没有因此新增全屏爆炸、原客户端火雨调度、伤害范围或额外结算。原字段摘录为 `artifacts/formation-visual-repair/TAL-raw-actor-skills.json`，原采样来源对应为 `TAL-original-skill-map.json`。c610583影片为修正之前的对照，不作本配对修正后的GPU验证。
+
+### 2026-11-21 复核并重接塔露拉原包层
+
+重新读取本机 PC 客户端 `26-10-20-11-10-38-04170990` 的 `battle/enm_pfb_18.ab`、`pkgrps/btl_pfb_fx_enemy_1.ab` 和 `battle/prefabs/[uc]projectiles.ab`。两个形态的 Ignite 与 DragonFireExplode 对应 `Skill_1` 和 `Skill_2`。`ScreenAttack` 的原动作字段为空，其独立投射物为 `projectile_enemy_bsnake`。本作复用的原采样来自官方 Android `26-10-29-15-36-11-33649006`，版本、镜头与渲染平台有差异。保留原权利状态。
+
+| 本作表现 | 对应原资源及播放时点 |
+|---|---|
+| 三费点燃 | `ignite-A/B-caster` 从施法开始播放，`enemy_bsnake_skill_01_hit` 与 reborn 变体从实际命中播放。身体 `Skill_1_A/B` 的原接触标记为 1.167 源秒，基础 2× 时约 0.583 对局秒。 |
+| 四、五费龙炎 | `explode-A/B-caster` 和 `explode-A/B-target` 一起从 `ON_CAST_START` 开始。目标层挂在本作已选守军；原两层 `enemy_bsnake_skill_02_hit`、`enemy_bsnake_skill_02_hit_02` 及对应 reborn 变体。`Skill_2_A/B` 的接触标记为 1.033 源秒，基础 2× 时约 0.517 对局秒。 |
+| 五费横向火浪 | 替换成 `projectile_enemy_bsnake` 指定的 `enemy_bsnake_reborn_01_trail`。每条火流使用原效果朝向，按源速 2.5 原世界单位/秒和 2× 时钟前进，行起势延差使用源 0.100 秒上限，逐格贴右侧八行的实际地面。 |
+| 五费实际直接命中 | `enemy_bsnake_reborn_01_trail_hit_01` 播完整原采样，原首帧可以透明。灼烧结算无额外爆闪。五费播完整 `Skill_2_A/B` 后回本形态待机，8 秒期间仍保持既定攻击锁。 |
+
+本作仍按原有六段直伤与八秒灼烧结算。五费火浪从本作烧区开始，在八秒内按 2 秒间隔覆过右侧棋盘，发射边界及行间相位适配当前场地。原 `ScreenAttack` 属复生阶段并依源投射物拦截，本作用作独立渲染层，火流位置不产生新的伤害、声音或命中。四费保留真实烧区中心持续层，使用 `enemy_bsnake_skill_01_buff` 的既有循环采样。
+
+`tools/package_talulah_native.py --verify-only` 回读原 30 fps HDR 采样和 Git PNG，以记录中的镜像、裁切及补边逐帧校对，39 段、83 页、4218 帧一致。Windows Player 仅导出已绑定的补充包 56 页。火流及命中保留 RGBA32 预处理，避免压缩改变源 HDR 梯度。原资源片段、2× 对照和关键帧位于 `artifacts/formation-original-fidelity/reference`。场景播放与复核结果见本轮 QA。

@@ -133,7 +133,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(contact.At, Is.InRange(cast.LaunchedAt - .0001, cast.LaunchedAt + .0251));
         }
 
-        [UnityTest] public IEnumerator ResolvedContactLightsOnlyTheRecipientAndStopsAtItsModelTime()
+        [UnityTest] public IEnumerator OriginalCampaignContactDoesNotAddAGenericBodyFlash()
         {
             RequireGpu();
             yield return Fixture(new[] { "B22" });
@@ -148,15 +148,8 @@ namespace YesterdayConvoy.Tests
                 Body(body).GetPropertyBlock(block);
                 return block.GetVector("_ContactPulse").w;
             }
-            Assert.That(Pulse(recipient), Is.GreaterThan(.08f));
-            Assert.That(Pulse(actor), Is.Zero);
-            float before = Pulse(recipient);
-            controller.Model.Paused = true;
-            Step(.4f);
-            Assert.That(Pulse(recipient), Is.EqualTo(before));
-            controller.Model.Paused = false;
-            Step(.175f);
             Assert.That(Pulse(recipient), Is.Zero);
+            Assert.That(Pulse(actor), Is.Zero);
         }
 
         [UnityTest] public IEnumerator SourceRiftbeastImpactUsesResolvedContactsAndDoesNotRepeatAtItsBoundary()
@@ -180,6 +173,10 @@ namespace YesterdayConvoy.Tests
             var collected = WithSource(name);
             Assert.That(collected.Length, Is.EqualTo(1));
             Assert.That(Field<double>(collected.Single(), "At"), Is.EqualTo(hit.At));
+            Assert.That(Field<string>(collected.Single(), "SourceEvent"),
+                Is.EqualTo("battle.ON_ABILITY_HIT.enemy_1571_mirbst.combat.0"));
+            Assert.That(cues.Cast<object>().Any(cue => ((AudioClip)Field<object>(cue, "Clip")).name.StartsWith("Formation ")),
+                Is.False, "A normal campaign contact must never attach a synthesized substitute.");
             cues.Clear();
             Invoke(controller, "CollectFormationAudio", hit.At, hit.At + .01, cues, false);
             Assert.That(WithSource(name), Is.Empty, "A repeated read at exactly the previous end cannot replay the hit.");
@@ -309,7 +306,7 @@ namespace YesterdayConvoy.Tests
             }
         }
 
-        [UnityTest] public IEnumerator FiveCostRainUsesGroundStreamsAcrossAllLanesAndFreezesWithCombat()
+        [UnityTest] public IEnumerator TalulahRendersNativeIgnitionExplosionAndScreenAttack()
         {
             RequireGpu();
             yield return Fixture(new[]{"TAL"},talulahCost:5);
@@ -319,28 +316,27 @@ namespace YesterdayConvoy.Tests
             SpriteRenderer[] fire=Array.Empty<SpriteRenderer>();
             float first=float.PositiveInfinity,last=float.NegativeInfinity;
             double waveStart=double.PositiveInfinity;
-            bool sawContact=false;
-            var camera=Camera.main;
+            bool sawContact=false,sawExplosion=false;
             yield return Until(()=>
             {
                 sawContact|=controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&
                     r.name=="Formation Talulah / rain impact"&&HasPaint(r.sprite))&&model.Hits.Any(h=>h.FromId==caster.Id&&h.Skill);
-                fire=LegacyLayers().Where(r=>r.sprite.name.Contains("original-energy-stream")).ToArray();
-                if(fire.Length>0)waveStart=Math.Min(waveStart,model.Clock);
-                if(fire.Length!=2*FormationBattleModel.Height)return false;
+                sawExplosion|=model.PresentationActions.Any(a=>a.ActorId==caster.Id&&a.Skill&&model.Clock<a.ContactAt)&&
+                    LegacyLayers().Any(r=>r.sprite.name.Contains("explode-A-target")&&HasPaint(r.sprite));
+                fire=LegacyLayers().Where(r=>r.sprite.name.Contains("original-fire-stream")).ToArray();
+                if(fire.Length==0)return false;
+                waveStart=Math.Min(waveStart,model.Clock);
                 first=Mathf.Min(first,fire.Min(r=>r.transform.position.x));
                 last=Mathf.Max(last,fire.Max(r=>r.transform.position.x));
-                return last-first>8&&fire.Any(r=>HasPaint(r.sprite));
+                return fire.Length==FormationBattleModel.Height&&last-first>8&&fire.Any(r=>HasPaint(r.sprite))&&sawContact&&sawExplosion;
             },45);
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
-            Assert.That(sawContact,Is.True,"A committed hit should show the dedicated ground impact.");
-            Assert.That(model.Clock-waveStart,Is.GreaterThan(2.3),"The fire front crosses the board over a slower, readable sweep.");
-            Assert.That(model.Clock-waveStart,Is.LessThan(3.5),"The next wave starts before the first has finished.");
-            Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahGroundFlame"),Is.True);
+            Assert.That(model.Clock-waveStart,Is.InRange(.95,1.4),"The native front crosses eight board units at the source speed.");
+            Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"&&r.color==Color.white),Is.True);
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
             foreach(var stream in fire)
             {
-                var ground=stream.transform.position-camera.transform.up*.12f;
+                var ground=stream.transform.position-Vector3.up*.025f;
                 var cell=new Vector2(ground.x+(FormationBattleModel.Width-1)*.5f,ground.z+(FormationBattleModel.Height-1)*.5f);
                 Assert.That(ground.y,Is.EqualTo(controller.ActorWorldPoint(cell).y).Within(.01));
             }
@@ -352,8 +348,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(fire[0].transform.position,Is.EqualTo(point));
             Assert.That(fire[0].sprite,Is.SameAs(sprite));
             model.Paused=false;
-            var sustainedBody=Body(caster).sprite;
-            yield return Until(()=>Body(caster).sprite!=sustainedBody,.6);
+            var idleBody=Body(caster).sprite;
+            yield return Until(()=>Body(caster).sprite!=idleBody,.6);
             var cast=model.PresentationActions.Single(a=>a.ActorId==caster.Id&&a.Skill);
             double rainEnd=(double)Invoke(model,"TalulahRainEnd",caster);
             Assert.That(rainEnd-cast.ContactAt,Is.EqualTo(8).Within(.026));
@@ -365,8 +361,18 @@ namespace YesterdayConvoy.Tests
                 return model.Clock>=rainEnd;
             },10);
             yield return Until(()=>model.PresentationActions.Any(a=>a.ActorId==caster.Id&&!a.Skill&&a.At>=rainEnd),5);
+
             yield return Fixture(new[]{"TAL"},talulahCost:4);
             Assert.That(fire.All(r=>r==null||!r.enabled),Is.True);
+            Begin();
+            yield return Until(()=>LegacyLayers().Any(r=>r.sprite.name.Contains("explode-A-target")&&HasPaint(r.sprite)),45);
+            Assert.That(controller.Model.Clock,Is.LessThan(controller.Model.PresentationActions.Single(a=>a.Skill).ContactAt));
+            Assert.That(LegacyLayers().Any(r=>r.sprite.name.Contains("original-energy-stream")||r.sprite.name.Contains("original-fire-stream")),Is.False);
+
+            yield return Fixture(new[]{"TAL"},talulahCost:3);
+            Begin();
+            yield return Until(()=>LegacyLayers().Any(r=>r.sprite.name.Contains("ignite-A-target")&&HasPaint(r.sprite)),45);
+            Assert.That(controller.Model.Clock,Is.GreaterThanOrEqualTo(controller.Model.PresentationActions.Single(a=>a.Skill).ContactAt));
         }
 
         [UnityTest] public IEnumerator FlamerazerPaintsAContinuousJetDuringTheActualSkill()
@@ -392,6 +398,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Model.Clock,Is.LessThan(cast.EndAt));
             yield return Until(()=>controller.Model.Clock>=cast.EndAt,4);
             Assert.That(controller.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.enabled&&r.name=="Formation Flamerazer / fire jet"),Is.False);
+            var sprayHits=controller.Model.Hits.Where(hit=>hit.FromId==actor.Id&&hit.Skill&&hit.Action==cast).ToArray();
+            Assert.That(sprayHits.Select(hit=>hit.ImpactIndex).Distinct().Count(),Is.GreaterThan(1));
+            var type=typeof(FormationBattleController).GetNestedType("FormationAudioCue",BindingFlags.NonPublic);
+            var cues=(IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+            Invoke(controller,"CollectFormationAudio",cast.At-.00001,controller.Model.Clock,cues,false);
+            var spray=cues.Cast<object>().Single(cue=>Field<string>(cue,"SourceEvent")==
+                "battle.ON_PROJECTILE_HIT.projectile_enemy_duspfr");
+            Assert.That(Field<double>(spray,"At"),Is.EqualTo(sprayHits[0].At).Within(.0001));
         }
 
         [UnityTest] public IEnumerator ProductionEquipmentSpeedsAprilFramesWithoutChangingBattleClockSpeed()
@@ -547,6 +561,10 @@ namespace YesterdayConvoy.Tests
             yield return Until(() => controller.Model.PresentationActions.Any(a => a.ActorId == actor.Id && a.Skill), 40);
             var action = controller.Model.PresentationActions.First(a => a.ActorId == actor.Id && a.Skill);
             yield return Until(() => (float)Invoke(controller.Model, "PresentationBuff", actor, "wisadel") > 0, 3);
+            yield return Until(() => controller.Model.PresentationActions.Any(a => a.ActorId == actor.Id && a.Animation == "Skill_2_Loop"), 5);
+            var empowered = controller.Model.PresentationActions.First(a => a.ActorId == actor.Id && a.Animation == "Skill_2_Loop");
+            Assert.That(empowered.ContactAt - empowered.LaunchedAt, Is.EqualTo(.1 / empowered.Rate).Within(.0001));
+            Assert.That(empowered.ProjectileMovement, Is.Null);
             double buffEnd = action.ContactAt + 8;
             yield return Until(() => controller.Model.Clock >= buffEnd - .1, 10);
             Assert.That((float)Invoke(controller.Model, "PresentationBuff", actor, "wisadel"), Is.GreaterThan(0),

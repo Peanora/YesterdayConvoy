@@ -67,7 +67,7 @@ namespace YesterdayConvoy
         void CollectFormationContactReactions()
         {
             formationContactReactions.Clear();
-            if (Model.Phase == FormationPhase.Preparation) return;
+            if (Campaign != null || Model.Phase == FormationPhase.Preparation) return;
             foreach (var hit in Model.Hits)
             {
                 double age = Model.Clock - hit.At;

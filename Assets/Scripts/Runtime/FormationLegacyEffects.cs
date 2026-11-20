@@ -56,6 +56,8 @@ namespace YesterdayConvoy
         const string GuardFireHit = "common/common_firemagic_hit_01";
         const string GuardHealHit = "common/common_heal_hit_01";
         const string GuardHealCast = "common/common_heal_start_01";
+        const string GuardArrowTrail = "common/common_gongjian_trail_01";
+        const string GuardMagicTrail = "common/common_magic_trail_01";
         const string GuardLavaTargetCast = "lava_attack_01_hit";
         const string GuardChessPlaced = "wang_passive_01_start";
         const string GuardChessArmed = "wang_passive_01_buff";
@@ -67,18 +69,18 @@ namespace YesterdayConvoy
             ["D02"]=new[]{GuardPhysicalHit},
             ["D03"]=new[]{GuardPhysicalHit},
             ["D04"]=new[]{GuardPhysicalHit},
-            ["D05"]=new[]{"midn_attack_01_hit","midn_skill_01_hit"},
+            ["D05"]=new[]{"midn_attack_01_hit","midn_skill_01_hit","midn_attack_01_trail","midn_skill_01_trail"},
             ["D06"]=new[]{GuardPhysicalHit},
-            ["D07"]=new[]{GuardPhysicalHit},
-            ["D08"]=new[]{GuardMagicHit,"stward_skill_01_hit"},
+            ["D07"]=new[]{GuardPhysicalHit,GuardArrowTrail},
+            ["D08"]=new[]{GuardMagicHit,GuardMagicTrail,"stward_skill_01_hit","stward_skill_01_trail"},
             ["D09"]=new[]{GuardLavaTargetCast,GuardFireHit},
             ["D10"]=new[]{GuardHealCast,GuardHealHit},
             ["D11"]=new[]{GuardHealHit},
-            ["D12"]=new[]{"orchid_attack_01_hit"},
-            ["D21"]=new[]{"whitw2_attack_01_start","whitw2_skill_03_start_01","whitw2_skill_03_buff_start","whitw2_skill_03_token_trail_01","whitw2_skill_03_token_hit_01","whitw2_hit_01"},
+            ["D12"]=new[]{"orchid_attack_01_hit","orchid_attack_01_trail"},
+            ["D21"]=new[]{"whitw2_attack_01_start","whitw2_skill_03_start_01","whitw2_skill_03_buff_start","whitw2_skill_03_token_trail_01","whitw2_skill_03_token_hit_01","whitw2_hit_01","whitw2_attack_01_trail","whitw2_skill_03_trail_01"},
             ["D22"]=new[]{"yu_attack_01","yu_skill3_attack_01","yu_skill3_range_01","yu_skill3_range_01_l","yu_skill3_range_01_r","yu_skill3_buff_01","yu_hit_01","yu_skill3_hit_01"},
-            ["D23"]=new[]{"monstr_attack_start_01","monstr_attack_hit_01","monstr_skill_03_start_01","monstr_skill_03_buff_01","monstr_skill_03_hit"},
-            ["D24"]=new[]{"angel2_attack_loop_start_01","angel2_skill_3_loop_start_01","angel2_skill_3_loop_hit_01","angel2_attack_loop_hit_01"},
+            ["D23"]=new[]{"monstr_attack_start_01","monstr_attack_hit_01","monstr_skill_03_start_01","monstr_skill_03_buff_01","monstr_skill_03_hit","monstr_attack_trail"},
+            ["D24"]=new[]{"angel2_attack_loop_start_01","angel2_skill_3_loop_start_01","angel2_skill_3_loop_hit_01","angel2_attack_loop_hit_01","angel2_attack_loop_trail_01","angel2_skill_3_loop_trail_01"},
             ["D25"]=new[]{"hsgma2_attack_01_start_01","hsgma2_skill_03_buff_01","hsgma2_attack_01_hit_01"},
             ["D26"]=new[]{"svash2_attack_start_a_01","svash2_attack_start_a_02","svash2_skill_03_combat_start_01_2","svash2_skill_03_combat_start_02","svash2_attack_hit_01"},
             ["D27"]=new[]{"sbell2_skill_03_start_01","sbell2_skill_03_hit"},
@@ -190,7 +192,8 @@ namespace YesterdayConvoy
                             flat:true,scale:1.45f,gammaOutput:true);
                     continue;
                 }
-                PresentFormationGuardCast(guard, action, now);
+                if(!action.ProjectileOnly)PresentFormationGuardCast(guard, action, now);
+                PresentFormationGuardProjectile(guard, action, now);
             }
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
@@ -256,7 +259,7 @@ namespace YesterdayConvoy
             {
                 // Original input-target spell event on the selected cell, distinct from the damage contact.
                 LegacyOriginal(FormationGuardFxKey(guard.ArtId, GuardLavaTargetCast),
-                    (now-action.LaunchedAt)*action.Rate,action.To,14,flat:true);
+                    (now-action.LaunchedAt)*action.Rate,action.To,-6,flat:true);
             }
             if(clip==null)return;
 
@@ -264,11 +267,61 @@ namespace YesterdayConvoy
             double startedAt = guard.ArtId is "D10" or "D24" ? action.LaunchedAt : action.At;
             bool left = Vector3.Dot(ActorWorldPoint(action.To)-ActorWorldPoint(action.From),battleCamera.transform.right)<0;
             double age = (now-startedAt)*action.Rate;
-            var anchor = LegacyOwnerPoint(guard,action.From);
+            var anchor = guard.ArtId == "D24" ? FormationGuardMuzzle(guard, action, left) : LegacyOwnerPoint(guard,action.From);
             LegacyOriginal(FormationGuardFxKey(guard.ArtId,clip),age,action.From,23,explicitPosition:anchor,flip:left);
             if(guard.ArtId=="D26")
                 LegacyOriginal(FormationGuardFxKey(guard.ArtId,ordinary?"svash2_attack_start_a_02":"svash2_skill_03_combat_start_02"),
                     age,action.From,24,explicitPosition:anchor,flip:left);
+        }
+
+        Vector3 FormationGuardMuzzle(FormationDefender guard, FormationPresentationAction action, bool left)
+        {
+            // Original front SkeletonBinary bone positions at each retained action's OnAttack marker.
+            Vector2 bone = guard.ArtId switch
+            {
+                "D05" => new Vector2(116.09f, 21.64f),
+                "D07" => new Vector2(234.02f, 238.66f),
+                "D08" => new Vector2(196.08f, 139.61f),
+                "D12" => new Vector2(285.77f, 139.18f),
+                "D21" when action.Animation == "skill_attack" => new Vector2(358.50f, 191.20f),
+                "D21" => new Vector2(90.84f, 521.78f),
+                "D23" => new Vector2(-112, 397.60f),
+                "D24" => new Vector2(203.58f, 166.23f),
+                _ => Vector2.zero
+            };
+            var foot = LegacyOwnerPoint(guard, action.From);
+            if(!art.TryGetValue(guard.ArtId, out var source))return foot;
+            // The front body export sampled .38 atlas pixels per skeleton pixel.
+            float worldPerSourcePixel = .38f / source.Ppu;
+            return foot + battleCamera.transform.right * (bone.x * worldPerSourcePixel * (left ? -1 : 1)) +
+                battleCamera.transform.up * (bone.y * worldPerSourcePixel);
+        }
+
+        void PresentFormationGuardProjectile(FormationDefender guard, FormationPresentationAction action, double now)
+        {
+            if(action.ProjectileMovement == null || now < action.LaunchedAt || now >= action.ContactAt)return;
+            var target = FormationFeedbackActor(action.TargetId);
+            if(target?.Alive != true || !guard.Alive)return;
+            string trail = guard.ArtId switch
+            {
+                "D05" => action.Skill ? "midn_skill_01_trail" : "midn_attack_01_trail",
+                "D07" => GuardArrowTrail,
+                "D08" => action.Skill ? "stward_skill_01_trail" : GuardMagicTrail,
+                "D12" => "orchid_attack_01_trail",
+                "D21" => action.Animation == "skill_attack" ? "whitw2_skill_03_trail_01" : "whitw2_attack_01_trail",
+                "D23" => "monstr_attack_trail",
+                "D24" => action.Skill ? "angel2_skill_3_loop_trail_01" : "angel2_attack_loop_trail_01",
+                _ => null
+            };
+            if(trail == null)return;
+            bool left = Vector3.Dot(ActorWorldPoint(action.To)-ActorWorldPoint(action.From),battleCamera.transform.right)<0;
+            var start = FormationGuardMuzzle(guard, action, left);
+            var end = FormationFeedbackContactPoint(target,target.Position,action.Heal ? .62f : .52f);
+            double elapsed = now - action.LaunchedAt;
+            float progress = (float)(elapsed / (action.ContactAt-action.LaunchedAt));
+            Vector2 cell = Vector2.Lerp(action.From,target.Position,progress);
+            LegacyOriginal(FormationGuardFxKey(guard.ArtId,trail),elapsed*action.Rate,cell,32,loop:guard.ArtId!="D07",
+                explicitPosition:Vector3.Lerp(start,end,progress),direction:guard.ArtId=="D08" ? null : end-start);
         }
 
         static string FormationGuardHitClip(FormationHit hit) => hit.SourceArtId switch
@@ -449,7 +502,8 @@ namespace YesterdayConvoy
             if(artId=="TALULAH_TRIAL")
                 foreach(string key in new[]{"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing",
                     "first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
-                    "ignite-B-caster","ignite-B-target","explode-A-caster","explode-B-caster","target-burn-loop","original-energy-stream","original-fire-impact"})
+                    "ignite-B-caster","ignite-B-target","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target",
+                    "target-burn-loop","original-fire-stream","original-fire-impact"})
                     yield return BossRosterSupplementArt.Talulah(key).Sequence;
         }
         internal bool FormationHasLegacyImpact(string artId,bool skill)
@@ -642,7 +696,7 @@ namespace YesterdayConvoy
             if(frames.Count!=d.count)throw new InvalidDataException("Incomplete Talulah native core "+key);
             cached=new LegacyTalulahFrames{Data=d,Frames=frames.ToArray()};legacyTalulahFrames[key]=cached;return cached;
         }
-        void LegacyTalulah(string key,double age,Vector2 cell,FormationActor actor,int order=12,bool loop=false,Vector3? position=null)
+        void LegacyTalulah(string key,double age,Vector2 cell,FormationActor actor,int order=12,bool loop=false,Vector3? position=null,bool? facingLeft=null)
         {
             if(age<0||!FormationPointVisibleInView(cell))return;Sprite frame;float hdr;
             if(key=="attack-A-caster"||key=="attack-A-hit"||key=="ambient-A-foot"||key=="movement-A-foot"||key=="firecast-A-hand")
@@ -659,7 +713,7 @@ namespace YesterdayConvoy
                 if(sourceLoop)age%=clip.Duration;
                 frame=clip.At(age,false);hdr=clip.HdrRange;
             }
-            LegacyDraw(frame,legacyHdrMaterial,position??(ActorWorldPoint(cell)+battleCamera.transform.up*.12f),cell,LegacyScale(actor),order,actor.Facing.x<0,hdr);
+            LegacyDraw(frame,legacyHdrMaterial,position??(ActorWorldPoint(cell)+battleCamera.transform.up*.12f),cell,LegacyScale(actor),order,facingLeft??actor.Facing.x<0,hdr);
         }
         void LegacyPatriot(string suffix,double age,Vector2 cell,FormationActor actor,int order=12,bool loop=false,Vector3? point=null)
         {
@@ -699,13 +753,23 @@ namespace YesterdayConvoy
             if(action.ProjectileOnly)return;
             if(id=="TALULAH_TRIAL")
             {
+                bool reborn=action.NativePhase>0;
+                bool facingLeft=action.To.x<action.From.x;
                 if(action.Skill)
                 {
-                    string caster=Campaign.TalulahCost<=3?actor.NativePhase>0?"ignite-B-caster":"ignite-A-caster":
-                        actor.NativePhase>0?"explode-B-caster":"explode-A-caster";
-                    LegacyTalulah(caster,age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
+                    bool ignite=Campaign.TalulahCost<=3;
+                    string caster=ignite?(reborn?"ignite-B-caster":"ignite-A-caster"):
+                        (reborn?"explode-B-caster":"explode-A-caster");
+                    LegacyTalulah(caster,age,action.From,actor,position:origin+battleCamera.transform.up*.12f,facingLeft:facingLeft);
+                    if(!ignite&&action.TargetId>=0)
+                    {
+                        // DragonFireExplode runs both original emission lists on ON_CAST_START.
+                        var target=FormationFeedbackActor(action.TargetId);
+                        var point=FormationFeedbackContactPoint(target,action.To,.48f);
+                        LegacyTalulah(reborn?"explode-B-target":"explode-A-target",age,action.To,actor,35,position:point,facingLeft:facingLeft);
+                    }
                 }
-                else LegacyTalulah(actor.NativePhase>0?"attack-B-caster":"attack-A-caster",age,action.From,actor,position:origin+battleCamera.transform.up*.12f);
+                else LegacyTalulah(reborn?"attack-B-caster":"attack-A-caster",age,action.From,actor,position:origin+battleCamera.transform.up*.12f,facingLeft:facingLeft);
                 return;
             }
             if(id=="M20")
@@ -819,10 +883,8 @@ namespace YesterdayConvoy
             }
             if(id=="TALULAH_TRIAL")
             {
-                if(hit.Skill&&Campaign.TalulahCost==5){PresentFormationTalulahRainHit(hit,actor);return;}
-                bool directIgnition=hit.Skill&&Campaign.TalulahCost<=3&&Model.PresentationActions.Any(a=>a.ActorId==actor.Id&&a.Skill&&!a.ProjectileOnly&&Math.Abs(a.ContactAt-hit.At)<.03);
-                string effect=directIgnition?actor.NativePhase>0?"ignite-B-target":"ignite-A-target":hit.Skill?"original-fire-impact":actor.NativePhase>0?"attack-B-hit":"attack-A-hit";
-                LegacyTalulah(effect,age,hit.To,actor,35,position:ActorWorldPoint(hit.To)+battleCamera.transform.up*.65f*scale);return;
+                PresentFormationTalulahHit(hit,actor);
+                return;
             }
             if(id=="M25"&&hit.Heal)
             {LegacyPremult(MephistoVfxArt.Load("attack_01_hit").At(age),hit.To,.779296875f*scale,24);return;}
@@ -1000,29 +1062,8 @@ namespace YesterdayConvoy
                 double age=(Model.Clock-zone.At)*LegacyVisualRate;
                 if(source.ArtId=="TALULAH_TRIAL"&&zone.Kind=="burn")
                 {
-                    if (Campaign.TalulahCost == 5)
-                    {
-                        PresentFormationTalulahRain(zone,source);
-                        continue;
-                    }
-                    LegacyTalulah("target-burn-loop",age,zone.Center,source,-2,true);
-                    if(Campaign.TalulahCost>=4)
-                    {
-                        // Original energy-stream sample: repeat emissions only during
-                        // the actual burn zone, oriented to the actor's facing.
-                        var stream=BossRosterSupplementArt.Talulah("original-energy-stream");
-                        double streamAge=age%stream.Duration;
-                        int rows=Mathf.FloorToInt(zone.Radius);
-                        for(int row=-rows;row<=rows;row++)
-                        {
-                            float y=zone.Center.y+row;
-                            if(y<0||y>FormationBattleModel.Height-1)continue;
-                            float span=Mathf.Sqrt(Mathf.Max(0,zone.Radius*zone.Radius-row*row));
-                            var cell=new Vector2(Mathf.Lerp(zone.Center.x-span,zone.Center.x+span,(float)(streamAge/stream.Duration)),y);
-                            if(cell.x>FormationBattleModel.Width-.5f)continue;
-                            LegacyTalulah("original-energy-stream",streamAge,cell,source,20);
-                        }
-                    }
+                    if(Campaign.TalulahCost==5)PresentFormationTalulahRain(zone,source);
+                    else LegacyTalulah("target-burn-loop",age,zone.Center,source,-2,true);
                 }
                 else if(source.ArtId=="B15"&&zone.Kind=="kingdom")PresentFormationKingdomTiles(zone.Cells,age);
                 else if(source.ArtId=="M14"&&zone.Kind=="snow")LegacyOriginal("firstar_skill_01_range",age,zone.Center,24,flat:true,scale:LegacyScale(source));
@@ -1091,8 +1132,6 @@ namespace YesterdayConvoy
         }
         internal void DisposeFormationLegacyEffects()
         {
-            if(talulahSweepMaterial!=null)Destroy(talulahSweepMaterial);
-            talulahSweepMaterial=null;
             if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
             if(formationFlameCoreMaterial!=null)Destroy(formationFlameCoreMaterial);
             if(formationFlameSprayFrames!=null)

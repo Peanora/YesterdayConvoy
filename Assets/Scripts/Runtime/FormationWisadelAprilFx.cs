@@ -189,7 +189,8 @@ namespace YesterdayConvoy
             Vector2 center=projectile?.To??hit.To;
             string stop=hit.Skill?(skill==1?"skill_01_hit_02":"skill_03_hit_02_game#9"):
                 "skill_02_hit_02";
-            LegacyWisadel(stop,age,center,30);
+            double stopAge=stop=="skill_02_hit_02"?age-.15:age;
+            LegacyWisadel(stop,stopAge,center,30);
             // The first applied hit is the primary victim of this shell. The
             // same expression stays here through the opening of the explosion.
             if(hit.Skill&&skill==3)PresentWisadelShellImpactFace(hit,projectile,contact);

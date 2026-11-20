@@ -246,6 +246,13 @@ namespace YesterdayConvoy
             target.Position = guard.ArtId == "D23" || guard.ArtId == "D28"
                 ? (Vector2)guard.SkillCell.Value + Vector2.left * .5f
                 : guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f);
+            // Separate the reviewed muzzle, flight and target from each other on the capture board.
+            float reviewDistance = artId == "D24" ? 3.6f : artId == "D09" ? 2.8f : 0;
+            if (reviewDistance > 0)
+            {
+                Vector2 reviewTarget = guard.Position + Vector2.left * Mathf.Min(reviewDistance, guard.Range * .95f);
+                if (Terrain == null || Terrain.IsWalkable(reviewTarget)) target.Position = reviewTarget;
+            }
             target.Facing = Vector2.right;
             target.Health = target.MaxHealth = 100000;
             target.NextAttackAt = double.PositiveInfinity;
