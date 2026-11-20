@@ -78,7 +78,7 @@ namespace YesterdayConvoy
             }
         }
 
-        static string IconId(string name)
+        internal static string IconId(string name)
         {
             switch (name)
             {

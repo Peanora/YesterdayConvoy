@@ -143,6 +143,12 @@ namespace YesterdayConvoy
                 yield return VerifyStrategyVariants();
                 yield break;
             }
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationItemArtEvidence") >= 0)
+            {
+                result.scope = "Formal Windows board and real badge choice, inventory and equipment UI. The recipe materials are fixed test grants.";
+                yield return VerifyItemArt();
+                yield break;
+            }
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3,"Three distinct random low-cost starter cards");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
@@ -435,6 +441,88 @@ namespace YesterdayConvoy
             while(controller.Campaign.PendingBalls.Any(ball=>drops.Any(drop=>drop.Id==ball.Id))&&
                 Time.realtimeSinceStartupAsDouble<until)yield return null;
             Assert(controller.Campaign.PendingBalls.Count==count-2,"Exactly two independently started drops have been delivered");
+        }
+
+        IEnumerator VerifyItemArt()
+        {
+            foreach (var trait in FormationCampaignRun.BadgeTraits)
+            {
+                string name = FormationCampaignRules.FindRecord(trait).Name;
+                string id = SynergyBadgePresentation.IconId(name);
+                var art = FormationBattleController.SupplyItemArt("徽章:" + trait);
+                Assert(art != null && art == Resources.Load<Texture2D>("UI/FormationSupplies/Badges/" + id) &&
+                    art != SynergyBadgePresentation.IconFor(name) && art.width == 256 && art.height == 256,
+                    "Badge equipment loads its own approved texture: " + name);
+            }
+            Assert(FormationBattleController.SupplyItemArt("蓝宝石") is { name: "blue-gem", width: 256, height: 256 } &&
+                FormationBattleController.SupplyItemArt("赤宝石") is { name: "red-gem", width: 256, height: 256 },
+                "Red and blue gems load their approved textures");
+
+            int badgeSeed = Enumerable.Range(controller.seed, 100).First(seed =>
+            {
+                var run = new FormationShopSession(seed, fullCampaign: true).Run;
+                run.Choose(0);
+                return run.Choices.Any(option => option.Id == "P13");
+            });
+            controller.seed = badgeSeed - 1;
+            controller.ResetDemo();
+            yield return null;
+            Assert(controller.ChooseCampaignOption(0).Success, "Choose opening equipment in the seeded run");
+            int preplan = Array.FindIndex(controller.Campaign.Choices.ToArray(), option => option.Id == "P13");
+            Assert(controller.ChooseCampaignOption(preplan).Success &&
+                controller.Campaign.Choices.All(option => FormationCampaignRun.BadgeTrait(option.Id) != null),
+                "External Recruitment opens its real emblem choice");
+            yield return Frame("01-badge-choice");
+            Assert(controller.ChooseCampaignOption(0).Success, "Claim a badge from the real choice");
+            yield return ReadyArt();
+
+            var red = controller.Campaign.AddItem("赤宝石", false);
+            var blue = controller.Campaign.AddItem("蓝宝石", false);
+            var component = controller.Campaign.AddItem("A", false);
+            Assert(controller.TryEquipmentTilePoint(blue.Instance, out var source), "Blue gem appears in the equipment rail");
+            Assert(controller.TryEquipmentTilePoint(component.Instance, out var target) &&
+                controller.TryEquipmentTilePoint(red.Instance, out _), "Red gem and the recipe component appear in the equipment rail");
+            yield return Frame("02-gems-and-badge-in-rail");
+
+            Assert(controller.ProcessFormationEquipmentPointer(EventType.MouseDown, source) &&
+                controller.ProcessFormationEquipmentPointer(EventType.MouseDrag, target), "Drag blue gem onto Steel Blade");
+            yield return Frame("03-badge-recipe-hover");
+            Assert(controller.ProcessFormationEquipmentPointer(EventType.MouseUp, target) &&
+                controller.EquipmentCombinationPending, "Badge recipe opens real confirmation");
+            yield return Frame("04-badge-recipe-confirmation");
+            yield return CaptureInterfaceClip("badge-recipe-confirmation", 12);
+            Assert(controller.ConfirmFormationEquipmentCombination(), "Confirm the blue gem recipe");
+            var badge = controller.Campaign.Inventory.Single(item => item.Key == "徽章:连击:A");
+            Assert(FormationBattleController.SupplyItemArt(badge.Key) == FormationBattleController.SupplyItemArt("徽章:连击"),
+                "Crafted and reward forms share the same Combo badge texture");
+            var wearer = controller.Shop.Bench.First(piece => controller.Session.Seats.InLineup(piece.Instance) &&
+                !controller.Campaign.HasTrait(piece, "连击"));
+            Assert(controller.TryEquipmentTilePoint(badge.Instance, out source), "Crafted badge appears in inventory");
+            target = controller.FormationPieceRect(wearer.Instance).center;
+            Assert(controller.ProcessFormationEquipmentPointer(EventType.MouseDown, source) &&
+                controller.ProcessFormationEquipmentPointer(EventType.MouseDrag, target) &&
+                controller.ProcessFormationEquipmentPointer(EventType.MouseUp, target) && badge.Owner == wearer.Instance,
+                "Equip the crafted badge by dragging it onto a real deployed unit");
+            yield return Frame("05-badge-equipped");
+
+            foreach (string trait in FormationCampaignRun.BadgeTraits)
+            {
+                string key = "徽章:" + trait;
+                if (!controller.Campaign.Inventory.Any(item => item.Key == key))
+                    controller.Campaign.AddItem(key, false);
+            }
+            var inventory = controller.Campaign.Inventory;
+            Assert(FormationCampaignRun.BadgeTraits.All(trait => inventory.Any(item => item.Key == "徽章:" + trait)),
+                "All approved badge variants are present in the same equipment rail");
+            const int pageSize = 7;
+            for (int first = 0; first < inventory.Count; first += pageSize)
+            {
+                int last = Math.Min(first + pageSize, inventory.Count) - 1;
+                controller.RevealEquipmentSlot(last);
+                Assert(controller.TryEquipmentTilePoint(inventory[first].Instance, out _) &&
+                    controller.TryEquipmentTilePoint(inventory[last].Instance, out _), "Badge rail sample page is visible");
+                yield return Frame("06-badge-rail-page-" + (first / pageSize + 1));
+            }
         }
 
         IEnumerator VerifyEquipmentDragCombination()

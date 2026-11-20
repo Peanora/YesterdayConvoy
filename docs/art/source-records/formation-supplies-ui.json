@@ -4,6 +4,19 @@
   "style_reference": "https://ol.3dmgame.com/gl/322682.html",
   "activation_reference": "https://www.bilibili.com/video/BV1kc1uBkE4s/?t=260.2",
   "rights": "New equipment and orbs were generated for this project. Iberia and Sui use existing Arknights faction icon imagery; open redistribution rights not established. The other ten added trait emblems are project-authored. Existing older plates, faction art and activation audio keep their previous provenance.",
+  "transfer_equipment_icons": {
+    "date": "2026-11-20 Asia/Shanghai",
+    "preview": "转职徽章与宝石-v2 / 转职徽章与宝石-全套预览.png",
+    "approval": "用户确认项目外全套预览并要求接入游戏。",
+    "destination": "Assets/Art/UI/FormationSupplies/Resources/UI/FormationSupplies",
+    "badge_ids": ["reunion", "snow", "mudrock", "deep-pool", "sarkaz", "marine", "combo", "swift", "revival", "blast", "prompt-relay", "hitchhike", "theatre", "handoff", "resonance"],
+    "gem_files": ["Items/blue-gem.png", "Items/red-gem.png"],
+    "art_direction": "15 枚共用切角底板，内部叠合现有白色羁绊 UI；两色宝石共用轮廓和切面。描边、硬切面和高光以项目现有钢刃、战术终端及进阶装备为对照。17 张确认稿以同字节 256×256 RGBA PNG 接入。",
+    "reference_sprite_and_material": "https://ak.hypergryph.com/news/2024021267.html",
+    "reference_emblem": "https://wiki.biligame.com/sr/击破星徽",
+    "reference_gems": "https://hsr.gachabase.net/tutorials/currency-wars/100049/rare-equipment-red-gem-and-blue-gem/beta",
+    "rights": "新底板和宝石为本作绘制。复用的白色羁绊图案沿用本清单和 synergy-badges-v3.json 登记的来源与权利状态，原作标志和原作图形的开放再分发许可未确认。预览确认仅记录本项目接入决定。"
+  },
   "assets": [
     {
       "asset": "Assets/Art/UI/Synergies/Resources/UI/Synergies/iberia.png",

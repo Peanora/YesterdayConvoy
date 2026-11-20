@@ -33,8 +33,20 @@ namespace YesterdayConvoy
         {
             string trait = FormationCampaignRun.BadgeTrait(key);
             if (trait != null)
-                return SynergyBadgePresentation.IconFor(FormationCampaignRules.FindRecord(trait)?.Name);
-            return key != null && key.Length <= 2 ? SupplyArt("Items/" + key) : null;
+            {
+                string name = FormationCampaignRules.FindRecord(trait)?.Name;
+                string id = SynergyBadgePresentation.IconId(name);
+                return id == null ? null : SupplyArt("Badges/" + id) ?? SynergyBadgePresentation.IconFor(name);
+            }
+
+            string item = key switch
+            {
+                "赤宝石" => "red-gem",
+                "蓝宝石" => "blue-gem",
+                { Length: <= 2 } => key,
+                _ => null
+            };
+            return item == null ? null : SupplyArt("Items/" + item);
         }
 
         internal static Texture2D SupplyOrbArt(string color)
@@ -268,7 +280,7 @@ namespace YesterdayConvoy
             return false;
         }
 
-        void RevealEquipmentSlot(int index)
+        internal void RevealEquipmentSlot(int index)
         {
             equipmentRailScroll.y = Mathf.Max(equipmentRailScroll.y,EquipmentTile(index).yMax-EquipmentTilesViewport.height);
         }
