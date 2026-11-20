@@ -33,7 +33,6 @@ namespace YesterdayConvoy
         Transform actorRoot;
         string loading="正在准备战斗动作…";
         double lastSoundAt=-10;
-        AudioSource sounds;
         bool soundEnabled=true;
         bool pointerHeld;
         Vector2 pointerStart;
@@ -65,7 +64,6 @@ namespace YesterdayConvoy
             lineMaterial.SetInt("_Cull",0);lineMaterial.SetInt("_ZWrite",0);
             // Metadata covers the roster; only current actors warm their actual action pages.
             foreach(string id in RequiredFormationArtIds().ToArray())yield return WarmFormationArt(id);
-            sounds=gameObject.AddComponent<AudioSource>();sounds.spatialBlend=0;sounds.volume=.36f;
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
             Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
@@ -295,14 +293,22 @@ namespace YesterdayConvoy
         internal void SyncActors()
         {
             if(!Ready)return;
+            CollectFormationContactReactions();
             var current=new HashSet<int>();
             foreach(var unit in Model.Units){if(!unit.Enabled)continue;current.Add(unit.Id);Present(unit,false);}
             foreach(var defender in Model.Defenders){current.Add(defender.Id);Present(defender,true);}
             foreach(var summon in Model.Summons){current.Add(summon.Id);Present(summon,false);}
             PresentFormationNativeEffects();
-            foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);formationLabelHeights.Remove(id);}
+            foreach(var id in bodies.Keys.Where(id=>!current.Contains(id)).ToArray()){Destroy(bodies[id].gameObject);bodies.Remove(id);formationLabelHeights.Remove(id);formationPulsingBodies.Remove(id);}
         }
-        void Present(FormationActor actor,bool defender)=>PresentFormationActor(actor,defender);
+        void Present(FormationActor actor,bool defender)
+        {
+            PresentFormationActor(actor,defender);
+            if (!bodies.TryGetValue(actor.Id, out var body)) return;
+            bool frozen = actor is FormationDefender guard ? Model.SnowBossTransitionActive(guard)
+                : actor is FormationFighter fighter && Model.SnowBossFreezeRemaining(fighter) > 0;
+            ApplyFormationContactReaction(actor, body, frozen);
+        }
         void OnRenderObject()
         {
             if(!Ready||Camera.current!=battleCamera)return;

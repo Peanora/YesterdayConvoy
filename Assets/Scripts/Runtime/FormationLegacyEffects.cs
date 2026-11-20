@@ -37,7 +37,7 @@ namespace YesterdayConvoy
         readonly List<MeshRenderer> legacySeaTiles=new List<MeshRenderer>();
         readonly List<LegacyComicBurst> legacyComicBursts=new List<LegacyComicBurst>();
         readonly Dictionary<FormationHit,int> legacyComicFaceIds=new Dictionary<FormationHit,int>();
-        readonly HashSet<(string ArtId,int TargetId,double At,string Clip)> guardHitSprites=new HashSet<(string,int,double,string)>();
+        readonly HashSet<(int SourceId,int TargetId,double At,string Clip)> guardHitSprites=new HashSet<(int,int,double,string)>();
         LegacyPatriotCatalog legacyPatriotCatalog;
         LegacyTalulahManifest legacyTalulahManifest;
         Material legacyHdrMaterial,legacyPremultMaterial,legacyPatriotMaterial,legacySeaMaterial,legacyComicMaterial;
@@ -51,17 +51,39 @@ namespace YesterdayConvoy
         const float LegacyVisualRate=2;
         const string KingdomRangeArt="boss/B15/enemy_hlystp_skill01_range";
 
+        const string GuardPhysicalHit = "common/common_hit_01";
+        const string GuardMagicHit = "common/common_magic_hit_01";
+        const string GuardFireHit = "common/common_firemagic_hit_01";
+        const string GuardHealHit = "common/common_heal_hit_01";
+        const string GuardHealCast = "common/common_heal_start_01";
+        const string GuardLavaTargetCast = "lava_attack_01_hit";
+        const string GuardChessPlaced = "wang_passive_01_start";
+        const string GuardChessArmed = "wang_passive_01_buff";
+        const string GuardChessTriggered = "wang_passive_01_buff_02";
+
         static readonly Dictionary<string,string[]> FormationGuardEffectKeys=new Dictionary<string,string[]>
         {
-            ["D21"]=new[]{"whitw2_skill_03_buff_start","whitw2_skill_03_token_trail_01","whitw2_skill_03_token_hit_01","whitw2_hit_01"},
-            ["D22"]=new[]{"yu_skill3_range_01","yu_skill3_range_01_l","yu_skill3_range_01_r","yu_skill3_buff_01","yu_hit_01"},
-            ["D23"]=new[]{"monstr_skill_03_buff_01","monstr_skill_03_heal","monstr_skill_03_hit"},
-            ["D24"]=new[]{"angel2_skill_3_loop_start_01","angel2_skill_3_loop_hit_01","angel2_attack_loop_hit_01"},
-            ["D25"]=new[]{"hsgma2_skill_03_buff_01","hsgma2_attack_01_hit_01"},
-            ["D26"]=new[]{"svash2_skill_03_combat_start_01_2","svash2_attack_hit_01"},
+            ["D01"]=new[]{GuardPhysicalHit},
+            ["D02"]=new[]{GuardPhysicalHit},
+            ["D03"]=new[]{GuardPhysicalHit},
+            ["D04"]=new[]{GuardPhysicalHit},
+            ["D05"]=new[]{"midn_attack_01_hit","midn_skill_01_hit"},
+            ["D06"]=new[]{GuardPhysicalHit},
+            ["D07"]=new[]{GuardPhysicalHit},
+            ["D08"]=new[]{GuardMagicHit,"stward_skill_01_hit"},
+            ["D09"]=new[]{GuardLavaTargetCast,GuardFireHit},
+            ["D10"]=new[]{GuardHealCast,GuardHealHit},
+            ["D11"]=new[]{GuardHealHit},
+            ["D12"]=new[]{"orchid_attack_01_hit"},
+            ["D21"]=new[]{"whitw2_attack_01_start","whitw2_skill_03_start_01","whitw2_skill_03_buff_start","whitw2_skill_03_token_trail_01","whitw2_skill_03_token_hit_01","whitw2_hit_01"},
+            ["D22"]=new[]{"yu_attack_01","yu_skill3_attack_01","yu_skill3_range_01","yu_skill3_range_01_l","yu_skill3_range_01_r","yu_skill3_buff_01","yu_hit_01","yu_skill3_hit_01"},
+            ["D23"]=new[]{"monstr_attack_start_01","monstr_attack_hit_01","monstr_skill_03_start_01","monstr_skill_03_buff_01","monstr_skill_03_hit"},
+            ["D24"]=new[]{"angel2_attack_loop_start_01","angel2_skill_3_loop_start_01","angel2_skill_3_loop_hit_01","angel2_attack_loop_hit_01"},
+            ["D25"]=new[]{"hsgma2_attack_01_start_01","hsgma2_skill_03_buff_01","hsgma2_attack_01_hit_01"},
+            ["D26"]=new[]{"svash2_attack_start_a_01","svash2_attack_start_a_02","svash2_skill_03_combat_start_01_2","svash2_skill_03_combat_start_02","svash2_attack_hit_01"},
             ["D27"]=new[]{"sbell2_skill_03_start_01","sbell2_skill_03_hit"},
-            ["D28"]=new[]{"wang_passive_01_start","wang_passive_01_buff","wang_attack_01_hit"},
-            ["D29"]=new[]{"demkni_skill_03_self","demkni_attack_01_hit"},
+            ["D28"]=new[]{GuardChessPlaced,GuardChessArmed,GuardChessTriggered},
+            ["D29"]=new[]{"demkni_skill_03_self","demkni_attack_01_hit",GuardHealHit},
             ["D30"]=new[]{"mlynar_skill_03_buff_03","mlynar_skill_03_start_01","mlynar_skill_03_hit_01"},
         };
 
@@ -84,8 +106,11 @@ namespace YesterdayConvoy
             if(!FormationGuardEffectKeys.TryGetValue(guardId,out var keys))yield break;
             if(pramanixBoss)keys=PramanixBossEffectKeys;
             foreach(string key in keys)
-                if(OriginalCombatVfxArt.TryGet("defender/"+guardId+"/"+key,out var clip))yield return clip.Sequence;
+                if(OriginalCombatVfxArt.TryGet(FormationGuardFxKey(guardId,key),out var clip))yield return clip.Sequence;
         }
+
+        static string FormationGuardFxKey(string id, string clip) =>
+            clip.StartsWith("common/", StringComparison.Ordinal) ? clip : "defender/" + id + "/" + clip;
 
         void PresentFormationGuardEffects()
         {
@@ -129,7 +154,7 @@ namespace YesterdayConvoy
                             break;
                         case "chess":
                         case "chess_hit":
-                            PresentFormationGuardChess(origin,age,effect.Kind=="chess_hit");
+                            PresentFormationGuardChess(origin,age,effect.Kind=="chess_hit",combat: CombatViewActive);
                             break;
                         case "slash":
                             if(id=="D30")
@@ -165,42 +190,35 @@ namespace YesterdayConvoy
                             flat:true,scale:1.45f,gammaOutput:true);
                     continue;
                 }
-                if(action.Animation!="skill_attack")continue;
-                string cast=guard.ArtId switch
-                {
-                    "D24"=>"angel2_skill_3_loop_start_01",
-                    "D26"=>"svash2_skill_03_combat_start_01_2",
-                    "D30"=>"mlynar_skill_03_start_01",
-                    _=>null
-                };
-                if(cast!=null)
-                    LegacyOriginal("defender/"+guard.ArtId+"/"+cast,(now-action.At)*FormationVisualRate,action.From,23);
+                PresentFormationGuardCast(guard, action, now);
             }
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
             {
                 var pramanix = hit.SourceArtId == "D27" ? Model.Defenders.FirstOrDefault(d => d.Id == hit.FromId && d.IsSnowBoss) : null;
-                string clip=hit.SourceArtId switch
+                string clip=pramanix == null ? FormationGuardHitClip(hit) : PramanixBossHit(pramanix, hit);
+                if(clip==null)continue;
+                var stamp=(hit.FromId,hit.ToId,hit.At,clip);
+                if(guardHitSprites.Contains(stamp))
                 {
-                    "D21"=>hit.Skill?"whitw2_skill_03_token_hit_01":"whitw2_hit_01",
-                    "D22"=>"yu_hit_01",
-                    "D23"=>hit.Heal?"monstr_skill_03_heal":"monstr_skill_03_hit",
-                    "D24"=>hit.Skill?"angel2_skill_3_loop_hit_01":"angel2_attack_loop_hit_01",
-                    "D25"=>"hsgma2_attack_01_hit_01",
-                    "D26"=>"svash2_attack_hit_01",
-                    "D27"=>pramanix == null ? "sbell2_skill_03_hit" : PramanixBossHit(pramanix, hit),
-                    "D28"=>"wang_attack_01_hit",
-                    "D29"=>hit.Heal?null:"demkni_attack_01_hit",
-                    "D30"=>"mlynar_skill_03_hit_01",
-                    _=>null
-                };
-                if(clip==null||!guardHitSprites.Add((hit.SourceArtId,hit.ToId,hit.At,clip)))continue;
+                    if(pramanix==null)formationImpactOwners.Add(hit);
+                    continue;
+                }
                 double age=(now-hit.At)*FormationVisualRate;
                 if(pramanix==null)
                 {
-                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,age,hit.To,35);
+                    var target=FormationFeedbackActor(hit.ToId);
+                    var contactPoint=FormationFeedbackContactPoint(target,hit.To,hit.Heal ? .62f : .52f);
+                    bool left=Vector3.Dot(ActorWorldPoint(hit.To)-ActorWorldPoint(hit.From),battleCamera.transform.right)<0;
+                    if (LegacyOriginal(FormationGuardFxKey(hit.SourceArtId,clip),age,hit.To,35,
+                        explicitPosition:contactPoint,flip:left)!=null)
+                    {
+                        guardHitSprites.Add(stamp);
+                        formationImpactOwners.Add(hit);
+                    }
                     continue;
                 }
+                guardHitSprites.Add(stamp);
                 if(clip=="sbell2_buff_01_hit_02")
                 {
                     LegacyOriginal(PramanixEffects+clip,age,hit.To,-6,gammaOutput:true);
@@ -212,6 +230,66 @@ namespace YesterdayConvoy
                 if(impact!=null)impact.name=PramanixImpactRendererPrefix+hit.ToId;
             }
         }
+
+        void PresentFormationGuardCast(FormationDefender guard, FormationPresentationAction action, double now)
+        {
+            bool ordinary = action.Animation == "attack";
+            bool empowered = action.Animation == "skill_attack";
+            string clip = guard.ArtId switch
+            {
+                "D10" when action.Heal => GuardHealCast,
+                "D21" when ordinary => "whitw2_attack_01_start",
+                "D21" when empowered => "whitw2_skill_03_start_01",
+                "D22" when ordinary => "yu_attack_01",
+                "D22" when empowered => "yu_skill3_attack_01",
+                "D23" when ordinary && action.Heal => "monstr_attack_start_01",
+                "D23" when empowered => "monstr_skill_03_start_01",
+                "D24" when ordinary => "angel2_attack_loop_start_01",
+                "D24" when empowered => "angel2_skill_3_loop_start_01",
+                "D25" when ordinary => "hsgma2_attack_01_start_01",
+                "D26" when ordinary => "svash2_attack_start_a_01",
+                "D26" when empowered => "svash2_skill_03_combat_start_01_2",
+                "D30" when empowered => "mlynar_skill_03_start_01",
+                _ => null
+            };
+            if(guard.ArtId == "D09" && action.TargetId >= 0)
+            {
+                // Original input-target spell event on the selected cell, distinct from the damage contact.
+                LegacyOriginal(FormationGuardFxKey(guard.ArtId, GuardLavaTargetCast),
+                    (now-action.LaunchedAt)*action.Rate,action.To,14,flat:true);
+            }
+            if(clip==null)return;
+
+            // Hibiscus and Exusiai use the original spell-on event. The remaining retained cast clips start with the body.
+            double startedAt = guard.ArtId is "D10" or "D24" ? action.LaunchedAt : action.At;
+            bool left = Vector3.Dot(ActorWorldPoint(action.To)-ActorWorldPoint(action.From),battleCamera.transform.right)<0;
+            double age = (now-startedAt)*action.Rate;
+            var anchor = LegacyOwnerPoint(guard,action.From);
+            LegacyOriginal(FormationGuardFxKey(guard.ArtId,clip),age,action.From,23,explicitPosition:anchor,flip:left);
+            if(guard.ArtId=="D26")
+                LegacyOriginal(FormationGuardFxKey(guard.ArtId,ordinary?"svash2_attack_start_a_02":"svash2_skill_03_combat_start_02"),
+                    age,action.From,24,explicitPosition:anchor,flip:left);
+        }
+
+        static string FormationGuardHitClip(FormationHit hit) => hit.SourceArtId switch
+        {
+            "D01" or "D02" or "D03" or "D04" or "D06" or "D07" => GuardPhysicalHit,
+            "D05" => hit.Skill ? "midn_skill_01_hit" : "midn_attack_01_hit",
+            "D08" => hit.Skill ? "stward_skill_01_hit" : GuardMagicHit,
+            "D09" => GuardFireHit,
+            "D10" or "D11" when hit.Heal => GuardHealHit,
+            "D12" => "orchid_attack_01_hit",
+            "D21" => hit.Skill ? "whitw2_skill_03_token_hit_01" : "whitw2_hit_01",
+            "D22" => hit.Action?.Animation == "skill_attack" ? "yu_skill3_hit_01" : "yu_hit_01",
+            "D23" => hit.Heal ? "monstr_attack_hit_01" : "monstr_skill_03_hit",
+            "D24" => hit.Skill ? "angel2_skill_3_loop_hit_01" : "angel2_attack_loop_hit_01",
+            "D25" => "hsgma2_attack_01_hit_01",
+            "D26" => "svash2_attack_hit_01",
+            "D27" => "sbell2_skill_03_hit",
+            "D29" => hit.Heal ? GuardHealHit : "demkni_attack_01_hit",
+            "D30" => "mlynar_skill_03_hit_01",
+            _ => null
+        };
 
         static string PramanixBossHit(FormationDefender guard, FormationHit hit)
         {
@@ -333,7 +411,7 @@ namespace YesterdayConvoy
             }
         }
 
-        void PresentFormationGuardChess(Vector2 cell,double age,bool hitting)
+        void PresentFormationGuardChess(Vector2 cell,double age,bool hitting,bool combat)
         {
             if(!art.TryGetValue("D28Chess",out var chess)||!FormationArtAvailable("D28Chess"))return;
             var clip=chess.Clips[hitting?"attack":"idle"];
@@ -341,8 +419,14 @@ namespace YesterdayConvoy
             var position=ActorWorldPoint(cell);
             LegacyDraw(clip.Frames[hitting?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count],
                 actorMaterial,position,cell,1,6);
-            string fx=hitting?"wang_passive_01_start":"wang_passive_01_buff";
-            LegacyOriginal("defender/D28/"+fx,age,cell,12,!hitting,true);
+            if(hitting)
+                LegacyOriginal(FormationGuardFxKey("D28",GuardChessTriggered),age,cell,12,flat:true);
+            else
+            {
+                LegacyOriginal(FormationGuardFxKey("D28",GuardChessArmed),age,cell,12,true,true);
+                if(combat)
+                    LegacyOriginal(FormationGuardFxKey("D28",GuardChessPlaced),age,cell,13,flat:true);
+            }
         }
 
         // Only source sequences used by the actual owned role enter the bounded
@@ -416,7 +500,7 @@ namespace YesterdayConvoy
             r.SetPropertyBlock(view.Properties);
             return r;
         }
-        SpriteRenderer LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null,bool gammaOutput=false)
+        SpriteRenderer LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null,bool gammaOutput=false,bool flip=false)
         {
             if(age<0||!FormationPointVisibleInView(cell))return null;
             string key=raw.Contains("/")?raw:"monster/"+raw;
@@ -428,7 +512,7 @@ namespace YesterdayConvoy
                 var vector=direction.Value;float x=Vector3.Dot(vector,battleCamera.transform.right),y=Vector3.Dot(vector,battleCamera.transform.up);
                 if(x*x+y*y>1e-8)roll=Mathf.Atan2(y,x)*Mathf.Rad2Deg-clip.ForwardDegrees;
             }
-            return LegacyDraw(clip.At(age,loop),legacyHdrMaterial,explicitPosition??(ActorWorldPoint(cell)+Vector3.up*.025f),cell,scale,order,hdr:clip.HdrRange,flat:flat,roll:roll,gammaOutput:gammaOutput);
+            return LegacyDraw(clip.At(age,loop),legacyHdrMaterial,explicitPosition??(ActorWorldPoint(cell)+Vector3.up*.025f),cell,scale,order,flip:flip,hdr:clip.HdrRange,flat:flat,roll:roll,gammaOutput:gammaOutput);
         }
         void LegacyOriginalBeam(string key,double age,Vector2 from,Vector2 to,float lift=1.05f,bool loop=true,Vector3? explicitStart=null,Vector3? explicitEnd=null)
         {

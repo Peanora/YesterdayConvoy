@@ -155,17 +155,50 @@ namespace YesterdayConvoy
             if (key != null && snowBossEffectClips.TryGetValue(key, out var clip)) snowBossEffects.PlayOneShot(clip);
         }
 
+        static string SnowBossContactCue(FormationHit hit) => hit.Action?.Animation switch
+        {
+            "skill_2_attack" => "p_imp_swlprdbl_n",
+            "skill_attack" or "skill_attack_b" or "skill_attack_c" => "p_imp_swlprdbl_s",
+            "SnowBossS2Tick" => "p_imp_swcvr_h",
+            _ => null
+        };
+
         bool HasSnowBossImpactAudio(FormationHit hit)
         {
             if (snowBossAudioBattle != Model || hit.FromId != snowBossAudioGuard?.Id) return false;
-            string key = hit.Action?.Animation switch
-            {
-                "skill_2_attack" => "p_imp_swlprdbl_n",
-                "skill_attack" or "skill_attack_b" or "skill_attack_c" => "p_imp_swlprdbl_s",
-                "SnowBossS2Tick" => "p_imp_swcvr_h",
-                _ => null
-            };
+            string key = SnowBossContactCue(hit);
             return key != null && snowBossEffectClips.ContainsKey(key);
+        }
+
+        void CollectShowcaseSnowBossAudio(double after, double through, List<FormationAudioCue> destination)
+        {
+            var guard = Model.Defenders.FirstOrDefault(actor => actor.IsSnowBoss);
+            if (guard == null) return;
+            WarmSnowBossAudio();
+            foreach (var action in Model.PresentationActions)
+            {
+                if (action.ActorId != guard.Id || action.Cancelled) continue;
+                Add(action.At, action.Animation switch
+                {
+                    "skill_2_begin" => "p_skill_swlprdbl_h",
+                    "skill_2_attack" => "p_atk_swlprdbl_h",
+                    "skill_begin" => "p_skill_swlprdbl_s",
+                    "skill_attack" or "skill_attack_b" or "skill_attack_c" => "p_atk_swlprdbl_s",
+                    _ => null
+                }, 3);
+                if (action.Animation == "skill_2_attack")
+                    Add(action.ContactAt, "p_atk_swlprdblrs_h", 3);
+            }
+            foreach (var hit in Model.Hits)
+                if (hit.FromId == guard.Id) Add(hit.At, SnowBossContactCue(hit), 4);
+            if (guard.SnowBossTransitionStartedAt > 0)
+                Add(guard.SnowBossTransitionStartedAt, "p_skill_swlprdbl", 4);
+
+            void Add(double at, string key, int priority)
+            {
+                if (key != null && FormationAudioInWindow(at, after, through) && snowBossEffectClips.TryGetValue(key, out var clip))
+                    AddFormationAudio(destination, new FormationAudioCue(at, guard.Id, clip, .31f, 1, priority));
+            }
         }
 
         void StopSnowBossAudio()

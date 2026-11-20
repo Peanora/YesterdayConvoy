@@ -117,6 +117,61 @@ namespace YesterdayConvoy.Tests
             return ((string)args[4], (double)args[5], (bool)args[6]);
         }
 
+        [UnityTest] public IEnumerator ResolvedContactLightsOnlyTheRecipientAndStopsAtItsModelTime()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B22" });
+            Begin();
+            var actor = controller.Model.Units.Single();
+            yield return Until(() => controller.Model.Hits.Any(h => h.FromId == actor.Id && !h.Skill && h.Amount > 0));
+            var hit = controller.Model.Hits.Last(h => h.FromId == actor.Id && !h.Skill);
+            var recipient = controller.Model.Defenders.Single(guard => guard.Id == hit.ToId);
+            var block = new MaterialPropertyBlock();
+            float Pulse(FormationActor body)
+            {
+                Body(body).GetPropertyBlock(block);
+                return block.GetVector("_ContactPulse").w;
+            }
+            Assert.That(Pulse(recipient), Is.GreaterThan(.08f));
+            Assert.That(Pulse(actor), Is.Zero);
+            float before = Pulse(recipient);
+            controller.Model.Paused = true;
+            Step(.4f);
+            Assert.That(Pulse(recipient), Is.EqualTo(before));
+            controller.Model.Paused = false;
+            Step(.175f);
+            Assert.That(Pulse(recipient), Is.Zero);
+        }
+
+        [UnityTest] public IEnumerator SourceRiftbeastImpactUsesResolvedContactsAndDoesNotRepeatAtItsBoundary()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B22" });
+            Begin();
+            var actor = controller.Model.Units.Single();
+            yield return Until(() => controller.Model.Hits.Any(h => h.FromId == actor.Id && !h.Skill && h.Amount > 0));
+            var hit = controller.Model.Hits.Last(h => h.FromId == actor.Id && !h.Skill);
+            var type = typeof(FormationBattleController).GetNestedType("FormationAudioCue", BindingFlags.NonPublic);
+            Assert.That(type, Is.Not.Null);
+            var cues = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+            object[] WithSource(string name) => cues.Cast<object>()
+                .Where(cue => ((AudioClip)Field<object>(cue, "Clip")).name == name).ToArray();
+            const string name = "e_imp_orcstlbr_n_u";
+            Invoke(controller, "CollectFormationAudio", hit.At - .1, hit.At - .00001, cues, false);
+            Assert.That(WithSource(name), Is.Empty, "Impact audio cannot precede the damage event.");
+            cues.Clear();
+            Invoke(controller, "CollectFormationAudio", hit.At - .00001, hit.At, cues, false);
+            var collected = WithSource(name);
+            Assert.That(collected.Length, Is.EqualTo(1));
+            Assert.That(Field<double>(collected.Single(), "At"), Is.EqualTo(hit.At));
+            cues.Clear();
+            Invoke(controller, "CollectFormationAudio", hit.At, hit.At + .01, cues, false);
+            Assert.That(WithSource(name), Is.Empty, "A repeated read at exactly the previous end cannot replay the hit.");
+            Invoke(controller, "UpdateFormationSounds");
+            Assert.That(controller.GetComponents<AudioSource>().Any(source => source.clip != null && source.clip.name == name),
+                Is.True, "The live mixer must bind the verified original clip as well.");
+        }
+
         [UnityTest] public IEnumerator AprilOutfitExposesRealSkillAndDeathFramesWithOriginalMarkers()
         {
             RequireGpu();

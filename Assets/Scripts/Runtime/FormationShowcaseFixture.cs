@@ -8,13 +8,19 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         float showcaseTargetPressure;
+        string showcaseGuardArt;
+        bool showcaseUseCurrentBoard;
         internal string ShowcaseFixtureNote => "展示夹具：一星原数值、无装备；预置10级编队与右侧起点，3名高生命展示靶。" +
             "靶默认不反击；治疗、受击及阶段片段按字幕启用首靶压力。" +
             "技能依正常技力和动作规则触发；不是自然对局或平衡演示。";
 
         // Called only by the explicitly requested showcase recorder. Normal play never
         // invokes this fixture or changes its lineup, targets, camera or combat clock.
-        internal IEnumerator PrepareShowcaseFixture(string[] unitIds, int talulahCost = 3, int wisadelSkill = 3)
+        internal IEnumerator PrepareShowcaseFixture(string[] unitIds, int talulahCost = 3, int wisadelSkill = 3) =>
+            PrepareShowcaseRoleFixture(unitIds, talulahCost, wisadelSkill, null, false, false);
+
+        internal IEnumerator PrepareShowcaseRoleFixture(string[] unitIds, int talulahCost, int wisadelSkill,
+            string guardArt, bool snowBoss, bool useCurrentBoard)
         {
             if (!Ready) throw new InvalidOperationException("The saved formation scene is not ready.");
             if (unitIds == null || unitIds.Length < 1 || unitIds.Length > 10)
@@ -37,8 +43,12 @@ namespace YesterdayConvoy
             ArtMemoryCache.Pin(Array.Empty<string>());
             approvedShop?.ResetShopPresentation();
 
-            Session = FormationShopSession.StartNew(seed, fullCampaign: true);
-            if (!Session.CompleteOpeningDelivery())
+            showcaseGuardArt = guardArt;
+            showcaseUseCurrentBoard = useCurrentBoard;
+            string node = guardArt == "D25" ? "1-9" : guardArt == "D29" ? "2-7" : snowBoss ? "3-7" : "1-1";
+            Session = guardArt == null ? FormationShopSession.StartNew(seed, fullCampaign: true) :
+                FormationShopSession.StartPractice(seed, Array.FindIndex(FormationCampaignRules.Nodes, entry => entry.Id == node));
+            if (Session.Run.OpeningRewardsPending && !Session.CompleteOpeningDelivery())
                 throw new InvalidOperationException("Could not deliver the production opening rewards for the showcase.");
             for (int choice = 0; Session.Run.HasBlockingChoice; choice++)
             {
@@ -78,7 +88,8 @@ namespace YesterdayConvoy
             Model.LimitSeconds = double.PositiveInfinity;
             Model.Speed = 1;
             showcaseTargetPressure = 0;
-            PrepareShowcaseTargets();
+            if (guardArt == null) PrepareShowcaseTargets();
+            else Model.PrepareShowcaseGuard(guardArt);
             campaignResultSettled = false;
             campaignInventoryOpen = campaignFormationOpen = campaignRouteOpen = campaignScoutingOpen = false;
             campaignSeaPainting = false;
@@ -119,7 +130,8 @@ namespace YesterdayConvoy
                 unit.Position = new Vector2(11.25f + (index / 7) * .9f, rows[index]);
                 unit.Facing = Vector2.right;
             }
-            PrepareShowcaseTargets();
+            if (showcaseGuardArt == null) PrepareShowcaseTargets();
+            else Model.BeginShowcaseGuard(showcaseGuardArt);
             Model.Paused = false;
             RefreshFormationOperatingVisibility();
             SetFormationView(true, true);
@@ -128,6 +140,10 @@ namespace YesterdayConvoy
 
         internal void SetShowcaseTargetPressure(float attack, float interval = 1.5f) =>
             SetShowcaseTargetPressureInRange(attack,interval,100);
+
+        internal float ShowcaseGuardMotionDuration(FormationDefender guard, string key) =>
+            art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue(key, out var sequence)
+                ? sequence.Duration : 0;
 
         internal void SetShowcaseTargetPressureInRange(float attack, float interval, float range)
         {
@@ -151,7 +167,7 @@ namespace YesterdayConvoy
 
         internal void RestoreShowcaseTargetHealth()
         {
-            if (Model == null) return;
+            if (Model == null || showcaseGuardArt != null) return;
             foreach (var target in Model.Defenders)
             {
                 target.Health = target.MaxHealth;
@@ -162,7 +178,10 @@ namespace YesterdayConvoy
         void PrepareShowcaseTargets()
         {
             Model.Defenders.Clear();
-            Vector2[] points = { new Vector2(20.5f, 3.2f), new Vector2(21.7f, 2.8f), new Vector2(21.7f, 3.9f) };
+            float lastGuardColumn = FormationBattleModel.Width - 2;
+            Vector2[] points = showcaseUseCurrentBoard
+                ? new[] { new Vector2(lastGuardColumn - .55f, 3.2f), new Vector2(lastGuardColumn, 2.6f), new Vector2(lastGuardColumn, 4.15f) }
+                : new[] { new Vector2(20.5f, 3.2f), new Vector2(21.7f, 2.8f), new Vector2(21.7f, 3.9f) };
             for (int index = 0; index < points.Length; index++)
                 Model.Defenders.Add(new FormationDefender
                 {
@@ -188,6 +207,70 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
+        internal void PrepareShowcaseGuard(string artId)
+        {
+            var node = Campaign.CurrentNode;
+            var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id && entry.ArtId == artId);
+            var cell = new Vector2Int(17, 3);
+            var skillCell = new Vector2Int(16, 3);
+            var targetCell = new Vector2Int(15, 3);
+            var allyCell = new Vector2Int(17, 4);
+            bool reserved = artId == "D23" || artId == "D28";
+            if (Terrain != null && (!Terrain.CanPlaceDefender(cell) || !Terrain.IsWalkable(cell) ||
+                reserved && (!Terrain.CanPlaceDefender(skillCell) || !Terrain.IsWalkable(skillCell) ||
+                    Terrain.HeightAt(skillCell) != 0) || !Terrain.IsWalkable(targetCell) ||
+                (artId == "D10" || artId == "D11" || artId == "D29") && !Terrain.CanPlaceDefender(allyCell)))
+                throw new InvalidOperationException("Showcase guard fixture cells are unavailable.");
+            foreach (var key in combat.Keys.Where(key => key >= 100).ToArray()) combat.Remove(key);
+            Defenders.Clear();
+            AddCampaignDefender(node, null, artId, cell, 1, boss);
+            if (reserved) Defenders[0].SkillCell = skillCell;
+            if (Defenders[0].Healer && artId != "D23" || artId == "D29")
+            {
+                AddCampaignDefender(node, null, "D01", allyCell, 1, null);
+                Defenders[1].Attack = 0;
+                Defenders[1].Range = 0;
+                Defenders[1].MaxHealth = 100000;
+            }
+        }
+
+        internal void BeginShowcaseGuard(string artId)
+        {
+            // StartBattle reprojects the campaign roster. Replace its freshly created
+            // guards and immediately run their regular initialization before the first tick.
+            PrepareShowcaseGuard(artId);
+            BeginCampaignBattle();
+            LimitSeconds = double.PositiveInfinity;
+            var guard = Defenders[0];
+            var target = Units.First(unit => unit.Enabled);
+            target.Position = guard.ArtId == "D23" || guard.ArtId == "D28"
+                ? (Vector2)guard.SkillCell.Value + Vector2.left * .5f
+                : guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f);
+            target.Facing = Vector2.right;
+            target.Health = target.MaxHealth = 100000;
+            target.NextAttackAt = double.PositiveInfinity;
+            if (Defenders.Count > 1) Defenders[1].Health *= .55f;
+            if (guard.ArtId == "D23") guard.Health *= .18f;
+        }
+
+        internal void QueueShowcaseSnowBossTransition()
+        {
+            // Stage the lethal threshold, then let an actual production projectile
+            // hit resolve the transition and trigger the 2-second freeze.
+            Defenders[0].Health = 1;
+            Units.First(unit => unit.Enabled).NextAttackAt = Clock;
+        }
+
+        internal void PreviewShowcaseGuardMotion(string motion, float sourceSeconds)
+        {
+            var guard = Defenders[0];
+            guard.LastActionAt = guard.LastSkillAt = Clock;
+            guard.PresentationStartedAt = Clock;
+            guard.PresentationDuration = sourceSeconds / FormationBattleController.FormationVisualRate;
+            guard.PresentationRate = FormationBattleController.FormationVisualRate;
+            guard.PresentationAction = motion;
+        }
+
         // Source-animation review only: no combat simulation or skill/SP alteration.
         // This is deliberately labelled separately from the natural AI combat clips.
         internal void AdvanceShowcaseWalk(float seconds)

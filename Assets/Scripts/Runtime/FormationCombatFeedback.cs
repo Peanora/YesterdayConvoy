@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -12,7 +11,10 @@ namespace YesterdayConvoy
         internal enum ImpactStyle { Slash, Bite, Bolt, Fire, Shield, Blast, Magic, Heal, FireRain }
         readonly Dictionary<ImpactStyle, AudioClip> impactSounds = new Dictionary<ImpactStyle, AudioClip>();
         readonly HashSet<FormationHit> formationImpactOwners = new HashSet<FormationHit>();
-        readonly Dictionary<int, double> formationLastImpactSound = new Dictionary<int, double>();
+        readonly Dictionary<int, FormationHit> formationContactReactions = new Dictionary<int, FormationHit>();
+        readonly HashSet<int> formationPulsingBodies = new HashSet<int>();
+        MaterialPropertyBlock formationContactProperties;
+        static readonly int FormationContactPulse = Shader.PropertyToID("_ContactPulse");
         const int ImpactSampleRate = 22050;
 
         FormationActor FormationFeedbackActor(int id)
@@ -62,39 +64,39 @@ namespace YesterdayConvoy
 
         internal bool IsAudibleFormationHit(FormationHit hit) => !hit.Secondary || hit.Killed || hit.Absorbed;
 
-        void UpdateFormationSounds()
+        void CollectFormationContactReactions()
         {
-            if (lastSoundAt > Model.Clock)
-            {
-                formationLastImpactSound.Clear();
-                lastSoundAt = -10;
-            }
-            if (Model.Phase == FormationPhase.Preparation)
-            {
-                formationLastImpactSound.Clear();
-                lastSoundAt = -10;
-                return;
-            }
-            if (Model.Paused) return;
-            if (!soundEnabled) { lastSoundAt = Model.Clock; return; }
-            int voices = 0;
+            formationContactReactions.Clear();
+            if (Model.Phase == FormationPhase.Preparation) return;
             foreach (var hit in Model.Hits)
             {
-                if (hit.At <= lastSoundAt || Model.Clock - hit.At > .18 || !IsAudibleFormationHit(hit) || HasSnowBossImpactAudio(hit)) continue;
-                if (formationLastImpactSound.TryGetValue(hit.FromId, out var previous) && hit.At - previous < .09) continue;
-                var style = FormationHitStyle(hit);
-                if (!impactSounds.TryGetValue(style,out var clip))
-                {
-                    var samples = FormationImpactSamples(style);
-                    clip = AudioClip.Create("Formation " + style, samples.Length, 1, ImpactSampleRate, false);
-                    clip.SetData(samples,0);
-                    impactSounds.Add(style,clip);
-                }
-                sounds.PlayOneShot(clip, hit.Heal ? .46f : hit.Skill ? .85f : .67f);
-                formationLastImpactSound[hit.FromId] = hit.At;
-                if (++voices == 3) break;
+                double age = Model.Clock - hit.At;
+                if (hit.Heal || age < 0 || age >= .15 || !IsAudibleFormationHit(hit) || hit.Amount <= 0 && !hit.Absorbed) continue;
+                if (!formationContactReactions.TryGetValue(hit.ToId, out var previous) ||
+                    hit.At > previous.At || hit.At == previous.At && hit.Amount >= previous.Amount)
+                    formationContactReactions[hit.ToId] = hit;
             }
-            lastSoundAt = Model.Clock;
+        }
+
+        void ApplyFormationContactReaction(FormationActor actor, SpriteRenderer body, bool frozen = false)
+        {
+            formationContactReactions.TryGetValue(actor.Id, out var hit);
+            bool active = !frozen && body.enabled && hit != null;
+            if (!active && !formationPulsingBodies.Remove(actor.Id)) return;
+            Vector4 pulse = Vector4.zero;
+            if (active && hit != null)
+            {
+                formationPulsingBodies.Add(actor.Id);
+                float remaining = 1 - (float)(Model.Clock - hit.At) / .15f;
+                bool absorbed = hit.Absorbed && hit.Amount < .001f;
+                pulse = absorbed ? new Vector4(.56f, .81f, 1f, .18f) : new Vector4(1f, .85f, .72f,
+                    hit.ShowDamageNumber || hit.Killed ? .30f : hit.Skill ? .22f : .13f);
+                pulse.w *= remaining * remaining;
+            }
+            formationContactProperties ??= new MaterialPropertyBlock();
+            body.GetPropertyBlock(formationContactProperties);
+            formationContactProperties.SetVector(FormationContactPulse, pulse);
+            body.SetPropertyBlock(formationContactProperties);
         }
 
         // The effects are generated locally from envelopes, filtered noise and

@@ -7,6 +7,7 @@ Shader "YesterdayConvoy/Tactical Actor"
         [PerRendererData] _PoseWeight ("Adjacent pose weight", Float) = 0
         [PerRendererData] _PoseUv ("Adjacent pose UV transform", Vector) = (0,0,0,0)
         [PerRendererData] _PoseRect ("Adjacent pose UV bounds", Vector) = (0,0,0,0)
+        [PerRendererData] _ContactPulse ("Contact tint and weight", Vector) = (0,0,0,0)
         _Color ("Tint", Color) = (1,1,1,1)
         _EnvironmentTint ("Local ambient tint", Color) = (1,1,1,1)
         _BodyHeight ("Body height", Float) = 1.25
@@ -33,7 +34,7 @@ Shader "YesterdayConvoy/Tactical Actor"
             float _BodyHeight;
             sampler2D _PoseTex;
             float _PoseWeight;
-            float4 _PoseUv, _PoseRect;
+            float4 _PoseUv, _PoseRect, _ContactPulse;
             struct actor_v2f
             {
                 float4 vertex : SV_POSITION;
@@ -76,7 +77,9 @@ Shader "YesterdayConvoy/Tactical Actor"
                     pose.rgb*=pose.a;
                     pixel=lerp(pixel,pose,_PoseWeight);
                 }
-                o.color=fixed4(pixel.rgb*shade.rgb*shade.a,pixel.a*shade.a);
+                fixed3 bodyColor=pixel.rgb*shade.rgb;
+                bodyColor=lerp(bodyColor,max(bodyColor,_ContactPulse.rgb*pixel.a),_ContactPulse.a);
+                o.color=fixed4(bodyColor*shade.a,pixel.a*shade.a);
                 // Draw an undistorted billboard, but test depth on the vertical plane at its feet.
                 // This prevents a high tile slicing through the middle of a camera-facing card.
                 float3 ray=i.world-_WorldSpaceCameraPos;

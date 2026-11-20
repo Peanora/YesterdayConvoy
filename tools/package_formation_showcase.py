@@ -11,12 +11,13 @@ from fractions import Fraction
 import json
 import math
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
 
 
-KINDS = {"monster", "synergy", "variant"}
+KINDS = {"monster", "defender", "summon", "synergy", "variant"}
 
 
 def finite_number(value, label, *, positive=False):
@@ -106,8 +107,8 @@ def load_manifest(directory):
             raise ValueError(f"{key} must be an integer")
         data[key] = int(value)
     data["fps"] = finite_number(data.get("fps"), "fps", positive=True)
-    if data.get("audio") is not False:
-        raise ValueError("This silent capture package expects manifest.audio=false")
+    if not isinstance(data.get("audio"), bool):
+        raise ValueError("manifest.audio must be a boolean")
     seen_ids, seen_files = set(), set()
     for index, clip in enumerate(data["clips"]):
         if not isinstance(clip, dict):
@@ -123,6 +124,8 @@ def load_manifest(directory):
         if str(path).casefold() in seen_files:
             raise ValueError(f"Duplicate clip file: {clip['file']}")
         seen_files.add(str(path).casefold())
+        if data["audio"] and not clip.get("error"):
+            clip_path(directory, clip.get("audioFile"))
         for stage in clip.get("stages", []):
             if not isinstance(stage, dict) or not isinstance(stage.get("label"), str):
                 raise ValueError(f"Malformed stage for {clip['id']}")
@@ -131,7 +134,26 @@ def load_manifest(directory):
     return data
 
 
-def validate_clips(directory, data, ffprobe):
+def mux_clip(directory, clip, path, duration, ffmpeg, ffprobe):
+    wav = clip_path(directory, clip["audioFile"])
+    if not wav.is_file():
+        raise ValueError(f"Missing battle-event WAV: {clip['audioFile']}")
+    folder = directory / "roles"
+    folder.mkdir(exist_ok=True)
+    name = re.sub(r'[^\w\-一-鿿]+', '-', clip["name"]).strip('-_')
+    output = folder / (path.stem + ("-" + name if name else "") + ".mp4")
+    partial = output.with_suffix(".partial.mp4")
+    run([ffmpeg, "-nostdin", "-v", "error", "-y", "-i", str(path), "-i", str(wav),
+         "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-c:a", "aac", "-b:a", "128k",
+         "-t", f"{duration:.6f}", "-movflags", "+faststart", str(partial)])
+    actual = probe(ffprobe, partial)
+    if actual["audioStreams"] != 1 or abs(actual["duration"] - duration) > .05:
+        raise ValueError(f"Muxed video does not retain the expected duration and one audio stream: {output.name}")
+    partial.replace(output)
+    return output.relative_to(directory).as_posix(), actual
+
+
+def validate_clips(directory, data, ffprobe, ffmpeg):
     records, errors = [], []
     for clip in data["clips"]:
         record = {"id": clip["id"], "file": clip["file"], "passed": False}
@@ -152,7 +174,7 @@ def validate_clips(directory, data, ffprobe):
             if abs(actual["fps"] - data["fps"]) > .001:
                 raise ValueError(f"Video FPS {actual['fps']} differs from manifest {data['fps']}")
             if actual["audioStreams"]:
-                raise ValueError("Video has audio streams but manifest declares silent captures")
+                raise ValueError("Raw video contains audio; expected a clean capture before packaging")
             expected_duration = clip.get("duration")
             if expected_duration is not None:
                 expected_duration = finite_number(expected_duration, "clip.duration", positive=True)
@@ -165,6 +187,10 @@ def validate_clips(directory, data, ffprobe):
             if any(float(stage["start"]) > actual["duration"] + 1 / data["fps"]
                    for stage in clip.get("stages", [])):
                 raise ValueError("A stage starts after the video ends")
+            if data["audio"]:
+                final_file, final_media = mux_clip(directory, clip, path, actual["duration"], ffmpeg, ffprobe)
+                record.update(final_media)
+                record.update(finalFile=final_file, soundCues=clip.get("soundCues", 0), unreadableSounds=clip.get("unreadableSounds", 0))
             record["passed"] = True
         except (ValueError, RuntimeError, OSError) as error:
             record["error"] = str(error)
@@ -203,7 +229,7 @@ def concatenate(directory, data, records, ffmpeg, ffprobe):
             continue
         listing = work / (key + ".concat.txt")
         listing.write_text("ffconcat version 1.0\n" + "".join(
-            "file " + concat_quote(clip_path(directory, clip["file"])) + "\n" for clip in clips),
+            "file " + concat_quote(clip_path(directory, by_id[clip["id"]].get("finalFile", clip["file"]))) + "\n" for clip in clips),
             encoding="utf-8")
         lines = [";FFMETADATA1", "title=" + metadata_escape(title)]
         elapsed = 0.0
@@ -222,9 +248,10 @@ def concatenate(directory, data, records, ffmpeg, ffprobe):
         metadata.write_text("\n".join(lines) + "\n", encoding="utf-8")
         output = directory / filename
         partial = directory / (output.stem + ".partial.mp4")
+        audio_map = ["-map", "0:a:0"] if data["audio"] else ["-an"]
         run([ffmpeg, "-hide_banner", "-v", "error", "-y", "-f", "concat", "-safe", "0",
              "-i", str(listing), "-f", "ffmetadata", "-i", str(metadata), "-map", "0:v:0",
-             "-c", "copy", "-an", "-map_metadata", "1", "-map_chapters", "1",
+             *audio_map, "-c", "copy", "-map_metadata", "1", "-map_chapters", "1",
              "-movflags", "+faststart", str(partial)])
         actual = probe(ffprobe, partial)
         if abs(actual["duration"] - elapsed) > max(.25, len(clips) / data["fps"]):
@@ -247,8 +274,8 @@ a{color:var(--mint);text-underline-offset:4px}header{padding:24px 30px 18px;bord
 @media(max-width:960px){header{padding:20px;align-items:flex-start}.build{display:none}.layout{grid-template-columns:1fr;padding:20px;gap:28px}.library{border-left:0;border-top:1px solid var(--rule);padding:20px 0 0}.cliplist{max-height:440px}.footer{padding:16px 20px}}
 @media(max-width:520px){h1{font-size:21px}h2{font-size:19px}.layout{padding:14px}.controls{gap:6px}.controls button,.controls select{font-size:12px;padding:6px 8px}.current{gap:10px}.duration{font-size:11px}.auto{margin-left:0}.controls .next{margin-left:0}}
 </style></head><body>
-<header><div><h1>昨日圆车 · 棋盘动作审片</h1><p class="subtitle">逐个查看实际战斗、普攻、技能与羁绊联动，或单独查看源步态。点击右侧角色切换，下方可跳分段；暂停后可逐帧看动作。</p></div><div class="build" id="build"></div></header>
-<main class="layout"><section class="review" aria-label="演示视频"><video id="player" controls playsinline preload="metadata" aria-label="当前演示视频"></video><div class="current"><div><span class="label" id="kind"></span><h2 id="title"></h2></div><div class="duration" id="duration"></div></div><div id="error" class="error" role="status"></div><div class="stagebar" id="stages" aria-label="视频分段"></div><div class="controls"><button id="prev" type="button">上一段</button><button id="backframe" type="button">上一帧</button><button id="nextframe" type="button">下一帧</button><select id="rate" aria-label="播放速度"><option value="0.5">0.5× 慢放</option><option value="1" selected>1× 原速</option><option value="1.5">1.5×</option><option value="2">2×</option></select><label class="auto"><input type="checkbox" id="autonext">播完切下一段</label><button class="next" id="next" type="button">下一段 →</button></div><div class="facts" id="facts"></div><p class="tags" id="tags"></p><p class="notes" id="notes"></p><div class="scope"><p>这些视频录自当前棋盘的实机画面，使用预设展示夹具，且无音轨。它们用于定位现有动作和特效问题，不代表自然对局，也不代表最终美术已确认。「步态」分组使用源步态素材配合棋盘程序位移，与实际战斗AI分开查看。</p><details><summary>查看录制范围与版本</summary><p id="scope"></p><p>内容源码：<code id="commit"></code></p></details></div></section><aside class="library" aria-label="全部演示目录"><h2>演示目录 <span id="count"></span></h2><input id="search" type="search" placeholder="搜索角色、羁绊或问题" aria-label="搜索演示"><div class="filters" role="group" aria-label="筛选演示类型"><button type="button" data-filter="all" aria-pressed="true">全部</button><button type="button" data-filter="monster" aria-pressed="false">怪物</button><button type="button" data-filter="synergy" aria-pressed="false">羁绊</button><button type="button" data-filter="walk" aria-pressed="false">步态</button></div><nav class="cliplist" id="list" aria-label="演示选择"></nav><div id="collections" class="collections" hidden></div></aside></main><footer class="footer">本页可离线打开。反馈时写下角色名、视频时间与现象，例如「走路倒滑」「出手太快」「命中特效挡住身体」。</footer>
+<header><div><h1>昨日圆车 · 棋盘动作审片</h1><p class="subtitle">从右侧选择角色。点下方分段可直达行走、普攻或技能，暂停后可逐帧查看。</p></div><div class="build" id="build"></div></header>
+<main class="layout"><section class="review" aria-label="演示视频"><video id="player" controls playsinline preload="metadata" aria-label="当前演示视频"></video><div class="current"><div><span class="label" id="kind"></span><h2 id="title"></h2></div><div class="duration" id="duration"></div></div><div id="error" class="error" role="status"></div><div class="stagebar" id="stages" aria-label="视频分段"></div><div class="controls"><button id="prev" type="button">上一段</button><button id="backframe" type="button">上一帧</button><button id="nextframe" type="button">下一帧</button><select id="rate" aria-label="播放速度"><option value="0.5">0.5× 慢放</option><option value="1" selected>1× 原速</option><option value="1.5">1.5×</option><option value="2">2×</option></select><label class="auto"><input type="checkbox" id="autonext">播完切下一段</label><button class="next" id="next" type="button">下一段 →</button></div><div class="facts" id="facts"></div><a id="file" href="#" hidden>打开本角色 MP4</a><p class="tags" id="tags"></p><p class="notes" id="notes"></p><div class="scope"><p>视频录自当前棋盘的实机画面，采用预置阵容和展示靶。段落说明会标出站位、等待和源动作缺口。</p><details><summary>查看录制范围与版本</summary><p id="scope"></p><p>内容源码：<code id="commit"></code></p></details></div></section><aside class="library" aria-label="全部演示目录"><h2>演示目录 <span id="count"></span></h2><input id="search" type="search" placeholder="搜索角色、羁绊或问题" aria-label="搜索演示"><div class="filters" role="group" aria-label="筛选演示类型"><button type="button" data-filter="all" aria-pressed="true">全部</button><button type="button" data-filter="monster" aria-pressed="false">进攻方</button><button type="button" data-filter="defender" aria-pressed="false">守军</button><button type="button" data-filter="summon" aria-pressed="false">召唤物</button><button type="button" data-filter="synergy" aria-pressed="false">羁绊</button><button type="button" data-filter="walk" aria-pressed="false">步态</button></div><nav class="cliplist" id="list" aria-label="演示选择"></nav><div id="collections" class="collections" hidden></div></aside></main><footer class="footer">本页可离线打开。反馈时写下角色名、视频时间与现象，例如「走路倒滑」「出手太快」「命中特效挡住身体」。</footer>
 <script id="manifest" type="application/json">__MANIFEST__</script>
 <script>
 'use strict';
@@ -257,18 +284,19 @@ const byId=id=>document.getElementById(id), player=byId('player');
 const mediaPath=value=>String(value).split('/').map(encodeURIComponent).join('/');
 let current=0, filter='all', visible=[];
 const isWalk=clip=>String(clip.id).endsWith('-walk');
-const kindName={monster:'怪物 · 实际战斗与技能',variant:'角色变体 · 技能或形态',synergy:'羁绊 · 联动展示'};
+const kindName={monster:'进攻方',defender:'守军',summon:'召唤物',variant:'技能或形态',synergy:'羁绊联动'};
 const formatTime=value=>{const n=Math.max(0,Number(value)||0);return Math.floor(n/60)+':'+String(Math.floor(n%60)).padStart(2,'0');};
 const listText=value=>Array.isArray(value)?value.join('、'):value==null?'':String(value);
 const text=(id,value)=>{byId(id).textContent=value==null?'':String(value);};
-function filtered(){const q=byId('search').value.trim().toLocaleLowerCase();return clips.map((clip,index)=>({clip,index})).filter(({clip})=>(filter==='all'||(filter==='walk'?isWalk(clip):filter==='monster'?clip.kind!=='synergy'&&!isWalk(clip):clip.kind==='synergy'))&&(!q||[clip.id,clip.name,listText(clip.units),listText(clip.activeSynergies),clip.notes,clip.error].join(' ').toLocaleLowerCase().includes(q)));}
-function renderList(){visible=filtered();const list=byId('list');list.replaceChildren();text('count',visible.length+' / '+clips.length);if(!visible.length){const p=document.createElement('p');p.className='empty';p.textContent='没有匹配项。可换一个角色名或清空搜索。';list.append(p);}for(const {clip,index}of visible){const button=document.createElement('button');button.type='button';button.className='clip';button.setAttribute('aria-current',String(index===current));button.dataset.index=index;const id=document.createElement('span');id.className='id';id.textContent=clip.id+' · '+(isWalk(clip)?'步态':clip.kind==='synergy'?'羁绊':clip.kind==='variant'?'变体':'怪物');const name=document.createElement('span');name.className='name';name.textContent=clip.name;const hint=document.createElement('span');hint.className=clip.error?'hint bad':'hint';hint.textContent=clip.error?'录制或文件校验未通过':clip.notes||listText(clip.units)||'';button.append(id,name,hint);button.addEventListener('click',()=>select(index,true));list.append(button);}updateNavigation();}
+function filtered(){const q=byId('search').value.trim().toLocaleLowerCase();return clips.map((clip,index)=>({clip,index})).filter(({clip})=>(filter==='all'||(filter==='walk'?isWalk(clip):filter==='monster'?['monster','variant'].includes(clip.kind)&&!isWalk(clip):clip.kind===filter))&&(!q||[clip.id,clip.name,listText(clip.units),listText(clip.activeSynergies),clip.notes,clip.error].join(' ').toLocaleLowerCase().includes(q)));}
+function renderList(){visible=filtered();const list=byId('list');list.replaceChildren();text('count',visible.length+' / '+clips.length);if(!visible.length){const p=document.createElement('p');p.className='empty';p.textContent='没有匹配项。可换一个角色名或清空搜索。';list.append(p);}for(const {clip,index}of visible){const button=document.createElement('button');button.type='button';button.className='clip';button.setAttribute('aria-current',String(index===current));button.dataset.index=index;const id=document.createElement('span');id.className='id';id.textContent=clip.id+' · '+(isWalk(clip)?'步态':clip.kind==='synergy'?'羁绊':clip.kind==='variant'?'变体':kindName[clip.kind]||clip.kind);const name=document.createElement('span');name.className='name';name.textContent=clip.name;const hint=document.createElement('span');hint.className=clip.error?'hint bad':'hint';hint.textContent=clip.error?'录制或文件校验未通过':clip.notes||listText(clip.units)||'';button.append(id,name,hint);button.addEventListener('click',()=>select(index,true));list.append(button);}updateNavigation();}
 function updateNavigation(){const at=visible.findIndex(entry=>entry.index===current);byId('prev').disabled=at<=0;byId('next').disabled=at<0||at>=visible.length-1;}
 function navigate(offset,play=false){const at=visible.findIndex(entry=>entry.index===current), target=visible[at+offset];if(target)select(target.index,play);}
-function select(index,play=false){current=index;const clip=clips[index];player.pause();player.removeAttribute('src');player.load();text('kind',isWalk(clip)?'步态素材 · 棋盘程序位移':kindName[clip.kind]||clip.kind);text('title',clip.name);text('duration',clip.duration?formatTime(clip.duration)+' · '+data.width+'×'+data.height:'');text('notes',isWalk(clip)?'步态素材段：使用当前源步态与棋盘程序位移，不代表自然战斗AI。\n'+(clip.notes||''):clip.notes||'此段未附额外说明。');text('tags',clip.activeSynergies&&clip.activeSynergies.length?'本段已激活：'+listText(clip.activeSynergies):'');text('error',clip.error?'本段尚未完整生成或校验失败：'+clip.error:'');const facts=byId('facts');facts.replaceChildren();for(const value of [clip.units&&clip.units.length?'成员 '+listText(clip.units):'',Number.isFinite(clip.skillCasts)?'实际施法 '+clip.skillCasts+' 次':'',Number.isFinite(clip.hits)?'实际命中 '+clip.hits+' 次':'']){if(value){const span=document.createElement('span');span.textContent=value;facts.append(span);}}const stages=byId('stages');stages.replaceChildren();for(const stage of clip.stages||[]){const button=document.createElement('button');button.type='button';const time=document.createElement('small');time.textContent=formatTime(stage.start);button.append(time,document.createTextNode(stage.label));button.disabled=Boolean(clip.error);button.addEventListener('click',()=>{player.currentTime=Number(stage.start)||0;player.play().catch(()=>{});});stages.append(button);}if(!clip.error){player.src=mediaPath(clip.file);player.load();player.playbackRate=Number(byId('rate').value);if(play)player.play().catch(()=>{});}renderList();}
+function select(index,play=false){current=index;const clip=clips[index];player.pause();player.removeAttribute('src');player.load();text('kind',isWalk(clip)?'步态素材 · 棋盘程序位移':kindName[clip.kind]||clip.kind);text('title',clip.name);text('duration',clip.duration?formatTime(clip.duration)+' · '+data.width+'×'+data.height:'');text('notes',isWalk(clip)?'步态素材段：使用当前源步态与棋盘程序位移，不代表自然战斗AI。\n'+(clip.notes||''):clip.notes||'此段未附额外说明。');text('tags',clip.activeSynergies&&clip.activeSynergies.length?'本段已激活：'+listText(clip.activeSynergies):'');text('error',clip.error?'本段尚未完整生成或校验失败：'+clip.error:'');const facts=byId('facts');facts.replaceChildren();for(const value of [clip.units&&clip.units.length?'成员 '+listText(clip.units):'',Number.isFinite(clip.skillCasts)?'实际施法 '+clip.skillCasts+' 次':'',Number.isFinite(clip.hits)?'命中或治疗 '+clip.hits+' 次':'',data.audio&&Number.isFinite(clip.soundCues)?'录入 '+clip.soundCues+' 次战斗音效':'']){if(value){const span=document.createElement('span');span.textContent=value;facts.append(span);}}const stages=byId('stages');stages.replaceChildren();for(const stage of clip.stages||[]){const button=document.createElement('button');button.type='button';const time=document.createElement('small');time.textContent=formatTime(stage.start);button.append(time,document.createTextNode(stage.label));button.disabled=Boolean(clip.error);button.addEventListener('click',()=>{player.currentTime=Number(stage.start)||0;player.play().catch(()=>{});});stages.append(button);}const file=byId('file');file.hidden=Boolean(clip.error);if(!clip.error){file.href=mediaPath(clip.file);player.src=file.href;player.load();player.playbackRate=Number(byId('rate').value);if(play)player.play().catch(()=>{});}renderList();}
 function step(direction){if(!player.src)return;player.pause();const max=Number.isFinite(player.duration)?Math.max(0,player.duration-1/data.fps):Infinity;player.currentTime=Math.min(max,Math.max(0,player.currentTime+direction/data.fps));}
-byId('search').addEventListener('input',renderList);document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));renderList();}));byId('prev').addEventListener('click',()=>navigate(-1,true));byId('next').addEventListener('click',()=>navigate(1,true));byId('backframe').addEventListener('click',()=>step(-1));byId('nextframe').addEventListener('click',()=>step(1));byId('rate').addEventListener('change',()=>{player.playbackRate=Number(byId('rate').value);});player.addEventListener('ended',()=>{if(byId('autonext').checked)navigate(1,true);});player.addEventListener('error',()=>{if(clips[current]&&!clips[current].error)text('error','视频无法打开。请确认 clips 文件夹与本页面放在同一目录，且视频已录制完成。');});
-text('scope',data.scope||'具体展示条件请查看每段说明。');text('commit',data.sourceCommit||'未登记');const build=byId('build');const strong=document.createElement('strong');strong.textContent=data.width+'×'+data.height+' / '+data.fps+' fps / 无音轨';build.append(strong,document.createElement('br'),document.createTextNode('源码 '+String(data.sourceCommit||'未登记').slice(0,12)));const collections=byId('collections');for(const group of data.collections||[]){const a=document.createElement('a');a.href=mediaPath(group.file);a.textContent=group.title+' ↗';const small=document.createElement('small');small.textContent=group.clips+' 段 · '+formatTime(group.duration);a.append(small);collections.append(a);}collections.hidden=!(data.collections||[]).length;
+byId('search').addEventListener('input',renderList);document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));renderList();}));byId('prev').addEventListener('click',()=>navigate(-1,true));byId('next').addEventListener('click',()=>navigate(1,true));byId('backframe').addEventListener('click',()=>step(-1));byId('nextframe').addEventListener('click',()=>step(1));byId('rate').addEventListener('change',()=>{player.playbackRate=Number(byId('rate').value);});player.addEventListener('ended',()=>{if(byId('autonext').checked)navigate(1,true);});player.addEventListener('error',()=>{if(clips[current]&&!clips[current].error)text('error','视频无法打开。请确认 视频文件夹与本页面放在同一目录，且视频已录制完成。');});
+text('scope',data.scope||'具体展示条件请查看每段说明。');text('commit',data.sourceCommit||'未登记');const build=byId('build');const strong=document.createElement('strong');strong.textContent=data.width+'×'+data.height+' / '+data.fps+' fps / '+(data.audio?'战斗音效轨':'无音轨');build.append(strong,document.createElement('br'),document.createTextNode('源码 '+String(data.sourceCommit||'未登记').slice(0,12)));const collections=byId('collections');for(const group of data.collections||[]){const a=document.createElement('a');a.href=mediaPath(group.file);a.textContent=group.title+' ↗';const small=document.createElement('small');small.textContent=group.clips+' 段 · '+formatTime(group.duration);a.append(small);collections.append(a);}collections.hidden=!(data.collections||[]).length;
+for(const button of document.querySelectorAll('[data-filter]')){const kind=button.dataset.filter;if(kind!=='all'&&!clips.some(clip=>kind==='walk'?isWalk(clip):clip.kind===kind))button.hidden=true;}
 const requested=new URLSearchParams(location.search).get('clip');const initial=requested?clips.findIndex(clip=>clip.id===requested):0;select(initial>=0?initial:0);
 </script></body></html>'''
 
@@ -284,6 +312,7 @@ def write_gallery(directory, data, records, collections):
             clip["error"] = record["error"]
         elif record.get("duration"):
             clip["duration"] = record["duration"]
+            clip["file"] = record.get("finalFile", clip["file"])
         view["clips"].append(clip)
     view["collections"] = collections
     embedded = json.dumps(view, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c").replace("&", "\\u0026")
@@ -303,9 +332,9 @@ def main(argv=None):
         parser.error(f"Capture directory does not exist: {directory}")
     try:
         data = load_manifest(directory)
-        ffmpeg = executable("ffmpeg", args.ffmpeg) if args.concat else None
+        ffmpeg = executable("ffmpeg", args.ffmpeg) if args.concat or data["audio"] else None
         ffprobe = executable("ffprobe", args.ffprobe, companion=ffmpeg)
-        records, errors = validate_clips(directory, data, ffprobe)
+        records, errors = validate_clips(directory, data, ffprobe, ffmpeg)
         collections = []
         if args.concat and not errors:
             try:
@@ -321,7 +350,7 @@ def main(argv=None):
             "expectedClips": len(data["clips"]), "validatedClips": sum(record["passed"] for record in records),
             "filesInClipsDirectory": len(actual_files),
             "unlistedFiles": [str(path.relative_to(directory)) for path in actual_files if path.resolve() not in expected_paths],
-            "width": data["width"], "height": data["height"], "fps": data["fps"], "audio": False,
+            "width": data["width"], "height": data["height"], "fps": data["fps"], "audio": data["audio"],
             "clips": records, "collections": collections, "errors": errors,
         }
         (directory / "package-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

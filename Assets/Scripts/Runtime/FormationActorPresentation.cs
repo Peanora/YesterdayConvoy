@@ -74,6 +74,7 @@ namespace YesterdayConvoy
         {
             if(FormationArtAvailable(id)||!warmingFormationArt.Add(id))yield break;
             loading="准备原有动作  "+id;
+            WarmFormationCombatAudio(id);
             if(id.StartsWith("D",StringComparison.Ordinal))
             {
                 string root="DefenderArt/"+id;var source=ArtCatalog.Read(root);art[id]=source;
@@ -250,7 +251,7 @@ namespace YesterdayConvoy
                 if(!source.HasAction(key))
                 {
                     if(key=="death"){body.enabled=false;return;}
-                    key=casting&&source.HasAction("skill")?"skill":source.HasOrdinaryAttack?"attack":"idle";
+                    key=key=="walk"?"idle":casting&&source.HasAction("skill")?"skill":source.HasOrdinaryAttack?"attack":"idle";
                 }
                 if(!frozen||body.sprite==null)
                     body.sprite=source.Frame(key,age,regularSkill||harvesterMotion?loop:key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");

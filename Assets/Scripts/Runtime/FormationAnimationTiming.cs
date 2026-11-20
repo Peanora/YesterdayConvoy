@@ -40,6 +40,7 @@ namespace YesterdayConvoy
         public bool ProjectileOnly { get; internal set; }
         public int ParentSequence { get; internal set; }
         public int ProjectileIndex { get; internal set; }
+        internal int NativePhase { get; set; }
         public bool Cancelled { get; internal set; }
     }
 
@@ -131,6 +132,7 @@ namespace YesterdayConvoy
                 At = Clock, LaunchedAt = Clock + contact, ContactAt = Clock + contact + flight, EndAt = Clock + Math.Max(0, duration),
                 From = actor.Position, To = target?.Position ?? actor.Position,
                 Skill = skill, Heal = heal, Rate = rate, Animation = actor.PresentationAction,
+                NativePhase = actor is FormationFighter fighter ? fighter.NativePhase : actor.PhaseStage,
                 ProjectileRaiseHeight = projectileRaise, ProjectileMovement = projectileMovement
             };
             presentationActions.Add(action);
@@ -271,7 +273,7 @@ namespace YesterdayConvoy
                 Sequence=++presentationSequence, ActorId=actor.Id, TargetId=target.Id,
                 At=release-(profile?.SkillProjectileWindup??0)/rate, LaunchedAt=release, ContactAt=release+flight, EndAt=release+flight,
                 From=actor.Position, To=target.Position, Skill=true, Heal=false, Rate=rate, Animation=animation,
-                ProjectileOnly=true, ParentSequence=parent.Sequence, ProjectileIndex=index,
+                ProjectileOnly=true, ParentSequence=parent.Sequence, ProjectileIndex=index, NativePhase=parent.NativePhase,
                 ProjectileRaiseHeight=profile?.SkillProjectileRaiseHeight??0, ProjectileMovement=profile?.SkillProjectileMovement
             };
             presentationActions.Add(projectile);
