@@ -92,7 +92,7 @@ namespace YesterdayConvoy
             Assert(frozenActors.Length > 1 && frozenActors.Contains(guard) && frozenActors.All(actor =>
                 shells.Any(shell => shell.name == FormationBattleController.PramanixIceRendererPrefix + actor.Id &&
                     Vector3.Distance(shell.transform.position, controller.ActorWorldPoint(actor)) < .35f &&
-                    shell.sprite.texture.name.Contains(actor == guard ? "/buff_frozen-" : "/buff_frozen_to_walk-"))),
+                    shell.sprite.texture.name.Replace('\\', '/').Contains(actor == guard ? "/buff_frozen-" : "/buff_frozen_to_walk-"))),
                 "Boss and each in-view frozen unit have their aligned native freeze shell");
             yield return Frame("05-active-global-freeze");
             yield return CaptureInterfaceClip("phase-break-freeze", 28, SnowBossClipsFlag, () => model.SnowBossFreezeRemaining(frozen[0]) > .3);
