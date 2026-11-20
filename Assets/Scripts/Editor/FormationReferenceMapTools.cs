@@ -163,7 +163,7 @@ namespace YesterdayConvoy.Editor
                 else Rail(root,origin,length,alongZ);
             }
             Box(root,"Lower industrial service yard",new Vector3(0,-2.05f,0),new Vector3(70,.15f,50),trim);
-            Box(root,"Front reward shelf",new Vector3(-6.65f,.75f,-5.7f),new Vector3(6.1f,.36f,1.55f),trim);
+            Box(root,"Front reward shelf",new Vector3(-6.65f,1.04f,-4.61f),new Vector3(6.1f,.56f,1.18f),trim);
             ViewBox("Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f+extra,.76f,FormationBattleModel.Height+1.85f),recess);
             ViewBox("Rear service gantry deck",new Vector3(0,.06f,halfDepth+1.98f),new Vector3(21+extra,.12f,2.1f),trim);
             foreach(int side in new[]{-1,1})

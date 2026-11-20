@@ -38,7 +38,7 @@ namespace YesterdayConvoy
             public string[] events;
         }
         static bool started;
-        readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Preparation pans across the same terrain and combat uses its enlarged view. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
+        readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Left preparation uses the same tile scale as combat. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
         FormationBattleController controller;string directory;bool done;
         internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
@@ -120,9 +120,9 @@ namespace YesterdayConvoy
             }
             cell=default;return false;
         }
-        float GuardTileScreenWidth()
+        static float TileScreenWidth(int column)
         {
-            var cell=new Vector2(FormationBattleModel.DeploymentColumns+3,FormationBattleModel.Height*.5f);
+            var cell = new Vector2(column, FormationBattleModel.Height / 2);
             return Vector2.Distance(FormationBattleController.CellScreen(cell),FormationBattleController.CellScreen(cell+Vector2.right));
         }
         IEnumerator WaitForScoutingView(bool defenders)
@@ -229,7 +229,7 @@ namespace YesterdayConvoy
             Assert(!controller.MarketVisible,"Opening choices leave recruitment drawer collapsed");
             DeployOpeningRecruits();
             yield return Market(false);controller.SetFormationView(false);yield return WaitForScoutingView(false);yield return ReadyArt();
-            Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.PreparationCameraSafeRect,"Preparation uses its close fixed camera frame");
+            Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.LeftPreparationCameraSafeRect,"Preparation uses its close fixed camera frame");
             Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"Preparation displays the operating layer");
             Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
             Assert(controller.FormationDisplayedInterest==Math.Min(controller.Shop.InterestCap,controller.Shop.Gold/controller.Shop.InterestDivisor),"Coin HUD shows the production interest forecast");
@@ -264,7 +264,8 @@ namespace YesterdayConvoy
             bool clickScoutArrow = Array.IndexOf(Environment.GetCommandLineArgs(), "-formationScoutMouse") >= 0;
             if (clickScoutArrow) result.scope += " Scouting arrows use actual Windows mouse input.";
             yield return PanScoutingView(true, clickScoutArrow);
-            float scoutingTileWidth = GuardTileScreenWidth();
+            int guardSampleColumn = FormationBattleModel.DeploymentColumns + 3;
+            float scoutingTileWidth = TileScreenWidth(guardSampleColumn);
             yield return Frame("04-close-guard-area");
             yield return PanScoutingView(false, clickScoutArrow);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
@@ -330,10 +331,14 @@ namespace YesterdayConvoy
                 var core=controller.Session.Seats.Lineup(controller.Shop.Bench).FirstOrDefault();
                 foreach(var item in controller.Campaign.Inventory.ToArray())if(core!=null&&item.Key.Length<=2)controller.Campaign.Equip(item.Instance,core.Instance);
                 yield return ReadyArt();controller.SetMarketVisible(false);
+                float deploymentTileWidth = TileScreenWidth(3);
                 controller.StartBattle();Assert(controller.Model.Phase==FormationPhase.Fighting,"Start real auto battle "+controller.Campaign.CurrentNode.Id);
                 controller.Model.Paused=true;yield return null;
                 Assert(controller.CombatViewActive&&!controller.FormationPreparationUiVisible,"Actual and paused battle hide traits, reserve, gold, XP and operating toolbar "+battle);
-                Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.BattleCameraSafeRect&&GuardTileScreenWidth()>scoutingTileWidth*1.08f,"Battle fills the released screen with visibly larger guard tiles "+battle);
+                float battleTileWidth = TileScreenWidth(guardSampleColumn);
+                Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.BattleCameraSafeRect&&battleTileWidth>scoutingTileWidth*1.08f,"Battle fills the released screen with visibly larger guard tiles "+battle);
+                Assert(Mathf.Abs(deploymentTileWidth - battleTileWidth) < .1f,
+                    $"Deployment and battle tile widths match at {deploymentTileWidth:F2} / {battleTileWidth:F2} pixels in battle {battle + 1}");
                 Assert(controller.Shop.Bench.All(piece=>(controller.ShopBenchModel(piece.Instance)==null||!controller.ShopBenchModel(piece.Instance).enabled)&&(controller.ShopEntranceModel(piece.Instance)==null||!controller.ShopEntranceModel(piece.Instance).enabled)),"Battle hides every real reserve and arrival renderer "+battle);
                 controller.ToggleFormationMarket();controller.SetMarketVisible(true);
                 Assert(!controller.MarketVisible&&!controller.InspectFormationTrait(trait)&&!controller.FormationTraitDetailsOpen,"Battle actions cannot reopen preparation windows "+battle);
@@ -926,9 +931,9 @@ namespace YesterdayConvoy
                     yield return null;
                 yield return new WaitForSecondsRealtime(.68f);
                 bool projected = controller.TryGroundRewardPoint(drop.Id,out position);
+                float frontRowY = FormationBattleController.CellScreen(Vector2.zero).y;
                 Assert(projected && position.x > 285 && position.x < 735 &&
-                    position.y > FormationBattleController.PreparationCameraSafeRect.yMax &&
-                    position.y < FormationBattleController.FormationReserveRect(0).yMin,
+                    position.y > frontRowY && position.y < FormationBattleController.FormationBenchRect.yMin,
                     "Clickable 3D " + drop.Color + " ball sits between the deployment board and the reserve bench");
                 int gold = controller.Shop.Gold, equipment = controller.Campaign.Inventory.Count;
                 Assert(controller.ProcessFormationRewardPointer(EventType.MouseDown,position) &&

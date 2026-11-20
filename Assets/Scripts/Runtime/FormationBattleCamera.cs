@@ -7,15 +7,19 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const float FormationPanDuration = .48f;
+        const float FormationCameraFov = 40f;
+        static readonly float FormationFocalLength = 360 / Mathf.Tan(FormationCameraFov * .5f * Mathf.Deg2Rad);
         static readonly Quaternion FormationCameraRotation = Quaternion.Euler(60, 0, 0);
         static readonly Vector3 FormationCameraForward = FormationCameraRotation * Vector3.forward;
         static readonly Vector3 FormationCameraUp = FormationCameraRotation * Vector3.up;
         static readonly Vector3 FormationCameraRight = FormationCameraRotation * Vector3.right;
         static readonly Quaternion FormationCameraInverse = Quaternion.Inverse(FormationCameraRotation);
         public static Rect PreparationCameraSafeRect => new Rect(188, 64, 816, 472);
+        public static Rect LeftPreparationCameraSafeRect => BoardInputRect;
         public static Rect BattleCameraSafeRect => new Rect(12, 64, 1256, 644);
         public static Rect FormationCameraSafeRect => PreparationCameraSafeRect;
-        public Rect CurrentFormationCameraSafeRect => UseFormationBattleCamera ? BattleCameraSafeRect : PreparationCameraSafeRect;
+        public Rect CurrentFormationCameraSafeRect => UseFormationBattleCamera ? BattleCameraSafeRect :
+            ViewingDefenders ? PreparationCameraSafeRect : LeftPreparationCameraSafeRect;
         public bool ViewingDefenders { get; private set; }
         public bool CameraTransitioning => formationPanElapsed < FormationPanDuration;
         public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation &&
@@ -112,16 +116,29 @@ namespace YesterdayConvoy
         void RebuildFormationCameraPoses()
         {
             formationCameraHasSetPiece=HasFormationSetPiece();
-            formationLeftPreparationPose=FixedFormationPose(false,false);
-            formationRightPreparationPose=FixedFormationPose(true,false);
-            formationRightBattlePose=FixedFormationPose(true,true);
+            formationRightPreparationPose=FixedGuardPose(false);
+            formationRightBattlePose=FixedGuardPose(true);
+            formationLeftPreparationPose=LeftPreparationPose(formationRightBattlePose);
         }
         bool HasFormationSetPiece()=>Model.Units.Any(u=>u.Enabled&&u.ArtId=="B08"&&u.NativePhase>0);
-        Vector3 FixedFormationPose(bool defenders, bool combat)
+
+        static Vector3 LeftPreparationPose(Vector3 combatPose)
+        {
+            var frontEdge = WorldPoint(new Vector2(FormationBattleModel.DeploymentColumns * .5f + .4f, -.5f));
+            var relativeEdge = frontEdge - combatPose;
+            float depth = Vector3.Dot(relativeEdge, FormationCameraForward);
+            float frontEdgeY = LeftPreparationCameraSafeRect.yMax - 12;
+            float horizontalShift = Vector3.Dot(relativeEdge, FormationCameraRight);
+            float verticalShift = Vector3.Dot(relativeEdge, FormationCameraUp) + (frontEdgeY - 360) * depth / FormationFocalLength;
+            // Moving across the image plane preserves the combat perspective and grid scale.
+            return combatPose + FormationCameraRight * horizontalShift + FormationCameraUp * verticalShift;
+        }
+
+        Vector3 FixedGuardPose(bool combat)
         {
             formationCameraPoints.Clear();
-            float first = defenders ? FormationBattleModel.DeploymentColumns + .5f : -.5f;
-            float last = defenders ? FormationBattleModel.Width - .5f : FormationBattleModel.DeploymentColumns + .5f;
+            float first = FormationBattleModel.BattleAreaStart;
+            float last = FormationBattleModel.Width - .5f;
             float horizontalMargin = formationCameraHasSetPiece ? 5.1f : combat ? 2.1f : 1.5f;
             float topMargin = formationCameraHasSetPiece ? 6.2f : 3.4f;
             foreach (float col in new[] { first, last })
@@ -160,16 +177,15 @@ namespace YesterdayConvoy
         {
             float minX = float.NegativeInfinity, maxX = float.PositiveInfinity;
             float minY = float.NegativeInfinity, maxY = float.PositiveInfinity;
-            float focal = 360 / Mathf.Tan(20 * Mathf.Deg2Rad);
             foreach (var point in formationCameraPoints)
             {
                 Vector3 local = FormationCameraInverse * (point - focus);
                 float depth = local.z + distance;
                 if (depth <= .1f) { offset = default; return false; }
-                minX = Mathf.Max(minX, local.x - (rect.xMax - 640) * depth / focal);
-                maxX = Mathf.Min(maxX, local.x - (rect.xMin - 640) * depth / focal);
-                minY = Mathf.Max(minY, local.y + (rect.yMin - 360) * depth / focal);
-                maxY = Mathf.Min(maxY, local.y + (rect.yMax - 360) * depth / focal);
+                minX = Mathf.Max(minX, local.x - (rect.xMax - 640) * depth / FormationFocalLength);
+                maxX = Mathf.Min(maxX, local.x - (rect.xMin - 640) * depth / FormationFocalLength);
+                minY = Mathf.Max(minY, local.y + (rect.yMin - 360) * depth / FormationFocalLength);
+                maxY = Mathf.Min(maxY, local.y + (rect.yMax - 360) * depth / FormationFocalLength);
             }
             offset = new Vector2((minX + maxX) * .5f, (minY + maxY) * .5f);
             return minX <= maxX && minY <= maxY;
@@ -179,7 +195,7 @@ namespace YesterdayConvoy
         {
             battleCamera.orthographic = false;
             battleCamera.usePhysicalProperties = false;
-            battleCamera.fieldOfView = 40;
+            battleCamera.fieldOfView = FormationCameraFov;
             battleCamera.lensShift = Vector2.zero;
             battleCamera.transform.SetPositionAndRotation(position, FormationCameraRotation);
         }

@@ -71,6 +71,13 @@ namespace YesterdayConvoy.Tests
             }
         }
 
+        static float TileScreenWidth(int column, int row)
+        {
+            var cell = new Vector2(column, row);
+            return Vector2.Distance(FormationBattleController.CellScreen(cell),
+                FormationBattleController.CellScreen(cell + Vector2.right));
+        }
+
         [UnityTest]
         public IEnumerator ScoutingPansAcrossTheJoinedBoardAndKeepsPreparationAndBattleFraming()
         {
@@ -98,6 +105,8 @@ namespace YesterdayConvoy.Tests
             AssertHalfAndActorHeads(false);
             AssertJoinedSeam();
             var leftPose = controller.battleCamera.transform.position;
+            var sampleRows = new[] { 0, FormationBattleModel.Height / 2, FormationBattleModel.Height - 1 };
+            var leftTileWidths = sampleRows.Select(row => TileScreenWidth(3, row)).ToArray();
             var shopCamera = controller.ShopModelCamera;
             Assert.That(shopCamera, Is.Not.Null);
             var shopPose = shopCamera.transform.position; var shopRotation = shopCamera.transform.rotation;
@@ -137,8 +146,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.battleCamera.fieldOfView, Is.EqualTo(40));
             Assert.That(Quaternion.Angle(controller.battleCamera.transform.rotation, Quaternion.Euler(60, 0, 0)), Is.LessThan(.01f));
 
-            var sampleCell = new Vector2(FormationBattleModel.DeploymentColumns + 3, FormationBattleModel.Height * .5f);
-            float preparationCellWidth = Vector2.Distance(FormationBattleController.CellScreen(sampleCell), FormationBattleController.CellScreen(sampleCell + Vector2.right));
+            int guardSampleColumn = FormationBattleModel.DeploymentColumns + 3;
+            float scoutingTileWidth = TileScreenWidth(guardSampleColumn, FormationBattleModel.Height / 2);
             yield return new WaitForSecondsRealtime(.25f);
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "The defender camera must never drift.");
             Assert.That(model.Units.Any(u => u.Enabled && controller.FormationActorVisibleInView(u)), Is.True,
@@ -180,8 +189,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.CombatViewActive, Is.True);
             Assert.That(controller.FormationPreparationUiVisible, Is.False);
             Assert.That(controller.battleCamera.transform.position, Is.Not.EqualTo(rightPose), "Combat uses its own fixed enlarged view after hiding the preparation panels.");
-            float battleCellWidth = Vector2.Distance(FormationBattleController.CellScreen(sampleCell), FormationBattleController.CellScreen(sampleCell + Vector2.right));
-            Assert.That(battleCellWidth, Is.GreaterThan(preparationCellWidth * 1.08f), "The same guard tile must appear visibly larger in battle, rather than merely exposing more empty screen.");
+            float battleTileWidth = TileScreenWidth(guardSampleColumn, FormationBattleModel.Height / 2);
+            Assert.That(battleTileWidth, Is.GreaterThan(scoutingTileWidth * 1.08f), "Battles retain their larger scale compared with guard scouting.");
+            for (int index = 0; index < sampleRows.Length; index++)
+            {
+                int row = sampleRows[index];
+                Assert.That(TileScreenWidth(guardSampleColumn, row), Is.EqualTo(leftTileWidths[index]).Within(.1f),
+                    $"Corresponding floor tiles in row {row} must be the same size in deployment and battle.");
+            }
             var combatPose = controller.battleCamera.transform.position;
             yield return new WaitForSecondsRealtime(.2f);
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(combatPose), "Paused combat keeps its dedicated fixed camera pose.");
@@ -192,7 +207,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Phase, Is.EqualTo(FormationPhase.Preparation));
             Assert.That(model.Clock, Is.Zero); Assert.That(controller.ViewingDefenders, Is.False);
             Assert.That(controller.CanEditFormationView, Is.True);
-            Assert.That(controller.CurrentFormationCameraSafeRect, Is.EqualTo(FormationBattleController.PreparationCameraSafeRect));
+            Assert.That(controller.CurrentFormationCameraSafeRect, Is.EqualTo(FormationBattleController.LeftPreparationCameraSafeRect));
             Assert.That(controller.FormationPreparationUiVisible, Is.True);
             Assert.That(controller.CombatViewActive, Is.False);
             AssertHalfAndActorHeads(false);
