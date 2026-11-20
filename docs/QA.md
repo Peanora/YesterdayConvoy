@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 战略战备翻牌与本局策略
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994095862 bytes、0 错误，退出 0。运行源码 `27dd3c5d90b8b732e6cef0a42c8bcfff173fbf2d`。定向 EditMode **122/122**，退出 0。仓库检查覆盖 14075 个跟踪文件。[构建日志](../artifacts/formation-strategy-history/build-final.log) · [EditMode](../artifacts/formation-strategy-history/editmode.xml)
+- 1280×720 D3D11 独立版专项 **97/97**、前三场回归 **156/156**、银金彩回归 **71/71**，均零异常、退出 0。专项前两场走实际战斗，之后使用固定胜局样本经正式结算和推进接口到达 2-2、3-2。通过鼠标与键盘核对三个节点自动展开、一次重抽、预选反馈、确认只应用一次、收起时拦截底层按钮、暂停时隐藏整备入口、跨关回看和新局清空。三档回归另用三个种子各走两场实际战斗到达 1-3。完整自然长局未跑。[专项](../artifacts/formation-strategy-history/player-verified/strategy-history-smoke.json) · [前三场](../artifacts/formation-strategy-history/campaign/campaign-smoke.json) · [三档](../artifacts/formation-strategy-history/tiers/campaign-smoke.json)
+- 独立版以实际经过时间采集 24 帧每秒的动效，核对扫光、牌叠、逐张翻面、选中亮边、未选牌退场及选中牌到达进度条下方的关键帧。3-2 同屏可读开局预案和三份战备的实际名称、档位与效果，个别中文标点随自动折行落到下一行行首。参照《货币战争》实录的入场、确认和徽记位置，翻牌轨迹和回看面板为本作适配。[实机动效](../artifacts/formation-strategy-history/strategy-reveal-and-history.mp4) · [3-2 回看](../artifacts/formation-strategy-history/player-verified/3-2-history.png) · [来源与时间点](art/source-records/formation-strategy-choice.md)
+
 ## 2026-11-20 拖放布阵与备战溢出
 
 - Unity 6000.6.5f1 EditMode **270/270**，D3D11 PlayMode **15/15**。PlayMode 写出全部通过的结果后，编辑器退出阶段返回 Windows 状态 `0xC0000005`。Windows x64 Development 构建源码 `01960c7403f647dff2184b17dba8bb78c2cd37c7`，994068842 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-reserve/editmode.xml) · [PlayMode](../artifacts/formation-reserve/playmode-final.xml) · [编辑器日志](../artifacts/formation-reserve/playmode-final.log) · [构建日志](../artifacts/formation-reserve/build.log)
