@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-20 拖放布阵与备战溢出
+
+- Unity 6000.6.5f1 EditMode **270/270**，D3D11 PlayMode **15/15**。PlayMode 写出全部通过的结果后，编辑器退出阶段返回 Windows 状态 `0xC0000005`。Windows x64 Development 构建源码 `01960c7403f647dff2184b17dba8bb78c2cd37c7`，994068842 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-reserve/editmode.xml) · [PlayMode](../artifacts/formation-reserve/playmode-final.xml) · [编辑器日志](../artifacts/formation-reserve/playmode-final.log) · [构建日志](../artifacts/formation-reserve/build.log)
+- 同版 1280×720 D3D11 独立 Player 专项 **59/59**，正式挑战前三战 **156/156**，两次均零异常、退出 0。通过正式指针处理核对点击空格保留站位、跨空档和备战席的悬空角色、松手下阵、满席标红和暂停购买。用固定赠卡触发两个溢出位，核对直接部署、自动补位、购买恢复和清出溢出后开战。开局使用真实奖励球，其余溢出用固定赠卡样本。完整三个位面长局未覆盖。[专项报告](../artifacts/formation-reserve/reserve-player/reserve-smoke.json) · [开局备战席](../artifacts/formation-reserve/reserve-player/02-opening-recruits-on-reserve.png) · [拖过空档](../artifacts/formation-reserve/reserve-player/03-held-above-reserve.png) · [拖至备战席](../artifacts/formation-reserve/reserve-player/04-held-over-reserve.png) · [满席与溢出](../artifacts/formation-reserve/reserve-player/06-two-overflow-recruits.png) · [前三战报告](../artifacts/formation-reserve/campaign-player/campaign-smoke.json)
+
 ## 2026-11-20 随机开局补给与战备动画
 
 - Unity 6000.6.5f1 定向 EditMode **58/58**、D3D11 PlayMode **5/5**。覆盖同种子可复现、跨种子的装备和角色变化、初始店铺前预占库存、两种拾取顺序、到达后才到账、自动上阵和开局预案时点。Windows x64 Development 构建源码 `69c7d7409aebee3db4f5601225f0265d1bc52061`，994054498 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-opening-rewards/editmode-final.xml) · [PlayMode](../artifacts/formation-opening-rewards/playmode.xml) · [构建日志](../artifacts/formation-opening-rewards/build.log)
