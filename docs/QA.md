@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-20 圣聆初雪高清、攻速与冰壳
+
+- 运行源码 `2f07570838ad2e25f65051d58fefa6517b9d2fb3`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994150382 bytes、0 错误，退出 0。完整 EditMode **1213/1213**，零跳过，退出 0。新高清动作 67 页和原包两种冻结特效全部进入运行资源。仓库检查覆盖 14274 个跟踪文件。[构建](../artifacts/formation-snow-boss-hd/build-final.log) · [EditMode](../artifacts/formation-snow-boss-hd/editmode-final.xml)
+- 默认皮肤正面原骨骼 13 段、1870 帧按原 60 fps 双倍密度重新采样，124.8 → 249.6 PPU。以相同姿态比较，待机可见本体高从 157 → 314 源像素，各段可见世界边界偏差不超过 0.0041 个单位。独立版侦察、二技能、三技能均实测加载 249.6 PPU。侦察名条移到策略栏下方，脚下地格可见。[源帧对照](../artifacts/formation-snow-boss-hd/source-density-comparison.png) · [实机侦察](../artifacts/formation-snow-boss-hd/player-final/02-giant-boss-scout.png) · [骨骼来源](art/source-records/formation-pramanix-boss-hd-2026-11-20.json)
+- 原作角色表基础攻击间隔 2.0 秒，三技能表攻速 +30。棋盘按原作数值计算间隔并对齐 30 Hz 时间刻度，实机连续出手间隔为二技能 2.000／2.000 秒、三技能 1.525／1.550 秒。原动作接触点为 60 fps 源第 42／40 帧，按基础动画 2×、三技能 2.6× 分别落在单次动作后 0.350／约 0.256 秒。核对正常速度下抬手、实际命中和雪格伤害。[原作角色数据](https://github.com/Kengxxiao/ArknightsGameData/blob/7e560050b03c34661db1d322d008733072352b2a/zh_CN/gamedata/excel/character_table.json) · [原作技能数据](https://github.com/Kengxxiao/ArknightsGameData/blob/7e560050b03c34661db1d322d008733072352b2a/zh_CN/gamedata/excel/skill_table.json)
+- 原包中初雪首次致命伤的自身冻结和敌方冻结使用不同状态。棋盘绑定 `buff_frozen` 蓝壳及 `buff_frozen_to_walk` 青绿壳，按可见体型适配挂点，随本作 2 秒转段时钟。实机记录到 8 个存活进攻单位和初雪共 **9 层冰壳**，各自贴合脚点，暂停保持姿势和帧，解冻清理。记录 70.425 秒破第一条血、72.425 秒转入二阶段、128.075 秒清场和 137.300 秒本体进蓝门。1280×720 D3D11 独立版 **32/32**、零异常，由正常试玩控制器入口驱动，覆盖重试及 3-7 入口一致性。[原包绑定](art/source-records/formation-pramanix-boss-freeze-2026-11-20.json) · [冻结实机](../artifacts/formation-snow-boss-hd/player-final/05-active-global-freeze.png) · [独立版报告](../artifacts/formation-snow-boss-hd/player-final/snow-boss-smoke.json)
+- 实机短片由二技能出手、转段冻结、三技能出手三个片段组成。按采集时间重采样为 138 帧、24 fps、5.75 秒，无音轨，完整解码通过。[实机短片](../artifacts/formation-snow-boss-hd/pramanix-hd-two-phase-player.mp4)
+
 ## 2026-11-20 圣聆初雪双阶段终局
 
 - 运行源码 `64d9d0c60eba3259ce627d5d461b76978dfc0b77`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994144354 bytes、0 错误，退出 0。完整 EditMode **1212/1212**，零跳过，退出 0。FormationBattle 读取保存地形，初雪固定在可通行的中路低地 (17,4)。仓库检查覆盖 14130 个跟踪文件。[构建日志](../artifacts/formation-snow-boss/build-final.log) · [EditMode 报告](../artifacts/formation-snow-boss/editmode-final.xml)
