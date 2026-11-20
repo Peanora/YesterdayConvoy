@@ -11,6 +11,14 @@ namespace YesterdayConvoy
     {
         const string SnowBossClipsFlag = "-formationSnowBossClips";
         static bool SnowBossRequested => Array.IndexOf(Environment.GetCommandLineArgs(), "-formationSnowBossSmokeTest") >= 0;
+        bool keepSnowBossCaptureRunning, checkingSnowBossPause;
+
+        void LateUpdate()
+        {
+            if (keepSnowBossCaptureRunning && !checkingSnowBossPause &&
+                controller != null && controller.Model is { Paused: true } model && controller.CombatViewActive)
+                model.Paused = false;
+        }
 
         [Serializable]
         sealed class SnowBossReplay
@@ -28,6 +36,7 @@ namespace YesterdayConvoy
         IEnumerator VerifySnowBossTrial()
         {
             bool useMouse = Array.IndexOf(Environment.GetCommandLineArgs(), "-formationSnowBossMouse") >= 0;
+            keepSnowBossCaptureRunning = Array.IndexOf(Environment.GetCommandLineArgs(), "-formationSnowBossCaptureInBackground") >= 0;
             result.scope = "Rendered standalone Player using the production Snow Boss trial, its supplied roster and ordinary unscaled game updates. No actor stats, locations, damage or timing are injected. " +
                 (useMouse ? "Menu and start use native mouse input. " : "Menu selection and start call their production controller commands. ") +
                 "The formal 3-7 defense is checked separately through the difficulty selector.";
@@ -121,16 +130,20 @@ namespace YesterdayConvoy
             Assert(positions.SequenceEqual(frozen.Select(unit => unit.Position)), "Frozen opponents hold their positions across rendered frames");
             Assert(heldBossFrame != null && SnowBossBody(guard)?.sprite == heldBossFrame &&
                 model.SnowBossTransitionActive(guard), "The boss's source pose holds during its own freeze");
+            checkingSnowBossPause = true;
             model.Paused = true;
             double pausedAt = model.Clock;
             replay.freezeSecondsRemaining = model.SnowBossFreezeRemaining(frozen[0]);
             yield return Frame("05-paused-global-freeze");
+            yield return ObserveSnowBossUntil(() => !controller.SnowBossMusic.isPlaying,
+                "The battle music applies pause before sampling the playhead", 2);
             int pausedMusicAt = controller.SnowBossMusic.timeSamples;
             yield return new WaitForSecondsRealtime(.3f);
             Assert(replay.freezeSecondsRemaining > 0 && model.Clock == pausedAt &&
                 model.SnowBossFreezeRemaining(frozen[0]) == replay.freezeSecondsRemaining, "Pause holds the transition and the freeze timer");
             Assert(!controller.SnowBossMusic.isPlaying && controller.SnowBossMusic.timeSamples == pausedMusicAt &&
                 controller.SnowBossVoiceStarts.Count == 1, "Pause holds the music playhead without replaying the first voice");
+            checkingSnowBossPause = false;
             model.Paused = false;
 
             yield return ObserveSnowBossUntil(() => guard.SnowBossPhase == 2 && !model.SnowBossTransitionActive(guard) &&
@@ -251,6 +264,7 @@ namespace YesterdayConvoy
                     renderer.sprite.name.Contains(clip) && SnowBossImpactOverTarget(renderer, hit)));
             }, skill + " renders the native direct-impact layer above a target damaged at the source contact", 8);
             yield return Frame(thirdSkill ? "06-s3-native-direct-impact" : "04-s2-native-direct-impact");
+            yield return CaptureSnowBossClip(thirdSkill ? "s3-direct-impact" : "s2-direct-impact", 38);
         }
 
         bool SnowBossImpactOverTarget(SpriteRenderer renderer, FormationHit hit)
