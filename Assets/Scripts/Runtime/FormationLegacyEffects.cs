@@ -68,6 +68,7 @@ namespace YesterdayConvoy
         const string PramanixEffects = "defender/D27/";
         internal const string PramanixIceRendererPrefix = "Formation freeze / ";
         internal const string PramanixSnowRendererPrefix = "Formation snow / ";
+        internal const string PramanixImpactRendererPrefix = "Formation Pramanix impact / ";
         static readonly string[] PramanixBossEffectKeys =
         {
             "sbell2_skill_03_start_01", "sbell2_skill_03_hit",
@@ -161,7 +162,7 @@ namespace YesterdayConvoy
                     };
                     if(effect!=null && !(guard.SnowBossTransitionStartedAt>0 && action.At<=guard.SnowBossTransitionStartedAt))
                         LegacyOriginal(PramanixEffects+effect,(now-(action.Animation=="skill_2_attack"?action.ContactAt:action.At))*action.Rate,action.From,22,
-                            flat:true,scale:1.45f);
+                            flat:true,scale:1.45f,gammaOutput:true);
                     continue;
                 }
                 if(action.Animation!="skill_attack")continue;
@@ -193,8 +194,22 @@ namespace YesterdayConvoy
                     "D30"=>"mlynar_skill_03_hit_01",
                     _=>null
                 };
-                if(clip!=null&&guardHitSprites.Add((hit.SourceArtId,hit.ToId,hit.At,clip)))
-                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,(now-hit.At)*FormationVisualRate,hit.To,pramanix!=null?-6:35);
+                if(clip==null||!guardHitSprites.Add((hit.SourceArtId,hit.ToId,hit.At,clip)))continue;
+                double age=(now-hit.At)*FormationVisualRate;
+                if(pramanix==null)
+                {
+                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,age,hit.To,35);
+                    continue;
+                }
+                if(clip=="sbell2_buff_01_hit_02")
+                {
+                    LegacyOriginal(PramanixEffects+clip,age,hit.To,-6,gammaOutput:true);
+                    continue;
+                }
+                var victim=FormationFeedbackActor(hit.ToId);
+                var contact=FormationFeedbackContactPoint(victim,hit.To,.48f);
+                var impact=LegacyOriginal(PramanixEffects+clip,age,hit.To,24,explicitPosition:contact,gammaOutput:true);
+                if(impact!=null)impact.name=PramanixImpactRendererPrefix+hit.ToId;
             }
         }
 
@@ -220,6 +235,14 @@ namespace YesterdayConvoy
             {
                 string texture = snow.Value == 1 ? "sbell2_ground_01" : snow.Value < 5 ? "sbell2_ground_02" : "sbell2_ground_03";
                 Vector2 cell = snow.Key;
+                // Keep the native snow pattern and show the whole affected tile on the gray industrial deck.
+                var tint = new Color(.61f,.78f,.91f,.35f+(snow.Value-1)*.065f);
+                var coverage=DrawGuardGroundCell(cell,tint);
+                if(coverage!=null)
+                {
+                    coverage.transform.localScale=Vector3.one*.96f;
+                    coverage.sortingOrder=29;
+                }
                 double age = .8 + (now*FormationVisualRate+cell.x*.17+cell.y*.31)%1.6;
                 var clip=OriginalCombatVfxArt.Get(PramanixEffects+texture);
                 var snowTile=LegacyDraw(clip.At(age),legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.035f,
@@ -265,10 +288,10 @@ namespace YesterdayConvoy
         {
             // The first native sample includes the fade-in. Repeat only the settled section.
             if(age>=3.5)age=1+(age-1)%2.5;
-            LegacyOriginal(PramanixEffects+effect,age,cell,order,flat:true,scale:scale);
+            LegacyOriginal(PramanixEffects+effect,age,cell,order,flat:true,scale:scale,gammaOutput:true);
         }
 
-        void DrawGuardGroundCell(Vector2 cell,Color color)
+        SpriteRenderer DrawGuardGroundCell(Vector2 cell,Color color)
         {
             if(guardWarningTile==null)
             {
@@ -278,6 +301,7 @@ namespace YesterdayConvoy
             }
             var marker=LegacyDraw(guardWarningTile,legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.035f,cell,.92f,-8,flat:true);
             if(marker!=null)marker.color=color;
+            return marker;
         }
 
         void PresentGuardSlashWarning(FormationBattleModel.FormationGuardEffect slash,double now)
@@ -392,19 +416,19 @@ namespace YesterdayConvoy
             r.SetPropertyBlock(view.Properties);
             return r;
         }
-        void LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null)
+        SpriteRenderer LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null,bool gammaOutput=false)
         {
-            if(age<0||!FormationPointVisibleInView(cell))return;
+            if(age<0||!FormationPointVisibleInView(cell))return null;
             string key=raw.Contains("/")?raw:"monster/"+raw;
-            if(!OriginalCombatVfxArt.TryGet(key,out var clip)||!clip.Sequence.Ready)return;
-            if(loop&&!clip.Loop)return; // Never invent looping from a one-shot capture.
+            if(!OriginalCombatVfxArt.TryGet(key,out var clip)||!clip.Sequence.Ready)return null;
+            if(loop&&!clip.Loop)return null; // Never invent looping from a one-shot capture.
             float roll=0;
             if(direction.HasValue&&clip.Directional)
             {
                 var vector=direction.Value;float x=Vector3.Dot(vector,battleCamera.transform.right),y=Vector3.Dot(vector,battleCamera.transform.up);
                 if(x*x+y*y>1e-8)roll=Mathf.Atan2(y,x)*Mathf.Rad2Deg-clip.ForwardDegrees;
             }
-            LegacyDraw(clip.At(age,loop),legacyHdrMaterial,explicitPosition??(ActorWorldPoint(cell)+Vector3.up*.025f),cell,scale,order,hdr:clip.HdrRange,flat:flat,roll:roll);
+            return LegacyDraw(clip.At(age,loop),legacyHdrMaterial,explicitPosition??(ActorWorldPoint(cell)+Vector3.up*.025f),cell,scale,order,hdr:clip.HdrRange,flat:flat,roll:roll,gammaOutput:gammaOutput);
         }
         void LegacyOriginalBeam(string key,double age,Vector2 from,Vector2 to,float lift=1.05f,bool loop=true,Vector3? explicitStart=null,Vector3? explicitEnd=null)
         {

@@ -92,6 +92,7 @@ namespace YesterdayConvoy
             replay.s2Ppu = body == null ? 0 : body.sprite.pixelsPerUnit;
             Assert(Mathf.Approximately(replay.s2Ppu, 249.6f), "S2 uses the HD body in battle");
             yield return Frame("04-s2-snow-tiles");
+            yield return ObserveSnowBossDirectImpact(guard, false);
             yield return ObserveSnowBossMotion(guard, false, count => replay.s2DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, false).Length >= 2,
                 "S2 repeats at the faster combat interval with its source motion rate");
@@ -147,6 +148,7 @@ namespace YesterdayConvoy
             replay.s3Ppu = body == null ? 0 : body.sprite.pixelsPerUnit;
             Assert(Mathf.Approximately(replay.s3Ppu, 249.6f), "S3 uses the HD body in battle");
             yield return Frame("06-s3-impact");
+            yield return ObserveSnowBossDirectImpact(guard, true);
             yield return ObserveSnowBossMotion(guard, true, count => replay.s3DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, true).Length >= 2,
                 "S3 repeats at the faster combat interval with its source motion rate");
@@ -230,6 +232,37 @@ namespace YesterdayConvoy
             });
         }
 
+        IEnumerator ObserveSnowBossDirectImpact(FormationDefender guard, bool thirdSkill)
+        {
+            var model = controller.Model;
+            string skill = thirdSkill ? "S3" : "S2";
+            string clip = thirdSkill ? "sbell2_skill_03_hit" : "sbell2_skill_01_hit";
+            yield return ObserveSnowBossUntil(() =>
+            {
+                var directHits = model.Hits.Where(hit => hit.FromId == guard.Id && hit.Skill && hit.Amount > 0 &&
+                    hit.Action != null && IsSnowBossStrike(hit.Action, thirdSkill) &&
+                    Math.Abs(hit.At - hit.Action.ContactAt) <= .026 &&
+                    model.Clock - hit.At >= .08 && model.Clock - hit.At <= .25 &&
+                    controller.FormationPointVisibleInView(hit.To)).ToArray();
+                if (directHits.Length == 0) return false;
+                var sprites = controller.GetComponentsInChildren<SpriteRenderer>();
+                return directHits.Any(hit => sprites.Any(renderer => renderer.enabled && renderer.sprite != null &&
+                    renderer.name == FormationBattleController.PramanixImpactRendererPrefix + hit.ToId &&
+                    renderer.sprite.name.Contains(clip) && SnowBossImpactOverTarget(renderer, hit)));
+            }, skill + " renders the native direct-impact layer above a target damaged at the source contact", 8);
+            yield return Frame(thirdSkill ? "06-s3-native-direct-impact" : "04-s2-native-direct-impact");
+        }
+
+        bool SnowBossImpactOverTarget(SpriteRenderer renderer, FormationHit hit)
+        {
+            var camera = Camera.main;
+            var foot = camera.WorldToViewportPoint(controller.ActorWorldPoint(hit.To));
+            var impact = camera.WorldToViewportPoint(renderer.transform.position);
+            int targetOrder = 5000 - Mathf.RoundToInt(hit.To.y * 50);
+            return impact.z > 0 && Mathf.Abs(impact.x - foot.x) < .03f &&
+                impact.y - foot.y > .01f && impact.y - foot.y < .25f && renderer.sortingOrder > targetOrder;
+        }
+
         IEnumerator ObserveSnowBossAudio(int phase)
         {
             yield return ObserveSnowBossUntil(() => controller.SnowBossVoiceStarts.Count == phase &&
@@ -296,10 +329,10 @@ namespace YesterdayConvoy
                 .Select(pair => pair.interval).ToArray();
         }
 
-        IEnumerator ObserveSnowBossUntil(Func<bool> reached, string check)
+        IEnumerator ObserveSnowBossUntil(Func<bool> reached, string check, double? timeoutSeconds = null)
         {
             var model = controller.Model;
-            double deadline = Time.realtimeSinceStartupAsDouble + model.LimitSeconds + 10;
+            double deadline = Time.realtimeSinceStartupAsDouble + (timeoutSeconds ?? model.LimitSeconds + 10);
             while (!reached() && controller.CombatViewActive && Time.realtimeSinceStartupAsDouble < deadline)
                 yield return null;
             Assert(reached(), $"{check} ({model.Phase}, {model.Clock:0.000}s)");
