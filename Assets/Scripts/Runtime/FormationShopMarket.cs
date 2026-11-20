@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             var unit=Model?.Units.FirstOrDefault(u=>u.Instance==instance);
             if(unit==null||!FormationActorVisibleInView(unit))return Rect.zero;
             var foot=CellScreen(unit.SpawnCenter);
-            return new Rect(foot.x-46,foot.y-55,92,68);
+            return BattleRect.Contains(foot) ? new Rect(foot.x-46,foot.y-55,92,68) : Rect.zero;
         }
         void EnsureOriginalShop()
         {

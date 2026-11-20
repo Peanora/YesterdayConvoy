@@ -22,9 +22,9 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
-        public IEnumerator BoardMergeTargetsActualVisibleBodyAndSuppressesHiddenScoutingStage()
+        public IEnumerator BoardMergeTargetsOnScreenBodiesInBothViews()
         {
-            foreach (bool scouting in new[] { false, true })
+            foreach (var (scouting, visible, column) in new[] { (false, true, 5), (true, true, 8), (true, false, 0) })
             {
                 // Explicit legal-stock presentation fixture: two one-star copies and the
                 // third in the real shop. It does not establish natural acquisition odds.
@@ -44,15 +44,15 @@ namespace YesterdayConvoy.Tests
                 var fighter = controller.Model.Units.Single(); int instance = fighter.Instance;
                 Assert.That(session.Seats.InLineup(instance), Is.True);
                 Assert.That(session.Shop.Bench.Count(p => !session.Seats.InLineup(p.Instance)), Is.EqualTo(1));
-                Assert.That(session.TryDeploy(instance, new Vector2Int(5, 4)).Success, Is.True);
-                controller.SetFormationView(scouting); controller.SetMarketVisible(true);
+                Assert.That(session.TryDeploy(instance, new Vector2Int(column, 4)).Success, Is.True);
+                controller.SetFormationView(scouting, true); controller.SetMarketVisible(true);
                 deadline = Time.realtimeSinceStartupAsDouble + 3;
                 while (controller.ShopPanelTransitioning && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
                 yield return null;
                 fighter = controller.Model.Units.Single(); var anchor = fighter.Spawn;
                 var foot = FormationBattleController.CellScreen(fighter.SpawnCenter);
                 var target = controller.FormationRecruitmentTargetRect(instance);
-                if (scouting) Assert.That(target, Is.EqualTo(Rect.zero));
+                if (!visible) Assert.That(target, Is.EqualTo(Rect.zero));
                 else
                 {
                     Assert.That(target.width > 0 && target.height > 0, Is.True);
@@ -71,7 +71,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(controller.ShopBenchModel(instance).enabled, Is.False, "An on-board fighter has no persistent duplicate in the reserve stage.");
                 var arrival = controller.ShopEntranceModel(instance);
                 Assert.That(arrival, Is.Not.Null);
-                Assert.That(arrival.enabled, Is.EqualTo(!scouting));
+                Assert.That(arrival.enabled, Is.EqualTo(visible));
                 float nearestToFoot = float.PositiveInfinity;
                 deadline = Time.realtimeSinceStartupAsDouble + 3;
                 while (controller.ShopArrivalCount > 0 && Time.realtimeSinceStartupAsDouble < deadline)
@@ -79,16 +79,16 @@ namespace YesterdayConvoy.Tests
                     arrival = controller.ShopEntranceModel(instance);
                     if (arrival != null)
                     {
-                        if (scouting) Assert.That(arrival.enabled, Is.False, "A hidden left-side merge cannot emit a stage sprite at the fallback origin.");
+                        if (!visible) Assert.That(arrival.enabled, Is.False, "An off-screen merge cannot emit a stage sprite at the fallback origin.");
                         else nearestToFoot = Mathf.Min(nearestToFoot, Vector2.Distance(StagePoint(arrival.transform.position), foot));
                     }
                     Assert.That(controller.ShopBenchModel(instance).enabled, Is.False);
                     yield return null;
                 }
-                if (!scouting) Assert.That(nearestToFoot, Is.LessThan(8), "The actual recruitment flow must approach the real board destination, not (0,55).");
+                if (visible) Assert.That(nearestToFoot, Is.LessThan(8), "The actual recruitment flow must approach the real board destination, not (0,55).");
                 else Assert.That(controller.FormationRecruitmentTargetRect(instance), Is.EqualTo(Rect.zero));
                 session.Shop.Validate();
-                yield return Capture(scouting ? "playmode-onboard-merge-hidden-left" : "playmode-onboard-merge-visible-left");
+                yield return Capture(scouting ? $"playmode-onboard-merge-scout-visible-{visible}" : "playmode-onboard-merge-visible-left");
             }
         }
 
