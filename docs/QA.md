@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-20 整备拖装与装备详情
+
+- Unity 6000.6.5f1 Windows x64 Development 构建源码 `27b011f74b0fb8ae8884b4a9f8fc96001a93f256`，989464833 bytes，0 错误，退出 0。Runtime DLL SHA-256 `B893356B3D202653A5CDBE47CA5FFD20A73BD93B59BC2899017B35E274F36DC6`。仓库结构与元数据检查覆盖 14030 个跟踪文件。[构建日志](../artifacts/formation-equipment-ui/build-delivery.log)
+- 相关 EditMode **55/55**，D3D11 PlayMode **4/4**。正式场景回归覆盖装备栏点击、棋盘和备战席拖装、空备战席与宝石拒绝、角色装备格查阅、金币和站位、开战关闭详情。1280×720 独立版走正式入口及前三战 **134/134，零异常**，包含拖动合成预览、确认与取消。完整长局仍待试玩。[EditMode](../artifacts/formation-equipment-ui/editmode-delivery.xml) · [PlayMode](../artifacts/formation-equipment-ui/playmode-delivery.xml) · [独立 Player](../artifacts/formation-equipment-ui/delivery-player/campaign-smoke.json)
+- 最终版普通启动用鼠标从右侧查看钢刃，再拖给宿主士兵，核对装备离开物品栏和角色血条旁的图标。初轮另从角色资料点开了已穿戴的钢刃，看到穿戴者及属性。复验版去掉了基础装备重复的属性行，并把棋盘图标从脚边移到血条旁。备战席直接穿戴由正式场景 PlayMode 验证。[最终版未装备详情](../artifacts/formation-equipment-ui/mouse-inventory-detail.jpg)
+- 复用本作装备图标和左侧羁绊详情框，穿戴交互参照《货币战争》的装备分配。核对实机迅攻触发帧和淡出帧，旋转徽记仍可见，矩形扫描框移除。角色表现沿用现有资源，本轮调整整备界面绘制。[项目来源记录](art/source-records/formation-supplies-ui.json) · [《货币战争》玩法概览](https://www.hoyolab.com/article/42168333) · [羁绊触发实机片段](../artifacts/formation-equipment-ui/trait-activation.mp4) · [关键帧](../artifacts/formation-equipment-ui/delivery-player/trait-activation/010.png)
+
 ## 2026-11-19 守军难度与紧凑阵
 
 - 开工时在旧版重跑三组既有战斗夹具，1-3、2-4、3-7 分别 21.050、71.050、135.775 秒胜利。新版同一夹具分别为 30.800、44.850、113.925 秒。此结果比较既有阵容预算，不能代表自然买卡或全随机通关。[旧版](../artifacts/formation-defense-curve/baseline.xml) · [新版专项](../artifacts/formation-defense-curve/guards-final.xml)
