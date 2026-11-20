@@ -134,6 +134,7 @@ namespace YesterdayConvoy
             {
                 At=Clock, From=source.Position, To=target.Position, FromId=source.Id, ToId=target.Id,
                 Amount=healthLoss, ExpectedDamage=expectedDamage, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
+                IsOutgoingDamage=source is FormationFighter && target is FormationDefender,
                 Action=presentation, ImpactIndex=presentation?.ProjectileOnly==true?presentation.ProjectileIndex:Math.Max(0,s.ActionHits-1),
                 Absorbed=amount<originalAmount-.001f, Secondary=!native&&source is FormationFighter&&presentation==null
             });

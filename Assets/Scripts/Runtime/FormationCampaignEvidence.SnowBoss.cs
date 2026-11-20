@@ -30,7 +30,7 @@ namespace YesterdayConvoy
             public long audioCaptureUtcTicks;
             public double audioCaptureSeconds;
             public float startingHealth, restoredHealth, scoutPpu, s2Ppu, s3Ppu;
-            public float playerDamageNumber, s2DamageNumber, s3DamageNumber, suppressedSnowDamage;
+            public float playerDamageNumber, suppressedS2Damage, suppressedS3Damage, suppressedSnowDamage;
             public string musicClip, outcome;
         }
 
@@ -52,13 +52,14 @@ namespace YesterdayConvoy
 
             var run = controller.Campaign;
             var model = controller.Model;
-            Assert(!(new FormationHit { Amount = 99, ExpectedDamage = 40 }).ShowDamageNumber &&
-                (new FormationHit { Amount = 100, ExpectedDamage = 40 }).ShowDamageNumber &&
-                !(new FormationHit { Amount = 149, ExpectedDamage = 100 }).ShowDamageNumber &&
-                (new FormationHit { Amount = 150, ExpectedDamage = 100 }).ShowDamageNumber &&
-                !(new FormationHit { Amount = 0, Absorbed = true }).ShowDamageNumber &&
-                !(new FormationHit { Amount = 200, Heal = true }).ShowDamageNumber,
-                "Damage popups require both inclusive heavy-hit thresholds and do not count healing or zero HP loss");
+            Assert(!(new FormationHit { IsOutgoingDamage = true, Amount = 99, ExpectedDamage = 40 }).ShowDamageNumber &&
+                (new FormationHit { IsOutgoingDamage = true, Amount = 100, ExpectedDamage = 40 }).ShowDamageNumber &&
+                !(new FormationHit { IsOutgoingDamage = true, Amount = 149, ExpectedDamage = 100 }).ShowDamageNumber &&
+                (new FormationHit { IsOutgoingDamage = true, Amount = 150, ExpectedDamage = 100 }).ShowDamageNumber &&
+                !(new FormationHit { IsOutgoingDamage = true, Amount = 0, Absorbed = true }).ShowDamageNumber &&
+                !(new FormationHit { IsOutgoingDamage = true, Amount = 200, Heal = true }).ShowDamageNumber &&
+                !(new FormationHit { Amount = 200, ExpectedDamage = 100 }).ShowDamageNumber,
+                "Outgoing damage popups require both inclusive heavy-hit thresholds");
             Assert(run.IsPramanixBossTrial && run.CurrentNode.Id == "3-7" && model.EnabledCount > 0 &&
                 !run.HasBlockingChoice, "Dedicated trial opens immediately with the legal prebuilt army");
             var guard = model.Defenders.Single();
@@ -302,13 +303,14 @@ namespace YesterdayConvoy
             string skill = thirdSkill ? "S3" : "S2";
             yield return ObserveSnowBossUntil(() =>
             {
-                guardHit = RecentVisibleHit(hit => hit.FromId == guard.Id && hit.ShowDamageNumber &&
+                guardHit = RecentVisibleHit(hit => hit.FromId == guard.Id && hit.Amount >= Mathf.Max(100, hit.ExpectedDamage * 1.5f) &&
                     hit.Action != null && IsSnowBossStrike(hit.Action, thirdSkill));
                 return guardHit != null;
-            }, skill + " deals qualifying damage to a player unit", 8);
-            if (thirdSkill) replay.s3DamageNumber = guardHit.Amount;
-            else replay.s2DamageNumber = guardHit.Amount;
-            yield return Frame(thirdSkill ? "06-s3-large-damage-number" : "04-s2-large-damage-number");
+            }, skill + " deals a heavy incoming hit to a player unit", 8);
+            Assert(!guardHit.ShowDamageNumber, skill + " keeps the damage and impact without a red number on the player unit");
+            if (thirdSkill) replay.suppressedS3Damage = guardHit.Amount;
+            else replay.suppressedS2Damage = guardHit.Amount;
+            yield return Frame(thirdSkill ? "06-s3-incoming-no-damage-number" : "04-s2-incoming-no-damage-number");
             if (thirdSkill) yield break;
 
             FormationHit playerHit = null;
