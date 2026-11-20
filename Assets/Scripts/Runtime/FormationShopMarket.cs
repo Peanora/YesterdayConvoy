@@ -109,7 +109,7 @@ namespace YesterdayConvoy
         }
         public void SetMarketVisible(bool visible)
         {
-            visible=visible&&Model!=null&&Model.Phase==FormationPhase.Preparation;
+            visible=visible&&Model!=null&&Model.Phase==FormationPhase.Preparation&&Campaign?.OpeningRewardsPending!=true;
             if(visible)
             {
                 CloseFormationTraitDetails();
@@ -331,10 +331,11 @@ namespace YesterdayConvoy
             }
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
             bool supply=Campaign?.CurrentNode.Kind=="补给";
-            bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked;
+            bool openingRewards = Campaign?.OpeningRewardsPending == true;
+            bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked&&!openingRewards;
             var start = FormationStartRect;
             GUI.enabled = GUI.enabled && openingGroundBall == null;
-            if (EconomyButton(start, supply ? "继续行军  ›" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
+            if (EconomyButton(start, openingRewards ? "领取开局补给" : supply ? "继续行军  ›" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
                 supply ? "补给结束后前往下一节点" : "锁定本场阵容并发起进攻", FormationPreparationPalette.Rust, FormationPreparationPalette.Text, 15))
             {
                 if (supply) ContinueCampaign();

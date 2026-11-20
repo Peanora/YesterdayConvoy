@@ -38,6 +38,11 @@ namespace YesterdayConvoy
             approvedShop?.ResetShopPresentation();
 
             Session = FormationShopSession.StartNew(seed, fullCampaign: true);
+            foreach (var drop in Session.Run.PendingBalls.ToArray())
+            {
+                if (Session.Run.BeginBall(drop.Id) == null || Session.CompleteBall(drop.Id) == null)
+                    throw new InvalidOperationException("Could not claim the production opening rewards for the showcase.");
+            }
             for (int choice = 0; Session.Run.HasBlockingChoice; choice++)
             {
                 if (choice >= 32 || !Session.Choose(0).Success)

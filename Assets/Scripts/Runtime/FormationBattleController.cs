@@ -45,7 +45,10 @@ namespace YesterdayConvoy
         {
             FormationUnitArt.RegisterCards(formationCards);
             bool fullCampaign=!FormationBattleSmokeDriver.Requested&&Array.IndexOf(Environment.GetCommandLineArgs(),"-formationLegacyDemo")<0;
-            Session=FormationShopSession.Current??FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);seed=Session.Seed;
+            Session=FormationShopSession.Current??FormationShopSession.StartNew(
+                fullCampaign&&!FormationCampaignEvidence.Requested ? Guid.NewGuid().GetHashCode() : seed,fullCampaign:fullCampaign);
+            seed=Session.Seed;
+            if(Session.Run?.OpeningRewardsPending==true)notice=Session.Run.LastSummary;
             Model=new FormationBattleModel(seed,terrain!=null?terrain.BuildLayout():null);Session.ApplyTo(Model);
             if(Session.Run!=null)Model.BindCampaign(Session.Run);
             else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
@@ -235,12 +238,12 @@ namespace YesterdayConvoy
 
         void StartNewFormationChallenge(bool fullCampaign)
         {
-            seed=unchecked(seed+1);
+            seed=fullCampaign&&!FormationCampaignEvidence.Requested ? Guid.NewGuid().GetHashCode() : unchecked(seed+1);
             Session=FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);
             Model=new FormationBattleModel(seed,Model.Terrain);
             Session.ApplyTo(Model);
             if(!fullCampaign){Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
-            ResetFormationPreparation(fullCampaign?"新挑战：随机三名一费，3级、8金币。先选基础装备与战略预案。":"新挑战：无限测试金币，有限牌库与三人军团。");
+            ResetFormationPreparation(fullCampaign?Campaign.LastSummary:"新挑战：无限测试金币，有限牌库与三人军团。");
         }
 
         internal void SelectPracticeBattle(int node)

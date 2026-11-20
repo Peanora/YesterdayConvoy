@@ -129,11 +129,9 @@ namespace YesterdayConvoy
             if (ball == null || ball.Flight != null) return false;
             var payout = Campaign.BeginBall(id);
             if (payout == null) return false;
-            int earlierRecruits = rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Recruits.Count);
-            var vacant = Enumerable.Range(0,10).Where(slot=>Session.Seats.At(false,slot)==0).ToArray();
-            var targets = new Vector2[payout.Recruits.Count];
-            for (int index=0;index<payout.Recruits.Count;index++)
-                targets[index] = FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(earlierRecruits+index,vacant.Length-1)]).center;
+            var targets = ball.Drop.IsOpening && payout.Recruits.Count > 0
+                ? Session.OpeningRecruitCenters(payout.Recruits).Select(cell => RewardProjection(ActorWorldPoint(cell))).ToArray()
+                : ReserveRewardTargets(payout.Recruits.Count);
             ball.Flight = new GroundRewardFlight
             {
                 Ball = ball,
@@ -146,6 +144,16 @@ namespace YesterdayConvoy
                 RevealEquipmentSlot(Campaign.Inventory.Count + PendingGroundRewardItems - 1);
             CloseFormationTraitDetails();
             return true;
+        }
+
+        Vector2[] ReserveRewardTargets(int count)
+        {
+            int earlierRecruits = rewardFlights.Sum(flight => flight.Arrived ? 0 : flight.Payout.Recruits.Count);
+            var vacant = Enumerable.Range(0,10).Where(slot => Session.Seats.At(false,slot) == 0).ToArray();
+            var targets = new Vector2[count];
+            for (int index = 0; index < count; index++)
+                targets[index] = FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(earlierRecruits+index,vacant.Length-1)]).center;
+            return targets;
         }
 
         void TickGroundRewards(float delta)
@@ -222,7 +230,7 @@ namespace YesterdayConvoy
                 flight.ArrivalItems = Campaign.Inventory.Count - firstItem;
                 if (flight.ArrivalItems > 0)
                     RevealEquipmentSlot(firstItem + flight.ArrivalItems - 1);
-                notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
+                notice = (ball.Drop.IsOpening ? "开局补给" : ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
                 changed = true;
             }
             if (changed)
@@ -460,6 +468,13 @@ namespace YesterdayConvoy
         void DrawFormationRewardFlights()
         {
             if (CombatViewActive || ViewingDefenders || formationMenuOpen || Event.current.type != EventType.Repaint) return;
+            if (Campaign?.OpeningRewardsPending == true && !CampaignInteractionBlocked)
+            {
+                var anchor = RewardProjection(GroundRewardPoint((RewardLeft + RewardRight) * .5f, RewardFar, .3f));
+                var label = new Rect(anchor.x - 64, anchor.y - 22, 128, 19);
+                Fill(label, new Color(.10f,.15f,.19f,.89f));
+                EconomyLabel(label, "开局补给 · 点击拾取", 11, EconomyIce, true, TextAnchor.MiddleCenter);
+            }
             if (rewardFlights.Count == 0) return;
             int nextItem = Campaign.Inventory.Count;
             foreach (var flight in rewardFlights)

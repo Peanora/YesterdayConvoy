@@ -7,6 +7,7 @@ namespace YesterdayConvoy
     /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
     public sealed class FormationCampaignRun
     {
+        internal const string OpeningRewardNode = "开局";
         public sealed class ChoiceOption
         {
             public string Id, Name, Description;
@@ -49,6 +50,7 @@ namespace YesterdayConvoy
             public string Node { get; }
             public string Color { get; }
             public string Component { get; }
+            public bool IsOpening => Node == OpeningRewardNode;
             internal BallPayout Payout { get; }
             internal RewardDrop(int id,string node,string color,BallPayout payout,string component = null)
             { Id = id; Node = node; Color = color; Payout = payout; Component = component; }
@@ -58,7 +60,9 @@ namespace YesterdayConvoy
             public string CardId { get; }
             public string Name { get; }
             public int Star { get; }
-            internal RewardRecruit(string cardId,string name,int star) { CardId = cardId; Name = name; Star = star; }
+            internal ShopTrialModel.RewardReservation Reservation { get; }
+            internal RewardRecruit(string cardId,string name,int star,ShopTrialModel.RewardReservation reservation = null)
+            { CardId = cardId; Name = name; Star = star; Reservation = reservation; }
         }
         public sealed class BallPayout
         {
@@ -118,6 +122,7 @@ namespace YesterdayConvoy
         public IReadOnlyList<string> OpenedBalls=>openedBalls;
         public IReadOnlyList<BallReward> BallRewards => ballRewards;
         public IReadOnlyList<RewardDrop> PendingBalls => pendingBalls;
+        public bool OpeningRewardsPending => pendingBalls.Any(ball => ball.IsOpening);
         public int PendingRewardChoices => rewardSelections.Count;
         public string RewardChoiceTitle => rewardSelections.Count == 0 ? null : rewardSelections.Peek().Title;
         public IReadOnlyList<ChoiceOption> RewardChoices => rewardSelections.Count == 0 ? Array.Empty<ChoiceOption>() : rewardSelections.Peek().Options;
@@ -159,7 +164,8 @@ namespace YesterdayConvoy
 
         public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
 
-        internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode,FormationSynergyTrial trial=null)
+        internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode,FormationSynergyTrial trial=null,
+            IReadOnlyList<string> openingStarters = null)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
             SynergyTrial=trial;
@@ -177,8 +183,16 @@ namespace YesterdayConvoy
                 if (trial.Trait.Id == "萨卡兹") { SarkazPact = 2; SarkazBloodPact = true; }
                 return;
             }
-            RequestComponents("开局基础装备 · 三选一",3);
-            RequestPreplan();
+            if (openingStarters != null)
+            {
+                QueueOpeningRewards(openingStarters);
+                LastSummary = "点击奖励球领取开局装备与角色";
+            }
+            else
+            {
+                RequestComponents("开局基础装备 · 三选一",3);
+                RequestPreplan();
+            }
         }
 
         internal bool SelectPracticeNode(int node)
@@ -533,6 +547,22 @@ namespace YesterdayConvoy
             payout.items.Add(component);
             pendingBalls.Add(new RewardDrop(++ballSequence,node,"",payout,component));
         }
+
+        void QueueOpeningRewards(IReadOnlyList<string> starterIds)
+        {
+            var equipment = new BallPayout();
+            equipment.items.Add(Shuffle("ABCDEF".Select(letter => letter.ToString())).First());
+            pendingBalls.Add(new RewardDrop(++ballSequence, OpeningRewardNode, "蓝", equipment));
+
+            var recruits = new BallPayout();
+            foreach (string id in starterIds)
+            {
+                var ticket = shop.ReserveRewardCandidate(id);
+                if (ticket == null) throw new InvalidOperationException("Missing stock for starter " + id);
+                recruits.recruits.Add(new RewardRecruit(id, shop.Definition(id).Name, 1, ticket));
+            }
+            pendingBalls.Add(new RewardDrop(++ballSequence, OpeningRewardNode, "白", recruits));
+        }
         static int EquipmentWeight(string key) => key.Length == 1 && "ABCDEF".Contains(key) ? 1 :
             FormationCampaignRules.AllItems.Any(item=>item.Id==key) ? 2 : 0;
 
@@ -602,8 +632,11 @@ namespace YesterdayConvoy
             var recruits = new List<string>();
             foreach (var recruit in payout.Recruits)
             {
-                bool granted = shop.Grant(recruit.CardId,recruit.Star).Success;
-                if (!granted) waiting.Add(new Delivery{Id=recruit.CardId,Star=recruit.Star,KeepWhenMax=true});
+                bool granted = (recruit.Reservation == null
+                    ? shop.Grant(recruit.CardId,recruit.Star)
+                    : shop.GrantReserved(recruit.Reservation)).Success;
+                if (!granted) waiting.Add(new Delivery{Id=recruit.CardId,Star=recruit.Star,KeepWhenMax=true,
+                    Reservation=recruit.Reservation});
                 recruits.Add(recruit.Star+"★ "+recruit.Name+(granted?"":"（待领）"));
             }
             foreach (string key in payout.Items) AddItem(key);
@@ -628,6 +661,7 @@ namespace YesterdayConvoy
                 rewardSelections.Count > choiceCount ? rewardSelections.Last().Title : null, payout.Items.ToArray());
             if (drop.Component == null && drop.Node == CurrentNode.Id) openedBalls.Add(drop.Color);
             ballRewards.Add(reward);
+            if (drop.IsOpening && !OpeningRewardsPending) RequestPreplan();
             OnShopChanged();
             return reward;
         }

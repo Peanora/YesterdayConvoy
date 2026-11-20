@@ -18,7 +18,8 @@ namespace YesterdayConvoy
         public int Round { get; private set; } = 1;
         public FormationCampaignRun Run {get;private set;}
         public ShopTrialModel.RoundReward LastReward { get; private set; }
-        public bool CanShop => (model == null || model.Phase == FormationPhase.Preparation)&&(Run==null||!Run.Finished&&!Run.HasBlockingChoice&&!Run.NodeSettled);
+        public bool CanShop => (model == null || model.Phase == FormationPhase.Preparation)&&
+            (Run==null||!Run.Finished&&!Run.HasBlockingChoice&&!Run.OpeningRewardsPending&&!Run.NodeSettled);
 
         readonly List<string> lineup = new List<string>();
         readonly Dictionary<int, Vector2> instancePositions = new Dictionary<int, Vector2>();
@@ -54,10 +55,10 @@ namespace YesterdayConvoy
                 var random=new System.Random(seed^0x317a9);
                 var starting = trial?.Roster ?? FormationCampaignRules.AllUnits.Where(role => role.Cost == 1)
                     .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray();
-                var pieces = starting.Select(id => new ShopTrialModel.Piece { Id = id,
+                var pieces = (practiceNode.HasValue ? starting : Array.Empty<string>()).Select(id => new ShopTrialModel.Piece { Id = id,
                     Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 });
                 Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, starting.Count), xp: 0, gold: 8);
-                Run=new FormationCampaignRun(Shop,seed,practiceNode,trial);
+                Run=new FormationCampaignRun(Shop,seed,practiceNode,trial,practiceNode.HasValue ? null : starting);
                 Round=Run.NodeIndex+1;
             }
             else
@@ -324,10 +325,26 @@ namespace YesterdayConvoy
             var result=Run.Choose(index);if(result.Success){Synchronize();if(model!=null&&model.Phase==FormationPhase.Preparation)ApplyTo(model);}return result;
         }
         public bool RerollChoice()=>Run!=null&&Run.RerollChoice();
+        internal Vector2[] OpeningRecruitCenters(IReadOnlyList<FormationCampaignRun.RewardRecruit> recruits)
+        {
+            // During opening, no cards can be bought or placed before these first copies arrive.
+            var starters = recruits.Select((recruit, index) => new ShopTrialModel.Piece
+                { Id = recruit.CardId, Star = recruit.Star, Instance = index + 1 }).ToArray();
+            if (!TryProject(starters, out var placements, out var failure))
+                throw new InvalidOperationException(failure);
+            return placements.Select(entry => entry.Spawn +
+                (Vector2)(FormationUnitCatalog.Find(entry.ArtId).Footprint - Vector2Int.one) * .5f).ToArray();
+        }
+
         internal FormationCampaignRun.BallReward CompleteBall(int id)
         {
+            var opening = Run?.PendingBalls.FirstOrDefault(drop => drop.Id == id && drop.IsOpening);
             var reward = Run?.CompleteBall(id);
-            if (reward != null) Synchronize();
+            if (reward != null)
+            {
+                if (opening != null) lineup.AddRange(opening.Payout.Recruits.Select(recruit => recruit.CardId));
+                Synchronize();
+            }
             return reward;
         }
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)

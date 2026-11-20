@@ -23,6 +23,56 @@ namespace YesterdayConvoy.Tests
                 ResolveChoices(run);
             }
         }
+
+        [Test]
+        public void OpeningBallsReserveDistinctStartersAndRandomizeReproduciblyBySeed()
+        {
+            string Open(int seed)
+            {
+                var session = new FormationShopSession(seed, fullCampaign: true);
+                var run = session.Run;
+                var shop = session.Shop;
+                Assert.That(run.OpeningRewardsPending, Is.True);
+                Assert.That(run.HasBlockingChoice || session.CanShop, Is.False);
+                Assert.That(shop.Bench, Is.Empty);
+                Assert.That(run.Inventory, Is.Empty);
+                Assert.That(run.PendingBalls.Count, Is.EqualTo(2));
+                var recruitDrop = run.PendingBalls.Single(ball => ball.Color == "白");
+                var equipmentDrop = run.PendingBalls.Single(ball => ball.Color == "蓝");
+                var recruits = run.BeginBall(recruitDrop.Id).Recruits;
+                var equipment = run.BeginBall(equipmentDrop.Id).Items.Single();
+                Assert.That(recruits.Select(recruit => recruit.CardId).Distinct().Count(), Is.EqualTo(3));
+                Assert.That("ABCDEF", Does.Contain(equipment));
+                foreach (var recruit in recruits)
+                {
+                    Assert.That(shop.Definition(recruit.CardId).Cost, Is.EqualTo(1));
+                    Assert.That(shop.ReservedRewards(recruit.CardId), Is.EqualTo(1));
+                }
+                Assert.That(shop.Bench, Is.Empty);
+                Assert.That(run.Inventory, Is.Empty);
+                Assert.That(run.BeginBall(recruitDrop.Id), Is.Null);
+                Assert.That(run.CompleteBall(equipmentDrop.Id), Is.Not.Null);
+                Assert.That(run.HasBlockingChoice, Is.False);
+                Assert.That(run.CompleteBall(recruitDrop.Id), Is.Not.Null);
+                Assert.That(run.CompleteBall(recruitDrop.Id), Is.Null);
+                Assert.That(run.OpeningRewardsPending, Is.False);
+                Assert.That(run.ChoiceTitle, Does.Contain("战略预案"));
+                Assert.That(run.Inventory.Select(item => item.Key), Is.EqualTo(new[] { equipment }));
+                Assert.That(shop.Bench.Select(piece => piece.Id), Is.EqualTo(recruits.Select(recruit => recruit.CardId)));
+                Assert.That(shop.Gold, Is.EqualTo(8));
+                Assert.That(shop.Level, Is.EqualTo(3));
+                Assert.That(recruits.All(recruit => shop.ReservedRewards(recruit.CardId) == 0), Is.True);
+                shop.Validate();
+                return equipment + " / " + string.Join(",", recruits.Select(recruit => recruit.CardId).OrderBy(id => id));
+            }
+
+            string first = Open(17);
+            Assert.That(Open(17), Is.EqualTo(first));
+            var outcomes = Enumerable.Range(17, 10).Select(Open).ToArray();
+            Assert.That(outcomes.Select(result => result.Split('/')[0]).Distinct().Count(), Is.GreaterThan(1));
+            Assert.That(outcomes.Select(result => result.Split('/')[1]).Distinct().Count(), Is.GreaterThan(1));
+        }
+
         [Test]
         public void GroundDropsRequireAnOpeningAndPayExactlyOnceOnArrival()
         {
