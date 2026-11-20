@@ -59,7 +59,7 @@ namespace YesterdayConvoy
         int PendingGroundRewardItems => rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Items.Count);
         internal bool ActiveGroundRewardHasRecruits => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Count>0);
         internal bool ActiveGroundRewardHasTwoStar => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Any(recruit=>recruit.Star==2));
-        bool GroundRewardsVisible => Campaign != null && !Campaign.IsPractice && !CombatViewActive && !ViewingDefenders;
+        bool GroundRewardsVisible => Campaign != null && (!Campaign.IsPractice || Campaign.ShowsHopeRewards) && !CombatViewActive && !ViewingDefenders;
         bool CanPickGroundRewards => GroundRewardsVisible && !CampaignInteractionBlocked && !formationMenuOpen &&
             !shopOddsVisible && !rewardHistoryOpen;
 

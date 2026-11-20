@@ -28,7 +28,7 @@ namespace YesterdayConvoy
 
         public Rect FormationRouteNodeRect(int nodeIndex)
         {
-            if (Campaign == null) return Rect.zero;
+            if (Campaign == null || Campaign.SynergyTrial != null) return Rect.zero;
             var nodes = OperationsPlaneNodes;
             int slot = Array.IndexOf(nodes, nodeIndex);
             if (slot < 0) return Rect.zero;
@@ -99,20 +99,36 @@ namespace YesterdayConvoy
                 campaignScoutingOpen = true;
             }
 
-            DrawFormationNodeRail();
+            var trial = Campaign.SynergyTrial;
             var life = new Rect(1006, 20, 86, 36);
             Fill(new Rect(life.x, life.y + 2, 1, 32), OperationsEdge);
-            OperationsLabel(new Rect(life.x + 8, life.y, 19, 35), "♥", 15, new Color32(226, 163, 150, 255));
-            OperationsLabel(new Rect(life.x + 28, life.y, 61, 15), "队伍生命", 10, OperationsMuted);
-            OperationsLabel(new Rect(life.x + 28, life.y + 13, 58, 24), Campaign.SquadHP.ToString(), 23, OperationsInk, true);
+            if (trial != null)
+            {
+                var panel = OperationsRouteRect;
+                OperationsLabel(new Rect(panel.x + 12, panel.y + 7, panel.width - 24, 26),
+                    trial.Trait.Name + " · 羁绊试玩", 18, OperationsGold, true);
+                OperationsLabel(new Rect(panel.x + 12, panel.y + 35, panel.width - 24, 18), trial.Hint, 12, OperationsInk);
+                OperationsLabel(life, "无限金币", 12, OperationsMuted, false, TextAnchor.MiddleCenter);
+            }
+            else
+            {
+                DrawFormationNodeRail();
+                OperationsLabel(new Rect(life.x + 8, life.y, 19, 35), "♥", 15, new Color32(226, 163, 150, 255));
+                OperationsLabel(new Rect(life.x + 28, life.y, 61, 15), "队伍生命", 10, OperationsMuted);
+                OperationsLabel(new Rect(life.x + 28, life.y + 13, 58, 24), Campaign.SquadHP.ToString(), 23, OperationsInk, true);
+            }
             bool preparing = Model.Phase == FormationPhase.Preparation;
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && preparing;
             if (OperationsButton(new Rect(1096, 20, 58, 36), "搭档"))
             { OpenFormationOperationsPanel(); campaignFormationOpen = true; }
             GUI.enabled = enabled;
-            if (OperationsButton(new Rect(1155, 20, 59, 36), "记录"))
-            { OpenFormationOperationsPanel(); campaignRouteOpen = true; }
+            if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : "记录"))
+            {
+                OpenFormationOperationsPanel();
+                if (trial != null) OpenFormationTrialPicker(FormationMenuPage.SynergyTrials);
+                else campaignRouteOpen = true;
+            }
             Fill(new Rect(1154, 27, 1, 22), OperationsEdge);
             Fill(new Rect(1214, 27, 1, 22), OperationsEdge);
         }

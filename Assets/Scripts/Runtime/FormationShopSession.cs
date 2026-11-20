@@ -35,9 +35,15 @@ namespace YesterdayConvoy
             Current = new FormationShopSession(seed,true,node); return Current;
         }
 
+        internal static FormationShopSession StartSynergyTrial(int seed, FormationSynergyTrial trial)
+        {
+            Current = new FormationShopSession(seed, true, trial.NodeIndex, trial);
+            return Current;
+        }
+
         public FormationShopSession(int seed,bool fullCampaign=false) : this(seed,fullCampaign,null) {}
 
-        FormationShopSession(int seed,bool fullCampaign,int? practiceNode)
+        FormationShopSession(int seed,bool fullCampaign,int? practiceNode,FormationSynergyTrial trial=null)
         {
             Seed = seed;
             Shop = new ShopTrialModel((fullCampaign?FormationCampaignRules.AllUnits.Select(role=>new ShopTrialModel.Role{Id=role.CardId,Name=role.Name,Cost=role.Cost}):FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
@@ -46,9 +52,12 @@ namespace YesterdayConvoy
             {
                 Shop.EnableFormationEconomy(unlimited:practiceNode.HasValue);
                 var random=new System.Random(seed^0x317a9);
-                var starting=FormationCampaignRules.AllUnits.Where(role=>role.Cost==1).OrderBy(_=>random.Next()).Take(3).Select(role=>new ShopTrialModel.Piece{Id=role.CardId,Star=1});
-                Shop.Preset(starting,Array.Empty<string>(),level:3,xp:0,gold:8);
-                Run=new FormationCampaignRun(Shop,seed,practiceNode);
+                var starting = trial?.Roster ?? FormationCampaignRules.AllUnits.Where(role => role.Cost == 1)
+                    .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray();
+                var pieces = starting.Select(id => new ShopTrialModel.Piece { Id = id,
+                    Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 });
+                Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, starting.Count), xp: 0, gold: 8);
+                Run=new FormationCampaignRun(Shop,seed,practiceNode,trial);
                 Round=Run.NodeIndex+1;
             }
             else
@@ -324,9 +333,14 @@ namespace YesterdayConvoy
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
         {
             if(Run==null)return won?SettleWin(Round):null;
-            if(Run.IsPractice)return null;
-            bool already=Run.NodeSettled;
             if(model!=null&&model.Phase!=FormationPhase.Won&&model.Phase!=FormationPhase.Lost)return null;
+            if (Run.IsPractice)
+            {
+                Run.SettleSynergyTrial(won);
+                Synchronize();
+                return null;
+            }
+            bool already=Run.NodeSettled;
             LastReward=Run.SettleBattle(won,progress,initialCount,remainingCount,bossAlive);
             if(!already&&model!=null)Shop.AddGold(model.BattleGold);
             Synchronize();return LastReward;

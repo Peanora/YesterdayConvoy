@@ -24,10 +24,11 @@ namespace YesterdayConvoy
         void CampaignLabel(Rect rect,string value,int size=13,bool bold=false)=>GUI.Label(rect,value??"",CampaignText(size,bold));
         void TickCampaignSettlement()
         {
-            if(Campaign==null||Campaign.IsPractice||campaignResultSettled||Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost)return;
+            if(Campaign==null||campaignResultSettled||(Campaign.IsPractice&&Campaign.SynergyTrial==null)||
+                (Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost))return;
             campaignResultSettled=true;
             Session.SettleBattle(Model.Phase==FormationPhase.Won,Model.EncounterProgress,Model.InitialDefenderCount,Model.RemainingDefenders,Model.BossAlive);
-            notice=Campaign.LastSummary;
+            notice=Campaign.LastTrialProgress??Campaign.LastSummary;
         }
         public ShopTrialModel.Result ChooseCampaignOption(int index)
         {
@@ -93,8 +94,10 @@ namespace YesterdayConvoy
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
             string resources=$"希望 {Campaign.Hope} · 刷新券 {Campaign.FreeRefreshes}";
+            if(Campaign.SynergyTrial?.Trait.Id=="泥岩")resources=$"巨像培育经验 {Campaign.MudrockXP} · "+resources;
+            if(!string.IsNullOrEmpty(notice)&&notice!=Campaign.SynergyTrial?.Hint)resources+="  ·  "+notice;
             OperationsLabel(new Rect(117,FormationExperienceRect.yMin-20,1014,17),
-                resources+"  ·  "+notice+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),
+                resources+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),
                 10,OperationsMuted);
         }
         void DrawCampaignOverlays()
@@ -182,13 +185,18 @@ namespace YesterdayConvoy
         }
         void DrawPracticeResult()
         {
-            var r=new Rect(350,198,580,234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
+            var trial=Campaign.SynergyTrial;
+            string progress=Campaign.LastTrialProgress;
+            bool showProgress=!string.IsNullOrEmpty(progress);
+            var r=new Rect(350,198,580,showProgress?270:234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
             string outcome=Model.Phase==FormationPhase.Won?"蓝门突破":"本关失利";
-            CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{Campaign.CurrentNode.Id}  ·  {outcome}",25,true);
-            CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,60),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
-            if(Button(new Rect(r.x+25,r.yMax-72,254,46),"重试本关",true,true)){SelectPracticeBattle(Campaign.NodeIndex);return;}
-            if(Button(new Rect(r.x+296,r.yMax-72,259,46),"选择其他关卡"))
-            {formationMenuOpen=true;formationPracticePickerOpen=true;CancelFormationDrag();}
+            string title=trial?.Trait.Name??Campaign.CurrentNode.Id;
+            CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{title}  ·  {outcome}",25,true);
+            CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,35),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
+            if(showProgress)CampaignLabel(new Rect(r.x+25,r.y+122,r.width-50,67),progress,14,true);
+            if(Button(new Rect(r.x+25,r.yMax-72,254,46),"重试本关",true,true)){ResetDemo();return;}
+            if(Button(new Rect(r.x+296,r.yMax-72,259,46),trial==null?"选择其他关卡":"选择其他羁绊"))
+                OpenFormationTrialPicker(trial==null?FormationMenuPage.DifficultyTrials:FormationMenuPage.SynergyTrials);
         }
         void DrawCampaignInventory()
         {
@@ -305,7 +313,11 @@ namespace YesterdayConvoy
         }
         void DrawCampaignScouting()
         {
-            var r=CampaignWindow("怪物信息",$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind} · {(float.IsPositiveInfinity(Campaign.CurrentNode.TimeLimit)?"不限时":$"{Campaign.CurrentNode.TimeLimit:0} 秒")}");
+            var trial=Campaign.SynergyTrial;
+            string title=trial==null?$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}":trial.Trait.Name+" · 羁绊试玩";
+            double limit=trial==null?Campaign.CurrentNode.TimeLimit:Model.LimitSeconds;
+            string time=double.IsPositiveInfinity(limit)?"不限时":$"{limit:0} 秒";
+            var r=CampaignWindow("怪物信息",title+" · "+time);
             if(Button(new Rect(r.x+22,r.y+86,112,29),"本关守军",true,!campaignScoutOwn))
             {campaignScoutOwn=false;campaignScoutScroll=Vector2.zero;}
             if(Button(new Rect(r.x+140,r.y+86,112,29),"我方阵容",true,campaignScoutOwn))
@@ -329,7 +341,7 @@ namespace YesterdayConvoy
                 }
                 GUI.EndScrollView();return;
             }
-            bool encounter=Campaign.CurrentNode.Kind=="遭遇"&&Model.Phase==FormationPhase.Preparation;
+            bool encounter=trial==null&&Campaign.CurrentNode.Kind=="遭遇"&&Model.Phase==FormationPhase.Preparation;
             if(encounter)
             {
                 for(int i=1;i<=4;i++)

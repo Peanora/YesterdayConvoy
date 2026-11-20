@@ -100,9 +100,13 @@ namespace YesterdayConvoy
         string contractId, veteranId;
         bool graduationPaid, talulahFinalReward, deferredAutoRefresh, deferredSupply;
         int lockedReunionCount;
+        bool synergyTrialSettled;
         public int NodeIndex {get;private set;}
         public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
         public bool IsPractice {get;}
+        public FormationSynergyTrial SynergyTrial { get; }
+        public string LastTrialProgress { get; private set; }
+        internal bool ShowsHopeRewards => SynergyTrial?.Trait.Id == "整合";
         public int SquadHP {get;private set;}=100;
         public int Hope {get;private set;}
         public bool Finished {get;private set;}
@@ -155,11 +159,24 @@ namespace YesterdayConvoy
 
         public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
 
-        internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode)
+        internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode,FormationSynergyTrial trial=null)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
+            SynergyTrial=trial;
             IsPractice=practiceNode.HasValue;
             if(IsPractice&&!SelectPracticeNode(practiceNode.Value))throw new ArgumentOutOfRangeException(nameof(practiceNode));
+            if (trial != null)
+            {
+                foreach (string id in trial.BadgeWearers)
+                {
+                    var badge = AddItem("徽章:" + trial.Trait.Id);
+                    var result = Equip(badge.Instance, shop.Bench.Single(piece => piece.Id == id).Instance);
+                    if (!result.Success) throw new InvalidOperationException(result.Message);
+                }
+                if (trial.Trait.Id == "泥岩") MudrockXP = 74;
+                if (trial.Trait.Id == "萨卡兹") { SarkazPact = 2; SarkazBloodPact = true; }
+                return;
+            }
             RequestComponents("开局基础装备 · 三选一",3);
             RequestPreplan();
         }
@@ -167,8 +184,11 @@ namespace YesterdayConvoy
         internal bool SelectPracticeNode(int node)
         {
             if(!IsPractice||node<0||node>=FormationCampaignRules.Nodes.Length||FormationCampaignRules.Nodes[node].DefenderCount==0)return false;
+            if (SynergyTrial != null && node != SynergyTrial.NodeIndex) return false;
             if(NodeIndex!=node)CurrentEncounterTier=1;
             NodeIndex=node;
+            synergyTrialSettled=false;
+            LastTrialProgress=null;
             return true;
         }
         public ShopTrialModel.Result Choose(int index)
@@ -297,7 +317,7 @@ namespace YesterdayConvoy
             if(savings>0){shop.AddGold(2);savings--;}
             if(!won&&!reward&&lossCompensation>0){shop.AddGold(4);lossCompensation--;}
             if(PreplanId=="P05"&&won&&(CurrentNode.Kind=="战斗"||CurrentNode.Kind=="战斗战备")&&marchPlanes.Add(CurrentNode.Plane)){shop.AddGold(4);shop.AddExperience(4);}
-            if(lockedReunionCount>=3){int earned=lockedReunionCount>=9?30:lockedReunionCount>=7?14:lockedReunionCount>=5?7:3;AddHope(earned+(won&&!reward?2:0));}
+            AwardReunionHope(won);
             if(reward)RewardNode(key);
             if(CurrentNode.Kind=="遭遇"&&progress>.25f)
             {foreach(string ball in EncounterBalls(CurrentEncounterTier))OpenBall(ball);if(PreplanId=="P14")OpenBall("蓝");}
@@ -306,13 +326,7 @@ namespace YesterdayConvoy
                 if(UnitId(piece.Id)==veteranId)veteranStacks[veteranId]=Math.Min(10,VeteranStacks(veteranId)+1);
                 foreach(var item in Equipment(piece.Instance).Where(x=>x.Key=="EE"))item.Stacks=Math.Min(10,item.Stacks+1);
             }
-            int mudrockCount=TraitCount("泥岩");
-            if(mudrockCount>=2)
-            {
-                int stars=shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)&&HasNativeTrait(p.Id,"泥岩")).Sum(p=>p.Star);
-                int cap=mudrockCount>=4?99:mudrockCount==3?79:23;
-                MudrockXP=Math.Min(cap,MudrockXP+(mudrockCount+stars)/2);
-            }
+            AwardMudrockExperience();
             // Cannott's legacy ID may differ; metadata name is the stable fallback for the economy payout.
             foreach(var piece in shop.Bench.Where(p=>p.Star>=3&&shop.IsLineupInstance(p.Instance)&&FormationCampaignRules.Find(p.Id)?.Name=="坎诺特"))
                 if(commanderIncomeNodes.Add(key))shop.AddGold(30);
@@ -322,6 +336,43 @@ namespace YesterdayConvoy
             else if(NodeIndex==FormationCampaignRules.Nodes.Length-1){Finished=true;Won=won;}
             return receipt;
         }
+
+        internal void SettleSynergyTrial(bool won)
+        {
+            if (SynergyTrial == null || synergyTrialSettled) return;
+            synergyTrialSettled = true;
+            if (ShowsHopeRewards)
+            {
+                int gained = AwardReunionHope(won);
+                LastTrialProgress = $"本场希望 +{gained} · 累计 {Hope}";
+            }
+            if (SynergyTrial.Trait.Id == "泥岩")
+            {
+                int gained = AwardMudrockExperience();
+                LastTrialProgress = $"本场培育经验 +{gained} · 累计 {MudrockXP} XP";
+            }
+        }
+
+        int AwardReunionHope(bool won)
+        {
+            if (lockedReunionCount < 3) return 0;
+            int earned = lockedReunionCount >= 9 ? 30 : lockedReunionCount >= 7 ? 14 : lockedReunionCount >= 5 ? 7 : 3;
+            earned += won && CurrentNode.Kind != "奖励" ? 2 : 0;
+            AddHope(earned);
+            return earned;
+        }
+
+        int AwardMudrockExperience()
+        {
+            int count = TraitCount("泥岩");
+            if (count < 2) return 0;
+            int stars = shop.Bench.Where(piece => shop.IsLineupInstance(piece.Instance) && HasNativeTrait(piece.Id, "泥岩")).Sum(piece => piece.Star);
+            int cap = count >= 4 ? 99 : count == 3 ? 79 : 23;
+            int before = MudrockXP;
+            MudrockXP = Math.Min(cap, before + (count + stars) / 2);
+            return MudrockXP - before;
+        }
+
         public bool AdvanceNode()
         {
             if(Finished||!NodeSettled||HasBlockingChoice||openingBalls.Count!=0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
@@ -487,7 +538,7 @@ namespace YesterdayConvoy
 
         public void OpenBall(string color)
         {
-            if (IsPractice || color != "白" && color != "蓝" && color != "金" && color != "彩") return;
+            if (IsPractice && !ShowsHopeRewards || color != "白" && color != "蓝" && color != "金" && color != "彩") return;
             string node = CurrentNode.Id;
             pendingBalls.Add(new RewardDrop(++ballSequence,node,color,RollBall(color,node=="1-1"||node=="1-2")));
         }

@@ -215,6 +215,13 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
+            if (Campaign?.SynergyTrial != null)
+            {
+                if (openingGroundBall != null) return;
+                Model = Session.PreparePracticeBattle(Campaign.NodeIndex);
+                ResetFormationPreparation(Campaign.SynergyTrial.Hint);
+                return;
+            }
             if(Campaign?.IsPractice==true){SelectPracticeBattle(Campaign.NodeIndex);return;}
             StartNewFormationChallenge(Campaign!=null);
         }
@@ -231,7 +238,7 @@ namespace YesterdayConvoy
 
         internal void SelectPracticeBattle(int node)
         {
-            if(Campaign?.IsPractice==true)
+            if(Campaign?.IsPractice==true && Campaign.SynergyTrial==null)
             {
                 var next=Session.PreparePracticeBattle(node);
                 if(next==null)return;
@@ -244,6 +251,16 @@ namespace YesterdayConvoy
                 Session.ApplyTo(Model);
             }
             ResetFormationPreparation("难度试玩 · 招募、刷新和经验免费");
+        }
+
+        internal void SelectSynergyTrial(string traitId)
+        {
+            var trial = FormationSynergyTrial.Find(traitId);
+            if (!Ready || trial == null) return;
+            Session = FormationShopSession.StartSynergyTrial(seed, trial);
+            Model = new FormationBattleModel(seed, Model.Terrain);
+            Session.ApplyTo(Model);
+            ResetFormationPreparation(trial.Hint);
         }
 
         void ResetFormationPreparation(string message)

@@ -18,6 +18,7 @@ namespace YesterdayConvoy
             public int assertions,exceptionCount,battles;public string node;
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
             public List<DefenseStage> defenseStages = new List<DefenseStage>();
+            public List<SynergyStage> synergyStages = new List<SynergyStage>();
         }
         [Serializable] sealed class DefenseStage
         {
@@ -27,12 +28,21 @@ namespace YesterdayConvoy
             public List<string> filmedCasts = new List<string>();
             public List<string> observedSkillHits = new List<string>();
         }
+        [Serializable] sealed class SynergyStage
+        {
+            public string id, node, outcome, settlement, golem;
+            public int tier, skillCasts, remaining;
+            public double firstContact, battleSeconds;
+            public float guardHealthLoss;
+            public string[] events;
+        }
         static bool started;
         readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, smaller left deployment area, close fixed preparation views and enlarged battle-only view, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Battle and paused battle hide preparation UI and standing reserve models. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
         FormationBattleController controller;string directory;bool done;
-        static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested;
+        static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
+        static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -46,7 +56,8 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            var fallback = DefenseRequested ? "artifacts/formation-defense/player" : "artifacts/formation-combat-view/player";
+            var fallback = SynergyRequested ? "artifacts/formation-synergy-trials/player" :
+                DefenseRequested ? "artifacts/formation-defense/player" : "artifacts/formation-combat-view/player";
             directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:fallback);Directory.CreateDirectory(directory);
             return Guard(Verify());
         }
@@ -132,6 +143,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (SynergyRequested)
+            {
+                yield return VerifySynergyTrials();
+                yield break;
+            }
             if (DefenseRequested)
             {
                 yield return VerifyDefenses();
@@ -584,6 +600,68 @@ namespace YesterdayConvoy
             yield return CaptureInterfaceClip("trait-activation", 46);
         }
 
+        IEnumerator VerifySynergyTrials()
+        {
+            result.scope = "Authored FormationBattle Windows Player. All current synergy presets, normal controller selection and combat, timed simulation, outcome and retry. Battle observations are sampled without changing actor or defense stats.";
+            var rules = FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).Select(rule => rule.Id);
+            Assert(FormationSynergyTrial.All.Select(trial => trial.Trait.Id).OrderBy(id => id).SequenceEqual(rules.OrderBy(id => id)),
+                "Every current synergy has one preset");
+            foreach (var trial in FormationSynergyTrial.All)
+            {
+                string id = trial.Trait.Id;
+                string imagePrefix = $"{result.battles + 1:00}-{id}";
+                controller.SelectSynergyTrial(id);
+                var run = controller.Campaign;
+                var model = controller.Model;
+                int tier = trial.Trait.Levels.Max();
+                result.node = id;
+                Assert(run.SynergyTrial == trial && controller.Shop.UnlimitedGold && !run.HasBlockingChoice,
+                    id + " enters a fresh ready-to-play trial");
+                Assert(model.EnabledCount == trial.Roster.Count && model.Defenders.Count == run.CurrentNode.DefenderCount &&
+                    model.ActiveSynergies[id] == tier, id + " deploys the actual top tier and real guards");
+                yield return ReadyArt();
+                yield return Frame(imagePrefix + "-preparation");
+                controller.StartBattle();
+                Assert(model.Phase == FormationPhase.Fighting && model.ActiveSynergies[id] == tier, id + " starts combat");
+                var stage = new SynergyStage { id = id, node = run.CurrentNode.Id, tier = tier,
+                    golem = model.Summons.FirstOrDefault(unit => unit.ArtId == "GOLEM")?.Name };
+                while (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting)
+                {
+                    if (model.Clock > model.LimitSeconds + .01) throw new InvalidOperationException(id + " exceeded the battle clock");
+                    model.Paused = false;
+                    model.Advance(1f);
+                    if (stage.firstContact == 0 && model.EncounterProgress > 0)
+                    {
+                        stage.firstContact = model.Clock;
+                        yield return Frame(imagePrefix + "-contact");
+                    }
+                    yield return null;
+                }
+                Assert(stage.firstContact > 0 && model.Clock > 0 && model.Clock <= model.LimitSeconds + .01 &&
+                    (model.Phase == FormationPhase.Won || model.Phase == FormationPhase.Lost), id + " engages and reaches a timed result");
+                stage.battleSeconds = model.Clock;
+                stage.outcome = model.Phase.ToString();
+                stage.remaining = model.RemainingDefenders;
+                stage.guardHealthLoss = model.EncounterProgress;
+                stage.skillCasts = model.SkillCasts.Count;
+                stage.events = model.BattleEvents.Take(12).ToArray();
+                stage.settlement = run.LastTrialProgress;
+                result.synergyStages.Add(stage);
+                result.battles++;
+                yield return Frame(imagePrefix + "-result");
+                if (id != "整合" && id != "泥岩") continue;
+
+                Assert(!string.IsNullOrEmpty(stage.settlement), id + " displays actual settlement progress");
+                int progress = id == "整合" ? run.Hope : run.MudrockXP;
+                controller.ResetDemo();
+                Assert(controller.Campaign == run && controller.Model != model && controller.Model.Phase == FormationPhase.Preparation &&
+                    progress == (id == "整合" ? run.Hope : run.MudrockXP), id + " retries the same trial and preserves progression");
+            }
+            controller.SelectPracticeBattle(0);
+            Assert(controller.Campaign.IsPractice && controller.Campaign.SynergyTrial == null && controller.Campaign.HasBlockingChoice,
+                "Difficulty practice opens independently with its normal starting choices");
+        }
+
         IEnumerator VerifyDefenses()
         {
             bool probe = DefenseSkillProbe;
@@ -734,9 +812,10 @@ namespace YesterdayConvoy
         {
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
             result.passed=error==null&&result.exceptionCount==0;
-            string report = DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" : "campaign-smoke.json";
+            string report = SynergyRequested ? "synergy-smoke.json" :
+                DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
-            string marker = DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
+            string marker = SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
             Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));
             Application.Quit(result.passed?0:1);
         }

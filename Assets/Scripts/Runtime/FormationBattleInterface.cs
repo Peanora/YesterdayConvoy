@@ -11,7 +11,8 @@ namespace YesterdayConvoy
         Vector2 formationSynergyScroll,formationRankingScroll;
         GUIStyle formationRankingScrollbar;
         string formationInspectedTag;
-        bool formationPracticePickerOpen;
+        enum FormationMenuPage { Actions, DifficultyTrials, SynergyTrials }
+        FormationMenuPage formationMenuPage;
         GUIStyle Text(int size,Color color,TextAnchor align=TextAnchor.MiddleLeft)=>ApprovedUi.Text(null,size,align,color,size>=22?650:400);
         static void Fill(Rect rect,Color color)=>ApprovedUi.Fill(rect,color);
         void Label(Rect rect,string text,int size=16,Color? color=null,TextAnchor align=TextAnchor.MiddleLeft)=>GUI.Label(rect,text,Text(size,color??White,align));
@@ -142,7 +143,14 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(1136,612,113,54),Model.TimeRemaining.ToString("0.0"),approvedShop.LoopText(34,TextAnchor.MiddleLeft,null,700));
             if(Campaign==null&&Button(new Rect(1138,673,113,25),"返回整备"))Retry();
         }
-        void CloseFormationMenu(){formationMenuOpen=false;formationPracticePickerOpen=false;}
+        void CloseFormationMenu(){formationMenuOpen=false;formationMenuPage=FormationMenuPage.Actions;}
+
+        void OpenFormationTrialPicker(FormationMenuPage page)
+        {
+            formationMenuOpen=true;
+            formationMenuPage=page;
+            CancelFormationDrag();
+        }
 
         void DrawFormationMenuControls()
         {
@@ -163,20 +171,22 @@ namespace YesterdayConvoy
                 }
             }
             if(!formationMenuOpen)return;
-            if(formationPracticePickerOpen){DrawPracticePicker();return;}
+            if(formationMenuPage==FormationMenuPage.DifficultyTrials){DrawPracticePicker();return;}
+            if(formationMenuPage==FormationMenuPage.SynergyTrials){DrawSynergyTrialPicker();return;}
             bool practice=Campaign?.IsPractice==true;
             var r=ApprovedUi.Menu;r.y=operations?83:r.y;
             bool preparation = operations && Model.Phase == FormationPhase.Preparation && !CampaignInteractionBlocked;
             bool history = operations && Campaign.BallRewards.Count > 0;
-            r.height=(practice?198:160)+(preparation?37:0)+(history?37:0);
+            r.height=(practice?235:197)+(preparation?37:0)+(history?37:0);
             Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+12,r.y+9,r.width-60,27),"系统菜单",approvedShop.LoopText(19,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))CloseFormationMenu();
             if(Button(new Rect(r.x+12,r.y+44,r.width-24,30),soundEnabled?"关闭音效":"开启音效"))soundEnabled=!soundEnabled;
             if(Button(new Rect(r.x+12,r.y+81,r.width-24,30),practice?"重试当前关卡":"重新开始本次挑战")){ResetDemo();return;}
-            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),practice?"选择试玩关卡":"难度试玩 · 无限金币"))formationPracticePickerOpen=true;
-            if(practice&&Button(new Rect(r.x+12,r.y+155,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
-            float next = r.y + (practice ? 192 : 155);
+            if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"难度试玩 · 无限金币"))OpenFormationTrialPicker(FormationMenuPage.DifficultyTrials);
+            if(Button(new Rect(r.x+12,r.y+155,r.width-24,30),"羁绊试玩"))OpenFormationTrialPicker(FormationMenuPage.SynergyTrials);
+            if(practice&&Button(new Rect(r.x+12,r.y+192,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
+            float next = r.y + (practice ? 229 : 192);
             if (preparation)
             {
                 if (Button(new Rect(r.x + 12, next, r.width - 24, 30), "装备与合成"))
@@ -189,10 +199,10 @@ namespace YesterdayConvoy
 
         void DrawPracticePicker()
         {
-            bool practice=Campaign?.IsPractice==true;
+            bool practice=Campaign?.IsPractice==true&&Campaign.SynergyTrial==null;
             var r=CampaignWindow("难度试玩 · 无限金币",practice
                 ?"换关和重试保留阵容、装备及站位。"
-                :"选择战斗关卡后会新开一局试玩。当前挑战将结束。",false);
+                :"选择战斗关卡后会新开一局难度试玩。",false);
             if(Button(new Rect(r.xMax-57,r.y+15,38,30),"×")){CloseFormationMenu();return;}
             for(int plane=1;plane<=3;plane++)
             {
@@ -209,6 +219,23 @@ namespace YesterdayConvoy
                     {SelectPracticeBattle(i);return;}
                     y+=47;
                 }
+            }
+        }
+
+        void DrawSynergyTrialPicker()
+        {
+            var r=CampaignWindow("羁绊试玩", "选择羁绊进入预设军阵。可直接开战，也可先调整角色、搭档与站位。选择关卡会新开一局。", false);
+            if(Button(new Rect(r.xMax-57,r.y+15,38,30),"×")){CloseFormationMenu();return;}
+            var trials=FormationSynergyTrial.All;
+            for(int i=0;i<trials.Count;i++)
+            {
+                var trial=trials[i];
+                var card=new Rect(r.x+22+i%3*300,r.y+96+i/3*64,287,55);
+                bool current=Campaign?.SynergyTrial?.Trait.Id==trial.Trait.Id;
+                bool clicked=Button(card,string.Empty,true,current);
+                CampaignLabel(new Rect(card.x+12,card.y+5,card.width-24,19),trial.Trait.Name,15,true);
+                CampaignLabel(new Rect(card.x+12,card.y+29,card.width-24,19),"人数档位  "+string.Join(" / ",trial.Trait.Levels),11);
+                if(clicked){SelectSynergyTrial(trial.Trait.Id);return;}
             }
         }
         void DrawWorldLabels()
