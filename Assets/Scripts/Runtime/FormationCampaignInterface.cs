@@ -78,7 +78,7 @@ namespace YesterdayConvoy
         {
             campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;
             rewardHistoryOpen=false;formationExitOpen=false;
-            CloseFormationInspection();CloseFormationRouteDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
+            CloseFormationInspection();CloseFormationRouteDetails();CloseFormationEquipmentDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
         }
 
         void DrawCampaignToolbar()
@@ -241,13 +241,25 @@ namespace YesterdayConvoy
             var data=FormationCampaignRules.FindRecord(key);
             if(data==null)
             {
-                var badge=FormationCampaignRun.BadgeTrait(key);
-                return badge!=null?"增加"+badge+"标签，占一格装备；"+(key.Split(':').Length>2?FormationCampaignRules.FindRecord(key.Split(':')[2])?.Effect:"无额外基础属性。"):
-                    "宝石用于合成徽章；复制器取得一张目标当前形态的一星牌并占用库存。";
+                var badge = FormationCampaignRun.BadgeTrait(key);
+                if (badge != null)
+                {
+                    var parts = key.Split(':');
+                    return "增加「" + badge + "」羁绊标签，占一格装备。每名角色最多携带一枚徽章。\n" +
+                        (parts.Length > 2 ? CampaignItemDescription(parts[2]) : "无额外基础属性。");
+                }
+                return key switch
+                {
+                    "赤宝石" => "与指定基础装备合成阵营徽章，成品继承该基础装备的属性。",
+                    "蓝宝石" => "与指定基础装备合成流派徽章，成品继承该基础装备的属性。",
+                    "复制器" => "获得一张目标角色当前形态的一星卡，占用对应卡池库存。",
+                    _ => string.Empty
+                };
             }
             var names=new Dictionary<string,string>{{"attack_pct","攻击"},{"attack_speed","攻速"},{"hp_pct","最大生命"},{"power","能力强度"},{"armor","护甲"},{"mr","法抗"},{"sp_per_second","自然技力/秒"}};
             string stats=string.Join(" / ",data.Stats.Select(p=>(names.TryGetValue(p.Key,out var name)?name:p.Key)+"+"+(p.Key=="attack_pct"||p.Key=="attack_speed"||p.Key=="hp_pct"||p.Key=="power"?(p.Value*100).ToString("0.#")+"%":p.Value.ToString("0.##"))));
-            return stats+"；"+data.Effect;
+            return string.IsNullOrWhiteSpace(stats) ? data.Effect :
+                string.IsNullOrWhiteSpace(data.Effect) ? stats : stats + "\n" + data.Effect;
         }
         string CampaignPieceName(int instance)
         {var p=Shop.Bench.FirstOrDefault(x=>x.Instance==instance);return p==null?"自动推荐":Shop.Definition(p.Id).Name;}

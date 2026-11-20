@@ -23,7 +23,8 @@ namespace YesterdayConvoy
             DrawCard(bounds, cardId, batch, SynergyBadgePresentation.GradeFor(pulse.Name, pulse.Tier));
         }
 
-        public static void DrawCard(Rect bounds, string cardId, SynergyActivationFeedback.Batch batch, SynergyVisualGrade grade)
+        public static void DrawCard(Rect bounds, string cardId, SynergyActivationFeedback.Batch batch,
+            SynergyVisualGrade grade, bool showBorder = true)
         {
             if (Event.current == null || Event.current.type != EventType.Repaint || batch == null ||
                 bounds.width <= 0 || bounds.height <= 0 || string.IsNullOrEmpty(cardId) ||
@@ -44,7 +45,7 @@ namespace YesterdayConvoy
                 EnsureSoftTextures();
                 float unit = bounds.width / ReferenceCardWidth;
                 var motion = Evaluate(batch.Age);
-                DrawBorder(bounds, grade, batch.Age, motion.Border, unit, previousColor);
+                if (showBorder) DrawBorder(bounds, grade, batch.Age, motion.Border, unit, previousColor);
                 DrawBadge(bounds, frame, glyph, grade, batch.Age, motion, unit, previousColor);
             }
             finally

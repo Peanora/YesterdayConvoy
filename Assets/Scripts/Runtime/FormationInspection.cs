@@ -45,6 +45,7 @@ namespace YesterdayConvoy
         bool CloseFormationInspection()
         {
             if (formationInspectionCard == null) return false;
+            CloseFormationEquipmentDetails();
             formationInspectionCard = null;
             formationInspectedInstance = 0;
             formationInspectedOffer = -1;
@@ -86,7 +87,25 @@ namespace YesterdayConvoy
             CloseFormationRouteDetails();
             CloseFormationTraitDetails();
             CancelFormationEquipmentInteraction();
+            CloseFormationEquipmentDetails();
             formationInspectionCard = id;
+        }
+
+        static Rect FormationInspectionEquipmentSlot(Rect panel, int index) =>
+            new Rect(panel.x + 52 + index * 30, panel.y + 139, 26, 26);
+
+        internal bool TryFormationInspectedEquipmentSlot(int itemInstance, out Rect slot)
+        {
+            slot = default;
+            if (!FormationInspectionAvailable || formationInspectedInstance <= 0) return false;
+            var equipment = Campaign.Equipment(formationInspectedInstance);
+            for (int i = 0; i < equipment.Count; i++)
+            {
+                if (equipment[i].Instance != itemInstance) continue;
+                slot = FormationInspectionEquipmentSlot(FormationInspectionRect, i);
+                return true;
+            }
+            return false;
         }
 
         string FormationInspectionSkill(FormationCampaignRules.UnitDefinition spec) => spec.Id switch
@@ -142,14 +161,16 @@ namespace YesterdayConvoy
             float offset = 139;
             if (piece != null)
             {
+                OperationsLabel(new Rect(r.x + 11, r.y + offset, 40, 26), "装备", 11, OperationsMuted);
                 for (int i = 0; i < 3; i++)
                 {
-                    var slot = new Rect(r.x + 11 + i * 27, r.y + offset, 23, 23);
-                    Fill(slot, OperationsRail);
-                    ApprovedUi.Border(slot, OperationsEdge);
-                    if (i < equipped.Count) DrawSupplyItem(new Rect(slot.x + 2, slot.y + 2, 19, 19), equipped[i].Key);
+                    var slot = FormationInspectionEquipmentSlot(r, i);
+                    var item = i < equipped.Count ? equipped[i] : null;
+                    DrawEquippedItemSlot(slot, item, item != null && item.Instance == FormationInspectedItemId);
+                    if (item != null && TraitHit(slot, "查看 " + item.Name))
+                        ToggleFormationEquipmentDetails(item.Instance, slot);
                 }
-                offset += 28;
+                offset += 32;
             }
             var area = new Rect(r.x + 11, r.y + offset, r.width - 22, r.height - offset - 8);
             var style = new GUIStyle(approvedShop.LoopText(11, TextAnchor.UpperLeft, OperationsInk)){wordWrap=true};

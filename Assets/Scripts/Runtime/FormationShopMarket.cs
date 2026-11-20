@@ -124,6 +124,8 @@ namespace YesterdayConvoy
                 CloseFormationTraitDetails();
                 CloseFormationInspection();
                 CloseFormationRouteDetails();
+                CloseFormationEquipmentDetails();
+                CancelFormationEquipmentInteraction();
                 rewardHistoryOpen=false;
             }
             else CloseFormationOfferInspection();
@@ -333,6 +335,16 @@ namespace YesterdayConvoy
         void DrawFormationPreparation()
         {
             approvedShop.DrawShopBench(approvedShop.LoopText(12,TextAnchor.MiddleCenter));
+            if (Campaign != null && Model.Phase == FormationPhase.Preparation)
+            {
+                foreach (var piece in Shop.Bench)
+                {
+                    var slot = Session.Seats.For(piece.Instance);
+                    if (!slot.HasValue || slot.Value.Lineup) continue;
+                    var reserve = FormationReserveRect(slot.Value.Index);
+                    DrawEquippedItemStrip(piece.Instance, reserve.position + new Vector2(4, 37), 17, alignLeft: true);
+                }
+            }
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
             bool supply=Campaign?.CurrentNode.Kind=="补给";
             bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked;

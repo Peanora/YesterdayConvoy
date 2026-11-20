@@ -51,7 +51,8 @@ namespace YesterdayConvoy
                     DrawFormationMenuControls();
                     return;
                 }
-                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount;
+                GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignInteractionBlocked&&shopInputBlockedFrame!=Time.frameCount &&
+                    !FormationEquipmentDetailsRect.Contains(input.mousePosition);
                 DrawWorldLabels();DrawFormationTraitActivation();DrawFormationHeader();DrawFormationSidebars();
                 DrawCampaignToolbar();
                 DrawFormationSupplies();
@@ -157,6 +158,7 @@ namespace YesterdayConvoy
                     CloseFormationInspection();
                     CloseFormationRouteDetails();
                     CancelFormationEquipmentInteraction();
+                    CloseFormationEquipmentDetails();
                     formationMenuOpen=true;CancelFormationDrag();
                 }
             }
@@ -229,6 +231,7 @@ namespace YesterdayConvoy
                     if(!FormationActorVisibleInView(u))continue;
                     var p=CellScreen(u.SpawnCenter);
                     Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
+                    DrawEquippedItemStrip(u.Instance, p + new Vector2(0, 15), 18);
                 }
             foreach(var h in Model.Hits)
             {

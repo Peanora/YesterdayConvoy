@@ -166,6 +166,7 @@ namespace YesterdayConvoy
             CloseFormationInspection();
             CloseFormationTraitDetails();
             CancelFormationEquipmentInteraction();
+            CloseFormationEquipmentDetails();
             CancelFormationDrag();
             formationInspectedNode = open ? index : -1;
         }

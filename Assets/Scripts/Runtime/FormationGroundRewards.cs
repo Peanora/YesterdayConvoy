@@ -84,6 +84,7 @@ namespace YesterdayConvoy
             if (type == EventType.MouseDown) pressedGroundBall = null;
             bool canPick = CanPickGroundRewards && !FormationSupplyBlocksPoint(point) &&
                 !FormationTraitBlocksPoint(point) && !FormationInspectionBlocksPoint(point) && !OperationsBlocksPoint(point) &&
+                !FormationEquipmentDetailsRect.Contains(point) &&
                 (!(MarketVisible || ShopPanelTransitioning) || !FormationMarketRect.Contains(point));
             if (type == EventType.MouseDown)
             {

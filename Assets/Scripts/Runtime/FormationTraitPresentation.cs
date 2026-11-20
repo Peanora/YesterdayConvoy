@@ -54,6 +54,7 @@ namespace YesterdayConvoy
             SetMarketVisible(false);
             CloseFormationInspection();
             CloseFormationRouteDetails();
+            CloseFormationEquipmentDetails();
             formationInspectedTag = id;
             return true;
         }
@@ -241,29 +242,46 @@ namespace YesterdayConvoy
             var view = SelectedFormationTrait;
             if (view == null) return;
 
-            var panel = FormationTraitDetailsRect;
-            float progress = Mathf.Clamp01((float)((Time.unscaledTimeAsDouble - formationTraitOpenedAt) / TraitRevealSeconds));
-            float reveal = 1 - (1 - progress) * (1 - progress) * (1 - progress);
-            var previous = GUI.color;
-            GUI.BeginGroup(panel);
-            GUI.color = new Color(previous.r, previous.g, previous.b, previous.a * Mathf.Lerp(.20f, 1, progress));
-            try
-            {
-                DrawFormationTraitDetails(view, new Rect(Mathf.Lerp(-13, 0, reveal), 0, panel.width, panel.height));
-            }
-            finally
-            {
-                GUI.color = previous;
-                GUI.EndGroup();
-            }
+            var panel = BeginFormationDetailReveal(FormationTraitDetailsRect, formationTraitOpenedAt, -13, out var previous);
+            try { DrawFormationTraitDetails(view, panel); }
+            finally { EndFormationDetailReveal(previous); }
         }
 
-        void DrawFormationTraitDetails(FormationTraitView view, Rect panel)
+        static Rect BeginFormationDetailReveal(Rect bounds, double openedAt, float offset, out Color previous)
+        {
+            float progress = Mathf.Clamp01((float)((Time.unscaledTimeAsDouble - openedAt) / TraitRevealSeconds));
+            float reveal = 1 - (1 - progress) * (1 - progress) * (1 - progress);
+            previous = GUI.color;
+            GUI.BeginGroup(bounds);
+            GUI.color = new Color(previous.r, previous.g, previous.b, previous.a * Mathf.Lerp(.20f, 1, progress));
+            return new Rect(Mathf.Lerp(offset, 0, reveal), 0, bounds.width, bounds.height);
+        }
+
+        static void EndFormationDetailReveal(Color previous)
+        {
+            GUI.color = previous;
+            GUI.EndGroup();
+        }
+
+        static void DrawFormationDetailFrame(Rect panel)
         {
             Fill(panel, TraitTint(PreparationPalette.Plate));
             Fill(new Rect(panel.x, panel.y, panel.width, 60), TraitTint(PreparationPalette.Raised));
             Fill(new Rect(panel.x, panel.y + 59, panel.width, 2), TraitTint(PreparationPalette.Edge));
             ApprovedUi.Border(panel, TraitTint(PreparationPalette.PlateRule));
+        }
+
+        static bool FormationDetailClosePressed(Rect panel, string tooltip)
+        {
+            var close = new Rect(panel.xMax - 35, panel.y + 8, 26, 28);
+            if (GUI.enabled && close.Contains(Event.current.mousePosition)) Fill(close, TraitTint(PreparationPalette.Hover));
+            TraitLabel(close, "×", 23, PreparationPalette.Muted, false, TextAnchor.MiddleCenter);
+            return TraitHit(close, tooltip);
+        }
+
+        void DrawFormationTraitDetails(FormationTraitView view, Rect panel)
+        {
+            DrawFormationDetailFrame(panel);
             SynergyBadgePresentation.DrawBadge(new Rect(panel.x + 15, panel.y + 13, TraitBadgeSize, TraitBadgeSize), view.Name, view.Grade, view.Count, null);
             TraitLabel(new Rect(panel.x + 62, panel.y + 8, 180, 25), view.Name, 20, PreparationPalette.Text, true);
             TraitLabel(new Rect(panel.x + 62, panel.y + 34, 272, 20),
@@ -272,10 +290,7 @@ namespace YesterdayConvoy
             TraitLabel(new Rect(panel.xMax - 133, panel.y + 10, 88, 22),
                 view.Active ? view.ActiveLevel + " 人档已激活" : "未激活", 11,
                 view.Active ? PreparationPalette.Amber : PreparationPalette.Muted, true, TextAnchor.MiddleRight);
-            var close = new Rect(panel.xMax - 35, panel.y + 8, 26, 28);
-            if (GUI.enabled && close.Contains(Event.current.mousePosition)) Fill(close, TraitTint(PreparationPalette.Hover));
-            TraitLabel(close, "×", 23, PreparationPalette.Muted, false, TextAnchor.MiddleCenter);
-            if (TraitHit(close, "关闭羁绊详情")) { CloseFormationTraitDetails(); return; }
+            if (FormationDetailClosePressed(panel, "关闭羁绊详情")) { CloseFormationTraitDetails(); return; }
 
             var body = new Rect(panel.x + 13, panel.y + 69, panel.width - 19, panel.height - 78);
             float width = body.width - 17;

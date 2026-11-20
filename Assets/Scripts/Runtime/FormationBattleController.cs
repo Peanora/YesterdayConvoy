@@ -101,7 +101,7 @@ namespace YesterdayConvoy
             { CloseCampaignPanels(); return; }
             if (rewardHistoryOpen) { rewardHistoryOpen = false; return; }
             if (shopOddsVisible) { shopOddsVisible = false; return; }
-            if (CancelFormationEquipmentInteraction() || CloseFormationRouteDetails() ||
+            if (CancelFormationEquipmentInteraction() || CloseFormationEquipmentDetails() || CloseFormationRouteDetails() ||
                 CloseFormationInspection() || CloseFormationTraitDetails()) return;
             if (MarketVisible) SetMarketVisible(false);
             else if (CombatViewActive) Model.Paused = true;
@@ -121,6 +121,24 @@ namespace YesterdayConvoy
             var p=ray.GetPoint(distance);cell=new Vector2Int(Mathf.FloorToInt(p.x+FormationBattleModel.Width*.5f+.0001f),Mathf.FloorToInt(p.z+FormationBattleModel.Height*.5f+.0001f));
             return cell.x>=0&&cell.x<FormationBattleModel.Width&&cell.y>=0&&cell.y<FormationBattleModel.Height;
         }
+        FormationFighter FormationUnitAt(Vector2 point)
+        {
+            if (!CanEditFormationView || FormationShopBlocksPoint(point)) return null;
+            FormationFighter picked = null;
+            float nearest = float.MaxValue;
+            // The visible body can extend over the tile behind its deployment footprint.
+            foreach (var unit in Model.Units)
+            {
+                if (!unit.Enabled || !FormationActorScreenRect(unit).Contains(point)) continue;
+                var foot = CellScreen(unit.SpawnCenter);
+                float distance = Mathf.Abs(point.x - foot.x) + Mathf.Abs(point.y - (foot.y - 28)) * .15f;
+                if (distance >= nearest) continue;
+                nearest = distance;
+                picked = unit;
+            }
+            if (picked != null || !TryCell(point, out var cell)) return picked;
+            return Model.Units.FirstOrDefault(u => u.Enabled && u.DeploymentCells.Contains(cell));
+        }
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
@@ -139,23 +157,11 @@ namespace YesterdayConvoy
                 if(FormationShopPointerDown(point))return;
                 if(!CanEditFormationView){CancelFormationDrag();return;}
                 if(FormationShopBlocksPoint(point)||!BoardInputRect.Contains(point)){CancelFormationDrag();return;}
-                // Pick the visible character above its feet before projecting onto the ground grid.
-                // A click on a sprite's head must select it, not move it into the tile behind it.
-                FormationFighter picked=null;float nearest=float.MaxValue;
-                if(BoardInputRect.Contains(point))
-                    foreach(var unit in Model.Units.Where(u=>u.Enabled))
-                    {
-                        var foot=CellScreen(unit.SpawnCenter);
-                        if(!FormationActorScreenRect(unit).Contains(point))continue;
-                        float distance=Mathf.Abs(point.x-foot.x)+Mathf.Abs(point.y-(foot.y-28))*.15f;
-                        if(distance<nearest){nearest=distance;picked=unit;}
-                    }
+                var picked = FormationUnitAt(point);
                 if(picked!=null){SelectedSlot=picked.Slot;selectedPiece=picked.Instance;dragSlot=picked.Slot;shopDragInstance=picked.Instance;PrepareFieldDeploymentGrab(picked,point);}
-                else if(TryCell(point,out var cell))
+                else if(TryCell(point,out _))
                 {
-                    var on=Model.Units.FirstOrDefault(u=>u.Enabled&&u.DeploymentCells.Contains(cell));
-                    if(on!=null){SelectedSlot=on.Slot;selectedPiece=on.Instance;dragSlot=on.Slot;shopDragInstance=on.Instance;PrepareFieldDeploymentGrab(on,point);}
-                    else if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)
+                    if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)
                     {var selected=Model.Units[SelectedSlot];shopDragInstance=selected.Instance;dragSlot=selected.Slot;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
                     else if(selectedPiece>0)
                     {shopDragInstance=selectedPiece;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
@@ -169,9 +175,9 @@ namespace YesterdayConvoy
                     if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
                     {var anchor=DeploymentAnchor(cell);if(dragSlot>=0)Place(dragSlot,anchor);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,anchor);}
                 }
-                else if(pointerHeld&&FormationTraitDetailsOpen&&
+                else if(pointerHeld&&(FormationTraitDetailsOpen||FormationInspectedItemId>0)&&
                         (pendingClickDeployment||shopDragInstance==0&&BoardInputRect.Contains(point)))
-                    CloseFormationTraitDetails();
+                { CloseFormationTraitDetails(); CloseFormationEquipmentDetails(); }
                 else if(pointerHeld&&pendingClickDeployment&&TryCell(point,out var clickCell))
                 {if(dragSlot>=0)Place(dragSlot,clickCell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,clickCell);}
                 else if(pointerHeld&&shopDragInstance>0)
@@ -192,7 +198,7 @@ namespace YesterdayConvoy
             Session.SavePositions(Model);Session.ApplyTo(Model);
             if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
             campaignSeaPainting=false;rewardHistoryOpen=false;CloseFormationTraitDetails();CloseFormationInspection();CloseFormationRouteDetails();
-            CancelFormationEquipmentInteraction();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
+            CancelFormationEquipmentInteraction();CloseFormationEquipmentDetails();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
             SetFormationView(true);
         }
         public void Retry()

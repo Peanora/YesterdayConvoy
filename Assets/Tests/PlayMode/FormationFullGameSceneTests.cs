@@ -131,5 +131,110 @@ namespace YesterdayConvoy.Tests
             controller.SetFormationView(false);yield return null;
             Assert.That(controller.ViewingDefenders,Is.False);
         }
+
+        delegate bool ItemTilePoint(int instance, out Vector2 point);
+        delegate bool EquippedSlot(int instance, out Rect slot);
+
+        [UnityTest]
+        public IEnumerator EquipmentRailCanInspectAndDragToFieldAndBench()
+        {
+            FormationShopSession.StartNew(20261117, fullCampaign: true);
+            yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
+            double deadline = Time.realtimeSinceStartupAsDouble + 600;
+            while (Time.realtimeSinceStartupAsDouble < deadline)
+            {
+                controller = UnityEngine.Object.FindAnyObjectByType<FormationBattleController>();
+                if (controller != null && controller.Ready) break;
+                yield return null;
+            }
+            Assert.That(controller?.Ready, Is.True);
+            for (int i = 0; controller.Campaign.HasBlockingChoice; i++)
+            {
+                Assert.That(i, Is.LessThan(15));
+                Assert.That(controller.ChooseCampaignOption(0).Success, Is.True);
+            }
+
+            var startingArmy = controller.Session.Seats.Lineup(controller.Shop.Bench).ToArray();
+            int onBoard = startingArmy[0].Instance;
+            int inReserve = startingArmy[1].Instance;
+            int reserveSlot = controller.Session.Seats.FirstEmpty(false, 10);
+            Assert.That(controller.MovePiece(inReserve, false, reserveSlot).Success, Is.True);
+            controller.SetMarketVisible(false);
+            controller.SetFormationView(false);
+            deadline = Time.realtimeSinceStartupAsDouble + 600;
+            while ((!controller.RosterArtReady || controller.ShopPanelTransitioning) &&
+                   Time.realtimeSinceStartupAsDouble < deadline) yield return null;
+            Assert.That(controller.RosterArtReady, Is.True);
+            Assert.That(controller.ShopPanelTransitioning, Is.False);
+
+            // Grant fixed samples to exercise the UI independently of the random reward pool.
+            var fieldItem = controller.Campaign.AddItem("AB");
+            var reserveItem = controller.Campaign.AddItem("D");
+            var gem = controller.Campaign.AddItem("赤宝石");
+            var originalPositions = controller.Model.Units.Select(unit => (unit.Instance, unit.Spawn)).ToArray();
+            int gold = controller.Shop.Gold;
+
+            const BindingFlags nonPublic = BindingFlags.Instance | BindingFlags.NonPublic;
+            var type = typeof(FormationBattleController);
+            var equipmentPointer = (Func<EventType, Vector2, bool>) type
+                .GetMethod("ProcessFormationEquipmentPointer", nonPublic)
+                .CreateDelegate(typeof(Func<EventType, Vector2, bool>), controller);
+            var equipmentTilePoint = (ItemTilePoint) type.GetMethod("TryEquipmentTilePoint", nonPublic)
+                .CreateDelegate(typeof(ItemTilePoint), controller);
+            var inspectedItem = type.GetProperty("FormationInspectedItemId", nonPublic);
+            var detailsRect = type.GetProperty("FormationEquipmentDetailsRect", nonPublic);
+
+            void DragItem(int item, Vector2 destination)
+            {
+                Assert.That(equipmentTilePoint(item, out var source), Is.True, "The item must be visible on the equipment rail.");
+                Assert.That(equipmentPointer(EventType.MouseDown, source), Is.True);
+                Assert.That(equipmentPointer(EventType.MouseDrag, destination), Is.True);
+                Assert.That(equipmentPointer(EventType.MouseUp, destination), Is.True);
+            }
+
+            Assert.That(equipmentTilePoint(fieldItem.Instance, out var railPoint), Is.True);
+            Assert.That(equipmentPointer(EventType.MouseDown, railPoint), Is.True);
+            Assert.That(equipmentPointer(EventType.MouseUp, railPoint), Is.True);
+            Assert.That(inspectedItem.GetValue(controller), Is.EqualTo(fieldItem.Instance));
+            Assert.That(((Rect) detailsRect.GetValue(controller)).width, Is.GreaterThan(0));
+            Assert.That(fieldItem.Owner, Is.Zero, "Inspecting an inventory item must leave it unequipped.");
+
+            var bodyPoint = controller.FormationPieceRect(onBoard).center;
+            Assert.That(FormationBattleController.BoardInputRect.Contains(bodyPoint), Is.True);
+            DragItem(fieldItem.Instance, bodyPoint);
+            Assert.That(fieldItem.Owner, Is.EqualTo(onBoard));
+            Assert.That(equipmentTilePoint(fieldItem.Instance, out _), Is.False);
+
+            var reservePoint = FormationBattleController.FormationReserveRect(reserveSlot).center;
+            var emptySlot = controller.Session.Seats.FirstEmpty(false, 10);
+            DragItem(reserveItem.Instance, FormationBattleController.FormationReserveRect(emptySlot).center);
+            Assert.That(reserveItem.Owner, Is.Zero, "An empty reserve seat cannot receive equipment.");
+            DragItem(gem.Instance, reservePoint);
+            Assert.That(gem.Owner, Is.Zero, "A gem is a crafting material and must stay in inventory.");
+            DragItem(reserveItem.Instance, reservePoint);
+            Assert.That(reserveItem.Owner, Is.EqualTo(inReserve));
+            Assert.That(controller.Model.Units.Select(unit => (unit.Instance, unit.Spawn)), Is.EqualTo(originalPositions));
+            Assert.That(controller.Shop.Gold, Is.EqualTo(gold));
+
+            controller.ProcessPointer(EventType.MouseDown, reservePoint);
+            controller.ProcessPointer(EventType.MouseUp, reservePoint);
+            Assert.That(controller.FormationInspectedCardId, Is.EqualTo(startingArmy[1].Id));
+            var tryEquippedSlot = (EquippedSlot) type.GetMethod("TryFormationInspectedEquipmentSlot", nonPublic)
+                .CreateDelegate(typeof(EquippedSlot), controller);
+            Assert.That(tryEquippedSlot(reserveItem.Instance, out var equippedSlot), Is.True);
+            Assert.That(tryEquippedSlot(fieldItem.Instance, out _), Is.False);
+            type.GetMethod("ToggleFormationEquipmentDetails", nonPublic)
+                .Invoke(controller, new object[] { reserveItem.Instance, equippedSlot });
+            Assert.That(inspectedItem.GetValue(controller), Is.EqualTo(reserveItem.Instance));
+            Assert.That(((Rect) detailsRect.GetValue(controller)).width, Is.GreaterThan(0));
+            Assert.That(controller.FormationInspectedCardId, Is.EqualTo(startingArmy[1].Id));
+
+            controller.StartBattle();
+            Assert.That(controller.Model.Phase, Is.EqualTo(FormationPhase.Fighting));
+            Assert.That(inspectedItem.GetValue(controller), Is.EqualTo(0));
+            Assert.That(equipmentPointer(EventType.MouseDown, railPoint), Is.False);
+            Assert.That(controller.Campaign.Equipment(onBoard).Single().Instance, Is.EqualTo(fieldItem.Instance));
+            Assert.That(controller.Campaign.Equipment(inReserve).Single().Instance, Is.EqualTo(reserveItem.Instance));
+        }
     }
 }

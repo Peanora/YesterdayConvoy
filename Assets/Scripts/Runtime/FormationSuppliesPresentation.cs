@@ -21,6 +21,10 @@ namespace YesterdayConvoy
         Vector2 equipmentPointerStart, equipmentPointer;
         int equipmentPressedItem, equipmentCombinationFirst, equipmentCombinationSecond;
         bool equipmentDragging;
+        int inspectedEquipment;
+        double equipmentDetailsOpenedAt;
+        Rect equipmentDetailsAnchor;
+        Vector2 equipmentDetailsScroll;
         FormationCampaignRun rewardPresentationRun;
         int rewardHistorySelected = -1;
         bool rewardHistoryOpen;
@@ -57,22 +61,76 @@ namespace YesterdayConvoy
                 rewardHistorySelected = -1;
                 equipmentRailScroll = Vector2.zero;
                 CancelFormationEquipmentInteraction();
+                CloseFormationEquipmentDetails();
                 campaignSelectedItem = campaignCombineItem = campaignSelectedPiece = 0;
             }
-            if (!CanUseEquipmentTiles) CancelFormationEquipmentInteraction();
+            if (!CanUseEquipmentTiles)
+            {
+                CancelFormationEquipmentInteraction();
+                CloseFormationEquipmentDetails();
+            }
+            else if (inspectedEquipment > 0 && InspectedEquipment == null) CloseFormationEquipmentDetails();
             TickGroundRewards(delta);
         }
 
         bool FormationSupplyBlocksPoint(Vector2 point) => Campaign != null &&
             (Campaign.PendingRewardChoices>0 && RewardChoiceRect.Contains(point) ||
              GroundRewardPages>1 && RewardPageRect.Contains(point) ||
-             EquipmentTileAt(point)!=null || EquipmentCombinationPending && EquipmentCombinationRect.Contains(point) ||
+             EquipmentTileAt(point)!=null || FormationEquipmentDetailsRect.Contains(point) ||
+             EquipmentCombinationPending && EquipmentCombinationRect.Contains(point) ||
              rewardHistoryOpen && RewardHistoryRect.Contains(point));
 
         bool CanUseEquipmentTiles => Campaign != null && Model.Phase == FormationPhase.Preparation &&
             !CampaignInteractionBlocked && !formationMenuOpen && !shopOddsVisible && !rewardHistoryOpen;
 
         internal bool EquipmentCombinationPending => equipmentCombinationFirst > 0;
+
+        FormationCampaignRun.ItemInstance InspectedEquipment => inspectedEquipment == 0 ? null :
+            Campaign?.AllEquipment.FirstOrDefault(item => item.Instance == inspectedEquipment);
+
+        internal int FormationInspectedItemId => CanUseEquipmentTiles && InspectedEquipment != null ? inspectedEquipment : 0;
+
+        internal Rect FormationEquipmentDetailsRect
+        {
+            get
+            {
+                if (FormationInspectedItemId == 0) return Rect.zero;
+                const float width = 308, height = 181, gap = 8;
+                float rightEdge = EquipmentTilesViewport.xMin - gap;
+                float x = rightEdge - width;
+                if (InspectedEquipment.Owner > 0 && FormationInspectionAvailable)
+                {
+                    var role = FormationInspectionRect;
+                    x = role.xMax + gap + width <= rightEdge ? role.xMax + gap : role.xMin - gap - width;
+                }
+                float top = MarketVisible || ShopPanelTransitioning ? FormationMarketRect.yMax + gap : 85;
+                return new Rect(x, Mathf.Clamp(equipmentDetailsAnchor.y, top, FormationExperienceRect.yMin - height - gap), width, height);
+            }
+        }
+
+        bool CloseFormationEquipmentDetails()
+        {
+            if (inspectedEquipment == 0) return false;
+            inspectedEquipment = 0;
+            equipmentDetailsScroll = Vector2.zero;
+            return true;
+        }
+
+        internal void ToggleFormationEquipmentDetails(int itemInstance, Rect anchor)
+        {
+            if (!CanUseEquipmentTiles) return;
+            int previous = inspectedEquipment;
+            CloseFormationEquipmentDetails();
+            if (previous == itemInstance) return;
+            var item = Campaign.AllEquipment.FirstOrDefault(entry => entry.Instance == itemInstance);
+            if (item == null || item.Owner != 0 && item.Owner != formationInspectedInstance) return;
+            CancelFormationDrag();
+            CloseFormationRouteDetails();
+            CloseFormationTraitDetails();
+            inspectedEquipment = item.Instance;
+            equipmentDetailsAnchor = anchor;
+            equipmentDetailsOpenedAt = Time.unscaledTimeAsDouble;
+        }
 
         internal bool CancelFormationEquipmentInteraction()
         {
@@ -89,11 +147,13 @@ namespace YesterdayConvoy
             {
                 if (EquipmentCombinationPending && EquipmentCombinationRect.Contains(point)) return false;
                 CancelFormationEquipmentInteraction();
-                if (FormationTraitBlocksPoint(point) || FormationInspectionBlocksPoint(point) || OperationsBlocksPoint(point)) return false;
+                if (FormationTraitBlocksPoint(point) || FormationInspectionBlocksPoint(point) ||
+                    OperationsBlocksPoint(point) || FormationEquipmentDetailsRect.Contains(point)) return false;
                 var pressed = EquipmentTileAt(point);
                 if (pressed == null) return false;
                 CloseFormationInspection();
                 CloseFormationRouteDetails();
+                CloseFormationTraitDetails();
                 equipmentPressedItem = pressed.Instance;
                 equipmentPointerStart = equipmentPointer = point;
                 CancelFormationDrag();
@@ -102,6 +162,7 @@ namespace YesterdayConvoy
             if (equipmentPressedItem == 0) return false;
             equipmentPointer = point;
             equipmentDragging |= Vector2.Distance(point, equipmentPointerStart) > 6;
+            if (equipmentDragging) CloseFormationEquipmentDetails();
             if (type == EventType.MouseUp)
             {
                 int source = equipmentPressedItem;
@@ -110,15 +171,28 @@ namespace YesterdayConvoy
                 equipmentDragging = false;
                 var target = EquipmentTileAt(point);
                 if (!dragged && target?.Instance == source)
-                    OpenFormationInventory(source);
-                else if (dragged && target != null && PreviewEquipmentPair(source,target.Instance,out _))
+                    ToggleFormationEquipmentDetails(source, EquipmentTileOnScreen(EquipmentTileIndex(point)));
+                else if (dragged && target != null && PreviewEquipmentPair(source, target.Instance, out _))
                 {
-                    CloseFormationTraitDetails();
                     equipmentCombinationFirst = source;
                     equipmentCombinationSecond = target.Instance;
                 }
+                else if (dragged && target == null && CanTrade)
+                {
+                    int owner = FormationEquipmentDropTarget(point);
+                    if (owner > 0 && Campaign.Inventory.Any(item => item.Instance == source))
+                        CampaignAction(Campaign.Equip(source, owner));
+                }
             }
             return true;
+        }
+
+        int FormationEquipmentDropTarget(Vector2 point)
+        {
+            if (FormationSupplyBlocksPoint(point) || FormationTraitBlocksPoint(point) ||
+                FormationInspectionBlocksPoint(point) || OperationsBlocksPoint(point)) return 0;
+            if (FindFormationSeat(point, out bool lineup, out int seat)) return Session.Seats.At(lineup, seat);
+            return FormationUnitAt(point)?.Instance ?? 0;
         }
 
         bool PreviewEquipmentPair(int first,int second,out string key)
@@ -161,10 +235,13 @@ namespace YesterdayConvoy
             return target;
         }
 
+        int EquipmentTileIndex(Vector2 point) =>
+            Mathf.FloorToInt((point.y - EquipmentTilesViewport.y + equipmentRailScroll.y) / EquipmentTilePitch);
+
         FormationCampaignRun.ItemInstance EquipmentTileAt(Vector2 point)
         {
             if (!EquipmentTilesViewport.Contains(point)) return null;
-            int index = Mathf.FloorToInt((point.y - EquipmentTilesViewport.y + equipmentRailScroll.y) / EquipmentTilePitch);
+            int index = EquipmentTileIndex(point);
             var inventory = Campaign.Inventory;
             return index >= 0 && index < inventory.Count && EquipmentTileOnScreen(index).Contains(point) ? inventory[index] : null;
         }
@@ -188,7 +265,7 @@ namespace YesterdayConvoy
             equipmentRailScroll.y = Mathf.Max(equipmentRailScroll.y,EquipmentTile(index).yMax-EquipmentTilesViewport.height);
         }
 
-        void OpenFormationInventory(int item = 0)
+        void OpenFormationInventory()
         {
             if (Model.Phase != FormationPhase.Preparation) return;
             CancelFormationEquipmentInteraction();
@@ -199,7 +276,7 @@ namespace YesterdayConvoy
             CloseCampaignPanels();
             campaignInventoryOpen = true;
             campaignItemScroll = Vector2.zero;
-            campaignSelectedItem = item;
+            campaignSelectedItem = 0;
             campaignCombineItem = 0;
         }
 
@@ -230,6 +307,25 @@ namespace YesterdayConvoy
             Color color = key == "赤宝石" ? new Color(.94f, .44f, .43f) :
                 key == "蓝宝石" ? new Color(.39f, .76f, 1f) : TraitInk;
             TraitLabel(rect, symbol, Mathf.Clamp(Mathf.RoundToInt(rect.height * .58f), 10, 25), color, true, TextAnchor.MiddleCenter);
+        }
+
+        void DrawEquippedItemSlot(Rect slot, FormationCampaignRun.ItemInstance item, bool active = false)
+        {
+            Fill(slot, OperationsRail);
+            ApprovedUi.Border(slot, active ? OperationsGold : OperationsEdge);
+            if (item != null)
+                DrawSupplyItem(new Rect(slot.x + 2, slot.y + 2, slot.width - 4, slot.height - 4), item.Key);
+        }
+
+        void DrawEquippedItemStrip(int owner, Vector2 center, float size, bool alignLeft = false)
+        {
+            if (Campaign == null || owner == shopDragInstance && DragPreviewVisible) return;
+            var equipment = Campaign.Equipment(owner);
+            if (equipment.Count == 0) return;
+            float pitch = size + 2;
+            float x = alignLeft ? center.x : center.x - (pitch * equipment.Count - 2) * .5f;
+            for (int i = 0; i < equipment.Count; i++)
+                DrawEquippedItemSlot(new Rect(x + pitch * i, center.y, size, size), equipment[i]);
         }
 
         static Color BallAccent(string color) => color switch
@@ -263,12 +359,13 @@ namespace YesterdayConvoy
             equipmentRailScroll = GUI.BeginScrollView(EquipmentTilesViewport,equipmentRailScroll,
                 new Rect(0,0,EquipmentTileWidth,contentHeight));
             int first = Mathf.Max(0,Mathf.FloorToInt(equipmentRailScroll.y/EquipmentTilePitch));
+            int selected = FormationInspectedItemId;
             for (int i = first; i < inventory.Count && EquipmentTile(i).y < equipmentRailScroll.y + EquipmentTilesViewport.height; i++)
             {
                 var slot = EquipmentTile(i);
                 var item = inventory[i];
                 bool highlight = item.Instance == equipmentPressedItem || item.Instance == equipmentCombinationFirst ||
-                    item.Instance == equipmentCombinationSecond ||
+                    item.Instance == equipmentCombinationSecond || item.Instance == selected ||
                     equipmentDragging && EquipmentTileOnScreen(i).Contains(equipmentPointer) &&
                     PreviewEquipmentPair(equipmentPressedItem,item.Instance,out _);
                 Fill(slot,OperationsRail);
@@ -289,6 +386,7 @@ namespace YesterdayConvoy
                 else CancelFormationEquipmentInteraction();
                 return;
             }
+            DrawFormationEquipmentDetails();
             if (!equipmentDragging) return;
             var source = Campaign.Inventory.FirstOrDefault(item=>item.Instance==equipmentPressedItem);
             if (source == null) return;
@@ -296,6 +394,40 @@ namespace YesterdayConvoy
             if (target != null && PreviewEquipmentPair(source.Instance,target.Instance,out string combined))
                 DrawEquipmentCombination(combined,source.Instance,target.Instance,false);
             DrawSupplyItem(new Rect(equipmentPointer.x-21,equipmentPointer.y-23,42,42),source.Key);
+        }
+
+        void DrawFormationEquipmentDetails()
+        {
+            var bounds = FormationEquipmentDetailsRect;
+            if (bounds.width <= 0) return;
+            var item = InspectedEquipment;
+            var panel = BeginFormationDetailReveal(bounds, equipmentDetailsOpenedAt, 13, out var previous);
+            try
+            {
+                DrawFormationDetailFrame(panel);
+                DrawSupplyItem(new Rect(panel.x + 13, panel.y + 10, 40, 40), item.Key);
+                TraitLabel(new Rect(panel.x + 61, panel.y + 7, panel.width - 104, 27), item.Name, 19, OperationsInk, true);
+                string category = FormationCampaignRun.BadgeTrait(item.Key) != null ? "羁绊徽章" : item.Key.Length switch
+                {
+                    1 => "基础装备",
+                    2 => "进阶装备",
+                    _ => "道具"
+                };
+                string status = item.Owner == 0 ? (category == "道具" ? "物品栏" : "未装备") : "已装备 · " + CampaignPieceName(item.Owner);
+                TraitLabel(new Rect(panel.x + 61, panel.y + 34, panel.width - 74, 18),
+                    category + "  /  " + status, 11, OperationsMuted);
+                if (FormationDetailClosePressed(panel, "关闭装备详情")) { CloseFormationEquipmentDetails(); return; }
+
+                var description = new GUIContent(CampaignItemDescription(item.Key));
+                var style = TraitText(13, FormationPreparationPalette.Ink, false, TextAnchor.UpperLeft);
+                var body = new Rect(panel.x + 13, panel.y + 73, panel.width - 22, panel.height - 83);
+                float width = body.width - 17;
+                float height = Mathf.Max(body.height, style.CalcHeight(description, width));
+                equipmentDetailsScroll = GUI.BeginScrollView(body, equipmentDetailsScroll, new Rect(0, 0, width, height));
+                GUI.Label(new Rect(0, 0, width, height), description, style);
+                GUI.EndScrollView();
+            }
+            finally { EndFormationDetailReveal(previous); }
         }
 
         void DrawEquipmentCombination(string key,int first,int second,bool confirm)
