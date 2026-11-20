@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 奖励球散布与守军落地演出
+
+- 运行源码 `514a81d4363a2a16d5daea051c41dd2c5acc45e8`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994109458 bytes、0 错误，退出 0。定向 EditMode **135/135**、仓库检查 **14079** 个跟踪文件。EditMode 覆盖奖励球数量、遭遇进度严格超过 25% 和重复结算保护。[构建日志](../artifacts/formation-reward-drops/build-final.log) · [EditMode](../artifacts/formation-reward-drops/editmode-final.xml)
+- 1280×720 D3D11 独立版前三战 **206/206**、零异常、退出 0。1-1 以正常速度录到首次倒地后小晶球下落、回弹、触地光圈和消散。核对了战中演出不入账、结束时清理、普通战斗无掉球提示、前两关四颗及五颗球的实际结算、跨关留存、两颗并行领取与旁球留位。1-1 和 1-2 分别查看四颗球和十一份奖励的散布。[落地实机](../artifacts/formation-reward-drops/guard-reward-drop.mp4) · [首关平台](../artifacts/formation-reward-drops/player-final/06-first-reward-platform-scatter.png) · [密集平台](../artifacts/formation-reward-drops/player-final/06-reward-platform-scatter.png) · [独立版报告](../artifacts/formation-reward-drops/player-final/campaign-smoke.json)
+- 对照留存《明日方舟》守军 `Die` 清单，保留原时序的 2× 播放，原死亡片结束后接本作掉落。短片为 54 帧、24 fps、2.25 秒无声，完整解码通过。实机短片覆盖首关地面守军，高台和遭遇关未单独录制。[来源与时序](art/source-records/formation-ground-rewards.md)
+
 ## 2026-11-20 备战与战斗同倍率
 
 - Unity 6000.6.5f1 Windows x64 Development 构建通过，994099357 bytes、0 错误，运行源码 `1b1fa16067c65b71e9f98f728728bdeefbf3e490`。D3D11 PlayMode **17/17**，核对前、中、后三排的同排地格宽度、布阵边缘、悬空拖放、两格占地角色和侦察往返。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-preparation-zoom/build.log) · [PlayMode](../artifacts/formation-preparation-zoom/playmode-final.xml)
