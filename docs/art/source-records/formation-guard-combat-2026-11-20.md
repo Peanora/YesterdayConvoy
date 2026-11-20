@@ -20,7 +20,7 @@
 
 斩业星熊的正面 `skill_attack` 使用 `Skill_3_Loop_A`。本机 `charpack/char_1044_hsgma2.ab` 的 S3 `Attack_Anim_A` 发射器路径 ID 为 `0xd653746ee43b21e2`，在 `_startEvent=2` 播放 `hsgma2_skill_03_start_01`。棋盘仅有一段实际打击，对应首组 `hsgma2_skill_03_hit_01`。原作第二组 `hsgma2_skill_03_hit_01_1`、其余动作变体和临死后的四段分支保留为缺口。凛御银灰第三层 `svash2_skill_03_combat_start_01` 仍缺武器骨骼驱动的原拖尾，望的 `token_wang_skill_01_hit` 仍缺可运行采样。
 
-炎熔原 Actor 的 `startEvent=4` 保持无飞行。普攻和本作强化沿用前向攻击帧的 0.833333 秒标记，发射当刻定位到目标格。地面层置于受击者下方，独立受击保持在身体接触位置。
+炎熔原 Actor 的 `startEvent=4` 保持无飞行。普攻和本作强化沿用前向攻击帧的 0.833333 秒标记，发射当刻定位到目标格。本机 `battle/prefabs/effects/lava.ab` 的 `lava_attack_01_hit` 同时包含相机朝向和局部朝向的粒子，原生采样已经合成这两类。棋盘以目标格为支点保持采样的相机朝向，使足边爆闪可与更上层的身体受击区分。
 
 | 角色 | 原作数据 | 现役棋盘绑定 |
 | --- | --- | --- |

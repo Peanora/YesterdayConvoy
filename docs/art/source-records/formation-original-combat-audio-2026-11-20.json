@@ -5782,7 +5782,7 @@
       "nativePhase": -1,
       "animation": "Skill_1",
       "talulahCost": 0,
-      "reason": "",
+      "reason": "The source S1_Common plays this release once from its animated parent. In the first Windows pilot the board replayed it on all four v0.7 child segments, five cues total in one cast. Keep the original release on the parent while keeping the board's segments.",
       "abilityIndex": -1,
       "hitIndex": -1,
       "resource": "FormationOriginal/p_atk_dkmrcaygnfr_d",
@@ -5795,6 +5795,7 @@
       "maxSoundAllowed": 2,
       "popOldest": true,
       "oncePerAction": false,
+      "parentOnly": true,
       "sourceEvent": "battle.ON_ABILITY_ON.skchr_wisdel_1.1"
     },
     {
@@ -6393,6 +6394,15 @@
       "decision": "The installed Windows game#9 CharacterSkinHooker replaces visual assets and contains fake-projectile keys for Default/S1/S3. Both S2 release and hit use the original base character bank. The board plays the regular S2 sequence and has no S2 overload cue binding.",
       "skinBundle": "skinpack/char_1035_wisdel.ab",
       "skinPrefab": "dyn/battle/prefabs/skins/character/char_1035_wisdel/char_1035_wisdel_game#9.prefab",
+      "s1ReleaseSource": {
+        "path": "Arknights_Data/StreamingAssets/AB/Windows/battle/prefabs/[uc]skills.ab",
+        "sha256": "0d0b4c0f9252c14a69a20d4bea09527403dd3eddfc2f7bcd757c3c30cf37ffc3",
+        "prefabNode": "skchr_wisdel_1/S1_Common",
+        "abilityClass": "RangedAttack",
+        "animation": "Skill_1",
+        "projectile": "projectile_chr_wisdel_s1",
+        "siblingProjectiles": ["projectile_chr_wisdel_s1_shock", "projectile_chr_wisdel_s1_shock2", "projectile_chr_wisdel_s1_bomb"]
+      },
       "s2ContactSource": {
         "prefab": "projectile_chr_wisdel_s2",
         "attachment": "AttachToTarget",

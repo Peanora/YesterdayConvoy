@@ -9,7 +9,7 @@ namespace YesterdayConvoy
         // 2.5 world units/s and spawns a projectile in each row within .1 s.
         const float TalulahSourceProjectileSpeed = 2.5f;
         const float TalulahSourceScale = 1.60714286f;
-        const float TalulahScreenWaveInterval = 2f;
+        const float TalulahSourceWaveInterval = 2f;
         const float TalulahScreenSpawnWindow = .1f;
 
         bool IsFormationTalulahRainContact(FormationHit hit)
@@ -49,7 +49,7 @@ namespace YesterdayConvoy
             const float worldSpeed = TalulahSourceProjectileSpeed * TalulahSourceScale;
             double zoneAge = Model.Clock - zone.At;
             float scale = LegacyScale(source);
-            for (float startsAt = 0; startsAt <= zoneAge; startsAt += TalulahScreenWaveInterval)
+            for (float startsAt = 0; startsAt <= zoneAge; startsAt += TalulahSourceWaveInterval / LegacyVisualRate)
             {
                 for (int row = 0; row < FormationBattleModel.Height; row++)
                 {

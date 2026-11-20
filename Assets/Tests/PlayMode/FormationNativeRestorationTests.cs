@@ -303,6 +303,17 @@ namespace YesterdayConvoy.Tests
                         (skill==2?h.Action!=null&&!h.Skill&&h.At>h.Action.At:h.Action?.ProjectileOnly==true));
                     return controller.Model.SkillCasts.Count>0&&owner&&impact&&linked&&headAtTarget;
                 },60);
+                if(skill==1)
+                {
+                    var cast=controller.Model.PresentationActions.Single(a=>a.Skill&&!a.ProjectileOnly&&a.Animation=="Skill_1");
+                    yield return Until(()=>controller.Model.Clock>=cast.LaunchedAt+1,2);
+                    var type=typeof(FormationBattleController).GetNestedType("FormationAudioCue",BindingFlags.NonPublic);
+                    var cues=(IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                    Invoke(controller,"CollectFormationAudio",cast.At-.00001,controller.Model.Clock,cues,false);
+                    var release=cues.Cast<object>().Single(cue=>Field<string>(cue,"SourceEvent")==
+                        "battle.ON_ABILITY_ON.skchr_wisdel_1.1");
+                    Assert.That(Field<double>(release,"At"),Is.EqualTo(cast.LaunchedAt).Within(.0001));
+                }
             }
         }
 
@@ -328,10 +339,10 @@ namespace YesterdayConvoy.Tests
                 waveStart=Math.Min(waveStart,model.Clock);
                 first=Mathf.Min(first,fire.Min(r=>r.transform.position.x));
                 last=Mathf.Max(last,fire.Max(r=>r.transform.position.x));
-                return fire.Length==FormationBattleModel.Height&&last-first>8&&fire.Any(r=>HasPaint(r.sprite))&&sawContact&&sawExplosion;
+                return fire.Length==2*FormationBattleModel.Height&&last-first>8&&fire.Any(r=>HasPaint(r.sprite))&&sawContact&&sawExplosion;
             },45);
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
-            Assert.That(model.Clock-waveStart,Is.InRange(.95,1.4),"The native front crosses eight board units at the source speed.");
+            Assert.That(model.Clock-waveStart,Is.InRange(.99,1.18),"The next front overlaps the first one second later at 2x.");
             Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"&&r.color==Color.white),Is.True);
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
             foreach(var stream in fire)

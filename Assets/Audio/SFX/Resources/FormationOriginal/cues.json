@@ -3418,6 +3418,7 @@
       "maxVolume": 1.0,
       "sourceEvent": "battle.ON_ABILITY_ON.skchr_wisdel_1.1",
       "oncePerAction": false,
+      "parentOnly": true,
       "maxSoundAllowed": 2,
       "popOldest": true
     },

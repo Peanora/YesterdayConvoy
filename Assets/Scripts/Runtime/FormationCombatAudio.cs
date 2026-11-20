@@ -38,7 +38,7 @@ namespace YesterdayConvoy
         {
             public string artId, trigger, resource, animation, sourceEvent;
             public int abilityIndex = -1, hitIndex = -1, nativePhase = -1, talulahCost, maxSoundAllowed;
-            public bool oncePerAction, popOldest;
+            public bool oncePerAction, parentOnly, popOldest;
             public float delay, minPitch = 1, maxPitch = 1, minVolume = 1, maxVolume = 1;
         }
 
@@ -172,9 +172,11 @@ namespace YesterdayConvoy
                         action.Skill ? "skillStart" : "attackStart", action.Animation, -1, action.NativePhase),
                         action.At, after, through, actor.Id, action.Sequence, action.Skill ? 3 : 1);
                 if (action.Cancelled) continue;
-                AddFormationOriginalAudio(destination, FindFormationOriginalCue(actor.ArtId,
-                    action.Skill ? "skillRelease" : "attackRelease", action.Animation, action.ProjectileOnly ? action.ProjectileIndex : -1, action.NativePhase),
-                    action.LaunchedAt, after, through, actor.Id, action.Sequence, action.Skill ? 3 : 2);
+                var release = FindFormationOriginalCue(actor.ArtId, action.Skill ? "skillRelease" : "attackRelease",
+                    action.Animation, action.ProjectileOnly ? action.ProjectileIndex : -1, action.NativePhase);
+                if (release != null && (!action.ProjectileOnly || !release.parentOnly))
+                    AddFormationOriginalAudio(destination, release, action.LaunchedAt, after, through, actor.Id,
+                        action.Sequence, action.Skill ? 3 : 2);
             }
 
             foreach (var hit in Model.Hits)

@@ -258,9 +258,10 @@ namespace YesterdayConvoy
             };
             if(guard.ArtId == "D09" && action.TargetId >= 0)
             {
-                // Original input-target spell event on the selected cell, distinct from the damage contact.
+                // The native cast combines view and local particle alignment in one camera sample.
+                // Keep its target-cell pivot and the captured orientation, with contact drawn separately above it.
                 LegacyOriginal(FormationGuardFxKey(guard.ArtId, GuardLavaTargetCast),
-                    (now-action.LaunchedAt)*action.Rate,action.To,-6,flat:true);
+                    (now-action.LaunchedAt)*action.Rate,action.To,6);
             }
             if(clip==null)return;
 
