@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-20 商店点卡招募
+
+- Unity 6000.6.5f1 正式场景 PlayMode **1/1**。覆盖卡牌底部购买、拖动取消、空卡位重复点击、金币扣款、备战落位和后续布阵。Windows x64 Development 构建源码 `8e7a3930fefb328e5c99cc81ed989eeab9faf3f7`，994045522 bytes，0 错误，退出 0。[PlayMode](../artifacts/formation-card-purchase/playmode-visible.xml) · [构建日志](../artifacts/formation-card-purchase/build-final.log)
+- 同版本 1280×720 D3D11 独立版前三场回归 **143/143、零异常、退出 0**。通过正式指针入口验证 9 次点击购买和 1 次满仓无法合成时保留商品、金币。另从同版普通开局用鼠标打开商店并点击 W 的立绘，看到金币从 8 降到 7、商品位显示空缺、W 进入备战。再点击备战席 W，可打开角色详情。未跑完整三个位面。[商店画面](../artifacts/formation-card-purchase/player-final/03-recruitment-drawer-open.png) · [独立版回归](../artifacts/formation-card-purchase/player-final/campaign-smoke.json)
+
 ## 2026-11-20 顶栏节点图标
 
 - Unity 6000.6.5f1 Windows x64 Development 构建源码 `740a8f1d444aa85bca7ea2460c09c1734ef2fc3b`，994046750 bytes、0 错误、退出 0。构建入口检验图集可加载及尺寸；修正了首次打包的图集导入问题。[最终构建日志](../artifacts/formation-node-icons/build-final.log)
