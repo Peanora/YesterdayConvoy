@@ -287,6 +287,14 @@ namespace YesterdayConvoy.Tests
         public IEnumerator TraitDetailsFollowOwnedReserveLineupAndBadgeActivationWithoutPointerLeakage()
         {
             yield return OpenFinitePreparation();
+            // The trait and occlusion checks need specific members regardless of the opening draw.
+            foreach (var piece in controller.Shop.Bench.ToArray())
+                Assert.That(controller.SellPiece(piece.Instance).Success, Is.True);
+            foreach (string cardId in new[] { "CARD_M21", "CARD_B22", "CARD_M03" })
+                Assert.That(controller.Shop.Grant(cardId, 1).Success, Is.True);
+            controller.Session.ApplyTo(controller.Model);
+            FormationFullGameSceneTests.DeployOpeningRecruits(controller);
+            yield return RosterReady();
             var hound = controller.Shop.Bench.Single(piece => piece.Id == "CARD_M03");
             var host = controller.Shop.Bench.Single(piece => piece.Id == "CARD_M21");
             int houndSeat = controller.Session.Seats.For(hound.Instance).Value.Index;

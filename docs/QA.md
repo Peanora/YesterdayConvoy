@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 开局自动发放与预案翻牌
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994107806 bytes、0 错误，退出 0。运行源码 `422cd611e84e1a274e64c7d6063341491ac51bea`。定向 EditMode **135/135**，D3D11 PlayMode **5/5**，两次均退出 0。验证首次刷新前占库、落位只结算一次、同种可复现，以及 1000 个固定种子的 3000 次费用抽样。羁绊测试使用固定成员验证遮挡与装备交互。仓库检查覆盖 14077 个跟踪文件。[构建日志](../artifacts/formation-opening-delivery/build.log) · [EditMode](../artifacts/formation-opening-delivery/editmode.xml) · [PlayMode](../artifacts/formation-opening-delivery/playmode-final.xml)
+- 正常速度独立版保存了补给出现、四项飞行、三格备战席和右栏落位、随后扫光翻牌的连续关键帧。普通启动与菜单重新开始均实点验证，先后用鼠标选牌配键盘确认、数字键选牌配鼠标确认。两局都是三人进备战席且零人上阵，右侧均到账一件装备，第二局选择「起步资金」后 8 金变为 26 金。专项脚本完成发放状态核对后因窗口失去焦点停在输入段，该段由普通启动实点补验。[连续实机片段](../artifacts/formation-opening-delivery/opening-delivery-and-strategy.mp4) · [普通运行日志](../artifacts/formation-opening-delivery/ordinary-player.log)
+- 1280×720 D3D11 独立版正式前三场 **150/150**，后续银金彩战备回归 **62/62**，均零异常、退出 0。前三场回归涵盖真实战后掉落领取。三档回归用三个种子各走两场实际战斗到达 1-3。完整自然长局未跑。[前三场](../artifacts/formation-opening-delivery/campaign/campaign-smoke.json) · [三档](../artifacts/formation-opening-delivery/tiers/campaign-smoke.json)
+
 ## 2026-11-20 战略战备翻牌与本局策略
 
 - Unity 6000.6.5f1 Windows x64 Development 构建通过，994095862 bytes、0 错误，退出 0。运行源码 `27dd3c5d90b8b732e6cef0a42c8bcfff173fbf2d`。定向 EditMode **122/122**，退出 0。仓库检查覆盖 14075 个跟踪文件。[构建日志](../artifacts/formation-strategy-history/build-final.log) · [EditMode](../artifacts/formation-strategy-history/editmode.xml)
