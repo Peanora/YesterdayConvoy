@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Editor
             FormationDeploymentTools.RebuildExpandedBoard();
             GameSceneCatalog.UpdateBuildSettings();
             Validate();
-            Debug.Log("FORMATION_FULL_AUTHOR_PASS: approved v0.7 rules, complete card references and authored 24x8 board with 10x8 deployment and retained 12x8 guard area");
+            Debug.Log("FORMATION_FULL_AUTHOR_PASS: approved v0.7 rules, complete card references and authored 22x8 board with 10x8 deployment and guard areas");
         }
         [MenuItem("Yesterday Convoy/Formation Battle/Validate Complete v0.7 Challenge")]
         public static void Validate()
@@ -34,12 +34,12 @@ namespace YesterdayConvoy.Editor
                 if(catalog==null||!c.formationCards.Any(card=>card.CardId==unit.CardId))
                     throw new InvalidOperationException("Missing full-challenge unit: "+unit.Name);
             }
-            if(FormationBattleModel.Width!=24||FormationBattleModel.Height!=8||FormationBattleModel.DeploymentColumns!=10||
-                FormationBattleModel.Width-FormationBattleModel.DeploymentColumns-2!=12)
-                throw new InvalidOperationException("The preparation board must be 10x8 while the guard area remains 12x8.");
+            if(FormationBattleModel.Width!=22||FormationBattleModel.Height!=8||FormationBattleModel.DeploymentColumns!=10||
+                FormationBattleModel.Width-FormationBattleModel.DeploymentColumns-2!=10)
+                throw new InvalidOperationException("The preparation and guard areas must each be 10x8.");
             if(FormationCampaignRules.ExperienceToNext[8]!=80||FormationCampaignRules.ExperienceToNext[9]!=100)
                 throw new InvalidOperationException("Approved high-level experience curve has regressed.");
-            Debug.Log("FORMATION_FULL_VALIDATE_PASS: 46 units, 16 preplans, 36 augments, 21 advanced recipes, 23 nodes and authored 24x8 board");
+            Debug.Log("FORMATION_FULL_VALIDATE_PASS: 46 units, 16 preplans, 36 augments, 21 advanced recipes, 23 nodes and authored 22x8 board");
         }
     }
 }

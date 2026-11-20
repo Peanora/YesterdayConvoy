@@ -73,7 +73,11 @@ namespace YesterdayConvoy.Editor
                 if(source.name=="BG_Qcity")
                 {
                     var sky=new GameObject("Original LS-5 surrounding city").transform;sky.SetParent(root,false);
-                    var background=FormationNativeAssetTools.CreatePart(source,sky,true);SetBoardMaterials(background,source);continue;
+                    var background=FormationNativeAssetTools.CreatePart(source,sky,true);
+                    SetBoardMaterials(background,source);
+                    if(scene.GetRootGameObjects().Any(g=>g.name=="Industrial service deck backdrop"))
+                        background.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.ShadowsOnly;
+                    continue;
                 }
                 // Source-only occluders describe the original narrow corridor. They have no
                 // corresponding building after widening and would cast floating giant shadows.
@@ -88,7 +92,13 @@ namespace YesterdayConvoy.Editor
                 // The native stage has a narrow central corridor. Move its complete service bands out
                 // around our fixed open rectangle, retaining each band's original relative prop positions.
                 if(p.z>=1.45f)p.z+=3.05f+(FormationBattleModel.Height-8)*.5f;
-                else if(p.z<=-1.45f)p.z-=3.05f+(FormationBattleModel.Height-8)*.5f;
+                else if(p.z<=-1.45f)
+                {
+                    // Keep the foreground tower and its walkway together, beside the loading bay
+                    // on the guard side. This leaves the preparation reward shelf in open view.
+                    if(p.x<=-3.95f)p.x+=12;
+                    p.z-=3.05f+(FormationBattleModel.Height-8)*.5f;
+                }
                 else if(p.x<=-4.45f)p.x-=3.05f+(FormationBattleModel.Width-14)*.5f;
                 else if(p.x>=4.45f)p.x+=3.05f+(FormationBattleModel.Width-14)*.5f;
                 else continue;

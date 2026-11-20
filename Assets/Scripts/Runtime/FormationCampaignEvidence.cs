@@ -38,7 +38,7 @@ namespace YesterdayConvoy
             public string[] events;
         }
         static bool started;
-        readonly Report result=new Report{scope="Actual v0.7 finite-economy campaign controller, production choices/shop/equipment and first three battles, smaller left deployment area, close fixed preparation views and enlarged battle-only view, coin-operated recruitment drawer, reserve-only bench and direct board deployment, with trait details and actual GPU screenshots. Battle and paused battle hide preparation UI and standing reserve models. Accelerated simulation uses normal model time. No forced victories or actor/stat injection. This is not a full natural campaign win-rate or OS mouse test."};
+        readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Preparation pans across the same terrain and combat uses its enlarged view. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
         FormationBattleController controller;string directory;bool done;
         internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
@@ -125,6 +125,35 @@ namespace YesterdayConvoy
             var cell=new Vector2(FormationBattleModel.DeploymentColumns+3,FormationBattleModel.Height*.5f);
             return Vector2.Distance(FormationBattleController.CellScreen(cell),FormationBattleController.CellScreen(cell+Vector2.right));
         }
+        IEnumerator WaitForScoutingView(bool defenders)
+        {
+            double deadline = Time.realtimeSinceStartupAsDouble + 3;
+            while (controller.CameraTransitioning && Time.realtimeSinceStartupAsDouble < deadline)
+                yield return null;
+            Assert(!controller.CameraTransitioning && controller.ViewingDefenders == defenders,
+                defenders ? "Camera settled on the guard formation" : "Camera settled on the editable formation");
+        }
+        IEnumerator PanScoutingView(bool defenders, bool clickArrow)
+        {
+            float start = controller.battleCamera.transform.position.x;
+            if (clickArrow)
+                yield return ClickStrategyUi(FormationBattleController.FormationScoutRect.center);
+            else
+                controller.SetFormationView(defenders);
+            Assert(controller.ViewingDefenders == defenders && controller.CameraTransitioning && !controller.CanEditFormationView,
+                defenders ? "Scouting begins the rightward pan" : "Returning begins the leftward pan");
+            double deadline = Time.realtimeSinceStartupAsDouble + 3;
+            while (Mathf.Abs(controller.battleCamera.transform.position.x - start) <= .02f &&
+                controller.CameraTransitioning && Time.realtimeSinceStartupAsDouble < deadline)
+                yield return null;
+            float moving = controller.battleCamera.transform.position.x;
+            Assert(controller.CameraTransitioning, "The board has a rendered intermediate position");
+            yield return CaptureInterfaceClip(defenders ? "scout-pan-right" : "scout-pan-left", 16);
+            yield return WaitForScoutingView(defenders);
+            float end = controller.battleCamera.transform.position.x;
+            Assert(defenders ? start < moving && moving < end : end < moving && moving < start,
+                "Preparation camera travels through the intervening board cells");
+        }
         IEnumerator ResolveChoices()
         {
             int safety=0;
@@ -183,7 +212,8 @@ namespace YesterdayConvoy
             }
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
-            Assert(FormationBattleModel.Width==24&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10,"Smaller 10 by 8 left deployment area retains the 12 by 8 guard half");
+            Assert(FormationBattleModel.Width==22&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10,
+                "The joined board has a 10 by 8 deployment area and a 10 by 8 guard area");
             yield return WaitForOpeningDelivery("01-opening-delivery-and-preplan");
             if (ReserveRequested)
             {
@@ -198,7 +228,7 @@ namespace YesterdayConvoy
             yield return Frame("02-investment-environment");yield return ResolveChoices();
             Assert(!controller.MarketVisible,"Opening choices leave recruitment drawer collapsed");
             DeployOpeningRecruits();
-            yield return Market(false);controller.SetFormationView(false);yield return ReadyArt();
+            yield return Market(false);controller.SetFormationView(false);yield return WaitForScoutingView(false);yield return ReadyArt();
             Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.PreparationCameraSafeRect,"Preparation uses its close fixed camera frame");
             Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"Preparation displays the operating layer");
             Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
@@ -231,7 +261,12 @@ namespace YesterdayConvoy
             Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
             yield return Frame("03-recruitment-drawer-open");
             yield return Market(false);
-            controller.SetFormationView(true);yield return null;float scoutingTileWidth=GuardTileScreenWidth();yield return Frame("04-close-guard-area");controller.SetFormationView(false);
+            bool clickScoutArrow = Array.IndexOf(Environment.GetCommandLineArgs(), "-formationScoutMouse") >= 0;
+            if (clickScoutArrow) result.scope += " Scouting arrows use actual Windows mouse input.";
+            yield return PanScoutingView(true, clickScoutArrow);
+            float scoutingTileWidth = GuardTileScreenWidth();
+            yield return Frame("04-close-guard-area");
+            yield return PanScoutingView(false, clickScoutArrow);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
             Assert(controller.InspectFormationTrait(trait)&&controller.FormationTraitDetailsOpen&&controller.SelectedFormationTraitId==trait,"Open real lineup trait details");
             var spawns=controller.Model.Units.Select(u=>u.Spawn).ToArray();var detailPoint=FormationBattleController.FormationTraitDetailsRect.center;
@@ -327,7 +362,7 @@ namespace YesterdayConvoy
                         "First real reward settlement drops four unopened balls without payouts");
                     var dropped = controller.Campaign.PendingBalls.Select(ball=>ball.Id).ToArray();
                     Assert(controller.ContinueCampaign(),"Unopened ground rewards do not block the next node");
-                    yield return null;
+                    yield return WaitForScoutingView(false);
                     Assert(controller.Campaign.CurrentNode.Id=="1-2"&&controller.Campaign.PendingBalls.Select(ball=>ball.Id).SequenceEqual(dropped),
                         "Every original drop persists in the next preparation");
                     yield return Frame("06-carried-drops-1-2");
@@ -891,8 +926,10 @@ namespace YesterdayConvoy
                     yield return null;
                 yield return new WaitForSecondsRealtime(.68f);
                 bool projected = controller.TryGroundRewardPoint(drop.Id,out position);
-                Assert(projected && position.x > 860 && position.x < 1115 && position.y > 120 && position.y < 610,
-                    "Clickable 3D " + drop.Color + " ball sits in the visible red-gate reward bay");
+                Assert(projected && position.x > 285 && position.x < 735 &&
+                    position.y > FormationBattleController.PreparationCameraSafeRect.yMax &&
+                    position.y < FormationBattleController.FormationReserveRect(0).yMin,
+                    "Clickable 3D " + drop.Color + " ball sits between the deployment board and the reserve bench");
                 int gold = controller.Shop.Gold, equipment = controller.Campaign.Inventory.Count;
                 Assert(controller.ProcessFormationRewardPointer(EventType.MouseDown,position) &&
                     controller.ProcessFormationRewardPointer(EventType.MouseUp,position),"Pointer opens one real ground reward");
@@ -1180,9 +1217,10 @@ namespace YesterdayConvoy
                     model.Terrain.IsWalkable(d.SkillCell.Value) && defenders.All(guard => guard.Position != (Vector2)d.SkillCell.Value)),
                     id + " reserved skill cells remain clear");
                 controller.SetFormationView(true);
-                yield return null;
+                yield return WaitForScoutingView(true);
                 yield return Frame(id + "-scout-" + entry.side);
                 controller.SetFormationView(false);
+                yield return WaitForScoutingView(false);
                 controller.StartBattle();
                 Assert(model.Phase == FormationPhase.Fighting, id + " starts on the normal battle command");
                 var probeGuard = probe ? StageDefenseSkillProbe(model, id) : null;

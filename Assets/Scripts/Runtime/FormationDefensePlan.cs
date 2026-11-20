@@ -67,15 +67,18 @@ namespace YesterdayConvoy
             };
         }
 
+        static Vector2Int GuardCell(int columnsFromGate, int row) =>
+            new Vector2Int(FormationBattleModel.Width - 1 - columnsFromGate, row);
+
         internal static readonly GuardFormation NorthGuardFormation = new GuardFormation(
-            new[] { new Vector2Int(17, 2), new Vector2Int(17, 3), new Vector2Int(17, 1), new Vector2Int(18, 2) },
-            new[] { new Vector2Int(19, 2), new Vector2Int(19, 1), new Vector2Int(20, 2), new Vector2Int(20, 1), new Vector2Int(20, 3) },
-            new Vector2Int(18, 1), new Vector2Int(18, 3));
+            new[] { GuardCell(6, 2), GuardCell(6, 3), GuardCell(6, 1), GuardCell(5, 2) },
+            new[] { GuardCell(4, 2), GuardCell(4, 1), GuardCell(3, 2), GuardCell(3, 1), GuardCell(3, 3) },
+            GuardCell(5, 1), GuardCell(5, 3));
 
         internal static readonly GuardFormation SouthGuardFormation = new GuardFormation(
-            new[] { new Vector2Int(18, 5), new Vector2Int(18, 6), new Vector2Int(18, 7), new Vector2Int(19, 5) },
-            new[] { new Vector2Int(20, 5), new Vector2Int(20, 6), new Vector2Int(21, 5), new Vector2Int(21, 6), new Vector2Int(21, 7) },
-            new Vector2Int(19, 6), new Vector2Int(19, 7));
+            new[] { GuardCell(5, 5), GuardCell(5, 6), GuardCell(5, 7), GuardCell(4, 5) },
+            new[] { GuardCell(3, 5), GuardCell(3, 6), GuardCell(2, 5), GuardCell(2, 6), GuardCell(2, 7) },
+            GuardCell(4, 6), GuardCell(4, 7));
 
         public static readonly NodeDefinition[] Nodes =
         {

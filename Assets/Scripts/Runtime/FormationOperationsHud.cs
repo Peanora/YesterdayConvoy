@@ -17,6 +17,7 @@ namespace YesterdayConvoy
         internal static readonly Rect FormationStrategyHistoryAnchor = new Rect(527, 76, 228, 27);
         static readonly Rect OperationsExitRect = new Rect(14, 20, 58, 36);
         static readonly Rect OperationsScoutRect = new Rect(83, 20, 113, 36);
+        internal static readonly Rect FormationScoutRect = new Rect(1124, 435, 56, 58);
         static readonly Rect OperationsMenuRect = new Rect(1215, 20, 49, 36);
         static readonly int[][] OperationsPlanes = FormationCampaignRules.Nodes
             .Select((node, index) => new { node.Plane, Index = index })
@@ -30,6 +31,8 @@ namespace YesterdayConvoy
         int[] OperationsPlaneNodes => OperationsPlanes[Campaign.CurrentNode.Plane - 1];
         bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !CombatViewActive &&
             !MarketVisible && !ShopPanelTransitioning;
+        bool FormationScoutAvailable => Model?.Phase == FormationPhase.Preparation &&
+            !CampaignInteractionBlocked && !formationMenuOpen && !shopOddsVisible && !rewardHistoryOpen;
 
         public Rect FormationRouteNodeRect(int nodeIndex)
         {
@@ -61,7 +64,8 @@ namespace YesterdayConvoy
 
         bool OperationsBlocksPoint(Vector2 point) =>
             (formationInspectedNode >= 0 && FormationRouteDetailsRect.Contains(point)) ||
-            (FormationStrategyHistoryAvailable && FormationStrategyHistoryAnchor.Contains(point));
+            (FormationStrategyHistoryAvailable && FormationStrategyHistoryAnchor.Contains(point)) ||
+            (FormationScoutAvailable && FormationScoutRect.Contains(point));
 
         void OperationsLabel(Rect rect, string value, int size, Color color, bool bold = false,
             TextAnchor align = TextAnchor.MiddleLeft) =>
@@ -74,6 +78,24 @@ namespace YesterdayConvoy
                 Fill(rect, active ? FormationPreparationPalette.Selected : FormationPreparationPalette.Hover);
             OperationsLabel(rect, text, 13, GUI.enabled ? OperationsInk : OperationsMuted, false, TextAnchor.MiddleCenter);
             return GUI.Button(rect, GUIContent.none, GUIStyle.none);
+        }
+
+        void DrawFormationScoutControl()
+        {
+            if (!FormationScoutAvailable) return;
+            var rect = FormationScoutRect;
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && openingGroundBall == null;
+            bool hovered = GUI.enabled && rect.Contains(Event.current.mousePosition);
+            Fill(rect, hovered ? FormationPreparationPalette.Hover : OperationsSurface);
+            ApprovedUi.Border(rect, hovered ? OperationsGold : FormationPreparationPalette.Edge);
+            var label = ViewingDefenders ? "返回布阵" : "查看守军";
+            OperationsLabel(new Rect(rect.x, rect.y, rect.width, 36), ViewingDefenders ? "‹" : "›", 32,
+                GUI.enabled ? OperationsGold : OperationsMuted, true, TextAnchor.MiddleCenter);
+            OperationsLabel(new Rect(rect.x, rect.y + 35, rect.width, 17), label, 11,
+                GUI.enabled ? OperationsInk : OperationsMuted, false, TextAnchor.MiddleCenter);
+            if (GUI.Button(rect, new GUIContent(string.Empty, label + " [V]"), GUIStyle.none)) ToggleFormationView();
+            GUI.enabled = enabled;
         }
 
         void DrawFormationOperationsHeader()
@@ -93,8 +115,7 @@ namespace YesterdayConvoy
             if (scoutHover) Fill(scout, OperationsRail);
             Fill(new Rect(scout.x, scout.y + 2, 1, 32), OperationsEdge);
             OperationsLabel(new Rect(scout.x + 10, scout.y, 73, 20), "怪物信息", 12, OperationsInk, true);
-            OperationsLabel(new Rect(scout.x + 10, scout.y + 19, 82, 16),
-                ViewingDefenders ? "返回我方 [V]" : "查看防线 [V]", 9, OperationsMuted);
+            OperationsLabel(new Rect(scout.x + 10, scout.y + 19, 82, 16), "阵容与属性", 9, OperationsMuted);
             OperationsLabel(new Rect(scout.xMax - 26, scout.y, 23, 36),
                 Model.RemainingDefenders.ToString(), 19, OperationsFocus, true, TextAnchor.MiddleRight);
             if (GUI.Button(scout, GUIContent.none, GUIStyle.none))

@@ -61,7 +61,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.Equip(run.AddItem("B").Instance, actor.Instance).Success, Is.True);
             model.BindCampaign(run); model.SetAnimationProfile("B09", Profile(1.8f, 3)); Enter(model);
             Advance(model, 6);
-            var actions = model.PresentationActions.Where(a => !a.Skill).ToArray();
+            var actions = model.PresentationActions.Where(a => a.ActorId == actor.Id && !a.Skill && !a.ProjectileOnly).ToArray();
             Assert.That(actions.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(actions[0].Rate, Is.EqualTo(2 * 1.15f).Within(.001));
             Assert.That(actions[0].EndAt - actions[0].At, Is.EqualTo(3 / (2 * 1.15f)).Within(.001));

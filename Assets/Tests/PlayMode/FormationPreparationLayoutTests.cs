@@ -101,9 +101,9 @@ namespace YesterdayConvoy.Tests
         public IEnumerator CoinDrawerAndReserveOnlyLayoutSupportRealPurchaseUpgradeAndDirectDeployment()
         {
             yield return OpenFinitePreparation();
-            Assert.That(FormationBattleModel.Width * FormationBattleModel.Height, Is.EqualTo(192));
-            Assert.That(FormationBattleModel.DeploymentColumns, Is.EqualTo(10), "Only the left deployment area shrinks; the guard half keeps its twelve columns.");
-            Assert.That(FormationBattleModel.Width - FormationBattleModel.DeploymentColumns - 2, Is.EqualTo(12));
+            Assert.That(FormationBattleModel.Width * FormationBattleModel.Height, Is.EqualTo(176));
+            Assert.That(FormationBattleModel.DeploymentColumns, Is.EqualTo(10));
+            Assert.That(FormationBattleModel.Width - FormationBattleModel.DeploymentColumns - 2, Is.EqualTo(10));
             Assert.That(controller.FormationPreparationUiVisible, Is.True);
             Assert.That(controller.CombatViewActive, Is.False);
             Assert.That(controller.MarketVisible, Is.False, "Ordinary preparation starts with the coin drawer collapsed.");
@@ -123,9 +123,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(FormationBattleController.FormationCoinRect.xMin, Is.GreaterThan(FormationBattleController.FormationReserveRect(9).xMax));
             Assert.That(FormationBattleController.FormationInterestRect.yMax, Is.LessThanOrEqualTo(FormationBattleController.FormationCoinRect.yMin));
             Assert.That(controller.FormationDisplayedInterest, Is.EqualTo(Math.Min(controller.Shop.InterestCap, controller.Shop.Gold / controller.Shop.InterestDivisor)));
-            controller.SetFormationView(true); yield return null;
+            controller.SetFormationView(true, immediate: true); yield return null;
             AssertNormalBoardUncovered(true);
-            controller.SetFormationView(false); yield return null;
+            controller.SetFormationView(false, immediate: true); yield return null;
             var cameraPose = controller.battleCamera.transform.position;
             controller.ToggleFormationMarket();
             yield return Market(true);

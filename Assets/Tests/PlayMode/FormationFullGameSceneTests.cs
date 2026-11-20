@@ -164,7 +164,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Model.Defenders.Count,Is.EqualTo(3));
             Assert.That(double.IsPositiveInfinity(controller.Model.LimitSeconds),Is.True,"Opening reward battles must have no deadline.");
             Assert.That(controller.terrain.regions.Length,Is.EqualTo(4));
-            Assert.That(FormationBattleModel.Width,Is.EqualTo(24));
+            Assert.That(FormationBattleModel.Width,Is.EqualTo(22));
             Assert.That(FormationBattleModel.Height,Is.EqualTo(8));
             Assert.That(FormationBattleModel.DeploymentColumns,Is.EqualTo(10));
             controller.SetMarketVisible(false);controller.SetFormationView(true);yield return null;

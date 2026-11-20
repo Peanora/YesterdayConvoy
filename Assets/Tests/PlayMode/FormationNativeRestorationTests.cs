@@ -369,7 +369,7 @@ namespace YesterdayConvoy.Tests
             yield return Fixture(new[] { "M03" });
             var camera = Field<Camera>(controller,"battleCamera");
             var normalPreparation = camera.transform.position;
-            controller.SetFormationView(true);
+            controller.SetFormationView(true, true);
             var normalScouting = camera.transform.position;
             Begin();
             var normalBattle = camera.transform.position;
@@ -381,7 +381,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(camera.transform.position,Is.EqualTo(normalPreparation));
             Assert.That(Body(actor).enabled, Is.True, "Preparation still shows the board's deployable claw.");
             AssertPainted(Body(actor).sprite);
-            controller.SetFormationView(true);
+            controller.SetFormationView(true, true);
             Assert.That(camera.transform.position,Is.EqualTo(normalScouting));
             yield return WarmFrame(source, "Skill_Begin_A", .13333333);
             Begin();

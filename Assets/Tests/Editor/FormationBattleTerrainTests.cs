@@ -11,8 +11,8 @@ namespace YesterdayConvoy.Tests
         {
             new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.Width - 5, 1, 2, 2), .48f, true),
             new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.Width - 4, FormationBattleModel.Height - 3, 2, 2), .48f, true),
-            new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.DeploymentColumns + 4, 1, 2, 1), .36f, false),
-            new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.DeploymentColumns + 7, 4, 2, 1), .36f, false)
+            new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.Width - 10, 1, 2, 1), .36f, false),
+            new FormationBattleTerrainRegion(new RectInt(FormationBattleModel.Width - 7, 4, 2, 1), .36f, false)
         };
 
         static FormationBattleModel SoloDog()
@@ -89,7 +89,7 @@ namespace YesterdayConvoy.Tests
         {
             var model = SoloDog(); var dog = model.Units[1];
             Assert.That(model.StartBattle(), Is.True);
-            dog.Position = new Vector2(FormationBattleModel.DeploymentColumns + 2, 1);
+            dog.Position = new Vector2(FormationBattleModel.DeploymentColumns + 1, 1);
             foreach (var guard in model.Defenders) { guard.Alive = false; guard.Health = 0; }
             bool sawDetour = false;
             for (int step = 0; step < 1000 && model.Phase != FormationPhase.Won; step++)
@@ -147,7 +147,7 @@ namespace YesterdayConvoy.Tests
             source[0] = new FormationBattleTerrainRegion(new RectInt(14, 0, 1, 1), 1, false);
             Assert.That(layout.HeightAt(new Vector2(FormationBattleModel.Width - 5, 1)), Is.EqualTo(.48f));
             Assert.That(layout.CanPlaceDefender(new Vector2(FormationBattleModel.Width - 5, 1)), Is.True);
-            Assert.That(layout.CanPlaceDefender(new Vector2(FormationBattleModel.DeploymentColumns + 4, 1)), Is.False);
+            Assert.That(layout.CanPlaceDefender(new Vector2(FormationBattleModel.Width - 10, 1)), Is.False);
             Assert.That(layout.HeightAt(new Vector2(5, 2)), Is.Zero);
         }
 

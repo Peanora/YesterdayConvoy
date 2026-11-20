@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const float RewardPop = .205f, RewardFlightEnd = 1.09f, RewardArrivalTime = .46f;
-        const float RewardLeft = 11.28f, RewardRight = 14.37f, RewardNear = .38f, RewardFar = 2.88f, RewardFloor = .12f;
+        const float RewardLeft = 1f, RewardRight = 6.7f, RewardNear = -2.66f, RewardFar = -1.54f, RewardFloor = .935f;
         static readonly Color[] PrismLight =
         {
             new Color(.40f,.94f,.98f), new Color(.54f,.65f,1), new Color(.82f,.57f,1),
@@ -15,10 +15,10 @@ namespace YesterdayConvoy
         };
         static readonly Vector2[] LootScatter =
         {
-            new Vector2(.38f,.50f), new Vector2(.62f,.50f), new Vector2(.14f,.17f),
-            new Vector2(.86f,.17f), new Vector2(.14f,.83f), new Vector2(.86f,.83f),
-            new Vector2(.38f,.17f), new Vector2(.62f,.17f), new Vector2(.14f,.50f),
-            new Vector2(.86f,.50f), new Vector2(.38f,.83f), new Vector2(.62f,.83f)
+            new Vector2(5f/12,.18f), new Vector2(7f/12,.18f), new Vector2(3f/12,.18f),
+            new Vector2(9f/12,.18f), new Vector2(1f/12,.18f), new Vector2(11f/12,.18f),
+            new Vector2(5f/12,.82f), new Vector2(7f/12,.82f), new Vector2(3f/12,.82f),
+            new Vector2(9f/12,.82f), new Vector2(1f/12,.82f), new Vector2(11f/12,.82f)
         };
         sealed class GroundBall
         {
@@ -59,8 +59,8 @@ namespace YesterdayConvoy
         int PendingGroundRewardItems => rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Items.Count);
         internal bool ActiveGroundRewardHasRecruits => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Count>0);
         internal bool ActiveGroundRewardHasTwoStar => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Any(recruit=>recruit.Star==2));
-        bool GroundRewardsVisible => Campaign != null && (!Campaign.IsPractice || Campaign.ShowsHopeRewards) && !CombatViewActive && !ViewingDefenders;
-        bool CanPickGroundRewards => GroundRewardsVisible && !CampaignInteractionBlocked && !formationMenuOpen &&
+        bool GroundRewardsVisible => Campaign != null && (!Campaign.IsPractice || Campaign.ShowsHopeRewards) && !CombatViewActive;
+        bool CanPickGroundRewards => GroundRewardsVisible && !ViewingDefenders && !CameraTransitioning && !CampaignInteractionBlocked && !formationMenuOpen &&
             !shopOddsVisible && !rewardHistoryOpen;
 
         internal static float RewardSizeRatio(string color) => color switch
@@ -324,7 +324,7 @@ namespace YesterdayConvoy
                 var art = SupplyItemArt(drop.Component);
                 if (art != null)
                 {
-                    var display = new GameObject("拾取装备") {layer=FormationLeftLayer};
+                    var display = new GameObject("拾取装备");
                     display.transform.SetParent(body,false);
                     var renderer = display.AddComponent<SpriteRenderer>();
                     if (!componentDropSprites.TryGetValue(drop.Component,out var sprite))
@@ -355,7 +355,7 @@ namespace YesterdayConvoy
 
         MeshRenderer RewardMeshChild(string name,Transform parent,Mesh mesh,Material material)
         {
-            var child = new GameObject(name) { layer = FormationLeftLayer };
+            var child = new GameObject(name);
             child.transform.SetParent(parent,false);
             child.AddComponent<MeshFilter>().sharedMesh = mesh;
             var renderer = child.AddComponent<MeshRenderer>();

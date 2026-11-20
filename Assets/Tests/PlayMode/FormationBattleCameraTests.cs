@@ -22,8 +22,28 @@ namespace YesterdayConvoy.Tests
         {
             double deadline = Time.realtimeSinceStartupAsDouble + 3;
             while (controller.CameraTransitioning && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
-            Assert.That(controller.CameraTransitioning, Is.False, "A focused camera transition must finish even while combat is paused.");
+            Assert.That(controller.CameraTransitioning, Is.False, "The camera must finish moving.");
             yield return null;
+        }
+
+        void AssertJoinedSeam()
+        {
+            var camera = controller.battleCamera;
+            var board = SceneManager.GetActiveScene().GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<Transform>());
+            int row = FormationBattleModel.Height / 2;
+            foreach (int column in new[] { FormationBattleModel.DeploymentColumns - 1, FormationBattleModel.DeploymentColumns + 1 })
+            {
+                var tile = board.Single(t => t.name == $"Tile {column:00},{row:00}");
+                Assert.That(camera.cullingMask & (1 << tile.gameObject.layer), Is.Not.EqualTo(0),
+                    "The camera must render the saved tiles on both sides of the red gate.");
+                var cell = new Vector2(column, row);
+                var point = camera.WorldToViewportPoint(FormationBattleController.WorldPoint(cell));
+                Assert.That(point.x, Is.InRange(0f, 1f), "The center of the same board remains visible across the seam.");
+                Assert.That(point.y, Is.InRange(0f, 1f));
+                Assert.That(controller.FormationPointVisibleInView(cell), Is.True,
+                    "A visible point across the seam must be available to actor presentation.");
+            }
         }
 
         void AssertInFocusedFrame(Vector3 world, string message)
@@ -52,7 +72,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [UnityTest]
-        public IEnumerator FocusedViewsKeepPreparationAndOriginalShopAndFollowBattleAndRetry()
+        public IEnumerator ScoutingPansAcrossTheJoinedBoardAndKeepsPreparationAndBattleFraming()
         {
             FormationShopSession.StartNew(20261117);
             yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
@@ -76,6 +96,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.ViewingDefenders, Is.False, "Ordinary preparation starts on the editable left army.");
             Assert.That(controller.CanEditFormationView, Is.True);
             AssertHalfAndActorHeads(false);
+            AssertJoinedSeam();
             var leftPose = controller.battleCamera.transform.position;
             var shopCamera = controller.ShopModelCamera;
             Assert.That(shopCamera, Is.Not.Null);
@@ -89,10 +110,21 @@ namespace YesterdayConvoy.Tests
             controller.SetFormationView(true);
             Assert.That(controller.ViewingDefenders, Is.True);
             Assert.That(controller.CanEditFormationView, Is.False);
-            Assert.That(controller.CameraTransitioning, Is.False, "Scouting cuts directly between two fixed views without panning.");
+            Assert.That(controller.CameraTransitioning, Is.True);
+            Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Scouting starts from the current preparation view.");
+            deadline = Time.realtimeSinceStartupAsDouble + 3;
+            while (controller.CameraTransitioning && controller.battleCamera.transform.position.x <= leftPose.x + .05f &&
+                Time.realtimeSinceStartupAsDouble < deadline)
+                yield return null;
+            var movingPose = controller.battleCamera.transform.position;
+            Assert.That(controller.CameraTransitioning, Is.True, "Scouting must render a position between the two views.");
+            AssertJoinedSeam();
             yield return WaitForCamera();
             AssertHalfAndActorHeads(true);
-            Assert.That(controller.battleCamera.transform.position.x - leftPose.x, Is.GreaterThan(4), "The fixed defender view must be distinct from the fixed deployment view.");
+            AssertJoinedSeam();
+            var rightPose = controller.battleCamera.transform.position;
+            Assert.That(rightPose.x - leftPose.x, Is.GreaterThan(4), "The scout view pans far enough to focus on the guard deployment.");
+            Assert.That(movingPose.x, Is.InRange(leftPose.x + .05f, rightPose.x - .05f));
             Assert.That(model.Clock, Is.EqualTo(clock)); Assert.That(model.TimeRemaining, Is.EqualTo(remaining));
             CollectionAssert.AreEqual(positions, model.Units.Select(u => u.Position));
             CollectionAssert.AreEqual(spawns, model.Units.Select(u => u.Spawn));
@@ -105,16 +137,24 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.battleCamera.fieldOfView, Is.EqualTo(40));
             Assert.That(Quaternion.Angle(controller.battleCamera.transform.rotation, Quaternion.Euler(60, 0, 0)), Is.LessThan(.01f));
 
-            var rightPose = controller.battleCamera.transform.position;
             var sampleCell = new Vector2(FormationBattleModel.DeploymentColumns + 3, FormationBattleModel.Height * .5f);
             float preparationCellWidth = Vector2.Distance(FormationBattleController.CellScreen(sampleCell), FormationBattleController.CellScreen(sampleCell + Vector2.right));
             yield return new WaitForSecondsRealtime(.25f);
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(rightPose), "The defender camera must never drift.");
-            Assert.That(model.Units.All(u => !controller.FormationActorVisibleInView(u)), Is.True);
+            Assert.That(model.Units.Any(u => u.Enabled && controller.FormationActorVisibleInView(u)), Is.True,
+                "Allied actors near the seam remain present in the scout view.");
             controller.ToggleFormationView();
+            Assert.That(controller.CameraTransitioning, Is.True, "Returning also pans back across the board.");
+            Assert.That(controller.CanEditFormationView, Is.False, "Dragging stays disabled while the board moves under the pointer.");
+            deadline = Time.realtimeSinceStartupAsDouble + 3;
+            while (controller.CameraTransitioning && controller.battleCamera.transform.position.x >= rightPose.x - .05f &&
+                Time.realtimeSinceStartupAsDouble < deadline)
+                yield return null;
+            Assert.That(controller.CameraTransitioning, Is.True);
+            Assert.That(controller.battleCamera.transform.position.x, Is.InRange(leftPose.x + .05f, rightPose.x - .05f));
             yield return WaitForCamera();
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Returning restores the same fixed pose.");
-            Assert.That(model.Defenders.All(d => !controller.FormationActorVisibleInView(d)), Is.True);
+            AssertJoinedSeam();
             Assert.That(controller.ViewingDefenders, Is.False); Assert.That(controller.CanEditFormationView, Is.True);
             var first = model.Units.Single(u => u.Enabled && u.ArtId == "M21");
             var second = model.Units.Single(u => u.Enabled && u.ArtId == "M11");
@@ -127,10 +167,6 @@ namespace YesterdayConvoy.Tests
 
             yield return new WaitForSecondsRealtime(.25f);
             Assert.That(controller.battleCamera.transform.position, Is.EqualTo(leftPose), "Dragging and swapping must not reframe the camera.");
-            var redTile = SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Transform>()).Single(t => t.name == "Tile " + FormationBattleModel.DeploymentColumns.ToString("00") + ",00");
-            var enemyTile = SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Transform>()).Single(t => t.name == "Tile " + (FormationBattleModel.DeploymentColumns + 1).ToString("00") + ",00");
-            Assert.That((controller.battleCamera.cullingMask & (1 << redTile.gameObject.layer)) != 0, Is.True);
-            Assert.That((controller.battleCamera.cullingMask & (1 << enemyTile.gameObject.layer)) == 0, Is.True, "The left view excludes the defender tiles.");
             deadline = Time.realtimeSinceStartupAsDouble + 600;
             while (!controller.RosterArtReady && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert.That(controller.RosterArtReady, Is.True);

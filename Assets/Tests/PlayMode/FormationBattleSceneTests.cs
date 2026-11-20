@@ -321,7 +321,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain.transform.IsChildOf(guardTerrain.transform),Is.True,"The controller must read the saved guard terrain authoring.");
             Assert.That(controller.Model.Terrain,Is.Not.Null);
             var regions=controller.terrain.regions;
-            CollectionAssert.AreEquivalent(new[]{new RectInt(19,1,2,2),new RectInt(20,5,2,2),new RectInt(14,1,2,1),new RectInt(17,4,2,1)},regions.Select(r=>r.cells));
+            CollectionAssert.AreEquivalent(new[]{new RectInt(17,1,2,2),new RectInt(18,5,2,2),new RectInt(12,1,2,1),new RectInt(15,4,2,1)},regions.Select(r=>r.cells));
             var terrainRenderers=guardTerrain.GetComponentsInChildren<MeshRenderer>(true);
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)

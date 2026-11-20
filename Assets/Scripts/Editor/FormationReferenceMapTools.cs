@@ -58,8 +58,8 @@ namespace YesterdayConvoy.Editor
             {
                 new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-5,1,2,2), height=.48f, allowDefender=true },
                 new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-4,FormationBattleModel.Height-3,2,2), height=.48f, allowDefender=true },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+4,1,2,1), height=.36f, allowDefender=false },
-                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.DeploymentColumns+7,4,2,1), height=.36f, allowDefender=false }
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-10,1,2,1), height=.36f, allowDefender=false },
+                new FormationBattleTerrainRegion { cells = new RectInt(FormationBattleModel.Width-7,4,2,1), height=.36f, allowDefender=false }
             };
             controller.terrain = authoring;
             foreach (var region in authoring.regions)
@@ -163,6 +163,7 @@ namespace YesterdayConvoy.Editor
                 else Rail(root,origin,length,alongZ);
             }
             Box(root,"Lower industrial service yard",new Vector3(0,-2.05f,0),new Vector3(70,.15f,50),trim);
+            Box(root,"Front reward shelf",new Vector3(-6.65f,.75f,-5.7f),new Vector3(6.1f,.36f,1.55f),trim);
             ViewBox("Dark continuous board substructure",new Vector3(0,-.36f,0),new Vector3(16.0f+extra,.76f,FormationBattleModel.Height+1.85f),recess);
             ViewBox("Rear service gantry deck",new Vector3(0,.06f,halfDepth+1.98f),new Vector3(21+extra,.12f,2.1f),trim);
             foreach(int side in new[]{-1,1})

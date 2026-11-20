@@ -136,7 +136,7 @@ namespace YesterdayConvoy
             var root=SceneManager.GetActiveScene().GetRootGameObjects().SingleOrDefault(go=>go.name=="Defender terrain");
             if(root==null||controller.terrain==null||!controller.terrain.transform.IsChildOf(root.transform)||controller.Model.Terrain==null)return false;
             var regions=controller.terrain.regions;
-            var footprints=new[]{new RectInt(21,1,2,2),new RectInt(22,5,2,2),new RectInt(16,1,2,1),new RectInt(19,4,2,1)};
+            var footprints=new[]{new RectInt(17,1,2,2),new RectInt(18,5,2,2),new RectInt(12,1,2,1),new RectInt(15,4,2,1)};
             if(regions==null||regions.Length!=footprints.Length||!footprints.All(cells=>regions.Count(r=>r.cells==cells)==1))return false;
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true);
             foreach(var region in regions)
@@ -258,7 +258,7 @@ namespace YesterdayConvoy
             yield return RosterReady();yield return View(false);yield return null;
             result.scene=SceneManager.GetActiveScene().name;result.width=Screen.width;result.height=Screen.height;
             var m=controller.Model;var terrain=Terrain();var terrainSet=new HashSet<MeshFilter>(terrain);result.savedMeshes=terrain.Length;
-            CheckThat("smaller-left-board-preserves-the-twelve-column-guard-half",FormationBattleModel.Width==24&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10&&FormationBattleModel.Width-FormationBattleModel.DeploymentColumns-2==12);
+            CheckThat("compact-board-has-ten-column-deployment-and-guard-areas",FormationBattleModel.Width==22&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10);
             CheckThat("authored-rectangle-has-saved-meshes",terrain.Length>20&&SceneManager.GetActiveScene().path=="Assets/Scenes/FormationBattle.unity");
             var cam=controller.battleCamera;
             CheckThat("native-map-keeps-full-virtual-camera-and-forward-view",cam!=null&&cam.rect==TacticalViewport.Current.CameraRect(new Rect(0,0,1280,720))&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.y,0))<.1f&&Mathf.Abs(Mathf.DeltaAngle(cam.transform.eulerAngles.z,0))<.1f);

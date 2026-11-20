@@ -81,7 +81,7 @@ namespace YesterdayConvoy.Tests
             var elevated = model.Defenders[0];
             elevated.Position = new Vector2(18, 3);
             var next = model.Defenders[1];
-            next.Position = new Vector2(22, 6);
+            next.Position = new Vector2(FormationBattleModel.Width - 2, 6);
             foreach (var guard in model.Defenders.Skip(2)) guard.Alive = false;
 
             model.Advance(.025f);

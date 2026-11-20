@@ -60,6 +60,7 @@ namespace YesterdayConvoy
                 bool preparing=Model.Phase==FormationPhase.Preparation;
                 DrawFormationPreparation();
                 DrawFormationResources(preparing);
+                DrawFormationScoutControl();
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();
                 if(!FormationStrategyHistoryOpen)DrawFormationStrategyHistoryToggle();
@@ -100,7 +101,6 @@ namespace YesterdayConvoy
             GUI.Label(new Rect(1016,10,94,17),"剩余时间",approvedShop.LoopText(10,TextAnchor.MiddleLeft,ApprovedUi.Muted));
             GUI.Label(new Rect(1016,27,94,23),double.IsInfinity(Model.TimeRemaining)?"不限时":Model.TimeRemaining.ToString("0.0")+" 秒",approvedShop.LoopText(20,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(1174,8,42,42),Model.Paused?"继续":"暂停",Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=!Model.Paused;
-            if(prep&&Button(new Rect(790,8,208,42),ViewingDefenders?"返回我方布阵  [V]":"查看守军部署  [V]"))ToggleFormationView();
         }
         void DrawFormationSidebars()
         {
@@ -267,7 +267,7 @@ namespace YesterdayConvoy
             foreach(var h in Model.Hits)
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
-                if(ViewingDefenders!=(h.To.x>=FormationBattleModel.DeploymentColumns+.5f))continue;
+                if(!FormationPointVisibleInView(h.To))continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
                 if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
                 Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);

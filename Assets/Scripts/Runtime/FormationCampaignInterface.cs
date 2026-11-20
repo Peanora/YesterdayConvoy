@@ -179,7 +179,7 @@ namespace YesterdayConvoy
                 if(art!=null)GUI.DrawTexture(new Rect(x,r.y+221,32,32),art,ScaleMode.ScaleToFit,true);
                 CampaignLabel(new Rect(x+35,r.y+228,88,23),names[i]+"球 ×"+Campaign.PendingBalls.Count(ball=>ball.Node==Campaign.CurrentNode.Id&&ball.Color==names[i]),13,true);
             }
-            if(HasGroundRewards) CampaignLabel(new Rect(r.x+25,r.y+258,r.width-50,20),"红门右侧的战利品可以留到下次整备领取。",11);
+            if(HasGroundRewards) CampaignLabel(new Rect(r.x+25,r.y+258,r.width-50,20),"棋盘前沿的战利品可以留到下次整备领取。",11);
             string next=Campaign.HasBlockingChoice?"先完成必要选择":Campaign.Finished?"查看最终结算":"继续下一节点";
             if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),next,!Campaign.HasBlockingChoice&&openingGroundBall==null,true))
             {
@@ -374,7 +374,7 @@ namespace YesterdayConvoy
         bool ProcessCampaignSeaPointer(EventType type,Vector2 point)
         {
             if(!campaignSeaPainting||Campaign==null)return false;
-            if(type!=EventType.MouseUp||!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point))return true;
+            if(type!=EventType.MouseUp||CameraTransitioning||!BoardInputRect.Contains(point)||FormationShopBlocksPoint(point))return true;
             var ray=battleCamera.ScreenPointToRay(TacticalViewport.Current.ToScreen(point));
             var plane=new Plane(Vector3.up,new Vector3(0,.12f,0));
             if(!plane.Raycast(ray,out float distance))return true;
