@@ -42,7 +42,7 @@ M11两条共用资源原本就已存在于正式 `OriginalCombatVfx/Monsters` �
 
 ### 2026-11-21 复核并重接塔露拉原包层
 
-重新读取本机 PC 客户端 `26-10-20-11-10-38-04170990` 的 `battle/enm_pfb_18.ab`、`pkgrps/btl_pfb_fx_enemy_1.ab` 和 `battle/prefabs/[uc]projectiles.ab`。两个形态的 Ignite 与 DragonFireExplode 对应 `Skill_1` 和 `Skill_2`。`ScreenAttack` 的原动作字段为空，其独立投射物为 `projectile_enemy_bsnake`。本作复用的原采样来自官方 Android `26-10-29-15-36-11-33649006`，版本、镜头与渲染平台有差异。保留原权利状态。
+重新读取本机 PC 客户端 `26-10-20-11-10-38-04170990` 的 `battle/enm_pfb_18.ab`、`pkgrps/btl_pfb_fx_enemy_1.ab`、`battle/prefabs/[uc]projectiles.ab` 与 `refs/arts/enm_art_16.ab`。两个形态的 Ignite 与 DragonFireExplode 对应 `Skill_1` 和 `Skill_2`。`ScreenAttack` 的原动作字段为空，其独立投射物为 `projectile_enemy_bsnake`。与保留的官方 Android `26-10-29-15-36-11-33649006` 资源相比，塔露拉 `.skel` 和 `.atlas` 的 SHA-256 相同。点燃、龙炎及火浪的 21 个对照特效根、284 个节点路径一致，归一化对象引用后比较的 774 个变换、粒子、拖尾、网格及 Animator 组件字段一致。保留样本用 Android 资源离线采样，平台纹理格式和镜头各异。保留原权利状态。
 
 | 本作表现 | 对应原资源及播放时点 |
 |---|---|
