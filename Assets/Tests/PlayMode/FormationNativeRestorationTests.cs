@@ -117,6 +117,22 @@ namespace YesterdayConvoy.Tests
             return ((string)args[4], (double)args[5], (bool)args[6]);
         }
 
+        [UnityTest] public IEnumerator LavaOriginalMarkerKeepsTheWindupAheadOfTheRealContact()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D09", false, true);
+            Begin();
+            var guard = controller.Model.Defenders.Single();
+            yield return Until(() => controller.Model.PresentationActions.Any(action => action.ActorId == guard.Id && !action.Skill), 4);
+            var cast = controller.Model.PresentationActions.First(action => action.ActorId == guard.Id && !action.Skill);
+            Assert.That(cast.LaunchedAt - cast.At, Is.EqualTo(.833333313 / 2).Within(.0001));
+            Assert.That(controller.Model.Hits.Any(hit => hit.Action == cast), Is.False, "The mirror of the original first attack starts with a windup.");
+            yield return Until(() => controller.Model.Hits.Any(hit => hit.Action == cast), 2);
+            var contact = controller.Model.Hits.First(hit => hit.Action == cast);
+            Assert.That(contact.At, Is.InRange(cast.LaunchedAt - .0001, cast.LaunchedAt + .0251));
+        }
+
         [UnityTest] public IEnumerator ResolvedContactLightsOnlyTheRecipientAndStopsAtItsModelTime()
         {
             RequireGpu();
