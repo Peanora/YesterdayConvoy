@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-20 顶栏节点图标
+
+- Unity 6000.6.5f1 Windows x64 Development 构建源码 `740a8f1d444aa85bca7ea2460c09c1734ef2fc3b`，994046750 bytes、0 错误、退出 0。构建入口检验图集可加载及尺寸；修正了首次打包的图集导入问题。[最终构建日志](../artifacts/formation-node-icons/build-final.log)
+- 同版本 1280×720 D3D11 独立 Player 走正式挑战前三场，**134/134、零异常、退出 0**。对照[图标看稿与原作参考](art/source-records/formation-node-icons.md)，目视复核首位面九格：奖励是物资箱、补给是切面球，战斗、遭遇、战备和首领与各自看稿一致。实机截图像素比较仅在九个图标底框内有变化，框外零变化；遭遇详情仍正常打开。此为静态界面验证，未单独试玩至补给成为当前节点，也未跑完整三个位面。[实机顶栏](../artifacts/formation-node-icons/hud-final.png) · [遭遇详情](../artifacts/formation-node-icons/player-final/03-node-encounter-detail.png) · [回归结果](../artifacts/formation-node-icons/player-final/campaign-smoke.json)
+
 ## 2026-11-20 羁绊试玩
 
 - Unity 6000.6.5f1 Windows x64 Development 构建通过，993949198 bytes、0 错误。唯一构建场景为 `FormationBattle`，运行源码 `6e3a9783eecf5e72198630cd3ea5652d3155c85f`。仓库结构与元数据检查覆盖 14069 个跟踪文件。[构建日志](../artifacts/formation-synergy-trials/build.log)
