@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 大伤害红字
+
+- 对照《明日方舟》新约能天使三技能原客户端录像约 0:05 的红色 `1398`。棋盘沿用项目字体，加粗红色整数并加深色描边，命中后弹出上浮，约 0.8 秒淡出。红字采用我方对守军的单笔实际扣血，门槛为至少 100 点且达到普通伤害估算的 1.5 倍。普通伤害按同次命中的伤害类型和目标防御计算。100 点下限、粗字与弹出曲线是本作适配。治疗继续走原青色提示，守军对我方的伤害保留实际扣血与受击事件。[原作录像](https://www.bilibili.com/video/BV18JVGzNEJb/?t=5)
+- 运行源码 `be63f51a0cebfee3c004cce87c7702f1cf305454`。Unity 6000.6.5f1 Windows x64 Development 构建通过，1001980086 bytes、0 错误、退出 0。定向 EditMode **98/98**。仓库完整性检查覆盖 14312 个跟踪文件。[构建](../artifacts/formation-red-damage/build-final.log) · [定向测试](../artifacts/formation-red-damage/editmode.xml)
+- 1280×720 D3D11 独立版正常首领试玩 **61/61、零异常**，133.650 秒进入蓝门。核对 99/100、149/150 两组边界，以及治疗、全吸收、守军来源。实机看到我方的 11918 红字，初雪二、三技能实际扣约 329、251 点时我方身上无伤害数字，约 28 点积雪伤害仍结算。复看两阶段连续出手及关键帧，短片按采集时间重采样为 173 帧、24 fps，含游戏混音，完整解码通过。实机取样覆盖首领试玩。[我方重击](../artifacts/formation-red-damage/player-final/04-player-large-damage-number.png) · [二技能受击](../artifacts/formation-red-damage/player-final/04-s2-incoming-no-damage-number.png) · [三技能受击](../artifacts/formation-red-damage/player-final/06-s3-incoming-no-damage-number.png) · [有声实机](../artifacts/formation-red-damage/red-damage-player.mp4) · [独立版报告](../artifacts/formation-red-damage/player-final/snow-boss-smoke.json)
+
 ## 2026-11-20 圣聆初雪命中与积雪辨识
 
 - 默认皮肤二技能「霜涛覆岭」复用原作 `sbell2_skill_02_start_01`、直接命中 `sbell2_skill_01_hit`，周期伤害仍走独立的 `sbell2_buff_01_hit_02`。三技能「群山俯首」复用原作 `sbell2_skill_03_start_01`、`sbell2_skill_03_hit` 和持续 `sbell2_skill_03_flow`。直接命中以结算时的目标位置为准，按目标体型抬至身体中部并排在该目标体层上。施法、直接命中和持续风雪各按原图集输出到棋盘显示色域。对照原客户端录像二技能约 1:32.8–1:35.4，三技能约 2:04.6–2:06.8。原录像里的独立立体冰簇归属仍未确定，棋盘用三档原作平面雪纹叠加浅蓝格底，颜色随实际雪层加深。这是适配工业灰地板的表现层。原素材权利状态见来源记录。[原包绑定](art/source-records/formation-pramanix-boss-2026-11-20.json) · [二技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=92) · [三技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=124)
