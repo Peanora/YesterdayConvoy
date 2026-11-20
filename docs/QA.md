@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-20 连通棋盘与守军侦察
+
+- Unity 6000.6.5f1 场景校验通过，确认保存了 176 个底格、60 个外围格、原红蓝门各八扇及两处高台、两处掩体。沿用《明日方舟》LS-5 版本 26-10-29 的留存环境原部件和正向 60°／FOV 40 构图。塔楼及相邻走道整体向右挪动，为棋盘前沿的奖励平台让出视线。横移的 0.48 秒为本作整备操作时长。 [原素材记录](art/source-records/formation-ls5-native.json) · [场景校验](../artifacts/formation-board-pan/editor-author.log)
+- Windows x64 Development 构建通过，994098622 bytes、0 错误，运行源码 `0ccf122a2a8094ba13ea3f105b2c27fbf21ffb9a`。同版完整 EditMode **1211/1211**、D3D11 PlayMode **14/14**。覆盖交界两侧地块同屏、平移中间位置、返回后原坐标拖放，以及合成表现对屏内角色与屏外落点的处理。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-board-pan/build.log) · [EditMode](../artifacts/formation-board-pan/editmode-full-final.xml) · [PlayMode](../artifacts/formation-board-pan/playmode-final.xml)
+- 独立版 1280×720 D3D11 前三场 **191/191**、零异常、退出 0。鼠标实际点击右侧箭头往返，两端与横移中间帧都能看到交界两侧。按正式领奖指针入口验证前沿平台两排奖励、跨关留存、并行飞行和各自落位结算。白蓝金彩同框来自固定掉落样本，前三场的掉落来自实际结算。首次鼠标验证因窗口失焦中断，激活游戏窗口后完成。[往返实机片段](../artifacts/formation-board-pan/scouting-pan.mp4) · [两排奖励与飞行](../artifacts/formation-board-pan/player-final/06-concurrent-reward-flights/010.png) · [四种奖励](../artifacts/formation-board-pan/player-final/08-four-rarities-ground.png) · [独立版报告](../artifacts/formation-board-pan/player-final/campaign-smoke.json)
+- 右侧收窄后，固定种子 20261119 的三名一星原样阵容在 1-3 由失败变为 81.35 秒胜利。种子 71 的对应样本仍失败。两组原样阵容在 1-4 和 1-6 均失败，升级配装样本均胜利。完整自然长局和第二台机器未测。[定向模拟明细](../artifacts/formation-board-pan/editmode-final.xml)
+
 ## 2026-11-20 开局自动发放与预案翻牌
 
 - Unity 6000.6.5f1 Windows x64 Development 构建通过，994107806 bytes、0 错误，退出 0。运行源码 `422cd611e84e1a274e64c7d6063341491ac51bea`。定向 EditMode **135/135**，D3D11 PlayMode **5/5**，两次均退出 0。验证首次刷新前占库、落位只结算一次、同种可复现，以及 1000 个固定种子的 3000 次费用抽样。羁绊测试使用固定成员验证遮挡与装备交互。仓库检查覆盖 14077 个跟踪文件。[构建日志](../artifacts/formation-opening-delivery/build.log) · [EditMode](../artifacts/formation-opening-delivery/editmode.xml) · [PlayMode](../artifacts/formation-opening-delivery/playmode-final.xml)
