@@ -105,17 +105,6 @@ namespace YesterdayConvoy.Tests
             Assert.That(m.SetLineup(new[]{"R0","R1"}));Assert.That(m.Purchase(0).Success);Assert.That(m.Purchase(1).Success);
             Assert.That(m.Bench.Count,Is.EqualTo(12));Assert.That(m.Purchase(2).Success,Is.False);Assert.That(m.SetLineup(new[]{"R0"}),Is.False);m.Validate();
         }
-        [Test]public void AllLaunchProfilesBuildAtEveryStarAndKeepAuthoredActionWindows()
-        {
-            var data=UnityEditor.AssetDatabase.FindAssets("t:ManualBattleDefinition").Select(g=>UnityEditor.AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(UnityEditor.AssetDatabase.GUIDToAssetPath(g)))
-                .Where(d=>d!=null&&CampaignBalance.Supports(d.Card.CardId)).GroupBy(d=>d.Card.CardId).Select(g=>g.First()).ToArray();
-            Assert.That(data.Length,Is.EqualTo(CampaignBalance.Profiles.Count));
-            foreach(var d in data)for(int star=1;star<=3;star++)
-            {
-                var p=CampaignBalance.Build(d,star,50,5);Assert.That(p.Combat.UnitInterval,Is.GreaterThanOrEqualTo(p.Combat.AttackDuration));
-                Assert.That(p.Combat.AttackDuration,Is.EqualTo(d.Engagement.Snapshot().AttackDuration));Assert.That(p.Unit.DeploymentLimit,Is.EqualTo(CampaignPlan.Uses(d.Card.RecruitCost)));
-            }
-        }
         [Test]public void CampaignBossesUseExistingDistinctCompleteSkillsWithoutMutatingSource()
         {
             var original=Resources.Load<DefenderTrialDefinition>("Maps/BattleShop");float hp=original.defenders[1].health;

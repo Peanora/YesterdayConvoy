@@ -1,0 +1,735 @@
+{
+  "version": 1,
+  "task": "WIS_APRIL_G9",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "wisdel_attack_01_hit",
+      "count": 33,
+      "width": 104,
+      "height": 48,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.41346153846153844,
+      "pivotY": 0.5181948343912761,
+      "duration": 1.1,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_01_hit/00.png",
+          "count": 33,
+          "width": 1248,
+          "height": 144
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_01_hit_02",
+      "count": 57,
+      "width": 148,
+      "height": 128,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.49324324324324326,
+      "pivotY": 0.6005730628967285,
+      "duration": 1.9,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_01_hit_02/00.png",
+          "count": 57,
+          "width": 1776,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_01_trail",
+      "count": 30,
+      "width": 420,
+      "height": 24,
+      "columns": 4,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.9619047619047619,
+      "pivotY": 0.5659268697102864,
+      "duration": 1.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_01_trail/00.png",
+          "count": 30,
+          "width": 1680,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_c_start",
+      "count": 48,
+      "width": 80,
+      "height": 40,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.05,
+      "pivotY": 0.1968338012695312,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_c_start/00.png",
+          "count": 48,
+          "width": 960,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_down_a_start",
+      "count": 48,
+      "width": 76,
+      "height": 36,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.5789473684210527,
+      "pivotY": 0.16314866807725692,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_down_a_start/00.png",
+          "count": 48,
+          "width": 912,
+          "height": 144
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_down_b_start",
+      "count": 48,
+      "width": 76,
+      "height": 52,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.5,
+      "pivotY": 0.15141061636117792,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_down_b_start/00.png",
+          "count": 48,
+          "width": 912,
+          "height": 208
+        }
+      ]
+    },
+    {
+      "key": "wisdel_attack_down_c_start",
+      "count": 48,
+      "width": 76,
+      "height": 32,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.06578947368421052,
+      "pivotY": 0.30854225158691406,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_attack_down_c_start/00.png",
+          "count": 48,
+          "width": 912,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "wisdel_birth_01_start",
+      "count": 61,
+      "width": 84,
+      "height": 168,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.5119047619047619,
+      "pivotY": 0.13441803341820124,
+      "duration": 2.033333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_birth_01_start/00.png",
+          "count": 61,
+          "width": 1008,
+          "height": 1008
+        }
+      ]
+    },
+    {
+      "key": "wisdel_bomb_01_hit",
+      "count": 58,
+      "width": 180,
+      "height": 180,
+      "columns": 11,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.49444444444444446,
+      "pivotY": 0.5381852891710069,
+      "duration": 1.9333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_bomb_01_hit/00.png",
+          "count": 58,
+          "width": 1980,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "key": "wisdel_bomb_buff_01",
+      "count": 90,
+      "width": 60,
+      "height": 60,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.5,
+      "pivotY": 0.2978892008463542,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_bomb_buff_01/00.png",
+          "count": 90,
+          "width": 720,
+          "height": 480
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_hit",
+      "count": 18,
+      "width": 88,
+      "height": 48,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.5227272727272727,
+      "pivotY": 0.7265281677246094,
+      "duration": 0.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_hit/00.png",
+          "count": 18,
+          "width": 1056,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_hit_02",
+      "count": 30,
+      "width": 152,
+      "height": 156,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.4868421052631579,
+      "pivotY": 0.5889317439152644,
+      "duration": 1.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_hit_02/00.png",
+          "count": 30,
+          "width": 1824,
+          "height": 468
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_hit_03",
+      "count": 57,
+      "width": 180,
+      "height": 180,
+      "columns": 11,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.4888888888888889,
+      "pivotY": 0.5548519558376737,
+      "duration": 1.9,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_hit_03/00.png",
+          "count": 57,
+          "width": 1980,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_start",
+      "count": 48,
+      "width": 84,
+      "height": 84,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.047619047619047616,
+      "pivotY": 0.2723018101283482,
+      "duration": 1.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_start/00.png",
+          "count": 48,
+          "width": 1008,
+          "height": 336
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_start_02",
+      "count": 26,
+      "width": 100,
+      "height": 72,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.26,
+      "pivotY": 0.2204632229275174,
+      "duration": 0.8666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_start_02/00.png",
+          "count": 26,
+          "width": 1200,
+          "height": 216
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_01_trail",
+      "count": 30,
+      "width": 420,
+      "height": 24,
+      "columns": 4,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.9619047619047619,
+      "pivotY": 0.5659268697102864,
+      "duration": 1.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_01_trail/00.png",
+          "count": 30,
+          "width": 1680,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_buff",
+      "count": 90,
+      "width": 100,
+      "height": 68,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.72,
+      "pivotY": 0.27754929486443014,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_buff/00.png",
+          "count": 90,
+          "width": 1200,
+          "height": 544
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_buff_02",
+      "count": 90,
+      "width": 92,
+      "height": 52,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.6521739130434783,
+      "pivotY": 0.15141061636117792,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_buff_02/00.png",
+          "count": 90,
+          "width": 1104,
+          "height": 416
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_hit",
+      "count": 47,
+      "width": 84,
+      "height": 248,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.4880952380952381,
+      "pivotY": 0.03577964536605338,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_hit/00.png",
+          "count": 47,
+          "width": 1008,
+          "height": 992
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_hit_02",
+      "count": 57,
+      "width": 152,
+      "height": 156,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.5,
+      "pivotY": 0.5889317439152644,
+      "duration": 1.9,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_hit_02/00.png",
+          "count": 57,
+          "width": 1824,
+          "height": 780
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_overload_start",
+      "count": 42,
+      "width": 108,
+      "height": 72,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.17592592592592593,
+      "pivotY": 0.23435211181640625,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_overload_start/00.png",
+          "count": 42,
+          "width": 1296,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_start",
+      "count": 42,
+      "width": 84,
+      "height": 72,
+      "columns": 12,
+      "ppu": 38.400000000000006,
+      "pivotX": 0.2261904761904762,
+      "pivotY": 0.2204632229275174,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_start/00.png",
+          "count": 42,
+          "width": 1008,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_buff_02_f_game#9",
+      "count": 90,
+      "width": 92,
+      "height": 44,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.7065217391304348,
+      "pivotY": 0.2632324912331321,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_buff_02_f_game#9/00.png",
+          "count": 90,
+          "width": 1104,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_buff_f",
+      "count": 90,
+      "width": 68,
+      "height": 44,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.8235294117647058,
+      "pivotY": 0.2632324912331321,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_buff_f/00.png",
+          "count": 90,
+          "width": 816,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_down_start",
+      "count": 49,
+      "width": 168,
+      "height": 88,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.5178571428571429,
+      "pivotY": 0.5293435183438389,
+      "duration": 1.6333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_down_start/00.png",
+          "count": 49,
+          "width": 2016,
+          "height": 440
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_game#9",
+      "count": 58,
+      "width": 308,
+      "height": 296,
+      "columns": 6,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.5097402597402597,
+      "pivotY": 0.5256156405887088,
+      "duration": 1.9333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_game#9/00.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1776
+        },
+        {
+          "file": "wisdel_skill_03_hit_02_game#9/01.png",
+          "count": 22,
+          "width": 1848,
+          "height": 1184
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_03_game#9",
+      "count": 30,
+      "width": 64,
+      "height": 40,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.5,
+      "pivotY": 0.5395557403564453,
+      "duration": 1.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_03_game#9/00.png",
+          "count": 30,
+          "width": 768,
+          "height": 120
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_game#9",
+      "count": 49,
+      "width": 88,
+      "height": 48,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.32954545454545453,
+      "pivotY": 0.40796311696370446,
+      "duration": 1.6333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_game#9/00.png",
+          "count": 49,
+          "width": 1056,
+          "height": 240
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_start_game#9",
+      "count": 50,
+      "width": 140,
+      "height": 88,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.6,
+      "pivotY": 0.472525336525657,
+      "duration": 1.6666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_start_game#9/00.png",
+          "count": 50,
+          "width": 1680,
+          "height": 440
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_trail_game#9",
+      "count": 30,
+      "width": 440,
+      "height": 36,
+      "columns": 4,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.884090909090909,
+      "pivotY": 0.5439512464735243,
+      "duration": 1.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_trail_game#9/00.png",
+          "count": 30,
+          "width": 1760,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_up_start",
+      "count": 49,
+      "width": 156,
+      "height": 88,
+      "columns": 12,
+      "ppu": 25.600000762939455,
+      "pivotX": 0.5576923076923077,
+      "pivotY": 0.2907071547074751,
+      "duration": 1.6333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_up_start/00.png",
+          "count": 49,
+          "width": 1872,
+          "height": 440
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "wisdel_attack_01_hit",
+        "wisdel_attack_01_hit_02",
+        "wisdel_attack_01_trail",
+        "wisdel_attack_c_start",
+        "wisdel_attack_down_a_start",
+        "wisdel_attack_down_b_start",
+        "wisdel_attack_down_c_start",
+        "wisdel_birth_01_start",
+        "wisdel_bomb_01_hit",
+        "wisdel_bomb_buff_01",
+        "wisdel_skill_01_hit",
+        "wisdel_skill_01_hit_02",
+        "wisdel_skill_01_hit_03",
+        "wisdel_skill_01_start",
+        "wisdel_skill_01_start_02",
+        "wisdel_skill_01_trail",
+        "wisdel_skill_02_buff",
+        "wisdel_skill_02_buff_02",
+        "wisdel_skill_02_hit",
+        "wisdel_skill_02_hit_02",
+        "wisdel_skill_02_overload_start",
+        "wisdel_skill_02_start",
+        "wisdel_skill_03_buff_02_f_game#9",
+        "wisdel_skill_03_buff_f",
+        "wisdel_skill_03_down_start",
+        "wisdel_skill_03_hit_02_game#9",
+        "wisdel_skill_03_hit_03_game#9",
+        "wisdel_skill_03_hit_game#9",
+        "wisdel_skill_03_start_game#9",
+        "wisdel_skill_03_trail_game#9",
+        "wisdel_skill_03_up_start"
+      ]
+    }
+  ],
+  "bindings": []
+}

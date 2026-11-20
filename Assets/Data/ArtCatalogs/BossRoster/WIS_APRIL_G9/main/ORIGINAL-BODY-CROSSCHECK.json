@@ -1,0 +1,30 @@
+[
+  {
+    "name": "char_1035_wisdel_game#9.skel",
+    "pathID": -9187406645378579491,
+    "bytes": 60099,
+    "sha256": "2a9b820581abb0f00ec49d57cc3c8af2bd4139fb7350703f7671fa0bef79eb03",
+    "matchesPrtsBodyFile": false
+  },
+  {
+    "name": "char_1035_wisdel_game#9.atlas",
+    "pathID": -7213354377834100630,
+    "bytes": 3016,
+    "sha256": "b15b5f5cec06ce1892d4845d1a0b00067644598d82198f0611cc6bdd813ae338",
+    "matchesPrtsBodyFile": false
+  },
+  {
+    "name": "char_1035_wisdel_game#9.atlas",
+    "pathID": -5510761747621208197,
+    "bytes": 3016,
+    "sha256": "b15b5f5cec06ce1892d4845d1a0b00067644598d82198f0611cc6bdd813ae338",
+    "matchesPrtsBodyFile": false
+  },
+  {
+    "name": "char_1035_wisdel_game#9.skel",
+    "pathID": 9170847677655954632,
+    "bytes": 88351,
+    "sha256": "752222cf3b85580e16553c6d3fbbfc20b66ae313cc5c2370cade743bb607fa70",
+    "matchesPrtsBodyFile": true
+  }
+]

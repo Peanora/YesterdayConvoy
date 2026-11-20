@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "task": "P26",
+  "view": "main",
+  "sourcePreview": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1",
+  "approvedScope": "User approved all 26 selected Boss previews plus P14/P26 skill auxiliaries for game integration; the B22 representative passed the actual Unity camera gate.",
+  "reference": "https://prts.wiki/w/%E6%A2%81",
+  "model": "enemy_2122_dybgzd",
+  "spineVersion": "3.8.99",
+  "sourceFiles": [
+    {
+      "file": "P26/source/main/enemy_2122_dybgzd.skel",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.skel",
+      "bytes": 46559,
+      "sha256": "f69b95168faea96dd1478dee7aff847da614f441565277609baf0efc30206442"
+    },
+    {
+      "file": "P26/source/main/enemy_2122_dybgzd.atlas",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.atlas",
+      "bytes": 2683,
+      "sha256": "bb3ecf90e1306d21a38e99059ca769c6090f3933a50685f2c8312a2846e4fe99"
+    },
+    {
+      "file": "P26/source/main/enemy_2122_dybgzd.png",
+      "url": "https://torappu.prts.wiki/assets/enemy_spine/enemy_2122_dybgzd/enemy_2122_dybgzd.png",
+      "bytes": 60635,
+      "sha256": "6ce2473b4fcbc24bb5fde0357e877e5dbad61396128b47613af9d185545b5dbb"
+    }
+  ],
+  "atlasManifestSha256": "5ac6309dce1817dfe6e6ea394a9a4c37b5f835c8a38ae6e899d5a780f04d20b6",
+  "atlasFiles": [
+    {
+      "file": "Die-000.png",
+      "sha256": "a78816ed826d05472b5e1e69aeb15c3858a92ef61304715eecf1c0269473c809",
+      "bytes": 1466331
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "3471a047db835cb405051e179f51973e0d0a6a587bb0a06cb2c6af1992eedcf9",
+      "bytes": 1109062
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "947a9f82eee5a870d2498a5e13e4ad6a254b4a534fa57ba26e612e77b03d7656",
+      "bytes": 254115
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "7b362295408414e9a7a9ce7c0d4dab79913540ffffbcdd88f6b7f047df19e7eb",
+      "bytes": 1402601
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "4104ecc71522c67391daeb0ec8eec1341ff804ab5ca97a6f8081260c12404c40",
+      "bytes": 1442117
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "b02d737c1d3aa55ac72aaa6008d65bb50bdc3282e437abc6ca039bcd75cdec4b",
+      "bytes": 1452686
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "03308ab790661ababc1abf7b1dd00e8a8835a3ad8fc5384b57c97c539d4ba683",
+      "bytes": 358488
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "57c7b04a52e2888ff829943ed7aced3494945850648ee192c622a9751d02dd43",
+      "bytes": 1446989
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "4bba2887f198a4444abe5eb21cc177e627ce98dd26169eab66b4e5c20f83da99",
+      "bytes": 1523176
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "4fe33dbf940be6007bab4aa2aba5751b8cfe7d5d4c43c35b27522971b97da0da",
+      "bytes": 671305
+    },
+    {
+      "file": "Skill-000.png",
+      "sha256": "1f3dd0af1044613014dc25da5f7a66cec4496cc0fdf6b0e8925143746a0a420f",
+      "bytes": 1416451
+    },
+    {
+      "file": "Skill-001.png",
+      "sha256": "c543d07a3dbd81bcf2533fa491e49476a8146406f02d1f6bef38a0f313368d3f",
+      "bytes": 1298421
+    },
+    {
+      "file": "Skill-002.png",
+      "sha256": "499a590efdda74f283a0c1a05268620a660c86e4d691bc947036de2998b96965",
+      "bytes": 283278
+    }
+  ],
+  "portraitSha256": "ca53313091e85260493fd4a679d51966cddf0f053a259cc25309fb18f5631229",
+  "geometryPolicy": "Original frame PNG bytes, frame count, source duration, root pivot and source event payloads preserved. No image resizing or animation retiming.",
+  "worldScale": {
+    "unitsPerSourceBone": 0.0045,
+    "ppu": 132.2019015871907,
+    "basis": "Existing original Talulah body scale; representative B22 actual camera verified. Other units retain source proportions pending camera review."
+  },
+  "runtimePolicy": "Only runtimeSources are proposed for default prewarm; raw optional motions use the existing per-sequence cache on demand. Zero-duration states have metadata only.",
+  "rights": "Original Arknights model, textures and motions belong to Hypergryph/original rights holders. Open redistribution permission unconfirmed; user upload authorization is not a rights-holder license.",
+  "unityTests": "NOT_RUN_BY_PACKAGER",
+  "unityCamera": "NOT_RUN_BY_PACKAGER"
+}

@@ -10,11 +10,8 @@ namespace YesterdayConvoy.Editor
     public static class SceneOrganizationTools
     {
         const string MapFolder="Assets/Prefabs/Resources/Maps";
-        [MenuItem("Yesterday Convoy/Scenes/Open Monster Trial")]
         public static void OpenMonster()=>EditorSceneManager.OpenScene(InitialDemoTools.ScenePath);
-        [MenuItem("Yesterday Convoy/Scenes/Open Battle and Shop")]
         public static void OpenShop()=>EditorSceneManager.OpenScene(ShopMapTools.ScenePath);
-        [MenuItem("Yesterday Convoy/Scenes/New Map Scene")]
         public static void NewMap()
         {
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;

@@ -1,0 +1,1520 @@
+{
+  "skinId": "char_1035_wisdel@game#9",
+  "model": "char_1035_wisdel_game_9",
+  "records": [
+    {
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_game_9/front/char_1035_wisdel_game_9.skel",
+      "file": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-visual-repair\\WIS-source\\source\\front\\char_1035_wisdel_game_9.skel",
+      "bytes": 88351,
+      "sha256": "752222cf3b85580e16553c6d3fbbfc20b66ae313cc5c2370cade743bb607fa70"
+    },
+    {
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_game_9/front/char_1035_wisdel_game_9.atlas",
+      "file": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-visual-repair\\WIS-source\\source\\front\\char_1035_wisdel_game_9.atlas",
+      "bytes": 3016,
+      "sha256": "2b20ce0f3da15cbc7fa7f9a2f388c5a2e7503a81112f5ce7c56a723bfb878cb8"
+    },
+    {
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_game_9/front/char_1035_wisdel_game_9.png",
+      "file": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-visual-repair\\WIS-source\\source\\front\\char_1035_wisdel_game_9.png",
+      "bytes": 68765,
+      "sha256": "4e6b81a533158d2e9de84ca5bee66b5dbd32502cc8d2a65f60307af7854365b5"
+    }
+  ],
+  "date": "2026-11-18",
+  "package": "WIS_APRIL_G9/main",
+  "method": "ORIGINAL_SPINE_GAME9_60FPS",
+  "sourceSpineVersion": "3.8.99",
+  "originalClientVersion": "26-10-29-15-36-11-33649006",
+  "originalSkinpackManifestDigest": "968e0892865e95823b75cdef7356cad3",
+  "frontSkeletonMatchesOriginalBundleByteForByte": true,
+  "atlasNormalization": "Original page name game#9 becomes game_9 in the PRTS export; all other atlas bytes match.",
+  "originalSkinPrefab": {
+    "bundle": "skinpack/char_1035_wisdel.ab",
+    "sha256": "943a0b9fd845c6215767055d55b0b3065a7adbdac54aec8f830904be5d31a047",
+    "container": "dyn/battle/prefabs/skins/character/char_1035_wisdel/char_1035_wisdel_game#9.prefab"
+  },
+  "originalPrefabFaceSwitcherScale": 0.27000001072883606,
+  "originalSkeletonDataAssetScale": 0.009999999776482582,
+  "presentationWorldUnitsPerSourceBone": 0.0045,
+  "presentationScalePolicy": "Same calibrated original-bone/world ratio as all formation native roles; no rarity or Size normalization. Original client .27*.01 transforms retained separately.",
+  "bodyFiles": [
+    {
+      "file": "Attack_A-000.png",
+      "bytes": 1717970,
+      "sha256": "53ec8ececf44aa2ebe520a61ed7bde6c07d5a94232825cdb2ff0e731c1334a99",
+      "originalCaptureSha256": "6b916d0a01c3ba7520a8a01f85c0b0975fd86a0fdcdd6c345a2dc8090de9478f",
+      "rgbaSha256": "8e68acffeb722e5ea3b295b777ae708059b7f407d157c4375343b22ea6d8ad35"
+    },
+    {
+      "file": "Attack_A-001.png",
+      "bytes": 1637459,
+      "sha256": "e0c90c41f409fb5ca0061224f09f32e5c782f01d4d00f3e0a89e18a9e20ad3c0",
+      "originalCaptureSha256": "8a5af7ad81eb0ad1fa2f941d6e4b1db36e27a2f30e62b9047a721991eae08b16",
+      "rgbaSha256": "f423d1e00b3a66d1c8e14795f0a89902549fe2d7211bc6149dae4372d0b4a565"
+    },
+    {
+      "file": "Attack_A-002.png",
+      "bytes": 1815044,
+      "sha256": "ea0666479a7051485bad82eb828e7faadcb9a47800be9e3a29ea39aca16edc9a",
+      "originalCaptureSha256": "63ae8d91c68f3656bb273e04585f832d4f753d1eddd5106a58f2e96b9f3ed543",
+      "rgbaSha256": "9357ffa1ef00d813006f01c24e51a704243790722f6cc3dacc8f3f86a18632d1"
+    },
+    {
+      "file": "Attack_A-003.png",
+      "bytes": 1935867,
+      "sha256": "6d7011382660f5f7c50d86b18260737818873812074aa36282b3f575600853ad",
+      "originalCaptureSha256": "02ce30de48eb21b87c8a10980f0346f4c43de0847bfebf2b59200a7455d56a4c",
+      "rgbaSha256": "3c5cf968e896d82a297f99f923b2a2011ad95aa8fdd3a4cc14e417e1fc235d9c"
+    },
+    {
+      "file": "Attack_A-004.png",
+      "bytes": 1916079,
+      "sha256": "e2018b91560209cc2359a6c72ec5aaf427a32c4aa259a4d1d1ab9c2ddc47ba60",
+      "originalCaptureSha256": "836602d8a28039e4a9b71ea874723b0f5b7d6f1b99f23046985a969f0caed4db",
+      "rgbaSha256": "c2b0a5533c82b71a5200483e3fa28f99e43e5da5e34825c2ab8c55358fd833b3"
+    },
+    {
+      "file": "Attack_A-005.png",
+      "bytes": 1898521,
+      "sha256": "e488ef30f98504b15a4408d92fdb0b422e0c3b99b947733dbf71a36d2a549ef2",
+      "originalCaptureSha256": "4e2ffee69765a4b73a55800a323fc3518a83b2aeed627d2aa6c801eeff36f59b",
+      "rgbaSha256": "6c941a4781e76adf5aa94ae3105bd81ec662535e193eeb71734789994110b391"
+    },
+    {
+      "file": "Attack_A-006.png",
+      "bytes": 1647909,
+      "sha256": "ddc1ca57857012077d94d1b018040a984c3392fe0dc8f56c14ef27a7c71b6c3b",
+      "originalCaptureSha256": "3ecd88ac893db1a16fbdf130efb2a48e5c7676218ab78dac530ce9637d989788",
+      "rgbaSha256": "9c3172d9be5fe878b93f192cc5de83ac19cf47d048d6ab0d0a74b372a82b91a7"
+    },
+    {
+      "file": "Attack_A-007.png",
+      "bytes": 1066375,
+      "sha256": "4f82bef95cef2c0b8bdd8ae8798ee29bcb05863bd287bd5ce90b9e92d99e17b4",
+      "originalCaptureSha256": "f363bffc8f96f31aae7a899a954b92b01903238778d19e8cf31aa435cc59399f",
+      "rgbaSha256": "37fe00834702aa16642c43bc373f515fc57c968767865de1e03941226cdfb15b"
+    },
+    {
+      "file": "Attack_B-000.png",
+      "bytes": 1787725,
+      "sha256": "7af27150222ed8f4c94063ec09eaa8e44ba544e4222bc7875b7cd008f67db21b",
+      "originalCaptureSha256": "b86ec5b53ee60f3ad04d117ec7a61b66559333561b2349bcfbb26bf1fa6edafb",
+      "rgbaSha256": "8aa8ed72e080815de183a4622c4cec4a55da68114f9f31c283b2d0ecbcac7c4e"
+    },
+    {
+      "file": "Attack_B-001.png",
+      "bytes": 1918151,
+      "sha256": "d4dfe2b8d5894e119cfdb48b84b005501cf1417ca93041c5b6ff49e2db67a19f",
+      "originalCaptureSha256": "0c62cf9e50c69dc88bafebac0fba31dbaa5275702e6798a54908c478df0b0321",
+      "rgbaSha256": "44c4bbfddce7b2bec26002533b90977ae5e4b4bb34fe618de38e3c86cb8799c6"
+    },
+    {
+      "file": "Attack_B-002.png",
+      "bytes": 1835919,
+      "sha256": "0b47e70509fcfefaca2efae6d6c32a930e46853c1d4aa067fed32b7513f56775",
+      "originalCaptureSha256": "0bd122c92a23a240ca8dbc3e0b654bc508aa1f62c62eab7cfcca989d8f78fa10",
+      "rgbaSha256": "db62250b44070c0fffc7989169ad3d6a47bb3205f46fff73fd9d01f0b9642f6f"
+    },
+    {
+      "file": "Attack_B-003.png",
+      "bytes": 1647312,
+      "sha256": "4fa1894f2f51c5d5957a76aa5830ce6fe7a8602cf7fc8c6a451d317de28a9bd6",
+      "originalCaptureSha256": "3a935621916842a4ab20558b78a45dc88c0c9d68d4411255791cd58e3e9fbae0",
+      "rgbaSha256": "4bea48ecbd419f564130e2b1f123c86f82c079ebb5c55d58733031b2d0eab4ea"
+    },
+    {
+      "file": "Attack_B-004.png",
+      "bytes": 1241074,
+      "sha256": "0700bb1e9eba5574f2260f40692c9009935e2d01847d2e4bd563251fcdfbc408",
+      "originalCaptureSha256": "72ff7118eddc149890b2f2de7e4b430cb73235d12caaef841ee16d3e214912a9",
+      "rgbaSha256": "15d5dd230d0e7192ed74d5636a15b89200d8eed3771e529562183050703aa0d7"
+    },
+    {
+      "file": "Attack_B-005.png",
+      "bytes": 1689995,
+      "sha256": "7ef9924f00f90d8f3a02222a7adf4e81bf45ca766defdba4e6c0b99bd09d2f10",
+      "originalCaptureSha256": "84b18a4dbe960d8ac5a2004717da17c102ccb251de26b54ffbfb93a7c6b43d82",
+      "rgbaSha256": "0ada6491dd377a0124a6ce09cd35cec1cefe4124ecb4d7ef8236e32c4b5e7e39"
+    },
+    {
+      "file": "Attack_B-006.png",
+      "bytes": 1653976,
+      "sha256": "82292d5d4320c88a452dcd2652305244f8254857b07d52d51eb3fea292b542de",
+      "originalCaptureSha256": "38ac8c4aa242befb9728d178aed5de8d4841c51d35accc265f763e56a7f1a744",
+      "rgbaSha256": "596c62763ad3e7109edfe8f4a1a57c37532c76f6599c36024e5f6d6e7da4c997"
+    },
+    {
+      "file": "Attack_B-007.png",
+      "bytes": 1525702,
+      "sha256": "f240d8d0a23d74baffec7b6f9178213c9a961dbc2c47bf7bd9e78437a8d4c05c",
+      "originalCaptureSha256": "4d631b4b6ab9a6bf6a3bcd02a813d92a104ddb0221ffc8265ae18ef2924fdc74",
+      "rgbaSha256": "b4938f45c2daa890929a90e70ea1f77ab9abf290f6cc10fc8a6824f6f1b4d37d"
+    },
+    {
+      "file": "Attack_C-000.png",
+      "bytes": 1897902,
+      "sha256": "536574e2ca970adafbd9c5773ccb087b7eb31adf5cfae528538a7f502e971a04",
+      "originalCaptureSha256": "c2773c0572af0fd2d256e6e4abcd246759224784fae4bf688ebca0f236020f46",
+      "rgbaSha256": "8e1499201d98ed1e8a3197405ad103f75a20d448579ac771535b6950b39995d5"
+    },
+    {
+      "file": "Attack_C-001.png",
+      "bytes": 1973374,
+      "sha256": "fd3938b6e9540dd6596fdf1a07ddcd6fac1df1581db24c1ba50706bbe81dbf31",
+      "originalCaptureSha256": "ccf8394d410e26e08013d491de37861ef7cc5b888d8de2825aab608d44039f7d",
+      "rgbaSha256": "cb817522c8ee2cad0ed057c577c8e01b4675d249bb95cea0d5478717b1603b7c"
+    },
+    {
+      "file": "Attack_C-002.png",
+      "bytes": 1866432,
+      "sha256": "0bc990628e5ca5463213ecf6c3c4e48465ea11634ef3b5d718f18bfa5a6ef5ee",
+      "originalCaptureSha256": "742af51494a62f29ccc6aa44caa48148480a09b42d8eff2487b9ccebd9f03acd",
+      "rgbaSha256": "3ec80b7e8d11a26f69152f5ef5e5fca79b7d5a676022c9e1bfbc73e914a55ab5"
+    },
+    {
+      "file": "Attack_C-003.png",
+      "bytes": 1707423,
+      "sha256": "5d171cc789d2ba0f2dc5d5cc5ba626392f8d76f0c62e8a174b349687e92987e9",
+      "originalCaptureSha256": "2fa35caa76fcf065ed5d0e8cd230c8574ef2306e75f8e45c5789bdb7702aea1b",
+      "rgbaSha256": "dfe77c8d56c374489ddf29d260054391cc40e4019afeb708532c36a472042baf"
+    },
+    {
+      "file": "Attack_C-004.png",
+      "bytes": 1302087,
+      "sha256": "aecd065da620b4801725cead0a79bafb5f47e7a65839127ec665168d8d73e6c2",
+      "originalCaptureSha256": "117839bf1a01349a4edea8952a71344a55e877fc35fcbc6052b5675f4414328d",
+      "rgbaSha256": "566304015eada8cf894a39129239de13c7ff5c86045113e91c4775bb6093c099"
+    },
+    {
+      "file": "Attack_C-005.png",
+      "bytes": 1765895,
+      "sha256": "0e768aa29bbe4c7d88c9b3ebf422fe02f3b92c624e4af317862d02164e4eb12e",
+      "originalCaptureSha256": "18b015f73b85267436651bd3cdeb03f85fdc1e6d116a99e8ee3ac2a1714fa004",
+      "rgbaSha256": "eed9229e4e63acb3555a844148b929d307a5169ff611f4a6ece077cf8aed1f68"
+    },
+    {
+      "file": "Attack_C-006.png",
+      "bytes": 1756120,
+      "sha256": "34a17666c600c132e7ad754b8120976c7afdcaad9f368393b66b72e4d344a831",
+      "originalCaptureSha256": "3fa30dcca5df6c5d61b8a436159ba34c4969f7f073027dac9a5b57388c760680",
+      "rgbaSha256": "7f6049cac22bee815f060fc3f81a2a9dcb8996e45904b94254278de6b6ad3012"
+    },
+    {
+      "file": "Attack_C-007.png",
+      "bytes": 1621997,
+      "sha256": "182b58302d96885da675c879eb0ad65970c6708cfaa4c972ea7316fadd3d454e",
+      "originalCaptureSha256": "8a71a04b342bd603d863149c48ef82f11c808ad9d4cecf268006f098c91c2c96",
+      "rgbaSha256": "872d93d8ca63208710197fa99481005b0fdc43018029b7ee60bdb04defaf02bf"
+    },
+    {
+      "file": "Attack_Down_A-000.png",
+      "bytes": 1607017,
+      "sha256": "2bd7611ad75fa3301cf87ec11a72743cb1850e411dc6a4ba5872b447414b90eb",
+      "originalCaptureSha256": "d7be576bfbfc5719cdf2b394d951d33f1dc4e2f8286a58270a11c08bfc2a85d4",
+      "rgbaSha256": "b99dfd09f10fe4c0626f171bb14eb31c8b00fb9e09c2a669544b133f16993625"
+    },
+    {
+      "file": "Attack_Down_A-001.png",
+      "bytes": 1718898,
+      "sha256": "c31a0c59ddd1c96a0bcd91f863d5fe0275333c9314fd98f11d6e7f2490e95fa2",
+      "originalCaptureSha256": "9f0454ea4cb6cee87114195d75d3a863a2ea9fea0fff9d5fcecf307c8e9206d1",
+      "rgbaSha256": "dfa840df17fd8226a83c67d981730fafc32103815502caff5a869733da7adbf8"
+    },
+    {
+      "file": "Attack_Down_A-002.png",
+      "bytes": 1706227,
+      "sha256": "f07d6590daf92478a83b47eb79f6a83e6b01ee4ba03a391fa86d5facbd016095",
+      "originalCaptureSha256": "2d62fb9cbeaad807634e900d8d68bd252827bd081b94fcdc2d81b707b34718b8",
+      "rgbaSha256": "100db3ec5daaa3b7eeacc4a3868d77086112dfdb8a11bc31083b875e2d255cb4"
+    },
+    {
+      "file": "Attack_Down_A-003.png",
+      "bytes": 1644663,
+      "sha256": "82b3b14722c0d2dbabb5d5caca4f11e4486521a132f45f7cd36afe30f4f66f64",
+      "originalCaptureSha256": "a1c02f7fd21fdf29ba47aae1f34c8cd299a94470e015946a013d8928954e406d",
+      "rgbaSha256": "61e12bcb12281cbd786df80cf5d49c5eccb1363508b09c2d0a883b3278c700d3"
+    },
+    {
+      "file": "Attack_Down_A-004.png",
+      "bytes": 1633250,
+      "sha256": "68342ab8a47e5777c5e07b2cbe06ced25b83f3a65330ddf7d510d2a350c9eb69",
+      "originalCaptureSha256": "1ce7c835c4f94de165d1eacf76da93071ab1a4dbbb6f03b4120d7bd9ed64b420",
+      "rgbaSha256": "ee9a22097d619996e9087caa6bd1bdd09fe4856580da07d38ee21e9666be7f4d"
+    },
+    {
+      "file": "Attack_Down_A-005.png",
+      "bytes": 1627812,
+      "sha256": "228d54493883ac15c3091657fecc245cac16cd442f0244cb1c94aa92d34b9c92",
+      "originalCaptureSha256": "eba046c37f509ad5a6d3a9f4d373577c3c550b0da390caa9c3e7976d6eb00604",
+      "rgbaSha256": "2c761600f4b6ad0ae7d5cc9ca571102b2e30edf84684239bfa583a7a9c07e7f2"
+    },
+    {
+      "file": "Attack_Down_A-006.png",
+      "bytes": 1436302,
+      "sha256": "191ed26926454b5b29848ae882cdf2dacd4d81678b848a5e3e41de0fe0ef50c1",
+      "originalCaptureSha256": "8fad9af9eb80328eefec8378980ca2d7a7378719698c040eb36539991f17fdf5",
+      "rgbaSha256": "e9d6c6b35a2c4ce2d41d9afac78cf5f19ff77e2f2936f5f9542ed00bc385a1e1"
+    },
+    {
+      "file": "Attack_Down_A-007.png",
+      "bytes": 933051,
+      "sha256": "097f9d5a5c8d3ab2348d90dfa115a8f319f734df0536460335981e524deefab7",
+      "originalCaptureSha256": "281ea920db2ab5211891d312e254229d153dc7270ee41fbbfe5f2632719cfc52",
+      "rgbaSha256": "a2ee8b0aa5861075df53e113a5fdf3d46af1c08567852eaf43eae1e3c9fb29ed"
+    },
+    {
+      "file": "Attack_Down_B-000.png",
+      "bytes": 1544839,
+      "sha256": "6713e7a1b59f7a86adb55c8778649d029b1b65d9786423f9999156c5c9b336ff",
+      "originalCaptureSha256": "fa5f8492e6c7cff07baa910ce32b2918fe12a57e9ab6f45dde4ff0cfc1876122",
+      "rgbaSha256": "fd6050b1615e87866f9b9e8a4759fdd12485ee4535b78207c51458381d23ae6a"
+    },
+    {
+      "file": "Attack_Down_B-001.png",
+      "bytes": 1659150,
+      "sha256": "8fa2ded777d4c73a15a2436fd9ee09c1d049e67dcdae49c595e83bc192ca1941",
+      "originalCaptureSha256": "c35efff84f18ad35cad856c4aee02e81b635794bd02761d8719566932e19202f",
+      "rgbaSha256": "5a627a2ed7faa4d7b71e28772ee9b6d10bb274c7f44368f42a11e775b7db81bc"
+    },
+    {
+      "file": "Attack_Down_B-002.png",
+      "bytes": 1632693,
+      "sha256": "9ec7cbec9de11cb8c507f16894766a25188a6f627a209c8ef1cbe44e9c794519",
+      "originalCaptureSha256": "765caf3a681f2ddcdd621df6d1cc5312daf6dc902a3328fc53c55c6b6c7ee581",
+      "rgbaSha256": "001bcb2e11e3ca55dd02c75b28b6488f9735b0e2f29a85f265bb36bbffeb39de"
+    },
+    {
+      "file": "Attack_Down_B-003.png",
+      "bytes": 1581468,
+      "sha256": "7d3c55bd330210b426d41522789ccef8d22981a2ac90b0f6c120547e7da0abf5",
+      "originalCaptureSha256": "82efd3884dd7f4e4dafd7bcb2e8729a82c32cf9a73c7de1c5914a9a1b8b03276",
+      "rgbaSha256": "56a3183c879fcfedac06e3a7e3f73eade49d72aba19556deb1c7bb01bf87458c"
+    },
+    {
+      "file": "Attack_Down_B-004.png",
+      "bytes": 1207788,
+      "sha256": "189e7f0fb491f0f5c0cfed8e960dffc242297b12d64d19c813076abd50661507",
+      "originalCaptureSha256": "76db02b5c4508faafc366e2c32fad314c97bb05504fc6844cca9fc09c600c915",
+      "rgbaSha256": "8f1a3c18a437b4891336288f665b3f100d11449879066d442d220f9ae8793c6e"
+    },
+    {
+      "file": "Attack_Down_B-005.png",
+      "bytes": 1597957,
+      "sha256": "dee6751fbb8daa6f441ca4d9fa1704b29b2259f364b60ce5552b49d75a53f097",
+      "originalCaptureSha256": "222616ed78b8c589e722fae00a5a77b6fcb1e9eb68bbc97484b2a03ea9feb40a",
+      "rgbaSha256": "35e423f344f156f460fd53d964cec0ad6b46f3712a5797c7b2b6897b446420dc"
+    },
+    {
+      "file": "Attack_Down_B-006.png",
+      "bytes": 1421838,
+      "sha256": "1f14305ccdb823aa69ffa8e21a2d560e6aad098bc699bdbe62322706af6e9166",
+      "originalCaptureSha256": "d6e0ea71d2418de5c2c290e66f8b9b307397c33e09d1e3a65a48f4db2d4b058a",
+      "rgbaSha256": "da4edb71a4df69b3757c4f2fe2f1d2aaea6111ab71ca8aa824959c2c80b523d3"
+    },
+    {
+      "file": "Attack_Down_B-007.png",
+      "bytes": 1314690,
+      "sha256": "11f4793f7672e3b09240c616633fc1d622930b0158f6cefaa68b93be918d2e97",
+      "originalCaptureSha256": "5e317332d2b74af4b887514675e26216299a51d57e3dfe651f3c6bcfe29be170",
+      "rgbaSha256": "026f06988fa809da762d83157b95d970293dee12918482f38b2c9c97c64a25eb"
+    },
+    {
+      "file": "Attack_Down_C-000.png",
+      "bytes": 1671083,
+      "sha256": "bc8d8a509eb49b5a17f1511377dbc33bdd79779ff9a224dbc88cb7b9330c5d84",
+      "originalCaptureSha256": "faddf4b0c637f068e2aa5830c15799ecf28d3df899ddafb2e4f0c7ee9acb788b",
+      "rgbaSha256": "d510076efe45dd73dcd0b581f85fb220fee3ebb6c6c44544eaec35ea48739201"
+    },
+    {
+      "file": "Attack_Down_C-001.png",
+      "bytes": 1746579,
+      "sha256": "5c74d31ddbc2e40bf59ded79d67d2675b966a1d263224eb7e697e4735caf4a8a",
+      "originalCaptureSha256": "db211b0585fb654cf725791c6a3c531f0e37056bca8c9f3bfdf28b63a2c4a59d",
+      "rgbaSha256": "b31741fa5154878e28b63b6d8828d4f4362b3d2d4409c5bc6a3eebc8ca310234"
+    },
+    {
+      "file": "Attack_Down_C-002.png",
+      "bytes": 1707785,
+      "sha256": "f0b850db4334dce7bfce9a39710e489082dc038bf456548f5e486ebc34f47944",
+      "originalCaptureSha256": "2b2e0d63d86ade1f26ca477515938470606f40040f0033f53c2fffd5db73f21f",
+      "rgbaSha256": "91c1de0850efe58c851859d27defcbe60a7c6282754c7ea756c6597c84b0dc7e"
+    },
+    {
+      "file": "Attack_Down_C-003.png",
+      "bytes": 1696980,
+      "sha256": "66102fd3513de1bead173c5eb40dbc3d7dafcd39f1dd3981c6c964e2eaf77742",
+      "originalCaptureSha256": "675f14176444515fc746ab6e7303658f0be491ab4d8395b6f46e6653d3e27523",
+      "rgbaSha256": "1e0f0260cd009ba0db9d562f9d777ccc4fbdc443d5eb32a7cd811e6394dd8738"
+    },
+    {
+      "file": "Attack_Down_C-004.png",
+      "bytes": 1307839,
+      "sha256": "6bc92268a0a7c6fd852156bf54040ab809f16b3e1a9dddddb5eab73bbe76a44b",
+      "originalCaptureSha256": "268935943f5c91a6e3073ea680d27d7afd6ecbb2d70c94df318eb149b1a32aa1",
+      "rgbaSha256": "03c4945b09e5bd8f5b00290c9ad687d80b285dcf2940900301d646af811db670"
+    },
+    {
+      "file": "Attack_Down_C-005.png",
+      "bytes": 1714628,
+      "sha256": "4e940c43b59ab97e305eaaf6d0b25d36b0bd494b674d12f5182908d50fdeb967",
+      "originalCaptureSha256": "fd411480125c0861e5fa1ce54d3f3506f6e9c27b83dbbf13044da110e2eb26c8",
+      "rgbaSha256": "fd9f56c61078abb2747a9b0743995192b7fb8f37193642f4a9aace83a57d66e1"
+    },
+    {
+      "file": "Attack_Down_C-006.png",
+      "bytes": 1548769,
+      "sha256": "5fc50eea11374cc8373965c92a53376311c1d476b3411eedaad231461842fbf8",
+      "originalCaptureSha256": "18b344c277b5b5ef3fb02285fc260bb370ae472b947baa31f921faebab528629",
+      "rgbaSha256": "e19a30799f36cfc584b5b9ee076529d43335dc990c8d74660351878e99638263"
+    },
+    {
+      "file": "Attack_Down_C-007.png",
+      "bytes": 1430564,
+      "sha256": "f937ca820e57886013b86e8229f25beeeea5bb7e2254786dbb85ad582e6af20f",
+      "originalCaptureSha256": "07c13385a3d93df1e7df54e0f58d7c826611c8f43d2ec7928965fc60da17c2f5",
+      "rgbaSha256": "a49801d4ba5929ffc6116a3a4f30d0e321a473e6fc6f1a162e06b7f476d187d7"
+    },
+    {
+      "file": "Die-000.png",
+      "bytes": 1848736,
+      "sha256": "b9bdd89e1c0428f5f5af1b26fca6b9f5e0e3df3f39c50c604cc1def02278cd85",
+      "originalCaptureSha256": "e72b976a33e749227621179b0b4e129cf26e3e0853e7bee85adaa7f581456bf6",
+      "rgbaSha256": "f7fc732931ab39ca0203d9d2b8407edc18189a4f0b7a95453d51e62769c11dfd"
+    },
+    {
+      "file": "Die-001.png",
+      "bytes": 2091472,
+      "sha256": "e6bc8572eb02d72b679537553abdd6b7fe9bf52ecac19732598dfcf05f6349d2",
+      "originalCaptureSha256": "ff2ca0687d2c0d04a21059dabebfb8e14806dfb4419a746e5452647c16e16125",
+      "rgbaSha256": "55768aa21d9d5dfa66551c5678aaf81efd80f45143e9875c653ecb18f944c8db"
+    },
+    {
+      "file": "Die-002.png",
+      "bytes": 2034706,
+      "sha256": "b29879f90c7f2c840ab5ac89ffef2c5214752527d06545d21d76508c96ef0f1c",
+      "originalCaptureSha256": "79bc672e453d717a8b5d0df0b89535602daa3223a632576c8e66c06078df6078",
+      "rgbaSha256": "2589b1b23166a3e92472f05ba53d3e566df8658adf16495ef567055720d6d237"
+    },
+    {
+      "file": "Die-003.png",
+      "bytes": 1443567,
+      "sha256": "ec9a1c97e9fb0ff3c1a17145deabf8207c3b766229e917920447f18ca91e3ec7",
+      "originalCaptureSha256": "3bc9e85369fe4b0c5ee9509323fdf49c6493407bb4186900c5325ee29c3a6a63",
+      "rgbaSha256": "dfc6dbeea5c6ad8a382d0053b8be4e46711bde2aa0f562ee619378c7cd67d249"
+    },
+    {
+      "file": "Idle-000.png",
+      "bytes": 1861744,
+      "sha256": "883a2557e09500a708385fd950c44f62c152b6b5ea8fc6ca04033e2ad784a2df",
+      "originalCaptureSha256": "c4127e4413cc37b8d6aabf48d5ff1ff2af17c8a1aaf9ece4fedf01e186034b8c",
+      "rgbaSha256": "0d1fe352e2a0864908e1c45d87713aeb0ffcb85a97b2e10927376f6309b562b0"
+    },
+    {
+      "file": "Idle-001.png",
+      "bytes": 1903197,
+      "sha256": "88e1a2d86ee38577dd7671fbdb5f9ab62d134209c3f2fa26537f8a827d0e1f5b",
+      "originalCaptureSha256": "3ac36084f37a83130f519e6a5f84d5bc6773b14a9cd0b907fc712c1ffc18f9a9",
+      "rgbaSha256": "6cbde354d13b0eb1baeeb307e25d5472e25db520342c8e96aca4f7053f1415b0"
+    },
+    {
+      "file": "Idle-002.png",
+      "bytes": 1845128,
+      "sha256": "ceac7c19569190100c91cce71eb2db1c56748346f510038a22524d209135770c",
+      "originalCaptureSha256": "eb3f54cfd50abc3da70fdf3ae590a0a1e2afa7bd59c881a7d15fb713a1a70570",
+      "rgbaSha256": "ab36eaaf7cc9d803ed5763871fe8d9f5f801e4180cd265dfc3cfa42abe360309"
+    },
+    {
+      "file": "Idle-003.png",
+      "bytes": 1924086,
+      "sha256": "77706fee360e0edb78d97ffad8e97b2d17fe1e9c62f05d7332d1e664811c7ef3",
+      "originalCaptureSha256": "68072398f62283fc7dd81299695027948db6a630a01213ecba47b29ac247f11e",
+      "rgbaSha256": "f8e16868d08e36814e9f00458b5fb73711562615a39e6b66bec9498575d669a9"
+    },
+    {
+      "file": "Idle-004.png",
+      "bytes": 1901857,
+      "sha256": "f5f6162435867e160977828ae54c699b5f9b40192987dfd2c18d7a5df9b10c6f",
+      "originalCaptureSha256": "c07cf71e2e389702f0e7b1a135327cb6d5d16b535ab356e10f4f763c84fcf3c7",
+      "rgbaSha256": "68d0a146d0f18bbd092adf1ad20cfbee6c7bff8e89450632df968b58e2eae9b7"
+    },
+    {
+      "file": "Idle-005.png",
+      "bytes": 156476,
+      "sha256": "fabe3ecdb19e92388b4db42342b7a9658cd0d5faea0495f48071648b30318ae8",
+      "originalCaptureSha256": "ad70a91e14a98ae91c68c52b417a16e3e3441cea623fd02f16c2b9ec2d0d2feb",
+      "rgbaSha256": "3cf5a4896441bcb3d8a4a1054f2783c81880cf7f4aa386933236a5227f9c5944"
+    },
+    {
+      "file": "Skill_1-000.png",
+      "bytes": 1562387,
+      "sha256": "1e1718f607d145ad4668326842a7cc2f82c83d978879600133d8e7705384e9c4",
+      "originalCaptureSha256": "3b6409421d305bb1d00b346d5c3e8f518cccadd20603ef279b6d89016e7779d7",
+      "rgbaSha256": "be86713b20bfd37b46338f27708571cc11ebb7c0c2a2cfd8dc3082c30fdef2d1"
+    },
+    {
+      "file": "Skill_1-001.png",
+      "bytes": 1553603,
+      "sha256": "cbed2ea22042fefc7f18ad614b561f3d1d5db554d17f099739706cac8527fab4",
+      "originalCaptureSha256": "f95f24f801ff35871164cd1d439c76686d2ef58d115640cb90522236680b624f",
+      "rgbaSha256": "2a330a6d083c8e8bee0124071df2ab39d7273fee309bbbdf94d740a967e6dcee"
+    },
+    {
+      "file": "Skill_1-002.png",
+      "bytes": 1628080,
+      "sha256": "c31daed48c763789b1eefd189f686cc061c4b382f011ffd254e6dd3f44ac498b",
+      "originalCaptureSha256": "e3789af22b3ec21327b48e64ebfad3fe9c3bae9cb352bc367d265a9a8213c88b",
+      "rgbaSha256": "7948d0581d99fccd386c84b0fc1e68233adb9f75ed27cefb7e8b5f6b770857fa"
+    },
+    {
+      "file": "Skill_1-003.png",
+      "bytes": 1646803,
+      "sha256": "43a1e4f86298948879ec0d035ac9545d8219744c0abd5d15ab9da71a65498ed3",
+      "originalCaptureSha256": "1db5d60e0eaf135be8b249b7029e40a4d510c6d45c5fef4b4612c3d7a1bb1c7b",
+      "rgbaSha256": "dda24f2e51b2e4457f45f84df9639863c75552489cfe3dce0ae8d2f41061d40c"
+    },
+    {
+      "file": "Skill_1-004.png",
+      "bytes": 1608136,
+      "sha256": "47d192f4f3a01969714fd8634f7d649fbb2171de2d918e7af383282caa9aac21",
+      "originalCaptureSha256": "00690b86bebd7294d29e7eb868243b933d297bc30d0404d6bdf9f8f635179964",
+      "rgbaSha256": "51da75c140822029bf4ad77bcf105cb829a3215bef5853d3339cb01f4cef8198"
+    },
+    {
+      "file": "Skill_1-005.png",
+      "bytes": 1557312,
+      "sha256": "0468cefa3b921772e1e8078876b855eb52df347b60fe38efa3be7323b5b92f62",
+      "originalCaptureSha256": "ce9000e53a45540370758408ae025d85c1c9370487efd42aa65952dcf8994fbc",
+      "rgbaSha256": "eee5957d7ce7e80cddbcb78a07920a529802068315365c9d526687fa8d5e8133"
+    },
+    {
+      "file": "Skill_1-006.png",
+      "bytes": 1443704,
+      "sha256": "723dd4b20929b72a7a239adc354afad97f16386e24f35e330c21166da3e8437c",
+      "originalCaptureSha256": "753490d6eb4b3e06859d7d3addc81a721e5e66aa77ece9da1d15585990079c4b",
+      "rgbaSha256": "2f1c20eb1069d62a745ee1887120a613b8f26440eaec0a0a37c53fc3dfeca52e"
+    },
+    {
+      "file": "Skill_1-007.png",
+      "bytes": 1273841,
+      "sha256": "e56b9c069d4c1f725619959dbe27e69e5772912aa29f9730379b2479a77b5f0b",
+      "originalCaptureSha256": "6e70293ba5f819cf04c95c67b4f1b5440931c1b48f7fc4ee760bfe347c7a1b78",
+      "rgbaSha256": "01dfbd3581a70160ff398d75c9229c541896ce5bcea52a0cb8014567fa3a0bd1"
+    },
+    {
+      "file": "Skill_2_Begin-000.png",
+      "bytes": 1996054,
+      "sha256": "1cb88bdf697ee92c7a5ed36db4541da66dcbc4428b208e80a48a72142fbc1117",
+      "originalCaptureSha256": "93cd07d3d8425c964ebc6578658419ffccd8a020a83974c9680a461bf842eaa1",
+      "rgbaSha256": "6e79254f2afae70effde9bc10a73a67e6bd196ab032200e6b0bed9b66b2c5749"
+    },
+    {
+      "file": "Skill_2_Begin-001.png",
+      "bytes": 661622,
+      "sha256": "5d885e93633e42f342186f66f387cb56089c7b0db2bd621ed8566efce9f8e216",
+      "originalCaptureSha256": "9cb11de5137fc09fc8e6ff5e3fb1ef7459d4f9c4ca6e1842417e6a9fc50aeac6",
+      "rgbaSha256": "9ce698baf8e1af3e5a1d797391859dac3dd02551ceffd1f0836cefc1ebe947c2"
+    },
+    {
+      "file": "Skill_2_End-000.png",
+      "bytes": 898944,
+      "sha256": "bb5c94ebc6ea7ace56e93d00066951da834d90f33d377b402592fa33b873e10f",
+      "originalCaptureSha256": "4814c9aa77213576c5d4725e48b703e5100a1b1d459181bdb11afe9d942e9cf4",
+      "rgbaSha256": "0a1a6bde9bafab3eed25d0d4af179571001e222030c80da1a3a275286394ce67"
+    },
+    {
+      "file": "Skill_2_Idle-000.png",
+      "bytes": 1892803,
+      "sha256": "cd6041d79452813fb5a85dcaa7f3749c4ae8793447a2ecac70c59f59ce8c09af",
+      "originalCaptureSha256": "6c5e359fe3f297e0f4ec8b626a32a056cd6bc91211712e139141e0f04a7d8ba6",
+      "rgbaSha256": "3f6b5fe43e9d772875712e8b6df05ec756a9cfb985bfe57384d28bed2459a315"
+    },
+    {
+      "file": "Skill_2_Idle-001.png",
+      "bytes": 1944321,
+      "sha256": "45445dcbd02e7d9fa461646a88a88700b2c06e5c478754582269ba9d07e4f50b",
+      "originalCaptureSha256": "1651dd7d7eb067d283f904e094e30c4c4e365989978a8f4523752118b7a95bbd",
+      "rgbaSha256": "007865cf163616c2fa37858b4760a2c37fc15147c56d928f487c17dab4141270"
+    },
+    {
+      "file": "Skill_2_Idle-002.png",
+      "bytes": 1885096,
+      "sha256": "14f89a836a8f0d40c7a4d7a7b900c3604478140784f48ed5320e858cff3c9be1",
+      "originalCaptureSha256": "286ab5830bda056f1447e09cee8e07737c8b04b3ee98212e70ad27d38139faa2",
+      "rgbaSha256": "75a07a304005f6d9f092171042b9b4f4aa92cd830eba115a844af9773eee5590"
+    },
+    {
+      "file": "Skill_2_Idle-003.png",
+      "bytes": 1952573,
+      "sha256": "17fec3423728ac346cde0e00bd1374d7fbfe42263cc30f74c3279518a8ed93b3",
+      "originalCaptureSha256": "b9b79b3b3aabf149afd66391201f0a3ce847622a13458cf2133da8d6c261c985",
+      "rgbaSha256": "dd360429261bc93563f79aeca7b99a3fc911aec29297ed04c2d6d5ad664ddaa1"
+    },
+    {
+      "file": "Skill_2_Idle-004.png",
+      "bytes": 1950487,
+      "sha256": "628a220963980a6be55912f8af449230a8be6a51e4dc832cc74a602af38de39c",
+      "originalCaptureSha256": "243617ef573f48817ea01ce21f0db88d60a95f4579d8c0b3825e9c59e11f45a3",
+      "rgbaSha256": "57374a9cc0c9556dc467ac7f971c7b9f089e618ce7a5f9f2140677dfdf50c0d9"
+    },
+    {
+      "file": "Skill_2_Idle-005.png",
+      "bytes": 1950605,
+      "sha256": "cfb782e3b76f25a521e60d529ce8662194d17752ca6051747d1722ab37182ab8",
+      "originalCaptureSha256": "a4379cd3860b8b2d0d4fe13893fdea41ab357f3f27fc6aaf7648e5f410821d6a",
+      "rgbaSha256": "a0ba708f616773b0d6b47ac75b8efa3b94c25104f83f398aaa38106c65eab581"
+    },
+    {
+      "file": "Skill_2_Idle-006.png",
+      "bytes": 1944330,
+      "sha256": "39df341083e809737a1a79ba83de2ed2d2bc40330e6f7ca9fd5daae89c74f989",
+      "originalCaptureSha256": "2c2223b9ff941a5aea050a0fe3081f2d87ea042b27f40fe85cce7b7d0875e932",
+      "rgbaSha256": "dee139ee91c8497b026783795a0099ad1b302dafac8e6b2826a9ab0f1d6b3ea1"
+    },
+    {
+      "file": "Skill_2_Idle-007.png",
+      "bytes": 1885096,
+      "sha256": "14f89a836a8f0d40c7a4d7a7b900c3604478140784f48ed5320e858cff3c9be1",
+      "originalCaptureSha256": "286ab5830bda056f1447e09cee8e07737c8b04b3ee98212e70ad27d38139faa2",
+      "rgbaSha256": "75a07a304005f6d9f092171042b9b4f4aa92cd830eba115a844af9773eee5590"
+    },
+    {
+      "file": "Skill_2_Idle-008.png",
+      "bytes": 1952573,
+      "sha256": "17fec3423728ac346cde0e00bd1374d7fbfe42263cc30f74c3279518a8ed93b3",
+      "originalCaptureSha256": "b9b79b3b3aabf149afd66391201f0a3ce847622a13458cf2133da8d6c261c985",
+      "rgbaSha256": "dd360429261bc93563f79aeca7b99a3fc911aec29297ed04c2d6d5ad664ddaa1"
+    },
+    {
+      "file": "Skill_2_Idle-009.png",
+      "bytes": 1950487,
+      "sha256": "628a220963980a6be55912f8af449230a8be6a51e4dc832cc74a602af38de39c",
+      "originalCaptureSha256": "243617ef573f48817ea01ce21f0db88d60a95f4579d8c0b3825e9c59e11f45a3",
+      "rgbaSha256": "57374a9cc0c9556dc467ac7f971c7b9f089e618ce7a5f9f2140677dfdf50c0d9"
+    },
+    {
+      "file": "Skill_2_Idle-010.png",
+      "bytes": 1950605,
+      "sha256": "cfb782e3b76f25a521e60d529ce8662194d17752ca6051747d1722ab37182ab8",
+      "originalCaptureSha256": "a4379cd3860b8b2d0d4fe13893fdea41ab357f3f27fc6aaf7648e5f410821d6a",
+      "rgbaSha256": "a0ba708f616773b0d6b47ac75b8efa3b94c25104f83f398aaa38106c65eab581"
+    },
+    {
+      "file": "Skill_2_Idle-011.png",
+      "bytes": 1944330,
+      "sha256": "39df341083e809737a1a79ba83de2ed2d2bc40330e6f7ca9fd5daae89c74f989",
+      "originalCaptureSha256": "2c2223b9ff941a5aea050a0fe3081f2d87ea042b27f40fe85cce7b7d0875e932",
+      "rgbaSha256": "dee139ee91c8497b026783795a0099ad1b302dafac8e6b2826a9ab0f1d6b3ea1"
+    },
+    {
+      "file": "Skill_2_Idle-012.png",
+      "bytes": 1885096,
+      "sha256": "14f89a836a8f0d40c7a4d7a7b900c3604478140784f48ed5320e858cff3c9be1",
+      "originalCaptureSha256": "286ab5830bda056f1447e09cee8e07737c8b04b3ee98212e70ad27d38139faa2",
+      "rgbaSha256": "75a07a304005f6d9f092171042b9b4f4aa92cd830eba115a844af9773eee5590"
+    },
+    {
+      "file": "Skill_2_Idle-013.png",
+      "bytes": 1952573,
+      "sha256": "17fec3423728ac346cde0e00bd1374d7fbfe42263cc30f74c3279518a8ed93b3",
+      "originalCaptureSha256": "b9b79b3b3aabf149afd66391201f0a3ce847622a13458cf2133da8d6c261c985",
+      "rgbaSha256": "dd360429261bc93563f79aeca7b99a3fc911aec29297ed04c2d6d5ad664ddaa1"
+    },
+    {
+      "file": "Skill_2_Idle-014.png",
+      "bytes": 1950487,
+      "sha256": "628a220963980a6be55912f8af449230a8be6a51e4dc832cc74a602af38de39c",
+      "originalCaptureSha256": "243617ef573f48817ea01ce21f0db88d60a95f4579d8c0b3825e9c59e11f45a3",
+      "rgbaSha256": "57374a9cc0c9556dc467ac7f971c7b9f089e618ce7a5f9f2140677dfdf50c0d9"
+    },
+    {
+      "file": "Skill_2_Idle-015.png",
+      "bytes": 156950,
+      "sha256": "a887201ce52d6767cf2aa1337fc5152c0f64a3371d3ac74600cb74d419e46591",
+      "originalCaptureSha256": "103b6ad84155cee2f2e48222b6dfe972989cb023cf892759f604fecee7ed85b4",
+      "rgbaSha256": "7d0e9c42893445d86ee02631ac57b484714bb72c10114aeba20f300798dc356a"
+    },
+    {
+      "file": "Skill_2_Loop-000.png",
+      "bytes": 1701544,
+      "sha256": "0c0f92434d372a86f93741e2f45bbd131ba6d30a9d0a31b43087406365c9ab3a",
+      "originalCaptureSha256": "e7d13d76e0e023ffbd015a3a29ad9e861385828274aa97dcb9b76f947a1831ea",
+      "rgbaSha256": "2ca56e4538187e6099c758fb4436c3dd49082cc2b81a1a801ad4150d528788b8"
+    },
+    {
+      "file": "Skill_2_Loop-001.png",
+      "bytes": 1869374,
+      "sha256": "07da996c6eea819bdca35ae3f116bf513b565b9729ac724fccbeb08fff7e9829",
+      "originalCaptureSha256": "22eebc758146d51e6a5a4724e6edc727538d00267410b5c009a04f47a5708243",
+      "rgbaSha256": "90669778adb5fae8e5f8c9ef4ee7801853b49cf34a6d199e2598619e62da46ff"
+    },
+    {
+      "file": "Skill_2_Loop-002.png",
+      "bytes": 1893412,
+      "sha256": "f397b4f245dc81124a4a309bcb32f16237ed03f41a42c3a393c2df0382e7931f",
+      "originalCaptureSha256": "c5339139a125649da9e6d9ead9b6de5f88ea9943bea4bde90ed14c56b1fac076",
+      "rgbaSha256": "23fbaee27833e38575bce7d77eb26b22f1c2c853bc39db3d44ef74c0c1fd72de"
+    },
+    {
+      "file": "Skill_2_Loop-003.png",
+      "bytes": 1838277,
+      "sha256": "3d7a0cd39f41ead0d41b8cf702f723fc456440831bf4958f64388f5a58a08a58",
+      "originalCaptureSha256": "c3906496ce6c5bd1e7b50e44db4d76a5d91c6fea101a38e9f794af0ef9235e67",
+      "rgbaSha256": "6969fd45633835c7ed397b4d8bc8066c20442ce963cda0a1c951f5ba5ac1a6c2"
+    },
+    {
+      "file": "Skill_2_Loop-004.png",
+      "bytes": 1605152,
+      "sha256": "27494f163a4b0be7f0b0166fb4574df02f3633cd7a4eb4460bbfa74386254aca",
+      "originalCaptureSha256": "3f8f6adff08702b473cfe7701b2607b0920d28eb21210cb38f59797a1e2851a8",
+      "rgbaSha256": "7ec4d8766647d98d99caba7b8f2decf5f30610a69d7b03e8ae34e291d618f0d5"
+    },
+    {
+      "file": "Skill_2_Loop-005.png",
+      "bytes": 503012,
+      "sha256": "7d4d959eba24f0e2129b6dfacc64fddff5a2899aeabbaea0dc7b05d7432e8820",
+      "originalCaptureSha256": "a6bd8aa50d9efc150d759ad9f1d0839900331796b05f8e3abe3c7a2e2c02f52a",
+      "rgbaSha256": "8aaee6c9990a882d8d5303ecd5573af113f2ec1a3d359562dd2acb65cb8d6113"
+    },
+    {
+      "file": "Skill_2_Overload_Begin-000.png",
+      "bytes": 1523096,
+      "sha256": "3e53774b6d8bd3dd46e6142ff0bb1c47efadae480762d81ada19f26026a34631",
+      "originalCaptureSha256": "0b75ce2aa5e0552f4fc08eaf23cbc4a16e74c7a154f6c8a01a41b30ec9d62738",
+      "rgbaSha256": "6fc337dd655e79d19bcb87bbe1e8026f9b35862a2460f8ad55e8bbd2bf9647aa"
+    },
+    {
+      "file": "Skill_2_Overload_End-000.png",
+      "bytes": 2201434,
+      "sha256": "a482e49a7d9dd125e374a16759967102f47ef3195210ee513f6fc40d6d888d93",
+      "originalCaptureSha256": "a68d3a7cf3742d6886f60655ce5f921c00d5db173d61f14aee68927f557b369a",
+      "rgbaSha256": "6fc40d4e319942eb8a44d85c896953b3288ee4617c1e2cce1a5bf0b72105bfb3"
+    },
+    {
+      "file": "Skill_2_Overload_End-001.png",
+      "bytes": 1894174,
+      "sha256": "aee1dd5a596001e683673354f08e3c2fad1486e2c8d01ed7b004840f8eb35fb1",
+      "originalCaptureSha256": "e4f7d8132b5711e4b12284c7328653389717a50f4d1a2e9146e5ac94732c6659",
+      "rgbaSha256": "22691666818598375f60d1da4a9929816cbde14ff395324ab9d54b0ff125fdc4"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-000.png",
+      "bytes": 2056797,
+      "sha256": "8adb839a8f0f5f98d987d06b4e8734dbaf8a66b30cb5b50d4d252c0c4abfd4cd",
+      "originalCaptureSha256": "ad678335d0780e40b83a0ff6407c8560106e577479e16523b9a2cb99efce8ca1",
+      "rgbaSha256": "a3bee39cff1c618329937739e7a489b30ee6f089e2ae8e6de6d7f35b21c2870c"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-001.png",
+      "bytes": 2125994,
+      "sha256": "1265cf3005e4812e8ffa3e8ec01ac652e7f1c473d8c013182954adc26c25977e",
+      "originalCaptureSha256": "40309ea5270787b4b517d4d844997e66f1572247534a7daeaf01e8f38a617751",
+      "rgbaSha256": "e8c04dec8e8c239b151c54ea74a10ddaf61d8ab14504c14988b5133317815d50"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-002.png",
+      "bytes": 2071715,
+      "sha256": "cdb63d68977026fca3196729c313906b1a0f5c8aa87e0fcec26c54e5871213dd",
+      "originalCaptureSha256": "12b1124e11146b120998277f9fedf52f84d5ff618ee8f9fe16e9f9a234252105",
+      "rgbaSha256": "28f80981631b978577743c5b8fb61f44441ac7421f0bccc1ef4071f3cb3d1a57"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-003.png",
+      "bytes": 2122180,
+      "sha256": "d243c564f2de68b0b70cf53bf7db1b1906726fad01e179b865e23d40a1a35faa",
+      "originalCaptureSha256": "e2814f8d675128c7b0c4e2ec69eba15bab2a8c9c52adc9dc4b16cb7f9b5baeba",
+      "rgbaSha256": "11bf642db419450de5a97ab26fdefa087d2ca6ecf440eaff6b9b3374d9828acb"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-004.png",
+      "bytes": 2144300,
+      "sha256": "7fa8d8bcdb3e852dc1a6b3f66b339443376c67d96641bd0fae08a4c2bafd0f37",
+      "originalCaptureSha256": "f53f7b15184bfe827249374cd573c59d49311cbd2a09d328aeedf1a61d57b388",
+      "rgbaSha256": "33537a2c638dc17e62e061b5666a02585fe2a517de5b24064928608e3b222b0b"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-005.png",
+      "bytes": 2122468,
+      "sha256": "3880eab89c487baae1cffddd2a5ad0193cae75349ab4a2d2a9b0951a4f60a8ff",
+      "originalCaptureSha256": "105a20a88a443464d229beedf6f551408a3de324a1c2bf2c95679904d8ee6623",
+      "rgbaSha256": "158a3c247a63eda3ba68489e7e162bedc531abde86ffbf5dfea42c75fdf18b10"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-006.png",
+      "bytes": 2125987,
+      "sha256": "c70ad55c4fce0694e9002894cfe8877f0e448e958ef2dd921e22c7c0d4355004",
+      "originalCaptureSha256": "bdca03c10d6a24174c653fdbc7a15e122c7f33842455ccb80fcc1a16c6e4f7fb",
+      "rgbaSha256": "82dd78c3bff69769e3fbd61135df28d569e186993f827db2b7665315578d8164"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-007.png",
+      "bytes": 2071715,
+      "sha256": "cdb63d68977026fca3196729c313906b1a0f5c8aa87e0fcec26c54e5871213dd",
+      "originalCaptureSha256": "12b1124e11146b120998277f9fedf52f84d5ff618ee8f9fe16e9f9a234252105",
+      "rgbaSha256": "28f80981631b978577743c5b8fb61f44441ac7421f0bccc1ef4071f3cb3d1a57"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-008.png",
+      "bytes": 2122180,
+      "sha256": "d243c564f2de68b0b70cf53bf7db1b1906726fad01e179b865e23d40a1a35faa",
+      "originalCaptureSha256": "e2814f8d675128c7b0c4e2ec69eba15bab2a8c9c52adc9dc4b16cb7f9b5baeba",
+      "rgbaSha256": "11bf642db419450de5a97ab26fdefa087d2ca6ecf440eaff6b9b3374d9828acb"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-009.png",
+      "bytes": 2144300,
+      "sha256": "7fa8d8bcdb3e852dc1a6b3f66b339443376c67d96641bd0fae08a4c2bafd0f37",
+      "originalCaptureSha256": "f53f7b15184bfe827249374cd573c59d49311cbd2a09d328aeedf1a61d57b388",
+      "rgbaSha256": "33537a2c638dc17e62e061b5666a02585fe2a517de5b24064928608e3b222b0b"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-010.png",
+      "bytes": 2122468,
+      "sha256": "3880eab89c487baae1cffddd2a5ad0193cae75349ab4a2d2a9b0951a4f60a8ff",
+      "originalCaptureSha256": "105a20a88a443464d229beedf6f551408a3de324a1c2bf2c95679904d8ee6623",
+      "rgbaSha256": "158a3c247a63eda3ba68489e7e162bedc531abde86ffbf5dfea42c75fdf18b10"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-011.png",
+      "bytes": 2125987,
+      "sha256": "c70ad55c4fce0694e9002894cfe8877f0e448e958ef2dd921e22c7c0d4355004",
+      "originalCaptureSha256": "bdca03c10d6a24174c653fdbc7a15e122c7f33842455ccb80fcc1a16c6e4f7fb",
+      "rgbaSha256": "82dd78c3bff69769e3fbd61135df28d569e186993f827db2b7665315578d8164"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-012.png",
+      "bytes": 2071715,
+      "sha256": "cdb63d68977026fca3196729c313906b1a0f5c8aa87e0fcec26c54e5871213dd",
+      "originalCaptureSha256": "12b1124e11146b120998277f9fedf52f84d5ff618ee8f9fe16e9f9a234252105",
+      "rgbaSha256": "28f80981631b978577743c5b8fb61f44441ac7421f0bccc1ef4071f3cb3d1a57"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-013.png",
+      "bytes": 2122180,
+      "sha256": "d243c564f2de68b0b70cf53bf7db1b1906726fad01e179b865e23d40a1a35faa",
+      "originalCaptureSha256": "e2814f8d675128c7b0c4e2ec69eba15bab2a8c9c52adc9dc4b16cb7f9b5baeba",
+      "rgbaSha256": "11bf642db419450de5a97ab26fdefa087d2ca6ecf440eaff6b9b3374d9828acb"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-014.png",
+      "bytes": 2144300,
+      "sha256": "7fa8d8bcdb3e852dc1a6b3f66b339443376c67d96641bd0fae08a4c2bafd0f37",
+      "originalCaptureSha256": "f53f7b15184bfe827249374cd573c59d49311cbd2a09d328aeedf1a61d57b388",
+      "rgbaSha256": "33537a2c638dc17e62e061b5666a02585fe2a517de5b24064928608e3b222b0b"
+    },
+    {
+      "file": "Skill_2_Overload_Idle-015.png",
+      "bytes": 169654,
+      "sha256": "31fc8f44f0f15ded5915a0230de3f9bbcc3163c15ce0024799f11dfd9f142a4c",
+      "originalCaptureSha256": "75e6673a16e180530873ede3e89daa954c483e04dbe38dd648e27f0c1402787d",
+      "rgbaSha256": "4f8c026f6b826aded0284559c6b7df91d60a0a8c183919493eefbdbef9e2c42c"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-000.png",
+      "bytes": 1849869,
+      "sha256": "563b6d3ebbf757694deb0541b1207c67ea1e10308e30fbc9d7116180d4512d3d",
+      "originalCaptureSha256": "a894deb07edca3705458781e786c5fd5796ead24cbf0a79e8996e67c5ae7e565",
+      "rgbaSha256": "8aff6c15c203b533017c156e2f33dab108d24d34cca1400926d1e9e4ce14d7bc"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-001.png",
+      "bytes": 2048010,
+      "sha256": "17d66074623e176c3e23c1aff6ac5568099fe3c5ff8e5cb36b94d4a545eb5bb3",
+      "originalCaptureSha256": "48d8f10c699617ff4b8f33b6d0f7d405093f1493ca49b9a804b8cb04fe4da477",
+      "rgbaSha256": "790a265366beffca9bfcb33a9b3677ecbb0a9cf4c591e87f8b2b2800c9a5e870"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-002.png",
+      "bytes": 2066891,
+      "sha256": "474e7a014d0318d714121b8f901e646195bab8bdf60e52e040c5f7323c72bdca",
+      "originalCaptureSha256": "46421862a983bf650e47e147e820c1d1c94419d43d1685f0d4f9ffec3dde226a",
+      "rgbaSha256": "68ee8867d26ecc477bdfc253d15c0f275f09d88ab652e7f824dec2a80ead57b1"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-003.png",
+      "bytes": 2046979,
+      "sha256": "7696e16e7d4f0f486395a1cf6227c302be3291eacb25c3678fb7e7e290c08642",
+      "originalCaptureSha256": "e5b816d901efab7505212e0239068c1bd150a07fa3136d4fb03f15fc7dc1bc05",
+      "rgbaSha256": "4348df9e7a4d92044fad08ceed9ce4e7f2476ebafbb633b58135c97995e93441"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-004.png",
+      "bytes": 1813299,
+      "sha256": "684b2cbd98a02824afaf36441c17b23927de6cd67379b4d0a5f11dcc1373b096",
+      "originalCaptureSha256": "abf106a4e531fc85b8066cc759184f3e9fbf7404afaf03a4187a7269ccfd1d5f",
+      "rgbaSha256": "e706e961cb11b9f5f2956e74e1ca0535377226e86ac49e46c22ce750413bcb5f"
+    },
+    {
+      "file": "Skill_2_Overload_Loop-005.png",
+      "bytes": 615969,
+      "sha256": "1b16b2be5b87d51a1f1bc1be0684bc8fe38b5e17b0d8808a6200172cc7e27760",
+      "originalCaptureSha256": "5e521a4630540d1a064205d2a09297c8d1e07c1ec9b9fcab2d5da2461d39e59d",
+      "rgbaSha256": "41145dfa2df101a86e4e3655ae596f44116ef948ff41a24fa0d5ea6de474f5cd"
+    },
+    {
+      "file": "Skill_3_Begin-000.png",
+      "bytes": 1823067,
+      "sha256": "bd0cf33940b9c7b7c907cc4a272b5ddccf71b47195e5c4d3b8b64936e542074e",
+      "originalCaptureSha256": "e72e58b2f49591d8fb990fa755049f4fcb4cf5b193b42f76d21d0238c320158c",
+      "rgbaSha256": "67ad7608c1cd74e2200545b4ed98a599b96e1c474066fc61d44ca49395e566e5"
+    },
+    {
+      "file": "Skill_3_Begin-001.png",
+      "bytes": 1833072,
+      "sha256": "9a15ba27023527a9793a827b1a8975bcd9608aa4b57e71b47200761f3feb2f54",
+      "originalCaptureSha256": "52153456438205b9ff0de336688958036ee51f7888c938133db689a9bd9d52c0",
+      "rgbaSha256": "73e0ab2ecf89328bae55b1908b3fcc8c63d9bcfe7046d33f8abea09b21d9bfed"
+    },
+    {
+      "file": "Skill_3_Begin-002.png",
+      "bytes": 1782852,
+      "sha256": "9562514bd6ccb031adaf6c3050272457091bca785b17cf393dbcd322fa544f14",
+      "originalCaptureSha256": "9a6dac1d8da2355444bde27eb962d861e8f41ebe380d3dbde1e108adf7b744a7",
+      "rgbaSha256": "ed99a853ce64368501767713b8e338c1cb5eb770adcd0428e571a2f5c9ca93d4"
+    },
+    {
+      "file": "Skill_3_Begin-003.png",
+      "bytes": 333023,
+      "sha256": "334deb76db2785deb02c4e92657a29372b2060d1b319955e4ba8c2f42b50851f",
+      "originalCaptureSha256": "4be28c6abd584e77eed31120e10713beb09c2109d871ec02f1189d47675a5e62",
+      "rgbaSha256": "a57bca61bf6f77cad9efaebf9efc1fd67e21ba788b0f0bb99293c3c41ca04ac8"
+    },
+    {
+      "file": "Skill_3_End-000.png",
+      "bytes": 2104266,
+      "sha256": "f4a966d0b7b2d3fface787ff9f95cabf31407c702ed91f51570731e6365dea7c",
+      "originalCaptureSha256": "4e588ba8b2ad6d489af3fda7a54e54ed1509aa6b48b0e65f45eefec62682eabe",
+      "rgbaSha256": "da598dcad15dad4f6e51c021c0cbce895fa3c0b9216eddd4631a32c9e82d988e"
+    },
+    {
+      "file": "Skill_3_End-001.png",
+      "bytes": 1902773,
+      "sha256": "2ec4c0e96aa4bddd44ba27d772fbaa8f0b23597d84de545eab3cac5d86523560",
+      "originalCaptureSha256": "5a8b613cbd1a25e8b3422f4e96fd070ed76173608c8e952628adecf316334c8c",
+      "rgbaSha256": "5353d6a8ee8f11a423cb0641a1eddf3bd6106cc48550c4751571a7f6e756d985"
+    },
+    {
+      "file": "Skill_3_Idle-000.png",
+      "bytes": 1918742,
+      "sha256": "78410d5abd6540387a01eed87962487ebac34c0f0888e6f42864e99c5ca58ece",
+      "originalCaptureSha256": "34031bc6d27d87d692e61ded4d86c4532d647809cff6037ba6458b58bdd5b76f",
+      "rgbaSha256": "74a867f13398f7deaa123e349d328d45b23afdd8a321591cd7178be3fdea1ebe"
+    },
+    {
+      "file": "Skill_3_Idle-001.png",
+      "bytes": 1957239,
+      "sha256": "002b61de7666b426c65fac639c434ea9a7147ef3e19b16beea7b1e82731cec95",
+      "originalCaptureSha256": "e68393f1611be11a042adf3188e2529f315e35169f1b3f6f77329e96ff055138",
+      "rgbaSha256": "56126803389aae1c1b196a588e984cf96d11607ec05197845d89ece81873d67b"
+    },
+    {
+      "file": "Skill_3_Idle-002.png",
+      "bytes": 1911893,
+      "sha256": "e40a8ae3ea9c77facb6fb40926ab97fb79f7bd7bb2b10e316bb060e4d2431cf2",
+      "originalCaptureSha256": "d93a6d455f8acf9c7dd1928bfcba48475d984f5f338c2d1eb5439a7bcfd341dd",
+      "rgbaSha256": "420ac299753c9d30f45691addc9b65c6e84b9e66947a144ddbbd45aa183c9c1b"
+    },
+    {
+      "file": "Skill_3_Idle-003.png",
+      "bytes": 1972897,
+      "sha256": "4531b91796e51389388f0a893b260bb0e56046f889575c0996eead496d6ccb16",
+      "originalCaptureSha256": "f667bd8f09d65e6cd9b61f10266fc67a34c7ce2b1981530fe00e8b1aff4bb8a2",
+      "rgbaSha256": "931e9fff02ae72b23cc792c2e26fe3683ad7dba78d7c072599fe0552787ea5b1"
+    },
+    {
+      "file": "Skill_3_Idle-004.png",
+      "bytes": 1963245,
+      "sha256": "710fa877f8644203413625e9ebf9e8f120ae853ede283e7bc91d1f3fe5bc48d1",
+      "originalCaptureSha256": "2bbd97a9d68cb4e2e36ae2d630aeaa6b13ff1d21488e66c378d4ec8bd5eda672",
+      "rgbaSha256": "4d22204985a8e258a726801e7494e73d5038641f528c218ae5f83b6a8d9b0e31"
+    },
+    {
+      "file": "Skill_3_Idle-005.png",
+      "bytes": 1972278,
+      "sha256": "8511c46169ba83ee6939afbe01ae0d61b5dfb96376ee113b22d8e0640f557be2",
+      "originalCaptureSha256": "71be3963494dd7644c7f557da3a8d2b355f0b686663146ea384d6b3f7d89bdd8",
+      "rgbaSha256": "c14b6287a2c82ac0e77169f2429d9f038b5db90ae4523b69525804ebddd0939b"
+    },
+    {
+      "file": "Skill_3_Idle-006.png",
+      "bytes": 1957293,
+      "sha256": "24cf8d33afd2161c07dae0cda6a817614f6a47ff1ff02fa66faa3d09272283ea",
+      "originalCaptureSha256": "f7bd9052f6378ad1ecc996f4f456fd5a2bab451a73fa8fa18649349fcf1689cf",
+      "rgbaSha256": "5582681a9af17613cfd68aa283960e1492a571ad6900c84dd61d91d7eaaafac8"
+    },
+    {
+      "file": "Skill_3_Idle-007.png",
+      "bytes": 1911893,
+      "sha256": "e40a8ae3ea9c77facb6fb40926ab97fb79f7bd7bb2b10e316bb060e4d2431cf2",
+      "originalCaptureSha256": "d93a6d455f8acf9c7dd1928bfcba48475d984f5f338c2d1eb5439a7bcfd341dd",
+      "rgbaSha256": "420ac299753c9d30f45691addc9b65c6e84b9e66947a144ddbbd45aa183c9c1b"
+    },
+    {
+      "file": "Skill_3_Idle-008.png",
+      "bytes": 1972897,
+      "sha256": "4531b91796e51389388f0a893b260bb0e56046f889575c0996eead496d6ccb16",
+      "originalCaptureSha256": "f667bd8f09d65e6cd9b61f10266fc67a34c7ce2b1981530fe00e8b1aff4bb8a2",
+      "rgbaSha256": "931e9fff02ae72b23cc792c2e26fe3683ad7dba78d7c072599fe0552787ea5b1"
+    },
+    {
+      "file": "Skill_3_Idle-009.png",
+      "bytes": 1963245,
+      "sha256": "710fa877f8644203413625e9ebf9e8f120ae853ede283e7bc91d1f3fe5bc48d1",
+      "originalCaptureSha256": "2bbd97a9d68cb4e2e36ae2d630aeaa6b13ff1d21488e66c378d4ec8bd5eda672",
+      "rgbaSha256": "4d22204985a8e258a726801e7494e73d5038641f528c218ae5f83b6a8d9b0e31"
+    },
+    {
+      "file": "Skill_3_Idle-010.png",
+      "bytes": 1972278,
+      "sha256": "8511c46169ba83ee6939afbe01ae0d61b5dfb96376ee113b22d8e0640f557be2",
+      "originalCaptureSha256": "71be3963494dd7644c7f557da3a8d2b355f0b686663146ea384d6b3f7d89bdd8",
+      "rgbaSha256": "c14b6287a2c82ac0e77169f2429d9f038b5db90ae4523b69525804ebddd0939b"
+    },
+    {
+      "file": "Skill_3_Idle-011.png",
+      "bytes": 1957293,
+      "sha256": "24cf8d33afd2161c07dae0cda6a817614f6a47ff1ff02fa66faa3d09272283ea",
+      "originalCaptureSha256": "f7bd9052f6378ad1ecc996f4f456fd5a2bab451a73fa8fa18649349fcf1689cf",
+      "rgbaSha256": "5582681a9af17613cfd68aa283960e1492a571ad6900c84dd61d91d7eaaafac8"
+    },
+    {
+      "file": "Skill_3_Idle-012.png",
+      "bytes": 1911893,
+      "sha256": "e40a8ae3ea9c77facb6fb40926ab97fb79f7bd7bb2b10e316bb060e4d2431cf2",
+      "originalCaptureSha256": "d93a6d455f8acf9c7dd1928bfcba48475d984f5f338c2d1eb5439a7bcfd341dd",
+      "rgbaSha256": "420ac299753c9d30f45691addc9b65c6e84b9e66947a144ddbbd45aa183c9c1b"
+    },
+    {
+      "file": "Skill_3_Idle-013.png",
+      "bytes": 1972897,
+      "sha256": "4531b91796e51389388f0a893b260bb0e56046f889575c0996eead496d6ccb16",
+      "originalCaptureSha256": "f667bd8f09d65e6cd9b61f10266fc67a34c7ce2b1981530fe00e8b1aff4bb8a2",
+      "rgbaSha256": "931e9fff02ae72b23cc792c2e26fe3683ad7dba78d7c072599fe0552787ea5b1"
+    },
+    {
+      "file": "Skill_3_Idle-014.png",
+      "bytes": 1963245,
+      "sha256": "710fa877f8644203413625e9ebf9e8f120ae853ede283e7bc91d1f3fe5bc48d1",
+      "originalCaptureSha256": "2bbd97a9d68cb4e2e36ae2d630aeaa6b13ff1d21488e66c378d4ec8bd5eda672",
+      "rgbaSha256": "4d22204985a8e258a726801e7494e73d5038641f528c218ae5f83b6a8d9b0e31"
+    },
+    {
+      "file": "Skill_3_Idle-015.png",
+      "bytes": 1972278,
+      "sha256": "8511c46169ba83ee6939afbe01ae0d61b5dfb96376ee113b22d8e0640f557be2",
+      "originalCaptureSha256": "71be3963494dd7644c7f557da3a8d2b355f0b686663146ea384d6b3f7d89bdd8",
+      "rgbaSha256": "c14b6287a2c82ac0e77169f2429d9f038b5db90ae4523b69525804ebddd0939b"
+    },
+    {
+      "file": "Skill_3_Idle-016.png",
+      "bytes": 1957293,
+      "sha256": "24cf8d33afd2161c07dae0cda6a817614f6a47ff1ff02fa66faa3d09272283ea",
+      "originalCaptureSha256": "f7bd9052f6378ad1ecc996f4f456fd5a2bab451a73fa8fa18649349fcf1689cf",
+      "rgbaSha256": "5582681a9af17613cfd68aa283960e1492a571ad6900c84dd61d91d7eaaafac8"
+    },
+    {
+      "file": "Skill_3_Idle-017.png",
+      "bytes": 1911893,
+      "sha256": "e40a8ae3ea9c77facb6fb40926ab97fb79f7bd7bb2b10e316bb060e4d2431cf2",
+      "originalCaptureSha256": "d93a6d455f8acf9c7dd1928bfcba48475d984f5f338c2d1eb5439a7bcfd341dd",
+      "rgbaSha256": "420ac299753c9d30f45691addc9b65c6e84b9e66947a144ddbbd45aa183c9c1b"
+    },
+    {
+      "file": "Skill_3_Idle-018.png",
+      "bytes": 1972897,
+      "sha256": "4531b91796e51389388f0a893b260bb0e56046f889575c0996eead496d6ccb16",
+      "originalCaptureSha256": "f667bd8f09d65e6cd9b61f10266fc67a34c7ce2b1981530fe00e8b1aff4bb8a2",
+      "rgbaSha256": "931e9fff02ae72b23cc792c2e26fe3683ad7dba78d7c072599fe0552787ea5b1"
+    },
+    {
+      "file": "Skill_3_Idle-019.png",
+      "bytes": 1963226,
+      "sha256": "10b1e764af3b8870a2388cbf123e533dc619c2cd1831815b3f4eb9527bd2e9b1",
+      "originalCaptureSha256": "565ee654d333af412262e16852931616828d96edabf60bec4f29fe7734ebad51",
+      "rgbaSha256": "1ffd23306119301d049b307dc6f5f624450e13dfb109aba0f991bfef426beffe"
+    },
+    {
+      "file": "Skill_3_Idle-020.png",
+      "bytes": 160100,
+      "sha256": "d670ac356738898c83585d6f62f98bab013701ed71d70e19929346a0455951c4",
+      "originalCaptureSha256": "9c73977f742b63ff7e6213e447aa82ac407ac7ef30fbf29b4bb3b2d13f54cce1",
+      "rgbaSha256": "71fdd3e75beff21a96bf9b3fae885f867079b9656abefd4f67731c71b5c7bcbd"
+    },
+    {
+      "file": "Skill_3_Loop-000.png",
+      "bytes": 1323892,
+      "sha256": "2ae4e4c002f866b22b89a35e286448aea1a8b88fcb852c3a51eaedbbf097bbd9",
+      "originalCaptureSha256": "15e4d12f0dc94d07c951539219081c290ce6c1b8e59b936904e908281de7f579",
+      "rgbaSha256": "6b2b28c858cd79a459a9265852352ecf7f794747d1326b7162d070674a276b1a"
+    },
+    {
+      "file": "Skill_3_Loop-001.png",
+      "bytes": 1355661,
+      "sha256": "372aa9fc76df70c5876f5241ae1c5405a457cdb05178085bb5db4bfb503e4572",
+      "originalCaptureSha256": "06be5785480e1b4b165723c10197e28dc3bdd6c833d52deecedbe239dc181913",
+      "rgbaSha256": "b13dc6e37ca19afb0abf66e139e9c437c64514197743046844eb833d79f1af53"
+    },
+    {
+      "file": "Skill_3_Loop-002.png",
+      "bytes": 1503853,
+      "sha256": "99217568ebf910d54838d57969c8082287e2d9e90d4a93d7ed59038a82f546d3",
+      "originalCaptureSha256": "68d511e6c6242388200826bea422a4be1e8f73a2ca826335e8b265692c1a70b6",
+      "rgbaSha256": "65dbbb1dbe88224b725bfc7a32143327ae26aed354091b26b561072f430fc932"
+    },
+    {
+      "file": "Skill_3_Loop-003.png",
+      "bytes": 1421876,
+      "sha256": "5e3d28a94f647d6766b48a3241ef319b6a65cd227ef91950d0afd616a13375b6",
+      "originalCaptureSha256": "db4a669a22ed7a19b3207f068cf6918a5f6191c9f14e0ecf8594159e6e9a715c",
+      "rgbaSha256": "399a4cdeb3bb7a5996d6021d30213065b796041b95e141ee6ab685eb08de46fa"
+    },
+    {
+      "file": "Skill_3_Loop-004.png",
+      "bytes": 1435373,
+      "sha256": "40f0467bbddec735af990fbe5cefaac13f7cdfdd666cceb259bbf20c1088ff29",
+      "originalCaptureSha256": "a2c29749fac2278f34d132b0921e7050f6e97c683e370850417bd8ac9854cd98",
+      "rgbaSha256": "163a95089f6510b7f34e2ff682ebbcac4483964312d40b831499b1abc45c2181"
+    },
+    {
+      "file": "Skill_3_Loop-005.png",
+      "bytes": 1310632,
+      "sha256": "a84fd22af29478ee6fa3e1c39b4fa5ad43ef1faa937f24d6d6e68fdd2f9a8ca9",
+      "originalCaptureSha256": "651037933ddaded1983d21790b18c71722b4c353f8435631d8732af4ae17855d",
+      "rgbaSha256": "071070ec2c9bb360764f87f0b183e4db12cd115f40c48f20a888be23ff8a997e"
+    },
+    {
+      "file": "Skill_3_Loop-006.png",
+      "bytes": 1186763,
+      "sha256": "57521ca44b4c25be27eee08e3f523add505cb5067dc4c6a16fbd2e3ec376fb66",
+      "originalCaptureSha256": "4b97938a676746ee87db7a1a8c8b091f618354657bdfbfb1e3022db526ebfd32",
+      "rgbaSha256": "aa7a37c5198920b24162ce68e8cf4a549ab81f984a096647512938482231797f"
+    },
+    {
+      "file": "Skill_3_Loop-007.png",
+      "bytes": 1162879,
+      "sha256": "80acefb0fa53e9e7a90385ac58536773572369dcdae6a4faa03da20a9b5d6026",
+      "originalCaptureSha256": "a98f86bd3378ffd96f855d79923188917e681f51b8a521cb5d44daa00ddf5565",
+      "rgbaSha256": "0ef606218cbe55240c24bc089f3d5a733e56f7747d3b75b801436fd2ef254ca8"
+    },
+    {
+      "file": "Skill_3_Loop-008.png",
+      "bytes": 1158132,
+      "sha256": "1beeac6a214fbb584987c3877a9e889f56953ee66950e8e0a42c73b8ed5b4faf",
+      "originalCaptureSha256": "3fe36a2bb0a78a64a6ca8d679706354ad423e29904d11e18b99ea35edcf6937c",
+      "rgbaSha256": "03ab6a95a7d98eb01fd22cfe39e8ce5c1a313ef0322fdeaf433fd2783daf37be"
+    },
+    {
+      "file": "Skill_3_Loop-009.png",
+      "bytes": 1187618,
+      "sha256": "dfdaf1264182adfea4553e18b8a03bf9e0a94012c24edc288d0e5636e2329b07",
+      "originalCaptureSha256": "8ee6e7a8b207cb86a3b9628e06b73180a59595182c2a4077062d9273a38caf9c",
+      "rgbaSha256": "f4eb1df1b94f9b71d8ced315349790ff9b936dc20d34e5f40c265d4ff5d1f83f"
+    },
+    {
+      "file": "Skill_3_Loop-010.png",
+      "bytes": 1219047,
+      "sha256": "42805d1487deee6381342b46a251713579ab26802378b93476430306c0772f3c",
+      "originalCaptureSha256": "524f029ce1f975bfd862a299d5796f1e8f5463a1d659b2b3018d96eb177721cd",
+      "rgbaSha256": "e1eaa8f84e3ce86bdb609bc254b3569179bee89b20484ae3602d87634732154d"
+    },
+    {
+      "file": "Skill_3_Loop-011.png",
+      "bytes": 1227394,
+      "sha256": "806a0c030a1483dd9218ee162baef08b0fac66a806cd993d5bc051aca5c44a08",
+      "originalCaptureSha256": "47ce4f75c5fcb88acfd38a73e3c9b3e6ddf215a8903e4f2a1968e8b747a3e30b",
+      "rgbaSha256": "37485e2f95a1be8dd1f422da1cac523b1e363158a08d1ee53359bc718cee16dd"
+    },
+    {
+      "file": "Skill_3_Loop-012.png",
+      "bytes": 1227160,
+      "sha256": "61c9d675d51d7cf6622e0459276a2a014ed2ac7a51577d78244980da234ec367",
+      "originalCaptureSha256": "613c5b6163ca75e4b5f38e1615bfd4302d7e15cf69f824839092ddd2ddb318c6",
+      "rgbaSha256": "1dd571ed70d4eb548115cec146679edf3d4ae3ecc504aa13fc9de6fa3b7518ac"
+    },
+    {
+      "file": "Skill_3_Loop-013.png",
+      "bytes": 1213158,
+      "sha256": "ecb6f13ce0611979b76fcd79fcdfff16327d7ae4b25e7efde6a55a8c2afc4c68",
+      "originalCaptureSha256": "30153db8697bc637841d4af9994e6c00bcf7751ad309e3f30a6329b9c7c4b57c",
+      "rgbaSha256": "4f3993ac1f0ad729e67d42ad28c273075df816604202f410402e97783176cc17"
+    },
+    {
+      "file": "Skill_3_Loop-014.png",
+      "bytes": 1227018,
+      "sha256": "6dd3d3d8dbaee7553b6267c720918fa462f80783bb63d808320e795e93415e03",
+      "originalCaptureSha256": "9d9db8a379a23b299d8821ddcf82ffb72123e10fb29ffcee73114f43895299a7",
+      "rgbaSha256": "410cda6af59865668b9fb34c30e9b8d1f132a6d2297ac574b1cd7ea8beb59994"
+    },
+    {
+      "file": "Skill_3_Loop-015.png",
+      "bytes": 1321337,
+      "sha256": "1e9d1baa14d44fdaf5e6a55a2d01e12da5b993d2d7fdd2669d9d08e4a98d2f4f",
+      "originalCaptureSha256": "343967cc45b1f314d63342525811565fa91e2427125f6a8913842f339c1b0fc1",
+      "rgbaSha256": "b1714102369e98cd1b1a7560cacfa61e81944a020e43536fab2ac103c15f91ae"
+    },
+    {
+      "file": "Skill_3_Loop-016.png",
+      "bytes": 1367320,
+      "sha256": "81201cf5fb6c002165e8f6b6b983a948f84f7eae56ce345f6b0ea15948adfee5",
+      "originalCaptureSha256": "bd81604b79a7d694399072699b536a7fb25c90b214b43e395f622a0dec53f323",
+      "rgbaSha256": "4ec72d38d2b9495c3a24f83fccdcb8c25152a3548b0d2a05af56534610fb1895"
+    },
+    {
+      "file": "Skill_3_Loop-017.png",
+      "bytes": 1277411,
+      "sha256": "f3bca8fadb4cbdac21c7178351430f8b471076c5fbe2e4b9d86946e13bb0406f",
+      "originalCaptureSha256": "47dc7a379e7dcabed48e59275df3f36e5b9465b1f09b450ce6e61ebe66c2c4e6",
+      "rgbaSha256": "968e140be90ce927145e365aad5bddbfa29b25f389d452423eb7d55ad98f09c7"
+    },
+    {
+      "file": "Skill_3_Loop-018.png",
+      "bytes": 1024479,
+      "sha256": "7e57152bcd994a003add60aa99d751f58c5f921bfd09ec6594a3d283ddc14251",
+      "originalCaptureSha256": "68ef414df2df65a17166966994e27141edb5431ef45ca748387a33eed33515ac",
+      "rgbaSha256": "4ea949eef0b93432e97ff3dcf91abcba0c6cacb15d17fd9a6bfa2587d3645328"
+    },
+    {
+      "file": "Skill_Down_3_Idle-000.png",
+      "bytes": 2085181,
+      "sha256": "02134c5f67fe70e90f98442d9474fb88c2b3c87b4f4ce21f08d7ab22c529efda",
+      "originalCaptureSha256": "f86f0489e746301aebbcbe3b9317bd91fbe64bffe062c6cd4bfe705d6135968c",
+      "rgbaSha256": "221a692ce613f5c1f5e9d42e0d7c4fd5863e469fc13243099c7ba2db8d9b6f10"
+    },
+    {
+      "file": "Skill_Down_3_Idle-001.png",
+      "bytes": 2142301,
+      "sha256": "a60dcc8a8c1863d72b8b1d393c55f27e6e3c2718c748473350f0a808f132e0b8",
+      "originalCaptureSha256": "4532c1fd5d5b676fb3187322618399df3bd0cf226fd16f3c06e2e7b2ec8f8aad",
+      "rgbaSha256": "4860a24f7ebab1c7529d7c031f38e37a50f8441e7375460f0364a7b1517f617e"
+    },
+    {
+      "file": "Skill_Down_3_Idle-002.png",
+      "bytes": 2093976,
+      "sha256": "59ac0df79113823c650bb2f347f344bfbbf2eadac28d28385f402c5159614ede",
+      "originalCaptureSha256": "23597dd0852f156275b78eb7004d071792b8bb60c3ef384a8f5ab684683b8cca",
+      "rgbaSha256": "6d244a572325ee971701de71b4f1d60f4b1d8688477fa111f7f8be6f8f4ce45f"
+    },
+    {
+      "file": "Skill_Down_3_Idle-003.png",
+      "bytes": 2142661,
+      "sha256": "86fc164c42be505da077bbc146531ccbd02dc90bd17b98c8d29b1254e9c915d9",
+      "originalCaptureSha256": "8338c52ad445e69577cef2209fdf5d62798a48ccbf0b5465414bd82303cde186",
+      "rgbaSha256": "4033a33bc92284ea57087a054d24364fbffdffdac4cd824fc1305536b37b6e21"
+    },
+    {
+      "file": "Skill_Down_3_Idle-004.png",
+      "bytes": 2159051,
+      "sha256": "1ab5ec469c24d9c0c281d4612718144eecaf0e10a3593a357354cee485e3dd93",
+      "originalCaptureSha256": "5701675fb2a546179f6c0c405d62311fcad8cd6c2cd3782d7b0771b7d95ad7cd",
+      "rgbaSha256": "65e7bc20858bc497d60674fe5010fb97b5bd0c22a55a401de73fbd1d7b4477a3"
+    },
+    {
+      "file": "Skill_Down_3_Idle-005.png",
+      "bytes": 2149992,
+      "sha256": "ab6bea01ec8ed5057e50952b3dca39a260c2e97fdf3e46020ec6dfc7af5a765f",
+      "originalCaptureSha256": "7de1a5d9e5911e4edb42f695ea7ac5e9073bcba40ed403290b909b0b93b9b725",
+      "rgbaSha256": "4497667346e97dee1e9015aa93e2bd56c14a9c9b1f4a8f7c4b10b91f82250260"
+    },
+    {
+      "file": "Skill_Down_3_Idle-006.png",
+      "bytes": 2142170,
+      "sha256": "6a8eff883abf432ed2d3d7fc8466d2a83f2dfccad1bdf2b71ed17354342c0643",
+      "originalCaptureSha256": "8bf74a254b9381e70433d73f9b869679a5b49d64f6a7d861c6e4324d5ecb67c1",
+      "rgbaSha256": "55352800c8e922f0ed40c51845be65bd7e7d968bc3ed9e7a90c69ca497707e0e"
+    },
+    {
+      "file": "Skill_Down_3_Idle-007.png",
+      "bytes": 2093976,
+      "sha256": "59ac0df79113823c650bb2f347f344bfbbf2eadac28d28385f402c5159614ede",
+      "originalCaptureSha256": "23597dd0852f156275b78eb7004d071792b8bb60c3ef384a8f5ab684683b8cca",
+      "rgbaSha256": "6d244a572325ee971701de71b4f1d60f4b1d8688477fa111f7f8be6f8f4ce45f"
+    },
+    {
+      "file": "Skill_Down_3_Idle-008.png",
+      "bytes": 2142661,
+      "sha256": "86fc164c42be505da077bbc146531ccbd02dc90bd17b98c8d29b1254e9c915d9",
+      "originalCaptureSha256": "8338c52ad445e69577cef2209fdf5d62798a48ccbf0b5465414bd82303cde186",
+      "rgbaSha256": "4033a33bc92284ea57087a054d24364fbffdffdac4cd824fc1305536b37b6e21"
+    },
+    {
+      "file": "Skill_Down_3_Idle-009.png",
+      "bytes": 2159051,
+      "sha256": "1ab5ec469c24d9c0c281d4612718144eecaf0e10a3593a357354cee485e3dd93",
+      "originalCaptureSha256": "5701675fb2a546179f6c0c405d62311fcad8cd6c2cd3782d7b0771b7d95ad7cd",
+      "rgbaSha256": "65e7bc20858bc497d60674fe5010fb97b5bd0c22a55a401de73fbd1d7b4477a3"
+    },
+    {
+      "file": "Skill_Down_3_Idle-010.png",
+      "bytes": 2149992,
+      "sha256": "ab6bea01ec8ed5057e50952b3dca39a260c2e97fdf3e46020ec6dfc7af5a765f",
+      "originalCaptureSha256": "7de1a5d9e5911e4edb42f695ea7ac5e9073bcba40ed403290b909b0b93b9b725",
+      "rgbaSha256": "4497667346e97dee1e9015aa93e2bd56c14a9c9b1f4a8f7c4b10b91f82250260"
+    },
+    {
+      "file": "Skill_Down_3_Idle-011.png",
+      "bytes": 2142170,
+      "sha256": "6a8eff883abf432ed2d3d7fc8466d2a83f2dfccad1bdf2b71ed17354342c0643",
+      "originalCaptureSha256": "8bf74a254b9381e70433d73f9b869679a5b49d64f6a7d861c6e4324d5ecb67c1",
+      "rgbaSha256": "55352800c8e922f0ed40c51845be65bd7e7d968bc3ed9e7a90c69ca497707e0e"
+    },
+    {
+      "file": "Skill_Down_3_Idle-012.png",
+      "bytes": 2093976,
+      "sha256": "59ac0df79113823c650bb2f347f344bfbbf2eadac28d28385f402c5159614ede",
+      "originalCaptureSha256": "23597dd0852f156275b78eb7004d071792b8bb60c3ef384a8f5ab684683b8cca",
+      "rgbaSha256": "6d244a572325ee971701de71b4f1d60f4b1d8688477fa111f7f8be6f8f4ce45f"
+    },
+    {
+      "file": "Skill_Down_3_Idle-013.png",
+      "bytes": 2142661,
+      "sha256": "86fc164c42be505da077bbc146531ccbd02dc90bd17b98c8d29b1254e9c915d9",
+      "originalCaptureSha256": "8338c52ad445e69577cef2209fdf5d62798a48ccbf0b5465414bd82303cde186",
+      "rgbaSha256": "4033a33bc92284ea57087a054d24364fbffdffdac4cd824fc1305536b37b6e21"
+    },
+    {
+      "file": "Skill_Down_3_Idle-014.png",
+      "bytes": 2159051,
+      "sha256": "1ab5ec469c24d9c0c281d4612718144eecaf0e10a3593a357354cee485e3dd93",
+      "originalCaptureSha256": "5701675fb2a546179f6c0c405d62311fcad8cd6c2cd3782d7b0771b7d95ad7cd",
+      "rgbaSha256": "65e7bc20858bc497d60674fe5010fb97b5bd0c22a55a401de73fbd1d7b4477a3"
+    },
+    {
+      "file": "Skill_Down_3_Idle-015.png",
+      "bytes": 2149992,
+      "sha256": "ab6bea01ec8ed5057e50952b3dca39a260c2e97fdf3e46020ec6dfc7af5a765f",
+      "originalCaptureSha256": "7de1a5d9e5911e4edb42f695ea7ac5e9073bcba40ed403290b909b0b93b9b725",
+      "rgbaSha256": "4497667346e97dee1e9015aa93e2bd56c14a9c9b1f4a8f7c4b10b91f82250260"
+    },
+    {
+      "file": "Skill_Down_3_Idle-016.png",
+      "bytes": 2142170,
+      "sha256": "6a8eff883abf432ed2d3d7fc8466d2a83f2dfccad1bdf2b71ed17354342c0643",
+      "originalCaptureSha256": "8bf74a254b9381e70433d73f9b869679a5b49d64f6a7d861c6e4324d5ecb67c1",
+      "rgbaSha256": "55352800c8e922f0ed40c51845be65bd7e7d968bc3ed9e7a90c69ca497707e0e"
+    },
+    {
+      "file": "Skill_Down_3_Idle-017.png",
+      "bytes": 2093976,
+      "sha256": "59ac0df79113823c650bb2f347f344bfbbf2eadac28d28385f402c5159614ede",
+      "originalCaptureSha256": "23597dd0852f156275b78eb7004d071792b8bb60c3ef384a8f5ab684683b8cca",
+      "rgbaSha256": "6d244a572325ee971701de71b4f1d60f4b1d8688477fa111f7f8be6f8f4ce45f"
+    },
+    {
+      "file": "Skill_Down_3_Idle-018.png",
+      "bytes": 2142661,
+      "sha256": "86fc164c42be505da077bbc146531ccbd02dc90bd17b98c8d29b1254e9c915d9",
+      "originalCaptureSha256": "8338c52ad445e69577cef2209fdf5d62798a48ccbf0b5465414bd82303cde186",
+      "rgbaSha256": "4033a33bc92284ea57087a054d24364fbffdffdac4cd824fc1305536b37b6e21"
+    },
+    {
+      "file": "Skill_Down_3_Idle-019.png",
+      "bytes": 2159051,
+      "sha256": "1ab5ec469c24d9c0c281d4612718144eecaf0e10a3593a357354cee485e3dd93",
+      "originalCaptureSha256": "5701675fb2a546179f6c0c405d62311fcad8cd6c2cd3782d7b0771b7d95ad7cd",
+      "rgbaSha256": "65e7bc20858bc497d60674fe5010fb97b5bd0c22a55a401de73fbd1d7b4477a3"
+    },
+    {
+      "file": "Skill_Down_3_Idle-020.png",
+      "bytes": 172444,
+      "sha256": "8b977dd00aa5a13511c3290aa7f4ccdee252c56b77246f54daf9ad108d581bc4",
+      "originalCaptureSha256": "ebaae4a08cf1fd53244933692c95d1f0b04b91c67274c67057f06627e9e1a7e8",
+      "rgbaSha256": "bb05797e21bb7115ef36118b3a3a833eeb53957cd6ede7bdf7e4121d125913c9"
+    },
+    {
+      "file": "Skill_Down_3_Loop-000.png",
+      "bytes": 1524652,
+      "sha256": "96c749e2039773d17b2fdbfd6fef0616a646193b8ecb2cf4041d075093a9e686",
+      "originalCaptureSha256": "c1934b8891b3621c374c2dccaef6e0a43aabe3ad02eb5e8362652e17ee479c37",
+      "rgbaSha256": "1fac9cbce28b938bdce243f6967a585123f619c5e4b86d59afcaec76c99569e8"
+    },
+    {
+      "file": "Skill_Down_3_Loop-001.png",
+      "bytes": 1541897,
+      "sha256": "9c11fe78e16fa3d5ed7ea55b57aca1c2daf849016934ea19672ba48db51beaf8",
+      "originalCaptureSha256": "83e51ea8932898ef65703a48bf69827730c12a587b3c242eb34c4dbd555a3205",
+      "rgbaSha256": "75fbb8337bb230c36651d81039e1727d6f5ba70adcefbbbc99234e93b5d3b67e"
+    },
+    {
+      "file": "Skill_Down_3_Loop-002.png",
+      "bytes": 1611892,
+      "sha256": "2c5f749e13b2b598c70565bea35b9bd52fc1626911c96f09096133cb7429ef02",
+      "originalCaptureSha256": "5a1e5d96101104581f35fc91c9bfbe04b9372e1308246b463602b78fc32358e1",
+      "rgbaSha256": "370b1b7f21b3a018d7c47d52afa400598dd772918ef4df8d02853e6a7a504fad"
+    },
+    {
+      "file": "Skill_Down_3_Loop-003.png",
+      "bytes": 1502313,
+      "sha256": "f66d1517546dc3623184d26ac07fb6ba2cc999e5b856bd5d40b12c8c0aef8617",
+      "originalCaptureSha256": "d92716c79f6e46cf280c0e23b5d5109b62523802a35c9f898f7daa5f9fdef3d6",
+      "rgbaSha256": "d556c334c3adf954aafdc4a01a7d9a09dfd40ea7d53307a3a6d97d5916a952f8"
+    },
+    {
+      "file": "Skill_Down_3_Loop-004.png",
+      "bytes": 1433937,
+      "sha256": "e152c6fa87e84b2bbb85ada55d808a367766356c6596091322004c001d6f1301",
+      "originalCaptureSha256": "9e722af92d2030e9540b4fe52a462aaa60622a21dac6c9ed87cbf8b30467b6c6",
+      "rgbaSha256": "92336e1e2348ac24002601f8360e729a7b572b41945ea246a872a2fb1853a576"
+    },
+    {
+      "file": "Skill_Down_3_Loop-005.png",
+      "bytes": 1394443,
+      "sha256": "b3cefccbe30b9982003e7fb9adf84c4c797d4474c28c3605ac230375c659ffca",
+      "originalCaptureSha256": "80b3ddd984c5c430d806e365a520766ff32541084a6f60ee1ba78e0fffafa7f0",
+      "rgbaSha256": "17278f5608f6dc2b2cef04a14aaf12d64b841a8a2ff745839abdd8fec2832b6f"
+    },
+    {
+      "file": "Skill_Down_3_Loop-006.png",
+      "bytes": 1308743,
+      "sha256": "adf63e07101e427c602ea35bfb18babf91e3cc505689ceeed3a905e377a115cb",
+      "originalCaptureSha256": "0b9b1619d3b37151c46248fcd95ac1695de2f37cc7c0c612b1d1517b07254a4c",
+      "rgbaSha256": "c158cffa5f2c2e17498533f4d9a9ea763b0f23b318cf54c46a8b6c6176ea8531"
+    },
+    {
+      "file": "Skill_Down_3_Loop-007.png",
+      "bytes": 1285677,
+      "sha256": "4db3207ca1902c8d4d75b381ce089f9769f61d67d5a1de4352d2fdc9c47b098c",
+      "originalCaptureSha256": "4f4e5ea767e2c2db749a63a4147bae0f135aa875269fe80aa0454df09d7f7ef9",
+      "rgbaSha256": "9e2af9dcc64326e99f7771a4747eca23d19522b50babeed5dc01aeb8a1ebc2c7"
+    },
+    {
+      "file": "Skill_Down_3_Loop-008.png",
+      "bytes": 1277293,
+      "sha256": "bdaeb4686e3dd57290cedd3ed7678923d523da7f79b14e2e8f3a8da05078c1ea",
+      "originalCaptureSha256": "fe2312d40f52d9c265ee9230ad10afb220c951a0e648f729991b432df2852b4a",
+      "rgbaSha256": "89c3a1ce00356fd3f6f3cd3a3aad263c1a203e09d1591f88fa0a94640ed6a5d5"
+    },
+    {
+      "file": "Skill_Down_3_Loop-009.png",
+      "bytes": 1286273,
+      "sha256": "6565506c4b35ec6f1f8498ec532db5d2d326d49daaac99e93f90eddc880ba31f",
+      "originalCaptureSha256": "3d1409aa1b3adb592734ea9d2140edd658c1d4c88c00ffc5ca56f8a17606da8c",
+      "rgbaSha256": "8ad91794fb4cca2f9e0233075ba5e5fe1568e5f7435cd7392d34f2bfff84fa2c"
+    },
+    {
+      "file": "Skill_Down_3_Loop-010.png",
+      "bytes": 1293598,
+      "sha256": "0654bb42370dbda59b33e3014debdb89be7a8e4d6e62e07e72154dd054b0775e",
+      "originalCaptureSha256": "55dfe3fb7abb94e88b3716e4ca8b54e0734c3955f4c27ada344dd13fecbdb8c6",
+      "rgbaSha256": "1e537f20bd91217b65501fb72701f41e701ac6c490e1b376bf995a4bd2c5f163"
+    },
+    {
+      "file": "Skill_Down_3_Loop-011.png",
+      "bytes": 1309801,
+      "sha256": "03cb50e23bc135eb01d9a2cc613c9a19a80fd2f7c642cf9205fe3c9431ffd906",
+      "originalCaptureSha256": "7e5af1dc8be31d04f9453989ccc0bcced980becd88ad777939d3fec1d85d5c56",
+      "rgbaSha256": "aa55ddf5660ef618cf45fc85c6ab235a093097410f5973ae50e46c692220e496"
+    },
+    {
+      "file": "Skill_Down_3_Loop-012.png",
+      "bytes": 1308920,
+      "sha256": "bd09c9a9660d3b265b562f9079ae90131c9b2faf4136acb878f7e02788d3670f",
+      "originalCaptureSha256": "91e27686c01a93f0dc992916c84c7de6bfcd77ce220e9ec68b9a1c27d33cf53d",
+      "rgbaSha256": "d199395c153a7dc015c2c1199b5233f9295c6d4e73f79d341f5a7841c12eceb9"
+    },
+    {
+      "file": "Skill_Down_3_Loop-013.png",
+      "bytes": 1294213,
+      "sha256": "dbe6c3e7c8fbf2f855a914d740444757197c16ec3df113056e3f3c32b3a0ac3c",
+      "originalCaptureSha256": "2bbd49708c50e347edfb56710bf00e871792a54db228f1bbdac6a0e43c3bc665",
+      "rgbaSha256": "d0d7012133d003b75488d6bd21a6db8c4c9a7d6cda846cefb789707c1d4015f8"
+    },
+    {
+      "file": "Skill_Down_3_Loop-014.png",
+      "bytes": 1299852,
+      "sha256": "3c46ecbc2d998bc612a179ca78d235ccba2ccc371b120f2928d9fc9828c12037",
+      "originalCaptureSha256": "3c86bffde4f7889b08f8602a3cb32dbb4cf73965ed21414c6ff25046db269dd0",
+      "rgbaSha256": "513e1d0c161e4292501d088ad428af5e510fb55945f3d401e17bb8659e1be765"
+    },
+    {
+      "file": "Skill_Down_3_Loop-015.png",
+      "bytes": 1394455,
+      "sha256": "ad26ac7265432c4010a7593c2b15a31da46fd2fa384e29caa5ee557f76a2ce8f",
+      "originalCaptureSha256": "4fbde6c7d10726cf1001f9ae55a71f410fbe83597d871fbec29c99b2f5c4bbe7",
+      "rgbaSha256": "7aaf578fe579dfd13801bdd287c4ada0f70c770889c3403ad14d2ef9fe8306fd"
+    },
+    {
+      "file": "Skill_Down_3_Loop-016.png",
+      "bytes": 1441386,
+      "sha256": "d910b4f4fa98ddf89ec4300d717818d52fcc164b2856cedbf8ee3d6f43c8007e",
+      "originalCaptureSha256": "4def5c76e87329e3f0b568ca773c8c0dc8aa22b995707fd54af30ff19599dcf0",
+      "rgbaSha256": "66dd552758e3a6706c8ef4587d9510ab1c06282b691bda8d55e2d79d3b661b7d"
+    },
+    {
+      "file": "Skill_Down_3_Loop-017.png",
+      "bytes": 1375896,
+      "sha256": "0c2cf3f85d053fe4b1b0de59886ddc628bc66ad1d1872c9bc330485cc87f3953",
+      "originalCaptureSha256": "334338821ad3b220c512799d8e89776e66e653cf472043b3a133f7a9b0716fa8",
+      "rgbaSha256": "fb7a2c2ffb551c8758dad2df27ec506ec8ed401b2aeb340dc0ad8eb66bd59dca"
+    },
+    {
+      "file": "Skill_Down_3_Loop-018.png",
+      "bytes": 1008034,
+      "sha256": "8ea3cbe5810575493e19e8780b537905d6b457571a6be69b2da6afb941a23366",
+      "originalCaptureSha256": "76bf2409b95d85c798b6155fe3d1428ed2232edbdb3e4d8c625e4da6ad9df819",
+      "rgbaSha256": "888dc5efdcf338bcca1e0dfa6ddb815d1288c2a11a2059e6d27dc17ee1f82bd3"
+    },
+    {
+      "file": "Start-000.png",
+      "bytes": 603334,
+      "sha256": "fe936a7f48dc262612562105f13ac9b60c0caef600ef86a3ef06610391ba2b35",
+      "originalCaptureSha256": "f0b0b82c2f8bcf15e2d86397b1878cf56d07a5489d39b364503590edbec397c6",
+      "rgbaSha256": "d53de3f7f6f5c68658169872834cace5e4cb00739e228d9f678a1eced9d7e926"
+    },
+    {
+      "file": "Start-001.png",
+      "bytes": 1366364,
+      "sha256": "10693c0ba45ae991303108cb8e9d38d7022027e1e716ea9ebc945deb4550f807",
+      "originalCaptureSha256": "da2bd805f4de9d69b8c5b103928633a20da88dfc05515a09958b27d4a41eb487",
+      "rgbaSha256": "ec56c7c5a2f08dcb77fdaff6469aaf04f5cac18ee37c8ce44fa15b473596ff00"
+    },
+    {
+      "file": "Start-002.png",
+      "bytes": 1220928,
+      "sha256": "7f698c6fdc135049bfbae82003aa1d8a5d0adb3dd6467bb6b49bf5eaea85f41c",
+      "originalCaptureSha256": "18c896cbe720a332c37119694beaf3f9f5d4ebba60faec7323fb42c368de774d",
+      "rgbaSha256": "6c2ea48f344acdae894647127d0aa4a8226b1d93e064255fefb8da3872307e95"
+    },
+    {
+      "file": "Start-003.png",
+      "bytes": 927640,
+      "sha256": "e78a0f97c190f5b43f6992e769ae3b2f296306b23282028c6ad2c929292cdeda",
+      "originalCaptureSha256": "692a11a62e9fa1575106e7e6e439fdae5c3cc2569323ab264c564651015f660d",
+      "rgbaSha256": "e0e7d44f69cb78b9aad4841fd449f8f4f9aea1b35b61b7a088ea0b3a4b4876c4"
+    },
+    {
+      "file": "Stun-000.png",
+      "bytes": 1848736,
+      "sha256": "b9bdd89e1c0428f5f5af1b26fca6b9f5e0e3df3f39c50c604cc1def02278cd85",
+      "originalCaptureSha256": "e72b976a33e749227621179b0b4e129cf26e3e0853e7bee85adaa7f581456bf6",
+      "rgbaSha256": "f7fc732931ab39ca0203d9d2b8407edc18189a4f0b7a95453d51e62769c11dfd"
+    },
+    {
+      "file": "Stun-001.png",
+      "bytes": 2091472,
+      "sha256": "e6bc8572eb02d72b679537553abdd6b7fe9bf52ecac19732598dfcf05f6349d2",
+      "originalCaptureSha256": "ff2ca0687d2c0d04a21059dabebfb8e14806dfb4419a746e5452647c16e16125",
+      "rgbaSha256": "55768aa21d9d5dfa66551c5678aaf81efd80f45143e9875c653ecb18f944c8db"
+    },
+    {
+      "file": "Stun-002.png",
+      "bytes": 2034706,
+      "sha256": "b29879f90c7f2c840ab5ac89ffef2c5214752527d06545d21d76508c96ef0f1c",
+      "originalCaptureSha256": "79bc672e453d717a8b5d0df0b89535602daa3223a632576c8e66c06078df6078",
+      "rgbaSha256": "2589b1b23166a3e92472f05ba53d3e566df8658adf16495ef567055720d6d237"
+    },
+    {
+      "file": "Stun-003.png",
+      "bytes": 1443567,
+      "sha256": "ec9a1c97e9fb0ff3c1a17145deabf8207c3b766229e917920447f18ca91e3ec7",
+      "originalCaptureSha256": "3bc9e85369fe4b0c5ee9509323fdf49c6493407bb4186900c5325ee29c3a6a63",
+      "rgbaSha256": "dfc6dbeea5c6ad8a382d0053b8be4e46711bde2aa0f562ee619378c7cd67d249"
+    }
+  ],
+  "sourceDurationsAndEventsPreserved": true,
+  "completeSourceSkillsAndDeath": true,
+  "hasOriginalMove": false,
+  "userGifFallback": "Existing WisadelComic assets and CardDefinition Sprite references retained unchanged.",
+  "noAIEnhancement": true,
+  "unityTests": "NOT_RUN_BY_INSTALLER",
+  "rights": "Original Arknights media; user requested local game integration. No claim of open redistribution permission."
+}

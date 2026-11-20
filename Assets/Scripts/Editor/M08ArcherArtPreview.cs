@@ -20,7 +20,6 @@ namespace YesterdayConvoy.Editor
         private static string Root => ArtSourcePaths.ImageDirectory("ArcherOriginal");
         private static string Manifest => ArtSourcePaths.Resolve("ArcherOriginal/manifest.json");
 
-        [MenuItem("Yesterday Convoy/Art/M08 Archer Approved Preview")]
         public static void Open()
         {
             var window = GetWindow<M08ArcherArtPreview>("M08 弩手美术");

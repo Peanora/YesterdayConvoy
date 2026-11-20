@@ -24,7 +24,7 @@ namespace YesterdayConvoy
                 // Purchases join the real model before their existing .63s arrival finishes.
                 // Wait only before this pulse starts. A later purchase of the same kind must
                 // not hide/freeze an already visible pulse because its flow shares the same ID.
-                return shopFlows.Any(flow=>batch.IsAddedMember(flow.Id)&&Time.unscaledTime-flow.At<flow.Reveal);
+                return OriginalShopPresentation.HasUnrevealedFlow(batch.IsAddedMember);
             }
         }
         bool SynergyActivationBlocked=>ArtLoading||Battle==null||Battle.IsPaused||CampaignUiModalOpen||loopMenuOpen||SynergyActivationWaitingForArrival;

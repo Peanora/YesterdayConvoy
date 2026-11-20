@@ -1,0 +1,739 @@
+{
+  "version": 1,
+  "task": "B19",
+  "cardId": "CARD_M28",
+  "name": "泥岩",
+  "view": "main",
+  "model": "enemy_1511_mdrock",
+  "skin": "default",
+  "ppu": 82.30324997024191,
+  "referenceSpeed": 0.75,
+  "height": 2.182713978052139,
+  "sourcePixelsPerBone": 0.37036462486608857,
+  "worldUnitsPerSourceBone": 0.0045,
+  "scaleStatus": "TALULAH_BODY_BASELINE_B22_ACTUAL_CAMERA_VERIFIED_OTHER_UNITS_PENDING_CAMERA_REVIEW",
+  "pivotX": 0.4837788696402251,
+  "pivotY": 0.24616906610699046,
+  "captureBounds": [
+    -437.9255676269531,
+    -134.87103271484375,
+    471.5622253417969,
+    661.2230224609375
+  ],
+  "aliases": [
+    {
+      "key": "idle",
+      "source": "Idle"
+    },
+    {
+      "key": "walk",
+      "source": "Move"
+    },
+    {
+      "key": "attack",
+      "source": "Attack_1"
+    },
+    {
+      "key": "cast",
+      "source": "Skill_1"
+    },
+    {
+      "key": "death",
+      "source": "Die"
+    }
+  ],
+  "runtimeSources": [
+    "Idle",
+    "Move",
+    "Attack_1",
+    "Skill_1",
+    "Die"
+  ],
+  "clips": [
+    {
+      "key": "Attack_1",
+      "source": "Attack_1",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [
+        {
+          "time": 1.1333333253860474,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "Attack_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_1-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_1-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Attack_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_1-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_1-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "Attack_2",
+      "source": "Attack_2",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [
+        {
+          "time": 1.1333333253860474,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 121,
+          "pages": [
+            {
+              "file": "Attack_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_2-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Attack_2-004.png",
+              "count": 21,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Attack_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_2-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Attack_2-004.png",
+          "count": 21,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "Die",
+      "source": "Die",
+      "duration": 3.3333332538604736,
+      "count": 201,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 201,
+          "pages": [
+            {
+              "file": "Die-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Die-008.png",
+              "count": 1,
+              "width": 1920,
+              "height": 384
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Die-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-008.png",
+          "count": 1,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "Idle",
+      "source": "Idle",
+      "duration": 2.6666667461395264,
+      "count": 162,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 162,
+          "pages": [
+            {
+              "file": "Idle-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Idle-006.png",
+              "count": 12,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-006.png",
+          "count": 12,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "Move",
+      "source": "Move",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "Move-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Move-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Move-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Move-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Move-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Skill_1",
+      "source": "Skill_1",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [
+        {
+          "time": 0.8666666746139526,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "Skill_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_1-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Skill_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_1-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "Skill_2",
+      "source": "Skill_2",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4837788696402251,
+      "pivotY": 0.24616906610699046,
+      "events": [
+        {
+          "time": 0.7333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 82.30324997024191,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "Skill_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Skill_2-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Skill_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill_2-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    }
+  ],
+  "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+  "movementPresentation": "ORIGINAL_MOVE",
+  "idlePresentation": "ORIGINAL_IDLE",
+  "deathPresentation": "ORIGINAL_DEATH",
+  "zeroDurationStates": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -198.8474578857422,
+        -4.866790771484375,
+        241.923583984375,
+        478.5707702636719
+      ],
+      "boundsSampleFPS": 120,
+      "events": [],
+      "verticesMeasured": 674,
+      "loop": false
+    }
+  ],
+  "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
+  "status": "IMPORTED_NOT_BOUND"
+}

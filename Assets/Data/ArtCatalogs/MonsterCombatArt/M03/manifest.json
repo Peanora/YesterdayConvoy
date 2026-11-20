@@ -96,5 +96,13 @@
       "sha256": "de2aed77847804fe93b92389906b469830f426dfe964060366ff50bfa2d40e12"
     }
   ],
-  "provenance": "Approved local preview M03-GuerrillaHound-v1; source and rights records remain beside it. No public redistribution license confirmed."
+  "provenance": "Approved local preview M03-GuerrillaHound-v1; source and rights records remain beside it. No public redistribution license confirmed.",
+  "attackContact": 0.6,
+  "attackContactProvenance": {
+    "kind": "EXISTING_APPROVED_ENGAGEMENT_WINDUP",
+    "asset": "Assets/Data/Battles/M03.asset",
+    "attackDuration": 1.0,
+    "sourceDuration": 1.0,
+    "note": "Reuse the already authored legacy contact. This is not a newly recovered original skeleton event."
+  }
 }

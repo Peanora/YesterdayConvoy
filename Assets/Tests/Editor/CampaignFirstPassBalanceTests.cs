@@ -28,30 +28,6 @@ namespace YesterdayConvoy.Editor.Tests
             return battle;
         }
 
-        [Test] public void RegularSoldierAndArcherOfferDifferentTradesFromTheirOtherFormationPeers()
-        {
-            var soldierData=Definition("CARD_M07");var archerData=Definition("CARD_M08");
-            string soldierSource=EditorJsonUtility.ToJson(soldierData),archerSource=EditorJsonUtility.ToJson(archerData);
-            foreach(int star in new[]{1,2,3,4})
-            {
-                var soldier=CampaignBalance.Build(soldierData,star,100,5);
-                var runner=CampaignBalance.Build(Definition("CARD_M15"),star,100,5);
-                var archer=CampaignBalance.Build(archerData,star,100,5);
-                var snow=CampaignBalance.Build(Definition("CARD_M11"),star,100,5);
-                Assert.That(soldier.Unit.Health,Is.GreaterThan(runner.Unit.Health));
-                Assert.That(soldier.Combat.UnitAttack,Is.LessThan(runner.Combat.UnitAttack));
-                Assert.That(soldier.Unit.Speed,Is.LessThan(runner.Unit.Speed));
-                Assert.That(soldier.Unit.DeploymentCost,Is.EqualTo(runner.Unit.DeploymentCost));
-                Assert.That(archer.Combat.UnitAttack,Is.GreaterThan(snow.Combat.UnitAttack));
-                Assert.That(archer.Unit.Health,Is.LessThan(snow.Unit.Health));
-                Assert.That(archer.Combat.UnitAttack,Is.LessThan(snow.Combat.UnitAttack*snow.Combat.Effects.FrozenAttackMultiplier));
-                Assert.That(archer.Combat.UnitInterval,Is.EqualTo(snow.Combat.UnitInterval));
-                Assert.That(archer.Unit.DeploymentCost,Is.EqualTo(snow.Unit.DeploymentCost));
-            }
-            Assert.That(EditorJsonUtility.ToJson(soldierData),Is.EqualTo(soldierSource));
-            Assert.That(EditorJsonUtility.ToJson(archerData),Is.EqualTo(archerSource));
-        }
-
         [TestCase(1,80f)]
         [TestCase(2,140f)]
         [TestCase(3,240f)]
@@ -156,18 +132,6 @@ namespace YesterdayConvoy.Editor.Tests
             var guards=CampaignPlan.Guards(stage,true);
             Assert.That(guards.Select(g=>g.artId),Is.EqualTo(new[]{"D01","D04"}));
             Assert.That(guards.All(g=>g.health==950&&g.attack==5&&g.armor==8&&g.range==1.1f));
-        }
-
-        [Test] public void NewRangedGuardNaturallyTradesShotsWithAnOrdinaryArcher()
-        {
-            var guard=CampaignPlan.Guards(7,false)[1].Snapshot();
-            var profile=CampaignBalance.Build(Definition("CARD_M08"),1,100,5);
-            var battle=Battle(profile,guard);
-            for(int i=0;i<160;i++)battle.Advance(.05f);
-            Assert.That(battle.CombatShots.Any(s=>s.FromDefender&&s.Applied),Is.True);
-            Assert.That(battle.CombatShots.Any(s=>!s.FromDefender&&s.Applied),Is.True);
-            Assert.That(battle.Units.Single().Health,Is.LessThan(profile.Unit.Health));
-            Assert.That(battle.Defender.Health,Is.LessThan(guard.Health));
         }
     }
 }

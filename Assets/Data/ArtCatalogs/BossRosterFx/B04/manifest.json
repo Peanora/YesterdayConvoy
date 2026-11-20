@@ -1,0 +1,1174 @@
+{
+  "version": 1,
+  "task": "B04",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "common_disarm_icon",
+      "count": 90,
+      "width": 12,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.560521125793457,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_disarm_icon/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "common_invincible_01",
+      "count": 90,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_invincible_01/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_a_hit_01",
+      "count": 25,
+      "width": 36,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.5268982781304253,
+      "duration": 0.8333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_a_hit_01/00.png",
+          "count": 25,
+          "width": 432,
+          "height": 108
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_a_start_01",
+      "count": 38,
+      "width": 48,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.3541666666666667,
+      "pivotY": 0.3560120718819755,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_a_start_01/00.png",
+          "count": 38,
+          "width": 576,
+          "height": 112
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_b_hit_01",
+      "count": 25,
+      "width": 36,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.49912050035264754,
+      "duration": 0.8333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_b_hit_01/00.png",
+          "count": 25,
+          "width": 432,
+          "height": 108
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_b_start_01",
+      "count": 44,
+      "width": 48,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.375,
+      "pivotY": 0.4365105628967285,
+      "duration": 1.4666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_b_start_01/00.png",
+          "count": 44,
+          "width": 576,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_b_weapon_01",
+      "count": 38,
+      "width": 28,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.32142857142857145,
+      "pivotY": 0.5806948343912761,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_b_weapon_01/00.png",
+          "count": 38,
+          "width": 336,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_attack_b_weapon_02",
+      "count": 38,
+      "width": 28,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.35714285714285715,
+      "pivotY": 0.5806948343912761,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_attack_b_weapon_02/00.png",
+          "count": 38,
+          "width": 336,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_buff_01",
+      "count": 90,
+      "width": 24,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3484169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_buff_01/00.png",
+          "count": 90,
+          "width": 288,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_buff_02",
+      "count": 90,
+      "width": 32,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.46875,
+      "pivotY": 0.41534741719563806,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_buff_02/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_buff_03",
+      "count": 90,
+      "width": 36,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.3736807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_buff_03/00.png",
+          "count": 90,
+          "width": 432,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_reborn_loop_01",
+      "count": 90,
+      "width": 36,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3736807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_reborn_loop_01/00.png",
+          "count": 90,
+          "width": 432,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_reborn_loop_02",
+      "count": 90,
+      "width": 68,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.7352941176470589,
+      "pivotY": 0.623021125793457,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_reborn_loop_02/00.png",
+          "count": 90,
+          "width": 816,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_reborn_start_01",
+      "count": 90,
+      "width": 60,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4666666666666667,
+      "pivotY": 0.4365105628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_reborn_start_01/00.png",
+          "count": 90,
+          "width": 720,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_reborn_weapon_01",
+      "count": 62,
+      "width": 32,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.40625,
+      "pivotY": 0.4984169006347656,
+      "duration": 2.066666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_reborn_weapon_01/00.png",
+          "count": 62,
+          "width": 384,
+          "height": 120
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_reborn_weapon_02",
+      "count": 62,
+      "width": 24,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.375,
+      "pivotY": 0.5806948343912761,
+      "duration": 2.066666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_reborn_weapon_02/00.png",
+          "count": 62,
+          "width": 288,
+          "height": 72
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_01_start_01",
+      "count": 47,
+      "width": 188,
+      "height": 76,
+      "columns": 10,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.3670212765957447,
+      "pivotY": 0.42268441852770355,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_01_start_01/00.png",
+          "count": 47,
+          "width": 1880,
+          "height": 380
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_a_start_01",
+      "count": 90,
+      "width": 76,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5131578947368421,
+      "pivotY": 0.42420845031738286,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_a_start_01/00.png",
+          "count": 90,
+          "width": 912,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_a_start_02",
+      "count": 17,
+      "width": 76,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.47368421052631576,
+      "pivotY": 0.3484169006347656,
+      "duration": 0.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_a_start_02/00.png",
+          "count": 17,
+          "width": 912,
+          "height": 40
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_a_weapon_01",
+      "count": 56,
+      "width": 48,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4375,
+      "pivotY": 0.5345835004534041,
+      "duration": 1.8666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_a_weapon_01/00.png",
+          "count": 56,
+          "width": 576,
+          "height": 140
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_b_start_01",
+      "count": 51,
+      "width": 64,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.484375,
+      "pivotY": 0.4365105628967285,
+      "duration": 1.7,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_b_start_01/00.png",
+          "count": 51,
+          "width": 768,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_b_start_02",
+      "count": 59,
+      "width": 52,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4807692307692308,
+      "pivotY": 0.3917263575962612,
+      "duration": 1.9666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_b_start_02/00.png",
+          "count": 59,
+          "width": 624,
+          "height": 140
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_b_start_03",
+      "count": 17,
+      "width": 88,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4772727272727273,
+      "pivotY": 0.29841690063476567,
+      "duration": 0.5666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_b_start_03/00.png",
+          "count": 17,
+          "width": 1056,
+          "height": 40
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_b_weapon_01",
+      "count": 42,
+      "width": 44,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.45454545454545453,
+      "pivotY": 0.5702977861676897,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_b_weapon_01/00.png",
+          "count": 42,
+          "width": 528,
+          "height": 112
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_b_weapon_02",
+      "count": 42,
+      "width": 28,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.32142857142857145,
+      "pivotY": 0.623021125793457,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_b_weapon_02/00.png",
+          "count": 42,
+          "width": 336,
+          "height": 64
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_02_hit_01",
+      "count": 25,
+      "width": 36,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.49912050035264754,
+      "duration": 0.8333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_02_hit_01/00.png",
+          "count": 25,
+          "width": 432,
+          "height": 108
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_03_start_01",
+      "count": 90,
+      "width": 132,
+      "height": 96,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.49242424242424243,
+      "pivotY": 0.6455035209655762,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_03_start_01/00.png",
+          "count": 90,
+          "width": 1584,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "enemy_blkswb_skill_03_start_02",
+      "count": 90,
+      "width": 28,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4990105628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_blkswb_skill_03_start_02/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 256
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "common_disarm_icon",
+        "common_invincible_01",
+        "enemy_blkswb_attack_a_hit_01",
+        "enemy_blkswb_attack_a_start_01",
+        "enemy_blkswb_attack_b_hit_01",
+        "enemy_blkswb_attack_b_start_01",
+        "enemy_blkswb_attack_b_weapon_01",
+        "enemy_blkswb_attack_b_weapon_02",
+        "enemy_blkswb_buff_01",
+        "enemy_blkswb_buff_02",
+        "enemy_blkswb_buff_03",
+        "enemy_blkswb_reborn_loop_01",
+        "enemy_blkswb_reborn_loop_02",
+        "enemy_blkswb_reborn_start_01",
+        "enemy_blkswb_reborn_weapon_01",
+        "enemy_blkswb_reborn_weapon_02",
+        "enemy_blkswb_skill_01_start_01",
+        "enemy_blkswb_skill_02_a_start_01",
+        "enemy_blkswb_skill_02_a_start_02",
+        "enemy_blkswb_skill_02_a_weapon_01",
+        "enemy_blkswb_skill_02_b_start_01",
+        "enemy_blkswb_skill_02_b_start_02",
+        "enemy_blkswb_skill_02_b_start_03",
+        "enemy_blkswb_skill_02_b_weapon_01",
+        "enemy_blkswb_skill_02_b_weapon_02",
+        "enemy_blkswb_skill_02_hit_01",
+        "enemy_blkswb_skill_03_start_01",
+        "enemy_blkswb_skill_03_start_02"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_a_start_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "A_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_a_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "A_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_b_start_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "B_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_b_weapon_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "B_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_b_weapon_02",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "B_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_attack_b_hit_01",
+      "attach": "target",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "B_Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "blink",
+      "key": "enemy_blkswb_skill_01_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "blink2",
+      "key": "enemy_blkswb_skill_01_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "circleattack",
+      "key": "enemy_blkswb_skill_02_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack",
+      "key": "enemy_blkswb_skill_02_a_start_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack",
+      "key": "enemy_blkswb_skill_02_a_weapon_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack",
+      "key": "enemy_blkswb_skill_02_a_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_b_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_b_start_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_b_start_03",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_b_weapon_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "circleattack2",
+      "key": "enemy_blkswb_skill_02_b_weapon_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateEnd",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_buff_02",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Summon",
+      "skill": "deploy",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_buff_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "clearsp",
+      "key": "enemy_blkswb_skill_03_start_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_reborn_loop_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_reborn_loop_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_reborn_weapon_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_reborn_weapon_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_blkswb_reborn_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "common_invincible_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

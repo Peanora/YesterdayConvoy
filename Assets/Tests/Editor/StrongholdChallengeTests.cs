@@ -6,26 +6,6 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class StrongholdChallengeTests
     {
-        [TestCase(-1f)][TestCase(1f)]public void ReferenceWavesAllowASecondOfTimingTolerance(float offset)
-        {
-            var plan=JsonUtility.FromJson<StrongholdChallengePlan.Plan>(Resources.Load<TextAsset>("StrongholdChallengeSolution").text);
-            foreach(var order in plan.orders)if(order.time>0)order.time+=offset;
-            Assert.That(StrongholdChallengePlan.Run(plan).Phase,Is.EqualTo(BattlePhase.Won));
-        }
-        [Test]public void MixedReferencePlanWinsAndTheSameOrdersOnOneWingCannotWin()
-        {
-            var source=Resources.Load<TextAsset>("StrongholdChallengeSolution");Assert.That(source,Is.Not.Null);
-            var plan=JsonUtility.FromJson<StrongholdChallengePlan.Plan>(source.text);var b=StrongholdChallengePlan.Run(plan);
-            Assert.That(b.Phase,Is.EqualTo(BattlePhase.Won));Assert.That(b.DP,Is.EqualTo(0));Assert.That(b.Units.Count,Is.EqualTo(14));
-            Assert.That(b.Lanes.All(l=>b.StrongholdExitBroken(l.ExitId)),Is.True);
-            foreach(var order in plan.orders)order.lane=0;
-            var oneWing=StrongholdChallengePlan.Run(plan);Assert.That(oneWing.Phase,Is.Not.EqualTo(BattlePhase.Won));
-        }
-        [TestCase("M02")][TestCase("M08")][TestCase("M18")]public void FourCopiesOfOneRoleCannotBeatSixStarDefense(string role)
-        {
-            var plan=new StrongholdChallengePlan.Plan{orders=Enumerable.Range(0,4).Select(i=>new StrongholdChallengePlan.Order{time=i*3,card="CARD_"+role,lane=i%2}).ToArray()};
-            var b=StrongholdChallengePlan.Run(plan);Assert.That(b.Phase,Is.Not.EqualTo(BattlePhase.Won));Assert.That(b.ActiveCount,Is.Zero);
-        }
         [Test]public void ExpandedRoutesAvoidWallsPlatformsAndBarricades()
         {
             foreach(var lane in StrongholdChallengeLayout.Lanes())

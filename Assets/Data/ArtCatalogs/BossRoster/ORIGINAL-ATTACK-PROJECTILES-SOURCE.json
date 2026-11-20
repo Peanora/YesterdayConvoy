@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "sourceVersion": "26-10-29-15-36-11-33649006",
+  "sourceSnapshot": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\runtime-additions\\NATIVE-ATTACK-PROJECTILES.json",
+  "sourceSnapshotSha256": "d8a4e698f66a902cf62b50d9a0eeb1d86402e8e71cc07cbbf7753a20757a4ccf",
+  "snapshotPreservedByteForByte": true,
+  "coreSnapshotSha256": "3a77fb41dd95f6f91c69f1acd977ddfe78d48ca6b107710369f501955abb7931",
+  "legacyRangedSnapshotSha256": "e71da3e8c23250b9eccff33ec272272243d3b93cdb173bb4c88af1ba1280f5a1",
+  "legacyRangedOriginalBundleSha256": "d7015e88d8839086c14b11c766367716834000c7556e09ccda79b8f5e35a887c",
+  "meaning": "Existing original-prefab extraction, ordinary attack branches only. No client runtime or fresh bundle decode was performed by this generator.",
+  "routes": [
+    {
+      "artId": "B01",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_cqbw",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 5,
+      "movementClass": "ParacurveMovement"
+    },
+    {
+      "artId": "B05",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_shdbjg",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B07",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_ncrmcr",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B07",
+      "nativePhase": 1,
+      "originalMode": "Reborn",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_ncrmcr",
+      "node": "mode/Modes/Reborn/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B08",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_fthlgj",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B08",
+      "nativePhase": 1,
+      "originalMode": "M2",
+      "originalPhase": 3,
+      "projectileKey": "projectile_enemy_fthlgj_2",
+      "node": "mode/Modes/M2/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B09",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_dirctr",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B09",
+      "nativePhase": 1,
+      "originalMode": "m1",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_dirctr_p2",
+      "node": "mode/Modes/m1/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B11",
+      "nativePhase": 0,
+      "originalMode": "s1",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_ltniak_1",
+      "node": "mode/Modes/s1/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B11",
+      "nativePhase": 1,
+      "originalMode": "s2",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_ltniak_2",
+      "node": "mode/Modes/s2/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B12",
+      "nativePhase": 0,
+      "originalMode": "s1",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_skzamy_1",
+      "node": "mode/Modes/s1/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B12",
+      "nativePhase": 1,
+      "originalMode": "s4",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_skzamy_2",
+      "node": "mode/Modes/s4/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B13",
+      "nativePhase": 1,
+      "originalMode": "m1attack",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_pope_walk",
+      "node": "native EnemySkill used by attack FSM/M1Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B13",
+      "nativePhase": 2,
+      "originalMode": "m2attack",
+      "originalPhase": 3,
+      "projectileKey": "projectile_enemy_pope_fly",
+      "node": "native EnemySkill used by attack FSM/M2Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B15",
+      "nativePhase": 0,
+      "originalMode": "P1",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_hlystp_attack",
+      "node": "mode/Modes/P1/Body/Attack",
+      "speed": 8,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B15",
+      "nativePhase": 1,
+      "originalMode": "P2",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_hlystp_attack",
+      "node": "mode/Modes/P2/Body/Attack",
+      "speed": 8,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B23",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_crzjdg_a",
+      "node": "mode/Modes/Default/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B23",
+      "nativePhase": 1,
+      "originalMode": "M2",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_crzjdg_a",
+      "node": "mode/Modes/M2/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "B26",
+      "nativePhase": 0,
+      "originalMode": "YinMode",
+      "originalPhase": -1,
+      "projectileKey": "projectile_enemy_dylbhm_yin",
+      "node": "mode/Modes/YinMode/Body/Attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M14",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_frstar2",
+      "node": "units/enemy_1510_frstar2/modes/Default/attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M14",
+      "nativePhase": 1,
+      "originalMode": "Reborn",
+      "originalPhase": 2,
+      "projectileKey": "projectile_frstar2",
+      "node": "units/enemy_1510_frstar2/modes/Reborn/attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M32",
+      "nativePhase": 1,
+      "originalMode": "P2",
+      "originalPhase": 2,
+      "projectileKey": "projectile_enemy_mandra_p2",
+      "node": "units/enemy_1523_mandra/modes/P2/attack",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "WISADEL_APRIL",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_chr_wisdel_default",
+      "node": "units/char_1035_wisdel/modes/Default/attack/Attack_A+B+C",
+      "speed": 10,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M11",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_crossbow",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M11/projectile_crossbow",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M12",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_snow_magic_ball",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M12/projectile_enemy_snow_magic_ball",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M16",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_sotisp",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M16/projectile_sotisp",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M26",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_mdsnpr",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M26/M42/projectile_enemy_mdsnpr",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M42",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_mdsnpr",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M26/M42/projectile_enemy_mdsnpr",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M36",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_dsmant",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M36/projectile_enemy_dsmant",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    },
+    {
+      "artId": "M38",
+      "nativePhase": 0,
+      "originalMode": "Default",
+      "originalPhase": 1,
+      "projectileKey": "projectile_enemy_magic_ball",
+      "node": "ORIGINAL-LEGACY-RANGED-PROJECTILES/M38/projectile_enemy_magic_ball",
+      "speed": 10.0,
+      "movementClass": "AdvancedMovement"
+    }
+  ],
+  "equivalentScalars": "B26 YinMode and YangMode ordinary attacks both have original speed10, same movement class, raise/delay/threshold; their visual projectile identities remain separate in the raw snapshot.",
+  "exclusions": "Unknown/melee/empty branches have no invented speed. Original Talulah fireball is a skill, not an ordinary projectile. April Wisadel uses its verified base ordinary projectile plus game#9 skin hook, never B20/Supernova values.",
+  "rights": "Original Arknights resource metadata; original rights retained, no CC0 or public redistribution license claim.",
+  "unityTests": "NOT_RUN_BY_GENERATOR"
+}

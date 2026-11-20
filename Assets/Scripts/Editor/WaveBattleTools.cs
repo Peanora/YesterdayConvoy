@@ -108,7 +108,6 @@ namespace YesterdayConvoy.Editor
             return result;
         }
 
-        [MenuItem("Yesterday Convoy/Black Forest/Evaluate Wave Policies")]
         public static void Evaluate()
         {
             var encounter=Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource);
@@ -172,7 +171,6 @@ namespace YesterdayConvoy.Editor
             return result;
         }
 
-        [MenuItem("Yesterday Convoy/Black Forest/Search Fixed Wave Strategies")]
         public static void EvaluateStrategies()
         {
             var encounter=Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource);
@@ -221,7 +219,6 @@ namespace YesterdayConvoy.Editor
             Debug.Log($"WAVE_STRATEGY_SEARCH_COMPLETE: cases={report.caseCount}; fixedPolicyWins={report.winningCases}; firstWinningSeed={report.firstWinningSeed}; sourceUnchanged=True; originalThreePolicyReportPreserved=True");
         }
 
-        [MenuItem("Yesterday Convoy/Black Forest/Build Wave Trial")]
         public static void BuildWindows()
         {
             var encounter=Resources.Load<DefenderTrialDefinition>(BlackForestLayout.Resource);

@@ -9,10 +9,18 @@ namespace YesterdayConvoy
         public bool sandbox=true;
         public SynergyTrialDefinition trialDefinition;
         static bool approvedLaunchConsumed;
+        static bool legacyEntranceRequested;
+        public static void OpenLegacyEntrance()
+        {
+            legacyEntranceRequested=true;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Campaign");
+        }
         IEnumerator Start()
         {
             yield return null;
             var args=Environment.GetCommandLineArgs();
+            if(!sandbox&&Array.Exists(args,a=>a=="-formationDemo"||a=="-formationSmokeTest"||a=="-formationCampaignSmokeTest"))
+            {UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);yield break;}
             // These dedicated drivers own scene startup; do not race them with
             // the default journey's asynchronous load.
             if(!sandbox&&Array.Exists(args,a=>a=="-campaignJourneySmokeTest"||a=="-viviCombatSmokeTest"))yield break;
@@ -36,6 +44,9 @@ namespace YesterdayConvoy
             if(Array.Exists(args,a=>a=="-talulahSmokeTest"||a=="-talulahMotionEvidence"||a=="-talulahFireRainV12Test"||a=="-patriotVfxSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene("MonsterTrial");yield break;}
             if(!sandbox&&(Array.IndexOf(args,"-patriotShopSmokeTest")>=0||Array.IndexOf(args,"-mephistoVfxSmokeTest")>=0||Array.IndexOf(args,"-mandragoraVfxSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0||Array.IndexOf(args,"-remainingSynergySmokeTest")>=0||Array.IndexOf(args,"-synergyReworkSmokeTest")>=0)){UnityEngine.SceneManagement.SceneManager.LoadScene("SynergyTrial");yield break;}
             if(Array.Exists(args,a=>a=="-frostSealSmokeTest"||a=="-lateBattleShopSmokeTest"||a=="-battleShopLoopSmokeTest")){UnityEngine.SceneManagement.SceneManager.LoadScene("BattleShop");yield break;}
+            if(!sandbox&&!legacyEntranceRequested&&!args.Any(a=>a.EndsWith("SmokeTest",StringComparison.Ordinal)||a=="-legacyCampaign"||a=="-talulahMotionEvidence"||a=="-talulahFireRainV12Test"))
+            {UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);yield break;}
+            legacyEntranceRequested=false;
             var controller=FindAnyObjectByType<ManualBattleController>();
             bool smoke=Array.IndexOf(args,"-patriotShopSmokeTest")>=0||Array.IndexOf(args,"-mephistoVfxSmokeTest")>=0||Array.IndexOf(args,"-mandragoraVfxSmokeTest")>=0||Array.IndexOf(args,"-campaignSmokeTest")>=0||Array.IndexOf(args,"-synergySandboxSmokeTest")>=0||Array.IndexOf(args,"-advancedSynergySmokeTest")>=0||Array.IndexOf(args,"-remainingSynergySmokeTest")>=0||Array.IndexOf(args,"-synergyReworkSmokeTest")>=0;
             if(smoke)Application.runInBackground=true;

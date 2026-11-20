@@ -1,0 +1,494 @@
+{
+  "version": 1,
+  "task": "B21",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_dyshhj_die",
+      "count": 90,
+      "width": 48,
+      "height": 48,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.5833333333333334,
+      "pivotY": 0.21223608652750647,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_die/00.png",
+          "count": 90,
+          "width": 576,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_die_02_hit_01",
+      "count": 58,
+      "width": 64,
+      "height": 60,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.5,
+      "pivotY": 0.6531222025553385,
+      "duration": 1.9333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_die_02_hit_01/00.png",
+          "count": 58,
+          "width": 768,
+          "height": 300
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_die_02_start_01",
+      "count": 54,
+      "width": 52,
+      "height": 36,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.5192307692307693,
+      "pivotY": 0.532981448703342,
+      "duration": 1.8,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_die_02_start_01/00.png",
+          "count": 54,
+          "width": 624,
+          "height": 180
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_die_02_start_02",
+      "count": 62,
+      "width": 40,
+      "height": 28,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.2,
+      "pivotY": 0.22097614833286827,
+      "duration": 2.066666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_die_02_start_02/00.png",
+          "count": 62,
+          "width": 480,
+          "height": 168
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_lighting",
+      "count": 90,
+      "width": 40,
+      "height": 28,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.2,
+      "pivotY": 0.22097614833286827,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_lighting/00.png",
+          "count": 90,
+          "width": 480,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_lighting_right",
+      "count": 90,
+      "width": 44,
+      "height": 28,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.6818181818181818,
+      "pivotY": 0.25669043404715397,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_lighting_right/00.png",
+          "count": 90,
+          "width": 528,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_locked_01",
+      "count": 90,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 5.333333492279053,
+      "pivotX": 0.5,
+      "pivotY": 0.7615277426583427,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_locked_01/00.png",
+          "count": 90,
+          "width": 336,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_skill_01_hit_01",
+      "count": 58,
+      "width": 52,
+      "height": 60,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.5,
+      "pivotY": 0.6531222025553385,
+      "duration": 1.9333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_skill_01_hit_01/00.png",
+          "count": 58,
+          "width": 624,
+          "height": 300
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_skill_02_hit_01",
+      "count": 29,
+      "width": 20,
+      "height": 16,
+      "columns": 12,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.5,
+      "pivotY": 0.6367082595825195,
+      "duration": 0.9666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_skill_02_hit_01/00.png",
+          "count": 29,
+          "width": 240,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_dyshhj_skill_02_range_01",
+      "count": 84,
+      "width": 212,
+      "height": 104,
+      "columns": 9,
+      "ppu": 6.400000095367432,
+      "pivotX": 0.49528301886792453,
+      "pivotY": 0.49218588608961844,
+      "duration": 2.8,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dyshhj_skill_02_range_01/00.png",
+          "count": 84,
+          "width": 1908,
+          "height": 1040
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_dyshhj_die",
+        "enemy_dyshhj_die_02_hit_01",
+        "enemy_dyshhj_die_02_start_01",
+        "enemy_dyshhj_die_02_start_02",
+        "enemy_dyshhj_lighting",
+        "enemy_dyshhj_lighting_right",
+        "enemy_dyshhj_locked_01",
+        "enemy_dyshhj_skill_01_hit_01",
+        "enemy_dyshhj_skill_02_hit_01",
+        "enemy_dyshhj_skill_02_range_01"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "bombard",
+      "key": "enemy_dyshhj_lighting",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "bombard",
+      "key": "enemy_dyshhj_lighting_right",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "bombard",
+      "key": "enemy_dyshhj_skill_01_hit_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "hptriggerboombard",
+      "key": "enemy_dyshhj_lighting",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "hptriggerboombard",
+      "key": "enemy_dyshhj_lighting_right",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "hptriggerboombard",
+      "key": "enemy_dyshhj_skill_01_hit_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "suicideboombard",
+      "key": "enemy_dyshhj_die_02_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "suicideboombard",
+      "key": "enemy_dyshhj_die_02_start_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "suicideboombard",
+      "key": "enemy_dyshhj_die_02_hit_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "suicideboombard",
+      "key": "enemy_dyshhj_die",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "threestrikes",
+      "key": "enemy_dyshhj_skill_02_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "threestrikes",
+      "key": "enemy_dyshhj_skill_02_range_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_dyshhj_die",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

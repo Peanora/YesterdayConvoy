@@ -10,7 +10,6 @@ namespace YesterdayConvoy.Editor
     public static class ShopMapTools
     {
         public const string ScenePath="Assets/Scenes/BattleShop.unity";
-        [MenuItem("Yesterday Convoy/Shop Trial/Prepare Independent Map")]
         public static void Prepare()
         {
             if(!File.Exists(ScenePath))throw new InvalidOperationException("Restore BattleShop.unity from Git; scenes are authored assets.");

@@ -276,5 +276,13 @@
       "sha256": "1b755e7bd3d71075637a5ab652f7e672e147f37a4abfdf54e4d29a9f2d3c3b26"
     }
   ],
-  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1091_mdhmmr. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip."
+  "provenance": "Human approved M21-M38 integration 2026-10-22. Original Arknights model enemy_1091_mdhmmr. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics. M25 cast is healing art only; no healing gameplay. M33 has no attack clip.",
+  "attackContact": 0.75,
+  "attackContactProvenance": {
+    "kind": "EXISTING_APPROVED_ENGAGEMENT_WINDUP",
+    "asset": "Assets/Data/Battles/M27.asset",
+    "attackDuration": 1.6,
+    "sourceDuration": 1.600000023841858,
+    "note": "Reuse the already authored legacy contact. This is not a newly recovered original skeleton event."
+  }
 }

@@ -16,13 +16,10 @@ MonoBehaviour:
   displayName: "\u5854\u9732\u62C9"
   recruitCost: 5
   unit: {fileID: 11400000, guid: 6bd4655203a5c2c4f82d77eff15a58e8, type: 2}
-  portrait: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
-  battleSprite: {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  portrait: {fileID: 0}
+  battleSprite: {fileID: 0}
   articulatedArt: {fileID: 11400000, guid: 29e0e49e05597d346b6b4fe38a01821a, type: 2}
-  walkFrames:
-  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
-  attackFrames:
-  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
-  skillFrames:
-  - {fileID: 21300000, guid: 22bb689232c9d884fa03863892ab8b31, type: 3}
+  walkFrames: []
+  attackFrames: []
+  skillFrames: []
   comicImpactFaces: []

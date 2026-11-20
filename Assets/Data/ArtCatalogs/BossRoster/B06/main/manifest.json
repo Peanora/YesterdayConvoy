@@ -1,0 +1,2021 @@
+{
+  "version": 1,
+  "task": "B06",
+  "cardId": "CARD_M32",
+  "name": "蔓德拉",
+  "view": "main",
+  "model": "enemy_1523_mandra",
+  "skin": "default",
+  "ppu": 133.45849771931512,
+  "referenceSpeed": 0.75,
+  "height": 1.7945808069705962,
+  "sourcePixelsPerBone": 0.600563239736918,
+  "worldUnitsPerSourceBone": 0.0045,
+  "scaleStatus": "TALULAH_BODY_BASELINE_B22_ACTUAL_CAMERA_VERIFIED_OTHER_UNITS_PENDING_CAMERA_REVIEW",
+  "pivotX": 0.4996280877665806,
+  "pivotY": 0.0932875341620325,
+  "captureBounds": [
+    -197.69772338867188,
+    -20.386638641357422,
+    198.17332458496094,
+    540.4903564453125
+  ],
+  "aliases": [
+    {
+      "key": "idle",
+      "source": "C1_Idle"
+    },
+    {
+      "key": "walk",
+      "source": "C1_Move"
+    },
+    {
+      "key": "attack",
+      "source": "C1_Attack"
+    },
+    {
+      "key": "cast",
+      "source": "C1_Skill_2"
+    },
+    {
+      "key": "death",
+      "source": "C2_Die_1"
+    }
+  ],
+  "runtimeSources": [
+    "C1_Idle",
+    "C1_Move",
+    "C1_Attack",
+    "C1_Skill_2",
+    "C2_Die_1"
+  ],
+  "clips": [
+    {
+      "key": "C1_Attack",
+      "source": "C1_Attack",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.8333333134651184,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "C1_Attack-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Attack-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Attack-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Attack-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Attack-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Attack-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Attack-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Attack-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "C1_Idle",
+      "source": "C1_Idle",
+      "duration": 5.333333492279053,
+      "count": 322,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 322,
+          "pages": [
+            {
+              "file": "C1_Idle-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Idle-012.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Idle-012.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "C1_Move",
+      "source": "C1_Move",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C1_Move-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Move-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Move-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Move-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Move-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Move-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Move-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Move-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C1_Skill_2",
+      "source": "C1_Skill_2",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.7333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "C1_Skill_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_2-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Skill_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_2-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "C1_Skill_1_Begin",
+      "source": "C1_Skill_1_Begin",
+      "duration": 0.8333333134651184,
+      "count": 51,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 51,
+          "pages": [
+            {
+              "file": "C1_Skill_1_Begin-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_1_Begin-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_1_Begin-002.png",
+              "count": 1,
+              "width": 1920,
+              "height": 384
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Skill_1_Begin-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_1_Begin-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_1_Begin-002.png",
+          "count": 1,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "C1_Skill_1_End",
+      "source": "C1_Skill_1_End",
+      "duration": 0.3333333432674408,
+      "count": 22,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 22,
+          "pages": [
+            {
+              "file": "C1_Skill_1_End-000.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Skill_1_End-000.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "C1_Skill_1_Loop",
+      "source": "C1_Skill_1_Loop",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 61,
+          "pages": [
+            {
+              "file": "C1_Skill_1_Loop-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_1_Loop-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C1_Skill_1_Loop-002.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C1_Skill_1_Loop-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_1_Loop-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C1_Skill_1_Loop-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "C2_Attack_1",
+      "source": "C2_Attack_1",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.8333333134651184,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "C2_Attack_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_1-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Attack_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_1-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "C2_Attack_2",
+      "source": "C2_Attack_2",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.8333333134651184,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "C2_Attack_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Attack_2-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Attack_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Attack_2-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "C2_Die_1",
+      "source": "C2_Die_1",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C2_Die_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_1-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Die_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_1-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C2_Die_2",
+      "source": "C2_Die_2",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C2_Die_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Die_2-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Die_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Die_2-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C2_Idle_1",
+      "source": "C2_Idle_1",
+      "duration": 2.6666667461395264,
+      "count": 162,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 162,
+          "pages": [
+            {
+              "file": "C2_Idle_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_1-006.png",
+              "count": 12,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Idle_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_1-006.png",
+          "count": 12,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "C2_Idle_2",
+      "source": "C2_Idle_2",
+      "duration": 5.333333492279053,
+      "count": 322,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 322,
+          "pages": [
+            {
+              "file": "C2_Idle_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Idle_2-012.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Idle_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Idle_2-012.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "C2_Move_1",
+      "source": "C2_Move_1",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C2_Move_1-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_1-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_1-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_1-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Move_1-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_1-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_1-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_1-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C2_Move_2",
+      "source": "C2_Move_2",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C2_Move_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Move_2-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Move_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Move_2-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C2_Skill_2",
+      "source": "C2_Skill_2",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.7333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 91,
+          "pages": [
+            {
+              "file": "C2_Skill_2-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_2-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_2-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_2-003.png",
+              "count": 16,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Skill_2-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_2-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_2-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_2-003.png",
+          "count": 16,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "C2_Skill_3",
+      "source": "C2_Skill_3",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 82,
+          "pages": [
+            {
+              "file": "C2_Skill_3-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_3-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_3-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_3-003.png",
+              "count": 7,
+              "width": 1920,
+              "height": 768
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Skill_3-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_3-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_3-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_3-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "C2_Skill_1_Begin",
+      "source": "C2_Skill_1_Begin",
+      "duration": 0.8333333134651184,
+      "count": 51,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 51,
+          "pages": [
+            {
+              "file": "C2_Skill_1_Begin-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_1_Begin-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_1_Begin-002.png",
+              "count": 1,
+              "width": 1920,
+              "height": 384
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Skill_1_Begin-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_1_Begin-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_1_Begin-002.png",
+          "count": 1,
+          "width": 1920,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "C2_Skill_1_End",
+      "source": "C2_Skill_1_End",
+      "duration": 0.3333333432674408,
+      "count": 22,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 22,
+          "pages": [
+            {
+              "file": "C2_Skill_1_End-000.png",
+              "count": 22,
+              "width": 1920,
+              "height": 1920
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Skill_1_End-000.png",
+          "count": 22,
+          "width": 1920,
+          "height": 1920
+        }
+      ]
+    },
+    {
+      "key": "C2_Skill_1_Loop",
+      "source": "C2_Skill_1_Loop",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [
+        {
+          "time": 0,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 61,
+          "pages": [
+            {
+              "file": "C2_Skill_1_Loop-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_1_Loop-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Skill_1_Loop-002.png",
+              "count": 11,
+              "width": 1920,
+              "height": 1152
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Skill_1_Loop-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_1_Loop-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Skill_1_Loop-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "C2_Stun",
+      "source": "C2_Stun",
+      "duration": 0.6666666865348816,
+      "count": 42,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 42,
+          "pages": [
+            {
+              "file": "C2_Stun-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "C2_Stun-001.png",
+              "count": 17,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "C2_Stun-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "C2_Stun-001.png",
+          "count": 17,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    },
+    {
+      "key": "Reborn",
+      "source": "Reborn",
+      "duration": 7.333333492279053,
+      "count": 442,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.4996280877665806,
+      "pivotY": 0.0932875341620325,
+      "events": [],
+      "transparentWait": false,
+      "pixelsPerUnit": 133.45849771931512,
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 442,
+          "pages": [
+            {
+              "file": "Reborn-000.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-001.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-002.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-003.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-004.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-005.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-006.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-007.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-008.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-009.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-010.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-011.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-012.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-013.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-014.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-015.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-016.png",
+              "count": 25,
+              "width": 1920,
+              "height": 1920
+            },
+            {
+              "file": "Reborn-017.png",
+              "count": 17,
+              "width": 1920,
+              "height": 1536
+            }
+          ]
+        }
+      ],
+      "pages": [
+        {
+          "file": "Reborn-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-003.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-004.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-005.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-006.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-007.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-008.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-009.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-010.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-011.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-012.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-013.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-014.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-015.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-016.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Reborn-017.png",
+          "count": 17,
+          "width": 1920,
+          "height": 1536
+        }
+      ]
+    }
+  ],
+  "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
+  "movementPresentation": "ORIGINAL_MOVE",
+  "idlePresentation": "ORIGINAL_IDLE",
+  "deathPresentation": "ORIGINAL_DEATH",
+  "zeroDurationStates": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -124.7724609375,
+        -2.508957624435425,
+        95.2499771118164,
+        394.2242431640625
+      ],
+      "events": [],
+      "verticesMeasured": 1378,
+      "loop": false
+    }
+  ],
+  "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
+  "status": "IMPORTED_NOT_BOUND"
+}

@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "task": "P26",
+  "name": "易·梁",
+  "view": "main",
+  "model": "enemy_2122_dybgzd",
+  "skin": "default",
+  "fps": 60,
+  "cell": 384,
+  "columns": 5,
+  "captureBounds": [
+    -199.08195106412202,
+    -85.44873838867255,
+    183.2303757917669,
+    480.7594649042474
+  ],
+  "captureMargin": 1.14,
+  "viewport": 645.4773517539287,
+  "pivotX": 0.5122789554345186,
+  "pivotY": 0.19378420060640894,
+  "scale": 0.594908557142358,
+  "status": "APPROVED_ORIGINAL_SOURCE_CAPTURE_NOT_YET_BOUND",
+  "clips": [
+    {
+      "key": "Die",
+      "source": "Die",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5122789554345186,
+      "pivotY": 0.19378420060640894,
+      "events": [
+        {
+          "time": 0.4333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Die-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Die-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "Idle",
+      "source": "Idle",
+      "duration": 1.3333333730697632,
+      "count": 82,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5122789554345186,
+      "pivotY": 0.19378420060640894,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Idle-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-002.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Idle-003.png",
+          "count": 7,
+          "width": 1920,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "Move",
+      "source": "Move",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": true,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5122789554345186,
+      "pivotY": 0.19378420060640894,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Move-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Move-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "Skill",
+      "source": "Skill",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 384,
+      "columns": 5,
+      "pivotX": 0.5122789554345186,
+      "pivotY": 0.19378420060640894,
+      "events": [
+        {
+          "time": 0.4333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "Skill-000.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill-001.png",
+          "count": 25,
+          "width": 1920,
+          "height": 1920
+        },
+        {
+          "file": "Skill-002.png",
+          "count": 11,
+          "width": 1920,
+          "height": 1152
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "Die-000.png",
+      "sha256": "a78816ed826d05472b5e1e69aeb15c3858a92ef61304715eecf1c0269473c809",
+      "bytes": 1466331
+    },
+    {
+      "file": "Die-001.png",
+      "sha256": "3471a047db835cb405051e179f51973e0d0a6a587bb0a06cb2c6af1992eedcf9",
+      "bytes": 1109062
+    },
+    {
+      "file": "Die-002.png",
+      "sha256": "947a9f82eee5a870d2498a5e13e4ad6a254b4a534fa57ba26e612e77b03d7656",
+      "bytes": 254115
+    },
+    {
+      "file": "Idle-000.png",
+      "sha256": "7b362295408414e9a7a9ce7c0d4dab79913540ffffbcdd88f6b7f047df19e7eb",
+      "bytes": 1402601
+    },
+    {
+      "file": "Idle-001.png",
+      "sha256": "4104ecc71522c67391daeb0ec8eec1341ff804ab5ca97a6f8081260c12404c40",
+      "bytes": 1442117
+    },
+    {
+      "file": "Idle-002.png",
+      "sha256": "b02d737c1d3aa55ac72aaa6008d65bb50bdc3282e437abc6ca039bcd75cdec4b",
+      "bytes": 1452686
+    },
+    {
+      "file": "Idle-003.png",
+      "sha256": "03308ab790661ababc1abf7b1dd00e8a8835a3ad8fc5384b57c97c539d4ba683",
+      "bytes": 358488
+    },
+    {
+      "file": "Move-000.png",
+      "sha256": "57c7b04a52e2888ff829943ed7aced3494945850648ee192c622a9751d02dd43",
+      "bytes": 1446989
+    },
+    {
+      "file": "Move-001.png",
+      "sha256": "4bba2887f198a4444abe5eb21cc177e627ce98dd26169eab66b4e5c20f83da99",
+      "bytes": 1523176
+    },
+    {
+      "file": "Move-002.png",
+      "sha256": "4fe33dbf940be6007bab4aa2aba5751b8cfe7d5d4c43c35b27522971b97da0da",
+      "bytes": 671305
+    },
+    {
+      "file": "Skill-000.png",
+      "sha256": "1f3dd0af1044613014dc25da5f7a66cec4496cc0fdf6b0e8925143746a0a420f",
+      "bytes": 1416451
+    },
+    {
+      "file": "Skill-001.png",
+      "sha256": "c543d07a3dbd81bcf2533fa491e49476a8146406f02d1f6bef38a0f313368d3f",
+      "bytes": 1298421
+    },
+    {
+      "file": "Skill-002.png",
+      "sha256": "499a590efdda74f283a0c1a05268620a660c86e4d691bc947036de2998b96965",
+      "bytes": 283278
+    }
+  ],
+  "zeroDurationStates": [
+    {
+      "name": "Default",
+      "duration": 0,
+      "bounds": [
+        -173.19290161132812,
+        -8.839981079101562,
+        99.84222412109375,
+        417.6258239746094
+      ],
+      "boundsSampleFPS": 30,
+      "events": [],
+      "verticesMeasured": 398,
+      "loop": false
+    }
+  ]
+}

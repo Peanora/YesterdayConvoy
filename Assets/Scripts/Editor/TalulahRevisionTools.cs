@@ -10,7 +10,6 @@ namespace YesterdayConvoy.Editor
     {
         private const string Root=TalulahTools.Root+"V2/";
         public const string ArtPath="Assets/Data/Cards/TalulahArt.asset";
-        [MenuItem("Yesterday Convoy/Initial Demo/Apply Talulah Video Revision")]
         public static void Apply()
         {
             AssetDatabase.Refresh();

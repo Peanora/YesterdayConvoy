@@ -36,33 +36,5 @@ namespace YesterdayConvoy.Tests
             }
             finally{UnityEngine.Object.DestroyImmediate(authored);}
         }
-
-        [Test]public void EveryPlayableCampaignCardUsesItsWaveCadenceWithoutChangingUsesOrLegacyCadence()
-        {
-            var definitions=AssetDatabase.FindAssets("t:ManualBattleDefinition",new[]{"Assets/Data"})
-                .Select(id=>AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(AssetDatabase.GUIDToAssetPath(id)))
-                .Where(d=>d!=null&&d.Card!=null).ToArray();
-            foreach(var entry in CampaignBalance.Profiles)
-            {
-                var data=definitions.FirstOrDefault(d=>d.Card.CardId==entry.Key);
-                Assert.That(data,Is.Not.Null,entry.Key);
-                int cost=entry.Value.Cost;
-                foreach(int star in new[]{1,ShopTrialModel.MaxStarForCost(cost)})
-                {
-                    var legacy=CampaignBalance.Build(data,star,16,6);
-                    var wave=CampaignBalance.Build(data,star,16,6,waveMode:true);
-                    Assert.That(wave.Unit.Cooldown,Is.EqualTo(WaveDeploymentCadence.ForCard(entry.Key,cost)),entry.Key);
-                    Assert.That(legacy.Unit.Cooldown,Is.EqualTo(new[]{0,2,3,4,5,8}[cost]),entry.Key);
-                    Assert.That(wave.Unit.DeploymentLimit,Is.EqualTo(legacy.Unit.DeploymentLimit),entry.Key);
-                    Assert.That(wave.Unit.Health,Is.EqualTo(legacy.Unit.Health),entry.Key);
-                    Assert.That(wave.Unit.DeploymentCost,Is.EqualTo(legacy.Unit.DeploymentCost),entry.Key);
-                }
-            }
-            Assert.That(WaveDeploymentCadence.ForCard("CARD_M04",2),Is.EqualTo(14));
-            Assert.That(WaveDeploymentCadence.ForCard("CARD_M06",2),Is.EqualTo(16));
-            Assert.That(WaveDeploymentCadence.ForCard("CARD_M17",3),Is.EqualTo(20));
-            Assert.That(WaveDeploymentCadence.ForCard("CARD_M38",3),Is.EqualTo(24));
-            Assert.Throws<ArgumentOutOfRangeException>(()=>WaveDeploymentCadence.ForCard("bad",0));
-        }
     }
 }

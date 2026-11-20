@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "note": "Existing approved remake fixed-flight times. Deliberately separate from original speed profiles; not auto-applied by TryFor.",
+  "rows": [
+    {
+      "artId": "M11",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M11.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M12",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M12.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M16",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M16.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M38",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M38.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M24",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M24.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M42",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M42.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M31",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M31.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "M36",
+      "fixedSeconds": 0.25,
+      "source": "Assets/Data/Battles/M36.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    },
+    {
+      "artId": "WISADEL_APRIL",
+      "fixedSeconds": 0.22,
+      "source": "Assets/Data/Battles/WisadelVsKroos.asset",
+      "kind": "APPROVED_LEGACY_ADAPTATION_NOT_NATIVE_SPEED"
+    }
+  ]
+}

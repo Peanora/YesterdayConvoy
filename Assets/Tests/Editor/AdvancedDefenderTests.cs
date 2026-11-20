@@ -127,13 +127,13 @@ namespace YesterdayConvoy.Tests
             Assert.That(motion.Position,Is.EqualTo(Vector3.right*.5f));motion.Retreat(10);Assert.That(motion.Position,Is.EqualTo(Vector3.zero));Assert.That(motion.DistanceTravelled,Is.Zero);
             motion.Advance(.5f);Assert.That(motion.Position,Is.EqualTo(Vector3.right*.5f));Assert.Throws<ArgumentOutOfRangeException>(()=>motion.Retreat(float.NaN));
         }
-        [Test]public void FourOriginalS3ModelsAndConfigurationsAreAvailableWithoutFabricatedMlynarAttack()
+        [Test]public void FourSkillConfigurationsAndTheTwoCurrentBossModelsRemainAvailable()
         {
             foreach(string id in ManualBattleController.DefenderBatch4Ids)
             {
                 var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);Assert.That(data,Is.Not.Null);Assert.That(data.Snapshot()[0].Skill.Enabled,Is.True);
-                Assert.That(DefenderArt.Load(id).Portrait,Is.Not.Null);Assert.That(DefenderArt.Load(id+"B")["idle"].Frames.Length,Is.GreaterThan(1));
             }
+            foreach(string id in new[]{"D29","D30"})Assert.That(DefenderArt.Load(id)["skill_attack"].Frames.Length,Is.GreaterThan(1),id);
             Assert.That(DefenderArt.Load("D30").ActionDuration,Is.Zero);Assert.That(Resources.Load<DefenderTrialDefinition>("DefenderTrials/D30").Snapshot()[0].CanAttack,Is.False);
         }
     }

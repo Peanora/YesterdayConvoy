@@ -12,7 +12,6 @@ namespace YesterdayConvoy.Editor
     {
         public const string ScenePath="Assets/Scenes/TalulahPhaseTrial.unity";
         public const string EncounterPath="Assets/Data/Trials/TalulahPhaseDefenders.asset";
-        [MenuItem("Yesterday Convoy/Talulah Phase Trial/Create Missing Authored Scene")]
         public static void CreateMissingScene()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play Mode before scene authoring.");

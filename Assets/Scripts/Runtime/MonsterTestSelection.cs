@@ -185,13 +185,7 @@ namespace YesterdayConvoy
             if(GUI.Button(new Rect(790,631,426,22),"九羁绊专项 · 独立场景",buttonStyle))dedicatedSynergyMenuOpen=true;
             GUI.Label(new Rect(56,655,1160,38),"进入后拖动底部卡牌至红门部署；有主动技能的角色满技力后点选释放。可随时返回。",menuBody);
         }
-        private static void DrawTestPortrait(Rect bounds,Sprite sprite)
-        {
-            if(sprite==null) return;
-            Rect source=sprite.textureRect; float ratio=Mathf.Min(bounds.width/source.width,bounds.height/source.height);
-            Rect target=new Rect(bounds.center.x-source.width*ratio/2,bounds.center.y-source.height*ratio/2,source.width*ratio,source.height*ratio);
-            GUI.DrawTextureWithTexCoords(target,sprite.texture,new Rect(source.x/sprite.texture.width,source.y/sprite.texture.height,source.width/sprite.texture.width,source.height/sprite.texture.height));
-        }
+        private static void DrawTestPortrait(Rect bounds,Sprite sprite)=>ApprovedShopPresentation.DrawTestPortrait(bounds,sprite);
 
         private IEnumerator VerifyMonsterSelection(string directory)
         {

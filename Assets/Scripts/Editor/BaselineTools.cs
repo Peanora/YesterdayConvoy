@@ -8,18 +8,21 @@ namespace YesterdayConvoy.Editor
 {
     public static class BaselineTools
     {
-        public const string EntryScene=InitialDemoTools.ScenePath;
+        public const string EntryScene=FormationBattleTools.ScenePath;
         [MenuItem("Yesterday Convoy/Baseline/Initialize")]
-        public static void Initialize() => InitialDemoTools.Initialize();
+        public static void Initialize() => FormationBattleTools.Author();
         [MenuItem("Yesterday Convoy/Baseline/Validate")]
-        public static void Validate() => InitialDemoTools.Validate();
+        public static void Validate()
+        {
+            FormationCampaignTools.Validate();
+            FormationRosterTools.Validate();
+        }
 
         [MenuItem("Yesterday Convoy/Baseline/Build Windows")]
         public static void BuildWindows()
         {
             PreparedArtTools.PrepareAll();
-            if (File.Exists(DemoArtTools.CardPath)) DemoArtTools.Validate();
-            else InitialDemoTools.Validate();
+            Validate();
             GameSceneCatalog.UpdateBuildSettings();
             Directory.CreateDirectory("Builds/Windows");
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions

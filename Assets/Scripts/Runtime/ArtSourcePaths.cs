@@ -8,6 +8,8 @@ namespace YesterdayConvoy
     public static class ArtSourcePaths
     {
         static readonly string[,] ImageRoots = {
+            {"BossRoster", "Art/Characters/Monsters/BossRoster"},
+            {"BossRosterFx", "Art/VFX/BossRoster"},
             {"DefenderArt", "Art/Characters/Defenders/Flipbooks"},
             {"MonsterCombatArt", "Art/Characters/Monsters/Flipbooks"},
             {"TalulahOriginal", "Art/Characters/Monsters/Boss/TalulahOriginal"},

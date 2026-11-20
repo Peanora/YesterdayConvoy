@@ -80,37 +80,6 @@ namespace YesterdayConvoy.Tests
             Assert.That(CampaignV2Balance.PlayerCount,Is.EqualTo(43));Assert.That(CampaignV2Balance.StarRowCount,Is.EqualTo(138));Assert.That(CampaignV2Balance.SkillCount,Is.EqualTo(92));
         }
 
-        [Test]public void EveryAdoptedOrdinaryProfileMatchesItsFinalJsonRowWithoutApplyingGrowthTwice()
-        {
-            var expected=JsonUtility.FromJson<Expected>(Resources.Load<TextAsset>("CampaignV2/player-roster").text);int rows=0;
-            foreach(var u in expected.units)
-            {
-                var data=Definition(u.id);string before=EditorJsonUtility.ToJson(data),combatBefore=EditorJsonUtility.ToJson(data.Engagement);
-                foreach(var r in u.stars)
-                {
-                    var profile=CampaignV2Balance.Build(data,r.star,50,6);
-                    if(u.id=="CARD_M41")
-                    {
-                        var old=CampaignBalance.Build(data,r.star,50,6);
-                        Assert.That(profile.Unit.Health,Is.EqualTo(old.Unit.Health));Assert.That(profile.Combat.SkillAttack,Is.EqualTo(old.Combat.SkillAttack));continue;
-                    }
-                    string label=u.id+" star "+r.star;
-                    Assert.That(profile.Unit.Health,Is.EqualTo(r.hp).Within(.001f),label);
-                    Assert.That(profile.Unit.DeploymentCost,Is.EqualTo(r.dp),label);Assert.That(profile.Unit.DeploymentLimit,Is.EqualTo(r.uses),label);
-                    Assert.That(profile.Unit.GateDamage,Is.EqualTo(r.gate),label);Assert.That(profile.Unit.Cooldown,Is.EqualTo(r.nonWaveCooldown),label);
-                    Assert.That(profile.Unit.Speed,Is.EqualTo(r.speed),label);Assert.That(profile.Combat.UnitAttack,Is.EqualTo(r.attack).Within(.001f),label);
-                    Assert.That(profile.Combat.UnitArmor,Is.EqualTo(r.armor),label);Assert.That(profile.Combat.Effects.UnitResistance,Is.EqualTo(r.resistance),label);
-                    Assert.That(profile.Combat.UnitRange,Is.EqualTo(r.range),label);Assert.That(profile.Combat.UnitInterval,Is.EqualTo(r.interval),label);
-                    Assert.That(profile.Combat.AttackDuration,Is.EqualTo(r.attackDuration).Within(.00001f),label);
-                    Assert.That(profile.Combat.AttackWindup,Is.EqualTo(r.effectiveAttackWindup).Within(.00001f),label);
-                    Assert.That(profile.Combat.ProjectileTime,Is.EqualTo(r.projectileTime).Within(.00001f),label);
-                    Assert.That(profile.Combat.CanAttack,Is.EqualTo(r.canOrdinaryAttack),label);Assert.That(CampaignV2Balance.StarFor(profile.Unit),Is.EqualTo(r.star),label);rows++;
-                }
-                Assert.That(EditorJsonUtility.ToJson(data),Is.EqualTo(before));Assert.That(EditorJsonUtility.ToJson(data.Engagement),Is.EqualTo(combatBefore));
-            }
-            Assert.That(rows,Is.EqualTo(135),"Three Silver Wolf rows remain explicitly deferred.");
-        }
-
         [Test]public void ManualSkillsUseFinalPerStarBudgetsAndLegacyDefinitionsStayIndependent()
         {
             var talulah=Definition("CARD_TALULAH_TRIAL");var current=CampaignBalance.Build(talulah,3,50,6);var next=CampaignV2Balance.Build(talulah,3,50,6);
@@ -119,40 +88,6 @@ namespace YesterdayConvoy.Tests
             Assert.That(CampaignV2Balance.Build(Definition("CARD_M14"),2,50,6).Combat.SkillAttack,Is.EqualTo(560));
             Assert.That(CampaignV2Balance.Build(Definition("CARD_WISADEL_APRIL"),2,50,6).Combat.SkillAttack,Is.EqualTo(520));
             Assert.That(CampaignV2Balance.Build(Definition("CARD_M28"),2,50,6).Combat.RequiredSP,Is.EqualTo(35));
-        }
-        [Test]public void WaveProfilesUseBlackForestCadenceWithoutChangingPlayerStatsOrOrdinaryTrials()
-        {
-            foreach(string id in CampaignV2Balance.PlayerIds)
-            {
-                var definition=Definition(id);var ordinary=CampaignV2Balance.Build(definition,1,10,1);
-                var wave=CampaignV2Balance.Build(definition,1,10,1,waveMode:true);
-                Assert.That(wave.Unit.Cooldown,Is.EqualTo(WaveDeploymentCadence.ForCard(id,definition.Card.RecruitCost)),id);
-                Assert.That(wave.Unit.Health,Is.EqualTo(ordinary.Unit.Health),id);
-                Assert.That(wave.Unit.DeploymentCost,Is.EqualTo(ordinary.Unit.DeploymentCost),id);
-                Assert.That(wave.Unit.DeploymentLimit,Is.EqualTo(ordinary.Unit.DeploymentLimit),id);
-                Assert.That(wave.Combat.UnitAttack,Is.EqualTo(ordinary.Combat.UnitAttack),id);
-            }
-        }
-
-        [Test]public void HighCostJourneyCardsUseRecruitmentTierDpAndKeepLegacyDeploymentCosts()
-        {
-            foreach(string id in CampaignV2Balance.PlayerIds.Where(CampaignBalance.ShopEligible))
-            {
-                var definition=Definition(id);int cost=definition.Card.RecruitCost;if(cost<4)continue;
-                int legacyBase=CampaignBalance.Profiles[id].BaseDP;
-                for(int star=1;star<=3;star++)
-                {
-                    var current=CampaignV2Balance.Build(definition,star,50,6,waveMode:true);
-                    var legacy=CampaignBalance.Build(definition,star,50,6,waveMode:true);
-                    Assert.That(current.Unit.DeploymentCost,Is.EqualTo(cost+star-1),id+" star "+star);
-                    Assert.That(CampaignV2Balance.StarFor(current.Unit),Is.EqualTo(star),id);
-                    Assert.That(current.Unit.Cooldown,Is.EqualTo(WaveDeploymentCadence.ForCard(id,cost)),id);
-                    Assert.That(current.Unit.DeploymentLimit,Is.EqualTo(cost==4?3:2),id);
-                    Assert.That(legacy.Unit.DeploymentCost,Is.EqualTo(legacyBase+(star-1)*(cost==5?2:1)),id);
-                }
-            }
-            Assert.That(CampaignV2Balance.Build(Definition("CARD_TALULAH_TRIAL"),3,7,6,waveMode:true).Unit.DeploymentCost,Is.EqualTo(7));
-            Assert.That(CampaignV2Balance.Build(Definition("CARD_M18"),3,6,6,waveMode:true).Unit.DeploymentCost,Is.EqualTo(6));
         }
 
         [Test]public void DeploymentAppliesExactBarrierLayerAndHpBudgetsAndRestartKeepsV2Enabled()

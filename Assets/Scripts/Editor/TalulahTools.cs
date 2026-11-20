@@ -14,7 +14,6 @@ namespace YesterdayConvoy.Editor
         public const string LevelPath="Assets/Data/Battles/TalulahTrial.asset";
         public const string CardPath="Assets/Data/Cards/Talulah.asset";
 
-        [MenuItem("Yesterday Convoy/Initial Demo/Prepare Talulah Fire Rain Trial")]
         public static void Prepare()
         {
             AssetDatabase.Refresh();

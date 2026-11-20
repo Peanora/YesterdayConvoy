@@ -1,0 +1,995 @@
+{
+  "version": 1,
+  "task": "B09",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "common_invincible_01",
+      "count": 90,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3427605628967285,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "common_invincible_01/00.png",
+          "count": 90,
+          "width": 384,
+          "height": 256
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_attack_hit_01",
+      "count": 18,
+      "width": 32,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.540347417195638,
+      "duration": 0.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_attack_hit_01/00.png",
+          "count": 18,
+          "width": 384,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_attack_start_01",
+      "count": 35,
+      "width": 24,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.16666666666666666,
+      "pivotY": 0.49802112579345703,
+      "duration": 1.1666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_attack_start_01/00.png",
+          "count": 35,
+          "width": 288,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_attack_trail_01",
+      "count": 90,
+      "width": 96,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5104166666666666,
+      "pivotY": 0.24841690063476562,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_attack_trail_01/00.png",
+          "count": 90,
+          "width": 1152,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_hit_01",
+      "count": 26,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6552605628967285,
+      "duration": 0.8666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_hit_01/00.png",
+          "count": 26,
+          "width": 384,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_skill_01_hit_01",
+      "count": 42,
+      "width": 48,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4791666666666667,
+      "pivotY": 0.4992084503173828,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_skill_01_hit_01/00.png",
+          "count": 42,
+          "width": 576,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_skill_01_start_01",
+      "count": 36,
+      "width": 92,
+      "height": 64,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.42391304347826086,
+      "pivotY": 0.43943774700164795,
+      "duration": 1.2,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_skill_01_start_01/00.png",
+          "count": 36,
+          "width": 1104,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_skill_01_trail_01",
+      "count": 90,
+      "width": 96,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5104166666666666,
+      "pivotY": 0.3320140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_skill_01_trail_01/00.png",
+          "count": 90,
+          "width": 1152,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_a_skill_01_weapon_02",
+      "count": 90,
+      "width": 20,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2,
+      "pivotY": 0.5984169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_a_skill_01_weapon_02/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_b_attack_01_trail_01",
+      "count": 90,
+      "width": 96,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5104166666666666,
+      "pivotY": 0.24841690063476562,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_b_attack_01_trail_01/00.png",
+          "count": 90,
+          "width": 1152,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_b_attack_hit_01",
+      "count": 18,
+      "width": 32,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.540347417195638,
+      "duration": 0.6,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_b_attack_hit_01/00.png",
+          "count": 18,
+          "width": 384,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_b_attack_start_01",
+      "count": 35,
+      "width": 24,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.16666666666666666,
+      "pivotY": 0.49802112579345703,
+      "duration": 1.1666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_b_attack_start_01/00.png",
+          "count": 35,
+          "width": 288,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_b_skill_01_weapon_02",
+      "count": 90,
+      "width": 20,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2,
+      "pivotY": 0.5984169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_b_skill_01_weapon_02/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_revive_loop_01",
+      "count": 90,
+      "width": 108,
+      "height": 100,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.49074074074074076,
+      "pivotY": 0.4996833801269531,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_revive_loop_01/00.png",
+          "count": 90,
+          "width": 1296,
+          "height": 800
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_revive_loop_end",
+      "count": 38,
+      "width": 140,
+      "height": 132,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5285714285714286,
+      "pivotY": 0.552790439490116,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_revive_loop_end/00.png",
+          "count": 38,
+          "width": 1680,
+          "height": 528
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_01_hit_01",
+      "count": 42,
+      "width": 48,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4791666666666667,
+      "pivotY": 0.4992084503173828,
+      "duration": 1.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_01_hit_01/00.png",
+          "count": 42,
+          "width": 576,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_01_start_01",
+      "count": 36,
+      "width": 44,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4090909090909091,
+      "pivotY": 0.4677605628967285,
+      "duration": 1.2,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_01_start_01/00.png",
+          "count": 36,
+          "width": 528,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_01_trail_01",
+      "count": 90,
+      "width": 96,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5104166666666666,
+      "pivotY": 0.3320140838623047,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_01_trail_01/00.png",
+          "count": 90,
+          "width": 1152,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_buff_01",
+      "count": 90,
+      "width": 192,
+      "height": 108,
+      "columns": 10,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5089660927101418,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_buff_01/00.png",
+          "count": 90,
+          "width": 1920,
+          "height": 972
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_buff_02",
+      "count": 90,
+      "width": 40,
+      "height": 24,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.3736807505289713,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_buff_02/00.png",
+          "count": 90,
+          "width": 480,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_locked_01",
+      "count": 90,
+      "width": 20,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4984169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_locked_01/00.png",
+          "count": 90,
+          "width": 240,
+          "height": 160
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_start_01",
+      "count": 20,
+      "width": 28,
+      "height": 28,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.75,
+      "pivotY": 0.21315492902483257,
+      "duration": 0.6666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_start_01/00.png",
+          "count": 20,
+          "width": 336,
+          "height": 56
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_trail_01",
+      "count": 90,
+      "width": 12,
+      "height": 12,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.49736150105794275,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_trail_01/00.png",
+          "count": 90,
+          "width": 144,
+          "height": 96
+        }
+      ]
+    },
+    {
+      "key": "enemy_dirctr_skill_03_weapon_01",
+      "count": 33,
+      "width": 16,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.25,
+      "pivotY": 0.49802112579345703,
+      "duration": 1.1,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_dirctr_skill_03_weapon_01/00.png",
+          "count": 33,
+          "width": 192,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "key": "trap_247_crfilm__OFF__structure",
+      "count": 38,
+      "width": 56,
+      "height": 96,
+      "columns": 12,
+      "ppu": 73.14286041259766,
+      "pivotX": 0.5,
+      "pivotY": 0.8407541910807291,
+      "duration": 1.2666666666666666,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "trap_247_crfilm__OFF__structure/00.png",
+          "count": 38,
+          "width": 672,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "trap_247_crfilm__ON__structure",
+      "count": 39,
+      "width": 56,
+      "height": 96,
+      "columns": 12,
+      "ppu": 73.14286041259766,
+      "pivotX": 0.5,
+      "pivotY": 0.8407541910807291,
+      "duration": 1.3,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "trap_247_crfilm__ON__structure/00.png",
+          "count": 39,
+          "width": 672,
+          "height": 384
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "common_invincible_01",
+        "enemy_dirctr_a_attack_hit_01",
+        "enemy_dirctr_a_attack_start_01",
+        "enemy_dirctr_a_attack_trail_01",
+        "enemy_dirctr_a_hit_01",
+        "enemy_dirctr_a_skill_01_hit_01",
+        "enemy_dirctr_a_skill_01_start_01",
+        "enemy_dirctr_a_skill_01_trail_01",
+        "enemy_dirctr_a_skill_01_weapon_02",
+        "enemy_dirctr_b_attack_01_trail_01",
+        "enemy_dirctr_b_attack_hit_01",
+        "enemy_dirctr_b_attack_start_01",
+        "enemy_dirctr_b_skill_01_weapon_02",
+        "enemy_dirctr_revive_loop_01",
+        "enemy_dirctr_revive_loop_end",
+        "enemy_dirctr_skill_01_hit_01",
+        "enemy_dirctr_skill_01_start_01",
+        "enemy_dirctr_skill_01_trail_01",
+        "enemy_dirctr_skill_03_buff_01",
+        "enemy_dirctr_skill_03_buff_02",
+        "enemy_dirctr_skill_03_locked_01",
+        "enemy_dirctr_skill_03_start_01",
+        "enemy_dirctr_skill_03_trail_01",
+        "enemy_dirctr_skill_03_weapon_01",
+        "trap_247_crfilm__OFF__structure",
+        "trap_247_crfilm__ON__structure"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_a_attack_start_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_a_attack_trail_01",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_a_attack_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_b_attack_start_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_b_attack_01_trail_01",
+      "attach": "projectile",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_b_attack_hit_01",
+      "attach": "target",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "replace",
+      "key": "enemy_dirctr_a_skill_01_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "replace",
+      "key": "enemy_dirctr_a_skill_01_weapon_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "replace",
+      "key": "enemy_dirctr_a_skill_01_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "replace",
+      "key": "enemy_dirctr_a_skill_01_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "replace2",
+      "key": "enemy_dirctr_skill_01_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "replace2",
+      "key": "enemy_dirctr_b_skill_01_weapon_02",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "replace2",
+      "key": "enemy_dirctr_skill_01_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "replace2",
+      "key": "enemy_dirctr_skill_01_hit_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "s3",
+      "key": "enemy_dirctr_skill_03_locked_01",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "SkillStart",
+      "skill": "",
+      "nativeSkill": "s3",
+      "key": "enemy_dirctr_skill_03_buff_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "StateEnd",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_skill_03_buff_01",
+      "attach": "owner",
+      "phase": 2,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "common_invincible_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_revive_loop_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "PhaseStart",
+      "skill": "reborn",
+      "nativeSkill": "",
+      "key": "enemy_dirctr_revive_loop_end",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}
