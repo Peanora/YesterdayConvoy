@@ -64,6 +64,8 @@ namespace YesterdayConvoy
         public string SourceArtId { get; internal set; }
         public bool Absorbed { get; internal set; }
         public bool Secondary { get; internal set; }
+        internal float ExpectedDamage { get; set; }
+        internal bool ShowDamageNumber => !Heal && Amount >= Mathf.Max(100f, ExpectedDamage * 1.5f);
     }
 
     public sealed class FormationRosterEntry
@@ -596,7 +598,8 @@ namespace YesterdayConvoy
                     fighter.RespawnRemaining = (float)Math.Max(0, ReviveSeconds);
                 }
             }
-            Hits.Add(new FormationHit { At = Clock, From = source.Position, To = target.Position, FromId = source.Id, ToId = target.Id, Amount = amount, Heal = false, Skill = skill, Killed = killed });
+            Hits.Add(new FormationHit { At = Clock, From = source.Position, To = target.Position, FromId = source.Id, ToId = target.Id,
+                Amount = amount, Skill = skill, Killed = killed, ExpectedDamage = Mathf.Max(1, source.Attack - target.Armor * (arts ? .2f : 1)) });
         }
 
         void Heal(FormationActor source, FormationActor target, float raw, bool skill)

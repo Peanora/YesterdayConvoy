@@ -61,6 +61,12 @@ namespace YesterdayConvoy
             {var r=State(recorder);if(r.RecordOwner==source&&r.RecordUntil>Clock)r.RecordDamage=Mathf.Min(recorder.Attack*24,r.RecordDamage+total*.25f);}
             return total;
         }
+        static float DamageAfterDefense(float raw, int type, float armor, float mr)
+        {
+            return type == 2 ? raw : type == 1 ? raw * (1 - Mathf.Clamp(mr, -50, 80) / 100)
+                : Mathf.Max(1, raw - Mathf.Max(-30, armor));
+        }
+
         float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,bool transferred=false)
         {
             if(target==null||!target.Alive||raw<=0||target is FormationDefender snowBoss&&SnowBossTransitionActive(snowBoss))return 0;var t=State(target);var s=State(source);
@@ -68,7 +74,8 @@ namespace YesterdayConvoy
             if(Buff(target,"armorbreak")>0)armor-=Mathf.Min(5,Stack(target,"armorbreak"))*2;
             if(source is FormationFighter sf&&HasItem(sf,"AA")&&armor>0)armor*=1-Stack(source,"saw")*.02f;
             float mr=target.MagicResistance+Buff(target,"mandra_mr")+Buff(target,"blast_mr")+Buff(target,"kingdom_mr")+Buff(target,"king_mr")+Buff(target,"burn_mr");
-            float baseDamage=type==2?raw:type==1?raw*(1-Mathf.Clamp(mr,-50,80)/100):Mathf.Max(1,raw-Mathf.Max(-30,armor));
+            float baseDamage=DamageAfterDefense(raw,type,armor,mr);
+            float expectedDamage=DamageAfterDefense(source.Attack,type,armor,mr);
             bool inKingdom=zones.Any(z=>z.Kind=="kingdom"&&z.Until>Clock&&z.Cells!=null&&z.Cells.Contains(Vector2Int.RoundToInt(source.Position)));
             float amp=Buff(source,"theatre_damage")+(inKingdom?Buff(source,"kingdom_damage"):0)+Buff(target,"vulnerable")+(type==1?Buff(target,"arts_vulnerable"):0)+(skill&&native?Buff(target,"skill_vulnerable"):0);
             if(source is FormationFighter)
@@ -126,7 +133,7 @@ namespace YesterdayConvoy
             Hits.Add(new FormationHit
             {
                 At=Clock, From=source.Position, To=target.Position, FromId=source.Id, ToId=target.Id,
-                Amount=healthLoss, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
+                Amount=healthLoss, ExpectedDamage=expectedDamage, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
                 Action=presentation, ImpactIndex=presentation?.ProjectileOnly==true?presentation.ProjectileIndex:Math.Max(0,s.ActionHits-1),
                 Absorbed=amount<originalAmount-.001f, Secondary=!native&&source is FormationFighter&&presentation==null
             });

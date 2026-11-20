@@ -30,6 +30,7 @@ namespace YesterdayConvoy
             public long audioCaptureUtcTicks;
             public double audioCaptureSeconds;
             public float startingHealth, restoredHealth, scoutPpu, s2Ppu, s3Ppu;
+            public float playerDamageNumber, s2DamageNumber, s3DamageNumber, suppressedSnowDamage;
             public string musicClip, outcome;
         }
 
@@ -51,6 +52,13 @@ namespace YesterdayConvoy
 
             var run = controller.Campaign;
             var model = controller.Model;
+            Assert(!(new FormationHit { Amount = 99, ExpectedDamage = 40 }).ShowDamageNumber &&
+                (new FormationHit { Amount = 100, ExpectedDamage = 40 }).ShowDamageNumber &&
+                !(new FormationHit { Amount = 149, ExpectedDamage = 100 }).ShowDamageNumber &&
+                (new FormationHit { Amount = 150, ExpectedDamage = 100 }).ShowDamageNumber &&
+                !(new FormationHit { Amount = 0, Absorbed = true }).ShowDamageNumber &&
+                !(new FormationHit { Amount = 200, Heal = true }).ShowDamageNumber,
+                "Damage popups require both inclusive heavy-hit thresholds and do not count healing or zero HP loss");
             Assert(run.IsPramanixBossTrial && run.CurrentNode.Id == "3-7" && model.EnabledCount > 0 &&
                 !run.HasBlockingChoice, "Dedicated trial opens immediately with the legal prebuilt army");
             var guard = model.Defenders.Single();
@@ -102,6 +110,7 @@ namespace YesterdayConvoy
             Assert(Mathf.Approximately(replay.s2Ppu, 249.6f), "S2 uses the HD body in battle");
             yield return Frame("04-s2-snow-tiles");
             yield return ObserveSnowBossDirectImpact(guard, false);
+            yield return ObserveSnowBossDamageNumbers(guard, replay, false);
             yield return ObserveSnowBossMotion(guard, false, count => replay.s2DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, false).Length >= 2,
                 "S2 repeats at the faster combat interval with its source motion rate");
@@ -165,6 +174,7 @@ namespace YesterdayConvoy
             Assert(Mathf.Approximately(replay.s3Ppu, 249.6f), "S3 uses the HD body in battle");
             yield return Frame("06-s3-impact");
             yield return ObserveSnowBossDirectImpact(guard, true);
+            yield return ObserveSnowBossDamageNumbers(guard, replay, true);
             yield return ObserveSnowBossMotion(guard, true, count => replay.s3DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, true).Length >= 2,
                 "S3 repeats at the faster combat interval with its source motion rate");
@@ -279,6 +289,46 @@ namespace YesterdayConvoy
             int targetOrder = 5000 - Mathf.RoundToInt(hit.To.y * 50);
             return impact.z > 0 && Mathf.Abs(impact.x - foot.x) < .03f &&
                 impact.y - foot.y > .01f && impact.y - foot.y < .25f && renderer.sortingOrder > targetOrder;
+        }
+
+        IEnumerator ObserveSnowBossDamageNumbers(FormationDefender guard, SnowBossReplay replay, bool thirdSkill)
+        {
+            var model = controller.Model;
+            FormationHit RecentVisibleHit(Func<FormationHit, bool> matches) =>
+                model.Hits.LastOrDefault(hit => model.Clock - hit.At < .25 &&
+                    controller.FormationPointVisibleInView(hit.To) && matches(hit));
+
+            FormationHit guardHit = null;
+            string skill = thirdSkill ? "S3" : "S2";
+            yield return ObserveSnowBossUntil(() =>
+            {
+                guardHit = RecentVisibleHit(hit => hit.FromId == guard.Id && hit.ShowDamageNumber &&
+                    hit.Action != null && IsSnowBossStrike(hit.Action, thirdSkill));
+                return guardHit != null;
+            }, skill + " deals qualifying damage to a player unit", 8);
+            if (thirdSkill) replay.s3DamageNumber = guardHit.Amount;
+            else replay.s2DamageNumber = guardHit.Amount;
+            yield return Frame(thirdSkill ? "06-s3-large-damage-number" : "04-s2-large-damage-number");
+            if (thirdSkill) yield break;
+
+            FormationHit playerHit = null;
+            yield return ObserveSnowBossUntil(() =>
+            {
+                playerHit = RecentVisibleHit(hit => hit.ToId == guard.Id && hit.ShowDamageNumber);
+                return playerHit != null;
+            }, "A player unit deals qualifying damage to the boss", 8);
+            replay.playerDamageNumber = playerHit.Amount;
+            yield return Frame("04-player-large-damage-number");
+
+            FormationHit snowHit = null;
+            yield return ObserveSnowBossUntil(() =>
+            {
+                snowHit = model.Hits.LastOrDefault(hit => hit.FromId == guard.Id && hit.Action?.Animation == "SnowBossS2Tick" &&
+                    hit.Amount > 0 && hit.Amount < 100);
+                return snowHit != null;
+            }, "A real snow tick deals damage below the popup floor", 8);
+            replay.suppressedSnowDamage = snowHit.Amount;
+            Assert(!snowHit.ShowDamageNumber, "Small snow damage remains in the hit records without a popup");
         }
 
         IEnumerator ObserveSnowBossAudio(int phase)

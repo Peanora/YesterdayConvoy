@@ -8,8 +8,14 @@ namespace YesterdayConvoy
     {
         static readonly Color Dark=new Color(.045f,.075f,.105f,.96f),Panel=ApprovedUi.Paper;
         static readonly Color Cyan=new Color(.28f,.85f,.88f),Gold=new Color(1,.79f,.38f),White=new Color(.9f,.94f,.96f),Muted=new Color(.55f,.67f,.73f);
+        static readonly Vector2[] DamageNumberOutline =
+        {
+            new Vector2(-2, 0), new Vector2(2, 0), new Vector2(0, -2), new Vector2(0, 2),
+            new Vector2(-1.5f, -1.5f), new Vector2(-1.5f, 1.5f),
+            new Vector2(1.5f, -1.5f), new Vector2(1.5f, 1.5f)
+        };
         Vector2 formationSynergyScroll,formationRankingScroll;
-        GUIStyle formationRankingScrollbar;
+        GUIStyle formationRankingScrollbar, formationDamageNumberStyle;
         string formationInspectedTag;
         enum FormationMenuPage { Actions, DifficultyTrials, SynergyTrials }
         FormationMenuPage formationMenuPage;
@@ -266,15 +272,50 @@ namespace YesterdayConvoy
                     var p=CellScreen(u.SpawnCenter);
                     Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
                 }
+            if(Event.current.type!=EventType.Repaint)return;
             foreach(var h in Model.Hits)
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
                 if(!FormationPointVisibleInView(h.To))continue;
+                if(h.ShowDamageNumber)
+                {
+                    DrawFormationDamageNumber(h,(float)age,labelFrame);
+                    continue;
+                }
+                if(!h.Heal)continue;
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
                 if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
-                Label(new Rect(p.x-48,p.y-10,96,24),(h.Heal?"+":"")+h.Amount.ToString("0"),h.Skill?20:15,h.Heal?Cyan:h.Skill?Gold:White,TextAnchor.MiddleCenter);
+                Label(new Rect(p.x-48,p.y-10,96,24),"+"+h.Amount.ToString("0"),h.Skill?20:15,Cyan,TextAnchor.MiddleCenter);
             }
         }
+
+        void DrawFormationDamageNumber(FormationHit hit, float age, Rect labelFrame)
+        {
+            var anchor=FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.68f);
+            var point=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(anchor));
+            if(!labelFrame.Contains(point))return;
+            float remaining=1-age/.8f;
+            float rise=12+48*(1-remaining*remaining);
+            int lane=((int)Math.Round(hit.At*20)+hit.FromId*2)%3-1;
+            const float width=208, height=50;
+            float x=Mathf.Clamp(point.x+lane*25-width*.5f,labelFrame.xMin+2,labelFrame.xMax-width-2);
+            float y=Mathf.Clamp(point.y-rise-height*.5f,labelFrame.yMin+2,labelFrame.yMax-height-2);
+            var rect=new Rect(x,y,width,height);
+
+            float size=age<.10f ? Mathf.SmoothStep(28,39,age/.10f)
+                : Mathf.SmoothStep(39,32,Mathf.InverseLerp(.10f,.24f,age));
+            float alpha=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.43f,.8f,age));
+            formationDamageNumberStyle??=ApprovedUi.Text(null,32,TextAnchor.MiddleCenter,Color.white,650);
+            var style=formationDamageNumberStyle;
+            style.fontSize=Mathf.RoundToInt(size);
+            string number=hit.Amount.ToString("0");
+            style.normal.textColor=new Color(.13f,.025f,.035f,alpha);
+            foreach(var offset in DamageNumberOutline)
+                GUI.Label(new Rect(rect.position+offset,rect.size),number,style);
+            style.normal.textColor=new Color(1f,.30f,.28f,alpha);
+            GUI.Label(rect,number,style);
+        }
+
         void DrawSettlement()
         {
             if(Campaign?.IsPractice==true){DrawPracticeResult();return;}
