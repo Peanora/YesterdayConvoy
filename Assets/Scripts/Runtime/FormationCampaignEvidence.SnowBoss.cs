@@ -54,6 +54,7 @@ namespace YesterdayConvoy
             if (useMouse) yield return ClickStrategyUi(FormationBattleController.FormationStartRect.center);
             else controller.StartBattle();
             Assert(model.Phase == FormationPhase.Fighting && model.Speed == 1, "Boss trial starts at the ordinary simulation rate");
+            guard = model.Defenders.Single();
             yield return ObserveSnowBossUntil(() => model.PresentationActions.Any(action => action.ActorId == guard.Id && action.Skill),
                 "Phase 1 performs its S2 animation");
             replay.secondSkillAttackAt = model.Clock;
@@ -72,7 +73,7 @@ namespace YesterdayConvoy
             Assert(model.BossAlive && model.RemainingDefenders == 1 && guard.Health == 0 &&
                 model.SnowBossSnow(guard).Count == 0, "Transition empties the first bar and clears S2 tiles without clearing the board");
             var positions = frozen.Select(unit => unit.Position).ToArray();
-            yield return CaptureInterfaceClip("phase-break-freeze", 28, SnowBossClipsFlag);
+            yield return CaptureInterfaceClip("phase-break-freeze", 28, SnowBossClipsFlag, () => model.SnowBossFreezeRemaining(frozen[0]) > .3);
             Assert(positions.SequenceEqual(frozen.Select(unit => unit.Position)), "Frozen opponents hold their positions across rendered frames");
             model.Paused = true;
             double pausedAt = model.Clock;

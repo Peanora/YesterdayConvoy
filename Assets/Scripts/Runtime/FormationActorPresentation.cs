@@ -123,7 +123,9 @@ namespace YesterdayConvoy
             return actor is FormationDefender guard && guard.IsSnowBoss ? height * PramanixBossScale : height;
         }
 
-        const float PramanixBossScale = 2.45f;
+        const float PramanixBossScale = 3.65f;
+        // The retained idle frames all have visible alpha at 1.23–1.26 source units above the feet.
+        const float PramanixScoutLabelTop = 1.30f;
 
         Rect FormationActorScreenRect(FormationFighter actor)
         {
@@ -238,6 +240,7 @@ namespace YesterdayConvoy
                 bool singleFrameSequence=false;
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
+                    if(guard.IsSnowBoss)labelTop=PramanixScoutLabelTop;
                     double sourceAge=(now-actor.LastActionAt)*actionRate;
                     double s2StartedAt=Model.SnowBossS2StartedAt(guard);
                     if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&

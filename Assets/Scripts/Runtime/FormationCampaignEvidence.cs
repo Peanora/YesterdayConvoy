@@ -87,7 +87,7 @@ namespace YesterdayConvoy
         {result.checks.Add(new Check{name=name,passed=value});if(!value)throw new InvalidOperationException(name);}
         IEnumerator Frame(string name)
         {yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,name+".png"));yield return null;}
-        IEnumerator CaptureInterfaceClip(string name, int frames, string flag = "-formationUiClips")
+        IEnumerator CaptureInterfaceClip(string name, int frames, string flag = "-formationUiClips", Func<bool> continueRecording = null)
         {
             if (Array.IndexOf(Environment.GetCommandLineArgs(), flag) < 0) yield break;
             string target = Path.Combine(directory, name);
@@ -96,6 +96,7 @@ namespace YesterdayConvoy
             for (int i = 0; i < frames; i++)
             {
                 while (Time.realtimeSinceStartupAsDouble < start + i / 24d) yield return null;
+                if (continueRecording != null && !continueRecording()) break;
                 yield return new WaitForEndOfFrame();
                 ScreenCapture.CaptureScreenshot(Path.Combine(target, i.ToString("D3") + ".png"));
             }
