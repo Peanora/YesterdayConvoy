@@ -128,6 +128,60 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void ReserveOverflowPromotesInOrderAllowsDeploymentAndBlocksOnlyRecruitmentAndBattleAsNeeded()
+        {
+            var session = new FormationShopSession(17, fullCampaign: true);
+            foreach (var drop in session.Run.PendingBalls.ToArray())
+            {
+                Assert.That(session.Run.BeginBall(drop.Id), Is.Not.Null);
+                Assert.That(session.Run.CompleteBall(drop.Id), Is.Not.Null);
+            }
+            while (session.Run.HasBlockingChoice) Assert.That(session.Choose(0).Success, Is.True);
+
+            var shop = session.Shop;
+            var ids = FormationCampaignRules.AllUnits.Take(12).Select(role => role.CardId).ToArray();
+            shop.Preset(ids.Take(9).Append(ids[0]).Select(id => new ShopTrialModel.Piece { Id = id, Star = 1 }),
+                new[] { ids[0] }, level: 3, xp: 0, gold: 8);
+            var model = Bind(session);
+            string untouched = ShopSnapshot(shop);
+            Assert.That(session.Seats.ReserveFull, Is.True);
+            Assert.That(shop.PreviewPurchase(0).Success, Is.False, "Even a third copy requires a vacancy.");
+            Assert.That(session.Purchase(0).Success, Is.False);
+            Assert.That(ShopSnapshot(shop), Is.EqualTo(untouched));
+
+            int Instance(string id) => shop.Bench.First(piece => piece.Id == id).Instance;
+            Assert.That(session.TryDeploy(Instance(ids[1]), new Vector2Int(1, 1)).Success, Is.True);
+            Assert.That(shop.PreviewPurchase(0).Success, Is.True);
+            Assert.That(shop.Grant(ids[9]).Success, Is.True);
+            Assert.That(shop.Grant(ids[10]).Success, Is.True);
+            Assert.That(shop.Grant(ids[11]).Success, Is.True);
+            session.ApplyTo(model);
+            Assert.That(session.Seats.OverflowCount, Is.EqualTo(2));
+            Assert.That(session.Seats.At(false, ShopSeatLayout.ReserveCapacity), Is.EqualTo(Instance(ids[10])));
+            Assert.That(session.Seats.At(false, ShopSeatLayout.ReserveCapacity + 1), Is.EqualTo(Instance(ids[11])));
+            Assert.That(model.StartBattle(), Is.False);
+
+            int vacated = session.Seats.For(Instance(ids[2])).Value.Index;
+            Assert.That(session.TryDeploy(Instance(ids[2]), new Vector2Int(4, 1)).Success, Is.True);
+            Assert.That(session.Seats.At(false, vacated), Is.EqualTo(Instance(ids[10])));
+            Assert.That(session.Seats.At(false, ShopSeatLayout.ReserveCapacity), Is.EqualTo(Instance(ids[11])));
+            Assert.That(session.Purchase(0).Success, Is.False);
+            Assert.That(model.StartBattle(), Is.False);
+
+            Assert.That(session.TryDeploy(Instance(ids[11]), new Vector2Int(6, 4)).Success, Is.True);
+            Assert.That(session.Seats.OverflowCount, Is.Zero);
+            Assert.That(session.Seats.ReserveFull, Is.True);
+            Assert.That(session.Purchase(0).Success, Is.False);
+            Assert.That(model.StartBattle(), Is.True, "A full reserve without overflow is battle-ready.");
+
+            model.Retry();
+            session.ApplyTo(model);
+            Assert.That(session.Sell(Instance(ids[3])).Success, Is.True);
+            Assert.That(session.Purchase(0).FinalStar, Is.EqualTo(2));
+            AssertStock(shop);
+        }
+
+        [Test]
         public void FailedTransactionsAndAllCombatTimeShopActionsLeaveTheEconomyUnchanged()
         {
             var session = new FormationShopSession(51); var model = Bind(session);

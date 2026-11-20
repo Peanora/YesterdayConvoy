@@ -39,6 +39,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(controller.ChooseCampaignOption(0).Success, Is.True);
                 yield return null;
             }
+            FormationFullGameSceneTests.DeployOpeningRecruits(controller);
             yield return RosterReady();
         }
 
@@ -293,6 +294,7 @@ namespace YesterdayConvoy.Tests
             // The normal sized camera must not make this regression depend on default spawn projection.
             var beast = controller.Shop.Bench.Single(piece => piece.Id == "CARD_B22");
             Assert.That(controller.Session.TryDeploy(beast.Instance, FreeCell(beast.Instance, underneathDetails: true)).Success, Is.True);
+            Assert.That(controller.MovePiece(host.Instance, true, controller.Session.Seats.For(host.Instance).Value.Index).Success, Is.True);
             yield return null;
             Assert.That(controller.FormationPieceRect(beast.Instance).Overlaps(FormationBattleController.FormationTraitDetailsRect), Is.True,
                 "The input regression must cover an actual projected body, not an assumed screen lineup slot.");

@@ -35,11 +35,9 @@ namespace YesterdayConvoy
         double lastSoundAt=-10;
         AudioSource sounds;
         bool soundEnabled=true;
-        int dragSlot=-1;
         bool pointerHeld;
-        bool pendingClickDeployment;
         Vector2 pointerStart;
-        string notice="拖动场上角色换位，或选中下方角色后点击左侧格子。";
+        string notice="拖动角色换位、上阵或返回备战席。";
 
         IEnumerator Start()
         {
@@ -145,13 +143,18 @@ namespace YesterdayConvoy
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
-            if(FormationSupplyBlocksPoint(point) &&
-                !(type!=EventType.MouseDown && pointerHeld && shopDragInstance>0 && FormationSellRight.Contains(point)))
-            {CancelFormationDrag();return;}
-            // Detail cards also overlap part of the lineup rail. They get first refusal
-            // before either terrain painting or seat dragging can capture the pointer.
-            if(FormationTraitDetailsOpen&&FormationTraitDetailsRect.Contains(point)){CancelFormationDrag();return;}
-            if(FormationInspectionBlocksPoint(point)||OperationsBlocksPoint(point)){CancelFormationDrag();return;}
+            bool heldPiece=pointerHeld&&shopDragInstance>0;
+            if(type!=EventType.MouseDrag||!heldPiece)
+            {
+                // Panels block starting and committing a drag, but crossing them while
+                // holding a piece must not drop the preview or lose the original grab.
+                if(FormationSupplyBlocksPoint(point)&&
+                    !(type==EventType.MouseUp&&heldPiece&&FormationSellRight.Contains(point)))
+                {CancelFormationDrag();return;}
+                if(FormationTraitDetailsOpen&&FormationTraitDetailsRect.Contains(point)||
+                    FormationInspectionBlocksPoint(point)||OperationsBlocksPoint(point))
+                {CancelFormationDrag();return;}
+            }
             if (pressedFormationOffer >= 0 && type != EventType.MouseDown)
             {
                 if (type == EventType.MouseUp) ReleaseFormationOffer(point);
@@ -168,41 +171,32 @@ namespace YesterdayConvoy
                 if(!CanEditFormationView){CancelFormationDrag();return;}
                 if(FormationShopBlocksPoint(point)||!BoardInputRect.Contains(point)){CancelFormationDrag();return;}
                 var picked = FormationUnitAt(point);
-                if(picked!=null){SelectedSlot=picked.Slot;selectedPiece=picked.Instance;dragSlot=picked.Slot;shopDragInstance=picked.Instance;PrepareFieldDeploymentGrab(picked,point);}
-                else if(TryCell(point,out _))
+                if(picked!=null)
                 {
-                    if(SelectedSlot>=0&&SelectedSlot<Model.Units.Count&&Model.Units[SelectedSlot].Enabled)
-                    {var selected=Model.Units[SelectedSlot];shopDragInstance=selected.Instance;dragSlot=selected.Slot;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
-                    else if(selectedPiece>0)
-                    {shopDragInstance=selectedPiece;deploymentGrabOffset=Vector2Int.zero;deploymentGrabGroundOffset=Vector3.zero;pendingClickDeployment=true;}
+                    SelectedSlot=picked.Slot;selectedPiece=picked.Instance;shopDragInstance=picked.Instance;
+                    PrepareFieldDeploymentGrab(picked,point);
                 }
             }
             if(type==EventType.MouseDrag)UpdateDeploymentPreview();
             if(type==EventType.MouseUp)
             {
-                if(pointerHeld&&Vector2.Distance(point,pointerStart)>6)
+                if(heldPiece&&Vector2.Distance(point,pointerStart)>6)
                 {
                     if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
-                    {var anchor=DeploymentAnchor(cell);if(dragSlot>=0)Place(dragSlot,anchor);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,anchor);}
+                        PlaceFormationPiece(shopDragInstance,DeploymentAnchor(cell));
                 }
-                else if(pointerHeld&&(FormationTraitDetailsOpen||FormationInspectedItemId>0)&&
-                        (pendingClickDeployment||shopDragInstance==0&&BoardInputRect.Contains(point)))
+                else if(pointerHeld&&!heldPiece&&Vector2.Distance(point,pointerStart)<=6&&
+                        (FormationTraitDetailsOpen||FormationInspectedItemId>0)&&BoardInputRect.Contains(point))
                 { CloseFormationTraitDetails(); CloseFormationEquipmentDetails(); }
-                else if(pointerHeld&&pendingClickDeployment&&TryCell(point,out var clickCell))
-                {if(dragSlot>=0)Place(dragSlot,clickCell);else if(shopDragInstance>0)PlaceReserve(shopDragInstance,clickCell);}
-                else if(pointerHeld&&shopDragInstance>0)
+                else if(heldPiece)
                     ToggleFormationPieceInspection(shopDragInstance);
                 CancelFormationDrag();SyncActors();
             }
         }
-        void Place(int slot,Vector2Int cell)
-        {
-            var unit=Model.Units.FirstOrDefault(u=>u.Slot==slot);
-            if(unit!=null)ShopAction(()=>Session.TryDeploy(unit.Instance,cell));
-        }
         public void StartBattle()
         {
             if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
+            if(OverflowCount>0){notice="备战席还有溢出角色，请先上阵或出售。";return;}
             if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
             if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
             Session.SavePositions(Model);Session.ApplyTo(Model);

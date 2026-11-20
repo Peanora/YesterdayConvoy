@@ -43,6 +43,7 @@ namespace YesterdayConvoy
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
+        static bool ReserveRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationReserveEvidence")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -176,7 +177,13 @@ namespace YesterdayConvoy
             yield return ClaimGroundRewards(true,"opening-reward");
             Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3&&
                 controller.Shop.Bench.All(piece=>piece.Star==1&&controller.Shop.Definition(piece.Id).Cost==1)&&
-                controller.Model.EnabledCount==3&&controller.Campaign.Inventory.Count==1,"Both opening balls deliver three distinct active starters and one component");
+                controller.Shop.Bench.All(piece=>controller.Session.Seats.For(piece.Instance) is { Lineup: false })&&
+                controller.Model.EnabledCount==0&&controller.Campaign.Inventory.Count==1,"Both opening balls deliver three distinct starters to reserve and one component");
+            if (ReserveRequested)
+            {
+                yield return VerifyReserveOverflow();
+                yield break;
+            }
             var original=controller.Campaign.Choices.Select(c=>c.Id).ToArray();
             Assert(controller.Campaign.CanRerollChoice,"Preplan has one free whole-group reroll");
             Assert(controller.Campaign.RerollChoice(),"Reroll preplan");
@@ -184,6 +191,7 @@ namespace YesterdayConvoy
             Assert(!controller.Campaign.CanRerollChoice,"Preplan cannot be rerolled twice");
             yield return Frame("02-investment-environment");yield return ResolveChoices();
             Assert(!controller.MarketVisible,"Opening choices leave recruitment drawer collapsed");
+            DeployOpeningRecruits();
             yield return Market(false);controller.SetFormationView(false);yield return ReadyArt();
             Assert(controller.CurrentFormationCameraSafeRect==FormationBattleController.PreparationCameraSafeRect,"Preparation uses its close fixed camera frame");
             Assert(controller.FormationPreparationUiVisible&&!controller.CombatViewActive,"Preparation displays the operating layer");
@@ -273,6 +281,11 @@ namespace YesterdayConvoy
                         controller.ProcessPointer(EventType.MouseDown,origin);controller.ProcessPointer(EventType.MouseDrag,destination);controller.ProcessPointer(EventType.MouseUp,destination);
                         Assert(controller.Session.Seats.InLineup(p.Instance),"Purchased reserve deploys directly onto an actual board cell");
                     }
+                while (controller.Session.Seats.OverflowCount > 0)
+                {
+                    int overflow = controller.Session.Seats.At(false, ShopSeatLayout.ReserveCapacity);
+                    Assert(controller.SellPiece(overflow).Success, "Sell an extra reward recruit to clear battle-blocking overflow");
+                }
                 var core=controller.Session.Seats.Lineup(controller.Shop.Bench).FirstOrDefault();
                 foreach(var item in controller.Campaign.Inventory.ToArray())if(core!=null&&item.Key.Length<=2)controller.Campaign.Equip(item.Instance,core.Instance);
                 yield return ReadyArt();controller.SetMarketVisible(false);
@@ -351,6 +364,151 @@ namespace YesterdayConvoy
                 Assert(controller.ChooseGroundRewardOption(0).Success,"Claim one queued option on demand");
             }
         }
+        void DeployOpeningRecruits()
+        {
+            foreach (var piece in controller.Shop.Bench.Take(3).ToArray())
+            {
+                int seat = controller.Session.Seats.FirstEmpty(true, controller.Shop.PopulationCap);
+                Assert(controller.MovePiece(piece.Instance, true, seat).Success, "Explicitly deploy opening recruit " + piece.Id);
+            }
+        }
+
+        void Click(Vector2 point)
+        {
+            controller.ProcessPointer(EventType.MouseDown, point);
+            controller.ProcessPointer(EventType.MouseUp, point);
+        }
+
+        void DragReserveOnBoard(int instance, Vector2Int cell)
+        {
+            var origin = controller.FormationPieceRect(instance);
+            var target = FormationBattleController.CellScreen(cell);
+            Assert(origin.width > 0 && !controller.Session.Seats.InLineup(instance) &&
+                controller.Session.PreviewDeploy(instance, cell).Valid, "Visible reserve or overflow card has a legal board destination");
+            controller.ProcessPointer(EventType.MouseDown, origin.center);
+            controller.ProcessPointer(EventType.MouseDrag, target);
+            controller.ProcessPointer(EventType.MouseUp, target);
+            Assert(controller.Session.Seats.InLineup(instance) &&
+                controller.Model.Units.Single(unit => unit.Instance == instance).Spawn == (Vector2)cell,
+                "Dragging the visible card deploys it to the intended board cell");
+        }
+
+        IEnumerator VerifyReserveOverflow()
+        {
+            result.scope = "Actual authored Windows Player. Opening balls, selection, drag, shop and combat use production paths. Fixed reward grants fill the reserve after the random opening. Input is driven through game pointer handlers.";
+            yield return ResolveChoices();
+            yield return Market(false);
+            controller.StartBattle();
+            Assert(controller.Model.Phase == FormationPhase.Preparation && controller.Model.EnabledCount == 0,
+                "After opening choices the empty board still requires deployment");
+            yield return Frame("02-opening-recruits-on-reserve");
+
+            int field = controller.Shop.Bench[0].Instance;
+            int onBench = controller.Shop.Bench[1].Instance;
+            var anchor = new Vector2Int(4, 3);
+            DragReserveOnBoard(field, anchor);
+            yield return ReadyArt();
+            var body = controller.FormationPieceRect(field).center;
+            var empty = FormationBattleController.CellScreen(new Vector2Int(1, 5));
+            Click(body);
+            Assert(controller.FormationInspectedCardId == controller.Shop.Bench[0].Id, "A board click selects and inspects the actor");
+            Click(empty);
+            Assert(controller.Model.Units.Single().Spawn == (Vector2)anchor, "Selecting an on-board actor and clicking empty ground leaves its spawn fixed");
+            if (controller.FormationInspectedCardId != null) Click(body);
+            var reserve = controller.FormationPieceRect(onBench).center;
+            Click(reserve);
+            Click(empty);
+            Assert(!controller.Session.Seats.InLineup(onBench) && controller.Model.EnabledCount == 1,
+                "Selecting a reserve card and clicking empty ground does not deploy it");
+            if (controller.FormationInspectedCardId != null) Click(reserve);
+
+            const int returnSeat = 5;
+            var bench = FormationBattleController.FormationReserveRect(returnSeat).center;
+            var gap = new Vector2(bench.x, FormationBattleController.FormationBenchRect.yMin - 14);
+            controller.ProcessPointer(EventType.MouseDown, body);
+            controller.ProcessPointer(EventType.MouseDrag, gap);
+            Assert(controller.DragPreviewVisible && controller.DeploymentPreview == null &&
+                controller.DeploymentGhost.sprite != null, "The held source idle frame remains visible in the gap above the bench");
+            yield return Frame("03-held-above-reserve");
+            controller.ProcessPointer(EventType.MouseDrag, bench);
+            Assert(controller.DragPreviewVisible && controller.DeploymentPreview == null &&
+                controller.DeploymentGhost.sprite != null, "The held source idle frame remains visible over the reserve slot");
+            yield return Frame("04-held-over-reserve");
+            controller.ProcessPointer(EventType.MouseUp, bench);
+            Assert(controller.Session.Seats.At(false, returnSeat) == field && controller.Model.EnabledCount == 0 &&
+                !controller.DragPreviewVisible, "Releasing the held model moves it into that reserve slot");
+            DragReserveOnBoard(field, anchor);
+
+            int offerSlot = Enumerable.Range(0, controller.Shop.Offers.Count).First(index =>
+                controller.Shop.Offers[index] != null && controller.Shop.Bench.All(piece => piece.Id != controller.Shop.Offers[index]));
+            string offerId = controller.Shop.Offers[offerSlot];
+            var fixture = controller.Shop.Roles.Where(role => role.Cost <= 2 && role.Id != offerId &&
+                controller.Shop.Bench.All(piece => piece.Id != role.Id)).Select(role => role.Id).ToArray();
+            int slotsToFill = ShopSeatLayout.ReserveCapacity - (controller.Shop.Bench.Count - controller.Model.EnabledCount);
+            foreach (string id in fixture.Take(slotsToFill))
+                Assert(controller.Shop.Grant(id).Success, "Grant a fixed test recruit to fill the reserve");
+            controller.Session.ApplyTo(controller.Model);
+            Assert(controller.Session.Seats.ReserveFull && controller.Session.Seats.OverflowCount == 0,
+                "The ten regular reserve seats can all be filled without overflow");
+            yield return Market(true);
+            int gold = controller.Shop.Gold;
+            var offer = FormationBattleController.FormationOfferRect(offerSlot).center;
+            Click(offer);
+            Assert(!controller.Shop.PreviewPurchase(offerSlot).Success && controller.Shop.Gold == gold &&
+                controller.Shop.Offers[offerSlot] == offerId, "A full reserve blocks the visible card purchase without spending gold");
+            yield return Frame("05-full-reserve-no-overflow");
+            yield return Market(false);
+
+            var first = controller.Shop.Grant(fixture[slotsToFill]);
+            var ticket = controller.Shop.ReserveRewardCandidate(fixture[slotsToFill + 1]);
+            var second = controller.Shop.GrantReserved(ticket);
+            controller.Session.ApplyTo(controller.Model);
+            var firstRect = controller.FormationPieceRect(first.Instance);
+            var secondRect = controller.FormationPieceRect(second.Instance);
+            Assert(first.Success && second.Success && controller.Session.Seats.OverflowCount == 2 &&
+                firstRect.width > 0 && secondRect.width > 0 && firstRect.center.x > 850 && secondRect.center.x > 850 &&
+                firstRect.center.y < 400 && secondRect.center.y < 400 && !firstRect.Overlaps(secondRect),
+                "Both awarded recruits occupy distinct visible positions at the upper right");
+            yield return Frame("06-two-overflow-recruits");
+            controller.StartBattle();
+            Assert(controller.Model.Phase == FormationPhase.Preparation && controller.Model.EnabledCount == 1,
+                "Overflow blocks combat even with a legal deployed actor");
+            yield return Market(true);
+            Click(offer);
+            Assert(controller.Shop.Gold == gold && controller.Shop.Offers[offerSlot] == offerId,
+                "An unresolved overflow also blocks card purchase");
+            yield return Market(false);
+
+            DragReserveOnBoard(second.Instance, new Vector2Int(6, 2));
+            Assert(controller.Session.Seats.OverflowCount == 1, "An overflow recruit itself can deploy through the ordinary board drag");
+            int regularSeat = controller.Session.Seats.For(onBench).Value.Index;
+            DragReserveOnBoard(onBench, new Vector2Int(6, 5));
+            Assert(controller.Session.Seats.OverflowCount == 0 && controller.Session.Seats.ReserveFull &&
+                controller.Session.Seats.At(false, regularSeat) == first.Instance,
+                "Deploying a reserve recruit automatically fills that vacancy with the remaining overflow recruit");
+            yield return Frame("07-overflow-cleared-on-board-deployment");
+            yield return Market(true);
+            Click(offer);
+            Assert(controller.Shop.Gold == gold && controller.Shop.Offers[offerSlot] == offerId,
+                "Purchases remain blocked while all ten regular slots are still occupied");
+            Assert(controller.SellPiece(first.Instance).Success && !controller.Session.Seats.ReserveFull,
+                "One ordinary sale exposes a real reserve vacancy");
+            int beforePurchase = controller.Shop.Gold;
+            Click(offer);
+            Assert(controller.Shop.Offers[offerSlot] == null &&
+                controller.Shop.Gold == beforePurchase - controller.Shop.Definition(offerId).Cost &&
+                controller.Session.Seats.At(false, regularSeat) > 0 &&
+                controller.Shop.Bench.Any(piece => piece.Id == offerId && !controller.Session.Seats.InLineup(piece.Instance)),
+                "The same offer becomes purchasable once a regular slot is available and lands in reserve");
+            yield return Market(false);
+            yield return ReadyArt();
+            controller.StartBattle();
+            Assert(controller.Model.Phase == FormationPhase.Fighting && controller.Session.Seats.ReserveFull &&
+                controller.Session.Seats.OverflowCount == 0, "Ten regular reserve recruits allow battle once overflow is cleared");
+            controller.Model.Paused = true;
+            yield return Frame("08-combat-after-overflow-resolved");
+        }
+
         IEnumerator VerifyStrategyVariants()
         {
             Assert(Resources.Load<Texture2D>("UI/Strategy/plates") != null &&
@@ -383,6 +541,7 @@ namespace YesterdayConvoy
                 if (tier == "银") yield return Frame("strategy-opening");
                 while (controller.Campaign.HasBlockingChoice)
                     Assert(controller.ChooseCampaignOption(0).Success, "Resolve opening choice for " + tier);
+                DeployOpeningRecruits();
 
                 for (int i = 0; i < 2; i++)
                 {
@@ -527,6 +686,7 @@ namespace YesterdayConvoy
                 "External Recruitment opens its real emblem choice");
             yield return Frame("01-badge-choice");
             Assert(controller.ChooseCampaignOption(0).Success, "Claim a badge from the real choice");
+            DeployOpeningRecruits();
             yield return ReadyArt();
 
             var red = controller.Campaign.AddItem("赤宝石", false);
@@ -850,7 +1010,8 @@ namespace YesterdayConvoy
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
             result.passed=error==null&&result.exceptionCount==0;
             string report = SynergyRequested ? "synergy-smoke.json" :
-                DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" : "campaign-smoke.json";
+                DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" :
+                ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
             string marker = SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
             Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));

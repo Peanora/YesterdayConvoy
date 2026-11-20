@@ -72,7 +72,7 @@ namespace YesterdayConvoy
                 new ShopTrialModel.Piece { Id = "CARD_M11", Star = 1 }
             }, Array.Empty<string>(), level: 3, xp: 0, gold: 12);
             }
-            Seats = new ShopSeatLayout();
+            Seats = new ShopSeatLayout(Shop.FormationEconomy);
             lineup.AddRange(Shop.Bench.Select(piece => piece.Id));
             Synchronize(); Shop.BeginPreparation(); Shop.Refresh(true);
         }
@@ -210,7 +210,7 @@ namespace YesterdayConvoy
         {
             selected = null; failure = null;
             var origin = Seats.For(instance);
-            if (!origin.HasValue || seat < 0 || seat >= (toLineup ? Shop.PopulationCap : 10))
+            if (!origin.HasValue || !Seats.CanTarget(toLineup, seat, Shop.PopulationCap))
             { failure = "该席位尚未解锁"; return false; }
             int swapped = Seats.At(toLineup, seat);
             selected = Shop.Bench.Where(piece => piece.Instance == instance ? toLineup :
@@ -219,7 +219,7 @@ namespace YesterdayConvoy
                     piece.Instance == swapped ? origin.Value.Index : Seats.For(piece.Instance).Value.Index).ToArray();
             if (selected.Select(piece => piece.Id).Distinct(StringComparer.Ordinal).Count() != selected.Length)
             { failure = "同名角色只能有一张出战；可与其直接交换"; return false; }
-            if (selected.Length > Shop.PopulationCap || Shop.Bench.Count - selected.Length > 10)
+            if (selected.Length > Shop.PopulationCap || !Shop.FormationEconomy && Shop.Bench.Count - selected.Length > ShopSeatLayout.ReserveCapacity)
             { failure = "备战席或上阵席位已满"; return false; }
             return true;
         }
@@ -325,26 +325,11 @@ namespace YesterdayConvoy
             var result=Run.Choose(index);if(result.Success){Synchronize();if(model!=null&&model.Phase==FormationPhase.Preparation)ApplyTo(model);}return result;
         }
         public bool RerollChoice()=>Run!=null&&Run.RerollChoice();
-        internal Vector2[] OpeningRecruitCenters(IReadOnlyList<FormationCampaignRun.RewardRecruit> recruits)
-        {
-            // During opening, no cards can be bought or placed before these first copies arrive.
-            var starters = recruits.Select((recruit, index) => new ShopTrialModel.Piece
-                { Id = recruit.CardId, Star = recruit.Star, Instance = index + 1 }).ToArray();
-            if (!TryProject(starters, out var placements, out var failure))
-                throw new InvalidOperationException(failure);
-            return placements.Select(entry => entry.Spawn +
-                (Vector2)(FormationUnitCatalog.Find(entry.ArtId).Footprint - Vector2Int.one) * .5f).ToArray();
-        }
 
         internal FormationCampaignRun.BallReward CompleteBall(int id)
         {
-            var opening = Run?.PendingBalls.FirstOrDefault(drop => drop.Id == id && drop.IsOpening);
             var reward = Run?.CompleteBall(id);
-            if (reward != null)
-            {
-                if (opening != null) lineup.AddRange(opening.Payout.Recruits.Select(recruit => recruit.CardId));
-                Synchronize();
-            }
+            if (reward != null) Synchronize();
             return reward;
         }
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)

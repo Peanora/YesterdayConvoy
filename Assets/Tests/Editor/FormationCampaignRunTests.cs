@@ -387,13 +387,17 @@ namespace YesterdayConvoy.Tests
             var otherShop=Shop();var foreign=otherShop.ReserveRewardCandidate(other);Assert.That(shop.GrantReserved(foreign).Success,Is.False);Assert.That(shop.ReleaseReservation(foreign),Is.False);shop.Validate();otherShop.Validate();
         }
         [Test]
-        public void FullBenchKeepsSelectedReservedCopyUntilSpaceIsReleased()
+        public void FullBenchClaimsReservedRewardIntoOverflowWithoutSpendingStockTwice()
         {
             var shop=Shop();var ids=FormationCampaignRules.AllUnits.Take(10).Select(x=>x.CardId).ToArray();string target=FormationCampaignRules.Find("M28").CardId;
             shop.Preset(ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=1}),Array.Empty<string>(),3,0,80);
             var ticket=shop.ReserveRewardCandidate(target);int available=shop.Available(target);
-            Assert.That(shop.GrantReserved(ticket).Success,Is.False);Assert.That(shop.IsReservationActive(ticket),Is.True);Assert.That(shop.Available(target),Is.EqualTo(available));shop.Validate();
-            shop.Sell(shop.Bench.First().Instance);Assert.That(shop.GrantReserved(ticket).Success,Is.True);Assert.That(shop.Available(target),Is.EqualTo(available));Assert.That(shop.IsReservationActive(ticket),Is.False);shop.Validate();
+            Assert.That(shop.GrantReserved(ticket).Success,Is.True);
+            Assert.That(shop.Bench.Count,Is.EqualTo(ShopSeatLayout.ReserveCapacity + 1));
+            Assert.That(shop.Available(target),Is.EqualTo(available));
+            Assert.That(shop.IsReservationActive(ticket),Is.False);
+            Assert.That(shop.GrantReserved(ticket).Success,Is.False);
+            shop.Validate();
         }
         [Test]
         public void TalulahBothCostUpgradesIncludeOutstandingRewardReservations()
@@ -442,15 +446,22 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.Choose(0).Success,Is.True);Assert.That(run.ChoiceTitle,Does.StartWith("补给"));Assert.That(shop.RewardReservations.Count,Is.EqualTo(5));Assert.That(run.NodeSettled,Is.False);shop.Validate();
         }
         [Test]
-        public void SelectedSupplyWithFullReserveWaitsAcrossNodesWithoutReleasingItsTicket()
+        public void SelectedSupplyWithFullReserveCarriesOwnedOverflowAcrossNodes()
         {
             var run=SupplyFixture();var shop=run.Shop;
             foreach(var role in FormationCampaignRules.AllUnits.Where(x=>x.Cost==1))Assert.That(shop.Grant(role.CardId).Success,Is.True);
             foreach(string id in new[]{"M14","M28"})Assert.That(shop.Grant(FormationCampaignRules.Find(id).CardId).Success,Is.True);
             Assert.That(shop.Bench.Count,Is.EqualTo(10));int selected=Array.FindIndex(run.Choices.ToArray(),x=>x.Id!="TAL");string target=FormationCampaignRules.Find(run.Choices[selected].Id).CardId;
-            run.Choose(selected);Assert.That(run.PendingDeliveries,Is.EqualTo(1));Assert.That(shop.ReservedRewards(target),Is.EqualTo(1));Assert.That(shop.RewardReservations.Count,Is.EqualTo(1));
-            Assert.That(run.AdvanceNode(),Is.True);Assert.That(run.PendingDeliveries,Is.EqualTo(1));Assert.That(shop.ReservedRewards(target),Is.EqualTo(1));shop.Validate();
-            shop.Sell(shop.Bench.First().Instance);run.OnShopChanged();Assert.That(run.PendingDeliveries,Is.Zero);Assert.That(shop.RewardReservations.Count,Is.Zero);Assert.That(shop.Bench.Any(p=>p.Id==target),Is.True);shop.Validate();
+            Assert.That(run.Choose(selected).Success,Is.True);
+            Assert.That(run.PendingDeliveries,Is.Zero);
+            Assert.That(shop.RewardReservations,Is.Empty);
+            var recruit = shop.Bench.Last();
+            Assert.That(recruit.Id,Is.EqualTo(target));
+            Assert.That(shop.Bench.Count,Is.EqualTo(ShopSeatLayout.ReserveCapacity + 1));
+            Assert.That(run.AdvanceNode(),Is.True);
+            Assert.That(shop.Bench.Last(),Is.SameAs(recruit));
+            Assert.That(shop.Bench.Count,Is.EqualTo(ShopSeatLayout.ReserveCapacity + 1));
+            shop.Validate();
         }
     }
 }

@@ -70,7 +70,8 @@ namespace YesterdayConvoy
         public bool SetLineup(IEnumerable<string> ids,IEnumerable<int> preferredInstances=null)
         {
             var next=new HashSet<string>(ids);
-            if(next.Count>PopulationCap||next.Any(id=>!bench.Any(p=>p.Id==id))||bench.Count-next.Count>10)return false;
+            if(next.Count>PopulationCap||next.Any(id=>!bench.Any(p=>p.Id==id))||
+                !FormationEconomy&&bench.Count-next.Count>ShopSeatLayout.ReserveCapacity)return false;
             var preferred=new HashSet<int>(preferredInstances??Enumerable.Empty<int>());
             var selected=bench.Where(p=>preferred.Contains(p.Instance)).ToArray();
             if(preferredInstances!=null&&(preferred.Count!=next.Count||selected.Length!=preferred.Count||selected.Any(p=>!next.Contains(p.Id))||selected.Select(p=>p.Id).Distinct().Count()!=next.Count))return false;
@@ -78,7 +79,8 @@ namespace YesterdayConvoy
             lineupInstances.Clear();foreach(int instance in preferred)lineupInstances.Add(instance);return true;
         }
         public void BeginPreparation(){CommissionUsed=false;}
-        bool Fits(List<Piece> pieces)=>pieces.Count<=10+lineup.Count(id=>pieces.Any(p=>p.Id==id));
+        int ReserveCount(IReadOnlyList<Piece> pieces) => pieces.Count - lineup.Count(id => pieces.Any(piece => piece.Id == id));
+        internal int ReserveOverflowCount => Math.Max(0, ReserveCount(bench) - ShopSeatLayout.ReserveCapacity);
         internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;
         public int Level {get;private set;}=5;
@@ -124,6 +126,8 @@ namespace YesterdayConvoy
         {
             planned=null;
             if(index<0||index>=5||offers[index]==null)return Fail("该位置没有可购买棋子");
+            if (FormationEconomy && ReserveCount(bench) >= ShopSeatLayout.ReserveCapacity)
+                return Fail("备战席已满，请腾出空位后再招募");
             return PlanIncoming(offers[index],out planned);
         }
         Result PlanIncoming(string id,out List<Piece> planned,int incomingStar=1)
@@ -138,7 +142,8 @@ namespace YesterdayConvoy
                 group[0].Star++;planned.Remove(group[1]);planned.Remove(group[2]);target=group[0].Instance;star=group[0].Star;
                 if(FormationEconomy&&id==TalulahId&&!TalulahLocked&&role.Cost<5&&star==2)break;
             }
-            if(!Fits(planned))return Fail("备战席已满；本次不能合成，不扣金币");
+            if(!FormationEconomy&&ReserveCount(planned)>ShopSeatLayout.ReserveCapacity)
+                return Fail("备战席已满；本次不能合成，不扣金币");
             return new Result{Success=true,Id=id,Instance=target,FinalStar=star,Value=role.Cost,Message=star>1?$"{role.Name} 晋升 {star}星":"招募成功"};
         }
         public Result Purchase(int index)
@@ -295,7 +300,7 @@ namespace YesterdayConvoy
         }
         public void Validate()
         {
-            if(Gold<0||bench.Count>10+lineup.Count(id=>bench.Any(p=>p.Id==id))||bench.Select(p=>p.Instance).Distinct().Count()!=bench.Count||bench.Any(p=>!roles.ContainsKey(p.Id)||p.Star<1||p.Star>MaxStar(p.Id)))throw new InvalidOperationException("Invalid shop state");
+            if(Gold<0||!FormationEconomy&&ReserveOverflowCount>0||bench.Select(p=>p.Instance).Distinct().Count()!=bench.Count||bench.Any(p=>!roles.ContainsKey(p.Id)||p.Star<1||p.Star>MaxStar(p.Id)))throw new InvalidOperationException("Invalid shop state");
             foreach(var id in roles.Keys)
                 if(pool[id]<0||pool[id]+offers.Count(o=>o==id)+bench.Where(p=>p.Id==id).Sum(p=>Copies(p.Star))+ReservedRewards(id)!=Capacity(id))throw new InvalidOperationException("Stock mismatch: "+id);
         }

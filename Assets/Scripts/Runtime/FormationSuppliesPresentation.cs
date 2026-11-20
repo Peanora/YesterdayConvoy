@@ -211,7 +211,9 @@ namespace YesterdayConvoy
         {
             if (FormationSupplyBlocksPoint(point) || FormationTraitBlocksPoint(point) ||
                 FormationInspectionBlocksPoint(point) || OperationsBlocksPoint(point)) return 0;
-            if (FindFormationSeat(point, out bool lineup, out int seat)) return Session.Seats.At(lineup, seat);
+            if (FindFormationReserveSeat(point, out int seat)) return Session.Seats.At(false, seat);
+            int overflow = FormationOverflowSeatAt(point);
+            if (overflow >= 0) return Session.Seats.At(false, overflow);
             return FormationUnitAt(point)?.Instance ?? 0;
         }
 

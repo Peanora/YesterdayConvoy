@@ -236,7 +236,8 @@ namespace YesterdayConvoy
         public bool StartBattle()
         {
             if (Phase != FormationPhase.Preparation || EnabledCount == 0 || Campaign != null &&
-                (Campaign.HasBlockingChoice || Campaign.OpeningRewardsPending || Campaign.Finished || Campaign.NodeSettled)) return false;
+                (Campaign.HasBlockingChoice || Campaign.OpeningRewardsPending || Campaign.Finished || Campaign.NodeSettled ||
+                 Campaign.Shop.ReserveOverflowCount > 0)) return false;
             if(Campaign!=null&&(Campaign.CurrentNode.Kind=="补给"||!ValidateSeaPlacement(out _)))return false;
             Clock = 0; accumulator = 0; Hits.Clear(); ResetAnimationPresentation(); ResetCadejoBlinks(); Paused = false;
             foreach (var unit in Units) ResetFighter(unit);

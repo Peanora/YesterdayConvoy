@@ -6,10 +6,11 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         public FormationDeploymentPreview DeploymentPreview {get;private set;}
-        public bool DragPreviewVisible=>deploymentGhost!=null&&deploymentGhost.enabled&&DeploymentPreview!=null;
+        public bool DragPreviewVisible=>deploymentGhost!=null&&(deploymentGhost.enabled||deploymentOverlay.width>0);
         public SpriteRenderer DeploymentGhost=>deploymentGhost;
         SpriteRenderer deploymentGhost,deploymentShadow;
         MaterialPropertyBlock deploymentProperties;
+        Rect deploymentOverlay;
         Vector2Int deploymentGrabOffset;
         Vector3 deploymentGrabGroundOffset;
         const float DeploymentLiftHeight=.62f;
@@ -38,16 +39,18 @@ namespace YesterdayConvoy
         void ClearDeploymentPreview()
         {
             DeploymentPreview=null;
+            deploymentOverlay=Rect.zero;
             if(deploymentGhost!=null)deploymentGhost.enabled=false;
             if(deploymentShadow!=null)deploymentShadow.enabled=false;
         }
         void UpdateDeploymentPreview()
         {
             ClearDeploymentPreview();
-            if(!Ready||!CanEditFormationView||!pointerHeld||shopDragInstance<=0||Vector2.Distance(formationShopPointer,pointerStart)<=6||!TryCell(formationShopPointer,out var pointerCell))return;
+            if(!CanEditFormationView||formationMenuOpen||CampaignInteractionBlocked||!pointerHeld||shopDragInstance<=0||
+                Vector2.Distance(formationShopPointer,pointerStart)<=6||!TryDeploymentGroundPoint(formationShopPointer,out var pointerGround))return;
             var piece=Shop.Bench.FirstOrDefault(p=>p.Instance==shopDragInstance);if(piece==null)return;
-            DeploymentPreview=Session.PreviewDeploy(piece.Instance,DeploymentAnchor(pointerCell));
-            if(DeploymentPreview.Cells.width<1||DeploymentPreview.Cells.height<1)return;
+            bool overBoard=TryCell(formationShopPointer,out var pointerCell);
+            if(overBoard)DeploymentPreview=Session.PreviewDeploy(piece.Instance,DeploymentAnchor(pointerCell));
             var definition=FormationUnitCatalog.Find(piece.Id);
             if(!FormationArtAvailable(definition.ArtId))return;
             var source=formationMonsterArt[definition.ArtId];var sprite=source.Frame("idle",Time.unscaledTimeAsDouble,true);
@@ -62,7 +65,6 @@ namespace YesterdayConvoy
                 var grounding=deploymentGhost.GetComponent<ActorGrounding>();grounding.enabled=false;
                 deploymentShadow=grounding.Shadow;deploymentShadow.transform.SetParent(actorRoot,false);
             }
-            if(!TryDeploymentGroundPoint(formationShopPointer,out var pointerGround))return;
             var ghostGround=pointerGround+deploymentGrabGroundOffset;
             // Only the landing footprint snaps to cells. The held body follows every pointer
             // movement continuously above its separate ground shadow, without moving the roster.
@@ -72,7 +74,20 @@ namespace YesterdayConvoy
             float breath=definition.ArtId=="WISADEL_APRIL"?1+Mathf.Sin(Time.unscaledTime*2.6f)*.007f:1;
             deploymentGhost.transform.localScale=new Vector3(scale,scale*breath,scale);
             deploymentGhost.flipX=false;deploymentGhost.sortingOrder=12000;
-            deploymentGhost.color=DeploymentPreview.Valid?new Color(1,1,1,.94f):new Color(1,.72f,.66f,.88f);
+            deploymentGhost.color=DeploymentPreview?.Valid==false?new Color(1,.72f,.66f,.88f):new Color(1,1,1,.94f);
+            if(!overBoard)
+            {
+                // Project the same lifted sprite onto the UI while it crosses the gap and
+                // bench. The bench background is drawn after the board camera.
+                var bounds=sprite.bounds;
+                var viewport=TacticalViewport.Current;
+                var topLeft=viewport.FromScreen(battleCamera.WorldToScreenPoint(
+                    deploymentGhost.transform.TransformPoint(new Vector3(bounds.min.x,bounds.max.y))));
+                var bottomRight=viewport.FromScreen(battleCamera.WorldToScreenPoint(
+                    deploymentGhost.transform.TransformPoint(new Vector3(bounds.max.x,bounds.min.y))));
+                deploymentOverlay=Rect.MinMaxRect(topLeft.x,topLeft.y,bottomRight.x,bottomRight.y);
+                return;
+            }
             if(deploymentProperties==null)deploymentProperties=new MaterialPropertyBlock();
             deploymentGhost.GetPropertyBlock(deploymentProperties);
             deploymentProperties.SetColor("_EnvironmentTint",new Color(.88f,.93f,.99f,1));deploymentProperties.SetFloat("_BodyHeight",definition.VisualHeight);deploymentGhost.SetPropertyBlock(deploymentProperties);
@@ -81,6 +96,19 @@ namespace YesterdayConvoy
             deploymentShadow.transform.rotation=Quaternion.Euler(90,0,0);
             deploymentShadow.transform.localScale=new Vector3(definition.VisualHeight*.75f,definition.VisualHeight*.44f,1);
             deploymentShadow.color=new Color(0,0,0,.25f);deploymentShadow.sortingOrder=11999;
+        }
+        void DrawHeldFormationActor()
+        {
+            if(deploymentOverlay.width<=0||Event.current.type!=EventType.Repaint)return;
+            var sprite=deploymentGhost.sprite;
+            if(sprite==null||sprite.texture==null)return;
+            var source=sprite.textureRect;
+            var texture=sprite.texture;
+            var previous=GUI.color;
+            GUI.color=deploymentGhost.color;
+            GUI.DrawTextureWithTexCoords(deploymentOverlay,texture,new Rect(
+                source.x/texture.width,source.y/texture.height,source.width/texture.width,source.height/texture.height));
+            GUI.color=previous;
         }
         void DrawDeploymentGrid()
         {

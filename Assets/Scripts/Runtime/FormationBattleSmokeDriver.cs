@@ -332,9 +332,9 @@ namespace YesterdayConvoy
             string placed=Formation(m);Drag(first.Spawn,new Vector2(FormationBattleModel.DeploymentColumns,4));
             CheckThat("pointer-enemy-half-drop-is-atomic",Formation(m)==placed&&m.Clock==0&&m.Phase==FormationPhase.Preparation);
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));
-            var dockHeading=new Vector2(dock.center.x,dock.y+8);
-            controller.ProcessPointer(EventType.MouseDrag,dockHeading);controller.ProcessPointer(EventType.MouseUp,dockHeading);
-            CheckThat("pointer-hud-drop-keeps-placement",Formation(m)==placed);
+            var gapAboveDock=new Vector2(dock.center.x,dock.yMin-14);
+            controller.ProcessPointer(EventType.MouseDrag,gapAboveDock);controller.ProcessPointer(EventType.MouseUp,gapAboveDock);
+            CheckThat("pointer-release-above-dock-keeps-placement",Formation(m)==placed);
             Drag(first.Spawn,second.Spawn);
             first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
             CheckThat("pointer-swap-can-be-reversed",first.Spawn==firstSpawn&&second.Spawn==secondSpawn);

@@ -9,6 +9,7 @@ namespace YesterdayConvoy
         bool marketVisible,shopOddsVisible,finalRewardClaimed,formationMenuOpen;
         int shopDragInstance,selectedPiece,shopInputBlockedFrame=-1;
         int pressedFormationOffer = -1;
+        int overflowPage;
         Vector2 formationShopPointer;
         Texture2D formationCoin,formationStar;
         ApprovedShopPresentation approvedShop;
@@ -25,6 +26,21 @@ namespace YesterdayConvoy
         public static Rect FormationLineupRect(int index)=>Rect.zero;
         public static Rect FormationBenchRect => new Rect(115, 627, 1050, 86);
         public static Rect FormationReserveRect(int index) => new Rect(120 + 104.3f * index, 643, 102, 69);
+        const int OverflowColumns = 4, OverflowPageSize = 8;
+        int OverflowCount => Session?.Seats.OverflowCount ?? 0;
+        int OverflowPages => Mathf.Max(1, (OverflowCount + OverflowPageSize - 1) / OverflowPageSize);
+        int OverflowFirst => ShopSeatLayout.ReserveCapacity + Mathf.Min(overflowPage, OverflowPages - 1) * OverflowPageSize;
+        int VisibleOverflowCount => Mathf.Clamp(ShopSeatLayout.ReserveCapacity + OverflowCount - OverflowFirst, 0, OverflowPageSize);
+        Rect FormationOverflowPanel => OverflowCount == 0 ? Rect.zero :
+            new Rect(914, 247, 264, 27 + 63 * ((VisibleOverflowCount + OverflowColumns - 1) / OverflowColumns));
+        Rect FormationOverflowRect(int index)
+        {
+            int display = index - OverflowFirst;
+            if (display < 0 || display >= OverflowPageSize) return Rect.zero;
+            return new Rect(918 + 65 * (display % OverflowColumns), 270 + 63 * (display / OverflowColumns), 62, 60);
+        }
+        Rect FormationReserveOrOverflowRect(int index) => index < ShopSeatLayout.ReserveCapacity
+            ? FormationReserveRect(index) : FormationOverflowRect(index);
         const float MarketHeaderHeight = 32, MarketCardHeight = 120, MarketInset = 10;
         public static Rect FormationMarketRect => new Rect(188, 77, 1012, MarketHeaderHeight + MarketCardHeight + MarketInset);
         public static Rect FormationOfferRect(int index)
@@ -54,7 +70,7 @@ namespace YesterdayConvoy
         {
             var seat=Session?.Seats.For(instance);
             if(!seat.HasValue)return Rect.zero;
-            if(!seat.Value.Lineup)return FormationReserveRect(seat.Value.Index);
+            if(!seat.Value.Lineup)return FormationReserveOrOverflowRect(seat.Value.Index);
             var unit=Model?.Units.FirstOrDefault(u=>u.Instance==instance);
             return unit==null||!FormationActorVisibleInView(unit)?Rect.zero:FormationActorScreenRect(unit);
         }
@@ -62,7 +78,8 @@ namespace YesterdayConvoy
         {
             if(CombatViewActive||Shop==null||index<0||index>=Shop.Bench.Count)return Rect.zero;
             var seat=Session.Seats.For(Shop.Bench[index].Instance);
-            return seat.HasValue&&!seat.Value.Lineup?FormationReserveRect(seat.Value.Index):Rect.zero;
+            return seat.HasValue&&!seat.Value.Lineup&&seat.Value.Index<ShopSeatLayout.ReserveCapacity?
+                FormationReserveRect(seat.Value.Index):Rect.zero;
         }
         Rect FormationFlowPieceRect(int index)
         {
@@ -74,7 +91,7 @@ namespace YesterdayConvoy
             if(CombatViewActive)return Rect.zero;
             var seat=Session?.Seats.For(instance);
             if(!seat.HasValue)return Rect.zero;
-            if(!seat.Value.Lineup)return FormationReserveRect(seat.Value.Index);
+            if(!seat.Value.Lineup)return FormationReserveOrOverflowRect(seat.Value.Index);
             var unit=Model?.Units.FirstOrDefault(u=>u.Instance==instance);
             if(unit==null||!FormationActorVisibleInView(unit))return Rect.zero;
             var foot=CellScreen(unit.SpawnCenter);
@@ -92,6 +109,7 @@ namespace YesterdayConvoy
                 Loading=()=>!Ready,Visible=()=>marketVisible,StoreVisible=v=>marketVisible=v,SetVisible=SetMarketVisible,CanCollapse=()=>true,ReserveOnly=()=>true,
                 MarketRect=()=>FormationMarketRect,OfferRect=FormationOfferRect,FlowPieceRect=FormationFlowPieceRect,
                 ReserveDeck=()=>FormationBenchRect,ReserveSlot=FormationReserveRect,ReserveFee=FormationFeeColor,
+                ReserveFull=()=>Session.Seats.ReserveFull,
                 ReserveSelection=instance=>selectedPiece==instance,
                 OddsVisible=()=>shopOddsVisible,StoreOdds=v=>shopOddsVisible=v,
                 Dragging=()=>pointerHeld&&Vector2.Distance(formationShopPointer,pointerStart)>6&&!DragPreviewVisible,
@@ -146,11 +164,11 @@ namespace YesterdayConvoy
         public ShopTrialModel.Result MovePiece(int instance,bool lineup,int seat)=>ShopAction(()=>Session.Move(instance,lineup,seat));
         bool FormationShopBlocksPoint(Vector2 point)=>CampaignInteractionBlocked||shopOddsVisible||formationMenuOpen||
             FormationTraitBlocksPoint(point)||FormationSupplyBlocksPoint(point)||FormationInspectionBlocksPoint(point)||
-            OperationsBlocksPoint(point)||!BoardInputRect.Contains(point)||
+            OperationsBlocksPoint(point)||FormationOverflowPanel.Contains(point)||!BoardInputRect.Contains(point)||
             Campaign!=null&&point.y<FormationMarketRect.yMin||
             (marketVisible||ShopPanelTransitioning)&&FormationMarketRect.Contains(point)||
             Campaign==null&&formationInspectedTag!=null&&new Rect(200,244,380,112).Contains(point);
-        void CancelFormationDrag(){pointerHeld=false;pendingClickDeployment=false;dragSlot=-1;shopDragInstance=0;pressedFormationOffer=-1;ClearDeploymentPreview();}
+        void CancelFormationDrag(){pointerHeld=false;shopDragInstance=0;pressedFormationOffer=-1;ClearDeploymentPreview();}
         void SelectFirstLineup()
         {
             if(Model==null)return;
@@ -159,13 +177,22 @@ namespace YesterdayConvoy
             selected=selected??Model.Units.FirstOrDefault();SelectedSlot=selected?.Slot??-1;selectedPiece=selected?.Instance??0;
         }
         void SelectShopPiece(int instance){selectedPiece=instance;SelectedSlot=Model.Units.FindIndex(u=>u.Instance==instance);}
-        bool FindFormationSeat(Vector2 point,out bool lineup,out int seat)
+        bool FindFormationReserveSeat(Vector2 point,out int seat)
         {
-            for(int i=0;i<10;i++)
+            if(FormationBenchRect.Contains(point))
             {
-                if(FormationReserveRect(i).Contains(point)){lineup=false;seat=i;return true;}
+                seat = Mathf.Clamp(Mathf.FloorToInt((point.x - FormationBenchRect.x) / 104.3f),
+                    0, ShopSeatLayout.ReserveCapacity - 1);
+                return true;
             }
-            lineup=false;seat=-1;return false;
+            seat=-1;return false;
+        }
+        int FormationOverflowSeatAt(Vector2 point)
+        {
+            if (FormationOverflowPanel.Contains(point))
+                for (int index = OverflowFirst; index < OverflowFirst + VisibleOverflowCount; index++)
+                    if (FormationOverflowRect(index).Contains(point)) return index;
+            return -1;
         }
         bool FormationShopPointerDown(Vector2 point)
         {
@@ -182,8 +209,12 @@ namespace YesterdayConvoy
                         }
                 return true;
             }
-            if(!FindFormationSeat(point,out bool lineup,out int seat))return false;
-            int instance=Session.Seats.At(lineup,seat);
+            if(!FindFormationReserveSeat(point,out int seat))
+            {
+                if (!FormationOverflowPanel.Contains(point)) return false;
+                seat = FormationOverflowSeatAt(point);
+            }
+            int instance=Session.Seats.At(false,seat);
             if(instance>0){SelectShopPiece(instance);shopDragInstance=instance;PrepareDeploymentGrab(instance);}else CancelFormationDrag();
             return true;
         }
@@ -191,7 +222,7 @@ namespace YesterdayConvoy
         {
             if(shopDragInstance<=0)return FormationShopBlocksPoint(point);
             if(FormationSellLeft.Contains(point)||FormationSellRight.Contains(point)){SellPiece(shopDragInstance);return true;}
-            if(FindFormationSeat(point,out bool lineup,out int seat)){MovePiece(shopDragInstance,lineup,seat);return true;}
+            if(FindFormationReserveSeat(point,out int seat)){MovePiece(shopDragInstance,false,seat);return true;}
             return FormationShopBlocksPoint(point);
         }
         void ReleaseFormationOffer(Vector2 point)
@@ -201,9 +232,10 @@ namespace YesterdayConvoy
             if (!marketVisible || ShopPanelTransitioning || shopOddsVisible || !CanTrade ||
                 !FormationOfferRect(slot).Contains(point) || Vector2.Distance(point, pointerStart) > 6) return;
             var preview = Shop.PreviewPurchase(slot);
-            if (preview.Success && Shop.CanAfford(preview.Value)) BuyOffer(slot);
+            if (Session.Seats.ReserveFull) notice = "备战席已满，请先上阵或出售角色。";
+            else if (preview.Success && Shop.CanAfford(preview.Value)) BuyOffer(slot);
         }
-        void PlaceReserve(int instance,Vector2Int cell)
+        void PlaceFormationPiece(int instance,Vector2Int cell)
         {
             ShopAction(()=>Session.TryDeploy(instance,cell));
         }
@@ -281,11 +313,12 @@ namespace YesterdayConvoy
             var role = Shop.Definition(id);
             var preview = Shop.PreviewPurchase(slot);
             bool affordable = Shop.CanAfford(role.Cost);
-            bool hovered = GUI.enabled && CanTrade && affordable && preview.Success && card.Contains(Event.current.mousePosition);
+            bool reserveFull = Session.Seats.ReserveFull;
+            bool hovered = GUI.enabled && CanTrade && affordable && !reserveFull && preview.Success && card.Contains(Event.current.mousePosition);
             approvedShop.DrawLoopCostBackground(card, role.Cost);
             DrawFormationPortrait(new Rect(card.x + card.width * .34f, card.y + 5, card.width * .64f, 108), id);
             Fill(new Rect(card.x, card.y + 73, card.width, card.height - 73), new Color(.09f, .15f, .20f, .91f));
-            if (!affordable)
+            if (!affordable || reserveFull)
                 Fill(card, new Color(.16f, .16f, .16f, .60f));
             if (hovered) ApprovedUi.Border(card, EconomyIce, pressedFormationOffer == slot ? 2 : 1);
             DrawFormationCoin(new Rect(card.x + 11, card.y + 12, 13, 13));
@@ -293,10 +326,10 @@ namespace YesterdayConvoy
 
             int held = Shop.Bench.Where(p => p.Id == id).Sum(p => ShopTrialModel.Copies(p.Star));
             var status = new Rect(card.xMax - 65, card.y + 6, 59, 17);
-            if (!affordable || !preview.Success)
+            if (!affordable || reserveFull || !preview.Success)
             {
                 Fill(status, EconomyPanel);
-                EconomyLabel(status, !affordable ? "金币不足" : "备战已满", 10, EconomyMuted, true, TextAnchor.MiddleCenter);
+                EconomyLabel(status, reserveFull || !preview.Success ? "备战已满" : "金币不足", 10, EconomyMuted, true, TextAnchor.MiddleCenter);
             }
             else if (preview.FinalStar > 1)
                 approvedShop.DrawApprovedUpgradeCue(status, preview.FinalStar);
@@ -316,17 +349,62 @@ namespace YesterdayConvoy
         }
         void DrawFormationResources(bool preparing)=>DrawFormationEconomyHud(preparing);
         void DrawFormationOdds()=>approvedShop.DrawShopOdds(formationShopPointer);
+        void DrawFormationOverflow()
+        {
+            overflowPage = Mathf.Min(overflowPage, OverflowPages - 1);
+            if (OverflowCount == 0) return;
+            var panel = FormationOverflowPanel;
+            Fill(panel, FormationPreparationPalette.Recess);
+            ApprovedUi.Border(panel, FormationPreparationPalette.RustEdge);
+            EconomyLabel(new Rect(panel.x + 7, panel.y + 2, 164, 19),
+                $"备战溢出  {OverflowCount}", 12, FormationPreparationPalette.Text, true);
+            if (OverflowPages > 1)
+            {
+                if (EconomyButton(new Rect(panel.xMax - 78, panel.y + 3, 19, 17), "‹", "上一页",
+                    FormationPreparationPalette.Surface, FormationPreparationPalette.Text))
+                    overflowPage = Mathf.Max(0, overflowPage - 1);
+                EconomyLabel(new Rect(panel.xMax - 55, panel.y + 2, 30, 19), $"{overflowPage + 1}/{OverflowPages}",
+                    10, FormationPreparationPalette.Text, false, TextAnchor.MiddleCenter);
+                if (EconomyButton(new Rect(panel.xMax - 23, panel.y + 3, 19, 17), "›", "下一页",
+                    FormationPreparationPalette.Surface, FormationPreparationPalette.Text))
+                    overflowPage = Mathf.Min(OverflowPages - 1, overflowPage + 1);
+            }
+            var first = OverflowFirst;
+            for (int index = first; index < first + VisibleOverflowCount; index++)
+            {
+                int instance = Session.Seats.At(false, index);
+                var piece = Shop.Bench.FirstOrDefault(card => card.Instance == instance);
+                if (piece == null) continue;
+                var rect = FormationOverflowRect(index);
+                var definition = Shop.Definition(piece.Id);
+                Fill(rect, Color.Lerp(FormationPreparationPalette.Rust, FormationFeeColor(definition.Cost), .17f));
+                if (!(pointerHeld && instance == shopDragInstance && DragPreviewVisible))
+                    DrawFormationPortrait(new Rect(rect.x + 1, rect.y + 1, rect.width - 2, 46), piece.Id);
+                ApprovedUi.Border(rect, selectedPiece == instance ? EconomyIce : FormationPreparationPalette.RustEdge);
+                EconomyLabel(new Rect(rect.x + 3, rect.y, 10, 13), definition.Cost.ToString(), 10, EconomyInk, true);
+                approvedShop.DrawShopStars(new Rect(rect.xMax - 4 - piece.Star * 8, rect.y + 2, piece.Star * 8, 8),
+                    piece.Star, new Color(1,.94f,.72f));
+                Fill(new Rect(rect.x + 1, rect.yMax - 14, rect.width - 2, 13), FormationPreparationPalette.Recess);
+                EconomyLabel(new Rect(rect.x + 2, rect.yMax - 14, rect.width - 4, 13), definition.Name,
+                    definition.Name.Length > 6 ? 8 : 10, EconomyInk, false, TextAnchor.MiddleCenter);
+            }
+        }
         void DrawFormationPreparation()
         {
             approvedShop.DrawShopBench(approvedShop.LoopText(12,TextAnchor.MiddleCenter));
+            if (Model.Phase == FormationPhase.Preparation) DrawFormationOverflow();
             if (Campaign != null && Model.Phase == FormationPhase.Preparation)
             {
                 foreach (var piece in Shop.Bench)
                 {
                     var slot = Session.Seats.For(piece.Instance);
                     if (!slot.HasValue || slot.Value.Lineup) continue;
-                    var reserve = FormationReserveRect(slot.Value.Index);
-                    DrawEquippedItemStrip(piece.Instance, reserve.position + new Vector2(4, 37), 17);
+                    var reserve = FormationReserveOrOverflowRect(slot.Value.Index);
+                    if (reserve.width > 0)
+                    {
+                        bool regular = slot.Value.Index < ShopSeatLayout.ReserveCapacity;
+                        DrawEquippedItemStrip(piece.Instance, reserve.position + new Vector2(4, regular ? 37 : 33), regular ? 17 : 12);
+                    }
                 }
             }
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
@@ -334,8 +412,11 @@ namespace YesterdayConvoy
             bool openingRewards = Campaign?.OpeningRewardsPending == true;
             bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked&&!openingRewards;
             var start = FormationStartRect;
-            GUI.enabled = GUI.enabled && openingGroundBall == null;
-            if (EconomyButton(start, openingRewards ? "领取开局补给" : supply ? "继续行军  ›" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
+            bool overflowBlocked = !supply && OverflowCount > 0;
+            GUI.enabled = GUI.enabled && openingGroundBall == null && !overflowBlocked;
+            if (EconomyButton(start, openingRewards ? "领取开局补给" : supply ? "继续行军  ›" :
+                overflowBlocked ? "先处理溢出" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
+                overflowBlocked ? "上阵或出售角色，清空溢出区后开战" :
                 supply ? "补给结束后前往下一节点" : "锁定本场阵容并发起进攻", FormationPreparationPalette.Rust, FormationPreparationPalette.Text, 15))
             {
                 if (supply) ContinueCampaign();
@@ -347,10 +428,8 @@ namespace YesterdayConvoy
         void DrawFormationDropTarget()
         {
             if(!pointerHeld||shopDragInstance<=0||Vector2.Distance(formationShopPointer,pointerStart)<=6||
-                !FindFormationSeat(formationShopPointer,out bool lineup,out int seat))return;
-            bool unlocked=!lineup||seat<Shop.PopulationCap;
-            var r=lineup?FormationLineupRect(seat):FormationReserveRect(seat);
-            ApprovedUi.Border(r,unlocked?new Color(.86f,.83f,.72f,.8f):new Color(.86f,.43f,.36f,.85f),1);
+                !FindFormationReserveSeat(formationShopPointer,out int seat))return;
+            ApprovedUi.Border(FormationReserveRect(seat),new Color(.86f,.83f,.72f,.8f),1);
         }
         void DrawFormationSaleTargets()
         {

@@ -191,10 +191,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.SelectedSlot,Is.EqualTo(first.Slot));
             var clickedCell=new Vector2(1,1);
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(clickedCell));
-            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(b),"Pressing an empty tile must wait for release before changing deployment.");
             controller.ProcessPointer(EventType.MouseUp,FormationBattleController.CellScreen(clickedCell));
-            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(clickedCell));
-            Drag(clickedCell,b);
+            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(b),"Clicking an empty tile must not move the selected character.");
+            Drag(clickedCell,new Vector2(2,1));
+            Assert.That(m.Units.Single(u=>u.Instance==firstInstance).Spawn,Is.EqualTo(b),"Dragging empty terrain must not pick up the selected character.");
             first=m.Units.Single(u=>u.Instance==firstInstance);second=m.Units.Single(u=>u.Instance==secondInstance);
             Drag(first.Spawn,new Vector2(FormationBattleModel.DeploymentColumns,4));Assert.That(first.Spawn,Is.EqualTo(b));Assert.That(second.Spawn,Is.EqualTo(a));
             controller.ProcessPointer(EventType.MouseDown,FormationBattleController.CellScreen(first.Spawn));

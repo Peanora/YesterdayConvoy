@@ -105,6 +105,36 @@ namespace YesterdayConvoy.Tests
             controller.ProcessPointer(EventType.MouseUp,pointer+new Vector2(2,0));
             Assert.That(controller.Model.Units.Single(unit=>unit.Instance==instance).DeploymentCells,Is.EqualTo(landing));
             Assert.That(controller.DragPreviewVisible,Is.False);Assert.That(shadow.enabled,Is.False);
+
+            int reserveSeat=controller.Session.Seats.FirstEmpty(false,10);
+            var bench=FormationBattleController.FormationReserveRect(reserveSeat).center;
+            var gap=new Vector2(bench.x,(FormationBattleController.BoardInputRect.yMax+FormationBattleController.FormationBenchRect.yMin)/2);
+            bounds=body.sprite.bounds;
+            var regrab=Project(body.transform.TransformPoint(new Vector3(bounds.center.x,Mathf.Lerp(bounds.min.y,bounds.max.y,.35f),0)));
+            controller.ProcessPointer(EventType.MouseDown,regrab);
+            controller.ProcessPointer(EventType.MouseDrag,gap);
+            Assert.That(controller.DragPreviewVisible,Is.True,"The held actor must remain visible between the board and the bench.");
+            Assert.That(controller.DeploymentPreview,Is.Null,"The gap is not a deployment cell.");
+            Assert.That(shadow.enabled,Is.False);
+            var gapPosition=ghost.transform.position;
+            controller.ProcessPointer(EventType.MouseDrag,bench);
+            Assert.That(controller.DragPreviewVisible,Is.True,"The held actor must remain visible in front of the bench.");
+            Assert.That(controller.DeploymentPreview,Is.Null);
+            Assert.That(ghost.transform.position,Is.Not.EqualTo(gapPosition));
+            Assert.That(FormationArtAssertions.IsActualIdleFrame(actor.ArtId,ghost.sprite),Is.True);
+            Assert.That(controller.Model.Units.Single(unit=>unit.Instance==instance).DeploymentCells,Is.EqualTo(landing));
+            yield return new WaitForEndOfFrame();
+            Assert.That(controller.DragPreviewVisible,Is.True);
+            controller.ProcessPointer(EventType.MouseUp,bench);
+            Assert.That(controller.Session.Seats.At(false,reserveSeat),Is.EqualTo(instance));
+            Assert.That(controller.Model.Units.Any(unit=>unit.Instance==instance),Is.False);
+            Assert.That(controller.DragPreviewVisible,Is.False);
+
+            controller.ProcessPointer(EventType.MouseDown,bench);
+            controller.ProcessPointer(EventType.MouseUp,bench);
+            controller.ProcessPointer(EventType.MouseDown,pointer);
+            controller.ProcessPointer(EventType.MouseUp,pointer);
+            Assert.That(controller.Session.Seats.At(false,reserveSeat),Is.EqualTo(instance),"Clicking a tile must not deploy a selected bench character.");
             Assert.That(controller.Model.Clock,Is.Zero);controller.Shop.Validate();
         }
     }

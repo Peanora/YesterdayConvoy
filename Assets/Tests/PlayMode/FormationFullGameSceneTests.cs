@@ -52,12 +52,23 @@ namespace YesterdayConvoy.Tests
             Assert.That(board.Shop.Gold, Is.EqualTo(8));
             Assert.That(board.Shop.Bench.Select(piece => piece.Id).Distinct().Count(), Is.EqualTo(3));
             Assert.That(board.Shop.Bench.All(piece => piece.Star == 1 && board.Shop.Definition(piece.Id).Cost == 1), Is.True);
-            Assert.That(board.Model.EnabledCount, Is.EqualTo(3));
+            Assert.That(board.Model.EnabledCount, Is.Zero);
+            Assert.That(board.Shop.Bench.All(piece => board.Session.Seats.For(piece.Instance) is { Lineup: false }), Is.True,
+                "Opening recruits belong to the reserve until explicitly deployed.");
             Assert.That(run.Inventory.Count, Is.EqualTo(1));
             Assert.That(new[] { "A", "B", "C", "D", "E", "F" }, Does.Contain(run.Inventory.Single().Key));
             Assert.That(run.Choices.Count, Is.EqualTo(3));
             Assert.That(run.ChoiceTitle, Does.Contain("战略预案"));
             board.Shop.Validate();
+        }
+
+        internal static void DeployOpeningRecruits(FormationBattleController board)
+        {
+            foreach (var piece in board.Shop.Bench.Take(3).ToArray())
+            {
+                int slot = board.Session.Seats.FirstEmpty(true, board.Shop.PopulationCap);
+                Assert.That(board.MovePiece(piece.Instance, true, slot).Success, Is.True);
+            }
         }
 
         [UnityTest]
@@ -157,6 +168,9 @@ namespace YesterdayConvoy.Tests
             while(controller.Campaign.HasBlockingChoice)
             {Assert.That(++safety,Is.LessThan(15));Assert.That(controller.ChooseCampaignOption(0).Success,Is.True);yield return null;}
             Assert.That(controller.Session.CanShop,Is.True);
+            controller.StartBattle();
+            Assert.That(controller.Model.Phase, Is.EqualTo(FormationPhase.Preparation), "An empty board cannot start even after the opening choice.");
+            DeployOpeningRecruits(controller);
             var piece=controller.Session.Seats.Lineup(controller.Shop.Bench).First();
             var item=controller.Campaign.Inventory.First();
             Assert.That(controller.Campaign.Equip(item.Instance,piece.Instance).Success,Is.True);
@@ -199,11 +213,10 @@ namespace YesterdayConvoy.Tests
                 Assert.That(controller.ChooseCampaignOption(0).Success, Is.True);
             }
 
-            var startingArmy = controller.Session.Seats.Lineup(controller.Shop.Bench).ToArray();
+            var startingArmy = controller.Shop.Bench.ToArray();
             int onBoard = startingArmy[0].Instance;
             int inReserve = startingArmy[1].Instance;
-            int reserveSlot = controller.Session.Seats.FirstEmpty(false, 10);
-            Assert.That(controller.MovePiece(inReserve, false, reserveSlot).Success, Is.True);
+            Assert.That(controller.MovePiece(onBoard, true, 0).Success, Is.True);
             controller.SetMarketVisible(false);
             controller.SetFormationView(false);
             deadline = Time.realtimeSinceStartupAsDouble + 600;
@@ -250,7 +263,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(fieldItem.Owner, Is.EqualTo(onBoard));
             Assert.That(equipmentTilePoint(fieldItem.Instance, out _), Is.False);
 
-            var reservePoint = FormationBattleController.FormationReserveRect(reserveSlot).center;
+            var reservePoint = controller.FormationPieceRect(inReserve).center;
             var emptySlot = controller.Session.Seats.FirstEmpty(false, 10);
             DragItem(reserveItem.Instance, FormationBattleController.FormationReserveRect(emptySlot).center);
             Assert.That(reserveItem.Owner, Is.Zero, "An empty reserve seat cannot receive equipment.");

@@ -129,9 +129,7 @@ namespace YesterdayConvoy
             if (ball == null || ball.Flight != null) return false;
             var payout = Campaign.BeginBall(id);
             if (payout == null) return false;
-            var targets = ball.Drop.IsOpening && payout.Recruits.Count > 0
-                ? Session.OpeningRecruitCenters(payout.Recruits).Select(cell => RewardProjection(ActorWorldPoint(cell))).ToArray()
-                : ReserveRewardTargets(payout.Recruits.Count);
+            var targets = ReserveRewardTargets(payout.Recruits.Count);
             ball.Flight = new GroundRewardFlight
             {
                 Ball = ball,
@@ -149,10 +147,15 @@ namespace YesterdayConvoy
         Vector2[] ReserveRewardTargets(int count)
         {
             int earlierRecruits = rewardFlights.Sum(flight => flight.Arrived ? 0 : flight.Payout.Recruits.Count);
-            var vacant = Enumerable.Range(0,10).Where(slot => Session.Seats.At(false,slot) == 0).ToArray();
+            var vacant = Enumerable.Range(0,ShopSeatLayout.ReserveCapacity).Where(slot => Session.Seats.At(false,slot) == 0).ToArray();
             var targets = new Vector2[count];
             for (int index = 0; index < count; index++)
-                targets[index] = FormationReserveRect(vacant.Length == 0 ? 9 : vacant[Mathf.Min(earlierRecruits+index,vacant.Length-1)]).center;
+            {
+                int arrival = earlierRecruits + index;
+                targets[index] = arrival < vacant.Length
+                    ? FormationReserveRect(vacant[arrival]).center
+                    : FormationOverflowRect(OverflowFirst + (OverflowCount + arrival - vacant.Length) % OverflowPageSize).center;
+            }
             return targets;
         }
 

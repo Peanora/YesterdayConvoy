@@ -547,14 +547,14 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.BattleEvents.Count(e=>e.Contains("接棒:")),Is.EqualTo(1),"Native and mode returns must share a source credit.");
         }
 
-        static void ReachNode(FormationCampaignRun run,string nodeId)
+        static void ReachNode(FormationCampaignRun run,string nodeId,bool collectDrops=true)
         {
             int safety=0;
             while(run.CurrentNode.Id!=nodeId)
             {
                 Assert.That(++safety,Is.LessThan(30));
                 if(!run.NodeSettled)run.SettleBattle(true,1,3,0,false);
-                FormationCampaignRunTests.CollectDrops(run);
+                if(collectDrops||run.OpeningRewardsPending)FormationCampaignRunTests.CollectDrops(run);
                 Assert.That(run.AdvanceNode(),Is.True);
                 while(run.HasBlockingChoice)Assert.That(run.Choose(0).Success,Is.True);
             }
@@ -568,7 +568,7 @@ namespace YesterdayConvoy.Tests
         [TestCase("1-6","D12",10,24,1.4f)]
         public void AuthoredDefendersPreserveInitialChargeThresholdAndRealSkillAction(string nodeId,string artId,float initial,float required,float seconds)
         {
-            var model=Fixture(out var run,"M11");ReachNode(run,nodeId);model.BindCampaign(run);
+            var model=Fixture(out var run,"M11");ReachNode(run,nodeId,collectDrops:false);model.BindCampaign(run);
             var guard=model.Defenders.Single(defender=>defender.ArtId==artId);
             Assert.That(guard.SkillCharge,Is.EqualTo(initial));Assert.That(guard.SkillRequired,Is.EqualTo(required));
             model.Defenders.RemoveAll(d=>d!=guard);guard.Position=new Vector2(15,3);
@@ -583,7 +583,7 @@ namespace YesterdayConvoy.Tests
         [TestCase("2-7",10,24,1)]
         public void BossesUseTheirOwnAuthoredInitialChargeAndActionInsteadOfAUniversalTwelve(string nodeId,float initial,float required,float seconds)
         {
-            var model=Fixture(out var run,"M11");ReachNode(run,nodeId);model.BindCampaign(run);
+            var model=Fixture(out var run,"M11");ReachNode(run,nodeId,collectDrops:false);model.BindCampaign(run);
             var spec=FormationCampaignRules.Bosses.Single(b=>b.NodeId==nodeId);var boss=model.Defenders.Single(d=>d.Name==spec.Name);
             Assert.That(boss.SkillCharge,Is.EqualTo(initial));Assert.That(boss.SkillRequired,Is.EqualTo(required));
             model.Defenders.RemoveAll(d=>d!=boss);boss.Position=new Vector2(15,3);
@@ -598,7 +598,7 @@ namespace YesterdayConvoy.Tests
         public void MlynarWaitsForChargeThenDealsDamageOnlyAfterTheThreeSecondWarning()
         {
             var model = Fixture(out var run, "M11");
-            ReachNode(run, "3-7");
+            ReachNode(run, "3-7", collectDrops: false);
             model.BindCampaign(run);
             var guard = model.Defenders.Single(defender => defender.ArtId == "D30");
             model.Defenders.RemoveAll(defender => defender != guard);
@@ -626,7 +626,7 @@ namespace YesterdayConvoy.Tests
         public void YuOnlyCastsOneWallInTheFirstPlaneBattle()
         {
             var model = Fixture(out var run, "M11");
-            ReachNode(run, "1-6");
+            ReachNode(run, "1-6", collectDrops: false);
             model.BindCampaign(run);
             var guard = model.Defenders.Single(defender => defender.ArtId == "D22");
             model.Defenders.RemoveAll(defender => defender != guard);
@@ -646,7 +646,7 @@ namespace YesterdayConvoy.Tests
         public void WangsReservedChessCellTriggersSkillDamageOnContact()
         {
             var model = Fixture(out var run, "M11");
-            ReachNode(run, "3-4");
+            ReachNode(run, "3-4", collectDrops: false);
             model.BindCampaign(run);
             var guard = model.Defenders.Single(defender => defender.ArtId == "D28");
             Assert.That(guard.SkillCell.HasValue, Is.True);
