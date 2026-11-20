@@ -223,7 +223,7 @@ namespace YesterdayConvoy
                 double age = .8 + (now*FormationVisualRate+cell.x*.17+cell.y*.31)%1.6;
                 var clip=OriginalCombatVfxArt.Get(PramanixEffects+texture);
                 var snowTile=LegacyDraw(clip.At(age),legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.035f,
-                    cell,1,-12,hdr:clip.HdrRange,flat:true);
+                    cell,1,-12,hdr:clip.HdrRange,flat:true,gammaOutput:true);
                 if(snowTile!=null)
                 {
                     snowTile.sortingOrder=30;
@@ -368,7 +368,7 @@ namespace YesterdayConvoy
                 legacyHdrMaterial=new Material(shader){name="Formation / restored native HDR effects"};
             }
         }
-        SpriteRenderer LegacyDraw(Sprite sprite,Material material,Vector3 position,Vector2 ground,float scale,int order,bool flip=false,float hdr=1,float frame=-1,bool flat=false,float roll=0)
+        SpriteRenderer LegacyDraw(Sprite sprite,Material material,Vector3 position,Vector2 ground,float scale,int order,bool flip=false,float hdr=1,float frame=-1,bool flat=false,float roll=0,bool gammaOutput=false)
         {
             if(sprite==null||battleCamera==null||!FormationPointVisibleInView(ground))return null;
             if(legacyFxUsed==legacyFxViews.Count)
@@ -386,7 +386,10 @@ namespace YesterdayConvoy
                 rotation=Quaternion.LookRotation(-Vector3.up,forward)*Quaternion.Euler(0,0,roll);stretch.y/=projection;
             }
             r.transform.SetPositionAndRotation(position,rotation);r.transform.localScale=stretch;r.sortingOrder=LegacyOrder(ground,order);
-            view.Properties.Clear();view.Properties.SetFloat("_HdrRange",hdr);if(frame>=0)view.Properties.SetFloat("_Frame",frame);r.SetPropertyBlock(view.Properties);
+            view.Properties.Clear();view.Properties.SetFloat("_HdrRange",hdr);
+            if(frame>=0)view.Properties.SetFloat("_Frame",frame);
+            if(gammaOutput)view.Properties.SetFloat("_GammaOutput",1);
+            r.SetPropertyBlock(view.Properties);
             return r;
         }
         void LegacyOriginal(string raw,double age,Vector2 cell,int order=24,bool loop=false,bool flat=false,float scale=1,Vector3? explicitPosition=null,Vector3? direction=null)
