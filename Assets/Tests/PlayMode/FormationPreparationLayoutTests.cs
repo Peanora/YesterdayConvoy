@@ -134,21 +134,10 @@ namespace YesterdayConvoy.Tests
             for (int index = 0; index < controller.Shop.Offers.Count; index++)
             {
                 var card = FormationBattleController.FormationOfferRect(index);
-                var inspect = FormationBattleController.FormationOfferInspectionRect(index);
-                var buy = FormationBattleController.FormationBuyRect(index);
                 Assert.That(card.height, Is.EqualTo(120), "The top drawer uses the tall recruitment card format.");
                 Assert.That(market.Contains(card.min) && market.Contains(card.max - Vector2.one), Is.True);
                 Assert.That(card.Overlaps(dock), Is.False);
-                Assert.That(inspect.Contains(card.center) && !inspect.Overlaps(buy), Is.True,
-                    "A card click and the separate purchase button must not claim the same pointer.");
-                Assert.That(card.Contains(buy.min) && card.Contains(buy.max - Vector2.one), Is.True);
             }
-            var coveredPositions = controller.Model.Units.ToDictionary(unit => unit.Instance, unit => unit.Spawn);
-            var coveredPoint = FormationBattleController.FormationOfferInspectionRect(0).center;
-            controller.ProcessPointer(EventType.MouseDown, coveredPoint);
-            controller.ProcessPointer(EventType.MouseDrag, coveredPoint + Vector2.right * 18);
-            controller.ProcessPointer(EventType.MouseUp, coveredPoint + Vector2.right * 18);
-            Assert.That(controller.Model.Units.All(unit => unit.Spawn == coveredPositions[unit.Instance]), Is.True);
             yield return Capture("playmode-currency-drawer-open");
 
             var owned = controller.Shop.Bench.Select(piece => piece.Id).ToArray();
@@ -158,10 +147,28 @@ namespace YesterdayConvoy.Tests
                 .DefaultIfEmpty(-1).First();
             Assert.That(offer, Is.GreaterThanOrEqualTo(0), "The actual finite opening shop must provide an affordable new kind for this deterministic path.");
             int beforeGold = controller.Shop.Gold;
-            int price = controller.Shop.Definition(controller.Shop.Offers[offer]).Cost;
-            var bought = controller.BuyOffer(offer);
-            Assert.That(bought.Success, Is.True); Assert.That(controller.Shop.Gold, Is.EqualTo(beforeGold - price));
+            string cardId = controller.Shop.Offers[offer];
+            int price = controller.Shop.Definition(cardId).Cost;
+            var cardRect = FormationBattleController.FormationOfferRect(offer);
+            var coveredPositions = controller.Model.Units.ToDictionary(unit => unit.Instance, unit => unit.Spawn);
+            controller.ProcessPointer(EventType.MouseDown, cardRect.center);
+            controller.ProcessPointer(EventType.MouseDrag, cardRect.center + Vector2.right * 18);
+            controller.ProcessPointer(EventType.MouseUp, cardRect.center);
+            Assert.That(controller.Model.Units.All(unit => unit.Spawn == coveredPositions[unit.Instance]), Is.True);
+            Assert.That(controller.Shop.Offers[offer], Is.EqualTo(cardId), "Dragging the card must not purchase it.");
+
+            var cardFooter = new Vector2(cardRect.center.x, cardRect.yMax - 12);
+            controller.ProcessPointer(EventType.MouseDown, cardFooter);
+            Assert.That(controller.Shop.Gold, Is.EqualTo(beforeGold));
+            controller.ProcessPointer(EventType.MouseUp, cardFooter);
+            Assert.That(controller.Shop.Gold, Is.EqualTo(beforeGold - price));
+            Assert.That(controller.Shop.Offers[offer], Is.Null);
+            Assert.That(controller.FormationInspectedCardId, Is.Null);
+            var bought = controller.Shop.Bench.Single(piece => piece.Id == cardId);
             Assert.That(controller.Session.Seats.InLineup(bought.Instance), Is.False);
+            controller.ProcessPointer(EventType.MouseDown, cardFooter);
+            controller.ProcessPointer(EventType.MouseUp, cardFooter);
+            Assert.That(controller.Shop.Gold, Is.EqualTo(beforeGold - price), "An empty slot cannot be purchased again.");
             Assert.That(controller.BuyExperience().Success, Is.True);
             Assert.That(controller.Shop.Level, Is.EqualTo(3));
             Assert.That(controller.Shop.XP, Is.EqualTo(4));

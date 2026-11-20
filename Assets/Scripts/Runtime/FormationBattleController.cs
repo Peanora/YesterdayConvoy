@@ -149,7 +149,14 @@ namespace YesterdayConvoy
             // before either terrain painting or seat dragging can capture the pointer.
             if(FormationTraitDetailsOpen&&FormationTraitDetailsRect.Contains(point)){CancelFormationDrag();return;}
             if(FormationInspectionBlocksPoint(point)||OperationsBlocksPoint(point)){CancelFormationDrag();return;}
-            if(ProcessCampaignSeaPointer(type,point))return;
+            if (pressedFormationOffer >= 0 && type != EventType.MouseDown)
+            {
+                if (type == EventType.MouseUp) ReleaseFormationOffer(point);
+                else if (type == EventType.MouseDrag && Vector2.Distance(point, pointerStart) > 6) CancelFormationDrag();
+                return;
+            }
+            if (!((marketVisible || ShopPanelTransitioning) && FormationMarketRect.Contains(point)) &&
+                ProcessCampaignSeaPointer(type, point)) return;
             formationShopPointer=point;
             if(type==EventType.MouseDown)
             {

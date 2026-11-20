@@ -210,13 +210,6 @@ namespace YesterdayConvoy
             var cameraPose=controller.battleCamera.transform.position;controller.ToggleFormationMarket();yield return Market(true);
             Assert(controller.battleCamera.transform.position==cameraPose,"Opening drawer preserves the large board camera");
             yield return Frame("03-recruitment-drawer-open");
-            int offer=Enumerable.Range(0,controller.Shop.Offers.Count).First(index=>controller.Shop.Offers[index]!=null);
-            string offerId=controller.Shop.Offers[offer];int goldBeforeInspect=controller.Shop.Gold;
-            controller.ToggleFormationOfferInspection(offer,offerId,controller.Shop.Definition(offerId).Cost,
-                FormationBattleController.FormationOfferRect(offer));
-            Assert(controller.FormationInspectedCardId==offerId&&controller.Shop.Gold==goldBeforeInspect,
-                "Inspecting a live shop offer neither purchases it nor changes the price");
-            yield return Frame("03-shop-offer-detail");
             yield return Market(false);
             controller.SetFormationView(true);yield return null;float scoutingTileWidth=GuardTileScreenWidth();yield return Frame("04-close-guard-area");controller.SetFormationView(false);
             string trait=FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles).First(t=>controller.Campaign.TraitCount(t.Id)>0).Id;
@@ -248,7 +241,16 @@ namespace YesterdayConvoy
                 {
                     string id=controller.Shop.Offers[slot];if(id==null)continue;
                     bool owned=controller.Shop.Bench.Any(p=>p.Id==id);
-                    if(controller.Shop.CanAfford(controller.Shop.Definition(id).Cost)&&(owned||controller.Shop.Bench.Count<5))controller.BuyOffer(slot);
+                    int price=controller.Shop.Definition(id).Cost;
+                    if(controller.Shop.CanAfford(price)&&(owned||controller.Shop.Bench.Count<5))
+                    {
+                        int beforeGold=controller.Shop.Gold;
+                        var card=FormationBattleController.FormationOfferRect(slot).center;
+                        controller.ProcessPointer(EventType.MouseDown,card);
+                        controller.ProcessPointer(EventType.MouseUp,card);
+                        Assert(controller.Shop.Gold==beforeGold-price&&controller.Shop.Offers[slot]==null&&
+                            controller.FormationInspectedCardId==null,"Click the shop card to recruit one copy without opening details");
+                    }
                     yield return ResolveChoices();
                 }
                 if(controller.Shop.Gold>=14&&controller.Shop.Level<5)controller.BuyExperience();

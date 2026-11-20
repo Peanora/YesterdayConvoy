@@ -6,33 +6,24 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const float InspectionWidth = 300, InspectionHeight = 224;
-        int formationInspectedInstance, formationInspectedOffer = -1;
+        int formationInspectedInstance;
         string formationInspectionCard;
-        Rect formationOfferInspectionAnchor;
         Vector2 formationInspectionScroll;
 
         public string FormationInspectedCardId => FormationInspectionAvailable ? formationInspectionCard : null;
 
         bool FormationInspectionAvailable => Campaign != null && Model.Phase == FormationPhase.Preparation &&
-            formationInspectionCard != null &&
-            (formationInspectedOffer < 0
-                ? FormationPieceRect(formationInspectedInstance).width > 0
-                : MarketVisible && formationInspectedOffer < Shop.Offers.Count &&
-                  Shop.Offers[formationInspectedOffer] == formationInspectionCard);
+            formationInspectionCard != null && FormationPieceRect(formationInspectedInstance).width > 0;
 
-        Rect FormationInspectionTarget => formationInspectedOffer >= 0
-            ? formationOfferInspectionAnchor : FormationPieceRect(formationInspectedInstance);
+        Rect FormationInspectionTarget => FormationPieceRect(formationInspectedInstance);
 
         Rect FormationInspectionRect
         {
             get
             {
                 var anchor = FormationInspectionTarget;
-                bool offer = formationInspectedOffer >= 0;
-                float x = offer ? anchor.center.x - InspectionWidth * .5f :
-                    anchor.center.x > 640 ? anchor.xMin - InspectionWidth - 9 : anchor.xMax + 9;
-                float y = offer ? FormationMarketRect.yMax + 7 :
-                    anchor.yMin >= FormationExperienceRect.yMin - 2 ? anchor.yMin - InspectionHeight - 9 : anchor.yMin + 4;
+                float x = anchor.center.x > 640 ? anchor.xMin - InspectionWidth - 9 : anchor.xMax + 9;
+                float y = anchor.yMin >= FormationExperienceRect.yMin - 2 ? anchor.yMin - InspectionHeight - 9 : anchor.yMin + 4;
                 return new Rect(Mathf.Clamp(x, 170, 1261 - InspectionWidth),
                     Mathf.Clamp(y, MarketVisible ? FormationMarketRect.yMax + 7 : 87,
                         FormationExperienceRect.yMin - InspectionHeight - 5), InspectionWidth, InspectionHeight);
@@ -48,26 +39,8 @@ namespace YesterdayConvoy
             CloseFormationEquipmentDetails();
             formationInspectionCard = null;
             formationInspectedInstance = 0;
-            formationInspectedOffer = -1;
             formationInspectionScroll = Vector2.zero;
             return true;
-        }
-
-        void CloseFormationOfferInspection()
-        {
-            if (formationInspectedOffer >= 0) CloseFormationInspection();
-        }
-
-        internal void ToggleFormationOfferInspection(int slot, string id, int cost, Rect anchor)
-        {
-            if (Campaign == null || !MarketVisible || FormationCampaignRules.Find(id) == null) return;
-            if (slot < 0 || slot >= Shop.Offers.Count || Shop.Offers[slot] != id || Shop.Definition(id).Cost != cost) return;
-            bool wasOpen = formationInspectedOffer == slot && formationInspectionCard == id;
-            CloseFormationInspection();
-            if (wasOpen) return;
-            OpenFormationInspection(id);
-            formationInspectedOffer = slot;
-            formationOfferInspectionAnchor = anchor;
         }
 
         void ToggleFormationPieceInspection(int instance)
@@ -133,7 +106,7 @@ namespace YesterdayConvoy
             Fill(r, OperationsSurface);
             ApprovedUi.Border(r, OperationsEdge);
             Fill(new Rect(r.x, r.y, 2, r.height), OperationsFocus);
-            string location = formationInspectedOffer >= 0 ? "招募商店" : actor == null ? "备战席" : "已上阵";
+            string location = actor == null ? "备战席" : "已上阵";
             int cost = Shop.Definition(card).Cost;
             OperationsLabel(new Rect(r.x + 11, r.y + 6, 244, 17), $"{location} · {cost}费 · {spec.Role}", 11, OperationsMuted);
             string stars = piece == null ? "" : "  " + new string('★', piece.Star);
