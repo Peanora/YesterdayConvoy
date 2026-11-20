@@ -20,6 +20,9 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             FormationDeploymentTools.Validate();
+            var nodeIcons = Resources.Load<Texture2D>("formation-node-icons");
+            if (nodeIcons == null || nodeIcons.width != 192 || nodeIcons.height != 128)
+                throw new InvalidOperationException("Missing or invalid formation route icon atlas.");
             if(FormationCampaignRules.AllUnits.Length!=46||FormationCampaignRules.Nodes.Length!=23||FormationCampaignRules.AllPreplans.Length!=16||FormationCampaignRules.AllAugments.Length!=36)
                 throw new InvalidOperationException("Full v0.7 content tables are incomplete.");
             if(FormationCampaignRules.Nodes.Count(n=>n.Kind!="补给")!=20)
