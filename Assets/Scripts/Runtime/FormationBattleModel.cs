@@ -97,6 +97,7 @@ namespace YesterdayConvoy
         public int Seed { get; private set; }
         public int Capacity { get; private set; }
         public double Clock { get; private set; }
+        internal double MotionPresentationClock => Running ? Clock + Math.Min(accumulator, StepSeconds) : Clock;
         public double LimitSeconds = 90, ReviveSeconds = 8;
         public double TimeRemaining => Math.Max(0, LimitSeconds - Clock);
         public bool Paused;

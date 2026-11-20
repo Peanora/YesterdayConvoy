@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -15,9 +17,12 @@ namespace YesterdayConvoy
         {
             public double secondSkillAttackAt, transitionAt, freezeSecondsRemaining, thirdSkillAttackAt, clearedAt, endAt;
             public double[] s2StrikeIntervals, s3StrikeIntervals;
-            public int frozenUnits, freezeShells, snowCells;
+            public int frozenUnits, freezeShells, snowCells, lateSnowCells, lateSnowCenterLayers, s2DistinctRenderedFrames, s3DistinctRenderedFrames;
+            public int[] voiceStarts;
+            public long audioCaptureUtcTicks;
+            public double audioCaptureSeconds;
             public float startingHealth, restoredHealth, scoutPpu, s2Ppu, s3Ppu;
-            public string outcome;
+            public string musicClip, outcome;
         }
 
         IEnumerator VerifySnowBossTrial()
@@ -57,23 +62,39 @@ namespace YesterdayConvoy
             yield return WaitForScoutingView(false);
             yield return Frame("03-trial-roster");
 
+            FormationSnowBossAudioEvidence audioCapture = null;
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), SnowBossClipsFlag) >= 0)
+            {
+                var listener = FindAnyObjectByType<AudioListener>();
+                if (listener != null)
+                {
+                    audioCapture = listener.gameObject.AddComponent<FormationSnowBossAudioEvidence>();
+                    audioCapture.Begin();
+                }
+            }
             if (useMouse) yield return ClickStrategyUi(FormationBattleController.FormationStartRect.center);
             else controller.StartBattle();
             Assert(model.Phase == FormationPhase.Fighting && model.Speed == 1, "Boss trial starts at the ordinary simulation rate");
             guard = model.Defenders.Single();
+            yield return ObserveSnowBossAudio(1);
+            replay.musicClip = controller.SnowBossMusic.clip.name;
+            yield return CaptureSnowBossClip("battle-start-voice", 59);
             yield return ObserveSnowBossUntil(() => model.PresentationActions.Any(action => action.ActorId == guard.Id && action.Skill),
                 "Phase 1 performs its S2 animation");
             replay.secondSkillAttackAt = model.Clock;
-            yield return CaptureInterfaceClip("s2-cast-and-contact", 37, SnowBossClipsFlag);
+            yield return CaptureSnowBossClip("s2-cast-and-contact", 37);
             yield return ObserveSnowBossUntil(() => model.SnowBossSnow(guard).Count > 0 &&
                 model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill && hit.Amount > 0), "S2 damage and snow originate on the battlefield");
             replay.snowCells = model.SnowBossSnow(guard).Count;
+            Assert(replay.snowCells >= 7 && SnowBossGroundIsLegal(model, guard) && SnowBossGroundRendered(model, guard),
+                "S2 renders original snowfall across real walkable tiles around the boss");
             var body = SnowBossBody(guard);
             replay.s2Ppu = body == null ? 0 : body.sprite.pixelsPerUnit;
             Assert(Mathf.Approximately(replay.s2Ppu, 249.6f), "S2 uses the HD body in battle");
             yield return Frame("04-s2-snow-tiles");
+            yield return ObserveSnowBossMotion(guard, false, count => replay.s2DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, false).Length >= 2,
-                "S2 repeats at its unmodified source interval");
+                "S2 repeats at the faster combat interval with its source motion rate");
             replay.s2StrikeIntervals = SnowBossPlayerIntervals(model, guard, false);
 
             yield return ObserveSnowBossUntil(() => model.SnowBossTransitionActive(guard), "First lethal hit starts the phase transition");
@@ -95,7 +116,7 @@ namespace YesterdayConvoy
                     shell.sprite.texture.name.Replace('\\', '/').Contains(actor == guard ? "/buff_frozen-" : "/buff_frozen_to_walk-"))),
                 "Boss and each in-view frozen unit have their aligned native freeze shell");
             yield return Frame("05-active-global-freeze");
-            yield return CaptureInterfaceClip("phase-break-freeze", 28, SnowBossClipsFlag, () => model.SnowBossFreezeRemaining(frozen[0]) > .3);
+            yield return CaptureSnowBossClip("phase-break-freeze", 28, () => model.SnowBossFreezeRemaining(frozen[0]) > .3);
             Assert(positions.SequenceEqual(frozen.Select(unit => unit.Position)), "Frozen opponents hold their positions across rendered frames");
             Assert(heldBossFrame != null && SnowBossBody(guard)?.sprite == heldBossFrame &&
                 model.SnowBossTransitionActive(guard), "The boss's source pose holds during its own freeze");
@@ -103,9 +124,12 @@ namespace YesterdayConvoy
             double pausedAt = model.Clock;
             replay.freezeSecondsRemaining = model.SnowBossFreezeRemaining(frozen[0]);
             yield return Frame("05-paused-global-freeze");
+            int pausedMusicAt = controller.SnowBossMusic.timeSamples;
             yield return new WaitForSecondsRealtime(.3f);
             Assert(replay.freezeSecondsRemaining > 0 && model.Clock == pausedAt &&
                 model.SnowBossFreezeRemaining(frozen[0]) == replay.freezeSecondsRemaining, "Pause holds the transition and the freeze timer");
+            Assert(!controller.SnowBossMusic.isPlaying && controller.SnowBossMusic.timeSamples == pausedMusicAt &&
+                controller.SnowBossVoiceStarts.Count == 1, "Pause holds the music playhead without replaying the first voice");
             model.Paused = false;
 
             yield return ObserveSnowBossUntil(() => guard.SnowBossPhase == 2 && !model.SnowBossTransitionActive(guard) &&
@@ -115,22 +139,45 @@ namespace YesterdayConvoy
             replay.restoredHealth = guard.Health;
             Assert(guard.Health > guard.MaxHealth * .95f, "Phase 2 opens with its own health bar");
             Assert(!SnowBossShells().Any(), "All transition freeze shells clear after the thaw");
-            yield return CaptureInterfaceClip("s3-cast-and-contact", 44, SnowBossClipsFlag);
+            yield return ObserveSnowBossAudio(2);
+            yield return CaptureSnowBossClip("s3-cast-and-contact", 59);
             yield return ObserveSnowBossUntil(() => model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill &&
                 hit.Amount > 0 && hit.At >= replay.thirdSkillAttackAt - .05), "S3 applies damage through a real hit");
             body = SnowBossBody(guard);
             replay.s3Ppu = body == null ? 0 : body.sprite.pixelsPerUnit;
             Assert(Mathf.Approximately(replay.s3Ppu, 249.6f), "S3 uses the HD body in battle");
             yield return Frame("06-s3-impact");
+            yield return ObserveSnowBossMotion(guard, true, count => replay.s3DistinctRenderedFrames = count);
             yield return ObserveSnowBossUntil(() => SnowBossPlayerIntervals(model, guard, true).Length >= 2,
-                "S3 repeats at its unmodified source interval");
+                "S3 repeats at the faster combat interval with its source motion rate");
             replay.s3StrikeIntervals = SnowBossPlayerIntervals(model, guard, true);
+            yield return ObserveSnowBossUntil(() => model.Clock >= replay.thirdSkillAttackAt + 18,
+                "Second phase runs beyond the former skill expiry and recast times");
+            var lateSnow = model.SnowBossSnow(guard);
+            replay.lateSnowCells = lateSnow.Count;
+            lateSnow.TryGetValue(Vector2Int.RoundToInt(guard.Position), out replay.lateSnowCenterLayers);
+            Assert(guard.SnowBossPhase == 2 && replay.lateSnowCells >= 12 && replay.lateSnowCenterLayers == 5 &&
+                SnowBossGroundIsLegal(model, guard) && SnowBossGroundRendered(model, guard) && model.GuardSkillActive(guard) &&
+                double.IsPositiveInfinity(model.GuardEffect(guard).EndsAt),
+                "S3 keeps its full-depth legal snowfall around the boss without timing out");
+            Assert(model.PresentationActions.Any(action => action.ActorId == guard.Id && !action.Cancelled &&
+                action.Animation?.StartsWith("skill_attack", StringComparison.Ordinal) == true && action.At >= model.Clock - 2) &&
+                !model.PresentationActions.Any(action => action.ActorId == guard.Id && action.Animation == "skill_begin"),
+                "Late S3 continues to attack without repeating the startup");
+            yield return Frame("06-late-s3-snowfall");
+            yield return CaptureSnowBossClip("s3-late-permanent-snowfall", 44);
 
             yield return ObserveSnowBossUntil(() => model.RemainingDefenders == 0, "The supplied roster removes the second bar by ordinary combat");
             Assert(model.Phase == FormationPhase.Exiting && !model.BossAlive, "Only the second clear opens the route to the blue gate");
             replay.clearedAt = model.Clock;
             yield return Frame("07-second-bar-cleared");
             yield return ObserveSnowBossUntil(() => model.Phase == FormationPhase.Won, "A real deployed body reaches the blue gate");
+            replay.voiceStarts = controller.SnowBossVoiceStarts.ToArray();
+            Assert(replay.voiceStarts.Length == 2 && replay.voiceStarts.Distinct().Count() == 2 &&
+                !controller.SnowBossMusic.isPlaying && !controller.SnowBossVoice.isPlaying,
+                "Exactly two distinct dialogue lines play in the fight and both audio channels stop at settlement");
+            if (audioCapture != null)
+                replay.audioCaptureUtcTicks = audioCapture.Save(Path.Combine(directory, "battle-mix.wav"), out replay.audioCaptureSeconds);
             replay.outcome = model.Phase.ToString();
             replay.endAt = model.Clock;
             result.battles++;
@@ -151,6 +198,14 @@ namespace YesterdayConvoy
                 formalGuard.MaxHealth == resetGuard.MaxHealth, "Formal 3-7 uses the same giant two-phase defense");
         }
 
+        IEnumerator CaptureSnowBossClip(string name, int frames, Func<bool> continueRecording = null)
+        {
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), SnowBossClipsFlag) < 0) yield break;
+            using var times = File.CreateText(Path.Combine(directory, name + "-utc-ticks.txt"));
+            yield return CaptureInterfaceClip(name, frames, SnowBossClipsFlag, continueRecording,
+                _ => times.WriteLine(DateTime.UtcNow.Ticks));
+        }
+
         SpriteRenderer SnowBossBody(FormationDefender guard) => controller.GetComponentsInChildren<SpriteRenderer>()
             .SingleOrDefault(renderer => renderer.enabled && renderer.sprite != null && renderer.name == guard.Name);
 
@@ -158,13 +213,83 @@ namespace YesterdayConvoy
             .Where(renderer => renderer.enabled && renderer.sprite != null &&
                 renderer.name.StartsWith(FormationBattleController.PramanixIceRendererPrefix, StringComparison.Ordinal)).ToArray();
 
+        static bool SnowBossGroundIsLegal(FormationBattleModel model, FormationDefender guard) =>
+            model.SnowBossSnow(guard).Keys.All(cell => model.Terrain.IsWalkable(cell) && model.Terrain.HeightAt(cell) == 0);
+
+        bool SnowBossGroundRendered(FormationBattleModel model, FormationDefender guard)
+        {
+            var sprites = controller.GetComponentsInChildren<SpriteRenderer>();
+            return model.SnowBossSnow(guard).Where(pair => controller.FormationPointVisibleInView(pair.Key)).All(pair =>
+            {
+                var cell = pair.Key;
+                string texture = pair.Value == 1 ? "sbell2_ground_01" : pair.Value < 5 ? "sbell2_ground_02" : "sbell2_ground_03";
+                return sprites.Any(renderer => renderer.enabled && renderer.sprite != null &&
+                    renderer.name == FormationBattleController.PramanixSnowRendererPrefix + cell.x + "," + cell.y &&
+                    renderer.sprite.name.Contains(texture) &&
+                    Vector3.Distance(renderer.transform.position, controller.ActorWorldPoint(cell)) < .15f);
+            });
+        }
+
+        IEnumerator ObserveSnowBossAudio(int phase)
+        {
+            yield return ObserveSnowBossUntil(() => controller.SnowBossVoiceStarts.Count == phase &&
+                controller.SnowBossVoice != null && controller.SnowBossVoice.isPlaying,
+                phase == 1 ? "One original voice starts with the battle" : "A different original voice starts on entry to phase two");
+            var music = controller.SnowBossMusic;
+            var voice = controller.SnowBossVoice;
+            var starts = controller.SnowBossVoiceStarts;
+            Assert(music != null && music.loop && music.isPlaying && music.clip != null && music.clip.name == "battle" &&
+                music.clip.length > 170 && music.clip.channels == 2 && !music.mute && music.volume > 0,
+                "The selected original event battle soundtrack is actively looping");
+            Assert(starts.Distinct().Count() == phase && starts.All(line => line >= 1 && line <= 4) &&
+                voice.clip != null && voice.clip.name == "voice-" + starts.Last() && !voice.loop && !voice.mute && voice.volume > 0,
+                "Playback uses the expected distinct non-looping original voice asset");
+            int musicAt = music.timeSamples;
+            int voiceAt = voice.timeSamples;
+            yield return new WaitForSecondsRealtime(.15f);
+            Assert(music.timeSamples > musicAt && voice.timeSamples > voiceAt,
+                "The live voice and music playback positions both advance");
+        }
+
+        IEnumerator ObserveSnowBossMotion(FormationDefender guard, bool thirdSkill, Action<int> report)
+        {
+            var model = controller.Model;
+            FormationPresentationAction attack = null;
+            yield return ObserveSnowBossUntil(() =>
+            {
+                attack = model.PresentationActions.LastOrDefault(action => action.ActorId == guard.Id && !action.Cancelled &&
+                    model.Clock - action.At <= .05 && IsSnowBossStrike(action, thirdSkill));
+                return attack != null;
+            }, thirdSkill ? "S3 starts another genuine rendered swing" : "S2 starts another genuine rendered swing");
+            var frames = new HashSet<Sprite>();
+            bool blended = false;
+            var properties = new MaterialPropertyBlock();
+            while (controller.CombatViewActive && !attack.Cancelled && model.Clock < attack.EndAt)
+            {
+                var body = SnowBossBody(guard);
+                if (body != null && body.sprite.name.Contains("/" + attack.Animation + "/"))
+                {
+                    frames.Add(body.sprite);
+                    body.GetPropertyBlock(properties);
+                    float weight = properties.GetFloat("_PoseWeight");
+                    blended |= weight > 0 && weight < 1;
+                }
+                yield return null;
+            }
+            Assert(frames.Count >= 6 && blended, "The giant body advances through original frames with live pose interpolation");
+            report(frames.Count);
+        }
+
+        static bool IsSnowBossStrike(FormationPresentationAction action, bool thirdSkill) =>
+            thirdSkill ? action.Animation?.StartsWith("skill_attack", StringComparison.Ordinal) == true : action.Animation == "skill_2_attack";
+
         static double[] SnowBossPlayerIntervals(FormationBattleModel model, FormationDefender guard, bool thirdSkill)
         {
             var actions = model.PresentationActions.Where(action => action.ActorId == guard.Id && !action.Cancelled &&
-                (thirdSkill ? action.Animation?.StartsWith("skill_attack", StringComparison.Ordinal) == true : action.Animation == "skill_2_attack"))
+                IsSnowBossStrike(action, thirdSkill))
                 .ToArray();
             double expectedRate = thirdSkill ? 2.6 : 2;
-            double expectedInterval = thirdSkill ? 46d / 30 : 2;
+            double expectedInterval = thirdSkill ? 35d / 30 : 1.5;
             return actions.Zip(actions.Skip(1), (a, b) => (earlier: a, later: b, interval: b.At - a.At))
                 .Where(pair => Math.Abs(pair.earlier.Rate - expectedRate) < .0001 && Math.Abs(pair.later.Rate - expectedRate) < .0001 &&
                     Math.Abs(pair.interval - expectedInterval) <= .025001)

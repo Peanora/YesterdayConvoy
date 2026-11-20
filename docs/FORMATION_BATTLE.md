@@ -4,9 +4,11 @@
 
 打开右上「菜单 → 首领试玩 · 圣聆初雪」，可用配好装备的八人预设直接开战。可以先改站位、调整阵容或在免费商店补卡。结算后点「重试本关」保留本轮阵容、装备与站位。正式挑战的 3-7 使用同一场首领战。
 
-圣聆初雪独自守在右侧中路。首领面板依次显示两段生命。第一阶段的「霜涛覆岭」基础攻击间隔为 2 秒，命中后在目标脚边堆雪，积雪扩散并造成持续法伤。第一段生命耗尽后，初雪和场上存活的进攻方本体、召唤物一同冻结 2 秒，各自显示挂在身上的冰壳。初雪随后恢复满血，进入「群山俯首」阶段，技能内攻速提高 30%，基础攻击间隔约 1.54 秒。击倒第二阶段后，仍须让至少一个存活本体在 150 秒内进入蓝门。
+圣聆初雪独自守在右侧中路。首领面板依次显示两段生命。第一阶段「霜涛覆岭」每 1.50 秒出手一次，周围可通行低地积雪，命中后在目标脚边进一步堆雪和扩散。第一段生命耗尽后，初雪和场上存活的进攻方本体、召唤物一同冻结 2 秒。初雪随后恢复满血，发动一次「群山俯首」并保持技能状态直至倒下，约每 1.17 秒出手一次，周围积雪更快、更广。击倒第二阶段后，仍须让至少一个存活本体在 150 秒内进入蓝门。
 
-[终局参数](design/FORMATION_DEFENSE_CURVE.md#数值入口) · [原动作与特效来源](art/source-records/formation-pramanix-boss-2026-11-20.json) · [高清骨骼采样](art/source-records/formation-pramanix-boss-hd-2026-11-20.json) · [冻结状态素材](art/source-records/formation-pramanix-boss-freeze-2026-11-20.json)
+战斗开始播放「雪山降临1101」常规战斗曲。两个阶段开始时各从四句普通话战斗语音中抽一句，同一战斗不重复。暂停时语音与音乐一同暂停，音量随菜单的音效开关。
+
+[终局参数](design/FORMATION_DEFENSE_CURVE.md#数值入口) · [动作与特效来源](art/source-records/formation-pramanix-boss-2026-11-20.json) · [高清骨骼采样](art/source-records/formation-pramanix-boss-hd-2026-11-20.json) · [冻结状态素材](art/source-records/formation-pramanix-boss-freeze-2026-11-20.json) · [语音、技能音效与战斗曲](art/source-records/formation-pramanix-boss-audio-2026-11-20.json)
 
 ## 正式开局与战略战备
 

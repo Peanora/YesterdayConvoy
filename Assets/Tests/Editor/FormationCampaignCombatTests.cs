@@ -623,7 +623,8 @@ namespace YesterdayConvoy.Tests
             fighter.Position = guard.Position + Vector2.left;
             fighter.MaxHealth = fighter.Health = 100000;
             distant.Position = Vector2.zero;
-            for (int tick = 0; tick < 400 && model.SnowBossSnow(guard).Count == 0; tick++)
+            for (int tick = 0; tick < 400 && (model.SnowBossSnow(guard).Count == 0 ||
+                !model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill && hit.Amount > 0)); tick++)
                 Advance(model, .025f);
             Assert.That(model.SnowBossSnow(guard), Is.Not.Empty, "Phase 1 builds snow at real contact cells");
             Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill && hit.Amount > 0), Is.True);
@@ -676,7 +677,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void SnowBossUsesSourceCadenceAndContactForBothPhases()
+        public void SnowBossKeepsSourceContactAtFasterCadenceAndSustainsPhaseTwo()
         {
             var model = Fixture(out var run, "M03");
             ReachNode(run, "3-7", collectDrops: false);
@@ -688,15 +689,31 @@ namespace YesterdayConvoy.Tests
             fighter.MaxHealth = fighter.Health = 100000;
 
             var secondSkill = ObserveSnowBossStrikes(model, boss, action => action.Animation == "skill_2_attack");
-            AssertSnowBossCadence(secondSkill, 2, .7, 2);
+            AssertSnowBossCadence(secondSkill, 2, .7, 1.5);
+            Assert.That(model.SnowBossSnow(boss).ContainsKey(Vector2Int.RoundToInt(boss.Position)), Is.True,
+                "S2 builds snow around the boss as well as at attack contacts");
             boss.Health = 1;
             for (int tick = 0; tick < 240 && boss.SnowBossPhase == 1; tick++)
                 Advance(model, .025f);
             Assert.That(boss.SnowBossPhase, Is.EqualTo(2));
 
-            var thirdSkill = ObserveSnowBossStrikes(model, boss, action => action.Animation.StartsWith("skill_attack", StringComparison.Ordinal));
-            AssertSnowBossCadence(thirdSkill, 2.6, 40d / 60, 46d / 30);
+            var thirdSkill = ObserveSnowBossStrikes(model, boss, IsSnowBossS3Strike);
+            AssertSnowBossCadence(thirdSkill, 2.6, 40d / 60, 35d / 30);
+            var opening = model.PresentationActions.Single(action => action.ActorId == boss.Id && action.Animation == "skill_begin");
+            var snowCenter = Vector2Int.RoundToInt(boss.Position);
+            var initialLayers = model.SnowBossSnow(boss)[snowCenter];
+            Advance(model, 18);
+            Assert.That(boss.SnowBossPhase, Is.EqualTo(2));
+            Assert.That(model.SnowBossSnow(boss)[snowCenter], Is.EqualTo(5).And.GreaterThan(initialLayers));
+            Assert.That(model.PresentationActions.Count(action => action.ActorId == boss.Id && action.Animation == "skill_begin"), Is.Zero,
+                "S3 activates once without recycling its startup later in phase two");
+            Assert.That(model.Hits.Any(hit => hit.FromId == boss.Id && hit.At > opening.At + 17 &&
+                hit.Action != null && IsSnowBossS3Strike(hit.Action) && hit.Amount > 0), Is.True,
+                "S3 is still landing real attacks after its previous expiry and recast timings");
         }
+
+        static bool IsSnowBossS3Strike(FormationPresentationAction action) =>
+            action.Animation?.StartsWith("skill_attack", StringComparison.Ordinal) == true;
 
         static FormationPresentationAction[] ObserveSnowBossStrikes(FormationBattleModel model, FormationDefender boss,
             Func<FormationPresentationAction, bool> isStrike)

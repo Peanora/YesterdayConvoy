@@ -29,7 +29,7 @@ namespace YesterdayConvoy
             internal HashSet<int> InSnow;
             internal Dictionary<int, Vector2Int> SnowInduction;
             internal int SnowStrikes;
-            internal double NextSnowTick;
+            internal double NextSnowTick, NextSnowGrowth;
         }
 
         readonly Dictionary<int, GuardKit> guardKits = new Dictionary<int, GuardKit>();
@@ -80,8 +80,12 @@ namespace YesterdayConvoy
             foreach (var guard in Defenders)
             {
                 if (guard.ArtId != "D27") continue;
-                if (guard.IsSnowBoss && SnowBossSnow(guard).ContainsKey(Vector2Int.RoundToInt(fighter.Position)))
-                    slow = Mathf.Max(slow, .25f);
+                if (guard.IsSnowBoss)
+                {
+                    if (SnowBossSnow(guard).ContainsKey(Vector2Int.RoundToInt(fighter.Position)))
+                        slow = Mathf.Max(slow, .25f);
+                    continue;
+                }
                 var effect = GuardEffect(guard);
                 if (effect != null && (fighter.Position - effect.Origin).sqrMagnitude <= effect.Radius * effect.Radius)
                     return Mathf.Max(slow, .25f);

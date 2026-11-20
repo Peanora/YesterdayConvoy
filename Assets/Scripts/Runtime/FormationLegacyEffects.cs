@@ -67,6 +67,7 @@ namespace YesterdayConvoy
 
         const string PramanixEffects = "defender/D27/";
         internal const string PramanixIceRendererPrefix = "Formation freeze / ";
+        internal const string PramanixSnowRendererPrefix = "Formation snow / ";
         static readonly string[] PramanixBossEffectKeys =
         {
             "sbell2_skill_03_start_01", "sbell2_skill_03_hit",
@@ -220,13 +221,19 @@ namespace YesterdayConvoy
                 string texture = snow.Value == 1 ? "sbell2_ground_01" : snow.Value < 5 ? "sbell2_ground_02" : "sbell2_ground_03";
                 Vector2 cell = snow.Key;
                 double age = .8 + (now*FormationVisualRate+cell.x*.17+cell.y*.31)%1.6;
-                LegacyOriginal(PramanixEffects+texture,age,cell,-12,flat:true);
+                var clip=OriginalCombatVfxArt.Get(PramanixEffects+texture);
+                var snowTile=LegacyDraw(clip.At(age),legacyHdrMaterial,ActorWorldPoint(cell)+Vector3.up*.035f,
+                    cell,1,-12,hdr:clip.HdrRange,flat:true);
+                if(snowTile!=null)
+                {
+                    snowTile.sortingOrder=30;
+                    snowTile.name=PramanixSnowRendererPrefix+snow.Key.x+","+snow.Key.y;
+                }
             }
             var field = Model.GuardEffect(guard);
             if(field != null && field.Kind == "snow")
             {
                 PresentPramanixWind("sbell2_skill_03_flow",(now-field.StartedAt)*FormationVisualRate,guard.Position,20,1.45f);
-                if(snowCells.Count==0)PresentGuardSnowField(field);
             }
             if(!Model.SnowBossTransitionActive(guard))return;
             double transitionAge = now-guard.SnowBossTransitionStartedAt;

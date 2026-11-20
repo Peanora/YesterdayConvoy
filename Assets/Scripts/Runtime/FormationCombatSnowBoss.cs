@@ -8,6 +8,8 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleModel
     {
         const double SnowBossTransitionSeconds = 2;
+        const double SnowBossS2SnowGrowthSeconds = 5.5, SnowBossS3SnowGrowthSeconds = 1.5;
+        const double SnowBossS3OpeningDamageSeconds = 8;
         const int SnowBossMaxSnowCells = 20;
         const int SnowBossMaxSnowLayers = 5;
         static readonly IReadOnlyDictionary<Vector2Int, int> NoSnowBossSnow = new Dictionary<Vector2Int, int>();
@@ -103,6 +105,8 @@ namespace YesterdayConvoy
         {
             if (SnowBossTransitionActive(guard)) return;
             bool firstPhase = guard.SnowBossPhase == 1;
+            if (kit.SnowTiles.Count > 0 && Clock + 1e-8 >= kit.NextSnowGrowth)
+                GrowSnowBossField(guard, kit);
             if (firstPhase)
                 TickSnowBossFloor(guard, kit);
             else
@@ -118,10 +122,12 @@ namespace YesterdayConvoy
             {
                 kit.Casts = 1;
                 kit.LastCast = Clock;
+                kit.NextSnowTick = Clock + 1;
+                GrowSnowBossField(guard, kit);
                 SnowBossAction(guard, target, "skill_2_begin", 50d / 60);
                 return;
             }
-            if (!firstPhase && (kit.Casts == 0 || target != null && Clock >= kit.LastCast + 14))
+            if (!firstPhase && kit.Casts == 0)
             {
                 StartSnowBossS3(guard, kit, target);
                 return;
@@ -142,7 +148,6 @@ namespace YesterdayConvoy
                 foreach (var unit in GuardVictims(guard.Position, guard.Range, 4))
                 {
                     if (!guard.Alive || SnowBossTransitionActive(guard)) return;
-                    if (kit.SnowTiles.Count == 0) kit.NextSnowTick = Clock + 1;
                     GrowSnowBossFloor(kit, Vector2Int.RoundToInt(unit.Position));
                     CombatDamage(guard, unit, guard.Attack * 2.50f, 1, true, false);
                 }
@@ -151,6 +156,25 @@ namespace YesterdayConvoy
 
         bool CanSpreadBossSnow(Vector2Int cell) => cell.x >= DeploymentColumns + 1 && cell.x < Width - 1 &&
             cell.y >= 0 && cell.y < Height && (Terrain == null || Terrain.HeightAt(cell) == 0 && Terrain.IsWalkable(cell));
+
+        void GrowSnowBossField(FormationDefender guard, GuardKit kit)
+        {
+            bool skillThree = guard.SnowBossPhase == 2;
+            kit.NextSnowGrowth = Clock + (skillThree ? SnowBossS3SnowGrowthSeconds : SnowBossS2SnowGrowthSeconds);
+            var center = Vector2Int.RoundToInt(guard.Position);
+            // Source ranges x-1 and x-2: a two-cell diamond and a 5×5 region without the corners.
+            for (int x = -2; x <= 2; x++)
+                for (int y = -2; y <= 2; y++)
+                {
+                    if (Math.Abs(x) + Math.Abs(y) > (skillThree ? 3 : 2)) continue;
+                    var cell = center + new Vector2Int(x, y);
+                    if (!CanSpreadBossSnow(cell)) continue;
+                    if (kit.SnowTiles.TryGetValue(cell, out int layers))
+                        kit.SnowTiles[cell] = Math.Min(SnowBossMaxSnowLayers, layers + 1);
+                    else if (kit.SnowTiles.Count < SnowBossMaxSnowCells)
+                        kit.SnowTiles[cell] = 1;
+                }
+        }
 
         void GrowSnowBossFloor(GuardKit kit, Vector2Int cell)
         {
@@ -195,12 +219,12 @@ namespace YesterdayConvoy
             var startup = SnowBossAction(guard, target, "skill_begin", 20d / 60, 20d / 60);
             GuardContact(guard, startup, () =>
             {
-                Vector2 center = target?.Position ?? guard.Position;
-                kit.Effect = new FormationGuardEffect { Kind = "snow", Origin = center, Radius = 2,
-                    StartedAt = Clock, EndsAt = Clock + 8 };
+                kit.Effect = new FormationGuardEffect { Kind = "snow", Origin = guard.Position, Radius = 2.25f,
+                    StartedAt = Clock, EndsAt = double.PositiveInfinity };
                 kit.ActiveUntil = kit.Effect.EndsAt;
                 kit.NextSnowTick = Clock + 1;
                 kit.SnowStrikes = 0;
+                GrowSnowBossField(guard, kit);
                 InduceSnowBossVictims(guard, kit);
             });
         }
@@ -272,9 +296,9 @@ namespace YesterdayConvoy
         void TickSnowBossS3Floor(FormationDefender guard, GuardKit kit)
         {
             var snow = kit.Effect;
-            if (snow == null || Clock > snow.EndsAt + 1e-8 || Clock + 1e-8 < kit.NextSnowTick) return;
+            if (snow == null || Clock > snow.StartedAt + SnowBossS3OpeningDamageSeconds + 1e-8 || Clock + 1e-8 < kit.NextSnowTick) return;
             kit.NextSnowTick += 1;
-            foreach (var unit in GuardVictims(snow.Origin, snow.Radius, int.MaxValue))
+            foreach (var unit in GuardTargets().Where(unit => kit.SnowTiles.ContainsKey(Vector2Int.RoundToInt(unit.Position))).ToArray())
             {
                 if (!guard.Alive) return;
                 SnowBossSnowDamage(guard, unit, .60f, "SnowBossS3Tick");

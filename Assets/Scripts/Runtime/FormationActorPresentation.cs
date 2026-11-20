@@ -81,6 +81,7 @@ namespace YesterdayConvoy
                 var effects=FormationGuardEffects(id).ToArray();
                 foreach(var sequence in effects)pinned.Add(sequence.CacheKey);
                 ArtMemoryCache.Pin(pinned);
+                if(id==PramanixBossBodyArt)WarmSnowBossAudio();
                 foreach(var clip in source.Clips.Values.Where(FormationGuardClip))yield return clip.Warm();
                 foreach(var clip in effects)if(!clip.Ready)yield return clip.Warm();
             }
@@ -130,6 +131,14 @@ namespace YesterdayConvoy
         const float PramanixBossScale = 3.65f;
         // The retained idle frames all have visible alpha at 1.23–1.26 source units above the feet.
         const float PramanixScoutLabelTop = 1.23f;
+        const double PramanixPoseTransition = .075;
+        MaterialPropertyBlock pramanixPoseProperties;
+        FormationBattleModel pramanixPoseModel;
+        SpriteRenderer pramanixPoseRenderer;
+        Sprite pramanixPreviousPose;
+        string pramanixPoseClip;
+        double pramanixPoseActionAt, pramanixPoseChangedAt;
+        bool pramanixPreviousFlip, pramanixPoseInBattle;
 
         Rect FormationActorScreenRect(FormationFighter actor)
         {
@@ -171,6 +180,13 @@ namespace YesterdayConvoy
             string bodyArtId=FormationBodyArtId(actor);
             body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(bodyArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
+            bool pramanix = actor is FormationDefender { IsSnowBoss: true };
+            if(!pramanix && pramanixPoseRenderer == body)
+            {
+                SetPramanixPoseBlend(body,null,false,0);
+                pramanixPoseRenderer=null;
+            }
+            double motionNow=pramanix?Model.MotionPresentationClock:now;
             double visualStarted=actor.PresentationDuration>0?actor.PresentationStartedAt:actor.LastActionAt;
             double visualDuration=actor.PresentationDuration>0?actor.PresentationDuration:Math.Max(0,actor.ActionUntil-actor.LastActionAt);
             bool acting=actor.Alive&&now<visualStarted+visualDuration&&actor.LastActionAt>=0;
@@ -183,8 +199,8 @@ namespace YesterdayConvoy
             bool casting=acting&&actor.LastSkillAt>=actor.LastActionAt-.0001;
             string key=!actor.Alive?"death":casting&&actor.ArtId=="B21"?"cast":actor.IsMoving?"walk":casting?"cast":acting?"attack":"idle";
             float actionRate=actor.PresentationDuration>0&&actor.PresentationRate>0?actor.PresentationRate:FormationVisualRate;
-            double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
-                (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now*FormationVisualRate);
+            double age=key=="death"?(motionNow-actor.LastDeathAt)*FormationVisualRate:key=="attack"||key=="cast"?(motionNow-visualStarted)*actionRate:
+                (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:motionNow*FormationVisualRate);
             float sourceHeight,labelTop=0,actionScale=1;
             bool frozen = actor is FormationDefender frozenGuard
                 ? Model.SnowBossTransitionActive(frozenGuard)
@@ -248,17 +264,24 @@ namespace YesterdayConvoy
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
                     if(guard.IsSnowBoss)labelTop=PramanixScoutLabelTop;
-                    double sourceAge=(now-actor.LastActionAt)*actionRate;
+                    double sourceAge=(motionNow-actor.LastActionAt)*actionRate;
                     double s2StartedAt=Model.SnowBossS2StartedAt(guard);
                     if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
                        source.Clips.TryGetValue(actor.PresentationAction,out var nativeSkill)&&sourceAge<nativeSkill.Duration)
-                    {key=actor.PresentationAction;age=sourceAge;singleFrameSequence=true;}
+                    {
+                        key=actor.PresentationAction;age=sourceAge;singleFrameSequence=true;
+                        if(pramanix)age=PramanixMotionBeforeContact(guard,age,nativeSkill.Fps,actionRate);
+                    }
                     else if(guard.IsSnowBoss&&Model.SnowBossTransitionActive(guard))
                     {key="idle";age=0;singleFrameSequence=true;}
-                    else if(!acting&&s2StartedAt>=0&&CombatViewActive&&source.Clips.ContainsKey("skill_2_idle"))
-                    {key="skill_2_idle";age=(now-s2StartedAt)*FormationVisualRate;}
-                    else if(!acting&&Model.GuardSkillActive(guard)&&source.Clips.ContainsKey("skill_idle"))
-                    {key="skill_idle";age=Math.Max(0,now-actor.LastSkillAt)*FormationVisualRate;}
+                    else if((pramanix||!acting)&&s2StartedAt>=0&&CombatViewActive&&source.Clips.ContainsKey("skill_2_idle"))
+                    {key="skill_2_idle";age=Math.Max(0,motionNow-Math.Max(s2StartedAt,visualStarted+visualDuration))*FormationVisualRate;}
+                    else if((pramanix||!acting)&&Model.GuardSkillActive(guard)&&source.Clips.ContainsKey("skill_idle"))
+                    {
+                        key="skill_idle";
+                        double idleFrom=pramanix?visualStarted+visualDuration:actor.LastSkillAt;
+                        age=Math.Max(0,motionNow-idleFrom)*FormationVisualRate;
+                    }
                 }
                 if(key=="cast")key=source.Clips.ContainsKey("skill")?"skill":source.Clips.ContainsKey("skill_begin")?"skill_begin":source.Clips.ContainsKey("attack")?"attack":"idle";
                 if(!source.Clips.TryGetValue(key,out var clip))clip=source.Clips["idle"];
@@ -270,12 +293,23 @@ namespace YesterdayConvoy
                     else if(at<(begin?.Duration??0)+clip.Duration)age=at-(begin?.Duration??0);
                     else {age=at-(begin?.Duration??0)-clip.Duration;clip=end??clip;}
                 }
-                int frame=(int)(Math.Max(0,age)*clip.Fps);
-                frame=singleFrameSequence||key=="death"||key=="attack"||key=="skill"||key=="skill_begin"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
-                if(!frozen||body.sprite==null)body.sprite=clip.Frames[frame];
+                double framePosition=Math.Max(0,age)*clip.Fps;
+                int frame=(int)framePosition;
+                bool oneShot=singleFrameSequence||key=="death"||key=="attack"||key=="skill"||key=="skill_begin";
+                if(pramanix)
+                {
+                    if(!frozen||body.sprite==null)
+                        PresentPramanixPose(body,clip,framePosition,oneShot,oneShot?actor.LastActionAt:-1,motionNow,actor.Facing.x<-.01f);
+                }
+                else
+                {
+                    frame=oneShot?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
+                    if(!frozen||body.sprite==null)body.sprite=clip.Frames[frame];
+                }
             }
             body.enabled=body.sprite!=null;if(!body.enabled)return;
-            body.flipX=actor.Facing.x<-.01f;body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
+            if(!pramanix||!frozen)body.flipX=actor.Facing.x<-.01f;
+            body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
             float scale=ActorPresentationHeight(actor)/Mathf.Max(.5f,sourceHeight>0?sourceHeight:1.4f);
             body.transform.localScale=Vector3.one*(scale*actionScale);
             formationLabelHeights[actor.Id]=(labelTop>0?labelTop:sourceHeight)*scale;
@@ -283,6 +317,67 @@ namespace YesterdayConvoy
             Color color=frozen ? new Color(.67f,.83f,1f) : Color.white;
             if(actor is FormationFighter fighter&&fighter.Instance==shopDragInstance&&DragPreviewVisible)color.a=.25f;
             body.color=color;
+        }
+
+        double PramanixMotionBeforeContact(FormationDefender guard,double age,float fps,float rate)
+        {
+            var action=Model.PresentationActions.LastOrDefault(cue=>cue.ActorId==guard.Id&&cue.At==guard.LastActionAt);
+            if(action==null||Model.Clock+1e-8>=action.ContactAt)return age;
+            // Interpolation may approach the contact pose, but never display it before the real hit tick.
+            double contactFrame=Math.Round((action.ContactAt-action.At)*rate*fps);
+            return Math.Min(age,Math.Max(0,contactFrame-1)/fps);
+        }
+
+        void PresentPramanixPose(SpriteRenderer body,ArtSequence clip,double framePosition,bool oneShot,
+            double actionAt,double motionNow,bool flip)
+        {
+            bool sameActor=pramanixPoseRenderer==body&&pramanixPoseModel==Model;
+            if(!sameActor||pramanixPoseClip!=clip.Key||pramanixPoseActionAt!=actionAt||
+                pramanixPoseInBattle!=CombatViewActive||body.flipX!=flip)
+            {
+                pramanixPreviousPose=sameActor?body.sprite:null;
+                pramanixPreviousFlip=body.flipX;
+                pramanixPoseChangedAt=motionNow;
+                pramanixPoseClip=clip.Key;
+                pramanixPoseActionAt=actionAt;
+                pramanixPoseInBattle=CombatViewActive;
+                pramanixPoseModel=Model;
+                pramanixPoseRenderer=body;
+            }
+            int frame=(int)framePosition;
+            int current=oneShot?Math.Min(frame,clip.Count-1):frame%clip.Count;
+            int next=oneShot?Math.Min(current+1,clip.Count-1):(current+1)%clip.Count;
+            var frames=clip.Frames;
+            body.sprite=frames[current];
+            body.flipX=flip;
+            double transitionAge=motionNow-pramanixPoseChangedAt;
+            if(pramanixPreviousPose!=null&&transitionAge>=0&&transitionAge<PramanixPoseTransition)
+                SetPramanixPoseBlend(body,pramanixPreviousPose,pramanixPreviousFlip,
+                    1-Mathf.SmoothStep(0,1,(float)(transitionAge/PramanixPoseTransition)));
+            else
+            {
+                pramanixPreviousPose=null;
+                SetPramanixPoseBlend(body,frames[next],flip,current==next?0:(float)(framePosition-frame));
+            }
+        }
+
+        void SetPramanixPoseBlend(SpriteRenderer body,Sprite pose,bool flip,float weight)
+        {
+            pramanixPoseProperties??=new MaterialPropertyBlock();
+            body.GetPropertyBlock(pramanixPoseProperties);
+            pramanixPoseProperties.SetFloat("_PoseWeight",weight);
+            if(pose!=null&&weight>0)
+            {
+                var tex=pose.texture;
+                Rect r=pose.textureRect;
+                float invW=1f/tex.width,invH=1f/tex.height;
+                pramanixPoseProperties.SetTexture("_PoseTex",tex);
+                pramanixPoseProperties.SetVector("_PoseUv",new Vector4((flip?-1:1)*pose.pixelsPerUnit*invW,
+                    pose.pixelsPerUnit*invH,(r.x+pose.pivot.x)*invW,(r.y+pose.pivot.y)*invH));
+                pramanixPoseProperties.SetVector("_PoseRect",new Vector4((r.xMin+.5f)*invW,(r.yMin+.5f)*invH,
+                    (r.xMax-.5f)*invW,(r.yMax-.5f)*invH));
+            }
+            body.SetPropertyBlock(pramanixPoseProperties);
         }
 
         // These existing source actions are presentation only. In particular, loading

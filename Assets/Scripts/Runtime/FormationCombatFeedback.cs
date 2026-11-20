@@ -80,7 +80,7 @@ namespace YesterdayConvoy
             int voices = 0;
             foreach (var hit in Model.Hits)
             {
-                if (hit.At <= lastSoundAt || Model.Clock - hit.At > .18 || !IsAudibleFormationHit(hit)) continue;
+                if (hit.At <= lastSoundAt || Model.Clock - hit.At > .18 || !IsAudibleFormationHit(hit) || HasSnowBossImpactAudio(hit)) continue;
                 if (formationLastImpactSound.TryGetValue(hit.FromId, out var previous) && hit.At - previous < .09) continue;
                 var style = FormationHitStyle(hit);
                 if (!impactSounds.TryGetValue(style,out var clip))
