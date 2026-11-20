@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-20 圣聆初雪持续攻击、积雪与原声
+
+- 运行源码 `d9f024110c728c2ff9851dfed27c00d1a10890b7`。Unity 6000.6.5f1 Windows x64 Development 构建通过，1001968578 bytes、0 错误，退出 0。功能提交 `b5ad2d14` 的完整 EditMode **1213/1213**、零跳过，退出 0。后续版本补了初雪雪格的色彩输出，战斗参数相同。仓库检查覆盖 14312 个跟踪文件。[最终构建](../artifacts/formation-snow-boss-sustained/build-snow-decode.log) · [EditMode](../artifacts/formation-snow-boss-sustained/editmode-final.xml)
+- 高清图集的源动作逐帧与跨页检查显示，二技能收势与技能待机起点衔接，三技能 B/C 收势与技能待机起点有原姿态差。修订后从收势结束时起采样待机，使用模拟时钟余量连续取样，动作切换 0.075 秒过渡，保留真实命中时点。最终独立版测得二技能 1.500 秒、三技能 1.150／1.175 秒的相邻出手。抽样看到插值和连续换帧，冻结时保留本体姿势。三技能开场后超过 18 秒仍出手，并保持技能状态。[二技能连续帧](../artifacts/formation-snow-boss-sustained/player-snow-decode/s2-cast-and-contact) · [二阶段持续出手](../artifacts/formation-snow-boss-sustained/player-snow-decode/s3-late-permanent-snowfall)
+- 源数据的基础格形为菱形 13 格，三技能为 5×5 去四角的 21 格。按合法通行低地过滤后生成积雪，基础／三技能分别每 5.5／1.5 秒叠层，最多五层。二技能命中可在实际格点进一步堆雪、扩散。三技能雪地持续减速，开场保留 8 秒周期伤害。实机二技能初次取样时 10 格积雪，晚期三技能 14 格、中心五层。使用源雪纹在真实地面渲染，补齐 Gamma 转换后由暗灰变为浅灰蓝白，保持地形高度、遮挡和原图层级。[一阶段积雪](../artifacts/formation-snow-boss-sustained/player-snow-decode/04-s2-snow-tiles.png) · [二阶段晚期积雪](../artifacts/formation-snow-boss-sustained/player-snow-decode/06-late-s3-snowfall.png) · [原作技能与天赋](https://prts.wiki/w/Pramanix_the_Prerita)
+- 1280×720 D3D11 独立版 **50/50**、零异常。通过正常试玩入口，68.825 秒破首条血，70.825 秒开三技能，124.425 秒击倒，133.650 秒本体进蓝门。为补偿密集出手及持续三技能，首领攻击降至 155，两个阶段各 50 万生命。原终局九人、14 装备格的配装阵容在模型回归中 134.375 秒通过。最终实机两阶段分别抽中 CN_027 与 CN_028，背景音轨从开战持续至退场，暂停期间播放头停住。原作施法、攻击、接触、积雪和复苏声绑定实战触发，实机录音来自游戏自己的监听器。[独立版报告](../artifacts/formation-snow-boss-sustained/player-snow-decode/snow-boss-smoke.json) · [阵容回归](../artifacts/formation-snow-boss-sustained/editmode-atk-155-rerun.xml) · [原声音频](art/source-records/formation-pramanix-boss-audio-2026-11-20.json)
+- 在同一二阶段时点对比构建，实机露出雪格的同一取样区域平均亮度由 90.53 提升至 142.56（0–255）。用最终实机监听器录音匹配两段源语音波形，确认两句分别在各自开场进入混音。实机短片按采集时点导出为 309 帧、24 fps，12.875 秒，含 48 kHz 立体声音轨，完整解码通过。[有声实机短片](../artifacts/formation-snow-boss-sustained/pramanix-final-player-audio.mp4)
+
 ## 2026-11-20 圣聆初雪高清、攻速与冰壳
 
 - 运行源码 `2f07570838ad2e25f65051d58fefa6517b9d2fb3`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994150382 bytes、0 错误，退出 0。完整 EditMode **1213/1213**，零跳过，退出 0。新高清动作 67 页和原包两种冻结特效全部进入运行资源。仓库检查覆盖 14274 个跟踪文件。[构建](../artifacts/formation-snow-boss-hd/build-final.log) · [EditMode](../artifacts/formation-snow-boss-hd/editmode-final.xml)
