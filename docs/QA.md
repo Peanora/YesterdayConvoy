@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-20 圣聆初雪双阶段终局
+
+- 运行源码 `64d9d0c60eba3259ce627d5d461b76978dfc0b77`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994144354 bytes、0 错误，退出 0。完整 EditMode **1212/1212**，零跳过，退出 0。FormationBattle 读取保存地形，初雪固定在可通行的中路低地 (17,4)。仓库检查覆盖 14130 个跟踪文件。[构建日志](../artifacts/formation-snow-boss/build-final.log) · [EditMode 报告](../artifacts/formation-snow-boss/editmode-final.xml)
+- 1280×720 D3D11 独立版 **23/23**、零异常。由实际试玩入口的控制器命令建立预设并开战，普通时钟推进，阵容、站位、原始面板与伤害均来自正常战斗。首个二技能动作在 4.525 秒，68.175 秒首条耗尽，7 个存活进攻方同时冻结。暂停时冻结剩余 0.45 秒及单位位置保持。70.175 秒二阶段以满额 50 万生命开始三技能，124.425 秒清空守军，129.475 秒本体进入蓝门。重试恢复第一阶段并保留原阵容与站位。难度选择的 3-7 读到同一首领定义。鼠标输入探针受当前桌面前台句柄限制，最终回放由同一入口命令驱动。验证范围为首领试玩及 3-7，完整三位面自然运营长局待试玩。[独立版报告](../artifacts/formation-snow-boss/player-final/snow-boss-smoke.json) · [通关画面](../artifacts/formation-snow-boss/player-final/08-trial-victory.png)
+- 对照原包 `26-10-29-15-36-11-33649006` 默认皮肤。二技能源接触第 42 帧（60 fps），基础 2× 时为出手动作起点后 0.350 秒。三技能三种出手的源接触均为第 40 帧，实机接触同时考虑技能攻速。二技能围身层、直接命中、周期地伤与三档雪格分别绑定实际施法、目标伤害和格子状态。看过实机二技能出手、落点雪格及首个周期伤害，深色地面上的积雪和直接命中偏轻。二段核对范围、多个实际命中与风雪层。转段逐帧核对生命条、持姿、脚边冰壳及解冻后动作接续。转段冻结范围和 2 秒时长按棋盘适配，冰壳绑定为本作用法。看稿只核实到原包材质与原素材，原客户端额外挂点辉光与全套粒子时序仍有差异。[原包与采样记录](art/source-records/formation-pramanix-boss-2026-11-20.json) · [二技能落地](../artifacts/formation-snow-boss/player-final/04-s2-snow-tiles.png) · [冻结](../artifacts/formation-snow-boss/player-final/phase-break-freeze/018.png) · [三技能命中](../artifacts/formation-snow-boss/player-final/s3-cast-and-contact/014.png)
+- 首领身体按原图集 3.65× 显示，保持比例与脚点，当前构图可容纳可见身体和蓝门。侦察时头顶小名条与策略条有轻微交叠，试玩标题与战斗首领条完整可见。当前放大沿用既有图集像素密度。实机短片合并二技能、阶段冻结和三技能三个连续片段，按实机采集时间编码为 149 帧、24 fps、6.208 秒，无音轨。[实机短片](../artifacts/formation-snow-boss/pramanix-two-phase-player.mp4) · [侦察画面](../artifacts/formation-snow-boss/player-final/02-giant-boss-scout.png)
+
 ## 2026-11-20 奖励球散布与守军落地演出
 
 - 运行源码 `514a81d4363a2a16d5daea051c41dd2c5acc45e8`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994109458 bytes、0 错误，退出 0。定向 EditMode **135/135**、仓库检查 **14079** 个跟踪文件。EditMode 覆盖奖励球数量、遭遇进度严格超过 25% 和重复结算保护。[构建日志](../artifacts/formation-reward-drops/build-final.log) · [EditMode](../artifacts/formation-reward-drops/editmode-final.xml)
