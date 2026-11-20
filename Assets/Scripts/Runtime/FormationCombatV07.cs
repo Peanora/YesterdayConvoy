@@ -13,6 +13,7 @@ namespace YesterdayConvoy
         public int InitialDefenderCount { get; private set; }
         public bool BossAlive => Defenders.Any(d => d.Alive && State(d).Boss);
         public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d => State(d).LowestHealth) / initialGuardHealth);
+        internal bool IsInitialGuard(FormationDefender guard) => State(guard).InitialGuard;
         public readonly List<FormationFighter> Summons = new List<FormationFighter>();
         public IReadOnlyDictionary<string,int> SynergyCounts => synergyCounts;
         public IReadOnlyDictionary<string,int> ActiveSynergies => synergyLevels;

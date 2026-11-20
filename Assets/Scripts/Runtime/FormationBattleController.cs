@@ -88,7 +88,7 @@ namespace YesterdayConvoy
             if(!formationMenuOpen&&!formationExitOpen&&Input.GetKeyDown(KeyCode.Space)&&Model.Phase!=FormationPhase.Preparation)Model.Paused=!Model.Paused;
             if(Input.GetKeyDown(KeyCode.Escape))
                 DismissFormationInteraction();
-            EnsureFormationArt();UpdateDeploymentPreview();SyncActors();
+            EnsureFormationArt();UpdateDeploymentPreview();SyncActors();TickBattleRewardDrops();
             if(!FormationShowcaseRecorder.Drives(this))UpdateFormationSounds();
         }
         void OnApplicationFocus(bool focus)

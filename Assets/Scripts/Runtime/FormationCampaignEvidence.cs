@@ -47,6 +47,8 @@ namespace YesterdayConvoy
         static bool ReserveRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationReserveEvidence")>=0;
         static bool StrategyHistoryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationStrategyHistoryEvidence")>=0;
         static bool OpeningDeliveryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationOpeningDeliveryEvidence")>=0;
+        const string RewardDropEvidenceFlag = "-formationRewardDropEvidence";
+        static bool RewardDropEvidenceRequested => Array.IndexOf(Environment.GetCommandLineArgs(), RewardDropEvidenceFlag) >= 0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -346,6 +348,10 @@ namespace YesterdayConvoy
                 Assert(controller.Model.Clock==pausedClock&&controller.CombatViewActive&&!controller.FormationPreparationUiVisible,"Pause preserves battle clock and battle-only layout "+battle);
                 if(battle==0)yield return Frame("05-combat-paused-no-operating-ui");
                 controller.Model.Paused=false;
+                if (battle == 0 && RewardDropEvidenceRequested) yield return VerifyBattleRewardDrop();
+                if (battle == 2 && RewardDropEvidenceRequested)
+                    Assert(controller.Campaign.GuardRewardCueLimit(1, controller.Model.InitialDefenderCount) == 0,
+                        "Ordinary 1-3 combat has no reward drop cues, even at full progress");
                 int guard=0;
                 while(controller.Model.Phase==FormationPhase.Fighting||controller.Model.Phase==FormationPhase.Exiting)
                 {
@@ -355,6 +361,8 @@ namespace YesterdayConvoy
                     yield return null;
                 }
                 yield return null; // Production Update settles this actual outcome.
+                if (RewardDropEvidenceRequested)
+                    Assert(controller.ActiveBattleRewardDrops == 0, "No battle reward effect survives settlement");
                 Assert(controller.Campaign.NodeSettled,"Battle receipt uses actual result");
                 Assert(controller.Model.Phase==FormationPhase.Won||controller.Model.Phase==FormationPhase.Lost,"Battle has a legal terminal phase");
                 Assert(!controller.CombatViewActive&&controller.FormationPreparationUiVisible,"Natural settlement restores the operating layout "+battle);
@@ -365,6 +373,11 @@ namespace YesterdayConvoy
                 {
                     Assert(controller.Campaign.PendingBalls.Count(ball=>ball.Component==null) == 4 && controller.Campaign.BallRewards.Count == 0,
                         "First real reward settlement drops four unopened balls without payouts");
+                    if (RewardDropEvidenceRequested)
+                    {
+                        yield return new WaitForSecondsRealtime(.8f);
+                        yield return Frame("06-first-reward-platform-scatter");
+                    }
                     var dropped = controller.Campaign.PendingBalls.Select(ball=>ball.Id).ToArray();
                     Assert(controller.ContinueCampaign(),"Unopened ground rewards do not block the next node");
                     yield return WaitForScoutingView(false);
@@ -957,9 +970,63 @@ namespace YesterdayConvoy
             }
         }
 
+        IEnumerator VerifyBattleRewardDrop()
+        {
+            result.scope += " The 1-1 defender fall and cosmetic reward drop are captured at normal speed.";
+            var model = controller.Model;
+            var run = controller.Campaign;
+            int queued = run.PendingBalls.Count, claimed = run.BallRewards.Count;
+            Assert(model.Speed == 1 && controller.BattleRewardDropsShown == 0,
+                "Normal-speed reward battle begins without staged drops");
+            double deadline = Time.realtimeSinceStartupAsDouble + 100;
+            while (model.Defenders.All(guard => guard.LastDeathAt < 0) &&
+                model.Phase == FormationPhase.Fighting && Time.realtimeSinceStartupAsDouble < deadline)
+                yield return null;
+            Assert(model.Defenders.Any(guard => !guard.Alive && guard.LastDeathAt >= 0),
+                "A defender naturally falls on the authored 1-1 board");
+            Assert(controller.ActiveBattleRewardDrops == 0, "Reward drop waits for the defender's fall");
+
+            string target = Path.Combine(directory, "05-guard-reward-drop");
+            Directory.CreateDirectory(target);
+            double start = Time.realtimeSinceStartupAsDouble;
+            double openedAt = -1;
+            int landingFrame = -1, clearedFrame = -1;
+            for (int frame = 0; frame < 54; frame++)
+            {
+                while (Time.realtimeSinceStartupAsDouble < start + frame / 24d) yield return null;
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(target, frame.ToString("D3") + ".png"));
+                bool active = controller.ActiveBattleRewardDrops > 0;
+                if (active && openedAt < 0) openedAt = model.Clock;
+                if (active && landingFrame < 0 && model.Clock - openedAt >= .38) landingFrame = frame;
+                if (landingFrame >= 0 && !active && clearedFrame < 0 && controller.CombatViewActive)
+                    clearedFrame = frame;
+            }
+            yield return null;
+            Assert(openedAt >= 0 && landingFrame >= 0 && clearedFrame >= 0,
+                "Drop lands and clears while the battle camera is still active");
+            File.Copy(Path.Combine(target, landingFrame.ToString("D3") + ".png"),
+                Path.Combine(directory, "05-guard-reward-landing.png"), true);
+            File.Copy(Path.Combine(target, clearedFrame.ToString("D3") + ".png"),
+                Path.Combine(directory, "05-guard-reward-cleared.png"), true);
+            Assert(controller.BattleRewardDropsShown <= model.Defenders.Count(guard => guard.LastDeathAt >= 0),
+                "The visible drop count does not exceed the fallen defender count");
+            Assert(run.PendingBalls.Count == queued && run.BallRewards.Count == claimed && !run.NodeSettled,
+                "Fallen-guard presentation neither queues nor claims a reward during combat");
+        }
+
         IEnumerator VerifyConcurrentGroundRewards()
         {
             yield return new WaitForSecondsRealtime(.45f);
+            int untouched = 0;
+            Vector2 untouchedPoint = default;
+            if (RewardDropEvidenceRequested)
+            {
+                yield return new WaitForSecondsRealtime(.25f);
+                yield return Frame("06-reward-platform-scatter");
+                untouched = controller.Campaign.PendingBalls[2].Id;
+                Assert(controller.TryGroundRewardPoint(untouched, out untouchedPoint), "A third reward has a selectable position before other pickups");
+            }
             var drops=controller.Campaign.PendingBalls.Take(2).ToArray();
             Assert(drops.Length==2,"Two real carried rewards are available for independent opening");
             int count=controller.Campaign.PendingBalls.Count, gold=controller.Shop.Gold, items=controller.Campaign.Inventory.Count;
@@ -977,6 +1044,10 @@ namespace YesterdayConvoy
             while(controller.Campaign.PendingBalls.Any(ball=>drops.Any(drop=>drop.Id==ball.Id))&&
                 Time.realtimeSinceStartupAsDouble<until)yield return null;
             Assert(controller.Campaign.PendingBalls.Count==count-2,"Exactly two independently started drops have been delivered");
+            if (untouched != 0)
+                Assert(controller.TryGroundRewardPoint(untouched, out var remainingPoint) &&
+                    Vector2.Distance(remainingPoint, untouchedPoint) < 4,
+                    "The untouched reward keeps its position as its neighbors are picked up");
         }
 
         IEnumerator VerifyItemArt()

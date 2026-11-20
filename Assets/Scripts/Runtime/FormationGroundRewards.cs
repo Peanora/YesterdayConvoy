@@ -13,12 +13,13 @@ namespace YesterdayConvoy
             new Color(.40f,.94f,.98f), new Color(.54f,.65f,1), new Color(.82f,.57f,1),
             new Color(1,.55f,.81f), new Color(1,.78f,.49f)
         };
-        static readonly Vector2[] LootScatter =
+        static readonly (Vector2 Anchor, float DepthBias)[] LootScatter =
         {
-            new Vector2(5f/12,.15f), new Vector2(7f/12,.15f), new Vector2(3f/12,.15f),
-            new Vector2(9f/12,.15f), new Vector2(1f/12,.15f), new Vector2(11f/12,.15f),
-            new Vector2(5f/12,.73f), new Vector2(7f/12,.73f), new Vector2(3f/12,.73f),
-            new Vector2(9f/12,.73f), new Vector2(1f/12,.73f), new Vector2(11f/12,.73f)
+            // Broad anchors leave room for the largest rewards. Smaller drops can sit deeper between them.
+            (new Vector2(.472f,.764f), -.37f), (new Vector2(.708f,.031f), .16f), (new Vector2(.225f,.04f), .32f),
+            (new Vector2(.629f,.774f), -.06f), (new Vector2(.316f,.77f), -.01f), (new Vector2(.868f,.013f), .29f),
+            (new Vector2(.157f,.79f), -.24f), (new Vector2(.546f,.044f), .05f), (new Vector2(.783f,.784f), -.42f),
+            (new Vector2(.382f,.018f), .30f), (new Vector2(.065f,.067f), .24f), (new Vector2(.942f,.764f), -.11f)
         };
         sealed class GroundBall
         {
@@ -252,13 +253,20 @@ namespace YesterdayConvoy
             Destroy(ball.Root.gameObject);
         }
 
-        void EnsureGroundRewards()
+        void EnsureRewardGeometry()
         {
-            if (groundRewardRoot != null) return;
+            if (rewardMaterial != null) return;
             var shader = Resources.Load<Shader>("FormationRewardCrystal");
             rewardMaterial = new Material(shader) { name = "Formation reward crystal" };
             rewardDecal = new Material(Shader.Find("Sprites/Default")) { name = "Formation reward contact" };
             rewardTint = new MaterialPropertyBlock();
+            rewardShadowMesh = MakeRewardShadow();
+        }
+
+        void EnsureGroundRewards()
+        {
+            if (groundRewardRoot != null) return;
+            EnsureRewardGeometry();
             groundRewardRoot = new GameObject("Ground reward drops");
             groundRewardRoot.transform.SetParent(transform, false);
             groundRewardFrame = new GameObject("Reward bay / ground markings");
@@ -273,7 +281,6 @@ namespace YesterdayConvoy
             }
             foreach (float row in new[] { RewardNear, RewardFar })
                 PlaneRewardQuad(RewardLeft, row - .025f, RewardRight, row + .025f, frame, true);
-            rewardShadowMesh = MakeRewardShadow();
         }
 
         void ClearGroundRewards()
@@ -307,14 +314,19 @@ namespace YesterdayConvoy
 
         void AddGroundBall(FormationCampaignRun.RewardDrop drop,int index)
         {
-            var offset = LootScatter[index % LootScatter.Length];
+            var (offset, depthBias) = LootScatter[index];
+            float size = RewardSizeRatio(drop.Color);
+            // Smaller rewards use their spare clearance to scatter within each slot.
+            float clearance = RewardSizeRatio("彩") - size;
+            offset.x += (LootNoise(drop.Id * 17) - .5f) * .012f * clearance;
+            offset.y += (depthBias + (LootNoise(drop.Id * 11) - .5f) * .045f) * clearance;
             var root = new GameObject(drop.Component != null ? "装备补足 · "+drop.Component : drop.Color+"球").transform;
             root.SetParent(groundRewardRoot.transform, false);
             root.position = GroundRewardPoint(Mathf.Lerp(RewardLeft, RewardRight, offset.x),
                 Mathf.Lerp(RewardFar, RewardNear, offset.y), RewardFloor + .012f);
             var body = new GameObject("3D crystal").transform;
             body.SetParent(root,false);
-            float radius = .228f * RewardSizeRatio(drop.Color);
+            float radius = .228f * size;
             body.localPosition = Vector3.up * (radius + .96f);
             body.localScale = Vector3.one * radius;
             MeshRenderer shell = null;

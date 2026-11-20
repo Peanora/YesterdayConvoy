@@ -335,7 +335,7 @@ namespace YesterdayConvoy
             if(PreplanId=="P05"&&won&&(CurrentNode.Kind=="战斗"||CurrentNode.Kind=="战斗战备")&&marchPlanes.Add(CurrentNode.Plane)){shop.AddGold(4);shop.AddExperience(4);}
             AwardReunionHope(won);
             if(reward)RewardNode(key);
-            if(CurrentNode.Kind=="遭遇"&&progress>.25f)
+            if(EarnedEncounterBalls(progress))
             {foreach(string ball in EncounterBalls(CurrentEncounterTier))OpenBall(ball);if(PreplanId=="P14")OpenBall("蓝");}
             foreach(var piece in shop.Bench.Where(p=>shop.IsLineupInstance(p.Instance)))
             {
@@ -698,7 +698,18 @@ namespace YesterdayConvoy
             var unit = units[random.Next(units.Length)];
             payout.recruits.Add(new RewardRecruit(unit.CardId,unit.Name,star));
         }
-        static IEnumerable<string> EncounterBalls(int tier)=>tier switch{2=>new[]{"蓝","蓝"},3=>new[]{"金","蓝"},4=>new[]{"金","金","彩"},_=>new[]{"蓝"}};
+        static readonly string[][] encounterBalls = { new[]{"蓝"}, new[]{"蓝","蓝"}, new[]{"金","蓝"}, new[]{"金","金","彩"} };
+        static string[] EncounterBalls(int tier) => encounterBalls[tier >= 1 && tier <= 4 ? tier - 1 : 0];
+        bool EarnedEncounterBalls(float progress) => CurrentNode.Kind == "遭遇" && progress > .25f;
+
+        internal int GuardRewardCueLimit(float encounterProgress, int initialGuardCount)
+        {
+            if (IsPractice || Finished || NodeSettled) return 0;
+            if (CurrentNode.Kind == "奖励") return initialGuardCount;
+            return EarnedEncounterBalls(encounterProgress)
+                ? EncounterBalls(CurrentEncounterTier).Length + (PreplanId == "P14" ? 1 : 0)
+                : 0;
+        }
         string RandomComponent()=>"ABCDEF"[random.Next(6)].ToString();
         string RandomAdvanced()=>FormationCampaignRules.AllItems[random.Next(FormationCampaignRules.AllItems.Length)].Id;
         void RequestComponents(string title,int count)

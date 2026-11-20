@@ -137,6 +137,10 @@ namespace YesterdayConvoy
             }
             var foot=CellScreen(actor.SpawnCenter);return new Rect(foot.x-28,foot.y-75,56,82);
         }
+        float GuardDeathDuration(FormationActor guard) =>
+            (art.TryGetValue(guard.ArtId, out var source) && source.Clips.TryGetValue("death", out var clip)
+                ? clip.Duration : .65f) / FormationVisualRate;
+
         void PresentFormationActor(FormationActor actor,bool defender)
         {
             if(!bodies.TryGetValue(actor.Id,out var body))
@@ -148,7 +152,8 @@ namespace YesterdayConvoy
             if(PresentFormationSuiBody(actor,body))return;
             double now=Model.Clock,deathAge=now-actor.LastDeathAt;
             bool returning=actor is FormationFighter returningFighter&&returningFighter.NativePhaseReturningUntil>now;
-            float deathDuration=(defender?art.TryGetValue(actor.ArtId,out var da)&&da.Clips.TryGetValue("death",out var dd)?dd.Duration:.65f:formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
+            float deathDuration=defender?GuardDeathDuration(actor):
+                (formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
             body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(actor.ArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
             double visualStarted=actor.PresentationDuration>0?actor.PresentationStartedAt:actor.LastActionAt;
