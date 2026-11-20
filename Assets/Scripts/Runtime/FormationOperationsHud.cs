@@ -23,6 +23,7 @@ namespace YesterdayConvoy
             .Select(group => group.Select(node => node.Index).ToArray()).ToArray();
         int formationInspectedNode = -1;
         bool formationExitOpen, campaignScoutOwn;
+        Texture2D operationsNodeIcons;
 
         int[] OperationsPlaneNodes => OperationsPlanes[Campaign.CurrentNode.Plane - 1];
 
@@ -142,6 +143,8 @@ namespace YesterdayConvoy
 
         void DrawFormationNodeRail()
         {
+            if (operationsNodeIcons == null)
+                operationsNodeIcons = Resources.Load<Texture2D>("formation-node-icons");
             var panel = OperationsRouteRect;
             Fill(panel, OperationsSurface);
             Fill(new Rect(panel.x, panel.yMax - 1, panel.width, 1), OperationsEdge);
@@ -196,59 +199,23 @@ namespace YesterdayConvoy
             _ => OperationsInk
         };
 
-        static void OperationsStroke(Vector2 from, Vector2 to, Color color, float width = 1)
+        void DrawNodeMark(Vector2 center, string kind, Color tint)
         {
-            var difference = to - from;
-            var previous = GUI.matrix;
-            GUIUtility.RotateAroundPivot(Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg, from);
-            Fill(new Rect(from.x, from.y - width / 2, difference.magnitude, width), color);
-            GUI.matrix = previous;
-        }
-
-        static void DrawNodeMark(Vector2 p, string kind, Color color)
-        {
-            if (kind == "补给")
+            if (operationsNodeIcons == null) return;
+            int icon = kind switch
             {
-                ApprovedUi.Border(new Rect(p.x - 6, p.y - 2, 12, 8), color);
-                Fill(new Rect(p.x - 8, p.y - 4, 16, 2), color);
-                Fill(new Rect(p.x - .75f, p.y - 5, 1.5f, 11), color);
-                OperationsStroke(p + new Vector2(-4, -7), p + new Vector2(0, -4), color);
-                OperationsStroke(p + new Vector2(4, -7), p + new Vector2(0, -4), color);
-            }
-            else if (kind == "奖励")
-            {
-                Fill(new Rect(p.x - 6, p.y - 1, 12, 2), color);
-                Fill(new Rect(p.x - 1, p.y - 6, 2, 12), color);
-            }
-            else if (kind == "遭遇")
-            {
-                OperationsStroke(p + new Vector2(0,-7), p + new Vector2(7,6), color, 1.5f);
-                OperationsStroke(p + new Vector2(7,6), p + new Vector2(-7,6), color, 1.5f);
-                OperationsStroke(p + new Vector2(-7,6), p + new Vector2(0,-7), color, 1.5f);
-                Fill(new Rect(p.x - .7f, p.y - 2, 1.4f, 4), color);
-                Fill(new Rect(p.x - .7f, p.y + 3, 1.4f, 1.4f), color);
-            }
-            else if (kind == "首领")
-            {
-                OperationsStroke(p + new Vector2(-8,-5), p + new Vector2(-6,5), color, 1.5f);
-                OperationsStroke(p + new Vector2(8,-5), p + new Vector2(6,5), color, 1.5f);
-                Fill(new Rect(p.x - 6, p.y + 4, 12, 2), color);
-                OperationsStroke(p + new Vector2(-8,-5), p + new Vector2(-4,-1), color, 1.5f);
-                OperationsStroke(p + new Vector2(-4,-1), p + new Vector2(0,-6), color, 1.5f);
-                OperationsStroke(p + new Vector2(0,-6), p + new Vector2(4,-1), color, 1.5f);
-                OperationsStroke(p + new Vector2(4,-1), p + new Vector2(8,-5), color, 1.5f);
-            }
-            else if (kind == "战斗战备")
-            {
-                ApprovedShopPresentation.DrawLoopShield(p - new Vector2(7, 8), color);
-            }
-            else
-            {
-                OperationsStroke(p + new Vector2(-6,-6), p + new Vector2(6,6), color, 2);
-                OperationsStroke(p + new Vector2(6,-6), p + new Vector2(-6,6), color, 2);
-                OperationsStroke(p + new Vector2(-6,2), p + new Vector2(-2,6), color, 1.5f);
-                OperationsStroke(p + new Vector2(6,2), p + new Vector2(2,6), color, 1.5f);
-            }
+                "遭遇" => 1,
+                "奖励" => 2,
+                "补给" => 3,
+                "战斗战备" => 4,
+                "首领" => 5,
+                _ => 0
+            };
+            var uv = new Rect(icon % 3 / 3f, (1 - icon / 3) / 2f, 1f / 3, .5f);
+            var previous = GUI.color;
+            GUI.color = previous * tint;
+            GUI.DrawTextureWithTexCoords(new Rect(center.x - 11, center.y - 11, 22, 22), operationsNodeIcons, uv);
+            GUI.color = previous;
         }
 
         void DrawFormationRouteDetails()
