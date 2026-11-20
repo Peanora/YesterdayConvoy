@@ -137,12 +137,15 @@ namespace YesterdayConvoy
             yield return Frame("05-paused-global-freeze");
             yield return ObserveSnowBossUntil(() => !controller.SnowBossMusic.isPlaying,
                 "The battle music applies pause before sampling the playhead", 2);
+            // isPlaying reflects the pause request before the audio thread finishes its current buffer.
+            yield return new WaitForSecondsRealtime(.15f);
             int pausedMusicAt = controller.SnowBossMusic.timeSamples;
             yield return new WaitForSecondsRealtime(.3f);
             Assert(replay.freezeSecondsRemaining > 0 && model.Clock == pausedAt &&
                 model.SnowBossFreezeRemaining(frozen[0]) == replay.freezeSecondsRemaining, "Pause holds the transition and the freeze timer");
-            Assert(!controller.SnowBossMusic.isPlaying && controller.SnowBossMusic.timeSamples == pausedMusicAt &&
-                controller.SnowBossVoiceStarts.Count == 1, "Pause holds the music playhead without replaying the first voice");
+            int heldMusicAt = controller.SnowBossMusic.timeSamples;
+            bool heldMusic = !controller.SnowBossMusic.isPlaying && heldMusicAt == pausedMusicAt &&
+                controller.SnowBossVoiceStarts.Count == 1;
             checkingSnowBossPause = false;
             model.Paused = false;
 
@@ -211,6 +214,7 @@ namespace YesterdayConvoy
             Assert(!controller.Campaign.IsPramanixBossTrial && controller.Campaign.CurrentNode.Id == "3-7" &&
                 formalGuard.IsSnowBoss && formalGuard.ArtId == resetGuard.ArtId && formalGuard.Position == resetGuard.Position &&
                 formalGuard.MaxHealth == resetGuard.MaxHealth, "Formal 3-7 uses the same giant two-phase defense");
+            Assert(heldMusic, $"Pause holds the music playhead without replaying the first voice ({pausedMusicAt} to {heldMusicAt})");
         }
 
         IEnumerator CaptureSnowBossClip(string name, int frames, Func<bool> continueRecording = null)
