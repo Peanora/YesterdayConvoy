@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-20 转职徽章与红蓝宝石
+
+- 逐张比对 17 张工程内 PNG 与批准稿，内容一致。15 张徽章的 Alpha 轮廓逐像素相同，红、蓝宝石的 Alpha 轮廓也逐像素相同。查验了 18 个新 Unity GUID 的唯一性。仓库结构与元数据检查覆盖 14065 个跟踪文件。[图标来源与权利状态](art/source-records/formation-supplies-ui.json)
+- Unity 6000.6.5f1 Windows x64 Development 运行源码 `af2d6e16a469e8b4f3eef3a8510f54c965eb30a1`，构建产物 993932689 bytes，0 错误，退出 0。Runtime DLL SHA-256 `2BA6D3350D58B1C828ECB91147CC59A50ACDABB7C0E78236732EEC417A44FAEA`。[构建日志](../artifacts/formation-badge-items/build-final.log)
+- 同版本 1280×720 D3D11 独立 Player 的专项 **34/34、零异常**。进入正式棋盘后走「外聘编制」的真实徽章匣，核对 17 张纹理加载、15 枚徽章分三屏的装备栏效果与两颗宝石实际尺寸。用固定发放的材料操作蓝宝石和钢刃，核对拖动预览、确认、连击徽章入栏及拖装后的血条旁显示。对照了确认稿的轮廓、配色、白色图案和既有装备描边。专项材料为验证用样本，随机宝石掉落的飞行未单独录制。[专项报告](../artifacts/formation-badge-items/item-art-visible/campaign-smoke.json) · [徽章匣](../artifacts/formation-badge-items/item-art-visible/01-badge-choice.png) · [红蓝宝石](../artifacts/formation-badge-items/item-art-visible/02-gems-and-badge-in-rail.png) · [15 枚徽章分屏](../artifacts/formation-badge-items/item-art-visible/rail-comparison.png) · [合成确认实机片段](../artifacts/formation-badge-items/item-art-visible/badge-recipe-confirmation.mp4) · [装备后](../artifacts/formation-badge-items/item-art-visible/05-badge-equipped.png)
+- 同版本正式挑战前三场回归 **134/134、零异常**。相关 EditMode **55/55**，D3D11 PlayMode **4/4**。回归覆盖范围为前三场和整备交互。[前三场](../artifacts/formation-badge-items/campaign-player/campaign-smoke.json) · [EditMode](../artifacts/formation-badge-items/editmode-final.xml) · [PlayMode](../artifacts/formation-badge-items/playmode.xml)
+
 ## 2026-11-20 整备拖装与装备详情
 
 - Unity 6000.6.5f1 Windows x64 Development 构建源码 `27b011f74b0fb8ae8884b4a9f8fc96001a93f256`，989464833 bytes，0 错误，退出 0。Runtime DLL SHA-256 `B893356B3D202653A5CDBE47CA5FFD20A73BD93B59BC2899017B35E274F36DC6`。仓库结构与元数据检查覆盖 14030 个跟踪文件。[构建日志](../artifacts/formation-equipment-ui/build-delivery.log)
