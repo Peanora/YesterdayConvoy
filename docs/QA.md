@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-20 羁绊试玩
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，993949198 bytes、0 错误。唯一构建场景为 `FormationBattle`，运行源码 `6e3a9783eecf5e72198630cd3ea5652d3155c85f`。仓库结构与元数据检查覆盖 14069 个跟踪文件。[构建日志](../artifacts/formation-synergy-trials/build.log)
+- 定向 EditMode **147/147**，其中 21 项为本轮新增核验。覆盖 18 关在现役棋盘的守军、完整占地、徽章、真实档位和接敌，另核对希望与巨像经验单次结算、重试保留阵容与相同守军，以及巨像从 IV 阶升至 V 阶。[EditMode](../artifacts/formation-synergy-trials/editmode-final.xml)
+- 独立 Windows Player **98/98、零异常**。18 套预设均从正式棋盘控制器进入、开战、接敌并结算，15 胜 3 负。记录到接棒与同频事件，整合首战 +32 希望，泥岩 +6 XP 至 80。另核对从羁绊切到难度试玩时开启独立的新局。[Player 结果](../artifacts/formation-synergy-trials/player/synergy-smoke.json)
+- 同版本正常启动后，用鼠标打开菜单和 18 关选择页，进入泥岩，两次实战突破蓝门，分别结算至 80 和 86 XP，再通过结算按钮打开选关页。18 关的实际触发分支和长局平衡未逐项人工验收。
+
 ## 2026-11-20 转职徽章与红蓝宝石
 
 - 逐张比对 17 张工程内 PNG 与批准稿，内容一致。15 张徽章的 Alpha 轮廓逐像素相同，红、蓝宝石的 Alpha 轮廓也逐像素相同。查验了 18 个新 Unity GUID 的唯一性。仓库结构与元数据检查覆盖 14065 个跟踪文件。[图标来源与权利状态](art/source-records/formation-supplies-ui.json)
