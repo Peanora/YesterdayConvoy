@@ -136,9 +136,7 @@ namespace YesterdayConvoy
         void StrikeSnowBossS2(FormationDefender guard, GuardKit kit, FormationFighter target)
         {
             // D27 source attack event is frame 42 at 60 fps at normal playback.
-            float haste = Mathf.Max(.1f, 1 - (Buff(guard, "cold") > 0 ? .2f : 0) - Buff(guard, "nerve_slow"));
-            var action = SnowBossAction(guard, target, "skill_2_attack", 2, 42d / 60, 2 * haste);
-            guard.NextAttackAt = Clock + guard.Interval / haste;
+            var action = SnowBossStrike(guard, target, "skill_2_attack", 42d / 60, 0);
             GuardContact(guard, action, () =>
             {
                 foreach (var unit in GuardVictims(guard.Position, guard.Range, 4))
@@ -209,10 +207,8 @@ namespace YesterdayConvoy
 
         void StrikeSnowBossS3(FormationDefender guard, GuardKit kit, FormationFighter target)
         {
-            float haste = Mathf.Max(.1f, 1.30f - (Buff(guard, "cold") > 0 ? .2f : 0) - Buff(guard, "nerve_slow"));
-            var action = SnowBossAction(guard, target, SnowBossS3Attacks[kit.SnowStrikes++ % SnowBossS3Attacks.Length],
-                2, 40d / 60, 2 * haste);
-            guard.NextAttackAt = Clock + guard.Interval / haste;
+            var action = SnowBossStrike(guard, target, SnowBossS3Attacks[kit.SnowStrikes++ % SnowBossS3Attacks.Length],
+                40d / 60, .30f);
             GuardContact(guard, action, () =>
             {
                 foreach (var unit in GuardVictims(guard.Position, guard.Range, 5))
@@ -221,6 +217,20 @@ namespace YesterdayConvoy
                     CombatDamage(guard, unit, guard.Attack * 2.70f, 1, true, false);
                 }
             });
+        }
+
+        FormationPresentationAction SnowBossStrike(FormationDefender guard, FormationFighter target,
+            string motion, double sourceContact, float skillAttackSpeedBonus)
+        {
+            float haste = Mathf.Max(.1f, 1 + skillAttackSpeedBonus - (Buff(guard, "cold") > 0 ? .2f : 0) - Buff(guard, "nerve_slow"));
+            double previousDeadline = guard.NextAttackAt;
+            var action = SnowBossAction(guard, target, motion, 2, sourceContact, 2 * haste);
+            // Source attack intervals align to 30 Hz. Keep that deadline through a
+            // single board tick of latency, but start fresh after a gap in targets.
+            double interval = Math.Round(guard.Interval / (double)haste * 30, MidpointRounding.AwayFromZero) / 30;
+            double start = Clock - previousDeadline <= StepSeconds + 1e-8 ? previousDeadline : Clock;
+            guard.NextAttackAt = start + interval;
+            return action;
         }
 
         void InduceSnowBossVictims(FormationDefender guard, GuardKit kit)

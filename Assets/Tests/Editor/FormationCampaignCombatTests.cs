@@ -676,6 +676,61 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void SnowBossUsesSourceCadenceAndContactForBothPhases()
+        {
+            var model = Fixture(out var run, "M03");
+            ReachNode(run, "3-7", collectDrops: false);
+            model.BindCampaign(run);
+            var boss = model.Defenders.Single();
+            var fighter = model.Units.Single();
+            Assert.That(model.StartBattle(), Is.True);
+            fighter.Position = boss.Position + Vector2.left;
+            fighter.MaxHealth = fighter.Health = 100000;
+
+            var secondSkill = ObserveSnowBossStrikes(model, boss, action => action.Animation == "skill_2_attack");
+            AssertSnowBossCadence(secondSkill, 2, .7, 2);
+            boss.Health = 1;
+            for (int tick = 0; tick < 240 && boss.SnowBossPhase == 1; tick++)
+                Advance(model, .025f);
+            Assert.That(boss.SnowBossPhase, Is.EqualTo(2));
+
+            var thirdSkill = ObserveSnowBossStrikes(model, boss, action => action.Animation.StartsWith("skill_attack", StringComparison.Ordinal));
+            AssertSnowBossCadence(thirdSkill, 2.6, 40d / 60, 46d / 30);
+        }
+
+        static FormationPresentationAction[] ObserveSnowBossStrikes(FormationBattleModel model, FormationDefender boss,
+            Func<FormationPresentationAction, bool> isStrike)
+        {
+            FormationPresentationAction[] attacks = Array.Empty<FormationPresentationAction>();
+            for (int tick = 0; tick < 360; tick++)
+            {
+                Advance(model, .025f);
+                attacks = model.PresentationActions
+                    .Where(action => action.ActorId == boss.Id && !action.Cancelled && isStrike(action))
+                    .Take(3).ToArray();
+                if (attacks.Length == 3 && model.Hits.Any(hit => hit.Action == attacks[2] && hit.Amount > 0)) break;
+            }
+            Assert.That(attacks.Length, Is.EqualTo(3));
+            var directHit = model.Hits.FirstOrDefault(hit => hit.Action == attacks[2] && hit.Amount > 0);
+            Assert.That(directHit, Is.Not.Null);
+            Assert.That(directHit.At, Is.InRange(attacks[2].ContactAt - .000001, attacks[2].ContactAt + .025001));
+            return attacks;
+        }
+
+        static void AssertSnowBossCadence(FormationPresentationAction[] attacks, double presentationRate, double sourceContact, double interval)
+        {
+            Assert.That(attacks.Select(action => (double)action.Rate), Is.All.EqualTo(presentationRate).Within(.00001));
+            foreach (var action in attacks)
+            {
+                Assert.That(action.ContactAt - action.At, Is.EqualTo(sourceContact / presentationRate).Within(.00001));
+                Assert.That(action.EndAt - action.At, Is.EqualTo(2 / presentationRate).Within(.00001));
+            }
+            Assert.That(attacks[1].At - attacks[0].At, Is.EqualTo(interval).Within(.025001));
+            Assert.That(attacks[2].At - attacks[1].At, Is.EqualTo(interval).Within(.025001));
+            TestContext.WriteLine($"{attacks[0].Animation}: {attacks[1].At - attacks[0].At:0.000}s / {attacks[2].At - attacks[1].At:0.000}s, {attacks[0].Rate:0.00}x, contact +{attacks[0].ContactAt - attacks[0].At:0.000}s");
+        }
+
+        [Test]
         public void DefaultSnowBossTrialRosterWinsTheUnmodifiedBattle()
         {
             const int seed = 20261117;

@@ -3376,6 +3376,58 @@
       "sourcePrefab": "sbell2_skill_02_buff_01",
       "sourceBundle": "battle/prefabs/effects/sbell2.ab",
       "adaptation": "S2 persistent owner layer from skchr_sbell2_2 BuffDuringSkill sbell2_s2[effect_1]. Continue from the stable window after the initial fade-in. Native brightness and pivot retained."
+    },
+    {
+      "key": "defender/D27/buff_frozen",
+      "count": 105,
+      "width": 144,
+      "height": 124,
+      "columns": 8,
+      "ppu": 91.42857360839844,
+      "pivotX": 0.5277777777777778,
+      "pivotY": 0.37096884942823843,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/buff_frozen-00.png",
+          "width": 1152,
+          "height": 1736,
+          "count": 105
+        }
+      ],
+      "sourcePrefab": "buff_frozen",
+      "sourceBundle": "battle/prefabs/effects/buff.ab",
+      "adaptation": "Stock frozen status shell for the boss. Sampled from the original native mesh, materials and particles at 60-degree board camera pitch."
+    },
+    {
+      "key": "defender/D27/buff_frozen_to_walk",
+      "count": 105,
+      "width": 140,
+      "height": 124,
+      "columns": 8,
+      "ppu": 91.42857360839844,
+      "pivotX": 0.5142857142857142,
+      "pivotY": 0.4354849784604965,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/buff_frozen_to_walk-00.png",
+          "width": 1120,
+          "height": 1736,
+          "count": 105
+        }
+      ],
+      "sourcePrefab": "buff_frozen_to_walk",
+      "sourceBundle": "battle/prefabs/effects/buff.ab",
+      "adaptation": "Ground enemy freeze shell selected by buff_frozen_to_enemy motion mode 0. Sampled from the original native mesh, materials and particles at 60-degree board camera pitch."
     }
   ]
 }

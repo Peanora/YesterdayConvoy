@@ -23,7 +23,7 @@ namespace YesterdayConvoy
                 FormationAnimationProfile profile;
                 if(actor.ArtId.StartsWith("D",StringComparison.Ordinal))
                 {
-                    if(!art.TryGetValue(actor.ArtId,out var defender))continue;
+                    if(!art.TryGetValue(FormationBodyArtId(actor),out var defender))continue;
                     defender.Clips.TryGetValue("attack",out var attack);
                     float duration=attack?.Duration??0;
                     if(attack!=null){if(defender.Clips.TryGetValue("attack_start",out var start))duration+=start.Duration;if(defender.Clips.TryGetValue("attack_end",out var end))duration+=end.Duration;}

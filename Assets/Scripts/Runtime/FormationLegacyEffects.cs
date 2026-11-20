@@ -66,21 +66,23 @@ namespace YesterdayConvoy
         };
 
         const string PramanixEffects = "defender/D27/";
+        internal const string PramanixIceRendererPrefix = "Formation freeze / ";
         static readonly string[] PramanixBossEffectKeys =
         {
             "sbell2_skill_03_start_01", "sbell2_skill_03_hit",
             "sbell2_skill_02_buff_01", "sbell2_skill_02_start_01", "sbell2_skill_01_hit", "sbell2_buff_01_hit_02",
             "sbell2_ground_01", "sbell2_ground_02", "sbell2_ground_03", "sbell2_revive",
-            "sbell2_frozen", "sbell2_skill_03_flow"
+            "buff_frozen", "buff_frozen_to_walk", "sbell2_skill_03_flow"
         };
 
         IEnumerable<ArtSequence> FormationGuardEffects(string id)
         {
-            if(!FormationGuardEffectKeys.TryGetValue(id,out var keys))yield break;
-            if(id=="D27"&&Model.Defenders.Any(d=>d.IsSnowBoss))
-                keys=PramanixBossEffectKeys;
+            bool pramanixBoss = id == PramanixBossBodyArt;
+            string guardId = pramanixBoss ? "D27" : id;
+            if(!FormationGuardEffectKeys.TryGetValue(guardId,out var keys))yield break;
+            if(pramanixBoss)keys=PramanixBossEffectKeys;
             foreach(string key in keys)
-                if(OriginalCombatVfxArt.TryGet("defender/"+id+"/"+key,out var clip))yield return clip.Sequence;
+                if(OriginalCombatVfxArt.TryGet("defender/"+guardId+"/"+key,out var clip))yield return clip.Sequence;
         }
 
         void PresentFormationGuardEffects()
@@ -227,14 +229,29 @@ namespace YesterdayConvoy
                 if(snowCells.Count==0)PresentGuardSnowField(field);
             }
             if(!Model.SnowBossTransitionActive(guard))return;
-            double transitionAge = (now-guard.SnowBossTransitionStartedAt)*FormationVisualRate;
-            LegacyOriginal(PramanixEffects+"sbell2_revive",transitionAge,guard.Position,28,
+            double transitionAge = now-guard.SnowBossTransitionStartedAt;
+            LegacyOriginal(PramanixEffects+"sbell2_revive",transitionAge*FormationVisualRate,guard.Position,28,
                 flat:true,scale:PramanixBossScale);
-            double iceAge = transitionAge < 3.4 ? transitionAge : .8 + (transitionAge-.8)%2.6;
+            // The status particles advance on the battle clock, independently of attack animation speed.
+            var selfIce = OriginalCombatVfxArt.Get(PramanixEffects+"buff_frozen");
+            var targetIce = OriginalCombatVfxArt.Get(PramanixEffects+"buff_frozen_to_walk");
+            PresentPramanixIce(guard,selfIce.At(transitionAge),selfIce.HdrRange,PramanixScoutLabelTop*PramanixBossScale);
+            var targetIceFrame = targetIce.At(transitionAge);
             foreach(var fighter in Model.Units.Concat(Model.Summons))
                 if(Model.SnowBossFreezeRemaining(fighter)>0)
-                    LegacyOriginal(PramanixEffects+"sbell2_frozen",iceAge,fighter.Position,-5,
-                        scale:Mathf.Max(1,Mathf.Max(fighter.Footprint.x,fighter.Footprint.y)*.72f));
+                    PresentPramanixIce(fighter,targetIceFrame,targetIce.HdrRange,
+                        Mathf.Max(ActorPresentationHeight(fighter),Mathf.Max(fighter.Footprint.x,fighter.Footprint.y)));
+        }
+
+        void PresentPramanixIce(FormationActor actor, Sprite frame, float hdrRange, float bodyHeight)
+        {
+            float scale = Mathf.Max(1.15f,bodyHeight*.82f);
+            var shell = LegacyDraw(frame,legacyHdrMaterial,FormationDisplayPoint(actor)+Vector3.up*.025f,
+                actor.Position,scale,12,hdr:hdrRange);
+            if(shell==null)return;
+            // Fit the native ice to the occupant while leaving the head above the shell.
+            shell.transform.localScale=new Vector3(scale,scale*1.65f,scale);
+            shell.name=PramanixIceRendererPrefix+actor.Id;
         }
 
         void PresentPramanixWind(string effect, double age, Vector2 cell, int order, float scale)

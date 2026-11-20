@@ -127,8 +127,8 @@ namespace YesterdayConvoy
             {
                 NodeId = "3-7", ArtId = "D27", Name = "圣聆初雪",
                 Health = 500000, Attack = 230, Armor = 35, MagicResistance = 30,
-                Interval = 3.2f, Range = 4.25f, InitialSP = 0, RequiredSP = 0, ActionSeconds = 1,
-                Effect = "第一阶段「霜涛覆岭」，攻击落点积雪并向邻格扩散，雪地持续造成法伤。第一段生命耗尽时冻结全场进攻方2秒，随后以完整的第二段生命释放「群山俯首」。第二段生命耗尽后才算消灭。"
+                Interval = 2f, Range = 4.25f, InitialSP = 0, RequiredSP = 0, ActionSeconds = 1,
+                Effect = "第一阶段「霜涛覆岭」，攻击落点积雪并向邻格扩散，雪地持续造成法伤。第一段生命耗尽时，初雪和全场进攻方冻结2秒。随后以完整的第二段生命释放「群山俯首」，技能内攻速提高30%。"
             },
         };
 

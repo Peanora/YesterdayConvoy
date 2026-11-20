@@ -20,6 +20,10 @@ namespace YesterdayConvoy
         FormationBattleModel formationRegularMotionModel;
         public bool RosterArtReady=>Model!=null&&RequiredFormationArtIds().All(FormationArtAvailable);
 
+        internal const string PramanixBossBodyArt = "D27Boss";
+        static string FormationBodyArtId(FormationActor actor) =>
+            actor is FormationDefender { IsSnowBoss: true } ? PramanixBossBodyArt : actor.ArtId;
+
         bool FormationArtAvailable(string id)
         {
             if(!warmedFormationArt.Contains(id))return false;
@@ -34,7 +38,7 @@ namespace YesterdayConvoy
         IEnumerable<string> RequiredFormationArtIds()
         {
             if(Model==null)yield break;
-            foreach(var id in Model.Units.Where(u=>u.Enabled).Select(u=>u.ArtId).Concat(Model.Defenders.Select(d=>d.ArtId)).Distinct())yield return id;
+            foreach(var id in Model.Units.Where(u=>u.Enabled).Select(u=>u.ArtId).Concat(Model.Defenders.Select(FormationBodyArtId)).Distinct())yield return id;
             if(Campaign!=null&&Model.Defenders.Any(d=>d.ArtId=="D28"))yield return "D28Chess";
             foreach(var id in Model.Summons.Select(u=>u.ArtId).Distinct())yield return id;
             var team=Model.Units.Where(u=>u.Enabled).Select(u=>FormationCampaignRules.Find(u.ArtId)).Where(s=>s!=null).ToArray();
@@ -119,13 +123,13 @@ namespace YesterdayConvoy
         public float ActorPresentationHeight(FormationActor actor)
         {
             if(actor is FormationFighter)return FormationUnitCatalog.Find(actor.ArtId)?.VisualHeight??1.12f;
-            float height = art.TryGetValue(actor.ArtId,out var source)&&source.Height>0?source.Height:1.12f;
+            float height = art.TryGetValue(FormationBodyArtId(actor),out var source)&&source.Height>0?source.Height:1.12f;
             return actor is FormationDefender guard && guard.IsSnowBoss ? height * PramanixBossScale : height;
         }
 
         const float PramanixBossScale = 3.65f;
         // The retained idle frames all have visible alpha at 1.23–1.26 source units above the feet.
-        const float PramanixScoutLabelTop = 1.30f;
+        const float PramanixScoutLabelTop = 1.23f;
 
         Rect FormationActorScreenRect(FormationFighter actor)
         {
@@ -143,7 +147,7 @@ namespace YesterdayConvoy
             var foot=CellScreen(actor.SpawnCenter);return new Rect(foot.x-28,foot.y-75,56,82);
         }
         float GuardDeathDuration(FormationActor guard) =>
-            (art.TryGetValue(guard.ArtId, out var source) && source.Clips.TryGetValue("death", out var clip)
+            (art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue("death", out var clip)
                 ? clip.Duration : .65f) / FormationVisualRate;
 
         void PresentFormationActor(FormationActor actor,bool defender)
@@ -164,7 +168,8 @@ namespace YesterdayConvoy
             bool returning=actor is FormationFighter returningFighter&&returningFighter.NativePhaseReturningUntil>now;
             float deathDuration=defender?GuardDeathDuration(actor):
                 (formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
-            body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(actor.ArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
+            string bodyArtId=FormationBodyArtId(actor);
+            body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(bodyArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
             double visualStarted=actor.PresentationDuration>0?actor.PresentationStartedAt:actor.LastActionAt;
             double visualDuration=actor.PresentationDuration>0?actor.PresentationDuration:Math.Max(0,actor.ActionUntil-actor.LastActionAt);
@@ -181,7 +186,9 @@ namespace YesterdayConvoy
             double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
                 (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now*FormationVisualRate);
             float sourceHeight,labelTop=0,actionScale=1;
-            bool frozen = actor is FormationFighter frozenFighter && Model.SnowBossFreezeRemaining(frozenFighter) > 0;
+            bool frozen = actor is FormationDefender frozenGuard
+                ? Model.SnowBossTransitionActive(frozenGuard)
+                : actor is FormationFighter frozenFighter && Model.SnowBossFreezeRemaining(frozenFighter) > 0;
             if(!defender)
             {
                 var source=formationMonsterArt[actor.ArtId];sourceHeight=source.Height;
@@ -236,7 +243,7 @@ namespace YesterdayConvoy
             }
             else
             {
-                var source=art[actor.ArtId];sourceHeight=source.Height;labelTop=source.Height;
+                var source=art[bodyArtId];sourceHeight=source.Height;labelTop=source.Height;
                 bool singleFrameSequence=false;
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
@@ -264,7 +271,8 @@ namespace YesterdayConvoy
                     else {age=at-(begin?.Duration??0)-clip.Duration;clip=end??clip;}
                 }
                 int frame=(int)(Math.Max(0,age)*clip.Fps);
-                frame=singleFrameSequence||key=="death"||key=="attack"||key=="skill"||key=="skill_begin"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;body.sprite=clip.Frames[frame];
+                frame=singleFrameSequence||key=="death"||key=="attack"||key=="skill"||key=="skill_begin"?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
+                if(!frozen||body.sprite==null)body.sprite=clip.Frames[frame];
             }
             body.enabled=body.sprite!=null;if(!body.enabled)return;
             body.flipX=actor.Facing.x<-.01f;body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
