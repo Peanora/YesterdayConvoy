@@ -179,6 +179,13 @@ namespace YesterdayConvoy
                         action.Sequence, action.Skill ? 3 : 2);
             }
 
+            foreach (var guard in Model.Defenders)
+            {
+                if (guard.ArtId != "D28" || Model.GuardEffect(guard) is not { Kind: "chess_hit" } chess) continue;
+                var cue = FindFormationOriginalCue(guard.ArtId, "skillHit", chess.Kind, 0);
+                AddFormationOriginalAudio(destination, cue, chess.ImpactAt, after, through, guard.Id, (int)(chess.ImpactAt * 40), 3);
+            }
+
             foreach (var hit in Model.Hits)
             {
                 if (hit.At > through || hit.At < earliestAnchor || !IsAudibleFormationHit(hit)) continue;

@@ -1451,6 +1451,17 @@
       "sha256": "921b791c4f8badf80ca88b5ccf3126c65280610bade64a10bf63930229037bcf"
     },
     {
+      "asset": "dyn/audio/sound_beta_2/player/p_atk/p_atk_stwctp_d.wav",
+      "bundle": "audio/sound_beta_2/player/p_atk_6.ab",
+      "clipPathId": 2926080935188528447,
+      "resource": "FormationOriginal/p_atk_stwctp_d",
+      "channels": 1,
+      "frequency": 48000,
+      "frames": 54288,
+      "seconds": 1.131,
+      "sha256": "bf1ac9db67eb6a89acc719d991fdacb302e31eafd2712781094e0ce0accc1f07"
+    },
+    {
       "asset": "dyn/audio/sound_beta_2/player/p_atk/p_atk_stwctp_n.wav",
       "bundle": "audio/sound_beta_2/player/p_atk_6.ab",
       "clipPathId": 1438691716632802600,
@@ -4589,6 +4600,28 @@
     },
     {
       "artId": "D28",
+      "trigger": "skillHit",
+      "event": "battle.ON_PROJECTILE_HIT.projectile_chr_wang_stone1",
+      "nativePhase": -1,
+      "animation": "chess_hit",
+      "talulahCost": 0,
+      "reason": "The board displays the original stone1 token model. In the installed Windows projectile prefab, WangStoneHitBehaviour checks passersby, stops at its first selected hit, and enables the projectile hit sound. This cue plays at the board chess_hit transition once. Native stone birth, line-up and separate damage-audio events are outside this binding.",
+      "abilityIndex": -1,
+      "hitIndex": -1,
+      "resource": "FormationOriginal/p_atk_stwctp_d",
+      "delay": 0.0,
+      "minPitch": 0.8,
+      "maxPitch": 1.2,
+      "minVolume": 1.0,
+      "maxVolume": 1.0,
+      "sourceAsset": "dyn/audio/sound_beta_2/player/p_atk/p_atk_stwctp_d.wav",
+      "maxSoundAllowed": 1,
+      "popOldest": true,
+      "sourceEvent": "battle.ON_PROJECTILE_HIT.projectile_chr_wang_stone1",
+      "oncePerAction": false
+    },
+    {
+      "artId": "D28",
       "trigger": "skillStart",
       "event": "battle.ON_SKILL_START.skchr_wang_3",
       "nativePhase": -1,
@@ -6258,7 +6291,19 @@
     {
       "artId": "D28",
       "previousCueRows": 3,
-      "currentCueRows": 3
+      "currentCueRows": 4,
+      "decision": "The adapted stationary stone1 trap uses the original contact bank on chess_hit. Native stone birth, line-up and custom damage-audio events stay unbound.",
+      "chessContactSource": {
+        "path": "Arknights_Data/PersistentData/Bundles/battle/prefabs/[uc]projectiles.ab",
+        "sha256": "4fe6672c65b56cf6f593c9daadda11e61956c89ecd7fd0e91bf95996a65d1dc4",
+        "prefab": "projectile_chr_wang_stone1",
+        "behaviour": "WangStoneHitBehaviour",
+        "checksPassersby": true,
+        "checkIntervalSeconds": 0.10000000149011612,
+        "limitedHitTimes": 1,
+        "stopAtHitLimit": true,
+        "playAudioOnSelect": true
+      }
     },
     {
       "artId": "D29",
@@ -6401,7 +6446,11 @@
         "abilityClass": "RangedAttack",
         "animation": "Skill_1",
         "projectile": "projectile_chr_wisdel_s1",
-        "siblingProjectiles": ["projectile_chr_wisdel_s1_shock", "projectile_chr_wisdel_s1_shock2", "projectile_chr_wisdel_s1_bomb"]
+        "siblingProjectiles": [
+          "projectile_chr_wisdel_s1_shock",
+          "projectile_chr_wisdel_s1_shock2",
+          "projectile_chr_wisdel_s1_bomb"
+        ]
       },
       "s2ContactSource": {
         "prefab": "projectile_chr_wisdel_s2",
