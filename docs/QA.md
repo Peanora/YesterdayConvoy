@@ -2,7 +2,7 @@
 
 ## 2026-11-20 备战与战斗同倍率
 
-- Unity 6000.6.5f1 Windows x64 Development 构建通过，994099357 bytes、0 错误，运行源码 `1b1fa16067c65b71e9f98f728728bdeefbf3e490`。D3D11 PlayMode **17/17**，核对前、中、后三排行同排地格宽度、布阵边缘、悬空拖放、两格占地角色和侦察往返。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-preparation-zoom/build.log) · [PlayMode](../artifacts/formation-preparation-zoom/playmode-final.xml)
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994099357 bytes、0 错误，运行源码 `1b1fa16067c65b71e9f98f728728bdeefbf3e490`。D3D11 PlayMode **17/17**，核对前、中、后三排的同排地格宽度、布阵边缘、悬空拖放、两格占地角色和侦察往返。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-preparation-zoom/build.log) · [PlayMode](../artifacts/formation-preparation-zoom/playmode-final.xml)
 - 1280×720 D3D11 独立版前三场 **194/194**、零异常、退出 0。三场备战和战斗的中排地格宽均为 **59.44 px**。通过正式视角入口往返并核对中间帧。鼠标驱动测试受前台焦点限制，最终帧序列通过同一视角入口触发。真实结算核对了新平台两排球、并行拾取和飞行到账。[备战画面](../artifacts/formation-preparation-zoom/player-verified/03-left-preparation.png) · [守军横移中间帧](../artifacts/formation-preparation-zoom/player-verified/scout-pan-right/005.png) · [战斗画面](../artifacts/formation-preparation-zoom/player-verified/05-combat-0.png) · [奖励平台](../artifacts/formation-preparation-zoom/player-verified/06-concurrent-reward-flights/010.png) · [独立版报告](../artifacts/formation-preparation-zoom/player-verified/campaign-smoke.json)
 - 场景调整仅涉及现有奖励平台的尺寸和位置。继续沿用已核对的《明日方舟》LS-5 留存环境部件、60° 俯视角和 FOV 40。奖励台位置与备战构图按本作界面适配。[原素材记录](art/source-records/formation-ls5-native.json)
 
