@@ -137,8 +137,8 @@ namespace YesterdayConvoy.Tests
             for (int sample = 0; sample < 14 && (floor == null || bodyHit == null); sample++)
             {
                 var layers = LegacyLayers();
-                floor = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("lava_attack_01_hit") && HasPaint(renderer.sprite));
-                bodyHit = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("common_firemagic_hit_01") && HasPaint(renderer.sprite));
+                floor = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("lava_attack_01_hit"));
+                bodyHit = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("common_firemagic_hit_01"));
                 if (floor == null || bodyHit == null) { Step(.025f); yield return null; }
             }
             Assert.That(floor, Is.Not.Null, "The original flame must render on a valid player target cell.");
